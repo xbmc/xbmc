@@ -53,16 +53,37 @@ CBaseRenderer* CRendererDRMPRIME::Create(CVideoBuffer* buffer)
     if (!buf->AcquireDescriptor())
       return nullptr;
 
-    AVDRMFrameDescriptor* desc = buf->GetDescriptor();
-    if (!desc)
+    AVDRMFrameDescriptor* descriptor = buf->GetDescriptor();
+    if (!descriptor)
     {
       buf->ReleaseDescriptor();
       return nullptr;
     }
 
-    AVDRMLayerDescriptor* layer = &desc->layers[0];
+    AVDRMLayerDescriptor* layer = &descriptor->layers[0];
     uint32_t format = layer->format;
-    uint64_t modifier = desc->objects[0].format_modifier;
+    uint64_t modifier = descriptor->objects[0].format_modifier;
+
+    if (descriptor->nb_layers == 2)
+    {
+      if (descriptor->layers[0].format == DRM_FORMAT_R8 &&
+          descriptor->layers[1].format == DRM_FORMAT_GR88)
+        format = DRM_FORMAT_NV12;
+
+      if (descriptor->layers[0].format == DRM_FORMAT_R16 &&
+          descriptor->layers[1].format == DRM_FORMAT_GR1616)
+        format = DRM_FORMAT_P010;
+    }
+
+    if (descriptor->nb_layers == 3)
+    {
+      if (descriptor->layers[0].format == DRM_FORMAT_R8 &&
+          descriptor->layers[1].format == DRM_FORMAT_R8 &&
+          descriptor->layers[2].format == DRM_FORMAT_R8)
+        format = DRM_FORMAT_YUV420;
+
+      // YUV420P10 isn't supported by any hardware that I've seen
+    }
 
     buf->ReleaseDescriptor();
 

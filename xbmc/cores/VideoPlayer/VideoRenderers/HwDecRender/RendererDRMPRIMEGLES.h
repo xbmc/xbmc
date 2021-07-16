@@ -10,8 +10,14 @@
 
 #include "DRMPRIMEEGL.h"
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
+#include "rendering/gles/RenderSystemGLES.h"
 
 #include <memory>
+
+extern "C"
+{
+#include <libavutil/mastering_display_metadata.h>
+}
 
 namespace KODI
 {
@@ -56,7 +62,6 @@ public:
 
 private:
   void DrawBlackBars();
-  void Render(unsigned int flags, int index);
 
   bool m_configured = false;
   float m_clearColour{0.0f};
@@ -66,5 +71,16 @@ private:
     CVideoBuffer* videoBuffer = nullptr;
     std::unique_ptr<KODI::UTILS::EGL::CEGLFence> fence;
     CDRMPRIMETexture texture;
+
+    AVColorPrimaries m_srcPrimaries;
+    AVColorSpace m_srcColSpace;
+
+    bool m_hasDisplayMetadata{false};
+    AVMasteringDisplayMetadata m_displayMetadata;
+    bool m_hasLightMetadata{false};
+    AVContentLightMetadata m_lightMetadata;
+
+    bool m_srcFullRange;
+    int m_srcBits;
   } m_buffers[NUM_BUFFERS];
 };

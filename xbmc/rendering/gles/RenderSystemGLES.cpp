@@ -456,6 +456,14 @@ void CRenderSystemGLES::InitialiseShaders()
     CLog::Log(LOGERROR, "GUI Shader gles_shader_rgba_bob.frag - compile and link failed");
   }
 
+  m_pShader[SM_TEXTURE_YUV2RGB].reset(new CGLESShader("gles_shader_yuv2rgb.frag", defines));
+  if (!m_pShader[SM_TEXTURE_YUV2RGB]->CompileAndLink())
+  {
+    m_pShader[SM_TEXTURE_YUV2RGB]->Free();
+    m_pShader[SM_TEXTURE_YUV2RGB].reset();
+    CLog::Log(LOGERROR, "GUI Shader gles_shader_yuv2rgb.frag - compile and link failed");
+  }
+
   if (IsExtSupported("GL_OES_EGL_image_external"))
   {
     m_pShader[SM_TEXTURE_RGBA_OES].reset(new CGLESShader("gles_shader_rgba_oes.frag", defines));
@@ -465,7 +473,6 @@ void CRenderSystemGLES::InitialiseShaders()
       m_pShader[SM_TEXTURE_RGBA_OES].reset();
       CLog::Log(LOGERROR, "GUI Shader gles_shader_rgba_oes.frag - compile and link failed");
     }
-
 
     m_pShader[SM_TEXTURE_RGBA_BOB_OES].reset(new CGLESShader("gles_shader_rgba_bob_oes.frag", defines));
     if (!m_pShader[SM_TEXTURE_RGBA_BOB_OES]->CompileAndLink())
@@ -526,6 +533,10 @@ void CRenderSystemGLES::ReleaseShaders()
   if (m_pShader[SM_TEXTURE_RGBA_OES])
     m_pShader[SM_TEXTURE_RGBA_OES]->Free();
   m_pShader[SM_TEXTURE_RGBA_OES].reset();
+
+  if (m_pShader[SM_TEXTURE_YUV2RGB])
+    m_pShader[SM_TEXTURE_YUV2RGB]->Free();
+  m_pShader[SM_TEXTURE_YUV2RGB].reset();
 
   if (m_pShader[SM_TEXTURE_RGBA_BOB_OES])
     m_pShader[SM_TEXTURE_RGBA_BOB_OES]->Free();
@@ -636,6 +647,66 @@ GLint CRenderSystemGLES::GUIShaderGetBrightness()
     return m_pShader[m_method]->GetBrightnessLoc();
 
   return -1;
+}
+
+void CRenderSystemGLES::GUIShaderSetAlpha(float alpha)
+{
+  if (m_pShader[m_method])
+    m_pShader[m_method]->SetAlpha(alpha);
+}
+
+void CRenderSystemGLES::GUIShaderSetLayers(int layers)
+{
+  if (m_pShader[m_method])
+    m_pShader[m_method]->SetLayers(layers);
+}
+
+void CRenderSystemGLES::GUIShaderSetYUVMatrix(float (&yuv)[4][4])
+{
+  if (m_pShader[m_method])
+    m_pShader[m_method]->SetYUVMatrix(yuv);
+}
+
+void CRenderSystemGLES::GUIShaderSetEnableColorConversion(bool enable)
+{
+  if (m_pShader[m_method])
+    m_pShader[m_method]->SetEnableColorConversion(enable);
+}
+
+void CRenderSystemGLES::GUIShaderSetPrimaryMatrix(float (&mat)[3][3])
+{
+  if (m_pShader[m_method])
+    m_pShader[m_method]->SetPrimaryMatrix(mat);
+}
+
+void CRenderSystemGLES::GUIShaderSetGammaSrc(float gamma)
+{
+  if (m_pShader[m_method])
+    m_pShader[m_method]->SetGammaSrc(gamma);
+}
+
+void CRenderSystemGLES::GUIShaderSetGammaDstInv(float gamma)
+{
+  if (m_pShader[m_method])
+    m_pShader[m_method]->SetGammaDstInv(gamma);
+}
+
+void CRenderSystemGLES::GUIShaderSetToneMappingMethod(int method)
+{
+  if (m_pShader[m_method])
+    m_pShader[m_method]->SetToneMappingMethod(method);
+}
+
+void CRenderSystemGLES::GUIShaderSetRGBYUVCoefficients(float (&coefs)[3])
+{
+  if (m_pShader[m_method])
+    m_pShader[m_method]->SetRGBYUVCoefficients(coefs);
+}
+
+void CRenderSystemGLES::GUIShaderSetToneMapParameter(float parameter)
+{
+  if (m_pShader[m_method])
+    m_pShader[m_method]->SetToneMapParameter(parameter);
 }
 
 bool CRenderSystemGLES::SupportsStereo(RENDER_STEREO_MODE mode) const

@@ -26,6 +26,7 @@ enum ESHADERMETHOD
   SM_MULTI_BLENDCOLOR,
   SM_TEXTURE_RGBA,
   SM_TEXTURE_RGBA_OES,
+  SM_TEXTURE_YUV2RGB,
   SM_TEXTURE_RGBA_BLENDCOLOR,
   SM_TEXTURE_RGBA_BOB,
   SM_TEXTURE_RGBA_BOB_OES,
@@ -87,6 +88,21 @@ public:
   GLint GUIShaderGetContrast();
   GLint GUIShaderGetBrightness();
   GLint GUIShaderGetModel();
+
+  void GUIShaderSetAlpha(float alpha);
+
+  void GUIShaderSetLayers(int layers);
+
+  void GUIShaderSetYUVMatrix(float (&yuv)[4][4]);
+
+  void GUIShaderSetEnableColorConversion(bool enable);
+  void GUIShaderSetPrimaryMatrix(float (&mat)[3][3]);
+  void GUIShaderSetGammaSrc(float gamma);
+  void GUIShaderSetGammaDstInv(float gamma);
+
+  void GUIShaderSetToneMappingMethod(int method);
+  void GUIShaderSetRGBYUVCoefficients(float (&coefs)[3]);
+  void GUIShaderSetToneMapParameter(float parameter);
 
 protected:
   virtual void SetVSyncImpl(bool enable) = 0;

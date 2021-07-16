@@ -137,7 +137,7 @@ static bool IsSupportedHwFormat(const enum AVPixelFormat fmt)
 
 static bool IsSupportedSwFormat(const enum AVPixelFormat fmt)
 {
-  return fmt == AV_PIX_FMT_YUV420P || fmt == AV_PIX_FMT_YUVJ420P;
+  return fmt == AV_PIX_FMT_YUV420P || fmt == AV_PIX_FMT_YUVJ420P || fmt == AV_PIX_FMT_YUV420P10;
 }
 
 static const AVCodecHWConfig* FindHWConfig(const AVCodec* codec)
@@ -220,6 +220,9 @@ int CDVDVideoCodecDRMPRIME::GetBuffer(struct AVCodecContext* avctx, AVFrame* fra
       case AV_PIX_FMT_YUV420P:
       case AV_PIX_FMT_YUVJ420P:
         size = width * height * 3 / 2;
+        break;
+      case AV_PIX_FMT_YUV420P10:
+        size = width * height * 3;
         break;
       default:
         return -1;

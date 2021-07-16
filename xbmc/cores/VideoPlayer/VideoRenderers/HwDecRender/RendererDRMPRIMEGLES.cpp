@@ -13,6 +13,7 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderCapture.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
+#include "cores/VideoPlayer/VideoRenderers/VideoShaders/ConversionMatrix.h"
 #include "rendering/gles/RenderSystemGLES.h"
 #include "utils/EGLFence.h"
 #include "utils/EGLImage.h"
@@ -21,6 +22,11 @@
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 #include "windowing/linux/WinSystemEGL.h"
+
+extern "C"
+{
+#include "libavutil/pixfmt.h"
+}
 
 using namespace KODI::UTILS::EGL;
 
@@ -133,6 +139,28 @@ void CRendererDRMPRIMEGLES::AddVideoPicture(const VideoPicture& picture, int ind
   }
   buf.videoBuffer = picture.videoBuffer;
   buf.videoBuffer->Acquire();
+
+  buf.m_srcPrimaries = static_cast<AVColorPrimaries>(picture.color_primaries);
+  buf.m_srcColSpace = static_cast<AVColorSpace>(picture.color_space);
+
+  if (buf.m_srcColSpace == AVCOL_SPC_UNSPECIFIED)
+  {
+    if (picture.iWidth > 1024 || picture.iHeight >= 600)
+      buf.m_srcColSpace = AVCOL_SPC_BT709;
+    else
+      buf.m_srcColSpace = AVCOL_SPC_BT470BG;
+  }
+
+  buf.m_srcFullRange = picture.color_range == 1;
+  buf.m_srcBits = picture.colorBits;
+
+  buf.m_hasDisplayMetadata = picture.hasDisplayMetadata;
+  buf.m_displayMetadata = picture.displayMetadata;
+  buf.m_lightMetadata = picture.lightMetadata;
+  if (picture.hasLightMetadata && picture.lightMetadata.MaxCLL)
+  {
+    buf.m_hasLightMetadata = picture.hasLightMetadata;
+  }
 }
 
 bool CRendererDRMPRIMEGLES::Flush(bool saveBuffers)
@@ -262,43 +290,27 @@ void CRendererDRMPRIMEGLES::RenderUpdate(
     }
   }
 
+  float shaderAlpha = 1.0f;
+
   if (alpha < 255)
   {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    shaderAlpha = alpha / 255.0f;
   }
   else
   {
     glDisable(GL_BLEND);
+    shaderAlpha = 1.0f;
   }
 
-  Render(flags, index);
-
-  VerifyGLState();
-  glEnable(GL_BLEND);
-}
-
-bool CRendererDRMPRIMEGLES::RenderCapture(CRenderCapture* capture)
-{
-  capture->BeginRender();
-  capture->EndRender();
-  return true;
-}
-
-bool CRendererDRMPRIMEGLES::ConfigChanged(const VideoPicture& picture)
-{
-  if (picture.videoBuffer->GetFormat() != m_format)
-    return true;
-
-  return false;
-}
-
-void CRendererDRMPRIMEGLES::Render(unsigned int flags, int index)
-{
   BUFFER& buf = m_buffers[index];
 
   CVideoBufferDRMPRIME* buffer = dynamic_cast<CVideoBufferDRMPRIME*>(buf.videoBuffer);
   if (!buffer || !buffer->IsValid())
+    return;
+
+  if (!buf.texture.Map(buffer))
     return;
 
   CRenderSystemGLES* renderSystem =
@@ -306,14 +318,140 @@ void CRendererDRMPRIMEGLES::Render(unsigned int flags, int index)
   if (!renderSystem)
     return;
 
-  if (!buf.texture.Map(buffer))
-    return;
+  int layers = 0;
 
-  glBindTexture(GL_TEXTURE_EXTERNAL_OES, buf.texture.GetTexture());
+  if (buf.texture.GetTextureY() != 0)
+  {
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(buf.texture.GetTextureTarget(), buf.texture.GetTextureY());
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CRendererDRMPRIMEGLES::{} - Y={}", __FUNCTION__,
+              buf.texture.GetTextureY());
+    layers = 1;
+  }
 
-  renderSystem->EnableGUIShader(SM_TEXTURE_RGBA_OES);
+  if (buf.texture.GetTextureU() != 0)
+  {
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(buf.texture.GetTextureTarget(), buf.texture.GetTextureU());
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CRendererDRMPRIMEGLES::{} - U={}", __FUNCTION__,
+              buf.texture.GetTextureU());
+    layers = 2;
+  }
 
-  GLubyte idx[4] = {0, 1, 3, 2}; // Determines order of triangle strip
+  if (buf.texture.GetTextureV() != 0)
+  {
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(buf.texture.GetTextureTarget(), buf.texture.GetTextureV());
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CRendererDRMPRIMEGLES::{} - V={}", __FUNCTION__,
+              buf.texture.GetTextureV());
+    layers = 3;
+  }
+
+  if (layers == 1)
+    renderSystem->EnableGUIShader(SM_TEXTURE_RGBA_OES);
+  else
+    renderSystem->EnableGUIShader(SM_TEXTURE_YUV2RGB);
+
+  renderSystem->GUIShaderSetLayers(layers);
+  renderSystem->GUIShaderSetAlpha(shaderAlpha);
+
+  CConvertMatrix matrix;
+  matrix.SetColPrimaries(AVCOL_PRI_BT709, buf.m_srcPrimaries);
+  matrix.SetColParams(buf.m_srcColSpace, buf.m_srcBits, !buf.m_srcFullRange,
+                      buf.texture.GetTextureBits());
+  matrix.SetParams(m_videoSettings.m_Contrast * 0.02f, m_videoSettings.m_Brightness * 0.01f - 0.5f,
+                   CServiceBroker::GetWinSystem()->UseLimitedColor());
+
+  float yuv[4][4];
+  matrix.GetYuvMat(yuv);
+
+  CLog::Log(LOGDEBUG, LOGVIDEO,
+            "CRendererDRMPRIMEGLES::{} - source primary: {} destination primary: {}", __FUNCTION__,
+            buf.m_srcPrimaries, AVCOL_PRI_BT709);
+  CLog::Log(LOGDEBUG, LOGVIDEO, "CRendererDRMPRIMEGLES::{} - source colorspace: {}", __FUNCTION__,
+            buf.m_srcColSpace);
+  CLog::Log(LOGDEBUG, LOGVIDEO, "CRendererDRMPRIMEGLES::{} - source bits: {}", __FUNCTION__,
+            buf.m_srcBits);
+  CLog::Log(LOGDEBUG, LOGVIDEO, "CRendererDRMPRIMEGLES::{} - source limited: {}", __FUNCTION__,
+            !buf.m_srcFullRange);
+  CLog::Log(LOGDEBUG, LOGVIDEO, "CRendererDRMPRIMEGLES::{} - texture bits: {}", __FUNCTION__,
+            buf.texture.GetTextureBits());
+
+  std::string yuvStr;
+  for (int i = 0; i < 4; i++)
+    yuvStr.append(
+        StringUtils::Format("\n[%f][%f][%f][%f]", yuv[i][0], yuv[i][1], yuv[i][2], yuv[i][3]));
+
+  CLog::Log(LOGDEBUG, LOGVIDEO, "CRendererDRMPRIMEGLES::{} - YUV matrix: {}", __FUNCTION__, yuvStr);
+
+  renderSystem->GUIShaderSetYUVMatrix(yuv);
+  renderSystem->GUIShaderSetEnableColorConversion(false);
+
+  //! @todo: depend on output colorspace
+  if (buf.m_srcPrimaries != AVCOL_PRI_BT709)
+  {
+    float primMat[3][3];
+    matrix.GetPrimMat(primMat);
+
+    renderSystem->GUIShaderSetEnableColorConversion(true);
+    renderSystem->GUIShaderSetPrimaryMatrix(primMat);
+    renderSystem->GUIShaderSetGammaSrc(matrix.GetGammaSrc());
+    renderSystem->GUIShaderSetGammaDstInv(1 / matrix.GetGammaDst());
+
+    std::string primaryStr;
+    for (int i = 0; i < 3; i++)
+      primaryStr.append(
+          StringUtils::Format("\n[%f][%f][%f]", primMat[i][0], primMat[i][1], primMat[i][2]));
+
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CRendererDRMPRIMEGLES::{} - Primary matrix: {}", __FUNCTION__,
+              primaryStr);
+
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CRendererDRMPRIMEGLES::{} - gamma src: {}", __FUNCTION__,
+              matrix.GetGammaSrc());
+
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CRendererDRMPRIMEGLES::{} - gamma dst inv: {}", __FUNCTION__,
+              1 / matrix.GetGammaDst());
+  }
+
+  renderSystem->GUIShaderSetToneMappingMethod(VS_TONEMAPMETHOD_OFF);
+  if (m_videoSettings.m_ToneMapMethod != 0 &&
+      (buf.m_hasLightMetadata || (buf.m_hasDisplayMetadata && buf.m_displayMetadata.has_luminance)))
+  {
+    float param = 0.7;
+
+    if (buf.m_hasLightMetadata)
+    {
+      param = log10(100) / log10(buf.m_lightMetadata.MaxCLL);
+    }
+    else if (buf.m_hasDisplayMetadata && buf.m_displayMetadata.has_luminance)
+    {
+      param = log10(100) / log10(buf.m_displayMetadata.max_luminance.num /
+                                 buf.m_displayMetadata.max_luminance.den);
+    }
+
+    // Sanity check
+    if (param < 0.1f || param > 5.0f)
+    {
+      param = 0.7f;
+    }
+
+    param *= m_videoSettings.m_ToneMapParam;
+
+    float coefs[3];
+    matrix.GetRGBYuvCoefs(buf.m_srcColSpace, coefs);
+    renderSystem->GUIShaderSetRGBYUVCoefficients(coefs);
+    renderSystem->GUIShaderSetToneMappingMethod(m_videoSettings.m_ToneMapMethod);
+    renderSystem->GUIShaderSetToneMapParameter(param);
+
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CRendererDRMPRIMEGLES::{} - Tonemap coefficients: [{}][{}][{}]",
+              __FUNCTION__, coefs[0], coefs[1], coefs[2]);
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CRendererDRMPRIMEGLES::{} - Tonemap method: {}", __FUNCTION__,
+              m_videoSettings.m_ToneMapMethod);
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CRendererDRMPRIMEGLES::{} - Tonemap parameter: {}", __FUNCTION__,
+              param);
+  }
+
+  GLubyte idx[4] = {0, 1, 3, 2};
   GLuint vertexVBO;
   GLuint indexVBO;
   struct PackedVertex
@@ -384,9 +522,25 @@ void CRendererDRMPRIMEGLES::Render(unsigned int flags, int index)
 
   renderSystem->DisableGUIShader();
 
-  glBindTexture(GL_TEXTURE_EXTERNAL_OES, 0);
-
   buf.fence->CreateFence();
+
+  VerifyGLState();
+  glEnable(GL_BLEND);
+}
+
+bool CRendererDRMPRIMEGLES::RenderCapture(CRenderCapture* capture)
+{
+  capture->BeginRender();
+  capture->EndRender();
+  return true;
+}
+
+bool CRendererDRMPRIMEGLES::ConfigChanged(const VideoPicture& picture)
+{
+  if (picture.videoBuffer->GetFormat() != m_format)
+    return true;
+
+  return false;
 }
 
 bool CRendererDRMPRIMEGLES::Supports(ERENDERFEATURE feature)
@@ -398,6 +552,9 @@ bool CRendererDRMPRIMEGLES::Supports(ERENDERFEATURE feature)
     case RENDERFEATURE_VERTICAL_SHIFT:
     case RENDERFEATURE_PIXEL_RATIO:
     case RENDERFEATURE_ROTATION:
+    case RENDERFEATURE_TONEMAP:
+    case RENDERFEATURE_BRIGHTNESS:
+    case RENDERFEATURE_CONTRAST:
       return true;
     default:
       return false;
