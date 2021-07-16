@@ -64,6 +64,12 @@ namespace SOCKETS
       SetAddress(address);
     }
 
+    CAddress(const char* address, uint16_t port)
+    {
+      SetAddress(address);
+      SetPort(port);
+    }
+
     void SetAddress(const char *address)
     {
       in6_addr addr6;
@@ -117,6 +123,28 @@ namespace SOCKETS
       else
         return (unsigned long)saddr.saddr4.sin_addr.s_addr;
     }
+
+    void SetPort(uint16_t port)
+    {
+      if (saddr.saddr_generic.sa_family == AF_INET6)
+      {
+        saddr.saddr6.sin6_port = htons(port);
+        size = sizeof(saddr.saddr6);
+      }
+      else
+      {
+        saddr.saddr4.sin_port = htons(port);
+        size = sizeof(saddr.saddr4);
+      }
+    }
+
+    uint16_t Port() const
+    {
+      if (saddr.saddr_generic.sa_family == AF_INET6)
+        return ntohs(saddr.saddr6.sin6_port);
+      else
+        return ntohs(saddr.saddr4.sin_port);
+    }
   };
 
   /**********************************************************************/
@@ -166,15 +194,25 @@ namespace SOCKETS
     CUDPSocket()
       {
         m_Type = ST_UDP;
+        m_ipv4Only = false;
+        m_broadcast = false;
       }
-    // I/O functions
-    virtual int SendTo(const CAddress& addr, const int bufferlength,
-                       const void* buffer) = 0;
 
-    // read datagrams, return no. of bytes read or -1 or error
-    virtual int Read(CAddress& addr, const int buffersize, void *buffer) = 0;
-    virtual bool Broadcast(const CAddress& addr, const int datasize,
-                           const void* data) = 0;
+      bool IsIp4vOnly() const { return m_ipv4Only; }
+      void SetIpv4Only(bool ipv4Only) { m_ipv4Only = ipv4Only; }
+
+      bool IsBroadcast() const { return m_broadcast; }
+      void SetBroadcast(bool broadcast) { m_broadcast = broadcast; }
+
+      // I/O functions
+      virtual int SendTo(const CAddress& addr, const int bufferlength, const void* buffer) = 0;
+
+      // read datagrams, return no. of bytes read or -1 or error
+      virtual int Read(CAddress& addr, const int buffersize, void* buffer) = 0;
+
+    protected:
+      bool m_ipv4Only;
+      bool m_broadcast;
   };
 
   // Implementation specific classes
@@ -186,21 +224,16 @@ namespace SOCKETS
   {
   public:
     CPosixUDPSocket()
-      {
-        m_iSock = INVALID_SOCKET;
-        m_ipv6Socket = false;
-      }
+    {
+      m_iSock = INVALID_SOCKET;
+      m_ipv6Socket = false;
+    }
 
     bool Bind(bool localOnly, int port, int range=0) override;
     bool Connect() override { return false; }
     bool Listen(int timeout);
     int SendTo(const CAddress& addr, const int datasize, const void* data) override;
     int Read(CAddress& addr, const int buffersize, void *buffer) override;
-    bool Broadcast(const CAddress& addr, const int datasize, const void* data) override
-    {
-      //! @todo implement
-      return false;
-    }
     SOCKET Socket() override { return m_iSock; }
     void Close() override;
 
