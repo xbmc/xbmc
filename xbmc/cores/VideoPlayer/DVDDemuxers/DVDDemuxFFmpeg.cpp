@@ -1669,6 +1669,21 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         if (!stereoMode.empty())
           st->stereo_mode = stereoMode;
 
+        // Dolby Vision track side data present
+        int dovi_conf_size;
+        uint8_t* dovi_conf_side_data = av_stream_get_side_data(pStream, AV_PKT_DATA_DOVI_CONF, &dovi_conf_size);
+
+        if (dovi_conf_size > 0 && dovi_conf_side_data)
+        {
+          // For use later with Matroska
+          auto dovi = reinterpret_cast<AVDOVIDecoderConfigurationRecord*>(dovi_conf_side_data);
+
+          if (dovi->dv_profile > 0)
+          {
+            // Try giving the hint to decode as Dolby Vision anyways, as the side data is present
+            pStream->codecpar->codec_tag = MKTAG('d', 'v', 'h', 'e');
+          }
+        }
 
         if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
         {

@@ -96,6 +96,7 @@ public:
   int               GetExtraSize() const;
   void              ResetStartDecode(void);
   bool              CanStartDecode() const;
+  void              SetDoviWorkaround(void);
 
   static bool       mpeg2_sequence_header(const uint8_t *data, const uint32_t size, mpeg2_sequence *sequence);
 
@@ -110,7 +111,7 @@ protected:
   bool              BitstreamConvertInitHEVC(void *in_extradata, int in_extrasize);
   bool              BitstreamConvert(uint8_t* pData, int iSize, uint8_t **poutbuf, int *poutbuf_size);
   static void       BitstreamAllocAndCopy(uint8_t **poutbuf, int *poutbuf_size,
-                      const uint8_t *sps_pps, uint32_t sps_pps_size, const uint8_t *in, uint32_t in_size);
+                      const uint8_t *sps_pps, uint32_t sps_pps_size, const uint8_t *in, uint32_t in_size, uint8_t nal_type, bool dovi_workaround);
 
   typedef struct omx_bitstream_ctx {
       uint8_t  length_size;
@@ -136,4 +137,5 @@ protected:
   bool              m_convert_bytestream;
   AVCodecID         m_codec;
   bool              m_start_decode;
+  bool              m_dovi_workaround;
 };

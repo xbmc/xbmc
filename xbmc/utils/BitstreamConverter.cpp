@@ -62,7 +62,9 @@ enum {
   HEVC_NAL_EOB_NUT    = 37,
   HEVC_NAL_FD_NUT     = 38,
   HEVC_NAL_SEI_PREFIX = 39,
-  HEVC_NAL_SEI_SUFFIX = 40
+  HEVC_NAL_SEI_SUFFIX = 40,
+  HEVC_NAL_UNSPEC62   = 62, // Dolby Vision RPU
+  HEVC_NAL_UNSPEC63   = 63  // Dolby Vision EL
 };
 
 enum {
@@ -321,6 +323,7 @@ CBitstreamConverter::CBitstreamConverter()
   m_convert_bytestream = false;
   m_sps_pps_context.sps_pps_data = NULL;
   m_start_decode = true;
+  m_dovi_workaround = false;
 }
 
 CBitstreamConverter::~CBitstreamConverter()
@@ -659,6 +662,11 @@ bool CBitstreamConverter::CanStartDecode() const
   return m_start_decode;
 }
 
+void CBitstreamConverter::SetDoviWorkaround(void)
+{
+  m_dovi_workaround = true;
+}
+
 bool CBitstreamConverter::BitstreamConvertInitAVC(void *in_extradata, int in_extrasize)
 {
   // based on h264_mp4toannexb_bsf.c (ffmpeg)
@@ -927,12 +935,12 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **
     if (m_sps_pps_context.first_idr && IsIDR(unit_type) && !m_sps_pps_context.idr_sps_pps_seen)
     {
       BitstreamAllocAndCopy(poutbuf, poutbuf_size,
-        m_sps_pps_context.sps_pps_data, m_sps_pps_context.size, buf, nal_size);
+        m_sps_pps_context.sps_pps_data, m_sps_pps_context.size, buf, nal_size, unit_type, m_dovi_workaround);
       m_sps_pps_context.first_idr = 0;
     }
     else
     {
-      BitstreamAllocAndCopy(poutbuf, poutbuf_size, NULL, 0, buf, nal_size);
+      BitstreamAllocAndCopy(poutbuf, poutbuf_size, NULL, 0, buf, nal_size, unit_type, m_dovi_workaround);
       if (!m_sps_pps_context.first_idr && IsSlice(unit_type))
       {
           m_sps_pps_context.first_idr = 1;
@@ -953,7 +961,7 @@ fail:
 }
 
 void CBitstreamConverter::BitstreamAllocAndCopy( uint8_t **poutbuf, int *poutbuf_size,
-    const uint8_t *sps_pps, uint32_t sps_pps_size, const uint8_t *in, uint32_t in_size)
+    const uint8_t *sps_pps, uint32_t sps_pps_size, const uint8_t *in, uint32_t in_size, uint8_t nal_type, bool dovi_workaround)
 {
   // based on h264_mp4toannexb_bsf.c (ffmpeg)
   // which is Copyright (c) 2007 Benoit Fouet <benoit.fouet@free.fr>
@@ -962,6 +970,13 @@ void CBitstreamConverter::BitstreamAllocAndCopy( uint8_t **poutbuf, int *poutbuf
   uint32_t offset = *poutbuf_size;
   uint8_t nal_header_size = offset ? 3 : 4;
   void *tmp;
+
+  // MTK Dolby Vision decoder (seems) to expect header of size 4
+  if (dovi_workaround &&
+    (nal_type == HEVC_NAL_UNSPEC62 || nal_type == HEVC_NAL_UNSPEC63))
+  {
+    nal_header_size = 4;
+  }
 
   *poutbuf_size += sps_pps_size + in_size + nal_header_size;
   tmp = av_realloc(*poutbuf, *poutbuf_size);
@@ -976,8 +991,16 @@ void CBitstreamConverter::BitstreamAllocAndCopy( uint8_t **poutbuf, int *poutbuf
   {
     BS_WB32(*poutbuf + sps_pps_size, 1);
   }
-  else
+  else if (dovi_workaround &&
+    (nal_type == HEVC_NAL_UNSPEC62 || nal_type == HEVC_NAL_UNSPEC63))
   {
+    (*poutbuf + offset + sps_pps_size)[0] = 0;
+    (*poutbuf + offset + sps_pps_size)[1] = 0;
+    (*poutbuf + offset + sps_pps_size)[2] = 0;
+    (*poutbuf + offset + sps_pps_size)[3] = 1;
+  }
+   else
+   {
     (*poutbuf + offset + sps_pps_size)[0] = 0;
     (*poutbuf + offset + sps_pps_size)[1] = 0;
     (*poutbuf + offset + sps_pps_size)[2] = 1;
