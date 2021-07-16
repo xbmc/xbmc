@@ -662,7 +662,7 @@ bool CGUIWindowVideoBase::OnFileAction(int iItem, int action, const std::string&
       {
         std::string itemPath(item->GetPath());
         itemPath = item->GetVideoInfoTag()->m_strFileNameAndPath;
-        if (URIUtils::IsStack(itemPath) && CFileItem(CStackDirectory::GetFirstStackedFile(itemPath),false).IsDiscImage())
+        if (URIUtils::IsStack(itemPath))
           choices.Add(SELECT_ACTION_PLAYPART, 20324); // Play Part
       }
 
