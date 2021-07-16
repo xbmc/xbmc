@@ -614,6 +614,9 @@ void CPVRManager::OnWake()
   /* start job to search for missing channel icons */
   TriggerSearchMissingChannelIcons();
 
+  /* try to play channel on startup */
+  TriggerPlayChannelOnStartup();
+
   /* trigger PVR data updates */
   TriggerChannelGroupsUpdate();
   TriggerChannelsUpdate();
