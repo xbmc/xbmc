@@ -385,23 +385,17 @@ void CGUIFontTTF::DrawTextInternal(float x,
                                               CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalZCoord(x, y));
   }
   CVertexBuffer unusedVertexBuffer;
-  CVertexBuffer &vertexBuffer = hardwareClipping ?
-      m_dynamicCache.Lookup(dynamicPos,
-                            colors, text,
-                            alignment, maxPixelWidth,
-                            scrolling,
-                            XbmcThreads::SystemClockMillis(),
-                            dirtyCache) :
-      unusedVertexBuffer;
+  CVertexBuffer& vertexBuffer =
+      hardwareClipping
+          ? m_dynamicCache.Lookup(dynamicPos, colors, text, alignment, maxPixelWidth, scrolling,
+                                  std::chrono::steady_clock::now(), dirtyCache)
+          : unusedVertexBuffer;
   std::shared_ptr<std::vector<SVertex> > tempVertices = std::make_shared<std::vector<SVertex> >();
-  std::shared_ptr<std::vector<SVertex> > &vertices = hardwareClipping ?
-      tempVertices :
-      static_cast<std::shared_ptr<std::vector<SVertex> >&>(m_staticCache.Lookup(staticPos,
-                           colors, text,
-                           alignment, maxPixelWidth,
-                           scrolling,
-                           XbmcThreads::SystemClockMillis(),
-                           dirtyCache));
+  std::shared_ptr<std::vector<SVertex>>& vertices =
+      hardwareClipping ? tempVertices
+                       : static_cast<std::shared_ptr<std::vector<SVertex>>&>(m_staticCache.Lookup(
+                             staticPos, colors, text, alignment, maxPixelWidth, scrolling,
+                             std::chrono::steady_clock::now(), dirtyCache));
   if (dirtyCache)
   {
     // save the origin, which is scaled separately
@@ -543,12 +537,9 @@ void CGUIFontTTF::DrawTextInternal(float x,
     }
     if (hardwareClipping)
     {
-      CVertexBuffer &vertexBuffer = m_dynamicCache.Lookup(dynamicPos,
-                                                          colors, text,
-                                                          rawAlignment, maxPixelWidth,
-                                                          scrolling,
-                                                          XbmcThreads::SystemClockMillis(),
-                                                          dirtyCache);
+      CVertexBuffer& vertexBuffer =
+          m_dynamicCache.Lookup(dynamicPos, colors, text, rawAlignment, maxPixelWidth, scrolling,
+                                std::chrono::steady_clock::now(), dirtyCache);
       CVertexBuffer newVertexBuffer = CreateVertexBuffer(*tempVertices);
       vertexBuffer = newVertexBuffer;
       m_vertexTrans.emplace_back(0, 0, 0, &vertexBuffer,
@@ -556,12 +547,9 @@ void CGUIFontTTF::DrawTextInternal(float x,
     }
     else
     {
-      m_staticCache.Lookup(staticPos,
-                           colors, text,
-                           rawAlignment, maxPixelWidth,
-                           scrolling,
-                           XbmcThreads::SystemClockMillis(),
-                           dirtyCache) = *static_cast<CGUIFontCacheStaticValue *>(&tempVertices);
+      m_staticCache.Lookup(staticPos, colors, text, rawAlignment, maxPixelWidth, scrolling,
+                           std::chrono::steady_clock::now(), dirtyCache) =
+          *static_cast<CGUIFontCacheStaticValue*>(&tempVertices);
       /* Append the new vertices to the set collected since the first Begin() call */
       m_vertex.insert(m_vertex.end(), tempVertices->begin(), tempVertices->end());
     }

@@ -12,31 +12,36 @@
 #include <stdint.h>
 #include <vector>
 
+using namespace std::chrono_literals;
+
+namespace
+{
+constexpr auto FONT_CACHE_TIME_LIMIT = 1000ms;
+}
+
 template<class Position, class Value>
 class CGUIFontCacheImpl
 {
   struct EntryList
   {
-    using HashMap = std::multimap<size_t, CGUIFontCacheEntry<Position, Value>*>;
+    using HashMap = std::multimap<size_t, std::unique_ptr<CGUIFontCacheEntry<Position, Value>>>;
     using HashIter = typename HashMap::iterator;
-    using AgeMap = std::multimap<size_t, HashIter>;
+    using AgeMap = std::multimap<std::chrono::steady_clock::time_point, HashIter>;
 
     ~EntryList()
     {
       Flush();
     }
-    HashIter Insert(size_t hash, CGUIFontCacheEntry<Position, Value> *v)
+    HashIter Insert(size_t hash, std::unique_ptr<CGUIFontCacheEntry<Position, Value>> v)
     {
-      auto r (hashMap.insert(typename HashMap::value_type(hash, v)));
+      auto r(hashMap.insert(typename HashMap::value_type(hash, std::move(v))));
       if (r->second)
-        ageMap.insert(typename AgeMap::value_type(r->second->m_lastUsedMillis, r));
+        ageMap.insert(typename AgeMap::value_type(r->second->m_lastUsed, r));
       return r;
     }
     void Flush()
     {
       ageMap.clear();
-      for (auto it = hashMap.begin(); it != hashMap.end(); ++it)
-        delete(it->second);
       hashMap.clear();
     }
     typename HashMap::iterator FindKey(CGUIFontCacheKey<Position> key)
@@ -53,16 +58,16 @@ class CGUIFontCacheImpl
       }
       return hashMap.end();
     }
-    void UpdateAge(HashIter it, size_t millis)
+    void UpdateAge(HashIter it, std::chrono::steady_clock::time_point now)
     {
-      auto range = ageMap.equal_range(it->second->m_lastUsedMillis);
+      auto range = ageMap.equal_range(it->second->m_lastUsed);
       for (auto ageit = range.first; ageit != range.second; ++ageit)
       {
         if (ageit->second == it)
         {
           ageMap.erase(ageit);
-          ageMap.insert(typename AgeMap::value_type(millis, it));
-          it->second->m_lastUsedMillis = millis;
+          ageMap.insert(typename AgeMap::value_type(now, it));
+          it->second->m_lastUsed = now;
           return;
         }
       }
@@ -78,69 +83,74 @@ class CGUIFontCacheImpl
 public:
 
   explicit CGUIFontCacheImpl(CGUIFontCache<Position, Value>* parent) : m_parent(parent) {}
-  Value &Lookup(Position &pos,
-                const std::vector<UTILS::Color> &colors, const vecText &text,
-                uint32_t alignment, float maxPixelWidth,
+  Value& Lookup(Position& pos,
+                const std::vector<UTILS::Color>& colors,
+                const vecText& text,
+                uint32_t alignment,
+                float maxPixelWidth,
                 bool scrolling,
-                unsigned int nowMillis, bool &dirtyCache);
+                std::chrono::steady_clock::time_point now,
+                bool& dirtyCache);
   void Flush();
 };
 
 template<class Position, class Value>
 CGUIFontCacheEntry<Position, Value>::~CGUIFontCacheEntry()
 {
-  delete &m_key.m_colors;
-  delete &m_key.m_text;
   m_value.clear();
 }
 
 template<class Position, class Value>
-void CGUIFontCacheEntry<Position, Value>::Assign(const CGUIFontCacheKey<Position> &key, unsigned int nowMillis)
+void CGUIFontCacheEntry<Position, Value>::Assign(const CGUIFontCacheKey<Position>& key,
+                                                 std::chrono::steady_clock::time_point now)
 {
   m_key.m_pos = key.m_pos;
-  m_key.m_colors.assign(key.m_colors.begin(), key.m_colors.end());
-  m_key.m_text.assign(key.m_text.begin(), key.m_text.end());
+  m_key.m_colors = key.m_colors;
+  m_key.m_text = key.m_text;
   m_key.m_alignment = key.m_alignment;
   m_key.m_maxPixelWidth = key.m_maxPixelWidth;
   m_key.m_scrolling = key.m_scrolling;
   m_matrix = key.m_matrix;
   m_key.m_scaleX = key.m_scaleX;
   m_key.m_scaleY = key.m_scaleY;
-  m_lastUsedMillis = nowMillis;
+  m_lastUsed = now;
   m_value.clear();
 }
 
 template<class Position, class Value>
 CGUIFontCache<Position, Value>::CGUIFontCache(CGUIFontTTF& font)
-  : m_impl(new CGUIFontCacheImpl<Position, Value>(this)), m_font(font)
+  : m_impl(std::make_unique<CGUIFontCacheImpl<Position, Value>>(this)), m_font(font)
 {
 }
 
 template<class Position, class Value>
-CGUIFontCache<Position, Value>::~CGUIFontCache()
-{
-  delete m_impl;
-}
+CGUIFontCache<Position, Value>::~CGUIFontCache() = default;
 
 template<class Position, class Value>
-Value &CGUIFontCache<Position, Value>::Lookup(Position &pos,
-                                              const std::vector<UTILS::Color> &colors, const vecText &text,
-                                              uint32_t alignment, float maxPixelWidth,
+Value& CGUIFontCache<Position, Value>::Lookup(Position& pos,
+                                              const std::vector<UTILS::Color>& colors,
+                                              const vecText& text,
+                                              uint32_t alignment,
+                                              float maxPixelWidth,
                                               bool scrolling,
-                                              unsigned int nowMillis, bool &dirtyCache)
+                                              std::chrono::steady_clock::time_point now,
+                                              bool& dirtyCache)
 {
-  if (m_impl == nullptr)
-    m_impl = new CGUIFontCacheImpl<Position, Value>(this);
+  if (!m_impl)
+    m_impl = std::make_unique<CGUIFontCacheImpl<Position, Value>>(this);
 
-  return m_impl->Lookup(pos, colors, text, alignment, maxPixelWidth, scrolling, nowMillis, dirtyCache);
+  return m_impl->Lookup(pos, colors, text, alignment, maxPixelWidth, scrolling, now, dirtyCache);
 }
 
 template<class Position, class Value>
-Value &CGUIFontCacheImpl<Position, Value>::Lookup(Position &pos,
-                                                  const std::vector<UTILS::Color> &colors, const vecText &text,
-                                                  uint32_t alignment, float maxPixelWidth,
+Value& CGUIFontCacheImpl<Position, Value>::Lookup(Position& pos,
+                                                  const std::vector<UTILS::Color>& colors,
+                                                  const vecText& text,
+                                                  uint32_t alignment,
+                                                  float maxPixelWidth,
                                                   bool scrolling,
-                                                  unsigned int nowMillis, bool &dirtyCache)
+                                                  std::chrono::steady_clock::time_point now,
+                                                  bool& dirtyCache)
 {
   const CGUIFontCacheKey<Position> key(pos,
                                        const_cast<std::vector<UTILS::Color> &>(colors), const_cast<vecText &>(text),
@@ -153,10 +163,14 @@ Value &CGUIFontCacheImpl<Position, Value>::Lookup(Position &pos,
   {
     // Cache miss
     dirtyCache = true;
-    CGUIFontCacheEntry<Position, Value> *entry = nullptr;
-    if (!m_list.ageMap.empty() && (nowMillis - m_list.ageMap.begin()->first) > FONT_CACHE_TIME_LIMIT)
+    std::unique_ptr<CGUIFontCacheEntry<Position, Value>> entry;
+
+    const auto duration =
+        std::chrono::duration_cast<std::chrono::milliseconds>(now - m_list.ageMap.begin()->first);
+
+    if (!m_list.ageMap.empty() && duration > FONT_CACHE_TIME_LIMIT)
     {
-      entry = m_list.ageMap.begin()->second->second;
+      entry = std::move(m_list.ageMap.begin()->second->second);
       m_list.hashMap.erase(m_list.ageMap.begin()->second);
       m_list.ageMap.erase(m_list.ageMap.begin());
     }
@@ -164,10 +178,10 @@ Value &CGUIFontCacheImpl<Position, Value>::Lookup(Position &pos,
     // add new entry
     CGUIFontCacheHash<Position> hashgen;
     if (!entry)
-      entry = new CGUIFontCacheEntry<Position, Value>(*m_parent, key, nowMillis);
+      entry = std::make_unique<CGUIFontCacheEntry<Position, Value>>(*m_parent, key, now);
     else
-      entry->Assign(key, nowMillis);
-    return m_list.Insert(hashgen(key), entry)->second->m_value;
+      entry->Assign(key, now);
+    return m_list.Insert(hashgen(key), std::move(entry))->second->m_value;
   }
   else
   {
@@ -177,7 +191,7 @@ Value &CGUIFontCacheImpl<Position, Value>::Lookup(Position &pos,
     pos.UpdateWithOffsets(i->second->m_key.m_pos, scrolling);
 
     // Update time in entry and move to the back of the list
-    m_list.UpdateAge(i, nowMillis);
+    m_list.UpdateAge(i, now);
 
     dirtyCache = false;
     return i->second->m_value;
@@ -200,14 +214,32 @@ template CGUIFontCache<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue>::C
     CGUIFontTTF& font);
 template CGUIFontCache<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue>::~CGUIFontCache();
 template CGUIFontCacheEntry<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue>::~CGUIFontCacheEntry();
-template CGUIFontCacheStaticValue &CGUIFontCache<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue>::Lookup(CGUIFontCacheStaticPosition &, const std::vector<UTILS::Color> &, const vecText &, uint32_t, float, bool, unsigned int, bool &);
+template CGUIFontCacheStaticValue& CGUIFontCache<
+    CGUIFontCacheStaticPosition,
+    CGUIFontCacheStaticValue>::Lookup(CGUIFontCacheStaticPosition&,
+                                      const std::vector<UTILS::Color>&,
+                                      const vecText&,
+                                      uint32_t,
+                                      float,
+                                      bool,
+                                      std::chrono::steady_clock::time_point,
+                                      bool&);
 template void CGUIFontCache<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue>::Flush();
 
 template CGUIFontCache<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue>::CGUIFontCache(
     CGUIFontTTF& font);
 template CGUIFontCache<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue>::~CGUIFontCache();
 template CGUIFontCacheEntry<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue>::~CGUIFontCacheEntry();
-template CGUIFontCacheDynamicValue &CGUIFontCache<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue>::Lookup(CGUIFontCacheDynamicPosition &, const std::vector<UTILS::Color> &, const vecText &, uint32_t, float, bool, unsigned int, bool &);
+template CGUIFontCacheDynamicValue& CGUIFontCache<
+    CGUIFontCacheDynamicPosition,
+    CGUIFontCacheDynamicValue>::Lookup(CGUIFontCacheDynamicPosition&,
+                                       const std::vector<UTILS::Color>&,
+                                       const vecText&,
+                                       uint32_t,
+                                       float,
+                                       bool,
+                                       std::chrono::steady_clock::time_point,
+                                       bool&);
 template void CGUIFontCache<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue>::Flush();
 
 void CVertexBuffer::clear()
