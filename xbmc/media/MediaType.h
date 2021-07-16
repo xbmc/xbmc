@@ -9,7 +9,6 @@
 #pragma once
 
 #include <map>
-#include <set>
 #include <string>
 
 using MediaType = std::string;

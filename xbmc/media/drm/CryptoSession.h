@@ -11,7 +11,6 @@
 #include "commons/Buffer.h"
 
 #include <map>
-#include <stdint.h>
 #include <string>
 #include <vector>
 
