@@ -1229,8 +1229,9 @@ void CTeletextDecoder::RenderPage()
         m_RenderInfo.PageAtrb[32].fg = TXT_ColorYellow;
         m_RenderInfo.PageAtrb[32].bg = TXT_ColorMenu1;
         int showpage    = m_txtCache->PageReceiving;
-        int showsubpage = m_txtCache->SubPageTable[showpage];
-        if (showsubpage!=0xff)
+        int showsubpage;
+
+        if (showpage >= 0 && (showsubpage = m_txtCache->SubPageTable[showpage]) != 0xff)
         {
           TextCachedPage_t *pCachedPage;
           pCachedPage = m_txtCache->astCachetable[showpage][showsubpage];
@@ -1303,6 +1304,10 @@ void CTeletextDecoder::RenderPage()
 
 void CTeletextDecoder::DoFlashing(int startrow)
 {
+  if (m_RenderInfo.PageInfo !=
+      &m_txtCache->astCachetable[m_txtCache->Page][m_txtCache->SubPage]->pageinfo)
+    m_RenderInfo.PageInfo = nullptr;
+
   /* get national subset */
   if (m_txtCache->NationalSubset <= NAT_MAX_FROM_HEADER && /* not for GR/RU as long as line28 is not evaluated */
      m_RenderInfo.PageInfo && m_RenderInfo.PageInfo->nationalvalid) /* individual subset according to page header */
@@ -2224,7 +2229,11 @@ void CTeletextDecoder::RenderCharIntern(TextRenderInfo_t* RenderInfo, int Char, 
 
   /* render char */
   sbitbuffer = m_sBit->buffer;
+#ifdef __GNUC__
+  unsigned char localbuffer[(m_sBit->pitch + 1) * m_sBit->height];
+#else
   unsigned char localbuffer[1000]; // should be enough to store one character-bitmap...
+#endif
   // add diacritical marks
   if (Attribute->diacrit)
   {
@@ -2244,6 +2253,7 @@ void CTeletextDecoder::RenderCharIntern(TextRenderInfo_t* RenderInfo, int Char, 
     {
       if (FTC_SBitCache_Lookup(m_Cache, &m_TypeTTF, glyph, &sbit_diacrit, NULL) == 0)
       {
+        const int sbitLen = sbit_diacrit->height * sbit_diacrit->pitch;
         sbitbuffer = localbuffer;
         memcpy(sbitbuffer,m_sBit->buffer,m_sBit->pitch*m_sBit->height);
 
@@ -2251,8 +2261,9 @@ void CTeletextDecoder::RenderCharIntern(TextRenderInfo_t* RenderInfo, int Char, 
         {
           for (Pitch = 0; Pitch < m_sBit->pitch; Pitch++)
           {
-            if (sbit_diacrit->pitch > Pitch && sbit_diacrit->height > Row)
-              sbitbuffer[Row*m_sBit->pitch+Pitch] |= sbit_diacrit->buffer[Row*m_sBit->pitch+Pitch];
+            const int offset = Row * m_sBit->pitch + Pitch;
+            if (sbit_diacrit->pitch > Pitch && sbit_diacrit->height > Row && offset < sbitLen)
+              sbitbuffer[offset] |= sbit_diacrit->buffer[offset];
           }
         }
       }
