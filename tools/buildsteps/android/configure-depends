@@ -14,5 +14,5 @@ then
     --with-ndk-path=$NDK_PATH \
     $(if [ "$NDK_API" != "Default" ]; then echo --with-ndk-api=$NDK_API;fi) \
     --prefix=$XBMC_DEPENDS_ROOT \
-    --enable-neon $DEBUG_SWITCH
+    $DEBUG_SWITCH
 fi
