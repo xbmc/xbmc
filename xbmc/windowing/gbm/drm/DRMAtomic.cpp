@@ -102,12 +102,13 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
     AddProperty(m_gui_plane, "SRC_H", m_height << 16);
     AddProperty(m_gui_plane, "CRTC_X", 0);
     AddProperty(m_gui_plane, "CRTC_Y", 0);
-    //! @todo: disabled until upstream kernel changes are merged
-    // if (DisplayHardwareScalingEnabled())
-    // {
-    //   SetScalingFilter(m_gui_plane, "SCALING_FILTER", "Nearest Neighbor");
-    // }
-    // else
+    //kernel changes are merged.
+    //Ref:https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6d1a2fdedb2683007405762ca3c9d727b2aee6e2
+    if (DisplayHardwareScalingEnabled())
+    {
+      SetScalingFilter(m_gui_plane, "SCALING_FILTER", "Nearest Neighbor");
+    }
+    else
     {
       AddProperty(m_gui_plane, "CRTC_W", m_mode->hdisplay);
       AddProperty(m_gui_plane, "CRTC_H", m_mode->vdisplay);
