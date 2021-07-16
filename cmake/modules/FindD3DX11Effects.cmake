@@ -12,7 +12,7 @@ if(NOT CORE_SYSTEM_NAME STREQUAL windowsstore)
               "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\Microsoft SDKs\\Windows\\v8.1;InstallationFolder]/Redist/D3D/${SDK_TARGET_ARCH}"
               "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\Microsoft SDKs\\Windows\\v8.0;InstallationFolder]/Redist/D3D/${SDK_TARGET_ARCH}"
               "$ENV{WindowsSdkDir}Redist/d3d/${SDK_TARGET_ARCH}"
-            NO_DEFAULT_PATH)
+            NO_DEFAULT_PATH CMAKE_FIND_ROOT_PATH_BOTH)
   if(NOT D3DCOMPILER_DLL)
     message(WARNING "Could NOT find Direct3D Compiler")
   endif()

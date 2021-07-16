@@ -1,0 +1,1 @@
+sqlite3 https://www.sqlite.org/2019/sqlite-amalgamation-3300100.zip

@@ -1,0 +1,26 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -137,23 +137,10 @@
+       COMPONENT pkgconfig)
+ ENDIF()
+ 
+-install(FILES readme.md
+-        DESTINATION "${DOC_INSTALL_DIR}"
+-        COMPONENT doc)
+-
+ install(DIRECTORY include/rapidjson
+     DESTINATION "${INCLUDE_INSTALL_DIR}"
+     COMPONENT dev)
+ 
+-install(DIRECTORY example/
+-    DESTINATION "${DOC_INSTALL_DIR}/examples"
+-    COMPONENT examples
+-    # Following patterns are for excluding the intermediate/object files
+-    # from an install of in-source CMake build.
+-    PATTERN "CMakeFiles" EXCLUDE
+-    PATTERN "Makefile" EXCLUDE
+-    PATTERN "cmake_install.cmake" EXCLUDE)
+-
+ # Provide config and version files to be used by other applications
+ # ===============================
+ 

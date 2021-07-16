@@ -1,0 +1,30 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -356,6 +356,7 @@
+   ${PRIVATE_HEADERS}
+   ${BASE_SRCS}
+ )
++add_library(freetype::freetype ALIAS freetype)
+ 
+ set_target_properties(
+   freetype PROPERTIES
+@@ -488,16 +489,17 @@
+ 
+   install(
+     TARGETS freetype
+-      EXPORT freetype-targets
++      EXPORT freetype
+       LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+       ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+       RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+       FRAMEWORK DESTINATION Library/Frameworks
+       COMPONENT libraries)
+   install(
+-    EXPORT freetype-targets
++    EXPORT freetype
+       DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/freetype
+       FILE freetype-config.cmake
++      NAMESPACE freetype::
+       COMPONENT headers)
+ 
+   include(CMakePackageConfigHelpers)

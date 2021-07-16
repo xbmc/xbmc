@@ -1,0 +1,15 @@
+--- a/lib/ac/string.h
++++ b/lib/ac/string.h
+@@ -22,10 +22,10 @@
+ 
+ #include <lib/config.h>
+ 
+-#if STDC_HEADERS || HAVE_STRING_H
++#if defined(STDC_HEADERS) || defined(HAVE_STRING_H)
+ #  include <string.h>
+    /* An ANSI string.h and pre-ANSI memory.h might conflict. */
+-#  if !STDC_HEADERS && HAVE_MEMORY_H
++#  if !defined(STDC_HEADERS) && defined(HAVE_MEMORY_H)
+ #    include <memory.h>
+ #  endif
+ #else

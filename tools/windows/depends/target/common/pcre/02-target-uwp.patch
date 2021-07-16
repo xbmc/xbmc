@@ -1,0 +1,92 @@
+--- a/pcre_compile.c
++++ b/pcre_compile.c
+@@ -4449,6 +4449,10 @@
+                     FALSE, with *errorcodeptr set non-zero on error
+ */
+ 
++#if defined(_MSC_VER)
++#pragma warning(push)
++#pragma warning(disable:4703)
++#endif
+ static BOOL
+ compile_branch(int *optionsptr, pcre_uchar **codeptr,
+   const pcre_uchar **ptrptr, int *errorcodeptr,
+@@ -6770,7 +6774,7 @@
+       int i, set, unset, namelen;
+       int *optset;
+       const pcre_uchar *name;
+-      pcre_uchar *slot;
++      pcre_uchar *slot = NULL;
+ 
+       switch (*(++ptr))
+         {
+--- a/pcre_jit_compile.c
++++ b/pcre_jit_compile.c
+@@ -4855,12 +4855,12 @@
+ 
+ /* Drop frames until we reach STACK_TOP. */
+ mainloop = LABEL();
+-OP1(SLJIT_MOV, TMP2, 0, SLJIT_MEM1(STACK_TOP), -sizeof(sljit_sw));
++OP1(SLJIT_MOV, TMP2, 0, SLJIT_MEM1(STACK_TOP), 0u - sizeof(sljit_sw));
+ jump = CMP(SLJIT_SIG_LESS_EQUAL, TMP2, 0, SLJIT_IMM, 0);
+ 
+ OP2(SLJIT_ADD, TMP2, 0, TMP2, 0, TMP1, 0);
+-OP1(SLJIT_MOV, SLJIT_MEM1(TMP2), 0, SLJIT_MEM1(STACK_TOP), -2 * sizeof(sljit_sw));
+-OP1(SLJIT_MOV, SLJIT_MEM1(TMP2), sizeof(sljit_sw), SLJIT_MEM1(STACK_TOP), -3 * sizeof(sljit_sw));
++OP1(SLJIT_MOV, SLJIT_MEM1(TMP2), 0, SLJIT_MEM1(STACK_TOP), 0u - 2 * sizeof(sljit_sw));
++OP1(SLJIT_MOV, SLJIT_MEM1(TMP2), sizeof(sljit_sw), SLJIT_MEM1(STACK_TOP), 0u - 3 * sizeof(sljit_sw));
+ OP2(SLJIT_SUB, STACK_TOP, 0, STACK_TOP, 0, SLJIT_IMM, 3 * sizeof(sljit_sw));
+ JUMPTO(SLJIT_JUMP, mainloop);
+ 
+@@ -4873,7 +4873,7 @@
+ JUMPHERE(jump);
+ OP1(SLJIT_NEG, TMP2, 0, TMP2, 0);
+ OP2(SLJIT_ADD, TMP2, 0, TMP2, 0, TMP1, 0);
+-OP1(SLJIT_MOV, SLJIT_MEM1(TMP2), 0, SLJIT_MEM1(STACK_TOP), -2 * sizeof(sljit_sw));
++OP1(SLJIT_MOV, SLJIT_MEM1(TMP2), 0, SLJIT_MEM1(STACK_TOP), 0u - 2 * sizeof(sljit_sw));
+ OP2(SLJIT_SUB, STACK_TOP, 0, STACK_TOP, 0, SLJIT_IMM, 2 * sizeof(sljit_sw));
+ JUMPTO(SLJIT_JUMP, mainloop);
+ }
+--- a/sljit/sljitNativeARM_T2_32.c
++++ b/sljit/sljitNativeARM_T2_32.c
+@@ -586,7 +586,7 @@
+ 			   Although some clever things could be done here, "NOT IMM" does not worth the efforts. */
+ 			break;
+ 		case SLJIT_ADD:
+-			nimm = -imm;
++			nimm = 0u - imm;
+ 			if (IS_2_LO_REGS(reg, dst)) {
+ 				if (imm <= 0x7)
+ 					return push_inst16(compiler, ADDSI3 | IMM3(imm) | RD3(dst) | RN3(reg));
+@@ -608,7 +608,7 @@
+ 			nimm = get_imm(imm);
+ 			if (nimm != INVALID_IMM)
+ 				return push_inst32(compiler, ADD_WI | (flags & SET_FLAGS) | RD4(dst) | RN4(reg) | nimm);
+-			nimm = get_imm(-imm);
++			nimm = get_imm(0u - imm);
+ 			if (nimm != INVALID_IMM)
+ 				return push_inst32(compiler, SUB_WI | (flags & SET_FLAGS) | RD4(dst) | RN4(reg) | nimm);
+ 			break;
+@@ -633,11 +633,11 @@
+ 				nimm = get_imm(imm);
+ 				if (nimm != INVALID_IMM)
+ 					return push_inst32(compiler, CMPI_W | RN4(reg) | nimm);
+-				nimm = get_imm(-imm);
++				nimm = get_imm(0u - imm);
+ 				if (nimm != INVALID_IMM)
+ 					return push_inst32(compiler, CMNI_W | RN4(reg) | nimm);
+ 			}
+-			nimm = -imm;
++			nimm = 0u - imm;
+ 			if (IS_2_LO_REGS(reg, dst)) {
+ 				if (imm <= 0x7)
+ 					return push_inst16(compiler, SUBSI3 | IMM3(imm) | RD3(dst) | RN3(reg));
+@@ -659,7 +659,7 @@
+ 			nimm = get_imm(imm);
+ 			if (nimm != INVALID_IMM)
+ 				return push_inst32(compiler, SUB_WI | (flags & SET_FLAGS) | RD4(dst) | RN4(reg) | nimm);
+-			nimm = get_imm(-imm);
++			nimm = get_imm(0u - imm);
+ 			if (nimm != INVALID_IMM)
+ 				return push_inst32(compiler, ADD_WI | (flags & SET_FLAGS) | RD4(dst) | RN4(reg) | nimm);
+ 			break;

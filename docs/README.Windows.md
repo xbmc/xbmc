@@ -47,9 +47,11 @@ Several different strategies are used to draw your attention to certain pieces o
 ## 2. Prerequisites
 To build Kodi:
 * **[CMake](https://cmake.org/download/)** (version 3.15 or greater is required)
+* **[Doxygen](www.doxygen.org/download.html)** (Only needed if you want to generate the documentation)
 * **[Git for Windows](https://gitforwindows.org/)**
 * **[Java Runtime Environment (JRE)](http://www.oracle.com/technetwork/java/javase/downloads/index.html)**
 * **[Nullsoft scriptable install system (NSIS)](http://nsis.sourceforge.net/Download)** (Only needed if you want to generate an installer file)
+* **[Perl](https://www.perl.org/get.html)**
 * **[Visual Studio 2019](https://visualstudio.microsoft.com/downloads/)** or **[Visual Studio 2017](https://visualstudio.microsoft.com/vs/older-downloads/)** (Community Edition is fine)
 
 To run Kodi you need a relatively recent CPU with integrated GPU or discrete GPU with up-to-date graphics device-drivers installed from the manufacturer's website.
@@ -135,6 +137,12 @@ Kodi can be built as either a normal 32bit or 64bit program, UWP 32bit and 64bit
 
 **TIP:** Look for comments starting with `Or ...` and only execute the command(s) you need.
 
+Build native dependencies:
+```
+cd %userprofile%\kodi\tools\buildsteps\windows
+make-native-depends.bat
+```
+
 Change to the 64bit build directory (**recommended**):
 ```
 cd %userprofile%\kodi\tools\buildsteps\windows\x64
@@ -160,6 +168,7 @@ Or change to the UWP ARM 32bit build directory:
 cd %userprofile%\kodi\tools\buildsteps\windows\arm-uwp
 ```
 
+### Prepare dependencies for 64bit
 Download dependencies:
 ```
 download-dependencies.bat
@@ -174,6 +183,12 @@ download-msys2.bat
 Build FFmpeg:
 ```
 make-mingwlibs.bat
+```
+
+### Prepare dependencies for everything else
+Build target dependencies:
+```
+make-target-depends.bat
 ```
 
 **[back to top](#table-of-contents)** | **[back to section top](#4-set-up-the-build-environment)**
@@ -224,27 +239,27 @@ cd kodi-build
 
 Configure build for 64bit (**recommended**):
 ```
-cmake -G "Visual Studio 16 2019" -A x64 -T host=x64 %userprofile%\kodi
+cmake -G "Visual Studio 16 2019" -A x64 -T host=x64 -DCMAKE_PREFIX_PATH=%userprofile%\kodi\tools\depends\xbmc-depends\x86_64-windows-native %userprofile%\kodi
 ```
 
 Or configure build for 32bit:
 ```
-cmake -G "Visual Studio 16 2019" -A Win32 -T host=x64 %userprofile%\kodi
+cmake -G "Visual Studio 16 2019" -A Win32 -T host=x64 -DCMAKE_TOOLCHAIN_FILE=%userprofile%\kodi\tools\depends\xbmc-depends\x86-windows-Debug\Toolchain.cmake %userprofile%\kodi
 ```
 
 Or configure build for UWP 64bit:
 ```
-cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 -T host=x64 %userprofile%\kodi
+cmake -G "Visual Studio 16 2019" -A x64 -T host=x64 -DCMAKE_TOOLCHAIN_FILE=%userprofile%\kodi\tools\depends\xbmc-depends\x86_64-windowsstore-Debug\Toolchain.cmake %userprofile%\kodi
 ```
 
 Or configure build for UWP 32bit:
 ```
-cmake -G "Visual Studio 16 2019" -A Win32 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 -T host=x64 %userprofile%\kodi
+cmake -G "Visual Studio 16 2019" -A Win32 -T host=x64 -DCMAKE_TOOLCHAIN_FILE=%userprofile%\kodi\tools\depends\xbmc-depends\x86-windowsstore-Debug\Toolchain.cmake %userprofile%\kodi
 ```
 
 Or configure build for UWP ARM 32bit:
 ```
-cmake -G "Visual Studio 16 2019" -A ARM -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 -T host=x64 %userprofile%\kodi
+cmake -G "Visual Studio 16 2019" -A ARM -T host=x64 -DCMAKE_TOOLCHAIN_FILE=%userprofile%\kodi\tools\depends\xbmc-depends\arm-windowsstore-Debug\Toolchain.cmake %userprofile%\kodi
 ```
 
 **Visual Studio 2017:**

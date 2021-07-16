@@ -1,0 +1,1 @@
+msys2 https://repo.msys2.org/distrib/x86_64/msys2-base-x86_64-20210604.tar.xz

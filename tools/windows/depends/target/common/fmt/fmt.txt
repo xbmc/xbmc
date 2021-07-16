@@ -1,0 +1,1 @@
+fmt https://github.com/fmtlib/fmt/releases/download/6.1.2/fmt-6.1.2.zip

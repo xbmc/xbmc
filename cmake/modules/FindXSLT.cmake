@@ -14,7 +14,7 @@
 #
 #   XSLT::XSLT   - The XSLT library
 
-find_package(LibXml2 REQUIRED)
+find_package(LibXml2 QUIET)
 
 if(PKG_CONFIG_FOUND)
   pkg_check_modules(PC_XSLT libxslt QUIET)
@@ -29,7 +29,7 @@ set(XSLT_VERSION ${PC_XSLT_VERSION})
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(XSLT
-                                  REQUIRED_VARS XSLT_LIBRARY XSLT_INCLUDE_DIR
+                                  REQUIRED_VARS XSLT_LIBRARY XSLT_INCLUDE_DIR LIBXML2_FOUND
                                   VERSION_VAR XSLT_VERSION)
 
 if(XSLT_FOUND)

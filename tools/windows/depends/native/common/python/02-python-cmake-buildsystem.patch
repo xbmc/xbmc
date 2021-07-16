@@ -1,0 +1,295 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -8,13 +8,6 @@
+ list(GET VERSION_LIST 2 PY_VERSION_PATCH)
+ set(PY_VERSION "${PY_VERSION_MAJOR}.${PY_VERSION_MINOR}.${PY_VERSION_PATCH}")
+ 
+-if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+-    set(CMAKE_CONFIGURATION_TYPES Release CACHE STRING "Release configuration" FORCE)
+-    set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
+-    # Set the possible values of build type for cmake-gui
+-    set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Release")
+-endif()
+-
+ if(APPLE)
+   set(_msg "Checking which MACOSX_DEPLOYMENT_TARGET to use")
+   message(STATUS "${_msg}")
+@@ -306,9 +299,6 @@
+ 
+ # This is the major version number of Python
+ set(LIBPYTHON_VERSION ${PY_VERSION_MAJOR}.${PY_VERSION_MINOR})
+-if(WIN32)
+-    set(LIBPYTHON_VERSION ${PY_VERSION_MAJOR}${PY_VERSION_MINOR})
+-endif()
+ set(LIBPYTHON python${LIBPYTHON_VERSION})
+ 
+ # Proceed to the configure checks
+@@ -316,7 +306,7 @@
+ 
+ # Set PYTHONHOME
+ set(LIBDIR "Lib") # See Lib/distutils/sysconfig.py - function 'get_python_lib'
+-if(UNIX)
++if(TRUE)
+     set(LIBDIR "lib")
+ endif()
+ if(USE_LIB64)
+@@ -324,7 +314,7 @@
+     set(LIBDIR "lib64")
+ endif()
+ set(PYTHONHOME "${LIBDIR}")
+-if(UNIX)
++if(TRUE)
+     set(PYTHONHOME "${PYTHONHOME}/${LIBPYTHON}")
+ endif()
+ 
+@@ -347,16 +337,13 @@
+     set(EXTENSION_INSTALL_DIR DLLs)
+ endif()
+ set(INCLUDE_INSTALL_DIR include/python${LD_VERSION})
+-if(MSVC)
+-    set(INCLUDE_INSTALL_DIR include)
+-endif()
+ # Build tree directory
+ set(BIN_BUILD_DIR ${PROJECT_BINARY_DIR}/bin)
+ set(CONFIG_BUILD_DIR ${PROJECT_BINARY_DIR}/${CONFIG_INSTALL_DIR})
+ set(EXTENSION_BUILD_DIR ${PROJECT_BINARY_DIR}/${PYTHONHOME}/lib-dynload)
+ set(INCLUDE_BUILD_DIR ${SRC_DIR}/Include)
+ 
+-set(ARCHIVEDIR "libs")      # Contains the static (*.a) and import libraries (*.lib)
++set(ARCHIVEDIR "lib")      # Contains the static (*.a) and import libraries (*.lib)
+ 
+ # Directories specific to 'libpython'
+ set(LIBPYTHON_LIBDIR ${LIBDIR})
+--- a/cmake/ConfigureChecks.cmake
++++ b/cmake/ConfigureChecks.cmake
+@@ -155,11 +155,12 @@
+ message(STATUS "${_msg} - ${ABIFLAGS}")
+ 
+ set(_msg "Checking SOABI")
+-try_run(PLATFORM_RUN PLATFORM_COMPILE
+-        ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR}/cmake/platform.c
+-        RUN_OUTPUT_VARIABLE PLATFORM_TRIPLET)
+-if(NOT PLATFORM_COMPILE)
+-  message(FATAL_ERROR "We could not determine the platform. Please clean the ${CMAKE_PROJECT_NAME} environment and try again...")
++string(TOLOWER ${CMAKE_SYSTEM_NAME} lc_system_name)
++# XXX This should be improved.
++if(APPLE)
++  set(PLATFORM_TRIPLET "${lc_system_name}")
++else()
++  set(PLATFORM_TRIPLET "${CMAKE_SYSTEM_PROCESSOR}-${lc_system_name}")
+ endif()
+ set(SOABI "cpython-${PY_VERSION_MAJOR}${PY_VERSION_MINOR}${ABIFLAGS}-${PLATFORM_TRIPLET}")
+ 
+--- a/cmake/config_3.c.in
++++ b/cmake/config_3.c.in
+@@ -10,7 +10,7 @@
+ /* -- ADDMODULE MARKER 1 -- */
+ 
+ extern PyObject* PyMarshal_Init(void);
+-extern PyObject* PyInit_imp(void);
++extern PyObject* PyInit__imp(void);
+ extern PyObject* PyInit_gc(void);
+ extern PyObject* PyInit__ast(void);
+ extern PyObject* _PyWarnings_Init(void);
+@@ -35,7 +35,7 @@
+     {"marshal", PyMarshal_Init},
+ 
+     /* This lives in import.c */
+-    {"_imp", PyInit_imp},
++    {"_imp", PyInit__imp},
+ 
+     /* This lives in Python/Python-ast.c */
+     {"_ast", PyInit__ast},
+--- a/cmake/extensions/CMakeLists.txt
++++ b/cmake/extensions/CMakeLists.txt
+@@ -32,6 +32,7 @@
+ 
+ add_python_extension(array ${WIN32_BUILTIN} SOURCES arraymodule.c)
+ add_python_extension(audioop ${WIN32_BUILTIN} SOURCES audioop.c)
++add_python_extension(_asyncio REQUIRES IS_PY3 SOURCES _asynciomodule.c)
+ add_python_extension(_bisect ${WIN32_BUILTIN} SOURCES _bisectmodule.c)
+ add_python_extension(cmath REQUIRES HAVE_LIBM ${WIN32_BUILTIN} SOURCES _math.c cmathmodule.c LIBRARIES ${M_LIBRARIES})
+ add_python_extension(_codecs_cn ${WIN32_BUILTIN} SOURCES cjkcodecs/_codecs_cn.c)
+@@ -41,6 +42,7 @@
+ add_python_extension(_codecs_kr ${WIN32_BUILTIN} SOURCES cjkcodecs/_codecs_kr.c)
+ add_python_extension(_codecs_tw ${WIN32_BUILTIN} SOURCES cjkcodecs/_codecs_tw.c)
+ add_python_extension(_collections ALWAYS_BUILTIN SOURCES _collectionsmodule.c) # Container types
++add_python_extension(_queue REQUIRES IS_PY3 SOURCES _queuemodule.c)
+ add_python_extension(cPickle ${WIN32_BUILTIN} REQUIRES IS_PY2 SOURCES cPickle.c)
+ set(crypt2_NAME crypt)
+ set(crypt2_SOURCES cryptmodule.c)
+@@ -105,11 +107,13 @@
+ 
+ # Python3
+ add_python_extension(atexit BUILTIN REQUIRES IS_PY3 SOURCES atexitmodule.c) # Register functions to be run at interpreter-shutdown
++add_python_extension(_blake2 REQUIRES IS_PY3 SOURCES _blake2/blake2b2s.py _blake2/blake2b_impl.c _blake2/blake2module.c _blake2/blake2s_impl.c)
+ add_python_extension(_codecs BUILTIN REQUIRES IS_PY3 SOURCES _codecsmodule.c) # access to the builtin codecs and codec registry
+ add_python_extension(faulthandler BUILTIN REQUIRES IS_PY3 SOURCES faulthandler.c)
+ add_python_extension(_opcode BUILTIN REQUIRES IS_PY3 SOURCES _opcode.c)
+ add_python_extension(_operator ${WIN32_BUILTIN} REQUIRES IS_PY3 SOURCES _operator.c)
+ add_python_extension(_pickle BUILTIN REQUIRES IS_PY3 SOURCES _pickle.c)
++add_python_extension(_sha3 BUILTIN REQUIRES IS_PY3 SOURCES _sha3/sha3module.c)
+ add_python_extension(_sre BUILTIN REQUIRES IS_PY3 SOURCES _sre.c) # Fredrik Lundh's new regular expressions
+ add_python_extension(_stat BUILTIN REQUIRES IS_PY3 SOURCES _stat.c) # stat.h interface
+ add_python_extension(_symtable BUILTIN REQUIRES IS_PY3 SOURCES symtablemodule.c)
+@@ -145,7 +149,7 @@
+ add_python_extension(termios REQUIRES UNIX SOURCES termios.c)
+ 
+ # Python3: UNIX-only extensions
+-add_python_extension(errno BUILTIN REQUIRES IS_PY3 UNIX SOURCES errnomodule.c)
++add_python_extension(errno BUILTIN REQUIRES IS_PY3 SOURCES errnomodule.c)
+ add_python_extension(_posixsubprocess BUILTIN REQUIRES IS_PY3 UNIX SOURCES _posixsubprocess.c)
+ 
+ # MacOSX-only extensions
+@@ -168,12 +172,12 @@
+     LIBRARIES cabinet.lib msi.lib rpcrt4.lib
+ )
+ add_python_extension(msvcrt REQUIRES MSVC BUILTIN SOURCES ${SRC_DIR}/PC/msvcrtmodule.c)
+-add_python_extension(nt REQUIRES WIN32 BUILTIN SOURCES posixmodule.c)
++add_python_extension(nt REQUIRES WIN32 BUILTIN SOURCES posixmodule.c LIBRARIES Shell32.lib)
+ add_python_extension(_subprocess REQUIRES WIN32 IS_PY2 BUILTIN SOURCES ${SRC_DIR}/PC/_subprocess.c)
+ 
+ set(winreg2_NAME _winreg)
+ set(winreg3_NAME winreg)
+-add_python_extension(${winreg${PY_VERSION_MAJOR}_NAME} REQUIRES WIN32 BUILTIN SOURCES ${SRC_DIR}/PC/${winreg${PY_VERSION_MAJOR}_NAME}.c)
++add_python_extension(${winreg${PY_VERSION_MAJOR}_NAME} REQUIRES WIN32 BUILTIN SOURCES ${SRC_DIR}/PC/${winreg${PY_VERSION_MAJOR}_NAME}.c LIBRARIES Advapi32.lib)
+ 
+ # Python3: Windows-only extensions
+ add_python_extension(_overlapped
+--- a/cmake/libpython/CMakeLists.txt
++++ b/cmake/libpython/CMakeLists.txt
+@@ -104,6 +104,12 @@
+     )
+ endif()
+ 
++if(PYTHON_VERSION VERSION_EQUAL 3.7.0 OR PYTHON_VERSION VERSION_GREATER 3.7.0)
++    list(APPEND OBJECT3_SOURCES
++        ${SRC_DIR}/Objects/call.c
++    )
++endif()
++
+ set(OBJECT_COMMON_SOURCES # Equivalent to OBJECT_OBJS in Makefile.pre
+     ${OBJECT${PY_VERSION_MAJOR}_SOURCES}
+     ${SRC_DIR}/Objects/abstract.c
+@@ -243,13 +249,25 @@
+     ${SRC_DIR}/Python/pystrcmp.c
+     ${SRC_DIR}/Python/Python-ast.c
+     ${SRC_DIR}/Python/pythonrun.c
+-    ${SRC_DIR}/Python/random.c
+     ${SRC_DIR}/Python/structmember.c
+     ${SRC_DIR}/Python/symtable.c
+     ${SRC_DIR}/Python/sysmodule.c
+     ${SRC_DIR}/Python/traceback.c
+     ${SRC_DIR}/Python/_warnings.c
+ )
++if(PYTHON_VERSION VERSION_LESS 3.7.0)
++    list(APPEND PYTHON_COMMON_SOURCES ${SRC_DIR}/Python/random.c)
++else()
++    list(APPEND PYTHON_COMMON_SOURCES
++        ${SRC_DIR}/Python/ast_opt.c
++        ${SRC_DIR}/Python/ast_unparse.c
++        ${SRC_DIR}/Python/bootstrap_hash.c
++        ${SRC_DIR}/Python/context.c
++        ${SRC_DIR}/Python/hamt.c
++        ${SRC_DIR}/Python/pathconfig.c
++    )
++endif()
++
+ if(UNIX)
+     list(APPEND PYTHON_COMMON_SOURCES
+         ${SRC_DIR}/Python/frozenmain.c
+@@ -392,44 +410,6 @@
+ endif()
+ 
+ set(LIBPYTHON_FROZEN_SOURCES )
+-if(IS_PY3)
+-
+-# Build _freeze_importlib executable
+-add_executable(_freeze_importlib
+-  ${SRC_DIR}/Programs/_freeze_importlib.c
+-  ${LIBPYTHON_OMIT_FROZEN_SOURCES}
+-  )
+-target_link_libraries(_freeze_importlib ${LIBPYTHON_TARGET_LIBRARIES})
+-if(builtin_compile_definitions_without_py_limited_api)
+-  target_compile_definitions(_freeze_importlib PUBLIC ${builtin_compile_definitions_without_py_limited_api})
+-endif()
+-
+-# Freeze modules
+-set(LIBPYTHON_FROZEN_SOURCES
+-  ${SRC_DIR}/Python/importlib_external.h
+-  ${SRC_DIR}/Python/importlib.h
+-)
+-add_custom_command(
+-  OUTPUT ${LIBPYTHON_FROZEN_SOURCES}
+-  COMMAND
+-    ${CMAKE_CROSSCOMPILING_EMULATOR} $<TARGET_FILE:_freeze_importlib>
+-      ${SRC_DIR}/Lib/importlib/_bootstrap_external.py
+-      ${SRC_DIR}/Python/importlib_external.h
+-  COMMAND
+-    ${CMAKE_CROSSCOMPILING_EMULATOR} $<TARGET_FILE:_freeze_importlib>
+-      ${SRC_DIR}/Lib/importlib/_bootstrap.py
+-      ${SRC_DIR}/Python/importlib.h
+-  DEPENDS
+-    _freeze_importlib
+-    ${SRC_DIR}/Lib/importlib/_bootstrap_external.py
+-    ${SRC_DIR}/Lib/importlib/_bootstrap.py
+-)
+-
+-# This is a convenience target allowing to regenerate
+-# the frozen sources.
+-add_custom_target(freeze_modules DEPENDS ${LIBPYTHON_FROZEN_SOURCES})
+-
+-endif()
+ 
+ # Build pgen executable
+ set(PGEN2_SOURCES
+@@ -518,49 +498,6 @@
+ 
+     set(targetname "libpython3-shared")
+ 
+-    if(IS_PY3 AND MSVC)
+-        # XXX Add BuildPython3_dDef
+-
+-        # Generate 'python3stub.def'
+-        set(pythonstub_def ${PROJECT_BINARY_DIR}/${LIBPYTHON_ARCHIVEDIR}/${CMAKE_CFG_INTDIR}/python3stub.def)
+-        add_custom_command(
+-            OUTPUT ${pythonstub_def}
+-            COMMAND ${CMAKE_COMMAND}
+-                -DINPUT_DEF_FILE:PATH=${SRC_DIR}/PC/python3.def
+-                -DOUTPUT_DEF_FILE:PATH=${PROJECT_BINARY_DIR}/CMakeFiles/python3stub.def
+-                -P ${CMAKE_CURRENT_SOURCE_DIR}/generate_libpythonstub_def.cmake
+-            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+-                ${PROJECT_BINARY_DIR}/CMakeFiles/python3stub.def
+-                ${pythonstub_def}
+-        )
+-        add_custom_target(generate_libpythonstub_def DEPENDS ${pythonstub_def})
+-
+-        # Build 'python3.dll'
+-        add_library(${targetname} SHARED ${SRC_DIR}/PC/python3dll.c ${SRC_DIR}/PC/python3.def)
+-        set_target_properties(${targetname} PROPERTIES
+-            OUTPUT_NAME python3
+-            LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${LIBPYTHON_LIBDIR}
+-            RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${LIBPYTHON_LIBDIR}
+-            INSTALL_NAME_DIR ${CMAKE_INSTALL_PREFIX}/${LIBPYTHON_LIBDIR}
+-        )
+-        add_dependencies(${targetname} generate_libpythonstub_def)
+-
+-        # Build 'python3stub.lib' before linking 'python3.dll'
+-        set(python3stub_lib ${PROJECT_BINARY_DIR}/${LIBPYTHON_ARCHIVEDIR}/${CMAKE_CFG_INTDIR}/python3stub.lib)
+-        set(machine X86)
+-        if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
+-            set(machine X64)
+-        endif()
+-        add_custom_command(
+-            TARGET ${targetname} PRE_LINK
+-            COMMAND lib /nologo /def:${pythonstub_def} /out:${python3stub_lib} /MACHINE:${machine}
+-            COMMENT "Rebuilding python3stub.lib"
+-            VERBATIM
+-        )
+-
+-        target_link_libraries(${targetname} ${python3stub_lib})
+-    endif()
+-
+     if(IS_PY3 AND UNIX AND NOT APPLE)
+         add_library(${targetname} SHARED ${PROJECT_SOURCE_DIR}/cmake/empty.c)
+         set_target_properties(${targetname} PROPERTIES

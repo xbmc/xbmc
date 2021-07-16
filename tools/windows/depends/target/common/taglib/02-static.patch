@@ -1,0 +1,36 @@
+--- a/bindings/c/tag_c.h
++++ b/bindings/c/tag_c.h
+@@ -29,14 +29,8 @@
+ extern "C" {
+ #endif
+ 
+-#if defined(TAGLIB_STATIC)
++#if defined(TAGLIB_STATIC) || defined(_WIN32) || defined(_WIN64)
+ #define TAGLIB_C_EXPORT
+-#elif defined(_WIN32) || defined(_WIN64)
+-#ifdef MAKE_TAGLIB_C_LIB
+-#define TAGLIB_C_EXPORT __declspec(dllexport)
+-#else
+-#define TAGLIB_C_EXPORT __declspec(dllimport)
+-#endif
+ #elif defined(__GNUC__) && (__GNUC__ > 4 || __GNUC__ == 4 && __GNUC_MINOR__ >= 1)
+ #define TAGLIB_C_EXPORT __attribute__ ((visibility("default")))
+ #else
+--- a/taglib/taglib_export.h
++++ b/taglib/taglib_export.h
+@@ -26,14 +26,8 @@
+ #ifndef TAGLIB_EXPORT_H
+ #define TAGLIB_EXPORT_H
+ 
+-#if defined(TAGLIB_STATIC)
++#if defined(TAGLIB_STATIC) || defined(_WIN32) || defined(_WIN64)
+ #define TAGLIB_EXPORT
+-#elif (defined(_WIN32) || defined(_WIN64))
+-#ifdef MAKE_TAGLIB_LIB
+-#define TAGLIB_EXPORT __declspec(dllexport)
+-#else
+-#define TAGLIB_EXPORT __declspec(dllimport)
+-#endif
+ #elif defined(__GNUC__) && (__GNUC__ > 4 || __GNUC__ == 4 && __GNUC_MINOR__ >= 1)
+ #define TAGLIB_EXPORT __attribute__ ((visibility("default")))
+ #else

@@ -1,0 +1,50 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -552,10 +552,10 @@
+ endif()
+ 
+ if(ENABLE_STATIC)
+-  add_library(jpeg-static STATIC ${JPEG_SOURCES} $<TARGET_OBJECTS:simd>
++  add_library(jpeg STATIC ${JPEG_SOURCES} $<TARGET_OBJECTS:simd>
+     ${SIMD_OBJS})
+   if(NOT MSVC)
+-    set_target_properties(jpeg-static PROPERTIES OUTPUT_NAME jpeg)
++    set_target_properties(jpeg PROPERTIES OUTPUT_NAME jpeg)
+   endif()
+ endif()
+ 
+@@ -595,13 +595,13 @@
+   endif()
+ 
+   if(ENABLE_STATIC)
+-    add_library(turbojpeg-static STATIC ${JPEG_SOURCES} $<TARGET_OBJECTS:simd>
++    add_library(turbojpeg STATIC ${JPEG_SOURCES} $<TARGET_OBJECTS:simd>
+       ${SIMD_OBJS} turbojpeg.c transupp.c jdatadst-tj.c jdatasrc-tj.c rdbmp.c
+       rdppm.c wrbmp.c wrppm.c)
+-    set_property(TARGET turbojpeg-static PROPERTY COMPILE_FLAGS
++    set_property(TARGET turbojpeg PROPERTY COMPILE_FLAGS
+       "-DBMP_SUPPORTED -DPPM_SUPPORTED")
+     if(NOT MSVC)
+-      set_target_properties(turbojpeg-static PROPERTIES OUTPUT_NAME turbojpeg)
++      set_target_properties(turbojpeg PROPERTIES OUTPUT_NAME turbojpeg)
+     endif()
+   endif()
+ endif()
+@@ -1306,7 +1306,7 @@
+     endif()
+   endif()
+   if(ENABLE_STATIC)
+-    install(TARGETS turbojpeg-static ARCHIVE
++    install(TARGETS turbojpeg ARCHIVE
+       DESTINATION ${CMAKE_INSTALL_LIBDIR})
+   endif()
+   install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/turbojpeg.h
+@@ -1314,7 +1314,7 @@
+ endif()
+ 
+ if(ENABLE_STATIC)
+-  install(TARGETS jpeg-static ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
++  install(TARGETS jpeg ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+ endif()
+ 
+ if(WITH_JAVA)

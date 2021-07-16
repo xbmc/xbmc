@@ -1,0 +1,145 @@
+--- a/lib/config.h.in
++++ b/lib/config.h.in
+@@ -24,88 +24,88 @@
+ 
+ /* Set this to be the absolute path of a Bourne shell which understands
+    functions. */
+-#undef CONF_SHELL
++#cmakedefine CONF_SHELL
+ 
+ /* Define to 1 if you have the <assert.h> header file. */
+-#undef HAVE_ASSERT_H
++#cmakedefine HAVE_ASSERT_H
+ 
+ /* Define to 1 if you have the <ctype.h> header file. */
+-#undef HAVE_CTYPE_H
++#cmakedefine HAVE_CTYPE_H
+ 
+ /* Define to 1 if you have the <fcntl.h> header file. */
+-#undef HAVE_FCNTL_H
++#cmakedefine HAVE_FCNTL_H
+ 
+ /* Define to 1 if you have the <getopt.h> header file. */
+-#undef HAVE_GETOPT_H
++#cmakedefine HAVE_GETOPT_H
+ 
+ /* Define to 1 if you have the <inttypes.h> header file. */
+-#undef HAVE_INTTYPES_H
++#cmakedefine HAVE_INTTYPES_H
+ 
+ /* Define to 1 if you have the <memory.h> header file. */
+-#undef HAVE_MEMORY_H
++#cmakedefine HAVE_MEMORY_H
+ 
+ /* Define to 1 if you have the <pwd.h> header file. */
+-#undef HAVE_PWD_H
++#cmakedefine HAVE_PWD_H
+ 
+ /* Define to 1 if you have the `snprintf' function. */
+-#undef HAVE_SNPRINTF
++#cmakedefine HAVE_SNPRINTF
+ 
+ /* Define to 1 if you have the <stddef.h> header file. */
+-#undef HAVE_STDDEF_H
++#cmakedefine HAVE_STDDEF_H
+ 
+ /* Define to 1 if you have the <stdint.h> header file. */
+-#undef HAVE_STDINT_H
++#cmakedefine HAVE_STDINT_H
+ 
+ /* Define to 1 if you have the <stdlib.h> header file. */
+-#undef HAVE_STDLIB_H
++#cmakedefine HAVE_STDLIB_H
+ 
+ /* Define to 1 if you have the `strerror' function. */
+-#undef HAVE_STRERROR
++#cmakedefine HAVE_STRERROR
+ 
+ /* Define to 1 if you have the <strings.h> header file. */
+-#undef HAVE_STRINGS_H
++#cmakedefine HAVE_STRINGS_H
+ 
+ /* Define to 1 if you have the <string.h> header file. */
+-#undef HAVE_STRING_H
++#cmakedefine HAVE_STRING_H
+ 
+ /* Define to 1 if you have the <sys/stat.h> header file. */
+-#undef HAVE_SYS_STAT_H
++#cmakedefine HAVE_SYS_STAT_H
+ 
+ /* Define to 1 if you have the <sys/time.h> header file. */
+-#undef HAVE_SYS_TIME_H
++#cmakedefine HAVE_SYS_TIME_H
+ 
+ /* Define to 1 if you have the <sys/types.h> header file. */
+-#undef HAVE_SYS_TYPES_H
++#cmakedefine HAVE_SYS_TYPES_H
+ 
+ /* Define to 1 if you have the <unistd.h> header file. */
+-#undef HAVE_UNISTD_H
++#cmakedefine HAVE_UNISTD_H
+ 
+ /* Define to 1 if you have the `vsnprintf' function. */
+-#undef HAVE_VSNPRINTF
++#cmakedefine HAVE_VSNPRINTF
+ 
+ /* Define to 1 if you have the <wchar.h> header file. */
+-#undef HAVE_WCHAR_H
++#cmakedefine HAVE_WCHAR_H
+ 
+ /* Define to the address where bug reports for this package should be sent. */
+-#undef PACKAGE_BUGREPORT
++#cmakedefine PACKAGE_BUGREPORT
+ 
+ /* Define to the full name of this package. */
+-#undef PACKAGE_NAME
++#cmakedefine PACKAGE_NAME
+ 
+ /* Define to the full name and version of this package. */
+-#undef PACKAGE_STRING
++#cmakedefine PACKAGE_STRING
+ 
+ /* Define to the one symbol short name of this package. */
+-#undef PACKAGE_TARNAME
++#cmakedefine PACKAGE_TARNAME
+ 
+ /* Define to the home page for this package. */
+-#undef PACKAGE_URL
++#cmakedefine PACKAGE_URL
+ 
+ /* Define to the version of this package. */
+-#undef PACKAGE_VERSION
++#cmakedefine PACKAGE_VERSION
+ 
+ /* Define to 1 if you have the ANSI C header files. */
+-#undef STDC_HEADERS
++#cmakedefine STDC_HEADERS
+ 
+ /* Enable extensions on AIX 3, Interix.  */
+ #ifndef _ALL_SOURCE
+@@ -130,20 +130,20 @@
+ 
+ 
+ /* Define to 1 if on MINIX. */
+-#undef _MINIX
++#cmakedefine _MINIX
+ 
+ /* Define to 2 if the system does not provide POSIX.1 features except with
+    this defined. */
+-#undef _POSIX_1_SOURCE
++#cmakedefine _POSIX_1_SOURCE
+ 
+ /* Define to 1 if you need to in order for `stat' and other things to work. */
+-#undef _POSIX_SOURCE
++#cmakedefine _POSIX_SOURCE
+ 
+ /* Define to empty if `const' does not conform to ANSI C. */
+-#undef const
++#cmakedefine const
+ 
+ /* Define to `unsigned int' if <sys/types.h> does not define. */
+-#undef size_t
++#cmakedefine size_t
+ 
+ 
+ /*

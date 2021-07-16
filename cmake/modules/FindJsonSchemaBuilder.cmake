@@ -16,13 +16,11 @@ if(NOT TARGET JsonSchemaBuilder::JsonSchemaBuilder)
     add_executable(JsonSchemaBuilder::JsonSchemaBuilder IMPORTED GLOBAL)
     set_target_properties(JsonSchemaBuilder::JsonSchemaBuilder PROPERTIES
                                                        IMPORTED_LOCATION "${NATIVEPREFIX}/bin/JsonSchemaBuilder")
-  elseif(CORE_SYSTEM_NAME STREQUAL windowsstore)
-    add_executable(JsonSchemaBuilder::JsonSchemaBuilder IMPORTED GLOBAL)
-    set_target_properties(JsonSchemaBuilder::JsonSchemaBuilder PROPERTIES
-                                                       IMPORTED_LOCATION "${DEPENDENCIES_DIR}/bin/json-rpc/JsonSchemaBuilder")
   else()
-    if(WITH_JSONSCHEMABUILDER)
-      get_filename_component(_jsbpath ${WITH_JSONSCHEMABUILDER} ABSOLUTE)
+    if(WITH_JSONSCHEMABUILDER OR WIN32)
+      if(WITH_JSONSCHEMABUILDER)
+        get_filename_component(_jsbpath ${WITH_JSONSCHEMABUILDER} ABSOLUTE)
+      endif()
       find_program(JSONSCHEMABUILDER_EXECUTABLE JsonSchemaBuilder PATHS ${_jsbpath})
 
       include(FindPackageHandleStandardArgs)

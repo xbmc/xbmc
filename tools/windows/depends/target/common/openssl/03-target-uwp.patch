@@ -1,0 +1,70 @@
+--- a/Configurations/50-win-onecore.conf
++++ b/Configurations/50-win-onecore.conf
+@@ -80,7 +80,7 @@
+         defines         => add("WINAPI_FAMILY=WINAPI_FAMILY_APP",
+                                "_WIN32_WINNT=0x0A00"),
+         dso_scheme      => "",
+-        disable         => [ 'ui-console', 'stdio', 'async', 'uplink' ],
++        disable         => [ 'ui-console', 'apps', 'async', 'uplink' ],
+         ex_libs         => "WindowsApp.lib",
+     },
+      "VC-WIN64A-UWP" => {
+@@ -89,7 +89,7 @@
+         defines         => add("WINAPI_FAMILY=WINAPI_FAMILY_APP",
+                                "_WIN32_WINNT=0x0A00"),
+         dso_scheme      => "",
+-        disable         => [ 'ui-console', 'stdio', 'async', 'uplink' ],
++        disable         => [ 'ui-console', 'apps', 'async', 'uplink' ],
+         ex_libs         => "WindowsApp.lib",
+     },
+     "VC-WIN32-ARM-UWP" => {
+@@ -98,7 +98,7 @@
+         defines         => add("WINAPI_FAMILY=WINAPI_FAMILY_APP",
+                                "_WIN32_WINNT=0x0A00"),
+         dso_scheme      => "",
+-        disable         => [ 'ui-console', 'stdio', 'async', 'uplink' ],
++        disable         => [ 'ui-console', 'apps', 'async', 'uplink' ],
+         ex_libs         => "WindowsApp.lib",
+     },
+      "VC-WIN64-ARM-UWP" => {
+@@ -107,7 +107,7 @@
+         defines         => add("WINAPI_FAMILY=WINAPI_FAMILY_APP",
+                                "_WIN32_WINNT=0x0A00"),
+         dso_scheme      => "",
+-        disable         => [ 'ui-console', 'stdio', 'async', 'uplink' ],
++        disable         => [ 'ui-console', 'apps', 'async', 'uplink' ],
+         ex_libs         => "WindowsApp.lib",
+     },
+ );
+--- a/Configure
++++ b/Configure
+@@ -343,6 +343,7 @@
+ 
+ my @disablables = (
+     "afalgeng",
++    "apps",
+     "aria",
+     "asan",
+     "asm",
+--- a/crypto/async/arch/async_win.c
++++ b/crypto/async/arch/async_win.c
+@@ -34,7 +34,7 @@
+ 
+ int async_fibre_init_dispatcher(async_fibre *fibre)
+ {
+-    fibre->fibre = ConvertThreadToFiber(NULL);
++    fibre->fibre = ConvertThreadToFiberEx(NULL, FIBER_FLAG_FLOAT_SWITCH);
+     if (fibre->fibre == NULL) {
+         fibre->converted = 0;
+         fibre->fibre = GetCurrentFiber();
+--- a/crypto/async/arch/async_win.h
++++ b/crypto/async/arch/async_win.h
+@@ -27,7 +27,7 @@
+ # define async_fibre_swapcontext(o,n,r) \
+         (SwitchToFiber((n)->fibre), 1)
+ # define async_fibre_makecontext(c) \
+-        ((c)->fibre = CreateFiber(0, async_start_func_win, 0))
++        ((c)->fibre = CreateFiberEx(0, 1024, FIBER_FLAG_FLOAT_SWITCH, async_start_func_win, 0))
+ # define async_fibre_free(f)             (DeleteFiber((f)->fibre))
+ 
+ int async_fibre_init_dispatcher(async_fibre *fibre);

@@ -16,13 +16,11 @@ if(NOT TARGET TexturePacker::TexturePacker)
     add_executable(TexturePacker::TexturePacker IMPORTED GLOBAL)
     set_target_properties(TexturePacker::TexturePacker PROPERTIES
                                                        IMPORTED_LOCATION "${NATIVEPREFIX}/bin/TexturePacker")
-  elseif(WIN32)
-    add_executable(TexturePacker::TexturePacker IMPORTED GLOBAL)
-    set_target_properties(TexturePacker::TexturePacker PROPERTIES
-                                                       IMPORTED_LOCATION "${DEPENDENCIES_DIR}/tools/TexturePacker/TexturePacker.exe")
   else()
-    if(WITH_TEXTUREPACKER)
-      get_filename_component(_tppath ${WITH_TEXTUREPACKER} ABSOLUTE)
+    if(WITH_TEXTUREPACKER OR WIN32)
+      if(WITH_TEXTUREPACKER)
+        get_filename_component(_tppath ${WITH_TEXTUREPACKER} ABSOLUTE)
+      endif()
       find_program(TEXTUREPACKER_EXECUTABLE TexturePacker PATHS ${_tppath})
 
       include(FindPackageHandleStandardArgs)

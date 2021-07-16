@@ -25,14 +25,6 @@
 
 #include <lzo/lzo1x.h>
 
-#ifdef TARGET_WINDOWS_DESKTOP
-#ifdef NDEBUG
-#pragma comment(lib,"lzo2.lib")
-#else
-#pragma comment(lib, "lzo2d.lib")
-#endif
-#endif
-
 CTextureBundleXBT::CTextureBundleXBT()
   : m_TimeStamp{0}
   , m_themeBundle{false}

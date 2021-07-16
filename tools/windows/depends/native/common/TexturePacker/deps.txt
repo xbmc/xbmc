@@ -1,0 +1,4 @@
+gif
+jpeg-turbo
+lzo2
+png

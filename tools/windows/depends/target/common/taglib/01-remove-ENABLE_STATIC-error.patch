@@ -1,0 +1,13 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -8,10 +8,6 @@
+ 
+ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules")
+ 
+-if(DEFINED ENABLE_STATIC)
+-  message(FATAL_ERROR "This option is no longer available, use BUILD_SHARED_LIBS instead")
+-endif()
+-
+ option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
+ if(NOT BUILD_SHARED_LIBS)
+   add_definitions(-DTAGLIB_STATIC)

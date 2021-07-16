@@ -1,0 +1,5 @@
+/build-*-windows-native/
+/build-*-windows*-Debug/
+/build-*-windows*-Release/
+/build-*-windows*-RelWithDebInfo/
+/target/common/ffmpeg/ffmpeg.txt

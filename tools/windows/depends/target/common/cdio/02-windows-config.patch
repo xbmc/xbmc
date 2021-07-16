@@ -1,0 +1,65 @@
+--- a/MSVC/config.h
++++ b/MSVC/config.h
+@@ -37,7 +37,7 @@
+ #define HAVE_ERRNO_H 1
+ 
+ /* Define to 1 if you have the <fcntl.h> header file. */
+-#undef HAVE_FCNTL_H
++#define HAVE_FCNTL_H 1
+ 
+ /* Define 1 if you have FreeBSD CD-ROM support */
+ #undef HAVE_FREEBSD_CDROM
+@@ -91,14 +91,23 @@
+ /* Define to 1 if you have the `memset' function. */
+ #define HAVE_MEMSET 1
+ 
++/* Define to 1 if you have the <ntddcdrm.h> header file. */
++#define HAVE_NTDDCDRM_H 1
++
++/* Define to 1 if you have the <ntddscsi.h> header file. */
++#define HAVE_NTDDSCSI_H 1
++
+ /* Define to 1 if you have the `snprintf' function. */
+-#undef HAVE_SNPRINTF
++#define HAVE_SNPRINTF 1
+ 
+ /* Define 1 if you have Solaris CD-ROM support */
+ #undef HAVE_SOLARIS_CDROM
+ 
++/* Define to 1 if you have the <stdarg.h> header file. */
++#define HAVE_STDARG_H 1
++
+ /* Define to 1 if you have the <stdbool.h> header file. */
+-#undef HAVE_STDBOOL_H
++#define HAVE_STDBOOL_H 1
+ 
+ /* Define to 1 if you have the <stdint.h> header file. */
+ #undef HAVE_STDINT_H
+@@ -119,7 +128,7 @@
+ #undef HAVE_SYS_CDIO_H
+ 
+ /* Define to 1 if you have the <sys/stat.h> header file. */
+-#undef HAVE_SYS_STAT_H
++#define HAVE_SYS_STAT_H 1
+ 
+ /* Define to 1 if you have the <sys/types.h> header file. */
+ #define HAVE_SYS_TYPES_H 1
+@@ -140,11 +149,17 @@
+ #undef HAVE_VCDINFO
+ 
+ /* Define to 1 if you have the `vsnprintf' function. */
+-#undef HAVE_VSNPRINTF
++#define HAVE_VSNPRINTF 1
+ 
+ /* Define 1 if you have MinGW CD-ROM support */
+ #define HAVE_WIN32_CDROM 1
+ 
++/* Define to 1 if you have the <windows.h> header file. */
++#define HAVE_WINDOWS_H 1
++
++/* Define to 1 if you have the `_stati64' function. */
++#define HAVE__STATI64 1
++
+ /* Define as const if the declaration of iconv() needs const. */
+ #undef ICONV_CONST 
+ 

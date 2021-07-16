@@ -31,9 +31,6 @@ public:
   bool DestroyRenderSystem() override;
   void* GetHWContext() override { return m_deviceResources->GetD3DContext(); }
 
-  void UninitHooks();
-  void InitHooks(IDXGIOutput* pOutput);
-
   void OnMove(int x, int y) override;
   void OnResize(int width, int height);
   winrt::Windows::Foundation::Size GetOutputSize() const { return m_deviceResources->GetOutputSize(); }

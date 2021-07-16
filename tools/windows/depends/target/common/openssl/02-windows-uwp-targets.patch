@@ -1,0 +1,171 @@
+From 5ded1ca6dade13e093086573f4cebe400bff9f4d Mon Sep 17 00:00:00 2001
+From: MouriNaruto <Mouri_Naruto@outlook.com>
+Date: Sun, 12 May 2019 05:10:58 +0800
+Subject: [PATCH] Improve the Windows OneCore target support. (Add targets for
+ building libraries for Windows Store apps.)
+
+Reviewed-by: Richard Levitte <levitte@openssl.org>
+Reviewed-by: Matt Caswell <matt@openssl.org>
+(Merged from https://github.com/openssl/openssl/pull/8917)
+---
+ Configurations/10-main.conf        |  8 ++---
+ Configurations/50-win-onecore.conf | 49 ++++++++++++++++++++++++++++++
+ Configure                          |  4 ++-
+ INSTALL                            |  3 ++
+ NOTES.WIN                          | 12 ++++++++
+ 5 files changed, 71 insertions(+), 5 deletions(-)
+
+--- a/Configurations/10-main.conf
++++ b/Configurations/10-main.conf
+@@ -1288,7 +1288,7 @@
+     },
+     "VC-WIN64I" => {
+         inherit_from     => [ "VC-WIN64-common", asm("ia64_asm"),
+-                              sub { $disabled{shared} ? () : "ia64_uplink" } ],
++                              sub { $disabled{uplink} ? () : "ia64_uplink" } ],
+         AS               => "ias",
+         ASFLAGS          => "-d debug",
+         asoutflag        => "-o ",
+@@ -1300,7 +1300,7 @@
+     },
+     "VC-WIN64A" => {
+         inherit_from     => [ "VC-WIN64-common", asm("x86_64_asm"),
+-                              sub { $disabled{shared} ? () : "x86_64_uplink" } ],
++                              sub { $disabled{uplink} ? () : "x86_64_uplink" } ],
+         AS               => sub { vc_win64a_info()->{AS} },
+         ASFLAGS          => sub { vc_win64a_info()->{ASFLAGS} },
+         asoutflag        => sub { vc_win64a_info()->{asoutflag} },
+@@ -1313,7 +1313,7 @@
+     },
+     "VC-WIN32" => {
+         inherit_from     => [ "VC-noCE-common", asm("x86_asm"),
+-                              sub { $disabled{shared} ? () : "uplink_common" } ],
++                              sub { $disabled{uplink} ? () : "uplink_common" } ],
+         AS               => sub { vc_win32_info()->{AS} },
+         ASFLAGS          => sub { vc_win32_info()->{ASFLAGS} },
+         asoutflag        => sub { vc_win32_info()->{asoutflag} },
+@@ -1375,7 +1375,7 @@
+ #### MinGW
+     "mingw" => {
+         inherit_from     => [ "BASE_unix", asm("x86_asm"),
+-                              sub { $disabled{shared} ? () : "x86_uplink" } ],
++                              sub { $disabled{uplink} ? () : "x86_uplink" } ],
+         CC               => "gcc",
+         CFLAGS           => picker(default => "-Wall",
+                                    debug   => "-g -O0",
+--- a/Configurations/50-win-onecore.conf
++++ b/Configurations/50-win-onecore.conf
+@@ -61,4 +61,53 @@
+         ex_libs         => "onecore.lib",
+         multilib        => "-arm64",
+     },
++
++    # Universal Windows Platform (UWP) App Support
++
++    # TODO
++    #
++    # The 'disable' attribute should have 'uplink'.
++    # however, these are checked in some 'inherit_from', which is processed
++    # very early, before the 'disable' attributes are seen.
++    # This is a problem that needs to be resolved in Configure first.
++    #
++    # But if you want to build library with Windows 10 Version 1809 SDK or
++    # earlier, the 'disable' attribute should also have 'asm'.
++
++    "VC-WIN32-UWP" => {
++        inherit_from    => [ "VC-WIN32-ONECORE" ],
++        lflags          => add("/APPCONTAINER"),
++        defines         => add("WINAPI_FAMILY=WINAPI_FAMILY_APP",
++                               "_WIN32_WINNT=0x0A00"),
++        dso_scheme      => "",
++        disable         => [ 'ui-console', 'stdio', 'async', 'uplink' ],
++        ex_libs         => "WindowsApp.lib",
++    },
++     "VC-WIN64A-UWP" => {
++        inherit_from    => [ "VC-WIN64A-ONECORE" ],
++        lflags          => add("/APPCONTAINER"),
++        defines         => add("WINAPI_FAMILY=WINAPI_FAMILY_APP",
++                               "_WIN32_WINNT=0x0A00"),
++        dso_scheme      => "",
++        disable         => [ 'ui-console', 'stdio', 'async', 'uplink' ],
++        ex_libs         => "WindowsApp.lib",
++    },
++    "VC-WIN32-ARM-UWP" => {
++        inherit_from    => [ "VC-WIN32-ARM" ],
++        lflags          => add("/APPCONTAINER"),
++        defines         => add("WINAPI_FAMILY=WINAPI_FAMILY_APP",
++                               "_WIN32_WINNT=0x0A00"),
++        dso_scheme      => "",
++        disable         => [ 'ui-console', 'stdio', 'async', 'uplink' ],
++        ex_libs         => "WindowsApp.lib",
++    },
++     "VC-WIN64-ARM-UWP" => {
++        inherit_from    => [ "VC-WIN64-ARM" ],
++        lflags          => add("/APPCONTAINER"),
++        defines         => add("WINAPI_FAMILY=WINAPI_FAMILY_APP",
++                               "_WIN32_WINNT=0x0A00"),
++        dso_scheme      => "",
++        disable         => [ 'ui-console', 'stdio', 'async', 'uplink' ],
++        ex_libs         => "WindowsApp.lib",
++    },
+ );
+--- a/Configure
++++ b/Configure
+@@ -63,6 +63,7 @@
+ # zlib-dynamic  Like "zlib", but the zlib library is expected to be a shared
+ #               library and will be loaded in run-time by the OpenSSL library.
+ # sctp          include SCTP support
++# no-uplink     Don't build support for UPLINK interface.
+ # enable-weak-ssl-ciphers
+ #               Enable weak ciphers that are disabled by default.
+ # 386           generate 80386 code in assembly modules
+@@ -430,6 +431,7 @@
+     "ubsan",
+     "ui-console",
+     "unit-test",
++    "uplink",
+     "whirlpool",
+     "weak-ssl-ciphers",
+     "zlib",
+@@ -501,7 +503,7 @@
+ 
+     # Without position independent code, there can be no shared libraries or DSOs
+     "pic"               => [ "shared" ],
+-    "shared"            => [ "dynamic-engine" ],
++    "shared"            => [ "dynamic-engine", "uplink" ],
+     "dso"               => [ "dynamic-engine" ],
+     "engine"            => [ "afalgeng", "devcryptoeng" ],
+ 
+--- a/INSTALL
++++ b/INSTALL
+@@ -544,6 +544,9 @@
+                    Enable additional unit test APIs. This should not typically
+                    be used in production deployments.
+ 
++  no-uplink
++                   Don't build support for UPLINK interface.
++
+   enable-weak-ssl-ciphers
+                    Build support for SSL/TLS ciphers that are considered "weak"
+                    (e.g. RC4 based ciphersuites).
+--- a/NOTES.WIN
++++ b/NOTES.WIN
+@@ -83,6 +83,18 @@
+  is, of course, to choose a different set of directories by using
+  --prefix and --openssldir when configuring.
+ 
++
++ Special notes for Universal Windows Platform builds, a.k.a. VC-*-UWP
++ --------------------------------------------------------------------
++
++ - UWP targets only support building the static and dynamic libraries.
++
++ - The "no-uplink" must be given in the "Configure" script.
++
++ - You should define the platform type to "uwp" and the target arch via
++   "vcvarsall.bat" before you compile. For example, if you want to build
++   "arm64" builds, you should type "vcvarsall.bat x86_arm64 uwp".
++
+  mingw and mingw64
+  =================
+ 

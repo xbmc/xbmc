@@ -1,0 +1,1 @@
+spdlog https://github.com/gabime/spdlog/archive/v1.6.0.tar.gz

@@ -1,0 +1,10 @@
+--- a/etc/pacman.d/mirrorlist.msys
++++ b/etc/pacman.d/mirrorlist.msys
+@@ -3,6 +3,7 @@
+ ##
+ 
+ ## Primary
++Server = http://mirrors.kodi.tv/build-deps/win32/msys2/repos/msys2/$arch
+ Server = https://repo.msys2.org/msys/$arch/
+ ## Mirrors
+ Server = https://downloads.sourceforge.net/project/msys2/REPOS/MSYS2/$arch/

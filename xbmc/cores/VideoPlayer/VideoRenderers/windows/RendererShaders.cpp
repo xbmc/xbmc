@@ -11,8 +11,8 @@
 #include "DVDCodecs/Video/DXVA.h"
 #include "rendering/dx/RenderContext.h"
 #include "utils/CPUInfo.h"
-#ifndef _M_ARM
-  #include "utils/gpu_memcpy_sse4.h"
+#if defined(HAVE_SSE2) && defined(__SSE2__)
+#include "utils/gpu_memcpy_sse4.h"
 #endif
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
@@ -384,7 +384,7 @@ bool CRendererShaders::CRenderBufferImpl::UploadFromGPU()
   }
 
   void* (*copy_func)(void* d, const void* s, size_t size) =
-#if defined(HAVE_SSE2)
+#if defined(HAVE_SSE2) && defined(__SSE2__)
       ((CServiceBroker::GetCPUInfo()->GetCPUFeatures() & CPU_FEATURE_SSE4) != 0) ? gpu_memcpy :
 #endif
                                                                                  memcpy;

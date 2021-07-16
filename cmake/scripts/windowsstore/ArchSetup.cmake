@@ -43,16 +43,6 @@ set(CMAKE_SYSTEM_NAME WindowsStore)
 set(CORE_SYSTEM_NAME "windowsstore")
 set(PACKAGE_GUID "281d668b-5739-4abd-b3c2-ed1cda572ed2")
 set(APP_MANIFEST_NAME package.appxmanifest)
-set(DEPS_FOLDER_RELATIVE project/BuildDependencies)
-
-set(DEPENDENCIES_DIR ${CMAKE_SOURCE_DIR}/${DEPS_FOLDER_RELATIVE}/win10-${ARCH})
-set(MINGW_LIBS_DIR ${CMAKE_SOURCE_DIR}/${DEPS_FOLDER_RELATIVE}/mingwlibs/win10-${ARCH})
-
-# mingw libs
-list(APPEND CMAKE_PREFIX_PATH ${MINGW_LIBS_DIR})
-list(APPEND CMAKE_LIBRARY_PATH ${MINGW_LIBS_DIR}/bin)
-# dependencies
-list(PREPEND CMAKE_PREFIX_PATH ${DEPENDENCIES_DIR})
 
 
 # -------- Compiler options ---------
@@ -67,11 +57,10 @@ if(NOT SDK_TARGET_ARCH STREQUAL arm)
   list(APPEND ARCH_DEFINES -D__SSE__ -D__SSE2__)
 endif()
 set(SYSTEM_DEFINES -DWIN32_LEAN_AND_MEAN -DNOMINMAX -DHAS_DX -D__STDC_CONSTANT_MACROS
-                   -DTAGLIB_STATIC -DNPT_CONFIG_ENABLE_LOGGING
+                   -DNPT_CONFIG_ENABLE_LOGGING
                    -DPLT_HTTP_DEFAULT_USER_AGENT="UPnP/1.0 DLNADOC/1.50 Kodi"
                    -DPLT_HTTP_DEFAULT_SERVER="UPnP/1.0 DLNADOC/1.50 Kodi"
                    -DUNICODE -D_UNICODE
-                   -DFRIBIDI_STATIC
                    $<$<CONFIG:Debug>:-DD3D_DEBUG_INFO>)
 
 # Additional SYSTEM_DEFINES
@@ -85,11 +74,6 @@ set(gtest_force_shared_crt ON CACHE STRING "" FORCE)
 
 
 # -------- Linker options ---------
-
-# For #pragma comment(lib X)
-# TODO: It would certainly be better to handle these libraries via CMake modules.
-link_directories(${MINGW_LIBS_DIR}/lib
-                 ${DEPENDENCIES_DIR}/lib)
 
 list(APPEND DEPLIBS bcrypt.lib d3d11.lib WS2_32.lib dxguid.lib dloadhelper.lib WindowsApp.lib)
 

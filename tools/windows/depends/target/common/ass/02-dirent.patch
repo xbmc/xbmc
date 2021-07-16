@@ -1,0 +1,28 @@
+--- a/libass/ass_fontselect.c
++++ b/libass/ass_fontselect.c
+@@ -31,7 +31,9 @@
+ #include <limits.h>
+ #include <ft2build.h>
+ #include <sys/types.h>
++#if defined(HAVE_DIRENT_H)
+ #include <dirent.h>
++#endif
+ #include FT_FREETYPE_H
+ #include FT_SFNT_NAMES_H
+ #include FT_TRUETYPE_IDS_H
+@@ -163,6 +165,7 @@
+ 
+ static void load_fonts_from_dir(ASS_Library *library, const char *dir)
+ {
++#if defined(HAVE_DIRENT_H)
+     DIR *d = opendir(dir);
+     if (!d)
+         return;
+@@ -183,6 +186,7 @@
+         }
+     }
+     closedir(d);
++#endif
+ }
+ 
+ /**

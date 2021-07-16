@@ -1,0 +1,13 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -245,9 +245,7 @@
+ else ()
+   set(ORIGINAL_FTCONFIG_H "")
+ endif ()
+-if (NOT (ORIGINAL_FTCONFIG_H STREQUAL FTCONFIG_H))
+-  file(WRITE "${FTCONFIG_H_NAME}" "${FTCONFIG_H}")
+-endif ()
++configure_file("${PROJECT_SOURCE_DIR}/include/freetype/config/ftconfig.h" "${FTCONFIG_H_NAME}" COPYONLY)
+ 
+ 
+ # Create the options file

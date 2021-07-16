@@ -35,9 +35,6 @@ public:
   bool DestroyRenderSystem() override;
   void* GetHWContext() override { return m_deviceResources->GetD3DContext(); }
 
-  void UninitHooks();
-  void InitHooks(IDXGIOutput* pOutput);
-
   void OnMove(int x, int y) override;
   void OnResize(int width, int height);
 
@@ -66,8 +63,6 @@ public:
   void Register(IDispResource *resource) override { CWinSystemWin32::Register(resource); };
   void Unregister(IDispResource *resource) override { CWinSystemWin32::Unregister(resource); };
 
-  void FixRefreshRateIfNecessary(const D3D10DDIARG_CREATERESOURCE* pResource) const;
-
   // HDR OS/display override
   bool IsHDRDisplay() override;
   HDR_STATUS ToggleHDR() override;
@@ -90,7 +85,5 @@ protected:
   bool IsStereoEnabled() override;
   void OnScreenChange(HMONITOR monitor) override;
   bool ChangeResolution(const RESOLUTION_INFO& res, bool forceChange = false) override;
-
-  HMODULE m_hDriverModule;
 };
 

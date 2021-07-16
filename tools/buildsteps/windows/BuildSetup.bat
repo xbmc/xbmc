@@ -3,32 +3,16 @@ REM setup all paths
 PUSHD %~dp0\..\..\..
 SET base_dir=%CD%
 POPD
-SET builddeps_dir=%base_dir%\project\BuildDependencies
-SET bin_dir=%builddeps_dir%\bin
-SET msys_dir=%builddeps_dir%\msys64
-IF NOT EXIST %msys_dir% (SET msys_dir=%builddeps_dir%\msys32)
-SET sed_exe=%msys_dir%\usr\bin\sed.exe
 
 REM read the version values from version.txt
 SET version_props=^
 APP_NAME ^
 COMPANY_NAME ^
-PACKAGE_DESCRIPTION ^
-PACKAGE_IDENTITY ^
-PACKAGE_PUBLISHER ^
-VERSION_MAJOR ^
-VERSION_MINOR ^
-VERSION_TAG ^
 VERSION_CODE ^
 WEBSITE
 
 FOR %%p IN (%version_props%) DO (
-  FOR /f "delims=" %%v IN ('%sed_exe% -n "/%%p/ s/%%p *//p" %base_dir%\version.txt') DO SET %%p=%%v
-)
-
-SET APP_VERSION=%VERSION_MAJOR%.%VERSION_MINOR%
-IF NOT [%VERSION_TAG%] == [] (
-  SET APP_VERSION=%APP_VERSION%-%VERSION_TAG%
+  FOR /f "tokens=2*" %%v IN ('findstr /b /c:"%%p " %base_dir%\version.txt') DO SET %%p=%%v
 )
 
 rem ----Usage----
@@ -62,7 +46,6 @@ FOR %%b in (%*) DO (
 )
 
 SET PreferredToolArchitecture=x64
-SET buildconfig=Release
 set WORKSPACE=%base_dir%\kodi-build.%TARGET_PLATFORM%
 
 
@@ -84,26 +67,34 @@ set WORKSPACE=%base_dir%\kodi-build.%TARGET_PLATFORM%
   MKDIR %WORKSPACE%
   PUSHD %WORKSPACE%
 
-  cmake.exe -G "%cmakeGenerator%" -A %cmakeArch% -T host=x64 %cmakeProps% %base_dir%
+  if "%TARGET_PLATFORM%" NEQ "" (
+    cmake -G "%TARGET_CMAKE_GENERATOR%" -A %TARGET_CMAKE_GENERATOR_PLATFORM% -T host=x64 -DCMAKE_TOOLCHAIN_FILE:FILEPATH=%base_dir%\tools\depends\xbmc-depends\%TARGET_PLATFORM%\Toolchain.cmake %base_dir%
+    if errorlevel 1 (
+      set DIETEXT="%APP_NAME%.EXE failed to build!"
+      goto DIE
+    )
+  ) else (
+    cmake.exe -G "%TARGET_CMAKE_GENERATOR%" -A %TARGET_CMAKE_GENERATOR_PLATFORM% -T host=x64 -DCMAKE_PREFIX_PATH=%base_dir%\tools\depends\xbmc-depends\%NATIVE_PLATFORM% %base_dir%
+    IF %errorlevel%==1 (
+      set DIETEXT="%APP_NAME%.EXE failed to build!"
+      goto DIE
+    )
+  )
+
+  cmake.exe --build . --config "%BUILD_TYPE%"
   IF %errorlevel%==1 (
     set DIETEXT="%APP_NAME%.EXE failed to build!"
     goto DIE
   )
 
-  cmake.exe --build . --config "%buildconfig%"
-  IF %errorlevel%==1 (
-    set DIETEXT="%APP_NAME%.EXE failed to build!"
-    goto DIE
-  )
-
-  set EXE="%WORKSPACE%\%buildconfig%\%APP_NAME%.exe"
-  set PDB="%WORKSPACE%\%buildconfig%\%APP_NAME%.pdb"
+  set EXE="%WORKSPACE%\%BUILD_TYPE%\%APP_NAME%.exe"
+  set PDB="%WORKSPACE%\%BUILD_TYPE%\%APP_NAME%.pdb"
   set D3D="%WORKSPACE%\D3DCompile*.DLL"
 
   POPD
   ECHO Done!
   ECHO ------------------------------------------------------------
-  IF "%cmakeProps%" NEQ "" GOTO MAKE_APPX
+  IF "%TARGET_CMAKE_OPTIONS%" NEQ "" GOTO MAKE_APPX
   GOTO MAKE_BUILD_EXE
 
 
@@ -149,22 +140,12 @@ set WORKSPACE=%base_dir%\kodi-build.%TARGET_PLATFORM%
   copy %base_dir%\privacy-policy.txt BUILD_WIN32\application > NUL
   copy %base_dir%\known_issues.txt BUILD_WIN32\application > NUL
 
+  xcopy %WORKSPACE%\AppxManifest.xml BUILD_WIN32\application > NUL
   xcopy %WORKSPACE%\addons BUILD_WIN32\application\addons /E /Q /I /Y /EXCLUDE:exclude.txt > NUL
   xcopy %WORKSPACE%\*.dll BUILD_WIN32\application /Q /I /Y > NUL
   xcopy %WORKSPACE%\libbluray-*.jar BUILD_WIN32\application /Q /I /Y > NUL
   xcopy %WORKSPACE%\system BUILD_WIN32\application\system /E /Q /I /Y /EXCLUDE:exclude.txt+exclude_dll.txt  > NUL
   xcopy %WORKSPACE%\media BUILD_WIN32\application\media /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
-
-  REM create AppxManifest.xml
-  "%sed_exe%" ^
-    -e 's/@APP_NAME@/%APP_NAME%/g' ^
-    -e 's/@COMPANY_NAME@/%COMPANY_NAME%/g' ^
-    -e 's/@TARGET_ARCHITECTURE@/%TARGET_ARCHITECTURE%/g' ^
-    -e 's/@VERSION_CODE@/%VERSION_CODE%/g' ^
-    -e 's/@PACKAGE_IDENTITY@/%PACKAGE_IDENTITY%/g' ^
-    -e 's/@PACKAGE_PUBLISHER@/%PACKAGE_PUBLISHER%/g' ^
-    -e 's/@PACKAGE_DESCRIPTION@/%PACKAGE_DESCRIPTION%/g' ^
-    "AppxManifest.xml.in" > "BUILD_WIN32\application\AppxManifest.xml"
 
   SET build_path=%CD%
   IF %buildbinaryaddons%==true (
@@ -259,7 +240,7 @@ set WORKSPACE=%base_dir%\kodi-build.%TARGET_PLATFORM%
   set app_path=%base_dir%\project\UWPBuildSetup
   if not exist "%app_path%" mkdir %app_path%
   call %base_dir%\project\Win32BuildSetup\extract_git_rev.bat > NUL
-  for /F %%a IN ('dir /B /S %WORKSPACE%\AppPackages ^| findstr /I /R "%APP_NAME%_.*_%TARGET_ARCHITECTURE%_%buildconfig%\.%app_ext%$"') DO (
+  for /F %%a IN ('dir /B /S %WORKSPACE%\AppPackages ^| findstr /I /R "%APP_NAME%_.*_%TARGET_ARCHITECTURE%_%BUILD_TYPE%\.%app_ext%$"') DO (
     copy /Y %%a %app_path%\%APP_NAME%-%GIT_REV%-%BRANCH%-%TARGET_ARCHITECTURE%.%app_ext%
     copy /Y %%~dpna.cer %app_path%\%APP_NAME%-%GIT_REV%-%BRANCH%-%TARGET_ARCHITECTURE%.cer
     copy /Y %%~dpna.appxsym %app_path%\%APP_NAME%-%GIT_REV%-%BRANCH%-%TARGET_ARCHITECTURE%.appxsym
@@ -275,7 +256,7 @@ set WORKSPACE=%base_dir%\kodi-build.%TARGET_PLATFORM%
 
   rem apxx file has win32 instead of x86 in it's name
   if %TARGET_ARCHITECTURE%==x86 (
-    for /F %%a IN ('dir /B /S %WORKSPACE%\AppPackages ^| findstr /I /R "%APP_NAME%_.*_win32_%buildconfig%\.%app_ext%$"') DO (
+    for /F %%a IN ('dir /B /S %WORKSPACE%\AppPackages ^| findstr /I /R "%APP_NAME%_.*_win32_%BUILD_TYPE%\.%app_ext%$"') DO (
       copy /Y %%a %app_path%\%APP_NAME%-%GIT_REV%-%BRANCH%-%TARGET_ARCHITECTURE%.%app_ext%
       copy /Y %%~dpna.cer %app_path%\%APP_NAME%-%GIT_REV%-%BRANCH%-%TARGET_ARCHITECTURE%.cer
       copy /Y %%~dpna.appxsym %app_path%\%APP_NAME%-%GIT_REV%-%BRANCH%-%TARGET_ARCHITECTURE%.appxsym
