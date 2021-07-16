@@ -24,4 +24,24 @@ Default font lacks support for all characters
       <row>`~</row>
    </keyboard>
   </layout>
+  <layout language="Korean" layout="두벌식" codingtable="Korean">
+    <keyboard>
+      <row>1234567890</row>
+      <row>ㅂㅈㄷㄱㅅㅛㅕㅑㅐㅔ</row>
+      <row>ㅁㄴㅇㄹㅎㅗㅓㅏㅣ'</row>
+      <row>ㅋㅌㅊㅍㅠㅜㅡ,.;</row>
+    </keyboard>
+    <keyboard modifiers="shift">
+      <row>1234567890</row>
+      <row>ㅃㅉㄸㄲㅆㅛㅕㅑㅒㅖ</row>
+      <row>ㅁㄴㅇㄹㅎㅗㅓㅏㅣ"</row>
+      <row>ㅋㅌㅊㅍㅠㅜㅡ,.:</row>
+    </keyboard>
+    <keyboard modifiers="symbol,shift+symbol">
+      <row>)!@#$%^&amp;*(</row>
+      <row>[]{}-_=+;:</row>
+      <row>'",.&lt;&gt;/?\|</row>
+      <row>`~</row>
+   </keyboard>
+  </layout>
 </keyboardlayouts>
