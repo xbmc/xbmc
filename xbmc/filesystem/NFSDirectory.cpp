@@ -115,7 +115,7 @@ bool CNFSDirectory::ResolveSymlink( const std::string &dirName, struct nfsdirent
   resolvedUrl.SetProtocol("nfs");
   resolvedUrl.SetHostName(gNfsConnection.GetConnectedIp());
 
-  ret = nfs_readlink(gNfsConnection.GetNfsContext(), fullpath.c_str(), resolvedLink, MAX_PATH);
+  ret = nfs_readlink(gNfsConnection.GetNfsContext(), CURL::Decode(fullpath).c_str(), resolvedLink, MAX_PATH);
 
   if(ret == 0)
   {
@@ -138,7 +138,7 @@ bool CNFSDirectory::ResolveSymlink( const std::string &dirName, struct nfsdirent
     }
     else
     {
-      ret = nfs_stat(gNfsConnection.GetNfsContext(), fullpath.c_str(), &tmpBuffer);
+      ret = nfs_stat(gNfsConnection.GetNfsContext(), CURL::Decode(fullpath).c_str(), &tmpBuffer);
       resolvedUrl.SetFileName(gNfsConnection.GetConnectedExport() + fullpath);
     }
 
@@ -209,7 +209,7 @@ bool CNFSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   struct nfsdir *nfsdir = NULL;
   struct nfsdirent *nfsdirent = NULL;
 
-  ret = nfs_opendir(gNfsConnection.GetNfsContext(), strDirName.c_str(), &nfsdir);
+  ret = nfs_opendir(gNfsConnection.GetNfsContext(), CURL::Decode(strDirName).c_str(), &nfsdir);
 
   if(ret != 0)
   {
@@ -222,7 +222,7 @@ bool CNFSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   while((nfsdirent = nfs_readdir(gNfsConnection.GetNfsContext(), nfsdir)) != NULL)
   {
     struct nfsdirent tmpDirent = *nfsdirent;
-    std::string strName = tmpDirent.name;
+    std::string strName = CURL::Encode(tmpDirent.name);
     std::string path(myStrPath + strName);
     int64_t iSize = 0;
     bool bIsDir = false;
@@ -303,7 +303,7 @@ bool CNFSDirectory::Create(const CURL& url2)
   if(!gNfsConnection.Connect(url,folderName))
     return false;
 
-  ret = nfs_mkdir(gNfsConnection.GetNfsContext(), folderName.c_str());
+  ret = nfs_mkdir(gNfsConnection.GetNfsContext(), CURL::Decode(folderName).c_str());
 
   success = (ret == 0 || -EEXIST == ret);
   if(!success)
@@ -325,7 +325,7 @@ bool CNFSDirectory::Remove(const CURL& url2)
   if(!gNfsConnection.Connect(url,folderName))
     return false;
 
-  ret = nfs_rmdir(gNfsConnection.GetNfsContext(), folderName.c_str());
+  ret = nfs_rmdir(gNfsConnection.GetNfsContext(), CURL::Decode(folderName).c_str());
 
   if(ret != 0 && errno != ENOENT)
   {
@@ -350,7 +350,7 @@ bool CNFSDirectory::Exists(const CURL& url2)
     return false;
 
   NFSSTAT info;
-  ret = nfs_stat(gNfsConnection.GetNfsContext(), folderName.c_str(), &info);
+  ret = nfs_stat(gNfsConnection.GetNfsContext(), CURL::Decode(folderName).c_str(), &info);
 
   if (ret != 0)
   {

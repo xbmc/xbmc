@@ -549,7 +549,7 @@ bool CNFSFile::Open(const CURL& url)
   m_pNfsContext = gNfsConnection.GetNfsContext();
   m_exportPath = gNfsConnection.GetContextMapId();
 
-  ret = nfs_open(m_pNfsContext, filename.c_str(), O_RDONLY, &m_pFileHandle);
+  ret = nfs_open(m_pNfsContext, CURL::Decode(filename).c_str(), O_RDONLY, &m_pFileHandle);
 
   if (ret != 0)
   {
@@ -601,7 +601,7 @@ int CNFSFile::Stat(const CURL& url, struct __stat64* buffer)
 
   NFSSTAT tmpBuffer = {};
 
-  ret = nfs_stat(gNfsConnection.GetNfsContext(), filename.c_str(), &tmpBuffer);
+  ret = nfs_stat(gNfsConnection.GetNfsContext(), CURL::Decode(filename).c_str(), &tmpBuffer);
 
   //if buffer == NULL we where called from Exists - in that case don't spam the log with errors
   if (ret != 0 && buffer != NULL)
@@ -781,7 +781,7 @@ bool CNFSFile::Delete(const CURL& url)
     return false;
 
 
-  ret = nfs_unlink(gNfsConnection.GetNfsContext(), filename.c_str());
+  ret = nfs_unlink(gNfsConnection.GetNfsContext(), CURL::Decode(filename).c_str());
 
   if(ret != 0)
   {
@@ -804,7 +804,7 @@ bool CNFSFile::Rename(const CURL& url, const CURL& urlnew)
   std::string strDummy;
   gNfsConnection.splitUrlIntoExportAndPath(urlnew, strDummy, strFileNew);
 
-  ret = nfs_rename(gNfsConnection.GetNfsContext() , strFile.c_str(), strFileNew.c_str());
+  ret = nfs_rename(gNfsConnection.GetNfsContext() , CURL::Decode(strFile).c_str(), strFileNew.c_str());
 
   if(ret != 0)
   {
@@ -836,7 +836,7 @@ bool CNFSFile::OpenForWrite(const CURL& url, bool bOverWrite)
     CLog::Log(LOGWARNING, "FileNFS::OpenForWrite() called with overwriting enabled! - {}",
               filename);
     //create file with proper permissions
-    ret = nfs_creat(m_pNfsContext, filename.c_str(), S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH, &m_pFileHandle);
+    ret = nfs_creat(m_pNfsContext, CURL::Decode(filename).c_str(), S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH, &m_pFileHandle);
     //if file was created the file handle isn't valid ... so close it and open later
     if(ret == 0)
     {
@@ -845,7 +845,7 @@ bool CNFSFile::OpenForWrite(const CURL& url, bool bOverWrite)
     }
   }
 
-  ret = nfs_open(m_pNfsContext, filename.c_str(), O_RDWR, &m_pFileHandle);
+  ret = nfs_open(m_pNfsContext, CURL::Decode(filename).c_str(), O_RDWR, &m_pFileHandle);
 
   if (ret || m_pFileHandle == NULL)
   {
