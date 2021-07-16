@@ -112,6 +112,14 @@ public:
   const std::locale& GetOriginalLocale() const;
 
   /*!
+   * \brief Gets the locale name with language code and region code separated with "_".
+   * 
+   * The language code is ISO-936-1 two-letter code. The region code is ISO-3166 two-letter code.
+   * \return Locale code like "en_US" which can be used in libicu.
+   */
+  const std::string GetISOLocale() const;
+
+  /*!
   \brief Returns the full locale of the current language.
   */
   const CLocale& GetLocale() const;
