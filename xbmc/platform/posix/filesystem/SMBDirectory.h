@@ -29,5 +29,6 @@ public:
 
 private:
   int OpenDir(const CURL &url, std::string& strAuth);
+  bool GetServerList(CFileItemList& items);
 };
 }
