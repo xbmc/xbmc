@@ -62,7 +62,7 @@ When working in a large group, the two most important values are readability and
 
 Conventions can be bent or broken in the interest of making code more readable and maintainable. However, if you submit a patch that contains excessive style conflicts, you may be asked to improve your code before your pull request is reviewed.
 
-In the repository root directory, there is a `.clang-format` file that implements the rules as specified here. You are encouraged to run `clang-format` on any newly created files. It is currently not recommended to do so on preexisting files because all the formatting changes will clutter your commits and pull request.
+In the repository root directory, there is a `.clang-format` file that implements the rules as specified here. You are encouraged to run `clang-format` on any newly created files. It is currently not recommended to do so on preexisting files because all the formatting changes will clutter your commits and pull request. Note that the version of `clang-format` needs to be at least verson 9.0.
 
 **[back to top](#table-of-contents)**
 
