@@ -1,98 +1,143 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 # -*- coding: UTF-8 -*-
 
-import xbmcplugin,xbmcgui,xbmc,xbmcaddon
-import os,sys,urllib
+from sys import argv
+from urllib import unquote_plus
+from xbmcplugin import addDirectoryItem, setResolvedUrl, endOfDirectory
+from xbmcgui import ListItem
 
 def get_params():
-        param=[]
-        paramstring=sys.argv[2]
-        if len(paramstring)>=2:
-                params=sys.argv[2]
-                cleanedparams=params.replace('?','')
-                if (params[len(params)-1]=='/'):
-                        params=params[0:len(params)-2]
-                pairsofparams=cleanedparams.split('&')
-                param={}
-                for i in range(len(pairsofparams)):
-                        splitparams={}
-                        splitparams=pairsofparams[i].split('=')
-                        if (len(splitparams))==2:
-                                param[splitparams[0]]=splitparams[1]
+    param = []
+    paramstring = argv[2]
+    if len(paramstring) >=  2:
+        params = argv[2]
+        cleanedparams = params.replace('?', '')
+        if (params[len(params)-1] == '/'):
+            params = params[0:len(params)-2]
+        pairsofparams = cleanedparams.split('&')
+        param = {}
+        for i in range(len(pairsofparams)):
+            splitparams = {}
+            splitparams = pairsofparams[i].split(' = ')
+            if (len(splitparams)) == 2:
+                param[splitparams[0]] = splitparams[1]
+    return param
 
-        return param
 
+params = get_params()
 
-params=get_params()
-
-action=urllib.unquote_plus(params["action"])
+action = unquote_plus(params["action"])
 
 if action == 'find':
     year = 0
-    title=urllib.unquote_plus(params["title"])
+    title = unquote_plus(params["title"])
     try:
-        year=int(urllib.unquote_plus(params["year"]))
-    except:
-        pass
+        year = int(unquote_plus(params["year"]))
+    except Exception as error:
+        print(f" The Error was {error}")
 
-    print('Find movie with title %s from year %i' %(title, int(year)))
-    liz=xbmcgui.ListItem('Demo movie 1', thumbnailImage='DefaultVideo.png', offscreen=True)
-    liz.setProperty('relevance', '0.5')
-    xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url="/path/to/movie", listitem=liz, isFolder=True)
-    liz=xbmcgui.ListItem('Demo movie 2', thumbnailImage='DefaultVideo.png', offscreen=True)
-    liz.setProperty('relevance', '0.3')
-    xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url="/path/to/movie2", listitem=liz, isFolder=True)
+    print(f"Find movie with title {title} from year {year}")
+    list_item = ListItem(
+        'Demo movie 1', thumbnailImage = 'DefaultVideo.png', offscreen = True
+    )
+    list_item.setProperty('relevance', '0.5')
+    addDirectoryItem(
+        handle = int(argv[1]), url = "/path/to/movie",
+        listitem = list_item, isFolder = True
+    )
+    list_item = ListItem(
+        'Demo movie 2', thumbnailImage = 'DefaultVideo.png', offscreen = True
+    )
+    list_item.setProperty('relevance', '0.3')
+    addDirectoryItem(
+        handle = int(argv[1]), url = "/path/to/movie2",
+        listitem = list_item, isFolder = True
+    )
 elif action == 'getdetails':
-    url=urllib.unquote_plus(params["url"])
+    url = unquote_plus(params["url"])
     if url == '/path/to/movie':
-        liz=xbmcgui.ListItem('Demo movie 1', offscreen=True)
-        liz.setInfo('video',
-                    {'title': 'Demo movie 1',
-                     'originaltitle': 'Demo måvie 1',
-                     'sorttitle': '2',
-                     'userrating': 5,
-                     'top250': 3,
-                     'plotoutline': 'Outline yo',
-                     'plot': 'Plot yo',
-                     'tagline': 'Tag yo',
-                     'duration': 110,
-                     'mpaa': 'T',
-                     'trailer': '/home/akva/bunnies/unicorns.mkv',
-                     'genre': ['Action', 'Comedy'],
-                     'country': ['Norway', 'Sweden', 'China'],
-                     'credits': ['None', 'Want', 'To Admit It'],
-                     'director': ['spiff', 'spiff2'],
-                     'set': 'Spiffy creations',
-                     'setoverview': 'Horrors created by spiff',
-                     'studio': ['Studio1', 'Studio2'],
-                     'dateadded': '2016-01-01',
-                     'premiered': '2015-01-01',
-                     'showlink': ['Demo show 1']
-                    })
+        list_item = ListItem('Demo movie 1', offscreen = True)
+        list_item.setInfo('video', 
+            {
+                'title': 'Demo movie 1', 
+                'originaltitle': 'Demo måvie 1', 
+                'sorttitle': '2', 
+                'userrating': 5, 
+                'top250': 3, 
+                'plotoutline': 'Outline yo', 
+                'plot': 'Plot yo', 
+                'tagline': 'Tag yo', 
+                'duration': 110, 
+                'mpaa': 'T', 
+                'trailer': '/home/akva/bunnies/unicorns.mkv', 
+                'genre': ['Action', 'Comedy'], 
+                'country': ['Norway', 'Sweden', 'China'], 
+                'credits': ['None', 'Want', 'To Admit It'], 
+                'director': ['spiff', 'spiff2'], 
+                'set': 'Spiffy creations', 
+                'setoverview': 'Horrors created by spiff', 
+                'studio': ['Studio1', 'Studio2'], 
+                'dateadded': '2016-01-01', 
+                'premiered': '2015-01-01', 
+                'showlink': ['Demo show 1']
+            }
+        )
                     #todo: missing actor thumb aspect
-        liz.setRating("imdb", 9, 100000, True )
-        liz.setRating("themoviedb", 8.9, 1000)
-        liz.setUniqueIDs({ 'imdb': 'tt8938399', 'tmdb' : '9837493' }, 'imdb')
-        liz.setCast([{'name': 'spiff', 'role': 'himself', 'thumbnail': '/home/akva/Pictures/fish.jpg', 'order': 2},
-                    {'name': 'monkey', 'role': 'orange', 'thumbnail': '/home/akva/Pictures/coffee.jpg', 'order': 1}])
-        liz.addAvailableArtwork('DefaultBackFanart.png', 'banner')
-        liz.addAvailableArtwork('/home/akva/Pictures/hawaii-shirt.png', 'poster')
-        liz.setAvailableFanart([{'image': 'DefaultBackFanart.png', 'preview': 'DefaultBackFanart.png'}, 
-                                {'image': '/home/akva/Pictures/hawaii-shirt.png', 'preview': '/home/akva/Pictures/hawaii-shirt.png'}])
-        xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=liz)
+        list_item.setRating("imdb", 9, 100000, True )
+        list_item.setRating("themoviedb", 8.9, 1000)
+        list_item.setUniqueIDs({ 'imdb': 'tt8938399', 'tmdb' : '9837493'}, 'imdb')
+        list_item.setCast(
+            [
+                {
+                    'name': 'spiff', 'role': 'himself', 
+                    'thumbnail': '/home/akva/Pictures/fish.jpg', 'order': 2
+                }, {
+                    'name': 'monkey', 'role': 'orange', 
+                    'thumbnail': '/home/akva/Pictures/coffee.jpg', 'order': 1
+                }
+            ]
+        )
+        list_item.addAvailableArtwork('DefaultBackFanart.png', 'banner')
+        list_item.addAvailableArtwork(
+            '/home/akva/Pictures/hawaii-shirt.png', 'poster'
+        )
+        list_item.setAvailableFanart(
+            [
+                {
+                    'image': 'DefaultBackFanart.png', 
+                    'preview': 'DefaultBackFanart.png'
+                }, {
+                    'image': '/home/akva/Pictures/hawaii-shirt.png', 
+                    'preview': '/home/akva/Pictures/hawaii-shirt.png'
+                }
+            ]
+        )
+        setResolvedUrl(handle = int(argv[1]), succeeded = True, listitem = list_item)
 elif action == 'getartwork':
-    url=urllib.unquote_plus(params["id"])
+    url = unquote_plus(params["id"])
     if url == '456':
-        liz=xbmcgui.ListItem('Demo movie 1', offscreen=True)
-        liz.addAvailableArtwork('DefaultBackFanart.png', 'banner')
-        liz.addAvailableArtwork('/home/akva/Pictures/hawaii-shirt.png', 'poster')
-        liz.setAvailableFanart([{'image': 'DefaultBackFanart.png', 'preview': 'DefaultBackFanart.png'}, 
-                                {'image': '/home/akva/Pictures/hawaii-shirt.png', 'preview': '/home/akva/Pictures/hawaii-shirt.png'}])
-        xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=liz)
+        list_item = ListItem('Demo movie 1', offscreen = True)
+        list_item.addAvailableArtwork('DefaultBackFanart.png', 'banner')
+        list_item.addAvailableArtwork('/home/akva/Pictures/shirt.png', 'poster')
+        list_item.setAvailableFanart(
+            [
+                {
+                    'image': 'DefaultBackFanart.png', 
+                    'preview': 'DefaultBackFanart.png'
+                }, {
+                    'image': '/home/akva/Pictures/hawaii-shirt.png', 
+                    'preview': '/home/akva/Pictures/hawaii-shirt.png'
+                }
+            ]
+        )
+        setResolvedUrl(handle = int(argv[1]), succeeded = True, listitem = list_item)
 elif action == 'nfourl':
-    nfo=urllib.unquote_plus(params["nfo"])
-    print 'Find url from nfo file'
-    liz=xbmcgui.ListItem('Demo movie 1', offscreen=True)
-    xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url="/path/to/movie1", listitem=liz, isFolder=True)
+    nfo = unquote_plus(params["nfo"])
+    print('Find url from nfo file')
+    list_item = ListItem('Demo movie 1', offscreen = True)
+    addDirectoryItem(
+        handle = int(argv[1]), url = "/path/to/movie1", 
+        listitem = list_item, isFolder = True
+    )
 
-xbmcplugin.endOfDirectory(int(sys.argv[1]))
+endOfDirectory(int(argv[1]))
