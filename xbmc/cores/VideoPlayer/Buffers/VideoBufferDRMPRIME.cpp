@@ -102,10 +102,44 @@ void CVideoBufferDRMPRIMEFFmpeg::Unref()
   av_frame_unref(m_pFrame);
 }
 
+AVDRMFrameDescriptor* CVideoBufferDRMPRIMEFFmpeg::GetDescriptor() const
+{
+  if (m_pMapFrame)
+    return reinterpret_cast<AVDRMFrameDescriptor*>(m_pMapFrame->data[0]);
+
+  return reinterpret_cast<AVDRMFrameDescriptor*>(m_pFrame->data[0]);
+}
+
 bool CVideoBufferDRMPRIMEFFmpeg::IsValid() const
 {
+  if (m_pFrame->format == AV_PIX_FMT_VAAPI)
+    return true;
+
   AVDRMFrameDescriptor* descriptor = GetDescriptor();
   return descriptor && descriptor->nb_layers;
+}
+
+bool CVideoBufferDRMPRIMEFFmpeg::AcquireDescriptor()
+{
+  if (m_pFrame->format == AV_PIX_FMT_VAAPI)
+  {
+    m_pMapFrame = av_frame_alloc();
+    m_pMapFrame->format = AV_PIX_FMT_DRM_PRIME;
+
+    int ret = av_hwframe_map(m_pMapFrame, m_pFrame, 0);
+    if (ret)
+    {
+      av_frame_free(&m_pMapFrame);
+      return false;
+    }
+  }
+
+  return true;
+}
+
+void CVideoBufferDRMPRIMEFFmpeg::ReleaseDescriptor()
+{
+  av_frame_free(&m_pMapFrame);
 }
 
 CVideoBufferPoolDRMPRIMEFFmpeg::~CVideoBufferPoolDRMPRIMEFFmpeg()

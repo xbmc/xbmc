@@ -232,12 +232,15 @@ if(NOT FFMPEG_FOUND)
     message(STATUS "dav1d not found, internal ffmpeg build will be missing AV1 support!")
   endif()
 
+  find_package(LibDRM)
+
   set(FFMPEG_OPTIONS -DENABLE_CCACHE=${ENABLE_CCACHE}
                      -DCCACHE_PROGRAM=${CCACHE_PROGRAM}
                      -DENABLE_VAAPI=${ENABLE_VAAPI}
                      -DENABLE_VDPAU=${ENABLE_VDPAU}
                      -DENABLE_DAV1D=${DAV1D_FOUND}
-                     -DEXTRA_FLAGS=${FFMPEG_EXTRA_FLAGS})
+                     -DEXTRA_FLAGS=${FFMPEG_EXTRA_FLAGS}
+                     -DENABLE_LIBDRM=${LIBDRM_FOUND})
 
   if(KODI_DEPENDSBUILD)
     set(CROSS_ARGS -DDEPENDS_PATH=${DEPENDS_PATH}
