@@ -8,8 +8,12 @@
 
 #include "MultiProvider.h"
 
+#include "listproviders/IListProvider.h"
 #include "threads/SingleLock.h"
-#include "utils/XBMCTinyXML.h"
+
+#include <utility>
+
+#include <tinyxml.h>
 
 CMultiProvider::CMultiProvider(const TiXmlNode *first, int parentID)
  : IListProvider(parentID)

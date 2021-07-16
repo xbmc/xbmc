@@ -11,7 +11,10 @@
 #include "DirectoryProvider.h"
 #include "MultiProvider.h"
 #include "StaticProvider.h"
-#include "utils/XBMCTinyXML.h"
+
+#include <cstddef>
+
+#include <tinyxml.h>
 
 IListProvider *IListProvider::Create(const TiXmlNode *node, int parentID)
 {

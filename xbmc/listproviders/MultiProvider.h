@@ -11,8 +11,12 @@
 #include "IListProvider.h"
 #include "threads/CriticalSection.h"
 
+#include <cstddef>
 #include <map>
+#include <memory>
 #include <vector>
+
+class TiXmlNode;
 
 typedef std::shared_ptr<IListProvider> IListProviderPtr;
 

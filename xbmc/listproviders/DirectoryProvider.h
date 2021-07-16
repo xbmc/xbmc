@@ -9,16 +9,25 @@
 #pragma once
 
 #include "IListProvider.h"
-#include "addons/AddonEvents.h"
 #include "addons/RepositoryUpdater.h"
 #include "favourites/FavouritesService.h"
+#include "guilib/GUIAction.h"
 #include "guilib/GUIStaticItem.h"
+#include "guilib/guiinfo/GUIInfoLabel.h"
 #include "interfaces/IAnnouncer.h"
 #include "threads/CriticalSection.h"
 #include "utils/Job.h"
+#include "utils/SortUtils.h"
 
 #include <string>
 #include <vector>
+
+class CFileItem;
+
+namespace ADDON
+{
+struct AddonEvent;
+}
 
 class TiXmlElement;
 class CVariant;
