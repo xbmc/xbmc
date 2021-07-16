@@ -1036,7 +1036,7 @@ bool CFileItem::IsCUESheet() const
 bool CFileItem::IsInternetStream(const bool bStrictCheck /* = false */) const
 {
   if (HasProperty("IsHTTPDirectory"))
-    return false;
+    return bStrictCheck;
 
   if (!m_strDynPath.empty())
     return URIUtils::IsInternetStream(m_strDynPath, bStrictCheck);
