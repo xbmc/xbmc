@@ -1447,12 +1447,14 @@ void CVideoPlayer::Process()
         // stills will be skipped
         if(m_dvd.state == DVDSTATE_STILL)
         {
-          if (m_dvd.iDVDStillTime > 0)
+          if (m_dvd.iDVDStillTime.count() > 0)
           {
-            if ((XbmcThreads::SystemClockMillis() - m_dvd.iDVDStillStartTime) >= m_dvd.iDVDStillTime)
+            auto now = std::chrono::steady_clock::now();
+
+            if ((now - m_dvd.iDVDStillStartTime) >= m_dvd.iDVDStillTime)
             {
-              m_dvd.iDVDStillTime = 0;
-              m_dvd.iDVDStillStartTime = 0;
+              m_dvd.iDVDStillTime = {};
+              m_dvd.iDVDStillStartTime = {};
               m_dvd.state = DVDSTATE_NORMAL;
               pStream->SkipStill();
               continue;
@@ -2803,8 +2805,8 @@ void CVideoPlayer::HandleMessages()
         if(ptr->SetState(pMsgPlayerSetState->GetState()))
         {
           m_dvd.state = DVDSTATE_NORMAL;
-          m_dvd.iDVDStillStartTime = 0;
-          m_dvd.iDVDStillTime = 0;
+          m_dvd.iDVDStillStartTime = {};
+          m_dvd.iDVDStillTime = {};
         }
       }
 
@@ -3893,23 +3895,23 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
       {
         // else notify the player we have received a still frame
 
-        m_dvd.iDVDStillTime = *static_cast<int*>(pData);
-        m_dvd.iDVDStillStartTime = XbmcThreads::SystemClockMillis();
+        m_dvd.iDVDStillTime = std::chrono::milliseconds(*static_cast<int*>(pData));
+        m_dvd.iDVDStillStartTime = std::chrono::steady_clock::now();
 
-        if (m_dvd.iDVDStillTime != 0)
-          m_dvd.iDVDStillTime *= 1000;
+        if (m_dvd.iDVDStillTime.count() > 0)
+          m_dvd.iDVDStillTime = std::chrono::milliseconds(m_dvd.iDVDStillTime.count() * 1000);
 
         /* adjust for the output delay in the video queue */
         unsigned int time = 0;
-        if (m_CurrentVideo.stream && m_dvd.iDVDStillTime > 0)
+        if (m_CurrentVideo.stream && m_dvd.iDVDStillTime.count() > 0)
         {
           time = (unsigned int)(m_VideoPlayerVideo->GetOutputDelay() / (DVD_TIME_BASE / 1000));
           if (time < 10000 && time > 0)
-            m_dvd.iDVDStillTime += time;
+            m_dvd.iDVDStillTime += std::chrono::milliseconds(time);
         }
         m_dvd.state = DVDSTATE_STILL;
-        CLog::Log(LOGDEBUG, "BD_EVENT_STILL_TIME - waiting {} sec, with delay of {} sec",
-                  m_dvd.iDVDStillTime, time / 1000);
+        CLog::Log(LOGDEBUG, "BD_EVENT_STILL_TIME - waiting {} msec, with delay of {} sec",
+                  m_dvd.iDVDStillTime.count(), time / 1000);
       }
     }
     break;
@@ -3919,15 +3921,15 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
       if (on && m_dvd.state != DVDSTATE_STILL)
       {
         m_dvd.state = DVDSTATE_STILL;
-        m_dvd.iDVDStillStartTime = XbmcThreads::SystemClockMillis();
-        m_dvd.iDVDStillTime = 0;
+        m_dvd.iDVDStillStartTime = std::chrono::steady_clock::now();
+        m_dvd.iDVDStillTime = {};
         CLog::Log(LOGDEBUG, "CDVDPlayer::OnDVDNavResult - libbluray DVDSTATE_STILL start");
       }
       else if (!on && m_dvd.state == DVDSTATE_STILL)
       {
         m_dvd.state = DVDSTATE_NORMAL;
-        m_dvd.iDVDStillStartTime = 0;
-        m_dvd.iDVDStillTime = 0;
+        m_dvd.iDVDStillStartTime = {};
+        m_dvd.iDVDStillTime = {};
         CLog::Log(LOGDEBUG, "CDVDPlayer::OnDVDNavResult - libbluray DVDSTATE_STILL end");
       }
     }
@@ -3973,19 +3975,20 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
           // else notify the player we have received a still frame
 
           if(still_event->length < 0xff)
-            m_dvd.iDVDStillTime = still_event->length * 1000;
+            m_dvd.iDVDStillTime = std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::seconds(still_event->length));
           else
-            m_dvd.iDVDStillTime = 0;
+            m_dvd.iDVDStillTime = {};
 
-          m_dvd.iDVDStillStartTime = XbmcThreads::SystemClockMillis();
+          m_dvd.iDVDStillStartTime = std::chrono::steady_clock::now();
 
           /* adjust for the output delay in the video queue */
           unsigned int time = 0;
-          if( m_CurrentVideo.stream && m_dvd.iDVDStillTime > 0 )
+          if (m_CurrentVideo.stream && m_dvd.iDVDStillTime.count() > 0)
           {
             time = (unsigned int)(m_VideoPlayerVideo->GetOutputDelay() / ( DVD_TIME_BASE / 1000 ));
             if( time < 10000 && time > 0 )
-              m_dvd.iDVDStillTime += time;
+              m_dvd.iDVDStillTime += std::chrono::milliseconds(time);
           }
           m_dvd.state = DVDSTATE_STILL;
           CLog::Log(LOGDEBUG, "DVDNAV_STILL_FRAME - waiting {} sec, with delay of {} sec",
@@ -4148,7 +4151,8 @@ bool CVideoPlayer::OnAction(const CAction &action)
   std::shared_ptr<CDVDInputStream::IMenus> pMenus = std::dynamic_pointer_cast<CDVDInputStream::IMenus>(m_pInputStream);
   if (pMenus)
   {
-    if (m_dvd.state == DVDSTATE_STILL && m_dvd.iDVDStillTime != 0 && pMenus->GetTotalButtons() == 0)
+    if (m_dvd.state == DVDSTATE_STILL && m_dvd.iDVDStillTime.count() != 0 &&
+        pMenus->GetTotalButtons() == 0)
     {
       switch(action.GetID())
       {
@@ -4160,8 +4164,8 @@ bool CVideoPlayer::OnAction(const CAction &action)
             THREAD_ACTION(action);
             /* this will force us out of the stillframe */
             CLog::Log(LOGDEBUG, "{} - User asked to exit stillframe", __FUNCTION__);
-            m_dvd.iDVDStillStartTime = 0;
-            m_dvd.iDVDStillTime = 1;
+            m_dvd.iDVDStillStartTime = {};
+            m_dvd.iDVDStillTime = std::chrono::milliseconds(1);
           }
           return true;
       }
@@ -4677,8 +4681,11 @@ void CVideoPlayer::UpdatePlayState(double timeout)
 
       if (m_dvd.state == DVDSTATE_STILL)
       {
-        state.time = XbmcThreads::SystemClockMillis() - m_dvd.iDVDStillStartTime;
-        state.timeMax = m_dvd.iDVDStillTime;
+        auto now = std::chrono::steady_clock::now();
+        state.time =
+            std::chrono::duration_cast<std::chrono::milliseconds>(now - m_dvd.iDVDStillStartTime)
+                .count();
+        state.timeMax = m_dvd.iDVDStillTime.count();
         state.isInMenu = true;
       }
       else if (IsInMenuInternal())

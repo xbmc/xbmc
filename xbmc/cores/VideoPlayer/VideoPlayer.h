@@ -25,6 +25,7 @@
 #include "threads/Thread.h"
 
 #include <atomic>
+#include <chrono>
 #include <memory>
 #include <unordered_map>
 #include <utility>
@@ -514,15 +515,17 @@ protected:
       iSelectedSPUStream   = -1;
       iSelectedAudioStream = -1;
       iSelectedVideoStream = -1;
-      iDVDStillTime        =  0;
-      iDVDStillStartTime   =  0;
+      iDVDStillTime = {};
+      iDVDStillStartTime = {};
       syncClock = false;
     }
 
     int state;                // current dvdstate
     bool syncClock;
-    unsigned int iDVDStillTime;      // total time in ticks we should display the still before continuing
-    unsigned int iDVDStillStartTime; // time in ticks when we started the still
+    std::chrono::milliseconds
+        iDVDStillTime; // total time in ticks we should display the still before continuing
+    std::chrono::time_point<std::chrono::steady_clock>
+        iDVDStillStartTime; // time in ticks when we started the still
     int iSelectedSPUStream;   // mpeg stream id, or -1 if disabled
     int iSelectedAudioStream; // mpeg stream id, or -1 if disabled
     int iSelectedVideoStream; // mpeg stream id or angle, -1 if disabled
