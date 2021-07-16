@@ -241,7 +241,11 @@ void CDirectoryProvider::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
          (std::find(m_itemTypes.begin(), m_itemTypes.end(), InfoTagType::AUDIO) == m_itemTypes.end())))
       return;
 
-    if (flag & ANNOUNCEMENT::Player)
+    if ((flag & ANNOUNCEMENT::Player) &&
+        ((CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO) ||
+         (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VISUALISATION) ||
+         (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SLIDESHOW) ||
+         (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_FULLSCREEN_GAME)))
     {
       if (message == "OnPlay" || message == "OnResume" || message == "OnStop")
       {
