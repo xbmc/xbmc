@@ -207,6 +207,41 @@ bool CAddonInstaller::InstallOrUpdateDependency(const ADDON::AddonPtr& dependsId
                    DependencyJob::YES, AllowCheckForUpdates::YES);
 }
 
+bool CAddonInstaller::RemoveDependency(const std::shared_ptr<IAddon>& dependsId) const
+{
+  bool removeData = CDirectory::Exists("special://profile/addon_data/" + dependsId->ID());
+  CAddonUnInstallJob removeDependencyJob(dependsId, removeData);
+  removeDependencyJob.SetRecurseOrphaned(RecurseOrphaned::NO);
+
+  return removeDependencyJob.DoWork();
+}
+
+std::vector<std::string> CAddonInstaller::RemoveOrphanedDepsRecursively() const
+{
+  std::vector<std::string> removedItems;
+
+  auto toRemove = CServiceBroker::GetAddonMgr().GetOrphanedDependencies();
+  while (toRemove.size() > 0)
+  {
+    for (const auto& dep : toRemove)
+    {
+      if (RemoveDependency(dep))
+      {
+        removedItems.emplace_back(dep->Name()); // successfully removed
+      }
+      else
+      {
+        CLog::Log(LOGERROR, "CAddonMgr::{}: failed to remove orphaned dependency: {}", __FUNCTION__,
+                  dep->Name());
+      }
+    }
+
+    toRemove = CServiceBroker::GetAddonMgr().GetOrphanedDependencies();
+  }
+
+  return removedItems;
+}
+
 bool CAddonInstaller::Install(const std::string& addonId,
                               const AddonVersion& version,
                               const std::string& repoId)
@@ -1077,6 +1112,18 @@ bool CAddonUnInstallJob::DoWork()
   database.OnPostUnInstall(m_addon->ID());
 
   ADDON::OnPostUnInstall(m_addon);
+
+  if (m_recurseOrphaned == RecurseOrphaned::YES)
+  {
+    auto removedItems = CAddonInstaller::GetInstance().RemoveOrphanedDepsRecursively();
+
+    if (removedItems.size() > 0)
+    {
+      CLog::Log(LOGINFO, "CAddonUnInstallJob[{}]: removed orphaned dependencies ({})",
+                m_addon->ID(), StringUtils::Join(removedItems, ", "));
+    }
+  }
+
   return true;
 }
 
