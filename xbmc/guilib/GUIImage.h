@@ -19,6 +19,26 @@
 
 #include <vector>
 
+enum IMAGE_BLENDMODE
+{
+  IMAGE_BLENDMODE_NONE = 0,
+  IMAGE_BLENDMODE_ADD,
+  IMAGE_BLENDMODE_SUBTRACT,
+  IMAGE_BLENDMODE_REVERSE_SUBTRACT,
+  IMAGE_BLENDMODE_MULTIPLY,
+  IMAGE_BLENDMODE_2X_MULTIPLY,
+  IMAGE_BLENDMODE_DARKEN,
+  IMAGE_BLENDMODE_LIGHTEN,
+  IMAGE_BLENDMODE_ADVANCED_MULTIPLY,
+  IMAGE_BLENDMODE_ADVANCED_SCREEN,
+  IMAGE_BLENDMODE_ADVANCED_OVERLAY,
+  IMAGE_BLENDMODE_ADVANCED_DARKEN,
+  IMAGE_BLENDMODE_ADVANCED_LIGHTEN,
+  IMAGE_BLENDMODE_ADVANCED_COLORDODGE,
+  IMAGE_BLENDMODE_ADVANCED_COLORBURN,
+  IMAGE_BLENDMODE_ADVANCED_DIFFERENCE,
+};
+
 /*!
  \ingroup controls
  \brief
@@ -78,6 +98,7 @@ public:
   void SetPosition(float posX, float posY) override;
   std::string GetDescription() const override;
   void SetCrossFade(unsigned int time);
+  void SetBlendMode(IMAGE_BLENDMODE blendMode);
 
   const std::string& GetFileName() const;
   float GetTextureWidth() const;
@@ -109,5 +130,7 @@ protected:
   unsigned int m_crossFadeTime;
   unsigned int m_currentFadeTime;
   unsigned int m_lastRenderTime;
+
+  IMAGE_BLENDMODE m_blendMode = IMAGE_BLENDMODE_ADD;
 };
 

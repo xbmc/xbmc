@@ -89,15 +89,89 @@ void CGUITextureGLES::Begin(UTILS::Color color)
     }
   }
 
-  if ( hasAlpha )
+  if (hasAlpha || m_blendMode != TEXTURE_BLENDMODE_ADD)
   {
-    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_ONE);
-    glEnable( GL_BLEND );
+    if (m_blendMode == TEXTURE_BLENDMODE_ADD)
+    {
+      glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE);
+      glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
+    }
+    else if (m_blendMode == TEXTURE_BLENDMODE_SUBTRACT)
+    {
+      glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE, GL_ZERO, GL_ONE);
+      glBlendEquationSeparate(GL_FUNC_SUBTRACT, GL_FUNC_ADD);
+    }
+    else if (m_blendMode == TEXTURE_BLENDMODE_REVERSE_SUBTRACT)
+    {
+      glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE, GL_ZERO, GL_ONE);
+      glBlendEquationSeparate(GL_FUNC_REVERSE_SUBTRACT, GL_FUNC_ADD);
+    }
+    else if (m_blendMode == TEXTURE_BLENDMODE_MULTIPLY)
+    {
+      glBlendFuncSeparate(GL_ZERO, GL_SRC_COLOR, GL_ZERO, GL_ONE);
+      glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
+    }
+    else if (m_blendMode == TEXTURE_BLENDMODE_2X_MULTIPLY)
+    {
+      glBlendFuncSeparate(GL_DST_COLOR, GL_SRC_COLOR, GL_ZERO, GL_ONE);
+      glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
+    }
+    else if (m_blendMode == TEXTURE_BLENDMODE_DARKEN)
+    {
+      glBlendFuncSeparate(GL_ONE, GL_ONE, GL_ZERO, GL_ONE);
+      glBlendEquationSeparate(GL_MIN, GL_FUNC_ADD);
+    }
+    else if (m_blendMode == TEXTURE_BLENDMODE_LIGHTEN)
+    {
+      glBlendFuncSeparate(GL_ONE, GL_ONE, GL_ZERO, GL_ONE);
+      glBlendEquationSeparate(GL_MAX, GL_FUNC_ADD);
+    }
+
+    //needs a shader with the proper layout qualifier
+    else if (m_blendMode == TEXTURE_BLENDMODE_ADVANCED_MULTIPLY)
+    {
+      glBlendEquation(GL_MULTIPLY_KHR);
+    }
+    else if (m_blendMode == TEXTURE_BLENDMODE_ADVANCED_SCREEN)
+    {
+      glBlendEquation(GL_SCREEN_KHR);
+    }
+    else if (m_blendMode == TEXTURE_BLENDMODE_ADVANCED_OVERLAY)
+    {
+      glBlendEquation(GL_OVERLAY_KHR);
+    }
+    else if (m_blendMode == TEXTURE_BLENDMODE_ADVANCED_DARKEN)
+    {
+      glBlendEquation(GL_DARKEN_KHR);
+    }
+    else if (m_blendMode == TEXTURE_BLENDMODE_ADVANCED_LIGHTEN)
+    {
+      glBlendEquation(GL_LIGHTEN_KHR);
+    }
+    else if (m_blendMode == TEXTURE_BLENDMODE_ADVANCED_COLORDODGE)
+    {
+      glBlendEquation(GL_COLORDODGE_KHR);
+    }
+    else if (m_blendMode == TEXTURE_BLENDMODE_ADVANCED_COLORBURN)
+    {
+      glBlendEquation(GL_COLORBURN_KHR);
+    }
+    else if (m_blendMode == TEXTURE_BLENDMODE_ADVANCED_DIFFERENCE)
+    {
+      glBlendEquation(GL_DIFFERENCE_KHR);
+    }
+    else
+    {
+      glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+      glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
+    }
+    glEnable(GL_BLEND);
   }
   else
   {
     glDisable(GL_BLEND);
   }
+
   m_packedVertices.clear();
 }
 

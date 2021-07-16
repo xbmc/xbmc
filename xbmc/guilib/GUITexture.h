@@ -23,6 +23,25 @@
 #define ASPECT_ALIGN_MASK    3
 #define ASPECT_ALIGNY_MASK  ~3
 
+enum TEXTURE_BLENDMODE
+{
+  TEXTURE_BLENDMODE_ADD = 0,
+  TEXTURE_BLENDMODE_SUBTRACT,
+  TEXTURE_BLENDMODE_REVERSE_SUBTRACT,
+  TEXTURE_BLENDMODE_MULTIPLY,
+  TEXTURE_BLENDMODE_2X_MULTIPLY,
+  TEXTURE_BLENDMODE_DARKEN,
+  TEXTURE_BLENDMODE_LIGHTEN,
+  TEXTURE_BLENDMODE_ADVANCED_MULTIPLY,
+  TEXTURE_BLENDMODE_ADVANCED_SCREEN,
+  TEXTURE_BLENDMODE_ADVANCED_OVERLAY,
+  TEXTURE_BLENDMODE_ADVANCED_DARKEN,
+  TEXTURE_BLENDMODE_ADVANCED_LIGHTEN,
+  TEXTURE_BLENDMODE_ADVANCED_COLORDODGE,
+  TEXTURE_BLENDMODE_ADVANCED_COLORBURN,
+  TEXTURE_BLENDMODE_ADVANCED_DIFFERENCE,
+};
+
 class CAspectRatio
 {
 public:
@@ -90,6 +109,7 @@ public:
   bool SetFileName(const std::string &filename);
   void SetUseCache(const bool useCache = true);
   bool SetAspectRatio(const CAspectRatio &aspect);
+  void SetBlendMode(TEXTURE_BLENDMODE blendMode) { m_blendMode = blendMode; };
 
   const std::string& GetFileName() const { return m_info.filename; };
   float GetTextureWidth() const { return m_frameWidth; };
@@ -174,4 +194,6 @@ protected:
 
   CTextureArray m_diffuse;
   CTextureArray m_texture;
+
+  TEXTURE_BLENDMODE m_blendMode = TEXTURE_BLENDMODE_ADD;
 };
