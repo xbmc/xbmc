@@ -43,6 +43,7 @@ namespace DRM
 
     // Interface methods
     XbmcCommons::Buffer GetKeyRequest(const XbmcCommons::Buffer& init, const std::string& mimeType, bool offlineKey, const std::map<std::string, std::string>& parameters) override;
+    XbmcCommons::Buffer GetPropertyByteArray(const std::string& name) override;
     std::string GetPropertyString(const std::string& name) override;
     std::string ProvideKeyResponse(const XbmcCommons::Buffer& response) override;
     void RemoveKeys() override;

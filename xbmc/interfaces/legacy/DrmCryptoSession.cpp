@@ -36,6 +36,14 @@ namespace XBMCAddon
       return Buffer();
     }
 
+    Buffer CryptoSession::GetPropertyByteArray(const String &name)
+    {
+      if (m_cryptoSession)
+        return m_cryptoSession->GetPropertyByteArray(name);
+
+      return Buffer();
+    }
+
     String CryptoSession::GetPropertyString(const String &name)
     {
       if (m_cryptoSession)
