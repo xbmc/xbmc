@@ -130,7 +130,7 @@ else()
       ExternalProject_Add_Step(dvdcss autoreconf
                                       DEPENDEES download update patch
                                       DEPENDERS configure
-                                      COMMAND PATH=${NATIVEPREFIX}/bin:$ENV{PATH} autoreconf -vif
+                                      COMMAND ${CMAKE_COMMAND} -E env PATH=${NATIVEPREFIX}/bin:$ENV{PATH} autoreconf -vif
                                       WORKING_DIRECTORY <SOURCE_DIR>)
     else()
       ExternalProject_Add(dvdcss
@@ -172,7 +172,7 @@ else()
     ExternalProject_Add_Step(dvdread autoreconf
                                       DEPENDEES download update patch
                                       DEPENDERS configure
-                                      COMMAND PATH=${NATIVEPREFIX}/bin:$ENV{PATH} autoreconf -vif
+                                      COMMAND ${CMAKE_COMMAND} -E env PATH=${NATIVEPREFIX}/bin:$ENV{PATH} autoreconf -vif
                                       WORKING_DIRECTORY <SOURCE_DIR>)
   else()
     ExternalProject_Add(dvdread
@@ -220,7 +220,7 @@ else()
     ExternalProject_Add_Step(dvdnav autoreconf
                                     DEPENDEES download update patch
                                     DEPENDERS configure
-                                    COMMAND PATH=${NATIVEPREFIX}/bin:$ENV{PATH} autoreconf -vif
+                                    COMMAND ${CMAKE_COMMAND} -E env PATH=${NATIVEPREFIX}/bin:$ENV{PATH} autoreconf -vif
                                     WORKING_DIRECTORY <SOURCE_DIR>)
   else()
     set(DVDNAV_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdnav.lib)
