@@ -282,6 +282,12 @@ namespace PVR
     int ParentalRating() const;
 
     /*!
+     * @brief Get the parental rating code of this event.
+     * @return The parental rating code.
+     */
+    std::string ParentalRatingCode() const;
+
+    /*!
      * @brief Get the star rating of this event.
      * @return The star rating.
      */
@@ -458,6 +464,7 @@ namespace PVR
     int m_iGenreType = 0; /*!< genre type */
     int m_iGenreSubType = 0; /*!< genre subtype */
     int m_iParentalRating = 0; /*!< parental rating */
+    std::string m_strParentalRatingCode; /*!< parental rating code */
     int m_iStarRating = 0; /*!< star rating */
     int m_iSeriesNumber = -1; /*!< series number */
     int m_iEpisodeNumber = -1; /*!< episode number */

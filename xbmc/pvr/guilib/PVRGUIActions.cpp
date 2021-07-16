@@ -1806,11 +1806,16 @@ namespace PVR
     if (!bResetEPGOnly)
     {
       pvrDatabase->DeleteChannelGroups();
-      pDlgProgress->SetPercentage(60);
+      pDlgProgress->SetPercentage(50);
       pDlgProgress->Progress();
 
       /* delete all channels */
       pvrDatabase->DeleteChannels();
+      pDlgProgress->SetPercentage(60);
+      pDlgProgress->Progress();
+
+      /* delete all providers */
+      pvrDatabase->DeleteProviders();
       pDlgProgress->SetPercentage(70);
       pDlgProgress->Progress();
 

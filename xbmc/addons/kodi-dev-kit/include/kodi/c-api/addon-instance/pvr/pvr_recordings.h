@@ -137,6 +137,8 @@ extern "C"
     char strFirstAired[PVR_ADDON_DATE_STRING_LENGTH];
     unsigned int iFlags;
     int64_t sizeInBytes;
+    int iClientProviderUid;
+    char strProviderName[PVR_ADDON_NAME_STRING_LENGTH];
   } PVR_RECORDING;
 
 #ifdef __cplusplus

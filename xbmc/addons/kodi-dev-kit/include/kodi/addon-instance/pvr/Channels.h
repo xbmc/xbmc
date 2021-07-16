@@ -41,7 +41,11 @@ class PVRChannel : public CStructHdl<PVRChannel, PVR_CHANNEL>
 
 public:
   /*! \cond PRIVATE */
-  PVRChannel() { memset(m_cStructure, 0, sizeof(PVR_CHANNEL)); }
+  PVRChannel()
+  {
+    memset(m_cStructure, 0, sizeof(PVR_CHANNEL));
+    m_cStructure->iClientProviderUid = PVR_PROVIDER_INVALID_UID;
+  }
   PVRChannel(const PVRChannel& channel) : CStructHdl(channel) {}
   /*! \endcond */
 
@@ -62,6 +66,7 @@ public:
   /// | **Is hidden** | `bool` | @ref PVRChannel::SetIsHidden "SetIsHidden" | @ref PVRChannel::GetIsHidden "GetIsHidden" | *optional*
   /// | **Has archive** | `bool` | @ref PVRChannel::SetHasArchive "SetHasArchive" | @ref PVRChannel::GetHasArchive "GetHasArchive" | *optional*
   /// | **Order** | `int` | @ref PVRChannel::SetOrder "SetOrder" | @ref PVRChannel::GetOrder "GetOrder" | *optional*
+  /// | **Client provider unique identifier** | `int` | @ref PVRChannel::SetClientProviderUid "SetClientProviderUid" | @ref PVRTimer::GetClientProviderUid "GetClientProviderUid" | *optional*
   ///
 
   /// @addtogroup cpp_kodi_addon_pvr_Defs_Channel_PVRChannel
@@ -172,6 +177,18 @@ public:
   /// @brief To get with @ref SetOrder changed values.
   bool GetOrder() const { return m_cStructure->iOrder; }
   ///@}
+
+  /// @brief **optional**\n
+  /// Unique identifier of the provider this channel belongs to.
+  ///
+  /// @ref PVR_PROVIDER_INVALID_UID denotes that provider uid is not available.
+  void SetClientProviderUid(int iClientProviderUid)
+  {
+    m_cStructure->iClientProviderUid = iClientProviderUid;
+  }
+
+  /// @brief To get with @ref SetClientProviderUid changed values
+  int GetClientProviderUid() const { return m_cStructure->iClientProviderUid; }
 
 private:
   PVRChannel(const PVR_CHANNEL* channel) : CStructHdl(channel) {}

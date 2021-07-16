@@ -14,6 +14,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClient.h"
 #include "pvr/addons/PVRClientMenuHooks.h"
+#include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
@@ -345,12 +346,17 @@ namespace PVR
 
     bool DeleteRecording::IsVisible(const CFileItem& item) const
     {
+      const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(item);
+      if (client && !client->GetClientCapabilities().SupportsRecordingsDelete())
+        return false;
+
       const std::shared_ptr<CPVRRecording> recording(item.GetPVRRecordingInfoTag());
       if (recording && !recording->IsInProgress())
         return true;
 
       // recordings folder?
-      if (item.m_bIsFolder)
+      if (item.m_bIsFolder &&
+          CServiceBroker::GetPVRManager().Clients()->AnyClientSupportingRecordingsDelete())
       {
         const CPVRRecordingsPath path(item.GetPath());
         return path.IsValid() && !path.IsRecordingsRoot();

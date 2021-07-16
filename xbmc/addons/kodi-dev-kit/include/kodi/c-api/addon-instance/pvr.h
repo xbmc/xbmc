@@ -17,6 +17,7 @@
 #include "pvr/pvr_epg.h"
 #include "pvr/pvr_general.h"
 #include "pvr/pvr_menu_hook.h"
+#include "pvr/pvr_providers.h"
 #include "pvr/pvr_recordings.h"
 #include "pvr/pvr_stream.h"
 #include "pvr/pvr_timers.h"
@@ -97,6 +98,9 @@ extern "C"
     void (*TransferChannelEntry)(void* kodiInstance,
                                  const ADDON_HANDLE handle,
                                  const struct PVR_CHANNEL* chan);
+    void (*TransferProviderEntry)(void* kodiInstance,
+                                  const ADDON_HANDLE handle,
+                                  const struct PVR_PROVIDER* chanProvider);
     void (*TransferChannelGroup)(void* kodiInstance,
                                  const ADDON_HANDLE handle,
                                  const struct PVR_CHANNEL_GROUP* group);
@@ -116,6 +120,7 @@ extern "C"
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Kodi inform interface functions
     void (*TriggerChannelUpdate)(void* kodiInstance);
+    void (*TriggerProvidersUpdate)(void* kodiInstance);
     void (*TriggerChannelGroupsUpdate)(void* kodiInstance);
     void (*TriggerEpgUpdate)(void* kodiInstance, unsigned int iChannelUid);
     void (*TriggerRecordingUpdate)(void* kodiInstance);
@@ -167,6 +172,12 @@ extern "C"
     enum PVR_ERROR(__cdecl* GetDescrambleInfo)(const struct AddonInstance_PVR*,
                                                int,
                                                struct PVR_DESCRAMBLE_INFO*);
+
+    //--==----==----==----==----==----==----==----==----==----==----==----==----==
+    // Provider interface functions
+
+    enum PVR_ERROR(__cdecl* GetProvidersAmount)(const struct AddonInstance_PVR*, int*);
+    enum PVR_ERROR(__cdecl* GetProviders)(const struct AddonInstance_PVR*, ADDON_HANDLE);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Channel group interface functions

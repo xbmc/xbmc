@@ -28,6 +28,7 @@ namespace PVR
   class CPVRChannelGroupInternal;
   class CPVRChannelGroup;
   class CPVRChannelGroups;
+  class CPVRProvidersContainer;
   class CPVRClient;
   class CPVREpg;
   class CPVRRecordings;
@@ -47,6 +48,8 @@ namespace PVR
     int numTimers = 0;
     int numRecordings = 0;
     int numDeletedRecordings = 0;
+    int numProviders = 0;
+    int numChannelGroups = 0;
     int numChannels = 0;
     uint64_t diskUsed = 0;
     uint64_t diskTotal = 0;
@@ -134,6 +137,12 @@ namespace PVR
      * @return True on success, false otherwise.
      */
     bool GetCreatedClient(int iClientId, std::shared_ptr<CPVRClient>& addon) const;
+
+    /*!
+     * @brief Get info required for providers. Include both enabled and disabled PVR add-ons
+     * @return A list containing the information required to create client providers.
+     */
+    std::vector<CVariant> GetClientProviderInfos() const;
 
     /*!
      * @brief Get all created clients.
@@ -265,6 +274,14 @@ namespace PVR
                           std::vector<int>& failedClients);
 
     /*!
+     * @brief Get all providers from backends.
+     * @param group The container to store the providers in.
+     * @param failedClients in case of errors will contain the ids of the clients for which the providers could not be obtained.
+     * @return PVR_ERROR_NO_ERROR if the providers were fetched successfully, last error otherwise.
+     */
+    PVR_ERROR GetProviders(CPVRProvidersContainer* providers, std::vector<int>& failedClients);
+
+    /*!
      * @brief Get all channel groups from backends.
      * @param groups Store the channel groups in this container.
      * @param failedClients in case of errors will contain the ids of the clients for which the channel groups could not be obtained.
@@ -313,6 +330,13 @@ namespace PVR
      * @return True if any client supports recordings.
      */
     bool AnyClientSupportingRecordings() const;
+    //@}
+
+    /*!
+     * @brief Get whether or not any client supports recordings delete.
+     * @return True if any client supports recordings delete.
+     */
+    bool AnyClientSupportingRecordingsDelete() const;
     //@}
 
     /*! @name Power management methods */

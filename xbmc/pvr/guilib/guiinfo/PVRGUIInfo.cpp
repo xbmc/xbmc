@@ -28,6 +28,7 @@
 #include "pvr/channels/PVRRadioRDSInfoTag.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/providers/PVRProvider.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
@@ -36,6 +37,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
+#include "threads/SystemClock.h"
 #include "utils/StringUtils.h"
 
 #include <cmath>
@@ -71,6 +73,8 @@ void CPVRGUIInfo::ResetProperties()
   m_strBackendTimers            .clear();
   m_strBackendRecordings        .clear();
   m_strBackendDeletedRecordings .clear();
+  m_strBackendProviders.clear();
+  m_strBackendChannelGroups.clear();
   m_strBackendChannels          .clear();
   m_iBackendDiskTotal = 0;
   m_iBackendDiskUsed = 0;
@@ -132,8 +136,9 @@ void CPVRGUIInfo::Notify(const PVREvent& event)
 
 void CPVRGUIInfo::Process()
 {
-  unsigned int iLoop = 0;
-  int toggleInterval = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRInfoToggleInterval / 1000;
+  int toggleIntervalMs =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRInfoToggleInterval;
+  XbmcThreads::EndTime cacheTimer(toggleIntervalMs);
 
   /* updated on request */
   CServiceBroker::GetPVRManager().Events().Subscribe(this, &CPVRGUIInfo::Notify);
@@ -179,11 +184,11 @@ void CPVRGUIInfo::Process()
     std::this_thread::yield();
 
     // Update the backend cache every toggleInterval seconds
-    if (!m_bStop && iLoop % toggleInterval == 0)
+    if (!m_bStop && cacheTimer.IsTimePast())
+    {
       UpdateBackendCache();
-
-    if (++iLoop == 1000)
-      iLoop = 0;
+      cacheTimer.Set(toggleIntervalMs);
+    }
 
     if (!m_bStop)
       CThread::Sleep(500ms);
@@ -431,6 +436,18 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
       case VIDEOPLAYER_CHANNEL_NAME:
       case LISTITEM_CHANNEL_NAME:
         strValue = recording->m_strChannelName;
+        if (strValue.empty())
+        {
+          if (recording->ProviderName().empty())
+          {
+            const auto& provider = recording->GetProvider();
+            strValue = provider->GetName();
+          }
+          else
+          {
+            strValue = recording->ProviderName();
+          }
+        }
         return true;
       case VIDEOPLAYER_CHANNEL_NUMBER:
       case LISTITEM_CHANNEL_NUMBER:
@@ -444,6 +461,26 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
         }
         break;
       }
+      case LISTITEM_ICON:
+        if (!recording->Channel())
+        {
+          auto provider = recording->GetProvider();
+          if (provider->GetIconPath().empty())
+          {
+            provider = recording->GetDefaultProvider();
+            if (!provider->GetIconPath().empty())
+            {
+              strValue = provider->GetIconPath();
+              return true;
+            }
+          }
+          else
+          {
+            strValue = provider->GetIconPath();
+            return true;
+          }
+        }
+        return false;
       case VIDEOPLAYER_CHANNEL_GROUP:
       {
         CSingleLock lock(m_critSection);
@@ -900,6 +937,12 @@ bool CPVRGUIInfo::GetPVRLabel(const CFileItem* item, const CGUIInfo& info, std::
       return true;
     case PVR_BACKEND_DISKSPACE:
       CharInfoBackendDiskspace(strValue);
+      return true;
+    case PVR_BACKEND_PROVIDERS:
+      CharInfoBackendProviders(strValue);
+      return true;
+    case PVR_BACKEND_CHANNEL_GROUPS:
+      CharInfoBackendChannelGroups(strValue);
       return true;
     case PVR_BACKEND_CHANNELS:
       CharInfoBackendChannels(strValue);
@@ -1663,6 +1706,18 @@ void CPVRGUIInfo::CharInfoBackendDiskspace(std::string& strValue) const
     strValue = g_localizeStrings.Get(13205);
 }
 
+void CPVRGUIInfo::CharInfoBackendProviders(std::string& strValue) const
+{
+  m_updateBackendCacheRequested = true;
+  strValue = m_strBackendProviders;
+}
+
+void CPVRGUIInfo::CharInfoBackendChannelGroups(std::string& strValue) const
+{
+  m_updateBackendCacheRequested = true;
+  strValue = m_strBackendChannelGroups;
+}
+
 void CPVRGUIInfo::CharInfoBackendChannels(std::string& strValue) const
 {
   m_updateBackendCacheRequested = true;
@@ -1762,6 +1817,8 @@ void CPVRGUIInfo::UpdateBackendCache()
   m_strBackendName = g_localizeStrings.Get(13205);
   m_strBackendVersion = g_localizeStrings.Get(13205);
   m_strBackendHost = g_localizeStrings.Get(13205);
+  m_strBackendProviders = g_localizeStrings.Get(13205);
+  m_strBackendChannelGroups = g_localizeStrings.Get(13205);
   m_strBackendChannels = g_localizeStrings.Get(13205);
   m_strBackendTimers = g_localizeStrings.Get(13205);
   m_strBackendRecordings = g_localizeStrings.Get(13205);
@@ -1777,6 +1834,13 @@ void CPVRGUIInfo::UpdateBackendCache()
     m_strBackendName = backend.name;
     m_strBackendVersion = backend.version;
     m_strBackendHost = backend.host;
+
+    // We always display one extra as the add-on itself counts as a provider
+    if (backend.numProviders >= 0)
+      m_strBackendProviders = StringUtils::Format("%i", backend.numProviders + 1);
+
+    if (backend.numChannelGroups >= 0)
+      m_strBackendChannelGroups = StringUtils::Format("%i", backend.numChannelGroups);
 
     if (backend.numChannels >= 0)
       m_strBackendChannels = std::to_string(backend.numChannels);

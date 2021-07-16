@@ -105,6 +105,8 @@ namespace PVR
     void CharInfoBackendVersion(std::string& strValue) const;
     void CharInfoBackendHost(std::string& strValue) const;
     void CharInfoBackendDiskspace(std::string& strValue) const;
+    void CharInfoBackendProviders(std::string& strValue) const;
+    void CharInfoBackendChannelGroups(std::string& strValue) const;
     void CharInfoBackendChannels(std::string& strValue) const;
     void CharInfoBackendTimers(std::string& strValue) const;
     void CharInfoBackendRecordings(std::string& strValue) const;
@@ -133,6 +135,8 @@ namespace PVR
     std::string m_strBackendTimers;
     std::string m_strBackendRecordings;
     std::string m_strBackendDeletedRecordings;
+    std::string m_strBackendProviders;
+    std::string m_strBackendChannelGroups;
     std::string m_strBackendChannels;
     long long m_iBackendDiskTotal;
     long long m_iBackendDiskUsed;
