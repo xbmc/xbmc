@@ -12,10 +12,12 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
+#include "commons/ilog.h"
 #include "filesystem/File.h"
 #include "music/tags/MusicInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "threads/SingleLock.h"
 #include "utils/ContentUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -23,6 +25,12 @@
 #include "utils/log.h"
 #include "video/VideoInfoTag.h"
 
+#include <cstring>
+#include <memory>
+#include <utility>
+#include <vector>
+
+#include <tinyxml.h>
 
 static bool LoadFromFile(const std::string& strPath, CFileItemList& items)
 {

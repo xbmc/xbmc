@@ -13,8 +13,6 @@
 #include "utils/EventStream.h"
 
 #include <string>
-#include <vector>
-
 
 class CFavouritesService
 {

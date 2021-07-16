@@ -11,8 +11,11 @@
 #include "FileItem.h"
 #include "GUIDialogFavourites.h"
 #include "ServiceBroker.h"
+#include "favourites/FavouritesService.h"
 #include "utils/URIUtils.h"
 
+#include <memory>
+#include <string>
 
 namespace CONTEXTMENU
 {
