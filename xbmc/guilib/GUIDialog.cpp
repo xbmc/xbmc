@@ -129,7 +129,10 @@ void CGUIDialog::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregi
     dirtyregions.push_back(CDirtyRegion(m_renderRegion));
 
   if (m_active)
+  {
     CGUIWindow::DoProcess(currentTime, dirtyregions);
+    MarkDirtyRegion();
+  }
 
   m_wasRunning = m_active;
 }
