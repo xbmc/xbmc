@@ -156,8 +156,11 @@ if(ADDON_SRC_PREFIX)
   message(STATUS "Overriding addon source directory prefix: ${ADDON_SRC_PREFIX}")
 endif()
 
+include(${CORE_SOURCE_DIR}/cmake/scripts/common/Macros.cmake)
+core_find_versions()
+
 if(NOT APP_LIB_DIR)
-  set(APP_LIB_DIR "${ADDON_DEPENDS_PATH}/lib/kodi")
+  set(APP_LIB_DIR "${ADDON_DEPENDS_PATH}/lib/${APP_NAME_LC}")
 else()
   file(TO_CMAKE_PATH "${APP_LIB_DIR}" APP_LIB_DIR)
 endif()
