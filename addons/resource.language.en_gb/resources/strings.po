@@ -7307,6 +7307,17 @@ msgctxt "#13467"
 msgid "Unlimited / 1080 (>30Hz)"
 msgstr ""
 
+#: system/settings/settings.xml
+msgctxt "#13468"
+msgid "Use AV1 VAAPI"
+msgstr ""
+
+#. Description of setting with label #13468 "Use AV1 VAAPI"
+#: system/settings/settings.xml
+msgctxt "#13469"
+msgid "Enable this option to use hardware acceleration for the AV1 codec. If disabled the CPU will be used instead."
+msgstr ""
+
 #empty strings from id 13468 to 13504
 
 #: system/settings/settings.xml
