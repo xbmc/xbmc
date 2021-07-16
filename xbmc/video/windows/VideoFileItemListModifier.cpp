@@ -31,6 +31,7 @@ bool CVideoFileItemListModifier::CanModify(const CFileItemList &items) const
 bool CVideoFileItemListModifier::Modify(CFileItemList &items) const
 {
   AddQueuingFolder(items);
+  AddTrailerItem(items);
   return true;
 }
 
@@ -127,5 +128,68 @@ void CVideoFileItemListModifier::AddQueuingFolder(CFileItemList& items)
     pItem->SetSpecialSort(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVideoLibraryAllItemsOnBottom ? SortSpecialOnBottom : SortSpecialOnTop);
     pItem->SetCanQueue(false);
     items.Add(pItem);
+  }
+}
+
+
+//If TV Show has trailer, add a trailer item on the seaons list.
+void CVideoFileItemListModifier::AddTrailerItem(CFileItemList& items)
+{
+  if (!items.IsVideoDb())
+    return;  
+
+  if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOLIBRARY_SHOWTRAILERTVSHOWS))
+    return;
+  
+  CDirectoryNode* directoryNode = CDirectoryNode::ParseURL(items.GetPath());  
+  CFileItemPtr pItem;
+  CVideoDbUrl videoUrl;  
+  if (!videoUrl.FromString(directoryNode->BuildPath()))
+    return;
+
+  // hack - as the season node might return episodes
+  std::unique_ptr<CDirectoryNode> pNode(directoryNode);
+
+  CVideoDatabase db;
+  CVideoInfoTag tvShowInfo;
+
+  if (pNode->GetChildType() == NODE_TYPE_SEASONS &&
+      db.Open() &&        
+      db.GetTvShowInfo("", tvShowInfo, stoi(directoryNode->GetName())) &&
+      tvShowInfo.m_strTrailer != "")      
+  {
+    const std::string& strLabel = g_localizeStrings.Get(39160);
+    pItem.reset(new CFileItem(strLabel));  // "Trailer"      
+    pItem->GetVideoInfoTag()->m_iDbId = db.GetSeasonId(pItem->GetVideoInfoTag()->m_iIdShow, -1);          
+    
+    pItem->SetPath(tvShowInfo.m_strTrailer);
+    
+    db.Close();
+    
+
+    // @note: The items list may contain additional items that do not belong to the show.
+    // This is the case of the up directory (..) or movies linked to the tvshow.
+    // Iterate through the list till the first season type is found and the infotag can safely be copied.
+
+    if (items.Size() > 1)
+    {
+        for (int i = 1; i < items.Size(); i++)
+        {
+            if (items[i]->GetVideoInfoTag() && items[i]->GetVideoInfoTag()->m_type == MediaTypeSeason &&
+                items[i]->GetVideoInfoTag()->m_iSeason > 0)
+            {
+                pItem->GetVideoInfoTag()->m_genre = items[i]->GetVideoInfoTag()->m_genre;
+                pItem->GetVideoInfoTag()->m_strPlot = items[i]->GetVideoInfoTag()->m_strPlot;                
+                break;
+            }
+        }
+    }
+    pItem->GetVideoInfoTag()->m_type = MediaTypeSeason;
+    if (pItem)
+    {
+        pItem->m_bIsFolder = false;
+        items.Add(pItem);
+    }
+          
   }
 }

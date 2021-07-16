@@ -903,6 +903,11 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <setting id="videolibrary.showtrailertvshows" type="boolean" label="39161" help="39162">
+          <level>2</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
         <setting id="videolibrary.showunwatchedplots" type="list[integer]" label="20369" help="36141">
           <level>0</level>
           <default>0,1,2</default> <!-- Show plot for both -->

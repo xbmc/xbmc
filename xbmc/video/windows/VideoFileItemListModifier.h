@@ -21,4 +21,5 @@ public:
 
 private:
   static void AddQueuingFolder(CFileItemList & items);
+  static void AddTrailerItem(CFileItemList & items);
 };
