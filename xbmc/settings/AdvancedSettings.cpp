@@ -236,9 +236,12 @@ void CAdvancedSettings::Initialize()
   m_tvshowEnumRegExps.push_back(TVShowRegexp(
       false, "[\\._ -]?()e(?:p[ ._-]?)?([0-9]+(?:(?:[a-i]|\\.[1-9])(?![0-9]))?)([^\\\\/]*)$"));
   // foo.yyyy.mm.dd.* (byDate=true)
-  m_tvshowEnumRegExps.push_back(TVShowRegexp(true,"([0-9]{4})[\\.-]([0-9]{2})[\\.-]([0-9]{2})"));
+  m_tvshowEnumRegExps.push_back(
+      TVShowRegexp(true, "([0-9]{4})[\\.-]([0-1][0-9])[\\.-]([0-3][0-9])"));
   // foo.mm.dd.yyyy.* (byDate=true)
-  m_tvshowEnumRegExps.push_back(TVShowRegexp(true,"([0-9]{2})[\\.-]([0-9]{2})[\\.-]([0-9]{4})"));
+  // foo.dd.mm.yyyy.* or foo.mm-dd-yyyy.* (byDate=true)
+  m_tvshowEnumRegExps.push_back(
+      TVShowRegexp(true, "([0-3][0-9])[\\.-]([0-3][0-9])[\\.-]([0-9]{4})"));
   // foo.1x09* or just /1x09*
   m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ \\[\\(-]([0-9]+)x([0-9]+(?:(?:[a-i]|\\.[1-9])(?![0-9]))?)([^\\\\/]*)$"));
   // Part I, Pt.VI, Part 1
