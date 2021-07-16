@@ -382,7 +382,7 @@ bool CDirectoryProvider::OnClick(const CGUIListItemPtr &item)
 {
   CFileItem fileItem(*std::static_pointer_cast<CFileItem>(item));
 
-  if (fileItem.HasVideoInfoTag()
+  if (fileItem.HasVideoInfoTag() && !fileItem.m_bIsFolder
       && CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_MYVIDEOS_SELECTACTION) == SELECT_ACTION_INFO
       && OnInfo(item))
     return true;
