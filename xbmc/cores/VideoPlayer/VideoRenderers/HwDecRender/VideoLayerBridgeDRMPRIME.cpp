@@ -87,6 +87,20 @@ bool CVideoLayerBridgeDRMPRIME::Map(CVideoBufferDRMPRIME* buffer)
   uint64_t modifier[4] = {};
   int ret;
 
+  // get drm format of the frame
+#ifdef HAVE_AVDRMFRAMEDESCRIPTOR_FORMAT
+  uint32_t format = descriptor->format;
+#else
+  uint32_t format = 0;
+#endif
+  if (!format && descriptor->nb_layers == 1)
+    format = descriptor->layers[0].format;
+  if (!format)
+  {
+    CLog::Log(LOGERROR, "CVideoLayerBridgeDRMPRIME::{} - failed to determine format", __FUNCTION__);
+    return false;
+  }
+
   // convert Prime FD to GEM handle
   for (int object = 0; object < descriptor->nb_objects; object++)
   {
@@ -102,18 +116,21 @@ bool CVideoLayerBridgeDRMPRIME::Map(CVideoBufferDRMPRIME* buffer)
     }
   }
 
-  AVDRMLayerDescriptor* layer = &descriptor->layers[0];
-
-  for (int plane = 0; plane < layer->nb_planes; plane++)
+  int index = 0;
+  for (int i = 0; i < descriptor->nb_layers; i++)
   {
-    int object = layer->planes[plane].object_index;
-    uint32_t handle = buffer->m_handles[object];
-    if (handle && layer->planes[plane].pitch)
+    AVDRMLayerDescriptor* layer = &descriptor->layers[i];
+    for (int j = 0; j < layer->nb_planes; j++)
     {
-      handles[plane] = handle;
-      pitches[plane] = layer->planes[plane].pitch;
-      offsets[plane] = layer->planes[plane].offset;
-      modifier[plane] = descriptor->objects[object].format_modifier;
+      AVDRMPlaneDescriptor* plane = &layer->planes[j];
+      int object = plane->object_index;
+
+      handles[index] = buffer->m_handles[object];
+      pitches[index] = plane->pitch;
+      offsets[index] = plane->offset;
+      modifier[index] = descriptor->objects[object].format_modifier;
+
+      index++;
     }
   }
 
@@ -122,8 +139,8 @@ bool CVideoLayerBridgeDRMPRIME::Map(CVideoBufferDRMPRIME* buffer)
 
   // add the video frame FB
   ret = drmModeAddFB2WithModifiers(m_DRM->GetFileDescriptor(), buffer->GetWidth(),
-                                   buffer->GetHeight(), layer->format, handles, pitches, offsets,
-                                   modifier, &buffer->m_fb_id, flags);
+                                   buffer->GetHeight(), format, handles, pitches, offsets, modifier,
+                                   &buffer->m_fb_id, flags);
   if (ret < 0)
   {
     CLog::Log(LOGERROR, "CVideoLayerBridgeDRMPRIME::{} - failed to add fb {}, ret = {}",
