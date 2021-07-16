@@ -205,7 +205,7 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
             for (auto& artitem : artistart)
             {
               if (iOrder > 0)
-                artitem.prefix = StringUtils::Format("artist{}", iOrder);
+                artitem.prefix = fmt::format("artist{}", iOrder);
               else
                 artitem.prefix = "artist";
             }
@@ -235,7 +235,7 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
               for (auto& artitem : artistart)
               {
                 if (iOrder > 0)
-                  artitem.prefix = StringUtils::Format("albumartist{}", iOrder);
+                  artitem.prefix = fmt::format("albumartist{}", iOrder);
                 else
                   artitem.prefix = "albumartist";
               }

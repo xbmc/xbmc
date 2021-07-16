@@ -433,11 +433,11 @@ void CMusicInfoTag::SetYear(int year)
   // Parse integer year value into YYYY ISO8601 format (partial) date string
   // Add century for to 2 digit numbers, 41 -> 1941, 40 -> 2040
   if (year > 99)
-    SetReleaseDate(StringUtils::Format("{:04}", year));
+    SetReleaseDate(fmt::format("{:04}", year));
   else if (year > 40)
-    SetReleaseDate(StringUtils::Format("{:04}", 19 + year));
+    SetReleaseDate(fmt::format("{:04}", 19 + year));
   else  if (year > 0)
-    SetReleaseDate(StringUtils::Format("{:04}", 20 + year));
+    SetReleaseDate(fmt::format("{:04}", 20 + year));
   else
     m_strReleaseDate.clear();
 }
@@ -495,7 +495,7 @@ void CMusicInfoTag::AddReleaseDate(const std::string& strDateYear, bool isMonth 
     std::string strYYYY = GetReleaseYear();
     if (strYYYY.empty())
       strYYYY = "0000"; // Fake year when TYER not read yet
-    m_strReleaseDate = StringUtils::Format("{}-{}-{}", strYYYY, StringUtils::Left(strDateYear, 2),
+    m_strReleaseDate = fmt::format("{}-{}-{}", strYYYY, StringUtils::Left(strDateYear, 2),
                                            StringUtils::Right(strDateYear, 2));
   }
   // Given YYYY only (from YEAR tag) and already have YYYY-MM or YYYY-MM-DD (from DATE tag)
@@ -1268,7 +1268,7 @@ const std::string CMusicInfoTag::GetContributorsText() const
   std::string strLabel;
   for (const auto& credit : m_musicRoles)
   {
-    strLabel += StringUtils::Format("{}\n", credit.GetArtist());
+    strLabel += fmt::format("{}\n", credit.GetArtist());
   }
   return StringUtils::TrimRight(strLabel, "\n");
 }
@@ -1278,7 +1278,7 @@ const std::string CMusicInfoTag::GetContributorsAndRolesText() const
   std::string strLabel;
   for (const auto& credit : m_musicRoles)
   {
-    strLabel += StringUtils::Format("{} - {}\n", credit.GetRoleDesc(), credit.GetArtist());
+    strLabel += fmt::format("{} - {}\n", credit.GetRoleDesc(), credit.GetArtist());
   }
   return StringUtils::TrimRight(strLabel, "\n");
 }

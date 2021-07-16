@@ -321,9 +321,9 @@ bool CGUIWindowMusicNav::ManageInfoProvider(const CFileItemPtr& item)
       // Change information provider, selected artist or album
       if (CGUIDialogYesNo::ShowAndGetInput(CVariant{20195}, CVariant{38073}))
       {
-        std::string itempath = StringUtils::Format("musicdb://albums/{}/", id);
+        std::string itempath = fmt::format("musicdb://albums/{}/", id);
         if (content == CONTENT_ARTISTS)
-          itempath = StringUtils::Format("musicdb://artists/{}/", id);
+          itempath = fmt::format("musicdb://artists/{}/", id);
         OnItemInfoAll(itempath, true);
       }
     }
@@ -480,7 +480,7 @@ void CGUIWindowMusicNav::UpdateButtons()
       StringUtils::StartsWith(m_vecItems->Get(m_vecItems->Size()-1)->GetPath(), "/-1/"))
       iItems--;
   }
-  std::string items = StringUtils::Format("{} {}", iItems, g_localizeStrings.Get(127));
+  std::string items = fmt::format("{} {}", iItems, g_localizeStrings.Get(127));
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
 
   // set the filter label
@@ -693,7 +693,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         int idArtist = m_musicdatabase.GetArtistByName(item->GetLabel());
         if (idArtist == -1)
           return false;
-        std::string path = StringUtils::Format("musicdb://artists/{}/", idArtist);
+        std::string path = fmt::format("musicdb://artists/{}/", idArtist);
         CArtist artist;
         m_musicdatabase.GetArtist(idArtist, artist, false);
         *item = CFileItem(artist);
@@ -710,7 +710,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         int idAlbum = m_musicdatabase.GetAlbumByName(item->GetLabel());
         if (idAlbum == -1)
           return false;
-        std::string path = StringUtils::Format("musicdb://albums/{}/", idAlbum);
+        std::string path = fmt::format("musicdb://albums/{}/", idAlbum);
         CAlbum album;
         m_musicdatabase.GetAlbum(idAlbum, album, false);
         *item = CFileItem(path,album);
@@ -754,7 +754,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       std::string strPath;
       CVideoDatabase database;
       database.Open();
-      strPath = StringUtils::Format(
+      strPath = fmt::format(
           "videodb://musicvideos/artists/{}/",
           database.GetMatchingMusicVideo(item->GetMusicInfoTag()->GetArtistString()));
       CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_VIDEO_NAV,strPath);

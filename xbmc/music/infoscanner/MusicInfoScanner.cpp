@@ -1320,7 +1320,7 @@ CMusicInfoScanner::UpdateDatabaseAlbumInfo(CAlbum& album,
       {
         CServiceBroker::GetEventLog().Add(EventPtr(new CMediaLibraryEvent(
             MediaTypeAlbum, album.strPath, 24146,
-            StringUtils::Format(g_localizeStrings.Get(24147), MediaTypeAlbum, album.strAlbum),
+            fmt::format(g_localizeStrings.Get(24147), MediaTypeAlbum, album.strAlbum),
             CScraperUrl::GetThumbUrl(album.thumbURL.GetFirstUrlByType()),
             CURL::GetRedacted(album.strPath), EventLevel::Warning)));
       }
@@ -1388,7 +1388,7 @@ CMusicInfoScanner::UpdateDatabaseArtistInfo(CArtist& artist,
       {
         CServiceBroker::GetEventLog().Add(EventPtr(new CMediaLibraryEvent(
             MediaTypeArtist, artist.strPath, 24146,
-            StringUtils::Format(g_localizeStrings.Get(24147), MediaTypeArtist, artist.strArtist),
+            fmt::format(g_localizeStrings.Get(24147), MediaTypeArtist, artist.strArtist),
             CScraperUrl::GetThumbUrl(artist.thumbURL.GetFirstUrlByType()),
             CURL::GetRedacted(artist.strPath), EventLevel::Warning)));
       }
@@ -1446,7 +1446,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
 {
   if (m_handle)
   {
-    m_handle->SetTitle(StringUtils::Format(g_localizeStrings.Get(20321), info->Name()));
+    m_handle->SetTitle(fmt::format(g_localizeStrings.Get(20321), info->Name()));
     m_handle->SetText(album.GetAlbumArtistString() + " - " + album.strAlbum);
   }
 
@@ -1588,7 +1588,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
           if (pDialog)
           {
             // set the label to [relevance]  album - artist
-            std::string strTemp = StringUtils::Format("[{:0.2f}]  {}", relevance, info.GetTitle2());
+            std::string strTemp = fmt::format("[{:0.2f}]  {}", relevance, info.GetTitle2());
             CFileItemPtr item(new CFileItem("", false));
             item->SetLabel(strTemp);
 
@@ -1707,7 +1707,7 @@ CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist,
 {
   if (m_handle)
   {
-    m_handle->SetTitle(StringUtils::Format(g_localizeStrings.Get(20320), info->Name()));
+    m_handle->SetTitle(fmt::format(g_localizeStrings.Get(20320), info->Name()));
     m_handle->SetText(artist.strArtist);
   }
 
@@ -1849,7 +1849,7 @@ CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist,
             {
               std::string genres = StringUtils::Join(scraper.GetArtist(i).GetArtist().genre, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
               if (!genres.empty())
-                strTemp = StringUtils::Format("[{}] {}", genres, strTemp);
+                strTemp = fmt::format("[{}] {}", genres, strTemp);
             }
             item.SetLabel(strTemp);
             item.m_idepth = i; // use this to hold the index of the album in the scraper
@@ -2074,7 +2074,7 @@ bool CMusicInfoScanner::AddAlbumArtwork(CAlbum& album)
         // Handle thumbs separately. Get thumb for path from textures db cached during scan
         // (could be embedded or local file from multiple confgurable file names)
         CFileItem item(pathpair.first.c_str(), true);
-        std::string strArtType = StringUtils::Format("{}{}", "thumb", discnum);
+        std::string strArtType = fmt::format("{}{}", "thumb", discnum);
         strArt = loader.GetCachedImage(item, "thumb");
         if (strArt.empty())
           strArt = CScraperUrl::GetThumbUrl(album.thumbURL.GetFirstUrlByType(strArtType));
