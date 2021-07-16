@@ -477,12 +477,19 @@ bool CTexture::HasAlpha() const
   return m_hasAlpha;
 }
 
-void CTexture::SetMipmapping()
+void CTexture::SetMipmapping(bool FlagAsSpecial)
 {
   m_mipmapping = true;
+  if (FlagAsSpecial)
+    m_mipmappingspecial = true;
 }
 
 bool CTexture::IsMipmapped() const
 {
   return m_mipmapping;
+}
+
+bool CTexture::IsMipmappedSpecial() const
+{
+  return m_mipmappingspecial;
 }

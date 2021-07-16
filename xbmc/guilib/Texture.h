@@ -72,8 +72,9 @@ public:
 
   bool HasAlpha() const;
 
-  void SetMipmapping();
+  void SetMipmapping(bool FlagAsSpecial = false);
   bool IsMipmapped() const;
+  bool IsMipmappedSpecial() const;
   void SetScalingMethod(TEXTURE_SCALING scalingMethod) { m_scalingMethod = scalingMethod; }
   TEXTURE_SCALING GetScalingMethod() const { return m_scalingMethod; }
   void SetCacheMemory(bool bCacheMemory) { m_bCacheMemory = bCacheMemory; }
@@ -133,6 +134,7 @@ protected:
   int m_orientation;
   bool m_hasAlpha =  true ;
   bool m_mipmapping =  false ;
+  bool m_mipmappingspecial =  false ;
   TEXTURE_SCALING m_scalingMethod = TEXTURE_SCALING::LINEAR;
   bool m_bCacheMemory = false;
 };
