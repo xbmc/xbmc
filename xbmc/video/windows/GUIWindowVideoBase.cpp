@@ -1390,7 +1390,8 @@ void CGUIWindowVideoBase::GetGroupedItems(CFileItemList &items)
     {
       CFileItemList groupedItems;
       GroupAttribute groupAttributes = settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_GROUPSINGLEITEMSETS) ? GroupAttributeNone : GroupAttributeIgnoreSingleItems;
-      if (GroupUtils::GroupAndMix(GroupBySet, m_strFilterPath, items, groupedItems, groupAttributes))
+      int groupRating = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOLIBRARY_MOVIESETRATING);
+      if (GroupUtils::GroupAndMix(GroupBySet, m_strFilterPath, items, groupedItems, groupRating, groupAttributes))
       {
         items.ClearItems();
         items.Append(groupedItems);
