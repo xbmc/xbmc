@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "network/IWSDiscovery.h"
 #include "threads/CriticalSection.h"
 
 #include <wsdapi.h>
@@ -15,7 +16,8 @@
 
 #include <vector>
 
-
+namespace WSDiscovery
+{
 class CClientNotificationSink : public IWSDiscoveryProviderNotify
 {
 public:
@@ -41,18 +43,16 @@ private:
   CCriticalSection m_criticalSection;
 };
 
-class CWSDiscoverySupport
+class CWSDiscoveryWindows : public WSDiscovery::IWSDiscovery
 {
 public:
-  CWSDiscoverySupport();
-  ~CWSDiscoverySupport();
+  CWSDiscoveryWindows() = default;
+  ~CWSDiscoveryWindows() override;
 
-  static std::shared_ptr<CWSDiscoverySupport> Get();
+  bool StartServices() override;
+  bool StopServices() override;
+  bool IsRunning() override;
 
-  bool Initialize();
-  void Terminate();
-
-  bool IsInitialized() { return m_initialized; }
   bool ThereAreServers();
   std::vector<std::wstring> GetServersIPs();
 
@@ -63,3 +63,4 @@ private:
   IWSDiscoveryProvider* m_provider = nullptr;
   CClientNotificationSink* m_sink = nullptr;
 };
+} // namespace WSDiscovery

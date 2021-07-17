@@ -49,7 +49,8 @@ public:
     ES_UPNPRENDERER,
     ES_UPNPSERVER,
     ES_EVENTSERVER,
-    ES_ZEROCONF
+    ES_ZEROCONF,
+    ES_WSDISCOVERY,
   };
 
   bool StartServer(enum ESERVERS server, bool start);
@@ -96,6 +97,10 @@ public:
   bool StartZeroconf();
   bool IsZeroconfRunning();
   bool StopZeroconf();
+
+  bool StartWSDiscovery();
+  bool IsWSDiscoveryRunning();
+  bool StopWSDiscovery();
 
 private:
   CNetworkServices(const CNetworkServices&);
