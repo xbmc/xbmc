@@ -192,7 +192,9 @@ bool CServiceManager::InitStageThree(const std::shared_ptr<CProfileManager>& pro
 
   m_playerCoreFactory.reset(new CPlayerCoreFactory(*profileManager));
 
+#if defined(HAS_FILESYSTEM_SMB)
   m_WSDiscovery = WSDiscovery::IWSDiscovery::GetInstance();
+#endif
 
   if (!m_Platform->InitStageThree())
     return false;

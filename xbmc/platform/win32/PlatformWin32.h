@@ -18,6 +18,5 @@ public:
   ~CPlatformWin32() override;
 
   bool InitStageOne() override;
-  bool InitStageThree() override;
   void PlatformSyslog() override;
 };

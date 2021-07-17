@@ -42,16 +42,6 @@ bool CPlatformWin32::InitStageOne()
   return true;
 }
 
-bool CPlatformWin32::InitStageThree()
-{
-  if (!CPlatform::InitStageThree())
-    return false;
-
-  CWSDiscoverySupport::Get()->Initialize();
-
-  return true;
-}
-
 void CPlatformWin32::PlatformSyslog()
 {
   CWIN32Util::PlatformSyslog();
