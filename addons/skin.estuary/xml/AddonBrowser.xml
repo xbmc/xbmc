@@ -10,8 +10,12 @@
 			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
 			<include>View_50_List</include>
 			<include>View_52_IconWall</include>
-			<include>View_55_WideList</include>
-			<include>CommonScrollbars</include>
+			<include content="View_55_WideList">
+				<param name="bottom_offset">list_bottom</param>
+			</include>
+			<include content="CommonScrollbars">
+				<param name="bottom_offset">list_bottom</param>
+			</include>
 			<control type="group">
 				<include>OpenClose_Left</include>
 				<visible>Control.IsVisible(55)</visible>

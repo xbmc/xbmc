@@ -14,9 +14,9 @@
 				<include>Visible_Left</include>
 				<control type="fixedlist" id="50">
 					<left>0</left>
-					<top>100</top>
+					<top>list_top_offset</top>
 					<right>918</right>
-					<bottom>80</bottom>
+					<bottom>list_bottom_offset</bottom>
 					<onleft>9000</onleft>
 					<onright>73</onright>
 					<onup>50</onup>
@@ -46,9 +46,9 @@
 				</include>
 				<control type="scrollbar" id="73">
 					<left>-50</left>
-					<top>100</top>
+					<top>list_top_offset</top>
 					<width>12</width>
-					<bottom>80</bottom>
+					<bottom>list_bottom_offset</bottom>
 					<onleft>50</onleft>
 					<onright>50</onright>
 					<orientation>vertical</orientation>
