@@ -55,7 +55,8 @@ namespace XFILE
     std::vector<std::string> virtualFolders;
 
     SortDescription sorting;
-    sorting.limitEnd = playlist.GetLimit();
+    if (playlist.GetLimit() > 0)
+      sorting.limitEnd = playlist.GetLimit();
     sorting.sortBy = playlist.GetOrder();
     sorting.sortOrder = playlist.GetOrderAscending() ? SortOrderAscending : SortOrderDescending;
     sorting.sortAttributes = playlist.GetOrderAttributes();
