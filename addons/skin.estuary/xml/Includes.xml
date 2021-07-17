@@ -32,61 +32,66 @@
 	<constant name="DepthSideBlade">0.10</constant>
 	<constant name="bg_alpha">79</constant>
 	<constant name="dialogbuttons_itemgap">-20</constant>
-	<constant name="list_y_offset">0</constant>
-	<constant name="list_item_height">80</constant>
+	<constant name="list_bottom">0</constant>
+	<constant name="list_bottom_offset">80</constant>
+	<constant name="list_top_offset">100</constant>
+	<constant name="list_item_height">75</constant>
 	<expression name="infodialog_active">Window.IsActive(musicinformation) | Window.IsActive(songinformation) | Window.IsActive(movieinformation) | Window.IsActive(addoninformation) | Window.IsActive(pvrguideinfo) | Window.IsActive(pvrrecordinginfo) | Window.IsActive(pictureinfo) | Window.IsVisible(script-embuary-video.xml) | Window.IsVisible(script-embuary-person.xml) | Window.IsVisible(script-embuary-image.xml)</expression>
 	<expression name="sidebar_visible">ControlGroup(9000).HasFocus | Control.HasFocus(6130) | Control.HasFocus(6131)</expression>
 	<include name="CommonScrollbars">
-		<control type="group">
-			<animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
-			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="System.HasActiveModalDialog">Conditional</animation>
-			<animation effect="fade" start="0" end="100" delay="300" time="320">WindowOpen</animation>
+		<param name="bottom_offset">list_bottom_offset</param>
+		<definition>
 			<control type="group">
-				<right>0</right>
-				<top>80</top>
-				<width>60</width>
-				<bottom>80</bottom>
-				<control type="scrollbar" id="531">
+				<animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
+				<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="System.HasActiveModalDialog">Conditional</animation>
+				<animation effect="fade" start="0" end="100" delay="300" time="320">WindowOpen</animation>
+				<control type="group">
 					<right>0</right>
-					<top>0</top>
-					<bottom>0</bottom>
-					<width>13</width>
-					<onleft condition="![Window.IsVisible(musicplaylist) | Window.IsVisible(videoplaylist)]">50</onleft>
-					<onleft condition="Window.IsVisible(musicplaylist) | Window.IsVisible(videoplaylist)">55</onleft>
-					<onright condition="![Window.IsVisible(musicplaylist) | Window.IsVisible(videoplaylist)]">50</onright>
-					<onright condition="Window.IsVisible(musicplaylist) | Window.IsVisible(videoplaylist)">55</onright>
-					<orientation>vertical</orientation>
-					<texturesliderbackground />
-					<animation effect="fade" start="0" end="100" time="200" delay="300">Visible</animation>
-					<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
-					<animation effect="slide" end="6,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(531)">conditional</animation>
-					<visible>Control.IsVisible(52) | Control.IsVisible(500) | Control.IsVisible(55) | Control.IsVisible(501) | Control.IsVisible(54)</visible>
+					<top>list_top_offset</top>
+					<width>60</width>
+					<bottom>$PARAM[bottom_offset]</bottom>
+					<control type="scrollbar" id="531">
+						<right>0</right>
+						<top>0</top>
+						<bottom>0</bottom>
+						<width>13</width>
+						<onleft condition="![Window.IsVisible(musicplaylist) | Window.IsVisible(videoplaylist)]">50</onleft>
+						<onleft condition="Window.IsVisible(musicplaylist) | Window.IsVisible(videoplaylist)">55</onleft>
+						<onright condition="![Window.IsVisible(musicplaylist) | Window.IsVisible(videoplaylist)]">50</onright>
+						<onright condition="Window.IsVisible(musicplaylist) | Window.IsVisible(videoplaylist)">55</onright>
+						<orientation>vertical</orientation>
+						<texturesliderbackground />
+						<animation effect="fade" start="0" end="100" time="200" delay="300">Visible</animation>
+						<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
+						<animation effect="slide" end="6,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(531)">conditional</animation>
+						<visible>Control.IsVisible(52) | Control.IsVisible(500) | Control.IsVisible(55) | Control.IsVisible(501) | Control.IsVisible(54)</visible>
+					</control>
 				</control>
-			</control>
-			<control type="group">
-				<left>0</left>
-				<right>0</right>
-				<bottom>0</bottom>
-				<width>100%</width>
-				<height>60</height>
-				<control type="scrollbar" id="5199">
+				<control type="group">
 					<left>0</left>
+					<right>0</right>
 					<bottom>0</bottom>
 					<width>100%</width>
-					<height>12</height>
-					<texturesliderbackground />
-					<onup>50</onup>
-					<ondown>50</ondown>
-					<orientation>horizontal</orientation>
-					<visible>Control.IsVisible(51) | Control.IsVisible(53)</visible>
-					<animation effect="slide" end="0,6" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(5199)">conditional</animation>
-					<animation effect="fade" start="0" end="100" time="200" delay="300">Visible</animation>
-					<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
-					<animation effect="slide" end="0,90" time="300" tween="sine" easing="inout" condition="$EXP[infodialog_active]">conditional</animation>
-					<hitrect x="0" y="20" w="100%" h="40" />
+					<height>60</height>
+					<control type="scrollbar" id="5199">
+						<left>0</left>
+						<bottom>0</bottom>
+						<width>100%</width>
+						<height>12</height>
+						<texturesliderbackground />
+						<onup>50</onup>
+						<ondown>50</ondown>
+						<orientation>horizontal</orientation>
+						<visible>Control.IsVisible(51) | Control.IsVisible(53)</visible>
+						<animation effect="slide" end="0,6" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(5199)">conditional</animation>
+						<animation effect="fade" start="0" end="100" time="200" delay="300">Visible</animation>
+						<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
+						<animation effect="slide" end="0,90" time="300" tween="sine" easing="inout" condition="$EXP[infodialog_active]">conditional</animation>
+						<hitrect x="0" y="20" w="100%" h="40" />
+					</control>
 				</control>
 			</control>
-		</control>
+		</definition>
 	</include>
 	<include name="HiddenObject">
 		<left>-3000</left>
@@ -459,8 +464,8 @@
 		<definition>
 			<control type="fixedlist" id="$PARAM[list_id]">
 				<left>0</left>
-				<top>list_y_offset</top>
-				<bottom>list_y_offset</bottom>
+				<top>list_top_offset</top>
+				<bottom>list_bottom_offset</bottom>
 				<right>$PARAM[right]</right>
 				<width>$PARAM[width]</width>
 				<focusposition>4</focusposition>

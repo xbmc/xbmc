@@ -25,6 +25,16 @@
 					<include content="RightListPanel">
 						<param name="list_id" value="503" />
 					</include>
+					<control type="scrollbar" id="503600">
+						<left>20</left>
+						<top>list_top_offset</top>
+						<width>12</width>
+						<bottom>list_bottom_offset</bottom>
+						<onleft>503</onleft>
+						<onright>503</onright>
+						<orientation>vertical</orientation>
+						<animation effect="zoom" end="50,100" time="300" tween="sine" center="20,0" easing="inout" condition="!Control.HasFocus(503600)">conditional</animation>
+					</control>
 				</control>
 			</control>
 		</control>

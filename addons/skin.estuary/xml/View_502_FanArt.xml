@@ -50,9 +50,9 @@
 				</control>
 				<control type="scrollbar" id="502600">
 					<left>20</left>
-					<top>list_y_offset</top>
+					<top>list_top_offset</top>
 					<width>12</width>
-					<bottom>list_y_offset</bottom>
+					<bottom>list_bottom_offset</bottom>
 					<onleft>502</onleft>
 					<onright>502</onright>
 					<orientation>vertical</orientation>

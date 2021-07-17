@@ -27,10 +27,10 @@
 				<param name="width" value="812" />
 			</include>
 			<control type="scrollbar" id="60">
-				<top>80</top>
+				<top>list_top_offset</top>
 				<left>0</left>
 				<width>12</width>
-				<bottom>80</bottom>
+				<bottom>list_bottom_offset</bottom>
 				<onleft>20</onleft>
 				<onright>20</onright>
 				<orientation>vertical</orientation>
@@ -57,9 +57,9 @@
 			<control type="scrollbar" id="61">
 				<left>800</left>
 				<animation effect="slide" end="5,0" time="0" condition="true">Conditional</animation>
-				<top>80</top>
+				<top>list_top_offset</top>
 				<width>12</width>
-				<bottom>80</bottom>
+				<bottom>list_bottom_offset</bottom>
 				<onleft>21</onleft>
 				<onright>21</onright>
 				<animation effect="zoom" end="50,100" time="300" tween="sine" center="812,0" easing="inout" condition="!Control.HasFocus(61)">conditional</animation>
