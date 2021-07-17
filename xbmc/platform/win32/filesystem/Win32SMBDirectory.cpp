@@ -10,6 +10,7 @@
 
 #include "FileItem.h"
 #include "PasswordManager.h"
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "utils/CharsetConverter.h"
 #include "utils/XTimeUtils.h"
@@ -637,14 +638,15 @@ static bool localGetShares(const std::wstring& serverNameToScan, const std::stri
 // Get servers using WS-Discovery protocol
 static bool localGetServers(const std::string& urlPrefixForItems, CFileItemList& items)
 {
-  auto wsd = CWSDiscoverySupport::Get();
+  WSDiscovery::CWSDiscoveryWindows& wsd =
+      dynamic_cast<WSDiscovery::CWSDiscoveryWindows&>(CServiceBroker::GetWSDiscovery());
 
   // Get servers immediately from WSD daemon process
-  if (wsd && wsd->IsInitialized() && wsd->ThereAreServers())
+  if (wsd.IsRunning() && wsd.ThereAreServers())
   {
-    for (const auto& ip : wsd->GetServersIPs())
+    for (const auto& ip : wsd.GetServersIPs())
     {
-      std::wstring hostname = wsd->ResolveHostName(ip);
+      std::wstring hostname = wsd.ResolveHostName(ip);
       std::string shareNameUtf8;
       if (g_charsetConverter.wToUTF8(hostname, shareNameUtf8, true) && !shareNameUtf8.empty())
       {

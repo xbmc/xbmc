@@ -9,7 +9,12 @@
       </group>
     </category>
     <category id="smb">
-      <visible>false</visible>
+      <group id="1">
+        <visible>false</visible>
+      </group>
+      <group id="2">
+        <visible>false</visible>
+      </group>
     </category>
   </section>
   <section id="system">

@@ -66,6 +66,7 @@
 
 #if defined(HAS_FILESYSTEM_SMB)
 #if defined(TARGET_WINDOWS)
+#include "platform/win32/network/WSDiscoveryWin32.h"
 #else // defined(TARGET_POSIX)
 #include "platform/posix/filesystem/SMBWSDiscovery.h"
 #endif

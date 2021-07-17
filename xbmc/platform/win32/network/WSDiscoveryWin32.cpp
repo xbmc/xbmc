@@ -19,7 +19,10 @@
 #include <ws2tcpip.h>
 
 using KODI::PLATFORM::WINDOWS::FromW;
+using namespace WSDiscovery;
 
+namespace WSDiscovery
+{
 
 HRESULT CClientNotificationSink::Create(CClientNotificationSink** sink)
 {
@@ -194,23 +197,17 @@ ULONG STDMETHODCALLTYPE CClientNotificationSink::Release()
 
 //==================================================================================
 
-std::shared_ptr<CWSDiscoverySupport> CWSDiscoverySupport::Get()
+std::unique_ptr<IWSDiscovery> IWSDiscovery::GetInstance()
 {
-  static std::shared_ptr<CWSDiscoverySupport> sWSD(std::make_shared<CWSDiscoverySupport>());
-  return sWSD;
+  return std::make_unique<WSDiscovery::CWSDiscoveryWindows>();
 }
 
-CWSDiscoverySupport::CWSDiscoverySupport()
+CWSDiscoveryWindows::~CWSDiscoveryWindows()
 {
-  Initialize();
+  StopServices();
 }
 
-CWSDiscoverySupport::~CWSDiscoverySupport()
-{
-  Terminate();
-}
-
-bool CWSDiscoverySupport::Initialize()
+bool CWSDiscoveryWindows::StartServices()
 {
   if (m_initialized)
     return true;
@@ -236,12 +233,12 @@ bool CWSDiscoverySupport::Initialize()
   // if get here something has gone wrong
   CLog::Log(LOGERROR, "[WS-Discovery]: Daemon initialization has failed.");
 
-  Terminate();
+  StopServices();
 
   return false;
 }
 
-void CWSDiscoverySupport::Terminate()
+bool CWSDiscoveryWindows::StopServices()
 {
   if (m_initialized)
   {
@@ -259,9 +256,15 @@ void CWSDiscoverySupport::Terminate()
     m_sink->Release();
     m_sink = nullptr;
   }
+  return true;
 }
 
-bool CWSDiscoverySupport::ThereAreServers()
+bool CWSDiscoveryWindows::IsRunning()
+{
+  return m_initialized;
+}
+
+bool CWSDiscoveryWindows::ThereAreServers()
 {
   if (!m_sink)
     return false;
@@ -269,7 +272,7 @@ bool CWSDiscoverySupport::ThereAreServers()
   return m_sink->ThereAreServers();
 }
 
-std::vector<std::wstring> CWSDiscoverySupport::GetServersIPs()
+std::vector<std::wstring> CWSDiscoveryWindows::GetServersIPs()
 {
   if (!m_sink)
     return {};
@@ -277,7 +280,7 @@ std::vector<std::wstring> CWSDiscoverySupport::GetServersIPs()
   return m_sink->GetServersIPs();
 }
 
-std::wstring CWSDiscoverySupport::ResolveHostName(const std::wstring& serverIP)
+std::wstring CWSDiscoveryWindows::ResolveHostName(const std::wstring& serverIP)
 {
   std::wstring hostName = serverIP;
 
@@ -317,3 +320,4 @@ std::wstring CWSDiscoverySupport::ResolveHostName(const std::wstring& serverIP)
 
   return hostName;
 }
+} // namespace WSDiscovery

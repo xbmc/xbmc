@@ -29,7 +29,7 @@
 #if defined(HAS_FILESYSTEM_SMB)
 #include "network/IWSDiscovery.h"
 #if defined(TARGET_WINDOWS)
-// ToDo
+#include "platform/win32/network/WSDiscoveryWin32.h"
 #else // !defined(TARGET_WINDOWS)
 #include "platform/posix/filesystem/SMBWSDiscovery.h"
 #endif // defined(TARGET_WINDOWS)
