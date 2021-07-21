@@ -812,7 +812,8 @@
             "aspect": { "type": "number" },
             "width": { "type": "integer" },
             "height": { "type": "integer" },
-            "duration": { "type": "integer" }
+            "duration": { "type": "integer" },
+            "hdrtype": { "type": "string"}
           },
           "additionalProperties": false
         }
