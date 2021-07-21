@@ -46,6 +46,7 @@ class CGUIDialogKeyboardGeneric : public CGUIDialog, public CGUIKeyboard
     void OnShift();
     void MoveCursor(int iAmount);
     void OnLayout();
+    void OnReveal();
     void OnSymbols();
     void OnIPAddress();
     void OnVoiceRecognition();

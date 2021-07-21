@@ -568,6 +568,10 @@
 					<param name="width" value="350" />
 				</include>
 				<include content="DefaultDialogButton">
+					<param name="id" value="310" />
+					<param name="width" value="350" />
+				</include>
+				<include content="DefaultDialogButton">
 					<param name="id" value="309" />
 					<param name="width" value="350" />
 				</include>

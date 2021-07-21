@@ -5618,7 +5618,19 @@ msgctxt "#12022"
 msgid "Resume from {0:s}"
 msgstr ""
 
-#empty strings from id 12023 to 12309
+#empty strings from id 12023 to 12307
+
+#. Label of the show password button in the keyboard dialog
+#: xbmc/dialogs/GUIDialogKeyboardGeneric.cpp
+msgctxt "#12308"
+msgid "Show password"
+msgstr ""
+
+#. Label of the hide password button in the keyboard dialog
+#: xbmc/dialogs/GUIDialogKeyboardGeneric.cpp
+msgctxt "#12309"
+msgid "Hide password"
+msgstr ""
 
 #: addons/skin.estuary/xml/DialogNumeric.xml
 #: addons/skin.estouchy/xml/DialogNumeric.xml
