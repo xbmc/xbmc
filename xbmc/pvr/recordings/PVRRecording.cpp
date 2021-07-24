@@ -229,6 +229,7 @@ void CPVRRecording::Reset()
   m_bGotMetaData = false;
   m_iRecordingId = 0;
   m_bIsDeleted = false;
+  m_bMaybeInProgress = true;
   m_iEpgEventId = EPG_TAG_INVALID_UID;
   m_iSeason = -1;
   m_iEpisode = -1;
@@ -552,8 +553,17 @@ bool CPVRRecording::IsInProgress() const
   // Note: It is not enough to only check recording time and duration against 'now'.
   //       Only the state of the related timer is a safe indicator that the backend
   //       actually is recording this.
-
-  return GetRecordingTimer() != nullptr;
+  // Once the recording is known to not be in progress that will never change.
+  if (m_bMaybeInProgress)
+  {
+    bool reallyInProgress = GetRecordingTimer() != nullptr;
+    m_bMaybeInProgress = reallyInProgress;
+    return reallyInProgress;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 void CPVRRecording::SetGenre(int iGenreType, int iGenreSubType, const std::string& strGenre)
