@@ -409,6 +409,7 @@ namespace PVR
     CDateTime m_recordingTime; /*!< start time of the recording */
     bool m_bGotMetaData;
     bool m_bIsDeleted; /*!< set if entry is a deleted recording which can be undelete */
+    mutable bool m_bInProgress; /*!< set if recording might be in progress */
     unsigned int m_iEpgEventId; /*!< epg broadcast id associated with this recording */
     int m_iChannelUid; /*!< channel uid associated with this recording */
     bool m_bRadio; /*!< radio or tv recording */
