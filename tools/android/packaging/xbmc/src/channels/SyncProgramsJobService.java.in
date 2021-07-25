@@ -209,10 +209,14 @@ public class SyncProgramsJobService extends JobService
                         .insert(
                                 TvContractCompat.PreviewPrograms.CONTENT_URI,
                                 previewProgram.toContentValues());
-        long programId = ContentUris.parseId(programUri);
-        Log.d(TAG, "Inserted new program: " + programId);
-        media.setProgramId(programId);
-        mediasAdded.add(media);
+
+        if (programUri != null)
+        {
+          long programId = ContentUris.parseId(programUri);
+          Log.d(TAG, "Inserted new program: " + programId);
+          media.setProgramId(programId);
+          mediasAdded.add(media);
+        }
       }
 
       return mediasAdded;
