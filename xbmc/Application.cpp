@@ -2994,7 +2994,8 @@ void CApplication::OnPlayBackStarted(const CFileItem &file)
       || ((!file.HasVideoInfoTag() || !file.GetVideoInfoTag()->HasStreamDetails())
       && (URIUtils::IsBluray(file.GetPath())
       || file.IsDVDFile()
-      || file.IsDiscImage())))
+      || file.IsDiscImage()
+      || file.IsInternetStream())))
     m_appPlayer.SetUpdateStreamDetails();
 
   if (m_stackHelper.IsPlayingISOStack() || m_stackHelper.IsPlayingRegularStack())
