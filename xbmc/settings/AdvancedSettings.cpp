@@ -340,7 +340,7 @@ void CAdvancedSettings::Initialize()
   m_curlKeepAliveInterval = 30;
   m_curlDisableIPV6 = false;      //Certain hardware/OS combinations have trouble
                                   //with ipv6.
-  m_curlDisableHTTP2 = false;
+  m_curlDisableHTTP2 = true;
 
 #if defined(TARGET_WINDOWS_DESKTOP)
   m_minimizeToTray = false;
