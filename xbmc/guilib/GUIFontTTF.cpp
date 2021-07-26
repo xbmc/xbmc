@@ -737,7 +737,7 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr, FT_UInt glyph
   // quick access to ascii chars
   if (letter < 255)
   {
-    character_t ch = (style << 8) | glyphIndex;
+    character_t ch = (style << 8) | letter;
     if (ch < LOOKUPTABLE_SIZE && m_charquick[ch])
       return m_charquick[ch];
   }
@@ -805,7 +805,7 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr, FT_UInt glyph
   {
     if (m_char[i].letter < 255)
     {
-      character_t ch = ((m_char[i].glyphAndStyle & 0xffff0000) >> 8) | (m_char[i].glyphIndex);
+      character_t ch = ((m_char[i].glyphAndStyle & 0xffff0000) >> 8) | m_char[i].letter;
       m_charquick[ch] = m_char+i;
     }
   }
