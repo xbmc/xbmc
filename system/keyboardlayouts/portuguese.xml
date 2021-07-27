@@ -4,6 +4,26 @@ Please use English language names instead.
 Default font lacks support for all characters
 -->
 <keyboardlayouts>
+  <layout language="Portuguese (Brazil)" layout="QWERTY">
+    <keyboard>
+        <row>/\0123456789</row>
+        <row>qwertyuiopôê</row>
+        <row>asdfghjklç.:</row>
+        <row>zxcvbnmáéíóú</row>
+      </keyboard>
+      <keyboard modifiers="shift">
+        <row>/\0123456789</row>
+        <row>QWERTYUIOPÔÊ</row>
+        <row>ASDFGHJKLÇ.:</row>
+        <row>ZXCVBNMÁÉÍÓÚ</row>
+      </keyboard>
+      <keyboard modifiers="symbol,shift+symbol">
+        <row>)!@#$%^&amp;*(</row>
+        <row>[]{}-_=+;:</row>
+        <row>'",.&lt;&gt;/?\|</row>
+        <row>`~ÁÉÍÓÚÊÃ</row>
+      </keyboard>
+  </layout> 
   <layout language="Portuguese (Portugal)" layout="QWERTY">
     <keyboard>
       <row>\1234567890'</row>
