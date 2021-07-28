@@ -448,7 +448,8 @@ bool CContext::GetFormatAndConfig(AVCodecContext* avctx, D3D11_VIDEO_DECODER_DES
       }
 
       // check decoder config
-      D3D11_VIDEO_DECODER_DESC checkFormat = {*mode.guid, avctx->coded_width, avctx->coded_height,
+      D3D11_VIDEO_DECODER_DESC checkFormat = {*mode.guid, static_cast<UINT>(avctx->coded_width),
+                                              static_cast<UINT>(avctx->coded_height),
                                               render_targets_dxgi[j]};
       if (!GetConfig(checkFormat, config))
         continue;
