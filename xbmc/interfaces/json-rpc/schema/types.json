@@ -1019,7 +1019,7 @@
                 "wasactive", "thumbnail", "rating", "originaltitle", "cast",
                 "director", "writer", "year", "imdbnumber", "hastimerrule",
                 "hasrecording", "recording", "isseries", "isplayable", "clientid",
-                "hasreminder" ]
+                "hasreminder", "seasonnum" ]
     }
   },
   "PVR.Details.Broadcast": {
@@ -1057,7 +1057,8 @@
       "isseries": { "type": "boolean" },
       "isplayable": { "type": "boolean", "description": "Deprecated - Use GetBroadcastIsPlayable instead" },
       "clientid": { "$ref": "Library.Id" },
-      "hasreminder": { "type": "boolean" }
+      "hasreminder": { "type": "boolean" },
+      "seasonnum": { "type": "integer" }
     }
   },
   "PVR.Fields.Channel": {
