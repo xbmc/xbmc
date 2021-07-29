@@ -17,6 +17,7 @@
 #include "cores/AudioEngine/Sinks/pipewire/PipewireThreadLoop.h"
 #include "utils/log.h"
 
+#include <pipewire/keys.h>
 #include <spa/param/audio/raw.h>
 
 namespace
