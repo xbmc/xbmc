@@ -308,6 +308,7 @@ bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
   m_pCodecContext->opaque = static_cast<void*>(this);
   m_pCodecContext->get_format = GetFormat;
   m_pCodecContext->get_buffer2 = GetBuffer;
+  m_pCodecContext->thread_safe_callbacks = 1;
   m_pCodecContext->codec_tag = hints.codec_tag;
   m_pCodecContext->coded_width = hints.width;
   m_pCodecContext->coded_height = hints.height;
