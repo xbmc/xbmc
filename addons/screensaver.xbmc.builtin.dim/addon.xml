@@ -10,7 +10,7 @@
       <icon>icon.png</icon>
     </assets>
     <summary lang="af_ZA">Sluimerskerm wat jou skerm verdof</summary>
-    <summary lang="am_ET">መመልከቻ ማዳኛ የ እርስዎን መመልከቻ ፈዘዝ ያደርገዋል </summary>
+    <summary lang="am_ET">መመልከቻ ማዳኛ የ እርስዎን መመልከቻ ፈዘዝ ያደርገዋል</summary>
     <summary lang="ar_SA">شاشة توقف تمكن من تظليم الشاشة</summary>
     <summary lang="be_BY">Ахоўнік экрана, што паступова зацямняе ваш экран</summary>
     <summary lang="bg_BG">Скрийнсейвър, който затъмнява екрана</summary>
@@ -29,11 +29,11 @@
     <summary lang="es_MX">Protector de pantalla que obscurece su pantalla</summary>
     <summary lang="et_EE">Ekraanisäästja, mis hämardab ekraani</summary>
     <summary lang="eu_ES">Pantaila iluntzen duen pantaila-babeslea</summary>
-    <summary lang="fa_IR">محافظ تاریک کننده صفحه نمایش</summary>
+    <summary lang="fa_IR">محافظ صفحه‌ای که صفحه‌تان را تاریک می‌کند</summary>
     <summary lang="fi_FI">Näytönsäästäjä, joka himmentää näytön</summary>
     <summary lang="fr_CA">Un économiseur d’écran qui baisse la luminosité de votre écran</summary>
     <summary lang="fr_FR">Un économiseur qui assombrit l'écran</summary>
-    <summary lang="gl_ES">O  protector de pantalla atenúa a súa pantalla</summary>
+    <summary lang="gl_ES">O protector de pantalla atenúa a súa pantalla</summary>
     <summary lang="he_IL">שומר מסך אשר מעמעם את המסך</summary>
     <summary lang="hr_HR">Čuvar zaslona koji zatamnjuje vaš zaslon</summary>
     <summary lang="hu_HU">Képernyővédő ami elhalványítja a képernyőt</summary>
@@ -55,7 +55,7 @@
     <summary lang="pt_PT">Protetor de ecrã que obscurece o seu ecrã</summary>
     <summary lang="ro_RO">Protector de ecran ce întunecă ecranul</summary>
     <summary lang="ru_RU">Заставка, постепенно затемняющая экран</summary>
-    <summary lang="sk_SK">Šetrič obrazovky, ktorý zatemní  Vašu obrazovku </summary>
+    <summary lang="sk_SK">Šetrič obrazovky, ktorý zatemní Vašu obrazovku</summary>
     <summary lang="sl_SI">Ohranjevalnik zaslona, ki zatemni zaslon</summary>
     <summary lang="sq_AL">Ruajtës ekrani, që errëson ekranin</summary>
     <summary lang="sr_RS">Чувар екрана који пригушује ваш екран</summary>
@@ -71,7 +71,7 @@
     <summary lang="zh_TW">讓螢幕變暗的螢幕保護程式</summary>
     <description lang="af_ZA">Die Verdof sluimerskerm is 'n eenvoudige sluimerskerm wat jou skerm verdof (uit vaag) tot 'n stelbare waarde tussen 20 en 100%</description>
     <description lang="am_ET">የ መመልከቻ ማዳኛ ማደብዘዣ የ እርስዎን መመልከቻ ያፈዘዋል (ማፍዘዣ) የ እርስዎን መመልከቻ ዋጋ በ 20 እና በ 100% መካከል</description>
-    <description lang="ar_SA">Dim عبارة عن شاشة توقف  تمكن من  تظليم (صورة خافتة) الشاشة إلى قيمة قابلة للتحديد بين 20 و 100%</description>
+    <description lang="ar_SA">Dim عبارة عن شاشة توقف تمكن من تظليم (صورة خافتة) الشاشة إلى قيمة قابلة للتحديد بين 20 و 100%</description>
     <description lang="be_BY">Dim - просты ахоўнік экрана, які будзе паступова зацямняць экран. Значэнне зацямнення можа змяняцца ад 20 да 100%.</description>
     <description lang="bg_BG">Скрийнсейвърът &quot;Dim&quot; затъмнява екрана, до стойност, която Вие определяте предварително (между 20 и 100%).</description>
     <description lang="ca_ES">L'estalvi de pantalla Dim és un estalvi de pantalla simple que enfosquirà (fos en negre) la seva pantalla a un valor que es pot configurar entre 20 i 100%.</description>
@@ -88,8 +88,8 @@
     <description lang="es_ES">Dim es un sencillo salvapantallas que atenúa tu pantalla. El valor es configurable entre el 20% y el 100%.</description>
     <description lang="es_MX">El protector de pantalla de obscurecimiento, es un protector simple que obscurece (fade out) su pantalla en un valor entre 20 y 100%</description>
     <description lang="et_EE">Lihtne ekraanisäästja, mis hämardab (tumestab) ekraani vastavalt valitud väärtusele vahemikus 20 kuni 100%.</description>
-    <description lang="eu_ES">Dim  %20 eta %100 artean zure pantaila iluntzeko (belztu) konfiguratu daitekeen pantaila babesle soil bat da.</description>
-    <description lang="fa_IR">محافظ تاریک کننده صفحه نمایش یک محافظ ساده است که نور صفحه نمایش را (بطور تدریجی) تا سطح تعریف شده بین 20 تا 100% کم می کند.</description>
+    <description lang="eu_ES">Dim %20 eta %100 artean zure pantaila iluntzeko (belztu) konfiguratu daitekeen pantaila babesle soil bat da.</description>
+    <description lang="fa_IR">محافظ صفحهٔ تاریک‌کننده، محافظ صفحه‌ای ساده است که نور صفحه‌تان را (به صورت تدریجی) تا سطح تعریف شده‌ای بین ۲۰ تا ۱۰۰٪ کم خواهد کرد.</description>
     <description lang="fi_FI">Dim on yksinkertainen näytönsäästäjä joka himmentää ruudun valitulle tasolle välillä 20-100%.</description>
     <description lang="fr_CA">L’économiseur Dim est un économiseur d’écran simple qui abaissera la luminosité de votre écran à une valeur réglable entre 20 à 100 %.</description>
     <description lang="fr_FR">L'économiseur Dim est un simple économiseur qui assombrira l'écran. L'assombrissement est paramétrable de 20 à 100 %.</description>
@@ -117,7 +117,7 @@
     <description lang="ru_RU">Эта заставка постепенно затемняет изображение на экране до заданного значения (от 20% до 100%).</description>
     <description lang="sk_SK">&quot;Dim&quot; šetrič obrazovky je jednoduchý šetrič, ktorý zatemní Vašu obrazovku podľa nastavenia v rozsahu 20 až 100%.</description>
     <description lang="sl_SI">Dim je enostaven ohranjevalnik zaslona, ki zatemni zaslon do izbrane svetlosti med 20 in 100%.</description>
-    <description lang="sq_AL">Errësuesi i ekranit është një mbrojtës i thjeshtë ekrani, i cili errëson (zbeh) ekranin tuaj në varësi të një vlere të axhustueshme nga 20 deri në 100%. </description>
+    <description lang="sq_AL">Errësuesi i ekranit është një mbrojtës i thjeshtë ekrani, i cili errëson (zbeh) ekranin tuaj në varësi të një vlere të axhustueshme nga 20 deri në 100%.</description>
     <description lang="sr_RS">Чувар екрана Пригуши је једноставан чувар екрана који ће пригушити (избледети) ваш екран на подешену вредност између 20 и 100% .</description>
     <description lang="sr_RS@latin">Čuvar ekrana Priguši je jednostavan čuvar ekrana koji će prigušiti (izbledeti) vaš ekran na podešenu vrednost između 20 i 100% .</description>
     <description lang="sv_SE">Detta är en enkel skärmsläckare som tonar ned ljusstyrkan på din skärm till ett angivet värde mellan 20 och 100%</description>
