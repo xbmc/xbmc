@@ -5,16 +5,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Persian (Iran) (http://www.transifex.com/projects/p/kodi-main/language/fa_IR/)\n"
-"Language: fa_IR\n"
+"PO-Revision-Date: 2021-07-19 13:06+0000\n"
+"Last-Translator: Danial Behzadi <dani.behzi@ubuntu.com>\n"
+"Language-Team: Persian (Iran) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/fa_ir/>\n"
+"Language: fa_ir\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.7.1\n"
 
 msgctxt "Addon Summary"
 msgid "Skin for touchscreen devices"
@@ -26,15 +27,15 @@ msgstr ""
 
 msgctxt "#31002"
 msgid "Audio Settings"
-msgstr ""
+msgstr "تنظیمات صدا"
 
 msgctxt "#31003"
 msgid "IP"
-msgstr ""
+msgstr "آی‌پی"
 
 msgctxt "#31004"
 msgid "Caps[CR]Lock"
-msgstr ""
+msgstr "قفل تبدیل"
 
 msgctxt "#31005"
 msgid "Visualization Options"
@@ -46,7 +47,7 @@ msgstr ""
 
 msgctxt "#31007"
 msgid "Context Menu"
-msgstr ""
+msgstr "فهرست زمینه"
 
 msgctxt "#31009"
 msgid "Working..."
@@ -55,43 +56,43 @@ msgstr "در حال کار..."
 # empty string with id 31010
 msgctxt "#31011"
 msgid "Recent"
-msgstr ""
+msgstr "به تازگی"
 
 msgctxt "#31013"
 msgid "Movies"
-msgstr "فیلم ها"
+msgstr "فیلم‌ها"
 
 msgctxt "#31014"
 msgid "Episodes"
-msgstr "قسمت"
+msgstr "قسمت‌ها"
 
 msgctxt "#31015"
 msgid "Player info"
-msgstr ""
+msgstr "اطّلاعات پخش‌کننده"
 
 msgctxt "#31016"
 msgid "Albums"
-msgstr "آلبوم ها"
+msgstr "آلبوم‌ها"
 
 msgctxt "#31017"
 msgid "PVR info"
-msgstr ""
+msgstr "اطَلاعات PVR"
 
 msgctxt "#31018"
 msgid "Player process info"
-msgstr ""
+msgstr "اطَلاعات فرایند پخش‌کننده"
 
 msgctxt "#31019"
 msgid "Video decoder"
-msgstr ""
+msgstr "رمزگشای ویدیو"
 
 msgctxt "#31020"
 msgid "Pixel format"
-msgstr ""
+msgstr "قالب پیکسل"
 
 msgctxt "#31021"
 msgid "System memory usage"
-msgstr ""
+msgstr "استفادهٔ حافظهٔ سامانه"
 
 msgctxt "#31024"
 msgid "Page"
@@ -101,7 +102,7 @@ msgstr "صفحه"
 # ViewType labels
 msgctxt "#31030"
 msgid "Info List"
-msgstr ""
+msgstr "فهرست اطّلاعات"
 
 msgctxt "#31038"
 msgid "Login"
@@ -109,7 +110,7 @@ msgstr "ورود"
 
 msgctxt "#31039"
 msgid "Updated:"
-msgstr ""
+msgstr "به‌روز شده:"
 
 msgctxt "#31040"
 msgid "Select + X"
@@ -137,45 +138,45 @@ msgstr "حرکت سریع به عقب"
 
 msgctxt "#31046"
 msgid "Play speed"
-msgstr ""
+msgstr "سرعت پخش"
 
 msgctxt "#31049"
 msgid "End Time"
-msgstr "زمان اتمام"
+msgstr "زمان پایان"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "مرتب سازی صعودی"
+msgstr "چینش: فرازی"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "مرتب سازی نزولی"
+msgstr "چینش: فرودی"
 
 msgctxt "#31055"
 msgid "Open playlist"
-msgstr "باز کردن لیست پخش"
+msgstr "گشودن فهرست پخش"
 
 msgctxt "#31056"
 msgid "Save playlist"
-msgstr "ذخیره لیست پخش"
+msgstr "ذخیرهٔ فهرست پخش"
 
 msgctxt "#31057"
 msgid "Close playlist"
-msgstr "بستن لیست پخش"
+msgstr "بستن فهرست پخش"
 
 msgctxt "#31058"
 msgid "System music files"
-msgstr "سیستم فایل های موسیقی"
+msgstr "پرونده‌های آهنگ سامانه"
 
 msgctxt "#31059"
 msgid "Current playlist"
-msgstr "لیست پخش فعلی"
+msgstr "فهرست پخش کنونی"
 
 # empty strings from id 31060 to 31199
 # Submenu labels
 msgctxt "#31200"
 msgid "Back"
-msgstr ""
+msgstr "بازگشت"
 
 msgctxt "#31201"
 msgid "Location"
@@ -183,7 +184,7 @@ msgstr "مکان"
 
 msgctxt "#31202"
 msgid "View"
-msgstr "مشاهده"
+msgstr "نما"
 
 msgctxt "#31300"
 msgid "Current Temp"
@@ -191,16 +192,16 @@ msgstr "دمای کنونی"
 
 msgctxt "#31301"
 msgid "Last Updated"
-msgstr "آخرین بروزرسانی"
+msgstr "واپسین به‌روز شده"
 
 msgctxt "#31303"
 msgid "Data provider"
-msgstr "ارائه دهنده اطلاعات"
+msgstr "فراهم‌کنندهٔ داده"
 
 # empty strings from id 31304 to 31308
 msgctxt "#31309"
 msgid "System Memory Used:"
-msgstr ""
+msgstr "استفاده از حافظهٔ سامانه:"
 
 msgctxt "#31320"
 msgid "Last Logged In"
@@ -208,29 +209,29 @@ msgstr "آخرین ورود"
 
 msgctxt "#31322"
 msgid "Aired"
-msgstr "پخش شده"
+msgstr "پخش‌شده"
 
 # empty strings from id 31323 to 31354
 # Video and Music OSD Labels
 msgctxt "#31355"
 msgid "Video Menu"
-msgstr ""
+msgstr "فهرست ویدیو"
 
 msgctxt "#31356"
 msgid "Download Subtitles"
-msgstr "دانلود زیر نویس ها"
+msgstr "بارگیری زیرنویس‌ها"
 
 msgctxt "#31358"
 msgid "Teletext"
-msgstr "تله تکست"
+msgstr "دورمتن"
 
 msgctxt "#31390"
 msgid "Skin default"
-msgstr "پیش فرض پوسته"
+msgstr "پیش‌گزیدهٔ پوسته"
 
 msgctxt "#31391"
 msgid "Arial based"
-msgstr "بر اساس فونت Arial"
+msgstr "بر پایهٔ Arial"
 
 # empty strings from id 31392 to 31399
 # Description Labels
@@ -273,25 +274,25 @@ msgstr ""
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
-msgstr "جهت ورود و ادامه کار، کاربر kodi را انتخاب نمایید."
+msgstr "برای ورود و ادامه، نمایهٔ[CR]کاربری کودیتان را برگزینید"
 
 # empty strings from id 31422 to 31547
 # Skin Setting Options
 msgctxt "#31548"
 msgid "Home menu"
-msgstr ""
+msgstr "فهرست خانه"
 
 msgctxt "#31549"
 msgid "Home Add-ons"
-msgstr ""
+msgstr "افزونه‌های خانه"
 
 msgctxt "#31550"
 msgid "Backgrounds"
-msgstr "پس زمیته ها"
+msgstr "پس‌زمینه‌ها"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"
-msgstr ""
+msgstr "میان‌بر افزونه"
 
 msgctxt "#31552"
 msgid "SYNC"
@@ -299,11 +300,11 @@ msgstr ""
 
 msgctxt "#31553"
 msgid "Use Custom Background"
-msgstr ""
+msgstr "استفاده از پس‌زمینهٔ سفارشی"
 
 msgctxt "#31554"
 msgid "Background:"
-msgstr ""
+msgstr "پس‌زمینه:"
 
 msgctxt "#31555"
 msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
@@ -311,11 +312,11 @@ msgstr ""
 
 msgctxt "#31556"
 msgid "Live TV"
-msgstr "تلویزیون زنده"
+msgstr "تلویزیون"
 
 msgctxt "#31557"
 msgid "Hide video background"
-msgstr "مخفی کردن پس زمینه های ویدئویی"
+msgstr "نهفتن پس‌زمینهٔ ویدیو"
 
 msgctxt "#31558"
 msgid "Hide visualization background"
@@ -323,15 +324,15 @@ msgstr ""
 
 msgctxt "#31559"
 msgid "Channel settings"
-msgstr ""
+msgstr "تنظیمات کانال"
 
 msgctxt "#31560"
 msgid "Available groups"
-msgstr ""
+msgstr "گروه‌های موجود"
 
 msgctxt "#31561"
 msgid "Add Group"
-msgstr "افزودن گروه جدید"
+msgstr "افزودن گروه"
 
 msgctxt "#31562"
 msgid "Rename Group"
@@ -343,29 +344,29 @@ msgstr "حذف گروه"
 
 msgctxt "#31564"
 msgid "Show hidden"
-msgstr ""
+msgstr "نمایش نهفته"
 
 msgctxt "#31565"
 msgid "Show deleted"
-msgstr ""
+msgstr "نمایش حذف‌شده"
 
 # empty strings from id 31566 to 31899
 msgctxt "#31900"
 msgid "First Run"
-msgstr ""
+msgstr "نخستین اجرا"
 
 msgctxt "#31901"
 msgid "There are two things to know about navigating Estouchy"
-msgstr ""
+msgstr "باید دو چبز را دربارهٔ ناوش استاچی بدانید"
 
 msgctxt "#31902"
 msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
-msgstr ""
+msgstr "نشان کودی به عنوان دکمهٔ «خانه» عمل می‌کند. هرگاه لمسش کنید، به صفحهٔ خانه بازگرداننده خواهید شد."
 
 msgctxt "#31903"
 msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
-msgstr ""
+msgstr "هنگامی که در حال پخش صدا یا ویدیو هستید، عنوان مورد در بالای صفحه نقش خواهد بست. لمسش به پنجرهٔ تمام‌صفحهٔ تصویرسازی یا ویدیو خواهد بردتان."
 
 msgctxt "#31904"
 msgid "Now Playing Title..."
-msgstr ""
+msgstr "عنوان در حال پخش…"
