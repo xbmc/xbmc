@@ -5,16 +5,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Catalan (Spain) (http://www.transifex.com/projects/p/kodi-main/language/ca_ES/)\n"
-"Language: ca_ES\n"
+"PO-Revision-Date: 2021-07-25 11:10+0000\n"
+"Last-Translator: Xean <xeanhort007@gmail.com>\n"
+"Language-Team: Catalan (Spain) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/ca_es/>\n"
+"Language: ca_es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.7.2\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -129,7 +130,7 @@ msgstr "Tipus de vista"
 
 msgctxt "#31024"
 msgid "Choose rating to display for media items"
-msgstr ""
+msgstr "Trieu la puntuació a mostrar per als elements multimèdia"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
@@ -141,7 +142,7 @@ msgstr "Salts en el temps"
 
 msgctxt "#31027"
 msgid "Next aired"
-msgstr ""
+msgstr "Següent emissió"
 
 msgctxt "#31028"
 msgid "Show fanart"
@@ -181,7 +182,7 @@ msgstr "elements"
 
 msgctxt "#31037"
 msgid "Selected track"
-msgstr ""
+msgstr "Pista seleccionada"
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -229,11 +230,11 @@ msgstr "Basat en Arial"
 
 msgctxt "#31054"
 msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
-msgstr ""
+msgstr "Premeu [B]Esquerra[/B] per fer un pas enrere, o [B]Dreta[/B] per avançar"
 
 msgctxt "#31055"
 msgid "Press [B]Right[/B] to frame advance"
-msgstr ""
+msgstr "Premeu [B]Dreta[/B] per avançar"
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -247,13 +248,15 @@ msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Autenticació automàtica a l'inici"
 
+#, fuzzy
 msgctxt "#31059"
 msgid "Select + X"
-msgstr ""
+msgstr "Select + X"
 
+#, fuzzy
 msgctxt "#31060"
 msgid "Select + Start"
-msgstr ""
+msgstr "Select + Start"
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -297,7 +300,7 @@ msgstr "Opcions d'energia"
 
 msgctxt "#31073"
 msgid "Total length"
-msgstr ""
+msgstr "Durada total"
 
 msgctxt "#31074"
 msgid "Total duration"
@@ -418,7 +421,7 @@ msgstr "Cerca de YouTube"
 
 msgctxt "#31115"
 msgid "Toggle subtitle"
-msgstr ""
+msgstr "Canvia el subtítol"
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
@@ -482,11 +485,11 @@ msgstr "Tria el paquet de fanart de l'aparença"
 
 msgctxt "#31132"
 msgid "Select Program"
-msgstr ""
+msgstr "Seleccioneu Programa"
 
 msgctxt "#31133"
 msgid "Select Resolution"
-msgstr ""
+msgstr "Seleccioneu Resolució"
 
 msgctxt "#31134"
 msgid "Remaining"
@@ -494,7 +497,7 @@ msgstr "Restant"
 
 msgctxt "#31135"
 msgid "Binary"
-msgstr ""
+msgstr "Binari"
 
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
@@ -538,11 +541,11 @@ msgstr "Cerca complements"
 
 msgctxt "#31146"
 msgid "In cinemas"
-msgstr ""
+msgstr "Als cinemes"
 
 msgctxt "#31147"
 msgid "In cinemas soon"
-msgstr ""
+msgstr "Aviat als cinemes"
 
 msgctxt "#31148"
 msgid "Categories"
@@ -550,11 +553,11 @@ msgstr "Categories"
 
 msgctxt "#31149"
 msgid "Select genre fanart pack"
-msgstr ""
+msgstr "Seleccioneu un paquet de fanart de gènere"
 
 msgctxt "#31150"
 msgid "Origin"
-msgstr ""
+msgstr "Origen"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
@@ -602,16 +605,16 @@ msgstr "Teclat numèric"
 
 msgctxt "#31162"
 msgid "Play your personal games or download one of the many game add-ons from the official repository."
-msgstr ""
+msgstr "Juga als teus jocs personals o descarrega't un dels molts complements de jocs del repositori oficial."
 
 msgctxt "#31163"
 msgid "Show Fanart background"
-msgstr ""
+msgstr "Mostra el fons de Fanart"
 
 #. Choose profile identifier
 msgctxt "#31164"
 msgid "Choose kind of profile identification"
-msgstr ""
+msgstr "Trieu el tipus d'identificació del perfil"
 
 #. Label for the kind of profile identification
 msgctxt "#31165"
@@ -621,19 +624,19 @@ msgstr "Nom del perfil"
 #. Label for the kind of profile identification
 msgctxt "#31166"
 msgid "Profile avatar"
-msgstr ""
+msgstr "Avatar del perfil"
 
 #. Label of a setting
 msgctxt "#31167"
 msgid "Animate background"
-msgstr ""
+msgstr "Anima el fons"
 
 #. Label of a setting
 msgctxt "#31168"
 msgid "Show posters instead of thumbs for musicvideos"
-msgstr ""
+msgstr "Mostra els pòsters en lloc de les miniatures dels vídeos musicals"
 
 #. Description label for skin settings area
 msgctxt "#31169"
 msgid "Artwork related settings."
-msgstr ""
+msgstr "Configuració relacionada amb les obres d'art."

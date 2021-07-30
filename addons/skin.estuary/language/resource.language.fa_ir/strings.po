@@ -5,28 +5,29 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Persian (Iran) (http://www.transifex.com/projects/p/kodi-main/language/fa_IR/)\n"
-"Language: fa_IR\n"
+"PO-Revision-Date: 2021-07-22 14:56+0000\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"Language-Team: Persian (Iran) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/fa_ir/>\n"
+"Language: fa_ir\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.7.2\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
-msgstr ""
+msgstr "پوستهٔ اسچوری به دست phil65. (پوستهٔ پیش‌گزیدهٔ کودی)"
 
 msgctxt "Addon Description"
 msgid "Estuary is the default skin for Kodi 17.0 and above. It attempts to be easy for first time Kodi users to understand and use."
-msgstr ""
+msgstr "اسچوری پوستهٔ پیش‌گزیدهٔ کودی ۱۷٫۰ و بالاتر است. این پوسته تلاش می‌کند درک و استفاده‌اش برای کاربرانی که نخستین بار با کودی کار می‌کنند، ساده باشد."
 
 msgctxt "Addon Disclaimer"
 msgid "Estuary is the default skin for Kodi, removing it may cause issues"
-msgstr ""
+msgstr "اسچوری پوستهٔ پیش‌گزیدهٔ کودی است. ممکن است برداشتنش موجب مشکلاتی شود"
 
 msgctxt "#31000"
 msgid "Now playing"
@@ -38,11 +39,11 @@ msgstr "جستجو ..."
 
 msgctxt "#31002"
 msgid "Show media fanart as background"
-msgstr ""
+msgstr "نمایش هنرهای هواداری به عنوان پس‌زمینه"
 
 msgctxt "#31003"
 msgid "Cinema mode"
-msgstr ""
+msgstr "حالت سینما"
 
 msgctxt "#31004"
 msgid "Change mode"
@@ -54,58 +55,58 @@ msgstr "تماشا بصورت دو بعدی"
 
 msgctxt "#31006"
 msgid "Random movies"
-msgstr ""
+msgstr "فیلم‌های کاتوره‌ای"
 
 msgctxt "#31007"
 msgid "Unwatched movies"
-msgstr ""
+msgstr "فیلم‌های ندیده"
 
 msgctxt "#31008"
 msgid "Enable category widgets"
-msgstr ""
+msgstr "به کار انداختن ابزارک‌های دسته"
 
 msgctxt "#31009"
 msgid "Download icons"
-msgstr ""
+msgstr "نقشک‌های بارگیری"
 
 msgctxt "#31010"
 msgid "In progress movies"
-msgstr ""
+msgstr "فیلم‌های در حال دیدن"
 
 msgctxt "#31011"
 msgid "Most played albums"
-msgstr ""
+msgstr "آلبوم‌های بیش‌تر پخش‌شده"
 
 msgctxt "#31012"
 msgid "Random albums"
-msgstr ""
+msgstr "آلبوم‌های کاتوره‌ای"
 
 msgctxt "#31013"
 msgid "Random artists"
-msgstr ""
+msgstr "هنرمندان کاتوره‌ای"
 
 msgctxt "#31014"
 msgid "Unplayed albums"
-msgstr ""
+msgstr "آلبوم‌های پخش‌نشده"
 
 #. home screen recordings widget: recent tv / radio recordings
 msgctxt "#31015"
 msgid "Recent recordings"
-msgstr ""
+msgstr "ضبط‌های تازه"
 
 #. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31016"
 msgid "Recently played channels"
-msgstr ""
+msgstr "کانال‌های تازه پخش‌شده"
 
 msgctxt "#31017"
 msgid "Rated"
-msgstr ""
+msgstr "رتبه‌داده"
 
 #. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
 msgid "Recently played channels"
-msgstr ""
+msgstr "کانال‌های تازه پخش‌شده"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -121,15 +122,15 @@ msgstr "سایر تنظیمات"
 
 msgctxt "#31022"
 msgid "Sort by"
-msgstr ""
+msgstr "چینش با"
 
 msgctxt "#31023"
 msgid "Viewtype"
-msgstr ""
+msgstr "گونهٔ نما"
 
 msgctxt "#31024"
 msgid "Choose rating to display for media items"
-msgstr ""
+msgstr "گزینش رتبه‌بندی برای نمایش موارد رسانه"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
@@ -137,68 +138,68 @@ msgstr ""
 
 msgctxt "#31026"
 msgid "Timeshift"
-msgstr ""
+msgstr "جابه‌جایی زمانی"
 
 msgctxt "#31027"
 msgid "Next aired"
-msgstr ""
+msgstr "روی آنتن رفتهٔ بعدی"
 
 msgctxt "#31028"
 msgid "Show fanart"
-msgstr ""
+msgstr "نمایش هنر هواداری"
 
 msgctxt "#31029"
 msgid "Last logged in"
-msgstr ""
+msgstr "واپسین ورود"
 
 msgctxt "#31030"
 msgid "System memory usage"
-msgstr ""
+msgstr "استفادهٔ حافظهٔ سامانه"
 
 msgctxt "#31031"
 msgid "Version info"
-msgstr ""
+msgstr "اطّلاعات نگارش"
 
 msgctxt "#31032"
 msgid "Order"
-msgstr ""
+msgstr "ترتیب"
 
 msgctxt "#31033"
 msgid "Your rating"
-msgstr ""
+msgstr "رتبه‌بندیتان"
 
 msgctxt "#31034"
 msgid "Extended info"
-msgstr ""
+msgstr "اطّلاعات گسترش‌یافته"
 
 msgctxt "#31035"
 msgid "Pages"
-msgstr ""
+msgstr "صفحه‌ها"
 
 msgctxt "#31036"
 msgid "items"
-msgstr ""
+msgstr "موردها"
 
 msgctxt "#31037"
 msgid "Selected track"
-msgstr ""
+msgstr "قطعهٔ گزیده"
 
 msgctxt "#31038"
 msgid "Rewind"
-msgstr "بازکشت"
+msgstr "پس‌روی"
 
 msgctxt "#31039"
 msgid "Fast forward"
-msgstr ""
+msgstr "پیش‌روی سریع"
 
 # empty string with id 31040
 msgctxt "#31041"
 msgid "Camera manufacturer"
-msgstr ""
+msgstr "سازندهٔ دوربین"
 
 msgctxt "#31042"
 msgid "Playlist options"
-msgstr ""
+msgstr "گزینه‌های فهرست پخش"
 
 msgctxt "#31043"
 msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
@@ -219,16 +220,16 @@ msgstr "حذف گروه"
 # empty string with id 31047
 msgctxt "#31048"
 msgid "Available"
-msgstr ""
+msgstr "موجود"
 
 # empty strings from id 31049 to 31051
 msgctxt "#31052"
 msgid "filtered"
-msgstr ""
+msgstr "پالوده"
 
 msgctxt "#31053"
 msgid "Arial based"
-msgstr "بر اساس قلم Arial"
+msgstr "بر پایهٔ Arial"
 
 msgctxt "#31054"
 msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
@@ -240,48 +241,48 @@ msgstr ""
 
 msgctxt "#31056"
 msgid "Go to playlist"
-msgstr ""
+msgstr "رفتن به فهرست پخش"
 
 msgctxt "#31057"
 msgid "Show login screen on startup"
-msgstr ""
+msgstr "نمایش صفحهٔ ورود هنگام آغاز"
 
 msgctxt "#31058"
 msgid "Automatic Login on startup"
-msgstr ""
+msgstr "ورود خودکار هنگام آغاز"
 
 msgctxt "#31059"
 msgid "Select + X"
-msgstr ""
+msgstr "گزینش + X"
 
 msgctxt "#31060"
 msgid "Select + Start"
-msgstr ""
+msgstr "گزینش + آغاز"
 
 msgctxt "#31061"
 msgid "Main menu items"
-msgstr ""
+msgstr "موردهای فهرست اصلی"
 
 msgctxt "#31062"
 msgid "Choose weather fanart pack"
-msgstr ""
+msgstr "گزینش بستهٔ هنر هواداری آب‌وهوا"
 
 msgctxt "#31063"
 msgid "Sections"
-msgstr ""
+msgstr "بخش‌ها"
 
 # empty string with id 31064
 msgctxt "#31065"
 msgid "Video playlist"
-msgstr ""
+msgstr "فهرست پخش ویدیو"
 
 msgctxt "#31066"
 msgid "Music playlist"
-msgstr "پلی لیست موسیقی"
+msgstr "فهرست پخش آهنگ"
 
 msgctxt "#31067"
 msgid "Event log"
-msgstr "گزارش رخداد"
+msgstr "گزارش رویداد"
 
 msgctxt "#31068"
 msgid "Choose presets"
@@ -289,28 +290,28 @@ msgstr ""
 
 msgctxt "#31069"
 msgid "Last Updated"
-msgstr "آخرین بروزرسانی"
+msgstr "واپسین به‌روز شده"
 
 # empty string with id 31070
 msgctxt "#31071"
 msgid "by"
-msgstr ""
+msgstr "به دست"
 
 msgctxt "#31072"
 msgid "Power Options"
-msgstr "گزینه های صرفه جویی در مصرف انرژی"
+msgstr "گزینه‌های نیرو"
 
 msgctxt "#31073"
 msgid "Total length"
-msgstr ""
+msgstr "مجموع طول"
 
 msgctxt "#31074"
 msgid "Total duration"
-msgstr "تمام مدت"
+msgstr "مجموع مدت"
 
 msgctxt "#31075"
 msgid "Movie sets"
-msgstr ""
+msgstr "مجموعه فیلم‌ها"
 
 # empty strings from id 31076 to 31078
 msgctxt "#31079"
@@ -319,74 +320,74 @@ msgstr ""
 
 msgctxt "#31080"
 msgid "Ends at"
-msgstr ""
+msgstr "پایان در"
 
 msgctxt "#31082"
 msgid "Lyrics add-on"
-msgstr "افزونه متن ترانه"
+msgstr "افزونهٔ ترانه‌ها"
 
 msgctxt "#31083"
 msgid "Lyrics add-on settings"
-msgstr ""
+msgstr "تنظیمات افزونهٔ ترانه‌ها"
 
 msgctxt "#31084"
 msgid "Visualisation settings"
-msgstr ""
+msgstr "تنظیمات تصویرسازی"
 
 # empty strings from id 31085 to 31088
 msgctxt "#31089"
 msgid "Available groups"
-msgstr ""
+msgstr "گروه‌های موجود"
 
 # empty strings from id 31090 to 31091
 msgctxt "#31092"
 msgid "Video menu"
-msgstr ""
+msgstr "فهرست ویدیو"
 
 msgctxt "#31093"
 msgid "Show weather info in top bar"
-msgstr ""
+msgstr "نمایش اطّلاعات آب‌وهوا در نوار بالایی"
 
 # empty string with id 31094
 msgctxt "#31095"
 msgid "Use slide animations"
-msgstr ""
+msgstr "استفاده از پویانمایی‌های اسلاید"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
-msgstr "زیر نویس محلی موجود"
+msgstr "زیرنویس محلّی موجود است"
 
 msgctxt "#31097"
 msgid "Channel options"
-msgstr ""
+msgstr "گزینه‌های کانال"
 
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
-msgstr ""
+msgstr "برای ورود و ادامه، نمایهٔ[CR]کاربری کودیتان را برگزینید"
 
 #. viewtype name
 msgctxt "#31099"
 msgid "IconWall"
-msgstr ""
+msgstr "دیوار نقشک"
 
 #. viewtype name
 msgctxt "#31100"
 msgid "Shift"
-msgstr "Shift"
+msgstr "جابه‌جایی"
 
 #. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
-msgstr ""
+msgstr "دیوار اطّلاعات"
 
 #. viewtype name
 msgctxt "#31102"
 msgid "Wall"
-msgstr ""
+msgstr "دیوار"
 
 msgctxt "#31103"
 msgid "Enter text here..."
-msgstr ""
+msgstr "این‌جا بنویسید…"
 
 msgctxt "#31104"
 msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
@@ -398,17 +399,17 @@ msgstr ""
 
 msgctxt "#31106"
 msgid "Teletext"
-msgstr "تله تکست"
+msgstr "دورمتن"
 
 #. viewtype name
 msgctxt "#31107"
 msgid "WideList"
-msgstr ""
+msgstr "فهرست پهناور"
 
 # empty strings from id 31108 to 31109
 msgctxt "#31110"
 msgid "Enter files section"
-msgstr ""
+msgstr "ورود به بخش پرونده‌ها"
 
 msgctxt "#31111"
 msgid "View your personal pictures or download one of the many image add-ons from the official repository."
@@ -416,31 +417,31 @@ msgstr ""
 
 msgctxt "#31112"
 msgid "Toggle audio stream"
-msgstr ""
+msgstr "تغییر جریان صدا"
 
 msgctxt "#31113"
 msgid "Search local library"
-msgstr ""
+msgstr "جست‌وجوی کتاب‌خانهٔ محلّی"
 
 msgctxt "#31114"
 msgid "Search YouTube"
-msgstr ""
+msgstr "جست‌وجوی یوتوب"
 
 msgctxt "#31115"
 msgid "Toggle subtitle"
-msgstr ""
+msgstr "تغییر وضعیت زیرنویس"
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
-msgstr ""
+msgstr "برداشتن این مورد فهرست اصلی"
 
 msgctxt "#31117"
 msgid "Edit nodes"
-msgstr ""
+msgstr "ویرایش گره‌ها"
 
 msgctxt "#31118"
 msgid "Enter add-on browser"
-msgstr ""
+msgstr "ورود به مرورگر افزونه"
 
 msgctxt "#31119"
 msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
@@ -452,36 +453,36 @@ msgstr ""
 
 msgctxt "#31121"
 msgid "Set weather provider"
-msgstr ""
+msgstr "تنظیم فراهم‌کنندهٔ آب‌وهوا"
 
 msgctxt "#31122"
 msgid "Unwatched TV Shows"
-msgstr ""
+msgstr "نمایش‌های تلویزیونی ندیده"
 
 msgctxt "#31123"
 msgid "Same director"
-msgstr ""
+msgstr "همین کارگردان"
 
 # empty string with id 31124
 msgctxt "#31125"
 msgid "Press up for actor info"
-msgstr ""
+msgstr "برای اطّلاعات بازیگر، بالا را بزنید"
 
 msgctxt "#31126"
 msgid "Press OK to read plot"
-msgstr ""
+msgstr "برای خواندن طرح داستانی، قبول را بزنید"
 
 msgctxt "#31127"
 msgid "Show icons"
-msgstr ""
+msgstr "نمایش نقشک‌ها"
 
 msgctxt "#31128"
 msgid "Contributors"
-msgstr ""
+msgstr "مشارکت‌کنندگان"
 
 msgctxt "#31129"
 msgid "General settings applying to all areas of the skin."
-msgstr ""
+msgstr "تنظیمات عمومی به تمامی نواحی پوسته اعمال می‌شوند."
 
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
@@ -489,51 +490,51 @@ msgstr ""
 
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
-msgstr ""
+msgstr "گزینش بستهٔ هنر هواداری پوسته"
 
 msgctxt "#31132"
 msgid "Select Program"
-msgstr ""
+msgstr "گزینش برنامه"
 
 msgctxt "#31133"
 msgid "Select Resolution"
-msgstr ""
+msgstr "گزینش وضوح"
 
 msgctxt "#31134"
 msgid "Remaining"
-msgstr ""
+msgstr "مانده"
 
 msgctxt "#31135"
 msgid "Binary"
-msgstr ""
+msgstr "دودویی"
 
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
-msgstr ""
+msgstr "برای دیدن جدیدترین تغییرها، این‌جا را بزنید…"
 
 msgctxt "#31137"
 msgid "PVR info"
-msgstr ""
+msgstr "اطَلاعات PVR"
 
 msgctxt "#31138"
 msgid "Player process info"
-msgstr ""
+msgstr "اطَلاعات فرایند پخش‌کننده"
 
 msgctxt "#31139"
 msgid "Video decoder"
-msgstr ""
+msgstr "رمزگشای ویدیو"
 
 msgctxt "#31140"
 msgid "Pixel format"
-msgstr ""
+msgstr "قالب پیکسل"
 
 msgctxt "#31141"
 msgid "Changes for version"
-msgstr ""
+msgstr "تغییرها برای نگارش"
 
 msgctxt "#31142"
 msgid "Play speed"
-msgstr ""
+msgstr "سرعت پخش"
 
 msgctxt "#31143"
 msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
@@ -541,39 +542,39 @@ msgstr ""
 
 msgctxt "#31144"
 msgid "Enter add-on browser"
-msgstr ""
+msgstr "ورود به مرورگر افزونه"
 
 msgctxt "#31145"
 msgid "Search add-ons"
-msgstr ""
+msgstr "جست‌وجوی افزونه‌ها"
 
 msgctxt "#31146"
 msgid "In cinemas"
-msgstr ""
+msgstr "در سینماها"
 
 msgctxt "#31147"
 msgid "In cinemas soon"
-msgstr ""
+msgstr "به‌زودی در سینماها"
 
 msgctxt "#31148"
 msgid "Categories"
-msgstr ""
+msgstr "دسته‌ها"
 
 msgctxt "#31149"
 msgid "Select genre fanart pack"
-msgstr ""
+msgstr "گزینش بستهٔ هنر هواداری سبک"
 
 msgctxt "#31150"
 msgid "Origin"
-msgstr ""
+msgstr "خاستگاه"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
-msgstr ""
+msgstr "نماهنگ‌های ندیده"
 
 msgctxt "#31152"
 msgid "Random music videos"
-msgstr ""
+msgstr "نماهنگ‌های کاتوره‌ای"
 
 msgctxt "#31153"
 msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
@@ -581,43 +582,43 @@ msgstr ""
 
 msgctxt "#31154"
 msgid "Press OK to switch between locations"
-msgstr ""
+msgstr "برای تعویض بین مکان‌ها، قبول را بزنید"
 
 msgctxt "#31155"
 msgid "No bookmarks created yet."
-msgstr ""
+msgstr "هنوز هیچ نشانکی ایجاد نشده."
 
 msgctxt "#31156"
 msgid "Choose background pattern"
-msgstr ""
+msgstr "گزینش الگوی پس‌زمینه"
 
 msgctxt "#31157"
 msgid "Edit categories"
-msgstr ""
+msgstr "ویرایش دسته‌ها"
 
 msgctxt "#31158"
 msgid "Touch mode"
-msgstr ""
+msgstr "جالت لمسی"
 
 msgctxt "#31159"
 msgid "Artwork"
-msgstr ""
+msgstr "اثر هنری"
 
 msgctxt "#31160"
 msgid "Show media flags"
-msgstr ""
+msgstr "نمایش پرچم‌های رسانه"
 
 msgctxt "#31161"
 msgid "Numeric pad"
-msgstr ""
+msgstr "صفحهٔ عددی"
 
 msgctxt "#31162"
 msgid "Play your personal games or download one of the many game add-ons from the official repository."
-msgstr ""
+msgstr "اجرای بازی‌های شخصی یا بارگیری یکی از چندین افزونهٔ بازی از مخازن رسمی."
 
 msgctxt "#31163"
 msgid "Show Fanart background"
-msgstr ""
+msgstr "نمایش پس‌زمینهٔ هنر هواداری"
 
 #. Choose profile identifier
 msgctxt "#31164"
@@ -627,24 +628,24 @@ msgstr ""
 #. Label for the kind of profile identification
 msgctxt "#31165"
 msgid "Profile name"
-msgstr "نام پروفایل"
+msgstr "نام نمایه"
 
 #. Label for the kind of profile identification
 msgctxt "#31166"
 msgid "Profile avatar"
-msgstr ""
+msgstr "تصویر نمایه"
 
 #. Label of a setting
 msgctxt "#31167"
 msgid "Animate background"
-msgstr ""
+msgstr "پویانمایی پس‌زمینه"
 
 #. Label of a setting
 msgctxt "#31168"
 msgid "Show posters instead of thumbs for musicvideos"
-msgstr ""
+msgstr "نمایش پوستر به جای بندانگشتی‌ها برای نماهنگ‌ها"
 
 #. Description label for skin settings area
 msgctxt "#31169"
 msgid "Artwork related settings."
-msgstr ""
+msgstr "تنظمیات مربوط به اثر هنری."
