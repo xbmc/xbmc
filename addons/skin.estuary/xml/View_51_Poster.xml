@@ -143,6 +143,47 @@
 				<aspectratio>scale</aspectratio>
 				<texture fallback="DefaultMovies.png" background="true">$VAR[PosterThumbVar]</texture>
 			</control>
+			<control type="group">
+				<visible>String.IsEqual(ListItem.DBtype,tvshow)</visible>
+				<control type="image">
+					<left>4</left>
+					<top>670</top>
+					<width>476</width>
+					<height>50</height>
+					<texture colordiffuse="CCFFFFFF">overlays/overlayfade.png</texture>
+					<visible>!String.IsEmpty(ListItem.Art(poster))</visible>
+				</control>
+				<control type="label">
+					<left>0</left>
+					<top>690</top>
+					<width>435</width>
+					<height>24</height>
+					<label>$INFO[ListItem.Property(WatchedEpisodes)]$INFO[ListItem.Property(TotalEpisodes), / ,]</label>
+					<font>font20_title</font>
+					<shadowcolor>text_shadow</shadowcolor>
+					<align>right</align>
+					<aligny>center</aligny>
+				</control>
+				<control type="image">
+					<left>445</left>
+					<top>690</top>
+					<width>24</width>
+					<height>24</height>
+					<texture>lists/played-total.png</texture>
+					<align>right</align>
+					<aligny>center</aligny>
+				</control>
+			</control>
+			<control type="progress">
+				<left>4</left>
+				<top>702</top>
+				<width>476</width>
+				<height>1</height>
+				<texturebg></texturebg>
+				<midtexture colordiffuse="button_focus" border="3">progress/texturebg_alt_white.png</midtexture>
+				<info>ListItem.PercentPlayed</info>
+				<visible>!Integer.IsEqual(ListItem.PercentPlayed,0)</visible>
+			</control>
 			<control type="image">
 				<left>1</left>
 				<top>1</top>
