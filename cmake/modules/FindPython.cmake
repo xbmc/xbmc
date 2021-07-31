@@ -1,17 +1,56 @@
-# - Try to find python
-# Once done this will define
+# FindPython
+# --------
+# Finds Python3 libraries
+#
+# This module will search for the required python libraries on the system
+# If multiple versions are found, the highest version will be used.
+#
+# --------
+#
+# the following variables influence behaviour:
+#
+# PYTHON_PATH - use external python not found in system paths
+#               usage: -DPYTHON_PATH=/path/to/python/lib
+# PYTHON_VER - use exact python version, fail if not found
+#               usage: -DPYTHON_VER=3.8
+#
+# --------
+#
+# This module will define the following variables:
 #
 # PYTHON_FOUND - system has PYTHON
+# PYTHON_VERSION - Python version number (Major.Minor)
 # PYTHON_INCLUDE_DIRS - the python include directory
 # PYTHON_LIBRARIES - The python libraries
+# PYTHON_LDFLAGS - Python provided link options
+#
+# --------
+#
 
-if(PKG_CONFIG_FOUND)
-  pkg_check_modules(PC_PYTHON python3>=3.5 QUIET)
+# for Depends builds, set search root dir to depends path
+if(KODI_DEPENDSBUILD)
+  set(Python3_USE_STATIC_LIBS TRUE)
+  set(Python3_ROOT_DIR ${DEPENDS_PATH}/lib)
 endif()
 
-find_program(PYTHON_EXECUTABLE python3 ONLY_CMAKE_FIND_ROOT_PATH)
-find_library(PYTHON_LIBRARY NAMES python3.9 python3.8 python3.7 python3.6 python3.5 PATHS ${PC_PYTHON_LIBDIR})
-find_path(PYTHON_INCLUDE_DIR NAMES Python.h PATHS ${PC_PYTHON_INCLUDE_DIRS} PATH_SUFFIXES python3.9 python3.8 python3.7 python3.6 python3.5)
+# Provide root dir to search for Python if provided
+if(PYTHON_PATH)
+  set(Python3_ROOT_DIR ${PYTHON_PATH})
+
+  # unset cache var so we can generate again with a different dir (or none) if desired
+  unset(PYTHON_PATH CACHE)
+endif()
+
+# Set specific version of Python to find if provided
+if(PYTHON_VER)
+  set(VERSION ${PYTHON_VER})
+  set(EXACT_VER "EXACT")
+
+  # unset cache var so we can generate again with a different ver (or none) if desired
+  unset(PYTHON_VER CACHE)
+endif()
+
+find_package(Python3 ${VERSION} ${EXACT_VER} COMPONENTS Development)
 
 if(KODI_DEPENDSBUILD)
   find_library(FFI_LIBRARY ffi REQUIRED)
@@ -27,17 +66,17 @@ if(KODI_DEPENDSBUILD)
     endif()
   endif()
 
-  set(PYTHON_LIBRARIES ${PYTHON_LIBRARY} ${FFI_LIBRARY} ${EXPAT_LIBRARY} ${INTL_LIBRARY} ${GMP_LIBRARY} ${PYTHON_DEP_LIBRARIES})
-else()
-  find_package(PythonLibs 3.5 REQUIRED)
-  list(APPEND PYTHON_LIBRARIES ${PC_PYTHON_STATIC_LIBRARIES})
+  list(APPEND Python3_LIBRARIES ${FFI_LIBRARY} ${EXPAT_LIBRARY} ${INTL_LIBRARY} ${GMP_LIBRARY} ${PYTHON_DEP_LIBRARIES})
 endif()
 
-include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(Python REQUIRED_VARS PYTHON_INCLUDE_DIR PYTHON_LIBRARY PYTHON_LIBRARIES)
-if(PYTHON_FOUND)
-  set(PYTHON_INCLUDE_DIRS ${PYTHON_INCLUDE_DIR})
+if(Python3_FOUND)
   list(APPEND PYTHON_DEFINITIONS -DHAS_PYTHON=1)
+  # These are all set for easy integration with the rest of our build system
+  set(PYTHON_FOUND ${Python3_FOUND})
+  set(PYTHON_INCLUDE_DIRS ${Python3_INCLUDE_DIRS})
+  set(PYTHON_LIBRARIES ${Python3_LIBRARIES})
+  set(PYTHON_VERSION "${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}" CACHE INTERNAL "" FORCE)
+  set(PYTHON_LDFLAGS ${Python3_LINK_OPTIONS})
 endif()
 
-mark_as_advanced(PYTHON_EXECUTABLE PYTHON_INCLUDE_DIRS PYTHON_INCLUDE_DIR PYTHON_LIBRARY PYTHON_LIBRARIES PYTHON_LDFLAGS FFI_LIBRARY EXPAT_LIBRARY INTL_LIBRARY GMP_LIBRARY)
+mark_as_advanced(PYTHON_EXECUTABLE PYTHON_VERSION PYTHON_INCLUDE_DIRS PYTHON_LDFLAGS FFI_LIBRARY EXPAT_LIBRARY INTL_LIBRARY GMP_LIBRARY)

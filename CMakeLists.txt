@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.4)
+cmake_minimum_required(VERSION 3.12)
 if(WIN32)
   # Version 3.15 is required to use "PREPEND" for dependencies
   cmake_minimum_required(VERSION 3.15)
@@ -186,8 +186,6 @@ core_require_dep(${required_deps})
 # Required tools
 find_package(TexturePacker REQUIRED)
 find_package(JsonSchemaBuilder REQUIRED)
-
-SET(PYTHON_VERSION 3.8)
 
 if(ENABLE_MARIADBCLIENT AND NOT ENABLE_MARIADBCLIENT STREQUAL AUTO AND ENABLE_MYSQLCLIENT AND NOT ENABLE_MYSQLCLIENT STREQUAL AUTO)
   MESSAGE(FATAL_ERROR "You can not use MySql and MariaDB at the same time. Disable one by adding -DENABLE_MYSQLCLIENT=OFF or -DENABLE_MARIADBCLIENT=OFF.")
