@@ -172,9 +172,9 @@
 					<control type="button" id="112">
 						<description>(0,12) key button</description>
 						<onup>306</onup>
-                                                <ondown>132</ondown>
-                                                <include>KeyboardButton</include>
-                                        </control>
+						<ondown>132</ondown>
+						<include>KeyboardButton</include>
+					</control>
 					<control type="group">
 						<posx>0</posx>
 						<posy>0</posy>
@@ -655,6 +655,36 @@
 						<font>font22</font>
 						<align>center</align>
 						<aligny>center</aligny>
+					</control>
+					<control type="group">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>76</width>
+						<height>76</height>
+						<control type="button" id="310">
+							<description>show password button</description>
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>76</width>
+							<height>76</height>
+							<texturenofocus colordiffuse="grey3">white.png</texturenofocus>
+							<texturefocus>list_focus.png</texturefocus>
+							<textcolor></textcolor>
+							<font></font>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label></label>
+						</control>
+						<control type="image">
+							<description>Next Icon image</description>
+							<posx>13</posx>
+							<posy>18</posy>
+							<width>50</width>
+							<height>40</height>
+							<aspectratio>keep</aspectratio>
+							<texture>$VAR[PasswordButton]</texture>
+							<visible>Control.IsVisible(310)</visible>
+						</control>
 					</control>
 				</control>
 			</control>

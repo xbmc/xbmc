@@ -88,6 +88,10 @@
 		<value condition="Player.Process(videohwdecoder)">HW</value>
 		<value>SW</value>
 	</variable>
+	<variable name="PasswordButton">
+		<value condition="String.IsEqual(Control.GetLabel(310), $LOCALIZE[12308])">icon_keyboard_show.png</value>
+		<value>icon_keyboard_hide.png</value>
+	</variable>
 
 	<include name="ScreenWidth">
 		<include condition="String.IsEqual(Skin.AspectRatio,16:9)">ScreenWidth-16x9</include>

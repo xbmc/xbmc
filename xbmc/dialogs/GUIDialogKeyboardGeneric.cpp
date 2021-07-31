@@ -57,7 +57,7 @@ using namespace KODI::MESSAGING;
 #define CTL_BUTTON_IP_ADDRESS 307
 #define CTL_BUTTON_CLEAR      308
 #define CTL_BUTTON_LAYOUT     309
-
+#define CTL_BUTTON_REVEAL     310
 #define CTL_LABEL_HEADING     311
 #define CTL_EDIT              312
 #define CTL_LABEL_HZCODE      313
@@ -163,6 +163,14 @@ void CGUIDialogKeyboardGeneric::OnInitWindow()
     CGUIMessage msg(GUI_MSG_SET_TYPE, GetID(), CTL_EDIT, m_hiddenInput ? CGUIEditControl::INPUT_TYPE_PASSWORD : CGUIEditControl::INPUT_TYPE_TEXT);
     OnMessage(msg);
   }
+  if (m_hiddenInput)
+  {
+    SET_CONTROL_VISIBLE(CTL_BUTTON_REVEAL);
+    SET_CONTROL_LABEL(CTL_BUTTON_REVEAL, g_localizeStrings.Get(12308));
+  }
+  else
+    SET_CONTROL_HIDDEN(CTL_BUTTON_REVEAL);
+
   SetEditText(m_text);
 
   // get HZLIST label options
@@ -270,6 +278,9 @@ bool CGUIDialogKeyboardGeneric::OnMessage(CGUIMessage& message)
         break;
       case CTL_BUTTON_LAYOUT:
         OnLayout();
+        break;
+      case CTL_BUTTON_REVEAL:
+        OnReveal();
         break;
       case CTL_BUTTON_SYMBOLS:
         OnSymbols();
@@ -544,6 +555,16 @@ void CGUIDialogKeyboardGeneric::OnSymbols()
   else
     m_keyType = SYMBOLS;
   UpdateButtons();
+}
+
+void CGUIDialogKeyboardGeneric::OnReveal()
+{
+  m_hiddenInput = !m_hiddenInput;
+  SET_CONTROL_LABEL(CTL_BUTTON_REVEAL, g_localizeStrings.Get(m_hiddenInput ? 12308 : 12309));
+  CGUIMessage msg(GUI_MSG_SET_TYPE, GetID(), CTL_EDIT,
+                  m_hiddenInput ? CGUIEditControl::INPUT_TYPE_PASSWORD
+                                : CGUIEditControl::INPUT_TYPE_TEXT);
+  OnMessage(msg);
 }
 
 void CGUIDialogKeyboardGeneric::OnShift()
