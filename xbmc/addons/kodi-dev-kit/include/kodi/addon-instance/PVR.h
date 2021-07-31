@@ -2989,10 +2989,18 @@ private:
                                              PVR_EDL_ENTRY* edl,
                                              int* size)
   {
-    *size = 0;
     std::vector<PVREDLEntry> edlList;
     PVR_ERROR error = static_cast<CInstancePVRClient*>(instance->toAddon->addonInstance)
                           ->GetEPGTagEdl(tag, edlList);
+    if (edlList.size() > *size)
+    {
+      kodi::Log(
+          ADDON_LOG_WARNING,
+          "CInstancePVRClient::%s: Truncating %d EDL entries from client to permitted size %d",
+          __func__, edlList.size(), *size);
+      edlList.resize(*size);
+    }
+    *size = 0;
     if (error == PVR_ERROR_NO_ERROR)
     {
       for (const auto& edlEntry : edlList)
@@ -3132,10 +3140,18 @@ private:
                                                 PVR_EDL_ENTRY* edl,
                                                 int* size)
   {
-    *size = 0;
     std::vector<PVREDLEntry> edlList;
     PVR_ERROR error = static_cast<CInstancePVRClient*>(instance->toAddon->addonInstance)
                           ->GetRecordingEdl(recording, edlList);
+    if (edlList.size() > *size)
+    {
+      kodi::Log(
+          ADDON_LOG_WARNING,
+          "CInstancePVRClient::%s: Truncating %d EDL entries from client to permitted size %d",
+          __func__, edlList.size(), *size);
+      edlList.resize(*size);
+    }
+    *size = 0;
     if (error == PVR_ERROR_NO_ERROR)
     {
       for (const auto& edlEntry : edlList)
