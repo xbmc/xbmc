@@ -351,6 +351,7 @@ public:
   static constexpr auto SETTING_VIDEOSCREEN_TESTPATTERN = "videoscreen.testpattern";
   static constexpr auto SETTING_VIDEOSCREEN_LIMITEDRANGE = "videoscreen.limitedrange";
   static constexpr auto SETTING_VIDEOSCREEN_FRAMEPACKING = "videoscreen.framepacking";
+  static constexpr auto SETTING_VIDEOSCREEN_10BITSURFACES = "videoscreen.10bitsurfaces";
   static constexpr auto SETTING_AUDIOOUTPUT_AUDIODEVICE = "audiooutput.audiodevice";
   static constexpr auto SETTING_AUDIOOUTPUT_CHANNELS = "audiooutput.channels";
   static constexpr auto SETTING_AUDIOOUTPUT_CONFIG = "audiooutput.config";

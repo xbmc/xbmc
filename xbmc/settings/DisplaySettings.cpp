@@ -58,6 +58,10 @@
 #include "windowing/windows/WinSystemWin32DX.h"
 #endif
 
+#ifdef TARGET_WINDOWS
+#include "rendering/dx/DeviceResources.h"
+#endif
+
 using namespace KODI::MESSAGING;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
@@ -339,6 +343,13 @@ bool CDisplaySettings::OnSettingChanging(const std::shared_ptr<const CSetting>& 
       m_resolutionChangeAborted = false;
 
     return true;
+  }
+  else if (settingId == CSettings::SETTING_VIDEOSCREEN_10BITSURFACES)
+  {
+#ifdef TARGET_WINDOWS
+    DX::DeviceResources::Get()->ApplyDisplaySettings();
+    return true;
+#endif
   }
 #if defined(HAVE_X11) || defined(TARGET_WINDOWS_DESKTOP) || defined(TARGET_DARWIN_OSX)
   else if (settingId == CSettings::SETTING_VIDEOSCREEN_BLANKDISPLAYS)
