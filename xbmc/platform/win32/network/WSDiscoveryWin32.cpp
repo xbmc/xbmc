@@ -79,7 +79,7 @@ HRESULT STDMETHODCALLTYPE CClientNotificationSink::Add(IWSDiscoveredService* ser
         pList = nullptr; // end of list
     } while (type != L"Computer" && pList != nullptr);
 
-    CLog::Log(LOGDEBUG,
+    CLog::Log(LOGDEBUG, LOGWSDISCOVERY,
               "[WS-Discovery]: HELLO packet received: device type = '{}', device address = '{}'",
               FromW(type), FromW(addr));
 
@@ -93,8 +93,8 @@ HRESULT STDMETHODCALLTYPE CClientNotificationSink::Add(IWSDiscoveredService* ser
       if (it == m_serversIPs.end())
       {
         m_serversIPs.push_back(ip);
-        CLog::Log(LOGDEBUG, "[WS-Discovery]: IP '{}' has been inserted into the server list.",
-                  FromW(ip));
+        CLog::Log(LOGDEBUG, LOGWSDISCOVERY,
+                  "[WS-Discovery]: IP '{}' has been inserted into the server list.", FromW(ip));
       }
     }
   }
@@ -116,7 +116,8 @@ HRESULT STDMETHODCALLTYPE CClientNotificationSink::Remove(IWSDiscoveredService* 
   {
     const std::wstring addr(address);
 
-    CLog::Log(LOGDEBUG, "[WS-Discovery]: BYE packet received: device address = '{}'", FromW(addr));
+    CLog::Log(LOGDEBUG, LOGWSDISCOVERY,
+              "[WS-Discovery]: BYE packet received: device address = '{}'", FromW(addr));
 
     const std::wstring ip = addr.substr(0, addr.find(L":", 0));
     auto it = std::find(m_serversIPs.begin(), m_serversIPs.end(), ip);
@@ -125,8 +126,8 @@ HRESULT STDMETHODCALLTYPE CClientNotificationSink::Remove(IWSDiscoveredService* 
     if (it != m_serversIPs.end())
     {
       m_serversIPs.erase(it);
-      CLog::Log(LOGDEBUG, "[WS-Discovery]: IP '{}' has been removed from the server list.",
-                FromW(ip));
+      CLog::Log(LOGDEBUG, LOGWSDISCOVERY,
+                "[WS-Discovery]: IP '{}' has been removed from the server list.", FromW(ip));
     }
   }
 
@@ -148,7 +149,7 @@ HRESULT STDMETHODCALLTYPE CClientNotificationSink::SearchComplete(LPCWSTR tag)
 {
   CSingleLock lock(m_criticalSection);
 
-  CLog::Log(LOGDEBUG,
+  CLog::Log(LOGDEBUG, LOGWSDISCOVERY,
             "[WS-Discovery]: The initial servers search has completed successfully with {} "
             "server(s) found:",
             m_serversIPs.size());
