@@ -654,6 +654,9 @@ bool CPVRDatabase::Get(CPVRChannelGroups& results)
         data.SetLastOpened(static_cast<uint64_t>(m_pDS->fv("iLastOpened").get_asInt64()));
         results.Update(data);
 
+  CLog::LogF(LOGDEBUG, "YYY Get group load last opened group time for group '{}', id: {}, time: {}", data.GroupName(), data.GroupID(), data.LastOpened());
+
+
         CLog::LogFC(LOGDEBUG, LOGPVR, "Group '{}' loaded from PVR database", data.GroupName());
         m_pDS->next();
       }
@@ -853,6 +856,7 @@ bool CPVRDatabase::Persist(CPVRChannelGroup& group)
           static_cast<unsigned int>(group.LastWatched()), group.IsHidden(), group.GetPosition(),
           group.LastOpened());
 
+
     bReturn = ExecuteQuery(strQuery);
 
     /* set the group id if it was <= 0 */
@@ -861,6 +865,8 @@ bool CPVRDatabase::Persist(CPVRChannelGroup& group)
       CSingleLock lock(group.m_critSection);
       group.m_iGroupId = (int) m_pDS->lastinsertid();
     }
+
+    CLog::LogF(LOGDEBUG, "YYY Persist Last opened group time for group '{}', id: {}, time: {}", group.GroupName(), group.GroupID(), group.LastOpened());
   }
 
   /* only persist the channel data for the internal groups */
@@ -949,6 +955,9 @@ bool CPVRDatabase::UpdateLastOpened(const CPVRChannelGroup& group)
   const std::string strQuery =
       PrepareSQL("UPDATE channelgroups SET iLastOpened = %llu WHERE idGroup = %d",
                  group.LastOpened(), group.GroupID());
+
+  CLog::LogF(LOGDEBUG, "YYY Update Last opened group time for group '{}', id: {}, time: {}", group.GroupName(), group.GroupID(), group.LastOpened());
+
   return ExecuteQuery(strQuery);
 }
 

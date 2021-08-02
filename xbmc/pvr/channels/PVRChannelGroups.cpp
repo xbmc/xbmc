@@ -377,6 +377,10 @@ bool CPVRChannelGroups::Load()
   std::shared_ptr<CPVRChannelGroup> lastOpenedGroup = GetLastOpenedGroup();
   SetSelectedGroup(lastOpenedGroup ? lastOpenedGroup : internalGroup);
 
+  std::shared_ptr<CPVRChannelGroup> group = GetSelectedGroup();
+  CLog::LogF(LOGDEBUG, "YYY GetLastOpenGroup on load Last opened group time for group '{}', id: {}, time: {}", group->GroupName(), group->GroupID(), group->LastOpened());
+
+
   CLog::LogFC(LOGDEBUG, LOGPVR, "{} {} channel groups loaded", m_groups.size(),
               m_bRadio ? "radio" : "TV");
 
