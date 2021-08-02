@@ -28,7 +28,7 @@ using namespace DirectX;
 using namespace DirectX::PackedVector;
 #endif
 
-constexpr size_t LOOKUPTABLE_SIZE = 256 * 8;
+constexpr size_t LOOKUPTABLE_SIZE = 256 * 8 * 2;
 
 class CTexture;
 class CRenderSystemBase;
