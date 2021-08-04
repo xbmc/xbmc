@@ -503,13 +503,33 @@ bool CXBMCApp::AcquireAudioFocus()
 {
   CJNIAudioManager audioManager(getSystemService("audio"));
 
-  // Request audio focus for playback
-  int result = audioManager.requestAudioFocus(m_audioFocusListener,
-                                              // Use the music stream.
-                                              CJNIAudioManager::STREAM_MUSIC,
-                                              // Request permanent focus.
-                                              CJNIAudioManager::AUDIOFOCUS_GAIN);
+  int result;
 
+  if (CJNIBuild::SDK_INT >= 26)
+  {
+    CJNIAudioFocusRequestClassBuilder audioFocusBuilder(CJNIAudioManager::AUDIOFOCUS_GAIN);
+    CJNIAudioAttributesBuilder audioAttrBuilder;
+
+    audioAttrBuilder.setUsage(CJNIAudioAttributes::USAGE_MEDIA);
+    audioAttrBuilder.setContentType(CJNIAudioAttributes::CONTENT_TYPE_MUSIC);
+
+    audioFocusBuilder.setAudioAttributes(audioAttrBuilder.build());
+    audioFocusBuilder.setAcceptsDelayedFocusGain(true);
+    audioFocusBuilder.setWillPauseWhenDucked(true);
+    audioFocusBuilder.setOnAudioFocusChangeListener(m_audioFocusListener);
+
+    // Request audio focus for playback
+    result = audioManager.requestAudioFocus(audioFocusBuilder.build());
+  }
+  else
+  {
+    // Request audio focus for playback
+    result = audioManager.requestAudioFocus(m_audioFocusListener,
+                                            // Use the music stream.
+                                            CJNIAudioManager::STREAM_MUSIC,
+                                            // Request permanent focus.
+                                            CJNIAudioManager::AUDIOFOCUS_GAIN);
+  }
   if (result != CJNIAudioManager::AUDIOFOCUS_REQUEST_GRANTED)
   {
     CXBMCApp::android_printf("Audio Focus request failed");
@@ -521,9 +541,31 @@ bool CXBMCApp::AcquireAudioFocus()
 bool CXBMCApp::ReleaseAudioFocus()
 {
   CJNIAudioManager audioManager(getSystemService("audio"));
+  int result;
 
-  // Release audio focus after playback
-  int result = audioManager.abandonAudioFocus(m_audioFocusListener);
+  if (CJNIBuild::SDK_INT >= 26)
+  {
+    // Abandon requires the same AudioFocusRequest as the request
+    CJNIAudioFocusRequestClassBuilder audioFocusBuilder(CJNIAudioManager::AUDIOFOCUS_GAIN);
+    CJNIAudioAttributesBuilder audioAttrBuilder;
+
+    audioAttrBuilder.setUsage(CJNIAudioAttributes::USAGE_MEDIA);
+    audioAttrBuilder.setContentType(CJNIAudioAttributes::CONTENT_TYPE_MUSIC);
+
+    audioFocusBuilder.setAudioAttributes(audioAttrBuilder.build());
+    audioFocusBuilder.setAcceptsDelayedFocusGain(true);
+    audioFocusBuilder.setWillPauseWhenDucked(true);
+    audioFocusBuilder.setOnAudioFocusChangeListener(m_audioFocusListener);
+
+    // Release audio focus after playback
+    result = audioManager.abandonAudioFocusRequest(audioFocusBuilder.build());
+  }
+  else
+  {
+    // Release audio focus after playback
+    result = audioManager.abandonAudioFocus(m_audioFocusListener);
+  }
+
   if (result != CJNIAudioManager::AUDIOFOCUS_REQUEST_GRANTED)
   {
     CXBMCApp::android_printf("Audio Focus abandon failed");
