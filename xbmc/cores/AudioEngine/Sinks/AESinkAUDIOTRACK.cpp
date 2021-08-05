@@ -158,7 +158,6 @@ jni::CJNIAudioTrack *CAESinkAUDIOTRACK::CreateAudioTrack(int stream, int sampleR
     CJNIAudioAttributesBuilder attrBuilder;
     attrBuilder.setUsage(CJNIAudioAttributes::USAGE_MEDIA);
     attrBuilder.setContentType(CJNIAudioAttributes::CONTENT_TYPE_MUSIC);
-    attrBuilder.setLegacyStreamType(CJNIAudioManager::STREAM_MUSIC);
 
     CJNIAudioFormatBuilder fmtBuilder;
     fmtBuilder.setChannelMask(channelMask);
