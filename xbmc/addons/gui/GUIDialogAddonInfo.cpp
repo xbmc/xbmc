@@ -793,21 +793,21 @@ void CGUIDialogAddonInfo::BuildDependencyList()
     }
 
     m_depsInstalledWithAvailable.emplace_back(dep, addonInstalled, addonAvailable);
-
-    // sort criteria in dialog:
-    // 1. optional add-ons to top
-    // 2. scripts/modules to bottom
-    std::sort(m_depsInstalledWithAvailable.begin(), m_depsInstalledWithAvailable.end(),
-              [](const auto& a, const auto& b) {
-                if (a.m_depInfo.optional != b.m_depInfo.optional)
-                {
-                  return a.m_depInfo.optional;
-                }
-
-                const std::shared_ptr<IAddon>& depA = a.m_installed ? a.m_installed : a.m_available;
-                return (depA && depA->MainType() != ADDON_SCRIPT_MODULE);
-              });
   }
+
+  // sort criteria in dialog:
+  // 1. optional add-ons to top
+  // 2. scripts/modules to bottom
+  std::sort(m_depsInstalledWithAvailable.begin(), m_depsInstalledWithAvailable.end(),
+            [](const auto& a, const auto& b) {
+              if (a.m_depInfo.optional != b.m_depInfo.optional)
+              {
+                return a.m_depInfo.optional;
+              }
+
+              const std::shared_ptr<IAddon>& depA = a.m_installed ? a.m_installed : a.m_available;
+              return (depA && depA->MainType() != ADDON_SCRIPT_MODULE);
+            });
 }
 
 bool CInstalledWithAvailable::IsInstalledUpToDate() const
