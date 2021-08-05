@@ -15,6 +15,7 @@
 #include "DVDSubtitleParserSubrip.h"
 #include "DVDSubtitleParserVplayer.h"
 #include "DVDSubtitleStream.h"
+#include "utils/StringUtils.h"
 
 #include <cstring>
 #include <memory>
@@ -51,8 +52,11 @@ CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(std::string& strFile)
       {
         return new CDVDSubtitleParserVplayer(std::move(pStream), strFile.c_str());
       }
-      else if ((!memcmp(line, "Dialogue: Marked", 16)) || (!memcmp(line, "Dialogue: ", 10)) ||
-               (!memcmp(line, "[Events]", 8)))
+      else if (!StringUtils::CompareNoCase(line, "!: This is a Sub Station Alpha v", 32) ||
+               !StringUtils::CompareNoCase(line, "ScriptType: v4.00", 17) ||
+               !StringUtils::CompareNoCase(line, "Dialogue: Marked", 16) ||
+               !StringUtils::CompareNoCase(line, "Dialogue: ", 10) ||
+               !StringUtils::CompareNoCase(line, "[Events]", 8))
       {
         return new CDVDSubtitleParserSSA(std::move(pStream), strFile.c_str());
       }
