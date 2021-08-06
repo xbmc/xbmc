@@ -58,8 +58,6 @@ CGUIShaderDX::CGUIShaderDX() :
     m_currentShader(0),
     m_clipPossible(false)
 {
-  ZeroMemory(&m_cbViewPort, sizeof(m_cbViewPort));
-  ZeroMemory(&m_cbWorldViewProj, sizeof(m_cbWorldViewProj));
 }
 
 CGUIShaderDX::~CGUIShaderDX()

@@ -721,8 +721,7 @@ RECT CWinSystemWin32::ScreenRect(HMONITOR handle)
     return RECT();
   }
 
-  DEVMODEW sDevMode;
-  ZeroMemory(&sDevMode, sizeof(sDevMode));
+  DEVMODEW sDevMode = {};
   sDevMode.dmSize = sizeof(sDevMode);
   if(!EnumDisplaySettingsW(details->DeviceNameW.c_str(), ENUM_CURRENT_SETTINGS, &sDevMode))
     CLog::LogF(LOGERROR, " EnumDisplaySettings failed with {}", GetLastError());
@@ -779,8 +778,7 @@ void CWinSystemWin32::GetConnectedDisplays(std::vector<MONITOR_DETAILS>& outputs
     if (foundScreen)
     {
       // get information about the display's current position and display mode
-      DEVMODEW dm;
-      ZeroMemory(&dm, sizeof(dm));
+      DEVMODEW dm = {};
       dm.dmSize = sizeof(dm);
       if (EnumDisplaySettingsExW(ddAdapter.DeviceName, ENUM_CURRENT_SETTINGS, &dm, 0) == FALSE)
         EnumDisplaySettingsExW(ddAdapter.DeviceName, ENUM_REGISTRY_SETTINGS, &dm, 0);

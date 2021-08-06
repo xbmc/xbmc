@@ -179,8 +179,7 @@ bool CRenderSystemDX::CreateStates()
   m_BlendDisableState = nullptr;
 
   // Initialize the description of the stencil state.
-  D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
-  ZeroMemory(&depthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
+  D3D11_DEPTH_STENCIL_DESC depthStencilDesc = {};
 
   // Set up the description of the stencil state.
   depthStencilDesc.DepthEnable = false;
@@ -231,8 +230,7 @@ bool CRenderSystemDX::CreateStates()
 
   m_pContext->RSSetState(m_RSScissorDisable.Get()); // by default
 
-  D3D11_BLEND_DESC blendState = { 0 };
-  ZeroMemory(&blendState, sizeof(D3D11_BLEND_DESC));
+  D3D11_BLEND_DESC blendState = {};
   blendState.RenderTarget[0].BlendEnable = true;
   blendState.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA; // D3D11_BLEND_SRC_ALPHA;
   blendState.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA; // D3D11_BLEND_INV_SRC_ALPHA;

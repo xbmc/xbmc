@@ -405,8 +405,7 @@ void DX::DeviceResources::CreateDeviceResources()
                                                                           // Add more message IDs here as needed
       };
 
-      D3D11_INFO_QUEUE_FILTER filter;
-      ZeroMemory(&filter, sizeof(filter));
+      D3D11_INFO_QUEUE_FILTER filter = {};
       filter.DenyList.NumIDs = hide.size();
       filter.DenyList.pIDList = hide.data();
       d3dInfoQueue->AddStorageFilterEntries(&filter);

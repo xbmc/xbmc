@@ -324,7 +324,7 @@ DEVINST CWin32StorageProvider::GetDrivesDevInstByDiskNumber(long DiskNumber)
         continue;
 
       pspdidd->cbSize = sizeof(*pspdidd);
-      ZeroMemory((PVOID)&spdd, sizeof(spdd));
+      memset(&spdd, 0, sizeof(spdd));
       spdd.cbSize = sizeof(spdd);
 
       long res = SetupDiGetDeviceInterfaceDetail(hDevInfo, &spdid,

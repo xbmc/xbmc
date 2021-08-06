@@ -184,8 +184,6 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
     return false;
   }
 
-  WAVEFORMATEXTENSIBLE wfxex = {0};
-
   // clamp samplerate between 44100 and 192000
   if (format.m_sampleRate < 44100)
     format.m_sampleRate = 44100;
@@ -193,8 +191,8 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
   if (format.m_sampleRate > 192000)
     format.m_sampleRate = 192000;
 
-  //fill waveformatex
-  ZeroMemory(&wfxex, sizeof(WAVEFORMATEXTENSIBLE));
+  // fill waveformatex
+  WAVEFORMATEXTENSIBLE wfxex = {};
   wfxex.Format.cbSize          = sizeof(WAVEFORMATEXTENSIBLE)-sizeof(WAVEFORMATEX);
   wfxex.Format.nChannels       = format.m_channelLayout.Count();
   wfxex.Format.nSamplesPerSec  = format.m_sampleRate;
