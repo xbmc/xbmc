@@ -937,7 +937,7 @@ void DX::DeviceResources::Present()
   // The first argument instructs DXGI to block until VSync, putting the application
   // to sleep until the next VSync. This ensures we don't waste any cycles rendering
   // frames that will never be displayed to the screen.
-  DXGI_PRESENT_PARAMETERS parameters = { 0 };
+  DXGI_PRESENT_PARAMETERS parameters = {};
   HRESULT hr = m_swapChain->Present1(1, 0, &parameters);
 
   // If the device was removed either by a disconnection or a driver upgrade, we
@@ -973,8 +973,8 @@ void DX::DeviceResources::ClearRenderTarget(ID3D11RenderTargetView* pRTView, flo
 
 void DX::DeviceResources::HandleOutputChange(const std::function<bool(DXGI_OUTPUT_DESC)>& cmpFunc)
 {
-  DXGI_ADAPTER_DESC currentDesc = { 0 };
-  DXGI_ADAPTER_DESC foundDesc = { 0 };
+  DXGI_ADAPTER_DESC currentDesc = {};
+  DXGI_ADAPTER_DESC foundDesc = {};
 
   ComPtr<IDXGIFactory1> factory;
   if (m_adapter)

@@ -243,7 +243,7 @@ bool CWIN32Util::XBMCShellExecute(const std::string &strPath, bool bWaitForScrip
   g_charsetConverter.utf8ToW(strWorkingDir, WstrWorkingDir);
 
   bool ret;
-  SHELLEXECUTEINFOW ShExecInfo = {0};
+  SHELLEXECUTEINFOW ShExecInfo = {};
   ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFOW);
   ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
   ShExecInfo.hwnd = NULL;

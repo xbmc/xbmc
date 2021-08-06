@@ -53,7 +53,7 @@ bool CScreenshotSurfaceWindows::Capture()
   if (!backbuffer.Get())
     return false;
 
-  D3D11_TEXTURE2D_DESC desc = { 0 };
+  D3D11_TEXTURE2D_DESC desc = {};
   backbuffer.GetDesc(&desc);
   desc.Usage = D3D11_USAGE_STAGING;
   desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;

@@ -401,7 +401,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
   CAEChannelInfo       deviceChannels;
   bool                 add192 = false;
 
-  WAVEFORMATEXTENSIBLE wfxex = {0};
+  WAVEFORMATEXTENSIBLE wfxex = {};
   HRESULT              hr;
 
   for(RendererDetail& details : CAESinkFactoryWin::GetRendererDetails())

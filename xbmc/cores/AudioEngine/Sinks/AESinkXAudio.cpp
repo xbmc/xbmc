@@ -84,7 +84,7 @@ CAESinkXAudio::CAESinkXAudio() :
 #ifdef  _DEBUG
   else
   {
-    XAUDIO2_DEBUG_CONFIGURATION config = { 0 };
+    XAUDIO2_DEBUG_CONFIGURATION config = {};
     config.BreakMask = XAUDIO2_LOG_ERRORS | XAUDIO2_LOG_WARNINGS | XAUDIO2_LOG_API_CALLS | XAUDIO2_LOG_STREAMING;
     config.TraceMask = XAUDIO2_LOG_ERRORS | XAUDIO2_LOG_WARNINGS | XAUDIO2_LOG_API_CALLS | XAUDIO2_LOG_STREAMING;
     config.LogTiming = true;
@@ -248,7 +248,7 @@ unsigned int CAESinkXAudio::AddPackets(uint8_t **data, unsigned int frames, unsi
   ctx->sink = this;
   memcpy(ctx->data, data[0] + offset * m_format.m_frameSize, dataLenght);
 
-  XAUDIO2_BUFFER xbuffer = { 0 };
+  XAUDIO2_BUFFER xbuffer = {};
   xbuffer.AudioBytes = dataLenght;
   xbuffer.pAudioData = ctx->data;
   xbuffer.pContext = ctx;
@@ -335,7 +335,7 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
   HRESULT hr = S_OK, hr2 = S_OK;
   CAEDeviceInfo deviceInfo;
   CAEChannelInfo deviceChannels;
-  WAVEFORMATEXTENSIBLE wfxex = { 0 };
+  WAVEFORMATEXTENSIBLE wfxex = {};
   bool add192 = false;
 
   UINT32 eflags = 0;// XAUDIO2_DEBUG_ENGINE;
@@ -605,7 +605,7 @@ failed:
 bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &format)
 {
   std::wstring device = KODI::PLATFORM::WINDOWS::ToW(deviceId);
-  WAVEFORMATEXTENSIBLE wfxex = { 0 };
+  WAVEFORMATEXTENSIBLE wfxex = {};
 
   if ( format.m_dataFormat <= AE_FMT_FLOAT
     || format.m_dataFormat == AE_FMT_RAW)

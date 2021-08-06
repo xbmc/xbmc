@@ -906,7 +906,7 @@ void CWinEventsWin32::OnGesture(HWND hWnd, LPARAM lParam)
   if (!DX::Windowing()->PtrGetGestureInfo)
     return;
 
-  GESTUREINFO gi = {0};
+  GESTUREINFO gi = {};
   gi.cbSize = sizeof(gi);
   DX::Windowing()->PtrGetGestureInfo(reinterpret_cast<HGESTUREINFO>(lParam), &gi);
 

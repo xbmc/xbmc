@@ -498,7 +498,7 @@ std::string CNetworkBase::GetIpStr(const struct sockaddr* sa)
   if (!sa)
     return result;
 
-  char buffer[INET6_ADDRSTRLEN] = { 0 };
+  char buffer[INET6_ADDRSTRLEN] = {};
   switch (sa->sa_family)
   {
   case AF_INET:

@@ -295,7 +295,7 @@ DEVINST CWin32StorageProvider::GetDrivesDevInstByDiskNumber(long DiskNumber)
   // Retrieve a context structure for a device interface of a device
   // information set.
   DWORD dwIndex = 0;
-  SP_DEVICE_INTERFACE_DATA devInterfaceData = { 0 };
+  SP_DEVICE_INTERFACE_DATA devInterfaceData = {};
   devInterfaceData.cbSize = sizeof(SP_DEVICE_INTERFACE_DATA);
   BOOL bRet = FALSE;
 

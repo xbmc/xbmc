@@ -140,7 +140,7 @@ bool win32_exception::write_stacktrace(EXCEPTION_POINTERS* pEp)
   KODI::TIME::SystemTime stLocalTime;
   KODI::TIME::GetLocalTime(&stLocalTime);
   bool returncode = false;
-  STACKFRAME64 frame = { 0 };
+  STACKFRAME64 frame = {};
   HANDLE hCurProc = GetCurrentProcess();
   IMAGEHLP_SYMBOL64* pSym = NULL;
   HANDLE hDumpFile = INVALID_HANDLE_VALUE;

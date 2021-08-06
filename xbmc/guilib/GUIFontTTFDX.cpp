@@ -345,7 +345,7 @@ void CGUIFontTTFDX::CreateStaticIndexBuffer(void)
   }
 
   CD3D11_BUFFER_DESC desc(sizeof(index), D3D11_BIND_INDEX_BUFFER, D3D11_USAGE_IMMUTABLE);
-  D3D11_SUBRESOURCE_DATA initData = { 0 };
+  D3D11_SUBRESOURCE_DATA initData = {};
   initData.pSysMem = index;
 
   if (SUCCEEDED(pDevice->CreateBuffer(&desc, &initData, m_staticIndexBuffer.ReleaseAndGetAddressOf())))

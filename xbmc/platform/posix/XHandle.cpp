@@ -13,7 +13,7 @@
 
 #include <cassert>
 
-int CXHandle::m_objectTracker[10] = {0};
+int CXHandle::m_objectTracker[10] = {};
 
 HANDLE WINAPI GetCurrentProcess(void) {
   return (HANDLE)-1; // -1 a special value - pseudo handle

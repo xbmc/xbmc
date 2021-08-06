@@ -259,7 +259,7 @@ bool CD3DTexture::CreateInternal(const void* pixels /* nullptr */, unsigned int 
     m_mipLevels = 1;
 
   CD3D11_TEXTURE2D_DESC textureDesc(m_format, m_width, m_height, 1, m_mipLevels, m_bindFlags, m_usage, m_cpuFlags, 1, 0, miscFlags);
-  D3D11_SUBRESOURCE_DATA initData = { 0 };
+  D3D11_SUBRESOURCE_DATA initData = {};
   initData.pSysMem = pixels;
   initData.SysMemPitch = srcPitch ? srcPitch : CD3DHelper::BitsPerPixel(m_format) * m_width / 8;
   initData.SysMemSlicePitch = 0;
