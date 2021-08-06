@@ -52,8 +52,7 @@ void CLibInputPointer::ProcessButton(libinput_event_pointer *e)
       break;
   }
 
-  XBMC_Event event;
-  memset(&event, 0, sizeof(event));
+  XBMC_Event event = {};
 
   event.type = pressed ? XBMC_MOUSEBUTTONDOWN : XBMC_MOUSEBUTTONUP;
   event.button.button = xbmc_button;
@@ -86,8 +85,7 @@ void CLibInputPointer::ProcessMotion(libinput_event_pointer *e)
   m_pos.Y = std::min(CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight(), m_pos.Y);
   m_pos.Y = std::max(0, m_pos.Y);
 
-  XBMC_Event event;
-  memset(&event, 0, sizeof(event));
+  XBMC_Event event = {};
 
   event.type = XBMC_MOUSEMOTION;
   event.motion.x = static_cast<uint16_t>(m_pos.X);
@@ -107,7 +105,7 @@ void CLibInputPointer::ProcessMotionAbsolute(libinput_event_pointer *e)
   m_pos.X = static_cast<int>(libinput_event_pointer_get_absolute_x_transformed(e, CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth()));
   m_pos.Y = static_cast<int>(libinput_event_pointer_get_absolute_y_transformed(e, CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight()));
 
-  XBMC_Event event;
+  XBMC_Event event = {};
   event.type = XBMC_MOUSEMOTION;
   event.motion.x = static_cast<uint16_t>(m_pos.X);
   event.motion.y = static_cast<uint16_t>(m_pos.Y);
@@ -133,8 +131,7 @@ void CLibInputPointer::ProcessAxis(libinput_event_pointer *e)
   else
     scroll = XBMC_BUTTON_WHEELDOWN;
 
-  XBMC_Event event;
-  memset(&event, 0, sizeof(event));
+  XBMC_Event event = {};
 
   event.type = XBMC_MOUSEBUTTONDOWN;
   event.button.button = scroll;

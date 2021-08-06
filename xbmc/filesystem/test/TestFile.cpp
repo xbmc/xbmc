@@ -29,8 +29,7 @@ TEST(TestFile, Read)
   const std::string fifthBuf = "multimedia jukebox." + newLine;
 
   XFILE::CFile file;
-  char buf[23];
-  memset(buf, 0, sizeof(buf));
+  char buf[23] = {};
 
   size_t currentPos;
   ASSERT_TRUE(file.Open(
@@ -89,8 +88,7 @@ TEST(TestFile, Write)
 {
   XFILE::CFile *file;
   const char str[] = "TestFile.Write test string\n";
-  char buf[30];
-  memset(buf, 0, sizeof(buf));
+  char buf[30] = {};
 
   ASSERT_NE(nullptr, file = XBMC_CREATETEMPFILE(""));
   file->Close();

@@ -157,8 +157,7 @@ void DX::DeviceResources::GetDisplayMode(DXGI_MODE_DESC* mode) const
   mode->ScanlineOrdering = scDesc.BufferDesc.ScanlineOrdering;
 
 #ifdef TARGET_WINDOWS_DESKTOP
-  DEVMODEW sDevMode;
-  memset(&sDevMode, 0, sizeof(sDevMode));
+  DEVMODEW sDevMode = {};
   sDevMode.dmSize = sizeof(sDevMode);
 
   // EnumDisplaySettingsW is only one way to detect current refresh rate

@@ -212,12 +212,10 @@ bool win32_exception::write_stacktrace(EXCEPTION_POINTERS* pEp)
   pSym->SizeOfStruct = sizeof(IMAGEHLP_SYMBOL64);
   pSym->MaxNameLength = STACKWALK_MAX_NAMELEN;
 
-  IMAGEHLP_LINE64 Line;
-  memset(&Line, 0, sizeof(Line));
+  IMAGEHLP_LINE64 Line = {};
   Line.SizeOfStruct = sizeof(Line);
 
-  IMAGEHLP_MODULE64 Module;
-  memset(&Module, 0, sizeof(Module));
+  IMAGEHLP_MODULE64 Module = {};
   Module.SizeOfStruct = sizeof(Module);
   int seq=0;
 

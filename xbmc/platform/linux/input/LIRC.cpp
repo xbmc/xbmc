@@ -148,7 +148,7 @@ void CLirc::ProcessCode(char *buf)
               &deviceName[0], buttonName);
     m_firstClickTime = std::chrono::steady_clock::now();
 
-    XBMC_Event newEvent;
+    XBMC_Event newEvent = {};
     newEvent.type = XBMC_BUTTON;
     newEvent.keybutton.button = button;
     newEvent.keybutton.holdtime = 0;
@@ -159,7 +159,7 @@ void CLirc::ProcessCode(char *buf)
   }
   else if (repeat > CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_remoteDelay)
   {
-    XBMC_Event newEvent;
+    XBMC_Event newEvent = {};
     newEvent.type = XBMC_BUTTON;
     newEvent.keybutton.button = button;
 

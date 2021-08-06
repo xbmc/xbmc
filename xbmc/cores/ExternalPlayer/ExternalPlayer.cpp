@@ -402,8 +402,7 @@ bool CExternalPlayer::ExecuteAppW32(const char* strPath, const char* strSwitches
 {
   CLog::Log(LOGINFO, "{}: {} {}", __FUNCTION__, strPath, strSwitches);
 
-  STARTUPINFOW si;
-  memset(&si, 0, sizeof(si));
+  STARTUPINFOW si = {};
   si.cb = sizeof(si);
   si.dwFlags = STARTF_USESHOWWINDOW;
   si.wShowWindow = m_hideconsole ? SW_HIDE : SW_SHOW;

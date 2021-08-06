@@ -36,8 +36,7 @@ protected:
 TEST_F(TestZipFile, Read)
 {
   XFILE::CFile file;
-  char buf[20];
-  memset(&buf, 0, sizeof(buf));
+  char buf[20] = {};
   std::string reffile, strpathinzip;
   CFileItemList itemlist;
 
@@ -125,8 +124,7 @@ TEST_F(TestZipFile, Stat)
 TEST_F(TestZipFile, CorruptedFile)
 {
   XFILE::CFile *file;
-  char buf[16];
-  memset(&buf, 0, sizeof(buf));
+  char buf[16] = {};
   std::string reffilepath, strpathinzip, str;
   CFileItemList itemlist;
   ssize_t size, i;

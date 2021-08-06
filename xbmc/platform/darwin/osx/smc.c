@@ -99,11 +99,9 @@ kern_return_t SMCCall(int index, SMCKeyData_t *inputStructure, SMCKeyData_t *out
 kern_return_t SMCReadKey(UInt32ConstChar_t key, SMCVal_t *val)
 {
   kern_return_t result;
-  SMCKeyData_t  inputStructure;
-  SMCKeyData_t  outputStructure;
+  SMCKeyData_t inputStructure = {};
+  SMCKeyData_t outputStructure = {};
 
-  memset(&inputStructure, 0, sizeof(SMCKeyData_t));
-  memset(&outputStructure, 0, sizeof(SMCKeyData_t));
   memset(val, 0, sizeof(SMCVal_t));
 
   inputStructure.key = _strtoul(key, 4, 16);

@@ -15,10 +15,8 @@
 
 bool CDVDStateSerializer::test( const dvd_state_t *state  )
 {
-  dvd_state_t state2;
+  dvd_state_t state2 = {};
   std::string buffer;
-
-  memset( &state2, 0, sizeof(dvd_state_t));
 
   DVDToXMLState(buffer, state);
 

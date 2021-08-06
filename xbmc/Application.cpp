@@ -2036,8 +2036,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
   }
   case TMSG_VIDEORESIZE:
   {
-    XBMC_Event newEvent;
-    memset(&newEvent, 0, sizeof(newEvent));
+    XBMC_Event newEvent = {};
     newEvent.type = XBMC_VIDEORESIZE;
     newEvent.resize.w = pMsg->param1;
     newEvent.resize.h = pMsg->param2;

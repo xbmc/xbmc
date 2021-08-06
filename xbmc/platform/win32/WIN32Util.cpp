@@ -1210,8 +1210,7 @@ bool CWIN32Util::IsUsbDevice(const std::wstring &strWdrive)
     return false;
 
   // setup query
-  STORAGE_PROPERTY_QUERY query;
-  memset(&query, 0, sizeof(query));
+  STORAGE_PROPERTY_QUERY query = {};
   query.PropertyId = StorageDeviceProperty;
   query.QueryType = PropertyStandardQuery;
 

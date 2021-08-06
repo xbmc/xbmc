@@ -316,8 +316,7 @@ void CAndroidKey::XBMC_Key(uint8_t code, uint16_t key, uint16_t modifiers, uint1
   if (!winSystem)
     return;
 
-  XBMC_Event newEvent;
-  memset(&newEvent, 0, sizeof(newEvent));
+  XBMC_Event newEvent = {};
 
   unsigned char type = up ? XBMC_KEYUP : XBMC_KEYDOWN;
   newEvent.type = type;

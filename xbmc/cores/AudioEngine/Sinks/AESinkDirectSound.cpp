@@ -224,8 +224,7 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
   m_dwBufferLen = m_dwChunkSize * 12; //180ms total buffer
 
   // fill in the secondary sound buffer descriptor
-  DSBUFFERDESC dsbdesc;
-  memset(&dsbdesc, 0, sizeof(DSBUFFERDESC));
+  DSBUFFERDESC dsbdesc = {};
   dsbdesc.dwSize = sizeof(DSBUFFERDESC);
   dsbdesc.dwFlags = DSBCAPS_GETCURRENTPOSITION2 /** Better position accuracy */
                   | DSBCAPS_TRUEPLAYPOSITION    /** Vista+ accurate position */

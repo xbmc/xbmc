@@ -50,8 +50,7 @@ uint32_t* convert_rgba(CDVDOverlayImage* o, bool mergealpha)
   if(!rgba)
     return NULL;
 
-  uint32_t palette[256];
-  memset(palette, 0, 256 * sizeof(palette[0]));
+  uint32_t palette[256] = {};
   for(int i = 0; i < o->palette_colors; i++)
     palette[i] = build_rgba((o->palette[i] >> PIXEL_ASHIFT) & 0xff
                           , (o->palette[i] >> PIXEL_RSHIFT) & 0xff
