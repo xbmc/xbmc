@@ -52,7 +52,7 @@ CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(std::string& strFile)
         return new CDVDSubtitleParserVplayer(std::move(pStream), strFile.c_str());
       }
       else if ((!memcmp(line, "Dialogue: Marked", 16)) || (!memcmp(line, "Dialogue: ", 10)) ||
-               (!memcmp(line, "[Events]", 8)))
+               (!memcmp(line, "[Events]", 8) || !memcmp(line, "[Script Info]", 13)))
       {
         return new CDVDSubtitleParserSSA(std::move(pStream), strFile.c_str());
       }
