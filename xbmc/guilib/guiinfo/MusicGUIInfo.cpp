@@ -387,6 +387,13 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
 
         value = CURL(value).GetWithoutUserDetails();
         return true;
+      case LISTITEM_DATE_ADDED:
+        if (tag->GetDateAdded().IsValid())
+        {
+          value = tag->GetDateAdded().GetAsLocalizedDate();
+          return true;
+        }
+        break;
     }
   }
 
