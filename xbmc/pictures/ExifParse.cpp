@@ -101,22 +101,23 @@ static void ErrNonfatal(const char* const msg, int a1, int a2);
 
 //--------------------------------------------------------------------------
 // Exif format descriptor stuff
-#define FMT_BYTE       1
-#define FMT_STRING     2
-#define FMT_USHORT     3
-#define FMT_ULONG      4
-#define FMT_URATIONAL  5
-#define FMT_SBYTE      6
-#define FMT_UNDEFINED  7
-#define FMT_SSHORT     8
-#define FMT_SLONG      9
-#define FMT_SRATIONAL 10
-#define FMT_SINGLE    11
-#define FMT_DOUBLE    12
+namespace
+{
+constexpr auto FMT_BYTE = 1;
+constexpr auto FMT_USHORT = 2;
+constexpr auto FMT_ULONG = 3;
+constexpr auto FMT_URATIONAL = 4;
+constexpr auto FMT_SBYTE = 5;
+constexpr auto FMT_SSHORT = 6;
+constexpr auto FMT_SLONG = 7;
+constexpr auto FMT_SRATIONAL = 8;
+constexpr auto FMT_SINGLE = 9;
+constexpr auto FMT_DOUBLE = 10;
 // NOTE: Remember to change NUM_FORMATS if you define a new format
-#define NUM_FORMATS   12
+constexpr auto NUM_FORMATS = 10;
 
-const unsigned int BytesPerFormat[NUM_FORMATS] = { 1,1,2,4,8,1,1,2,4,8,4,8 };
+const unsigned int BytesPerFormat[NUM_FORMATS] = {1, 2, 4, 8, 1, 2, 4, 8, 4, 8};
+} // namespace
 
 //--------------------------------------------------------------------------
 // Internationalisation string IDs. The enum order must match that in the

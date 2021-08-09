@@ -36,7 +36,8 @@ public:
 
   static void ShowAndEditMediaFilter(const std::string &path, CSmartPlaylist &filter);
 
-  typedef struct {
+  struct Filter
+  {
     std::string mediaType;
     Field field;
     uint32_t label;
@@ -47,7 +48,7 @@ public:
     std::shared_ptr<CSetting> setting = nullptr;
     CSmartPlaylistRule* rule = nullptr;
     void* data = nullptr;
-  } Filter;
+  };
 
 protected:
   // specializations of CGUIWindow

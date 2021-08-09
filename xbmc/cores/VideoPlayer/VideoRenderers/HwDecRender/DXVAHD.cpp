@@ -460,8 +460,10 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
   if (!views[2])
     return false;
 
-  RECT sourceRECT = { src.x1, src.y1, src.x2, src.y2 };
-  RECT dstRECT    = { dst.x1, dst.y1, dst.x2, dst.y2 };
+  RECT sourceRECT = {static_cast<LONG>(src.x1), static_cast<LONG>(src.y1),
+                     static_cast<LONG>(src.x2), static_cast<LONG>(src.y2)};
+  RECT dstRECT = {static_cast<LONG>(dst.x1), static_cast<LONG>(dst.y1), static_cast<LONG>(dst.x2),
+                  static_cast<LONG>(dst.y2)};
 
   D3D11_VIDEO_FRAME_FORMAT dxvaFrameFormat = D3D11_VIDEO_FRAME_FORMAT_PROGRESSIVE;
 
@@ -573,14 +575,16 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
   {
     // input colorspace
     bool isBT601 = views[2]->color_space == AVCOL_SPC_BT470BG || views[2]->color_space == AVCOL_SPC_SMPTE170M;
+    // clang-format off
     D3D11_VIDEO_PROCESSOR_COLOR_SPACE colorSpace
     {
-      0,                            // 0 - Playback, 1 - Processing
-      views[2]->full_range ? 0 : 1, // 0 - Full (0-255), 1 - Limited (16-235) (RGB)
-      isBT601 ? 1 : 0,              // 0 - BT.601, 1 - BT.709
-      0,                            // 0 - Conventional YCbCr, 1 - xvYCC
-      views[2]->full_range ? 2 : 1  // 0 - driver defaults, 2 - Full range [0-255], 1 - Studio range [16-235] (YUV)
+      0u,                             // 0 - Playback, 1 - Processing
+      views[2]->full_range ? 0u : 1u, // 0 - Full (0-255), 1 - Limited (16-235) (RGB)
+      isBT601 ? 1u : 0u,              // 0 - BT.601, 1 - BT.709
+      0u,                             // 0 - Conventional YCbCr, 1 - xvYCC
+      views[2]->full_range ? 2u : 1u  // 0 - driver defaults, 2 - Full range [0-255], 1 - Studio range [16-235] (YUV)
     };
+    // clang-format on
     m_pVideoContext->VideoProcessorSetStreamColorSpace(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, &colorSpace);
     // Output color space
     // don't apply any color range conversion, this will be fixed at later stage.
