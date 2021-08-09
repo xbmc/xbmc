@@ -41,6 +41,10 @@ if(SHAIRPLAY_FOUND)
   list(APPEND HEADERS AirTunesServer.h)
 endif()
 
+if(SMBCLIENT_FOUND)
+  list(APPEND HEADERS IWSDiscovery.h)
+endif()
+
 if(MICROHTTPD_FOUND)
   list(APPEND SOURCES WebServer.cpp)
   list(APPEND HEADERS WebServer.h)

@@ -336,6 +336,7 @@ constexpr const char* CSettings::SETTING_SMB_WORKGROUP;
 constexpr const char* CSettings::SETTING_SMB_MINPROTOCOL;
 constexpr const char* CSettings::SETTING_SMB_MAXPROTOCOL;
 constexpr const char* CSettings::SETTING_SMB_LEGACYSECURITY;
+constexpr const char* CSettings::SETTING_SERVICES_WSDISCOVERY;
 constexpr const char* CSettings::SETTING_VIDEOSCREEN_MONITOR;
 constexpr const char* CSettings::SETTING_VIDEOSCREEN_SCREEN;
 constexpr const char* CSettings::SETTING_VIDEOSCREEN_WHITELIST;

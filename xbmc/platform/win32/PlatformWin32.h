@@ -15,9 +15,8 @@ class CPlatformWin32 : public CPlatform
 public:
   CPlatformWin32() = default;
 
-  ~CPlatformWin32() override;
+  ~CPlatformWin32() = default;
 
   bool InitStageOne() override;
-  bool InitStageThree() override;
   void PlatformSyslog() override;
 };

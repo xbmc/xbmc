@@ -25,12 +25,15 @@
 #include "Util.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
+
+#include "platform/posix/filesystem/SMBWSDiscovery.h"
 
 #include <libsmbclient.h>
 
@@ -66,6 +69,32 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   std::string strAuth;
 
   lock.Leave(); // OpenDir is locked
+
+  // if url provided does not having anything except smb protocol
+  // Do a WS-Discovery search to find possible smb servers to mimic smbv1 behaviour
+  if (strRoot == "smb://")
+  {
+    auto settingsComponent = CServiceBroker::GetSettingsComponent();
+    if (!settingsComponent)
+      return false;
+
+    auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+    if (!settings)
+      return false;
+
+    // Check WS-Discovery daemon enabled, if not return as smb:// cant be handled further
+    if (settings->GetBool(CSettings::SETTING_SERVICES_WSDISCOVERY))
+    {
+      WSDiscovery::CWSDiscoveryPosix& WSInstance =
+          dynamic_cast<WSDiscovery::CWSDiscoveryPosix&>(CServiceBroker::GetWSDiscovery());
+      return WSInstance.GetServerList(items);
+    }
+    else
+    {
+      return false;
+    }
+  }
+
   int fd = OpenDir(url, strAuth);
   if (fd < 0)
     return false;
