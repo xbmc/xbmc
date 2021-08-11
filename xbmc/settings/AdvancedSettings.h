@@ -304,7 +304,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_iSkipLoopFilter;
 
     bool m_bVirtualShares;
-    bool m_bTry10bitOutput;
 
     std::string m_cpuTempCmd;
     std::string m_gpuTempCmd;

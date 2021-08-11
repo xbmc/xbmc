@@ -79,6 +79,9 @@ namespace DX
 
     bool SetFullScreen(bool fullscreen, RESOLUTION_INFO& res);
 
+    // Apply display settings changes
+    void ApplyDisplaySettings();
+
     // HDR display support
     HDR_STATUS ToggleHDR();
     void SetHdrMetaData(DXGI_HDR_METADATA_HDR10& hdr10) const;

@@ -7062,6 +7062,8 @@ msgctxt "#13415"
 msgid "Render method"
 msgstr ""
 
+#. Value for setting with label #13415 "Player / Videos / Render method"
+#. Value for setting with label #36098 "System / Display / Use 10 bit for SDR"
 #: system/settings/settings.xml
 #: xbmc/cores/VideoPlayer/VideoRenderers/BaseRenderer.cpp
 msgctxt "#13416"
@@ -13415,7 +13417,8 @@ msgctxt "#20419"
 msgid "Replace file names with library titles"
 msgstr ""
 
-#. Settings -> PVR -> Playback -> Switch to fullscreen value
+#. Value for setting with label #19171 "PVR & Live TV / Playback / Switch to full screen"
+#. Value for setting with label #36098 "System / Display / Use 10 bit for SDR"
 #: system/settings/settings.xml
 msgctxt "#20420"
 msgid "Never"
@@ -13426,6 +13429,8 @@ msgctxt "#20421"
 msgid "If only one season"
 msgstr ""
 
+#. Value for setting with label #170 "Player / Videos / Adjust display refresh rate"
+#. Value for setting with label #36098 "System / Display / Use 10 bit for SDR"
 #: system/settings/settings.xml
 msgctxt "#20422"
 msgid "Always"
@@ -18416,7 +18421,13 @@ msgctxt "#36050"
 msgid "On start"
 msgstr ""
 
-#empty strings from id 36051 to 36098
+#empty strings from id 36051 to 36097
+
+#. Label of setting "System / Display / Use 10 bit for SDR"
+#: system/settings/settings.xml
+msgctxt "#36098"
+msgid "Use 10 bit for SDR"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36099"
@@ -20798,7 +20809,11 @@ msgctxt "#36577"
 msgid "Specify the resolution for the 3D lookup table. Use a lower resolution for quick preview and higher resolution for more accurate picture. Using a high resolution may take seconds to prepare when parameters are changed or a new video is started."
 msgstr ""
 
-#empty string with id 36578
+#. Description of setting "System / Display / Use 10 bit for SDR" with label #36098
+#: system/settings/settings.xml
+msgctxt "#36578"
+msgid "Improves video quality by using 10-bit video surfaces for Standard Dynamic Range (SDR) video.[CR][Auto detect] Enables 10 bit for SDR only if the connected display supports HDR.[CR][Always] Enables 10 bit for SDR even if the connected display doesn't support HDR.[CR][Never] Do not use 10 bit for SDR.[CR]HDR passthrough mode always uses 10-bit regardless of this setting."
+msgstr ""
 
 #. primaries labels
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp

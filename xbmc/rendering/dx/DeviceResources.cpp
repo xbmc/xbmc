@@ -14,7 +14,6 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "messaging/ApplicationMessenger.h"
-#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/SystemInfo.h"
@@ -601,7 +600,16 @@ void DX::DeviceResources::ResizeBuffers()
   {
     HDR_STATUS hdrStatus = CWIN32Util::GetWindowsHDRStatus();
     const bool isHdrEnabled = (hdrStatus == HDR_STATUS::HDR_ON);
-    const bool is10bitSafe = (hdrStatus != HDR_STATUS::HDR_UNSUPPORTED);
+    bool use10bit = (hdrStatus != HDR_STATUS::HDR_UNSUPPORTED);
+
+    // 0 = Auto | 1 = Never | 2 = Always
+    int use10bitSetting = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+        CSettings::SETTING_VIDEOSCREEN_10BITSURFACES);
+
+    if (use10bitSetting == 1)
+      use10bit = false;
+    else if (use10bitSetting == 2)
+      use10bit = true;
 
     DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
     swapChainDesc.Width = lround(m_outputSize.Width);
@@ -629,8 +637,7 @@ void DX::DeviceResources::ResizeBuffers()
 
     ComPtr<IDXGISwapChain1> swapChain;
     if (m_d3dFeatureLevel >= D3D_FEATURE_LEVEL_11_0 && !bHWStereoEnabled &&
-        (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bTry10bitOutput ||
-         isHdrEnabled || is10bitSafe))
+        (isHdrEnabled || use10bit))
     {
       swapChainDesc.Format = DXGI_FORMAT_R10G10B10A2_UNORM;
       hr = CreateSwapChain(swapChainDesc, scFSDesc, &swapChain);
@@ -1247,6 +1254,14 @@ HDR_STATUS DX::DeviceResources::ToggleHDR()
   }
 
   return hdrStatus;
+}
+
+void DX::DeviceResources::ApplyDisplaySettings()
+{
+  CLog::LogF(LOGDEBUG, "Re-create swapchain due Display Settings changed");
+
+  DestroySwapChain();
+  CreateWindowSizeDependentResources();
 }
 
 DEBUG_INFO_RENDER DX::DeviceResources::GetDebugInfo() const
