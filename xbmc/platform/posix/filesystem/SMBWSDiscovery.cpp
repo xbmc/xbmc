@@ -85,7 +85,7 @@ bool CWSDiscoveryPosix::GetServerList(CFileItemList& items)
       // fallback incase xaddrs doesnt return back "GetMetadata" expected address format (delim2)
       if (found == std::string::npos)
       {
-        found = tmpxaddrs.find("/");
+        found = tmpxaddrs.find('/');
       }
       std::string host = tmpxaddrs.substr(0, found);
 
