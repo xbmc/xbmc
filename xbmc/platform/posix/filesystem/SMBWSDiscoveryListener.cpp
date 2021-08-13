@@ -492,7 +492,7 @@ template<std::size_t SIZE>
 const std::string CWSDiscoveryListenerUDP::wsd_tag_find(
     const std::string& xml, const std::array<std::pair<std::string, std::string>, SIZE>& tag)
 {
-  for (auto tagpair : tag)
+  for (const auto& tagpair : tag)
   {
     std::size_t found1 = xml.find(tagpair.first);
     if (found1 != std::string::npos)
