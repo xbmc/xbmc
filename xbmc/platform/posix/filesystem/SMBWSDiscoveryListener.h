@@ -55,7 +55,7 @@ private:
    * in        (string) extra data field (currently used solely for resolve addresses)
    * return    (void)
    */
-  void AddCommand(const std::string message, const std::string extraparameter = "");
+  void AddCommand(const std::string& message, const std::string& extraparameter = "");
 
   /*
    * Process received broadcast messages and add accepted items to 
@@ -73,7 +73,7 @@ private:
    */
   bool buildSoapMessage(const std::string& action,
                         std::string& msg,
-                        const std::string extraparameter);
+                        const std::string& extraparameter);
 
   // Closes socket and handles setting state for WS-Discovery
   void Cleanup(bool aborted);

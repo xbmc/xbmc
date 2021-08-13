@@ -353,7 +353,7 @@ CSettingList::CSettingList(const std::string& id,
                            std::shared_ptr<CSetting> settingDefinition,
                            int label,
                            CSettingsManager* settingsManager /* = nullptr */)
-  : CSettingList(id, settingDefinition, settingsManager)
+  : CSettingList(id, std::move(settingDefinition), settingsManager)
 {
   SetLabel(label);
 }

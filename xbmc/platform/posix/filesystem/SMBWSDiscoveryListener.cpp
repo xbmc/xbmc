@@ -317,8 +317,8 @@ bool CWSDiscoveryListenerUDP::DispatchCommand()
   return true;
 }
 
-void CWSDiscoveryListenerUDP::AddCommand(const std::string message,
-                                         const std::string extraparameter /* = "" */)
+void CWSDiscoveryListenerUDP::AddCommand(const std::string& message,
+                                         const std::string& extraparameter /* = "" */)
 {
 
   CSingleLock lock(crit_commandqueue);
@@ -446,7 +446,7 @@ void CWSDiscoveryListenerUDP::ParseBuffer(const std::string& buffer)
 
 bool CWSDiscoveryListenerUDP::buildSoapMessage(const std::string& action,
                                                std::string& msg,
-                                               const std::string extraparameter)
+                                               const std::string& extraparameter)
 {
   auto msg_uuid = StringUtils::CreateUUID();
   std::string body;
