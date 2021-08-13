@@ -19415,7 +19415,7 @@ msgstr ""
 #. Description of setting with label #227 "Load audio CD information from online service"
 #: system/settings/settings.xml
 msgctxt "#36284"
-msgid "Read the information belonging to an audio CD, like song title and artist, from the Internet database freedb.org."
+msgid "Read the information belonging to an audio CD, like song title and artist, from the Internet database gnudb.org."
 msgstr ""
 
 #. Description of setting label #20000 "Saved music folder"
