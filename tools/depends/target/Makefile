@@ -87,6 +87,7 @@ endif
 all: .installed-$(PLATFORM)
 
 gettext: $(ICONV)
+xz: gettext
 libgcrypt: libgpg-error
 fontconfig: freetype2 expat $(ICONV) $(LIBUUID)
 curl: openssl nghttp2

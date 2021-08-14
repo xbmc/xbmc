@@ -60,6 +60,10 @@ ifeq ($(OS),android)
 else
 	cd $(PLATFORM); sed -ie 's|_locale -DPy_BUILD_CORE_BUILTIN _localemodule.c  # -lintl|_locale -DPy_BUILD_CORE_BUILTIN _localemodule.c   -lintl $(LINK_ICONV)|' Modules/Setup
 endif
+ifeq ($(OS),linux)
+	# _posixshmem module requires librt for linux for SHM_OPEN/SHM_UNLINK
+	cd $(PLATFORM); sed -ie 's|# -lrt # _posixshmem|-lrt # _posixshmem|' Modules/Setup
+endif
 ifeq ($(OS),osx)
 	echo "_scproxy \$$(srcdir)/Modules/_scproxy.c -framework SystemConfiguration -framework CoreFoundation" >> $(PLATFORM)/Modules/Setup
 endif
