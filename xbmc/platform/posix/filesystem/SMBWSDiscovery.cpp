@@ -20,6 +20,7 @@
 #include <chrono>
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 using namespace std::chrono;
@@ -74,7 +75,7 @@ bool CWSDiscoveryPosix::GetServerList(CFileItemList& items)
     // delim2 used to strip anything past the port
     const std::string delim1 = "://";
     const std::string delim2 = ":";
-    for (auto item : m_vecWSDInfo)
+    for (const auto& item : m_vecWSDInfo)
     {
       int found = item.xaddrs.find(delim1);
       if (found == std::string::npos)
@@ -85,7 +86,7 @@ bool CWSDiscoveryPosix::GetServerList(CFileItemList& items)
       // fallback incase xaddrs doesnt return back "GetMetadata" expected address format (delim2)
       if (found == std::string::npos)
       {
-        found = tmpxaddrs.find("/");
+        found = tmpxaddrs.find('/');
       }
       std::string host = tmpxaddrs.substr(0, found);
 
@@ -102,7 +103,7 @@ void CWSDiscoveryPosix::SetItems(std::vector<wsd_req_info> entries)
 {
   {
     CSingleLock lock(m_critWSD);
-    m_vecWSDInfo = entries;
+    m_vecWSDInfo = std::move(entries);
   }
 }
 } // namespace WSDiscovery
