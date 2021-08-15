@@ -77,7 +77,7 @@ bool CWSDiscoveryPosix::GetServerList(CFileItemList& items)
     const std::string delim2 = ":";
     for (const auto& item : m_vecWSDInfo)
     {
-      int found = item.xaddrs.find(delim1);
+      auto found = item.xaddrs.find(delim1);
       if (found == std::string::npos)
         continue;
 
