@@ -520,8 +520,6 @@ long MysqlDatabase::nextid(const char* sname) {
     else
     {
       id = -1;
-      unsigned long *lengths;
-      lengths = mysql_fetch_lengths(res);
       snprintf(sqlcmd, sizeof(sqlcmd), "UPDATE %s SET nextid=%d WHERE seq_name = '%s'", seq_table,
                id, sname);
       mysql_free_result(res);
