@@ -701,16 +701,7 @@ void CGUIMediaWindow::FormatItemLabels(CFileItemList &items, const LABEL_MASKS &
  */
 void CGUIMediaWindow::FormatAndSort(CFileItemList &items)
 {
-  std::unique_ptr<CGUIViewState> viewState(CGUIViewState::GetViewState(GetID(), items));
-
-  if (viewState)
-  {
-    LABEL_MASKS labelMasks;
-    viewState->GetSortMethodLabelMasks(labelMasks);
-    FormatItemLabels(items, labelMasks);
-
-    items.Sort(viewState->GetSortMethod().sortBy, viewState->GetSortOrder(), viewState->GetSortMethod().sortAttributes);
-  }
+  m_queueAndPlayUtils.FormatAndSort(items);
 }
 
 /*!
@@ -732,37 +723,20 @@ bool CGUIMediaWindow::GetDirectory(const std::string &strDirectory, CFileItemLis
   if (pathToUrl.IsProtocol("plugin") && !pathToUrl.GetHostName().empty())
     CServiceBroker::GetAddonMgr().UpdateLastUsed(pathToUrl.GetHostName());
 
-  // see if we can load a previously cached folder
-  CFileItemList cachedItems(strDirectory);
-  if (!strDirectory.empty() && cachedItems.Load(GetID()))
-  {
-    items.Assign(cachedItems);
-  }
-  else
-  {
-    auto start = std::chrono::steady_clock::now();
+  auto start = std::chrono::steady_clock::now();
 
-    if (strDirectory.empty())
-      SetupShares();
+  if (!m_queueAndPlayUtils.GetDirectory(strDirectory, items))
+    return false;
 
-    CFileItemList dirItems;
-    if (!GetDirectoryItems(pathToUrl, dirItems, UseFileDirectories()))
-      return false;
+  auto end = std::chrono::steady_clock::now();
+  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
-    // assign fetched directory items
-    items.Assign(dirItems);
+  if (duration.count() > 1000 && items.CacheToDiscIfSlow())
+    items.Save(GetID());
 
-    // took over a second, and not normally cached, so cache it
-    auto end = std::chrono::steady_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-
-    if (duration.count() > 1000 && items.CacheToDiscIfSlow())
-      items.Save(GetID());
-
-    // if these items should replace the current listing, then pop it off the top
-    if (items.GetReplaceListing())
-      m_history.RemoveParentPath();
-  }
+  // if these items should replace the current listing, then pop it off the top
+  if (items.GetReplaceListing())
+    m_history.RemoveParentPath();
 
   // update the view state's reference to the current items
   m_guiState.reset(CGUIViewState::GetViewState(GetID(), items));

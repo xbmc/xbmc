@@ -19,6 +19,7 @@
 #include "interfaces/AnnouncementManager.h"
 #include "music/MusicThumbLoader.h"
 #include "music/dialogs/GUIDialogMusicInfo.h"
+#include "music/windows/GUIWindowMusicBase.h"
 #include "pictures/PictureThumbLoader.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRThumbLoader.h"
@@ -414,6 +415,34 @@ bool CDirectoryProvider::OnClick(const CGUIListItemPtr &item)
       && CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_MYVIDEOS_SELECTACTION) == SELECT_ACTION_INFO
       && OnInfo(item))
     return true;
+
+  if (fileItem.HasMusicInfoTag())
+  {
+    CMusicDatabaseDirectory dir;
+
+    int defaultAction = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+          CSettings::SETTING_MUSICFILES_DEFAULT_SELECT_ACTION);
+
+    if (defaultAction == MUSIC_SELECT_ACTION_CHOOSE &&
+      fileItem.IsAlbum())
+    {
+      CContextButtons choices;
+      choices.Add(MUSIC_SELECT_ACTION_INFO, 22081); // show information
+      choices.Add(MUSIC_SELECT_ACTION_OPEN, 37015); // Browse into
+      choices.Add(MUSIC_SELECT_ACTION_PLAY, 208);
+
+      defaultAction = CGUIDialogContextMenu::ShowAndGetChoice(choices);
+    }
+    if (defaultAction == -1) // user didn't select anything, so do nothing
+      return false;
+    if (defaultAction == MUSIC_SELECT_ACTION_INFO && OnInfo(item))
+      return true;
+    // Only autoplay albums when clicked (artists can be queued and played via the context menu)
+    const CFileItemPtr pItem = std::make_shared<CFileItem>(fileItem);
+    if (defaultAction == MUSIC_SELECT_ACTION_PLAY && fileItem.IsAlbum() &&
+        m_queueAndPlayUtils.PlayItem(pItem))
+      return true;
+  }
 
   if (fileItem.HasProperty("node.target_url"))
     fileItem.SetPath(fileItem.GetProperty("node.target_url").asString());

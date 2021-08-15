@@ -34,6 +34,7 @@ using namespace XFILE;
 
 #define CONTROL_BTN_REFRESH       6
 #define CONTROL_USERRATING        7
+#define CONTROL_BTN_PLAY          8
 #define CONTROL_BTN_GET_THUMB     10
 #define CONTROL_ALBUMINFO         12
 
@@ -185,6 +186,14 @@ bool CGUIDialogSongInfo::OnMessage(CGUIMessage& message)
           return true;
         }
       }
+      else if (iControl == CONTROL_BTN_PLAY)
+      {
+        const CFileItemPtr pItem = std::make_shared<CFileItem>(*m_song);
+
+        OnPlaySong(pItem);
+        return true;
+      }
+      return false;
     }
     break;
   }
@@ -509,4 +518,11 @@ void CGUIDialogSongInfo::ShowFor(CFileItem* pItem)
     }
   }
 
+}
+
+void CGUIDialogSongInfo::OnPlaySong(const CFileItemPtr& pItem)
+{
+  CQueueAndPlayUtils queueAndPlayUtils;
+  queueAndPlayUtils.PlayItem(pItem);
+  Close(true);
 }

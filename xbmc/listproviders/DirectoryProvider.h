@@ -16,6 +16,7 @@
 #include "interfaces/IAnnouncer.h"
 #include "threads/CriticalSection.h"
 #include "utils/Job.h"
+#include "utils/QueueAndPlayUtils.h"
 
 #include <string>
 #include <vector>
@@ -87,6 +88,7 @@ private:
   std::vector<CGUIStaticItemPtr> m_items;
   std::vector<InfoTagType> m_itemTypes;
   mutable CCriticalSection m_section;
+  CQueueAndPlayUtils m_queueAndPlayUtils;
 
   bool UpdateURL();
   bool UpdateLimit();

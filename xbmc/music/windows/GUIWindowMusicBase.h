@@ -18,6 +18,7 @@
 #include "music/MusicInfoLoader.h"
 #include "music/MusicThumbLoader.h"
 #include "music/infoscanner/MusicInfoScraper.h"
+#include "utils/QueueAndPlayUtils.h"
 #include "windows/GUIMediaWindow.h"
 
 #include <vector>
@@ -26,6 +27,9 @@ enum MusicSelectAction
 {
     MUSIC_SELECT_ACTION_PLAY,
     MUSIC_SELECT_ACTION_RESUME,
+    MUSIC_SELECT_ACTION_INFO,
+    MUSIC_SELECT_ACTION_OPEN,
+    MUSIC_SELECT_ACTION_CHOOSE,
 };
 
 /*!
@@ -103,6 +107,7 @@ protected:
 
   CMusicDatabase m_musicdatabase;
   MUSIC_INFO::CMusicInfoLoader m_musicInfoLoader;
+  CQueueAndPlayUtils m_queueAndPlayUtils;
 
   CMusicThumbLoader m_thumbLoader;
 };

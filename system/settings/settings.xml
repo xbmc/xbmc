@@ -1225,6 +1225,19 @@
     </category>
     <category id="music" label="14216" help="38108">
       <group id="1" label="39121">
+        <setting id="musicfiles.defaultselectaction" type="integer" label="22084" help="36435">
+          <level>0</level>
+          <default>3</default> <!-- SELECT_ACTION_OPEN -->
+          <constraints>
+            <options>
+              <option label="208">0</option> <!-- MUSIC_SELECT_ACTION_PLAY -->
+              <option label="37015">3</option> <!-- MUSIC_SELECT_ACTION_OPEN -->
+              <option label="22081">2</option> <!-- MUSIC_SELECT_ACTION_INFO -->
+              <option label="22080">4</option> <!-- MUSIC_SELECT_ACTION_CHOOSE -->
+            </options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
         <setting id="musiclibrary.showallitems" type="boolean" label="38011" help="38012">
           <level>2</level>
           <default>true</default>
@@ -1417,7 +1430,7 @@
         </setting>
       </group>
       <group id="4" label="128">
-        <setting id="musicfiles.selectaction" type="boolean" label="12381" help="38112">
+        <setting id="musicfiles.gofullscreen" type="boolean" label="12381" help="38112">
           <level>0</level>
           <default>false</default>
           <control type="toggle" />

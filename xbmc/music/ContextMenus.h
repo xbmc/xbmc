@@ -10,7 +10,6 @@
 
 #include "ContextMenuItem.h"
 
-
 namespace CONTEXTMENU
 {
 
@@ -38,4 +37,31 @@ struct CSongInfo : CMusicInfo
   CSongInfo() : CMusicInfo(MediaTypeSong) {}
 };
 
-}
+struct CMusicPlay : IContextMenuItem
+{
+  std::string GetLabel(const CFileItem& item) const override;
+  bool IsVisible(const CFileItem& item) const override;
+  bool Execute(const CFileItemPtr& item) const override;
+};
+
+struct CMusicQueue : IContextMenuItem
+{
+  std::string GetLabel(const CFileItem& item) const override;
+  bool IsVisible(const CFileItem& item) const override;
+  bool Execute(const CFileItemPtr& item) const override;
+};
+
+struct CMusicBrowse : IContextMenuItem
+{
+  std::string GetLabel(const CFileItem& item) const override;
+  bool IsVisible(const CFileItem& item) const override;
+  bool Execute(const CFileItemPtr& item) const override;
+};
+
+struct CMusicPlayNext : IContextMenuItem
+{
+  std::string GetLabel(const CFileItem& item) const override;
+  bool IsVisible(const CFileItem& item) const override;
+  bool Execute(const CFileItemPtr& item) const override;
+};
+} //namespace CONTEXTMENU

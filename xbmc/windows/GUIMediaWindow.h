@@ -13,6 +13,7 @@
 #include "filesystem/VirtualDirectory.h"
 #include "guilib/GUIWindow.h"
 #include "playlists/SmartPlayList.h"
+#include "utils/QueueAndPlayUtils.h"
 #include "view/GUIViewControl.h"
 
 #include <atomic>
@@ -179,6 +180,7 @@ protected:
 
   XFILE::CVirtualDirectory m_rootDir;
   CGUIViewControl m_viewControl;
+  CQueueAndPlayUtils m_queueAndPlayUtils;
 
   // current path and history
   CFileItemList* m_vecItems;

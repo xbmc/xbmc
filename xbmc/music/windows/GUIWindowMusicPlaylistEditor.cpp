@@ -256,7 +256,7 @@ void CGUIWindowMusicPlaylistEditor::OnQueueItem(int iItem, bool)
   // and thus want a different layout for each item
   CFileItemPtr item(new CFileItem(*m_vecItems->Get(iItem)));
   CFileItemList newItems;
-  AddItemToPlayList(item, newItems);
+  m_queueAndPlayUtils.AddItemToPlayList(item, newItems);
   AppendToPlaylist(newItems);
 }
 

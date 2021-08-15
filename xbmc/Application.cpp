@@ -2387,7 +2387,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
     // don't switch to fullscreen if we are not playing the first item...
     options.fullscreen = !CServiceBroker::GetPlaylistPlayer().HasPlayedFirstFile() &&
         CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-        CSettings::SETTING_MUSICFILES_SELECTACTION) &&
+        CSettings::SETTING_MUSICFILES_GOFULLSCREEN) &&
         !CMediaSettings::GetInstance().DoesMediaStartWindowed();
   }
   else if (item.IsVideo() && playlist == PLAYLIST_VIDEO &&

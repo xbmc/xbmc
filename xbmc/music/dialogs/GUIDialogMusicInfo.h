@@ -61,6 +61,7 @@ protected:
   void OnArtistInfo(int id);
   void OnSetUserrating() const;
   void SetUserrating(int userrating) const;
+  void OnPlayAlbum(int id);
 
   CAlbum m_album;
   CArtist m_artist;

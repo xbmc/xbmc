@@ -39,6 +39,7 @@ protected:
   void OnGetArt();
   void SetUserrating(int userrating);
   void OnSetUserrating();
+  void OnPlaySong(const CFileItemPtr& pItem);
 
   CFileItemPtr m_song;
   CFileItemList m_artTypeList;

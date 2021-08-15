@@ -15124,7 +15124,13 @@ msgctxt "#22083"
 msgid "Play all"
 msgstr ""
 
-#empty strings from id 22084 to 23048
+#. Description of a setting to choose what happens when clicking on an album in the music library on the home screen
+#: system/settings/settings.xml
+msgctxt "#22084"
+msgid "Default select action for albums on the home screen"
+msgstr ""
+
+#empty strings from id 22085 to 23048
 
 msgctxt "#23049"
 msgid "Teletext not available"
@@ -20675,7 +20681,11 @@ msgctxt "#36434"
 msgid "If enabled, switch to the channel with the programme to remind when auto-closing the reminder popup."
 msgstr ""
 
-#empty string with id 36435
+#. Description of setting #22084 "Default select action for albums on the home screen"
+#: system/settings/settings.xml
+msgctxt "#36435"
+msgid "Toggle between [Play], [Browse into], [Show information] and [Choose].[CR][Browse into] will navigate into an album to show the discs or tracks.[CR][Play] will automatically play a full album from the home screen.[CR][Choose] will open a context menu to select from these options each time."
+msgstr ""
 
 #. Description for setting #407: "Hardware keyboard layouts"
 #. Setting in System -> Input -> Hardware keyboard layouts
@@ -21637,6 +21647,7 @@ msgid "Last used profile"
 msgstr ""
 
 #: xbmc/Windows/GUIMediaWindow.cpp
+#: xbmc/music/ContextMenus.cpp
 msgctxt "#37015"
 msgid "Browse into"
 msgstr ""
@@ -22137,8 +22148,20 @@ msgctxt "#38081"
 msgid "Release status"
 msgstr ""
 
-#empty strings from id 38082 to 38099
-#strings 38082 to 38099 reserved for music library
+#. Displayed in a toast notification when music items are added to a playlist via the context menu
+#: xbmc/music/ContextMenus.cpp
+msgctxt "#38082"
+msgid "Added to playlist"
+msgstr ""
+
+#. Displayed in a toast notification when music items are added to a playlist to play next via the context menu
+#: xbmc/music/ContextMenus.cpp
+msgctxt "#38083"
+msgid "Added to playlist to play next"
+msgstr ""
+
+#empty strings from id 38084 to 38099
+#strings 38084 to 38099 reserved for music library
 
 #. Description of section #14200 "Player""
 #: system/settings/settings.xml
