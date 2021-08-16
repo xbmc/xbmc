@@ -23,6 +23,9 @@ CONFIGURE_FLAGS=--disable-assembly
 endif
 ifeq ($(OS),osx)
 CONFIGURE_FLAGS=--with-pic
+ifeq ($(CPU),arm64)
+CONFIGURE_FLAGS+= --disable-assembly
+endif
 endif
 ifeq ($(OS), android)
 CONFIGURE_FLAGS=--with-pic
