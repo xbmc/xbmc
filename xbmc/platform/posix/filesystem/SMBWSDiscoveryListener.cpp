@@ -231,6 +231,9 @@ void CWSDiscoveryListenerUDP::Process()
     timeout.tv_usec = 0;
     nready = select((fd + 1), &rset, NULL, NULL, &timeout);
 
+    if (nready < 0)
+      break;
+
     if (m_bStop)
       break;
 
