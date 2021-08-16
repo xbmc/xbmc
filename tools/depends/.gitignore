@@ -8,6 +8,7 @@
 /native/*/x86-native/*
 /native/*/x86_64-linux-gnu-native/*
 /native/*/x86_64-darwin*.*.*-native/
+/native/*/*-darwin*.*.*-native/
 /native/*/armeabi-v7a-native/*
 
 /target/*/.installed-*
@@ -20,7 +21,7 @@
 /target/*/arm*-linux-androideabi-**
 /target/*/arm*-linux-gnueabi-**
 /target/*/aarch64-linux-**
-/target/*/macosx*.*_x86_64-target-**
+/target/*/macosx*-target-**
 /target/*/i686-linux-android-**
 /target/*/iphoneos*.*_arm*-target-**
 /target/*/iphonesimulator*.*_x86_64*-target-**
