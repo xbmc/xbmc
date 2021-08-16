@@ -1,0 +1,13 @@
+WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
+XBMC_PLATFORM_DIR=osx-arm64
+. $WORKSPACE/tools/buildsteps/defaultenv
+
+if [ "$(pathChanged $WORKSPACE/tools/depends)" == "1" ]
+then
+  cd $WORKSPACE/tools/depends;./configure \
+    --with-tarballs=/Users/Shared/xbmc-depends/tarballs \
+    --host=aarch64-apple-darwin \
+    --with-sdk=$SDK_VERSION \
+    --with-platform=macos \
+    --prefix=$XBMC_DEPENDS_ROOT $DEBUG_SWITCH
+fi
