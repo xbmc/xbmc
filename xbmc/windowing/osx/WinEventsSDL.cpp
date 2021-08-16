@@ -67,7 +67,7 @@ bool CWinEventsSDL::MessagePump()
           break;
         }
 
-        XBMC_Event newEvent;
+        XBMC_Event newEvent = {};
         newEvent.type = XBMC_KEYDOWN;
         newEvent.key.keysym.scancode = event.key.keysym.scancode;
         newEvent.key.keysym.sym = (XBMCKey) event.key.keysym.sym;
@@ -90,7 +90,7 @@ bool CWinEventsSDL::MessagePump()
 
       case SDL_KEYUP:
       {
-        XBMC_Event newEvent;
+        XBMC_Event newEvent = {};
         newEvent.type = XBMC_KEYUP;
         newEvent.key.keysym.scancode = event.key.keysym.scancode;
         newEvent.key.keysym.sym = (XBMCKey) event.key.keysym.sym;
@@ -105,7 +105,7 @@ bool CWinEventsSDL::MessagePump()
 
       case SDL_MOUSEBUTTONDOWN:
       {
-        XBMC_Event newEvent;
+        XBMC_Event newEvent = {};
         newEvent.type = XBMC_MOUSEBUTTONDOWN;
         newEvent.button.button = event.button.button;
         newEvent.button.x = event.button.x;
@@ -119,7 +119,7 @@ bool CWinEventsSDL::MessagePump()
 
       case SDL_MOUSEBUTTONUP:
       {
-        XBMC_Event newEvent;
+        XBMC_Event newEvent = {};
         newEvent.type = XBMC_MOUSEBUTTONUP;
         newEvent.button.button = event.button.button;
         newEvent.button.x = event.button.x;
@@ -141,7 +141,7 @@ bool CWinEventsSDL::MessagePump()
           Cocoa_ShowMouse();
           break;
         }
-        XBMC_Event newEvent;
+        XBMC_Event newEvent = {};
         newEvent.type = XBMC_MOUSEMOTION;
         newEvent.motion.x = event.motion.x;
         newEvent.motion.y = event.motion.y;
@@ -161,7 +161,7 @@ bool CWinEventsSDL::MessagePump()
         {
           break;
         }
-        XBMC_Event newEvent;
+        XBMC_Event newEvent = {};
         newEvent.type = XBMC_VIDEORESIZE;
         newEvent.resize.w = event.resize.w;
         newEvent.resize.h = event.resize.h;
@@ -173,7 +173,7 @@ bool CWinEventsSDL::MessagePump()
       }
       case SDL_USEREVENT:
       {
-        XBMC_Event newEvent;
+        XBMC_Event newEvent = {};
         newEvent.type = XBMC_USEREVENT;
         newEvent.user.code = event.user.code;
         std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();

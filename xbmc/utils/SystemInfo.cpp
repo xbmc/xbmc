@@ -88,7 +88,6 @@ using namespace XFILE;
 #ifdef TARGET_WINDOWS_DESKTOP
 static bool sysGetVersionExWByRef(OSVERSIONINFOEXW& osVerInfo)
 {
-  ZeroMemory(&osVerInfo, sizeof(osVerInfo));
   osVerInfo.dwOSVersionInfoSize = sizeof(osVerInfo);
 
   typedef NTSTATUS(__stdcall *RtlGetVersionPtr)(RTL_OSVERSIONINFOEXW* pOsInfo);
@@ -503,7 +502,7 @@ std::string CSysInfo::GetKernelName(bool emptyIfUnknown /*= false*/)
   if (kernelName.empty())
   {
 #if defined(TARGET_WINDOWS_DESKTOP)
-    OSVERSIONINFOEXW osvi;
+    OSVERSIONINFOEXW osvi = {};
     if (sysGetVersionExWByRef(osvi) && osvi.dwPlatformId == VER_PLATFORM_WIN32_NT)
       kernelName = "Windows NT";
 #elif defined(TARGET_WINDOWS_STORE)

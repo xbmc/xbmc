@@ -90,8 +90,7 @@ using namespace std::chrono_literals;
     if ([context view])
     {
       NSPoint window_origin = [[[context view] window] frame].origin;
-      XBMC_Event newEvent;
-      memset(&newEvent, 0, sizeof(newEvent));
+      XBMC_Event newEvent = {};
       newEvent.type = XBMC_VIDEOMOVE;
       newEvent.move.x = window_origin.x;
       newEvent.move.y = window_origin.y;

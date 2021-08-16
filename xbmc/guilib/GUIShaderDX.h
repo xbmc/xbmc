@@ -116,8 +116,8 @@ private:
   void ClipToScissorParams(void);
 
   // GUI constants
-  cbViewPort m_cbViewPort;
-  cbWorldViewProj m_cbWorldViewProj;
+  cbViewPort m_cbViewPort = {};
+  cbWorldViewProj m_cbWorldViewProj = {};
 
   bool  m_bCreated;
   size_t m_currentShader;

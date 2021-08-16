@@ -176,8 +176,7 @@ public:
     return;
   }
 
-  XBMC_Event newEvent;
-  memset(&newEvent, 0, sizeof(newEvent));
+  XBMC_Event newEvent = {};
   unichar currentKey = [text characterAtIndex:0];
 
   // handle upper case letters
@@ -215,8 +214,7 @@ public:
 
 -(void)sendKey:(XBMCKey) key
 {
-  XBMC_Event newEvent;
-  memset(&newEvent, 0, sizeof(newEvent));
+  XBMC_Event newEvent = {};
 
   //newEvent.key.keysym.unicode = key;
   newEvent.key.keysym.sym = key;

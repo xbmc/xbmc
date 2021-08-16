@@ -91,8 +91,7 @@ bool CXBMCTinyXML::LoadFile(const std::string& _filename, const std::string& doc
 bool CXBMCTinyXML::LoadFile(FILE *f, TiXmlEncoding encoding)
 {
   std::string data;
-  char buf[BUFFER_SIZE];
-  memset(buf, 0, BUFFER_SIZE);
+  char buf[BUFFER_SIZE] = {};
   int result;
   while ((result = fread(buf, 1, BUFFER_SIZE, f)) > 0)
     data.append(buf, result);

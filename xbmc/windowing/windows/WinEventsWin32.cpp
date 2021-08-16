@@ -224,8 +224,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 {
   using KODI::PLATFORM::WINDOWS::FromW;
 
-  XBMC_Event newEvent;
-  ZeroMemory(&newEvent, sizeof(newEvent));
+  XBMC_Event newEvent = {};
   static HDEVNOTIFY hDeviceNotify;
 
 #if 0
@@ -829,9 +828,8 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 
 void CWinEventsWin32::RegisterDeviceInterfaceToHwnd(GUID InterfaceClassGuid, HWND hWnd, HDEVNOTIFY *hDeviceNotify)
 {
-  DEV_BROADCAST_DEVICEINTERFACE NotificationFilter;
+  DEV_BROADCAST_DEVICEINTERFACE NotificationFilter = {};
 
-  ZeroMemory( &NotificationFilter, sizeof(NotificationFilter) );
   NotificationFilter.dbcc_size = sizeof(DEV_BROADCAST_DEVICEINTERFACE);
   NotificationFilter.dbcc_devicetype = DBT_DEVTYP_DEVICEINTERFACE;
   NotificationFilter.dbcc_classguid = InterfaceClassGuid;
@@ -908,7 +906,7 @@ void CWinEventsWin32::OnGesture(HWND hWnd, LPARAM lParam)
   if (!DX::Windowing()->PtrGetGestureInfo)
     return;
 
-  GESTUREINFO gi = {0};
+  GESTUREINFO gi = {};
   gi.cbSize = sizeof(gi);
   DX::Windowing()->PtrGetGestureInfo(reinterpret_cast<HGESTUREINFO>(lParam), &gi);
 

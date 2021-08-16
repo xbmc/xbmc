@@ -1389,7 +1389,7 @@ CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
     return CDVDVideoCodec::VC_NONE;
 
 #ifdef TARGET_WINDOWS_DESKTOP
-  D3D11_VIDEO_DECODER_EXTENSION data = {0};
+  D3D11_VIDEO_DECODER_EXTENSION data = {};
   union {
     DXVA_Status_H264 h264;
     DXVA_Status_VC1 vc1;

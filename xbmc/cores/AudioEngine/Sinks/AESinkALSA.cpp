@@ -318,7 +318,7 @@ snd_pcm_chmap_t* CAESinkALSA::CopyALSAchmap(snd_pcm_chmap_t* alsaMap)
 
 std::string CAESinkALSA::ALSAchmapToString(snd_pcm_chmap_t* alsaMap)
 {
-  char buf[128] = { 0 };
+  char buf[128] = {};
   //! @bug ALSA bug - buffer overflow by a factor of 2 is possible
   //! http://mailman.alsa-project.org/pipermail/alsa-devel/2014-December/085815.html
   int err = snd_pcm_chmap_print(alsaMap, sizeof(buf) / 2, buf);

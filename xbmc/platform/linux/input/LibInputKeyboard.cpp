@@ -222,8 +222,7 @@ void CLibInputKeyboard::ProcessKey(libinput_event_keyboard *e)
   if (!m_ctx || !m_keymap || !m_state)
     return;
 
-  XBMC_Event event;
-  memset(&event, 0, sizeof(event));
+  XBMC_Event event = {};
 
   const uint32_t xkbkey = libinput_event_keyboard_get_key(e) + 8;
   const bool pressed = libinput_event_keyboard_get_key_state(e) == LIBINPUT_KEY_STATE_PRESSED;

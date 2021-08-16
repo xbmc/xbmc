@@ -378,7 +378,7 @@ bool CVaapi1Texture::TestInteropDeepColor(VADisplay vaDpy, EGLDisplay eglDisplay
   VAImage image;
   VABufferInfo bufferInfo;
 
-  VASurfaceAttrib attribs = { };
+  VASurfaceAttrib attribs = {};
   attribs.flags = VA_SURFACE_ATTRIB_SETTABLE;
   attribs.type = VASurfaceAttribPixelFormat;
   attribs.value.type = VAGenericValueTypeInteger;

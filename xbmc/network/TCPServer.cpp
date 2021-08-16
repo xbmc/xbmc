@@ -352,7 +352,7 @@ bool CTCPServer::InitializeBlue()
     CLog::Log(LOGINFO, "JSONRPC Server: Unable to get bluetooth socket");
     return false;
   }
-  struct sockaddr_rc sa  = {0};
+  struct sockaddr_rc sa = {};
   sa.rc_family  = AF_BLUETOOTH;
   sa.rc_bdaddr  = bt_bdaddr_any;
   sa.rc_channel = 0;

@@ -273,7 +273,7 @@ bool CInputManager::ProcessEventServer(int windowId, float frameTime)
     CPoint pos;
     if (es->GetMousePos(pos.x, pos.y) && m_Mouse.IsEnabled())
     {
-      XBMC_Event newEvent;
+      XBMC_Event newEvent = {};
       newEvent.type = XBMC_MOUSEMOTION;
       newEvent.motion.x = (uint16_t)pos.x;
       newEvent.motion.y = (uint16_t)pos.y;

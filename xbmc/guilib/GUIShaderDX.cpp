@@ -58,8 +58,6 @@ CGUIShaderDX::CGUIShaderDX() :
     m_currentShader(0),
     m_clipPossible(false)
 {
-  ZeroMemory(&m_cbViewPort, sizeof(m_cbViewPort));
-  ZeroMemory(&m_cbWorldViewProj, sizeof(m_cbWorldViewProj));
 }
 
 CGUIShaderDX::~CGUIShaderDX()
@@ -149,8 +147,7 @@ bool CGUIShaderDX::CreateBuffers()
 bool CGUIShaderDX::CreateSamplers()
 {
   // Describe the Sampler State
-  D3D11_SAMPLER_DESC sampDesc;
-  memset(&sampDesc, 0, sizeof(D3D11_SAMPLER_DESC));
+  D3D11_SAMPLER_DESC sampDesc = {};
   sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
   sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
   sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;

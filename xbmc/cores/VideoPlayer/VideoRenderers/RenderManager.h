@@ -177,7 +177,7 @@ protected:
   double m_latencyTweak = 0.0;
   /// Display latency updated in PrepareNextRender in DVD clock units, includes m_latencyTweak
   double m_displayLatency = 0.0;
-  std::atomic_int m_videoDelay = {0};
+  std::atomic_int m_videoDelay = {};
 
   int m_QueueSize = 2;
   int m_QueueSkip = 0;

@@ -383,7 +383,7 @@ bool CIRServerSuite::HandleRemoteEvent(CIrssMessage& message)
     CLog::LogF(LOGDEBUG, "remoteEvent: {} {}", deviceName, keycode);
     unsigned button = m_irTranslator.TranslateButton(deviceName, keycode);
 
-    XBMC_Event newEvent;
+    XBMC_Event newEvent = {};
     newEvent.type = XBMC_BUTTON;
     newEvent.keybutton.button = button;
     newEvent.keybutton.holdtime = 0;

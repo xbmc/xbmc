@@ -87,7 +87,7 @@ void CRemoteControlXbox::HandleAcceleratorKey(const CoreDispatcher& sender, cons
   if (!button)
     return;
 
-  XBMC_Event newEvent;
+  XBMC_Event newEvent = {};
   newEvent.type = XBMC_BUTTON;
   newEvent.keybutton.button = button;
   newEvent.keybutton.holdtime = 0;
@@ -140,7 +140,7 @@ void CRemoteControlXbox::HandleAcceleratorKey(const CoreDispatcher& sender, cons
 
 void CRemoteControlXbox::HandleMediaButton(const SystemMediaTransportControlsButtonPressedEventArgs& args)
 {
-  XBMC_Event newEvent;
+  XBMC_Event newEvent = {};
   newEvent.type = XBMC_BUTTON;
   newEvent.keybutton.button = TranslateMediaKey(args.Button());
   newEvent.keybutton.holdtime = 0;

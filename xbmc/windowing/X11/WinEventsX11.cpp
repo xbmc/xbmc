@@ -381,8 +381,7 @@ bool CWinEventsX11::MessagePump()
           break;
 
         m_structureChanged = true;
-        XBMC_Event newEvent;
-        memset(&newEvent, 0, sizeof(newEvent));
+        XBMC_Event newEvent = {};
         newEvent.type = XBMC_VIDEORESIZE;
         newEvent.resize.w = xevent.xconfigure.width;
         newEvent.resize.h = xevent.xconfigure.height;
@@ -401,8 +400,7 @@ bool CWinEventsX11::MessagePump()
 
       case KeyPress:
       {
-        XBMC_Event newEvent;
-        memset(&newEvent, 0, sizeof(newEvent));
+        XBMC_Event newEvent = {};
         newEvent.type = XBMC_KEYDOWN;
         KeySym xkeysym;
 
@@ -495,9 +493,8 @@ bool CWinEventsX11::MessagePump()
             continue;
         }
 
-        XBMC_Event newEvent;
+        XBMC_Event newEvent = {};
         KeySym xkeysym;
-        memset(&newEvent, 0, sizeof(newEvent));
         newEvent.type = XBMC_KEYUP;
         xkeysym = XLookupKeysym(&xevent.xkey, 0);
         newEvent.key.keysym.scancode = xevent.xkey.keycode;
@@ -522,8 +519,7 @@ bool CWinEventsX11::MessagePump()
       {
         if (xevent.xmotion.window != m_window)
           break;
-        XBMC_Event newEvent;
-        memset(&newEvent, 0, sizeof(newEvent));
+        XBMC_Event newEvent = {};
         newEvent.type = XBMC_MOUSEMOTION;
         newEvent.motion.x = (int16_t)xevent.xmotion.x;
         newEvent.motion.y = (int16_t)xevent.xmotion.y;
@@ -534,8 +530,7 @@ bool CWinEventsX11::MessagePump()
 
       case ButtonPress:
       {
-        XBMC_Event newEvent;
-        memset(&newEvent, 0, sizeof(newEvent));
+        XBMC_Event newEvent = {};
         newEvent.type = XBMC_MOUSEBUTTONDOWN;
         newEvent.button.button = (unsigned char)xevent.xbutton.button;
         newEvent.button.x = (int16_t)xevent.xbutton.x;
@@ -547,8 +542,7 @@ bool CWinEventsX11::MessagePump()
 
       case ButtonRelease:
       {
-        XBMC_Event newEvent;
-        memset(&newEvent, 0, sizeof(newEvent));
+        XBMC_Event newEvent = {};
         newEvent.type = XBMC_MOUSEBUTTONUP;
         newEvent.button.button = (unsigned char)xevent.xbutton.button;
         newEvent.button.x = (int16_t)xevent.xbutton.x;

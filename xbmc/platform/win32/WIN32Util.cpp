@@ -81,8 +81,8 @@ int CWIN32Util::GetDriveStatus(const std::string &strPath, bool bStatusEx)
   int iResult;                  // results flag
   ULONG ulChanges=0;
   DWORD dwBytesReturned;
-  T_SPDT_SBUF sptd_sb;  //SCSI Pass Through Direct variable.
-  byte DataBuf[8];  //Buffer for holding data to/from drive.
+  T_SPDT_SBUF sptd_sb = {}; // SCSI Pass Through Direct variable.
+  byte DataBuf[8] = {}; // Buffer for holding data to/from drive.
 
   CLog::LogF(LOGDEBUG, "Requesting status for drive {}.", strPath);
 
@@ -161,9 +161,6 @@ int CWIN32Util::GetDriveStatus(const std::string &strPath, bool bStatusEx)
   sptd_sb.sptd.Cdb[13]=0;
   sptd_sb.sptd.Cdb[14]=0;
   sptd_sb.sptd.Cdb[15]=0;
-
-  ZeroMemory(DataBuf, 8);
-  ZeroMemory(sptd_sb.SenseBuf, MAX_SENSE_LEN);
 
   //Send the command to drive
   CLog::LogF(LOGDEBUG, "Requesting tray status for drive {}.", strPath);
@@ -246,7 +243,7 @@ bool CWIN32Util::XBMCShellExecute(const std::string &strPath, bool bWaitForScrip
   g_charsetConverter.utf8ToW(strWorkingDir, WstrWorkingDir);
 
   bool ret;
-  SHELLEXECUTEINFOW ShExecInfo = {0};
+  SHELLEXECUTEINFOW ShExecInfo = {};
   ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFOW);
   ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
   ShExecInfo.hwnd = NULL;
@@ -313,8 +310,7 @@ int CWIN32Util::GetDesktopColorDepth()
   CLog::LogF(LOGDEBUG, "s not implemented");
   return 32;
 #else
-  DEVMODE devmode;
-  ZeroMemory(&devmode, sizeof(devmode));
+  DEVMODE devmode = {};
   devmode.dmSize = sizeof(devmode);
   EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devmode);
   return (int)devmode.dmBitsPerPel;
@@ -1214,8 +1210,7 @@ bool CWIN32Util::IsUsbDevice(const std::wstring &strWdrive)
     return false;
 
   // setup query
-  STORAGE_PROPERTY_QUERY query;
-  memset(&query, 0, sizeof(query));
+  STORAGE_PROPERTY_QUERY query = {};
   query.PropertyId = StorageDeviceProperty;
   query.QueryType = PropertyStandardQuery;
 

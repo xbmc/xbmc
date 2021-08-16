@@ -517,8 +517,7 @@ void CAESinkOSS::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
       info.m_deviceType = AE_DEVTYPE_PCM;
     }
 
-    oss_audioinfo ainfo;
-    memset(&ainfo, 0, sizeof(ainfo));
+    oss_audioinfo ainfo = {};
     ainfo.dev = i;
     if (ioctl(mixerfd, SNDCTL_AUDIOINFO, &ainfo) != -1) {
 #if 0

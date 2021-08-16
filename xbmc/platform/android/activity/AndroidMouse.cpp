@@ -55,9 +55,7 @@ void CAndroidMouse::MouseMove(float x, float y)
 #ifdef DEBUG_VERBOSE
   CXBMCApp::android_printf("%s: x:%f, y:%f", __PRETTY_FUNCTION__, x, y);
 #endif
-  XBMC_Event newEvent;
-
-  memset(&newEvent, 0, sizeof(newEvent));
+  XBMC_Event newEvent = {};
 
   newEvent.type = XBMC_MOUSEMOTION;
   newEvent.motion.x = x;
@@ -72,9 +70,7 @@ void CAndroidMouse::MouseButton(float x, float y, int32_t action, int32_t button
 #ifdef DEBUG_VERBOSE
   CXBMCApp::android_printf("%s: x:%f, y:%f, action:%i, buttons:%i", __PRETTY_FUNCTION__, x, y, action, buttons);
 #endif
-  XBMC_Event newEvent;
-
-  memset(&newEvent, 0, sizeof(newEvent));
+  XBMC_Event newEvent = {};
 
   int32_t checkButtons = buttons;
   if (action ==  AMOTION_EVENT_ACTION_UP)
@@ -102,9 +98,7 @@ void CAndroidMouse::MouseWheel(float x, float y, float value)
 #ifdef DEBUG_VERBOSE
   CXBMCApp::android_printf("%s: val:%f", __PRETTY_FUNCTION__, value);
 #endif
-  XBMC_Event newEvent;
-
-  memset(&newEvent, 0, sizeof(newEvent));
+  XBMC_Event newEvent = {};
 
   if (value > 0.0f)
   {

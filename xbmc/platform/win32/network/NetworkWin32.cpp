@@ -241,11 +241,11 @@ bool CNetworkInterfaceWin32::GetHostMacAddress(const struct sockaddr& host, std:
   if (GetBestInterfaceEx(&static_cast<struct sockaddr>(host), &InterfaceIndex) != NO_ERROR)
     return false;
 
-  NET_LUID luid = { 0 };
+  NET_LUID luid = {};
   if (ConvertInterfaceIndexToLuid(InterfaceIndex, &luid) != NO_ERROR)
     return false;
 
-  MIB_IPNET_ROW2 neighborIp = { 0 };
+  MIB_IPNET_ROW2 neighborIp = {};
   neighborIp.InterfaceLuid = luid;
   neighborIp.InterfaceIndex;
   neighborIp.Address.si_family = host.sa_family;

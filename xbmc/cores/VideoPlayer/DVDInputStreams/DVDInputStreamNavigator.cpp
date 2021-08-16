@@ -1382,8 +1382,7 @@ bool CDVDInputStreamNavigator::SetState(const std::string &xmlstate)
   if( !m_dvdnav )
     return false;
 
-  dvd_state_t save_state;
-  memset( &save_state, 0, sizeof( save_state ) );
+  dvd_state_t save_state = {};
 
   if( !CDVDStateSerializer::XMLToDVDState(&save_state, xmlstate)  )
   {

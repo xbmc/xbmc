@@ -142,7 +142,7 @@ bool CWinSystemWin32::CreateNewWindow(const std::string& name, bool fullScreen, 
   m_hIcon = LoadIcon(m_hInstance, MAKEINTRESOURCE(IDI_MAIN_ICON));
 
   // Register the windows class
-  WNDCLASSEX wndClass = { 0 };
+  WNDCLASSEX wndClass = {};
   wndClass.cbSize = sizeof(wndClass);
   wndClass.style = CS_HREDRAW | CS_VREDRAW;
   wndClass.lpfnWndProc = CWinEventsWin32::WndProc;
@@ -423,7 +423,7 @@ void CWinSystemWin32::AdjustWindow(bool forceResize)
 void CWinSystemWin32::CenterCursor() const
 {
   RECT rect;
-  POINT point = { 0 };
+  POINT point = {};
 
   //Gets the client rect, then translates it to screen coordinates
   //so that SetCursorPos isn't called with relative x and y values
@@ -721,8 +721,7 @@ RECT CWinSystemWin32::ScreenRect(HMONITOR handle)
     return RECT();
   }
 
-  DEVMODEW sDevMode;
-  ZeroMemory(&sDevMode, sizeof(sDevMode));
+  DEVMODEW sDevMode = {};
   sDevMode.dmSize = sizeof(sDevMode);
   if(!EnumDisplaySettingsW(details->DeviceNameW.c_str(), ENUM_CURRENT_SETTINGS, &sDevMode))
     CLog::LogF(LOGERROR, " EnumDisplaySettings failed with {}", GetLastError());
@@ -743,7 +742,7 @@ void CWinSystemWin32::GetConnectedDisplays(std::vector<MONITOR_DETAILS>& outputs
   const POINT ptZero = { 0, 0 };
   HMONITOR hmPrimary = MonitorFromPoint(ptZero, MONITOR_DEFAULTTOPRIMARY);
 
-  DISPLAY_DEVICEW ddAdapter = { 0 };
+  DISPLAY_DEVICEW ddAdapter = {};
   ddAdapter.cb = sizeof(ddAdapter);
 
   for (DWORD adapter = 0; EnumDisplayDevicesW(nullptr, adapter, &ddAdapter, 0); ++adapter)
@@ -754,7 +753,7 @@ void CWinSystemWin32::GetConnectedDisplays(std::vector<MONITOR_DETAILS>& outputs
       || !(ddAdapter.StateFlags & DISPLAY_DEVICE_ATTACHED_TO_DESKTOP))
       continue;
 
-    DISPLAY_DEVICEW ddMon = { 0 };
+    DISPLAY_DEVICEW ddMon = {};
     ddMon.cb = sizeof(ddMon);
     bool foundScreen = false;
 
@@ -779,8 +778,7 @@ void CWinSystemWin32::GetConnectedDisplays(std::vector<MONITOR_DETAILS>& outputs
     if (foundScreen)
     {
       // get information about the display's current position and display mode
-      DEVMODEW dm;
-      ZeroMemory(&dm, sizeof(dm));
+      DEVMODEW dm = {};
       dm.dmSize = sizeof(dm);
       if (EnumDisplaySettingsExW(ddAdapter.DeviceName, ENUM_CURRENT_SETTINGS, &dm, 0) == FALSE)
         EnumDisplaySettingsExW(ddAdapter.DeviceName, ENUM_REGISTRY_SETTINGS, &dm, 0);
@@ -806,7 +804,7 @@ void CWinSystemWin32::GetConnectedDisplays(std::vector<MONITOR_DETAILS>& outputs
       md.Bpp = dm.dmBitsPerPel;
       md.Interlaced = (dm.dmDisplayFlags & DM_INTERLACED) ? true : false;
 
-      MONITORINFO mi = { 0 };
+      MONITORINFO mi = {};
       mi.cbSize = sizeof(mi);
       if (GetMonitorInfoW(hm, &mi) && (mi.dwFlags & MONITORINFOF_PRIMARY))
         md.IsPrimary = true;
@@ -821,7 +819,7 @@ bool CWinSystemWin32::ChangeResolution(const RESOLUTION_INFO& res, bool forceCha
   using KODI::PLATFORM::WINDOWS::ToW;
   std::wstring outputW = ToW(res.strOutput);
 
-  DEVMODEW sDevMode = { 0 };
+  DEVMODEW sDevMode = {};
   sDevMode.dmSize = sizeof(sDevMode);
 
   // If we can't read the current resolution or any detail of the resolution is different than res
@@ -852,7 +850,7 @@ bool CWinSystemWin32::ChangeResolution(const RESOLUTION_INFO& res, bool forceCha
                  static_cast<int>(res.fRefreshRate));
 
       // Get current resolution stored in registry
-      DEVMODEW sDevModeRegistry = { 0 };
+      DEVMODEW sDevModeRegistry = {};
       sDevModeRegistry.dmSize = sizeof(sDevModeRegistry);
       if (EnumDisplaySettingsW(outputW.c_str(), ENUM_REGISTRY_SETTINGS, &sDevModeRegistry))
       {
@@ -947,7 +945,7 @@ void CWinSystemWin32::UpdateResolutions()
 
   for(int mode = 0;; mode++)
   {
-    DEVMODEW devmode = { 0 };
+    DEVMODEW devmode = {};
     devmode.dmSize = sizeof(devmode);
     if(EnumDisplaySettingsW(details->DeviceNameW.c_str(), mode, &devmode) == 0)
       break;
@@ -1103,7 +1101,7 @@ void CWinSystemWin32::SetForegroundWindowInternal(HWND hWnd)
   if (!IsWindow(hWnd)) return;
 
   // if the window isn't focused, bring it to front or SetFullScreen will fail
-  BYTE keyState[256] = { 0 };
+  BYTE keyState[256] = {};
   // to unlock SetForegroundWindow we need to imitate Alt pressing
   if (GetKeyboardState(reinterpret_cast<LPBYTE>(&keyState)) && !(keyState[VK_MENU] & 0x80))
     keybd_event(VK_MENU, 0, KEYEVENTF_EXTENDEDKEY | 0, 0);
@@ -1184,7 +1182,7 @@ void CWinSystemWin32::NotifyAppFocusChange(bool bGaining)
     if (bGaining)
       SetWindowPos(m_hWnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOREDRAW);
 
-    RESOLUTION_INFO res = { 0 };
+    RESOLUTION_INFO res = {};
     const RESOLUTION resolution = CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution();
     if (bGaining && resolution > RES_INVALID)
       res = CDisplaySettings::GetInstance().GetResolutionInfo(resolution);
