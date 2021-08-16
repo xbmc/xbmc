@@ -83,11 +83,18 @@ Kodi can be built as either a 32bit or 64bit program. The dependencies are built
 **TIP:** Look for comments starting with `Or ...` and only execute the command(s) you need.
 **NOTE:** `--with-platform` is mandatory for all Apple platforms
 
-Configure build:
+Configure build (x86 intel):
 ```
 cd $HOME/kodi/tools/depends
 ./bootstrap
 ./configure --host=x86_64-apple-darwin --with-platform=macos
+```
+
+Configure build (apple silicon):
+```
+cd $HOME/kodi/tools/depends
+./bootstrap
+./configure --host=aarch64-apple-darwin --with-platform=macos
 ```
 
 Build tools and dependencies:
@@ -161,7 +168,7 @@ Change to build directory:
 cd $HOME/kodi-build
 ```
 
-Generate Xcode project:
+Generate Xcode project (x86_64 intel):
 ```
 /Users/Shared/xbmc-depends/x86_64-darwin17.5.0-native/bin/cmake -G Xcode -DCMAKE_TOOLCHAIN_FILE=/Users/Shared/xbmc-depends/macosx10.13_x86_64-target-debug/share/Toolchain.cmake ../kodi
 ```
