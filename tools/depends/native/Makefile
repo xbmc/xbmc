@@ -6,13 +6,17 @@ endif
 
 NATIVE= m4 gettext heimdal autoconf automake \
         libtool pkg-config yasm nasm cmake \
-        gas-preprocessor libffi python3 zlib \
+        gas-preprocessor python3 zlib \
         pcre swig \
         libpng libjpeg-turbo liblzo2 giflib \
         setuptools distutilscross JsonSchemaBuilder TexturePacker \
         flatbuffers \
         meson ninja
 
+ifneq ($(NATIVE_OS),osx)
+  NATIVE += libffi
+  LIBFFI = libffi
+endif
 
 ifeq ($(OS),darwin_embedded)
   NATIVE += dpkg xz tar ldid
@@ -46,7 +50,7 @@ ninja: meson
 swig: pcre
 distutilscross: python3
 tar: xz automake
-python3: $(EXPAT) libffi pkg-config zlib
+python3: $(EXPAT) $(LIBFFI) pkg-config zlib
 setuptools: python3
 wayland-scanner: expat pkg-config
 waylandpp-scanner: cmake pugixml
