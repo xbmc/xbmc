@@ -1,0 +1,81 @@
+# Kodi Media Center language file
+# Addon Name: SNES Controller
+# Addon id: game.controller.snes
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: ar_ma\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+msgctxt "Addon Summary"
+msgid "SNES controller"
+msgstr ""
+
+msgctxt "Addon Description"
+msgid "The SNES (akso known as Super NES or Super Nintendo) is a 16-bit console released in 1990. The controller design served as inspiration for the PlayStation, Dreamcast, Xbox and Wii Classic controllers."
+msgstr ""
+
+msgctxt "Addon Disclaimer"
+msgid "Image credit: OpenEmu (openemu.org)"
+msgstr ""
+
+msgctxt "#30000"
+msgid "Super Nintendo"
+msgstr ""
+
+msgctxt "#30001"
+msgid "A"
+msgstr ""
+
+msgctxt "#30002"
+msgid "B"
+msgstr ""
+
+msgctxt "#30003"
+msgid "X"
+msgstr ""
+
+msgctxt "#30004"
+msgid "Y"
+msgstr ""
+
+msgctxt "#30005"
+msgid "Start"
+msgstr ""
+
+msgctxt "#30006"
+msgid "Select"
+msgstr ""
+
+msgctxt "#30007"
+msgid "Up"
+msgstr ""
+
+msgctxt "#30008"
+msgid "Right"
+msgstr ""
+
+msgctxt "#30009"
+msgid "Down"
+msgstr ""
+
+msgctxt "#30010"
+msgid "Left"
+msgstr ""
+
+msgctxt "#30011"
+msgid "Left Bumper"
+msgstr ""
+
+msgctxt "#30012"
+msgid "Right Bumper"
+msgstr ""
