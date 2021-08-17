@@ -1,0 +1,102 @@
+# Kodi Media Center language file
+# Addon Name: Default Controller
+# Addon id: game.controller.default
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"POT-Creation-Date: 2014-05-30 17:00+8\n"
+"PO-Revision-Date: 2021-05-20 16:49+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Vietnamese <https://kodi.weblate.cloud/projects/kodi-core/game-controller-default/vi_vn/>\n"
+"Language: vi_vn\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.6.2\n"
+
+msgctxt "Addon Summary"
+msgid "Default Controller"
+msgstr ""
+
+msgctxt "Addon Description"
+msgid "The default media center controller is based on the Xbox 360 controller."
+msgstr ""
+
+msgctxt "Addon Disclaimer"
+msgid "Image credit: Wikipedia (wikipedia.org)"
+msgstr ""
+
+msgctxt "#30000"
+msgid "Kodi"
+msgstr ""
+
+msgctxt "#30001"
+msgid "A"
+msgstr ""
+
+msgctxt "#30002"
+msgid "B"
+msgstr ""
+
+msgctxt "#30003"
+msgid "X"
+msgstr ""
+
+msgctxt "#30004"
+msgid "Y"
+msgstr ""
+
+msgctxt "#30005"
+msgid "Start"
+msgstr "Bắt đầu"
+
+msgctxt "#30006"
+msgid "Back"
+msgstr "Lùi"
+
+msgctxt "#30007"
+msgid "Guide"
+msgstr "Lịch phát sóng"
+
+msgctxt "#30008"
+msgid "Left Stick"
+msgstr ""
+
+msgctxt "#30009"
+msgid "Right Stick"
+msgstr ""
+
+msgctxt "#30010"
+msgid "Up"
+msgstr ""
+
+msgctxt "#30011"
+msgid "Down"
+msgstr ""
+
+msgctxt "#30012"
+msgid "Right"
+msgstr ""
+
+msgctxt "#30013"
+msgid "Left"
+msgstr ""
+
+msgctxt "#30014"
+msgid "Left Shoulder"
+msgstr ""
+
+msgctxt "#30015"
+msgid "Right Shoulder"
+msgstr ""
+
+msgctxt "#30016"
+msgid "Left Trigger"
+msgstr ""
+
+msgctxt "#30017"
+msgid "Right Trigger"
+msgstr ""
