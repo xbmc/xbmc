@@ -1,6 +1,6 @@
 include ../../Makefile.include
 DEPS= ../../Makefile.include Makefile apple.patch crosscompile.patch android.patch \
-       modules.setup darwin_embedded.patch
+       modules.setup darwin_embedded.patch 01-GH-27394-move-crypt-h.patch
 
 # lib name, version
 LIBNAME=Python
@@ -47,6 +47,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); patch -p1 -i ../crosscompile.patch
 	cd $(PLATFORM); patch -p1 -i ../android.patch
 	cd $(PLATFORM); patch -p1 -i ../apple.patch
+	cd $(PLATFORM); patch -p1 -i ../01-GH-27394-move-crypt-h.patch
 ifeq ($(OS),darwin_embedded)
 	cd $(PLATFORM); patch -p1 -i ../darwin_embedded.patch
 endif
