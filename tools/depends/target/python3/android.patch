@@ -1,6 +1,6 @@
 --- a/Modules/termios.c
 +++ b/Modules/termios.c
-@@ -224,6 +224,7 @@
+@@ -239,6 +239,7 @@
      Py_RETURN_NONE;
  }
  
@@ -8,7 +8,7 @@
  PyDoc_STRVAR(termios_tcdrain__doc__,
  "tcdrain(fd) -> None\n\
  \n\
-@@ -242,6 +243,7 @@
+@@ -257,6 +257,7 @@
  
      Py_RETURN_NONE;
  }
@@ -16,7 +16,7 @@
  
  PyDoc_STRVAR(termios_tcflush__doc__,
  "tcflush(fd, queue) -> None\n\
-@@ -295,8 +297,10 @@
+@@ -310,8 +310,10 @@
       METH_VARARGS, termios_tcsetattr__doc__},
      {"tcsendbreak", termios_tcsendbreak,
       METH_VARARGS, termios_tcsendbreak__doc__},

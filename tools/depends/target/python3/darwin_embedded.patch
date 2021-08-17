@@ -1,6 +1,6 @@
 --- a/Lib/os.py
 +++ b/Lib/os.py
-@@ -599,6 +599,7 @@
+@@ -605,6 +605,7 @@
          fullname = path.join(dir, file)
          try:
              exec_func(fullname, *argrest)
@@ -10,16 +10,7 @@
          except OSError as e:
 --- a/Lib/platform.py
 +++ b/Lib/platform.py
-@@ -604,7 +604,7 @@
- 
-     """ Interface to the system's uname command.
-     """
--    if sys.platform in ('dos', 'win32', 'win16'):
-+    if sys.platform in ('dos', 'win32', 'win16', 'darwin'):
-         # XXX Others too ?
-         return default
- 
-@@ -626,7 +626,7 @@
+@@ -614,7 +614,7 @@
          default in case the command should fail.
  
      """
@@ -30,16 +21,16 @@
  
 --- a/Lib/subprocess.py
 +++ b/Lib/subprocess.py
-@@ -737,6 +737,8 @@
-                  restore_signals=True, start_new_session=False,
-                  pass_fds=(), *, encoding=None, errors=None, text=None):
+@@ -762,6 +762,8 @@
+                  pass_fds=(), *, user=None, group=None, extra_groups=None,
+                  encoding=None, errors=None, text=None, umask=-1):
          """Create new Popen instance."""
 +        raise RuntimeError("Subprocesses are not supported on this platform.")
 +
          _cleanup()
          # Held while anything is calling waitpid before returncode has been
          # updated to prevent clobbering returncode if wait() or poll() are
-@@ -936,6 +936,7 @@
+@@ -1046,6 +1048,7 @@
          if not self._child_created:
              # We didn't get to successfully create a child process.
              return
@@ -47,7 +38,7 @@
          if self.returncode is None:
              # Not reading subprocess exit status creates a zombie process which
              # is only destroyed at the parent python process exit
-@@ -1566,6 +1566,7 @@
+@@ -1679,6 +1682,7 @@
              else:
                  args = list(args)
  
@@ -55,15 +46,15 @@
              if shell:
                  # On Android the default shell is at '/system/bin/sh'.
                  unix_shell = ('/system/bin/sh' if
-@@ -1643,6 +1643,7 @@
-                             errpipe_read, errpipe_write,
-                             restore_signals, start_new_session, preexec_fn)
+@@ -1762,6 +1766,7 @@
+                             gid, gids, uid, umask,
+                             preexec_fn)
                      self._child_created = True
 +                    return
                  finally:
                      # be sure the FD is closed no matter what
                      os.close(errpipe_write)
-@@ -1662,6 +1662,7 @@
+@@ -1781,6 +1786,7 @@
              finally:
                  # be sure the FD is closed no matter what
                  os.close(errpipe_read)
@@ -71,16 +62,16 @@
  
              if errpipe_data:
                  try:
-@@ -1721,7 +1724,7 @@
-                 raise SubprocessError("Unknown child exit status!")
- 
+@@ -1834,7 +1840,7 @@
+             else:
+                 self.returncode = waitstatus_to_exitcode(sts)
  
 -        def _internal_poll(self, _deadstate=None, _waitpid=os.waitpid,
 +        def _internal_poll(self, _deadstate=None, _waitpid=None,
                  _WNOHANG=os.WNOHANG, _ECHILD=errno.ECHILD):
              """Check if child process has terminated.  Returns returncode
              attribute.
-@@ -1730,6 +1733,8 @@
+@@ -1843,6 +1849,8 @@
              outside of the local scope (nor can any methods it calls).
  
              """
@@ -91,7 +82,7 @@
                      # Something else is busy calling waitpid.  Don't allow two
 --- a/Lib/urllib/request.py
 +++ b/Lib/urllib/request.py
-@@ -2616,11 +2616,9 @@
+@@ -2617,11 +2617,9 @@
  
  
  if sys.platform == 'darwin':
@@ -104,7 +95,7 @@
  
      def getproxies_macosx_sysconf():
          """Return a dictionary of scheme -> proxy server URL mappings.
-@@ -2628,7 +2628,7 @@
+@@ -2629,7 +2627,7 @@
          This function uses the MacOSX framework SystemConfiguration
          to fetch the proxy information.
          """
@@ -113,7 +104,7 @@
  
  
  
-@@ -2641,9 +2641,9 @@
+@@ -2642,9 +2640,9 @@
          """
          proxies = getproxies_environment()
          if proxies:
@@ -127,17 +118,17 @@
          return getproxies_environment() or getproxies_macosx_sysconf()
 --- a/Modules/_posixsubprocess.c
 +++ b/Modules/_posixsubprocess.c
-@@ -49,6 +49,9 @@
- 
- #define POSIX_CALL(call)   do { if ((call) == -1) goto error; } while (0)
+@@ -100,6 +100,9 @@
+     return 0;
+ }
  
 +#if defined(__APPLE__)
 +#include <TargetConditionals.h>
 +#endif
  
- /* If gc was disabled, call gc.enable().  Return 0 on success. */
+ /* Convert ASCII to a positive int, no libc call. no overflow. -1 on error. */
  static int
-@@ -419,14 +422,14 @@
+@@ -456,14 +459,14 @@
          goto error;
  
      /* Close parent's pipe ends. */
@@ -154,7 +145,7 @@
      /* When duping fds, if there arises a situation where one of the fds is
         either 0, 1 or 2, it is possible that it is overwritten (#12607). */
      if (c2pwrite == 0) {
-@@ -471,6 +474,8 @@
+@@ -508,6 +511,8 @@
      /* We no longer manually close p2cread, c2pwrite, and errwrite here as
       * _close_open_fds takes care when it is not already non-inheritable. */
  
@@ -163,7 +154,7 @@
      if (cwd)
          POSIX_CALL(chdir(cwd));
  
-@@ -496,13 +501,13 @@
+@@ -552,13 +557,13 @@
              errno = 0;  /* We don't want to report an OSError. */
              goto error;
          }
@@ -179,7 +170,7 @@
      }
  
      /* This loop matches the Lib/os.py _execvpe()'s PATH search when */
-@@ -511,20 +516,34 @@
+@@ -567,20 +572,34 @@
      for (i = 0; exec_array[i] != NULL; ++i) {
          const char *executable = exec_array[i];
          if (envp) {
@@ -214,7 +205,7 @@
      /* Report the posix error to our parent process. */
      /* We ignore all write() return values as the total size of our writes is
         less than PIPEBUF and we cannot do anything about an error anyways.
-@@ -686,11 +705,12 @@
+@@ -837,11 +856,12 @@
          preexec_fn_args_tuple = PyTuple_New(0);
          if (!preexec_fn_args_tuple)
              goto cleanup;
@@ -229,7 +220,7 @@
      if (pid == 0) {
          /* Child process */
          /*
-@@ -704,7 +724,7 @@
+@@ -855,7 +875,7 @@
               * This call may not be async-signal-safe but neither is calling
               * back into Python.  The user asked us to use hope as a strategy
               * to avoid deadlock... */
@@ -238,7 +229,7 @@
          }
  
          child_exec(exec_array, argv, envp, cwd,
-@@ -723,8 +743,8 @@
+@@ -876,8 +896,8 @@
  
      Py_XDECREF(cwd_obj2);
  
@@ -251,42 +242,42 @@
      if (argv)
 --- a/Modules/getpath.c
 +++ b/Modules/getpath.c
-@@ -806,8 +806,10 @@
-       * will fail if a relative path was used. but in that case,
-       * absolutize() should help us out below
-       */
--    else if(0 == _NSGetExecutablePath(execpath, &nsexeclength) &&
--            execpath[0] == SEP)
+@@ -935,8 +935,10 @@
+        will fail if a relative path was used. but in that case,
+        absolutize() should help us out below
+      */
+-    if (_NSGetExecutablePath(execpath, &nsexeclength) != 0
+-        || (wchar_t)execpath[0] != SEP)
 +    char *iospath = Py_GETENV("PYTHONHOME");
 +    char *prog = Py_GETENV("PYTHONEXECUTABLE");
 +    sprintf(execpath, "%s/bin/%s", iospath, prog);
-+    if (execpath[0] == SEP)
++    if (execpath[0] != SEP)
      {
-         size_t len;
-         wchar_t *path = Py_DecodeLocale(execpath, &len);
+         /* _NSGetExecutablePath() failed or the path is relative */
+         return _PyStatus_OK();
 --- a/Modules/posixmodule.c
 +++ b/Modules/posixmodule.c
-@@ -196,8 +196,8 @@
- #else
- /* Unix functions that the configure script doesn't check for */
- #ifndef __VXWORKS__
--#define HAVE_EXECV      1
--#define HAVE_FORK       1
-+//#define HAVE_EXECV      0
-+//#define HAVE_FORK       0
- #if defined(__USLC__) && defined(__SCO_VERSION__)       /* SCO UDK Compiler */
- #define HAVE_FORK1      1
- #endif
-@@ -210,8 +210,8 @@
- #define HAVE_KILL       1
- #define HAVE_OPENDIR    1
- #define HAVE_PIPE       1
--#define HAVE_SYSTEM     1
--#define HAVE_WAIT       1
-+//#define HAVE_SYSTEM     0
-+//#define HAVE_WAIT       0
- #define HAVE_TTYNAME    1
- #endif  /* _MSC_VER */
+@@ -313,8 +313,8 @@
+ #  else
+      /* Unix functions that the configure script doesn't check for */
+ #    ifndef __VXWORKS__
+-#      define HAVE_EXECV      1
+-#      define HAVE_FORK       1
++//#      define HAVE_EXECV      0
++//#      define HAVE_FORK       0
+ #      if defined(__USLC__) && defined(__SCO_VERSION__)       /* SCO UDK Compiler */
+ #        define HAVE_FORK1      1
+ #      endif
+@@ -327,8 +327,8 @@
+ #    define HAVE_KILL       1
+ #    define HAVE_OPENDIR    1
+ #    define HAVE_PIPE       1
+-#    define HAVE_SYSTEM     1
+-#    define HAVE_WAIT       1
++//#    define HAVE_SYSTEM     0
++//#    define HAVE_WAIT       0
+ #    define HAVE_TTYNAME    1
+ #  endif  /* _MSC_VER */
  #endif  /* ! __WATCOMC__ || __QNX__ */
 --- a/Include/intrcheck.h
 +++ b/Include/intrcheck.h

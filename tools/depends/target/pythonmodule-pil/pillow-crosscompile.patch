@@ -1,6 +1,6 @@
 --- a/setup.py
 +++ b/setup.py
-@@ -363,6 +363,16 @@
+@@ -363,6 +363,19 @@
          if _cmd_exists(os.environ.get("PKG_CONFIG", "pkg-config")):
              pkg_config = _pkg_config
  
@@ -13,6 +13,9 @@
 +            cflags = os.environ.get('CFLAGS') or ''
 +            args['compiler_so'] = compiler + ' ' + ccshared + ' ' + cflags
 +        self.compiler.set_executables(**args)
++
++        self.compiler.include_dirs.clear()
++        self.compiler.include_dirs.append(os.environ.get('PYTHONXINCLUDE'))
 +
          #
          # add configured kits
