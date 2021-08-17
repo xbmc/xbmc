@@ -4,7 +4,7 @@ DEPS=../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=meson
-VERSION=0.55.1
+VERSION=0.59.2
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
