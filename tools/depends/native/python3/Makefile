@@ -4,7 +4,7 @@ DEPS= ../../Makefile.include Makefile 01-distutil-flags.patch
 
 # lib name, version
 LIBNAME=Python
-VERSION=3.8.5
+VERSION=3.9.7
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
 CWD=$(shell pwd)

@@ -52,7 +52,7 @@ ninja: meson
 openssl: zlib
 swig: pcre
 tar: xz automake
-python3: $(EXPAT) $(LIBFFI) pkg-config zlib openssl
+python3: $(EXPAT) $(LIBFFI) pkg-config zlib openssl autoconf-archive
 setuptools: python3
 wayland-scanner: expat pkg-config
 waylandpp-scanner: cmake pugixml
