@@ -5922,7 +5922,7 @@ bool CMusicDatabase::GetDiscsByWhere(CMusicDbUrl& musicUrl,
     items.Reserve(total);
     int albumOffset = 2;
     CAlbum album;
-    bool useTitle = false;
+    bool useTitle = true; // Assume we want to match by disc title later unless we have no titles
     std::string oldDiscTitle;
     const dbiplus::query_data& data = m_pDS->get_result_set().records;
     for (const auto& i : results)
@@ -5933,23 +5933,22 @@ bool CMusicDatabase::GetDiscsByWhere(CMusicDbUrl& musicUrl,
       {
         if (album.idAlbum != record->at(albumOffset + album_idAlbum).get_asInt())
         { // New album
-          useTitle = false;
+          useTitle = true;
           album = GetAlbumFromDataset(record, albumOffset);
         }
 
         int discnum = record->at(0).get_asInt();
         std::string strDiscSubtitle = record->at(1).get_asString();
         if (strDiscSubtitle.empty())
-          // Make (fake) disc title from disc number
+        { // Make (fake) disc title from disc number, group by disc number as no real title to match
           strDiscSubtitle = StringUtils::Format("{} {}", g_localizeStrings.Get(427), discnum);
+          useTitle = false;
+        }
         else if (oldDiscTitle == strDiscSubtitle)
-        { // When real disc titles are provided (as they ALWAYS are for boxed sets)
-          // group discs together by title not number.
-          useTitle = true;
+        { // disc title already added to list, fetch the next disc
           continue;
         }
-        else
-          oldDiscTitle = strDiscSubtitle;
+        oldDiscTitle = strDiscSubtitle;
 
         CMusicDbUrl itemUrl = musicUrl;
         std::string path = StringUtils::Format("{}/", discnum);
