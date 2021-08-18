@@ -1,0 +1,102 @@
+# Kodi Media Center language file
+# Addon Name: Default Controller
+# Addon id: game.controller.default
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"POT-Creation-Date: 2014-05-30 17:00+8\n"
+"PO-Revision-Date: 2021-07-12 13:29+0000\n"
+"Last-Translator: Raimondas Dužinskas <raimondas.duzinskas@gmail.com>\n"
+"Language-Team: Lithuanian <https://kodi.weblate.cloud/projects/kodi-core/game-controller-default/lt_lt/>\n"
+"Language: lt_lt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Weblate 4.7.1\n"
+
+msgctxt "Addon Summary"
+msgid "Default Controller"
+msgstr "Numatytasis valdiklis"
+
+msgctxt "Addon Description"
+msgid "The default media center controller is based on the Xbox 360 controller."
+msgstr "Numatytasis media centro valdiklis yra paremtas Xbox 360 valdikliu."
+
+msgctxt "Addon Disclaimer"
+msgid "Image credit: Wikipedia (wikipedia.org)"
+msgstr "Atvaizdo šaltinis: Wikipedia (wikipedia.org)"
+
+msgctxt "#30000"
+msgid "Kodi"
+msgstr "Kodi"
+
+msgctxt "#30001"
+msgid "A"
+msgstr "A"
+
+msgctxt "#30002"
+msgid "B"
+msgstr "B"
+
+msgctxt "#30003"
+msgid "X"
+msgstr "X"
+
+msgctxt "#30004"
+msgid "Y"
+msgstr "Y"
+
+msgctxt "#30005"
+msgid "Start"
+msgstr "Pradėti"
+
+msgctxt "#30006"
+msgid "Back"
+msgstr "Atgal"
+
+msgctxt "#30007"
+msgid "Guide"
+msgstr "Gidas"
+
+msgctxt "#30008"
+msgid "Left Stick"
+msgstr "Kairė svirtis"
+
+msgctxt "#30009"
+msgid "Right Stick"
+msgstr "Dešinė svirtis"
+
+msgctxt "#30010"
+msgid "Up"
+msgstr "Aukštyn"
+
+msgctxt "#30011"
+msgid "Down"
+msgstr "Žemyn"
+
+msgctxt "#30012"
+msgid "Right"
+msgstr "Dešinėn"
+
+msgctxt "#30013"
+msgid "Left"
+msgstr "Kairėn"
+
+msgctxt "#30014"
+msgid "Left Shoulder"
+msgstr "Kairysis petys"
+
+msgctxt "#30015"
+msgid "Right Shoulder"
+msgstr "Dešinysis petys"
+
+msgctxt "#30016"
+msgid "Left Trigger"
+msgstr "Kairysis gaidukas"
+
+msgctxt "#30017"
+msgid "Right Trigger"
+msgstr "Dešinysis gaidukas"

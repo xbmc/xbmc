@@ -1,0 +1,82 @@
+# Kodi Media Center language file
+# Addon Name: SNES Controller
+# Addon id: game.controller.snes
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2021-07-12 13:29+0000\n"
+"Last-Translator: Jeremy Chen <jeremy@naviart.idv.tw>\n"
+"Language-Team: Chinese (Taiwan) <https://kodi.weblate.cloud/projects/kodi-core/game-controller-snes/zh_tw/>\n"
+"Language: zh_tw\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.7.1\n"
+
+msgctxt "Addon Summary"
+msgid "SNES controller"
+msgstr "SNES控制器"
+
+msgctxt "Addon Description"
+msgid "The SNES (akso known as Super NES or Super Nintendo) is a 16-bit console released in 1990. The controller design served as inspiration for the PlayStation, Dreamcast, Xbox and Wii Classic controllers."
+msgstr "SNES(又名超任)是在1990發表的16位元遊戲主機。該機型的控制器設計思路啟發了後繼的PS、DC、Xbox及Wii等主機。"
+
+msgctxt "Addon Disclaimer"
+msgid "Image credit: OpenEmu (openemu.org)"
+msgstr "圖片來源：OpenEmu (openemu.org)"
+
+msgctxt "#30000"
+msgid "Super Nintendo"
+msgstr "超級任天堂"
+
+msgctxt "#30001"
+msgid "A"
+msgstr "A"
+
+msgctxt "#30002"
+msgid "B"
+msgstr "B"
+
+msgctxt "#30003"
+msgid "X"
+msgstr "X"
+
+msgctxt "#30004"
+msgid "Y"
+msgstr "Y"
+
+msgctxt "#30005"
+msgid "Start"
+msgstr "開始"
+
+msgctxt "#30006"
+msgid "Select"
+msgstr "選擇"
+
+msgctxt "#30007"
+msgid "Up"
+msgstr "上"
+
+msgctxt "#30008"
+msgid "Right"
+msgstr "右"
+
+msgctxt "#30009"
+msgid "Down"
+msgstr "下"
+
+msgctxt "#30010"
+msgid "Left"
+msgstr "左"
+
+msgctxt "#30011"
+msgid "Left Bumper"
+msgstr "左肩"
+
+msgctxt "#30012"
+msgid "Right Bumper"
+msgstr "右肩"

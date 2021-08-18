@@ -16,6 +16,18 @@ msgstr ""
 "Language: en_GB\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "Addon Summary"
+msgid "Default Controller"
+msgstr ""
+
+msgctxt "Addon Description"
+msgid "The default media center controller is based on the Xbox 360 controller."
+msgstr ""
+
+msgctxt "Addon Disclaimer"
+msgid "Image credit: Wikipedia (wikipedia.org)"
+msgstr ""
+
 msgctxt "#30000"
 msgid "Kodi"
 msgstr ""
