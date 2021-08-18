@@ -168,7 +168,11 @@ case $build in
   ;;
   *darwin*)
     build_os="osx"
-    host_includes=-mmacosx-version-min=`sw_vers | grep ProductVersion | awk '{ print $2}'`
+    if test "x$build_cpu" = "xx86_64"; then
+      host_includes=-mmacosx-version-min=10.13
+    else
+      host_includes=-mmacosx-version-min=11.0
+    fi
     use_xcodepath=`xcode-select -print-path`
     use_build_toolchain=$use_xcodepath
     use_xcodebuild=$use_xcodepath/usr/bin/xcodebuild
