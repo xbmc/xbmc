@@ -1,0 +1,102 @@
+# Kodi Media Center language file
+# Addon Name: Default Controller
+# Addon id: game.controller.default
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"POT-Creation-Date: 2014-05-30 17:00+8\n"
+"PO-Revision-Date: 2021-07-12 13:29+0000\n"
+"Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
+"Language-Team: Hebrew (Israel) <https://kodi.weblate.cloud/projects/kodi-core/game-controller-default/he_il/>\n"
+"Language: he_il\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && n % 10 == 0) ? 2 : 3));\n"
+"X-Generator: Weblate 4.7.1\n"
+
+msgctxt "Addon Summary"
+msgid "Default Controller"
+msgstr "בקר בררת מחדל"
+
+msgctxt "Addon Description"
+msgid "The default media center controller is based on the Xbox 360 controller."
+msgstr "בקר בררת המחדל של מרכז המדיה מבוסס על הבקר של Xbox 360."
+
+msgctxt "Addon Disclaimer"
+msgid "Image credit: Wikipedia (wikipedia.org)"
+msgstr "זכויות על התמונה: ויקיפדיה (wikipedia.org)"
+
+msgctxt "#30000"
+msgid "Kodi"
+msgstr "קודי"
+
+msgctxt "#30001"
+msgid "A"
+msgstr "A"
+
+msgctxt "#30002"
+msgid "B"
+msgstr "B"
+
+msgctxt "#30003"
+msgid "X"
+msgstr "X"
+
+msgctxt "#30004"
+msgid "Y"
+msgstr "Y"
+
+msgctxt "#30005"
+msgid "Start"
+msgstr "התחל"
+
+msgctxt "#30006"
+msgid "Back"
+msgstr "אחורה"
+
+msgctxt "#30007"
+msgid "Guide"
+msgstr "מדריך"
+
+msgctxt "#30008"
+msgid "Left Stick"
+msgstr "סטיק שמאלי"
+
+msgctxt "#30009"
+msgid "Right Stick"
+msgstr "סטיק ימני"
+
+msgctxt "#30010"
+msgid "Up"
+msgstr "למעלה"
+
+msgctxt "#30011"
+msgid "Down"
+msgstr "למטה"
+
+msgctxt "#30012"
+msgid "Right"
+msgstr "ימין"
+
+msgctxt "#30013"
+msgid "Left"
+msgstr "שמאל"
+
+msgctxt "#30014"
+msgid "Left Shoulder"
+msgstr "כתף שמאל"
+
+msgctxt "#30015"
+msgid "Right Shoulder"
+msgstr "כתף ימין"
+
+msgctxt "#30016"
+msgid "Left Trigger"
+msgstr "טריגר שמאל"
+
+msgctxt "#30017"
+msgid "Right Trigger"
+msgstr "טריגר ימין"
