@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """
@@ -34,17 +33,21 @@ from .json_interface import get_version_file_list
 from .json_interface import get_installed_version
 from .versions import compare_version
 
-if sys.version_info[0] == 3 and sys.version_info[1] >= 8:
-    try:
-        from .distro import distro
 
-        DISTRIBUTION = distro.linux_distribution(full_distribution_name=False)[0].lower()
+DISTRIBUTION = ''
 
-    except (AttributeError, ImportError):
-        DISTRIBUTION = ''
+if sys.platform.startswith('linux'):
+    if sys.version_info[0] == 3 and sys.version_info[1] >= 8:
+        try:
+            from .distro import distro
 
-else:
-    DISTRIBUTION = platform.linux_distribution(full_distribution_name=0)[0].lower()  # pylint: disable=deprecated-method
+            DISTRIBUTION = distro.linux_distribution(full_distribution_name=False)[0].lower()
+
+        except (AttributeError, ImportError):
+            DISTRIBUTION = ''
+
+    else:
+        DISTRIBUTION = platform.linux_distribution(full_distribution_name=0)[0].lower()  # pylint: disable=deprecated-method
 
 if not DISTRIBUTION:
     DISTRIBUTION = platform.uname()[0].lower()
