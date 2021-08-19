@@ -7,14 +7,15 @@ msgstr ""
 "Project-Id-Version: XBMC Addons\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Chinese (Simple) (http://www.transifex.com/projects/p/xbmc-addons/language/zh/)\n"
+"PO-Revision-Date: 2021-03-22 02:28+0000\n"
+"Last-Translator: Meano  Lee <meanocat@gmail.com>\n"
+"Language-Team: Chinese (China) <https://kodi.weblate.cloud/projects/kodi-core/service-xbmc-versioncheck/zh_cn/>\n"
+"Language: zh_cn\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: zh\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.5.1\n"
 
 msgctxt "#32001"
 msgid "We would like to recommend you to upgrade."
@@ -76,26 +77,45 @@ msgctxt "#32024"
 msgid "Linux: Upgrade using apt"
 msgstr "Linux：使用 apt 来升级"
 
+#. Used in OK dialog
 msgctxt "#32030"
 msgid "A new stable version of Kodi is available."
 msgstr "有新的稳定版 Kodi 可用。"
 
+#. Direct people to the website. Used in OK dialog
 msgctxt "#32031"
 msgid "Visit http://kodi.tv for more information."
 msgstr "更多信息访问 http://kodi.tv。"
 
+#. Used in OK dialog
 msgctxt "#32032"
 msgid "A new stable version of Kodi is available."
 msgstr "有新的稳定版 Kodi 可用。"
 
+#. Direct people to the website. Used in OK dialog
 msgctxt "#32033"
 msgid "Visit http://kodi.tv for more information."
 msgstr "更多信息访问 http://kodi.tv。"
 
+#. For example: "You are using 13.1 prealpha while 13.2 stable is available"
 msgctxt "#32034"
 msgid "Using %s while %s is available."
 msgstr "使用 %s 当 %s 可用。"
 
+#. Used in OK dialog
 msgctxt "#32035"
 msgid "It is recommended that you to upgrade to a newer version."
 msgstr "建议升级到新版本。"
+
+# empty strings from id 32036 to 32039
+msgctxt "#32040"
+msgid "Your version %s of the Python cryptography module is too old. You need at least version 1.7."
+msgstr "Python cryptography 模块版本过时。最低要求版本为 1.7。"
+
+msgctxt "#32041"
+msgid "Please upgrade your operating system."
+msgstr "请更新您的操作系统。"
+
+msgctxt "#32042"
+msgid "For more information, see https://kodi.wiki/view/Linux"
+msgstr "更多详情，请访问 https://kodi.wiki/view/Linux"

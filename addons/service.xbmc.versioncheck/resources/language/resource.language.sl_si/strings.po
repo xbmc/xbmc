@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Kodi Translation Team\n"
 "Language-Team: Slovenian (http://www.transifex.com/projects/p/xbmc-addons/language/sl/)\n"
+"Language: sl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: sl\n"
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);\n"
 
 msgctxt "#32001"
@@ -76,26 +76,45 @@ msgctxt "#32024"
 msgid "Linux: Upgrade using apt"
 msgstr "GNU/Linux: nadgradite z apt"
 
+#. Used in OK dialog
 msgctxt "#32030"
 msgid "A new stable version of Kodi is available."
 msgstr "Na voljo je nova stabilna različica Kodija."
 
+#. Direct people to the website. Used in OK dialog
 msgctxt "#32031"
 msgid "Visit http://kodi.tv for more information."
 msgstr "Za dodatne informacije obiščite http://kodi.tv"
 
+#. Used in OK dialog
 msgctxt "#32032"
 msgid "A new stable version of Kodi is available."
 msgstr "Na voljo je nova stabilna različica Kodija."
 
+#. Direct people to the website. Used in OK dialog
 msgctxt "#32033"
 msgid "Visit http://kodi.tv for more information."
 msgstr "Za dodatne informacije obiščite Kodi.tv."
 
+#. For example: "You are using 13.1 prealpha while 13.2 stable is available"
 msgctxt "#32034"
 msgid "Using %s while %s is available."
 msgstr "Uporabljate %s, ko je na voljo že %s."
 
+#. Used in OK dialog
 msgctxt "#32035"
 msgid "It is recommended that you to upgrade to a newer version."
 msgstr "Priporočamo, da nadgradite sistem na novejšo različico."
+
+# empty strings from id 32036 to 32039
+msgctxt "#32040"
+msgid "Your version %s of the Python cryptography module is too old. You need at least version 1.7."
+msgstr ""
+
+msgctxt "#32041"
+msgid "Please upgrade your operating system."
+msgstr ""
+
+msgctxt "#32042"
+msgid "For more information, see https://kodi.wiki/view/Linux"
+msgstr ""
