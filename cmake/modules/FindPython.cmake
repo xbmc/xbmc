@@ -27,10 +27,12 @@
 # --------
 #
 
-# for Depends builds, set search root dir to depends path
-if(KODI_DEPENDSBUILD)
+# for Depends/Windows builds, set search root dir to libdir path
+if(KODI_DEPENDSBUILD
+   OR CMAKE_SYSTEM_NAME STREQUAL WINDOWS
+   OR CMAKE_SYSTEM_NAME STREQUAL WindowsStore)
   set(Python3_USE_STATIC_LIBS TRUE)
-  set(Python3_ROOT_DIR ${DEPENDS_PATH}/lib)
+  set(Python3_ROOT_DIR ${libdir})
 endif()
 
 # Provide root dir to search for Python if provided
