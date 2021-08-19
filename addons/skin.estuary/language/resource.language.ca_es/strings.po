@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2021-07-25 11:10+0000\n"
-"Last-Translator: Xean <xeanhort007@gmail.com>\n"
+"PO-Revision-Date: 2021-08-18 16:16+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Catalan (Spain) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/ca_es/>\n"
 "Language: ca_es\n"
 "MIME-Version: 1.0\n"
@@ -248,12 +248,10 @@ msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Autenticació automàtica a l'inici"
 
-#, fuzzy
 msgctxt "#31059"
 msgid "Select + X"
 msgstr "Select + X"
 
-#, fuzzy
 msgctxt "#31060"
 msgid "Select + Start"
 msgstr "Select + Start"
