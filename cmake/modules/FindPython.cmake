@@ -20,6 +20,7 @@
 #
 # PYTHON_FOUND - system has PYTHON
 # PYTHON_VERSION - Python version number (Major.Minor)
+# PYTHON_EXECUTABLE - Python interpreter binary
 # PYTHON_INCLUDE_DIRS - the python include directory
 # PYTHON_LIBRARIES - The python libraries
 # PYTHON_LDFLAGS - Python provided link options
@@ -51,6 +52,9 @@ if(PYTHON_VER)
 endif()
 
 find_package(Python3 ${VERSION} ${EXACT_VER} COMPONENTS Development)
+if(CORE_SYSTEM_NAME STREQUAL linux)
+  find_package(Python3 ${VERSION} ${EXACT_VER} COMPONENTS Interpreter)
+endif()
 
 if(KODI_DEPENDSBUILD)
   find_library(FFI_LIBRARY ffi REQUIRED)
@@ -73,6 +77,7 @@ if(Python3_FOUND)
   list(APPEND PYTHON_DEFINITIONS -DHAS_PYTHON=1)
   # These are all set for easy integration with the rest of our build system
   set(PYTHON_FOUND ${Python3_FOUND})
+  set(PYTHON_EXECUTABLE ${Python3_EXECUTABLE} CACHE FILEPATH "Python interpreter" FORCE)
   set(PYTHON_INCLUDE_DIRS ${Python3_INCLUDE_DIRS})
   set(PYTHON_LIBRARIES ${Python3_LIBRARIES})
   set(PYTHON_VERSION "${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}" CACHE INTERNAL "" FORCE)
