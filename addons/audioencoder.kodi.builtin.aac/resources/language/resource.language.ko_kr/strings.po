@@ -7,37 +7,39 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: English (United Kingdom) (https://kodi.weblate.cloud/languages/en_gb/)\n"
+"PO-Revision-Date: 2021-08-19 13:26+0000\n"
+"Last-Translator: Minho Park <parkmino@gmail.com>\n"
+"Language-Team: Korean <https://kodi.weblate.cloud/projects/kodi-core/audioencoder-kodi-builtin-aac/ko_kr/>\n"
+"Language: ko_kr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: en_GB\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.7.2\n"
 
 msgctxt "Addon Summary"
 msgid "AAC Audio Encoder"
-msgstr ""
+msgstr "AAC 오디오 인코더"
 
 msgctxt "Addon Description"
 msgid "AAC is a set of codecs designed to provide better compression than MP3s, and are improved versions of MPEG audio."
-msgstr ""
+msgstr "AAC는 MP3보다 더 나은 압축을 제공하도록 설계된 코덱 세트이며 MPEG 오디오의 개선된 버전입니다."
 
 #. Bitrate to use on for compression
 #: resources/settings.xml
 msgctxt "#30000"
 msgid "Bitrate"
-msgstr ""
+msgstr "비트 전송률"
 
 #. Description of setting with label #30000 "Bitrate"
 #: resources/settings.xml
 msgctxt "#30001"
 msgid "Select which bitrate to use for the AAC audio encoder for audio compression."
-msgstr ""
+msgstr "오디오 압축을 위해 AAC 오디오 인코더에 사용할 비트 전송률을 선택합니다."
 
 #. Value format for with bitrate edited field
 #: resources/settings.xml
+#, fuzzy
 msgctxt "#30002"
 msgid "{0:d} kbps"
-msgstr ""
+msgstr "{0:d} kbps"
