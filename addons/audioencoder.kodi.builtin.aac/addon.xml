@@ -13,7 +13,18 @@
     <assets>
       <icon>icon.png</icon>
     </assets>
+    <summary lang="da_DK">AAC Lydindkoder</summary>
+    <summary lang="en_AU">AAC Audio Encoder</summary>
     <summary lang="en_GB">AAC Audio Encoder</summary>
+    <summary lang="en_NZ">AAC Audio Encoder</summary>
+    <summary lang="en_US">AAC Audio Encoder</summary>
+    <summary lang="es_ES">Codificador de Audio AAC</summary>
+    <summary lang="ko_KR">AAC 오디오 인코더</summary>
+    <description lang="da_DK">AAC er et sæt codecs designet til at give bedre komprimering end MP3'er og er forbedrede versioner af MPEG-lyd.</description>
+    <description lang="en_AU">AAC is a set of codecs designed to provide better compression than MP3s, and are improved versions of MPEG audio.</description>
     <description lang="en_GB">AAC is a set of codecs designed to provide better compression than MP3s, and are improved versions of MPEG audio.</description>
+    <description lang="en_NZ">AAC is a set of codecs designed to provide better compression than MP3s, and are improved versions of MPEG audio.</description>
+    <description lang="en_US">AAC is a set of codecs designed to provide better compression than MP3s, and are improved versions of MPEG audio.</description>
+    <description lang="ko_KR">AAC는 MP3보다 더 나은 압축을 제공하도록 설계된 코덱 세트이며 MPEG 오디오의 개선된 버전입니다.</description>
   </extension>
 </addon>
