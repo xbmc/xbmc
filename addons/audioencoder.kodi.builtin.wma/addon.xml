@@ -13,7 +13,17 @@
     <assets>
       <icon>icon.png</icon>
     </assets>
+    <summary lang="da_DK">WMA Lydindkoder</summary>
+    <summary lang="en_AU">WMA Audio Encoder</summary>
     <summary lang="en_GB">WMA Audio Encoder</summary>
+    <summary lang="en_NZ">WMA Audio Encoder</summary>
+    <summary lang="en_US">WMA Audio Encoder</summary>
+    <summary lang="es_ES">Codificador de Audio WMA</summary>
+    <summary lang="ko_KR">WMA 오디오 인코더</summary>
+    <description lang="da_DK">Windows Media Audio, Microsofts kvalitetstabende lydformat.</description>
+    <description lang="en_AU">Windows Media Audio, Microsoft’s lossy audio format.</description>
     <description lang="en_GB">Windows Media Audio, Microsoft’s lossy audio format.</description>
+    <description lang="en_NZ">Windows Media Audio, Microsoft’s lossy audio format.</description>
+    <description lang="en_US">Windows Media Audio, Microsoft’s lossy audio format.</description>
   </extension>
 </addon>
