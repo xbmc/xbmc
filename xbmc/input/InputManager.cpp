@@ -682,7 +682,9 @@ bool CInputManager::AlwaysProcess(const CAction& action)
     if (builtInFunction == "powerdown" || builtInFunction == "reboot" ||
         builtInFunction == "restart" || builtInFunction == "restartapp" ||
         builtInFunction == "suspend" || builtInFunction == "hibernate" ||
-        builtInFunction == "quit" || builtInFunction == "shutdown")
+        builtInFunction == "quit" || builtInFunction == "shutdown" ||
+        builtInFunction == "volumeup" || builtInFunction == "volumedown" ||
+        builtInFunction == "mute")
     {
       return true;
     }
