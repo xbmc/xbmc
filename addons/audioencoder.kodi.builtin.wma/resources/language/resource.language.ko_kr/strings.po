@@ -5,10 +5,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2021-08-19 13:26+0000\n"
-"Last-Translator: Minho Park <parkmino@gmail.com>\n"
+"PO-Revision-Date: 2021-08-21 08:38+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Korean <https://kodi.weblate.cloud/projects/kodi-core/audioencoder-kodi-builtin-wma/ko_kr/>\n"
 "Language: ko_kr\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 msgctxt "Addon Summary"
 msgid "WMA Audio Encoder"
-msgstr ""
+msgstr "WMA 오디오 인코더"
 
 msgctxt "Addon Description"
 msgid "Windows Media Audio, Microsoft’s lossy audio format."
@@ -35,11 +35,10 @@ msgstr "비트 전송률"
 #: resources/settings.xml
 msgctxt "#30001"
 msgid "Select which bitrate to use for the WMA audio encoder for audio compression."
-msgstr ""
+msgstr "오디오 압축을 위해 WMA 오디오 인코더에 사용할 비트 전송률을 선택합니다."
 
 #. Value format for with bitrate edited field
 #: resources/settings.xml
-#, fuzzy
 msgctxt "#30002"
 msgid "{0:d} kbps"
 msgstr "{0:d} kbps"
