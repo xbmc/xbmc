@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2021-08-19 13:26+0000\n"
-"Last-Translator: Minho Park <parkmino@gmail.com>\n"
+"PO-Revision-Date: 2021-08-21 08:21+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Korean <https://kodi.weblate.cloud/projects/kodi-core/audioencoder-kodi-builtin-aac/ko_kr/>\n"
 "Language: ko_kr\n"
 "MIME-Version: 1.0\n"
@@ -39,7 +39,6 @@ msgstr "오디오 압축을 위해 AAC 오디오 인코더에 사용할 비트 �
 
 #. Value format for with bitrate edited field
 #: resources/settings.xml
-#, fuzzy
 msgctxt "#30002"
 msgid "{0:d} kbps"
 msgstr "{0:d} kbps"
