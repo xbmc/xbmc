@@ -12,6 +12,33 @@
 #include "cores/RetroPlayer/cheevos/RConsoleIDs.h"
 #include "games/addons/GameClient.h"
 
+namespace
+{
+// C ABI expects a raw callback + context pointer, so we bridge to std::function here
+void __cdecl GetCheevoUrlIdCallback(const void* context,
+                                    const char* achievementUrl,
+                                    unsigned int cheevoId)
+{
+  if (context == nullptr)
+    return;
+
+  const auto* callback = static_cast<
+      const std::function<void(const std::string& achievementUrl, unsigned int cheevoId)>*>(
+      context);
+  if (!(*callback))
+    return;
+
+  try
+  {
+    (*callback)(achievementUrl != nullptr ? std::string{achievementUrl} : std::string{}, cheevoId);
+  }
+  catch (...)
+  {
+    // Never allow exceptions to unwind through the C ABI callback boundary
+  }
+}
+} // namespace
+
 using namespace KODI;
 using namespace GAME;
 
@@ -37,7 +64,7 @@ bool CGameClientCheevos::RCGenerateHashFromFile(std::string& hash,
   }
   catch (...)
   {
-    m_gameClient.LogException("RCGetGameIDUrl()");
+    m_gameClient.LogException("RCGenerateHashFromFile()");
   }
 
   if (_hash)
@@ -138,6 +165,22 @@ bool CGameClientCheevos::RCPostRichPresenceUrl(std::string& url,
   return error == GAME_ERROR_NO_ERROR;
 }
 
+void CGameClientCheevos::SetRetroAchievementsCredentials(const std::string& username,
+                                                         const std::string& token)
+{
+  GAME_ERROR error = GAME_ERROR_NO_ERROR;
+  try
+  {
+    m_gameClient.LogError(error = m_struct.toAddon->SetRetroAchievementsCredentials(
+                              &m_struct, username.c_str(), token.c_str()),
+                          "SetRetroAchievementsCredentials()");
+  }
+  catch (...)
+  {
+    m_gameClient.LogException("SetRetroAchievementsCredentials()");
+  }
+}
+
 void CGameClientCheevos::RCEnableRichPresence(const std::string& script)
 {
   GAME_ERROR error = GAME_ERROR_NO_ERROR;
@@ -174,6 +217,43 @@ void CGameClientCheevos::RCGetRichPresenceEvaluation(std::string& evaluation,
   catch (...)
   {
     m_gameClient.LogException("RCGetRichPresenceEvaluation()");
+  }
+}
+
+void CGameClientCheevos::ActivateAchievement(unsigned int cheevoId,
+                                             const std::string& memAddrExpression)
+{
+  GAME_ERROR error = GAME_ERROR_NO_ERROR;
+
+  try
+  {
+    m_gameClient.LogError(error = m_struct.toAddon->ActivateAchievement(&m_struct, cheevoId,
+                                                                        memAddrExpression.c_str()),
+                          "ActivateAchievement()");
+  }
+  catch (...)
+  {
+    m_gameClient.LogException("ActivateAchievement()");
+  }
+}
+
+void CGameClientCheevos::GetAchievementUrlId(
+    const std::function<void(const std::string& achievementUrl, unsigned int cheevoId)>& callback)
+{
+  if (!callback)
+    return;
+
+  GAME_ERROR error = GAME_ERROR_NO_ERROR;
+
+  try
+  {
+    m_gameClient.LogError(
+        error = m_struct.toAddon->GetCheevoUrlId(&m_struct, GetCheevoUrlIdCallback, &callback),
+        "GetCheevoUrlId()");
+  }
+  catch (...)
+  {
+    m_gameClient.LogException("GetCheevoUrlId()");
   }
 }
 
