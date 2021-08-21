@@ -646,8 +646,8 @@ bool CInputManager::HandleKey(const CKey& key)
       action = m_buttonTranslator->GetAction(iWin, key);
   }
   if (!key.IsAnalogButton())
-    CLog::LogF(LOGDEBUG, "{} pressed, action is {}",
-               m_Keyboard.GetKeyName((int)key.GetButtonCode()), action.GetName());
+    CLog::LogF(LOGDEBUG, "{} pressed, window {}, action is {}",
+               m_Keyboard.GetKeyName((int)key.GetButtonCode()), iWin, action.GetName());
 
   return ExecuteInputAction(action);
 }
