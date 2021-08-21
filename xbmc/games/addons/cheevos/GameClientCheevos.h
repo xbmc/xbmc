@@ -38,6 +38,7 @@ public:
                          const std::string& username,
                          const std::string& token,
                          unsigned int gameID);
+  void SetRetroAchievementsCredentials(const std::string& username, const std::string& token);
   bool RCPostRichPresenceUrl(std::string& url,
                              std::string& postData,
                              const std::string& username,
@@ -46,6 +47,10 @@ public:
                              const std::string& richPresence);
   void RCEnableRichPresence(const std::string& script);
   void RCGetRichPresenceEvaluation(std::string& evaluation, RETRO::RConsoleID consoleID);
+
+  void ActivateAchievement(unsigned cheevoId, const char* memaddr);
+  void GetAchievement_URL_ID(void (*callback)(const char* achievementUrl, unsigned cheevoId));
+
   // When the game is reset, the runtime should also be reset
   void RCResetRuntime();
 
