@@ -125,6 +125,12 @@ TEST_F(TestURIUtils, Split)
   URIUtils::Split("file:///path/to/movie.avi?showinfo=true", varpathOptional, varfileOptional);
   EXPECT_STREQ(refpath.c_str(), varpathOptional.c_str());
   EXPECT_STREQ(reffile.c_str(), varfileOptional.c_str());
+
+  refpath = "nfs:///path/to?/";
+  reffile = "movie?.avi";
+  URIUtils::Split("nfs:///path/to?/movie?.avi", varpathOptional, varfileOptional);
+  EXPECT_STREQ(refpath.c_str(), varpathOptional.c_str());
+  EXPECT_STREQ(reffile.c_str(), varfileOptional.c_str());
 }
 
 TEST_F(TestURIUtils, SplitPath)

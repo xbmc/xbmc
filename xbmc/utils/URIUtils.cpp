@@ -208,6 +208,16 @@ void URIUtils::Split(const std::string& strFileNameAndPath,
   //Splits a full filename in path and file.
   //ex. smb://computer/share/directory/filename.ext -> strPath:smb://computer/share/directory/ and strFileName:filename.ext
   //Trailing slash will be preserved
+  if (IsURL(strFileNameAndPath))
+  {
+    CURL url(strFileNameAndPath);
+
+    strFileName  = url.GetFileNameWithoutPath();
+    strPath = GetDirectory(strFileNameAndPath);
+
+    return;
+  }
+
   strFileName = "";
   strPath = "";
   int i = strFileNameAndPath.size() - 1;
@@ -225,20 +235,6 @@ void URIUtils::Split(const std::string& strFileNameAndPath,
   strPath = strFileNameAndPath.substr(0, i+1);
   // everything to the right of the directory separator
   strFileName = strFileNameAndPath.substr(i+1);
-
-  // if actual uri, ignore options
-  if (IsURL(strFileNameAndPath))
-  {
-    i = strFileName.size() - 1;
-    while (i > 0)
-    {
-      char ch = strFileName[i];
-      if (ch == '?' || ch == '|') break;
-      else i--;
-    }
-    if (i > 0)
-      strFileName = strFileName.substr(0, i);
-  }
 }
 
 std::vector<std::string> URIUtils::SplitPath(const std::string& strPath)
