@@ -27,9 +27,7 @@ bool CPlatformWin10::Init()
   if (!CPlatform::Init())
     return false;
 
-  CEnvironment::setenv("SSL_CERT_FILE", CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem").c_str(), 1);
-
-  CEnvironment::setenv("OS", "win32"); // for python scripts that check the OS
+  CEnvironment::setenv("OS", "win10"); // for python scripts that check the OS
 
   // enable independent locale for each thread, see https://connect.microsoft.com/VisualStudio/feedback/details/794122
   CWIN32Util::SetThreadLocalLocale(true);
