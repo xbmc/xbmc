@@ -36,7 +36,7 @@
 		<summary lang="bg_BG">Облик за устройства със сензорен екран</summary>
 		<summary lang="ca_ES">Aparença per als dispositius amb pantalla tàctil</summary>
 		<summary lang="cs_CZ">Vzhled pro zařízení s dotykovou obrazovkou</summary>
-		<summary lang="da_DK">Skin for touchscreen-enheder</summary>
+		<summary lang="da_DK">Skin for berøringsfølsomme enheder</summary>
 		<summary lang="de_DE">Skin für Touchscreen-Geräte</summary>
 		<summary lang="el_GR">Κέλυφος για συσκευές με οθόνη αφής</summary>
 		<summary lang="en_GB">Skin for touchscreen devices</summary>
@@ -83,7 +83,7 @@
 		<description lang="bg_BG">Обликът е разработен за ползване на устройства със сензорен екран, като таблети и телефони.</description>
 		<description lang="ca_ES">Aparença dissenyada perquè s'utilitzi en dispositius amb pantalla tàctil com taules i telèfons intel·ligents</description>
 		<description lang="cs_CZ">Vzhled navržený pro použití na zařízeních s dotykovou obrazovkou, jako jsou tablety a chytré telefony</description>
-		<description lang="da_DK">Skin der er designet til brug på touchscreen-enheder som f.eks. tablets og smartphones</description>
+		<description lang="da_DK">Skin der er designet til brug på berøringsfølsomme enheder som f.eks. tablets og smartphones</description>
 		<description lang="de_DE">Dieser Skin wurde für die Verwendung mit Touchscreen-Geräten, wie Tablets und Handys, entworfen</description>
 		<description lang="el_GR">Κέλυφος σχεδιασμένο για να χρησιμοποιηθεί σε συσκευές με οθόνη αφής όπως ταμπλέτες και έξυπνα κινητά.</description>
 		<description lang="en_GB">Skin designed to be used on touchscreen devices like tablets and smartphones</description>
