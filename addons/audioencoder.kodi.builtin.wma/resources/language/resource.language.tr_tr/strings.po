@@ -7,23 +7,23 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2021-08-21 08:21+0000\n"
-"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"PO-Revision-Date: 2021-08-26 10:37+0000\n"
+"Last-Translator: queeup <queeup@zoho.com>\n"
 "Language-Team: Turkish <https://kodi.weblate.cloud/projects/kodi-core/audioencoder-kodi-builtin-wma/tr_tr/>\n"
 "Language: tr_tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.7.2\n"
+"X-Generator: Weblate 4.8\n"
 
 msgctxt "Addon Summary"
 msgid "WMA Audio Encoder"
-msgstr ""
+msgstr "WMA Ses Kodlayıcı"
 
 msgctxt "Addon Description"
 msgid "Windows Media Audio, Microsoft’s lossy audio format."
-msgstr ""
+msgstr "Windows Media Audio, Microsoft'un kayıplı ses biçimi."
 
 #. Bitrate to use on for compression
 #: resources/settings.xml
@@ -35,10 +35,10 @@ msgstr "Bit hızı"
 #: resources/settings.xml
 msgctxt "#30001"
 msgid "Select which bitrate to use for the WMA audio encoder for audio compression."
-msgstr ""
+msgstr "WMA ses kodlayıcının ses sıkıştırması için hangi bit hızının kullanılacağını seçin."
 
 #. Value format for with bitrate edited field
 #: resources/settings.xml
 msgctxt "#30002"
 msgid "{0:d} kbps"
-msgstr ""
+msgstr "{0:d} kbps"
