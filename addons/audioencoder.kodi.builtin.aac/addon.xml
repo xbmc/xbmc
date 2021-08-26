@@ -23,6 +23,7 @@
     <summary lang="ko_KR">AAC 오디오 인코더</summary>
     <summary lang="pl_PL">Koder dźwięku AAC</summary>
     <summary lang="ru_RU">Кодировщик аудио AAC</summary>
+    <summary lang="tr_TR">AAC Ses Kodlayıcı</summary>
     <description lang="da_DK">AAC er et sæt codecs designet til at give bedre komprimering end MP3'er og er forbedrede versioner af MPEG-lyd.</description>
     <description lang="de_DE">AAC ist eine Sammlung von Codecs mit einer besseren Komprimierung als MP3. Sie sind verbesserte Versionen von MPEG-Audio.</description>
     <description lang="en_AU">AAC is a set of codecs designed to provide better compression than MP3s, and are improved versions of MPEG audio.</description>
@@ -32,5 +33,6 @@
     <description lang="ko_KR">AAC는 MP3보다 더 나은 압축을 제공하도록 설계된 코덱 세트이며 MPEG 오디오의 개선된 버전입니다.</description>
     <description lang="pl_PL">AAC to zestaw kodeków zaprojektowanych w celu zapewnienia lepszej kompresji niż pliki MP3, są ulepszonymi wersjami audio MPEG.</description>
     <description lang="ru_RU">AAC - это набор кодеков, разработанных для обеспечения лучшего сжатия, чем MP3, и являющихся улучшенными версиями аудио MPEG.</description>
+    <description lang="tr_TR">AAC, MP3'lerden daha iyi sıkıştırma sağlamak üzere tasarlanmış bir dizi codec bileşenleridir ve MPEG sesinin geliştirilmiş sürümleridir.</description>
   </extension>
 </addon>
