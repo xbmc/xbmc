@@ -48,7 +48,12 @@ static const bdaddr_t bt_bdaddr_local = {{0, 0, 0, 0xff, 0xff, 0xff}};
 
 using namespace JSONRPC;
 
-#define RECEIVEBUFFER 1024
+#define RECEIVEBUFFER 4096
+
+namespace
+{
+constexpr size_t maxBufferLength = 64 * 1024;
+}
 
 CTCPServer *CTCPServer::ServerInstance = NULL;
 
@@ -637,11 +642,13 @@ void CTCPServer::CTCPClient::Copy(const CTCPClient& client)
 CTCPServer::CWebSocketClient::CWebSocketClient(CWebSocket *websocket)
 {
   m_websocket = websocket;
+  m_buffer.reserve(maxBufferLength);
 }
 
 CTCPServer::CWebSocketClient::CWebSocketClient(const CWebSocketClient& client)
 {
   *this = client;
+  m_buffer.reserve(maxBufferLength);
 }
 
 CTCPServer::CWebSocketClient::CWebSocketClient(CWebSocket *websocket, const CTCPClient& client)
@@ -649,6 +656,7 @@ CTCPServer::CWebSocketClient::CWebSocketClient(CWebSocket *websocket, const CTCP
   Copy(client);
 
   m_websocket = websocket;
+  m_buffer.reserve(maxBufferLength);
 }
 
 CTCPServer::CWebSocketClient::~CWebSocketClient()
@@ -661,6 +669,7 @@ CTCPServer::CWebSocketClient& CTCPServer::CWebSocketClient::operator=(const CWeb
   Copy(client);
 
   m_websocket = client.m_websocket;
+  m_buffer = client.m_buffer;
 
   return *this;
 }
@@ -680,10 +689,21 @@ void CTCPServer::CWebSocketClient::PushBuffer(CTCPServer *host, const char *buff
 {
   bool send;
   const CWebSocketMessage *msg = NULL;
-  size_t len = length;
+
+  if (m_buffer.size() + length > maxBufferLength)
+  {
+    CLog::Log(LOGINFO, "WebSocket: client buffer size {} exceeded", maxBufferLength);
+    return Disconnect();
+  }
+
+  m_buffer.append(buffer, length);
+
+  const char* buf = m_buffer.data();
+  size_t len = m_buffer.size();
+
   do
   {
-    if ((msg = m_websocket->Handle(buffer, len, send)) != NULL && msg->IsComplete())
+    if ((msg = m_websocket->Handle(buf, len, send)) != NULL && msg->IsComplete())
     {
       std::vector<const CWebSocketFrame *> frames = msg->GetFrames();
       if (send)
@@ -701,6 +721,9 @@ void CTCPServer::CWebSocketClient::PushBuffer(CTCPServer *host, const char *buff
     }
   }
   while (len > 0 && msg != NULL);
+
+  if (len < m_buffer.size())
+    m_buffer = m_buffer.substr(m_buffer.size() - len);
 
   if (m_websocket->GetState() == WebSocketStateClosed)
     Disconnect();
@@ -721,4 +744,3 @@ void CTCPServer::CWebSocketClient::Disconnect()
       CTCPClient::Disconnect();
   }
 }
-
