@@ -586,6 +586,7 @@
 						<textcolor>button_focus</textcolor>
 						<aligny>center</aligny>
 						<textoffsetx>10</textoffsetx>
+						<scroll>true</scroll>
 					</control>
 				</focusedchannellayout>
 				<itemlayout height="62" width="60">
