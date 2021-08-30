@@ -29,6 +29,13 @@ else()
   set(NEON True)
 endif()
 
+if(NOT APP_RENDER_SYSTEM OR APP_RENDER_SYSTEM STREQUAL "gles")
+  set(PLATFORM_REQUIRED_DEPS OpenGLES)
+  set(APP_RENDER_SYSTEM gles)
+else()
+  message(SEND_ERROR "Currently only OpenGLES rendering is supported. Please set APP_RENDER_SYSTEM to \"gles\"")
+endif()
+
 list(APPEND CMAKE_SYSTEM_PREFIX_PATH ${NATIVEPREFIX})
 
 list(APPEND DEPLIBS "-framework CoreFoundation" "-framework CoreVideo"
