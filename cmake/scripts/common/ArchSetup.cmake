@@ -147,10 +147,6 @@ if(NOT DEFINED NEON OR NEON)
   endif()
 endif()
 
-if(PLATFORM_DEFINES)
-  add_options(ALL_LANGUAGES ALL_BUILDS ${PLATFORM_DEFINES})
-endif()
-
 if(NOT MSVC)
   add_options(ALL_LANGUAGES ALL_BUILDS "-Wall" "-Wdouble-promotion" "-Wmissing-field-initializers")
   add_options(ALL_LANGUAGES DEBUG "-g" "-D_DEBUG")
