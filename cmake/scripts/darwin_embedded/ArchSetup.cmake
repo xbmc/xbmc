@@ -43,11 +43,6 @@ list(APPEND DEPLIBS "-framework CoreFoundation" "-framework CoreVideo"
                     "-framework AVKit" "-framework GameController")
 
 set(ENABLE_OPTICAL OFF CACHE BOOL "" FORCE)
-
-# AppleTV already has built-in AirPlay support
-if(CORE_PLATFORM_NAME_LC STREQUAL tvos)
-  set(ENABLE_AIRTUNES OFF CACHE BOOL "" FORCE)
-endif()
 set(CMAKE_XCODE_ATTRIBUTE_INLINES_ARE_PRIVATE_EXTERN OFF)
 set(CMAKE_XCODE_ATTRIBUTE_GCC_SYMBOLS_PRIVATE_EXTERN OFF)
 set(CMAKE_XCODE_ATTRIBUTE_COPY_PHASE_STRIP OFF)
