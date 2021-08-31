@@ -33,8 +33,13 @@ ifeq ($(OS),darwin_embedded)
 endif
 
 ifeq ($(OS),osx)
-  DEPENDS += libsdl
   EXCLUDED_DEPENDS = libusb
+  ifeq ($(CPU),arm64)
+    # ToDo: support all regular depends for apple silicon
+    EXCLUDED_DEPENDS += pythonmodule-pil pythonmodule-pycryptodome pythonmodule-setuptools
+  else
+    DEPENDS += libsdl
+  endif
 endif
 
 ifeq ($(OS),android)

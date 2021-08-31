@@ -19,6 +19,8 @@ else()
   if(CPU STREQUAL x86_64 OR CPU STREQUAL i386)
     set(ARCH x86-osx)
     set(NEON False)
+  elseif(CPU STREQUAL arm64)
+    set(ARCH aarch64)
   else()
     message(SEND_ERROR "Unknown CPU: ${CPU}")
   endif()
@@ -39,7 +41,11 @@ list(APPEND DEPLIBS "-framework DiskArbitration" "-framework IOKit"
                     "-framework VideoToolbox" "-framework Security"
                     "-framework GameController")
 
-set(CMAKE_OSX_DEPLOYMENT_TARGET 10.13)
+if(ARCH STREQUAL aarch64)
+  set(CMAKE_OSX_DEPLOYMENT_TARGET 11.0)
+else()
+  set(CMAKE_OSX_DEPLOYMENT_TARGET 10.13)
+endif()
 set(CMAKE_XCODE_ATTRIBUTE_CLANG_LINK_OBJC_RUNTIME OFF)
 
 include(cmake/scripts/darwin/Macros.cmake)

@@ -1,0 +1,3 @@
+WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
+XBMC_PLATFORM_DIR=osx-arm64
+. $WORKSPACE/tools/buildsteps/defaultenv

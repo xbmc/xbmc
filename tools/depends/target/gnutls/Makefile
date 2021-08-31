@@ -7,6 +7,12 @@ VERSION=3.6.16
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
 
+ifeq ($(OS),osx)
+ifeq ($(CPU),arm64)
+CONFIGURE_OPTIONS= --disable-hardware-acceleration
+endif
+endif
+
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) --disable-shared --without-p11-kit --disable-nls --with-included-unistring \
                       --with-included-libtasn1 --enable-local-libopts --disable-doc --disable-tests --disable-guile \

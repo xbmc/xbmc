@@ -7,6 +7,12 @@ VERSION=3.6
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
+ifeq ($(OS),osx)
+ifeq ($(CPU),arm64)
+  CONFIGURE_FLAGS=-disable-assembler
+endif
+endif
+
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
           ./configure --prefix=$(PREFIX) --disable-shared --disable-openssl $(CONFIGURE_FLAGS)
