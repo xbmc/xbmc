@@ -61,6 +61,10 @@ Install build dependencies needed to cross-compile Kodi for Android:
 sudo apt install autoconf build-essential curl default-jdk gawk git gperf lib32stdc++6 lib32z1 lib32z1-dev libcurl4-openssl-dev unzip zlib1g-dev
 ```
 **NOTE:** If you're running a 32bit Debian/Ubuntu distribution,  remove `lib32stdc++6 lib32z1 lib32z1-dev` from the command.
+If you're using Ubuntu 20.04 and later, you may also need to install:
+```
+sudo apt install libunistring-dev libaom-dev libdav1d-dev
+```
 
 **[back to top](#table-of-contents)**
 
