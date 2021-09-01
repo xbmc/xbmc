@@ -918,12 +918,6 @@ public:
   PVR_ERROR GetStreamTimes(PVR_STREAM_TIMES* times);
 
   /*!
-   * @brief reads the client's properties.
-   * @return True on success, false otherwise.
-   */
-  bool GetAddonProperties();
-
-  /*!
    * @brief Get the client's menu hooks.
    * @return The hooks. Guaranteed never to be nullptr.
    */
@@ -1013,6 +1007,12 @@ private:
    * @brief Resets all class members to their defaults. Called by the constructors.
    */
   void ResetProperties(int iClientId = PVR_INVALID_CLIENT_ID);
+
+  /*!
+   * @brief reads the client's properties.
+   * @return True on success, false otherwise.
+   */
+  bool GetAddonProperties();
 
   /*!
    * @brief Copy over group info from xbmcGroup to addonGroup.
