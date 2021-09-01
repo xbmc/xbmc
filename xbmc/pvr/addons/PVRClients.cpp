@@ -717,15 +717,6 @@ void CPVRClients::ConnectionStateChange(CPVRClient* client,
 
   // Notify user.
   CJobManager::GetInstance().AddJob(new CPVREventLogJob(bNotify, bError, client->Name(), strMsg, client->Icon()), nullptr);
-
-  if (newState == PVR_CONNECTION_STATE_CONNECTED)
-  {
-    // update properties on connect
-    if (!client->GetAddonProperties())
-      CLog::LogF(LOGERROR, "Error reading PVR client properties");
-
-    CServiceBroker::GetPVRManager().Start();
-  }
 }
 
 PVR_ERROR CPVRClients::ForCreatedClients(const char* strFunctionName,
