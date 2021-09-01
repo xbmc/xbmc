@@ -218,7 +218,7 @@ void CGUIDialogPVRGuideInfo::OnInitWindow()
       SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 19059); /* Stop recording */
       bHideRecord = false;
     }
-    else if (timer->HasTimerType() && !timer->GetTimerType()->IsReadOnly())
+    else if (!timer->GetTimerType()->IsReadOnly())
     {
       SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 19060); /* Delete timer */
       bHideRecord = false;

@@ -181,12 +181,6 @@ namespace PVR
     bool IsRecording() const { return m_state == PVR_TIMER_STATE_RECORDING; }
 
     /*!
-      * @brief Checks whether this timer has a timer type.
-      * @return True if this timer has a timer type, false otherwise
-      */
-    bool HasTimerType() const { return m_timerType.get() != NULL; }
-
-    /*!
       * @brief Gets the type of this timer.
       * @return the timer type or NULL if this tag has no timer type.
       */
