@@ -32,8 +32,10 @@ if(CORE_SYSTEM_NAME STREQUAL osx)
 endif()
 
 if(CORE_SYSTEM_NAME STREQUAL darwin_embedded)
-  list(APPEND SOURCES RendererVTBGLES.cpp)
-  list(APPEND HEADERS RendererVTBGLES.h)
+  if(OPENGLES_FOUND)
+    list(APPEND SOURCES RendererVTBGLES.cpp)
+    list(APPEND HEADERS RendererVTBGLES.h)
+  endif()
 endif()
 
 if(CORE_SYSTEM_NAME STREQUAL android)
