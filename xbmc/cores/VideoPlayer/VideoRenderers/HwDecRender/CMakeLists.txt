@@ -25,8 +25,10 @@ if(VDPAU_FOUND)
 endif()
 
 if(CORE_SYSTEM_NAME STREQUAL osx)
-  list(APPEND SOURCES RendererVTBGL.cpp)
-  list(APPEND HEADERS RendererVTBGL.h)
+  if(OPENGL_FOUND)
+    list(APPEND SOURCES RendererVTBGL.cpp)
+    list(APPEND HEADERS RendererVTBGL.h)
+  endif()
 endif()
 
 if(CORE_SYSTEM_NAME STREQUAL darwin_embedded)
