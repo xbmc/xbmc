@@ -64,9 +64,6 @@ else()
   set(CORE_HOST_IS_TARGET FALSE)
 endif()
 
-# Main cpp
-set(CORE_MAIN_SOURCE ${CMAKE_SOURCE_DIR}/xbmc/platform/posix/main.cpp)
-
 # system specific arch setup
 if(NOT EXISTS ${CMAKE_SOURCE_DIR}/cmake/scripts/${CORE_SYSTEM_NAME}/ArchSetup.cmake)
   message(FATAL_ERROR "Couldn't find configuration for '${CORE_SYSTEM_NAME}' "
