@@ -154,8 +154,6 @@ public:
   virtual std::shared_ptr<TextCacheStruct_t> GetTeletextCache() { return NULL; }
   virtual void LoadPage(int p, int sp, unsigned char* buffer) {}
 
-  virtual std::string GetRadioText(unsigned int line) { return ""; }
-
   virtual int  GetChapterCount()                               { return 0; }
   virtual int  GetChapter()                                    { return -1; }
   virtual void GetChapterName(std::string& strChapterName, int chapterIdx = -1) {}
