@@ -489,15 +489,6 @@ std::shared_ptr<TextCacheStruct_t> CApplicationPlayer::GetTeletextCache()
     return NULL;
 }
 
-std::string CApplicationPlayer::GetRadioText(unsigned int line)
-{
-  std::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    return player->GetRadioText(line);
-  else
-    return "";
-}
-
 float CApplicationPlayer::GetPercentage() const
 {
   std::shared_ptr<IPlayer> player = GetInternal();

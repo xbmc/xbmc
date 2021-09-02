@@ -14,7 +14,6 @@
 #include "threads/Thread.h"
 #include "utils/Stopwatch.h"
 
-#include <deque>
 #include <memory>
 
 class CDVDStreamInfo;
@@ -33,7 +32,6 @@ class CPVRRadioRDSInfoTag;
                                                    max. 255(MSG)+4(ADD/SQC/MFL)+2(CRC)+2(Start/Stop) of RDS-data */
 #define RT_MEL                        65
 #define MAX_RTPC                      50
-#define MAX_RADIOTEXT_LISTSIZE        6
 
 class CDVDRadioRDSData : public CThread, public IDVDStreamPlayer
 {
@@ -57,8 +55,6 @@ public:
   void FlushMessages() override { m_messageQueue.Flush(); }
   bool IsInited() const override { return true; }
   bool IsStalled() const override { return true; }
-
-  std::string GetRadioText(unsigned int line);
 
 protected:
   void OnExit() override;
@@ -114,11 +110,6 @@ private:
 
   unsigned int                m_EPP_TM_INFO_ExtendedCountryCode;
 
-  #define PS_TEXT_ENTRIES     12
-  bool                        m_PS_Present;
-  int                         m_PS_Index;
-  char                        m_PS_Text[PS_TEXT_ENTRIES][9];
-
   bool                        m_DI_IsStereo;
   bool                        m_DI_ArtificialHead;
   bool                        m_DI_Compressed;
@@ -133,14 +124,8 @@ private:
   char                        m_PTYN[9];
   bool                        m_PTYN_Present;
 
-  bool                        m_RT_Present;
-  std::deque<std::string>     m_RT;
-  int                         m_RT_Index;
-  int                         m_RT_MaxSize;
   bool                        m_RT_NewItem;
-  char                        m_RT_Text[6][RT_MEL+1];
 
-  bool                        m_RTPlus_Present;
   uint8_t                     m_RTPlus_WorkText[RT_MEL+1];
   bool                        m_RTPlus_TToggle;
   int                         m_RTPlus_iDiffs;
