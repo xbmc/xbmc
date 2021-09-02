@@ -222,6 +222,13 @@ PVR_CONNECTION_STATE CPVRClient::GetConnectionState() const
 
 void CPVRClient::SetConnectionState(PVR_CONNECTION_STATE state)
 {
+  if (state == PVR_CONNECTION_STATE_CONNECTED)
+  {
+    // update properties - some will only be available after add-on is connected to backend
+    if (!GetAddonProperties())
+      CLog::LogF(LOGERROR, "Error reading PVR client properties");
+  }
+
   CSingleLock lock(m_critSection);
 
   m_prevConnectionState = m_connectionState;
@@ -231,7 +238,7 @@ void CPVRClient::SetConnectionState(PVR_CONNECTION_STATE state)
     m_ignoreClient = false;
   else if (m_connectionState == PVR_CONNECTION_STATE_CONNECTING &&
            m_prevConnectionState == PVR_CONNECTION_STATE_UNKNOWN)
-    m_ignoreClient = true;
+    m_ignoreClient = true; // ignore until connected
 }
 
 PVR_CONNECTION_STATE CPVRClient::GetPreviousConnectionState() const
@@ -1376,7 +1383,7 @@ PVR_ERROR CPVRClient::DoAddonCall(const char* strFunctionName,
   if (m_bBlockAddonCalls)
     return PVR_ERROR_SERVER_ERROR;
 
-  if (!m_bReadyToUse && bCheckReadyToUse)
+  if (bCheckReadyToUse && (!ReadyToUse() || IgnoreClient()))
     return PVR_ERROR_SERVER_ERROR;
 
   // Call.

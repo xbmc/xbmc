@@ -839,6 +839,10 @@ void CPVRManager::ConnectionStateChange(CPVRClient* client,
 {
   CJobManager::GetInstance().Submit([this, client, connectString, state, message] {
     Clients()->ConnectionStateChange(client, connectString, state, message);
+
+    if (state == PVR_CONNECTION_STATE_CONNECTED)
+      Start(); // start over
+
     return true;
   });
 }
