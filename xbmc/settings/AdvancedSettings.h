@@ -18,11 +18,11 @@
 #include <utility>
 #include <vector>
 
-#define CACHE_BUFFER_MODE_INTERNET      0
-#define CACHE_BUFFER_MODE_ALL           1
+#define CACHE_BUFFER_MODE_INTERNET 0
+#define CACHE_BUFFER_MODE_ALL 1
 #define CACHE_BUFFER_MODE_TRUE_INTERNET 2
-#define CACHE_BUFFER_MODE_NONE          3
-#define CACHE_BUFFER_MODE_REMOTE        4
+#define CACHE_BUFFER_MODE_NONE 3
+#define CACHE_BUFFER_MODE_NETWORK 4
 
 class CAppParamParser;
 class CProfileManager;
