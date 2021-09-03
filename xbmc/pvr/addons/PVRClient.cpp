@@ -351,8 +351,7 @@ void CPVRClient::WriteClientTimerInfo(const CPVRTimerInfoTag& xbmcTimer, PVR_TIM
   addonTimer.iClientIndex = xbmcTimer.m_iClientIndex;
   addonTimer.iParentClientIndex = xbmcTimer.m_iParentClientIndex;
   addonTimer.state = xbmcTimer.m_state;
-  addonTimer.iTimerType =
-      xbmcTimer.GetTimerType() ? xbmcTimer.GetTimerType()->GetTypeId() : PVR_TIMER_TYPE_NONE;
+  addonTimer.iTimerType = xbmcTimer.GetTimerType()->GetTypeId();
   addonTimer.iClientChannelUid = xbmcTimer.m_iClientChannelUid;
   strncpy(addonTimer.strTitle, xbmcTimer.m_strTitle.c_str(), sizeof(addonTimer.strTitle) - 1);
   strncpy(addonTimer.strEpgSearchString, xbmcTimer.m_strEpgSearchString.c_str(),

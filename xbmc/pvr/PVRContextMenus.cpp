@@ -435,8 +435,7 @@ namespace PVR
       if (!timer || URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER) || timer->IsBroken())
         return false;
 
-      const std::shared_ptr<CPVRTimerType> timerType(timer->GetTimerType());
-      return timerType && timerType->SupportsEnableDisable();
+      return timer->GetTimerType()->SupportsEnableDisable();
     }
 
     bool ToggleTimerState::Execute(const CFileItemPtr& item) const
@@ -470,8 +469,7 @@ namespace PVR
         const std::shared_ptr<CPVRTimerInfoTag> parentTimer(CServiceBroker::GetPVRManager().Timers()->GetTimerRule(timer));
         if (parentTimer)
         {
-          const std::shared_ptr<CPVRTimerType> parentTimerType(parentTimer->GetTimerType());
-          if (parentTimerType && !parentTimerType->IsReadOnly())
+          if (!parentTimer->GetTimerType()->IsReadOnly())
             return g_localizeStrings.Get(19243); /* Edit timer rule */
         }
       }
@@ -503,10 +501,7 @@ namespace PVR
       {
         const std::shared_ptr<CPVRTimerInfoTag> parentTimer(CServiceBroker::GetPVRManager().Timers()->GetTimerRule(timer));
         if (parentTimer)
-        {
-          const std::shared_ptr<CPVRTimerType> parentTimerType(parentTimer->GetTimerType());
-          return parentTimerType && parentTimerType->AllowsDelete();
-        }
+          return parentTimer->GetTimerType()->AllowsDelete();
       }
 
       return false;
@@ -529,19 +524,18 @@ namespace PVR
       const std::shared_ptr<CPVRTimerInfoTag> timer(GetTimerInfoTagFromItem(item));
       if (timer)
       {
-        const std::shared_ptr<CPVRTimerType> timerType(timer->GetTimerType());
-        if (timerType)
+        const std::shared_ptr<CPVRTimerType> timerType = timer->GetTimerType();
+        if (item.GetEPGInfoTag())
         {
-          if (item.GetEPGInfoTag())
-          {
-            if (timerType->IsReminder())
-              return g_localizeStrings.Get(timerType->IsReadOnly() ? 829 : 830); /* View/Edit reminder */
-            else
-              return g_localizeStrings.Get(timerType->IsReadOnly() ? 19241 : 19242); /* View/Edit timer */
-          }
+          if (timerType->IsReminder())
+            return g_localizeStrings.Get(timerType->IsReadOnly() ? 829 /* View reminder */
+                                                                 : 830); /* Edit reminder */
           else
-            return g_localizeStrings.Get(timerType->IsReadOnly() ? 21483 : 21450); /* View/Edit */
+            return g_localizeStrings.Get(timerType->IsReadOnly() ? 19241 /* View timer */
+                                                                 : 19242); /* Edit timer */
         }
+        else
+          return g_localizeStrings.Get(timerType->IsReadOnly() ? 21483 : 21450); /* View/Edit */
       }
       return g_localizeStrings.Get(19241); /* View timer */
     }
@@ -579,10 +573,7 @@ namespace PVR
     {
       const std::shared_ptr<CPVRTimerInfoTag> timer(GetTimerInfoTagFromItem(item));
       if (timer && (!item.GetEPGInfoTag() || !URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER)) && !timer->IsRecording())
-      {
-        const std::shared_ptr<CPVRTimerType> timerType(timer->GetTimerType());
-        return timerType && timerType->AllowsDelete();
-      }
+        return timer->GetTimerType()->AllowsDelete();
 
       return false;
     }

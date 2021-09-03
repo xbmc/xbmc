@@ -30,6 +30,7 @@
 
 #include <ctime>
 #include <memory>
+#include <stdexcept>
 #include <string>
 
 using namespace PVR;
@@ -71,9 +72,12 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */) :
   if (type)
     SetTimerType(type);
   else
+  {
     CLog::LogF(LOGERROR, "Unable to obtain timer type!");
+    throw std::logic_error("CPVRTimerInfoTag::CPVRTimerInfoTag - Unable to obtain timer type!");
+  }
 
-  m_iWeekdays = (m_timerType && m_timerType->IsTimerRule()) ? PVR_WEEKDAY_ALLDAYS : PVR_WEEKDAY_NONE;
+  m_iWeekdays = m_timerType->IsTimerRule() ? PVR_WEEKDAY_ALLDAYS : PVR_WEEKDAY_NONE;
 
   UpdateSummary();
 }
@@ -161,11 +165,16 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER& timer,
     }
 
     if (!m_timerType)
+    {
       CLog::LogF(LOGERROR, "No timer type, although timers are supported by client {}!",
                  m_iClientId);
+      throw std::logic_error("CPVRTimerInfoTag::CPVRTimerInfoTag - Unable to obtain timer type!");
+    }
     else if (m_iEpgUid == EPG_TAG_INVALID_UID && m_timerType->IsEpgBasedOnetime())
+    {
       CLog::LogF(LOGERROR, "No epg tag given for epg based timer type ({})!",
                  m_timerType->GetTypeId());
+    }
   }
 
   UpdateSummary();
@@ -304,10 +313,10 @@ void CPVRTimerInfoTag::Serialize(CVariant& value) const
     break;
   }
 
-  value["istimerrule"] = m_timerType && m_timerType->IsTimerRule();
-  value["ismanual"] = m_timerType && m_timerType->IsManual();
-  value["isreadonly"] = m_timerType && m_timerType->IsReadOnly();
-  value["isreminder"] = m_timerType && m_timerType->IsReminder();
+  value["istimerrule"] = m_timerType->IsTimerRule();
+  value["ismanual"] = m_timerType->IsManual();
+  value["isreadonly"] = m_timerType->IsReadOnly();
+  value["isreminder"] = m_timerType->IsReminder();
 
   value["epgsearchstring"]   = m_strEpgSearchString;
   value["fulltextepgsearch"] = m_bFullTextEpgSearch;
@@ -367,10 +376,13 @@ void CPVRTimerInfoTag::UpdateSummary()
 
 void CPVRTimerInfoTag::SetTimerType(const std::shared_ptr<CPVRTimerType>& type)
 {
+  if (!type)
+    throw std::logic_error("CPVRTimerInfoTag::SetTimerType - Attempt to set 'null' timer type!");
+
   CSingleLock lock(m_critSection);
   m_timerType = type;
 
-  if (m_timerType && m_iClientIndex == PVR_TIMER_NO_CLIENT_INDEX)
+  if (m_iClientIndex == PVR_TIMER_NO_CLIENT_INDEX)
   {
     m_iPriority = m_timerType->GetPriorityDefault();
     m_iLifetime = m_timerType->GetLifetimeDefault();
@@ -379,7 +391,7 @@ void CPVRTimerInfoTag::SetTimerType(const std::shared_ptr<CPVRTimerType>& type)
     m_iRecordingGroup = m_timerType->GetRecordingGroupDefault();
   }
 
-  if (m_timerType && !m_timerType->IsTimerRule())
+  if (!m_timerType->IsTimerRule())
     m_iWeekdays = PVR_WEEKDAY_NONE;
 }
 
@@ -431,7 +443,7 @@ std::string CPVRTimerInfoTag::GetStatus(bool bRadio) const
 std::string CPVRTimerInfoTag::GetTypeAsString() const
 {
   CSingleLock lock(m_critSection);
-  return m_timerType ? m_timerType->GetDescription() : "";
+  return m_timerType->GetDescription();
 }
 
 namespace
@@ -516,12 +528,12 @@ std::string CPVRTimerInfoTag::GetWeekdaysString(unsigned int iWeekdays, bool bEp
 std::string CPVRTimerInfoTag::GetWeekdaysString() const
 {
   CSingleLock lock(m_critSection);
-  return GetWeekdaysString(m_iWeekdays, m_timerType ? m_timerType->IsEpgBased() : false, false);
+  return GetWeekdaysString(m_iWeekdays, m_timerType->IsEpgBased(), false);
 }
 
 bool CPVRTimerInfoTag::IsOwnedByClient() const
 {
-  return m_timerType && m_timerType->GetClientId() > -1;
+  return m_timerType->GetClientId() > -1;
 }
 
 bool CPVRTimerInfoTag::AddToClient() const
@@ -691,7 +703,7 @@ std::string CPVRTimerInfoTag::ChannelName() const
   std::shared_ptr<CPVRChannel> channeltag = Channel();
   if (channeltag)
     strReturn = channeltag->ChannelName();
-  else if (m_timerType && m_timerType->IsEpgBasedTimerRule())
+  else if (m_timerType->IsEpgBasedTimerRule())
     strReturn = StringUtils::Format("({})", g_localizeStrings.Get(809)); // "Any channel"
 
   return strReturn;

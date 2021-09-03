@@ -465,7 +465,7 @@ namespace PVR
 
   bool CPVRGUIActions::AddTimer(const std::shared_ptr<CPVRTimerInfoTag>& item) const
   {
-    if (!item->Channel() && item->GetTimerType() && !item->GetTimerType()->IsEpgBasedTimerRule())
+    if (!item->Channel() && !item->GetTimerType()->IsEpgBasedTimerRule())
     {
       CLog::LogF(LOGERROR, "No channel given");
       HELPERS::ShowOKDialogText(CVariant{257}, CVariant{19109}); // "Error", "Could not save the timer. Check the log for more information about this message."
@@ -919,7 +919,7 @@ namespace PVR
         return false;
       }
     }
-    else if (timer->HasTimerType() && !timer->GetTimerType()->AllowsDelete())
+    else if (!timer->GetTimerType()->AllowsDelete())
     {
       return false;
     }
@@ -970,7 +970,7 @@ namespace PVR
     bool bConfirmed(false);
     const std::shared_ptr<CPVRTimerInfoTag> parentTimer(CServiceBroker::GetPVRManager().Timers()->GetTimerRule(timer));
 
-    if (parentTimer && parentTimer->HasTimerType() && parentTimer->GetTimerType()->AllowsDelete())
+    if (parentTimer && parentTimer->GetTimerType()->AllowsDelete())
     {
       // timer was scheduled by a deletable timer rule. prompt user for confirmation for deleting the timer rule, including scheduled timers.
       bool bCancel(false);
