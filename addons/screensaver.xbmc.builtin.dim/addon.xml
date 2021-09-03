@@ -36,7 +36,7 @@
     <summary lang="gl_ES">O protector de pantalla atenúa a súa pantalla</summary>
     <summary lang="he_IL">שומר מסך אשר מעמעם את המסך</summary>
     <summary lang="hr_HR">Čuvar zaslona koji zatamnjuje vaš zaslon</summary>
-    <summary lang="hu_HU">Képernyővédő ami elhalványítja a képernyőt</summary>
+    <summary lang="hu_HU">Képernyővédő ami elsötétíti a képernyőt</summary>
     <summary lang="id_ID">Penyelamat layar yang meredupkan layar Anda</summary>
     <summary lang="is_IS">Skjáhvíla sem lækkar birtustigið á skjánum</summary>
     <summary lang="it_IT">Salvaschermo che oscura lo schermo</summary>
@@ -96,7 +96,7 @@
     <description lang="gl_ES">Este protector de pantalla atenuará a súa pantalla nun valor configurábel entre o 20% e o 100%.</description>
     <description lang="he_IL">שומר המסך Dim הוא שומר מסך פשוט אשר מעמעם את המסך לערך מוגדר בין 20% ל־100%.</description>
     <description lang="hr_HR">Dim čuvar zaslona je jednostavan čuvar zaslona koji će zatamniti (postepeno isčeznuti) vaš zaslon na odabranu vrijednost između 20 i 100% .</description>
-    <description lang="hu_HU">A Dim képernyővédő egyszerűen elhalványítja a képernyőt egy előre beállítható sötétségi szintre 20 és 100% között.</description>
+    <description lang="hu_HU">A Dim képernyővédő egyszerűen elsötétíti a képernyőt egy előre beállítható szintre 20 és 100% között.</description>
     <description lang="id_ID">Penyelamat layar Redup adalah penyelamat layar sederhana yang akan meredupkan (membuat gambar menjadi hilang) layar Anda ke suatu nilai yang dapat diatur antara 20 dan 100%.</description>
     <description lang="is_IS">Dimma er einföld skjáhvíla sem lækkar birtustigið á skjánum (deyfa út) um stillanlegt gildi á milli 20 og 100%</description>
     <description lang="it_IT">Dim è un semplice salvaschermo che diminuirà la luminosità del tuo schermo ad un valore (regolabile) tra il 20% e il 100%.</description>
