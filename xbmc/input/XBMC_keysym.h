@@ -27,6 +27,7 @@ typedef enum
   // The keyboard syms have been cleverly chosen to map to ASCII
   XBMCK_UNKNOWN = 0x00,
   XBMCK_FIRST = 0x00,
+  XBMCK_CTRLF = 0x06,
   XBMCK_BACKSPACE = 0x08,
   XBMCK_TAB = 0x09,
   XBMCK_CLEAR = 0x0C,
