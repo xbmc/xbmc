@@ -10816,7 +10816,7 @@ std::string CGUIInfoManager::GetMultiInfoItemLabel(const CFileItem *item, int co
         return item->GetArt("icon");
       case LISTITEM_ICON:
       {
-        std::string strThumb = item->GetArt("thumb");
+        std::string strThumb = item->GetThumbHideIfUnwatched(item);
         if (strThumb.empty())
           strThumb = item->GetArt("icon");
         if (fallback)
@@ -10828,7 +10828,7 @@ std::string CGUIInfoManager::GetMultiInfoItemLabel(const CFileItem *item, int co
       case LISTITEM_OVERLAY:
         return item->GetOverlayImage();
       case LISTITEM_THUMB:
-        return item->GetArt("thumb");
+        return item->GetThumbHideIfUnwatched(item);
       case LISTITEM_FOLDERPATH:
         return CURL(item->GetPath()).GetWithoutUserDetails();
       case LISTITEM_FOLDERNAME:
