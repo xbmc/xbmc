@@ -19,8 +19,9 @@
 				</include>
 				<control type="fixedlist" id="11">
 					<left>0</left>
+					<top>list_top_offset</top>
 					<width>1900</width>
-					<height>100%</height>
+					<bottom>list_bottom</bottom>
 					<onleft>60</onleft>
 					<onright>60</onright>
 					<onup>11</onup>
@@ -28,7 +29,7 @@
 					<pagecontrol>60</pagecontrol>
 					<scrolltime tween="cubic" easing="out">500</scrolltime>
 					<movement>4</movement>
-					<focusposition>5</focusposition>
+					<focusposition>4</focusposition>
 					<itemlayout height="90" width="1900">
 						<control type="label">
 							<left>20</left>
@@ -44,7 +45,7 @@
 							<bottom>0</bottom>
 							<align>right</align>
 							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label]</label>
+							<label>$VAR[PVRListItemSubLabel]</label>
 						</control>
 					</itemlayout>
 					<focusedlayout height="90" width="1900">
@@ -69,7 +70,8 @@
 							<bottom>0</bottom>
 							<align>right</align>
 							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label]</label>
+							<label>$VAR[PVRListItemSubLabelFocused]</label>
+							<scroll>true</scroll>
 						</control>
 						<control type="group">
 							<visible>!String.IsEmpty(ListItem.Plot) + Control.HasFocus(11)</visible>
@@ -102,15 +104,13 @@
 				</control>
 				<control type="scrollbar" id="60">
 					<left>768</left>
+					<top>list_top_offset</top>
 					<width>12</width>
-					<height>100%</height>
+					<bottom>list_bottom</bottom>
 					<onleft>11</onleft>
+					<onright>11</onright>
 					<texturesliderbackground />
-					<onright>NextChannelGroup</onright>
-					<ondown>61</ondown>
-					<onup>61</onup>
 					<animation effect="zoom" start="100,100" end="50,100" center="780,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(60)">conditional</animation>
-					<orientation>vertical</orientation>
 				</control>
 			</control>
 			<control type="image">
