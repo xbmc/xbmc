@@ -46,10 +46,22 @@ using namespace PVR;
 using namespace KODI::MESSAGING;
 using namespace std::chrono_literals;
 
-namespace PVR
+namespace
 {
+
+class CPVRJob
+{
+public:
+  virtual ~CPVRJob() = default;
+
+  virtual bool DoWork() = 0;
+  virtual const std::string GetType() const = 0;
+
+protected:
+};
+
 template<typename F>
-class CPVRLambdaJob : public CJob
+class CPVRLambdaJob : public CPVRJob
 {
 public:
   CPVRLambdaJob() = delete;
@@ -61,15 +73,17 @@ public:
     return true;
   }
 
-  const char* GetType() const override
-  {
-    return m_type.c_str();
-  }
+  const std::string GetType() const override { return m_type; }
 
 private:
   std::string m_type;
   F m_f;
 };
+
+} // unnamed namespace
+
+namespace PVR
+{
 
 class CPVRManagerJobQueue
 {
@@ -95,13 +109,14 @@ public:
 
 
 private:
-  void AppendJob(CJob* job);
+  void AppendJob(CPVRJob* job);
 
   CCriticalSection m_critSection;
   CEvent m_triggerEvent;
-  std::vector<CJob*> m_pendingUpdates;
+  std::vector<CPVRJob*> m_pendingUpdates;
   bool m_bStopped = true;
 };
+
 } // namespace PVR
 
 void CPVRManagerJobQueue::Start()
@@ -121,21 +136,21 @@ void CPVRManagerJobQueue::Stop()
 void CPVRManagerJobQueue::Clear()
 {
   CSingleLock lock(m_critSection);
-  for (CJob* updateJob : m_pendingUpdates)
+  for (CPVRJob* updateJob : m_pendingUpdates)
     delete updateJob;
 
   m_pendingUpdates.clear();
   m_triggerEvent.Set();
 }
 
-void CPVRManagerJobQueue::AppendJob(CJob* job)
+void CPVRManagerJobQueue::AppendJob(CPVRJob* job)
 {
   CSingleLock lock(m_critSection);
 
   // check for another pending job of given type...
-  for (CJob* updateJob : m_pendingUpdates)
+  for (CPVRJob* updateJob : m_pendingUpdates)
   {
-    if (!strcmp(updateJob->GetType(), job->GetType()))
+    if (updateJob->GetType() == job->GetType())
     {
       delete job;
       return;
@@ -148,7 +163,7 @@ void CPVRManagerJobQueue::AppendJob(CJob* job)
 
 void CPVRManagerJobQueue::ExecutePendingJobs()
 {
-  std::vector<CJob*> pendingUpdates;
+  std::vector<CPVRJob*> pendingUpdates;
 
   {
     CSingleLock lock(m_critSection);
@@ -160,7 +175,7 @@ void CPVRManagerJobQueue::ExecutePendingJobs()
     m_triggerEvent.Reset();
   }
 
-  CJob* job = nullptr;
+  CPVRJob* job = nullptr;
   while (!pendingUpdates.empty())
   {
     job = pendingUpdates.front();
