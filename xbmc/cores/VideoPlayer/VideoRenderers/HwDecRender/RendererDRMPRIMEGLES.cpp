@@ -14,6 +14,8 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderCapture.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
+#include "cores/VideoPlayer/VideoRenderers/VideoShaders/YUV2RGBShaderGLES.h"
+#include "rendering/MatrixGL.h"
 #include "rendering/gles/RenderSystemGLES.h"
 #include "utils/EGLFence.h"
 #include "utils/EGLImage.h"
@@ -87,6 +89,14 @@ bool CRendererDRMPRIMEGLES::Configure(const VideoPicture& picture,
              GetFlagsColorPrimaries(picture.color_primaries) |
              GetFlagsStereoMode(picture.stereoMode);
 
+  m_srcPrimaries = GetSrcPrimaries(static_cast<AVColorPrimaries>(picture.color_primaries),
+                                   picture.iWidth, picture.iHeight);
+  m_toneMap = false;
+
+  m_fullRange = !CServiceBroker::GetWinSystem()->UseLimitedColor();
+
+  LoadShaders();
+
   // Calculate the input frame aspect ratio.
   CalculateFrameAspectRatio(picture.iDisplayWidth, picture.iDisplayHeight);
   SetViewMode(m_videoSettings.m_ViewMode);
@@ -134,6 +144,19 @@ void CRendererDRMPRIMEGLES::AddVideoPicture(const VideoPicture& picture, int ind
   }
   buf.videoBuffer = picture.videoBuffer;
   buf.videoBuffer->Acquire();
+
+  buf.m_srcPrimaries = static_cast<AVColorPrimaries>(picture.color_primaries);
+  buf.m_srcColSpace = static_cast<AVColorSpace>(picture.color_space);
+  buf.m_srcFullRange = picture.color_range == 1;
+  buf.m_srcBits = picture.colorBits;
+
+  buf.hasDisplayMetadata = picture.hasDisplayMetadata;
+  buf.displayMetadata = picture.displayMetadata;
+  buf.lightMetadata = picture.lightMetadata;
+  if (picture.hasLightMetadata && picture.lightMetadata.MaxCLL)
+  {
+    buf.hasLightMetadata = picture.hasLightMetadata;
+  }
 }
 
 bool CRendererDRMPRIMEGLES::Flush(bool saveBuffers)
@@ -268,10 +291,12 @@ void CRendererDRMPRIMEGLES::RenderUpdate(
   {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    m_progressiveShader->SetAlpha(alpha / 255.0f);
   }
   else
   {
     glDisable(GL_BLEND);
+    m_progressiveShader->SetAlpha(1.0f);
   }
 
   Render(flags, index);
@@ -311,9 +336,49 @@ void CRendererDRMPRIMEGLES::Render(unsigned int flags, int index)
   if (!buf.texture->Map(buffer))
     return;
 
+  AVColorPrimaries srcPrim =
+      GetSrcPrimaries(buf.m_srcPrimaries, buf.texture->GetTextureSize().Width(),
+                      buf.texture->GetTextureSize().Height());
+  if (srcPrim != m_srcPrimaries)
+  {
+    m_srcPrimaries = srcPrim;
+    m_reloadShaders = true;
+  }
+
+  bool toneMap = false;
+
+  if (m_videoSettings.m_ToneMapMethod != VS_TONEMAPMETHOD_OFF)
+  {
+    if (buf.hasLightMetadata || (buf.hasDisplayMetadata && buf.displayMetadata.has_luminance))
+    {
+      toneMap = true;
+    }
+  }
+
+  if (toneMap != m_toneMap)
+  {
+    m_reloadShaders = true;
+  }
+
+  m_toneMap = toneMap;
+
+  if (m_reloadShaders)
+    LoadShaders();
+
   glBindTexture(GL_TEXTURE_EXTERNAL_OES, buf.texture->GetTexture());
 
-  renderSystem->EnableGUIShader(SM_TEXTURE_RGBA_OES);
+  m_progressiveShader->SetBlack(m_videoSettings.m_Brightness * 0.01f - 0.5f);
+  m_progressiveShader->SetContrast(m_videoSettings.m_Contrast * 0.02f);
+  m_progressiveShader->SetWidth(buf.texture->GetTextureSize().Width());
+  m_progressiveShader->SetHeight(buf.texture->GetTextureSize().Height());
+  m_progressiveShader->SetColParams(buf.m_srcColSpace, buf.m_srcBits, !buf.m_srcFullRange,
+                                    buf.m_srcTextureBits);
+  m_progressiveShader->SetDisplayMetadata(buf.hasDisplayMetadata, buf.displayMetadata,
+                                          buf.hasLightMetadata, buf.lightMetadata);
+  m_progressiveShader->SetToneMapParam(m_videoSettings.m_ToneMapParam);
+
+  m_progressiveShader->SetMatrices(glMatrixProject.Get(), glMatrixModview.Get());
+  m_progressiveShader->Enable();
 
   GLubyte idx[4] = {0, 1, 3, 2}; // Determines order of triangle strip
   GLuint vertexVBO;
@@ -326,8 +391,8 @@ void CRendererDRMPRIMEGLES::Render(unsigned int flags, int index)
 
   std::array<PackedVertex, 4> vertex;
 
-  GLint vertLoc = renderSystem->GUIShaderGetPos();
-  GLint loc = renderSystem->GUIShaderGetCoord0();
+  GLint vertLoc = m_progressiveShader->GetVertexLoc();
+  GLint loc = m_progressiveShader->GetYcoordLoc();
 
   // top left
   vertex[0].x = m_rotatedDestCoords[0].x;
@@ -384,7 +449,7 @@ void CRendererDRMPRIMEGLES::Render(unsigned int flags, int index)
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
   glDeleteBuffers(1, &indexVBO);
 
-  renderSystem->DisableGUIShader();
+  m_progressiveShader->Disable();
 
   glBindTexture(GL_TEXTURE_EXTERNAL_OES, 0);
 
@@ -415,4 +480,36 @@ bool CRendererDRMPRIMEGLES::Supports(ESCALINGMETHOD method)
     default:
       return false;
   }
+}
+
+void CRendererDRMPRIMEGLES::LoadShaders()
+{
+  m_progressiveShader = std::make_unique<Shaders::YUV2RGBProgressiveShader>(
+      SHADER_OES, AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries, m_toneMap);
+
+  m_progressiveShader->CompileAndLink();
+
+  m_progressiveShader->SetConvertFullColorRange(m_fullRange);
+
+  m_reloadShaders = false;
+}
+
+AVColorPrimaries CRendererDRMPRIMEGLES::GetSrcPrimaries(AVColorPrimaries srcPrimaries,
+                                                        unsigned int width,
+                                                        unsigned int height)
+{
+  AVColorPrimaries ret = srcPrimaries;
+  if (ret == AVCOL_PRI_UNSPECIFIED)
+  {
+    if (width > 1024 || height >= 600)
+    {
+      ret = AVCOL_PRI_BT709;
+    }
+    else
+    {
+      ret = AVCOL_PRI_BT470BG;
+    }
+  }
+
+  return ret;
 }

@@ -41,6 +41,8 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(EShaderFormat format, AVColorPrimar
     m_defines += "#define XBMC_NV12\n";
   else if (m_format == SHADER_NV12_RRG)
     m_defines += "#define XBMC_NV12_RRG\n";
+  else if (m_format == SHADER_OES)
+    m_defines += "#define XBMC_OES\n";
   else
     CLog::Log(LOGERROR, "GLES: BaseYUV2RGBGLSLShader - unsupported format {}", m_format);
 
@@ -70,6 +72,8 @@ BaseYUV2RGBGLSLShader::~BaseYUV2RGBGLSLShader()
 
 void BaseYUV2RGBGLSLShader::OnCompiledAndLinked()
 {
+  m_oesTex = glGetUniformLocation(ProgramHandle(), "m_samp0");
+
   m_hVertex = glGetAttribLocation(ProgramHandle(),  "m_attrpos");
   m_hYcoord = glGetAttribLocation(ProgramHandle(),  "m_attrcordY");
   m_hUcoord = glGetAttribLocation(ProgramHandle(),  "m_attrcordU");
@@ -93,6 +97,8 @@ void BaseYUV2RGBGLSLShader::OnCompiledAndLinked()
 bool BaseYUV2RGBGLSLShader::OnEnabled()
 {
   // set shader attributes once enabled
+  glUniform1i(m_oesTex, 0);
+
   glUniform1i(m_hYTex, 0);
   glUniform1i(m_hUTex, 1);
   glUniform1i(m_hVTex, 2);
