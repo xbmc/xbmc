@@ -12,6 +12,16 @@
 
 #include <memory>
 
+extern "C"
+{
+#include <libavutil/mastering_display_metadata.h>
+}
+
+namespace Shaders
+{
+class YUV2RGBProgressiveShader;
+}
+
 namespace KODI
 {
 namespace UTILS
@@ -60,13 +70,37 @@ private:
   void DrawBlackBars();
   void Render(unsigned int flags, int index);
 
+  AVColorPrimaries GetSrcPrimaries(AVColorPrimaries srcPrimaries,
+                                   unsigned int width,
+                                   unsigned int height);
+  void LoadShaders();
+
+  bool m_reloadShaders;
+
   bool m_configured = false;
   float m_clearColour{0.0f};
+
+  bool m_fullRange;
+  AVColorPrimaries m_srcPrimaries;
+  bool m_toneMap = false;
 
   struct BUFFER
   {
     CVideoBuffer* videoBuffer = nullptr;
     std::unique_ptr<KODI::UTILS::EGL::CEGLFence> fence;
     std::unique_ptr<CDRMPRIMETexture> texture;
+
+    AVColorPrimaries m_srcPrimaries;
+    AVColorSpace m_srcColSpace;
+    int m_srcBits{8};
+    int m_srcTextureBits{8};
+    bool m_srcFullRange;
+
+    bool hasDisplayMetadata{false};
+    AVMasteringDisplayMetadata displayMetadata;
+    bool hasLightMetadata{false};
+    AVContentLightMetadata lightMetadata;
   } m_buffers[NUM_BUFFERS];
+
+  std::unique_ptr<Shaders::YUV2RGBProgressiveShader> m_progressiveShader;
 };
