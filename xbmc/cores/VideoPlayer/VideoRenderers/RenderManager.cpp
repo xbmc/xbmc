@@ -419,7 +419,10 @@ bool CRenderManager::Flush(bool wait, bool saveBuffers)
   {
     CLog::Log(LOGDEBUG, "{} - flushing renderer", __FUNCTION__);
 
+// fix deadlock on Windows only when is enabled 'Sync playback to display'
+#ifndef TARGET_WINDOWS
     CSingleExit exitlock(CServiceBroker::GetWinSystem()->GetGfxContext());
+#endif
 
     CSingleLock lock(m_statelock);
     CSingleLock lock2(m_presentlock);

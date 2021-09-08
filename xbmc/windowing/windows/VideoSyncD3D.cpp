@@ -116,7 +116,7 @@ void CVideoSyncD3D::Cleanup()
 
 float CVideoSyncD3D::GetFps()
 {
-  DXGI_MODE_DESC DisplayMode;
+  DXGI_MODE_DESC DisplayMode = {};
   DX::DeviceResources::Get()->GetDisplayMode(&DisplayMode);
 
   m_fps = (DisplayMode.RefreshRate.Denominator != 0) ? (float)DisplayMode.RefreshRate.Numerator / (float)DisplayMode.RefreshRate.Denominator : 0.0f;
