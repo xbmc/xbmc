@@ -709,6 +709,11 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
   }
 
   delay += m_hw_delay;
+
+  // stop smoothing if we have the new API available
+  if (m_hw_delay != 0)
+    m_linearmovingaverage.clear();
+
   if (usesAdvancedLogging)
   {
     CLog::Log(LOGINFO, "Combined Delay: {} ms", delay * 1000);
