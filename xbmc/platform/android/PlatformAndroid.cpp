@@ -54,7 +54,7 @@ bool CPlatformAndroid::InitStageOne()
 bool CPlatformAndroid::InitStageTwo()
 {
   std::string envSslCertFile = CEnvironment::getenv("SSL_CERT_FILE");
-  if (envSslCertFile.empty()
+  if (envSslCertFile.empty())
   {
     CLog::Log(LOGDEBUG, "CPlatformAndroid::InitStageTow - SSL_CERT_FILE not set, setting it again");
     CEnvironment::setenv("SSL_CERT_FILE",
