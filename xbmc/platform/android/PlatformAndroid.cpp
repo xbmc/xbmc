@@ -9,6 +9,7 @@
 #include "PlatformAndroid.h"
 
 #include "filesystem/SpecialProtocol.h"
+#include "platform/Environment.h"
 #include "utils/log.h"
 #include "windowing/android/WinSystemAndroidGLESContext.h"
 
@@ -28,9 +29,14 @@ bool CPlatformAndroid::InitStageOne()
 {
   if (!CPlatformPosix::InitStageOne())
     return false;
-  setenv("SSL_CERT_FILE", CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem").c_str(), 1);
+  CEnvironment::setenv(
+      "SSL_CERT_FILE",
+      CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem").c_str(), 1);
+  CEnvironment::setenv(
+      "REQUESTS_CA_BUNDLE",
+      CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem").c_str(), 1);
 
-  setenv("OS", "Linux", true); // for python scripts that check the OS
+  CEnvironment::setenv("OS", "Linux", true); // for python scripts that check the OS
 
   CWinSystemAndroidGLESContext::Register();
 
