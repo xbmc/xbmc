@@ -488,7 +488,8 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
         m_audioSink.Resume();
     }
 
-    m_audioSink.SetDynamicRangeCompression((long)(m_processInfo.GetVideoSettings().m_VolumeAmplification * 100));
+    m_audioSink.SetDynamicRangeCompression(
+      static_cast<long>(m_processInfo.GetVideoSettings().m_VolumeAmplification * 100));
     
     SetSyncType(audioframe.passthrough);
 
