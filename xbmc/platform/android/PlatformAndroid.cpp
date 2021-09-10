@@ -28,20 +28,42 @@ CPlatform* CPlatform::CreateInstance()
 bool CPlatformAndroid::InitStageOne()
 {
   if (!CPlatformPosix::InitStageOne())
+  {
+    CLog::Log(LOGINFO, "Error: CPlatformPosix::InitStageOne failed");
     return false;
-  CEnvironment::setenv(
-      "SSL_CERT_FILE",
-      CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem").c_str(), 1);
-  CEnvironment::setenv(
-      "REQUESTS_CA_BUNDLE",
-      CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem").c_str(), 1);
+  }
 
+  CEnvironment::setenv("SSL_CERT_FILE",
+                       CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem"),
+                       1);
+  CEnvironment::setenv("REQUESTS_CA_BUNDLE",
+                       CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem"),
+                       1);
+
+  CLog::Log(LOGDEBUG, "CPlatformAndroid::InitStageOne - SSL_CERT_FILE: {}",
+            CEnvironment::getenv("SSL_CERT_FILE"));
   CEnvironment::setenv("OS", "Linux", true); // for python scripts that check the OS
 
   CWinSystemAndroidGLESContext::Register();
 
   CAndroidPowerSyscall::Register();
 
+  return true;
+}
+
+bool CPlatformAndroid::InitStageTwo()
+{
+  std::string envSslCertFile = CEnvironment::getenv("SSL_CERT_FILE");
+  if (envSslCertFile.empty()
+  {
+    CLog::Log(LOGDEBUG, "CPlatformAndroid::InitStageTow - SSL_CERT_FILE not set, setting it again");
+    CEnvironment::setenv("SSL_CERT_FILE",
+                         CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem"),
+                         1);
+    CEnvironment::setenv("REQUESTS_CA_BUNDLE",
+                         CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem"),
+                         1);
+  }
   return true;
 }
 

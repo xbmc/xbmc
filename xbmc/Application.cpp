@@ -438,7 +438,6 @@ bool CApplication::Create(const CAppParamParser &params)
     if (XFILE::CFile::Exists(caCert))
     {
       CEnvironment::setenv("SSL_CERT_FILE", caCert.c_str(), 1);
-      CLog::Log(LOGDEBUG, "CApplication::Create - SSL_CERT_FILE: {}", caCert);
     }
     else
     {
@@ -446,6 +445,8 @@ bool CApplication::Create(const CAppParamParser &params)
                 caCert);
     }
   }
+  CLog::Log(LOGDEBUG, "CApplication::Create - SSL_CERT_FILE: {}",
+            CEnvironment::getenv("SSL_CERT_FILE"));
 
   CUtil::InitRandomSeed();
 
