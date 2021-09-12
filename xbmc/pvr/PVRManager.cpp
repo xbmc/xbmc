@@ -540,8 +540,17 @@ void CPVRManager::Process()
   CLog::LogFC(LOGDEBUG, LOGPVR, "PVR Manager entering main loop");
 
   bool bRestart(false);
+  XbmcThreads::EndTime cachedImagesCleanupTimeout(30000); // first timeout after 30 secs
+
   while (IsStarted() && m_addons->HasCreatedClients() && !bRestart)
   {
+    if (cachedImagesCleanupTimeout.IsTimePast())
+    {
+      // start a job to erase stale texture db entries and image files
+      TriggerCleanupCachedImages();
+      cachedImagesCleanupTimeout.Set(12 * 60 * 60 * 1000); // following timeouts after 12 hours
+    }
+
     /* first startup */
     if (m_bFirstStart)
     {
@@ -842,6 +851,17 @@ void CPVRManager::TriggerSearchMissingChannelIcons(const std::shared_ptr<CPVRCha
                              updater.SearchAndUpdateMissingChannelIcons();
                              return true;
                            });
+}
+
+void CPVRManager::TriggerCleanupCachedImages()
+{
+  m_pendingUpdates->Append("pvr-cleanup-cached-images", [this]() {
+    int iCleanedImages = 0;
+    CLog::Log(LOGINFO, "PVR Manager: Starting cleanup of cached images.");
+    iCleanedImages += Recordings()->CleanupCachedImages();
+    CLog::Log(LOGINFO, "PVR Manager: Cleaned up {} cached images.", iCleanedImages);
+    return true;
+  });
 }
 
 void CPVRManager::ConnectionStateChange(CPVRClient* client,

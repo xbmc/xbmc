@@ -25,6 +25,7 @@
  */
 
 #include "XBDateTime.h"
+#include "pvr/PVRCachedImage.h"
 #include "threads/CriticalSection.h"
 #include "threads/SystemClock.h"
 #include "video/Bookmark.h"
@@ -65,15 +66,14 @@ namespace PVR
   class CPVRRecording final : public CVideoInfoTag
   {
   public:
+    static const std::string IMAGE_OWNER_PATTERN;
+
     int m_iClientId; /*!< ID of the backend */
     std::string m_strRecordingId; /*!< unique ID of the recording on the client */
     std::string m_strChannelName; /*!< name of the channel this was recorded from */
     int m_iPriority; /*!< priority of this recording */
     int m_iLifetime; /*!< lifetime of this recording */
     std::string m_strDirectory; /*!< directory of this recording on the client */
-    std::string m_strIconPath; /*!< icon path */
-    std::string m_strThumbnailPath; /*!< thumbnail path */
-    std::string m_strFanartPath; /*!< fanart path */
     unsigned m_iRecordingId; /*!< id that won't change while xbmc is running */
 
     CPVRRecording();
@@ -282,6 +282,42 @@ namespace PVR
     int ClientID() const;
 
     /*!
+     * @brief Return the icon path as given by the client.
+     * @return The path.
+     */
+    const std::string& ClientIconPath() const { return m_iconPath.GetClientImage(); }
+
+    /*!
+     * @brief Return the thumbnail path as given by the client.
+     * @return The path.
+     */
+    const std::string& ClientThumbnailPath() const { return m_thumbnailPath.GetClientImage(); }
+
+    /*!
+     * @brief Return the fanart path as given by the client.
+     * @return The path.
+     */
+    const std::string& ClientFanartPath() const { return m_fanartPath.GetClientImage(); }
+
+    /*!
+     * @brief Return the icon path used by Kodi.
+     * @return The path.
+     */
+    const std::string& IconPath() const { return m_iconPath.GetLocalImage(); }
+
+    /*!
+     * @brief Return the thumnail path used by Kodi.
+     * @return The path.
+     */
+    const std::string& ThumbnailPath() const { return m_thumbnailPath.GetLocalImage(); }
+
+    /*!
+     * @brief Return the fanart path used by Kodi.
+     * @return The path.
+     */
+    const std::string& FanartPath() const { return m_fanartPath.GetLocalImage(); }
+
+    /*!
      * @brief Retrieve the recording Episode Name
      * @note Returns an empty string if no Episode Name was provided by the PVR client
      */
@@ -406,6 +442,9 @@ namespace PVR
   private:
     void UpdatePath();
 
+    CPVRCachedImage m_iconPath; /*!< icon path */
+    CPVRCachedImage m_thumbnailPath; /*!< thumbnail path */
+    CPVRCachedImage m_fanartPath; /*!< fanart path */
     CDateTime m_recordingTime; /*!< start time of the recording */
     bool m_bGotMetaData;
     bool m_bIsDeleted; /*!< set if entry is a deleted recording which can be undelete */
