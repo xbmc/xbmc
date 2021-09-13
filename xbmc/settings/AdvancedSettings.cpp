@@ -904,7 +904,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 #if defined(TARGET_WINDOWS_DESKTOP)
   XMLUtils::GetBoolean(pRootElement, "minimizetotray", m_minimizeToTray);
 #endif
-#if defined(HAS_SDL) || defined(TARGET_WINDOWS)
+#if defined(TARGET_DARWIN_OSX) || defined(TARGET_WINDOWS)
   XMLUtils::GetBoolean(pRootElement, "fullscreen", m_startFullScreen);
 #endif
   XMLUtils::GetBoolean(pRootElement, "splash", m_splashImage);

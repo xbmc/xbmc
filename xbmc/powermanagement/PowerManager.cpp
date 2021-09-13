@@ -208,7 +208,7 @@ void CPowerManager::OnWake()
   if (dialog)
     dialog->Close(true); // force close. no closing animation, sound etc at this early stage
 
-#if defined(HAS_SDL) || defined(TARGET_WINDOWS)
+#if defined(TARGET_DARWIN_OSX) || defined(TARGET_WINDOWS)
   if (CServiceBroker::GetWinSystem()->IsFullScreen())
   {
 #if defined(TARGET_WINDOWS_DESKTOP)
