@@ -77,7 +77,9 @@ endif
 ifeq ($(OS),osx)
   EXCLUDED_DEPENDS = libusb
   ifneq ($(CPU),arm64)
-    DEPENDS += libsdl
+    ifeq ($(WINDOW_SYSTEM),sdl)
+      DEPENDS += libsdl
+    endif
   endif
 endif
 

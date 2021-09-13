@@ -7,9 +7,11 @@ set(HEADERS CocoaDPMSSupport.h
 
 if(NOT SDL_FOUND)
   list(APPEND SOURCES WinEventsOSX.mm
-                      WinEventsOSXImpl.mm)
+                      WinEventsOSXImpl.mm
+                      WinSystemOSX.mm)
   list(APPEND HEADERS WinEventsOSX.h
-                      WinEventsOSXImpl.h)
+                      WinEventsOSXImpl.h
+                      WinSystemOSX.h)
 endif()
 
 if(OPENGL_FOUND)
