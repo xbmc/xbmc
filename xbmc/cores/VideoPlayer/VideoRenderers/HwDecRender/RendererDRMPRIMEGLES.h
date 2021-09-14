@@ -83,6 +83,7 @@ private:
   bool m_fullRange;
   AVColorPrimaries m_srcPrimaries;
   bool m_toneMap = false;
+  bool m_passthroughHDR = false;
 
   struct BUFFER
   {

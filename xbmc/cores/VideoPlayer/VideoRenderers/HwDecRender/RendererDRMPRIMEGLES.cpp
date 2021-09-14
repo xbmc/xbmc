@@ -30,6 +30,13 @@ using namespace KODI::UTILS::EGL;
 CRendererDRMPRIMEGLES::~CRendererDRMPRIMEGLES()
 {
   Flush(false);
+
+  auto winSystem = CServiceBroker::GetWinSystem();
+
+  if (!winSystem)
+    return;
+
+  winSystem->SetHDR(nullptr);
 }
 
 CBaseRenderer* CRendererDRMPRIMEGLES::Create(CVideoBuffer* buffer)
@@ -124,6 +131,15 @@ bool CRendererDRMPRIMEGLES::Configure(const VideoPicture& picture,
   }
 
   m_clearColour = winSystem->UseLimitedColor() ? (16.0f / 0xff) : 0.0f;
+
+  if (picture.hasDisplayMetadata || picture.hasLightMetadata)
+  {
+    // note that this doesn't mean much right now as we blindly set HDR metadata if the
+    // connector property supports it. Can we improve this with a callback after a modeset?
+    m_passthroughHDR = winSystem->SetHDR(&picture);
+    CLog::Log(LOGDEBUG, "CRendererDRMPRIMEGLES::Configure - HDR passthrough: {}",
+              m_passthroughHDR ? "on" : "off");
+  }
 
   m_configured = true;
   return true;
@@ -298,7 +314,7 @@ void CRendererDRMPRIMEGLES::RenderUpdate(
 
   bool toneMap = false;
 
-  if (m_videoSettings.m_ToneMapMethod != VS_TONEMAPMETHOD_OFF)
+  if (!m_passthroughHDR && m_videoSettings.m_ToneMapMethod != VS_TONEMAPMETHOD_OFF)
   {
     if (buf.hasLightMetadata || (buf.hasDisplayMetadata && buf.displayMetadata.has_luminance))
     {
@@ -354,7 +370,8 @@ void CRendererDRMPRIMEGLES::RenderUpdate(
   if (m_reloadShaders)
   {
     m_progressiveShader = std::make_unique<Shaders::YUV2RGBProgressiveShader>(
-        m_shaderFormat, AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries, m_toneMap);
+        m_shaderFormat, m_passthroughHDR ? m_srcPrimaries : AVColorPrimaries::AVCOL_PRI_BT709,
+        m_srcPrimaries, m_toneMap);
 
     m_progressiveShader->CompileAndLink();
 

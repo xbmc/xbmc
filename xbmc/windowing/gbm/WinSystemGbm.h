@@ -18,7 +18,37 @@
 
 #include <utility>
 
+#include <drm_mode.h>
 #include <gbm.h>
+
+#ifndef HAVE_HDR_OUTPUT_METADATA
+// HDR structs is copied from linux include/linux/hdmi.h
+struct hdr_metadata_infoframe
+{
+  uint8_t eotf;
+  uint8_t metadata_type;
+  struct
+  {
+    uint16_t x, y;
+  } display_primaries[3];
+  struct
+  {
+    uint16_t x, y;
+  } white_point;
+  uint16_t max_display_mastering_luminance;
+  uint16_t min_display_mastering_luminance;
+  uint16_t max_cll;
+  uint16_t max_fall;
+};
+struct hdr_output_metadata
+{
+  uint32_t metadata_type;
+  union
+  {
+    struct hdr_metadata_infoframe hdmi_metadata_type1;
+  };
+};
+#endif
 
 class IDispResource;
 
@@ -66,6 +96,11 @@ public:
   CGBMUtils::CGBMDevice* GetGBMDevice() const { return m_GBM->GetDevice(); }
   std::shared_ptr<CDRMUtils> GetDrm() const { return m_DRM; }
 
+  bool SetHDR(const VideoPicture* videoPicture) override;
+  bool IsHDRDisplay() override;
+  HDR_STATUS ToggleHDR() override;
+  HDR_STATUS GetOSHDRStatus() override;
+
 protected:
   void OnLostDevice();
 
@@ -81,6 +116,10 @@ protected:
   bool m_dispReset = false;
   XbmcThreads::EndTime m_dispResetTimer;
   std::unique_ptr<CLibInputHandler> m_libinput;
+
+private:
+  uint32_t m_hdr_blob_id = 0;
+  struct hdr_output_metadata m_hdr_metadata = {};
 };
 
 }
