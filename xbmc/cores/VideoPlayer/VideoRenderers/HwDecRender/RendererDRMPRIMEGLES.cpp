@@ -385,8 +385,7 @@ void CRendererDRMPRIMEGLES::RenderUpdate(
     m_progressiveShader->SetAlpha(1.0f);
   }
 
-  //! @todo
-  // buf.m_srcTextureBits = 10;
+  buf.m_srcTextureBits = buf.texture->GetTextureBits();
 
   m_progressiveShader->SetBlack(m_videoSettings.m_Brightness * 0.01f - 0.5f);
   m_progressiveShader->SetContrast(m_videoSettings.m_Contrast * 0.02f);
