@@ -84,6 +84,14 @@ bool CDRMPRIMETexture::Map(CVideoBufferDRMPRIME* buffer)
   if (descriptor->nb_layers > 1)
     m_textureTarget = GL_TEXTURE_2D;
 
+  if (descriptor->nb_layers == 3)
+  {
+    if (descriptor->layers[0].format == DRM_FORMAT_R16 &&
+        descriptor->layers[1].format == DRM_FORMAT_R16 &&
+        descriptor->layers[2].format == DRM_FORMAT_R16)
+      m_textureBits = 10;
+  }
+
   for (int layer = 0; layer < descriptor->nb_layers; layer++)
   {
     std::array<CEGLImage::EglPlane, CEGLImage::MAX_NUM_PLANES> planes;

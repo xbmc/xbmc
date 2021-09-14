@@ -35,6 +35,8 @@ public:
 
   CSizeInt GetTextureSize() { return {m_texWidth, m_texHeight}; }
 
+  int GetTextureBits() const { return m_textureBits; }
+
 protected:
   CVideoBufferDRMPRIME* m_primebuffer{nullptr};
   std::array<std::unique_ptr<CEGLImage>, 3> m_eglImage;
@@ -43,4 +45,6 @@ protected:
   std::array<GLuint, 3> m_texture{0};
   int m_texWidth{0};
   int m_texHeight{0};
+
+  int m_textureBits{8};
 };
