@@ -1319,9 +1319,8 @@ bool CLinuxRendererGLES::UploadYV12Texture(int source)
             im->stride[1], im->bpp, im->plane[1]);
 
   // load V plane
-  LoadPlane(buf.fields[FIELD_FULL][2], GL_ALPHA,
-            im->width >> im->cshift_x, im->height >> im->cshift_y,
-            im->stride[2], im->bpp, im->plane[2]);
+  LoadPlane(buf.fields[FIELD_FULL][2], GL_LUMINANCE, im->width >> im->cshift_x,
+            im->height >> im->cshift_y, im->stride[2], im->bpp, im->plane[2]);
 
   VerifyGLState();
 
@@ -1430,18 +1429,8 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
       }
 
       glBindTexture(m_textureTarget, plane.id);
-
-      GLint format;
-      if (p == 2) // V plane needs an alpha texture
-      {
-        format = GL_ALPHA;
-      }
-      else
-      {
-        format = GL_LUMINANCE;
-      }
-
-      glTexImage2D(m_textureTarget, 0, format, plane.texwidth, plane.texheight, 0, format, GL_UNSIGNED_BYTE, nullptr);
+      glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, plane.texwidth, plane.texheight, 0,
+                   GL_LUMINANCE, GL_UNSIGNED_BYTE, nullptr);
       glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
       glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
       glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
