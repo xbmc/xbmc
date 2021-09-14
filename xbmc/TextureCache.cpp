@@ -96,7 +96,9 @@ std::string CTextureCache::GetCachedImage(const std::string &image, CTextureDeta
 bool CTextureCache::CanCacheImageURL(const CURL &url)
 {
   return url.GetUserName().empty() || url.GetUserName() == "music" ||
-          StringUtils::StartsWith(url.GetUserName(), "video_");
+         StringUtils::StartsWith(url.GetUserName(), "video_") ||
+         StringUtils::StartsWith(url.GetUserName(), "pvr") ||
+         StringUtils::StartsWith(url.GetUserName(), "epg");
 }
 
 std::string CTextureCache::CheckCachedImage(const std::string &url, bool &needsRecaching)
