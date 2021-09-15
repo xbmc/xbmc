@@ -240,15 +240,24 @@ bool CEGLImage::SupportsFormat(uint32_t format)
   }
 
   auto foundFormat = std::find(formats.begin(), formats.end(), format);
+  if (foundFormat == formats.end() || CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
+  {
+    std::string formatStr;
+    for (const auto& supportedFormat : formats)
+      formatStr.append("\n" + FourCCToString(supportedFormat));
+
+    CLog::Log(LOGDEBUG, "CEGLImage::{} - supported formats:{}", __FUNCTION__, formatStr);
+  }
+
   if (foundFormat != formats.end())
+  {
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CEGLImage::{} - supported format: {}", __FUNCTION__,
+              FourCCToString(format));
     return true;
+  }
 
-  CLog::Log(LOGDEBUG, "CEGLImage::{} - format not supported: {}", __FUNCTION__,
+  CLog::Log(LOGERROR, "CEGLImage::{} - format not supported: {}", __FUNCTION__,
             FourCCToString(format));
-
-  CLog::Log(LOGERROR, "CEGLImage::{} - supported formats:", __FUNCTION__);
-  for (const auto& supportedFormat : formats)
-    CLog::Log(LOGERROR, "CEGLImage::{} -   {}", __FUNCTION__, FourCCToString(supportedFormat));
 
   return false;
 }
@@ -295,15 +304,23 @@ bool CEGLImage::SupportsFormatAndModifier(uint32_t format, uint64_t modifier)
   }
 
   auto foundModifier = std::find(modifiers.begin(), modifiers.end(), modifier);
+  if (foundModifier == modifiers.end() || CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
+  {
+    std::string modifierStr;
+    for (const auto& supportedModifier : modifiers)
+      modifierStr.append("\n" + std::to_string(supportedModifier));
+
+    CLog::Log(LOGDEBUG, "CEGLImage::{} - supported modifiers:{}", __FUNCTION__, modifierStr);
+  }
+
   if (foundModifier != modifiers.end())
+  {
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CEGLImage::{} - supported modifier: {}", __FUNCTION__, modifier);
     return true;
+  }
 
-  CLog::Log(LOGDEBUG, "CEGLImage::{} - modifier ({:#x}) not supported for format ({})",
+  CLog::Log(LOGERROR, "CEGLImage::{} - modifier ({:#x}) not supported for format ({})",
             __FUNCTION__, modifier, FourCCToString(format));
-
-  CLog::Log(LOGERROR, "CEGLImage::{} - supported modifiers:", __FUNCTION__);
-  for (const auto& supportedModifier : modifiers)
-    CLog::Log(LOGERROR, "CEGLImage::{} -   {}", __FUNCTION__, supportedModifier);
 
   return false;
 }
