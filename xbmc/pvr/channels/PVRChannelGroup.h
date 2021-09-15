@@ -450,6 +450,12 @@ namespace PVR
      */
     bool IsDeleted() const { return m_bDeleted; }
 
+    /*!
+     * @brief Erase stale texture db entries and image files.
+     * @return number of cleaned up images.
+     */
+    int CleanupCachedImages();
+
   protected:
     /*!
      * @brief Remove deleted group members from this group.

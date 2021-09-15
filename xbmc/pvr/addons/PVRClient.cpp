@@ -394,7 +394,7 @@ void CPVRClient::WriteClientChannelInfo(const std::shared_ptr<CPVRChannel>& xbmc
   addonChannel.iSubChannelNumber = xbmcChannel->ClientChannelNumber().GetSubChannelNumber();
   strncpy(addonChannel.strChannelName, xbmcChannel->ClientChannelName().c_str(),
           sizeof(addonChannel.strChannelName) - 1);
-  strncpy(addonChannel.strIconPath, xbmcChannel->IconPath().c_str(),
+  strncpy(addonChannel.strIconPath, xbmcChannel->ClientIconPath().c_str(),
           sizeof(addonChannel.strIconPath) - 1);
   addonChannel.iEncryptionSystem = xbmcChannel->EncryptionSystem();
   addonChannel.bIsRadio = xbmcChannel->IsRadio();

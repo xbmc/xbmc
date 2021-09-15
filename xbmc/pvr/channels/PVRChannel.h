@@ -9,6 +9,7 @@
 #pragma once
 
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_channels.h"
+#include "pvr/PVRCachedImage.h"
 #include "pvr/channels/PVRChannelNumber.h"
 #include "threads/CriticalSection.h"
 #include "utils/ISerializable.h"
@@ -34,7 +35,10 @@ namespace PVR
     friend class CPVRDatabase;
 
   public:
+    static const std::string IMAGE_OWNER_PATTERN;
+
     explicit CPVRChannel(bool bRadio);
+    CPVRChannel(bool bRadio, const std::string& iconPath);
     CPVRChannel(const PVR_CHANNEL& channel, unsigned int iClientId);
 
     virtual ~CPVRChannel();
@@ -142,6 +146,11 @@ namespace PVR
      * @return True if the flag was changed, false otherwise.
      */
     bool SetArchive(bool bHasArchive);
+
+    /*!
+     * @return The path to the icon for this channel as given by the client.
+     */
+    std::string ClientIconPath() const;
 
     /*!
      * @return The path to the icon for this channel.
@@ -433,7 +442,7 @@ namespace PVR
 
     //@}
   private:
-    CPVRChannel();
+    CPVRChannel() = delete;
     CPVRChannel(const CPVRChannel& tag) = delete;
     CPVRChannel& operator=(const CPVRChannel& channel) = delete;
 
@@ -456,7 +465,7 @@ namespace PVR
     bool m_bIsUserSetName = false; /*!< true if user set the channel name via GUI, false if not */
     bool m_bIsUserSetIcon = false; /*!< true if user set the icon via GUI, false if not */
     bool m_bIsLocked = false; /*!< true if channel is locked, false if not */
-    std::string m_strIconPath; /*!< the path to the icon for this channel */
+    CPVRCachedImage m_iconPath; /*!< the path to the icon for this channel */
     std::string m_strChannelName; /*!< the name for this channel used by XBMC */
     time_t m_iLastWatched = 0; /*!< last time channel has been watched */
     bool m_bChanged = false; /*!< true if anything in this entry was changed that needs to be persisted */

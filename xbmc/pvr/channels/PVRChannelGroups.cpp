@@ -600,6 +600,9 @@ int CPVRChannelGroups::CleanupCachedImages()
 {
   int iCleanedImages = 0;
 
+  // cleanup channels
+  iCleanedImages += GetGroupAll()->CleanupCachedImages();
+
   // cleanup groups
   std::vector<std::string> urlsToCheck;
   {
