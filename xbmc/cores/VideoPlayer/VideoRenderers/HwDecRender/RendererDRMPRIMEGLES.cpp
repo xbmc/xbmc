@@ -59,8 +59,11 @@ CBaseRenderer* CRendererDRMPRIMEGLES::Create(CVideoBuffer* buffer)
     return nullptr;
   }
 
-  uint64_t modifier = desc->objects[0].format_modifier;
-  uint32_t format = desc->layers[0].format;
+  std::vector<std::pair<uint32_t, uint64_t>> layout(desc->nb_layers);
+
+  for (int layer = 0; layer < desc->nb_layers; layer++)
+    layout[layer] =
+        std::make_pair(desc->layers[layer].format, desc->objects[layer].format_modifier);
 
   buf->ReleaseDescriptor();
 
@@ -70,8 +73,13 @@ CBaseRenderer* CRendererDRMPRIMEGLES::Create(CVideoBuffer* buffer)
     return nullptr;
 
   CEGLImage image{winSystemEGL->GetEGLDisplay()};
-  if (!image.SupportsFormatAndModifier(format, modifier))
-    return nullptr;
+  for (const auto& l : layout)
+  {
+    auto format = l.first;
+    auto modifier = l.second;
+    if (!image.SupportsFormatAndModifier(format, modifier))
+      return nullptr;
+  }
 #endif
 
   return new CRendererDRMPRIMEGLES();
