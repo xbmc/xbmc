@@ -258,7 +258,7 @@ bool CEGLImage::SupportsFormatAndModifier(uint32_t format, uint64_t modifier)
   if (!SupportsFormat(format))
     return false;
 
-  if (modifier == DRM_FORMAT_MOD_LINEAR)
+  if (modifier == DRM_FORMAT_MOD_LINEAR || modifier == DRM_FORMAT_MOD_INVALID)
     return true;
 
   /*
