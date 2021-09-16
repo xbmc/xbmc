@@ -9,6 +9,7 @@
 #include "DRMPlane.h"
 
 #include "DRMUtils.h"
+#include "utils/DRMHelpers.h"
 #include "utils/log.h"
 
 using namespace KODI::WINDOWING::GBM;
@@ -46,7 +47,7 @@ bool CDRMPlane::SupportsFormatAndModifier(uint32_t format, uint64_t modifier)
     if (!SupportsFormat(format))
     {
       CLog::Log(LOGDEBUG, "CDRMPlane::{} - format not supported: {}", __FUNCTION__,
-                CDRMUtils::FourCCToString(format));
+                DRMHELPERS::FourCCToString(format));
       return false;
     }
   }
@@ -56,7 +57,7 @@ bool CDRMPlane::SupportsFormatAndModifier(uint32_t format, uint64_t modifier)
     if (formatModifiers->empty())
     {
       CLog::Log(LOGDEBUG, "CDRMPlane::{} - format not supported: {}", __FUNCTION__,
-                CDRMUtils::FourCCToString(format));
+                DRMHELPERS::FourCCToString(format));
       return false;
     }
 
@@ -64,13 +65,13 @@ bool CDRMPlane::SupportsFormatAndModifier(uint32_t format, uint64_t modifier)
     if (formatModifier == formatModifiers->end())
     {
       CLog::Log(LOGDEBUG, "CDRMPlane::{} - modifier ({:#x}) not supported for format ({})",
-                __FUNCTION__, modifier, CDRMUtils::FourCCToString(format));
+                __FUNCTION__, modifier, DRMHELPERS::FourCCToString(format));
       return false;
     }
   }
 
   CLog::Log(LOGDEBUG, "CDRMPlane::{} - found plane format ({}) and modifier ({:#x})", __FUNCTION__,
-            CDRMUtils::FourCCToString(format), modifier);
+            DRMHELPERS::FourCCToString(format), modifier);
 
   return true;
 }
