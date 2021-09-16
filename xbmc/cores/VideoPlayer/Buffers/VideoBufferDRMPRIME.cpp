@@ -19,6 +19,18 @@ extern "C"
 namespace DRMPRIME
 {
 
+std::string GetColorimetry(const VideoPicture& picture)
+{
+  switch (picture.color_space)
+  {
+    case AVCOL_SPC_BT2020_CL:
+    case AVCOL_SPC_BT2020_NCL:
+      return "BT2020_RGB";
+  }
+
+  return "Default";
+}
+
 std::string GetColorEncoding(const VideoPicture& picture)
 {
   switch (picture.color_space)

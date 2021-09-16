@@ -293,6 +293,18 @@ bool CWinSystemGbm::SetHDR(const VideoPicture* picture)
   if (!picture)
   {
     auto connector = drm->GetConnector();
+
+    bool result;
+    uint64_t value;
+    std::tie(result, value) = connector->GetPropertyValue("Colorspace", "Default");
+    if (result)
+    {
+      CLog::Log(LOGDEBUG, "CWinSystemGbm::{} - setting connector colorspace to Default",
+                __FUNCTION__);
+      drm->AddProperty(connector, "Colorspace", value);
+    }
+
+
     if (connector->SupportsProperty("HDR_OUTPUT_METADATA"))
     {
       drm->AddProperty(connector, "HDR_OUTPUT_METADATA", 0);
@@ -326,6 +338,16 @@ bool CWinSystemGbm::SetHDR(const VideoPicture* picture)
     drm->AddProperty(plane, "COLOR_RANGE", value);
 
   auto connector = drm->GetConnector();
+  std::tie(result, value) =
+      connector->GetPropertyValue("Colorspace", DRMPRIME::GetColorimetry(*picture));
+  if (result)
+  {
+    CLog::Log(LOGDEBUG, "CWinSystemGbm::{} - setting connector colorspace to {}", __FUNCTION__,
+              DRMPRIME::GetColorimetry(*picture));
+    drm->AddProperty(connector, "Colorspace", value);
+    drm->SetActive(true);
+  }
+
   if (connector->SupportsProperty("HDR_OUTPUT_METADATA"))
   {
     m_hdr_metadata.metadata_type = DRMPRIME::HDMI_STATIC_METADATA_TYPE1;
