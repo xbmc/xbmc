@@ -635,7 +635,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
         strValue = epgTag->GetWritersLabel();
         return true;
       case LISTITEM_EPG_EVENT_ICON:
-        strValue = epgTag->Icon();
+        strValue = epgTag->IconPath();
         return true;
       case VIDEOPLAYER_PARENTAL_RATING:
       case LISTITEM_PARENTAL_RATING:
@@ -728,7 +728,7 @@ bool CPVRGUIInfo::GetPVRLabel(const CFileItem* item, const CGUIInfo& info, std::
       const std::shared_ptr<CPVREpgInfoTag> epgTag = (item->IsPVRChannel() || item->IsEPG()) ? CPVRItem(item).GetEpgInfoTag() : nullptr;
       if (epgTag)
       {
-        strValue = epgTag->Icon();
+        strValue = epgTag->IconPath();
       }
       return true;
     }

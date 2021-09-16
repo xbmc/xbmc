@@ -10,6 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
+#include "pvr/PVRCachedImages.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClient.h"
 #include "pvr/epg/EpgChannelData.h"
@@ -551,4 +552,12 @@ bool CPVREpg::IsValid() const
 void CPVREpg::RemovedFromContainer()
 {
   m_events.Publish(PVREvent::EpgDeleted);
+}
+
+int CPVREpg::CleanupCachedImages(const std::shared_ptr<CPVREpgDatabase>& database)
+{
+  const std::vector<std::string> urlsToCheck = database->GetAllIconPaths(EpgID());
+  const std::string owner = StringUtils::Format(CPVREpgInfoTag::IMAGE_OWNER_PATTERN, EpgID());
+
+  return CPVRCachedImages::Cleanup({{owner, ""}}, urlsToCheck);
 }

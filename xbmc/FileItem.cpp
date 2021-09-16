@@ -174,8 +174,8 @@ CFileItem::CFileItem(const std::shared_ptr<PVR::CPVREpgInfoTag>& tag,
   if (!groupMember)
     groupMember = CServiceBroker::GetPVRManager().GUIActions()->GetChannelGroupMember(*this);
 
-  if (!tag->Icon().empty())
-    SetArt("icon", tag->Icon());
+  if (!tag->IconPath().empty())
+    SetArt("icon", tag->IconPath());
   else
   {
     std::shared_ptr<CPVRChannel> channel;

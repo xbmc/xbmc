@@ -738,7 +738,7 @@ public:
       m_strWriter(kodiTag->DeTokenize(kodiTag->Writers())),
       m_strIMDBNumber(kodiTag->IMDBNumber()),
       m_strEpisodeName(kodiTag->EpisodeName()),
-      m_strIconPath(kodiTag->Icon()),
+      m_strIconPath(kodiTag->ClientIconPath()),
       m_strSeriesLink(kodiTag->SeriesLink()),
       m_strGenreDescription(kodiTag->GetGenresLabel())
   {

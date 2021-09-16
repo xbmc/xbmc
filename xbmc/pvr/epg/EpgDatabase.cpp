@@ -346,7 +346,8 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::CreateEpgTag(
 {
   if (!pDS->eof())
   {
-    std::shared_ptr<CPVREpgInfoTag> newTag(new CPVREpgInfoTag());
+    const std::shared_ptr<CPVREpgInfoTag> newTag(
+        new CPVREpgInfoTag(m_pDS->fv("idEpg").get_asInt(), m_pDS->fv("sIconPath").get_asString()));
 
     time_t iStartTime;
     iStartTime = static_cast<time_t>(m_pDS->fv("iStartTime").get_asInt());
@@ -365,27 +366,24 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::CreateEpgTag(
     // Compat: null value for broadcast uid changed from numerical -1 to 0 with PVR Addon API v4.0.0
     newTag->m_iUniqueBroadcastID = iBroadcastUID == -1 ? EPG_TAG_INVALID_UID : iBroadcastUID;
 
-    newTag->m_iEpgID = m_pDS->fv("idEpg").get_asInt();
     newTag->m_iDatabaseID = m_pDS->fv("idBroadcast").get_asInt();
-    newTag->m_strTitle = m_pDS->fv("sTitle").get_asString().c_str();
-    newTag->m_strPlotOutline = m_pDS->fv("sPlotOutline").get_asString().c_str();
-    newTag->m_strPlot = m_pDS->fv("sPlot").get_asString().c_str();
-    newTag->m_strOriginalTitle = m_pDS->fv("sOriginalTitle").get_asString().c_str();
+    newTag->m_strTitle = m_pDS->fv("sTitle").get_asString();
+    newTag->m_strPlotOutline = m_pDS->fv("sPlotOutline").get_asString();
+    newTag->m_strPlot = m_pDS->fv("sPlot").get_asString();
+    newTag->m_strOriginalTitle = m_pDS->fv("sOriginalTitle").get_asString();
     newTag->m_cast = newTag->Tokenize(m_pDS->fv("sCast").get_asString());
     newTag->m_directors = newTag->Tokenize(m_pDS->fv("sDirector").get_asString());
     newTag->m_writers = newTag->Tokenize(m_pDS->fv("sWriter").get_asString());
     newTag->m_iYear = m_pDS->fv("iYear").get_asInt();
-    newTag->m_strIMDBNumber = m_pDS->fv("sIMDBNumber").get_asString().c_str();
+    newTag->m_strIMDBNumber = m_pDS->fv("sIMDBNumber").get_asString();
     newTag->m_iParentalRating = m_pDS->fv("iParentalRating").get_asInt();
     newTag->m_iStarRating = m_pDS->fv("iStarRating").get_asInt();
     newTag->m_iEpisodeNumber = m_pDS->fv("iEpisodeId").get_asInt();
     newTag->m_iEpisodePart = m_pDS->fv("iEpisodePart").get_asInt();
-    newTag->m_strEpisodeName = m_pDS->fv("sEpisodeName").get_asString().c_str();
+    newTag->m_strEpisodeName = m_pDS->fv("sEpisodeName").get_asString();
     newTag->m_iSeriesNumber = m_pDS->fv("iSeriesId").get_asInt();
-    newTag->m_strIconPath = m_pDS->fv("sIconPath").get_asString().c_str();
     newTag->m_iFlags = m_pDS->fv("iFlags").get_asInt();
-    newTag->m_strSeriesLink = m_pDS->fv("sSeriesLink").get_asString().c_str();
-
+    newTag->m_strSeriesLink = m_pDS->fv("sSeriesLink").get_asString();
     newTag->SetGenre(m_pDS->fv("iGenreType").get_asInt(), m_pDS->fv("iGenreSubType").get_asInt(),
                      m_pDS->fv("sGenre").get_asString().c_str());
     newTag->UpdatePath();
@@ -990,6 +988,32 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetAllEpgTags(int 
   return {};
 }
 
+std::vector<std::string> CPVREpgDatabase::GetAllIconPaths(int iEpgID)
+{
+  CSingleLock lock(m_critSection);
+  const std::string strQuery =
+      PrepareSQL("SELECT sIconPath FROM epgtags WHERE idEpg = %u;", iEpgID);
+  if (ResultQuery(strQuery))
+  {
+    try
+    {
+      std::vector<std::string> paths;
+      while (!m_pDS->eof())
+      {
+        paths.emplace_back(m_pDS->fv("sIconPath").get_asString());
+        m_pDS->next();
+      }
+      m_pDS->close();
+      return paths;
+    }
+    catch (...)
+    {
+      CLog::LogF(LOGERROR, "Could not load tags for EPG ({})", iEpgID);
+    }
+  }
+  return {};
+}
+
 bool CPVREpgDatabase::GetLastEpgScanTime(int iEpgId, CDateTime* lastScan)
 {
   bool bReturn = false;
@@ -1129,35 +1153,43 @@ bool CPVREpgDatabase::QueuePersistQuery(const CPVREpgInfoTag& tag)
 
   if (iBroadcastId < 0)
   {
-    strQuery = PrepareSQL("REPLACE INTO epgtags (idEpg, iStartTime, "
-        "iEndTime, sTitle, sPlotOutline, sPlot, sOriginalTitle, sCast, sDirector, sWriter, iYear, sIMDBNumber, "
-        "sIconPath, iGenreType, iGenreSubType, sGenre, sFirstAired, iParentalRating, iStarRating, iSeriesId, "
+    strQuery = PrepareSQL(
+        "REPLACE INTO epgtags (idEpg, iStartTime, "
+        "iEndTime, sTitle, sPlotOutline, sPlot, sOriginalTitle, sCast, sDirector, sWriter, iYear, "
+        "sIMDBNumber, "
+        "sIconPath, iGenreType, iGenreSubType, sGenre, sFirstAired, iParentalRating, iStarRating, "
+        "iSeriesId, "
         "iEpisodeId, iEpisodePart, sEpisodeName, iFlags, sSeriesLink, iBroadcastUid) "
-        "VALUES (%u, %u, %u, '%s', '%s', '%s', '%s', '%s', '%s', '%s', %i, '%s', '%s', %i, %i, '%s', '%s', %i, %i, %i, %i, %i, '%s', %i, '%s', %i);",
+        "VALUES (%u, %u, %u, '%s', '%s', '%s', '%s', '%s', '%s', '%s', %i, '%s', '%s', %i, %i, "
+        "'%s', '%s', %i, %i, %i, %i, %i, '%s', %i, '%s', %i);",
         tag.EpgID(), static_cast<unsigned int>(iStartTime), static_cast<unsigned int>(iEndTime),
         tag.Title().c_str(), tag.PlotOutline().c_str(), tag.Plot().c_str(),
-        tag.OriginalTitle().c_str(), tag.DeTokenize(tag.Cast()).c_str(), tag.DeTokenize(tag.Directors()).c_str(),
-        tag.DeTokenize(tag.Writers()).c_str(), tag.Year(), tag.IMDBNumber().c_str(),
-        tag.Icon().c_str(), tag.GenreType(), tag.GenreSubType(), strGenre.c_str(),
-        sFirstAired.c_str(), tag.ParentalRating(), tag.StarRating(),
-        tag.SeriesNumber(), tag.EpisodeNumber(), tag.EpisodePart(), tag.EpisodeName().c_str(), tag.Flags(), tag.SeriesLink().c_str(),
-        tag.UniqueBroadcastID());
+        tag.OriginalTitle().c_str(), tag.DeTokenize(tag.Cast()).c_str(),
+        tag.DeTokenize(tag.Directors()).c_str(), tag.DeTokenize(tag.Writers()).c_str(), tag.Year(),
+        tag.IMDBNumber().c_str(), tag.ClientIconPath().c_str(), tag.GenreType(), tag.GenreSubType(),
+        strGenre.c_str(), sFirstAired.c_str(), tag.ParentalRating(), tag.StarRating(),
+        tag.SeriesNumber(), tag.EpisodeNumber(), tag.EpisodePart(), tag.EpisodeName().c_str(),
+        tag.Flags(), tag.SeriesLink().c_str(), tag.UniqueBroadcastID());
   }
   else
   {
-    strQuery = PrepareSQL("REPLACE INTO epgtags (idEpg, iStartTime, "
-        "iEndTime, sTitle, sPlotOutline, sPlot, sOriginalTitle, sCast, sDirector, sWriter, iYear, sIMDBNumber, "
-        "sIconPath, iGenreType, iGenreSubType, sGenre, sFirstAired, iParentalRating, iStarRating, iSeriesId, "
+    strQuery = PrepareSQL(
+        "REPLACE INTO epgtags (idEpg, iStartTime, "
+        "iEndTime, sTitle, sPlotOutline, sPlot, sOriginalTitle, sCast, sDirector, sWriter, iYear, "
+        "sIMDBNumber, "
+        "sIconPath, iGenreType, iGenreSubType, sGenre, sFirstAired, iParentalRating, iStarRating, "
+        "iSeriesId, "
         "iEpisodeId, iEpisodePart, sEpisodeName, iFlags, sSeriesLink, iBroadcastUid, idBroadcast) "
-        "VALUES (%u, %u, %u, '%s', '%s', '%s', '%s', '%s', '%s', '%s', %i, '%s', '%s', %i, %i, '%s', '%s', %i, %i, %i, %i, %i, '%s', %i, '%s', %i, %i);",
+        "VALUES (%u, %u, %u, '%s', '%s', '%s', '%s', '%s', '%s', '%s', %i, '%s', '%s', %i, %i, "
+        "'%s', '%s', %i, %i, %i, %i, %i, '%s', %i, '%s', %i, %i);",
         tag.EpgID(), static_cast<unsigned int>(iStartTime), static_cast<unsigned int>(iEndTime),
         tag.Title().c_str(), tag.PlotOutline().c_str(), tag.Plot().c_str(),
-        tag.OriginalTitle().c_str(), tag.DeTokenize(tag.Cast()).c_str(), tag.DeTokenize(tag.Directors()).c_str(),
-        tag.DeTokenize(tag.Writers()).c_str(), tag.Year(), tag.IMDBNumber().c_str(),
-        tag.Icon().c_str(), tag.GenreType(), tag.GenreSubType(), strGenre.c_str(),
-        sFirstAired.c_str(), tag.ParentalRating(), tag.StarRating(),
-        tag.SeriesNumber(), tag.EpisodeNumber(), tag.EpisodePart(), tag.EpisodeName().c_str(), tag.Flags(), tag.SeriesLink().c_str(),
-        tag.UniqueBroadcastID(), iBroadcastId);
+        tag.OriginalTitle().c_str(), tag.DeTokenize(tag.Cast()).c_str(),
+        tag.DeTokenize(tag.Directors()).c_str(), tag.DeTokenize(tag.Writers()).c_str(), tag.Year(),
+        tag.IMDBNumber().c_str(), tag.ClientIconPath().c_str(), tag.GenreType(), tag.GenreSubType(),
+        strGenre.c_str(), sFirstAired.c_str(), tag.ParentalRating(), tag.StarRating(),
+        tag.SeriesNumber(), tag.EpisodeNumber(), tag.EpisodePart(), tag.EpisodeName().c_str(),
+        tag.Flags(), tag.SeriesLink().c_str(), tag.UniqueBroadcastID(), iBroadcastId);
   }
 
   QueueInsertQuery(strQuery);

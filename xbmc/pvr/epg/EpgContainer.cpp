@@ -937,4 +937,25 @@ void CPVREpgContainer::OnSystemWake()
   m_bSuspended = false;
 }
 
+int CPVREpgContainer::CleanupCachedImages()
+{
+  int iCleanedImages = 0;
+
+  CSingleLock lock(m_critSection);
+
+  const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
+  if (!database)
+  {
+    CLog::LogF(LOGERROR, "No EPG database");
+    return iCleanedImages;
+  }
+
+  for (const auto& epg : m_epgIdToEpgMap)
+  {
+    iCleanedImages += epg.second->CleanupCachedImages(database);
+  }
+
+  return iCleanedImages;
+}
+
 } // namespace PVR

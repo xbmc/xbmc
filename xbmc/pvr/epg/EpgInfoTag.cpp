@@ -28,10 +28,14 @@
 
 using namespace PVR;
 
-CPVREpgInfoTag::CPVREpgInfoTag()
-: m_iUniqueBroadcastID(EPG_TAG_INVALID_UID),
-  m_iFlags(EPG_TAG_FLAG_UNDEFINED),
-  m_channelData(new CPVREpgChannelData)
+const std::string CPVREpgInfoTag::IMAGE_OWNER_PATTERN = "epgtag_{}";
+
+CPVREpgInfoTag::CPVREpgInfoTag(int iEpgID, const std::string& iconPath)
+  : m_iUniqueBroadcastID(EPG_TAG_INVALID_UID),
+    m_iconPath(iconPath, StringUtils::Format(IMAGE_OWNER_PATTERN, iEpgID)),
+    m_iFlags(EPG_TAG_FLAG_UNDEFINED),
+    m_channelData(new CPVREpgChannelData),
+    m_iEpgID(iEpgID)
 {
 }
 
@@ -41,6 +45,7 @@ CPVREpgInfoTag::CPVREpgInfoTag(const std::shared_ptr<CPVREpgChannelData>& channe
                                const CDateTime& end,
                                bool bIsGapTag)
   : m_iUniqueBroadcastID(EPG_TAG_INVALID_UID),
+    m_iconPath(StringUtils::Format(IMAGE_OWNER_PATTERN, iEpgID)),
     m_iFlags(EPG_TAG_FLAG_UNDEFINED),
     m_bIsGapTag(bIsGapTag),
     m_iEpgID(iEpgID)
@@ -58,18 +63,26 @@ CPVREpgInfoTag::CPVREpgInfoTag(const std::shared_ptr<CPVREpgChannelData>& channe
   UpdatePath();
 }
 
-CPVREpgInfoTag::CPVREpgInfoTag(const EPG_TAG& data, int iClientId, const std::shared_ptr<CPVREpgChannelData>& channelData, int iEpgID)
-: m_iParentalRating(data.iParentalRating),
-  m_iStarRating(data.iStarRating),
-  m_iSeriesNumber(data.iSeriesNumber),
-  m_iEpisodeNumber(data.iEpisodeNumber),
-  m_iEpisodePart(data.iEpisodePartNumber),
-  m_iUniqueBroadcastID(data.iUniqueBroadcastId),
-  m_iYear(data.iYear),
-  m_startTime(data.startTime + CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection),
-  m_endTime(data.endTime + CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection),
-  m_iFlags(data.iFlags),
-  m_iEpgID(iEpgID)
+CPVREpgInfoTag::CPVREpgInfoTag(const EPG_TAG& data,
+                               int iClientId,
+                               const std::shared_ptr<CPVREpgChannelData>& channelData,
+                               int iEpgID)
+  : m_iParentalRating(data.iParentalRating),
+    m_iStarRating(data.iStarRating),
+    m_iSeriesNumber(data.iSeriesNumber),
+    m_iEpisodeNumber(data.iEpisodeNumber),
+    m_iEpisodePart(data.iEpisodePartNumber),
+    m_iUniqueBroadcastID(data.iUniqueBroadcastId),
+    m_iYear(data.iYear),
+    m_iconPath(data.strIconPath ? data.strIconPath : "",
+               StringUtils::Format(IMAGE_OWNER_PATTERN, iEpgID)),
+    m_startTime(
+        data.startTime +
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection),
+    m_endTime(data.endTime +
+              CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection),
+    m_iFlags(data.iFlags),
+    m_iEpgID(iEpgID)
 {
   // strFirstAired is optional, so check if supported before assigning it
   if (data.strFirstAired && strlen(data.strFirstAired) > 0)
@@ -113,8 +126,6 @@ CPVREpgInfoTag::CPVREpgInfoTag(const EPG_TAG& data, int iClientId, const std::sh
     m_strIMDBNumber = data.strIMDBNumber;
   if (data.strEpisodeName)
     m_strEpisodeName = data.strEpisodeName;
-  if (data.strIconPath)
-    m_strIconPath = data.strIconPath;
   if (data.strSeriesLink)
     m_strSeriesLink = data.strSeriesLink;
 
@@ -161,7 +172,7 @@ void CPVREpgInfoTag::Serialize(CVariant& value) const
   value["plotoutline"] = m_strPlotOutline;
   value["plot"] = m_strPlot;
   value["originaltitle"] = m_strOriginalTitle;
-  value["thumbnail"] = m_strIconPath;
+  value["thumbnail"] = ClientIconPath();
   value["cast"] = DeTokenize(m_cast);
   value["director"] = DeTokenize(m_directors);
   value["writer"] = DeTokenize(m_writers);
@@ -453,9 +464,14 @@ std::string CPVREpgInfoTag::EpisodeName() const
   return m_strEpisodeName;
 }
 
-std::string CPVREpgInfoTag::Icon() const
+std::string CPVREpgInfoTag::IconPath() const
 {
-  return m_strIconPath;
+  return m_iconPath.GetLocalImage();
+}
+
+std::string CPVREpgInfoTag::ClientIconPath() const
+{
+  return m_iconPath.GetClientImage();
 }
 
 std::string CPVREpgInfoTag::Path() const
@@ -466,35 +482,20 @@ std::string CPVREpgInfoTag::Path() const
 bool CPVREpgInfoTag::Update(const CPVREpgInfoTag& tag, bool bUpdateBroadcastId /* = true */)
 {
   CSingleLock lock(m_critSection);
-  bool bChanged = (
-      m_strTitle           != tag.m_strTitle ||
-      m_strPlotOutline     != tag.m_strPlotOutline ||
-      m_strPlot            != tag.m_strPlot ||
-      m_strOriginalTitle   != tag.m_strOriginalTitle ||
-      m_cast               != tag.m_cast ||
-      m_directors          != tag.m_directors ||
-      m_writers            != tag.m_writers ||
-      m_iYear              != tag.m_iYear ||
-      m_strIMDBNumber      != tag.m_strIMDBNumber ||
-      m_startTime          != tag.m_startTime ||
-      m_endTime            != tag.m_endTime ||
-      m_iGenreType         != tag.m_iGenreType ||
-      m_iGenreSubType      != tag.m_iGenreSubType ||
-      m_firstAired         != tag.m_firstAired ||
-      m_iParentalRating    != tag.m_iParentalRating ||
-      m_iStarRating        != tag.m_iStarRating ||
-      m_iEpisodeNumber     != tag.m_iEpisodeNumber ||
-      m_iEpisodePart       != tag.m_iEpisodePart ||
-      m_iSeriesNumber      != tag.m_iSeriesNumber ||
-      m_strEpisodeName     != tag.m_strEpisodeName ||
-      m_iUniqueBroadcastID != tag.m_iUniqueBroadcastID ||
-      m_iEpgID             != tag.m_iEpgID ||
-      m_genre              != tag.m_genre ||
-      m_strIconPath        != tag.m_strIconPath ||
-      m_iFlags             != tag.m_iFlags ||
-      m_strSeriesLink      != tag.m_strSeriesLink ||
-      m_channelData        != tag.m_channelData
-  );
+  bool bChanged =
+      (m_strTitle != tag.m_strTitle || m_strPlotOutline != tag.m_strPlotOutline ||
+       m_strPlot != tag.m_strPlot || m_strOriginalTitle != tag.m_strOriginalTitle ||
+       m_cast != tag.m_cast || m_directors != tag.m_directors || m_writers != tag.m_writers ||
+       m_iYear != tag.m_iYear || m_strIMDBNumber != tag.m_strIMDBNumber ||
+       m_startTime != tag.m_startTime || m_endTime != tag.m_endTime ||
+       m_iGenreType != tag.m_iGenreType || m_iGenreSubType != tag.m_iGenreSubType ||
+       m_firstAired != tag.m_firstAired || m_iParentalRating != tag.m_iParentalRating ||
+       m_iStarRating != tag.m_iStarRating || m_iEpisodeNumber != tag.m_iEpisodeNumber ||
+       m_iEpisodePart != tag.m_iEpisodePart || m_iSeriesNumber != tag.m_iSeriesNumber ||
+       m_strEpisodeName != tag.m_strEpisodeName ||
+       m_iUniqueBroadcastID != tag.m_iUniqueBroadcastID || m_iEpgID != tag.m_iEpgID ||
+       m_genre != tag.m_genre || m_iconPath != tag.m_iconPath || m_iFlags != tag.m_iFlags ||
+       m_strSeriesLink != tag.m_strSeriesLink || m_channelData != tag.m_channelData);
 
   if (bUpdateBroadcastId)
     bChanged |= (m_iDatabaseID != tag.m_iDatabaseID);
@@ -539,7 +540,7 @@ bool CPVREpgInfoTag::Update(const CPVREpgInfoTag& tag, bool bUpdateBroadcastId /
     m_iSeriesNumber = tag.m_iSeriesNumber;
     m_strEpisodeName = tag.m_strEpisodeName;
     m_iUniqueBroadcastID = tag.m_iUniqueBroadcastID;
-    m_strIconPath = tag.m_strIconPath;
+    m_iconPath = tag.m_iconPath;
     m_channelData = tag.m_channelData;
   }
 
@@ -587,6 +588,7 @@ int CPVREpgInfoTag::EpgID() const
 void CPVREpgInfoTag::SetEpgID(int iEpgID)
 {
   m_iEpgID = iEpgID;
+  m_iconPath.SetOwner(StringUtils::Format(IMAGE_OWNER_PATTERN, m_iEpgID));
   UpdatePath(); // Note: path contains epg id.
 }
 
