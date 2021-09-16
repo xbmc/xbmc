@@ -15,4 +15,6 @@ namespace DRMHELPERS
 
 std::string FourCCToString(uint32_t fourcc);
 
+std::string ModifierToString(uint64_t modifier);
+
 } // namespace DRMHELPERS

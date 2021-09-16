@@ -64,14 +64,15 @@ bool CDRMPlane::SupportsFormatAndModifier(uint32_t format, uint64_t modifier)
     auto formatModifier = std::find(formatModifiers->begin(), formatModifiers->end(), modifier);
     if (formatModifier == formatModifiers->end())
     {
-      CLog::Log(LOGDEBUG, "CDRMPlane::{} - modifier ({:#x}) not supported for format ({})",
-                __FUNCTION__, modifier, DRMHELPERS::FourCCToString(format));
+      CLog::Log(LOGDEBUG, "CDRMPlane::{} - modifier ({}) not supported for format ({})",
+                __FUNCTION__, DRMHELPERS::ModifierToString(modifier),
+                DRMHELPERS::FourCCToString(format));
       return false;
     }
   }
 
-  CLog::Log(LOGDEBUG, "CDRMPlane::{} - found plane format ({}) and modifier ({:#x})", __FUNCTION__,
-            DRMHELPERS::FourCCToString(format), modifier);
+  CLog::Log(LOGDEBUG, "CDRMPlane::{} - found plane format ({}) and modifier ({})", __FUNCTION__,
+            DRMHELPERS::FourCCToString(format), DRMHELPERS::ModifierToString(modifier));
 
   return true;
 }
