@@ -271,3 +271,8 @@ std::unique_ptr<CVideoSync> CWinSystemGbm::GetVideoSync(void* clock)
 {
   return std::make_unique<CVideoSyncGbm>(clock);
 }
+
+std::vector<std::string> CWinSystemGbm::GetConnectedOutputs()
+{
+  return m_DRM->GetConnectedConnectorNames();
+}
