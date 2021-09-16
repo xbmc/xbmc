@@ -104,6 +104,8 @@ public:
   bool WindowedMode() const { return m_state != WINDOW_STATE_FULLSCREEN; }
   bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
 
+  std::vector<std::string> GetConnectedOutputs() override;
+
   // CWinSystemWin32
   HWND GetHwnd() const { return m_hWnd; }
   bool IsAlteringWindow() const { return m_IsAlteringWindow; }
@@ -111,7 +113,6 @@ public:
   virtual bool DPIChanged(WORD dpi, RECT windowRect) const;
   bool IsMinimized() const { return m_bMinimized; }
   void SetMinimized(bool minimized);
-  void GetConnectedOutputs(std::vector<std::string> *outputs);
 
   // touchscreen support
   typedef BOOL(WINAPI *pGetGestureInfo)(HGESTUREINFO, PGESTUREINFO);

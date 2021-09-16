@@ -462,16 +462,19 @@ bool CWinSystemX11::UseLimitedColor()
   return CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE);
 }
 
-void CWinSystemX11::GetConnectedOutputs(std::vector<std::string> *outputs)
+std::vector<std::string> CWinSystemX11::GetConnectedOutputs()
 {
+  std::vector<std::string> outputs;
   std::vector<XOutput> outs;
   g_xrandr.Query(true);
   outs = g_xrandr.GetModes();
-  outputs->push_back("Default");
+  outputs.emplace_back("Default");
   for(unsigned int i=0; i<outs.size(); ++i)
   {
-    outputs->push_back(outs[i].name);
+    outputs.emplace_back(outs[i].name);
   }
+
+  return outputs;
 }
 
 bool CWinSystemX11::IsCurrentOutput(const std::string& output)
