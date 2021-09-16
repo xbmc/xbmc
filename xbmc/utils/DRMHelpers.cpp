@@ -8,7 +8,12 @@
 
 #include "DRMHelpers.h"
 
+#include "utils/StringUtils.h"
+
 #include <sstream>
+
+#include <drm_fourcc.h>
+#include <xf86drm.h>
 
 namespace DRMHELPERS
 {
@@ -22,6 +27,33 @@ std::string FourCCToString(uint32_t fourcc)
   ss << static_cast<char>((fourcc & 0xFF000000) >> 24);
 
   return ss.str();
+}
+
+std::string ModifierToString(uint64_t modifier)
+{
+#if defined(HAVE_DRM_MODIFIER_NAME)
+  std::string modifierName(drmGetFormatModifierName(modifier));
+  std::string vendorName(drmGetFormatModifierVendor(modifier));
+
+  if (modifierName.empty())
+  {
+    if (!vendorName.empty())
+    {
+      return vendorName + "_UNKNOWN_MODIFIER";
+    }
+    else
+    {
+      return "UNKNOWN_VENDOR_UNKNOWN_MODIFIER";
+    }
+  }
+
+  if (modifier == DRM_FORMAT_MOD_LINEAR)
+    return modifierName;
+
+  return vendorName + "_" + modifierName;
+#else
+  return StringUtils::Format("{:#x}", modifier);
+#endif
 }
 
 } // namespace DRMHELPERS

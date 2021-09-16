@@ -10,6 +10,7 @@
 
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/DRMHelpers.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
@@ -103,7 +104,8 @@ drm_fb * CDRMUtils::DrmFbGetFromBo(struct gbm_bo *bo)
   if (modifiers[0] && modifiers[0] != DRM_FORMAT_MOD_INVALID)
   {
     flags |= DRM_MODE_FB_MODIFIERS;
-    CLog::Log(LOGDEBUG, "CDRMUtils::{} - using modifier: {:#x}", __FUNCTION__, modifiers[0]);
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} - using modifier: {}", __FUNCTION__,
+              DRMHELPERS::ModifierToString(modifiers[0]));
   }
 
   int ret = drmModeAddFB2WithModifiers(m_fd,

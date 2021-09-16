@@ -297,19 +297,21 @@ bool CEGLImage::SupportsFormatAndModifier(uint32_t format, uint64_t modifier)
   {
     std::string modifierStr;
     for (const auto& supportedModifier : modifiers)
-      modifierStr.append("\n" + std::to_string(supportedModifier));
+      modifierStr.append("\n" + DRMHELPERS::ModifierToString(supportedModifier));
 
     CLog::Log(LOGDEBUG, "CEGLImage::{} - supported modifiers:{}", __FUNCTION__, modifierStr);
   }
 
   if (foundModifier != modifiers.end())
   {
-    CLog::Log(LOGDEBUG, LOGVIDEO, "CEGLImage::{} - supported modifier: {}", __FUNCTION__, modifier);
+    CLog::Log(LOGDEBUG, LOGVIDEO, "CEGLImage::{} - supported modifier: {}", __FUNCTION__,
+              DRMHELPERS::ModifierToString(modifier));
     return true;
   }
 
   CLog::Log(LOGERROR, "CEGLImage::{} - modifier ({:#x}) not supported for format ({})",
-            __FUNCTION__, modifier, DRMHELPERS::FourCCToString(format));
+            __FUNCTION__, DRMHELPERS::ModifierToString(modifier),
+            DRMHELPERS::FourCCToString(format));
 
   return false;
 }
