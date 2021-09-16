@@ -71,7 +71,6 @@ public:
 
   static uint32_t FourCCWithAlpha(uint32_t fourcc);
   static uint32_t FourCCWithoutAlpha(uint32_t fourcc);
-  static std::string FourCCToString(uint32_t fourcc);
 
 protected:
   bool OpenDrm(bool needConnector);

@@ -723,14 +723,3 @@ uint32_t CDRMUtils::FourCCWithoutAlpha(uint32_t fourcc)
 {
   return (fourcc & 0xFFFFFF00) | static_cast<uint32_t>('X');
 }
-
-std::string CDRMUtils::FourCCToString(uint32_t fourcc)
-{
-  std::stringstream ss;
-  ss << static_cast<char>((fourcc & 0x000000FF));
-  ss << static_cast<char>((fourcc & 0x0000FF00) >> 8);
-  ss << static_cast<char>((fourcc & 0x00FF0000) >> 16);
-  ss << static_cast<char>((fourcc & 0xFF000000) >> 24);
-
-  return ss.str();
-}
