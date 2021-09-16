@@ -399,13 +399,15 @@ bool CWinSystemWayland::CanDoWindowed()
   return true;
 }
 
-void CWinSystemWayland::GetConnectedOutputs(std::vector<std::string>* outputs)
+std::vector<std::string> CWinSystemWayland::GetConnectedOutputs()
 {
   CSingleLock lock(m_outputsMutex);
-  std::transform(m_outputs.cbegin(), m_outputs.cend(), std::back_inserter(*outputs),
+  std::vector<std::string> outputs;
+  std::transform(m_outputs.cbegin(), m_outputs.cend(), std::back_inserter(outputs),
                  [this](decltype(m_outputs)::value_type const& pair)
-                 {
-                   return UserFriendlyOutputName(pair.second); });
+                 { return UserFriendlyOutputName(pair.second); });
+
+  return outputs;
 }
 
 bool CWinSystemWayland::UseLimitedColor()

@@ -437,10 +437,13 @@ CVEAGLContext CWinSystemTVOS::GetEAGLContextObj()
   return [g_xbmcController getEAGLContextObj];
 }
 
-void CWinSystemTVOS::GetConnectedOutputs(std::vector<std::string>* outputs)
+std::vector<std::string> CWinSystemTVOS::GetConnectedOutputs()
 {
-  outputs->push_back("Default");
-  outputs->push_back(CONST_HDMI);
+  std::vector<std::string> outputs;
+  outputs.emplace_back("Default");
+  outputs.emplace_back(CONST_HDMI);
+
+  return outputs;
 }
 
 bool CWinSystemTVOS::MessagePump()

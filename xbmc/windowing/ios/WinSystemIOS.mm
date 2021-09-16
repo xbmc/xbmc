@@ -470,14 +470,17 @@ CVEAGLContext CWinSystemIOS::GetEAGLContextObj()
   return [g_xbmcController getEAGLContextObj];
 }
 
-void CWinSystemIOS::GetConnectedOutputs(std::vector<std::string> *outputs)
+std::vector<std::string> CWinSystemIOS::GetConnectedOutputs()
 {
-  outputs->push_back("Default");
-  outputs->push_back(CONST_TOUCHSCREEN);
+  std::vector<std::string> outputs;
+  outputs.emplace_back("Default");
+  outputs.emplace_back(CONST_TOUCHSCREEN);
   if ([[UIScreen screens] count] > 1)
   {
-    outputs->push_back(CONST_EXTERNAL);
+    outputs.emplace_back(CONST_EXTERNAL);
   }
+
+  return outputs;
 }
 
 void CWinSystemIOS::MoveToTouchscreen()
