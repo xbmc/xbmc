@@ -101,6 +101,8 @@ public:
   HDR_STATUS ToggleHDR() override;
   HDR_STATUS GetOSHDRStatus() override;
 
+  std::vector<std::string> GetConnectedOutputs() override;
+
 protected:
   void OnLostDevice();
 

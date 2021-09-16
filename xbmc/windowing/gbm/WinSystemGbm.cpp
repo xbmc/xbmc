@@ -444,3 +444,8 @@ HDR_STATUS CWinSystemGbm::GetOSHDRStatus()
 
   return HDR_STATUS::HDR_OFF;
 }
+
+std::vector<std::string> CWinSystemGbm::GetConnectedOutputs()
+{
+  return m_DRM->GetConnectedConnectorNames();
+}

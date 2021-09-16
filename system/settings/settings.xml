@@ -2345,6 +2345,7 @@
               <condition>HAVE_OSX</condition>
               <condition>HAS_DX</condition>
               <condition>HAVE_IOS</condition>
+              <condition>HAVE_GBM</condition>
             </or>
           </requirement>
           <level>0</level>

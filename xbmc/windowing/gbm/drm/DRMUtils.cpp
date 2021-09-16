@@ -503,9 +503,40 @@ bool CDRMUtils::InitDrm()
 
 bool CDRMUtils::FindConnector()
 {
-  auto connector = std::find_if(m_connectors.begin(), m_connectors.end(), [](auto& connector) {
-    return connector->GetEncoderId() > 0 && connector->IsConnected();
-  });
+  auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  if (!settingsComponent)
+    return false;
+
+  auto settings = settingsComponent->GetSettings();
+  if (!settings)
+    return false;
+
+  std::vector<std::unique_ptr<CDRMConnector>>::iterator connector;
+
+  std::string connectorName = settings->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
+  if (connectorName != "Default")
+  {
+    connector = std::find_if(m_connectors.begin(), m_connectors.end(),
+                             [&connectorName](auto& connector)
+                             {
+                               return connector->GetEncoderId() > 0 && connector->IsConnected() &&
+                                      connector->GetName() == connectorName;
+                             });
+  }
+
+  if (connector == m_connectors.end())
+  {
+    CLog::Log(LOGDEBUG, "CDRMUtils::{} - failed to find specified connector: {}, trying default",
+              __FUNCTION__, connectorName);
+    connectorName = "Default";
+  }
+
+  if (connectorName == "Default")
+  {
+    connector = std::find_if(m_connectors.begin(), m_connectors.end(),
+                             [](auto& connector)
+                             { return connector->GetEncoderId() > 0 && connector->IsConnected(); });
+  }
 
   if (connector == m_connectors.end())
   {
@@ -514,7 +545,7 @@ bool CDRMUtils::FindConnector()
   }
 
   CLog::Log(LOGINFO, "CDRMUtils::{} - using connector: {}", __FUNCTION__,
-            *connector->get()->GetConnectorId());
+            connector->get()->GetName());
 
   m_connector = connector->get();
   return true;
