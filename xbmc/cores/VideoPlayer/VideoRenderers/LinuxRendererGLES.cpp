@@ -657,9 +657,14 @@ void CLinuxRendererGLES::LoadShaders(int field)
           CLog::Log(LOGINFO, "GLES: Selecting YUV 2 RGB shader");
 
           EShaderFormat shaderFormat = GetShaderFormat();
-          m_pYUVProgShader = new YUV2RGBProgressiveShader(shaderFormat, m_passthroughHDR ? m_srcPrimaries : AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries, m_toneMap);
+          m_toneMapMethod = m_videoSettings.m_ToneMapMethod;
+          m_pYUVProgShader = new YUV2RGBProgressiveShader(
+              shaderFormat, m_passthroughHDR ? m_srcPrimaries : AVColorPrimaries::AVCOL_PRI_BT709,
+              m_srcPrimaries, m_toneMap, m_toneMapMethod);
           m_pYUVProgShader->SetConvertFullColorRange(m_fullRange);
-          m_pYUVBobShader = new YUV2RGBBobShader(shaderFormat, m_passthroughHDR ? m_srcPrimaries : AVColorPrimaries::AVCOL_PRI_BT709, m_srcPrimaries, m_toneMap);
+          m_pYUVBobShader = new YUV2RGBBobShader(
+              shaderFormat, m_passthroughHDR ? m_srcPrimaries : AVColorPrimaries::AVCOL_PRI_BT709,
+              m_srcPrimaries, m_toneMap, m_toneMapMethod);
           m_pYUVBobShader->SetConvertFullColorRange(m_fullRange);
 
           if ((m_pYUVProgShader && m_pYUVProgShader->CompileAndLink())
@@ -853,8 +858,9 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
   }
 
   bool toneMap = false;
+  int toneMapMethod = m_videoSettings.m_ToneMapMethod;
 
-  if (!m_passthroughHDR && m_videoSettings.m_ToneMapMethod != VS_TONEMAPMETHOD_OFF)
+  if (!m_passthroughHDR && toneMapMethod != VS_TONEMAPMETHOD_OFF)
   {
     if (buf.hasLightMetadata || (buf.hasDisplayMetadata && buf.displayMetadata.has_luminance))
     {
@@ -862,12 +868,13 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
     }
   }
 
-  if (toneMap != m_toneMap)
+  if (toneMap != m_toneMap || toneMapMethod != m_toneMapMethod)
   {
     m_reloadShaders = true;
   }
 
   m_toneMap = toneMap;
+  m_toneMapMethod = toneMapMethod;
 
   if (m_reloadShaders)
   {
@@ -986,7 +993,9 @@ void CLinuxRendererGLES::RenderToFBO(int index, int field)
   }
 
   bool toneMap = false;
-  if (m_videoSettings.m_ToneMapMethod != VS_TONEMAPMETHOD_OFF)
+  int toneMapMethod = m_videoSettings.m_ToneMapMethod;
+
+  if (toneMapMethod != VS_TONEMAPMETHOD_OFF)
   {
     if (buf.hasLightMetadata || (buf.hasDisplayMetadata && buf.displayMetadata.has_luminance))
     {
@@ -994,12 +1003,13 @@ void CLinuxRendererGLES::RenderToFBO(int index, int field)
     }
   }
 
-  if (toneMap != m_toneMap)
+  if (toneMap != m_toneMap || m_toneMapMethod != toneMapMethod)
   {
     m_reloadShaders = true;
   }
 
   m_toneMap = toneMap;
+  m_toneMapMethod = toneMapMethod;
 
   if (m_reloadShaders)
   {

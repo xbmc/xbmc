@@ -10,6 +10,7 @@
 
 #include "ConversionMatrix.h"
 #include "ShaderFormats.h"
+#include "cores/VideoSettings.h"
 #include "guilib/Shader.h"
 #include "utils/TransformMatrix.h"
 
@@ -23,7 +24,11 @@ namespace Shaders {
   class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
   {
   public:
-    BaseYUV2RGBGLSLShader(EShaderFormat format, AVColorPrimaries dst, AVColorPrimaries src, bool toneMap);
+    BaseYUV2RGBGLSLShader(EShaderFormat format,
+                          AVColorPrimaries dst,
+                          AVColorPrimaries src,
+                          bool toneMap,
+                          int toneMapMethod);
     ~BaseYUV2RGBGLSLShader() override;
     void SetField(int field) { m_field = field; }
     void SetWidth(int w) { m_width = w; }
@@ -36,6 +41,7 @@ namespace Shaders {
     void SetDisplayMetadata(bool hasDisplayMetadata, AVMasteringDisplayMetadata displayMetadata,
                             bool hasLightMetadata, AVContentLightMetadata lightMetadata);
     void SetToneMapParam(float param) { m_toneMappingParam = param; }
+    float GetLuminanceValue() const;
 
     GLint GetVertexLoc() { return m_hVertex; }
     GLint GetYcoordLoc() { return m_hYcoord; }
@@ -60,6 +66,7 @@ namespace Shaders {
     bool m_hasLightMetadata{false};
     AVContentLightMetadata m_lightMetadata;
     bool m_toneMapping{false};
+    int m_toneMappingMethod{VS_TONEMAPMETHOD_REINHARD};
     float m_toneMappingParam{1.0};
 
     bool m_colorConversion{false};
@@ -83,6 +90,7 @@ namespace Shaders {
     GLint m_hPrimMat{-1};
     GLint m_hToneP1{-1};
     GLint m_hCoefsDst{-1};
+    GLint m_hLuminance = -1;
 
     GLint m_hVertex{-1};
     GLint m_hYcoord{-1};
@@ -102,13 +110,21 @@ namespace Shaders {
   class YUV2RGBProgressiveShader : public BaseYUV2RGBGLSLShader
   {
   public:
-    YUV2RGBProgressiveShader(EShaderFormat format, AVColorPrimaries dstPrimaries, AVColorPrimaries srcPrimaries, bool toneMap);
+    YUV2RGBProgressiveShader(EShaderFormat format,
+                             AVColorPrimaries dstPrimaries,
+                             AVColorPrimaries srcPrimaries,
+                             bool toneMap,
+                             int toneMapMethod);
   };
 
   class YUV2RGBBobShader : public BaseYUV2RGBGLSLShader
   {
   public:
-    YUV2RGBBobShader(EShaderFormat format, AVColorPrimaries dstPrimaries, AVColorPrimaries srcPrimaries, bool toneMap);
+    YUV2RGBBobShader(EShaderFormat format,
+                     AVColorPrimaries dstPrimaries,
+                     AVColorPrimaries srcPrimaries,
+                     bool toneMap,
+                     int toneMapMethod);
     void OnCompiledAndLinked() override;
     bool OnEnabled() override;
 
