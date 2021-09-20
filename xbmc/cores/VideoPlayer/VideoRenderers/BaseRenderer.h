@@ -9,6 +9,7 @@
 #pragma once
 
 #include "DebugInfo.h"
+#include "RenderCapture.h"
 #include "RenderInfo.h"
 #include "VideoShaders/ShaderFormats.h"
 #include "cores/IPlayer.h"
@@ -43,7 +44,6 @@ enum RenderMethods
 };
 
 struct VideoPicture;
-class CRenderCapture;
 
 class CBaseRenderer
 {
@@ -95,6 +95,8 @@ public:
 
   // Gets debug info from render buffer
   virtual DEBUG_INFO_VIDEO GetDebugInfo(int idx) { return {}; };
+
+  virtual CRenderCapture* GetRenderCapture() { return nullptr; }
 
 protected:
   void CalcNormalRenderRect(float offsetX, float offsetY, float width, float height,

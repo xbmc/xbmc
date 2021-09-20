@@ -92,6 +92,8 @@ public:
   bool Supports(ERENDERFEATURE feature) override;
   bool Supports(ESCALINGMETHOD method) override;
 
+  CRenderCapture* GetRenderCapture() override;
+
 protected:
 
   bool Render(unsigned int flags, int renderBuffer);

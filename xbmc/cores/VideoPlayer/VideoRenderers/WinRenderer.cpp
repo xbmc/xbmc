@@ -9,6 +9,7 @@
 #include "WinRenderer.h"
 
 #include "RenderCapture.h"
+#include "RenderCaptureDX.h"
 #include "RenderFactory.h"
 #include "RenderFlags.h"
 #include "rendering/dx/RenderContext.h"
@@ -340,4 +341,9 @@ DEBUG_INFO_VIDEO CWinRenderer::GetDebugInfo(int idx)
     return {};
 
   return m_renderer->GetDebugInfo(idx);
+}
+
+CRenderCapture* CWinRenderer::GetRenderCapture()
+{
+  return new CRenderCaptureDX;
 }

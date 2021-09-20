@@ -49,6 +49,8 @@ public:
   // Debug info video
   DEBUG_INFO_VIDEO GetDebugInfo(int idx) override;
 
+  CRenderCapture* GetRenderCapture() override;
+
 protected:
   void PreInit();
   int NextBuffer() const;
