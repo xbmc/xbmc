@@ -321,8 +321,9 @@ void CRendererDRMPRIMEGLES::RenderUpdate(
   }
 
   bool toneMap = false;
+  int toneMapMethod = m_videoSettings.m_ToneMapMethod;
 
-  if (!m_passthroughHDR && m_videoSettings.m_ToneMapMethod != VS_TONEMAPMETHOD_OFF)
+  if (!m_passthroughHDR && toneMapMethod != VS_TONEMAPMETHOD_OFF)
   {
     if (buf.hasLightMetadata || (buf.hasDisplayMetadata && buf.displayMetadata.has_luminance))
     {
@@ -330,12 +331,13 @@ void CRendererDRMPRIMEGLES::RenderUpdate(
     }
   }
 
-  if (toneMap != m_toneMap)
+  if (toneMap != m_toneMap || toneMapMethod != m_toneMapMethod)
   {
     m_reloadShaders = true;
   }
 
   m_toneMap = toneMap;
+  m_toneMapMethod = toneMapMethod;
 
   EShaderFormat shaderFormat = SHADER_NONE;
 
@@ -379,7 +381,7 @@ void CRendererDRMPRIMEGLES::RenderUpdate(
   {
     m_progressiveShader = std::make_unique<Shaders::YUV2RGBProgressiveShader>(
         m_shaderFormat, m_passthroughHDR ? m_srcPrimaries : AVColorPrimaries::AVCOL_PRI_BT709,
-        m_srcPrimaries, m_toneMap);
+        m_srcPrimaries, m_toneMap, m_toneMapMethod);
 
     m_progressiveShader->CompileAndLink();
 
