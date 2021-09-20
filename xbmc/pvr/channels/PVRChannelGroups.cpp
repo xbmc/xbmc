@@ -239,7 +239,7 @@ bool CPVRChannelGroups::Update(bool bChannelsOnly /* = false */)
       if (group->Size() - iMemberCount > 0)
       {
         CLog::LogFC(LOGDEBUG, LOGPVR, "{} channel group members added from clients to group '{}'",
-                    static_cast<int>(Size() - iMemberCount), group->GroupName());
+                    static_cast<int>(group->Size() - iMemberCount), group->GroupName());
       }
     }
 
@@ -313,8 +313,8 @@ bool CPVRChannelGroups::LoadFromDb()
               m_bRadio ? "radio" : "TV");
 
   // load all groups from the database
-  database->Get(*this);
-  CLog::LogFC(LOGDEBUG, LOGPVR, "Fetched {} {} groups from the database", m_groups.size(),
+  const int iLoaded = database->Get(*this);
+  CLog::LogFC(LOGDEBUG, LOGPVR, "Fetched {} {} groups from the database", iLoaded,
               m_bRadio ? "radio" : "TV");
 
   // load all group members from the database

@@ -99,12 +99,18 @@ bool CPVRChannelGroup::Load(
   Unload();
 
   int iChannelCount = m_iGroupId > 0 ? LoadFromDb() : 0;
-  CLog::LogFC(LOGDEBUG, LOGPVR, "{} channels loaded from the database for group '{}'",
-              iChannelCount, GroupName());
+  CLog::LogFC(LOGDEBUG, LOGPVR, "Fetched {} {} group members from the database for group '{}'",
+              iChannelCount, IsRadio() ? "radio" : "TV", GroupName());
 
   for (const auto& groupMember : m_members)
   {
     auto channel = channels.find(groupMember.first);
+    if (channel == channels.end())
+    {
+      CLog::Log(LOGERROR, "Cannot find group member '{},{}' in channels!", groupMember.first.first,
+                groupMember.first.second);
+      // No workaround here, please. We need to find and fix the root cause of this case!
+    }
     groupMember.second->SetChannel((*channel).second);
   }
 
@@ -469,11 +475,70 @@ int CPVRChannelGroup::LoadFromDb()
   if (!database)
     return -1;
 
-  int iChannelCount = Size();
+  const int iChannelCount = Size();
+  const std::vector<std::shared_ptr<CPVRChannelGroupMember>> results = database->Get(*this);
 
-  database->Get(*this);
+  std::vector<std::shared_ptr<CPVRChannelGroupMember>> membersToDelete;
+  if (!results.empty())
+  {
+    CSingleLock lock(m_critSection);
+    for (const auto& member : results)
+    {
+      // Consistency check.
+      if (member->ClientID() > 0 && member->ChannelUID() > 0 && member->IsRadio() == IsRadio())
+      {
+        m_sortedMembers.emplace_back(member);
+        m_members.emplace(std::make_pair(member->ClientID(), member->ChannelUID()), member);
+      }
+      else
+      {
+        CLog::LogF(LOGWARNING,
+                   "Skipping member with channel database id {} of {} channel group '{}'. "
+                   "Channel not found in the database or radio flag changed.",
+                   member->ChannelDatabaseID(), IsRadio() ? "radio" : "TV", GroupName());
+        membersToDelete.emplace_back(member);
+      }
+    }
 
-  return Size() - iChannelCount;
+    SortByChannelNumber();
+  }
+
+  DeleteGroupMembersFromDb(membersToDelete);
+
+  return results.size() - membersToDelete.size() - iChannelCount;
+}
+
+void CPVRChannelGroup::DeleteGroupMembersFromDb(
+    const std::vector<std::shared_ptr<CPVRChannelGroupMember>>& membersToDelete)
+{
+  if (!membersToDelete.empty())
+  {
+    const std::shared_ptr<CPVRDatabase> database = CServiceBroker::GetPVRManager().GetTVDatabase();
+    if (!database)
+    {
+      CLog::LogF(LOGERROR, "No TV database");
+      return;
+    }
+
+    // Note: We must lock the db the whole time, otherwise races may occur.
+    database->Lock();
+
+    bool commitPending = false;
+
+    for (const auto& member : membersToDelete)
+    {
+      commitPending |= member->QueueDelete();
+
+      size_t queryCount = database->GetDeleteQueriesCount();
+      if (queryCount > CHANNEL_COMMIT_QUERY_COUNT_LIMIT)
+        database->CommitDeleteQueries();
+    }
+
+    if (commitPending)
+      database->CommitDeleteQueries();
+
+    database->Unlock();
+  }
 }
 
 bool CPVRChannelGroup::UpdateFromClient(const std::shared_ptr<CPVRChannelGroupMember>& groupMember)
@@ -511,7 +576,7 @@ bool CPVRChannelGroup::UpdateFromClient(const std::shared_ptr<CPVRChannelGroupMe
       groupMember->SetGroupID(GroupID());
 
     m_sortedMembers.emplace_back(groupMember);
-    m_members.insert(std::make_pair(channel->StorageId(), groupMember));
+    m_members.emplace(channel->StorageId(), groupMember);
 
     CLog::LogFC(LOGDEBUG, LOGPVR, "Added {} channel group member '{}' to group '{}'",
                 IsRadio() ? "radio" : "TV", channel->ChannelName(), GroupName());
@@ -606,34 +671,7 @@ std::vector<std::shared_ptr<CPVRChannelGroupMember>> CPVRChannelGroup::RemoveDel
     }
   }
 
-  if (!membersToRemove.empty())
-  {
-    const std::shared_ptr<CPVRDatabase> database = CServiceBroker::GetPVRManager().GetTVDatabase();
-    if (!database)
-    {
-      CLog::LogF(LOGERROR, "No TV database");
-      return {};
-    }
-
-    // Note: We must lock the db the whole time, otherwise races may occur.
-    database->Lock();
-
-    bool commitPending = false;
-
-    for (const auto& member : membersToRemove)
-    {
-      commitPending |= member->QueueDelete();
-
-      size_t queryCount = database->GetDeleteQueriesCount();
-      if (queryCount > CHANNEL_COMMIT_QUERY_COUNT_LIMIT)
-        database->CommitDeleteQueries();
-    }
-
-    if (commitPending)
-      database->CommitDeleteQueries();
-
-    database->Unlock();
-  }
+  DeleteGroupMembersFromDb(membersToRemove);
 
   return membersToRemove;
 }
@@ -719,7 +757,7 @@ bool CPVRChannelGroup::AppendToGroup(const std::shared_ptr<CPVRChannel>& channel
       newMember->SetClientPriority(allGroupMember->ClientPriority());
 
       m_sortedMembers.emplace_back(newMember);
-      m_members.insert(std::make_pair(allGroupMember->Channel()->StorageId(), newMember));
+      m_members.emplace(allGroupMember->Channel()->StorageId(), newMember);
 
       SortAndRenumber();
       bReturn = true;
