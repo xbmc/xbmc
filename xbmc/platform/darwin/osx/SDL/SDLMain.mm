@@ -11,7 +11,7 @@
 
 #import "platform/darwin/osx/CocoaInterface.h"
 #import "platform/darwin/osx/HotKeyController.h"
-#import "platform/darwin/osx/SDLMain.h"
+#import "platform/darwin/osx/XBMCApplication.h"
 #import "platform/darwin/osx/storage/OSXStorageProvider.h"
 
 #import <SDL/SDL.h>
