@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include "windowing/osx/WinEventsSDL.h"
+#include "windowing/WinEvents.h"
 
-class CWinEventsOSX : public CWinEventsSDL
+class CWinEventsOSX : public IWinEvents
 {
 public:
   CWinEventsOSX() = default;

@@ -8,7 +8,9 @@
 
 #pragma once
 
-#include "WinSystemOSX.h"
+#if defined(HAS_SDL)
+#include "windowing/osx/SDL/WinSystemOSXSDL.h"
+#endif
 #include "rendering/gl/RenderSystemGL.h"
 
 class CWinSystemOSXGL : public CWinSystemOSX, public CRenderSystemGL

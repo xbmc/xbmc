@@ -14,3 +14,4 @@ xbmc/platform/posix/filesystem        platform/posix/filesystem
 xbmc/platform/posix/network           platform/posix/network
 xbmc/platform/posix/utils             platform/posix/utils
 xbmc/windowing/osx                    windowing/osx
+xbmc/windowing/osx/SDL                windowing/osx/SDL
