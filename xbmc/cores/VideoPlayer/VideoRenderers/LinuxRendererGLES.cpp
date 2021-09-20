@@ -10,6 +10,7 @@
 
 #include "Application.h"
 #include "RenderCapture.h"
+#include "RenderCaptureGLES.h"
 #include "RenderFactory.h"
 #include "ServiceBroker.h"
 #include "VideoShaders/VideoFilterShaderGLES.h"
@@ -28,7 +29,6 @@
 #include "utils/MathUtils.h"
 #include "utils/log.h"
 #include "windowing/WinSystem.h"
-
 
 using namespace Shaders;
 
@@ -1778,4 +1778,9 @@ AVColorPrimaries CLinuxRendererGLES::GetSrcPrimaries(AVColorPrimaries srcPrimari
   }
 
   return ret;
+}
+
+CRenderCapture* CLinuxRendererGLES::GetRenderCapture()
+{
+  return new CRenderCaptureGLES;
 }

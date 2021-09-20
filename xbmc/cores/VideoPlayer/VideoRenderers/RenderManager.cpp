@@ -503,9 +503,17 @@ void CRenderManager::DeleteRenderer()
 
 unsigned int CRenderManager::AllocRenderCapture()
 {
-  CRenderCapture *capture = new CRenderCapture;
-  m_captures[m_nextCaptureId] = capture;
-  return m_nextCaptureId++;
+  if (m_pRenderer)
+  {
+    CRenderCapture* capture = m_pRenderer->GetRenderCapture();
+    if (capture)
+    {
+      m_captures[m_nextCaptureId] = capture;
+      return m_nextCaptureId++;
+    }
+  }
+
+  return m_nextCaptureId;
 }
 
 void CRenderManager::ReleaseRenderCapture(unsigned int captureId)
