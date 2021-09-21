@@ -11,8 +11,10 @@
 #include "GLESShader.h"
 #include "rendering/RenderSystem.h"
 #include "utils/Color.h"
+#include "utils/log.h"
 
 #include <array>
+#include <unordered_set>
 
 #include "system_gl.h"
 
@@ -31,6 +33,65 @@ enum ESHADERMETHOD
   SM_TEXTURE_RGBA_BOB_OES,
   SM_TEXTURE_NOALPHA,
   SM_MAX
+};
+
+class CShaderCache
+{
+public:
+  CShaderCache() = default;
+  ~CShaderCache()
+  {
+    for (auto& shader : m_shaderCache)
+    {
+      CLog::Log(LOGDEBUG, "deleting shader with hash: {}", (*shader).GetHash());
+      delete shader;
+    }
+  }
+
+  Shaders::CGLSLShaderProgram* Find(Shaders::CGLSLShaderProgram* s)
+  {
+    CLog::Log(LOGDEBUG, "looking for hash: {}", s->GetHash());
+
+    CLog::Log(LOGDEBUG, "shaders in cache:");
+    for (auto shader : m_shaderCache)
+      CLog::Log(LOGDEBUG, "\t\thash: {}", (*shader).GetHash());
+
+    auto shader = m_shaderCache.find(s);
+    if (shader != m_shaderCache.end())
+    {
+      CLog::Log(LOGDEBUG, "found shader in cache: {} hash: {}", fmt::ptr(*shader),
+                (*shader)->GetHash());
+      return *shader;
+    }
+
+    return nullptr;
+  }
+
+  void Add(Shaders::CGLSLShaderProgram* const s)
+  {
+    m_shaderCache.emplace(s);
+    CLog::Log(LOGDEBUG, "new shader added to cache: {} hash: {}", fmt::ptr(s), s->GetHash());
+  }
+
+private:
+  struct ShaderHash
+  {
+    std::size_t operator()(Shaders::CGLSLShaderProgram* const s) const noexcept
+    {
+      return s->GetHash();
+    }
+  };
+
+  struct ShaderEquals
+  {
+    bool operator()(Shaders::CGLSLShaderProgram const* lhs,
+                    Shaders::CGLSLShaderProgram const* rhs) const
+    {
+      return lhs->GetHash() == rhs->GetHash();
+    }
+  };
+
+  std::unordered_set<Shaders::CGLSLShaderProgram*, ShaderHash, ShaderEquals> m_shaderCache;
 };
 
 class CRenderSystemGLES : public CRenderSystemBase
@@ -88,6 +149,8 @@ public:
   GLint GUIShaderGetBrightness();
   GLint GUIShaderGetModel();
 
+  CShaderCache* GetShaderCache() { return m_shaderCache.get(); }
+
 protected:
   virtual void SetVSyncImpl(bool enable) = 0;
   virtual void PresentRenderImpl(bool rendered) = 0;
@@ -103,5 +166,7 @@ protected:
   ESHADERMETHOD m_method = SM_DEFAULT;
 
   GLint      m_viewPort[4];
+
+  std::unique_ptr<CShaderCache> m_shaderCache;
 };
 

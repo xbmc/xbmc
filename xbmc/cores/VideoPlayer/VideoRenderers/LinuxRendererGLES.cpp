@@ -63,8 +63,6 @@ CLinuxRendererGLES::~CLinuxRendererGLES()
 {
   UnInit();
 
-  ReleaseShaders();
-
   free(m_planeBuffer);
   m_planeBuffer = nullptr;
 }
@@ -545,12 +543,6 @@ void CLinuxRendererGLES::UpdateVideoFilter()
     m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
   }
 
-  if (m_pVideoFilterShader)
-  {
-    delete m_pVideoFilterShader;
-    m_pVideoFilterShader = nullptr;
-  }
-
   m_fbo.fbo.Cleanup();
 
   VerifyGLState();
@@ -598,7 +590,25 @@ void CLinuxRendererGLES::UpdateVideoFilter()
     }
 
     m_pVideoFilterShader = new ConvolutionFilterShader(m_scalingMethod);
-    if (!m_pVideoFilterShader->CompileAndLink())
+
+    auto renderSystem = CServiceBroker::GetRenderSystem();
+
+    auto renderSystemGLES = static_cast<CRenderSystemGLES*>(renderSystem);
+
+    auto shaderCache = renderSystemGLES->GetShaderCache();
+
+    auto shader =
+        static_cast<Shaders::ConvolutionFilterShader*>(shaderCache->Find(m_pVideoFilterShader));
+    if (shader)
+    {
+      delete m_pVideoFilterShader;
+      m_pVideoFilterShader = shader;
+    }
+    else if (m_pVideoFilterShader && m_pVideoFilterShader->CompileAndLink())
+    {
+      shaderCache->Add(m_pVideoFilterShader);
+    }
+    else
     {
       CLog::Log(LOGERROR, "GLES: Error compiling and linking video filter shader");
       break;
@@ -643,8 +653,6 @@ void CLinuxRendererGLES::LoadShaders(int field)
     int requestedMethod = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_RENDERMETHOD);
     CLog::Log(LOGDEBUG, "GLES: Requested render method: {}", requestedMethod);
 
-    ReleaseShaders();
-
     switch(requestedMethod)
     {
       case RENDER_METHOD_AUTO:
@@ -662,21 +670,38 @@ void CLinuxRendererGLES::LoadShaders(int field)
               shaderFormat, m_passthroughHDR ? m_srcPrimaries : AVColorPrimaries::AVCOL_PRI_BT709,
               m_srcPrimaries, m_toneMap, m_toneMapMethod);
           m_pYUVProgShader->SetConvertFullColorRange(m_fullRange);
-          m_pYUVBobShader = new YUV2RGBBobShader(
-              shaderFormat, m_passthroughHDR ? m_srcPrimaries : AVColorPrimaries::AVCOL_PRI_BT709,
-              m_srcPrimaries, m_toneMap, m_toneMapMethod);
-          m_pYUVBobShader->SetConvertFullColorRange(m_fullRange);
+          // m_pYUVBobShader = new YUV2RGBBobShader(
+          //     shaderFormat, m_passthroughHDR ? m_srcPrimaries : AVColorPrimaries::AVCOL_PRI_BT709,
+          //     m_srcPrimaries, m_toneMap, m_toneMapMethod);
+          // m_pYUVBobShader->SetConvertFullColorRange(m_fullRange);
 
-          if ((m_pYUVProgShader && m_pYUVProgShader->CompileAndLink())
-              && (m_pYUVBobShader && m_pYUVBobShader->CompileAndLink()))
+          auto renderSystem = CServiceBroker::GetRenderSystem();
+
+          auto renderSystemGLES = static_cast<CRenderSystemGLES*>(renderSystem);
+
+          auto shaderCache = renderSystemGLES->GetShaderCache();
+
+          auto shader =
+              static_cast<Shaders::YUV2RGBProgressiveShader*>(shaderCache->Find(m_pYUVProgShader));
+          if (shader)
           {
+            delete m_pYUVProgShader;
+            m_pYUVProgShader = shader;
+
+            m_renderMethod = RENDER_GLSL;
+            UpdateVideoFilter();
+            break;
+          }
+          else if ((m_pYUVProgShader && m_pYUVProgShader->CompileAndLink()))
+          {
+            shaderCache->Add(m_pYUVProgShader);
+
             m_renderMethod = RENDER_GLSL;
             UpdateVideoFilter();
             break;
           }
           else
           {
-            ReleaseShaders();
             CLog::Log(LOGERROR, "GLES: Error enabling YUV2RGB GLSL shader");
             m_renderMethod = -1;
             break;

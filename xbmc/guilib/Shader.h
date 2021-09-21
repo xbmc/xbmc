@@ -34,6 +34,7 @@ namespace Shaders {
 
     std::string GetName() const { return m_filenames; }
     std::string GetSourceWithLineNumbers() const;
+    std::string GetSource() const { return m_source; }
 
   protected:
     std::string m_source;
@@ -161,6 +162,14 @@ namespace Shaders {
 
     // compile and link the shaders
     bool CompileAndLink() override;
+
+    size_t GetHash() const
+    {
+      size_t vertexHash = std::hash<std::string>{}(m_pVP->GetSource());
+      size_t fragmentHash = std::hash<std::string>{}(m_pFP->GetSource());
+
+      return vertexHash ^ (fragmentHash << 1);
+    }
 
   protected:
     void Free();
