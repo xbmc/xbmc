@@ -194,7 +194,7 @@
 				</control>
 				<control type="image">
 					<left>600</left>
-					<top>290</top>
+					<top>299</top>
 					<width>70</width>
 					<height>50</height>
 					<aspectratio>keep</aspectratio>
