@@ -41,6 +41,19 @@ endmacro()
 macro (build_addon target prefix libs)
   addon_version(${target} ${prefix})
 
+  # Compare addon version to Kodi's Version
+  # 1. If addon version is larger then Kodi version, it's not the correct API and
+  #    need to abort to prevent new addon release and upload to wrong
+  #    Kodi addon mirror.
+  # 2. If addon version is lower than Kodi version, it may or may not work
+  #    due to API changes. Show a warning message in this case.
+  string(REGEX REPLACE "^([0-9]*)\.[0-9]*\.[0-9]*" "\\1" ${prefix}_VERSION_MAJOR ${${prefix}_VERSION})
+  if(${${prefix}_VERSION_MAJOR} GREATER ${APP_VERSION_MAJOR})
+    message(FATAL_ERROR "Addon major version ${${prefix}_VERSION_MAJOR} larger than Kodi's major version ${APP_VERSION_MAJOR}. Correct API cannot be guaranteed and build will be aborted!")
+  elseif(${${prefix}_VERSION_MAJOR} LESS ${APP_VERSION_MAJOR})
+    message(WARNING "Addon major version ${${prefix}_VERSION_MAJOR} smaller than Kodi's major version ${APP_VERSION_MAJOR}. WARNING: Possible API changes may not be included. Since Kodi 20, addon and Kodi should use the same major version.")
+  endif()
+
   # Below comes the generation of a list with used sources where the includes to
   # kodi's headers becomes checked.
   # This goes the following steps to identify them:
