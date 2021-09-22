@@ -46,6 +46,7 @@ private:
   CVariant& m_parsedObject;
   std::vector<CVariant *> m_parse;
   std::string m_key;
+  CVariant m_root;
 
   enum class PARSE_STATUS
   {
@@ -160,7 +161,10 @@ void CJSONVariantParserHandler::PushObject(const CVariant& variant)
     m_parse.push_back(&(*temp)[temp->size() - 1]);
   }
   else if (m_parse.empty())
-    m_parse.push_back(new CVariant(variant));
+  {
+    m_root = variant;
+    m_parse.push_back(&m_root);
+  }
 
   if (variant.isObject())
     m_status = PARSE_STATUS::Object;
@@ -188,8 +192,6 @@ void CJSONVariantParserHandler::PopObject()
   else
   {
     m_parsedObject = *variant;
-    delete variant;
-
     m_status = PARSE_STATUS::Variable;
   }
 }
