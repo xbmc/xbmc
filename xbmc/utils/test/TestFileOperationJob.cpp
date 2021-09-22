@@ -80,6 +80,8 @@ TEST(TestFileOperationJob, ActionMove)
 
   EXPECT_TRUE(XFILE::CFile::Delete(destfile));
   EXPECT_TRUE(XFILE::CDirectory::Remove(destpath));
+
+  EXPECT_FALSE(XBMC_DELETETEMPFILE(tmpfile));
 }
 
 TEST(TestFileOperationJob, ActionDelete)
@@ -130,6 +132,8 @@ TEST(TestFileOperationJob, ActionDelete)
   EXPECT_TRUE(job.DoWork());
   EXPECT_FALSE(XFILE::CFile::Exists(destfile));
   EXPECT_TRUE(XFILE::CDirectory::Remove(destpath));
+
+  EXPECT_FALSE(XBMC_DELETETEMPFILE(tmpfile));
 }
 
 TEST(TestFileOperationJob, ActionReplace)
