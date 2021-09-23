@@ -12,9 +12,11 @@
 
 #include <SDL/SDL_events.h>
 
-class CWinEventsSDL : public IWinEvents
+class CWinEventsOSX : public IWinEvents
 {
 public:
+  CWinEventsOSX() = default;
+  ~CWinEventsOSX() override = default;
   bool MessagePump() override;
 
 private:

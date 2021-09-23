@@ -25,7 +25,7 @@
 
 using namespace KODI::MESSAGING;
 
-bool CWinEventsSDL::MessagePump()
+bool CWinEventsOSX::MessagePump()
 {
   SDL_Event event;
   bool ret = false;
@@ -191,7 +191,7 @@ bool CWinEventsSDL::MessagePump()
   return ret;
 }
 
-bool CWinEventsSDL::ProcessOSXShortcuts(SDL_Event& event)
+bool CWinEventsOSX::ProcessOSXShortcuts(SDL_Event& event)
 {
   static bool shift = false, cmd = false;
 

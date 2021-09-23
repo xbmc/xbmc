@@ -7,12 +7,11 @@
  *  See LICENSES/README.md for more information.
  */
 
-#import "SDLMain.h"
-
 #import "messaging/ApplicationMessenger.h"
 
 #import "platform/darwin/osx/CocoaInterface.h"
 #import "platform/darwin/osx/HotKeyController.h"
+#import "platform/darwin/osx/XBMCApplication.h"
 #import "platform/darwin/osx/storage/OSXStorageProvider.h"
 
 #import <SDL/SDL.h>

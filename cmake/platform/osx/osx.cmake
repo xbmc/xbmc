@@ -9,8 +9,8 @@ endif()
 if(NOT APP_WINDOW_SYSTEM OR APP_WINDOW_SYSTEM STREQUAL sdl)
   list(APPEND SYSTEM_DEFINES -DHAS_SDL)
   list(APPEND PLATFORM_REQUIRED_DEPS Sdl)
-  list(APPEND CORE_MAIN_SOURCE ${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/osx/SDLMain.mm
-                               ${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/osx/SDLMain.h)
+  list(APPEND CORE_MAIN_SOURCE ${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/osx/SDL/SDLMain.mm
+                               ${CMAKE_SOURCE_DIR}/xbmc/platform/posix/main.cpp)
 else()
   message(SEND_ERROR "Currently only SDL windowing is supported. Please set APP_WINDOW_SYSTEM to \"sdl\"")
 endif()

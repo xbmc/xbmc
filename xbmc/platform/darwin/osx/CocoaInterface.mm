@@ -11,7 +11,9 @@
 #import "DllPaths_generated.h"
 #include "ServiceBroker.h"
 #include "utils/log.h"
-#include "windowing/osx/WinSystemOSX.h"
+#if defined(HAS_SDL)
+#include "windowing/osx/SDL/WinSystemOSXSDL.h"
+#endif
 
 #import <AudioToolbox/AudioToolbox.h>
 #import <AudioUnit/AudioUnit.h>

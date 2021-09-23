@@ -42,7 +42,9 @@
 #include "windowing/X11/WinSystemX11.h"
 #elif defined(TARGET_DARWIN_OSX)
 #define WIN_SYSTEM_CLASS CWinSystemOSX
-#include "windowing/osx/WinSystemOSX.h"
+#if defined(HAS_SDL)
+#include "windowing/osx/SDL/WinSystemOSXSDL.h"
+#endif
 #elif defined(TARGET_ANDROID)
 #elif defined(TARGET_DARWIN_IOS)
 #define WIN_SYSTEM_CLASS CWinSystemIOS
