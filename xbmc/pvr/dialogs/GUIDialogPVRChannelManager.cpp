@@ -11,6 +11,7 @@
 #include "FileItem.h"
 #include "GUIPassword.h"
 #include "ServiceBroker.h"
+#include "TextureCache.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"
@@ -59,6 +60,7 @@
 #define BUTTON_GROUP_MANAGER      30
 #define BUTTON_NEW_CHANNEL        31
 #define BUTTON_RADIO_TV           34
+#define BUTTON_REFRESH_LOGOS 35
 
 using namespace PVR;
 using namespace KODI::MESSAGING;
@@ -518,6 +520,28 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel()
   return true;
 }
 
+bool CGUIDialogPVRChannelManager::OnClickButtonRefreshChannelLogos()
+{
+  for (const auto& item : *m_channelItems)
+  {
+    const std::string thumb = item->GetArt("thumb");
+    if (!thumb.empty())
+    {
+      // clear current cached image
+      CTextureCache::GetInstance().ClearCachedImage(thumb);
+      item->SetArt("thumb", "");
+    }
+  }
+
+  m_iSelected = 0;
+  Update();
+
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
+  CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
+
+  return true;
+}
+
 bool CGUIDialogPVRChannelManager::OnMessageClick(CGUIMessage& message)
 {
   int iControl = message.GetSenderId();
@@ -549,6 +573,8 @@ bool CGUIDialogPVRChannelManager::OnMessageClick(CGUIMessage& message)
     return OnClickButtonGroupManager(message);
   case BUTTON_NEW_CHANNEL:
     return OnClickButtonNewChannel();
+  case BUTTON_REFRESH_LOGOS:
+    return OnClickButtonRefreshChannelLogos();
   default:
     return false;
   }

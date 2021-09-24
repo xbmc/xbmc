@@ -9452,7 +9452,13 @@ msgctxt "#19040"
 msgid "Timers"
 msgstr ""
 
-#empty strings from id 19041 to 19042
+#. Label for button to refresh the channel logos
+#: addons/skin.estuary/xml/DialogPVRChannelManager.xml
+msgctxt "#19041"
+msgid "Refresh channel logos"
+msgstr ""
+
+#empty string with id 19042
 
 #. pvr settings "recording" category label
 #: system/settings/settings.xml
