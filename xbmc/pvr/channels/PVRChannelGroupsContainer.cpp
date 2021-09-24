@@ -155,5 +155,7 @@ std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroupsContainer::
 
 bool CPVRChannelGroupsContainer::CreateChannelEpgs()
 {
-  return m_groupsTV->CreateChannelEpgs() && m_groupsRadio->CreateChannelEpgs();
+  bool bReturn = m_groupsTV->CreateChannelEpgs();
+  bReturn &= m_groupsRadio->CreateChannelEpgs();
+  return bReturn;
 }
