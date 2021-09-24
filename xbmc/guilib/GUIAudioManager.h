@@ -14,6 +14,7 @@
 #include "threads/CriticalSection.h"
 
 #include <map>
+#include <memory>
 #include <string>
 
 // forward definitions
@@ -29,15 +30,13 @@ class CGUIAudioManager : public ISettingCallback
   class CWindowSounds
   {
   public:
-    IAESound *initSound;
-    IAESound *deInitSound;
+    std::shared_ptr<IAESound> initSound;
+    std::shared_ptr<IAESound> deInitSound;
   };
 
-  class CSoundInfo
+  struct IAESoundDeleter
   {
-  public:
-    int usage;
-    IAESound *sound;
+    void operator()(IAESound* s);
   };
 
 public:
@@ -68,10 +67,10 @@ private:
   // Construction parameters
   std::shared_ptr<CSettings> m_settings;
 
-  typedef std::map<const std::string, CSoundInfo> soundCache;
-  typedef std::map<int, IAESound*              > actionSoundMap;
-  typedef std::map<int, CWindowSounds          > windowSoundMap;
-  typedef std::map<const std::string, IAESound* > pythonSoundsMap;
+  typedef std::map<const std::string, std::weak_ptr<IAESound>> soundCache;
+  typedef std::map<int, std::shared_ptr<IAESound>> actionSoundMap;
+  typedef std::map<int, CWindowSounds> windowSoundMap;
+  typedef std::map<const std::string, std::shared_ptr<IAESound>> pythonSoundsMap;
 
   soundCache          m_soundCache;
   actionSoundMap      m_actionSoundMap;
@@ -83,9 +82,8 @@ private:
 
   CCriticalSection    m_cs;
 
-  IAESound* LoadSound(const std::string &filename);
-  void      FreeSound(IAESound *sound);
-  void      FreeSoundAllUsage(IAESound *sound);
-  IAESound* LoadWindowSound(TiXmlNode* pWindowNode, const std::string& strIdentifier);
+  std::shared_ptr<IAESound> LoadSound(const std::string& filename);
+  std::shared_ptr<IAESound> LoadWindowSound(TiXmlNode* pWindowNode,
+                                            const std::string& strIdentifier);
 };
 
