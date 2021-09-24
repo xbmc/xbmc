@@ -9,22 +9,23 @@
 #pragma once
 
 #include "DVDOverlayCodec.h"
+#include "DVDSubtitles/SubtitlesAdapter.h"
 
-class CDVDOverlayText;
+class CDVDOverlay;
 
-class CDVDOverlayCodecTX3G : public CDVDOverlayCodec
+class CDVDOverlayCodecTX3G : public CDVDOverlayCodec, private CSubtitlesAdapter
 {
 public:
   CDVDOverlayCodecTX3G();
   ~CDVDOverlayCodecTX3G() override;
-  bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) override;
-  void Dispose() override;
-  int Decode(DemuxPacket *pPacket) override;
+  bool Open(CDVDStreamInfo& hints, CDVDCodecOptions& options) override;
+  int Decode(DemuxPacket* pPacket) override;
   void Reset() override;
   void Flush() override;
   CDVDOverlay* GetOverlay() override;
 
 private:
-  CDVDOverlayText* m_pOverlay;
-  uint32_t         m_textColor;
+  void Dispose() override;
+  CDVDOverlay* m_pOverlay;
+  uint32_t m_textColor;
 };
