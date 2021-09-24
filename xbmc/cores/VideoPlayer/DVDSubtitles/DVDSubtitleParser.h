@@ -26,6 +26,7 @@ public:
   virtual void Dispose() = 0;
   virtual void Reset() = 0;
   virtual CDVDOverlay* Parse(double iPts) = 0;
+  virtual const std::string& GetName() const = 0;
 };
 
 class CDVDSubtitleParserCollection
@@ -53,13 +54,19 @@ class CDVDSubtitleParserText
      : public CDVDSubtitleParserCollection
 {
 public:
-  CDVDSubtitleParserText(std::unique_ptr<CDVDSubtitleStream> && stream, const std::string& filename)
-    : CDVDSubtitleParserCollection(filename)
-		, m_pStream(std::move(stream))
+  CDVDSubtitleParserText(std::unique_ptr<CDVDSubtitleStream>&& stream,
+                         const std::string& filename,
+                         const char* name)
+    : CDVDSubtitleParserCollection(filename), m_pStream(std::move(stream)), m_parserName(name)
   {
   }
 
   ~CDVDSubtitleParserText() override = default;
+
+  /*
+   * \brief Returns parser name
+   */
+  const std::string& GetName() const override { return m_parserName; }
 
 protected:
   using CDVDSubtitleParserCollection::Open;
@@ -77,4 +84,5 @@ protected:
   }
 
   std::unique_ptr<CDVDSubtitleStream> m_pStream;
+  std::string m_parserName;
 };
