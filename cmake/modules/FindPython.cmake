@@ -21,6 +21,10 @@ if(KODI_DEPENDSBUILD)
 
   if(NOT CORE_SYSTEM_NAME STREQUAL android)
     set(PYTHON_DEP_LIBRARIES pthread dl util)
+    if(CORE_SYSTEM_NAME STREQUAL linux)
+      # python archive built via depends requires librt for _posixshmem library
+      list(APPEND PYTHON_DEP_LIBRARIES rt)
+    endif()
   endif()
 
   set(PYTHON_LIBRARIES ${PYTHON_LIBRARY} ${FFI_LIBRARY} ${EXPAT_LIBRARY} ${INTL_LIBRARY} ${GMP_LIBRARY} ${PYTHON_DEP_LIBRARIES})

@@ -254,6 +254,12 @@ _sha3 _sha3/sha3module.c
 # _blake module
 _blake2 _blake2/blake2module.c _blake2/blake2b_impl.c _blake2/blake2s_impl.c
 
+# _multiprocessing module
+_multiprocessing _multiprocessing/multiprocessing.c _multiprocessing/semaphore.c
+
+# _posixshmem module does not run on android platform due to missing primitives shm_open/shm_unlink
+_posixshmem _multiprocessing/posixshmem.c -I$(srcdir)/Modules/_multiprocessing # -lrt # _posixshmem
+
 # The _tkinter module.
 #
 # The command for _tkinter is long and site specific.  Please
