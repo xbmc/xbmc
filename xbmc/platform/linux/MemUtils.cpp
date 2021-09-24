@@ -18,7 +18,9 @@ namespace MEMORY
 
 void* AlignedMalloc(size_t s, size_t alignTo)
 {
-  return aligned_alloc(alignTo, s);
+  void* p = nullptr;
+  posix_memalign(&p, alignTo, s);
+  return p;
 }
 
 void AlignedFree(void* p)
