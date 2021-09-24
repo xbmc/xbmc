@@ -104,6 +104,7 @@ namespace JSONRPC
 
     private:
       CWebSocket *m_websocket;
+      std::string m_buffer;
     };
 
     std::vector<CTCPClient*> m_connections;
