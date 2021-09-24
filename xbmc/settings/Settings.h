@@ -144,6 +144,7 @@ public:
   static constexpr auto SETTING_SUBTITLES_HEIGHT = "subtitles.height";
   static constexpr auto SETTING_SUBTITLES_STYLE = "subtitles.style";
   static constexpr auto SETTING_SUBTITLES_COLOR = "subtitles.color";
+  static constexpr auto SETTING_SUBTITLES_OPACITY = "subtitles.opacity";
   static constexpr auto SETTING_SUBTITLES_BGCOLOR = "subtitles.bgcolor";
   static constexpr auto SETTING_SUBTITLES_BGOPACITY = "subtitles.bgopacity";
   static constexpr auto SETTING_SUBTITLES_CHARSET = "subtitles.charset";

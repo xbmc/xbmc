@@ -16,7 +16,8 @@ set(SOURCES AdvancedSettings.cpp
             SettingsValueXmlSerializer.cpp
             SettingUtils.cpp
             SkinSettings.cpp
-            SettingsComponent.cpp)
+            SettingsComponent.cpp
+            SubtitlesSettings.cpp)
 
 set(HEADERS AdvancedSettings.h
             DiscSettings.h
@@ -38,7 +39,8 @@ set(HEADERS AdvancedSettings.h
             SettingsValueXmlSerializer.h
             SettingUtils.h
             SkinSettings.h
-            SettingsComponent.h)
+            SettingsComponent.h
+            SubtitlesSettings.h)
 
 if(BLURAY_FOUND)
   list(APPEND SOURCES DiscSettings.cpp)
