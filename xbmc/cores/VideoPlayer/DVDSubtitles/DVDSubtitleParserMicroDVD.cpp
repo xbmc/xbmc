@@ -8,17 +8,17 @@
 
 #include "DVDSubtitleParserMicroDVD.h"
 
-#include "DVDCodecs/Overlay/DVDOverlayText.h"
 #include "DVDStreamInfo.h"
 #include "DVDSubtitleTagMicroDVD.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "utils/RegExp.h"
 #include "utils/log.h"
 
-CDVDSubtitleParserMicroDVD::CDVDSubtitleParserMicroDVD(std::unique_ptr<CDVDSubtitleStream> && stream, const std::string& filename)
-    : CDVDSubtitleParserText(std::move(stream), filename), m_framerate( DVD_TIME_BASE / 25.0 )
+CDVDSubtitleParserMicroDVD::CDVDSubtitleParserMicroDVD(std::unique_ptr<CDVDSubtitleStream>&& stream,
+                                                       const std::string& filename)
+  : CDVDSubtitleParserText(std::move(stream), filename, "MicroDVD Subtitle Parser"),
+    m_framerate(DVD_TIME_BASE / 25.0)
 {
-
 }
 
 CDVDSubtitleParserMicroDVD::~CDVDSubtitleParserMicroDVD()
@@ -26,9 +26,12 @@ CDVDSubtitleParserMicroDVD::~CDVDSubtitleParserMicroDVD()
   Dispose();
 }
 
-bool CDVDSubtitleParserMicroDVD::Open(CDVDStreamInfo &hints)
+bool CDVDSubtitleParserMicroDVD::Open(CDVDStreamInfo& hints)
 {
   if (!CDVDSubtitleParserText::Open())
+    return false;
+
+  if (!Initialize())
     return false;
 
   CLog::Log(LOGDEBUG, "{} - framerate {}:{}", __FUNCTION__, hints.fpsrate, hints.fpsscale);
@@ -55,20 +58,24 @@ bool CDVDSubtitleParserMicroDVD::Open(CDVDStreamInfo &hints)
     int pos = reg.RegFind(line);
     if (pos > -1)
     {
-      const char* text = line + pos + reg.GetFindLen();
+      std::string text(line + pos + reg.GetFindLen());
       std::string startFrame(reg.GetMatch(1));
-      std::string endFrame  (reg.GetMatch(2));
-      CDVDOverlayText* pOverlay = new CDVDOverlayText();
-      pOverlay->Acquire(); // increase ref count with one so that we can hold a handle to this overlay
+      std::string endFrame(reg.GetMatch(2));
 
-      pOverlay->iPTSStartTime = m_framerate * atoi(startFrame.c_str());
-      pOverlay->iPTSStopTime  = m_framerate * atoi(endFrame.c_str());
+      double iPTSStartTime = m_framerate * atoi(startFrame.c_str());
+      double iPTSStopTime = m_framerate * atoi(endFrame.c_str());
 
-      TagConv.ConvertLine(pOverlay, text, strlen(text));
-      m_collection.Add(pOverlay);
+      TagConv.ConvertLine(text);
+      AddSubtitle(text.c_str(), iPTSStartTime, iPTSStopTime);
     }
   }
+
+  m_collection.Add(CreateOverlay());
 
   return true;
 }
 
+void CDVDSubtitleParserMicroDVD::Dispose()
+{
+  CDVDSubtitleParserCollection::Dispose();
+}
