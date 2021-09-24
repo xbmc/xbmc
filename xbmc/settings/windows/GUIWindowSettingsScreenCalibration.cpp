@@ -284,8 +284,7 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
   pControl = dynamic_cast<CGUIMoverControl*>(GetControl(CONTROL_SUBTITLES));
   if (pControl)
   {
-    pControl->SetLimits(0, info.iHeight*3 / 4,
-                        0, info.iHeight*5 / 4);
+    pControl->SetLimits(0, 0, 0, info.iHeight);
     pControl->SetPosition((info.iWidth - pControl->GetWidth()) * 0.5f,
                           info.iSubtitles - pControl->GetHeight());
     pControl->SetLocation(0, info.iSubtitles, false);
