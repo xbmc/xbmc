@@ -8,38 +8,21 @@
 
 #pragma once
 
-#include "../../DVDSubtitles/DVDSubtitlesLibass.h"
-#include "DVDOverlay.h"
+#include "DVDOverlayLibass.h"
+#include "cores/VideoPlayer/DVDSubtitles/DVDSubtitlesLibass.h"
 
-class CDVDOverlaySSA : public CDVDOverlay
+#include <memory>
+
+class CDVDOverlaySSA : public CDVDOverlayLibass
 {
 public:
   explicit CDVDOverlaySSA(std::shared_ptr<CDVDSubtitlesLibass> libass)
-    : CDVDOverlay(DVDOVERLAY_TYPE_SSA)
+    : CDVDOverlayLibass(libass, DVDOVERLAY_TYPE_SSA)
   {
     replace = true;
-    m_libass = std::move(libass);
-  }
-
-  CDVDOverlaySSA(CDVDOverlaySSA& src)
-    : CDVDOverlay(src)
-    , m_libass(src.m_libass)
-  {
   }
 
   ~CDVDOverlaySSA() override = default;
 
-  CDVDOverlaySSA* Clone() override
-  {
-    return new CDVDOverlaySSA(*this);
-  }
-
-  /*!
-   \brief Getter for the libass handler
-   \return The libass handler.
-   */
-  std::shared_ptr<CDVDSubtitlesLibass> GetLibass() const { return m_libass; }
-
-private:
-  std::shared_ptr<CDVDSubtitlesLibass> m_libass;
+  CDVDOverlaySSA* Clone() override { return new CDVDOverlaySSA(*this); }
 };

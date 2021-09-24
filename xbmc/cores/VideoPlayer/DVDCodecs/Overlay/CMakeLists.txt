@@ -13,6 +13,7 @@ set(HEADERS DVDOverlay.h
             DVDOverlayCodecTX3G.h
             DVDOverlayCodecText.h
             DVDOverlayImage.h
+            DVDOverlayLibass.h
             DVDOverlaySSA.h
             DVDOverlaySpu.h
             DVDOverlayText.h
