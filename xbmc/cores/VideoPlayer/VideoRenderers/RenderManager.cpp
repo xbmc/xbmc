@@ -397,7 +397,7 @@ void CRenderManager::UnInit()
   CSingleLock lock(m_statelock);
 
   m_overlays.Flush();
-  m_debugRenderer.Flush();
+  m_debugRenderer.Dispose();
 
   DeleteRenderer();
 
@@ -912,14 +912,26 @@ void CRenderManager::TriggerUpdateResolution(float fps, int width, int height, s
 
 void CRenderManager::ToggleDebug()
 {
-  m_renderDebug = !m_renderDebug;
+  bool isEnabled = !m_renderDebug;
+  if (isEnabled)
+    m_debugRenderer.Initialize();
+  else
+    m_debugRenderer.Dispose();
+
+  m_renderDebug = isEnabled;
   m_debugTimer.SetExpired();
   m_renderDebugVideo = false;
 }
 
 void CRenderManager::ToggleDebugVideo()
 {
-  m_renderDebug = !m_renderDebug;
+  bool isEnabled = !m_renderDebug;
+  if (isEnabled)
+    m_debugRenderer.Initialize();
+  else
+    m_debugRenderer.Dispose();
+
+  m_renderDebug = isEnabled;
   m_debugTimer.SetExpired();
   m_renderDebugVideo = true;
 }

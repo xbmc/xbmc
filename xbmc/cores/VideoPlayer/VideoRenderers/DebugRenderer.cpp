@@ -6,178 +6,150 @@
  *  See LICENSES/README.md for more information.
  */
 
-
 #include "DebugRenderer.h"
 
-#include "OverlayRendererGUI.h"
-#include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlayText.h"
+#include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlayLibass.h"
+#include "cores/VideoPlayer/Interface/TimingConstants.h"
+#include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
 using namespace OVERLAY;
 
 CDebugRenderer::CDebugRenderer()
 {
-  for (int i = 0; i < 6; i++)
-  {
-    m_overlay[i] = nullptr;
-    m_strDebug[i] = " ";
-  }
 }
 
 CDebugRenderer::~CDebugRenderer()
 {
-  for (CDVDOverlayText* overlayText : m_overlay)
+  Dispose();
+}
+
+void CDebugRenderer::Initialize()
+{
+  if (m_isInitialized)
+    return;
+
+  m_adapter = new CSubtitlesAdapter();
+
+  m_isInitialized = m_adapter->Initialize();
+  if (!m_isInitialized)
   {
-    if (overlayText)
-      overlayText->Release();
+    CLog::Log(LOGERROR, "{} - Failed to configure OSD info debug renderer", __FUNCTION__);
+    delete m_adapter;
+    m_adapter = nullptr;
+    return;
+  }
+
+  // We create only a single overlay with a fixed PTS for each rendered frame
+  m_overlay = m_adapter->CreateOverlay();
+  m_overlayRenderer.AddOverlay(m_overlay, 1000000., 0);
+}
+
+void CDebugRenderer::Dispose()
+{
+  m_isInitialized = false;
+  m_overlayRenderer.Flush();
+  if (m_overlay)
+  {
+    m_overlay->Release();
+    m_overlay = nullptr;
+  }
+  if (m_adapter)
+  {
+    delete m_adapter;
+    m_adapter = nullptr;
   }
 }
 
 void CDebugRenderer::SetInfo(DEBUG_INFO_PLAYER& info)
 {
-  m_overlayRenderer.Release(0);
+  if (!m_isInitialized)
+    return;
 
-  if (info.audio != m_strDebug[0])
-  {
-    m_strDebug[0] = info.audio;
-    if (m_overlay[0])
-      m_overlay[0]->Release();
-    m_overlay[0] = new CDVDOverlayText();
-    m_overlay[0]->AddElement(new CDVDOverlayText::CElementText(m_strDebug[0]));
-  }
-  if (info.video != m_strDebug[1])
-  {
-    m_strDebug[1] = info.video;
-    if (m_overlay[1])
-      m_overlay[1]->Release();
-    m_overlay[1] = new CDVDOverlayText();
-    m_overlay[1]->AddElement(new CDVDOverlayText::CElementText(m_strDebug[1]));
-  }
-  if (info.player != m_strDebug[2])
-  {
-    m_strDebug[2] = info.player;
-    if (m_overlay[2])
-      m_overlay[2]->Release();
-    m_overlay[2] = new CDVDOverlayText();
-    m_overlay[2]->AddElement(new CDVDOverlayText::CElementText(m_strDebug[2]));
-  }
-  if (info.vsync != m_strDebug[3])
-  {
-    m_strDebug[3] = info.vsync;
-    if (m_overlay[3])
-      m_overlay[3]->Release();
-    m_overlay[3] = new CDVDOverlayText();
-    m_overlay[3]->AddElement(new CDVDOverlayText::CElementText(m_strDebug[3]));
-  }
-
-  for (int i = 0; i < 4; i++)
-    m_overlayRenderer.AddOverlay(m_overlay[i], 0, 0);
+  // FIXME: We currently force ASS_Event's and the current PTS
+  // of rendering with fixed values to allow perpetual
+  // display of on-screen text. It would be appropriate for Libass
+  // provide a way to allow fixed on-screen text display
+  // without use all these fixed values.
+  m_adapter->FlushSubtitles();
+  m_adapter->AddSubtitle(info.audio.c_str(), 0., 5000000.);
+  m_adapter->AddSubtitle(info.video.c_str(), 0., 5000000.);
+  m_adapter->AddSubtitle(info.player.c_str(), 0., 5000000.);
+  m_adapter->AddSubtitle(info.vsync.c_str(), 0., 5000000.);
 }
 
 void CDebugRenderer::SetInfo(DEBUG_INFO_VIDEO& video, DEBUG_INFO_RENDER& render)
 {
-  m_overlayRenderer.Release(0);
+  if (!m_isInitialized)
+    return;
 
-  if (video.videoSource != m_strDebug[0])
-  {
-    m_strDebug[0] = video.videoSource;
-    if (m_overlay[0])
-      m_overlay[0]->Release();
-    m_overlay[0] = new CDVDOverlayText();
-    m_overlay[0]->AddElement(new CDVDOverlayText::CElementText(m_strDebug[0]));
-  }
-  if (video.metaPrim != m_strDebug[1])
-  {
-    m_strDebug[1] = video.metaPrim;
-    if (m_overlay[1])
-      m_overlay[1]->Release();
-    m_overlay[1] = new CDVDOverlayText();
-    m_overlay[1]->AddElement(new CDVDOverlayText::CElementText(m_strDebug[1]));
-  }
-  if (video.metaLight != m_strDebug[2])
-  {
-    m_strDebug[2] = video.metaLight;
-    if (m_overlay[2])
-      m_overlay[2]->Release();
-    m_overlay[2] = new CDVDOverlayText();
-    m_overlay[2]->AddElement(new CDVDOverlayText::CElementText(m_strDebug[2]));
-  }
-  if (video.shader != m_strDebug[3])
-  {
-    m_strDebug[3] = video.shader;
-    if (m_overlay[3])
-      m_overlay[3]->Release();
-    m_overlay[3] = new CDVDOverlayText();
-    m_overlay[3]->AddElement(new CDVDOverlayText::CElementText(m_strDebug[3]));
-  }
-  if (render.renderFlags != m_strDebug[4])
-  {
-    m_strDebug[4] = render.renderFlags;
-    if (m_overlay[4])
-      m_overlay[4]->Release();
-    m_overlay[4] = new CDVDOverlayText();
-    m_overlay[4]->AddElement(new CDVDOverlayText::CElementText(m_strDebug[4]));
-  }
-  if (render.videoOutput != m_strDebug[5])
-  {
-    m_strDebug[5] = render.videoOutput;
-    if (m_overlay[5])
-      m_overlay[5]->Release();
-    m_overlay[5] = new CDVDOverlayText();
-    m_overlay[5]->AddElement(new CDVDOverlayText::CElementText(m_strDebug[5]));
-  }
-
-  for (int i = 0; i < 6; i++)
-    m_overlayRenderer.AddOverlay(m_overlay[i], 0, 0);
+  // FIXME: We currently force ASS_Event's and the current PTS
+  // of rendering with fixed values to allow perpetual
+  // display of on-screen text. It would be appropriate for Libass
+  // provide a way to allow fixed on-screen text display
+  // without use all these fixed values.
+  m_adapter->FlushSubtitles();
+  m_adapter->AddSubtitle(video.videoSource.c_str(), 0., 5000000.);
+  m_adapter->AddSubtitle(video.metaPrim.c_str(), 0., 5000000.);
+  m_adapter->AddSubtitle(video.metaLight.c_str(), 0., 5000000.);
+  m_adapter->AddSubtitle(video.shader.c_str(), 0., 5000000.);
+  m_adapter->AddSubtitle(render.renderFlags.c_str(), 0., 5000000.);
+  m_adapter->AddSubtitle(render.videoOutput.c_str(), 0., 5000000.);
 }
 
 void CDebugRenderer::Render(CRect& src, CRect& dst, CRect& view)
 {
+  if (!m_isInitialized)
+    return;
+
   m_overlayRenderer.SetVideoRect(src, dst, view);
   m_overlayRenderer.Render(0);
 }
 
 void CDebugRenderer::Flush()
 {
-  m_overlayRenderer.Flush();
+  if (!m_isInitialized)
+    return;
+
+  m_adapter->FlushSubtitles();
 }
 
 CDebugRenderer::CRenderer::CRenderer() : OVERLAY::CRenderer()
 {
-  m_font = "__debug__";
-  m_fontBorder = "__debugborder__";
 }
 
 void CDebugRenderer::CRenderer::Render(int idx)
 {
-  std::vector<COverlay*> render;
   std::vector<SElement>& list = m_buffers[idx];
-  float posY = 0.0f;
   for (std::vector<SElement>::iterator it = list.begin(); it != list.end(); ++it)
   {
     COverlay* o = nullptr;
 
     if (it->overlay_dvd)
-      o = Convert(it->overlay_dvd, it->pts);
+    {
+      CDVDOverlayLibass* ovAss = static_cast<CDVDOverlayLibass*>(it->overlay_dvd);
+      if (!ovAss || !ovAss->GetLibassHandler())
+        continue;
 
-    if (!o)
-      continue;
+      KODI::SUBTITLES::style subStyle;
+      bool updateStyle = !m_debugOverlayStyle;
+      if (updateStyle)
+        CreateSubtitlesStyle();
 
-    COverlayText *text = dynamic_cast<COverlayText*>(o);
-    if (text)
-      text->PrepareRender("arial.ttf", 1, 100, 15, 0, m_font, m_fontBorder, UTILS::COLOR::NONE,
-                          m_rv);
+      o = ConvertLibass(ovAss, it->pts, updateStyle, m_debugOverlayStyle);
 
-    RESOLUTION_INFO res = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution());
+      if (!o)
+        continue;
+    }
 
-    o->m_pos = COverlay::POSITION_ABSOLUTE;
-    o->m_align = COverlay::ALIGN_SCREEN;
-    o->m_x = 10 + (o->m_width * m_rv.Width() / res.iWidth) / 2;
-    o->m_y = posY + o->m_height;
-    OVERLAY::CRenderer::Render(o, 0);
-
-    posY = o->m_y;
+    OVERLAY::CRenderer::Render(o);
   }
-
   ReleaseUnused();
+}
+
+void CDebugRenderer::CRenderer::CreateSubtitlesStyle()
+{
+  m_debugOverlayStyle = std::make_shared<KODI::SUBTITLES::style>();
+  m_debugOverlayStyle->fontName = "arial.ttf";
+  m_debugOverlayStyle->fontSize = 20.0;
 }
