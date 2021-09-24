@@ -55,7 +55,7 @@ void CVideoPlayerSubtitle::SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priori
       {
         CDVDOverlay* overlay;
 
-        while((overlay = m_pOverlayCodec->GetOverlay()) != NULL)
+        while ((overlay = m_pOverlayCodec->GetOverlay()))
         {
           m_pOverlayContainer->ProcessAndAddOverlayIfValid(overlay);
           overlay->Release();

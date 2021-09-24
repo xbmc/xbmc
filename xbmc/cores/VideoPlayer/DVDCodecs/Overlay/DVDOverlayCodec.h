@@ -18,6 +18,8 @@
 #define OC_ERROR    0x00000001  // an error occurred, no other messages will be returned
 #define OC_BUFFER   0x00000002  // the decoder needs more data
 #define OC_OVERLAY  0x00000004  // the decoder decoded an overlay, call Decode(NULL, 0) again to parse the rest of the data
+#define OC_DONE \
+  0x00000008 // the decoder has decoded the packet, no overlay will be provided because the previous one is still valid
 
 class CDVDOverlay;
 class CDVDStreamInfo;
@@ -73,12 +75,11 @@ public:
 
 protected:
   /*
-   * Adapts startTime, stopTIme from the subtitle stream (which is relative to stream pts)
+   * \brief Adapts startTime, stopTIme from the subtitle stream (which is relative to stream pts)
    * so that it returns the absolute start and stop timestamps.
-   * replace - will be set to true if the overlay should replace the former overlay
-   * offset - optional - offset will be added to start and stoptime
    */
-  static void GetAbsoluteTimes(double &starttime, double &stoptime, DemuxPacket *pkt, bool &replace, double offset = 0.0);
+  static void GetAbsoluteTimes(double& starttime, double& stoptime, DemuxPacket* pkt);
+
 
 private:
   std::string m_codecName;

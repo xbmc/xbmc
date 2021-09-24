@@ -24,13 +24,13 @@ public:
   CDVDOverlayCodecFFmpeg();
   ~CDVDOverlayCodecFFmpeg() override;
   bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) override;
-  void Dispose() override;
   int Decode(DemuxPacket *pPacket) override;
   void Reset() override;
   void Flush() override;
   CDVDOverlay* GetOverlay() override;
 
 private:
+  void Dispose() override;
   AVCodecContext* m_pCodecContext;
   AVSubtitle      m_Subtitle;
   int             m_SubtitleIndex;
