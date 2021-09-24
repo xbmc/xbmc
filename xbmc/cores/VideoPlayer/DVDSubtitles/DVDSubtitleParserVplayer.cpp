@@ -8,12 +8,14 @@
 
 #include "DVDSubtitleParserVplayer.h"
 
-#include "DVDCodecs/Overlay/DVDOverlayText.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "utils/RegExp.h"
+#include "utils/StringUtils.h"
 
-CDVDSubtitleParserVplayer::CDVDSubtitleParserVplayer(std::unique_ptr<CDVDSubtitleStream> && pStream, const std::string& strFile)
-    : CDVDSubtitleParserText(std::move(pStream), strFile), m_framerate(DVD_TIME_BASE)
+CDVDSubtitleParserVplayer::CDVDSubtitleParserVplayer(std::unique_ptr<CDVDSubtitleStream>&& pStream,
+                                                     const std::string& strFile)
+  : CDVDSubtitleParserText(std::move(pStream), strFile, "VPlayer Subtitle Parser"),
+    m_framerate(DVD_TIME_BASE)
 {
 }
 
@@ -22,9 +24,12 @@ CDVDSubtitleParserVplayer::~CDVDSubtitleParserVplayer()
   Dispose();
 }
 
-bool CDVDSubtitleParserVplayer::Open(CDVDStreamInfo &hints)
+bool CDVDSubtitleParserVplayer::Open(CDVDStreamInfo& hints)
 {
   if (!CDVDSubtitleParserText::Open())
+    return false;
+
+  if (!Initialize())
     return false;
 
   // Vplayer subtitles have 1-second resolution
@@ -33,53 +38,54 @@ bool CDVDSubtitleParserVplayer::Open(CDVDStreamInfo &hints)
   // Vplayer subtitles don't have StopTime, so we use following subtitle's StartTime
   // for that, unless gap was more than 4 seconds. Then we set subtitle duration
   // for 4 seconds, to not have text hanging around in silent scenes...
-  int iDefaultDuration = 4 * (int)m_framerate;
+  int defaultDuration = 4 * (int)m_framerate;
 
   char line[1024];
 
   CRegExp reg;
-  if (!reg.RegComp("([0-9]+):([0-9]+):([0-9]+):([^|]*?)(\\|([^|]*?))?$"))
+  if (!reg.RegComp("([0-9]+):([0-9]+):([0-9]+):(.+)$"))
     return false;
 
-  CDVDOverlayText* pPrevOverlay = NULL;
+  int prevSubId = NO_SUBTITLE_ID;
+  double prevPTSStartTime = 0.;
 
   while (m_pStream->ReadLine(line, sizeof(line)))
   {
     if (reg.RegFind(line) > -1)
     {
-      std::string hour(reg.GetMatch(1));
-      std::string min (reg.GetMatch(2));
-      std::string sec (reg.GetMatch(3));
-      std::string lines[3];
-      lines[0] = reg.GetMatch(4);
-      lines[1] = reg.GetMatch(6);
-      lines[2] = reg.GetMatch(8);
+      int hour = atoi(reg.GetMatch(1).c_str());
+      int min = atoi(reg.GetMatch(2).c_str());
+      int sec = atoi(reg.GetMatch(3).c_str());
+      std::string currText = reg.GetMatch(4);
 
-      CDVDOverlayText* pOverlay = new CDVDOverlayText();
-      pOverlay->Acquire(); // increase ref count with one so that we can hold a handle to this overlay
+      double currPTSStartTime = m_framerate * (3600 * hour + 60 * min + sec);
 
-      pOverlay->iPTSStartTime = m_framerate * (3600*atoi(hour.c_str()) + 60*atoi(min.c_str()) + atoi(sec.c_str()));
+      // We have to set the stop time for the previous line (Event)
+      // by using the start time of the current line,
+      // but if the duration is too long we keep the default 4 secs
+      double PTSDuration = currPTSStartTime - prevPTSStartTime;
 
-      // set StopTime for previous overlay
-      if (pPrevOverlay)
-      {
-        if ( (pOverlay->iPTSStartTime - pPrevOverlay->iPTSStartTime) < iDefaultDuration)
-          pPrevOverlay->iPTSStopTime = pOverlay->iPTSStartTime;
-        else
-          pPrevOverlay->iPTSStopTime = pPrevOverlay->iPTSStartTime + iDefaultDuration;
-      }
-      pPrevOverlay = pOverlay;
-      for (int i = 0; i < 3 && !lines[i].empty(); i++)
-          pOverlay->AddElement(new CDVDOverlayText::CElementText(lines[i].c_str()));
+      if (PTSDuration < defaultDuration)
+        ChangeSubtitleStopTime(prevSubId, currPTSStartTime);
 
-      m_collection.Add(pOverlay);
+      // A single line can contain multiple lines split by |
+      StringUtils::Replace(currText, "|", "\n");
+      // We have to remove all \r because it causes the line to display empty box "tofu"
+      StringUtils::Replace(currText, "\r", "");
+
+      prevSubId =
+          AddSubtitle(currText.c_str(), currPTSStartTime, currPTSStartTime + defaultDuration);
+
+      prevPTSStartTime = currPTSStartTime;
     }
-
-    // set StopTime for the last subtitle
-    if (pPrevOverlay)
-      pPrevOverlay->iPTSStopTime = pPrevOverlay->iPTSStartTime + iDefaultDuration;
   }
+
+  m_collection.Add(CreateOverlay());
 
   return true;
 }
 
+void CDVDSubtitleParserVplayer::Dispose()
+{
+  CDVDSubtitleParserCollection::Dispose();
+}
