@@ -473,8 +473,21 @@ void ccmem_tobuf(cc_decoder_t *dec)
       dec->text[dec->textlen++] = '\n';
     }
   }
-  dec->text[dec->textlen++] = '\n';
-  dec->text[dec->textlen++] = '\0';
+
+  // FIXME: the end-of-string char is often wrong cause unexpected behaviours
+  if (dec->textlen > 0)
+  {
+    if (dec->text[dec->textlen - 1] == '\n' && dec->text[dec->textlen] != '\0')
+    {
+      dec->text[dec->textlen] = '\0';
+    }
+    else if (dec->text[dec->textlen] != '\0')
+    {
+      dec->text[dec->textlen++] = '\n';
+      dec->text[dec->textlen++] = '\0';
+    }
+  }
+
   dec->callback(0, dec->userdata);
 }
 
