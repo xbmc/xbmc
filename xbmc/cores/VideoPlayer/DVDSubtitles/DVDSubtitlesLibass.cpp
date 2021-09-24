@@ -347,7 +347,7 @@ void CDVDSubtitlesLibass::ApplyStyle(style subStyle, renderOpts opts)
       if (opts.usePosition)
         style->MarginV = 0;
       else
-        style->MarginV = 20 * scale;
+        style->MarginV = subStyle.marginVertical * scale;
     }
 
     // Set the alignment

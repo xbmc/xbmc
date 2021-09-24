@@ -20,6 +20,7 @@
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlayText.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "guilib/GUIFont.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/SubtitlesSettings.h"
@@ -316,6 +317,11 @@ void CRenderer::CreateSubtitlesStyle()
         static_cast<KODI::SUBTITLES::AssOverrideStyles>(overrideStyles);
   else
     m_overlayStyle->assOverrideStyles = KODI::SUBTITLES::AssOverrideStyles::DISABLED;
+
+  int overrideMerginVertical =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoSubtitleVerticalMargin;
+  if (overrideMerginVertical >= 0 && overrideMerginVertical < m_rv.Height())
+    m_overlayStyle->marginVertical = overrideMerginVertical;
 }
 
 COverlay* CRenderer::ConvertLibass(CDVDOverlayLibass* o,

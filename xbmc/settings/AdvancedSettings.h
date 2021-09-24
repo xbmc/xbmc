@@ -364,6 +364,8 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::string m_stereoscopicregex_sbs;
     std::string m_stereoscopicregex_tab;
 
+    int m_videoSubtitleVerticalMargin;
+
     bool m_openGlDebugging;
 
     std::string m_userAgent;

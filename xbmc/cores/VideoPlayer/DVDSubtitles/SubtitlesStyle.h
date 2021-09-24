@@ -19,6 +19,7 @@ namespace SUBTITLES
 
 constexpr double VIEWPORT_HEIGHT = 1080.0;
 constexpr double VIEWPORT_WIDTH = 1920.0;
+constexpr int MARGIN_VERTICAL = 30;
 
 enum class FontAlignment
 {
@@ -70,6 +71,7 @@ struct style
   AssOverrideStyles assOverrideStyles = AssOverrideStyles::DISABLED;
   bool assOverrideFont = false;
   bool drawWithinBlackBars = false;
+  int marginVertical = MARGIN_VERTICAL;
 };
 
 const UTILS::Color colors[9] = {
