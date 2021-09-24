@@ -10,7 +10,8 @@
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 
-void CDVDOverlayCodec::GetAbsoluteTimes(double &starttime, double &stoptime, DemuxPacket *pkt, bool &replace, double offset/* = 0.0*/)
+
+void CDVDOverlayCodec::GetAbsoluteTimes(double& starttime, double& stoptime, DemuxPacket* pkt)
 {
   if (!pkt)
     return;
@@ -21,24 +22,19 @@ void CDVDOverlayCodec::GetAbsoluteTimes(double &starttime, double &stoptime, Dem
   // we assume pts from packet is better than what
   // decoder gives us, only take duration
   // from decoder if available
-  if(stoptime > starttime)
+  if (stoptime > starttime)
     duration = stoptime - starttime;
-  else if(pkt->duration != DVD_NOPTS_VALUE)
+  else if (pkt->duration != DVD_NOPTS_VALUE)
     duration = pkt->duration;
 
-  if     (pkt->pts != DVD_NOPTS_VALUE)
+  if (pkt->pts != DVD_NOPTS_VALUE)
     pts = pkt->pts;
-  else if(pkt->dts != DVD_NOPTS_VALUE)
+  else if (pkt->dts != DVD_NOPTS_VALUE)
     pts = pkt->dts;
 
-  starttime = pts + offset;
-  if(duration)
-  {
-    stoptime = pts + duration + offset;
-  }
+  starttime = pts;
+  if (duration > 0)
+    stoptime = pts + duration;
   else
-  {
     stoptime = 0;
-    replace = true;
-  }
 }

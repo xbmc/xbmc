@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2021 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -10,15 +10,15 @@
 
 #include "DVDOverlayCodec.h"
 #include "DVDStreamInfo.h"
-#include "DVDSubtitles/DVDSubtitlesLibass.h"
+#include "DVDSubtitles/SubtitlesAdapter.h"
 
-class CDVDOverlaySSA;
+class CDVDOverlay;
 
-class CDVDOverlayCodecSSA : public CDVDOverlayCodec
+class CDVDOverlayCodecCCText : public CDVDOverlayCodec, private CSubtitlesAdapter
 {
 public:
-  CDVDOverlayCodecSSA();
-  ~CDVDOverlayCodecSSA() override;
+  CDVDOverlayCodecCCText();
+  ~CDVDOverlayCodecCCText() override;
   bool Open(CDVDStreamInfo& hints, CDVDCodecOptions& options) override;
   int Decode(DemuxPacket* pPacket) override;
   void Reset() override;
@@ -27,7 +27,9 @@ public:
 
 private:
   void Dispose() override;
-  std::shared_ptr<CDVDSubtitlesLibass> m_libass;
-  CDVDOverlaySSA* m_pOverlay;
-  int m_order;
+  CDVDOverlay* m_pOverlay;
+  int m_prevSubId;
+  double m_prevPTSStart;
+  std::string m_prevText;
+  bool m_changePrevStopTime;
 };

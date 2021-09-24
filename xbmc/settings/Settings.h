@@ -141,13 +141,15 @@ public:
   static constexpr auto SETTING_SUBTITLES_ALIGN = "subtitles.align";
   static constexpr auto SETTING_SUBTITLES_STEREOSCOPICDEPTH = "subtitles.stereoscopicdepth";
   static constexpr auto SETTING_SUBTITLES_FONT = "subtitles.font";
-  static constexpr auto SETTING_SUBTITLES_HEIGHT = "subtitles.height";
+  static constexpr auto SETTING_SUBTITLES_FONTSIZE = "subtitles.fontsize";
   static constexpr auto SETTING_SUBTITLES_STYLE = "subtitles.style";
   static constexpr auto SETTING_SUBTITLES_COLOR = "subtitles.color";
+  static constexpr auto SETTING_SUBTITLES_OPACITY = "subtitles.opacity";
   static constexpr auto SETTING_SUBTITLES_BGCOLOR = "subtitles.bgcolor";
   static constexpr auto SETTING_SUBTITLES_BGOPACITY = "subtitles.bgopacity";
   static constexpr auto SETTING_SUBTITLES_CHARSET = "subtitles.charset";
   static constexpr auto SETTING_SUBTITLES_OVERRIDEASSFONTS = "subtitles.overrideassfonts";
+  static constexpr auto SETTING_SUBTITLES_OVERRIDEASSSTYLES = "subtitles.overrideassstyles";
   static constexpr auto SETTING_SUBTITLES_LANGUAGES = "subtitles.languages";
   static constexpr auto SETTING_SUBTITLES_STORAGEMODE = "subtitles.storagemode";
   static constexpr auto SETTING_SUBTITLES_CUSTOMPATH = "subtitles.custompath";

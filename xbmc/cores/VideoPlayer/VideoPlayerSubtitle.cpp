@@ -55,7 +55,7 @@ void CVideoPlayerSubtitle::SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priori
       {
         CDVDOverlay* overlay;
 
-        while((overlay = m_pOverlayCodec->GetOverlay()) != NULL)
+        while ((overlay = m_pOverlayCodec->GetOverlay()))
         {
           m_pOverlayContainer->ProcessAndAddOverlayIfValid(overlay);
           overlay->Release();
@@ -133,6 +133,8 @@ bool CVideoPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, std::string &filena
       return false;
     }
 
+    CLog::Log(LOGDEBUG, "Created subtitles parser: {}", m_pSubtitleFileParser->GetName());
+
     if (!m_pSubtitleFileParser->Open(hints))
     {
       CLog::Log(LOGERROR, "{} - Unable to init subtitle parser", __FUNCTION__);
@@ -148,8 +150,11 @@ bool CVideoPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, std::string &filena
     return true;
 
   m_pOverlayCodec = CDVDFactoryCodec::CreateOverlayCodec(hints);
-  if(m_pOverlayCodec)
+  if (m_pOverlayCodec)
+  {
+    CLog::Log(LOGDEBUG, "Created subtitles overlay codec: {}", m_pOverlayCodec->GetName());
     return true;
+  }
 
   CLog::Log(LOGERROR, "{} - Unable to init overlay codec", __FUNCTION__);
   return false;

@@ -219,9 +219,22 @@ void printTVtoBuf (cc708_service_decoder *decoder)
       decoder->text[decoder->textlen++] = '\n';
     }
   }
-  decoder->text[decoder->textlen++] = '\r';
-  decoder->text[decoder->textlen++] = '\n';
-  decoder->text[decoder->textlen++] = '\0';
+
+  // FIXME: the end-of-string char is often wrong cause unexpected behaviours
+  if (decoder->textlen >= 2)
+  {
+    if (decoder->text[decoder->textlen - 2] == '\r' &&
+        decoder->text[decoder->textlen - 1] == '\n' && decoder->text[decoder->textlen] != '\0')
+    {
+      decoder->text[decoder->textlen] = '\0';
+    }
+    else if (decoder->text[decoder->textlen] != '\0')
+    {
+      decoder->text[decoder->textlen++] = '\r';
+      decoder->text[decoder->textlen++] = '\n';
+      decoder->text[decoder->textlen++] = '\0';
+    }
+  }
 }
 
 void updateScreen (cc708_service_decoder *decoder)

@@ -420,8 +420,6 @@ void CAdvancedSettings::Initialize()
   m_stereoscopicregex_sbs = "[-. _]h?sbs[-. _]";
   m_stereoscopicregex_tab = "[-. _]h?tab[-. _]";
 
-  m_videoAssFixedWorks = false;
-
   m_logLevelHint = m_logLevel = LOG_LEVEL_NORMAL;
 
   m_openGlDebugging = false;
@@ -578,7 +576,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   pElement = pRootElement->FirstChildElement("video");
   if (pElement)
   {
-    XMLUtils::GetBoolean(pElement, "assfixedworks", m_videoAssFixedWorks);
     XMLUtils::GetString(pElement, "stereoscopicregex3d", m_stereoscopicregex_3d);
     XMLUtils::GetString(pElement, "stereoscopicregexsbs", m_stereoscopicregex_sbs);
     XMLUtils::GetString(pElement, "stereoscopicregextab", m_stereoscopicregex_tab);

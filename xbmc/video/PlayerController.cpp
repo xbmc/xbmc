@@ -11,7 +11,7 @@
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "cores/IPlayer.h"
-#include "cores/VideoPlayer/VideoRenderers/OverlayRendererGUI.h"
+#include "cores/VideoPlayer/VideoRenderers/OverlayRenderer.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogSlider.h"

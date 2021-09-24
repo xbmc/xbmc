@@ -33,27 +33,28 @@
 #if defined(TARGET_DARWIN_EMBEDDED)
 #include "SettingAddon.h"
 #endif
+#include "DiscSettings.h"
+#include "SeekHandler.h"
+#include "ServiceBroker.h"
 #include "powermanagement/PowerTypes.h"
 #include "profiles/ProfileManager.h"
-#include "ServiceBroker.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
-#include "settings/SettingsComponent.h"
 #include "settings/SettingConditions.h"
+#include "settings/SettingsComponent.h"
 #include "settings/SkinSettings.h"
+#include "settings/SubtitlesSettings.h"
 #include "settings/lib/SettingsManager.h"
 #include "threads/SingleLock.h"
 #include "utils/CharsetConverter.h"
-#include "utils/log.h"
 #include "utils/RssManager.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
-#include "utils/XBMCTinyXML.h"
-#include "SeekHandler.h"
 #include "utils/Variant.h"
+#include "utils/XBMCTinyXML.h"
+#include "utils/log.h"
 #include "view/ViewStateSettings.h"
-#include "DiscSettings.h"
 
 #define SETTINGS_XML_FOLDER "special://xbmc/system/settings/"
 
@@ -163,13 +164,14 @@ constexpr const char* CSettings::SETTING_SUBTITLES_PARSECAPTIONS;
 constexpr const char* CSettings::SETTING_SUBTITLES_ALIGN;
 constexpr const char* CSettings::SETTING_SUBTITLES_STEREOSCOPICDEPTH;
 constexpr const char* CSettings::SETTING_SUBTITLES_FONT;
-constexpr const char* CSettings::SETTING_SUBTITLES_HEIGHT;
+constexpr const char* CSettings::SETTING_SUBTITLES_FONTSIZE;
 constexpr const char* CSettings::SETTING_SUBTITLES_STYLE;
 constexpr const char* CSettings::SETTING_SUBTITLES_COLOR;
 constexpr const char* CSettings::SETTING_SUBTITLES_BGCOLOR;
 constexpr const char* CSettings::SETTING_SUBTITLES_BGOPACITY;
 constexpr const char* CSettings::SETTING_SUBTITLES_CHARSET;
 constexpr const char* CSettings::SETTING_SUBTITLES_OVERRIDEASSFONTS;
+constexpr const char* CSettings::SETTING_SUBTITLES_OVERRIDEASSSTYLES;
 constexpr const char* CSettings::SETTING_SUBTITLES_LANGUAGES;
 constexpr const char* CSettings::SETTING_SUBTITLES_STORAGEMODE;
 constexpr const char* CSettings::SETTING_SUBTITLES_CUSTOMPATH;

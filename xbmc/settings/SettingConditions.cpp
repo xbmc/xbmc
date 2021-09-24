@@ -330,6 +330,14 @@ bool LessThanOrEqual(const std::string& condition,
   return lhs <= rhs;
 }
 
+bool IsPlaying(const std::string& condition,
+               const std::string& value,
+               const SettingConstPtr& setting,
+               void* data)
+{
+  return g_application.GetAppPlayer().IsPlaying();
+}
+
 const CProfileManager *CSettingConditions::m_profileManager = nullptr;
 std::set<std::string> CSettingConditions::m_simpleConditions;
 std::map<std::string, SettingConditionCheck> CSettingConditions::m_complexConditions;
@@ -447,6 +455,7 @@ void CSettingConditions::Initialize()
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("gte",                           GreaterThanOrEqual));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("lt",                            LessThan));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("lte",                           LessThanOrEqual));
+  m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("isplaying", IsPlaying));
 }
 
 void CSettingConditions::Deinitialize()
