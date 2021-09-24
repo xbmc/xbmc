@@ -480,7 +480,7 @@
         </setting>
         <setting id="subtitles.align" type="integer" label="21460" help="36192">
           <level>2</level>
-          <default>0</default> <!-- SUBTITLE_ALIGN_MANUAL -->
+          <default>1</default> <!-- SUBTITLE_ALIGN_BOTTOM_INSIDE -->
           <constraints>
             <options>
               <option label="21461">0</option> <!-- SUBTITLE_ALIGN_MANUAL -->
@@ -521,9 +521,9 @@
           </dependencies>
           <control type="list" format="string" />
         </setting>
-        <setting id="subtitles.height" type="integer" parent="subtitles.font" label="289" help="36186">
+        <setting id="subtitles.fontsize" type="integer" parent="subtitles.font" label="289" help="36186">
           <level>3</level>
-          <default>28</default>
+          <default>42</default>
           <constraints>
             <minimum>12</minimum>
             <step>2</step>
@@ -607,7 +607,26 @@
         <setting id="subtitles.overrideassfonts" type="boolean" label="21368" help="36190">
           <level>3</level>
           <default>false</default>
+          <dependencies>
+            <dependency type="enable" on="property" operator="!is" name="isplaying" />
+          </dependencies>
           <control type="toggle" />
+        </setting>
+        <setting id="subtitles.overrideassstyles" type="integer" label="39154" help="39155">
+          <level>3</level>
+          <default>0</default> <!-- ASS_OVERRIDE_DISABLED -->
+          <constraints>
+            <options>
+              <option label="13106">0</option> <!-- ASS_OVERRIDE_DISABLED -->
+              <option label="39156">1</option> <!-- ASS_OVERRIDE_POSITIONS -->
+              <option label="39157">2</option> <!-- ASS_OVERRIDE_STYLES -->
+              <option label="39158">3</option> <!-- ASS_OVERRIDE_STYLES_POSITIONS -->
+            </options>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" on="property" operator="!is" name="isplaying" />
+          </dependencies>
+          <control type="list" format="string" />
         </setting>
       </group>
       <group id="3" label="14235">

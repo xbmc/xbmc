@@ -1,7 +1,6 @@
 set(SOURCES BaseRenderer.cpp
             ColorManager.cpp
             OverlayRenderer.cpp
-            OverlayRendererGUI.cpp
             OverlayRendererUtil.cpp
             RenderCapture.cpp
             RenderFactory.cpp
@@ -13,7 +12,6 @@ set(HEADERS BaseRenderer.h
             ColorManager.h
             DebugInfo.h
             OverlayRenderer.h
-            OverlayRendererGUI.h
             OverlayRendererUtil.h
             RenderCapture.h
             RenderFactory.h

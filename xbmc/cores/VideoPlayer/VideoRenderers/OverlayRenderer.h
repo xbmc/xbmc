@@ -10,15 +10,29 @@
 #pragma once
 
 #include "BaseRenderer.h"
+#include "cores/VideoPlayer/DVDSubtitles/SubtitlesStyle.h"
 #include "threads/CriticalSection.h"
+#include "utils/Observer.h"
 
 #include <map>
+#include <memory>
 #include <vector>
 
 class CDVDOverlay;
+class CDVDOverlayLibass;
 class CDVDOverlayImage;
 class CDVDOverlaySpu;
 class CDVDOverlaySSA;
+class CDVDOverlayText;
+
+enum SubtitleAlign
+{
+  SUBTITLE_ALIGN_MANUAL = 0,
+  SUBTITLE_ALIGN_BOTTOM_INSIDE,
+  SUBTITLE_ALIGN_BOTTOM_OUTSIDE,
+  SUBTITLE_ALIGN_TOP_INSIDE,
+  SUBTITLE_ALIGN_TOP_OUTSIDE
+};
 
 namespace OVERLAY {
 
@@ -37,24 +51,25 @@ namespace OVERLAY {
     virtual ~COverlay();
 
     virtual void Render(SRenderState& state) = 0;
-    virtual void PrepareRender() {};
 
     enum EType
-    { TYPE_NONE
-    , TYPE_TEXTURE
-    , TYPE_GUITEXT
+    {
+      TYPE_NONE,
+      TYPE_TEXTURE
     } m_type;
 
     enum EAlign
-    { ALIGN_SCREEN
-    , ALIGN_VIDEO
-    , ALIGN_SUBTITLE
+    {
+      ALIGN_SCREEN,
+      ALIGN_VIDEO,
+      ALIGN_SUBTITLE
     } m_align;
 
     enum EPosition
-    { POSITION_ABSOLUTE
-    , POSITION_ABSOLUTE_SCREEN
-    , POSITION_RELATIVE
+    {
+      POSITION_ABSOLUTE,
+      POSITION_ABSOLUTE_SCREEN,
+      POSITION_RELATIVE
     } m_pos;
 
     float m_x;
@@ -63,11 +78,14 @@ namespace OVERLAY {
     float m_height;
   };
 
-  class CRenderer
+  class CRenderer : public Observer
   {
   public:
     CRenderer();
     virtual ~CRenderer();
+
+    // implementation of Observer
+    void Notify(const Observable& obs, const ObservableMessage msg) override;
 
     void AddOverlay(CDVDOverlay* o, double pts, int index);
     virtual void Render(int idx);
@@ -90,9 +108,21 @@ namespace OVERLAY {
       CDVDOverlay* overlay_dvd;
     };
 
-    void Render(COverlay* o, float adjust_height);
+    void Render(COverlay* o);
     COverlay* Convert(CDVDOverlay* o, double pts);
-    COverlay* Convert(CDVDOverlaySSA* o, double pts);
+    /*!
+    * \brief Convert the overlay to a overlay renderer
+    * \param o The overlay to convert
+    * \param pts The current PTS time
+    * \param subStyle The style to be used, MUST BE SET ONLY at the first call or when user change settings
+    * \return True if success, false if error
+    */
+    COverlay* ConvertLibass(CDVDOverlayLibass* o,
+                            double pts,
+                            bool updateStyle,
+                            std::shared_ptr<struct KODI::SUBTITLES::style> overlayStyle);
+
+    void CreateSubtitlesStyle();
 
     void Release(std::vector<SElement>& list);
     void ReleaseCache();
@@ -103,9 +133,9 @@ namespace OVERLAY {
     std::map<unsigned int, COverlay*> m_textureCache;
     static unsigned int m_textureid;
     CRect m_rv, m_rs, m_rd;
-    std::string m_font, m_fontBorder;
     std::string m_stereomode;
-  };
 
-  extern const std::string SETTING_SUBTITLES_OPACITY;
+    std::shared_ptr<struct KODI::SUBTITLES::style> m_overlayStyle;
+    bool m_forceUpdateOverlayStyle;
+  };
 }

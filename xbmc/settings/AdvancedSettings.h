@@ -361,11 +361,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::string m_stereoscopicregex_sbs;
     std::string m_stereoscopicregex_tab;
 
-    /*!< @brief position behavior of ass subtitles when setting "subtitle position on screen" set to "fixed"
-    True to show at the fixed position set in video calibration
-    False to show at the bottom of video (default) */
-    bool m_videoAssFixedWorks;
-
     bool m_openGlDebugging;
 
     std::string m_userAgent;
