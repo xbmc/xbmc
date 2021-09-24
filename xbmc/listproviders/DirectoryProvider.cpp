@@ -351,6 +351,13 @@ void CDirectoryProvider::Reset()
   }
 }
 
+void CDirectoryProvider::FreeResources(bool immediately)
+{
+  CSingleLock lock(m_section);
+  for (const auto& item : m_items)
+    item->FreeMemory(immediately);
+}
+
 void CDirectoryProvider::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
   CSingleLock lock(m_section);
