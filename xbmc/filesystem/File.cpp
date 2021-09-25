@@ -27,8 +27,6 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
-#include "system.h"
-
 using namespace XFILE;
 
 //////////////////////////////////////////////////////////////////////

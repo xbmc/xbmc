@@ -43,8 +43,6 @@
 #import <AVKit/AVDisplayManager.h>
 #import <AVKit/UIWindow.h>
 
-#import "system.h"
-
 using namespace KODI::MESSAGING;
 
 XBMCController* g_xbmcController;

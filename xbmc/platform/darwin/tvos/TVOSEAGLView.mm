@@ -18,8 +18,6 @@
 #import <signal.h>
 #import <stdio.h>
 
-#import "system.h"
-
 using namespace KODI::MESSAGING;
 
 @implementation TVOSEAGLView

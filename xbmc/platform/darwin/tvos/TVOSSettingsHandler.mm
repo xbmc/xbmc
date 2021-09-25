@@ -18,8 +18,6 @@
 #import "platform/darwin/tvos/input/LibInputHandler.h"
 #import "platform/darwin/tvos/input/LibInputSettings.h"
 
-#import "system.h"
-
 static std::atomic_flag sg_singleton_lock_variable = ATOMIC_FLAG_INIT;
 CTVOSInputSettings* CTVOSInputSettings::m_instance = nullptr;
 

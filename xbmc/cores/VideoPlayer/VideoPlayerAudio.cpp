@@ -20,7 +20,6 @@
 #include "utils/MathUtils.h"
 #include "utils/log.h"
 
-#include "system.h"
 #ifdef TARGET_RASPBERRY_PI
 #include "platform/linux/RBP.h"
 #endif

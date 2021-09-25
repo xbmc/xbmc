@@ -35,8 +35,6 @@
 #import <mach/mach_host.h>
 #import <sys/sysctl.h>
 
-#import "system.h"
-
 static const int MaxItems = 5;
 
 std::string CTVOSTopShelf::m_url;

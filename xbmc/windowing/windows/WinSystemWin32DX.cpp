@@ -22,8 +22,6 @@
 #include "platform/win32/CharsetConverter.h"
 #include "platform/win32/WIN32Util.h"
 
-#include "system.h"
-
 #ifndef _M_X64
 #include "utils/SystemInfo.h"
 #endif

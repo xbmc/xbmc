@@ -85,7 +85,6 @@ set(HEADERS AppParamParser.h
             Util.h
             XBApplicationEx.h
             XBDateTime.h
-            system.h
             system_egl.h
             system_gl.h)
 
