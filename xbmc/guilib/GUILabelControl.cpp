@@ -56,9 +56,9 @@ void CGUILabelControl::SetInfo(const GUIINFO::CGUIInfoLabel &infoLabel)
   m_infoLabel = infoLabel;
 }
 
-bool CGUILabelControl::UpdateColors()
+bool CGUILabelControl::UpdateColors(const CGUIListItem* item)
 {
-  bool changed = CGUIControl::UpdateColors();
+  bool changed = CGUIControl::UpdateColors(nullptr);
   changed |= m_label.UpdateColors();
 
   return changed;

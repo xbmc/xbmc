@@ -74,7 +74,7 @@ protected:
   void SetRanges(const std::vector<std::pair<float, float>>& ranges);
   void ClearRanges();
 
-  bool UpdateColors() override;
+  bool UpdateColors(const CGUIListItem* item) override;
   bool UpdateLayout();
 
   std::unique_ptr<CGUITexture> m_guiBackground;

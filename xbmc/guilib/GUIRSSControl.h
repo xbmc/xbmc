@@ -48,7 +48,7 @@ public:
   void SetUrlSet(const int urlset);
 
 protected:
-  bool UpdateColors() override;
+  bool UpdateColors(const CGUIListItem* item) override;
 
   CCriticalSection m_criticalSection;
 

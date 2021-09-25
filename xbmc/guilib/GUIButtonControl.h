@@ -67,7 +67,7 @@ public:
   virtual void OnClick();
   bool HasClickActions() const { return m_clickActions.HasActionsMeetingCondition(); }
 
-  bool UpdateColors() override;
+  bool UpdateColors(const CGUIListItem* item) override;
 
   CRect CalcRenderRegion() const override;
 

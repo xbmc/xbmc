@@ -60,7 +60,7 @@ public:
 
 protected:
   EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event) override;
-  bool UpdateColors() override;
+  bool UpdateColors(const CGUIListItem* item) override;
   bool SetAlpha(unsigned char alpha);
   void UpdateSpeed(int nDirection);
   void Move(int iX, int iY);

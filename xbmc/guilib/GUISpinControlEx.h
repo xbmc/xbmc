@@ -50,7 +50,7 @@ public:
   void SetItemInvalid(bool invalid);
 protected:
   void RenderText(float posX, float posY, float width, float height) override;
-  bool UpdateColors() override;
+  bool UpdateColors(const CGUIListItem* item) override;
   CGUIButtonControl m_buttonControl;
   float m_spinPosX;
 };

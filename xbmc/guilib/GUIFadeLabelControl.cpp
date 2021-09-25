@@ -160,9 +160,9 @@ void CGUIFadeLabelControl::Process(unsigned int currentTime, CDirtyRegionList &d
   CGUIControl::Process(currentTime, dirtyregions);
 }
 
-bool CGUIFadeLabelControl::UpdateColors()
+bool CGUIFadeLabelControl::UpdateColors(const CGUIListItem* item)
 {
-  bool changed = CGUIControl::UpdateColors();
+  bool changed = CGUIControl::UpdateColors(nullptr);
   changed |= m_label.UpdateColors();
 
   return changed;

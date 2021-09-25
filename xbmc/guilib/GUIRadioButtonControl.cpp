@@ -242,9 +242,9 @@ std::string CGUIRadioButtonControl::GetDescription() const
   return strLabel;
 }
 
-bool CGUIRadioButtonControl::UpdateColors()
+bool CGUIRadioButtonControl::UpdateColors(const CGUIListItem* item)
 {
-  bool changed = CGUIButtonControl::UpdateColors();
+  bool changed = CGUIButtonControl::UpdateColors(nullptr);
   changed |= m_imgRadioOnFocus->SetDiffuseColor(m_diffuseColor);
   changed |= m_imgRadioOnNoFocus->SetDiffuseColor(m_diffuseColor);
   changed |= m_imgRadioOffFocus->SetDiffuseColor(m_diffuseColor);

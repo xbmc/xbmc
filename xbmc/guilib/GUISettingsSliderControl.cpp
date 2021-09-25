@@ -158,11 +158,11 @@ std::string CGUISettingsSliderControl::GetDescription() const
   return m_buttonControl.GetDescription() + " " + CGUISliderControl::GetDescription();
 }
 
-bool CGUISettingsSliderControl::UpdateColors()
+bool CGUISettingsSliderControl::UpdateColors(const CGUIListItem* item)
 {
-  bool changed = CGUISliderControl::UpdateColors();
+  bool changed = CGUISliderControl::UpdateColors(nullptr);
   changed |= m_buttonControl.SetColorDiffuse(m_diffuseColor);
-  changed |= m_buttonControl.UpdateColors();
+  changed |= m_buttonControl.UpdateColors(nullptr);
   changed |= m_label.UpdateColors();
 
   return changed;

@@ -1050,9 +1050,9 @@ void CGUISpinControl::ChangePage(int amount)
   SendWindowMessage(message);
 }
 
-bool CGUISpinControl::UpdateColors()
+bool CGUISpinControl::UpdateColors(const CGUIListItem* item)
 {
-  bool changed = CGUIControl::UpdateColors();
+  bool changed = CGUIControl::UpdateColors(nullptr);
   changed |= m_label.UpdateColors();
   changed |= m_imgspinDownFocus->SetDiffuseColor(m_diffuseColor);
   changed |= m_imgspinDown->SetDiffuseColor(m_diffuseColor);

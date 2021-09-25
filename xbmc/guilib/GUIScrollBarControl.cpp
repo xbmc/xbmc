@@ -375,9 +375,9 @@ std::string GUIScrollBarControl::GetDescription() const
   return StringUtils::Format("{}/{}", m_offset, m_numItems);
 }
 
-bool GUIScrollBarControl::UpdateColors()
+bool GUIScrollBarControl::UpdateColors(const CGUIListItem* item)
 {
-  bool changed = CGUIControl::UpdateColors();
+  bool changed = CGUIControl::UpdateColors(nullptr);
   changed |= m_guiBackground->SetDiffuseColor(m_diffuseColor);
   changed |= m_guiBarNoFocus->SetDiffuseColor(m_diffuseColor);
   changed |= m_guiBarFocus->SetDiffuseColor(m_diffuseColor);

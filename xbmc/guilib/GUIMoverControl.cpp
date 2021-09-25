@@ -260,9 +260,9 @@ bool CGUIMoverControl::SetAlpha(unsigned char alpha)
   return m_imgFocus->SetAlpha(alpha) | m_imgNoFocus->SetAlpha(alpha);
 }
 
-bool CGUIMoverControl::UpdateColors()
+bool CGUIMoverControl::UpdateColors(const CGUIListItem* item)
 {
-  bool changed = CGUIControl::UpdateColors();
+  bool changed = CGUIControl::UpdateColors(nullptr);
   changed |= m_imgFocus->SetDiffuseColor(m_diffuseColor);
   changed |= m_imgNoFocus->SetDiffuseColor(m_diffuseColor);
 

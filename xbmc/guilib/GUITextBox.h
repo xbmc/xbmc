@@ -58,7 +58,7 @@ public:
 
 protected:
   void UpdateVisibility(const CGUIListItem *item = NULL) override;
-  bool UpdateColors() override;
+  bool UpdateColors(const CGUIListItem* item) override;
   void UpdateInfo(const CGUIListItem *item = NULL) override;
   void UpdatePageControl();
   void ScrollToOffset(int offset, bool autoScroll = false);

@@ -89,11 +89,11 @@ void CGUISpinControlEx::SetHeight(float height)
   CGUISpinControl::SetInvalid();
 }
 
-bool CGUISpinControlEx::UpdateColors()
+bool CGUISpinControlEx::UpdateColors(const CGUIListItem* item)
 {
-  bool changed = CGUISpinControl::UpdateColors();
+  bool changed = CGUISpinControl::UpdateColors(nullptr);
   changed |= m_buttonControl.SetColorDiffuse(m_diffuseColor);
-  changed |= m_buttonControl.UpdateColors();
+  changed |= m_buttonControl.UpdateColors(nullptr);
 
   return changed;
 }

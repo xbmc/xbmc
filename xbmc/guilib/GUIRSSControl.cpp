@@ -79,9 +79,9 @@ void CGUIRSSControl::SetUrlSet(const int urlset)
   m_urlset = urlset;
 }
 
-bool CGUIRSSControl::UpdateColors()
+bool CGUIRSSControl::UpdateColors(const CGUIListItem* item)
 {
-  bool changed = CGUIControl::UpdateColors();
+  bool changed = CGUIControl::UpdateColors(nullptr);
   changed |= m_label.UpdateColors();
   changed |= m_headlineColor.Update();
   changed |= m_channelColor.Update();
