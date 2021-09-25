@@ -11,6 +11,12 @@ ARCHIVE=$(SOURCE).tar.bz2
 CONFIGURE=./configure --prefix=$(PREFIX) \
   --disable-libxml2 --disable-docs --with-arch=$(PLATFORM) --disable-shared
 
+ifeq ($(OS),android)
+  # Freetype with Harfbuzz support requires stdc++ lib linking
+  # Fontconfig uses clang and not clang++, therefore we need the explicit stdc++ link
+  export LDFLAGS+= -lstdc++
+endif
+
 LIBDYLIB=$(PLATFORM)/src/.libs/lib$(LIBNAME).a
 
 all: .installed-$(PLATFORM)

@@ -7,11 +7,15 @@ VERSION=2.10.2
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
 
+# Freetype has a circular dependency with harfbuzz.
+# To enable harfbuzz support in freetype, we build this first to bootstrap harfbuzz
+# and then build freetype2 again with harfbuzz support
+
 # configuration settings
 # force using internal libtool
 export LIBTOOL=builds/unix/libtool
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) builds/unix; \
-          ./configure --prefix=$(PREFIX) --disable-shared --with-png=no --with-harfbuzz=yes
+          ./configure --prefix=$(PREFIX) --disable-shared --with-png=no --with-harfbuzz=no
 
 LIBDYLIB=$(PLATFORM)/objs/.libs/lib$(LIBNAME).a
 

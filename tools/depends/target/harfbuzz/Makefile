@@ -20,6 +20,7 @@ CONFIGURE = $(NATIVEPREFIX)/bin/python3 $(NATIVEPREFIX)/bin/meson \
 	-Ddocs=disabled \
 	-Dtests=disabled \
 	-Dicu_builtin=false \
+	-Dfreetype=enabled \
 	-Dintrospection=disabled \
 	-Ddefault_library=static
 
