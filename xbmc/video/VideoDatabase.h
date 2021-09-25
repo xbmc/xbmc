@@ -609,6 +609,12 @@ public:
    */
   void EraseAllVideoSettings(const std::string& path);
 
+  /**
+   * Erases all entries for files starting with path, including the files and path entries
+   * @param path pattern
+   */
+  void EraseAllForPath(const std::string& path);
+
   bool GetStackTimes(const std::string &filePath, std::vector<uint64_t> &times);
   void SetStackTimes(const std::string &filePath, const std::vector<uint64_t> &times);
 
