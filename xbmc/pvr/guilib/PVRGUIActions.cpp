@@ -156,7 +156,7 @@ namespace PVR
       bool bReturn = true;
       for (const auto& itemToDelete : items)
       {
-        if (itemToDelete->IsUsablePVRRecording() &&
+        if (itemToDelete->IsPVRRecording() &&
             (!m_bWatchedOnly || itemToDelete->GetPVRRecordingInfoTag()->GetPlayCount() > 0))
           bReturn &= itemToDelete->GetPVRRecordingInfoTag()->Delete();
       }
