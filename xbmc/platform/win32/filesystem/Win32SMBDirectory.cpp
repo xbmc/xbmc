@@ -14,7 +14,6 @@
 #include "URL.h"
 #include "utils/CharsetConverter.h"
 #include "utils/XTimeUtils.h"
-#include "utils/auto_buffer.h"
 #include "utils/log.h"
 
 #include "platform/win32/CharsetConverter.h"
@@ -432,28 +431,28 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
     return false;
   }
 
-  XUTILS::auto_buffer buf(size_t(32 * 1024));
+  std::vector<char> buf(size_t(32 * 1024));
   bool errorFlag = false;
   do
   {
     DWORD resCount = -1;
     size_t bufSize = buf.size();
-    result = WNetEnumResourceW(netEnum, &resCount, buf.get(), reinterpret_cast<LPDWORD>(&bufSize));
+    result = WNetEnumResourceW(netEnum, &resCount, buf.data(), reinterpret_cast<LPDWORD>(&bufSize));
     if (result == NO_ERROR)
     {
       if (bufSize > buf.size())
       { // buffer is too small
-        buf.allocate(bufSize); // discard buffer content and extend the buffer
+        buf.resize(bufSize); // discard buffer content and extend the buffer
         bufSize = buf.size();
         result =
-            WNetEnumResourceW(netEnum, &resCount, buf.get(), reinterpret_cast<LPDWORD>(&bufSize));
+            WNetEnumResourceW(netEnum, &resCount, buf.data(), reinterpret_cast<LPDWORD>(&bufSize));
         if (result != NO_ERROR || bufSize > buf.size())
           errorFlag = true; // hardly ever happens
       }
 
       for (unsigned int i = 0; i < resCount && !errorFlag; i++)
       {
-        _NETRESOURCEW& curResource = ((_NETRESOURCEW*)buf.get())[i];
+        _NETRESOURCEW& curResource = ((_NETRESOURCEW*)buf.data())[i];
 
         /* check and collect servers */
         if (!getShares && curResource.dwDisplayType == RESOURCEDISPLAYTYPE_SERVER)

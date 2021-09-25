@@ -136,12 +136,12 @@ void CPreflightHandler::MigrateUserdataXMLToNSUserDefaults()
       if (dstfile.OpenForWrite(dtsUrl, true))
       {
         auto iBufferSize = 128 * 1024;
-        XFILE::auto_buffer buffer(iBufferSize);
+        std::vector<char> buffer(iBufferSize);
 
         while (true)
         {
           // read data
-          auto iread = srcfile.Read(buffer.get(), iBufferSize);
+          auto iread = srcfile.Read(buffer.data(), iBufferSize);
           if (iread == 0)
             break;
           else if (iread < 0)
@@ -155,7 +155,7 @@ void CPreflightHandler::MigrateUserdataXMLToNSUserDefaults()
           auto iwrite = 0;
           while (iwrite < iread)
           {
-            auto iwrite2 = dstfile.Write(buffer.get() + iwrite, iread - iwrite);
+            auto iwrite2 = dstfile.Write(buffer.data() + iwrite, iread - iwrite);
             if (iwrite2 <= 0)
               break;
             iwrite += iwrite2;

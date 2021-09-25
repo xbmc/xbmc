@@ -131,10 +131,10 @@ int CNfoFile::Load(const std::string& strFile)
 {
   Close();
   XFILE::CFile file;
-  XFILE::auto_buffer buf;
+  std::vector<uint8_t> buf;
   if (file.LoadFile(strFile, buf) > 0)
   {
-    m_doc.assign(buf.get(), buf.size());
+    m_doc.assign(reinterpret_cast<char*>(buf.data()), buf.size());
     m_headPos = 0;
     return 0;
   }

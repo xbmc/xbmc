@@ -34,7 +34,7 @@ bool CDVDSubtitleStream::Open(const std::string& strFile)
   {
     // prepare buffer
     size_t totalread = 0;
-    XUTILS::auto_buffer buf(1024);
+    std::vector<uint8_t> buf(1024);
 
     if (URIUtils::HasExtension(strFile, ".sub") && IsIncompatible(pInputStream.get(), buf, &totalread))
     {
@@ -54,7 +54,7 @@ bool CDVDSubtitleStream::Open(const std::string& strFile)
       if (totalread == buf.size())
         buf.resize(buf.size() + chunksize);
 
-      read = pInputStream->Read((uint8_t*)buf.get() + totalread, static_cast<int>(buf.size() - totalread));
+      read = pInputStream->Read(buf.data() + totalread, static_cast<int>(buf.size() - totalread));
       if (read > 0)
         totalread += read;
     } while (read > 0);
@@ -62,7 +62,7 @@ bool CDVDSubtitleStream::Open(const std::string& strFile)
     if (!totalread)
       return false;
 
-    std::string tmpStr(buf.get(), totalread);
+    std::string tmpStr(reinterpret_cast<char*>(buf.data()), totalread);
     buf.clear();
 
     std::string enc(CCharsetDetection::GetBomEncoding(tmpStr));
@@ -93,14 +93,16 @@ bool CDVDSubtitleStream::Open(const std::string& strFile)
   return false;
 }
 
-bool CDVDSubtitleStream::IsIncompatible(CDVDInputStream* pInputStream, XUTILS::auto_buffer& buf, size_t* bytesRead)
+bool CDVDSubtitleStream::IsIncompatible(CDVDInputStream* pInputStream,
+                                        std::vector<uint8_t>& buf,
+                                        size_t* bytesRead)
 {
   if (!pInputStream)
     return true;
 
   static const uint8_t vobsub[] = { 0x00, 0x00, 0x01, 0xBA };
 
-  int read = pInputStream->Read(reinterpret_cast<uint8_t*>(buf.get()), static_cast<int>(buf.size()));
+  int read = pInputStream->Read(buf.data(), static_cast<int>(buf.size()));
 
   if (read < 0)
   {
@@ -113,7 +115,7 @@ bool CDVDSubtitleStream::IsIncompatible(CDVDInputStream* pInputStream, XUTILS::a
 
   if (read >= 4)
   {
-    if (!std::memcmp(buf.get(), vobsub, 4))
+    if (!std::memcmp(buf.data(), vobsub, 4))
       return true;
   }
 

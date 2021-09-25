@@ -314,10 +314,10 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL,
     if (XFILE::CFile::Exists(strCachePath))
     {
       XFILE::CFile file;
-      XFILE::auto_buffer buffer;
+      std::vector<uint8_t> buffer;
       if (file.LoadFile(strCachePath, buffer) > 0)
       {
-        strHTML.assign(buffer.get(), buffer.length());
+        strHTML.assign(reinterpret_cast<char*>(buffer.data()), buffer.size());
         return true;
       }
     }

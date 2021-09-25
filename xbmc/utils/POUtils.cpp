@@ -32,7 +32,7 @@ bool CPODocument::LoadFile(const std::string &pofilename)
     return false;
 
   XFILE::CFile file;
-  XFILE::auto_buffer buf;
+  std::vector<uint8_t> buf;
   if (file.LoadFile(poFileUrl, buf) < 18) // at least a size of a minimalistic header
   {
     CLog::Log(LOGERROR, "{}: can't load file \"{}\" or file is too small", __FUNCTION__,
@@ -41,7 +41,7 @@ bool CPODocument::LoadFile(const std::string &pofilename)
   }
 
   m_strBuffer = '\n';
-  m_strBuffer.append(buf.get(), buf.size());
+  m_strBuffer.append(reinterpret_cast<char*>(buf.data()), buf.size());
   buf.clear();
 
   ConvertLineEnds(pofilename);

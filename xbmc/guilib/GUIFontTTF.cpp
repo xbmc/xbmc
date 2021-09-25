@@ -66,7 +66,10 @@ public:
       FT_Done_FreeType(m_library);
   }
 
-  FT_Face GetFont(const std::string &filename, float size, float aspect, XUTILS::auto_buffer& memoryBuf)
+  FT_Face GetFont(const std::string& filename,
+                  float size,
+                  float aspect,
+                  std::vector<uint8_t>& memoryBuf)
   {
     // don't have it yet - create it
     if (!m_library)
@@ -95,7 +98,8 @@ public:
       XFILE::CFile f;
       if (f.LoadFile(realFile, memoryBuf) <= 0)
         return NULL;
-      if (FT_New_Memory_Face(m_library, (const FT_Byte*)memoryBuf.get(), memoryBuf.size(), 0, &face) != 0)
+      if (FT_New_Memory_Face(m_library, reinterpret_cast<const FT_Byte*>(memoryBuf.data()),
+                             memoryBuf.size(), 0, &face) != 0)
         return NULL;
     }
 #ifndef TARGET_WINDOWS

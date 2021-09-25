@@ -2,7 +2,6 @@ set(SOURCES ActorProtocol.cpp
             AlarmClock.cpp
             AliasShortcutUtils.cpp
             Archive.cpp
-            auto_buffer.cpp
             Base64.cpp
             BitstreamConverter.cpp
             BitstreamReader.cpp
@@ -75,7 +74,6 @@ set(HEADERS ActorProtocol.h
             AlarmClock.h
             AliasShortcutUtils.h
             Archive.h
-            auto_buffer.h
             Base64.h
             BitstreamConverter.h
             BitstreamReader.h

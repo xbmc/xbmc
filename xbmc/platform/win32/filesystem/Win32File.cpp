@@ -8,7 +8,6 @@
 
 #include "Win32File.h"
 
-#include "utils/auto_buffer.h"
 #include "utils/log.h"
 
 #include "platform/win32/CharsetConverter.h"
@@ -177,9 +176,9 @@ ssize_t CWin32File::Read(void* lpBuf, size_t uiBufSize)
 
   if (uiBufSize == 0)
   { // allow "test" read with zero size
-    XUTILS::auto_buffer dummyBuf(255);
+    char dummyBuf = 0;
     DWORD bytesRead = 0;
-    if (!ReadFile(m_hFile, dummyBuf.get(), 0, &bytesRead, NULL))
+    if (!ReadFile(m_hFile, reinterpret_cast<LPVOID>(&dummyBuf), 0, &bytesRead, NULL))
       return -1;
 
     assert(bytesRead == 0);
@@ -238,10 +237,9 @@ ssize_t CWin32File::Write(const void* lpBuf, size_t uiBufSize)
 
   if (uiBufSize == 0)
   { // allow "test" write with zero size
-    XUTILS::auto_buffer dummyBuf(255);
-    dummyBuf.get()[0] = 0;
+    char dummyBuf = 0;
     DWORD bytesWritten = 0;
-    if (!WriteFile(m_hFile, dummyBuf.get(), 0, &bytesWritten, NULL))
+    if (!WriteFile(m_hFile, reinterpret_cast<LPVOID>(&dummyBuf), 0, &bytesWritten, NULL))
       return -1;
 
     assert(bytesWritten == 0);
@@ -577,10 +575,10 @@ int CWin32File::Stat(const CURL& url, struct __stat64* statData)
     if (lastDot != std::wstring::npos && pathnameW.rfind(L'\\') < lastDot)
     { // file has some extension
       const std::wstring fileExt(pathnameW, lastDot);
-      XUTILS::auto_buffer buf(32767 * sizeof(wchar_t)); // maximum possible size
-      const DWORD envRes = GetEnvironmentVariableW(L"PATHEXT", (wchar_t*)buf.get(), buf.size() / sizeof(wchar_t));
+      std::vector<wchar_t> buf(32767); // maximum possible size
+      const DWORD envRes = GetEnvironmentVariableW(L"PATHEXT", buf.data(), buf.size());
       std::vector<std::wstring> listExts;
-      if (envRes == 0 || envRes > (buf.size() / sizeof(wchar_t)))
+      if (envRes == 0 || envRes > buf.size())
       {
         buf.clear();
         static const wchar_t* extArr[] = { L".exe", L".bat", L".cmd", L".com" };
@@ -588,7 +586,7 @@ int CWin32File::Stat(const CURL& url, struct __stat64* statData)
       }
       else
       {
-        std::wstring envPathextW((wchar_t*)buf.get(), envRes);
+        std::wstring envPathextW(buf.data(), envRes);
         buf.clear();
         size_t posExt = envPathextW.find_first_not_of(L';'); // skip ';' at the start
         while (posExt != std::wstring::npos)
@@ -701,11 +699,12 @@ int CWin32File::Stat(struct __stat64* statData)
 #ifdef WIN32_USE_FILE_STAT_MAX_INFO
     // set _S_IEXEC if file has executable extension
     std::wstring pathnameW;
-    XUTILS::auto_buffer nameInfoBuf(sizeof(FILE_NAME_INFO) + sizeof(wchar_t) * MAX_PATH * 2);
-    if (GetFileInformationByHandleEx(m_hFile, FileNameInfo, nameInfoBuf.get(), nameInfoBuf.size()) != 0)
+    std::vector<char> nameInfoBuf(sizeof(FILE_NAME_INFO) + sizeof(wchar_t) * MAX_PATH * 2);
+    if (GetFileInformationByHandleEx(m_hFile, FileNameInfo, nameInfoBuf.data(),
+                                     nameInfoBuf.size()) != 0)
     {
       // real path and name without drive
-      const PFILE_NAME_INFO pNameInfo = PFILE_NAME_INFO(nameInfoBuf.get());
+      const PFILE_NAME_INFO pNameInfo = PFILE_NAME_INFO(nameInfoBuf.data());
       pathnameW.assign(pNameInfo->FileName, pNameInfo->FileNameLength / sizeof(wchar_t));
       nameInfoBuf.clear();
     }
@@ -718,10 +717,10 @@ int CWin32File::Stat(struct __stat64* statData)
         (lastSlash == std::wstring::npos || lastSlash<lastDot))
     { // file has some extension
       const std::wstring fileExt(pathnameW, lastDot);
-      XUTILS::auto_buffer buf(32767 * sizeof(wchar_t)); // maximum possible size
-      const DWORD envRes = GetEnvironmentVariableW(L"PATHEXT", (wchar_t*)buf.get(), buf.size() / sizeof(wchar_t));
+      std::vector<wchar_t> buf(32767); // maximum possible size
+      const DWORD envRes = GetEnvironmentVariableW(L"PATHEXT", buf.data(), buf.size());
       std::vector<std::wstring> listExts;
-      if (envRes == 0 || envRes > (buf.size() / sizeof(wchar_t)))
+      if (envRes == 0 || envRes > buf.size())
       {
         buf.clear();
         static const wchar_t* extArr[] = { L".exe", L".bat", L".cmd", L".com" };
@@ -729,7 +728,7 @@ int CWin32File::Stat(struct __stat64* statData)
       }
       else
       {
-        std::wstring envPathextW((wchar_t*)buf.get(), envRes);
+        std::wstring envPathextW((buf.data(), envRes);
         buf.clear();
         size_t posExt = envPathextW.find_first_not_of(L';'); // skip ';' at the start
         while (posExt != std::wstring::npos)

@@ -16,7 +16,6 @@
 
 #include "IFileTypes.h"
 #include "URL.h"
-#include "utils/auto_buffer.h"
 
 #include <iostream>
 #include <memory>
@@ -31,7 +30,6 @@ class BitstreamStats;
 namespace XFILE
 {
 
-using ::XUTILS::auto_buffer;
 class IFile;
 
 class IFileCallback
@@ -70,7 +68,7 @@ public:
   bool OpenForWrite(const CURL& file, bool bOverWrite = false);
   bool OpenForWrite(const std::string& strFileName, bool bOverWrite = false);
 
-  ssize_t LoadFile(const CURL &file, auto_buffer& outputBuffer);
+  ssize_t LoadFile(const CURL& file, std::vector<uint8_t>& outputBuffer);
 
   /**
    * Attempt to read bufSize bytes from currently opened file into buffer bufPtr.
@@ -100,7 +98,7 @@ public:
   int GetChunkSize();
   const std::string GetProperty(XFILE::FileProperty type, const std::string &name = "") const;
   const std::vector<std::string> GetPropertyValues(XFILE::FileProperty type, const std::string &name = "") const;
-  ssize_t LoadFile(const std::string &filename, auto_buffer& outputBuffer);
+  ssize_t LoadFile(const std::string& filename, std::vector<uint8_t>& outputBuffer);
 
   static int DetermineChunkSize(const int srcChunkSize, const int reqChunkSize);
 

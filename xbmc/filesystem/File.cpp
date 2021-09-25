@@ -118,7 +118,7 @@ bool CFile::Copy(const CURL& url2, const CURL& dest, XFILE::IFileCallback* pCall
 
     int iBufferSize = DetermineChunkSize(file.GetChunkSize(), 128 * 1024);
 
-    auto_buffer buffer(iBufferSize);
+    std::vector<char> buffer(iBufferSize);
     ssize_t iRead, iWrite;
 
     unsigned long long llFileSize = file.GetLength();
@@ -131,7 +131,7 @@ bool CFile::Copy(const CURL& url2, const CURL& dest, XFILE::IFileCallback* pCall
     {
       g_application.ResetScreenSaver();
 
-      iRead = file.Read(buffer.get(), iBufferSize);
+      iRead = file.Read(buffer.data(), buffer.size());
       if (iRead == 0) break;
       else if (iRead < 0)
       {
@@ -144,7 +144,7 @@ bool CFile::Copy(const CURL& url2, const CURL& dest, XFILE::IFileCallback* pCall
       iWrite = 0;
       while(iWrite < iRead)
       {
-        ssize_t iWrite2 = newFile.Write(buffer.get() + iWrite, iRead - iWrite);
+        ssize_t iWrite2 = newFile.Write(buffer.data() + iWrite, iRead - iWrite);
         if(iWrite2 <=0)
           break;
         iWrite+=iWrite2;
@@ -816,9 +816,8 @@ ssize_t CFile::Write(const void* lpBuf, size_t uiBufSize)
     { // "test" write with zero size
       // some VFSs don't handle correctly null buffer pointer
       // provide valid buffer pointer for them
-      auto_buffer dummyBuf(255);
-      dummyBuf.get()[0] = 0;
-      return m_pFile->Write(dummyBuf.get(), 0);
+      const char dummyBuf = 0;
+      return m_pFile->Write(&dummyBuf, 0);
     }
 
     return m_pFile->Write(lpBuf, uiBufSize);
@@ -967,13 +966,13 @@ const std::vector<std::string> CFile::GetPropertyValues(XFILE::FileProperty type
   return m_pFile->GetPropertyValues(type, name);
 }
 
-ssize_t CFile::LoadFile(const std::string &filename, auto_buffer& outputBuffer)
+ssize_t CFile::LoadFile(const std::string& filename, std::vector<uint8_t>& outputBuffer)
 {
   const CURL pathToUrl(filename);
   return LoadFile(pathToUrl, outputBuffer);
 }
 
-ssize_t CFile::LoadFile(const CURL& file, auto_buffer& outputBuffer)
+ssize_t CFile::LoadFile(const CURL& file, std::vector<uint8_t>& outputBuffer)
 {
   static const size_t max_file_size = 0x7FFFFFFF;
   static const size_t min_chunk_size = 64 * 1024U;
@@ -1023,7 +1022,7 @@ ssize_t CFile::LoadFile(const CURL& file, auto_buffer& outputBuffer)
       if (chunksize < max_chunk_size)
         chunksize *= 2;
     }
-    ssize_t read = Read(outputBuffer.get() + total_read, outputBuffer.size() - total_read);
+    ssize_t read = Read(outputBuffer.data() + total_read, outputBuffer.size() - total_read);
     if (read < 0)
     {
       outputBuffer.clear();

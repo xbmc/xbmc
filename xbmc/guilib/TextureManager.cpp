@@ -386,11 +386,10 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
       mimeType = "image/apng";
 
     XFILE::CFile file;
-    XFILE::auto_buffer buf;
+    std::vector<uint8_t> buf;
     CFFmpegImage anim(mimeType);
 
-    if (file.LoadFile(strPath, buf) <= 0 ||
-       !anim.Initialize((uint8_t*)buf.get(), buf.size()))
+    if (file.LoadFile(strPath, buf) <= 0 || !anim.Initialize(buf.data(), buf.size()))
     {
       CLog::Log(LOGERROR, "Texture manager unable to load file: {}", CURL::GetRedacted(strPath));
       file.Close();

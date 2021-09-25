@@ -60,7 +60,6 @@ using namespace winrt::Windows::System::Profile;
 #include <Availability.h>
 #include <mach-o/arch.h>
 #include <sys/sysctl.h>
-#include "utils/auto_buffer.h"
 #elif defined(TARGET_ANDROID)
 #include <android/api-level.h>
 #include <sys/system_properties.h>
@@ -800,9 +799,10 @@ std::string CSysInfo::GetModelName(void)
     size_t nameLen = 0; // 'nameLen' should include terminating null
     if (sysctlbyname("hw.model", NULL, &nameLen, NULL, 0) == 0 && nameLen > 1)
     {
-      XUTILS::auto_buffer buf(nameLen);
-      if (sysctlbyname("hw.model", buf.get(), &nameLen, NULL, 0) == 0 && nameLen == buf.size())
-        modelName.assign(buf.get(), nameLen - 1); // assign exactly 'nameLen-1' characters to 'modelName'
+      std::vector<char> buf(nameLen);
+      if (sysctlbyname("hw.model", buf.data(), &nameLen, NULL, 0) == 0 && nameLen == buf.size())
+        modelName.assign(buf.data(),
+                         nameLen - 1); // assign exactly 'nameLen-1' characters to 'modelName'
     }
 #elif defined(TARGET_WINDOWS_STORE)
     auto eas = EasClientDeviceInformation();
@@ -1414,11 +1414,10 @@ std::string CSysInfo::GetPrivacyPolicy()
   if (m_privacyPolicy.empty())
   {
     CFile file;
-    XFILE::auto_buffer buf;
+    std::vector<uint8_t> buf;
     if (file.LoadFile("special://xbmc/privacy-policy.txt", buf) > 0)
     {
-      std::string strBuf(buf.get(), buf.length());
-      m_privacyPolicy = strBuf;
+      m_privacyPolicy = std::string(reinterpret_cast<char*>(buf.data()), buf.size());
     }
     else
       m_privacyPolicy = g_localizeStrings.Get(19055);
