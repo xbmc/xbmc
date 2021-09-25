@@ -393,8 +393,12 @@ COverlay* CRenderer::ConvertLibass(CDVDOverlayLibass* o,
   {
     overlay->m_width = (float)rOpts.frameWidth / rOpts.videoWidth;
     overlay->m_height = (float)rOpts.frameHeight / rOpts.videoHeight;
-    overlay->m_x = ((float)rOpts.videoWidth - rOpts.frameWidth) / 2 / rOpts.videoWidth;
-    overlay->m_y = ((float)rOpts.videoHeight - rOpts.frameHeight) / 2 / rOpts.videoHeight;
+    // If "Set GUI resolution limit" is enabled the frame will be lower than video, then x/y must be to 0
+    if (rOpts.frameWidth >= rOpts.videoWidth && rOpts.frameHeight >= rOpts.videoHeight)
+    {
+      overlay->m_x = ((float)rOpts.videoWidth - rOpts.frameWidth) / 2 / rOpts.videoWidth;
+      overlay->m_y = ((float)rOpts.videoHeight - rOpts.frameHeight) / 2 / rOpts.videoHeight;
+    }
   }
   m_textureCache[m_textureid] = overlay;
   o->m_textureid = m_textureid;
