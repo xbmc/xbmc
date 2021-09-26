@@ -88,8 +88,7 @@ public:
   using PresentationFeedbackHandler = std::function<void(timespec /* tv */, std::uint32_t /* refresh */, std::uint32_t /* sync output id */, float /* sync output fps */, std::uint64_t /* msc */)>;
   CSignalRegistration RegisterOnPresentationFeedback(const PresentationFeedbackHandler& handler);
 
-  // Like CWinSystemX11
-  void GetConnectedOutputs(std::vector<std::string>* outputs);
+  std::vector<std::string> GetConnectedOutputs() override;
 
   // winevents override
   bool MessagePump() override;

@@ -62,11 +62,12 @@ public:
   bool HasCalibration(const RESOLUTION_INFO &resInfo) override;
   bool UseLimitedColor() override;
 
+  std::vector<std::string> GetConnectedOutputs() override;
+
   // Local to WinSystemX11 only
   Display*  GetDisplay() { return m_dpy; }
   int GetScreen() { return m_screen; }
   void NotifyXRREvent();
-  void GetConnectedOutputs(std::vector<std::string> *outputs);
   bool IsCurrentOutput(const std::string& output);
   void RecreateWindow();
   int GetCrtc() { return m_crtc; }

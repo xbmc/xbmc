@@ -1831,15 +1831,18 @@ bool CWinSystemOSX::MessagePump()
   return m_winEvents->MessagePump();
 }
 
-void CWinSystemOSX::GetConnectedOutputs(std::vector<std::string> *outputs)
+std::vector<std::string> CWinSystemOSX::GetConnectedOutputs()
 {
-  outputs->push_back("Default");
+  std::vector<std::string> outputs;
+  outputs.emplace_back("Default");
 
   int numDisplays = [[NSScreen screens] count];
 
   for (int disp = 0; disp < numDisplays; disp++)
   {
     NSString *dispName = screenNameForDisplay(GetDisplayID(disp));
-    outputs->push_back([dispName UTF8String]);
+    outputs.emplace_back([dispName UTF8String]);
   }
+
+  return outputs;
 }

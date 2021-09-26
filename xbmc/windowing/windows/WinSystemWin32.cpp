@@ -644,12 +644,16 @@ void CWinSystemWin32::SetMinimized(bool minimized)
   m_bMinimized = minimized;
 }
 
-void CWinSystemWin32::GetConnectedOutputs(std::vector<std::string>* outputs)
+std::vector<std::string> CWinSystemWin32::GetConnectedOutputs()
 {
+  std::vector<std::string> outputs;
+
   for (auto& display : m_displays)
   {
-    outputs->push_back(KODI::PLATFORM::WINDOWS::FromW(display.MonitorNameW));
+    outputs.emplace_back(KODI::PLATFORM::WINDOWS::FromW(display.MonitorNameW));
   }
+
+  return outputs;
 }
 
 void CWinSystemWin32::RestoreDesktopResolution(MONITOR_DETAILS* details)
