@@ -576,7 +576,11 @@ void CLinuxRendererGLES::UpdateVideoFilter()
   case VS_SCALINGMETHOD_LANCZOS3_FAST:
   case VS_SCALINGMETHOD_SPLINE36:
   case VS_SCALINGMETHOD_LANCZOS3:
+  case VS_SCALINGMETHOD_CUBIC_B_SPLINE:
   case VS_SCALINGMETHOD_CUBIC_MITCHELL:
+  case VS_SCALINGMETHOD_CUBIC_CATMULL:
+  case VS_SCALINGMETHOD_CUBIC_0_075:
+  case VS_SCALINGMETHOD_CUBIC_0_1:
   {
     if (m_renderMethod & RENDER_GLSL)
     {
@@ -605,10 +609,6 @@ void CLinuxRendererGLES::UpdateVideoFilter()
     m_renderQuality = RQ_MULTIPASS;
       return;
   }
-  case VS_SCALINGMETHOD_CUBIC_B_SPLINE:
-  case VS_SCALINGMETHOD_CUBIC_CATMULL:
-  case VS_SCALINGMETHOD_CUBIC_0_075:
-  case VS_SCALINGMETHOD_CUBIC_0_1:
   case VS_SCALINGMETHOD_BICUBIC_SOFTWARE:
   case VS_SCALINGMETHOD_LANCZOS_SOFTWARE:
   case VS_SCALINGMETHOD_SINC_SOFTWARE:
@@ -1715,12 +1715,16 @@ bool CLinuxRendererGLES::Supports(ESCALINGMETHOD method)
     return true;
   }
 
-  if(method == VS_SCALINGMETHOD_CUBIC_MITCHELL ||
-     method == VS_SCALINGMETHOD_LANCZOS2 ||
-     method == VS_SCALINGMETHOD_SPLINE36_FAST ||
-     method == VS_SCALINGMETHOD_LANCZOS3_FAST ||
-     method == VS_SCALINGMETHOD_SPLINE36 ||
-     method == VS_SCALINGMETHOD_LANCZOS3)
+  if (method == VS_SCALINGMETHOD_CUBIC_B_SPLINE ||
+      method == VS_SCALINGMETHOD_CUBIC_MITCHELL ||
+      method == VS_SCALINGMETHOD_CUBIC_CATMULL ||
+      method == VS_SCALINGMETHOD_CUBIC_0_075 ||
+      method == VS_SCALINGMETHOD_CUBIC_0_1 ||
+      method == VS_SCALINGMETHOD_LANCZOS2 ||
+      method == VS_SCALINGMETHOD_SPLINE36_FAST ||
+      method == VS_SCALINGMETHOD_LANCZOS3_FAST ||
+      method == VS_SCALINGMETHOD_SPLINE36 ||
+      method == VS_SCALINGMETHOD_LANCZOS3)
   {
     // if scaling is below level, avoid hq scaling
     float scaleX = fabs((static_cast<float>(m_sourceWidth) - m_destRect.Width()) / m_sourceWidth) * 100;
