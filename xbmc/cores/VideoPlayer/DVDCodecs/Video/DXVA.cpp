@@ -34,8 +34,6 @@
 #include <dxva.h>
 #include <initguid.h>
 
-#include "system.h"
-
 using namespace DXVA;
 using namespace Microsoft::WRL;
 using namespace std::chrono_literals;
@@ -1276,7 +1274,8 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
   {
     if (m_bufferPool->IsValid(reinterpret_cast<ID3D11View*>(frame->data[3])))
     {
-      SAFE_RELEASE(m_videoBuffer);
+      if (m_videoBuffer)
+        m_videoBuffer->Release();
       m_videoBuffer = reinterpret_cast<CVideoBuffer*>(m_bufferPool->Get());
       if (!m_videoBuffer)
       {
@@ -1296,11 +1295,11 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
 
 bool CDecoder::GetPicture(AVCodecContext* avctx, VideoPicture* picture)
 {
-  SAFE_RELEASE(picture->videoBuffer);
-
   static_cast<ICallbackHWAccel*>(avctx->opaque)->GetPictureCommon(picture);
   CSingleLock lock(m_section);
 
+  if (picture->videoBuffer)
+    picture->videoBuffer->Release();
   picture->videoBuffer = m_videoBuffer;
   m_videoBuffer = nullptr;
 
@@ -1322,7 +1321,11 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, VideoPicture* picture)
 
 void CDecoder::Reset()
 {
-  SAFE_RELEASE(m_videoBuffer);
+  if (m_videoBuffer)
+  {
+    m_videoBuffer->Release();
+    m_videoBuffer = nullptr;
+  }
 }
 
 CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)

@@ -18,8 +18,6 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
-#include "system.h"
-
 CVideoPlayerSubtitle::CVideoPlayerSubtitle(CDVDOverlayContainer* pOverlayContainer, CProcessInfo &processInfo)
 : IDVDStreamPlayer(processInfo)
 {

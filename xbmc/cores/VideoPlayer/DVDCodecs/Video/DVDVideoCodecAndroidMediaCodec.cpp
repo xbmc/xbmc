@@ -54,8 +54,6 @@
 #include <androidjni/SurfaceTexture.h>
 #include <androidjni/UUID.h>
 
-#include "system.h"
-
 static const char* XMEDIAFORMAT_KEY_ROTATION = "rotation-degrees";
 static const char* XMEDIAFORMAT_KEY_SLICE = "slice-height";
 static const char* XMEDIAFORMAT_KEY_CROP_LEFT = "crop-left";

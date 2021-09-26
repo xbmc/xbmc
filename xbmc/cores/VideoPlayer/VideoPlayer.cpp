@@ -65,8 +65,6 @@
 #include <iterator>
 #include <utility>
 
-#include "system.h"
-
 using namespace KODI::MESSAGING;
 using namespace std::chrono_literals;
 

@@ -25,8 +25,6 @@
 
 #include <memory>
 
-#include "system.h"
-
 extern "C" {
 #include <libavutil/opt.h>
 #include <libavutil/mastering_display_metadata.h>
@@ -293,8 +291,8 @@ enum AVPixelFormat CDVDVideoCodecFFmpeg::GetFormat(struct AVCodecContext * avctx
           ctx->SetHardware(pDecoder);
           return *cur;
         }
+        pDecoder->Release();
       }
-      SAFE_RELEASE(pDecoder);
     }
     cur++;
   }
@@ -452,7 +450,12 @@ void CDVDVideoCodecFFmpeg::Dispose()
   av_frame_free(&m_pDecodedFrame);
   av_frame_free(&m_pFilterFrame);
   avcodec_free_context(&m_pCodecContext);
-  SAFE_RELEASE(m_pHardware);
+
+  if (m_pHardware)
+  {
+    m_pHardware->Release();
+    m_pHardware = nullptr;
+  }
 
   FilterClose();
 }
@@ -1352,7 +1355,8 @@ void CDVDVideoCodecFFmpeg::SetCodecControl(int flags)
 
 void CDVDVideoCodecFFmpeg::SetHardware(IHardwareDecoder* hardware)
 {
-  SAFE_RELEASE(m_pHardware);
+  if (m_pHardware)
+    m_pHardware->Release();
   m_pHardware = hardware;
   UpdateName();
 }
