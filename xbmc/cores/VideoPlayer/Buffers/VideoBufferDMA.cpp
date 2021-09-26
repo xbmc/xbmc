@@ -10,6 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "utils/BufferObject.h"
+#include "utils/DRMHelpers.h"
 #include "utils/log.h"
 
 extern "C"
@@ -96,7 +97,7 @@ void CVideoBufferDMA::SetDimensions(int width,
                                   planeOffsets[plane]));
 
     CLog::Log(LOGDEBUG, LOGVIDEO, "CVideoBufferDMA::{} - frame layout id={} fourcc={}{}",
-              __FUNCTION__, m_id, m_fourcc, planeStr);
+              __FUNCTION__, m_id, DRMHELPERS::FourCCToString(m_fourcc), planeStr);
   }
 }
 
@@ -110,7 +111,8 @@ bool CVideoBufferDMA::Alloc()
   m_planes = 3; // CAddonVideoCodec only requests AV_PIX_FMT_YUV420P for now
 
   CLog::Log(LOGDEBUG, LOGVIDEO, "CVideoBufferDMA::{} - id={} fourcc={} fd={} size={} addr={}",
-            __FUNCTION__, m_id, m_fourcc, m_fd, m_size, fmt::ptr(m_addr));
+            __FUNCTION__, m_id, DRMHELPERS::FourCCToString(m_fourcc), m_fd, m_size,
+            fmt::ptr(m_addr));
 
   return true;
 }
@@ -140,7 +142,7 @@ void CVideoBufferDMA::Export(AVFrame* frame, uint32_t width, uint32_t height)
                                   m_offsets[plane]));
 
     CLog::Log(LOGDEBUG, LOGVIDEO, "CVideoBufferDMA::{} - frame layout id={} fourcc={}{}",
-              __FUNCTION__, m_id, m_fourcc, planeStr);
+              __FUNCTION__, m_id, DRMHELPERS::FourCCToString(m_fourcc), planeStr);
   }
 
   for (uint32_t i = 0; i < AV_NUM_DATA_POINTERS; i++)
