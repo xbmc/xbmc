@@ -21,7 +21,8 @@ namespace XFILE
       bool GetDirectory(const CURL& url, CFileItemList &items) override;
       bool Exists(const CURL& url) override;
       bool ContainsFiles(const CURL& url) override;
-      bool IsAllowed(const CURL& url) const override { return true; };
+      bool IsAllowed(const CURL& url) const override { return true; }
+
     protected:
       AVIOContext* m_ioctx = nullptr;
       AVFormatContext* m_fctx = nullptr;

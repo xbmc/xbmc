@@ -45,12 +45,12 @@ public:
 
   CGUISliderControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& backGroundTexture, const CTextureInfo& mibTexture, const CTextureInfo& nibTextureFocus, int iType, ORIENTATION orientation);
   ~CGUISliderControl() override = default;
-  CGUISliderControl *Clone() const override { return new CGUISliderControl(*this); };
+  CGUISliderControl* Clone() const override { return new CGUISliderControl(*this); }
 
   void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
   void Render() override;
   bool OnAction(const CAction &action) override;
-  virtual bool IsActive() const { return true; };
+  virtual bool IsActive() const { return true; }
   void AllocResources() override;
   void FreeResources(bool immediately = false) override;
   void DynamicResourceAlloc(bool bOnOff) override;
@@ -75,10 +75,10 @@ public:
   float GetFloatValue(RangeSelector selector = RangeSelectorLower) const;
   void SetIntInterval(int iInterval);
   void SetFloatInterval(float fInterval);
-  void SetType(int iType) { m_iType = iType; };
+  void SetType(int iType) { m_iType = iType; }
   int GetType() const { return m_iType; }
   std::string GetDescription() const override;
-  void SetTextValue(const std::string &textValue) { m_textValue = textValue; };
+  void SetTextValue(const std::string& textValue) { m_textValue = textValue; }
   void SetAction(const std::string &action);
 
 protected:

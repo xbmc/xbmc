@@ -257,10 +257,26 @@ namespace XBMCAddon
       SWIGHIDDENVIRTUAL bool    OnBack(int actionId);
       SWIGHIDDENVIRTUAL void    OnDeinitWindow(int nextWindowID);
 
-      SWIGHIDDENVIRTUAL bool    IsDialogRunning() const { XBMC_TRACE; return false; };
-      SWIGHIDDENVIRTUAL bool    IsDialog() const { XBMC_TRACE; return false; };
-      SWIGHIDDENVIRTUAL bool    IsModalDialog() const { XBMC_TRACE; return false; };
-      SWIGHIDDENVIRTUAL bool    IsMediaWindow() const { XBMC_TRACE; return false; };
+      SWIGHIDDENVIRTUAL bool IsDialogRunning() const
+      {
+        XBMC_TRACE;
+        return false;
+      }
+      SWIGHIDDENVIRTUAL bool IsDialog() const
+      {
+        XBMC_TRACE;
+        return false;
+      }
+      SWIGHIDDENVIRTUAL bool IsModalDialog() const
+      {
+        XBMC_TRACE;
+        return false;
+      }
+      SWIGHIDDENVIRTUAL bool IsMediaWindow() const
+      {
+        XBMC_TRACE;
+        return false;
+      }
       SWIGHIDDENVIRTUAL void    dispose();
 
       /**

@@ -109,21 +109,24 @@ public:
 
   void SetName(const std::string &name);
   void SetType(const std::string &type); // music, video, mixed
-  const std::string& GetName() const { return m_playlistName; };
-  const std::string& GetType() const { return m_playlistType; };
+  const std::string& GetName() const { return m_playlistName; }
+  const std::string& GetType() const { return m_playlistType; }
   bool IsVideoType() const;
   bool IsMusicType() const;
 
   void SetMatchAllRules(bool matchAll) { m_ruleCombination.SetType(matchAll ? CSmartPlaylistRuleCombination::CombinationAnd : CSmartPlaylistRuleCombination::CombinationOr); }
   bool GetMatchAllRules() const { return m_ruleCombination.GetType() == CSmartPlaylistRuleCombination::CombinationAnd; }
 
-  void SetLimit(unsigned int limit) { m_limit = limit; };
-  unsigned int GetLimit() const { return m_limit; };
+  void SetLimit(unsigned int limit) { m_limit = limit; }
+  unsigned int GetLimit() const { return m_limit; }
 
-  void SetOrder(SortBy order) { m_orderField = order; };
-  SortBy GetOrder() const { return m_orderField; };
-  void SetOrderAscending(bool orderAscending) { m_orderDirection = orderAscending ? SortOrderAscending : SortOrderDescending; };
-  bool GetOrderAscending() const { return m_orderDirection != SortOrderDescending; };
+  void SetOrder(SortBy order) { m_orderField = order; }
+  SortBy GetOrder() const { return m_orderField; }
+  void SetOrderAscending(bool orderAscending)
+  {
+    m_orderDirection = orderAscending ? SortOrderAscending : SortOrderDescending;
+  }
+  bool GetOrderAscending() const { return m_orderDirection != SortOrderDescending; }
   SortOrder GetOrderDirection() const { return m_orderDirection; }
   void SetOrderAttributes(SortAttribute attributes) { m_orderAttributes = attributes; }
   SortAttribute GetOrderAttributes() const { return m_orderAttributes; }

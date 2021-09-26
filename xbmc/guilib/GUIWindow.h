@@ -87,7 +87,7 @@ public:
    Any window that requires updating on a frame by frame basis (such as to maintain
    timers and the like) should override this function.
    */
-  virtual void FrameMove() {};
+  virtual void FrameMove() {}
 
   void Close(bool forceClose = false, int nextWindowID = 0, bool enableSound = true, bool bWait = true);
 
@@ -101,7 +101,7 @@ public:
   using CGUIControlGroup::OnBack;
   virtual bool OnBack(int actionID);
   using CGUIControlGroup::OnInfo;
-  virtual bool OnInfo(int actionID) { return false; };
+  virtual bool OnInfo(int actionID) { return false; }
 
   /*! \brief Clear the background (if necessary) prior to rendering the window
    */
@@ -113,30 +113,30 @@ public:
   bool ControlGroupHasFocus(int groupID, int controlID);
   void SetID(int id) override;
   virtual bool HasID(int controlID) const;
-  const std::vector<int>& GetIDRange() const { return m_idRange; };
-  int GetPreviousWindow() { return m_previousWindow; };
+  const std::vector<int>& GetIDRange() const { return m_idRange; }
+  int GetPreviousWindow() { return m_previousWindow; }
   CRect GetScaledBounds() const;
   void ClearAll() override;
   using CGUIControlGroup::AllocResources;
   virtual void AllocResources(bool forceLoad = false);
   void FreeResources(bool forceUnLoad = false) override;
   void DynamicResourceAlloc(bool bOnOff) override;
-  virtual bool IsDialog() const { return false; };
-  virtual bool IsDialogRunning() const { return false; };
-  virtual bool IsModalDialog() const { return false; };
-  virtual bool IsMediaWindow() const { return false; };
-  virtual bool HasListItems() const { return false; };
-  virtual bool IsSoundEnabled() const { return true; };
-  virtual CFileItemPtr GetCurrentListItem(int offset = 0) { return CFileItemPtr(); };
-  virtual int GetViewContainerID() const { return 0; };
-  virtual int GetViewCount() const { return 0; };
-  virtual bool CanBeActivated() const { return true; };
+  virtual bool IsDialog() const { return false; }
+  virtual bool IsDialogRunning() const { return false; }
+  virtual bool IsModalDialog() const { return false; }
+  virtual bool IsMediaWindow() const { return false; }
+  virtual bool HasListItems() const { return false; }
+  virtual bool IsSoundEnabled() const { return true; }
+  virtual CFileItemPtr GetCurrentListItem(int offset = 0) { return CFileItemPtr(); }
+  virtual int GetViewContainerID() const { return 0; }
+  virtual int GetViewCount() const { return 0; }
+  virtual bool CanBeActivated() const { return true; }
   virtual bool IsActive() const;
-  void SetCoordsRes(const RESOLUTION_INFO &res) { m_coordsRes = res; };
-  const RESOLUTION_INFO &GetCoordsRes() const { return m_coordsRes; };
-  void SetLoadType(LOAD_TYPE loadType) { m_loadType = loadType; };
+  void SetCoordsRes(const RESOLUTION_INFO& res) { m_coordsRes = res; }
+  const RESOLUTION_INFO& GetCoordsRes() const { return m_coordsRes; }
+  void SetLoadType(LOAD_TYPE loadType) { m_loadType = loadType; }
   LOAD_TYPE GetLoadType() { return m_loadType; }
-  int GetRenderOrder() { return m_renderOrder; };
+  int GetRenderOrder() { return m_renderOrder; }
   void SetInitialVisibility() override;
   bool IsVisible() const override { return true; }; // windows are always considered visible as they implement their own
                                                    // versions of UpdateVisibility, and are deemed visible if they're in
@@ -149,13 +149,13 @@ public:
    \brief Return if the window is a custom window
    \return true if the window is an custom window otherwise false
    */
-  bool IsCustom() const { return m_custom; };
+  bool IsCustom() const { return m_custom; }
 
   /*!
    \brief Mark this window as custom window
    \param custom true if this window is a custom window, false if not
    */
-  void SetCustom(bool custom) { m_custom = custom; };
+  void SetCustom(bool custom) { m_custom = custom; }
 
   void DisableAnimations();
 
@@ -188,7 +188,7 @@ public:
 #ifdef _DEBUG
   void DumpTextureUse() override;
 #endif
-  bool HasSaveLastControl() const { return !m_defaultAlways; };
+  bool HasSaveLastControl() const { return !m_defaultAlways; }
 
   virtual void OnDeinitWindow(int nextWindowID);
 protected:

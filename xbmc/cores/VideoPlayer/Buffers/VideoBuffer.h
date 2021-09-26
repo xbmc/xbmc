@@ -61,25 +61,25 @@ public:
 
   // required if pool is registered with BufferManager BM call configure
   // as soon as it knows parameters: pixFmx, size
-  virtual void Configure(AVPixelFormat format, int size) {};
+  virtual void Configure(AVPixelFormat format, int size) {}
 
   // required if pool is registered with BufferManager
-  virtual bool IsConfigured() { return false;};
+  virtual bool IsConfigured() { return false; }
 
   // required if pool is registered with BufferManager
   // called before Get() to check if buffer pool is suitable
-  virtual bool IsCompatible(AVPixelFormat format, int size) { return false;};
+  virtual bool IsCompatible(AVPixelFormat format, int size) { return false; }
 
   // callback when BM releases buffer pool. i.e. before a new codec is created
   // clients can register a new pool on this callback
-  virtual void Released(CVideoBufferManager &videoBufferManager) {};
+  virtual void Released(CVideoBufferManager& videoBufferManager) {}
 
   // called by BM when buffer is discarded
   // pool calls back when all buffers are back home
-  virtual void Discard(CVideoBufferManager *bm, ReadyToDispose cb) { (bm->*cb)(this); };
+  virtual void Discard(CVideoBufferManager* bm, ReadyToDispose cb) { (bm->*cb)(this); }
 
   // call on Get() before returning buffer to caller
-  std::shared_ptr<IVideoBufferPool> GetPtr() { return shared_from_this(); };
+  std::shared_ptr<IVideoBufferPool> GetPtr() { return shared_from_this(); }
 };
 
 class CVideoBuffer
@@ -90,14 +90,19 @@ public:
   void Acquire();
   void Acquire(std::shared_ptr<IVideoBufferPool> pool);
   void Release();
-  int GetId() const { return m_id; };
+  int GetId() const { return m_id; }
 
   virtual AVPixelFormat GetFormat();
-  virtual uint8_t* GetMemPtr() { return nullptr; };
-  virtual void GetPlanes(uint8_t*(&planes)[YuvImage::MAX_PLANES]) {};
-  virtual void GetStrides(int(&strides)[YuvImage::MAX_PLANES]) {};
-  virtual void SetDimensions(int width, int height, const int (&strides)[YuvImage::MAX_PLANES]) {};
-  virtual void SetDimensions(int width, int height, const int (&strides)[YuvImage::MAX_PLANES], const int (&planeOffsets)[YuvImage::MAX_PLANES]) {};
+  virtual uint8_t* GetMemPtr() { return nullptr; }
+  virtual void GetPlanes(uint8_t* (&planes)[YuvImage::MAX_PLANES]) {}
+  virtual void GetStrides(int (&strides)[YuvImage::MAX_PLANES]) {}
+  virtual void SetDimensions(int width, int height, const int (&strides)[YuvImage::MAX_PLANES]) {}
+  virtual void SetDimensions(int width,
+                             int height,
+                             const int (&strides)[YuvImage::MAX_PLANES],
+                             const int (&planeOffsets)[YuvImage::MAX_PLANES])
+  {
+  }
 
   static bool CopyPicture(YuvImage* pDst, YuvImage *pSrc);
   static bool CopyNV12Picture(YuvImage* pDst, YuvImage *pSrc);

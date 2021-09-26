@@ -49,17 +49,17 @@ public:
 
   bool OnBack(int actionID) override;
 
-  bool IsDialogRunning() const override { return m_active; };
-  bool IsDialog() const override { return true;};
-  bool IsModalDialog() const override { return m_modalityType == DialogModalityType::MODAL; };
-  virtual DialogModalityType GetModalityType() const { return m_modalityType; };
+  bool IsDialogRunning() const override { return m_active; }
+  bool IsDialog() const override { return true; }
+  bool IsModalDialog() const override { return m_modalityType == DialogModalityType::MODAL; }
+  virtual DialogModalityType GetModalityType() const { return m_modalityType; }
 
   void SetAutoClose(unsigned int timeoutMs);
   void ResetAutoClose(void);
   void CancelAutoClose(void);
-  bool IsAutoClosed(void) const { return m_bAutoClosed; };
-  void SetSound(bool OnOff) { m_enableSound = OnOff; };
-  bool IsSoundEnabled() const override { return m_enableSound; };
+  bool IsAutoClosed(void) const { return m_bAutoClosed; }
+  void SetSound(bool OnOff) { m_enableSound = OnOff; }
+  bool IsSoundEnabled() const override { return m_enableSound; }
 
 protected:
   bool Load(TiXmlElement *pRootElement) override;

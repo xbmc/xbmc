@@ -44,7 +44,7 @@ public:
   /*
     This method returns latency of hardware.
   */
-  virtual double GetLatency() { return 0.0; };
+  virtual double GetLatency() { return 0.0; }
 
   /*!
    * @brief Adds packets to be sent out, this routine MUST block or sleep.
@@ -59,7 +59,7 @@ public:
    * @brief instruct the sink to add a pause
    * @param millis ms to pause
    */
-  virtual void AddPause(unsigned int millis) {};
+  virtual void AddPause(unsigned int millis) {}
 
   /*!
    * @brief Return a timestamped status structure with delay and sink info
@@ -70,16 +70,16 @@ public:
   /*
     Drain the sink
    */
-  virtual void Drain() {};
+  virtual void Drain() {}
 
   /*
     Indicates if sink can handle volume control.
   */
-  virtual bool  HasVolume() {return false;};
+  virtual bool HasVolume() { return false; }
 
   /*
     This method sets the volume control, volume ranges from 0.0 to 1.0.
   */
-  virtual void  SetVolume(float volume) {};
+  virtual void SetVolume(float volume) {}
 };
 

@@ -25,13 +25,13 @@ public:
   void SetMovie(const CFileItem *item);
   bool NeedRefresh() const;
   bool RefreshAll() const;
-  bool HasUpdatedThumb() const { return m_hasUpdatedThumb; };
-  bool HasUpdatedUserrating() const { return m_hasUpdatedUserrating; };
+  bool HasUpdatedThumb() const { return m_hasUpdatedThumb; }
+  bool HasUpdatedUserrating() const { return m_hasUpdatedUserrating; }
 
   std::string GetThumbnail() const;
   CFileItemPtr GetCurrentListItem(int offset = 0) override { return m_movieItem; }
-  const CFileItemList& CurrentDirectory() const { return *m_castList; };
-  bool HasListItems() const override { return true; };
+  const CFileItemList& CurrentDirectory() const { return *m_castList; }
+  bool HasListItems() const override { return true; }
 
   static void AddItemPathToFileBrowserSources(VECSOURCES &sources, const CFileItem &item);
 

@@ -34,7 +34,7 @@ public:
                     const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus);
 
   ~CGUIResizeControl() override = default;
-  CGUIResizeControl *Clone() const override { return new CGUIResizeControl(*this); };
+  CGUIResizeControl* Clone() const override { return new CGUIResizeControl(*this); }
 
   void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
   void Render() override;
@@ -49,7 +49,7 @@ public:
   void SetInvalid() override;
   void SetPosition(float posX, float posY) override;
   void SetLimits(float x1, float y1, float x2, float y2);
-  bool CanFocus() const override { return true; };
+  bool CanFocus() const override { return true; }
 
 protected:
   EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event) override;

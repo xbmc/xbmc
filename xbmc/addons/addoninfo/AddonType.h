@@ -77,7 +77,7 @@ class CAddonDatabaseSerializer;
 class CAddonType : public CAddonExtensions
 {
 public:
-  CAddonType(TYPE type = ADDON_UNKNOWN) : m_type(type) {};
+  CAddonType(TYPE type = ADDON_UNKNOWN) : m_type(type) {}
 
   TYPE Type() const { return m_type; }
   std::string LibPath() const;

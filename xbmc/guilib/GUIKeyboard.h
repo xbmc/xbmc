@@ -24,7 +24,7 @@ typedef void (*char_callback_t) (CGUIKeyboard *ref, const std::string &typedStri
 class CGUIKeyboard : public ITimerCallback
 {
   public:
-    CGUIKeyboard():m_idleTimer(this){};
+    CGUIKeyboard() : m_idleTimer(this) {}
     ~CGUIKeyboard() override = default;
 
     // entrypoint

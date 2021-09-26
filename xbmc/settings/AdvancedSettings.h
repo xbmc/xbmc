@@ -116,7 +116,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     void Initialize(const CAppParamParser &params, CSettingsManager& settingsMgr);
     void Uninitialize(CSettingsManager& settingsMgr);
-    bool Initialized() const { return m_initialized; };
+    bool Initialized() const { return m_initialized; }
     void AddSettingsFile(const std::string &filename);
     bool Load(const CProfileManager &profileManager);
 
@@ -348,7 +348,10 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     void SetDebugMode(bool debug);
 
     //! \brief Toggles dirty-region visualization
-    void ToggleDirtyRegionVisualization() { m_guiVisualizeDirtyRegions = !m_guiVisualizeDirtyRegions; };
+    void ToggleDirtyRegionVisualization()
+    {
+      m_guiVisualizeDirtyRegions = !m_guiVisualizeDirtyRegions;
+    }
 
     // runtime settings which cannot be set from advancedsettings.xml
     std::string m_videoExtensions;

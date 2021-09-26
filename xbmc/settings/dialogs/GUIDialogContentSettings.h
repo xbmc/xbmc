@@ -26,7 +26,7 @@ public:
   CGUIDialogContentSettings();
 
   // specialization of CGUIWindow
-  bool HasListItems() const override { return true; };
+  bool HasListItems() const override { return true; }
 
   CONTENT_TYPE GetContent() const { return m_content; }
   void SetContent(CONTENT_TYPE content);

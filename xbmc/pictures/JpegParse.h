@@ -47,8 +47,8 @@ class CJpegParse
     CJpegParse();
    ~CJpegParse(void) = default;
     bool Process(const char *picFileName);
-    const ExifInfo_t * GetExifInfo() const { return &m_ExifInfo; };
-    const IPTCInfo_t * GetIptcInfo() const { return &m_IPTCInfo; };
+    const ExifInfo_t* GetExifInfo() const { return &m_ExifInfo; }
+    const IPTCInfo_t* GetIptcInfo() const { return &m_IPTCInfo; }
 
   private:
     bool ExtractInfo(XFILE::CFile& infile);

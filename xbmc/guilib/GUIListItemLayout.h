@@ -29,11 +29,11 @@ public:
   void SetFocusedItem(unsigned int focus);
   bool IsAnimating(ANIMATION_TYPE animType);
   void ResetAnimation(ANIMATION_TYPE animType);
-  void SetInvalid() { m_invalidated = true; };
+  void SetInvalid() { m_invalidated = true; }
   void FreeResources(bool immediately = false);
-  void SetParentControl(CGUIControl *control) { m_group.SetParentControl(control); };
+  void SetParentControl(CGUIControl* control) { m_group.SetParentControl(control); }
 
-//#ifdef GUILIB_PYTHON_COMPATIBILITY
+  //#ifdef GUILIB_PYTHON_COMPATIBILITY
   void CreateListControlLayouts(float width, float height, bool focused, const CLabelInfo &labelInfo, const CLabelInfo &labelInfo2, const CTextureInfo &texture, const CTextureInfo &textureFocus, float texHeight, float iconWidth, float iconHeight, const std::string &nofocusCondition, const std::string &focusCondition);
 //#endif
 

@@ -13,7 +13,7 @@ class IScreenshotSurface
 public:
   virtual ~IScreenshotSurface() = default;
   virtual bool Capture() { return false; }
-  virtual void CaptureVideo(bool blendToBuffer) { };
+  virtual void CaptureVideo(bool blendToBuffer) {}
 
   int GetWidth() const { return m_width; }
   int GetHeight() const { return m_height; }

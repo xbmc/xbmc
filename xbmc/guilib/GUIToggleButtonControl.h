@@ -24,7 +24,7 @@ class CGUIToggleButtonControl : public CGUIButtonControl
 public:
   CGUIToggleButtonControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus, const CTextureInfo& altTextureFocus, const CTextureInfo& altTextureNoFocus, const CLabelInfo &labelInfo, bool wrapMultiline = false);
   ~CGUIToggleButtonControl(void) override;
-  CGUIToggleButtonControl *Clone() const override { return new CGUIToggleButtonControl(*this); };
+  CGUIToggleButtonControl* Clone() const override { return new CGUIToggleButtonControl(*this); }
 
   void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
   void Render() override;

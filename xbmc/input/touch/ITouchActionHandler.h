@@ -37,7 +37,7 @@ public:
   /*!
    * \brief A touch action has been aborted
    */
-  virtual void OnTouchAbort(){};
+  virtual void OnTouchAbort() {}
 
   /*!
    * \brief A single touch has started

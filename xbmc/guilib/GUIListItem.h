@@ -51,7 +51,7 @@ public:
   CGUIListItem(const CGUIListItem& item);
   explicit CGUIListItem(const std::string& strLabel);
   virtual ~CGUIListItem(void);
-  virtual CGUIListItem *Clone() const { return new CGUIListItem(*this); };
+  virtual CGUIListItem* Clone() const { return new CGUIListItem(*this); }
 
   CGUIListItem& operator =(const CGUIListItem& item);
 
@@ -123,7 +123,7 @@ public:
   bool IsSelected() const;
 
   bool HasOverlay() const;
-  virtual bool IsFileItem() const { return false; };
+  virtual bool IsFileItem() const { return false; }
 
   void SetLayout(CGUIListItemLayoutPtr layout);
   CGUIListItemLayout *GetLayout();
@@ -156,7 +156,7 @@ public:
   void Serialize(CVariant& value);
 
   bool       HasProperty(const std::string &strKey) const;
-  bool       HasProperties() const { return !m_mapProperties.empty(); };
+  bool HasProperties() const { return !m_mapProperties.empty(); }
   void       ClearProperty(const std::string &strKey);
 
   const CVariant &GetProperty(const std::string &strKey) const;

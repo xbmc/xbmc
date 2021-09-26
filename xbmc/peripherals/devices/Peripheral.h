@@ -80,7 +80,7 @@ public:
   int ProductId(void) const { return m_iProductId; }
   const char* ProductIdAsString(void) const { return m_strProductId.c_str(); }
   PeripheralType Type(void) const { return m_type; }
-  PeripheralBusType GetBusType(void) const { return m_busType; };
+  PeripheralBusType GetBusType(void) const { return m_busType; }
   const std::string& DeviceName(void) const { return m_strDeviceName; }
   bool IsHidden(void) const { return m_bHidden; }
   void SetHidden(bool bSetTo = true) { m_bHidden = bSetTo; }
@@ -134,7 +134,7 @@ public:
    * @brief Called when a setting changed.
    * @param strChangedSetting The changed setting.
    */
-  virtual void OnSettingChanged(const std::string& strChangedSetting){};
+  virtual void OnSettingChanged(const std::string& strChangedSetting) {}
 
   /*!
    * @brief Called when this device is removed, before calling the destructor.

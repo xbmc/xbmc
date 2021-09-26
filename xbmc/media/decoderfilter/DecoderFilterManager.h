@@ -47,7 +47,7 @@ public:
   * \param name decodername
   * \return nothing.
   */
-  CDecoderFilter(const std::string& name) : m_name(name) {};
+  CDecoderFilter(const std::string& name) : m_name(name) {}
 
   /**
   * \fn CDecoderFilter::CDecoderFilter(const std::string& name, uint32_t flags, uint32_t maxWidth, uint32_t maxHeight);
@@ -65,7 +65,7 @@ public:
   * \fn CDecoderFilter::operator < (const CDecoderFilter& other);
   * \brief used for sorting / replacing / find
   */
-  bool operator < (const CDecoderFilter& other) const { return m_name < other.m_name; };
+  bool operator<(const CDecoderFilter& other) const { return m_name < other.m_name; }
 
   /**
   * \fn CDecoderFilter::isValid(const CDVDStreamInfo& streamInfo);
@@ -109,8 +109,8 @@ private:
 class CDecoderFilterManager
 {
 public:
-  CDecoderFilterManager() { Load(); };
-  virtual ~CDecoderFilterManager() { Save(); };
+  CDecoderFilterManager() { Load(); }
+  virtual ~CDecoderFilterManager() { Save(); }
 
   /**
   * \fn bool CDecoderFilterManager::add(const CDecoderFilter& filter);

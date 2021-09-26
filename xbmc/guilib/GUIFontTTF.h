@@ -87,7 +87,7 @@ public:
   virtual CVertexBuffer CreateVertexBuffer(const std::vector<SVertex> &vertices) const { assert(false); return CVertexBuffer(); }
   virtual void DestroyVertexBuffer(CVertexBuffer &bufferHandle) const {}
 
-  const std::string& GetFileName() const { return m_strFileName; };
+  const std::string& GetFileName() const { return m_strFileName; }
 
 protected:
   explicit CGUIFontTTF(const std::string& strFileName);

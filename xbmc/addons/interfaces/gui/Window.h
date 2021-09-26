@@ -264,8 +264,8 @@ extern "C"
     CGUIAddonWindowDialog(int id, const std::string& strXML, ADDON::CAddonDll* addon);
 
     bool IsDialogRunning() const override { return m_bRunning; }
-    bool IsDialog() const override { return true; };
-    bool IsModalDialog() const override { return true; };
+    bool IsDialog() const override { return true; }
+    bool IsModalDialog() const override { return true; }
 
     void Show(bool show = true, bool modal = true);
     void Show_Internal(bool show = true);

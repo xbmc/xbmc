@@ -91,20 +91,26 @@ public:
   void SetUseCache(const bool useCache = true);
   bool SetAspectRatio(const CAspectRatio &aspect);
 
-  const std::string& GetFileName() const { return m_info.filename; };
-  float GetTextureWidth() const { return m_frameWidth; };
-  float GetTextureHeight() const { return m_frameHeight; };
-  float GetWidth() const { return m_width; };
-  float GetHeight() const { return m_height; };
-  float GetXPosition() const { return m_posX; };
-  float GetYPosition() const { return m_posY; };
+  const std::string& GetFileName() const { return m_info.filename; }
+  float GetTextureWidth() const { return m_frameWidth; }
+  float GetTextureHeight() const { return m_frameHeight; }
+  float GetWidth() const { return m_width; }
+  float GetHeight() const { return m_height; }
+  float GetXPosition() const { return m_posX; }
+  float GetYPosition() const { return m_posY; }
   int GetOrientation() const;
-  const CRect &GetRenderRect() const { return m_vertex; };
-  bool IsLazyLoaded() const { return m_info.useLarge; };
+  const CRect& GetRenderRect() const { return m_vertex; }
+  bool IsLazyLoaded() const { return m_info.useLarge; }
 
-  bool HitTest(const CPoint &point) const { return CRect(m_posX, m_posY, m_posX + m_width, m_posY + m_height).PtInRect(point); };
-  bool IsAllocated() const { return m_isAllocated != NO; };
-  bool FailedToAlloc() const { return m_isAllocated == NORMAL_FAILED || m_isAllocated == LARGE_FAILED; };
+  bool HitTest(const CPoint& point) const
+  {
+    return CRect(m_posX, m_posY, m_posX + m_width, m_posY + m_height).PtInRect(point);
+  }
+  bool IsAllocated() const { return m_isAllocated != NO; }
+  bool FailedToAlloc() const
+  {
+    return m_isAllocated == NORMAL_FAILED || m_isAllocated == LARGE_FAILED;
+  }
   bool ReadyToRender() const;
 
 protected:

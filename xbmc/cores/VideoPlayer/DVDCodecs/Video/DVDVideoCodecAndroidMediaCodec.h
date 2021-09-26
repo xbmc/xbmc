@@ -54,8 +54,7 @@ class CMediaCodecVideoBufferPool;
 class CMediaCodecVideoBuffer : public CVideoBuffer
 {
 public:
-  CMediaCodecVideoBuffer(int id)
-    : CVideoBuffer(id){};
+  CMediaCodecVideoBuffer(int id) : CVideoBuffer(id) {}
   ~CMediaCodecVideoBuffer() override = default;
 
   void Set(int internalId,
@@ -76,7 +75,7 @@ public:
   void GetTransformMatrix(float* textureMatrix);
   void UpdateTexImage();
   void RenderUpdate(const CRect& DestRect, int64_t displayTime);
-  bool HasSurfaceTexture() const { return m_surfacetexture.operator bool(); };
+  bool HasSurfaceTexture() const { return m_surfacetexture.operator bool(); }
 
 private:
   int m_bufferId = -1;
@@ -92,7 +91,9 @@ class CMediaCodecVideoBufferPool : public IVideoBufferPool
 {
 public:
   CMediaCodecVideoBufferPool(std::shared_ptr<CJNIMediaCodec> mediaCodec)
-    : m_codec(std::move(mediaCodec)){};
+    : m_codec(std::move(mediaCodec))
+  {
+  }
 
   ~CMediaCodecVideoBufferPool() override;
 
@@ -127,7 +128,7 @@ public:
   void Reset() override;
   bool Reconfigure(CDVDStreamInfo& hints) override;
   VCReturn GetPicture(VideoPicture* pVideoPicture) override;
-  const char* GetName() override { return m_formatname.c_str(); };
+  const char* GetName() override { return m_formatname.c_str(); }
   void SetCodecControl(int flags) override;
   unsigned GetAllowedReferences() override;
 

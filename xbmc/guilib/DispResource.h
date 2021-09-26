@@ -14,9 +14,9 @@
 class IDispResource
 {
 public:
-  virtual void OnLostDisplay() {};
-  virtual void OnResetDisplay() {};
-  virtual void OnAppFocusChange(bool focus) {};
+  virtual void OnLostDisplay() {}
+  virtual void OnResetDisplay() {}
+  virtual void OnAppFocusChange(bool focus) {}
 };
 
 // interface used by clients to register into render loop

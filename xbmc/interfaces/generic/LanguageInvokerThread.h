@@ -26,8 +26,8 @@ public:
 
   virtual InvokerState GetState() const;
 
-  const std::string& GetScript() const { return m_script; };
-  LanguageInvokerPtr GetInvoker() const { return m_invoker; };
+  const std::string& GetScript() const { return m_script; }
+  LanguageInvokerPtr GetInvoker() const { return m_invoker; }
   bool Reuseable(const std::string& script) const
   {
     return !m_bStop && m_reusable && GetState() == InvokerStateScriptDone && m_script == script;

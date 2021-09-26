@@ -74,8 +74,8 @@ public:
   void SetAlphaBlendEnable(bool enable);
 
   // empty overrides
-  bool IsExtSupported(const char* extension) const override { return false; };
-  bool ResetRenderSystem(int width, int height) override { return true; };
+  bool IsExtSupported(const char* extension) const override { return false; }
+  bool ResetRenderSystem(int width, int height) override { return true; }
 
 protected:
   virtual void PresentRenderImpl(bool rendered) = 0;

@@ -62,7 +62,7 @@ namespace XBMCAddon
       ///
       st_mode();
 #else
-      inline long long st_mode() { return st.st_mode; };
+      inline long long st_mode() { return st.st_mode; }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -75,7 +75,7 @@ namespace XBMCAddon
       ///
       st_ino();
 #else
-      inline long long st_ino() { return st.st_ino; };
+      inline long long st_ino() { return st.st_ino; }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -90,7 +90,7 @@ namespace XBMCAddon
       ///
       st_dev();
 #else
-      inline long long st_dev() { return st.st_dev; };
+      inline long long st_dev() { return st.st_dev; }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -103,7 +103,7 @@ namespace XBMCAddon
       ///
       st_nlink();
 #else
-      inline long long st_nlink() { return st.st_nlink; };
+      inline long long st_nlink() { return st.st_nlink; }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -116,7 +116,7 @@ namespace XBMCAddon
       ///
       st_uid();
 #else
-      inline long long st_uid() { return st.st_uid; };
+      inline long long st_uid() { return st.st_uid; }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -129,7 +129,7 @@ namespace XBMCAddon
       ///
       st_gid();
 #else
-      inline long long st_gid() { return st.st_gid; };
+      inline long long st_gid() { return st.st_gid; }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -147,7 +147,7 @@ namespace XBMCAddon
       ///
       st_size();
 #else
-      inline long long st_size() { return st.st_size; };
+      inline long long st_size() { return st.st_size; }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -173,7 +173,7 @@ namespace XBMCAddon
       ///
       st_mtime();
 #else
-      inline long long mtime() { return st.st_mtime; };
+      inline long long mtime() { return st.st_mtime; }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -186,7 +186,7 @@ namespace XBMCAddon
       ///
       st_ctime();
 #else
-      inline long long ctime() { return st.st_ctime; };
+      inline long long ctime() { return st.st_ctime; }
 #endif
     };
     /// @}

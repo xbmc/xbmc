@@ -93,8 +93,8 @@ public:
 
   std::string ID() const override{ return m_addonInfo->ID(); }
   std::string Name() const override { return m_addonInfo->Name(); }
-  bool IsInUse() const override{ return false; };
-  bool IsBinary() const override { return m_addonInfo->IsBinary(); };
+  bool IsInUse() const override { return false; }
+  bool IsBinary() const override { return m_addonInfo->IsBinary(); }
   AddonVersion Version() const override { return m_addonInfo->Version(); }
   AddonVersion MinVersion() const override { return m_addonInfo->MinVersion(); }
   std::string Summary() const override { return m_addonInfo->Summary(); }
@@ -104,9 +104,9 @@ public:
   std::string LibPath() const override;
   std::string Author() const override { return m_addonInfo->Author(); }
   std::string ChangeLog() const override { return m_addonInfo->ChangeLog(); }
-  std::string Icon() const override { return m_addonInfo->Icon(); };
+  std::string Icon() const override { return m_addonInfo->Icon(); }
   ArtMap Art() const override { return m_addonInfo->Art(); }
-  std::vector<std::string> Screenshots() const override { return m_addonInfo->Screenshots(); };
+  std::vector<std::string> Screenshots() const override { return m_addonInfo->Screenshots(); }
   std::string Disclaimer() const override { return m_addonInfo->Disclaimer(); }
   AddonLifecycleState LifecycleState() const override { return m_addonInfo->LifecycleState(); }
   std::string LifecycleStateDescription() const override

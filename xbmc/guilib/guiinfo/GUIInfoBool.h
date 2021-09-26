@@ -32,7 +32,7 @@ public:
   explicit CGUIInfoBool(bool value = false);
   ~CGUIInfoBool();
 
-  operator bool() const { return m_value; };
+  operator bool() const { return m_value; }
 
   void Update(const CGUIListItem *item = NULL);
   void Parse(const std::string &expression, int context);

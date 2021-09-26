@@ -52,11 +52,11 @@ public:
   void UnShuffle();
   bool IsShuffled() const { return m_bShuffled; }
 
-  void SetPlayed(bool bPlayed) { m_bWasPlayed = true; };
-  bool WasPlayed() const { return m_bWasPlayed; };
+  void SetPlayed(bool bPlayed) { m_bWasPlayed = true; }
+  bool WasPlayed() const { return m_bWasPlayed; }
 
   void SetUnPlayable(int iItem);
-  int GetPlayable() const { return m_iPlayableItems; };
+  int GetPlayable() const { return m_iPlayableItems; }
 
   void UpdateItem(const CFileItem *item);
 

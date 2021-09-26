@@ -33,7 +33,7 @@ template<typename F>
 class CLambdaJob : public CJob
 {
 public:
-  CLambdaJob(F&& f) : m_f(std::forward<F>(f)) {};
+  CLambdaJob(F&& f) : m_f(std::forward<F>(f)) {}
   bool DoWork() override
   {
     m_f();

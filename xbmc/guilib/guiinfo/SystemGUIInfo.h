@@ -32,7 +32,7 @@ public:
   bool GetInt(int& value, const CGUIListItem *item, int contextWindow, const CGUIInfo &info) const override;
   bool GetBool(bool& value, const CGUIListItem *item, int contextWindow, const CGUIInfo &info) const override;
 
-  float GetFPS() const { return m_fps; };
+  float GetFPS() const { return m_fps; }
   void UpdateFPS();
 
 private:

@@ -51,7 +51,7 @@ public:
   void Pause(bool bPaused);
 
   // Demux interface
-  CDVDInputStream::IDemux* GetIDemux() override { return nullptr; };
+  CDVDInputStream::IDemux* GetIDemux() override { return nullptr; }
   bool OpenDemux() override;
   DemuxPacket* ReadDemux() override;
   CDemuxStream* GetStream(int iStreamId) const override;

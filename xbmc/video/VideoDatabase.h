@@ -1030,10 +1030,10 @@ private:
    */
   int GetPlayCount(int iFileId);
 
-  int GetMinSchemaVersion() const override { return 75; };
+  int GetMinSchemaVersion() const override { return 75; }
   int GetSchemaVersion() const override;
-  virtual int GetExportVersion() const { return 1; };
-  const char *GetBaseDBName() const override { return "MyVideos"; };
+  virtual int GetExportVersion() const { return 1; }
+  const char* GetBaseDBName() const override { return "MyVideos"; }
 
   void ConstructPath(std::string& strDest, const std::string& strPath, const std::string& strFileName);
   void SplitPath(const std::string& strFileNameAndPath, std::string& strPath, std::string& strFileName);

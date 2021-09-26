@@ -46,7 +46,9 @@ class CSinkControlProtocol : public Protocol
 {
 public:
   CSinkControlProtocol(std::string name, CEvent* inEvent, CEvent* outEvent)
-    : Protocol(std::move(name), inEvent, outEvent){};
+    : Protocol(std::move(name), inEvent, outEvent)
+  {
+  }
   enum OutSignal
   {
     CONFIGURE,
@@ -71,7 +73,9 @@ class CSinkDataProtocol : public Protocol
 {
 public:
   CSinkDataProtocol(std::string name, CEvent* inEvent, CEvent* outEvent)
-    : Protocol(std::move(name), inEvent, outEvent){};
+    : Protocol(std::move(name), inEvent, outEvent)
+  {
+  }
   enum OutSignal
   {
     SAMPLE = 0,

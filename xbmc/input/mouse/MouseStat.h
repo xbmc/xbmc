@@ -86,9 +86,9 @@ public:
   bool IsEnabled() const;
 
   void SetActive(bool active = true);
-  void SetState(MOUSE_STATE state) { m_pointerState = state; };
+  void SetState(MOUSE_STATE state) { m_pointerState = state; }
   void SetEnabled(bool enabled = true);
-  MOUSE_STATE GetState() const { return m_pointerState; };
+  MOUSE_STATE GetState() const { return m_pointerState; }
   uint32_t GetKey() const;
 
   int GetHold(int ButtonID) const;

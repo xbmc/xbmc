@@ -40,7 +40,7 @@ public:
   IGUIRenderSettings* GetRenderSettings() const;
 
   // implementation of CGUIControl
-  CGUIGameControl* Clone() const override { return new CGUIGameControl(*this); };
+  CGUIGameControl* Clone() const override { return new CGUIGameControl(*this); }
   void Process(unsigned int currentTime, CDirtyRegionList& dirtyregions) override;
   void Render() override;
   void RenderEx() override;

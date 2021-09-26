@@ -50,7 +50,7 @@ namespace XFILE
 
     void GetSources(VECSOURCES &sources) const;
 
-    void AllowNonLocalSources(bool allow) { m_allowNonLocalSources = allow; };
+    void AllowNonLocalSources(bool allow) { m_allowNonLocalSources = allow; }
 
     std::shared_ptr<IDirectory> GetDirImpl() { return m_pDir; }
     void ReleaseDirImpl() { m_pDir.reset(); }

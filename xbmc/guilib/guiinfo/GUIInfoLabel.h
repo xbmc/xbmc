@@ -63,7 +63,7 @@ public:
   bool IsConstant() const;
   bool IsEmpty() const;
 
-  const std::string &GetFallback() const { return m_fallback; };
+  const std::string& GetFallback() const { return m_fallback; }
 
   static std::string GetLabel(const std::string &label, int contextWindow = 0, bool preferImage = false);
   static std::string GetItemLabel(const std::string &label, const CGUIListItem *item, bool preferImage = false);

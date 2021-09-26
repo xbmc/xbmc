@@ -52,7 +52,7 @@ public:
   CGUIStaticItem(const TiXmlElement *element, int contextWindow);
   explicit CGUIStaticItem(const CFileItem &item); // for python
   ~CGUIStaticItem() override = default;
-  CGUIListItem *Clone() const override { return new CGUIStaticItem(*this); };
+  CGUIListItem* Clone() const override { return new CGUIStaticItem(*this); }
 
   /*! \brief update any infolabels in the items properties
    Runs through all the items properties, updating any that should be
@@ -77,7 +77,8 @@ public:
    */
   void SetVisibleCondition(const std::string &condition, int context);
 
-  const CGUIAction &GetClickActions() const { return m_clickActions; };
+  const CGUIAction& GetClickActions() const { return m_clickActions; }
+
 private:
   typedef std::vector< std::pair<KODI::GUILIB::GUIINFO::CGUIInfoLabel, std::string> > InfoVector;
   InfoVector m_info;

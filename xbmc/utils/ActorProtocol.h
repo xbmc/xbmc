@@ -32,9 +32,10 @@ class CPayloadWrap : public CPayloadWrapBase
 {
 public:
   ~CPayloadWrap() override = default;
-  CPayloadWrap(Payload *data) {m_pPayload.reset(data);};
-  CPayloadWrap(Payload &data) {m_pPayload.reset(new Payload(data));};
-  Payload *GetPlayload() {return m_pPayload.get();};
+  CPayloadWrap(Payload* data) { m_pPayload.reset(data); }
+  CPayloadWrap(Payload& data) { m_pPayload.reset(new Payload(data)); }
+  Payload* GetPlayload() { return m_pPayload.get(); }
+
 protected:
   std::unique_ptr<Payload> m_pPayload;
 };
@@ -98,10 +99,10 @@ public:
   void Purge();
   void PurgeIn(int signal);
   void PurgeOut(int signal);
-  void DeferIn(bool value) {inDefered = value;};
-  void DeferOut(bool value) {outDefered = value;};
-  void Lock() {criticalSection.lock();};
-  void Unlock() {criticalSection.unlock();};
+  void DeferIn(bool value) { inDefered = value; }
+  void DeferOut(bool value) { outDefered = value; }
+  void Lock() { criticalSection.lock(); }
+  void Unlock() { criticalSection.unlock(); }
   std::string portName;
 
 protected:

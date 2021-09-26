@@ -122,7 +122,7 @@ public:
    no windows should be able to be initialized.
    \return true if the window manager is initialized, false otherwise.
    */
-  bool Initialized() const { return m_initialized; };
+  bool Initialized() const { return m_initialized; }
 
   /*! \brief Create and initialize all windows and dialogs
    */
@@ -147,8 +147,12 @@ public:
    * \param id the window id
    * \return the window with for the given type \code{T} or null
    */
-  template<typename T, typename std::enable_if<std::is_base_of<CGUIWindow,T>::value>::type* = nullptr>
-  T* GetWindow(int id) const { return dynamic_cast<T *>(GetWindow(id)); };
+  template<typename T,
+           typename std::enable_if<std::is_base_of<CGUIWindow, T>::value>::type* = nullptr>
+  T* GetWindow(int id) const
+  {
+    return dynamic_cast<T*>(GetWindow(id));
+  }
 
   /*! \brief Return the window with the given id or null.
    *
@@ -210,12 +214,15 @@ public:
    *
    * \return true if the given window is an addon window, otherwise false.
    */
-  bool IsAddonWindow(int id) const { return (id >= WINDOW_ADDON_START && id <= WINDOW_ADDON_END); };
+  bool IsAddonWindow(int id) const { return (id >= WINDOW_ADDON_START && id <= WINDOW_ADDON_END); }
   /*! \brief Checks if the given window is a python window.
    *
    * \return true if the given window is a python window, otherwise false.
    */
-  bool IsPythonWindow(int id) const { return (id >= WINDOW_PYTHON_START && id <= WINDOW_PYTHON_END); };
+  bool IsPythonWindow(int id) const
+  {
+    return (id >= WINDOW_PYTHON_START && id <= WINDOW_PYTHON_END);
+  }
 
   bool HasVisibleControls();
 

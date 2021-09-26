@@ -32,8 +32,10 @@ class CWinSystemX11GLContext;
 class CVideoSyncGLX : public CVideoSync, IDispResource
 {
 public:
-  explicit CVideoSyncGLX(void *clock, CWinSystemX11GLContext& winSystem) :
-    CVideoSync(clock), m_winSystem(winSystem) {};
+  explicit CVideoSyncGLX(void* clock, CWinSystemX11GLContext& winSystem)
+    : CVideoSync(clock), m_winSystem(winSystem)
+  {
+  }
   bool Setup(PUPDATECLOCK func) override;
   void Run(CEvent& stopEvent) override;
   void Cleanup() override;

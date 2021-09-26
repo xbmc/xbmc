@@ -57,7 +57,7 @@ public:
   void Register(IDispResource* resource) override;
   void Unregister(IDispResource* resource) override;
 
-  std::shared_ptr<CVideoLayerBridge> GetVideoLayerBridge() const { return m_videoLayerBridge; };
+  std::shared_ptr<CVideoLayerBridge> GetVideoLayerBridge() const { return m_videoLayerBridge; }
   void RegisterVideoLayerBridge(std::shared_ptr<CVideoLayerBridge> bridge)
   {
     m_videoLayerBridge = std::move(bridge);

@@ -19,7 +19,7 @@ public:
   CGUIDialogLibExportSettings();
 
   // specialization of CGUIWindow
-  bool HasListItems() const override { return true; };
+  bool HasListItems() const override { return true; }
   static bool Show(CLibExportSettings& settings);
 
 protected:

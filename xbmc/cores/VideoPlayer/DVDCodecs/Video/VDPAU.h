@@ -243,7 +243,9 @@ class CMixerControlProtocol : public Actor::Protocol
 {
 public:
   CMixerControlProtocol(std::string name, CEvent* inEvent, CEvent* outEvent)
-    : Protocol(std::move(name), inEvent, outEvent){};
+    : Protocol(std::move(name), inEvent, outEvent)
+  {
+  }
   enum OutSignal
   {
     INIT = 0,
@@ -261,7 +263,9 @@ class CMixerDataProtocol : public Actor::Protocol
 {
 public:
   CMixerDataProtocol(std::string name, CEvent* inEvent, CEvent* outEvent)
-    : Protocol(std::move(name), inEvent, outEvent){};
+    : Protocol(std::move(name), inEvent, outEvent)
+  {
+  }
   enum OutSignal
   {
     FRAME,
@@ -352,7 +356,9 @@ class COutputControlProtocol : public Actor::Protocol
 {
 public:
   COutputControlProtocol(std::string name, CEvent* inEvent, CEvent* outEvent)
-    : Actor::Protocol(std::move(name), inEvent, outEvent){};
+    : Actor::Protocol(std::move(name), inEvent, outEvent)
+  {
+  }
   enum OutSignal
   {
     INIT,
@@ -372,7 +378,9 @@ class COutputDataProtocol : public Actor::Protocol
 {
 public:
   COutputDataProtocol(std::string name, CEvent* inEvent, CEvent* outEvent)
-    : Actor::Protocol(std::move(name), inEvent, outEvent){};
+    : Actor::Protocol(std::move(name), inEvent, outEvent)
+  {
+  }
   enum OutSignal
   {
     NEWFRAME = 0,

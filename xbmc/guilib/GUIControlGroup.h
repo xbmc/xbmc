@@ -28,7 +28,7 @@ public:
   CGUIControlGroup(int parentID, int controlID, float posX, float posY, float width, float height);
   CGUIControlGroup(const CGUIControlGroup &from);
   ~CGUIControlGroup(void) override;
-  CGUIControlGroup *Clone() const override { return new CGUIControlGroup(*this); };
+  CGUIControlGroup* Clone() const override { return new CGUIControlGroup(*this); }
 
   void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
   void Render() override;
@@ -61,12 +61,16 @@ public:
   bool InsertControl(CGUIControl *control, const CGUIControl *insertPoint);
   virtual bool RemoveControl(const CGUIControl *control);
   virtual void ClearAll();
-  void SetDefaultControl(int id, bool always) { m_defaultControl = id; m_defaultAlways = always; };
-  void SetRenderFocusedLast(bool renderLast) { m_renderFocusedLast = renderLast; };
+  void SetDefaultControl(int id, bool always)
+  {
+    m_defaultControl = id;
+    m_defaultAlways = always;
+  }
+  void SetRenderFocusedLast(bool renderLast) { m_renderFocusedLast = renderLast; }
 
   void SaveStates(std::vector<CControlState> &states) override;
 
-  bool IsGroup() const override { return true; };
+  bool IsGroup() const override { return true; }
 
 #ifdef _DEBUG
   void DumpTextureUse() override;
@@ -89,7 +93,11 @@ private:
 
   struct IDCollectorList
   {
-    ~IDCollectorList() { for (auto item : m_items) delete item; };
+    ~IDCollectorList()
+    {
+      for (auto item : m_items)
+        delete item;
+    }
 
     std::vector<CGUIControl *> *Get() {
       if (++m_stackDepth > m_items.size())
@@ -97,7 +105,7 @@ private:
       return m_items[m_stackDepth - 1];
     }
 
-    void Release() { --m_stackDepth; };
+    void Release() { --m_stackDepth; }
 
     COLLECTORTYPE m_items;
     size_t m_stackDepth = 0;
@@ -105,11 +113,9 @@ private:
 
   struct IDCollector
   {
-    explicit IDCollector(IDCollectorList &list)
-      : m_list(list)
-      , m_collector(list.Get()) {};
+    explicit IDCollector(IDCollectorList& list) : m_list(list), m_collector(list.Get()) {}
 
-    ~IDCollector() { m_list.Release(); };
+    ~IDCollector() { m_list.Release(); }
 
     IDCollectorList &m_list;
     std::vector<CGUIControl *> *m_collector;

@@ -143,7 +143,7 @@ public:
   void Begin();
   void End();
 
-  uint32_t GetStyle() const { return m_style; };
+  uint32_t GetStyle() const { return m_style; }
 
   static wchar_t RemapGlyph(wchar_t letter);
 

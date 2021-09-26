@@ -115,7 +115,7 @@ public:
     or ALBUMARTIST, e.g. COMPOSER or CONDUCTOR etc.
   \return a vector of all contributing artist names and their roles
   */
-  const VECMUSICROLES& GetContributors() const { return m_musicRoles; };
+  const VECMUSICROLES& GetContributors() const { return m_musicRoles; }
   //void AddArtistRole(const int &role, const std::string &artist);
   void AppendArtistRole(const CMusicRole& musicRole);
 

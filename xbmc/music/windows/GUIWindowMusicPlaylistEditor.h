@@ -29,7 +29,7 @@ protected:
   bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;
   void OnPrepareFileItems(CFileItemList &items) override;
   void OnQueueItem(int iItem, bool) override;
-  std::string GetStartFolder(const std::string &dir) override { return ""; };
+  std::string GetStartFolder(const std::string& dir) override { return ""; }
 
   void OnSourcesContext();
   void OnPlaylistContext();

@@ -31,7 +31,7 @@ public:
   CGUIDialogInfoProviderSettings();
 
   // specialization of CGUIWindow
-  bool HasListItems() const override { return true; };
+  bool HasListItems() const override { return true; }
 
   const ADDON::ScraperPtr& GetAlbumScraper() const { return m_albumscraper; }
   void SetAlbumScraper(ADDON::ScraperPtr scraper) { m_albumscraper = std::move(scraper); }

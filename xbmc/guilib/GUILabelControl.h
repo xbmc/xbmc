@@ -27,7 +27,7 @@ class CGUILabelControl :
 public:
   CGUILabelControl(int parentID, int controlID, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool wrapMultiLine, bool bHasPath);
   ~CGUILabelControl(void) override;
-  CGUILabelControl *Clone() const override { return new CGUILabelControl(*this); };
+  CGUILabelControl* Clone() const override { return new CGUILabelControl(*this); }
 
   void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
   void Render() override;
@@ -39,11 +39,11 @@ public:
   void SetWidth(float width) override;
   CRect CalcRenderRegion() const override;
 
-  const CLabelInfo& GetLabelInfo() const { return m_label.GetLabelInfo(); };
+  const CLabelInfo& GetLabelInfo() const { return m_label.GetLabelInfo(); }
   void SetLabel(const std::string &strLabel);
   void ShowCursor(bool bShow = true);
   void SetCursorPos(int iPos);
-  int GetCursorPos() const { return m_iCursorPos;};
+  int GetCursorPos() const { return m_iCursorPos; }
   void SetInfo(const KODI::GUILIB::GUIINFO::CGUIInfoLabel&labelInfo);
   void SetWidthControl(float minWidth, bool bScroll);
   void SetAlignment(uint32_t align);

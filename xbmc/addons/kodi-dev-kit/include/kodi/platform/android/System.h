@@ -45,7 +45,9 @@ class ATTRIBUTE_HIDDEN CInterfaceAndroidSystem
 public:
   CInterfaceAndroidSystem()
     : m_interface(static_cast<AddonToKodiFuncTable_android_system*>(
-          GetInterface(INTERFACE_ANDROID_SYSTEM_NAME, INTERFACE_ANDROID_SYSTEM_VERSION))){};
+          GetInterface(INTERFACE_ANDROID_SYSTEM_NAME, INTERFACE_ANDROID_SYSTEM_VERSION)))
+  {
+  }
 
   //============================================================================
   /// @ingroup cpp_kodi_platform_CInterfaceAndroidSystem

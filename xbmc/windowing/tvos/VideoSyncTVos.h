@@ -16,8 +16,9 @@ class CWinSystemTVOS;
 class CVideoSyncTVos : public CVideoSync, IDispResource
 {
 public:
-  CVideoSyncTVos(void* clock, CWinSystemTVOS& winSystem)
-    : CVideoSync(clock), m_winSystem(winSystem){};
+  CVideoSyncTVos(void* clock, CWinSystemTVOS& winSystem) : CVideoSync(clock), m_winSystem(winSystem)
+  {
+  }
 
   // CVideoSync interface
   bool Setup(PUPDATECLOCK func) override;

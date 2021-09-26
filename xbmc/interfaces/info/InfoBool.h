@@ -25,7 +25,7 @@ public:
   InfoBool(const std::string &expression, int context, unsigned int &refreshCounter);
   virtual ~InfoBool() = default;
 
-  virtual void Initialize() {};
+  virtual void Initialize() {}
 
   /*! \brief Get the value of this info bool
    This is called to update (if dirty) and fetch the value of the info bool
@@ -62,7 +62,7 @@ public:
   /*! \brief Update the value of this info bool
    This is called if and only if the info bool is dirty, allowing it to update it's current value
    */
-  virtual void Update(const CGUIListItem *item) {};
+  virtual void Update(const CGUIListItem* item) {}
 
   const std::string &GetExpression() const { return m_expression; }
   bool ListItemDependent() const { return m_listItemDependent; }

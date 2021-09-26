@@ -30,7 +30,7 @@ public:
   CGUIMultiImage(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& texture, unsigned int timePerImage, unsigned int fadeTime, bool randomized, bool loop, unsigned int timeToPauseAtEnd);
   CGUIMultiImage(const CGUIMultiImage &from);
   ~CGUIMultiImage(void) override;
-  CGUIMultiImage *Clone() const override { return new CGUIMultiImage(*this); };
+  CGUIMultiImage* Clone() const override { return new CGUIMultiImage(*this); }
 
   void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
   void Render() override;
@@ -41,7 +41,7 @@ public:
   void AllocResources() override;
   void FreeResources(bool immediately = false) override;
   void DynamicResourceAlloc(bool bOnOff) override;
-  bool IsDynamicallyAllocated() override { return m_bDynamicResourceAlloc; };
+  bool IsDynamicallyAllocated() override { return m_bDynamicResourceAlloc; }
   void SetInvalid() override;
   bool CanFocus() const override;
   std::string GetDescription() const override;
@@ -62,7 +62,7 @@ protected:
   public:
     explicit CMultiImageJob(const std::string &path);
     bool DoWork() override;
-    const char *GetType() const override { return "multiimage"; };
+    const char* GetType() const override { return "multiimage"; }
 
     std::vector<std::string> m_files;
     std::string              m_path;

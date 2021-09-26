@@ -1708,7 +1708,7 @@ public:
   ///
   /// @remarks
   ///
-  virtual int GetChapter() { return -1; };
+  virtual int GetChapter() { return -1; }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -1719,7 +1719,7 @@ public:
   ///
   /// @remarks
   ///
-  virtual int GetChapterCount() { return 0; };
+  virtual int GetChapterCount() { return 0; }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -1731,7 +1731,7 @@ public:
   ///
   /// @remarks
   ///
-  virtual const char* GetChapterName(int ch) { return nullptr; };
+  virtual const char* GetChapterName(int ch) { return nullptr; }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -1743,7 +1743,7 @@ public:
   ///
   /// @remarks
   ///
-  virtual int64_t GetChapterPos(int ch) { return 0; };
+  virtual int64_t GetChapterPos(int ch) { return 0; }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -1755,7 +1755,7 @@ public:
   ///
   /// @remarks
   ///
-  virtual bool SeekChapter(int ch) { return false; };
+  virtual bool SeekChapter(int ch) { return false; }
   //--------------------------------------------------------------------------
 
   ///@}

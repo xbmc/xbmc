@@ -115,8 +115,8 @@ private:
     bool DeleteIfRequired(bool deleteImmediately = false);
     void SetTexture(CTexture* texture);
 
-    const std::string &GetPath() const { return m_path; };
-    const CTextureArray &GetTexture() const { return m_texture; };
+    const std::string& GetPath() const { return m_path; }
+    const CTextureArray& GetTexture() const { return m_texture; }
 
   private:
     static const unsigned int TIME_TO_DELETE = 2000;

@@ -122,13 +122,13 @@ public:
   explicit CFileItem(const EventPtr& eventLogEntry);
 
   ~CFileItem(void) override;
-  CGUIListItem *Clone() const override { return new CFileItem(*this); };
+  CGUIListItem* Clone() const override { return new CFileItem(*this); }
 
   const CURL GetURL() const;
   void SetURL(const CURL& url);
   bool IsURL(const CURL& url) const;
-  const std::string &GetPath() const { return m_strPath; };
-  void SetPath(const std::string &path) { m_strPath = path; };
+  const std::string& GetPath() const { return m_strPath; }
+  void SetPath(const std::string& path) { m_strPath = path; }
   bool IsPath(const std::string& path, bool ignoreURLOptions = false) const;
 
   const CURL GetDynURL() const;
@@ -146,7 +146,7 @@ public:
   void Serialize(CVariant& value) const override;
   void ToSortable(SortItem &sortable, Field field) const override;
   void ToSortable(SortItem &sortable, const Fields &fields) const;
-  bool IsFileItem() const override { return true; };
+  bool IsFileItem() const override { return true; }
 
   bool Exists(bool bUseCache = true) const;
 
@@ -483,7 +483,7 @@ public:
   \brief Some sources do not support HTTP HEAD request to determine i.e. mime type
   \return false if HEAD requests have to be avoided
   */
-  bool ContentLookup() { return m_doContentLookup; };
+  bool ContentLookup() { return m_doContentLookup; }
 
   /*!
    \brief (Re)set the mime-type for internet files if allowed (m_doContentLookup)
@@ -495,11 +495,11 @@ public:
    *\brief Lookup via HTTP HEAD request might not be needed, use this setter to
    * disable ContentLookup.
    */
-  void SetContentLookup(bool enable) { m_doContentLookup = enable; };
+  void SetContentLookup(bool enable) { m_doContentLookup = enable; }
 
   /* general extra info about the contents of the item, not for display */
-  void SetExtraInfo(const std::string& info) { m_extrainfo = info; };
-  const std::string& GetExtraInfo() const { return m_extrainfo; };
+  void SetExtraInfo(const std::string& info) { m_extrainfo = info; }
+  const std::string& GetExtraInfo() const { return m_extrainfo; }
 
   /*! \brief Update an item with information from another item
    We take metadata information from the given item and supplement the current item
@@ -706,7 +706,7 @@ public:
   void SetIgnoreURLOptions(bool ignoreURLOptions);
   void SetFastLookup(bool fastLookup);
   bool Contains(const std::string& fileName) const;
-  bool GetFastLookup() const { return m_fastLookup; };
+  bool GetFastLookup() const { return m_fastLookup; }
 
   /*! \brief stack a CFileItemList
    By default we stack all items (files and folders) in a CFileItemList
@@ -780,11 +780,11 @@ public:
    With this set the folder state will be ignored, allowing folders and files to sort interleaved.
    \param sort whether to ignore the folder state.
    */
-  void SetSortIgnoreFolders(bool sort) { m_sortIgnoreFolders = sort; };
-  bool GetReplaceListing() const { return m_replaceListing; };
+  void SetSortIgnoreFolders(bool sort) { m_sortIgnoreFolders = sort; }
+  bool GetReplaceListing() const { return m_replaceListing; }
   void SetReplaceListing(bool replace);
-  void SetContent(const std::string &content) { m_content = content; };
-  const std::string &GetContent() const { return m_content; };
+  void SetContent(const std::string& content) { m_content = content; }
+  const std::string& GetContent() const { return m_content; }
 
   void ClearSortState();
 

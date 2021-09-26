@@ -35,7 +35,7 @@ public:
 class IDVDStreamPlayer
 {
 public:
-  explicit IDVDStreamPlayer(CProcessInfo &processInfo) : m_processInfo(processInfo) {};
+  explicit IDVDStreamPlayer(CProcessInfo& processInfo) : m_processInfo(processInfo) {}
   virtual ~IDVDStreamPlayer() = default;
   virtual bool OpenStream(CDVDStreamInfo hint) = 0;
   virtual void CloseStream(bool bWaitForBuffers) = 0;
@@ -74,7 +74,7 @@ class CDVDVideoCodec;
 class IDVDStreamPlayerVideo : public IDVDStreamPlayer
 {
 public:
-  explicit IDVDStreamPlayerVideo(CProcessInfo &processInfo) : IDVDStreamPlayer(processInfo) {};
+  explicit IDVDStreamPlayerVideo(CProcessInfo& processInfo) : IDVDStreamPlayer(processInfo) {}
   ~IDVDStreamPlayerVideo() override = default;
   bool OpenStream(CDVDStreamInfo hint) override = 0;
   void CloseStream(bool bWaitForBuffers) override = 0;
@@ -94,14 +94,14 @@ public:
   virtual std::string GetPlayerInfo() = 0;
   virtual int GetVideoBitrate() = 0;
   virtual void SetSpeed(int iSpeed) = 0;
-  virtual bool IsEOS() { return false; };
+  virtual bool IsEOS() { return false; }
 };
 
 class CDVDAudioCodec;
 class IDVDStreamPlayerAudio : public IDVDStreamPlayer
 {
 public:
-  explicit IDVDStreamPlayerAudio(CProcessInfo &processInfo) : IDVDStreamPlayer(processInfo) {};
+  explicit IDVDStreamPlayerAudio(CProcessInfo& processInfo) : IDVDStreamPlayer(processInfo) {}
   ~IDVDStreamPlayerAudio() override = default;
   bool OpenStream(CDVDStreamInfo hints) override = 0;
   void CloseStream(bool bWaitForBuffers) override = 0;
@@ -112,8 +112,8 @@ public:
   virtual int  GetLevel() const = 0;
   bool IsInited() const override = 0;
   void SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priority = 0) override = 0;
-  virtual void SetVolume(float fVolume) {};
-  virtual void SetMute(bool bOnOff) {};
+  virtual void SetVolume(float fVolume) {}
+  virtual void SetMute(bool bOnOff) {}
   virtual void SetDynamicRangeCompression(long drc) = 0;
   virtual std::string GetPlayerInfo() = 0;
   virtual int GetAudioChannels() = 0;
@@ -121,5 +121,5 @@ public:
   bool IsStalled() const override = 0;
   virtual bool IsPassthrough() const = 0;
   virtual float GetDynamicRangeAmplification() const = 0;
-  virtual bool IsEOS() { return false; };
+  virtual bool IsEOS() { return false; }
 };

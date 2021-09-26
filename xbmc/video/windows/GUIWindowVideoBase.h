@@ -88,7 +88,7 @@ protected:
   virtual void OnQueueItem(int iItem, bool first = false);
   virtual void OnDeleteItem(const CFileItemPtr& pItem);
   void OnDeleteItem(int iItem) override;
-  virtual void DoSearch(const std::string& strSearch, CFileItemList& items) {};
+  virtual void DoSearch(const std::string& strSearch, CFileItemList& items) {}
   std::string GetStartFolder(const std::string &dir) override;
 
   bool OnClick(int iItem, const std::string &player = "") override;

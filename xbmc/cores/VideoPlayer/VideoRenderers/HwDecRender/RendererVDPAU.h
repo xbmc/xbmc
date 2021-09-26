@@ -52,7 +52,7 @@ protected:
 
   EShaderFormat GetShaderFormat() override;
 
-  bool CanSaveBuffers() override { return false; };
+  bool CanSaveBuffers() override { return false; }
 
   bool m_isYuv = false;
 

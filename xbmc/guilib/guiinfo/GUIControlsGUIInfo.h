@@ -33,8 +33,8 @@ public:
   bool GetInt(int& value, const CGUIListItem *item, int contextWindow, const CGUIInfo &info) const override;
   bool GetBool(bool& value, const CGUIListItem *item, int contextWindow, const CGUIInfo &info) const override;
 
-  void SetNextWindow(int windowID) { m_nextWindowID = windowID; };
-  void SetPreviousWindow(int windowID) { m_prevWindowID = windowID; };
+  void SetNextWindow(int windowID) { m_nextWindowID = windowID; }
+  void SetPreviousWindow(int windowID) { m_prevWindowID = windowID; }
 
   /*! \brief containers call this to specify that the focus is changing
    \param id control id

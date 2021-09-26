@@ -85,8 +85,8 @@ public:
 /* active status is OK state */
   virtual bool isActive(void) const { return active; }
 /* Set new name of sequence table */
-  void setSequenceTable(const char *new_seq_table) { sequence_table = new_seq_table; };
-/* Get name of sequence table */
+  void setSequenceTable(const char* new_seq_table) { sequence_table = new_seq_table; }
+  /* Get name of sequence table */
   const char *getSequenceTable(void) { return sequence_table.c_str(); }
 /* Get the default character set */
   const char *getDefaultCharset(void) { return default_charset.c_str(); }
@@ -128,11 +128,11 @@ public:
 
 /* virtual methods for transaction */
 
-  virtual void start_transaction() {};
-  virtual void commit_transaction() {};
-  virtual void rollback_transaction() {};
+  virtual void start_transaction() {}
+  virtual void commit_transaction() {}
+  virtual void rollback_transaction() {}
 
-/* virtual methods for formatting */
+  /* virtual methods for formatting */
 
   /*! \brief Prepare a SQL statement for execution or querying using C printf nomenclature.
    \param format - C printf compliant format string
@@ -148,8 +148,7 @@ public:
    */
   virtual std::string vprepare(const char *format, va_list args) = 0;
 
-  virtual bool in_transaction() {return false;};
-
+  virtual bool in_transaction() { return false; }
 };
 
 
@@ -341,9 +340,9 @@ public:
 /* Delete statements from database */
   virtual void deletion();
 /* Cancel changes, made in insert or edit states of dataset */
-  virtual void cancel() {};
-/* interrupt any pending database operation  */
-	virtual void interrupt() {};
+  virtual void cancel() {}
+  /* interrupt any pending database operation  */
+  virtual void interrupt() {}
 
   virtual void setParamList(const ParamList &params);
   virtual bool locate();
@@ -370,9 +369,9 @@ public:
 
 
 /* Return field name by it index */
-//  virtual char *field_name(int f_index) { return field_by_index(f_index)->get_field_name(); };
+  //  virtual char *field_name(int f_index) { return field_by_index(f_index)->get_field_name(); }
 
-/* Getting value of field for current record */
+  /* Getting value of field for current record */
   virtual const field_value get_field_value(const char *f_name);
   virtual const field_value get_field_value(int index);
 /* Alias to get_field_value */
@@ -384,10 +383,10 @@ public:
   bool get_autocommit() { return autocommit; }
 
 /* ----------------- for debug -------------------- */
-  Fields *get_fields_object() {return fields_object;};
-  Fields *get_edit_object() {return edit_object;};
+  Fields* get_fields_object() { return fields_object; }
+  Fields* get_edit_object() { return edit_object; }
 
-/* --------------- for fast access ---------------- */
+  /* --------------- for fast access ---------------- */
   const result_set& get_result_set() { return result; }
   const sql_record* get_sql_record();
 
@@ -400,23 +399,20 @@ public:
 /* Struct to store an indexMapped field access entry */
   struct FieldIndexMapEntry
   {
-   explicit FieldIndexMapEntry(const char *name):fieldIndex(~0), strName(name){};
-   bool operator < (const FieldIndexMapEntry &other) const {return strName < other.strName;};
-   unsigned int fieldIndex;
-   std::string strName;
+    explicit FieldIndexMapEntry(const char* name) : fieldIndex(~0), strName(name) {}
+    bool operator<(const FieldIndexMapEntry& other) const { return strName < other.strName; }
+    unsigned int fieldIndex;
+    std::string strName;
   };
 
 /* Comparator to quickly find an indexMapped field access entry in the unsorted fieldIndexMap_Entries vector */
   struct FieldIndexMapComparator
   {
-   explicit FieldIndexMapComparator(const std::vector<FieldIndexMapEntry> &c): c_(c) {};
-   bool operator()(const unsigned int &v, const FieldIndexMapEntry &o) const
-   {
-     return c_[v] < o;
-   };
-   bool operator()(const unsigned int &v1, const unsigned int &v2) const
-   {
-     return c_[v1] < c_[v2];
+    explicit FieldIndexMapComparator(const std::vector<FieldIndexMapEntry>& c) : c_(c) {}
+    bool operator()(const unsigned int& v, const FieldIndexMapEntry& o) const { return c_[v] < o; };
+    bool operator()(const unsigned int& v1, const unsigned int& v2) const
+    {
+      return c_[v1] < c_[v2];
    };
    bool operator()(const FieldIndexMapEntry &o, const unsigned int &v) const
    {
@@ -446,12 +442,13 @@ public:
 /* Get the column index from a string field_value request */
   bool get_index_map_entry(const char *f_name);
 
-  void set_ds_state(dsStates new_state) {ds_state = new_state;};
- public:
-/* return ds_state value */
-  dsStates get_state() {return ds_state;};
+  void set_ds_state(dsStates new_state) { ds_state = new_state; }
 
-/*add a new value to select_sql*/
+public:
+  /* return ds_state value */
+  dsStates get_state() { return ds_state; }
+
+  /*add a new value to select_sql*/
   void set_select_sql(const char *sel_sql);
   void set_select_sql(const std::string &select_sql);
 /*add a new value to update_sql*/

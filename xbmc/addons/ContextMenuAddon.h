@@ -23,7 +23,7 @@ namespace ADDON
   public:
     explicit CContextMenuAddon(const AddonInfoPtr& addonInfo);
 
-    const std::vector<CContextMenuItem>& GetItems() const { return m_items; };
+    const std::vector<CContextMenuItem>& GetItems() const { return m_items; }
 
   private:
     void ParseMenu(const CAddonExtensions* elem, const std::string& parent, int& anonGroupCount);

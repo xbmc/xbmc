@@ -48,7 +48,7 @@ class CAddonRepos
 {
 public:
   CAddonRepos() = delete;
-  explicit CAddonRepos(const CAddonMgr& addonMgr) : m_addonMgr(addonMgr){};
+  explicit CAddonRepos(const CAddonMgr& addonMgr) : m_addonMgr(addonMgr) {}
 
   /*!
    * \brief Load the map of all available addon versions in any installed repository

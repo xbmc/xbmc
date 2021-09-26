@@ -59,7 +59,7 @@ public:
   */
   bool GetServerList(CFileItemList& items);
 
-  const long long GetInstanceID() { return wsd_instance_id; };
+  const long long GetInstanceID() { return wsd_instance_id; }
 
   /*
    * Set List of WSD info request

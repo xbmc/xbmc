@@ -84,9 +84,9 @@ public:
    */
   void SetRenderOffset(const CPoint &offset);
 
-  void SetClickActions(const CGUIAction& clickActions) { m_clickActions = clickActions; };
-  void SetFocusActions(const CGUIAction& focusActions) { m_focusActions = focusActions; };
-  void SetUnFocusActions(const CGUIAction& unfocusActions) { m_unfocusActions = unfocusActions; };
+  void SetClickActions(const CGUIAction& clickActions) { m_clickActions = clickActions; }
+  void SetFocusActions(const CGUIAction& focusActions) { m_focusActions = focusActions; }
+  void SetUnFocusActions(const CGUIAction& unfocusActions) { m_unfocusActions = unfocusActions; }
 
   void SetAutoScrolling(const TiXmlNode *node);
   void ResetAutoScrolling();
@@ -113,11 +113,11 @@ protected:
   virtual void SetPageControlRange();
   virtual void UpdatePageControl(int offset);
   virtual void CalculateLayout();
-  virtual void SelectItem(int item) {};
-  virtual bool SelectItemFromPoint(const CPoint &point) { return false; };
-  virtual int GetCursorFromPoint(const CPoint &point, CPoint *itemPoint = NULL) const { return -1; };
+  virtual void SelectItem(int item) {}
+  virtual bool SelectItemFromPoint(const CPoint& point) { return false; }
+  virtual int GetCursorFromPoint(const CPoint& point, CPoint* itemPoint = NULL) const { return -1; }
   virtual void Reset();
-  virtual size_t GetNumItems() const { return m_items.size(); };
+  virtual size_t GetNumItems() const { return m_items.size(); }
   virtual int GetCurrentPage() const;
   bool InsideLayout(const CGUIListItemLayout *layout, const CPoint &point) const;
   void OnFocus() override;
@@ -167,9 +167,9 @@ protected:
 
   void UpdateScrollByLetter();
   void GetCacheOffsets(int &cacheBefore, int &cacheAfter) const;
-  int GetCacheCount() const { return m_cacheItems; };
-  bool ScrollingDown() const { return m_scroller.IsScrollingDown(); };
-  bool ScrollingUp() const { return m_scroller.IsScrollingUp(); };
+  int GetCacheCount() const { return m_cacheItems; }
+  bool ScrollingDown() const { return m_scroller.IsScrollingDown(); }
+  bool ScrollingUp() const { return m_scroller.IsScrollingUp(); }
   void OnNextLetter();
   void OnPrevLetter();
   void OnJumpLetter(const std::string& letter, bool skip = false);
@@ -181,7 +181,7 @@ protected:
    this also marks the control as dirty (if needed)
    */
   virtual void SetCursor(int cursor);
-  inline int GetCursor() const { return m_cursor; };
+  inline int GetCursor() const { return m_cursor; }
 
   /*! \brief Set the container offset
    Should be used by all base classes rather than directly setting it, as
@@ -192,7 +192,7 @@ protected:
    returns the first row. This may be outside of the range of available items. Use GetItemOffset() to retrieve the first visible item in the list.
    \sa GetItemOffset
   */
-  inline int GetOffset() const { return m_offset; };
+  inline int GetOffset() const { return m_offset; }
   /*! \brief Returns the index of the first visible item
    returns the first visible item. This will always be in the range of available items. Use GetOffset() to retrieve the first visible row in the list.
    \sa GetOffset

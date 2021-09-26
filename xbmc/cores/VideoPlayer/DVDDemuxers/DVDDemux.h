@@ -124,7 +124,7 @@ public:
 class CDemuxStreamVideo : public CDemuxStream
 {
 public:
-  CDemuxStreamVideo() { type = STREAM_VIDEO; };
+  CDemuxStreamVideo() { type = STREAM_VIDEO; }
 
   ~CDemuxStreamVideo() override = default;
   int iFpsScale = 0; // scale of 1000 and a rate of 29970 will result in 29.97 fps
@@ -336,29 +336,29 @@ public:
   /*
    * enable / disable demux stream
    */
-  virtual void EnableStream(int64_t demuxerId, int id, bool enable) { EnableStream(id, enable); };
+  virtual void EnableStream(int64_t demuxerId, int id, bool enable) { EnableStream(id, enable); }
 
   /*
   * implicitly enable and open a demux stream for playback
   */
-  virtual void OpenStream(int64_t demuxerId, int id) { OpenStream(id); };
+  virtual void OpenStream(int64_t demuxerId, int id) { OpenStream(id); }
 
   /*
    * sets desired width / height for video stream
    * adaptive demuxers like DASH can use this to choose best fitting video stream
    */
-  virtual void SetVideoResolution(int width, int height){};
+  virtual void SetVideoResolution(int width, int height) {}
 
   /*
   * return the id of the demuxer
   */
-  int64_t GetDemuxerId() { return m_demuxerId; };
+  int64_t GetDemuxerId() { return m_demuxerId; }
 
 protected:
-  virtual void EnableStream(int id, bool enable){};
-  virtual void OpenStream(int id){};
+  virtual void EnableStream(int id, bool enable) {}
+  virtual void OpenStream(int id) {}
   virtual CDemuxStream* GetStream(int iStreamId) const = 0;
-  virtual std::string GetStreamCodecName(int iStreamId) { return ""; };
+  virtual std::string GetStreamCodecName(int iStreamId) { return ""; }
 
   int GetNrOfStreams(StreamType streamType);
 

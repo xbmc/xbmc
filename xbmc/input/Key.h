@@ -175,8 +175,8 @@ public:
   inline uint8_t GetVKey() const { return m_vkey; }
   inline wchar_t GetUnicode() const { return m_unicode; }
   inline char GetAscii() const { return m_ascii; }
-  inline uint32_t GetModifiers() const { return m_modifiers; };
-  inline uint32_t GetLockingModifiers() const { return m_lockingModifiers; };
+  inline uint32_t GetModifiers() const { return m_modifiers; }
+  inline uint32_t GetLockingModifiers() const { return m_lockingModifiers; }
   inline unsigned int GetHeld() const { return m_held; }
 
   enum Modifier

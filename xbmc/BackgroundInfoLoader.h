@@ -37,16 +37,16 @@ public:
   void Run() override;
   void SetObserver(IBackgroundLoaderObserver* pObserver);
   void SetProgressCallback(IProgressCallback* pCallback);
-  virtual bool LoadItem(CFileItem* pItem) { return false; };
-  virtual bool LoadItemCached(CFileItem* pItem) { return false; };
-  virtual bool LoadItemLookup(CFileItem* pItem) { return false; };
+  virtual bool LoadItem(CFileItem* pItem) { return false; }
+  virtual bool LoadItemCached(CFileItem* pItem) { return false; }
+  virtual bool LoadItemLookup(CFileItem* pItem) { return false; }
 
   void StopThread(); // will actually stop the loader thread.
   void StopAsync();  // will ask loader to stop as soon as possible, but not block
 
 protected:
-  virtual void OnLoaderStart() {};
-  virtual void OnLoaderFinish() {};
+  virtual void OnLoaderStart() {}
+  virtual void OnLoaderFinish() {}
 
   CFileItemList *m_pVecItems;
   std::vector<CFileItemPtr> m_vecItems; // FileItemList would delete the items and we only want to keep a reference.

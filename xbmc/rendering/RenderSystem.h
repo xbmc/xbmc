@@ -42,7 +42,7 @@ public:
 
   virtual void SetViewPort(const CRect& viewPort) = 0;
   virtual void GetViewPort(CRect& viewPort) = 0;
-  virtual void RestoreViewPort() {};
+  virtual void RestoreViewPort() {}
 
   virtual bool ScissorsCanEffectClipping() { return false; }
   virtual CRect ClipRectToScissorRect(const CRect &rect) { return CRect(); }
