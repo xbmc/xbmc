@@ -985,8 +985,10 @@ void CLangInfo::SetCurrentRegion(const std::string& strName)
   // See https://github.com/xbmc/xbmc/issue/19883 for details
   if (std::tolower('i') != std::tolower('I'))
   {
-    CLog::Log(LOGWARNING, "region '{}' is affected by 'Turkish I' problem - falling back to default region '{}'",
-              m_currentRegion->m_strName, m_defaultRegion.m_strName);
+    CLog::Log(
+        LOGWARNING,
+        "region '{}' is affected by 'Turkish I' problem - falling back to default region '{}'",
+        m_currentRegion->m_strName, m_defaultRegion.m_strName);
     m_currentRegion = &m_defaultRegion;
     m_currentRegion->SetGlobalLocale();
   }
