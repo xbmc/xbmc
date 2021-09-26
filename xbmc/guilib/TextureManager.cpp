@@ -339,8 +339,7 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
   CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
 #ifdef _DEBUG_TEXTURES
-  int64_t start;
-  start = CurrentHostCounter();
+  const auto start = std::chrono::steady_clock::now();
 #endif
 
   if (bundle >= 0 && StringUtils::EndsWithNoCase(strPath, ".gif"))
@@ -463,12 +462,10 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
   m_vecTextures.push_back(pMap);
 
 #ifdef _DEBUG_TEXTURES
-  int64_t end, freq;
-  end = CurrentHostCounter();
-  freq = CurrentHostFrequency();
-  char temp[200];
-  sprintf(temp, "Load %s: %.1fms%s\n", strPath.c_str(), 1000.f * (end - start) / freq, (bundle >= 0) ? " (bundled)" : "");
-  OutputDebugString(temp);
+  const auto end = std::chrono::steady_clock::now();
+  const std::chrono::duration<double, std::milli> duration = end - start;
+  CLog::Log(LOGDEBUG, "Load {}: {:.3f} ms {}", strPath, duration.count(),
+            (bundle >= 0) ? "(bundled)" : "");
 #endif
 
   return pMap->GetTexture();

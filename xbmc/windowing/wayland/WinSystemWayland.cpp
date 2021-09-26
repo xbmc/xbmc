@@ -1427,13 +1427,14 @@ void CWinSystemWayland::FinishFramePresentation()
 {
   ProcessMessages();
 
-  m_frameStartTime = CurrentHostCounter();
+  m_frameStartTime = std::chrono::steady_clock::now();
 }
 
 float CWinSystemWayland::GetFrameLatencyAdjustment()
 {
-  std::int64_t now{CurrentHostCounter()};
-  return static_cast<float> (now - m_frameStartTime) / CurrentHostFrequency() * 1000.0f;
+  const auto now = std::chrono::steady_clock::now();
+  const std::chrono::duration<float, std::milli> duration = now - m_frameStartTime;
+  return duration.count();
 }
 
 float CWinSystemWayland::GetDisplayLatency()

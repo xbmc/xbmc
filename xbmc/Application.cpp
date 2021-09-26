@@ -1136,19 +1136,17 @@ bool CApplication::LoadSkin(const std::string& skinID)
 
   g_localizeStrings.LoadSkinStrings(langPath, settings->GetString(CSettings::SETTING_LOCALE_LANGUAGE));
 
-
-  int64_t start;
-  start = CurrentHostCounter();
+  const auto start = std::chrono::steady_clock::now();
 
   CLog::Log(LOGINFO, "  load new skin...");
 
   // Load custom windows
   LoadCustomWindows();
 
-  int64_t end, freq;
-  end = CurrentHostCounter();
-  freq = CurrentHostFrequency();
-  CLog::Log(LOGDEBUG, "Load Skin XML: {:.2f}ms", 1000.f * (end - start) / freq);
+  const auto end = std::chrono::steady_clock::now();
+  std::chrono::duration<double, std::milli> duration = end - start;
+
+  CLog::Log(LOGDEBUG, "Load Skin XML: {:.2f} ms", duration.count());
 
   CLog::Log(LOGINFO, "  initialize new skin...");
   CServiceBroker::GetGUI()->GetWindowManager().AddMsgTarget(this);
