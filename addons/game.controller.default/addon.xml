@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="game.controller.default"
         name="Default Controller"
-        version="1.0.10"
+        version="1.0.15"
         provider-name="Team Kodi">
     <extension point="kodi.game.controller" library="resources/layout.xml"/>
     <extension point="xbmc.addon.metadata">
@@ -9,12 +9,15 @@
         <assets>
             <icon>resources/icon.png</icon>
         </assets>
+        <summary lang="ca_ES">Comandament per defecte</summary>
         <summary lang="da_DK">Standard controller</summary>
         <summary lang="de_DE">Standard-Controller</summary>
         <summary lang="en_GB">Default Controller</summary>
         <summary lang="es_ES">Mando por defecto</summary>
+        <summary lang="es_MX">Mando por defecto</summary>
         <summary lang="fa_IR">دستهٔ پیش‌گزیده</summary>
         <summary lang="he_IL">בקר בררת מחדל</summary>
+        <summary lang="hu_HU">Alap kontroller</summary>
         <summary lang="ko_KR">기본 콘트롤러</summary>
         <summary lang="lt_LT">Numatytasis valdiklis</summary>
         <summary lang="nl_NL">Standaard Controller</summary>
@@ -23,24 +26,32 @@
         <summary lang="ru_RU">Стандартный контроллер</summary>
         <summary lang="zh_CN">默认控制器</summary>
         <summary lang="zh_TW">預設控制器</summary>
+        <description lang="ca_ES">El comandament predeterminat del centre multimèdia es basa en el comandament d'Xbox 360.</description>
         <description lang="da_DK">Mediecentrets standardcontroller er baseret på Xbox 360-controlleren.</description>
         <description lang="de_DE">Der Standard-Mediacenter-Controller basiert auf dem Xbox 360 Controller.</description>
         <description lang="en_GB">The default media center controller is based on the Xbox 360 controller.</description>
         <description lang="es_ES">El mando por defecto del media center está basado en el mando de Xbox 360.</description>
+        <description lang="es_MX">El mando por defecto de Kodi se basa en el control de Xbox 360.</description>
         <description lang="fa_IR">دستهٔ پیش‌گزیدهٔ مرکز رسانه، بر پایهٔ دستهٔ اکس‌باکس ۳۶۰ است.</description>
         <description lang="he_IL">בקר בררת המחדל של מרכז המדיה מבוסס על הבקר של Xbox 360.</description>
+        <description lang="hu_HU">Az alapértelmezett médiaközpont -vezérlő az Xbox 360 vezérlőn alapul.</description>
+        <description lang="ko_KR">기본 미디어 센터 컨트롤러는 Xbox 360 컨트롤러를 기반으로 합니다.</description>
         <description lang="lt_LT">Numatytasis media centro valdiklis yra paremtas Xbox 360 valdikliu.</description>
         <description lang="pl_PL">Domyślny kontroler centrum multimedialnego jest oparty na kontrolerze Xbox 360.</description>
         <description lang="pt_BR">O controlador do media center padrão é baseado no controlador do Xbox 360.</description>
         <description lang="ru_RU">Стандартный контроллер, основанный на контроллере Xbox 360.</description>
         <description lang="zh_CN">默认媒体中心控制器基于 Xbox 360 控制器。</description>
         <description lang="zh_TW">預設的媒體中心控制器佈局是以Xbox 360控制器為基礎。</description>
+        <disclaimer lang="ca_ES">Crèdit de la imatge: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="da_DK">Kildeangivelse: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="de_DE">Bildnachweis: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="en_GB">Image credit: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="es_ES">Crédito de la imagen: Wikipedia (wikipedia.org)</disclaimer>
+        <disclaimer lang="es_MX">Crédito de la imagen: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="fa_IR">اعتبار تصویر: ویکی‌پدیا (wikipedia.org)</disclaimer>
         <disclaimer lang="he_IL">זכויות על התמונה: ויקיפדיה (wikipedia.org)</disclaimer>
+        <disclaimer lang="hu_HU">Kép credit: Wikipedia (wikipedia.org)</disclaimer>
+        <disclaimer lang="ko_KR">이미지 제공: Wikipedia(wikipedia.org)</disclaimer>
         <disclaimer lang="lt_LT">Atvaizdo šaltinis: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="nl_NL">Bron afbeelding: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="pl_PL">Pochodzenie obrazu: Wikipedia (wikipedia.org)</disclaimer>
