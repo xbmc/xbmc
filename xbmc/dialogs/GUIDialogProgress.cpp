@@ -158,6 +158,9 @@ void CGUIDialogProgress::SetPercentage(int iPercentage)
   if (iPercentage < 0) iPercentage = 0;
   if (iPercentage > 100) iPercentage = 100;
 
+  if (iPercentage != m_percentage)
+    MarkDirtyRegion();
+
   m_percentage = iPercentage;
 }
 
