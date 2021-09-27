@@ -30,13 +30,13 @@ bool CGUIDialogVolumeBar::OnAction(const CAction &action)
     if (g_application.IsMuted() || g_application.GetVolumeRatio() <= VOLUME_MINIMUM)
     { // cancel the timer, dialog needs to stay visible
       CancelAutoClose();
-      return true;
     }
     else
     { // reset the timer, as we've changed the volume level
       SetAutoClose(VOLUME_BAR_DISPLAY_TIME);
-      return true;
     }
+    MarkDirtyRegion();
+    return true;
   }
   return CGUIDialog::OnAction(action);
 }
