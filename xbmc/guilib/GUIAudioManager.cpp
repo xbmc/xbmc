@@ -25,6 +25,13 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
+void CGUIAudioManager::IAESoundDeleter::operator()(IAESound* s)
+{
+  IAE* ae = CServiceBroker::GetActiveAE();
+  if (ae)
+    ae->FreeSound(s);
+}
+
 CGUIAudioManager::CGUIAudioManager()
 {
   m_settings = CServiceBroker::GetSettingsComponent()->GetSettings();
@@ -86,18 +93,17 @@ void CGUIAudioManager::DeInitialize()
 void CGUIAudioManager::Stop()
 {
   CSingleLock lock(m_cs);
-  for (auto& it : m_windowSoundMap)
+  for (const auto& windowSound : m_windowSoundMap)
   {
-    if (it.second.initSound)
-      it.second.initSound->Stop();
-    if (it.second.deInitSound)
-      it.second.deInitSound->Stop();
+    if (windowSound.second.initSound)
+      windowSound.second.initSound->Stop();
+    if (windowSound.second.deInitSound)
+      windowSound.second.deInitSound->Stop();
   }
 
-  for (auto& it : m_pythonSounds)
+  for (const auto& pythonSound : m_pythonSounds)
   {
-    IAESound* sound = it.second;
-    sound->Stop();
+    pythonSound.second->Stop();
   }
 }
 
@@ -110,7 +116,7 @@ void CGUIAudioManager::PlayActionSound(const CAction& action)
   if (!m_bEnabled)
     return;
 
-  actionSoundMap::iterator it = m_actionSoundMap.find(action.GetID());
+  const auto it = m_actionSoundMap.find(action.GetID());
   if (it == m_actionSoundMap.end())
     return;
 
@@ -128,21 +134,19 @@ void CGUIAudioManager::PlayWindowSound(int id, WINDOW_SOUND event)
   if (!m_bEnabled)
     return;
 
-  windowSoundMap::iterator it=m_windowSoundMap.find(id);
+  const auto it = m_windowSoundMap.find(id);
   if (it==m_windowSoundMap.end())
     return;
 
-  CWindowSounds sounds=it->second;
-  IAESound *sound = NULL;
-  switch (event)
-  {
-  case SOUND_INIT:
-    sound = sounds.initSound;
-    break;
-  case SOUND_DEINIT:
-    sound = sounds.deInitSound;
-    break;
-  }
+  const auto& sound = [&]() {
+    switch (event)
+    {
+      case SOUND_INIT:
+        return it->second.initSound;
+      case SOUND_DEINIT:
+        return it->second.deInitSound;
+    }
+  }();
 
   if (!sound)
     return;
@@ -160,10 +164,10 @@ void CGUIAudioManager::PlayPythonSound(const std::string& strFileName, bool useC
     return;
 
   // If we already loaded the sound, just play it
-  pythonSoundsMap::iterator itsb=m_pythonSounds.find(strFileName);
+  const auto itsb = m_pythonSounds.find(strFileName);
   if (itsb != m_pythonSounds.end())
   {
-    IAESound* sound = itsb->second;
+    const auto& sound = itsb->second;
     if (useCached)
     {
       sound->Play();
@@ -171,53 +175,24 @@ void CGUIAudioManager::PlayPythonSound(const std::string& strFileName, bool useC
     }
     else
     {
-      FreeSoundAllUsage(sound);
       m_pythonSounds.erase(itsb);
     }
   }
 
-  IAESound *sound = LoadSound(strFileName);
+  auto sound = LoadSound(strFileName);
   if (!sound)
     return;
 
-  m_pythonSounds.insert(std::pair<const std::string, IAESound*>(strFileName, sound));
   sound->Play();
+  m_pythonSounds.emplace(strFileName, std::move(sound));
 }
 
 void CGUIAudioManager::UnLoad()
 {
-  //  Free sounds from windows
-  {
-    windowSoundMap::iterator it = m_windowSoundMap.begin();
-    while (it != m_windowSoundMap.end())
-    {
-      if (it->second.initSound  ) FreeSound(it->second.initSound  );
-      if (it->second.deInitSound) FreeSound(it->second.deInitSound);
-      m_windowSoundMap.erase(it++);
-    }
-  }
-
-  // Free sounds from python
-  {
-    pythonSoundsMap::iterator it = m_pythonSounds.begin();
-    while (it != m_pythonSounds.end())
-    {
-      IAESound* sound = it->second;
-      FreeSound(sound);
-      m_pythonSounds.erase(it++);
-    }
-  }
-
-  // free action sounds
-  {
-    actionSoundMap::iterator it = m_actionSoundMap.begin();
-    while (it != m_actionSoundMap.end())
-    {
-      IAESound* sound = it->second;
-      FreeSound(sound);
-      m_actionSoundMap.erase(it++);
-    }
-  }
+  m_windowSoundMap.clear();
+  m_pythonSounds.clear();
+  m_actionSoundMap.clear();
+  m_soundCache.clear();
 }
 
 
@@ -295,9 +270,9 @@ bool CGUIAudioManager::Load()
       if (id != ACTION_NONE && !strFile.empty())
       {
         std::string filename = URIUtils::AddFileToFolder(m_strMediaDir, strFile);
-        IAESound *sound = LoadSound(filename);
+        auto sound = LoadSound(filename);
         if (sound)
-          m_actionSoundMap.insert(std::pair<int, IAESound *>(id, sound));
+          m_actionSoundMap.emplace(id, std::move(sound));
       }
 
       pAction = pAction->NextSibling();
@@ -335,69 +310,35 @@ bool CGUIAudioManager::Load()
   return true;
 }
 
-IAESound* CGUIAudioManager::LoadSound(const std::string &filename)
+std::shared_ptr<IAESound> CGUIAudioManager::LoadSound(const std::string& filename)
 {
   CSingleLock lock(m_cs);
-  soundCache::iterator it = m_soundCache.find(filename);
+  const auto it = m_soundCache.find(filename);
   if (it != m_soundCache.end())
   {
-    ++it->second.usage;
-    return it->second.sound;
+    auto sound = it->second.lock();
+    if (sound)
+      return sound;
+    else
+      m_soundCache.erase(it); // cleanup orphaned cache entry
   }
 
   IAE *ae = CServiceBroker::GetActiveAE();
   if (!ae)
     return nullptr;
 
-  IAESound *sound = ae->MakeSound(filename);
+  std::shared_ptr<IAESound> sound(ae->MakeSound(filename), IAESoundDeleter());
   if (!sound)
     return nullptr;
 
-  CSoundInfo info;
-  info.usage = 1;
-  info.sound = sound;
-  m_soundCache[filename] = info;
+  m_soundCache[filename] = sound;
 
-  return info.sound;
-}
-
-void CGUIAudioManager::FreeSound(IAESound *sound)
-{
-  CSingleLock lock(m_cs);
-  IAE *ae = CServiceBroker::GetActiveAE();
-  for(soundCache::iterator it = m_soundCache.begin(); it != m_soundCache.end(); ++it)
-  {
-    if (it->second.sound == sound)
-    {
-      if (--it->second.usage == 0)
-      {
-        if (ae)
-          ae->FreeSound(sound);
-        m_soundCache.erase(it);
-      }
-      return;
-    }
-  }
-}
-
-void CGUIAudioManager::FreeSoundAllUsage(IAESound *sound)
-{
-  CSingleLock lock(m_cs);
-  IAE *ae = CServiceBroker::GetActiveAE();
-  for(soundCache::iterator it = m_soundCache.begin(); it != m_soundCache.end(); ++it)
-  {
-    if (it->second.sound == sound)
-    {
-      if (ae)
-       ae->FreeSound(sound);
-      m_soundCache.erase(it);
-      return;
-    }
-  }
+  return sound;
 }
 
 // \brief Load a window node of the config file (sounds.xml)
-IAESound* CGUIAudioManager::LoadWindowSound(TiXmlNode* pWindowNode, const std::string& strIdentifier)
+std::shared_ptr<IAESound> CGUIAudioManager::LoadWindowSound(TiXmlNode* pWindowNode,
+                                                            const std::string& strIdentifier)
 {
   if (!pWindowNode)
     return NULL;
@@ -426,26 +367,26 @@ void CGUIAudioManager::SetVolume(float level)
   CSingleLock lock(m_cs);
 
   {
-    for (auto& it : m_actionSoundMap)
+    for (const auto& actionSound : m_actionSoundMap)
     {
-      if (it.second)
-        it.second->SetVolume(level);
+      if (actionSound.second)
+        actionSound.second->SetVolume(level);
     }
   }
 
-  for (auto& it : m_windowSoundMap)
+  for (const auto& windowSound : m_windowSoundMap)
   {
-    if (it.second.initSound)
-      it.second.initSound->SetVolume(level);
-    if (it.second.deInitSound)
-      it.second.deInitSound->SetVolume(level);
+    if (windowSound.second.initSound)
+      windowSound.second.initSound->SetVolume(level);
+    if (windowSound.second.deInitSound)
+      windowSound.second.deInitSound->SetVolume(level);
   }
 
   {
-    for (auto& it : m_pythonSounds)
+    for (const auto& pythonSound : m_pythonSounds)
     {
-      if (it.second)
-        it.second->SetVolume(level);
+      if (pythonSound.second)
+        pythonSound.second->SetVolume(level);
     }
   }
 }
