@@ -71,8 +71,8 @@ namespace XBMCAddon
       inline ~File() override { delete file; }
 
 #if !defined(DOXYGEN_SHOULD_USE_THIS)
-      inline File* __enter__() { return this; };
-      inline void __exit__() { close(); };
+      inline File* __enter__() { return this; }
+      inline void __exit__() { close(); }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS

@@ -51,7 +51,7 @@ public:
                                                  int& current,
                                                  void* data);
 
-  IPowerSyscall* GetPowerSyscall() const { return m_instance.get(); };
+  IPowerSyscall* GetPowerSyscall() const { return m_instance.get(); }
 
 private:
   void OnSleep() override;

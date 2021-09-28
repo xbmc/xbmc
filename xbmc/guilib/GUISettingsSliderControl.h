@@ -34,7 +34,7 @@ public:
   void OnUnFocus() override;
   EVENT_RESULT OnMouseEvent(const CPoint& point, const CMouseEvent& event) override;
   void SetActive();
-  bool IsActive() const override { return m_active; };
+  bool IsActive() const override { return m_active; }
   void AllocResources() override;
   void FreeResources(bool immediately = false) override;
   void DynamicResourceAlloc(bool bOnOff) override;
@@ -46,11 +46,11 @@ public:
   void SetHeight(float height) override;
   void SetEnabled(bool bEnable) override;
 
-  void SetText(const std::string &label) {m_buttonControl.SetLabel(label);};
-  float GetXPosition() const override { return m_buttonControl.GetXPosition();};
-  float GetYPosition() const override { return m_buttonControl.GetYPosition();};
+  void SetText(const std::string& label) { m_buttonControl.SetLabel(label); }
+  float GetXPosition() const override { return m_buttonControl.GetXPosition(); }
+  float GetYPosition() const override { return m_buttonControl.GetYPosition(); }
   std::string GetDescription() const override;
-  bool HitTest(const CPoint &point) const override { return m_buttonControl.HitTest(point); };
+  bool HitTest(const CPoint& point) const override { return m_buttonControl.HitTest(point); }
 
 protected:
   bool UpdateColors() override;

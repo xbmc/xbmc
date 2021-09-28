@@ -27,7 +27,7 @@ namespace XFILE
       virtual ~CDir();
 
       void SetLastAccess(unsigned int &accessCounter);
-      unsigned int GetLastAccess() const { return m_lastAccess; };
+      unsigned int GetLastAccess() const { return m_lastAccess; }
 
       CFileItemList* m_Items;
       DIR_CACHE_TYPE m_cacheType;

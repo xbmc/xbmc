@@ -137,7 +137,7 @@ namespace SOCKETS
     // socket functions
     virtual bool Bind(bool localOnly, int port, int range=0) = 0;
     virtual bool Connect() = 0;
-    virtual void Close() {};
+    virtual void Close() {}
 
     // state functions
     bool Ready() { return m_bReady; }

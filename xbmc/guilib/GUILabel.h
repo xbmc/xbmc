@@ -139,7 +139,7 @@ public:
    \param rect CRect containing the extents of the current text
    \sa GetRenderRect, UpdateRenderRect
    */
-  void SetRenderRect(const CRect &rect) { m_renderRect = rect; };
+  void SetRenderRect(const CRect& rect) { m_renderRect = rect; }
 
   /*! \brief Set whether or not this label control should scroll
    \param scrolling true if this label should scroll.
@@ -148,7 +148,7 @@ public:
 
   /*! \brief Set max. text scroll count
   */
-  void SetScrollLoopCount(unsigned int loopCount) { m_maxScrollLoops = loopCount; };
+  void SetScrollLoopCount(unsigned int loopCount) { m_maxScrollLoops = loopCount; }
 
   /*! \brief Set how this label should handle overflowing text.
    \param overflow the overflow type
@@ -168,13 +168,13 @@ public:
    \return CRect containing the extents of the current text
    \sa SetRenderRect, UpdateRenderRect
    */
-  const CRect &GetRenderRect() const { return m_renderRect; };
+  const CRect& GetRenderRect() const { return m_renderRect; }
 
   /*! \brief Returns the precalculated full width of the current text, regardless of layout
    \return full width of the current text
    \sa CalcTextWidth
    */
-  float GetTextWidth() const { return m_textLayout.GetTextWidth(); };
+  float GetTextWidth() const { return m_textLayout.GetTextWidth(); }
 
   /*! \brief Returns the maximal width that this label can render into
    \return Maximal width that this label can render into. Note that this may differ from the
@@ -188,10 +188,10 @@ public:
    \return width of the given text
    \sa GetTextWidth
    */
-  float CalcTextWidth(const std::wstring &text) const { return m_textLayout.GetTextWidth(text); };
+  float CalcTextWidth(const std::wstring& text) const { return m_textLayout.GetTextWidth(text); }
 
-  const CLabelInfo& GetLabelInfo() const { return m_label; };
-  CLabelInfo &GetLabelInfo() { return m_label; };
+  const CLabelInfo& GetLabelInfo() const { return m_label; }
+  CLabelInfo& GetLabelInfo() { return m_label; }
 
   /*! \brief Check a left aligned and right aligned label for overlap and cut the labels off so that no overlap occurs
 

@@ -28,9 +28,9 @@ public:
   class Filter
   {
   public:
-    Filter() : fields("*") {};
-    explicit Filter(const char *w) : fields("*"), where(w) {};
-    explicit Filter(const std::string &w) : fields("*"), where(w) {};
+    Filter() : fields("*") {}
+    explicit Filter(const char* w) : fields("*"), where(w) {}
+    explicit Filter(const std::string& w) : fields("*"), where(w) {}
 
     void AppendField(const std::string &strField);
     void AppendJoin(const std::string &strJoin);
@@ -80,8 +80,11 @@ public:
   class ExistsSubQuery
   {
   public:
-    explicit ExistsSubQuery(const std::string &table) : tablename(table) {};
-    ExistsSubQuery(const std::string &table, const std::string &parameter) : tablename(table), param(parameter) {};
+    explicit ExistsSubQuery(const std::string& table) : tablename(table) {}
+    ExistsSubQuery(const std::string& table, const std::string& parameter)
+      : tablename(table), param(parameter)
+    {
+    }
     void AppendJoin(const std::string &strJoin);
     void AppendWhere(const std::string &strWhere, bool combineWithAnd = true);
     bool BuildSQL(std::string &strSQL);
@@ -267,11 +270,11 @@ protected:
    Note that analytics (views, indices, triggers) are not present during this
    function, so don't rely on them.
    */
-  virtual void UpdateTables(int version) {};
+  virtual void UpdateTables(int version) {}
 
   /* \brief The minimum schema version that we support updating from.
    */
-  virtual int GetMinSchemaVersion() const { return 0; };
+  virtual int GetMinSchemaVersion() const { return 0; }
 
   /* \brief The current schema version.
    */

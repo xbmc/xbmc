@@ -31,7 +31,7 @@ class CGUIInfoColor
 public:
   constexpr CGUIInfoColor(::UTILS::Color color = 0):m_color(color) {}
 
-  constexpr operator ::UTILS::Color() const { return m_color; };
+  constexpr operator ::UTILS::Color() const { return m_color; }
 
   bool Update();
   void Parse(const std::string &label, int context);

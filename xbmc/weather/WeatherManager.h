@@ -86,7 +86,7 @@ public:
   static bool GetSearchResults(const std::string &strSearch, std::string &strResult);
 
   std::string GetLocation(int iLocation);
-  const std::string &GetLastUpdateTime() const { return m_info.lastUpdateTime; };
+  const std::string& GetLastUpdateTime() const { return m_info.lastUpdateTime; }
   const ForecastDay &GetForecast(int day) const;
   bool IsFetched();
   void Reset();

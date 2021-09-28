@@ -15,7 +15,7 @@ namespace ADDON
   struct AddonEvent
   {
     std::string id;
-    explicit AddonEvent(std::string id) : id(std::move(id)) {};
+    explicit AddonEvent(std::string id) : id(std::move(id)) {}
 
     // Note: Do not remove the virtual dtor. There are types derived from AddonEvent (see below)
     //       and there are several places where 'typeid' is used to determine the runtime type of

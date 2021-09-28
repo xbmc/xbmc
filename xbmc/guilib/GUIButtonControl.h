@@ -35,7 +35,7 @@ public:
   CGUIButtonControl(const CGUIButtonControl& control);
 
   ~CGUIButtonControl() override = default;
-  CGUIButtonControl *Clone() const override { return new CGUIButtonControl(*this); };
+  CGUIButtonControl* Clone() const override { return new CGUIButtonControl(*this); }
 
   void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
   void Render() override;
@@ -48,12 +48,12 @@ public:
   void SetPosition(float posX, float posY) override;
   virtual void SetLabel(const std::string & aLabel);
   virtual void SetLabel2(const std::string & aLabel2);
-  void SetClickActions(const CGUIAction& clickActions) { m_clickActions = clickActions; };
-  const CGUIAction &GetClickActions() const { return m_clickActions; };
-  void SetFocusActions(const CGUIAction& focusActions) { m_focusActions = focusActions; };
-  void SetUnFocusActions(const CGUIAction& unfocusActions) { m_unfocusActions = unfocusActions; };
-  const CLabelInfo& GetLabelInfo() const { return m_label.GetLabelInfo(); };
-  virtual std::string GetLabel() const { return GetDescription(); };
+  void SetClickActions(const CGUIAction& clickActions) { m_clickActions = clickActions; }
+  const CGUIAction& GetClickActions() const { return m_clickActions; }
+  void SetFocusActions(const CGUIAction& focusActions) { m_focusActions = focusActions; }
+  void SetUnFocusActions(const CGUIAction& unfocusActions) { m_unfocusActions = unfocusActions; }
+  const CLabelInfo& GetLabelInfo() const { return m_label.GetLabelInfo(); }
+  virtual std::string GetLabel() const { return GetDescription(); }
   virtual std::string GetLabel2() const;
   void SetSelected(bool bSelected);
   std::string GetDescription() const override;
@@ -65,7 +65,7 @@ public:
   void PythonSetDisabledColor(UTILS::Color disabledColor);
 
   virtual void OnClick();
-  bool HasClickActions() const { return m_clickActions.HasActionsMeetingCondition(); };
+  bool HasClickActions() const { return m_clickActions.HasActionsMeetingCondition(); }
 
   bool UpdateColors() override;
 

@@ -52,10 +52,10 @@ public:
   void Calculate(unsigned int time, const CPoint &center);
   void ApplyState(ANIMATION_STATE state, const CPoint &center);
 
-  unsigned int GetDelay() const { return m_delay; };
-  unsigned int GetLength() const { return m_delay + m_length; };
-  const TransformMatrix &GetTransform() const { return m_matrix; };
-  EFFECT_TYPE GetType() const { return m_effect; };
+  unsigned int GetDelay() const { return m_delay; }
+  unsigned int GetLength() const { return m_delay + m_length; }
+  const TransformMatrix& GetTransform() const { return m_matrix; }
+  EFFECT_TYPE GetType() const { return m_effect; }
 
   static std::shared_ptr<Tweener> GetTweener(const TiXmlElement *pAnimationNode);
 protected:
@@ -155,11 +155,11 @@ public:
   void RenderAnimation(TransformMatrix &matrix, const CPoint &center);
   void QueueAnimation(ANIMATION_PROCESS process);
 
-  inline bool IsReversible() const { return m_reversible; };
-  inline ANIMATION_TYPE GetType() const { return m_type; };
-  inline ANIMATION_STATE GetState() const { return m_currentState; };
-  inline ANIMATION_PROCESS GetProcess() const { return m_currentProcess; };
-  inline ANIMATION_PROCESS GetQueuedProcess() const { return m_queuedProcess; };
+  inline bool IsReversible() const { return m_reversible; }
+  inline ANIMATION_TYPE GetType() const { return m_type; }
+  inline ANIMATION_STATE GetState() const { return m_currentState; }
+  inline ANIMATION_PROCESS GetProcess() const { return m_currentProcess; }
+  inline ANIMATION_PROCESS GetQueuedProcess() const { return m_queuedProcess; }
 
   bool CheckCondition();
   void UpdateCondition(const CGUIListItem *item = NULL);
@@ -218,7 +218,7 @@ public:
   /**
    * Immediately stop scrolling
    */
-  void Stop() { m_delta = 0; };
+  void Stop() { m_delta = 0; }
   /**
    * Update the scroller to where it would be at the given time point, calculating a new Value.
    * @param time time point
@@ -229,14 +229,15 @@ public:
   /**
    * Value of scroll
    */
-  float GetValue() const { return m_scrollValue; };
-  void SetValue(float scrollValue) { m_scrollValue = scrollValue; };
+  float GetValue() const { return m_scrollValue; }
+  void SetValue(float scrollValue) { m_scrollValue = scrollValue; }
 
-  bool IsScrolling() const { return m_delta != 0; };
-  bool IsScrollingUp() const { return m_delta < 0; };
-  bool IsScrollingDown() const { return m_delta > 0; };
+  bool IsScrolling() const { return m_delta != 0; }
+  bool IsScrollingUp() const { return m_delta < 0; }
+  bool IsScrollingDown() const { return m_delta > 0; }
 
-  unsigned int GetDuration() const { return m_duration; };
+  unsigned int GetDuration() const { return m_duration; }
+
 private:
   float Tween(float progress);
 

@@ -81,7 +81,7 @@ protected:
   virtual std::string         FormatParameter(const std::string &negate, const std::string &oper, const CDatabase &db, const std::string &type) const;
   virtual std::string         FormatWhereClause(const std::string &negate, const std::string &oper, const std::string &param,
                                                 const CDatabase &db, const std::string &type) const;
-  virtual SEARCH_OPERATOR     GetOperator(const std::string &type) const { return m_operator; };
+  virtual SEARCH_OPERATOR GetOperator(const std::string& type) const { return m_operator; }
   virtual std::string         GetOperatorString(SEARCH_OPERATOR op) const;
   virtual std::string         GetBooleanQuery(const std::string &negate, const std::string &strType) const { return ""; }
 

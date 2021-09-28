@@ -56,7 +56,7 @@ protected:
   void UpdateName();
   bool SetPictureParams(VideoPicture* pVideoPicture);
 
-  bool HasHardware() { return m_pHardware != nullptr; };
+  bool HasHardware() { return m_pHardware != nullptr; }
   void SetHardware(IHardwareDecoder *hardware);
 
   AVFrame* m_pFrame = nullptr;;

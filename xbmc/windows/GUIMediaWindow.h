@@ -42,7 +42,7 @@ public:
   void OnInitWindow() override;
   bool IsMediaWindow() const  override { return true; }
   int GetViewContainerID() const  override { return m_viewControl.GetCurrentControl(); }
-  int GetViewCount() const  override { return m_viewControl.GetViewModeCount(); };
+  int GetViewCount() const override { return m_viewControl.GetViewModeCount(); }
   bool HasListItems() const  override { return true; }
   CFileItemPtr GetCurrentListItem(int offset = 0) override;
 
@@ -77,7 +77,7 @@ protected:
 
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-  virtual bool OnAddMediaSource() { return false; };
+  virtual bool OnAddMediaSource() { return false; }
 
   virtual void FormatItemLabels(CFileItemList &items, const LABEL_MASKS &labelMasks);
   virtual void UpdateButtons();

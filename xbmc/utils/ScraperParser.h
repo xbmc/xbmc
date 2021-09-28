@@ -31,7 +31,7 @@ public:
   ~CScraperParser();
   CScraperParser& operator= (const CScraperParser& parser);
   bool Load(const std::string& strXMLFile);
-  bool IsNoop() const { return m_isNoop; };
+  bool IsNoop() const { return m_isNoop; }
 
   void Clear();
   const std::string& GetFilename() const { return m_strFile; }

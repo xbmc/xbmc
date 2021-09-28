@@ -68,7 +68,9 @@ class CActiveAEControlProtocol : public Protocol
 {
 public:
   CActiveAEControlProtocol(std::string name, CEvent* inEvent, CEvent* outEvent)
-    : Protocol(std::move(name), inEvent, outEvent){};
+    : Protocol(std::move(name), inEvent, outEvent)
+  {
+  }
   enum OutSignal
   {
     INIT = 0,
@@ -108,7 +110,9 @@ class CActiveAEDataProtocol : public Protocol
 {
 public:
   CActiveAEDataProtocol(std::string name, CEvent* inEvent, CEvent* outEvent)
-    : Protocol(std::move(name), inEvent, outEvent){};
+    : Protocol(std::move(name), inEvent, outEvent)
+  {
+  }
   enum OutSignal
   {
     NEWSOUND = 0,

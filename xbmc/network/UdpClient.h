@@ -41,7 +41,12 @@ protected:
   bool Send(struct sockaddr_in aAddress, const std::string& aMessage);
   bool Send(struct sockaddr_in aAddress, unsigned char* pMessage, DWORD dwSize);
 
-  virtual void OnMessage(struct sockaddr_in& aRemoteAddress, const std::string& aMessage, unsigned char* pMessage, DWORD dwMessageLength){};
+  virtual void OnMessage(struct sockaddr_in& aRemoteAddress,
+                         const std::string& aMessage,
+                         unsigned char* pMessage,
+                         DWORD dwMessageLength)
+  {
+  }
 
 protected:
 

@@ -30,7 +30,7 @@ public:
     SUBTITLE
   };
 
-  explicit CStreamDetail(StreamType type) : m_eType(type), m_pParent(NULL) {};
+  explicit CStreamDetail(StreamType type) : m_eType(type), m_pParent(NULL) {}
   virtual ~CStreamDetail() = default;
   virtual bool IsWorseThan(const CStreamDetail &that) const = 0;
 
@@ -89,7 +89,7 @@ public:
 class CStreamDetails final : public IArchivable, public ISerializable
 {
 public:
-  CStreamDetails() { Reset(); };
+  CStreamDetails() { Reset(); }
   CStreamDetails(const CStreamDetails &that);
   CStreamDetails& operator=(const CStreamDetails &that);
   bool operator ==(const CStreamDetails &that) const;
@@ -98,7 +98,7 @@ public:
   static std::string VideoDimsToResolutionDescription(int iWidth, int iHeight);
   static std::string VideoAspectToAspectDescription(float fAspect);
 
-  bool HasItems(void) const { return m_vecItems.size() > 0; };
+  bool HasItems(void) const { return m_vecItems.size() > 0; }
   int GetStreamCount(CStreamDetail::StreamType type) const;
   int GetVideoStreamCount(void) const;
   int GetAudioStreamCount(void) const;

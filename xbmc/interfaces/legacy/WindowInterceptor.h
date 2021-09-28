@@ -158,11 +158,27 @@ namespace XBMCAddon
       void OnDeinitWindow(int nextWindowID) override
       { XBMC_TRACE; if(up()) P::OnDeinitWindow(nextWindowID); else checkedv(OnDeinitWindow(nextWindowID)); }
 
-      bool IsModalDialog() const override { XBMC_TRACE; return checkedb(IsModalDialog()); };
+      bool IsModalDialog() const override
+      {
+        XBMC_TRACE;
+        return checkedb(IsModalDialog());
+      }
 
-      bool IsDialogRunning() const override { XBMC_TRACE; return checkedb(IsDialogRunning()); };
-      bool IsDialog() const override { XBMC_TRACE; return checkedb(IsDialog()); };
-      bool IsMediaWindow() const override { XBMC_TRACE; return checkedb(IsMediaWindow()); };
+      bool IsDialogRunning() const override
+      {
+        XBMC_TRACE;
+        return checkedb(IsDialogRunning());
+      }
+      bool IsDialog() const override
+      {
+        XBMC_TRACE;
+        return checkedb(IsDialog());
+      }
+      bool IsMediaWindow() const override
+      {
+        XBMC_TRACE;
+        return checkedb(IsMediaWindow());
+      }
 
       void SetRenderOrder(int renderOrder) override { XBMC_TRACE; P::m_renderOrder = renderOrder; }
 

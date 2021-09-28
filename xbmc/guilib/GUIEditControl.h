@@ -46,7 +46,7 @@ public:
                   const CLabelInfo& labelInfo, const std::string &text);
   explicit CGUIEditControl(const CGUIButtonControl &button);
   ~CGUIEditControl(void) override;
-  CGUIEditControl *Clone() const override { return new CGUIEditControl(*this); };
+  CGUIEditControl* Clone() const override { return new CGUIEditControl(*this); }
 
   bool OnMessage(CGUIMessage &message) override;
   bool OnAction(const CAction &action) override;
@@ -63,9 +63,12 @@ public:
 
   void SetInputType(INPUT_TYPE type, const CVariant& heading);
 
-  void SetTextChangeActions(const CGUIAction& textChangeActions) { m_textChangeActions = textChangeActions; };
+  void SetTextChangeActions(const CGUIAction& textChangeActions)
+  {
+    m_textChangeActions = textChangeActions;
+  }
 
-  bool HasTextChangeActions() const { return m_textChangeActions.HasActionsMeetingCondition(); };
+  bool HasTextChangeActions() const { return m_textChangeActions.HasActionsMeetingCondition(); }
 
   virtual bool HasInvalidInput() const { return m_invalidInput; }
   virtual void SetInputValidation(StringValidation::Validator inputValidator, void *data = NULL);

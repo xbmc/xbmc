@@ -192,7 +192,9 @@ class COutputControlProtocol : public Protocol
 {
 public:
   COutputControlProtocol(std::string name, CEvent* inEvent, CEvent* outEvent)
-    : Protocol(std::move(name), inEvent, outEvent){};
+    : Protocol(std::move(name), inEvent, outEvent)
+  {
+  }
   enum OutSignal
   {
     INIT,
@@ -212,7 +214,9 @@ class COutputDataProtocol : public Protocol
 {
 public:
   COutputDataProtocol(std::string name, CEvent* inEvent, CEvent* outEvent)
-    : Protocol(std::move(name), inEvent, outEvent){};
+    : Protocol(std::move(name), inEvent, outEvent)
+  {
+  }
   enum OutSignal
   {
     NEWFRAME = 0,
@@ -357,7 +361,7 @@ class IVaapiWinSystem
 {
 public:
   virtual VADisplay GetVADisplay() = 0;
-  virtual void *GetEGLDisplay() { return nullptr; };
+  virtual void* GetEGLDisplay() { return nullptr; }
 };
 
 //-----------------------------------------------------------------------------
@@ -454,7 +458,8 @@ public:
   virtual bool DoesSync() = 0;
   virtual bool WantsPic() {return true;}
   virtual bool UseVideoSurface() = 0;
-  virtual void Discard(COutput *output, ReadyToDispose cb) { (output->*cb)(this); };
+  virtual void Discard(COutput* output, ReadyToDispose cb) { (output->*cb)(this); }
+
 protected:
   CVaapiConfig m_config;
   int m_step;

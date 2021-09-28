@@ -41,8 +41,8 @@ public:
                   TRANSITION_EFFECT transEffect = FADEIN_FADEOUT);
   void UpdateTexture(CTexture* pTexture);
 
-  bool IsLoaded() const { return m_bIsLoaded;};
-  void UnLoad() {m_bIsLoaded = false;};
+  bool IsLoaded() const { return m_bIsLoaded; }
+  void UnLoad() { m_bIsLoaded = false; }
   void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   void Render();
   void Close();
@@ -50,30 +50,30 @@ public:
   DISPLAY_EFFECT DisplayEffect() const { return m_displayEffect; }
   bool DisplayEffectNeedChange(DISPLAY_EFFECT newDispEffect) const;
   bool IsStarted() const { return m_iCounter > 0; }
-  bool IsFinished() const { return m_bIsFinished;};
-  bool DrawNextImage() const { return m_bDrawNextImage;};
+  bool IsFinished() const { return m_bIsFinished; }
+  bool DrawNextImage() const { return m_bDrawNextImage; }
 
-  int GetWidth() const { return (int)m_fWidth;};
-  int GetHeight() const { return (int)m_fHeight;};
+  int GetWidth() const { return (int)m_fWidth; }
+  int GetHeight() const { return (int)m_fHeight; }
 
   void Keep();
   bool StartTransition();
   int GetTransitionTime(int iType) const;
   void SetTransitionTime(int iType, int iTime);
 
-  int SlideNumber() const { return m_iSlideNumber;};
+  int SlideNumber() const { return m_iSlideNumber; }
 
   void Zoom(float fZoomAmount, bool immediate = false);
   void Rotate(float fRotateAngle, bool immediate = false);
   void Pause(bool bPause);
   void SetInSlideshow(bool slideshow);
   void SetOriginalSize(int iOriginalWidth, int iOriginalHeight, bool bFullSize);
-  bool FullSize() const { return m_bFullSize;};
+  bool FullSize() const { return m_bFullSize; }
   int GetOriginalWidth();
   int GetOriginalHeight();
 
   void Move(float dX, float dY);
-  float GetZoom() const { return m_fZoomAmount;};
+  float GetZoom() const { return m_fZoomAmount; }
 
   bool m_bIsComic;
   bool m_bCanMoveHorizontally;

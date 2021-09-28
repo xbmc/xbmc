@@ -35,12 +35,12 @@ public:
   void UpdateResolutions() override;
 
   void InitiateModeChange();
-  bool IsHdmiModeTriggered() const { return m_HdmiModeTriggered; };
+  bool IsHdmiModeTriggered() const { return m_HdmiModeTriggered; }
   void SetHdmiState(bool connected);
 
   void UpdateDisplayModes();
 
-  bool HasCursor() override { return false; };
+  bool HasCursor() override { return false; }
 
   bool Hide() override;
   bool Show(bool raise = true) override;

@@ -33,7 +33,7 @@ public:
               const CLabelInfo* labelInfoMono = nullptr);
   CGUITextBox(const CGUITextBox &from);
   ~CGUITextBox(void) override;
-  CGUITextBox *Clone() const override { return new CGUITextBox(*this); };
+  CGUITextBox* Clone() const override { return new CGUITextBox(*this); }
 
   void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
   void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;

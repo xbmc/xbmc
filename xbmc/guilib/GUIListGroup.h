@@ -25,7 +25,7 @@ public:
   CGUIListGroup(int parentID, int controlID, float posX, float posY, float width, float height);
   CGUIListGroup(const CGUIListGroup &right);
   ~CGUIListGroup(void) override;
-  CGUIListGroup *Clone() const override { return new CGUIListGroup(*this); };
+  CGUIListGroup* Clone() const override { return new CGUIListGroup(*this); }
 
   void AddControl(CGUIControl *control, int position = -1) override;
 

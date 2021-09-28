@@ -243,10 +243,10 @@ public:
   std::unique_ptr<MEDIA_DETECT::CAutorun> m_Autorun;
 #endif
 
-  inline bool IsInScreenSaver() { return m_screensaverActive; };
+  inline bool IsInScreenSaver() { return m_screensaverActive; }
   inline std::string ScreensaverIdInUse() { return m_screensaverIdInUse; }
 
-  inline bool IsDPMSActive() { return m_dpmsIsActive; };
+  inline bool IsDPMSActive() { return m_dpmsIsActive; }
   int m_iScreenSaveLock = 0; // spiff: are we checking for a lock? if so, ignore the screensaver state, if -1 we have failed to input locks
 
   std::string m_strPlayListFile;
@@ -265,7 +265,7 @@ public:
 
   bool SwitchToFullScreen(bool force = false);
 
-  bool GetRenderGUI() const override { return m_renderGUI; };
+  bool GetRenderGUI() const override { return m_renderGUI; }
 
   bool SetLanguage(const std::string &strLanguage);
   bool LoadLanguage(bool reload);

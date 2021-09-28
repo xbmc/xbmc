@@ -31,7 +31,7 @@ public:
   void FrameMove() override;
   void OnWindowLoaded() override;
   void OnWindowUnload() override;
-  bool IsConfirmed() { return m_bConfirmed; };
+  bool IsConfirmed() { return m_bConfirmed; }
   void SetHeading(const std::string &heading);
 
   static bool ShowAndGetDirectory(const VECSOURCES &shares, const std::string &heading, std::string &path, bool bWriteOnly=false);
@@ -47,9 +47,9 @@ public:
 
   void OnItemLoaded(CFileItem *item) override {};
 
-  bool HasListItems() const override { return true; };
+  bool HasListItems() const override { return true; }
   CFileItemPtr GetCurrentListItem(int offset = 0) override;
-  int GetViewContainerID() const override { return m_viewControl.GetCurrentControl(); };
+  int GetViewContainerID() const override { return m_viewControl.GetCurrentControl(); }
 
 protected:
   void GoParentFolder();

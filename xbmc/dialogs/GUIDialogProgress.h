@@ -28,7 +28,7 @@ public:
   void Progress();
   bool IsCanceled() const { return m_iChoice == CHOICE_CANCELED; }
   void SetPercentage(int iPercentage);
-  int GetPercentage() const { return m_percentage; };
+  int GetPercentage() const { return m_percentage; }
   void ShowProgressBar(bool bOnOff);
 
   void ShowChoice(int iChoice, const CVariant& label);

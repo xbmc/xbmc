@@ -237,7 +237,7 @@ public:
    */
   static bool GetAddon(const std::string& addonID, ADDON::RepositoryPtr& repo, ADDON::AddonPtr& addon);
 
-  void SetDependsInstall(DependencyJob dependsInstall) { m_dependsInstall = dependsInstall; };
+  void SetDependsInstall(DependencyJob dependsInstall) { m_dependsInstall = dependsInstall; }
   void SetAllowCheckForUpdates(AllowCheckForUpdates allowCheckForUpdates)
   {
     m_allowCheckForUpdates = allowCheckForUpdates;

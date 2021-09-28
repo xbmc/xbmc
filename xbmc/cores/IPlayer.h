@@ -86,15 +86,15 @@ enum ERENDERFEATURE
 class IPlayer
 {
 public:
-  explicit IPlayer(IPlayerCallback& callback): m_callback(callback){};
+  explicit IPlayer(IPlayerCallback& callback) : m_callback(callback) {}
   virtual ~IPlayer() = default;
-  virtual bool Initialize(TiXmlElement* pConfig) { return true; };
+  virtual bool Initialize(TiXmlElement* pConfig) { return true; }
   virtual bool OpenFile(const CFileItem& file, const CPlayerOptions& options){ return false;}
   virtual bool QueueNextFile(const CFileItem &file) { return false; }
   virtual void OnNothingToQueueNotify() {}
   virtual bool CloseFile(bool reopen = false) = 0;
   virtual bool IsPlaying() const { return false;}
-  virtual bool CanPause() { return true; };
+  virtual bool CanPause() { return true; }
   virtual void Pause() = 0;
   virtual bool HasVideo() const = 0;
   virtual bool HasAudio() const = 0;
@@ -111,27 +111,27 @@ public:
   virtual void SetDynamicRangeCompression(long drc){}
 
   virtual void SetAVDelay(float fValue = 0.0f) {}
-  virtual float GetAVDelay()                    { return 0.0f;};
+  virtual float GetAVDelay() { return 0.0f; }
 
-  virtual void SetSubTitleDelay(float fValue = 0.0f){};
+  virtual void SetSubTitleDelay(float fValue = 0.0f) {}
   virtual float GetSubTitleDelay()    { return 0.0f; }
   virtual int  GetSubtitleCount()     { return 0; }
   virtual int  GetSubtitle()          { return -1; }
-  virtual void GetSubtitleStreamInfo(int index, SubtitleStreamInfo &info){};
-  virtual void SetSubtitle(int iStream){};
-  virtual bool GetSubtitleVisible(){ return false;};
-  virtual void SetSubtitleVisible(bool bVisible){};
+  virtual void GetSubtitleStreamInfo(int index, SubtitleStreamInfo& info) {}
+  virtual void SetSubtitle(int iStream) {}
+  virtual bool GetSubtitleVisible() { return false; }
+  virtual void SetSubtitleVisible(bool bVisible) {}
 
   /** \brief Adds the subtitle(s) provided by the given file to the available player streams
   *          and actives the first of the added stream(s). E.g., vob subs can contain multiple streams.
   *   \param[in] strSubPath The full path of the subtitle file.
   */
-  virtual void  AddSubtitle(const std::string& strSubPath) {};
+  virtual void AddSubtitle(const std::string& strSubPath) {}
 
   virtual int  GetAudioStreamCount()  { return 0; }
   virtual int  GetAudioStream()       { return -1; }
-  virtual void SetAudioStream(int iStream){};
-  virtual void GetAudioStreamInfo(int index, AudioStreamInfo &info){};
+  virtual void SetAudioStream(int iStream) {}
+  virtual void GetAudioStreamInfo(int index, AudioStreamInfo& info) {}
 
   virtual int GetVideoStream() const { return -1; }
   virtual int GetVideoStreamCount() const { return 0; }
@@ -142,10 +142,10 @@ public:
   virtual void SetProgram(int progId) {}
   virtual int GetProgramsCount() { return 0; }
 
-  virtual std::shared_ptr<TextCacheStruct_t> GetTeletextCache() { return NULL; };
-  virtual void LoadPage(int p, int sp, unsigned char* buffer) {};
+  virtual std::shared_ptr<TextCacheStruct_t> GetTeletextCache() { return NULL; }
+  virtual void LoadPage(int p, int sp, unsigned char* buffer) {}
 
-  virtual std::string GetRadioText(unsigned int line) { return ""; };
+  virtual std::string GetRadioText(unsigned int line) { return ""; }
 
   virtual int  GetChapterCount()                               { return 0; }
   virtual int  GetChapter()                                    { return -1; }
@@ -154,7 +154,7 @@ public:
   virtual int  SeekChapter(int iChapter)                       { return -1; }
 //  virtual bool GetChapterInfo(int chapter, SChapterInfo &info) { return false; }
 
-  virtual void SeekTime(int64_t iTime = 0){};
+  virtual void SeekTime(int64_t iTime = 0) {}
   /*
    \brief seek relative to current time, returns false if not implemented by player
    \param iTime The time in milliseconds to seek. A positive value will seek forward, a negative backward.
@@ -178,54 +178,71 @@ public:
    */
   virtual void SetTotalTime(int64_t time) { }
   virtual void SetSpeed(float speed) = 0;
-  virtual void SetTempo(float tempo) { };
+  virtual void SetTempo(float tempo) {}
   virtual bool SupportsTempo() { return false; }
-  virtual void FrameAdvance(int frames) { };
+  virtual void FrameAdvance(int frames) {}
 
   //Returns true if not playback (paused or stopped being filled)
-  virtual bool IsCaching() const {return false;};
+  virtual bool IsCaching() const { return false; }
   //Cache filled in Percent
-  virtual int GetCacheLevel() const {return -1;};
+  virtual int GetCacheLevel() const { return -1; }
 
-  virtual bool IsInMenu() const {return false;};
-  virtual bool HasMenu() const { return false; };
+  virtual bool IsInMenu() const { return false; }
+  virtual bool HasMenu() const { return false; }
 
-  virtual void DoAudioWork(){};
-  virtual bool OnAction(const CAction &action) { return false; };
+  virtual void DoAudioWork() {}
+  virtual bool OnAction(const CAction& action) { return false; }
 
   //returns a state that is needed for resuming from a specific time
-  virtual std::string GetPlayerState() { return ""; };
-  virtual bool SetPlayerState(const std::string& state) { return false;};
+  virtual std::string GetPlayerState() { return ""; }
+  virtual bool SetPlayerState(const std::string& state) { return false; }
 
-  virtual void GetAudioCapabilities(std::vector<int> &audioCaps) { audioCaps.assign(1,IPC_AUD_ALL); };
+  virtual void GetAudioCapabilities(std::vector<int>& audioCaps)
+  {
+    audioCaps.assign(1, IPC_AUD_ALL);
+  }
   /*!
    \brief define the subtitle capabilities of the player
    */
-  virtual void GetSubtitleCapabilities(std::vector<int> &subCaps) { subCaps.assign(1,IPC_SUBS_ALL); };
+  virtual void GetSubtitleCapabilities(std::vector<int>& subCaps)
+  {
+    subCaps.assign(1, IPC_SUBS_ALL);
+  }
 
   /*!
    \brief hook into render loop of render thread
    */
-  virtual void Render(bool clear, uint32_t alpha = 255, bool gui = true) {};
-  virtual void FlushRenderer() {};
-  virtual void SetRenderViewMode(int mode, float zoom, float par, float shift, bool stretch) {};
-  virtual float GetRenderAspectRatio() { return 1.0; };
-  virtual void TriggerUpdateResolution() {};
-  virtual bool IsRenderingVideo() { return false; };
+  virtual void Render(bool clear, uint32_t alpha = 255, bool gui = true) {}
+  virtual void FlushRenderer() {}
+  virtual void SetRenderViewMode(int mode, float zoom, float par, float shift, bool stretch) {}
+  virtual float GetRenderAspectRatio() { return 1.0; }
+  virtual void TriggerUpdateResolution() {}
+  virtual bool IsRenderingVideo() { return false; }
 
-  virtual bool Supports(EINTERLACEMETHOD method) { return false; };
+  virtual bool Supports(EINTERLACEMETHOD method) { return false; }
   virtual EINTERLACEMETHOD GetDeinterlacingMethodDefault() { return EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE; }
-  virtual bool Supports(ESCALINGMETHOD method) { return false; };
-  virtual bool Supports(ERENDERFEATURE feature) { return false; };
+  virtual bool Supports(ESCALINGMETHOD method) { return false; }
+  virtual bool Supports(ERENDERFEATURE feature) { return false; }
 
-  virtual unsigned int RenderCaptureAlloc() { return 0; };
-  virtual void RenderCaptureRelease(unsigned int captureId) {};
-  virtual void RenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags) {};
-  virtual bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size) { return false; };
+  virtual unsigned int RenderCaptureAlloc() { return 0; }
+  virtual void RenderCaptureRelease(unsigned int captureId) {}
+  virtual void RenderCapture(unsigned int captureId,
+                             unsigned int width,
+                             unsigned int height,
+                             int flags)
+  {
+  }
+  virtual bool RenderCaptureGetPixels(unsigned int captureId,
+                                      unsigned int millis,
+                                      uint8_t* buffer,
+                                      unsigned int size)
+  {
+    return false;
+  }
 
   // video and audio settings
-  virtual CVideoSettings GetVideoSettings() { return CVideoSettings(); };
-  virtual void SetVideoSettings(CVideoSettings& settings) {};
+  virtual CVideoSettings GetVideoSettings() { return CVideoSettings(); }
+  virtual void SetVideoSettings(CVideoSettings& settings) {}
 
   /*!
    * \brief Check if any players are playing a game

@@ -21,16 +21,16 @@ public:
   }
   virtual ~CGLContext() = default;
   virtual bool Refresh(bool force, int screen, Window glWindow, bool &newContext) = 0;
-  virtual bool CreatePB() { return false; };
+  virtual bool CreatePB() { return false; }
   virtual void Destroy() = 0;
   virtual void Detach() = 0;
   virtual void SetVSync(bool enable) = 0;
   virtual void SwapBuffers() = 0;
   virtual void QueryExtensions() = 0;
-  virtual uint64_t GetVblankTiming(uint64_t &msc, uint64_t &interval) { return 0; };
+  virtual uint64_t GetVblankTiming(uint64_t& msc, uint64_t& interval) { return 0; }
   bool IsExtSupported(const char* extension) const;
 
-  std::string ExtPrefix(){ return m_extPrefix; };
+  std::string ExtPrefix() { return m_extPrefix; }
   std::string m_extPrefix;
   std::string m_extensions;
 

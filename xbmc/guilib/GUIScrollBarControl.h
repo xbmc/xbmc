@@ -31,7 +31,7 @@ public:
                        const CTextureInfo& nibTexture, const CTextureInfo& nibTextureFocus,
                        ORIENTATION orientation, bool showOnePage);
   ~GUIScrollBarControl() override = default;
-  GUIScrollBarControl *Clone() const override { return new GUIScrollBarControl(*this); };
+  GUIScrollBarControl* Clone() const override { return new GUIScrollBarControl(*this); }
 
   void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
   void Render() override;

@@ -68,12 +68,12 @@ public:
    \return the progress as a float in the range 0..100.
    \sa GetDirectory, CancelDirectory
    */
-  virtual float GetProgress() const { return 0.0f; };
+  virtual float GetProgress() const { return 0.0f; }
   /*!
    \brief Cancel the current directory fetch (if possible).
    \sa GetDirectory
    */
-  virtual void CancelDirectory() { };
+  virtual void CancelDirectory() {}
   /*!
   \brief Create the directory
   \param url Directory to create.
@@ -119,7 +119,7 @@ public:
   \param url Directory at hand.
   \return Returns the cache type.
   */
-  virtual DIR_CACHE_TYPE GetCacheType(const CURL& url) const { return DIR_CACHE_ONCE; };
+  virtual DIR_CACHE_TYPE GetCacheType(const CURL& url) const { return DIR_CACHE_ONCE; }
 
   void SetMask(const std::string& strMask);
   void SetFlags(int flags);

@@ -20,7 +20,7 @@ public:
   bool LoadItem(CFileItem* pItem) override;
   bool LoadItemCached(CFileItem* pItem) override;
   bool LoadItemLookup(CFileItem* pItem) override;
-  void SetRegenerateThumbs(bool regenerate) { m_regenerateThumbs = regenerate; };
+  void SetRegenerateThumbs(bool regenerate) { m_regenerateThumbs = regenerate; }
   static void ProcessFoldersAndArchives(CFileItem *pItem);
 
   /*!

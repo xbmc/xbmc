@@ -165,7 +165,7 @@ public:
    * will be called by video player indicating the playback speed. see DVD_PLAYSPEED_NORMAL,
    * DVD_PLAYSPEED_PAUSE and friends.
    */
-  virtual void SetSpeed(int iSpeed) {};
+  virtual void SetSpeed(int iSpeed) {}
 
   /**
    * should return codecs name
@@ -235,7 +235,7 @@ public:
    * Re-open the decoder.
    * Decoder request to re-open
    */
-  virtual void Reopen() {};
+  virtual void Reopen() {}
 
 protected:
   CProcessInfo &m_processInfo;
@@ -255,7 +255,7 @@ public:
   virtual unsigned GetAllowedReferences() { return 0; }
   virtual bool CanSkipDeint() {return false; }
   virtual const std::string Name() = 0;
-  virtual void SetCodecControl(int flags) {};
+  virtual void SetCodecControl(int flags) {}
 };
 
 class ICallbackHWAccel

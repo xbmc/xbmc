@@ -25,19 +25,19 @@ public:
   void AddVideoPicture(const VideoPicture& picture, int index) override;
   void ReleaseBuffer(int idx) override;
   bool Configure(const VideoPicture& picture, float fps, unsigned int orientation) override;
-  bool IsConfigured() override { return m_bConfigured; };
-  bool ConfigChanged(const VideoPicture& picture) override { return false; };
+  bool IsConfigured() override { return m_bConfigured; }
+  bool ConfigChanged(const VideoPicture& picture) override { return false; }
   CRenderInfo GetRenderInfo() override;
   void UnInit() override{};
   void Update() override{};
   void RenderUpdate(int index, int index2, bool clear, unsigned int flags, unsigned int alpha) override;
-  bool SupportsMultiPassRendering() override { return false; };
+  bool SupportsMultiPassRendering() override { return false; }
 
   // Player functions
-  bool IsGuiLayer() override { return false; };
+  bool IsGuiLayer() override { return false; }
 
   // Feature support
-  bool Supports(ESCALINGMETHOD method) override { return false; };
+  bool Supports(ESCALINGMETHOD method) override { return false; }
   bool Supports(ERENDERFEATURE feature) override;
 
 protected:

@@ -75,7 +75,7 @@ public:
   CBitstreamParser();
   ~CBitstreamParser() = default;
 
-  static bool Open(){ return true; };
+  static bool Open() { return true; }
   static void Close();
   static bool CanStartDecode(const uint8_t *buf, int buf_size);
 };
@@ -88,7 +88,7 @@ public:
 
   bool              Open(enum AVCodecID codec, uint8_t *in_extradata, int in_extrasize, bool to_annexb);
   void              Close(void);
-  bool              NeedConvert(void) const { return m_convert_bitstream; };
+  bool NeedConvert(void) const { return m_convert_bitstream; }
   bool              Convert(uint8_t *pData, int iSize);
   uint8_t*          GetConvertBuffer(void) const;
   int               GetConvertSize() const;

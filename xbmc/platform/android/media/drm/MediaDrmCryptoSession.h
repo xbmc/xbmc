@@ -18,7 +18,7 @@ namespace DRM
   class CharVecBuffer : public XbmcCommons::Buffer
   {
   public:
-    inline CharVecBuffer(const XbmcCommons::Buffer& buf) : XbmcCommons::Buffer(buf) {};
+    inline CharVecBuffer(const XbmcCommons::Buffer& buf) : XbmcCommons::Buffer(buf) {}
 
     inline CharVecBuffer(const std::vector<char>& vec)
       : XbmcCommons::Buffer(vec.size())

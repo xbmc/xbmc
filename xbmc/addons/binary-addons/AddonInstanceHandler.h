@@ -40,7 +40,7 @@ namespace ADDON
     ADDON_STATUS CreateInstance(KODI_HANDLE instance);
     void DestroyInstance();
     const AddonDllPtr& Addon() const { return m_addon; }
-    AddonInfoPtr GetAddonInfo() const { return m_addonInfo; };
+    AddonInfoPtr GetAddonInfo() const { return m_addonInfo; }
 
     virtual void OnPreInstall() {}
     virtual void OnPostInstall(bool update, bool modal) {}

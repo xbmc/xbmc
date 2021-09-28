@@ -33,7 +33,7 @@ class CGUISpinControl : public CGUIControl
 public:
   CGUISpinControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& textureUp, const CTextureInfo& textureDown, const CTextureInfo& textureUpFocus, const CTextureInfo& textureDownFocus, const CTextureInfo& textureUpDisabled, const CTextureInfo& textureDownDisabled, const CLabelInfo& labelInfo, int iType);
   ~CGUISpinControl() override = default;
-  CGUISpinControl *Clone() const override { return new CGUISpinControl(*this); };
+  CGUISpinControl* Clone() const override { return new CGUISpinControl(*this); }
 
   void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
   void Render() override;
@@ -64,13 +64,17 @@ public:
   void SetReverse(bool bOnOff);
   int GetMaximum() const;
   int GetMinimum() const;
-  void SetSpinAlign(uint32_t align, float offsetX) { m_label.GetLabelInfo().align = align; m_label.GetLabelInfo().offsetX = offsetX; };
-  void SetType(int iType) { m_iType = iType; };
-  float GetSpinWidth() const { return m_imgspinUp->GetWidth(); };
-  float GetSpinHeight() const { return m_imgspinUp->GetHeight(); };
+  void SetSpinAlign(uint32_t align, float offsetX)
+  {
+    m_label.GetLabelInfo().align = align;
+    m_label.GetLabelInfo().offsetX = offsetX;
+  }
+  void SetType(int iType) { m_iType = iType; }
+  float GetSpinWidth() const { return m_imgspinUp->GetWidth(); }
+  float GetSpinHeight() const { return m_imgspinUp->GetHeight(); }
   void SetFloatInterval(float fInterval);
   void SetShowRange(bool bOnoff) ;
-  void SetShowOnePage(bool showOnePage) { m_showOnePage = showOnePage; };
+  void SetShowOnePage(bool showOnePage) { m_showOnePage = showOnePage; }
   void Clear();
   std::string GetDescription() const override;
   bool IsFocusedOnUp() const;

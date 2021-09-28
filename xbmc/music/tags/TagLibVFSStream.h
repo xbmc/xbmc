@@ -110,7 +110,7 @@ namespace MUSIC_INFO
     /*!
      * Returns the buffer size that is used for internal buffering.
      */
-    static TagLib::uint bufferSize() { return 1024; };
+    static TagLib::uint bufferSize() { return 1024; }
 
   private:
     std::string   m_strFileName;

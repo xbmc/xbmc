@@ -55,9 +55,9 @@ public:
   virtual bool Configure(const VideoPicture &picture, float fps, unsigned int orientation) = 0;
   virtual bool IsConfigured() = 0;
   virtual void AddVideoPicture(const VideoPicture &picture, int index) = 0;
-  virtual bool IsPictureHW(const VideoPicture &picture) { return false; };
+  virtual bool IsPictureHW(const VideoPicture& picture) { return false; }
   virtual void UnInit() = 0;
-  virtual bool Flush(bool saveBuffers) { return false; };
+  virtual bool Flush(bool saveBuffers) { return false; }
   virtual void SetBufferSize(int numBuffers) { }
   virtual void ReleaseBuffer(int idx) { }
   virtual bool NeedBuffer(int idx) { return false; }
@@ -71,10 +71,10 @@ public:
 
   // Feature support
   virtual bool SupportsMultiPassRendering() = 0;
-  virtual bool Supports(ERENDERFEATURE feature) { return false; };
+  virtual bool Supports(ERENDERFEATURE feature) { return false; }
   virtual bool Supports(ESCALINGMETHOD method) = 0;
 
-  virtual bool WantsDoublePass() { return false; };
+  virtual bool WantsDoublePass() { return false; }
 
   void SetViewMode(int viewMode);
 
@@ -94,7 +94,7 @@ public:
   void SetVideoSettings(const CVideoSettings &settings);
 
   // Gets debug info from render buffer
-  virtual DEBUG_INFO_VIDEO GetDebugInfo(int idx) { return {}; };
+  virtual DEBUG_INFO_VIDEO GetDebugInfo(int idx) { return {}; }
 
   virtual CRenderCapture* GetRenderCapture() { return nullptr; }
 

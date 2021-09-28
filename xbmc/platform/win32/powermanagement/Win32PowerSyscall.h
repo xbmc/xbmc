@@ -23,7 +23,7 @@ public:
 
 protected:
   virtual void Process(void);
-  virtual void OnStartup() { SetPriority(THREAD_PRIORITY_IDLE); };
+  virtual void OnStartup() { SetPriority(THREAD_PRIORITY_IDLE); }
 
 private:
   static bool PowerManagement(PowerState State);

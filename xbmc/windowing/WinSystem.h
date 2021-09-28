@@ -69,7 +69,7 @@ public:
   virtual bool IsCreated(){ return m_bWindowCreated; }
   virtual void NotifyAppFocusChange(bool bGaining) {}
   virtual void NotifyAppActiveChange(bool bActivated) {}
-  virtual void ShowOSMouse(bool show) {};
+  virtual void ShowOSMouse(bool show) {}
   virtual bool HasCursor(){ return true; }
   //some platforms have api for gesture inertial scrolling - default to false and use the InertialScrollingHandler
   virtual bool HasInertialGestures(){ return false; }
@@ -129,7 +129,7 @@ public:
   std::vector<RESOLUTION_WHR> ScreenResolutions(float refreshrate);
   std::vector<REFRESHRATE> RefreshRates(int width, int height, uint32_t dwFlags);
   REFRESHRATE DefaultRefreshRate(std::vector<REFRESHRATE> rates);
-  virtual bool HasCalibration(const RESOLUTION_INFO &resInfo) { return true; };
+  virtual bool HasCalibration(const RESOLUTION_INFO& resInfo) { return true; }
 
   // text input interface
   virtual std::string GetClipboardText(void);
@@ -161,15 +161,15 @@ public:
   virtual void* GetHWContext() { return nullptr; }
 
   std::shared_ptr<CDPMSSupport> GetDPMSManager();
-  virtual bool SetHDR(const VideoPicture* videoPicture) { return false; };
-  virtual bool IsHDRDisplay() { return false; };
-  virtual HDR_STATUS ToggleHDR() { return HDR_STATUS::HDR_UNSUPPORTED; };
-  virtual HDR_STATUS GetOSHDRStatus() { return HDR_STATUS::HDR_UNSUPPORTED; };
+  virtual bool SetHDR(const VideoPicture* videoPicture) { return false; }
+  virtual bool IsHDRDisplay() { return false; }
+  virtual HDR_STATUS ToggleHDR() { return HDR_STATUS::HDR_UNSUPPORTED; }
+  virtual HDR_STATUS GetOSHDRStatus() { return HDR_STATUS::HDR_UNSUPPORTED; }
 
   static const char* SETTING_WINSYSTEM_IS_HDR_DISPLAY;
 
   // Gets debug info from video renderer
-  virtual DEBUG_INFO_RENDER GetDebugInfo() { return {}; };
+  virtual DEBUG_INFO_RENDER GetDebugInfo() { return {}; }
 
   virtual std::vector<std::string> GetConnectedOutputs() { return {}; }
 

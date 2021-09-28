@@ -118,7 +118,7 @@ class CPictureInfoTag : public IArchivable, public ISerializable, public ISortab
   };
 
 public:
-  CPictureInfoTag() { Reset(); };
+  CPictureInfoTag() { Reset(); }
   virtual ~CPictureInfoTag() = default;
   void Reset();
   void Archive(CArchive& ar) override;
@@ -126,7 +126,7 @@ public:
   void ToSortable(SortItem& sortable, Field field) const override;
   const std::string GetInfo(int info) const;
 
-  bool Loaded() const { return m_isLoaded; };
+  bool Loaded() const { return m_isLoaded; }
   bool Load(const std::string &path);
 
   void SetInfo(const std::string& key, const std::string& value);

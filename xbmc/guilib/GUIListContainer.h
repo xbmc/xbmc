@@ -33,7 +33,7 @@ public:
                          float textureHeight, float itemWidth, float itemHeight, float spaceBetweenItems);
 //#endif
   ~CGUIListContainer(void) override;
-  CGUIListContainer *Clone() const override { return new CGUIListContainer(*this); };
+  CGUIListContainer* Clone() const override { return new CGUIListContainer(*this); }
 
   bool OnAction(const CAction &action) override;
   bool OnMessage(CGUIMessage& message) override;

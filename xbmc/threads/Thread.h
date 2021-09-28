@@ -78,8 +78,8 @@ public:
   virtual void OnException(){} // signal termination handler
 
 protected:
-  virtual void OnStartup(){};
-  virtual void OnExit(){};
+  virtual void OnStartup() {}
+  virtual void OnExit() {}
   virtual void Process();
 
   std::atomic<bool> m_bStop;

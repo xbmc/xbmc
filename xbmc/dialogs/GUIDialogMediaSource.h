@@ -29,7 +29,7 @@ public:
   static bool ShowAndEditMediaSource(const std::string &type, const CMediaSource &share);
   static bool ShowAndEditMediaSource(const std::string &type, const std::string &share);
 
-  bool IsConfirmed() const { return m_confirmed; };
+  bool IsConfirmed() const { return m_confirmed; }
 
   void SetShare(const CMediaSource &share);
   void SetTypeOfMedia(const std::string &type, bool editNotAdd = false);

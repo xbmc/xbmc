@@ -38,7 +38,7 @@ public:
                    const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus);
 
   ~CGUIMoverControl(void) override = default;
-  CGUIMoverControl *Clone() const override { return new CGUIMoverControl(*this); };
+  CGUIMoverControl* Clone() const override { return new CGUIMoverControl(*this); }
 
   void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
   void Render() override;
@@ -54,9 +54,9 @@ public:
   void SetPosition(float posX, float posY) override;
   void SetLimits(int iX1, int iY1, int iX2, int iY2);
   void SetLocation(int iLocX, int iLocY, bool bSetPosition = true);
-  int GetXLocation() const { return m_iLocationX;};
-  int GetYLocation() const { return m_iLocationY;};
-  bool CanFocus() const override { return true; };
+  int GetXLocation() const { return m_iLocationX; }
+  int GetYLocation() const { return m_iLocationY; }
+  bool CanFocus() const override { return true; }
 
 protected:
   EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event) override;

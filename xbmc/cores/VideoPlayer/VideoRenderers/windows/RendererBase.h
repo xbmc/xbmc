@@ -114,7 +114,7 @@ public:
   virtual CRenderInfo GetRenderInfo();
   virtual bool Configure(const VideoPicture &picture, float fps, unsigned int orientation);
   virtual bool Supports(ESCALINGMETHOD method) = 0;
-  virtual bool WantsDoublePass() { return false; };
+  virtual bool WantsDoublePass() { return false; }
   virtual bool NeedBuffer(int idx) { return false; }
 
   void AddVideoPicture(const VideoPicture &picture, int index);

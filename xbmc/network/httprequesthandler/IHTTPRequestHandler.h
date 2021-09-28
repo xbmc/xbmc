@@ -151,7 +151,7 @@ public:
    *
    * \details This is only used if the response type is one of the HTTPMemoryDownload types.
    */
-  virtual HttpResponseRanges GetResponseData() const { return HttpResponseRanges(); };
+  virtual HttpResponseRanges GetResponseData() const { return HttpResponseRanges(); }
 
   /*!
   * \brief Returns the URL to which the request should be redirected.

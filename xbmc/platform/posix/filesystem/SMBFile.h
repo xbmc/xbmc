@@ -36,7 +36,7 @@ public:
   void Init();
   void Deinit();
   /* Makes sense to be called after acquiring the lock */
-  bool IsSmbValid() const { return m_context != nullptr; };
+  bool IsSmbValid() const { return m_context != nullptr; }
   void CheckIfIdle();
   void SetActivityTime();
   void AddActiveConnection();

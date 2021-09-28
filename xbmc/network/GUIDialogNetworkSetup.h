@@ -38,7 +38,7 @@ public:
 
   std::string ConstructPath() const;
   bool SetPath(const std::string &path);
-  bool IsConfirmed() const override { return m_confirmed; };
+  bool IsConfirmed() const override { return m_confirmed; }
 
 protected:
   // implementations of ISettingCallback

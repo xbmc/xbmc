@@ -33,7 +33,7 @@ public:
   void GetData(DVDAudioFrame &frame) override;
   void Reset() override;
   AEAudioFormat GetFormat() override { return m_format; }
-  std::string GetName() override { return m_codecName; };
+  std::string GetName() override { return m_codecName; }
   enum AVMatrixEncoding GetMatrixEncoding() override;
   enum AVAudioServiceType GetAudioServiceType() override;
   int GetProfile() override;

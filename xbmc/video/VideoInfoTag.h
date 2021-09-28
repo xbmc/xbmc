@@ -51,7 +51,7 @@ typedef std::map<std::string, CRating> RatingMap;
 class CVideoInfoTag : public IArchivable, public ISerializable, public ISortable
 {
 public:
-  CVideoInfoTag() { Reset(); };
+  CVideoInfoTag() { Reset(); }
   virtual ~CVideoInfoTag() = default;
   void Reset();
   /* \brief Load information to a videoinfotag from an XML element

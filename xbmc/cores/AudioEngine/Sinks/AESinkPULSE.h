@@ -45,7 +45,7 @@ public:
   unsigned int AddPackets(uint8_t **data, unsigned int frames, unsigned int offset) override;
   void Drain() override;
 
-  bool HasVolume() override { return true; };
+  bool HasVolume() override { return true; }
   void SetVolume(float volume) override;
 
   bool IsInitialized();

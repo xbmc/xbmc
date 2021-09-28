@@ -34,7 +34,7 @@ class CFileItem;
 class CNetworkLocation
 {
 public:
-  CNetworkLocation() { id = 0; };
+  CNetworkLocation() { id = 0; }
   int id;
   std::string path;
 };

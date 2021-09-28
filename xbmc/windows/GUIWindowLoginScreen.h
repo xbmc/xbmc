@@ -23,9 +23,9 @@ public:
   bool OnAction(const CAction &action) override;
   bool OnBack(int actionID) override;
   void FrameMove() override;
-  bool HasListItems() const override { return true; };
+  bool HasListItems() const override { return true; }
   CFileItemPtr GetCurrentListItem(int offset = 0) override;
-  int GetViewContainerID() const override { return m_viewControl.GetCurrentControl(); };
+  int GetViewContainerID() const override { return m_viewControl.GetCurrentControl(); }
 
 protected:
   void OnInitWindow() override;

@@ -146,10 +146,10 @@ protected:
   GLint GetInternalFormat(GLint format, int bpp);
 
   // hooks for HwDec Renderer
-  virtual bool LoadShadersHook() { return false; };
-  virtual bool RenderHook(int idx) { return false; };
-  virtual void AfterRenderHook(int idx) {};
-  virtual bool CanSaveBuffers() { return true; };
+  virtual bool LoadShadersHook() { return false; }
+  virtual bool RenderHook(int idx) { return false; }
+  virtual void AfterRenderHook(int idx) {}
+  virtual bool CanSaveBuffers() { return true; }
 
   struct
   {

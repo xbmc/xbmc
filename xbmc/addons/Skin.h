@@ -128,7 +128,7 @@ public:
   /*! \brief Return whether skin debugging is enabled
    \return true if skin debugging (set via <debugging>true</debugging> in addon.xml) is enabled.
    */
-  bool IsDebugging() const { return m_debugging; };
+  bool IsDebugging() const { return m_debugging; }
 
   /*! \brief Get the id of the first window to load
    The first window is generally Startup.xml unless it doesn't exist or if the skinner
@@ -152,9 +152,9 @@ public:
 
   void ResolveIncludes(TiXmlElement *node, std::map<INFO::InfoPtr, bool>* xmlIncludeConditions = NULL);
 
-  float GetEffectsSlowdown() const { return m_effectsSlowDown; };
+  float GetEffectsSlowdown() const { return m_effectsSlowDown; }
 
-  const std::vector<CStartupWindow> &GetStartupWindows() const { return m_startupWindows; };
+  const std::vector<CStartupWindow>& GetStartupWindows() const { return m_startupWindows; }
 
   /*! \brief Retrieve the skin paths to search for skin XML files
    \param paths [out] vector of paths to search, in order.

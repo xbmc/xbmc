@@ -22,7 +22,7 @@ public:
   bool OnMessage(CGUIMessage &message) override;
   bool OnAction(const CAction &action) override;
   bool OnBack(int actionID) override;
-  int GetID() const override { return CGUIDialogSettingsManagerBase::GetID() + m_iSection; };
+  int GetID() const override { return CGUIDialogSettingsManagerBase::GetID() + m_iSection; }
 
   // specialization of CGUIWindow
   bool IsDialog() const override { return false; }

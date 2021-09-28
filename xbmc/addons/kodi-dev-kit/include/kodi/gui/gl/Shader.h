@@ -526,7 +526,7 @@ public:
   /// @ingroup cpp_kodi_gui_helpers_gl_CShaderProgram_child
   /// @brief Mandatory child function to set the necessary CPU to GPU data
   ///
-  virtual void OnCompiledAndLinked(){};
+  virtual void OnCompiledAndLinked() {}
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -536,14 +536,14 @@ public:
   ///
   /// @return true if enable was successfull done
   ///
-  virtual bool OnEnabled() { return true; };
+  virtual bool OnEnabled() { return true; }
   //--------------------------------------------------------------------------
 
   //==========================================================================
   /// @ingroup cpp_kodi_gui_helpers_gl_CShaderProgram_child
   /// @brief Optional child function that may have to be performed when
   /// switching off the shader
-  virtual void OnDisabled(){};
+  virtual void OnDisabled() {}
   //--------------------------------------------------------------------------
   /// @}
 

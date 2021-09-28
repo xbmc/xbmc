@@ -56,7 +56,7 @@ public:
   CTextureCacheJob(const std::string &url, const std::string &oldHash = "");
   ~CTextureCacheJob() override;
 
-  const char* GetType() const override { return kJobTypeCacheImage; };
+  const char* GetType() const override { return kJobTypeCacheImage; }
   bool operator==(const CJob *job) const override;
   bool DoWork() override;
 
@@ -126,7 +126,7 @@ class CTextureUseCountJob : public CJob
 public:
   explicit CTextureUseCountJob(const std::vector<CTextureDetails> &textures);
 
-  const char* GetType() const override { return "usecount"; };
+  const char* GetType() const override { return "usecount"; }
   bool operator==(const CJob *job) const override;
   bool DoWork() override;
 

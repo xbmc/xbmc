@@ -30,7 +30,7 @@ public:
 
   void AddListener(void* userdata);
   void Sync();
-  int GetSync() const { return m_sync; };
+  int GetSync() const { return m_sync; }
 
 private:
   static void OnCoreDone(void* userdata, uint32_t id, int seq);

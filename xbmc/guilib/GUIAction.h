@@ -35,7 +35,7 @@ public:
   /**
    * Check if there is any action
    */
-  bool HasAnyActions() const { return m_actions.size() > 0; };
+  bool HasAnyActions() const { return m_actions.size() > 0; }
   /**
    * Get navigation route that meet its conditions first
    */

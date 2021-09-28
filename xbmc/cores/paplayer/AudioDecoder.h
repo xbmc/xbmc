@@ -48,12 +48,18 @@ public:
 
   int ReadSamples(int numsamples);
 
-  bool CanSeek() { if (m_codec) return m_codec->CanSeek(); else return false; };
+  bool CanSeek()
+  {
+    if (m_codec)
+      return m_codec->CanSeek();
+    else
+      return false;
+  }
   int64_t Seek(int64_t time);
   int64_t TotalTime();
   void SetTotalTime(int64_t time);
   void Start() { m_canPlay = true;}; // cause a pre-buffered stream to start.
-  int GetStatus() { return m_status; };
+  int GetStatus() { return m_status; }
   void SetStatus(int status) { m_status = status; }
 
   AEAudioFormat GetFormat();

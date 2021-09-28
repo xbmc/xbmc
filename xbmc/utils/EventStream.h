@@ -65,7 +65,7 @@ template<typename Event>
 class CEventSource : public CEventStream<Event>
 {
 public:
-  explicit CEventSource() : m_queue(false, 1, CJob::PRIORITY_HIGH) {};
+  explicit CEventSource() : m_queue(false, 1, CJob::PRIORITY_HIGH) {}
 
   template<typename A>
   void Publish(A event)

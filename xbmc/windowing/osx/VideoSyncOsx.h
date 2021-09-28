@@ -15,12 +15,10 @@
 class CVideoSyncOsx : public CVideoSync, IDispResource
 {
 public:
-
-  CVideoSyncOsx(void *clock) :
-    CVideoSync(clock),
-    m_LastVBlankTime(0),
-    m_displayLost(false),
-    m_displayReset(false){};
+  CVideoSyncOsx(void* clock)
+    : CVideoSync(clock), m_LastVBlankTime(0), m_displayLost(false), m_displayReset(false)
+  {
+  }
 
   // CVideoSync interface
   bool Setup(PUPDATECLOCK func) override;

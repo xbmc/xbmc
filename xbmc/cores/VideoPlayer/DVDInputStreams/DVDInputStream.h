@@ -111,10 +111,10 @@ public:
     virtual bool HasMenu() = 0;
     virtual bool IsInMenu() = 0;
     virtual void SkipStill() = 0;
-    virtual double GetTimeStampCorrection() { return 0.0; };
+    virtual double GetTimeStampCorrection() { return 0.0; }
     virtual bool GetState(std::string &xmlstate) = 0;
     virtual bool SetState(const std::string &xmlstate) = 0;
-    virtual bool CanSeek() { return !IsInMenu(); };
+    virtual bool CanSeek() { return !IsInMenu(); }
   };
 
   class IDemux
@@ -125,15 +125,15 @@ public:
     virtual DemuxPacket* ReadDemux() = 0;
     virtual CDemuxStream* GetStream(int iStreamId) const = 0;
     virtual std::vector<CDemuxStream*> GetStreams() const = 0;
-    virtual void EnableStream(int iStreamId, bool enable) {};
-    virtual bool OpenStream(int iStreamId) { return false; };
+    virtual void EnableStream(int iStreamId, bool enable) {}
+    virtual bool OpenStream(int iStreamId) { return false; }
     virtual int GetNrOfStreams() const = 0;
     virtual void SetSpeed(int iSpeed) = 0;
-    virtual void FillBuffer(bool mode) {};
+    virtual void FillBuffer(bool mode) {}
     virtual bool SeekTime(double time, bool backward = false, double* startpts = NULL) = 0;
     virtual void AbortDemux() = 0;
     virtual void FlushDemux() = 0;
-    virtual void SetVideoResolution(int width, int height) {};
+    virtual void SetVideoResolution(int width, int height) {}
   };
 
   enum ENextStream
@@ -150,7 +150,7 @@ public:
   virtual int Read(uint8_t* buf, int buf_size) = 0;
   virtual int64_t Seek(int64_t offset, int whence) = 0;
   virtual int64_t GetLength() = 0;
-  virtual std::string& GetContent() { return m_content; };
+  virtual std::string& GetContent() { return m_content; }
   virtual std::string GetFileName();
   virtual CURL GetURL();
   virtual ENextStream NextStream() { return NEXTSTREAM_NONE; }

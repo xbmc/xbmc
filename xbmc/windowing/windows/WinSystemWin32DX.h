@@ -63,8 +63,8 @@ public:
     m_deviceResources->Unregister(resource);
   };
 
-  void Register(IDispResource *resource) override { CWinSystemWin32::Register(resource); };
-  void Unregister(IDispResource *resource) override { CWinSystemWin32::Unregister(resource); };
+  void Register(IDispResource* resource) override { CWinSystemWin32::Register(resource); }
+  void Unregister(IDispResource* resource) override { CWinSystemWin32::Unregister(resource); }
 
   void FixRefreshRateIfNecessary(const D3D10DDIARG_CREATERESOURCE* pResource) const;
 
