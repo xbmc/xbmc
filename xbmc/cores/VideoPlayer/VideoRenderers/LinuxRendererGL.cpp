@@ -9,33 +9,35 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <locale.h>
-
 #include "LinuxRendererGL.h"
+
 #include "Application.h"
+#include "RenderCapture.h"
+#include "RenderCaptureGL.h"
 #include "RenderFactory.h"
 #include "ServiceBroker.h"
+#include "VideoShaders/VideoFilterShaderGL.h"
+#include "VideoShaders/YUV2RGBShaderGL.h"
+#include "cores/FFmpeg.h"
+#include "cores/IPlayer.h"
+#include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
+#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
+#include "guilib/LocalizeStrings.h"
+#include "guilib/Texture.h"
+#include "rendering/MatrixGL.h"
+#include "rendering/gl/RenderSystemGL.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "VideoShaders/YUV2RGBShaderGL.h"
-#include "VideoShaders/VideoFilterShaderGL.h"
-#include "windowing/WinSystem.h"
-#include "guilib/Texture.h"
-#include "guilib/LocalizeStrings.h"
-#include "rendering/MatrixGL.h"
-#include "rendering/gl/RenderSystemGL.h"
 #include "threads/SingleLock.h"
-#include "utils/log.h"
 #include "utils/GLUtils.h"
 #include "utils/StringUtils.h"
-#include "RenderCapture.h"
-#include "cores/IPlayer.h"
-#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
-#include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
-#include "cores/FFmpeg.h"
+#include "utils/log.h"
+#include "windowing/WinSystem.h"
+
+#include <locale.h>
 
 #ifdef TARGET_DARWIN_OSX
 #include "platform/darwin/osx/CocoaInterface.h"
@@ -2752,4 +2754,9 @@ AVColorPrimaries CLinuxRendererGL::GetSrcPrimaries(AVColorPrimaries srcPrimaries
       ret = AVCOL_PRI_BT470BG;
   }
   return ret;
+}
+
+CRenderCapture* CLinuxRendererGL::GetRenderCapture()
+{
+  return new CRenderCaptureGL;
 }

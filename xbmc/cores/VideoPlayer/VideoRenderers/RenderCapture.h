@@ -8,13 +8,7 @@
 
 #pragma once
 
-#ifdef HAS_DX
-  #include "guilib/D3DResource.h"
-  #include <wrl/client.h>
-#endif
-
 #include "threads/Event.h"
-
 
 enum ECAPTURESTATE
 {
@@ -26,11 +20,17 @@ enum ECAPTURESTATE
   CAPTURESTATE_NEEDSDELETE
 };
 
-class CRenderCaptureBase
+class CRenderCapture
 {
   public:
-    CRenderCaptureBase();
-    virtual ~CRenderCaptureBase();
+    CRenderCapture() = default;
+    virtual ~CRenderCapture() = default;
+
+    virtual void BeginRender() = 0;
+    virtual void EndRender() = 0;
+
+    virtual void ReadOut() {}
+    virtual void* GetRenderBuffer() { return m_pixels; }
 
     /* \brief Called by the rendermanager to set the state, should not be called by anything else */
     void SetState(ECAPTURESTATE state) { m_state = state; }
@@ -85,86 +85,18 @@ class CRenderCaptureBase
   protected:
     bool UseOcclusionQuery();
 
-    ECAPTURESTATE  m_state;     //state for the rendermanager
-    ECAPTURESTATE  m_userState; //state for the thread that wants the capture
-    int m_flags;
+    ECAPTURESTATE m_state{CAPTURESTATE_FAILED}; //state for the rendermanager
+    ECAPTURESTATE m_userState{CAPTURESTATE_FAILED}; //state for the thread that wants the capture
+    int m_flags{0};
     CEvent m_event;
 
-    uint8_t*  m_pixels;
-    unsigned int m_width;
-    unsigned int m_height;
-    unsigned int m_bufferSize;
+    uint8_t* m_pixels{nullptr};
+    unsigned int m_width{0};
+    unsigned int m_height{0};
+    unsigned int m_bufferSize{0};
 
-    //this is set after the first render
-    bool m_asyncSupported;
-    bool m_asyncChecked;
+    // this is set after the first render
+    bool m_asyncSupported{false};
+    bool m_asyncChecked{false};
 };
 
-#if defined(HAS_GL) || defined(HAS_GLES)
-#include "system_gl.h"
-
-class CRenderCaptureGL : public CRenderCaptureBase
-{
-  public:
-    CRenderCaptureGL();
-    ~CRenderCaptureGL() override;
-
-    int   GetCaptureFormat();
-
-    void  BeginRender();
-    void  EndRender();
-    void  ReadOut();
-
-    void* GetRenderBuffer();
-
-  private:
-    void   PboToBuffer();
-    GLuint m_pbo;
-    GLuint m_query;
-    bool   m_occlusionQuerySupported;
-};
-
-//used instead of typedef CRenderCaptureGL CRenderCapture
-//since C++ doesn't allow you to forward declare a typedef
-class CRenderCapture : public CRenderCaptureGL
-{
-  public:
-    CRenderCapture() = default;
-};
-
-#elif HAS_DX /*HAS_GL*/
-
-class CRenderCaptureDX : public CRenderCaptureBase, public ID3DResource
-{
-  public:
-    CRenderCaptureDX();
-    ~CRenderCaptureDX();
-
-    int GetCaptureFormat();
-
-    void BeginRender();
-    void EndRender();
-    void ReadOut();
-
-    void OnDestroyDevice(bool fatal) override;
-    void OnCreateDevice() override {};
-    CD3DTexture& GetTarget() { return m_renderTex; }
-
-  private:
-    void SurfaceToBuffer();
-    void CleanupDX();
-
-    unsigned int m_surfaceWidth;
-    unsigned int m_surfaceHeight;
-    Microsoft::WRL::ComPtr<ID3D11Query> m_query;
-    CD3DTexture m_renderTex;
-    CD3DTexture m_copyTex;
-};
-
-class CRenderCapture : public CRenderCaptureDX
-{
-  public:
-    CRenderCapture() {};
-};
-
-#endif
