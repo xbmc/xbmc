@@ -372,11 +372,21 @@ bool CWinSystemGbm::SetHDR(const VideoPicture* videoPicture)
               std::round(av_q2d(mdmd->display_primaries[i][0]) * 50000.0);
           hdr_metadata.hdmi_metadata_type1.display_primaries[i].y =
               std::round(av_q2d(mdmd->display_primaries[i][1]) * 50000.0);
+
+          CLog::Log(LOGDEBUG, LOGVIDEO, "CWinSystemGbm::{} - display_primaries[{}].x: {}",
+                    __FUNCTION__, i, hdr_metadata.hdmi_metadata_type1.display_primaries[i].x);
+          CLog::Log(LOGDEBUG, LOGVIDEO, "CWinSystemGbm::{} - display_primaries[{}].y: {}",
+                    __FUNCTION__, i, hdr_metadata.hdmi_metadata_type1.display_primaries[i].y);
         }
         hdr_metadata.hdmi_metadata_type1.white_point.x =
             std::round(av_q2d(mdmd->white_point[0]) * 50000.0);
         hdr_metadata.hdmi_metadata_type1.white_point.y =
             std::round(av_q2d(mdmd->white_point[1]) * 50000.0);
+
+        CLog::Log(LOGDEBUG, LOGVIDEO, "CWinSystemGbm::{} - white_point.x: {}", __FUNCTION__,
+                  hdr_metadata.hdmi_metadata_type1.white_point.x);
+        CLog::Log(LOGDEBUG, LOGVIDEO, "CWinSystemGbm::{} - white_point.y: {}", __FUNCTION__,
+                  hdr_metadata.hdmi_metadata_type1.white_point.y);
       }
       if (mdmd && mdmd->has_luminance)
       {
@@ -389,6 +399,11 @@ bool CWinSystemGbm::SetHDR(const VideoPicture* videoPicture)
         // where 0x0001 represents 0.0001 cd/m2 and 0xFFFF represents 6.5535 cd/m2
         hdr_metadata.hdmi_metadata_type1.min_display_mastering_luminance =
             std::round(av_q2d(mdmd->min_luminance) * 10000.0);
+
+        CLog::Log(LOGDEBUG, LOGVIDEO, "CWinSystemGbm::{} - max_display_mastering_luminance: {}",
+                  __FUNCTION__, hdr_metadata.hdmi_metadata_type1.max_display_mastering_luminance);
+        CLog::Log(LOGDEBUG, LOGVIDEO, "CWinSystemGbm::{} - min_display_mastering_luminance: {}",
+                  __FUNCTION__, hdr_metadata.hdmi_metadata_type1.min_display_mastering_luminance);
       }
 
       const AVContentLightMetadata* clmd = DRMPRIME::GetContentLightMetadata(*videoPicture);
@@ -396,6 +411,11 @@ bool CWinSystemGbm::SetHDR(const VideoPicture* videoPicture)
       {
         hdr_metadata.hdmi_metadata_type1.max_cll = clmd->MaxCLL;
         hdr_metadata.hdmi_metadata_type1.max_fall = clmd->MaxFALL;
+
+        CLog::Log(LOGDEBUG, LOGVIDEO, "CWinSystemGbm::{} - max_cll: {}", __FUNCTION__,
+                  hdr_metadata.hdmi_metadata_type1.max_cll);
+        CLog::Log(LOGDEBUG, LOGVIDEO, "CWinSystemGbm::{} - max_fall: {}", __FUNCTION__,
+                  hdr_metadata.hdmi_metadata_type1.max_fall);
       }
 
       drmModeCreatePropertyBlob(drm->GetFileDescriptor(), &hdr_metadata, sizeof(hdr_metadata),
