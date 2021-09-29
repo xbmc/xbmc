@@ -50,6 +50,7 @@ protected:
 private:
   bool m_bConfigured = false;
   int m_iLastRenderBuffer = -1;
+  CRect m_planeDestRect;
 
   std::shared_ptr<CVideoLayerBridgeDRMPRIME> m_videoLayerBridge;
 
