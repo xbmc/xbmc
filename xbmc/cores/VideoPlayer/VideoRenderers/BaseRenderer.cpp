@@ -104,13 +104,19 @@ void CBaseRenderer::restoreRotatedCoords()
     m_rotatedDestCoords[i] = m_savedRotatedDestCoords[i];
 }
 
-void CBaseRenderer::CalcNormalRenderRect(float offsetX, float offsetY, float width, float height,
-                                         float inputFrameRatio, float zoomAmount, float verticalShift)
+void CBaseRenderer::CalcDestRect(float offsetX,
+                                 float offsetY,
+                                 float width,
+                                 float height,
+                                 float inputFrameRatio,
+                                 float zoomAmount,
+                                 float verticalShift,
+                                 CRect& destRect)
 {
   // if view window is empty, set empty destination
   if (height == 0 || width == 0)
   {
-    m_destRect.SetRect(0.0f, 0.0f, 0.0f, 0.0f);
+    destRect.SetRect(0.0f, 0.0f, 0.0f, 0.0f);
     return;
   }
 
@@ -190,10 +196,26 @@ void CBaseRenderer::CalcNormalRenderRect(float offsetX, float offsetY, float wid
   else if (verticalShift < -1.0f)
     posY += shiftRange * (verticalShift + 1.0f);
 
-  m_destRect.x1 = (float)MathUtils::round_int(posX + offsetX);
-  m_destRect.x2 = m_destRect.x1 + MathUtils::round_int(newWidth);
-  m_destRect.y1 = (float)MathUtils::round_int(posY + offsetY);
-  m_destRect.y2 = m_destRect.y1 + MathUtils::round_int(newHeight);
+  destRect.x1 = static_cast<float>(MathUtils::round_int(static_cast<double>(posX + offsetX)));
+  destRect.x2 = destRect.x1 + MathUtils::round_int(static_cast<double>(newWidth));
+  destRect.y1 = static_cast<float>(MathUtils::round_int(static_cast<double>(posY + offsetY)));
+  destRect.y2 = destRect.y1 + MathUtils::round_int(static_cast<double>(newHeight));
+}
+
+void CBaseRenderer::CalcNormalRenderRect(float offsetX,
+                                         float offsetY,
+                                         float width,
+                                         float height,
+                                         float inputFrameRatio,
+                                         float zoomAmount,
+                                         float verticalShift)
+{
+  CalcDestRect(offsetX, offsetY, width, height, inputFrameRatio, zoomAmount, verticalShift,
+               m_destRect);
+
+  // bail out if view window is empty
+  if (height == 0 || width == 0)
+    return;
 
   // clip as needed
   if (!(CServiceBroker::GetWinSystem()->GetGfxContext().IsFullScreenVideo() || CServiceBroker::GetWinSystem()->GetGfxContext().IsCalibrating()))
