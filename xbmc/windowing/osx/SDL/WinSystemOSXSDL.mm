@@ -40,7 +40,7 @@
 #include "platform/darwin/DarwinUtils.h"
 #include "platform/darwin/DictionaryUtils.h"
 #include "platform/darwin/osx/CocoaInterface.h"
-#import "platform/darwin/osx/OSXTextInputResponder.h"
+#import "platform/darwin/osx/SDL/OSXTextInputResponder.h"
 #include "platform/darwin/osx/XBMCHelper.h"
 
 #include <cstdlib>
