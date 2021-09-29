@@ -50,38 +50,58 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
   if (url.IsProtocol("stack")) // disqualify stack as we need to work with each of the parts instead
     return NULL;
 
+  /**
+   * Check available binary addons which can contain files with underlaid
+   * folders / files.
+   * Currently in vfs and audiodecoder addons.
+   *
+   * @note The file extensions are absolutely necessary for these in order to
+   * identify the associated add-on.
+   */
+  /**@{*/
+
+  // Get file extensions to find addon related to it.
   std::string strExtension = URIUtils::GetExtension(url);
   StringUtils::ToLower(strExtension);
-  if (!strExtension.empty() && CServiceBroker::IsBinaryAddonCacheUp() &&
-      !StringUtils::EndsWith(strExtension, "stream"))
-  {
-    std::vector<AddonInfoPtr> addonInfos;
-    CServiceBroker::GetAddonMgr().GetAddonInfos(addonInfos, true, ADDON_AUDIODECODER);
-    for (const auto& addonInfo : addonInfos)
-    {
-      if (CAudioDecoder::HasTracks(addonInfo))
-      {
-        auto exts = StringUtils::Split(CAudioDecoder::GetExtensions(addonInfo), "|");
-        if (std::find(exts.begin(), exts.end(), strExtension) != exts.end())
-        {
-          CAudioDecoder* result = new CAudioDecoder(addonInfo);
-          if (!result->CreateDecoder() || !result->ContainsFiles(url))
-          {
-            delete result;
-            CLog::Log(LOGINFO,
-                      "CFileDirectoryFactory::{}: Addon '{}' support extension '{}' but creation "
-                      "failed (seems not supported), trying other addons and Kodi",
-                      __func__, addonInfo->ID(), strExtension);
-            continue;
-          }
-          return result;
-        }
-      }
-    }
-  }
 
   if (!strExtension.empty() && CServiceBroker::IsBinaryAddonCacheUp())
   {
+    /*!
+     * Scan here about audiodecoder addons.
+     *
+     * @note: Do not check audio decoder files that are already open, they cannot
+     * contain any further sub-folders.
+     */
+    if (!StringUtils::EndsWith(strExtension, "stream"))
+    {
+      std::vector<AddonInfoPtr> addonInfos;
+      CServiceBroker::GetAddonMgr().GetAddonInfos(addonInfos, true, ADDON_AUDIODECODER);
+      for (const auto& addonInfo : addonInfos)
+      {
+        if (CAudioDecoder::HasTracks(addonInfo))
+        {
+          auto exts = StringUtils::Split(CAudioDecoder::GetExtensions(addonInfo), "|");
+          if (std::find(exts.begin(), exts.end(), strExtension) != exts.end())
+          {
+            CAudioDecoder* result = new CAudioDecoder(addonInfo);
+            if (!result->CreateDecoder() || !result->ContainsFiles(url))
+            {
+              delete result;
+              CLog::Log(LOGINFO,
+                        "CFileDirectoryFactory::{}: Addon '{}' support extension '{}' but creation "
+                        "failed (seems not supported), trying other addons and Kodi",
+                        __func__, addonInfo->ID(), strExtension);
+              continue;
+            }
+            return result;
+          }
+        }
+      }
+    }
+
+    /*!
+     * Scan here about VFS addons.
+     */
     for (const auto& vfsAddon : CServiceBroker::GetVFSAddonCache().GetAddonInstances())
     {
       if (vfsAddon->HasFileDirectories())
@@ -120,6 +140,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
       }
     }
   }
+  /**@}*/
 
   if (pItem->IsRSS())
     return new CRSSDirectory();
