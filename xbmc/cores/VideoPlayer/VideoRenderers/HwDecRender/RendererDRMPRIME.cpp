@@ -124,10 +124,14 @@ void CRendererDRMPRIME::ManageRenderArea()
   RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
   if (info.iScreenWidth != info.iWidth)
   {
-    CalcNormalRenderRect(0, 0, info.iScreenWidth, info.iScreenHeight,
-                         GetAspectRatio() * CDisplaySettings::GetInstance().GetPixelRatio(),
-                         CDisplaySettings::GetInstance().GetZoomAmount(),
-                         CDisplaySettings::GetInstance().GetVerticalShift());
+    CalcDestRect(0, 0, info.iScreenWidth, info.iScreenHeight,
+                 GetAspectRatio() * CDisplaySettings::GetInstance().GetPixelRatio(),
+                 CDisplaySettings::GetInstance().GetZoomAmount(),
+                 CDisplaySettings::GetInstance().GetVerticalShift(), m_planeDestRect);
+  }
+  else
+  {
+    m_planeDestRect = m_destRect;
   }
 }
 
@@ -217,7 +221,7 @@ void CRendererDRMPRIME::RenderUpdate(
   if (m_iLastRenderBuffer == -1)
     m_videoLayerBridge->Configure(buffer);
 
-  m_videoLayerBridge->SetVideoPlane(buffer, m_destRect);
+  m_videoLayerBridge->SetVideoPlane(buffer, m_planeDestRect);
 
   m_iLastRenderBuffer = index;
 }
