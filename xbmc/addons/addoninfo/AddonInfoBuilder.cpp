@@ -643,6 +643,17 @@ bool CAddonInfoBuilder::PlatformSupportsAddon(const AddonInfoPtr& addon)
     "freebsd",
 #elif defined(TARGET_LINUX)
     "linux",
+#if defined(__ARM_ARCH_7A__)
+    "linux-armv7",
+#elif defined(__aarch64__)
+    "linux-aarch64",
+#elif defined(__i686__)
+    "linux-i686",
+#elif defined(__x86_64__)
+    "linux-x86_64",
+#else
+    #warning no architecture dependant platform tag
+#endif
 #elif defined(TARGET_WINDOWS_DESKTOP)
     "windx",
     "windows",
