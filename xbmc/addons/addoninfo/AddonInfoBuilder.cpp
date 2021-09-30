@@ -118,6 +118,12 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
   }
 
   /*
+   * The function variable "repo" is only used when data stored on the internet
+   * are read out. A boolean value is then set here for easier identification.
+   */
+  const bool isRepoXMLContent = !repo.artdir.empty() && !repo.datadir.empty();
+
+  /*
    * Parse addon.xml:
    * <addon id="???"
    *        name="???"
@@ -188,7 +194,7 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
   }
 
   std::string assetBasePath;
-  if (repo.artdir.empty() && !addonPath.empty())
+  if (!isRepoXMLContent && !addonPath.empty())
   {
     // Default for add-on information not loaded from repository
     assetBasePath = addonPath;
@@ -367,7 +373,7 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
        * whether it is an installed addon and read a changelog.txt as a
        * replacement, if available. */
       GetTextList(child, "news", addon->m_changelog);
-      if (addon->m_changelog.empty() && repo.artdir.empty() && !addonPath.empty())
+      if (addon->m_changelog.empty() && !isRepoXMLContent && !addonPath.empty())
       {
         using XFILE::auto_buffer;
         using XFILE::CFile;
@@ -428,7 +434,7 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
     {
       // Prevent log file entry if data is from repository, there normal on
       // addons for other OS's
-      if (repo.datadir.empty())
+      if (!isRepoXMLContent)
         CLog::Log(LOGERROR, "CAddonInfoBuilder::{}: addon.xml from '{}' for binary type '{}' doesn't contain library and addon becomes ignored",
                       __FUNCTION__, addon->ID(), CAddonInfo::TranslateType(addon->m_mainType));
       return false;
