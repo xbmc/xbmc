@@ -58,6 +58,13 @@ public:
    */
   bool EncodedHostName(const std::string& protocol) const;
 
+  /*!
+   * @brief Returns true if related provider can operate related file
+   *
+   * @note Thought for cases e.g. by ISO, where can be a video or also a SACD.
+   */
+  bool CanOperateExtension(const std::string& path) const;
+
 private:
   std::string GetAddonExtensions(const ADDON::TYPE &type) const;
   std::string GetAddonFileFolderExtensions(const ADDON::TYPE &type) const;
