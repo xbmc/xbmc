@@ -4,7 +4,13 @@ function(core_link_library lib wraplib)
   elseif(CMAKE_GENERATOR MATCHES "Xcode")
     # CURRENT_VARIANT is an Xcode env var
     # CPU is a project cmake var
-    set(wrapper_obj cores/dll-loader/exports/kodi.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/wrapper.build/Objects-$(CURRENT_VARIANT)/${CPU}/wrapper.o)
+    # Xcode new build system (CMAKE_XCODE_BUILD_SYSTEM=12) requires the env var CURRENT_VARIANT to be passed WITHOUT brackets
+    # Xcode Legacy build system (CMAKE_XCODE_BUILD_SYSTEM=1) requires the env var CURRENT_VARIANT to be passed WITH brackets
+    if(CMAKE_XCODE_BUILD_SYSTEM STREQUAL 12)
+      set(wrapper_obj cores/dll-loader/exports/kodi.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/wrapper.build/Objects-$CURRENT_VARIANT/${CPU}/wrapper.o)
+    else()
+			set(wrapper_obj cores/dll-loader/exports/kodi.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/wrapper.build/Objects-$(CURRENT_VARIANT)/${CPU}/wrapper.o)
+    endif()
   else()
     message(FATAL_ERROR "Unsupported generator in core_link_library")
   endif()
