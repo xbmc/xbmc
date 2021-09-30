@@ -1078,7 +1078,8 @@ bool CFileItem::IsFileFolder(EFileFolderType types) const
   }
 
   if (CServiceBroker::IsBinaryAddonCacheUp() &&
-      IsType(CServiceBroker::GetFileExtensionProvider().GetFileFolderExtensions().c_str()))
+      IsType(CServiceBroker::GetFileExtensionProvider().GetFileFolderExtensions().c_str()) &&
+      CServiceBroker::GetFileExtensionProvider().CanOperateExtension(m_strPath))
     return true;
 
   if(types & EFILEFOLDER_TYPE_ONBROWSE)
