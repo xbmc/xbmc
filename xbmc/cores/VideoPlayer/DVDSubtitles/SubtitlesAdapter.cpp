@@ -27,7 +27,7 @@ CSubtitlesAdapter::~CSubtitlesAdapter()
 bool CSubtitlesAdapter::Initialize()
 {
   m_libass->SetSubtitleType(ADAPTED);
-  return m_libass->CreateTrack();
+  return m_libass->CreateTrack() && m_libass->CreateStyle();
 }
 
 int CSubtitlesAdapter::AddSubtitle(const char* text, double startTime, double stopTime)
