@@ -63,6 +63,14 @@ public:
   bool NeedsSave() const { return m_bChanged; }
   void SetSaved() { m_bChanged = false; }
 
+  int ClientID() const { return m_iClientID; }
+
+  int ChannelUID() const { return m_iChannelUID; }
+
+  int ChannelDatabaseID() const { return m_iChannelDatabaseID; }
+
+  int IsRadio() const { return m_bIsRadio; }
+
   /*!
    * @brief Delete this group member from the database.
    * @return True if it was deleted successfully, false otherwise.
@@ -73,6 +81,7 @@ private:
   int m_iGroupID = -1;
   int m_iClientID = -1;
   int m_iChannelUID = -1;
+  int m_iChannelDatabaseID = -1;
   bool m_bIsRadio = false;
   std::shared_ptr<CPVRChannel> m_channel;
   std::string m_path;

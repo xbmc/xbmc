@@ -214,6 +214,8 @@ bool CPVRChannel::Persist()
   const std::shared_ptr<CPVRDatabase> database = CServiceBroker::GetPVRManager().GetTVDatabase();
   if (database)
   {
+    CLog::LogFC(LOGDEBUG, LOGPVR, "Persisting channel '{}'", m_strChannelName);
+
     bool bReturn = database->Persist(*this, true);
 
     CSingleLock lock(m_critSection);

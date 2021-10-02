@@ -44,6 +44,7 @@ void CPVRChannelGroupMember::SetChannel(const std::shared_ptr<CPVRChannel>& chan
   m_channel = channel;
   m_iClientID = channel->ClientID();
   m_iChannelUID = channel->UniqueID();
+  m_iChannelDatabaseID = channel->ChannelID();
   m_bIsRadio = channel->IsRadio();
 }
 

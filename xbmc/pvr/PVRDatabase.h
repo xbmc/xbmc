@@ -165,16 +165,16 @@ namespace PVR
     /*!
      * @brief Get the channel groups.
      * @param results The container to store the results in.
-     * @return True if the list was fetched successfully, false otherwise.
+     * @return The number of groups loaded.
      */
-    bool Get(CPVRChannelGroups& results);
+    int Get(CPVRChannelGroups& results);
 
     /*!
-     * @brief Add the group members to a group.
-     * @param group The group to get the channels for.
-     * @return The amount of channels that were added.
+     * @brief Get the members of a channel group.
+     * @param group The group to get the members for.
+     * @return The group members.
      */
-    int Get(CPVRChannelGroup& group);
+    std::vector<std::shared_ptr<CPVRChannelGroupMember>> Get(const CPVRChannelGroup& group);
 
     /*!
      * @brief Add or update a channel group entry in the database.

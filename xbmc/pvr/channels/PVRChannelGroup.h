@@ -513,6 +513,13 @@ namespace PVR
     int LoadFromDb();
 
     /*!
+     * @brief Delete channel group members from database.
+     * @param membersToDelete The channel group members.
+     */
+    void DeleteGroupMembersFromDb(
+        const std::vector<std::shared_ptr<CPVRChannelGroupMember>>& membersToDelete);
+
+    /*!
      * @brief Update this group's data with a channel group member provided by a client.
      * @param groupMember The updated group member.
      * @return True if group member data were changed, false otherwise.
