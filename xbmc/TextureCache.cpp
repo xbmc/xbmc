@@ -11,16 +11,22 @@
 #include "ServiceBroker.h"
 #include "TextureCacheJob.h"
 #include "URL.h"
+#include "commons/ilog.h"
 #include "filesystem/File.h"
+#include "filesystem/IFileTypes.h"
 #include "guilib/Texture.h"
 #include "profiles/ProfileManager.h"
-#include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "utils/Crc32.h"
+#include "utils/Job.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+
+#include <chrono>
+#include <exception>
+#include <string.h>
 
 using namespace XFILE;
 using namespace std::chrono_literals;
@@ -130,8 +136,8 @@ void CTextureCache::BackgroundCacheImage(const std::string &url)
 }
 
 std::string CTextureCache::CacheImage(const std::string& image,
-                                      CTexture** texture /* = NULL */,
-                                      CTextureDetails* details /* = NULL */)
+                                      std::unique_ptr<CTexture>* texture /*= nullptr*/,
+                                      CTextureDetails* details /*= nullptr*/)
 {
   std::string url = CTextureUtils::UnwrapImageURL(image);
   if (url.empty())

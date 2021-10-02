@@ -8,14 +8,18 @@
 
 #pragma once
 
+#include "TextureCacheJob.h"
 #include "TextureDatabase.h"
+#include "threads/CriticalSection.h"
 #include "threads/Event.h"
 #include "utils/JobManager.h"
 
+#include <memory>
 #include <set>
 #include <string>
 #include <vector>
 
+class CJob;
 class CURL;
 class CTexture;
 
@@ -80,8 +84,8 @@ public:
    \sa CTextureCacheJob::CacheTexture
    */
   std::string CacheImage(const std::string& image,
-                         CTexture** texture = NULL,
-                         CTextureDetails* details = NULL);
+                         std::unique_ptr<CTexture>* texture = nullptr,
+                         CTextureDetails* details = nullptr);
 
   /*! \brief Cache an image to image cache if not already cached, returning the image details.
    \param image url of the image to cache.
