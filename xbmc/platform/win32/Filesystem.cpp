@@ -8,6 +8,8 @@
 
 #include "platform/Filesystem.h"
 
+#include "utils/StringUtils.h"
+
 #include "platform/win32/CharsetConverter.h"
 
 #include <Windows.h>
@@ -48,28 +50,56 @@ space_info space(const std::string& path, std::error_code& ec)
   return sp;
 }
 
-std::string temp_directory_path(std::error_code &ec)
+namespace
+{
+std::wstring temp_directory_path_w(std::error_code& ec)
 {
   wchar_t lpTempPathBuffer[MAX_PATH + 1];
 
   if (!GetTempPathW(MAX_PATH, lpTempPathBuffer))
   {
     ec.assign(GetLastError(), std::system_category());
-    return std::string();
+    return std::wstring();
+  }
+
+  // Save this to return in case the tests succeed
+  auto tempDir = std::wstring(lpTempPathBuffer);
+
+  if (!GetTempFileNameW(tempDir.c_str(), L"xbm", 0, lpTempPathBuffer))
+  {
+    tempDir = std::wstring(L"C:\\Windows\\SystemTemp\\");
+    if (!GetTempFileNameW(tempDir.c_str(), L"xbm", 0, lpTempPathBuffer))
+    {
+      ec.assign(GetLastError(), std::system_category());
+      return std::wstring();
+    }
+  }
+
+  if (!DeleteFileW(lpTempPathBuffer))
+  {
+    auto err = GetLastError();
+    if (err != ERROR_FILE_NOT_FOUND)
+    {
+      ec.assign(err, std::system_category());
+      return std::wstring();
+    }
   }
 
   ec.clear();
-  return win::FromW(lpTempPathBuffer);
+  return tempDir;
+}
+} // namespace
+
+std::string temp_directory_path(std::error_code& ec)
+{
+  return win::FromW(temp_directory_path_w(ec));
 }
 
-std::string create_temp_directory(std::error_code &ec)
+std::string create_temp_directory(std::error_code& ec)
 {
   wchar_t lpTempPathBuffer[MAX_PATH + 1];
 
-  std::wstring xbmcTempPath = win::ToW(temp_directory_path(ec));
-
-  if (ec)
-    return std::string();
+  std::wstring xbmcTempPath = temp_directory_path_w(ec);
 
   if (!GetTempFileNameW(xbmcTempPath.c_str(), L"xbm", 0, lpTempPathBuffer))
   {
@@ -77,7 +107,15 @@ std::string create_temp_directory(std::error_code &ec)
     return std::string();
   }
 
-  DeleteFileW(lpTempPathBuffer);
+  if (!DeleteFileW(lpTempPathBuffer))
+  {
+    auto err = GetLastError();
+    if (err != ERROR_FILE_NOT_FOUND)
+    {
+      ec.assign(err, std::system_category());
+      return std::string();
+    }
+  }
 
   if (!CreateDirectoryW(lpTempPathBuffer, nullptr))
   {
@@ -93,7 +131,7 @@ std::string temp_file_path(const std::string&, std::error_code& ec)
 {
   wchar_t lpTempPathBuffer[MAX_PATH + 1];
 
-  std::wstring xbmcTempPath = win::ToW(create_temp_directory(ec));
+  std::wstring xbmcTempPath = temp_directory_path_w(ec);
 
   if (ec)
     return std::string();
@@ -104,12 +142,20 @@ std::string temp_file_path(const std::string&, std::error_code& ec)
     return std::string();
   }
 
-  DeleteFileW(lpTempPathBuffer);
+  if (!DeleteFileW(lpTempPathBuffer))
+  {
+    auto err = GetLastError();
+    if (err != ERROR_FILE_NOT_FOUND)
+    {
+      ec.assign(err, std::system_category());
+      return std::string();
+    }
+  }
 
   ec.clear();
   return win::FromW(lpTempPathBuffer);
 }
 
-}
-}
-}
+} // namespace FILESYSTEM
+} // namespace PLATFORM
+} // namespace KODI
