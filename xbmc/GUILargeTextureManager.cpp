@@ -8,15 +8,21 @@
 
 #include "GUILargeTextureManager.h"
 
+#include "ServiceBroker.h"
 #include "TextureCache.h"
+#include "commons/ilog.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/Texture.h"
 #include "threads/SingleLock.h"
 #include "utils/JobManager.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
+#include "windowing/WinSystem.h"
 
 #include <cassert>
+#include <chrono>
+#include <exception>
 
 CImageLoader::CImageLoader(const std::string &path, const bool useCache):
   m_path(path)
@@ -25,10 +31,7 @@ CImageLoader::CImageLoader(const std::string &path, const bool useCache):
   m_use_cache = useCache;
 }
 
-CImageLoader::~CImageLoader()
-{
-  delete(m_texture);
-}
+CImageLoader::~CImageLoader() = default;
 
 bool CImageLoader::DoWork()
 {
@@ -121,11 +124,15 @@ bool CGUILargeTextureManager::CLargeTexture::DeleteIfRequired(bool deleteImmedia
   return false;
 }
 
-void CGUILargeTextureManager::CLargeTexture::SetTexture(CTexture* texture)
+void CGUILargeTextureManager::CLargeTexture::SetTexture(std::unique_ptr<CTexture> texture)
 {
   assert(!m_texture.size());
   if (texture)
-    m_texture.Set(texture, texture->GetWidth(), texture->GetHeight());
+  {
+    const auto width = texture->GetWidth();
+    const auto height = texture->GetHeight();
+    m_texture.Set(std::move(texture), width, height);
+  }
 }
 
 CGUILargeTextureManager::CGUILargeTextureManager() = default;
@@ -230,7 +237,7 @@ void CGUILargeTextureManager::OnJobComplete(unsigned int jobID, bool success, CJ
     { // found our job
       CImageLoader *loader = static_cast<CImageLoader*>(job);
       CLargeTexture *image = it->second;
-      image->SetTexture(loader->m_texture);
+      image->SetTexture(std::move(loader->m_texture));
       loader->m_texture = NULL; // we want to keep the texture, and jobs are auto-deleted.
       m_queued.erase(it);
       m_allocated.push_back(image);
