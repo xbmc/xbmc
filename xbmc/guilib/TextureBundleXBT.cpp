@@ -10,8 +10,10 @@
 
 #include "ServiceBroker.h"
 #include "Texture.h"
+#include "URL.h"
 #include "XBTF.h"
 #include "XBTFReader.h"
+#include "commons/ilog.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/XbtManager.h"
 #include "settings/Settings.h"
@@ -20,10 +22,15 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
+#include "windowing/WinSystem.h"
 
-#include <inttypes.h>
+#include <algorithm>
+#include <cstdint>
+#include <exception>
 
 #include <lzo/lzo1x.h>
+#include <lzo/lzoconf.h>
+
 
 #ifdef TARGET_WINDOWS_DESKTOP
 #ifdef NDEBUG
@@ -217,7 +224,7 @@ bool CTextureBundleXBT::ConvertFrameToTexture(const std::string& name,
                                               std::unique_ptr<CTexture>& texture)
 {
   // found texture - allocate the necessary buffers
-  std::vector<unsigned char> buffer((size_t)frame.GetPackedSize());
+  std::vector<unsigned char> buffer(static_cast<size_t>(frame.GetPackedSize()));
 
   // load the compressed texture
   if (!m_XBTFReader->Load(frame, buffer.data()))
@@ -229,7 +236,7 @@ bool CTextureBundleXBT::ConvertFrameToTexture(const std::string& name,
   // check if it's packed with lzo
   if (frame.IsPacked())
   { // unpack
-    std::vector<unsigned char> unpacked((size_t)frame.GetUnpackedSize());
+    std::vector<unsigned char> unpacked(static_cast<size_t>(frame.GetUnpackedSize()));
     lzo_uint s = (lzo_uint)frame.GetUnpackedSize();
     if (lzo1x_decompress_safe(buffer.data(), static_cast<lzo_uint>(buffer.size()), unpacked.data(),
                               &s, NULL) != LZO_E_OK ||
@@ -242,7 +249,7 @@ bool CTextureBundleXBT::ConvertFrameToTexture(const std::string& name,
   }
 
   // create an xbmc texture
-  texture.reset(CTexture::CreateTexture());
+  texture = CTexture::CreateTexture();
   texture->LoadFromMemory(frame.GetWidth(), frame.GetHeight(), 0, frame.GetFormat(),
                           frame.HasAlpha(), buffer.data());
 
