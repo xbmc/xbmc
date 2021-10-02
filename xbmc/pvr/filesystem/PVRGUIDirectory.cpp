@@ -524,13 +524,6 @@ bool GetTimersRootDirectory(const CPVRTimersPath& path,
                             const std::vector<std::shared_ptr<CPVRTimerInfoTag>>& timers,
                             CFileItemList& results)
 {
-  std::shared_ptr<CFileItem> item(new CFileItem(CPVRTimersPath::PATH_ADDTIMER, false));
-  item->SetLabel(g_localizeStrings.Get(19026)); // "Add timer..."
-  item->SetLabelPreformatted(true);
-  item->SetSpecialSort(SortSpecialOnTop);
-  item->SetArt("icon", "DefaultTVShows.png");
-  results.Add(item);
-
   bool bRadio = path.IsRadio();
   bool bRules = path.IsRules();
 
@@ -542,7 +535,7 @@ bool GetTimersRootDirectory(const CPVRTimersPath& path,
         (bRules == timer->IsTimerRule()) &&
         (!bHideDisabled || (timer->m_state != PVR_TIMER_STATE_DISABLED)))
     {
-      item.reset(new CFileItem(timer));
+      const auto item = std::make_shared<CFileItem>(timer);
       const CPVRTimersPath timersPath(path.GetPath(), timer->m_iClientId, timer->m_iClientIndex);
       item->SetPath(timersPath.GetPath());
       results.Add(item);

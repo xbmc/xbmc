@@ -13,6 +13,7 @@
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
+#include "guilib/LocalizeStrings.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "pvr/PVRManager.h"
@@ -49,6 +50,21 @@ bool CGUIWindowPVRTimersBase::OnAction(const CAction& action)
     }
   }
   return CGUIWindowPVRBase::OnAction(action);
+}
+
+void CGUIWindowPVRTimersBase::OnPrepareFileItems(CFileItemList& items)
+{
+  const CPVRTimersPath path(m_vecItems->GetPath());
+  if (path.IsValid() && path.IsTimersRoot())
+  {
+    const auto item = std::make_shared<CFileItem>(CPVRTimersPath::PATH_ADDTIMER, false);
+    item->SetLabel(g_localizeStrings.Get(19026)); // "Add timer..."
+    item->SetLabelPreformatted(true);
+    item->SetSpecialSort(SortSpecialOnTop);
+    item->SetArt("icon", "DefaultTVShows.png");
+
+    items.AddFront(item, 0);
+  }
 }
 
 bool CGUIWindowPVRTimersBase::Update(const std::string& strDirectory, bool updateFilterPath /* = true */)

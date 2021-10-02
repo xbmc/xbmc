@@ -24,6 +24,7 @@ namespace PVR
 
     bool OnMessage(CGUIMessage& message) override;
     bool OnAction(const CAction& action) override;
+    void OnPrepareFileItems(CFileItemList& items) override;
     bool Update(const std::string& strDirectory, bool updateFilterPath = true) override;
     void UpdateButtons() override;
 
