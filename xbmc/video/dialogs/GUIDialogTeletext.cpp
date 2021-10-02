@@ -117,7 +117,7 @@ void CGUIDialogTeletext::Render()
 
   UTILS::COLOR::Color color =
       (static_cast<UTILS::COLOR::Color>(teletextFadeAmount * 2.55f) & 0xff) << 24 | 0xFFFFFF;
-  CGUITexture::DrawQuad(m_vertCoords, color, m_pTxtTexture);
+  CGUITexture::DrawQuad(m_vertCoords, color, m_pTxtTexture.get());
 
   CGUIDialog::Render();
 }
@@ -152,8 +152,7 @@ void CGUIDialogTeletext::OnDeinitWindow(int nextWindowID)
   m_windowLoaded = false;
   m_TextDecoder.EndDecoder();
 
-  delete m_pTxtTexture;
-  m_pTxtTexture = NULL;
+  m_pTxtTexture.reset();
 
   CGUIDialog::OnDeinitWindow(nextWindowID);
 }
