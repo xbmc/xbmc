@@ -11,6 +11,8 @@
 #include "guilib/GUIDialog.h"
 #include "video/Teletext.h"
 
+#include <memory>
+
 class CTexture;
 
 class CGUIDialogTeletext : public CGUIDialog
@@ -28,7 +30,7 @@ public:
 
 protected:
   bool                m_bClose;           /* Close sendet, needed for fade out */
-  CTexture* m_pTxtTexture; /* Texture info class to render to screen */
+  std::unique_ptr<CTexture> m_pTxtTexture; /* Texture info class to render to screen */
   CRect               m_vertCoords;       /* Coordinates of teletext field on screen */
   CTeletextDecoder    m_TextDecoder;      /* Decoding class for teletext code */
 
