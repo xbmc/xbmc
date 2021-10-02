@@ -71,24 +71,18 @@ bool CWSDiscoveryPosix::GetServerList(CFileItemList& items)
   {
     CSingleLock lock(m_critWSD);
 
-    // delim1 used to strip protocol from xaddrs
-    // delim2 used to strip anything past the port
-    const std::string delim1 = "://";
-    const std::string delim2 = ":";
     for (const auto& item : m_vecWSDInfo)
     {
-      auto found = item.xaddrs.find(delim1);
-      if (found == std::string::npos)
-        continue;
-
-      std::string tmpxaddrs = item.xaddrs.substr(found + delim1.size());
-      found = tmpxaddrs.find(delim2);
-      // fallback incase xaddrs doesnt return back "GetMetadata" expected address format (delim2)
-      if (found == std::string::npos)
+      auto found = item.computer.find('/');
+      std::string host;
+      if (found != std::string::npos)
+        host = item.computer.substr(0, found);
+      else
       {
-        found = tmpxaddrs.find('/');
+        if (item.xaddrs_host.empty())
+          continue;
+        host = item.xaddrs_host;
       }
-      std::string host = tmpxaddrs.substr(0, found);
 
       CFileItemPtr pItem = std::make_shared<CFileItem>(host);
       pItem->SetPath("smb://" + host + '/');

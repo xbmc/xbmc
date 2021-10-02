@@ -34,6 +34,8 @@ struct wsd_req_info
   std::string types; // ToDo: Types may not be needed.
   std::string address;
   std::string xaddrs;
+  std::string xaddrs_host;
+  std::string computer;
 
   bool operator==(const wsd_req_info& item) const
   {
