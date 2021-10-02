@@ -291,23 +291,26 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
              URIUtils::IsInternetStream(pathToUrl, true)) ||
             (iCacheBufferMode == CACHE_BUFFER_MODE_TRUE_INTERNET &&
              URIUtils::IsInternetStream(pathToUrl, false)) ||
-            (iCacheBufferMode == CACHE_BUFFER_MODE_REMOTE && URIUtils::IsRemote(pathToUrl)) ||
-            (iCacheBufferMode == CACHE_BUFFER_MODE_ALL))
+            (iCacheBufferMode == CACHE_BUFFER_MODE_NETWORK &&
+             URIUtils::IsNetworkFilesystem(pathToUrl)) ||
+            (iCacheBufferMode == CACHE_BUFFER_MODE_ALL &&
+             (URIUtils::IsNetworkFilesystem(pathToUrl) || URIUtils::IsHD(pathToUrl))))
         {
           m_flags |= READ_CACHED;
         }
       }
+
+      if (m_flags & READ_CACHED)
+      {
+        m_pFile = std::make_unique<CFileCache>(m_flags);
+
+        if (!m_pFile)
+          return false;
+
+        return m_pFile->Open(url);
+      }
     }
 
-    if (m_flags & READ_CACHED)
-    {
-      m_pFile = std::make_unique<CFileCache>(m_flags);
-
-      if (!m_pFile)
-        return false;
-
-      return m_pFile->Open(url);
-    }
     m_pFile.reset(CFileFactory::CreateLoader(url));
 
     if (!m_pFile)

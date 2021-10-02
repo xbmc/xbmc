@@ -924,7 +924,7 @@ bool URIUtils::IsFTP(const std::string& strFile)
          IsProtocol(strFile, "ftps");
 }
 
-bool URIUtils::IsHTTP(const std::string& strFile)
+bool URIUtils::IsHTTP(const std::string& strFile, bool bTranslate /* = false */)
 {
   if (IsStack(strFile))
     return IsHTTP(CStackDirectory::GetFirstStackedFile(strFile));
@@ -936,8 +936,9 @@ bool URIUtils::IsHTTP(const std::string& strFile)
   if (HasParentInHostname(url))
     return IsHTTP(url.GetHostName());
 
-  return IsProtocol(strFile, "http") ||
-         IsProtocol(strFile, "https");
+  const std::string strProtocol = (bTranslate ? url.GetTranslatedProtocol() : url.GetProtocol());
+
+  return (strProtocol == "http" || strProtocol == "https");
 }
 
 bool URIUtils::IsUDP(const std::string& strFile)
@@ -1019,12 +1020,9 @@ bool URIUtils::IsInternetStream(const CURL& url, bool bStrictCheck /* = false */
   if (url.IsProtocol("stack"))
     return IsInternetStream(CStackDirectory::GetFirstStackedFile(url.Get()));
 
-  // Special case these
-  //! @todo sftp special case has to be handled by vfs addon
-  if (url.IsProtocol("ftp") || url.IsProtocol("ftps")  ||
-      url.IsProtocol("dav") || url.IsProtocol("davs")  ||
-      url.IsProtocol("sftp"))
-    return bStrictCheck;
+  // Only consider "streamed" filesystems internet streams when being strict
+  if (bStrictCheck && IsStreamedFilesystem(url.Get()))
+    return true;
 
   std::string protocol = url.GetTranslatedProtocol();
   if (CURL::IsProtocolEqual(protocol, "http")  || CURL::IsProtocolEqual(protocol, "https")  ||
@@ -1035,6 +1033,45 @@ bool URIUtils::IsInternetStream(const CURL& url, bool bStrictCheck /* = false */
       CURL::IsProtocolEqual(protocol, "rtmp")  || CURL::IsProtocolEqual(protocol, "rtmpt")  ||
       CURL::IsProtocolEqual(protocol, "rtmpe") || CURL::IsProtocolEqual(protocol, "rtmpte") ||
       CURL::IsProtocolEqual(protocol, "rtmps"))
+    return true;
+
+  return false;
+}
+
+bool URIUtils::IsStreamedFilesystem(const std::string& strPath)
+{
+  CURL url(strPath);
+
+  if (url.GetProtocol().empty())
+    return false;
+
+  if (url.IsProtocol("stack"))
+    return IsStreamedFilesystem(CStackDirectory::GetFirstStackedFile(strPath));
+
+  if (IsUPnP(strPath) || IsFTP(strPath) || IsHTTP(strPath, true))
+    return true;
+
+  //! @todo sftp/ssh special case has to be handled by vfs addon
+  if (url.IsProtocol("sftp") || url.IsProtocol("ssh"))
+    return true;
+
+  return false;
+}
+
+bool URIUtils::IsNetworkFilesystem(const std::string& strPath)
+{
+  CURL url(strPath);
+
+  if (url.GetProtocol().empty())
+    return false;
+
+  if (url.IsProtocol("stack"))
+    return IsNetworkFilesystem(CStackDirectory::GetFirstStackedFile(strPath));
+
+  if (IsStreamedFilesystem(strPath))
+    return true;
+
+  if (IsSmb(strPath) || IsNfs(strPath))
     return true;
 
   return false;

@@ -666,13 +666,16 @@ std::string CVideoThumbLoader::GetLocalArt(const CFileItem &item, const std::str
   if (item.SkipLocalArt())
     return "";
 
-  /* Cache directory for (sub) folders on streamed filesystems. We need to do this
+  /* Cache directory for (sub) folders with Curl("streamed") filesystems. We need to do this
      else entering (new) directories from the app thread becomes much slower. This
      is caused by the fact that Curl Stat/Exist() is really slow and that the
      thumbloader thread accesses the streamed filesystem at the same time as the
-     App thread and the latter has to wait for it.
+     app thread and the latter has to wait for it.
    */
-  if (item.m_bIsFolder && (item.IsInternetStream(true) || CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cacheBufferMode == CACHE_BUFFER_MODE_ALL))
+  if (item.m_bIsFolder &&
+      (item.IsStreamedFilesystem() ||
+       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cacheBufferMode ==
+           CACHE_BUFFER_MODE_ALL))
   {
     CFileItemList items; // Dummy list
     CDirectory::GetDirectory(item.GetPath(), items, "", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
