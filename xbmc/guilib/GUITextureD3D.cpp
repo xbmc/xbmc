@@ -36,7 +36,7 @@ CGUITextureD3D* CGUITextureD3D::Clone() const
 
 void CGUITextureD3D::Begin(UTILS::COLOR::Color color)
 {
-  CTexture* texture = m_texture.m_textures[m_currentFrame];
+  CTexture* texture = m_texture.m_textures[m_currentFrame].get();
   texture->LoadToGPU();
 
   if (m_diffuse.size())
@@ -113,14 +113,14 @@ void CGUITextureD3D::Draw(float *x, float *y, float *z, const CRect &texture, co
   }
   verts[3].color = xcolor;
 
-  CDXTexture* tex = (CDXTexture *)m_texture.m_textures[m_currentFrame];
+  CDXTexture* tex = static_cast<CDXTexture*>(m_texture.m_textures[m_currentFrame].get());
   CGUIShaderDX* pGUIShader = DX::Windowing()->GetGUIShader();
 
   pGUIShader->Begin(m_diffuse.size() ? SHADER_METHOD_RENDER_MULTI_TEXTURE_BLEND : SHADER_METHOD_RENDER_TEXTURE_BLEND);
 
   if (m_diffuse.size())
   {
-    CDXTexture* diff = (CDXTexture *)m_diffuse.m_textures[0];
+    CDXTexture* diff = static_cast<CDXTexture*>(m_diffuse.m_textures[0].get());
     ID3D11ShaderResourceView* resource[] = { tex->GetShaderResource(), diff->GetShaderResource() };
     pGUIShader->SetShaderViews(ARRAYSIZE(resource), resource);
   }

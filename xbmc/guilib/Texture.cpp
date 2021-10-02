@@ -7,23 +7,32 @@
  */
 
 #include "Texture.h"
-#include "ServiceBroker.h"
-#include "utils/log.h"
-#include "utils/URIUtils.h"
+
 #include "DDSImage.h"
+#include "ServiceBroker.h"
+#include "URL.h"
+#include "commons/ilog.h"
 #include "filesystem/File.h"
 #include "filesystem/ResourceFile.h"
 #include "filesystem/XbtFile.h"
+#include "guilib/iimage.h"
+#include "guilib/imagefactory.h"
+#include "utils/URIUtils.h"
+#include "utils/log.h"
 #if defined(TARGET_DARWIN_EMBEDDED)
 #include <ImageIO/ImageIO.h>
 #include "filesystem/File.h"
 #endif
 #if defined(TARGET_ANDROID)
-#include "URL.h"
 #include "platform/android/filesystem/AndroidAppFile.h"
 #endif
 #include "rendering/RenderSystem.h"
 #include "utils/MemUtils.h"
+
+#include <algorithm>
+#include <cstring>
+#include <exception>
+#include <utility>
 
 /************************************************************************/
 /*                                                                      */
@@ -180,11 +189,11 @@ void CTexture::ClampToEdge()
   }
 }
 
-CTexture* CTexture::LoadFromFile(const std::string& texturePath,
-                                 unsigned int idealWidth,
-                                 unsigned int idealHeight,
-                                 bool requirePixels,
-                                 const std::string& strMimeType)
+std::unique_ptr<CTexture> CTexture::LoadFromFile(const std::string& texturePath,
+                                                 unsigned int idealWidth,
+                                                 unsigned int idealHeight,
+                                                 bool requirePixels,
+                                                 const std::string& strMimeType)
 {
 #if defined(TARGET_ANDROID)
   CURL url(texturePath);
@@ -201,31 +210,28 @@ CTexture* CTexture::LoadFromFile(const std::string& texturePath,
       if (!inputBuffSize)
         return NULL;
 
-      CTexture* texture = CTexture::CreateTexture();
+      std::unique_ptr<CTexture> texture = CTexture::CreateTexture();
       texture->LoadFromMemory(width, height, width*4, XB_FMT_RGBA8, true, inputBuff);
-      delete [] inputBuff;
       return texture;
     }
   }
 #endif
-  CTexture* texture = CTexture::CreateTexture();
+  std::unique_ptr<CTexture> texture = CTexture::CreateTexture();
   if (texture->LoadFromFileInternal(texturePath, idealWidth, idealHeight, requirePixels, strMimeType))
     return texture;
-  delete texture;
-  return NULL;
+  return {};
 }
 
-CTexture* CTexture::LoadFromFileInMemory(unsigned char* buffer,
-                                         size_t bufferSize,
-                                         const std::string& mimeType,
-                                         unsigned int idealWidth,
-                                         unsigned int idealHeight)
+std::unique_ptr<CTexture> CTexture::LoadFromFileInMemory(unsigned char* buffer,
+                                                         size_t bufferSize,
+                                                         const std::string& mimeType,
+                                                         unsigned int idealWidth,
+                                                         unsigned int idealHeight)
 {
-  CTexture* texture = CTexture::CreateTexture();
+  std::unique_ptr<CTexture> texture = CTexture::CreateTexture();
   if (texture->LoadFromFileInMem(buffer, bufferSize, mimeType, idealWidth, idealHeight))
     return texture;
-  delete texture;
-  return NULL;
+  return {};
 }
 
 bool CTexture::LoadFromFileInternal(const std::string& texturePath,
