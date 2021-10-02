@@ -226,7 +226,8 @@ void CGUIMultiImage::LoadDirectory()
   if (item.IsPicture() || CTextureCache::GetInstance().HasCachedImage(m_currentPath))
     m_files.push_back(m_currentPath);
   else // bundled folder?
-    CServiceBroker::GetGUI()->GetTextureManager().GetBundledTexturesFromPath(m_currentPath, m_files);
+    m_files =
+        CServiceBroker::GetGUI()->GetTextureManager().GetBundledTexturesFromPath(m_currentPath);
   if (!m_files.empty())
   { // found - nothing more to do
     OnDirectoryLoaded();
