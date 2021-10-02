@@ -12,6 +12,7 @@
 
 #include "ServiceBroker.h"
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_channel_groups.h"
+#include "pvr/PVRCachedImages.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClient.h"
@@ -1186,4 +1187,20 @@ void CPVRChannelGroup::SetPosition(int iPosition)
     if (m_bLoaded)
       m_bChanged = true;
   }
+}
+
+int CPVRChannelGroup::CleanupCachedImages()
+{
+  std::vector<std::string> urlsToCheck;
+  {
+    CSingleLock lock(m_critSection);
+    for (const auto& groupMember : m_members)
+    {
+      urlsToCheck.emplace_back(groupMember.second->Channel()->ClientIconPath());
+    }
+  }
+
+  const std::string owner =
+      StringUtils::Format(CPVRChannel::IMAGE_OWNER_PATTERN, IsRadio() ? "radio" : "tv");
+  return CPVRCachedImages::Cleanup({{owner, ""}}, urlsToCheck);
 }

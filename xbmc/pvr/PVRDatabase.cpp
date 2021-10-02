@@ -327,16 +327,15 @@ int CPVRDatabase::Get(bool bRadio,
     {
       while (!m_pDS->eof())
       {
-        const std::shared_ptr<CPVRChannel> channel(new CPVRChannel());
+        const std::shared_ptr<CPVRChannel> channel(new CPVRChannel(
+            m_pDS->fv("bIsRadio").get_asBool(), m_pDS->fv("sIconPath").get_asString()));
 
         channel->m_iChannelId = m_pDS->fv("idChannel").get_asInt();
         channel->m_iUniqueId = m_pDS->fv("iUniqueId").get_asInt();
-        channel->m_bIsRadio = m_pDS->fv("bIsRadio").get_asBool();
         channel->m_bIsHidden = m_pDS->fv("bIsHidden").get_asBool();
         channel->m_bIsUserSetIcon = m_pDS->fv("bIsUserSetIcon").get_asBool();
         channel->m_bIsUserSetName = m_pDS->fv("bIsUserSetName").get_asBool();
         channel->m_bIsLocked = m_pDS->fv("bIsLocked").get_asBool();
-        channel->m_strIconPath = m_pDS->fv("sIconPath").get_asString();
         channel->m_strChannelName = m_pDS->fv("sChannelName").get_asString();
         channel->m_bEPGEnabled = m_pDS->fv("bEPGEnabled").get_asBool();
         channel->m_strEPGScraper = m_pDS->fv("sEPGScraper").get_asString();
@@ -730,27 +729,34 @@ bool CPVRDatabase::Persist(CPVRChannel& channel, bool bCommit)
   if (strValue.empty())
   {
     /* new channel */
-    strQuery = PrepareSQL("INSERT INTO channels ("
+    strQuery = PrepareSQL(
+        "INSERT INTO channels ("
         "iUniqueId, bIsRadio, bIsHidden, bIsUserSetIcon, bIsUserSetName, bIsLocked, "
         "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, sEPGScraper, iLastWatched, iClientId, "
         "idEpg, bHasArchive) "
         "VALUES (%i, %i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, %i)",
-        channel.UniqueID(), (channel.IsRadio() ? 1 :0), (channel.IsHidden() ? 1 : 0), (channel.IsUserSetIcon() ? 1 : 0), (channel.IsUserSetName() ? 1 : 0), (channel.IsLocked() ? 1 : 0),
-        channel.IconPath().c_str(), channel.ChannelName().c_str(), 0, (channel.EPGEnabled() ? 1 : 0), channel.EPGScraper().c_str(), static_cast<unsigned int>(channel.LastWatched()), channel.ClientID(),
-        channel.EpgID(), channel.HasArchive());
+        channel.UniqueID(), (channel.IsRadio() ? 1 : 0), (channel.IsHidden() ? 1 : 0),
+        (channel.IsUserSetIcon() ? 1 : 0), (channel.IsUserSetName() ? 1 : 0),
+        (channel.IsLocked() ? 1 : 0), channel.ClientIconPath().c_str(),
+        channel.ChannelName().c_str(), 0, (channel.EPGEnabled() ? 1 : 0),
+        channel.EPGScraper().c_str(), static_cast<unsigned int>(channel.LastWatched()),
+        channel.ClientID(), channel.EpgID(), channel.HasArchive());
   }
   else
   {
     /* update channel */
-    strQuery = PrepareSQL("REPLACE INTO channels ("
+    strQuery = PrepareSQL(
+        "REPLACE INTO channels ("
         "iUniqueId, bIsRadio, bIsHidden, bIsUserSetIcon, bIsUserSetName, bIsLocked, "
         "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, sEPGScraper, iLastWatched, iClientId, "
         "idChannel, idEpg, bHasArchive) "
         "VALUES (%i, %i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %s, %i, %i)",
-        channel.UniqueID(), (channel.IsRadio() ? 1 :0), (channel.IsHidden() ? 1 : 0), (channel.IsUserSetIcon() ? 1 : 0), (channel.IsUserSetName() ? 1 : 0), (channel.IsLocked() ? 1 : 0),
-        channel.IconPath().c_str(), channel.ChannelName().c_str(), 0, (channel.EPGEnabled() ? 1 : 0), channel.EPGScraper().c_str(), static_cast<unsigned int>(channel.LastWatched()), channel.ClientID(),
-        strValue.c_str(),
-        channel.EpgID(), channel.HasArchive());
+        channel.UniqueID(), (channel.IsRadio() ? 1 : 0), (channel.IsHidden() ? 1 : 0),
+        (channel.IsUserSetIcon() ? 1 : 0), (channel.IsUserSetName() ? 1 : 0),
+        (channel.IsLocked() ? 1 : 0), channel.ClientIconPath().c_str(),
+        channel.ChannelName().c_str(), 0, (channel.EPGEnabled() ? 1 : 0),
+        channel.EPGScraper().c_str(), static_cast<unsigned int>(channel.LastWatched()),
+        channel.ClientID(), strValue.c_str(), channel.EpgID(), channel.HasArchive());
   }
 
   if (QueueInsertQuery(strQuery))

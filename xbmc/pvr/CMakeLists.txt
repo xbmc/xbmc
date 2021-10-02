@@ -1,4 +1,6 @@
-set(SOURCES PVRChannelNumberInputHandler.cpp
+set(SOURCES PVRCachedImage.cpp
+	    PVRCachedImages.cpp
+            PVRChannelNumberInputHandler.cpp
             PVRContextMenus.cpp
             PVRDatabase.cpp
             PVREdl.cpp
@@ -9,7 +11,9 @@ set(SOURCES PVRChannelNumberInputHandler.cpp
             PVRStreamProperties.cpp
             PVRThumbLoader.cpp)
 
-set(HEADERS PVRChannelNumberInputHandler.h
+set(HEADERS PVRCachedImage.h
+            PVRCachedImages.h
+            PVRChannelNumberInputHandler.h
             PVRContextMenus.h
             PVRDatabase.h
             PVREdl.h

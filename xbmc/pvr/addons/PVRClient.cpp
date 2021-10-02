@@ -307,11 +307,11 @@ void CPVRClient::WriteClientRecordingInfo(const CPVRRecording& xbmcRecording,
           sizeof(addonRecording.strGenreDescription) - 1);
   strncpy(addonRecording.strChannelName, xbmcRecording.m_strChannelName.c_str(),
           sizeof(addonRecording.strChannelName) - 1);
-  strncpy(addonRecording.strIconPath, xbmcRecording.m_strIconPath.c_str(),
+  strncpy(addonRecording.strIconPath, xbmcRecording.ClientIconPath().c_str(),
           sizeof(addonRecording.strIconPath) - 1);
-  strncpy(addonRecording.strThumbnailPath, xbmcRecording.m_strThumbnailPath.c_str(),
+  strncpy(addonRecording.strThumbnailPath, xbmcRecording.ClientThumbnailPath().c_str(),
           sizeof(addonRecording.strThumbnailPath) - 1);
-  strncpy(addonRecording.strFanartPath, xbmcRecording.m_strFanartPath.c_str(),
+  strncpy(addonRecording.strFanartPath, xbmcRecording.ClientFanartPath().c_str(),
           sizeof(addonRecording.strFanartPath) - 1);
   addonRecording.recordingTime =
       recTime - CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection;
@@ -394,7 +394,7 @@ void CPVRClient::WriteClientChannelInfo(const std::shared_ptr<CPVRChannel>& xbmc
   addonChannel.iSubChannelNumber = xbmcChannel->ClientChannelNumber().GetSubChannelNumber();
   strncpy(addonChannel.strChannelName, xbmcChannel->ClientChannelName().c_str(),
           sizeof(addonChannel.strChannelName) - 1);
-  strncpy(addonChannel.strIconPath, xbmcChannel->IconPath().c_str(),
+  strncpy(addonChannel.strIconPath, xbmcChannel->ClientIconPath().c_str(),
           sizeof(addonChannel.strIconPath) - 1);
   addonChannel.iEncryptionSystem = xbmcChannel->EncryptionSystem();
   addonChannel.bIsRadio = xbmcChannel->IsRadio();
@@ -738,7 +738,7 @@ public:
       m_strWriter(kodiTag->DeTokenize(kodiTag->Writers())),
       m_strIMDBNumber(kodiTag->IMDBNumber()),
       m_strEpisodeName(kodiTag->EpisodeName()),
-      m_strIconPath(kodiTag->Icon()),
+      m_strIconPath(kodiTag->ClientIconPath()),
       m_strSeriesLink(kodiTag->SeriesLink()),
       m_strGenreDescription(kodiTag->GetGenresLabel())
   {

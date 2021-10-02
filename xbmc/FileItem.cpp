@@ -174,8 +174,8 @@ CFileItem::CFileItem(const std::shared_ptr<PVR::CPVREpgInfoTag>& tag,
   if (!groupMember)
     groupMember = CServiceBroker::GetPVRManager().GUIActions()->GetChannelGroupMember(*this);
 
-  if (!tag->Icon().empty())
-    SetArt("icon", tag->Icon());
+  if (!tag->IconPath().empty())
+    SetArt("icon", tag->IconPath());
   else
   {
     std::shared_ptr<CPVRChannel> channel;
@@ -235,8 +235,8 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRRecording>& record)
   m_dwSize = record->GetSizeInBytes();
 
   // Set art
-  if (!record->m_strIconPath.empty())
-    SetArt("icon", record->m_strIconPath);
+  if (!record->IconPath().empty())
+    SetArt("icon", record->IconPath());
   else
   {
     const std::shared_ptr<CPVRChannel> channel = record->Channel();
@@ -248,11 +248,11 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRRecording>& record)
       SetArt("icon", "DefaultTVShows.png");
   }
 
-  if (!record->m_strThumbnailPath.empty())
-    SetArt("thumb", record->m_strThumbnailPath);
+  if (!record->ThumbnailPath().empty())
+    SetArt("thumb", record->ThumbnailPath());
 
-  if (!record->m_strFanartPath.empty())
-    SetArt("fanart", record->m_strFanartPath);
+  if (!record->FanartPath().empty())
+    SetArt("fanart", record->FanartPath());
 
   FillInMimeType(false);
 }

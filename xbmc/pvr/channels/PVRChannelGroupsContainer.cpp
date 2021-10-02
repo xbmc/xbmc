@@ -159,3 +159,8 @@ bool CPVRChannelGroupsContainer::CreateChannelEpgs()
   bReturn &= m_groupsRadio->CreateChannelEpgs();
   return bReturn;
 }
+
+int CPVRChannelGroupsContainer::CleanupCachedImages()
+{
+  return m_groupsTV->CleanupCachedImages() + m_groupsRadio->CleanupCachedImages();
+}

@@ -219,6 +219,12 @@ namespace PVR
      */
     void OnSystemWake();
 
+    /*!
+     * @brief Erase stale texture db entries and image files.
+     * @return number of cleaned up images.
+     */
+    int CleanupCachedImages();
+
   private:
     /*!
      * @brief Notify EPG table observers when the currently active tag changed.

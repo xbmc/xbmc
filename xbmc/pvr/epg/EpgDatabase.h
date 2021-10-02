@@ -110,6 +110,13 @@ namespace PVR
     std::vector<std::shared_ptr<CPVREpgInfoTag>> GetAllEpgTags(int iEpgID);
 
     /*!
+     * @brief Get all icon paths for a given EPG id.
+     * @param iEpgID The ID of the EPG.
+     * @return The entries.
+     */
+    std::vector<std::string> GetAllIconPaths(int iEpgID);
+
+    /*!
      * @brief Get the start time of the first tag in this EPG.
      * @param iEpgID The ID of the EPG.
      * @return The time.

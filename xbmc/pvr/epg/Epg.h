@@ -282,6 +282,13 @@ namespace PVR
      */
     void RemovedFromContainer();
 
+    /*!
+     * @brief Erase stale texture db entries and image files.
+     * @param database The EPG database
+     * @return number of cleaned up images.
+     */
+    int CleanupCachedImages(const std::shared_ptr<CPVREpgDatabase>& database);
+
   private:
     CPVREpg() = delete;
     CPVREpg(const CPVREpg&) = delete;

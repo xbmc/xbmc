@@ -151,6 +151,12 @@ namespace PVR
      */
     bool CreateChannelEpgs();
 
+    /*!
+     * @brief Erase stale texture db entries and image files.
+     * @return number of cleaned up images.
+     */
+    int CleanupCachedImages();
+
   private:
     CPVRChannelGroupsContainer& operator=(const CPVRChannelGroupsContainer&) = delete;
     CPVRChannelGroupsContainer(const CPVRChannelGroupsContainer&) = delete;

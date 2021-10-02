@@ -9,6 +9,7 @@
 #include "PVRRecordings.h"
 
 #include "ServiceBroker.h"
+#include "pvr/PVRCachedImages.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/epg/EpgInfoTag.h"
@@ -346,4 +347,25 @@ CVideoDatabase& CPVRRecordings::GetVideoDatabase()
   }
 
   return *m_database;
+}
+
+int CPVRRecordings::CleanupCachedImages()
+{
+  std::vector<std::string> urlsToCheck;
+  {
+    CSingleLock lock(m_critSection);
+    for (const auto& recording : m_recordings)
+    {
+      urlsToCheck.emplace_back(recording.second->ClientIconPath());
+      urlsToCheck.emplace_back(recording.second->ClientThumbnailPath());
+      urlsToCheck.emplace_back(recording.second->ClientFanartPath());
+      urlsToCheck.emplace_back(recording.second->m_strFileNameAndPath);
+    }
+  }
+
+  static const std::vector<PVRImagePattern> urlPatterns = {
+      {CPVRRecording::IMAGE_OWNER_PATTERN, ""}, // client-supplied icon, thumbnail, fanart
+      {"video", "pvr://recordings/"}, // kodi-generated video thumbnail
+  };
+  return CPVRCachedImages::Cleanup(urlPatterns, urlsToCheck);
 }

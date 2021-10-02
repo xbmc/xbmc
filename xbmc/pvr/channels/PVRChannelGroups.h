@@ -211,6 +211,12 @@ namespace PVR
      */
     bool UpdateChannelNumbersFromAllChannelsGroup();
 
+    /*!
+     * @brief Erase stale texture db entries and image files.
+     * @return number of cleaned up images.
+     */
+    int CleanupCachedImages();
+
   private:
     bool LoadFromDb();
     void SortGroups();

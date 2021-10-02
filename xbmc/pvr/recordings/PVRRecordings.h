@@ -96,6 +96,12 @@ namespace PVR
      */
     std::shared_ptr<CPVRRecording> GetRecordingForEpgTag(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const;
 
+    /*!
+     * @brief Erase stale texture db entries and image files.
+     * @return number of cleaned up images.
+     */
+    int CleanupCachedImages();
+
   private:
     mutable CCriticalSection m_critSection;
     bool m_bIsUpdating = false;

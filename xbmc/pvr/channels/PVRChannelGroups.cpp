@@ -9,6 +9,7 @@
 #include "PVRChannelGroups.h"
 
 #include "ServiceBroker.h"
+#include "pvr/PVRCachedImages.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
@@ -593,4 +594,28 @@ bool CPVRChannelGroups::CreateChannelEpgs()
       bReturn = (*it)->CreateChannelEpgs();
   }
   return bReturn;
+}
+
+int CPVRChannelGroups::CleanupCachedImages()
+{
+  int iCleanedImages = 0;
+
+  // cleanup channels
+  iCleanedImages += GetGroupAll()->CleanupCachedImages();
+
+  // cleanup groups
+  std::vector<std::string> urlsToCheck;
+  {
+    CSingleLock lock(m_critSection);
+    for (const auto& group : m_groups)
+    {
+      urlsToCheck.emplace_back(group->GetPath());
+    }
+  }
+
+  // kodi-generated thumbnail (see CPVRThumbLoader)
+  const std::string path = StringUtils::Format("pvr://channels/{}/", IsRadio() ? "radio" : "tv");
+  iCleanedImages += CPVRCachedImages::Cleanup({{"pvr", path}}, urlsToCheck, true);
+
+  return iCleanedImages;
 }

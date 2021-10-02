@@ -9,6 +9,7 @@
 #pragma once
 
 #include "XBDateTime.h"
+#include "pvr/PVRCachedImage.h"
 #include "threads/CriticalSection.h"
 #include "utils/ISerializable.h"
 
@@ -30,6 +31,8 @@ namespace PVR
     friend class CPVREpgDatabase;
 
   public:
+    static const std::string IMAGE_OWNER_PATTERN;
+
     /*!
      * @brief Create a new EPG infotag.
      * @param data The tag's data.
@@ -318,10 +321,16 @@ namespace PVR
     std::string EpisodeName() const;
 
     /*!
-     * @brief Get the path to the icon for this event.
+     * @brief Get the path to the icon for this event used by Kodi.
      * @return The path to the icon
      */
-    std::string Icon() const;
+    std::string IconPath() const;
+
+    /*!
+     * @brief Get the path to the icon for this event as given by the client.
+     * @return The path to the icon
+     */
+    std::string ClientIconPath() const;
 
     /*!
      * @brief The path to this event.
@@ -431,8 +440,9 @@ namespace PVR
     static const std::string DeTokenize(const std::vector<std::string>& tokens);
 
   private:
-    CPVREpgInfoTag();
+    CPVREpgInfoTag(int iEpgID, const std::string& iconPath);
 
+    CPVREpgInfoTag() = delete;
     CPVREpgInfoTag(const CPVREpgInfoTag& tag) = delete;
     CPVREpgInfoTag& operator =(const CPVREpgInfoTag& other) = delete;
 
@@ -474,7 +484,7 @@ namespace PVR
     std::string m_strIMDBNumber; /*!< imdb number */
     std::vector<std::string> m_genre; /*!< genre */
     std::string m_strEpisodeName; /*!< episode name */
-    std::string m_strIconPath; /*!< the path to the icon */
+    CPVRCachedImage m_iconPath; /*!< the path to the icon */
     std::string m_strFileNameAndPath; /*!< the filename and path */
     CDateTime m_startTime; /*!< event start time */
     CDateTime m_endTime; /*!< event end time */

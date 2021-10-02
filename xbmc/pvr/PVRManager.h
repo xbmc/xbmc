@@ -295,6 +295,11 @@ namespace PVR
     void TriggerSearchMissingChannelIcons();
 
     /*!
+     * @brief Let the background thread erase stale texture db entries and image files.
+     */
+    void TriggerCleanupCachedImages();
+
+    /*!
      * @brief Let the background thread search for missing channel icons for channels contained in the given group.
      * @param group The channel group.
      */

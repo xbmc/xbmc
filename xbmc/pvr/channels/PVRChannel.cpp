@@ -28,6 +28,8 @@
 
 using namespace PVR;
 
+const std::string CPVRChannel::IMAGE_OWNER_PATTERN = "pvrchannel_{}";
+
 bool CPVRChannel::operator==(const CPVRChannel& right) const
 {
   return (m_bIsRadio == right.m_bIsRadio &&
@@ -40,13 +42,16 @@ bool CPVRChannel::operator!=(const CPVRChannel& right) const
   return !(*this == right);
 }
 
-CPVRChannel::CPVRChannel()
+CPVRChannel::CPVRChannel(bool bRadio)
+  : m_bIsRadio(bRadio),
+    m_iconPath("", StringUtils::Format(IMAGE_OWNER_PATTERN, bRadio ? "radio" : "tv"))
 {
   UpdateEncryptionName();
 }
 
-CPVRChannel::CPVRChannel(bool bRadio)
-  : m_bIsRadio(bRadio)
+CPVRChannel::CPVRChannel(bool bRadio, const std::string& iconPath)
+  : m_bIsRadio(bRadio),
+    m_iconPath(iconPath, StringUtils::Format(IMAGE_OWNER_PATTERN, bRadio ? "radio" : "tv"))
 {
   UpdateEncryptionName();
 }
@@ -54,7 +59,8 @@ CPVRChannel::CPVRChannel(bool bRadio)
 CPVRChannel::CPVRChannel(const PVR_CHANNEL& channel, unsigned int iClientId)
   : m_bIsRadio(channel.bIsRadio),
     m_bIsHidden(channel.bIsHidden),
-    m_strIconPath(channel.strIconPath),
+    m_iconPath(channel.strIconPath,
+               StringUtils::Format(IMAGE_OWNER_PATTERN, channel.bIsRadio ? "radio" : "tv")),
     m_strChannelName(channel.strChannelName),
     m_bHasArchive(channel.bHasArchive),
     m_bEPGEnabled(!channel.bIsHidden),
@@ -82,7 +88,7 @@ void CPVRChannel::Serialize(CVariant& value) const
   value["channeltype"] = m_bIsRadio ? "radio" : "tv";
   value["hidden"] = m_bIsHidden;
   value["locked"] = m_bIsLocked;
-  value["icon"] = m_strIconPath;
+  value["icon"] = ClientIconPath();
   value["channel"]  = m_strChannelName;
   value["uniqueid"]  = m_iUniqueId;
   CDateTime lastPlayed(m_iLastWatched);
@@ -196,8 +202,8 @@ bool CPVRChannel::UpdateFromClient(const std::shared_ptr<CPVRChannel>& channel)
   // only update the channel name and icon if the user hasn't changed them manually
   if (m_strChannelName.empty() || !IsUserSetName())
     SetChannelName(channel->ClientChannelName());
-  if (m_strIconPath.empty() || !IsUserSetIcon())
-    SetIconPath(channel->IconPath());
+  if (IconPath().empty() || !IsUserSetIcon())
+    SetIconPath(channel->ClientIconPath());
 
   return m_bChanged;
 }
@@ -320,17 +326,20 @@ bool CPVRChannel::SetArchive(bool bHasArchive)
 
 bool CPVRChannel::SetIconPath(const std::string& strIconPath, bool bIsUserSetIcon /* = false */)
 {
-  CSingleLock lock(m_critSection);
-  if (m_strIconPath != strIconPath)
+  if (StringUtils::StartsWith(strIconPath, "image://"))
   {
-    m_strIconPath = strIconPath;
-
-    m_bChanged = true;
-    m_bIsUserSetIcon = bIsUserSetIcon && !m_strIconPath.empty();
-    return true;
+    CLog::LogF(LOGERROR, "Not allowed to call this method with an image URL");
+    return false;
   }
 
-  return false;
+  CSingleLock lock(m_critSection);
+  if (ClientIconPath() == strIconPath)
+    return false;
+
+  m_iconPath.SetClientImage(strIconPath);
+  m_bChanged = true;
+  m_bIsUserSetIcon = bIsUserSetIcon && !IconPath().empty();
+  return true;
 }
 
 bool CPVRChannel::SetChannelName(const std::string& strChannelName, bool bIsUserSetName /*= false*/)
@@ -670,10 +679,16 @@ bool CPVRChannel::IsLocked() const
   return m_bIsLocked;
 }
 
+std::string CPVRChannel::ClientIconPath() const
+{
+  CSingleLock lock(m_critSection);
+  return m_iconPath.GetClientImage();
+}
+
 std::string CPVRChannel::IconPath() const
 {
   CSingleLock lock(m_critSection);
-  return m_strIconPath;
+  return m_iconPath.GetLocalImage();
 }
 
 bool CPVRChannel::IsUserSetIcon() const

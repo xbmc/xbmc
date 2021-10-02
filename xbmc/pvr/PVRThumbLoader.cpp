@@ -13,6 +13,7 @@
 #include "TextureCache.h"
 #include "TextureCacheJob.h"
 #include "pictures/Picture.h"
+#include "pvr/PVRCachedImages.h"
 #include "pvr/PVRManager.h"
 #include "pvr/filesystem/PVRGUIDirectory.h"
 #include "settings/AdvancedSettings.h"
@@ -110,7 +111,7 @@ std::string CPVRThumbLoader::CreateChannelGroupThumb(const CFileItem& channelGro
     {
       const std::string& icon = channel->GetArt("icon");
       if (!icon.empty())
-        channelIcons.emplace_back(icon);
+        channelIcons.emplace_back(CPVRCachedImages::UnwrapImageURL(icon));
 
       if (channelIcons.size() == 9) // limit number of tiles
         break;
