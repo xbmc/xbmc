@@ -6,24 +6,26 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "GUIFont.h"
 #include "GUIFontTTF.h"
+
+#include "GUIFont.h"
 #include "GUIFontManager.h"
-#include "Texture.h"
-#include "windowing/GraphicContext.h"
 #include "ServiceBroker.h"
-#include "filesystem/SpecialProtocol.h"
-#include "utils/MathUtils.h"
-#include "utils/log.h"
-#include "rendering/RenderSystem.h"
-#include "windowing/WinSystem.h"
+#include "Texture.h"
 #include "URL.h"
 #include "filesystem/File.h"
+#include "filesystem/SpecialProtocol.h"
+#include "rendering/RenderSystem.h"
 #include "threads/SystemClock.h"
+#include "utils/MathUtils.h"
+#include "utils/log.h"
+#include "windowing/GraphicContext.h"
+#include "windowing/WinSystem.h"
 
 #include <math.h>
 #include <memory>
 #include <queue>
+#include <utility>
 
 // stuff for freetype
 #include <ft2build.h>
@@ -203,7 +205,7 @@ void CGUIFontTTF::RemoveReference()
 
 void CGUIFontTTF::ClearCharacterCache()
 {
-  delete(m_texture);
+  m_texture.reset();
 
   DeleteHardwareTexture();
 
@@ -221,7 +223,7 @@ void CGUIFontTTF::ClearCharacterCache()
 
 void CGUIFontTTF::Clear()
 {
-  delete(m_texture);
+  m_texture.reset();
   m_texture = NULL;
   delete[] m_char;
   memset(m_charquick, 0, sizeof(m_charquick));
@@ -311,7 +313,7 @@ bool CGUIFontTTF::Load(
 
   m_height = height;
 
-  delete(m_texture);
+  m_texture.reset();
   m_texture = NULL;
   delete[] m_char;
   m_char = NULL;
@@ -905,8 +907,7 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch, 
           return false;
         }
 
-        CTexture* newTexture = NULL;
-        newTexture = ReallocTexture(newHeight);
+        std::unique_ptr<CTexture> newTexture = ReallocTexture(newHeight);
         if(newTexture == NULL)
         {
           FT_Done_Glyph(glyph);
@@ -914,7 +915,7 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch, 
                     newHeight);
           return false;
         }
-        m_texture = newTexture;
+        m_texture = std::move(newTexture);
       }
     }
 

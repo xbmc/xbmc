@@ -24,6 +24,7 @@
 #include "rendering/MatrixGL.h"
 
 #include <cassert>
+#include <memory>
 
 // stuff for freetype
 #include <ft2build.h>
@@ -324,18 +325,18 @@ void CGUIFontTTFGL::DestroyVertexBuffer(CVertexBuffer &buffer) const
   }
 }
 
-CTexture* CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
+std::unique_ptr<CTexture> CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
 {
   newHeight = CTexture::PadPow2(newHeight);
 
-  CTexture* newTexture = CTexture::CreateTexture(m_textureWidth, newHeight, XB_FMT_A8);
+  std::unique_ptr<CTexture> newTexture =
+      CTexture::CreateTexture(m_textureWidth, newHeight, XB_FMT_A8);
 
   if (!newTexture || newTexture->GetPixels() == NULL)
   {
     CLog::Log(LOGERROR,
               "GUIFontTTFGL::CacheCharacter: Error creating new cache texture for size {:f}",
               m_height);
-    delete newTexture;
     return NULL;
   }
   m_textureHeight = newTexture->GetHeight();
@@ -362,7 +363,6 @@ CTexture* CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
       src += m_texture->GetPitch();
       dst += newTexture->GetPitch();
     }
-    delete m_texture;
   }
 
   m_textureStatus = TEXTURE_REALLOCATED;

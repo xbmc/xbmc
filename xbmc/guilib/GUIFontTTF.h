@@ -11,6 +11,7 @@
 #include "utils/ColorUtils.h"
 #include "utils/Geometry.h"
 
+#include <memory>
 #include <stdint.h>
 #include <string>
 #include <vector>
@@ -161,7 +162,7 @@ protected:
                        std::vector<SVertex>& vertices);
   void ClearCharacterCache();
 
-  virtual CTexture* ReallocTexture(unsigned int& newHeight) = 0;
+  virtual std::unique_ptr<CTexture> ReallocTexture(unsigned int& newHeight) = 0;
   virtual bool CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2) = 0;
   virtual void DeleteHardwareTexture() = 0;
 
@@ -169,7 +170,8 @@ protected:
   void SetGlyphStrength(FT_GlyphSlot slot, int glyphStrength);
   static void ObliqueGlyph(FT_GlyphSlot slot);
 
-  CTexture* m_texture; // texture that holds our rendered characters (8bit alpha only)
+  std::unique_ptr<CTexture>
+      m_texture; // texture that holds our rendered characters (8bit alpha only)
 
   unsigned int m_textureWidth;       // width of our texture
   unsigned int m_textureHeight;      // height of our texture

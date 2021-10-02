@@ -30,7 +30,7 @@ public:
   static void DestroyStaticVertexBuffers(void);
 
 protected:
-  CTexture* ReallocTexture(unsigned int& newHeight) override;
+  std::unique_ptr<CTexture> ReallocTexture(unsigned int& newHeight) override;
   bool CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2) override;
   void DeleteHardwareTexture() override;
 

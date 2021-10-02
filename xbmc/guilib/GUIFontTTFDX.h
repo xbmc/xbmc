@@ -17,6 +17,7 @@
 #include "GUIFontTTF.h"
 
 #include <list>
+#include <memory>
 #include <vector>
 
 #include <wrl/client.h>
@@ -45,7 +46,7 @@ public:
   static void DestroyStaticIndexBuffer(void);
 
 protected:
-  CTexture* ReallocTexture(unsigned int& newHeight) override;
+  std::unique_ptr<CTexture> ReallocTexture(unsigned int& newHeight) override;
   bool CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2) override;
   void DeleteHardwareTexture() override;
 
@@ -55,7 +56,7 @@ private:
   static void ClearReference(CGUIFontTTFDX* font, CD3DBuffer* pBuffer);
 
   unsigned m_vertexWidth;
-  CD3DTexture* m_speedupTexture;  // extra texture to speed up reallocations
+  std::unique_ptr<CD3DTexture> m_speedupTexture; // extra texture to speed up reallocations
   Microsoft::WRL::ComPtr<ID3D11Buffer> m_vertexBuffer;
   std::list<CD3DBuffer*> m_buffers;
 
