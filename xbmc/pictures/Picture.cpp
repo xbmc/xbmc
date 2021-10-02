@@ -286,7 +286,7 @@ bool CPicture::CreateTiledThumb(const std::vector<std::string> &files, const std
     int y = i / num_across;
     // load in the image
     unsigned int width = tile_width - 2*tile_gap, height = tile_height - 2*tile_gap;
-    CTexture* texture = CTexture::LoadFromFile(files[i], width, height, true);
+    std::unique_ptr<CTexture> texture = CTexture::LoadFromFile(files[i], width, height, true);
     if (texture && texture->GetWidth() && texture->GetHeight())
     {
       GetScale(texture->GetWidth(), texture->GetHeight(), width, height);
@@ -314,7 +314,6 @@ bool CPicture::CreateTiledThumb(const std::vector<std::string> &files, const std
       }
       delete[] scaled;
     }
-    delete texture;
   }
   // now save to a file
   if (success)
