@@ -72,6 +72,7 @@ namespace PVR
     bool OnClickEPGSourceSpin(CGUIMessage& message);
     bool OnClickButtonGroupManager(CGUIMessage& message);
     bool OnClickButtonNewChannel();
+    bool OnClickButtonRefreshChannelLogos();
 
     bool PersistChannel(const CFileItemPtr& pItem, const std::shared_ptr<CPVRChannelGroup>& group, unsigned int* iChannelNumber);
 

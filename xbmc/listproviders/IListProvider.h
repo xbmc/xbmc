@@ -59,6 +59,11 @@ public:
    */
   virtual void Reset() {}
 
+  /*! \brief Free all GUI resources allocated by the items.
+   \param immediately true to free resources imediately, free resources async later otherwise.
+   */
+  virtual void FreeResources(bool immediately) {}
+
   /*! \brief Click event on an item.
    \param item the item that was clicked.
    \return true if the click was handled, false otherwise.

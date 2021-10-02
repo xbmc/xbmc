@@ -468,6 +468,11 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
       for (unsigned int i = 0; i < m_items.size(); ++i)
         m_items[i]->SetInvalid();
     }
+    else if (message.GetMessage() == GUI_MSG_REFRESH_THUMBS)
+    {
+      if (m_listProvider)
+        m_listProvider->FreeResources(true);
+    }
     else if (message.GetMessage() == GUI_MSG_MOVE_OFFSET)
     {
       int count = message.GetParam1();

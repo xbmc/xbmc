@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-	<defaultcontrol always="true">20</defaultcontrol>
+	<defaultcontrol always="true">4</defaultcontrol>
 	<include>Animation_DialogPopupOpenClose</include>
 	<controls>
 		<control type="group">
 			<centertop>50%</centertop>
-			<height>895</height>
+			<height>995</height>
 			<centerleft>50%</centerleft>
 			<width>1820</width>
 			<include content="DialogBackgroundCommons">
 				<param name="width" value="1820" />
-				<param name="height" value="895" />
+				<param name="height" value="995" />
 				<param name="header_label" value="$VAR[PVRChannelMgrHeader]$INFO[Container(20).NumItems, (,)]" />
 				<param name="header_id" value="2" />
 			</include>
@@ -21,7 +21,7 @@
 					<left>660</left>
 					<top>30</top>
 					<width>12</width>
-					<height>770</height>
+					<height>870</height>
 					<onleft>20</onleft>
 					<onright>9002</onright>
 					<orientation>vertical</orientation>
@@ -30,14 +30,14 @@
 					<left>0</left>
 					<top>10</top>
 					<width>672</width>
-					<height>810</height>
+					<height>910</height>
 					<texture border="40">buttons/dialogbutton-nofo.png</texture>
 				</control>
 				<control type="list" id="20">
 					<left>20</left>
 					<top>30</top>
 					<width>630</width>
-					<height>770</height>
+					<height>870</height>
 					<onup>20</onup>
 					<ondown>20</ondown>
 					<onleft>9000</onleft>
@@ -142,7 +142,7 @@
 					<onleft>60</onleft>
 					<onright>9000</onright>
 					<onup>34</onup>
-					<ondown>30</ondown>
+					<ondown>35</ondown>
 					<itemgap>-22</itemgap>
 					<control type="label" id="9001">
 						<description>channel options Header</description>
@@ -217,6 +217,14 @@
 						<aligny>center</aligny>
 						<textcolor>button_focus</textcolor>
 						<shadowcolor>black</shadowcolor>
+					</control>
+					<control type="button" id="35">
+						<description>Refresh channel logos Button</description>
+						<width>700</width>
+						<height>100</height>
+						<textoffsetx>40</textoffsetx>
+						<align>center</align>
+						<label>$LOCALIZE[19041]</label>
 					</control>
 					<control type="button" id="31">
 						<description>New channel Button</description>
