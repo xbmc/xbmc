@@ -67,11 +67,7 @@ CSlideShowPic::~CSlideShowPic()
 void CSlideShowPic::Close()
 {
   CSingleLock lock(m_textureAccess);
-  if (m_pImage)
-  {
-    delete m_pImage;
-    m_pImage = nullptr;
-  }
+  m_pImage.reset();
   m_bIsLoaded = false;
   m_bIsFinished = false;
   m_bDrawNextImage = false;
@@ -87,7 +83,7 @@ void CSlideShowPic::Reset(DISPLAY_EFFECT dispEffect, TRANSITION_EFFECT transEffe
 {
   CSingleLock lock(m_textureAccess);
   if (m_pImage)
-    SetTexture_Internal(m_iSlideNumber, m_pImage, dispEffect, transEffect);
+    SetTexture_Internal(m_iSlideNumber, std::move(m_pImage), dispEffect, transEffect);
   else
     Close();
 }
@@ -102,17 +98,17 @@ bool CSlideShowPic::DisplayEffectNeedChange(DISPLAY_EFFECT newDispEffect) const
 }
 
 void CSlideShowPic::SetTexture(int iSlideNumber,
-                               CTexture* pTexture,
+                               std::unique_ptr<CTexture> pTexture,
                                DISPLAY_EFFECT dispEffect,
                                TRANSITION_EFFECT transEffect)
 {
   CSingleLock lock(m_textureAccess);
   Close();
-  SetTexture_Internal(iSlideNumber, pTexture, dispEffect, transEffect);
+  SetTexture_Internal(iSlideNumber, std::move(pTexture), dispEffect, transEffect);
 }
 
 void CSlideShowPic::SetTexture_Internal(int iSlideNumber,
-                                        CTexture* pTexture,
+                                        std::unique_ptr<CTexture> pTexture,
                                         DISPLAY_EFFECT dispEffect,
                                         TRANSITION_EFFECT transEffect)
 {
@@ -123,12 +119,12 @@ void CSlideShowPic::SetTexture_Internal(int iSlideNumber,
   m_iSlideNumber = iSlideNumber;
 
   m_bIsDirty = true;
-  m_pImage = pTexture;
-  m_fWidth = (float)pTexture->GetWidth();
-  m_fHeight = (float)pTexture->GetHeight();
+  m_pImage = std::move(pTexture);
+  m_fWidth = static_cast<float>(m_pImage->GetWidth());
+  m_fHeight = static_cast<float>(m_pImage->GetHeight());
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_SLIDESHOW_HIGHQUALITYDOWNSCALING))
   { // activate mipmapping when high quality downscaling is 'on'
-    pTexture->SetMipmapping();
+    m_pImage->SetMipmapping();
   }
   // reset our counter
   m_iCounter = 0;
@@ -158,15 +154,15 @@ void CSlideShowPic::SetTexture_Internal(int iSlideNumber,
   m_fTransitionAngle = 0;
   m_fTransitionZoom = 0;
   m_fAngle = 0.0f;
-  if (pTexture->GetOrientation() == 7)
+  if (m_pImage->GetOrientation() == 7)
   { // rotate to 270 degrees
     m_fAngle = 270.0f;
   }
-  if (pTexture->GetOrientation() == 2)
+  if (m_pImage->GetOrientation() == 2)
   { // rotate to 180 degrees
       m_fAngle = 180.0f;
   }
-  if (pTexture->GetOrientation() == 5)
+  if (m_pImage->GetOrientation() == 5)
   { // rotate to 90 degrees
     m_fAngle = 90.0f;
   }
@@ -257,17 +253,12 @@ int CSlideShowPic::GetOriginalHeight()
     return m_iOriginalHeight;
 }
 
-void CSlideShowPic::UpdateTexture(CTexture* pTexture)
+void CSlideShowPic::UpdateTexture(std::unique_ptr<CTexture> pTexture)
 {
   CSingleLock lock(m_textureAccess);
-  if (m_pImage)
-  {
-    delete m_pImage;
-    m_pImage = nullptr;
-  }
-  m_pImage = pTexture;
-  m_fWidth = (float)pTexture->GetWidth();
-  m_fHeight = (float)pTexture->GetHeight();
+  m_pImage = std::move(pTexture);
+  m_fWidth = static_cast<float>(m_pImage->GetWidth());
+  m_fHeight = static_cast<float>(m_pImage->GetHeight());
   m_bIsDirty = true;
 }
 
@@ -754,13 +745,13 @@ void CSlideShowPic::Render()
 {
   CSingleLock lock(m_textureAccess);
 
-  Render(m_ax, m_ay, m_pImage, (m_alpha << 24) | 0xFFFFFF);
+  Render(m_ax, m_ay, m_pImage.get(), (m_alpha << 24) | 0xFFFFFF);
 
   // now render the image in the top right corner if we're zooming
   if (m_fZoomAmount == 1.0f || m_bIsComic) return ;
 
   Render(m_bx, m_by, NULL, PICTURE_VIEW_BOX_BACKGROUND);
-  Render(m_sx, m_sy, m_pImage, 0xFFFFFFFF);
+  Render(m_sx, m_sy, m_pImage.get(), 0xFFFFFFFF);
   Render(m_ox, m_oy, NULL, PICTURE_VIEW_BOX_COLOR);
 }
 
