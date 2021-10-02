@@ -8,15 +8,15 @@
 
 #include "TextureBundle.h"
 
-CTextureBundle::CTextureBundle()
-  : m_tbXBT{false}
-	, m_useXBT{false}
+#include "guilib/TextureBundleXBT.h"
+
+class CTexture;
+
+CTextureBundle::CTextureBundle() : m_tbXBT{false}, m_useXBT{false}
 {
 }
 
-CTextureBundle::CTextureBundle(bool useXBT)
-  : m_tbXBT{useXBT}
-	, m_useXBT{useXBT}
+CTextureBundle::CTextureBundle(bool useXBT) : m_tbXBT{useXBT}, m_useXBT{useXBT}
 {
 }
 
@@ -36,40 +36,35 @@ bool CTextureBundle::HasFile(const std::string& Filename)
   return false;
 }
 
-void CTextureBundle::GetTexturesFromPath(const std::string &path, std::vector<std::string> &textures)
+std::vector<std::string> CTextureBundle::GetTexturesFromPath(const std::string& path)
 {
   if (m_useXBT)
-  {
-    m_tbXBT.GetTexturesFromPath(path, textures);
-  }
+    return m_tbXBT.GetTexturesFromPath(path);
+  else
+    return {};
 }
 
-bool CTextureBundle::LoadTexture(const std::string& Filename,
-                                 CTexture** ppTexture,
+bool CTextureBundle::LoadTexture(const std::string& filename,
+                                 std::unique_ptr<CTexture>& texture,
                                  int& width,
                                  int& height)
 {
   if (m_useXBT)
-  {
-    return m_tbXBT.LoadTexture(Filename, ppTexture, width, height);
-  }
-
-  return false;
+    return m_tbXBT.LoadTexture(filename, texture, width, height);
+  else
+    return false;
 }
 
-int CTextureBundle::LoadAnim(const std::string& Filename,
-                             CTexture*** ppTextures,
-                             int& width,
-                             int& height,
-                             int& nLoops,
-                             int** ppDelays)
+bool CTextureBundle::LoadAnim(const std::string& filename,
+                              std::vector<std::pair<std::unique_ptr<CTexture>, int>>& textures,
+                              int& width,
+                              int& height,
+                              int& nLoops)
 {
   if (m_useXBT)
-  {
-    return m_tbXBT.LoadAnim(Filename, ppTextures, width, height, nLoops, ppDelays);
-  }
-
-  return 0;
+    return m_tbXBT.LoadAnim(filename, textures, width, height, nLoops);
+  else
+    return false;
 }
 
 void CTextureBundle::Close()
@@ -82,7 +77,7 @@ void CTextureBundle::SetThemeBundle(bool themeBundle)
   m_tbXBT.SetThemeBundle(themeBundle);
 }
 
-std::string CTextureBundle::Normalize(const std::string &name)
+std::string CTextureBundle::Normalize(std::string name)
 {
-  return CTextureBundleXBT::Normalize(name);
+  return CTextureBundleXBT::Normalize(std::move(name));
 }
