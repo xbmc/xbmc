@@ -60,6 +60,7 @@ msgstr ""
 
 #: xbmc/windows/GUIWindowFileManager.cpp
 #: addons/skin.estuary/xml/Variables.xml
+#: xbmc/video/dialogs/GUIDialogSubtitles.cpp
 msgctxt "#5"
 msgid "Settings"
 msgstr ""
@@ -15094,6 +15095,7 @@ msgctxt "#24020"
 msgid "Configure"
 msgstr ""
 
+#: xbmc/video/dialogs/GUIDialogSubtitles.cpp
 msgctxt "#24021"
 msgid "Disable"
 msgstr ""
