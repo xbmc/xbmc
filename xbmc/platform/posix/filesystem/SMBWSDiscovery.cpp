@@ -12,6 +12,7 @@
 #include "ServiceBroker.h"
 #include "network/IWSDiscovery.h"
 #include "threads/SingleLock.h"
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include "platform/posix/filesystem/SMBWSDiscoveryListener.h"
@@ -33,6 +34,8 @@ std::unique_ptr<IWSDiscovery> IWSDiscovery::GetInstance()
   return std::make_unique<WSDiscovery::CWSDiscoveryPosix>();
 }
 
+std::atomic<bool> CWSDiscoveryPosix::m_isInitialized{false};
+
 CWSDiscoveryPosix::CWSDiscoveryPosix()
 {
   // Set our wsd_instance ID to seconds since epoch
@@ -40,6 +43,7 @@ CWSDiscoveryPosix::CWSDiscoveryPosix()
   wsd_instance_id = epochduration.count() * system_clock::period::num / system_clock::period::den;
 
   m_WSDListenerUDP = std::make_unique<CWSDiscoveryListenerUDP>();
+  m_isInitialized = true;
 }
 
 CWSDiscoveryPosix::~CWSDiscoveryPosix()
@@ -91,6 +95,25 @@ bool CWSDiscoveryPosix::GetServerList(CFileItemList& items)
     }
   }
   return true;
+}
+
+bool CWSDiscoveryPosix::GetCached(const std::string& strHostName, std::string& strIpAddress)
+{
+  const std::string match = strHostName + "/";
+
+  CSingleLock lock(m_critWSD);
+  for (const auto& item : m_vecWSDInfo)
+  {
+    if (!item.computer.empty() && StringUtils::StartsWithNoCase(item.computer, match))
+    {
+      strIpAddress = item.xaddrs_host;
+      CLog::Log(LOGDEBUG, LOGWSDISCOVERY, "CWSDiscoveryPosix::Lookup - {} -> {}", strHostName,
+                strIpAddress);
+      return true;
+    }
+  }
+
+  return false;
 }
 
 void CWSDiscoveryPosix::SetItems(std::vector<wsd_req_info> entries)
