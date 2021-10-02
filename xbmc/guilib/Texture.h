@@ -8,8 +8,14 @@
 
 #pragma once
 
-#include "XBTF.h"
-#include "guilib/imagefactory.h"
+#include "guilib/TextureFormats.h"
+
+#include <cstddef>
+#include <memory>
+#include <string>
+
+class IImage;
+
 
 #pragma pack(1)
 struct COLOR {unsigned char b,g,r,x;};	// Windows GDI expects 4bytes per color
@@ -32,9 +38,9 @@ public:
   CTexture(unsigned int width = 0, unsigned int height = 0, unsigned int format = XB_FMT_A8R8G8B8);
   virtual ~CTexture();
 
-  static CTexture* CreateTexture(unsigned int width = 0,
-                                 unsigned int height = 0,
-                                 unsigned int format = XB_FMT_A8R8G8B8);
+  static std::unique_ptr<CTexture> CreateTexture(unsigned int width = 0,
+                                                 unsigned int height = 0,
+                                                 unsigned int format = XB_FMT_A8R8G8B8);
 
   /*! \brief Load a texture from a file
    Loads a texture from a file, restricting in size if needed based on maxHeight and maxWidth.
@@ -43,13 +49,13 @@ public:
    \param idealWidth the ideal width of the texture (defaults to 0, no ideal width).
    \param idealHeight the ideal height of the texture (defaults to 0, no ideal height).
    \param strMimeType mimetype of the given texture if available (defaults to empty)
-   \return a CTexture pointer to the created texture - NULL if the texture failed to load.
+   \return a CTexture std::unique_ptr to the created texture - nullptr if the texture failed to load.
    */
-  static CTexture* LoadFromFile(const std::string& texturePath,
-                                unsigned int idealWidth = 0,
-                                unsigned int idealHeight = 0,
-                                bool requirePixels = false,
-                                const std::string& strMimeType = "");
+  static std::unique_ptr<CTexture> LoadFromFile(const std::string& texturePath,
+                                                unsigned int idealWidth = 0,
+                                                unsigned int idealHeight = 0,
+                                                bool requirePixels = false,
+                                                const std::string& strMimeType = "");
 
   /*! \brief Load a texture from a file in memory
    Loads a texture from a file in memory, restricting in size if needed based on maxHeight and maxWidth.
@@ -59,13 +65,13 @@ public:
    \param mimeType the mime type of the file in buffer.
    \param idealWidth the ideal width of the texture (defaults to 0, no ideal width).
    \param idealHeight the ideal height of the texture (defaults to 0, no ideal height).
-   \return a CTexture pointer to the created texture - NULL if the texture failed to load.
+   \return a CTexture std::unique_ptr to the created texture - nullptr if the texture failed to load.
    */
-  static CTexture* LoadFromFileInMemory(unsigned char* buffer,
-                                        size_t bufferSize,
-                                        const std::string& mimeType,
-                                        unsigned int idealWidth = 0,
-                                        unsigned int idealHeight = 0);
+  static std::unique_ptr<CTexture> LoadFromFileInMemory(unsigned char* buffer,
+                                                        size_t bufferSize,
+                                                        const std::string& mimeType,
+                                                        unsigned int idealWidth = 0,
+                                                        unsigned int idealHeight = 0);
 
   bool LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, bool hasAlpha, const unsigned char* pixels);
   bool LoadPaletted(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, const unsigned char *pixels, const COLOR *palette);
