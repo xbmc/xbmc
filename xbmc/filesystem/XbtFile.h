@@ -13,7 +13,11 @@
 #include "guilib/XBTF.h"
 #include "guilib/XBTFReader.h"
 
+#include <cstdint>
+#include <cstdio>
 #include <vector>
+
+#include "PlatformDefs.h"
 
 namespace XFILE
 {
@@ -58,6 +62,6 @@ private:
   uint64_t m_positionWithinFrame = 0;
   int64_t m_positionTotal = 0;
 
-  std::vector<uint8_t*> m_unpackedFrames;
+  std::vector<std::vector<uint8_t>> m_unpackedFrames;
 };
 }
