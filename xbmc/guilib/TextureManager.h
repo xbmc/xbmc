@@ -12,9 +12,16 @@
 #include "TextureBundle.h"
 #include "threads/CriticalSection.h"
 
+#include <chrono>
+#include <cstddef>
+#include <cstdint>
 #include <list>
+#include <memory>
+#include <string>
 #include <utility>
 #include <vector>
+
+class CTexture;
 
 /************************************************************************/
 /*                                                                      */
@@ -29,12 +36,12 @@ public:
 
   void Reset();
 
-  void Add(CTexture* texture, int delay);
-  void Set(CTexture* texture, int width, int height);
+  void Add(std::shared_ptr<CTexture> texture, int delay);
+  void Set(std::shared_ptr<CTexture> texture, int width, int height);
   void Free();
   unsigned int size() const;
 
-  std::vector<CTexture*> m_textures;
+  std::vector<std::shared_ptr<CTexture>> m_textures;
   std::vector<int> m_delays;
   int m_width;
   int m_height;
@@ -59,7 +66,7 @@ public:
   CTextureMap(const std::string& textureName, int width, int height, int loops);
   virtual ~CTextureMap();
 
-  void Add(CTexture* texture, int delay);
+  void Add(std::unique_ptr<CTexture> texture, int delay);
   bool Release();
 
   const std::string& GetName() const;
@@ -101,7 +108,7 @@ public:
   uint32_t GetMemoryUsage() const;
   void Flush();
   std::string GetTexturePath(const std::string& textureName, bool directory = false);
-  void GetBundledTexturesFromPath(const std::string& texturePath, std::vector<std::string> &items);
+  std::vector<std::string> GetBundledTexturesFromPath(const std::string& texturePath);
 
   void AddTexturePath(const std::string &texturePath);    ///< Add a new path to the paths to check when loading media
   void SetTexturePath(const std::string &texturePath);    ///< Set a single path as the path to check when loading media (clear then add)
