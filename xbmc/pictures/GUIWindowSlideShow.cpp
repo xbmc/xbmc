@@ -97,7 +97,8 @@ void CBackgroundPicLoader::Process()
       if (m_pCallback)
       {
         auto start = std::chrono::steady_clock::now();
-        CTexture* texture = CTexture::LoadFromFile(m_strFileName, m_maxWidth, m_maxHeight);
+        std::unique_ptr<CTexture> texture =
+            CTexture::LoadFromFile(m_strFileName, m_maxWidth, m_maxHeight);
 
         auto end = std::chrono::steady_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
@@ -120,7 +121,8 @@ void CBackgroundPicLoader::Process()
               bFullSize = true;
           }
         }
-        m_pCallback->OnLoadPic(m_iPic, m_iSlideNumber, m_strFileName, texture, bFullSize);
+        m_pCallback->OnLoadPic(m_iPic, m_iSlideNumber, m_strFileName, std::move(texture),
+                               bFullSize);
         m_isLoading = false;
       }
     }
@@ -1148,21 +1150,23 @@ CSlideShowPic::DISPLAY_EFFECT CGUIWindowSlideShow::GetDisplayEffect(int iSlideNu
     return CSlideShowPic::EFFECT_NO_TIMEOUT;
 }
 
-void CGUIWindowSlideShow::OnLoadPic(
-    int iPic, int iSlideNumber, const std::string& strFileName, CTexture* pTexture, bool bFullSize)
+void CGUIWindowSlideShow::OnLoadPic(int iPic,
+                                    int iSlideNumber,
+                                    const std::string& strFileName,
+                                    std::unique_ptr<CTexture> pTexture,
+                                    bool bFullSize)
 {
   if (pTexture)
   {
     // set the pic's texture + size etc.
     if (iSlideNumber >= static_cast<int>(m_slides.size()) || GetPicturePath(m_slides.at(iSlideNumber).get()) != strFileName)
     { // throw this away - we must have cleared the slideshow while we were still loading
-      delete pTexture;
       return;
     }
     CLog::Log(LOGDEBUG, "Finished background loading slot {}, {}: {}", iPic, iSlideNumber,
               m_slides.at(iSlideNumber)->GetPath());
-    m_Image[iPic].SetTexture(iSlideNumber, pTexture, GetDisplayEffect(iSlideNumber));
     m_Image[iPic].SetOriginalSize(pTexture->GetOriginalWidth(), pTexture->GetOriginalHeight(), bFullSize);
+    m_Image[iPic].SetTexture(iSlideNumber, std::move(pTexture), GetDisplayEffect(iSlideNumber));
 
     m_Image[iPic].m_bIsComic = false;
     if (URIUtils::IsInRAR(m_slides.at(m_iCurrentSlide)->GetPath()) || URIUtils::IsInZIP(m_slides.at(m_iCurrentSlide)->GetPath())) // move to top for cbr/cbz

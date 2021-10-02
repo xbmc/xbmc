@@ -85,7 +85,7 @@ public:
   void OnLoadPic(int iPic,
                  int iSlideNumber,
                  const std::string& strFileName,
-                 CTexture* pTexture,
+                 std::unique_ptr<CTexture> pTexture,
                  bool bFullSize);
   int NumSlides() const;
   int CurrentSlide() const;
