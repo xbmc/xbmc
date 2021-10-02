@@ -11084,3 +11084,48 @@ CDateTime CVideoDatabase::GetDateAdded(const std::string& filename,
 
   return dateAdded;
 }
+
+void CVideoDatabase::EraseAllForPath(const std::string& path)
+{
+  try
+  {
+    std::string itemsToDelete;
+    std::string sql =
+        PrepareSQL("SELECT files.idFile FROM files WHERE idFile IN (SELECT idFile FROM files INNER "
+                   "JOIN path ON path.idPath = files.idPath AND path.strPath LIKE \"%s%%\")",
+                   path.c_str());
+
+    m_pDS->query(sql);
+    while (!m_pDS->eof())
+    {
+      std::string file = m_pDS->fv("files.idFile").get_asString() + ",";
+      itemsToDelete += file;
+      m_pDS->next();
+    }
+    m_pDS->close();
+
+    sql = PrepareSQL("DELETE FROM path WHERE strPath LIKE \"%s%%\"", path.c_str());
+    m_pDS->exec(sql);
+
+    if (!itemsToDelete.empty())
+    {
+      itemsToDelete = "(" + StringUtils::TrimRight(itemsToDelete, ",") + ")";
+
+      sql = "DELETE FROM files WHERE idFile IN " + itemsToDelete;
+      m_pDS->exec(sql);
+
+      sql = "DELETE FROM settings WHERE idFile IN " + itemsToDelete;
+      m_pDS->exec(sql);
+
+      sql = "DELETE FROM bookmark WHERE idFile IN " + itemsToDelete;
+      m_pDS->exec(sql);
+
+      sql = "DELETE FROM streamdetails WHERE idFile IN " + itemsToDelete;
+      m_pDS->exec(sql);
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
+  }
+}

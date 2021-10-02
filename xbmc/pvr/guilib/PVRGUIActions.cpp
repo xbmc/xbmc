@@ -1737,6 +1737,113 @@ namespace PVR
     return selectedHook->first->CallSettingsMenuHook(selectedHook->second) == PVR_ERROR_NO_ERROR;
   }
 
+  namespace
+  {
+  class CPVRGUIDatabaseResetComponentsSelector
+  {
+  public:
+    CPVRGUIDatabaseResetComponentsSelector() = default;
+    virtual ~CPVRGUIDatabaseResetComponentsSelector() = default;
+
+    bool Select()
+    {
+      CGUIDialogSelect* pDlgSelect =
+          CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
+              WINDOW_DIALOG_SELECT);
+      if (!pDlgSelect)
+      {
+        CLog::LogF(LOGERROR, "Unable to get WINDOW_DIALOG_SELECT!");
+        return false;
+      }
+
+      CFileItemList options;
+
+      const std::shared_ptr<CFileItem> itemAll =
+          std::make_shared<CFileItem>(StringUtils::Format(g_localizeStrings.Get(593))); // All
+      itemAll->SetPath("all");
+      options.Add(itemAll);
+
+      // if channels are cleared, groups and EPG data must also be cleared
+      const std::shared_ptr<CFileItem> itemChannels =
+          std::make_shared<CFileItem>(StringUtils::Format("{}, {}, {}",
+                                                          g_localizeStrings.Get(19019), // Channels
+                                                          g_localizeStrings.Get(19146), // Groups
+                                                          g_localizeStrings.Get(19069))); // Guide
+      itemChannels->SetPath("channels");
+      itemChannels->Select(true); // preselect this item in dialog
+      options.Add(itemChannels);
+
+      const std::shared_ptr<CFileItem> itemGroups =
+          std::make_shared<CFileItem>(g_localizeStrings.Get(19146)); // Groups
+      itemGroups->SetPath("groups");
+      options.Add(itemGroups);
+
+      const std::shared_ptr<CFileItem> itemGuide =
+          std::make_shared<CFileItem>(g_localizeStrings.Get(19069)); // Guide
+      itemGuide->SetPath("guide");
+      options.Add(itemGuide);
+
+      const std::shared_ptr<CFileItem> itemReminders =
+          std::make_shared<CFileItem>(g_localizeStrings.Get(19215)); // Reminders
+      itemReminders->SetPath("reminders");
+      options.Add(itemReminders);
+
+      const std::shared_ptr<CFileItem> itemRecordings =
+          std::make_shared<CFileItem>(g_localizeStrings.Get(19017)); // Recordings
+      itemRecordings->SetPath("recordings");
+      options.Add(itemRecordings);
+
+      const std::shared_ptr<CFileItem> itemClients =
+          std::make_shared<CFileItem>(g_localizeStrings.Get(24019)); // PVR clients
+      itemClients->SetPath("clients");
+      options.Add(itemClients);
+
+      pDlgSelect->Reset();
+      pDlgSelect->SetHeading(CVariant{g_localizeStrings.Get(19185)}); // "Clear data"
+      pDlgSelect->SetItems(options);
+      pDlgSelect->SetMultiSelection(true);
+      pDlgSelect->Open();
+
+      if (!pDlgSelect->IsConfirmed())
+        return false;
+
+      for (int i : pDlgSelect->GetSelectedItems())
+      {
+        const std::string path = options.Get(i)->GetPath();
+
+        m_bResetChannels |= (path == "channels" || path == "all");
+        m_bResetGroups |= (path == "groups" || path == "all");
+        m_bResetGuide |= (path == "guide" || path == "all");
+        m_bResetReminders |= (path == "reminders" || path == "all");
+        m_bResetRecordings |= (path == "recordings" || path == "all");
+        m_bResetClients |= (path == "clients" || path == "all");
+      }
+
+      m_bResetGroups |= m_bResetChannels;
+      m_bResetGuide |= m_bResetChannels;
+
+      return (m_bResetChannels || m_bResetGroups || m_bResetGuide || m_bResetReminders ||
+              m_bResetRecordings || m_bResetClients);
+    }
+
+    bool IsResetChannelsSelected() const { return m_bResetChannels; }
+    bool IsResetGroupsSelected() const { return m_bResetGroups; }
+    bool IsResetGuideSelected() const { return m_bResetGuide; }
+    bool IsResetRemindersSelected() const { return m_bResetReminders; }
+    bool IsResetRecordingsSelected() const { return m_bResetRecordings; }
+    bool IsResetClientsSelected() const { return m_bResetClients; }
+
+  private:
+    bool m_bResetChannels = false;
+    bool m_bResetGroups = false;
+    bool m_bResetGuide = false;
+    bool m_bResetReminders = false;
+    bool m_bResetRecordings = false;
+    bool m_bResetClients = false;
+  };
+
+  } // unnamed namespace
+
   bool CPVRGUIActions::ResetPVRDatabase(bool bResetEPGOnly)
   {
     CGUIDialogProgress* pDlgProgress = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
@@ -1746,18 +1853,42 @@ namespace PVR
       return false;
     }
 
+    bool bResetChannels = false;
+    bool bResetGroups = false;
+    bool bResetGuide = false;
+    bool bResetReminders = false;
+    bool bResetRecordings = false;
+    bool bResetClients = false;
+
     if (bResetEPGOnly)
     {
-      if (!CGUIDialogYesNo::ShowAndGetInput(CVariant{19098},  // "Warning!"
-                                            CVariant{19188})) // "All your guide data will be cleared. Are you sure?"
+      if (!CGUIDialogYesNo::ShowAndGetInput(
+              CVariant{19098}, // "Warning!"
+              CVariant{19188})) // "All guide data will be cleared. Are you sure?"
         return false;
+
+      bResetGuide = true;
     }
     else
     {
-      if (CheckParentalPIN() != ParentalCheckResult::SUCCESS ||
-          !CGUIDialogYesNo::ShowAndGetInput(CVariant{19098},  // "Warning!"
-                                            CVariant{19186})) // "All your TV related data (channels, groups, guide) will be cleared. Are you sure?"
+      if (CheckParentalPIN() != ParentalCheckResult::SUCCESS)
         return false;
+
+      CPVRGUIDatabaseResetComponentsSelector selector;
+      if (!selector.Select())
+        return false;
+
+      if (!CGUIDialogYesNo::ShowAndGetInput(
+              CVariant{19098}, // "Warning!"
+              CVariant{19186})) // "All selected data will be cleared. ... Are you sure?"
+        return false;
+
+      bResetChannels = selector.IsResetChannelsSelected();
+      bResetGroups = selector.IsResetGroupsSelected();
+      bResetGuide = selector.IsResetGuideSelected();
+      bResetReminders = selector.IsResetRemindersSelected();
+      bResetRecordings = selector.IsResetRecordingsSelected();
+      bResetClients = selector.IsResetClientsSelected();
     }
 
     CDateTime::ResetTimezoneBias();
@@ -1780,9 +1911,6 @@ namespace PVR
       CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
     }
 
-    pDlgProgress->SetPercentage(10);
-    pDlgProgress->Progress();
-
     const std::shared_ptr<CPVRDatabase> pvrDatabase(CServiceBroker::GetPVRManager().GetTVDatabase());
     const std::shared_ptr<CPVREpgDatabase> epgDatabase(CServiceBroker::GetPVRManager().EpgContainer().GetEpgDatabase());
 
@@ -1793,44 +1921,83 @@ namespace PVR
     // stop pvr manager; close both pvr and epg databases
     CServiceBroker::GetPVRManager().Stop();
 
-    /* reset the EPG pointers */
-    pvrDatabase->ResetEPG();
-    pDlgProgress->SetPercentage(bResetEPGOnly ? 40 : 20);
-    pDlgProgress->Progress();
+    const int iProgressStepPercentage =
+        100 / ((2 * bResetChannels) + bResetGroups + bResetGuide + bResetReminders +
+               bResetRecordings + bResetClients + 1);
+    int iProgressStepsDone = 0;
 
-    /* clean the EPG database */
-    epgDatabase->DeleteEpg();
-    pDlgProgress->SetPercentage(bResetEPGOnly ? 70 : 40);
-    pDlgProgress->Progress();
-
-    if (!bResetEPGOnly)
+    if (bResetGuide)
     {
+      pDlgProgress->SetPercentage(iProgressStepPercentage * ++iProgressStepsDone);
+      pDlgProgress->Progress();
+
+      // reset channel's EPG pointers
+      pvrDatabase->ResetEPG();
+
+      // delete all entries from the EPG database
+      epgDatabase->DeleteEpg();
+    }
+
+    if (bResetGroups)
+    {
+      pDlgProgress->SetPercentage(iProgressStepPercentage * ++iProgressStepsDone);
+      pDlgProgress->Progress();
+
+      // delete all channel groups (including data only available locally, like user defined groups)
       pvrDatabase->DeleteChannelGroups();
-      pDlgProgress->SetPercentage(60);
+    }
+
+    if (bResetChannels)
+    {
+      pDlgProgress->SetPercentage(iProgressStepPercentage * ++iProgressStepsDone);
       pDlgProgress->Progress();
 
-      /* delete all channels */
+      // delete all channels (including data only available locally, like user set icons)
       pvrDatabase->DeleteChannels();
-      pDlgProgress->SetPercentage(70);
+    }
+
+    if (bResetReminders)
+    {
+      pDlgProgress->SetPercentage(iProgressStepPercentage * ++iProgressStepsDone);
       pDlgProgress->Progress();
 
-      /* delete all timers */
+      // delete all timers data (e.g. all reminders, which are only stored locally)
       pvrDatabase->DeleteTimers();
-      pDlgProgress->SetPercentage(80);
+    }
+
+    if (bResetClients)
+    {
+      pDlgProgress->SetPercentage(iProgressStepPercentage * ++iProgressStepsDone);
       pDlgProgress->Progress();
 
-      /* delete all clients */
+      // delete all clients data (e.g priorities, which are only stored locally)
       pvrDatabase->DeleteClients();
-      pDlgProgress->SetPercentage(90);
-      pDlgProgress->Progress();
+    }
 
-      /* delete all channel and recording settings */
+    if (bResetChannels || bResetRecordings)
+    {
       CVideoDatabase videoDatabase;
 
       if (videoDatabase.Open())
       {
-        videoDatabase.EraseAllVideoSettings("pvr://channels/");
-        videoDatabase.EraseAllVideoSettings(CPVRRecordingsPath::PATH_RECORDINGS);
+        if (bResetChannels)
+        {
+          pDlgProgress->SetPercentage(iProgressStepPercentage * ++iProgressStepsDone);
+          pDlgProgress->Progress();
+
+          // delete all channel's entries (e.g. settings, bookmarks, stream details)
+          videoDatabase.EraseAllForPath("pvr://channels/");
+        }
+
+        if (bResetRecordings)
+        {
+          pDlgProgress->SetPercentage(iProgressStepPercentage * ++iProgressStepsDone);
+          pDlgProgress->Progress();
+
+          // delete all recording's entries (e.g. settings, bookmarks, stream details)
+          videoDatabase.EraseAllForPath(CPVRRecordingsPath::PATH_RECORDINGS);
+        }
+
         videoDatabase.Close();
       }
     }
