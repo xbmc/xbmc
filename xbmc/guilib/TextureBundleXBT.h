@@ -8,10 +8,11 @@
 
 #pragma once
 
+#include <cstdint>
 #include <ctime>
-#include <map>
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 class CTexture;
