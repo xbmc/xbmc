@@ -154,7 +154,7 @@ void CTCPServer::Process()
               if (!response.empty())
                 m_connections[i]->Send(response.c_str(), response.size());
 
-              if (websocket != NULL)
+              if (websocket)
               {
                 // Replace the CTCPClient with a CWebSocketClient
                 CWebSocketClient *websocketClient = new CWebSocketClient(websocket, *(m_connections[i]));
@@ -709,7 +709,7 @@ void CTCPServer::CWebSocketClient::PushBuffer(CTCPServer *host, const char *buff
 
   do
   {
-    if ((msg = m_websocket->Handle(buf, len, send)) != NULL && msg->IsComplete())
+    if ((msg = m_websocket->Handle(buf, len, send)) != nullptr && msg->IsComplete())
     {
       std::vector<const CWebSocketFrame *> frames = msg->GetFrames();
       if (send)
@@ -725,8 +725,7 @@ void CTCPServer::CWebSocketClient::PushBuffer(CTCPServer *host, const char *buff
 
       delete msg;
     }
-  }
-  while (len > 0 && msg != NULL);
+  } while (len > 0 && msg);
 
   if (len < m_buffer.size())
     m_buffer = m_buffer.substr(m_buffer.size() - len);

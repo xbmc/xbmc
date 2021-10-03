@@ -53,18 +53,18 @@ bool CRenderSystemGLES::InitRenderSystem()
   // Get our driver vendor and renderer
   const char *tmpVendor = (const char*) glGetString(GL_VENDOR);
   m_RenderVendor.clear();
-  if (tmpVendor != NULL)
+  if (tmpVendor)
     m_RenderVendor = tmpVendor;
 
   const char *tmpRenderer = (const char*) glGetString(GL_RENDERER);
   m_RenderRenderer.clear();
-  if (tmpRenderer != NULL)
+  if (tmpRenderer)
     m_RenderRenderer = tmpRenderer;
 
   m_RenderExtensions  = " ";
 
   const char *tmpExtensions = (const char*) glGetString(GL_EXTENSIONS);
-  if (tmpExtensions != NULL)
+  if (tmpExtensions)
   {
     m_RenderExtensions += tmpExtensions;
   }

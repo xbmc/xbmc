@@ -46,7 +46,13 @@ namespace XBMCAddon
        *  the call will wrongly proceed back to the xbmc core side rather than
        *  to the Addon API side.
        */
-      static bool up() { bool ret = ((upcallTls) != NULL); upcallTls = NULL; return ret; }
+      static bool up()
+      {
+        bool ret = ((upcallTls) != nullptr);
+        upcallTls = NULL;
+        return ret;
+      }
+
     public:
 
       virtual ~InterceptorBase() { if (window.isNotNull()) { window->interceptorClear(); } }

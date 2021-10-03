@@ -148,7 +148,7 @@ namespace XBMCAddon
             nextSleep = 100; // only sleep for 100 millis
           KODI::TIME::Sleep(nextSleep);
         }
-        if (lh != NULL)
+        if (lh)
           lh->MakePendingCalls();
       }
     }

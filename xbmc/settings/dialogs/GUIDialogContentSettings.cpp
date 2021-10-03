@@ -81,7 +81,7 @@ bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSet
   if (dialog == NULL)
     return false;
 
-  if (scraper != NULL)
+  if (scraper)
   {
     dialog->SetContent(content != CONTENT_NONE ? content : scraper->Content());
     dialog->SetScraper(scraper);
@@ -291,7 +291,7 @@ void CGUIDialogContentSettings::SetupView()
   else
   {
     ToggleState(SETTING_SCRAPER_LIST, true);
-    if (m_scraper != NULL && !CServiceBroker::GetAddonMgr().IsAddonDisabled(m_scraper->ID()))
+    if (m_scraper && !CServiceBroker::GetAddonMgr().IsAddonDisabled(m_scraper->ID()))
     {
       SetLabel2(SETTING_SCRAPER_LIST, m_scraper->Name());
       if (m_scraper && m_scraper->Supports(m_content) && m_scraper->HasSettings())
@@ -313,7 +313,7 @@ void CGUIDialogContentSettings::InitializeSettings()
 
   if (m_content == CONTENT_NONE)
     m_showScanSettings = false;
-  else if (m_scraper != NULL && !CServiceBroker::GetAddonMgr().IsAddonDisabled(m_scraper->ID()))
+  else if (m_scraper && !CServiceBroker::GetAddonMgr().IsAddonDisabled(m_scraper->ID()))
     m_showScanSettings = true;
 
   std::shared_ptr<CSettingCategory> category = AddCategory("contentsettings", -1);
@@ -333,7 +333,7 @@ void CGUIDialogContentSettings::InitializeSettings()
   AddButton(group, SETTING_CONTENT_TYPE, 20344, SettingLevel::Basic);
   AddButton(group, SETTING_SCRAPER_LIST, 38025, SettingLevel::Basic);
   std::shared_ptr<CSettingAction> subsetting = AddButton(group, SETTING_SCRAPER_SETTINGS, 10004, SettingLevel::Basic);
-  if (subsetting != NULL)
+  if (subsetting)
     subsetting->SetParent(SETTING_SCRAPER_LIST);
 
   std::shared_ptr<CSettingGroup> groupDetails = AddGroup(category, 20322);
@@ -403,14 +403,14 @@ void CGUIDialogContentSettings::InitializeSettings()
 void CGUIDialogContentSettings::SetLabel2(const std::string &settingid, const std::string &label)
 {
   BaseSettingControlPtr settingControl = GetSettingControl(settingid);
-  if (settingControl != NULL && settingControl->GetControl() != NULL)
+  if (settingControl && settingControl->GetControl())
     SET_CONTROL_LABEL2(settingControl->GetID(), label);
 }
 
 void CGUIDialogContentSettings::ToggleState(const std::string &settingid, bool enabled)
 {
   BaseSettingControlPtr settingControl = GetSettingControl(settingid);
-  if (settingControl != NULL && settingControl->GetControl() != NULL)
+  if (settingControl && settingControl->GetControl())
   {
     if (enabled)
       CONTROL_ENABLE(settingControl->GetID());
@@ -422,6 +422,6 @@ void CGUIDialogContentSettings::ToggleState(const std::string &settingid, bool e
 void CGUIDialogContentSettings::SetFocusToSetting(const std::string& settingid)
 {
   BaseSettingControlPtr settingControl = GetSettingControl(settingid);
-  if (settingControl != NULL && settingControl->GetControl() != NULL)
+  if (settingControl && settingControl->GetControl())
     SET_CONTROL_FOCUS(settingControl->GetID(), 0);
 }

@@ -128,9 +128,9 @@ void COSXStorageProvider::GetRemovableDrives(VECSOURCES& removableDrives)
             {
               CFStringRef mediaKind = (CFStringRef)CFDictionaryGetValue(details, kDADiskDescriptionMediaKindKey);
               // and either cd or dvd kind of media in it
-              if (mediaKind != NULL &&
+              if (mediaKind &&
                   (CFStringCompare(mediaKind, CFSTR(kIOCDMediaClass), 0) == kCFCompareEqualTo ||
-                  CFStringCompare(mediaKind, CFSTR(kIODVDMediaClass), 0) == kCFCompareEqualTo))
+                   CFStringCompare(mediaKind, CFSTR(kIODVDMediaClass), 0) == kCFCompareEqualTo))
                 share.m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
             }
             removableDrives.push_back(share);

@@ -164,7 +164,7 @@ void DllLibCurlGlobal::easy_acquire(const char* protocol,
                                     CURL_HANDLE** easy_handle,
                                     CURLM** multi_handle)
 {
-  assert(easy_handle != NULL);
+  assert(easy_handle);
 
   CSingleLock lock(m_critSection);
 

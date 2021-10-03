@@ -384,7 +384,8 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
 {
   assert(!basePathToScanPtr || (basePathToScanPtr->dwUsage & RESOURCEUSAGE_CONTAINER));
   assert(!basePathToScanPtr || basePathToScanPtr->dwScope == RESOURCE_GLOBALNET);
-  assert(!basePathToScanPtr || (basePathToScanPtr->lpRemoteName != NULL && basePathToScanPtr->lpRemoteName[0]));
+  assert(!basePathToScanPtr ||
+         (basePathToScanPtr->lpRemoteName && basePathToScanPtr->lpRemoteName[0]));
   assert(!getShares || basePathToScanPtr); // can't get shares without host
   assert(urlPrefixForItems.compare(0, 6, "smb://", 6) == 0); // 'urlPrefixForItems' must be in form 'smb://[[user[:pass]@]ServerName]'
   assert(urlPrefixForItems.length() >= 6);
@@ -457,7 +458,7 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
         /* check and collect servers */
         if (!getShares && curResource.dwDisplayType == RESOURCEDISPLAYTYPE_SERVER)
         {
-          if (curResource.lpRemoteName != NULL)
+          if (curResource.lpRemoteName)
           {
             std::wstring remoteName(curResource.lpRemoteName);
             if (remoteName.length() > 2 && remoteName.compare(0, 2, L"\\\\", 2) == 0)
@@ -488,7 +489,7 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
                           curResource.dwDisplayType == RESOURCEDISPLAYTYPE_SHAREADMIN) &&
                           curResource.dwType != RESOURCETYPE_PRINT)
         {
-          if (curResource.lpRemoteName != NULL)
+          if (curResource.lpRemoteName)
           {
             std::wstring serverShareName(curResource.lpRemoteName);
             if (serverShareName.length() > 2 && serverShareName.compare(0, 2, L"\\\\", 2) == 0)
@@ -535,7 +536,7 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
         if (!getShares && (curResource.dwUsage & RESOURCEUSAGE_CONTAINER) &&
             curResource.dwDisplayType != RESOURCEDISPLAYTYPE_SERVER) // don't scan servers for other servers
         {
-          if (curResource.lpRemoteName != NULL && curResource.lpRemoteName[0] != 0)
+          if (curResource.lpRemoteName && curResource.lpRemoteName[0] != 0)
           {
             if (!localGetNetworkResources(&curResource, urlPrefixForItems, items, false))
             {

@@ -34,10 +34,10 @@ namespace
     CFDataRef data = NULL;
 
     data=CFNetServiceGetTXTData(serviceRef);
-    if (data != NULL)
+    if (data)
     {
       CFDictionaryRef dict = CFNetServiceCreateDictionaryWithTXTData(kCFAllocatorDefault, data);
-      if (dict != NULL)
+      if (dict)
       {
         CFIndex numValues = 0;
         numValues = CFDictionaryGetCount(dict);
@@ -77,7 +77,7 @@ namespace
     char buffer[256];
     CFArrayRef addressResults = CFNetServiceGetAddressing( (CFNetServiceRef)serviceRef );
 
-    if ( addressResults != NULL )
+    if (addressResults)
     {
       CFIndex numAddressResults = CFArrayGetCount( addressResults );
       CFDataRef sockAddrRef = NULL;
@@ -86,14 +86,15 @@ namespace
       for ( idx = 0; idx < numAddressResults; idx++ )
       {
         sockAddrRef = (CFDataRef)CFArrayGetValueAtIndex( addressResults, idx );
-        if ( sockAddrRef != NULL )
+        if (sockAddrRef)
         {
           CFDataGetBytes( sockAddrRef, CFRangeMake(0, sizeof(sockHdr)), (UInt8*)&sockHdr );
           switch ( sockHdr.sa_family )
           {
             case AF_INET:
               CFDataGetBytes( sockAddrRef, CFRangeMake(0, sizeof(address)), (UInt8*)&address );
-              if ( inet_ntop(sockHdr.sa_family, &address.sin_addr, buffer, sizeof(buffer)) != NULL )
+              if (inet_ntop(sockHdr.sa_family, &address.sin_addr, buffer, sizeof(buffer)) !=
+                  nullptr)
               {
                 fr_address = buffer;
                 fr_port = ntohs(address.sin_port);
@@ -242,14 +243,14 @@ bool CZeroconfBrowserDarwin::doAddServiceType(const std::string& fcr_service_typ
   CFStringRef domain = CFSTR("");
   CFNetServiceBrowserRef p_browser = CFNetServiceBrowserCreate(kCFAllocatorDefault,
     CZeroconfBrowserDarwin::BrowserCallback, &clientContext);
-  assert(p_browser != NULL);
+  assert(p_browser);
 
   //schedule the browser
   CFNetServiceBrowserScheduleWithRunLoop(p_browser, m_runloop, kCFRunLoopCommonModes);
   CFStreamError error;
   CFStringRef type = CFStringCreateWithCString(NULL, fcr_service_type.c_str(), kCFStringEncodingUTF8);
 
-  assert(type != NULL);
+  assert(type);
   Boolean result = CFNetServiceBrowserSearchForServices(p_browser, domain, type, &error);
   CFRelease(type);
   if (result == false)

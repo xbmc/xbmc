@@ -58,9 +58,9 @@ int CCircularCache::Open()
 void CCircularCache::Close()
 {
 #ifdef TARGET_WINDOWS
-  if (m_buf != NULL)
+  if (m_buf)
     UnmapViewOfFile(m_buf);
-  if (m_handle != NULL)
+  if (m_handle)
     CloseHandle(m_handle);
   m_handle = NULL;
 #else

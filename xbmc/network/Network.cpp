@@ -206,7 +206,7 @@ bool CNetworkBase::IsAvailable(void)
 
 bool CNetworkBase::IsConnected()
 {
-   return GetFirstConnectedInterface() != NULL;
+  return GetFirstConnectedInterface() != nullptr;
 }
 
 void CNetworkBase::NetworkMessage(EMESSAGE message, int param)

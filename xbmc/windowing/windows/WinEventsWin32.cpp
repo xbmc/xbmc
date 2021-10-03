@@ -231,7 +231,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
   if (uMsg == WM_NCCREATE)
   {
     // if available, enable DPI scaling of non-client portion of window (title bar, etc.)
-    if (g_Windowing.PtrEnableNonClientDpiScaling != NULL)
+    if (g_Windowing.PtrEnableNonClientDpiScaling)
     {
       g_Windowing.PtrEnableNonClientDpiScaling(hWnd);
     }

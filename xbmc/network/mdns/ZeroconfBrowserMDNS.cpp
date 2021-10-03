@@ -165,7 +165,7 @@ void DNSSD_API CZeroconfBrowserMDNS::ResolveCallback(DNSServiceRef              
     if(err != kDNSServiceErr_NoError)
       continue;
 
-    if(value != NULL && valueLen > 0)
+    if (value && valueLen > 0)
       strvalue.append((const char *)value, valueLen);
 
     recordMap.insert(std::make_pair(key, strvalue));

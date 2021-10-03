@@ -189,7 +189,7 @@ bool CJpegParse::ExtractInfo (CFile& infile)
 
       case M_COM: // Comment section
         GetSection(infile, itemlen);
-        if (m_SectionBuffer != NULL)
+        if (m_SectionBuffer)
         {
        //   CExifParse::FixComment(comment);          // Ensure comment is printable
           unsigned short length = min(itemlen - 2, MAX_COMMENT);
@@ -213,7 +213,7 @@ bool CJpegParse::ExtractInfo (CFile& infile)
       case M_SOF14:
       case M_SOF15:
         GetSection(infile, itemlen);
-        if ((m_SectionBuffer != NULL) && (itemlen >= 7))
+        if ((m_SectionBuffer) && (itemlen >= 7))
         {
           ProcessSOFn();
           m_ExifInfo.Process = marker;
@@ -223,7 +223,7 @@ bool CJpegParse::ExtractInfo (CFile& infile)
 
       case M_IPTC:
         GetSection(infile, itemlen);
-        if (m_SectionBuffer != NULL)
+        if (m_SectionBuffer)
         {
           CIptcParse::Process(m_SectionBuffer, itemlen, &m_IPTCInfo);
         }
@@ -235,7 +235,7 @@ bool CJpegParse::ExtractInfo (CFile& infile)
         // that uses marker 31 for non exif stuff.  Thus make sure
         // it says 'Exif' in the section before treating it as exif.
         GetSection(infile, itemlen);
-        if (m_SectionBuffer != NULL)
+        if (m_SectionBuffer)
         {
           CExifParse exif;
           exif.Process(m_SectionBuffer, itemlen, &m_ExifInfo);

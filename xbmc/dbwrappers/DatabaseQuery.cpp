@@ -89,10 +89,10 @@ bool CDatabaseQueryRule::Load(const TiXmlNode *node, const std::string &encoding
   else if (parameter->Type() == TiXmlNode::TINYXML_ELEMENT)
   {
     const TiXmlNode *valueNode = element->FirstChild("value");
-    while (valueNode != NULL)
+    while (valueNode)
     {
       const TiXmlNode *value = valueNode->FirstChild();
-      if (value != NULL && value->Type() == TiXmlNode::TINYXML_TEXT)
+      if (value && value->Type() == TiXmlNode::TINYXML_TEXT)
       {
         std::string utf8Parameter;
         if (encoding.empty()) // utf8

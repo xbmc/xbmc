@@ -227,7 +227,7 @@ CWebSocketFrame::~CWebSocketFrame()
   if (!m_valid)
     return;
 
-  if (m_free && m_data != NULL)
+  if (m_free && m_data)
   {
     delete[] m_data;
     m_data = NULL;
@@ -320,7 +320,7 @@ const CWebSocketMessage* CWebSocket::Handle(const char* &buffer, size_t &length,
           {
             case WebSocketPing:
               msg = GetMessage();
-              if (msg != NULL)
+              if (msg)
                 msg->AddFrame(Pong(frame->GetApplicationData()));
               break;
 
@@ -328,7 +328,7 @@ const CWebSocketMessage* CWebSocket::Handle(const char* &buffer, size_t &length,
               CLog::Log(LOGINFO, "WebSocket: connection closed by client");
 
               msg = GetMessage();
-              if (msg != NULL)
+              if (msg)
                 msg->AddFrame(Close());
 
               m_state = WebSocketStateClosed;
@@ -345,7 +345,7 @@ const CWebSocketMessage* CWebSocket::Handle(const char* &buffer, size_t &length,
 
           delete frame;
 
-          if (msg != NULL)
+          if (msg)
             send = true;
 
           return msg;

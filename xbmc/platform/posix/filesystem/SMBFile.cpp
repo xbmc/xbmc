@@ -104,7 +104,7 @@ void CSMB::Init()
     {
       smb_conf += "/smb.conf";
       FILE* f = fopen(smb_conf.c_str(), "w");
-      if (f != NULL)
+      if (f)
       {
         fprintf(f, "[global]\n");
 
@@ -285,7 +285,7 @@ void CSMB::CheckIfIdle()
   if (m_OpenConnections == 0)
   { /* I've set the the maximum IDLE time to be 1 min and 30 sec. */
     CSingleLock lock(*this);
-    if (m_OpenConnections == 0 /* check again - when locked */ && m_context != NULL)
+    if (m_OpenConnections == 0 /* check again - when locked */ && m_context)
     {
       if (m_IdleTimeout > 0)
 	  {

@@ -425,7 +425,7 @@ void CGUIDialogLibExportSettings::ToggleState(const std::string & settingid, boo
 void CGUIDialogLibExportSettings::SetFocus(const std::string &settingid)
 {
   BaseSettingControlPtr settingControl = GetSettingControl(settingid);
-  if (settingControl != NULL && settingControl->GetControl() != NULL)
+  if (settingControl && settingControl->GetControl())
     SET_CONTROL_FOCUS(settingControl->GetID(), 0);
 }
 

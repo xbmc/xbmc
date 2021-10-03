@@ -61,13 +61,13 @@ bool CKeyboardLayout::Load(const TiXmlElement* element)
         CInputCodingTableFactory::CreateCodingTable(element->Attribute("codingtable"), element));
   else
     m_codingtable = NULL;
-  while (keyboard != NULL)
+  while (keyboard)
   {
     // parse modifiers keys
     std::set<unsigned int> modifierKeysSet;
 
     const char* strModifiers = keyboard->Attribute("modifiers");
-    if (strModifiers != NULL)
+    if (strModifiers)
     {
       std::string modifiers = strModifiers;
       StringUtils::ToLower(modifiers);
@@ -91,7 +91,7 @@ bool CKeyboardLayout::Load(const TiXmlElement* element)
 
     // parse keyboard rows
     const TiXmlNode* row = keyboard->FirstChild("row");
-    while (row != NULL)
+    while (row)
     {
       if (!row->NoChildren())
       {

@@ -31,7 +31,7 @@ CGUIDialogPeripheralSettings::CGUIDialogPeripheralSettings()
 
 CGUIDialogPeripheralSettings::~CGUIDialogPeripheralSettings()
 {
-  if (m_item != NULL)
+  if (m_item)
     delete m_item;
 
   m_settingsMap.clear();
@@ -54,7 +54,7 @@ void CGUIDialogPeripheralSettings::SetFileItem(const CFileItem* item)
   if (item == NULL)
     return;
 
-  if (m_item != NULL)
+  if (m_item)
     delete m_item;
 
   m_item = new CFileItem(*item);
@@ -222,7 +222,7 @@ void CGUIDialogPeripheralSettings::InitializeSettings()
         break;
     }
 
-    if (settingCopy != NULL && settingCopy->GetControl() != NULL)
+    if (settingCopy && settingCopy->GetControl())
     {
       settingCopy->SetLevel(SettingLevel::Basic);
       group->AddSetting(settingCopy);

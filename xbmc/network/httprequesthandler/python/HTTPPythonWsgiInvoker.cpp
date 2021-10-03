@@ -244,7 +244,7 @@ void CHTTPPythonWsgiInvoker::executeScript(FILE* fp, const std::string& script, 
   }
 
   // go through all the iterables in the result and turn them into strings
-  while ((pyIterResult = PyIter_Next(pyResultIterator)) != NULL)
+  while ((pyIterResult = PyIter_Next(pyResultIterator)) != nullptr)
   {
     std::string result;
     try
@@ -273,11 +273,11 @@ void CHTTPPythonWsgiInvoker::executeScript(FILE* fp, const std::string& script, 
   }
 
 cleanup:
-  if (pyIterResult != NULL)
+  if (pyIterResult)
   {
     Py_DECREF(pyIterResult);
   }
-  if (pyResultIterator != NULL)
+  if (pyResultIterator)
   {
     // Call optional close method on iterator
     if (PyObject_HasAttrString(pyResultIterator, "close") == 1)
@@ -287,15 +287,15 @@ cleanup:
     }
     Py_DECREF(pyResultIterator);
   }
-  if (pyResult != NULL)
+  if (pyResult)
   {
     Py_DECREF(pyResult);
   }
-  if (pyEntryPoint != NULL)
+  if (pyEntryPoint)
   {
     Py_DECREF(pyEntryPoint);
   }
-  if (pyModule != NULL)
+  if (pyModule)
   {
     Py_DECREF(pyModule);
   }
@@ -416,7 +416,7 @@ void CHTTPPythonWsgiInvoker::addWsgiEnvironment(HTTPPythonRequest* request, void
   {
     // wsgi.input
     XBMCAddon::xbmcwsgi::WsgiInputStream* wsgiInputStream = new XBMCAddon::xbmcwsgi::WsgiInputStream();
-    if (request != NULL)
+    if (request)
       wsgiInputStream->SetRequest(request);
 
     PythonBindings::prepareForReturn(wsgiInputStream);
@@ -427,7 +427,7 @@ void CHTTPPythonWsgiInvoker::addWsgiEnvironment(HTTPPythonRequest* request, void
   {
     // wsgi.errors
     XBMCAddon::xbmcwsgi::WsgiErrorStream* wsgiErrorStream = new XBMCAddon::xbmcwsgi::WsgiErrorStream();
-    if (request != NULL)
+    if (request)
       wsgiErrorStream->SetRequest(request);
 
     PythonBindings::prepareForReturn(wsgiErrorStream);

@@ -19,13 +19,13 @@ CConsoleUPowerSyscall::CConsoleUPowerSyscall()
 bool CConsoleUPowerSyscall::Powerdown()
 {
   CDBusMessage message("org.freedesktop.ConsoleKit", "/org/freedesktop/ConsoleKit/Manager", "org.freedesktop.ConsoleKit.Manager", "Stop");
-  return message.SendSystem() != NULL;
+  return message.SendSystem() != nullptr;
 }
 
 bool CConsoleUPowerSyscall::Reboot()
 {
   CDBusMessage message("org.freedesktop.ConsoleKit", "/org/freedesktop/ConsoleKit/Manager", "org.freedesktop.ConsoleKit.Manager", "Restart");
-  return message.SendSystem() != NULL;
+  return message.SendSystem() != nullptr;
 }
 
 bool CConsoleUPowerSyscall::HasConsoleKitAndUPower()

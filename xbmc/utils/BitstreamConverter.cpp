@@ -620,7 +620,8 @@ bool CBitstreamConverter::Convert(uint8_t *pData, int iSize)
 
 uint8_t *CBitstreamConverter::GetConvertBuffer() const
 {
-  if((m_convert_bitstream || m_convert_bytestream || m_convert_3byteTo4byteNALSize) && m_convertBuffer != NULL)
+  if ((m_convert_bitstream || m_convert_bytestream || m_convert_3byteTo4byteNALSize) &&
+      m_convertBuffer)
     return m_convertBuffer;
   else
     return m_inputBuffer;
@@ -628,7 +629,8 @@ uint8_t *CBitstreamConverter::GetConvertBuffer() const
 
 int CBitstreamConverter::GetConvertSize() const
 {
-  if((m_convert_bitstream || m_convert_bytestream || m_convert_3byteTo4byteNALSize) && m_convertBuffer != NULL)
+  if ((m_convert_bitstream || m_convert_bytestream || m_convert_3byteTo4byteNALSize) &&
+      m_convertBuffer)
     return m_convertSize;
   else
     return m_inputSize;

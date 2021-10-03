@@ -135,7 +135,7 @@ bool CWinSystemIOS::CreateNewWindow(const std::string& name, bool fullScreen, RE
   m_eglext  = " ";
 
   const char *tmpExtensions = (const char*) glGetString(GL_EXTENSIONS);
-  if (tmpExtensions != NULL)
+  if (tmpExtensions)
   {
     m_eglext += tmpExtensions;
   }

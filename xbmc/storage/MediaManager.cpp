@@ -374,14 +374,14 @@ bool CMediaManager::IsAudio(const std::string& devicePath)
     return false;
 
   CCdInfo* pCdInfo = GetCdInfo(devicePath);
-  if(pCdInfo != NULL && pCdInfo->IsAudio(1))
+  if (pCdInfo && pCdInfo->IsAudio(1))
     return true;
 
   return false;
 #else
   //! @todo switch all ports to use auto sources
   MEDIA_DETECT::CCdInfo* pInfo = MEDIA_DETECT::CDetectDVDMedia::GetCdInfo();
-  if (pInfo != NULL && pInfo->IsAudio(1))
+  if (pInfo && pInfo->IsAudio(1))
     return true;
 #endif
 #endif
@@ -451,7 +451,7 @@ CCdInfo* CMediaManager::GetCdInfo(const std::string& devicePath)
   CCdInfo* pCdInfo=NULL;
   CCdIoSupport cdio;
   pCdInfo = cdio.GetCdInfo((char*)strDevice.c_str());
-  if(pCdInfo!=NULL)
+  if (pCdInfo)
   {
     CSingleLock waitLock(m_muAutoSource);
     m_mapCdInfo.insert(std::pair<std::string,CCdInfo*>(strDevice,pCdInfo));
@@ -475,7 +475,7 @@ bool CMediaManager::RemoveCdInfo(const std::string& devicePath)
   it = m_mapCdInfo.find(strDevice);
   if(it != m_mapCdInfo.end())
   {
-    if(it->second != NULL)
+    if (it->second)
       delete it->second;
 
     m_mapCdInfo.erase(it);

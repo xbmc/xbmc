@@ -217,7 +217,7 @@ void XBMCHelper::Configure()
     if (_NSGetExecutablePath(given_path, &path_size) == 0)
     {
       char real_path[2 * MAXPATHLEN];
-      if (realpath(given_path, real_path) != NULL)
+      if (realpath(given_path, real_path))
       {
         strConfig += "--appPath \"";
         strConfig += real_path;
@@ -435,8 +435,8 @@ static int GetBSDProcessList(kinfo_proc **procList, size_t *procCount)
   // sysctl because the prototype doesn't include the const modifier.
   size_t length;
 
-  assert(procList != NULL);
-  assert(procCount != NULL);
+  assert(procList);
+  assert(procCount);
 
   *procCount = 0;
 
@@ -488,7 +488,7 @@ static int GetBSDProcessList(kinfo_proc **procList, size_t *procCount)
       }
       else if (err == ENOMEM)
       {
-        assert(result != NULL);
+        assert(result);
         free(result);
         result = NULL;
         err = 0;
@@ -497,7 +497,7 @@ static int GetBSDProcessList(kinfo_proc **procList, size_t *procCount)
   } while (err == 0 && !done);
 
   // Clean up and establish post conditions.
-  if (err != 0 && result != NULL)
+  if (err != 0 && result)
   {
     free(result);
     result = NULL;
@@ -507,6 +507,6 @@ static int GetBSDProcessList(kinfo_proc **procList, size_t *procCount)
   if (err == 0)
     *procCount = length / sizeof(kinfo_proc);
 
-  assert( (err == 0) == (*procList != NULL) );
+  assert((err == 0) == (*procList != nullptr));
   return err;
 }

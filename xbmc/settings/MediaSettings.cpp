@@ -74,7 +74,7 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
 
   CSingleLock lock(m_critical);
   const TiXmlElement *pElement = settings->FirstChildElement("defaultvideosettings");
-  if (pElement != NULL)
+  if (pElement)
   {
     int interlaceMethod;
     XMLUtils::GetInt(pElement, "interlacemethod", interlaceMethod, VS_INTERLACEMETHOD_NONE, VS_INTERLACEMETHOD_MAX);
@@ -143,10 +143,10 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
 
   // mymusic settings
   pElement = settings->FirstChildElement("mymusic");
-  if (pElement != NULL)
+  if (pElement)
   {
     const TiXmlElement *pChild = pElement->FirstChildElement("playlist");
-    if (pChild != NULL)
+    if (pChild)
     {
       XMLUtils::GetBoolean(pChild, "repeat", m_musicPlaylistRepeat);
       XMLUtils::GetBoolean(pChild, "shuffle", m_musicPlaylistShuffle);
@@ -164,7 +164,7 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
 
   // Read the watchmode settings for the various media views
   pElement = settings->FirstChildElement("myvideos");
-  if (pElement != NULL)
+  if (pElement)
   {
     int tmp;
     if (XMLUtils::GetInt(pElement, "watchmodemovies", tmp, (int)WatchedModeAll, (int)WatchedModeWatched))
@@ -177,7 +177,7 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
       m_watchedModes["recordings"] = static_cast<WatchedMode>(tmp);
 
     const TiXmlElement *pChild = pElement->FirstChildElement("playlist");
-    if (pChild != NULL)
+    if (pChild)
     {
       XMLUtils::GetBoolean(pChild, "repeat", m_videoPlaylistRepeat);
       XMLUtils::GetBoolean(pChild, "shuffle", m_videoPlaylistShuffle);

@@ -385,13 +385,13 @@ bool CGUIDialogProfileSettings::GetProfilePath(std::string &directory, bool isDe
 void CGUIDialogProfileSettings::UpdateProfileImage()
 {
   BaseSettingControlPtr settingControl = GetSettingControl(SETTING_PROFILE_IMAGE);
-  if (settingControl != NULL && settingControl->GetControl() != NULL)
+  if (settingControl && settingControl->GetControl())
     SET_CONTROL_LABEL2(settingControl->GetID(), URIUtils::GetFileName(m_thumb));
 }
 
 void CGUIDialogProfileSettings::updateProfileDirectory()
 {
   BaseSettingControlPtr settingControl = GetSettingControl(SETTING_PROFILE_DIRECTORY);
-  if (settingControl != NULL && settingControl->GetControl() != NULL)
+  if (settingControl && settingControl->GetControl())
     SET_CONTROL_LABEL2(settingControl->GetID(), m_directory);
 }

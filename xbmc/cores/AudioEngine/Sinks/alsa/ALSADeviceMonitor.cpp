@@ -96,7 +96,7 @@ void CALSADeviceMonitor::FDEventCallback(int id, int fd, short revents, void *da
   bool audioDevicesChanged = false;
   struct udev_device *device;
 
-  while ((device = udev_monitor_receive_device(udevMonitor)) != NULL)
+  while ((device = udev_monitor_receive_device(udevMonitor)) != nullptr)
   {
     const char* action = udev_device_get_action(device);
     const char* soundInitialized = udev_device_get_property_value(device, "SOUND_INITIALIZED");

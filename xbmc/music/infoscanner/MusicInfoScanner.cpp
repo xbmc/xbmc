@@ -630,7 +630,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
     CSong song(*items[i]);
 
     // keep the db-only fields intact on rescan...
-    if (songsMap != NULL)
+    if (songsMap)
     {
       // Match up item to songs in library previously scanned with this path
       MAPSONGS::iterator songlist = songsMap->find(items[i]->GetPath());

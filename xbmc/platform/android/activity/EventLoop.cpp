@@ -44,7 +44,7 @@ void CEventLoop::run(IActivityHandler &activityHandler, IInputHandler &inputHand
     while ((ident = ALooper_pollAll(-1, NULL, &events, (void**)&source)) >= 0)
     {
       // Process this event.
-      if (source != NULL)
+      if (source)
         source->process(m_application, source);
 
       // Check if we are exiting.

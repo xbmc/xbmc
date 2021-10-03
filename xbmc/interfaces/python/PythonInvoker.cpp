@@ -256,12 +256,12 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
     PyObject* sysModDict(PyModule_GetDict(sysMod)); // borrowed ref, no need to delete
     PyObject* pathObj(PyDict_GetItemString(sysModDict, "path")); // borrowed ref, no need to delete
 
-    if (pathObj != NULL && PyList_Check(pathObj))
+    if (pathObj && PyList_Check(pathObj))
     {
       for (int i = 0; i < PyList_Size(pathObj); i++)
       {
         PyObject* e = PyList_GetItem(pathObj, i); // borrowed ref, no need to delete
-        if (e != NULL && PyUnicode_Check(e))
+        if (e && PyUnicode_Check(e))
           addPath(PyUnicode_AsUTF8(e)); // returns internal data, don't delete or modify
       }
     }
@@ -320,7 +320,7 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
       FILE* fp = _Py_fopen_obj(pyRealFilename, "rb");
       Py_DECREF(pyRealFilename);
 
-      if (fp != NULL)
+      if (fp)
       {
         PyObject* f = PyUnicode_FromString(realFilename.c_str());
         PyDict_SetItemString(moduleDict, "__file__", f);
@@ -472,7 +472,7 @@ bool CPythonInvoker::stop(bool abort)
   if (!IsRunning() && !m_threadState)
     return false;
 
-  if (m_threadState != NULL)
+  if (m_threadState)
   {
     if (IsRunning())
     {
@@ -526,7 +526,7 @@ bool CPythonInvoker::stop(bool abort)
 
     // Since we released the m_critical it's possible that the state is cleaned up
     // so we need to recheck for m_threadState == NULL
-    if (m_threadState != NULL)
+    if (m_threadState)
     {
       {
         // grabbing the PyLock while holding the m_critical is asking for a deadlock
@@ -562,7 +562,7 @@ bool CPythonInvoker::stop(bool abort)
 void CPythonInvoker::onExecutionDone()
 {
   CSingleLock lock(m_critical);
-  if (m_threadState != NULL)
+  if (m_threadState)
   {
     CLog::Log(LOGDEBUG, "{}({}, {})", __FUNCTION__, GetId(), m_sourceFile);
 
@@ -640,7 +640,7 @@ void CPythonInvoker::onInitialization()
 
   // get a possible initialization script
   const char* runscript = getInitializationScript();
-  if (runscript != NULL && strlen(runscript) > 0)
+  if (runscript && strlen(runscript) > 0)
   {
     // redirecting default output to debug console
     if (PyRun_SimpleString(runscript) == -1)
@@ -686,7 +686,7 @@ void CPythonInvoker::onError(const std::string& exceptionType /* = "" */,
   CGUIDialogKaiToast* pDlgToast =
       CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogKaiToast>(
           WINDOW_DIALOG_KAI_TOAST);
-  if (pDlgToast != NULL)
+  if (pDlgToast)
   {
     std::string message;
     if (m_addon && !m_addon->Name().empty())

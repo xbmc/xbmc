@@ -652,13 +652,13 @@ CUPnP::UpdateItem(const std::string& path, const CFileItem& item)
 void
 CUPnP::StartClient()
 {
-    if (m_MediaBrowser != NULL)
-        return;
+  if (m_MediaBrowser)
+    return;
 
-    CreateControlPoint();
+  CreateControlPoint();
 
-    // start browser
-    m_MediaBrowser = new CMediaBrowser(m_CtrlPointHolder->m_CtrlPoint);
+  // start browser
+  m_MediaBrowser = new CMediaBrowser(m_CtrlPointHolder->m_CtrlPoint);
 }
 
 /*----------------------------------------------------------------------
@@ -683,12 +683,12 @@ CUPnP::StopClient()
 void
 CUPnP::StartController()
 {
-    if (m_MediaController != NULL)
-        return;
+  if (m_MediaController)
+    return;
 
-    CreateControlPoint();
+  CreateControlPoint();
 
-    m_MediaController = new CMediaController(m_CtrlPointHolder->m_CtrlPoint);
+  m_MediaController = new CMediaController(m_CtrlPointHolder->m_CtrlPoint);
 }
 
 /*----------------------------------------------------------------------

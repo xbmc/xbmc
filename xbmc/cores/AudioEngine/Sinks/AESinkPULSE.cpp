@@ -966,7 +966,7 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
     pa_context_set_subscribe_callback(m_Context, SinkChangedCallback, this);
     const pa_subscription_mask_t mask = pa_subscription_mask_t(PA_SUBSCRIPTION_MASK_SINK_INPUT);
     pa_operation *op = pa_context_subscribe(m_Context, mask, NULL, this);
-    if (op != NULL)
+    if (op)
       pa_operation_unref(op);
   }
 

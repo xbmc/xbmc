@@ -88,12 +88,12 @@ bool CRenderSystemGL::InitRenderSystem()
   // Get our driver vendor and renderer
   const char* tmpVendor = (const char*) glGetString(GL_VENDOR);
   m_RenderVendor.clear();
-  if (tmpVendor != NULL)
+  if (tmpVendor)
     m_RenderVendor = tmpVendor;
 
   const char* tmpRenderer = (const char*) glGetString(GL_RENDERER);
   m_RenderRenderer.clear();
-  if (tmpRenderer != NULL)
+  if (tmpRenderer)
     m_RenderRenderer = tmpRenderer;
 
   m_bRenderCreated = true;

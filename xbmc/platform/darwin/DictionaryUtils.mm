@@ -18,7 +18,7 @@ Boolean GetDictionaryBoolean(CFDictionaryRef theDict, const void* key)
   Boolean value = false;
   CFBooleanRef boolRef;
   boolRef = (CFBooleanRef)CFDictionaryGetValue(theDict, key);
-  if (boolRef != NULL)
+  if (boolRef)
     value = CFBooleanGetValue(boolRef);
   return value;
 }
@@ -29,7 +29,7 @@ long GetDictionaryLong(CFDictionaryRef theDict, const void* key)
   long value = 0;
   CFNumberRef numRef;
   numRef = (CFNumberRef)CFDictionaryGetValue(theDict, key);
-  if (numRef != NULL)
+  if (numRef)
     CFNumberGetValue(numRef, kCFNumberLongType, &value);
   return value;
 }
@@ -40,7 +40,7 @@ int GetDictionaryInt(CFDictionaryRef theDict, const void* key)
   int value = 0;
   CFNumberRef numRef;
   numRef = (CFNumberRef)CFDictionaryGetValue(theDict, key);
-  if (numRef != NULL)
+  if (numRef)
     CFNumberGetValue(numRef, kCFNumberIntType, &value);
   return value;
 }
@@ -51,7 +51,7 @@ float GetDictionaryFloat(CFDictionaryRef theDict, const void* key)
   int value = 0;
   CFNumberRef numRef;
   numRef = (CFNumberRef)CFDictionaryGetValue(theDict, key);
-  if (numRef != NULL)
+  if (numRef)
     CFNumberGetValue(numRef, kCFNumberFloatType, &value);
   return value;
 }
@@ -62,7 +62,7 @@ double GetDictionaryDouble(CFDictionaryRef theDict, const void* key)
   double value = 0.0;
   CFNumberRef numRef;
   numRef = (CFNumberRef)CFDictionaryGetValue(theDict, key);
-  if (numRef != NULL)
+  if (numRef)
     CFNumberGetValue(numRef, kCFNumberDoubleType, &value);
   return value;
 }

@@ -192,8 +192,16 @@ namespace XBMCAddon
 
       inline ~Ref() { refcheck; if (ac) ac->Release(); }
       inline bool isNull() const { refcheck; return ac == NULL; }
-      inline bool isNotNull() const { refcheck; return ac != NULL; }
-      inline bool isSet() const { refcheck; return ac != NULL; }
+      inline bool isNotNull() const
+      {
+        refcheck;
+        return ac != nullptr;
+      }
+      inline bool isSet() const
+      {
+        refcheck;
+        return ac != nullptr;
+      }
       inline bool operator!() const { refcheck; return ac == NULL; }
       inline bool operator==(const AddonClass::Ref<T>& oref) const { refcheck; return ac == oref.ac; }
       inline bool operator<(const AddonClass::Ref<T>& oref) const { refcheck; return ac < oref.ac; } // std::set semantics

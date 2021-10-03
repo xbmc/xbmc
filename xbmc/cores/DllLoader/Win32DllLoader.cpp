@@ -121,7 +121,7 @@ bool Win32DllLoader::Load()
 {
   using namespace KODI::PLATFORM::WINDOWS;
 
-  if (m_dllHandle != NULL)
+  if (m_dllHandle)
     return true;
 
   std::string strFileName = GetFileName();

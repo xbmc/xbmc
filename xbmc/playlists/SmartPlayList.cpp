@@ -1354,11 +1354,11 @@ bool CSmartPlaylist::LoadFromXML(const TiXmlNode *root, const std::string &encod
   }
 
   const TiXmlElement *groupElement = root->FirstChildElement("group");
-  if (groupElement != NULL && groupElement->FirstChild() != NULL)
+  if (groupElement && groupElement->FirstChild())
   {
     m_group = groupElement->FirstChild()->ValueStr();
     const char* mixed = groupElement->Attribute("mixed");
-    m_groupMixed = mixed != NULL && StringUtils::EqualsNoCase(mixed, "true");
+    m_groupMixed = mixed != nullptr && StringUtils::EqualsNoCase(mixed, "true");
   }
 
   // now any limits
@@ -1375,7 +1375,7 @@ bool CSmartPlaylist::LoadFromXML(const TiXmlNode *root, const std::string &encod
       m_orderDirection = StringUtils::EqualsNoCase(direction, "ascending") ? SortOrderAscending : SortOrderDescending;
 
     const char *ignorefolders = order->Attribute("ignorefolders");
-    if (ignorefolders != NULL)
+    if (ignorefolders)
       m_orderAttributes = StringUtils::EqualsNoCase(ignorefolders, "true") ? SortAttributeIgnoreFolders : SortAttributeNone;
 
     m_orderField = CSmartPlaylistRule::TranslateOrder(order->FirstChild()->Value());

@@ -122,8 +122,7 @@ std::shared_ptr<CSettingBool> CGUIDialogSettingsManualBase::AddToggle(const Sett
                                                                       bool visible /* = true */,
                                                                       int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingBool> setting = std::make_shared<CSettingBool>(id, label, value, GetSettingsManager());
@@ -152,8 +151,7 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddEdit(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingInt> setting = std::make_shared<CSettingInt>(id, label, value, minimum, step, maximum, GetSettingsManager());
@@ -182,8 +180,7 @@ std::shared_ptr<CSettingNumber> CGUIDialogSettingsManualBase::AddEdit(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingNumber> setting = std::make_shared<CSettingNumber>(id, label, value, minimum, step, maximum, GetSettingsManager());
@@ -209,8 +206,7 @@ std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddEdit(const Sett
                                                                       bool visible /* = true */,
                                                                       int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingString> setting = std::make_shared<CSettingString>(id, label, value, GetSettingsManager());
@@ -236,8 +232,7 @@ std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddIp(const Settin
                                                                     bool visible /* = true */,
                                                                     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingString> setting = std::make_shared<CSettingString>(id, label, value, GetSettingsManager());
@@ -264,8 +259,7 @@ std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddPasswordMd5(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingString> setting = std::make_shared<CSettingString>(id, label, value, GetSettingsManager());
@@ -290,8 +284,7 @@ std::shared_ptr<CSettingAction> CGUIDialogSettingsManualBase::AddButton(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingAction> setting = std::make_shared<CSettingAction>(id, label, GetSettingsManager());
@@ -315,8 +308,7 @@ std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddInfoLabelButton
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingString> setting = std::make_shared<CSettingString>(id, label, info, GetSettingsManager());
@@ -347,8 +339,7 @@ std::shared_ptr<CSettingAddon> CGUIDialogSettingsManualBase::AddAddon(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingAddon> setting = std::make_shared<CSettingAddon>(id, label, value, GetSettingsManager());
@@ -379,8 +370,7 @@ std::shared_ptr<CSettingPath> CGUIDialogSettingsManualBase::AddPath(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingPath> setting = std::make_shared<CSettingPath>(id, label, value, GetSettingsManager());
@@ -408,7 +398,7 @@ std::shared_ptr<CSettingDate> CGUIDialogSettingsManualBase::AddDate(const Settin
                                                                     bool visible /* = true */,
                                                                     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 || GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingDate> setting = std::make_shared<CSettingDate>(id, label, value, GetSettingsManager());
@@ -434,7 +424,7 @@ std::shared_ptr<CSettingTime> CGUIDialogSettingsManualBase::AddTime(const Settin
                                                                     bool visible /* = true */,
                                                                     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 || GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingTime> setting = std::make_shared<CSettingTime>(id, label, value, GetSettingsManager());
@@ -460,8 +450,7 @@ std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddSpinner(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 || filler == NULL ||
-      GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || filler == NULL || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingString> setting = std::make_shared<CSettingString>(id, label, value, GetSettingsManager());
@@ -490,8 +479,7 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSpinner(const Sett
                                                                       bool visible /* = true */,
                                                                       int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingInt> setting = std::make_shared<CSettingInt>(id, label, value, GetSettingsManager());
@@ -523,8 +511,7 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSpinner(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingInt> setting = std::make_shared<CSettingInt>(id, label, value, GetSettingsManager());
@@ -552,8 +539,7 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSpinner(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 || entries.empty() ||
-      GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || entries.empty() || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingInt> setting = std::make_shared<CSettingInt>(id, label, value, GetSettingsManager());
@@ -579,8 +565,7 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSpinner(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 || entries.empty() ||
-      GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || entries.empty() || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingInt> setting = std::make_shared<CSettingInt>(id, label, value, GetSettingsManager());
@@ -606,8 +591,7 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSpinner(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 || filler == NULL ||
-      GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || filler == NULL || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingInt> setting = std::make_shared<CSettingInt>(id, label, value, GetSettingsManager());
@@ -637,8 +621,7 @@ std::shared_ptr<CSettingNumber> CGUIDialogSettingsManualBase::AddSpinner(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingNumber> setting = std::make_shared<CSettingNumber>(id, label, value, GetSettingsManager());
@@ -670,8 +653,7 @@ std::shared_ptr<CSettingNumber> CGUIDialogSettingsManualBase::AddSpinner(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingNumber> setting = std::make_shared<CSettingNumber>(id, label, value, GetSettingsManager());
@@ -699,8 +681,7 @@ std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddList(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 || filler == NULL ||
-      GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || filler == NULL || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingString> setting = std::make_shared<CSettingString>(id, label, value, GetSettingsManager());
@@ -726,8 +707,7 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddList(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 || entries.empty() ||
-      GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || entries.empty() || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingInt> setting = std::make_shared<CSettingInt>(id, label, value, GetSettingsManager());
@@ -753,8 +733,7 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddList(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 || entries.empty() ||
-      GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || entries.empty() || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingInt> setting = std::make_shared<CSettingInt>(id, label, value, GetSettingsManager());
@@ -780,8 +759,7 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddList(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 || filler == NULL ||
-      GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || filler == NULL || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingInt> setting = std::make_shared<CSettingInt>(id, label, value, GetSettingsManager());
@@ -809,8 +787,7 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 || filler == NULL ||
-      GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || filler == NULL || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingString> settingDefinition = std::make_shared<CSettingString>(id, GetSettingsManager());
@@ -854,8 +831,7 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 || entries.empty() ||
-      GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || entries.empty() || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingInt> settingDefinition = std::make_shared<CSettingInt>(id, GetSettingsManager());
@@ -899,8 +875,7 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 || entries.empty() ||
-      GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || entries.empty() || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingInt> settingDefinition = std::make_shared<CSettingInt>(id, GetSettingsManager());
@@ -945,8 +920,7 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(
     int help /* = -1 */,
     SettingControlListValueFormatter formatter /* = NULL */)
 {
-  if (group == NULL || id.empty() || label < 0 || filler == NULL ||
-      GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || filler == NULL || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingInt> settingDefinition = std::make_shared<CSettingInt>(id, GetSettingsManager());
@@ -991,8 +965,7 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddPercentageSlider(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingInt> setting = std::make_shared<CSettingInt>(id, label, value, GetSettingsManager());
@@ -1023,8 +996,7 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddPercentageSlider(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingInt> setting = std::make_shared<CSettingInt>(id, label, value, GetSettingsManager());
@@ -1056,8 +1028,7 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSlider(const Setti
                                                                      bool visible /* = true */,
                                                                      int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingInt> setting = std::make_shared<CSettingInt>(id, label, value, GetSettingsManager());
@@ -1090,8 +1061,7 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddSlider(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingInt> setting = std::make_shared<CSettingInt>(id, label, value, GetSettingsManager());
@@ -1124,8 +1094,7 @@ std::shared_ptr<CSettingNumber> CGUIDialogSettingsManualBase::AddSlider(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingNumber> setting = std::make_shared<CSettingNumber>(id, label, value, GetSettingsManager());
@@ -1158,8 +1127,7 @@ std::shared_ptr<CSettingNumber> CGUIDialogSettingsManualBase::AddSlider(
     bool visible /* = true */,
     int help /* = -1 */)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingNumber> setting = std::make_shared<CSettingNumber>(id, label, value, GetSettingsManager());
@@ -1378,8 +1346,7 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddRange(
     bool visible,
     int help)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingInt> settingDefinition = std::make_shared<CSettingInt>(id, GetSettingsManager());
@@ -1431,8 +1398,7 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddRange(
     bool visible,
     int help)
 {
-  if (group == NULL || id.empty() || label < 0 ||
-      GetSetting(id) != NULL)
+  if (group == NULL || id.empty() || label < 0 || GetSetting(id))
     return NULL;
 
   std::shared_ptr<CSettingNumber> settingDefinition = std::make_shared<CSettingNumber>(id, GetSettingsManager());

@@ -159,7 +159,7 @@ void CApplicationPlayer::OpenNext(const CPlayerCoreFactory &factory)
 bool CApplicationPlayer::HasPlayer() const
 {
   std::shared_ptr<IPlayer> player = GetInternal();
-  return player != NULL;
+  return player != nullptr;
 }
 
 int CApplicationPlayer::GetChapter()

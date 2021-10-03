@@ -246,7 +246,7 @@ void CGUIDialogLockSettings::InitializeSettings()
   {
     AddEdit(group, SETTING_USERNAME, 20142, SettingLevel::Basic, m_user);
     AddEdit(group, SETTING_PASSWORD, 12326, SettingLevel::Basic, m_locks.code, false, true);
-    if (m_saveUserDetails != NULL)
+    if (m_saveUserDetails)
       AddToggle(group, SETTING_PASSWORD_REMEMBER, 13423, SettingLevel::Basic, *m_saveUserDetails);
 
     return;
@@ -309,6 +309,6 @@ void CGUIDialogLockSettings::SetSettingLockCodeLabel()
   if (m_locks.mode > LOCK_MODE_QWERTY)
     m_locks.mode = LOCK_MODE_EVERYONE;
   BaseSettingControlPtr settingControl = GetSettingControl(SETTING_LOCKCODE);
-  if (settingControl != NULL && settingControl->GetControl() != NULL)
+  if (settingControl && settingControl->GetControl())
     SET_CONTROL_LABEL2(settingControl->GetID(), GetLockModeLabel());
 }

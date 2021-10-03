@@ -33,7 +33,7 @@ CLogindUPowerSyscall::CLogindUPowerSyscall()
 
   // Check if we have UPower. If not, we avoid any battery related operations.
   CDBusMessage message("org.freedesktop.UPower", "/org/freedesktop/UPower", "org.freedesktop.UPower", "EnumerateDevices");
-  m_hasUPower = message.SendSystem() != NULL;
+  m_hasUPower = message.SendSystem() != nullptr;
 
   if (!m_hasUPower)
     CLog::Log(LOGINFO, "LogindUPowerSyscall - UPower not found, battery information will not be available");
@@ -163,7 +163,7 @@ bool CLogindUPowerSyscall::LogindSetPowerState(const char *state)
   // wether PolicyKit should interactively ask the user for authentication
   // credentials if it needs to.
   message.AppendArgument(false);
-  return message.SendSystem() != NULL;
+  return message.SendSystem() != nullptr;
 }
 
 bool CLogindUPowerSyscall::LogindCheckCapability(const char *capability)

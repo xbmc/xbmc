@@ -88,7 +88,7 @@ bool CKeyboardLayoutManager::Load(const std::string& path /* = "" */)
     }
 
     const TiXmlElement* layoutElement = rootElement->FirstChildElement("layout");
-    while (layoutElement != NULL)
+    while (layoutElement)
     {
       CKeyboardLayout layout;
       if (!layout.Load(layoutElement))

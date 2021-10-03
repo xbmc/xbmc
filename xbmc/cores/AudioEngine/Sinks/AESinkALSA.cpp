@@ -1129,7 +1129,7 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
 
   std::string defaultDescription;
 
-  for (void** hint = hints; *hint != NULL; ++hint)
+  for (void** hint = hints; *hint != nullptr; ++hint)
   {
     char *io = snd_device_name_get_hint(*hint, "IOID");
     char *name = snd_device_name_get_hint(*hint, "NAME");

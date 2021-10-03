@@ -151,7 +151,7 @@ namespace XBMCAddon
 
     void WsgiInputStream::SetRequest(HTTPPythonRequest* request)
     {
-      if (m_request != NULL)
+      if (m_request)
         return;
 
       m_request = request;

@@ -331,7 +331,7 @@ bool CTexture::LoadIImage(IImage* pImage,
                           unsigned int width,
                           unsigned int height)
 {
-  if(pImage != NULL && pImage->LoadImageFromMemory(buffer, bufSize, width, height))
+  if (pImage && pImage->LoadImageFromMemory(buffer, bufSize, width, height))
   {
     if (pImage->Width() > 0 && pImage->Height() > 0)
     {

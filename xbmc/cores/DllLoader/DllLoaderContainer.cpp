@@ -70,7 +70,7 @@ HMODULE DllLoaderContainer::GetModuleAddress(const char* sName)
 
 LibraryLoader* DllLoaderContainer::GetModule(const char* sName)
 {
-  for (int i = 0; i < m_iNrOfDlls && m_dlls[i] != NULL; i++)
+  for (int i = 0; i < m_iNrOfDlls && m_dlls[i] != nullptr; i++)
   {
     if (StringUtils::CompareNoCase(m_dlls[i]->GetName(), sName) == 0)
       return m_dlls[i];
@@ -84,7 +84,7 @@ LibraryLoader* DllLoaderContainer::GetModule(const char* sName)
 
 LibraryLoader* DllLoaderContainer::GetModule(HMODULE hModule)
 {
-  for (int i = 0; i < m_iNrOfDlls && m_dlls[i] != NULL; i++)
+  for (int i = 0; i < m_iNrOfDlls && m_dlls[i] != nullptr; i++)
   {
     if (m_dlls[i]->GetHModule() == hModule) return m_dlls[i];
   }
@@ -181,7 +181,7 @@ LibraryLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCu
     strPath+=sName;
 
     // Have we already loaded this dll
-    if ((pDll = GetModule(strPath.c_str())) != NULL)
+    if ((pDll = GetModule(strPath.c_str())) != nullptr)
       return pDll;
 
     if (CFile::Exists(strPath))
@@ -189,7 +189,7 @@ LibraryLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCu
   }
 
   // can't find it in any of our paths - could be a system dll
-  if ((pDll = LoadDll(sName, bLoadSymbols)) != NULL)
+  if ((pDll = LoadDll(sName, bLoadSymbols)) != nullptr)
     return pDll;
 
   CLog::Log(LOGDEBUG, "Dll {} was not found in path", sName);
@@ -265,7 +265,7 @@ LibraryLoader* DllLoaderContainer::LoadDll(const char* sName, bool bLoadSymbols)
 
 bool DllLoaderContainer::IsSystemDll(const char* sName)
 {
-  for (int i = 0; i < m_iNrOfDlls && m_dlls[i] != NULL; i++)
+  for (int i = 0; i < m_iNrOfDlls && m_dlls[i] != nullptr; i++)
   {
     if (m_dlls[i]->IsSystemDll() && StringUtils::CompareNoCase(m_dlls[i]->GetName(), sName) == 0)
       return true;
@@ -330,10 +330,10 @@ void DllLoaderContainer::UnRegisterDll(LibraryLoader* pDll)
 void DllLoaderContainer::UnloadPythonDlls()
 {
   // unload all dlls that python could have loaded
-  for (int i = 0; i < m_iNrOfDlls && m_dlls[i] != NULL; i++)
+  for (int i = 0; i < m_iNrOfDlls && m_dlls[i] != nullptr; i++)
   {
     const char* name = m_dlls[i]->GetName();
-    if (strstr(name, ".pyd") != NULL)
+    if (strstr(name, ".pyd") != nullptr)
     {
       LibraryLoader* pDll = m_dlls[i];
       ReleaseModule(pDll);

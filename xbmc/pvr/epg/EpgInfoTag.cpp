@@ -395,7 +395,8 @@ void CPVREpgInfoTag::SetGenre(int iGenreType, int iGenreSubType, const char* str
   {
     m_iGenreType = iGenreType;
     m_iGenreSubType = iGenreSubType;
-    if ((iGenreType == EPG_GENRE_USE_STRING || iGenreSubType == EPG_GENRE_USE_STRING) && (strGenre != NULL) && (strlen(strGenre) > 0))
+    if ((iGenreType == EPG_GENRE_USE_STRING || iGenreSubType == EPG_GENRE_USE_STRING) && strGenre &&
+        strlen(strGenre) > 0)
     {
       /* Type and sub type are both not given. No EPG color coding possible unless sub type is used to specify
        * EPG_GENRE_USE_STRING leaving type available for genre category, use the provided genre description for the text. */

@@ -218,7 +218,8 @@ namespace PythonBindings
 
     // See https://docs.python.org/3/c-api/exceptions.html#c.PyErr_NormalizeException
     PyErr_NormalizeException(&exc_type, &exc_value, &exc_traceback);
-    if (exc_traceback != NULL) {
+    if (exc_traceback)
+    {
       PyException_SetTraceback(exc_value, exc_traceback);
     }
 
@@ -226,21 +227,21 @@ namespace PythonBindings
     exceptionValue.clear();
     exceptionTraceback.clear();
 
-    if (exc_type != NULL && (pystring = PyObject_Str(exc_type)) != NULL && PyUnicode_Check(pystring))
+    if (exc_type && (pystring = PyObject_Str(exc_type)) != nullptr && PyUnicode_Check(pystring))
     {
       const char* str = PyUnicode_AsUTF8(pystring);
-      if (str != NULL)
+      if (str)
         exceptionType = str;
 
       pystring = PyObject_Str(exc_value);
-      if (pystring != NULL)
+      if (pystring)
       {
         str = PyUnicode_AsUTF8(pystring);
         exceptionValue = str;
       }
 
       PyObject *tracebackModule = PyImport_ImportModule("traceback");
-      if (tracebackModule != NULL)
+      if (tracebackModule)
       {
         char method[] = "format_exception";
         char format[] = "OOO";
@@ -257,7 +258,7 @@ namespace PythonBindings
           if (strRetval)
           {
             str = PyUnicode_AsUTF8(strRetval);
-            if (str != NULL)
+            if (str)
               exceptionTraceback = str;
             Py_DECREF(strRetval);
           }

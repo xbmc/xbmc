@@ -489,7 +489,7 @@ void Xcddb::parseData(const char *buffer)
     if (line[0] != '#')
     {
       char *s = strstr(line, "=");
-      if (s != NULL)
+      if (s)
       {
         std::string strKeyword(line, s - line);
         StringUtils::TrimRight(strKeyword);

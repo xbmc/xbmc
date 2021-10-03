@@ -334,7 +334,7 @@ void CGUIDialogMediaFilter::OnSettingChanged(const std::shared_ptr<const CSettin
     return;
 
   // we need to remove the existing rule for the title
-  if (remove && filter.rule != NULL)
+  if (remove && filter.rule)
   {
     DeleteRule(filter.field);
     filter.rule = NULL;
@@ -420,7 +420,7 @@ void CGUIDialogMediaFilter::InitializeSettings()
     if (filter.controlType == "edit")
     {
       CVariant data;
-      if (filter.rule != NULL && filter.rule->m_parameter.size() == 1)
+      if (filter.rule && filter.rule->m_parameter.size() == 1)
         data = filter.rule->m_parameter.at(0);
 
       if (filter.settingType == SettingType::String)
@@ -433,7 +433,7 @@ void CGUIDialogMediaFilter::InitializeSettings()
     else if (filter.controlType == "toggle")
     {
       int value = CHECK_ALL;
-      if (filter.rule != NULL)
+      if (filter.rule)
         value = filter.rule->m_operator == CDatabaseQueryRule::OPERATOR_TRUE ? CHECK_YES : CHECK_NO;
 
       TranslatableIntegerSettingOptions entries;
@@ -446,7 +446,7 @@ void CGUIDialogMediaFilter::InitializeSettings()
     else if (filter.controlType == "list")
     {
       std::vector<std::string> values;
-      if (filter.rule != NULL && !filter.rule->m_parameter.empty())
+      if (filter.rule && !filter.rule->m_parameter.empty())
       {
         values = StringUtils::Split(filter.rule->GetParameter(), DATABASEQUERY_RULE_VALUE_SEPARATOR);
         if (values.size() == 1 && values.at(0).empty())
@@ -458,7 +458,7 @@ void CGUIDialogMediaFilter::InitializeSettings()
     else if (filter.controlType == "range")
     {
       CVariant valueLower, valueUpper;
-      if (filter.rule != NULL)
+      if (filter.rule)
       {
         if (filter.rule->m_parameter.size() == 2)
         {
@@ -510,7 +510,7 @@ void CGUIDialogMediaFilter::InitializeSettings()
     }
     else
     {
-      if (filter.rule != NULL)
+      if (filter.rule)
         handledRules--;
 
       CLog::Log(LOGWARNING,
@@ -521,7 +521,7 @@ void CGUIDialogMediaFilter::InitializeSettings()
 
     if (filter.setting == NULL)
     {
-      if (filter.rule != NULL)
+      if (filter.rule)
         handledRules--;
 
       CLog::Log(LOGWARNING,

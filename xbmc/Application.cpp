@@ -1024,7 +1024,7 @@ bool CApplication::Load(const TiXmlNode *settings)
     return false;
 
   const TiXmlElement *audioElement = settings->FirstChildElement("audio");
-  if (audioElement != NULL)
+  if (audioElement)
   {
     XMLUtils::GetBoolean(audioElement, "mute", m_muted);
     if (!XMLUtils::GetFloat(audioElement, "fvolumelevel", m_volumeLevel, VOLUME_MINIMUM, VOLUME_MAXIMUM))

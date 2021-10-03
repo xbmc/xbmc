@@ -35,7 +35,7 @@ namespace XBMCAddon
       if (msg.at(msg.size() - 1) == '\n')
         msg.erase(msg.size() - 1);
 
-      if (m_request != NULL)
+      if (m_request)
         CLog::Log(LOGERROR, "WSGI [{}]: {}", m_request->url, msg);
       else
         CLog::Log(LOGERROR, "WSGI: {}", msg);
@@ -53,7 +53,7 @@ namespace XBMCAddon
 #ifndef SWIG
     void WsgiErrorStream::SetRequest(HTTPPythonRequest* request)
     {
-      if (m_request != NULL)
+      if (m_request)
         return;
 
       m_request = request;

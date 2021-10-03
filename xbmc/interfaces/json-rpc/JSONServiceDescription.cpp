@@ -889,7 +889,7 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant& value,
     {
       // If additional properties are allowed we need to check if
       // they match the defined schema
-      if (hasAdditionalProperties && additionalProperties != NULL)
+      if (hasAdditionalProperties && additionalProperties)
       {
         CVariant::const_iterator_map iter;
         CVariant::const_iterator_map iterEnd = value.end_map();
@@ -1173,7 +1173,7 @@ void JSONSchemaTypeDefinition::Print(bool isParameter, bool isGlobal, bool print
 
       if (!hasAdditionalProperties)
         output["additionalProperties"] = false;
-      else if (additionalProperties != NULL && additionalProperties->type != AnyValue)
+      else if (additionalProperties && additionalProperties->type != AnyValue)
         additionalProperties->Print(false, false, true, printDescriptions, output["additionalProperties"]);
     }
   }
@@ -1228,7 +1228,7 @@ void JSONSchemaTypeDefinition::ResolveReference()
   if (!origDefaultValue.isNull())
     defaultValue = origDefaultValue;
 
-  if (referencedTypeDef.get() != NULL)
+  if (referencedTypeDef)
     referencedType = referencedTypeDef;
 
   // This will have been overwritten by the copy of the reference
@@ -1348,9 +1348,10 @@ bool JsonRpcMethod::Parse(const CVariant &value)
 
 JSONRPC_STATUS JsonRpcMethod::Check(const CVariant &requestParameters, ITransportLayer *transport, IClient *client, bool notification, MethodCall &methodCall, CVariant &outputParameters) const
 {
-  if (transport != NULL && (transport->GetCapabilities() & transportneed) == transportneed)
+  if (transport && (transport->GetCapabilities() & transportneed) == transportneed)
   {
-    if (client != NULL && (client->GetPermissionFlags() & permission) == permission && (!notification || (permission & OPERATION_PERMISSION_NOTIFICATION) == permission))
+    if (client && (client->GetPermissionFlags() & permission) == permission &&
+        (!notification || (permission & OPERATION_PERMISSION_NOTIFICATION) == permission))
     {
       methodCall = method;
 

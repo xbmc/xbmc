@@ -130,7 +130,7 @@ void CWeatherJob::LoadLocalizedToken()
   // We load the english strings in to get our tokens
   std::string language = LANGUAGE_DEFAULT;
   std::shared_ptr<CSettingString> languageSetting = std::static_pointer_cast<CSettingString>(CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(CSettings::SETTING_LOCALE_LANGUAGE));
-  if (languageSetting != NULL)
+  if (languageSetting)
     language = languageSetting->GetDefault();
 
   // Load the strings.po file

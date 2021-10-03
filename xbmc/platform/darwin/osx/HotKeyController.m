@@ -263,7 +263,7 @@ static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEv
     m_eventPort = CGEventTapCreate(kCGSessionEventTap,
       kCGHeadInsertEventTap, kCGEventTapOptionDefault,
       CGEventMaskBit(NX_SYSDEFINED), tapEventCallback, (__bridge void*)self);
-    if (m_eventPort != NULL)
+    if (m_eventPort)
     {
       // Run this in a separate thread so that a slow app
       // doesn't lag the event tap

@@ -86,7 +86,7 @@ std::string CHttpResponse::Create()
       hasContentLengthHeader = true;
   }
 
-  if (!hasContentLengthHeader && m_content != NULL && m_contentLength > 0)
+  if (!hasContentLengthHeader && m_content && m_contentLength > 0)
   {
     m_buffer.append(HEADER_CONTENT_LENGTH);
     m_buffer.append(SEPARATOR);
@@ -97,7 +97,7 @@ std::string CHttpResponse::Create()
   }
 
   m_buffer.append(LINEBREAK);
-  if (m_content != NULL && m_contentLength > 0)
+  if (m_content && m_contentLength > 0)
     m_buffer.append(m_content, m_contentLength);
 
   return m_buffer;

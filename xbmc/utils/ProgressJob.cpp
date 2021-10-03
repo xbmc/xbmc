@@ -97,9 +97,9 @@ void CProgressJob::SetTitle(const std::string &title)
   if (!m_updateInformation)
     return;
 
-  if (m_progress != NULL)
+  if (m_progress)
     m_progress->SetTitle(title);
-  else if (m_progressDialog != NULL)
+  else if (m_progressDialog)
   {
     m_progressDialog->SetHeading(CVariant{title});
 
@@ -112,9 +112,9 @@ void CProgressJob::SetText(const std::string &text)
   if (!m_updateInformation)
     return;
 
-  if (m_progress != NULL)
+  if (m_progress)
     m_progress->SetText(text);
-  else if (m_progressDialog != NULL)
+  else if (m_progressDialog)
   {
     m_progressDialog->SetText(CVariant{text});
 
@@ -127,9 +127,9 @@ void CProgressJob::SetProgress(float percentage) const
   if (!m_updateProgress)
     return;
 
-  if (m_progress != NULL)
+  if (m_progress)
     m_progress->SetPercentage(percentage);
-  else if (m_progressDialog != NULL)
+  else if (m_progressDialog)
   {
     ShowProgressDialog();
 
@@ -149,15 +149,15 @@ void CProgressJob::SetProgress(int currentStep, int totalSteps) const
   if (!m_updateProgress)
     return;
 
-  if (m_progress != NULL)
+  if (m_progress)
     m_progress->SetProgress(currentStep, totalSteps);
-  else if (m_progressDialog != NULL)
+  else if (m_progressDialog)
     SetProgress((static_cast<float>(currentStep) * 100.0f) / totalSteps);
 }
 
 void CProgressJob::MarkFinished()
 {
-  if (m_progress != NULL)
+  if (m_progress)
   {
     if (m_updateProgress)
     {
@@ -167,13 +167,13 @@ void CProgressJob::MarkFinished()
       m_progress = nullptr;
     }
   }
-  else if (m_progressDialog != NULL && m_autoClose)
+  else if (m_progressDialog && m_autoClose)
     m_progressDialog->Close();
 }
 
 bool CProgressJob::IsCancelled() const
 {
-  if (m_progressDialog != NULL)
+  if (m_progressDialog)
     return m_progressDialog->IsCanceled();
 
   return false;

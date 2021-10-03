@@ -78,7 +78,7 @@ bool CImageLoader::DoWork()
 
   // not in our texture cache or it failed to load from it, so try and load directly and then cache the result
   CTextureCache::GetInstance().CacheImage(texturePath, &m_texture);
-  return (m_texture != NULL);
+  return (m_texture != nullptr);
 }
 
 CGUILargeTextureManager::CLargeTexture::CLargeTexture(const std::string &path):

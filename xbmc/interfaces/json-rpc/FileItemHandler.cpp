@@ -196,8 +196,9 @@ bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, 
 
     if (field == "thumbnail")
     {
-      if (thumbLoader != NULL && !item->HasArt("thumb") && !fetchedArt &&
-        ((item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > -1) || (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > -1)))
+      if (thumbLoader && !item->HasArt("thumb") && !fetchedArt &&
+          ((item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > -1) ||
+           (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > -1)))
       {
         thumbLoader->FillLibraryArt(*item);
         fetchedArt = true;
@@ -215,8 +216,9 @@ bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, 
 
     if (field == "fanart")
     {
-      if (thumbLoader != NULL && !item->HasArt("fanart") && !fetchedArt &&
-        ((item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > -1) || (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > -1)))
+      if (thumbLoader && !item->HasArt("fanart") && !fetchedArt &&
+          ((item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > -1) ||
+           (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > -1)))
       {
         thumbLoader->FillLibraryArt(*item);
         fetchedArt = true;
@@ -300,7 +302,7 @@ void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const 
     else if (items.Get(start)->HasMusicInfoTag())
       thumbLoader = new CMusicThumbLoader();
 
-    if (thumbLoader != NULL)
+    if (thumbLoader)
       thumbLoader->OnLoaderStart();
   }
 
@@ -445,7 +447,7 @@ void CFileItemHandler::HandleFileItem(const char* ID,
       else if (item->HasMusicInfoTag())
         thumbLoader = new CMusicThumbLoader();
 
-      if (thumbLoader != NULL)
+      if (thumbLoader)
       {
         deleteThumbloader = true;
         thumbLoader->OnLoaderStart();

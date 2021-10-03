@@ -724,7 +724,8 @@ extern "C" {
 
     bp = (const u_char *)buf;
 
-    while (bp != NULL && (c = *fmt++) != '\0') {
+    while (bp && (c = *fmt++) != '\0')
+    {
       /* Clear `alternate' modifier prior to new conversion. */
       alt_format = 0;
       i = 0;
@@ -983,7 +984,8 @@ extern "C" {
     size_t len;
 
     /* check full name - then abbreviated ones */
-    for (; n1 != NULL; n1 = n2, n2 = NULL) {
+    for (; n1 != nullptr; n1 = n2, n2 = NULL)
+    {
       for (i = 0; i < c; i++, n1++) {
         len = strlen(*n1);
         if (StringUtils::CompareNoCase(*n1, (const char*)bp, len) == 0)

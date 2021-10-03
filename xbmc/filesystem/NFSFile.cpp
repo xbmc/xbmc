@@ -84,7 +84,7 @@ std::list<std::string> CNfsConnection::GetExportList(const CURL& url)
 #endif
   tmp = exportlist;
 
-  for (tmp = exportlist; tmp != NULL; tmp = tmp->ex_next)
+  for (tmp = exportlist; tmp != nullptr; tmp = tmp->ex_next)
   {
     std::string exportStr = std::string(tmp->ex_dir);
 
@@ -336,7 +336,7 @@ void CNfsConnection::CheckIfIdle()
 {
   /* We check if there are open connections. This is done without a lock to not halt the mainthread. It should be thread safe as
    worst case scenario is that m_OpenConnections could read 0 and then changed to 1 if this happens it will enter the if wich will lead to another check, wich is locked.  */
-  if (m_OpenConnections == 0 && m_pNfsContext != NULL)
+  if (m_OpenConnections == 0 && m_pNfsContext)
   { /* I've set the the maximum IDLE time to be 1 min and 30 sec. */
     CSingleLock lock(*this);
     if (m_OpenConnections == 0 /* check again - when locked */)
@@ -353,7 +353,7 @@ void CNfsConnection::CheckIfIdle()
     }
   }
 
-  if( m_pNfsContext != NULL )
+  if (m_pNfsContext)
   {
     CSingleLock lock(keepAliveLock);
     //handle keep alive on opened files
@@ -604,7 +604,7 @@ int CNFSFile::Stat(const CURL& url, struct __stat64* buffer)
   ret = nfs_stat(gNfsConnection.GetNfsContext(), filename.c_str(), &tmpBuffer);
 
   //if buffer == NULL we where called from Exists - in that case don't spam the log with errors
-  if (ret != 0 && buffer != NULL)
+  if (ret != 0 && buffer)
   {
     CLog::Log(LOGERROR, "NFS: Failed to stat({}) {}", url.GetFileName(),
               nfs_get_error(gNfsConnection.GetNfsContext()));
@@ -701,7 +701,7 @@ void CNFSFile::Close()
 {
   CSingleLock lock(gNfsConnection);
 
-  if (m_pFileHandle != NULL && m_pNfsContext != NULL)
+  if (m_pFileHandle && m_pNfsContext)
   {
     int ret = 0;
     CLog::Log(LOGDEBUG, "CNFSFile::Close closing file {}", m_url.GetFileName());

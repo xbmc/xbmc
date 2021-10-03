@@ -1017,7 +1017,7 @@ bool CCurlFile::Download(const std::string& strURL, const std::string& strFileNa
   if (!strData.empty())
     written = file.Write(strData.c_str(), strData.size());
 
-  if (pdwSize != NULL)
+  if (pdwSize)
     *pdwSize = written > 0 ? written : 0;
 
   return written == static_cast<ssize_t>(strData.size());

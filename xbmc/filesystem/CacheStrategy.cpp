@@ -289,7 +289,7 @@ CCacheStrategy *CSimpleFileCache::CreateNew()
 
 CDoubleCache::CDoubleCache(CCacheStrategy *impl)
 {
-  assert(NULL != impl);
+  assert(impl);
   m_pCache = impl;
   m_pCacheOld = NULL;
 }

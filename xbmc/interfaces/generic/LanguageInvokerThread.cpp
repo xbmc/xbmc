@@ -91,7 +91,7 @@ void CLanguageInvokerThread::OnStartup()
     return;
 
   m_invoker->SetId(GetId());
-  if (m_addon != NULL)
+  if (m_addon)
     m_invoker->SetAddon(m_addon);
 }
 

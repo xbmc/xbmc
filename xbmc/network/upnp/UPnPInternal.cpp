@@ -641,7 +641,7 @@ BuildObject(CFileItem&                    item,
     // look for and add external subtitle if we are processing a video file and
     // we are being called by a UPnP player or renderer or the user has chosen
     // to look for external subtitles
-    if (upnp_server != NULL && item.IsVideo() &&
+    if (upnp_server && item.IsVideo() &&
         (upnp_service == UPnPPlayer || upnp_service == UPnPRenderer ||
          settings->GetBool(CSettings::SETTING_SERVICES_UPNPLOOKFOREXTERNALSUBTITLES)))
     {

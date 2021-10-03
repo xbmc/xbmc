@@ -956,7 +956,7 @@ void SortUtils::Sort(SortBy sortBy, SortOrder sortOrder, SortAttribute attribute
   {
     // get the matching SortPreparator
     SortPreparator preparator = getPreparator(sortBy);
-    if (preparator != NULL)
+    if (preparator)
     {
       Fields sortingFields = GetFieldsForSorting(sortBy);
 
@@ -995,7 +995,7 @@ void SortUtils::Sort(SortBy sortBy, SortOrder sortOrder, SortAttribute attribute
   {
     // get the matching SortPreparator
     SortPreparator preparator = getPreparator(sortBy);
-    if (preparator != NULL)
+    if (preparator)
     {
       Fields sortingFields = GetFieldsForSorting(sortBy);
 

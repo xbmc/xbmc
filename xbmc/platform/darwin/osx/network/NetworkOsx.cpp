@@ -131,7 +131,7 @@ void CNetworkOsx::GetMacAddress(const std::string& interfaceName, char rawMac[6]
     return;
   }
 
-  for (interface = list; interface != NULL; interface = interface->ifa_next)
+  for (interface = list; interface != nullptr; interface = interface->ifa_next)
   {
     if (interfaceName == interface->ifa_name)
     {
@@ -164,7 +164,7 @@ void CNetworkOsx::queryInterfaceList()
     return;
 
   struct ifaddrs* cur;
-  for (cur = list; cur != NULL; cur = cur->ifa_next)
+  for (cur = list; cur != nullptr; cur = cur->ifa_next)
   {
     if (cur->ifa_addr->sa_family != AF_INET)
       continue;

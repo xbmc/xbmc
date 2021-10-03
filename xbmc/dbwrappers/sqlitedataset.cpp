@@ -173,7 +173,7 @@ int callback(void* res_ptr,int ncol, char** result,char** cols)
     }
   }
 
-  if (result != NULL)
+  if (result)
   {
     sql_record *rec = new sql_record;
     rec->resize(ncol);
@@ -631,7 +631,8 @@ void SqliteDataset::set_autorefresh(bool val){
 //--------- protected functions implementation -----------------//
 
 sqlite3* SqliteDataset::handle(){
-  if (db != NULL){
+  if (db)
+  {
     return static_cast<SqliteDatabase*>(db)->getHandle();
       }
   else return NULL;

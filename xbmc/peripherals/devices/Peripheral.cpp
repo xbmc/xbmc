@@ -281,7 +281,7 @@ void CPeripheral::AddSetting(const std::string& strKey, const SettingConstPtr& s
         break;
     }
 
-    if (deviceSetting.m_setting != NULL)
+    if (deviceSetting.m_setting)
       m_settings.insert(make_pair(strKey, deviceSetting));
   }
 }

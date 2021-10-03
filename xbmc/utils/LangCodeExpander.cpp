@@ -56,18 +56,18 @@ void CLangCodeExpander::Clear()
 
 void CLangCodeExpander::LoadUserCodes(const TiXmlElement* pRootElement)
 {
-  if (pRootElement != NULL)
+  if (pRootElement)
   {
     m_mapUser.clear();
 
     std::string sShort, sLong;
 
     const TiXmlNode* pLangCode = pRootElement->FirstChild("code");
-    while (pLangCode != NULL)
+    while (pLangCode)
     {
       const TiXmlNode* pShort = pLangCode->FirstChildElement("short");
       const TiXmlNode* pLong = pLangCode->FirstChildElement("long");
-      if (pShort != NULL && pLong != NULL)
+      if (pShort && pLong)
       {
         sShort = pShort->FirstChild()->Value();
         sLong = pLong->FirstChild()->Value();
@@ -182,7 +182,7 @@ bool CLangCodeExpander::ConvertToISO6392B(const std::string& strCharCode,
     for (const auto& codes : LanguageCodes)
     {
       if (charCode == codes.iso639_2b ||
-          (checkWin32Locales && codes.win_id != NULL && charCode == codes.win_id))
+          (checkWin32Locales && codes.win_id && charCode == codes.win_id))
       {
         strISO6392B = charCode;
         return true;
@@ -222,7 +222,7 @@ bool CLangCodeExpander::ConvertToISO6392T(const std::string& strCharCode,
   for (const auto& codes : LanguageCodes)
   {
     if (strISO6392T == codes.iso639_2b ||
-        (checkWin32Locales && codes.win_id != NULL && strISO6392T == codes.win_id))
+        (checkWin32Locales && codes.win_id && strISO6392T == codes.win_id))
     {
       if (codes.iso639_2t != nullptr)
         strISO6392T = codes.iso639_2t;

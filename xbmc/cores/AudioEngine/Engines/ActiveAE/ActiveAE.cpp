@@ -1137,7 +1137,7 @@ AEAudioFormat CActiveAE::GetInputFormat(AEAudioFormat *desiredFmt)
     inputFormat.m_frameSize     = 0;
   }
   // force input format after unpausing slave
-  else if (desiredFmt != NULL)
+  else if (desiredFmt)
   {
     inputFormat = *desiredFmt;
   }

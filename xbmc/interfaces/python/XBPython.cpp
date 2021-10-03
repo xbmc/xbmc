@@ -569,7 +569,7 @@ void XBPython::NotifyScriptAborting(ILanguageInvoker* invoker)
   XBMC_TRACE;
 
   long invokerId(-1);
-  if (invoker != NULL)
+  if (invoker)
     invokerId = invoker->GetId();
 
   LOCK_AND_COPY(std::vector<XBMCAddon::xbmc::Monitor*>, tmp, m_vecMonitorCallbackList);
@@ -629,5 +629,5 @@ bool XBPython::WaitForEvent(CEvent& hEvent, unsigned int milliseconds)
   CEvent* ret = eventGroup.wait(std::chrono::milliseconds(milliseconds));
   if (ret)
     m_globalEvent.Reset();
-  return ret != NULL;
+  return ret != nullptr;
 }

@@ -22,7 +22,7 @@ CWHelper::~CWHelper(void)
 {
   StopThread();
   m_hwnd = NULL;
-  if(m_hProcess != NULL)
+  if (m_hProcess)
   {
     CloseHandle(m_hProcess);
     m_hProcess = NULL;
@@ -36,7 +36,7 @@ void CWHelper::OnStartup()
 
   // Minimize XBMC if not already
   ShowWindow(g_hWnd,SW_MINIMIZE);
-  if(m_hwnd != NULL)
+  if (m_hwnd)
     ShowWindow(m_hwnd,SW_RESTORE);
 
   OutputDebugString(L"WindowHelper thread started\n");
@@ -48,7 +48,7 @@ void CWHelper::OnExit()
   ShowWindow(g_hWnd,SW_RESTORE);
   SetForegroundWindow(g_hWnd);
   m_hwnd = NULL;
-  if(m_hProcess != NULL)
+  if (m_hProcess)
   {
     CloseHandle(m_hProcess);
     m_hProcess = NULL;
@@ -63,7 +63,7 @@ void CWHelper::Process()
   {
     if(WaitForSingleObject(m_hProcess,500) != WAIT_TIMEOUT)
       break;
-    /*if((m_hwnd != NULL) && (IsIconic(m_hwnd) == TRUE))
+    /*if((m_hwnd) && (IsIconic(m_hwnd) == TRUE))
       break;*/
   }
 }

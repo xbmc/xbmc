@@ -541,7 +541,7 @@ bool CGUIIncludes::GetParameters(const TiXmlElement *include, const char *valueA
   if (include)
   {
     const TiXmlElement *param = include->FirstChildElement("param");
-    foundAny = param != NULL;  // doesn't matter if param isn't entirely valid
+    foundAny = param != nullptr; // doesn't matter if param isn't entirely valid
     while (param)
     {
       std::string paramName = XMLUtils::GetAttribute(param, "name");

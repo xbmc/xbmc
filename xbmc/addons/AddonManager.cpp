@@ -625,7 +625,7 @@ bool CAddonMgr::GetAddon(const std::string& str,
       if (runningAddon)
         addon = runningAddon;
     }
-    return NULL != addon.get();
+    return addon != nullptr;
   }
 
   return false;
@@ -827,7 +827,7 @@ bool CAddonMgr::DisableAddon(const std::string& id, AddonDisabledReason disabled
   //success
   CLog::Log(LOGDEBUG, "CAddonMgr: {} disabled", id);
   AddonPtr addon;
-  if (GetAddon(id, addon, ADDON_UNKNOWN, OnlyEnabled::NO) && addon != NULL)
+  if (GetAddon(id, addon, ADDON_UNKNOWN, OnlyEnabled::NO) && addon)
   {
     CServiceBroker::GetEventLog().Add(EventPtr(new CAddonManagementEvent(addon, 24141)));
   }

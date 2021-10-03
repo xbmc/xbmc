@@ -120,16 +120,16 @@ bool CRssManager::Load()
 
   m_mapRssUrls.clear();
   const TiXmlElement* pSet = pRootElement->FirstChildElement("set");
-  while (pSet != NULL)
+  while (pSet)
   {
     int iId;
     if (pSet->QueryIntAttribute("id", &iId) == TIXML_SUCCESS)
     {
       RssSet set;
-      set.rtl = pSet->Attribute("rtl") != NULL &&
+      set.rtl = pSet->Attribute("rtl") != nullptr &&
                 StringUtils::CompareNoCase(pSet->Attribute("rtl"), "true") == 0;
       const TiXmlElement* pFeed = pSet->FirstChildElement("feed");
-      while (pFeed != NULL)
+      while (pFeed)
       {
         int iInterval;
         if (pFeed->QueryIntAttribute("updateinterval", &iInterval) != TIXML_SUCCESS)
@@ -138,7 +138,7 @@ bool CRssManager::Load()
           CLog::Log(LOGDEBUG, "CRssManager: no interval set, default to 30!");
         }
 
-        if (pFeed->FirstChild() != NULL)
+        if (pFeed->FirstChild())
         {
           //! @todo UTF-8: Do these URLs need to be converted to UTF-8?
           //!              What about the xml encoding?

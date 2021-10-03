@@ -542,14 +542,14 @@ void CGUIViewState::SaveViewToDb(const std::string &path, int windowID, CViewSta
 
   SortDescription sorting = GetSortMethod();
   CViewState state(m_currentViewAsControl, sorting.sortBy, sorting.sortOrder, sorting.sortAttributes);
-  if (viewState != NULL)
+  if (viewState)
     *viewState = state;
 
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   db.SetViewState(path, windowID, state, settings->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN));
   db.Close();
 
-  if (viewState != NULL)
+  if (viewState)
     settings->Save();
 }
 

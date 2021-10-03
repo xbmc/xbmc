@@ -323,7 +323,7 @@ bool CMediaSourceSettings::GetSource(const std::string &category, const TiXmlNod
   // get multiple paths
   std::vector<std::string> vecPaths;
   const TiXmlElement *pPathName = source->FirstChildElement("path");
-  while (pPathName != NULL)
+  while (pPathName)
   {
     if (pPathName->FirstChild())
     {
@@ -435,7 +435,7 @@ void CMediaSourceSettings::GetSources(const TiXmlNode* pRootElement, const std::
   }
 
   pChild = pChild->FirstChild();
-  while (pChild != NULL)
+  while (pChild)
   {
     std::string strValue = pChild->ValueStr();
     if (strValue == XML_SOURCE || strValue == "bookmark") // "bookmark" left in for backwards compatibility

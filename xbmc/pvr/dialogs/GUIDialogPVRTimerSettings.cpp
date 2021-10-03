@@ -683,14 +683,14 @@ void CGUIDialogPVRTimerSettings::SetButtonLabels()
 {
   // timer start time
   BaseSettingControlPtr settingControl = GetSettingControl(SETTING_TMR_BEGIN);
-  if (settingControl != NULL && settingControl->GetControl() != NULL)
+  if (settingControl && settingControl->GetControl())
   {
     SET_CONTROL_LABEL2(settingControl->GetID(), m_timerStartTimeStr);
   }
 
   // timer end time
   settingControl = GetSettingControl(SETTING_TMR_END);
-  if (settingControl != NULL && settingControl->GetControl() != NULL)
+  if (settingControl && settingControl->GetControl())
   {
     SET_CONTROL_LABEL2(settingControl->GetID(), m_timerEndTimeStr);
   }

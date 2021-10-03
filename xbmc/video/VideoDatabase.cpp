@@ -4119,7 +4119,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
     details.m_parsedDetails = getDetails;
   }
 
-  if (item != NULL)
+  if (item)
   {
     item->m_dateTime = details.GetPremiered();
     item->SetProperty("totalseasons", details.m_iSeason);
@@ -9329,7 +9329,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
       if (del)
         filesToTestForDelete += m_pDS2->fv("files.idFile").get_asString() + ",";
 
-      if (handle == NULL && progress != NULL)
+      if (handle == NULL && progress)
       {
         int percentage = current * 100 / total;
         if (percentage > progress->GetPercentage())
@@ -9346,7 +9346,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
           return;
         }
       }
-      else if (handle != NULL)
+      else if (handle)
         handle->SetPercentage(current * 100 / (float)total);
 
       m_pDS2->next();
@@ -9383,7 +9383,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
       musicVideoIDs = CleanMediaType(MediaTypeMusicVideo, filesToTestForDelete, pathsDeleteDecisions, filesToDelete, !showProgress);
     }
 
-    if (progress != NULL)
+    if (progress)
     {
       progress->SetPercentage(100);
       progress->Progress();
@@ -9679,7 +9679,7 @@ std::vector<int> CVideoDatabase::CleanMediaType(const std::string &mediaType, co
           else
           {
             CGUIDialogYesNo* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
-            if (pDialog != NULL)
+            if (pDialog)
             {
               CURL sourceUrl(sourcePath);
               pDialog->SetHeading(CVariant{15012});

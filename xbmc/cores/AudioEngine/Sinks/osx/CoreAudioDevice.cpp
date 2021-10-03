@@ -874,7 +874,7 @@ OSStatus CCoreAudioDevice::defaultOutputDeviceChanged(AudioObjectID             
                          const AudioObjectPropertyAddress    inAddresses[],
                          void*                               inClientData)
 {
-  if (m_callbackSuppressTimer.IsTimePast() && m_defaultOutputDeviceChangedCB != NULL)
+  if (m_callbackSuppressTimer.IsTimePast() && m_defaultOutputDeviceChangedCB)
     return m_defaultOutputDeviceChangedCB(inObjectID, inNumberAddresses, inAddresses, inClientData);
   return 0;
 }

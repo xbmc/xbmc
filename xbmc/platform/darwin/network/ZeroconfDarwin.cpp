@@ -190,7 +190,7 @@ void CZeroconfDarwin::registerCallback(CFNetServiceRef theService, CFStreamError
 
 void CZeroconfDarwin::cancelRegistration(CFNetServiceRef theService)
 {
-  assert(theService != NULL);
+  assert(theService);
   CFNetServiceUnscheduleFromRunLoop(theService, m_runloop, kCFRunLoopCommonModes);
   CFNetServiceSetClient(theService, NULL, NULL);
   CFNetServiceCancel(theService);

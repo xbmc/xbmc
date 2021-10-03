@@ -546,7 +546,7 @@ void CGUIDialogSmartPlaylistRule::OnInitWindow()
   UpdateButtons();
 
   CGUIEditControl *editControl = dynamic_cast<CGUIEditControl*>(GetControl(CONTROL_VALUE));
-  if (editControl != NULL)
+  if (editControl)
     editControl->SetInputValidation(CSmartPlaylistRule::Validate, &m_rule);
 }
 

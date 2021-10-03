@@ -91,7 +91,7 @@ static bool sysGetVersionExWByRef(OSVERSIONINFOEXW& osVerInfo)
 
   typedef NTSTATUS(__stdcall *RtlGetVersionPtr)(RTL_OSVERSIONINFOEXW* pOsInfo);
   static HMODULE hNtDll = GetModuleHandleW(L"ntdll.dll");
-  if (hNtDll != NULL)
+  if (hNtDll)
   {
     static RtlGetVersionPtr RtlGetVer = (RtlGetVersionPtr) GetProcAddress(hNtDll, "RtlGetVersion");
     if (RtlGetVer && RtlGetVer(&osVerInfo) == 0)
@@ -444,7 +444,7 @@ bool CSysInfo::Save(TiXmlNode *settings) const
 
 const std::string& CSysInfo::GetAppName(void)
 {
-  assert(CCompileInfo::GetAppName() != NULL);
+  assert(CCompileInfo::GetAppName());
   static const std::string appName(CCompileInfo::GetAppName());
 
   return appName;

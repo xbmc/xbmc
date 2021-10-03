@@ -170,7 +170,7 @@ ssize_t CWin32File::Read(void* lpBuf, size_t uiBufSize)
   if (m_hFile == INVALID_HANDLE_VALUE)
     return -1;
 
-  assert(lpBuf != NULL || uiBufSize == 0);
+  assert(lpBuf || uiBufSize == 0);
   if (lpBuf == NULL && uiBufSize != 0)
     return -1;
 
@@ -225,7 +225,7 @@ ssize_t CWin32File::Write(const void* lpBuf, size_t uiBufSize)
   if (m_hFile == INVALID_HANDLE_VALUE)
     return -1;
 
-  assert(lpBuf != NULL || uiBufSize == 0);
+  assert(lpBuf || uiBufSize == 0);
   if (lpBuf == NULL && uiBufSize != 0)
     return -1;
 

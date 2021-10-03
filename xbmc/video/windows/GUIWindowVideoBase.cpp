@@ -391,7 +391,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItemPtr item, const ScraperPtr &info2, b
     if (!needsRefresh)
       return pDlgInfo->HasUpdatedThumb();
     // check if the item in the video info dialog has changed and if so, get the new item
-    else if (pDlgInfo->GetCurrentListItem() != NULL)
+    else if (pDlgInfo->GetCurrentListItem())
     {
       item = pDlgInfo->GetCurrentListItem();
 

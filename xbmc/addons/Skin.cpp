@@ -474,7 +474,7 @@ void CSkinInfo::SettingOptionsSkinFontsFiller(const SettingConstPtr& setting,
   {
     const char* idAttr = pChild->Attribute("id");
     const char* idLocAttr = pChild->Attribute("idloc");
-    if (idAttr != NULL)
+    if (idAttr)
     {
       if (idLocAttr)
         list.emplace_back(g_localizeStrings.Get(atoi(idLocAttr)), idAttr);

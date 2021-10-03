@@ -280,7 +280,7 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
 
 void VideoPlayerCodec::DeInit()
 {
-  if (m_pDemuxer != NULL)
+  if (m_pDemuxer)
   {
     delete m_pDemuxer;
     m_pDemuxer = NULL;

@@ -118,7 +118,7 @@ void MysqlDatabase::configure_connection() {
 
     if (res)
     {
-      if ((row = mysql_fetch_row(res)) != NULL)
+      if ((row = mysql_fetch_row(res)) != nullptr)
       {
         std::string column = row[0];
         std::vector<std::string> split = StringUtils::Split(column, ',');
@@ -173,13 +173,8 @@ int MysqlDatabase::connect(bool create_new) {
       return DB_CONNECTION_NONE;
 
     // establish connection with just user credentials
-    if (mysql_real_connect(conn, host.c_str(),
-                                 login.c_str(),
-                                 passwd.c_str(),
-                                 NULL,
-                                 atoi(port.c_str()),
-                                 NULL,
-                                 compression ? CLIENT_COMPRESS : 0) != NULL)
+    if (mysql_real_connect(conn, host.c_str(), login.c_str(), passwd.c_str(), NULL,
+                           atoi(port.c_str()), NULL, compression ? CLIENT_COMPRESS : 0) != nullptr)
     {
       static bool showed_ver_info = false;
       if (!showed_ver_info)
@@ -265,7 +260,7 @@ int MysqlDatabase::connect(bool create_new) {
 }
 
 void MysqlDatabase::disconnect(void) {
-  if (conn != NULL)
+  if (conn)
   {
     mysql_close(conn);
     conn = NULL;
@@ -331,7 +326,7 @@ int MysqlDatabase::copy(const char *backup_name) {
     MYSQL_ROW row;
 
     // duplicate each table from old db to new db
-    while ( (row=mysql_fetch_row(res)) != NULL )
+    while ((row = mysql_fetch_row(res)) != nullptr)
     {
       // copy the table definition
       snprintf(sql, sizeof(sql), "CREATE TABLE `%s`.%s LIKE %s", backup_name, row[0], row[0]);
@@ -386,7 +381,7 @@ int MysqlDatabase::drop_analytics(void) {
 
   if (res)
   {
-    while ( (row=mysql_fetch_row(res)) != NULL )
+    while ((row = mysql_fetch_row(res)) != nullptr)
     {
       snprintf(sql, sizeof(sql), "ALTER TABLE `%s`.%s DROP INDEX %s", db.c_str(), row[0], row[1]);
 
@@ -409,7 +404,7 @@ int MysqlDatabase::drop_analytics(void) {
 
   if (res)
   {
-    while ( (row=mysql_fetch_row(res)) != NULL )
+    while ((row = mysql_fetch_row(res)) != nullptr)
     {
       /* we do not need IF EXISTS because these views are exist */
       snprintf(sql, sizeof(sql), "DROP VIEW `%s`.%s", db.c_str(), row[0]);
@@ -434,7 +429,7 @@ int MysqlDatabase::drop_analytics(void) {
 
   if (res)
   {
-    while ( (row=mysql_fetch_row(res)) != NULL )
+    while ((row = mysql_fetch_row(res)) != nullptr)
     {
       snprintf(sql, sizeof(sql), "DROP TRIGGER `%s`.%s", db.c_str(), row[0]);
 
@@ -458,7 +453,7 @@ int MysqlDatabase::drop_analytics(void) {
 
   if (res)
   {
-    while ((row = mysql_fetch_row(res)) != NULL)
+    while ((row = mysql_fetch_row(res)) != nullptr)
     {
       snprintf(sql, sizeof(sql), "DROP FUNCTION `%s`.%s", db.c_str(), row[0]);
 
@@ -584,7 +579,7 @@ bool MysqlDatabase::exists(void) {
   if (ret)
   {
     result = mysql_list_tables(conn, NULL);
-    if (result != NULL)
+    if (result)
       ret = (mysql_num_rows(result) > 0);
 
     mysql_free_result(result);
@@ -1429,7 +1424,7 @@ void MysqlDataset::set_autorefresh(bool val) {
 //--------- protected functions implementation -----------------//
 
 MYSQL* MysqlDataset::handle(){
-  if (db != NULL)
+  if (db)
   {
     return static_cast<MysqlDatabase*>(db)->getHandle();
   }
@@ -1660,7 +1655,7 @@ bool MysqlDataset::query(const std::string &query) {
         case MYSQL_TYPE_SHORT:
         case MYSQL_TYPE_INT24:
         case MYSQL_TYPE_LONG:
-          if (row[i] != NULL)
+          if (row[i])
           {
             v.set_asInt(atoi(row[i]));
           }
@@ -1671,7 +1666,7 @@ bool MysqlDataset::query(const std::string &query) {
           break;
         case MYSQL_TYPE_FLOAT:
         case MYSQL_TYPE_DOUBLE:
-          if (row[i] != NULL)
+          if (row[i])
           {
             v.set_asDouble(atof(row[i]));
           }
@@ -1683,13 +1678,15 @@ bool MysqlDataset::query(const std::string &query) {
         case MYSQL_TYPE_STRING:
         case MYSQL_TYPE_VAR_STRING:
         case MYSQL_TYPE_VARCHAR:
-          if (row[i] != NULL) v.set_asString((const char *)row[i] );
+          if (row[i])
+            v.set_asString((const char*)row[i]);
           break;
         case MYSQL_TYPE_TINY_BLOB:
         case MYSQL_TYPE_MEDIUM_BLOB:
         case MYSQL_TYPE_LONG_BLOB:
         case MYSQL_TYPE_BLOB:
-          if (row[i] != NULL) v.set_asString((const char *)row[i]);
+          if (row[i])
+            v.set_asString((const char*)row[i]);
           break;
         case MYSQL_TYPE_NULL:
         default:

@@ -245,7 +245,7 @@ std::string GetHomePath(const std::string& strTarget, std::string strPath)
 
       // Convert to real path.
       char real_path[2 * MAXPATHLEN];
-      if (realpath(given_path, real_path) != NULL)
+      if (realpath(given_path, real_path))
       {
         strPath = real_path;
         return strPath;
@@ -624,7 +624,7 @@ void CUtil::GetDVDDriveIcon(const std::string& strPath, std::string& strIcon)
   {
 #ifdef HAS_DVD_DRIVE
     CCdInfo* pInfo = CServiceBroker::GetMediaManager().GetCdInfo();
-    if ( pInfo != NULL && pInfo->IsVideoCd( 1 ) )
+    if (pInfo && pInfo->IsVideoCd(1))
     {
       strIcon = "DefaultVCD.png";
       return ;

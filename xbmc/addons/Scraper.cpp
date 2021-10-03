@@ -948,7 +948,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl,
     if (fSort)
     {
       const char *sorted = xhResults.Element()->Attribute("sorted");
-      if (sorted != NULL)
+      if (sorted)
         fSort = !StringUtils::EqualsNoCase(sorted, "yes");
     }
 

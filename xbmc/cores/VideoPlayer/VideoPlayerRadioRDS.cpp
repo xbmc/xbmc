@@ -445,7 +445,7 @@ static char *rds_entitychar(char *text)
 
   while (i < EntityChars)
   {
-    if ((temp = strstr(text, entitystr[i])) != NULL)
+    if ((temp = strstr(text, entitystr[i])) != nullptr)
     {
       l = strlen(entitystr[i]);
       lof = (temp-text);

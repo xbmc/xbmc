@@ -182,7 +182,7 @@ void CVideoLibraryQueue::CancelJob(CVideoLibraryJob *job)
   // remember the job type needed later because the job might be deleted
   // in the call to CJobQueue::CancelJob()
   std::string jobType;
-  if (job->GetType() != NULL)
+  if (job->GetType())
     jobType = job->GetType();
 
   // check if the job supports cancellation and cancel it

@@ -11612,7 +11612,7 @@ bool CMusicDatabase::GetScraper(int id, const CONTENT_TYPE& content, ADDON::Scra
               ADDON::ScraperTypeFromContent(content), addon))
       {
         scraper = std::dynamic_pointer_cast<ADDON::CScraper>(addon);
-        return scraper != NULL;
+        return scraper != nullptr;
       }
       else
         return false;

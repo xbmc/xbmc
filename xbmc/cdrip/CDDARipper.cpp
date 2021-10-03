@@ -140,7 +140,7 @@ bool CCDDARipper::RipCD()
 bool CCDDARipper::CreateAlbumDir(const MUSIC_INFO::CMusicInfoTag& infoTag, std::string& strDirectory, int& legalType)
 {
   std::shared_ptr<CSettingPath> recordingpathSetting = std::static_pointer_cast<CSettingPath>(CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(CSettings::SETTING_AUDIOCDS_RECORDINGPATH));
-  if (recordingpathSetting != NULL)
+  if (recordingpathSetting)
   {
     strDirectory = recordingpathSetting->GetValue();
     if (strDirectory.empty())

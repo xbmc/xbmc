@@ -123,7 +123,7 @@ bool CHttpResponseRange::IsValid() const
   if (!CHttpRange::IsValid())
     return false;
 
-  return m_data != NULL;
+  return m_data != nullptr;
 }
 
 CHttpRanges::CHttpRanges()

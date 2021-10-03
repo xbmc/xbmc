@@ -114,7 +114,7 @@ public:
   void onDisplayRemoved(int displayId) override;
   jni::jhobject getDisplayListener() { return m_displayListener.get_raw(); }
 
-  bool isValid() { return m_activity != NULL; }
+  bool isValid() { return m_activity != nullptr; }
   const ANativeActivity *getActivity() const { return m_activity; }
 
   void onStart() override;

@@ -244,7 +244,7 @@ bool ProfileLockMode(const std::string& condition,
 {
   char *tmp = NULL;
   LockType lock = (LockType)strtol(value.c_str(), &tmp, 0);
-  if (tmp != NULL && *tmp != '\0')
+  if (tmp && *tmp != '\0')
     return false;
 
   return CSettingConditions::GetCurrentProfile().getLockMode() == lock;

@@ -39,7 +39,7 @@ namespace XBMCAddon
     {
       CFileItemList items;
 
-      if (listitem != NULL)
+      if (listitem)
       {
         // an optional listitem was passed
         // set m_strPath to the passed url

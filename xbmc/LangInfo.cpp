@@ -652,8 +652,8 @@ std::string CLangInfo::GetSubtitleCharSet() const
 
 LanguageResourcePtr CLangInfo::GetLanguageAddon(const std::string& locale /* = "" */) const
 {
-  if (locale.empty() ||
-     (m_languageAddon != NULL && (locale.compare(m_languageAddon->ID()) == 0 || m_languageAddon->GetLocale().Equals(locale))))
+  if (locale.empty() || (m_languageAddon && (locale.compare(m_languageAddon->ID()) == 0 ||
+                                             m_languageAddon->GetLocale().Equals(locale))))
     return m_languageAddon;
 
   std::string addonId = ADDON::CLanguageResource::GetAddonId(locale);
@@ -663,7 +663,7 @@ LanguageResourcePtr CLangInfo::GetLanguageAddon(const std::string& locale /* = "
   ADDON::AddonPtr addon;
   if (CServiceBroker::GetAddonMgr().GetAddon(addonId, addon, ADDON::ADDON_RESOURCE_LANGUAGE,
                                              ADDON::OnlyEnabled::YES) &&
-      addon != NULL)
+      addon)
     return std::dynamic_pointer_cast<ADDON::CLanguageResource>(addon);
 
   return NULL;
@@ -816,7 +816,7 @@ const std::string CLangInfo::GetDVDSubtitleLanguage() const
 const CLocale& CLangInfo::GetLocale() const
 {
   LanguageResourcePtr language = GetLanguageAddon();
-  if (language != NULL)
+  if (language)
     return language->GetLocale();
 
   return CLocale::Empty;

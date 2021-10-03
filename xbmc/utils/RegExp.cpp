@@ -298,11 +298,11 @@ bool CRegExp::RegComp(const char *re, studyMode study /*= NoStudy*/)
     const int studyOptions = jitCompile ? PCRE_STUDY_JIT_COMPILE : 0;
 
     m_sd = pcre_study(m_re, studyOptions, &errMsg);
-    if (errMsg != NULL)
+    if (errMsg)
     {
       CLog::Log(LOGWARNING, "{}: PCRE error \"{}\" while studying expression", __FUNCTION__,
                 errMsg);
-      if (m_sd != NULL)
+      if (m_sd)
       {
         pcre_free_study(m_sd);
         m_sd = NULL;

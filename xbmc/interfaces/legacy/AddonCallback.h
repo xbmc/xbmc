@@ -30,7 +30,7 @@ namespace XBMCAddon
     inline AddonCallback() : handler(NULL)
     {
       // if there is a LanguageHook, it should be set already.
-      if (languageHook != NULL)
+      if (languageHook)
         setHandler(languageHook->GetCallbackHandler());
     }
   public:

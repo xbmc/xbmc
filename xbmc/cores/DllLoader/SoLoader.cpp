@@ -28,7 +28,7 @@ SoLoader::~SoLoader()
 
 bool SoLoader::Load()
 {
-  if (m_soHandle != NULL)
+  if (m_soHandle)
     return true;
 
   std::string strFileName= CSpecialProtocol::TranslatePath(GetFileName());

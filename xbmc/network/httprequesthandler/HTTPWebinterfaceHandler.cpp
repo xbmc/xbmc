@@ -53,7 +53,7 @@ int CHTTPWebinterfaceHandler::ResolveUrl(const std::string &url, std::string &pa
     if (URIUtils::GetFileName(path).empty())
     {
       // determine the actual file path using the default entry point
-      if (addon != NULL && addon->Type() == ADDON::ADDON_WEB_INTERFACE)
+      if (addon && addon->Type() == ADDON::ADDON_WEB_INTERFACE)
         path = std::dynamic_pointer_cast<ADDON::CWebinterface>(addon)->GetEntryPoint(path);
     }
     else

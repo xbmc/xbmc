@@ -130,7 +130,7 @@ void CDetectDVDMedia::UpdateDvdrom()
           m_DriveState = DRIVE_NOT_READY;
           // DVD-ROM in undefined state
           // Better delete old CD Information
-          if ( m_pCdInfo != NULL )
+          if (m_pCdInfo)
           {
             delete m_pCdInfo;
             m_pCdInfo = NULL;
@@ -198,7 +198,7 @@ void CDetectDVDMedia::DetectMediaType()
   CCdIoSupport cdio;
 
   // Delete old CD-Information
-  if ( m_pCdInfo != NULL )
+  if (m_pCdInfo)
   {
     delete m_pCdInfo;
     m_pCdInfo = NULL;

@@ -219,7 +219,7 @@ bool CNFSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   }
   lock.Leave();
 
-  while((nfsdirent = nfs_readdir(gNfsConnection.GetNfsContext(), nfsdir)) != NULL)
+  while ((nfsdirent = nfs_readdir(gNfsConnection.GetNfsContext(), nfsdir)) != nullptr)
   {
     struct nfsdirent tmpDirent = *nfsdirent;
     std::string strName = tmpDirent.name;

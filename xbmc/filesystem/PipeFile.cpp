@@ -44,7 +44,7 @@ bool CPipeFile::Open(const CURL& url)
   m_pipe = PipesManager::GetInstance().OpenPipe(name);
   if (m_pipe)
     m_pipe->AddListener(this);
-  return (m_pipe != NULL);
+  return (m_pipe != nullptr);
 }
 
 bool CPipeFile::Exists(const CURL& url)
@@ -139,7 +139,7 @@ bool CPipeFile::OpenForWrite(const CURL& url, bool bOverWrite)
   m_pipe = PipesManager::GetInstance().CreatePipe(name);
   if (m_pipe)
     m_pipe->AddListener(this);
-  return (m_pipe != NULL);
+  return (m_pipe != nullptr);
 }
 
 bool CPipeFile::Delete(const CURL& url)

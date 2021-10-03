@@ -684,7 +684,7 @@ void CTeletextDecoder::EndDecoder()
   /* clear SubtitleCache */
   for (TextSubtitleCache_t*& subtitleCache : m_RenderInfo.SubtitleCache)
   {
-    if (subtitleCache != NULL)
+    if (subtitleCache)
     {
       delete subtitleCache;
       subtitleCache = NULL;

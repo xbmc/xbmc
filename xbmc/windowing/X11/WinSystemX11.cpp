@@ -373,7 +373,7 @@ void CWinSystemX11::UpdateResolutions()
   CLog::Log(LOGINFO, "Available videomodes (xrandr):");
 
   XOutput *out = g_xrandr.GetOutput(m_userOutput);
-  if (out != NULL)
+  if (out)
   {
     CLog::Log(LOGINFO, "Output '{}' has {} modes", out->name, out->modes.size());
 

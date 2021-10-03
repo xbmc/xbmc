@@ -133,7 +133,7 @@ void CAirTunesServer::RefreshCoverArt(const char *outputFilename/* = NULL*/)
 {
   static std::string coverArtFile = TMP_COVERART_PATH_JPG;
 
-  if (outputFilename != NULL)
+  if (outputFilename)
     coverArtFile = std::string(outputFilename);
 
   CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
@@ -446,7 +446,7 @@ void CAirTunesServer::SetupRemoteControl()
 {
   // check if we found the remote control service via zeroconf already or
   // if no valid id and headers was received yet
-  if (m_dacp_id.empty() || m_active_remote_header.empty() || m_pDACP != NULL)
+  if (m_dacp_id.empty() || m_active_remote_header.empty() || m_pDACP)
     return;
 
   // check for the service matching m_dacp_id
