@@ -39,13 +39,16 @@
 using namespace ADDON;
 using namespace XFILE;
 
-#define CONTROL_NAMELABEL            100
-#define CONTROL_NAMELOGO             110
-#define CONTROL_SUBLIST              120
-#define CONTROL_SUBSEXIST            130
-#define CONTROL_SUBSTATUS            140
-#define CONTROL_SERVICELIST          150
-#define CONTROL_MANUALSEARCH         160
+namespace
+{
+constexpr int CONTROL_NAMELABEL = 100;
+constexpr int CONTROL_NAMELOGO = 110;
+constexpr int CONTROL_SUBLIST = 120;
+constexpr int CONTROL_SUBSEXIST = 130;
+constexpr int CONTROL_SUBSTATUS = 140;
+constexpr int CONTROL_SERVICELIST = 150;
+constexpr int CONTROL_MANUALSEARCH = 160;
+} // namespace
 
 /*! \brief simple job to retrieve a directory and store a string (language)
  */
