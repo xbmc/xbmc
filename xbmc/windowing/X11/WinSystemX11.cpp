@@ -909,7 +909,8 @@ bool CWinSystemX11::CreateIconPixmap()
   gRatio = vis->green_mask / 255.0;
   bRatio = vis->blue_mask / 255.0;
 
-  CTexture* iconTexture = CTexture::LoadFromFile("special://xbmc/media/icon256x256.png");
+  std::unique_ptr<CTexture> iconTexture =
+      CTexture::LoadFromFile("special://xbmc/media/icon256x256.png");
 
   if (!iconTexture)
     return false;
@@ -982,8 +983,6 @@ bool CWinSystemX11::CreateIconPixmap()
   XPutImage(m_dpy, m_icon, gc, img, 0, 0, 0, 0, img->width, img->height);
   XFreeGC(m_dpy, gc);
   XDestroyImage(img); // this also frees newBuf
-
-  delete iconTexture;
 
   return true;
 }
