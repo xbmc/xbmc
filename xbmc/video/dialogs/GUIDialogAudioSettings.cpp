@@ -92,7 +92,7 @@ std::string CGUIDialogAudioSettings::FormatPercentAsDecibel(float value)
 
 void CGUIDialogAudioSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (!setting)
     return;
 
   CGUIDialogSettingsManualBase::OnSettingChanged(setting);
@@ -137,7 +137,7 @@ void CGUIDialogAudioSettings::OnSettingChanged(const std::shared_ptr<const CSett
 
 void CGUIDialogAudioSettings::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (!setting)
     return;
 
   CGUIDialogSettingsManualBase::OnSettingAction(setting);
@@ -189,7 +189,7 @@ void CGUIDialogAudioSettings::InitializeSettings()
   CGUIDialogSettingsManualBase::InitializeSettings();
 
   const std::shared_ptr<CSettingCategory> category = AddCategory("audiosubtitlesettings", -1);
-  if (category == NULL)
+  if (!category)
   {
     CLog::Log(LOGERROR, "CGUIDialogAudioSettings: unable to setup settings");
     return;
@@ -197,19 +197,19 @@ void CGUIDialogAudioSettings::InitializeSettings()
 
   // get all necessary setting groups
   const std::shared_ptr<CSettingGroup> groupAudio = AddGroup(category);
-  if (groupAudio == NULL)
+  if (!groupAudio)
   {
     CLog::Log(LOGERROR, "CGUIDialogAudioSettings: unable to setup settings");
     return;
   }
   const std::shared_ptr<CSettingGroup> groupSubtitles = AddGroup(category);
-  if (groupSubtitles == NULL)
+  if (!groupSubtitles)
   {
     CLog::Log(LOGERROR, "CGUIDialogAudioSettings: unable to setup settings");
     return;
   }
   const std::shared_ptr<CSettingGroup> groupSaveAsDefault = AddGroup(category);
-  if (groupSaveAsDefault == NULL)
+  if (!groupSaveAsDefault)
   {
     CLog::Log(LOGERROR, "CGUIDialogAudioSettings: unable to setup settings");
     return;
@@ -291,7 +291,7 @@ bool CGUIDialogAudioSettings::SupportsAudioFeature(int feature)
 void CGUIDialogAudioSettings::AddAudioStreams(const std::shared_ptr<CSettingGroup>& group,
                                               const std::string& settingId)
 {
-  if (group == NULL || settingId.empty())
+  if (!group || settingId.empty())
     return;
 
   m_audioStream = g_application.GetAppPlayer().GetAudioStream();
@@ -376,7 +376,7 @@ std::string CGUIDialogAudioSettings::SettingFormatterPercentAsDecibel(
     const CVariant& step,
     const CVariant& maximum)
 {
-  if (control == NULL || !value.isDouble())
+  if (!control || !value.isDouble())
     return "";
 
   std::string formatString = control->GetFormatString();

@@ -180,7 +180,7 @@ int callback(void* res_ptr,int ncol, char** result,char** cols)
     for (int i=0; i<ncol; i++)
     {
       field_value &v = rec->at(i);
-      if (result[i] == NULL)
+      if (!result[i])
       {
         v.set_asString("");
         v.set_isNull();
@@ -640,40 +640,44 @@ sqlite3* SqliteDataset::handle(){
 
 void SqliteDataset::make_query(StringList &_sql) {
   std::string query;
-  if (db == NULL) throw DbErrors("No Database Connection");
+  if (!db)
+    throw DbErrors("No Database Connection");
 
- try {
-
-  if (autocommit) db->start_transaction();
-
-
-  for (const std::string& i : _sql)
+  try
   {
-    query = i;
-    char* err = NULL;
-    Dataset::parse_sql(query);
-    if (db->setErr(sqlite3_exec(this->handle(), query.c_str(), NULL, NULL, &err), query.c_str()) !=
-        SQLITE_OK)
+
+    if (autocommit)
+      db->start_transaction();
+
+
+    for (const std::string& i : _sql)
     {
-      std::string message = db->getErrorMsg();
-      if (err)
+      query = i;
+      char* err = NULL;
+      Dataset::parse_sql(query);
+      if (db->setErr(sqlite3_exec(this->handle(), query.c_str(), NULL, NULL, &err),
+                     query.c_str()) != SQLITE_OK)
       {
-        message.append(" (");
-        message.append(err);
-        message.append(")");
-        sqlite3_free(err);
+        std::string message = db->getErrorMsg();
+        if (err)
+        {
+          message.append(" (");
+          message.append(err);
+          message.append(")");
+          sqlite3_free(err);
+        }
+        throw DbErrors("%s", message.c_str());
       }
-      throw DbErrors("%s", message.c_str());
-    }
-  } // end of for
+    } // end of for
 
 
-  if (db->in_transaction() && autocommit) db->commit_transaction();
+    if (db->in_transaction() && autocommit)
+      db->commit_transaction();
 
-  active = true;
-  ds_state = dsSelect;
-  if (autorefresh)
-    refresh();
+    active = true;
+    ds_state = dsSelect;
+    if (autorefresh)
+      refresh();
 
  } // end of try
  catch(...) {
@@ -702,7 +706,8 @@ void SqliteDataset::make_deletion() {
 
 void SqliteDataset::fill_fields() {
   //cout <<"rr "<<result.records.size()<<"|" << frecno <<"\n";
-  if ((db == NULL) || (result.record_header.empty()) || (result.records.size() < (unsigned int)frecno)) return;
+  if (!db || result.record_header.empty() || result.records.size() < (unsigned int)frecno)
+    return;
 
   if (fields_object->size() == 0) // Filling columns name
   {

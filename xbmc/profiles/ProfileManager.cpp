@@ -469,11 +469,11 @@ bool CProfileManager::DeleteProfile(unsigned int index)
 {
   CSingleLock lock(m_critical);
   const CProfile *profile = GetProfile(index);
-  if (profile == NULL)
+  if (!profile)
     return false;
 
   CGUIDialogYesNo* dlgYesNo = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogYesNo>(WINDOW_DIALOG_YES_NO);
-  if (dlgYesNo == NULL)
+  if (!dlgYesNo)
     return false;
 
   const std::string& str = g_localizeStrings.Get(13201);

@@ -27,7 +27,7 @@ CTimer::~CTimer()
 
 bool CTimer::Start(std::chrono::milliseconds timeout, bool interval /* = false */)
 {
-  if (m_callback == NULL || timeout == 0ms || IsRunning())
+  if (!m_callback || timeout == 0ms || IsRunning())
     return false;
 
   m_timeout = timeout;

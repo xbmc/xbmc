@@ -16,7 +16,7 @@ const std::string Base64::m_characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 void Base64::Encode(const char* input, unsigned int length, std::string &output)
 {
-  if (input == NULL || length == 0)
+  if (!input || length == 0)
     return;
 
   long l;
@@ -70,7 +70,7 @@ std::string Base64::Encode(const std::string &input)
 
 void Base64::Decode(const char* input, unsigned int length, std::string &output)
 {
-  if (input == NULL || length == 0)
+  if (!input || length == 0)
     return;
 
   long l;

@@ -58,7 +58,7 @@ void CRssManager::OnSettingsUnloaded()
 
 void CRssManager::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (!setting)
     return;
 
   const std::string &settingId = setting->GetId();
@@ -112,7 +112,7 @@ bool CRssManager::Load()
   }
 
   const TiXmlElement *pRootElement = rssDoc.RootElement();
-  if (pRootElement == NULL || !StringUtils::EqualsNoCase(pRootElement->ValueStr(), "rssfeeds"))
+  if (!pRootElement || !StringUtils::EqualsNoCase(pRootElement->ValueStr(), "rssfeeds"))
   {
     CLog::Log(LOGERROR, "CRssManager: error loading {}, no <rssfeeds> node", rssXML);
     return false;

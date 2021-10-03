@@ -139,7 +139,7 @@ CAEChannelInfo& CAEChannelInfo::operator=(const CAEChannelInfo& rhs)
 CAEChannelInfo& CAEChannelInfo::operator=(const enum AEChannel* rhs)
 {
   Reset();
-  if (rhs == NULL)
+  if (!rhs)
     return *this;
 
   while (m_channelCount < AE_CH_MAX && rhs[m_channelCount] != AE_CH_NULL)

@@ -82,7 +82,7 @@ XBMCHelper::XBMCHelper()
 /////////////////////////////////////////////////////////////////////////////
 bool XBMCHelper::OnSettingChanging(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (!setting)
     return false;
 
   const std::string &settingId = setting->GetId();
@@ -454,7 +454,7 @@ static int GetBSDProcessList(kinfo_proc **procList, size_t *procCount)
   done = false;
   do
   {
-    assert(result == NULL);
+    assert(!result);
 
     // Call sysctl with a NULL buffer.
     length = 0;
@@ -467,7 +467,7 @@ static int GetBSDProcessList(kinfo_proc **procList, size_t *procCount)
     if (err == 0)
     {
       result = (kinfo_proc*) malloc(length);
-      if (result == NULL)
+      if (!result)
         err = ENOMEM;
     }
 

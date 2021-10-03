@@ -223,11 +223,11 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
     if(m_SubtitleIndex >= (int)m_Subtitle.num_rects)
       return nullptr;
 
-    if(m_Subtitle.rects[m_SubtitleIndex] == NULL)
+    if (!m_Subtitle.rects[m_SubtitleIndex])
       return nullptr;
 
     AVSubtitleRect rect = *m_Subtitle.rects[m_SubtitleIndex];
-    if (rect.data[0] == NULL)
+    if (!rect.data[0])
       return nullptr;
 
     m_height = m_pCodecContext->height;

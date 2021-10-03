@@ -100,7 +100,7 @@ ssize_t CPosixFile::Read(void* lpBuf, size_t uiBufSize)
     return -1;
 
   assert(lpBuf || uiBufSize == 0);
-  if (lpBuf == NULL && uiBufSize != 0)
+  if (!lpBuf && uiBufSize != 0)
     return -1;
 
   if (uiBufSize > SSIZE_MAX)
@@ -142,7 +142,7 @@ ssize_t CPosixFile::Write(const void* lpBuf, size_t uiBufSize)
     return -1;
 
   assert(lpBuf || uiBufSize == 0);
-  if ((lpBuf == NULL && uiBufSize != 0) || !m_allowWrite)
+  if ((!lpBuf && uiBufSize != 0) || !m_allowWrite)
     return -1;
 
   if (uiBufSize > SSIZE_MAX)

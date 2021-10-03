@@ -55,7 +55,7 @@ int64_t str2int64(const std::string &str, int64_t fallback /* = 0 */)
   char *end = NULL;
   std::string tmp = trimRight(str);
   int64_t result = strtoll(tmp.c_str(), &end, 0);
-  if (end == NULL || *end == '\0')
+  if (!end || *end == '\0')
     return result;
 
   return fallback;
@@ -66,7 +66,7 @@ int64_t str2int64(const std::wstring &str, int64_t fallback /* = 0 */)
   wchar_t *end = NULL;
   std::wstring tmp = trimRight(str);
   int64_t result = wcstoll(tmp.c_str(), &end, 0);
-  if (end == NULL || *end == '\0')
+  if (!end || *end == '\0')
     return result;
 
   return fallback;
@@ -77,7 +77,7 @@ uint64_t str2uint64(const std::string &str, uint64_t fallback /* = 0 */)
   char *end = NULL;
   std::string tmp = trimRight(str);
   uint64_t result = strtoull(tmp.c_str(), &end, 0);
-  if (end == NULL || *end == '\0')
+  if (!end || *end == '\0')
     return result;
 
   return fallback;
@@ -88,7 +88,7 @@ uint64_t str2uint64(const std::wstring &str, uint64_t fallback /* = 0 */)
   wchar_t *end = NULL;
   std::wstring tmp = trimRight(str);
   uint64_t result = wcstoull(tmp.c_str(), &end, 0);
-  if (end == NULL || *end == '\0')
+  if (!end || *end == '\0')
     return result;
 
   return fallback;
@@ -99,7 +99,7 @@ double str2double(const std::string &str, double fallback /* = 0.0 */)
   char *end = NULL;
   std::string tmp = trimRight(str);
   double result = strtod(tmp.c_str(), &end);
-  if (end == NULL || *end == '\0')
+  if (!end || *end == '\0')
     return result;
 
   return fallback;
@@ -110,7 +110,7 @@ double str2double(const std::wstring &str, double fallback /* = 0.0 */)
   wchar_t *end = NULL;
   std::wstring tmp = trimRight(str);
   double result = wcstod(tmp.c_str(), &end);
-  if (end == NULL || *end == '\0')
+  if (!end || *end == '\0')
     return result;
 
   return fallback;

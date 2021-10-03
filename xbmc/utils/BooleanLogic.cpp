@@ -14,11 +14,11 @@
 
 bool CBooleanLogicValue::Deserialize(const TiXmlNode *node)
 {
-  if (node == NULL)
+  if (!node)
     return false;
 
   const TiXmlElement *elem = node->ToElement();
-  if (elem == NULL)
+  if (!elem)
     return false;
 
   if (node->FirstChild() && node->FirstChild()->Type() == TiXmlNode::TINYXML_TEXT)
@@ -42,15 +42,15 @@ bool CBooleanLogicValue::Deserialize(const TiXmlNode *node)
 
 bool CBooleanLogicOperation::Deserialize(const TiXmlNode *node)
 {
-  if (node == NULL)
+  if (!node)
     return false;
 
   // check if this is a simple operation with a single value directly expressed
   // in the parent tag
-  if (node->FirstChild() == NULL || node->FirstChild()->Type() == TiXmlNode::TINYXML_TEXT)
+  if (!node->FirstChild() || node->FirstChild()->Type() == TiXmlNode::TINYXML_TEXT)
   {
     CBooleanLogicValuePtr value = CBooleanLogicValuePtr(newValue());
-    if (value == NULL || !value->Deserialize(node))
+    if (!value || !value->Deserialize(node))
     {
       CLog::Log(LOGDEBUG, "CBooleanLogicOperation: failed to deserialize implicit boolean value definition");
       return false;
@@ -67,7 +67,7 @@ bool CBooleanLogicOperation::Deserialize(const TiXmlNode *node)
     if (StringUtils::EqualsNoCase(tag, "and") || StringUtils::EqualsNoCase(tag, "or"))
     {
       CBooleanLogicOperationPtr operation = CBooleanLogicOperationPtr(newOperation());
-      if (operation == NULL)
+      if (!operation)
         return false;
 
       operation->SetOperation(StringUtils::EqualsNoCase(tag, "and") ? BooleanLogicOperationAnd : BooleanLogicOperationOr);
@@ -82,7 +82,7 @@ bool CBooleanLogicOperation::Deserialize(const TiXmlNode *node)
     else
     {
       CBooleanLogicValuePtr value = CBooleanLogicValuePtr(newValue());
-      if (value == NULL)
+      if (!value)
         return false;
 
       if (StringUtils::EqualsNoCase(tag, value->GetTag()))
@@ -107,14 +107,14 @@ bool CBooleanLogicOperation::Deserialize(const TiXmlNode *node)
 
 bool CBooleanLogic::Deserialize(const TiXmlNode *node)
 {
-  if (node == NULL)
+  if (!node)
     return false;
 
-  if (m_operation == NULL)
+  if (!m_operation)
   {
     m_operation = CBooleanLogicOperationPtr(new CBooleanLogicOperation());
 
-    if (m_operation == NULL)
+    if (!m_operation)
       return false;
   }
 

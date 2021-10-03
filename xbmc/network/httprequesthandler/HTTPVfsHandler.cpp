@@ -49,7 +49,7 @@ CHTTPVfsHandler::CHTTPVfsHandler(const HTTPRequest &request)
         for (unsigned int index = 0; index < size && !accessible; index++)
         {
           sources = CMediaSourceSettings::GetInstance().GetSources(sourceTypes[index]);
-          if (sources == NULL)
+          if (!sources)
             continue;
 
           for (const auto& source : *sources)

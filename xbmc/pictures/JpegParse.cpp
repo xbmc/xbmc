@@ -100,7 +100,7 @@ bool CJpegParse::GetSection (CFile& infile, const unsigned short sectionLength)
   }
 
   m_SectionBuffer = new unsigned char[sectionLength];
-  if (m_SectionBuffer == NULL)
+  if (!m_SectionBuffer)
   {
     printf("JpgParse: could not allocate memory");
     return false;

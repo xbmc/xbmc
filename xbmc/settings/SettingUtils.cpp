@@ -35,7 +35,7 @@ std::vector<CVariant> CSettingUtils::ListToValues(
 {
   std::vector<CVariant> realValues;
 
-  if (setting == NULL)
+  if (!setting)
     return realValues;
 
   for (const auto& value : values)
@@ -70,7 +70,7 @@ bool CSettingUtils::ValuesToList(const std::shared_ptr<const CSettingList>& sett
                                  const std::vector<CVariant>& values,
                                  std::vector<std::shared_ptr<CSetting>>& newValues)
 {
-  if (setting == NULL)
+  if (!setting)
     return false;
 
   int index = 0;
@@ -79,7 +79,7 @@ bool CSettingUtils::ValuesToList(const std::shared_ptr<const CSettingList>& sett
   {
     SettingPtr settingValue =
         setting->GetDefinition()->Clone(StringUtils::Format("{}.{}", setting->GetId(), index++));
-    if (settingValue == NULL)
+    if (!settingValue)
       return false;
 
     switch (setting->GetElementType())

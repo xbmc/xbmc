@@ -61,7 +61,7 @@ JSONRPC_STATUS CPVROperations::GetChannelGroups(const std::string &method, ITran
     return FailedToExecute;
 
   CPVRChannelGroups *channelGroups = channelGroupContainer->Get(parameterObject["channeltype"].asString().compare("radio") == 0);
-  if (channelGroups == NULL)
+  if (!channelGroups)
     return FailedToExecute;
 
   int start, end;
@@ -90,7 +90,7 @@ JSONRPC_STATUS CPVROperations::GetChannelGroupDetails(const std::string &method,
   else if (id.isString())
     channelGroup = channelGroupContainer->GetGroupAll(id.asString() == "allradio");
 
-  if (channelGroup == NULL)
+  if (!channelGroup)
     return InvalidParams;
 
   FillChannelGroupDetails(channelGroup, parameterObject, result["channelgroupdetails"], false);
@@ -114,7 +114,7 @@ JSONRPC_STATUS CPVROperations::GetChannels(const std::string &method, ITransport
   else if (id.isString())
     channelGroup = channelGroupContainer->GetGroupAll(id.asString() == "allradio");
 
-  if (channelGroup == NULL)
+  if (!channelGroup)
     return InvalidParams;
 
   CFileItemList channels;
@@ -140,7 +140,7 @@ JSONRPC_STATUS CPVROperations::GetChannelDetails(const std::string &method, ITra
 
   std::shared_ptr<CPVRChannel> channel = channelGroupContainer->GetChannelById(
       static_cast<int>(parameterObject["channelid"].asInteger()));
-  if (channel == NULL)
+  if (!channel)
     return InvalidParams;
 
   const std::shared_ptr<CPVRChannelGroupMember> groupMember =
@@ -183,7 +183,7 @@ JSONRPC_STATUS CPVROperations::GetBroadcasts(const std::string &method, ITranspo
     return FailedToExecute;
 
   std::shared_ptr<CPVRChannel> channel = channelGroupContainer->GetChannelById((int)parameterObject["channelid"].asInteger());
-  if (channel == NULL)
+  if (!channel)
     return InvalidParams;
 
   std::shared_ptr<CPVREpg> channelEpg = channel->GetEPG();
@@ -265,7 +265,7 @@ JSONRPC_STATUS CPVROperations::Record(const std::string &method, ITransportLayer
   else
     return InvalidParams;
 
-  if (pChannel == NULL)
+  if (!pChannel)
     return InvalidParams;
   else if (!pChannel->CanRecord())
     return FailedToExecute;
@@ -333,7 +333,7 @@ JSONRPC_STATUS CPVROperations::GetPropertyValue(const std::string &property, CVa
 
 void CPVROperations::FillChannelGroupDetails(const std::shared_ptr<CPVRChannelGroup> &channelGroup, const CVariant &parameterObject, CVariant &result, bool append /* = false */)
 {
-  if (channelGroup == NULL)
+  if (!channelGroup)
     return;
 
   CVariant object(CVariant::VariantTypeObject);

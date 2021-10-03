@@ -25,7 +25,7 @@ CAndroidTouch::~CAndroidTouch()
 
 bool CAndroidTouch::onTouchEvent(AInputEvent* event)
 {
-  if (event == NULL)
+  if (!event)
     return false;
 
   size_t numPointers = AMotionEvent_getPointerCount(event);

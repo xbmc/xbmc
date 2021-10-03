@@ -188,7 +188,7 @@ bool CGUIDialogMediaFilter::OnMessage(CGUIMessage& message)
 void CGUIDialogMediaFilter::ShowAndEditMediaFilter(const std::string &path, CSmartPlaylist &filter)
 {
   CGUIDialogMediaFilter *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogMediaFilter>(WINDOW_DIALOG_MEDIA_FILTER);
-  if (dialog == NULL)
+  if (!dialog)
     return;
 
   // initialize and show the dialog
@@ -233,7 +233,7 @@ void CGUIDialogMediaFilter::OnSettingChanged(const std::shared_ptr<const CSettin
     std::string value = setting->ToString();
     if (!value.empty())
     {
-      if (filter.rule == NULL)
+      if (!filter.rule)
         filter.rule = AddRule(filter.field, filter.ruleOperator);
       filter.rule->m_parameter.clear();
       filter.rule->m_parameter.push_back(value);
@@ -247,7 +247,7 @@ void CGUIDialogMediaFilter::OnSettingChanged(const std::shared_ptr<const CSettin
     if (choice > CHECK_ALL)
     {
       CDatabaseQueryRule::SEARCH_OPERATOR ruleOperator = choice == CHECK_YES ? CDatabaseQueryRule::OPERATOR_TRUE : CDatabaseQueryRule::OPERATOR_FALSE;
-      if (filter.rule == NULL)
+      if (!filter.rule)
         filter.rule = AddRule(filter.field, ruleOperator);
       else
         filter.rule->m_operator = ruleOperator;
@@ -260,7 +260,7 @@ void CGUIDialogMediaFilter::OnSettingChanged(const std::shared_ptr<const CSettin
     std::vector<CVariant> values = CSettingUtils::GetList(std::static_pointer_cast<const CSettingList>(setting));
     if (!values.empty())
     {
-      if (filter.rule == NULL)
+      if (!filter.rule)
         filter.rule = AddRule(filter.field, filter.ruleOperator);
 
       filter.rule->m_parameter.clear();
@@ -320,7 +320,7 @@ void CGUIDialogMediaFilter::OnSettingChanged(const std::shared_ptr<const CSettin
     if (!strValueLower.empty() && !strValueUpper.empty())
     {
       // prepare the filter rule
-      if (filter.rule == NULL)
+      if (!filter.rule)
         filter.rule = AddRule(filter.field, filter.ruleOperator);
       filter.rule->m_parameter.clear();
 
@@ -377,7 +377,7 @@ void CGUIDialogMediaFilter::InitializeSettings()
 {
   CGUIDialogSettingsManualBase::InitializeSettings();
 
-  if (m_filter == NULL)
+  if (!m_filter)
     return;
 
   Reset(true);
@@ -385,14 +385,14 @@ void CGUIDialogMediaFilter::InitializeSettings()
   int handledRules = 0;
 
   const std::shared_ptr<CSettingCategory> category = AddCategory("filter", -1);
-  if (category == NULL)
+  if (!category)
   {
     CLog::Log(LOGERROR, "CGUIDialogMediaFilter: unable to setup filters");
     return;
   }
 
   const std::shared_ptr<CSettingGroup> group = AddGroup(category);
-  if (group == NULL)
+  if (!group)
   {
     CLog::Log(LOGERROR, "CGUIDialogMediaFilter: unable to setup filters");
     return;
@@ -519,7 +519,7 @@ void CGUIDialogMediaFilter::InitializeSettings()
       continue;
     }
 
-    if (filter.setting == NULL)
+    if (!filter.setting)
     {
       if (filter.rule)
         handledRules--;
@@ -542,7 +542,7 @@ void CGUIDialogMediaFilter::InitializeSettings()
 
 bool CGUIDialogMediaFilter::SetPath(const std::string &path)
 {
-  if (path.empty() || m_filter == NULL)
+  if (path.empty() || !m_filter)
   {
     CLog::Log(LOGWARNING, "CGUIDialogMediaFilter::SetPath({}): invalid path or filter", path);
     return false;
@@ -599,7 +599,7 @@ void CGUIDialogMediaFilter::UpdateControls()
 
     std::string label = g_localizeStrings.Get(itFilter.second.label);
     BaseSettingControlPtr control = GetSettingControl(itFilter.second.setting->GetId());
-    if (control == NULL)
+    if (!control)
       continue;
 
     if (size <= 0 ||
@@ -616,7 +616,7 @@ void CGUIDialogMediaFilter::UpdateControls()
 
 void CGUIDialogMediaFilter::TriggerFilter() const
 {
-  if (m_filter == NULL)
+  if (!m_filter)
     return;
 
   CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS, 10); // 10 for advanced
@@ -751,7 +751,7 @@ void CGUIDialogMediaFilter::GetStringListOptions(const SettingConstPtr& setting,
                                                  std::string& current,
                                                  void* data)
 {
-  if (setting == NULL || data == NULL)
+  if (!setting || !data)
     return;
 
   CGUIDialogMediaFilter *mediaFilter = static_cast<CGUIDialogMediaFilter*>(data);
@@ -902,7 +902,7 @@ bool CGUIDialogMediaFilter::GetMinMax(const std::string &table, const std::strin
     dbUrl = new CMusicDbUrl();
   }
 
-  if (db == NULL || !db->IsOpen() || dbUrl == NULL)
+  if (!db || !db->IsOpen() || !dbUrl)
   {
     delete db;
     delete dbUrl;

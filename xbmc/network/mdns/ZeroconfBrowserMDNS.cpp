@@ -231,7 +231,7 @@ bool CZeroconfBrowserMDNS::doAddServiceType(const std::string& fcr_service_type)
   DNSServiceRef browser = NULL;
 
 #if !defined(HAS_MDNS_EMBEDDED)
-  if(m_browser == NULL)
+  if (!m_browser)
   {
     err = DNSServiceCreateConnection(&m_browser);
     if (err != kDNSServiceErr_NoError)

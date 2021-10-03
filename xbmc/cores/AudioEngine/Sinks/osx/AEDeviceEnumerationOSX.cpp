@@ -778,7 +778,7 @@ void AEDeviceEnumerationOSX::GetAEChannelMap(CAEChannelInfo &channelMap, unsigne
   if (mapAvailable)
   {
     layout = calayout;
-    if (layout == NULL || layout->mChannelLayoutTag != kAudioChannelLayoutTag_UseChannelDescriptions)
+    if (!layout || layout->mChannelLayoutTag != kAudioChannelLayoutTag_UseChannelDescriptions)
       mapAvailable = false;// wrong map format
     else
       numberChannelsInDeviceLayout = layout->mNumberChannelDescriptions;

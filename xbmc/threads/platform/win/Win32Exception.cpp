@@ -179,8 +179,7 @@ bool win32_exception::write_stacktrace(EXCEPTION_POINTERS* pEp)
   pSFTA = (tSFTA)GetProcAddress(hDbgHelpDll, "SymFunctionTableAccess64");
   pSGMB = (tSGMB)GetProcAddress(hDbgHelpDll, "SymGetModuleBase64");
 
-  if(pSI == NULL || pSGO == NULL || pSSO == NULL || pSC == NULL || pSW == NULL || pSGSFA == NULL || pUDSN == NULL || pSGLFA == NULL ||
-     pSFTA == NULL || pSGMB == NULL)
+  if (!pSI || !pSGO || !pSSO || !pSC || !pSW || !pSGSFA || !pUDSN || !pSGLFA || !pSFTA || !pSGMB)
     goto cleanup;
 
   dumpFileName = StringUtils::Format("kodi_stacktrace-{}-{:04}{:02}{:02}-{:02}{:02}{:02}.txt",

@@ -957,7 +957,7 @@ JSONRPC_STATUS CPlayerOperations::SetShuffle(const std::string &method, ITranspo
 
     case Picture:
       slideshow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
-      if (slideshow == NULL)
+      if (!slideshow)
         return FailedToExecute;
       if (slideshow->IsShuffled())
       {

@@ -1368,7 +1368,7 @@ void CWinSystemOSX::FillInVideoModes()
 
     CLog::Log(LOGINFO, "Display {} has name {}", disp, [dispName UTF8String]);
 
-    if (NULL == displayModes)
+    if (!displayModes)
       continue;
 
     for (int i=0; i < CFArrayGetCount(displayModes); ++i)

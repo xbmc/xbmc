@@ -384,11 +384,11 @@ static void setupWindowMenu(void)
   temparg = [filename UTF8String];
   arglen = SDL_strlen(temparg) + 1;
   arg = (char *) SDL_malloc(arglen);
-  if (arg == NULL)
+  if (!arg)
     return FALSE;
 
   newargv = (char **) realloc(gArgv, sizeof (char *) * (gArgc + 2));
-  if (newargv == NULL)
+  if (!newargv)
   {
     SDL_free(arg);
     return FALSE;

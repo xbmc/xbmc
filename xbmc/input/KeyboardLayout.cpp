@@ -28,7 +28,7 @@ CKeyboardLayout::~CKeyboardLayout() = default;
 bool CKeyboardLayout::Load(const TiXmlElement* element)
 {
   const char* language = element->Attribute("language");
-  if (language == NULL)
+  if (!language)
   {
     CLog::Log(LOGWARNING, "CKeyboardLayout: invalid \"language\" attribute");
     return false;
@@ -42,7 +42,7 @@ bool CKeyboardLayout::Load(const TiXmlElement* element)
   }
 
   const char* layout = element->Attribute("layout");
-  if (layout == NULL)
+  if (!layout)
   {
     CLog::Log(LOGWARNING, "CKeyboardLayout: invalid \"layout\" attribute");
     return false;

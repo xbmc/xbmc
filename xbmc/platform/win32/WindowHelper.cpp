@@ -31,7 +31,7 @@ CWHelper::~CWHelper(void)
 
 void CWHelper::OnStartup()
 {
-  if((m_hwnd == NULL) && (m_hProcess == NULL))
+  if (!m_hwnd && !m_hProcess)
     return;
 
   // Minimize XBMC if not already

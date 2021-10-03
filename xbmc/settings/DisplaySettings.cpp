@@ -102,7 +102,7 @@ bool CDisplaySettings::Load(const TiXmlNode *settings)
   CSingleLock lock(m_critical);
   m_calibrations.clear();
 
-  if (settings == NULL)
+  if (!settings)
     return false;
 
   const TiXmlElement *pElement = settings->FirstChildElement("resolutions");
@@ -163,13 +163,13 @@ bool CDisplaySettings::Load(const TiXmlNode *settings)
 
 bool CDisplaySettings::Save(TiXmlNode *settings) const
 {
-  if (settings == NULL)
+  if (!settings)
     return false;
 
   CSingleLock lock(m_critical);
   TiXmlElement xmlRootElement("resolutions");
   TiXmlNode *pRoot = settings->InsertEndChild(xmlRootElement);
-  if (pRoot == NULL)
+  if (!pRoot)
     return false;
 
   // save calibrations
@@ -178,7 +178,7 @@ bool CDisplaySettings::Save(TiXmlNode *settings) const
     // Write the resolution tag
     TiXmlElement resElement("resolution");
     TiXmlNode *pNode = pRoot->InsertEndChild(resElement);
-    if (pNode == NULL)
+    if (!pNode)
       return false;
 
     // Now write each of the pieces of information we need...
@@ -194,7 +194,7 @@ bool CDisplaySettings::Save(TiXmlNode *settings) const
     // create the overscan child
     TiXmlElement overscanElement("overscan");
     TiXmlNode *pOverscanNode = pNode->InsertEndChild(overscanElement);
-    if (pOverscanNode == NULL)
+    if (!pOverscanNode)
       return false;
 
     XMLUtils::SetInt(pOverscanNode, "left", it->Overscan.left);
@@ -221,7 +221,7 @@ void CDisplaySettings::Clear()
 
 void CDisplaySettings::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (!setting)
     return;
 
   const std::string &settingId = setting->GetId();
@@ -249,7 +249,7 @@ void CDisplaySettings::OnSettingAction(const std::shared_ptr<const CSetting>& se
 
 bool CDisplaySettings::OnSettingChanging(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (!setting)
     return false;
 
   const std::string &settingId = setting->GetId();
@@ -350,7 +350,7 @@ bool CDisplaySettings::OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
                                        const char* oldSettingId,
                                        const TiXmlNode* oldSettingNode)
 {
-  if (setting == NULL)
+  if (!setting)
     return false;
 
   const std::string &settingId = setting->GetId();

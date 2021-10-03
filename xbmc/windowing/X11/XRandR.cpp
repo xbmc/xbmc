@@ -42,7 +42,7 @@ bool CXRandR::Query(bool force, bool ignoreoff)
 
   m_bInit = true;
 
-  if (getenv("KODI_BIN_HOME") == NULL)
+  if (!getenv("KODI_BIN_HOME"))
     return false;
 
   m_outputs.clear();

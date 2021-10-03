@@ -38,7 +38,7 @@ public:
   CDVDOverlay* Parse(double iPts) override
   {
     CDVDOverlay* o = m_collection.Get(iPts);
-    if(o == NULL)
+    if (!o)
       return o;
     return o->Clone();
   }

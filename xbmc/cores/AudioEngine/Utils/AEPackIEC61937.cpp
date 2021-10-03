@@ -29,7 +29,7 @@ int CAEPackIEC61937::PackAC3(uint8_t *data, unsigned int size, uint8_t *dest)
   packet->m_preamble2 = IEC61937_PREAMBLE2;
   packet->m_length    = size << 3;
 
-  if (data == NULL)
+  if (!data)
     data = packet->m_data;
 #ifdef __BIG_ENDIAN__
   else
@@ -57,7 +57,7 @@ int CAEPackIEC61937::PackEAC3(uint8_t *data, unsigned int size, uint8_t *dest)
   packet->m_type      = IEC61937_TYPE_EAC3;
   packet->m_length    = size;
 
-  if (data == NULL)
+  if (!data)
     data = packet->m_data;
 #ifdef __BIG_ENDIAN__
   else
@@ -98,7 +98,7 @@ int CAEPackIEC61937::PackTrueHD(uint8_t *data, unsigned int size, uint8_t *dest)
   packet->m_type      = IEC61937_TYPE_TRUEHD;
   packet->m_length    = size;
 
-  if (data == NULL)
+  if (!data)
     data = packet->m_data;
 #ifdef __BIG_ENDIAN__
   else
@@ -137,7 +137,7 @@ int CAEPackIEC61937::PackDTSHD(uint8_t *data, unsigned int size, uint8_t *dest, 
    * with some receivers, but the exact requirement is unconfirmed. */
   packet->m_length    = ((size + 0x17) &~ 0x0f) - 0x08;
 
-  if (data == NULL)
+  if (!data)
     data = packet->m_data;
 #ifdef __BIG_ENDIAN__
   else
@@ -189,7 +189,7 @@ int CAEPackIEC61937::PackDTS(uint8_t *data, unsigned int size, uint8_t *dest, bo
     return 0;
   }
 
-  if (data == NULL)
+  if (!data)
     data = dataTo;
   else if (!byteSwapNeeded)
     memcpy(dataTo, data, size);

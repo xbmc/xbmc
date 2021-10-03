@@ -46,8 +46,8 @@ namespace UPNP
 +---------------------------------------------------------------------*/
 EClientQuirks GetClientQuirks(const PLT_HttpRequestContext* context)
 {
-  if(context == NULL)
-      return ECLIENTQUIRKS_NONE;
+  if (!context)
+    return ECLIENTQUIRKS_NONE;
 
   unsigned int quirks = 0;
   const NPT_String* user_agent = context->GetRequest().GetHeaders().GetHeaderValue(NPT_HTTP_HEADER_USER_AGENT);
@@ -75,15 +75,15 @@ EClientQuirks GetClientQuirks(const PLT_HttpRequestContext* context)
 +---------------------------------------------------------------------*/
 EMediaControllerQuirks GetMediaControllerQuirks(const PLT_DeviceData *device)
 {
-    if (device == NULL)
-        return EMEDIACONTROLLERQUIRKS_NONE;
+  if (!device)
+    return EMEDIACONTROLLERQUIRKS_NONE;
 
-    unsigned int quirks = 0;
+  unsigned int quirks = 0;
 
-    if (device->m_Manufacturer.Find("Samsung Electronics") >= 0)
-        quirks |= EMEDIACONTROLLERQUIRKS_X_MKV;
+  if (device->m_Manufacturer.Find("Samsung Electronics") >= 0)
+    quirks |= EMEDIACONTROLLERQUIRKS_X_MKV;
 
-    return (EMediaControllerQuirks)quirks;
+  return (EMediaControllerQuirks)quirks;
 }
 
 /*----------------------------------------------------------------------

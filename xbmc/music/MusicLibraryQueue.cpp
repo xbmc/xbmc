@@ -240,7 +240,7 @@ void CMusicLibraryQueue::CleanLibraryModal()
 
 void CMusicLibraryQueue::AddJob(CMusicLibraryJob *job)
 {
-  if (job == NULL)
+  if (!job)
     return;
 
   CSingleLock lock(m_critical);
@@ -262,7 +262,7 @@ void CMusicLibraryQueue::AddJob(CMusicLibraryJob *job)
 
 void CMusicLibraryQueue::CancelJob(CMusicLibraryJob *job)
 {
-  if (job == NULL)
+  if (!job)
     return;
 
   CSingleLock lock(m_critical);

@@ -444,7 +444,7 @@ CTeletextDecoder::~CTeletextDecoder() = default;
 
 bool CTeletextDecoder::HandleAction(const CAction &action)
 {
-  if (m_txtCache == NULL)
+  if (!m_txtCache)
   {
     CLog::Log(LOGERROR, "CTeletextDecoder::HandleAction called without teletext cache");
     return false;
@@ -591,7 +591,7 @@ bool CTeletextDecoder::InitDecoder()
   int error;
 
   m_txtCache = g_application.GetAppPlayer().GetTeletextCache();
-  if (m_txtCache == NULL)
+  if (!m_txtCache)
   {
     CLog::Log(LOGERROR, "{}: called without teletext cache", __FUNCTION__);
     return false;
@@ -1153,13 +1153,13 @@ void CTeletextDecoder::RenderPage()
           break;
         }
       }
-      if (c == NULL)
+      if (!c)
       {
         if (j == -1) // no more space in SubtitleCache
           return;
 
         c = new TextSubtitleCache_t;
-        if (c == NULL)
+        if (!c)
           return;
 
         c = {};
@@ -1967,7 +1967,8 @@ void CTeletextDecoder::RenderDRCS(
     UTILS::COLOR::Color fgcolor,
     UTILS::COLOR::Color bgcolor)
 {
-  if (d == NULL) return;
+  if (!d)
+    return;
 
   unsigned char *ay = ax + 13; /* array[0..10] of y-offsets for each pixel */
 

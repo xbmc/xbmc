@@ -290,9 +290,10 @@ _wopendir(
     int error;
 
     /* Must have directory name */
-    if (dirname == NULL  ||  dirname[0] == '\0') {
-        dirent_set_errno (ENOENT);
-        return NULL;
+    if (!dirname || dirname[0] == '\0')
+    {
+      dirent_set_errno(ENOENT);
+      return NULL;
     }
 
     /* Allocate new _WDIR structure */
@@ -573,9 +574,10 @@ opendir(
     int error;
 
     /* Must have directory name */
-    if (dirname == NULL  ||  dirname[0] == '\0') {
-        dirent_set_errno (ENOENT);
-        return NULL;
+    if (!dirname || dirname[0] == '\0')
+    {
+      dirent_set_errno(ENOENT);
+      return NULL;
     }
 
     /* Allocate memory for DIR structure */

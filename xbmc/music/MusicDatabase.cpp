@@ -4619,7 +4619,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery /*=false*/)
 
   // Get information for the inserted disc
   CCdInfo* pCdInfo = CServiceBroker::GetMediaManager().GetCdInfo();
-  if (pCdInfo == NULL)
+  if (!pCdInfo)
     return false;
 
   // If the disc has no tracks, we are finished here.

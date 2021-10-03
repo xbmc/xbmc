@@ -291,7 +291,7 @@ static void SinkChangedCallback(pa_context *c, pa_subscription_event_type_t t, u
         // we need to leave the lock as we trigger a second callback
         CSingleExit exitlock(p->m_sec);
         pa_operation* op = pa_context_get_sink_input_info(c, idx, SinkInputInfoCallback, p);
-        if (op == NULL)
+        if (!op)
           CLog::Log(LOGERROR, "PulseAudio: Failed to sync volume");
         else
           pa_operation_unref(op);
@@ -880,7 +880,7 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
   m_Stream = pa_stream_new_extended(m_Context, "kodi audio stream", info, 1, NULL);
   pa_format_info_free(info[0]);
 
-  if (m_Stream == NULL)
+  if (!m_Stream)
   {
     CLog::Log(LOGERROR, "PulseAudio: Could not create a stream");
     pa_threaded_mainloop_unlock(m_MainLoop);
@@ -1185,7 +1185,7 @@ void CAESinkPULSE::SetVolume(float volume)
       pa_cvolume_set(&m_Volume, m_Channels, pavolume);
 
     pa_operation *op = pa_context_set_sink_input_volume(m_Context, sink_input_idx, &m_Volume, NULL, NULL);
-    if (op == NULL)
+    if (!op)
       CLog::Log(LOGERROR, "PulseAudio: Failed to set volume");
     else
       pa_operation_unref(op);
@@ -1259,7 +1259,7 @@ void CAESinkPULSE::Pause(bool pause)
 
 inline bool CAESinkPULSE::WaitForOperation(pa_operation *op, pa_threaded_mainloop *mainloop, const char *LogEntry = "")
 {
-  if (op == NULL)
+  if (!op)
     return false;
 
   bool success = true;

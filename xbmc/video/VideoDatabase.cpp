@@ -3995,7 +3995,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
 {
   CVideoInfoTag details;
 
-  if (record == NULL)
+  if (!record)
     return details;
 
   int idMovie = record->at(0).get_asInt();
@@ -4075,7 +4075,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
 {
   CVideoInfoTag details;
 
-  if (record == NULL)
+  if (!record)
     return details;
 
   int idTvShow = record->at(0).get_asInt();
@@ -9329,7 +9329,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
       if (del)
         filesToTestForDelete += m_pDS2->fv("files.idFile").get_asString() + ",";
 
-      if (handle == NULL && progress)
+      if (!handle && progress)
       {
         int percentage = current * 100 / total;
         if (percentage > progress->GetPercentage())

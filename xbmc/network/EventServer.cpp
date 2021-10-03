@@ -229,7 +229,7 @@ void CEventServer::ProcessPacket(CAddress& addr, int pSize)
 {
   // check packet validity
   CEventPacket* packet = new CEventPacket(pSize, m_pPacketBuffer);
-  if(packet == NULL)
+  if (!packet)
   {
     CLog::Log(LOGERROR, "ES: Out of memory, cannot accept packet");
     return;
@@ -264,7 +264,7 @@ void CEventServer::ProcessPacket(CAddress& addr, int pSize)
 
     // new client
     CEventClient* client = new CEventClient ( addr );
-    if (client==NULL)
+    if (!client)
     {
       CLog::Log(LOGERROR, "ES: Out of memory, cannot accept new client connection");
       delete packet;

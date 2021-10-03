@@ -194,7 +194,7 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
 #endif
       l_threadState = Py_NewInterpreter();
       PyEval_ReleaseThread(l_threadState);
-      if (l_threadState == NULL)
+      if (!l_threadState)
       {
         CLog::Log(LOGERROR, "CPythonInvoker({}, {}): FAILED to get thread m_threadState!", GetId(),
                   m_sourceFile);
@@ -436,7 +436,7 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
 
 void CPythonInvoker::executeScript(FILE* fp, const std::string& script, PyObject* moduleDict)
 {
-  if (fp == NULL || script.empty() || moduleDict == NULL)
+  if (!fp || script.empty() || !moduleDict)
     return;
 
   int m_Py_file_input = Py_file_input;
@@ -446,7 +446,7 @@ void CPythonInvoker::executeScript(FILE* fp, const std::string& script, PyObject
 FILE* CPythonInvoker::PyFile_AsFileWithMode(PyObject* py_file, const char* mode)
 {
   PyObject* ret = PyObject_CallMethod(py_file, "flush", "");
-  if (ret == NULL)
+  if (!ret)
     return NULL;
   Py_DECREF(ret);
 
@@ -455,7 +455,7 @@ FILE* CPythonInvoker::PyFile_AsFileWithMode(PyObject* py_file, const char* mode)
     return NULL;
 
   FILE* f = fdopen(fd, mode);
-  if (f == NULL)
+  if (!f)
   {
     PyErr_SetFromErrno(PyExc_OSError);
     return NULL;
@@ -650,7 +650,7 @@ void CPythonInvoker::onInitialization()
 
 void CPythonInvoker::onPythonModuleInitialization(void* moduleDict)
 {
-  if (m_addon.get() == NULL || moduleDict == NULL)
+  if (!m_addon || !moduleDict)
     return;
 
   PyObject* moduleDictionary = (PyObject*)moduleDict;
@@ -710,7 +710,7 @@ void CPythonInvoker::initializeModules(
 
 bool CPythonInvoker::initializeModule(PythonModuleInitialization module)
 {
-  if (module == NULL)
+  if (!module)
     return false;
 
   return module() != nullptr;

@@ -103,7 +103,7 @@ CHTTPPythonWsgiInvoker::~CHTTPPythonWsgiInvoker()
 
 HTTPPythonRequest* CHTTPPythonWsgiInvoker::GetRequest()
 {
-  if (m_request == NULL || m_wsgiResponse == NULL)
+  if (!m_request || !m_wsgiResponse)
     return NULL;
 
   if (m_internalError)
@@ -115,8 +115,8 @@ HTTPPythonRequest* CHTTPPythonWsgiInvoker::GetRequest()
 
 void CHTTPPythonWsgiInvoker::executeScript(FILE* fp, const std::string& script, PyObject* moduleDict)
 {
-  if (m_request == NULL || m_addon == NULL || m_addon->Type() != ADDON::ADDON_WEB_INTERFACE ||
-      fp == NULL || script.empty() || moduleDict == NULL)
+  if (!m_request || !m_addon || m_addon->Type() != ADDON::ADDON_WEB_INTERFACE || !fp ||
+      script.empty() || !moduleDict)
     return;
 
   auto logger = CServiceBroker::GetLogging().GetLogger(
@@ -144,7 +144,7 @@ void CHTTPPythonWsgiInvoker::executeScript(FILE* fp, const std::string& script, 
   std::string scriptName = URIUtils::GetFileName(script);
   URIUtils::RemoveExtension(scriptName);
   pyScript = PyUnicode_FromStringAndSize(scriptName.c_str(), scriptName.size());
-  if (pyScript == NULL)
+  if (!pyScript)
   {
     logger->error("failed to convert script to python string");
     return;
@@ -154,7 +154,7 @@ void CHTTPPythonWsgiInvoker::executeScript(FILE* fp, const std::string& script, 
   logger->debug("loading script");
   pyModule = PyImport_Import(pyScript);
   Py_DECREF(pyScript);
-  if (pyModule == NULL)
+  if (!pyModule)
   {
     logger->error("failed to load WSGI script");
     return;
@@ -164,7 +164,7 @@ void CHTTPPythonWsgiInvoker::executeScript(FILE* fp, const std::string& script, 
   const std::string& entryPoint = webinterface->EntryPoint();
   logger->debug(R"(loading entry point "{}")", entryPoint);
   pyEntryPoint = PyObject_GetAttrString(pyModule, entryPoint.c_str());
-  if (pyEntryPoint == NULL)
+  if (!pyEntryPoint)
   {
     logger->error(R"(failed to load entry point "{}")", entryPoint);
     goto cleanup;
@@ -179,7 +179,7 @@ void CHTTPPythonWsgiInvoker::executeScript(FILE* fp, const std::string& script, 
 
   // prepare the WsgiResponse object
   m_wsgiResponse = new XBMCAddon::xbmcwsgi::WsgiResponse();
-  if (m_wsgiResponse == NULL)
+  if (!m_wsgiResponse)
   {
     logger->error("failed to create WsgiResponse object");
     goto cleanup;
@@ -229,7 +229,7 @@ void CHTTPPythonWsgiInvoker::executeScript(FILE* fp, const std::string& script, 
   // call the given handler with the prepared arguments
   pyResult = PyObject_CallObject(pyEntryPoint, pyArgs);
   Py_DECREF(pyArgs);
-  if (pyResult == NULL)
+  if (!pyResult)
   {
     logger->error("no result");
     goto cleanup;
@@ -237,7 +237,7 @@ void CHTTPPythonWsgiInvoker::executeScript(FILE* fp, const std::string& script, 
 
   // try to get an iterator from the result object
   pyResultIterator = PyObject_GetIter(pyResult);
-  if (pyResultIterator == NULL || !PyIter_Check(pyResultIterator))
+  if (!pyResultIterator || !PyIter_Check(pyResultIterator))
   {
     logger->error("result is not iterable");
     goto cleanup;
@@ -282,7 +282,7 @@ cleanup:
     // Call optional close method on iterator
     if (PyObject_HasAttrString(pyResultIterator, "close") == 1)
     {
-      if (PyObject_CallMethod(pyResultIterator, "close", NULL) == NULL)
+      if (!PyObject_CallMethod(pyResultIterator, "close", NULL))
         logger->error("failed to close iterator object");
     }
     Py_DECREF(pyResultIterator);

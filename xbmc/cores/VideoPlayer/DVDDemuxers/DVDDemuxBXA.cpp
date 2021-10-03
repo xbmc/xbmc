@@ -167,7 +167,7 @@ std::vector<CDemuxStream*> CDVDDemuxBXA::GetStreams() const
 
 int CDVDDemuxBXA::GetNrOfStreams() const
 {
-  return (m_stream == NULL ? 0 : 1);
+  return (m_stream == nullptr ? 0 : 1);
 }
 
 std::string CDVDDemuxBXA::GetFileName()

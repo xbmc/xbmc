@@ -66,7 +66,7 @@ void CLog::OnSettingsLoaded()
 
 void CLog::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (!setting)
     return;
 
   const std::string& settingId = setting->GetId();

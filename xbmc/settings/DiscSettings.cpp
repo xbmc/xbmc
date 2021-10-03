@@ -31,7 +31,7 @@ CDiscSettings& CDiscSettings::GetInstance()
 void CDiscSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
 #if (BLURAY_VERSION >= BLURAY_VERSION_CODE(1,0,1))
-  if (setting == NULL)
+  if (!setting)
     return;
 
   const std::string &settingId = setting->GetId();

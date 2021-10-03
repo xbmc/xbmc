@@ -452,7 +452,7 @@ const std::string CScraperParser::Parse(const std::string& strTag,
                                        CScraper* scraper)
 {
   TiXmlElement* pChildElement = m_pRootElement->FirstChildElement(strTag.c_str());
-  if(pChildElement == NULL)
+  if (!pChildElement)
   {
     CLog::Log(LOGERROR, "{}: Could not find scraper function {}", __FUNCTION__, strTag);
     return "";

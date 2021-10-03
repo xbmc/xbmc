@@ -89,7 +89,7 @@ public:
 
   void OnGetMediaInfoResult(NPT_Result res, PLT_DeviceDataReference& device, PLT_MediaInfo* info, void* userdata) override
   {
-    if(NPT_FAILED(res) || info == NULL)
+    if (NPT_FAILED(res) || !info)
       m_logger->error("OnGetMediaInfoResult failed");
   }
 
@@ -124,7 +124,7 @@ public:
   {
     CSingleLock lock(m_section);
 
-    if(NPT_FAILED(res) || info == NULL)
+    if (NPT_FAILED(res) || !info)
     {
       m_logger->error("OnGetMediaInfoResult failed");
       m_posinfo = PLT_PositionInfo();

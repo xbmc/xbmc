@@ -270,7 +270,7 @@ void CAirPlayServer::StopServer(bool bWait)
 
 bool CAirPlayServer::IsRunning()
 {
-  if (ServerInstance == NULL)
+  if (!ServerInstance)
     return false;
 
   return static_cast<CThread*>(ServerInstance)->IsRunning();

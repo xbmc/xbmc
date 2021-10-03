@@ -61,7 +61,7 @@ bool CGUIDialogLockSettings::ShowAndGetLock(LockType &lockMode, std::string &pas
 bool CGUIDialogLockSettings::ShowAndGetLock(CProfile::CLock &locks, int buttonLabel /* = 20091 */, bool conditional /* = false */, bool details /* = true */)
 {
   CGUIDialogLockSettings *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogLockSettings>(WINDOW_DIALOG_LOCK_SETTINGS);
-  if (dialog == NULL)
+  if (!dialog)
     return false;
 
   dialog->m_locks = locks;
@@ -81,7 +81,7 @@ bool CGUIDialogLockSettings::ShowAndGetLock(CProfile::CLock &locks, int buttonLa
 bool CGUIDialogLockSettings::ShowAndGetUserAndPassword(std::string &user, std::string &password, const std::string &url, bool *saveUserDetails)
 {
   CGUIDialogLockSettings *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogLockSettings>(WINDOW_DIALOG_LOCK_SETTINGS);
-  if (dialog == NULL)
+  if (!dialog)
     return false;
 
   dialog->m_getUser = true;
@@ -101,7 +101,7 @@ bool CGUIDialogLockSettings::ShowAndGetUserAndPassword(std::string &user, std::s
 
 void CGUIDialogLockSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (!setting)
     return;
 
   CGUIDialogSettingsManualBase::OnSettingChanged(setting);
@@ -133,7 +133,7 @@ void CGUIDialogLockSettings::OnSettingChanged(const std::shared_ptr<const CSetti
 
 void CGUIDialogLockSettings::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (!setting)
     return;
 
   CGUIDialogSettingsManualBase::OnSettingAction(setting);
@@ -229,14 +229,14 @@ void CGUIDialogLockSettings::InitializeSettings()
   CGUIDialogSettingsManualBase::InitializeSettings();
 
   const std::shared_ptr<CSettingCategory> category = AddCategory("locksettings", -1);
-  if (category == NULL)
+  if (!category)
   {
     CLog::Log(LOGERROR, "CGUIDialogLockSettings: unable to setup settings");
     return;
   }
 
   const std::shared_ptr<CSettingGroup> group = AddGroup(category);
-  if (group == NULL)
+  if (!group)
   {
     CLog::Log(LOGERROR, "CGUIDialogLockSettings: unable to setup settings");
     return;
@@ -257,7 +257,7 @@ void CGUIDialogLockSettings::InitializeSettings()
   if (m_details)
   {
     const std::shared_ptr<CSettingGroup> groupDetails = AddGroup(category);
-    if (groupDetails == NULL)
+    if (!groupDetails)
     {
       CLog::Log(LOGERROR, "CGUIDialogLockSettings: unable to setup settings");
       return;

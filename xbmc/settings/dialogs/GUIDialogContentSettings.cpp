@@ -78,7 +78,7 @@ bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, CONTENT_TYPE co
 bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings, CONTENT_TYPE content /* = CONTENT_NONE */)
 {
   CGUIDialogContentSettings *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogContentSettings>(WINDOW_DIALOG_CONTENT_SETTINGS);
-  if (dialog == NULL)
+  if (!dialog)
     return false;
 
   if (scraper)
@@ -101,7 +101,7 @@ bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSet
 
     settings.m_allExtAudio = dialog->GetUseAllExternalAudio();
 
-    if (scraper == NULL || content == CONTENT_NONE)
+    if (!scraper || content == CONTENT_NONE)
       settings.exclude = dialog->GetExclude();
     else
     {
@@ -151,7 +151,7 @@ void CGUIDialogContentSettings::OnInitWindow()
 
 void CGUIDialogContentSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (!setting)
     return;
 
   CGUIDialogSettingsManualBase::OnSettingChanged(setting);
@@ -176,7 +176,7 @@ void CGUIDialogContentSettings::OnSettingChanged(const std::shared_ptr<const CSe
 
 void CGUIDialogContentSettings::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (!setting)
     return;
 
   CGUIDialogSettingsManualBase::OnSettingAction(setting);
@@ -317,14 +317,14 @@ void CGUIDialogContentSettings::InitializeSettings()
     m_showScanSettings = true;
 
   std::shared_ptr<CSettingCategory> category = AddCategory("contentsettings", -1);
-  if (category == NULL)
+  if (!category)
   {
     CLog::Log(LOGERROR, "CGUIDialogContentSettings: unable to setup settings");
     return;
   }
 
   std::shared_ptr<CSettingGroup> group = AddGroup(category);
-  if (group == NULL)
+  if (!group)
   {
     CLog::Log(LOGERROR, "CGUIDialogContentSettings: unable to setup settings");
     return;
@@ -337,7 +337,7 @@ void CGUIDialogContentSettings::InitializeSettings()
     subsetting->SetParent(SETTING_SCRAPER_LIST);
 
   std::shared_ptr<CSettingGroup> groupDetails = AddGroup(category, 20322);
-  if (groupDetails == NULL)
+  if (!groupDetails)
   {
     CLog::Log(LOGERROR, "CGUIDialogContentSettings: unable to setup scanning settings");
     return;

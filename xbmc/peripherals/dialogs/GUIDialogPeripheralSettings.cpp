@@ -51,7 +51,7 @@ bool CGUIDialogPeripheralSettings::OnMessage(CGUIMessage& message)
 
 void CGUIDialogPeripheralSettings::SetFileItem(const CFileItem* item)
 {
-  if (item == NULL)
+  if (!item)
     return;
 
   if (m_item)
@@ -62,7 +62,7 @@ void CGUIDialogPeripheralSettings::SetFileItem(const CFileItem* item)
 
 void CGUIDialogPeripheralSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (!setting)
     return;
 
   CGUIDialogSettingsManualBase::OnSettingChanged(setting);
@@ -79,7 +79,7 @@ void CGUIDialogPeripheralSettings::OnSettingChanged(const std::shared_ptr<const 
 
 bool CGUIDialogPeripheralSettings::Save()
 {
-  if (m_item == NULL || m_initialising)
+  if (!m_item || m_initialising)
     return true;
 
   PeripheralPtr peripheral = CServiceBroker::GetPeripherals().GetByPath(m_item->GetPath());
@@ -93,7 +93,7 @@ bool CGUIDialogPeripheralSettings::Save()
 
 void CGUIDialogPeripheralSettings::OnResetSettings()
 {
-  if (m_item == NULL)
+  if (!m_item)
     return;
 
   PeripheralPtr peripheral = CServiceBroker::GetPeripherals().GetByPath(m_item->GetPath());
@@ -122,7 +122,7 @@ void CGUIDialogPeripheralSettings::SetupView()
 
 void CGUIDialogPeripheralSettings::InitializeSettings()
 {
-  if (m_item == NULL)
+  if (!m_item)
   {
     m_initialising = false;
     return;
@@ -143,14 +143,14 @@ void CGUIDialogPeripheralSettings::InitializeSettings()
   CGUIDialogSettingsManualBase::InitializeSettings();
 
   const std::shared_ptr<CSettingCategory> category = AddCategory("peripheralsettings", -1);
-  if (category == NULL)
+  if (!category)
   {
     CLog::Log(LOGERROR, "CGUIDialogPeripheralSettings: unable to setup settings");
     return;
   }
 
   const std::shared_ptr<CSettingGroup> group = AddGroup(category);
-  if (group == NULL)
+  if (!group)
   {
     CLog::Log(LOGERROR, "CGUIDialogPeripheralSettings: unable to setup settings");
     return;
@@ -159,7 +159,7 @@ void CGUIDialogPeripheralSettings::InitializeSettings()
   std::vector<SettingPtr> settings = peripheral->GetSettings();
   for (auto& setting : settings)
   {
-    if (setting == NULL)
+    if (!setting)
       continue;
 
     if (!setting->IsVisible())

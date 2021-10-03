@@ -105,7 +105,7 @@ JSONRPC_STATUS CPlaylistOperations::Add(const std::string &method, ITransportLay
   if (playlist == PLAYLIST_PICTURE)
   {
     slideshow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
-    if (slideshow == NULL)
+    if (!slideshow)
       return FailedToExecute;
   }
 

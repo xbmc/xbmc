@@ -196,7 +196,8 @@ CUPnPRenderer::ProcessHttpGetRequest(NPT_HttpRequest&              request,
         NPT_String filepath = query.GetField("path");
         if (!filepath.IsEmpty()) {
             NPT_HttpEntity* entity = response.GetEntity();
-            if (entity == NULL) return NPT_ERROR_INVALID_STATE;
+            if (!entity)
+              return NPT_ERROR_INVALID_STATE;
 
             // check the method
             if (request.GetMethod() != NPT_HTTP_METHOD_GET &&

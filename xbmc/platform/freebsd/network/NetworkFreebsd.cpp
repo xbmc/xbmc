@@ -55,7 +55,7 @@ std::string CNetworkInterfaceFreebsd::GetCurrentDefaultGateway() const
   if (sysctl(mib, 6, NULL, &needed, NULL, 0) < 0)
     return result;
 
-  if ((buf = (char*)malloc(needed)) == NULL)
+  if ((buf = (char*)malloc(needed)) == nullptr)
     return result;
 
   if (sysctl(mib, 6, buf, &needed, NULL, 0) < 0)
@@ -71,7 +71,7 @@ std::string CNetworkInterfaceFreebsd::GetCurrentDefaultGateway() const
     sa = (struct sockaddr*)(rtm + 1);
     sa = (struct sockaddr*)(SA_SIZE(sa) + (char*)sa);
     sockin = (struct sockaddr_in*)sa;
-    if (inet_ntop(AF_INET, &sockin->sin_addr.s_addr, line, sizeof(line)) == NULL)
+    if (!inet_ntop(AF_INET, &sockin->sin_addr.s_addr, line, sizeof(line)))
     {
       free(buf);
       return result;

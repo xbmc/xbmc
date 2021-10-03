@@ -74,7 +74,7 @@ JSONRPC_STATUS CSettingsOperations::GetCategories(const std::string &method, ITr
   if (!strSection.empty())
   {
     SettingSectionPtr section = CServiceBroker::GetSettingsComponent()->GetSettings()->GetSection(strSection);
-    if (section == NULL)
+    if (!section)
       return InvalidParams;
 
     sections.push_back(section);
@@ -146,7 +146,7 @@ JSONRPC_STATUS CSettingsOperations::GetSettings(const std::string &method, ITran
   if (doFilter)
   {
     SettingSectionPtr section = CServiceBroker::GetSettingsComponent()->GetSettings()->GetSection(strSection);
-    if (section == NULL)
+    if (!section)
       return InvalidParams;
 
     sections.push_back(section);
@@ -199,8 +199,7 @@ JSONRPC_STATUS CSettingsOperations::GetSettingValue(const std::string &method, I
   std::string settingId = parameterObject["setting"].asString();
 
   SettingPtr setting = CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(settingId);
-  if (setting == NULL ||
-      !setting->IsVisible())
+  if (!setting || !setting->IsVisible())
     return InvalidParams;
 
   CVariant value;
@@ -245,8 +244,7 @@ JSONRPC_STATUS CSettingsOperations::SetSettingValue(const std::string &method, I
   CVariant value = parameterObject["value"];
 
   SettingPtr setting = CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(settingId);
-  if (setting == NULL ||
-      !setting->IsVisible())
+  if (!setting || !setting->IsVisible())
     return InvalidParams;
 
   switch (setting->GetType())
@@ -306,8 +304,7 @@ JSONRPC_STATUS CSettingsOperations::ResetSettingValue(const std::string &method,
   std::string settingId = parameterObject["setting"].asString();
 
   SettingPtr setting = CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(settingId);
-  if (setting == NULL ||
-      !setting->IsVisible())
+  if (!setting || !setting->IsVisible())
     return InvalidParams;
 
   switch (setting->GetType())
@@ -344,7 +341,7 @@ SettingLevel CSettingsOperations::ParseSettingLevel(const std::string &strLevel)
 bool CSettingsOperations::SerializeISetting(const std::shared_ptr<const ISetting>& setting,
                                             CVariant& obj)
 {
-  if (setting == NULL)
+  if (!setting)
     return false;
 
   obj["id"] = setting->GetId();
@@ -471,7 +468,7 @@ bool CSettingsOperations::SerializeSetting(const std::shared_ptr<const CSetting>
 bool CSettingsOperations::SerializeSettingBool(const std::shared_ptr<const CSettingBool>& setting,
                                                CVariant& obj)
 {
-  if (setting == NULL)
+  if (!setting)
     return false;
 
   obj["value"] = setting->GetValue();
@@ -483,7 +480,7 @@ bool CSettingsOperations::SerializeSettingBool(const std::shared_ptr<const CSett
 bool CSettingsOperations::SerializeSettingInt(const std::shared_ptr<const CSettingInt>& setting,
                                               CVariant& obj)
 {
-  if (setting == NULL)
+  if (!setting)
     return false;
 
   obj["default"] = setting->GetDefault();
@@ -550,7 +547,7 @@ bool CSettingsOperations::SerializeSettingInt(const std::shared_ptr<const CSetti
 bool CSettingsOperations::SerializeSettingNumber(
     const std::shared_ptr<const CSettingNumber>& setting, CVariant& obj)
 {
-  if (setting == NULL)
+  if (!setting)
     return false;
 
   obj["value"] = setting->GetValue();
@@ -566,7 +563,7 @@ bool CSettingsOperations::SerializeSettingNumber(
 bool CSettingsOperations::SerializeSettingString(
     const std::shared_ptr<const CSettingString>& setting, CVariant& obj)
 {
-  if (setting == NULL)
+  if (!setting)
     return false;
 
   obj["default"] = setting->GetDefault();
@@ -655,7 +652,7 @@ bool CSettingsOperations::SerializeSettingString(
 bool CSettingsOperations::SerializeSettingAction(
     const std::shared_ptr<const CSettingAction>& setting, CVariant& obj)
 {
-  if (setting == NULL)
+  if (!setting)
     return false;
 
   obj["data"] = setting->GetData();
@@ -666,8 +663,7 @@ bool CSettingsOperations::SerializeSettingAction(
 bool CSettingsOperations::SerializeSettingList(const std::shared_ptr<const CSettingList>& setting,
                                                CVariant& obj)
 {
-  if (setting == NULL ||
-      !SerializeSetting(setting->GetDefinition(), obj["definition"]))
+  if (!setting || !SerializeSetting(setting->GetDefinition(), obj["definition"]))
     return false;
 
   SerializeSettingListValues(CSettingUtils::GetList(setting), obj["value"]);
@@ -684,7 +680,7 @@ bool CSettingsOperations::SerializeSettingList(const std::shared_ptr<const CSett
 bool CSettingsOperations::SerializeSettingPath(const std::shared_ptr<const CSettingPath>& setting,
                                                CVariant& obj)
 {
-  if (setting == NULL)
+  if (!setting)
     return false;
 
   obj["type"] = "path";
@@ -697,7 +693,7 @@ bool CSettingsOperations::SerializeSettingPath(const std::shared_ptr<const CSett
 bool CSettingsOperations::SerializeSettingAddon(const std::shared_ptr<const CSettingAddon>& setting,
                                                 CVariant& obj)
 {
-  if (setting == NULL)
+  if (!setting)
     return false;
 
   obj["type"] = "addon";
@@ -709,7 +705,7 @@ bool CSettingsOperations::SerializeSettingAddon(const std::shared_ptr<const CSet
 bool CSettingsOperations::SerializeSettingDate(const std::shared_ptr<const CSettingDate>& setting,
                                                CVariant& obj)
 {
-  if (setting == NULL)
+  if (!setting)
     return false;
 
   obj["type"] = "date";
@@ -720,7 +716,7 @@ bool CSettingsOperations::SerializeSettingDate(const std::shared_ptr<const CSett
 bool CSettingsOperations::SerializeSettingTime(const std::shared_ptr<const CSettingTime>& setting,
                                                CVariant& obj)
 {
-  if (setting == NULL)
+  if (!setting)
     return false;
 
   obj["type"] = "time";
@@ -731,7 +727,7 @@ bool CSettingsOperations::SerializeSettingTime(const std::shared_ptr<const CSett
 bool CSettingsOperations::SerializeSettingControl(
     const std::shared_ptr<const ISettingControl>& control, CVariant& obj)
 {
-  if (control == NULL)
+  if (!control)
     return false;
 
   const std::string& type = control->GetType();

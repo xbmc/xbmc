@@ -25,28 +25,37 @@ namespace XBMCAddon
 {
   namespace xbmcaddon
   {
-    String Addon::getDefaultId() { return languageHook == NULL ? emptyString : languageHook->GetAddonId(); }
+  String Addon::getDefaultId()
+  {
+    return languageHook == nullptr ? emptyString : languageHook->GetAddonId();
+  }
 
-    String Addon::getAddonVersion() { return languageHook == NULL ? emptyString : languageHook->GetAddonVersion(); }
+  String Addon::getAddonVersion()
+  {
+    return languageHook == nullptr ? emptyString : languageHook->GetAddonVersion();
+  }
 
-    bool Addon::UpdateSettingInActiveDialog(const char* id, const String& value)
-    {
-      ADDON::AddonPtr addon(pAddon);
-      if (!CServiceBroker::GetGUI()->GetWindowManager().IsWindowActive(WINDOW_DIALOG_ADDON_SETTINGS))
-        return false;
+  bool Addon::UpdateSettingInActiveDialog(const char* id, const String& value)
+  {
+    ADDON::AddonPtr addon(pAddon);
+    if (!CServiceBroker::GetGUI()->GetWindowManager().IsWindowActive(WINDOW_DIALOG_ADDON_SETTINGS))
+      return false;
 
-      CGUIDialogAddonSettings* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogAddonSettings>(WINDOW_DIALOG_ADDON_SETTINGS);
-      if (dialog->GetCurrentAddonID() != addon->ID())
-        return false;
+    CGUIDialogAddonSettings* dialog =
+        CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogAddonSettings>(
+            WINDOW_DIALOG_ADDON_SETTINGS);
+    if (dialog->GetCurrentAddonID() != addon->ID())
+      return false;
 
-      CGUIMessage message(GUI_MSG_SETTING_UPDATED, 0, 0);
-      std::vector<std::string> params;
-      params.emplace_back(id);
-      params.push_back(value);
-      message.SetStringParams(params);
-      CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message, WINDOW_DIALOG_ADDON_SETTINGS);
+    CGUIMessage message(GUI_MSG_SETTING_UPDATED, 0, 0);
+    std::vector<std::string> params;
+    params.emplace_back(id);
+    params.push_back(value);
+    message.SetStringParams(params);
+    CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message,
+                                                                   WINDOW_DIALOG_ADDON_SETTINGS);
 
-      return true;
+    return true;
     }
 
     Addon::Addon(const char* cid)

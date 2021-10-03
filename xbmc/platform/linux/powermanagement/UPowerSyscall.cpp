@@ -12,7 +12,7 @@
 
 CUPowerSource::CUPowerSource(const char *powerSource)
 {
-  if(powerSource == NULL)
+  if (!powerSource)
     m_powerSource = "";
   else
     m_powerSource = powerSource;

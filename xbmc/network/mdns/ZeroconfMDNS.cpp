@@ -88,7 +88,7 @@ bool CZeroconfMDNS::doPublishService(const std::string& fcr_identifier,
 
 #if !defined(HAS_MDNS_EMBEDDED)
   CSingleLock lock(m_data_guard);
-  if(m_service == NULL)
+  if (!m_service)
   {
     err = DNSServiceCreateConnection(&m_service);
     if (err != kDNSServiceErr_NoError)

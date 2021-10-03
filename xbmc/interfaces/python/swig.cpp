@@ -213,7 +213,7 @@ namespace PythonBindings
     PyObject* pystring = NULL;
 
     PyErr_Fetch(&exc_type, &exc_value, &exc_traceback);
-    if (exc_type == NULL && exc_value == NULL && exc_traceback == NULL)
+    if (!exc_type && !exc_value && !exc_traceback)
       return false;
 
     // See https://docs.python.org/3/c-api/exceptions.html#c.PyErr_NormalizeException
@@ -245,7 +245,9 @@ namespace PythonBindings
       {
         char method[] = "format_exception";
         char format[] = "OOO";
-        PyObject *tbList = PyObject_CallMethod(tracebackModule, method, format, exc_type, exc_value == NULL ? Py_None : exc_value, exc_traceback == NULL ? Py_None : exc_traceback);
+        PyObject* tbList = PyObject_CallMethod(tracebackModule, method, format, exc_type,
+                                               exc_value == nullptr ? Py_None : exc_value,
+                                               exc_traceback == nullptr ? Py_None : exc_traceback);
 
         if (tbList)
         {
@@ -408,7 +410,8 @@ namespace PythonBindings
 
     // retrieve the TypeInfo from the api class
     const TypeInfo* typeInfo = getTypeInfoForInstance(api);
-    PyTypeObject* typeObj = pytype == NULL ? const_cast<PyTypeObject*>(&(typeInfo->pythonType)) : pytype;
+    PyTypeObject* typeObj =
+        pytype == nullptr ? const_cast<PyTypeObject*>(&(typeInfo->pythonType)) : pytype;
 
     PyHolder* self = reinterpret_cast<PyHolder*>(typeObj->tp_alloc(typeObj,0));
     if (!self) return NULL;

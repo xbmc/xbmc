@@ -795,7 +795,7 @@ bool CApplication::Initialize()
 
 void CApplication::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (!setting)
     return;
 
   const std::string &settingId = setting->GetId();
@@ -893,7 +893,7 @@ void CApplication::OnSettingChanged(const std::shared_ptr<const CSetting>& setti
 
 void CApplication::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (!setting)
     return;
 
   const std::string &settingId = setting->GetId();
@@ -939,7 +939,7 @@ bool CApplication::OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
                                    const char* oldSettingId,
                                    const TiXmlNode* oldSettingNode)
 {
-  if (setting == NULL)
+  if (!setting)
     return false;
 
 #if defined(TARGET_DARWIN_OSX)
@@ -1020,7 +1020,7 @@ void CApplication::ReloadSkin(bool confirm/*=false*/)
 
 bool CApplication::Load(const TiXmlNode *settings)
 {
-  if (settings == NULL)
+  if (!settings)
     return false;
 
   const TiXmlElement *audioElement = settings->FirstChildElement("audio");
@@ -1036,12 +1036,12 @@ bool CApplication::Load(const TiXmlNode *settings)
 
 bool CApplication::Save(TiXmlNode *settings) const
 {
-  if (settings == NULL)
+  if (!settings)
     return false;
 
   TiXmlElement volumeNode("audio");
   TiXmlNode *audioNode = settings->InsertEndChild(volumeNode);
-  if (audioNode == NULL)
+  if (!audioNode)
     return false;
 
   XMLUtils::SetBoolean(audioNode, "mute", m_muted);

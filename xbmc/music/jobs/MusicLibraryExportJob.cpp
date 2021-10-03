@@ -29,7 +29,7 @@ bool CMusicLibraryExportJob::operator==(const CJob* job) const
     return false;
 
   const CMusicLibraryExportJob* exportJob = dynamic_cast<const CMusicLibraryExportJob*>(job);
-  if (exportJob == NULL)
+  if (!exportJob)
     return false;
 
   return !(m_settings != exportJob->m_settings);

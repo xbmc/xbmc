@@ -95,7 +95,7 @@ void CGUIRSSControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyre
   {
     CSingleLock lock(m_criticalSection);
     // Create RSS background/worker thread if needed
-    if (m_pReader == NULL)
+    if (!m_pReader)
     {
 
       RssUrls::const_iterator iter = CRssManager::GetInstance().GetUrls().find(m_urlset);

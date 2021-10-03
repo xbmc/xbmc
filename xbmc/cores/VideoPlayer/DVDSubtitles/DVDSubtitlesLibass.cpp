@@ -158,7 +158,7 @@ bool CDVDSubtitlesLibass::CreateTrack()
 
   CLog::Log(LOGINFO, "CDVDSubtitlesLibass: Creating new ASS track");
   m_track = ass_new_track(m_library);
-  if (m_track == NULL)
+  if (!m_track)
   {
     CLog::Log(LOGERROR, "{} - Failed to allocate ASS track.", __FUNCTION__);
     return false;
@@ -206,7 +206,7 @@ bool CDVDSubtitlesLibass::CreateTrack(char* buf, size_t size)
   CLog::Log(LOGINFO, "CDVDSubtitlesLibass: Creating m_track from SSA buffer");
 
   m_track = ass_read_memory(m_library, buf, size, 0);
-  if (m_track == NULL)
+  if (!m_track)
     return false;
 
   return true;
@@ -514,7 +514,7 @@ int CDVDSubtitlesLibass::AddEvent(const char* text,
                                   double stopTime,
                                   subtitleOpts* opts)
 {
-  if (text == NULL || text[0] == '\0')
+  if (!text || text[0] == '\0')
   {
     CLog::Log(LOGDEBUG,
               "{} - Add event skipped due to empty text (with start time: {}, stop time {})",
@@ -554,7 +554,7 @@ int CDVDSubtitlesLibass::AddEvent(const char* text,
 void CDVDSubtitlesLibass::AppendTextToEvent(int eventId, const char* text)
 {
   CSingleLock lock(m_section);
-  if (eventId == ASS_NO_ID || text == NULL || text[0] == '\0')
+  if (eventId == ASS_NO_ID || !text || text[0] == '\0')
     return;
   if (!m_track)
   {

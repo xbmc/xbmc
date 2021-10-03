@@ -32,7 +32,7 @@ namespace XBMCAddon
     void* PyContext::enterContext()
     {
       PyContextState* cur = tlsPyContextState;
-      if (cur == NULL)
+      if (!cur)
       {
         cur = new PyContextState();
         tlsPyContextState = cur;

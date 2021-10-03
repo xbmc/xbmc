@@ -101,7 +101,7 @@ bool CRingBuffer::ReadData(char *buf, unsigned int size)
 bool CRingBuffer::ReadData(CRingBuffer &rBuf, unsigned int size)
 {
   CSingleLock lock(m_critSection);
-  if (rBuf.getBuffer() == NULL)
+  if (!rBuf.getBuffer())
     rBuf.Create(size);
 
   bool bOk = size <= rBuf.getMaxWriteSize() && size <= getMaxReadSize();
@@ -152,7 +152,7 @@ bool CRingBuffer::WriteData(const char *buf, unsigned int size)
 bool CRingBuffer::WriteData(CRingBuffer &rBuf, unsigned int size)
 {
   CSingleLock lock(m_critSection);
-  if (m_buffer == NULL)
+  if (!m_buffer)
     Create(size);
 
   bool bOk = size <= rBuf.getMaxReadSize() && size <= getMaxWriteSize();

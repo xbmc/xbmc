@@ -31,11 +31,11 @@ CLinuxStorageProvider::CLinuxStorageProvider()
     m_instance = new CUDisksProvider();
 #endif
 #ifdef HAVE_LIBUDEV
-  if (m_instance == NULL)
+  if (!m_instance)
     m_instance = new CUDevProvider();
 #endif
 
-  if (m_instance == NULL)
+  if (!m_instance)
     m_instance = new CPosixMountProvider();
 }
 

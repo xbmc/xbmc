@@ -194,7 +194,7 @@ TEST(TestEvent, Group)
   EXPECT_TRUE(!result2);
 
   EXPECT_TRUE(w3.waiting);
-  EXPECT_TRUE(w3.result == NULL);
+  EXPECT_TRUE(!w3.result);
 
   event1.Set();
 
@@ -449,7 +449,7 @@ TEST(TestEvent, GroupWaitResetsChild)
   EXPECT_TRUE(waitForWaiters(group, 1, 10000ms));
 
   EXPECT_TRUE(w3.waiting);
-  EXPECT_TRUE(w3.result == NULL);
+  EXPECT_TRUE(!w3.result);
 
   event2.Set();
 
@@ -479,7 +479,7 @@ TEST(TestEvent, GroupTimedWait)
   EXPECT_TRUE(waitForWaiters(event1, 1, 10000ms));
   EXPECT_TRUE(waitForWaiters(event2, 1, 10000ms));
 
-  EXPECT_TRUE(group.wait(20ms) == NULL); // waited ... got nothing
+  EXPECT_TRUE(!group.wait(20ms)); // waited ... got nothing
 
   group_wait w3(group, 50ms);
   thread waitThread3(w3);
@@ -490,13 +490,13 @@ TEST(TestEvent, GroupTimedWait)
   EXPECT_TRUE(!result2);
 
   EXPECT_TRUE(w3.waiting);
-  EXPECT_TRUE(w3.result == NULL);
+  EXPECT_TRUE(!w3.result);
 
   // this should end given the wait is for only 50 millis
   EXPECT_TRUE(waitThread3.timed_join(200ms));
 
   EXPECT_TRUE(!w3.waiting);
-  EXPECT_TRUE(w3.result == NULL);
+  EXPECT_TRUE(!w3.result);
 
   group_wait w4(group, 50ms);
   thread waitThread4(w4);
@@ -504,7 +504,7 @@ TEST(TestEvent, GroupTimedWait)
   EXPECT_TRUE(waitForWaiters(group, 1, 10000ms));
 
   EXPECT_TRUE(w4.waiting);
-  EXPECT_TRUE(w4.result == NULL);
+  EXPECT_TRUE(!w4.result);
 
   event1.Set();
 

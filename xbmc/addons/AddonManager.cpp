@@ -90,7 +90,7 @@ IAddonMgrCallback* CAddonMgr::GetCallbackForType(TYPE type)
 
 bool CAddonMgr::RegisterAddonMgrCallback(const TYPE type, IAddonMgrCallback* cb)
 {
-  if (cb == NULL)
+  if (!cb)
     return false;
 
   m_managers.erase(type);

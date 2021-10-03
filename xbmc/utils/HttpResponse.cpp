@@ -40,7 +40,7 @@ void CHttpResponse::SetContent(const char* data, unsigned int length)
 {
   m_content = data;
 
-  if (m_content == NULL)
+  if (!m_content)
     m_contentLength = 0;
   else
     m_contentLength = length;

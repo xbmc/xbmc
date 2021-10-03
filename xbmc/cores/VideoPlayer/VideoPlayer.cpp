@@ -1084,7 +1084,7 @@ bool CVideoPlayer::IsValidStream(CCurrentStream& stream)
   if (source == STREAM_SOURCE_DEMUX_SUB)
   {
     CDemuxStream* st = m_pSubtitleDemuxer->GetStream(stream.demuxerId, stream.id);
-    if(st == NULL || st->disabled)
+    if (!st || st->disabled)
       return false;
     if(st->type != stream.type)
       return false;
@@ -1093,7 +1093,7 @@ bool CVideoPlayer::IsValidStream(CCurrentStream& stream)
   if (source == STREAM_SOURCE_DEMUX)
   {
     CDemuxStream* st = m_pDemuxer->GetStream(stream.demuxerId, stream.id);
-    if(st == NULL || st->disabled)
+    if (!st || st->disabled)
       return false;
     if(st->type != stream.type)
       return false;
@@ -1111,7 +1111,7 @@ bool CVideoPlayer::IsValidStream(CCurrentStream& stream)
   if (source == STREAM_SOURCE_VIDEOMUX)
   {
     CDemuxStream* st = m_pCCDemuxer->GetStream(stream.id);
-    if (st == NULL || st->disabled)
+    if (!st || st->disabled)
       return false;
     if (st->type != stream.type)
       return false;
@@ -1175,7 +1175,7 @@ bool CVideoPlayer::IsBetterStream(CCurrentStream& current, CDemuxStream* stream)
 void CVideoPlayer::CheckBetterStream(CCurrentStream& current, CDemuxStream* stream)
 {
   IDVDStreamPlayer* player = GetStreamPlayer(current.player);
-  if (!IsValidStream(current) && (player == NULL || player->IsStalled()))
+  if (!IsValidStream(current) && (!player || player->IsStalled()))
     CloseStream(current, true);
 
   if (IsBetterStream(current, stream))

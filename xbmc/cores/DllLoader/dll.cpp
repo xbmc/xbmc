@@ -80,7 +80,7 @@ extern "C" HMODULE __stdcall dllLoadLibraryExtended(const char* lib_file, const 
   /* msdn docs state */
   /* "If no file name extension is specified in the lpFileName parameter, the default library extension .dll is appended.  */
   /* However, the file name string can include a trailing point character (.) to indicate that the module name has no extension." */
-  if( strrchr(libname, '.') == NULL )
+  if (!strrchr(libname, '.'))
     strcat(libname, ".dll");
   else if( libname[strlen(libname)-1] == '.' )
     libname[strlen(libname)-1] = '\0';
@@ -227,7 +227,7 @@ extern "C" HMODULE WINAPI dllGetModuleHandleA(const char* lpModuleName)
   If this parameter is NULL, GetModuleHandle returns a handle to the file used to create the calling process (.exe file).
   */
 
-  if( lpModuleName == NULL )
+  if (!lpModuleName)
     return NULL;
 
   char* strModuleName = new char[strlen(lpModuleName) + 5];

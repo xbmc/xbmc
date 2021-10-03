@@ -696,7 +696,7 @@ void CGUIEditControl::SetInputValidation(StringValidation::Validator inputValida
 
 bool CGUIEditControl::ValidateInput(const std::wstring &data) const
 {
-  if (m_inputValidator == NULL)
+  if (!m_inputValidator)
     return true;
 
   return m_inputValidator(GetLabel2(), m_inputValidatorData != nullptr

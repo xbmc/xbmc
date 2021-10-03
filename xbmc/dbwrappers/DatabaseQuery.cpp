@@ -49,11 +49,11 @@ CDatabaseQueryRule::CDatabaseQueryRule()
 
 bool CDatabaseQueryRule::Load(const TiXmlNode *node, const std::string &encoding /* = "UTF-8" */)
 {
-  if (node == NULL)
+  if (!node)
     return false;
 
   const TiXmlElement *element = node->ToElement();
-  if (element == NULL)
+  if (!element)
     return false;
 
   // format is:
@@ -62,7 +62,7 @@ bool CDatabaseQueryRule::Load(const TiXmlNode *node, const std::string &encoding
   // <value> tags containing a string
   const char *field = element->Attribute("field");
   const char *oper = element->Attribute("operator");
-  if (field == NULL || oper == NULL)
+  if (!field || !oper)
     return false;
 
   m_field = TranslateField(field);
@@ -72,7 +72,7 @@ bool CDatabaseQueryRule::Load(const TiXmlNode *node, const std::string &encoding
     return true;
 
   const TiXmlNode *parameter = element->FirstChild();
-  if (parameter == NULL)
+  if (!parameter)
     return false;
 
   if (parameter->Type() == TiXmlNode::TINYXML_TEXT)
@@ -149,7 +149,8 @@ bool CDatabaseQueryRule::Load(const CVariant &obj)
 
 bool CDatabaseQueryRule::Save(TiXmlNode *parent) const
 {
-  if (parent == NULL || (m_parameter.empty() && m_operator != OPERATOR_TRUE && m_operator != OPERATOR_FALSE))
+  if (!parent ||
+      (m_parameter.empty() && m_operator != OPERATOR_TRUE && m_operator != OPERATOR_FALSE))
     return false;
 
   TiXmlElement rule("rule");

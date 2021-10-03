@@ -158,7 +158,8 @@ int MysqlDatabase::connect(bool create_new) {
   {
     disconnect();
 
-    if (conn == NULL) {
+    if (!conn)
+    {
       conn = mysql_init(conn);
       mysql_ssl_set(
         conn,
@@ -288,7 +289,7 @@ int MysqlDatabase::drop() {
 }
 
 int MysqlDatabase::copy(const char *backup_name) {
-  if ( !active || conn == NULL)
+  if (!active || !conn)
     throw DbErrors("Can't copy database: no active connection...");
 
   char sql[4096];
@@ -357,7 +358,7 @@ int MysqlDatabase::copy(const char *backup_name) {
 }
 
 int MysqlDatabase::drop_analytics(void) {
-  if ( !active || conn == NULL)
+  if (!active || !conn)
     throw DbErrors("Can't clean database: no active connection...");
 
   char sql[4096];
@@ -559,14 +560,14 @@ void MysqlDatabase::rollback_transaction() {
 bool MysqlDatabase::exists(void) {
   bool ret = false;
 
-  if ( conn == NULL || mysql_ping(conn) )
+  if (!conn || mysql_ping(conn))
   {
     CLog::Log(LOGERROR, "Not connected to database, test of existence is not possible.");
     return ret;
   }
 
   MYSQL_RES* result = mysql_list_dbs(conn, db.c_str());
-  if (result == NULL)
+  if (!result)
   {
     CLog::Log(LOGERROR,"Database is not present, does the user has CREATE DATABASE permission");
     return false;
@@ -1434,7 +1435,8 @@ MYSQL* MysqlDataset::handle(){
 
 void MysqlDataset::make_query(StringList &_sql) {
   std::string query;
-  if (db == NULL) throw DbErrors("No Database Connection");
+  if (!db)
+    throw DbErrors("No Database Connection");
   try
   {
     if (autocommit) db->start_transaction();
@@ -1478,7 +1480,8 @@ void MysqlDataset::make_deletion() {
 }
 
 void MysqlDataset::fill_fields() {
-  if ((db == NULL) || (result.record_header.empty()) || (result.records.size() < (unsigned int)frecno)) return;
+  if (!db || result.record_header.empty() || result.records.size() < (unsigned int)frecno)
+    return;
 
   if (fields_object->size() == 0) // Filling columns name
   {
@@ -1618,7 +1621,7 @@ bool MysqlDataset::query(const std::string &query) {
 
   MYSQL* conn = handle();
   stmt = mysql_store_result(conn);
-  if (stmt == NULL)
+  if (!stmt)
     throw DbErrors("Missing result set!");
 
   // column headers

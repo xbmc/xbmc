@@ -412,7 +412,8 @@ extern "C"
     // dll has to make sure it uses the correct path for now
     if (len > 1 && relPath[1] == ':')
     {
-      if (absPath == NULL) absPath = dll_strdup(relPath);
+      if (!absPath)
+        absPath = dll_strdup(relPath);
       else
       {
         strncpy(absPath, relPath, maxLength);
@@ -424,7 +425,8 @@ extern "C"
     if (!strncmp(relPath, "\\Device\\Cdrom0", 14))
     {
       // needed?
-      if (absPath == NULL) absPath = strdup(relPath);
+      if (!absPath)
+        absPath = strdup(relPath);
       else
       {
         strncpy(absPath, relPath, maxLength);
@@ -527,7 +529,7 @@ extern "C"
     if (bResult)
     {
       EmuFileObject* object = g_emuFileWrapper.RegisterFileObject(pFile);
-      if (object == NULL)
+      if (!object)
       {
         pFile->Close();
         delete pFile;
@@ -1155,11 +1157,11 @@ extern "C"
 
   int dll_fopen_s(FILE** pFile, const char * filename, const char * mode)
   {
-    if (pFile == NULL || filename == NULL || mode == NULL)
+    if (!pFile || !filename || !mode)
       return EINVAL;
 
     *pFile = dll_fopen(filename, mode);
-    if (*pFile == NULL)
+    if (!*pFile)
       return errno;
 
     return 0;
@@ -1844,7 +1846,7 @@ extern "C"
           CSingleLock lock(dll_cs_environ);
 
           char** free_position = NULL;
-          for (int i = 0; i < EMU_MAX_ENVIRONMENT_ITEMS && free_position == NULL; i++)
+          for (int i = 0; i < EMU_MAX_ENVIRONMENT_ITEMS && !free_position; i++)
           {
             if (dll__environ[i])
             {
@@ -1896,7 +1898,7 @@ extern "C"
 
       update_emu_environ();//apply any changes
 
-      for (int i = 0; i < EMU_MAX_ENVIRONMENT_ITEMS && value == NULL; i++)
+      for (int i = 0; i < EMU_MAX_ENVIRONMENT_ITEMS && !value; i++)
       {
         if (dll__environ[i])
         {
@@ -2027,7 +2029,7 @@ extern "C"
 
   struct mntent *dll_getmntent(FILE *fp)
   {
-    if (fp == NULL)
+    if (!fp)
       return NULL;
 
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByStream(fp);

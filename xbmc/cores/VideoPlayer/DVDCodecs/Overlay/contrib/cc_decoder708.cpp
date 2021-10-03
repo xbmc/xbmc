@@ -433,7 +433,7 @@ void process_cr (cc708_service_decoder *decoder)
 int handle_708_C0 (cc708_service_decoder *decoder, unsigned char *data, int data_length)
 {
   const char *name=COMMANDS_C0[data[0]];
-  if (name==NULL)
+  if (!name)
     name="Reserved";
   int len=-1;
   // These commands have a known length even if they are reserved.
@@ -695,7 +695,7 @@ void handle_708_DFx_DefineWindow (cc708_service_decoder *decoder, int window, un
       for (int i=0;i<=I708_MAX_ROWS;i++)
       {
         decoder->windows[window].rows[i]=(unsigned char *) malloc (I708_MAX_COLUMNS+1);
-        if (decoder->windows[window].rows[i]==NULL) // Great
+        if (!decoder->windows[window].rows[i]) // Great
         {
           decoder->windows[window].is_defined=0;
           decoder->current_window=-1;

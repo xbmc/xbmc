@@ -143,7 +143,7 @@ bool CActiveAESettings::IsSettingVisible(const std::string& condition,
                                          const SettingConstPtr& setting,
                                          void* data)
 {
-  if (setting == NULL || value.empty())
+  if (!setting || value.empty())
     return false;
 
   CSingleLock lock(m_instance->m_cs);

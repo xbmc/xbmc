@@ -445,7 +445,7 @@ public:
 
   bool OnMRAdded(PLT_DeviceDataReference& device ) override
   {
-    if (device->GetUUID().IsEmpty() || device->GetUUID().GetChars() == NULL)
+    if (device->GetUUID().IsEmpty() || !device->GetUUID().GetChars())
       return false;
 
     CPlayerCoreFactory &playerCoreFactory = CServiceBroker::GetPlayerCoreFactory();
@@ -459,7 +459,7 @@ public:
 
   void OnMRRemoved(PLT_DeviceDataReference& device ) override
   {
-    if (device->GetUUID().IsEmpty() || device->GetUUID().GetChars() == NULL)
+    if (device->GetUUID().IsEmpty() || !device->GetUUID().GetChars())
       return;
 
     std::string uuid(device->GetUUID().GetChars());
@@ -667,14 +667,14 @@ CUPnP::StartClient()
 void
 CUPnP::StopClient()
 {
-    if (m_MediaBrowser == NULL)
-        return;
+  if (!m_MediaBrowser)
+    return;
 
-    delete m_MediaBrowser;
-    m_MediaBrowser = NULL;
+  delete m_MediaBrowser;
+  m_MediaBrowser = NULL;
 
-    if (!IsControllerStarted())
-        DestroyControlPoint();
+  if (!IsControllerStarted())
+    DestroyControlPoint();
 }
 
 /*----------------------------------------------------------------------
@@ -697,8 +697,8 @@ CUPnP::StartController()
 void
 CUPnP::StopController()
 {
-  if (m_MediaController == NULL)
-      return;
+  if (!m_MediaController)
+    return;
 
   delete m_MediaController;
   m_MediaController = NULL;

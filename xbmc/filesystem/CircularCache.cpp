@@ -41,13 +41,13 @@ int CCircularCache::Open()
 {
 #ifdef TARGET_WINDOWS
   m_handle = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, m_size, NULL);
-  if(m_handle == NULL)
+  if (!m_handle)
     return CACHE_RC_ERROR;
   m_buf = (uint8_t*)MapViewOfFile(m_handle, FILE_MAP_ALL_ACCESS, 0, 0, 0);
 #else
   m_buf = new uint8_t[m_size];
 #endif
-  if (m_buf == NULL)
+  if (!m_buf)
     return CACHE_RC_ERROR;
   m_beg = 0;
   m_end = 0;
@@ -123,7 +123,7 @@ int CCircularCache::WriteToCache(const char *buf, size_t len)
   if(len == 0)
     return 0;
 
-  if (m_buf == NULL)
+  if (!m_buf)
     return 0;
 
   // write the data
@@ -166,7 +166,7 @@ int CCircularCache::ReadFromCache(char *buf, size_t len)
   if(len == 0)
     return 0;
 
-  if (m_buf == NULL)
+  if (!m_buf)
     return 0;
 
   memcpy(buf, m_buf + pos, len);

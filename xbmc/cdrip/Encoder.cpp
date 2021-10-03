@@ -48,7 +48,8 @@ int64_t CEncoder::SeekCallback(void *opaque, int64_t position, int whence)
 
 bool CEncoder::Init(const char* strFile, int iInChannels, int iInRate, int iInBits)
 {
-  if (strFile == NULL) return false;
+  if (!strFile)
+    return false;
 
   m_dwWriteBufferPointer = 0;
   m_impl->m_strFile = strFile;

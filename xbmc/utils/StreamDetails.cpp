@@ -547,7 +547,7 @@ void CStreamDetails::DetermineBestStreams(void)
     if (!champion)
       continue;
 
-    if ((*champion == NULL) || (*champion)->IsWorseThan(*iter))
+    if (!*champion || (*champion)->IsWorseThan(*iter))
       *champion = iter.get();
   }  /* for each */
 }

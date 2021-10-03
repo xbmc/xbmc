@@ -138,7 +138,7 @@ void CGUIDialogLibExportSettings::OnSettingChanged(const std::shared_ptr<const C
 
 void CGUIDialogLibExportSettings::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (!setting)
     return;
 
   CGUIDialogSettingsManualBase::OnSettingAction(setting);

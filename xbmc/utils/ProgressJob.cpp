@@ -50,11 +50,11 @@ bool CProgressJob::DoModal()
   m_progress = NULL;
 
   // get a progress dialog if we don't already have one
-  if (m_progressDialog == NULL)
+  if (!m_progressDialog)
   {
     m_progressDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
 
-    if (m_progressDialog == NULL)
+    if (!m_progressDialog)
       return false;
   }
 
@@ -83,8 +83,7 @@ void CProgressJob::SetProgressIndicators(CGUIDialogProgressBarHandle* progressBa
 
 void CProgressJob::ShowProgressDialog() const
 {
-  if (!IsModal() || m_progressDialog == NULL ||
-      m_progressDialog->IsDialogRunning())
+  if (!IsModal() || !m_progressDialog || m_progressDialog->IsDialogRunning())
     return;
 
   // show the progress dialog as a modal dialog with a progress bar

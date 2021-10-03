@@ -268,9 +268,8 @@ void CLangInfo::CRegion::SetGlobalLocale()
 #endif
 
 #ifndef TARGET_WINDOWS
-  if (setlocale(LC_COLLATE, strLocale.c_str()) == NULL ||
-      setlocale(LC_CTYPE, strLocale.c_str()) == NULL ||
-      setlocale(LC_TIME, strLocale.c_str()) == NULL)
+  if (!setlocale(LC_COLLATE, strLocale.c_str()) || !setlocale(LC_CTYPE, strLocale.c_str()) ||
+      !setlocale(LC_TIME, strLocale.c_str()))
   {
     strLocale = "C";
     setlocale(LC_COLLATE, strLocale.c_str());
@@ -280,9 +279,8 @@ void CLangInfo::CRegion::SetGlobalLocale()
 #else
   std::wstring strLocaleW;
   g_charsetConverter.utf8ToW(strLocale, strLocaleW);
-  if (_wsetlocale(LC_COLLATE, strLocaleW.c_str()) == NULL ||
-      _wsetlocale(LC_CTYPE, strLocaleW.c_str()) == NULL ||
-      _wsetlocale(LC_TIME, strLocaleW.c_str()) == NULL)
+  if (!_wsetlocale(LC_COLLATE, strLocaleW.c_str()) || !_wsetlocale(LC_CTYPE, strLocaleW.c_str()) ||
+      !_wsetlocale(LC_TIME, strLocaleW.c_str()))
   {
     strLocale = "C";
     strLocaleW = L"C";
@@ -317,7 +315,7 @@ CLangInfo::~CLangInfo() = default;
 
 void CLangInfo::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (!setting)
     return;
 
   auto settingsComponent = CServiceBroker::GetSettingsComponent();
@@ -397,7 +395,7 @@ bool CLangInfo::Load(const std::string& strLanguage)
 
   // get the matching language addon
   m_languageAddon = GetLanguageAddon(strLanguage);
-  if (m_languageAddon == NULL)
+  if (!m_languageAddon)
   {
     CLog::Log(LOGERROR, "Unknown language {}", strLanguage);
     return false;
@@ -635,7 +633,7 @@ void CLangInfo::SetDefaults()
 std::string CLangInfo::GetGuiCharSet() const
 {
   std::shared_ptr<CSettingString> charsetSetting = std::static_pointer_cast<CSettingString>(CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(CSettings::SETTING_LOCALE_CHARSET));
-  if (charsetSetting == NULL || charsetSetting->IsDefault())
+  if (!charsetSetting || charsetSetting->IsDefault())
     return m_strGuiCharSet;
 
   return charsetSetting->GetValue();
@@ -672,7 +670,7 @@ LanguageResourcePtr CLangInfo::GetLanguageAddon(const std::string& locale /* = "
 std::string CLangInfo::GetEnglishLanguageName(const std::string& locale /* = "" */) const
 {
   LanguageResourcePtr addon = GetLanguageAddon(locale);
-  if (addon == NULL)
+  if (!addon)
     return "";
 
   return addon->Name();

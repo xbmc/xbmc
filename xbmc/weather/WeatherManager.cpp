@@ -151,7 +151,7 @@ void CWeatherManager::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 
 void CWeatherManager::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (!setting)
     return;
 
   const std::string settingId = setting->GetId();
@@ -167,7 +167,7 @@ void CWeatherManager::OnSettingChanged(const std::shared_ptr<const CSetting>& se
 
 void CWeatherManager::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (!setting)
     return;
 
   const std::string settingId = setting->GetId();

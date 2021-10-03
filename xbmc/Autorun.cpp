@@ -77,7 +77,7 @@ void CAutorun::ExecuteAutorun(const std::string& path, bool bypassSettings, bool
 
   CCdInfo* pInfo = CServiceBroker::GetMediaManager().GetCdInfo(path);
 
-  if ( pInfo == NULL )
+  if (!pInfo)
     return ;
 
   g_application.ResetScreenSaver();
@@ -106,7 +106,7 @@ bool CAutorun::PlayDisc(const std::string& path, bool bypassSettings, bool start
   std::string mediaPath;
 
   CCdInfo* pInfo = CServiceBroker::GetMediaManager().GetCdInfo(path);
-  if (pInfo == NULL)
+  if (!pInfo)
     return false;
 
   if (mediaPath.empty() && pInfo->IsAudio(1))

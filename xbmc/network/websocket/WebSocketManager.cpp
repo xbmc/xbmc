@@ -26,7 +26,7 @@
 
 CWebSocket* CWebSocketManager::Handle(const char* data, unsigned int length, std::string &response)
 {
-  if (data == NULL || length <= 0)
+  if (!data || length <= 0)
     return NULL;
 
   HttpParser header;
@@ -45,7 +45,7 @@ CWebSocket* CWebSocketManager::Handle(const char* data, unsigned int length, std
 
   // There must be a "Sec-WebSocket-Version" header
   const char* value = header.getValue(WS_HEADER_VERSION_LC);
-  if (value == NULL)
+  if (!value)
   {
     CLog::Log(LOGINFO, "WebSocket: missing Sec-WebSocket-Version");
     CHttpResponse httpResponse(HTTP::Get, HTTP::BadRequest, HTTP::Version1_1);
@@ -60,7 +60,7 @@ CWebSocket* CWebSocketManager::Handle(const char* data, unsigned int length, std
   else if (strncmp(value, "13", 2) == 0)
     websocket = new CWebSocketV13();
 
-  if (websocket == NULL)
+  if (!websocket)
   {
     CLog::Log(LOGINFO, "WebSocket: Unsupported Sec-WebSocket-Version {}", value);
     CHttpResponse httpResponse(HTTP::Get, HTTP::UpgradeRequired, HTTP::Version1_1);

@@ -33,7 +33,7 @@ CWebSocketFrame::CWebSocketFrame(const char* data, uint64_t length)
 {
   reset();
 
-  if (data == NULL || length < LENGTH_MIN)
+  if (!data || length < LENGTH_MIN)
     return;
 
   m_free = false;
@@ -351,7 +351,7 @@ const CWebSocketMessage* CWebSocket::Handle(const char* &buffer, size_t &length,
           return msg;
         }
 
-        if (m_message == NULL && (m_message = GetMessage()) == NULL)
+        if (!m_message && (m_message = GetMessage()) == nullptr)
         {
           CLog::Log(LOGINFO, "WebSocket: Could not allocate a new websocket message");
           delete frame;
@@ -409,14 +409,14 @@ const CWebSocketMessage* CWebSocket::Handle(const char* &buffer, size_t &length,
 const CWebSocketMessage* CWebSocket::Send(WebSocketFrameOpcode opcode, const char* data /* = NULL */, uint32_t length /* = 0 */)
 {
   CWebSocketFrame *frame = GetFrame(opcode, data, length);
-  if (frame == NULL || !frame->IsValid())
+  if (!frame || !frame->IsValid())
   {
     CLog::Log(LOGINFO, "WebSocket: Trying to send an invalid frame");
     return NULL;
   }
 
   CWebSocketMessage *msg = GetMessage();
-  if (msg == NULL)
+  if (!msg)
   {
     CLog::Log(LOGINFO, "WebSocket: Could not allocate a message");
     return NULL;

@@ -303,7 +303,7 @@ void CUDisksProvider::DeviceChanged(const char *object, IStorageEventsCallback *
   CLog::Log(LOGDEBUG, LOGDBUS, "UDisks: DeviceChanged ({})", object);
 
   CUDiskDevice *device = m_AvailableDevices[object];
-  if (device == NULL)
+  if (!device)
   {
     CLog::Log(LOGWARNING, "UDisks: Inconsistency found! DeviceChanged on an unindexed disk");
     DeviceAdded(object, callback);

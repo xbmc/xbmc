@@ -374,7 +374,7 @@ bool CCharsetConverter::CInnerConverter::convert(iconv_t type, int multiplier, c
   //allocate output buffer for iconv()
   size_t      outBufSize = (strSource.length() + 1) * sizeof(typename OUTPUT::value_type) * multiplier;
   char*       outBuf     = (char*)malloc(outBufSize);
-  if (outBuf == NULL)
+  if (!outBuf)
   {
     CLog::Log(LOGFATAL, "{}: malloc failed", __FUNCTION__);
     return false;
@@ -496,7 +496,7 @@ bool CCharsetConverter::CInnerConverter::logicalToVisualBiDi(
     const size_t lineLen = lineEnd - lineStart;
 
     FriBidiChar* visual = (FriBidiChar*) malloc((lineLen + 1) * sizeof(FriBidiChar));
-    if (visual == NULL)
+    if (!visual)
     {
       free(visual);
       CLog::Log(LOGFATAL, "{}: can't allocate memory", __FUNCTION__);
@@ -583,7 +583,7 @@ CCharsetConverter::CCharsetConverter() = default;
 
 void CCharsetConverter::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (!setting)
     return;
 
   const std::string& settingId = setting->GetId();

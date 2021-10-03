@@ -386,8 +386,9 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
       // DO NOT MAKE THIS A DELAYED CALL!!!!
-      bool ret = languageHook == NULL ? m_actionEvent.Wait(std::chrono::milliseconds(milliseconds))
-                                      : languageHook->WaitForEvent(m_actionEvent, milliseconds);
+      bool ret = languageHook == nullptr
+                     ? m_actionEvent.Wait(std::chrono::milliseconds(milliseconds))
+                     : languageHook->WaitForEvent(m_actionEvent, milliseconds);
       if (ret)
         m_actionEvent.Reset();
       return ret;
@@ -497,7 +498,7 @@ namespace XBMCAddon
     void Window::setFocus(Control* pControl)
     {
       XBMC_TRACE;
-      if(pControl == NULL)
+      if (!pControl)
         throw WindowException("Object should be of type Control");
 
       CGUIMessage msg = CGUIMessage(GUI_MSG_SETFOCUS,pControl->iParentId, pControl->iControlId);
@@ -544,7 +545,7 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
       // type checking, object should be of type Control
-      if(pControl == NULL)
+      if (!pControl)
         throw WindowException("Object should be of type Control");
 
       {
@@ -700,7 +701,7 @@ namespace XBMCAddon
     void Window::doAddControl(Control* pControl, CCriticalSection* gcontext, bool wait)
     {
       XBMC_TRACE;
-      if(pControl == NULL)
+      if (!pControl)
         throw WindowException("NULL Control passed to WindowBase::addControl");
 
       if(pControl->iControlId != 0)

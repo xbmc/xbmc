@@ -88,7 +88,7 @@ void CTCPServer::StopServer(bool bWait)
 
 bool CTCPServer::IsRunning()
 {
-  if (ServerInstance == NULL)
+  if (!ServerInstance)
     return false;
 
   return ((CThread*)ServerInstance)->IsRunning();
@@ -436,7 +436,7 @@ bool CTCPServer::InitializeBlue()
 
   // connect to the local SDP server, register the service record
   sdp_session_t *session = sdp_connect(&bt_bdaddr_any, &bt_bdaddr_local, SDP_RETRY_IF_BUSY);
-  if (session == NULL)
+  if (!session)
   {
     CLog::Log(LOGERROR, "JSONRPC Server: Failed to connect to sdpd");
     closesocket(fd);
@@ -683,7 +683,7 @@ CTCPServer::CWebSocketClient& CTCPServer::CWebSocketClient::operator=(const CWeb
 void CTCPServer::CWebSocketClient::Send(const char *data, unsigned int size)
 {
   const CWebSocketMessage *msg = m_websocket->Send(WebSocketTextFrame, data, size);
-  if (msg == NULL || !msg->IsComplete())
+  if (!msg || !msg->IsComplete())
     return;
 
   std::vector<const CWebSocketFrame *> frames = msg->GetFrames();

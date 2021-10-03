@@ -83,7 +83,7 @@ bool CGUIDialogSubtitleSettings::OnMessage(CGUIMessage& message)
 
 void CGUIDialogSubtitleSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (!setting)
     return;
 
   CGUIDialogSettingsManualBase::OnSettingChanged(setting);
@@ -165,7 +165,7 @@ std::string CGUIDialogSubtitleSettings::BrowseForSubtitle()
 
 void CGUIDialogSubtitleSettings::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (!setting)
     return;
 
   CGUIDialogSettingsManualBase::OnSettingAction(setting);
@@ -235,7 +235,7 @@ void CGUIDialogSubtitleSettings::InitializeSettings()
   CGUIDialogSettingsManualBase::InitializeSettings();
 
   const std::shared_ptr<CSettingCategory> category = AddCategory("audiosubtitlesettings", -1);
-  if (category == NULL)
+  if (!category)
   {
     CLog::Log(LOGERROR, "CGUIDialogSubtitleSettings: unable to setup settings");
     return;
@@ -243,19 +243,19 @@ void CGUIDialogSubtitleSettings::InitializeSettings()
 
   // get all necessary setting groups
   const std::shared_ptr<CSettingGroup> groupAudio = AddGroup(category);
-  if (groupAudio == NULL)
+  if (!groupAudio)
   {
     CLog::Log(LOGERROR, "CGUIDialogSubtitleSettings: unable to setup settings");
     return;
   }
   const std::shared_ptr<CSettingGroup> groupSubtitles = AddGroup(category);
-  if (groupSubtitles == NULL)
+  if (!groupSubtitles)
   {
     CLog::Log(LOGERROR, "CGUIDialogSubtitleSettings: unable to setup settings");
     return;
   }
   const std::shared_ptr<CSettingGroup> groupSaveAsDefault = AddGroup(category);
-  if (groupSaveAsDefault == NULL)
+  if (!groupSaveAsDefault)
   {
     CLog::Log(LOGERROR, "CGUIDialogSubtitleSettings: unable to setup settings");
     return;
@@ -310,7 +310,7 @@ bool CGUIDialogSubtitleSettings::SupportsSubtitleFeature(int feature)
 void CGUIDialogSubtitleSettings::AddSubtitleStreams(const std::shared_ptr<CSettingGroup>& group,
                                                     const std::string& settingId)
 {
-  if (group == NULL || settingId.empty())
+  if (!group || settingId.empty())
     return;
 
   m_subtitleStream = g_application.GetAppPlayer().GetSubtitle();

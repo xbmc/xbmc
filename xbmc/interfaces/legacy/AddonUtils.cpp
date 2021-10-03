@@ -93,7 +93,7 @@ namespace XBMCAddonUtils
   TraceGuard::TraceGuard(const char* _function) :function(_function)
   {
     parent = tlParent;
-    depth = parent == NULL ? 0 : parent->depth + 1;
+    depth = parent == nullptr ? 0 : parent->depth + 1;
 
     tlParent = this;
 
@@ -103,7 +103,7 @@ namespace XBMCAddonUtils
   TraceGuard::TraceGuard() :function(NULL)
   {
     parent = tlParent;
-    depth = parent == NULL ? 0 : parent->depth + 1;
+    depth = parent == nullptr ? 0 : parent->depth + 1;
     tlParent = this;
     // silent
   }

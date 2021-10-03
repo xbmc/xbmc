@@ -468,7 +468,7 @@ void CAirTunesServer::SetupRemoteControl()
           CZeroconfBrowser::GetInstance()->ResolveService(service);
           CSingleLock lock(m_dacpLock);
           // recheck with lock hold
-          if (m_pDACP == NULL)
+          if (!m_pDACP)
           {
             // we can control the client with this object now
             m_pDACP = new CDACP(m_active_remote_header, service.GetIP(), service.GetPort());
@@ -638,7 +638,7 @@ void CAirTunesServer::StopServer(bool bWait)
 
 bool CAirTunesServer::IsRunning()
 {
-  if (ServerInstance == NULL)
+  if (!ServerInstance)
     return false;
 
   return ServerInstance->IsRAOPRunningInternal();

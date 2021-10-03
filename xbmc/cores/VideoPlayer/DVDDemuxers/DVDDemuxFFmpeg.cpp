@@ -1921,7 +1921,7 @@ int CDVDDemuxFFmpeg::GetChapterCount()
   if (ich)
     return ich->GetChapterCount();
 
-  if (m_pFormatContext == NULL)
+  if (!m_pFormatContext)
     return 0;
 
   return m_pFormatContext->nb_chapters;
@@ -1933,8 +1933,7 @@ int CDVDDemuxFFmpeg::GetChapter()
   if (ich)
     return ich->GetChapter();
 
-  if (m_pFormatContext == NULL
-  || m_currentPts == DVD_NOPTS_VALUE)
+  if (!m_pFormatContext || m_currentPts == DVD_NOPTS_VALUE)
     return 0;
 
   for(unsigned i = 0; i < m_pFormatContext->nb_chapters; i++)
@@ -2002,7 +2001,7 @@ bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
     return true;
   }
 
-  if (m_pFormatContext == NULL)
+  if (!m_pFormatContext)
     return false;
 
   if (chapter < 1 || chapter > (int)m_pFormatContext->nb_chapters)

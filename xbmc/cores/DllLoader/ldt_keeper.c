@@ -175,7 +175,7 @@ ldt_fs_t* Setup_LDT_Keeper(void)
 	  return NULL;
 
 #if defined(TARGET_DARWIN)
-  if (getenv("DYLD_BIND_AT_LAUNCH") == NULL)
+  if (!getenv("DYLD_BIND_AT_LAUNCH"))
     printf("DYLD_BIND_AT_LAUNCH");
 #endif // TARGET_DARWIN
 
@@ -266,8 +266,8 @@ ldt_fs_t* Setup_LDT_Keeper(void)
 
 void Restore_LDT_Keeper(ldt_fs_t* ldt_fs)
 {
-  if (ldt_fs == NULL || ldt_fs->fs_seg == 0)
-	  return;
+  if (!ldt_fs || ldt_fs->fs_seg == 0)
+    return;
   if (ldt_fs->prev_struct)
 	  free(ldt_fs->prev_struct);
 

@@ -237,7 +237,7 @@ bool CSmartPlaylistRule::IsFieldBrowseable(int field)
 
 bool CSmartPlaylistRule::Validate(const std::string &input, void *data)
 {
-  if (data == NULL)
+  if (!data)
     return true;
 
   CSmartPlaylistRule *rule = static_cast<CSmartPlaylistRule*>(data);
@@ -252,7 +252,7 @@ bool CSmartPlaylistRule::Validate(const std::string &input, void *data)
         break;
     }
   }
-  if (validator == NULL)
+  if (!validator)
     return true;
 
   // split the input into multiple values and validate every value separately
@@ -273,8 +273,7 @@ bool CSmartPlaylistRule::ValidateRating(const std::string &input, void *data)
   StringUtils::Trim(strRating);
 
   double rating = std::strtod(strRating.c_str(), &end);
-  return (end == NULL || *end == '\0') &&
-         rating >= 0.0 && rating <= 10.0;
+  return (!end || *end == '\0') && rating >= 0.0 && rating <= 10.0;
 }
 
 bool CSmartPlaylistRule::ValidateMyRating(const std::string &input, void *data)
@@ -1179,7 +1178,7 @@ CSmartPlaylist::CSmartPlaylist()
 
 bool CSmartPlaylist::OpenAndReadName(const CURL &url)
 {
-  if (readNameFromPath(url) == NULL)
+  if (!readNameFromPath(url))
     return false;
 
   return !m_playlistName.empty();
@@ -1187,11 +1186,11 @@ bool CSmartPlaylist::OpenAndReadName(const CURL &url)
 
 const TiXmlNode* CSmartPlaylist::readName(const TiXmlNode *root)
 {
-  if (root == NULL)
+  if (!root)
     return NULL;
 
   const TiXmlElement *rootElem = root->ToElement();
-  if (rootElem == NULL)
+  if (!rootElem)
     return NULL;
 
   if (!root || !StringUtils::EqualsNoCase(root->Value(),"smartplaylist"))
@@ -1262,7 +1261,7 @@ const TiXmlNode* CSmartPlaylist::readNameFromXml(const std::string &xml)
 
 bool CSmartPlaylist::load(const TiXmlNode *root)
 {
-  if (root == NULL)
+  if (!root)
     return false;
 
   return LoadFromXML(root);

@@ -573,7 +573,7 @@ ssize_t CFile::Read(void *lpBuf, size_t uiBufSize)
 {
   if (!m_pFile)
     return -1;
-  if (lpBuf == NULL && uiBufSize != 0)
+  if (!lpBuf && uiBufSize != 0)
     return -1;
 
   if (uiBufSize > SSIZE_MAX)
@@ -807,12 +807,12 @@ ssize_t CFile::Write(const void* lpBuf, size_t uiBufSize)
 {
   if (!m_pFile)
     return -1;
-  if (lpBuf == NULL && uiBufSize != 0)
+  if (!lpBuf && uiBufSize != 0)
     return -1;
 
   try
   {
-    if (uiBufSize == 0 && lpBuf == NULL)
+    if (uiBufSize == 0 && !lpBuf)
     { // "test" write with zero size
       // some VFSs don't handle correctly null buffer pointer
       // provide valid buffer pointer for them

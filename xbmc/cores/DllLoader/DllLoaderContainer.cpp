@@ -289,7 +289,7 @@ void DllLoaderContainer::RegisterDll(LibraryLoader* pDll)
 {
   for (LibraryLoader*& dll : m_dlls)
   {
-    if (dll == NULL)
+    if (!dll)
     {
       dll = pDll;
       m_iNrOfDlls++;

@@ -31,7 +31,7 @@ bool CVideoLibraryCleaningJob::operator==(const CJob* job) const
     return false;
 
   const CVideoLibraryCleaningJob* cleaningJob = dynamic_cast<const CVideoLibraryCleaningJob*>(job);
-  if (cleaningJob == NULL)
+  if (!cleaningJob)
     return false;
 
   return m_paths == cleaningJob->m_paths &&

@@ -320,7 +320,7 @@ DEVINST CWin32StorageProvider::GetDrivesDevInstByDiskNumber(long DiskNumber)
     if (dwSize)
     {
       pspdidd = (PSP_DEVICE_INTERFACE_DETAIL_DATA)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, dwSize);
-      if (pspdidd == NULL)
+      if (!pspdidd)
         continue;
 
       pspdidd->cbSize = sizeof(*pspdidd);

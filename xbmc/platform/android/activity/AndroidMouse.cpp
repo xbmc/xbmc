@@ -20,7 +20,7 @@
 
 bool CAndroidMouse::onMouseEvent(AInputEvent* event)
 {
-  if (event == NULL)
+  if (!event)
     return false;
 
   int32_t eventAction = AMotionEvent_getAction(event);

@@ -189,7 +189,7 @@ char* CLibcdio::GetDeviceFileName()
     s_defaultDevice = NULL;
   }
 
-  if (s_defaultDevice == NULL)
+  if (!s_defaultDevice)
   {
     std::string strEnvDvd = CEnvironment::getenv("KODI_DVD_DEVICE");
     if (!strEnvDvd.empty())
@@ -267,7 +267,7 @@ int CCdIoSupport::ReadSector(HANDLE hDevice, DWORD dwSector, char* lpczBuffer)
   CSingleLock lock(*m_cdio);
 
   CdIo* cdio = (CdIo*) hDevice;
-  if ( cdio == NULL )
+  if (!cdio)
     return -1;
 
   if ( ::cdio_read_mode1_sector( cdio, lpczBuffer, dwSector, false ) == 0 )
@@ -281,7 +281,7 @@ int CCdIoSupport::ReadSectorMode2(HANDLE hDevice, DWORD dwSector, char* lpczBuff
   CSingleLock lock(*m_cdio);
 
   CdIo* cdio = (CdIo*) hDevice;
-  if ( cdio == NULL )
+  if (!cdio)
     return -1;
 
   if ( ::cdio_read_mode2_sector( cdio, lpczBuffer, dwSector, false ) == 0 )
@@ -295,7 +295,7 @@ int CCdIoSupport::ReadSectorCDDA(HANDLE hDevice, DWORD dwSector, char* lpczBuffe
   CSingleLock lock(*m_cdio);
 
   CdIo* cdio = (CdIo*) hDevice;
-  if ( cdio == NULL )
+  if (!cdio)
     return -1;
 
   if ( ::cdio_read_audio_sector( cdio, lpczBuffer, dwSector ) == 0 )
@@ -310,7 +310,7 @@ void CCdIoSupport::CloseCDROM(HANDLE hDevice)
 
   CdIo* cdio = (CdIo*) hDevice;
 
-  if ( cdio == NULL )
+  if (!cdio)
     return ;
 
   ::cdio_destroy( cdio );
@@ -622,7 +622,7 @@ void CCdIoSupport::GetCdTextInfo(xbmc_cdtext_t &xcdt, int trackNum)
   cdtext_t *pcdtext = (cdtext_t *)::cdio_get_cdtext(cdio, trackNum);
 #endif
 
-  if (pcdtext == NULL)
+  if (!pcdtext)
     return ;
 
 #if defined(LIBCDIO_VERSION_NUM) && (LIBCDIO_VERSION_NUM >= 84)
@@ -644,13 +644,13 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
   CSingleLock lock(*m_cdio);
 
   char* source_name;
-  if(cDeviceFileName == NULL)
+  if (!cDeviceFileName)
     source_name = m_cdio->GetDeviceFileName();
   else
     source_name = cDeviceFileName;
 
   cdio = ::cdio_open(source_name, DRIVER_UNKNOWN);
-  if (cdio == NULL)
+  if (!cdio)
   {
     CLog::Log(LOGERROR, "{}: Error in automatically selecting driver with input", __FUNCTION__);
     return NULL;

@@ -92,7 +92,7 @@ bool CHTTPWebinterfaceHandler::ResolveAddon(const std::string &url, ADDON::Addon
 
     if (!CServiceBroker::GetAddonMgr().GetAddon(components.at(1), addon, ADDON::ADDON_UNKNOWN,
                                                 ADDON::OnlyEnabled::YES) ||
-        addon == NULL)
+        !addon)
       return false;
 
     addonPath = addon->Path();
@@ -105,7 +105,9 @@ bool CHTTPWebinterfaceHandler::ResolveAddon(const std::string &url, ADDON::Addon
     // determine the path within the addon
     path = StringUtils::Join(components, WEBSERVER_DIRECTORY_SEPARATOR);
   }
-  else if (!ADDON::CAddonSystemSettings::GetInstance().GetActive(ADDON::ADDON_WEB_INTERFACE, addon) || addon == NULL)
+  else if (!ADDON::CAddonSystemSettings::GetInstance().GetActive(ADDON::ADDON_WEB_INTERFACE,
+                                                                 addon) ||
+           !addon)
     return false;
 
   // get the path of the addon

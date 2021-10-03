@@ -464,7 +464,7 @@ void XBPython::Process()
 
 bool XBPython::OnScriptInitialized(ILanguageInvoker* invoker)
 {
-  if (invoker == NULL)
+  if (!invoker)
     return false;
 
   XBMC_TRACE;
@@ -550,7 +550,7 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker* invoker)
 
 void XBPython::OnScriptStarted(ILanguageInvoker* invoker)
 {
-  if (invoker == NULL)
+  if (!invoker)
     return;
 
   if (!m_bInitialized)

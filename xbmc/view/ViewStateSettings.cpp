@@ -67,12 +67,12 @@ CViewStateSettings& CViewStateSettings::GetInstance()
 
 bool CViewStateSettings::Load(const TiXmlNode *settings)
 {
-  if (settings == NULL)
+  if (!settings)
     return false;
 
   CSingleLock lock(m_critical);
   const TiXmlNode *pElement = settings->FirstChildElement(XML_VIEWSTATESETTINGS);
-  if (pElement == NULL)
+  if (!pElement)
   {
     CLog::Log(LOGWARNING, "CViewStateSettings: no <viewstates> tag found");
     return false;
@@ -81,13 +81,13 @@ bool CViewStateSettings::Load(const TiXmlNode *settings)
   for (std::map<std::string, CViewState*>::iterator viewState = m_viewStates.begin(); viewState != m_viewStates.end(); ++viewState)
   {
     const TiXmlNode* pViewState = pElement->FirstChildElement(viewState->first);
-    if (pViewState == NULL)
+    if (!pViewState)
       continue;
 
     XMLUtils::GetInt(pViewState, XML_VIEWMODE, viewState->second->m_viewMode, DEFAULT_VIEW_LIST, DEFAULT_VIEW_MAX);
 
     // keep backwards compatibility to the old sorting methods
-    if (pViewState->FirstChild(XML_SORTATTRIBUTES) == NULL)
+    if (!pViewState->FirstChild(XML_SORTATTRIBUTES))
     {
       int sortMethod;
       if (XMLUtils::GetInt(pViewState, XML_SORTMETHOD, sortMethod, SORT_METHOD_NONE, SORT_METHOD_MAX))
@@ -135,14 +135,14 @@ bool CViewStateSettings::Load(const TiXmlNode *settings)
 
 bool CViewStateSettings::Save(TiXmlNode *settings) const
 {
-  if (settings == NULL)
+  if (!settings)
     return false;
 
   CSingleLock lock(m_critical);
   // add the <viewstates> tag
   TiXmlElement xmlViewStateElement(XML_VIEWSTATESETTINGS);
   TiXmlNode *pViewStateNode = settings->InsertEndChild(xmlViewStateElement);
-  if (pViewStateNode == NULL)
+  if (!pViewStateNode)
   {
     CLog::Log(LOGWARNING, "CViewStateSettings: could not create <viewstates> tag");
     return false;
@@ -152,7 +152,7 @@ bool CViewStateSettings::Save(TiXmlNode *settings) const
   {
     TiXmlElement newElement(viewState->first);
     TiXmlNode *pNewNode = pViewStateNode->InsertEndChild(newElement);
-    if (pNewNode == NULL)
+    if (!pNewNode)
       continue;
 
     XMLUtils::SetInt(pNewNode, XML_VIEWMODE, viewState->second->m_viewMode);
@@ -162,22 +162,22 @@ bool CViewStateSettings::Save(TiXmlNode *settings) const
   }
 
   TiXmlNode *generalNode = settings->FirstChild(XML_GENERAL);
-  if (generalNode == NULL)
+  if (!generalNode)
   {
     TiXmlElement generalElement(XML_GENERAL);
     generalNode = settings->InsertEndChild(generalElement);
-    if (generalNode == NULL)
+    if (!generalNode)
       return false;
   }
 
   XMLUtils::SetInt(generalNode, XML_SETTINGLEVEL, (int)m_settingLevel);
 
   TiXmlNode *eventLogNode = generalNode->FirstChild(XML_EVENTLOG);
-  if (eventLogNode == NULL)
+  if (!eventLogNode)
   {
     TiXmlElement eventLogElement(XML_EVENTLOG);
     eventLogNode = generalNode->InsertEndChild(eventLogElement);
-    if (eventLogNode == NULL)
+    if (!eventLogNode)
       return false;
   }
 
@@ -264,7 +264,7 @@ void CViewStateSettings::AddViewState(const std::string& strTagName, int default
     return;
 
   CViewState *viewState = new CViewState(defaultView, defaultSort, SortOrderAscending);
-  if (viewState == NULL)
+  if (!viewState)
     return;
 
   m_viewStates.insert(make_pair(strTagName, viewState));

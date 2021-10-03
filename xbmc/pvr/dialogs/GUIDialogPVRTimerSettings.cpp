@@ -213,14 +213,14 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
   CGUIDialogSettingsManualBase::InitializeSettings();
 
   const std::shared_ptr<CSettingCategory> category = AddCategory("pvrtimersettings", -1);
-  if (category == NULL)
+  if (!category)
   {
     CLog::LogF(LOGERROR, "Unable to add settings category");
     return;
   }
 
   const std::shared_ptr<CSettingGroup> group = AddGroup(category);
-  if (group == NULL)
+  if (!group)
   {
     CLog::LogF(LOGERROR, "Unable to add settings group");
     return;
@@ -381,7 +381,7 @@ int CGUIDialogPVRTimerSettings::GetWeekdaysFromSetting(const SettingConstPtr& se
 
 void CGUIDialogPVRTimerSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (!setting)
   {
     CLog::LogF(LOGERROR, "No setting");
     return;
@@ -496,7 +496,7 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(const std::shared_ptr<const CS
 
 void CGUIDialogPVRTimerSettings::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (!setting)
   {
     CLog::LogF(LOGERROR, "No setting");
     return;
@@ -1192,11 +1192,11 @@ bool CGUIDialogPVRTimerSettings::TypeReadOnlyCondition(const std::string& condit
                                                        const SettingConstPtr& setting,
                                                        void* data)
 {
-  if (setting == NULL)
+  if (!setting)
     return false;
 
   CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
-  if (pThis == NULL)
+  if (!pThis)
   {
     CLog::LogF(LOGERROR, "No dialog");
     return false;
@@ -1259,11 +1259,11 @@ bool CGUIDialogPVRTimerSettings::TypeSupportsCondition(const std::string& condit
                                                        const SettingConstPtr& setting,
                                                        void* data)
 {
-  if (setting == NULL)
+  if (!setting)
     return false;
 
   CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
-  if (pThis == NULL)
+  if (!pThis)
   {
     CLog::LogF(LOGERROR, "No dialog");
     return false;
@@ -1343,11 +1343,11 @@ bool CGUIDialogPVRTimerSettings::StartAnytimeSetCondition(const std::string& con
                                                           const SettingConstPtr& setting,
                                                           void* data)
 {
-  if (setting == NULL)
+  if (!setting)
     return false;
 
   CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
-  if (pThis == NULL)
+  if (!pThis)
   {
     CLog::LogF(LOGERROR, "No dialog");
     return false;
@@ -1390,11 +1390,11 @@ bool CGUIDialogPVRTimerSettings::EndAnytimeSetCondition(const std::string& condi
                                                         const SettingConstPtr& setting,
                                                         void* data)
 {
-  if (setting == NULL)
+  if (!setting)
     return false;
 
   CGUIDialogPVRTimerSettings* pThis = static_cast<CGUIDialogPVRTimerSettings*>(data);
-  if (pThis == NULL)
+  if (!pThis)
   {
     CLog::LogF(LOGERROR, "No dialog");
     return false;

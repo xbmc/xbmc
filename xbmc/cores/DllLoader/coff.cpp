@@ -203,10 +203,10 @@ int CoffLoader::LoadCoffHModule(FILE *fp)
   hModule = VirtualAllocFromApp(GetCurrentProcess(), tempWindowsHeader.SizeOfImage, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
 #else
   hModule = VirtualAllocEx(GetCurrentProcess(), (PVOID)tempWindowsHeader.ImageBase, tempWindowsHeader.SizeOfImage, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
-  if (hModule == NULL)
+  if (!hModule)
     hModule = VirtualAlloc(GetCurrentProcess(), tempWindowsHeader.SizeOfImage, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
 #endif
-  if (hModule == NULL)
+  if (!hModule)
     return 0;   //memory allocation fails
 
   rewind(fp);
@@ -322,7 +322,7 @@ int CoffLoader::LoadStringTable(FILE *fp)
   if (StringTableSize != 0)
   {
     tmp = new char[StringTableSize];
-    if (tmp == NULL)
+    if (!tmp)
     {
       printf("Could not allocate memory for string table\n");
       return 0;

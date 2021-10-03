@@ -250,7 +250,7 @@ std::string CSpecialProtocol::TranslatePathConvertCase(const std::string& path)
 
         // if we did not find any file that somewhat matches, just
         // fallback but we know it's not gonna be a good ending
-        if (de == NULL)
+        if (!de)
           result += "/" + tokens[i];
 
         closedir(dir);

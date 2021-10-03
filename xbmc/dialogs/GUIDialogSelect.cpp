@@ -268,8 +268,7 @@ void CGUIDialogSelect::Sort(bool bSortOrder /*=true*/)
 
 void CGUIDialogSelect::SetSelected(int iSelected)
 {
-  if (iSelected < 0 || iSelected >= m_vecList->Size() ||
-      m_vecList->Get(iSelected).get() == NULL)
+  if (iSelected < 0 || iSelected >= m_vecList->Size() || !m_vecList->Get(iSelected))
     return;
 
   // only set m_iSelected if there is no multi-select

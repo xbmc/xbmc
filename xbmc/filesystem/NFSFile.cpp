@@ -510,7 +510,8 @@ int64_t CNFSFile::GetPosition()
   uint64_t offset = 0;
   CSingleLock lock(gNfsConnection);
 
-  if (gNfsConnection.GetNfsContext() == NULL || m_pFileHandle == NULL) return 0;
+  if (!gNfsConnection.GetNfsContext() || !m_pFileHandle)
+    return 0;
 
   ret = nfs_lseek(gNfsConnection.GetNfsContext(), m_pFileHandle, 0, SEEK_CUR, &offset);
 
@@ -523,7 +524,8 @@ int64_t CNFSFile::GetPosition()
 
 int64_t CNFSFile::GetLength()
 {
-  if (m_pFileHandle == NULL) return 0;
+  if (!m_pFileHandle)
+    return 0;
   return m_fileSize;
 }
 
@@ -643,7 +645,7 @@ ssize_t CNFSFile::Read(void *lpBuf, size_t uiBufSize)
   ssize_t numberOfBytesRead = 0;
   CSingleLock lock(gNfsConnection);
 
-  if (m_pFileHandle == NULL || m_pNfsContext == NULL )
+  if (!m_pFileHandle || !m_pNfsContext)
     return -1;
 
   numberOfBytesRead = nfs_read(m_pNfsContext, m_pFileHandle, uiBufSize, (char *)lpBuf);
@@ -666,7 +668,8 @@ int64_t CNFSFile::Seek(int64_t iFilePosition, int iWhence)
   uint64_t offset = 0;
 
   CSingleLock lock(gNfsConnection);
-  if (m_pFileHandle == NULL || m_pNfsContext == NULL) return -1;
+  if (!m_pFileHandle || !m_pNfsContext)
+    return -1;
 
 
   ret = nfs_lseek(m_pNfsContext, m_pFileHandle, iFilePosition, iWhence, &offset);
@@ -684,7 +687,8 @@ int CNFSFile::Truncate(int64_t iSize)
   int ret = 0;
 
   CSingleLock lock(gNfsConnection);
-  if (m_pFileHandle == NULL || m_pNfsContext == NULL) return -1;
+  if (!m_pFileHandle || !m_pNfsContext)
+    return -1;
 
 
   ret = nfs_ftruncate(m_pNfsContext, m_pFileHandle, iSize);
@@ -735,7 +739,8 @@ ssize_t CNFSFile::Write(const void* lpBuf, size_t uiBufSize)
 
   CSingleLock lock(gNfsConnection);
 
-  if (m_pFileHandle == NULL || m_pNfsContext == NULL) return -1;
+  if (!m_pFileHandle || !m_pNfsContext)
+    return -1;
 
   //write as long as some bytes are left to be written
   while( leftBytes )
@@ -847,7 +852,7 @@ bool CNFSFile::OpenForWrite(const CURL& url, bool bOverWrite)
 
   ret = nfs_open(m_pNfsContext, filename.c_str(), O_RDWR, &m_pFileHandle);
 
-  if (ret || m_pFileHandle == NULL)
+  if (ret || !m_pFileHandle)
   {
     // write error to logfile
     CLog::Log(LOGERROR, "CNFSFile::Open: Unable to open file : '{}' error : '{}'", filename,

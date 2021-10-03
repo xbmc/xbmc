@@ -133,8 +133,9 @@ NPT_XbmcFileInputStream::Read(void*     buffer,
     unsigned int nb_read;
 
     // check the parameters
-    if (buffer == NULL) {
-        return NPT_ERROR_INVALID_PARAMETERS;
+    if (!buffer)
+    {
+      return NPT_ERROR_INVALID_PARAMETERS;
     }
 
     // read from the file

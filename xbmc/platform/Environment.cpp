@@ -38,7 +38,7 @@ std::string CEnvironment::getenv(const std::string &name)
   return win_getenv(name);
 #else
   char * str = ::getenv(name.c_str());
-  if (str == NULL)
+  if (!str)
     return "";
   return str;
 #endif

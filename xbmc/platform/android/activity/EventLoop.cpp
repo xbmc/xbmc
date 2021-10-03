@@ -20,7 +20,7 @@ CEventLoop::CEventLoop(android_app* application)
     m_application(application),
     m_activityHandler(NULL), m_inputHandler(NULL)
 {
-  if (m_application == NULL)
+  if (!m_application)
     return;
 
   m_application->userData = this;
@@ -156,7 +156,7 @@ int32_t CEventLoop::processInput(AInputEvent* event)
 
 void CEventLoop::activityCallback(android_app* application, int32_t command)
 {
-  if (application == NULL || application->userData == NULL)
+  if (!application || !application->userData)
     return;
 
   CEventLoop& eventLoop = *((CEventLoop*)application->userData);
@@ -165,7 +165,7 @@ void CEventLoop::activityCallback(android_app* application, int32_t command)
 
 int32_t CEventLoop::inputCallback(android_app* application, AInputEvent* event)
 {
-  if (application == NULL || application->userData == NULL || event == NULL)
+  if (!application || !application->userData || !event)
     return 0;
 
   CEventLoop& eventLoop = *((CEventLoop*)application->userData);

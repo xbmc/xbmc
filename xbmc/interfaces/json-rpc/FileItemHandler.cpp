@@ -258,7 +258,7 @@ bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, 
 
 void CFileItemHandler::FillDetails(const ISerializable *info, const CFileItemPtr &item, std::set<std::string> &fields, CVariant &result, CThumbLoader *thumbLoader /* = NULL */)
 {
-  if (info == NULL || fields.empty())
+  if (!info || fields.empty())
     return;
 
   CVariant serialization;
@@ -440,7 +440,7 @@ void CFileItemHandler::HandleFileItem(const char* ID,
     }
 
     bool deleteThumbloader = false;
-    if (thumbLoader == NULL)
+    if (!thumbLoader)
     {
       if (item->HasVideoInfoTag())
         thumbLoader = new CVideoThumbLoader();

@@ -137,7 +137,7 @@ bool CVideoLibraryQueue::RefreshItemModal(CFileItemPtr item, bool forceRefresh /
 
 void CVideoLibraryQueue::MarkAsWatched(const CFileItemPtr &item, bool watched)
 {
-  if (item == NULL)
+  if (!item)
     return;
 
   AddJob(new CVideoLibraryMarkWatchedJob(item, watched));
@@ -153,7 +153,7 @@ void CVideoLibraryQueue::ResetResumePoint(const CFileItemPtr& item)
 
 void CVideoLibraryQueue::AddJob(CVideoLibraryJob *job)
 {
-  if (job == NULL)
+  if (!job)
     return;
 
   CSingleLock lock(m_critical);
@@ -175,7 +175,7 @@ void CVideoLibraryQueue::AddJob(CVideoLibraryJob *job)
 
 void CVideoLibraryQueue::CancelJob(CVideoLibraryJob *job)
 {
-  if (job == NULL)
+  if (!job)
     return;
 
   CSingleLock lock(m_critical);

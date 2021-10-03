@@ -941,7 +941,7 @@ void CGUIWindowSlideShow::RenderErrorMessage()
     return ;
 
   const CGUIControl *control = GetControl(LABEL_ROW1);
-  if (NULL == control || control->GetControlType() != CGUIControl::GUICONTROL_LABEL)
+  if (!control || control->GetControlType() != CGUIControl::GUICONTROL_LABEL)
   {
      return;
   }

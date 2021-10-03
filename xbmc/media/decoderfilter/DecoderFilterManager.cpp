@@ -158,7 +158,7 @@ bool CDecoderFilterManager::Save() const
   CXBMCTinyXML doc;
   TiXmlElement xmlRootElement(TAG_ROOT);
   TiXmlNode *pRoot = doc.InsertEndChild(xmlRootElement);
-  if (pRoot == NULL)
+  if (!pRoot)
     return false;
 
   for (const CDecoderFilter& filter : m_filters)
@@ -166,7 +166,7 @@ bool CDecoderFilterManager::Save() const
     // Write the resolution tag
     TiXmlElement filterElem(TAG_FILTER);
     TiXmlNode *pNode = pRoot->InsertEndChild(filterElem);
-    if (pNode == NULL)
+    if (!pNode)
       return false;
 
     filter.Save(pNode);

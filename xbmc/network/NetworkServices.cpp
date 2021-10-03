@@ -176,7 +176,7 @@ CNetworkServices::~CNetworkServices()
 
 bool CNetworkServices::OnSettingChanging(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (!setting)
     return false;
 
   const std::string &settingId = setting->GetId();
@@ -494,7 +494,7 @@ bool CNetworkServices::OnSettingChanging(const std::shared_ptr<const CSetting>& 
 
 void CNetworkServices::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (!setting)
     return;
 
   const std::string& settingId = setting->GetId();
@@ -518,7 +518,7 @@ bool CNetworkServices::OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
                                        const char* oldSettingId,
                                        const TiXmlNode* oldSettingNode)
 {
-  if (setting == NULL)
+  if (!setting)
     return false;
 
   const std::string &settingId = setting->GetId();

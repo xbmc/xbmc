@@ -33,7 +33,7 @@ bool CCDDADirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
   // Get information for the inserted disc
   CCdInfo* pCdInfo = CServiceBroker::GetMediaManager().GetCdInfo(strPath);
-  if (pCdInfo == NULL)
+  if (!pCdInfo)
     return false;
 
   //  Preload CDDB info

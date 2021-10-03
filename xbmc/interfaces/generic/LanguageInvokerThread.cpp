@@ -29,7 +29,7 @@ CLanguageInvokerThread::~CLanguageInvokerThread()
 
 InvokerState CLanguageInvokerThread::GetState() const
 {
-  if (m_invoker == NULL)
+  if (!m_invoker)
     return InvokerStateFailed;
 
   return m_invoker->GetState();
@@ -43,7 +43,7 @@ void CLanguageInvokerThread::Release()
 
 bool CLanguageInvokerThread::execute(const std::string &script, const std::vector<std::string> &arguments)
 {
-  if (m_invoker == NULL || script.empty())
+  if (!m_invoker || script.empty())
     return false;
 
   m_script = script;
@@ -65,7 +65,7 @@ bool CLanguageInvokerThread::execute(const std::string &script, const std::vecto
 
 bool CLanguageInvokerThread::stop(bool wait)
 {
-  if (m_invoker == NULL)
+  if (!m_invoker)
     return false;
 
   if (!CThread::IsRunning())
@@ -87,7 +87,7 @@ bool CLanguageInvokerThread::stop(bool wait)
 
 void CLanguageInvokerThread::OnStartup()
 {
-  if (m_invoker == NULL)
+  if (!m_invoker)
     return;
 
   m_invoker->SetId(GetId());
@@ -97,7 +97,7 @@ void CLanguageInvokerThread::OnStartup()
 
 void CLanguageInvokerThread::Process()
 {
-  if (m_invoker == NULL)
+  if (!m_invoker)
     return;
 
   std::unique_lock<std::mutex> lckdl(m_mutex);
@@ -116,7 +116,7 @@ void CLanguageInvokerThread::Process()
 
 void CLanguageInvokerThread::OnExit()
 {
-  if (m_invoker == NULL)
+  if (!m_invoker)
     return;
 
   m_invoker->onExecutionDone();
@@ -125,7 +125,7 @@ void CLanguageInvokerThread::OnExit()
 
 void CLanguageInvokerThread::OnException()
 {
-  if (m_invoker == NULL)
+  if (!m_invoker)
     return;
 
   m_invoker->onExecutionFailed();

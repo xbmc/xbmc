@@ -110,7 +110,7 @@ void CScriptInvocationManager::Uninitialize()
 
 void CScriptInvocationManager::RegisterLanguageInvocationHandler(ILanguageInvocationHandler *invocationHandler, const std::string &extension)
 {
-  if (invocationHandler == NULL || extension.empty())
+  if (!invocationHandler || extension.empty())
     return;
 
   std::string ext = extension;
@@ -141,7 +141,7 @@ void CScriptInvocationManager::RegisterLanguageInvocationHandler(ILanguageInvoca
 
 void CScriptInvocationManager::RegisterLanguageInvocationHandler(ILanguageInvocationHandler *invocationHandler, const std::set<std::string> &extensions)
 {
-  if (invocationHandler == NULL || extensions.empty())
+  if (!invocationHandler || extensions.empty())
     return;
 
   for (const auto& extension : extensions)
@@ -150,7 +150,7 @@ void CScriptInvocationManager::RegisterLanguageInvocationHandler(ILanguageInvoca
 
 void CScriptInvocationManager::UnregisterLanguageInvocationHandler(ILanguageInvocationHandler *invocationHandler)
 {
-  if (invocationHandler == NULL)
+  if (!invocationHandler)
     return;
 
   CSingleLock lock(m_critSection);
@@ -246,7 +246,7 @@ int CScriptInvocationManager::ExecuteAsync(
     bool reuseable /* = false */,
     int pluginHandle /* = -1 */)
 {
-  if (script.empty() || languageInvoker == NULL)
+  if (script.empty() || !languageInvoker)
     return -1;
 
   if (!CFile::Exists(script, false))
@@ -272,7 +272,7 @@ int CScriptInvocationManager::ExecuteAsync(
 
   m_lastInvokerThread =
       CLanguageInvokerThreadPtr(new CLanguageInvokerThread(languageInvoker, this, reuseable));
-  if (m_lastInvokerThread == NULL)
+  if (!m_lastInvokerThread)
     return -1;
 
   if (addon)
@@ -353,7 +353,7 @@ bool CScriptInvocationManager::Stop(int scriptId, bool wait /* = false */)
 
   CSingleLock lock(m_critSection);
   CLanguageInvokerThreadPtr invokerThread = getInvokerThread(scriptId).thread;
-  if (invokerThread == NULL)
+  if (!invokerThread)
     return false;
 
   return invokerThread->Stop(wait);
@@ -385,7 +385,7 @@ bool CScriptInvocationManager::IsRunning(int scriptId) const
 {
   CSingleLock lock(m_critSection);
   LanguageInvokerThread invokerThread = getInvokerThread(scriptId);
-  if (invokerThread.thread == NULL)
+  if (!invokerThread.thread)
     return false;
 
   return !invokerThread.done;

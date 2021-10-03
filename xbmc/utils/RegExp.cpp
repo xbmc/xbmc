@@ -351,7 +351,7 @@ int CRegExp::PrivateRegFind(size_t bufferLen, const char *str, unsigned int star
   if (m_jitCompiled && !m_jitStack)
   {
     m_jitStack = pcre_jit_stack_alloc(32*1024, 512*1024);
-    if (m_jitStack == NULL)
+    if (!m_jitStack)
       CLog::Log(LOGWARNING, "{}: can't allocate address space for JIT stack", __FUNCTION__);
 
     pcre_assign_jit_stack(m_sd, NULL, m_jitStack);

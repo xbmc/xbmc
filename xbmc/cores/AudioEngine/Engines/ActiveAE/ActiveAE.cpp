@@ -424,7 +424,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
         }
       }
       {
-        std::string portName = port == NULL ? "timer" : port->portName;
+        std::string portName = port == nullptr ? "timer" : port->portName;
         CLog::Log(LOGWARNING, "CActiveAE::{} - signal: {} from port: {} not handled for state: {}",
                   __FUNCTION__, signal, portName, m_state);
       }
@@ -465,7 +465,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
       break;
 
     case AE_TOP_ERROR:
-      if (port == NULL) // timeout
+      if (!port) // timeout
       {
         switch (signal)
         {
@@ -529,7 +529,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
       break;
 
     case AE_TOP_RECONFIGURING:
-      if (port == NULL) // timeout
+      if (!port) // timeout
       {
         switch (signal)
         {
@@ -909,7 +909,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           break;
         }
       }
-      else if (port == NULL) // timeout
+      else if (!port) // timeout
       {
         switch (signal)
         {
@@ -946,7 +946,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           break;
         }
       }
-      else if (port == NULL) // timeout
+      else if (!port) // timeout
       {
         switch (signal)
         {
@@ -982,7 +982,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
       break;
 
     case AE_TOP_CONFIGURED_PLAY:
-      if (port == NULL) // timeout
+      if (!port) // timeout
       {
         switch (signal)
         {
@@ -1142,7 +1142,7 @@ AEAudioFormat CActiveAE::GetInputFormat(AEAudioFormat *desiredFmt)
     inputFormat = *desiredFmt;
   }
   // keep format when having multiple streams
-  else if (m_streams.size() > 1 && m_silenceBuffers == NULL)
+  else if (m_streams.size() > 1 && !m_silenceBuffers)
   {
     inputFormat = m_inputFormat;
   }

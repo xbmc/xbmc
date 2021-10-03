@@ -123,7 +123,7 @@ void CPipeFile::Close()
 
 bool CPipeFile::IsClosed()
 {
-  return (m_pipe == NULL);
+  return (!m_pipe);
 }
 
 void CPipeFile::Flush()

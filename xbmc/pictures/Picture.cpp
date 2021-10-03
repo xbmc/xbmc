@@ -34,7 +34,9 @@ bool CPicture::GetThumbnailFromSurface(const unsigned char* buffer, int width, i
 
   // get an image handler
   IImage* image = ImageFactory::CreateLoader(thumbFile);
-  if (image == NULL || !image->CreateThumbnailFromSurface(const_cast<unsigned char*>(buffer), width, height, XB_FMT_A8R8G8B8, stride, thumbFile.c_str(), thumb, thumbsize))
+  if (!image || !image->CreateThumbnailFromSurface(const_cast<unsigned char*>(buffer), width,
+                                                   height, XB_FMT_A8R8G8B8, stride,
+                                                   thumbFile.c_str(), thumb, thumbsize))
   {
     delete image;
     return false;
@@ -59,7 +61,9 @@ bool CPicture::CreateThumbnailFromSurface(const unsigned char *buffer, int width
   unsigned char *thumb = NULL;
   unsigned int thumbsize=0;
   IImage* pImage = ImageFactory::CreateLoader(thumbFile);
-  if(pImage == NULL || !pImage->CreateThumbnailFromSurface(const_cast<unsigned char*>(buffer), width, height, XB_FMT_A8R8G8B8, stride, thumbFile.c_str(), thumb, thumbsize))
+  if (!pImage || !pImage->CreateThumbnailFromSurface(const_cast<unsigned char*>(buffer), width,
+                                                     height, XB_FMT_A8R8G8B8, stride,
+                                                     thumbFile.c_str(), thumb, thumbsize))
   {
     CLog::Log(LOGERROR, "Failed to CreateThumbnailFromSurface for {}",
               CURL::GetRedacted(thumbFile));
@@ -117,7 +121,7 @@ bool CPicture::ResizeTexture(const std::string& image,
                              CPictureScalingAlgorithm::Algorithm
                                  scalingAlgorithm /* = CPictureScalingAlgorithm::NoAlgorithm */)
 {
-  if (image.empty() || texture == NULL)
+  if (image.empty() || !texture)
     return false;
 
   return ResizeTexture(image, texture->GetPixels(), texture->GetWidth(), texture->GetHeight(), texture->GetPitch(),
@@ -129,7 +133,7 @@ bool CPicture::ResizeTexture(const std::string &image, uint8_t *pixels, uint32_t
   uint32_t &dest_width, uint32_t &dest_height, uint8_t* &result, size_t& result_size,
   CPictureScalingAlgorithm::Algorithm scalingAlgorithm /* = CPictureScalingAlgorithm::NoAlgorithm */)
 {
-  if (image.empty() || pixels == NULL)
+  if (image.empty() || !pixels)
     return false;
 
   dest_width = std::min(width, dest_width);
@@ -160,7 +164,7 @@ bool CPicture::ResizeTexture(const std::string &image, uint8_t *pixels, uint32_t
   GetScale(width, height, dest_width, dest_height);
 
   uint8_t *buffer = new uint8_t[dest_width * dest_height * sizeof(uint32_t)];
-  if (buffer == NULL)
+  if (!buffer)
   {
     result = NULL;
     result_size = 0;

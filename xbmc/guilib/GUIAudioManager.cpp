@@ -50,7 +50,7 @@ CGUIAudioManager::~CGUIAudioManager()
 
 void CGUIAudioManager::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
-  if (setting == NULL)
+  if (!setting)
     return;
 
   const std::string &settingId = setting->GetId();
@@ -65,7 +65,7 @@ bool CGUIAudioManager::OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
                                        const char* oldSettingId,
                                        const TiXmlNode* oldSettingNode)
 {
-  if (setting == NULL)
+  if (!setting)
     return false;
 
   if (setting->GetId() == CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN)

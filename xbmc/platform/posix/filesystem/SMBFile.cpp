@@ -547,7 +547,7 @@ ssize_t CSMBFile::Read(void *lpBuf, size_t uiBufSize)
   // libsmbclient always return "-1" if called with null buffer
   // regardless of buffer size.
   // To overcome this, force return "0" in that case.
-  if (uiBufSize == 0 && lpBuf == NULL)
+  if (uiBufSize == 0 && !lpBuf)
     return 0;
 
   CSingleLock lock(smb); // Init not called since it has to be "inited" by now

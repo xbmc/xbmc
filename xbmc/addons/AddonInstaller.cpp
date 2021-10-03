@@ -364,7 +364,7 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
                                         std::vector<std::string>& preDeps, CAddonDatabase &database,
                                         std::pair<std::string, std::string> &failedDep)
 {
-  if (addon == NULL)
+  if (!addon)
     return true; // a NULL addon has no dependencies
 
   if (!database.Open())
@@ -1137,7 +1137,7 @@ bool CAddonUnInstallJob::DoWork()
   CAddonDatabase database;
   // try to get the addon object from the repository as the local one does not exist anymore
   // if that doesn't work fall back to the local one
-  if (!database.Open() || !database.GetAddon(m_addon->ID(), addon) || addon == NULL)
+  if (!database.Open() || !database.GetAddon(m_addon->ID(), addon) || !addon)
     addon = m_addon;
   CServiceBroker::GetEventLog().Add(EventPtr(new CAddonManagementEvent(addon, 24144)));
 

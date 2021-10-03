@@ -65,7 +65,7 @@ void CDetectDVDMedia::Process()
 #if !defined(TARGET_DARWIN)
   //Before entering loop make sure we actually have a CDrom drive
   CdIo_t *p_cdio = m_cdio->cdio_open(NULL, DRIVER_DEVICE);
-  if (p_cdio == NULL)
+  if (!p_cdio)
     return;
   else
     m_cdio->cdio_destroy(p_cdio);
@@ -206,7 +206,7 @@ void CDetectDVDMedia::DetectMediaType()
 
   // Detect new CD-Information
   m_pCdInfo = cdio.GetCdInfo();
-  if (m_pCdInfo == NULL)
+  if (!m_pCdInfo)
   {
     CLog::Log(LOGERROR, "Detection of DVD-ROM media failed.");
     return ;

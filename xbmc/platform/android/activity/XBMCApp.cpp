@@ -150,7 +150,7 @@ CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity, IInputHandler& inputHandler)
 {
   m_xbmcappinstance = this;
   m_activity = nativeActivity;
-  if (m_activity == NULL)
+  if (!m_activity)
   {
     android_printf("CXBMCApp: invalid ANativeActivity instance");
     exit(1);
@@ -654,7 +654,7 @@ int CXBMCApp::android_printf(const char *format, ...)
 
 int CXBMCApp::GetDPI()
 {
-  if (m_activity == NULL || m_activity->assetManager == NULL)
+  if (!m_activity || !m_activity->assetManager)
     return 0;
 
   // grab DPI from the current configuration - this is approximate
@@ -1540,7 +1540,7 @@ void CXBMCApp::surfaceCreated(CJNISurfaceHolder holder)
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
   m_window = ANativeWindow_fromSurface(xbmc_jnienv(), holder.getSurface().get_raw());
-  if (m_window == NULL)
+  if (!m_window)
   {
     android_printf(" => invalid ANativeWindow object");
     return;

@@ -96,7 +96,8 @@ extern "C" size_t write_callback(char *buffer,
                size_t nitems,
                void *userp)
 {
-  if(userp == NULL) return 0;
+  if (!userp)
+    return 0;
 
   CCurlFile::CReadState *state = (CCurlFile::CReadState *)userp;
   return state->WriteCallback(buffer, size, nitems);
@@ -107,7 +108,8 @@ extern "C" size_t read_callback(char *buffer,
                size_t nitems,
                void *userp)
 {
-  if(userp == NULL) return 0;
+  if (!userp)
+    return 0;
 
   CCurlFile::CReadState *state = (CCurlFile::CReadState *)userp;
   return state->ReadCallback(buffer, size, nitems);
@@ -230,7 +232,7 @@ size_t CCurlFile::CReadState::WriteCallback(char *buffer, size_t size, size_t ni
   {
     //! @todo Limit max. amount of the overflowbuffer
     m_overflowBuffer = (char*)realloc_simple(m_overflowBuffer, amount + m_overflowSize);
-    if(m_overflowBuffer == NULL)
+    if (!m_overflowBuffer)
     {
       CLog::Log(LOGWARNING,
                 "CCurlFile::CReadState::{} - ({}) Failed to grow overflow buffer from {} bytes to "
@@ -528,7 +530,7 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
   }
 
   // enable support for icecast / shoutcast streams
-  if ( NULL == state->m_curlAliasList )
+  if (!state->m_curlAliasList)
     // m_curlAliasList is used only by this one place, but SetCommonOptions can
     // be called multiple times, only append to list if it's empty.
     state->m_curlAliasList = g_curlInterface.slist_append(state->m_curlAliasList, "ICY 200 OK");
@@ -1087,7 +1089,7 @@ bool CCurlFile::Open(const CURL& url)
   CLog::Log(LOGDEBUG, "CurlFile::{} - <{}>", __FUNCTION__, redactPath);
 
   assert(!(!m_state->m_easyHandle ^ !m_state->m_multiHandle));
-  if( m_state->m_easyHandle == NULL )
+  if (!m_state->m_easyHandle)
     g_curlInterface.easy_acquire(url2.GetProtocol().c_str(),
                                 url2.GetHostName().c_str(),
                                 &m_state->m_easyHandle,
@@ -1193,7 +1195,7 @@ bool CCurlFile::OpenForWrite(const CURL& url, bool bOverWrite)
 
   CLog::Log(LOGDEBUG, "CCurlFile::{} - Opening {}", __FUNCTION__, CURL::GetRedacted(m_url));
 
-  assert(m_state->m_easyHandle == NULL);
+  assert(!m_state->m_easyHandle);
   g_curlInterface.easy_acquire(url2.GetProtocol().c_str(),
                               url2.GetHostName().c_str(),
                               &m_state->m_easyHandle,
@@ -1313,7 +1315,7 @@ bool CCurlFile::Exists(const CURL& url)
   CURL url2(url);
   ParseAndCorrectUrl(url2);
 
-  assert(m_state->m_easyHandle == NULL);
+  assert(!m_state->m_easyHandle);
   g_curlInterface.easy_acquire(url2.GetProtocol().c_str(),
                               url2.GetHostName().c_str(),
                               &m_state->m_easyHandle, NULL);
@@ -1521,7 +1523,7 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
   CURL url2(url);
   ParseAndCorrectUrl(url2);
 
-  assert(m_state->m_easyHandle == NULL);
+  assert(!m_state->m_easyHandle);
   g_curlInterface.easy_acquire(url2.GetProtocol().c_str(),
                               url2.GetHostName().c_str(),
                               &m_state->m_easyHandle, NULL);

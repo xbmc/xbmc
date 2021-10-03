@@ -121,7 +121,7 @@ void CTexture::Update(unsigned int width,
                       const unsigned char* pixels,
                       bool loadToGPU)
 {
-  if (pixels == NULL)
+  if (!pixels)
     return;
 
   if (format & XB_FMT_DXT_MASK)
@@ -375,7 +375,7 @@ bool CTexture::LoadPaletted(unsigned int width,
                             const unsigned char* pixels,
                             const COLOR* palette)
 {
-  if (pixels == NULL || palette == NULL)
+  if (!pixels || !palette)
     return false;
 
   Allocate(width, height, format);

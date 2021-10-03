@@ -535,7 +535,7 @@ std::string CMediaManager::GetDiskUniqueId(const std::string& devicePath)
   std::string mediaPath;
 
   CCdInfo* pInfo = CServiceBroker::GetMediaManager().GetCdInfo(devicePath);
-  if (pInfo == NULL)
+  if (!pInfo)
     return "";
 
   if (mediaPath.empty() && pInfo->IsAudio(1))

@@ -99,7 +99,7 @@ namespace JSONRPC
       void PushBuffer(CTCPServer *host, const char *buffer, int length) override;
       void Disconnect() override;
 
-      bool IsNew() const override { return m_websocket == NULL; }
+      bool IsNew() const override { return !m_websocket; }
       bool Closing() const override
       {
         return m_websocket != nullptr && m_websocket->GetState() == WebSocketStateClosed;
