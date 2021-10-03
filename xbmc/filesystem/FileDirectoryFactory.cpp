@@ -29,6 +29,7 @@
 #include "URL.h"
 #include "XbtDirectory.h"
 #include "ZipDirectory.h"
+#include "addons/AddonManager.h"
 #include "addons/AudioDecoder.h"
 #include "addons/VFSEntry.h"
 #include "playlists/PlayListFactory.h"

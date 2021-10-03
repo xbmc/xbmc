@@ -14,6 +14,7 @@
 #include "GUIUserMessages.h"
 #include "GUIWindowManager.h"
 #include "ServiceBroker.h"
+#include "addons/AddonManager.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"

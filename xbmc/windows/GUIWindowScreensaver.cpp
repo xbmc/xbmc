@@ -12,6 +12,7 @@
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
+#include "addons/AddonManager.h"
 #include "addons/ScreenSaver.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"

@@ -9,6 +9,7 @@
 #include "imagefactory.h"
 
 #include "ServiceBroker.h"
+#include "addons/AddonManager.h"
 #include "addons/ImageDecoder.h"
 #include "guilib/FFmpegImage.h"
 #include "utils/Mime.h"

@@ -9,6 +9,7 @@
 
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "addons/AddonManager.h"
 #include "addons/interfaces/Filesystem.h"
 #include "network/ZeroconfBrowser.h"
 #include "utils/StringUtils.h"
