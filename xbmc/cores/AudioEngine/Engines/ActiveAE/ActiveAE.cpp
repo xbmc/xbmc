@@ -2999,20 +2999,19 @@ bool CActiveAE::CompareFormat(AEAudioFormat &lhs, AEAudioFormat &rhs)
  * later when the engine is idle it will convert the sound to sink format
  */
 
-IAESound *CActiveAE::MakeSound(const std::string& file)
+IAE::SoundPtr CActiveAE::MakeSound(const std::string& file)
 {
   AVFormatContext *fmt_ctx = nullptr;
   AVCodecContext *dec_ctx = nullptr;
   AVIOContext *io_ctx;
   AVInputFormat *io_fmt = nullptr;
   AVCodec *dec = nullptr;
-  CActiveAESound *sound = nullptr;
   SampleConfig config;
 
-  sound = new CActiveAESound(file, this);
+  // No custom deleter until sound is registered
+  auto sound = std::make_unique<CActiveAESound>(file, this);
   if (!sound->Prepare())
   {
-    delete sound;
     return nullptr;
   }
   int fileSize = sound->GetFileSize();
@@ -3024,8 +3023,8 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
 
   fmt_ctx = avformat_alloc_context();
   unsigned char* buffer = (unsigned char*)av_malloc(bufferSize);
-  io_ctx = avio_alloc_context(buffer, bufferSize, 0,
-                              sound, CActiveAESound::Read, NULL, CActiveAESound::Seek);
+  io_ctx = avio_alloc_context(buffer, bufferSize, 0, sound.get(), CActiveAESound::Read, NULL,
+                              CActiveAESound::Seek);
 
   io_ctx->max_packet_size = bufferSize;
 
@@ -3046,7 +3045,6 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
       av_freep(&io_ctx->buffer);
       av_freep(&io_ctx);
     }
-    delete sound;
     return nullptr;
   }
 
@@ -3071,7 +3069,6 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
       av_freep(&io_ctx->buffer);
       av_freep(&io_ctx);
     }
-    delete sound;
     return nullptr;
   }
 
@@ -3157,7 +3154,6 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
 
   if (error)
   {
-    delete sound;
     return nullptr;
   }
 
@@ -3166,7 +3162,8 @@ IAESound *CActiveAE::MakeSound(const std::string& file)
   // register sound
   m_dataPort.SendOutMessage(CActiveAEDataProtocol::NEWSOUND, &sound, sizeof(CActiveAESound*));
 
-  return sound;
+  // transfer ownership to std::unique_ptr that unregisters the sound
+  return {sound.release(), IAESoundDeleter(*this)};
 }
 
 void CActiveAE::FreeSound(IAESound *sound)

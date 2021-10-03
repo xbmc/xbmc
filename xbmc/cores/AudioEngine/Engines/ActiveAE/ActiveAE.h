@@ -250,8 +250,7 @@ public:
   bool FreeStream(IAEStream *stream, bool finish) override;
 
   /* returns a new sound object */
-  IAESound *MakeSound(const std::string& file) override;
-  void FreeSound(IAESound *sound) override;
+  IAE::SoundPtr MakeSound(const std::string& file) override;
 
   void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough) override;
   bool SupportsRaw(AEAudioFormat &format) override;
@@ -272,6 +271,9 @@ public:
   void OnLostDisplay() override;
   void OnResetDisplay() override;
   void OnAppFocusChange(bool focus) override;
+
+private:
+  void FreeSound(IAESound* sound) override;
 
 protected:
   void PlaySound(CActiveAESound *sound);
