@@ -8,12 +8,14 @@
 
 #pragma once
 
-#include <map>
-#include <list>
-#include <vector>
-#include <utility>
-
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
+
+#include <cassert>
+#include <list>
+#include <map>
+#include <memory>
+#include <utility>
+#include <vector>
 
 extern "C" {
 #include <libavutil/samplefmt.h>
@@ -84,6 +86,8 @@ protected:
    */
   virtual void Start() = 0;
 public:
+  using SoundPtr = std::unique_ptr<IAESound, IAESoundDeleter>;
+
   /*!
    * \brief Called when the application needs to terminate the engine
    */
@@ -171,14 +175,7 @@ public:
    * \param file The WAV file to load, this supports XBMC's VFS
    * \return A new IAESound if the file could be loaded, otherwise NULL
    */
-  virtual IAESound *MakeSound(const std::string &file) = 0;
-
-  /*!
-   * \brief Free the supplied IAESound object
-   *
-   * \param sound The IAESound object to free
-   */
-  virtual void FreeSound(IAESound *sound) = 0;
+  virtual SoundPtr MakeSound(const std::string& file) = 0;
 
   /*!
    * \brief Enumerate the supported audio output devices
@@ -267,4 +264,29 @@ public:
    * \return Returns true on success, else false.
    */
   virtual bool GetCurrentSinkFormat(AEAudioFormat &SinkFormat) { return false; }
+
+private:
+  friend class IAESoundDeleter;
+
+  /*!
+   * \brief Free the supplied IAESound object
+   *
+   * \param sound The IAESound object to free
+   */
+  virtual void FreeSound(IAESound* sound) = 0;
+};
+
+class IAESoundDeleter
+{
+private:
+  IAE* m_iae;
+
+public:
+  IAESoundDeleter() : m_iae(nullptr) {}
+  explicit IAESoundDeleter(IAE& iae) : m_iae(&iae) {}
+  void operator()(IAESound* sound)
+  {
+    assert(m_iae);
+    m_iae->FreeSound(sound);
+  }
 };

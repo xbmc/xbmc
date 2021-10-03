@@ -25,13 +25,6 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
-void CGUIAudioManager::IAESoundDeleter::operator()(IAESound* s)
-{
-  IAE* ae = CServiceBroker::GetActiveAE();
-  if (ae)
-    ae->FreeSound(s);
-}
-
 CGUIAudioManager::CGUIAudioManager()
 {
   m_settings = CServiceBroker::GetSettingsComponent()->GetSettings();
@@ -328,7 +321,7 @@ std::shared_ptr<IAESound> CGUIAudioManager::LoadSound(const std::string& filenam
   if (!ae)
     return nullptr;
 
-  std::shared_ptr<IAESound> sound(ae->MakeSound(filename), IAESoundDeleter());
+  std::shared_ptr<IAESound> sound(ae->MakeSound(filename));
   if (!sound)
     return nullptr;
 
