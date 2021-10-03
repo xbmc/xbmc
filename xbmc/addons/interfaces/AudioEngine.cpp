@@ -336,7 +336,7 @@ AEStreamHandle* Interface_AudioEngine::audioengine_make_stream(void* kodiBase,
   if (options & AUDIO_STREAM_AUTOSTART)
     kodiOption |= AESTREAM_AUTOSTART;
 
-  return engine->MakeStream(format, kodiOption);
+  return engine->MakeStream(format, kodiOption).release();
 }
 
 void Interface_AudioEngine::audioengine_free_stream(void* kodiBase, AEStreamHandle* streamHandle)

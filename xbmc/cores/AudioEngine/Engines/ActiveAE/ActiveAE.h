@@ -246,8 +246,9 @@ public:
   bool IsMuted() override;
 
   /* returns a new stream for data in the specified format */
-  IAEStream *MakeStream(AEAudioFormat &audioFormat, unsigned int options = 0, IAEClockCallback *clock = NULL) override;
-  bool FreeStream(IAEStream *stream, bool finish) override;
+  IAE::StreamPtr MakeStream(AEAudioFormat& audioFormat,
+                            unsigned int options = 0,
+                            IAEClockCallback* clock = NULL) override;
 
   /* returns a new sound object */
   IAE::SoundPtr MakeSound(const std::string& file) override;
@@ -273,6 +274,7 @@ public:
   void OnAppFocusChange(bool focus) override;
 
 private:
+  bool FreeStream(IAEStream* stream, bool finish) override;
   void FreeSound(IAESound* sound) override;
 
 protected:

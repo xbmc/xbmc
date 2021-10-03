@@ -175,8 +175,7 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
       if (si->m_stream)
       {
         CloseFileCB(*si);
-        CServiceBroker::GetActiveAE()->FreeStream(si->m_stream, true);
-        si->m_stream = NULL;
+        si->m_stream.reset();
       }
 
       si->m_decoder.Destroy();
@@ -191,8 +190,7 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
       if (si->m_stream)
       {
         CloseFileCB(*si);
-        CServiceBroker::GetActiveAE()->FreeStream(si->m_stream, true);
-        si->m_stream = nullptr;
+        si->m_stream.reset();
       }
 
       si->m_decoder.Destroy();
@@ -475,7 +473,7 @@ inline bool PAPlayer::PrepareStream(StreamInfo *si)
   {
     /* slave the stream for gapless */
     si->m_isSlaved = true;
-    m_currentStream->m_stream->RegisterSlave(si->m_stream);
+    m_currentStream->m_stream->RegisterSlave(si->m_stream.get());
   }
 
   /* fill the stream's buffer */
@@ -594,7 +592,6 @@ inline void PAPlayer::ProcessStreams(double &freeBufferTime)
     {
       itt = m_finishing.erase(itt);
       CloseFileCB(*si);
-      CServiceBroker::GetActiveAE()->FreeStream(si->m_stream, true);
       delete si;
       CLog::Log(LOGDEBUG, "PAPlayer::ProcessStreams - Stream Freed");
     }

@@ -138,7 +138,6 @@ void CRetroPlayerAudio::CloseStream()
   {
     CLog::Log(LOGDEBUG, "RetroPlayer[AUDIO]: Closing audio stream");
 
-    CServiceBroker::GetActiveAE()->FreeStream(m_pAudioStream, true);
-    m_pAudioStream = nullptr;
+    m_pAudioStream.reset();
   }
 }
