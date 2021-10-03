@@ -26,12 +26,18 @@ typedef std::vector<AEDevice> AEDeviceList;
 
 /* forward declarations */
 class IAEStream;
+class IAEStreamDeleter;
 class IAESound;
 class IAESoundDeleter;
 class IAEPacketizer;
 class IAudioCallback;
 class IAEClockCallback;
 class CAEStreamInfo;
+
+namespace ADDON
+{
+struct Interface_AudioEngine;
+}
 
 /* sound options */
 #define AE_SOUND_OFF 0 /*! disable sounds */
@@ -86,6 +92,7 @@ protected:
    */
   virtual void Start() = 0;
 public:
+  using StreamPtr = std::unique_ptr<IAEStream, IAEStreamDeleter>;
   using SoundPtr = std::unique_ptr<IAESound, IAESoundDeleter>;
 
   /*!
@@ -152,22 +159,16 @@ public:
   /*!
    * \brief Creates and returns a new IAEStream in the format specified, this function should never fail
    *
+   * The cleanup behaviour can be modified with the IAEStreamDeleter::setFinish method.
+   * Per default the behaviour is the same as calling FreeStream with true.
+   *
    * \param audioFormat
    * \param options A bit field of stream options (see: enum AEStreamOptions)
    * \return a new IAEStream that will accept data in the requested format
    */
-  virtual IAEStream *MakeStream(AEAudioFormat &audioFormat, unsigned int options = 0, IAEClockCallback *clock = NULL) = 0;
-
-  /*!
-   * \brief This method will remove the specifyed stream from the engine.
-   *
-   * For OSX/IOS this is essential to reconfigure the audio output.
-   *
-   * \param stream The stream to be altered
-   * \param finish if true AE will switch back to gui sound mode (if this is last stream)
-   * \return NULL
-   */
-  virtual bool FreeStream(IAEStream *stream, bool finish) = 0;
+  virtual StreamPtr MakeStream(AEAudioFormat& audioFormat,
+                               unsigned int options = 0,
+                               IAEClockCallback* clock = NULL) = 0;
 
   /*!
    * \brief Creates a new IAESound that is ready to play the specified file
@@ -266,7 +267,20 @@ public:
   virtual bool GetCurrentSinkFormat(AEAudioFormat &SinkFormat) { return false; }
 
 private:
+  friend class IAEStreamDeleter;
   friend class IAESoundDeleter;
+  friend struct ADDON::Interface_AudioEngine;
+
+  /*!
+   * \brief This method will remove the specified stream from the engine.
+   *
+   * For OSX/IOS this is essential to reconfigure the audio output.
+   *
+   * \param stream The stream to be altered
+   * \param finish if true AE will switch back to gui sound mode (if this is last stream)
+   * \return true on success, else false.
+   */
+  virtual bool FreeStream(IAEStream* stream, bool finish) = 0;
 
   /*!
    * \brief Free the supplied IAESound object
@@ -274,6 +288,23 @@ private:
    * \param sound The IAESound object to free
    */
   virtual void FreeSound(IAESound* sound) = 0;
+};
+
+class IAEStreamDeleter
+{
+private:
+  IAE* m_iae;
+  bool m_finish;
+
+public:
+  IAEStreamDeleter() : m_iae(nullptr), m_finish(true) {}
+  explicit IAEStreamDeleter(IAE& iae) : m_iae(&iae), m_finish{true} {}
+  void setFinish(bool finish) { m_finish = finish; }
+  void operator()(IAEStream* stream)
+  {
+    assert(m_iae);
+    m_iae->FreeStream(stream, m_finish);
+  }
 };
 
 class IAESoundDeleter

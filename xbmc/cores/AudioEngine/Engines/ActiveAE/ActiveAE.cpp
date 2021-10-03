@@ -3277,7 +3277,9 @@ bool CActiveAE::ResampleSound(CActiveAESound *sound)
 // Streams
 //-----------------------------------------------------------------------------
 
-IAEStream *CActiveAE::MakeStream(AEAudioFormat &audioFormat, unsigned int options, IAEClockCallback *clock)
+IAE::StreamPtr CActiveAE::MakeStream(AEAudioFormat& audioFormat,
+                                     unsigned int options,
+                                     IAEClockCallback* clock)
 {
   if (audioFormat.m_dataFormat <= AE_FMT_INVALID || audioFormat.m_dataFormat >= AE_FMT_MAX)
   {
@@ -3313,7 +3315,8 @@ IAEStream *CActiveAE::MakeStream(AEAudioFormat &audioFormat, unsigned int option
     bool success = reply->signal == CActiveAEControlProtocol::ACC;
     if (success)
     {
-      CActiveAEStream *stream = *(CActiveAEStream**)reply->data;
+      IAE::StreamPtr stream(*reinterpret_cast<CActiveAEStream**>(reply->data),
+                            IAEStreamDeleter(*this));
       reply->Release();
       return stream;
     }
