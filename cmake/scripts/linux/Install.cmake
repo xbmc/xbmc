@@ -47,6 +47,10 @@ configure_file(${CMAKE_SOURCE_DIR}/tools/Linux/kodi-xsession.desktop.in
 configure_file(${CMAKE_SOURCE_DIR}/tools/Linux/kodi.desktop.in
                ${CORE_BUILD_DIR}/${APP_NAME_LC}.desktop @ONLY)
 
+# Configure metainfo
+configure_file(${CMAKE_SOURCE_DIR}/tools/Linux/kodi.metainfo.xml.in
+               ${CORE_BUILD_DIR}/${APP_PACKAGE}.metainfo.xml @ONLY)
+
 # Install app
 install(TARGETS ${APP_NAME_LC}
         DESTINATION ${libdir}/${APP_NAME_LC}
@@ -90,6 +94,11 @@ install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${APP_NAME_LC}-xsession.desk
 # Install desktop entry
 install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${APP_NAME_LC}.desktop
         DESTINATION ${datarootdir}/applications
+        COMPONENT kodi)
+
+# Install metainfo
+install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${APP_PACKAGE}.metainfo.xml
+        DESTINATION ${datarootdir}/metainfo
         COMPONENT kodi)
 
 # Install icons
