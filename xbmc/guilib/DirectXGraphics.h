@@ -12,6 +12,8 @@ class CTexture;
 
 #include "gui3d.h"
 
+#include <memory>
+
 LPVOID XPhysicalAlloc(SIZE_T s, DWORD ulPhysicalAddress, DWORD ulAlignment, DWORD flProtect);
 void XPhysicalFree(LPVOID lpAddress);
 
@@ -154,4 +156,4 @@ void DXT1toARGB(const void *src, void *dest, unsigned int destWidth);
 void DXT4toARGB(const void *src, void *dest, unsigned int destWidth);
 void ConvertDXT1(const void *src, unsigned int width, unsigned int height, void *dest);
 void ConvertDXT4(const void *src, unsigned int width, unsigned int height, void *dest);
-void GetTextureFromData(D3DTexture* pTex, void* texData, CTexture** ppTexture);
+void GetTextureFromData(D3DTexture* pTex, void* texData, std::unique_ptr<CTexture>* ppTexture);

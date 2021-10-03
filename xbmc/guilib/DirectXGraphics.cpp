@@ -304,7 +304,7 @@ void ConvertDXT4(const void *src, unsigned int width, unsigned int height, void 
   }
 }
 
-void GetTextureFromData(D3DTexture* pTex, void* texData, CTexture** ppTexture)
+void GetTextureFromData(D3DTexture* pTex, void* texData, std::unique_ptr<CTexture>* ppTexture)
 {
   XB_D3DFORMAT fmt;
   DWORD width, height, pitch, offset;
