@@ -360,6 +360,37 @@ int CPVRClients::GetCreatedClients(CPVRClientMap& clients) const
   return iReturn;
 }
 
+std::vector<CVariant> CPVRClients::GetClientProviderInfos() const
+{
+  std::vector<AddonInfoPtr> addonInfos;
+  // Get enabled and disabled PVR client addon infos
+  CServiceBroker::GetAddonMgr().GetAddonInfos(addonInfos, false, ADDON_PVRDLL);
+
+  CSingleLock lock(m_critSection);
+
+  std::vector<CVariant> clientProviderInfos;
+  for (const auto& addonInfo : addonInfos)
+  {
+    CVariant clientProviderInfo(CVariant::VariantTypeObject);
+    if (IsKnownClient(addonInfo->ID()))
+      clientProviderInfo["clientid"] = GetClientId(addonInfo->ID());
+    else
+      clientProviderInfo["clientid"] = ClientIdFromAddonId(addonInfo->ID());
+    clientProviderInfo["addonid"] = addonInfo->ID();
+    clientProviderInfo["enabled"] = !CServiceBroker::GetAddonMgr().IsAddonDisabled(addonInfo->ID());
+    clientProviderInfo["name"] = addonInfo->Name();
+    clientProviderInfo["icon"] = addonInfo->Icon();
+    auto& artMap = addonInfo->Art();
+    auto thumbEntry = artMap.find("thumb");
+    if (thumbEntry != artMap.end())
+      clientProviderInfo["thumb"] = thumbEntry->second;
+
+    clientProviderInfos.emplace_back(clientProviderInfo);
+  }
+
+  return clientProviderInfos;
+}
+
 PVR_ERROR CPVRClients::GetCreatedClients(CPVRClientMap& clientsReady, std::vector<int>& clientsNotReady) const
 {
   clientsNotReady.clear();
@@ -447,6 +478,7 @@ std::vector<CVariant> CPVRClients::GetEnabledClientInfos() const
       clientInfo["supportstimers"] = capabilities.SupportsTimers();
       clientInfo["supportschannelgroups"] = capabilities.SupportsChannelGroups();
       clientInfo["supportschannelscan"] = capabilities.SupportsChannelScan();
+      clientInfo["supportchannelproviders"] = capabilities.SupportsProviders();
 
       clientInfos.push_back(clientInfo);
     }
@@ -473,6 +505,10 @@ std::vector<SBackend> CPVRClients::GetBackendProperties() const
     }
 
     int iAmount = 0;
+    if (client->GetProvidersAmount(iAmount) == PVR_ERROR_NO_ERROR)
+      properties.numProviders = iAmount;
+    if (client->GetChannelGroupsAmount(iAmount) == PVR_ERROR_NO_ERROR)
+      properties.numChannelGroups = iAmount;
     if (client->GetChannelsAmount(iAmount) == PVR_ERROR_NO_ERROR)
       properties.numChannels = iAmount;
     if (client->GetTimersAmount(iAmount) == PVR_ERROR_NO_ERROR)
@@ -555,6 +591,14 @@ PVR_ERROR CPVRClients::GetChannels(bool bRadio,
       failedClients);
 }
 
+PVR_ERROR CPVRClients::GetProviders(CPVRProvidersContainer* providers,
+                                    std::vector<int>& failedClients)
+{
+  return ForCreatedClients(__FUNCTION__, [providers](const std::shared_ptr<CPVRClient>& client) {
+    return client->GetProviders(*providers);
+  }, failedClients);
+}
+
 PVR_ERROR CPVRClients::GetChannelGroups(CPVRChannelGroups* groups, std::vector<int>& failedClients)
 {
   return ForCreatedClients(__FUNCTION__, [groups](const std::shared_ptr<CPVRClient>& client) {
@@ -628,6 +672,18 @@ bool CPVRClients::AnyClientSupportingRecordings() const
   ForCreatedClients(__FUNCTION__,
                     [&bHaveSupportingClient](const std::shared_ptr<CPVRClient>& client) {
                       if (client->GetClientCapabilities().SupportsRecordings())
+                        bHaveSupportingClient = true;
+                      return PVR_ERROR_NO_ERROR;
+                    });
+  return bHaveSupportingClient;
+}
+
+bool CPVRClients::AnyClientSupportingRecordingsDelete() const
+{
+  bool bHaveSupportingClient = false;
+  ForCreatedClients(__FUNCTION__,
+                    [&bHaveSupportingClient](const std::shared_ptr<CPVRClient>& client) {
+                      if (client->GetClientCapabilities().SupportsRecordingsDelete())
                         bHaveSupportingClient = true;
                       return PVR_ERROR_NO_ERROR;
                     });

@@ -15,6 +15,7 @@
 #include "pvr/EPG.h"
 #include "pvr/General.h"
 #include "pvr/MenuHook.h"
+#include "pvr/Providers.h"
 #include "pvr/Recordings.h"
 #include "pvr/Stream.h"
 #include "pvr/Timers.h"
@@ -278,6 +279,8 @@ namespace addon
 ///   PVR_ERROR GetBackendName(std::string& name) override;
 ///   PVR_ERROR GetBackendVersion(std::string& version) override;
 ///
+///   PVR_ERROR GetProvidersAmount(int& amount) override;
+///   PVR_ERROR GetProviders(std::vector<kodi::addon::PVRProvider>& providers) override;
 ///   PVR_ERROR GetChannelsAmount(int& amount) override;
 ///   PVR_ERROR GetChannels(bool radio, std::vector<kodi::addon::PVRChannel>& channels) override;
 ///   PVR_ERROR GetChannelStreamProperties(const kodi::addon::PVRChannel&	channel,
@@ -312,6 +315,18 @@ namespace addon
 /// PVR_ERROR CMyPVRClient::GetBackendVersion(std::string& version)
 /// {
 ///   version = "1.0.0";
+///   return PVR_ERROR_NO_ERROR;
+/// }
+///
+/// PVR_ERROR CMyInstance::GetProvidersAmount(int& amount)
+/// {
+///   amount = m_myProviders.size();
+///   return PVR_ERROR_NO_ERROR;
+/// }
+///
+/// PVR_ERROR CMyPVRClient::GetProviders(std::vector<kodi::addon::PVRProvider>& providers)
+/// {
+///   providers = m_myProviders;
 ///   return PVR_ERROR_NO_ERROR;
 /// }
 ///
@@ -825,6 +840,78 @@ public:
   /// @copydetails cpp_kodi_addon_pvr_Channels_source_addon_auto_check
   ///
   ///@{
+
+  //============================================================================
+  /// @brief The total amount of providers on the backend
+  ///
+  /// @param[out] amount The total amount of providers on the backend
+  /// @return @ref PVR_ERROR_NO_ERROR if the amount has been fetched successfully.
+  ///
+  /// @remarks Optional, and only used if @ref PVRCapabilities::SetSupportsProviders
+  ///          "supportsProviders" is set to true.
+  ///
+  virtual PVR_ERROR GetProvidersAmount(int& amount) { return PVR_ERROR_NOT_IMPLEMENTED; }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  /// @brief Request the list of all providers from the backend.
+  ///
+  /// @param[out] results The channels defined with @ref
+  ///                     cpp_kodi_addon_pvr_Defs_PVRProviders
+  ///                     and available at the addon, then transferred with
+  ///                     @ref cpp_kodi_addon_pvr_Defs_PVRProvidersResultSet.
+  /// @return @ref PVR_ERROR_NO_ERROR if the list has been fetched successfully.
+  ///
+  /// @remarks Optional, and only used if @ref PVRCapabilities::SetSupportsProviders
+  ///          "supportsProviders" is set to true.
+  ///
+  /// --------------------------------------------------------------------------
+  ///
+  /// @copydetails cpp_kodi_addon_pvr_Defs_PVRProviders_Help
+  ///
+  ///
+  /// --------------------------------------------------------------------------
+  ///
+  ///
+  ///
+  ///---------------------------------------------------------------------------
+  ///
+  /// **Example:**
+  /// ~~~~~~~~~~~~~{.cpp}
+  /// ...
+  /// PVR_ERROR CMyPVRInstance::GetProviders(kodi::addon::PVRProvidersResultSet& results)
+  /// {
+  ///   // Minimal demo example, in reality bigger and loop to transfer all
+  ///   kodi::addon::PVRProvider provider;
+  ///   provider.SetUniqueId(123);
+  ///   provider.SetProviderName("My provider name");
+  ///   provider.SetProviderType(PVR_PROVIDER_TYPE_SATELLITE);
+  ///   ...
+  ///
+  ///   // Give it now to Kodi
+  ///   results.Add(provider);
+  ///   return PVR_ERROR_NO_ERROR;
+  /// }
+  /// ...
+  /// ~~~~~~~~~~~~~
+  ///
+  virtual PVR_ERROR GetProviders(kodi::addon::PVRProvidersResultSet& results)
+  {
+    return PVR_ERROR_NOT_IMPLEMENTED;
+  }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  /// @brief **Callback to Kodi Function**\n
+  /// Request Kodi to update it's list of providers.
+  ///
+  /// @remarks Only called from addon itself.
+  ///
+  inline void TriggerProvidersUpdate()
+  {
+    m_instanceData->toKodi->TriggerProvidersUpdate(m_instanceData->toKodi->kodiInstance);
+  }
+  //----------------------------------------------------------------------------
 
   //============================================================================
   /// @brief The total amount of channels on the backend
@@ -2676,6 +2763,9 @@ private:
     m_instanceData->toAddon->GetSignalStatus = ADDON_GetSignalStatus;
     m_instanceData->toAddon->GetDescrambleInfo = ADDON_GetDescrambleInfo;
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
+    m_instanceData->toAddon->GetProvidersAmount = ADDON_GetProvidersAmount;
+    m_instanceData->toAddon->GetProviders = ADDON_GetProviders;
+    //--==----==----==----==----==----==----==----==----==----==----==----==----==
     m_instanceData->toAddon->GetChannelGroupsAmount = ADDON_GetChannelGroupsAmount;
     m_instanceData->toAddon->GetChannelGroups = ADDON_GetChannelGroups;
     m_instanceData->toAddon->GetChannelGroupMembers = ADDON_GetChannelGroupMembers;
@@ -2882,6 +2972,20 @@ private:
     PVRDescrambleInfo cppDescrambleInfo(descrambleInfo);
     return static_cast<CInstancePVRClient*>(instance->toAddon->addonInstance)
         ->GetDescrambleInfo(channelUid, cppDescrambleInfo);
+  }
+
+  //--==----==----==----==----==----==----==----==----==----==----==----==----==
+
+  inline static PVR_ERROR ADDON_GetProvidersAmount(const AddonInstance_PVR* instance, int* amount)
+  {
+    return static_cast<CInstancePVRClient*>(instance->toAddon->addonInstance)
+        ->GetProvidersAmount(*amount);
+  }
+
+  inline static PVR_ERROR ADDON_GetProviders(const AddonInstance_PVR* instance, ADDON_HANDLE handle)
+  {
+    PVRProvidersResultSet result(instance, handle);
+    return static_cast<CInstancePVRClient*>(instance->toAddon->addonInstance)->GetProviders(result);
   }
 
   //--==----==----==----==----==----==----==----==----==----==----==----==----==

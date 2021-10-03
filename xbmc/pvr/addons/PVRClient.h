@@ -26,6 +26,8 @@ namespace PVR
 class CPVRChannel;
 class CPVRChannelGroup;
 class CPVRChannelGroups;
+class CPVRProvider;
+class CPVRProvidersContainer;
 class CPVRClientMenuHook;
 class CPVRClientMenuHooks;
 class CPVREpg;
@@ -69,6 +71,15 @@ public:
    * @return True if supported, false otherwise.
    */
   bool SupportsRadio() const { return m_addonCapabilities && m_addonCapabilities->bSupportsRadio; }
+
+  /*!
+   * @brief Check whether this add-on supports providers.
+   * @return True if supported, false otherwise.
+   */
+  bool SupportsProviders() const
+  {
+    return m_addonCapabilities && m_addonCapabilities->bSupportsProviders;
+  }
 
   /*!
    * @brief Check whether this add-on supports channel groups.
@@ -243,6 +254,16 @@ public:
   {
     return m_addonCapabilities && m_addonCapabilities->bSupportsRecordings &&
            m_addonCapabilities->bSupportsRecordingSize;
+  }
+
+  /*!
+   * @brief Check whether this add-on supports deleting recordings.
+   * @return True if supported, false otherwise.
+   */
+  bool SupportsRecordingsDelete() const
+  {
+    return m_addonCapabilities && m_addonCapabilities->bSupportsRecordings &&
+           m_addonCapabilities->bSupportsRecordingsDelete;
   }
 
   /////////////////////////////////////////////////////////////////////////////////
@@ -556,6 +577,20 @@ public:
    * @return PVR_ERROR_NO_ERROR if the list has been fetched successfully.
    */
   PVR_ERROR GetChannels(bool bRadio, std::vector<std::shared_ptr<CPVRChannel>>& channels);
+
+  /*!
+   * @brief Get the total amount of providers from the backend.
+   * @param iChannels The total amount of channels on the server or -1 on error.
+   * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
+   */
+  PVR_ERROR GetProvidersAmount(int& iProviders);
+
+  /*!
+   * @brief Request the list of all providers from the backend.
+   * @param providers The providers list to add the providers to.
+   * @return PVR_ERROR_NO_ERROR if the list has been fetched successfully.
+   */
+  PVR_ERROR GetProviders(CPVRProvidersContainer& providers);
 
   //@}
   /** @name PVR recording methods */
@@ -1139,6 +1174,16 @@ private:
                                         const PVR_CHANNEL* entry);
 
   /*!
+   * @brief Transfer a provider entry from the add-on to Kodi
+   * @param kodiInstance Pointer to Kodi's CPVRClient class
+   * @param handle The handle parameter that Kodi used when requesting the channel list
+   * @param entry The entry to transfer to Kodi
+   */
+  static void cb_transfer_provider_entry(void* kodiInstance,
+                                         const ADDON_HANDLE handle,
+                                         const PVR_PROVIDER* entry);
+
+  /*!
    * @brief Transfer a timer entry from the add-on to Kodi
    * @param kodiInstance Pointer to Kodi's CPVRClient class
    * @param handle The handle parameter that Kodi used when requesting the timers list
@@ -1182,6 +1227,12 @@ private:
    * @param kodiInstance Pointer to Kodi's CPVRClient class
    */
   static void cb_trigger_channel_update(void* kodiInstance);
+
+  /*!
+   * @brief Request Kodi to update it's list of providers
+   * @param kodiInstance Pointer to Kodi's CPVRClient class
+   */
+  static void cb_trigger_provider_update(void* kodiInstance);
 
   /*!
    * @brief Request Kodi to update it's list of timers

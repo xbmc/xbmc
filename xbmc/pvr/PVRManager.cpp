@@ -26,6 +26,8 @@
 #include "pvr/guilib/PVRGUIChannelIconUpdater.h"
 #include "pvr/guilib/PVRGUIProgressHandler.h"
 #include "pvr/guilib/guiinfo/PVRGUIInfo.h"
+#include "pvr/providers/PVRProvider.h"
+#include "pvr/providers/PVRProviders.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
@@ -188,6 +190,7 @@ void CPVRManagerJobQueue::ExecutePendingJobs()
 
 CPVRManager::CPVRManager() :
     CThread("PVRManager"),
+    m_providers(new CPVRProviders),
     m_channelGroups(new CPVRChannelGroupsContainer),
     m_recordings(new CPVRRecordings),
     m_timers(new CPVRTimers),
@@ -243,6 +246,12 @@ std::shared_ptr<CPVRDatabase> CPVRManager::GetTVDatabase() const
     CLog::LogF(LOGERROR, "Failed to open the PVR database");
 
   return m_database;
+}
+
+std::shared_ptr<CPVRProviders> CPVRManager::Providers() const
+{
+  CSingleLock lock(m_critSection);
+  return m_providers;
 }
 
 std::shared_ptr<CPVRChannelGroupsContainer> CPVRManager::ChannelGroups() const
@@ -333,6 +342,7 @@ void CPVRManager::Clear()
   m_guiInfo.reset();
   m_timers.reset();
   m_recordings.reset();
+  m_providers.reset();
   m_channelGroups.reset();
   m_parentalTimer.reset();
   m_database.reset();
@@ -346,6 +356,7 @@ void CPVRManager::ResetProperties()
   Clear();
 
   m_database.reset(new CPVRDatabase);
+  m_providers.reset(new CPVRProviders);
   m_channelGroups.reset(new CPVRChannelGroupsContainer);
   m_recordings.reset(new CPVRRecordings);
   m_timers.reset(new CPVRTimers);
@@ -643,6 +654,7 @@ void CPVRManager::OnWake()
 
   /* trigger PVR data updates */
   TriggerChannelGroupsUpdate();
+  TriggerProvidersUpdate();
   TriggerChannelsUpdate();
   TriggerRecordingsUpdate();
   TriggerEpgsCreate();
@@ -663,6 +675,9 @@ bool CPVRManager::LoadComponents(CPVRGUIProgressHandler* progressHandler)
   /* load all channels and groups */
   if (progressHandler)
     progressHandler->UpdateProgress(g_localizeStrings.Get(19236), 0); // Loading channels from clients
+
+  if (!m_providers->Load() || !IsInitialising())
+    return false;
 
   if (!m_channelGroups->Load() || !IsInitialising())
     return false;
@@ -696,6 +711,7 @@ void CPVRManager::UnloadComponents()
   m_recordings->Unload();
   m_timers->Unload();
   m_channelGroups->Unload();
+  m_providers->Unload();
   m_epgContainer.Unload();
 }
 
@@ -823,6 +839,13 @@ void CPVRManager::TriggerChannelsUpdate()
 {
   m_pendingUpdates->Append("pvr-update-channels", [this]() {
     return ChannelGroups()->Update(true);
+  });
+}
+
+void CPVRManager::TriggerProvidersUpdate()
+{
+  m_pendingUpdates->Append("pvr-update-channel-providers", [this]() {
+    return Providers()->Update();
   });
 }
 

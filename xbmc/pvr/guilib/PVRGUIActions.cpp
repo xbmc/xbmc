@@ -1952,6 +1952,8 @@ namespace PVR
       pDlgProgress->SetPercentage(iProgressStepPercentage * ++iProgressStepsDone);
       pDlgProgress->Progress();
 
+      /* delete all providers */
+      pvrDatabase->DeleteProviders();
       // delete all channels (including data only available locally, like user set icons)
       pvrDatabase->DeleteChannels();
     }

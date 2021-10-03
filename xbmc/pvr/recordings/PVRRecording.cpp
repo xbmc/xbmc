@@ -16,6 +16,8 @@
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/Epg.h"
+#include "pvr/providers/PVRProvider.h"
+#include "pvr/providers/PVRProviders.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
@@ -103,6 +105,8 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING& recording, unsigned int iClien
   m_iFlags = recording.iFlags;
   if (recording.sizeInBytes >= 0)
     m_sizeInBytes = recording.sizeInBytes;
+  m_strProviderName = recording.strProviderName;
+  m_iClientProviderUniqueId = recording.iClientProviderUid;
 
   SetGenre(recording.iGenreType, recording.iGenreSubType, recording.strGenreDescription);
   CVideoInfoTag::SetPlayCount(recording.iPlayCount);
@@ -159,7 +163,9 @@ bool CPVRRecording::operator ==(const CPVRRecording& right) const
           m_iChannelUid == right.m_iChannelUid && m_bRadio == right.m_bRadio &&
           m_genre == right.m_genre && m_iGenreType == right.m_iGenreType &&
           m_iGenreSubType == right.m_iGenreSubType && m_firstAired == right.m_firstAired &&
-          m_iFlags == right.m_iFlags && m_sizeInBytes == right.m_sizeInBytes);
+          m_iFlags == right.m_iFlags && m_sizeInBytes == right.m_sizeInBytes &&
+          m_strProviderName == right.m_strProviderName &&
+          m_iClientProviderUniqueId == right.m_iClientProviderUniqueId);
 }
 
 bool CPVRRecording::operator !=(const CPVRRecording& right) const
@@ -226,6 +232,8 @@ void CPVRRecording::Reset()
     CSingleLock lock(m_critSection);
     m_sizeInBytes = 0;
   }
+  m_strProviderName.clear();
+  m_iClientProviderUniqueId = PVR_PROVIDER_INVALID_UID;
 
   m_recordingTime.Reset();
   CVideoInfoTag::Reset();
@@ -403,6 +411,8 @@ void CPVRRecording::Update(const CPVRRecording& tag, const CPVRClient& client)
   {
     CSingleLock lock(m_critSection);
     m_sizeInBytes = tag.m_sizeInBytes;
+    m_strProviderName = tag.m_strProviderName;
+    m_iClientProviderUniqueId = tag.m_iClientProviderUniqueId;
   }
 
   if (client.GetClientCapabilities().SupportsRecordingsPlayCount())
@@ -614,4 +624,34 @@ int64_t CPVRRecording::GetSizeInBytes() const
 {
   CSingleLock lock(m_critSection);
   return m_sizeInBytes;
+}
+
+int CPVRRecording::ClientProviderUniqueId() const
+{
+  CSingleLock lock(m_critSection);
+  return m_iClientProviderUniqueId;
+}
+
+std::string CPVRRecording::ProviderName() const
+{
+  CSingleLock lock(m_critSection);
+  return m_strProviderName;
+}
+
+std::shared_ptr<CPVRProvider> CPVRRecording::GetDefaultProvider() const
+{
+  return CServiceBroker::GetPVRManager().Providers()->GetByClient(m_iClientId,
+                                                                  PVR_PROVIDER_INVALID_UID);
+}
+
+bool CPVRRecording::HasClientProvider() const
+{
+  CSingleLock lock(m_critSection);
+  return m_iClientProviderUniqueId != PVR_PROVIDER_INVALID_UID;
+}
+
+std::shared_ptr<CPVRProvider> CPVRRecording::GetProvider() const
+{
+  return CServiceBroker::GetPVRManager().Providers()->GetByClient(m_iClientId,
+                                                                  m_iClientProviderUniqueId);
 }

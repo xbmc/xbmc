@@ -217,6 +217,8 @@ void CGUIWindowSystemInfo::FrameMove()
     SetControlLabel(i++, "{}: {}", 19114, PVR_BACKEND_VERSION);
     SetControlLabel(i++, "{}: {}", 19115, PVR_BACKEND_HOST);
     SetControlLabel(i++, "{}: {}", 19116, PVR_BACKEND_DISKSPACE);
+    SetControlLabel(i++, "%s: %s", 19334, PVR_BACKEND_PROVIDERS);
+    SetControlLabel(i++, "%s: %s", 19042, PVR_BACKEND_CHANNEL_GROUPS);
     SetControlLabel(i++, "{}: {}", 19019, PVR_BACKEND_CHANNELS);
     SetControlLabel(i++, "{}: {}", 19163, PVR_BACKEND_RECORDINGS);
     SetControlLabel(i++, "{}: {}", 19168,

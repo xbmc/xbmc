@@ -18,6 +18,7 @@
 #include "pvr/epg/EpgChannelData.h"
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
+#include "pvr/providers/PVRProviders.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
@@ -69,7 +70,8 @@ CPVRChannel::CPVRChannel(const PVR_CHANNEL& channel, unsigned int iClientId)
     m_clientChannelNumber(channel.iChannelNumber, channel.iSubChannelNumber),
     m_strClientChannelName(channel.strChannelName),
     m_strMimeType(channel.strMimeType),
-    m_iClientEncryptionSystem(channel.iEncryptionSystem)
+    m_iClientEncryptionSystem(channel.iEncryptionSystem),
+    m_iClientProviderUid(channel.iClientProviderUid)
 {
   if (m_strChannelName.empty())
     m_strChannelName = StringUtils::Format("{} {}", g_localizeStrings.Get(19029), m_iUniqueId);
@@ -191,6 +193,7 @@ bool CPVRChannel::UpdateFromClient(const std::shared_ptr<CPVRChannel>& channel)
 
   SetClientID(channel->ClientID());
   SetArchive(channel->HasArchive());
+  SetClientProviderUid(channel->ClientProviderUid());
 
   m_clientChannelNumber = channel->m_clientChannelNumber;
   m_strMimeType = channel->MimeType();
@@ -515,6 +518,20 @@ void CPVRChannel::UpdateEncryptionName()
   m_strClientEncryptionName = GetEncryptionName(m_iClientEncryptionSystem);
 }
 
+bool CPVRChannel::SetClientProviderUid(int iClientProviderUid)
+{
+  CSingleLock lock(m_critSection);
+
+  if (m_iClientProviderUid != iClientProviderUid)
+  {
+    m_iClientProviderUid = iClientProviderUid;
+    m_bChanged = true;
+    return true;
+  }
+
+  return false;
+}
+
 /********** EPG methods **********/
 
 std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVRChannel::GetEpgTags() const
@@ -795,5 +812,24 @@ std::string CPVRChannel::EPGScraper() const
 bool CPVRChannel::CanRecord() const
 {
   const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
-  return client && client->GetClientCapabilities().SupportsRecordings();
+  return client && client->GetClientCapabilities().SupportsRecordings() &&
+         client->GetClientCapabilities().SupportsTimers();
+}
+
+std::shared_ptr<CPVRProvider> CPVRChannel::GetDefaultProvider() const
+{
+  return CServiceBroker::GetPVRManager().Providers()->GetByClient(m_iClientId,
+                                                                  PVR_PROVIDER_INVALID_UID);
+}
+
+bool CPVRChannel::HasClientProvider() const
+{
+  CSingleLock lock(m_critSection);
+  return m_iClientProviderUid != PVR_PROVIDER_INVALID_UID;
+}
+
+std::shared_ptr<CPVRProvider> CPVRChannel::GetProvider() const
+{
+  return CServiceBroker::GetPVRManager().Providers()->GetByClient(m_iClientId,
+                                                                  m_iClientProviderUid);
 }
