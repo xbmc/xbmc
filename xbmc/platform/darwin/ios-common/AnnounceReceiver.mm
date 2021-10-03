@@ -179,7 +179,7 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag,
           item[@"artist"] = @[item[@"title"]];
           item[@"title"] = @(epg_title.c_str());
         }
-        auto epg_icon = epg_now->Icon();
+        auto epg_icon = epg_now->ClientIconPath();
         if (!epg_icon.empty())
         {
           // If we have the TV show icon, use it instead of the channel logo.
