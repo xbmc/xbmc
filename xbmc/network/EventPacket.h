@@ -8,7 +8,9 @@
 
 #pragma once
 
+#include <cstdint>
 #include <stdlib.h>
+#include <vector>
 
 namespace EVENTPACKET
 {
@@ -199,8 +201,7 @@ namespace EVENTPACKET
       m_bValid = false;
       m_iSeq = 0;
       m_iTotalPackets = 0;
-      m_pPayload = NULL;
-      m_iPayloadSize = 0;
+      m_pPayload = {};
       m_iClientToken = 0;
       m_cMajVer = '0';
       m_cMinVer = '0';
@@ -212,8 +213,7 @@ namespace EVENTPACKET
       m_bValid = false;
       m_iSeq = 0;
       m_iTotalPackets = 0;
-      m_pPayload = NULL;
-      m_iPayloadSize = 0;
+      m_pPayload = {};
       m_iClientToken = 0;
       m_cMajVer = '0';
       m_cMinVer = '0';
@@ -222,20 +222,20 @@ namespace EVENTPACKET
       Parse(datasize, data);
     }
 
-    virtual      ~CEventPacket() { free(m_pPayload); }
+    virtual ~CEventPacket() = default;
     virtual bool Parse(int datasize, const void *data);
     bool         IsValid() const { return m_bValid; }
     PacketType   Type() const { return m_eType; }
     unsigned int Size() const { return m_iTotalPackets; }
     unsigned int Sequence() const { return m_iSeq; }
-    void*        Payload() { return m_pPayload; }
-    unsigned int PayloadSize() const { return m_iPayloadSize; }
+    void* Payload() { return reinterpret_cast<void*>(m_pPayload.data()); }
+    unsigned int PayloadSize() const { return m_pPayload.size(); }
     unsigned int ClientToken() const { return m_iClientToken; }
     void         SetPayload(unsigned int psize, void *payload)
     {
-      free(m_pPayload);
-      m_pPayload = payload;
-      m_iPayloadSize = psize;
+      m_pPayload = std::vector<uint8_t>(reinterpret_cast<uint8_t*>(payload),
+                                        reinterpret_cast<uint8_t*>(payload) + psize);
+      free(payload);
     }
 
   protected:
@@ -243,8 +243,7 @@ namespace EVENTPACKET
     unsigned int   m_iSeq;
     unsigned int   m_iTotalPackets;
     unsigned char  m_header[32];
-    void*          m_pPayload;
-    unsigned int   m_iPayloadSize;
+    std::vector<uint8_t> m_pPayload;
     unsigned int   m_iClientToken;
     unsigned char  m_cMajVer;
     unsigned char  m_cMinVer;
