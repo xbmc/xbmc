@@ -11232,6 +11232,7 @@ msgid "Switched to channel for auto-closed PVR reminder for channel '{0:s}' at '
 msgstr ""
 
 #. label for PVR backend number of channel providers in system information's PVR section
+#: xbmc/pvr/timers/PVRGUIActions.cpp
 #: xbmc/windows/GUIWindowSystemInfo.cpp
 msgctxt "#19334"
 msgid "Providers"
