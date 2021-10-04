@@ -8,6 +8,7 @@
 
 #include "GUIDialogPVRRecordingSettings.h"
 
+#include "FileItem.h"
 #include "ServiceBroker.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/LocalizeStrings.h"

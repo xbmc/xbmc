@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "VideoPlayerCodec.h"
+#include "addons/AddonManager.h"
 #include "addons/AudioDecoder.h"
 #include "utils/StringUtils.h"
 

@@ -19,6 +19,8 @@
 #include <memory>
 #include <vector>
 
+class CFileItemList;
+
 namespace KODI
 {
 namespace JOYSTICK
