@@ -23,9 +23,14 @@
 
 using namespace PVR;
 
+
+const std::string CPVRProvider::IMAGE_OWNER_PATTERN = "pvrprovider";
+
 CPVRProvider::CPVRProvider(int iUniqueId, int iClientId)
   : m_iUniqueId(iUniqueId),
-    m_iClientId(iClientId)
+    m_iClientId(iClientId),
+    m_iconPath(IMAGE_OWNER_PATTERN),
+    m_thumbPath(IMAGE_OWNER_PATTERN)
 {
 }
 
@@ -34,9 +39,10 @@ CPVRProvider::CPVRProvider(const PVR_PROVIDER& provider, int iClientId)
     m_iClientId(iClientId),
     m_strName(provider.strName),
     m_type(provider.type),
-    m_strIconPath(provider.strIconPath),
+    m_iconPath(provider.strIconPath, IMAGE_OWNER_PATTERN),
     m_strCountries(provider.strCountries),
-    m_strLanguages(provider.strLanguages)
+    m_strLanguages(provider.strLanguages),
+    m_thumbPath(IMAGE_OWNER_PATTERN)
 {
 }
 
@@ -47,9 +53,9 @@ CPVRProvider::CPVRProvider(int iClientId,
   : m_iClientId(iClientId),
     m_strName(addonProviderName),
     m_type(PVR_PROVIDER_TYPE_ADDON),
-    m_strIconPath(addonIconPath),
+    m_iconPath(addonIconPath, IMAGE_OWNER_PATTERN),
     m_bIsClientProvider(true),
-    m_strThumbPath(addonThumbPath)
+    m_thumbPath(addonThumbPath, IMAGE_OWNER_PATTERN)
 {
 }
 
@@ -92,7 +98,7 @@ void CPVRProvider::Serialize(CVariant& value) const
       value["state"] = "unknown";
       break;
   }
-  value["iconpath"] = m_strIconPath;
+  value["iconpath"] = GetClientIconPath();
   value["countries"] = m_strCountries;
   value["languages"] = m_strLanguages;
 }
@@ -164,18 +170,24 @@ bool CPVRProvider::SetType(PVR_PROVIDER_TYPE type)
   return false;
 }
 
+std::string CPVRProvider::GetClientIconPath() const
+{
+  CSingleLock lock(m_critSection);
+  return m_iconPath.GetClientImage();
+}
+
 std::string CPVRProvider::GetIconPath() const
 {
   CSingleLock lock(m_critSection);
-  return m_strIconPath;
+  return m_iconPath.GetLocalImage();
 }
 
 bool CPVRProvider::SetIconPath(const std::string& strIconPath)
 {
   CSingleLock lock(m_critSection);
-  if (m_strIconPath != strIconPath)
+  if (GetClientIconPath() != strIconPath)
   {
-    m_strIconPath = strIconPath;
+    m_iconPath.SetClientImage(strIconPath);
     return true;
   }
 
@@ -308,11 +320,11 @@ bool CPVRProvider::UpdateEntry(const std::shared_ptr<CPVRProvider>& fromProvider
 
     m_strName = fromProvider->m_strName;
     m_type = fromProvider->m_type;
-    m_strIconPath = fromProvider->m_strIconPath;
+    m_iconPath = fromProvider->m_iconPath;
 
     if (fromProvider->m_bIsClientProvider)
     {
-      m_strThumbPath = fromProvider->m_strThumbPath;
+      m_thumbPath = fromProvider->m_thumbPath;
       m_bIsClientProvider = fromProvider->m_bIsClientProvider;
     }
 
@@ -333,15 +345,15 @@ bool CPVRProvider::UpdateEntry(const std::shared_ptr<CPVRProvider>& fromProvider
       bChanged = true;
     }
 
-    if (m_strIconPath != fromProvider->m_strIconPath)
+    if (m_iconPath != fromProvider->m_iconPath)
     {
-      m_strIconPath = fromProvider->m_strIconPath;
+      m_iconPath = fromProvider->m_iconPath;
       bChanged = true;
     }
 
     if (fromProvider->m_bIsClientProvider)
     {
-      m_strThumbPath = fromProvider->m_strThumbPath;
+      m_thumbPath = fromProvider->m_thumbPath;
       m_bIsClientProvider = fromProvider->m_bIsClientProvider;
     }
 
@@ -364,5 +376,17 @@ bool CPVRProvider::UpdateEntry(const std::shared_ptr<CPVRProvider>& fromProvider
 bool CPVRProvider::HasThumbPath() const
 {
   CSingleLock lock(m_critSection);
-  return (m_type == PVR_PROVIDER_TYPE_ADDON && !m_strThumbPath.empty());
+  return (m_type == PVR_PROVIDER_TYPE_ADDON && !m_thumbPath.GetLocalImage().empty());
+}
+
+std::string CPVRProvider::GetThumbPath() const
+{
+  CSingleLock lock(m_critSection);
+  return m_thumbPath.GetLocalImage();
+}
+
+std::string CPVRProvider::GetClientThumbPath() const
+{
+  CSingleLock lock(m_critSection);
+  return m_thumbPath.GetClientImage();
 }

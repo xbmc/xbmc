@@ -369,7 +369,7 @@ bool CPVRDatabase::Persist(CPVRProvider& provider, bool updateRecord /* = false 
                      "VALUES (%i, %i, %i, '%s', %i, '%s', '%s', '%s');",
                      provider.GetDatabaseId(), provider.GetUniqueId(), provider.GetClientId(),
                      provider.GetName().c_str(), static_cast<int>(provider.GetType()),
-                     provider.GetIconPath().c_str(), provider.GetCountriesDBString().c_str(),
+                     provider.GetClientIconPath().c_str(), provider.GetCountriesDBString().c_str(),
                      provider.GetLanguagesDBString().c_str());
     else
       strQuery =
@@ -378,7 +378,7 @@ bool CPVRDatabase::Persist(CPVRProvider& provider, bool updateRecord /* = false 
                      "VALUES (%i, %i, %i, '%s', %i, '%s', '%s', '%s');",
                      provider.GetDatabaseId(), provider.GetUniqueId(), provider.GetClientId(),
                      provider.GetName().c_str(), static_cast<int>(provider.GetType()),
-                     provider.GetIconPath().c_str(), provider.GetCountriesDBString().c_str(),
+                     provider.GetClientIconPath().c_str(), provider.GetCountriesDBString().c_str(),
                      provider.GetLanguagesDBString().c_str());
 
     bReturn = ExecuteQuery(strQuery);

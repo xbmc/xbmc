@@ -9,6 +9,7 @@
 #pragma once
 
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_providers.h"
+#include "pvr/PVRCachedImage.h"
 #include "threads/CriticalSection.h"
 #include "utils/ISerializable.h"
 
@@ -31,6 +32,8 @@ static constexpr int PVR_PROVIDER_INVALID_DB_ID = -1;
 class CPVRProvider final : public ISerializable
 {
 public:
+  static const std::string IMAGE_OWNER_PATTERN;
+
   CPVRProvider(int iUniqueId, int iClientId);
   CPVRProvider(const PVR_PROVIDER& provider, int iClientId);
   CPVRProvider(int iClientId,
@@ -120,6 +123,11 @@ public:
   bool SetIconPath(const std::string& strIconPath);
 
   /*!
+   * @return Get the path to the icon for this provider as given by the client.
+   */
+  std::string GetClientIconPath() const;
+
+  /*!
    * @brief Get this provider's country codes (ISO 3166).
    * @return This provider's country codes.
    */
@@ -181,7 +189,12 @@ public:
    * @brief Get this provider's thumb image path. Note only PVR add-on providers will set this value.
    * @return This add-on provider's thumb image path.
    */
-  std::string GetThumbPath() const { return m_strThumbPath; }
+  std::string GetThumbPath() const;
+
+  /*!
+   * @return Get the path to the thumb for this provider as given by the client.
+   */
+  std::string GetClientThumbPath() const;
 
   /*!
    * @brief Whether a provider is a default provider of a PVR Client add-on or not
@@ -221,11 +234,11 @@ private:
   int m_iClientId; /*!< @brief ID of the backend */
   std::string m_strName; /*!< @brief name of this provider */
   PVR_PROVIDER_TYPE m_type = PVR_PROVIDER_TYPE_UNKNOWN; /*!< @brief service type for this provider */
-  std::string m_strIconPath; /*!< @brief the path to the icon for this provider */
+  CPVRCachedImage m_iconPath; /*!< @brief the path to the icon for this provider */
   std::string m_strCountries; /*!< @brief the country codes for this provider (empty if undefined) */
   std::string m_strLanguages; /*!< @brief the language codes for this provider (empty if undefined) */
   bool m_bIsClientProvider = false; /*!< the provider is a default provider of a PVR Client add-on */
-  std::string m_strThumbPath; /*!< a thumb image path for providers that are PVR add-ons */
+  CPVRCachedImage m_thumbPath; /*!< a thumb image path for providers that are PVR add-ons */
 
   mutable CCriticalSection m_critSection;
 };
