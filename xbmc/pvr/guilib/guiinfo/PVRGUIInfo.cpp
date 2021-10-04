@@ -1837,10 +1837,10 @@ void CPVRGUIInfo::UpdateBackendCache()
 
     // We always display one extra as the add-on itself counts as a provider
     if (backend.numProviders >= 0)
-      m_strBackendProviders = StringUtils::Format("%i", backend.numProviders + 1);
+      m_strBackendProviders = std::to_string(backend.numProviders + 1);
 
     if (backend.numChannelGroups >= 0)
-      m_strBackendChannelGroups = StringUtils::Format("%i", backend.numChannelGroups);
+      m_strBackendChannelGroups = std::to_string(backend.numChannelGroups);
 
     if (backend.numChannels >= 0)
       m_strBackendChannels = std::to_string(backend.numChannels);
