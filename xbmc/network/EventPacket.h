@@ -196,31 +196,9 @@ namespace EVENTPACKET
   class CEventPacket
   {
   public:
-    CEventPacket()
-    {
-      m_bValid = false;
-      m_iSeq = 0;
-      m_iTotalPackets = 0;
-      m_pPayload = {};
-      m_iClientToken = 0;
-      m_cMajVer = '0';
-      m_cMinVer = '0';
-      m_eType = PT_LAST;
-    }
+    CEventPacket() = default;
 
-    CEventPacket(int datasize, const void* data)
-    {
-      m_bValid = false;
-      m_iSeq = 0;
-      m_iTotalPackets = 0;
-      m_pPayload = {};
-      m_iClientToken = 0;
-      m_cMajVer = '0';
-      m_cMinVer = '0';
-      m_eType = PT_LAST;
-
-      Parse(datasize, data);
-    }
+    explicit CEventPacket(int datasize, const void* data) { Parse(datasize, data); }
 
     virtual ~CEventPacket() = default;
     virtual bool Parse(int datasize, const void *data);
@@ -239,15 +217,15 @@ namespace EVENTPACKET
     }
 
   protected:
-    bool           m_bValid;
-    unsigned int   m_iSeq;
-    unsigned int   m_iTotalPackets;
+    bool m_bValid{false};
+    unsigned int m_iSeq{0};
+    unsigned int m_iTotalPackets{0};
     unsigned char  m_header[32];
     std::vector<uint8_t> m_pPayload;
-    unsigned int   m_iClientToken;
-    unsigned char  m_cMajVer;
-    unsigned char  m_cMinVer;
-    PacketType     m_eType;
+    unsigned int m_iClientToken{0};
+    unsigned char m_cMajVer{'0'};
+    unsigned char m_cMinVer{'0'};
+    PacketType m_eType{PT_LAST};
   };
 
 }
