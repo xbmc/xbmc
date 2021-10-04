@@ -1763,12 +1763,13 @@ namespace PVR
       itemAll->SetPath("all");
       options.Add(itemAll);
 
-      // if channels are cleared, groups and EPG data must also be cleared
-      const std::shared_ptr<CFileItem> itemChannels =
-          std::make_shared<CFileItem>(StringUtils::Format("{}, {}, {}",
-                                                          g_localizeStrings.Get(19019), // Channels
-                                                          g_localizeStrings.Get(19146), // Groups
-                                                          g_localizeStrings.Get(19069))); // Guide
+      // if channels are cleared, groups, EPG data and providers must also be cleared
+      const std::shared_ptr<CFileItem> itemChannels = std::make_shared<CFileItem>(
+          StringUtils::Format("{}, {}, {}, {}",
+                              g_localizeStrings.Get(19019), // Channels
+                              g_localizeStrings.Get(19146), // Groups
+                              g_localizeStrings.Get(19069), // Guide
+                              g_localizeStrings.Get(19334))); // Providers
       itemChannels->SetPath("channels");
       itemChannels->Select(true); // preselect this item in dialog
       options.Add(itemChannels);
@@ -1782,6 +1783,11 @@ namespace PVR
           std::make_shared<CFileItem>(g_localizeStrings.Get(19069)); // Guide
       itemGuide->SetPath("guide");
       options.Add(itemGuide);
+
+      const std::shared_ptr<CFileItem> itemProviders =
+          std::make_shared<CFileItem>(g_localizeStrings.Get(19334)); // Providers
+      itemProviders->SetPath("providers");
+      options.Add(itemProviders);
 
       const std::shared_ptr<CFileItem> itemReminders =
           std::make_shared<CFileItem>(g_localizeStrings.Get(19215)); // Reminders
@@ -1814,6 +1820,7 @@ namespace PVR
         m_bResetChannels |= (path == "channels" || path == "all");
         m_bResetGroups |= (path == "groups" || path == "all");
         m_bResetGuide |= (path == "guide" || path == "all");
+        m_bResetProviders |= (path == "providers" || path == "all");
         m_bResetReminders |= (path == "reminders" || path == "all");
         m_bResetRecordings |= (path == "recordings" || path == "all");
         m_bResetClients |= (path == "clients" || path == "all");
@@ -1821,14 +1828,16 @@ namespace PVR
 
       m_bResetGroups |= m_bResetChannels;
       m_bResetGuide |= m_bResetChannels;
+      m_bResetProviders |= m_bResetChannels;
 
-      return (m_bResetChannels || m_bResetGroups || m_bResetGuide || m_bResetReminders ||
-              m_bResetRecordings || m_bResetClients);
+      return (m_bResetChannels || m_bResetGroups || m_bResetGuide || m_bResetProviders ||
+              m_bResetReminders || m_bResetRecordings || m_bResetClients);
     }
 
     bool IsResetChannelsSelected() const { return m_bResetChannels; }
     bool IsResetGroupsSelected() const { return m_bResetGroups; }
     bool IsResetGuideSelected() const { return m_bResetGuide; }
+    bool IsResetProvidersSelected() const { return m_bResetProviders; }
     bool IsResetRemindersSelected() const { return m_bResetReminders; }
     bool IsResetRecordingsSelected() const { return m_bResetRecordings; }
     bool IsResetClientsSelected() const { return m_bResetClients; }
@@ -1837,6 +1846,7 @@ namespace PVR
     bool m_bResetChannels = false;
     bool m_bResetGroups = false;
     bool m_bResetGuide = false;
+    bool m_bResetProviders = false;
     bool m_bResetReminders = false;
     bool m_bResetRecordings = false;
     bool m_bResetClients = false;
@@ -1856,6 +1866,7 @@ namespace PVR
     bool bResetChannels = false;
     bool bResetGroups = false;
     bool bResetGuide = false;
+    bool bResetProviders = false;
     bool bResetReminders = false;
     bool bResetRecordings = false;
     bool bResetClients = false;
@@ -1886,6 +1897,7 @@ namespace PVR
       bResetChannels = selector.IsResetChannelsSelected();
       bResetGroups = selector.IsResetGroupsSelected();
       bResetGuide = selector.IsResetGuideSelected();
+      bResetProviders = selector.IsResetProvidersSelected();
       bResetReminders = selector.IsResetRemindersSelected();
       bResetRecordings = selector.IsResetRecordingsSelected();
       bResetClients = selector.IsResetClientsSelected();
@@ -1922,9 +1934,18 @@ namespace PVR
     CServiceBroker::GetPVRManager().Stop();
 
     const int iProgressStepPercentage =
-        100 / ((2 * bResetChannels) + bResetGroups + bResetGuide + bResetReminders +
-               bResetRecordings + bResetClients + 1);
+        100 / ((2 * bResetChannels) + bResetGroups + bResetGuide + bResetProviders +
+               bResetReminders + bResetRecordings + bResetClients + 1);
     int iProgressStepsDone = 0;
+
+    if (bResetProviders)
+    {
+      pDlgProgress->SetPercentage(iProgressStepPercentage * ++iProgressStepsDone);
+      pDlgProgress->Progress();
+
+      // delete all providers
+      pvrDatabase->DeleteProviders();
+    }
 
     if (bResetGuide)
     {
@@ -1952,8 +1973,6 @@ namespace PVR
       pDlgProgress->SetPercentage(iProgressStepPercentage * ++iProgressStepsDone);
       pDlgProgress->Progress();
 
-      /* delete all providers */
-      pvrDatabase->DeleteProviders();
       // delete all channels (including data only available locally, like user set icons)
       pvrDatabase->DeleteChannels();
     }
