@@ -14,7 +14,9 @@
 #include "URL.h"
 #include "Util.h"
 #include "addons/AddonManager.h"
+#include "addons/gui/GUIDialogAddonSettings.h"
 #include "cores/IPlayer.h"
+#include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/AddonsDirectory.h"
 #include "filesystem/Directory.h"
@@ -39,13 +41,22 @@
 using namespace ADDON;
 using namespace XFILE;
 
-#define CONTROL_NAMELABEL            100
-#define CONTROL_NAMELOGO             110
-#define CONTROL_SUBLIST              120
-#define CONTROL_SUBSEXIST            130
-#define CONTROL_SUBSTATUS            140
-#define CONTROL_SERVICELIST          150
-#define CONTROL_MANUALSEARCH         160
+namespace
+{
+constexpr int CONTROL_NAMELABEL = 100;
+constexpr int CONTROL_NAMELOGO = 110;
+constexpr int CONTROL_SUBLIST = 120;
+constexpr int CONTROL_SUBSEXIST = 130;
+constexpr int CONTROL_SUBSTATUS = 140;
+constexpr int CONTROL_SERVICELIST = 150;
+constexpr int CONTROL_MANUALSEARCH = 160;
+
+enum class SUBTITLE_SERVICE_CONTEXT_BUTTONS
+{
+  ADDON_SETTINGS,
+  ADDON_DISABLE
+};
+} // namespace
 
 /*! \brief simple job to retrieve a directory and store a string (language)
  */
@@ -110,6 +121,9 @@ bool CGUIDialogSubtitles::OnMessage(CGUIMessage& message)
     bool selectAction = (message.GetParam1() == ACTION_SELECT_ITEM ||
                          message.GetParam1() == ACTION_MOUSE_LEFT_CLICK);
 
+    bool contextMenuAction = (message.GetParam1() == ACTION_CONTEXT_MENU ||
+                              message.GetParam1() == ACTION_MOUSE_RIGHT_CLICK);
+
     if (selectAction && iControl == CONTROL_SUBLIST)
     {
       CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_SUBLIST);
@@ -132,6 +146,17 @@ bool CGUIDialogSubtitles::OnMessage(CGUIMessage& message)
         Search();
       }
       return true;
+    }
+    else if (contextMenuAction && iControl == CONTROL_SERVICELIST)
+    {
+      CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_SERVICELIST);
+      OnMessage(msg);
+
+      const int itemIdx = msg.GetParam1();
+      if (itemIdx >= 0 && itemIdx < m_serviceItems->Size())
+      {
+        OnSubtitleServiceContextMenu(itemIdx);
+      }
     }
     else if (iControl == CONTROL_MANUALSEARCH)
     {
@@ -378,6 +403,53 @@ void CGUIDialogSubtitles::OnSearchComplete(const CFileItemList *items)
   }
 
   SetInvalid();
+}
+
+void CGUIDialogSubtitles::OnSubtitleServiceContextMenu(int itemIdx)
+{
+  const auto service = m_serviceItems->Get(itemIdx);
+
+  CContextButtons buttons;
+  // Subtitle addon settings
+  buttons.Add(static_cast<int>(SUBTITLE_SERVICE_CONTEXT_BUTTONS::ADDON_SETTINGS),
+              g_localizeStrings.Get(21417));
+  // Disable addon
+  buttons.Add(static_cast<int>(SUBTITLE_SERVICE_CONTEXT_BUTTONS::ADDON_DISABLE),
+              g_localizeStrings.Get(24021));
+
+  auto idx = static_cast<SUBTITLE_SERVICE_CONTEXT_BUTTONS>(CGUIDialogContextMenu::Show(buttons));
+  switch (idx)
+  {
+    case SUBTITLE_SERVICE_CONTEXT_BUTTONS::ADDON_SETTINGS:
+    {
+      AddonPtr addon;
+      CServiceBroker::GetAddonMgr().GetAddon(service->GetProperty("Addon.ID").asString(), addon,
+                                             ADDON_SUBTITLE_MODULE, OnlyEnabled::YES);
+      CGUIDialogAddonSettings::ShowForAddon(addon);
+      break;
+    }
+    case SUBTITLE_SERVICE_CONTEXT_BUTTONS::ADDON_DISABLE:
+    {
+      CServiceBroker::GetAddonMgr().DisableAddon(service->GetProperty("Addon.ID").asString(),
+                                                 AddonDisabledReason::USER);
+      const bool currentActiveServiceWasDisabled =
+          m_currentService == service->GetProperty("Addon.ID").asString();
+      FillServices();
+      // restart search if the current active service was disabled
+      if (currentActiveServiceWasDisabled && !m_serviceItems->IsEmpty())
+      {
+        Search();
+      }
+      // if no more services are available make sure the subtitle list is cleaned up
+      else if (m_serviceItems->IsEmpty())
+      {
+        ClearSubtitles();
+      }
+      break;
+    }
+    default:
+      break;
+  }
 }
 
 void CGUIDialogSubtitles::UpdateStatus(STATUS status)

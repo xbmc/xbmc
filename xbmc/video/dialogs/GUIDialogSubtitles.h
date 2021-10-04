@@ -50,6 +50,14 @@ protected:
   void Download(const CFileItem &subtitle);
   void OnDownloadComplete(const CFileItemList *items, const std::string &language);
 
+
+  /*!
+   \brief Called when the context menu is requested on a subtitle service
+   present on the list of installed subtitle addons
+   \param itemIdx the index of the selected subtitle service on the list
+  */
+  void OnSubtitleServiceContextMenu(int itemIdx);
+
   void SetSubtitles(const std::string &subtitle);
 
   CCriticalSection m_critsection;
