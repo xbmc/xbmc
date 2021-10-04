@@ -162,7 +162,7 @@ public:
     }
 #endif
 
-    m_dll = dlopen(path.c_str(), RTLD_LAZY);
+    m_dll = dlopen(path.c_str(), RTLD_LOCAL | RTLD_LAZY);
     if (m_dll == nullptr)
     {
       kodi::Log(ADDON_LOG_ERROR, "Unable to load %s", dlerror());
