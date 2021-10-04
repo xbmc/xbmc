@@ -9,6 +9,7 @@
 #include "PVRProviders.h"
 
 #include "ServiceBroker.h"
+#include "pvr/PVRCachedImages.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClient.h"
@@ -381,4 +382,21 @@ void CPVRProviders::RemoveEntry(const std::shared_ptr<CPVRProvider>& provider)
                    return provider->GetClientId() == providerToRemove->GetClientId() &&
                           provider->GetUniqueId() == providerToRemove->GetUniqueId();
                  });
+}
+
+int CPVRProviders::CleanupCachedImages()
+{
+  std::vector<std::string> urlsToCheck;
+  {
+    CSingleLock lock(m_critSection);
+
+    for (const auto& provider : m_providers)
+    {
+      urlsToCheck.emplace_back(provider->GetClientIconPath());
+      urlsToCheck.emplace_back(provider->GetClientThumbPath());
+    }
+  }
+
+  static const std::vector<PVRImagePattern> urlPatterns = {{CPVRProvider::IMAGE_OWNER_PATTERN, ""}};
+  return CPVRCachedImages::Cleanup(urlPatterns, urlsToCheck);
 }

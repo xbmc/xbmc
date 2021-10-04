@@ -110,6 +110,12 @@ public:
      */
   std::shared_ptr<CPVRProvider> GetById(unsigned int iProviderId) const;
 
+  /*!
+    * @brief Erase stale texture db entries and image files.
+    * @return number of cleaned up images.
+    */
+  int CleanupCachedImages();
+
 private:
   void RemoveEntry(const std::shared_ptr<CPVRProvider>& provider);
   bool UpdateDefaultEntries(const CPVRProvidersContainer& newProviders);

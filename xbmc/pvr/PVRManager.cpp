@@ -883,6 +883,7 @@ void CPVRManager::TriggerCleanupCachedImages()
     CLog::Log(LOGINFO, "PVR Manager: Starting cleanup of cached images.");
     iCleanedImages += Recordings()->CleanupCachedImages();
     iCleanedImages += ChannelGroups()->CleanupCachedImages();
+    iCleanedImages += Providers()->CleanupCachedImages();
     iCleanedImages += EpgContainer().CleanupCachedImages();
     CLog::Log(LOGINFO, "PVR Manager: Cleaned up {} cached images.", iCleanedImages);
     return true;
