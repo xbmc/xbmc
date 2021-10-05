@@ -3252,6 +3252,10 @@
           <level>2</level>
           <control type="button" format="action" />
         </setting>
+        <setting id="addons.removeorphaneddependencies" type="action" label="36638" help="36639">
+          <level>2</level>
+          <control type="button" format="action" />
+        </setting>
         <setting id="addons.showrunning" type="action" label="24994" help="36614">
           <level>2</level>
           <control type="button" format="action" />

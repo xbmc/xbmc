@@ -144,21 +144,6 @@ static bool IsUserInstalled(const AddonPtr& addon)
   return !CAddonType::IsDependencyType(addon->MainType());
 }
 
-static bool IsOrphaned(const AddonPtr& addon, const VECADDONS& all)
-{
-  if (CServiceBroker::GetAddonMgr().IsSystemAddon(addon->ID()) || IsUserInstalled(addon))
-    return false;
-
-  for (const AddonPtr& other : all)
-  {
-    const auto& deps = other->GetDependencies();
-    auto it = std::find_if(deps.begin(), deps.end(), [&](const DependencyInfo& dep){ return dep.id == addon->ID(); });
-    if (it != deps.end())
-      return false;
-  }
-  return true;
-}
-
 // Creates categories from addon types, if we have any addons with that type.
 static void GenerateTypeListing(const CURL& path, const std::set<TYPE>& types,
     const VECADDONS& addons, CFileItemList& items)
@@ -482,7 +467,7 @@ static void DependencyAddons(const CURL& path, CFileItemList &items)
   std::set<std::string> orphaned;
   for (const auto& addon : deps)
   {
-    if (IsOrphaned(addon, all))
+    if (CServiceBroker::GetAddonMgr().IsOrphaned(addon, all))
       orphaned.insert(addon->ID());
   }
 
@@ -793,9 +778,8 @@ void CAddonsDirectory::GenerateAddonListing(const CURL& path,
                                             CFileItemList& items,
                                             const std::string& label)
 {
-  std::map<std::string, CAddonWithUpdate> addonsWithUpdate;
-
-  CServiceBroker::GetAddonMgr().GetAddonsWithAvailableUpdate(addonsWithUpdate);
+  std::map<std::string, CAddonWithUpdate> addonsWithUpdate =
+      CServiceBroker::GetAddonMgr().GetAddonsWithAvailableUpdate();
 
   items.ClearItems();
   items.SetContent("addons");

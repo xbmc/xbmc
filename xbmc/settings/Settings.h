@@ -435,6 +435,8 @@ public:
   static constexpr auto SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES = "addons.unknownsources";
   static constexpr auto SETTING_ADDONS_UPDATEMODE = "addons.updatemode";
   static constexpr auto SETTING_ADDONS_MANAGE_DEPENDENCIES = "addons.managedependencies";
+  static constexpr auto SETTING_ADDONS_REMOVE_ORPHANED_DEPENDENCIES =
+      "addons.removeorphaneddependencies";
   static constexpr auto SETTING_GENERAL_ADDONFOREIGNFILTER = "general.addonforeignfilter";
   static constexpr auto SETTING_GENERAL_ADDONBROKENFILTER = "general.addonbrokenfilter";
   static constexpr auto SETTING_SOURCE_VIDEOS = "source.videos";

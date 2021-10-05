@@ -26,7 +26,7 @@ namespace ADDON
 
   const std::string ADDON_PYTHON_EXT           = "*.py";
 
-  enum class AllowCheckForUpdates;
+  enum class AllowCheckForUpdates : bool;
 
   enum class AddonCheckType
   {
@@ -41,6 +41,12 @@ namespace ADDON
   };
 
   enum class OnlyEnabledRootAddon : bool
+  {
+    YES = true,
+    NO = false,
+  };
+
+  enum class CheckIncompatible : bool
   {
     YES = true,
     NO = false,
@@ -153,6 +159,15 @@ namespace ADDON
 
     /*! Returns true if there is any addon with available updates, otherwise false */
     bool HasAvailableUpdates();
+
+    /*!
+     * \brief Checks if the passed in addon is an orphaned dependency
+     * \param addon the add-on/dependency to check
+     * \param allAddons vector of all installed add-ons
+     * \return true or false
+     */
+    bool IsOrphaned(const std::shared_ptr<IAddon>& addon,
+                    const std::vector<std::shared_ptr<IAddon>>& allAddons) const;
 
     /*! \brief Checks for new / updated add-ons
      \return True if everything went ok, false otherwise
@@ -517,20 +532,16 @@ namespace ADDON
     /*!
      * \brief Retrieves list of outdated addons as well as their related
      *        available updates and stores them into map.
-     * \param[out] addonsWithUpdate target map
-     * \return true or false
+     * \return map of outdated addons with their update
      */
-    bool GetAddonsWithAvailableUpdate(
-        std::map<std::string, CAddonWithUpdate>& addonsWithUpdate) const;
+    std::map<std::string, CAddonWithUpdate> GetAddonsWithAvailableUpdate() const;
 
     /*!
      * \brief Retrieves list of compatible addon versions of all origins
      * \param[in] addonId addon to look up
-     * \param[out] compatibleVersions target vector to be filled
-     * \return true or false
+     * \return vector containing compatible addon versions
      */
-    bool GetCompatibleVersions(const std::string& addonId,
-                               std::vector<std::shared_ptr<IAddon>>& compatibleVersions) const;
+    std::vector<std::shared_ptr<IAddon>> GetCompatibleVersions(const std::string& addonId) const;
 
     /*!
      * \brief Return number of available updates formatted as string
@@ -539,6 +550,12 @@ namespace ADDON
      * \return number of available updates
      */
     const std::string& GetLastAvailableUpdatesCountAsString() const;
+
+    /*!
+     * \brief returns a vector with all found orphaned dependencies.
+     * \return the vector
+     */
+    std::vector<std::shared_ptr<IAddon>> GetOrphanedDependencies() const;
 
   private:
     CAddonMgr& operator=(CAddonMgr const&) = delete;
@@ -557,8 +574,8 @@ namespace ADDON
 
     bool GetAddonsInternal(const TYPE& type,
                            VECADDONS& addons,
-                           bool onlyEnabled,
-                           bool checkIncompatible = false) const;
+                           OnlyEnabled onlyEnabled,
+                           CheckIncompatible checkIncompatible) const;
 
     bool EnableSingle(const std::string& id);
 

@@ -26,40 +26,46 @@ namespace ADDON
 
 class CAddonDatabase;
 
-enum class BackgroundJob
+enum class BackgroundJob : bool
 {
-  YES,
-  NO,
+  YES = true,
+  NO = false,
 };
 
-enum class ModalJob
+enum class ModalJob : bool
 {
-  YES,
-  NO,
+  YES = true,
+  NO = false,
 };
 
-enum class AutoUpdateJob
+enum class AutoUpdateJob : bool
 {
-  YES,
-  NO,
+  YES = true,
+  NO = false,
 };
 
-enum class DependencyJob
+enum class DependencyJob : bool
 {
-  YES,
-  NO,
+  YES = true,
+  NO = false,
 };
 
-enum class InstallModalPrompt
+enum class InstallModalPrompt : bool
 {
-  PROMPT,
-  NO_PROMPT,
+  PROMPT = true,
+  NO_PROMPT = false,
 };
 
-enum class AllowCheckForUpdates
+enum class AllowCheckForUpdates : bool
 {
-  YES,
-  NO,
+  YES = true,
+  NO = false,
+};
+
+enum class RecurseOrphaned : bool
+{
+  YES = true,
+  NO = false,
 };
 
 class CAddonInstaller : public IJobCallback
@@ -100,6 +106,19 @@ public:
    */
   bool InstallOrUpdateDependency(const ADDON::AddonPtr& dependsId,
                                  const ADDON::RepositoryPtr& repo);
+
+  /*! \brief Remove a single dependency from the system
+   \param dependsId the dependency to remove
+   \return true on successful uninstall, false on failure.
+   */
+  bool RemoveDependency(const std::shared_ptr<IAddon>& dependsId) const;
+
+  /*!
+   * \brief Removes all orphaned dependency add-ons recursively. Removal may orphan further
+   *        dependencies, so loop until no orphaned is left on the system
+   * \return Names of dependencies that have effectively been removed
+   */
+  std::vector<std::string> RemoveOrphanedDepsRecursively() const;
 
   /*! \brief Installs a vector of addons
    *  \param addons the list of addons to install
@@ -273,12 +292,14 @@ public:
   CAddonUnInstallJob(const ADDON::AddonPtr &addon, bool removeData);
 
   bool DoWork() override;
+  void SetRecurseOrphaned(RecurseOrphaned recurseOrphaned) { m_recurseOrphaned = recurseOrphaned; };
 
 private:
   void ClearFavourites();
 
   ADDON::AddonPtr m_addon;
   bool m_removeData;
+  RecurseOrphaned m_recurseOrphaned = RecurseOrphaned::YES;
 };
 
 }; // namespace ADDON
