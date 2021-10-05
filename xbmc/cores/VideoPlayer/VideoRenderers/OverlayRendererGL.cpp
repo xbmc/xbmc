@@ -161,9 +161,9 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlayImage* o)
 {
   m_texture = 0;
 
-  uint32_t* rgba;
+  std::vector<uint32_t> rgba;
   int stride;
-  if(o->palette)
+  if (!o->palette.empty())
   {
     m_pma  = !!USE_PREMULTIPLIED_ALPHA;
     rgba   = convert_rgba(o, m_pma);
@@ -172,11 +172,11 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlayImage* o)
   else
   {
     m_pma  = false;
-    rgba   = (uint32_t*)o->data;
+    rgba = std::vector<uint32_t>(o->data.data(), o->data.data() + o->data.size());
     stride = o->linesize;
   }
 
-  if(!rgba)
+  if (rgba.empty())
   {
     CLog::Log(LOGERROR, "COverlayTextureGL::COverlayTextureGL - failed to convert overlay to rgb");
     return;
@@ -190,15 +190,10 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlayImage* o)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-  LoadTexture(GL_TEXTURE_2D
-            , o->width
-            , o->height
-            , stride
-            , &m_u, &m_v
-            , false
-            , rgba);
-  if(reinterpret_cast<uint8_t*>(rgba) != o->data)
-    free(rgba);
+  LoadTexture(GL_TEXTURE_2D, o->width, o->height, stride, &m_u, &m_v, false, rgba.data());
+
+  if (reinterpret_cast<uint8_t*>(rgba.data()) != o->data.data())
+    rgba.clear();
 
   glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -234,10 +229,9 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlaySpu* o)
   m_texture = 0;
 
   int min_x, max_x, min_y, max_y;
-  uint32_t* rgba = convert_rgba(o, USE_PREMULTIPLIED_ALPHA
-                              , min_x, max_x, min_y, max_y);
+  std::vector<uint32_t> rgba = convert_rgba(o, USE_PREMULTIPLIED_ALPHA, min_x, max_x, min_y, max_y);
 
-  if (!rgba)
+  if (rgba.empty())
   {
     CLog::Log(LOGERROR, "COverlayTextureGL::COverlayTextureGL - failed to convert overlay to rgb");
     return;
@@ -251,15 +245,8 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlaySpu* o)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-  LoadTexture(GL_TEXTURE_2D
-            , max_x - min_x
-            , max_y - min_y
-            , o->width * 4
-            , &m_u, &m_v
-            , false
-            , rgba + min_x + min_y * o->width);
-
-  free(rgba);
+  LoadTexture(GL_TEXTURE_2D, max_x - min_x, max_y - min_y, o->width * 4, &m_u, &m_v, false,
+              rgba.data() + min_x + min_y * o->width);
 
   glBindTexture(GL_TEXTURE_2D, 0);
 

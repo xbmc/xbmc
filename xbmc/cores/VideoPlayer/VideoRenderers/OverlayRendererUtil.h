@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include <vector>
 
 class CDVDOverlayImage;
 class CDVDOverlaySpu;
@@ -48,10 +49,9 @@ namespace OVERLAY {
     SQuad*   quad;
   };
 
-  uint32_t* convert_rgba(CDVDOverlayImage* o, bool mergealpha);
-  uint32_t* convert_rgba(CDVDOverlaySpu*   o, bool mergealpha
-                       , int& min_x, int& max_x
-                       , int& min_y, int& max_y);
+  std::vector<uint32_t> convert_rgba(CDVDOverlayImage* o, bool mergealpha);
+  std::vector<uint32_t> convert_rgba(
+      CDVDOverlaySpu* o, bool mergealpha, int& min_x, int& max_x, int& min_y, int& max_y);
   bool      convert_quad(ASS_Image* images, SQuads& quads, int max_x);
   int       GetStereoscopicDepth();
 

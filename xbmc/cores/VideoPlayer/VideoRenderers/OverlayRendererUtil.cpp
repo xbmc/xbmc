@@ -43,12 +43,9 @@ static uint32_t build_rgba(int yuv[3], int alpha, bool mergealpha)
 }
 #undef clamp
 
-uint32_t* convert_rgba(CDVDOverlayImage* o, bool mergealpha)
+std::vector<uint32_t> convert_rgba(CDVDOverlayImage* o, bool mergealpha)
 {
-  uint32_t* rgba = (uint32_t*)malloc(o->width * o->height * sizeof(uint32_t));
-
-  if(!rgba)
-    return NULL;
+  std::vector<uint32_t> rgba(o->width * o->height);
 
   uint32_t palette[256] = {};
   for(int i = 0; i < o->palette_colors; i++)
@@ -65,14 +62,10 @@ uint32_t* convert_rgba(CDVDOverlayImage* o, bool mergealpha)
   return rgba;
 }
 
-uint32_t* convert_rgba(CDVDOverlaySpu* o, bool mergealpha
-                              , int& min_x, int& max_x
-                              , int& min_y, int& max_y)
+std::vector<uint32_t> convert_rgba(
+    CDVDOverlaySpu* o, bool mergealpha, int& min_x, int& max_x, int& min_y, int& max_y)
 {
-  uint32_t* rgba = (uint32_t*)malloc(o->width * o->height * sizeof(uint32_t));
-
-  if(!rgba)
-    return NULL;
+  std::vector<uint32_t> rgba(o->width * o->height);
 
   uint32_t palette[8];
   for(int i = 0; i < 4; i++)
@@ -105,7 +98,7 @@ uint32_t* convert_rgba(CDVDOverlaySpu* o, bool mergealpha
   min_y = o->height;
   max_y = 0;
 
-  trg = rgba;
+  trg = rgba.data();
   src = (uint16_t*)o->result;
 
   for (int y = 0; y < o->height; y++)

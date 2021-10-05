@@ -20,8 +20,8 @@ class CDVDOverlayImage : public CDVDOverlay
 public:
   CDVDOverlayImage() : CDVDOverlay(DVDOVERLAY_TYPE_IMAGE)
   {
-    data = NULL;
-    palette = NULL;
+    data = {};
+    palette = {};
     palette_colors = 0;
     linesize = 0;
     x = 0;
@@ -32,45 +32,19 @@ public:
     source_height = 0;
   }
 
-  CDVDOverlayImage(const CDVDOverlayImage& src)
-    : CDVDOverlay(src)
-  {
-    data    = (uint8_t*)malloc(src.linesize * src.height);
-    memcpy(data, src.data, src.linesize * src.height);
-
-    if(src.palette)
-    {
-      palette = (uint32_t*)malloc(src.palette_colors * 4);
-      memcpy(palette, src.palette, src.palette_colors * 4);
-    }
-    else
-      palette = NULL;
-
-    palette_colors = src.palette_colors;
-    linesize       = src.linesize;
-    x              = src.x;
-    y              = src.y;
-    width          = src.width;
-    height         = src.height;
-    source_width   = src.source_width;
-    source_height  = src.source_height;
-
-  }
-
   CDVDOverlayImage(const CDVDOverlayImage& src, int sub_x, int sub_y, int sub_w, int sub_h)
   : CDVDOverlay(src)
   {
     int bpp;
-    if(src.palette)
+    if (!src.palette.empty())
     {
       bpp = 1;
-      palette = (uint32_t*)malloc(src.palette_colors * 4);
-      memcpy(palette, src.palette, src.palette_colors * 4);
+      palette = src.palette;
     }
     else
     {
       bpp = 4;
-      palette = NULL;
+      palette = {};
     }
 
     palette_colors = src.palette_colors;
@@ -82,10 +56,10 @@ public:
     source_width   = src.source_width;
     source_height  = src.source_height;
 
-    data = (uint8_t*)malloc(sub_h * linesize);
+    data = std::vector<uint8_t>(sub_h * linesize);
 
     uint8_t* s = src.data_at(sub_x, sub_y);
-    uint8_t* t = data;
+    uint8_t* t = data.data();
 
     for(int row = 0;row < sub_h; ++row)
     {
@@ -97,11 +71,7 @@ public:
     m_textureid = 0;
   }
 
-  ~CDVDOverlayImage() override
-  {
-    if(data) free(data);
-    if(palette) free(palette);
-  }
+  ~CDVDOverlayImage() override = default;
 
   CDVDOverlayImage* Clone() override
   {
@@ -111,18 +81,17 @@ public:
   uint8_t* data_at(int sub_x, int sub_y) const
   {
     int bpp;
-    if(palette)
+    if (!palette.empty())
       bpp = 1;
     else
       bpp = 4;
-    return &data[(sub_y - y)*linesize +
-                 (sub_x - x)*bpp];
+    return const_cast<uint8_t*>(&data[(sub_y - y) * linesize + (sub_x - x) * bpp]);
   }
 
-  uint8_t*  data;
+  std::vector<uint8_t> data;
   int    linesize;
 
-  uint32_t* palette;
+  std::vector<uint32_t> palette;
   int    palette_colors;
 
   int    x;
