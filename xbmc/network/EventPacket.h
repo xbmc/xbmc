@@ -206,7 +206,7 @@ namespace EVENTPACKET
     PacketType   Type() const { return m_eType; }
     unsigned int Size() const { return m_iTotalPackets; }
     unsigned int Sequence() const { return m_iSeq; }
-    void* Payload() { return reinterpret_cast<void*>(m_pPayload.data()); }
+    const uint8_t* Payload() const { return m_pPayload.data(); }
     unsigned int PayloadSize() const { return m_pPayload.size(); }
     unsigned int ClientToken() const { return m_iClientToken; }
     void         SetPayload(unsigned int psize, void *payload)
