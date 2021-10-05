@@ -36,7 +36,8 @@ using namespace std::chrono_literals;
 /************************************************************************/
 /* CEventServer                                                         */
 /************************************************************************/
-CEventServer* CEventServer::m_pInstance = NULL;
+std::unique_ptr<CEventServer> CEventServer::m_pInstance;
+
 CEventServer::CEventServer() : CThread("EventServer")
 {
   m_pSocket       = NULL;
@@ -50,20 +51,15 @@ CEventServer::CEventServer() : CThread("EventServer")
 
 void CEventServer::RemoveInstance()
 {
-  if (m_pInstance)
-  {
-    delete m_pInstance;
-    m_pInstance=NULL;
-  }
+  m_pInstance.reset();
 }
 
 CEventServer* CEventServer::GetInstance()
 {
   if (!m_pInstance)
-  {
-    m_pInstance = new CEventServer();
-  }
-  return m_pInstance;
+    m_pInstance = std::make_unique<CEventServer>();
+
+  return m_pInstance.get();
 }
 
 void CEventServer::StartServer()
