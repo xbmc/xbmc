@@ -228,8 +228,8 @@ void CEventServer::Run()
 void CEventServer::ProcessPacket(CAddress& addr, int pSize)
 {
   // check packet validity
-  CEventPacket* packet = new CEventPacket(pSize, m_pPacketBuffer);
-  if(packet == NULL)
+  std::unique_ptr<CEventPacket> packet = std::make_unique<CEventPacket>(pSize, m_pPacketBuffer);
+  if (!packet)
   {
     CLog::Log(LOGERROR, "ES: Out of memory, cannot accept packet");
     return;
@@ -240,7 +240,6 @@ void CEventServer::ProcessPacket(CAddress& addr, int pSize)
   if (!packet->IsValid())
   {
     CLog::Log(LOGDEBUG, "ES: Received invalid packet");
-    delete packet;
     return;
   }
 
@@ -258,7 +257,6 @@ void CEventServer::ProcessPacket(CAddress& addr, int pSize)
     if ( m_clients.size() >= (unsigned int)m_iMaxClients)
     {
       CLog::Log(LOGWARNING, "ES: Cannot accept any more clients, maximum client count reached");
-      delete packet;
       return;
     }
 
@@ -267,13 +265,12 @@ void CEventServer::ProcessPacket(CAddress& addr, int pSize)
     if (client==NULL)
     {
       CLog::Log(LOGERROR, "ES: Out of memory, cannot accept new client connection");
-      delete packet;
       return;
     }
 
     m_clients[clientToken] = client;
   }
-  m_clients[clientToken]->AddPacket(packet);
+  m_clients[clientToken]->AddPacket(std::move(packet));
 }
 
 void CEventServer::RefreshClients()
