@@ -668,7 +668,7 @@ void CPVRRadioRDSInfoTag::Info::Add(const std::string& text)
   std::string tmp = Trim(text);
   g_charsetConverter.unknownToUTF8(tmp);
 
-  if (std::find(m_data.begin(), m_data.end(), text) != m_data.end())
+  if (std::find(m_data.begin(), m_data.end(), tmp) != m_data.end())
     return;
 
   if (m_data.size() >= 10)
