@@ -30,6 +30,8 @@ namespace EVENTSERVER
   public:
     static void RemoveInstance();
     static CEventServer* GetInstance();
+
+    CEventServer();
     ~CEventServer() override = default;
 
     // IRunnable entry point for thread
@@ -57,7 +59,6 @@ namespace EVENTSERVER
     int GetNumberOfClients();
 
   protected:
-    CEventServer();
     void Cleanup();
     void Run();
     void ProcessPacket(SOCKETS::CAddress& addr, int packetSize);
@@ -65,7 +66,7 @@ namespace EVENTSERVER
     void RefreshClients();
 
     std::map<unsigned long, std::unique_ptr<EVENTCLIENT::CEventClient>> m_clients;
-    static CEventServer* m_pInstance;
+    static std::unique_ptr<CEventServer> m_pInstance;
     SOCKETS::CUDPSocket* m_pSocket;
     int              m_iPort;
     int              m_iListenTimeout;
