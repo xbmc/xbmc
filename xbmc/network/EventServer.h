@@ -64,7 +64,7 @@ namespace EVENTSERVER
     void ProcessEvents();
     void RefreshClients();
 
-    std::map<unsigned long, EVENTCLIENT::CEventClient*>  m_clients;
+    std::map<unsigned long, std::unique_ptr<EVENTCLIENT::CEventClient>> m_clients;
     static CEventServer* m_pInstance;
     SOCKETS::CUDPSocket* m_pSocket;
     int              m_iPort;
