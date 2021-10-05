@@ -71,7 +71,7 @@ public:
   /*
    * return codecs name
    */
-  virtual const char* GetName() { return m_codecName.c_str(); }
+  const std::string& GetName() const { return m_codecName; }
 
 protected:
   /*
