@@ -73,19 +73,14 @@ COverlayQuadsDX::COverlayQuadsDX(ASS_Image* images, int width, int height)
     return;
 
   float u, v;
-  if(!LoadTexture(quads.size_x
-                , quads.size_y
-                , quads.size_x
-                , DXGI_FORMAT_R8_UNORM
-                , quads.data
-                , &u, &v
-                , &m_texture))
+  if (!LoadTexture(quads.size_x, quads.size_y, quads.size_x, DXGI_FORMAT_R8_UNORM,
+                   quads.data.data(), &u, &v, &m_texture))
   {
     return;
   }
 
-  Vertex* vt = new Vertex[6 * quads.count], *vt_orig = vt;
-  SQuad*  vs = quads.quad;
+  Vertex *vt = new Vertex[6 * quads.quad.size()], *vt_orig = vt;
+  SQuad* vs = quads.quad.data();
 
   float scale_u = u / quads.size_x;
   float scale_v = v / quads.size_y;
@@ -93,7 +88,7 @@ COverlayQuadsDX::COverlayQuadsDX(ASS_Image* images, int width, int height)
   float scale_x = 1.0f / width;
   float scale_y = 1.0f / height;
 
-  for (int i = 0; i < quads.count; i++)
+  for (size_t i = 0; i < quads.quad.size(); i++)
   {
     for (int s = 0; s < 6; s++)
     {
@@ -132,9 +127,10 @@ COverlayQuadsDX::COverlayQuadsDX(ASS_Image* images, int width, int height)
   }
 
   vt = vt_orig;
-  m_count = quads.count;
+  m_count = quads.quad.size();
 
-  if (!m_vertex.Create(D3D11_BIND_VERTEX_BUFFER, 6 * quads.count, sizeof(Vertex), DXGI_FORMAT_UNKNOWN, D3D11_USAGE_IMMUTABLE, vt))
+  if (!m_vertex.Create(D3D11_BIND_VERTEX_BUFFER, 6 * quads.quad.size(), sizeof(Vertex),
+                       DXGI_FORMAT_UNKNOWN, D3D11_USAGE_IMMUTABLE, vt))
   {
     CLog::Log(LOGERROR, "{} - failed to create vertex buffer", __FUNCTION__);
     m_texture.Release();

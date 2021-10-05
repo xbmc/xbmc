@@ -31,22 +31,15 @@ namespace OVERLAY {
   {
     SQuads()
     {
-      data = NULL;
-      quad = NULL;
+      data = {};
+      quad = {};
       size_x = 0;
       size_y = 0;
-      count  = 0;
-    }
-   ~SQuads()
-    {
-      free(data);
-      free(quad);
     }
     int      size_x;
     int      size_y;
-    int      count;
-    uint8_t* data;
-    SQuad*   quad;
+    std::vector<uint8_t> data;
+    std::vector<SQuad> quad;
   };
 
   std::vector<uint32_t> convert_rgba(CDVDOverlayImage* o, bool mergealpha);

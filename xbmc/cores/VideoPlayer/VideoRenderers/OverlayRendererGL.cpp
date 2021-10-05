@@ -277,13 +277,8 @@ COverlayGlyphGL::COverlayGlyphGL(ASS_Image* images, int width, int height)
   glGenTextures(1, &m_texture);
   glBindTexture(GL_TEXTURE_2D, m_texture);
 
-  LoadTexture(GL_TEXTURE_2D
-            , quads.size_x
-            , quads.size_y
-            , quads.size_x
-            , &m_u, &m_v
-            , true
-            , quads.data);
+  LoadTexture(GL_TEXTURE_2D, quads.size_x, quads.size_y, quads.size_x, &m_u, &m_v, true,
+              quads.data.data());
 
 
   float scale_u = m_u / quads.size_x;
@@ -292,13 +287,13 @@ COverlayGlyphGL::COverlayGlyphGL(ASS_Image* images, int width, int height)
   float scale_x = 1.0f / width;
   float scale_y = 1.0f / height;
 
-  m_count  = quads.count;
+  m_count = quads.quad.size();
   m_vertex = (VERTEX*)calloc(m_count * 4, sizeof(VERTEX));
 
   VERTEX* vt = m_vertex;
-  SQuad*  vs = quads.quad;
+  SQuad* vs = quads.quad.data();
 
-  for(int i=0; i < quads.count; i++)
+  for (size_t i = 0; i < quads.quad.size(); i++)
   {
     for(int s = 0; s < 4; s++)
     {
