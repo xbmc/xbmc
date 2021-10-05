@@ -261,7 +261,6 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlaySpu* o)
 
 COverlayGlyphGL::COverlayGlyphGL(ASS_Image* images, int width, int height)
 {
-  m_vertex = NULL;
   m_width  = 1.0;
   m_height = 1.0;
   m_align  = ALIGN_VIDEO;
@@ -287,10 +286,9 @@ COverlayGlyphGL::COverlayGlyphGL(ASS_Image* images, int width, int height)
   float scale_x = 1.0f / width;
   float scale_y = 1.0f / height;
 
-  m_count = quads.quad.size();
-  m_vertex = (VERTEX*)calloc(m_count * 4, sizeof(VERTEX));
+  m_vertex.resize(quads.quad.size() * 4);
 
-  VERTEX* vt = m_vertex;
+  VERTEX* vt = m_vertex.data();
   SQuad* vs = quads.quad.data();
 
   for (size_t i = 0; i < quads.quad.size(); i++)
@@ -339,12 +337,11 @@ COverlayGlyphGL::COverlayGlyphGL(ASS_Image* images, int width, int height)
 COverlayGlyphGL::~COverlayGlyphGL()
 {
   glDeleteTextures(1, &m_texture);
-  free(m_vertex);
 }
 
 void COverlayGlyphGL::Render(SRenderState& state)
 {
-  if ((m_texture == 0) || (m_count == 0))
+  if ((m_texture == 0) || (m_vertex.size() == 0))
     return;
 
   glEnable(GL_BLEND);
@@ -369,10 +366,10 @@ void COverlayGlyphGL::Render(SRenderState& state)
   GLint colLoc  = renderSystem->ShaderGetCol();
   GLint tex0Loc = renderSystem->ShaderGetCoord0();
 
-  std::vector<VERTEX> vecVertices( 6 * m_count);
-  VERTEX *vertices = &vecVertices[0];
+  std::vector<VERTEX> vecVertices(6 * m_vertex.size() / 4);
+  VERTEX* vertices = vecVertices.data();
 
-  for (int i=0; i<m_count*4; i+=4)
+  for (size_t i = 0; i < m_vertex.size(); i += 4)
   {
     *vertices++ = m_vertex[i];
     *vertices++ = m_vertex[i+1];
@@ -386,7 +383,8 @@ void COverlayGlyphGL::Render(SRenderState& state)
 
   glGenBuffers(1, &VertexVBO);
   glBindBuffer(GL_ARRAY_BUFFER, VertexVBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(VERTEX)*vecVertices.size(), &vecVertices[0], GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(VERTEX) * vecVertices.size(), vecVertices.data(),
+               GL_STATIC_DRAW);
 
   glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(VERTEX),
                         reinterpret_cast<const GLvoid*>(offsetof(VERTEX, x)));
@@ -418,10 +416,10 @@ void COverlayGlyphGL::Render(SRenderState& state)
   GLint tex0Loc = renderSystem->GUIShaderGetCoord0();
 
   // stack object until VBOs will be used
-  std::vector<VERTEX> vecVertices( 6 * m_count);
-  VERTEX *vertices = &vecVertices[0];
+  std::vector<VERTEX> vecVertices(6 * m_vertex.size() / 4);
+  VERTEX* vertices = vecVertices.data();
 
-  for (int i=0; i<m_count*4; i+=4)
+  for (size_t i = 0; i < m_vertex.size(); i += 4)
   {
     *vertices++ = m_vertex[i];
     *vertices++ = m_vertex[i+1];
@@ -432,7 +430,7 @@ void COverlayGlyphGL::Render(SRenderState& state)
     *vertices++ = m_vertex[i+2];
   }
 
-  vertices = &vecVertices[0];
+  vertices = vecVertices.data();
 
   glVertexAttribPointer(posLoc,  3, GL_FLOAT,         GL_FALSE, sizeof(VERTEX), (char*)vertices + offsetof(VERTEX, x));
   glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, GL_TRUE,  sizeof(VERTEX), (char*)vertices + offsetof(VERTEX, r));
