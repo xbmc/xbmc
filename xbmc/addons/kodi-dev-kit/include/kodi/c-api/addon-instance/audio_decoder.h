@@ -41,11 +41,6 @@ extern "C"
     char comment[ADDON_STANDARD_STRING_LENGTH];
   };
 
-  typedef struct AddonProps_AudioDecoder
-  {
-    int dummy;
-  } AddonProps_AudioDecoder;
-
   typedef struct AddonToKodiFuncTable_AudioDecoder
   {
     KODI_HANDLE kodiInstance;
@@ -78,7 +73,6 @@ extern "C"
 
   typedef struct AddonInstance_AudioDecoder
   {
-    struct AddonProps_AudioDecoder* props;
     struct AddonToKodiFuncTable_AudioDecoder* toKodi;
     struct KodiToAddonFuncTable_AudioDecoder* toAddon;
   } AddonInstance_AudioDecoder;

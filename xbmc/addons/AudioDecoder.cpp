@@ -25,7 +25,6 @@ CAudioDecoder::CAudioDecoder(const AddonInfoPtr& addonInfo)
 
   // Create all interface parts independent to make API changes easier if
   // something is added
-  m_struct.props = new AddonProps_AudioDecoder();
   m_struct.toKodi = new AddonToKodiFuncTable_AudioDecoder();
   m_struct.toAddon = new KodiToAddonFuncTable_AudioDecoder();
 }
@@ -34,7 +33,6 @@ CAudioDecoder::~CAudioDecoder()
 {
   DestroyInstance();
 
-  delete m_struct.props;
   delete m_struct.toKodi;
   delete m_struct.toAddon;
 }
