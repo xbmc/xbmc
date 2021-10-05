@@ -40,7 +40,6 @@ std::unique_ptr<CEventServer> CEventServer::m_pInstance;
 
 CEventServer::CEventServer() : CThread("EventServer")
 {
-  m_pSocket       = NULL;
   m_bStop         = false;
   m_bRunning      = false;
   m_bRefreshSettings = false;
@@ -93,11 +92,7 @@ void CEventServer::StopServer(bool bWait)
 void CEventServer::Cleanup()
 {
   if (m_pSocket)
-  {
     m_pSocket->Close();
-    delete m_pSocket;
-    m_pSocket = NULL;
-  }
 
   CSingleLock lock(m_critSection);
 
@@ -162,7 +157,7 @@ void CEventServer::Run()
                                txt);
 
   // add our socket to the 'select' listener
-  listener.AddSocket(m_pSocket);
+  listener.AddSocket(m_pSocket.get());
 
   m_bRunning = true;
 
