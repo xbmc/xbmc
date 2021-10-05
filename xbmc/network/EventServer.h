@@ -70,7 +70,7 @@ namespace EVENTSERVER
     int              m_iPort;
     int              m_iListenTimeout;
     int              m_iMaxClients;
-    unsigned char*   m_pPacketBuffer;
+    std::vector<uint8_t> m_pPacketBuffer;
     std::atomic<bool>  m_bRunning;
     CCriticalSection m_critSection;
     bool             m_bRefreshSettings;

@@ -40,7 +40,6 @@ CEventServer* CEventServer::m_pInstance = NULL;
 CEventServer::CEventServer() : CThread("EventServer")
 {
   m_pSocket       = NULL;
-  m_pPacketBuffer = NULL;
   m_bStop         = false;
   m_bRunning      = false;
   m_bRefreshSettings = false;
@@ -104,11 +103,6 @@ void CEventServer::Cleanup()
     m_pSocket = NULL;
   }
 
-  if (m_pPacketBuffer)
-  {
-    free(m_pPacketBuffer);
-    m_pPacketBuffer = NULL;
-  }
   CSingleLock lock(m_critSection);
 
   m_clients.clear();
@@ -146,13 +140,8 @@ void CEventServer::Run()
     CLog::Log(LOGERROR, "ES: Could not create socket, aborting!");
     return;
   }
-  m_pPacketBuffer = (unsigned char *)malloc(PACKET_SIZE);
 
-  if (!m_pPacketBuffer)
-  {
-    CLog::Log(LOGERROR, "ES: Out of memory, could not allocate packet buffer");
-    return;
-  }
+  m_pPacketBuffer.resize(PACKET_SIZE);
 
   // bind to IP and start listening on port
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
@@ -189,7 +178,7 @@ void CEventServer::Run()
       if (listener.Listen(m_iListenTimeout))
       {
         CAddress addr;
-        if ((packetSize = m_pSocket->Read(addr, PACKET_SIZE, (void *)m_pPacketBuffer)) > -1)
+        if ((packetSize = m_pSocket->Read(addr, PACKET_SIZE, m_pPacketBuffer.data())) > -1)
         {
           ProcessPacket(addr, packetSize);
         }
@@ -219,7 +208,8 @@ void CEventServer::Run()
 void CEventServer::ProcessPacket(CAddress& addr, int pSize)
 {
   // check packet validity
-  std::unique_ptr<CEventPacket> packet = std::make_unique<CEventPacket>(pSize, m_pPacketBuffer);
+  std::unique_ptr<CEventPacket> packet =
+      std::make_unique<CEventPacket>(pSize, m_pPacketBuffer.data());
   if (!packet)
   {
     CLog::Log(LOGERROR, "ES: Out of memory, cannot accept packet");
