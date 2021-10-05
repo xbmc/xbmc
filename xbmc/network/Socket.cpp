@@ -220,9 +220,9 @@ int CPosixUDPSocket::SendTo(const CAddress& addr, const int buffersize,
 /* CSocketFactory                                                     */
 /**********************************************************************/
 
-CUDPSocket* CSocketFactory::CreateUDPSocket()
+std::unique_ptr<CUDPSocket> CSocketFactory::CreateUDPSocket()
 {
-  return new CPosixUDPSocket();
+  return std::make_unique<CPosixUDPSocket>();
 }
 
 /**********************************************************************/

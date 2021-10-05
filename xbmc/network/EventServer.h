@@ -67,7 +67,7 @@ namespace EVENTSERVER
 
     std::map<unsigned long, std::unique_ptr<EVENTCLIENT::CEventClient>> m_clients;
     static std::unique_ptr<CEventServer> m_pInstance;
-    SOCKETS::CUDPSocket* m_pSocket;
+    std::unique_ptr<SOCKETS::CUDPSocket> m_pSocket;
     int              m_iPort;
     int              m_iListenTimeout;
     int              m_iMaxClients;

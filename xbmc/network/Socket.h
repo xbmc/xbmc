@@ -11,6 +11,7 @@
 #pragma once
 
 #include <map>
+#include <memory>
 #include <string.h>
 #include <vector>
 
@@ -220,7 +221,7 @@ namespace SOCKETS
   class CSocketFactory
   {
   public:
-    static CUDPSocket* CreateUDPSocket();
+    static std::unique_ptr<CUDPSocket> CreateUDPSocket();
   };
 
   /**********************************************************************/
