@@ -114,9 +114,9 @@ public:
   bool RemoveDependency(const std::shared_ptr<IAddon>& dependsId) const;
 
   /*!
-   * \brief Removes all orphaned dependency add-ons recursively. Removal may orphan further
-   *        dependencies, so loop until no orphaned is left on the system
-   * \return Names of dependencies that have effectively been removed
+   * \brief Removes all orphaned add-ons recursively. Removal may orphan further
+   *        add-ons/dependencies, so loop until no orphaned is left on the system
+   * \return Names of add-ons that have effectively been removed
    */
   std::vector<std::string> RemoveOrphanedDepsRecursively() const;
 

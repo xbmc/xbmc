@@ -231,8 +231,8 @@ std::vector<std::string> CAddonInstaller::RemoveOrphanedDepsRecursively() const
       }
       else
       {
-        CLog::Log(LOGERROR, "CAddonMgr::{}: failed to remove orphaned dependency: {}", __FUNCTION__,
-                  dep->Name());
+        CLog::Log(LOGERROR, "CAddonMgr::{}: failed to remove orphaned add-on/dependency: {}",
+                  __func__, dep->Name());
       }
     }
 

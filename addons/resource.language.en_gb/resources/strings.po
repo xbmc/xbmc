@@ -21186,31 +21186,31 @@ msgstr ""
 #. Menuitem at "Settings -> System -> Add-ons"
 #: ./system/settings/settings.xml
 msgctxt "#36638"
-msgid "Remove all orphaned dependencies"
+msgid "Remove all orphaned add-ons"
 msgstr ""
 
 #. Description of setting with label #36638 "Remove all orphaned dependencies"
 #: system/settings/settings.xml
 msgctxt "#36639"
-msgid "Remove all modules and support libraries that have been automatically installed as a dependency to other add-ons and are in an orphaned state."
+msgid "Remove all modules and support libraries that have been automatically installed and are in an orphaned state."
 msgstr ""
 
 #. Dialog caption
 #: xbmc/addons/AddonSystemSettings.cpp
 msgctxt "#36640"
-msgid "Orphaned dependencies"
+msgid "Orphaned add-ons"
 msgstr ""
 
-#. Dialog text if orphaned dependencies were found and removed
+#. Dialog text if orphaned add-ons were found and removed
 #: xbmc/addons/AddonSystemSettings.cpp
 msgctxt "#36641"
-msgid "The following orphaned dependency add-ons were removed from your system: {0:s}."
+msgid "The following orphaned add-ons were removed from your system: {0:s}."
 msgstr ""
 
-#. Dialog text if no more orphaned dependencies left on the system
+#. Dialog text if no more orphaned add-ons left on the system
 #: xbmc/addons/AddonSystemSettings.cpp
 msgctxt "#36642"
-msgid "No orphaned dependency add-ons to remove."
+msgid "No orphaned add-ons to remove."
 msgstr ""
 
 #empty strings from id 36643 to 36898
