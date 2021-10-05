@@ -73,3 +73,8 @@ bool CEventPacket::Parse(int datasize, const void *data)
   m_bValid = true;
   return true;
 }
+
+void CEventPacket::SetPayload(std::vector<uint8_t> payload)
+{
+  m_pPayload = std::move(payload);
+}
