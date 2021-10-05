@@ -165,7 +165,7 @@ namespace EVENTCLIENT
     }
 
     // add packet to queue
-    bool AddPacket(EVENTPACKET::CEventPacket *packet);
+    bool AddPacket(std::unique_ptr<EVENTPACKET::CEventPacket> packet);
 
     // return true if client received ping with the last 1 minute
     bool Alive() const;
@@ -247,8 +247,8 @@ namespace EVENTCLIENT
     EVENTPACKET::LogoType m_eLogoType;
     CCriticalSection  m_critSection;
 
-    std::map <unsigned int, EVENTPACKET::CEventPacket*>  m_seqPackets;
-    std::queue <EVENTPACKET::CEventPacket*> m_readyPackets;
+    std::map<unsigned int, std::unique_ptr<EVENTPACKET::CEventPacket>> m_seqPackets;
+    std::queue<std::unique_ptr<EVENTPACKET::CEventPacket>> m_readyPackets;
 
     // button and mouse state
     std::list<CEventButtonState>  m_buttonQueue;

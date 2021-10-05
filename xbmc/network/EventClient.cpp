@@ -89,7 +89,7 @@ void CEventButtonState::Load()
 /************************************************************************/
 /* CEventClient                                                         */
 /************************************************************************/
-bool CEventClient::AddPacket(CEventPacket *packet)
+bool CEventClient::AddPacket(std::unique_ptr<CEventPacket> packet)
 {
   if (!packet)
     return false;
@@ -98,7 +98,7 @@ bool CEventClient::AddPacket(CEventPacket *packet)
   if ( packet->Size() > 1 )
   {
     //! @todo limit payload size
-    if (m_seqPackets[ packet->Sequence() ])
+    if (m_seqPackets[packet->Sequence()])
     {
       if(!m_bSequenceError)
         CLog::Log(LOGWARNING,
@@ -106,14 +106,16 @@ bool CEventClient::AddPacket(CEventPacket *packet)
                   "previous packet from eventclient {}",
                   packet->Sequence(), m_deviceName);
       m_bSequenceError = true;
-      delete m_seqPackets[ packet->Sequence() ];
+      m_seqPackets.erase(packet->Sequence());
     }
 
-    m_seqPackets[ packet->Sequence() ] = packet;
-    if (m_seqPackets.size() == packet->Size())
+    unsigned int sequence = packet->Sequence();
+
+    m_seqPackets[sequence] = std::move(packet);
+    if (m_seqPackets.size() == m_seqPackets[sequence]->Size())
     {
       unsigned int iSeqPayloadSize = 0;
-      for (unsigned int i = 1 ; i<=packet->Size() ; i++)
+      for (unsigned int i = 1; i <= m_seqPackets[sequence]->Size(); i++)
       {
         iSeqPayloadSize += m_seqPackets[i]->PayloadSize();
       }
@@ -121,7 +123,7 @@ bool CEventClient::AddPacket(CEventPacket *packet)
       std::vector<uint8_t> newPayload(iSeqPayloadSize);
       auto newPayloadIter = newPayload.begin();
 
-      unsigned int packets = packet->Size(); // packet can be deleted in this loop
+      unsigned int packets = m_seqPackets[sequence]->Size(); // packet can be deleted in this loop
       for (unsigned int i = 1; i <= packets; i++)
       {
         newPayloadIter =
@@ -129,19 +131,16 @@ bool CEventClient::AddPacket(CEventPacket *packet)
                       m_seqPackets[i]->Payload() + m_seqPackets[i]->PayloadSize(), newPayloadIter);
 
         if (i > 1)
-        {
-          delete m_seqPackets[i];
-          m_seqPackets[i] = NULL;
-        }
+          m_seqPackets.erase(i);
       }
       m_seqPackets[1]->SetPayload(newPayload);
-      m_readyPackets.push(m_seqPackets[1]);
+      m_readyPackets.push(std::move(m_seqPackets[1]));
       m_seqPackets.clear();
     }
   }
   else
   {
-    m_readyPackets.push(packet);
+    m_readyPackets.push(std::move(packet));
   }
   return true;
 }
@@ -152,12 +151,9 @@ void CEventClient::ProcessEvents()
   {
     while ( ! m_readyPackets.empty() )
     {
-      ProcessPacket( m_readyPackets.front() );
+      ProcessPacket(m_readyPackets.front().get());
       if ( ! m_readyPackets.empty() ) // in case the BYE packet cleared the queues
-      {
-        delete m_readyPackets.front();
         m_readyPackets.pop();
-      }
     }
   }
 }
@@ -683,21 +679,10 @@ bool CEventClient::ParseUInt16(unsigned char* &payload, int &psize, unsigned sho
 void CEventClient::FreePacketQueues()
 {
   CSingleLock lock(m_critSection);
-  while ( ! m_readyPackets.empty() )
-  {
-    delete m_readyPackets.front();
-    m_readyPackets.pop();
-  }
 
-  std::map<unsigned int, EVENTPACKET::CEventPacket*>::iterator iter = m_seqPackets.begin();
-  while (iter != m_seqPackets.end())
-  {
-    if (iter->second)
-    {
-      delete iter->second;
-    }
-    ++iter;
-  }
+  while ( ! m_readyPackets.empty() )
+    m_readyPackets.pop();
+
   m_seqPackets.clear();
 }
 
