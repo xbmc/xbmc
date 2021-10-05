@@ -209,12 +209,7 @@ namespace EVENTPACKET
     const uint8_t* Payload() const { return m_pPayload.data(); }
     unsigned int PayloadSize() const { return m_pPayload.size(); }
     unsigned int ClientToken() const { return m_iClientToken; }
-    void         SetPayload(unsigned int psize, void *payload)
-    {
-      m_pPayload = std::vector<uint8_t>(reinterpret_cast<uint8_t*>(payload),
-                                        reinterpret_cast<uint8_t*>(payload) + psize);
-      free(payload);
-    }
+    void SetPayload(std::vector<uint8_t> payload);
 
   protected:
     bool m_bValid{false};

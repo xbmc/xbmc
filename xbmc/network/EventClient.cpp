@@ -117,34 +117,26 @@ bool CEventClient::AddPacket(CEventPacket *packet)
       {
         iSeqPayloadSize += m_seqPackets[i]->PayloadSize();
       }
-      unsigned int offset = 0;
-      void *newPayload = NULL;
-      newPayload = malloc(iSeqPayloadSize);
-      if (newPayload)
+
+      std::vector<uint8_t> newPayload(iSeqPayloadSize);
+      auto newPayloadIter = newPayload.begin();
+
+      unsigned int packets = packet->Size(); // packet can be deleted in this loop
+      for (unsigned int i = 1; i <= packets; i++)
       {
-        unsigned char *payloadPtr = (unsigned char *)newPayload;
-        unsigned int packets = packet->Size(); // packet can be deleted in this loop
-        for (unsigned int i = 1 ; i<=packets ; i++)
+        newPayloadIter =
+            std::copy(m_seqPackets[i]->Payload(),
+                      m_seqPackets[i]->Payload() + m_seqPackets[i]->PayloadSize(), newPayloadIter);
+
+        if (i > 1)
         {
-          memcpy((void*)(payloadPtr + offset), m_seqPackets[i]->Payload(),
-                 m_seqPackets[i]->PayloadSize());
-          offset += m_seqPackets[i]->PayloadSize();
-          if (i>1)
-          {
-            delete m_seqPackets[i];
-            m_seqPackets[i] = NULL;
-          }
+          delete m_seqPackets[i];
+          m_seqPackets[i] = NULL;
         }
-        m_seqPackets[1]->SetPayload(iSeqPayloadSize, newPayload);
-        m_readyPackets.push(m_seqPackets[1]);
-        m_seqPackets.clear();
       }
-      else
-      {
-        CLog::Log(LOGERROR, "ES: Could not assemble packets, Out of Memory");
-        FreePacketQueues();
-        return false;
-      }
+      m_seqPackets[1]->SetPayload(newPayload);
+      m_readyPackets.push(m_seqPackets[1]);
+      m_seqPackets.clear();
     }
   }
   else
