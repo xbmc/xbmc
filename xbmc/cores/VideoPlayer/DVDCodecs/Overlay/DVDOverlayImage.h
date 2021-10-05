@@ -20,16 +20,6 @@ class CDVDOverlayImage : public CDVDOverlay
 public:
   CDVDOverlayImage() : CDVDOverlay(DVDOVERLAY_TYPE_IMAGE)
   {
-    data = {};
-    palette = {};
-    palette_colors = 0;
-    linesize = 0;
-    x = 0;
-    y = 0;
-    width = 0;
-    height = 0;
-    source_width  = 0;
-    source_height = 0;
   }
 
   CDVDOverlayImage(const CDVDOverlayImage& src, int sub_x, int sub_y, int sub_w, int sub_h)
@@ -89,15 +79,15 @@ public:
   }
 
   std::vector<uint8_t> data;
-  int    linesize;
+  int linesize{0};
 
   std::vector<uint32_t> palette;
-  int    palette_colors;
+  int palette_colors{0};
 
-  int    x;
-  int    y;
-  int    width;
-  int    height;
-  int    source_width;
-  int    source_height;
+  int x{0};
+  int y{0};
+  int width{0};
+  int height{0};
+  int source_width{0};
+  int source_height{0};
 };
