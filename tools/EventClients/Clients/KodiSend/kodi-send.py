@@ -29,9 +29,18 @@ except:
     sys.path.append(os.path.join(os.path.realpath(os.path.dirname(__file__)), '../../lib/python'))
     from xbmcclient import *
 
+TYPE_LOG = 'log'
 TYPE_ACTION = 'action'
 TYPE_BUTTON = 'button'
 TYPE_DELAY = 'delay'
+
+log_map = {
+    "LOGDEBUG": LOGDEBUG,
+    "LOGINFO": LOGINFO,
+    "LOGWARNING": LOGWARNING,
+    "LOGERROR": LOGERROR,
+    "LOGFATAL": LOGFATAL,
+}
 
 def usage():
     print("Usage")
@@ -45,13 +54,15 @@ def usage():
     print("\t--port=PORT\t\t\tChoose what PORT to connect to (default=9777)")
     print("\t--keymap=KEYMAP\t\t\tChoose which KEYMAP to use for key presses (default=KB)")
     print('\t--button=BUTTON\t\t\tSends a key press event to Kodi, this option can be added multiple times to create a macro')
+    print("\t--log=MESSAGE\t\t\tSends a log message to Kodi")
+    print("\t--loglevel=LEVEL\t\tSets the log level when using --log= (default=LOGDEBUG)")
     print('\t-a ACTION, --action=ACTION\tSends an action to Kodi, this option can be added multiple times to create a macro')
     print('\t-d T, --delay=T\t\t\tWaits for T ms, this option can be added multiple times to create a macro')
     pass
 
 def main():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "?pa:d:v", ["help", "host=", "port=", "keymap=", "button=", "action=", "delay="])
+        opts, args = getopt.getopt(sys.argv[1:], "?pa:d:v", ["help", "host=", "port=", "keymap=", "button=", "log=", "loglevel=", "action=", "delay="])
     except getopt.GetoptError as err:
         # print help information and exit:
         print(str(err)) # will print something like "option -a not recognized"
@@ -60,6 +71,7 @@ def main():
     ip = "localhost"
     port = 9777
     keymap = "KB"
+    loglevel = LOGDEBUG
     actions = []
     verbose = False
     for o, a in opts:
@@ -74,6 +86,10 @@ def main():
             keymap = a
         elif o == "--button":
             actions.append({'type': TYPE_BUTTON, 'content': a})
+        elif o == "--log":
+            actions.append({'type': TYPE_LOG, 'content': a})
+        elif o == "--loglevel":
+            loglevel = log_map.get(a)
         elif o in ("-a", "--action"):
             actions.append({'type': TYPE_ACTION, 'content': a})
         elif o in ("-d", "--delay"):
@@ -97,6 +113,8 @@ def main():
         elif action['type'] == TYPE_DELAY:
             time.sleep(action['content'] / 1000.0)
             continue
+        elif action['type'] == TYPE_LOG:
+            packet = PacketLOG(loglevel=loglevel, logmessage=action['content'], autoprint=False)
         packet.send(sock, addr, uid=0)
 
 if __name__=="__main__":
