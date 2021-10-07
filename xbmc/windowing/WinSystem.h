@@ -162,6 +162,12 @@ public:
   virtual void* GetHWContext() { return nullptr; }
 
   std::shared_ptr<CDPMSSupport> GetDPMSManager();
+
+  /**
+   * @brief Set the HDR metadata. Passing nullptr as the parameter should
+   * disable HDR.
+   *
+   */
   virtual bool SetHDR(const VideoPicture* videoPicture) { return false; }
   virtual bool IsHDRDisplay() { return false; }
   virtual HDR_STATUS ToggleHDR() { return HDR_STATUS::HDR_UNSUPPORTED; }
