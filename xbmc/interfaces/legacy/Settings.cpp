@@ -96,7 +96,7 @@ Settings::Settings(std::shared_ptr<CSettingsBase> settings) : settings(std::move
 {
 }
 
-bool Settings::getBool(const char* id) throw(XBMCAddon::WrongTypeException)
+bool Settings::getBool(const char* id)
 {
   bool value = false;
   if (!GetSettingValue<CSettingBool>(settings, id, value))
@@ -105,7 +105,7 @@ bool Settings::getBool(const char* id) throw(XBMCAddon::WrongTypeException)
   return value;
 }
 
-int Settings::getInt(const char* id) throw(XBMCAddon::WrongTypeException)
+int Settings::getInt(const char* id)
 {
   int value = 0;
   if (!GetSettingValue<CSettingInt>(settings, id, value))
@@ -114,7 +114,7 @@ int Settings::getInt(const char* id) throw(XBMCAddon::WrongTypeException)
   return value;
 }
 
-double Settings::getNumber(const char* id) throw(XBMCAddon::WrongTypeException)
+double Settings::getNumber(const char* id)
 {
   double value = 0.0;
   if (!GetSettingValue<CSettingNumber>(settings, id, value))
@@ -123,7 +123,7 @@ double Settings::getNumber(const char* id) throw(XBMCAddon::WrongTypeException)
   return value;
 }
 
-String Settings::getString(const char* id) throw(XBMCAddon::WrongTypeException)
+String Settings::getString(const char* id)
 {
   std::string value;
   if (!GetSettingValue<CSettingString>(settings, id, value))
@@ -132,7 +132,7 @@ String Settings::getString(const char* id) throw(XBMCAddon::WrongTypeException)
   return value;
 }
 
-std::vector<bool> Settings::getBoolList(const char* id) throw(XBMCAddon::WrongTypeException)
+std::vector<bool> Settings::getBoolList(const char* id)
 {
   const auto transform = [](const CVariant& value) { return value.asBoolean(); };
   std::vector<bool> values;
@@ -142,7 +142,7 @@ std::vector<bool> Settings::getBoolList(const char* id) throw(XBMCAddon::WrongTy
   return values;
 }
 
-std::vector<int> Settings::getIntList(const char* id) throw(XBMCAddon::WrongTypeException)
+std::vector<int> Settings::getIntList(const char* id)
 {
   const auto transform = [](const CVariant& value) { return value.asInteger32(); };
   std::vector<int> values;
@@ -152,7 +152,7 @@ std::vector<int> Settings::getIntList(const char* id) throw(XBMCAddon::WrongType
   return values;
 }
 
-std::vector<double> Settings::getNumberList(const char* id) throw(XBMCAddon::WrongTypeException)
+std::vector<double> Settings::getNumberList(const char* id)
 {
   const auto transform = [](const CVariant& value) { return value.asDouble(); };
   std::vector<double> values;
@@ -162,7 +162,7 @@ std::vector<double> Settings::getNumberList(const char* id) throw(XBMCAddon::Wro
   return values;
 }
 
-std::vector<String> Settings::getStringList(const char* id) throw(XBMCAddon::WrongTypeException)
+std::vector<String> Settings::getStringList(const char* id)
 {
   const auto transform = [](const CVariant& value) { return value.asString(); };
   std::vector<std::string> values;
@@ -172,60 +172,56 @@ std::vector<String> Settings::getStringList(const char* id) throw(XBMCAddon::Wro
   return values;
 }
 
-void Settings::setBool(const char* id, bool value) throw(XBMCAddon::WrongTypeException)
+void Settings::setBool(const char* id, bool value)
 {
   if (!SetSettingValue<CSettingBool>(settings, id, value))
     throw XBMCAddon::WrongTypeException("Invalid setting type \"boolean\" for \"%s\"", id);
   settings->Save();
 }
 
-void Settings::setInt(const char* id, int value) throw(XBMCAddon::WrongTypeException)
+void Settings::setInt(const char* id, int value)
 {
   if (!SetSettingValue<CSettingInt>(settings, id, value))
     throw XBMCAddon::WrongTypeException("Invalid setting type \"integer\" for \"%s\"", id);
   settings->Save();
 }
 
-void Settings::setNumber(const char* id, double value) throw(XBMCAddon::WrongTypeException)
+void Settings::setNumber(const char* id, double value)
 {
   if (!SetSettingValue<CSettingNumber>(settings, id, value))
     throw XBMCAddon::WrongTypeException("Invalid setting type \"number\" for \"%s\"", id);
   settings->Save();
 }
 
-void Settings::setString(const char* id, const String& value) throw(XBMCAddon::WrongTypeException)
+void Settings::setString(const char* id, const String& value)
 {
   if (!SetSettingValue<CSettingString>(settings, id, value))
     throw XBMCAddon::WrongTypeException("Invalid setting type \"string\" for \"%s\"", id);
   settings->Save();
 }
 
-void Settings::setBoolList(const char* id,
-                           const std::vector<bool>& values) throw(XBMCAddon::WrongTypeException)
+void Settings::setBoolList(const char* id, const std::vector<bool>& values)
 {
   if (!SetSettingValueList<CSettingBool>(settings, id, values))
     throw XBMCAddon::WrongTypeException("Invalid setting type \"list[boolean]\" for \"%s\"", id);
   settings->Save();
 }
 
-void Settings::setIntList(const char* id,
-                          const std::vector<int>& values) throw(XBMCAddon::WrongTypeException)
+void Settings::setIntList(const char* id, const std::vector<int>& values)
 {
   if (!SetSettingValueList<CSettingInt>(settings, id, values))
     throw XBMCAddon::WrongTypeException("Invalid setting type \"list[integer]\" for \"%s\"", id);
   settings->Save();
 }
 
-void Settings::setNumberList(const char* id,
-                             const std::vector<double>& values) throw(XBMCAddon::WrongTypeException)
+void Settings::setNumberList(const char* id, const std::vector<double>& values)
 {
   if (!SetSettingValueList<CSettingNumber>(settings, id, values))
     throw XBMCAddon::WrongTypeException("Invalid setting type \"list[number]\" for \"%s\"", id);
   settings->Save();
 }
 
-void Settings::setStringList(const char* id,
-                             const std::vector<String>& values) throw(XBMCAddon::WrongTypeException)
+void Settings::setStringList(const char* id, const std::vector<String>& values)
 {
   if (!SetSettingValueList<CSettingString>(settings, id, values))
     throw XBMCAddon::WrongTypeException("Invalid setting type \"list[string]\" for \"%s\"", id);
