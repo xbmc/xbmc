@@ -45,7 +45,7 @@ def usage():
     print("\t--port=PORT\t\t\tChoose what PORT to connect to (default=9777)")
     print("\t--keymap=KEYMAP\t\t\tChoose which KEYMAP to use for key presses (default=KB)")
     print('\t--button=BUTTON\t\t\tSends a key press event to Kodi, this option can be added multiple times to create a macro')
-    print('\t-a ACTION, --action=ACTION\tSends an action to XBMC, this option can be added multiple times to create a macro')
+    print('\t-a ACTION, --action=ACTION\tSends an action to Kodi, this option can be added multiple times to create a macro')
     print('\t-d T, --delay=T\t\t\tWaits for T ms, this option can be added multiple times to create a macro')
     pass
 
