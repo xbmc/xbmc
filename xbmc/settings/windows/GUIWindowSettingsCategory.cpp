@@ -106,6 +106,17 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       }
       break;
     }
+
+    case GUI_MSG_PLAYBACK_STARTED:
+    case GUI_MSG_PLAYBACK_ENDED:
+    case GUI_MSG_PLAYBACK_STOPPED:
+    {
+      if (IsActive())
+      {
+        UpdateSettings();
+      }
+      break;
+    }
   }
 
   return CGUIDialogSettingsManagerBase::OnMessage(message);
