@@ -17,6 +17,7 @@
 #include "URL.h"
 #include "Util.h"
 #include "VideoInfoDownloader.h"
+#include "cores/VideoPlayer/DVDFileInfo.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "events/EventLog.h"
@@ -1316,6 +1317,12 @@ namespace VIDEO
     {
       strTitle = StringUtils::Format("%s - %ix%i - %s", showInfo->m_strTitle.c_str(), movieDetails.m_iSeason, movieDetails.m_iEpisode, strTitle.c_str());
     }
+
+    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+            CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS) &&
+        CDVDFileInfo::GetFileStreamDetails(pItem))
+      CLog::Log(LOGDEBUG, "VideoInfoScanner: Extracted filestream details from video file {}",
+                CURL::GetRedacted(pItem->GetPath()));
 
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new item to {}:{}", TranslateContent(content), CURL::GetRedacted(pItem->GetPath()));
     long lResult = -1;
