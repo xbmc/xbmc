@@ -2,8 +2,7 @@
  * Copyright © 2001 Keith Packard, member of The XFree86 Project, Inc.
  * Copyright © 2002 Hewlett Packard Company, Inc.
  * Copyright © 2006 Intel Corporation
- *
- * Permission to use, copy, modify, distribute, and sell this software and its
+ 
  * documentation for any purpose is hereby granted without fee, provided that
  * the above copyright notice appear in all copies and that both that copyright
  * notice and this permission notice appear in supporting documentation, and
