@@ -372,35 +372,6 @@
 					<control type="grouplist" id="12001">
 						<include>WidgetGroupListCommon</include>
 						<pagecontrol>12010</pagecontrol>
-						<control type="grouplist" id="12855">
-							<height>390</height>
-							<left>0</left>
-							<right>0</right>
-							<top>36</top>
-							<orientation>horizontal</orientation>
-							<visible>PVR.IsRecordingTV | PVR.HasNonRecordingTVTimer</visible>
-							<align>center</align>
-							<control type="group">
-								<width>674</width>
-								<visible>PVR.IsRecordingTV</visible>
-								<include content="PVRWidget">
-									<param name="icon" value="$INFO[PVR.TVNowRecordingChannelIcon]" />
-									<param name="header" value="$LOCALIZE[19158]" />
-									<param name="label1" value="$INFO[PVR.TVNowRecordingDateTime]" />
-									<param name="label2" value="$INFO[PVR.TVNowRecordingTitle][CR][COLOR=grey]$INFO[PVR.TVNowRecordingChannel][/COLOR]" />
-								</include>
-							</control>
-							<control type="group">
-								<width>674</width>
-								<visible>PVR.HasNonRecordingTVTimer</visible>
-								<include content="PVRWidget">
-									<param name="icon" value="$INFO[PVR.TVNextRecordingChannelIcon]" />
-									<param name="header" value="$LOCALIZE[19157]" />
-									<param name="label1" value="$INFO[PVR.TVNextRecordingDateTime]" />
-									<param name="label2" value="$INFO[PVR.TVNextRecordingTitle][CR][COLOR=grey]$INFO[PVR.TVNextRecordingChannel][/COLOR]" />
-								</include>
-							</control>
-						</control>
 						<include content="WidgetListCategories" condition="System.HasPVRAddon">
 							<param name="content_path" value="pvr://tv/"/>
 							<param name="widget_header" value="$LOCALIZE[31148]"/>
@@ -423,10 +394,20 @@
 							<param name="label2" value="$INFO[ListItem.Title]$INFO[ListItem.EpisodeName, (,)]"/>
 						</include>
 						<include content="WidgetListChannels" condition="System.HasPVRAddon">
+							<param name="content_path" value="pvr://timers/tv/timers/?view=hidedisabled"/>
+							<param name="sortorder" value="ascending"/>
+							<param name="sortby" value="date"/>
+							<param name="widget_header" value="$LOCALIZE[19040]"/>
+							<param name="widget_target" value="tvtimers"/>
+							<param name="list_id" value="12400"/>
+							<param name="label" value="$INFO[ListItem.Date]"/>
+							<param name="label2" value="$INFO[ListItem.Title]$INFO[ListItem.EpisodeName, (,)] - $INFO[ListItem.ChannelName]"/>
+						</include>
+						<include content="WidgetListChannels" condition="System.HasPVRAddon">
 							<param name="content_path" value="pvr://channels/tv"/>
 							<param name="widget_header" value="$LOCALIZE[19173]"/>
 							<param name="widget_target" value="tvguide"/>
-							<param name="list_id" value="12400"/>
+							<param name="list_id" value="12500"/>
 							<param name="item_treshold" value="1"/>
 						</include>
 					</control>
@@ -449,35 +430,6 @@
 					<control type="grouplist" id="13001">
 						<include>WidgetGroupListCommon</include>
 						<pagecontrol>13010</pagecontrol>
-						<control type="grouplist" id="13855">
-							<height>390</height>
-							<left>0</left>
-							<right>0</right>
-							<top>36</top>
-							<orientation>horizontal</orientation>
-							<align>center</align>
-							<visible>PVR.IsRecordingRadio | PVR.HasNonRecordingRadioTimer</visible>
-							<control type="group">
-								<width>680</width>
-								<visible>PVR.IsRecordingRadio</visible>
-								<include content="PVRWidget">
-									<param name="icon" value="$INFO[PVR.RadioNowRecordingChannelIcon]" />
-									<param name="header" value="$LOCALIZE[19158]" />
-									<param name="label1" value="$INFO[PVR.RadioNowRecordingDateTime]" />
-									<param name="label2" value="$INFO[PVR.RadioNowRecordingTitle][CR][COLOR=grey]$INFO[PVR.RadioNowRecordingChannel][/COLOR]" />
-								</include>
-							</control>
-							<control type="group">
-								<visible>PVR.HasNonRecordingRadioTimer</visible>
-								<width>680</width>
-								<include content="PVRWidget">
-									<param name="icon" value="$INFO[PVR.RadioNextRecordingChannelIcon]" />
-									<param name="header" value="$LOCALIZE[19157]" />
-									<param name="label1" value="$INFO[PVR.RadioNextRecordingDateTime]" />
-									<param name="label2" value="$INFO[PVR.RadioNextRecordingTitle][CR][COLOR=grey]$INFO[PVR.RadioNextRecordingChannel][/COLOR]" />
-								</include>
-							</control>
-						</control>
 						<include content="WidgetListCategories" condition="System.HasPVRAddon">
 							<param name="content_path" value="pvr://radio/"/>
 							<param name="widget_header" value="$LOCALIZE[31148]"/>
@@ -500,10 +452,20 @@
 							<param name="label2" value="$INFO[ListItem.Title]$INFO[ListItem.EpisodeName, (,)]"/>
 						</include>
 						<include content="WidgetListChannels" condition="System.HasPVRAddon">
+							<param name="content_path" value="pvr://timers/radio/timers/?view=hidedisabled"/>
+							<param name="sortorder" value="ascending"/>
+							<param name="sortby" value="date"/>
+							<param name="widget_header" value="$LOCALIZE[19040]"/>
+							<param name="widget_target" value="radiotimers"/>
+							<param name="list_id" value="13400"/>
+							<param name="label" value="$INFO[ListItem.Date]"/>
+							<param name="label2" value="$INFO[ListItem.Title]$INFO[ListItem.EpisodeName, (,)] - $INFO[ListItem.ChannelName]"/>
+						</include>
+						<include content="WidgetListChannels" condition="System.HasPVRAddon">
 							<param name="content_path" value="pvr://channels/radio"/>
 							<param name="widget_header" value="$LOCALIZE[19174]"/>
 							<param name="widget_target" value="radioguide"/>
-							<param name="list_id" value="13400"/>
+							<param name="list_id" value="13500"/>
 							<param name="item_treshold" value="1"/>
 						</include>
 					</control>

@@ -441,6 +441,12 @@ namespace PVR
      */
     void OnPlaybackStopped(const std::shared_ptr<CFileItem>& item);
 
+    /*!
+     * @brief Process info action for the given item.
+     * @param item The item.
+     */
+    bool OnInfo(const std::shared_ptr<CFileItem>& item);
+
   private:
     CPVRGUIActions(const CPVRGUIActions&) = delete;
     CPVRGUIActions const& operator=(CPVRGUIActions const&) = delete;

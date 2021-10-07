@@ -2617,6 +2617,21 @@ namespace PVR
     }
   }
 
+  bool CPVRGUIActions::OnInfo(const std::shared_ptr<CFileItem>& item)
+  {
+    if (item->HasPVRRecordingInfoTag())
+    {
+      CGUIDialogPVRRecordingInfo::ShowFor(item);
+      return true;
+    }
+    else if (item->HasPVRChannelInfoTag() || item->HasPVRTimerInfoTag())
+    {
+      CGUIDialogPVRGuideInfo::ShowFor(item);
+      return true;
+    }
+    return false;
+  }
+
   void CPVRChannelSwitchingInputHandler::AppendChannelNumberCharacter(char cCharacter)
   {
     // special case. if only a single zero was typed in, switch to previously played channel.
