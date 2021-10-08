@@ -19,6 +19,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/XBMCTinyXML.h"
+#include "utils/auto_buffer.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -360,8 +361,26 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
       if (element && element->GetText() != nullptr)
         addon->m_packageSize = StringUtils::ToUint64(element->GetText(), 0);
 
-      /* Parse addon.xml "<news lang="..">...</news>" */
+      /* Parse addon.xml "<news lang="..">...</news>"
+       *
+       * In the event that the changelog (news) in addon.xml is empty, check
+       * whether it is an installed addon and read a changelog.txt as a
+       * replacement, if available. */
       GetTextList(child, "news", addon->m_changelog);
+      if (addon->m_changelog.empty() && repo.artdir.empty() && !addonPath.empty())
+      {
+        using XFILE::auto_buffer;
+        using XFILE::CFile;
+
+        const std::string changelog = URIUtils::AddFileToFolder(addonPath, "changelog.txt");
+        if (CFile::Exists(changelog))
+        {
+          CFile file;
+          auto_buffer buf;
+          if (file.LoadFile(changelog, buf) > 0)
+            addon->m_changelog["en_GB"].assign(buf.get(), buf.size());
+        }
+      }
     }
     else
     {
