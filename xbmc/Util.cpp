@@ -1163,8 +1163,11 @@ int CUtil::GetMatchingSource(const std::string& strPath1, VECSOURCES& VECSOURCES
 
   if (checkURL.IsProtocol("shout"))
     strPath = checkURL.GetHostName();
+
+  // a plugin path should not be configured in any mediasource
   if (checkURL.IsProtocol("plugin"))
-    return 1;
+    return -1;
+
   if (checkURL.IsProtocol("multipath"))
     strPath = CMultiPathDirectory::GetFirstPath(strPath);
 
