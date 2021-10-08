@@ -68,8 +68,6 @@ static void libass_log(int level, const char* fmt, va_list args, void* data)
 
 CDVDSubtitlesLibass::CDVDSubtitlesLibass()
 {
-  m_currentStyleId = ASS_NO_ID;
-
   CLog::Log(LOGINFO, "CDVDSubtitlesLibass: Using libass version {0:x}", ass_library_version());
   CLog::Log(LOGINFO, "CDVDSubtitlesLibass: Creating ASS library structure");
   m_library = ass_library_init();
@@ -153,12 +151,18 @@ bool CDVDSubtitlesLibass::CreateTrack()
 {
   CSingleLock lock(m_section);
   if (!m_library)
+  {
+    CLog::Log(LOGERROR, "{} - Failed to create ASS track, library not initialized.", __FUNCTION__);
     return false;
+  }
 
   CLog::Log(LOGINFO, "CDVDSubtitlesLibass: Creating new ASS track");
   m_track = ass_new_track(m_library);
   if (m_track == NULL)
+  {
+    CLog::Log(LOGERROR, "{} - Failed to allocate ASS track.", __FUNCTION__);
     return false;
+  }
 
   m_track->track_type = m_track->TRACK_TYPE_ASS;
   m_track->Timer = 100.;
@@ -168,6 +172,25 @@ bool CDVDSubtitlesLibass::CreateTrack()
   m_track->Kerning = true; // Font kerning improves the letterspacing
   m_track->WrapStyle = 1; // The line feed \n doesn't break but wraps (instead \N breaks)
 
+  return true;
+}
+
+bool CDVDSubtitlesLibass::CreateStyle()
+{
+  CSingleLock lock(m_section);
+  if (!m_library)
+  {
+    CLog::Log(LOGERROR, "{} - Failed to create ASS style, library not initialized.", __FUNCTION__);
+    return false;
+  }
+
+  if (!m_track)
+  {
+    CLog::Log(LOGERROR, "{} - Failed to create ASS style, track not initialized.", __FUNCTION__);
+    return false;
+  }
+
+  m_defaultKodiStyleId = ass_alloc_style(m_track);
   return true;
 }
 
@@ -208,7 +231,7 @@ ASS_Image* CDVDSubtitlesLibass::RenderImage(double pts,
     return NULL;
   }
 
-  if (updateStyle || m_currentStyleId == ASS_NO_ID)
+  if (updateStyle || m_currentDefaultStyleId == ASS_NO_ID)
   {
     ApplyStyle(*subStyle.get(), opts);
     m_drawWithinBlackBars = subStyle->drawWithinBlackBars;
@@ -250,6 +273,8 @@ void CDVDSubtitlesLibass::ApplyStyle(style subStyle, renderOpts opts)
   if (m_subtitleType == ADAPTED ||
       (m_subtitleType == NATIVE && subStyle.assOverrideStyles != AssOverrideStyles::DISABLED))
   {
+    m_currentDefaultStyleId = m_defaultKodiStyleId;
+
     if (m_subtitleType == NATIVE)
     {
       // ASS_Style is a POD struct need to be initialized with {}
@@ -258,15 +283,7 @@ void CDVDSubtitlesLibass::ApplyStyle(style subStyle, renderOpts opts)
     }
     else
     {
-      if (m_currentStyleId != ASS_NO_ID)
-      {
-        // Delete current style
-        ass_free_style(m_track, m_currentStyleId);
-        m_track->n_styles -= 1;
-      }
-      m_currentStyleId = ass_alloc_style(m_track);
-      m_track->default_style = m_currentStyleId;
-      style = m_track->styles + m_currentStyleId;
+      style = &m_track->styles[m_currentDefaultStyleId];
     }
 
     style->Name = strdup("KodiDefault");
@@ -374,7 +391,7 @@ void CDVDSubtitlesLibass::ApplyStyle(style subStyle, renderOpts opts)
   if (m_subtitleType == NATIVE)
   {
     ConfigureAssOverride(subStyle, style);
-    m_currentStyleId = 0;
+    m_currentDefaultStyleId = m_track->default_style;
   }
 }
 
@@ -461,7 +478,7 @@ int CDVDSubtitlesLibass::AddEvent(const char* text, double startTime, double sto
     ASS_Event* event = m_track->events + eventId;
     event->Start = DVD_TIME_TO_MSEC(startTime);
     event->Duration = DVD_TIME_TO_MSEC(stopTime - startTime);
-    event->Style = 1; // We set the style ID that will be created later
+    event->Style = m_defaultKodiStyleId;
     event->ReadOrder = eventId;
     event->Text = strdup(text);
     return eventId;

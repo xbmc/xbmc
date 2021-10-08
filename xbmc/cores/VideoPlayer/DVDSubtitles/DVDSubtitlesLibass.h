@@ -85,6 +85,12 @@ protected:
   bool CreateTrack();
 
   /*!
+  * \brief Create a new empty ASS style
+  * \return True if success, false if error
+  */
+  bool CreateStyle();
+
+  /*!
   * \brief Specify whether the subtitles are
   * native (loaded from ASS/SSA file or stream)
   * or adapted (converted from other types e.g. SubRip)
@@ -133,6 +139,11 @@ private:
   ASS_Renderer* m_renderer = nullptr;
   mutable CCriticalSection m_section;
   ASSSubType m_subtitleType;
-  int m_currentStyleId;
+
+  // current default style ID of the ASS track
+  int m_currentDefaultStyleId{ASS_NO_ID};
+
+  // default allocated style ID for the kodi user configured subtitle style
+  int m_defaultKodiStyleId{ASS_NO_ID};
   bool m_drawWithinBlackBars;
 };
