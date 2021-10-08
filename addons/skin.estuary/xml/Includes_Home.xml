@@ -510,6 +510,16 @@
 							<height>32</height>
 							<texture>$VAR[WallWatchedIconVar]</texture>
 						</control>
+						<control type="progress">
+							<left>20</left>
+							<top>300</top>
+							<width>280</width>
+							<height>1</height>
+							<texturebg></texturebg>
+							<midtexture colordiffuse="button_focus" border="3">progress/texturebg_alt_white.png</midtexture>
+							<info>ListItem.PercentPlayed</info>
+							<visible>!Integer.IsEqual(ListItem.PercentPlayed,0)</visible>
+						</control>
 					</control>
 				</itemlayout>
 				<focusedlayout width="310" height="500">
@@ -574,6 +584,16 @@
 							<width>32</width>
 							<height>32</height>
 							<texture>$VAR[WallWatchedIconVar]</texture>
+						</control>
+						<control type="progress">
+							<left>20</left>
+							<top>300</top>
+							<width>280</width>
+							<height>1</height>
+							<texturebg></texturebg>
+							<midtexture colordiffuse="button_focus" border="3">progress/texturebg_alt_white.png</midtexture>
+							<info>ListItem.PercentPlayed</info>
+							<visible>!Integer.IsEqual(ListItem.PercentPlayed,0)</visible>
 						</control>
 					</control>
 				</focusedlayout>
