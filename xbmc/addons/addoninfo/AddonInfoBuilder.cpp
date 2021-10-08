@@ -331,7 +331,8 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
       if (element && element->GetText() != nullptr)
       {
         addon->m_lifecycleState = AddonLifecycleState::BROKEN;
-        addon->m_lifecycleStateDescription.emplace("en_gb", element->GetText());
+        addon->m_lifecycleStateDescription.emplace(KODI_ADDON_DEFAULT_LANGUAGE_CODE,
+                                                   element->GetText());
       }
 
       /* Parse addon.xml "<lifecyclestate">...</lifecyclestate>" */
@@ -384,7 +385,7 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
           CFile file;
           auto_buffer buf;
           if (file.LoadFile(changelog, buf) > 0)
-            addon->m_changelog["en_GB"].assign(buf.get(), buf.size());
+            addon->m_changelog[KODI_ADDON_DEFAULT_LANGUAGE_CODE].assign(buf.get(), buf.size());
         }
       }
     }
@@ -584,7 +585,8 @@ bool CAddonInfoBuilder::GetTextList(const TiXmlElement* element, const std::stri
         translatedValues.insert(std::make_pair(lang, text != nullptr ? text : ""));
     }
     else
-      translatedValues.insert(std::make_pair("en_GB", text != nullptr ? text : ""));
+      translatedValues.insert(
+          std::make_pair(KODI_ADDON_DEFAULT_LANGUAGE_CODE, text != nullptr ? text : ""));
   }
 
   return !translatedValues.empty();

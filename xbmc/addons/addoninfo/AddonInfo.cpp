@@ -235,7 +235,7 @@ const std::string& CAddonInfo::GetTranslatedText(const std::unordered_map<std::s
   // find the language from the list that matches the current locale best
   std::string matchingLanguage = g_langInfo.GetLocale().FindBestMatch(locales);
   if (matchingLanguage.empty())
-    matchingLanguage = "en_GB";
+    matchingLanguage = KODI_ADDON_DEFAULT_LANGUAGE_CODE;
 
   auto const& translatedValue = locales.find(matchingLanguage);
   if (translatedValue != locales.end())
