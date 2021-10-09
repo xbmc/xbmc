@@ -38,7 +38,7 @@ class CInstanceAudioDecoder;
 /// @copydetails cpp_kodi_addon_audiodecoder_Defs_AudioDecoderInfoTag_Help
 ///
 ///@{
-class AudioDecoderInfoTag
+class ATTR_DLL_LOCAL AudioDecoderInfoTag
 {
 public:
   /*! \cond PRIVATE */
@@ -359,7 +359,7 @@ private:
 /// The destruction of the example class `CMyAudioDecoder` is called from
 /// Kodi's header. Manually deleting the add-on instance is not required.
 ///
-class ATTRIBUTE_HIDDEN CInstanceAudioDecoder : public IAddonInstance
+class ATTR_DLL_LOCAL CInstanceAudioDecoder : public IAddonInstance
 {
 public:
   //==========================================================================
