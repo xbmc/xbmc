@@ -82,7 +82,7 @@ $(LIBDYLIB): $(PLATFORM)
 	touch $@
 
 clean:
-	rm -rf $(PLATFORM) .installed-$(PLATFORM)
+	rm -rf .installed-$(PLATFORM)
 
 distclean::
 	rm -rf $(PLATFORM) .installed-$(PLATFORM)
