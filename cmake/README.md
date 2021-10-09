@@ -89,13 +89,13 @@ for add-on development and detailed documentation about the add-on build system.
 Clang and GCC support different kinds of sanitizers. To enable a sanitizer, call CMake with the option `-DECM_ENABLE_SANITIZERS=’san1;san2;...'`. For more information about enabling the
 sanitizers, read the module **[documentation](modules/extra/ECMEnableSanitizers.cmake)**.
 
-It is also recommended to read the sections about sanitizers in the [Clang documentation](http://clang.llvm.org/docs/).
+It is also recommended to read the sections about sanitizers in the [Clang documentation](http://clang.llvm.org/docs/) .
 
 ## Debugging the build
 In order to see the exact compiler commands `make` and `nmake` can be executed with a `VERBOSE=1` parameter.
 
 On Windows, this is unfortunately not enough because `nmake` uses temporary files to workaround `nmake`'s command string length limitations.
-In order to see verbose output the file **[Modules/Platform/Windows.cmake](https://github.com/Kitware/CMake/blob/master/Modules/Platform/Windows.cmake#L40)** in the local CMake installation has to be adapted by uncommenting these lines:
+In order to see verbose output the file **[Modules/Platform/Windows.cmake](https://github.com/Kitware/CMake/blob/master/Modules/Platform/Windows.cmake#L40)** in the local CMake installation has to be adapted by uncommenting these lines :
 ```
 # uncomment these out to debug nmake and borland makefiles
 #set(CMAKE_START_TEMP_FILE "")
