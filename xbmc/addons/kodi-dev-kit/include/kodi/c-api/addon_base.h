@@ -65,6 +65,7 @@
 #define ATTR_DLL_IMPORT __declspec(dllimport)
 #define ATTR_DLL_EXPORT __declspec(dllexport)
 #define ATTR_DLL_LOCAL
+#define ATTR_APIENTRY __stdcall
 #else
 #if __GNUC__ >= 4
 #define ATTR_DLL_IMPORT __attribute__((visibility("default")))
@@ -75,6 +76,11 @@
 #define ATTR_DLL_EXPORT
 #define ATTR_DLL_LOCAL
 #endif
+#define ATTR_APIENTRY
+#endif
+
+#ifndef ATTR_APIENTRYP
+#define ATTR_APIENTRYP ATTR_APIENTRY*
 #endif
 
 // Fallbacks to old
