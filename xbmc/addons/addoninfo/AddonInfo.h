@@ -27,6 +27,12 @@ class CAddonInfo;
 typedef std::shared_ptr<CAddonInfo> AddonInfoPtr;
 typedef std::vector<AddonInfoPtr> AddonInfos;
 
+/*!
+ * Defines the default language code used as fallback in case the requested language is not
+ * available. Used, for instance, to handle content from addon.xml.
+ */
+constexpr const char* KODI_ADDON_DEFAULT_LANGUAGE_CODE = "en_GB";
+
 enum class AddonDisabledReason
 {
   /// @brief Special reason for returning all disabled addons.
