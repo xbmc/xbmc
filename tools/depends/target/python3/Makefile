@@ -11,7 +11,7 @@ BASE_URL=https://www.python.org/ftp/python/$(VERSION)
 
 ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
   HOSTPLATFORM=_PYTHON_HOST_PLATFORM="darwin"
-  LINK_ICONV=-framework CoreFoundation -liconv
+  LINK_ICONV=-liconv
 endif
 
 ifeq ($(OS), darwin_embedded)
@@ -56,9 +56,7 @@ endif
 #Add -liconv as needed, and add the _scproxy module for darwin
 #  disable locale altogether for Android
 ifeq ($(OS),android)
-	cd $(PLATFORM); sed -ie 's|_locale -DPy_BUILD_CORE_BUILTIN _localemodule.c  # -lintl|#_locale -DPy_BUILD_CORE_BUILTIN _localemodule.c  # -lintl|' Modules/Setup
-else
-	cd $(PLATFORM); sed -ie 's|_locale -DPy_BUILD_CORE_BUILTIN _localemodule.c  # -lintl|_locale -DPy_BUILD_CORE_BUILTIN _localemodule.c   -lintl $(LINK_ICONV)|' Modules/Setup
+	cd $(PLATFORM); sed -ie 's|_locale -DPy_BUILD_CORE_BUILTIN _localemodule.c -lintl \$$(LINK_ICONV)|#_locale -DPy_BUILD_CORE_BUILTIN _localemodule.c -lintl \$$(LINK_ICONV)|' Modules/Setup
 endif
 ifeq ($(OS),linux)
 	# _posixshmem module requires librt for linux for SHM_OPEN/SHM_UNLINK
