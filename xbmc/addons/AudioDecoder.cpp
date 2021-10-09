@@ -139,6 +139,7 @@ bool CAudioDecoder::Load(const std::string& fileName,
     tag.SetNoOfChannels(cTag->channels);
     tag.SetBitRate(cTag->bitrate);
     tag.SetComment(cTag->comment);
+    tag.SetLoaded(true);
   }
 
   delete cTag;
