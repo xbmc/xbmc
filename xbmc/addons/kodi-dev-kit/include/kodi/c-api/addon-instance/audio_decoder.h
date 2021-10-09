@@ -40,6 +40,28 @@ extern "C"
     char* comment;
   };
 
+  typedef bool(ATTR_APIENTRYP PFN_KODI_ADDON_AUDIODECODER_INIT_V1)(
+      const KODI_ADDON_AUDIODECODER_HDL hdl,
+      const char* file,
+      unsigned int filecache,
+      int* channels,
+      int* samplerate,
+      int* bitspersample,
+      int64_t* totaltime,
+      int* bitrate,
+      enum AudioEngineDataFormat* format,
+      enum AudioEngineChannel info[AUDIOENGINE_CH_MAX]);
+  typedef int(ATTR_APIENTRYP PFN_KODI_ADDON_AUDIODECODER_READ_PCM_V1)(
+      const KODI_ADDON_AUDIODECODER_HDL hdl, uint8_t* buffer, size_t size, size_t* actualsize);
+  typedef int64_t(ATTR_APIENTRYP PFN_KODI_ADDON_AUDIODECODER_SEEK_V1)(
+      const KODI_ADDON_AUDIODECODER_HDL hdl, int64_t time);
+  typedef bool(ATTR_APIENTRYP PFN_KODI_ADDON_AUDIODECODER_READ_TAG_V1)(
+      const KODI_ADDON_AUDIODECODER_HDL hdl,
+      const char* file,
+      struct KODI_ADDON_AUDIODECODER_INFO_TAG* tag);
+  typedef int(ATTR_APIENTRYP PFN_KODI_ADDON_AUDIODECODER_TRACK_COUNT_V1)(
+      const KODI_ADDON_AUDIODECODER_HDL hdl, const char* file);
+
   typedef struct AddonToKodiFuncTable_AudioDecoder
   {
     KODI_HANDLE kodiInstance;
@@ -48,25 +70,11 @@ extern "C"
   typedef struct KodiToAddonFuncTable_AudioDecoder
   {
     KODI_HANDLE addonInstance;
-    bool(__cdecl* init)(const KODI_ADDON_AUDIODECODER_HDL hdl,
-                        const char* file,
-                        unsigned int filecache,
-                        int* channels,
-                        int* samplerate,
-                        int* bitspersample,
-                        int64_t* totaltime,
-                        int* bitrate,
-                        enum AudioEngineDataFormat* format,
-                        enum AudioEngineChannel info[AUDIOENGINE_CH_MAX]);
-    int(__cdecl* read_pcm)(const KODI_ADDON_AUDIODECODER_HDL hdl,
-                           uint8_t* buffer,
-                           size_t size,
-                           size_t* actualsize);
-    int64_t(__cdecl* seek)(const KODI_ADDON_AUDIODECODER_HDL hdl, int64_t time);
-    bool(__cdecl* read_tag)(const KODI_ADDON_AUDIODECODER_HDL hdl,
-                            const char* file,
-                            struct KODI_ADDON_AUDIODECODER_INFO_TAG* tag);
-    int(__cdecl* track_count)(const KODI_ADDON_AUDIODECODER_HDL hdl, const char* file);
+    PFN_KODI_ADDON_AUDIODECODER_INIT_V1 init;
+    PFN_KODI_ADDON_AUDIODECODER_READ_PCM_V1 read_pcm;
+    PFN_KODI_ADDON_AUDIODECODER_SEEK_V1 seek;
+    PFN_KODI_ADDON_AUDIODECODER_READ_TAG_V1 read_tag;
+    PFN_KODI_ADDON_AUDIODECODER_TRACK_COUNT_V1 track_count;
   } KodiToAddonFuncTable_AudioDecoder;
 
   typedef struct AddonInstance_AudioDecoder
