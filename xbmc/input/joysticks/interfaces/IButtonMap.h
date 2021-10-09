@@ -41,11 +41,11 @@ public:
   virtual std::string ControllerID(void) const = 0;
 
   /*!
-   * \brief The name of the peripheral associated with this button map
+   * \brief The Location of the peripheral associated with this button map
    *
-   * \return The peripheral's name
+   * \return The peripheral's location
    */
-  virtual std::string DeviceName(void) const = 0;
+  virtual std::string Location(void) const = 0;
 
   /*!
    * \brief Load the button map into memory

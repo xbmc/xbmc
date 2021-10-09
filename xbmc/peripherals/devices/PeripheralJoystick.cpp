@@ -333,7 +333,7 @@ bool CPeripheralJoystick::OnAxisMotion(unsigned int axisIndex, float position)
   {
     for (std::vector<DriverHandler>::iterator it = m_driverHandlers.begin();
          it != m_driverHandlers.end(); ++it)
-      it->handler->OnAxisMotion(axisIndex, center, center, range);
+      it->handler->OnAxisMotion(axisIndex, static_cast<float>(center), center, range);
     return true;
   }
 
