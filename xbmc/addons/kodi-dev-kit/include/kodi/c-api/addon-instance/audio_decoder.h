@@ -57,7 +57,7 @@ extern "C"
                         int64_t* totaltime,
                         int* bitrate,
                         enum AudioEngineDataFormat* format,
-                        const enum AudioEngineChannel** info);
+                        enum AudioEngineChannel info[AUDIOENGINE_CH_MAX]);
     int(__cdecl* read_pcm)(const KODI_ADDON_AUDIODECODER_HDL hdl,
                            uint8_t* buffer,
                            int size,

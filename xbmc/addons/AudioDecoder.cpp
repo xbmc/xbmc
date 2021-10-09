@@ -61,10 +61,11 @@ bool CAudioDecoder::Init(const CFileItem& file, unsigned int filecache)
   int channels = -1;
   int sampleRate = -1;
   AudioEngineDataFormat addonFormat = AUDIOENGINE_FMT_INVALID;
+  AudioEngineChannel channelList[AUDIOENGINE_CH_MAX] = {AUDIOENGINE_CH_NULL};
 
   bool ret = m_struct.toAddon->init(m_addonInstance, file.GetDynPath().c_str(), filecache,
                                     &channels, &sampleRate, &m_bitsPerSample, &m_TotalTime,
-                                    &m_bitRate, &addonFormat, &m_channel);
+                                    &m_bitRate, &addonFormat, channelList);
   if (ret)
   {
     if (channels <= 0 || sampleRate <= 0 || addonFormat == AUDIOENGINE_FMT_INVALID)
@@ -77,14 +78,14 @@ bool CAudioDecoder::Init(const CFileItem& file, unsigned int filecache)
 
     m_format.m_dataFormat = Interface_AudioEngine::TranslateAEFormatToKodi(addonFormat);
     m_format.m_sampleRate = sampleRate;
-    if (m_channel)
+    if (channelList[0] != AUDIOENGINE_CH_NULL)
     {
       CAEChannelInfo layout;
-      for (unsigned int ch = 0; ch < AUDIOENGINE_CH_MAX; ++ch)
+      for (const auto& channel : channelList)
       {
-        if (m_channel[ch] == AUDIOENGINE_CH_NULL)
+        if (channel == AUDIOENGINE_CH_NULL)
           break;
-        layout += Interface_AudioEngine::TranslateAEChannelToKodi(m_channel[ch]);
+        layout += Interface_AudioEngine::TranslateAEChannelToKodi(channel);
       }
 
       m_format.m_channelLayout = layout;

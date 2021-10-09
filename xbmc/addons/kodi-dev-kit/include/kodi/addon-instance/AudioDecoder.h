@@ -525,21 +525,24 @@ private:
                                 int64_t* totaltime,
                                 int* bitrate,
                                 AudioEngineDataFormat* format,
-                                const AudioEngineChannel** info)
+                                enum AudioEngineChannel info[AUDIOENGINE_CH_MAX])
   {
     CInstanceAudioDecoder* thisClass = static_cast<CInstanceAudioDecoder*>(hdl);
 
-    thisClass->m_channelList.clear();
+    std::vector<AudioEngineChannel> channelList;
+
     bool ret = thisClass->Init(file, filecache, *channels, *samplerate, *bitspersample, *totaltime,
-                               *bitrate, *format, thisClass->m_channelList);
-    if (!thisClass->m_channelList.empty())
+                               *bitrate, *format, channelList);
+    if (!channelList.empty())
     {
-      if (thisClass->m_channelList.back() != AUDIOENGINE_CH_NULL)
-        thisClass->m_channelList.push_back(AUDIOENGINE_CH_NULL);
-      *info = thisClass->m_channelList.data();
+      if (channelList.back() != AUDIOENGINE_CH_NULL)
+        channelList.push_back(AUDIOENGINE_CH_NULL);
+
+      for (unsigned int i = 0; i < channelList.size(); ++i)
+      {
+        info[i] = channelList[i];
+      }
     }
-    else
-      *info = nullptr;
     return ret;
   }
 
