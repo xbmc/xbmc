@@ -423,9 +423,16 @@ void CGUIDialogSubtitles::OnSubtitleServiceContextMenu(int itemIdx)
     case SUBTITLE_SERVICE_CONTEXT_BUTTONS::ADDON_SETTINGS:
     {
       AddonPtr addon;
-      CServiceBroker::GetAddonMgr().GetAddon(service->GetProperty("Addon.ID").asString(), addon,
-                                             ADDON_SUBTITLE_MODULE, OnlyEnabled::YES);
-      CGUIDialogAddonSettings::ShowForAddon(addon);
+      if (CServiceBroker::GetAddonMgr().GetAddon(service->GetProperty("Addon.ID").asString(), addon,
+                                                 ADDON_SUBTITLE_MODULE, OnlyEnabled::YES))
+      {
+        CGUIDialogAddonSettings::ShowForAddon(addon);
+      }
+      else
+      {
+        CLog::Log(LOGERROR, "{} - Could not open settings for addon: {}", __FUNCTION__,
+                  service->GetProperty("Addon.ID").asString());
+      }
       break;
     }
     case SUBTITLE_SERVICE_CONTEXT_BUTTONS::ADDON_DISABLE:
