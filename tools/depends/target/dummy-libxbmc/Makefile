@@ -1,7 +1,5 @@
 include ../../Makefile.include
-VERSION.TXT := $(CMAKE_SOURCE_DIR)/version.txt
-DEPS= ../../Makefile.include Makefile dummy-libxbmc.c $(VERSION.TXT)
-APP_NAME=$(shell awk '/APP_NAME/ {print tolower($$2)}' $(VERSION.TXT))
+DEPS= ../../Makefile.include Makefile dummy-libxbmc.c
 
 LIBDYLIB=lib$(APP_NAME).so
 

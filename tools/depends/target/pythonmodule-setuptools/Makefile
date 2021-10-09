@@ -1,9 +1,6 @@
 include ../../Makefile.include
 DEPS= ../../Makefile.include Makefile
 
-VERSION.TXT := $(CMAKE_SOURCE_DIR)/version.txt
-APP_NAME=$(shell awk '/APP_NAME/ {print tolower($$2)}' $(VERSION.TXT))
-
 # lib name, version
 LIBNAME=setuptools
 VERSION=18.4

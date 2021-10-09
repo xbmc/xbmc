@@ -98,6 +98,8 @@ NATIVE_LDFLAGS=@host_includes@ -L@prefix@/@tool_dir@/lib
 NATIVE_CPPFLAGS=@host_includes@ -I@prefix@/@tool_dir@/include
 NATIVE_CXXFLAGS=@host_includes@ -I@prefix@/@tool_dir@/include
 
+VERSION.TXT := $(CMAKE_SOURCE_DIR)/version.txt
+APP_NAME=$(shell awk '/APP_NAME/ {print tolower($$2)}' $(VERSION.TXT))
 
 ifeq ($(CPU), arm64)
   export GASPP_FIX_XCODE5=1
