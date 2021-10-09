@@ -65,7 +65,7 @@ ifeq ($(OS),linux)
 	cd $(PLATFORM); sed -ie 's|# -lrt # _posixshmem|-lrt # _posixshmem|' Modules/Setup
 endif
 ifeq ($(OS),osx)
-	echo "_scproxy \$$(srcdir)/Modules/_scproxy.c -framework SystemConfiguration -framework CoreFoundation" >> $(PLATFORM)/Modules/Setup
+	cd $(PLATFORM); sed -ie 's|\$$(OSX_SCPROXY)|_scproxy \$$(srcdir)/Modules/_scproxy.c -framework SystemConfiguration -framework CoreFoundation|' Modules/Setup
 endif
 
 	cd $(PLATFORM); $(AUTORECONF)
