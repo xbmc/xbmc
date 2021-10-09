@@ -185,8 +185,8 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
   int nErrors = 0;
   for (int nPacket=0; nPacket < 10 && (m_channels == 0 || m_format.m_sampleRate == 0); nPacket++)
   {
-    unsigned char dummy[256];
-    int nSize = 256;
+    uint8_t dummy[256];
+    size_t nSize = 256;
     if (ReadPCM(dummy, nSize, &nSize) == READ_ERROR)
       ++nErrors;
 
@@ -322,11 +322,11 @@ bool VideoPlayerCodec::Seek(int64_t iSeekTime)
   return ret;
 }
 
-int VideoPlayerCodec::ReadPCM(unsigned char *pBuffer, int size, int *actualsize)
+int VideoPlayerCodec::ReadPCM(uint8_t* pBuffer, size_t size, size_t* actualsize)
 {
   if (m_nDecodedLen > 0)
   {
-    int nLen = (size<m_nDecodedLen)?size:m_nDecodedLen;
+    size_t nLen = (size < m_nDecodedLen) ? size : m_nDecodedLen;
     *actualsize = nLen;
     if (m_needConvert)
     {
