@@ -69,7 +69,7 @@ public:
 
   int ChannelDatabaseID() const { return m_iChannelDatabaseID; }
 
-  int IsRadio() const { return m_bIsRadio; }
+  bool IsRadio() const { return m_bIsRadio; }
 
   /*!
    * @brief Delete this group member from the database.
