@@ -34,7 +34,7 @@ public:
   // Things that MUST be supplied by the child classes
   bool CreateDecoder();
   bool Init(const CFileItem& file, unsigned int filecache) override;
-  int ReadPCM(uint8_t* buffer, int size, int* actualsize) override;
+  int ReadPCM(uint8_t* buffer, size_t size, size_t* actualsize) override;
   bool Seek(int64_t time) override;
   bool CanInit() override { return true; }
   bool Load(const std::string& strFileName,

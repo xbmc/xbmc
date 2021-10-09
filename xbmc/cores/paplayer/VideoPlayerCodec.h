@@ -26,7 +26,7 @@ public:
 
   bool Init(const CFileItem &file, unsigned int filecache) override;
   bool Seek(int64_t iSeekTime) override;
-  int ReadPCM(unsigned char *pBuffer, int size, int *actualsize) override;
+  int ReadPCM(uint8_t* pBuffer, size_t size, size_t* actualsize) override;
   int ReadRaw(uint8_t **pBuffer, int *bufferSize) override;
   bool CanInit() override;
   bool CanSeek() override;
@@ -48,7 +48,7 @@ private:
   std::string m_strContentType;
   std::string m_strFileName;
   int m_nAudioStream;
-  int  m_nDecodedLen;
+  size_t m_nDecodedLen;
 
   bool m_bInited;
   bool m_bCanSeek;

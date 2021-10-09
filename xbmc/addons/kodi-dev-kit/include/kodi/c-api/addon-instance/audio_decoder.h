@@ -60,8 +60,8 @@ extern "C"
                         enum AudioEngineChannel info[AUDIOENGINE_CH_MAX]);
     int(__cdecl* read_pcm)(const KODI_ADDON_AUDIODECODER_HDL hdl,
                            uint8_t* buffer,
-                           int size,
-                           int* actualsize);
+                           size_t size,
+                           size_t* actualsize);
     int64_t(__cdecl* seek)(const KODI_ADDON_AUDIODECODER_HDL hdl, int64_t time);
     bool(__cdecl* read_tag)(const KODI_ADDON_AUDIODECODER_HDL hdl,
                             const char* file,

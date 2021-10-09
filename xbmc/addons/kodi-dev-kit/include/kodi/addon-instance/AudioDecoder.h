@@ -459,7 +459,7 @@ public:
   /// |  -1   | on end of stream
   /// |   1   | on failure
   ///
-  virtual int ReadPCM(uint8_t* buffer, int size, int& actualsize) = 0;
+  virtual int ReadPCM(uint8_t* buffer, size_t size, size_t& actualsize) = 0;
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -548,8 +548,8 @@ private:
 
   inline static int ADDON_read_pcm(const KODI_ADDON_AUDIODECODER_HDL hdl,
                                    uint8_t* buffer,
-                                   int size,
-                                   int* actualsize)
+                                   size_t size,
+                                   size_t* actualsize)
   {
     return static_cast<CInstanceAudioDecoder*>(hdl)->ReadPCM(buffer, size, *actualsize);
   }

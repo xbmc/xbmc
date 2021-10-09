@@ -97,7 +97,7 @@ bool CAudioDecoder::Init(const CFileItem& file, unsigned int filecache)
   return ret;
 }
 
-int CAudioDecoder::ReadPCM(uint8_t* buffer, int size, int* actualsize)
+int CAudioDecoder::ReadPCM(uint8_t* buffer, size_t size, size_t* actualsize)
 {
   if (!m_struct.toAddon->read_pcm)
     return 0;
