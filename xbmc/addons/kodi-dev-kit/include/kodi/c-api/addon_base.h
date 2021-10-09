@@ -62,21 +62,26 @@
 // Generic helper definitions for shared library support
 //@{
 #if defined _WIN32 || defined __CYGWIN__
-#define ATTRIBUTE_DLL_IMPORT __declspec(dllimport)
-#define ATTRIBUTE_DLL_EXPORT __declspec(dllexport)
-#define ATTRIBUTE_DLL_LOCAL
+#define ATTR_DLL_IMPORT __declspec(dllimport)
+#define ATTR_DLL_EXPORT __declspec(dllexport)
+#define ATTR_DLL_LOCAL
 #else
 #if __GNUC__ >= 4
-#define ATTRIBUTE_DLL_IMPORT __attribute__ ((visibility ("default")))
-#define ATTRIBUTE_DLL_EXPORT __attribute__ ((visibility ("default")))
-#define ATTRIBUTE_DLL_LOCAL  __attribute__ ((visibility ("hidden")))
+#define ATTR_DLL_IMPORT __attribute__((visibility("default")))
+#define ATTR_DLL_EXPORT __attribute__((visibility("default")))
+#define ATTR_DLL_LOCAL __attribute__((visibility("hidden")))
 #else
-#define ATTRIBUTE_DLL_IMPORT
-#define ATTRIBUTE_DLL_EXPORT
-#define ATTRIBUTE_DLL_LOCAL
+#define ATTR_DLL_IMPORT
+#define ATTR_DLL_EXPORT
+#define ATTR_DLL_LOCAL
 #endif
 #endif
-#define ATTRIBUTE_HIDDEN ATTRIBUTE_DLL_LOCAL // Fallback to old
+
+// Fallbacks to old
+#define ATTRIBUTE_DLL_IMPORT ATTR_DLL_IMPORT
+#define ATTRIBUTE_DLL_EXPORT ATTR_DLL_EXPORT
+#define ATTRIBUTE_DLL_LOCAL ATTR_DLL_LOCAL
+#define ATTRIBUTE_HIDDEN ATTR_DLL_LOCAL
 //@}
 
 // Hardware specific device context interface
