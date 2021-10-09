@@ -12,15 +12,14 @@ BASE_URL=https://www.python.org/ftp/python/$(VERSION)
 ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
   HOSTPLATFORM=_PYTHON_HOST_PLATFORM="darwin"
   LINK_ICONV=-liconv
-endif
-
-ifeq ($(OS), darwin_embedded)
-  EXTRA_CONFIGURE=ac_cv_func_wait3=no ac_cv_func_wait4=no ac_cv_func_waitpid=no \
-                  ac_cv_func_execv=no ac_cv_func_fexecv=no ac_cv_func_getentropy=no \
-                  ac_cv_func_setpriority=no ac_cv_func_sendfile=no ac_cv_header_sched_h=no \
-                  ac_cv_func_posix_spawn=no ac_cv_func_posix_spawnp=no \
-                  ac_cv_func_forkpty=no ac_cv_lib_util_forkpty=no \
-                  ac_cv_func_getgroups=no
+  ifeq ($(OS), darwin_embedded)
+    EXTRA_CONFIGURE=ac_cv_func_wait3=no ac_cv_func_wait4=no ac_cv_func_waitpid=no \
+                    ac_cv_func_execv=no ac_cv_func_fexecv=no ac_cv_func_getentropy=no \
+                    ac_cv_func_setpriority=no ac_cv_func_sendfile=no ac_cv_header_sched_h=no \
+                    ac_cv_func_posix_spawn=no ac_cv_func_posix_spawnp=no \
+                    ac_cv_func_forkpty=no ac_cv_lib_util_forkpty=no \
+                    ac_cv_func_getgroups=no
+  endif
 endif
 
 ifeq ($(OS), linux)
