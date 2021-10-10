@@ -124,7 +124,7 @@ void DX::DeviceResources::Release()
 void DX::DeviceResources::GetOutput(IDXGIOutput** ppOutput) const
 {
   ComPtr<IDXGIOutput> pOutput;
-  if (FAILED(m_swapChain->GetContainingOutput(pOutput.GetAddressOf())) || !pOutput)
+  if (!m_swapChain || FAILED(m_swapChain->GetContainingOutput(pOutput.GetAddressOf())) || !pOutput)
     m_output.As(&pOutput);
   *ppOutput = pOutput.Detach();
 }
@@ -139,14 +139,16 @@ void DX::DeviceResources::GetDisplayMode(DXGI_MODE_DESC* mode) const
 {
   DXGI_OUTPUT_DESC outDesc;
   ComPtr<IDXGIOutput> pOutput;
+  DXGI_SWAP_CHAIN_DESC scDesc;
+
+  if (!m_swapChain)
+    return;
+
+  m_swapChain->GetDesc(&scDesc);
 
   GetOutput(pOutput.GetAddressOf());
   pOutput->GetDesc(&outDesc);
 
-  DXGI_SWAP_CHAIN_DESC scDesc;
-  m_swapChain->GetDesc(&scDesc);
-
-  memset(mode, 0, sizeof(DXGI_MODE_DESC));
   // desktop coords depend on DPI
   mode->Width = DX::ConvertDipsToPixels(outDesc.DesktopCoordinates.right - outDesc.DesktopCoordinates.left, m_dpi);
   mode->Height = DX::ConvertDipsToPixels(outDesc.DesktopCoordinates.bottom - outDesc.DesktopCoordinates.top, m_dpi);
@@ -228,7 +230,7 @@ bool DX::DeviceResources::SetFullScreen(bool fullscreen, RESOLUTION_INFO& res)
     const bool isResValid = res.iWidth > 0 && res.iHeight > 0 && res.fRefreshRate > 0.f;
     if (isResValid)
     {
-      DXGI_MODE_DESC currentMode;
+      DXGI_MODE_DESC currentMode = {};
       GetDisplayMode(&currentMode);
       DXGI_SWAP_CHAIN_DESC scDesc;
       m_swapChain->GetDesc(&scDesc);
@@ -1217,9 +1219,7 @@ void DX::DeviceResources::SetHdrColorSpace(const DXGI_COLOR_SPACE_TYPE colorSpac
 HDR_STATUS DX::DeviceResources::ToggleHDR()
 {
   DXGI_MODE_DESC md = {};
-
-  if (m_swapChain)
-    GetDisplayMode(&md);
+  GetDisplayMode(&md);
 
   // Toggle display HDR
   DX::Windowing()->SetAlteringWindow(true);
