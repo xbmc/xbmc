@@ -59,7 +59,7 @@ bool CDirectoryCache::GetDirectory(const std::string& strPath, CFileItemList &it
   std::string storedPath = CURL(strPath).GetWithoutOptions();
   URIUtils::RemoveSlashAtEnd(storedPath);
 
-  iCache i = m_cache.find(storedPath);
+  auto i = m_cache.find(storedPath);
   if (i != m_cache.end())
   {
     CDir& dir = i->second;
@@ -136,7 +136,7 @@ void CDirectoryCache::ClearSubPaths(const std::string& strPath)
   // Get rid of any URL options, else the compare may be wrong
   std::string storedPath = CURL(strPath).GetWithoutOptions();
 
-  iCache i = m_cache.begin();
+  auto i = m_cache.begin();
   while (i != m_cache.end())
   {
     if (URIUtils::PathHasParent(i->first, storedPath))
@@ -154,7 +154,7 @@ void CDirectoryCache::AddFile(const std::string& strFile)
   std::string strPath = URIUtils::GetDirectory(CURL(strFile).GetWithoutOptions());
   URIUtils::RemoveSlashAtEnd(strPath);
 
-  iCache i = m_cache.find(strPath);
+  auto i = m_cache.find(strPath);
   if (i != m_cache.end())
   {
     CDir& dir = i->second;
@@ -175,7 +175,7 @@ bool CDirectoryCache::FileExists(const std::string& strFile, bool& bInCache)
   std::string storedPath = URIUtils::GetDirectory(strPath);
   URIUtils::RemoveSlashAtEnd(storedPath);
 
-  iCache i = m_cache.find(storedPath);
+  auto i = m_cache.find(storedPath);
   if (i != m_cache.end())
   {
     bInCache = true;
@@ -211,7 +211,7 @@ void CDirectoryCache::InitCache(std::set<std::string>& dirs)
 
 void CDirectoryCache::ClearCache(std::set<std::string>& dirs)
 {
-  iCache i = m_cache.begin();
+  auto i = m_cache.begin();
   while (i != m_cache.end())
   {
     if (dirs.find(i->first) != dirs.end())
@@ -226,9 +226,9 @@ void CDirectoryCache::CheckIfFull()
   CSingleLock lock (m_cs);
 
   // find the last accessed folder, and remove if the number of cached folders is too many
-  iCache lastAccessed = m_cache.end();
+  auto lastAccessed = m_cache.end();
   unsigned int numCached = 0;
-  for (iCache i = m_cache.begin(); i != m_cache.end(); i++)
+  for (auto i = m_cache.begin(); i != m_cache.end(); i++)
   {
     // ensure dirs that are always cached aren't cleared
     if (i->second.m_cacheType != DIR_CACHE_ALWAYS)
@@ -253,7 +253,7 @@ void CDirectoryCache::PrintStats() const
   unsigned int oldest = UINT_MAX;
   unsigned int numItems = 0;
   unsigned int numDirs = 0;
-  for (ciCache i = m_cache.begin(); i != m_cache.end(); i++)
+  for (auto i = m_cache.begin(); i != m_cache.end(); i++)
   {
     const CDir& dir = i->second;
     oldest = std::min(oldest, dir.GetLastAccess());
