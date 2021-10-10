@@ -154,9 +154,9 @@ bool CAddonsGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       ADDON::AddonPtr addon;
       if (!info.GetData3().empty())
       {
-        CServiceBroker::GetAddonMgr().GetAddon(info.GetData3(), addon, ADDON::ADDON_UNKNOWN,
-                                               ADDON::OnlyEnabled::YES);
-        if (!addon)
+        bool success = CServiceBroker::GetAddonMgr().GetAddon(
+            info.GetData3(), addon, ADDON::ADDON_UNKNOWN, ADDON::OnlyEnabled::YES);
+        if (!success || !addon)
           break;
 
         if (info.m_info == SYSTEM_ADDON_TITLE)
