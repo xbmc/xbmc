@@ -1049,9 +1049,12 @@ void CAddonInstallJob::ReportInstallError(const std::string& addonID, const std:
   if (addon != NULL)
   {
     AddonPtr addon2;
-    CServiceBroker::GetAddonMgr().GetAddon(addonID, addon2, ADDON_UNKNOWN, OnlyEnabled::YES);
+    bool success =
+        CServiceBroker::GetAddonMgr().GetAddon(addonID, addon2, ADDON_UNKNOWN, OnlyEnabled::YES);
     if (msg.empty())
-      msg = g_localizeStrings.Get(addon2 != NULL ? 113 : 114);
+    {
+      msg = g_localizeStrings.Get(addon2 != nullptr && success ? 113 : 114);
+    }
 
     activity = EventPtr(new CAddonManagementEvent(addon, EventLevel::Error, msg));
     if (IsModal())

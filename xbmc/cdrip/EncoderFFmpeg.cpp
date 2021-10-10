@@ -76,13 +76,17 @@ bool CEncoderFFmpeg::Init(AddonToKodiFuncTable_AudioEncoder& callbacks)
   }
 
   AddonPtr addon;
-  CServiceBroker::GetAddonMgr().GetAddon(
-      CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
-          CSettings::SETTING_AUDIOCDS_ENCODER),
-      addon, ADDON::ADDON_UNKNOWN, ADDON::OnlyEnabled::YES);
-  if (addon)
+  std::string addonId = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+      CSettings::SETTING_AUDIOCDS_ENCODER);
+  bool success = CServiceBroker::GetAddonMgr().GetAddon(addonId, addon, ADDON::ADDON_UNKNOWN,
+                                                        ADDON::OnlyEnabled::YES);
+  if (success && addon)
   {
     m_Format->bit_rate = (128+32*strtol(addon->GetSetting("bitrate").c_str(), NULL, 10))*1000;
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "{} - Could not get addon: {}", __FUNCTION__, addonId);
   }
 
   /* add a stream to it */

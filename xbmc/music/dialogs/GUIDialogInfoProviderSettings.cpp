@@ -179,11 +179,18 @@ void CGUIDialogInfoProviderSettings::OnSettingAction(const std::shared_ptr<const
         && selectedAddonId != currentScraperId)
     {
       AddonPtr scraperAddon;
-      CServiceBroker::GetAddonMgr().GetAddon(selectedAddonId, scraperAddon, ADDON_UNKNOWN,
-                                             OnlyEnabled::YES);
-      m_albumscraper = std::dynamic_pointer_cast<CScraper>(scraperAddon);
-      SetupView();
-      SetFocus(settingId);
+      if (CServiceBroker::GetAddonMgr().GetAddon(selectedAddonId, scraperAddon, ADDON_UNKNOWN,
+                                                 OnlyEnabled::YES))
+      {
+        m_albumscraper = std::dynamic_pointer_cast<CScraper>(scraperAddon);
+        SetupView();
+        SetFocus(settingId);
+      }
+      else
+      {
+        CLog::Log(LOGERROR, "{} - Could not get settings for addon: {}", __FUNCTION__,
+                  selectedAddonId);
+      }
     }
   }
   else if (settingId == CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER)
@@ -197,11 +204,17 @@ void CGUIDialogInfoProviderSettings::OnSettingAction(const std::shared_ptr<const
         && selectedAddonId != currentScraperId)
     {
       AddonPtr scraperAddon;
-      CServiceBroker::GetAddonMgr().GetAddon(selectedAddonId, scraperAddon, ADDON_UNKNOWN,
-                                             OnlyEnabled::YES);
-      m_artistscraper = std::dynamic_pointer_cast<CScraper>(scraperAddon);
-      SetupView();
-      SetFocus(settingId);
+      if (CServiceBroker::GetAddonMgr().GetAddon(selectedAddonId, scraperAddon, ADDON_UNKNOWN,
+                                                 OnlyEnabled::YES))
+      {
+        m_artistscraper = std::dynamic_pointer_cast<CScraper>(scraperAddon);
+        SetupView();
+        SetFocus(settingId);
+      }
+      else
+      {
+        CLog::Log(LOGERROR, "{} - Could not get addon: {}", __FUNCTION__, selectedAddonId);
+      }
     }
   }
   else if (settingId == SETTING_ALBUMSCRAPER_SETTINGS)

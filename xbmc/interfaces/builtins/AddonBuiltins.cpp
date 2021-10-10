@@ -252,12 +252,19 @@ static int RunScript(const std::vector<std::string>& params)
       }
       else
       {
-        //Run a random extension point (old behaviour).
-        CServiceBroker::GetAddonMgr().GetAddon(params[0], addon, ADDON_UNKNOWN, OnlyEnabled::YES);
-        scriptpath = addon->LibPath();
-        CLog::Log(LOGWARNING,
-                  "RunScript called for a non-script addon '{}'. This behaviour is deprecated.",
-                  params[0]);
+        // Run a random extension point (old behaviour).
+        if (CServiceBroker::GetAddonMgr().GetAddon(params[0], addon, ADDON_UNKNOWN,
+                                                   OnlyEnabled::YES))
+        {
+          scriptpath = addon->LibPath();
+          CLog::Log(LOGWARNING,
+                    "RunScript called for a non-script addon '{}'. This behaviour is deprecated.",
+                    params[0]);
+        }
+        else
+        {
+          CLog::Log(LOGERROR, "{} - Could not get addon: {}", __FUNCTION__, params[0]);
+        }
       }
     }
     else

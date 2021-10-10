@@ -248,12 +248,18 @@ void CGUIDialogContentSettings::OnSettingAction(const std::shared_ptr<const CSet
         && selectedAddonId != currentScraperId)
     {
       AddonPtr scraperAddon;
-      CServiceBroker::GetAddonMgr().GetAddon(selectedAddonId, scraperAddon, ADDON::ADDON_UNKNOWN,
-                                             ADDON::OnlyEnabled::YES);
-      m_scraper = std::dynamic_pointer_cast<CScraper>(scraperAddon);
-
-      SetupView();
-      SetFocusToSetting(SETTING_SCRAPER_LIST);
+      if (CServiceBroker::GetAddonMgr().GetAddon(selectedAddonId, scraperAddon,
+                                                 ADDON::ADDON_UNKNOWN, ADDON::OnlyEnabled::YES))
+      {
+        m_scraper = std::dynamic_pointer_cast<CScraper>(scraperAddon);
+        SetupView();
+        SetFocusToSetting(SETTING_SCRAPER_LIST);
+      }
+      else
+      {
+        CLog::Log(LOGERROR, "{} - Could not get settings for addon: {}", __FUNCTION__,
+                  selectedAddonId);
+      }
     }
   }
   else if (settingId == SETTING_SCRAPER_SETTINGS)
