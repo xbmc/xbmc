@@ -59,8 +59,6 @@ namespace XFILE
     void CheckIfFull();
 
     std::map<std::string, CDir> m_cache;
-    typedef std::map<std::string, CDir*>::iterator iCache;
-    typedef std::map<std::string, CDir*>::const_iterator ciCache;
 
     mutable CCriticalSection m_cs;
 
