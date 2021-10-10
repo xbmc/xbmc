@@ -18,7 +18,7 @@ FOR %%b IN (%*) DO (
 SETLOCAL DisableDelayedExpansion
 
 rem set Visual C++ build environment
-call "%VS140COMNTOOLS%..\..\VC\bin\amd64_x86\vcvarsamd64_x86.bat" || call "%VS140COMNTOOLS%..\..\VC\bin\vcvars32.bat"
+call "%VS140COMNTOOLS%..\..\VC\bin\amd64\vcvars64.bat" || call "%VS140COMNTOOLS%..\..\VC\bin\vcvars32.bat"
 
 SET WORKDIR=%WORKSPACE%
 
@@ -76,7 +76,7 @@ IF "%addon%" NEQ "" (
 )
 
 rem execute cmake to generate Visual Studio 12 project files
-cmake "%ADDONS_PATH%" -G "Visual Studio 14" ^
+cmake "%ADDONS_PATH%" -G "Visual Studio 16 2019" ^
       -DCMAKE_BUILD_TYPE=Release ^
       -DCMAKE_USER_MAKE_RULES_OVERRIDE="%SCRIPTS_PATH%/CFlagOverrides.cmake" ^
       -DCMAKE_USER_MAKE_RULES_OVERRIDE_CXX="%SCRIPTS_PATH%/CXXFlagOverrides.cmake" ^
