@@ -315,7 +315,7 @@ private:
 /// int CMyAudioDecoder::ReadPCM(uint8_t* buffer, int size, int& actualsize)
 /// {
 ///   ...
-///   return 0;
+///   return AUDIODECODER_READ_SUCCESS;
 /// }
 ///
 ///
@@ -464,12 +464,7 @@ public:
   /// @param[in] buffer Output buffer
   /// @param[in] size Size of output buffer
   /// @param[out] actualsize Actual number of bytes written to output buffer
-  /// @return Return with following possible values:
-  /// | Value | Description
-  /// |:-----:|:------------
-  /// |   0   | on success
-  /// |  -1   | on end of stream
-  /// |   1   | on failure
+  /// @return @copydetails cpp_kodi_addon_audiodecoder_Defs_AUDIODECODER_READ_RETURN
   ///
   virtual int ReadPCM(uint8_t* buffer, size_t size, size_t& actualsize) = 0;
   //--------------------------------------------------------------------------
