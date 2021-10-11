@@ -120,31 +120,69 @@ bool CAudioDecoder::Load(const std::string& fileName,
   if (!m_struct.toAddon->read_tag)
     return false;
 
-  AUDIO_DECODER_INFO_TAG* cTag = new AUDIO_DECODER_INFO_TAG(); // allocate by his size
-  bool ret = m_struct.toAddon->read_tag(m_addonInstance, fileName.c_str(), cTag);
+  KODI_ADDON_AUDIODECODER_INFO_TAG ifcTag = {};
+  bool ret = m_struct.toAddon->read_tag(m_addonInstance, fileName.c_str(), &ifcTag);
   if (ret)
   {
-    tag.SetTitle(cTag->title);
-    tag.SetArtist(cTag->artist);
-    tag.SetAlbum(cTag->album);
-    tag.SetAlbumArtist(cTag->album_artist);
-    tag.SetType(cTag->media_type);
-    tag.SetGenre(cTag->genre);
-    tag.SetDuration(cTag->duration);
-    tag.SetTrackNumber(cTag->track);
-    tag.SetDiscNumber(cTag->disc);
-    tag.SetDiscSubtitle(cTag->disc_subtitle);
-    tag.SetTotalDiscs(cTag->disc_total);
-    tag.SetReleaseDate(cTag->release_date);
-    tag.SetLyrics(cTag->lyrics);
-    tag.SetSampleRate(cTag->samplerate);
-    tag.SetNoOfChannels(cTag->channels);
-    tag.SetBitRate(cTag->bitrate);
-    tag.SetComment(cTag->comment);
+    if (ifcTag.title)
+    {
+      tag.SetTitle(ifcTag.title);
+      free(ifcTag.title);
+    }
+    if (ifcTag.artist)
+    {
+      tag.SetArtist(ifcTag.artist);
+      free(ifcTag.artist);
+    }
+    if (ifcTag.album)
+    {
+      tag.SetAlbum(ifcTag.album);
+      free(ifcTag.album);
+    }
+    if (ifcTag.album_artist)
+    {
+      tag.SetAlbumArtist(ifcTag.album_artist);
+      free(ifcTag.album_artist);
+    }
+    if (ifcTag.media_type)
+    {
+      tag.SetType(ifcTag.media_type);
+      free(ifcTag.media_type);
+    }
+    if (ifcTag.genre)
+    {
+      tag.SetGenre(ifcTag.genre);
+      free(ifcTag.genre);
+    }
+    tag.SetDuration(ifcTag.duration);
+    tag.SetTrackNumber(ifcTag.track);
+    tag.SetDiscNumber(ifcTag.disc);
+    if (ifcTag.disc_subtitle)
+    {
+      tag.SetDiscSubtitle(ifcTag.disc_subtitle);
+      free(ifcTag.disc_subtitle);
+    }
+    tag.SetTotalDiscs(ifcTag.disc_total);
+    if (ifcTag.release_date)
+    {
+      tag.SetReleaseDate(ifcTag.release_date);
+      free(ifcTag.release_date);
+    }
+    if (ifcTag.lyrics)
+    {
+      tag.SetLyrics(ifcTag.lyrics);
+      free(ifcTag.lyrics);
+    }
+    tag.SetSampleRate(ifcTag.samplerate);
+    tag.SetNoOfChannels(ifcTag.channels);
+    tag.SetBitRate(ifcTag.bitrate);
+    if (ifcTag.comment)
+    {
+      tag.SetComment(ifcTag.comment);
+      free(ifcTag.comment);
+    }
     tag.SetLoaded(true);
   }
-
-  delete cTag;
 
   return ret;
 }
