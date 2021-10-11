@@ -535,7 +535,7 @@ private:
     m_instanceData->toAddon->track_count = ADDON_track_count;
   }
 
-  inline static bool ADDON_init(const AddonInstance_AudioDecoder* instance,
+  inline static bool ADDON_init(const KODI_ADDON_AUDIODECODER_HDL hdl,
                                 const char* file,
                                 unsigned int filecache,
                                 int* channels,
@@ -546,8 +546,7 @@ private:
                                 AudioEngineDataFormat* format,
                                 const AudioEngineChannel** info)
   {
-    CInstanceAudioDecoder* thisClass =
-        static_cast<CInstanceAudioDecoder*>(instance->toAddon->addonInstance);
+    CInstanceAudioDecoder* thisClass = static_cast<CInstanceAudioDecoder*>(hdl);
 
     thisClass->m_channelList.clear();
     bool ret = thisClass->Init(file, filecache, *channels, *samplerate, *bitspersample, *totaltime,
@@ -563,32 +562,30 @@ private:
     return ret;
   }
 
-  inline static int ADDON_read_pcm(const AddonInstance_AudioDecoder* instance,
+  inline static int ADDON_read_pcm(const KODI_ADDON_AUDIODECODER_HDL hdl,
                                    uint8_t* buffer,
                                    int size,
                                    int* actualsize)
   {
-    return static_cast<CInstanceAudioDecoder*>(instance->toAddon->addonInstance)
-        ->ReadPCM(buffer, size, *actualsize);
+    return static_cast<CInstanceAudioDecoder*>(hdl)->ReadPCM(buffer, size, *actualsize);
   }
 
-  inline static int64_t ADDON_seek(const AddonInstance_AudioDecoder* instance, int64_t time)
+  inline static int64_t ADDON_seek(const KODI_ADDON_AUDIODECODER_HDL hdl, int64_t time)
   {
-    return static_cast<CInstanceAudioDecoder*>(instance->toAddon->addonInstance)->Seek(time);
+    return static_cast<CInstanceAudioDecoder*>(hdl)->Seek(time);
   }
 
-  inline static bool ADDON_read_tag(const AddonInstance_AudioDecoder* instance,
+  inline static bool ADDON_read_tag(const KODI_ADDON_AUDIODECODER_HDL hdl,
                                     const char* file,
                                     struct AUDIO_DECODER_INFO_TAG* tag)
   {
     kodi::addon::AudioDecoderInfoTag cppTag(tag);
-    return static_cast<CInstanceAudioDecoder*>(instance->toAddon->addonInstance)
-        ->ReadTag(file, cppTag);
+    return static_cast<CInstanceAudioDecoder*>(hdl)->ReadTag(file, cppTag);
   }
 
-  inline static int ADDON_track_count(const AddonInstance_AudioDecoder* instance, const char* file)
+  inline static int ADDON_track_count(const KODI_ADDON_AUDIODECODER_HDL hdl, const char* file)
   {
-    return static_cast<CInstanceAudioDecoder*>(instance->toAddon->addonInstance)->TrackCount(file);
+    return static_cast<CInstanceAudioDecoder*>(hdl)->TrackCount(file);
   }
 
   std::vector<AudioEngineChannel> m_channelList;
