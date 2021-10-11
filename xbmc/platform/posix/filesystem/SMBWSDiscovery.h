@@ -34,6 +34,8 @@ struct wsd_req_info
   std::string types; // ToDo: Types may not be needed.
   std::string address;
   std::string xaddrs;
+  std::string xaddrs_host;
+  std::string computer;
 
   bool operator==(const wsd_req_info& item) const
   {
@@ -68,6 +70,16 @@ public:
   */
   void SetItems(std::vector<WSDiscovery::wsd_req_info> entries);
 
+  /*
+   * Lookup host name in collected ws-discovery data
+   * in     (const std::string&) Host name
+   * out    (std::string&) IP address if found
+   * return (bool) true if found
+  */
+  bool GetCached(const std::string& strHostName, std::string& strIpAddress);
+
+  static const bool IsInitialized() { return m_isInitialized; }
+
 private:
   CCriticalSection m_critWSD;
 
@@ -89,5 +101,7 @@ private:
   std::unique_ptr<WSDiscovery::CWSDiscoveryListenerUDP> m_WSDListenerUDP;
 
   std::vector<WSDiscovery::wsd_req_info> m_vecWSDInfo;
+
+  static std::atomic<bool> m_isInitialized;
 };
 } // namespace WSDiscovery

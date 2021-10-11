@@ -78,6 +78,13 @@ private:
   // Closes socket and handles setting state for WS-Discovery
   void Cleanup(bool aborted);
 
+  /*
+   * Use unicast Get to request computer name
+   * in/out    (wsd_req_info&) host info to be updated
+   * return    (void)
+   */
+  void UnicastGet(wsd_req_info& info);
+
 private:
   template<std::size_t SIZE>
   const std::string wsd_tag_find(const std::string& xml,

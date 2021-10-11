@@ -9,6 +9,7 @@
 #include "SMBWSDiscoveryListener.h"
 
 #include "ServiceBroker.h"
+#include "filesystem/CurlFile.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
@@ -118,6 +119,33 @@ static const std::array<std::pair<std::string, std::string>, 1> address_tag{
 
 static const std::array<std::pair<std::string, std::string>, 1> types_tag{
     {{"<wsd:Types>", "</wsd:Types>"}}};
+
+static const std::string get_msg =
+    "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+    "<soap:Envelope "
+    "xmlns:pnpx=\"http://schemas.microsoft.com/windows/pnpx/2005/10\" "
+    "xmlns:pub=\"http://schemas.microsoft.com/windows/pub/2005/07\" "
+    "xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\" "
+    "xmlns:wsa=\"http://schemas.xmlsoap.org/ws/2004/08/addressing\" "
+    "xmlns:wsd=\"http://schemas.xmlsoap.org/ws/2005/04/discovery\" "
+    "xmlns:wsdp=\"http://schemas.xmlsoap.org/ws/2006/02/devprof\" "
+    "xmlns:wsx=\"http://schemas.xmlsoap.org/ws/2004/09/mex\"> "
+    "<soap:Header> "
+    "<wsa:To>{}</wsa:To> "
+    "<wsa:Action>http://schemas.xmlsoap.org/ws/2004/09/transfer/Get</wsa:Action> "
+    "<wsa:MessageID>urn:uuid:{}</wsa:MessageID> "
+    "<wsa:ReplyTo> "
+    "<wsa:Address>http://schemas.xmlsoap.org/ws/2004/08/addressing/role/anonymous</wsa:Address> "
+    "</wsa:ReplyTo> "
+    "<wsa:From> "
+    "<wsa:Address>urn:uuid:{}</wsa:Address> "
+    "</wsa:From> "
+    "</soap:Header> "
+    "<soap:Body /> "
+    "</soap:Envelope>";
+
+static const std::array<std::pair<std::string, std::string>, 1> computer_tag{
+    {{"<pub:Computer>", "</pub:Computer>"}}};
 
 CWSDiscoveryListenerUDP::CWSDiscoveryListenerUDP()
   : CThread("WSDiscoveryListenerUDP"), wsd_instance_address(StringUtils::CreateUUID())
@@ -402,6 +430,19 @@ void CWSDiscoveryListenerUDP::ParseBuffer(const std::string& buffer)
     return;
   }
 
+  const std::string delim1 = "://";
+  const std::string delim2 = ":";
+  size_t found = info.xaddrs.find(delim1);
+  if (found != std::string::npos)
+  {
+    std::string tmpxaddrs = info.xaddrs.substr(found + delim1.size());
+    if (tmpxaddrs[0] != '[')
+    {
+      found = std::min(tmpxaddrs.find(delim2), tmpxaddrs.find("/"));
+      info.xaddrs_host = tmpxaddrs.substr(0, found);
+    }
+  }
+
   {
     CSingleLock lock(crit_wsdqueue);
     auto searchitem = std::find_if(m_vecWSDInfo.begin(), m_vecWSDInfo.end(),
@@ -416,6 +457,7 @@ void CWSDiscoveryListenerUDP::ParseBuffer(const std::string& buffer)
         // Acceptable request received, add to our server list
         CLog::Log(LOGDEBUG, LOGWSDISCOVERY,
                   "CWSDiscoveryListenerUDP::ParseBuffer - Actionable message");
+        UnicastGet(info);
         m_vecWSDInfo.emplace_back(info);
         WSInstance.SetItems(m_vecWSDInfo);
         PrintWSDInfo(info);
@@ -524,8 +566,42 @@ void CWSDiscoveryListenerUDP::PrintWSDInfo(const wsd_req_info& info)
             "\tMsgID: {}\n"
             "\tAddress: {}\n"
             "\tTypes: {}\n"
-            "\tXAddrs: {}\n",
-            info.action, info.msgid, info.address, info.types, info.xaddrs);
+            "\tXAddrs: {}\n"
+            "\tComputer: {}\n",
+            info.action, info.msgid, info.address, info.types, info.xaddrs, info.computer);
+}
+
+void CWSDiscoveryListenerUDP::UnicastGet(wsd_req_info& info)
+{
+  if (INADDR_NONE == inet_addr(info.xaddrs_host.c_str()))
+  {
+    CLog::Log(LOGDEBUG, LOGWSDISCOVERY, "CWSDiscoveryListenerUDP::UnicastGet - No IP address in {}",
+              info.xaddrs);
+    return;
+  }
+
+  std::string msg =
+      fmt::format(get_msg, info.address, StringUtils::CreateUUID(), wsd_instance_address);
+  XFILE::CCurlFile file;
+  file.SetAcceptEncoding("identity");
+  file.SetMimeType("application/soap+xml");
+  file.SetUserAgent("wsd");
+  file.SetRequestHeader("Connection", "Close");
+
+  std::string html;
+  if (!file.Post(info.xaddrs, msg, html))
+  {
+    CLog::Log(LOGDEBUG, LOGWSDISCOVERY,
+              "CWSDiscoveryListenerUDP::UnicastGet - Could not fetch from {}", info.xaddrs);
+    return;
+  }
+  info.computer = wsd_tag_find(html, computer_tag);
+  if (info.computer.empty())
+  {
+    CLog::Log(LOGDEBUG, LOGWSDISCOVERY,
+              "CWSDiscoveryListenerUDP::UnicastGet - No computer tag found");
+    return;
+  }
 }
 
 } // namespace WSDiscovery

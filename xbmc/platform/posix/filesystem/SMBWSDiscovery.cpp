@@ -12,6 +12,7 @@
 #include "ServiceBroker.h"
 #include "network/IWSDiscovery.h"
 #include "threads/SingleLock.h"
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include "platform/posix/filesystem/SMBWSDiscoveryListener.h"
@@ -33,6 +34,8 @@ std::unique_ptr<IWSDiscovery> IWSDiscovery::GetInstance()
   return std::make_unique<WSDiscovery::CWSDiscoveryPosix>();
 }
 
+std::atomic<bool> CWSDiscoveryPosix::m_isInitialized{false};
+
 CWSDiscoveryPosix::CWSDiscoveryPosix()
 {
   // Set our wsd_instance ID to seconds since epoch
@@ -40,6 +43,7 @@ CWSDiscoveryPosix::CWSDiscoveryPosix()
   wsd_instance_id = epochduration.count() * system_clock::period::num / system_clock::period::den;
 
   m_WSDListenerUDP = std::make_unique<CWSDiscoveryListenerUDP>();
+  m_isInitialized = true;
 }
 
 CWSDiscoveryPosix::~CWSDiscoveryPosix()
@@ -71,24 +75,18 @@ bool CWSDiscoveryPosix::GetServerList(CFileItemList& items)
   {
     CSingleLock lock(m_critWSD);
 
-    // delim1 used to strip protocol from xaddrs
-    // delim2 used to strip anything past the port
-    const std::string delim1 = "://";
-    const std::string delim2 = ":";
     for (const auto& item : m_vecWSDInfo)
     {
-      auto found = item.xaddrs.find(delim1);
-      if (found == std::string::npos)
-        continue;
-
-      std::string tmpxaddrs = item.xaddrs.substr(found + delim1.size());
-      found = tmpxaddrs.find(delim2);
-      // fallback incase xaddrs doesnt return back "GetMetadata" expected address format (delim2)
-      if (found == std::string::npos)
+      auto found = item.computer.find('/');
+      std::string host;
+      if (found != std::string::npos)
+        host = item.computer.substr(0, found);
+      else
       {
-        found = tmpxaddrs.find('/');
+        if (item.xaddrs_host.empty())
+          continue;
+        host = item.xaddrs_host;
       }
-      std::string host = tmpxaddrs.substr(0, found);
 
       CFileItemPtr pItem = std::make_shared<CFileItem>(host);
       pItem->SetPath("smb://" + host + '/');
@@ -97,6 +95,25 @@ bool CWSDiscoveryPosix::GetServerList(CFileItemList& items)
     }
   }
   return true;
+}
+
+bool CWSDiscoveryPosix::GetCached(const std::string& strHostName, std::string& strIpAddress)
+{
+  const std::string match = strHostName + "/";
+
+  CSingleLock lock(m_critWSD);
+  for (const auto& item : m_vecWSDInfo)
+  {
+    if (!item.computer.empty() && StringUtils::StartsWithNoCase(item.computer, match))
+    {
+      strIpAddress = item.xaddrs_host;
+      CLog::Log(LOGDEBUG, LOGWSDISCOVERY, "CWSDiscoveryPosix::Lookup - {} -> {}", strHostName,
+                strIpAddress);
+      return true;
+    }
+  }
+
+  return false;
 }
 
 void CWSDiscoveryPosix::SetItems(std::vector<wsd_req_info> entries)

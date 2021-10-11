@@ -12,6 +12,12 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#if !defined(TARGET_WINDOWS) && defined(HAS_FILESYSTEM_SMB)
+#include "ServiceBroker.h"
+
+#include "platform/posix/filesystem/SMBWSDiscovery.h"
+#endif
+
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <netinet/in.h>
@@ -106,24 +112,38 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
 
 bool CDNSNameCache::GetCached(const std::string& strHostName, std::string& strIpAddress)
 {
-  CSingleLock lock(m_critical);
-
-  // loop through all DNSname entries and see if strHostName is cached
-  for (int i = 0; i < (int)g_DNSCache.m_vecDNSNames.size(); ++i)
   {
-    CDNSName& DNSname = g_DNSCache.m_vecDNSNames[i];
-    if ( DNSname.m_strHostName == strHostName )
+    CSingleLock lock(m_critical);
+
+    // loop through all DNSname entries and see if strHostName is cached
+    for (const auto& DNSname : g_DNSCache.m_vecDNSNames)
     {
-      strIpAddress = DNSname.m_strIpAddress;
-      return true;
+      if (DNSname.m_strHostName == strHostName)
+      {
+        strIpAddress = DNSname.m_strIpAddress;
+        return true;
+      }
     }
   }
+
+#if !defined(TARGET_WINDOWS) && defined(HAS_FILESYSTEM_SMB)
+  if (WSDiscovery::CWSDiscoveryPosix::IsInitialized())
+  {
+    WSDiscovery::CWSDiscoveryPosix& WSInstance =
+        dynamic_cast<WSDiscovery::CWSDiscoveryPosix&>(CServiceBroker::GetWSDiscovery());
+    if (WSInstance.GetCached(strHostName, strIpAddress))
+      return true;
+  }
+  else
+    CLog::Log(LOGDEBUG, LOGWSDISCOVERY,
+              "CDNSNameCache::GetCached: CWSDiscoveryPosix not initialized");
+#endif
 
   // not cached
   return false;
 }
 
-void CDNSNameCache::Add(const std::string &strHostName, const std::string &strIpAddress)
+void CDNSNameCache::Add(const std::string& strHostName, const std::string& strIpAddress)
 {
   CDNSName dnsName;
 
