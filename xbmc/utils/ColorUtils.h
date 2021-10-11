@@ -10,6 +10,8 @@
 
 #include "Color.h"
 
+#include <string>
+
 class ColorUtils
 {
   public:

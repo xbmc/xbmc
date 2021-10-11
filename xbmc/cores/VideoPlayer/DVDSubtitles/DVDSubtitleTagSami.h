@@ -17,6 +17,7 @@
 #define FLAG_UNDERLINE 2
 #define FLAG_COLOR 3
 #define FLAG_LANGUAGE 4
+#define FLAG_ALPHA 5
 
 class CDVDSubtitleStream;
 class CRegExp;
@@ -59,5 +60,5 @@ public:
 private:
   CRegExp* m_tags;
   CRegExp* m_tagOptions;
-  bool m_flag[5];
+  bool m_flag[6];
 };

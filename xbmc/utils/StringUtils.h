@@ -269,6 +269,12 @@ public:
    */
   static bool IsInteger(const std::string& str);
 
+  /*! \brief Provided a byte hex representation as a string (e.g. FF) returns the inverted byte value as a zero-padded string (00)
+   \param byteHex the byte hex representation (e.g. FF)
+   \return a string containing the inverted byte (e.g. 00)
+   */
+  static std::string InvertStringHexByte(const std::string& byteHex);
+
   /* The next several isasciiXX and asciiXXvalue functions are locale independent (US-ASCII only),
    * as opposed to standard ::isXX (::isalpha, ::isdigit...) which are locale dependent.
    * Next functions get parameter as char and don't need double cast ((int)(unsigned char) is required for standard functions). */

@@ -88,10 +88,18 @@ void CDVDSubtitleTagSami::ConvertLine(std::string& strUTF8, const char* langClas
       m_flag[FLAG_COLOR] = false;
       strUTF8.insert(pos, "{\\c}");
       pos += 4;
+      if (m_flag[FLAG_ALPHA])
+      {
+        m_flag[FLAG_ALPHA] = false;
+        // reset alpha override tag with full opacity (0x00)
+        strUTF8.insert(pos, "{\\1a&H00&}");
+        pos += 5;
+      }
     }
     else if (StringUtils::StartsWith(fullTag, "<font"))
     {
       int pos2 = 5;
+      std::string alphaValue = "ff";
       while ((pos2 = m_tagOptions->RegFind(fullTag.c_str(), pos2)) >= 0)
       {
         std::string tagOptionName = m_tagOptions->GetMatch(1);
@@ -101,10 +109,19 @@ void CDVDSubtitleTagSami::ConvertLine(std::string& strUTF8, const char* langClas
         if (tagOptionName == "color")
         {
           m_flag[FLAG_COLOR] = true;
+          // rgb
           if (tagOptionValue[0] == '#' && tagOptionValue.size() == 7)
           {
             tagOptionValue.erase(0, 1);
             colorHex = tagOptionValue;
+          }
+          // rgba
+          else if (tagOptionValue[0] == '#' && tagOptionValue.size() == 9)
+          {
+            m_flag[FLAG_ALPHA] = true;
+            colorHex = tagOptionValue.substr(1, 6);
+            alphaValue = tagOptionValue.substr(7, 9);
+            tagOptionValue.erase(0, 1);
           }
           else if (tagOptionValue.size() == 6)
           {
@@ -127,6 +144,13 @@ void CDVDSubtitleTagSami::ConvertLine(std::string& strUTF8, const char* langClas
           std::string tempColorTag = "{\\c&H" + colorHex + "&}";
           strUTF8.insert(pos, tempColorTag);
           pos += tempColorTag.length();
+          if (m_flag[FLAG_ALPHA])
+          {
+            // alpha byte value needs to be inverted
+            // 0xff means fully opaque whereas in libass fully opaque means 0x00
+            strUTF8.insert(pos, "{\\1a&H" + StringUtils::InvertStringHexByte(alphaValue) + "&}");
+            pos += 10;
+          }
         }
       }
     }

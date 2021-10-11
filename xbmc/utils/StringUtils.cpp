@@ -1491,6 +1491,20 @@ bool StringUtils::IsInteger(const std::string& str)
   return i == str.size() && n > 0;
 }
 
+std::string StringUtils::InvertStringHexByte(const std::string& byteHex)
+{
+  std::stringstream invertedByteString;
+  invertedByteString << std::hex << (std::stol(byteHex, nullptr, 16) ^ 0xFF);
+  if (invertedByteString.str().size() > 1)
+  {
+    return invertedByteString.str();
+  }
+  else
+  {
+    return "0" + invertedByteString.str();
+  }
+}
+
 int StringUtils::asciidigitvalue(char chr)
 {
   if (!isasciidigit(chr))
