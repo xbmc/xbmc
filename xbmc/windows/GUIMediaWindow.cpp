@@ -185,13 +185,6 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
     return true;
   }
 
-  // the non-contextual menu can be called at any time
-  if (action.GetID() == ACTION_CONTEXT_MENU && !m_viewControl.HasControl(GetFocusedControlID()))
-  {
-    OnPopupMenu(-1);
-    return true;
-  }
-
   if (CGUIWindow::OnAction(action))
     return true;
 
