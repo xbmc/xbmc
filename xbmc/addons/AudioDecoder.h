@@ -65,6 +65,7 @@ public:
 private:
   const AudioEngineChannel* m_channel;
   AddonInstance_AudioDecoder m_struct;
+  KODI_HANDLE m_addonInstance;
   bool m_hasTags;
 };
 

@@ -40,7 +40,11 @@ CAudioDecoder::~CAudioDecoder()
 bool CAudioDecoder::CreateDecoder()
 {
   m_struct.toKodi->kodiInstance = this;
-  return CreateInstance(&m_struct) == ADDON_STATUS_OK;
+  if (CreateInstance(&m_struct) != ADDON_STATUS_OK)
+    return false;
+
+  m_addonInstance = m_struct.toAddon->addonInstance;
+  return true;
 }
 
 bool CAudioDecoder::Init(const CFileItem& file, unsigned int filecache)
@@ -58,9 +62,9 @@ bool CAudioDecoder::Init(const CFileItem& file, unsigned int filecache)
   int sampleRate = -1;
   AudioEngineDataFormat addonFormat = AUDIOENGINE_FMT_INVALID;
 
-  bool ret = m_struct.toAddon->init(&m_struct, file.GetDynPath().c_str(), filecache, &channels,
-                                    &sampleRate, &m_bitsPerSample, &m_TotalTime, &m_bitRate,
-                                    &addonFormat, &m_channel);
+  bool ret = m_struct.toAddon->init(m_addonInstance, file.GetDynPath().c_str(), filecache,
+                                    &channels, &sampleRate, &m_bitsPerSample, &m_TotalTime,
+                                    &m_bitRate, &addonFormat, &m_channel);
   if (ret)
   {
     if (channels <= 0 || sampleRate <= 0 || addonFormat == AUDIOENGINE_FMT_INVALID)
@@ -97,7 +101,7 @@ int CAudioDecoder::ReadPCM(uint8_t* buffer, int size, int* actualsize)
   if (!m_struct.toAddon->read_pcm)
     return 0;
 
-  return m_struct.toAddon->read_pcm(&m_struct, buffer, size, actualsize);
+  return m_struct.toAddon->read_pcm(m_addonInstance, buffer, size, actualsize);
 }
 
 bool CAudioDecoder::Seek(int64_t time)
@@ -105,7 +109,7 @@ bool CAudioDecoder::Seek(int64_t time)
   if (!m_struct.toAddon->seek)
     return false;
 
-  m_struct.toAddon->seek(&m_struct, time);
+  m_struct.toAddon->seek(m_addonInstance, time);
   return true;
 }
 
@@ -117,7 +121,7 @@ bool CAudioDecoder::Load(const std::string& fileName,
     return false;
 
   AUDIO_DECODER_INFO_TAG* cTag = new AUDIO_DECODER_INFO_TAG(); // allocate by his size
-  bool ret = m_struct.toAddon->read_tag(&m_struct, fileName.c_str(), cTag);
+  bool ret = m_struct.toAddon->read_tag(m_addonInstance, fileName.c_str(), cTag);
   if (ret)
   {
     tag.SetTitle(cTag->title);
@@ -150,7 +154,7 @@ int CAudioDecoder::GetTrackCount(const std::string& strPath)
   if (!m_struct.toAddon->track_count)
     return 0;
 
-  int result = m_struct.toAddon->track_count(&m_struct, strPath.c_str());
+  int result = m_struct.toAddon->track_count(m_addonInstance, strPath.c_str());
 
   if (result > 1)
   {

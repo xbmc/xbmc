@@ -19,6 +19,8 @@ extern "C"
 {
 #endif /* __cplusplus */
 
+  typedef void* KODI_ADDON_AUDIODECODER_HDL;
+
   // WARNING About size use malloc/new!
   struct AUDIO_DECODER_INFO_TAG
   {
@@ -46,11 +48,10 @@ extern "C"
     KODI_HANDLE kodiInstance;
   } AddonToKodiFuncTable_AudioDecoder;
 
-  struct AddonInstance_AudioDecoder;
   typedef struct KodiToAddonFuncTable_AudioDecoder
   {
     KODI_HANDLE addonInstance;
-    bool(__cdecl* init)(const struct AddonInstance_AudioDecoder* instance,
+    bool(__cdecl* init)(const KODI_ADDON_AUDIODECODER_HDL hdl,
                         const char* file,
                         unsigned int filecache,
                         int* channels,
@@ -60,15 +61,15 @@ extern "C"
                         int* bitrate,
                         enum AudioEngineDataFormat* format,
                         const enum AudioEngineChannel** info);
-    int(__cdecl* read_pcm)(const struct AddonInstance_AudioDecoder* instance,
+    int(__cdecl* read_pcm)(const KODI_ADDON_AUDIODECODER_HDL hdl,
                            uint8_t* buffer,
                            int size,
                            int* actualsize);
-    int64_t(__cdecl* seek)(const struct AddonInstance_AudioDecoder* instance, int64_t time);
-    bool(__cdecl* read_tag)(const struct AddonInstance_AudioDecoder* instance,
+    int64_t(__cdecl* seek)(const KODI_ADDON_AUDIODECODER_HDL hdl, int64_t time);
+    bool(__cdecl* read_tag)(const KODI_ADDON_AUDIODECODER_HDL hdl,
                             const char* file,
                             struct AUDIO_DECODER_INFO_TAG* tag);
-    int(__cdecl* track_count)(const struct AddonInstance_AudioDecoder* instance, const char* file);
+    int(__cdecl* track_count)(const KODI_ADDON_AUDIODECODER_HDL hdl, const char* file);
   } KodiToAddonFuncTable_AudioDecoder;
 
   typedef struct AddonInstance_AudioDecoder
