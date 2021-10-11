@@ -465,16 +465,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
         if (!recording->Channel())
         {
           auto provider = recording->GetProvider();
-          if (provider->GetIconPath().empty())
-          {
-            provider = recording->GetDefaultProvider();
-            if (!provider->GetIconPath().empty())
-            {
-              strValue = provider->GetIconPath();
-              return true;
-            }
-          }
-          else
+          if (!provider->GetIconPath().empty())
           {
             strValue = provider->GetIconPath();
             return true;
