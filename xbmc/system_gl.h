@@ -16,14 +16,12 @@
 #if defined(TARGET_LINUX)
 #include <GL/gl.h>
 #include <GL/glext.h>
-#include <GL/glu.h>
 #elif defined(TARGET_FREEBSD)
 #include <GL/gl.h>
-#include <GL/glu.h>
 #elif defined(TARGET_DARWIN)
+#include <OpenGL/gl.h>
 #include <OpenGL/gl3.h>
 #include <OpenGL/gl3ext.h>
-#include <OpenGL/glu.h>
 #endif
 #elif HAS_GLES >= 2
 #if defined(TARGET_DARWIN)

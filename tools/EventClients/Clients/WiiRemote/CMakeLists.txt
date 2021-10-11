@@ -2,6 +2,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
 
 find_package(Bluetooth REQUIRED)
 find_package(CWiid REQUIRED)
+find_package(GLU REQUIRED)
 
 set(SOURCES CWIID_WiiRemote.cpp)
 
