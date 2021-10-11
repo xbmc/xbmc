@@ -17,7 +17,7 @@ namespace MUSIC_INFO
 {
 class CMusicInfoTag;
 class EmbeddedArt;
-}
+} // namespace MUSIC_INFO
 
 namespace ADDON
 {
@@ -69,4 +69,4 @@ private:
   bool m_hasTags;
 };
 
-} /*namespace ADDON*/
+} /* namespace ADDON */
