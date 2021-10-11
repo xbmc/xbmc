@@ -12,8 +12,6 @@
 #include "../addon_base.h"
 #include "../audio_engine.h"
 
-#define AUDIO_DECODER_LYRICS_SIZE 65535
-
 #ifdef __cplusplus
 extern "C"
 {
@@ -21,26 +19,25 @@ extern "C"
 
   typedef void* KODI_ADDON_AUDIODECODER_HDL;
 
-  // WARNING About size use malloc/new!
-  struct AUDIO_DECODER_INFO_TAG
+  struct KODI_ADDON_AUDIODECODER_INFO_TAG
   {
-    char title[ADDON_STANDARD_STRING_LENGTH_SMALL];
-    char artist[ADDON_STANDARD_STRING_LENGTH_SMALL];
-    char album[ADDON_STANDARD_STRING_LENGTH_SMALL];
-    char album_artist[ADDON_STANDARD_STRING_LENGTH_SMALL];
-    char media_type[ADDON_STANDARD_STRING_LENGTH_SMALL];
-    char genre[ADDON_STANDARD_STRING_LENGTH_SMALL];
+    char* title;
+    char* artist;
+    char* album;
+    char* album_artist;
+    char* media_type;
+    char* genre;
     int duration;
     int track;
     int disc;
-    char disc_subtitle[ADDON_STANDARD_STRING_LENGTH_SMALL];
+    char* disc_subtitle;
     int disc_total;
-    char release_date[ADDON_STANDARD_STRING_LENGTH_SMALL];
-    char lyrics[AUDIO_DECODER_LYRICS_SIZE];
+    char* release_date;
+    char* lyrics;
     int samplerate;
     int channels;
     int bitrate;
-    char comment[ADDON_STANDARD_STRING_LENGTH];
+    char* comment;
   };
 
   typedef struct AddonToKodiFuncTable_AudioDecoder
@@ -68,7 +65,7 @@ extern "C"
     int64_t(__cdecl* seek)(const KODI_ADDON_AUDIODECODER_HDL hdl, int64_t time);
     bool(__cdecl* read_tag)(const KODI_ADDON_AUDIODECODER_HDL hdl,
                             const char* file,
-                            struct AUDIO_DECODER_INFO_TAG* tag);
+                            struct KODI_ADDON_AUDIODECODER_INFO_TAG* tag);
     int(__cdecl* track_count)(const KODI_ADDON_AUDIODECODER_HDL hdl, const char* file);
   } KodiToAddonFuncTable_AudioDecoder;
 

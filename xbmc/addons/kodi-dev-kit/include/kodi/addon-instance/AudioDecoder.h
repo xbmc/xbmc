@@ -38,16 +38,11 @@ class CInstanceAudioDecoder;
 /// @copydetails cpp_kodi_addon_audiodecoder_Defs_AudioDecoderInfoTag_Help
 ///
 ///@{
-class AudioDecoderInfoTag : public CStructHdl<AudioDecoderInfoTag, AUDIO_DECODER_INFO_TAG>
+class AudioDecoderInfoTag
 {
-  /*! \cond PRIVATE */
-  friend class CInstanceAudioDecoder;
-  /*! \endcond */
-
 public:
   /*! \cond PRIVATE */
-  AudioDecoderInfoTag() { memset(m_cStructure, 0, sizeof(AUDIO_DECODER_INFO_TAG)); }
-  AudioDecoderInfoTag(const AudioDecoderInfoTag& tag) : CStructHdl(tag) {}
+  AudioDecoderInfoTag() = default;
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_audiodecoder_Defs_AudioDecoderInfoTag_Help Value Help
@@ -79,41 +74,28 @@ public:
   ///@{
 
   /// @brief Set the title from music as string on info tag.
-  void SetTitle(const std::string& title)
-  {
-    strncpy(m_cStructure->title, title.c_str(), sizeof(m_cStructure->title) - 1);
-  }
+  void SetTitle(const std::string& title) { m_title = title; }
 
   /// @brief Get title name
-  std::string GetTitle() const { return m_cStructure->title; }
+  std::string GetTitle() const { return m_title; }
 
   /// @brief Set artist name
-  void SetArtist(const std::string& artist)
-  {
-    strncpy(m_cStructure->artist, artist.c_str(), sizeof(m_cStructure->artist) - 1);
-  }
+  void SetArtist(const std::string& artist) { m_artist = artist; }
 
   /// @brief Get artist name
-  std::string GetArtist() const { return m_cStructure->artist; }
+  std::string GetArtist() const { return m_artist; }
 
   /// @brief Set album name
-  void SetAlbum(const std::string& album)
-  {
-    strncpy(m_cStructure->album, album.c_str(), sizeof(m_cStructure->album) - 1);
-  }
+  void SetAlbum(const std::string& album) { m_album = album; }
 
   /// @brief Set album name
-  std::string GetAlbum() const { return m_cStructure->album; }
+  std::string GetAlbum() const { return m_album; }
 
   /// @brief Set album artist name
-  void SetAlbumArtist(const std::string& albumArtist)
-  {
-    strncpy(m_cStructure->album_artist, albumArtist.c_str(),
-            sizeof(m_cStructure->album_artist) - 1);
-  }
+  void SetAlbumArtist(const std::string& albumArtist) { m_album_artist = albumArtist; }
 
   /// @brief Get album artist name
-  std::string GetAlbumArtist() const { return m_cStructure->album_artist; }
+  std::string GetAlbumArtist() const { return m_album_artist; }
 
   /// @brief Set the media type of the music item.
   ///
@@ -125,109 +107,104 @@ public:
   /// | music          | If it is defined as an music
   /// | song           | If it is defined as a song
   ///
-  void SetMediaType(const std::string& mediaType)
-  {
-    strncpy(m_cStructure->media_type, mediaType.c_str(), sizeof(m_cStructure->media_type) - 1);
-  }
+  void SetMediaType(const std::string& mediaType) { m_media_type = mediaType; }
 
   /// @brief Get the media type of the music item.
-  std::string GetMediaType() const { return m_cStructure->media_type; }
+  std::string GetMediaType() const { return m_media_type; }
 
   /// @brief Set genre name from music as string if present.
-  void SetGenre(const std::string& genre)
-  {
-    strncpy(m_cStructure->genre, genre.c_str(), sizeof(m_cStructure->genre) - 1);
-  }
+  void SetGenre(const std::string& genre) { m_genre = genre; }
 
   /// @brief Get genre name from music as string if present.
-  std::string GetGenre() const { return m_cStructure->genre; }
+  std::string GetGenre() const { return m_genre; }
 
   /// @brief Set the duration of music as integer from info.
-  void SetDuration(int duration) { m_cStructure->duration = duration; }
+  void SetDuration(int duration) { m_duration = duration; }
 
   /// @brief Get the duration of music as integer from info.
-  int GetDuration() const { return m_cStructure->duration; }
+  int GetDuration() const { return m_duration; }
 
   /// @brief Set track number (if present) from music info as integer.
-  void SetTrack(int track) { m_cStructure->track = track; }
+  void SetTrack(int track) { m_track = track; }
 
   /// @brief Get track number (if present).
-  int GetTrack() const { return m_cStructure->track; }
+  int GetTrack() const { return m_track; }
 
   /// @brief Set disk number (if present) from music info as integer.
-  void SetDisc(int disc) { m_cStructure->disc = disc; }
+  void SetDisc(int disc) { m_disc = disc; }
 
   /// @brief Get disk number (if present)
-  int GetDisc() const { return m_cStructure->disc; }
+  int GetDisc() const { return m_disc; }
 
   /// @brief Set disk subtitle name (if present) from music info.
-  void SetDiscSubtitle(const std::string& discSubtitle)
-  {
-    strncpy(m_cStructure->disc_subtitle, discSubtitle.c_str(),
-            sizeof(m_cStructure->disc_subtitle) - 1);
-  }
+  void SetDiscSubtitle(const std::string& discSubtitle) { m_disc_subtitle = discSubtitle; }
 
   /// @brief Get disk subtitle name (if present) from music info.
-  std::string GetDiscSubtitle() const { return m_cStructure->disc_subtitle; }
+  std::string GetDiscSubtitle() const { return m_disc_subtitle; }
 
   /// @brief Set disks amount quantity (if present) from music info as integer.
-  void SetDiscTotal(int discTotal) { m_cStructure->disc_total = discTotal; }
+  void SetDiscTotal(int discTotal) { m_disc_total = discTotal; }
 
   /// @brief Get disks amount quantity (if present)
-  int GetDiscTotal() const { return m_cStructure->disc_total; }
+  int GetDiscTotal() const { return m_disc_total; }
 
   /// @brief Set release date as string from music info (if present).\n
   /// [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) date YYYY, YYYY-MM or YYYY-MM-DD
-  void SetReleaseDate(const std::string& releaseDate)
-  {
-    strncpy(m_cStructure->release_date, releaseDate.c_str(),
-            sizeof(m_cStructure->release_date) - 1);
-  }
+  void SetReleaseDate(const std::string& releaseDate) { m_release_date = releaseDate; }
 
   /// @brief Get release date as string from music info (if present).
-  std::string GetReleaseDate() const { return m_cStructure->release_date; }
+  std::string GetReleaseDate() const { return m_release_date; }
 
   /// @brief Set string from lyrics.
-  void SetLyrics(const std::string& lyrics)
-  {
-    strncpy(m_cStructure->lyrics, lyrics.c_str(), sizeof(m_cStructure->lyrics) - 1);
-  }
+  void SetLyrics(const std::string& lyrics) { m_lyrics = lyrics; }
 
   /// @brief Get string from lyrics.
-  std::string GetLyrics() const { return m_cStructure->lyrics; }
+  std::string GetLyrics() const { return m_lyrics; }
 
   /// @brief Set related stream samplerate.
-  void SetSamplerate(int samplerate) { m_cStructure->samplerate = samplerate; }
+  void SetSamplerate(int samplerate) { m_samplerate = samplerate; }
 
   /// @brief Get related stream samplerate.
-  int GetSamplerate() const { return m_cStructure->samplerate; }
+  int GetSamplerate() const { return m_samplerate; }
 
   /// @brief Set related stream channels amount.
-  void SetChannels(int channels) { m_cStructure->channels = channels; }
+  void SetChannels(int channels) { m_channels = channels; }
 
   /// @brief Get related stream channels amount.
-  int GetChannels() const { return m_cStructure->channels; }
+  int GetChannels() const { return m_channels; }
 
   /// @brief Set related stream bitrate.
-  void SetBitrate(int bitrate) { m_cStructure->bitrate = bitrate; }
+  void SetBitrate(int bitrate) { m_bitrate = bitrate; }
 
   /// @brief Get related stream bitrate.
-  int GetBitrate() const { return m_cStructure->bitrate; }
+  int GetBitrate() const { return m_bitrate; }
 
   /// @brief Set additional information comment (if present).
-  void SetComment(const std::string& comment)
-  {
-    strncpy(m_cStructure->comment, comment.c_str(), sizeof(m_cStructure->comment) - 1);
-  }
+  void SetComment(const std::string& comment) { m_comment = comment; }
 
   /// @brief Get additional information comment (if present).
-  std::string GetComment() const { return m_cStructure->comment; }
+  std::string GetComment() const { return m_comment; }
 
   ///@}
 
 private:
-  AudioDecoderInfoTag(const AUDIO_DECODER_INFO_TAG* tag) : CStructHdl(tag) {}
-  AudioDecoderInfoTag(AUDIO_DECODER_INFO_TAG* tag) : CStructHdl(tag) {}
+  std::string m_title;
+  std::string m_artist;
+  std::string m_album;
+  std::string m_album_artist;
+  std::string m_media_type;
+  std::string m_genre;
+  int m_duration{0};
+  int m_track{0};
+  int m_disc{0};
+  std::string m_disc_subtitle;
+  int m_disc_total{0};
+  std::string m_release_date;
+  std::string m_lyrics;
+  int m_samplerate{0};
+  int m_channels{0};
+  int m_bitrate{0};
+  std::string m_comment;
 };
 ///@}
 //------------------------------------------------------------------------------
@@ -581,10 +558,31 @@ private:
 
   inline static bool ADDON_read_tag(const KODI_ADDON_AUDIODECODER_HDL hdl,
                                     const char* file,
-                                    struct AUDIO_DECODER_INFO_TAG* tag)
+                                    struct KODI_ADDON_AUDIODECODER_INFO_TAG* tag)
   {
-    kodi::addon::AudioDecoderInfoTag cppTag(tag);
-    return static_cast<CInstanceAudioDecoder*>(hdl)->ReadTag(file, cppTag);
+    kodi::addon::AudioDecoderInfoTag cppTag;
+    bool ret = static_cast<CInstanceAudioDecoder*>(hdl)->ReadTag(file, cppTag);
+    if (ret)
+    {
+      tag->title = strdup(cppTag.GetTitle().c_str());
+      tag->artist = strdup(cppTag.GetArtist().c_str());
+      tag->album = strdup(cppTag.GetAlbum().c_str());
+      tag->album_artist = strdup(cppTag.GetAlbumArtist().c_str());
+      tag->media_type = strdup(cppTag.GetMediaType().c_str());
+      tag->genre = strdup(cppTag.GetGenre().c_str());
+      tag->duration = cppTag.GetDuration();
+      tag->track = cppTag.GetTrack();
+      tag->disc = cppTag.GetDisc();
+      tag->disc_subtitle = strdup(cppTag.GetDiscSubtitle().c_str());
+      tag->disc_total = cppTag.GetDiscTotal();
+      tag->release_date = strdup(cppTag.GetReleaseDate().c_str());
+      tag->lyrics = strdup(cppTag.GetLyrics().c_str());
+      tag->samplerate = cppTag.GetSamplerate();
+      tag->channels = cppTag.GetChannels();
+      tag->bitrate = cppTag.GetBitrate();
+      tag->comment = strdup(cppTag.GetComment().c_str());
+    }
+    return ret;
   }
 
   inline static int ADDON_track_count(const KODI_ADDON_AUDIODECODER_HDL hdl, const char* file)
