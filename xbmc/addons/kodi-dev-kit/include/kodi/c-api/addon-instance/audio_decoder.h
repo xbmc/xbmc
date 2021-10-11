@@ -19,6 +19,33 @@ extern "C"
 
   typedef void* KODI_ADDON_AUDIODECODER_HDL;
 
+  //============================================================================
+  /// @defgroup cpp_kodi_addon_audiodecoder_Defs_AUDIODECODER_READ_RETURN enum AUDIODECODER_READ_RETURN
+  /// @ingroup cpp_kodi_addon_audiodecoder_Defs
+  /// @brief **Return value about** @ref kodi::addon::CInstanceAudioDecoder::ReadPCM()
+  ///
+  /// Possible values are:
+  /// | Value | enum                           | Description
+  /// |:-----:|:-------------------------------|:--------------------------
+  /// |   0   | @ref AUDIODECODER_READ_SUCCESS | on success
+  /// |  -1   | @ref AUDIODECODER_READ_EOF     | on end of stream
+  /// |   1   | @ref AUDIODECODER_READ_ERROR   | on failure
+  ///
+  ///@{
+  typedef enum AUDIODECODER_READ_RETURN
+  {
+    /// @brief On end of stream
+    AUDIODECODER_READ_EOF = -1,
+
+    /// @brief On success
+    AUDIODECODER_READ_SUCCESS = 0,
+
+    /// @brief On failure
+    AUDIODECODER_READ_ERROR = 1
+  } AUDIODECODER_READ_RETURN;
+  ///@}
+  //----------------------------------------------------------------------------
+
   struct KODI_ADDON_AUDIODECODER_INFO_TAG
   {
     char* title;
