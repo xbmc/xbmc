@@ -47,4 +47,8 @@ if(OPENGLES_FOUND)
     set(OPENGLES_DEFINITIONS -DHAS_GLES=2)
     mark_as_advanced(OPENGLES_INCLUDE_DIR OPENGLES_gl_LIBRARY)
   endif()
+
+  if(NOT TARGET opengl-bindings)
+    include(${CMAKE_SOURCE_DIR}/cmake/scripts/common/GenerateOpenGLBindings.cmake)
+  endif()
 endif()

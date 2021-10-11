@@ -35,6 +35,10 @@ if(OPENGL_FOUND)
   set(OPENGL_INCLUDE_DIRS ${OPENGL_INCLUDE_DIR})
   set(OPENGL_LIBRARIES ${OPENGL_gl_LIBRARY})
   set(OPENGL_DEFINITIONS -DHAS_GL=1)
+
+  if(NOT TARGET opengl-bindings)
+    include(${CMAKE_SOURCE_DIR}/cmake/scripts/common/GenerateOpenGLBindings.cmake)
+  endif()
 endif()
 
 mark_as_advanced(OPENGL_INCLUDE_DIR OPENGL_gl_LIBRARY)
