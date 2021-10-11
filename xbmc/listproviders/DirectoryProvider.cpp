@@ -22,8 +22,7 @@
 #include "pictures/PictureThumbLoader.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRThumbLoader.h"
-#include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
-#include "pvr/dialogs/GUIDialogPVRRecordingInfo.h"
+#include "pvr/guilib/PVRGUIActions.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
@@ -414,16 +413,12 @@ bool CDirectoryProvider::OnInfo(const CGUIListItemPtr& item)
   auto fileItem = std::static_pointer_cast<CFileItem>(item);
 
   if (fileItem->HasAddonInfo())
+  {
     return CGUIDialogAddonInfo::ShowForItem(fileItem);
-  else if (fileItem->HasPVRRecordingInfoTag())
-  {
-    CGUIDialogPVRRecordingInfo::ShowFor(fileItem);
-    return true;
   }
-  else if (fileItem->HasPVRChannelInfoTag())
+  else if (fileItem->IsPVR())
   {
-    CGUIDialogPVRGuideInfo::ShowFor(fileItem);
-    return true;
+    return CServiceBroker::GetPVRManager().GUIActions()->OnInfo(fileItem);
   }
   else if (fileItem->HasVideoInfoTag())
   {

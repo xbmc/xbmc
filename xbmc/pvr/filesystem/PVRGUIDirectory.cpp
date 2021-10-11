@@ -521,20 +521,12 @@ namespace
 {
 
 bool GetTimersRootDirectory(const CPVRTimersPath& path,
+                            bool bHideDisabled,
                             const std::vector<std::shared_ptr<CPVRTimerInfoTag>>& timers,
                             CFileItemList& results)
 {
-  std::shared_ptr<CFileItem> item(new CFileItem(CPVRTimersPath::PATH_ADDTIMER, false));
-  item->SetLabel(g_localizeStrings.Get(19026)); // "Add timer..."
-  item->SetLabelPreformatted(true);
-  item->SetSpecialSort(SortSpecialOnTop);
-  item->SetArt("icon", "DefaultTVShows.png");
-  results.Add(item);
-
   bool bRadio = path.IsRadio();
   bool bRules = path.IsRules();
-
-  bool bHideDisabled = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_PVRTIMERS_HIDEDISABLEDTIMERS);
 
   for (const auto& timer : timers)
   {
@@ -542,7 +534,7 @@ bool GetTimersRootDirectory(const CPVRTimersPath& path,
         (bRules == timer->IsTimerRule()) &&
         (!bHideDisabled || (timer->m_state != PVR_TIMER_STATE_DISABLED)))
     {
-      item.reset(new CFileItem(timer));
+      const auto item = std::make_shared<CFileItem>(timer);
       const CPVRTimersPath timersPath(path.GetPath(), timer->m_iClientId, timer->m_iClientIndex);
       item->SetPath(timersPath.GetPath());
       results.Add(item);
@@ -552,14 +544,13 @@ bool GetTimersRootDirectory(const CPVRTimersPath& path,
 }
 
 bool GetTimersSubDirectory(const CPVRTimersPath& path,
+                           bool bHideDisabled,
                            const std::vector<std::shared_ptr<CPVRTimerInfoTag>>& timers,
                            CFileItemList& results)
 {
   bool bRadio = path.IsRadio();
   int iParentId = path.GetParentId();
   int iClientId = path.GetClientId();
-
-  bool bHideDisabled = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_PVRTIMERS_HIDEDISABLEDTIMERS);
 
   std::shared_ptr<CFileItem> item;
 
@@ -585,19 +576,40 @@ bool GetTimersSubDirectory(const CPVRTimersPath& path,
 bool CPVRGUIDirectory::GetTimersDirectory(CFileItemList& results) const
 {
   const CPVRTimersPath path(m_url.GetWithoutOptions());
-  if (path.IsValid())
+  if (path.IsValid() && (path.IsTimersRoot() || path.IsTimerRule()))
   {
-    const std::vector<std::shared_ptr<CPVRTimerInfoTag>> timers = CServiceBroker::GetPVRManager().Timers()->GetAll();
+    bool bHideDisabled = false;
+    if (m_url.HasOption("view"))
+    {
+      const std::string view = m_url.GetOption("view");
+      if (view == "hidedisabled")
+      {
+        bHideDisabled = true;
+      }
+      else
+      {
+        CLog::LogF(LOGERROR, "Unsupported value '{}' for url parameter 'view'", view);
+        return false;
+      }
+    }
+    else
+    {
+      bHideDisabled = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_PVRTIMERS_HIDEDISABLEDTIMERS);
+    }
+
+    const std::vector<std::shared_ptr<CPVRTimerInfoTag>> timers =
+        CServiceBroker::GetPVRManager().Timers()->GetAll();
 
     if (path.IsTimersRoot())
     {
       /* Root folder containing either timer rules or timers. */
-      return GetTimersRootDirectory(path, timers, results);
+      return GetTimersRootDirectory(path, bHideDisabled, timers, results);
     }
     else if (path.IsTimerRule())
     {
       /* Sub folder containing the timers scheduled by the given timer rule. */
-      return GetTimersSubDirectory(path, timers, results);
+      return GetTimersSubDirectory(path, bHideDisabled, timers, results);
     }
   }
 

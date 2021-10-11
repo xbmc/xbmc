@@ -477,7 +477,7 @@
 							<top>43</top>
 							<left>38</left>
 							<width>245</width>
-							<height>200</height>
+							<height>190</height>
 							<texture fallback="DefaultTVShows.png">$PARAM[icon]</texture>
 							<aspectratio>keep</aspectratio>
 						</control>
@@ -540,7 +540,7 @@
 							<top>43</top>
 							<left>38</left>
 							<width>245</width>
-							<height>200</height>
+							<height>190</height>
 							<texture fallback="DefaultTVShows.png">$PARAM[icon]</texture>
 							<aspectratio>keep</aspectratio>
 						</control>
