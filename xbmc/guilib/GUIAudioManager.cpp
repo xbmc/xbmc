@@ -138,15 +138,16 @@ void CGUIAudioManager::PlayWindowSound(int id, WINDOW_SOUND event)
   if (it==m_windowSoundMap.end())
     return;
 
-  const auto& sound = [&]() {
-    switch (event)
-    {
-      case SOUND_INIT:
-        return it->second.initSound;
-      case SOUND_DEINIT:
-        return it->second.deInitSound;
-    }
-  }();
+  std::shared_ptr<IAESound> sound;
+  switch (event)
+  {
+    case SOUND_INIT:
+      sound = it->second.initSound;
+      break;
+    case SOUND_DEINIT:
+      sound = it->second.deInitSound;
+      break;
+  }
 
   if (!sound)
     return;
