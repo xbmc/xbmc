@@ -830,6 +830,11 @@ bool CPVRChannel::HasClientProvider() const
 
 std::shared_ptr<CPVRProvider> CPVRChannel::GetProvider() const
 {
-  return CServiceBroker::GetPVRManager().Providers()->GetByClient(m_iClientId,
-                                                                  m_iClientProviderUid);
+  auto provider =
+      CServiceBroker::GetPVRManager().Providers()->GetByClient(m_iClientId, m_iClientProviderUid);
+
+  if (!provider)
+    provider = GetDefaultProvider();
+
+  return provider;
 }

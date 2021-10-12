@@ -652,6 +652,11 @@ bool CPVRRecording::HasClientProvider() const
 
 std::shared_ptr<CPVRProvider> CPVRRecording::GetProvider() const
 {
-  return CServiceBroker::GetPVRManager().Providers()->GetByClient(m_iClientId,
-                                                                  m_iClientProviderUniqueId);
+  auto provider = CServiceBroker::GetPVRManager().Providers()->GetByClient(
+      m_iClientId, m_iClientProviderUniqueId);
+
+  if (!provider)
+    provider = GetDefaultProvider();
+
+  return provider;
 }
