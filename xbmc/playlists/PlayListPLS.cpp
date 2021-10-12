@@ -284,8 +284,9 @@ bool CPlayListASX::LoadData(std::istream& stream)
   }
   else
   {
+    std::string asxstream(std::istreambuf_iterator<char>(stream), {});
     CXBMCTinyXML xmlDoc;
-    stream >> xmlDoc;
+    xmlDoc.Parse(asxstream, TIXML_DEFAULT_ENCODING);
 
     if (xmlDoc.Error())
     {
@@ -294,6 +295,9 @@ bool CPlayListASX::LoadData(std::istream& stream)
     }
 
     TiXmlElement *pRootElement = xmlDoc.RootElement();
+
+    if (!pRootElement)
+      return false;
 
     // lowercase every element
     TiXmlNode *pNode = pRootElement;
