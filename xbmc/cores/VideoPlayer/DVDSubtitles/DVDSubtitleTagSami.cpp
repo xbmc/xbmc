@@ -101,9 +101,10 @@ void CDVDSubtitleTagSami::ConvertLine(std::string& strUTF8, const char* langClas
         if (tagOptionName == "color")
         {
           m_flag[FLAG_COLOR] = true;
-          if (tagOptionValue[0] == '#' && tagOptionValue.size() == 7)
+          if (tagOptionValue[0] == '#' && tagOptionValue.size() >= 7)
           {
             tagOptionValue.erase(0, 1);
+            tagOptionValue.erase(6, tagOptionValue.size());
             colorHex = tagOptionValue;
           }
           else if (tagOptionValue.size() == 6)
