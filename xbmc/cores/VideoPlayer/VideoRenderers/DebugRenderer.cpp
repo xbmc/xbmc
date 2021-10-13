@@ -123,8 +123,6 @@ void CDebugRenderer::CRenderer::Render(int idx)
   std::vector<SElement>& list = m_buffers[idx];
   for (std::vector<SElement>::iterator it = list.begin(); it != list.end(); ++it)
   {
-    COverlay* o = nullptr;
-
     if (it->overlay_dvd)
     {
       CDVDOverlayLibass* ovAss = static_cast<CDVDOverlayLibass*>(it->overlay_dvd);
@@ -136,13 +134,11 @@ void CDebugRenderer::CRenderer::Render(int idx)
       if (updateStyle)
         CreateSubtitlesStyle();
 
-      o = ConvertLibass(ovAss, it->pts, updateStyle, m_debugOverlayStyle);
+      COverlay* o = ConvertLibass(ovAss, it->pts, updateStyle, m_debugOverlayStyle);
 
-      if (!o)
-        continue;
+      if (o)
+        OVERLAY::CRenderer::Render(o);
     }
-
-    OVERLAY::CRenderer::Render(o);
   }
   ReleaseUnused();
 }

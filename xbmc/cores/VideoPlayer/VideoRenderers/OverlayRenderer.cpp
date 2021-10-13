@@ -143,17 +143,13 @@ void CRenderer::Render(int idx)
   std::vector<SElement>& list = m_buffers[idx];
   for(std::vector<SElement>::iterator it = list.begin(); it != list.end(); ++it)
   {
-    COverlay* o = NULL;
-
     if (it->overlay_dvd)
     {
-      o = Convert(it->overlay_dvd, it->pts);
+      COverlay* o = Convert(it->overlay_dvd, it->pts);
 
-      if (!o)
-        continue;
+      if (o)
+        Render(o);
     }
-
-    Render(o);
   }
 
   ReleaseUnused();

@@ -136,6 +136,6 @@ namespace OVERLAY {
     std::string m_stereomode;
 
     std::shared_ptr<struct KODI::SUBTITLES::style> m_overlayStyle;
-    bool m_forceUpdateOverlayStyle;
+    bool m_forceUpdateOverlayStyle{false};
   };
 }

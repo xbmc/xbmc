@@ -138,12 +138,12 @@ private:
   ASS_Track* m_track = nullptr;
   ASS_Renderer* m_renderer = nullptr;
   mutable CCriticalSection m_section;
-  ASSSubType m_subtitleType;
+  ASSSubType m_subtitleType{NATIVE};
 
   // current default style ID of the ASS track
   int m_currentDefaultStyleId{ASS_NO_ID};
 
   // default allocated style ID for the kodi user configured subtitle style
   int m_defaultKodiStyleId{ASS_NO_ID};
-  bool m_drawWithinBlackBars;
+  bool m_drawWithinBlackBars{false};
 };

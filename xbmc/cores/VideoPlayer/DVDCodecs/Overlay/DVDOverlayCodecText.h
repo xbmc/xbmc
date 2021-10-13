@@ -34,5 +34,5 @@ private:
   void Dispose() override;
   CDVDOverlay* m_pOverlay;
   CDVDStreamInfo m_hints;
-  AVCodecID m_codecId;
+  AVCodecID m_codecId{AV_CODEC_ID_NONE};
 };

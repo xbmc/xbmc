@@ -103,7 +103,6 @@ void CDVDSubtitlesLibass::Configure()
     return;
   }
 
-  m_subtitleType = NATIVE;
   ass_set_margins(m_renderer, 0, 0, 0, 0);
   ass_set_use_margins(m_renderer, 0);
 
@@ -268,6 +267,8 @@ void CDVDSubtitlesLibass::ApplyStyle(style subStyle, renderOpts opts)
 
   ConfigureFont((m_subtitleType == NATIVE && subStyle.assOverrideFont), subStyle.fontName);
 
+  // ASS_Style is a POD struct need to be initialized with {}
+  ASS_Style defaultStyle{};
   ASS_Style* style = nullptr;
 
   if (m_subtitleType == ADAPTED ||
@@ -277,9 +278,7 @@ void CDVDSubtitlesLibass::ApplyStyle(style subStyle, renderOpts opts)
 
     if (m_subtitleType == NATIVE)
     {
-      // ASS_Style is a POD struct need to be initialized with {}
-      ASS_Style assStyle{};
-      style = &assStyle;
+      style = &defaultStyle;
     }
     else
     {
