@@ -551,7 +551,7 @@ void CMusicDatabase::CreateNativeDBFunctions()
     return;
   CLog::Log(LOGINFO, "Create native MySQL/MariaDB functions");
   /* Functions to do the natural number sorting and all ascii symbol char at top adjustments to
-     default utf8_general_ci collation that SQLite does via a collation sequence callback
+     default utf8mb4_unicode_ci collation that SQLite does via a collation sequence callback
      function to StringUtils::AlphaNumericCompare
      !@todo: the video needs these defined too for sorting in DB, then creation can be made common
   */
@@ -8311,8 +8311,8 @@ std::string CMusicDatabase::AlphanumericSortSQL(const std::string& strField,
   means there is no advantage in defining as column defualt in table create than per query (which
   also makes looking at the db with other tools difficult).
 
-  MySQL does not have callback collation, but all tables are defined with utf8_general_ci an
-  "ascii folding" case insensitive collation. Natural sorting is provided via native functions
+  MySQL does not have callback collation, but all tables are defined with utf8mb4_unicode_ci a
+  case insensitive collation. Natural sorting is provided via native functions
   stored in the db.
   */
   std::string DESC;

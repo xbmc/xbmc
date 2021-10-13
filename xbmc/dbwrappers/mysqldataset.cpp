@@ -226,7 +226,7 @@ int MysqlDatabase::connect(bool create_new) {
         int ret;
 
         snprintf(sqlcmd, sizeof(sqlcmd),
-                 "CREATE DATABASE `%s` CHARACTER SET utf8 COLLATE utf8_general_ci", db.c_str());
+                 "CREATE DATABASE `%s` CHARACTER SET utf8 COLLATE utf8mb4_unicode_ci", db.c_str());
         if ( (ret=query_with_reconnect(sqlcmd)) != MYSQL_OK )
         {
           throw DbErrors("Can't create new database: '%s' (%d)", db.c_str(), ret);
@@ -320,7 +320,7 @@ int MysqlDatabase::copy(const char *backup_name) {
     }
 
     // create the new database
-    snprintf(sql, sizeof(sql), "CREATE DATABASE `%s` CHARACTER SET utf8 COLLATE utf8_general_ci",
+    snprintf(sql, sizeof(sql), "CREATE DATABASE `%s` CHARACTER SET utf8 COLLATE utf8mb4_unicode_ci",
              backup_name);
     if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
     {
@@ -1569,14 +1569,14 @@ int MysqlDataset::exec(const std::string &sql) {
     || ci_find(qry, "CREATE TEMPORARY TABLE") != std::string::npos )
   {
     // If CREATE TABLE ... SELECT Syntax is used we need to add the encoding after the table before the select
-    // e.g. CREATE TABLE x CHARACTER SET utf8 COLLATE utf8_general_ci [AS] SELECT * FROM y
+    // e.g. CREATE TABLE x CHARACTER SET utf8 COLLATE utf8mb4_unicode_ci [AS] SELECT * FROM y
     if ((loc = qry.find(" AS SELECT ")) != std::string::npos ||
         (loc = qry.find(" SELECT ")) != std::string::npos)
     {
-      qry = qry.insert(loc, " CHARACTER SET utf8 COLLATE utf8_general_ci");
+      qry = qry.insert(loc, " CHARACTER SET utf8 COLLATE utf8mb4_unicode_ci");
     }
     else
-      qry += " CHARACTER SET utf8 COLLATE utf8_general_ci";
+      qry += " CHARACTER SET utf8 COLLATE utf8mb4_unicode_ci";
   }
 
   CLog::Log(LOGDEBUG, "Mysql execute: {}", qry);
