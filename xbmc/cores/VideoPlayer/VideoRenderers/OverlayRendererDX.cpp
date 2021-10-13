@@ -229,30 +229,17 @@ COverlayImageDX::COverlayImageDX(CDVDOverlayImage* o)
 
   if(o->source_width && o->source_height)
   {
-    float center_x = (float)(0.5f * o->width  + o->x) / o->source_width;
+    float center_x = (float)(0.5f * o->width + o->x) / o->source_width;
     float center_y = (float)(0.5f * o->height + o->y) / o->source_height;
 
-    m_width  = (float)o->width  / o->source_width;
-    m_height = (float)o->height / o->source_height;
-    m_pos    = POSITION_RELATIVE;
-
-#if 0
-    if(center_x > 0.4 && center_x < 0.6
-    && center_y > 0.8 && center_y < 1.0)
-    {
-     /* render bottom aligned to subtitle line */
-      m_align  = ALIGN_SUBTITLE;
-      m_x      = 0.0f;
-      m_y      = - 0.5 * m_height;
-    }
-    else
-#endif
-    {
-      /* render aligned to screen to avoid cropping problems */
-      m_align  = ALIGN_SCREEN;
-      m_x      = center_x;
-      m_y      = center_y;
-    }
+    m_align = ALIGN_SCREEN_AR;
+    m_pos = POSITION_RELATIVE;
+    m_x = center_x;
+    m_y = center_y;
+    m_width = static_cast<float>(o->width);
+    m_height = static_cast<float>(o->height);
+    m_source_width = static_cast<float>(o->source_width);
+    m_source_height = static_cast<float>(o->source_height);
   }
   else
   {

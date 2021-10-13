@@ -32,6 +32,8 @@
 #include "OverlayRendererDX.h"
 #endif
 
+#include <algorithm>
+
 using namespace OVERLAY;
 
 COverlay::COverlay()
@@ -166,36 +168,51 @@ void CRenderer::Render(COverlay* o)
   COverlay::EPosition pos   = o->m_pos;
   COverlay::EAlign    align = o->m_align;
 
-  if(pos == COverlay::POSITION_RELATIVE)
+  if (pos == COverlay::POSITION_RELATIVE)
   {
     float scale_x = 1.0;
     float scale_y = 1.0;
+    float scale_w = 1.0;
+    float scale_h = 1.0;
 
-    if(align == COverlay::ALIGN_SCREEN
-    || align == COverlay::ALIGN_SUBTITLE)
+    if (align == COverlay::ALIGN_SCREEN || align == COverlay::ALIGN_SUBTITLE)
     {
       scale_x = m_rv.Width();
       scale_y = m_rv.Height();
+      scale_w = scale_x;
+      scale_h = scale_y;
     }
-
-    if(align == COverlay::ALIGN_VIDEO)
+    else if (align == COverlay::ALIGN_VIDEO)
     {
       scale_x = m_rs.Width();
       scale_y = m_rs.Height();
+      scale_w = scale_x;
+      scale_h = scale_y;
+    }
+    else if (align == COverlay::ALIGN_SCREEN_AR)
+    {
+      // Align to screen by keeping aspect ratio to fit into the screen area
+      float source_width = o->m_source_width > 0 ? o->m_source_width : m_rs.Width();
+      float source_height = o->m_source_height > 0 ? o->m_source_height : m_rs.Height();
+      float ratio = std::min<float>(m_rv.Width() / source_width, m_rv.Height() / source_height);
+      scale_x = m_rv.Width();
+      scale_y = m_rv.Height();
+      scale_w = ratio;
+      scale_h = ratio;
     }
 
-    state.x      *= scale_x;
-    state.y      *= scale_y;
-    state.width  *= scale_x;
-    state.height *= scale_y;
+    state.x *= scale_x;
+    state.y *= scale_y;
+    state.width *= scale_w;
+    state.height *= scale_h;
 
     pos = COverlay::POSITION_ABSOLUTE;
   }
 
-  if(pos == COverlay::POSITION_ABSOLUTE)
+  if (pos == COverlay::POSITION_ABSOLUTE)
   {
-    if(align == COverlay::ALIGN_SCREEN
-    || align == COverlay::ALIGN_SUBTITLE)
+    if (align == COverlay::ALIGN_SCREEN || align == COverlay::ALIGN_SCREEN_AR ||
+        align == COverlay::ALIGN_SUBTITLE)
     {
       if(align == COverlay::ALIGN_SUBTITLE)
       {
@@ -209,8 +226,7 @@ void CRenderer::Render(COverlay* o)
         state.y += m_rv.y1;
       }
     }
-
-    if(align == COverlay::ALIGN_VIDEO)
+    else if (align == COverlay::ALIGN_VIDEO)
     {
       float scale_x = m_rd.Width() / m_rs.Width();
       float scale_y = m_rd.Height() / m_rs.Height();
@@ -223,7 +239,6 @@ void CRenderer::Render(COverlay* o)
       state.x      += m_rd.x1;
       state.y      += m_rd.y1;
     }
-
   }
 
   state.x += GetStereoscopicDepth();
