@@ -6,8 +6,8 @@
  *  See LICENSES/README.md for more information.
  */
 
+//Include necessary header files
 #include "ApplicationStackHelper.h"
-
 #include "ApplicationPlayer.h"
 #include "Util.h"
 #include "cores/VideoPlayer/DVDFileInfo.h"
