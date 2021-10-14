@@ -19,7 +19,7 @@ CAudioDecoder::CAudioDecoder(const AddonInfoPtr& addonInfo)
   : IAddonInstanceHandler(ADDON_INSTANCE_AUDIODECODER, addonInfo)
 {
   m_CodecName = addonInfo->Type(ADDON_AUDIODECODER)->GetValue("@name").asString();
-  m_strExt = m_CodecName + "stream";
+  m_strExt = m_CodecName + KODI_ADDON_AUDIODECODER_TRACK_EXT;
   m_hasTags = addonInfo->Type(ADDON_AUDIODECODER)->GetValue("@tags").asBoolean();
 
   // Create all interface parts independent to make API changes easier if
