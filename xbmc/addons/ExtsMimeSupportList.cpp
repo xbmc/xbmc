@@ -107,7 +107,8 @@ CExtsMimeSupportList::SupportValues CExtsMimeSupportList::ScanAddonProperties(
   // Check addons support tracks, if yes add extension about related entry names
   // By them addon no more need to add itself on his addon.xml
   if (values.m_hasTracks)
-    values.m_supportedExtensions.emplace("." + values.m_codecName + "stream", -1);
+    values.m_supportedExtensions.emplace(
+        "." + values.m_codecName + KODI_ADDON_AUDIODECODER_TRACK_EXT, -1);
 
   auto mimes = StringUtils::Split(
       addonInfo->Type(ADDON_AUDIODECODER)->GetValue("@mimetype").asString(), "|");

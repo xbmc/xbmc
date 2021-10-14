@@ -12,6 +12,34 @@
 #include "../addon_base.h"
 #include "../audio_engine.h"
 
+//============================================================================
+/// @ingroup cpp_kodi_addon_audiodecoder_Defs
+/// @brief Identifier which is attached to stream files and with defined names
+/// in addon.xml (`name="???"`) if addon supports "tracks" (set in addon.xml
+/// `tracks="true"`).
+///
+/// @note This macro is largely unnecessary to use directly on the addon,
+/// addon can use the @ref KODI_ADDON_AUDIODECODER_GET_TRACK_EXT around its
+/// associated name.
+///
+///@{
+#define KODI_ADDON_AUDIODECODER_TRACK_EXT "_adecstrm"
+///@}
+//----------------------------------------------------------------------------
+
+//============================================================================
+/// @ingroup cpp_kodi_addon_audiodecoder_Defs
+/// @brief Macro to get file extension to track supported files.
+///
+/// This macro can be used if `tracks="true"` is set in addon.xml, in this
+/// case the addon.xml field `name="???"` is used to identify stream.
+/// Which must then also be used for here.
+///
+///@{
+#define KODI_ADDON_AUDIODECODER_GET_TRACK_EXT(name) "." name KODI_ADDON_AUDIODECODER_TRACK_EXT
+///@}
+//----------------------------------------------------------------------------
+
 #ifdef __cplusplus
 extern "C"
 {
