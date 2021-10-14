@@ -156,8 +156,8 @@ std::string CFileExtensionProvider::GetAddonExtensions(const TYPE &type) const
 
 std::string CFileExtensionProvider::GetAddonFileFolderExtensions(const TYPE &type) const
 {
-  auto it = m_addonExtensions.find(type);
-  if (it != m_addonExtensions.end())
+  auto it = m_addonFileFolderExtensions.find(type);
+  if (it != m_addonFileFolderExtensions.end())
     return it->second;
 
   return "";
