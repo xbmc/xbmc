@@ -26,6 +26,5 @@ public:
 
 private:
   void Dispose() override;
-  CDVDOverlay* m_pOverlay;
-  uint32_t m_textColor;
+  CDVDOverlay* m_pOverlay{nullptr};
 };

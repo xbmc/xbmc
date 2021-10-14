@@ -12,71 +12,74 @@
 #include "DVDOverlayText.h"
 #include "DVDStreamInfo.h"
 #include "DVDSubtitles/SubtitlesStyle.h"
-#include "ServiceBroker.h"
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
+#include "utils/CharArrayParser.h"
+#include "utils/Color.h"
 #include "utils/ColorUtils.h"
-#include "utils/RegExp.h"
+#include "utils/StreamUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
-#include <cstddef>
+#include <vector>
 
 // 3GPP/TX3G (aka MPEG-4 Timed Text) Subtitle support
 // 3GPP -> 3rd Generation Partnership Program
 // adapted from https://github.com/HandBrake/HandBrake/blob/master/libhb/dectx3gsub.c;
 
-#define LEN_CHECK(x) \
-  do \
-  { \
-    if ((end - pos) < static_cast<std::ptrdiff_t>(x)) \
-      return OverlayMessage::OC_ERROR; \
-  } while (0)
-
-// NOTE: None of these macros check for buffer overflow
-#define READ_U8() \
-  *pos; \
-  pos += 1;
-#define READ_U16() \
-  (pos[0] << 8) | pos[1]; \
-  pos += 2;
-#define READ_U32() \
-  (pos[0] << 24) | (pos[1] << 16) | (pos[2] << 8) | pos[3]; \
-  pos += 4;
-#define READ_ARRAY(n) \
-  pos; \
-  pos += n;
-#define SKIP_ARRAY(n) pos += n;
-
-#define FOURCC(str) \
-  ((((uint32_t)str[0]) << 24) | (((uint32_t)str[1]) << 16) | (((uint32_t)str[2]) << 8) | \
-   (((uint32_t)str[3]) << 0))
-
-typedef enum
+namespace
+{
+enum FaceStyleFlag
 {
   BOLD = 0x1,
   ITALIC = 0x2,
   UNDERLINE = 0x4
-} FaceStyleFlag;
+};
 
-// NOTE: indices in terms of *character* (not: byte) positions
-typedef struct
+struct StyleRecord
 {
-  uint16_t bgnChar;
-  uint16_t endChar;
+  uint16_t startChar; // index in terms of character (not byte) position
+  uint16_t endChar; // index in terms of character (not byte) position
   uint16_t fontID;
   uint8_t faceStyleFlags; // FaceStyleFlag
   uint8_t fontSize;
-  uint32_t textColorRGBA;
-} StyleRecord;
+  UTILS::Color textColorARGB;
+  unsigned int textColorAlphaCh;
+};
+
+constexpr uint32_t BOX_TYPE_UUID = StreamUtils::MakeFourCC('u', 'u', 'i', 'd');
+constexpr uint32_t BOX_TYPE_STYL = StreamUtils::MakeFourCC('s', 't', 'y', 'l'); // TextStyleBox
+
+void ConvertStyleToTags(std::string& strUTF8, StyleRecord& style, bool closingTags)
+{
+  if (style.faceStyleFlags & BOLD)
+    strUTF8.append(closingTags ? "{\\b0}" : "{\\b1}");
+  if (style.faceStyleFlags & ITALIC)
+    strUTF8.append(closingTags ? "{\\i0}" : "{\\i1}");
+  if (style.faceStyleFlags & UNDERLINE)
+    strUTF8.append(closingTags ? "{\\u0}" : "{\\u1}");
+  if (style.textColorARGB != UTILS::COLOR::WHITE)
+  {
+    if (closingTags)
+      strUTF8 += "{\\c}";
+    else
+    {
+      UTILS::Color color = UTILS::ConvertToBGR(style.textColorARGB);
+      strUTF8 += StringUtils::Format("{{\\c&H{:06x}&}}", color);
+    }
+  }
+  if (style.textColorAlphaCh != 255)
+  {
+    // Libass use inverted alpha channel 0==opaque
+    unsigned int alpha = 0;
+    if (!closingTags)
+      alpha = 255 - style.textColorAlphaCh;
+    strUTF8 += StringUtils::Format("{{\\1a&H{:02x}&}}", alpha);
+  }
+}
+} // unnamed namespace
 
 CDVDOverlayCodecTX3G::CDVDOverlayCodecTX3G() : CDVDOverlayCodec("TX3G Subtitle Decoder")
 {
-  m_pOverlay = nullptr;
-  m_textColor =
-      UTILS::ConvertHexToColor(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
-          CSettings::SETTING_SUBTITLES_COLOR));
 }
 
 CDVDOverlayCodecTX3G::~CDVDOverlayCodecTX3G()
@@ -110,142 +113,134 @@ OverlayMessage CDVDOverlayCodecTX3G::Decode(DemuxPacket* pPacket)
 
   CDVDOverlayCodec::GetAbsoluteTimes(PTSStartTime, PTSStopTime, pPacket);
 
-  // do not move this. READ_XXXX macros modify pos.
-  uint8_t* pos = pPacket->pData;
-  uint8_t* end = pPacket->pData + pPacket->iSize;
+  char* data = reinterpret_cast<char*>(pPacket->pData);
 
   // Parse the packet as a TX3G TextSample.
-  // Look for a single StyleBox ('styl') and
-  // read all contained StyleRecords.
-  // Ignore all other box types.
-  // NOTE: Buffer overflows on read are not checked.
-  // ALSO: READ_XXXX/SKIP_XXXX macros will modify pos.
-  LEN_CHECK(2);
-  uint16_t textLength = READ_U16();
-  LEN_CHECK(textLength);
-  uint8_t* text = READ_ARRAY(textLength);
+  CCharArrayParser sampleData;
+  sampleData.Reset(data, pPacket->iSize);
 
-  int numStyleRecords = 0;
-  // reserve one more style slot for broken encoders
-
-  std::vector<uint8_t> bgnStyle(textLength + 1, 0);
-  std::vector<uint8_t> endStyle(textLength + 1, 0);
-
-  int bgnColorIndex = 0, endColorIndex = 0;
-  uint32_t textColorRGBA = m_textColor;
-  while (pos < end)
+  uint16_t textLength = 0;
+  char* text = nullptr;
+  if (sampleData.CharsLeft() >= 2)
+    textLength = sampleData.ReadNextUnsignedShort();
+  if (sampleData.CharsLeft() >= textLength)
   {
-    // Read TextSampleModifierBox
-    LEN_CHECK(4);
-    uint32_t size = READ_U32();
-    if (size == 0)
-      size = pos - end; // extends to end of packet
-    if (size == 1)
+    text = data + sampleData.GetPosition();
+    sampleData.SkipChars(textLength);
+  }
+
+  std::vector<StyleRecord> styleRecords;
+
+  // Read all TextSampleModifierBox types
+  while (sampleData.CharsLeft() > 0)
+  {
+    if (sampleData.CharsLeft() < MP4_BOX_HEADER_SIZE)
     {
-      CLog::Log(LOGDEBUG, "CDVDOverlayCodecTX3G: TextSampleModifierBox has unsupported large size");
-      break;
-    }
-    LEN_CHECK(4);
-    uint32_t type = READ_U32();
-    if (type == FOURCC("uuid"))
-    {
-      CLog::Log(LOGDEBUG,
-                "CDVDOverlayCodecTX3G: TextSampleModifierBox has unsupported extended type");
+      CLog::Log(LOGWARNING, "{} - Incomplete box header found", __FUNCTION__);
       break;
     }
 
-    if (type == FOURCC("styl"))
+    uint32_t boxSize = sampleData.ReadNextUnsignedInt();
+    uint32_t boxType = sampleData.ReadNextUnsignedInt();
+
+    if (boxType == BOX_TYPE_UUID)
     {
-      // Found a StyleBox. Parse the contained StyleRecords
-      if (numStyleRecords != 0)
+      CLog::Log(LOGDEBUG, "{} - Sample data has unsupported extended type 'uuid'", __FUNCTION__);
+    }
+    else if (boxType == BOX_TYPE_STYL)
+    {
+      // Parse the contained StyleRecords
+      if (styleRecords.size() != 0)
       {
-        CLog::Log(LOGDEBUG,
-                  "CDVDOverlayCodecTX3G: found additional StyleBoxes on subtitle; skipping");
-        LEN_CHECK(size);
-        SKIP_ARRAY(size);
+        CLog::Log(LOGDEBUG, "{} - Found additional TextStyleBox, skipping", __FUNCTION__);
+        sampleData.SkipChars(boxSize - MP4_BOX_HEADER_SIZE);
         continue;
       }
 
-      LEN_CHECK(2);
-      numStyleRecords = READ_U16();
-      for (int i = 0; i < numStyleRecords; i++)
+      if (sampleData.CharsLeft() < 2)
       {
-        StyleRecord curRecord;
-        LEN_CHECK(12);
-        curRecord.bgnChar = READ_U16();
-        curRecord.endChar = READ_U16();
-        curRecord.fontID = READ_U16();
-        curRecord.faceStyleFlags = READ_U8();
-        curRecord.fontSize = READ_U8();
-        curRecord.textColorRGBA = READ_U32();
-        // clamp bgnChar/bgnChar to textLength,
-        // we alloc enough space above and this
-        // fixes borken encoders that do not handle
-        // endChar correctly.
-        if (curRecord.bgnChar > textLength)
-          curRecord.bgnChar = textLength;
-        if (curRecord.endChar > textLength)
-          curRecord.endChar = textLength;
+        CLog::Log(LOGWARNING, "{} - Incomplete TextStyleBox header found", __FUNCTION__);
+        return OverlayMessage::OC_ERROR;
+      }
+      uint16_t styleCount = sampleData.ReadNextUnsignedShort();
 
-        bgnStyle[curRecord.bgnChar] |= curRecord.faceStyleFlags;
-        endStyle[curRecord.endChar] |= curRecord.faceStyleFlags;
-        bgnColorIndex = curRecord.bgnChar;
-        endColorIndex = curRecord.endChar;
-        textColorRGBA = curRecord.textColorRGBA;
+      // Get the data of each style record
+      // Each style is ordered by starting character offset, and the starting
+      // offset of one style record shall be greater than or equal to the
+      // ending character offset of the preceding record.
+      for (int i = 0; i < styleCount; i++)
+      {
+        if (sampleData.CharsLeft() < 12)
+        {
+          CLog::Log(LOGWARNING, "{} - Incomplete StyleRecord found, skipping", __FUNCTION__);
+          sampleData.SkipChars(sampleData.CharsLeft());
+          continue;
+        }
+
+        StyleRecord styleRec;
+        styleRec.startChar = sampleData.ReadNextUnsignedShort();
+        styleRec.endChar = sampleData.ReadNextUnsignedShort();
+        styleRec.fontID = sampleData.ReadNextUnsignedShort();
+        styleRec.faceStyleFlags = sampleData.ReadNextUnsignedChar();
+        styleRec.fontSize = sampleData.ReadNextUnsignedChar();
+        styleRec.textColorARGB = UTILS::ConvertToARGB(sampleData.ReadNextUnsignedInt());
+        styleRec.textColorAlphaCh = (styleRec.textColorARGB & 0xFF000000) >> 24;
+        // clamp bgnChar/bgnChar to textLength, we alloc enough space above and
+        // this fixes borken encoders that do not handle endChar correctly.
+        if (styleRec.startChar > textLength)
+          styleRec.startChar = textLength;
+        if (styleRec.endChar > textLength)
+          styleRec.endChar = textLength;
+
+        styleRecords.emplace_back(styleRec);
       }
     }
     else
     {
-      // Found some other kind of TextSampleModifierBox. Skip it.
-      LEN_CHECK(size);
-      SKIP_ARRAY(size);
+      // Other types of TextSampleModifierBox are not supported
+      sampleData.SkipChars(boxSize - MP4_BOX_HEADER_SIZE);
     }
   }
 
-  // Copy text to out and add HTML markup for the style records
-  int charIndex = 0;
+  uint16_t charIndex = 0;
+  size_t styleIndex = 0;
   std::string strUTF8;
+  bool skipChars = false;
+  // Parse the text to add the converted styles records,
   // index over textLength chars to include broken encoders,
   // so we pickup closing styles on broken encoders
-  for (pos = text, end = text + textLength; pos <= end; pos++)
+  for (char* curPos = text; curPos <= text + textLength; curPos++)
   {
-    if ((*pos & 0xC0) == 0x80)
+    if ((*curPos & 0xC0) == 0x80)
     {
       // Is a non-first byte of a multi-byte UTF-8 character
-      strUTF8.append((const char*)pos, 1);
+      strUTF8.append(static_cast<const char*>(curPos), 1);
       continue; // ...without incrementing 'charIndex'
     }
 
-    uint8_t bgnStyles = bgnStyle[charIndex];
-    uint8_t endStyles = endStyle[charIndex];
-
-    if (endStyles & BOLD)
-      strUTF8.append("{\\b0}");
-    if (endStyles & ITALIC)
-      strUTF8.append("{\\i0}");
-    if (endStyles & UNDERLINE)
-      strUTF8.append("{\\u0}");
-    if (endColorIndex == charIndex && textColorRGBA != m_textColor)
-      strUTF8.append("{\\c}");
-
-    // invert the order from above so we bracket the text correctly.
-    if (bgnColorIndex == charIndex && textColorRGBA != m_textColor)
+    if (styleIndex < styleRecords.size())
     {
-      uint32_t color = UTILS::ConvertToBGR(UTILS::ConvertToARGB(textColorRGBA));
-      strUTF8 += "{\\c&H" + StringUtils::Format("{:6x}", color) + "&}";
+      if (styleRecords[styleIndex].endChar == charIndex)
+      {
+        ConvertStyleToTags(strUTF8, styleRecords[styleIndex], true);
+        styleIndex++;
+      }
+      if (styleRecords[styleIndex].startChar == charIndex)
+      {
+        ConvertStyleToTags(strUTF8, styleRecords[styleIndex], false);
+      }
     }
 
-    if (bgnStyles & UNDERLINE)
-      strUTF8.append("{\\u1}");
-    if (bgnStyles & ITALIC)
-      strUTF8.append("{\\i1}");
-    if (bgnStyles & BOLD)
-      strUTF8.append("{\\b1}");
+    if (*curPos == '{') // erase unsupport tags
+      skipChars = true;
 
-    // stuff the UTF8 char
-    strUTF8.append((const char*)pos, 1);
+    // Skip all \r because it causes the line to display empty box "tofu"
+    if (!skipChars && *curPos != '\0' && *curPos != '\r')
+      strUTF8.append(static_cast<const char*>(curPos), 1);
 
-    // this is a char index, not a byte index.
+    if (*curPos == '}')
+      skipChars = false;
+
     charIndex++;
   }
 
@@ -254,28 +249,6 @@ OverlayMessage CDVDOverlayCodecTX3G::Decode(DemuxPacket* pPacket)
 
   if (strUTF8[strUTF8.size() - 1] == '\n')
     strUTF8.erase(strUTF8.size() - 1);
-
-  // erase unsupport tags
-  CRegExp tags;
-  if (tags.RegComp("(\\{[^\\}]*\\})"))
-  {
-    int pos = 0;
-    while ((pos = tags.RegFind(strUTF8.c_str(), pos)) >= 0)
-    {
-      std::string tag = tags.GetMatch(0);
-      if (tag == "{\\b0}" || tag == "{\\b1}" || tag == "{\\i0}" || tag == "{\\i1}" ||
-          tag == "{\\u0}" || tag == "{\\u1}" || tag == "{\\c}" ||
-          StringUtils::StartsWith(tag, "{\\c&H"))
-      {
-        pos += tag.length();
-        continue;
-      }
-      strUTF8.erase(pos, tag.length());
-    }
-  }
-
-  // We have to remove all \r because it causes the line to display empty box "tofu"
-  StringUtils::Replace(strUTF8, "\r", "");
 
   AddSubtitle(strUTF8.c_str(), PTSStartTime, PTSStopTime);
 
