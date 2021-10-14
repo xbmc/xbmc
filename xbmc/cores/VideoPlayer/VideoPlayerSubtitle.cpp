@@ -47,9 +47,9 @@ void CVideoPlayerSubtitle::SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priori
 
     if (m_pOverlayCodec)
     {
-      int result = m_pOverlayCodec->Decode(pPacket);
+      OverlayMessage result = m_pOverlayCodec->Decode(pPacket);
 
-      if(result == OC_OVERLAY)
+      if (result == OverlayMessage::OC_OVERLAY)
       {
         CDVDOverlay* overlay;
 

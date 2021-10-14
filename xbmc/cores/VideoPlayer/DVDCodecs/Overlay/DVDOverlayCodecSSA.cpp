@@ -50,10 +50,10 @@ void CDVDOverlayCodecSSA::Dispose()
   }
 }
 
-int CDVDOverlayCodecSSA::Decode(DemuxPacket* pPacket)
+OverlayMessage CDVDOverlayCodecSSA::Decode(DemuxPacket* pPacket)
 {
   if (!pPacket)
-    return OC_ERROR;
+    return OverlayMessage::OC_ERROR;
 
   double pts = pPacket->dts != DVD_NOPTS_VALUE ? pPacket->dts : pPacket->pts;
   // libass only has a precision of msec
@@ -102,7 +102,7 @@ int CDVDOverlayCodecSSA::Decode(DemuxPacket* pPacket)
     m_libass->DecodeDemuxPkt((char*)data, size, pts, duration);
   }
 
-  return m_pOverlay ? OC_DONE : OC_OVERLAY;
+  return m_pOverlay ? OverlayMessage::OC_DONE : OverlayMessage::OC_OVERLAY;
 }
 
 void CDVDOverlayCodecSSA::Reset()

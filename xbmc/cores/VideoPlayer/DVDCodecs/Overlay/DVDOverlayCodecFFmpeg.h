@@ -24,7 +24,7 @@ public:
   CDVDOverlayCodecFFmpeg();
   ~CDVDOverlayCodecFFmpeg() override;
   bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) override;
-  int Decode(DemuxPacket *pPacket) override;
+  OverlayMessage Decode(DemuxPacket* pPacket) override;
   void Reset() override;
   void Flush() override;
   CDVDOverlay* GetOverlay() override;

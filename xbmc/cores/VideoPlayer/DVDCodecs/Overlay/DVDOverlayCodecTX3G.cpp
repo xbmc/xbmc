@@ -31,7 +31,7 @@
   do \
   { \
     if ((end - pos) < static_cast<std::ptrdiff_t>(x)) \
-      return OC_ERROR; \
+      return OverlayMessage::OC_ERROR; \
   } while (0)
 
 // NOTE: None of these macros check for buffer overflow
@@ -103,7 +103,7 @@ void CDVDOverlayCodecTX3G::Dispose()
   }
 }
 
-int CDVDOverlayCodecTX3G::Decode(DemuxPacket* pPacket)
+OverlayMessage CDVDOverlayCodecTX3G::Decode(DemuxPacket* pPacket)
 {
   double PTSStartTime = 0;
   double PTSStopTime = 0;
@@ -253,7 +253,7 @@ int CDVDOverlayCodecTX3G::Decode(DemuxPacket* pPacket)
   }
 
   if (strUTF8.empty())
-    return OC_BUFFER;
+    return OverlayMessage::OC_BUFFER;
 
   if (strUTF8[strUTF8.size() - 1] == '\n')
     strUTF8.erase(strUTF8.size() - 1);
@@ -282,7 +282,7 @@ int CDVDOverlayCodecTX3G::Decode(DemuxPacket* pPacket)
 
   AddSubtitle(strUTF8.c_str(), PTSStartTime, PTSStopTime);
 
-  return m_pOverlay ? OC_DONE : OC_OVERLAY;
+  return m_pOverlay ? OverlayMessage::OC_DONE : OverlayMessage::OC_OVERLAY;
 }
 
 void CDVDOverlayCodecTX3G::Reset()

@@ -55,10 +55,10 @@ void CDVDOverlayCodecCCText::Dispose()
   }
 }
 
-int CDVDOverlayCodecCCText::Decode(DemuxPacket* pPacket)
+OverlayMessage CDVDOverlayCodecCCText::Decode(DemuxPacket* pPacket)
 {
   if (!pPacket)
-    return OC_ERROR;
+    return OverlayMessage::OC_ERROR;
 
   uint8_t* data = pPacket->pData;
   std::string text((char*)data, (char*)(data + pPacket->iSize));
@@ -120,7 +120,7 @@ int CDVDOverlayCodecCCText::Decode(DemuxPacket* pPacket)
   else
     CLog::Log(LOGERROR, "{} - Failed to initialize tag converter", __FUNCTION__);
 
-  return m_pOverlay ? OC_DONE : OC_OVERLAY;
+  return m_pOverlay ? OverlayMessage::OC_DONE : OverlayMessage::OC_OVERLAY;
 }
 
 void CDVDOverlayCodecCCText::Reset()

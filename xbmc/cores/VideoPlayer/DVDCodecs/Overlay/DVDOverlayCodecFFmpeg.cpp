@@ -118,10 +118,10 @@ void CDVDOverlayCodecFFmpeg::Dispose()
   avcodec_free_context(&m_pCodecContext);
 }
 
-int CDVDOverlayCodecFFmpeg::Decode(DemuxPacket *pPacket)
+OverlayMessage CDVDOverlayCodecFFmpeg::Decode(DemuxPacket* pPacket)
 {
   if (!m_pCodecContext || !pPacket)
-    return 1;
+    return OverlayMessage::OC_ERROR;
 
   int gotsub = 0, len = 0;
 
@@ -132,7 +132,7 @@ int CDVDOverlayCodecFFmpeg::Decode(DemuxPacket *pPacket)
   {
     CLog::Log(LOGERROR, "CDVDOverlayCodecFFmpeg::{} - av_packet_alloc failed: {}", __FUNCTION__,
               strerror(errno));
-    return OC_ERROR;
+    return OverlayMessage::OC_ERROR;
   }
 
   avpkt->data = pPacket->pData;
@@ -150,7 +150,7 @@ int CDVDOverlayCodecFFmpeg::Decode(DemuxPacket *pPacket)
   {
     CLog::Log(LOGERROR, "{} - avcodec_decode_subtitle returned failure", __FUNCTION__);
     Flush();
-    return OC_ERROR;
+    return OverlayMessage::OC_ERROR;
   }
 
   if (len != size)
@@ -158,7 +158,7 @@ int CDVDOverlayCodecFFmpeg::Decode(DemuxPacket *pPacket)
               __FUNCTION__);
 
   if (!gotsub)
-    return OC_BUFFER;
+    return OverlayMessage::OC_BUFFER;
 
   double pts_offset = 0.0;
 
@@ -186,7 +186,7 @@ int CDVDOverlayCodecFFmpeg::Decode(DemuxPacket *pPacket)
 
   m_SubtitleIndex = 0;
 
-  return OC_OVERLAY;
+  return OverlayMessage::OC_OVERLAY;
 }
 
 void CDVDOverlayCodecFFmpeg::Reset()
