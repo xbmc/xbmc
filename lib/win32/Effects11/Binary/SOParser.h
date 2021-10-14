@@ -108,6 +108,7 @@ protected:
     HRESULT Parse( _In_ uint32_t Stream, _In_z_ LPCSTR pString )
     {
         HRESULT hr = S_OK;
+        LPSTR pSemantic = nullptr;
 
         m_pError[0] = 0;
 
@@ -122,7 +123,7 @@ protected:
         VN( m_SemanticString[Stream] = new char[len + 1] );
         strcpy_s( m_SemanticString[Stream], len + 1, pString );
 
-        LPSTR pSemantic = m_SemanticString[Stream];
+        pSemantic = m_SemanticString[Stream];
 
         while( true )
         {
@@ -245,7 +246,8 @@ lExit:
         _Analysis_assume_( ppSemantic && *ppSemantic );
 
         HRESULT hr = S_OK;
-        LPSTR pColon = strchr( *ppSemantic, ':' ); 
+        LPSTR pColon = strchr( *ppSemantic, ':' );
+        int outputSlot = 0;
 
         if( pColon == nullptr )
             return S_OK;
@@ -258,7 +260,7 @@ lExit:
         }
 
         *pColon = '\0';
-        int outputSlot = atoi( *ppSemantic );
+        outputSlot = atoi(*ppSemantic);
         if( outputSlot < 0 || outputSlot > 255 )
         {
             strcpy_s( m_pError, MAX_ERROR_SIZE,

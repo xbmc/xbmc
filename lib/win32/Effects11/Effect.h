@@ -13,6 +13,9 @@
 
 #include "EffectBinaryFormat.h"
 #include "IUnknownImp.h"
+#include "d3dxGlobal.h"
+
+#include <cassert>
 
 #ifdef _DEBUG
 extern void __cdecl D3DXDebugPrintf(UINT lvl, _In_z_ _Printf_format_string_ LPCSTR szFormat, ...);

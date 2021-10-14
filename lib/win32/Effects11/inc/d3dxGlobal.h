@@ -71,6 +71,13 @@ using namespace D3DX11Debug;
 
 #define D3DX11FLTASSIGN(a,b)    { *reinterpret_cast< UINT32* >(&(a)) = *reinterpret_cast< UINT32* >(&(b)); }
 
+#ifdef _DEBUG
+extern void __cdecl D3DXDebugPrintf(UINT lvl, _In_z_ _Printf_format_string_ LPCSTR szFormat, ...);
+#define DPF D3DXDebugPrintf
+#else
+#define DPF
+#endif
+
 // Preferred data alignment -- must be a power of 2!
 static const uint32_t c_DataAlignment = sizeof(UINT_PTR);
 
@@ -426,44 +433,45 @@ lExit:
 //////////////////////////////////////////////////////////////////////////
 // CEffectVectorOwner - implements a vector of ptrs to objects. The vector owns the objects.
 //////////////////////////////////////////////////////////////////////////
-template<class T> class CEffectVectorOwner : public CEffectVector<T*>
+template<class T>
+class CEffectVectorOwner : public CEffectVector<typename T*>
 {
 public:
     ~CEffectVectorOwner<T>()
     {
         Clear();
 
-        for (size_t i=0; i<m_CurSize; i++)
-            SAFE_DELETE(((T**)m_pData)[i]);
+        for (size_t i = 0; i < this->m_CurSize; i++)
+          SAFE_DELETE(((T**)this->m_pData)[i]);
 
-        SAFE_DELETE_ARRAY(m_pData);
+        SAFE_DELETE_ARRAY(this->m_pData);
     }
 
     void Clear()
     {
         Empty();
-        SAFE_DELETE_ARRAY(m_pData);
-        m_MaxSize = 0;
+        SAFE_DELETE_ARRAY(this->m_pData);
+        this->m_MaxSize = 0;
     }
 
     void Empty()
     {
         // manually invoke destructor on all elements
-        for (size_t i = 0; i < m_CurSize; ++ i)
+        for (size_t i = 0; i < this->m_CurSize; ++i)
         {
-            SAFE_DELETE(((T**)m_pData)[i]);
+          SAFE_DELETE(((T**)this->m_pData)[i]);
         }
-        m_CurSize = 0;
-        m_hLastError = S_OK;
+        this->m_CurSize = 0;
+        this->m_hLastError = S_OK;
     }
 
     void Delete(_In_ uint32_t index)
     {
-        assert(index < m_CurSize);
+      assert(index < this->m_CurSize);
 
-        SAFE_DELETE(((T**)m_pData)[index]);
+      SAFE_DELETE(((T**)this->m_pData)[index]);
 
-        CEffectVector<T*>::Delete(index);
+      CEffectVector<T*>::Delete(index);
     }
 };
 
@@ -1247,9 +1255,9 @@ public:
 
     void Cleanup()
     {
-        CleanArray();
-        m_NumHashSlots = 0;
-        m_NumEntries = 0;
+      this->CleanArray();
+      this->m_NumHashSlots = 0;
+      this->m_NumEntries = 0;
     }
 
     ~CEffectHashTableWithPrivateHeap()
@@ -1271,18 +1279,21 @@ public:
 
         assert(m_pPrivateHeap);
         _Analysis_assume_(m_pPrivateHeap);
-        assert(m_NumHashSlots > 0);
+        assert(this->m_NumHashSlots > 0);
 
-        SHashEntry *pHashEntry;
-        uint32_t index = Hash % m_NumHashSlots;
+        using HashEntry = typename CEffectHashTable<T, pfnIsEqual>::SHashEntry;
 
-        VN( pHashEntry = new(*m_pPrivateHeap) SHashEntry );
-        pHashEntry->pNext = m_rgpHashEntries[index];
+        HashEntry* pHashEntry;
+        uint32_t index = Hash % this->m_NumHashSlots;
+
+
+        VN(pHashEntry = new (*this->m_pPrivateHeap) HashEntry);
+        pHashEntry->pNext = this->m_rgpHashEntries[index];
         pHashEntry->Data = Data;
         pHashEntry->Hash = Hash;
-        m_rgpHashEntries[index] = pHashEntry;
+        this->m_rgpHashEntries[index] = pHashEntry;
 
-        ++ m_NumEntries;
+        ++this->m_NumEntries;
 
 lExit:
         return hr;
