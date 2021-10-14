@@ -195,7 +195,10 @@ void CAESinkXAudio::GetDelay(AEDelayStatus& status)
   int retries = 0;
 
   if (!m_initialized)
-    goto failed;
+  {
+    status.SetDelay(0.0);
+    return;
+  }
 
   XAUDIO2_VOICE_STATE state;
   m_sourceVoice->GetState(&state, 0);
@@ -203,9 +206,6 @@ void CAESinkXAudio::GetDelay(AEDelayStatus& status)
   double delay = (double)(m_sinkFrames - state.SamplesPlayed) / m_format.m_sampleRate;
   status.SetDelay(delay);
   return;
-
-failed:
-  status.SetDelay(0);
 }
 
 double CAESinkXAudio::GetCacheTotal()
@@ -339,6 +339,9 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
   bool add192 = false;
 
   UINT32 eflags = 0;// XAUDIO2_DEBUG_ENGINE;
+
+  IXAudio2MasteringVoice* mMasterVoice = nullptr;
+  IXAudio2SourceVoice* mSourceVoice = nullptr;
   Microsoft::WRL::ComPtr<IXAudio2> xaudio2;
   hr = XAudio2Create(xaudio2.ReleaseAndGetAddressOf(), eflags);
   if (FAILED(hr))
@@ -346,9 +349,6 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
     CLog::Log(LOGDEBUG, __FUNCTION__": Failed to activate XAudio for capability testing.");
     goto failed;
   }
-
-  IXAudio2MasteringVoice* mMasterVoice = nullptr;
-  IXAudio2SourceVoice* mSourceVoice = nullptr;
 
   for(RendererDetail& details : CAESinkFactoryWin::GetRendererDetails())
   {
@@ -672,6 +672,10 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
 
   m_masterVoice = pMasterVoice;
 
+  int closestMatch = 0;
+  unsigned int requestedChannels = 0;
+  unsigned int noOfCh = 0;
+
   hr = m_xAudio2->CreateSourceVoice(&m_sourceVoice, &wfxex.Format, 0, XAUDIO2_DEFAULT_FREQ_RATIO, &m_voiceCallback);
   if (SUCCEEDED(hr))
   {
@@ -687,9 +691,7 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
               __FUNCTION__ ": CreateSourceVoice failed ({}) - trying to find a compatible format",
               WASAPIErrToStr(hr));
 
-  int closestMatch;
-  unsigned int requestedChannels = wfxex.Format.nChannels;
-  unsigned int noOfCh;
+  requestedChannels = wfxex.Format.nChannels;
 
   /* The requested format is not supported by the device.  Find something that works */
   for (int layout = -1; layout <= (int)ARRAYSIZE(layoutsList); layout++)

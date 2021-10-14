@@ -78,6 +78,8 @@ bool win32_exception::write_minidump(EXCEPTION_POINTERS* pEp)
   HANDLE hDumpFile = CreateFileW(dumpFileNameW.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
 
   HMODULE hDbgHelpDll = nullptr;
+  BOOL bMiniDumpSuccessful = FALSE;
+  MINIDUMPWRITEDUMP pDump = nullptr;
 
   if (hDumpFile == INVALID_HANDLE_VALUE)
   {
@@ -91,7 +93,7 @@ bool win32_exception::write_minidump(EXCEPTION_POINTERS* pEp)
     goto cleanup;
   }
 
-  MINIDUMPWRITEDUMP pDump = (MINIDUMPWRITEDUMP)::GetProcAddress(hDbgHelpDll, "MiniDumpWriteDump");
+  pDump = (MINIDUMPWRITEDUMP)::GetProcAddress(hDbgHelpDll, "MiniDumpWriteDump");
   if (!pDump)
   {
     goto cleanup;
@@ -106,7 +108,8 @@ bool win32_exception::write_minidump(EXCEPTION_POINTERS* pEp)
   // Call the minidump api with normal dumping
   // We can get more detail information by using other minidump types but the dump file will be
   // extremely large.
-  BOOL bMiniDumpSuccessful = pDump(GetCurrentProcess(), GetCurrentProcessId(), hDumpFile, MiniDumpNormal, &mdei, 0, NULL);
+  bMiniDumpSuccessful =
+      pDump(GetCurrentProcess(), GetCurrentProcessId(), hDumpFile, MiniDumpNormal, &mdei, 0, NULL);
   if( !bMiniDumpSuccessful )
   {
     goto cleanup;
@@ -144,9 +147,20 @@ bool win32_exception::write_stacktrace(EXCEPTION_POINTERS* pEp)
   HANDLE hCurProc = GetCurrentProcess();
   IMAGEHLP_SYMBOL64* pSym = NULL;
   HANDLE hDumpFile = INVALID_HANDLE_VALUE;
-  tSC pSC = NULL;
+  tSC pSC = nullptr;
   IMAGEHLP_LINE64 Line = {};
   Line.SizeOfStruct = sizeof(Line);
+  tSI pSI = nullptr;
+  tSGO pSGO = nullptr;
+  tSSO pSSO = nullptr;
+  tSW pSW = nullptr;
+  tSGSFA pSGSFA = nullptr;
+  tUDSN pUDSN = nullptr;
+  tSGLFA pSGLFA = nullptr;
+  tSFTA pSFTA = nullptr;
+  tSGMB pSGMB = nullptr;
+  DWORD symOptions = 0;
+  int seq = 0;
 
   HMODULE hDbgHelpDll = ::LoadLibrary(L"DBGHELP.DLL");
   if (!hDbgHelpDll)
@@ -154,16 +168,16 @@ bool win32_exception::write_stacktrace(EXCEPTION_POINTERS* pEp)
     goto cleanup;
   }
 
-  tSI pSI       = (tSI) GetProcAddress(hDbgHelpDll, "SymInitialize" );
-  tSGO pSGO     = (tSGO) GetProcAddress(hDbgHelpDll, "SymGetOptions" );
-  tSSO pSSO     = (tSSO) GetProcAddress(hDbgHelpDll, "SymSetOptions" );
+  pSI = (tSI)GetProcAddress(hDbgHelpDll, "SymInitialize");
+  pSGO = (tSGO)GetProcAddress(hDbgHelpDll, "SymGetOptions");
+  pSSO = (tSSO)GetProcAddress(hDbgHelpDll, "SymSetOptions");
   pSC           = (tSC) GetProcAddress(hDbgHelpDll, "SymCleanup" );
-  tSW pSW       = (tSW) GetProcAddress(hDbgHelpDll, "StackWalk64" );
-  tSGSFA pSGSFA = (tSGSFA) GetProcAddress(hDbgHelpDll, "SymGetSymFromAddr64" );
-  tUDSN pUDSN   = (tUDSN) GetProcAddress(hDbgHelpDll, "UnDecorateSymbolName" );
-  tSGLFA pSGLFA = (tSGLFA) GetProcAddress(hDbgHelpDll, "SymGetLineFromAddr64" );
-  tSFTA pSFTA   = (tSFTA) GetProcAddress(hDbgHelpDll, "SymFunctionTableAccess64" );
-  tSGMB pSGMB   = (tSGMB) GetProcAddress(hDbgHelpDll, "SymGetModuleBase64" );
+  pSW = (tSW)GetProcAddress(hDbgHelpDll, "StackWalk64");
+  pSGSFA = (tSGSFA)GetProcAddress(hDbgHelpDll, "SymGetSymFromAddr64");
+  pUDSN = (tUDSN)GetProcAddress(hDbgHelpDll, "UnDecorateSymbolName");
+  pSGLFA = (tSGLFA)GetProcAddress(hDbgHelpDll, "SymGetLineFromAddr64");
+  pSFTA = (tSFTA)GetProcAddress(hDbgHelpDll, "SymFunctionTableAccess64");
+  pSGMB = (tSGMB)GetProcAddress(hDbgHelpDll, "SymGetModuleBase64");
 
   if(pSI == NULL || pSGO == NULL || pSSO == NULL || pSC == NULL || pSW == NULL || pSGSFA == NULL || pUDSN == NULL || pSGLFA == NULL ||
      pSFTA == NULL || pSGMB == NULL)
@@ -200,7 +214,7 @@ bool win32_exception::write_stacktrace(EXCEPTION_POINTERS* pEp)
   if(pSI(hCurProc, NULL, TRUE) == FALSE)
     goto cleanup;
 
-  DWORD symOptions = pSGO();
+  symOptions = pSGO();
   symOptions |= SYMOPT_LOAD_LINES;
   symOptions |= SYMOPT_FAIL_CRITICAL_ERRORS;
   symOptions &= ~SYMOPT_UNDNAME;
@@ -214,7 +228,6 @@ bool win32_exception::write_stacktrace(EXCEPTION_POINTERS* pEp)
   pSym->SizeOfStruct = sizeof(IMAGEHLP_SYMBOL64);
   pSym->MaxNameLength = STACKWALK_MAX_NAMELEN;
 
-  int seq=0;
 
   strOutput = StringUtils::Format("Thread {} (process {})\r\n", GetCurrentThreadId(),
                                   GetCurrentProcessId());

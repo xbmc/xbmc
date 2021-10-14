@@ -323,7 +323,7 @@ bool CWinSystemWin10::ChangeResolution(const RESOLUTION_INFO& res, bool forceCha
         auto hdmiModes = hdmiInfo.GetSupportedDisplayModes();
 
         HdmiDisplayMode selected = nullptr;
-        for (auto& mode : hdmiModes)
+        for (const auto& mode : hdmiModes)
         {
           if (res.iScreenWidth == mode.ResolutionWidthInRawPixels() && res.iScreenHeight == mode.ResolutionHeightInRawPixels()
             && fabs(res.fRefreshRate - mode.RefreshRate()) <= 0.00001)
@@ -394,7 +394,7 @@ void CWinSystemWin10::UpdateResolutions()
     if (hdmiInfo != nullptr)
     {
       auto hdmiModes = hdmiInfo.GetSupportedDisplayModes();
-      for (auto& mode : hdmiModes)
+      for (const auto& mode : hdmiModes)
       {
         RESOLUTION_INFO res;
         res.iWidth = mode.ResolutionWidthInRawPixels();

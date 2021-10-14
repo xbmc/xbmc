@@ -76,8 +76,8 @@ public:
   {
     // if the default device changes this function is called four times.
     // therefore we call CServiceBroker::GetActiveAE()->DeviceChange() only for one role.
-    char  *pszFlow = "?????";
-    char  *pszRole = "?????";
+    std::string pszFlow = "?????";
+    std::string pszRole = "?????";
 
     switch (flow)
     {
@@ -124,7 +124,7 @@ public:
 
   HRESULT STDMETHODCALLTYPE OnDeviceStateChanged(LPCWSTR pwstrDeviceId, DWORD dwNewState)
   {
-    char  *pszState = "?????";
+    std::string pszState = "?????";
 
     switch (dwNewState)
     {

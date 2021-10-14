@@ -56,7 +56,7 @@ enum cc_charset
   CCSET_EXTENDED_PORTUGUESE_GERMAN_DANISH
 };
 
-char* get_char_override(uint8_t charset, uint8_t c)
+const char* get_char_override(uint8_t charset, uint8_t c)
 {
   if (charset == CCSET_BASIC_AMERICAN)
   {
@@ -456,7 +456,8 @@ void ccmem_tobuf(cc_decoder_t *dec)
           break;
       for (j = f; j <= l; j++)
       {
-        char* chbytes = get_char_override(buf->rows[i].cells[j].charset, buf->rows[i].cells[j].c);
+        const char* chbytes =
+            get_char_override(buf->rows[i].cells[j].charset, buf->rows[i].cells[j].c);
         if (chbytes != NULL)
         {
           for (; *chbytes != '\0'; chbytes++)

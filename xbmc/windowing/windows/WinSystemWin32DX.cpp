@@ -260,12 +260,12 @@ void CWinSystemWin32DX::InitHooks(IDXGIOutput* pOutput)
 
   CLog::LogF(LOGDEBUG, "Hooking into UserModeDriver on device {}. ",
              FromW(displayDevice.DeviceKey));
-  wchar_t* keyName =
+  const wchar_t* keyName =
 #ifndef _M_X64
-  // on x64 system and x32 build use UserModeDriverNameWow key
-  CSysInfo::GetKernelBitness() == 64 ? keyName = L"UserModeDriverNameWow" :
+      // on x64 system and x32 build use UserModeDriverNameWow key
+      CSysInfo::GetKernelBitness() == 64 ? keyName = L"UserModeDriverNameWow" :
 #endif // !_WIN64
-    L"UserModeDriverName";
+                                         L"UserModeDriverName";
 
   DWORD dwType = REG_MULTI_SZ;
   HKEY hKey = nullptr;

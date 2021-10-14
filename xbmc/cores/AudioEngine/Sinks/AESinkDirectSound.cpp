@@ -435,6 +435,7 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bo
 
   ComPtr<IMMDeviceEnumerator> pEnumerator = nullptr;
   ComPtr<IMMDeviceCollection> pEnumDevices = nullptr;
+  UINT uiCount = 0;
 
   HRESULT                hr;
 
@@ -443,8 +444,6 @@ void CAESinkDirectSound::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bo
   /* Windows Vista or later - supporting WASAPI device probing */
   hr = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, reinterpret_cast<void**>(pEnumerator.GetAddressOf()));
   EXIT_ON_FAILURE(hr, "Could not allocate WASAPI device enumerator.")
-
-  UINT uiCount = 0;
 
   hr = pEnumerator->EnumAudioEndpoints(eRender, DEVICE_STATE_ACTIVE, pEnumDevices.GetAddressOf());
   EXIT_ON_FAILURE(hr, "Retrieval of audio endpoint enumeration failed.")
@@ -728,6 +727,7 @@ std::string CAESinkDirectSound::GetDefaultDevice()
   ComPtr<IPropertyStore> pProperty = nullptr;
   PROPVARIANT varName;
   std::string strDevName = "default";
+  AEDeviceType aeDeviceType;
 
   hr = CoCreateInstance(CLSID_MMDeviceEnumerator, nullptr, CLSCTX_ALL, IID_IMMDeviceEnumerator, reinterpret_cast<void**>(pEnumerator.GetAddressOf()));
   EXIT_ON_FAILURE(hr, "Could not allocate WASAPI device enumerator")
@@ -742,7 +742,7 @@ std::string CAESinkDirectSound::GetDefaultDevice()
   hr = pProperty->GetValue(PKEY_AudioEndpoint_FormFactor, &varName);
   EXIT_ON_FAILURE(hr, "Retrival of DirectSound endpoint form factor failed.")
 
-  AEDeviceType aeDeviceType = winEndpoints[(EndpointFormFactor)varName.uiVal].aeDeviceType;
+  aeDeviceType = winEndpoints[(EndpointFormFactor)varName.uiVal].aeDeviceType;
   PropVariantClear(&varName);
 
   hr = pProperty->GetValue(PKEY_AudioEndpoint_GUID, &varName);
