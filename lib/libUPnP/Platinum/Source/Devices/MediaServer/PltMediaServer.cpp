@@ -401,7 +401,7 @@ PLT_MediaServer::ParseTagList(const NPT_String& updates, NPT_Map<NPT_String,NPT_
         NPT_XmlElementNode* child = (*children)->AsElementNode();
         if (!child) continue;
         const NPT_String *txt = child->GetText();
-        tags[child->GetTag()] = txt ? *txt : "";
+        tags[child->GetTag()] = txt ? txt->GetChars() : "";
     }
 
     return NPT_SUCCESS;

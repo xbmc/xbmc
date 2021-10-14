@@ -305,11 +305,12 @@ PLT_DeviceHost::Announce(PLT_DeviceData*      device,
             break;
     }
     PLT_UPnPMessageHelper::SetNTS(req, nts);
-    
-    NPT_LOG_FINER_3("Sending SSDP NOTIFY (%s) Request to %s (%s)",
-                    nts.GetChars(),
+
+    NPT_LOG_FINER_3("Sending SSDP NOTIFY (%s) Request to %s (%s)", nts.GetChars(),
                     (const char*)req.GetUrl().ToString(),
-                    (const char*)(PLT_UPnPMessageHelper::GetLocation(req)?*PLT_UPnPMessageHelper::GetLocation(req):""));
+                    (const char*)(PLT_UPnPMessageHelper::GetLocation(req)
+                                      ? PLT_UPnPMessageHelper::GetLocation(req)->GetChars()
+                                      : ""));
 
     // upnp:rootdevice
     if (device->m_ParentUUID.IsEmpty()) {
@@ -585,14 +586,13 @@ PLT_DeviceHost::ProcessHttpPostRequest(NPT_HttpRequest&              request,
             name = "ObjectID";
         }
 
-        res = action->SetArgumentValue(
-            name,
-            child->GetText()?*child->GetText():"");
+        res = action->SetArgumentValue(name, child->GetText() ? child->GetText()->GetChars() : "");
 
-		// test if value was correct
-		if (res == NPT_ERROR_INVALID_PARAMETERS) {
-			action->SetError(701, "Invalid Name");
-			goto error;
+        // test if value was correct
+        if (res == NPT_ERROR_INVALID_PARAMETERS)
+        {
+          action->SetError(701, "Invalid Name");
+          goto error;
 		}
     }
 
