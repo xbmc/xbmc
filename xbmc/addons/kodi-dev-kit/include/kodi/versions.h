@@ -85,8 +85,8 @@
                                                       "tools/Thread.h" \
                                                       "tools/Timer.h"
 
-#define ADDON_INSTANCE_VERSION_AUDIODECODER           "3.0.0"
-#define ADDON_INSTANCE_VERSION_AUDIODECODER_MIN       "3.0.0"
+#define ADDON_INSTANCE_VERSION_AUDIODECODER           "4.0.0"
+#define ADDON_INSTANCE_VERSION_AUDIODECODER_MIN       "4.0.0"
 #define ADDON_INSTANCE_VERSION_AUDIODECODER_XML_ID    "kodi.binary.instance.audiodecoder"
 #define ADDON_INSTANCE_VERSION_AUDIODECODER_DEPENDS   "c-api/addon-instance/audiodecoder.h" \
                                                       "addon-instance/AudioDecoder.h"
