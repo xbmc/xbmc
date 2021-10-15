@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<window>
+	<defaultcontrol always="true">6</defaultcontrol>
+	<include>Animation_DialogPopupOpenClose</include>
+	<depth>DepthOSD</depth>
+	<controls>
+		<control type="group">
+			<centertop>50%</centertop>
+			<centerleft>50%</centerleft>
+			<height>750</height>
+			<width>1220</width>
+			<include content="DialogBackgroundCommons">
+				<param name="width" value="1220" />
+				<param name="height" value="790" />
+				<param name="header_label" value="" />
+				<param name="header_id" value="1" />
+			</include>
+			<control type="image">
+				<left>0</left>
+				<top>80</top>
+				<width>920</width>
+				<bottom>2</bottom>
+				<texture border="40">buttons/dialogbutton-nofo.png</texture>
+			</control>
+			<!-- Color picker panel -->
+			<control type="panel" id="6">
+				<left>20</left>
+				<top>100</top>
+				<width>880</width>
+				<bottom>26</bottom>
+				<onup>6</onup>
+				<ondown>6</ondown>
+				<onleft>9001</onleft>
+				<onright>61</onright>
+				<orientation>vertical</orientation>
+				<pagecontrol>61</pagecontrol>
+				<viewtype label="100">icon</viewtype>
+				<itemlayout height="80" width="146">
+					<control type="group">
+						<control type="image">
+							<top>3</top>
+							<left>8</left>
+							<width>138</width>
+							<height>74</height>
+							<texture border="0">colors/white.png</texture>
+							<colordiffuse>$INFO[ListItem.Label2]</colordiffuse>
+							<aspectratio>stretch</aspectratio>
+						</control>
+					</control>
+				</itemlayout>
+				<focusedlayout height="80" width="146">
+					<control type="group">
+						<animation effect="zoom" time="200" tween="sine" easing="inout" start="100" end="124" center="auto">Focus</animation>
+						<control type="image">
+							<top>3</top>
+							<left>8</left>
+							<width>138</width>
+							<height>74</height>
+							<texture border="0">colors/white.png</texture>
+							<colordiffuse>$INFO[ListItem.Label2]</colordiffuse>
+							<aspectratio>stretch</aspectratio>
+						</control>
+					</control>
+				</focusedlayout>
+			</control>
+			<control type="scrollbar" id="61">
+				<left>910</left>
+				<top>100</top>
+				<width>12</width>
+				<bottom>26</bottom>
+				<onleft condition="Control.IsVisible(6)">6</onleft>
+				<onright>9001</onright>
+				<orientation>vertical</orientation>
+			</control>
+			<control type="label">
+				<left>28</left>
+				<top>740</top>
+				<width>880</width>
+				<height>35</height>
+				<align>left</align>
+				<label>[COLOR button_focus]$LOCALIZE[737]: [/COLOR]$INFO[ListItem.Label,, - ]$INFO[ListItem.Label2,#,]</label>
+			</control>
+			<control type="label">
+				<left>925</left>
+				<top>748</top>
+				<width>275</width>
+				<height>35</height>
+				<font>font12</font>
+				<align>right</align>
+				<textcolor>grey</textcolor>
+				<label>$VAR[SelectLabel]</label>
+			</control>
+			<control type="grouplist" id="9001">
+				<left>920</left>
+				<top>80</top>
+				<onleft>61</onleft>
+				<itemgap>dialogbuttons_itemgap</itemgap>
+				<onright>6</onright>
+				<include content="DefaultDialogButton">
+					<param name="id" value="7" />
+					<param name="label" value="$LOCALIZE[222]" />
+				</include>
+			</control>
+		</control>
+	</controls>
+</window>

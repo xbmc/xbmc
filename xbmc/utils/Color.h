@@ -15,8 +15,16 @@ namespace UTILS
 
   typedef uint32_t Color;
 
-namespace COLOR
-{
+  struct ColorInfo
+  {
+    Color colorARGB;
+    double hue;
+    double saturation;
+    double lightness;
+  };
+
+  namespace COLOR
+  {
   static const Color NONE = 0x00000000;
   static const Color BLACK = 0xFF000000;
   static const Color YELLOW = 0xFFFFFF00;

@@ -13,6 +13,7 @@
 \brief
 */
 
+#include "guilib/GUIListItem.h"
 #include "utils/Color.h"
 
 #include <string>

@@ -283,18 +283,31 @@ void CRenderer::CreateSubtitlesStyle()
     m_overlayStyle->fontStyle = KODI::SUBTITLES::FontStyle::ITALIC;
 
   m_overlayStyle->fontColor =
-      KODI::SUBTITLES::colors[settings->GetInt(CSettings::SETTING_SUBTITLES_COLOR)];
+      UTILS::ConvertHexToColor(settings->GetString(CSettings::SETTING_SUBTITLES_COLOR));
+  m_overlayStyle->fontBorderSize = settings->GetInt(CSettings::SETTING_SUBTITLES_BORDERSIZE);
+  m_overlayStyle->fontBorderColor =
+      UTILS::ConvertHexToColor(settings->GetString(CSettings::SETTING_SUBTITLES_BORDERCOLOR));
   m_overlayStyle->fontOpacity = settings->GetInt(CSettings::SETTING_SUBTITLES_OPACITY);
 
+  int backgroundType = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+      CSettings::SETTING_SUBTITLES_BACKGROUNDTYPE);
+  if (backgroundType == SUBTITLE_BACKGROUNDTYPE_NONE)
+    m_overlayStyle->borderStyle = KODI::SUBTITLES::BorderStyle::OUTLINE_NO_SHADOW;
+  else if (backgroundType == SUBTITLE_BACKGROUNDTYPE_SHADOW)
+    m_overlayStyle->borderStyle = KODI::SUBTITLES::BorderStyle::OUTLINE;
+  else if (backgroundType == SUBTITLE_BACKGROUNDTYPE_BOX)
+    m_overlayStyle->borderStyle = KODI::SUBTITLES::BorderStyle::BOX;
+  else if (backgroundType == SUBTITLE_BACKGROUNDTYPE_SQUAREBOX)
+    m_overlayStyle->borderStyle = KODI::SUBTITLES::BorderStyle::SQUARE_BOX;
+
   m_overlayStyle->backgroundColor =
-      KODI::SUBTITLES::bgColors[settings->GetInt(CSettings::SETTING_SUBTITLES_BGCOLOR)];
+      UTILS::ConvertHexToColor(settings->GetString(CSettings::SETTING_SUBTITLES_BGCOLOR));
   m_overlayStyle->backgroundOpacity = settings->GetInt(CSettings::SETTING_SUBTITLES_BGOPACITY);
 
-  // We enable "Box" border style only if the background opacity is > 0
-  if (m_overlayStyle->backgroundOpacity > 0)
-    m_overlayStyle->borderStyle = KODI::SUBTITLES::BorderStyle::OUTLINE_BOX;
-  else
-    m_overlayStyle->borderStyle = KODI::SUBTITLES::BorderStyle::OUTLINE;
+  m_overlayStyle->shadowColor =
+      UTILS::ConvertHexToColor(settings->GetString(CSettings::SETTING_SUBTITLES_SHADOWCOLOR));
+  m_overlayStyle->shadowOpacity = settings->GetInt(CSettings::SETTING_SUBTITLES_SHADOWOPACITY);
+  m_overlayStyle->shadowSize = settings->GetInt(CSettings::SETTING_SUBTITLES_SHADOWSIZE);
 
   int subAlign = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
       CSettings::SETTING_SUBTITLES_ALIGN);
@@ -322,6 +335,8 @@ void CRenderer::CreateSubtitlesStyle()
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoSubtitleVerticalMargin;
   if (overrideMerginVertical >= 0 && overrideMerginVertical < m_rv.Height())
     m_overlayStyle->marginVertical = overrideMerginVertical;
+
+  m_overlayStyle->blur = settings->GetInt(CSettings::SETTING_SUBTITLES_BLUR);
 }
 
 COverlay* CRenderer::ConvertLibass(CDVDOverlayLibass* o,
@@ -366,6 +381,20 @@ COverlay* CRenderer::ConvertLibass(CDVDOverlayLibass* o,
     res = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(
         CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution());
     rOpts.position = 100.0 - (double)(res.iSubtitles - res.Overscan.top) * 100 / res.iHeight;
+  }
+
+  // Set the horizontal text alignment (currently used to improve readability on CC subtitles only)
+  // This setting influence style->alignment property
+  if (o->IsTextAlignEnabled())
+  {
+    int subTextAlign = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+        CSettings::SETTING_SUBTITLES_CAPTIONSALIGN);
+    if (subTextAlign == SUBTITLE_HORIZONTAL_ALIGN_LEFT)
+      rOpts.horizontalAlignment = KODI::SUBTITLES::HorizontalAlignment::LEFT;
+    else if (subTextAlign == SUBTITLE_HORIZONTAL_ALIGN_RIGHT)
+      rOpts.horizontalAlignment = KODI::SUBTITLES::HorizontalAlignment::RIGHT;
+    else
+      rOpts.horizontalAlignment = KODI::SUBTITLES::HorizontalAlignment::CENTER;
   }
 
   // changes: Detect changes from previously rendered images, if > 0 they are changed

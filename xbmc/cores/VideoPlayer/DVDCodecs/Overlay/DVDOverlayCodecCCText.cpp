@@ -150,5 +150,6 @@ CDVDOverlay* CDVDOverlayCodecCCText::GetOverlay()
   if (m_pOverlay)
     return nullptr;
   m_pOverlay = CreateOverlay();
+  m_pOverlay->SetTextAlignEnabled(true);
   return m_pOverlay->Acquire();
 }

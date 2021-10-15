@@ -16,6 +16,7 @@
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ColorUtils.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/auto_buffer.h"
@@ -75,8 +76,8 @@ CDVDOverlayCodecTX3G::CDVDOverlayCodecTX3G() : CDVDOverlayCodec("TX3G Subtitle D
 {
   m_pOverlay = nullptr;
   m_textColor =
-      KODI::SUBTITLES::colors[CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
-          CSettings::SETTING_SUBTITLES_COLOR)];
+      UTILS::ConvertHexToColor(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+          CSettings::SETTING_SUBTITLES_COLOR));
 }
 
 CDVDOverlayCodecTX3G::~CDVDOverlayCodecTX3G()
@@ -234,7 +235,7 @@ int CDVDOverlayCodecTX3G::Decode(DemuxPacket* pPacket)
     // invert the order from above so we bracket the text correctly.
     if (bgnColorIndex == charIndex && textColorRGBA != m_textColor)
     {
-      uint32_t color = ColorUtils::ConvertToBGR(ColorUtils::ConvertToARGB(textColorRGBA));
+      uint32_t color = UTILS::ConvertToBGR(UTILS::ConvertToARGB(textColorRGBA));
       strUTF8 += "{\\c&H" + StringUtils::Format("{:6x}", color) + "&}";
     }
 

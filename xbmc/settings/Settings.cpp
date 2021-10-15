@@ -161,14 +161,22 @@ constexpr const char* CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB;
 constexpr const char* CSettings::SETTING_MYVIDEOS_STACKVIDEOS;
 constexpr const char* CSettings::SETTING_LOCALE_SUBTITLELANGUAGE;
 constexpr const char* CSettings::SETTING_SUBTITLES_PARSECAPTIONS;
+constexpr const char* CSettings::SETTING_SUBTITLES_CAPTIONSALIGN;
 constexpr const char* CSettings::SETTING_SUBTITLES_ALIGN;
 constexpr const char* CSettings::SETTING_SUBTITLES_STEREOSCOPICDEPTH;
 constexpr const char* CSettings::SETTING_SUBTITLES_FONT;
 constexpr const char* CSettings::SETTING_SUBTITLES_FONTSIZE;
 constexpr const char* CSettings::SETTING_SUBTITLES_STYLE;
 constexpr const char* CSettings::SETTING_SUBTITLES_COLOR;
+constexpr const char* CSettings::SETTING_SUBTITLES_BORDERSIZE;
+constexpr const char* CSettings::SETTING_SUBTITLES_BORDERCOLOR;
 constexpr const char* CSettings::SETTING_SUBTITLES_BGCOLOR;
 constexpr const char* CSettings::SETTING_SUBTITLES_BGOPACITY;
+constexpr const char* CSettings::SETTING_SUBTITLES_BLUR;
+constexpr const char* CSettings::SETTING_SUBTITLES_BACKGROUNDTYPE;
+constexpr const char* CSettings::SETTING_SUBTITLES_SHADOWCOLOR;
+constexpr const char* CSettings::SETTING_SUBTITLES_SHADOWOPACITY;
+constexpr const char* CSettings::SETTING_SUBTITLES_SHADOWSIZE;
 constexpr const char* CSettings::SETTING_SUBTITLES_CHARSET;
 constexpr const char* CSettings::SETTING_SUBTITLES_OVERRIDEASSFONTS;
 constexpr const char* CSettings::SETTING_SUBTITLES_OVERRIDEASSSTYLES;
@@ -701,6 +709,7 @@ void CSettings::InitializeControls()
   GetSettingsManager()->RegisterSettingControl("slider", this);
   GetSettingsManager()->RegisterSettingControl("range", this);
   GetSettingsManager()->RegisterSettingControl("title", this);
+  GetSettingsManager()->RegisterSettingControl("colorbutton", this);
 }
 
 void CSettings::InitializeVisibility()

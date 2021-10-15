@@ -22648,3 +22648,93 @@ msgstr ""
 msgctxt "#39158"
 msgid "Styles and positions"
 msgstr ""
+
+#. Subtitle border size setting toggle
+#: system/settings/settings.xml
+msgctxt "#39159"
+msgid "Border size"
+msgstr ""
+
+#. Subtitle border colour setting
+#: system/settings/settings.xml
+msgctxt "#39160"
+msgid "Border colour"
+msgstr ""
+
+#. CC Subtitles text alignment setting list
+#: system/settings/settings.xml
+msgctxt "#39161"
+msgid "Text alignment"
+msgstr ""
+
+#. Item list value of setting with label #39161 "Text alignment"
+#: system/settings/settings.xml
+msgctxt "#39162"
+msgid "Left"
+msgstr ""
+
+#. Item list value of setting with label #39161 "Text alignment"
+#: system/settings/settings.xml
+msgctxt "#39163"
+msgid "Center"
+msgstr ""
+
+#. Item list value of setting with label #39161 "Text alignment"
+#: system/settings/settings.xml
+msgctxt "#39164"
+msgid "Right"
+msgstr ""
+
+#. Type of background for displaying the subtitles
+#: system/settings/settings.xml
+msgctxt "#39165"
+msgid "Background type"
+msgstr ""
+
+#. Item list value of setting with label #39166 "Background type"
+#: system/settings/settings.xml
+msgctxt "#39166"
+msgid "Shadow"
+msgstr ""
+
+#. Item list value of setting with label #39166 "Background type"
+#: system/settings/settings.xml
+msgctxt "#39167"
+msgid "Box"
+msgstr ""
+
+#. Item list value of setting with label #39166 "Background type"
+#: system/settings/settings.xml
+msgctxt "#39168"
+msgid "Square box"
+msgstr ""
+
+#. Description of setting with label #39166 "Background type"
+#: system/settings/settings.xml
+msgctxt "#39169"
+msgid "Type of background to apply to subtitles."
+msgstr ""
+
+#. Subtitle shadow size setting
+#: system/settings/settings.xml
+msgctxt "#39170"
+msgid "Shadow size"
+msgstr ""
+
+#. Subtitle shadow colour setting
+#: system/settings/settings.xml
+msgctxt "#39171"
+msgid "Shadow colour"
+msgstr ""
+
+#. Subtitle shadow opacity setting
+#: system/settings/settings.xml
+msgctxt "#39172"
+msgid "Shadow opacity"
+msgstr ""
+
+#. Subtitle blur setting
+#: system/settings/settings.xml
+msgctxt "#39173"
+msgid "Blur"
+msgstr ""

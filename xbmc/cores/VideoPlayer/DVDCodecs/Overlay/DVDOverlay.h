@@ -10,6 +10,7 @@
 
 #include <assert.h>
 #include <atomic>
+#include <stdexcept>
 #include <vector>
 
 enum DVDOverlayType
@@ -35,6 +36,7 @@ public:
     replace = false;
     m_references = 1;
     m_textureid = 0;
+    m_enableTextAlign = false;
   }
 
   CDVDOverlay(const CDVDOverlay& src)
@@ -46,6 +48,7 @@ public:
     replace       = src.replace;
     m_references  = 1;
     m_textureid = 0;
+    m_enableTextAlign = src.m_enableTextAlign;
   }
 
   virtual ~CDVDOverlay()
@@ -90,6 +93,19 @@ public:
    */
   virtual CDVDOverlay* Clone() { return Acquire(); }
 
+  /*
+   * \brief Enable the use of text alignment (left/center/right).
+   */
+  virtual void SetTextAlignEnabled(bool enable)
+  {
+    throw std::logic_error("EnableTextAlign method not implemented.");
+  }
+
+  /*
+   * \brief Return true if the text alignment (left/center/right) is enabled otherwise false.
+   */
+  bool IsTextAlignEnabled() { return m_enableTextAlign; }
+
   double iPTSStartTime;
   double iPTSStopTime;
   bool bForced; // display, no matter what
@@ -97,6 +113,7 @@ public:
   unsigned long m_textureid;
 protected:
   DVDOverlayType m_type;
+  bool m_enableTextAlign;
 
 private:
   std::atomic_int m_references;

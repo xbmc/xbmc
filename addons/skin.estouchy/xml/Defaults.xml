@@ -85,6 +85,24 @@
 		<aligny>center</aligny>
 		<pulseonselect>no</pulseonselect>
 	</default>
+	<default type="colorbutton">
+		<posx>0</posx>
+		<posy>0</posy>
+		<width>300</width>
+		<height>42</height>
+		<colorwidth>130</colorwidth>
+		<colorheight>76</colorheight>
+		<texturecolormask>color-button-box.png</texturecolormask>
+		<texturecolordisabledmask colordiffuse="40FFFFFF">color-button-box.png</texturecolordisabledmask>
+		<texturefocus>list_focus.png</texturefocus>
+		<texturenofocus></texturenofocus>
+		<font>font20</font>
+		<textcolor>white</textcolor>
+		<disabledcolor>grey2</disabledcolor>
+		<textoffsetx>20</textoffsetx>
+		<aligny>center</aligny>
+		<pulseonselect>no</pulseonselect>
+	</default>
 	<default type="resize">
 		<posx>0</posx>
 		<posy>0</posy>

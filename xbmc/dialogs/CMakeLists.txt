@@ -3,6 +3,7 @@ set(SOURCES GUIDialogBoxBase.cpp
             GUIDialogBusyNoCancel.cpp
             GUIDialogButtonMenu.cpp
             GUIDialogCache.cpp
+            GUIDialogColorPicker.cpp
             GUIDialogContextMenu.cpp
             GUIDialogExtendedProgressBar.cpp
             GUIDialogFileBrowser.cpp
@@ -34,6 +35,7 @@ set(HEADERS GUIDialogBoxBase.h
             GUIDialogBusyNoCancel.h
             GUIDialogButtonMenu.h
             GUIDialogCache.h
+            GUIDialogColorPicker.h
             GUIDialogContextMenu.h
             GUIDialogExtendedProgressBar.h
             GUIDialogFileBrowser.h

@@ -11,6 +11,7 @@
 #include "GUIAction.h"
 #include "GUIBorderedImage.h"
 #include "GUIButtonControl.h"
+#include "GUIColorButtonControl.h"
 #include "GUIColorManager.h"
 #include "GUIControlGroup.h"
 #include "GUIControlGroupList.h"
@@ -65,41 +66,42 @@ typedef struct
   CGUIControl::GUICONTROLTYPES type;
 } ControlMapping;
 
-static const ControlMapping controls[] =
-   {{"button",            CGUIControl::GUICONTROL_BUTTON},
-    {"fadelabel",         CGUIControl::GUICONTROL_FADELABEL},
-    {"image",             CGUIControl::GUICONTROL_IMAGE},
-    {"image",             CGUIControl::GUICONTROL_BORDEREDIMAGE},
-    {"label",             CGUIControl::GUICONTROL_LABEL},
-    {"label",             CGUIControl::GUICONTROL_LISTLABEL},
-    {"group",             CGUIControl::GUICONTROL_GROUP},
-    {"group",             CGUIControl::GUICONTROL_LISTGROUP},
-    {"progress",          CGUIControl::GUICONTROL_PROGRESS},
-    {"radiobutton",       CGUIControl::GUICONTROL_RADIO},
-    {"rss",               CGUIControl::GUICONTROL_RSS},
-    {"slider",            CGUIControl::GUICONTROL_SLIDER},
-    {"sliderex",          CGUIControl::GUICONTROL_SETTINGS_SLIDER},
-    {"spincontrol",       CGUIControl::GUICONTROL_SPIN},
-    {"spincontrolex",     CGUIControl::GUICONTROL_SPINEX},
-    {"textbox",           CGUIControl::GUICONTROL_TEXTBOX},
-    {"togglebutton",      CGUIControl::GUICONTROL_TOGGLEBUTTON},
-    {"videowindow",       CGUIControl::GUICONTROL_VIDEO},
-    {"gamewindow",        CGUIControl::GUICONTROL_GAME},
-    {"mover",             CGUIControl::GUICONTROL_MOVER},
-    {"resize",            CGUIControl::GUICONTROL_RESIZE},
-    {"edit",              CGUIControl::GUICONTROL_EDIT},
-    {"visualisation",     CGUIControl::GUICONTROL_VISUALISATION},
-    {"renderaddon",       CGUIControl::GUICONTROL_RENDERADDON},
-    {"multiimage",        CGUIControl::GUICONTROL_MULTI_IMAGE},
-    {"grouplist",         CGUIControl::GUICONTROL_GROUPLIST},
-    {"scrollbar",         CGUIControl::GUICONTROL_SCROLLBAR},
-    {"gamecontroller",    CGUIControl::GUICONTROL_GAMECONTROLLER},
-    {"list",              CGUIControl::GUICONTAINER_LIST},
-    {"wraplist",          CGUIControl::GUICONTAINER_WRAPLIST},
-    {"fixedlist",         CGUIControl::GUICONTAINER_FIXEDLIST},
-    {"epggrid",           CGUIControl::GUICONTAINER_EPGGRID},
-    {"panel",             CGUIControl::GUICONTAINER_PANEL},
-    {"ranges",            CGUIControl::GUICONTROL_RANGES}};
+static const ControlMapping controls[] = {
+    {"button", CGUIControl::GUICONTROL_BUTTON},
+    {"fadelabel", CGUIControl::GUICONTROL_FADELABEL},
+    {"image", CGUIControl::GUICONTROL_IMAGE},
+    {"image", CGUIControl::GUICONTROL_BORDEREDIMAGE},
+    {"label", CGUIControl::GUICONTROL_LABEL},
+    {"label", CGUIControl::GUICONTROL_LISTLABEL},
+    {"group", CGUIControl::GUICONTROL_GROUP},
+    {"group", CGUIControl::GUICONTROL_LISTGROUP},
+    {"progress", CGUIControl::GUICONTROL_PROGRESS},
+    {"radiobutton", CGUIControl::GUICONTROL_RADIO},
+    {"rss", CGUIControl::GUICONTROL_RSS},
+    {"slider", CGUIControl::GUICONTROL_SLIDER},
+    {"sliderex", CGUIControl::GUICONTROL_SETTINGS_SLIDER},
+    {"spincontrol", CGUIControl::GUICONTROL_SPIN},
+    {"spincontrolex", CGUIControl::GUICONTROL_SPINEX},
+    {"textbox", CGUIControl::GUICONTROL_TEXTBOX},
+    {"togglebutton", CGUIControl::GUICONTROL_TOGGLEBUTTON},
+    {"videowindow", CGUIControl::GUICONTROL_VIDEO},
+    {"gamewindow", CGUIControl::GUICONTROL_GAME},
+    {"mover", CGUIControl::GUICONTROL_MOVER},
+    {"resize", CGUIControl::GUICONTROL_RESIZE},
+    {"edit", CGUIControl::GUICONTROL_EDIT},
+    {"visualisation", CGUIControl::GUICONTROL_VISUALISATION},
+    {"renderaddon", CGUIControl::GUICONTROL_RENDERADDON},
+    {"multiimage", CGUIControl::GUICONTROL_MULTI_IMAGE},
+    {"grouplist", CGUIControl::GUICONTROL_GROUPLIST},
+    {"scrollbar", CGUIControl::GUICONTROL_SCROLLBAR},
+    {"gamecontroller", CGUIControl::GUICONTROL_GAMECONTROLLER},
+    {"list", CGUIControl::GUICONTAINER_LIST},
+    {"wraplist", CGUIControl::GUICONTAINER_WRAPLIST},
+    {"fixedlist", CGUIControl::GUICONTAINER_FIXEDLIST},
+    {"epggrid", CGUIControl::GUICONTAINER_EPGGRID},
+    {"panel", CGUIControl::GUICONTAINER_PANEL},
+    {"ranges", CGUIControl::GUICONTROL_RANGES},
+    {"colorbutton", CGUIControl::GUICONTROL_COLORBUTTON}};
 
 CGUIControl::GUICONTROLTYPES CGUIControlFactory::TranslateControlType(const std::string &type)
 {
@@ -668,6 +670,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
   int pageControl = 0;
   GUIINFO::CGUIInfoColor colorDiffuse(0xFFFFFFFF);
+  GUIINFO::CGUIInfoColor colorBox(0xFF000000);
   int defaultControl = 0;
   bool  defaultAlways = false;
   std::string strTmp;
@@ -703,6 +706,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   CTextureInfo textureRadioOffFocus, textureRadioOffNoFocus;
   CTextureInfo textureRadioOnDisabled, textureRadioOffDisabled;
   CTextureInfo textureProgressIndicator;
+  CTextureInfo textureColorMask, textureColorDisabledMask;
+
   GUIINFO::CGUIInfoLabel texturePath;
   CRect borderSize;
 
@@ -749,6 +754,11 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   float radioHeight = 0;
   float radioPosX = 0;
   float radioPosY = 0;
+
+  float colorWidth = 0;
+  float colorHeight = 0;
+  float colorPosX = 0;
+  float colorPosY = 0;
 
   std::string altLabel;
   std::string strLabel2;
@@ -824,6 +834,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   XMLUtils::GetInt(pControlNode, "pagecontrol", pageControl);
 
   GetInfoColor(pControlNode, "colordiffuse", colorDiffuse, parentID);
+  GetInfoColor(pControlNode, "colorbox", colorBox, parentID);
 
   GetConditionalVisibility(pControlNode, visibleCondition, allowHiddenFocus);
   XMLUtils::GetString(pControlNode, "enable", enableCondition);
@@ -908,6 +919,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   GetTexture(pControlNode, "textureslidernib", textureNib);
   GetTexture(pControlNode, "textureslidernibfocus", textureNibFocus);
 
+  GetTexture(pControlNode, "texturecolormask", textureColorMask);
+  GetTexture(pControlNode, "texturecolordisabledmask", textureColorDisabledMask);
+
   XMLUtils::GetString(pControlNode, "title", strTitle);
   XMLUtils::GetString(pControlNode, "tagset", strRSSTags);
   GetInfoColor(pControlNode, "headlinecolor", headlineColor, parentID);
@@ -989,6 +1003,12 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   XMLUtils::GetFloat(pControlNode, "radioheight", radioHeight);
   XMLUtils::GetFloat(pControlNode, "radioposx", radioPosX);
   XMLUtils::GetFloat(pControlNode, "radioposy", radioPosY);
+
+  XMLUtils::GetFloat(pControlNode, "colorwidth", colorWidth);
+  XMLUtils::GetFloat(pControlNode, "colorheight", colorHeight);
+  XMLUtils::GetFloat(pControlNode, "colorposx", colorPosX);
+  XMLUtils::GetFloat(pControlNode, "colorposy", colorPosY);
+
   std::string borderStr;
   if (XMLUtils::GetString(pControlNode, "bordersize", borderStr))
     GetRectFromString(borderStr, borderSize);
@@ -1468,6 +1488,21 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   case CGUIControl::GUICONTROL_GAMECONTROLLER:
     control = new GAME::CGUIGameController(parentID, id, posX, posY, width, height);
     break;
+  case CGUIControl::GUICONTROL_COLORBUTTON:
+  {
+    control = new CGUIColorButtonControl(parentID, id, posX, posY, width, height, textureFocus,
+                                         textureNoFocus, labelInfo, textureColorMask,
+                                         textureColorDisabledMask);
+
+    CGUIColorButtonControl* rcontrol = static_cast<CGUIColorButtonControl*>(control);
+    rcontrol->SetLabel(strLabel);
+    rcontrol->SetImageBoxColor(colorBox);
+    rcontrol->SetColorDimensions(colorPosX, colorPosY, colorWidth, colorHeight);
+    rcontrol->SetClickActions(clickActions);
+    rcontrol->SetFocusActions(focusActions);
+    rcontrol->SetUnFocusActions(unfocusActions);
+  }
+  break;
   default:
     break;
   }

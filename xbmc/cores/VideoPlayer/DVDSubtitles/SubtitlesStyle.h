@@ -21,6 +21,15 @@ constexpr double VIEWPORT_HEIGHT = 1080.0;
 constexpr double VIEWPORT_WIDTH = 1920.0;
 constexpr int MARGIN_VERTICAL = 30;
 
+
+enum class HorizontalAlignment
+{
+  DISABLED = 0,
+  LEFT,
+  CENTER,
+  RIGHT
+};
+
 enum class FontAlignment
 {
   TOP_LEFT = 0,
@@ -44,8 +53,10 @@ enum class FontStyle
 
 enum class BorderStyle
 {
+  OUTLINE_NO_SHADOW,
   OUTLINE,
-  OUTLINE_BOX
+  BOX,
+  SQUARE_BOX
 };
 
 enum class AssOverrideStyles
@@ -62,25 +73,22 @@ struct style
   double fontSize;
   FontStyle fontStyle = FontStyle::NORMAL;
   UTILS::Color fontColor = UTILS::COLOR::WHITE;
-  int fontOpacity = 100;
+  int fontBorderSize = 15; // In %
+  UTILS::Color fontBorderColor = UTILS::COLOR::BLACK;
+  int fontOpacity = 100; // In %
   BorderStyle borderStyle = BorderStyle::OUTLINE;
-  UTILS::Color outlineColor = UTILS::COLOR::BLACK;
   UTILS::Color backgroundColor = UTILS::COLOR::BLACK;
-  int backgroundOpacity;
+  int backgroundOpacity = 0; // In %
+  int shadowSize = 0; // In %
+  UTILS::Color shadowColor = UTILS::COLOR::BLACK;
+  int shadowOpacity = 100; // In %
   FontAlignment alignment = FontAlignment::TOP_LEFT;
   AssOverrideStyles assOverrideStyles = AssOverrideStyles::DISABLED;
   bool assOverrideFont = false;
   bool drawWithinBlackBars = false;
   int marginVertical = MARGIN_VERTICAL;
+  int blur = 0; // In %
 };
-
-const UTILS::Color colors[9] = {
-    UTILS::COLOR::YELLOW,      UTILS::COLOR::WHITE,       UTILS::COLOR::BLUE,
-    UTILS::COLOR::BRIGHTGREEN, UTILS::COLOR::YELLOWGREEN, UTILS::COLOR::CYAN,
-    UTILS::COLOR::LIGHTGREY,   UTILS::COLOR::GREY,        UTILS::COLOR::DARKGREY};
-
-const UTILS::Color bgColors[5] = {UTILS::COLOR::BLACK, UTILS::COLOR::YELLOW, UTILS::COLOR::WHITE,
-                                  UTILS::COLOR::LIGHTGREY, UTILS::COLOR::GREY};
 
 struct renderOpts
 {
@@ -93,6 +101,7 @@ struct renderOpts
   bool usePosition = false;
   // position: vertical line position of subtitles in percent. 0 = no change (bottom), 100 = on top.
   double position = 0;
+  HorizontalAlignment horizontalAlignment = HorizontalAlignment::DISABLED;
 };
 
 } // namespace SUBTITLES
