@@ -90,6 +90,18 @@
 #define ATTRIBUTE_HIDDEN ATTR_DLL_LOCAL
 //@}
 
+#ifdef _WIN32 // windows
+#if !defined(_SSIZE_T_DEFINED) && !defined(HAVE_SSIZE_T)
+typedef intptr_t ssize_t;
+#define _SSIZE_T_DEFINED
+#endif // !_SSIZE_T_DEFINED
+#ifndef SSIZE_MAX
+#define SSIZE_MAX INTPTR_MAX
+#endif // !SSIZE_MAX
+#else // Linux, Mac, FreeBSD
+#include <sys/types.h>
+#endif // TARGET_POSIX
+
 // Hardware specific device context interface
 #define ADDON_HARDWARE_CONTEXT void*
 
