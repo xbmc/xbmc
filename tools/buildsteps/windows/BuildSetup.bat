@@ -121,6 +121,11 @@ set WORKSPACE=%base_dir%\kodi-build.%TARGET_PLATFORM%
   Echo xbmc.old.log>>exclude.txt
   Echo kodi.log>>exclude.txt
   Echo kodi.old.log>>exclude.txt
+  Echo .so>>exclude.txt
+  Echo .h>>exclude.txt
+  Echo .cpp>>exclude.txt
+  Echo .exp>>exclude.txt
+  Echo .lib>>exclude.txt
   rem Exclude userdata files
   Echo userdata\advancedsettings.xml>>exclude.txt
   Echo userdata\guisettings.xml>>exclude.txt
@@ -189,13 +194,8 @@ set WORKSPACE=%base_dir%\kodi-build.%TARGET_PLATFORM%
   COLOR 1B
   TITLE %APP_NAME% for Windows Build Script
 
-  IF EXIST exclude.txt del exclude.txt  > NUL
-  IF EXIST exclude_dll.txt del exclude_dll.txt  > NUL
-  del /s /q /f BUILD_WIN32\application\*.so  > NUL
-  del /s /q /f BUILD_WIN32\application\*.h  > NUL
-  del /s /q /f BUILD_WIN32\application\*.cpp  > NUL
-  del /s /q /f BUILD_WIN32\application\*.exp  > NUL
-  del /s /q /f BUILD_WIN32\application\*.lib  > NUL
+  IF EXIST exclude.txt del exclude.txt > NUL
+  IF EXIST exclude_dll.txt del exclude_dll.txt > NUL
   POPD
 
   ECHO ------------------------------------------------------------
