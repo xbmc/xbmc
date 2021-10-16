@@ -50,6 +50,7 @@
 #define GLYPH_STRENGTH_BOLD 24
 #define GLYPH_STRENGTH_LIGHT -48
 
+#define TAB_SPACE_LENGTH 4
 
 class CFreeTypeLibrary
 {
@@ -502,6 +503,15 @@ void CGUIFontTTF::DrawTextInternal(float x,
         continue;
       }
 
+      if ((text[glyph.glyphInfo.cluster] & 0xffff) == static_cast<character_t>('\t'))
+      {
+        const float tabwidth = GetTabSpaceLength();
+        const float a = cursorX / tabwidth;
+        cursorX += tabwidth - ((a - floorf(a)) * tabwidth);
+        characters.pop();
+        continue;
+      }
+
       if ( alignment & XBFONT_TRUNCATED )
       {
         // Check if we will be exceeded the max allowed width
@@ -600,6 +610,8 @@ float CGUIFontTTF::GetTextWidthInternal(const vecText& text, std::vector<Glyph>&
       // choped on the end (as render width is larger than advance then).
       if (it == glyphs.end())
         width += std::max(c->right - c->left + c->offsetX, c->advance);
+      else if ((c->letter & 0xffff) == static_cast<character_t>('\t'))
+        width += GetTabSpaceLength();
       else
         width += c->advance;
     }
@@ -610,7 +622,13 @@ float CGUIFontTTF::GetTextWidthInternal(const vecText& text, std::vector<Glyph>&
 float CGUIFontTTF::GetCharWidthInternal(character_t ch)
 {
   Character* c = GetCharacter(ch, 0);
-  if (c) return c->advance;
+  if (c)
+  {
+    if ((c->letter & 0xffff) == static_cast<character_t>('\t'))
+      return GetTabSpaceLength();
+    else
+      return c->advance;
+  }
   return 0;
 }
 
@@ -1144,4 +1162,10 @@ void CGUIFontTTF::SetGlyphStrength(FT_GlyphSlot slot, int glyphStrength)
   slot->metrics.vertBearingX -= dx / 2;
   slot->metrics.vertBearingY += dy;
   slot->metrics.vertAdvance  += dy;
+}
+
+float CGUIFontTTF::GetTabSpaceLength()
+{
+  const Character* c = GetCharacter(static_cast<character_t>('X'), 0);
+  return c ? c->advance * TAB_SPACE_LENGTH : 28.0f * TAB_SPACE_LENGTH;
 }

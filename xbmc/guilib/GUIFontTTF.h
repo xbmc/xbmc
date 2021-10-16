@@ -222,6 +222,8 @@ protected:
   CRenderSystemBase *m_renderSystem = nullptr;
 
 private:
+  float GetTabSpaceLength();
+
   virtual bool FirstBegin() = 0;
   virtual void LastEnd() = 0;
   CGUIFontTTF(const CGUIFontTTF&) = delete;

@@ -343,6 +343,7 @@ void CGUITextLayout::ParseText(const std::wstring &text, uint32_t defaultStyle, 
   // [I] or [/I] -> toggle italics on and off
   // [COLOR ffab007f] or [/COLOR] -> toggle color on and off
   // [CAPS <option>] or [/CAPS] -> toggle capatilization on and off
+  // [TABS] tab amount [/TABS] -> add tabulator space in view
 
   uint32_t currentStyle = defaultStyle; // start with the default font's style
   UTILS::Color currentColor = 0;
@@ -363,6 +364,7 @@ void CGUITextLayout::ParseText(const std::wstring &text, uint32_t defaultStyle, 
     UTILS::Color newColor = currentColor;
     bool colorTagChange = false;
     bool newLine = false;
+    int tabs = 0;
     // have a [ - check if it's an ON or OFF switch
     bool on(true);
     size_t endPos = pos++; // finish of string
@@ -414,6 +416,18 @@ void CGUITextLayout::ParseText(const std::wstring &text, uint32_t defaultStyle, 
          (!on && (currentStyle & FONT_STYLE_LIGHT)))
         newStyle = FONT_STYLE_LIGHT;
     }
+    else if (text.compare(pos, 5, L"TABS]") == 0 && on)
+    {
+      pos += 5;
+      const size_t end = text.find(L"[/TABS]", pos);
+      if (end != std::string::npos)
+      {
+        std::string t;
+        g_charsetConverter.wToUTF8(text.substr(pos), t);
+        tabs = atoi(t.c_str());
+        pos = end + 7;
+      }
+    }
     else if (text.compare(pos, 3, L"CR]") == 0 && on)
     {
       newLine = true;
@@ -454,7 +468,7 @@ void CGUITextLayout::ParseText(const std::wstring &text, uint32_t defaultStyle, 
         pos = finish + 1;
     }
 
-    if (newStyle || colorTagChange || newLine)
+    if (newStyle || colorTagChange || newLine || tabs)
     { // we have a new style or a new color, so format up the previous segment
       std::wstring subText = text.substr(startPos, endPos - startPos);
       if (currentStyle & FONT_STYLE_UPPERCASE)
@@ -466,6 +480,8 @@ void CGUITextLayout::ParseText(const std::wstring &text, uint32_t defaultStyle, 
       AppendToUTF32(subText, ((currentStyle & FONT_STYLE_MASK) << 24) | (currentColor << 16), parsedText);
       if (newLine)
         parsedText.push_back(L'\n');
+      for (int i = 0; i < tabs; ++i)
+        parsedText.push_back(L'\t');
 
       // and switch to the new style
       startPos = pos;
