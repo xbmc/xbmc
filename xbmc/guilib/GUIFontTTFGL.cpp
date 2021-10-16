@@ -121,7 +121,7 @@ void CGUIFontTTFGL::LastEnd()
 {
 #ifdef HAS_GL
   CRenderSystemGL* renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
-  renderSystem->EnableShader(SM_FONTS);
+  renderSystem->EnableShader(ShaderMethodGL::SM_FONTS);
 
   GLint posLoc = renderSystem->ShaderGetPos();
   GLint colLoc = renderSystem->ShaderGetCol();
@@ -175,7 +175,7 @@ void CGUIFontTTFGL::LastEnd()
 #else
   // GLES 2.0 version.
   CRenderSystemGLES* renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
-  renderSystem->EnableGUIShader(SM_FONTS);
+  renderSystem->EnableGUIShader(ShaderMethodGLES::SM_FONTS);
 
   GLint posLoc  = renderSystem->GUIShaderGetPos();
   GLint colLoc  = renderSystem->GUIShaderGetCol();

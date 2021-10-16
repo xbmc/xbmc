@@ -122,7 +122,7 @@ bool CRendererMediaCodec::RenderHook(int index)
 
   if (m_currentField != FIELD_FULL)
   {
-    renderSystem->EnableGUIShader(SM_TEXTURE_RGBA_BOB_OES);
+    renderSystem->EnableGUIShader(ShaderMethodGLES::SM_TEXTURE_RGBA_BOB_OES);
     GLint   fieldLoc = renderSystem->GUIShaderGetField();
     GLint   stepLoc = renderSystem->GUIShaderGetStep();
 
@@ -134,7 +134,7 @@ bool CRendererMediaCodec::RenderHook(int index)
     glUniform1f(stepLoc, 1.0f / (float)plane.texheight);
   }
   else
-    renderSystem->EnableGUIShader(SM_TEXTURE_RGBA_OES);
+    renderSystem->EnableGUIShader(ShaderMethodGLES::SM_TEXTURE_RGBA_OES);
 
   GLint   contrastLoc = renderSystem->GUIShaderGetContrast();
   glUniform1f(contrastLoc, m_videoSettings.m_Contrast * 0.02f);

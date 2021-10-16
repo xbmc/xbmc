@@ -359,7 +359,7 @@ void COverlayGlyphGL::Render(SRenderState& state)
 
 #ifdef HAS_GL
   CRenderSystemGL* renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
-  renderSystem->EnableShader(SM_FONTS);
+  renderSystem->EnableShader(ShaderMethodGL::SM_FONTS);
   GLint posLoc  = renderSystem->ShaderGetPos();
   GLint colLoc  = renderSystem->ShaderGetCol();
   GLint tex0Loc = renderSystem->ShaderGetCoord0();
@@ -408,7 +408,7 @@ void COverlayGlyphGL::Render(SRenderState& state)
 
 #else
   CRenderSystemGLES* renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
-  renderSystem->EnableGUIShader(SM_FONTS);
+  renderSystem->EnableGUIShader(ShaderMethodGLES::SM_FONTS);
   GLint posLoc  = renderSystem->GUIShaderGetPos();
   GLint colLoc  = renderSystem->GUIShaderGetCol();
   GLint tex0Loc = renderSystem->GUIShaderGetCoord0();
@@ -497,9 +497,9 @@ void COverlayTextureGL::Render(SRenderState& state)
   int glslMajor, glslMinor;
   renderSystem->GetGLSLVersion(glslMajor, glslMinor);
   if (glslMajor >= 2 || (glslMajor == 1 && glslMinor >= 50))
-    renderSystem->EnableShader(SM_TEXTURE_LIM);
+    renderSystem->EnableShader(ShaderMethodGL::SM_TEXTURE_LIM);
   else
-    renderSystem->EnableShader(SM_TEXTURE);
+    renderSystem->EnableShader(ShaderMethodGL::SM_TEXTURE);
 
   GLint posLoc = renderSystem->ShaderGetPos();
   GLint tex0Loc = renderSystem->ShaderGetCoord0();
@@ -572,7 +572,7 @@ void COverlayTextureGL::Render(SRenderState& state)
 
 #else
   CRenderSystemGLES* renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
-  renderSystem->EnableGUIShader(SM_TEXTURE);
+  renderSystem->EnableGUIShader(ShaderMethodGLES::SM_TEXTURE);
   GLint posLoc = renderSystem->GUIShaderGetPos();
   GLint colLoc = renderSystem->GUIShaderGetCol();
   GLint tex0Loc = renderSystem->GUIShaderGetCoord0();
