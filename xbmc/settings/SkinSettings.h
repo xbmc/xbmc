@@ -36,6 +36,10 @@ public:
   bool GetBool(int setting) const;
   void SetBool(int setting, bool set);
 
+  std::set<ADDON::CSkinSettingPtr> GetSettings() const;
+  ADDON::CSkinSettingPtr GetSetting(const std::string& settingId);
+  std::shared_ptr<const ADDON::CSkinSetting> GetSetting(const std::string& settingId) const;
+
   void Reset(const std::string &setting);
   void Reset();
 
