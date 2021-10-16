@@ -4,11 +4,11 @@
 		<control type="group">
 			<centertop>50%</centertop>
 			<centerleft>50%</centerleft>
-			<height>750</height>
+			<height>765</height>
 			<width>1220</width>
 			<include content="DialogBackgroundCommons">
 				<param name="width" value="1220" />
-				<param name="height" value="750" />
+				<param name="height" value="765" />
 				<param name="header_label" value="" />
 				<param name="header_id" value="1" />
 			</include>
@@ -46,10 +46,10 @@
 				<onright>61</onright>
 				<pagecontrol>61</pagecontrol>
 				<scrolltime>200</scrolltime>
-				<itemlayout height="125" width="880">
+				<itemlayout height="127" width="880">
 					<control type="image">
 						<left>12</left>
-						<top>7</top>
+						<top>8</top>
 						<width>110</width>
 						<height>110</height>
 						<texture>$VAR[InfoWallThumbVar]</texture>
@@ -68,13 +68,13 @@
 						<left>135</left>
 						<top>50</top>
 						<right>20</right>
-						<height>67</height>
+						<height>69</height>
 						<font>font12</font>
 						<textcolor>grey</textcolor>
 						<label>$INFO[ListItem.Label2]</label>
 					</control>
 				</itemlayout>
-				<focusedlayout height="125" width="880">
+				<focusedlayout height="127" width="880">
 					<control type="image">
 						<left>0</left>
 						<top>0</top>
@@ -85,7 +85,7 @@
 					</control>
 					<control type="image">
 						<left>12</left>
-						<top>7</top>
+						<top>8</top>
 						<width>110</width>
 						<height>110</height>
 						<texture>$VAR[InfoWallThumbVar]</texture>
@@ -105,8 +105,9 @@
 						<left>135</left>
 						<top>50</top>
 						<right>20</right>
-						<height>67</height>
+						<height>69</height>
 						<font>font12</font>
+						<autoscroll delay="1000" time="1000" repeat="1000">true</autoscroll>
 						<label>$INFO[ListItem.Label2]</label>
 					</control>
 				</focusedlayout>
