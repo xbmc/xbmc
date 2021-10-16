@@ -62,22 +62,45 @@
 // Generic helper definitions for shared library support
 //@{
 #if defined _WIN32 || defined __CYGWIN__
-#define ATTRIBUTE_DLL_IMPORT __declspec(dllimport)
-#define ATTRIBUTE_DLL_EXPORT __declspec(dllexport)
-#define ATTRIBUTE_DLL_LOCAL
+#define ATTR_DLL_IMPORT __declspec(dllimport)
+#define ATTR_DLL_EXPORT __declspec(dllexport)
+#define ATTR_DLL_LOCAL
+#define ATTR_APIENTRY __stdcall
 #else
 #if __GNUC__ >= 4
-#define ATTRIBUTE_DLL_IMPORT __attribute__ ((visibility ("default")))
-#define ATTRIBUTE_DLL_EXPORT __attribute__ ((visibility ("default")))
-#define ATTRIBUTE_DLL_LOCAL  __attribute__ ((visibility ("hidden")))
+#define ATTR_DLL_IMPORT __attribute__((visibility("default")))
+#define ATTR_DLL_EXPORT __attribute__((visibility("default")))
+#define ATTR_DLL_LOCAL __attribute__((visibility("hidden")))
 #else
-#define ATTRIBUTE_DLL_IMPORT
-#define ATTRIBUTE_DLL_EXPORT
-#define ATTRIBUTE_DLL_LOCAL
+#define ATTR_DLL_IMPORT
+#define ATTR_DLL_EXPORT
+#define ATTR_DLL_LOCAL
 #endif
+#define ATTR_APIENTRY
 #endif
-#define ATTRIBUTE_HIDDEN ATTRIBUTE_DLL_LOCAL // Fallback to old
+
+#ifndef ATTR_APIENTRYP
+#define ATTR_APIENTRYP ATTR_APIENTRY*
+#endif
+
+// Fallbacks to old
+#define ATTRIBUTE_DLL_IMPORT ATTR_DLL_IMPORT
+#define ATTRIBUTE_DLL_EXPORT ATTR_DLL_EXPORT
+#define ATTRIBUTE_DLL_LOCAL ATTR_DLL_LOCAL
+#define ATTRIBUTE_HIDDEN ATTR_DLL_LOCAL
 //@}
+
+#ifdef _WIN32 // windows
+#if !defined(_SSIZE_T_DEFINED) && !defined(HAVE_SSIZE_T)
+typedef intptr_t ssize_t;
+#define _SSIZE_T_DEFINED
+#endif // !_SSIZE_T_DEFINED
+#ifndef SSIZE_MAX
+#define SSIZE_MAX INTPTR_MAX
+#endif // !SSIZE_MAX
+#else // Linux, Mac, FreeBSD
+#include <sys/types.h>
+#endif // TARGET_POSIX
 
 // Hardware specific device context interface
 #define ADDON_HARDWARE_CONTEXT void*
