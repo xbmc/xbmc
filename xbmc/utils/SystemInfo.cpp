@@ -939,8 +939,9 @@ int CSysInfo::GetKernelBitness(void)
     if (uname(&un) == 0)
     {
       std::string machine(un.machine);
-      if (machine == "x86_64" || machine == "amd64" || machine == "arm64" || machine == "aarch64" || machine == "ppc64" ||
-          machine == "ia64" || machine == "mips64" || machine == "s390x")
+      if (machine == "x86_64" || machine == "amd64" || machine == "arm64" || machine == "aarch64" ||
+          machine == "ppc64" || machine == "ia64" || machine == "mips64" || machine == "s390x" ||
+          machine == "riscv64")
         kernelBitness = 64;
       else
         kernelBitness = 32;
