@@ -391,6 +391,7 @@ void CGUIDialogSubtitles::OnSearchComplete(const CFileItemList *items)
   m_subtitles->Assign(*items);
   UpdateStatus(SEARCH_COMPLETE);
   m_updateSubsList = true;
+  MarkDirtyRegion();
 
   if (!items->IsEmpty() && g_application.GetAppPlayer().GetSubtitleCount() == 0 &&
     m_LastAutoDownloaded != g_application.CurrentFile() && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_SUBTITLES_DOWNLOADFIRST))
