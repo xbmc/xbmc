@@ -550,7 +550,7 @@ void CLinuxRendererGL::DrawBlackBars()
   Svertex vertices[24];
   GLubyte count = 0;
 
-  m_renderSystem->EnableShader(SM_DEFAULT);
+  m_renderSystem->EnableShader(ShaderMethodGL::SM_DEFAULT);
   GLint posLoc = m_renderSystem->ShaderGetPos();
   GLint uniCol = m_renderSystem->ShaderGetUniCol();
 
