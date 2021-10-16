@@ -14,7 +14,7 @@
 #include "cores/AudioEngine/Utils/AEStreamInfo.h"
 
 #include <list>
-#include <memory>
+#include <vector>
 
 class CProcessInfo;
 
@@ -49,7 +49,8 @@ private:
   std::string m_codecName;
 
   // TrueHD specifics
-  std::unique_ptr<uint8_t[]> m_trueHDBuffer;
+  std::vector<uint8_t> m_trueHDBuffer;
   unsigned int m_trueHDoffset = 0;
+  unsigned int m_trueHDframes = 0;
 };
 
