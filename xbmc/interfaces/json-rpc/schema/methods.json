@@ -2835,5 +2835,52 @@
       { "name": "setting", "type": "string", "required": true, "minLength": 1 }
     ],
     "returns": "string"
+  },
+  "Settings.GetSkinSettingValue": {
+    "type": "method",
+    "description": "Retrieves the value of the specified skin setting",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "setting", "type": "string", "required": true, "minLength": 1 }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "value": { "type": [ "boolean", "string" ], "required": true }
+      }
+    }
+  },
+  "Settings.SetSkinSettingValue": {
+    "type": "method",
+    "description": "Changes the value of the specified skin setting",
+    "transport": "Response",
+    "permission": "WriteSetting",
+    "params": [
+      { "name": "setting", "type": "string", "required": true, "minLength": 1 },
+      { "name": "value", "type": [ "boolean", "string" ], "required": true }
+    ],
+    "returns": "boolean"
+  },
+  "Settings.GetSkinSettings": {
+    "type": "method",
+    "description": "Retrieves all skin settings of the currently used skin",
+    "transport": "Response",
+    "permission": "ReadData",
+    "returns": {
+      "type": "object",
+      "properties": {
+        "skin": { "type": "string", "required": true, "minLength": 1 },
+        "settings": { "type": "array",
+          "items": { "type": "object",
+            "properties": {
+              "id": { "type": "string", "required": true, "minLength": 1 },
+              "type": { "type": "string", "enum": [ "boolean", "string" ], "required": true },
+              "value": { "type": [ "boolean", "string" ], "required": true }
+            }
+          }
+        }
+      }
+    }
   }
 }

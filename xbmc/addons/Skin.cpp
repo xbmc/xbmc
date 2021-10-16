@@ -655,6 +655,34 @@ void CSkinInfo::SetBool(int setting, bool set)
   assert(false);
 }
 
+std::set<CSkinSettingPtr> CSkinInfo::GetSkinSettings() const
+{
+  std::set<CSkinSettingPtr> settings;
+
+  for (const auto& setting : m_settings)
+    settings.insert(setting.second);
+
+  return settings;
+}
+
+CSkinSettingPtr CSkinInfo::GetSkinSetting(const std::string& settingId)
+{
+  const auto& it = m_settings.find(settingId);
+  if (it != m_settings.end())
+    return it->second;
+
+  return nullptr;
+}
+
+std::shared_ptr<const CSkinSetting> CSkinInfo::GetSkinSetting(const std::string& settingId) const
+{
+  const auto& it = m_settings.find(settingId);
+  if (it != m_settings.end())
+    return it->second;
+
+  return nullptr;
+}
+
 void CSkinInfo::Reset(const std::string &setting)
 {
   // run through and see if we have this setting as a string
@@ -753,6 +781,7 @@ bool CSkinInfo::SettingsFromXML(const CXBMCTinyXML &doc, bool loadDefaults /* = 
     return false;
   }
 
+  m_settings.clear();
   m_strings.clear();
   m_bools.clear();
 
@@ -761,9 +790,17 @@ bool CSkinInfo::SettingsFromXML(const CXBMCTinyXML &doc, bool loadDefaults /* = 
   for (const auto& setting : settings)
   {
     if (setting->GetType() == "string")
-      m_strings.insert(std::pair<int, CSkinSettingStringPtr>(number++, std::dynamic_pointer_cast<CSkinSettingString>(setting)));
+    {
+      m_settings.insert(std::make_pair(setting->name, setting));
+      m_strings.insert(
+          std::make_pair(number++, std::dynamic_pointer_cast<CSkinSettingString>(setting)));
+    }
     else if (setting->GetType() == "bool")
-      m_bools.insert(std::pair<int, CSkinSettingBoolPtr>(number++, std::dynamic_pointer_cast<CSkinSettingBool>(setting)));
+    {
+      m_settings.insert(std::make_pair(setting->name, setting));
+      m_bools.insert(
+          std::make_pair(number++, std::dynamic_pointer_cast<CSkinSettingBool>(setting)));
+    }
     else
       CLog::Log(LOGWARNING, "CSkinInfo: ignoring setting of unknown type \"{}\"",
                 setting->GetType());

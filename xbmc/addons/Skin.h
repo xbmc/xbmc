@@ -199,6 +199,10 @@ public:
   bool GetBool(int setting) const;
   void SetBool(int setting, bool set);
 
+  std::set<CSkinSettingPtr> GetSkinSettings() const;
+  CSkinSettingPtr GetSkinSetting(const std::string& settingId);
+  std::shared_ptr<const CSkinSetting> GetSkinSetting(const std::string& settingId) const;
+
   void Reset(const std::string &setting);
   void Reset();
 
@@ -229,6 +233,7 @@ protected:
 private:
   std::map<int, CSkinSettingStringPtr> m_strings;
   std::map<int, CSkinSettingBoolPtr> m_bools;
+  std::map<std::string, CSkinSettingPtr> m_settings;
   std::unique_ptr<CSkinSettingUpdateHandler> m_settingsUpdateHandler;
 };
 
