@@ -25,7 +25,7 @@ find_library(CWIID_LIBRARY NAMES cwiid
 set(CWIID_VERSION ${PC_CWIID_VERSION})
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(CWIID
+find_package_handle_standard_args(CWiid
                                   REQUIRED_VARS CWIID_LIBRARY CWIID_INCLUDE_DIR
                                   VERSION_VAR CWIID_VERSION)
 
