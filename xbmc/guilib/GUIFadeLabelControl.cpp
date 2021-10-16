@@ -151,6 +151,7 @@ void CGUIFadeLabelControl::Process(unsigned int currentTime, CDirtyRegionList &d
     if (m_scroll)
     {
       m_textLayout.UpdateScrollinfo(m_scrollInfo);
+      MarkDirtyRegion();
     }
 
     CServiceBroker::GetWinSystem()->GetGfxContext().RemoveTransform();
