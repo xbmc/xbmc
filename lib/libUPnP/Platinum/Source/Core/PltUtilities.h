@@ -140,7 +140,8 @@ public:
 
         const NPT_String* text = child->GetText();
         // DLNA 7.3.17
-        value = text?text->SubString(0, max_size):"";
+        if (text)
+          text->SubString(0, max_size);
         return NPT_SUCCESS;
     }
                                    

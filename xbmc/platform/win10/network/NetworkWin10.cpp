@@ -225,7 +225,8 @@ void CNetworkWin10::queryInterfaceList()
 
   // collect all adapters from WinRT
   std::map<std::wstring, IUnknown*, ci_less> adapters;
-  for (auto& profile : NetworkInformation::GetConnectionProfiles())
+  auto profiles = NetworkInformation::GetConnectionProfiles();
+  for (const auto& profile : profiles)
   {
     if (profile && profile.NetworkAdapter())
     {

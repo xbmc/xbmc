@@ -232,13 +232,13 @@ bool CNetworkInterfaceWin32::GetHostMacAddress(unsigned long host, std::string& 
   struct sockaddr sockHost;
   sockHost.sa_family = AF_INET;
   reinterpret_cast<struct sockaddr_in&>(sockHost).sin_addr.S_un.S_addr = host;
-  return GetHostMacAddress(sockHost, mac);
+  return GetHostMacAddress(&sockHost, mac);
 }
 
-bool CNetworkInterfaceWin32::GetHostMacAddress(const struct sockaddr& host, std::string& mac) const
+bool CNetworkInterfaceWin32::GetHostMacAddress(struct sockaddr* host, std::string& mac) const
 {
   DWORD InterfaceIndex;
-  if (GetBestInterfaceEx(&static_cast<struct sockaddr>(host), &InterfaceIndex) != NO_ERROR)
+  if (GetBestInterfaceEx(host, &InterfaceIndex) != NO_ERROR)
     return false;
 
   NET_LUID luid = {};
@@ -248,8 +248,8 @@ bool CNetworkInterfaceWin32::GetHostMacAddress(const struct sockaddr& host, std:
   MIB_IPNET_ROW2 neighborIp = {};
   neighborIp.InterfaceLuid = luid;
   neighborIp.InterfaceIndex;
-  neighborIp.Address.si_family = host.sa_family;
-  switch (host.sa_family)
+  neighborIp.Address.si_family = host->sa_family;
+  switch (host->sa_family)
   {
     case AF_INET:
       neighborIp.Address.Ipv4 = reinterpret_cast<const struct sockaddr_in&>(host);

@@ -1100,6 +1100,20 @@ _Use_decl_annotations_
 HRESULT CEffect::BindToDevice(ID3D11Device *pDevice, LPCSTR srcName)
 {
     HRESULT hr = S_OK;
+    uint32_t CurMemberData = 0;
+    SConstantBuffer* pCB = nullptr;
+    SConstantBuffer* pCBLast = nullptr;
+    SRasterizerBlock* pRB = nullptr;
+    SRasterizerBlock* pRBLast = nullptr;
+    SSamplerBlock* pSampler = nullptr;
+    SSamplerBlock* pSamplerLast = nullptr;
+    ID3D11ClassLinkage* neededClassLinkage = nullptr;
+    SShaderBlock* pShader = nullptr;
+    SShaderBlock* pShaderLast = nullptr;
+    SDepthStencilBlock* pDS = nullptr;
+    SDepthStencilBlock* pDSLast = nullptr;
+    SBlendBlock* pBlend = nullptr;
+    SBlendBlock* pBlendLast = nullptr;
 
     // Set new device
     if (pDevice == nullptr)
@@ -1123,8 +1137,8 @@ HRESULT CEffect::BindToDevice(ID3D11Device *pDevice, LPCSTR srcName)
     SetDebugObjectName(m_pClassLinkage,srcName);
 
     // Create all constant buffers
-    SConstantBuffer *pCB = m_pCBs;
-    SConstantBuffer *pCBLast = m_pCBs + m_CBCount;
+    pCB = m_pCBs;
+    pCBLast = m_pCBs + m_CBCount;
     for(; pCB != pCBLast; pCB++)
     {
         SAFE_RELEASE(pCB->pD3DObject);
@@ -1179,8 +1193,8 @@ HRESULT CEffect::BindToDevice(ID3D11Device *pDevice, LPCSTR srcName)
     }
 
     // Create all RasterizerStates
-    SRasterizerBlock *pRB = m_pRasterizerBlocks;
-    SRasterizerBlock *pRBLast = m_pRasterizerBlocks + m_RasterizerBlockCount;
+    pRB = m_pRasterizerBlocks;
+    pRBLast = m_pRasterizerBlocks + m_RasterizerBlockCount;
     for(; pRB != pRBLast; pRB++)
     {
         SAFE_RELEASE(pRB->pRasterizerObject);
@@ -1194,8 +1208,8 @@ HRESULT CEffect::BindToDevice(ID3D11Device *pDevice, LPCSTR srcName)
     }
 
     // Create all DepthStencils
-    SDepthStencilBlock *pDS = m_pDepthStencilBlocks;
-    SDepthStencilBlock *pDSLast = m_pDepthStencilBlocks + m_DepthStencilBlockCount;
+    pDS = m_pDepthStencilBlocks;
+    pDSLast = m_pDepthStencilBlocks + m_DepthStencilBlockCount;
     for(; pDS != pDSLast; pDS++)
     {
         SAFE_RELEASE(pDS->pDSObject);
@@ -1209,8 +1223,8 @@ HRESULT CEffect::BindToDevice(ID3D11Device *pDevice, LPCSTR srcName)
     }
 
     // Create all BlendStates
-    SBlendBlock *pBlend = m_pBlendBlocks;
-    SBlendBlock *pBlendLast = m_pBlendBlocks + m_BlendBlockCount;
+    pBlend = m_pBlendBlocks;
+    pBlendLast = m_pBlendBlocks + m_BlendBlockCount;
     for(; pBlend != pBlendLast; pBlend++)
     {
         SAFE_RELEASE(pBlend->pBlendObject);
@@ -1224,8 +1238,8 @@ HRESULT CEffect::BindToDevice(ID3D11Device *pDevice, LPCSTR srcName)
     }
 
     // Create all Samplers
-    SSamplerBlock *pSampler = m_pSamplerBlocks;
-    SSamplerBlock *pSamplerLast = m_pSamplerBlocks + m_SamplerBlockCount;
+    pSampler = m_pSamplerBlocks;
+    pSamplerLast = m_pSamplerBlocks + m_SamplerBlockCount;
     for(; pSampler != pSamplerLast; pSampler++)
     {
         SAFE_RELEASE(pSampler->pD3DObject);
@@ -1235,9 +1249,9 @@ HRESULT CEffect::BindToDevice(ID3D11Device *pDevice, LPCSTR srcName)
     }
 
     // Create all shaders
-    ID3D11ClassLinkage* neededClassLinkage = featureLevelGE11 ? m_pClassLinkage : nullptr;
-    SShaderBlock *pShader = m_pShaderBlocks;
-    SShaderBlock *pShaderLast = m_pShaderBlocks + m_ShaderBlockCount;
+    neededClassLinkage = featureLevelGE11 ? m_pClassLinkage : nullptr;
+    pShader = m_pShaderBlocks;
+    pShaderLast = m_pShaderBlocks + m_ShaderBlockCount;
     for(; pShader != pShaderLast; pShader++)
     {
         SAFE_RELEASE(pShader->pD3DObject);
@@ -1303,7 +1317,6 @@ HRESULT CEffect::BindToDevice(ID3D11Device *pDevice, LPCSTR srcName)
     }
 
     // Initialize the member data pointers for all variables
-    uint32_t CurMemberData = 0;
     for (uint32_t i = 0; i < m_VariableCount; ++ i)
     {
         if( m_pVariables[i].pMemberData )
@@ -1887,6 +1900,7 @@ HRESULT CEffect::CopyOptimizedTypePool( CEffect* pEffectSource, CPointerMappingT
 {
     HRESULT hr = S_OK;
     CEffectHeap* pOptimizedTypeHeap = nullptr;
+    uint8_t* pReadTypes = nullptr;
 
     assert( pEffectSource->m_pOptimizedTypeHeap != 0 );
     _Analysis_assume_( pEffectSource->m_pOptimizedTypeHeap != 0 );
@@ -1899,7 +1913,7 @@ HRESULT CEffect::CopyOptimizedTypePool( CEffect* pEffectSource, CPointerMappingT
     CPointerMappingTable::CIterator mapIter;
 
     // first pass: move types over, build mapping table
-    uint8_t* pReadTypes = pEffectSource->m_pOptimizedTypeHeap->GetDataStart();
+    pReadTypes = pEffectSource->m_pOptimizedTypeHeap->GetDataStart();
     while( pEffectSource->m_pOptimizedTypeHeap->IsInHeap( pReadTypes ) )
     {
         SPointerMapping ptrMapping;
@@ -2186,6 +2200,7 @@ lExit:
 HRESULT CEffect::OptimizeTypes(_Inout_ CPointerMappingTable *pMappingTable, _In_ bool Cloning)
 {
     HRESULT hr = S_OK;
+    uint32_t Members = m_pMemberInterfaces.GetSize();
 
     // find all child types, point them to the new location
     for (size_t i = 0; i < m_VariableCount; ++ i)
@@ -2193,7 +2208,6 @@ HRESULT CEffect::OptimizeTypes(_Inout_ CPointerMappingTable *pMappingTable, _In_
         VH( RemapType((SType**)&m_pVariables[i].pType, pMappingTable) );
     }
 
-    uint32_t Members = m_pMemberInterfaces.GetSize();
     for( size_t i=0; i < Members; i++ )
     {
         if( m_pMemberInterfaces[i] != nullptr )

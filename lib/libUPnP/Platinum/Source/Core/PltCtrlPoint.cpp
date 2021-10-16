@@ -805,8 +805,9 @@ PLT_CtrlPoint::ProcessEventNotification(PLT_EventSubscriberReference subscriber,
         var = service->FindStateVariable(property->GetTag());
         if (var == NULL) continue;
 
-        if (NPT_FAILED(var->SetValue(property->GetText()?*property->GetText():""))) {
-            NPT_CHECK_LABEL_WARNING(NPT_FAILURE, failure);
+        if (NPT_FAILED(var->SetValue(property->GetText() ? property->GetText()->GetChars() : "")))
+        {
+          NPT_CHECK_LABEL_WARNING(NPT_FAILURE, failure);
         }
 
         vars.Add(var);
@@ -1662,12 +1663,11 @@ PLT_CtrlPoint::ProcessSubscribeResponse(NPT_Result                    res,
     goto remove_sub;
 
 failure:
-    NPT_LOG_SEVERE_4("%subscription failed of sub \"%s\" for service \"%s\" of device \"%s\"", 
-        (const char*)subscription?"S":"Uns",
-        (const char*)(sid?*sid:"Unknown"),
-        (const char*)service->GetServiceID(),
-        (const char*)service->GetDevice()->GetFriendlyName());
-    res = NPT_FAILED(res)?res:NPT_FAILURE;
+  NPT_LOG_SEVERE_4(
+      "%subscription failed of sub \"%s\" for service \"%s\" of device \"%s\"",
+      (const char*)subscription ? "S" : "Uns", (const char*)(sid ? sid->GetChars() : "Unknown"),
+      (const char*)service->GetServiceID(), (const char*)service->GetDevice()->GetFriendlyName());
+  res = NPT_FAILED(res) ? res : NPT_FAILURE;
 
 remove_sub:
     // in case it was a renewal look for the subscriber with that service and remove it from the list
@@ -1814,7 +1814,8 @@ PLT_CtrlPoint::ProcessActionResponse(NPT_Result                    res,
         NPT_XmlElementNode* child = (*args)->AsElementNode();
         if (!child) continue;
 
-        action->SetArgumentValue(child->GetTag(), child->GetText()?*child->GetText():"");
+        action->SetArgumentValue(child->GetTag(),
+                                 child->GetText() ? child->GetText()->GetChars() : "");
         if (NPT_FAILED(res)) goto failure; 
     }
 

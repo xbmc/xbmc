@@ -221,7 +221,7 @@ CUPnPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         int next_slash = path.Find('/', 7);
 
         NPT_String uuid = (next_slash==-1)?path.SubString(7):path.SubString(7, next_slash-7);
-        NPT_String object_id = (next_slash==-1)?"":path.SubString(next_slash+1);
+        NPT_String object_id = (next_slash == -1) ? NPT_String("") : path.SubString(next_slash + 1);
         object_id.TrimRight("/");
         if (object_id.GetLength()) {
             object_id = CURL::Decode((char*)object_id).c_str();
@@ -234,7 +234,7 @@ CUPnPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
         // issue a browse request with object_id
         // if object_id is empty use "0" for root
-        object_id = object_id.IsEmpty()?"0":object_id;
+        object_id = object_id.IsEmpty() ? NPT_String("0") : object_id;
 
         // remember a count of object classes
         std::map<NPT_String, int> classes;

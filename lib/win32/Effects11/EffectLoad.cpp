@@ -788,6 +788,7 @@ HRESULT CEffectLoader::LoadEffect(CEffect *pEffect, const void *pEffectBuffer, u
     HRESULT hr = S_OK;
     uint32_t  i, varSize, cMemberDataBlocks;
     CCheckedDword chkVariables = 0;
+    uint32_t oStructured = 0;
 
     // Used for cloning
     m_pvOldMemberInterfaces = nullptr;
@@ -875,7 +876,7 @@ HRESULT CEffectLoader::LoadEffect(CEffect *pEffect, const void *pEffectBuffer, u
     VN( m_pEffect->m_pRenderTargetViews = PRIVATENEW SRenderTargetView[m_pHeader->cRenderTargetViews] );
     VN( m_pEffect->m_pDepthStencilViews = PRIVATENEW SDepthStencilView[m_pHeader->cDepthStencilViews] );
 
-    uint32_t oStructured = m_pHeader->cbUnstructured + sizeof(SBinaryHeader5);
+    oStructured = m_pHeader->cbUnstructured + sizeof(SBinaryHeader5);
     VHD( m_msStructured.Seek(oStructured), "Invalid pEffectBuffer: Missing structured data block." );
     VH( m_msUnstructured.SetData(m_pData + sizeof(SBinaryHeader5), oStructured - sizeof(SBinaryHeader5)) );
 
@@ -994,7 +995,8 @@ HRESULT CEffectLoader::LoadTypeAndAddToPool(SType **ppType, uint32_t  dwOffset)
     uint8_t *pHashBuffer;
     uint32_t  hash;
     SVariable *pTempMembers = nullptr;
-    
+    uint32_t cElements = 0;
+
     m_HashBuffer.Empty();
 
     VHD( m_msUnstructured.ReadAtOffset(dwOffset, sizeof(SBinaryType), (void**) &psType), "Invalid pEffectBuffer: cannot read type." );
@@ -1006,7 +1008,7 @@ HRESULT CEffectLoader::LoadTypeAndAddToPool(SType **ppType, uint32_t  dwOffset)
     temporaryType.PackedSize = psType->PackedSize;
 
     // sanity check elements, size, stride, etc.
-    uint32_t  cElements = std::max<uint32_t>(1, temporaryType.Elements);
+    cElements = std::max<uint32_t>(1, temporaryType.Elements);
     VBD( cElements * temporaryType.Stride == AlignToPowerOf2(temporaryType.TotalSize, SType::c_RegisterSize), "Invalid pEffectBuffer: invalid type size." );
     VBD( temporaryType.Stride % SType::c_RegisterSize == 0, "Invalid pEffectBuffer: invalid type stride." );
     VBD( temporaryType.PackedSize <= temporaryType.TotalSize && temporaryType.PackedSize % cElements == 0, "Invalid pEffectBuffer: invalid type packed size." );
@@ -2554,7 +2556,9 @@ HRESULT CEffectLoader::GrabShaderData(SShaderBlock *pShaderBlock)
 
     SRange *pRange = nullptr;
     CEffectVector<SConstantBuffer*> vTBuffers;
-    
+    uint32_t NumInterfaces = 0;
+    uint32_t CurInterfaceParameter = 0;
+
     //////////////////////////////////////////////////////////////////////////
     // Step 1: iterate through the resource binding structures and build
     // an "optimized" list of all of the dependencies
@@ -2793,8 +2797,7 @@ HRESULT CEffectLoader::GrabShaderData(SShaderBlock *pShaderBlock)
     // Step 2: iterate through the interfaces and build
     // an "optimized" list of all of the dependencies
 
-    uint32_t NumInterfaces = pShaderBlock->pReflectionData->pReflection->GetNumInterfaceSlots();
-    uint32_t CurInterfaceParameter = 0;
+    NumInterfaces = pShaderBlock->pReflectionData->pReflection->GetNumInterfaceSlots();
     if( NumInterfaces > 0 )
     {
         assert( ShaderDesc.ConstantBuffers > 0 );

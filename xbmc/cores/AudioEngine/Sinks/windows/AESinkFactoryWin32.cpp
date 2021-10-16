@@ -42,11 +42,11 @@ std::vector<RendererDetail> CAESinkFactoryWin::GetRendererDetails()
   LPWSTR pwszID = nullptr;
   std::wstring wstrDDID;
   HRESULT hr;
+  UINT uiCount = 0;
 
   hr = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, reinterpret_cast<void**>(pEnumerator.GetAddressOf()));
   EXIT_ON_FAILURE(hr, "Could not allocate WASAPI device enumerator.")
 
-  UINT uiCount = 0;
 
   // get the default audio endpoint
   if (pEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, pDefaultDevice.GetAddressOf()) == S_OK)
@@ -253,6 +253,7 @@ HRESULT CAESinkFactoryWin::ActivateWASAPIDevice(std::string &device, IAEWASAPIDe
   ComPtr<IMMDevice> pDevice = nullptr;
   ComPtr<IMMDeviceEnumerator> pEnumerator = nullptr;
   ComPtr<IMMDeviceCollection> pEnumDevices = nullptr;
+  UINT uiCount = 0;
 
   if (!ppDevice)
     return E_POINTER;
@@ -261,7 +262,6 @@ HRESULT CAESinkFactoryWin::ActivateWASAPIDevice(std::string &device, IAEWASAPIDe
   EXIT_ON_FAILURE(hr, "Could not allocate WASAPI device enumerator.")
 
   /* Get our device. First try to find the named device. */
-  UINT uiCount = 0;
 
   hr = pEnumerator->EnumAudioEndpoints(eRender, DEVICE_STATE_ACTIVE, pEnumDevices.GetAddressOf());
   EXIT_ON_FAILURE(hr, "Retrieval of audio endpoint enumeration failed.")

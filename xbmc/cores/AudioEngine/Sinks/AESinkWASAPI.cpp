@@ -729,6 +729,11 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
 
   HRESULT hr = m_pAudioClient->IsFormatSupported(AUDCLNT_SHAREMODE_EXCLUSIVE, &wfxex.Format, NULL);
 
+  int closestMatch = 0;
+  unsigned int requestedChannels = 0;
+  unsigned int noOfCh = 0;
+  uint64_t desired_map = 0;
+
   if (SUCCEEDED(hr))
   {
     CLog::LogF(LOGINFO, "Format is Supported - will attempt to Initialize");
@@ -746,10 +751,8 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
              "IsFormatSupported failed ({}) - trying to find a compatible format",
              WASAPIErrToStr(hr));
 
-  int closestMatch;
-  unsigned int requestedChannels = wfxex.Format.nChannels;
-  unsigned int noOfCh;
-  uint64_t desired_map = CAESinkFactoryWin::SpeakerMaskFromAEChannels(format.m_channelLayout);
+  requestedChannels = wfxex.Format.nChannels;
+  desired_map = CAESinkFactoryWin::SpeakerMaskFromAEChannels(format.m_channelLayout);
 
   /* The requested format is not supported by the device.  Find something that works */
   CLog::Log(LOGDEBUG,
