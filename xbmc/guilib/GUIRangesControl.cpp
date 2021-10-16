@@ -323,9 +323,9 @@ void CGUIRangesControl::SetInvalid()
     range.SetInvalid();
 }
 
-bool CGUIRangesControl::UpdateColors()
+bool CGUIRangesControl::UpdateColors(const CGUIListItem* item)
 {
-  bool bChanged = CGUIControl::UpdateColors();
+  bool bChanged = CGUIControl::UpdateColors(nullptr);
 
   bChanged |= m_guiBackground->SetDiffuseColor(m_diffuseColor);
   bChanged |= m_guiOverlay->SetDiffuseColor(m_diffuseColor);

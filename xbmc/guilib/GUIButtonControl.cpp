@@ -312,9 +312,9 @@ void CGUIButtonControl::SetAlpha(unsigned char alpha)
   m_alpha = alpha;
 }
 
-bool CGUIButtonControl::UpdateColors()
+bool CGUIButtonControl::UpdateColors(const CGUIListItem* item)
 {
-  bool changed = CGUIControl::UpdateColors();
+  bool changed = CGUIControl::UpdateColors(nullptr);
   changed |= m_label.UpdateColors();
   changed |= m_label2.UpdateColors();
   changed |= m_imgFocus->SetDiffuseColor(m_diffuseColor);

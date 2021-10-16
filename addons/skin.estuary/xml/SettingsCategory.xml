@@ -80,6 +80,10 @@
 			<textcolor>grey</textcolor>
 			<shadowcolor>black</shadowcolor>
 		</control>
+		<control type="colorbutton" id="15">
+			<description>Default ColorButton</description>
+			<include>DefaultSettingButton</include>
+		</control>
 		<control type="group">
 			<depth>DepthContentPanel</depth>
 			<include>OpenClose_Left</include>

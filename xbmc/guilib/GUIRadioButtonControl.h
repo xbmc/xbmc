@@ -51,7 +51,7 @@ public:
   bool IsSelected() const { return m_bSelected; }
 
 protected:
-  bool UpdateColors() override;
+  bool UpdateColors(const CGUIListItem* item) override;
   std::unique_ptr<CGUITexture> m_imgRadioOnFocus;
   std::unique_ptr<CGUITexture> m_imgRadioOnNoFocus;
   std::unique_ptr<CGUITexture> m_imgRadioOffFocus;

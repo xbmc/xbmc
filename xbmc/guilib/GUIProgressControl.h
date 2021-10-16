@@ -50,7 +50,7 @@ public:
   void UpdateInfo(const CGUIListItem *item = NULL) override;
   bool UpdateLayout(void);
 protected:
-  bool UpdateColors() override;
+  bool UpdateColors(const CGUIListItem* item) override;
   std::unique_ptr<CGUITexture> m_guiBackground;
   std::unique_ptr<CGUITexture> m_guiLeft;
   std::unique_ptr<CGUITexture> m_guiMid;

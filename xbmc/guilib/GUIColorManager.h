@@ -22,6 +22,8 @@
 
 #include <map>
 #include <string>
+#include <utility>
+#include <vector>
 
 class CXBMCTinyXML;
 
@@ -37,8 +39,18 @@ public:
 
   void Clear();
 
+  /*! \brief Load a colors list from a XML file
+    \param filePath The path to the XML file
+    \param colors The vector to populate
+    \param sortColors if true the colors will be sorted in a hue scale
+    \return true if success, otherwise false
+  */
+  bool LoadColorsListFromXML(const std::string& filePath,
+                             std::vector<std::pair<std::string, UTILS::ColorInfo>>& colors,
+                             bool sortColors);
+
 protected:
-  bool LoadXML(CXBMCTinyXML &xmlDoc);
+  bool LoadXML(CXBMCTinyXML& xmlDoc);
 
   std::map<std::string, UTILS::Color> m_colors;
 };

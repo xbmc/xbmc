@@ -7,6 +7,7 @@ system/settings/*
 userdata/*
 system/addon-manifest.xml
 system/colors.xml
+system/dialogcolors.xml
 system/peripherals.xml
 system/playercorefactory.xml
 system/keyboardlayouts/*

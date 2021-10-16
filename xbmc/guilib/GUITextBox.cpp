@@ -78,9 +78,9 @@ CGUITextBox::~CGUITextBox(void)
   m_autoScrollRepeatAnim = NULL;
 }
 
-bool CGUITextBox::UpdateColors()
+bool CGUITextBox::UpdateColors(const CGUIListItem* item)
 {
-  bool changed = CGUIControl::UpdateColors();
+  bool changed = CGUIControl::UpdateColors(nullptr);
   changed |= m_label.UpdateColors();
 
   return changed;

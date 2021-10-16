@@ -254,7 +254,8 @@ public:
   void SetControlStats(GUICONTROLSTATS* controlStats) { m_controlStats = controlStats; }
   virtual void UpdateControlStats();
 
-  enum GUICONTROLTYPES {
+  enum GUICONTROLTYPES
+  {
     GUICONTROL_UNKNOWN,
     GUICONTROL_BUTTON,
     GUICONTROL_FADELABEL,
@@ -289,7 +290,8 @@ public:
     GUICONTAINER_FIXEDLIST,
     GUICONTAINER_EPGGRID,
     GUICONTAINER_PANEL,
-    GUICONTROL_RANGES
+    GUICONTROL_RANGES,
+    GUICONTROL_COLORBUTTON
   };
   GUICONTROLTYPES GetControlType() const { return ControlType; }
 
@@ -321,7 +323,7 @@ protected:
    */
   virtual bool CanFocusFromPoint(const CPoint &point) const;
 
-  virtual bool UpdateColors();
+  virtual bool UpdateColors(const CGUIListItem* item);
   virtual bool Animate(unsigned int currentTime);
   virtual bool CheckAnimation(ANIMATION_TYPE animType);
   void UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState);

@@ -14,10 +14,12 @@
 #include "addons/AddonManager.h"
 #include "addons/gui/GUIWindowAddonBrowser.h"
 #include "addons/settings/SettingUrlEncodedString.h"
+#include "dialogs/GUIDialogColorPicker.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogSlider.h"
+#include "guilib/GUIColorButtonControl.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIEditControl.h"
 #include "guilib/GUIImage.h"
@@ -364,6 +366,64 @@ void CGUIControlRadioButtonSetting::Update(bool fromControl, bool updateDisplayO
   CGUIControlBaseSetting::Update(fromControl, updateDisplayOnly);
 
   m_pRadioButton->SetSelected(std::static_pointer_cast<CSettingBool>(m_pSetting)->GetValue());
+}
+
+CGUIControlColorButtonSetting::CGUIControlColorButtonSetting(
+    CGUIColorButtonControl* pColorControl,
+    int id,
+    const std::shared_ptr<CSetting>& pSetting,
+    ILocalizer* localizer)
+  : CGUIControlBaseSetting(id, std::move(pSetting), localizer)
+{
+  m_pColorButton = pColorControl;
+  if (!m_pColorButton)
+    return;
+
+  m_pColorButton->SetID(id);
+}
+
+CGUIControlColorButtonSetting::~CGUIControlColorButtonSetting() = default;
+
+bool CGUIControlColorButtonSetting::OnClick()
+{
+  if (!m_pColorButton)
+    return false;
+
+  std::shared_ptr<CSettingString> settingHexColor =
+      std::static_pointer_cast<CSettingString>(m_pSetting);
+
+  CGUIDialogColorPicker* dialog =
+      CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogColorPicker>(
+          WINDOW_DIALOG_COLOR_PICKER);
+  if (!dialog)
+    return false;
+
+  dialog->Reset();
+  dialog->SetHeading(CVariant{Localize(m_pSetting->GetLabel())});
+  dialog->LoadColors();
+  std::string hexColor;
+  if (settingHexColor)
+    hexColor = settingHexColor.get()->GetValue();
+  dialog->SetSelectedColor(hexColor);
+  dialog->Open();
+
+  if (!dialog->IsConfirmed())
+    return false;
+
+  SetValid(
+      std::static_pointer_cast<CSettingString>(m_pSetting)->SetValue(dialog->GetSelectedColor()));
+  return IsValid();
+}
+
+void CGUIControlColorButtonSetting::Update(bool fromControl, bool updateDisplayOnly)
+{
+  if (fromControl || !m_pColorButton)
+    return;
+
+  CGUIControlBaseSetting::Update(fromControl, updateDisplayOnly);
+  // Set the color to apply to the preview color box
+  m_pColorButton->SetImageBoxColor(
+      std::static_pointer_cast<CSettingString>(m_pSetting)->GetValue());
 }
 
 CGUIControlSpinExSetting::CGUIControlSpinExSetting(CGUISpinControlEx* pSpin,

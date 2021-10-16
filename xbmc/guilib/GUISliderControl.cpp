@@ -738,9 +738,9 @@ std::string CGUISliderControl::GetDescription() const
   return description;
 }
 
-bool CGUISliderControl::UpdateColors()
+bool CGUISliderControl::UpdateColors(const CGUIListItem* item)
 {
-  bool changed = CGUIControl::UpdateColors();
+  bool changed = CGUIControl::UpdateColors(nullptr);
   changed |= m_guiBackground->SetDiffuseColor(m_diffuseColor);
   changed |= m_guiSelectorLower->SetDiffuseColor(m_diffuseColor);
   changed |= m_guiSelectorUpper->SetDiffuseColor(m_diffuseColor);

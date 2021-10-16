@@ -621,16 +621,16 @@ void CGUIControl::UpdateVisibility(const CGUIListItem *item)
     MarkDirtyRegion();
 
   m_allowHiddenFocus.Update(item);
-  if (UpdateColors())
+  if (UpdateColors(item))
     MarkDirtyRegion();
   // and finally, update our control information (if not pushed)
   if (!m_pushedUpdates)
     UpdateInfo(item);
 }
 
-bool CGUIControl::UpdateColors()
+bool CGUIControl::UpdateColors(const CGUIListItem* item)
 {
-  return m_diffuseColor.Update();
+  return m_diffuseColor.Update(item);
 }
 
 void CGUIControl::SetInitialVisibility()
@@ -655,7 +655,7 @@ void CGUIControl::SetInitialVisibility()
   if (m_enableCondition)
     m_enabled = m_enableCondition->Get();
   m_allowHiddenFocus.Update();
-  UpdateColors();
+  UpdateColors(nullptr);
 
   MarkDirtyRegion();
 }

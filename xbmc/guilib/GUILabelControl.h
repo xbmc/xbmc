@@ -51,7 +51,7 @@ public:
   void SetSelection(unsigned int start, unsigned int end);
 
 protected:
-  bool UpdateColors() override;
+  bool UpdateColors(const CGUIListItem* item) override;
   std::string ShortenPath(const std::string &path);
 
   /*! \brief Return the maximum width of this label control.

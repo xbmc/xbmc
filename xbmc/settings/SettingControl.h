@@ -297,3 +297,14 @@ public:
   // implementation of ISettingControl
   std::string GetType() const override { return "label"; }
 };
+
+class CSettingControlColorButton : public ISettingControl
+{
+public:
+  CSettingControlColorButton() { m_format = "string"; }
+  ~CSettingControlColorButton() override = default;
+
+  // implementation of ISettingControl
+  std::string GetType() const override { return "colorbutton"; }
+  bool SetFormat(const std::string& format) override;
+};

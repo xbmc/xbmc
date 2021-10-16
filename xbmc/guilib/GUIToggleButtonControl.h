@@ -44,7 +44,7 @@ public:
   void SetAltClickActions(const CGUIAction &clickActions);
 
 protected:
-  bool UpdateColors() override;
+  bool UpdateColors(const CGUIListItem* item) override;
   void OnClick() override;
   CGUIButtonControl m_selectButton;
   INFO::InfoPtr m_toggleSelect;

@@ -53,7 +53,7 @@ public:
   bool HitTest(const CPoint& point) const override { return m_buttonControl.HitTest(point); }
 
 protected:
-  bool UpdateColors() override;
+  bool UpdateColors(const CGUIListItem* item) override;
   virtual void ProcessText();
 
 private:

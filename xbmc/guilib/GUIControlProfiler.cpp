@@ -136,6 +136,9 @@ void CGUIControlProfilerItem::SaveToXML(TiXmlElement *parent)
     lpszType = "fixedlist"; break;
   case CGUIControl::GUICONTAINER_PANEL:
     lpszType = "panel"; break;
+  case CGUIControl::GUICONTROL_COLORBUTTON:
+    lpszType = "colorbutton";
+    break;
   //case CGUIControl::GUICONTROL_UNKNOWN:
   default:
     break;

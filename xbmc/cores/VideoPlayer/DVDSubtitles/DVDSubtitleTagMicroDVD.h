@@ -15,7 +15,8 @@
 #define FLAG_BOLD 0
 #define FLAG_ITALIC 1
 #define FLAG_UNDERLINE 2
-#define FLAG_COLOR 3
+#define FLAG_STRIKETHROUGH 3
+#define FLAG_COLOR 4
 
 #define TAG_ONE_LINE 1
 #define TAG_ALL_LINE 2
@@ -28,5 +29,5 @@ public:
   void ConvertLine(std::string& strUTF8);
 
 private:
-  int m_flag[4];
+  int m_flag[5];
 };

@@ -49,7 +49,7 @@ public:
   CRect CalcRenderRegion() const override;
 
 protected:
-  bool UpdateColors() override;
+  bool UpdateColors(const CGUIListItem* item) override;
 
   CGUILabel     m_label;
   KODI::GUILIB::GUIINFO::CGUIInfoLabel m_info;

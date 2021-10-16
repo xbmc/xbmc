@@ -24,6 +24,7 @@ class CGUIButtonControl;
 class CGUIRadioButtonControl;
 class CGUISettingsSliderControl;
 class CGUILabelControl;
+class CGUIColorButtonControl;
 
 class CSetting;
 class CSettingControlSlider;
@@ -117,6 +118,29 @@ private:
   CGUIRadioButtonControl* m_pRadioButton;
 };
 
+class CGUIControlColorButtonSetting : public CGUIControlBaseSetting
+{
+public:
+  CGUIControlColorButtonSetting(CGUIColorButtonControl* pColorControl,
+                                int id,
+                                const std::shared_ptr<CSetting>& pSetting,
+                                ILocalizer* localizer);
+  ~CGUIControlColorButtonSetting() override;
+
+  void Select(bool bSelect);
+
+  CGUIControl* GetControl() override { return reinterpret_cast<CGUIControl*>(m_pColorButton); }
+  bool OnClick() override;
+  void Clear() override { m_pColorButton = nullptr; }
+
+protected:
+  // specialization of CGUIControlBaseSetting
+  void Update(bool fromControl, bool updateDisplayOnly) override;
+
+private:
+  CGUIColorButtonControl* m_pColorButton;
+};
+
 class CGUIControlSpinExSetting : public CGUIControlBaseSetting
 {
 public:
@@ -170,6 +194,27 @@ private:
                       CFileItemList& items,
                       bool updateItems) const;
 
+  CGUIButtonControl* m_pButton;
+};
+
+class CGUIControlListColorSetting : public CGUIControlBaseSetting
+{
+public:
+  CGUIControlListColorSetting(CGUIButtonControl* pButton,
+                              int id,
+                              std::shared_ptr<CSetting> pSetting,
+                              ILocalizer* localizer);
+  ~CGUIControlListColorSetting() override;
+
+  CGUIControl* GetControl() override { return reinterpret_cast<CGUIControl*>(m_pButton); }
+  bool OnClick() override;
+  void Clear() override { m_pButton = nullptr; }
+
+protected:
+  // specialization of CGUIControlBaseSetting
+  void Update(bool fromControl, bool updateDisplayOnly) override;
+
+private:
   CGUIButtonControl* m_pButton;
 };
 

@@ -83,6 +83,17 @@
 			<texturenofocus></texturenofocus>
 			<textoffsetx>20</textoffsetx>
 		</control>
+		<control type="colorbutton" id="15">
+			<description>Default ColorButton</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<height>80</height>
+			<font>font24_title</font>
+			<textcolor>white</textcolor>
+			<texturefocus>list_focus.png</texturefocus>
+			<texturenofocus></texturenofocus>
+			<textoffsetx>20</textoffsetx>
+		</control>
 		<control type="spincontrolex" id="9">
 			<description>Default SpinControlex</description>
 			<posx>0</posx>

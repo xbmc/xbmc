@@ -42,7 +42,7 @@ public:
   bool AllLabelsShown() const { return m_allLabelsShown; }
 
 protected:
-  bool UpdateColors() override;
+  bool UpdateColors(const CGUIListItem* item) override;
   std::string GetDescription() const override;
   void AddLabel(const std::string &label);
 

@@ -48,7 +48,7 @@ public:
   bool IsVisible() const override;
 protected:
   EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event) override;
-  bool UpdateColors() override;
+  bool UpdateColors(const CGUIListItem* item) override;
   bool UpdateBarSize();
   bool Move(int iNumSteps);
   virtual void SetFromPosition(const CPoint &point);

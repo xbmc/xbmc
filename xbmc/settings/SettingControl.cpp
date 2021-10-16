@@ -40,6 +40,8 @@ std::shared_ptr<ISettingControl> CSettingControlCreator::CreateControl(const std
     return std::make_shared<CSettingControlTitle>();
   else if (StringUtils::EqualsNoCase(controlType, "label"))
     return std::make_shared<CSettingControlLabel>();
+  else if (StringUtils::EqualsNoCase(controlType, "colorbutton"))
+    return std::make_shared<CSettingControlColorButton>();
 
   return nullptr;
 }
@@ -368,4 +370,9 @@ bool CSettingControlTitle::Deserialize(const TiXmlNode *node, bool update /* = f
 CSettingControlLabel::CSettingControlLabel()
 {
   m_format = "string";
+}
+
+bool CSettingControlColorButton::SetFormat(const std::string& format)
+{
+  return format.empty() || StringUtils::EqualsNoCase(format, "string");
 }

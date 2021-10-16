@@ -83,6 +83,18 @@ void CDVDSubtitleTagSami::ConvertLine(std::string& strUTF8, const char* langClas
       strUTF8.insert(pos, "{\\u0}");
       pos += 5;
     }
+    else if (fullTag == "<s>")
+    {
+      m_flag[FLAG_STRIKETHROUGH] = true;
+      strUTF8.insert(pos, "{\\s1}");
+      pos += 5;
+    }
+    else if ((fullTag == "</s>") && m_flag[FLAG_STRIKETHROUGH])
+    {
+      m_flag[FLAG_STRIKETHROUGH] = false;
+      strUTF8.insert(pos, "{\\s0}");
+      pos += 5;
+    }
     else if ((fullTag == "</font>") && m_flag[FLAG_COLOR])
     {
       m_flag[FLAG_COLOR] = false;
@@ -219,6 +231,11 @@ void CDVDSubtitleTagSami::CloseTag(std::string& text)
   {
     m_flag[FLAG_UNDERLINE] = false;
     text += "{\\u0}";
+  }
+  if (m_flag[FLAG_STRIKETHROUGH])
+  {
+    m_flag[FLAG_STRIKETHROUGH] = false;
+    text += "{\\s0}";
   }
   if (m_flag[FLAG_COLOR])
   {

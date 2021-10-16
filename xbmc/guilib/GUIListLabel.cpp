@@ -49,9 +49,9 @@ CRect CGUIListLabel::CalcRenderRegion() const
   return m_label.GetRenderRect();
 }
 
-bool CGUIListLabel::UpdateColors()
+bool CGUIListLabel::UpdateColors(const CGUIListItem* item)
 {
-  bool changed = CGUIControl::UpdateColors();
+  bool changed = CGUIControl::UpdateColors(nullptr);
   changed |= m_label.UpdateColors();
 
   return changed;

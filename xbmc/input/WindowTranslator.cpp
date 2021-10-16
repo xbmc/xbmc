@@ -118,6 +118,7 @@ const CWindowTranslator::WindowMapByName CWindowTranslator::WindowMappingByName 
     {"movieinformation", WINDOW_DIALOG_VIDEO_INFO},
     {"textviewer", WINDOW_DIALOG_TEXT_VIEWER},
     {"fullscreenvideo", WINDOW_FULLSCREEN_VIDEO},
+    {"dialogcolorpicker", WINDOW_DIALOG_COLOR_PICKER},
 
     // Virtual window for fullscreen radio, uses WINDOW_FULLSCREEN_VIDEO as
     // fallback

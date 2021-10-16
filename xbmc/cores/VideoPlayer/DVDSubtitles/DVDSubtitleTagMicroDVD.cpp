@@ -15,6 +15,7 @@ void CDVDSubtitleTagMicroDVD::ConvertLine(std::string& strUTF8)
   m_flag[FLAG_BOLD] = 0;
   m_flag[FLAG_ITALIC] = 0;
   m_flag[FLAG_UNDERLINE] = 0;
+  m_flag[FLAG_STRIKETHROUGH] = 0;
   m_flag[FLAG_COLOR] = 0;
 
   int machine_status = 1;
@@ -53,6 +54,12 @@ void CDVDSubtitleTagMicroDVD::ConvertLine(std::string& strUTF8)
             {
               m_flag[FLAG_UNDERLINE] = (tagName == "U") ? TAG_ALL_LINE : TAG_ONE_LINE;
               strUTF8.insert(pos, "{\\u1}");
+              pos += 5;
+            }
+            else if ((tagValue == "s") && (m_flag[FLAG_STRIKETHROUGH] == 0))
+            {
+              m_flag[FLAG_STRIKETHROUGH] = (tagName == "S") ? TAG_ALL_LINE : TAG_ONE_LINE;
+              strUTF8.insert(pos, "{\\s1}");
               pos += 5;
             }
           }
@@ -123,6 +130,12 @@ void CDVDSubtitleTagMicroDVD::ConvertLine(std::string& strUTF8)
           strUTF8.insert(pos, "{\\u0}");
           pos += 5;
         }
+        if (m_flag[FLAG_STRIKETHROUGH] == TAG_ONE_LINE)
+        {
+          m_flag[FLAG_STRIKETHROUGH] = 0;
+          strUTF8.insert(pos, "{\\s0}");
+          pos += 5;
+        }
         if (m_flag[FLAG_COLOR] == TAG_ONE_LINE)
         {
           m_flag[FLAG_COLOR] = 0;
@@ -141,6 +154,8 @@ void CDVDSubtitleTagMicroDVD::ConvertLine(std::string& strUTF8)
           strUTF8.append("{\\i0}");
         if (m_flag[FLAG_UNDERLINE] != 0)
           strUTF8.append("{\\u0}");
+        if (m_flag[FLAG_STRIKETHROUGH] != 0)
+          strUTF8.append("{\\s0}");
         if (m_flag[FLAG_COLOR] != 0)
           strUTF8.append("{\\c}");
         machine_status = 0;

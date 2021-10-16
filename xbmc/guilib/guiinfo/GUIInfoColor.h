@@ -13,6 +13,7 @@
 \brief
 */
 
+#include "guilib/GUIListItem.h"
 #include "utils/Color.h"
 
 #include <string>
@@ -33,7 +34,7 @@ public:
 
   constexpr operator ::UTILS::Color() const { return m_color; }
 
-  bool Update();
+  bool Update(const CGUIListItem* item = nullptr);
   void Parse(const std::string &label, int context);
 
 private:

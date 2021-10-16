@@ -25,8 +25,9 @@ using namespace KODI::SUBTITLES;
 
 namespace
 {
-constexpr int BORDER_STYLE_OUTLINE = 1; // ASS_Style->BorderStyle: Outline + drop shadow
-constexpr int BORDER_STYLE_OUTLINE_BOX = 4; // ASS_Style->BorderStyle: Outline + box
+constexpr int ASS_BORDER_STYLE_OUTLINE = 1; // Outline + drop shadow
+constexpr int ASS_BORDER_STYLE_BOX = 3; // Box + drop shadow
+constexpr int ASS_BORDER_STYLE_SQUARE_BOX = 4; // Square box + outline
 
 // Directory where user defined fonts are located (and where mkv fonts are extracted to)
 constexpr const char* userFontPath = "special://home/media/Fonts/";
@@ -52,8 +53,7 @@ std::string GetDefaultFontPath(std::string& font)
 // Convert RGB/ARGB to RGBA by appling also the opacity value
 UTILS::Color ConvColor(UTILS::Color argbColor, int opacity = 100)
 {
-  return ColorUtils::ConvertToRGBA(
-      ColorUtils::ChangeOpacity(argbColor, (100.0f - opacity) / 100.0f));
+  return UTILS::ConvertToRGBA(UTILS::ChangeOpacity(argbColor, (100.0f - opacity) / 100.0f));
 }
 
 } // namespace
@@ -333,58 +333,106 @@ void CDVDSubtitlesLibass::ApplyStyle(style subStyle, renderOpts opts)
       // Set SecondaryColour may be used to prevent an onscreen collision
       style->SecondaryColour = subColor;
 
-      // Compute the outline color
-      UTILS::Color outlineColor = ConvColor(subStyle.outlineColor);
-
       // Configure the effects
-      if (subStyle.borderStyle == BorderStyle::OUTLINE)
+      double lineSpacing = 0.0;
+      if (subStyle.borderStyle == BorderStyle::OUTLINE ||
+          subStyle.borderStyle == BorderStyle::OUTLINE_NO_SHADOW)
       {
-        style->BorderStyle = BORDER_STYLE_OUTLINE;
-        style->OutlineColour = outlineColor;
-        style->BackColour = ConvColor(UTILS::COLOR::BLACK); // Shadow color
-        style->Outline = 1 * scale;
-        style->Shadow = 0;
+        style->BorderStyle = ASS_BORDER_STYLE_OUTLINE;
+        style->Outline = (10.00 / 100 * subStyle.fontBorderSize) * scale;
+        style->OutlineColour = ConvColor(subStyle.fontBorderColor, subStyle.fontOpacity);
+        if (subStyle.borderStyle == BorderStyle::OUTLINE_NO_SHADOW)
+        {
+          style->BackColour = ConvColor(UTILS::COLOR::NONE, 0); // Set the shadow color
+          style->Shadow = 0; // Set the shadow size
+        }
+        else
+        {
+          style->BackColour =
+              ConvColor(subStyle.shadowColor, subStyle.shadowOpacity); // Set the shadow color
+          style->Shadow = (10.00 / 100 * subStyle.shadowSize) * scale; // Set the shadow size
+        }
       }
-      else
+      else if (subStyle.borderStyle == BorderStyle::BOX)
       {
-        // Compute the color to be used for the box, depending on the opacity
-        style->BorderStyle = BORDER_STYLE_OUTLINE_BOX;
-        style->OutlineColour = outlineColor;
+        // This BorderStyle not support outline color/size
+        style->BorderStyle = ASS_BORDER_STYLE_BOX;
+        style->Outline = 4 * scale; // Space between the text and the box edges
+        style->OutlineColour =
+            ConvColor(subStyle.backgroundColor,
+                      subStyle.backgroundOpacity); // Set the background border color
+        style->BackColour =
+            ConvColor(subStyle.shadowColor, subStyle.shadowOpacity); // Set the box shadow color
+        style->Shadow = (10.00 / 100 * subStyle.shadowSize) * scale; // Set the box shadow size
+        // By default a box overlaps the other, then we increase a bit the line spacing
+        lineSpacing = 6.0;
+      }
+      else if (subStyle.borderStyle == BorderStyle::SQUARE_BOX)
+      {
+        // This BorderStyle not support shadow color/size
+        style->BorderStyle = ASS_BORDER_STYLE_SQUARE_BOX;
+        style->Outline = (10.00 / 100 * subStyle.fontBorderSize) * scale;
+        style->OutlineColour = ConvColor(subStyle.fontBorderColor, subStyle.fontOpacity);
         style->BackColour = ConvColor(subStyle.backgroundColor, subStyle.backgroundOpacity);
-        style->Outline = 1 * scale;
-        style->Shadow = 4; // Space between the text and the box edges
+        style->Shadow = 4 * scale; // Space between the text and the box edges
+      }
+
+      ass_set_line_spacing(m_renderer, lineSpacing);
+
+      style->Blur = (10.00 / 100 * subStyle.blur);
+
+      int marginLR = 20;
+      if (opts.horizontalAlignment != HorizontalAlignment::DISABLED)
+      {
+        // If the subtitle text is aligned on the left or right
+        // of the screen, we set an extra left/right margin
+        marginLR += int((double)opts.frameWidth / 10);
       }
 
       // Set the margins (in pixel)
-      style->MarginL = 20 * scale;
-      style->MarginR = style->MarginL;
+      style->MarginL = marginLR * scale;
+      style->MarginR = marginLR * scale;
       // Vertical margin (direction depends on alignment)
       // to be set only when the video calibration position setting is not used
       if (opts.usePosition)
         style->MarginV = 0;
       else
-        style->MarginV = 20 * scale;
+        style->MarginV = subStyle.marginVertical * scale;
     }
 
-    // Set the alignment
-    if (subStyle.alignment == FontAlignment::TOP_LEFT)
-      style->Alignment = VALIGN_TOP | HALIGN_LEFT;
-    else if (subStyle.alignment == FontAlignment::TOP_CENTER)
-      style->Alignment = VALIGN_TOP | HALIGN_CENTER;
-    else if (subStyle.alignment == FontAlignment::TOP_RIGHT)
-      style->Alignment = VALIGN_TOP | HALIGN_RIGHT;
-    else if (subStyle.alignment == FontAlignment::MIDDLE_LEFT)
-      style->Alignment = VALIGN_CENTER | HALIGN_LEFT;
-    else if (subStyle.alignment == FontAlignment::MIDDLE_CENTER)
-      style->Alignment = VALIGN_CENTER | HALIGN_CENTER;
-    else if (subStyle.alignment == FontAlignment::MIDDLE_RIGHT)
-      style->Alignment = VALIGN_CENTER | HALIGN_RIGHT;
-    else if (subStyle.alignment == FontAlignment::SUB_LEFT)
-      style->Alignment = VALIGN_SUB | HALIGN_LEFT;
-    else if (subStyle.alignment == FontAlignment::SUB_CENTER)
-      style->Alignment = VALIGN_SUB | HALIGN_CENTER;
-    else if (subStyle.alignment == FontAlignment::SUB_RIGHT)
-      style->Alignment = VALIGN_SUB | HALIGN_RIGHT;
+    // Set the vertical alignment
+    if (subStyle.alignment == FontAlignment::TOP_LEFT ||
+        subStyle.alignment == FontAlignment::TOP_CENTER ||
+        subStyle.alignment == FontAlignment::TOP_RIGHT)
+      style->Alignment = VALIGN_TOP;
+    else if (subStyle.alignment == FontAlignment::MIDDLE_LEFT ||
+             subStyle.alignment == FontAlignment::MIDDLE_CENTER ||
+             subStyle.alignment == FontAlignment::MIDDLE_RIGHT)
+      style->Alignment = VALIGN_CENTER;
+    else if (subStyle.alignment == FontAlignment::SUB_LEFT ||
+             subStyle.alignment == FontAlignment::SUB_CENTER ||
+             subStyle.alignment == FontAlignment::SUB_RIGHT)
+      style->Alignment = VALIGN_SUB;
+
+    // Set the horizontal alignment, giving priority to horizontalFontAlign property when set
+    if (opts.horizontalAlignment == HorizontalAlignment::LEFT)
+      style->Alignment |= HALIGN_LEFT;
+    else if (opts.horizontalAlignment == HorizontalAlignment::CENTER)
+      style->Alignment |= HALIGN_CENTER;
+    else if (opts.horizontalAlignment == HorizontalAlignment::RIGHT)
+      style->Alignment |= HALIGN_RIGHT;
+    else if (subStyle.alignment == FontAlignment::TOP_LEFT ||
+             subStyle.alignment == FontAlignment::MIDDLE_LEFT ||
+             subStyle.alignment == FontAlignment::SUB_LEFT)
+      style->Alignment |= HALIGN_LEFT;
+    else if (subStyle.alignment == FontAlignment::TOP_CENTER ||
+             subStyle.alignment == FontAlignment::MIDDLE_CENTER ||
+             subStyle.alignment == FontAlignment::SUB_CENTER)
+      style->Alignment |= HALIGN_CENTER;
+    else if (subStyle.alignment == FontAlignment::TOP_RIGHT ||
+             subStyle.alignment == FontAlignment::MIDDLE_RIGHT ||
+             subStyle.alignment == FontAlignment::SUB_RIGHT)
+      style->Alignment |= HALIGN_RIGHT;
   }
 
   if (m_subtitleType == NATIVE)
