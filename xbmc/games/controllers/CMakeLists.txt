@@ -2,6 +2,7 @@ set(SOURCES Controller.cpp
             ControllerFeature.cpp
             ControllerLayout.cpp
             ControllerManager.cpp
+            ControllerPort.cpp
             ControllerTopology.cpp
             ControllerTranslator.cpp)
 
@@ -11,6 +12,7 @@ set(HEADERS Controller.h
             ControllerIDs.h
             ControllerLayout.h
             ControllerManager.h
+            ControllerPort.h
             ControllerTopology.h
             ControllerTranslator.h
             ControllerTypes.h)

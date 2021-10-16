@@ -12,61 +12,10 @@
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
-#include <algorithm>
+#include <utility>
 
 using namespace KODI;
 using namespace GAME;
-
-// --- CControllerPort ---------------------------------------------------------
-
-CControllerPort::CControllerPort(std::string portId, std::vector<std::string> accepts)
-  : m_portId(std::move(portId)), m_accepts(std::move(accepts))
-{
-}
-
-void CControllerPort::Reset(void)
-{
-  CControllerPort defaultPort;
-  *this = std::move(defaultPort);
-}
-
-bool CControllerPort::IsCompatible(const std::string& controllerId) const
-{
-  return std::find(m_accepts.begin(), m_accepts.end(), controllerId) != m_accepts.end();
-}
-
-bool CControllerPort::Deserialize(const TiXmlElement* pElement)
-{
-  Reset();
-
-  if (pElement == nullptr)
-    return false;
-
-  m_portId = XMLUtils::GetAttribute(pElement, LAYOUT_XML_ATTR_PORT_ID);
-
-  for (const TiXmlElement* pChild = pElement->FirstChildElement(); pChild != nullptr;
-       pChild = pChild->NextSiblingElement())
-  {
-    if (pChild->ValueStr() == LAYOUT_XML_ELM_ACCEPTS)
-    {
-      std::string controller = XMLUtils::GetAttribute(pChild, LAYOUT_XML_ATTR_CONTROLLER);
-
-      if (!controller.empty())
-        m_accepts.emplace_back(std::move(controller));
-      else
-        CLog::Log(LOGWARNING, "<{}> tag is missing \"{}\" attribute", LAYOUT_XML_ELM_ACCEPTS,
-                  LAYOUT_XML_ATTR_CONTROLLER);
-    }
-    else
-    {
-      CLog::Log(LOGDEBUG, "Unknown physical topology port tag: <{}>", pChild->ValueStr());
-    }
-  }
-
-  return true;
-}
-
-// --- CControllerTopology -----------------------------------------------------
 
 CControllerTopology::CControllerTopology(bool bProvidesInput, std::vector<CControllerPort> ports)
   : m_bProvidesInput(bProvidesInput), m_ports(std::move(ports))
