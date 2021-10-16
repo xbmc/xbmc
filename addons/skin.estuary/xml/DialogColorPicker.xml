@@ -42,6 +42,13 @@
 							<left>8</left>
 							<width>138</width>
 							<height>74</height>
+							<texture>buttons/color-back.png</texture>
+						</control>
+						<control type="image">
+							<top>3</top>
+							<left>8</left>
+							<width>138</width>
+							<height>74</height>
 							<texture border="0">colors/white.png</texture>
 							<colordiffuse>$INFO[ListItem.Label2]</colordiffuse>
 							<aspectratio>stretch</aspectratio>
@@ -51,6 +58,13 @@
 				<focusedlayout height="80" width="146">
 					<control type="group">
 						<animation effect="zoom" time="200" tween="sine" easing="inout" start="100" end="124" center="auto">Focus</animation>
+						<control type="image">
+							<top>3</top>
+							<left>8</left>
+							<width>138</width>
+							<height>74</height>
+							<texture>buttons/color-back.png</texture>
+						</control>
 						<control type="image">
 							<top>3</top>
 							<left>8</left>
@@ -78,7 +92,7 @@
 				<width>880</width>
 				<height>35</height>
 				<align>left</align>
-				<label>[COLOR button_focus]$LOCALIZE[737]: [/COLOR]$INFO[ListItem.Label,, - ]$INFO[ListItem.Label2,#,]</label>
+				<label>[COLOR button_focus]$LOCALIZE[737]: [/COLOR]$INFO[Container(6).ListItem.Label,, - ]$INFO[Container(6).ListItem.Label2,#,]</label>
 			</control>
 			<control type="label">
 				<left>925</left>
