@@ -330,17 +330,16 @@ void CRenderer::CreateSubtitlesStyle()
   if (subAlign == SUBTITLE_ALIGN_BOTTOM_OUTSIDE || subAlign == SUBTITLE_ALIGN_TOP_OUTSIDE)
     m_overlayStyle->drawWithinBlackBars = true;
 
-  m_overlayStyle->assOverrideFont =
-      settings->GetBool(CSettings::SETTING_SUBTITLES_OVERRIDEASSFONTS);
+  m_overlayStyle->assOverrideFont = settings->GetBool(CSettings::SETTING_SUBTITLES_OVERRIDEFONTS);
 
-  int overrideStyles = settings->GetInt(CSettings::SETTING_SUBTITLES_OVERRIDEASSSTYLES);
-  if (overrideStyles == (int)KODI::SUBTITLES::AssOverrideStyles::POSITIONS ||
-      overrideStyles == (int)KODI::SUBTITLES::AssOverrideStyles::STYLES ||
-      overrideStyles == (int)KODI::SUBTITLES::AssOverrideStyles::STYLES_POSITIONS)
+  int overrideStyles = settings->GetInt(CSettings::SETTING_SUBTITLES_OVERRIDESTYLES);
+  if (overrideStyles == (int)KODI::SUBTITLES::OverrideStyles::POSITIONS ||
+      overrideStyles == (int)KODI::SUBTITLES::OverrideStyles::STYLES ||
+      overrideStyles == (int)KODI::SUBTITLES::OverrideStyles::STYLES_POSITIONS)
     m_overlayStyle->assOverrideStyles =
-        static_cast<KODI::SUBTITLES::AssOverrideStyles>(overrideStyles);
+        static_cast<KODI::SUBTITLES::OverrideStyles>(overrideStyles);
   else
-    m_overlayStyle->assOverrideStyles = KODI::SUBTITLES::AssOverrideStyles::DISABLED;
+    m_overlayStyle->assOverrideStyles = KODI::SUBTITLES::OverrideStyles::DISABLED;
 
   int overrideMerginVertical =
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoSubtitleVerticalMargin;

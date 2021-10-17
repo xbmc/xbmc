@@ -13854,7 +13854,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#21368"
-msgid "Override ASS / SSA subtitles fonts"
+msgid "Override subtitles fonts"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -19008,10 +19008,10 @@ msgctxt "#36189"
 msgid "Set the font character set to be used for subtitles."
 msgstr ""
 
-#. Description of setting with label #21368 "Override ASS/SSA subtitles fonts"
+#. Description of setting with label #21368 "Override subtitles fonts"
 #: system/settings/settings.xml
 msgctxt "#36190"
-msgid "Override ASS / SSA subtitles fonts."
+msgid "Override subtitles fonts in subtitle formats such as ASS / SSA."
 msgstr ""
 
 #. Description of setting with label #21366 "Custom subtitle folder"
@@ -22652,31 +22652,31 @@ msgctxt "#39153"
 msgid "Windowing system:"
 msgstr ""
 
-#. Override ASS / SSA subtitles styles setting list
+#. Override subtitles styles setting list
 #: system/settings/settings.xml
 msgctxt "#39154"
-msgid "Override ASS / SSA subtitles styles"
+msgid "Override subtitles styles"
 msgstr ""
 
-#. Description of setting with label #39154 "Override ASS / SSA subtitles styles"
+#. Description of setting with label #39154 "Override subtitles styles"
 #: system/settings/settings.xml
 msgctxt "#39155"
-msgid "The SSA/ASS format can include metadata like font style, colors, size, alignments, positions, etc. you can override the styles with your customizations (please note that side effects may occur in some cases)."
+msgid "Some subtitle formats such as SSA / ASS / WebVTT can include metadata like font style, colors, size, alignments, positions, etc. you can override the styles with your customizations (please note that side effects may occur in some cases)."
 msgstr ""
 
-#. Item list value of setting with label #39154 "Override ASS / SSA subtitles styles"
+#. Item list value of setting with label #39154 "Override subtitles styles"
 #: system/settings/settings.xml
 msgctxt "#39156"
 msgid "Positions"
 msgstr ""
 
-#. Item list value of setting with label #39154 "Override ASS / SSA subtitles styles"
+#. Item list value of setting with label #39154 "Override subtitles styles"
 #: system/settings/settings.xml
 msgctxt "#39157"
 msgid "Styles"
 msgstr ""
 
-#. Item list value of setting with label #39154 "Override ASS / SSA subtitles styles"
+#. Item list value of setting with label #39154 "Override subtitles styles"
 #: system/settings/settings.xml
 msgctxt "#39158"
 msgid "Styles and positions"

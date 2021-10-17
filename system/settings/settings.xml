@@ -701,7 +701,7 @@
           </dependencies>
           <control type="slider" format="percentage" range="0,100" />
         </setting>
-        <setting id="subtitles.overrideassfonts" type="boolean" label="21368" help="36190">
+        <setting id="subtitles.overridefonts" type="boolean" label="21368" help="36190">
           <level>3</level>
           <default>false</default>
           <dependencies>
@@ -709,15 +709,15 @@
           </dependencies>
           <control type="toggle" />
         </setting>
-        <setting id="subtitles.overrideassstyles" type="integer" label="39154" help="39155">
+        <setting id="subtitles.overridestyles" type="integer" label="39154" help="39155">
           <level>3</level>
-          <default>0</default> <!-- ASS_OVERRIDE_DISABLED -->
+          <default>0</default> <!-- OverrideStyles::DISABLED -->
           <constraints>
             <options>
-              <option label="13106">0</option> <!-- ASS_OVERRIDE_DISABLED -->
-              <option label="39156">1</option> <!-- ASS_OVERRIDE_POSITIONS -->
-              <option label="39157">2</option> <!-- ASS_OVERRIDE_STYLES -->
-              <option label="39158">3</option> <!-- ASS_OVERRIDE_STYLES_POSITIONS -->
+              <option label="13106">0</option> <!-- OverrideStyles::DISABLED -->
+              <option label="39156">1</option> <!-- OverrideStyles::POSITIONS -->
+              <option label="39157">2</option> <!-- OverrideStyles::STYLES -->
+              <option label="39158">3</option> <!-- OverrideStyles::STYLES_POSITIONS -->
             </options>
           </constraints>
           <dependencies>
