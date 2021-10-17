@@ -40,6 +40,12 @@ public:
   bool ContainsOverlayType(DVDOverlayType type);
 
   void Clear(); // clear the fifo and delete all overlays
+
+  /*
+   * \brief Flush the overlays.
+   */
+  void Flush();
+
   void CleanUp(double pts); // validates all overlays against current pts
   int GetSize();
 

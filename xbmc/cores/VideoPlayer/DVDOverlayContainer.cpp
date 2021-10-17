@@ -109,6 +109,17 @@ void CDVDOverlayContainer::CleanUp(double pts)
 
 }
 
+void CDVDOverlayContainer::Flush()
+{
+  CSingleLock lock(*this);
+
+  // Flush only the overlays marked as flushable
+  m_overlays.erase(
+      std::remove_if(m_overlays.begin(), m_overlays.end(),
+                     [](CDVDOverlay* ov) { return ov->IsOverlayContainerFlushable(); }),
+      m_overlays.end());
+}
+
 void CDVDOverlayContainer::Clear()
 {
   CSingleLock lock(*this);

@@ -106,8 +106,8 @@ void CVideoPlayerSubtitle::SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priori
 
     /* We must flush active overlays on flush or if we have a file
      * parser since it will re-populate active items.  */
-    if(pMsg->IsType(CDVDMsg::GENERAL_FLUSH) || m_pSubtitleFileParser)
-      m_pOverlayContainer->Clear();
+    if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH) || m_pSubtitleFileParser)
+      m_pOverlayContainer->Flush();
 
     m_lastPts = DVD_NOPTS_VALUE;
   }

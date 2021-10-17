@@ -37,6 +37,7 @@ public:
     m_references = 1;
     m_textureid = 0;
     m_enableTextAlign = false;
+    m_overlayContainerFlushable = true;
   }
 
   CDVDOverlay(const CDVDOverlay& src)
@@ -49,6 +50,7 @@ public:
     m_references  = 1;
     m_textureid = 0;
     m_enableTextAlign = src.m_enableTextAlign;
+    m_overlayContainerFlushable = src.m_overlayContainerFlushable;
   }
 
   virtual ~CDVDOverlay()
@@ -106,14 +108,27 @@ public:
    */
   bool IsTextAlignEnabled() { return m_enableTextAlign; }
 
+  /*
+   * \brief Allow/Disallow the overlay container to flush the overlay.
+   */
+  void SetOverlayContainerFlushable(bool isFlushable) { m_overlayContainerFlushable = isFlushable; }
+
+  /*
+   * \brief Return true when the overlay container can flush the overlay on flush events.
+   */
+  bool IsOverlayContainerFlushable() { return m_overlayContainerFlushable; }
+
+
   double iPTSStartTime;
   double iPTSStopTime;
   bool bForced; // display, no matter what
   bool replace; // replace by next nomatter what stoptime it has
   unsigned long m_textureid;
+
 protected:
   DVDOverlayType m_type;
   bool m_enableTextAlign;
+  bool m_overlayContainerFlushable;
 
 private:
   std::atomic_int m_references;
