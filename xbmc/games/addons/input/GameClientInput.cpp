@@ -64,9 +64,9 @@ void CGameClientInput::Start(IGameInputCallback* input)
   //! @todo Move to player manager
   if (SupportsKeyboard())
   {
-    auto it = std::find_if(
-        controllers.Ports().begin(), controllers.Ports().end(),
-        [](const CControllerPortNode& port) { return port.PortType() == PORT_TYPE::KEYBOARD; });
+    auto it =
+        std::find_if(controllers.Ports().begin(), controllers.Ports().end(),
+                     [](const CPortNode& port) { return port.PortType() == PORT_TYPE::KEYBOARD; });
 
     OpenKeyboard(it->ActiveController().Controller());
   }
@@ -75,9 +75,9 @@ void CGameClientInput::Start(IGameInputCallback* input)
   //! @todo Move to player manager
   if (SupportsMouse())
   {
-    auto it = std::find_if(
-        controllers.Ports().begin(), controllers.Ports().end(),
-        [](const CControllerPortNode& port) { return port.PortType() == PORT_TYPE::MOUSE; });
+    auto it =
+        std::find_if(controllers.Ports().begin(), controllers.Ports().end(),
+                     [](const CPortNode& port) { return port.PortType() == PORT_TYPE::MOUSE; });
 
     OpenMouse(it->ActiveController().Controller());
   }
@@ -271,9 +271,9 @@ bool CGameClientInput::SupportsKeyboard() const
 {
   const CControllerTree& controllers = m_topology->ControllerTree();
 
-  auto it = std::find_if(
-      controllers.Ports().begin(), controllers.Ports().end(),
-      [](const CControllerPortNode& port) { return port.PortType() == PORT_TYPE::KEYBOARD; });
+  auto it =
+      std::find_if(controllers.Ports().begin(), controllers.Ports().end(),
+                   [](const CPortNode& port) { return port.PortType() == PORT_TYPE::KEYBOARD; });
 
   return it != controllers.Ports().end() && !it->CompatibleControllers().empty();
 }
@@ -282,9 +282,8 @@ bool CGameClientInput::SupportsMouse() const
 {
   const CControllerTree& controllers = m_topology->ControllerTree();
 
-  auto it = std::find_if(
-      controllers.Ports().begin(), controllers.Ports().end(),
-      [](const CControllerPortNode& port) { return port.PortType() == PORT_TYPE::MOUSE; });
+  auto it = std::find_if(controllers.Ports().begin(), controllers.Ports().end(),
+                         [](const CPortNode& port) { return port.PortType() == PORT_TYPE::MOUSE; });
 
   return it != controllers.Ports().end() && !it->CompatibleControllers().empty();
 }
@@ -451,7 +450,7 @@ bool CGameClientInput::OpenJoystick(const std::string& portAddress, const Contro
 
   const CControllerTree& controllerTree = m_topology->ControllerTree();
 
-  const CControllerPortNode& port = controllerTree.GetPort(portAddress);
+  const CPortNode port = controllerTree.GetPort(portAddress);
   if (!port.IsControllerAccepted(portAddress, controller->ID()))
   {
     CLog::Log(LOGERROR, "Failed to open port: Invalid controller \"{}\" on port \"{}\"",

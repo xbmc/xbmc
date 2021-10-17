@@ -44,19 +44,19 @@ ControllerVector CControllerGrid::GetControllers(unsigned int playerIndex) const
   return controllers;
 }
 
-unsigned int CControllerGrid::AddPorts(const ControllerPortVec& ports, ControllerGrid& grid)
+unsigned int CControllerGrid::AddPorts(const PortVec& ports, ControllerGrid& grid)
 {
   unsigned int height = 0;
 
-  auto itKeyboard = std::find_if(ports.begin(), ports.end(), [](const CControllerPortNode& port) {
+  auto itKeyboard = std::find_if(ports.begin(), ports.end(), [](const CPortNode port) {
     return port.PortType() == PORT_TYPE::KEYBOARD;
   });
 
-  auto itMouse = std::find_if(ports.begin(), ports.end(), [](const CControllerPortNode& port) {
+  auto itMouse = std::find_if(ports.begin(), ports.end(), [](const CPortNode port) {
     return port.PortType() == PORT_TYPE::MOUSE;
   });
 
-  auto itController = std::find_if(ports.begin(), ports.end(), [](const CControllerPortNode& port) {
+  auto itController = std::find_if(ports.begin(), ports.end(), [](const CPortNode port) {
     return port.PortType() == PORT_TYPE::CONTROLLER;
   });
 
@@ -77,7 +77,7 @@ unsigned int CControllerGrid::AddPorts(const ControllerPortVec& ports, Controlle
   {
     // Add controller ports
     bool bFirstPlayer = true;
-    for (const CControllerPortNode& port : ports)
+    for (const CPortNode port : ports)
     {
       ControllerColumn column;
 
@@ -130,7 +130,7 @@ unsigned int CControllerGrid::AddPorts(const ControllerPortVec& ports, Controlle
   return height;
 }
 
-unsigned int CControllerGrid::AddController(const CControllerPortNode& port,
+unsigned int CControllerGrid::AddController(const CPortNode port,
                                             unsigned int height,
                                             std::vector<ControllerVertex>& column,
                                             ControllerGrid& grid)
@@ -155,7 +155,7 @@ unsigned int CControllerGrid::AddController(const CControllerPortNode& port,
   height++;
 
   // Process ports
-  const ControllerPortVec& ports = activeController.Hub().Ports();
+  const PortVec& ports = activeController.Hub().Ports();
   if (!ports.empty())
   {
     switch (GetDirection(activeController))
@@ -170,7 +170,7 @@ unsigned int CControllerGrid::AddController(const CControllerPortNode& port,
         const unsigned int row = height;
 
         // Add the first controller to the column
-        const CControllerPortNode& firstController = ports.at(0);
+        const CPortNode firstController = ports.at(0);
         height = std::max(height, AddController(firstController, row, column, grid));
 
         // Add the remaining controllers on the same row
@@ -184,7 +184,7 @@ unsigned int CControllerGrid::AddController(const CControllerPortNode& port,
   return height;
 }
 
-unsigned int CControllerGrid::AddHub(const ControllerPortVec& ports,
+unsigned int CControllerGrid::AddHub(const PortVec& ports,
                                      unsigned int height,
                                      bool bSkipFirst,
                                      ControllerGrid& grid)
