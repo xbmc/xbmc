@@ -102,7 +102,7 @@ private:
    *
    * \return The height of the grid determined by the maximum column height
    */
-  static unsigned int AddPorts(const ControllerPortVec& ports, ControllerGrid& grid);
+  static unsigned int AddPorts(const PortVec& ports, ControllerGrid& grid);
 
   /*!
    * \brief Draw a controller to the column at the specified height
@@ -114,7 +114,7 @@ private:
    *
    * \return The height of the grid
    */
-  static unsigned int AddController(const CControllerPortNode& port,
+  static unsigned int AddController(const CPortNode port,
                                     unsigned int height,
                                     std::vector<ControllerVertex>& column,
                                     ControllerGrid& grid);
@@ -130,7 +130,7 @@ private:
    *
    * \return The height of the grid
    */
-  static unsigned int AddHub(const ControllerPortVec& ports,
+  static unsigned int AddHub(const PortVec& ports,
                              unsigned int height,
                              bool bSkipFirst,
                              ControllerGrid& grid);

@@ -107,14 +107,14 @@ using ControllerNodeVec = std::vector<CControllerNode>;
 /*!
  * \brief Collection of nodes that can be connected to this port
  */
-class CControllerPortNode
+class CPortNode
 {
 public:
-  CControllerPortNode() = default;
-  CControllerPortNode(const CControllerPortNode& other) { *this = other; }
-  CControllerPortNode(CControllerPortNode&& other) = default;
-  CControllerPortNode& operator=(const CControllerPortNode& rhs);
-  ~CControllerPortNode();
+  CPortNode() = default;
+  CPortNode(const CPortNode& other) { *this = other; }
+  CPortNode(CPortNode&& other) = default;
+  CPortNode& operator=(const CPortNode& rhs);
+  ~CPortNode();
 
   /*!
    * \brief Connection state of the port
@@ -198,7 +198,7 @@ private:
 /*!
  * \brief Collection of port nodes
  */
-using ControllerPortVec = std::vector<CControllerPortNode>;
+using PortVec = std::vector<CPortNode>;
 
 /*!
  * \brief A branch in the controller tree
@@ -215,22 +215,21 @@ public:
   void Clear();
 
   bool HasPorts() const { return !m_ports.empty(); }
-  ControllerPortVec& Ports() { return m_ports; }
-  const ControllerPortVec& Ports() const { return m_ports; }
-  void SetPorts(ControllerPortVec ports);
+  PortVec& Ports() { return m_ports; }
+  const PortVec& Ports() const { return m_ports; }
+  void SetPorts(PortVec ports);
 
   bool IsControllerAccepted(const std::string& controllerId) const;
   bool IsControllerAccepted(const std::string& portAddress, const std::string& controllerId) const;
   ControllerVector GetControllers() const;
   void GetControllers(ControllerVector& controllers) const;
 
-  const CControllerPortNode& GetPort(const std::string& address) const;
+  const CPortNode& GetPort(const std::string& address) const;
 
 private:
-  static const CControllerPortNode& GetPort(const ControllerPortVec& ports,
-                                            const std::string& address);
+  static const CPortNode& GetPort(const PortVec& ports, const std::string& address);
 
-  ControllerPortVec m_ports;
+  PortVec m_ports;
 };
 
 /*!
