@@ -1,0 +1,53 @@
+/*
+ *  Copyright (C) 2017-2021 Team Kodi
+ *  This file is part of Kodi - https://kodi.tv
+ *
+ *  SPDX-License-Identifier: GPL-2.0-or-later
+ *  See LICENSES/README.md for more information.
+ */
+
+#pragma once
+
+#include "PortNode.h"
+#include "games/controllers/ControllerTypes.h"
+
+#include <string>
+
+namespace KODI
+{
+namespace GAME
+{
+/*!
+ * \brief A branch in the controller tree
+ */
+class CControllerHub
+{
+public:
+  CControllerHub() = default;
+  CControllerHub(const CControllerHub& other) { *this = other; }
+  CControllerHub(CControllerHub&& other) = default;
+  CControllerHub& operator=(const CControllerHub& rhs);
+  CControllerHub& operator=(CControllerHub&& rhs);
+  ~CControllerHub();
+
+  void Clear();
+
+  bool HasPorts() const { return !m_ports.empty(); }
+  PortVec& Ports() { return m_ports; }
+  const PortVec& Ports() const { return m_ports; }
+  void SetPorts(PortVec ports);
+
+  bool IsControllerAccepted(const std::string& controllerId) const;
+  bool IsControllerAccepted(const std::string& portAddress, const std::string& controllerId) const;
+  ControllerVector GetControllers() const;
+  void GetControllers(ControllerVector& controllers) const;
+
+  const CPortNode& GetPort(const std::string& address) const;
+
+private:
+  static const CPortNode& GetPort(const PortVec& ports, const std::string& address);
+
+  PortVec m_ports;
+};
+} // namespace GAME
+} // namespace KODI
