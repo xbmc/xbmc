@@ -203,9 +203,8 @@ void CFileExtensionProvider::SetAddonExtensions(const TYPE& type)
     }
   }
 
-  m_addonExtensions.insert(make_pair(type, StringUtils::Join(extensions, "|")));
-  if (!fileFolderExtensions.empty())
-    m_addonFileFolderExtensions.insert(make_pair(type, StringUtils::Join(fileFolderExtensions, "|")));
+  m_addonExtensions[type] = StringUtils::Join(extensions, "|");
+  m_addonFileFolderExtensions[type] = StringUtils::Join(fileFolderExtensions, "|");
 }
 
 void CFileExtensionProvider::OnAddonEvent(const AddonEvent& event)
