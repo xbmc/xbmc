@@ -45,7 +45,7 @@ public:
   const CPortNode& GetPort(const std::string& address) const;
 
 private:
-  static const CPortNode& GetPort(const PortVec& ports, const std::string& address);
+  static const CPortNode& GetPortInternal(const PortVec& ports, const std::string& address);
 
   PortVec m_ports;
 };
