@@ -1,9 +1,6 @@
 include ../../Makefile.include
 DEPS= ../../Makefile.include Makefile 01-nosetuptool.patch 02-android-dlopen.patch 03-obey-crosscompileflags.patch
 
-VERSION.TXT := $(CMAKE_SOURCE_DIR)/version.txt
-APP_NAME=$(shell awk '/APP_NAME/ {print tolower($$2)}' $(VERSION.TXT))
-
 # lib name, version
 LIBNAME=pycryptodome
 VERSION=3.4.3
