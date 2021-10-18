@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include "contrib/kissfft/kiss_fftr.h"
-
 #include <vector>
+
+#include <kissfft/kiss_fftr.h>
 
 //! \brief Class performing a RFFT of interleaved stereo data.
 class RFFT

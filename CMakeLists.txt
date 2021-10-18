@@ -69,6 +69,9 @@ if(UNIX)
   option(ENABLE_INTERNAL_UDFREAD "Enable internal udfread?" OFF)
   option(ENABLE_INTERNAL_SPDLOG "Enable internal spdlog?" OFF)
 endif()
+# prefer kissfft from xbmc/contrib but let use system one on unices
+include(CMakeDependentOption)
+cmake_dependent_option(ENABLE_INTERNAL_KISSFFT "Enable internal kissfft?" ON "UNIX" ON)
 # System options
 if(NOT WIN32)
   option(WITH_ARCH              "build with given arch" OFF)
@@ -134,6 +137,7 @@ set(required_deps ASS
                   fstrcmp
                   HarfBuzz
                   Iconv
+                  KissFFT
                   LibDvd
                   Lzo2
                   OpenSSL>=1.1.0
