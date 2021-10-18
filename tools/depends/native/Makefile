@@ -7,7 +7,7 @@ endif
 NATIVE= m4 gettext heimdal autoconf automake \
         libtool pkg-config yasm nasm cmake \
         gas-preprocessor python3 zlib \
-        pcre swig \
+        pcre swig openssl \
         libpng libjpeg-turbo liblzo2 giflib \
         setuptools JsonSchemaBuilder TexturePacker \
         flatbuffers \
@@ -47,9 +47,10 @@ libjpeg-turbo: cmake yasm
 libpng: zlib automake
 meson: python3 setuptools
 ninja: meson
+openssl: zlib
 swig: pcre
 tar: xz automake
-python3: $(EXPAT) $(LIBFFI) pkg-config zlib
+python3: $(EXPAT) $(LIBFFI) pkg-config zlib openssl
 setuptools: python3
 wayland-scanner: expat pkg-config
 waylandpp-scanner: cmake pugixml

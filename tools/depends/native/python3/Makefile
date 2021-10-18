@@ -1,6 +1,6 @@
 include ../../Makefile.include
 PLATFORM=$(NATIVEPLATFORM)
-DEPS= ../../Makefile.include Makefile
+DEPS= ../../Makefile.include Makefile 01-distutil-flags.patch
 
 # lib name, version
 LIBNAME=Python
@@ -36,6 +36,7 @@ $(LIBDYLIB): $(PLATFORM)
 	cd $(PLATFORM); $(MAKE)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
+	cd $(PLATFORM); patch -p1 -i ../01-distutil-flags.patch
 	cd $(PLATFORM); $(MAKE) install
 	touch $(LIBDYLIB)
 	touch $@

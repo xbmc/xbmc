@@ -7,7 +7,7 @@ VERSION=7.1.2
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
-PYTHONPATH=$(PREFIX)/lib/python3.8/site-packages/
+PYTHONPATH=$(PYTHON_SITE_PKG)
 PILPATH=$(PYTHONPATH)
 LDSHARED=$(CC) -shared
 
@@ -21,12 +21,12 @@ endif
 ifeq ($(OS),android)
 PILPATH=$(PREFIX)/share/$(APP_NAME)/addons/script.module.pil
 PILPATHLIB=$(PILPATH)/lib
-PYTHONPATH=$(PILPATH):$(PREFIX)/lib/python3.8/site-packages/
+PYTHONPATH=$(PILPATH):$(PYTHON_SITE_PKG)
 EXTRALDFLAGS=-L$(PREFIX)/lib/dummy-lib$(APP_NAME)/ -l$(APP_NAME) -lm
 else ifeq ($(OS),darwin_embedded)
 PILPATH=$(PREFIX)/share/$(APP_NAME)/addons/script.module.pil
 PILPATHLIB=$(PILPATH)/lib
-PYTHONPATH=$(PILPATH):$(PREFIX)/lib/python3.8/site-packages/
+PYTHONPATH=$(PILPATH):$(PYTHON_SITE_PKG)
 endif
 
 ifeq (darwin, $(findstring darwin, $(HOST)))
