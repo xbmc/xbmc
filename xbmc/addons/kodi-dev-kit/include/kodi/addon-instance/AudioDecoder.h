@@ -507,6 +507,47 @@ public:
   virtual int TrackCount(const std::string& file) { return 1; }
   //--------------------------------------------------------------------------
 
+  //==========================================================================
+  /// @ingroup cpp_kodi_addon_audiodecoder
+  /// @brief Static auxiliary function to read the track number used from the
+  /// given path.
+  ///
+  /// If track number is not found in file name, the originally given file
+  /// name is returned, track number then remains at "0".
+  ///
+  /// @param[in] name The value specified in addon.xml extension under `name="???"`
+  /// @param[in] trackPath The full path to evaluate
+  /// @param[out] track The track number read out in the path, 0 if not
+  ///                   identified as a track path.
+  /// @return Path to the associated file
+  ///
+  inline static std::string GetTrack(const std::string& name,
+                                     const std::string& trackPath,
+                                     int& track)
+  {
+    /*
+     * get the track name from path
+     */
+    track = 0;
+    std::string toLoad(trackPath);
+    const std::string ext = "." + name + KODI_ADDON_AUDIODECODER_TRACK_EXT;
+    if (toLoad.find(ext) != std::string::npos)
+    {
+      size_t iStart = toLoad.rfind('-') + 1;
+      track = atoi(toLoad.substr(iStart, toLoad.size() - iStart - ext.size()).c_str());
+      //  The directory we are in, is the file
+      //  that contains the bitstream to play,
+      //  so extract it
+      size_t slash = trackPath.rfind('\\');
+      if (slash == std::string::npos)
+        slash = trackPath.rfind('/');
+      toLoad = trackPath.substr(0, slash);
+    }
+
+    return toLoad;
+  }
+  //--------------------------------------------------------------------------
+
 private:
   void SetAddonStruct(KODI_HANDLE instance)
   {
