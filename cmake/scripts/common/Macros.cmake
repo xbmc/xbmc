@@ -682,7 +682,13 @@ macro(core_find_versions)
   string(TOUPPER ${APP_APP_NAME} APP_NAME_UC)
   set(COMPANY_NAME ${APP_COMPANY_NAME})
   set(APP_VERSION ${APP_VERSION_MAJOR}.${APP_VERSION_MINOR})
-  set(APP_PACKAGE ${APP_APP_PACKAGE})
+  # Let Flatpak builders etc override APP_PACKAGE
+  # NOTE: We cannot declare an option() in top-level CMakeLists.txt
+  # because of CMP0077.
+  if(NOT APP_PACKAGE)
+    set(APP_PACKAGE ${APP_APP_PACKAGE})
+  endif()
+  list(APPEND final_message "App package: ${APP_PACKAGE}")
   if(APP_VERSION_TAG)
     set(APP_VERSION ${APP_VERSION}-${APP_VERSION_TAG})
     string(TOLOWER ${APP_VERSION_TAG} APP_VERSION_TAG_LC)
