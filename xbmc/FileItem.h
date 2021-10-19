@@ -49,6 +49,7 @@ namespace PVR
 class CPVRChannel;
 class CPVRChannelGroupMember;
 class CPVREpgInfoTag;
+class CPVREpgSearchFilter;
 class CPVRRecording;
 class CPVRTimerInfoTag;
 }
@@ -114,6 +115,7 @@ public:
   explicit CFileItem(const std::shared_ptr<PVR::CPVREpgInfoTag>& tag);
   CFileItem(const std::shared_ptr<PVR::CPVREpgInfoTag>& tag,
             const std::shared_ptr<PVR::CPVRChannelGroupMember>& groupMember);
+  explicit CFileItem(const std::shared_ptr<PVR::CPVREpgSearchFilter>& filter);
   explicit CFileItem(const std::shared_ptr<PVR::CPVRChannelGroupMember>& channelGroupMember);
   explicit CFileItem(const std::shared_ptr<PVR::CPVRRecording>& record);
   explicit CFileItem(const std::shared_ptr<PVR::CPVRTimerInfoTag>& timer);
@@ -292,6 +294,13 @@ public:
   inline const std::shared_ptr<PVR::CPVREpgInfoTag> GetEPGInfoTag() const
   {
     return m_epgInfoTag;
+  }
+
+  bool HasEPGSearchFilter() const { return m_epgSearchFilter != nullptr; }
+
+  const std::shared_ptr<PVR::CPVREpgSearchFilter> GetEPGSearchFilter() const
+  {
+    return m_epgSearchFilter;
   }
 
   inline bool HasPVRChannelGroupMemberInfoTag() const
@@ -608,6 +617,7 @@ private:
   MUSIC_INFO::CMusicInfoTag* m_musicInfoTag;
   CVideoInfoTag* m_videoInfoTag;
   std::shared_ptr<PVR::CPVREpgInfoTag> m_epgInfoTag;
+  std::shared_ptr<PVR::CPVREpgSearchFilter> m_epgSearchFilter;
   std::shared_ptr<PVR::CPVRRecording> m_pvrRecordingInfoTag;
   std::shared_ptr<PVR::CPVRTimerInfoTag> m_pvrTimerInfoTag;
   std::shared_ptr<PVR::CPVRChannelGroupMember> m_pvrChannelGroupMemberInfoTag;

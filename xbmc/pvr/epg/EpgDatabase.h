@@ -20,6 +20,7 @@ namespace PVR
 {
   class CPVREpg;
   class CPVREpgInfoTag;
+  class CPVREpgSearchFilter;
 
   struct PVREpgSearchData;
 
@@ -65,7 +66,7 @@ namespace PVR
      * @brief Get the minimal database version that is required to operate correctly.
      * @return The minimal database version.
      */
-    int GetSchemaVersion() const override { return 14; }
+    int GetSchemaVersion() const override { return 15; }
 
     /*!
      * @brief Get the default sqlite database filename.
@@ -291,6 +292,45 @@ namespace PVR
      * @return Last EPG id in the database
      */
     int GetLastEPGId();
+
+    //@}
+
+    /*! @name EPG searches methods */
+    //@{
+
+    /*!
+     * @brief Get all saved searches from the database.
+     * @param bRadio Whether to fetch saved searches for radio or TV.
+     * @return The searches.
+     */
+    std::vector<std::shared_ptr<CPVREpgSearchFilter>> GetSavedSearches(bool bRadio);
+
+    /*!
+     * @brief Persist a search.
+     * @param epgSearch The search.
+     * @return True on success, false otherwise.
+     */
+    bool Persist(CPVREpgSearchFilter& epgSearch);
+
+    /*!
+     * @brief Update time last executed for the given search.
+     * @param epgSearch The search.
+     * @return True on success, false otherwise.
+     */
+    bool UpdateSavedSearchLastExecuted(const CPVREpgSearchFilter& epgSearch);
+
+    /*!
+     * @brief Delete a saved search.
+     * @param epgSearch The search.
+     * @return True on success, false otherwise.
+     */
+    bool Delete(const CPVREpgSearchFilter& epgSearch);
+
+    /*!
+     * @brief Delete all saved searches.
+     * @return True on success, false otherwise.
+     */
+    bool DeleteSavedSearches();
 
     //@}
 
