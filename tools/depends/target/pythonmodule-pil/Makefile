@@ -27,6 +27,10 @@ else ifeq ($(OS),darwin_embedded)
 PILPATH=$(PREFIX)/share/$(APP_NAME)/addons/script.module.pil
 PILPATHLIB=$(PILPATH)/lib
 PYTHONPATH=$(PILPATH):$(PYTHON_SITE_PKG)
+
+# Work around an issue with xcode 11 stripping -arch arm64 flags.
+# Not required for xcode 12+, but doesnt hurt either.
+CFLAGS+= -target arm64-apple-darwin
 endif
 
 ifeq (darwin, $(findstring darwin, $(HOST)))
