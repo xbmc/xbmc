@@ -109,8 +109,13 @@ protected:
   bool              BitstreamConvertInitAVC(void *in_extradata, int in_extrasize);
   bool              BitstreamConvertInitHEVC(void *in_extradata, int in_extrasize);
   bool              BitstreamConvert(uint8_t* pData, int iSize, uint8_t **poutbuf, int *poutbuf_size);
-  static void       BitstreamAllocAndCopy(uint8_t **poutbuf, int *poutbuf_size,
-                      const uint8_t *sps_pps, uint32_t sps_pps_size, const uint8_t *in, uint32_t in_size);
+  static void BitstreamAllocAndCopy(uint8_t** poutbuf,
+                                    int* poutbuf_size,
+                                    const uint8_t* sps_pps,
+                                    uint32_t sps_pps_size,
+                                    const uint8_t* in,
+                                    uint32_t in_size,
+                                    uint8_t nal_type);
 
   typedef struct omx_bitstream_ctx {
       uint8_t  length_size;
