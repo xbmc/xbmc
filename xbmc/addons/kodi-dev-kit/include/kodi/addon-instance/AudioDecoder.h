@@ -10,7 +10,7 @@
 
 #include "../AddonBase.h"
 #include "../AudioEngine.h"
-#include "../c-api/addon-instance/audio_decoder.h"
+#include "../c-api/addon-instance/audiodecoder.h"
 
 #ifdef __cplusplus
 

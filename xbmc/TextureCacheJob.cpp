@@ -12,7 +12,7 @@
 #include "ServiceBroker.h"
 #include "TextureCache.h"
 #include "URL.h"
-#include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/audio_decoder.h"
+#include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/audiodecoder.h"
 #include "filesystem/File.h"
 #include "guilib/Texture.h"
 #include "music/MusicThumbLoader.h"

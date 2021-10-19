@@ -6,8 +6,8 @@
  *  See LICENSES/README.md for more information.
  */
 
-#ifndef C_API_ADDONINSTANCE_AUDIO_DECODER_H
-#define C_API_ADDONINSTANCE_AUDIO_DECODER_H
+#ifndef C_API_ADDONINSTANCE_AUDIODECODER_H
+#define C_API_ADDONINSTANCE_AUDIODECODER_H
 
 #include "../addon_base.h"
 #include "../audio_engine.h"
@@ -149,4 +149,4 @@ extern "C"
 } /* extern "C" */
 #endif /* __cplusplus */
 
-#endif /* !C_API_ADDONINSTANCE_AUDIO_DECODER_H */
+#endif /* !C_API_ADDONINSTANCE_AUDIODECODER_H */

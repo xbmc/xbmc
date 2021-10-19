@@ -88,7 +88,7 @@
 #define ADDON_INSTANCE_VERSION_AUDIODECODER           "3.0.0"
 #define ADDON_INSTANCE_VERSION_AUDIODECODER_MIN       "3.0.0"
 #define ADDON_INSTANCE_VERSION_AUDIODECODER_XML_ID    "kodi.binary.instance.audiodecoder"
-#define ADDON_INSTANCE_VERSION_AUDIODECODER_DEPENDS   "c-api/addon-instance/audio_decoder.h" \
+#define ADDON_INSTANCE_VERSION_AUDIODECODER_DEPENDS   "c-api/addon-instance/audiodecoder.h" \
                                                       "addon-instance/AudioDecoder.h"
 
 #define ADDON_INSTANCE_VERSION_AUDIOENCODER           "2.1.0"
