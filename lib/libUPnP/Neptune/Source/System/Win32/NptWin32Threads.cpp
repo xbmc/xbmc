@@ -441,7 +441,7 @@ NPT_Win32Thread::NPT_Win32Thread(NPT_Thread*   delegator,
     m_Delegator(delegator),
     m_Target(target),
     m_Detached(detached),
-    m_ThreadHandle(0),
+    m_ThreadHandle(nullptr),
     m_ThreadId(0)
 {
 }
@@ -567,7 +567,7 @@ NPT_Win32Thread::EntryPoint(void* argument)
 NPT_Result
 NPT_Win32Thread::Start()
 {
-    if (m_ThreadHandle > 0) {
+    if (m_ThreadHandle != nullptr) {
         // failed
         NPT_LOG_WARNING("thread already started !");
         return NPT_ERROR_INVALID_STATE;
