@@ -41,6 +41,7 @@
 #ifdef TARGET_POSIX
 #include "PlatformDefs.h" // for __stat64
 #endif
+#include "CompileInfo.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "URL.h"
@@ -131,8 +132,8 @@ extern "C" void __stdcall init_emu_environ()
   // check if we are running as real xbmc.app or just binary
   if (!CUtil::GetFrameworksPath(true).empty())
   {
-    // using external python, it's build looking for xxx/lib/python3.8
-    // so point it to frameworks which is where python3.8 is located
+    // using external python, it's build looking for xxx/lib/python(VERSIONMAJOR.MINOR)
+    // so point it to frameworks which is where python is located
     dll_putenv(("PYTHONPATH=" +
       CSpecialProtocol::TranslatePath("special://frameworks")).c_str());
     dll_putenv(("PYTHONHOME=" +
@@ -154,7 +155,7 @@ extern "C" void __stdcall init_emu_environ()
 
 #if defined(TARGET_ANDROID)
   std::string apkPath = getenv("KODI_ANDROID_APK");
-  apkPath += "/assets/python3.8";
+  apkPath += "/assets/python" + CCompileInfo::GetPythonVersion();
   dll_putenv(("PYTHONHOME=" + apkPath).c_str());
   dll_putenv("PYTHONOPTIMIZE=");
   dll_putenv("PYTHONNOUSERSITE=1");

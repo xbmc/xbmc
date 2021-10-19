@@ -32,4 +32,5 @@ public:
   static const char* GetVersionCode();
   static std::vector<std::string> GetAvailableWindowSystems();
   static std::vector<ADDON::RepoInfo> LoadOfficialRepoInfos();
+  static std::string GetPythonVersion();
 };
