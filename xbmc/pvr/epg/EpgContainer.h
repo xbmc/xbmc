@@ -32,6 +32,7 @@ namespace PVR
   class CPVREpgChannelData;
   class CPVREpgDatabase;
   class CPVREpgInfoTag;
+  class CPVREpgSearchFilter;
 
   enum class PVREvent;
 
@@ -224,6 +225,34 @@ namespace PVR
      * @return number of cleaned up images.
      */
     int CleanupCachedImages();
+
+    /*!
+     * @brief Get all saved searches from the database.
+     * @param bRadio Whether to fetch saved searches for radio or TV.
+     * @return The searches.
+     */
+    std::vector<std::shared_ptr<CPVREpgSearchFilter>> GetSavedSearches(bool bRadio);
+
+    /*!
+     * @brief Persist a saved search in the database.
+     * @param search The saved search.
+     * @return True on success, false otherwise.
+     */
+    bool PersistSavedSearch(CPVREpgSearchFilter& search);
+
+    /*!
+     * @brief Update time last executed for the given search.
+     * @param epgSearch The search.
+     * @return True on success, false otherwise.
+     */
+    bool UpdateSavedSearchLastExecuted(const CPVREpgSearchFilter& epgSearch);
+
+    /*!
+     * @brief Delete a saved search from the database.
+     * @param search The saved search.
+     * @return True on success, false otherwise.
+     */
+    bool DeleteSavedSearch(const CPVREpgSearchFilter& search);
 
   private:
     /*!

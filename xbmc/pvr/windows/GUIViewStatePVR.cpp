@@ -12,6 +12,7 @@
 #include "ServiceBroker.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
+#include "pvr/epg/EpgSearchPath.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
 #include "pvr/timers/PVRTimersPath.h"
 #include "settings/AdvancedSettings.h"
@@ -114,12 +115,21 @@ CGUIViewStateWindowPVRSearch::CGUIViewStateWindowPVRSearch(const int windowId, c
   AddSortMethod(SortByDate,  552, LABEL_MASKS("%L", "%d", "%L", "%d")); // "Date" : Filename, DateTime | Foldername, DateTime
 
   // Default sorting
-  SetSortMethod(SortByDate);
+  if (CPVREpgSearchPath(m_items.GetPath()).IsSavedSearchesRoot())
+    SetSortMethod(SortByDate, SortOrderDescending);
+  else
+    SetSortMethod(SortByDate, SortOrderAscending);
 
-  LoadViewState("pvr://search/", m_windowId);
+  LoadViewState(m_items.GetPath(), m_windowId);
 }
 
 void CGUIViewStateWindowPVRSearch::SaveViewState()
 {
-  SaveViewToDb("pvr://search/", m_windowId, CViewStateSettings::GetInstance().Get("pvrsearch"));
+  SaveViewToDb(m_items.GetPath(), m_windowId, CViewStateSettings::GetInstance().Get("pvrsearch"));
+}
+
+bool CGUIViewStateWindowPVRSearch::HideParentDirItems()
+{
+  return (CGUIViewState::HideParentDirItems() ||
+          CPVREpgSearchPath(m_items.GetPath()).IsSearchRoot());
 }

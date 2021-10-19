@@ -78,6 +78,9 @@ namespace PVR
     EpgUpdatePending,
     EpgDeleted,
 
+    // Saved searches events
+    SavedSearchesInvalidated,
+
     // Item events
     CurrentItem,
 

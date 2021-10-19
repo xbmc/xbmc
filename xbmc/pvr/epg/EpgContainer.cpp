@@ -958,4 +958,62 @@ int CPVREpgContainer::CleanupCachedImages()
   return iCleanedImages;
 }
 
+std::vector<std::shared_ptr<CPVREpgSearchFilter>> CPVREpgContainer::GetSavedSearches(bool bRadio)
+{
+  const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
+  if (!database)
+  {
+    CLog::LogF(LOGERROR, "No EPG database");
+    return {};
+  }
+
+  return database->GetSavedSearches(bRadio);
+}
+
+bool CPVREpgContainer::PersistSavedSearch(CPVREpgSearchFilter& search)
+{
+  const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
+  if (!database)
+  {
+    CLog::LogF(LOGERROR, "No EPG database");
+    return {};
+  }
+
+  if (database->Persist(search))
+  {
+    CServiceBroker::GetPVRManager().PublishEvent(PVREvent::SavedSearchesInvalidated);
+    return true;
+  }
+  return false;
+}
+
+bool CPVREpgContainer::UpdateSavedSearchLastExecuted(const CPVREpgSearchFilter& epgSearch)
+{
+  const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
+  if (!database)
+  {
+    CLog::LogF(LOGERROR, "No EPG database");
+    return {};
+  }
+
+  return database->UpdateSavedSearchLastExecuted(epgSearch);
+}
+
+bool CPVREpgContainer::DeleteSavedSearch(const CPVREpgSearchFilter& search)
+{
+  const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
+  if (!database)
+  {
+    CLog::LogF(LOGERROR, "No EPG database");
+    return {};
+  }
+
+  if (database->Delete(search))
+  {
+    CServiceBroker::GetPVRManager().PublishEvent(PVREvent::SavedSearchesInvalidated);
+    return true;
+  }
+  return false;
+}
+
 } // namespace PVR

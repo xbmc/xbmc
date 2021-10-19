@@ -27,6 +27,7 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/channels/PVRRadioRDSInfoTag.h"
 #include "pvr/epg/EpgInfoTag.h"
+#include "pvr/epg/EpgSearchFilter.h"
 #include "pvr/guilib/PVRGUIActions.h"
 #include "pvr/providers/PVRProvider.h"
 #include "pvr/recordings/PVRRecording.h"
@@ -498,6 +499,24 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
           return true;
         }
         return false;
+    }
+    return false;
+  }
+
+  const std::shared_ptr<CPVREpgSearchFilter> filter = item->GetEPGSearchFilter();
+  if (filter)
+  {
+    switch (info.m_info)
+    {
+      case LISTITEM_DATE:
+      {
+        CDateTime lastExecLocal;
+        lastExecLocal.SetFromUTCDateTime(filter->GetLastExecutedDateTime());
+        strValue = GetAsLocalizedDateTimeString(lastExecLocal);
+        if (strValue.empty())
+          strValue = g_localizeStrings.Get(10006); // "N/A"
+        return true;
+      }
     }
     return false;
   }

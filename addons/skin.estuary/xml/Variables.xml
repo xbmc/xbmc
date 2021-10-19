@@ -6,6 +6,10 @@
 		<value condition="ListItem.HasArchive">windows/pvr/archive.png</value>
 		<value condition="ListItem.HasReminder">icons/pvr/timers/bell.png</value>
 	</variable>
+	<variable name="PVRMySearchLabel1Var">
+		<value condition="!String.IsEmpty(ListItem.ChannelName)">$INFO[ListItem.ChannelName]</value>
+		<value>$INFO[ListItem.Label]</value>
+	</variable>
 	<variable name="AutoCompletionContentVar">
 		<value condition="System.AddonIsEnabled(plugin.program.autocompletion) + !System.HasHiddenInput">plugin://plugin.program.autocompletion?info=autocomplete&amp;&amp;id=$INFO[Control.GetLabel(312).index(1)]&amp;&amp;limit=9</value>
 	</variable>
@@ -443,8 +447,8 @@
 		<value>$LOCALIZE[19021] / $LOCALIZE[19138]$INFO[Control.GetLabel(29), / ]</value>
 	</variable>
 	<variable name="BreadcrumbsPVRSearchVar">
-		<value condition="Window.IsActive(TVSearch)">$LOCALIZE[19020] / $LOCALIZE[137]</value>
-		<value>$LOCALIZE[19021] / $LOCALIZE[137]</value>
+		<value condition="Window.IsActive(TVSearch)">$LOCALIZE[19020] / $LOCALIZE[137]$INFO[Control.GetLabel(29), / ]$INFO[Control.GetLabel(30), ]</value>
+		<value>$LOCALIZE[19021] / $LOCALIZE[137]$INFO[Control.GetLabel(29), / ]$INFO[Control.GetLabel(30), ]</value>
 	</variable>
 	<variable name="BreadcrumbsPVRChannelsOSDVar">
 		<value condition="PVR.IsPlayingTV">$LOCALIZE[19020] / $LOCALIZE[19019] / $INFO[VideoPlayer.ChannelGroup]</value>

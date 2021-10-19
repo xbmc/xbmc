@@ -2,8 +2,8 @@ set(SOURCES EpgContainer.cpp
             Epg.cpp
             EpgDatabase.cpp
             EpgInfoTag.cpp
-            EpgSearchData.cpp
             EpgSearchFilter.cpp
+            EpgSearchPath.cpp
             EpgChannelData.cpp
             EpgTagsCache.cpp
             EpgTagsContainer.cpp)
@@ -14,6 +14,7 @@ set(HEADERS Epg.h
             EpgInfoTag.h
             EpgSearchData.h
             EpgSearchFilter.h
+            EpgSearchPath.h
             EpgChannelData.h
             EpgTagsCache.h
             EpgTagsContainer.h)

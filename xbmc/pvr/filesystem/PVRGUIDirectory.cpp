@@ -20,6 +20,9 @@
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/channels/PVRChannelsPath.h"
+#include "pvr/epg/EpgContainer.h"
+#include "pvr/epg/EpgSearchFilter.h"
+#include "pvr/epg/EpgSearchPath.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
@@ -121,8 +124,8 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
   // Search
   if (bAnyClientSupportingEPG)
   {
-    item.reset(
-        new CFileItem(StringUtils::Format("pvr://search/{}/", bRadio ? "radio" : "tv"), true));
+    item.reset(new CFileItem(
+        bRadio ? CPVREpgSearchPath::PATH_RADIO_SEARCH : CPVREpgSearchPath::PATH_TV_SEARCH, true));
     item->SetLabel(g_localizeStrings.Get(137)); // Search
     item->SetProperty("node.target", CWindowTranslator::TranslateWindow(bRadio ? WINDOW_RADIO_SEARCH
                                                                                : WINDOW_TV_SEARCH));
@@ -211,6 +214,15 @@ bool CPVRGUIDirectory::GetDirectory(CFileItemList& results) const
       return GetTimersDirectory(results);
     }
     return true;
+  }
+
+  const CPVREpgSearchPath path(m_url.Get());
+  if (path.IsValid() && CServiceBroker::GetPVRManager().IsStarted())
+  {
+    if (path.IsSavedSearchesRoot())
+      return GetSavedSearchesDirectory(path.IsRadio(), results);
+    else if (path.IsSearchRoot())
+      return true; // handled by search window
   }
 
   return false;
@@ -398,6 +410,18 @@ bool CPVRGUIDirectory::GetRecordingsDirectory(CFileItemList& results) const
   }
 
   return recPath.IsValid();
+}
+
+bool CPVRGUIDirectory::GetSavedSearchesDirectory(bool bRadio, CFileItemList& results) const
+{
+  const std::vector<std::shared_ptr<CPVREpgSearchFilter>> searches =
+      CServiceBroker::GetPVRManager().EpgContainer().GetSavedSearches(bRadio);
+
+  for (const auto& search : searches)
+  {
+    results.Add(std::make_shared<CFileItem>(search));
+  }
+  return true;
 }
 
 bool CPVRGUIDirectory::FilterDirectory(CFileItemList& results) const

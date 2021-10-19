@@ -70,5 +70,6 @@ namespace PVR
 
   protected:
     void SaveViewState() override;
+    bool HideParentDirItems() override;
   };
 }

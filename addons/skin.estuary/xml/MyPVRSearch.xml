@@ -28,7 +28,7 @@
 					<include content="PVRListItemLayouts">
 						<param name="list_id" value="50" />
 						<param name="only_label_condition" value="String.IsEmpty(ListItem.Date)" />
-						<param name="label1" value="$INFO[ListItem.ChannelName]" />
+						<param name="label1" value="$VAR[PVRMySearchLabel1Var]" />
 						<param name="label2" value="$INFO[ListItem.Date]" />
 					</include>
 				</control>
@@ -66,6 +66,14 @@
 				<include>MediaMenuCommon</include>
 				<include>PVRSideBar</include>
 			</control>
+		</control>
+		<control type="label" id="29">
+			<font></font>
+			<include>HiddenObject</include>
+		</control>
+		<control type="label" id="30">
+			<font></font>
+			<include>HiddenObject</include>
 		</control>
 	</controls>
 </window>

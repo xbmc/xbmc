@@ -70,6 +70,10 @@ namespace PVR
     DECL_STATICCONTEXTMENUITEM(DeleteWatchedRecordings);
     DECL_CONTEXTMENUITEM(ToggleTimerState);
     DECL_STATICCONTEXTMENUITEM(AddReminder);
+    DECL_STATICCONTEXTMENUITEM(ExecuteSearch);
+    DECL_STATICCONTEXTMENUITEM(EditSearch);
+    DECL_STATICCONTEXTMENUITEM(RenameSearch);
+    DECL_STATICCONTEXTMENUITEM(DeleteSearch);
 
     class PVRClientMenuHook : public IContextMenuItem
     {
@@ -639,6 +643,58 @@ namespace PVR
         return false;
     }
 
+    ///////////////////////////////////////////////////////////////////////////////
+    // Execute saved search
+
+    bool ExecuteSearch::IsVisible(const CFileItem& item) const
+    {
+      return item.HasEPGSearchFilter();
+    }
+
+    bool ExecuteSearch::Execute(const std::shared_ptr<CFileItem>& item) const
+    {
+      return CServiceBroker::GetPVRManager().GUIActions()->ExecuteSavedSearch(item);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // Edit saved search
+
+    bool EditSearch::IsVisible(const CFileItem& item) const
+    {
+      return item.HasEPGSearchFilter();
+    }
+
+    bool EditSearch::Execute(const std::shared_ptr<CFileItem>& item) const
+    {
+      return CServiceBroker::GetPVRManager().GUIActions()->EditSavedSearch(item);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // Rename saved search
+
+    bool RenameSearch::IsVisible(const CFileItem& item) const
+    {
+      return item.HasEPGSearchFilter();
+    }
+
+    bool RenameSearch::Execute(const std::shared_ptr<CFileItem>& item) const
+    {
+      return CServiceBroker::GetPVRManager().GUIActions()->RenameSavedSearch(item);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // Delete saved search
+
+    bool DeleteSearch::IsVisible(const CFileItem& item) const
+    {
+      return item.HasEPGSearchFilter();
+    }
+
+    bool DeleteSearch::Execute(const std::shared_ptr<CFileItem>& item) const
+    {
+      return CServiceBroker::GetPVRManager().GUIActions()->DeleteSavedSearch(item);
+    }
+
   } // namespace CONEXTMENUITEM
 
   CPVRContextMenuManager& CPVRContextMenuManager::GetInstance()
@@ -668,6 +724,10 @@ namespace PVR
         std::make_shared<CONTEXTMENUITEM::UndeleteRecording>(19290), /* Undelete */
         std::make_shared<CONTEXTMENUITEM::DeleteWatchedRecordings>(19327), /* Delete watched */
         std::make_shared<CONTEXTMENUITEM::AddReminder>(826), /* Set reminder */
+        std::make_shared<CONTEXTMENUITEM::ExecuteSearch>(137), /* Search */
+        std::make_shared<CONTEXTMENUITEM::EditSearch>(21450), /* Edit */
+        std::make_shared<CONTEXTMENUITEM::RenameSearch>(118), /* Rename */
+        std::make_shared<CONTEXTMENUITEM::DeleteSearch>(117), /* Delete */
     };
   }
 
