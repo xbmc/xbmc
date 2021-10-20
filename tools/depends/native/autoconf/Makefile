@@ -1,13 +1,13 @@
 include ../../Makefile.include
 PREFIX=$(NATIVEPREFIX)
 PLATFORM=$(NATIVEPLATFORM)
-DEPS= ../../Makefile.include Makefile endian-c++11-narrowing.patch
+DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=autoconf
-VERSION=2.69
+VERSION=2.71
 SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
+ARCHIVE=$(SOURCE).tar.xz
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX)
@@ -22,14 +22,14 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	-rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); patch -p1 -i ../endian-c++11-narrowing.patch
 
 $(LIBDYLIB): $(PLATFORM)
 	cd $(PLATFORM); $(CONFIGURE)
-	$(MAKE) -C $(PLATFORM)
+	$(MAKE) -C $(PLATFORM) install
+# patch autoreconf to not use gtkdocize. Details: https://savannah.gnu.org/support/?110503
+	cd $(NATIVEPREFIX); sed -ie 's|$uses_gtkdoc = 1              if \$$macro eq "GTK_DOC_CHECK";|$uses_gtkdoc = 0;  #            if \$$macro eq "GTK_DOC_CHECK";|' bin/autoreconf
 
 .installed-$(PLATFORM): $(LIBDYLIB)
-	$(MAKE) -C $(PLATFORM) install
 	touch $@
 
 clean:
