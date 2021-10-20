@@ -4,9 +4,9 @@ DEPS= ../../Makefile.include Makefile 01-fix-help2man-error.patch
 
 # lib name, version
 LIBNAME=automake
-VERSION=1.16.1
+VERSION=1.16.5
 SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
+ARCHIVE=$(SOURCE).tar.xz
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(NATIVEPREFIX)
