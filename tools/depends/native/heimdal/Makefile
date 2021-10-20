@@ -1,7 +1,7 @@
 include ../../Makefile.include
 PREFIX=$(NATIVEPREFIX)
 PLATFORM=$(NATIVEPLATFORM)
-DEPS= ../../Makefile.include Makefile 01-disable-libedit.patch
+DEPS= ../../Makefile.include Makefile 01-disable-libedit.patch 02-autoconf-2.70-configure.patch
 
 # lib name, version
 LIBNAME=heimdal
@@ -20,6 +20,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../01-disable-libedit.patch
+	cd $(PLATFORM); patch -p1 -i ../02-autoconf-2.70-configure.patch
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); ./configure --prefix=$(PREFIX) --disable-shared
 
