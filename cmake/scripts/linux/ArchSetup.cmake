@@ -167,3 +167,13 @@ endif()
 if(ENABLE_VDPAU)
   set(ENABLE_GLX ON CACHE BOOL "Enabling GLX" FORCE)
 endif()
+
+# Architecture endianness detector
+include(TestBigEndian)
+TEST_BIG_ENDIAN(ARCH_IS_BIGENDIAN)
+if(ARCH_IS_BIGENDIAN)
+  message(STATUS "Host architecture is big-endian")
+  list(APPEND ARCH_DEFINES "-DWORDS_BIGENDIAN=1")
+else()
+  message(STATUS "Host architecture is little-endian")
+endif()

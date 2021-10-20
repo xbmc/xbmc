@@ -23,6 +23,7 @@
 
 // clang-format off
 #if defined(__aarch64__) || \
+    defined(__alpha__) || \
     defined(__arc__) || \
     defined(__arm__) || \
     defined(_M_ARM) || \
@@ -32,6 +33,7 @@
     defined(__ppc__) || \
     defined(__riscv) || \
     defined(__SH4__) || \
+    defined(__s390x__) || \
     defined(__sparc__) || \
     defined(__xtensa__)
 #define DISABLE_MATHUTILS_ASM_ROUND_INT
