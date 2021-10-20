@@ -159,6 +159,10 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params, const std::str
   m_mediaManager.reset(new CMediaManager());
   m_mediaManager->Initialize();
 
+#if defined(HAS_FILESYSTEM_SMB)
+  m_WSDiscovery = WSDiscovery::IWSDiscovery::GetInstance();
+#endif
+
   if (!m_Platform->InitStageTwo())
     return false;
 
@@ -192,10 +196,6 @@ bool CServiceManager::InitStageThree(const std::shared_ptr<CProfileManager>& pro
 
   m_playerCoreFactory.reset(new CPlayerCoreFactory(*profileManager));
 
-#if defined(HAS_FILESYSTEM_SMB)
-  m_WSDiscovery = WSDiscovery::IWSDiscovery::GetInstance();
-#endif
-
   if (!m_Platform->InitStageThree())
     return false;
 
@@ -206,10 +206,6 @@ bool CServiceManager::InitStageThree(const std::shared_ptr<CProfileManager>& pro
 void CServiceManager::DeinitStageThree()
 {
   init_level = 2;
-
-#if defined(HAS_FILESYSTEM_SMB)
-  m_WSDiscovery.reset();
-#endif
 #if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
   m_DetectDVDType->StopThread();
   m_DetectDVDType.reset();
@@ -224,6 +220,10 @@ void CServiceManager::DeinitStageThree()
 void CServiceManager::DeinitStageTwo()
 {
   init_level = 1;
+
+#if defined(HAS_FILESYSTEM_SMB)
+  m_WSDiscovery.reset();
+#endif
 
   m_weatherManager.reset();
   m_powerManager.reset();
