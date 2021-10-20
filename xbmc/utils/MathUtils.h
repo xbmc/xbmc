@@ -21,19 +21,24 @@
 // avoid including system.h or other magic includes.
 // use 'gcc -dM -E - < /dev/null' or similar to find them.
 
-#if defined(__ppc__) || \
-    defined(__powerpc__) || \
-    defined(__mips__) || \
-    defined(__arm__) || \
-    defined(__aarch64__) || \
-    defined(__SH4__) || \
-    defined(__sparc__) || \
+// clang-format off
+#if defined(__aarch64__) || \
+    defined(__alpha__) || \
     defined(__arc__) || \
+    defined(__arm__) || \
     defined(_M_ARM) || \
+    defined(__mips__) || \
     defined(__or1k__) || \
+    defined(__powerpc__) || \
+    defined(__ppc__) || \
+    defined(__riscv) || \
+    defined(__SH4__) || \
+    defined(__s390x__) || \
+    defined(__sparc__) || \
     defined(__xtensa__)
-  #define DISABLE_MATHUTILS_ASM_ROUND_INT
+#define DISABLE_MATHUTILS_ASM_ROUND_INT
 #endif
+// clang-format on
 
 /*! \brief Math utility class.
  Note that the test() routine should return true for all implementations

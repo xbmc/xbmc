@@ -18,17 +18,21 @@
  * $Id: ldt_keeper.c 22733 2007-03-18 22:18:11Z nicodvb $
  */
 
-//#ifndef __powerpc__
-#if !defined(__powerpc__) && \
-    !defined(__ppc__) && \
+// clang-format off
+#if !defined(__aarch64__) && \
+    !defined(__alpha__) &&\
+    !defined(__arc__) &&\
     !defined(__arm__) && \
-    !defined(__aarch64__) && \
     !defined(__mips__) && \
-    !defined(__SH4__) && \
-    !defined(__sparc__) && \
-    !defined(__arc__) && \
     !defined(__or1k__) && \
+    !defined(__powerpc__) && \
+    !defined(__ppc__) && \
+    !defined(__riscv) && \
+    !defined(__SH4__) && \
+    !defined(__s390x__) && \
+    !defined(__sparc__) && \
     !defined(__xtensa__)
+// clang-format on
 
 #include "ldt_keeper.h"
 
