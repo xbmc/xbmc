@@ -52,12 +52,11 @@ namespace OVERLAY {
        GLfloat x, y, z;
     };
 
-   VERTEX* m_vertex;
-   int     m_count;
+    std::vector<VERTEX> m_vertex;
 
-   GLuint m_texture;
-   float  m_u;
-   float  m_v;
+    GLuint m_texture;
+    float m_u;
+    float m_v;
   };
 
 }

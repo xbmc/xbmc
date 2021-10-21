@@ -43,12 +43,9 @@ static uint32_t build_rgba(int yuv[3], int alpha, bool mergealpha)
 }
 #undef clamp
 
-uint32_t* convert_rgba(CDVDOverlayImage* o, bool mergealpha)
+std::vector<uint32_t> convert_rgba(CDVDOverlayImage* o, bool mergealpha)
 {
-  uint32_t* rgba = (uint32_t*)malloc(o->width * o->height * sizeof(uint32_t));
-
-  if(!rgba)
-    return NULL;
+  std::vector<uint32_t> rgba(o->width * o->height);
 
   uint32_t palette[256] = {};
   for(int i = 0; i < o->palette_colors; i++)
@@ -65,14 +62,10 @@ uint32_t* convert_rgba(CDVDOverlayImage* o, bool mergealpha)
   return rgba;
 }
 
-uint32_t* convert_rgba(CDVDOverlaySpu* o, bool mergealpha
-                              , int& min_x, int& max_x
-                              , int& min_y, int& max_y)
+std::vector<uint32_t> convert_rgba(
+    CDVDOverlaySpu* o, bool mergealpha, int& min_x, int& max_x, int& min_y, int& max_y)
 {
-  uint32_t* rgba = (uint32_t*)malloc(o->width * o->height * sizeof(uint32_t));
-
-  if(!rgba)
-    return NULL;
+  std::vector<uint32_t> rgba(o->width * o->height);
 
   uint32_t palette[8];
   for(int i = 0; i < 4; i++)
@@ -105,7 +98,7 @@ uint32_t* convert_rgba(CDVDOverlaySpu* o, bool mergealpha
   min_y = o->height;
   max_y = 0;
 
-  trg = rgba;
+  trg = rgba.data();
   src = (uint16_t*)o->result;
 
   for (int y = 0; y < o->height; y++)
@@ -179,6 +172,8 @@ bool convert_quad(ASS_Image* images, SQuads& quads, int max_x)
 
   // first calculate how many glyph we have and the total x length
 
+  int count{0};
+
   for(img = images; img; img = img->next)
   {
     // fully transparent or width or height is 0 -> not displayed
@@ -186,10 +181,10 @@ bool convert_quad(ASS_Image* images, SQuads& quads, int max_x)
       continue;
 
     quads.size_x += img->w + 1;
-    quads.count++;
+    count++;
   }
 
-  if (quads.count == 0)
+  if (count == 0)
     return false;
 
   if (quads.size_x > max_x)
@@ -223,11 +218,11 @@ bool convert_quad(ASS_Image* images, SQuads& quads, int max_x)
 
   // allocate space for the glyph positions and texturedata
 
-  quads.quad = static_cast<SQuad*>(calloc(quads.count, sizeof(SQuad)));
-  quads.data = static_cast<uint8_t*>(calloc(quads.size_x * quads.size_y, 1));
+  quads.quad = std::vector<SQuad>(count);
+  quads.data = std::vector<uint8_t>(quads.size_x * quads.size_y);
 
-  SQuad*   v    = quads.quad;
-  uint8_t* data = quads.data;
+  SQuad* v = quads.quad.data();
+  uint8_t* data = quads.data.data();
 
   int y = 0;
 
@@ -247,7 +242,7 @@ bool convert_quad(ASS_Image* images, SQuads& quads, int max_x)
       curr_y += y + 1;
       curr_x  = 0;
       y       = 0;
-      data    = quads.data + curr_y * quads.size_x;
+      data = quads.data.data() + curr_y * quads.size_x;
     }
 
     unsigned int r = ((color >> 24) & 0xff);

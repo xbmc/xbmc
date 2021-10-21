@@ -822,21 +822,20 @@ void CDVDInputStreamBluray::OverlayCallback(const BD_OVERLAY * const ov)
     if (ov->palette)
     {
       overlay->palette_colors = 256;
-      overlay->palette        = reinterpret_cast<uint32_t*>(calloc(overlay->palette_colors, 4));
+      overlay->palette = std::vector<uint32_t>(overlay->palette_colors);
 
       for(unsigned i = 0; i < 256; i++)
         overlay->palette[i] = build_rgba(ov->palette[i]);
     }
 
     const BD_PG_RLE_ELEM *rlep = ov->img;
-    uint8_t *img = reinterpret_cast<uint8_t*>(malloc(static_cast<size_t>(ov->w) * static_cast<size_t>(ov->h)));
-    if (!img)
-      return;
+
     unsigned pixels = ov->w * ov->h;
 
-    for (unsigned i = 0; i < pixels; i += rlep->len, rlep++) {
-      memset(img + i, rlep->color, rlep->len);
-    }
+    std::vector<uint8_t> img(pixels);
+
+    for (unsigned i = 0; i < pixels; i += rlep->len, rlep++)
+      memset(img.data() + i, rlep->color, rlep->len);
 
     overlay->data     = img;
     overlay->linesize = ov->w;
@@ -886,13 +885,11 @@ void CDVDInputStreamBluray::OverlayCallbackARGB(const struct bd_argb_overlay_s *
     SOverlay overlay(new CDVDOverlayImage(), [](CDVDOverlay* ov) { CDVDOverlay::Release(ov); });
 
     overlay->palette_colors = 0;
-    overlay->palette        = nullptr;
+    overlay->palette = {};
 
     size_t bytes = static_cast<size_t>(ov->stride * ov->h * 4);
-    uint8_t *img = reinterpret_cast<uint8_t*>(malloc(bytes));
-    memcpy(img, ov->argb, bytes);
 
-    overlay->data     = img;
+    overlay->data = std::vector<uint8_t>(ov->argb, ov->argb + bytes);
     overlay->linesize = ov->stride * 4;
     overlay->x        = ov->x;
     overlay->y        = ov->y;

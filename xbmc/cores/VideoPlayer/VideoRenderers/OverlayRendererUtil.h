@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include <vector>
 
 class CDVDOverlayImage;
 class CDVDOverlaySpu;
@@ -28,30 +29,15 @@ namespace OVERLAY {
 
   struct SQuads
   {
-    SQuads()
-    {
-      data = NULL;
-      quad = NULL;
-      size_x = 0;
-      size_y = 0;
-      count  = 0;
-    }
-   ~SQuads()
-    {
-      free(data);
-      free(quad);
-    }
-    int      size_x;
-    int      size_y;
-    int      count;
-    uint8_t* data;
-    SQuad*   quad;
+    int size_x{0};
+    int size_y{0};
+    std::vector<uint8_t> data;
+    std::vector<SQuad> quad;
   };
 
-  uint32_t* convert_rgba(CDVDOverlayImage* o, bool mergealpha);
-  uint32_t* convert_rgba(CDVDOverlaySpu*   o, bool mergealpha
-                       , int& min_x, int& max_x
-                       , int& min_y, int& max_y);
+  std::vector<uint32_t> convert_rgba(CDVDOverlayImage* o, bool mergealpha);
+  std::vector<uint32_t> convert_rgba(
+      CDVDOverlaySpu* o, bool mergealpha, int& min_x, int& max_x, int& min_y, int& max_y);
   bool      convert_quad(ASS_Image* images, SQuads& quads, int max_x);
   int       GetStereoscopicDepth();
 
