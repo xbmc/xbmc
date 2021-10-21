@@ -1,0 +1,182 @@
+diff --git a/lib/libUPnP/Neptune/Source/System/Bsd/NptBsdSockets.cpp b/lib/libUPnP/Neptune/Source/System/Bsd/NptBsdSockets.cpp
+index 638446d776..063be46a7d 100644
+--- a/lib/libUPnP/Neptune/Source/System/Bsd/NptBsdSockets.cpp
++++ b/lib/libUPnP/Neptune/Source/System/Bsd/NptBsdSockets.cpp
+@@ -564,8 +564,10 @@ static int
+ socketpair(int, int, int, SOCKET sockets[2]) // we ignore the first two params: we only use this for a strictly limited case
+ {
+ 	int result = 0;
++        socklen_t name_length = 0;
++        int reuse = 1;
+ 
+-	// initialize with default values
++        // initialize with default values
+ 	sockets[0] = INVALID_SOCKET;
+ 	sockets[1] = INVALID_SOCKET;
+ 
+@@ -578,15 +580,14 @@ socketpair(int, int, int, SOCKET sockets[2]) // we ignore the first two params:
+ 	memset(&inet_address, 0, sizeof(inet_address));
+ 	inet_address.sin_family = AF_INET;
+ 	inet_address.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+-	int reuse = 1;
+ 	setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, (const char*)&reuse, sizeof(reuse));
+ 	result = bind(listener, (const sockaddr*)&inet_address, sizeof(inet_address));
+ 	if (result != 0) goto fail;
+ 	listen(listener, 1);
+ 
+ 	// read the port that was assigned to the listener socket
+-    socklen_t name_length = sizeof(inet_address);
+-    result = getsockname(listener, (struct sockaddr*)&inet_address, &name_length); 
++        name_length = sizeof(inet_address);
++        result = getsockname(listener, (struct sockaddr*)&inet_address, &name_length); 
+ 	if (result != 0) goto fail;
+ 
+ 	// create the first socket 
+diff --git a/lib/libUPnP/Neptune/Source/System/Win32/NptWin32Threads.cpp b/lib/libUPnP/Neptune/Source/System/Win32/NptWin32Threads.cpp
+index 8f3c6b7a0d..3ab979ad3b 100644
+--- a/lib/libUPnP/Neptune/Source/System/Win32/NptWin32Threads.cpp
++++ b/lib/libUPnP/Neptune/Source/System/Win32/NptWin32Threads.cpp
+@@ -441,7 +441,7 @@ NPT_Win32Thread::NPT_Win32Thread(NPT_Thread*   delegator,
+     m_Delegator(delegator),
+     m_Target(target),
+     m_Detached(detached),
+-    m_ThreadHandle(0),
++    m_ThreadHandle(nullptr),
+     m_ThreadId(0)
+ {
+ }
+@@ -567,7 +567,7 @@ NPT_Win32Thread::EntryPoint(void* argument)
+ NPT_Result
+ NPT_Win32Thread::Start()
+ {
+-    if (m_ThreadHandle > 0) {
++    if (m_ThreadHandle != nullptr) {
+         // failed
+         NPT_LOG_WARNING("thread already started !");
+         return NPT_ERROR_INVALID_STATE;
+diff --git a/lib/libUPnP/Platinum/Source/Core/PltCtrlPoint.cpp b/lib/libUPnP/Platinum/Source/Core/PltCtrlPoint.cpp
+index bae654572c..7d476d1806 100644
+--- a/lib/libUPnP/Platinum/Source/Core/PltCtrlPoint.cpp
++++ b/lib/libUPnP/Platinum/Source/Core/PltCtrlPoint.cpp
+@@ -805,8 +805,9 @@ PLT_CtrlPoint::ProcessEventNotification(PLT_EventSubscriberReference subscriber,
+         var = service->FindStateVariable(property->GetTag());
+         if (var == NULL) continue;
+ 
+-        if (NPT_FAILED(var->SetValue(property->GetText()?*property->GetText():""))) {
+-            NPT_CHECK_LABEL_WARNING(NPT_FAILURE, failure);
++        if (NPT_FAILED(var->SetValue(property->GetText() ? property->GetText()->GetChars() : "")))
++        {
++          NPT_CHECK_LABEL_WARNING(NPT_FAILURE, failure);
+         }
+ 
+         vars.Add(var);
+@@ -1662,12 +1663,11 @@ PLT_CtrlPoint::ProcessSubscribeResponse(NPT_Result                    res,
+     goto remove_sub;
+ 
+ failure:
+-    NPT_LOG_SEVERE_4("%subscription failed of sub \"%s\" for service \"%s\" of device \"%s\"", 
+-        (const char*)subscription?"S":"Uns",
+-        (const char*)(sid?*sid:"Unknown"),
+-        (const char*)service->GetServiceID(),
+-        (const char*)service->GetDevice()->GetFriendlyName());
+-    res = NPT_FAILED(res)?res:NPT_FAILURE;
++  NPT_LOG_SEVERE_4(
++      "%subscription failed of sub \"%s\" for service \"%s\" of device \"%s\"",
++      (const char*)subscription ? "S" : "Uns", (const char*)(sid ? sid->GetChars() : "Unknown"),
++      (const char*)service->GetServiceID(), (const char*)service->GetDevice()->GetFriendlyName());
++  res = NPT_FAILED(res) ? res : NPT_FAILURE;
+ 
+ remove_sub:
+     // in case it was a renewal look for the subscriber with that service and remove it from the list
+@@ -1814,7 +1814,8 @@ PLT_CtrlPoint::ProcessActionResponse(NPT_Result                    res,
+         NPT_XmlElementNode* child = (*args)->AsElementNode();
+         if (!child) continue;
+ 
+-        action->SetArgumentValue(child->GetTag(), child->GetText()?*child->GetText():"");
++        action->SetArgumentValue(child->GetTag(),
++                                 child->GetText() ? child->GetText()->GetChars() : "");
+         if (NPT_FAILED(res)) goto failure; 
+     }
+ 
+diff --git a/lib/libUPnP/Platinum/Source/Core/PltDeviceHost.cpp b/lib/libUPnP/Platinum/Source/Core/PltDeviceHost.cpp
+index b6de5c202d..6f5f09f9cf 100644
+--- a/lib/libUPnP/Platinum/Source/Core/PltDeviceHost.cpp
++++ b/lib/libUPnP/Platinum/Source/Core/PltDeviceHost.cpp
+@@ -305,11 +305,12 @@ PLT_DeviceHost::Announce(PLT_DeviceData*      device,
+             break;
+     }
+     PLT_UPnPMessageHelper::SetNTS(req, nts);
+-    
+-    NPT_LOG_FINER_3("Sending SSDP NOTIFY (%s) Request to %s (%s)",
+-                    nts.GetChars(),
++
++    NPT_LOG_FINER_3("Sending SSDP NOTIFY (%s) Request to %s (%s)", nts.GetChars(),
+                     (const char*)req.GetUrl().ToString(),
+-                    (const char*)(PLT_UPnPMessageHelper::GetLocation(req)?*PLT_UPnPMessageHelper::GetLocation(req):""));
++                    (const char*)(PLT_UPnPMessageHelper::GetLocation(req)
++                                      ? PLT_UPnPMessageHelper::GetLocation(req)->GetChars()
++                                      : ""));
+ 
+     // upnp:rootdevice
+     if (device->m_ParentUUID.IsEmpty()) {
+@@ -585,14 +586,13 @@ PLT_DeviceHost::ProcessHttpPostRequest(NPT_HttpRequest&              request,
+             name = "ObjectID";
+         }
+ 
+-        res = action->SetArgumentValue(
+-            name,
+-            child->GetText()?*child->GetText():"");
++        res = action->SetArgumentValue(name, child->GetText() ? child->GetText()->GetChars() : "");
+ 
+-		// test if value was correct
+-		if (res == NPT_ERROR_INVALID_PARAMETERS) {
+-			action->SetError(701, "Invalid Name");
+-			goto error;
++        // test if value was correct
++        if (res == NPT_ERROR_INVALID_PARAMETERS)
++        {
++          action->SetError(701, "Invalid Name");
++          goto error;
+ 		}
+     }
+ 
+diff --git a/lib/libUPnP/Platinum/Source/Core/PltUtilities.h b/lib/libUPnP/Platinum/Source/Core/PltUtilities.h
+index bdc1340173..4677f5be0e 100644
+--- a/lib/libUPnP/Platinum/Source/Core/PltUtilities.h
++++ b/lib/libUPnP/Platinum/Source/Core/PltUtilities.h
+@@ -140,7 +140,8 @@ public:
+ 
+         const NPT_String* text = child->GetText();
+         // DLNA 7.3.17
+-        value = text?text->SubString(0, max_size):"";
++        if (text)
++          value = text->SubString(0, max_size);
+         return NPT_SUCCESS;
+     }
+                                    
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaServer.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaServer.cpp
+index feeb537648..8686aa9294 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaServer.cpp
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltMediaServer.cpp
+@@ -401,7 +401,7 @@ PLT_MediaServer::ParseTagList(const NPT_String& updates, NPT_Map<NPT_String,NPT_
+         NPT_XmlElementNode* child = (*children)->AsElementNode();
+         if (!child) continue;
+         const NPT_String *txt = child->GetText();
+-        tags[child->GetTag()] = txt ? *txt : "";
++        tags[child->GetTag()] = txt ? txt->GetChars() : "";
+     }
+ 
+     return NPT_SUCCESS;
+diff --git a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.cpp b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.cpp
+index 27d81fae86..794b56be17 100644
+--- a/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.cpp
++++ b/lib/libUPnP/Platinum/Source/Devices/MediaServer/PltSyncMediaBrowser.cpp
+@@ -245,7 +245,7 @@ PLT_SyncMediaBrowser::OnMSStateVariablesChanged(PLT_Service*                  se
+             if (value.GetLength()) {
+                 index = value.Find(',');
+                 update_id = (index<0)?value:value.Left(index);
+-                value = (index<0)?"":value.SubString(index+1);
++                value = (index < 0) ? "" : value.SubString(index + 1).GetChars();
+ 
+                 // clear cache for that device
+                 if (m_UseCache) m_Cache.Clear(device->GetUUID(), item_id);
