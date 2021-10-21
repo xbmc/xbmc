@@ -10,7 +10,9 @@
 #include "ServiceBroker.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "ASTCImage.h"
 #include "DDSImage.h"
+#include "PKMImage.h"
 #include "filesystem/File.h"
 #include "filesystem/ResourceFile.h"
 #include "filesystem/XbtFile.h"
@@ -63,11 +65,21 @@ void CTexture::Allocate(unsigned int width, unsigned int height, unsigned int fo
     m_textureHeight = PadPow2(m_textureHeight);
   }
 
-  if (m_format & XB_FMT_DXT_MASK)
+  if (m_format & XB_FMT_DXT_MASK ||
+      m_format == XB_FMT_ETC1 ||
+      m_format == XB_FMT_ETC2_R ||
+      m_format == XB_FMT_ETC2_RGB ||
+      m_format == XB_FMT_ETC2_RGBA ||
+      m_format == XB_FMT_ASTC_4x4)
   {
     // DXT textures must be a multiple of 4 in width and height
     m_textureWidth = ((m_textureWidth + 3) / 4) * 4;
     m_textureHeight = ((m_textureHeight + 3) / 4) * 4;
+  }
+  else if (m_format == XB_FMT_ASTC_8x8)
+  {
+    m_textureWidth = ((m_textureWidth + 7) / 8) * 8;
+    m_textureHeight = ((m_textureHeight + 7) / 8) * 8;
   }
   else
   {
@@ -240,6 +252,27 @@ bool CTexture::LoadFromFileInternal(const std::string& texturePath,
     if (image.ReadFile(texturePath))
     {
       Update(image.GetWidth(), image.GetHeight(), 0, image.GetFormat(), image.GetData(), false);
+      return true;
+    }
+    return false;
+  }
+  if ((URIUtils::HasExtension(texturePath, ".etc1") && IsTexSupported(XB_FMT_ETC1))
+      || (URIUtils::HasExtension(texturePath, ".etc2") && IsTexSupported(XB_FMT_ETC2_RGBA)))
+  { // special case for PKM images
+    CPKMImage image;
+    if (image.ReadFile(texturePath))
+    {
+      Update(image.GetWidth(), image.GetHeight(), 0, image.GetFormat(), reinterpret_cast<const unsigned char*>(image.GetData()), true);
+      return true;
+    }
+    return false;
+  }
+  if (URIUtils::HasExtension(texturePath, ".astc") && IsTexSupported(XB_FMT_ASTC_4x4))
+  { // special case for ASTC images
+    CASTCImage image;
+    if (image.ReadFile(texturePath))
+    {
+      Update(image.GetWidth(), image.GetHeight(), 0, image.GetFormat(), reinterpret_cast<const unsigned char*>(image.GetData()), true);
       return true;
     }
     return false;
@@ -424,11 +457,18 @@ unsigned int CTexture::GetPitch(unsigned int width) const
   switch (m_format)
   {
   case XB_FMT_DXT1:
+  case XB_FMT_ETC1:
+  case XB_FMT_ETC2_R:
+  case XB_FMT_ETC2_RGB:
     return ((width + 3) / 4) * 8;
   case XB_FMT_DXT3:
   case XB_FMT_DXT5:
   case XB_FMT_DXT5_YCoCg:
+  case XB_FMT_ETC2_RGBA:
+  case XB_FMT_ASTC_4x4:
     return ((width + 3) / 4) * 16;
+  case XB_FMT_ASTC_8x8:
+    return ((width + 7) / 8) * 16;
   case XB_FMT_A8:
     return width;
   case XB_FMT_RGB8:
@@ -445,11 +485,18 @@ unsigned int CTexture::GetRows(unsigned int height) const
   switch (m_format)
   {
   case XB_FMT_DXT1:
+  case XB_FMT_ETC1:
+  case XB_FMT_ETC2_R:
+  case XB_FMT_ETC2_RGB:
+  case XB_FMT_ASTC_4x4:
     return (height + 3) / 4;
   case XB_FMT_DXT3:
   case XB_FMT_DXT5:
   case XB_FMT_DXT5_YCoCg:
+  case XB_FMT_ETC2_RGBA:
     return (height + 3) / 4;
+  case XB_FMT_ASTC_8x8:
+    return (height + 7) / 8;
   default:
     return height;
   }
@@ -460,10 +507,16 @@ unsigned int CTexture::GetBlockSize() const
   switch (m_format)
   {
   case XB_FMT_DXT1:
+  case XB_FMT_ETC1:
+  case XB_FMT_ETC2_R:
+  case XB_FMT_ETC2_RGB:
     return 8;
   case XB_FMT_DXT3:
   case XB_FMT_DXT5:
   case XB_FMT_DXT5_YCoCg:
+  case XB_FMT_ETC2_RGBA:
+  case XB_FMT_ASTC_4x4:
+  case XB_FMT_ASTC_8x8:
     return 16;
   case XB_FMT_A8:
     return 1;

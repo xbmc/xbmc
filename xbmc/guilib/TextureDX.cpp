@@ -187,3 +187,30 @@ void CDXTexture::LoadToGPU()
 void CDXTexture::BindToUnit(unsigned int unit)
 {
 }
+
+bool CDXTexture::IsTexSupported(uint32_t textureFormat) const
+{
+  switch(textureFormat) // FIXME: actually probe for supported formats
+  {
+    case XB_FMT_UNKNOWN:
+    case XB_FMT_DXT1:
+    case XB_FMT_DXT3:
+    case XB_FMT_DXT5:
+    case XB_FMT_DXT5_YCoCg:
+    case XB_FMT_A8R8G8B8:
+    case XB_FMT_A8:
+    case XB_FMT_RGBA8:
+    case XB_FMT_RGB8:
+    case XB_FMT_OPAQUE:
+      return true;
+    case XB_FMT_ETC1:
+    case XB_FMT_ETC2_R:
+    case XB_FMT_ETC2_RGB:
+    case XB_FMT_ETC2_RGBA:
+    case XB_FMT_ASTC_4x4:
+    case XB_FMT_ASTC_8x8:
+      return false;
+    default:
+      return true;
+  }
+}

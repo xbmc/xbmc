@@ -80,6 +80,20 @@ bool CTextureCacheJob::CacheTexture(CTexture** out_texture)
   CTexture* texture = LoadImage(image, width, height, additional_info, true);
   if (texture)
   {
+    if (texture->GetFormat() == XB_FMT_ETC1 ||
+        texture->GetFormat() == XB_FMT_ETC2_R ||
+        texture->GetFormat() == XB_FMT_ETC2_RGB ||
+        texture->GetFormat() == XB_FMT_ETC2_RGBA ||
+        texture->GetFormat() == XB_FMT_ASTC_4x4 ||
+        texture->GetFormat() == XB_FMT_ASTC_8x8)
+    {
+      CLog::Log(LOGDEBUG, "Not caching image '%s'", CURL::GetRedacted(image).c_str());
+      if (out_texture) // caller wants the texture
+        *out_texture = texture;
+      else
+        delete texture;
+      return true;
+    }
     if (texture->HasAlpha())
       m_details.file = m_cachePath + ".png";
     else

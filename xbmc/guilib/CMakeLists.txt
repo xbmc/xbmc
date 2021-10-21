@@ -1,4 +1,5 @@
-set(SOURCES DDSImage.cpp
+set(SOURCES ASTCImage.cpp
+            DDSImage.cpp
             DirtyRegionSolvers.cpp
             DirtyRegionTracker.cpp
             FFmpegImage.cpp
@@ -61,6 +62,7 @@ set(SOURCES DDSImage.cpp
             imagefactory.cpp
             IWindowManagerCallback.cpp
             LocalizeStrings.cpp
+            PKMImage.cpp
             StereoscopicsManager.cpp
             TextureBundle.cpp
             TextureBundleXBT.cpp
@@ -70,7 +72,8 @@ set(SOURCES DDSImage.cpp
             XBTF.cpp
             XBTFReader.cpp)
 
-set(HEADERS DDSImage.h
+set(HEADERS ASTCImage.h
+            DDSImage.h
             DirtyRegion.h
             DirtyRegionSolvers.h
             DirtyRegionTracker.h
@@ -144,6 +147,7 @@ set(HEADERS DDSImage.h
             ISliderCallback.h
             IWindowManagerCallback.h
             LocalizeStrings.h
+            PKMImage.h
             StereoscopicsManager.h
             Texture.h
             TextureBundle.h
