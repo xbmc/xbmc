@@ -8,6 +8,7 @@ set(SOURCES ActorProtocol.cpp
             BitstreamStats.cpp
             BitstreamWriter.cpp
             BooleanLogic.cpp
+            CharArrayParser.cpp
             CharsetConverter.cpp
             CharsetDetection.cpp
             ColorUtils.cpp
@@ -80,6 +81,7 @@ set(HEADERS ActorProtocol.h
             BitstreamStats.h
             BitstreamWriter.h
             BooleanLogic.h
+            CharArrayParser.h
             CharsetConverter.h
             CharsetDetection.h
             CPUInfo.h
