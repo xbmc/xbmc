@@ -1183,7 +1183,7 @@ static void logFromMHD(void* unused, const char* fmt, va_list ap)
 bool CWebServer::LoadCert(std::string& skey, std::string& scert)
 {
   XFILE::CFile file;
-  XFILE::auto_buffer buf;
+  std::vector<uint8_t> buf;
   const char* keyFile = "special://userdata/server.key";
   const char* certFile = "special://userdata/server.pem";
 
@@ -1192,8 +1192,8 @@ bool CWebServer::LoadCert(std::string& skey, std::string& scert)
 
   if (file.LoadFile(keyFile, buf) > 0)
   {
-    skey.resize(buf.length());
-    skey.assign(buf.get());
+    skey.resize(buf.size());
+    skey.assign(reinterpret_cast<char*>(buf.data()));
     file.Close();
   }
   else
@@ -1201,8 +1201,8 @@ bool CWebServer::LoadCert(std::string& skey, std::string& scert)
 
   if (file.LoadFile(certFile, buf) > 0)
   {
-    scert.resize(buf.length());
-    scert.assign(buf.get());
+    scert.resize(buf.size());
+    scert.assign(reinterpret_cast<char*>(buf.data()));
     file.Close();
   }
   else

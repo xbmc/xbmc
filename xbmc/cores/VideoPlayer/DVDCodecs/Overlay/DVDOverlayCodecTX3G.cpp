@@ -19,7 +19,6 @@
 #include "utils/ColorUtils.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
-#include "utils/auto_buffer.h"
 #include "utils/log.h"
 
 #include <cstddef>
@@ -129,11 +128,8 @@ OverlayMessage CDVDOverlayCodecTX3G::Decode(DemuxPacket* pPacket)
   int numStyleRecords = 0;
   // reserve one more style slot for broken encoders
 
-  XUTILS::auto_buffer bgnStyle(textLength + 1);
-  XUTILS::auto_buffer endStyle(textLength + 1);
-
-  memset(bgnStyle.get(), 0, textLength + 1);
-  memset(endStyle.get(), 0, textLength + 1);
+  std::vector<uint8_t> bgnStyle(textLength + 1, 0);
+  std::vector<uint8_t> endStyle(textLength + 1, 0);
 
   int bgnColorIndex = 0, endColorIndex = 0;
   uint32_t textColorRGBA = m_textColor;
@@ -191,8 +187,8 @@ OverlayMessage CDVDOverlayCodecTX3G::Decode(DemuxPacket* pPacket)
         if (curRecord.endChar > textLength)
           curRecord.endChar = textLength;
 
-        bgnStyle.get()[curRecord.bgnChar] |= curRecord.faceStyleFlags;
-        endStyle.get()[curRecord.endChar] |= curRecord.faceStyleFlags;
+        bgnStyle[curRecord.bgnChar] |= curRecord.faceStyleFlags;
+        endStyle[curRecord.endChar] |= curRecord.faceStyleFlags;
         bgnColorIndex = curRecord.bgnChar;
         endColorIndex = curRecord.endChar;
         textColorRGBA = curRecord.textColorRGBA;
@@ -220,8 +216,8 @@ OverlayMessage CDVDOverlayCodecTX3G::Decode(DemuxPacket* pPacket)
       continue; // ...without incrementing 'charIndex'
     }
 
-    uint8_t bgnStyles = bgnStyle.get()[charIndex];
-    uint8_t endStyles = endStyle.get()[charIndex];
+    uint8_t bgnStyles = bgnStyle[charIndex];
+    uint8_t endStyles = endStyle[charIndex];
 
     if (endStyles & BOLD)
       strUTF8.append("{\\b0}");

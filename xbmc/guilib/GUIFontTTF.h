@@ -10,7 +10,6 @@
 
 #include "utils/Color.h"
 #include "utils/Geometry.h"
-#include "utils/auto_buffer.h"
 
 #include <stdint.h>
 #include <string>
@@ -214,7 +213,8 @@ protected:
   float    m_textureScaleY;
 
   std::string m_strFileName;
-  XUTILS::auto_buffer m_fontFileInMemory; // used only in some cases, see CFreeTypeLibrary::GetFont()
+  std::vector<uint8_t>
+      m_fontFileInMemory; // used only in some cases, see CFreeTypeLibrary::GetFont()
 
   CGUIFontCache<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue> m_staticCache;
   CGUIFontCache<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue> m_dynamicCache;

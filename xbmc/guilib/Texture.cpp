@@ -252,7 +252,7 @@ bool CTexture::LoadFromFileInternal(const std::string& texturePath,
 
   // Read image into memory to use our vfs
   XFILE::CFile file;
-  XFILE::auto_buffer buf;
+  std::vector<uint8_t> buf;
 
   if (file.LoadFile(texturePath, buf) <= 0)
     return false;
@@ -273,8 +273,8 @@ bool CTexture::LoadFromFileInternal(const std::string& texturePath,
     if (!xbtFile.Open(url))
       return false;
 
-    return LoadFromMemory(xbtFile.GetImageWidth(), xbtFile.GetImageHeight(), 0, xbtFile.GetImageFormat(),
-                          xbtFile.HasImageAlpha(), reinterpret_cast<const unsigned char*>(buf.get()));
+    return LoadFromMemory(xbtFile.GetImageWidth(), xbtFile.GetImageHeight(), 0,
+                          xbtFile.GetImageFormat(), xbtFile.HasImageAlpha(), buf.data());
   }
 
   IImage* pImage;
@@ -284,7 +284,7 @@ bool CTexture::LoadFromFileInternal(const std::string& texturePath,
   else
     pImage = ImageFactory::CreateLoaderFromMimeType(strMimeType);
 
-  if (!LoadIImage(pImage, (unsigned char *)buf.get(), buf.size(), width, height))
+  if (!LoadIImage(pImage, buf.data(), buf.size(), width, height))
   {
     CLog::Log(LOGDEBUG, "{} - Load of {} failed.", __FUNCTION__, CURL::GetRedacted(texturePath));
     delete pImage;

@@ -19,7 +19,6 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/XBMCTinyXML.h"
-#include "utils/auto_buffer.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -376,16 +375,16 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
       GetTextList(child, "news", addon->m_changelog);
       if (addon->m_changelog.empty() && !isRepoXMLContent && !addonPath.empty())
       {
-        using XFILE::auto_buffer;
         using XFILE::CFile;
 
         const std::string changelog = URIUtils::AddFileToFolder(addonPath, "changelog.txt");
         if (CFile::Exists(changelog))
         {
           CFile file;
-          auto_buffer buf;
+          std::vector<uint8_t> buf;
           if (file.LoadFile(changelog, buf) > 0)
-            addon->m_changelog[KODI_ADDON_DEFAULT_LANGUAGE_CODE].assign(buf.get(), buf.size());
+            addon->m_changelog[KODI_ADDON_DEFAULT_LANGUAGE_CODE].assign(
+                reinterpret_cast<char*>(buf.data()), buf.size());
         }
       }
     }

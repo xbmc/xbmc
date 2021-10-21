@@ -152,10 +152,10 @@ void CRssReader::Process()
         if (!url.IsProtocol("http") && !url.IsProtocol("https"))
         {
           CFile file;
-          auto_buffer buffer;
+          std::vector<uint8_t> buffer;
           if (file.LoadFile(strUrl, buffer) > 0)
           {
-            strXML.assign(buffer.get(), buffer.length());
+            strXML.assign(reinterpret_cast<char*>(buffer.data()), buffer.size());
             break;
           }
         }

@@ -56,7 +56,7 @@ bool CXBMCTinyXML::LoadFile(const std::string& _filename, TiXmlEncoding encoding
   value = _filename.c_str();
 
   XFILE::CFile file;
-  XFILE::auto_buffer buffer;
+  std::vector<uint8_t> buffer;
 
   if (file.LoadFile(value, buffer) <= 0)
   {
@@ -68,7 +68,7 @@ bool CXBMCTinyXML::LoadFile(const std::string& _filename, TiXmlEncoding encoding
   Clear();
   location.Clear();
 
-  std::string data(buffer.get(), buffer.length());
+  std::string data(reinterpret_cast<char*>(buffer.data()), buffer.size());
   buffer.clear(); // free memory early
 
   if (encoding == TIXML_ENCODING_UNKNOWN)

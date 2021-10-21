@@ -8,10 +8,9 @@
 
 #pragma once
 
-#include "utils/auto_buffer.h"
-
 #include <sstream>
 #include <string>
+#include <vector>
 
 class CDVDInputStream;
 
@@ -29,7 +28,7 @@ public:
    *         is known to be incompatible, e.g., vob sub files.
    *  \param[in] pInputStream The input stream for the subtitle to check.
    */
-  bool IsIncompatible(CDVDInputStream* pInputStream, XUTILS::auto_buffer& buf, size_t* bytesRead);
+  bool IsIncompatible(CDVDInputStream* pInputStream, std::vector<uint8_t>& buf, size_t* bytesRead);
 
   int Read(char* buf, int buf_size);
   long Seek(long offset, int whence);
