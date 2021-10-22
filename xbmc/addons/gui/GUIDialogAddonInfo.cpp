@@ -17,6 +17,8 @@
 #include "addons/AddonManager.h"
 #include "addons/AddonRepos.h"
 #include "addons/AddonSystemSettings.h"
+#include "addons/AudioDecoder.h"
+#include "addons/ExtsMimeSupportList.h"
 #include "addons/IAddon.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
 #include "addons/gui/GUIHelpers.h"
@@ -241,10 +243,20 @@ void CGUIDialogAddonInfo::UpdateControls(PerformButtonFocus performButtonFocus)
                            CServiceBroker::GetAddonMgr().IsAutoUpdateable(m_localAddon->ID()));
   SET_CONTROL_LABEL(CONTROL_BTN_AUTOUPDATE, 21340);
 
-  CONTROL_ENABLE_ON_CONDITION(
-      CONTROL_BTN_SELECT,
-      m_addonEnabled && (CanOpen() || CanRun() || (CanUse() && !m_localAddon->IsInUse())));
-  SET_CONTROL_LABEL(CONTROL_BTN_SELECT, CanUse() ? 21480 : (CanOpen() ? 21478 : 21479));
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SELECT,
+                              m_addonEnabled && (CanShowSupportList() || CanOpen() || CanRun() ||
+                                                 (CanUse() && !m_localAddon->IsInUse())));
+
+  int label;
+  if (CanShowSupportList())
+    label = 21484;
+  else if (CanUse())
+    label = 21480;
+  else if (CanOpen())
+    label = 21478;
+  else
+    label = 21479;
+  SET_CONTROL_LABEL(CONTROL_BTN_SELECT, label);
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SETTINGS, isInstalled && m_localAddon->HasSettings());
   if (isInstalled && m_localAddon->HasSettings() && performButtonFocus == PerformButtonFocus::YES)
@@ -473,6 +485,12 @@ void CGUIDialogAddonInfo::OnSelect()
   if (!m_localAddon)
     return;
 
+  if (CanShowSupportList())
+  {
+    ShowSupportList();
+    return;
+  }
+
   Close();
 
   if (CanOpen() || CanRun())
@@ -507,6 +525,11 @@ bool CGUIDialogAddonInfo::CanUse() const
           m_localAddon->Type() == ADDON_VIZ || m_localAddon->Type() == ADDON_SCRIPT_WEATHER ||
           m_localAddon->Type() == ADDON_RESOURCE_LANGUAGE ||
           m_localAddon->Type() == ADDON_RESOURCE_UISOUNDS);
+}
+
+bool CGUIDialogAddonInfo::CanShowSupportList() const
+{
+  return m_localAddon && m_localAddon->Type() == ADDON_AUDIODECODER;
 }
 
 bool CGUIDialogAddonInfo::PromptIfDependency(int heading, int line2)
@@ -710,6 +733,37 @@ bool CGUIDialogAddonInfo::ShowDependencyList(Reactivate reactivate, EntryPoint e
   }
 
   return true;
+}
+
+void CGUIDialogAddonInfo::ShowSupportList()
+{
+  std::vector<KODI::ADDONS::AddonSupportEntry> list;
+  if (m_localAddon->Type() == ADDON_AUDIODECODER)
+    list =
+        CServiceBroker::GetExtsMimeSupportList().GetSupportedExtsAndMimeTypes(m_localAddon->ID());
+
+  auto pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
+      WINDOW_DIALOG_SELECT);
+  CFileItemList items;
+  for (const auto& entry : list)
+  {
+    // Ignore included extension about track support
+    if (StringUtils::EndsWith(entry.m_name, KODI_ADDON_AUDIODECODER_TRACK_EXT))
+      continue;
+
+    const CFileItemPtr item = std::make_shared<CFileItem>(entry.m_name);
+    item->SetLabel2(entry.m_description);
+    item->SetProperty("addon_id", m_localAddon->ID());
+    items.Add(item);
+  }
+
+  pDialog->Reset();
+  pDialog->SetHeading(21485);
+  pDialog->SetUseDetails(true);
+  for (auto& it : items)
+    pDialog->Add(*it);
+  pDialog->SetButtonFocus(true);
+  pDialog->Open();
 }
 
 bool CGUIDialogAddonInfo::ShowForItem(const CFileItemPtr& item)

@@ -14483,7 +14483,19 @@ msgctxt "#21483"
 msgid "View"
 msgstr ""
 
-#empty strings from id 21484 to 21601
+#. Button label to show list of supported types, e.g. supported file extensions
+#: xbmc/addons/GUIDialogAddonInfo.cpp
+msgctxt "#21484"
+msgid "Show support"
+msgstr ""
+
+#. Dialog header label to show list of supported types, e.g. supported file extensions
+#: xbmc/addons/GUIDialogAddonInfo.cpp
+msgctxt "#21485"
+msgid "Supported file extensions and media types"
+msgstr ""
+
+#empty strings from id 21486 to 21601
 
 #: xbmc/Util.cpp
 msgctxt "#21602"
