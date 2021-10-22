@@ -4,7 +4,7 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=ninja
-VERSION=1.9.0
+VERSION=1.10.2
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
