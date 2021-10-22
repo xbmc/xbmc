@@ -53,6 +53,7 @@ set(HEADERS Addon.h
             FontResource.h
             GameResource.h
             IAddon.h
+            IAddonSupportCheck.h
             ImageDecoder.h
             ImageResource.h
             LanguageResource.h
