@@ -10,6 +10,7 @@
 
 #include "addons/AddonEvents.h"
 #include "addons/IAddon.h"
+#include "addons/IAddonSupportList.h"
 #include "threads/CriticalSection.h"
 
 namespace ADDON
@@ -30,7 +31,7 @@ namespace ADDONS
  * globally in Kodi so that other addons can also be managed with it (all which
  * have mimetypes and file extensions, e.g. vfs, audioencoder).
  */
-class CExtsMimeSupportList
+class CExtsMimeSupportList : public KODI::ADDONS::IAddonSupportList
 {
 public:
   CExtsMimeSupportList(ADDON::CAddonMgr& addonMgr);
@@ -132,6 +133,17 @@ public:
    */
   std::vector<std::pair<ADDON::TYPE, std::shared_ptr<ADDON::CAddonInfo>>>
   GetMimetypeSupportedAddonInfos(const std::string& mimetype, FilterSelect select);
+
+  /*!
+   * @brief To give all file extensions and MIME types supported by the addon.
+   *
+   * @param[in] addonId Identifier about wanted addon
+   * @return List of all supported parts on selected addon
+   *
+   * @sa KODI::ADDONS::IAddonSupportList
+   */
+  std::vector<KODI::ADDONS::AddonSupportEntry> GetSupportedExtsAndMimeTypes(
+      const std::string& addonId) override;
 
 protected:
   void Update(const std::string& id);

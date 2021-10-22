@@ -8,17 +8,12 @@
 #pragma once
 
 #include "addons/IAddonSupportCheck.h"
+#include "addons/IAddonSupportList.h"
 #include "addons/binary-addons/AddonInstanceHandler.h"
 #include "addons/kodi-dev-kit/include/kodi/addon-instance/AudioDecoder.h"
 #include "cores/paplayer/ICodec.h"
 #include "filesystem/MusicFileDirectory.h"
 #include "music/tags/ImusicInfoTagLoader.h"
-
-namespace MUSIC_INFO
-{
-class CMusicInfoTag;
-class EmbeddedArt;
-} // namespace MUSIC_INFO
 
 namespace ADDON
 {

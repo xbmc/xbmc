@@ -16,6 +16,8 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
+using namespace KODI::ADDONS;
+
 namespace ADDON
 {
 

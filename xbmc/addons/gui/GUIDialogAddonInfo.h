@@ -107,6 +107,11 @@ private:
   bool CanUse() const;
 
   /*!
+   * @brief Returns true if current addon can be show list about supported parts
+   */
+  bool CanShowSupportList() const;
+
+  /*!
    * @brief check if the add-on is a dependency of others, and if so prompt the user.
    *
    * @param[in] heading the label for the heading of the prompt dialog
@@ -123,6 +128,11 @@ private:
    * @return True if okay was selected, false otherwise
    */
   bool ShowDependencyList(Reactivate reactivate, EntryPoint entryPoint);
+
+  /*!
+   * @brief Show a dialog with the addon's supported extensions and mimetypes.
+   */
+  void ShowSupportList();
 
   /*!
    * @brief Used to build up the dependency list shown by @ref ShowDependencyList()

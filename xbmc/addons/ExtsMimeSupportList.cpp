@@ -216,3 +216,34 @@ std::vector<std::pair<ADDON::TYPE, std::shared_ptr<CAddonInfo>>> CExtsMimeSuppor
 
   return addonInfos;
 }
+
+std::vector<AddonSupportEntry> CExtsMimeSupportList::GetSupportedExtsAndMimeTypes(
+    const std::string& addonId)
+{
+  std::vector<AddonSupportEntry> list;
+
+  const auto it =
+      std::find_if(m_supportedList.begin(), m_supportedList.end(),
+                   [addonId](const SupportValues& v) { return v.m_addonInfo->ID() == addonId; });
+  if (it == m_supportedList.end())
+    return list;
+
+  for (const auto& entry : it->m_supportedExtensions)
+  {
+    AddonSupportEntry supportEntry;
+    supportEntry.m_type = AddonSupportType::Extension;
+    supportEntry.m_name = entry.first;
+    supportEntry.m_description = g_localizeStrings.GetAddonString(addonId, entry.second);
+    list.emplace_back(supportEntry);
+  }
+  for (const auto& entry : it->m_supportedMimetypes)
+  {
+    AddonSupportEntry supportEntry;
+    supportEntry.m_type = AddonSupportType::Mimetype;
+    supportEntry.m_name = entry.first;
+    supportEntry.m_description = g_localizeStrings.GetAddonString(addonId, entry.second);
+    list.emplace_back(supportEntry);
+  }
+
+  return list;
+}
