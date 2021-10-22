@@ -42,6 +42,9 @@ struct AddonSupportEntry
 
   /* User-friendly description of the name type stored here. */
   std::string m_description;
+
+  /* Path to use own icon about. */
+  std::string m_icon;
 };
 
 /*!

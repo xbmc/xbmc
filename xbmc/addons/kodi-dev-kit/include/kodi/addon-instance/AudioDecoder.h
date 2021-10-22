@@ -321,9 +321,16 @@ private:
 ///   <extension
 ///     point="kodi.audiodecoder"
 ///     name="2sf"
-///     extension=".2sf|.mini2sf"
 ///     tags="true"
-///     library_@PLATFORM@="@LIBRARY_FILENAME@"/>
+///     library_@PLATFORM@="@LIBRARY_FILENAME@">
+///     <support>
+///       <extension name=".2sf">
+///         <description>30100</description>
+///         <icon>resources/file_format_music_sound.png</icon>
+///       </extension>
+///       <extension name=".mini2sf"/>
+///     </support>
+///   </extension>
 ///   <extension point="xbmc.addon.metadata">
 ///     <summary lang="en_GB">My audio decoder addon addon</summary>
 ///     <description lang="en_GB">My audio decoder addon description</description>
@@ -333,15 +340,15 @@ private:
 /// ~~~~~~~~~~~~~
 ///
 /// Description to audio decoder related addon.xml values:
-/// | Name                          | Description
-/// |:------------------------------|----------------------------------------
-/// | <b>`point`</b>                | Addon type specification<br>At all addon types and for this kind always <b>"kodi.audiodecoder"</b>.
-/// | <b>`library_@PLATFORM@`</b>   | Sets the used library name, which is automatically set by cmake at addon build.
-/// | <b>`extension`</b>            | The file extensions / styles supported by this addon.
-/// | <b>`mimetype`</b>             | A stream URL mimetype where can be used to force to this addon.
-/// | <b>`name`</b>                 | The name of the decoder used in Kodi for display.
-/// | <b>`tags`</b>                 | Boolean to point out that addon can bring own information to replayed file, if <b>`false`</b> only the file name is used as info.<br>If <b>`true`</b>, @ref CInstanceAudioDecoder::ReadTag is used and must be implemented.
-/// | <b>`tracks`</b>               | Boolean to in inform one file can contains several different streams.
+/// | Name                                                  | Description
+/// |:------------------------------------------------------|----------------------------------------
+/// | <b>`point`</b>                                        | Addon type specification<br>At all addon types and for this kind always <b>"kodi.audiodecoder"</b>.
+/// | <b>`library_@PLATFORM@`</b>                           | Sets the used library name, which is automatically set by cmake at addon build.
+/// | <b>`name`</b>                                         | The name of the decoder used in Kodi for display.
+/// | <b>`tags`</b>                                         | Boolean to point out that addon can bring own information to replayed file, if <b>`false`</b> only the file name is used as info.<br>If <b>`true`</b>, @ref CInstanceAudioDecoder::ReadTag is used and must be implemented.
+/// | <b>`tracks`</b>                                       | Boolean to in inform one file can contains several different streams.
+/// | <b>`<support><extension name="..." /></support>`</b>  | The file extensions / styles supported by this addon.\nOptional can be with `<description>` and `<icon>`additional info added where used for list views in Kodi.
+/// | <b>`<support><mimetype name="..." /></support>`</b>   | A stream URL mimetype where can be used to force to this addon.\nOptional can be with ``<description>` and `<icon>`additional info added where used for list views in Kodi.
 ///
 /// --------------------------------------------------------------------------
 ///

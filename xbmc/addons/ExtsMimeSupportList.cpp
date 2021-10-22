@@ -92,35 +92,61 @@ CExtsMimeSupportList::SupportValues CExtsMimeSupportList::ScanAddonProperties(
     values.m_hasTracks = addonInfo->Type(type)->GetValue("@tracks").asBoolean();
   }
 
-  auto exts = StringUtils::Split(
-      addonInfo->Type(ADDON_AUDIODECODER)->GetValue("@extension").asString(), "|");
-  for (const auto& ext : exts)
+  const auto support = addonInfo->Type(type)->GetElement("support");
+  if (support)
   {
-    size_t iColon = ext.find('(');
-    if (iColon != std::string::npos)
-      values.m_supportedExtensions.emplace(ext.substr(0, iColon),
-                                           atoi(ext.substr(iColon + 1).c_str()));
-    else
-      values.m_supportedExtensions.emplace(ext, -1);
+    // Scan here about complete defined xml groups with description and maybe icon
+    // e.g.
+    // `<extension name=".zwdsp">`
+    // `  <description>30246</description>`
+    // `</extension>`
+    for (const auto& i : support->GetElements())
+    {
+      std::string name = i.second.GetValue("@name").asString();
+      if (name.empty())
+        continue;
+
+      const int description = i.second.GetValue("description").asInteger();
+      const std::string icon =
+          !i.second.GetValue("icon").empty()
+              ? URIUtils::AddFileToFolder(addonInfo->Path(), i.second.GetValue("icon").asString())
+              : "";
+
+      if (i.first == "extension")
+      {
+        if (name[0] != '.')
+          name.insert(name.begin(), '.');
+        values.m_supportedExtensions.emplace(name, SupportValue(description, icon));
+      }
+      else if (i.first == "mimetype")
+        values.m_supportedMimetypes.emplace(name, SupportValue(description, icon));
+    }
+
+    // Scan here about small defined xml groups without anything
+    // e.g. `<extension name=".adp"/>`
+    for (const auto& i : support->GetValues())
+    {
+      for (const auto& j : i.second)
+      {
+        std::string name = j.second.asString();
+        if (j.first == "extension@name")
+        {
+          if (name[0] != '.')
+            name.insert(name.begin(), '.');
+          values.m_supportedExtensions.emplace(name, SupportValue(-1, ""));
+        }
+        else if (j.first == "mimetype@name")
+          values.m_supportedMimetypes.emplace(name, SupportValue(-1, ""));
+      }
+    }
   }
 
   // Check addons support tracks, if yes add extension about related entry names
   // By them addon no more need to add itself on his addon.xml
   if (values.m_hasTracks)
     values.m_supportedExtensions.emplace(
-        "." + values.m_codecName + KODI_ADDON_AUDIODECODER_TRACK_EXT, -1);
+        "." + values.m_codecName + KODI_ADDON_AUDIODECODER_TRACK_EXT, SupportValue(-1, ""));
 
-  auto mimes = StringUtils::Split(
-      addonInfo->Type(ADDON_AUDIODECODER)->GetValue("@mimetype").asString(), "|");
-  for (const auto& mime : mimes)
-  {
-    size_t iColon = mime.find('(');
-    if (iColon != std::string::npos)
-      values.m_supportedMimetypes.emplace(mime.substr(0, iColon),
-                                          atoi(mime.substr(iColon + 1).c_str()));
-    else
-      values.m_supportedMimetypes.emplace(mime, -1);
-  }
 
   return values;
 }
@@ -148,9 +174,9 @@ bool CExtsMimeSupportList::IsExtensionSupported(const std::string& ext)
 
   for (const auto& entry : m_supportedList)
   {
-    const auto it =
-        std::find_if(entry.m_supportedExtensions.begin(), entry.m_supportedExtensions.end(),
-                     [ext](const std::pair<std::string, int>& v) { return v.first == ext; });
+    const auto it = std::find_if(
+        entry.m_supportedExtensions.begin(), entry.m_supportedExtensions.end(),
+        [ext](const std::pair<std::string, SupportValue>& v) { return v.first == ext; });
     if (it != entry.m_supportedExtensions.end())
       return true;
   }
@@ -167,9 +193,9 @@ std::vector<std::pair<ADDON::TYPE, std::shared_ptr<ADDON::CAddonInfo>>> CExtsMim
 
   for (const auto& entry : m_supportedList)
   {
-    const auto it =
-        std::find_if(entry.m_supportedExtensions.begin(), entry.m_supportedExtensions.end(),
-                     [ext](const std::pair<std::string, int>& v) { return v.first == ext; });
+    const auto it = std::find_if(
+        entry.m_supportedExtensions.begin(), entry.m_supportedExtensions.end(),
+        [ext](const std::pair<std::string, SupportValue>& v) { return v.first == ext; });
     if (it != entry.m_supportedExtensions.end() &&
         (select == FilterSelect::all || (select == FilterSelect::hasTags && entry.m_hasTags) ||
          (select == FilterSelect::hasTracks && entry.m_hasTracks)))
@@ -188,7 +214,7 @@ bool CExtsMimeSupportList::IsMimetypeSupported(const std::string& mimetype)
 
     const auto it = std::find_if(
         entry.m_supportedMimetypes.begin(), entry.m_supportedMimetypes.end(),
-        [mimetype](const std::pair<std::string, int>& v) { return v.first == mimetype; });
+        [mimetype](const std::pair<std::string, SupportValue>& v) { return v.first == mimetype; });
     if (it != entry.m_supportedMimetypes.end())
       return true;
   }
@@ -207,7 +233,7 @@ std::vector<std::pair<ADDON::TYPE, std::shared_ptr<CAddonInfo>>> CExtsMimeSuppor
   {
     const auto it = std::find_if(
         entry.m_supportedMimetypes.begin(), entry.m_supportedMimetypes.end(),
-        [mimetype](const std::pair<std::string, int>& v) { return v.first == mimetype; });
+        [mimetype](const std::pair<std::string, SupportValue>& v) { return v.first == mimetype; });
     if (it != entry.m_supportedMimetypes.end() &&
         (select == FilterSelect::all || (select == FilterSelect::hasTags && entry.m_hasTags) ||
          (select == FilterSelect::hasTracks && entry.m_hasTracks)))
@@ -233,7 +259,9 @@ std::vector<AddonSupportEntry> CExtsMimeSupportList::GetSupportedExtsAndMimeType
     AddonSupportEntry supportEntry;
     supportEntry.m_type = AddonSupportType::Extension;
     supportEntry.m_name = entry.first;
-    supportEntry.m_description = g_localizeStrings.GetAddonString(addonId, entry.second);
+    supportEntry.m_description =
+        g_localizeStrings.GetAddonString(addonId, entry.second.m_description);
+    supportEntry.m_icon = entry.second.m_icon;
     list.emplace_back(supportEntry);
   }
   for (const auto& entry : it->m_supportedMimetypes)
@@ -241,7 +269,9 @@ std::vector<AddonSupportEntry> CExtsMimeSupportList::GetSupportedExtsAndMimeType
     AddonSupportEntry supportEntry;
     supportEntry.m_type = AddonSupportType::Mimetype;
     supportEntry.m_name = entry.first;
-    supportEntry.m_description = g_localizeStrings.GetAddonString(addonId, entry.second);
+    supportEntry.m_description =
+        g_localizeStrings.GetAddonString(addonId, entry.second.m_description);
+    supportEntry.m_icon = entry.second.m_icon;
     list.emplace_back(supportEntry);
   }
 

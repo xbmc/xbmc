@@ -59,6 +59,7 @@
 #define CONTROL_LIST_SCREENSHOTS 50
 
 using namespace KODI;
+using namespace KODI::ADDONS;
 using namespace ADDON;
 using namespace XFILE;
 using namespace KODI::MESSAGING;
@@ -753,6 +754,12 @@ void CGUIDialogAddonInfo::ShowSupportList()
 
     const CFileItemPtr item = std::make_shared<CFileItem>(entry.m_name);
     item->SetLabel2(entry.m_description);
+    if (!entry.m_icon.empty())
+      item->SetArt("icon", entry.m_icon);
+    else if (entry.m_type == AddonSupportType::Extension)
+      item->SetArt("icon", "DefaultExtensionInfo.png");
+    else if (entry.m_type == AddonSupportType::Mimetype)
+      item->SetArt("icon", "DefaultMimetypeInfo.png");
     item->SetProperty("addon_id", m_localAddon->ID());
     items.Add(item);
   }
