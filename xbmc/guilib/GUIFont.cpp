@@ -52,8 +52,8 @@ float CScrollInfo::GetPixelsPerFrame()
 
 CGUIFont::CGUIFont(const std::string& strFontName,
                    uint32_t style,
-                   UTILS::Color textColor,
-                   UTILS::Color shadowColor,
+                   UTILS::COLOR::Color textColor,
+                   UTILS::COLOR::Color shadowColor,
                    float lineSpacing,
                    float origHeight,
                    CGUIFontTTF* font)
@@ -81,8 +81,13 @@ std::string& CGUIFont::GetFontName()
   return m_strFontName;
 }
 
-void CGUIFont::DrawText( float x, float y, const std::vector<UTILS::Color> &colors, UTILS::Color shadowColor,
-                const vecText &text, uint32_t alignment, float maxPixelWidth)
+void CGUIFont::DrawText(float x,
+                        float y,
+                        const std::vector<UTILS::COLOR::Color>& colors,
+                        UTILS::COLOR::Color shadowColor,
+                        const vecText& text,
+                        uint32_t alignment,
+                        float maxPixelWidth)
 {
   if (!m_font) return;
 
@@ -92,14 +97,14 @@ void CGUIFont::DrawText( float x, float y, const std::vector<UTILS::Color> &colo
 
   maxPixelWidth = ROUND(static_cast<double>(
       maxPixelWidth / CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIScaleX()));
-  std::vector<UTILS::Color> renderColors;
+  std::vector<UTILS::COLOR::Color> renderColors;
   for (unsigned int i = 0; i < colors.size(); i++)
     renderColors.push_back(CServiceBroker::GetWinSystem()->GetGfxContext().MergeAlpha(colors[i] ? colors[i] : m_textColor));
   if (!shadowColor) shadowColor = m_shadowColor;
   if (shadowColor)
   {
     shadowColor = CServiceBroker::GetWinSystem()->GetGfxContext().MergeAlpha(shadowColor);
-    std::vector<UTILS::Color> shadowColors;
+    std::vector<UTILS::COLOR::Color> shadowColors;
     for (unsigned int i = 0; i < renderColors.size(); i++)
       shadowColors.push_back((renderColors[i] & 0xff000000) != 0 ? shadowColor : 0);
     m_font->DrawTextInternal(x + 1, y + 1, shadowColors, text, alignment, maxPixelWidth, false);
@@ -156,8 +161,14 @@ bool CGUIFont::UpdateScrollInfo(const vecText &text, CScrollInfo &scrollInfo)
     return false;
 }
 
-void CGUIFont::DrawScrollingText(float x, float y, const std::vector<UTILS::Color> &colors, UTILS::Color shadowColor,
-                const vecText &text, uint32_t alignment, float maxWidth, const CScrollInfo &scrollInfo)
+void CGUIFont::DrawScrollingText(float x,
+                                 float y,
+                                 const std::vector<UTILS::COLOR::Color>& colors,
+                                 UTILS::COLOR::Color shadowColor,
+                                 const vecText& text,
+                                 uint32_t alignment,
+                                 float maxWidth,
+                                 const CScrollInfo& scrollInfo)
 {
   if (!m_font) return;
   if (!shadowColor) shadowColor = m_shadowColor;
@@ -187,7 +198,7 @@ void CGUIFont::DrawScrollingText(float x, float y, const std::vector<UTILS::Colo
   else
     offset = scrollInfo.m_totalWidth - scrollInfo.pixelPos;
 
-  std::vector<UTILS::Color> renderColors;
+  std::vector<UTILS::COLOR::Color> renderColors;
   for (unsigned int i = 0; i < colors.size(); i++)
     renderColors.push_back(CServiceBroker::GetWinSystem()->GetGfxContext().MergeAlpha(colors[i] ? colors[i] : m_textColor));
 
@@ -195,7 +206,7 @@ void CGUIFont::DrawScrollingText(float x, float y, const std::vector<UTILS::Colo
   if (shadowColor)
   {
     shadowColor = CServiceBroker::GetWinSystem()->GetGfxContext().MergeAlpha(shadowColor);
-    std::vector<UTILS::Color> shadowColors;
+    std::vector<UTILS::COLOR::Color> shadowColors;
     for (unsigned int i = 0; i < renderColors.size(); i++)
       shadowColors.push_back((renderColors[i] & 0xff000000) != 0 ? shadowColor : 0);
     for (float dx = -offset; dx < maxWidth; dx += scrollInfo.m_totalWidth)

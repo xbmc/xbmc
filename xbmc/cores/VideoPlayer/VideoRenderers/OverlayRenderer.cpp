@@ -294,10 +294,10 @@ void CRenderer::CreateSubtitlesStyle()
     m_overlayStyle->fontStyle = KODI::SUBTITLES::FontStyle::ITALIC;
 
   m_overlayStyle->fontColor =
-      UTILS::ConvertHexToColor(settings->GetString(CSettings::SETTING_SUBTITLES_COLOR));
+      UTILS::COLOR::ConvertHexToColor(settings->GetString(CSettings::SETTING_SUBTITLES_COLOR));
   m_overlayStyle->fontBorderSize = settings->GetInt(CSettings::SETTING_SUBTITLES_BORDERSIZE);
-  m_overlayStyle->fontBorderColor =
-      UTILS::ConvertHexToColor(settings->GetString(CSettings::SETTING_SUBTITLES_BORDERCOLOR));
+  m_overlayStyle->fontBorderColor = UTILS::COLOR::ConvertHexToColor(
+      settings->GetString(CSettings::SETTING_SUBTITLES_BORDERCOLOR));
   m_overlayStyle->fontOpacity = settings->GetInt(CSettings::SETTING_SUBTITLES_OPACITY);
 
   int backgroundType = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
@@ -312,11 +312,11 @@ void CRenderer::CreateSubtitlesStyle()
     m_overlayStyle->borderStyle = KODI::SUBTITLES::BorderStyle::SQUARE_BOX;
 
   m_overlayStyle->backgroundColor =
-      UTILS::ConvertHexToColor(settings->GetString(CSettings::SETTING_SUBTITLES_BGCOLOR));
+      UTILS::COLOR::ConvertHexToColor(settings->GetString(CSettings::SETTING_SUBTITLES_BGCOLOR));
   m_overlayStyle->backgroundOpacity = settings->GetInt(CSettings::SETTING_SUBTITLES_BGOPACITY);
 
-  m_overlayStyle->shadowColor =
-      UTILS::ConvertHexToColor(settings->GetString(CSettings::SETTING_SUBTITLES_SHADOWCOLOR));
+  m_overlayStyle->shadowColor = UTILS::COLOR::ConvertHexToColor(
+      settings->GetString(CSettings::SETTING_SUBTITLES_SHADOWCOLOR));
   m_overlayStyle->shadowOpacity = settings->GetInt(CSettings::SETTING_SUBTITLES_SHADOWOPACITY);
   m_overlayStyle->shadowSize = settings->GetInt(CSettings::SETTING_SUBTITLES_SHADOWSIZE);
 

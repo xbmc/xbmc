@@ -22,6 +22,7 @@
 #include <cstring>
 
 using namespace KODI::SUBTITLES;
+using namespace UTILS;
 
 namespace
 {
@@ -51,9 +52,9 @@ std::string GetDefaultFontPath(std::string& font)
 }
 
 // Convert RGB/ARGB to RGBA by appling also the opacity value
-UTILS::Color ConvColor(UTILS::Color argbColor, int opacity = 100)
+COLOR::Color ConvColor(COLOR::Color argbColor, int opacity = 100)
 {
-  return UTILS::ConvertToRGBA(UTILS::ChangeOpacity(argbColor, (100.0f - opacity) / 100.0f));
+  return COLOR::ConvertToRGBA(COLOR::ChangeOpacity(argbColor, (100.0f - opacity) / 100.0f));
 }
 
 } // namespace
@@ -327,7 +328,7 @@ void CDVDSubtitlesLibass::ApplyStyle(style subStyle, renderOpts opts)
       style->Italic = isFontItalic * -1;
 
       // Compute the font color, depending on the opacity
-      UTILS::Color subColor = ConvColor(subStyle.fontColor, subStyle.fontOpacity);
+      COLOR::Color subColor = ConvColor(subStyle.fontColor, subStyle.fontOpacity);
       // Set default subtitles color
       style->PrimaryColour = subColor;
       // Set SecondaryColour may be used to prevent an onscreen collision
@@ -343,7 +344,7 @@ void CDVDSubtitlesLibass::ApplyStyle(style subStyle, renderOpts opts)
         style->OutlineColour = ConvColor(subStyle.fontBorderColor, subStyle.fontOpacity);
         if (subStyle.borderStyle == BorderStyle::OUTLINE_NO_SHADOW)
         {
-          style->BackColour = ConvColor(UTILS::COLOR::NONE, 0); // Set the shadow color
+          style->BackColour = ConvColor(COLOR::NONE, 0); // Set the shadow color
           style->Shadow = 0; // Set the shadow size
         }
         else

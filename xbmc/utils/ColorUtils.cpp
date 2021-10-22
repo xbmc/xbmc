@@ -8,16 +8,11 @@
 
 #include "ColorUtils.h"
 
-#include "Color.h"
-#include "StringUtils.h"
-#include "utils/XBMCTinyXML.h"
-#include "utils/log.h"
-
 #include <algorithm>
-#include <math.h>
-#include <stdio.h>
+#include <cmath>
+#include <cstdio>
 
-using namespace UTILS;
+using namespace UTILS::COLOR;
 
 namespace
 {
@@ -66,13 +61,13 @@ void GetHSLValues(ColorInfo& colorInfo)
 
 } // unnamed namespace
 
-Color UTILS::ChangeOpacity(const Color color, const float opacity)
+Color UTILS::COLOR::ChangeOpacity(const Color color, const float opacity)
 {
   int newAlpha = ceil(((color >> 24) & 0xff) * opacity);
   return (color & 0x00FFFFFF) | (newAlpha << 24);
 };
 
-Color UTILS::ConvertToRGBA(const Color argb)
+Color UTILS::COLOR::ConvertToRGBA(const Color argb)
 {
   return ((argb & 0x00FF0000) << 8) | //RR______
          ((argb & 0x0000FF00) << 8) | //__GG____
@@ -80,7 +75,7 @@ Color UTILS::ConvertToRGBA(const Color argb)
          ((argb & 0xFF000000) >> 24); //______AA
 }
 
-Color UTILS::ConvertToARGB(const Color rgba)
+Color UTILS::COLOR::ConvertToARGB(const Color rgba)
 {
   return ((rgba & 0x000000FF) << 24) | //AA_____
          ((rgba & 0xFF000000) >> 8) | //__RR____
@@ -88,21 +83,21 @@ Color UTILS::ConvertToARGB(const Color rgba)
          ((rgba & 0x0000FF00) >> 8); //______BB
 }
 
-Color UTILS::ConvertToBGR(const Color argb)
+Color UTILS::COLOR::ConvertToBGR(const Color argb)
 {
   return (argb & 0x00FF0000) >> 16 | //____RR
          (argb & 0x0000FF00) | //__GG__
          (argb & 0x000000FF) << 16; //BB____
 }
 
-Color UTILS::ConvertHexToColor(const std::string& hexColor)
+Color UTILS::COLOR::ConvertHexToColor(const std::string& hexColor)
 {
   Color value = 0;
   std::sscanf(hexColor.c_str(), "%x", &value);
   return value;
 }
 
-ColorInfo UTILS::MakeColorInfo(const Color& argb)
+ColorInfo UTILS::COLOR::MakeColorInfo(const Color& argb)
 {
   ColorInfo colorInfo;
   colorInfo.colorARGB = argb;
@@ -110,7 +105,7 @@ ColorInfo UTILS::MakeColorInfo(const Color& argb)
   return colorInfo;
 }
 
-ColorInfo UTILS::MakeColorInfo(const std::string& hexColor)
+ColorInfo UTILS::COLOR::MakeColorInfo(const std::string& hexColor)
 {
   ColorInfo colorInfo;
   colorInfo.colorARGB = ConvertHexToColor(hexColor);
@@ -118,8 +113,8 @@ ColorInfo UTILS::MakeColorInfo(const std::string& hexColor)
   return colorInfo;
 }
 
-bool UTILS::comparePairColorInfo(const std::pair<std::string, ColorInfo>& a,
-                                 const std::pair<std::string, ColorInfo>& b)
+bool UTILS::COLOR::comparePairColorInfo(const std::pair<std::string, ColorInfo>& a,
+                                        const std::pair<std::string, ColorInfo>& b)
 {
   if (a.second.hue == b.second.hue)
   {

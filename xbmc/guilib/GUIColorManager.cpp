@@ -74,7 +74,7 @@ bool CGUIColorManager::LoadXML(CXBMCTinyXML &xmlDoc)
   {
     if (color->FirstChild() && color->Attribute("name"))
     {
-      UTILS::Color value = 0xffffffff;
+      UTILS::COLOR::Color value = 0xffffffff;
       sscanf(color->FirstChild()->Value(), "%x", (unsigned int*) &value);
       std::string name = color->Attribute("name");
       const auto it = m_colors.find(name);
@@ -89,7 +89,7 @@ bool CGUIColorManager::LoadXML(CXBMCTinyXML &xmlDoc)
 }
 
 // lookup a color and return it's hex value
-UTILS::Color CGUIColorManager::GetColor(const std::string &color) const
+UTILS::COLOR::Color CGUIColorManager::GetColor(const std::string& color) const
 {
   // look in our color map
   std::string trimmed(color);
@@ -99,14 +99,14 @@ UTILS::Color CGUIColorManager::GetColor(const std::string &color) const
     return (*it).second;
 
   // try converting hex directly
-  UTILS::Color value = 0;
+  UTILS::COLOR::Color value = 0;
   sscanf(trimmed.c_str(), "%x", &value);
   return value;
 }
 
 bool CGUIColorManager::LoadColorsListFromXML(
     const std::string& filePath,
-    std::vector<std::pair<std::string, UTILS::ColorInfo>>& colors,
+    std::vector<std::pair<std::string, UTILS::COLOR::ColorInfo>>& colors,
     bool sortColors)
 {
   CLog::Log(LOGDEBUG, "Loading colors from file {}", filePath);
@@ -130,14 +130,15 @@ bool CGUIColorManager::LoadColorsListFromXML(
   {
     if (xmlColor->FirstChild() && xmlColor->Attribute("name"))
     {
-      colors.emplace_back(std::make_pair(xmlColor->Attribute("name"),
-                                         UTILS::MakeColorInfo(xmlColor->FirstChild()->Value())));
+      colors.emplace_back(
+          std::make_pair(xmlColor->Attribute("name"),
+                         UTILS::COLOR::MakeColorInfo(xmlColor->FirstChild()->Value())));
     }
     xmlColor = xmlColor->NextSiblingElement("color");
   }
 
   if (sortColors)
-    std::sort(colors.begin(), colors.end(), UTILS::comparePairColorInfo);
+    std::sort(colors.begin(), colors.end(), UTILS::COLOR::comparePairColorInfo);
 
   return true;
 }

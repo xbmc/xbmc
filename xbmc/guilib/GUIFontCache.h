@@ -13,7 +13,7 @@
 \brief
 */
 
-#include "utils/Color.h"
+#include "utils/ColorUtils.h"
 #include "utils/TransformMatrix.h"
 
 #include <algorithm>
@@ -37,7 +37,7 @@ template<class Position>
 struct CGUIFontCacheKey
 {
   Position m_pos;
-  std::vector<UTILS::Color> &m_colors;
+  std::vector<UTILS::COLOR::Color>& m_colors;
   vecText &m_text;
   uint32_t m_alignment;
   float m_maxPixelWidth;
@@ -47,16 +47,25 @@ struct CGUIFontCacheKey
   float m_scaleY;
 
   CGUIFontCacheKey(Position pos,
-                   std::vector<UTILS::Color> &colors, vecText &text,
-                   uint32_t alignment, float maxPixelWidth,
-                   bool scrolling, const TransformMatrix &matrix,
-                   float scaleX, float scaleY) :
-    m_pos(pos),
-    m_colors(colors), m_text(text),
-    m_alignment(alignment), m_maxPixelWidth(maxPixelWidth),
-    m_scrolling(scrolling), m_matrix(matrix),
-    m_scaleX(scaleX), m_scaleY(scaleY)
-  {}
+                   std::vector<UTILS::COLOR::Color>& colors,
+                   vecText& text,
+                   uint32_t alignment,
+                   float maxPixelWidth,
+                   bool scrolling,
+                   const TransformMatrix& matrix,
+                   float scaleX,
+                   float scaleY)
+    : m_pos(pos),
+      m_colors(colors),
+      m_text(text),
+      m_alignment(alignment),
+      m_maxPixelWidth(maxPixelWidth),
+      m_scrolling(scrolling),
+      m_matrix(matrix),
+      m_scaleX(scaleX),
+      m_scaleY(scaleY)
+  {
+  }
 };
 
 template<class Position, class Value>
@@ -68,14 +77,20 @@ struct CGUIFontCacheEntry
   unsigned int m_lastUsedMillis;
   Value m_value;
 
-  CGUIFontCacheEntry(const CGUIFontCache<Position, Value> &cache, const CGUIFontCacheKey<Position> &key, unsigned int nowMillis) :
-    m_cache(cache),
-    m_key(key.m_pos,
-          *new std::vector<UTILS::Color>, *new vecText,
-          key.m_alignment, key.m_maxPixelWidth,
-          key.m_scrolling, m_matrix,
-          key.m_scaleX, key.m_scaleY),
-    m_lastUsedMillis(nowMillis)
+  CGUIFontCacheEntry(const CGUIFontCache<Position, Value>& cache,
+                     const CGUIFontCacheKey<Position>& key,
+                     unsigned int nowMillis)
+    : m_cache(cache),
+      m_key(key.m_pos,
+            *new std::vector<UTILS::COLOR::Color>,
+            *new vecText,
+            key.m_alignment,
+            key.m_maxPixelWidth,
+            key.m_scrolling,
+            m_matrix,
+            key.m_scaleX,
+            key.m_scaleY),
+      m_lastUsedMillis(nowMillis)
   {
     m_key.m_colors.assign(key.m_colors.begin(), key.m_colors.end());
     m_key.m_text.assign(key.m_text.begin(), key.m_text.end());
@@ -135,11 +150,14 @@ public:
 
   ~CGUIFontCache();
 
-  Value &Lookup(Position &pos,
-                const std::vector<UTILS::Color> &colors, const vecText &text,
-                uint32_t alignment, float maxPixelWidth,
+  Value& Lookup(Position& pos,
+                const std::vector<UTILS::COLOR::Color>& colors,
+                const vecText& text,
+                uint32_t alignment,
+                float maxPixelWidth,
                 bool scrolling,
-                unsigned int nowMillis, bool &dirtyCache);
+                unsigned int nowMillis,
+                bool& dirtyCache);
   void Flush();
 };
 

@@ -145,7 +145,8 @@ void CGUITexture::Render()
   #define MIX_ALPHA(a,c) (((a * (c >> 24)) / 255) << 24) | (c & 0x00ffffff)
 
   // diffuse color
-  UTILS::Color color = (m_info.diffuseColor) ? (UTILS::Color)m_info.diffuseColor : m_diffuseColor;
+  UTILS::COLOR::Color color =
+      (m_info.diffuseColor) ? (UTILS::COLOR::Color)m_info.diffuseColor : m_diffuseColor;
   if (m_alpha != 0xFF)
 	  color = MIX_ALPHA(m_alpha, color);
 
@@ -527,7 +528,8 @@ bool CGUITexture::SetAlpha(unsigned char alpha)
   return changed;
 }
 
-bool CGUITexture::SetDiffuseColor(UTILS::Color color, const CGUIListItem* item /* = nullptr */)
+bool CGUITexture::SetDiffuseColor(UTILS::COLOR::Color color,
+                                  const CGUIListItem* item /* = nullptr */)
 {
   bool changed = m_diffuseColor != color;
   m_diffuseColor = color;

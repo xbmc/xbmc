@@ -78,11 +78,14 @@ class CGUIFontCacheImpl
 public:
 
   explicit CGUIFontCacheImpl(CGUIFontCache<Position, Value>* parent) : m_parent(parent) {}
-  Value &Lookup(Position &pos,
-                const std::vector<UTILS::Color> &colors, const vecText &text,
-                uint32_t alignment, float maxPixelWidth,
+  Value& Lookup(Position& pos,
+                const std::vector<UTILS::COLOR::Color>& colors,
+                const vecText& text,
+                uint32_t alignment,
+                float maxPixelWidth,
                 bool scrolling,
-                unsigned int nowMillis, bool &dirtyCache);
+                unsigned int nowMillis,
+                bool& dirtyCache);
   void Flush();
 };
 
@@ -123,11 +126,14 @@ CGUIFontCache<Position, Value>::~CGUIFontCache()
 }
 
 template<class Position, class Value>
-Value &CGUIFontCache<Position, Value>::Lookup(Position &pos,
-                                              const std::vector<UTILS::Color> &colors, const vecText &text,
-                                              uint32_t alignment, float maxPixelWidth,
+Value& CGUIFontCache<Position, Value>::Lookup(Position& pos,
+                                              const std::vector<UTILS::COLOR::Color>& colors,
+                                              const vecText& text,
+                                              uint32_t alignment,
+                                              float maxPixelWidth,
                                               bool scrolling,
-                                              unsigned int nowMillis, bool &dirtyCache)
+                                              unsigned int nowMillis,
+                                              bool& dirtyCache)
 {
   if (m_impl == nullptr)
     m_impl = new CGUIFontCacheImpl<Position, Value>(this);
@@ -136,17 +142,21 @@ Value &CGUIFontCache<Position, Value>::Lookup(Position &pos,
 }
 
 template<class Position, class Value>
-Value &CGUIFontCacheImpl<Position, Value>::Lookup(Position &pos,
-                                                  const std::vector<UTILS::Color> &colors, const vecText &text,
-                                                  uint32_t alignment, float maxPixelWidth,
+Value& CGUIFontCacheImpl<Position, Value>::Lookup(Position& pos,
+                                                  const std::vector<UTILS::COLOR::Color>& colors,
+                                                  const vecText& text,
+                                                  uint32_t alignment,
+                                                  float maxPixelWidth,
                                                   bool scrolling,
-                                                  unsigned int nowMillis, bool &dirtyCache)
+                                                  unsigned int nowMillis,
+                                                  bool& dirtyCache)
 {
-  const CGUIFontCacheKey<Position> key(pos,
-                                       const_cast<std::vector<UTILS::Color> &>(colors), const_cast<vecText &>(text),
-                                       alignment, maxPixelWidth,
-                                       scrolling, CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIMatrix(),
-                                       CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIScaleX(), CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIScaleY());
+  const CGUIFontCacheKey<Position> key(
+      pos, const_cast<std::vector<UTILS::COLOR::Color>&>(colors), const_cast<vecText&>(text),
+      alignment, maxPixelWidth, scrolling,
+      CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIMatrix(),
+      CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIScaleX(),
+      CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIScaleY());
 
   auto i = m_list.FindKey(key);
   if (i == m_list.hashMap.end())
@@ -200,14 +210,32 @@ template CGUIFontCache<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue>::C
     CGUIFontTTF& font);
 template CGUIFontCache<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue>::~CGUIFontCache();
 template CGUIFontCacheEntry<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue>::~CGUIFontCacheEntry();
-template CGUIFontCacheStaticValue &CGUIFontCache<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue>::Lookup(CGUIFontCacheStaticPosition &, const std::vector<UTILS::Color> &, const vecText &, uint32_t, float, bool, unsigned int, bool &);
+template CGUIFontCacheStaticValue& CGUIFontCache<
+    CGUIFontCacheStaticPosition,
+    CGUIFontCacheStaticValue>::Lookup(CGUIFontCacheStaticPosition&,
+                                      const std::vector<UTILS::COLOR::Color>&,
+                                      const vecText&,
+                                      uint32_t,
+                                      float,
+                                      bool,
+                                      unsigned int,
+                                      bool&);
 template void CGUIFontCache<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue>::Flush();
 
 template CGUIFontCache<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue>::CGUIFontCache(
     CGUIFontTTF& font);
 template CGUIFontCache<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue>::~CGUIFontCache();
 template CGUIFontCacheEntry<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue>::~CGUIFontCacheEntry();
-template CGUIFontCacheDynamicValue &CGUIFontCache<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue>::Lookup(CGUIFontCacheDynamicPosition &, const std::vector<UTILS::Color> &, const vecText &, uint32_t, float, bool, unsigned int, bool &);
+template CGUIFontCacheDynamicValue& CGUIFontCache<
+    CGUIFontCacheDynamicPosition,
+    CGUIFontCacheDynamicValue>::Lookup(CGUIFontCacheDynamicPosition&,
+                                       const std::vector<UTILS::COLOR::Color>&,
+                                       const vecText&,
+                                       uint32_t,
+                                       float,
+                                       bool,
+                                       unsigned int,
+                                       bool&);
 template void CGUIFontCache<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue>::Flush();
 
 void CVertexBuffer::clear()

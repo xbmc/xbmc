@@ -231,7 +231,7 @@ RESOLUTION CRenderContext::GetVideoResolution()
   return m_graphicsContext.GetVideoResolution();
 }
 
-void CRenderContext::Clear(::UTILS::Color color /* = 0 */)
+void CRenderContext::Clear(UTILS::COLOR::Color color /* = 0 */)
 {
   m_graphicsContext.Clear(color);
 }
@@ -246,7 +246,7 @@ void CRenderContext::SetRenderingResolution(const RESOLUTION_INFO& res, bool nee
   m_graphicsContext.SetRenderingResolution(res, needsScaling);
 }
 
-::UTILS::Color CRenderContext::MergeAlpha(::UTILS::Color color)
+UTILS::COLOR::Color CRenderContext::MergeAlpha(UTILS::COLOR::Color color)
 {
   return m_graphicsContext.MergeAlpha(color);
 }

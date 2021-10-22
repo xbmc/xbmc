@@ -353,7 +353,11 @@ std::string CGUIButtonControl::GetLabel2() const
   return strLabel;
 }
 
-void CGUIButtonControl::PythonSetLabel(const std::string &strFont, const std::string &strText, UTILS::Color textColor, UTILS::Color shadowColor, UTILS::Color focusedColor)
+void CGUIButtonControl::PythonSetLabel(const std::string& strFont,
+                                       const std::string& strText,
+                                       UTILS::COLOR::Color textColor,
+                                       UTILS::COLOR::Color shadowColor,
+                                       UTILS::COLOR::Color focusedColor)
 {
   m_label.GetLabelInfo().font = g_fontManager.GetFont(strFont);
   m_label.GetLabelInfo().textColor = textColor;
@@ -362,7 +366,7 @@ void CGUIButtonControl::PythonSetLabel(const std::string &strFont, const std::st
   SetLabel(strText);
 }
 
-void CGUIButtonControl::PythonSetDisabledColor(UTILS::Color disabledColor)
+void CGUIButtonControl::PythonSetDisabledColor(UTILS::COLOR::Color disabledColor)
 {
   m_label.GetLabelInfo().disabledColor = disabledColor;
 }

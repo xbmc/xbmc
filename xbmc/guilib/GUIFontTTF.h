@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "utils/Color.h"
+#include "utils/ColorUtils.h"
 #include "utils/Geometry.h"
 
 #include <stdint.h>
@@ -139,8 +139,13 @@ protected:
   float GetLineHeight(float lineSpacing) const;
   float GetFontHeight() const { return m_height; }
 
-  void DrawTextInternal(float x, float y, const std::vector<UTILS::Color> &colors, const vecText &text,
-                            uint32_t alignment, float maxPixelWidth, bool scrolling);
+  void DrawTextInternal(float x,
+                        float y,
+                        const std::vector<UTILS::COLOR::Color>& colors,
+                        const vecText& text,
+                        uint32_t alignment,
+                        float maxPixelWidth,
+                        bool scrolling);
 
   float m_height;
   std::string m_strFilename;
@@ -148,7 +153,12 @@ protected:
   // Stuff for pre-rendering for speed
   Character* GetCharacter(character_t letter, FT_UInt glyphIndex);
   bool CacheCharacter(wchar_t letter, uint32_t style, Character* ch, FT_UInt glyphIndex);
-  void RenderCharacter(float posX, float posY, const Character *ch, UTILS::Color color, bool roundX, std::vector<SVertex> &vertices);
+  void RenderCharacter(float posX,
+                       float posY,
+                       const Character* ch,
+                       UTILS::COLOR::Color color,
+                       bool roundX,
+                       std::vector<SVertex>& vertices);
   void ClearCharacterCache();
 
   virtual CTexture* ReallocTexture(unsigned int& newHeight) = 0;
@@ -172,7 +182,7 @@ protected:
   unsigned int GetTextureLineHeight() const;
   static const unsigned int spacing_between_characters_in_texture;
 
-  UTILS::Color m_color;
+  UTILS::COLOR::Color m_color;
 
   Character *m_char;                 // our characters
   Character *m_charquick[LOOKUPTABLE_SIZE];     // ascii chars (7 styles) here

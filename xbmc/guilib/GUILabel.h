@@ -16,7 +16,7 @@
 #include "GUIFont.h"
 #include "GUITextLayout.h"
 #include "guiinfo/GUIInfoColor.h"
-#include "utils/Color.h"
+#include "utils/ColorUtils.h"
 #include "utils/Geometry.h"
 
 class CLabelInfo
@@ -126,7 +126,7 @@ public:
    \param colors colors referenced in the styled text.
    \sa SetText, SetTextW
    */
-  bool SetStyledText(const vecText &text, const std::vector<UTILS::Color> &colors);
+  bool SetStyledText(const vecText& text, const std::vector<UTILS::COLOR::Color>& colors);
 
   /*! \brief Set the color to use for the label
    Sets the color to be used for this label.  Takes effect at the next render
@@ -216,7 +216,7 @@ public:
   static bool CheckAndCorrectOverlap(CGUILabel &label1, CGUILabel &label2);
 
 protected:
-  UTILS::Color GetColor() const;
+  UTILS::COLOR::Color GetColor() const;
 
   /*! \brief Computes the final layout of the text
    Uses the maximal position and width of the text, as well as the text length

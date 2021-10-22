@@ -8,16 +8,17 @@
 
 #pragma once
 
-#include <string>
-#include <vector>
-#include <stack>
-#include <map>
-#include "threads/CriticalSection.h"
-#include "utils/TransformMatrix.h"        // for the members m_guiTransform etc.
-#include "utils/Geometry.h"               // for CRect/CPoint
 #include "Resolution.h"
 #include "rendering/RenderSystem.h"
-#include "utils/Color.h"
+#include "threads/CriticalSection.h"
+#include "utils/ColorUtils.h"
+#include "utils/Geometry.h" // for CRect/CPoint
+#include "utils/TransformMatrix.h" // for the members m_guiTransform etc.
+
+#include <map>
+#include <stack>
+#include <string>
+#include <vector>
 
 // required by clients
 #include "ServiceBroker.h"
@@ -98,7 +99,7 @@ public:
   void ResetScreenParameters(RESOLUTION res);
   void CaptureStateBlock();
   void ApplyStateBlock();
-  void Clear(UTILS::Color color = 0);
+  void Clear(UTILS::COLOR::Color color = 0);
   void GetAllowedResolutions(std::vector<RESOLUTION> &res);
 
   /* \brief Get UI scaling information from a given resolution to the screen resolution.
@@ -121,7 +122,7 @@ public:
   const TransformMatrix &GetGUIMatrix() const;
   float GetGUIScaleX() const;
   float GetGUIScaleY() const;
-  UTILS::Color MergeAlpha(UTILS::Color color) const;
+  UTILS::COLOR::Color MergeAlpha(UTILS::COLOR::Color color) const;
   void SetOrigin(float x, float y);
   void RestoreOrigin();
   void SetCameraPosition(const CPoint &camera);

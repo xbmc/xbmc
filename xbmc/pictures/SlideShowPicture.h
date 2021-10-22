@@ -8,9 +8,10 @@
 
 #pragma once
 
-#include "threads/CriticalSection.h"
 #include "guilib/DirtyRegion.h"
-#include "utils/Color.h"
+#include "threads/CriticalSection.h"
+#include "utils/ColorUtils.h"
+
 #include <string>
 #ifdef HAS_DX
 #include "guilib/GUIShaderDX.h"
@@ -84,7 +85,7 @@ private:
                            DISPLAY_EFFECT dispEffect = EFFECT_RANDOM,
                            TRANSITION_EFFECT transEffect = FADEIN_FADEOUT);
   void UpdateVertices(float cur_x[4], float cur_y[4], const float new_x[4], const float new_y[4], CDirtyRegionList &dirtyregions);
-  void Render(float* x, float* y, CTexture* pTexture, UTILS::Color color);
+  void Render(float* x, float* y, CTexture* pTexture, UTILS::COLOR::Color color);
   CTexture* m_pImage;
 
   int m_iOriginalWidth;
@@ -97,7 +98,7 @@ private:
   std::string m_strFileName;
   float m_fWidth;
   float m_fHeight;
-  UTILS::Color m_alpha = 0;
+  UTILS::COLOR::Color m_alpha = 0;
   // stuff relative to middle position
   float m_fPosX;
   float m_fPosY;
