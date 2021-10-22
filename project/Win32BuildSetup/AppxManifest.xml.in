@@ -169,6 +169,6 @@
     <uap:Capability Name="videosLibrary" />
     <uap:Capability Name="removableStorage" />
     <uap:Capability Name="picturesLibrary" />
-    <rescap:Capability Name="expandedResources" />
+    <rescap:Capability Name="hevcPlayback" />
   </Capabilities>
 </Package>
