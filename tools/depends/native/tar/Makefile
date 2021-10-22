@@ -5,20 +5,14 @@ DEPS= ../../Makefile.include Makefile
 
 # app name, version
 APPNAME=tar
-VERSION=1.32
+VERSION=1.34
 SOURCE=$(APPNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
+ARCHIVE=$(SOURCE).tar.xz
 
-ifeq ($(NATIVE_OS),osx)
-# https://openradar.appspot.com/radar?id=6160634819379200
-PLATFORM_CONFIGURE=gl_cv_func_getcwd_abort_bug=no
-endif
-
-export LIBTOOL=builds/unix/libtool
 export PATH:=$(PREFIX)/bin:$(PATH)
 CONFIGURE=./configure --prefix=$(PREFIX) \
   --program-transform-name=s/tar/gtar/   \
-  --disable-dependency-tracking ac_cv_func_fdopendir=no \
+  --disable-dependency-tracking \
   $(PLATFORM_CONFIGURE)
 
 APP=$(PLATFORM)/src/tar
