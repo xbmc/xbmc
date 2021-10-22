@@ -53,6 +53,20 @@ public:
   };
 
   /*!
+   * @brief Structure to store information about supported part.
+   */
+  struct SupportValue
+  {
+    SupportValue(int description, std::string icon) : m_description(description), m_icon(icon) {}
+
+    // Description text about supported part
+    int m_description;
+
+    // Own by addon defined icon path
+    std::string m_icon;
+  };
+
+  /*!
    * @brief Structure to store available data for related addon.
    */
   struct SupportValues
@@ -74,13 +88,13 @@ public:
 
     // List of supported file extensions by addon
     // First: Extension name
-    // Second: Language id to identify in strings.po defined description text about
-    std::map<std::string, int> m_supportedExtensions;
+    // Second: With @ref SupportValue defined content
+    std::map<std::string, SupportValue> m_supportedExtensions;
 
     // List of supported mimetypes by addon
     // First: Mimetype name
-    // Second: Language id to identify in strings.po defined description text about
-    std::map<std::string, int> m_supportedMimetypes;
+    // Second: With @ref SupportValue defined content
+    std::map<std::string, SupportValue> m_supportedMimetypes;
   };
 
   /*!
