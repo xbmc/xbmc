@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include "addons/IAddonSupportCheck.h"
 #include "addons/binary-addons/AddonInstanceHandler.h"
 #include "addons/kodi-dev-kit/include/kodi/addon-instance/AudioDecoder.h"
 #include "cores/paplayer/ICodec.h"
@@ -23,6 +24,7 @@ namespace ADDON
 {
 
 class CAudioDecoder : public IAddonInstanceHandler,
+                      public KODI::ADDONS::IAddonSupportCheck,
                       public ICodec,
                       public MUSIC_INFO::IMusicInfoTagLoader,
                       public XFILE::CMusicFileDirectory
@@ -62,9 +64,11 @@ public:
     return addonInfo->Type(ADDON_AUDIODECODER)->GetValue("@tracks").asBoolean();
   }
 
+  bool SupportsFile(const std::string& filename) override;
+
 private:
   AddonInstance_AudioDecoder m_struct;
-  KODI_HANDLE m_addonInstance;
+  KODI_HANDLE m_addonInstance{nullptr};
   bool m_hasTags;
 };
 

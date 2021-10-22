@@ -47,6 +47,15 @@ bool CAudioDecoder::CreateDecoder()
   return true;
 }
 
+bool CAudioDecoder::SupportsFile(const std::string& filename)
+{
+  // Create in case not available, possible as this done by IAddonSupportCheck
+  if ((!m_addonInstance && !CreateDecoder()) || !m_struct.toAddon->supports_file)
+    return false;
+
+  return m_struct.toAddon->supports_file(m_addonInstance, filename.c_str());
+}
+
 bool CAudioDecoder::Init(const CFileItem& file, unsigned int filecache)
 {
   if (!m_struct.toAddon->init)

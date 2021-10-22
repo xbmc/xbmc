@@ -417,6 +417,18 @@ public:
 
   //==========================================================================
   /// @ingroup cpp_kodi_addon_audiodecoder
+  /// @brief Checks addon support given file path.
+  ///
+  /// @param[in] filename The file to read
+  /// @return true if successfully done and supported, otherwise false
+  ///
+  /// @note Optional to add, as default becomes `true` used.
+  ///
+  virtual bool SupportsFile(const std::string& filename) { return true; }
+  //--------------------------------------------------------------------------
+
+  //==========================================================================
+  /// @ingroup cpp_kodi_addon_audiodecoder
   /// @brief Initialize a decoder.
   ///
   /// @param[in] filename The file to read
@@ -509,11 +521,17 @@ private:
     m_instanceData = static_cast<AddonInstance_AudioDecoder*>(instance);
 
     m_instanceData->toAddon->addonInstance = this;
+    m_instanceData->toAddon->supports_file = ADDON_supports_file;
     m_instanceData->toAddon->init = ADDON_init;
     m_instanceData->toAddon->read_pcm = ADDON_read_pcm;
     m_instanceData->toAddon->seek = ADDON_seek;
     m_instanceData->toAddon->read_tag = ADDON_read_tag;
     m_instanceData->toAddon->track_count = ADDON_track_count;
+  }
+
+  inline static bool ADDON_supports_file(const KODI_ADDON_AUDIODECODER_HDL hdl, const char* file)
+  {
+    return static_cast<CInstanceAudioDecoder*>(hdl)->SupportsFile(file);
   }
 
   inline static bool ADDON_init(const KODI_ADDON_AUDIODECODER_HDL hdl,
