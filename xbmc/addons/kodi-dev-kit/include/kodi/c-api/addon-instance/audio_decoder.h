@@ -93,6 +93,10 @@ extern "C"
     int channels;
     int bitrate;
     char* comment;
+    char* cover_art_path;
+    char* cover_art_mem_mimetype;
+    uint8_t* cover_art_mem;
+    size_t cover_art_mem_size;
   };
 
   typedef bool(ATTR_APIENTRYP PFN_KODI_ADDON_AUDIODECODER_SUPPORTS_FILE_V1)(

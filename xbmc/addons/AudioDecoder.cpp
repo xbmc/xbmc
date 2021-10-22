@@ -9,7 +9,11 @@
 
 #include "addons/interfaces/AudioEngine.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "filesystem/File.h"
+#include "music/tags/MusicInfoTag.h"
 #include "music/tags/TagLoaderTagLib.h"
+#include "utils/Mime.h"
+#include "utils/URIUtils.h"
 #include "utils/log.h"
 
 namespace ADDON
@@ -190,6 +194,37 @@ bool CAudioDecoder::Load(const std::string& fileName,
       tag.SetComment(ifcTag.comment);
       free(ifcTag.comment);
     }
+
+    if (ifcTag.cover_art_path)
+    {
+      const std::string mimetype =
+          CMime::GetMimeType(URIUtils::GetExtension(ifcTag.cover_art_path));
+      if (StringUtils::StartsWith(mimetype, "image/"))
+      {
+        XFILE::CFile file;
+        std::vector<uint8_t> buf;
+
+        if (file.LoadFile(ifcTag.cover_art_path, buf) > 0)
+        {
+          tag.SetCoverArtInfo(buf.size(), mimetype);
+          if (art)
+            art->Set(reinterpret_cast<const uint8_t*>(buf.data()), buf.size(), mimetype);
+        }
+      }
+      free(ifcTag.cover_art_path);
+    }
+    else if (ifcTag.cover_art_mem_mimetype && ifcTag.cover_art_mem && ifcTag.cover_art_mem_size > 0)
+    {
+      tag.SetCoverArtInfo(ifcTag.cover_art_mem_size, ifcTag.cover_art_mem_mimetype);
+      if (art)
+        art->Set(ifcTag.cover_art_mem, ifcTag.cover_art_mem_size, ifcTag.cover_art_mem_mimetype);
+    }
+
+    if (ifcTag.cover_art_mem_mimetype)
+      free(ifcTag.cover_art_mem_mimetype);
+    if (ifcTag.cover_art_mem)
+      free(ifcTag.cover_art_mem);
+
     tag.SetLoaded(true);
   }
 
