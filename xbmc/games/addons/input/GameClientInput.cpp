@@ -21,6 +21,7 @@
 #include "games/addons/GameClient.h"
 #include "games/addons/GameClientCallbacks.h"
 #include "games/controllers/Controller.h"
+#include "games/controllers/ControllerLayout.h"
 #include "games/controllers/input/PhysicalTopology.h"
 #include "input/joysticks/JoystickTypes.h"
 #include "peripherals/EventLockHandle.h"
@@ -82,15 +83,14 @@ void CGameClientInput::Start(IGameInputCallback* input)
     OpenMouse(it->ActiveController().Controller());
   }
 
-  // Open joysticks
-  //! @todo Move to player manager
-  for (const auto& port : controllers.Ports())
+  // Connect/disconnect active controllers
+  for (const CPortNode& port : controllers.Ports())
   {
-    if (port.PortType() == PORT_TYPE::CONTROLLER && !port.CompatibleControllers().empty())
-    {
-      ControllerPtr controller = port.ActiveController().Controller();
-      OpenJoystick(port.Address(), controller);
-    }
+    const ControllerPtr activeController = port.ActiveController().Controller();
+    if (port.Connected() && activeController)
+      ConnectController(port.Address(), activeController);
+    else
+      DisconnectController(port.Address());
   }
 
   // Ensure hardware is open to receive events
@@ -288,6 +288,95 @@ bool CGameClientInput::SupportsMouse() const
   return it != controllers.Ports().end() && !it->CompatibleControllers().empty();
 }
 
+bool CGameClientInput::ConnectController(const std::string& portAddress, ControllerPtr controller)
+{
+  const CControllerTree& controllerTree = m_topology->ControllerTree();
+
+  // Validate controller
+  const CPortNode& port = controllerTree.GetPort(portAddress);
+  if (!port.IsControllerAccepted(portAddress, controller->ID()))
+  {
+    CLog::Log(LOGERROR, "Failed to open port: Invalid controller \"{}\" on port \"{}\"",
+              controller->ID(), portAddress);
+    return false;
+  }
+
+  // Close current ports if any are open
+  const CPortNode& currentPort = m_topology->ControllerTree().GetPort(portAddress);
+  CloseJoysticks(currentPort);
+
+  bool bSuccess = false;
+
+  {
+    CSingleLock lock(m_clientAccess);
+
+    if (m_gameClient.Initialized())
+    {
+      try
+      {
+        bSuccess = m_struct.toAddon->ConnectController(&m_struct, true, portAddress.c_str(),
+                                                       controller->ID().c_str());
+      }
+      catch (...)
+      {
+        m_gameClient.LogException("ConnectController()");
+      }
+    }
+  }
+
+  if (bSuccess)
+  {
+    // Update player input
+    if (controller->Layout().Topology().ProvidesInput())
+      OpenJoystick(portAddress, controller);
+
+    // If port is a multitap, we need to activate its children
+    const CPortNode& updatedPort = m_topology->ControllerTree().GetPort(portAddress);
+    const PortVec& childPorts = updatedPort.ActiveController().Hub().Ports();
+    for (const CPortNode& childPort : childPorts)
+    {
+      const ControllerPtr childController = childPort.ActiveController().Controller();
+      if (childPort.Connected() && childController)
+        bSuccess &= ConnectController(childPort.Address(), childController);
+    }
+  }
+
+  return bSuccess;
+}
+
+bool CGameClientInput::DisconnectController(const std::string& portAddress)
+{
+  // If port is a multitap, we need to deactivate its children
+  const CPortNode& currentPort = m_topology->ControllerTree().GetPort(portAddress);
+  CloseJoysticks(currentPort);
+
+  bool bSuccess = false;
+
+  {
+    CSingleLock lock(m_clientAccess);
+
+    if (m_gameClient.Initialized())
+    {
+      try
+      {
+        bSuccess = m_struct.toAddon->ConnectController(&m_struct, false, portAddress.c_str(), "");
+      }
+      catch (...)
+      {
+        m_gameClient.LogException("ConnectController()");
+      }
+    }
+  }
+
+  if (bSuccess)
+  {
+    // Update player input
+    CloseJoystick(portAddress);
+  }
+
+  return bSuccess;
+}
+
 bool CGameClientInput::HasAgent() const
 {
   //! @todo We check m_portMap instead of m_joysticks because m_joysticks is
@@ -448,46 +537,18 @@ bool CGameClientInput::OpenJoystick(const std::string& portAddress, const Contro
     return false;
   }
 
-  const CControllerTree& controllerTree = m_topology->ControllerTree();
-
-  const CPortNode port = controllerTree.GetPort(portAddress);
-  if (!port.IsControllerAccepted(portAddress, controller->ID()))
+  if (m_joysticks.find(portAddress) != m_joysticks.end())
   {
-    CLog::Log(LOGERROR, "Failed to open port: Invalid controller \"{}\" on port \"{}\"",
-              controller->ID(), portAddress);
+    CLog::Log(LOGERROR, "Failed to open port \"{}\", already open", portAddress);
     return false;
   }
 
-  bool bSuccess = false;
+  PERIPHERALS::EventLockHandlePtr lock = CServiceBroker::GetPeripherals().RegisterEventLock();
 
-  {
-    CSingleLock lock(m_clientAccess);
+  m_joysticks[portAddress].reset(new CGameClientJoystick(m_gameClient, portAddress, controller));
+  ProcessJoysticks();
 
-    if (m_gameClient.Initialized())
-    {
-      try
-      {
-        bSuccess = m_struct.toAddon->ConnectController(&m_struct, true, portAddress.c_str(),
-                                                       controller->ID().c_str());
-      }
-      catch (...)
-      {
-        m_gameClient.LogException("ConnectController()");
-      }
-    }
-  }
-
-  if (bSuccess)
-  {
-    PERIPHERALS::EventLockHandlePtr lock = CServiceBroker::GetPeripherals().RegisterEventLock();
-
-    m_joysticks[portAddress].reset(new CGameClientJoystick(m_gameClient, portAddress, controller));
-    ProcessJoysticks();
-
-    return true;
-  }
-
-  return false;
+  return true;
 }
 
 void CGameClientInput::CloseJoystick(const std::string& portAddress)
@@ -497,6 +558,7 @@ void CGameClientInput::CloseJoystick(const std::string& portAddress)
   {
     std::unique_ptr<CGameClientJoystick> joystick = std::move(it->second);
     m_joysticks.erase(it);
+
     {
       PERIPHERALS::EventLockHandlePtr lock = CServiceBroker::GetPeripherals().RegisterEventLock();
 
@@ -504,22 +566,15 @@ void CGameClientInput::CloseJoystick(const std::string& portAddress)
       joystick.reset();
     }
   }
+}
 
-  {
-    CSingleLock lock(m_clientAccess);
+void CGameClientInput::CloseJoysticks(const CPortNode& port)
+{
+  const PortVec& childPorts = port.ActiveController().Hub().Ports();
+  for (const CPortNode& childPort : childPorts)
+    CloseJoysticks(childPort);
 
-    if (m_gameClient.Initialized())
-    {
-      try
-      {
-        m_struct.toAddon->ConnectController(&m_struct, false, portAddress.c_str(), "");
-      }
-      catch (...)
-      {
-        m_gameClient.LogException("ConnectController()");
-      }
-    }
-  }
+  CloseJoystick(port.Address());
 }
 
 void CGameClientInput::HardwareReset()
