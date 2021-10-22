@@ -662,7 +662,7 @@ void CGUIWindowSlideShow::Render()
     }
     else
     {
-      const UTILS::Color alpha = gfxCtx.MergeAlpha(0xff000000) >> 24;
+      const UTILS::COLOR::Color alpha = gfxCtx.MergeAlpha(0xff000000) >> 24;
       g_application.GetAppPlayer().Render(false, alpha);
     }
 

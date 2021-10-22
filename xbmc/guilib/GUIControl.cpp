@@ -186,7 +186,8 @@ void CGUIControl::DoRender()
 
     if (m_hitColor != 0xffffffff)
     {
-      UTILS::Color color = CServiceBroker::GetWinSystem()->GetGfxContext().MergeAlpha(m_hitColor);
+      UTILS::COLOR::Color color =
+          CServiceBroker::GetWinSystem()->GetGfxContext().MergeAlpha(m_hitColor);
       CGUITexture::DrawQuad(CServiceBroker::GetWinSystem()->GetGfxContext().GenerateAABB(m_hitRect), color);
     }
 
@@ -937,7 +938,7 @@ void CGUIControl::UpdateControlStats()
   }
 }
 
-void CGUIControl::SetHitRect(const CRect &rect, const UTILS::Color &color)
+void CGUIControl::SetHitRect(const CRect& rect, const UTILS::COLOR::Color& color)
 {
   m_hitRect = rect;
   m_hitColor = color;

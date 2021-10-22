@@ -9,9 +9,9 @@
 #pragma once
 
 #include "TextureManager.h"
-#include "utils/Color.h"
-#include "utils/Geometry.h"
 #include "guiinfo/GUIInfoColor.h"
+#include "utils/ColorUtils.h"
+#include "utils/Geometry.h"
 
 // image alignment for <aspect>keep</aspect>, <aspect>scale</aspect> or <aspect>center</aspect>
 #define ASPECT_ALIGN_CENTER  0
@@ -69,7 +69,7 @@ public:
   virtual CGUITexture* Clone() const = 0;
 
   static void DrawQuad(const CRect& coords,
-                       UTILS::Color color,
+                       UTILS::COLOR::Color color,
                        CTexture* texture = nullptr,
                        const CRect* texCoords = nullptr);
 
@@ -83,7 +83,7 @@ public:
 
   bool SetVisible(bool visible);
   bool SetAlpha(unsigned char alpha);
-  bool SetDiffuseColor(UTILS::Color color, const CGUIListItem* item = nullptr);
+  bool SetDiffuseColor(UTILS::COLOR::Color color, const CGUIListItem* item = nullptr);
   bool SetPosition(float x, float y);
   bool SetWidth(float width);
   bool SetHeight(float height);
@@ -137,7 +137,7 @@ protected:
   // functions that our implementation classes handle
   virtual void Allocate() {}; ///< called after our textures have been allocated
   virtual void Free() {};     ///< called after our textures have been freed
-  virtual void Begin(UTILS::Color color) = 0;
+  virtual void Begin(UTILS::COLOR::Color color) = 0;
   virtual void Draw(float* x,
                     float* y,
                     float* z,
@@ -147,7 +147,7 @@ protected:
   virtual void End() = 0;
 
   bool m_visible;
-  UTILS::Color m_diffuseColor;
+  UTILS::COLOR::Color m_diffuseColor;
 
   float m_posX;         // size of the frame
   float m_posY;

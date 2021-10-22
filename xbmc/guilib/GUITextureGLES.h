@@ -9,7 +9,7 @@
 #pragma once
 
 #include "GUITexture.h"
-#include "utils/Color.h"
+#include "utils/ColorUtils.h"
 
 #include <array>
 #include <vector>
@@ -35,7 +35,7 @@ public:
   CGUITextureGLES* Clone() const override;
 
 protected:
-  void Begin(UTILS::Color color) override;
+  void Begin(UTILS::COLOR::Color color) override;
   void Draw(float* x, float* y, float* z, const CRect& texture, const CRect& diffuse, int orientation) override;
   void End() override;
 

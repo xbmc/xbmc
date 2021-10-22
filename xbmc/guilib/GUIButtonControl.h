@@ -18,7 +18,7 @@
 #include "GUILabel.h"
 #include "GUITexture.h"
 #include "guilib/guiinfo/GUIInfoLabel.h"
-#include "utils/Color.h"
+#include "utils/ColorUtils.h"
 
 /*!
  \ingroup controls
@@ -61,8 +61,12 @@ public:
   virtual void SetMinWidth(float minWidth);
   void SetAlpha(unsigned char alpha);
 
-  void PythonSetLabel(const std::string &strFont, const std::string &strText, UTILS::Color textColor, UTILS::Color shadowColor, UTILS::Color focusedColor);
-  void PythonSetDisabledColor(UTILS::Color disabledColor);
+  void PythonSetLabel(const std::string& strFont,
+                      const std::string& strText,
+                      UTILS::COLOR::Color textColor,
+                      UTILS::COLOR::Color shadowColor,
+                      UTILS::COLOR::Color focusedColor);
+  void PythonSetDisabledColor(UTILS::COLOR::Color disabledColor);
 
   virtual void OnClick();
   bool HasClickActions() const { return m_clickActions.HasActionsMeetingCondition(); }

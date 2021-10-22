@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "utils/Color.h"
+#include "utils/ColorUtils.h"
 #include "utils/Geometry.h"
 #include "windowing/Resolution.h"
 
@@ -78,10 +78,10 @@ public:
   bool IsFullScreenVideo();
   bool IsCalibrating();
   RESOLUTION GetVideoResolution();
-  void Clear(::UTILS::Color color = 0);
+  void Clear(UTILS::COLOR::Color color = 0);
   RESOLUTION_INFO GetResInfo();
   void SetRenderingResolution(const RESOLUTION_INFO& res, bool needsScaling);
-  UTILS::Color MergeAlpha(UTILS::Color color);
+  UTILS::COLOR::Color MergeAlpha(UTILS::COLOR::Color color);
   void SetTransform(const TransformMatrix& matrix, float scaleX, float scaleY);
   void RemoveTransform();
   CRect StereoCorrection(const CRect& rect);

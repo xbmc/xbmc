@@ -34,7 +34,7 @@ CGUITextureD3D* CGUITextureD3D::Clone() const
   return new CGUITextureD3D(*this);
 }
 
-void CGUITextureD3D::Begin(UTILS::Color color)
+void CGUITextureD3D::Begin(UTILS::COLOR::Color color)
 {
   CTexture* texture = m_texture.m_textures[m_currentFrame];
   texture->LoadToGPU();
@@ -133,7 +133,7 @@ void CGUITextureD3D::Draw(float *x, float *y, float *z, const CRect &texture, co
 }
 
 void CGUITexture::DrawQuad(const CRect& rect,
-                           UTILS::Color color,
+                           UTILS::COLOR::Color color,
                            CTexture* texture,
                            const CRect* texCoords)
 {

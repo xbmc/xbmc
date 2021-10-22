@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "utils/Color.h"
+#include "utils/ColorUtils.h"
 
 #include <algorithm>
 #include <math.h>
@@ -224,9 +224,9 @@ public:
     return m[2][0] * x + m[2][1] * y + m[2][2] * z + m[2][3];
   }
 
-  inline UTILS::Color TransformAlpha(UTILS::Color color) const XBMC_FORCE_INLINE
+  inline UTILS::COLOR::Color TransformAlpha(UTILS::COLOR::Color color) const XBMC_FORCE_INLINE
   {
-    return static_cast<UTILS::Color>(color * alpha);
+    return static_cast<UTILS::COLOR::Color>(color * alpha);
   }
 
   float m[3][4];

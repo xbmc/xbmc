@@ -17,7 +17,7 @@
 #include "VisibleEffect.h" // needed for the CAnimation members
 #include "guiinfo/GUIInfoBool.h"
 #include "guiinfo/GUIInfoColor.h" // needed for CGUIInfoColor to handle infolabel'ed colors
-#include "utils/Color.h"
+#include "utils/ColorUtils.h"
 #include "windowing/GraphicContext.h" // needed by any rendering operation (all controls)
 
 #include <vector>
@@ -167,7 +167,7 @@ public:
   bool IsVisibleFromSkin() const { return m_visibleFromSkinCondition; }
   virtual bool IsDisabled() const;
   virtual void SetPosition(float posX, float posY);
-  virtual void SetHitRect(const CRect &rect, const UTILS::Color &color);
+  virtual void SetHitRect(const CRect& rect, const UTILS::COLOR::Color& color);
   virtual void SetCamera(const CPoint &camera);
   virtual void SetStereoFactor(const float &factor);
   bool SetColorDiffuse(const KODI::GUILIB::GUIINFO::CGUIInfoColor &color);
@@ -337,7 +337,7 @@ protected:
   float m_height;
   float m_width;
   CRect m_hitRect;
-  UTILS::Color m_hitColor = 0xffffffff;
+  UTILS::COLOR::Color m_hitColor = 0xffffffff;
   KODI::GUILIB::GUIINFO::CGUIInfoColor m_diffuseColor;
   int m_controlID;
   int m_parentID;

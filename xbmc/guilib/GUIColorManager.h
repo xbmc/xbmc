@@ -18,7 +18,7 @@
  \brief
  */
 
-#include "utils/Color.h"
+#include "utils/ColorUtils.h"
 
 #include <map>
 #include <string>
@@ -35,7 +35,7 @@ public:
 
   void Load(const std::string &colorFile);
 
-  UTILS::Color GetColor(const std::string &color) const;
+  UTILS::COLOR::Color GetColor(const std::string& color) const;
 
   void Clear();
 
@@ -46,11 +46,11 @@ public:
     \return true if success, otherwise false
   */
   bool LoadColorsListFromXML(const std::string& filePath,
-                             std::vector<std::pair<std::string, UTILS::ColorInfo>>& colors,
+                             std::vector<std::pair<std::string, UTILS::COLOR::ColorInfo>>& colors,
                              bool sortColors);
 
 protected:
   bool LoadXML(CXBMCTinyXML& xmlDoc);
 
-  std::map<std::string, UTILS::Color> m_colors;
+  std::map<std::string, UTILS::COLOR::Color> m_colors;
 };

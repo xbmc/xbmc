@@ -46,7 +46,14 @@ void CGUITextLayout::SetWrap(bool bWrap)
   m_wrap = bWrap;
 }
 
-void CGUITextLayout::Render(float x, float y, float angle, UTILS::Color color, UTILS::Color shadowColor, uint32_t alignment, float maxWidth, bool solid)
+void CGUITextLayout::Render(float x,
+                            float y,
+                            float angle,
+                            UTILS::COLOR::Color color,
+                            UTILS::COLOR::Color shadowColor,
+                            uint32_t alignment,
+                            float maxWidth,
+                            bool solid)
 {
   if (!m_font)
     return;
@@ -95,7 +102,14 @@ bool CGUITextLayout::UpdateScrollinfo(CScrollInfo &scrollInfo)
 }
 
 
-void CGUITextLayout::RenderScrolling(float x, float y, float angle, UTILS::Color color, UTILS::Color shadowColor, uint32_t alignment, float maxWidth, const CScrollInfo &scrollInfo)
+void CGUITextLayout::RenderScrolling(float x,
+                                     float y,
+                                     float angle,
+                                     UTILS::COLOR::Color color,
+                                     UTILS::COLOR::Color shadowColor,
+                                     uint32_t alignment,
+                                     float maxWidth,
+                                     const CScrollInfo& scrollInfo)
 {
   if (!m_font)
     return;
@@ -133,13 +147,18 @@ void CGUITextLayout::RenderScrolling(float x, float y, float angle, UTILS::Color
     CServiceBroker::GetWinSystem()->GetGfxContext().RemoveTransform();
 }
 
-void CGUITextLayout::RenderOutline(float x, float y, UTILS::Color color, UTILS::Color outlineColor, uint32_t alignment, float maxWidth)
+void CGUITextLayout::RenderOutline(float x,
+                                   float y,
+                                   UTILS::COLOR::Color color,
+                                   UTILS::COLOR::Color outlineColor,
+                                   uint32_t alignment,
+                                   float maxWidth)
 {
   if (!m_font)
     return;
 
   // set the outline color
-  std::vector<UTILS::Color> outlineColors;
+  std::vector<UTILS::COLOR::Color> outlineColors;
   if (m_colors.size())
     outlineColors.push_back(outlineColor);
 
@@ -226,14 +245,17 @@ void CGUITextLayout::UpdateCommon(const std::wstring &text, float maxWidth, bool
 {
   // parse the text for style information
   vecText parsedText;
-  std::vector<UTILS::Color> colors;
+  std::vector<UTILS::COLOR::Color> colors;
   ParseText(text, m_font ? m_font->GetStyle() : 0, m_textColor, colors, parsedText);
 
   // and update
   UpdateStyled(parsedText, colors, maxWidth, forceLTRReadingOrder);
 }
 
-void CGUITextLayout::UpdateStyled(const vecText &text, const std::vector<UTILS::Color> &colors, float maxWidth, bool forceLTRReadingOrder)
+void CGUITextLayout::UpdateStyled(const vecText& text,
+                                  const std::vector<UTILS::COLOR::Color>& colors,
+                                  float maxWidth,
+                                  bool forceLTRReadingOrder)
 {
   // empty out our previous string
   m_lines.clear();
@@ -327,7 +349,7 @@ void CGUITextLayout::Filter(std::string &text)
 {
   std::wstring utf16;
   g_charsetConverter.utf8ToW(text, utf16, false);
-  std::vector<UTILS::Color> colors;
+  std::vector<UTILS::COLOR::Color> colors;
   vecText parsedText;
   ParseText(utf16, 0, 0xffffffff, colors, parsedText);
   utf16.clear();
@@ -336,7 +358,11 @@ void CGUITextLayout::Filter(std::string &text)
   g_charsetConverter.wToUTF8(utf16, text);
 }
 
-void CGUITextLayout::ParseText(const std::wstring &text, uint32_t defaultStyle, UTILS::Color defaultColor, std::vector<UTILS::Color> &colors, vecText &parsedText)
+void CGUITextLayout::ParseText(const std::wstring& text,
+                               uint32_t defaultStyle,
+                               UTILS::COLOR::Color defaultColor,
+                               std::vector<UTILS::COLOR::Color>& colors,
+                               vecText& parsedText)
 {
   // run through the string, searching for:
   // [B] or [/B] -> toggle bold on and off
@@ -346,10 +372,10 @@ void CGUITextLayout::ParseText(const std::wstring &text, uint32_t defaultStyle, 
   // [TABS] tab amount [/TABS] -> add tabulator space in view
 
   uint32_t currentStyle = defaultStyle; // start with the default font's style
-  UTILS::Color currentColor = 0;
+  UTILS::COLOR::Color currentColor = 0;
 
   colors.push_back(defaultColor);
-  std::stack<UTILS::Color> colorStack;
+  std::stack<UTILS::COLOR::Color> colorStack;
   colorStack.push(0);
 
   // these aren't independent, but that's probably not too much of an issue
@@ -361,7 +387,7 @@ void CGUITextLayout::ParseText(const std::wstring &text, uint32_t defaultStyle, 
   while (pos != std::string::npos && pos + 1 < text.size())
   {
     uint32_t newStyle = 0;
-    UTILS::Color newColor = currentColor;
+    UTILS::COLOR::Color newColor = currentColor;
     bool colorTagChange = false;
     bool newLine = false;
     int tabs = 0;
@@ -440,7 +466,7 @@ void CGUITextLayout::ParseText(const std::wstring &text, uint32_t defaultStyle, 
       {
         std::string t;
         g_charsetConverter.wToUTF8(text.substr(pos + 5, finish - pos - 5), t);
-        UTILS::Color color = CServiceBroker::GetGUI()->GetColorManager().GetColor(t);
+        UTILS::COLOR::Color color = CServiceBroker::GetGUI()->GetColorManager().GetColor(t);
         const auto& it = std::find(colors.begin(), colors.end(), color);
         if (it == colors.end())
         { // create new color
@@ -669,7 +695,13 @@ std::string CGUITextLayout::GetText() const
   return m_lastUtf8Text;
 }
 
-void CGUITextLayout::DrawText(CGUIFont *font, float x, float y, UTILS::Color color, UTILS::Color shadowColor, const std::string &text, uint32_t align)
+void CGUITextLayout::DrawText(CGUIFont* font,
+                              float x,
+                              float y,
+                              UTILS::COLOR::Color color,
+                              UTILS::COLOR::Color shadowColor,
+                              const std::string& text,
+                              uint32_t align)
 {
   if (!font) return;
   vecText utf32;
