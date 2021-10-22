@@ -62,21 +62,11 @@ public:
   const CControllerTree& GetControllerTree() const;
   bool SupportsKeyboard() const;
   bool SupportsMouse() const;
+  bool ConnectController(const std::string& portAddress, ControllerPtr controller);
+  bool DisconnectController(const std::string& portAddress);
 
   // Agent functions
   bool HasAgent() const;
-
-  // Keyboard functions
-  bool OpenKeyboard(const ControllerPtr& controller);
-  void CloseKeyboard();
-
-  // Mouse functions
-  bool OpenMouse(const ControllerPtr& controller);
-  void CloseMouse();
-
-  // Joystick functions
-  bool OpenJoystick(const std::string& portAddress, const ControllerPtr& controller);
-  void CloseJoystick(const std::string& portAddress);
 
   // Hardware input functions
   void HardwareReset();
@@ -92,12 +82,25 @@ private:
   using JoystickMap = std::map<PortAddress, std::unique_ptr<CGameClientJoystick>>;
   using PortMap = std::map<JOYSTICK::IInputProvider*, CGameClientJoystick*>;
 
+  // Keyboard functions
+  bool OpenKeyboard(const ControllerPtr& controller);
+  void CloseKeyboard();
+
+  // Mouse functions
+  bool OpenMouse(const ControllerPtr& controller);
+  void CloseMouse();
+
+  // Joystick functions
+  bool OpenJoystick(const std::string& portAddress, const ControllerPtr& controller);
+  void CloseJoystick(const std::string& portAddress);
+
   // Private input helpers
   void LoadTopology();
   void SetControllerLayouts(const ControllerVector& controllers);
   void ProcessJoysticks();
   PortMap MapJoysticks(const PERIPHERALS::PeripheralVector& peripheralJoysticks,
                        const JoystickMap& gameClientjoysticks) const;
+  void CloseJoysticks(const CPortNode& port);
 
   // Private callback helpers
   bool SetRumble(const std::string& portAddress, const std::string& feature, float magnitude);
