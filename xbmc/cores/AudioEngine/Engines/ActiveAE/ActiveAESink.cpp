@@ -938,13 +938,13 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
         {
           if (frames == 61440)
           {
-            int offset;
-            int len;
-            for (int i=0; i<24; i++)
+            for (int i = 0, of = 0; i < 12; i++)
             {
-              offset = i*2560;
-              len = (*(buffer[0] + offset+2560-2) << 8) + *(buffer[0] + offset+2560-1);
-              m_packer->Pack(m_sinkFormat.m_streamInfo, buffer[0] + offset, len);
+              // calculates length of each audio unit using raw data of stream
+              const uint16_t len = ((*(buffer[0] + of) & 0x0F) << 8 | *(buffer[0] + of + 1)) << 1;
+
+              m_packer->Pack(m_sinkFormat.m_streamInfo, buffer[0] + of, len);
+              of += len;
             }
           }
           else
@@ -994,17 +994,18 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
     {
       if (m_sinkFormat.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD && frames == 61440)
       {
-        int offset;
-        int len;
         unsigned int size = 0;
         mergebuffer.reset(new uint8_t[MAX_IEC61937_PACKET]);
         p_mergebuffer = mergebuffer.get();
-        for (int i=0; i<24; i++)
+
+        for (int i = 0, offset = 0; i < 12; i++)
         {
-          offset = i*2560;
-          len = (*(buffer[0] + offset+2560-2) << 8) + *(buffer[0] + offset+2560-1);
+          // calculates length of each audio unit using raw data of stream
+          uint16_t len = ((*(buffer[0] + offset) & 0x0F) << 8 | *(buffer[0] + offset + 1)) << 1;
+
           memcpy(&(mergebuffer.get())[size], buffer[0] + offset, len);
           size += len;
+          offset += len;
         }
         buffer = &p_mergebuffer;
         totalFrames = size / m_sinkFormat.m_frameSize;

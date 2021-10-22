@@ -17,7 +17,10 @@ extern "C" {
 #include <libavcodec/avcodec.h>
 }
 
-#define TRUEHD_BUF_SIZE 61440
+namespace
+{
+constexpr auto TRUEHD_BUF_SIZE = 61440;
+}
 
 CDVDAudioCodecPassthrough::CDVDAudioCodecPassthrough(CProcessInfo &processInfo, CAEStreamInfo::DataType streamType) :
   CDVDAudioCodec(processInfo)
@@ -57,7 +60,6 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
       break;
 
     case CAEStreamInfo::STREAM_TYPE_TRUEHD:
-      m_trueHDBuffer.reset(new uint8_t[TRUEHD_BUF_SIZE]);
       m_codecName = "pt-truehd";
       break;
 
@@ -139,7 +141,7 @@ bool CDVDAudioCodecPassthrough::AddData(const DemuxPacket &packet)
     {
       if (m_backlogBufferSize < static_cast<unsigned int>(iSize - used))
       {
-        m_backlogBufferSize = std::max(61440, iSize - used);
+        m_backlogBufferSize = std::max(TRUEHD_BUF_SIZE, iSize - used);
         m_backlogBuffer = static_cast<uint8_t*>(realloc(m_backlogBuffer, m_backlogBufferSize));
       }
       m_backlogSize = iSize - used;
@@ -151,7 +153,7 @@ bool CDVDAudioCodecPassthrough::AddData(const DemuxPacket &packet)
   {
     if (m_backlogBufferSize < (m_backlogSize + iSize))
     {
-      m_backlogBufferSize = std::max(61440, static_cast<int>(m_backlogSize + iSize));
+      m_backlogBufferSize = std::max(TRUEHD_BUF_SIZE, static_cast<int>(m_backlogSize + iSize));
       m_backlogBuffer = static_cast<uint8_t*>(realloc(m_backlogBuffer, m_backlogBufferSize));
     }
     memcpy(m_backlogBuffer + m_backlogSize, pData, iSize);
@@ -178,27 +180,27 @@ bool CDVDAudioCodecPassthrough::AddData(const DemuxPacket &packet)
 
   if (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
   {
-    if (!m_trueHDoffset)
-      memset(m_trueHDBuffer.get(), 0, TRUEHD_BUF_SIZE);
-
-    if (m_dataSize > 2560 - 2)
+    if (m_trueHDBuffer.size() < TRUEHD_BUF_SIZE)
     {
-      CLog::Log(LOGERROR,
-                "CDVDAudioCodecPassthrough::AddData - truncating TrueHD frame of %u bytes",
-                m_dataSize);
-      m_dataSize = 2560 - 2;
-    }
-    memcpy(&(m_trueHDBuffer.get())[m_trueHDoffset], m_buffer, m_dataSize);
-    uint8_t highByte = (m_dataSize >> 8) & 0xFF;
-    uint8_t lowByte = m_dataSize & 0xFF;
-    m_trueHDBuffer[m_trueHDoffset+2560-2] = highByte;
-    m_trueHDBuffer[m_trueHDoffset+2560-1] = lowByte;
-    m_trueHDoffset += 2560;
-
-    if (m_trueHDoffset / 2560 == 24)
-    {
-      m_dataSize = m_trueHDoffset;
+      m_trueHDBuffer.resize(TRUEHD_BUF_SIZE);
       m_trueHDoffset = 0;
+    }
+
+    if (m_trueHDoffset == 0)
+      m_trueHDframes = 0;
+
+    memcpy(m_trueHDBuffer.data() + m_trueHDoffset, m_buffer, m_dataSize);
+    m_trueHDoffset += m_dataSize;
+
+    m_trueHDframes++;
+
+    // Only 12 audio units are packed in the buffer to avoid overflows and reduce latency.
+    // Compensates for the small increased latency in CAEBitstreamPacker::PackTrueHD
+    if (m_trueHDframes == 12)
+    {
+      m_dataSize = TRUEHD_BUF_SIZE;
+      m_trueHDoffset = 0;
+      m_trueHDframes = 0;
     }
     else
       m_dataSize = 0;
@@ -230,7 +232,7 @@ int CDVDAudioCodecPassthrough::GetData(uint8_t** dst)
     AddData(DemuxPacket());
 
   if (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
-    *dst = m_trueHDBuffer.get();
+    *dst = m_trueHDBuffer.data();
   else
     *dst = m_buffer;
 

@@ -22,7 +22,7 @@ extern "C" {
 class CAEStreamInfo
 {
 public:
-  double GetDuration() const;
+  double GetDuration(bool paPlayer = false) const;
   bool operator==(const CAEStreamInfo& info) const;
 
   enum DataType
