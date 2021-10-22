@@ -7,21 +7,23 @@
  */
 
 #include "TextureCacheJob.h"
+
+#include "FileItem.h"
 #include "ServiceBroker.h"
 #include "TextureCache.h"
-#include "guilib/Texture.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/SettingsComponent.h"
-#include "utils/log.h"
-#include "filesystem/File.h"
-#include "pictures/Picture.h"
-#include "utils/URIUtils.h"
-#include "utils/StringUtils.h"
-#include "video/VideoThumbLoader.h"
 #include "URL.h"
-#include "FileItem.h"
+#include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/audio_decoder.h"
+#include "filesystem/File.h"
+#include "guilib/Texture.h"
 #include "music/MusicThumbLoader.h"
 #include "music/tags/MusicInfoTag.h"
+#include "pictures/Picture.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/log.h"
+#include "video/VideoThumbLoader.h"
 
 #include <inttypes.h>
 
@@ -226,8 +228,19 @@ std::string CTextureCacheJob::GetImageHash(const std::string &url)
   if (URIUtils::IsProtocol(url,"addons") || URIUtils::IsProtocol(url,"plugin"))
     return "";
 
+  std::string statURL = url;
+
+  // Handle special case about audiodecoder addon music files, e.g. SACD
+  if (StringUtils::EndsWith(URIUtils::GetExtension(url), KODI_ADDON_AUDIODECODER_TRACK_EXT))
+  {
+    std::string addonImageURL = URIUtils::GetDirectory(url);
+    URIUtils::RemoveSlashAtEnd(addonImageURL);
+    if (XFILE::CFile::Exists(addonImageURL))
+      statURL = addonImageURL;
+  }
+
   struct __stat64 st;
-  if (XFILE::CFile::Stat(url, &st) == 0)
+  if (XFILE::CFile::Stat(statURL, &st) == 0)
   {
     int64_t time = st.st_mtime;
     if (!time)
@@ -239,6 +252,7 @@ std::string CTextureCacheJob::GetImageHash(const std::string &url)
     // so set an obviously bad hash
     return "BADHASH";
   }
+
   CLog::Log(LOGDEBUG, "{} - unable to stat url {}", __FUNCTION__, CURL::GetRedacted(url));
   return "";
 }

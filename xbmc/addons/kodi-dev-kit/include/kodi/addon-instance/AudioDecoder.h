@@ -68,6 +68,8 @@ public:
   /// | **Channels amount** | `int` | @ref AudioDecoderInfoTag::SetChannels "SetChannels" | @ref AudioDecoderInfoTag::GetChannels "GetChannels"
   /// | **Bitrate** | `int` | @ref AudioDecoderInfoTag::SetBitrate "SetBitrate" | @ref AudioDecoderInfoTag::GetBitrate "GetBitrate"
   /// | **Comment text** | `std::string` | @ref AudioDecoderInfoTag::SetComment "SetComment" | @ref AudioDecoderInfoTag::GetComment "GetComment"
+  /// | **Cover art by path** | `std::string` | @ref AudioDecoderInfoTag::SetCoverArtByPath "SetCoverArtByPath" | @ref AudioDecoderInfoTag::GetCoverArtByPath "GetCoverArtByPath"
+  /// | **Cover art by memory** | `std::string` | @ref AudioDecoderInfoTag::SetCoverArtByMem "SetCoverArtByMem" | @ref AudioDecoderInfoTag::GetCoverArtByMem "GetCoverArtByMem"
   ///
 
   /// @addtogroup cpp_kodi_addon_audiodecoder_Defs_AudioDecoderInfoTag
@@ -185,6 +187,68 @@ public:
   /// @brief Get additional information comment (if present).
   std::string GetComment() const { return m_comment; }
 
+  /// @brief Set cover art image by path.
+  ///
+  /// @param[in] path Image position path
+  ///
+  /// @note Cannot be combined with @ref SetCoverArtByMem and @ref GetCoverArtByMem.
+  void SetCoverArtByPath(const std::string& path) { m_cover_art_path = path; }
+
+  /// @brief Get cover art image path.
+  ///
+  /// @return Image position path
+  ///
+  /// @note Only be available if set before by @ref SetCoverArtByPath.
+  /// Cannot be combined with @ref SetCoverArtByMem and @ref GetCoverArtByMem.
+  ///
+  std::string GetCoverArtByPath() const { return m_cover_art_path; }
+
+  /// @brief Set cover art image by memory.
+  ///
+  /// @param[in] data Image data
+  /// @param[in] size Image data size
+  /// @param[in] mimetype Image format mimetype
+  ///    Possible mimetypes:
+  ///     - "image/jpeg"
+  ///     - "image/png"
+  ///     - "image/gif"
+  ///     - "image/bmp"
+  ///
+  void SetCoverArtByMem(const uint8_t* data, size_t size, const std::string& mimetype)
+  {
+    if (size > 0)
+    {
+      m_cover_art_mem_mimetype = mimetype;
+      m_cover_art_mem.resize(size);
+      m_cover_art_mem.assign(data, data + size);
+    }
+  }
+
+  /// @brief Get cover art data by memory.
+  ///
+  /// @param[out] size Stored size about art image
+  /// @param[in] mimetype Related image mimetype to stored data
+  /// @return Image data
+  ///
+  /// @note This only works if @ref SetCoverArtByMem was used before
+  ///
+  /// @warning This function is not thread safe and related data should never be
+  /// changed by @ref SetCoverArtByMem, if data from here is used without copy!
+  const uint8_t* GetCoverArtByMem(size_t& size, std::string& mimetype) const
+  {
+    if (!m_cover_art_mem.empty())
+    {
+      mimetype = m_cover_art_mem_mimetype;
+      size = m_cover_art_mem.size();
+      return m_cover_art_mem.data();
+    }
+    else
+    {
+      size = 0;
+      return nullptr;
+    }
+  }
+
   ///@}
 
 private:
@@ -205,6 +269,9 @@ private:
   int m_channels{0};
   int m_bitrate{0};
   std::string m_comment;
+  std::string m_cover_art_path;
+  std::string m_cover_art_mem_mimetype;
+  std::vector<uint8_t> m_cover_art_mem;
 };
 ///@}
 //------------------------------------------------------------------------------
@@ -638,6 +705,19 @@ private:
       tag->channels = cppTag.GetChannels();
       tag->bitrate = cppTag.GetBitrate();
       tag->comment = strdup(cppTag.GetComment().c_str());
+      std::string mimetype;
+      size_t size = 0;
+      const uint8_t* mem = cppTag.GetCoverArtByMem(size, mimetype);
+      if (mem)
+      {
+        tag->cover_art_mem_mimetype = strdup(mimetype.c_str());
+        tag->cover_art_mem_size = size;
+        tag->cover_art_mem = static_cast<uint8_t*>(malloc(size));
+      }
+      else
+      {
+        tag->cover_art_path = strdup(cppTag.GetCoverArtByPath().c_str());
+      }
     }
     return ret;
   }
