@@ -642,6 +642,60 @@ constexpr int ALPHANUM_HIDE_INPUT{2};
                    int autoclose = 0);
 #endif
 
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_Dialog
+      /// \python_func{ xbmcgui.Dialog().colorpicker(heading[, colorfile, colorlist, selectedcolor]) }
+      /// Show a color selection dialog.
+      ///
+      /// @param heading        string - dialog heading.
+      /// @param selectedcolor  [opt] string - hex value of the preselected color.
+      /// @param colorfile      [opt] string - xml file containing color definitions.\n
+      ///                       **XML content style:**
+      /// ~~~~~~xml
+      /// <colors>
+      ///   <color name="white">ffffffff</color>
+      ///   <color name="grey">7fffffff</color>
+      ///   <color name="green">ff00ff7f</color>
+      /// </colors>
+      /// ~~~~~~
+      /// @param colorlist      [opt] xbmcgui.ListItems - where label defines the color name and label2 is set to the hex value.
+      ///
+      /// @return Returns the hex value of the selected color as a string.
+      ///
+      ///
+      ///------------------------------------------------------------------------
+      /// @python_v20 New function added.
+      ///
+      /// **Example:**
+      /// ~~~~~~~~~~~~~{.py}
+      /// ..
+      /// # colorfile example
+      /// dialog = xbmcgui.Dialog()
+      /// value = dialog.colorpicker('Select color', 'ff00ff00', 'os.path.join(xbmcaddon.Addon().getAddonInfo("path"), "colors.xml")')
+      /// ..
+      /// # colorlist example
+      /// listitems = []
+      /// l1 = xbmcgui.ListItem("red", "FFFF0000")
+      /// l2 = xbmcgui.ListItem("green", "FF00FF00")
+      /// l3 = xbmcgui.ListItem("blue", "FF0000FF")
+      /// listitems.append(l1)
+      /// listitems.append(l2)
+      /// listitems.append(l3)
+      /// dialog = xbmcgui.Dialog()
+      /// value = dialog.colorpicker("Select color", "FF0000FF", colorlist=listitems)
+      /// ..
+      /// ~~~~~~~~~~~~~
+      ///
+      colorpicker(...);
+#else
+      String colorpicker(
+          const String& heading,
+          const String& selectedcolor = emptyString,
+          const String& colorfile = emptyString,
+          const std::vector<const ListItem*>& colorlist = std::vector<const ListItem*>());
+#endif
+
     private:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
       // used by both yesno() and yesnocustom()
