@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "ControllerPort.h"
+#include "PhysicalPort.h"
 
 #include <vector>
 
@@ -26,11 +26,11 @@ namespace GAME
  * whether it can provide player input (hubs like the Super Multitap don't
  * provide input).
  */
-class CControllerTopology
+class CPhysicalTopology
 {
 public:
-  CControllerTopology() = default;
-  CControllerTopology(bool bProvidesInput, std::vector<CControllerPort> ports);
+  CPhysicalTopology() = default;
+  CPhysicalTopology(bool bProvidesInput, std::vector<CPhysicalPort> ports);
 
   void Reset();
 
@@ -48,13 +48,13 @@ public:
    *
    * \return The ports
    */
-  const std::vector<CControllerPort>& Ports() const { return m_ports; }
+  const std::vector<CPhysicalPort>& Ports() const { return m_ports; }
 
   bool Deserialize(const TiXmlElement* pElement);
 
 private:
   bool m_bProvidesInput = true;
-  std::vector<CControllerPort> m_ports;
+  std::vector<CPhysicalPort> m_ports;
 };
 
 } // namespace GAME

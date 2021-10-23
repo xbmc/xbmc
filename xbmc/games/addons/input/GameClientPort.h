@@ -20,7 +20,7 @@ namespace KODI
 {
 namespace GAME
 {
-class CControllerPort;
+class CPhysicalPort;
 
 /*!
  * \ingroup games
@@ -60,7 +60,7 @@ public:
    * Obviously, the controllers specified by the logical port must be a subset
    * of the controllers supported by the physical port.
    */
-  CGameClientPort(const game_input_port& logicalPort, const CControllerPort& physicalPort);
+  CGameClientPort(const game_input_port& logicalPort, const CPhysicalPort& physicalPort);
 
   /*!
    * \brief Destructor

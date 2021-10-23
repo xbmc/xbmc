@@ -19,8 +19,8 @@ namespace KODI
 namespace GAME
 {
 class CController;
-class CControllerFeature;
-class CControllerTopology;
+class CPhysicalFeature;
+class CPhysicalTopology;
 
 class CControllerLayout
 {
@@ -67,7 +67,7 @@ public:
    *
    * \return The physical topology of the controller
    */
-  const CControllerTopology& Topology(void) const { return *m_topology; }
+  const CPhysicalTopology& Topology(void) const { return *m_topology; }
 
   /*!
    * \brief Deserialize the specified XML element
@@ -78,14 +78,14 @@ public:
    */
   void Deserialize(const TiXmlElement* pLayoutElement,
                    const CController* controller,
-                   std::vector<CControllerFeature>& features);
+                   std::vector<CPhysicalFeature>& features);
 
 private:
   const CController* m_controller = nullptr;
   int m_labelId = -1;
   std::string m_icon;
   std::string m_strImage;
-  std::unique_ptr<CControllerTopology> m_topology;
+  std::unique_ptr<CPhysicalTopology> m_topology;
 };
 
 } // namespace GAME

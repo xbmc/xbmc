@@ -6,11 +6,11 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "ControllerFeature.h"
+#include "PhysicalFeature.h"
 
-#include "Controller.h"
-#include "ControllerDefinitions.h"
-#include "ControllerTranslator.h"
+#include "games/controllers/Controller.h"
+#include "games/controllers/ControllerDefinitions.h"
+#include "games/controllers/ControllerTranslator.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
@@ -21,18 +21,18 @@ using namespace KODI;
 using namespace GAME;
 using namespace JOYSTICK;
 
-CControllerFeature::CControllerFeature(int labelId)
+CPhysicalFeature::CPhysicalFeature(int labelId)
 {
   Reset();
   m_labelId = labelId;
 }
 
-void CControllerFeature::Reset(void)
+void CPhysicalFeature::Reset(void)
 {
-  *this = CControllerFeature();
+  *this = CPhysicalFeature();
 }
 
-CControllerFeature& CControllerFeature::operator=(const CControllerFeature& rhs)
+CPhysicalFeature& CPhysicalFeature::operator=(const CPhysicalFeature& rhs)
 {
   if (this != &rhs)
   {
@@ -48,7 +48,7 @@ CControllerFeature& CControllerFeature::operator=(const CControllerFeature& rhs)
   return *this;
 }
 
-std::string CControllerFeature::CategoryLabel() const
+std::string CPhysicalFeature::CategoryLabel() const
 {
   std::string categoryLabel;
 
@@ -61,7 +61,7 @@ std::string CControllerFeature::CategoryLabel() const
   return categoryLabel;
 }
 
-std::string CControllerFeature::Label() const
+std::string CPhysicalFeature::Label() const
 {
   std::string label;
 
@@ -74,10 +74,10 @@ std::string CControllerFeature::Label() const
   return label;
 }
 
-bool CControllerFeature::Deserialize(const TiXmlElement* pElement,
-                                     const CController* controller,
-                                     FEATURE_CATEGORY category,
-                                     int categoryLabelId)
+bool CPhysicalFeature::Deserialize(const TiXmlElement* pElement,
+                                   const CController* controller,
+                                   FEATURE_CATEGORY category,
+                                   int categoryLabelId)
 {
   Reset();
 

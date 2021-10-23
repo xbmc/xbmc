@@ -23,11 +23,11 @@ class IInputProvider;
 
 namespace GAME
 {
-class CPort : public JOYSTICK::IInputHandler, public IKeymapEnvironment
+class CPortInput : public JOYSTICK::IInputHandler, public IKeymapEnvironment
 {
 public:
-  CPort(JOYSTICK::IInputHandler* gameInput);
-  ~CPort() override;
+  CPortInput(JOYSTICK::IInputHandler* gameInput);
+  ~CPortInput() override;
 
   void RegisterInput(JOYSTICK::IInputProvider* provider);
   void UnregisterInput(JOYSTICK::IInputProvider* provider);

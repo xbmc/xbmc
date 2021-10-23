@@ -11,7 +11,7 @@
 #include "GameClientInput.h"
 #include "games/addons/GameClient.h"
 #include "games/controllers/Controller.h"
-#include "games/ports/Port.h"
+#include "games/controllers/input/PortInput.h"
 #include "input/joysticks/interfaces/IInputReceiver.h"
 #include "utils/log.h"
 
@@ -26,7 +26,7 @@ CGameClientJoystick::CGameClientJoystick(CGameClient& gameClient,
   : m_gameClient(gameClient),
     m_portAddress(portAddress),
     m_controller(controller),
-    m_port(new CPort(this))
+    m_portInput(new CPortInput(this))
 {
   assert(m_controller.get() != NULL);
 }
@@ -35,12 +35,12 @@ CGameClientJoystick::~CGameClientJoystick() = default;
 
 void CGameClientJoystick::RegisterInput(JOYSTICK::IInputProvider* inputProvider)
 {
-  m_port->RegisterInput(inputProvider);
+  m_portInput->RegisterInput(inputProvider);
 }
 
 void CGameClientJoystick::UnregisterInput(JOYSTICK::IInputProvider* inputProvider)
 {
-  m_port->UnregisterInput(inputProvider);
+  m_portInput->UnregisterInput(inputProvider);
 }
 
 std::string CGameClientJoystick::ControllerID(void) const

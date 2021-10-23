@@ -19,7 +19,7 @@ class CGUICardinalFeatureButton : public CGUIFeatureButton
 public:
   CGUICardinalFeatureButton(const CGUIButtonControl& buttonTemplate,
                             IConfigurationWizard* wizard,
-                            const CControllerFeature& feature,
+                            const CPhysicalFeature& feature,
                             unsigned int index);
 
   ~CGUICardinalFeatureButton() override = default;

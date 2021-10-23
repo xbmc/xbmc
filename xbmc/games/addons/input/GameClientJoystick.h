@@ -23,7 +23,7 @@ class IInputProvider;
 namespace GAME
 {
 class CGameClient;
-class CPort;
+class CPortInput;
 
 /*!
  * \ingroup games
@@ -80,7 +80,7 @@ private:
   const ControllerPtr m_controller;
 
   // Input parameters
-  std::unique_ptr<CPort> m_port;
+  std::unique_ptr<CPortInput> m_portInput;
 };
 } // namespace GAME
 } // namespace KODI

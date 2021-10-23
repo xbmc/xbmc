@@ -16,7 +16,7 @@ namespace KODI
 {
 namespace GAME
 {
-class CControllerFeature;
+class CPhysicalFeature;
 class IConfigurationWizard;
 
 class CGUIFeatureFactory
@@ -30,7 +30,7 @@ public:
   static CGUIButtonControl* CreateButton(BUTTON_TYPE type,
                                          const CGUIButtonControl& buttonTemplate,
                                          IConfigurationWizard* wizard,
-                                         const CControllerFeature& feature,
+                                         const CPhysicalFeature& feature,
                                          unsigned int index);
 };
 } // namespace GAME

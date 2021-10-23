@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "ControllerTypes.h"
+#include "games/controllers/ControllerTypes.h"
 #include "input/joysticks/JoystickTypes.h"
 #include "input/keyboard/KeyboardTypes.h"
 
@@ -21,16 +21,16 @@ namespace KODI
 namespace GAME
 {
 
-class CControllerFeature
+class CPhysicalFeature
 {
 public:
-  CControllerFeature() = default;
-  CControllerFeature(int labelId);
-  CControllerFeature(const CControllerFeature& other) { *this = other; }
+  CPhysicalFeature() = default;
+  CPhysicalFeature(int labelId);
+  CPhysicalFeature(const CPhysicalFeature& other) { *this = other; }
 
   void Reset(void);
 
-  CControllerFeature& operator=(const CControllerFeature& rhs);
+  CPhysicalFeature& operator=(const CPhysicalFeature& rhs);
 
   JOYSTICK::FEATURE_TYPE Type(void) const { return m_type; }
   JOYSTICK::FEATURE_CATEGORY Category(void) const { return m_category; }

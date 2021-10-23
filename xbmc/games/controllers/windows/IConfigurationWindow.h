@@ -40,7 +40,7 @@ namespace KODI
 {
 namespace GAME
 {
-class CControllerFeature;
+class CPhysicalFeature;
 
 /*!
  * \brief A list populated by installed controllers
@@ -151,7 +151,7 @@ public:
   /*!
    * \brief Get the feature represented by this button
    */
-  virtual const CControllerFeature& Feature(void) const = 0;
+  virtual const CPhysicalFeature& Feature(void) const = 0;
 
   /*!
    * \brief Allow the wizard to include this feature in a list of buttons
@@ -207,7 +207,7 @@ public:
    *
    * \param key The key that was pressed
    */
-  virtual void SetKey(const CControllerFeature& key) {}
+  virtual void SetKey(const CPhysicalFeature& key) {}
 
   /*!
    * \brief Reset button after prompting for input has finished
@@ -251,7 +251,7 @@ public:
    * This should be called before Run(). It allows the user to choose a key
    * to map instead of scrolling through a long list.
    */
-  virtual void RegisterKey(const CControllerFeature& key) = 0;
+  virtual void RegisterKey(const CPhysicalFeature& key) = 0;
 
   /*!
    * \brief Unregister all registered keys

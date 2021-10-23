@@ -20,7 +20,7 @@ namespace KODI
 {
 namespace GAME
 {
-class CControllerPort;
+class CPhysicalPort;
 
 /*!
  * \ingroup games
@@ -65,7 +65,7 @@ private:
    * \param logicalPort The logical port Game API struct
    * \param physicalPort The physical port definition
    */
-  void AddPort(const game_input_port& logicalPort, const CControllerPort& physicalPort);
+  void AddPort(const game_input_port& logicalPort, const CPhysicalPort& physicalPort);
 
   // Helper function
   static ControllerPtr GetController(const char* controllerId);

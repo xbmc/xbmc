@@ -21,7 +21,7 @@
 #include "games/addons/GameClient.h"
 #include "games/addons/GameClientCallbacks.h"
 #include "games/controllers/Controller.h"
-#include "games/controllers/ControllerTopology.h"
+#include "games/controllers/input/PhysicalTopology.h"
 #include "input/joysticks/JoystickTypes.h"
 #include "peripherals/EventLockHandle.h"
 #include "peripherals/Peripherals.h"

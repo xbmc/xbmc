@@ -10,8 +10,8 @@
 
 #include "ServiceBroker.h"
 #include "games/controllers/Controller.h"
-#include "games/controllers/ControllerFeature.h"
 #include "games/controllers/ControllerManager.h"
+#include "games/controllers/input/PhysicalFeature.h"
 #include "input/IKeymap.h"
 #include "input/InputTranslator.h"
 #include "input/Key.h"

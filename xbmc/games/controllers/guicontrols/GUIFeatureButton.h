@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "games/controllers/ControllerFeature.h"
+#include "games/controllers/input/PhysicalFeature.h"
 #include "games/controllers/windows/IConfigurationWindow.h"
 #include "guilib/GUIButtonControl.h"
 
@@ -23,7 +23,7 @@ class CGUIFeatureButton : public CGUIButtonControl, public IFeatureButton
 public:
   CGUIFeatureButton(const CGUIButtonControl& buttonTemplate,
                     IConfigurationWizard* wizard,
-                    const CControllerFeature& feature,
+                    const CPhysicalFeature& feature,
                     unsigned int index);
 
   ~CGUIFeatureButton() override = default;
@@ -32,7 +32,7 @@ public:
   void OnUnFocus() override;
 
   // partial implementation of IFeatureButton
-  const CControllerFeature& Feature() const override { return m_feature; }
+  const CPhysicalFeature& Feature() const override { return m_feature; }
   INPUT::CARDINAL_DIRECTION GetCardinalDirection() const override
   {
     return INPUT::CARDINAL_DIRECTION::NONE;
@@ -59,7 +59,7 @@ protected:
     return static_cast<T>(static_cast<int>(state) + 1);
   }
 
-  const CControllerFeature m_feature;
+  const CPhysicalFeature m_feature;
 
 private:
   IConfigurationWizard* const m_wizard;

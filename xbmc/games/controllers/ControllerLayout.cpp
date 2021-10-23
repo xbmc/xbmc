@@ -10,8 +10,8 @@
 
 #include "Controller.h"
 #include "ControllerDefinitions.h"
-#include "ControllerTopology.h"
 #include "ControllerTranslator.h"
+#include "games/controllers/input/PhysicalTopology.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
@@ -22,7 +22,7 @@
 using namespace KODI;
 using namespace GAME;
 
-CControllerLayout::CControllerLayout() : m_topology(new CControllerTopology)
+CControllerLayout::CControllerLayout() : m_topology(new CPhysicalTopology)
 {
 }
 
@@ -31,7 +31,7 @@ CControllerLayout::CControllerLayout(const CControllerLayout& other)
     m_labelId(other.m_labelId),
     m_icon(other.m_icon),
     m_strImage(other.m_strImage),
-    m_topology(new CControllerTopology(*other.m_topology))
+    m_topology(new CPhysicalTopology(*other.m_topology))
 {
 }
 
@@ -89,7 +89,7 @@ std::string CControllerLayout::ImagePath(void) const
 
 void CControllerLayout::Deserialize(const TiXmlElement* pElement,
                                     const CController* controller,
-                                    std::vector<CControllerFeature>& features)
+                                    std::vector<CPhysicalFeature>& features)
 {
   if (pElement == nullptr || controller == nullptr)
     return;
@@ -138,7 +138,7 @@ void CControllerLayout::Deserialize(const TiXmlElement* pElement,
       for (const TiXmlElement* pFeature = pChild->FirstChildElement(); pFeature != nullptr;
            pFeature = pFeature->NextSiblingElement())
       {
-        CControllerFeature feature;
+        CPhysicalFeature feature;
 
         if (feature.Deserialize(pFeature, controller, category, categoryLabelId))
           features.push_back(feature);
@@ -147,7 +147,7 @@ void CControllerLayout::Deserialize(const TiXmlElement* pElement,
     else if (pChild->ValueStr() == LAYOUT_XML_ELM_TOPOLOGY)
     {
       // Topology
-      CControllerTopology topology;
+      CPhysicalTopology topology;
       if (topology.Deserialize(pChild))
         *m_topology = std::move(topology);
     }

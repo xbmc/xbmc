@@ -10,8 +10,8 @@
 
 #include "IConfigurationWindow.h"
 #include "games/GameTypes.h"
-#include "games/controllers/ControllerFeature.h"
 #include "games/controllers/ControllerTypes.h"
+#include "games/controllers/input/PhysicalFeature.h"
 #include "input/joysticks/JoystickTypes.h"
 
 class CGUIButtonControl;
@@ -47,17 +47,17 @@ private:
   struct FeatureGroup
   {
     std::string groupName;
-    std::vector<CControllerFeature> features;
+    std::vector<CPhysicalFeature> features;
     /*!
      * True if this group is a button that allows the user to map a key of
      * their choosing.
      */
     bool bIsVirtualKey = false;
   };
-  std::vector<FeatureGroup> GetFeatureGroups(const std::vector<CControllerFeature>& features) const;
-  std::vector<CGUIButtonControl*> GetButtons(const std::vector<CControllerFeature>& features,
+  std::vector<FeatureGroup> GetFeatureGroups(const std::vector<CPhysicalFeature>& features) const;
+  std::vector<CGUIButtonControl*> GetButtons(const std::vector<CPhysicalFeature>& features,
                                              unsigned int startIndex);
-  CGUIButtonControl* GetSelectKeyButton(const std::vector<CControllerFeature>& features,
+  CGUIButtonControl* GetSelectKeyButton(const std::vector<CPhysicalFeature>& features,
                                         unsigned int buttonIndex);
 
   // GUI stuff

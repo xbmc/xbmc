@@ -18,7 +18,7 @@ namespace KODI
 {
 namespace GAME
 {
-class CControllerPort;
+class CPhysicalPort;
 
 /*!
  * \brief Collection of nodes that can be connected to this port
@@ -102,7 +102,7 @@ public:
   bool IsControllerAccepted(const std::string& portAddress, const std::string& controllerId) const;
 
 private:
-  void GetPort(CControllerPort& port) const;
+  void GetPort(CPhysicalPort& port) const;
 
   bool m_bConnected = false;
   unsigned int m_active = 0;

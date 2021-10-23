@@ -9,7 +9,7 @@
 #pragma once
 
 #include "GUIFeatureButton.h"
-#include "games/controllers/ControllerFeature.h"
+#include "games/controllers/input/PhysicalFeature.h"
 
 namespace KODI
 {
@@ -25,16 +25,16 @@ public:
   ~CGUISelectKeyButton() override = default;
 
   // implementation of IFeatureButton
-  const CControllerFeature& Feature(void) const override;
+  const CPhysicalFeature& Feature(void) const override;
   bool AllowWizard() const override { return false; }
   bool PromptForInput(CEvent& waitEvent) override;
   bool IsFinished() const override;
   bool NeedsKey() const override { return m_state == STATE::NEED_KEY; }
-  void SetKey(const CControllerFeature& key) override;
+  void SetKey(const CPhysicalFeature& key) override;
   void Reset() override;
 
 private:
-  static CControllerFeature GetFeature();
+  static CPhysicalFeature GetFeature();
 
   enum class STATE
   {
@@ -45,7 +45,7 @@ private:
 
   STATE m_state = STATE::NEED_KEY;
 
-  CControllerFeature m_selectedKey;
+  CPhysicalFeature m_selectedKey;
 };
 } // namespace GAME
 } // namespace KODI

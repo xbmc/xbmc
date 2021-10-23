@@ -6,9 +6,9 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "ControllerPort.h"
+#include "PhysicalPort.h"
 
-#include "ControllerDefinitions.h"
+#include "games/controllers/ControllerDefinitions.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
@@ -18,23 +18,23 @@
 using namespace KODI;
 using namespace GAME;
 
-CControllerPort::CControllerPort(std::string portId, std::vector<std::string> accepts)
+CPhysicalPort::CPhysicalPort(std::string portId, std::vector<std::string> accepts)
   : m_portId(std::move(portId)), m_accepts(std::move(accepts))
 {
 }
 
-void CControllerPort::Reset()
+void CPhysicalPort::Reset()
 {
-  CControllerPort defaultPort;
+  CPhysicalPort defaultPort;
   *this = std::move(defaultPort);
 }
 
-bool CControllerPort::IsCompatible(const std::string& controllerId) const
+bool CPhysicalPort::IsCompatible(const std::string& controllerId) const
 {
   return std::find(m_accepts.begin(), m_accepts.end(), controllerId) != m_accepts.end();
 }
 
-bool CControllerPort::Deserialize(const TiXmlElement* pElement)
+bool CPhysicalPort::Deserialize(const TiXmlElement* pElement)
 {
   if (pElement == nullptr)
     return false;
