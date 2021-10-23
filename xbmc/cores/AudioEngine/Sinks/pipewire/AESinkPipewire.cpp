@@ -355,7 +355,7 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
   }
 
   pw_stream_state state;
-  while (state != PW_STREAM_STATE_PAUSED)
+  do
   {
     state = stream->GetState();
     if (state == PW_STREAM_STATE_PAUSED)
@@ -364,7 +364,7 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
     CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - waiting", __FUNCTION__);
 
     loop->Wait();
-  }
+  } while (state != PW_STREAM_STATE_PAUSED);
 
   CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - initialized", __FUNCTION__);
 
