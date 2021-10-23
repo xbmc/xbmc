@@ -179,7 +179,7 @@ bool CRenderSystemGLES::EndRender()
   return true;
 }
 
-bool CRenderSystemGLES::ClearBuffers(UTILS::Color color)
+bool CRenderSystemGLES::ClearBuffers(UTILS::COLOR::Color color)
 {
   if (!m_bRenderCreated)
     return false;

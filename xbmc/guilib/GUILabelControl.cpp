@@ -10,7 +10,7 @@
 
 #include "GUIMessage.h"
 #include "utils/CharsetConverter.h"
-#include "utils/Color.h"
+#include "utils/ColorUtils.h"
 #include "utils/StringUtils.h"
 
 using namespace KODI::GUILIB;
@@ -74,10 +74,10 @@ void CGUILabelControl::UpdateInfo(const CGUIListItem *item)
     std::wstring utf16;
     g_charsetConverter.utf8ToW(label, utf16);
     vecText text; text.reserve(utf16.size()+1);
-    std::vector<UTILS::Color> colors;
+    std::vector<UTILS::COLOR::Color> colors;
     colors.push_back(m_label.GetLabelInfo().textColor);
     colors.push_back(m_label.GetLabelInfo().disabledColor);
-    UTILS::Color select = m_label.GetLabelInfo().selectedColor;
+    UTILS::COLOR::Color select = m_label.GetLabelInfo().selectedColor;
     if (!select)
       select = 0xFFFF0000;
     colors.push_back(select);

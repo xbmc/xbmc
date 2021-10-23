@@ -24,7 +24,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
-#include "utils/Color.h"
+#include "utils/ColorUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
 #include "utils/Variant.h"
@@ -1059,7 +1059,7 @@ void CGUIWindow::RunUnloadActions() const
 void CGUIWindow::ClearBackground()
 {
   m_clearBackground.Update();
-  UTILS::Color color = m_clearBackground;
+  UTILS::COLOR::Color color = m_clearBackground;
   if (color)
     CServiceBroker::GetWinSystem()->GetGfxContext().Clear(color);
 }

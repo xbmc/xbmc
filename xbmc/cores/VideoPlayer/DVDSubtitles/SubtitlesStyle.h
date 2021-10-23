@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "utils/Color.h"
+#include "utils/ColorUtils.h"
 
 #include <string>
 
@@ -72,15 +72,15 @@ struct style
   std::string fontName;
   double fontSize;
   FontStyle fontStyle = FontStyle::NORMAL;
-  UTILS::Color fontColor = UTILS::COLOR::WHITE;
+  UTILS::COLOR::Color fontColor = UTILS::COLOR::WHITE;
   int fontBorderSize = 15; // In %
-  UTILS::Color fontBorderColor = UTILS::COLOR::BLACK;
+  UTILS::COLOR::Color fontBorderColor = UTILS::COLOR::BLACK;
   int fontOpacity = 100; // In %
   BorderStyle borderStyle = BorderStyle::OUTLINE;
-  UTILS::Color backgroundColor = UTILS::COLOR::BLACK;
+  UTILS::COLOR::Color backgroundColor = UTILS::COLOR::BLACK;
   int backgroundOpacity = 0; // In %
   int shadowSize = 0; // In %
-  UTILS::Color shadowColor = UTILS::COLOR::BLACK;
+  UTILS::COLOR::Color shadowColor = UTILS::COLOR::BLACK;
   int shadowOpacity = 100; // In %
   FontAlignment alignment = FontAlignment::TOP_LEFT;
   AssOverrideStyles assOverrideStyles = AssOverrideStyles::DISABLED;

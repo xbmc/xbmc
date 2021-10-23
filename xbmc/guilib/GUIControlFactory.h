@@ -14,7 +14,7 @@
 */
 
 #include "GUIControl.h"
-#include "utils/Color.h"
+#include "utils/ColorUtils.h"
 
 #include <string>
 #include <vector>
@@ -91,7 +91,7 @@ public:
   static bool GetInfoLabelFromElement(const TiXmlElement *element, KODI::GUILIB::GUIINFO::CGUIInfoLabel &infoLabel, int parentID);
   static void GetInfoLabel(const TiXmlNode *pControlNode, const std::string &labelTag, KODI::GUILIB::GUIINFO::CGUIInfoLabel &infoLabel, int parentID);
   static void GetInfoLabels(const TiXmlNode *pControlNode, const std::string &labelTag, std::vector<KODI::GUILIB::GUIINFO::CGUIInfoLabel> &infoLabels, int parentID);
-  static bool GetColor(const TiXmlNode* pRootNode, const char* strTag, UTILS::Color &value);
+  static bool GetColor(const TiXmlNode* pRootNode, const char* strTag, UTILS::COLOR::Color& value);
   static bool GetInfoColor(const TiXmlNode* pRootNode, const char* strTag, KODI::GUILIB::GUIINFO::CGUIInfoColor &value, int parentID);
   static std::string FilterLabel(const std::string &label);
   static bool GetConditionalVisibility(const TiXmlNode* control, std::string &condition);

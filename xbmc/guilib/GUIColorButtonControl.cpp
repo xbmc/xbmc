@@ -162,7 +162,7 @@ void CGUIColorButtonControl::SetImageBoxColor(std::string hexColor)
   if (hexColor.empty())
     m_imgBoxColor = UTILS::COLOR::NONE;
   else
-    m_imgBoxColor = UTILS::ConvertHexToColor(hexColor);
+    m_imgBoxColor = UTILS::COLOR::ConvertHexToColor(hexColor);
 }
 
 bool CGUIColorButtonControl::UpdateColors(const CGUIListItem* item)

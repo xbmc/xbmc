@@ -20,7 +20,7 @@
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPBaseRenderer.h"
 #include "threads/SingleLock.h"
-#include "utils/Color.h"
+#include "utils/ColorUtils.h"
 #include "utils/TransformMatrix.h"
 #include "utils/log.h"
 
@@ -367,7 +367,7 @@ void CRPRenderManager::RenderControl(bool bClear,
   }
 
   // Calculate alpha
-  UTILS::Color alpha = 255;
+  UTILS::COLOR::Color alpha = 255;
   if (bUseAlpha)
     alpha = m_renderContext.MergeAlpha(0xFF000000) >> 24;
 

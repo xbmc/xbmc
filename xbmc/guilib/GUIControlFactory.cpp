@@ -539,7 +539,9 @@ bool CGUIControlFactory::GetScroller(const TiXmlNode *control, const std::string
   return false;
 }
 
-bool CGUIControlFactory::GetColor(const TiXmlNode *control, const char *strTag, UTILS::Color &value)
+bool CGUIControlFactory::GetColor(const TiXmlNode* control,
+                                  const char* strTag,
+                                  UTILS::COLOR::Color& value)
 {
   const TiXmlElement* node = control->FirstChildElement(strTag);
   if (node && node->FirstChild())

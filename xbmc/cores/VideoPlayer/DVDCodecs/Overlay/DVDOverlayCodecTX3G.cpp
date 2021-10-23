@@ -14,7 +14,6 @@
 #include "DVDSubtitles/SubtitlesStyle.h"
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "utils/CharArrayParser.h"
-#include "utils/Color.h"
 #include "utils/ColorUtils.h"
 #include "utils/StreamUtils.h"
 #include "utils/StringUtils.h"
@@ -42,7 +41,7 @@ struct StyleRecord
   uint16_t fontID;
   uint8_t faceStyleFlags; // FaceStyleFlag
   uint8_t fontSize;
-  UTILS::Color textColorARGB;
+  UTILS::COLOR::Color textColorARGB;
   unsigned int textColorAlphaCh;
 };
 
@@ -63,7 +62,7 @@ void ConvertStyleToTags(std::string& strUTF8, StyleRecord& style, bool closingTa
       strUTF8 += "{\\c}";
     else
     {
-      UTILS::Color color = UTILS::ConvertToBGR(style.textColorARGB);
+      UTILS::COLOR::Color color = UTILS::COLOR::ConvertToBGR(style.textColorARGB);
       strUTF8 += StringUtils::Format("{{\\c&H{:06x}&}}", color);
     }
   }
@@ -183,7 +182,7 @@ OverlayMessage CDVDOverlayCodecTX3G::Decode(DemuxPacket* pPacket)
         styleRec.fontID = sampleData.ReadNextUnsignedShort();
         styleRec.faceStyleFlags = sampleData.ReadNextUnsignedChar();
         styleRec.fontSize = sampleData.ReadNextUnsignedChar();
-        styleRec.textColorARGB = UTILS::ConvertToARGB(sampleData.ReadNextUnsignedInt());
+        styleRec.textColorARGB = UTILS::COLOR::ConvertToARGB(sampleData.ReadNextUnsignedInt());
         styleRec.textColorAlphaCh = (styleRec.textColorARGB & 0xFF000000) >> 24;
         // clamp bgnChar/bgnChar to textLength, we alloc enough space above and
         // this fixes borken encoders that do not handle endChar correctly.

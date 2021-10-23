@@ -15,7 +15,7 @@
 #include "GUIButtonControl.h"
 #include "guilib/GUILabel.h"
 #include "guilib/guiinfo/GUIInfoColor.h"
-#include "utils/Color.h"
+#include "utils/ColorUtils.h"
 
 /*!
  \ingroup controls
@@ -66,6 +66,6 @@ protected:
   std::unique_ptr<CGUITexture> m_imgColorDisabledMask;
   float m_colorPosX;
   float m_colorPosY;
-  UTILS::Color m_imgBoxColor;
+  UTILS::COLOR::Color m_imgBoxColor;
   CGUILabel m_labelInfo;
 };

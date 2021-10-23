@@ -18,7 +18,7 @@
 #include "input/Key.h"
 #include "input/XBMC_vkeys.h"
 #include "utils/CharsetConverter.h"
-#include "utils/Color.h"
+#include "utils/ColorUtils.h"
 #include "utils/Digest.h"
 #include "utils/Variant.h"
 #include "windowing/WinSystem.h"
@@ -538,10 +538,10 @@ bool CGUIEditControl::SetStyledText(const std::wstring &text)
   vecText styled;
   styled.reserve(text.size() + 1);
 
-  std::vector<UTILS::Color> colors;
+  std::vector<UTILS::COLOR::Color> colors;
   colors.push_back(m_label.GetLabelInfo().textColor);
   colors.push_back(m_label.GetLabelInfo().disabledColor);
-  UTILS::Color select = m_label.GetLabelInfo().selectedColor;
+  UTILS::COLOR::Color select = m_label.GetLabelInfo().selectedColor;
   if (!select)
     select = 0xFFFF0000;
   colors.push_back(select);
