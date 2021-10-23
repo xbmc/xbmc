@@ -22,7 +22,7 @@ CGUISelectKeyButton::CGUISelectKeyButton(const CGUIButtonControl& buttonTemplate
 {
 }
 
-const CControllerFeature& CGUISelectKeyButton::Feature(void) const
+const CPhysicalFeature& CGUISelectKeyButton::Feature(void) const
 {
   if (m_state == STATE::NEED_INPUT)
     return m_selectedKey;
@@ -70,7 +70,7 @@ bool CGUISelectKeyButton::IsFinished(void) const
   return m_state >= STATE::FINISHED;
 }
 
-void CGUISelectKeyButton::SetKey(const CControllerFeature& key)
+void CGUISelectKeyButton::SetKey(const CPhysicalFeature& key)
 {
   m_selectedKey = key;
 }
@@ -81,7 +81,7 @@ void CGUISelectKeyButton::Reset(void)
   m_selectedKey.Reset();
 }
 
-CControllerFeature CGUISelectKeyButton::GetFeature()
+CPhysicalFeature CGUISelectKeyButton::GetFeature()
 {
-  return CControllerFeature(35168); // "Select key"
+  return CPhysicalFeature(35168); // "Select key"
 }

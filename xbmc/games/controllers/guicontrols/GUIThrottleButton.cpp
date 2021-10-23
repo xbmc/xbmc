@@ -17,7 +17,7 @@ using namespace GAME;
 
 CGUIThrottleButton::CGUIThrottleButton(const CGUIButtonControl& buttonTemplate,
                                        IConfigurationWizard* wizard,
-                                       const CControllerFeature& feature,
+                                       const CPhysicalFeature& feature,
                                        unsigned int index)
   : CGUIFeatureButton(buttonTemplate, wizard, feature, index)
 {

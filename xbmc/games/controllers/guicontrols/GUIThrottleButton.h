@@ -19,7 +19,7 @@ class CGUIThrottleButton : public CGUIFeatureButton
 public:
   CGUIThrottleButton(const CGUIButtonControl& buttonTemplate,
                      IConfigurationWizard* wizard,
-                     const CControllerFeature& feature,
+                     const CPhysicalFeature& feature,
                      unsigned int index);
 
   ~CGUIThrottleButton() override = default;

@@ -10,9 +10,9 @@
 
 #include "ServiceBroker.h"
 #include "games/controllers/Controller.h"
-#include "games/controllers/ControllerFeature.h"
 #include "games/controllers/dialogs/GUIDialogAxisDetection.h"
 #include "games/controllers/guicontrols/GUIFeatureButton.h"
+#include "games/controllers/input/PhysicalFeature.h"
 #include "input/IKeymap.h"
 #include "input/InputManager.h"
 #include "input/joysticks/JoystickUtils.h"
@@ -104,7 +104,7 @@ bool CGUIConfigurationWizard::Abort(bool bWait /* = true */)
   return bWasRunning;
 }
 
-void CGUIConfigurationWizard::RegisterKey(const CControllerFeature& key)
+void CGUIConfigurationWizard::RegisterKey(const CPhysicalFeature& key)
 {
   if (key.Keycode() != XBMCK_UNKNOWN)
     m_keyMap[key.Keycode()] = key;
@@ -266,7 +266,7 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
           auto it = m_keyMap.find(primitive.Keycode());
           if (it != m_keyMap.end())
           {
-            const CControllerFeature& key = it->second;
+            const CPhysicalFeature& key = it->second;
             currentButton->SetKey(key);
             m_inputEvent.Set();
           }
@@ -279,7 +279,7 @@ bool CGUIConfigurationWizard::MapPrimitive(JOYSTICK::IButtonMap* buttonMap,
       }
       else
       {
-        const CControllerFeature& feature = currentButton->Feature();
+        const CPhysicalFeature& feature = currentButton->Feature();
 
         if (primitive.Type() == PRIMITIVE_TYPE::RELATIVE_POINTER &&
             feature.Type() != FEATURE_TYPE::RELPOINTER)

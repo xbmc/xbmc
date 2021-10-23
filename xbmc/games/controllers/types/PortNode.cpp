@@ -9,7 +9,7 @@
 #include "PortNode.h"
 
 #include "games/controllers/Controller.h"
-#include "games/controllers/ControllerPort.h"
+#include "games/controllers/input/PhysicalPort.h"
 #include "games/controllers/types/ControllerHub.h"
 
 #include <algorithm>
@@ -87,7 +87,7 @@ void CPortNode::SetCompatibleControllers(ControllerNodeVec controllers)
 bool CPortNode::IsControllerAccepted(const std::string& controllerId) const
 {
   // Base case
-  CControllerPort port;
+  CPhysicalPort port;
   GetPort(port);
   if (port.IsCompatible(controllerId))
     return true;
@@ -107,7 +107,7 @@ bool CPortNode::IsControllerAccepted(const std::string& portAddress,
   if (m_address == portAddress)
   {
     // Base case
-    CControllerPort port;
+    CPhysicalPort port;
     GetPort(port);
     if (port.IsCompatible(controllerId))
       bAccepted = true;
@@ -127,11 +127,11 @@ bool CPortNode::IsControllerAccepted(const std::string& portAddress,
   return bAccepted;
 }
 
-void CPortNode::GetPort(CControllerPort& port) const
+void CPortNode::GetPort(CPhysicalPort& port) const
 {
   std::vector<std::string> accepts;
   for (const CControllerNode& node : m_controllers)
     accepts.emplace_back(node.Controller()->ID());
 
-  port = CControllerPort(m_portId, std::move(accepts));
+  port = CPhysicalPort(m_portId, std::move(accepts));
 }

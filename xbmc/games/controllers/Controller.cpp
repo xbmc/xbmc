@@ -10,8 +10,8 @@
 
 #include "ControllerDefinitions.h"
 #include "ControllerLayout.h"
-#include "ControllerTopology.h"
 #include "URL.h"
+#include "games/controllers/input/PhysicalTopology.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
@@ -30,7 +30,7 @@ struct FeatureTypeEqual
   {
   }
 
-  bool operator()(const CControllerFeature& feature) const
+  bool operator()(const CPhysicalFeature& feature) const
   {
     if (type == FEATURE_TYPE::UNKNOWN)
       return true; // Match all feature types
@@ -61,16 +61,16 @@ CController::CController(const ADDON::AddonInfoPtr& addonInfo)
 
 CController::~CController() = default;
 
-const CControllerFeature& CController::GetFeature(const std::string& name) const
+const CPhysicalFeature& CController::GetFeature(const std::string& name) const
 {
   auto it =
       std::find_if(m_features.begin(), m_features.end(),
-                   [&name](const CControllerFeature& feature) { return name == feature.Name(); });
+                   [&name](const CPhysicalFeature& feature) { return name == feature.Name(); });
 
   if (it != m_features.end())
     return *it;
 
-  static const CControllerFeature invalid{};
+  static const CPhysicalFeature invalid{};
   return invalid;
 }
 
@@ -86,7 +86,7 @@ unsigned int CController::FeatureCount(
 void CController::GetFeatures(std::vector<std::string>& features,
                               FEATURE_TYPE type /* = FEATURE_TYPE::UNKNOWN */) const
 {
-  for (const CControllerFeature& feature : m_features)
+  for (const CPhysicalFeature& feature : m_features)
   {
     if (type == FEATURE_TYPE::UNKNOWN || type == feature.Type())
       features.push_back(feature.Name());
@@ -150,7 +150,7 @@ bool CController::LoadLayout(void)
   return m_bLoaded;
 }
 
-const CControllerTopology& CController::Topology() const
+const CPhysicalTopology& CController::Topology() const
 {
   return m_layout->Topology();
 }

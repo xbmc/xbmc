@@ -18,10 +18,10 @@ namespace KODI
 namespace GAME
 {
 
-class CControllerPort
+class CPhysicalPort
 {
 public:
-  CControllerPort() = default;
+  CPhysicalPort() = default;
 
   /*!
    * \brief Create a controller port
@@ -29,7 +29,7 @@ public:
    * \param portId The port's ID
    * \param accepts A list of controller IDs that this port accepts
    */
-  CControllerPort(std::string portId, std::vector<std::string> accepts);
+  CPhysicalPort(std::string portId, std::vector<std::string> accepts);
 
   void Reset();
 

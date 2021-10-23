@@ -19,7 +19,7 @@ class CGUIScalarFeatureButton : public CGUIFeatureButton
 public:
   CGUIScalarFeatureButton(const CGUIButtonControl& buttonTemplate,
                           IConfigurationWizard* wizard,
-                          const CControllerFeature& feature,
+                          const CPhysicalFeature& feature,
                           unsigned int index);
 
   ~CGUIScalarFeatureButton() override = default;

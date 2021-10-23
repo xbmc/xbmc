@@ -11,7 +11,7 @@
 #include "ControllerHub.h"
 #include "PortNode.h"
 #include "games/controllers/Controller.h"
-#include "games/controllers/ControllerTopology.h"
+#include "games/controllers/input/PhysicalTopology.h"
 
 #include <algorithm>
 #include <utility>

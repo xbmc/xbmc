@@ -6,9 +6,9 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "ControllerTopology.h"
+#include "PhysicalTopology.h"
 
-#include "ControllerDefinitions.h"
+#include "games/controllers/ControllerDefinitions.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
@@ -17,18 +17,18 @@
 using namespace KODI;
 using namespace GAME;
 
-CControllerTopology::CControllerTopology(bool bProvidesInput, std::vector<CControllerPort> ports)
+CPhysicalTopology::CPhysicalTopology(bool bProvidesInput, std::vector<CPhysicalPort> ports)
   : m_bProvidesInput(bProvidesInput), m_ports(std::move(ports))
 {
 }
 
-void CControllerTopology::Reset()
+void CPhysicalTopology::Reset()
 {
-  CControllerTopology defaultTopology;
+  CPhysicalTopology defaultTopology;
   *this = std::move(defaultTopology);
 }
 
-bool CControllerTopology::Deserialize(const TiXmlElement* pElement)
+bool CPhysicalTopology::Deserialize(const TiXmlElement* pElement)
 {
   Reset();
 
@@ -42,7 +42,7 @@ bool CControllerTopology::Deserialize(const TiXmlElement* pElement)
   {
     if (pChild->ValueStr() == LAYOUT_XML_ELM_PORT)
     {
-      CControllerPort port;
+      CPhysicalPort port;
       if (port.Deserialize(pChild))
         m_ports.emplace_back(std::move(port));
     }
