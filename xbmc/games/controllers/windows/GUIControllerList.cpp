@@ -190,7 +190,7 @@ bool CGUIControllerList::RefreshControllers(void)
   // Filter by current game add-on
   if (m_gameClient)
   {
-    const CControllerTree& controllers = m_gameClient->Input().GetControllerTree();
+    const CControllerTree& controllers = m_gameClient->Input().GetDefaultControllerTree();
 
     auto ControllerNotAccepted = [&controllers](const ControllerPtr& controller) {
       return !controllers.IsControllerAccepted(controller->ID());

@@ -37,6 +37,7 @@ class CGameClientJoystick;
 class CGameClientKeyboard;
 class CGameClientMouse;
 class CGameClientTopology;
+class CPortManager;
 class IGameInputCallback;
 
 class CGameClientInput : protected CGameClientSubsystem, public Observer
@@ -59,11 +60,14 @@ public:
   bool InputEvent(const game_input_event& event);
 
   // Topology functions
-  const CControllerTree& GetControllerTree() const;
+  const CControllerTree& GetDefaultControllerTree() const;
+  const CControllerTree& GetActiveControllerTree() const;
   bool SupportsKeyboard() const;
   bool SupportsMouse() const;
   bool ConnectController(const std::string& portAddress, ControllerPtr controller);
   bool DisconnectController(const std::string& portAddress);
+  void SavePorts();
+  void ResetPorts();
 
   // Agent functions
   bool HasAgent() const;
@@ -116,6 +120,7 @@ private:
   ControllerLayoutMap m_controllerLayouts;
   JoystickMap m_joysticks;
   PortMap m_portMap;
+  std::unique_ptr<CPortManager> m_portManager;
   std::unique_ptr<CGameClientKeyboard> m_keyboard;
   std::unique_ptr<CGameClientMouse> m_mouse;
   std::unique_ptr<CGameClientHardware> m_hardware;

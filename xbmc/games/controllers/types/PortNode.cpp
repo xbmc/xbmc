@@ -70,6 +70,21 @@ CControllerNode& CPortNode::GetActiveController()
   return invalid;
 }
 
+bool CPortNode::SetActiveController(const std::string& controllerId)
+{
+  for (size_t i = 0; i < m_controllers.size(); ++i)
+  {
+    const ControllerPtr& controller = m_controllers.at(i).GetController();
+    if (controller && controller->ID() == controllerId)
+    {
+      m_active = i;
+      return true;
+    }
+  }
+
+  return false;
+}
+
 void CPortNode::SetPortID(std::string portId)
 {
   m_portId = std::move(portId);
