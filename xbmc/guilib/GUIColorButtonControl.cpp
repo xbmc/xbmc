@@ -37,6 +37,8 @@ CGUIColorButtonControl::CGUIColorButtonControl(int parentID,
   m_imgColorDisabledMask->SetAspectRatio(CAspectRatio::AR_KEEP);
   m_imgBoxColor = UTILS::COLOR::NONE;
   ControlType = GUICONTROL_COLORBUTTON;
+  // offsetX is like a left/right padding, "hex" label does not require high values
+  m_labelInfo.GetLabelInfo().offsetX = 2;
 }
 
 CGUIColorButtonControl::CGUIColorButtonControl(const CGUIColorButtonControl& control)
@@ -182,11 +184,13 @@ void CGUIColorButtonControl::RenderInfoText()
 void CGUIColorButtonControl::ProcessInfoText(unsigned int currentTime)
 {
   CRect labelRenderRect = m_labelInfo.GetRenderRect();
-  bool changed = m_labelInfo.SetText(StringUtils::Format("#{:8x}", m_imgBoxColor));
+  bool changed = m_labelInfo.SetText(StringUtils::Format("#{:08X}", m_imgBoxColor));
   // Set Label X position based on image mask control position
-  changed = m_labelInfo.SetMaxRect(m_imgColorMask->GetXPosition() - 300, m_posY, 300, m_height);
-  changed |= m_labelInfo.SetScrolling(HasFocus());
-  changed |= m_labelInfo.SetAlign(XBFONT_RIGHT | (m_label.GetLabelInfo().align & XBFONT_CENTER_Y));
+  float textWidth = m_labelInfo.GetTextWidth() + 2 * m_labelInfo.GetLabelInfo().offsetX;
+  float textPosX = m_imgColorMask->GetXPosition() - textWidth;
+  changed = m_labelInfo.SetMaxRect(textPosX, m_posY, textWidth, m_height);
+  // Limit the width for the left label to avoid text overlapping
+  SetMaxWidth(textPosX);
 
   // text changed - images need resizing
   if (m_minWidth && (m_labelInfo.GetRenderRect() != labelRenderRect))
