@@ -401,6 +401,7 @@ void CAddonSettings::InitializeControls()
   GetSettingsManager()->RegisterSettingControl("slider", this);
   GetSettingsManager()->RegisterSettingControl("range", this);
   GetSettingsManager()->RegisterSettingControl("title", this);
+  GetSettingsManager()->RegisterSettingControl("colorbutton", this);
 }
 
 void CAddonSettings::InitializeConditions()

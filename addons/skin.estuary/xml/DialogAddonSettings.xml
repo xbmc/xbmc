@@ -97,6 +97,10 @@
 				<description>Default Label</description>
 				<include>DefaultSettingLabel</include>
 			</control>
+			<control type="colorbutton" id="15">
+				<description>Default ColorButton</description>
+				<include>DefaultSettingButton</include>
+			</control>
 			<control type="grouplist" id="9000">
 				<left>1510</left>
 				<top>92</top>
