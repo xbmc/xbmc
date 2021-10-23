@@ -426,6 +426,13 @@ public:
    */
   bool SkipLocalArt() const;
 
+  /*! \brief Get the thumb for the item, but hide it to prevent spoilers if
+             the user has set 'Show information for unwatched items' appropriately.
+   \param item the item to get the thumb image for.
+   \return fanart or spoiler overlay if item is an unwatched episode, thumb art otherwise.
+   */
+  std::string GetThumbHideIfUnwatched(const CFileItem* item) const;
+
   // Gets the .tbn file associated with this item
   std::string GetTBNFile() const;
   // Gets the folder image associated with this item (defaults to folder.jpg)
