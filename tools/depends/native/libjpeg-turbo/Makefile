@@ -5,7 +5,7 @@ DEPS= ../../Makefile.include Makefile 01-disable-executables.patch
 
 # lib name, version
 LIBNAME=libjpeg-turbo
-VERSION=2.0.4
+VERSION=2.1.1
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
 
