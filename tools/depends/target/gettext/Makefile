@@ -3,9 +3,9 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=gettext
-VERSION=0.20.2
+VERSION=0.21
 SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
+ARCHIVE=$(SOURCE).tar.xz
 
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) build-aux/; \
