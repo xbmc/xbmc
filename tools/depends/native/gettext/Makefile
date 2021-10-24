@@ -1,13 +1,13 @@
 include ../../Makefile.include
 PREFIX=$(NATIVEPREFIX)
 PLATFORM=$(NATIVEPLATFORM)
-DEPS= ../../Makefile.include Makefile 01-gettext-tools-stpncpy.patch
+DEPS= ../../Makefile.include Makefile 01-gettext-tools-stpncpy.patch 02-disable-test-doc.patch
 
 # lib name, version
 LIBNAME=gettext
-VERSION=0.19.8
+VERSION=0.21
 SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
+ARCHIVE=$(SOURCE).tar.xz
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) \
@@ -33,11 +33,12 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); sed -ie '/gets is a security hole/d' gettext-tools/gnulib-lib/stdio.in.h
 	cd $(PLATFORM); sed -ie '/gets is a security hole/d' gettext-tools/libgettextpo/stdio.in.h
 	cd $(PLATFORM); sed -ie '/gets is a security hole/d' gettext-runtime/gnulib-lib/stdio.in.h
-	cd $(PLATFORM); sed -ie 's/SUBDIRS = doc intl gnulib-lib libgrep src libgettextpo po projects styles misc man m4 tests gnulib-tests examples/SUBDIRS = doc intl gnulib-lib libgrep src libgettextpo po projects styles misc man m4/' gettext-tools/Makefile.in
 	cd $(PLATFORM); patch -p1 -i ../01-gettext-tools-stpncpy.patch
+	cd $(PLATFORM); patch -p1 -i ../02-disable-test-doc.patch
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
+	$(MAKE) -C $(PLATFORM)/libtextstyle
 	$(MAKE) -C $(PLATFORM)/gettext-tools
 
 .installed-$(PLATFORM): $(LIBDYLIB)
