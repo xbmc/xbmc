@@ -110,6 +110,10 @@ int SystemTimeToFileTime(const SystemTime* systemTime, FileTime* fileTime)
   static std::atomic_flag timegm_lock = ATOMIC_FLAG_INIT;
 #endif
 
+  // Prevent out of bounds access in dayoffset array
+  if (systemTime->month < 1 || systemTime->month > 12)
+    return 0;
+
   struct tm sysTime = {};
   sysTime.tm_year = systemTime->year - 1900;
   sysTime.tm_mon = systemTime->month - 1;
