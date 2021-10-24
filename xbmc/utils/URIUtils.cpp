@@ -1035,6 +1035,19 @@ bool URIUtils::IsInternetStream(const CURL& url, bool bStrictCheck /* = false */
   return false;
 }
 
+bool URIUtils::IsNetworkFilesystem(const std::string& path)
+{
+  // Check for "internet" streaming protocols/filesystems
+  if (IsInternetStream(path, true))
+    return true;
+
+  // "Normal" network filesystems
+  if (IsSmb(path) || IsNfs(path) || IsUPnP(path))
+    return true;
+
+  return false;
+}
+
 bool URIUtils::IsUPnP(const std::string& strFile)
 {
   return IsProtocol(strFile, "upnp");

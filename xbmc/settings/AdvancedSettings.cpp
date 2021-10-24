@@ -378,7 +378,7 @@ void CAdvancedSettings::Initialize()
   m_PVRDefaultSortOrder.sortOrder = SortOrderDescending;
 
   m_cacheMemSize = 1024 * 1024 * 20; // 20 MiB
-  m_cacheBufferMode = CACHE_BUFFER_MODE_REMOTE; // Default (buffer all remote filesystems)
+  m_cacheBufferMode = CACHE_BUFFER_MODE_NETWORK; // Default (buffer all network filesystems)
   m_cacheChunkSize = 128 * 1024; // 128 KiB
 
   // the following setting determines the readRate of a player data

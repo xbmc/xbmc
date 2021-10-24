@@ -124,6 +124,7 @@ public:
   static bool IsInRAR(const std::string& strFile);
   static bool IsInternetStream(const std::string& path, bool bStrictCheck = false);
   static bool IsInternetStream(const CURL& url, bool bStrictCheck = false);
+  static bool IsNetworkFilesystem(const std::string& path);
   static bool IsInAPK(const std::string& strFile);
   static bool IsInZIP(const std::string& strFile);
   static bool IsISO9660(const std::string& strFile);
