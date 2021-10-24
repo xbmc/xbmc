@@ -5,9 +5,9 @@ DEPS= ../../Makefile.include Makefile
 
 # app name, version
 APPNAME=xz
-VERSION=5.2.4
+VERSION=5.2.5
 SOURCE=$(APPNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.bz2
+ARCHIVE=$(SOURCE).tar.gz
 
 export LIBTOOL=builds/unix/libtool
 export PATH:=$(PREFIX)/bin:$(PATH)
