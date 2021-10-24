@@ -28,10 +28,12 @@ endif
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) \
-  --disable-shared \
-  --without-ensurepip \
-  --disable-framework --with-system-expat --with-system-ffi --without-pymalloc --enable-ipv6 \
-  $(EXTRA_CONFIGURE)
+                      --disable-shared \
+                      --without-ensurepip \
+                      --disable-framework \
+                      --without-pymalloc \
+                      --enable-ipv6 \
+                      $(EXTRA_CONFIGURE)
 
 
 LIBDYLIB=$(PLATFORM)/libpython$(PYTHON_VERSION).a

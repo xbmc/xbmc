@@ -178,7 +178,7 @@ _weakref _weakref.c	# basic weak reference support
 #_testcapi _testcapimodule.c    # Python C API test module
 #_testinternalcapi _testinternalcapi.c -I$(srcdir)/Include/internal -DPy_BUILD_CORE_MODULE  # Python internal C API test module
 _random _randommodule.c -DPy_BUILD_CORE_MODULE	# Random number generator
-_elementtree -I$(srcdir)/Modules/expat -DHAVE_EXPAT_CONFIG_H -DUSE_PYEXPAT_CAPI _elementtree.c	# elementtree accelerator
+_elementtree -I$(prefix)/include -L$(prefix)/lib -lexpat -DHAVE_EXPAT_CONFIG_H -DUSE_PYEXPAT_CAPI _elementtree.c	# elementtree accelerator
 _pickle _pickle.c	-DPy_BUILD_CORE_MODULE # pickle accelerator
 _datetime _datetimemodule.c	-DPy_BUILD_CORE_MODULE # datetime accelerator
 _zoneinfo _zoneinfo.c	-DPy_BUILD_CORE_MODULE # zoneinfo accelerator
@@ -351,7 +351,7 @@ zlib zlibmodule.c -I$(prefix)/include -L$(exec_prefix)/lib -lz
 # Interface to the Expat XML parser
 # More information on Expat can be found at www.libexpat.org.
 #
-pyexpat expat/xmlparse.c expat/xmlrole.c expat/xmltok.c pyexpat.c -I$(srcdir)/Modules/expat -DHAVE_EXPAT_CONFIG_H -DXML_POOR_ENTROPY -DUSE_PYEXPAT_CAPI
+pyexpat pyexpat.c -I$(prefix)/include -L$(prefix)/lib -lexpat -DHAVE_EXPAT_CONFIG_H -DXML_POOR_ENTROPY -DUSE_PYEXPAT_CAPI
 
 # Hye-Shik Chang's CJKCodecs
 
