@@ -3,7 +3,7 @@ DEPS=Makefile
 
 # lib name, version
 LIBNAME=flatbuffers
-VERSION=1.12.0
+VERSION=2.0.0
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
