@@ -5,9 +5,9 @@ DEPS=../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=expat
-VERSION=2.2.7
+VERSION=2.4.1
 SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.bz2
+ARCHIVE=$(SOURCE).tar.xz
 
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) ./conftools; CFLAGS="-fPIC" ./configure --prefix=$(PREFIX) --disable-shared
