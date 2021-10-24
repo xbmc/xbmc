@@ -5,11 +5,15 @@ DEPS=../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=flatbuffers
-VERSION=1.12.0
+VERSION=2.0.0
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
 APP=$(PLATFORM)/build-cmake/flatc
+
+# BUILD Notes
+# When we go c++17, flatbuffers has FLATBUFFERS_BUILD_CPP17 to enable
+# If we bump cmake min req to 3.16, enable FLATBUFFERS_ENABLE_PCH
 
 ifeq ($(USE_CCACHE), yes)
   LAUNCHER=-DCMAKE_CXX_COMPILER_LAUNCHER=$(CCACHE)
