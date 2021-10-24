@@ -107,7 +107,7 @@
 #define ADDON_INSTANCE_VERSION_IMAGEDECODER_XML_ID    "kodi.binary.instance.imagedecoder"
 #define ADDON_INSTANCE_VERSION_IMAGEDECODER_DEPENDS   "addon-instance/ImageDecoder.h"
 
-#define ADDON_INSTANCE_VERSION_INPUTSTREAM            "3.0.1"
+#define ADDON_INSTANCE_VERSION_INPUTSTREAM            "3.0.2"
 #define ADDON_INSTANCE_VERSION_INPUTSTREAM_MIN        "3.0.1"
 #define ADDON_INSTANCE_VERSION_INPUTSTREAM_XML_ID     "kodi.binary.instance.inputstream"
 #define ADDON_INSTANCE_VERSION_INPUTSTREAM_DEPENDS    "c-api/addon-instance/inputstream.h" \
@@ -129,7 +129,7 @@
 #define ADDON_INSTANCE_VERSION_PERIPHERAL_DEPENDS     "addon-instance/Peripheral.h" \
                                                       "addon-instance/PeripheralUtils.h"
 
-#define ADDON_INSTANCE_VERSION_PVR                    "8.0.0"
+#define ADDON_INSTANCE_VERSION_PVR                    "8.0.1"
 #define ADDON_INSTANCE_VERSION_PVR_MIN                "8.0.0"
 #define ADDON_INSTANCE_VERSION_PVR_XML_ID             "kodi.binary.instance.pvr"
 #define ADDON_INSTANCE_VERSION_PVR_DEPENDS            "c-api/addon-instance/pvr.h" \

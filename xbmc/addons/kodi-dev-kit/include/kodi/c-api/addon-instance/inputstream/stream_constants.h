@@ -18,6 +18,16 @@
 #define STREAM_PROPERTY_INPUTSTREAM "inputstream"
 
 /// @ingroup cpp_kodi_addon_inputstream_Defs_StreamConstants
+/// @brief The name of the default player to use for this inputstream add-on that
+/// should be used by Kodi to play the stream.
+///
+/// Leave blank to use Kodi's built-in player selection mechanism.
+/// Permitted values are:
+/// - "videodefaultplayer"
+/// - "audiodefaultplayer"
+#define STREAM_PROPERTY_INPUTSTREAM_PLAYER "inputstream-player"
+
+/// @ingroup cpp_kodi_addon_inputstream_Defs_StreamConstants
 /// @brief Identification string for an input stream.
 ///
 /// This value can be used in addition to @ref STREAM_PROPERTY_INPUTSTREAM. It is

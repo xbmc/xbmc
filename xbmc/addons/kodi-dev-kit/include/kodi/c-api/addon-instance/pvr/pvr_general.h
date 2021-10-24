@@ -161,6 +161,16 @@ extern "C"
   ///
   #define PVR_STREAM_PROPERTY_INPUTSTREAM STREAM_PROPERTY_INPUTSTREAM
 
+  /// @brief To define in stream properties the player the inputstream add-on
+  /// should use.
+  ///
+  /// Leave blank to use Kodi's built-in player selection mechanism.
+  /// Permitted values are:
+  /// - "videodefaultplayer"
+  /// - "audiodefaultplayer"
+  ///
+  #define PVR_STREAM_PROPERTY_INPUTSTREAM_PLAYER STREAM_PROPERTY_INPUTSTREAM_PLAYER
+
   /// @brief Identification string for an input stream.
   ///
   /// This value can be used in addition to @ref PVR_STREAM_PROPERTY_INPUTSTREAM.
