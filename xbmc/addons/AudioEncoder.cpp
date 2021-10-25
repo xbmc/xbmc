@@ -57,5 +57,4 @@ bool CAudioEncoder::Close()
   return ret;
 }
 
-} /*namespace ADDON*/
-
+} /* namespace ADDON */
