@@ -16,6 +16,8 @@ extern "C"
 {
 #endif /* __cplusplus */
 
+  typedef void* KODI_ADDON_AUDIOENCODER_HDL;
+
   typedef struct AddonToKodiFuncTable_AudioEncoder
   {
     KODI_HANDLE kodiInstance;
@@ -23,11 +25,10 @@ extern "C"
     int64_t (*seek)(KODI_HANDLE kodiInstance, int64_t pos, int whence);
   } AddonToKodiFuncTable_AudioEncoder;
 
-  struct AddonInstance_AudioEncoder;
   typedef struct KodiToAddonFuncTable_AudioEncoder
   {
     KODI_HANDLE addonInstance;
-    bool(__cdecl* start)(const struct AddonInstance_AudioEncoder* instance,
+    bool(__cdecl* start)(const KODI_ADDON_AUDIOENCODER_HDL hdl,
                          int in_channels,
                          int in_rate,
                          int in_bits,
@@ -40,10 +41,10 @@ extern "C"
                          const char* genre,
                          const char* comment,
                          int track_length);
-    int(__cdecl* encode)(const struct AddonInstance_AudioEncoder* instance,
+    int(__cdecl* encode)(const KODI_ADDON_AUDIOENCODER_HDL hdl,
                          int num_bytes_read,
                          const uint8_t* pbt_stream);
-    bool(__cdecl* finish)(const struct AddonInstance_AudioEncoder* instance);
+    bool(__cdecl* finish)(const KODI_ADDON_AUDIOENCODER_HDL hdl);
   } KodiToAddonFuncTable_AudioEncoder;
 
   typedef struct AddonInstance_AudioEncoder

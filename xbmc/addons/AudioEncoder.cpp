@@ -31,16 +31,18 @@ bool CAudioEncoder::Init(AddonToKodiFuncTable_AudioEncoder& callbacks)
   if (CreateInstance(&m_struct) != ADDON_STATUS_OK || !m_struct.toAddon->start)
     return false;
 
-  return m_struct.toAddon->start(&m_struct, m_iInChannels, m_iInSampleRate, m_iInBitsPerSample,
-                                 m_strTitle.c_str(), m_strArtist.c_str(), m_strAlbumArtist.c_str(),
-                                 m_strAlbum.c_str(), m_strYear.c_str(), m_strTrack.c_str(),
-                                 m_strGenre.c_str(), m_strComment.c_str(), m_iTrackLength);
+  m_addonInstance = m_struct.toAddon->addonInstance;
+
+  return m_struct.toAddon->start(
+      m_addonInstance, m_iInChannels, m_iInSampleRate, m_iInBitsPerSample, m_strTitle.c_str(),
+      m_strArtist.c_str(), m_strAlbumArtist.c_str(), m_strAlbum.c_str(), m_strYear.c_str(),
+      m_strTrack.c_str(), m_strGenre.c_str(), m_strComment.c_str(), m_iTrackLength);
 }
 
 int CAudioEncoder::Encode(int nNumBytesRead, uint8_t* pbtStream)
 {
   if (m_struct.toAddon->encode)
-    return m_struct.toAddon->encode(&m_struct, nNumBytesRead, pbtStream);
+    return m_struct.toAddon->encode(m_addonInstance, nNumBytesRead, pbtStream);
   return 0;
 }
 
@@ -48,7 +50,7 @@ bool CAudioEncoder::Close()
 {
   bool ret = false;
   if (m_struct.toAddon->finish)
-    ret = m_struct.toAddon->finish(&m_struct);
+    ret = m_struct.toAddon->finish(m_addonInstance);
 
   DestroyInstance();
 

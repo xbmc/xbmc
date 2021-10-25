@@ -26,6 +26,7 @@ namespace ADDON
 
   private:
     AddonInstance_AudioEncoder m_struct;
+    KODI_HANDLE m_addonInstance;
   };
 
 } /*namespace ADDON*/

@@ -312,7 +312,7 @@ private:
     m_instanceData->toAddon->finish = ADDON_finish;
   }
 
-  inline static bool ADDON_start(const AddonInstance_AudioEncoder* instance,
+  inline static bool ADDON_start(const KODI_ADDON_AUDIOENCODER_HDL hdl,
                                  int inChannels,
                                  int inRate,
                                  int inBits,
@@ -326,22 +326,21 @@ private:
                                  const char* comment,
                                  int trackLength)
   {
-    return static_cast<CInstanceAudioEncoder*>(instance->toAddon->addonInstance)
-        ->Start(inChannels, inRate, inBits, title, artist, albumartist, album, year, track, genre,
-                comment, trackLength);
+    return static_cast<CInstanceAudioEncoder*>(hdl)->Start(inChannels, inRate, inBits, title,
+                                                           artist, albumartist, album, year, track,
+                                                           genre, comment, trackLength);
   }
 
-  inline static int ADDON_encode(const AddonInstance_AudioEncoder* instance,
+  inline static int ADDON_encode(const KODI_ADDON_AUDIOENCODER_HDL hdl,
                                  int numBytesRead,
                                  const uint8_t* pbtStream)
   {
-    return static_cast<CInstanceAudioEncoder*>(instance->toAddon->addonInstance)
-        ->Encode(numBytesRead, pbtStream);
+    return static_cast<CInstanceAudioEncoder*>(hdl)->Encode(numBytesRead, pbtStream);
   }
 
-  inline static bool ADDON_finish(const AddonInstance_AudioEncoder* instance)
+  inline static bool ADDON_finish(const KODI_ADDON_AUDIOENCODER_HDL hdl)
   {
-    return static_cast<CInstanceAudioEncoder*>(instance->toAddon->addonInstance)->Finish();
+    return static_cast<CInstanceAudioEncoder*>(hdl)->Finish();
   }
 
   AddonInstance_AudioEncoder* m_instanceData;
