@@ -6,7 +6,7 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=swig
-VERSION=4.0.0
+VERSION=4.0.2
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
