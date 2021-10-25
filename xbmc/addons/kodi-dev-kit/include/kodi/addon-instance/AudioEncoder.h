@@ -12,6 +12,9 @@
 #include "../c-api/addon-instance/audio_encoder.h"
 
 #ifdef __cplusplus
+
+#include <stdexcept>
+
 namespace kodi
 {
 namespace addon
