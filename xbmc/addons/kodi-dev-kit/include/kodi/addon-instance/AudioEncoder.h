@@ -307,12 +307,12 @@ private:
 
     m_instanceData = static_cast<AddonInstance_AudioEncoder*>(instance);
     m_instanceData->toAddon->addonInstance = this;
-    m_instanceData->toAddon->start = ADDON_Start;
-    m_instanceData->toAddon->encode = ADDON_Encode;
-    m_instanceData->toAddon->finish = ADDON_Finish;
+    m_instanceData->toAddon->start = ADDON_start;
+    m_instanceData->toAddon->encode = ADDON_encode;
+    m_instanceData->toAddon->finish = ADDON_finish;
   }
 
-  inline static bool ADDON_Start(const AddonInstance_AudioEncoder* instance,
+  inline static bool ADDON_start(const AddonInstance_AudioEncoder* instance,
                                  int inChannels,
                                  int inRate,
                                  int inBits,
@@ -331,7 +331,7 @@ private:
                 comment, trackLength);
   }
 
-  inline static int ADDON_Encode(const AddonInstance_AudioEncoder* instance,
+  inline static int ADDON_encode(const AddonInstance_AudioEncoder* instance,
                                  int numBytesRead,
                                  const uint8_t* pbtStream)
   {
@@ -339,7 +339,7 @@ private:
         ->Encode(numBytesRead, pbtStream);
   }
 
-  inline static bool ADDON_Finish(const AddonInstance_AudioEncoder* instance)
+  inline static bool ADDON_finish(const AddonInstance_AudioEncoder* instance)
   {
     return static_cast<CInstanceAudioEncoder*>(instance->toAddon->addonInstance)->Finish();
   }
