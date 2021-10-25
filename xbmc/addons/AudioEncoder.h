@@ -13,20 +13,20 @@
 namespace ADDON
 {
 
-  class CAudioEncoder : public IEncoder, public IAddonInstanceHandler
-  {
-  public:
-    explicit CAudioEncoder(const AddonInfoPtr& addonInfo);
-    ~CAudioEncoder() override;
+class CAudioEncoder : public IEncoder, public IAddonInstanceHandler
+{
+public:
+  explicit CAudioEncoder(const AddonInfoPtr& addonInfo);
+  ~CAudioEncoder() override;
 
-    // Child functions related to IEncoder
-    bool Init(AddonToKodiFuncTable_AudioEncoder& callbacks) override;
-    int Encode(int nNumBytesRead, uint8_t* pbtStream) override;
-    bool Close() override;
+  // Child functions related to IEncoder
+  bool Init(AddonToKodiFuncTable_AudioEncoder& callbacks) override;
+  int Encode(int nNumBytesRead, uint8_t* pbtStream) override;
+  bool Close() override;
 
-  private:
-    AddonInstance_AudioEncoder m_struct;
-    KODI_HANDLE m_addonInstance;
-  };
+private:
+  AddonInstance_AudioEncoder m_struct;
+  KODI_HANDLE m_addonInstance;
+};
 
-} /*namespace ADDON*/
+} /* namespace ADDON */
