@@ -2296,10 +2296,42 @@ void CUtil::ScanForExternalDemuxSub(const std::string& videoPath, std::vector<st
 
   CFileItemList items;
   const std::vector<std::string> common_sub_dirs = { "subs", "subtitles", "vobsubs", "sub", "vobsub", "subtitle" };
-  const std::string DemuxSubExtensions = ".sup";
-  GetItemsToScan(strBasePath, DemuxSubExtensions, common_sub_dirs, items);
+  const std::string demuxSubExtensions = ".sup";
+  GetItemsToScan(strBasePath, demuxSubExtensions, common_sub_dirs, items);
 
-  std::vector<std::string> exts = StringUtils::Split(DemuxSubExtensions, "|");
+  const std::string customPath = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+      CSettings::SETTING_SUBTITLES_CUSTOMPATH);
+
+  if (!CMediaSettings::GetInstance().GetAdditionalSubtitleDirectoryChecked() &&
+      !customPath.empty()) // to avoid checking non-existent directories (network) every time..
+  {
+    if (!CServiceBroker::GetNetwork().IsAvailable() && !URIUtils::IsHD(customPath))
+    {
+      CLog::Log(LOGINFO, "CUtil::CacheSubtitles: disabling alternate subtitle directory for this "
+                         "session, it's inaccessible");
+      CMediaSettings::GetInstance().SetAdditionalSubtitleDirectoryChecked(-1); // disabled
+    }
+    else if (!CDirectory::Exists(customPath))
+    {
+      CLog::Log(LOGINFO, "CUtil::CacheSubtitles: disabling alternate subtitle directory for this "
+                         "session, it's nonexistent");
+      CMediaSettings::GetInstance().SetAdditionalSubtitleDirectoryChecked(-1); // disabled
+    }
+    else
+      CMediaSettings::GetInstance().SetAdditionalSubtitleDirectoryChecked(1);
+  }
+
+  if (CMediaSettings::GetInstance().GetAdditionalSubtitleDirectoryChecked() == 1)
+  {
+    std::string strPath2 = customPath;
+    URIUtils::AddSlashAtEnd(strPath2);
+    int flags = DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO;
+    CFileItemList moreItems;
+    CDirectory::GetDirectory(strPath2, moreItems, demuxSubExtensions, flags);
+    items.Append(moreItems);
+  }
+
+  std::vector<std::string> exts = StringUtils::Split(demuxSubExtensions, "|");
   ScanPathsForAssociatedItems(strSubtitle, items, exts, vecSubtitles);
 }
 
