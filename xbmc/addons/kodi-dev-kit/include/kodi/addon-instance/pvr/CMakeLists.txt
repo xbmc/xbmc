@@ -1,13 +1,19 @@
-set(HEADERS ChannelGroups.h
-            Channels.h
-            EDL.h
-            EPG.h
-            General.h
-            MenuHook.h
-            Recordings.h
-            Stream.h
-            Timers.h)
+# Auto generated CMakeLists.txt.
+# See xbmc/addons/kodi-dev-kit/tools/code-generator.py.
 
-if(NOT ENABLE_STATIC_LIBS)
-  core_add_library(addons_kodi-dev-kit_include_kodi_addon-instance_pvr)
+set(HEADERS
+  ChannelGroups.h
+  Channels.h
+  EDL.h
+  EPG.h
+  General.h
+  MenuHook.h
+  Providers.h
+  Recordings.h
+  Stream.h
+  Timers.h
+)
+
+if(HEADERS)
+  core_add_devkit_header(kodi_addon-instance_pvr)
 endif()

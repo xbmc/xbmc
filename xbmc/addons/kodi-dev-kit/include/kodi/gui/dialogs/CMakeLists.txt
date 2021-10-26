@@ -1,14 +1,19 @@
-set(HEADERS ContextMenu.h
-            ExtendedProgress.h
-            FileBrowser.h
-            Keyboard.h
-            Numeric.h
-            OK.h
-            Progress.h
-            Select.h
-            TextViewer.h
-            YesNo.h)
+# Auto generated CMakeLists.txt.
+# See xbmc/addons/kodi-dev-kit/tools/code-generator.py.
 
-if(NOT ENABLE_STATIC_LIBS)
-  core_add_library(addons_kodi-dev-kit_include_kodi_gui_dialogs)
+set(HEADERS
+  ContextMenu.h
+  ExtendedProgress.h
+  FileBrowser.h
+  Keyboard.h
+  Numeric.h
+  OK.h
+  Progress.h
+  Select.h
+  TextViewer.h
+  YesNo.h
+)
+
+if(HEADERS)
+  core_add_devkit_header(kodi_gui_dialogs)
 endif()

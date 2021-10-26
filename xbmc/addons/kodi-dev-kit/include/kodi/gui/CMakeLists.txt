@@ -1,8 +1,13 @@
-set(HEADERS General.h
-            ListItem.h
-            Window.h
-            renderHelper.h)
+# Auto generated CMakeLists.txt.
+# See xbmc/addons/kodi-dev-kit/tools/code-generator.py.
 
-if(NOT ENABLE_STATIC_LIBS)
-  core_add_library(addons_kodi-dev-kit_include_kodi_gui)
+set(HEADERS
+  General.h
+  ListItem.h
+  Window.h
+  renderHelper.h
+)
+
+if(HEADERS)
+  core_add_devkit_header(kodi_gui)
 endif()

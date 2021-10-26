@@ -1,15 +1,20 @@
-set(HEADERS AudioDecoder.h
-            AudioEncoder.h
-            Game.h
-            ImageDecoder.h
-            Inputstream.h
-            Peripheral.h
-            PVR.h
-            Screensaver.h
-            VFS.h
-            VideoCodec.h
-            Visualization.h)
+# Auto generated CMakeLists.txt.
+# See xbmc/addons/kodi-dev-kit/tools/code-generator.py.
 
-if(NOT ENABLE_STATIC_LIBS)
-  core_add_library(addons_kodi-dev-kit_include_kodi_addon-instance)
+set(HEADERS
+  AudioDecoder.h
+  AudioEncoder.h
+  Game.h
+  ImageDecoder.h
+  Inputstream.h
+  PVR.h
+  Peripheral.h
+  Screensaver.h
+  VFS.h
+  VideoCodec.h
+  Visualization.h
+)
+
+if(HEADERS)
+  core_add_devkit_header(kodi_addon-instance)
 endif()

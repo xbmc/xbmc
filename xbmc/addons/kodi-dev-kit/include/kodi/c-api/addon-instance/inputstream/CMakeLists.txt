@@ -1,9 +1,14 @@
-set(HEADERS demux_packet.h
-            stream_codec.h
-            stream_constants.h
-            stream_crypto.h
-            timing_constants.h)
+# Auto generated CMakeLists.txt.
+# See xbmc/addons/kodi-dev-kit/tools/code-generator.py.
 
-if(NOT ENABLE_STATIC_LIBS)
-  core_add_library(addons_kodi-dev-kit_include_kodi_c-api_addon-instance_inputstream)
+set(HEADERS
+  demux_packet.h
+  stream_codec.h
+  stream_constants.h
+  stream_crypto.h
+  timing_constants.h
+)
+
+if(HEADERS)
+  core_add_devkit_header(kodi_c-api_addon-instance_inputstream)
 endif()

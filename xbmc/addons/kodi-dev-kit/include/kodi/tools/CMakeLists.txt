@@ -1,9 +1,14 @@
-set(HEADERS DllHelper.h
-            EndTime.h
-            StringUtils.h
-            Thread.h
-            Timer.h)
+# Auto generated CMakeLists.txt.
+# See xbmc/addons/kodi-dev-kit/tools/code-generator.py.
 
-if(NOT ENABLE_STATIC_LIBS)
-  core_add_library(addons_kodi-dev-kit_include_kodi_tools)
+set(HEADERS
+  DllHelper.h
+  EndTime.h
+  StringUtils.h
+  Thread.h
+  Timer.h
+)
+
+if(HEADERS)
+  core_add_devkit_header(kodi_tools)
 endif()
