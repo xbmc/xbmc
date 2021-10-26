@@ -38,6 +38,18 @@ public:
   int AddSubtitle(const char* text, double startTime, double stopTime);
 
   /*!
+  * \brief Add a subtitle with supplementary options
+  * \param startTime The PTS start time of the subtitle
+  * \param stopTime The PTS stop time of the subtitle
+  * \param opts Subtitle options
+  * \return Return the subtitle ID, otherwise NO_SUBTITLE_ID if fails
+  */
+  int AddSubtitle(const char* text,
+                  double startTime,
+                  double stopTime,
+                  KODI::SUBTITLES::subtitleOpts* opts);
+
+  /*!
   * \brief Append text to the specified subtitle ID
   * \param subtitleId The subtitle ID
   * \param text The text to append

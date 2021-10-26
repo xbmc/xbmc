@@ -196,6 +196,7 @@
               <uap:FileType>.smi</uap:FileType>
               <uap:FileType>.srt</uap:FileType>
               <uap:FileType>.ssa</uap:FileType>
+              <uap:FileType>.vtt</uap:FileType>
               <uap:FileType>.sub</uap:FileType>
               <uap:FileType>.text</uap:FileType>
               <uap:FileType>.txt</uap:FileType>

@@ -32,7 +32,15 @@ bool CSubtitlesAdapter::Initialize()
 
 int CSubtitlesAdapter::AddSubtitle(const char* text, double startTime, double stopTime)
 {
-  int ret = m_libass->AddEvent(text, startTime, stopTime);
+  return AddSubtitle(text, startTime, stopTime, nullptr);
+}
+
+int CSubtitlesAdapter::AddSubtitle(const char* text,
+                                   double startTime,
+                                   double stopTime,
+                                   KODI::SUBTITLES::subtitleOpts* opts)
+{
+  int ret = m_libass->AddEvent(text, startTime, stopTime, opts);
   if (ret == ASS_NO_ID)
     return NO_SUBTITLE_ID;
   return ret;
