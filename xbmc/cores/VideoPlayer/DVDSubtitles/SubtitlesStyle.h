@@ -92,6 +92,14 @@ struct style
   int blur = 0; // In %
 };
 
+struct subtitleOpts
+{
+  bool useMargins = false;
+  int marginLeft;
+  int marginRight;
+  int marginVertical;
+};
+
 struct renderOpts
 {
   int frameWidth;

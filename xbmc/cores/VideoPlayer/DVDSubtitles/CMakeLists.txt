@@ -10,6 +10,7 @@ set(SOURCES DVDFactorySubtitle.cpp
             DVDSubtitleParserSSA.cpp
             DVDSubtitleTagMicroDVD.cpp
             DVDSubtitleTagSami.cpp
+            SubtitleParserWebVTT.cpp
             SubtitlesAdapter.cpp)
 
 set(HEADERS DVDFactorySubtitle.h
@@ -25,6 +26,7 @@ set(HEADERS DVDFactorySubtitle.h
             DVDSubtitleTagMicroDVD.h
             DVDSubtitleTagSami.h
             DVDSubtitlesLibass.h
+            SubtitleParserWebVTT.h
             SubtitlesAdapter.h
             SubtitlesStyle.h)
 

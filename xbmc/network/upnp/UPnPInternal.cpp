@@ -658,7 +658,8 @@ BuildObject(CFileItem&                    item,
             std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
             /* Hardcoded check for extension is not the best way, but it can't be allowed to pass all
                subtitle extension (ex. rar or zip). There are the most popular extensions support by UPnP devices.*/
-            if (ext == "txt" || ext == "srt" || ext == "ssa" || ext == "ass" || ext == "sub" || ext == "smi")
+            if (ext == "txt" || ext == "srt" || ext == "ssa" || ext == "ass" || ext == "sub" ||
+                ext == "smi" || ext == "vtt")
             {
                 subtitles.push_back(filenames[i]);
             }

@@ -71,6 +71,14 @@ Color ConvertToBGR(const Color argb);
 */
 Color ConvertHexToColor(const std::string& hexColor);
 
+/*! \brief Convert given RGB int values to RGB color value
+    \param r The red value
+    \param g The green value
+    \param b The blue value
+    \return the color as RGB value
+*/
+Color ConvertIntToRGB(int r, int g, int b);
+
 /*! \brief Create a ColorInfo from an ARGB Color to
            get additional information of the color
            and allow to be sorted with a color comparer

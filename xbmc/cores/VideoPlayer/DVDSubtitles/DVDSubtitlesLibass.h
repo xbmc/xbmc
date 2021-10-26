@@ -106,6 +106,18 @@ protected:
   int AddEvent(const char* text, double startTime, double stopTime);
 
   /*!
+  * \brief Add an ASS event to show a subtitle on a specified time
+  * \param startTime The PTS start time of the Event
+  * \param stopTime The PTS stop time of the Event
+  * \param opts Subtitle options
+  * \return Return the Event ID, otherwise ASS_NO_ID if fails
+  */
+  int AddEvent(const char* text,
+               double startTime,
+               double stopTime,
+               KODI::SUBTITLES::subtitleOpts* opts);
+
+  /*!
   * \brief Append text to the specified event
   */
   void AppendTextToEvent(int eventId, const char* text);

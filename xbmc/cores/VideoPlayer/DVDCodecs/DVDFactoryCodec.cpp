@@ -18,6 +18,7 @@
 #include "Overlay/DVDOverlayCodecSSA.h"
 #include "Overlay/DVDOverlayCodecTX3G.h"
 #include "Overlay/DVDOverlayCodecText.h"
+#include "Overlay/OverlayCodecWebVTT.h"
 #include "Video/AddonVideoCodec.h"
 #include "Video/DVDVideoCodec.h"
 #include "Video/DVDVideoCodecFFmpeg.h"
@@ -266,6 +267,10 @@ std::unique_ptr<CDVDOverlayCodec> CDVDFactoryCodec::CreateOverlayCodec(CDVDStrea
 
     case AV_CODEC_ID_EIA_608:
       pCodec = std::make_unique<CDVDOverlayCodecCCText>();
+      break;
+
+    case AV_CODEC_ID_WEBVTT:
+      pCodec = std::make_unique<COverlayCodecWebVTT>();
       break;
 
     default:
