@@ -6,6 +6,8 @@
  *  See LICENSES/README.md for more information.
  */
 
+/*---AUTO_GEN_PARSE<$$CORE_SYSTEM_NAME:android>---*/
+
 #pragma once
 
 #include "../../AddonBase.h"
