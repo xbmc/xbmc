@@ -3,11 +3,19 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=nghttp2
-VERSION=1.41.0
+VERSION=1.46.0
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.xz
 
 # configuration settings
-CONFIGURE=./configure --prefix=$(PREFIX) --enable-lib-only --disable-shared
+# no extra libs are required when using --enable-lib-only
+CONFIGURE=./configure --prefix=$(PREFIX) --enable-lib-only --disable-shared \
+            --without-jansson \
+            --without-libevent-openssl \
+            --without-libcares \
+            --without-libev \
+            --without-cunit \
+            --without-openssl \
+            --without-zlib
 
 LIBDYLIB=$(PLATFORM)/lib/.libs/lib$(LIBNAME).a
 
