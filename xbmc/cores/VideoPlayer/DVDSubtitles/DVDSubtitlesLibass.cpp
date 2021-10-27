@@ -115,7 +115,7 @@ void CDVDSubtitlesLibass::Configure()
   // Extract font must be set before loading ASS/SSA data,
   // after that cannot be changed
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-  bool overrideFont = settings->GetBool(CSettings::SETTING_SUBTITLES_OVERRIDEASSFONTS);
+  bool overrideFont = settings->GetBool(CSettings::SETTING_SUBTITLES_OVERRIDEFONTS);
   ass_set_extract_fonts(m_library, overrideFont ? 0 : 1);
 }
 
@@ -273,7 +273,7 @@ void CDVDSubtitlesLibass::ApplyStyle(style subStyle, renderOpts opts)
   ASS_Style* style = nullptr;
 
   if (m_subtitleType == ADAPTED ||
-      (m_subtitleType == NATIVE && subStyle.assOverrideStyles != AssOverrideStyles::DISABLED))
+      (m_subtitleType == NATIVE && subStyle.assOverrideStyles != OverrideStyles::DISABLED))
   {
     m_currentDefaultStyleId = m_defaultKodiStyleId;
 
@@ -292,8 +292,8 @@ void CDVDSubtitlesLibass::ApplyStyle(style subStyle, renderOpts opts)
     double scale = 1.0;
     int playResY;
     if (m_subtitleType == NATIVE &&
-        (subStyle.assOverrideStyles == AssOverrideStyles::STYLES ||
-         subStyle.assOverrideStyles == AssOverrideStyles::STYLES_POSITIONS))
+        (subStyle.assOverrideStyles == OverrideStyles::STYLES ||
+         subStyle.assOverrideStyles == OverrideStyles::STYLES_POSITIONS))
     {
       // With styles overrided the PlayResY will be changed to 288
       playResY = 288;
@@ -308,7 +308,7 @@ void CDVDSubtitlesLibass::ApplyStyle(style subStyle, renderOpts opts)
     style->FontName = strdup(subStyle.fontName.c_str());
 
     if (m_subtitleType != NATIVE ||
-        (m_subtitleType == NATIVE && subStyle.assOverrideStyles != AssOverrideStyles::POSITIONS))
+        (m_subtitleType == NATIVE && subStyle.assOverrideStyles != OverrideStyles::POSITIONS))
     {
       // Configure the font properties
       // FIXME: The font size need to be scaled to be shown in right PT size
@@ -451,19 +451,19 @@ void CDVDSubtitlesLibass::ConfigureAssOverride(style& subStyle, ASS_Style* style
   if (style)
   {
     // Manage override cases with ASS embedded styles
-    if (subStyle.assOverrideStyles == AssOverrideStyles::STYLES)
+    if (subStyle.assOverrideStyles == OverrideStyles::STYLES)
     {
       stylesFlags = ASS_OVERRIDE_BIT_FONT_SIZE_FIELDS | ASS_OVERRIDE_BIT_FONT_NAME |
                     ASS_OVERRIDE_BIT_COLORS | ASS_OVERRIDE_BIT_ATTRIBUTES |
                     ASS_OVERRIDE_BIT_BORDER | ASS_OVERRIDE_BIT_MARGINS;
     }
-    else if (subStyle.assOverrideStyles == AssOverrideStyles::STYLES_POSITIONS)
+    else if (subStyle.assOverrideStyles == OverrideStyles::STYLES_POSITIONS)
     {
       stylesFlags = ASS_OVERRIDE_BIT_FONT_SIZE_FIELDS | ASS_OVERRIDE_BIT_FONT_NAME |
                     ASS_OVERRIDE_BIT_COLORS | ASS_OVERRIDE_BIT_ATTRIBUTES |
                     ASS_OVERRIDE_BIT_BORDER | ASS_OVERRIDE_BIT_MARGINS | ASS_OVERRIDE_BIT_ALIGNMENT;
     }
-    else if (subStyle.assOverrideStyles == AssOverrideStyles::POSITIONS)
+    else if (subStyle.assOverrideStyles == OverrideStyles::POSITIONS)
     {
       stylesFlags = ASS_OVERRIDE_BIT_ALIGNMENT;
     }
@@ -505,6 +505,14 @@ int CDVDSubtitlesLibass::GetNrOfEvents() const
 
 int CDVDSubtitlesLibass::AddEvent(const char* text, double startTime, double stopTime)
 {
+  return AddEvent(text, startTime, stopTime, nullptr);
+}
+
+int CDVDSubtitlesLibass::AddEvent(const char* text,
+                                  double startTime,
+                                  double stopTime,
+                                  subtitleOpts* opts)
+{
   if (text == NULL || text[0] == '\0')
   {
     CLog::Log(LOGDEBUG,
@@ -529,6 +537,12 @@ int CDVDSubtitlesLibass::AddEvent(const char* text, double startTime, double sto
     event->Style = m_defaultKodiStyleId;
     event->ReadOrder = eventId;
     event->Text = strdup(text);
+    if (opts && opts->useMargins)
+    {
+      event->MarginL = opts->marginLeft;
+      event->MarginR = opts->marginRight;
+      event->MarginV = opts->marginVertical;
+    }
     return eventId;
   }
   else

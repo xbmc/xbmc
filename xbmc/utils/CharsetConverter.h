@@ -144,6 +144,13 @@ public:
 
   static bool utf8logicalToVisualBiDi(const std::string& utf8StringSrc, std::string& utf8StringDst, bool failOnBadString = false);
 
+  /**
+   * Check if a string has RTL direction.
+   * @param utf8StringSrc the string
+   * @return true if the string is RTL, otherwise false
+   */
+  static bool utf8IsRTLBidiDirection(const std::string& utf8String);
+
   static bool utf32ToStringCharset(const std::u32string& utf32StringSrc, std::string& stringDst);
 
   static std::vector<std::string> getCharsetLabels();

@@ -97,6 +97,11 @@ Color UTILS::COLOR::ConvertHexToColor(const std::string& hexColor)
   return value;
 }
 
+Color UTILS::COLOR::ConvertIntToRGB(int r, int g, int b)
+{
+  return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
+}
+
 ColorInfo UTILS::COLOR::MakeColorInfo(const Color& argb)
 {
   ColorInfo colorInfo;

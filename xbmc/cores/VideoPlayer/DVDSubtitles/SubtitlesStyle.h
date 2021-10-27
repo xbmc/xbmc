@@ -59,7 +59,7 @@ enum class BorderStyle
   SQUARE_BOX
 };
 
-enum class AssOverrideStyles
+enum class OverrideStyles
 {
   DISABLED = 0,
   POSITIONS,
@@ -83,11 +83,21 @@ struct style
   UTILS::COLOR::Color shadowColor = UTILS::COLOR::BLACK;
   int shadowOpacity = 100; // In %
   FontAlignment alignment = FontAlignment::TOP_LEFT;
-  AssOverrideStyles assOverrideStyles = AssOverrideStyles::DISABLED;
+  // Override styles to native ASS/SSA format type only
+  OverrideStyles assOverrideStyles = OverrideStyles::DISABLED;
+  // Override fonts to native ASS/SSA format type only
   bool assOverrideFont = false;
   bool drawWithinBlackBars = false;
   int marginVertical = MARGIN_VERTICAL;
   int blur = 0; // In %
+};
+
+struct subtitleOpts
+{
+  bool useMargins = false;
+  int marginLeft;
+  int marginRight;
+  int marginVertical;
 };
 
 struct renderOpts
