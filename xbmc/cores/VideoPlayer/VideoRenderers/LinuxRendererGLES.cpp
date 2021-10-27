@@ -31,6 +31,7 @@
 #include "windowing/WinSystem.h"
 
 using namespace Shaders;
+using namespace Shaders::GLES;
 
 CLinuxRendererGLES::CLinuxRendererGLES()
 {

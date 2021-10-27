@@ -30,7 +30,13 @@ class CRenderSystemGLES;
 
 class CTexture;
 namespace Shaders { class BaseYUV2RGBGLSLShader; }
-namespace Shaders { class BaseVideoFilterShader; }
+namespace Shaders
+{
+namespace GLES
+{
+class BaseVideoFilterShader;
+}
+} // namespace Shaders
 
 struct DRAWRECT
 {
@@ -198,7 +204,7 @@ protected:
 
   Shaders::BaseYUV2RGBGLSLShader *m_pYUVProgShader{nullptr};
   Shaders::BaseYUV2RGBGLSLShader *m_pYUVBobShader{nullptr};
-  Shaders::BaseVideoFilterShader *m_pVideoFilterShader{nullptr};
+  Shaders::GLES::BaseVideoFilterShader* m_pVideoFilterShader{nullptr};
   ESCALINGMETHOD m_scalingMethod{VS_SCALINGMETHOD_LINEAR};
   ESCALINGMETHOD m_scalingMethodGui{VS_SCALINGMETHOD_MAX};
   bool m_fullRange;
