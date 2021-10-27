@@ -61,10 +61,10 @@ void GetHSLValues(ColorInfo& colorInfo)
 
 } // unnamed namespace
 
-Color UTILS::COLOR::ChangeOpacity(const Color color, const float opacity)
+Color UTILS::COLOR::ChangeOpacity(const Color argb, const float opacity)
 {
-  int newAlpha = ceil(((color >> 24) & 0xff) * opacity);
-  return (color & 0x00FFFFFF) | (newAlpha << 24);
+  int newAlpha = static_cast<int>(std::ceil(((argb >> 24) & 0xff) * opacity));
+  return (argb & 0x00FFFFFF) | (newAlpha << 24);
 };
 
 Color UTILS::COLOR::ConvertToRGBA(const Color argb)

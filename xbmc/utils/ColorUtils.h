@@ -40,12 +40,12 @@ struct ColorInfo
   double lightness;
 };
 
-/*! \brief Change the opacity of a given color
+/*! \brief Change the opacity of a given ARGB color
     \param color The original color
     \param opacity The opacity value as a float
     \return the original color with the changed opacity/alpha value
 */
-Color ChangeOpacity(const Color color, const float opacity);
+Color ChangeOpacity(const Color argb, const float opacity);
 
 /*! \brief Convert given ARGB color to RGBA color value
     \param color The original color
