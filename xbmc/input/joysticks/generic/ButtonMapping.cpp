@@ -319,10 +319,7 @@ KODI::INPUT::INTERCARDINAL_DIRECTION CPointerDetector::GetPointerDirection(int x
 // --- CButtonMapping ----------------------------------------------------------
 
 CButtonMapping::CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMap, IKeymap* keymap)
-  : m_buttonMapper(buttonMapper),
-    m_buttonMap(buttonMap),
-    m_keymap(keymap),
-    m_frameCount(0)
+  : m_buttonMapper(buttonMapper), m_buttonMap(buttonMap), m_keymap(keymap), m_frameCount(0)
 {
   assert(m_buttonMapper != nullptr);
   assert(m_buttonMap != nullptr);
