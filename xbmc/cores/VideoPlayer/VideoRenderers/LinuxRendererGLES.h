@@ -29,11 +29,11 @@ class CRenderCapture;
 class CRenderSystemGLES;
 
 class CTexture;
-namespace Shaders { class BaseYUV2RGBGLSLShader; }
 namespace Shaders
 {
 namespace GLES
 {
+class BaseYUV2RGBGLSLShader;
 class BaseVideoFilterShader;
 }
 } // namespace Shaders
@@ -202,8 +202,8 @@ protected:
                  unsigned width,  unsigned height,
                  int stride, int bpp, void* data);
 
-  Shaders::BaseYUV2RGBGLSLShader *m_pYUVProgShader{nullptr};
-  Shaders::BaseYUV2RGBGLSLShader *m_pYUVBobShader{nullptr};
+  Shaders::GLES::BaseYUV2RGBGLSLShader* m_pYUVProgShader{nullptr};
+  Shaders::GLES::BaseYUV2RGBGLSLShader* m_pYUVBobShader{nullptr};
   Shaders::GLES::BaseVideoFilterShader* m_pVideoFilterShader{nullptr};
   ESCALINGMETHOD m_scalingMethod{VS_SCALINGMETHOD_LINEAR};
   ESCALINGMETHOD m_scalingMethodGui{VS_SCALINGMETHOD_MAX};
