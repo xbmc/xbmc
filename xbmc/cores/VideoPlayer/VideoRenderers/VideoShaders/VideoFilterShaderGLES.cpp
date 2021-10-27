@@ -18,7 +18,7 @@
 #include <math.h>
 #include <string>
 
-using namespace Shaders;
+using namespace Shaders::GLES;
 
 //////////////////////////////////////////////////////////////////////
 // BaseVideoFilterShader - base class for video filter shaders
