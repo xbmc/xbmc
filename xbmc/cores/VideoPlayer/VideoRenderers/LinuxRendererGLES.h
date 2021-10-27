@@ -38,14 +38,6 @@ class BaseVideoFilterShader;
 }
 } // namespace Shaders
 
-struct DRAWRECT
-{
-  float left;
-  float top;
-  float right;
-  float bottom;
-};
-
 enum RenderMethod
 {
   RENDER_GLSL = 0x01,

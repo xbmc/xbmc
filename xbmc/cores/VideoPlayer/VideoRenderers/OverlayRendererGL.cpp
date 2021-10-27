@@ -475,20 +475,24 @@ void COverlayTextureGL::Render(SRenderState& state)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-  DRAWRECT rd;
+  CRect rd;
   if (m_pos == POSITION_RELATIVE)
   {
-    rd.top = state.y - state.height * 0.5f;
-    rd.bottom = state.y + state.height * 0.5f;
-    rd.left = state.x - state.width * 0.5f;
-    rd.right = state.x + state.width * 0.5f;
+    float top = state.y - state.height * 0.5f;
+    float bottom = state.y + state.height * 0.5f;
+    float left = state.x - state.width * 0.5f;
+    float right = state.x + state.width * 0.5f;
+
+    rd.SetRect(left, top, right, bottom);
   }
   else
   {
-    rd.top     = state.y;
-    rd.bottom  = state.y + state.height;
-    rd.left    = state.x;
-    rd.right   = state.x + state.width;
+    float top = state.y;
+    float bottom = state.y + state.height;
+    float left = state.x;
+    float right   = state.x + state.width;
+
+    rd.SetRect(left, top, right, bottom);
   }
 
 #if defined(HAS_GL)
@@ -519,26 +523,26 @@ void COverlayTextureGL::Render(SRenderState& state)
   glUniform4f(uniColLoc,(col[0]), (col[1]), (col[2]), (col[3]));
 
   // Setup vertex position values
-  vertex[0].x = rd.left;
-  vertex[0].y = rd.top;
+  vertex[0].x = rd.x1;
+  vertex[0].y = rd.y1;
   vertex[0].z = 0;
   vertex[0].u1 = 0.0f;
   vertex[0].v1 = 0.0;
 
-  vertex[1].x = rd.right;
-  vertex[1].y = rd.top;
+  vertex[1].x = rd.x2;
+  vertex[1].y = rd.y1;
   vertex[1].z = 0;
   vertex[1].u1 = m_u;
   vertex[1].v1 = 0.0f;
 
-  vertex[2].x = rd.right;
-  vertex[2].y = rd.bottom;
+  vertex[2].x = rd.x2;
+  vertex[2].y = rd.y2;
   vertex[2].z = 0;
   vertex[2].u1 = m_u;
   vertex[2].v1 = m_v;
 
-  vertex[3].x = rd.left;
-  vertex[3].y = rd.bottom;
+  vertex[3].x = rd.x1;
+  vertex[3].y = rd.y2;
   vertex[3].z = 0;
   vertex[3].u1 = 0.0f;
   vertex[3].v1 = m_v;
@@ -593,10 +597,10 @@ void COverlayTextureGL::Render(SRenderState& state)
 
   glUniform4f(uniColLoc,(col[0]), (col[1]), (col[2]), (col[3]));
   // Setup vertex position values
-  ver[0][0] = ver[3][0] = rd.left;
-  ver[0][1] = ver[1][1] = rd.top;
-  ver[1][0] = ver[2][0] = rd.right;
-  ver[2][1] = ver[3][1] = rd.bottom;
+  ver[0][0] = ver[3][0] = rd.x1;
+  ver[0][1] = ver[1][1] = rd.y1;
+  ver[1][0] = ver[2][0] = rd.x2;
+  ver[2][1] = ver[3][1] = rd.y2;
 
   // Setup texture coordinates
   tex[0][0] = tex[0][1] = tex[1][1] = tex[3][0] = 0.0f;
