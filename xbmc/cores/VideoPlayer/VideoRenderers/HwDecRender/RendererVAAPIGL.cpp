@@ -105,7 +105,7 @@ bool CRendererVAAPI::Configure(const VideoPicture &picture, float fps, unsigned 
 
   for (auto &fence : m_fences)
   {
-    fence = GL_NONE;
+    fence = {};
   }
 
   return CLinuxRendererGL::Configure(picture, fps, orientation);
@@ -271,7 +271,7 @@ void CRendererVAAPI::AfterRenderHook(int idx)
   if (glIsSync(m_fences[idx]))
   {
     glDeleteSync(m_fences[idx]);
-    m_fences[idx] = GL_NONE;
+    m_fences[idx] = {};
   }
   m_fences[idx] = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
 }
@@ -286,7 +286,7 @@ bool CRendererVAAPI::NeedBuffer(int idx)
     if (state == GL_SIGNALED)
     {
       glDeleteSync(m_fences[idx]);
-      m_fences[idx] = GL_NONE;
+      m_fences[idx] = {};
     }
     else
     {
@@ -302,7 +302,7 @@ void CRendererVAAPI::ReleaseBuffer(int idx)
   if (glIsSync(m_fences[idx]))
   {
     glDeleteSync(m_fences[idx]);
-    m_fences[idx] = GL_NONE;
+    m_fences[idx] = {};
   }
   if (m_isVAAPIBuffer)
   {
