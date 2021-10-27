@@ -40,7 +40,7 @@ void CPortInput::RegisterInput(JOYSTICK::IInputProvider* provider)
 void CPortInput::UnregisterInput(JOYSTICK::IInputProvider* provider)
 {
   // Unregister in reverse order
-  if (provider == nullptr)
+  if (provider == nullptr && m_appInput)
     m_appInput->UnregisterInputProvider();
   m_appInput.reset();
 
