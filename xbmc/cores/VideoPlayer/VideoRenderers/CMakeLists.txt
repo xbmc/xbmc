@@ -33,7 +33,8 @@ if (OPENGL_FOUND OR OPENGLES_FOUND)
   list(APPEND SOURCES OverlayRendererGL.cpp
                       FrameBufferObject.cpp)
   list(APPEND HEADERS OverlayRendererGL.h
-                      FrameBufferObject.h)
+                      FrameBufferObject.h
+                      RendererGLCommon.h)
 endif()
 
 if(OPENGL_FOUND)

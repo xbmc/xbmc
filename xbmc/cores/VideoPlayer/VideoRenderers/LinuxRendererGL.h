@@ -8,21 +8,22 @@
 
 #pragma once
 
+#include "BaseRenderer.h"
+#include "ColorManager.h"
+#include "FrameBufferObject.h"
+#include "RenderFlags.h"
+#include "RenderInfo.h"
+#include "RendererGLCommon.h"
+#include "VideoShaders/ShaderFormats.h"
+#include "cores/VideoSettings.h"
+#include "guilib/Shader.h"
+#include "threads/Event.h"
+#include "utils/Geometry.h"
+#include "windowing/GraphicContext.h"
+
 #include <vector>
 
 #include "system_gl.h"
-
-#include "FrameBufferObject.h"
-#include "guilib/Shader.h"
-#include "cores/VideoSettings.h"
-#include "RenderFlags.h"
-#include "RenderInfo.h"
-#include "windowing/GraphicContext.h"
-#include "BaseRenderer.h"
-#include "ColorManager.h"
-#include "threads/Event.h"
-#include "VideoShaders/ShaderFormats.h"
-#include "utils/Geometry.h"
 
 extern "C" {
 #include <libavutil/mastering_display_metadata.h>
@@ -40,23 +41,6 @@ class BaseYUV2RGBGLSLShader;
 class BaseVideoFilterShader;
 }
 } // namespace Shaders
-
-enum RenderMethod
-{
-  RENDER_GLSL=0x01,
-  RENDER_CUSTOM=0x02
-};
-
-enum RenderQuality
-{
-  RQ_LOW=1,
-  RQ_SINGLEPASS,
-  RQ_MULTIPASS,
-};
-
-#define FIELD_FULL 0
-#define FIELD_TOP 1
-#define FIELD_BOT 2
 
 class CLinuxRendererGL : public CBaseRenderer
 {
