@@ -25,11 +25,12 @@ CPortNode& CPortNode::operator=(const CPortNode& rhs)
   if (this != &rhs)
   {
     m_bConnected = rhs.m_bConnected;
+    m_active = rhs.m_active;
     m_portType = rhs.m_portType;
     m_portId = rhs.m_portId;
-    m_controllers = rhs.m_controllers;
     m_address = rhs.m_address;
-    m_active = rhs.m_active;
+    m_forceConnected = rhs.m_forceConnected;
+    m_controllers = rhs.m_controllers;
   }
 
   return *this;

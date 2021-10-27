@@ -847,6 +847,13 @@ extern "C"
     /// @brief Required for GAME_PORT_CONTROLLER type
     const char* port_id;
 
+    /// @brief Flag to prevent a port from being disconnected
+    ///
+    /// Set to true to prevent a disconnection option from appearing in the
+    /// GUI.
+    ///
+    bool force_connected;
+
     /// @brief
     game_input_device* accepted_devices;
 
