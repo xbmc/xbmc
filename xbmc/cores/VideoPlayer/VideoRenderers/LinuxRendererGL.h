@@ -54,10 +54,6 @@ enum RenderQuality
   RQ_MULTIPASS,
 };
 
-#define PLANE_Y 0
-#define PLANE_U 1
-#define PLANE_V 2
-
 #define FIELD_FULL 0
 #define FIELD_TOP 1
 #define FIELD_BOT 2
