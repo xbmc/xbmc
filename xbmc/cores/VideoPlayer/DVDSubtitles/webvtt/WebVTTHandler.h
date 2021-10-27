@@ -73,7 +73,7 @@ struct webvttCueSettings
   webvttAutoValue line;
   webvttAutoValue position;
   WebvttAlign positionAlign;
-  int size;
+  double size;
   WebvttAlign align;
 };
 
