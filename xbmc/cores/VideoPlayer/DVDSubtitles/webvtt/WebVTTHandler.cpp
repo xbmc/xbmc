@@ -457,7 +457,7 @@ void CWebVTTHandler::DecodeLine(std::string line, std::vector<subtitleData>* sub
         if (m_feedCssStyle.selectorType == WebvttSelector::TYPE)
         {
           // If there are multiple type selectors, copy the style for each one
-          for (int i = 1; i < m_cueCurrentCssStyleSelectors.size(); i++)
+          for (size_t i = 1; i < m_cueCurrentCssStyleSelectors.size(); i++)
           {
             webvttCssStyle cssStyleCopy = m_feedCssStyle;
             cssStyleCopy.selectorName = m_cueCurrentCssStyleSelectors[i];
