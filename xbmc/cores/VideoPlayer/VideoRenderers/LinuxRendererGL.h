@@ -33,7 +33,13 @@ class CRenderSystemGL;
 
 class CTexture;
 namespace Shaders { class BaseYUV2RGBGLSLShader; }
-namespace Shaders { class BaseVideoFilterShader; }
+namespace Shaders
+{
+namespace GL
+{
+class BaseVideoFilterShader;
+}
+} // namespace Shaders
 
 struct DRAWRECT
 {
@@ -214,7 +220,7 @@ protected:
   CPictureBuffer m_buffers[NUM_BUFFERS];
 
   Shaders::BaseYUV2RGBGLSLShader *m_pYUVShader = nullptr;
-  Shaders::BaseVideoFilterShader *m_pVideoFilterShader = nullptr;
+  Shaders::GL::BaseVideoFilterShader* m_pVideoFilterShader = nullptr;
   ESCALINGMETHOD m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
   ESCALINGMETHOD m_scalingMethodGui = VS_SCALINGMETHOD_MAX;
   bool m_useDithering;
