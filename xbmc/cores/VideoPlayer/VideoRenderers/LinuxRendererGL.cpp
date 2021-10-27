@@ -52,6 +52,7 @@
 #define PBO_OFFSET 16
 
 using namespace Shaders;
+using namespace Shaders::GL;
 
 static const GLubyte stipple_weave[] = {
   0x00, 0x00, 0x00, 0x00,
