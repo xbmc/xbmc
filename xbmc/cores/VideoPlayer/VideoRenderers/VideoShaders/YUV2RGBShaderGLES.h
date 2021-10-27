@@ -20,9 +20,11 @@ extern "C" {
 }
 
 namespace Shaders {
+namespace GLES
+{
 
-  class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
-  {
+class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
+{
   public:
     BaseYUV2RGBGLSLShader(EShaderFormat format,
                           AVColorPrimaries dst,
@@ -132,4 +134,5 @@ namespace Shaders {
     GLint m_hField;
   };
 
+  } // namespace GLES
 } // end namespace

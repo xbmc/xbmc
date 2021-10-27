@@ -17,7 +17,7 @@
 #include <sstream>
 #include <string>
 
-using namespace Shaders;
+using namespace Shaders::GLES;
 
 //////////////////////////////////////////////////////////////////////
 // BaseYUV2RGBGLSLShader - base class for GLSL YUV2RGB shaders
