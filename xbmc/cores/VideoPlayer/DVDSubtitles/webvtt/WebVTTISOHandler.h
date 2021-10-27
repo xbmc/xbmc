@@ -31,7 +31,7 @@ public:
                     int bufferSize,
                     double pts,
                     std::vector<subtitleData>* subList,
-                    int& prevSubStopTime);
+                    double& prevSubStopTime);
 
 private:
   bool ParseVTTCueBox(CCharArrayParser& sampleData,

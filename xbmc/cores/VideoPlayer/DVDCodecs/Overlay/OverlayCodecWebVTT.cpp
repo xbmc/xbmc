@@ -67,7 +67,7 @@ OverlayMessage COverlayCodecWebVTT::Decode(DemuxPacket* pPacket)
 
   if (m_isISOFormat)
   {
-    int prevSubStopTime = 0;
+    double prevSubStopTime = 0.0;
 
     m_webvttHandler.DecodeStream(data, pPacket->iSize, pPacket->dts, &subtitleList,
                                  prevSubStopTime);
