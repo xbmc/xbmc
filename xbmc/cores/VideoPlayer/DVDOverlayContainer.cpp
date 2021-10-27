@@ -130,7 +130,7 @@ void CDVDOverlayContainer::Clear()
   m_overlays.clear();
 }
 
-int CDVDOverlayContainer::GetSize()
+size_t CDVDOverlayContainer::GetSize()
 {
   return m_overlays.size();
 }

@@ -47,7 +47,7 @@ public:
   void Flush();
 
   void CleanUp(double pts); // validates all overlays against current pts
-  int GetSize();
+  size_t GetSize();
 
   void UpdateOverlayInfo(const std::shared_ptr<CDVDInputStreamNavigator>& pStream,
                          CDVDDemuxSPU* pSpu,
