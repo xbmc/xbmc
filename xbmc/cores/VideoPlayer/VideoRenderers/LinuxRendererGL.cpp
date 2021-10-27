@@ -340,9 +340,9 @@ void CLinuxRendererGL::CalculateTextureSourceRects(int source, int num_planes)
       if(field != FIELD_FULL)
       {
         /* correct for field offsets and chroma offsets */
-        float offset_y = 0.5;
+        float offset_y = 0.5f;
         if(plane != 0)
-          offset_y += 0.5;
+          offset_y += 0.5f;
         if(field == FIELD_BOT)
           offset_y *= -1;
 
