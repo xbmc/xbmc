@@ -21,7 +21,7 @@
 #include <string>
 #include <utility>
 
-using namespace Shaders;
+using namespace Shaders::GL;
 
 //////////////////////////////////////////////////////////////////////
 // BaseYUV2RGBGLSLShader - base class for GLSL YUV2RGB shaders

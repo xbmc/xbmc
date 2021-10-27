@@ -25,6 +25,8 @@ extern "C" {
 class CConvertMatrix;
 
 namespace Shaders {
+namespace GL
+{
 
 class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
 {
@@ -152,5 +154,6 @@ protected:
   ESCALINGMETHOD m_scaling = VS_SCALINGMETHOD_LANCZOS3_FAST;
 };
 
+} // namespace GL
 } // end namespace
 
