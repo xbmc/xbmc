@@ -99,6 +99,7 @@ protected:
 
   /*!
   * \brief Add an ASS event to show a subtitle on a specified time
+  * \param text The subtitle text
   * \param startTime The PTS start time of the Event
   * \param stopTime The PTS stop time of the Event
   * \return Return the Event ID, otherwise ASS_NO_ID if fails
@@ -107,6 +108,7 @@ protected:
 
   /*!
   * \brief Add an ASS event to show a subtitle on a specified time
+  * \param text The subtitle text
   * \param startTime The PTS start time of the Event
   * \param stopTime The PTS stop time of the Event
   * \param opts Subtitle options
