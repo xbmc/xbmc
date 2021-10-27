@@ -48,7 +48,7 @@ void CWebVTTISOHandler::DecodeStream(const char* buffer,
                                      int bufferSize,
                                      double pts,
                                      std::vector<subtitleData>* subList,
-                                     int& prevSubStopTime)
+                                     double& prevSubStopTime)
 {
   CCharArrayParser sampleData;
   sampleData.Reset(buffer, bufferSize);
