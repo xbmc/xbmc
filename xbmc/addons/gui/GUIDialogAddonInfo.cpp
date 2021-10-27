@@ -798,17 +798,35 @@ void CGUIDialogAddonInfo::BuildDependencyList()
         CInstalledWithAvailable{dep, addonInstalled, addonAvailable});
   }
 
-  // sort criteria in dialog:
-  // 1. optional add-ons to top
-  // 2. scripts/modules to bottom
   std::sort(m_depsInstalledWithAvailable.begin(), m_depsInstalledWithAvailable.end(),
             [](const auto& a, const auto& b) {
+              // 1. "not installed/available" go to the bottom first
+              const bool depAInstalledOrAvailable =
+                  a.m_installed != nullptr || a.m_available != nullptr;
+              const bool depBInstalledOrAvailable =
+                  b.m_installed != nullptr || b.m_available != nullptr;
+
+              if (depAInstalledOrAvailable != depBInstalledOrAvailable)
+              {
+                return !depAInstalledOrAvailable;
+              }
+
+              // 2. then optional add-ons to top
               if (a.m_depInfo.optional != b.m_depInfo.optional)
               {
                 return a.m_depInfo.optional;
               }
 
+              // 3. scripts/modules to bottom
               const std::shared_ptr<IAddon>& depA = a.m_installed ? a.m_installed : a.m_available;
-              return (depA && depA->MainType() != ADDON_SCRIPT_MODULE);
+              const std::shared_ptr<IAddon>& depB = b.m_installed ? b.m_installed : b.m_available;
+
+              if (depA && depB && depA->MainType() != depB->MainType())
+              {
+                return depA->MainType() != ADDON_SCRIPT_MODULE;
+              }
+
+              // 4. finally order by addon-id
+              return a.m_depInfo.id < b.m_depInfo.id;
             });
 }
