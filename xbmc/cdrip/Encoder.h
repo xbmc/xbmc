@@ -9,17 +9,14 @@
 #pragma once
 
 #include "IEncoder.h"
+#include "filesystem/File.h"
 
+#include <memory>
 #include <stdint.h>
 #include <stdio.h>
 #include <string>
 
 #define WRITEBUFFER_SIZE 131072 // 128k buffer
-
-namespace XFILE
-{
-class CFile;
-}
 
 class CEncoder : public IEncoder
 {
@@ -27,7 +24,7 @@ public:
   CEncoder() = default;
   virtual ~CEncoder();
 
-  bool EncoderInit(const char* strFile, int iInChannels, int iInRate, int iInBits);
+  bool EncoderInit(const std::string& strFile, int iInChannels, int iInRate, int iInBits);
   int EncoderEncode(int nNumBytesRead, uint8_t* pbtStream);
   bool EncoderClose();
 
@@ -43,15 +40,15 @@ public:
 
 protected:
   virtual int Write(const uint8_t* pBuffer, int iBytes);
-  virtual int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
+  virtual int64_t Seek(int64_t iFilePosition, int iWhence);
 
 private:
-  bool FileCreate(const char* filename);
+  bool FileCreate(const std::string& filename);
   bool FileClose();
   int FileWrite(const void* pBuffer, uint32_t iBytes);
   int FlushStream();
 
-  XFILE::CFile* m_file{nullptr};
+  std::unique_ptr<XFILE::CFile> m_file;
 
   uint8_t m_btWriteBuffer[WRITEBUFFER_SIZE]; // 128k buffer for writing to disc
   uint32_t m_dwWriteBufferPointer{0};

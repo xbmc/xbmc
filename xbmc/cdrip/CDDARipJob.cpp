@@ -215,7 +215,7 @@ CEncoder* CCDDARipJob::SetupEncoder(CFile& reader)
   encoder->SetYear(m_tag.GetYearString());
 
   // init encoder
-  if (!encoder->EncoderInit(m_output.c_str(), m_channels, m_rate, m_bps))
+  if (!encoder->EncoderInit(m_output, m_channels, m_rate, m_bps))
     delete encoder, encoder = nullptr;
 
   return encoder;
