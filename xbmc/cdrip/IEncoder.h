@@ -8,8 +8,6 @@
 
 #pragma once
 
-#include "addons/kodi-dev-kit/include/kodi/addon-instance/AudioEncoder.h"
-
 #include <stdint.h>
 #include <string>
 
@@ -17,7 +15,7 @@ class IEncoder
 {
 public:
   virtual ~IEncoder() = default;
-  virtual bool Init(AddonToKodiFuncTable_AudioEncoder& callbacks) = 0;
+  virtual bool Init() = 0;
   virtual int Encode(int nNumBytesRead, uint8_t* pbtStream) = 0;
   virtual bool Close() = 0;
 

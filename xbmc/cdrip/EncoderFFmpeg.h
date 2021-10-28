@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "IEncoder.h"
+#include "Encoder.h"
 
 extern "C"
 {
@@ -17,13 +17,13 @@ extern "C"
 #include <libswresample/swresample.h>
 }
 
-class CEncoderFFmpeg : public IEncoder
+class CEncoderFFmpeg : public CEncoder
 {
 public:
   CEncoderFFmpeg() = default;
   ~CEncoderFFmpeg() override = default;
 
-  bool Init(AddonToKodiFuncTable_AudioEncoder& callbacks) override;
+  bool Init() override;
   int Encode(int nNumBytesRead, uint8_t* pbtStream) override;
   bool Close() override;
 
@@ -57,6 +57,4 @@ private:
   unsigned int m_ResampledBufferSize{0};
   AVFrame* m_ResampledFrame{nullptr};
   bool m_NeedConversion{false};
-
-  AddonToKodiFuncTable_AudioEncoder m_callbacks{};
 };

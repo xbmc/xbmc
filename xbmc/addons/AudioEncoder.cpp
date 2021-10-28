@@ -16,6 +16,9 @@ CAudioEncoder::CAudioEncoder(const AddonInfoPtr& addonInfo)
   // Create "C" interface structures, used as own parts to prevent API problems on update
   m_struct.toAddon = new KodiToAddonFuncTable_AudioEncoder();
   m_struct.toKodi = new AddonToKodiFuncTable_AudioEncoder();
+  m_struct.toKodi->kodiInstance = this;
+  m_struct.toKodi->write = cb_write;
+  m_struct.toKodi->seek = cb_seek;
 }
 
 CAudioEncoder::~CAudioEncoder()
@@ -25,9 +28,8 @@ CAudioEncoder::~CAudioEncoder()
   delete m_struct.toKodi;
 }
 
-bool CAudioEncoder::Init(AddonToKodiFuncTable_AudioEncoder& callbacks)
+bool CAudioEncoder::Init()
 {
-  *m_struct.toKodi = callbacks;
   if (CreateInstance(&m_struct) != ADDON_STATUS_OK || !m_struct.toAddon->start)
     return false;
 
@@ -66,6 +68,30 @@ bool CAudioEncoder::Close()
   DestroyInstance();
 
   return ret;
+}
+
+int CAudioEncoder::Write(const uint8_t* data, int len)
+{
+  return CEncoder::Write(data, len);
+}
+
+int64_t CAudioEncoder::Seek(int64_t pos, int whence)
+{
+  return CEncoder::Seek(pos, whence);
+}
+
+int CAudioEncoder::cb_write(KODI_HANDLE kodiInstance, const uint8_t* data, int len)
+{
+  if (!kodiInstance || !data)
+    return -1;
+  return static_cast<CAudioEncoder*>(kodiInstance)->Write(data, len);
+}
+
+int64_t CAudioEncoder::cb_seek(KODI_HANDLE kodiInstance, int64_t pos, int whence)
+{
+  if (!kodiInstance)
+    return -1;
+  return static_cast<CAudioEncoder*>(kodiInstance)->Seek(pos, whence);
 }
 
 } /* namespace ADDON */
