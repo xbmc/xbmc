@@ -17,7 +17,10 @@
 
 #define WRITEBUFFER_SIZE 131072 // 128k buffer
 
-namespace XFILE { class CFile; }
+namespace XFILE
+{
+class CFile;
+}
 
 class CEncoder
 {
@@ -40,21 +43,20 @@ public:
 
   bool FileCreate(const char* filename);
   bool FileClose();
-  int FileWrite(const void *pBuffer, uint32_t iBytes);
+  int FileWrite(const void* pBuffer, uint32_t iBytes);
   int64_t FileSeek(int64_t iFilePosition, int iWhence = SEEK_SET);
-protected:
 
-  int WriteStream(const void *pBuffer, uint32_t iBytes);
+protected:
+  int WriteStream(const void* pBuffer, uint32_t iBytes);
   int FlushStream();
 
-  static int WriteCallback(void *opaque, const uint8_t *data, int size);
-  static int64_t SeekCallback(void *opaque, int64_t offset, int whence);
+  static int WriteCallback(void* opaque, const uint8_t* data, int size);
+  static int64_t SeekCallback(void* opaque, int64_t offset, int whence);
 
   std::shared_ptr<IEncoder> m_impl;
 
-  XFILE::CFile *m_file;
+  XFILE::CFile* m_file;
 
   uint8_t m_btWriteBuffer[WRITEBUFFER_SIZE]; // 128k buffer for writing to disc
   uint32_t m_dwWriteBufferPointer;
 };
-

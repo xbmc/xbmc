@@ -7,13 +7,14 @@
  */
 
 #include "CDDARipJob.h"
+
 #include "Encoder.h"
 #include "EncoderFFmpeg.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
-#include "utils/log.h"
-#include "utils/SystemInfo.h"
 #include "Util.h"
+#include "addons/AddonManager.h"
+#include "addons/AudioEncoder.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
@@ -23,10 +24,10 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/StringUtils.h"
 #include "storage/MediaManager.h"
-#include "addons/AddonManager.h"
-#include "addons/AudioEncoder.h"
+#include "utils/StringUtils.h"
+#include "utils/SystemInfo.h"
+#include "utils/log.h"
 
 #if defined(TARGET_WINDOWS)
 #include "platform/win32/CharsetConverter.h"
@@ -42,10 +43,16 @@ CCDDARipJob::CCDDARipJob(const std::string& input,
                          int encoder,
                          bool eject,
                          unsigned int rate,
-                         unsigned int channels, unsigned int bps) :
-  m_rate(rate), m_channels(channels), m_bps(bps), m_tag(tag),
-  m_input(input), m_output(CUtil::MakeLegalPath(output)), m_eject(eject),
-  m_encoder(encoder)
+                         unsigned int channels,
+                         unsigned int bps)
+  : m_rate(rate),
+    m_channels(channels),
+    m_bps(bps),
+    m_tag(tag),
+    m_input(input),
+    m_output(CUtil::MakeLegalPath(output)),
+    m_eject(eject),
+    m_encoder(encoder)
 {
 }
 
@@ -69,7 +76,7 @@ bool CCDDARipJob::DoWork()
   // init ripper
   CFile reader;
   CEncoder* encoder = nullptr;
-  if (!reader.Open(m_input,READ_CACHED) || !(encoder=SetupEncoder(reader)))
+  if (!reader.Open(m_input, READ_CACHED) || !(encoder = SetupEncoder(reader)))
   {
     CLog::Log(LOGERROR, "Error: CCDDARipper::Init failed");
     return false;
@@ -77,7 +84,8 @@ bool CCDDARipJob::DoWork()
 
   // setup the progress dialog
   CGUIDialogExtendedProgressBar* pDlgProgress =
-      CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogExtendedProgressBar>(WINDOW_DIALOG_EXT_PROGRESS);
+      CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogExtendedProgressBar>(
+          WINDOW_DIALOG_EXT_PROGRESS);
   CGUIDialogProgressBarHandle* handle = pDlgProgress->GetHandle(g_localizeStrings.Get(605));
 
   int iTrack = atoi(m_input.substr(13, m_input.size() - 13 - 5).c_str());
@@ -86,13 +94,13 @@ bool CCDDARipJob::DoWork()
   handle->SetText(strLine0);
 
   // start ripping
-  int percent=0;
-  int oldpercent=0;
+  int percent = 0;
+  int oldpercent = 0;
   bool cancelled(false);
   int result;
-  while (!cancelled && (result=RipChunk(reader, encoder, percent)) == 0)
+  while (!cancelled && (result = RipChunk(reader, encoder, percent)) == 0)
   {
-    cancelled = ShouldCancel(percent,100);
+    cancelled = ShouldCancel(percent, 100);
     if (percent > oldpercent)
     {
       oldpercent = percent;
@@ -156,22 +164,24 @@ int CCDDARipJob::RipChunk(CFile& reader, CEncoder* encoder, int& percent)
     return 1;
 
   // encode data
-  int encres=encoder->Encode(result, stream);
+  int encres = encoder->Encode(result, stream);
 
   // Get progress indication
-  percent = static_cast<int>(reader.GetPosition()*100/reader.GetLength());
+  percent = static_cast<int>(reader.GetPosition() * 100 / reader.GetLength());
 
   if (reader.GetPosition() == reader.GetLength())
     return 2;
 
-  return -(1-encres);
+  return -(1 - encres);
 }
 
 CEncoder* CCDDARipJob::SetupEncoder(CFile& reader)
 {
   CEncoder* encoder = nullptr;
-  const std::string audioEncoder = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_AUDIOCDS_ENCODER);
-  if (audioEncoder == "audioencoder.kodi.builtin.aac" || audioEncoder == "audioencoder.kodi.builtin.wma")
+  const std::string audioEncoder = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+      CSettings::SETTING_AUDIOCDS_ENCODER);
+  if (audioEncoder == "audioencoder.kodi.builtin.aac" ||
+      audioEncoder == "audioencoder.kodi.builtin.wma")
   {
     std::shared_ptr<IEncoder> enc(new CEncoderFFmpeg());
     encoder = new CEncoder(enc);
@@ -193,7 +203,8 @@ CEncoder* CCDDARipJob::SetupEncoder(CFile& reader)
   const std::string strTrack = StringUtils::Format(
       "{}", std::stol(m_input.substr(13, m_input.size() - 13 - 5), nullptr, 10));
 
-  const std::string itemSeparator = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator;
+  const std::string itemSeparator =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator;
 
   encoder->SetComment(std::string("Ripped with ") + CSysInfo::GetAppName());
   encoder->SetArtist(StringUtils::Join(m_tag.GetArtist(), itemSeparator));
@@ -218,14 +229,15 @@ std::string CCDDARipJob::SetupTempFile()
 #if defined(TARGET_WINDOWS)
   using namespace KODI::PLATFORM::WINDOWS;
   wchar_t tmpW[MAX_PATH];
-  GetTempFileName(ToW(CSpecialProtocol::TranslatePath("special://temp/")).c_str(), L"riptrack", 0, tmpW);
+  GetTempFileName(ToW(CSpecialProtocol::TranslatePath("special://temp/")).c_str(), L"riptrack", 0,
+                  tmpW);
   auto tmpString = FromW(tmpW);
   strncpy_s(tmp, tmpString.length(), tmpString.c_str(), MAX_PATH);
 #else
   int fd;
   strncpy(tmp, CSpecialProtocol::TranslatePath("special://temp/riptrackXXXXXX").c_str(), MAX_PATH);
   if ((fd = mkstemp(tmp)) == -1)
-   tmp[0] = '\0';
+    tmp[0] = '\0';
   if (fd != -1)
     close(fd);
 #endif
@@ -234,13 +246,12 @@ std::string CCDDARipJob::SetupTempFile()
 
 bool CCDDARipJob::operator==(const CJob* job) const
 {
-  if (strcmp(job->GetType(),GetType()) == 0)
+  if (strcmp(job->GetType(), GetType()) == 0)
   {
     const CCDDARipJob* rjob = dynamic_cast<const CCDDARipJob*>(job);
     if (rjob)
     {
-      return m_input  == rjob->m_input &&
-             m_output == rjob->m_output;
+      return m_input == rjob->m_input && m_output == rjob->m_output;
     }
   }
   return false;

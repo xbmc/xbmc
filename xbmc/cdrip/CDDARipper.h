@@ -16,7 +16,7 @@ class CFileItem;
 
 namespace MUSIC_INFO
 {
-  class CMusicInfoTag;
+class CMusicInfoTag;
 }
 
 /*! \brief Rip an entire CD or a single track
@@ -70,7 +70,9 @@ private:
    \param[out] legalType created directory type (see LEGAL_... constants)
    \return true if success, false if failure
    */
-  bool CreateAlbumDir(const MUSIC_INFO::CMusicInfoTag& infoTag, std::string& strDirectory, int& legalType);
+  bool CreateAlbumDir(const MUSIC_INFO::CMusicInfoTag& infoTag,
+                      std::string& strDirectory,
+                      int& legalType);
 
   /*! \brief Return formatted album subfolder for rip path
    \param infoTag music info tags for the CD, used to format album name
@@ -82,6 +84,5 @@ private:
    \param item CFileItem representing a track
    \return track file name
    */
-  std::string GetTrackName(CFileItem *item);
+  std::string GetTrackName(CFileItem* item);
 };
-
