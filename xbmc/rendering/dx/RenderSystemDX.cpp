@@ -95,6 +95,8 @@ bool CRenderSystemDX::InitRenderSystem()
     version += (decimal % 16) * std::pow(10, round);
   m_RenderVersion = StringUtils::Format("{:.1f}", static_cast<float>(version) / 10.0f);
 
+  CGUITextureD3D::Register();
+
   return true;
 }
 
