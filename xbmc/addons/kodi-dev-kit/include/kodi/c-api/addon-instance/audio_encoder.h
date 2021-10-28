@@ -18,6 +18,28 @@ extern "C"
 
   typedef void* KODI_ADDON_AUDIOENCODER_HDL;
 
+  struct KODI_ADDON_AUDIOENCODER_INFO_TAG
+  {
+    const char* title;
+    const char* artist;
+    const char* album;
+    const char* album_artist;
+    const char* media_type;
+    const char* genre;
+    int duration;
+    int track;
+    int disc;
+    const char* disc_subtitle;
+    int disc_total;
+    const char* release_date;
+    const char* lyrics;
+    int samplerate;
+    int channels;
+    int bits_per_sample;
+    int track_length;
+    const char* comment;
+  };
+
   typedef struct AddonToKodiFuncTable_AudioEncoder
   {
     KODI_HANDLE kodiInstance;
@@ -29,18 +51,7 @@ extern "C"
   {
     KODI_HANDLE addonInstance;
     bool(__cdecl* start)(const KODI_ADDON_AUDIOENCODER_HDL hdl,
-                         int in_channels,
-                         int in_rate,
-                         int in_bits,
-                         const char* title,
-                         const char* artist,
-                         const char* albumartist,
-                         const char* album,
-                         const char* year,
-                         const char* track,
-                         const char* genre,
-                         const char* comment,
-                         int track_length);
+                         const struct KODI_ADDON_AUDIOENCODER_INFO_TAG* tag);
     int(__cdecl* encode)(const KODI_ADDON_AUDIOENCODER_HDL hdl,
                          int num_bytes_read,
                          const uint8_t* pbt_stream);
