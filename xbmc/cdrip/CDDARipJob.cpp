@@ -9,12 +9,12 @@
 #include "CDDARipJob.h"
 
 #include "Encoder.h"
+#include "EncoderAddon.h"
 #include "EncoderFFmpeg.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "addons/AddonManager.h"
-#include "addons/AudioEncoder.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
@@ -191,7 +191,7 @@ CEncoder* CCDDARipJob::SetupEncoder(CFile& reader)
         CServiceBroker::GetAddonMgr().GetAddonInfo(audioEncoder, ADDON_AUDIOENCODER);
     if (addonInfo)
     {
-      encoder = new CAudioEncoder(addonInfo);
+      encoder = new CEncoderAddon(addonInfo);
     }
   }
   if (!encoder)
