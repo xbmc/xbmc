@@ -109,7 +109,7 @@ void CDVDSubtitleTagSami::ConvertLine(std::string& strUTF8, const char* langClas
         std::string tagOptionName = m_tagOptions->GetMatch(1);
         std::string tagOptionValue = m_tagOptions->GetMatch(2);
         std::string colorHex = "FFFFFF";
-        pos2 += tagOptionName.length() + tagOptionValue.length();
+        pos2 += static_cast<int>(tagOptionName.length() + tagOptionValue.length());
         if (tagOptionName == "color")
         {
           m_flag[FLAG_COLOR] = true;
@@ -139,7 +139,7 @@ void CDVDSubtitleTagSami::ConvertLine(std::string& strUTF8, const char* langClas
               colorHex.substr(4, 2) + tagOptionValue.substr(2, 2) + tagOptionValue.substr(0, 2);
           std::string tempColorTag = "{\\c&H" + colorHex + "&}";
           strUTF8.insert(pos, tempColorTag);
-          pos += tempColorTag.length();
+          pos += static_cast<int>(tempColorTag.length());
         }
       }
     }
@@ -151,7 +151,7 @@ void CDVDSubtitleTagSami::ConvertLine(std::string& strUTF8, const char* langClas
       {
         std::string tagOptionName = m_tagOptions->GetMatch(1);
         std::string tagOptionValue = StringUtils::ToLower(m_tagOptions->GetMatch(2));
-        pos2 += tagOptionName.length() + tagOptionValue.length();
+        pos2 += static_cast<int>(tagOptionName.length() + tagOptionValue.length());
         if (tagOptionName == "class")
         {
           if (m_flag[FLAG_LANGUAGE])
