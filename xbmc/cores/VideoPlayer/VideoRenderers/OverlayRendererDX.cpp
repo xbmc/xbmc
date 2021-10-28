@@ -127,10 +127,10 @@ COverlayQuadsDX::COverlayQuadsDX(ASS_Image* images, float width, float height)
   }
 
   vt = vt_orig;
-  m_count = quads.quad.size();
+  m_count = static_cast<unsigned int>(quads.quad.size());
 
-  if (!m_vertex.Create(D3D11_BIND_VERTEX_BUFFER, 6 * quads.quad.size(), sizeof(Vertex),
-                       DXGI_FORMAT_UNKNOWN, D3D11_USAGE_IMMUTABLE, vt))
+  if (!m_vertex.Create(D3D11_BIND_VERTEX_BUFFER, 6 * m_count, sizeof(Vertex), DXGI_FORMAT_UNKNOWN,
+                       D3D11_USAGE_IMMUTABLE, vt))
   {
     CLog::Log(LOGERROR, "{} - failed to create vertex buffer", __FUNCTION__);
     m_texture.Release();

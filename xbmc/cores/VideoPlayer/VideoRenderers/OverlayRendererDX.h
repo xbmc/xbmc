@@ -28,7 +28,7 @@ namespace OVERLAY {
 
     void Render(SRenderState& state);
 
-    int                    m_count;
+    unsigned int m_count;
     DWORD                  m_fvf;
     CD3DTexture            m_texture;
     CD3DBuffer             m_vertex;
