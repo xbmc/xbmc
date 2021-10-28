@@ -3,7 +3,7 @@
 
 set(HEADERS
   audiodecoder.h
-  audio_encoder.h
+  audioencoder.h
   game.h
   image_decoder.h
   inputstream.h

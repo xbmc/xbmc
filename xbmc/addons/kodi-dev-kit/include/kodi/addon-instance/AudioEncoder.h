@@ -9,7 +9,7 @@
 #pragma once
 
 #include "../AddonBase.h"
-#include "../c-api/addon-instance/audio_encoder.h"
+#include "../c-api/addon-instance/audioencoder.h"
 
 #ifdef __cplusplus
 
