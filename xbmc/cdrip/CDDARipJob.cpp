@@ -76,7 +76,7 @@ bool CCDDARipJob::DoWork()
 
   // init ripper
   CFile reader;
-  CEncoder* encoder = nullptr;
+  std::unique_ptr<CEncoder> encoder{};
   if (!reader.Open(m_input, READ_CACHED) || !(encoder = SetupEncoder(reader)))
   {
     CLog::Log(LOGERROR, "Error: CCDDARipper::Init failed");
@@ -111,7 +111,7 @@ bool CCDDARipJob::DoWork()
 
   // close encoder ripper
   encoder->EncoderClose();
-  delete encoder;
+  encoder.reset();
   reader.Close();
 
   if (file.IsRemote() && !cancelled && result == 2)
@@ -151,7 +151,7 @@ bool CCDDARipJob::DoWork()
   return !cancelled && result == 2;
 }
 
-int CCDDARipJob::RipChunk(CFile& reader, CEncoder* encoder, int& percent)
+int CCDDARipJob::RipChunk(CFile& reader, const std::unique_ptr<CEncoder>& encoder, int& percent)
 {
   percent = 0;
 
@@ -176,15 +176,15 @@ int CCDDARipJob::RipChunk(CFile& reader, CEncoder* encoder, int& percent)
   return -(1 - encres);
 }
 
-CEncoder* CCDDARipJob::SetupEncoder(CFile& reader)
+std::unique_ptr<CEncoder> CCDDARipJob::SetupEncoder(CFile& reader)
 {
-  CEncoder* encoder = nullptr;
+  std::unique_ptr<CEncoder> encoder;
   const std::string audioEncoder = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
       CSettings::SETTING_AUDIOCDS_ENCODER);
   if (audioEncoder == "audioencoder.kodi.builtin.aac" ||
       audioEncoder == "audioencoder.kodi.builtin.wma")
   {
-    encoder = new CEncoderFFmpeg();
+    encoder = std::make_unique<CEncoderFFmpeg>();
   }
   else
   {
@@ -192,11 +192,11 @@ CEncoder* CCDDARipJob::SetupEncoder(CFile& reader)
         CServiceBroker::GetAddonMgr().GetAddonInfo(audioEncoder, ADDON_AUDIOENCODER);
     if (addonInfo)
     {
-      encoder = new CEncoderAddon(addonInfo);
+      encoder = std::make_unique<CEncoderAddon>(addonInfo);
     }
   }
   if (!encoder)
-    return NULL;
+    return std::unique_ptr<CEncoder>{};
 
   // we have to set the tags before we init the Encoder
   const std::string strTrack = StringUtils::Format(
@@ -217,7 +217,7 @@ CEncoder* CCDDARipJob::SetupEncoder(CFile& reader)
 
   // init encoder
   if (!encoder->EncoderInit(m_output, m_channels, m_rate, m_bps))
-    delete encoder, encoder = nullptr;
+    encoder.reset();
 
   return encoder;
 }
