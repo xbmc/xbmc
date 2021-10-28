@@ -30,4 +30,7 @@
 /docs
 /build
 
-include/groups.dox
+# Prevent auto generated parts
+/include/groups.dox
+/tools/code-generator/creation_log.txt
+/tools/code-generator/creation_log.txt.old

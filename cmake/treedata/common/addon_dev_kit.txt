@@ -1,0 +1,26 @@
+# Auto generated cmake/treedata/common/addon_dev_kit.txt.
+# See xbmc/addons/kodi-dev-kit/tools/code-generator.py.
+
+xbmc/addons/kodi-dev-kit/include/kodi addons_kodi-dev-kit_include_kodi
+xbmc/addons/kodi-dev-kit/include/kodi/c-api addons_kodi-dev-kit_include_kodi_c-api
+xbmc/addons/kodi-dev-kit/include/kodi/c-api/platform addons_kodi-dev-kit_include_kodi_c-api_platform
+xbmc/addons/kodi-dev-kit/include/kodi/c-api/platform/android addons_kodi-dev-kit_include_kodi_c-api_platform_android
+xbmc/addons/kodi-dev-kit/include/kodi/c-api/addon-instance addons_kodi-dev-kit_include_kodi_c-api_addon-instance
+xbmc/addons/kodi-dev-kit/include/kodi/c-api/addon-instance/inputstream addons_kodi-dev-kit_include_kodi_c-api_addon-instance_inputstream
+xbmc/addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr addons_kodi-dev-kit_include_kodi_c-api_addon-instance_pvr
+xbmc/addons/kodi-dev-kit/include/kodi/c-api/gui addons_kodi-dev-kit_include_kodi_c-api_gui
+xbmc/addons/kodi-dev-kit/include/kodi/c-api/gui/dialogs addons_kodi-dev-kit_include_kodi_c-api_gui_dialogs
+xbmc/addons/kodi-dev-kit/include/kodi/c-api/gui/controls addons_kodi-dev-kit_include_kodi_c-api_gui_controls
+xbmc/addons/kodi-dev-kit/include/kodi/c-api/gui/input addons_kodi-dev-kit_include_kodi_c-api_gui_input
+xbmc/addons/kodi-dev-kit/include/kodi/platform addons_kodi-dev-kit_include_kodi_platform
+xbmc/addons/kodi-dev-kit/include/kodi/platform/android addons_kodi-dev-kit_include_kodi_platform_android
+xbmc/addons/kodi-dev-kit/include/kodi/addon-instance addons_kodi-dev-kit_include_kodi_addon-instance
+xbmc/addons/kodi-dev-kit/include/kodi/addon-instance/peripheral addons_kodi-dev-kit_include_kodi_addon-instance_peripheral
+xbmc/addons/kodi-dev-kit/include/kodi/addon-instance/inputstream addons_kodi-dev-kit_include_kodi_addon-instance_inputstream
+xbmc/addons/kodi-dev-kit/include/kodi/addon-instance/pvr addons_kodi-dev-kit_include_kodi_addon-instance_pvr
+xbmc/addons/kodi-dev-kit/include/kodi/gui addons_kodi-dev-kit_include_kodi_gui
+xbmc/addons/kodi-dev-kit/include/kodi/gui/dialogs addons_kodi-dev-kit_include_kodi_gui_dialogs
+xbmc/addons/kodi-dev-kit/include/kodi/gui/controls addons_kodi-dev-kit_include_kodi_gui_controls
+xbmc/addons/kodi-dev-kit/include/kodi/gui/input addons_kodi-dev-kit_include_kodi_gui_input
+xbmc/addons/kodi-dev-kit/include/kodi/gui/gl addons_kodi-dev-kit_include_kodi_gui_gl
+xbmc/addons/kodi-dev-kit/include/kodi/tools addons_kodi-dev-kit_include_kodi_tools

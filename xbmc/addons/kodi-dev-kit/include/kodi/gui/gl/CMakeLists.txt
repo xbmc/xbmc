@@ -1,7 +1,12 @@
-set(HEADERS GL.h
-            GLonDX.h
-            Shader.h)
+# Auto generated CMakeLists.txt.
+# See xbmc/addons/kodi-dev-kit/tools/code-generator.py.
 
-if(NOT ENABLE_STATIC_LIBS)
-  core_add_library(addons_kodi-dev-kit_include_kodi_gui_gl)
+set(HEADERS
+  GL.h
+  GLonDX.h
+  Shader.h
+)
+
+if(HEADERS)
+  core_add_devkit_header(kodi_gui_gl)
 endif()

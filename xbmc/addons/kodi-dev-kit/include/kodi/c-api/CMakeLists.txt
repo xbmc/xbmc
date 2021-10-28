@@ -1,13 +1,14 @@
-set(HEADERS addon_base.h
-            audio_engine.h
-            filesystem.h
-            general.h
-            network.h)
+# Auto generated CMakeLists.txt.
+# See xbmc/addons/kodi-dev-kit/tools/code-generator.py.
 
-if(CORE_SYSTEM_NAME STREQUAL android)
-  list(APPEND SOURCES platform/android/system.h)
-endif()
+set(HEADERS
+  addon_base.h
+  audio_engine.h
+  filesystem.h
+  general.h
+  network.h
+)
 
-if(NOT ENABLE_STATIC_LIBS)
-  core_add_library(addons_kodi-dev-kit_include_kodi_c-api)
+if(HEADERS)
+  core_add_devkit_header(kodi_c-api)
 endif()

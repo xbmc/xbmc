@@ -1,5 +1,10 @@
-set(HEADERS PeripheralUtils.h)
+# Auto generated CMakeLists.txt.
+# See xbmc/addons/kodi-dev-kit/tools/code-generator.py.
 
-if(NOT ENABLE_STATIC_LIBS)
-  core_add_library(addons_kodi-dev-kit_include_kodi_addon-instance_peripheral)
+set(HEADERS
+  PeripheralUtils.h
+)
+
+if(HEADERS)
+  core_add_devkit_header(kodi_addon-instance_peripheral)
 endif()

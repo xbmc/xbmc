@@ -111,6 +111,15 @@ function(core_add_test_library name)
   endforeach()
 endfunction()
 
+# Add addon dev kit headers to main application
+# Arguments:
+#   name name of the header part to add
+function(core_add_devkit_header name)
+  if(NOT ENABLE_STATIC_LIBS)
+    core_add_library(addons_kodi-dev-kit_include_${name})
+  endif()
+endfunction()
+
 # Add an dl-loaded shared library
 # Arguments:
 #   name name of the library to add

@@ -6,6 +6,8 @@
  *  See LICENSES/README.md for more information.
  */
 
+/*---AUTO_GEN_PARSE<$$CORE_SYSTEM_NAME:android>---*/
+
 #ifndef C_API_PLATFORM_ANDROID_H
 #define C_API_PLATFORM_ANDROID_H
 
