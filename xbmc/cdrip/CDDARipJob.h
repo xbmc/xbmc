@@ -53,7 +53,7 @@ public:
 
 protected:
   //! \brief Setup the audio encoder
-  CEncoder* SetupEncoder(XFILE::CFile& reader);
+  std::unique_ptr<CEncoder> SetupEncoder(XFILE::CFile& reader);
 
   //! \brief Helper used if output is a remote url
   std::string SetupTempFile();
@@ -66,7 +66,7 @@ protected:
   //!         a positive error code from the reader, or
   //!         -1 if the encoder failed
   //! \sa CCDDARipper::GetData, CEncoder::Encode
-  int RipChunk(XFILE::CFile& reader, CEncoder* encoder, int& percent);
+  int RipChunk(XFILE::CFile& reader, const std::unique_ptr<CEncoder>& encoder, int& percent);
 
   unsigned int m_rate; //< The sample rate of the input file
   unsigned int m_channels; //< The number of channels in input file
