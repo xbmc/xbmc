@@ -11,6 +11,8 @@
 #include <stdint.h>
 #include <string>
 
+#include "PlatformDefs.h" // for ssize_t
+
 namespace KODI
 {
 namespace CDRIP
@@ -21,7 +23,7 @@ class IEncoder
 public:
   virtual ~IEncoder() = default;
   virtual bool Init() = 0;
-  virtual int Encode(int nNumBytesRead, uint8_t* pbtStream) = 0;
+  virtual ssize_t Encode(uint8_t* pbtStream, size_t nNumBytesRead) = 0;
   virtual bool Close() = 0;
 
   // tag info

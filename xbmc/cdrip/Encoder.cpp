@@ -37,9 +37,9 @@ bool CEncoder::EncoderInit(const std::string& strFile, int iInChannels, int iInR
   return Init();
 }
 
-int CEncoder::EncoderEncode(int nNumBytesRead, uint8_t* pbtStream)
+ssize_t CEncoder::EncoderEncode(uint8_t* pbtStream, size_t nNumBytesRead)
 {
-  const int iBytes = Encode(nNumBytesRead, pbtStream);
+  const int iBytes = Encode(pbtStream, nNumBytesRead);
   if (iBytes < 0)
   {
     CLog::Log(LOGERROR, "CEncoder::{} - Internal encoder error: {}", __func__, iBytes);
@@ -78,7 +78,7 @@ bool CEncoder::FileClose()
 }
 
 // return total bytes written, or -1 on error
-int CEncoder::FileWrite(const void* pBuffer, uint32_t iBytes)
+ssize_t CEncoder::FileWrite(const uint8_t* pBuffer, size_t iBytes)
 {
   if (!m_file)
     return -1;
@@ -90,7 +90,7 @@ int CEncoder::FileWrite(const void* pBuffer, uint32_t iBytes)
   return dwBytesWritten;
 }
 
-int64_t CEncoder::Seek(int64_t iFilePosition, int iWhence)
+ssize_t CEncoder::Seek(ssize_t iFilePosition, int iWhence)
 {
   if (!m_file)
     return -1;
@@ -99,7 +99,7 @@ int64_t CEncoder::Seek(int64_t iFilePosition, int iWhence)
 }
 
 // write the stream to our writebuffer, and write the buffer to disk if it's full
-int CEncoder::Write(const uint8_t* pBuffer, int iBytes)
+ssize_t CEncoder::Write(const uint8_t* pBuffer, size_t iBytes)
 {
   if ((WRITEBUFFER_SIZE - m_dwWriteBufferPointer) > iBytes)
   {
@@ -117,7 +117,7 @@ int CEncoder::Write(const uint8_t* pBuffer, int iBytes)
       return FileWrite(pBuffer, iBytes);
     }
 
-    const uint32_t dwBytesRemaining = iBytes - (WRITEBUFFER_SIZE - m_dwWriteBufferPointer);
+    const size_t dwBytesRemaining = iBytes - (WRITEBUFFER_SIZE - m_dwWriteBufferPointer);
     // fill up our write buffer and write it to disk
     memcpy(m_btWriteBuffer + m_dwWriteBufferPointer, pBuffer,
            (WRITEBUFFER_SIZE - m_dwWriteBufferPointer));
@@ -125,7 +125,7 @@ int CEncoder::Write(const uint8_t* pBuffer, int iBytes)
     m_dwWriteBufferPointer = 0;
 
     // pbtRemaining = pBuffer + bytesWritten
-    const uint8_t* pbtRemaining = (const uint8_t*)pBuffer + (iBytes - dwBytesRemaining);
+    const uint8_t* pbtRemaining = pBuffer + (iBytes - dwBytesRemaining);
     if (dwBytesRemaining > WRITEBUFFER_SIZE)
     {
       // data is not going to fit in our buffer, just write it to disk
@@ -144,12 +144,12 @@ int CEncoder::Write(const uint8_t* pBuffer, int iBytes)
 }
 
 // flush the contents of our writebuffer
-int CEncoder::FlushStream()
+ssize_t CEncoder::FlushStream()
 {
   if (m_dwWriteBufferPointer == 0)
     return 0;
 
-  const int iResult = FileWrite(m_btWriteBuffer, m_dwWriteBufferPointer);
+  const ssize_t iResult = FileWrite(m_btWriteBuffer, m_dwWriteBufferPointer);
   m_dwWriteBufferPointer = 0;
 
   return iResult;

@@ -254,12 +254,12 @@ int64_t CEncoderFFmpeg::avio_seek_callback(void* opaque, int64_t offset, int whe
   return enc->Seek(offset, whence);
 }
 
-int CEncoderFFmpeg::Encode(int nNumBytesRead, uint8_t* pbtStream)
+ssize_t CEncoderFFmpeg::Encode(uint8_t* pbtStream, size_t nNumBytesRead)
 {
   while (nNumBytesRead > 0)
   {
-    unsigned int space = m_NeededBytes - m_BufferSize;
-    unsigned int copy = (unsigned int)nNumBytesRead > space ? space : nNumBytesRead;
+    size_t space = m_NeededBytes - m_BufferSize;
+    size_t copy = nNumBytesRead > space ? space : nNumBytesRead;
 
     memcpy(&m_Buffer[m_BufferSize], pbtStream, copy);
     m_BufferSize += copy;
