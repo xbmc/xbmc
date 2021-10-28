@@ -13,17 +13,26 @@
 
 if(NOT TARGET TexturePacker::TexturePacker)
   if(KODI_DEPENDSBUILD)
+    get_filename_component(_tppath "${NATIVEPREFIX}/bin" ABSOLUTE)
+    find_program(TEXTUREPACKER_EXECUTABLE NAMES "${APP_NAME_LC}-TexturePacker" TexturePacker
+                                          HINTS ${_tppath})
+
     add_executable(TexturePacker::TexturePacker IMPORTED GLOBAL)
     set_target_properties(TexturePacker::TexturePacker PROPERTIES
-                                                       IMPORTED_LOCATION "${NATIVEPREFIX}/bin/TexturePacker")
+                                                       IMPORTED_LOCATION "${TEXTUREPACKER_EXECUTABLE}")
   elseif(WIN32)
+    get_filename_component(_tppath "${DEPENDENCIES_DIR}/tools/TexturePacker" ABSOLUTE)
+    find_program(TEXTUREPACKER_EXECUTABLE NAMES "${APP_NAME_LC}-TexturePacker.exe" TexturePacker.exe
+                                          HINTS ${_tppath})
+
     add_executable(TexturePacker::TexturePacker IMPORTED GLOBAL)
     set_target_properties(TexturePacker::TexturePacker PROPERTIES
-                                                       IMPORTED_LOCATION "${DEPENDENCIES_DIR}/tools/TexturePacker/TexturePacker.exe")
+                                                       IMPORTED_LOCATION "${TEXTUREPACKER_EXECUTABLE}")
   else()
     if(WITH_TEXTUREPACKER)
       get_filename_component(_tppath ${WITH_TEXTUREPACKER} ABSOLUTE)
-      find_program(TEXTUREPACKER_EXECUTABLE TexturePacker PATHS ${_tppath})
+      find_program(TEXTUREPACKER_EXECUTABLE NAMES "${APP_NAME_LC}-TexturePacker" TexturePacker
+                                            PATHS ${_tppath})
 
       include(FindPackageHandleStandardArgs)
       find_package_handle_standard_args(TexturePacker DEFAULT_MSG TEXTUREPACKER_EXECUTABLE)
