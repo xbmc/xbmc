@@ -16,12 +16,12 @@
 #include <stdio.h>
 #include <string>
 
-#define WRITEBUFFER_SIZE 131072 // 128k buffer
-
 namespace KODI
 {
 namespace CDRIP
 {
+
+constexpr size_t WRITEBUFFER_SIZE = 131072; // 128k buffer
 
 class CEncoder : public IEncoder
 {
