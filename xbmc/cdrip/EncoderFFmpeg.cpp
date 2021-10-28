@@ -29,13 +29,8 @@
 #define AV_PKT_FLAG_KEY PKT_FLAG_KEY
 #endif
 
-bool CEncoderFFmpeg::Init(AddonToKodiFuncTable_AudioEncoder& callbacks)
+bool CEncoderFFmpeg::Init()
 {
-  if (!callbacks.kodiInstance || !callbacks.write || !callbacks.seek)
-    return false;
-
-  m_callbacks = callbacks;
-
   std::string filename = URIUtils::GetFileName(m_strFile);
   if (avformat_alloc_output_context2(&m_Format, nullptr, nullptr, filename.c_str()))
   {
@@ -243,7 +238,7 @@ void CEncoderFFmpeg::SetTag(const std::string& tag, const std::string& value)
 int CEncoderFFmpeg::avio_write_callback(void* opaque, uint8_t* buf, int buf_size)
 {
   CEncoderFFmpeg* enc = static_cast<CEncoderFFmpeg*>(opaque);
-  if (enc->m_callbacks.write(enc->m_callbacks.kodiInstance, buf, buf_size) != buf_size)
+  if (enc->Write(buf, buf_size) != buf_size)
   {
     CLog::Log(LOGERROR, "Error writing FFmpeg buffer to file");
     return -1;
@@ -254,7 +249,7 @@ int CEncoderFFmpeg::avio_write_callback(void* opaque, uint8_t* buf, int buf_size
 int64_t CEncoderFFmpeg::avio_seek_callback(void* opaque, int64_t offset, int whence)
 {
   CEncoderFFmpeg* enc = static_cast<CEncoderFFmpeg*>(opaque);
-  return enc->m_callbacks.seek(enc->m_callbacks.kodiInstance, offset, whence);
+  return enc->Seek(offset, whence);
 }
 
 int CEncoderFFmpeg::Encode(int nNumBytesRead, uint8_t* pbtStream)

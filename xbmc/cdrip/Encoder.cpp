@@ -14,49 +14,22 @@
 #include <string.h>
 #include <utility>
 
-CEncoder::CEncoder(std::shared_ptr<IEncoder> encoder)
-{
-  m_file = nullptr;
-  m_dwWriteBufferPointer = 0;
-  m_impl = std::move(encoder);
-}
-
 CEncoder::~CEncoder()
 {
   FileClose();
 }
 
-int CEncoder::WriteCallback(void* opaque, const uint8_t* data, int size)
-{
-  if (opaque)
-  {
-    CEncoder* encoder = static_cast<CEncoder*>(opaque);
-    return encoder->WriteStream(data, size);
-  }
-  return -1;
-}
-
-int64_t CEncoder::SeekCallback(void* opaque, int64_t position, int whence)
-{
-  if (opaque)
-  {
-    CEncoder* encoder = static_cast<CEncoder*>(opaque);
-    return encoder->FileSeek(position, whence);
-  }
-  return -1;
-}
-
-bool CEncoder::Init(const char* strFile, int iInChannels, int iInRate, int iInBits)
+bool CEncoder::EncoderInit(const char* strFile, int iInChannels, int iInRate, int iInBits)
 {
   if (strFile == nullptr)
     return false;
 
   m_dwWriteBufferPointer = 0;
-  m_impl->m_strFile = strFile;
+  m_strFile = strFile;
 
-  m_impl->m_iInChannels = iInChannels;
-  m_impl->m_iInSampleRate = iInRate;
-  m_impl->m_iInBitsPerSample = iInBits;
+  m_iInChannels = iInChannels;
+  m_iInSampleRate = iInRate;
+  m_iInBitsPerSample = iInBits;
 
   if (!FileCreate(strFile))
   {
@@ -64,11 +37,7 @@ bool CEncoder::Init(const char* strFile, int iInChannels, int iInRate, int iInBi
     return false;
   }
 
-  AddonToKodiFuncTable_AudioEncoder callbacks;
-  callbacks.kodiInstance = this;
-  callbacks.write = WriteCallback;
-  callbacks.seek = SeekCallback;
-  return m_impl->Init(callbacks);
+  return Init();
 }
 
 bool CEncoder::FileCreate(const char* filename)
@@ -105,7 +74,7 @@ int CEncoder::FileWrite(const void* pBuffer, uint32_t iBytes)
   return dwBytesWritten;
 }
 
-int64_t CEncoder::FileSeek(int64_t iFilePosition, int iWhence)
+int64_t CEncoder::Seek(int64_t iFilePosition, int iWhence)
 {
   if (!m_file)
     return -1;
@@ -114,7 +83,7 @@ int64_t CEncoder::FileSeek(int64_t iFilePosition, int iWhence)
 }
 
 // write the stream to our writebuffer, and write the buffer to disk if it's full
-int CEncoder::WriteStream(const void* pBuffer, uint32_t iBytes)
+int CEncoder::Write(const uint8_t* pBuffer, int iBytes)
 {
   if ((WRITEBUFFER_SIZE - m_dwWriteBufferPointer) > iBytes)
   {
@@ -171,9 +140,9 @@ int CEncoder::FlushStream()
   return iResult;
 }
 
-int CEncoder::Encode(int nNumBytesRead, uint8_t* pbtStream)
+int CEncoder::EncoderEncode(int nNumBytesRead, uint8_t* pbtStream)
 {
-  int iBytes = m_impl->Encode(nNumBytesRead, pbtStream);
+  int iBytes = Encode(nNumBytesRead, pbtStream);
 
   if (iBytes < 0)
   {
@@ -183,9 +152,9 @@ int CEncoder::Encode(int nNumBytesRead, uint8_t* pbtStream)
   return 1;
 }
 
-bool CEncoder::CloseEncode()
+bool CEncoder::EncoderClose()
 {
-  if (!m_impl->Close())
+  if (!Close())
     return false;
 
   FlushStream();

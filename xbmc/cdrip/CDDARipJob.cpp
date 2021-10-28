@@ -109,7 +109,7 @@ bool CCDDARipJob::DoWork()
   }
 
   // close encoder ripper
-  encoder->CloseEncode();
+  encoder->EncoderClose();
   delete encoder;
   reader.Close();
 
@@ -164,7 +164,7 @@ int CCDDARipJob::RipChunk(CFile& reader, CEncoder* encoder, int& percent)
     return 1;
 
   // encode data
-  int encres = encoder->Encode(result, stream);
+  int encres = encoder->EncoderEncode(result, stream);
 
   // Get progress indication
   percent = static_cast<int>(reader.GetPosition() * 100 / reader.GetLength());
@@ -183,8 +183,7 @@ CEncoder* CCDDARipJob::SetupEncoder(CFile& reader)
   if (audioEncoder == "audioencoder.kodi.builtin.aac" ||
       audioEncoder == "audioencoder.kodi.builtin.wma")
   {
-    std::shared_ptr<IEncoder> enc(new CEncoderFFmpeg());
-    encoder = new CEncoder(enc);
+    encoder = new CEncoderFFmpeg();
   }
   else
   {
@@ -192,8 +191,7 @@ CEncoder* CCDDARipJob::SetupEncoder(CFile& reader)
         CServiceBroker::GetAddonMgr().GetAddonInfo(audioEncoder, ADDON_AUDIOENCODER);
     if (addonInfo)
     {
-      std::shared_ptr<IEncoder> enc = std::make_shared<CAudioEncoder>(addonInfo);
-      encoder = new CEncoder(enc);
+      encoder = new CAudioEncoder(addonInfo);
     }
   }
   if (!encoder)
@@ -217,7 +215,7 @@ CEncoder* CCDDARipJob::SetupEncoder(CFile& reader)
   encoder->SetYear(m_tag.GetYearString());
 
   // init encoder
-  if (!encoder->Init(m_output.c_str(), m_channels, m_rate, m_bps))
+  if (!encoder->EncoderInit(m_output.c_str(), m_channels, m_rate, m_bps))
     delete encoder, encoder = nullptr;
 
   return encoder;
