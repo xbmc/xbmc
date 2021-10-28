@@ -18,7 +18,12 @@
 
 #include <cstddef>
 
-CGUITexture* CGUITexture::CreateTexture(
+void CGUITextureGL::Register()
+{
+  CGUITexture::Register(CGUITextureGL::CreateTexture, CGUITextureGL::DrawQuad);
+}
+
+CGUITexture* CGUITextureGL::CreateTexture(
     float posX, float posY, float width, float height, const CTextureInfo& texture)
 {
   return new CGUITextureGL(posX, posY, width, height, texture);
@@ -245,10 +250,10 @@ void CGUITextureGL::Draw(float *x, float *y, float *z, const CRect &texture, con
   }
 }
 
-void CGUITexture::DrawQuad(const CRect& rect,
-                           UTILS::COLOR::Color color,
-                           CTexture* texture,
-                           const CRect* texCoords)
+void CGUITextureGL::DrawQuad(const CRect& rect,
+                             UTILS::COLOR::Color color,
+                             CTexture* texture,
+                             const CRect* texCoords)
 {
   CRenderSystemGL *renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
   if (texture)

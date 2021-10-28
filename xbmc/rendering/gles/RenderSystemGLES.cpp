@@ -9,6 +9,7 @@
 #include "RenderSystemGLES.h"
 
 #include "guilib/DirtyRegion.h"
+#include "guilib/GUITextureGLES.h"
 #include "rendering/MatrixGL.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
@@ -99,6 +100,8 @@ bool CRenderSystemGLES::InitRenderSystem()
   m_bRenderCreated = true;
 
   InitialiseShaders();
+
+  CGUITextureGLES::Register();
 
   return true;
 }

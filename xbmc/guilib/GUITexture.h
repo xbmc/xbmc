@@ -13,6 +13,8 @@
 #include "utils/ColorUtils.h"
 #include "utils/Geometry.h"
 
+#include <functional>
+
 // image alignment for <aspect>keep</aspect>, <aspect>scale</aspect> or <aspect>center</aspect>
 #define ASPECT_ALIGN_CENTER  0
 #define ASPECT_ALIGN_LEFT    1
@@ -60,10 +62,21 @@ public:
   std::string filename;        // main texture file
 };
 
+class CGUITexture;
+
+using CreateGUITextureFunc = std::function<CGUITexture*(
+    float posX, float posY, float width, float height, const CTextureInfo& texture)>;
+using DrawQuadFunc = std::function<void(
+    const CRect& coords, UTILS::COLOR::Color color, CTexture* texture, const CRect* texCoords)>;
+
 class CGUITexture
 {
 public:
   virtual ~CGUITexture() = default;
+
+  static void Register(const CreateGUITextureFunc& createFunction,
+                       const DrawQuadFunc& drawQuadFunction);
+
   static CGUITexture* CreateTexture(
       float posX, float posY, float width, float height, const CTextureInfo& texture);
   virtual CGUITexture* Clone() const = 0;
@@ -180,4 +193,8 @@ protected:
 
   CTextureArray m_diffuse;
   CTextureArray m_texture;
+
+private:
+  static CreateGUITextureFunc m_createGUITextureFunc;
+  static DrawQuadFunc m_drawQuadFunc;
 };
