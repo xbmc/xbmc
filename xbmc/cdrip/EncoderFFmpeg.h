@@ -29,7 +29,7 @@ public:
   ~CEncoderFFmpeg() override = default;
 
   bool Init() override;
-  int Encode(int nNumBytesRead, uint8_t* pbtStream) override;
+  ssize_t Encode(uint8_t* pbtStream, size_t nNumBytesRead) override;
   bool Close() override;
 
 private:
@@ -54,12 +54,12 @@ private:
   unsigned char m_BCBuffer[4096];
 
   unsigned int m_NeededFrames;
-  unsigned int m_NeededBytes;
+  size_t m_NeededBytes;
   uint8_t* m_Buffer{nullptr};
-  unsigned int m_BufferSize{0};
+  size_t m_BufferSize{0};
   AVFrame* m_BufferFrame{nullptr};
   uint8_t* m_ResampledBuffer{nullptr};
-  unsigned int m_ResampledBufferSize{0};
+  size_t m_ResampledBufferSize{0};
   AVFrame* m_ResampledFrame{nullptr};
   bool m_NeedConversion{false};
 };

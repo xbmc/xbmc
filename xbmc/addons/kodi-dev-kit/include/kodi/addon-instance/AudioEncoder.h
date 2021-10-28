@@ -307,10 +307,10 @@ private:
 ///   return true;
 /// }
 ///
-/// int CMyAudioEncoder::Encode(int numBytesRead, const uint8_t* pbtStream)
+/// ssize_t CMyAudioEncoder::Encode(const uint8_t* pbtStream, size_t numBytesRead)
 /// {
 ///   uint8_t* data = nullptr;
-///   int length = 0;
+///   size_t length = 0;
 ///   ...
 ///   kodi::addon::CInstanceAudioEncoder::Write(data, length);
 ///
@@ -434,11 +434,11 @@ public:
   /// @ingroup cpp_kodi_addon_audioencoder
   /// @brief Encode a chunk of audio (**required**)
   ///
-  /// @param[in] numBytesRead Number of bytes in input buffer
   /// @param[in] pbtStream The input buffer
+  /// @param[in] numBytesRead Number of bytes in input buffer
   /// @return Number of bytes consumed
   ///
-  virtual int Encode(int numBytesRead, const uint8_t* pbtStream) = 0;
+  virtual ssize_t Encode(const uint8_t* pbtStream, size_t numBytesRead) = 0;
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -460,7 +460,7 @@ public:
   ///
   /// @remarks Only called from addon itself.
   ///
-  int Write(const uint8_t* data, int length)
+  ssize_t Write(const uint8_t* data, size_t length)
   {
     return m_instanceData->toKodi->write(m_instanceData->toKodi->kodiInstance, data, length);
   }
@@ -487,7 +487,7 @@ public:
   ///
   /// @remarks Only called from addon itself.
   ///
-  int64_t Seek(int64_t position, int whence = SEEK_SET)
+  ssize_t Seek(ssize_t position, int whence = SEEK_SET)
   {
     return m_instanceData->toKodi->seek(m_instanceData->toKodi->kodiInstance, position, whence);
   }
@@ -513,11 +513,11 @@ private:
     return static_cast<CInstanceAudioEncoder*>(hdl)->Start(tag);
   }
 
-  inline static int ADDON_encode(const KODI_ADDON_AUDIOENCODER_HDL hdl,
-                                 int numBytesRead,
-                                 const uint8_t* pbtStream)
+  inline static ssize_t ADDON_encode(const KODI_ADDON_AUDIOENCODER_HDL hdl,
+                                     const uint8_t* pbtStream,
+                                     size_t num_bytes_read)
   {
-    return static_cast<CInstanceAudioEncoder*>(hdl)->Encode(numBytesRead, pbtStream);
+    return static_cast<CInstanceAudioEncoder*>(hdl)->Encode(pbtStream, num_bytes_read);
   }
 
   inline static bool ADDON_finish(const KODI_ADDON_AUDIOENCODER_HDL hdl)

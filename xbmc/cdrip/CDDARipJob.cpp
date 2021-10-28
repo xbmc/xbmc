@@ -159,14 +159,14 @@ int CCDDARipJob::RipChunk(CFile& reader, const std::unique_ptr<CEncoder>& encode
   uint8_t stream[1024];
 
   // get data
-  int result = reader.Read(stream, 1024);
+  ssize_t result = reader.Read(stream, 1024);
 
   // return if rip is done or on some kind of error
   if (result <= 0)
     return 1;
 
   // encode data
-  int encres = encoder->EncoderEncode(result, stream);
+  ssize_t encres = encoder->EncoderEncode(stream, result);
 
   // Get progress indication
   percent = static_cast<int>(reader.GetPosition() * 100 / reader.GetLength());

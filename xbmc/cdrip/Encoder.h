@@ -30,7 +30,7 @@ public:
   virtual ~CEncoder();
 
   bool EncoderInit(const std::string& strFile, int iInChannels, int iInRate, int iInBits);
-  int EncoderEncode(int nNumBytesRead, uint8_t* pbtStream);
+  ssize_t EncoderEncode(uint8_t* pbtStream, size_t nNumBytesRead);
   bool EncoderClose();
 
   void SetComment(const std::string& str) { m_strComment = str; }
@@ -44,19 +44,19 @@ public:
   void SetYear(const std::string& str) { m_strYear = str; }
 
 protected:
-  virtual int Write(const uint8_t* pBuffer, int iBytes);
-  virtual int64_t Seek(int64_t iFilePosition, int iWhence);
+  virtual ssize_t Write(const uint8_t* pBuffer, size_t iBytes);
+  virtual ssize_t Seek(ssize_t iFilePosition, int iWhence);
 
 private:
   bool FileCreate(const std::string& filename);
   bool FileClose();
-  int FileWrite(const void* pBuffer, uint32_t iBytes);
-  int FlushStream();
+  ssize_t FileWrite(const uint8_t* pBuffer, size_t iBytes);
+  ssize_t FlushStream();
 
   std::unique_ptr<XFILE::CFile> m_file;
 
   uint8_t m_btWriteBuffer[WRITEBUFFER_SIZE]; // 128k buffer for writing to disc
-  uint32_t m_dwWriteBufferPointer{0};
+  size_t m_dwWriteBufferPointer{0};
 };
 
 } /* namespace CDRIP */

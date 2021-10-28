@@ -52,10 +52,10 @@ bool CEncoderAddon::Init()
   return m_struct.toAddon->start(m_addonInstance, &tag);
 }
 
-int CEncoderAddon::Encode(int nNumBytesRead, uint8_t* pbtStream)
+ssize_t CEncoderAddon::Encode(uint8_t* pbtStream, size_t nNumBytesRead)
 {
   if (m_struct.toAddon->encode)
-    return m_struct.toAddon->encode(m_addonInstance, nNumBytesRead, pbtStream);
+    return m_struct.toAddon->encode(m_addonInstance, pbtStream, nNumBytesRead);
   return 0;
 }
 
@@ -70,24 +70,24 @@ bool CEncoderAddon::Close()
   return ret;
 }
 
-int CEncoderAddon::Write(const uint8_t* data, int len)
+ssize_t CEncoderAddon::Write(const uint8_t* data, size_t len)
 {
   return CEncoder::Write(data, len);
 }
 
-int64_t CEncoderAddon::Seek(int64_t pos, int whence)
+ssize_t CEncoderAddon::Seek(ssize_t pos, int whence)
 {
   return CEncoder::Seek(pos, whence);
 }
 
-int CEncoderAddon::cb_write(KODI_HANDLE kodiInstance, const uint8_t* data, int len)
+ssize_t CEncoderAddon::cb_write(KODI_HANDLE kodiInstance, const uint8_t* data, size_t len)
 {
   if (!kodiInstance || !data)
     return -1;
   return static_cast<CEncoderAddon*>(kodiInstance)->Write(data, len);
 }
 
-int64_t CEncoderAddon::cb_seek(KODI_HANDLE kodiInstance, int64_t pos, int whence)
+ssize_t CEncoderAddon::cb_seek(KODI_HANDLE kodiInstance, ssize_t pos, int whence)
 {
   if (!kodiInstance)
     return -1;
