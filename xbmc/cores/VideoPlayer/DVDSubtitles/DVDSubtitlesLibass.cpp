@@ -237,15 +237,16 @@ ASS_Image* CDVDSubtitlesLibass::RenderImage(double pts,
     m_drawWithinBlackBars = subStyle->drawWithinBlackBars;
   }
 
-  double sar = (double)opts.sourceWidth / opts.sourceHeight;
-  double dar = (double)opts.videoWidth / opts.videoHeight;
+  double sar = static_cast<double>(opts.sourceWidth / opts.sourceHeight);
+  double dar = static_cast<double>(opts.videoWidth / opts.videoHeight);
 
-  ass_set_frame_size(m_renderer, opts.frameWidth, opts.frameHeight);
+  ass_set_frame_size(m_renderer, static_cast<int>(opts.frameWidth),
+                     static_cast<int>(opts.frameHeight));
 
   if (m_drawWithinBlackBars)
   {
-    int marginTop = (opts.frameHeight - opts.videoHeight) / 2;
-    int marginLeft = (opts.frameWidth - opts.videoWidth) / 2;
+    int marginTop = static_cast<int>((opts.frameHeight - opts.videoHeight) / 2);
+    int marginLeft = static_cast<int>((opts.frameWidth - opts.videoWidth) / 2);
     ass_set_margins(m_renderer, marginTop, marginTop, marginLeft, marginLeft);
   }
   ass_set_use_margins(m_renderer, m_drawWithinBlackBars);
@@ -382,23 +383,23 @@ void CDVDSubtitlesLibass::ApplyStyle(style subStyle, renderOpts opts)
 
       style->Blur = (10.00 / 100 * subStyle.blur);
 
-      int marginLR = 20;
+      double marginLR = 20;
       if (opts.horizontalAlignment != HorizontalAlignment::DISABLED)
       {
         // If the subtitle text is aligned on the left or right
         // of the screen, we set an extra left/right margin
-        marginLR += int((double)opts.frameWidth / 10);
+        marginLR += static_cast<double>(opts.frameWidth) / 10;
       }
 
       // Set the margins (in pixel)
-      style->MarginL = marginLR * scale;
-      style->MarginR = marginLR * scale;
+      style->MarginL = static_cast<int>(marginLR * scale);
+      style->MarginR = static_cast<int>(marginLR * scale);
       // Vertical margin (direction depends on alignment)
       // to be set only when the video calibration position setting is not used
       if (opts.usePosition)
         style->MarginV = 0;
       else
-        style->MarginV = subStyle.marginVertical * scale;
+        style->MarginV = static_cast<int>(subStyle.marginVertical * scale);
     }
 
     // Set the vertical alignment
@@ -572,7 +573,7 @@ void CDVDSubtitlesLibass::AppendTextToEvent(int eventId, const char* text)
   ASS_Event* assEvent = (assEvents + eventId);
   if (assEvent)
   {
-    int buffSize = strlen(assEvent->Text) + strlen(text) + 1;
+    size_t buffSize = strlen(assEvent->Text) + strlen(text) + 1;
     char* appendedText = new char[buffSize];
     strcpy(appendedText, assEvent->Text);
     strcat(appendedText, text);

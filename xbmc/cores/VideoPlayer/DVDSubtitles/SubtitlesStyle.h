@@ -102,12 +102,12 @@ struct subtitleOpts
 
 struct renderOpts
 {
-  int frameWidth;
-  int frameHeight;
-  int videoWidth;
-  int videoHeight;
-  int sourceWidth;
-  int sourceHeight;
+  float frameWidth;
+  float frameHeight;
+  float videoWidth;
+  float videoHeight;
+  float sourceWidth;
+  float sourceHeight;
   bool usePosition = false;
   // position: vertical line position of subtitles in percent. 0 = no change (bottom), 100 = on top.
   double position = 0;

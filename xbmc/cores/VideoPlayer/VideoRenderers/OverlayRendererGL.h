@@ -39,11 +39,11 @@ namespace OVERLAY {
   class COverlayGlyphGL : public COverlay
   {
   public:
-   COverlayGlyphGL(ASS_Image* images, int width, int height);
+    COverlayGlyphGL(ASS_Image* images, float width, float height);
 
-   ~COverlayGlyphGL() override;
+    ~COverlayGlyphGL() override;
 
-   void Render(SRenderState& state) override;
+    void Render(SRenderState& state) override;
 
     struct VERTEX
     {
