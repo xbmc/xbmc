@@ -257,7 +257,7 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlaySpu* o)
   m_pma    = !!USE_PREMULTIPLIED_ALPHA;
 }
 
-COverlayGlyphGL::COverlayGlyphGL(ASS_Image* images, int width, int height)
+COverlayGlyphGL::COverlayGlyphGL(ASS_Image* images, float width, float height)
 {
   m_width  = 1.0;
   m_height = 1.0;
@@ -268,7 +268,7 @@ COverlayGlyphGL::COverlayGlyphGL(ASS_Image* images, int width, int height)
   m_texture = 0;
 
   SQuads quads;
-  if(!convert_quad(images, quads, width))
+  if (!convert_quad(images, quads, static_cast<int>(width)))
     return;
 
   glGenTextures(1, &m_texture);
