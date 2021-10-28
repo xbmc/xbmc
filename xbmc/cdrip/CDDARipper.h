@@ -63,12 +63,6 @@ private:
   ~CCDDARipper() override;
   CCDDARipper const& operator=(CCDDARipper const&) = delete;
 
-  /*! \brief Return track file name extension for the given encoder type
-   \param[in] iEncoder encoder type (see CDDARIP_ENCODER_... constants)
-   \return file extension string (i.e. ".wav", ".mp3", ...)
-   */
-  const char* GetExtension(int iEncoder);
-
   /*! \brief Create folder where CD tracks will be stored
    \param[in]  infoTag music info tags for the CD, used to format album name
    \param[out] strDirectory full path of the created folder
