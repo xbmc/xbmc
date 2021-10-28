@@ -10,7 +10,6 @@ set(SOURCES Addon.cpp
             AddonUpdateRules.cpp
             AddonVersion.cpp
             AudioDecoder.cpp
-            AudioEncoder.cpp
             ContextMenuAddon.cpp
             ContextMenus.cpp
             ExtsMimeSupportList.cpp
@@ -47,7 +46,6 @@ set(HEADERS Addon.h
             AddonUpdateRules.h
             AddonVersion.h
             AudioDecoder.h
-            AudioEncoder.h
             ContextMenuAddon.h
             ContextMenus.h
             ExtsMimeSupportList.h
