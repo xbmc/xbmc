@@ -93,7 +93,7 @@ bool ValidateSignature(const char* data, const char* signature)
 void InsertTextPos(std::string& text, std::string insert, int& pos)
 {
   text.insert(pos, insert);
-  pos += insert.length();
+  pos += static_cast<int>(insert.length());
 }
 
 std::string ConvertStyleToOpenTags(int flagTags[], webvttCssStyle& style)
@@ -957,7 +957,7 @@ void CWebVTTHandler::InsertCssStyleStartTag(std::string& tagName,
     auto& cssStyle = *itCssStyle;
     std::string tags = ConvertStyleToOpenTags(flagTags, cssStyle);
     text.insert(pos, tags);
-    pos += tags.length();
+    pos += static_cast<int>(tags.length());
     // Keep track of the opened tag to be closed
     // or when we have to insert the closing tags we do not know what style we are closing
     cssTagsOpened.insert({tagName, cssStyle.selectorName});
@@ -981,7 +981,7 @@ void CWebVTTHandler::InsertCssStyleCloseTag(std::string& tagName,
     {
       std::string tags = ConvertStyleToCloseTags(flagTags, *itCssStyle, baseStyle);
       text.insert(pos, tags);
-      pos += tags.length();
+      pos += static_cast<int>(tags.length());
       cssTagsOpened.erase(itCssTagToClose);
     }
   }
