@@ -13,6 +13,8 @@
 #include <string.h>
 #include <utility>
 
+using namespace KODI::CDRIP;
+
 CEncoder::~CEncoder()
 {
   FileClose();

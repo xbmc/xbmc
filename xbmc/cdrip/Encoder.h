@@ -18,6 +18,11 @@
 
 #define WRITEBUFFER_SIZE 131072 // 128k buffer
 
+namespace KODI
+{
+namespace CDRIP
+{
+
 class CEncoder : public IEncoder
 {
 public:
@@ -53,3 +58,6 @@ private:
   uint8_t m_btWriteBuffer[WRITEBUFFER_SIZE]; // 128k buffer for writing to disc
   uint32_t m_dwWriteBufferPointer{0};
 };
+
+} /* namespace CDRIP */
+} /* namespace KODI */

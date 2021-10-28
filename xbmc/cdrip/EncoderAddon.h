@@ -11,6 +11,11 @@
 #include "addons/binary-addons/AddonInstanceHandler.h"
 #include "addons/kodi-dev-kit/include/kodi/addon-instance/AudioEncoder.h"
 
+namespace KODI
+{
+namespace CDRIP
+{
+
 class CEncoderAddon : public CEncoder, public ADDON::IAddonInstanceHandler
 {
 public:
@@ -36,3 +41,6 @@ private:
 
   KODI_HANDLE m_addonInstance;
 };
+
+} /* namespace CDRIP */
+} /* namespace KODI */
