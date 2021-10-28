@@ -13,6 +13,7 @@
 #include "PlayerSelectionRule.h"
 #include "URL.h"
 #include "cores/IPlayerCallback.h"
+#include "cores/VideoPlayer/Interface/InputStreamConstants.h"
 #include "cores/paplayer/PAPlayer.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "guilib/LocalizeStrings.h"
@@ -102,6 +103,30 @@ void CPlayerCoreFactory::GetPlayers(const CFileItem& item, std::vector<std::stri
 
   CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers(%s)", CURL::GetRedacted(item.GetDynPath()).c_str());
 
+  enum class ForcedPlayer
+  {
+    NONE,
+    VIDEO_DEFAULT,
+    AUDIO_DEFAULT
+  };
+
+  ForcedPlayer defaultInputstreamPlayerOverride = ForcedPlayer::NONE;
+
+  // If we are using an inpustream add-on
+  if (!item.GetProperty(STREAM_PROPERTY_INPUTSTREAM).empty())
+  {
+    if (!item.GetProperty("inputstream-player").empty())
+    {
+      const std::string inputstreamPlayerOverride =
+          item.GetProperty("inputstream-player").asString();
+
+      if (inputstreamPlayerOverride == "videodefaultplayer")
+        defaultInputstreamPlayerOverride = ForcedPlayer::VIDEO_DEFAULT;
+      else if ((inputstreamPlayerOverride == "audiodefaultplayer"))
+        defaultInputstreamPlayerOverride = ForcedPlayer::AUDIO_DEFAULT;
+    }
+  }
+
   std::vector<std::string>validPlayers;
   GetPlayers(validPlayers);
 
@@ -115,7 +140,12 @@ void CPlayerCoreFactory::GetPlayers(const CFileItem& item, std::vector<std::stri
 
   // Set video default player. Check whether it's video first (overrule audio and
   // game check). Also push these players in case it is NOT audio or game either.
-  if (item.IsVideo() || (!item.IsAudio() && !item.IsGame()))
+  //
+  // If an inputstream add-on is used, first check if we have an override to use
+  // "videodefaultplayer"
+  if (defaultInputstreamPlayerOverride == ForcedPlayer::VIDEO_DEFAULT ||
+      (defaultInputstreamPlayerOverride == ForcedPlayer::NONE &&
+       (item.IsVideo() || (!item.IsAudio() && !item.IsGame()))))
   {
     int idx = GetPlayerIndex("videodefaultplayer");
     if (idx > -1)
@@ -130,7 +160,8 @@ void CPlayerCoreFactory::GetPlayers(const CFileItem& item, std::vector<std::stri
 
   // Set audio default player
   // Pushback all audio players in case we don't know the type
-  if (item.IsAudio())
+  if (defaultInputstreamPlayerOverride == ForcedPlayer::AUDIO_DEFAULT ||
+      (defaultInputstreamPlayerOverride == ForcedPlayer::NONE && item.IsAudio()))
   {
     int idx = GetPlayerIndex("audiodefaultplayer");
     if (idx > -1)
