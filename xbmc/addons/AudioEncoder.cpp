@@ -33,10 +33,21 @@ bool CAudioEncoder::Init(AddonToKodiFuncTable_AudioEncoder& callbacks)
 
   m_addonInstance = m_struct.toAddon->addonInstance;
 
-  return m_struct.toAddon->start(
-      m_addonInstance, m_iInChannels, m_iInSampleRate, m_iInBitsPerSample, m_strTitle.c_str(),
-      m_strArtist.c_str(), m_strAlbumArtist.c_str(), m_strAlbum.c_str(), m_strYear.c_str(),
-      m_strTrack.c_str(), m_strGenre.c_str(), m_strComment.c_str(), m_iTrackLength);
+  KODI_ADDON_AUDIOENCODER_INFO_TAG tag{};
+  tag.channels = m_iInChannels;
+  tag.samplerate = m_iInSampleRate;
+  tag.bits_per_sample = m_iInBitsPerSample;
+  tag.track_length = m_iTrackLength;
+  tag.title = m_strTitle.c_str();
+  tag.artist = m_strArtist.c_str();
+  tag.album_artist = m_strAlbumArtist.c_str();
+  tag.album = m_strAlbum.c_str();
+  tag.release_date = m_strYear.c_str();
+  tag.track = atoi(m_strTrack.c_str());
+  tag.genre = m_strGenre.c_str();
+  tag.comment = m_strComment.c_str();
+
+  return m_struct.toAddon->start(m_addonInstance, &tag);
 }
 
 int CAudioEncoder::Encode(int nNumBytesRead, uint8_t* pbtStream)
