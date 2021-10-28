@@ -19,6 +19,11 @@ namespace MUSIC_INFO
 class CMusicInfoTag;
 }
 
+namespace KODI
+{
+namespace CDRIP
+{
+
 /*! \brief Rip an entire CD or a single track
 
  The CCDDARipper class is used to rip an entire CD or just a single track.
@@ -86,3 +91,6 @@ private:
    */
   std::string GetTrackName(CFileItem* item);
 };
+
+} /* namespace CDRIP */
+} /* namespace KODI */

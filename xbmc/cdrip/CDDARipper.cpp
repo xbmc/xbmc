@@ -40,6 +40,7 @@ using namespace ADDON;
 using namespace XFILE;
 using namespace MUSIC_INFO;
 using namespace KODI::MESSAGING;
+using namespace KODI::CDRIP;
 
 CCDDARipper& CCDDARipper::GetInstance()
 {

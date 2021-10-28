@@ -11,6 +11,11 @@
 #include <stdint.h>
 #include <string>
 
+namespace KODI
+{
+namespace CDRIP
+{
+
 class IEncoder
 {
 public:
@@ -34,3 +39,6 @@ public:
   int m_iInSampleRate = 0;
   int m_iInBitsPerSample = 0;
 };
+
+} /* namespace CDRIP */
+} /* namespace KODI */

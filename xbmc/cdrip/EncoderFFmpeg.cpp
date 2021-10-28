@@ -29,6 +29,8 @@
 #define AV_PKT_FLAG_KEY PKT_FLAG_KEY
 #endif
 
+using namespace KODI::CDRIP;
+
 bool CEncoderFFmpeg::Init()
 {
   std::string filename = URIUtils::GetFileName(m_strFile);

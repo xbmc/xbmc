@@ -8,6 +8,7 @@
 #include "EncoderAddon.h"
 
 using namespace ADDON;
+using namespace KODI::CDRIP;
 
 CEncoderAddon::CEncoderAddon(const AddonInfoPtr& addonInfo)
   : IAddonInstanceHandler(ADDON_INSTANCE_AUDIOENCODER, addonInfo)

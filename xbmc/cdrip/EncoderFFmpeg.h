@@ -17,6 +17,11 @@ extern "C"
 #include <libswresample/swresample.h>
 }
 
+namespace KODI
+{
+namespace CDRIP
+{
+
 class CEncoderFFmpeg : public CEncoder
 {
 public:
@@ -58,3 +63,6 @@ private:
   AVFrame* m_ResampledFrame{nullptr};
   bool m_NeedConversion{false};
 };
+
+} /* namespace CDRIP */
+} /* namespace KODI */

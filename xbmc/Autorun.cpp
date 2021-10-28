@@ -87,7 +87,7 @@ void CAutorun::ExecuteAutorun(const std::string& path, bool bypassSettings, bool
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_AUDIOCDS_AUTOACTION) == AUTOCD_RIP &&
       pInfo->IsAudio(1) && !CServiceBroker::GetSettingsComponent()->GetProfileManager()->GetCurrentProfile().musicLocked())
   {
-    CCDDARipper::GetInstance().RipCD();
+    KODI::CDRIP::CCDDARipper::GetInstance().RipCD();
   }
   else
 #endif

@@ -36,6 +36,7 @@
 using namespace ADDON;
 using namespace MUSIC_INFO;
 using namespace XFILE;
+using namespace KODI::CDRIP;
 
 CCDDARipJob::CCDDARipJob(const std::string& input,
                          const std::string& output,

@@ -11,12 +11,17 @@
 #include "music/tags/MusicInfoTag.h"
 #include "utils/Job.h"
 
-class CEncoder;
-
 namespace XFILE
 {
 class CFile;
 }
+
+namespace KODI
+{
+namespace CDRIP
+{
+
+class CEncoder;
 
 class CCDDARipJob : public CJob
 {
@@ -72,3 +77,6 @@ protected:
   bool m_eject; //< Should we eject tray when we are finished?
   int m_encoder; //< The audio encoder
 };
+
+} /* namespace CDRIP */
+} /* namespace KODI */
