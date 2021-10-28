@@ -8,7 +8,6 @@
 
 #include "Encoder.h"
 
-#include "filesystem/File.h"
 #include "utils/log.h"
 
 #include <string.h>
@@ -19,32 +18,48 @@ CEncoder::~CEncoder()
   FileClose();
 }
 
-bool CEncoder::EncoderInit(const char* strFile, int iInChannels, int iInRate, int iInBits)
+bool CEncoder::EncoderInit(const std::string& strFile, int iInChannels, int iInRate, int iInBits)
 {
-  if (strFile == nullptr)
-    return false;
-
   m_dwWriteBufferPointer = 0;
   m_strFile = strFile;
-
   m_iInChannels = iInChannels;
   m_iInSampleRate = iInRate;
   m_iInBitsPerSample = iInBits;
 
   if (!FileCreate(strFile))
   {
-    CLog::Log(LOGERROR, "Error: Cannot open file: {}", strFile);
+    CLog::Log(LOGERROR, "CEncoder::{} - Cannot open file: {}", __func__, strFile);
     return false;
   }
 
   return Init();
 }
 
-bool CEncoder::FileCreate(const char* filename)
+int CEncoder::EncoderEncode(int nNumBytesRead, uint8_t* pbtStream)
 {
-  delete m_file;
+  const int iBytes = Encode(nNumBytesRead, pbtStream);
+  if (iBytes < 0)
+  {
+    CLog::Log(LOGERROR, "CEncoder::{} - Internal encoder error: {}", __func__, iBytes);
+    return 0;
+  }
+  return 1;
+}
 
-  m_file = new XFILE::CFile;
+bool CEncoder::EncoderClose()
+{
+  if (!Close())
+    return false;
+
+  FlushStream();
+  FileClose();
+
+  return true;
+}
+
+bool CEncoder::FileCreate(const std::string& filename)
+{
+  m_file = std::make_unique<XFILE::CFile>();
   if (m_file)
     return m_file->OpenForWrite(filename, true);
   return false;
@@ -55,8 +70,7 @@ bool CEncoder::FileClose()
   if (m_file)
   {
     m_file->Close();
-    delete m_file;
-    m_file = nullptr;
+    m_file.reset();
   }
   return true;
 }
@@ -67,7 +81,7 @@ int CEncoder::FileWrite(const void* pBuffer, uint32_t iBytes)
   if (!m_file)
     return -1;
 
-  ssize_t dwBytesWritten = m_file->Write(pBuffer, iBytes);
+  const ssize_t dwBytesWritten = m_file->Write(pBuffer, iBytes);
   if (dwBytesWritten <= 0)
     return -1;
 
@@ -101,7 +115,7 @@ int CEncoder::Write(const uint8_t* pBuffer, int iBytes)
       return FileWrite(pBuffer, iBytes);
     }
 
-    uint32_t dwBytesRemaining = iBytes - (WRITEBUFFER_SIZE - m_dwWriteBufferPointer);
+    const uint32_t dwBytesRemaining = iBytes - (WRITEBUFFER_SIZE - m_dwWriteBufferPointer);
     // fill up our write buffer and write it to disk
     memcpy(m_btWriteBuffer + m_dwWriteBufferPointer, pBuffer,
            (WRITEBUFFER_SIZE - m_dwWriteBufferPointer));
@@ -130,35 +144,11 @@ int CEncoder::Write(const uint8_t* pBuffer, int iBytes)
 // flush the contents of our writebuffer
 int CEncoder::FlushStream()
 {
-  int iResult;
   if (m_dwWriteBufferPointer == 0)
     return 0;
 
-  iResult = FileWrite(m_btWriteBuffer, m_dwWriteBufferPointer);
+  const int iResult = FileWrite(m_btWriteBuffer, m_dwWriteBufferPointer);
   m_dwWriteBufferPointer = 0;
 
   return iResult;
-}
-
-int CEncoder::EncoderEncode(int nNumBytesRead, uint8_t* pbtStream)
-{
-  int iBytes = Encode(nNumBytesRead, pbtStream);
-
-  if (iBytes < 0)
-  {
-    CLog::Log(LOGERROR, "Internal encoder error: {}", iBytes);
-    return 0;
-  }
-  return 1;
-}
-
-bool CEncoder::EncoderClose()
-{
-  if (!Close())
-    return false;
-
-  FlushStream();
-  FileClose();
-
-  return true;
 }
