@@ -229,6 +229,9 @@ bool CGameClient::OpenFile(const CFileItem& file,
 
   GAME_ERROR error = GAME_ERROR_FAILED;
 
+  // Loading the game might require the stream subsystem to be initialized
+  Streams().Initialize(streamManager);
+
   try
   {
     LogError(error = m_ifc.game->toAddon->LoadGame(m_ifc.game, path.c_str()), "LoadGame()");
@@ -241,11 +244,13 @@ bool CGameClient::OpenFile(const CFileItem& file,
   if (error != GAME_ERROR_NO_ERROR)
   {
     NotifyError(error);
+    Streams().Deinitialize();
     return false;
   }
 
   if (!InitializeGameplay(file.GetPath(), streamManager, input))
   {
+    Streams().Deinitialize();
     return false;
   }
 
@@ -294,7 +299,6 @@ bool CGameClient::InitializeGameplay(const std::string& gamePath,
 {
   if (LoadGameInfo())
   {
-    Streams().Initialize(streamManager);
     Input().Start(input);
 
     m_bIsPlaying = true;
