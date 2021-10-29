@@ -210,7 +210,7 @@ extern "C"
     PVR_TIMER_TYPE_REQUIRES_EPG_SERIES_ON_CREATE = (1 << 23),
 
     /// @brief __0000 0001 0000 0000 0000 0000 0000 0000__ :\n This type supports 'any channel', for example when defining a timer
-    /// rule that should match any channel instaed of a particular channel.
+    /// rule that should match any channel instead of a particular channel.
     PVR_TIMER_TYPE_SUPPORTS_ANY_CHANNEL = (1 << 24),
 
     /// @brief __0000 0010 0000 0000 0000 0000 0000 0000__ :\n This type should not appear on any create menus which don't provide

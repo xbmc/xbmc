@@ -218,7 +218,7 @@ public:
 /// @ingroup cpp_kodi_vfs_Defs
 /// @brief **Cache information status**\n
 /// Used on kodi::vfs::CFile::IoControlGetCacheStatus() to get running cache
-/// status of proccessed stream.
+/// status of processed stream.
 ///
 ///@{
 class ATTRIBUTE_HIDDEN CacheStatus
@@ -766,7 +766,7 @@ private:
 /// ...
 /// std::string directory = "C:\\my_dir";
 /// bool ret = kodi::vfs::CreateDirectory(directory);
-/// fprintf(stderr, "Directory '%s' successfull created: %s\n", directory.c_str(), ret ? "yes" : "no");
+/// fprintf(stderr, "Directory '%s' successfully created: %s\n", directory.c_str(), ret ? "yes" : "no");
 /// ...
 /// ~~~~~~~~~~~~~
 ///
@@ -1026,7 +1026,7 @@ inline bool ATTRIBUTE_HIDDEN StatFile(const std::string& filename, kodi::vfs::Fi
 ///   if (!successed)
 ///     kodi::gui::DialogOK::ShowAndGetInput("Error", "Delete of File", filename, "failed!");
 ///   else
-///     kodi::gui::DialogOK::ShowAndGetInput("Information", "Delete of File", filename, "successfull done.");
+///     kodi::gui::DialogOK::ShowAndGetInput("Information", "Delete of File", filename, "successfully done.");
 /// }
 /// ~~~~~~~~~~~~~
 ///
@@ -1352,7 +1352,7 @@ inline bool ATTRIBUTE_HIDDEN GetDiskSpace(const std::string& path,
 
 //==============================================================================
 /// @ingroup cpp_kodi_vfs_General
-/// @brief Return the file name from given complate path string.
+/// @brief Return the file name from given complete path string.
 ///
 /// @param[in] path The complete path include file and directory
 /// @return Filename from path
@@ -1378,7 +1378,7 @@ inline std::string ATTRIBUTE_HIDDEN GetFileName(const std::string& path)
 
 //==============================================================================
 /// @ingroup cpp_kodi_vfs_General
-/// @brief Return the directory name from given complate path string.
+/// @brief Return the directory name from given complete path string.
 ///
 /// @param[in] path The complete path include file and directory
 /// @return Directory name from path
@@ -2221,7 +2221,7 @@ public:
   /// @brief To check a running stream on file for state of his cache.
   ///
   /// @param[in] status Information about current cache status
-  /// @return true if successfull done, false otherwise
+  /// @return true if successfully done, false otherwise
   ///
   ///
   /// @copydetails cpp_kodi_vfs_Defs_CacheStatus_Help
@@ -2242,7 +2242,7 @@ public:
   /// @brief Unsigned int with speed limit for caching in bytes per second.
   ///
   /// @param[in] rate Cache rate size to use
-  /// @return true if successfull done, false otherwise
+  /// @return true if successfully done, false otherwise
   ///
   bool IoControlSetCacheRate(unsigned int rate)
   {
@@ -2260,7 +2260,7 @@ public:
   /// @brief Enable/disable retry within the protocol handler (if supported).
   ///
   /// @param[in] retry To set the retry, true for use, false for not
-  /// @return true if successfull done, false otherwise
+  /// @return true if successfully done, false otherwise
   ///
   bool IoControlSetRetry(bool retry)
   {

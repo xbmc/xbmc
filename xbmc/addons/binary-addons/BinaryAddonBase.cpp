@@ -56,7 +56,7 @@ void CBinaryAddonBase::ReleaseAddon(IAddonInstanceHandler* handler)
 
   m_activeAddonHandlers.erase(presentHandler);
 
-  // if no handler is present anymore reset and delete the add-on class on informations
+  // if no handler is present anymore reset and delete the add-on class on information
   if (m_activeAddonHandlers.empty())
   {
     m_activeAddon.reset();

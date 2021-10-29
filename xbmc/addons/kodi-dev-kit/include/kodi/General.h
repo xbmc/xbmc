@@ -635,7 +635,7 @@ inline bool ATTRIBUTE_HIDDEN IsAddonAvailable(const std::string& id,
 
 //==============================================================================
 /// \ingroup cpp_kodi
-/// @brief Get current Kodi informations and versions, returned data from the following
+/// @brief Get current Kodi information and versions, returned data from the following
 /// <b><tt>kodi_version_t version; kodi::KodiVersion(version);</tt></b>
 /// is e.g.:
 /// ~~~~~~~~~~~~~{.cpp}

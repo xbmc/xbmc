@@ -794,7 +794,7 @@ public:
   /// @brief To get with @ref SetBlockAlign changed values.
   unsigned int GetBlockAlign() const { return m_cStructure->m_BlockAlign; }
 
-  /// @brief To set stream crypto session informations.
+  /// @brief To set stream crypto session information.
   ///
   /// @param[in] cryptoSession The with @ref cpp_kodi_addon_inputstream_Defs_Interface_StreamCryptoSession setable info
   ///
@@ -1528,7 +1528,7 @@ public:
   ///         then, the add-on should call @ref AllocateDemuxPacket "AllocateDemuxPacket(0)" on the
   ///         callback, and set the streamid to DMX_SPECIALID_STREAMCHANGE and
   ///         return the value.
-  ///         The add-on should return <b>`nullptr`</b> if an error occured.
+  ///         The add-on should return <b>`nullptr`</b> if an error occurred.
   ///
   /// @remarks Return <b>`nullptr`</b> if this add-on won't provide this function.
   ///

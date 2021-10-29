@@ -28,7 +28,7 @@ Currently support Kodi Add-Ons based upon Python and C++.
 In the distribution of the library  you find the two directories *tutorials*
 and *examples*. They contain subdirectories for the packages...
 The demos use third party libraries for the graphical user interface. The
-examples don't have this dependency and most examples are refered to in the
+examples don't have this dependency and most examples are referred to in the
 user manual.
 
 #### License

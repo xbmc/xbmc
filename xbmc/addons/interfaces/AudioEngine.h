@@ -46,7 +46,7 @@ struct Interface_AudioEngine
                                                  unsigned int options);
 
   /**
-   * This method will remove the specifyed stream from the engine.
+   * This method will remove the specified stream from the engine.
    * For OSX/IOS this is essential to reconfigure the audio output.
    * @param[in] streamHandle The stream to be altered
    */

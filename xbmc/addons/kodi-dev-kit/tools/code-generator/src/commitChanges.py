@@ -32,7 +32,7 @@ def CommitChanges(options):
         )
         quit(1)
 
-    Log.PrintBegin("Perfom GIT update check")
+    Log.PrintBegin("Perform GIT update check")
     Log.PrintResult(Result.SEE_BELOW)
 
     contains_devkit_change = False
@@ -67,7 +67,7 @@ def CommitChanges(options):
     # Hack place two to reset about before
     subprocess.run(["git", "reset", "HEAD"], check=True, stdout=subprocess.PIPE).stdout
 
-    Log.PrintBegin("Perfom GIT commit")
+    Log.PrintBegin("Perform GIT commit")
     if contains_devkit_change:
         # Add changed or added files to git
         for x in changes_list:

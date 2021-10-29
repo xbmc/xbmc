@@ -316,7 +316,7 @@ public:
   //============================================================================
   /// @ingroup cpp_kodi_gui_windows_listitem
   /// @brief To control selection of item in list (also multiple selection,
-  /// in list on serveral items possible).
+  /// in list on several items possible).
   ///
   /// @param[in] selected if true becomes set as selected
   ///

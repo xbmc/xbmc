@@ -154,7 +154,7 @@ public:
   /// @ingroup cpp_kodi_gui_windows_window
   /// @brief Show this window.
   ///
-  /// Shows this window by activating it, calling close() after it wil activate
+  /// Shows this window by activating it, calling close() after it will activate
   /// the current window again.
   ///
   /// @note If your Add-On ends this window will be closed to. To show it forever,
@@ -717,17 +717,17 @@ public:
   ///   {
   ///     case ADDON_ACTION_PREVIOUS_MENU:
   ///     case ADDON_ACTION_NAV_BACK:
-  ///       printf("action recieved: previous");
+  ///       printf("action received: previous");
   ///       Close();
   ///       return true;
   ///     case ADDON_ACTION_SHOW_INFO:
-  ///       printf("action recieved: show info");
+  ///       printf("action received: show info");
   ///       break;
   ///     case ADDON_ACTION_STOP:
-  ///       printf("action recieved: stop");
+  ///       printf("action received: stop");
   ///       break;
   ///     case ADDON_ACTION_PAUSE:
-  ///       printf("action recieved: pause");
+  ///       printf("action received: pause");
   ///       break;
   ///     default:
   ///       break;

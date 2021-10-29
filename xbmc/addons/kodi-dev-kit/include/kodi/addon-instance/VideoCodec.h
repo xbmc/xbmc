@@ -311,7 +311,7 @@ public:
   /// @ingroup cpp_kodi_addon_videocodec
   /// @brief Reconfigure the decoder, returns true on success
   ///
-  /// Decoders not capable of runnung multiple instances may be capable of reconfiguring
+  /// Decoders not capable of running multiple instances may be capable of reconfiguring
   /// the running instance. If Reconfigure returns false, player will close / open
   /// the decoder
   ///

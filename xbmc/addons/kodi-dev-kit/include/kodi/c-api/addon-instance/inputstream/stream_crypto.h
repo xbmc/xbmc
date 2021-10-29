@@ -87,11 +87,11 @@ extern "C"
     /// @brief Flags for later use.
     uint16_t flags;
 
-    /// @brief @ref numSubSamples uint16_t's wich define the size of clear size
+    /// @brief @ref numSubSamples uint16_t's which define the size of clear size
     /// of a subsample.
     uint16_t* clearBytes;
 
-    /// @brief @ref numSubSamples uint32_t's wich define the size of cipher size
+    /// @brief @ref numSubSamples uint32_t's which define the size of cipher size
     /// of a subsample.
     uint32_t* cipherBytes;
 

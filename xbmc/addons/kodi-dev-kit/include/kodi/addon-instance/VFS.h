@@ -634,7 +634,7 @@ public:
   /// @brief To check a running stream on file for state of his cache.
   ///
   /// @param[in] status Information about current cache status
-  /// @return true if successfull done, false otherwise
+  /// @return true if successfully done, false otherwise
   ///
   ///
   /// @copydetails cpp_kodi_vfs_Defs_CacheStatus_Help
@@ -651,7 +651,7 @@ public:
   /// @brief Unsigned int with speed limit for caching in bytes per second.
   ///
   /// @param[in] rate Cache rate size to use
-  /// @return true if successfull done, false otherwise
+  /// @return true if successfully done, false otherwise
   ///
   virtual bool IoControlSetCacheRate(kodi::addon::VFSFileHandle context, unsigned int rate)
   {
@@ -664,7 +664,7 @@ public:
   /// @brief Enable/disable retry within the protocol handler (if supported).
   ///
   /// @param[in] retry To set the retry, true for use, false for not
-  /// @return true if successfull done, false otherwise
+  /// @return true if successfully done, false otherwise
   ///
   virtual bool IoControlSetRetry(kodi::addon::VFSFileHandle context, bool retry) { return false; }
   //----------------------------------------------------------------------------

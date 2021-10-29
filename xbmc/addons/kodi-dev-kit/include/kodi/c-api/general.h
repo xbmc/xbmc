@@ -28,7 +28,7 @@ extern "C"
     STD_KB_BUTTONS_MAX_ROWS = 4,
     /// Keyboard layout type, this for initial standard
     STD_KB_MODIFIER_KEY_NONE = 0x00,
-    /// Keyboard layout type, this for shift controled layout (uppercase)
+    /// Keyboard layout type, this for shift controlled layout (uppercase)
     STD_KB_MODIFIER_KEY_SHIFT = 0x01,
     /// Keyboard layout type, this to show symbols
     STD_KB_MODIFIER_KEY_SYMBOL = 0x02

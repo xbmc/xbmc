@@ -225,7 +225,7 @@ public:
   /// @defgroup cpp_kodi_tools_CTimer_CB class ITimerCallback
   /// @ingroup cpp_kodi_tools_CTimer
   /// @brief **Callback class of timer**\n
-  /// To give on contructor by @ref CTimer(kodi::tools::CTimer::ITimerCallback* callback)
+  /// To give on constructor by @ref CTimer(kodi::tools::CTimer::ITimerCallback* callback)
   ///
   class ITimerCallback
   {
@@ -239,7 +239,7 @@ public:
 
     //==========================================================================
     /// @ingroup cpp_kodi_tools_CTimer_CB
-    /// @brief Callback function to implement if constuctor @ref CTimer(kodi::tools::CTimer::ITimerCallback* callback)
+    /// @brief Callback function to implement if constructor @ref CTimer(kodi::tools::CTimer::ITimerCallback* callback)
     /// is used and this as parent on related class
     ///
     /// ----------------------------------------------------------------------------
