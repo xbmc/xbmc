@@ -6,13 +6,17 @@ mergeable:
         no_empty:
           enabled: true
         must_exclude:
-          regex: 'Abandoned'
+          regex: "Abandoned"
       - do: label
         must_include:
-          regex: '^v|Infrastructure'
-          message: 'At least version label must be set'
+          regex: "^v|Infrastructure"
+          message: "At least version label must be set"
         must_exclude:
-          regex: '^(Don''t merge|On hold|No Jenkins|RFC|WIP)$'
+          regex: "^(Don't merge|On hold|No Jenkins|RFC|WIP)$"
       - do: title
         must_exclude:
           regex: '\[(RFC|WIP)\]'
+      - do: dependent
+        changed:
+          file: "version.txt"
+          required: ["tools/Linux/kodi.metainfo.xml.in"]
