@@ -26,10 +26,12 @@
 #if defined(HAS_GL)
 #include "rendering/gl/RenderSystemGL.h"
 #include "utils/GLUtils.h"
-#elif defined(HAS_GLES)
+#endif
+#if defined(HAS_GLES)
 #include "rendering/gles/RenderSystemGLES.h"
 #include "utils/GLUtils.h"
-#elif defined(TARGET_WINDOWS)
+#endif
+#if defined(TARGET_WINDOWS)
 #include "guilib/TextureDX.h"
 #include "rendering/dx/DeviceResources.h"
 #include "rendering/dx/RenderContext.h"
@@ -840,178 +842,186 @@ void CSlideShowPic::Render(float* x, float* y, CTexture* pTexture, UTILS::COLOR:
     pGUIShader->RestoreBuffers();
   }
 
-#elif defined(HAS_GL)
-  CRenderSystemGL *renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
-  if (pTexture)
+#endif
+#if defined(HAS_GL)
+  auto renderSystemGL = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
+
+  if (renderSystemGL)
   {
-    pTexture->LoadToGPU();
-    pTexture->BindToUnit(0);
+    if (pTexture)
+    {
+      pTexture->LoadToGPU();
+      pTexture->BindToUnit(0);
 
-    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_BLEND);
+      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      glEnable(GL_BLEND);
 
-    renderSystem->EnableShader(ShaderMethodGL::SM_TEXTURE);
-  }
-  else
-  {
-    renderSystem->EnableShader(ShaderMethodGL::SM_DEFAULT);
-  }
+      renderSystemGL->EnableShader(ShaderMethodGL::SM_TEXTURE);
+    }
+    else
+    {
+      renderSystemGL->EnableShader(ShaderMethodGL::SM_DEFAULT);
+    }
 
-  float u1 = 0, u2 = 1, v1 = 0, v2 = 1;
-  if (pTexture)
-  {
-    u2 = (float)pTexture->GetWidth() / pTexture->GetTextureWidth();
-    v2 = (float)pTexture->GetHeight() / pTexture->GetTextureHeight();
-  }
+    float u1 = 0, u2 = 1, v1 = 0, v2 = 1;
+    if (pTexture)
+    {
+      u2 = (float)pTexture->GetWidth() / pTexture->GetTextureWidth();
+      v2 = (float)pTexture->GetHeight() / pTexture->GetTextureHeight();
+    }
 
-  GLubyte colour[4];
-  GLubyte idx[4] = {0, 1, 3, 2};  //determines order of the vertices
-  GLuint vertexVBO;
-  GLuint indexVBO;
-  struct PackedVertex
-  {
-    float x, y, z;
-    float u1, v1;
-  } vertex[4];
+    GLubyte colour[4];
+    GLubyte idx[4] = {0, 1, 3, 2}; //determines order of the vertices
+    GLuint vertexVBO;
+    GLuint indexVBO;
+    struct PackedVertex
+    {
+      float x, y, z;
+      float u1, v1;
+    } vertex[4];
 
-  // Setup vertex position values
-  vertex[0].x = x[0];
-  vertex[0].y = y[0];
-  vertex[0].z = 0;
-  vertex[0].u1 = u1;
-  vertex[0].v1 = v1;
-
-  vertex[1].x = x[1];
-  vertex[1].y = y[1];
-  vertex[1].z = 0;
-  vertex[1].u1 = u2;
-  vertex[1].v1 = v1;
-
-  vertex[2].x = x[2];
-  vertex[2].y = y[2];
-  vertex[2].z = 0;
-  vertex[2].u1 = u2;
-  vertex[2].v1 = v2;
-
-  vertex[3].x = x[3];
-  vertex[3].y = y[3];
-  vertex[3].z = 0;
-  vertex[3].u1 = u1;
-  vertex[3].v1 = v2;
-
-  GLint posLoc  = renderSystem->ShaderGetPos();
-  GLint tex0Loc = renderSystem->ShaderGetCoord0();
-  GLint uniColLoc= renderSystem->ShaderGetUniCol();
-
-  glGenBuffers(1, &vertexVBO);
-  glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex)*4, &vertex[0], GL_STATIC_DRAW);
-
-  glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex),
-                        reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, x)));
-  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
-                        reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u1)));
-
-  glEnableVertexAttribArray(posLoc);
-  glEnableVertexAttribArray(tex0Loc);
-
-  // Setup Colour values
-  colour[0] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::R, color);
-  colour[1] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::G, color);
-  colour[2] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::B, color);
-  colour[3] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::A, color);
-
-  glUniform4f(uniColLoc,(colour[0] / 255.0f), (colour[1] / 255.0f),
-                        (colour[2] / 255.0f), (colour[3] / 255.0f));
-
-  glGenBuffers(1, &indexVBO);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte)*4, idx, GL_STATIC_DRAW);
-
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
-
-  glDisableVertexAttribArray(posLoc);
-  glDisableVertexAttribArray(tex0Loc);
-
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glDeleteBuffers(1, &vertexVBO);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-  glDeleteBuffers(1, &indexVBO);
-
-  renderSystem->DisableShader();
-
-#elif defined(HAS_GLES)
-  CRenderSystemGLES *renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
-  if (pTexture)
-  {
-    pTexture->LoadToGPU();
-    pTexture->BindToUnit(0);
-
-    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_BLEND);          // Turn Blending On
-
-    renderSystem->EnableGUIShader(ShaderMethodGLES::SM_TEXTURE);
-  }
-  else
-  {
-    renderSystem->EnableGUIShader(ShaderMethodGLES::SM_DEFAULT);
-  }
-
-  float u1 = 0, u2 = 1, v1 = 0, v2 = 1;
-  if (pTexture)
-  {
-    u2 = (float)pTexture->GetWidth() / pTexture->GetTextureWidth();
-    v2 = (float)pTexture->GetHeight() / pTexture->GetTextureHeight();
-  }
-
-  GLubyte col[4];
-  GLfloat ver[4][3];
-  GLfloat tex[4][2];
-  GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
-
-  GLint posLoc  = renderSystem->GUIShaderGetPos();
-  GLint tex0Loc = renderSystem->GUIShaderGetCoord0();
-  GLint uniColLoc= renderSystem->GUIShaderGetUniCol();
-
-  glVertexAttribPointer(posLoc,  3, GL_FLOAT, 0, 0, ver);
-  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, tex);
-
-  glEnableVertexAttribArray(posLoc);
-  glEnableVertexAttribArray(tex0Loc);
-
-  // Setup Colour values
-  col[0] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::R, color);
-  col[1] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::G, color);
-  col[2] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::B, color);
-  col[3] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::A, color);
-
-  if (CServiceBroker::GetWinSystem()->UseLimitedColor())
-  {
-    col[0] = (235 - 16) * col[0] / 255 + 16;
-    col[1] = (235 - 16) * col[1] / 255 + 16;
-    col[2] = (235 - 16) * col[2] / 255 + 16;
-  }
-
-  for (int i=0; i<4; i++)
-  {
     // Setup vertex position values
-    ver[i][0] = x[i];
-    ver[i][1] = y[i];
-    ver[i][2] = 0.0f;
+    vertex[0].x = x[0];
+    vertex[0].y = y[0];
+    vertex[0].z = 0;
+    vertex[0].u1 = u1;
+    vertex[0].v1 = v1;
+
+    vertex[1].x = x[1];
+    vertex[1].y = y[1];
+    vertex[1].z = 0;
+    vertex[1].u1 = u2;
+    vertex[1].v1 = v1;
+
+    vertex[2].x = x[2];
+    vertex[2].y = y[2];
+    vertex[2].z = 0;
+    vertex[2].u1 = u2;
+    vertex[2].v1 = v2;
+
+    vertex[3].x = x[3];
+    vertex[3].y = y[3];
+    vertex[3].z = 0;
+    vertex[3].u1 = u1;
+    vertex[3].v1 = v2;
+
+    GLint posLoc = renderSystemGL->ShaderGetPos();
+    GLint tex0Loc = renderSystemGL->ShaderGetCoord0();
+    GLint uniColLoc = renderSystemGL->ShaderGetUniCol();
+
+    glGenBuffers(1, &vertexVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex) * 4, &vertex[0], GL_STATIC_DRAW);
+
+    glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex),
+                          reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, x)));
+    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
+                          reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u1)));
+
+    glEnableVertexAttribArray(posLoc);
+    glEnableVertexAttribArray(tex0Loc);
+
+    // Setup Colour values
+    colour[0] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::R, color);
+    colour[1] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::G, color);
+    colour[2] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::B, color);
+    colour[3] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::A, color);
+
+    glUniform4f(uniColLoc, (colour[0] / 255.0f), (colour[1] / 255.0f), (colour[2] / 255.0f),
+                (colour[3] / 255.0f));
+
+    glGenBuffers(1, &indexVBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte) * 4, idx, GL_STATIC_DRAW);
+
+    glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
+
+    glDisableVertexAttribArray(posLoc);
+    glDisableVertexAttribArray(tex0Loc);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glDeleteBuffers(1, &vertexVBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glDeleteBuffers(1, &indexVBO);
+
+    renderSystemGL->DisableShader();
   }
-  // Setup texture coordinates
-  tex[0][0] = tex[3][0] = u1;
-  tex[0][1] = tex[1][1] = v1;
-  tex[1][0] = tex[2][0] = u2;
-  tex[2][1] = tex[3][1] = v2;
+#endif
+#if defined(HAS_GLES)
+  auto renderSystemGLES = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
+  if (renderSystemGLES)
+  {
+    if (pTexture)
+    {
+      pTexture->LoadToGPU();
+      pTexture->BindToUnit(0);
 
-  glUniform4f(uniColLoc,(col[0] / 255.0f), (col[1] / 255.0f), (col[2] / 255.0f), (col[3] / 255.0f));
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
+      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      glEnable(GL_BLEND); // Turn Blending On
 
-  glDisableVertexAttribArray(posLoc);
-  glDisableVertexAttribArray(tex0Loc);
+      renderSystemGLES->EnableGUIShader(ShaderMethodGLES::SM_TEXTURE);
+    }
+    else
+    {
+      renderSystemGLES->EnableGUIShader(ShaderMethodGLES::SM_DEFAULT);
+    }
 
-  renderSystem->DisableGUIShader();
+    float u1 = 0, u2 = 1, v1 = 0, v2 = 1;
+    if (pTexture)
+    {
+      u2 = (float)pTexture->GetWidth() / pTexture->GetTextureWidth();
+      v2 = (float)pTexture->GetHeight() / pTexture->GetTextureHeight();
+    }
 
+    GLubyte col[4];
+    GLfloat ver[4][3];
+    GLfloat tex[4][2];
+    GLubyte idx[4] = {0, 1, 3, 2}; //determines order of triangle strip
+
+    GLint posLoc = renderSystemGLES->GUIShaderGetPos();
+    GLint tex0Loc = renderSystemGLES->GUIShaderGetCoord0();
+    GLint uniColLoc = renderSystemGLES->GUIShaderGetUniCol();
+
+    glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, 0, ver);
+    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, tex);
+
+    glEnableVertexAttribArray(posLoc);
+    glEnableVertexAttribArray(tex0Loc);
+
+    // Setup Colour values
+    col[0] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::R, color);
+    col[1] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::G, color);
+    col[2] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::B, color);
+    col[3] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::A, color);
+
+    if (CServiceBroker::GetWinSystem()->UseLimitedColor())
+    {
+      col[0] = (235 - 16) * col[0] / 255 + 16;
+      col[1] = (235 - 16) * col[1] / 255 + 16;
+      col[2] = (235 - 16) * col[2] / 255 + 16;
+    }
+
+    for (int i = 0; i < 4; i++)
+    {
+      // Setup vertex position values
+      ver[i][0] = x[i];
+      ver[i][1] = y[i];
+      ver[i][2] = 0.0f;
+    }
+    // Setup texture coordinates
+    tex[0][0] = tex[3][0] = u1;
+    tex[0][1] = tex[1][1] = v1;
+    tex[1][0] = tex[2][0] = u2;
+    tex[2][1] = tex[3][1] = v2;
+
+    glUniform4f(uniColLoc, (col[0] / 255.0f), (col[1] / 255.0f), (col[2] / 255.0f),
+                (col[3] / 255.0f));
+    glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
+
+    glDisableVertexAttribArray(posLoc);
+    glDisableVertexAttribArray(tex0Loc);
+
+    renderSystemGLES->DisableGUIShader();
+  }
 #endif
 }

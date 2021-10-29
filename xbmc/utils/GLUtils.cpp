@@ -197,20 +197,27 @@ void LogGraphicsInfo()
   std::string extensions;
 #if defined(HAS_GL)
   unsigned int renderVersionMajor, renderVersionMinor;
-  CServiceBroker::GetRenderSystem()->GetRenderVersion(renderVersionMajor, renderVersionMinor);
-  if (renderVersionMajor > 3 ||
-      (renderVersionMajor == 3 && renderVersionMinor >= 2))
+  auto renderSystemGL = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
+  if (renderSystemGL)
   {
-    GLint n;
-    glGetIntegerv(GL_NUM_EXTENSIONS, &n);
-    if (n > 0)
+    renderSystemGL->GetRenderVersion(renderVersionMajor, renderVersionMinor);
+    if (renderVersionMajor > 3 || (renderVersionMajor == 3 && renderVersionMinor >= 2))
     {
-      GLint i;
-      for (i = 0; i < n; i++)
+      GLint n;
+      glGetIntegerv(GL_NUM_EXTENSIONS, &n);
+      if (n > 0)
       {
-        extensions += (const char*)glGetStringi(GL_EXTENSIONS, i);
-        extensions += " ";
+        GLint i;
+        for (i = 0; i < n; i++)
+        {
+          extensions += (const char*)glGetStringi(GL_EXTENSIONS, i);
+          extensions += " ";
+        }
       }
+    }
+    else
+    {
+      extensions += (const char*)glGetString(GL_EXTENSIONS);
     }
   }
   else

@@ -19,7 +19,8 @@
 #include "windowing/GraphicContext.h"
 #ifdef HAS_GL
 #include "rendering/gl/RenderSystemGL.h"
-#elif HAS_GLES
+#endif
+#ifdef HAS_GLES
 #include "rendering/gles/RenderSystemGLES.h"
 #endif
 #include "rendering/MatrixGL.h"
@@ -58,19 +59,31 @@ CGUIFontTTFGL::~CGUIFontTTFGL(void)
 
 bool CGUIFontTTFGL::FirstBegin()
 {
-#if defined(HAS_GL)
-  GLenum pixformat = GL_RED;
+  GLenum pixformat;
   GLenum internalFormat;
+
+#if defined(HAS_GL)
   unsigned int major, minor;
-  CRenderSystemGL* renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
-  renderSystem->GetRenderVersion(major, minor);
-  if (major >= 3)
-    internalFormat = GL_R8;
-  else
-    internalFormat = GL_LUMINANCE;
-#else
-  GLenum pixformat = GL_ALPHA; // deprecated
-  GLenum internalFormat = GL_ALPHA;
+  auto renderSystemGL = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
+  if (renderSystemGL)
+  {
+    pixformat = GL_RED;
+    renderSystemGL->GetRenderVersion(major, minor);
+    if (major >= 3)
+      internalFormat = GL_R8;
+    else
+      internalFormat = GL_LUMINANCE;
+  }
+#endif
+
+//! @todo: fix
+#ifdef HAS_GLES
+  auto renderSystemGLES = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
+  if (renderSystemGLES)
+  {
+    pixformat = GL_ALPHA; // deprecated
+    internalFormat = GL_ALPHA;
+  }
 #endif
 
   if (m_textureStatus == TEXTURE_REALLOCATED)
@@ -126,106 +139,119 @@ void CGUIFontTTFGL::LastEnd()
   if (!winSystem)
     return;
 
+  auto renderSystem = CServiceBroker::GetRenderSystem();
+
+  GLint posLoc;
+  GLint colLoc;
+  GLint tex0Loc;
+  GLint modelLoc;
+
+
 #ifdef HAS_GL
-  CRenderSystemGL* renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
-  renderSystem->EnableShader(ShaderMethodGL::SM_FONTS);
-
-  GLint posLoc = renderSystem->ShaderGetPos();
-  GLint colLoc = renderSystem->ShaderGetCol();
-  GLint tex0Loc = renderSystem->ShaderGetCoord0();
-  GLint modelLoc = renderSystem->ShaderGetModel();
-
-  CreateStaticVertexBuffers();
-
-  // Enable the attributes used by this shader
-  glEnableVertexAttribArray(posLoc);
-  glEnableVertexAttribArray(colLoc);
-  glEnableVertexAttribArray(tex0Loc);
-
-  if (!m_vertex.empty())
+  auto renderSystemGL = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
+  if (renderSystemGL)
   {
+    renderSystemGL->EnableShader(ShaderMethodGL::SM_FONTS);
 
-    // Deal with vertices that had to use software clipping
-    std::vector<SVertex> vecVertices(6 * (m_vertex.size() / 4));
-    SVertex* vertices = &vecVertices[0];
-    for (size_t i = 0; i < m_vertex.size(); i += 4)
+    posLoc = renderSystemGL->ShaderGetPos();
+    colLoc = renderSystemGL->ShaderGetCol();
+    tex0Loc = renderSystemGL->ShaderGetCoord0();
+    modelLoc = renderSystemGL->ShaderGetModel();
+
+    CreateStaticVertexBuffers();
+
+    // Enable the attributes used by this shader
+    glEnableVertexAttribArray(posLoc);
+    glEnableVertexAttribArray(colLoc);
+    glEnableVertexAttribArray(tex0Loc);
+
+    if (!m_vertex.empty())
     {
-      *vertices++ = m_vertex[i];
-      *vertices++ = m_vertex[i + 1];
-      *vertices++ = m_vertex[i + 2];
 
-      *vertices++ = m_vertex[i + 1];
-      *vertices++ = m_vertex[i + 3];
-      *vertices++ = m_vertex[i + 2];
+      // Deal with vertices that had to use software clipping
+      std::vector<SVertex> vecVertices(6 * (m_vertex.size() / 4));
+      SVertex* vertices = &vecVertices[0];
+      for (size_t i = 0; i < m_vertex.size(); i += 4)
+      {
+        *vertices++ = m_vertex[i];
+        *vertices++ = m_vertex[i + 1];
+        *vertices++ = m_vertex[i + 2];
+
+        *vertices++ = m_vertex[i + 1];
+        *vertices++ = m_vertex[i + 3];
+        *vertices++ = m_vertex[i + 2];
+      }
+      vertices = &vecVertices[0];
+
+      GLuint VertexVBO;
+
+      glGenBuffers(1, &VertexVBO);
+      glBindBuffer(GL_ARRAY_BUFFER, VertexVBO);
+      glBufferData(GL_ARRAY_BUFFER, sizeof(SVertex) * vecVertices.size(), &vecVertices[0],
+                   GL_STATIC_DRAW);
+
+      glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(SVertex),
+                            reinterpret_cast<const GLvoid*>(offsetof(SVertex, x)));
+      glVertexAttribPointer(colLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex),
+                            reinterpret_cast<const GLvoid*>(offsetof(SVertex, r)));
+      glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, GL_FALSE, sizeof(SVertex),
+                            reinterpret_cast<const GLvoid*>(offsetof(SVertex, u)));
+
+      glDrawArrays(GL_TRIANGLES, 0, vecVertices.size());
+
+      glBindBuffer(GL_ARRAY_BUFFER, 0);
+      glDeleteBuffers(1, &VertexVBO);
     }
-    vertices = &vecVertices[0];
-
-    GLuint VertexVBO;
-
-    glGenBuffers(1, &VertexVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VertexVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(SVertex) * vecVertices.size(), &vecVertices[0],
-                 GL_STATIC_DRAW);
-
-    glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(SVertex),
-                          reinterpret_cast<const GLvoid*>(offsetof(SVertex, x)));
-    glVertexAttribPointer(colLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex),
-                          reinterpret_cast<const GLvoid*>(offsetof(SVertex, r)));
-    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, GL_FALSE, sizeof(SVertex),
-                          reinterpret_cast<const GLvoid*>(offsetof(SVertex, u)));
-
-    glDrawArrays(GL_TRIANGLES, 0, vecVertices.size());
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glDeleteBuffers(1, &VertexVBO);
   }
-
-#else
+#endif
+#ifdef HAS_GLES
   // GLES 2.0 version.
-  CRenderSystemGLES* renderSystem =
-      dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
-  renderSystem->EnableGUIShader(ShaderMethodGLES::SM_FONTS);
-
-  GLint posLoc = renderSystem->GUIShaderGetPos();
-  GLint colLoc = renderSystem->GUIShaderGetCol();
-  GLint tex0Loc = renderSystem->GUIShaderGetCoord0();
-  GLint modelLoc = renderSystem->GUIShaderGetModel();
-
-
-  CreateStaticVertexBuffers();
-
-  // Enable the attributes used by this shader
-  glEnableVertexAttribArray(posLoc);
-  glEnableVertexAttribArray(colLoc);
-  glEnableVertexAttribArray(tex0Loc);
-
-  if (!m_vertex.empty())
+  auto renderSystemGLES = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
+  if (renderSystemGLES)
   {
-    // Deal with vertices that had to use software clipping
-    std::vector<SVertex> vecVertices(6 * (m_vertex.size() / 4));
-    SVertex* vertices = &vecVertices[0];
+    renderSystemGLES->EnableGUIShader(ShaderMethodGLES::SM_FONTS);
 
-    for (size_t i = 0; i < m_vertex.size(); i += 4)
+    posLoc = renderSystemGLES->GUIShaderGetPos();
+    colLoc = renderSystemGLES->GUIShaderGetCol();
+    tex0Loc = renderSystemGLES->GUIShaderGetCoord0();
+    modelLoc = renderSystemGLES->GUIShaderGetModel();
+
+
+    CreateStaticVertexBuffers();
+
+    // Enable the attributes used by this shader
+    glEnableVertexAttribArray(posLoc);
+    glEnableVertexAttribArray(colLoc);
+    glEnableVertexAttribArray(tex0Loc);
+
+    if (!m_vertex.empty())
     {
-      *vertices++ = m_vertex[i];
-      *vertices++ = m_vertex[i + 1];
-      *vertices++ = m_vertex[i + 2];
+      // Deal with vertices that had to use software clipping
+      std::vector<SVertex> vecVertices(6 * (m_vertex.size() / 4));
+      SVertex* vertices = &vecVertices[0];
 
-      *vertices++ = m_vertex[i + 1];
-      *vertices++ = m_vertex[i + 3];
-      *vertices++ = m_vertex[i + 2];
+      for (size_t i = 0; i < m_vertex.size(); i += 4)
+      {
+        *vertices++ = m_vertex[i];
+        *vertices++ = m_vertex[i + 1];
+        *vertices++ = m_vertex[i + 2];
+
+        *vertices++ = m_vertex[i + 1];
+        *vertices++ = m_vertex[i + 3];
+        *vertices++ = m_vertex[i + 2];
+      }
+
+      vertices = &vecVertices[0];
+
+      glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(SVertex),
+                            reinterpret_cast<char*>(vertices) + offsetof(SVertex, x));
+      glVertexAttribPointer(colLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex),
+                            reinterpret_cast<char*>(vertices) + offsetof(SVertex, r));
+      glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, GL_FALSE, sizeof(SVertex),
+                            reinterpret_cast<char*>(vertices) + offsetof(SVertex, u));
+
+      glDrawArrays(GL_TRIANGLES, 0, vecVertices.size());
     }
-
-    vertices = &vecVertices[0];
-
-    glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(SVertex),
-                          reinterpret_cast<char*>(vertices) + offsetof(SVertex, x));
-    glVertexAttribPointer(colLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex),
-                          reinterpret_cast<char*>(vertices) + offsetof(SVertex, r));
-    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, GL_FALSE, sizeof(SVertex),
-                          reinterpret_cast<char*>(vertices) + offsetof(SVertex, u));
-
-    glDrawArrays(GL_TRIANGLES, 0, vecVertices.size());
   }
 #endif
 
@@ -307,9 +333,12 @@ void CGUIFontTTFGL::LastEnd()
   glDisableVertexAttribArray(tex0Loc);
 
 #ifdef HAS_GL
-  renderSystem->DisableShader();
-#else
-  renderSystem->DisableGUIShader();
+  if (renderSystemGL)
+    renderSystemGL->DisableShader();
+#endif
+#ifdef HAS_GLES
+  if (renderSystemGLES)
+    renderSystemGLES->DisableGUIShader();
 #endif
 }
 

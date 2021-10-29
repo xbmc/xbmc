@@ -18,9 +18,11 @@
 
 #if defined(HAS_GL)
 #include "rendering/gl/RenderSystemGL.h"
-#elif HAS_GLES >= 2
+#endif
+#if HAS_GLES >= 2
 #include "rendering/gles/RenderSystemGLES.h"
-#elif defined(TARGET_WINDOWS)
+#endif
+#if defined(TARGET_WINDOWS)
 #include "rendering/dx/RenderSystemDX.h"
 #endif
 
@@ -113,7 +115,8 @@ void CRenderContext::EnableGUIShader(GL_SHADER_METHOD method)
   CRenderSystemGL* rendering = dynamic_cast<CRenderSystemGL*>(m_rendering);
   if (rendering != nullptr)
     rendering->EnableShader(TranslateShaderMethodGL(method));
-#elif HAS_GLES >= 2
+#endif
+#if HAS_GLES >= 2
   CRenderSystemGLES* renderingGLES = dynamic_cast<CRenderSystemGLES*>(m_rendering);
   if (renderingGLES != nullptr)
     renderingGLES->EnableGUIShader(TranslateShaderMethodGLES(method));
@@ -126,7 +129,8 @@ void CRenderContext::DisableGUIShader()
   CRenderSystemGL* renderingGL = dynamic_cast<CRenderSystemGL*>(m_rendering);
   if (renderingGL != nullptr)
     renderingGL->DisableShader();
-#elif HAS_GLES >= 2
+#endif
+#if HAS_GLES >= 2
   CRenderSystemGLES* renderingGLES = dynamic_cast<CRenderSystemGLES*>(m_rendering);
   if (renderingGLES != nullptr)
     renderingGLES->DisableGUIShader();
@@ -139,7 +143,8 @@ int CRenderContext::GUIShaderGetPos()
   CRenderSystemGL* renderingGL = dynamic_cast<CRenderSystemGL*>(m_rendering);
   if (renderingGL != nullptr)
     return static_cast<int>(renderingGL->ShaderGetPos());
-#elif HAS_GLES >= 2
+#endif
+#if HAS_GLES >= 2
   CRenderSystemGLES* renderingGLES = dynamic_cast<CRenderSystemGLES*>(m_rendering);
   if (renderingGLES != nullptr)
     return static_cast<int>(renderingGLES->GUIShaderGetPos());
@@ -154,7 +159,8 @@ int CRenderContext::GUIShaderGetCoord0()
   CRenderSystemGL* renderingGL = dynamic_cast<CRenderSystemGL*>(m_rendering);
   if (renderingGL != nullptr)
     return static_cast<int>(renderingGL->ShaderGetCoord0());
-#elif HAS_GLES >= 2
+#endif
+#if HAS_GLES >= 2
   CRenderSystemGLES* renderingGLES = dynamic_cast<CRenderSystemGLES*>(m_rendering);
   if (renderingGLES != nullptr)
     return static_cast<int>(renderingGLES->GUIShaderGetCoord0());
@@ -169,7 +175,8 @@ int CRenderContext::GUIShaderGetUniCol()
   CRenderSystemGL* renderingGL = dynamic_cast<CRenderSystemGL*>(m_rendering);
   if (renderingGL != nullptr)
     return static_cast<int>(renderingGL->ShaderGetUniCol());
-#elif HAS_GLES >= 2
+#endif
+#if HAS_GLES >= 2
   CRenderSystemGLES* renderingGLES = dynamic_cast<CRenderSystemGLES*>(m_rendering);
   if (renderingGLES != nullptr)
     return static_cast<int>(renderingGLES->GUIShaderGetUniCol());
