@@ -11,7 +11,7 @@ process the construction.
 
 --------------------------------------------------------------------------------
 
-<b>Here a minmal example of the for addon used CMakeLists.txt:</b>
+<b>Here's a minimal example of the addon used for CMakeLists.txt:</b>
 
 ~~~~~~~~~~~~~{.cmake}
 cmake_minimum_required(VERSION 3.5)

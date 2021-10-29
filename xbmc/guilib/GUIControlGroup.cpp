@@ -238,7 +238,7 @@ bool CGUIControlGroup::OnMessage(CGUIMessage& message)
     break;
   }
   bool handled(false);
-  //not intented for any specific control, send to all childs and our base handler.
+  //not intended for any specific control, send to all childs and our base handler.
   if (message.GetControlId() == 0)
   {
     for (auto *control : m_children)

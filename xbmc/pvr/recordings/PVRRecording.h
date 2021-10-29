@@ -11,8 +11,8 @@
 /*
  * DESCRIPTION:
  *
- * CPVRRecordingInfoTag is part of the Kodi PVR system to support recording entrys,
- * stored on a other Backend like VDR or MythTV.
+ * CPVRRecordingInfoTag is part of the Kodi PVR system to support recording entries,
+ * stored on another Backend like VDR or MythTV.
  *
  * The recording information tag holds data about name, length, recording time
  * and so on of recorded stream stored on the backend.
@@ -168,7 +168,7 @@ namespace PVR
 
     /*!
      * @brief Update this recording's size. The value will be obtained from the backend if it supports server-side size retrieval.
-     * @return true if the the updated value is differnt, false otherwise.
+     * @return true if the the updated value is different, false otherwise.
      */
     bool UpdateRecordingSize();
 

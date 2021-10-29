@@ -1734,7 +1734,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
           }
           else
           {
-            // Note: libass only supports a single font directory to look for aditional fonts
+            // Note: libass only supports a single font directory to look for additional fonts
             // (c.f. ass_set_fonts_dir). To support both user defined fonts (those placed in
             // special://home/media/Fonts/) and fonts extracted by the demuxer, make it extract
             // fonts to the user directory with a known, easy to identify, prefix (tmp.font.*).

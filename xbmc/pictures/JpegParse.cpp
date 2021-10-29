@@ -123,7 +123,7 @@ bool CJpegParse::GetSection (CFile& infile, const unsigned short sectionLength)
 
 //--------------------------------------------------------------------------
 // Deallocate memory allocated in GetSection. This function must always
-// be paired by a preceeding GetSection call.
+// be paired by a preceding GetSection call.
 //--------------------------------------------------------------------------
 void CJpegParse::ReleaseSection (void)
 {
@@ -245,7 +245,7 @@ bool CJpegParse::ExtractInfo (CFile& infile)
 
       case M_JFIF:
         // Regular jpegs always have this tag, exif images have the exif
-        // marker instead, althogh ACDsee will write images with both markers.
+        // marker instead, although ACDsee will write images with both markers.
         // this program will re-create this marker on absence of exif marker.
         // hence no need to keep the copy from the file.
       // fall through to default case

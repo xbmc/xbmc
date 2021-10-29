@@ -109,7 +109,7 @@ public:
   float GetPlayPercentage();
 
   /*!
-   * \brief Get the minumum time
+   * \brief Get the minimum time
    *
    * This will be zero for a typical video. With timeshift, this is the time,
    * in ms, that the player can go back. This can be before the start time.
@@ -119,7 +119,7 @@ public:
   /*!
    * \brief Get the maximum time
    *
-   * This is the maximun time, in ms, that the player can skip forward. For a
+   * This is the maximum time, in ms, that the player can skip forward. For a
    * typical video, this will be the total length. For live TV without
    * timeshift this is zero, and for live TV with timeshift this will be the
    * buffer ahead.

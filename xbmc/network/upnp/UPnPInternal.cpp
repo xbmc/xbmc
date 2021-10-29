@@ -675,7 +675,7 @@ BuildObject(CFileItem&                    item,
         {
           std::string preferredLanguage{"en"};
 
-          /* trying to find subtitle with prefered language settings */
+          /* trying to find subtitle with preferred language settings */
           auto setting = settings->GetSetting("locale.subtitlelanguage");
           if (!setting)
             CLog::Log(LOGERROR, "Failed to load setting for: {}", "locale.subtitlelanguage");
@@ -696,7 +696,7 @@ BuildObject(CFileItem&                    item,
               break;
             }
             }
-            /* if not found subtitle with prefered language, get the first one */
+            /* if not found subtitle with preferred language, get the first one */
             if (subtitlePath.empty())
             {
                 subtitlePath = subtitles[0];

@@ -664,7 +664,7 @@ std::string MysqlDatabase::vprepare(const char *format, va_list args)
 #define etPERCENT     8 /* Percent symbol. %% */
 #define etCHARX       9 /* Characters. %c */
 /* The rest are extensions, not normally found in printf() */
-#define etSQLESCAPE  10 /* Strings with '\'' doubled. Stings with '\\' escaped.  %q */
+#define etSQLESCAPE  10 /* Strings with '\'' doubled. Strings with '\\' escaped.  %q */
 #define etSQLESCAPE2 11 /* Strings with '\'' doubled and enclosed in '',
                           NULL pointers replaced by SQL NULL.  %Q */
 #define etPOINTER    14 /* The %p conversion */

@@ -31,7 +31,7 @@ public:
    \brief Creates a bookmark of the currently playing video file.
 
           NOTE: sends a GUI_MSG_REFRESH_LIST message to DialogVideoBookmark on success
-   \return True if creation of bookmark was succesful
+   \return True if creation of bookmark was successful
    \sa OnAddEpisodeBookmark
    */
   static bool OnAddBookmark();

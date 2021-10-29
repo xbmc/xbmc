@@ -65,7 +65,7 @@ static void dumpAVAudioSessionProperties()
             static_cast<long>([mySession outputNumberOfChannels]));
   // maximumOutputNumberOfChannels provides hints to tvOS audio settings
   // if 2, then audio is set to two channel stereo. iOS return this unless hdmi connected
-  // if 6, then audio is set to Digial Dolby 5.1 OR hdmi path detected sink can only handle 6 channels.
+  // if 6, then audio is set to Digital Dolby 5.1 OR hdmi path detected sink can only handle 6 channels.
   // if 8, then audio is set to Best Quality AND hdmi path detected sink can handle 8 channels.
   CLog::Log(LOGINFO, "{} maximumOutputNumberOfChannels {}", __PRETTY_FUNCTION__,
             static_cast<long>([mySession maximumOutputNumberOfChannels]));
@@ -363,7 +363,7 @@ unsigned int CAAudioUnitSink::write(uint8_t* data, unsigned int frames, unsigned
     if (!m_started)
       timeout = 4500;
 
-    // we are using a timer here for beeing sure for timeouts
+    // we are using a timer here for being sure for timeouts
     // condvar can be woken spuriously as signaled
     XbmcThreads::EndTime timer(timeout);
     condVar.wait(mutex, std::chrono::milliseconds(timeout));
@@ -437,7 +437,7 @@ bool CAAudioUnitSink::setupAudio()
   CLog::Log(LOGINFO, "{} setting buffer duration to {:f}", __PRETTY_FUNCTION__, bufferseconds);
   setAVAudioSessionProperties(bufferseconds, samplerate, channels);
 
-  // Get the real output samplerate, the requested might not avaliable
+  // Get the real output samplerate, the requested might not available
   Float64 realisedSampleRate = [[AVAudioSession sharedInstance] sampleRate];
   if (m_outputFormat.mSampleRate != realisedSampleRate)
   {
@@ -746,12 +746,12 @@ bool CAESinkDARWINTVOS::Initialize(AEAudioFormat& format, std::string& device)
     CAChannelIndex channel_index = CAChannel_PCM_6CHAN;
     if (maxChannels == 6 && format.m_channelLayout.Count() == 6)
     {
-      // if 6, then audio is set to Digial Dolby 5.1, need to use DD mapping
+      // if 6, then audio is set to Digital Dolby 5.1, need to use DD mapping
       channel_index = CAChannel_PCM_DD5_1;
     }
     else if (format.m_channelLayout.Count() == 5)
     {
-      // if 5, then audio is set to Digial Dolby 5.0, need to use DD mapping
+      // if 5, then audio is set to Digital Dolby 5.0, need to use DD mapping
       channel_index = CAChannel_PCM_DD5_1;
     }
     else

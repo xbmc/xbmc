@@ -108,7 +108,7 @@ private:
    * \brief Draw a controller to the column at the specified height
    *
    * \param port The controller's port node
-   * \param height The hight to draw the controller at
+   * \param height The height to draw the controller at
    * \param column[in/out] The column to draw to
    * \param grid[in/out] The grid to add additional columns to
    *

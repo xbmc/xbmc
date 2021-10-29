@@ -34,7 +34,7 @@ CXHandle::CXHandle(HandleType nType)
 
 CXHandle::CXHandle(const CXHandle &src)
 {
-  // we shouldnt get here EVER. however, if we do - try to make the best. copy what we can
+  // we shouldn't get here EVER. however, if we do - try to make the best. copy what we can
   // and most importantly - not share any pointer.
   CLog::Log(LOGWARNING, "{}, copy handle.", __FUNCTION__);
 

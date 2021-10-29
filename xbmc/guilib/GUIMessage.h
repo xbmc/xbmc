@@ -150,7 +150,7 @@
 #define GUI_MSG_REFRESH_TIMER  50
 
  /*!
- \brief Called if state has changed wich could lead to GUI changes
+ \brief Called if state has changed which could lead to GUI changes
  */
 #define GUI_MSG_STATE_CHANGED  51
 

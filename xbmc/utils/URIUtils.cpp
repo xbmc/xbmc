@@ -100,7 +100,7 @@ bool URIUtils::HasExtension(const std::string& strFileName, const std::string& s
   std::string::const_reverse_iterator itExtensions = strExtensions.rbegin();
   while (itExtensions != strExtensions.rend())
   {
-    // Iterate backwards over strFileName untill we hit a '.' or a mismatch
+    // Iterate backwards over strFileName until we hit a '.' or a mismatch
     for (std::string::const_reverse_iterator itFileName = strFileName.rbegin();
          itFileName != strFileName.rend() && itExtensions != strExtensions.rend() &&
          tolower(*itFileName) == *itExtensions;

@@ -22,7 +22,7 @@
 <!--   eg <b>ActivateWindow(Music)</b>                                       -->
 <!-- would automatically go to Music on the press of the B button.           -->
 <!--                                                                         -->
-<!-- Buttons can be overloaded with hold durations, in miliseconds:          -->
+<!-- Buttons can be overloaded with hold durations, in milliseconds:         -->
 <!--   <joystick profile="game.controller.default">                          -->
 <!--     <a>Select</a>                                                       -->
 <!--     <a holdtime="500">ContextMenu</a>                                   -->

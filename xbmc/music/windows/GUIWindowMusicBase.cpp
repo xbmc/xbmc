@@ -1105,7 +1105,7 @@ void CGUIWindowMusicBase::OnInitWindow()
 {
   CGUIMediaWindow::OnInitWindow();
   // Prompt for rescan of library to read music file tags that were not processed by previous versions
-  // and accomodate any changes to the way some tags are processed
+  // and accommodate any changes to the way some tags are processed
   if (m_musicdatabase.GetMusicNeedsTagScan() != 0)
   {
     if (CServiceBroker::GetGUI()

@@ -83,7 +83,7 @@ CDVDOverlay* CSubtitlesAdapter::CreateOverlay()
 
   // Side effects that happens when you create each overlay based on each Libass Event:
   // - A small delay when switching on/off the overlay renderer, cause subtitles
-  //   flickering when Events have close timing. A possibile cause of the
+  //   flickering when Events have close timing. A possible cause of the
   //   delay could be the async implementation of overlay management chain.
   // - When an overlay disable the renderer, Libass has no possibility to
   //   complete the rendering of text animations (not sure if related to previous problem)

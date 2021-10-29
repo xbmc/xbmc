@@ -249,7 +249,7 @@ bool CWinSystemWin10::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
   {
     if (state == WINDOW_STATE_WINDOWED) // go to a windowed state
     {
-      // need to restore resoultion if it was changed to not native
+      // need to restore resolution if it was changed to not native
       // because we do not support resolution change in windowed mode
       RestoreDesktopResolution();
     }

@@ -632,7 +632,7 @@ inline void PAPlayer::ProcessStreams(double &freeBufferTime)
         /* if it was the last stream */
         if (itt == m_streams.end())
         {
-          /* if it didnt trigger the next queue item */
+          /* if it didn't trigger the next queue item */
           if (!si->m_prepareTriggered)
           {
             if (si->m_waitOnDrain)

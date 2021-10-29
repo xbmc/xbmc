@@ -212,8 +212,8 @@ public: \
 //
 //  DEFINE_FUNC_ALIGNED 0-X
 //
-//  Defines a function for an export from a dll, wich
-//  require a aligned stack on function call
+//  Defines a function for an export from a dll, which
+//  requires an aligned stack on function call
 //  Use DEFINE_FUNC_ALIGNED for each function to be resolved.
 //
 //  result:  Result of the function
@@ -233,7 +233,7 @@ public: \
 //    __asm sub esp, [s];
 //    __asm and esp, ~15;
 //    __asm add esp, [s]
-//    m_test(p1, p2, p3);  //return value will still be correct aslong as we don't mess with it
+//    m_test(p1, p2, p3);  //return value will still be correct as long as we don't mess with it
 //    __asm mov esp,[o];
 //  };
 

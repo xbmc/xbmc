@@ -632,7 +632,7 @@ int CGUIEPGGridContainerModel::GetBlock(const CDateTime& datetime) const
     diff = (datetime - m_gridStart).GetSecondsTotal(); // block is after grid start
 
   // Note: Subtract 1 second from diff to ensure that events ending exactly at block boundary
-  //       are unambigious. Example: An event ending at 5:00:00 shall be mapped to block 9 and
+  //       are unambiguous. Example: An event ending at 5:00:00 shall be mapped to block 9 and
   //       an event starting at 5:00:00 shall be mapped to block 10, not both at block 10.
   //       Only exception is grid end, because there is no successor.
   if (datetime >= m_gridEnd)

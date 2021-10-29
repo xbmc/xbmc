@@ -35,7 +35,7 @@ void CDVDDemuxUtils::FreeDemuxPacket(DemuxPacket* pPacket)
         avPkt->side_data = static_cast<AVPacketSideData*>(pPacket->pSideData);
         avPkt->side_data_elems = pPacket->iSideDataElems;
 
-        //! @todo: properly handle avpkt side_data. this works around our inproper use of the side_data
+        //! @todo: properly handle avpkt side_data. this works around our improper use of the side_data
         // as we pass pointers to ffmpeg allocated memory for the side_data. we should really be allocating
         // and storing our own AVPacket. This will require some extensive changes.
 
@@ -103,7 +103,7 @@ void CDVDDemuxUtils::StoreSideData(DemuxPacket *pkt, AVPacket *src)
   pkt->pSideData = avPkt->side_data;
   pkt->iSideDataElems = avPkt->side_data_elems;
 
-  //! @todo: properly handle avpkt side_data. this works around our inproper use of the side_data
+  //! @todo: properly handle avpkt side_data. this works around our improper use of the side_data
   // as we pass pointers to ffmpeg allocated memory for the side_data. we should really be allocating
   // and storing our own AVPacket. This will require some extensive changes.
   av_buffer_unref(&avPkt->buf);

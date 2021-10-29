@@ -29,13 +29,13 @@ namespace PVR
 
     /*!
      * @brief Select the next channel in currently playing channel group, relative to the currently selected channel.
-     * @param eSwitchMode controls whether only the channel info OSD is triggered or whther additionally a (delayed) channel switch will be done.
+     * @param eSwitchMode controls whether only the channel info OSD is triggered or whether additionally a (delayed) channel switch will be done.
      */
     void SelectNextChannel(ChannelSwitchMode eSwitchMode);
 
     /*!
      * @brief Select the previous channel in currently playing channel group, relative to the currently selected channel.
-     * @param eSwitchMode controls whether only the channel info OSD is triggered or whther additionally a (delayed) channel switch will be done.
+     * @param eSwitchMode controls whether only the channel info OSD is triggered or whether additionally a (delayed) channel switch will be done.
      */
     void SelectPreviousChannel(ChannelSwitchMode eSwitchMode);
 

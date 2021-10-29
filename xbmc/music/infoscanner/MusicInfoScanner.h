@@ -170,7 +170,7 @@ protected:
 
   /*! \brief Add extra remote artwork for albums and artists
   This common utility fills the gaps in artwork using the first available art of each type from the
-  possibile art URL results of previous scraping.
+  possible art URL results of previous scraping.
   The art types applied are determined by whitelist and usealllocalart settings.
   \param art [in/out] map of art type and file location (URL or path) pairs
   \param mediaType [in] artist or album
@@ -183,7 +183,7 @@ protected:
 
   /*! \brief Add art for an artist
   This scans the given folder for local art and/or applies the first available art of each type
-  from the possibile art URLs previously scraped. Art is added to any already stored by previous
+  from the possible art URLs previously scraped. Art is added to any already stored by previous
   scanning etc.The art types processed are determined by whitelist and other art settings.
   When usealllocalart is enabled then all local image files are applied as art (providing name is
   valid for an art type), and then the URL list of remote art is checked adding the first available
@@ -197,7 +197,7 @@ protected:
 
   /*! \brief Add art for an album
   This scans the album folder, and any disc set subfolders, for local art and/or applies the first
-  available art of each type from the possibile art URLs previously scraped. Only those subfolders
+  available art of each type from the possible art URLs previously scraped. Only those subfolders
   beneath the album folder containing music files tagged with same unique disc number are scanned.
   Art is added to any already stored by previous scanning, only "thumb" is optionally replaced.
   The art types processed are determined by whitelist and other art settings. When usealllocalart is

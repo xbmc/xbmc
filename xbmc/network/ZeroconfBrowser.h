@@ -111,7 +111,7 @@ public:
   static CZeroconfBrowser* GetInstance();
   // release the singleton; (save to call multiple times)
   static void ReleaseInstance();
-  // returns false if ReleaseInstance() was called befores
+  // returns false if ReleaseInstance() was called before
   static bool IsInstantiated() { return  smp_instance != 0; }
 
   virtual void ProcessResults() {}

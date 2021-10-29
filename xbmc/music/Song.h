@@ -120,7 +120,7 @@ public:
   void AppendArtistRole(const CMusicRole& musicRole);
 
   /*! \brief Set album artist vector.
-   Album artist is held local to song until album created for inital processing only.
+   Album artist is held local to song until album created for initial processing only.
    Normalised album artist data belongs to album and is stored in album artist credits
   \param album artist names as a vector of strings
   */

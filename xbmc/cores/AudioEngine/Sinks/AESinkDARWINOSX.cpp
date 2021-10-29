@@ -343,7 +343,7 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
 void CAESinkDARWINOSX::SetHogMode(bool on)
 {
   //! @todo Auto hogging sets this for us. Figure out how/when to turn it off or use it
-  //! It appears that leaving this set will aslo restore the previous stream format when the
+  //! It appears that leaving this set will also restore the previous stream format when the
   //! Application exits. If auto hogging is set and we try to set hog mode, we will deadlock
   //! From the SDK docs: "If the AudioDevice is in a non-mixable mode, the HAL will automatically take hog mode on behalf of the first process to start an IOProc."
   //!

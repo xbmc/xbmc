@@ -885,7 +885,7 @@ extern "C"
       return ret;
     }
 
-    // we have a valid data struture. get next item!
+    // we have a valid data structure. get next item!
     int iItem = vecDirsOpen[found].curr_index;
     if (iItem+1 < vecDirsOpen[found].items.Size()) // we have a winner!
     {
@@ -1429,7 +1429,7 @@ extern "C"
       if (pFile != NULL)
       {
         int len = strlen(tmp);
-        // replace all '\n' occurences with '\r\n'...
+        // replace all '\n' occurrences with '\r\n'...
         char tmp2[2048];
         int j = 0;
         for (int i = 0; i < len; i++)

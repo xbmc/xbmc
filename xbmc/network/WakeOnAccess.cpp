@@ -48,7 +48,7 @@
 #define DEFAULT_TIMEOUT_SEC (5*60)           // at least 5 minutes between each magic packets
 #define DEFAULT_WAIT_FOR_ONLINE_SEC_1 (40)   // wait at 40 seconds after sending magic packet
 #define DEFAULT_WAIT_FOR_ONLINE_SEC_2 (40)   // same for extended wait
-#define DEFAULT_WAIT_FOR_SERVICES_SEC (5)    // wait 5 seconds after host go online to launch file sharing deamons
+#define DEFAULT_WAIT_FOR_SERVICES_SEC (5)    // wait 5 seconds after host go online to launch file sharing daemons
 
 static CDateTime upnpInitReady;
 
@@ -471,7 +471,7 @@ bool CWakeOnAccess::WakeUpHost(const std::string& hostName, const std::string& c
 
   if (FindOrTouchHostEntry(hostName, upnpMode, server))
   {
-    CLog::Log(LOGINFO, "WakeOnAccess [{}] trigged by accessing : {}", server.friendlyName,
+    CLog::Log(LOGINFO, "WakeOnAccess [{}] triggered by accessing : {}", server.friendlyName,
               customMessage);
 
     NestDetect nesting ; // detect recursive calls on gui thread..
@@ -551,7 +551,7 @@ bool CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
   // we have ping response ; just add extra wait-for-services before returning if requested
 
   {
-    WaitCondition waitObj ; // wait uninterruptable fixed time for services ..
+    WaitCondition waitObj ; // wait uninterruptible fixed time for services ..
 
     dlg.ShowAndWait (waitObj, server.wait_services_sec, LOCALIZED(13032));
 
@@ -624,7 +624,7 @@ static void AddHost (const std::string& host, std::vector<std::string>& hosts)
 {
   for (const auto& it : hosts)
     if (StringUtils::EqualsNoCase(host, it))
-      return; // allready there ..
+      return; // already there ..
 
   if (!host.empty())
     hosts.push_back(host);

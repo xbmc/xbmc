@@ -1152,7 +1152,7 @@ int64_t StringUtils::AlphaNumericCompare(const wchar_t* left, const wchar_t* rig
       else
       {
         // Fetch collation facet from locale to do comparison of wide char although on some
-        // platforms this is not langauge specific but just compares unicode
+        // platforms this is not language specific but just compares unicode
         const std::collate<wchar_t>& coll =
             std::use_facet<std::collate<wchar_t>>(g_langInfo.GetSystemLocale());
         int cmp_res = coll.compare(&lc, &lc + 1, &rc, &rc + 1);
@@ -1331,7 +1331,7 @@ int StringUtils::AlphaNumericCollation(int nKey1, const void* pKey1, int nKey2, 
       else
       {
         // Fetch collation facet from locale to do comparison of wide char although on some
-        // platforms this is not langauge specific but just compares unicode
+        // platforms this is not language specific but just compares unicode
         const std::collate<wchar_t>& coll =
             std::use_facet<std::collate<wchar_t>>(g_langInfo.GetSystemLocale());
         int cmp_res = coll.compare(&lc, &lc + 1, &rc, &rc + 1);

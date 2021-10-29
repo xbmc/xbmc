@@ -82,7 +82,7 @@ public:
 
   void Flip(bool rendered, bool videoLayer);
 
-  // gfx contect interface
+  // gfx context interface
   int GetWidth() const;
   int GetHeight() const;
   bool SetViewPort(float fx, float fy , float fwidth, float fheight, bool intersectPrevious = false);

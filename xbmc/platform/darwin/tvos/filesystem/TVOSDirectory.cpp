@@ -69,7 +69,7 @@ bool CTVOSDirectory::GetDirectory(const CURL& url, CFileItemList& items)
   // The directory request will point to the right path '.../home/userdata/..'
   // so we ask for files in ending directory, if we get xml file paths back
   // then we are re-vectoring them to persistent storage and need to
-  // create CFileItems that will tranlate into CTVOSFile object later
+  // create CFileItems that will translate into CTVOSFile object later
   // when accessed.
 
   // GetDirectoryContents will return full paths

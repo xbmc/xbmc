@@ -99,8 +99,8 @@ void CSong::SetArtistCredits(const std::vector<std::string>& names, const std::v
     // Establish tag consistency - do the number of musicbrainz ids and number of names in hints or artist match
     if (mbids.size() != artistHints.size() && mbids.size() != names.size())
     {
-      // Tags mis-match - report it and then try to fix
-      CLog::Log(LOGDEBUG, "Mis-match in song file tags: {} mbid {} names {} {}", (int)mbids.size(),
+      // Tags mismatch - report it and then try to fix
+      CLog::Log(LOGDEBUG, "Mismatch in song file tags: {} mbid {} names {} {}", (int)mbids.size(),
                 (int)names.size(), strTitle, strArtistDesc);
       /*
         Most likely we have no hints and a single artist name like "Artist1 feat. Artist2"
@@ -112,7 +112,7 @@ void CSong::SetArtistCredits(const std::vector<std::string>& names, const std::v
         separators so attempt to split them. Or we could have more hints or artist names than
         musicbrainz id so ignore them but raise warning.
       */
-      // Do hints exist yet mis-match
+      // Do hints exist yet mismatch
       if (artistHints.size() > 0 &&
         artistHints.size() != mbids.size())
       {
@@ -127,10 +127,10 @@ void CSong::SetArtistCredits(const std::vector<std::string>& names, const std::v
           // Extra hints, discard them.
           artistHints.resize(mbids.size());
       }
-      // Do hints not exist or still mis-match, try artists
+      // Do hints not exist or still mismatch, try artists
       if (artistHints.size() != mbids.size())
         artistHints = names;
-      // Still mis-match, try splitting the hints (now artists) until have matching number
+      // Still mismatch, try splitting the hints (now artists) until have matching number
       if (artistHints.size() < mbids.size())
       {
         artistHints = StringUtils::SplitMulti(artistHints, separators, mbids.size());
@@ -138,7 +138,7 @@ void CSong::SetArtistCredits(const std::vector<std::string>& names, const std::v
     }
     else
     { // Either hints or artist names (or both) matches number of musicbrainz id
-      // If hints mis-match, use artists
+      // If hints mismatch, use artists
       if (artistHints.size() != mbids.size())
         artistHints = names;
     }
@@ -300,7 +300,7 @@ const std::vector<std::string> CSong::GetArtist() const
 
 const std::string CSong::GetArtistSort() const
 {
-  //The stored artist sort name string takes precidence but a
+  //The stored artist sort name string takes precedence but a
   //value could be created from individual sort names held in artistcredits
   if (!strArtistSort.empty())
     return strArtistSort;

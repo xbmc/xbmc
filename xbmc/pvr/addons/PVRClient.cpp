@@ -729,7 +729,7 @@ PVR_ERROR CPVRClient::SetEPGMaxFutureDays(int iFutureDays)
 // This class wraps an EPG_TAG (PVR Addon API struct) to ensure that the string members of
 // that struct, which are const char pointers, stay valid until the EPG_TAG gets destructed.
 // Please note that this struct is also used to transfer huge amount of EPG_TAGs from
-// addon to Kodi. Thus, changing the struct to contain char arrays is not recommened,
+// addon to Kodi. Thus, changing the struct to contain char arrays is not recommended,
 // because this would lead to huge amount of string copies when transferring epg data
 // from addon to Kodi.
 class CAddonEpgTag : public EPG_TAG

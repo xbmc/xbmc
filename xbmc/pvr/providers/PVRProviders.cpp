@@ -134,7 +134,7 @@ bool CPVRProviders::Update()
   }
 
   // Default client providers are the add-ons themselves, we retrieve both enabled
-  // and disbled add-ons as we don't want them removed from the DB
+  // and disabled add-ons as we don't want them removed from the DB
   CPVRProviders newAddonProviderList;
   std::vector<int> disabledClients;
   std::vector<CVariant> clientProviderInfos =

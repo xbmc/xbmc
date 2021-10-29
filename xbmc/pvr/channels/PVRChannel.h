@@ -369,7 +369,7 @@ namespace PVR
      * Get the EPG tag that was previously active on this channel.
      * Will return an empty tag if there is none.
      *
-     * @return The EPG tag that was previously activ.
+     * @return The EPG tag that was previously active.
      */
     std::shared_ptr<CPVREpgInfoTag> GetEPGPrevious() const;
 

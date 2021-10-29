@@ -53,7 +53,7 @@ public:
 
   /**\brief Called by media manager to create platform storage provider
   *
-  * This method used to create platfrom specified storage provider
+  * This method used to create platform specified storage provider
   */
   static IStorageProvider* CreateInstance();
 };

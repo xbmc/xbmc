@@ -78,11 +78,11 @@ void CAlbum::SetArtistCredits(const std::vector<std::string>& names, const std::
     const std::vector<std::string> separators{ " feat. ", ";", ":", "|", "#", "/", ",", "&" };
 
     // Establish tag consistency
-    // Do the number of musicbrainz ids and *both* number of names and number of hints mis-match?
+    // Do the number of musicbrainz ids and *both* number of names and number of hints mismatch?
     if (albumartistHints.size() != mbids.size() && names.size() != mbids.size())
     {
-      // Tags mis-match - report it and then try to fix
-      CLog::Log(LOGDEBUG, "Mis-match in song file albumartist tags: {} mbid {} name album: {} {}",
+      // Tags mismatch - report it and then try to fix
+      CLog::Log(LOGDEBUG, "Mismatch in song file albumartist tags: {} mbid {} name album: {} {}",
                 (int)mbids.size(), (int)names.size(), strAlbum, strArtistDesc);
       /*
       Most likely we have no hints and a single artist name like "Artist1 feat. Artist2"
@@ -95,7 +95,7 @@ void CAlbum::SetArtistCredits(const std::vector<std::string>& names, const std::
       musicbrainz so ignore them but raise warning.
       */
 
-      // Do hints exist yet mis-match
+      // Do hints exist yet mismatch
       if (!albumartistHints.empty() && albumartistHints.size() != mbids.size())
       {
         if (names.size() == mbids.size())
@@ -109,10 +109,10 @@ void CAlbum::SetArtistCredits(const std::vector<std::string>& names, const std::
           // Extra hints, discard them.
           albumartistHints.resize(mbids.size());
       }
-      // Do hints not exist or still mis-match, try album artists
+      // Do hints not exist or still mismatch, try album artists
       if (albumartistHints.size() != mbids.size())
         albumartistHints = names;
-      // Still mis-match, try splitting the hints (now artists) until have matching number
+      // Still mismatch, try splitting the hints (now artists) until have matching number
       if (albumartistHints.size() < mbids.size())
         albumartistHints = StringUtils::SplitMulti(albumartistHints, separators, mbids.size());
       // Try matching on artists or artist hints field, if it is reliable
@@ -142,7 +142,7 @@ void CAlbum::SetArtistCredits(const std::vector<std::string>& names, const std::
     }
     else
     { // Either hints or album artists (or both) name matches number of musicbrainz id
-      // If hints mis-match, use album artists
+      // If hints mismatch, use album artists
       if (albumartistHints.size() != mbids.size())
         albumartistHints = names;
     }
@@ -216,9 +216,9 @@ void CAlbum::MergeScrapedAlbum(const CAlbum& source, bool override /* = true */)
    a manual refresh of album information uses either the mbid as derived from tags or the album
    and artist names, not any previously scraped mbid.
 
-   When overwritting the data derived from tags, AND the original and scraped album have the same
+   When overwriting the data derived from tags, AND the original and scraped album have the same
    Musicbrainz album ID, then merging is used to keep Kodi up to date with changes in the Musicbrainz
-   database including album artist credits, song artist credits and song titles. However it is ony
+   database including album artist credits, song artist credits and song titles. However it is only
    appropriate when the music files are tagged with mbids, these are taken as definative, scraped
    mbids can not be depended on in this way.
 
@@ -250,7 +250,7 @@ void CAlbum::MergeScrapedAlbum(const CAlbum& source, bool override /* = true */)
    Scraping can return different album artists from the originals derived from tags, even when
    doing a lookup on artist name.
 
-   When overwritting the data derived from tags, AND the original and scraped album have the same
+   When overwriting the data derived from tags, AND the original and scraped album have the same
    Musicbrainz album ID, then merging an album replaces both the album artsts and the song artists
    with those scraped (providing they are not empty).
 
@@ -321,7 +321,7 @@ void CAlbum::MergeScrapedAlbum(const CAlbum& source, bool override /* = true */)
   iVotes = source.iVotes;
 
   /*
-   When overwritting the data derived from tags, AND the original and scraped album have the same
+   When overwriting the data derived from tags, AND the original and scraped album have the same
    Musicbrainz album ID, update the local songs with scaped Musicbrainz information including the
    artist credits.
   */
@@ -381,7 +381,7 @@ const std::string CAlbum::GetAlbumArtistString() const
 
 const std::string CAlbum::GetAlbumArtistSort() const
 {
-  //The stored artist sort name string takes precidence but a
+  //The stored artist sort name string takes precedence but a
   //value could be created from individual sort names held in artistcredits
   if (!strArtistSort.empty())
     return strArtistSort;

@@ -713,7 +713,7 @@ void CCurlFile::SetRequestHeaders(CReadState* state)
 void CCurlFile::SetCorrectHeaders(CReadState* state)
 {
   CHttpHeader& h = state->m_httpheader;
-  /* workaround for shoutcast server wich doesn't set content type on standard mp3 */
+  /* workaround for shoutcast server which doesn't set content type on standard mp3 */
   if( h.GetMimeType().empty() )
   {
     if( !h.GetValue("icy-notice1").empty()
@@ -781,8 +781,8 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
       url2.SetOptions("");
     }
 
-    /* this is uggly, depending on from where   */
-    /* we get the link it may or may not be     */
+    /* this is ugly, depending on where we get  */
+    /* the link from, it may or may not be      */
     /* url encoded. if handed from ftpdirectory */
     /* it won't be so let's handle that case    */
 
@@ -1610,8 +1610,8 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
 
     // Note: CURLINFO_CONTENT_TYPE returns the last received content-type response header value.
     // In case there is authentication required there might be multiple requests involved and if
-    // the last request whch actually returns the data does not return a content-type header, but
-    // one of the preceeding requests, CURLINFO_CONTENT_TYPE returns not the content type of the
+    // the last request which actually returns the data does not return a content-type header, but
+    // one of the preceding requests, CURLINFO_CONTENT_TYPE returns not the content type of the
     // actual resource requested! m_state contains only the values of the last request, which is
     // what we want here.
     const std::string mimeType = m_state->m_httpheader.GetMimeType();
@@ -1888,7 +1888,7 @@ int8_t CCurlFile::CReadState::FillBuffer(unsigned int want)
       case CURLM_CALL_MULTI_PERFORM:
       {
         // we don't keep calling here as that can easily overwrite our buffer which we want to avoid
-        // docs says we should call it soon after, but aslong as we are reading data somewhere
+        // docs says we should call it soon after, but as long as we are reading data somewhere
         // this aught to be soon enough. should stay in socket otherwise
         continue;
       }

@@ -1637,7 +1637,7 @@ const infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
 ///   \table_row3{   <b>`System.StereoscopicMode`</b>,
 ///                  \anchor System_StereoscopicMode
 ///                  _string_,
-///     @return The prefered stereoscopic mode.
+///     @return The preferred stereoscopic mode.
 ///     @note Configured in settings > video > playback).
 ///     <p><hr>
 ///     @skinning_v13 **[New Infolabel]** \link System_StereoscopicMode
@@ -2137,7 +2137,7 @@ const infomap musicpartymode[] = {{ "enabled",           MUSICPM_ENABLED },
 ///     where any_custom_role could be an instrument violin or some other production activity e.g. sound engineer.
 ///     The roles listed (composer\, arranger etc.) are standard ones but there are many possible.
 ///     Music file tagging allows for the musicians and all other people involved in the recording to be added\, Kodi
-///     will gathers and stores that data\, and it is availlable to GUI.
+///     will gathers and stores that data\, and it is available to GUI.
 ///     <p><hr>
 ///     @skinning_v17 **[New Infolabel]** \link MusicPlayer_Property_Role_Mixer `MusicPlayer.Property(Role.Mixer)`\endlink
 ///     <p>
@@ -6646,7 +6646,7 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///   \table_row3{   <b>`ListItem.AlbumStatus`</b>,
 ///                  \anchor ListItem_AlbumStatus
 ///                  _string_,
-///     @return The Musicbrainz release status of the album (offical, bootleg, promotion etc)
+///     @return The Musicbrainz release status of the album (official, bootleg, promotion etc)
 ///     <p><hr>
 ///     @skinning_v19 **[New Infolabel]** \link ListItem_AlbumStatus `ListItem.AlbumStatus`\endlink
 ///   }

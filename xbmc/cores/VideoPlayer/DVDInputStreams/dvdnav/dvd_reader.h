@@ -37,7 +37,7 @@ struct iovec
 /**
  * The DVD access interface.
  *
- * This file contains the functions that form the interface to to
+ * This file contains the functions that form the interface to
  * reading files located on a DVD.
  */
 
@@ -105,7 +105,7 @@ typedef struct {
  *   path/vts_01_1.vob
  *
  * @param path Specifies the the device, file or directory to be used.
- * @return If successful a a read handle is returned. Otherwise 0 is returned.
+ * @return If successful a read handle is returned. Otherwise 0 is returned.
  *
  * dvd = DVDOpen(path);
  */
@@ -171,7 +171,7 @@ int DVDFileStat(dvd_reader_t *, int, dvd_read_domain_t, dvd_stat_t *);
  * @param dvd  A dvd read handle.
  * @param titlenum Which Video Title Set should be used, VIDEO_TS is 0.
  * @param domain Which domain.
- * @return If successful a a file read handle is returned, otherwise 0.
+ * @return If successful a file read handle is returned, otherwise 0.
  *
  * dvd_file = DVDOpenFile(dvd, titlenum, domain); */
 dvd_file_t *DVDOpenFile( dvd_reader_t *, int, dvd_read_domain_t );

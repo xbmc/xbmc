@@ -335,7 +335,7 @@ bool CApplication::Create(const CAppParamParser &params)
   m_pSettingsComponent.reset(new CSettingsComponent());
   m_pSettingsComponent->Init(params);
 
-  // Announement service
+  // Announcement service
   m_pAnnouncementManager = std::make_shared<ANNOUNCEMENT::CAnnouncementManager>();
   m_pAnnouncementManager->Start();
   CServiceBroker::RegisterAnnouncementManager(m_pAnnouncementManager);
@@ -4604,7 +4604,7 @@ void CApplication::UpdateCurrentPlayArt()
 {
   if (!m_appPlayer.IsPlayingAudio())
     return;
-  //Clear and reload the art for the currenty playing item to show updated  art on OSD
+  //Clear and reload the art for the currently playing item to show updated art on OSD
   m_itemCurrentFile->ClearArt();
   CMusicThumbLoader loader;
   loader.LoadItem(m_itemCurrentFile.get());
@@ -4674,7 +4674,7 @@ bool CApplication::SetLanguage(const std::string &strLanguage)
 
 bool CApplication::LoadLanguage(bool reload)
 {
-  // load the configured langauge
+  // load the configured language
   if (!g_langInfo.SetLanguage("", reload))
     return false;
 

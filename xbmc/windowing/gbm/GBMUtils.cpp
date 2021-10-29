@@ -84,7 +84,7 @@ CGBMUtils::CGBMDevice::CGBMSurface::CGBMSurfaceBuffer* CGBMUtils::CGBMDevice::CG
     /*
      * We want to use call_once here because we want it to be logged the first time that
      * we have to release buffers. This means that the maximum amount of buffers had been reached.
-     * For mesa this should be 4 buffers but it may vary accross other implementations.
+     * For mesa this should be 4 buffers but it may vary across other implementations.
      */
     std::call_once(
         flag, [this]() { CLog::Log(LOGDEBUG, "CGBMUtils - using {} buffers", m_buffers.size()); });

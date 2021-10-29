@@ -187,7 +187,7 @@ OverlayMessage CDVDOverlayCodecTX3G::Decode(DemuxPacket* pPacket)
         styleRec.textColorARGB = UTILS::COLOR::ConvertToARGB(sampleData.ReadNextUnsignedInt());
         styleRec.textColorAlphaCh = (styleRec.textColorARGB & 0xFF000000) >> 24;
         // clamp bgnChar/bgnChar to textLength, we alloc enough space above and
-        // this fixes borken encoders that do not handle endChar correctly.
+        // this fixes broken encoders that do not handle endChar correctly.
         if (styleRec.startChar > textLength)
           styleRec.startChar = textLength;
         if (styleRec.endChar > textLength)
@@ -232,7 +232,7 @@ OverlayMessage CDVDOverlayCodecTX3G::Decode(DemuxPacket* pPacket)
       }
     }
 
-    if (*curPos == '{') // erase unsupport tags
+    if (*curPos == '{') // erase unsupported tags
       skipChars = true;
 
     // Skip all \r because it causes the line to display empty box "tofu"

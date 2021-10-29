@@ -492,7 +492,7 @@ CDVDOverlaySpu* CDVDDemuxSPU::ParseRLE(CDVDOverlaySpu* pSPU, uint8_t* pUnparsedD
            pSPU->width, pSPU->height, pSPU->x, pSPU->y );
 
   // forced spu's (menu overlays) retrieve their alpha/color information from InputStreamNavigator::GetCurrentButtonInfo
-  // also they may contain completely covering data wich is supposed to be hidden normally
+  // also they may contain completely covering data which is supposed to be hidden normally
   // since whole spu is drawn, if this is done for forced, that may be displayed
   // so we must trust what is given
   if( !pSPU->bForced )

@@ -53,7 +53,7 @@ std::string GetDefaultFontPath(std::string& font)
   return "";
 }
 
-// Convert RGB/ARGB to RGBA by appling also the opacity value
+// Convert RGB/ARGB to RGBA by also applying the opacity value
 COLOR::Color ConvColor(COLOR::Color argbColor, int opacity = 100)
 {
   return COLOR::ConvertToRGBA(COLOR::ChangeOpacity(argbColor, (100.0f - opacity) / 100.0f));
@@ -298,7 +298,7 @@ void CDVDSubtitlesLibass::ApplyStyle(style subStyle, renderOpts opts)
         (subStyle.assOverrideStyles == OverrideStyles::STYLES ||
          subStyle.assOverrideStyles == OverrideStyles::STYLES_POSITIONS))
     {
-      // With styles overrided the PlayResY will be changed to 288
+      // With styles overridden the PlayResY will be changed to 288
       playResY = 288;
       scale = 288. / 720;
     }

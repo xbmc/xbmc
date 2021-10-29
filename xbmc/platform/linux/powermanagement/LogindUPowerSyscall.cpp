@@ -160,7 +160,7 @@ bool CLogindUPowerSyscall::LogindSetPowerState(const char *state)
 {
   CDBusMessage message(LOGIND_DEST, LOGIND_PATH, LOGIND_IFACE, state);
   // The user_interaction boolean parameters can be used to control
-  // wether PolicyKit should interactively ask the user for authentication
+  // whether PolicyKit should interactively ask the user for authentication
   // credentials if it needs to.
   message.AppendArgument(false);
   return message.SendSystem() != NULL;

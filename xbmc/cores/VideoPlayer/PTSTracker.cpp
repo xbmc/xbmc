@@ -253,7 +253,7 @@ bool CPtsTracker::CheckPattern(std::vector<double>& pattern)
 }
 
 //calculate how long each frame should last from the saved pattern
-//Retreive also information of max and min frame rate duration, for VFR files case
+//also retrieve information of max and min frame rate duration, for VFR files case
 double CPtsTracker::CalcFrameDuration()
 {
   if (!m_pattern.empty())

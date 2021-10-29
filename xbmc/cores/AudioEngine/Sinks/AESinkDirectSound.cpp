@@ -733,14 +733,14 @@ std::string CAESinkDirectSound::GetDefaultDevice()
   EXIT_ON_FAILURE(hr, "Could not allocate WASAPI device enumerator")
 
   hr = pEnumerator->GetDefaultAudioEndpoint(eRender, eMultimedia, pDevice.GetAddressOf());
-  EXIT_ON_FAILURE(hr, "Retrival of audio endpoint enumeration failed.")
+  EXIT_ON_FAILURE(hr, "Retrieval of audio endpoint enumeration failed.")
 
   hr = pDevice->OpenPropertyStore(STGM_READ, pProperty.GetAddressOf());
   EXIT_ON_FAILURE(hr, "Retrieval of DirectSound endpoint properties failed.")
 
   PropVariantInit(&varName);
   hr = pProperty->GetValue(PKEY_AudioEndpoint_FormFactor, &varName);
-  EXIT_ON_FAILURE(hr, "Retrival of DirectSound endpoint form factor failed.")
+  EXIT_ON_FAILURE(hr, "Retrieval of DirectSound endpoint form factor failed.")
 
   aeDeviceType = winEndpoints[(EndpointFormFactor)varName.uiVal].aeDeviceType;
   PropVariantClear(&varName);

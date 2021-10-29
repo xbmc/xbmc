@@ -78,7 +78,7 @@ void App::Run()
   {
     // fix the case then window opened in FS, but current setting is RES_WINDOW
     // the proper way is make window params related to setting, but in this setting isn't loaded yet
-    // perhaps we should observe setting changes and change window's Preffered props
+    // perhaps we should observe setting changes and change window's Preferred props
     bool fullscreen = ApplicationView::GetForCurrentView().IsFullScreenMode();
 
     CAppParamParser appParamParser;

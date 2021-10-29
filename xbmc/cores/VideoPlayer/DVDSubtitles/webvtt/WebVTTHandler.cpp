@@ -748,7 +748,7 @@ void CWebVTTHandler::CalculateTextPosition(std::string& subtitleText)
   }
 
   // The vertical margin should always referred from the top to simulate
-  // the corrent cue box position without a cue box.
+  // the current cue box position without a cue box.
   // But if the vertical margin is too high and the text size is very large,
   // in some cases the text could go off-screen.
   // To try ensure that the text does not go off-screen,

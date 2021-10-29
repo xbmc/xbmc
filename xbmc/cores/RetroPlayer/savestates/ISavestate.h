@@ -63,7 +63,7 @@ public:
   /// @name Game properties
   ///{
   /*!
-   * \brief The name of the file beloning to this savestate's game
+   * \brief The name of the file belonging to this savestate's game
    */
   virtual std::string GameFileName() const = 0;
   ///}

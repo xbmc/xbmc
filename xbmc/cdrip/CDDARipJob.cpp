@@ -63,7 +63,7 @@ bool CCDDARipJob::DoWork()
 {
   CLog::Log(LOGINFO, "CCDDARipJob::{} - Start ripping track {} to {}", __func__, m_input, m_output);
 
-  // if we are ripping to a samba share, rip it to hd first and then copy it it the share
+  // if we are ripping to a samba share, rip it to hd first and then copy it to the share
   CFileItem file(m_output, false);
   if (file.IsRemote())
     m_output = SetupTempFile();

@@ -54,7 +54,7 @@
 {
   // This function occurs:
   //  * on the first start of Kodi
-  //  * when Kodi has been activated after a beeing suspending by applicationWillResignActive()
+  //  * when Kodi has been activated after being suspended by applicationWillResignActive()
   //  * when Kodi has been foregrounded after applicationDidEnterBackground()
 }
 

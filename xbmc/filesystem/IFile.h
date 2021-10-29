@@ -100,7 +100,7 @@ public:
   virtual void Flush() { }
   virtual int Truncate(int64_t size) { return -1; }
 
-  /* Returns the minium size that can be read from input stream.   *
+  /* Returns the minimum size that can be read from input stream.  *
    * For example cdrom access where access could be sector based.  *
    * This will cause file system to buffer read requests, to       *
    * to meet the requirement of CFile.                             *

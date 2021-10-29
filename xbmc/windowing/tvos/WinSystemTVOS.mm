@@ -233,8 +233,8 @@ bool CWinSystemTVOS::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool b
 
 bool CWinSystemTVOS::SwitchToVideoMode(int width, int height, double refreshrate)
 {
-  /*! @todo Currently support SDR dynamic range only. HDR shouldnt be done during a
-   *  modeswitch. Look to create supplemental method to handle sdr/hdr enable
+  /*! @todo Currently support SDR dynamic range only. HDR shouldn't be done during
+   *  a modeswitch. Look to create supplemental method to handle sdr/hdr enable
    */
   [g_xbmcController.displayManager displayRateSwitch:refreshrate
                                     withDynamicRange:0 /*dynamicRange*/];

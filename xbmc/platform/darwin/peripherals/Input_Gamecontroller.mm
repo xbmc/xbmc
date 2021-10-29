@@ -47,7 +47,7 @@ struct PlayerControllerState
   CCriticalSection m_controllerMutex;
 }
 
-#pragma mark - Notificaton Observer
+#pragma mark - Notification Observer
 
 - (void)addModeSwitchObserver
 {

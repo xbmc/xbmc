@@ -65,7 +65,7 @@ DialogResponse ShowYesNoDialogText(CVariant heading, CVariant text, CVariant noL
                                    CVariant yesLabel = CVariant(), uint32_t autoCloseTimeout = 0);
 
 /*!
-\brief This is a helper method to send a threadmessage to open a Yes/No dialog box with a cutom button
+\brief This is a helper method to send a threadmessage to open a Yes/No dialog box with a custom button
 
 \param[in]  heading           The text to display as the dialog box header
 \param[in]  text              The text to display in the dialog body

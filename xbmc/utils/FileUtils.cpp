@@ -152,7 +152,7 @@ bool CFileUtils::RemoteAccessAllowed(const std::string &strPath)
   // Check auto-mounted sources
   VECSOURCES sources;
   CServiceBroker::GetMediaManager().GetRemovableDrives(
-      sources); // Sources returned allways have m_allowsharing = true
+      sources); // Sources returned always have m_allowsharing = true
   //! @todo Make sharing of auto-mounted sources user configurable
   int sourceIndex = CUtil::GetMatchingSource(realPath, sources, isSource);
   if (sourceIndex >= 0 && sourceIndex < static_cast<int>(sources.size()) &&
@@ -214,7 +214,7 @@ CDateTime CFileUtils::GetModificationDate(const int& code, const std::string& st
           addedTime =
               std::min(static_cast<time_t>(buffer.st_ctime), static_cast<time_t>(buffer.st_mtime));
       }
-      // Perfer the earliest of ctime and mtime, fallback to other
+      // Prefer the earliest of ctime and mtime, fallback to other
       else
       {
         addedTime =

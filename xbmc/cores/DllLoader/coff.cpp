@@ -443,7 +443,7 @@ void* CoffLoader::RVA2Data(unsigned long RVA)
    || RVA >= SectionHeader[Sctn].VirtualAddress + SectionHeader[Sctn].VirtualSize)
   {
     // RVA2Section is lying, let's use base address of dll instead, only works if
-    // DLL has been loaded fully into memory, wich we normally do
+    // DLL has been loaded fully into memory, which we normally do
     return (void*)(RVA + (unsigned long)hModule);
   }
   return SectionData[Sctn] + RVA - SectionHeader[Sctn].VirtualAddress;

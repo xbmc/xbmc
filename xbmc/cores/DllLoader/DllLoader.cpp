@@ -113,7 +113,7 @@ DllLoader::~DllLoader()
     delete entry;
   }
 
-  // can't unload a system dll, as this might be happing during xbmc destruction
+  // can't unload a system dll, as this might be happening during xbmc destruction
   if(!m_bSystemDll)
   {
     DllLoaderContainer::UnRegisterDll(this);

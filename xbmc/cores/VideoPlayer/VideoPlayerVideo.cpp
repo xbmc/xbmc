@@ -664,7 +664,7 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(double &frametime, double &pts)
     m_picture.iDuration = frametime;
 
     // validate picture timing,
-    // if both dts/pts invalid, use pts calulated from picture.iDuration
+    // if both dts/pts invalid, use pts calculated from picture.iDuration
     // if pts invalid use dts, else use picture.pts as passed
     if (m_picture.dts == DVD_NOPTS_VALUE && m_picture.pts == DVD_NOPTS_VALUE)
     {
@@ -711,7 +711,7 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(double &frametime, double &pts)
       }
     }
 
-    // if frame has a pts (usually originiating from demux packet), use that
+    // if frame has a pts (usually originating from demux packet), use that
     if (m_picture.pts != DVD_NOPTS_VALUE)
     {
       pts = m_picture.pts;

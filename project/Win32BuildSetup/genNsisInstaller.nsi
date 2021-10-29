@@ -372,7 +372,7 @@ Function .onInit
   ${Endif}
   ${If} $HotFixID != ""
     nsExec::ExecToStack 'cmd /Q /C "%SYSTEMROOT%\System32\wbem\wmic.exe /?"'
-    Pop $0 ; return value (it always 0 even if an error occured)
+    Pop $0 ; return value (it always 0 even if an error occurred)
     Pop $1 ; command output
     ${If} $0 != 0
     ${OrIf} $1 == ""
@@ -380,7 +380,7 @@ Function .onInit
       Quit
     ${EndIf}
     nsExec::ExecToStack 'cmd /Q /C "%SYSTEMROOT%\System32\findstr.exe /?"'
-    Pop $0 ; return value (it always 0 even if an error occured)
+    Pop $0 ; return value (it always 0 even if an error occurred)
     Pop $1 ; command output
     ${If} $0 != 0
     ${OrIf} $1 == ""
@@ -388,7 +388,7 @@ Function .onInit
       Quit
     ${EndIf}
     nsExec::ExecToStack 'cmd /Q /C "%SYSTEMROOT%\System32\wbem\wmic.exe qfe get hotfixid | %SYSTEMROOT%\System32\findstr.exe "^KB$HotFixID[^0-9]""'
-    Pop $0 ; return value (it always 0 even if an error occured)
+    Pop $0 ; return value (it always 0 even if an error occurred)
     Pop $1 ; command output
     ${If} $0 != 0
     ${OrIf} $1 == ""

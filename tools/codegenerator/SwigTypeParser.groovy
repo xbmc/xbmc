@@ -146,7 +146,7 @@ public class SwigTypeParser
    }
 
    /**
-    * This will resolve typedefs anbd handle qualifiers, pointers,
+    * This will resolve typedefs and handle qualifiers, pointers,
     *  references, and typedef of typedefs to resolve all the way down to the
     *  most basic types.
     */

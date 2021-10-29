@@ -107,7 +107,7 @@ typedef struct {
 
 /**
  * Button Color Information Table
- * Each entry being a 32bit word that contains the color indexs and alpha
+ * Each entry being a 32bit word that contains the color indexes and alpha
  * values to use.  They are all represented by 4 bit number and stored
  * like this [Ci3, Ci2, Ci1, Ci0, A3, A2, A1, A0].   The actual palette
  * that the indexes reference is in the PGC.

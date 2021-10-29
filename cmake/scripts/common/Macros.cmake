@@ -573,7 +573,7 @@ function(core_find_git_rev stamp)
   else()
     find_package(Git)
     if(GIT_FOUND AND EXISTS ${CMAKE_SOURCE_DIR}/.git)
-      # get tree status i.e. clean working tree vs dirty (uncommited or unstashed changes, etc.)
+      # get tree status i.e. clean working tree vs dirty (uncommitted or unstashed changes, etc.)
       execute_process(COMMAND ${GIT_EXECUTABLE} update-index --ignore-submodules -q --refresh
                       WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
       execute_process(COMMAND ${GIT_EXECUTABLE} diff-files --ignore-submodules --quiet --

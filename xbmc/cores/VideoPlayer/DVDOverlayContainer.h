@@ -25,7 +25,7 @@ public:
   /*!
   * \brief Adds an overlay into the container by processing the existing overlay collection first
   *
-  * \details Processes the overlay collection whenever a new overlay is added. Usefull to change
+  * \details Processes the overlay collection whenever a new overlay is added. Useful to change
   * the overlay's PTS values of previously added overlays if the collection itself is sequential. This
   * is, for example, the case of ASS subtitles in which a single call to ass_render_frame generates all
   * the subtitle images on a single call even if two subtitles exist at the same time frame. Other cases

@@ -52,7 +52,7 @@ bool CDecoderFilter::isValid(const CDVDStreamInfo& streamInfo) const
   if ((flags & m_flags) != flags)
     return false;
 
-  // remove codec pitch for comparision
+  // remove codec pitch for comparison
   if (m_minHeight && (streamInfo.height & ~31) <= m_minHeight)
     return false;
 

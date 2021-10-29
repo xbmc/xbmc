@@ -38,7 +38,7 @@ public:
   virtual ~CPVRGUIDirectory() = default;
 
   /*!
-   * @brief Check existense of this directory.
+   * @brief Check existence of this directory.
    * @return True if the directory exists, false otherwise.
    */
   bool Exists() const;

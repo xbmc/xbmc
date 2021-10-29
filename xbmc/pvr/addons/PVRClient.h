@@ -778,7 +778,7 @@ public:
   PVR_ERROR SeekLiveStream(int64_t iFilePosition, int iWhence, int64_t& iPosition);
 
   /*!
-   * @brief Get the lenght of the currently playing live stream, if any.
+   * @brief Get the length of the currently playing live stream, if any.
    * @param iLength The total length of the stream that's currently being read or -1 on error.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
@@ -892,7 +892,7 @@ public:
   PVR_ERROR SeekRecordedStream(int64_t iFilePosition, int iWhence, int64_t& iPosition);
 
   /*!
-   * @brief Get the lenght of the currently playing recording stream, if any.
+   * @brief Get the length of the currently playing recording stream, if any.
    * @param iLength The total length of the stream that's currently being read or -1 on error.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */

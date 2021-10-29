@@ -709,7 +709,7 @@ int64_t CUtil::ToInt64(uint32_t high, uint32_t low)
 /*!
   \brief Finds next unused filename that matches padded int format identifier provided
   \param[in]  fn_template    filename template consisting of a padded int format identifier (eg screenshot%03d)
-  \param[in]  max            maximum number to search for avaialble name
+  \param[in]  max            maximum number to search for available name
   \return "" on failure, string next available name matching format identifier on success
 */
 

@@ -432,7 +432,7 @@ namespace PVR
     unsigned int Flags() const { return m_iFlags; }
 
     /*!
-     * @brief Split the given string into tokens. Interpretes occurences of EPG_STRING_TOKEN_SEPARATOR in the string as separator.
+     * @brief Split the given string into tokens. Interprets occurrences of EPG_STRING_TOKEN_SEPARATOR in the string as separator.
      * @param str The string to tokenize.
      * @return the tokens.
      */
