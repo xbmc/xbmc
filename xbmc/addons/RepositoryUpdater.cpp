@@ -233,7 +233,7 @@ void CRepositoryUpdater::ScheduleUpdate()
     return;
 
   int delta{1};
-  const auto nextCheck = ClosestNextCheck();
+  const auto nextCheck = std::max(CDateTime::GetCurrentDateTime(), ClosestNextCheck());
   if (nextCheck.IsValid())
   {
     // Repos were already checked once and we know when to check next
