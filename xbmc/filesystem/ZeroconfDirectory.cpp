@@ -124,7 +124,7 @@ bool GetDirectoryFromTxtRecords(const CZeroconfBrowser::ZeroconfService& zerocon
 
       //add slash at end of path since it has to be a folder
       URIUtils::AddSlashAtEnd(path);
-      //this is the full path includeing remote stuff (e.x. nfs://ip/path
+      //this is the full path including remote stuff (e.x. nfs://ip/path
       item->SetPath(urlStr + path);
       //remove the slash at the end of the path or GetFileName will not give the last dir
       URIUtils::RemoveSlashAtEnd(path);

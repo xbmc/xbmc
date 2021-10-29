@@ -2352,7 +2352,7 @@ const infomap musicpartymode[] = {{ "enabled",           MUSICPM_ENABLED },
 ///                  _string_,
 ///     @return The year of release of the song with an offset `number` with
 ///     respect to the current playing song.
-///     @param number - the offset numbet with respect to the current song.
+///     @param number - the offset number with respect to the current song.
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`MusicPlayer.Position(number).Year`</b>,
@@ -2360,7 +2360,7 @@ const infomap musicpartymode[] = {{ "enabled",           MUSICPM_ENABLED },
 ///                  _string_,
 ///     @return The year of release of the song with an offset `number` with
 ///     respect to the start of the playlist.
-///     @param number - the offset numbet with respect to the start of the
+///     @param number - the offset number with respect to the start of the
 ///     playlist.
 ///     <p>
 ///   }

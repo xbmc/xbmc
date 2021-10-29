@@ -49,7 +49,7 @@
 #define ENV_PATH ENV_PARTIAL_PATH
 #endif
 
-//Define this to get loggin on all calls to load/unload of dlls
+//Define this to get logging on all calls to load/unload of dlls
 //#define LOGALL
 
 

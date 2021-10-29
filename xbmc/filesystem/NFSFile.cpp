@@ -394,7 +394,7 @@ void CNfsConnection::resetKeepAlive(const std::string& _exportPath, struct nfsfh
     m_lastAccessedTime = std::chrono::steady_clock::now();
   }
 
-  //adds new keys - refreshs existing ones
+  //adds new keys - refreshes existing ones
   m_KeepAliveTimeouts[_pFileHandle].exportPath = _exportPath;
   m_KeepAliveTimeouts[_pFileHandle].refreshCounter = KEEP_ALIVE_TIMEOUT;
 }
@@ -406,7 +406,7 @@ void CNfsConnection::keepAlive(const std::string& _exportPath, struct nfsfh* _pF
 {
   uint64_t offset = 0;
   char buffer[32];
-  // this also refreshs the last accessed time for the context
+  // this also refreshes the last accessed time for the context
   // true forces a cachehit regardless the context is timedout
   // on this call we are sure its not timedout even if the last accessed
   // time suggests it.

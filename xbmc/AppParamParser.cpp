@@ -135,7 +135,7 @@ void CAppParamParser::ParseArg(const std::string &arg)
     else
     {
       std::cout << "Selected logging target not available: " << arg << std::endl;
-      std::cout << "    Available log targest:";
+      std::cout << "    Available log targets:";
       for (const auto& logTarget : availableLogTargets)
         std::cout << " " << logTarget;
       std::cout << std::endl;
