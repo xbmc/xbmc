@@ -232,6 +232,7 @@ CAEDeviceInfo CAESinkAUDIOTRACK::m_info;
 CAEDeviceInfo CAESinkAUDIOTRACK::m_info_iec;
 CAEDeviceInfo CAESinkAUDIOTRACK::m_info_raw;
 bool CAESinkAUDIOTRACK::m_hasIEC = false;
+bool CAESinkAUDIOTRACK::m_isTrueHD = false;
 std::set<unsigned int> CAESinkAUDIOTRACK::m_sink_sampleRates;
 bool CAESinkAUDIOTRACK::m_sinkSupportsFloat = false;
 bool CAESinkAUDIOTRACK::m_sinkSupportsMultiChannelFloat = false;
@@ -337,6 +338,12 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
        CLog::Log(LOGDEBUG, "Updated SampleRate: {} Distance: {}", m_sink_sampleRate, d);
      }
   }
+
+  //for TrueHD to fix Atmos dropout, packet received is half a normal packet
+  //need to adjust duration
+  if (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
+    m_isTrueHD = true;
+
 
   if (m_format.m_dataFormat == AE_FMT_RAW)
   {
@@ -828,7 +835,14 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
         }
       }
       else
-        m_duration_written += ((double) loop_written / m_format.m_frameSize) / m_format.m_sampleRate;
+      {
+        //For TrueHD Atmos Fix, adjust duration as we received a half packet
+        if (m_isTrueHD)
+          m_duration_written += ((double) loop_written / m_format.m_frameSize) / m_format.m_sampleRate / 2;
+        else
+          m_duration_written += ((double) loop_written / m_format.m_frameSize) / m_format.m_sampleRate;
+      }
+
 
       // just try again to care for fragmentation
       if (written < size)
