@@ -36,7 +36,7 @@ if(CORE_SYSTEM_NAME STREQUAL darwin_embedded)
     set(CMAKE_MACOSX_BUNDLE YES)
     set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED "NO")
     # Need to set this attribute to "" in order to
-    # complety disable code signing
+    # completely disable code signing
     # see: https://gitlab.kitware.com/cmake/cmake/issues/19112
     set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "")
     if(CORE_PLATFORM_NAME STREQUAL tvos)

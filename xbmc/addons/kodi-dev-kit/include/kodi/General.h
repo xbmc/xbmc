@@ -28,7 +28,7 @@ typedef struct kodi_version_t
   int minor;
   /// The Revision contains a id and the build date, e.g. 20170706-c6b22fe217-dirty
   std::string revision;
-  /// The version canditate e.g. alpha, beta or release
+  /// The version candidate e.g. alpha, beta or release
   std::string tag;
   /// The revision of tag before
   std::string tag_revision;
