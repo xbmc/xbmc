@@ -100,7 +100,7 @@ public:
   bool CheckConfiguration(int cmsToken, AVColorPrimaries srcPrimaries);
 
   /*!
-  \brief Get a 3D LUT dimention and data size for video color correction
+  \brief Get a 3D LUT dimension and data size for video color correction
   \param format required format of CLUT data
   \param clutSize pointer to CLUT resolution
   \param dataSize pointer to CLUT data size

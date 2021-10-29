@@ -1397,7 +1397,7 @@ void CGUIWindowManager::DeInitialize()
 {
   CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
-  // Need a copy bacause addon-dialogs remove itself on Close()
+  // Need a copy because addon-dialogs removes itself on Close()
   std::unordered_map<int, CGUIWindow*> closeMap(m_mapWindows);
   for (const auto& entry : closeMap)
   {

@@ -16,7 +16,7 @@ namespace MUSIC_UTILS
   Input is a fileitem list, with each item having an "arttype" property
   e.g. "thumb", current art URL (if art exists), and label. One of these art types
   can be selected, or a new art type added. The new art type is added as a new item
-  in the list, as well as retuned as the selected art type.
+  in the list, as well as returned as the selected art type.
   \param artitems [in/out] a fileitem list to display
   \return the selected art type e.g. "fanart" or empty string when cancelled.
   \sa FillArtTypesList
@@ -67,7 +67,7 @@ namespace MUSIC_UTILS
   std::vector<std::string> GetArtTypesToScan(const MediaType& mediaType);
 
   /*! \brief Validate string is acceptable as the name of an additional art type
-  - limited length, and ascii alphanumberic charaters only
+  - limited length, and ascii alphanumberic characters only
   \param potentialArtType [in] potential art type name
  \return true if the art type is valid
  */

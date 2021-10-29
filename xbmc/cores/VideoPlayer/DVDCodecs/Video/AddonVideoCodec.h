@@ -38,7 +38,7 @@ private:
 
   /*!
    * @brief All picture members can be expected to be set correctly except decodedData and pts.
-   * GetFrameBuffer has to set decodedData to a valid memory adress and return true.
+   * GetFrameBuffer has to set decodedData to a valid memory address and return true.
    * In case buffer allocation fails, return false.
    */
   bool GetFrameBuffer(VIDEOCODEC_PICTURE &picture);

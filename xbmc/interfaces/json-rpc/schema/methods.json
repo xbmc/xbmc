@@ -2241,7 +2241,7 @@
     "transport": "Response",
     "permission": "ReadData",
     "params": [
-      { "name": "broadcastid", "$ref": "Library.Id", "required": true, "description": "the id of the broadcast to to check for playability" }
+      { "name": "broadcastid", "$ref": "Library.Id", "required": true, "description": "the id of the broadcast to check for playability" }
     ],
     "returns":  "boolean"
   },

@@ -297,7 +297,7 @@ bool DX::DeviceResources::SetFullScreen(bool fullscreen, RESOLUTION_INFO& res)
     }
   }
 
-  // resize backbuffer to proper hanlde fullscreen/stereo transition
+  // resize backbuffer to proper handle fullscreen/stereo transition
   if (recreate)
     ResizeBuffers();
 
@@ -868,7 +868,7 @@ void DX::DeviceResources::OnDeviceLost(bool removed)
     // the most of resources like textures and buffers try to
     // receive and save their status from current device.
     // `removed` means that we have no possibility
-    // to use the device anymore, tell all resouces about this.
+    // to use the device anymore, tell all resources about this.
     res->OnDestroyDevice(removed);
   }
 }

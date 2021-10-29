@@ -165,7 +165,7 @@ bool CDVDAudioCodecFFmpeg::AddData(const DemuxPacket &packet)
 
   int ret = avcodec_send_packet(m_pCodecContext, avpkt);
 
-  //! @todo: properly handle avpkt side_data. this works around our inproper use of the side_data
+  //! @todo: properly handle avpkt side_data. this works around our improper use of the side_data
   // as we pass pointers to ffmpeg allocated memory for the side_data. we should really be allocating
   // and storing our own AVPacket. This will require some extensive changes.
   av_buffer_unref(&avpkt->buf);

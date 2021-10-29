@@ -469,7 +469,7 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       value = false;
       return true;
     case SYSTEM_ETHERNET_LINK_ACTIVE:
-      // wtf: not implementated - always returns true?!
+      // wtf: not implemented - always returns true?!
       value = true;
       return true;
     case SYSTEM_PLATFORM_LINUX:

@@ -74,7 +74,7 @@ public:
   static CZeroconf* GetInstance();
   // release the singleton; (save to call multiple times)
   static void   ReleaseInstance();
-  // returns false if ReleaseInstance() was called befores
+  // returns false if ReleaseInstance() was called before
   static bool   IsInstantiated() { return  smp_instance != 0; }
   // win32: process results from the bonjour daemon
   virtual void  ProcessResults() {}

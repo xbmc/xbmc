@@ -348,7 +348,7 @@ namespace PVR
     void OnSystemSleep();
 
     /*!
-     * @brief Propagate "system wakup" event to clients
+     * @brief Propagate "system wakeup" event to clients
      */
     void OnSystemWake();
 

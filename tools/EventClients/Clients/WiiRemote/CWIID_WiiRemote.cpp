@@ -60,7 +60,8 @@ void CWiiRemote::MessageCallback(cwiid_wiimote_t *wiiremote, int mesg_count, uni
 
 /* The MessageCallback for the Wiiremote.
    This callback is used for error reports, mainly to see if the connection has been broken
-   This callback is also used for getting the IR sources, if this is done in update as with buttons we usually only get 1 IR source at a time wich is much harder to calculate */
+   This callback is also used for getting the IR sources, if this is done in update as with
+   buttons we usually only get 1 IR source at a time which is much harder to calculate */
 void CWiiRemote::MessageCallback(cwiid_wiimote_t *wiiremote, int mesg_count, union cwiid_mesg mesg[], struct timespec *timestamp)
 {
   for (int i=0; i < mesg_count; i++)
@@ -399,7 +400,7 @@ void CWiiRemote::DisconnectNow(bool startConnectThread)
 
 #ifdef CWIID_OLD
 /* This is a harsh check if there really is a connection, It will mainly be used in CWIID < 6.0
-   as it doesn't report connect error, wich is needed to see if the Wiiremote suddenly disconnected.
+   as it doesn't report connect error, which is needed to see if the Wiiremote suddenly disconnected.
    This could possible be done with bluetooth specific queries but I cannot find how to do it.  */
 bool CWiiRemote::CheckConnection()
 {
@@ -571,7 +572,7 @@ void CWiiRemote::ProcessNunchuck(struct cwiid_nunchuk_mesg &Nunchuck)
   }
 }
 
-/* Tell cwiid wich data will be reported */
+/* Tell cwiid which data will be reported */
 void CWiiRemote::SetRptMode()
 { //Sets our wiiremote to report something, for example IR, Buttons
 #ifdef CWIID_OLD

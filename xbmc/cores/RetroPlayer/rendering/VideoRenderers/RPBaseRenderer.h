@@ -99,7 +99,7 @@ private:
   virtual void ManageRenderArea(const IRenderBuffer& renderBuffer);
 
   /*!
-   * \brief Performs whatever nessesary after a frame has been rendered
+   * \brief Performs whatever necessary after a frame has been rendered
    */
   void PostRender();
 

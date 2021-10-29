@@ -318,7 +318,7 @@ bool CPlayListPlayer::Play(int iSong,
               CURL::GetRedacted(item->GetDynPath()));
     playlist.SetUnPlayable(m_iCurrentSong);
 
-    // abort on 100 failed CONSECTUTIVE songs
+    // abort on 100 failed CONSECUTIVE songs
     if (!m_iFailedSongs)
       m_failedSongsStart = playAttempt;
     m_iFailedSongs++;

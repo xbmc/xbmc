@@ -429,7 +429,7 @@ bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int 
   int size = av_image_fill_arrays(pictureRGB->data, pictureRGB->linesize, NULL, AV_PIX_FMT_RGB32, width, height, 16);
   if (size < 0)
   {
-    CLog::LogF(LOGERROR, "Could not allocate AVFrame member with {} x {} pixes", width, height);
+    CLog::LogF(LOGERROR, "Could not allocate AVFrame member with {} x {} pixels", width, height);
     av_frame_free(&pictureRGB);
     return false;
   }

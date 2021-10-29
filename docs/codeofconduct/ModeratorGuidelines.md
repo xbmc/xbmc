@@ -36,7 +36,7 @@ As suggested by keith on the slack channel, I thought it might be useful to have
 - Also if you move a thread, leave a note in it to say that you've done so.
 - Discussions isn't for support requests - that's what the main support sections are for.
 - Threads moved to off-topic can still be posted to by anyone, but normal users cannot start threads in that section.
-- If you bin a thread that contains dodgy links, please remember to edit it and remove them. The bin is publically visible, so can be harvested for such things by enterprising idiots.
+- If you bin a thread that contains dodgy links, please remember to edit it and remove them. The bin is publicly visible, so can be harvested for such things by enterprising idiots.
 
 **Warnings and banning**
 - Banning someone is an extreme measure, and should only be done "off the cuff" for short-term duration (certainly no more than a 2 week ban, ideally less) as a direct result of threatening or insulting behaviour (for the latter, something that goes materially beyond a simple breach of 2.1 of the Forum Rules).

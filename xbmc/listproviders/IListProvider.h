@@ -60,7 +60,7 @@ public:
   virtual void Reset() {}
 
   /*! \brief Free all GUI resources allocated by the items.
-   \param immediately true to free resources imediately, free resources async later otherwise.
+   \param immediately true to free resources immediately, free resources async later otherwise.
    */
   virtual void FreeResources(bool immediately) {}
 

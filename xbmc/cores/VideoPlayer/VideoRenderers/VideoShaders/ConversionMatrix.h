@@ -42,7 +42,7 @@ public:
         if (m_mat[i][j] == other.m_mat[i][j])
           continue;
 
-        // some floating point comparisions should be done by checking if the difference is within a tolerance
+        // some floating point comparisons should be done by checking if the difference is within a tolerance
         if (std::abs(m_mat[i][j] - other.m_mat[i][j]) <=
             (std::max(std::abs(other.m_mat[i][j]), std::abs(m_mat[i][j])) * 1e-2f))
           continue;

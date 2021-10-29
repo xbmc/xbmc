@@ -300,7 +300,7 @@ public:
    * \param [in,out] payload this is a void pointer that is meant to send larger objects to the receiver
    *             what to send depends on the message
    * \param [in] strParam value depends on the message being sent, remains for backward compat
-   * \param [in] params value depends on the message being sent, kept for backward compatiblity
+   * \param [in] params value depends on the message being sent, kept for backward compatibility
    * \return meaning of the return varies based on the message
    */
   int SendMsg(uint32_t messageId, int param1, int param2, void* payload, std::string strParam, std::vector<std::string> params);
@@ -366,7 +366,7 @@ public:
    * \param [in,out] payload this is a void pointer that is meant to send larger objects to the receiver
    *             what to send depends on the message
    * \param [in] strParam value depends on the message being sent, remains for backward compat
-   * \param [in] params value depends on the message being sent, kept for backward compatiblity
+   * \param [in] params value depends on the message being sent, kept for backward compatibility
    */
   void PostMsg(uint32_t messageId, int param1, int param2, void* payload, std::string strParam, std::vector<std::string> params);
 

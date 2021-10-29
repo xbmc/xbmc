@@ -154,7 +154,7 @@ public:
   unsigned int Range() const { return m_range; }
 
   /*!
-   * \brief The keybord symbol (valid for keys)
+   * \brief The keyboard symbol (valid for keys)
    */
   KEYBOARD::KeySymbol Keycode() const { return m_keycode; }
 

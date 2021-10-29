@@ -2540,7 +2540,7 @@ bool CMusicDatabase::AddSongGenres(int idSong, const std::vector<std::string>& g
     std::vector<std::string> modgenres = genres;
     for (auto& strGenre : modgenres)
     {
-      int idGenre = AddGenre(strGenre); // Genre string trimed and matched case insensitively
+      int idGenre = AddGenre(strGenre); // Genre string trimmed and matched case-insensitively
       strSQL = PrepareSQL("INSERT INTO song_genre (idGenre, idSong, iOrder) VALUES(%i,%i,%i)",
                           idGenre, idSong, index++);
       if (!ExecuteQuery(strSQL))
@@ -2773,7 +2773,7 @@ bool CMusicDatabase::GetGenresByArtist(int idArtist, CFileItem* item)
         return false;
       if (m_pDS->num_rows() == 0)
       {
-        //No song genres, but query sucessfull
+        //No song genres, but query successful
         m_pDS->close();
         return true;
       }
@@ -2816,7 +2816,7 @@ bool CMusicDatabase::GetGenresByAlbum(int idAlbum, CFileItem* item)
       return false;
     if (m_pDS->num_rows() == 0)
     {
-      //No song genres, but query sucessfull
+      //No song genres, but query successful
       m_pDS->close();
       return true;
     }
@@ -4510,7 +4510,7 @@ int CMusicDatabase::Cleanup(CGUIDialogProgress* progressDialog /*= nullptr*/)
     ret = ERROR_REORG_ARTIST;
     goto error;
   }
-  //Genres, roles and info settings progess in one step
+  //Genres, roles and info settings progress in one step
   if (progressDialog)
   {
     progressDialog->SetLine(1, CVariant{322});
@@ -6556,7 +6556,7 @@ bool CMusicDatabase::GetArtistsByWhereJSON(
     extFilter.AppendField(JSONtoDBArtist[0].fieldDB);
     dbfieldindex.emplace_back(0); // Output "artist"
 
-    // Check each otional artist db field that could be retrieved (not "artist")
+    // Check each optional artist db field that could be retrieved (not "artist")
     for (unsigned int i = 1; i < NUM_ARTIST_FIELDS; i++)
     {
       bool foundJSON = fields.find(JSONtoDBArtist[i].fieldJSON) != fields.end();
@@ -7268,7 +7268,7 @@ bool CMusicDatabase::GetAlbumsByWhereJSON(
     if (fields.find(JSONtoDBAlbum[0].fieldJSON) != fields.end())
       dbfieldindex.emplace_back(0); // Output "title"
     else
-      dbfieldindex.emplace_back(-1); // fetch but not outout
+      dbfieldindex.emplace_back(-1); // fetch but not output
 
     // Check each optional album db field that could be retrieved (not label)
     for (unsigned int i = 1; i < NUM_ALBUM_FIELDS; i++)
@@ -8310,7 +8310,7 @@ std::string CMusicDatabase::AlphanumericSortSQL(const std::string& strField,
   Use custom collation ALPHANUM in SQLite. This handles natural number order, case sensitivity
   and locale UFT-8 order for accents using the same functionality as fileitem list sorting.
   Natural number order is not significant for where clause comparison and use of calculated fields
-  means there is no advantage in defining as column defualt in table create than per query (which
+  means there is no advantage in defining as column default in table create than per query (which
   also makes looking at the db with other tools difficult).
 
   MySQL does not have callback collation, but all tables are defined with utf8_general_ci an
@@ -9262,7 +9262,7 @@ void CMusicDatabase::UpdateTables(int version)
                 "bScrapedMBID INTEGER NOT NULL DEFAULT 0, "
                 "idInfoSetting INTEGER NOT NULL DEFAULT 0, "
                 "dateAdded TEXT, dateNew TEXT, dateModified TEXT)");
-    // Concatentate fanart URLs into strImage field
+    // Concatenate fanart URLs into strImage field
     // Prepare SQL to convert CONCAT to || in SQLite
     m_pDS->exec(PrepareSQL("INSERT INTO artist_new "
                            "(idArtist, strArtist, strMusicBrainzArtistID, "
@@ -9287,7 +9287,7 @@ void CMusicDatabase::UpdateTables(int version)
     m_pDS->exec("DROP TABLE artist");
     m_pDS->exec("ALTER TABLE artist_new RENAME TO artist");
   }
-  // Set the verion of tag scanning required.
+  // Set the version of tag scanning required.
   // Not every schema change requires the tags to be rescanned, set to the highest schema version
   // that needs this. Forced rescanning (of music files that have not changed since they were
   // previously scanned) also accommodates any changes to the way tags are processed
@@ -9533,7 +9533,7 @@ bool CMusicDatabase::GetAlbumPaths(int idAlbum, std::vector<std::pair<std::strin
     // b) <album>/cd1, <album>/cd2 etc. for disc sets
     // but does *not* return any path when albums are mixed together. That could be because of
     // deliberate file organisation, or (more likely) because of a tagging error in album name
-    // or Musicbrainzalbumid. Thus it avoids finding somme generic music path.
+    // or Musicbrainzalbumid. Thus it avoids finding some generic music path.
     strSQL = PrepareSQL("SELECT DISTINCT strPath, song.idPath FROM song "
                         "JOIN path ON song.idPath = path.idPath "
                         "WHERE song.idAlbum = %ld "
@@ -10234,7 +10234,7 @@ bool CMusicDatabase::GetSources(CFileItemList& items)
     }
 
     // Get data from returned rows
-    // Item has source ID in MusicInfotag, multipath in path, and indiviual paths in property
+    // Item has source ID in MusicInfotag, multipath in path, and individual paths in property
     CVariant sourcePaths(CVariant::VariantTypeArray);
     int idSource = -1;
     while (!m_pDS->eof())
@@ -10315,7 +10315,7 @@ bool CMusicDatabase::GetSourcesByArtist(int idArtist, CFileItem* item)
         return false;
       if (m_pDS->num_rows() == 0)
       {
-        //No sources, but query sucessfull
+        //No sources, but query successful
         m_pDS->close();
         return true;
       }
@@ -11898,7 +11898,7 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
             if (settings.m_artwork)
             {
               // Save art in album folder
-              // Note thumb resoluton may be lower than original when overwriting
+              // Note thumb resolution may be lower than original when overwriting
               std::map<std::string, std::string> artwork;
               std::string savedArtfile;
               if (GetArtForItem(album.idAlbum, MediaTypeAlbum, artwork))
@@ -13112,7 +13112,7 @@ int CMusicDatabase::GetOrderFilter(const std::string& type,
         filter.AppendField(sortSQL); // Add artistsortname as scalar query field
         iFieldsAdded++;
       }
-      // Natural number case insensitve sort
+      // Natural number case-insensitive sort
       filter.AppendOrder(AlphanumericSortSQL(name, sorting.sortOrder));
     }
     else if (StringUtils::EndsWith(name, "strAlbum") || StringUtils::EndsWith(name, "strTitle"))
@@ -13124,11 +13124,11 @@ int CMusicDatabase::GetOrderFilter(const std::string& type,
         filter.AppendField(sortSQL); // Add sortname as scalar query field
         iFieldsAdded++;
       }
-      // Natural number case insensitve sort
+      // Natural number case-insensitive sort
       filter.AppendOrder(AlphanumericSortSQL(name, sorting.sortOrder));
     }
     else if (StringUtils::EndsWith(name, "strGenres"))
-      // Natural number case insensitve sort
+      // Natural number case-insensitive sort
       filter.AppendOrder(AlphanumericSortSQL(name, sorting.sortOrder));
     else
       filter.AppendOrder(name + DESC);

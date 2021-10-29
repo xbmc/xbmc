@@ -21,7 +21,7 @@
 // WebVTT in MP4 encapsulated subtitles (ISO/IEC 14496-30:2014)
 // This format type that differ from the text WebVTT, it makes use
 // of ISO BMFF byte stream where the data are enclosed in boxes (first 4 byte
-// speficy the size and next 4 byte specify the type).
+// specify the size and next 4 byte specify the type).
 // Start/Stop times info are not included, the start time is the current pts
 // provided from the decoder, the stop time is defined from the pts of the next
 // packages (depends from the box type).

@@ -7,7 +7,7 @@
  */
 
 /**
- * \file platfrom\win10\Environment.cpp
+ * \file platform\win10\Environment.cpp
  * \brief Implements CEnvironment WinRT specified class functions.
  */
 

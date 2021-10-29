@@ -446,7 +446,7 @@ bool CGUIDialogMusicInfo::SetItem(CFileItem* item)
   // In a separate job fetch info and fill list of art types.
   int jobid = CJobManager::GetInstance().AddJob(new CGetInfoJob(), nullptr, CJob::PRIORITY_LOW);
 
-  // Wait to get all data before show, allowing user to to cancel if fetch is slow
+  // Wait to get all data before show, allowing user to cancel if fetch is slow
   if (!CGUIDialogBusy::WaitOnEvent(m_event, TIME_TO_BUSY_DIALOG))
   {
     // Cancel job still waiting in queue (unlikely)
@@ -618,7 +618,7 @@ void CGUIDialogMusicInfo::RefreshInfo()
     return;
   }
 
-  // Show message when scraper was unsuccesfull
+  // Show message when scraper was unsuccessful
   if (!HasScrapedInfo())
   {
     if (m_bArtistInfo)

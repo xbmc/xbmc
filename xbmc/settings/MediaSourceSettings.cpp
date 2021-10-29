@@ -359,7 +359,7 @@ bool CMediaSourceSettings::GetSource(const std::string &category, const TiXmlNod
     return false;
 
   std::vector<std::string> verifiedPaths;
-  // disallowed for files, or theres only a single path in the vector
+  // disallowed for files, or there's only a single path in the vector
   if (StringUtils::EqualsNoCase(category, "files") || vecPaths.size() == 1)
     verifiedPaths.push_back(vecPaths[0]);
   // multiple paths?

@@ -164,7 +164,7 @@ void CZeroconfDarwin::registerCallback(CFNetServiceRef theService, CFStreamError
     CZeroconfDarwin* p_this = reinterpret_cast<CZeroconfDarwin*>(info);
     switch(error->error) {
       case kCFNetServicesErrorCollision:
-        CLog::Log(LOGERROR, "CZeroconfDarwin::registerCallback name collision occured");
+        CLog::Log(LOGERROR, "CZeroconfDarwin::registerCallback name collision occurred");
         break;
       default:
         CLog::Log(LOGERROR,

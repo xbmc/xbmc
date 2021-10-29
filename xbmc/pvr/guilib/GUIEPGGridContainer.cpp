@@ -717,7 +717,7 @@ void CGUIEPGGridContainer::UpdateItems()
     {
       channelUid = prevSelectedEpgTag->UniqueChannelID();
 
-      // As gap tags do not have a unique broadcast id, we will look for the real tag preceeding
+      // As gap tags do not have a unique broadcast id, we will look for the real tag preceding
       // the gap tag and add the respective offset to restore the gap tag selection, assuming that
       // the real tag is still the predecessor of the gap tag after the grid model update.
 

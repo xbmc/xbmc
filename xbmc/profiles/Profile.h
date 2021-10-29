@@ -59,7 +59,7 @@ public:
   bool canWriteSources() const { return m_bCanWriteSources; }
   bool hasAddons() const { return m_bAddons; }
   /**
-   \brief Returns wich settings levels are locked for the current profile
+   \brief Returns which settings levels are locked for the current profile
    \sa LOCK_LEVEL::SETTINGS_LOCK
    */
   LOCK_LEVEL::SETTINGS_LOCK settingsLockLevel() const { return m_locks.settings; }

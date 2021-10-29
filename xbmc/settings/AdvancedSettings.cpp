@@ -990,7 +990,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   if (pTrailerMatching)
     GetCustomRegexps(pTrailerMatching, m_trailerMatchRegExps);
 
-  //everything thats a trailer is not a movie
+  //everything that's a trailer is not a movie
   m_moviesExcludeFromScanRegExps.insert(m_moviesExcludeFromScanRegExps.end(),
                                         m_trailerMatchRegExps.begin(),
                                         m_trailerMatchRegExps.end());

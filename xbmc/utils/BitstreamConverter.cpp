@@ -369,7 +369,7 @@ bool CBitstreamConverter::Open(enum AVCodecID codec, uint8_t *in_extradata, int 
           {
             CLog::Log(LOGINFO, "CBitstreamConverter::Open annexb to bitstream init");
             // video content is from x264 or from bytestream h264 (AnnexB format)
-            // NAL reformating to bitstream format needed
+            // NAL reformatting to bitstream format needed
             AVIOContext *pb;
             if (avio_open_dyn_buf(&pb) < 0)
               return false;

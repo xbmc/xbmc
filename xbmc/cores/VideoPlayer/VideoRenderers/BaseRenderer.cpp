@@ -158,7 +158,7 @@ void CBaseRenderer::CalcDestRect(float offsetX,
   }
   else
   {
-    // maximize the movie hight
+    // maximize the movie height
     newHeight = std::min(width, height);
     newWidth = newHeight / outputFrameRatio;
     if (newWidth > width)

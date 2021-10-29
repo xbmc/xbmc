@@ -74,7 +74,7 @@ void CScriptInvocationManager::Uninitialize()
   // execute Process() once more to handle the remaining scripts
   Process();
 
-  // it is safe to relese early, thread must be in m_scripts too
+  // it is safe to release early, thread must be in m_scripts too
   m_lastInvokerThread = nullptr;
 
   // make sure all scripts are done

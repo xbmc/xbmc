@@ -178,7 +178,7 @@ public:
     \param song [in/out] the song to update, artist ids are returned in artist credits
     \param bArtists to update artist credits and contributors, default is true
     \param bArtists to check and log if artist links have changed, default is true
-    \return true if sucessfull
+    \return true if successful
    */
   bool UpdateSong(CSong& song, bool bArtists = true, bool bArtistLinks = true);
 
@@ -957,7 +957,7 @@ private:
                                const std::string& strField,
                                const std::string& strSortField);
 
-  /*! \brief Build SQL for sorting field naturally and case insensitvely (in SQLite).
+  /*! \brief Build SQL for sorting field naturally and case-insensitively (in SQLite).
   \param strField field name
   \param sortOrder the sort order
   \return SQL string e.g.
@@ -973,7 +973,7 @@ private:
 
   /*! \brief Initially fills source table from sources.xml for use only at
   migration of db from an earlier version than 72
-  returns true when successfuly done
+  returns true when successfully done
   */
   bool MigrateSources();
 

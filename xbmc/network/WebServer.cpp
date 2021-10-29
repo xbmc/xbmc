@@ -75,7 +75,7 @@ CWebServer::CWebServer()
   pthread_attr_getstack(&attr, &stack_addr, &m_thread_stacksize);
   pthread_attr_destroy(&attr);
   // double the stack size under darwin, not sure why yet
-  // but it stoped crashing using Kodi iOS remote -> play video.
+  // but it stopped crashing using Kodi iOS remote -> play video.
   // non-darwin will pass a value of zero which means 'system default'
   m_thread_stacksize *= 2;
   m_logger->debug("increasing thread stack to {}", m_thread_stacksize);

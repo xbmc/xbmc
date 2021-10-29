@@ -2335,7 +2335,7 @@ namespace PVR
                              19309); // (Auto-close of this reminder will schedule a recording...)
       else if (m_settings.GetBoolValue(CSettings::SETTING_PVRREMINDERS_AUTOSWITCH))
         text += "\n\n" + g_localizeStrings.Get(
-                             19331); // (Auto-close of this reminder will swicth to channel...)
+                             19331); // (Auto-close of this reminder will switch to channel...)
     }
     else
     {

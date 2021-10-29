@@ -224,7 +224,7 @@ void CGUIFont::DrawScrollingText(float x,
   CServiceBroker::GetWinSystem()->GetGfxContext().RestoreClipRegion();
 }
 
-// remaps unsupported font glpyhs to other suitable ones
+// remaps unsupported font glyphs to other suitable ones
 wchar_t CGUIFont::RemapGlyph(wchar_t letter)
 {
   if (letter == 0x2019 || letter == 0x2018) return 0x0027;  // single quotes

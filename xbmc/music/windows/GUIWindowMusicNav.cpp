@@ -261,7 +261,7 @@ bool CGUIWindowMusicNav::ManageInfoProvider(const CFileItemPtr& item)
           msgctxt = 38068;
         if (CGUIDialogYesNo::ShowAndGetInput(CVariant{ 20195 }, msgctxt)) // Change information provider, confirm for all shown
         {
-          // Set scraper for all items on curent view.
+          // Set scraper for all items on current view.
           std::string strPath = "musicdb://";
           if (content == CONTENT_ARTISTS)
             strPath += "artists";
@@ -296,7 +296,7 @@ bool CGUIWindowMusicNav::ManageInfoProvider(const CFileItemPtr& item)
           else
             settings->SetString(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER, scraper->ID());
           settings->Save();
-          // Clear all item specifc settings
+          // Clear all item specific settings
           if (content == CONTENT_ARTISTS)
             result = m_musicdatabase.SetScraperAll("musicdb://artists/", nullptr);
           else
@@ -897,7 +897,7 @@ void CGUIWindowMusicNav::AddSearchFolder()
     }
     if (!haveSearchSource && needSearchSource)
     {
-      // add earch share
+      // add search share
       CMediaSource share;
       share.strName=g_localizeStrings.Get(137); // Search
       share.strPath = "musicsearch://";

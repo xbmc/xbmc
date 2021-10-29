@@ -144,7 +144,7 @@ std::string CPVRRecordingsPath::GetUnescapedSubDirectoryPath(const std::string& 
   strUsePath.erase(0, strUnescapedDirectoryPath.size());
   strUsePath = TrimSlashes(strUsePath);
 
-  /* check for more occurences */
+  /* check for more occurrences */
   size_t iDelimiter = strUsePath.find('/');
   if (iDelimiter == std::string::npos)
     strReturn = strUsePath;

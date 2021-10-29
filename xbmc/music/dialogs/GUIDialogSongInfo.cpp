@@ -138,7 +138,7 @@ bool CGUIDialogSongInfo::OnMessage(CGUIMessage& message)
         // Send a message to all windows to tell them to update the fileitem
         // This communicates the rating change to the music lib window, current playlist and OSD.
         // The music lib window item is updated to but changes to the rating when it is the sort
-        // do not show on screen until refresh() that fetchs the list from scratch, sorts etc.
+        // do not show on screen until refresh() that fetches the list from scratch, sorts etc.
         CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_song);
         CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
       }
@@ -283,7 +283,7 @@ bool CGUIDialogSongInfo::SetSong(CFileItem* item)
   // In a separate job fetch song info and fill list of art types.
   int jobid = CJobManager::GetInstance().AddJob(new CGetSongInfoJob(), nullptr, CJob::PRIORITY_LOW);
 
-  // Wait to get all data before show, allowing user to to cancel if fetch is slow
+  // Wait to get all data before show, allowing user to cancel if fetch is slow
   if (!CGUIDialogBusy::WaitOnEvent(m_event, TIME_TO_BUSY_DIALOG))
   {
     // Cancel job still waiting in queue (unlikely)

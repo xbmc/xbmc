@@ -91,7 +91,7 @@ using namespace xbmcgui;
       }
       else
       {
-        // for backwards compatability in python scripts
+        // for backwards compatibility in python scripts
         PyObject* o1 = PyLong_FromLong(a1->id);
         return PyObject_RichCompare(o1, obj2, method);
       }

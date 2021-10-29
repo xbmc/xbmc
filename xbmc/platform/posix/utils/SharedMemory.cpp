@@ -61,7 +61,7 @@ CFileHandle CSharedMemory::Open()
 CFileHandle CSharedMemory::OpenMemfd()
 {
 #if defined(SYS_memfd_create) && defined(HAVE_LINUX_MEMFD)
-  // This is specific to Linux >= 3.17, but preffered over shm_create if available
+  // This is specific to Linux >= 3.17, but preferred over shm_create if available
   // because it is race-free
   int fd = syscall(SYS_memfd_create, "kodi", MFD_CLOEXEC);
   if (fd < 0)
