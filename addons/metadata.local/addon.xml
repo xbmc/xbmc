@@ -22,7 +22,7 @@
              language="multi"
              library="local.xml"/>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en_GB">Local Infomation only pseudo-scraper</summary>
+    <summary lang="en_GB">Local Information only pseudo-scraper</summary>
     <description lang="en_GB">Use local information only</description>
     <platform>all</platform>
     <license>GPL-2.0-only</license>

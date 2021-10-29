@@ -2264,7 +2264,7 @@ var Component = function () {
   /**
    * Clears a timeout that gets created via `window.setTimeout` or
    * {@link Component#setTimeout}. If you set a timeout via {@link Component#setTimeout}
-   * use this function instead of `window.clearTimout`. If you don't your dispose
+   * use this function instead of `window.clearTimeout`. If you don't your dispose
    * listener will not get cleaned up until {@link Component#dispose}!
    *
    * @param {number} timeoutId
@@ -10608,7 +10608,7 @@ var Player = function (_Component) {
    * dragging it along the progress bar.
    *
    * @param {boolean} [isScrubbing]
-   *        wether the user is or is not scrubbing
+   *        whether the user is or is not scrubbing
    *
    * @return {boolean|Player}
    *         A instance of the player that called this function when setting,
@@ -12276,7 +12276,7 @@ var Player = function (_Component) {
   };
 
   /**
-   * Determine wether or not flexbox is supported
+   * Determine whether or not flexbox is supported
    *
    * @return {boolean}
    *         - true if flexbox is supported
@@ -16130,7 +16130,7 @@ Html5.resetMediaElement = function (el) {
 
 /**
  * Get the value of the `error` from the media element. `error` indicates any
- * MediaError that may have occured during playback. If error returns null there is no
+ * MediaError that may have occurred during playback. If error returns null there is no
  * current error.
  *
  * @method Html5#error
@@ -17128,7 +17128,7 @@ var Tech = function (_Component) {
    * Returns the `TimeRange`s that have been played through for the current source.
    *
    * > NOTE: This implementation is incomplete. It does not track the played `TimeRange`.
-   *         It only checks wether the source has played at all or not.
+   *         It only checks whether the source has played at all or not.
    *
    * @return {TimeRange}
    *         - A single time range if this video has played
@@ -17654,7 +17654,7 @@ Tech.prototype.audioTracks_; // eslint-disable-line
 Tech.prototype.videoTracks_; // eslint-disable-line
 
 /**
- * Boolean indicating wether the `Tech` supports volume control.
+ * Boolean indicating whether the `Tech` supports volume control.
  *
  * @type {boolean}
  * @default
@@ -17662,7 +17662,7 @@ Tech.prototype.videoTracks_; // eslint-disable-line
 Tech.prototype.featuresVolumeControl = true;
 
 /**
- * Boolean indicating wether the `Tech` support fullscreen resize control.
+ * Boolean indicating whether the `Tech` support fullscreen resize control.
  * Resizing plugins using request fullscreen reloads the plugin
  *
  * @type {boolean}
@@ -17671,7 +17671,7 @@ Tech.prototype.featuresVolumeControl = true;
 Tech.prototype.featuresFullscreenResize = false;
 
 /**
- * Boolean indicating wether the `Tech` supports changing the speed at which the video
+ * Boolean indicating whether the `Tech` supports changing the speed at which the video
  * plays. Examples:
  *   - Set player to play 2x (twice) as fast
  *   - Set player to play 0.5x (half) as fast
@@ -17682,7 +17682,7 @@ Tech.prototype.featuresFullscreenResize = false;
 Tech.prototype.featuresPlaybackRate = false;
 
 /**
- * Boolean indicating wether the `Tech` supports the `progress` event. This is currently
+ * Boolean indicating whether the `Tech` supports the `progress` event. This is currently
  * not triggered by video-js-swf. This will be used to determine if
  * {@link Tech#manualProgressOn} should be called.
  *
@@ -17692,7 +17692,7 @@ Tech.prototype.featuresPlaybackRate = false;
 Tech.prototype.featuresProgressEvents = false;
 
 /**
- * Boolean indicating wether the `Tech` supports the `timeupdate` event. This is currently
+ * Boolean indicating whether the `Tech` supports the `timeupdate` event. This is currently
  * not triggered by video-js-swf. This will be used to determine if
  * {@link Tech#manualTimeUpdates} should be called.
  *
@@ -17702,7 +17702,7 @@ Tech.prototype.featuresProgressEvents = false;
 Tech.prototype.featuresTimeupdateEvents = false;
 
 /**
- * Boolean indicating wether the `Tech` supports the native `TextTrack`s.
+ * Boolean indicating whether the `Tech` supports the native `TextTrack`s.
  * This will help us integrate with native `TextTrack`s if the browser supports them.
  *
  * @type {boolean}
@@ -19016,7 +19016,7 @@ var TextTrackDisplay = function (_Component) {
   };
 
   /**
-   * Add an {@link Texttrack} to to the {@link Tech}s {@link TextTrackList}.
+   * Add an {@link Texttrack} to the {@link Tech}s {@link TextTrackList}.
    *
    * @param {TextTrack} track
    *        Text track object to be added to the list.

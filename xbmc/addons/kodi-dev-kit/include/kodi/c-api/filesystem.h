@@ -74,7 +74,7 @@ extern "C"
     ADDON_READ_NO_CACHE = 0x08,
 
     /// @brief **0000 0001 0000** :\n
-    /// Calcuate bitrate for file while reading.
+    /// Calculate bitrate for file while reading.
     ADDON_READ_BITRATE = 0x10,
 
     /// @brief **0000 0010 0000** :\n

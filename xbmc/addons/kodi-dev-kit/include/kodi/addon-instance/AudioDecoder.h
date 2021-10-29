@@ -515,7 +515,7 @@ public:
   /// @param[out] format Data format for output stream, see
   ///                    @ref cpp_kodi_audioengine_Defs_AudioEngineFormat for
   ///                    available values
-  /// @param[out] channellist Channel mapping for output streamm, see
+  /// @param[out] channellist Channel mapping for output stream, see
   ///                         @ref cpp_kodi_audioengine_Defs_AudioEngineChannel
   ///                         for available values
   /// @return true if successfully done, otherwise false

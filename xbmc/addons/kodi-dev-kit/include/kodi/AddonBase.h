@@ -713,7 +713,7 @@ inline std::string ATTRIBUTE_HIDDEN GetBaseUserPath(const std::string& append = 
 /// @note In addition, in this function, for a given folder, the add-on path
 /// itself, but its parent.
 ///
-/// @return Kodi's sytem library path where related addons are installed.
+/// @return Kodi's system library path where related addons are installed.
 ///
 inline std::string ATTRIBUTE_HIDDEN GetLibPath()
 {
@@ -1391,9 +1391,9 @@ inline void* GetInterface(const std::string& name, const std::string& version)
 ///                               There have addon needed values and functions
 ///                               to Kodi and addon must set his functions there
 ///                               for Kodi.
-///     @param[in] globalApiVersion This give the main version @ref ADDON_GLOBAL_VERSION_MAIN
+///     @param[in] globalApiVersion This gives the main version @ref ADDON_GLOBAL_VERSION_MAIN
 ///                                 where currently on Kodi's side.<br>
-///                                 This is unsued on addon as there also other
+///                                 This is unused on addon as there's also other
 ///                                 special callback functions for.<br>
 ///                                 Only thought for future use if needed earlier.
 ///     @param[in] unused This is a not used value\, only there to have in case of

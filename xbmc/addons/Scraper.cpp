@@ -319,7 +319,7 @@ std::string CScraper::InternalRun(const std::string &function,
         m_parser.m_param[i].empty())
       return "";
   }
-  // put the 'extra' parameterts into the parser parameter list too
+  // put the 'extra' parameters into the parser parameter list too
   if (extras)
   {
     for (size_t j = 0; j < extras->size(); ++j)

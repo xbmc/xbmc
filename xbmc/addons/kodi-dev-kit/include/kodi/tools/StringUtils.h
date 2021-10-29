@@ -1666,10 +1666,10 @@ public:
   /// std::string refstr = "test";
   ///
   /// ret = kodi::tools::StringUtils::StartsWith(refstr, "te");
-  /// fprintf(stderr, "Excpect true for here and is '%s'\n", ret ? "true" : "false");
+  /// fprintf(stderr, "Expect true for here and is '%s'\n", ret ? "true" : "false");
   ///
   /// ret = kodi::tools::StringUtils::StartsWith(refstr, "abc");
-  /// fprintf(stderr, "Excpect false for here and is '%s'\n", ret ? "true" : "false");
+  /// fprintf(stderr, "Expect false for here and is '%s'\n", ret ? "true" : "false");
   /// ~~~~~~~~~~~~~
   ///
   inline static bool StartsWith(const std::string& str1, const std::string& str2)
@@ -1732,13 +1732,13 @@ public:
   /// std::string refstr = "test";
   ///
   /// ret = kodi::tools::StringUtils::StartsWithNoCase(refstr, "te");
-  /// fprintf(stderr, "Excpect true for here and is '%s'\n", ret ? "true" : "false");
+  /// fprintf(stderr, "Expect true for here and is '%s'\n", ret ? "true" : "false");
   ///
   /// ret = kodi::tools::StringUtils::StartsWithNoCase(refstr, "TEs");
-  /// fprintf(stderr, "Excpect true for here and is '%s'\n", ret ? "true" : "false");
+  /// fprintf(stderr, "Expect true for here and is '%s'\n", ret ? "true" : "false");
   ///
   /// ret = kodi::tools::StringUtils::StartsWithNoCase(refstr, "abc");
-  /// fprintf(stderr, "Excpect false for here and is '%s'\n", ret ? "true" : "false");
+  /// fprintf(stderr, "Expect false for here and is '%s'\n", ret ? "true" : "false");
   /// ~~~~~~~~~~~~~
   ///
   inline static bool StartsWithNoCase(const std::string& str1, const std::string& str2)
@@ -1802,10 +1802,10 @@ public:
   /// std::string refstr = "test";
   ///
   /// ret = kodi::tools::StringUtils::EndsWith(refstr, "st");
-  /// fprintf(stderr, "Excpect true for here and is '%s'\n", ret ? "true" : "false");
+  /// fprintf(stderr, "Expect true for here and is '%s'\n", ret ? "true" : "false");
   ///
   /// ret = kodi::tools::StringUtils::EndsWith(refstr, "abc");
-  /// fprintf(stderr, "Excpect false for here and is '%s'\n", ret ? "true" : "false");
+  /// fprintf(stderr, "Expect false for here and is '%s'\n", ret ? "true" : "false");
   /// ~~~~~~~~~~~~~
   ///
   inline static bool EndsWith(const std::string& str1, const std::string& str2)
@@ -1852,10 +1852,10 @@ public:
   /// std::string refstr = "test";
   ///
   /// ret = kodi::tools::StringUtils::EndsWithNoCase(refstr, "ST");
-  /// fprintf(stderr, "Excpect true for here and is '%s'\n", ret ? "true" : "false");
+  /// fprintf(stderr, "Expect true for here and is '%s'\n", ret ? "true" : "false");
   ///
   /// ret = kodi::tools::StringUtils::EndsWithNoCase(refstr, "ABC");
-  /// fprintf(stderr, "Excpect false for here and is '%s'\n", ret ? "true" : "false");
+  /// fprintf(stderr, "Expect false for here and is '%s'\n", ret ? "true" : "false");
   /// ~~~~~~~~~~~~~
   ///
   inline static bool EndsWithNoCase(const std::string& str1, const std::string& str2)
@@ -2251,7 +2251,7 @@ public:
   //============================================================================
   /// @brief Check a string for another text.
   ///
-  /// @param[in] str String to seach for keywords
+  /// @param[in] str String to search for keywords
   /// @param[in] keywords List of keywords to search in text
   /// @return true if string contains word in list
   ///

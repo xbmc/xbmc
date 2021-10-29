@@ -231,7 +231,7 @@ inline bool ATTRIBUTE_HIDDEN ShowAndGetNewPassword(std::string& newPassword,
 ///   ret = ::kodi::gui::dialogs::Keyboard::ShowAndVerifyPassword(password, "Demo password call for PW 'kodi'", i, 0);
 ///   if (ret == 0)
 ///   {
-///     fprintf(stderr, "Password successfull confirmed after '%i' tries\n", i+1);
+///     fprintf(stderr, "Password successfully confirmed after '%i' tries\n", i+1);
 ///     break;
 ///   }
 ///   else if (ret < 0)

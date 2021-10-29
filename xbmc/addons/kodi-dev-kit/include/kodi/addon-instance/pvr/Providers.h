@@ -56,8 +56,8 @@ public:
   /// | **Provider name** | `std::string` | @ref PVRProvider::SetName "SetName" | @ref PVRProvider::GetName "GetName" | *required to set*
   /// | **Provider type** | @ref PVR_PROVIDER_TYPE | @ref PVRProvider::SetType "SetType" | @ref PVRProvider::GetType "GetType" | *optional*
   /// | **Icon path** | `std::string` | @ref PVRProvider::SetIconPath "SetIconPath" | @ref PVRProvider::GetIconPath "GetIconPath" | *optional*
-  /// | **Countries** | `std::vecotr<std::string>` | @ref PVRProvider::SetCountries "SetCountries" | @ref PVRProvider::GetCountries "GetCountries" | *optional*
-  /// | **Langauges** | `std::vecotr<std::string>` | @ref PVRProvider::SetLanguages "SetLanguages" | @ref PVRProvider::GetLanguages "GetLanguages" | *optional*
+  /// | **Countries** | `std::vector<std::string>` | @ref PVRProvider::SetCountries "SetCountries" | @ref PVRProvider::GetCountries "GetCountries" | *optional*
+  /// | **Languages** | `std::vector<std::string>` | @ref PVRProvider::SetLanguages "SetLanguages" | @ref PVRProvider::GetLanguages "GetLanguages" | *optional*
   ///
 
   /// @addtogroup cpp_kodi_addon_pvr_Defs_PVRProvider
