@@ -11,17 +11,8 @@
 #import <Cocoa/Cocoa.h>
 
 @interface OSXGLView : NSOpenGLView
-{
-  NSOpenGLContext* m_glcontext;
-  NSOpenGLPixelFormat* m_pixFmt;
-  NSTrackingArea* m_trackingArea;
-  BOOL pause;
-}
-
-@property(readonly, getter=getCurrentNSContext) NSOpenGLContext* context;
 
 - (id)initWithFrame:(NSRect)frameRect;
-- (void)dealloc;
 - (NSOpenGLContext*)getGLContext;
 
 @end

@@ -14,9 +14,4 @@ if(NOT SDL_FOUND)
                       WinSystemOSX.h)
 endif()
 
-if(OPENGL_FOUND)
-  list(APPEND SOURCES WinSystemOSXGL.mm)
-  list(APPEND HEADERS WinSystemOSXGL.h)
-endif()
-
 core_add_library(windowing_osx)

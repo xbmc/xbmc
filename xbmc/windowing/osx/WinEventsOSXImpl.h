@@ -10,15 +10,16 @@
 
 #include "windowing/osx/WinEventsOSX.h"
 
+#import <CoreGraphics/CoreGraphics.h>
 #import <Foundation/Foundation.h>
 
 @interface CWinEventsOSXImpl : NSObject
 
-- (instancetype)init;
 - (void)MessagePush:(XBMC_Event*)newEvent;
 - (size_t)GetQueueSize;
 - (bool)MessagePump;
 - (void)enableInputEvents;
 - (void)disableInputEvents;
+- (XBMC_Event)keyPressEvent:(CGEventRef*)event;
 
 @end
