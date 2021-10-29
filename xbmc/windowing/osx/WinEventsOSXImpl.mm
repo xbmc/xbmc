@@ -17,13 +17,15 @@
 #include "input/mouse/MouseStat.h"
 #include "messaging/ApplicationMessenger.h"
 #include "threads/CriticalSection.h"
-#include "threads/SingleLock.h"
+#include "utils/log.h"
 #include "windowing/osx/WinSystemOSX.h"
 
-#include <list>
 #include <memory>
+#include <mutex>
+#include <queue>
 
 #import <AppKit/AppKit.h>
+#import <Carbon/Carbon.h> // kvk_ANSI_ keycodes
 #import <CoreGraphics/CoreGraphics.h>
 #import <Foundation/Foundation.h>
 
@@ -31,8 +33,8 @@
 
 @implementation CWinEventsOSXImpl
 {
-  std::list<XBMC_Event> events;
-  CCriticalSection g_inputCond;
+  std::queue<XBMC_Event> events;
+  CCriticalSection m_inputlock;
   id mLocalMonitorId;
 }
 
@@ -49,8 +51,8 @@
 
 - (void)MessagePush:(XBMC_Event*)newEvent
 {
-  CSingleLock lock(g_inputCond);
-  events.push_back(*newEvent);
+  std::unique_lock<CCriticalSection> lock(m_inputlock);
+  events.emplace(*newEvent);
 }
 
 - (bool)MessagePump
@@ -66,11 +68,11 @@
     // deeper message loop and call the deeper MessagePump from there.
     XBMC_Event pumpEvent = {};
     {
-      CSingleLock lock(g_inputCond);
+      std::unique_lock<CCriticalSection> lock(m_inputlock);
       if (events.size() == 0)
         return ret;
       pumpEvent = events.front();
-      events.pop_front();
+      events.pop();
     }
     std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
     if (appPort)
@@ -81,7 +83,7 @@
 
 - (size_t)GetQueueSize
 {
-  CSingleLock lock(g_inputCond);
+  std::unique_lock<CCriticalSection> lock(m_inputlock);
   return events.size();
 }
 
@@ -89,19 +91,19 @@
 {
   switch (character)
   {
-    case 0x1c:
-    case 0xf702:
+    case kVK_ANSI_8:
+    case NSLeftArrowFunctionKey:
       return XBMCK_LEFT;
-    case 0x1d:
-    case 0xf703:
+    case kVK_ANSI_0:
+    case NSRightArrowFunctionKey:
       return XBMCK_RIGHT;
-    case 0x1e:
-    case 0xf700:
+    case kVK_ANSI_RightBracket:
+    case NSUpArrowFunctionKey:
       return XBMCK_UP;
-    case 0x1f:
-    case 0xf701:
+    case kVK_ANSI_O:
+    case NSDownArrowFunctionKey:
       return XBMCK_DOWN;
-    case 0x7f:
+    case NSDeleteCharacter:
       return XBMCK_BACKSPACE;
     default:
       return character;
@@ -127,35 +129,35 @@
   if (appleModifier & kCGEventFlagMaskCommand)
     xbmcModifier |= XBMCKMOD_LMETA;
 
-  return (XBMCMod)xbmcModifier;
+  return static_cast<XBMCMod>(xbmcModifier);
 }
 
 - (bool)ProcessOSXShortcuts:(XBMC_Event&)event
 {
-  bool cmd = !!(event.key.keysym.mod & (XBMCKMOD_LMETA | XBMCKMOD_RMETA));
+  const auto cmd = (event.key.keysym.mod & (XBMCKMOD_LMETA | XBMCKMOD_RMETA)) != 0;
   if (cmd && event.type == XBMC_KEYDOWN)
   {
     switch (event.key.keysym.sym)
     {
       case XBMCK_q: // CMD-q to quit
         if (!g_application.m_bStop)
-          KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
+          CServiceBroker::GetAppMessenger()->PostMsg(TMSG_QUIT);
         return true;
 
-      case XBMCK_CTRLF: // CMD-f to toggle fullscreen
-        KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_TOGGLEFULLSCREEN);
+      case XBMCK_CTRLF: // CMD-CTRL-f to toggle fullscreen
+        CServiceBroker::GetAppMessenger()->PostMsg(TMSG_TOGGLEFULLSCREEN);
         return true;
 
       case XBMCK_s: // CMD-s to take a screenshot
       {
         CAction* action = new CAction(ACTION_TAKE_SCREENSHOT);
-        KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(
-            TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(action));
+        CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+                                                   static_cast<void*>(action));
         return true;
       }
       case XBMCK_h: // CMD-h to hide (but we minimize for now)
       case XBMCK_m: // CMD-m to minimize
-        KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_MINIMIZE);
+        CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MINIMIZE);
         return true;
 
       default:
@@ -170,12 +172,19 @@
 {
   [self disableInputEvents]; // allow only one registration at a time
 
+  // clang-format off
   // Create an event tap. We are interested in mouse and keyboard events.
   NSEventMask eventMask =
-      NSEventMaskLeftMouseDown | NSEventMaskLeftMouseUp | NSEventMaskRightMouseDown |
-      NSEventMaskRightMouseUp | NSEventMaskLeftMouseDragged | NSEventMaskRightMouseDragged |
-      NSEventMaskOtherMouseDown | NSEventMaskOtherMouseUp | NSEventMaskOtherMouseDragged |
-      NSEventMaskMouseMoved | NSEventMaskScrollWheel | NSEventMaskKeyDown | NSEventMaskKeyUp;
+      NSEventMaskKeyDown | NSEventMaskKeyUp |
+      NSEventMaskLeftMouseDown | NSEventMaskLeftMouseUp |
+      NSEventMaskRightMouseDown | NSEventMaskRightMouseUp |
+      NSEventMaskOtherMouseDown | NSEventMaskOtherMouseUp |
+      NSEventMaskScrollWheel |
+      NSEventMaskLeftMouseDragged |
+      NSEventMaskRightMouseDragged |
+      NSEventMaskOtherMouseDragged |
+      NSEventMaskMouseMoved;
+  // clang-format on
 
   mLocalMonitorId = [NSEvent addLocalMonitorForEventsMatchingMask:eventMask
                                                           handler:^(NSEvent* event) {
@@ -187,7 +196,7 @@
 {
   // Disable the local Monitor
   if (mLocalMonitorId != nil)
-    [NSEvent removeMonitor:(id)mLocalMonitorId];
+    [NSEvent removeMonitor:mLocalMonitorId];
   mLocalMonitorId = nil;
 }
 
@@ -210,9 +219,6 @@
   NSRect frame = winSystem->GetWindowDimensions();
   location.y = frame.size.height - location.y;
 
-  UniChar unicodeString[10];
-  UniCharCount actualStringLength = 10;
-  CGKeyCode keycode;
   XBMC_Event newEvent = {};
 
   switch (type)
@@ -290,40 +296,15 @@
 
     // handle keyboard events and transform them into the xbmc event world
     case kCGEventKeyUp:
-      keycode = (CGKeyCode)CGEventGetIntegerValueField(event, kCGKeyboardEventKeycode);
-      CGEventKeyboardGetUnicodeString(event, sizeof(unicodeString) / sizeof(*unicodeString),
-                                      &actualStringLength, unicodeString);
-      if (actualStringLength > 0)
-        unicodeString[0] = [self OsxKey2XbmcKey:unicodeString[0]];
-      else
-        unicodeString[0] = [self OsxKey2XbmcKey:[nsevent.characters characterAtIndex:0]];
-
+      newEvent = [self keyPressEvent:&event];
       newEvent.type = XBMC_KEYUP;
-      newEvent.key.keysym.scancode = keycode;
-      newEvent.key.keysym.sym = (XBMCKey)unicodeString[0];
-      newEvent.key.keysym.unicode = unicodeString[0];
-      if (actualStringLength > 1)
-        newEvent.key.keysym.unicode |= (unicodeString[1] << 8);
-      newEvent.key.keysym.mod = [self OsxMod2XbmcMod:CGEventGetFlags(event)];
+
       [self MessagePush:&newEvent];
       passEvent = false;
       break;
     case kCGEventKeyDown:
-      keycode = (CGKeyCode)CGEventGetIntegerValueField(event, kCGKeyboardEventKeycode);
-      CGEventKeyboardGetUnicodeString(event, sizeof(unicodeString) / sizeof(*unicodeString),
-                                      &actualStringLength, unicodeString);
-      if (actualStringLength > 0)
-        unicodeString[0] = [self OsxKey2XbmcKey:unicodeString[0]];
-      else
-        unicodeString[0] = [self OsxKey2XbmcKey:[nsevent.characters characterAtIndex:0]];
-
+      newEvent = [self keyPressEvent:&event];
       newEvent.type = XBMC_KEYDOWN;
-      newEvent.key.keysym.scancode = keycode;
-      newEvent.key.keysym.sym = (XBMCKey)unicodeString[0];
-      newEvent.key.keysym.unicode = unicodeString[0];
-      if (actualStringLength > 1)
-        newEvent.key.keysym.unicode |= (unicodeString[1] << 8);
-      newEvent.key.keysym.mod = [self OsxMod2XbmcMod:CGEventGetFlags(event)];
 
       if (![self ProcessOSXShortcuts:newEvent])
         [self MessagePush:&newEvent];
@@ -338,6 +319,46 @@
     return nsevent;
   else
     return nullptr;
+}
+
+- (XBMC_Event)keyPressEvent:(CGEventRef*)event
+{
+  UniCharCount actualStringLength = 0;
+  // Get stringlength of event
+  CGEventKeyboardGetUnicodeString(*event, 0, &actualStringLength, nullptr);
+
+  // Create array with size of event string
+  UniChar unicodeString[actualStringLength];
+  memset(unicodeString, 0, sizeof(unicodeString));
+
+  auto keycode =
+      static_cast<CGKeyCode>(CGEventGetIntegerValueField(*event, kCGKeyboardEventKeycode));
+  CGEventKeyboardGetUnicodeString(*event, sizeof(unicodeString) / sizeof(*unicodeString),
+                                  &actualStringLength, unicodeString);
+
+  XBMC_Event newEvent = {};
+
+  // May be possible for actualStringLength > 1. Havent been able to replicate anything
+  // larger than 1, but keep in mind for any regressions
+  if (actualStringLength == 0)
+  {
+    return newEvent;
+  }
+  else if (actualStringLength > 1)
+  {
+    CLog::Log(LOGERROR, "CWinEventsOSXImpl::keyPressEvent - event string > 1 - size: {}",
+              static_cast<int>(actualStringLength));
+    return newEvent;
+  }
+
+  unicodeString[0] = [self OsxKey2XbmcKey:unicodeString[0]];
+
+  newEvent.key.keysym.scancode = keycode;
+  newEvent.key.keysym.sym = static_cast<XBMCKey>(unicodeString[0]);
+  newEvent.key.keysym.unicode = unicodeString[0];
+  newEvent.key.keysym.mod = [self OsxMod2XbmcMod:CGEventGetFlags(*event)];
+
+  return newEvent;
 }
 
 @end

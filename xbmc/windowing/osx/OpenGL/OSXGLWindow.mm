@@ -18,11 +18,11 @@
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#import "windowing/osx/OpenGL/OSXGLView.h"
 #include "windowing/osx/WinEventsOSX.h"
 #import "windowing/osx/WinSystemOSX.h"
 
 #include "platform/darwin/osx/CocoaInterface.h"
-#import "platform/darwin/osx/OSXGLView.h"
 
 //------------------------------------------------------------------------------------------
 @implementation OSXGLWindow
@@ -52,7 +52,7 @@
 - (BOOL)windowShouldClose:(id)sender
 {
   if (!g_application.m_bStop)
-    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_QUIT);
 
   return NO;
 }
@@ -96,20 +96,20 @@
   if (!m_resizeState)
   {
     NSRect rect = [self contentRectForFrameRect:self.frame];
+    int width = static_cast<int>(rect.size.width);
+    int height = static_cast<int>(rect.size.height);
 
     if (!CServiceBroker::GetWinSystem()->IsFullScreen())
     {
       RESOLUTION res_index = RES_DESKTOP;
-      if ((static_cast<int>(rect.size.width) ==
-           CDisplaySettings::GetInstance().GetResolutionInfo(res_index).iWidth) &&
-          (static_cast<int>(rect.size.height) ==
-           CDisplaySettings::GetInstance().GetResolutionInfo(res_index).iHeight))
+      if ((width == CDisplaySettings::GetInstance().GetResolutionInfo(res_index).iWidth) &&
+          (height == CDisplaySettings::GetInstance().GetResolutionInfo(res_index).iHeight))
         return;
     }
     XBMC_Event newEvent = {};
     newEvent.type = XBMC_VIDEORESIZE;
-    newEvent.resize.w = static_cast<int>(rect.size.width);
-    newEvent.resize.h = static_cast<int>(rect.size.height);
+    newEvent.resize.w = width;
+    newEvent.resize.h = height;
 
     // check for valid sizes cause in some cases
     // we are hit during fullscreen transition from osx
@@ -140,6 +140,9 @@
 - (void)windowWillEnterFullScreen:(NSNotification*)pNotification
 {
   CWinSystemOSX* winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
+  if (!winSystem)
+    return;
+
   // if osx is the issuer of the toggle
   // call XBMCs toggle function
   if (!winSystem->GetFullscreenWillToggle())
@@ -149,7 +152,7 @@
     // called from XBMCs gui thread
     winSystem->SetFullscreenWillToggle(true);
 
-    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_TOGGLEFULLSCREEN);
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_TOGGLEFULLSCREEN);
   }
   else
   {
@@ -163,6 +166,9 @@
 - (void)windowDidExitFullScreen:(NSNotification*)pNotification
 {
   auto winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
+  if (!winSystem)
+    return;
+
   // if osx is the issuer of the toggle
   // call XBMCs toggle function
   if (!winSystem->GetFullscreenWillToggle())
@@ -171,7 +177,7 @@
     // flag will be reset in SetFullscreen once its
     // called from XBMCs gui thread
     winSystem->SetFullscreenWillToggle(true);
-    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_TOGGLEFULLSCREEN);
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_TOGGLEFULLSCREEN);
   }
   else
   {
@@ -180,6 +186,17 @@
     // we don't need to do anything else
     winSystem->SetFullscreenWillToggle(false);
   }
+}
+
+- (NSApplicationPresentationOptions)window:(NSWindow*)window
+      willUseFullScreenPresentationOptions:(NSApplicationPresentationOptions)proposedOptions
+{
+  // customize our appearance when entering full screen:
+  // we don't want the dock to appear but we want the menubar to hide/show automatically
+  //
+  return (NSApplicationPresentationFullScreen | // support full screen for this window (required)
+          NSApplicationPresentationHideDock | // completely hide the dock
+          NSApplicationPresentationAutoHideMenuBar); // yes we want the menu bar to show/hide
 }
 
 - (void)windowDidMiniaturize:(NSNotification*)aNotification

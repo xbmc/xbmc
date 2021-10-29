@@ -21,77 +21,16 @@
 
 #import "platform/darwin/osx/storage/OSXStorageProvider.h"
 
+#import <Foundation/Foundation.h>
 #import <sys/param.h> /* for MAXPATHLEN */
 #import <unistd.h>
-
-// For some reason, Apple removed setAppleMenu from the headers in 10.4,
-// but the method still is there and works. To avoid warnings, we declare
-// it ourselves here.
-@interface NSApplication (Missing_Methods)
-- (void)setAppleMenu:(NSMenu*)menu;
-@end
-
-// Portions of CPS.h
-typedef struct CPSProcessSerNum
-{
-  UInt32 lo;
-  UInt32 hi;
-} CPSProcessSerNum;
-
-extern "C"
-{
-  extern OSErr CPSGetCurrentProcess(CPSProcessSerNum* psn);
-  extern OSErr CPSEnableForegroundOperation(
-      CPSProcessSerNum* psn, UInt32 _arg2, UInt32 _arg3, UInt32 _arg4, UInt32 _arg5);
-  extern OSErr CPSSetFrontProcess(CPSProcessSerNum* psn);
-}
 
 static int gArgc;
 static char** gArgv;
 static BOOL gCalledAppMainline = FALSE;
 
-static NSString* getApplicationName(void)
-{
-  NSString* appName = 0;
-
-  // Determine the application name
-  NSDictionary* dict = (NSDictionary*)CFBundleGetInfoDictionary(CFBundleGetMainBundle());
-  if (dict)
-    appName = [dict objectForKey:@"CFBundleName"];
-
-  if (![appName length])
-    appName = NSProcessInfo.processInfo.processName;
-
-  return appName;
-}
-static void setupApplicationMenu(void)
-{
-  // warning: this code is very odd
-  NSString* appName = getApplicationName();
-  NSMenu* appleMenu = [[NSMenu alloc] initWithTitle:@""];
-
-  // Add menu items
-  NSString* title = [@"About " stringByAppendingString:appName];
-  [appleMenu addItemWithTitle:title
-                       action:@selector(orderFrontStandardAboutPanel:)
-                keyEquivalent:@""];
-
-  [appleMenu addItem:[NSMenuItem separatorItem]];
-
-  title = [@"Quit " stringByAppendingString:appName];
-  [appleMenu addItemWithTitle:title action:@selector(terminate:) keyEquivalent:@"q"];
-
-  // Put menu into the menubar
-  NSMenuItem* menuItem = [[NSMenuItem alloc] initWithTitle:@"" action:nil keyEquivalent:@""];
-  [menuItem setSubmenu:appleMenu];
-  [NSApplication.sharedApplication.mainMenu addItem:menuItem];
-
-  // Tell the application object that this is now the application menu
-  [NSApplication.sharedApplication setAppleMenu:appleMenu];
-}
-
 // Create a window menu
-static void setupWindowMenu(void)
+static NSMenu* setupWindowMenu()
 {
   NSMenu* windowMenu = [[NSMenu alloc] initWithTitle:@"Window"];
 
@@ -107,42 +46,29 @@ static void setupWindowMenu(void)
   menuItem = [[NSMenuItem alloc] initWithTitle:@"Float on Top"
                                         action:@selector(floatOnTopToggle:)
                                  keyEquivalent:@"t"];
-  menuItem.keyEquivalentModifierMask = NSEventModifierFlagCommand | NSEventModifierFlagControl;
+  menuItem.keyEquivalentModifierMask = NSEventModifierFlagCommand;
   [windowMenu addItem:menuItem];
 
   // "Minimize" item
   menuItem = [[NSMenuItem alloc] initWithTitle:@"Minimize"
                                         action:@selector(performMiniaturize:)
                                  keyEquivalent:@"m"];
-  menuItem.keyEquivalentModifierMask = NSEventModifierFlagCommand | NSEventModifierFlagControl;
+  menuItem.keyEquivalentModifierMask = NSEventModifierFlagCommand;
   [windowMenu addItem:menuItem];
 
-  // Put menu into the menubar
-  NSMenuItem* windowMenuItem = [[NSMenuItem alloc] initWithTitle:@"Window"
-                                                          action:nil
-                                                   keyEquivalent:@""];
-  [windowMenuItem setSubmenu:windowMenu];
-  [NSApplication.sharedApplication.mainMenu addItem:windowMenuItem];
-
-  // Tell the application object that this is now the window menu
-  [NSApplication.sharedApplication setWindowsMenu:windowMenu];
+  return windowMenu;
 }
 
 // The main class of the application, the application's delegate
 @implementation XBMCDelegate
 
 // Set the working directory to the .app's parent directory
+//! @todo Whats this for, is it required?
 - (void)setupWorkingDirectory
 {
-  char parentdir[MAXPATHLEN];
-  CFURLRef url = CFBundleCopyBundleURL(CFBundleGetMainBundle());
-  CFURLRef url2 = CFURLCreateCopyDeletingLastPathComponent(0, url);
-  if (CFURLGetFileSystemRepresentation(url2, true, (UInt8*)parentdir, MAXPATHLEN))
-  {
-    assert(chdir(parentdir) == 0); /* chdir to the binary app's parent */
-  }
-  CFRelease(url);
-  CFRelease(url2);
+  auto parentPath = NSBundle.mainBundle.bundlePath.stringByDeletingLastPathComponent;
+  NSAssert([NSFileManager.defaultManager changeCurrentDirectoryPath:parentPath],
+           @"SetupWorkingDirectory Failed to cwd");
 }
 
 - (void)stopRunLoop
@@ -186,7 +112,7 @@ static void setupWindowMenu(void)
   struct rlimit rlim;
   rlim.rlim_cur = rlim.rlim_max = RLIM_INFINITY;
   if (setrlimit(RLIMIT_CORE, &rlim) == -1)
-    CLog::Log(LOGDEBUG, "Failed to set core size limit (%s)", strerror(errno));
+    CLog::Log(LOGDEBUG, "Failed to set core size limit ({})", strerror(errno));
 #endif
 
   setlocale(LC_NUMERIC, "C");
@@ -195,13 +121,6 @@ static void setupWindowMenu(void)
   appParamParser.Parse((const char**)gArgv, (int)gArgc);
 
   XBMC_Run(true, appParamParser);
-
-#ifdef _DEBUG
-  CServiceBroker::GetLogging().SetLogLevel(LOG_LEVEL_DEBUG);
-#else
-  //  CServiceBroker::GetLogging().SetLogLevel(LOG_LEVEL_NORMAL);
-  CServiceBroker::GetLogging().SetLogLevel(LOG_LEVEL_DEBUG);
-#endif
 
   std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
   if (appPort)
@@ -217,7 +136,41 @@ static void setupWindowMenu(void)
     occluded = false;
 
   CWinSystemOSX* winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
-  winSystem->SetOcclusionState(occluded);
+  if (winSystem)
+    winSystem->SetOcclusionState(occluded);
+}
+
+- (void)applicationWillFinishLaunching:(NSNotification*)notification
+{
+  NSMenu* menubar = [NSMenu new];
+  NSMenuItem* menuBarItem = [NSMenuItem new];
+  [menubar addItem:menuBarItem];
+  [NSApp setMainMenu:menubar];
+
+  // Main menu
+  NSMenu* appMenu = [NSMenu new];
+  NSMenuItem* quitMenuItem = [[NSMenuItem alloc] initWithTitle:@"Quit"
+                                                        action:@selector(terminate:)
+                                                 keyEquivalent:@"q"];
+  [appMenu addItem:quitMenuItem];
+  [menuBarItem setSubmenu:appMenu];
+
+  // Window Menu
+  NSMenuItem* windowMenuItem = [menubar addItemWithTitle:@"" action:nil keyEquivalent:@""];
+  NSMenu* windowMenu = [[NSMenu alloc] initWithTitle:@"Window"];
+  [menubar setSubmenu:windowMenu forItem:windowMenuItem];
+  NSMenuItem* fullscreenMenuItem = [[NSMenuItem alloc] initWithTitle:@"Full/Windowed Toggle"
+                                                              action:@selector(fullScreenToggle:)
+                                                       keyEquivalent:@"f"];
+  fullscreenMenuItem.keyEquivalentModifierMask =
+      NSEventModifierFlagCommand | NSEventModifierFlagControl;
+  [windowMenu addItem:fullscreenMenuItem];
+  [windowMenu addItemWithTitle:@"Float on Top"
+                        action:@selector(floatOnTopToggle:)
+                 keyEquivalent:@"t"];
+  [windowMenu addItemWithTitle:@"Minimize"
+                        action:@selector(performMiniaturize:)
+                 keyEquivalent:@"m"];
 }
 
 // Called after the internal event loop has started running.
@@ -247,7 +200,7 @@ static void setupWindowMenu(void)
   gCalledAppMainline = TRUE;
 
   //window.acceptsMouseMovedEvents = TRUE;
-
+  [NSApp activateIgnoringOtherApps:YES];
   // kick our mainloop into an extra thread
   [NSThread detachNewThreadSelector:@selector(mainLoopThread:) toTarget:self withObject:nil];
 }
@@ -293,6 +246,8 @@ static void setupWindowMenu(void)
  *
  * This message is ignored once the app's mainline has been called.
  */
+
+//! @Todo Transition to application: openURLs:
 - (BOOL)application:(NSApplication*)theApplication openFile:(NSString*)filename
 {
   const char* temparg;
@@ -307,11 +262,11 @@ static void setupWindowMenu(void)
   temparg = [filename UTF8String];
   arglen = strlen(temparg) + 1;
   arg = (char*)malloc(arglen);
-  if (arg == NULL)
+  if (arg == nullptr)
     return FALSE;
 
   newargv = (char**)realloc(gArgv, sizeof(char*) * (gArgc + 2));
-  if (newargv == NULL)
+  if (newargv == nullptr)
   {
     free(arg);
     return FALSE;
@@ -320,14 +275,13 @@ static void setupWindowMenu(void)
 
   strlcpy(arg, temparg, arglen);
   gArgv[gArgc++] = arg;
-  gArgv[gArgc] = NULL;
+  gArgv[gArgc] = nullptr;
 
   return TRUE;
 }
 
 - (void)deviceDidMountNotification:(NSNotification*)note
 {
-  // calling into c++ code, need to use autorelease pools
   @autoreleasepool
   {
     NSString* volumeLabel = [note.userInfo objectForKey:@"NSWorkspaceVolumeLocalizedNameKey"];
@@ -342,7 +296,6 @@ static void setupWindowMenu(void)
 
 - (void)deviceDidUnMountNotification:(NSNotification*)note
 {
-  // calling into c++ code, need to use autorelease pools
   @autoreleasepool
   {
     NSString* volumeLabel = [note.userInfo objectForKey:@"NSWorkspaceVolumeLocalizedNameKey"];
@@ -383,30 +336,24 @@ static void setupWindowMenu(void)
   }
 }
 
+- (NSMenu*)applicationDockMenu:(NSApplication*)sender
+{
+  return setupWindowMenu();
+}
+
 @end
 
 int main(int argc, char* argv[])
 {
   @autoreleasepool
   {
-    XBMCDelegate* xbmc_delegate;
-
-    // Block SIGPIPE
-    // SIGPIPE repeatably kills us, turn it off
-    {
-      sigset_t set;
-      sigemptyset(&set);
-      sigaddset(&set, SIGPIPE);
-      sigprocmask(SIG_BLOCK, &set, NULL);
-    }
-
     /* Copy the arguments into a global variable */
     /* This is passed if we are launched by double-clicking */
     if (argc >= 2 && strncmp(argv[1], "-psn", 4) == 0)
     {
       gArgv = (char**)malloc(sizeof(char*) * 2);
       gArgv[0] = argv[0];
-      gArgv[1] = NULL;
+      gArgv[1] = nullptr;
       gArgc = 1;
     }
     else
@@ -420,24 +367,17 @@ int main(int argc, char* argv[])
     // Ensure the application object is initialised
     [NSApplication sharedApplication];
 
-    CPSProcessSerNum PSN;
-    /* Tell the dock about us */
-    if (!CPSGetCurrentProcess(&PSN))
-      if (!CPSEnableForegroundOperation(&PSN, 0x03, 0x3C, 0x2C, 0x1103))
-        if (!CPSSetFrontProcess(&PSN))
-          [NSApplication sharedApplication];
+    // Make sure we call applicationWillTerminate on SIGTERM
+    [NSProcessInfo.processInfo disableSuddenTermination];
 
-    // Set up the menubars
-    [NSApplication.sharedApplication setMainMenu:[[NSMenu alloc] init]];
-    setupApplicationMenu();
-    setupWindowMenu();
+    // Set App Delegate
+    auto appDelegate = [XBMCDelegate new];
+    NSApp.delegate = appDelegate;
 
-    // Create XBMCDelegate and make it the app delegate
-    xbmc_delegate = [[XBMCDelegate alloc] init];
-    [NSApplication.sharedApplication setDelegate:xbmc_delegate];
-
+    // Set NSApp to show in dock
+    [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
     // Start the main event loop
-    [NSApplication.sharedApplication run];
+    [NSApp run];
 
     return 1;
   }

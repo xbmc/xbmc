@@ -20,6 +20,12 @@
 #include "system_gl.h"
 
 @implementation OSXGLView
+{
+  NSOpenGLContext* m_glcontext;
+  NSOpenGLPixelFormat* m_pixFmt;
+  NSTrackingArea* m_trackingArea;
+  BOOL pause;
+}
 
 - (id)initWithFrame:(NSRect)frameRect
 {
@@ -55,11 +61,9 @@
 
 - (void)drawRect:(NSRect)rect
 {
-  static BOOL firstRender = YES;
-  if (firstRender)
-  {
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
     [m_glcontext setView:self];
-    firstRender = NO;
 
     // clear screen on first render
     glClearColor(0, 0, 0, 0);
@@ -67,7 +71,7 @@
     glClearColor(0, 0, 0, 0);
 
     [m_glcontext update];
-  }
+  });
 }
 
 - (void)updateTrackingAreas
