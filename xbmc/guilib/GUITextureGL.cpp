@@ -87,12 +87,12 @@ void CGUITextureGL::Begin(UTILS::COLOR::Color color)
 
   if (hasAlpha)
   {
-    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_ONE);
-    glEnable(GL_BLEND);
+    gl::BlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_ONE);
+    gl::Enable(GL_BLEND);
   }
   else
   {
-    glDisable(GL_BLEND);
+    gl::Disable(GL_BLEND);
   }
   m_packedVertices.clear();
   m_idx.clear();
@@ -110,50 +110,53 @@ void CGUITextureGL::End()
     GLuint VertexVBO;
     GLuint IndexVBO;
 
-    glGenBuffers(1, &VertexVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VertexVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex)*m_packedVertices.size(), &m_packedVertices[0], GL_STATIC_DRAW);
+    gl::GenBuffers(1, &VertexVBO);
+    gl::BindBuffer(GL_ARRAY_BUFFER, VertexVBO);
+    gl::BufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex) * m_packedVertices.size(),
+                   &m_packedVertices[0], GL_STATIC_DRAW);
 
     if (uniColLoc >= 0)
     {
-      glUniform4f(uniColLoc,(m_col[0] / 255.0f), (m_col[1] / 255.0f), (m_col[2] / 255.0f), (m_col[3] / 255.0f));
+      gl::Uniform4f(uniColLoc, (m_col[0] / 255.0f), (m_col[1] / 255.0f), (m_col[2] / 255.0f),
+                    (m_col[3] / 255.0f));
     }
 
     if (m_diffuse.size())
     {
-      glVertexAttribPointer(tex1Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
-                            reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u2)));
-      glEnableVertexAttribArray(tex1Loc);
+      gl::VertexAttribPointer(tex1Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
+                              reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u2)));
+      gl::EnableVertexAttribArray(tex1Loc);
     }
 
-    glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex),
-                          reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, x)));
-    glEnableVertexAttribArray(posLoc);
-    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
-                          reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u1)));
-    glEnableVertexAttribArray(tex0Loc);
+    gl::VertexAttribPointer(posLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex),
+                            reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, x)));
+    gl::EnableVertexAttribArray(posLoc);
+    gl::VertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
+                            reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u1)));
+    gl::EnableVertexAttribArray(tex0Loc);
 
-    glGenBuffers(1, &IndexVBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IndexVBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ushort)*m_idx.size(), m_idx.data(), GL_STATIC_DRAW);
+    gl::GenBuffers(1, &IndexVBO);
+    gl::BindBuffer(GL_ELEMENT_ARRAY_BUFFER, IndexVBO);
+    gl::BufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ushort) * m_idx.size(), m_idx.data(),
+                   GL_STATIC_DRAW);
 
-    glDrawElements(GL_TRIANGLES, m_packedVertices.size()*6 / 4, GL_UNSIGNED_SHORT, 0);
+    gl::DrawElements(GL_TRIANGLES, m_packedVertices.size() * 6 / 4, GL_UNSIGNED_SHORT, 0);
 
     if (m_diffuse.size())
-      glDisableVertexAttribArray(tex1Loc);
+      gl::DisableVertexAttribArray(tex1Loc);
 
-    glDisableVertexAttribArray(posLoc);
-    glDisableVertexAttribArray(tex0Loc);
+    gl::DisableVertexAttribArray(posLoc);
+    gl::DisableVertexAttribArray(tex0Loc);
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glDeleteBuffers(1, &VertexVBO);
-    glDeleteBuffers(1, &IndexVBO);
+    gl::BindBuffer(GL_ARRAY_BUFFER, 0);
+    gl::BindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    gl::DeleteBuffers(1, &VertexVBO);
+    gl::DeleteBuffers(1, &IndexVBO);
   }
 
   if (m_diffuse.size())
-    glActiveTexture(GL_TEXTURE0);
-  glEnable(GL_BLEND);
+    gl::ActiveTexture(GL_TEXTURE0);
+  gl::Enable(GL_BLEND);
 
   m_renderSystem->DisableShader();
 }
@@ -262,8 +265,8 @@ void CGUITextureGL::DrawQuad(const CRect& rect,
     texture->BindToUnit(0);
   }
 
-  glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-  glEnable(GL_BLEND);          // Turn Blending On
+  gl::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  gl::Enable(GL_BLEND); // Turn Blending On
 
   VerifyGLState();
 
@@ -293,7 +296,7 @@ void CGUITextureGL::DrawQuad(const CRect& rect,
   col[2] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::B, color);
   col[3] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::A, color);
 
-  glUniform4f(uniColLoc, col[0] / 255.0f, col[1] / 255.0f, col[2] / 255.0f, col[3] / 255.0f);
+  gl::Uniform4f(uniColLoc, col[0] / 255.0f, col[1] / 255.0f, col[2] / 255.0f, col[3] / 255.0f);
 
   // bottom left
   vertex[0].x = rect.x1;
@@ -324,35 +327,35 @@ void CGUITextureGL::DrawQuad(const CRect& rect,
     vertex[2].v1 = vertex[3].v1 = coords.y2;
   }
 
-  glGenBuffers(1, &vertexVBO);
-  glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex)*4, &vertex[0], GL_STATIC_DRAW);
+  gl::GenBuffers(1, &vertexVBO);
+  gl::BindBuffer(GL_ARRAY_BUFFER, vertexVBO);
+  gl::BufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex) * 4, &vertex[0], GL_STATIC_DRAW);
 
-  glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex),
-                        reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, x)));
-  glEnableVertexAttribArray(posLoc);
+  gl::VertexAttribPointer(posLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex),
+                          reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, x)));
+  gl::EnableVertexAttribArray(posLoc);
 
   if (texture)
   {
-    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
-                          reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u1)));
-    glEnableVertexAttribArray(tex0Loc);
+    gl::VertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
+                            reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u1)));
+    gl::EnableVertexAttribArray(tex0Loc);
   }
 
-  glGenBuffers(1, &indexVBO);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte)*4, idx, GL_STATIC_DRAW);
+  gl::GenBuffers(1, &indexVBO);
+  gl::BindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
+  gl::BufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte) * 4, idx, GL_STATIC_DRAW);
 
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
+  gl::DrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
 
-  glDisableVertexAttribArray(posLoc);
+  gl::DisableVertexAttribArray(posLoc);
   if (texture)
-    glDisableVertexAttribArray(tex0Loc);
+    gl::DisableVertexAttribArray(tex0Loc);
 
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glDeleteBuffers(1, &vertexVBO);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-  glDeleteBuffers(1, &indexVBO);
+  gl::BindBuffer(GL_ARRAY_BUFFER, 0);
+  gl::DeleteBuffers(1, &vertexVBO);
+  gl::BindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  gl::DeleteBuffers(1, &indexVBO);
 
   renderSystem->DisableShader();
 }

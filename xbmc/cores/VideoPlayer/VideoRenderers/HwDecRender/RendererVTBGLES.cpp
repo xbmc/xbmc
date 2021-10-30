@@ -23,9 +23,10 @@
 #define WIN_SYSTEM_CLASS CWinSystemTVOS
 #endif
 
+#include "RenderingGL.hpp"
+
 #include <CoreVideo/CVBuffer.h>
 #include <CoreVideo/CVPixelBuffer.h>
-#include <OpenGLES/ES2/glext.h>
 
 CBaseRenderer* CRendererVTB::Create(CVideoBuffer *buffer)
 {
@@ -83,9 +84,9 @@ void CRendererVTB::ReleaseBuffer(int idx)
   CRenderBuffer &renderBuf = m_vtbBuffers[idx];
   if (buf.videoBuffer)
   {
-    if (renderBuf.m_fence && glIsSyncAPPLE(renderBuf.m_fence))
+    if (renderBuf.m_fence && gl::IsSyncAPPLE(renderBuf.m_fence))
     {
-      glDeleteSyncAPPLE(renderBuf.m_fence);
+      gl::DeleteSyncAPPLE(renderBuf.m_fence);
       renderBuf.m_fence = 0;
     }
     buf.videoBuffer->Release();
@@ -229,13 +230,13 @@ bool CRendererVTB::UploadTexture(int index)
 
   for (int p=0; p<2; p++)
   {
-    glBindTexture(m_textureTarget, planes[p].id);
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    gl::BindTexture(m_textureTarget, planes[p].id);
+    gl::TexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    gl::TexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    gl::TexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    gl::TexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-    glBindTexture(m_textureTarget, 0);
+    gl::BindTexture(m_textureTarget, 0);
     VerifyGLState();
   }
 
@@ -246,20 +247,20 @@ bool CRendererVTB::UploadTexture(int index)
 void CRendererVTB::AfterRenderHook(int idx)
 {
   CRenderBuffer &renderBuf = m_vtbBuffers[idx];
-  if (renderBuf.m_fence && glIsSyncAPPLE(renderBuf.m_fence))
+  if (renderBuf.m_fence && gl::IsSyncAPPLE(renderBuf.m_fence))
   {
-    glDeleteSyncAPPLE(renderBuf.m_fence);
+    gl::DeleteSyncAPPLE(renderBuf.m_fence);
   }
-  renderBuf.m_fence = glFenceSyncAPPLE(GL_SYNC_GPU_COMMANDS_COMPLETE_APPLE, 0);
+  renderBuf.m_fence = gl::FenceSyncAPPLE(GL_SYNC_GPU_COMMANDS_COMPLETE_APPLE, 0);
 }
 
 bool CRendererVTB::NeedBuffer(int idx)
 {
   CRenderBuffer &renderBuf = m_vtbBuffers[idx];
-  if (renderBuf.m_fence && glIsSyncAPPLE(renderBuf.m_fence))
+  if (renderBuf.m_fence && gl::IsSyncAPPLE(renderBuf.m_fence))
   {
     int syncState = GL_UNSIGNALED_APPLE;
-    glGetSyncivAPPLE(renderBuf.m_fence, GL_SYNC_STATUS_APPLE, 1, nullptr, &syncState);
+    gl::GetSyncivAPPLE(renderBuf.m_fence, GL_SYNC_STATUS_APPLE, 1, nullptr, &syncState);
     if (syncState != GL_SIGNALED_APPLE)
       return true;
   }

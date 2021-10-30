@@ -48,7 +48,7 @@ CGLTexture::~CGLTexture()
 
 void CGLTexture::CreateTextureObject()
 {
-  glGenTextures(1, (GLuint*) &m_texture);
+  gl::GenTextures(1, (GLuint*)&m_texture);
 }
 
 void CGLTexture::DestroyTextureObject()
@@ -72,7 +72,7 @@ void CGLTexture::LoadToGPU()
   }
 
   // Bind the texture object
-  glBindTexture(GL_TEXTURE_2D, m_texture);
+  gl::BindTexture(GL_TEXTURE_2D, m_texture);
 
   GLenum filter = (m_scalingMethod == TEXTURE_SCALING::NEAREST ? GL_NEAREST : GL_LINEAR);
 
@@ -84,26 +84,26 @@ void CGLTexture::LoadToGPU()
   if (IsMipmapped())
   {
     GLenum mipmapFilter = (m_scalingMethod == TEXTURE_SCALING::NEAREST ? GL_LINEAR_MIPMAP_NEAREST : GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, mipmapFilter);
+    gl::TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, mipmapFilter);
 
 #ifdef HAS_GL
     if (renderSystemGL)
     {
       // Lower LOD bias equals more sharpness, but less smooth animation
-      glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -0.5f);
+      gl::TexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -0.5f);
       if (!m_isOglVersion3orNewer)
-        glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+        gl::TexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
     }
 #endif
   }
   else
   {
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+    gl::TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
   }
 
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  gl::TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
+  gl::TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  gl::TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
   unsigned int maxSize = CServiceBroker::GetRenderSystem()->GetMaxTextureSize();
   if (m_textureHeight > maxSize)
@@ -120,7 +120,7 @@ void CGLTexture::LoadToGPU()
               m_textureWidth, maxSize);
 #if HAS_GL
     if (renderSystemGL)
-      glPixelStorei(GL_UNPACK_ROW_LENGTH, m_textureWidth);
+      gl::PixelStorei(GL_UNPACK_ROW_LENGTH, m_textureWidth);
 #endif
     m_textureWidth = maxSize;
   }
@@ -154,21 +154,21 @@ void CGLTexture::LoadToGPU()
 
     if ((m_format & XB_FMT_DXT_MASK) == 0)
     {
-      glTexImage2D(GL_TEXTURE_2D, 0, numcomponents, m_textureWidth, m_textureHeight, 0, format,
-                   GL_UNSIGNED_BYTE, m_pixels);
+      gl::TexImage2D(GL_TEXTURE_2D, 0, numcomponents, m_textureWidth, m_textureHeight, 0, format,
+                     GL_UNSIGNED_BYTE, m_pixels);
     }
     else
     {
-      glCompressedTexImage2D(GL_TEXTURE_2D, 0, format, m_textureWidth, m_textureHeight, 0,
-                             GetPitch() * GetRows(), m_pixels);
+      gl::CompressedTexImage2D(GL_TEXTURE_2D, 0, format, m_textureWidth, m_textureHeight, 0,
+                               GetPitch() * GetRows(), m_pixels);
     }
 
     if (IsMipmapped() && m_isOglVersion3orNewer)
     {
-      glGenerateMipmap(GL_TEXTURE_2D);
+      gl::GenerateMipmap(GL_TEXTURE_2D);
     }
 
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+    gl::PixelStorei(GL_UNPACK_ROW_LENGTH, 0);
   }
 #endif
 #ifdef HAS_GLES // GLES version
@@ -219,12 +219,12 @@ void CGLTexture::LoadToGPU()
         }
         break;
     }
-    glTexImage2D(GL_TEXTURE_2D, 0, internalformat, m_textureWidth, m_textureHeight, 0, pixelformat,
-                 GL_UNSIGNED_BYTE, m_pixels);
+    gl::TexImage2D(GL_TEXTURE_2D, 0, internalformat, m_textureWidth, m_textureHeight, 0,
+                   pixelformat, GL_UNSIGNED_BYTE, m_pixels);
 
     if (IsMipmapped())
     {
-      glGenerateMipmap(GL_TEXTURE_2D);
+      gl::GenerateMipmap(GL_TEXTURE_2D);
     }
   }
 #endif
@@ -241,7 +241,7 @@ void CGLTexture::LoadToGPU()
 
 void CGLTexture::BindToUnit(unsigned int unit)
 {
-  glActiveTexture(GL_TEXTURE0 + unit);
-  glBindTexture(GL_TEXTURE_2D, m_texture);
+  gl::ActiveTexture(GL_TEXTURE0 + unit);
+  gl::BindTexture(GL_TEXTURE_2D, m_texture);
 }
 

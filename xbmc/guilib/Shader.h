@@ -8,10 +8,10 @@
 
 #pragma once
 
+#include "RenderingGL.hpp"
+
 #include <string>
 #include <vector>
-
-#include "system_gl.h"
 
 namespace Shaders {
 

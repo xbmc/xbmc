@@ -42,37 +42,37 @@ void CGLShader::OnCompiledAndLinked()
   // This is called after CompileAndLink()
 
   // Variables passed directly to the Fragment shader
-  m_hTex0 = glGetUniformLocation(ProgramHandle(), "m_samp0");
-  m_hTex1 = glGetUniformLocation(ProgramHandle(), "m_samp1");
-  m_hUniCol = glGetUniformLocation(ProgramHandle(), "m_unicol");
+  m_hTex0 = gl::GetUniformLocation(ProgramHandle(), "m_samp0");
+  m_hTex1 = gl::GetUniformLocation(ProgramHandle(), "m_samp1");
+  m_hUniCol = gl::GetUniformLocation(ProgramHandle(), "m_unicol");
 
   // Variables passed directly to the Vertex shader
-  m_hProj = glGetUniformLocation(ProgramHandle(), "m_proj");
-  m_hModel = glGetUniformLocation(ProgramHandle(), "m_model");
+  m_hProj = gl::GetUniformLocation(ProgramHandle(), "m_proj");
+  m_hModel = gl::GetUniformLocation(ProgramHandle(), "m_model");
 
   // Vertex attributes
-  m_hPos = glGetAttribLocation(ProgramHandle(),  "m_attrpos");
-  m_hCol = glGetAttribLocation(ProgramHandle(),  "m_attrcol");
-  m_hCord0 = glGetAttribLocation(ProgramHandle(),  "m_attrcord0");
-  m_hCord1 = glGetAttribLocation(ProgramHandle(),  "m_attrcord1");
+  m_hPos = gl::GetAttribLocation(ProgramHandle(), "m_attrpos");
+  m_hCol = gl::GetAttribLocation(ProgramHandle(), "m_attrcol");
+  m_hCord0 = gl::GetAttribLocation(ProgramHandle(), "m_attrcord0");
+  m_hCord1 = gl::GetAttribLocation(ProgramHandle(), "m_attrcord1");
 
   // It's okay to do this only one time. Textures units never change.
-  glUseProgram(ProgramHandle());
-  glUniform1i(m_hTex0, 0);
-  glUniform1i(m_hTex1, 1);
-  glUniform4f(m_hUniCol, 1.0, 1.0, 1.0, 1.0);
+  gl::UseProgram(ProgramHandle());
+  gl::Uniform1i(m_hTex0, 0);
+  gl::Uniform1i(m_hTex1, 1);
+  gl::Uniform4f(m_hUniCol, 1.0, 1.0, 1.0, 1.0);
 
-  glUseProgram(0);
+  gl::UseProgram(0);
 }
 
 bool CGLShader::OnEnabled()
 {
-  // This is called after glUseProgram()
+  // This is called after gl::UseProgram()
 
-  const GLfloat *projMatrix = glMatrixProject.Get();
-  const GLfloat *modelMatrix = glMatrixModview.Get();
-  glUniformMatrix4fv(m_hProj,  1, GL_FALSE, projMatrix);
-  glUniformMatrix4fv(m_hModel, 1, GL_FALSE, modelMatrix);
+  const GLfloat* projMatrix = glMatrixProject.Get();
+  const GLfloat* modelMatrix = glMatrixModview.Get();
+  gl::UniformMatrix4fv(m_hProj, 1, GL_FALSE, projMatrix);
+  gl::UniformMatrix4fv(m_hModel, 1, GL_FALSE, modelMatrix);
 
   const TransformMatrix &guiMatrix = CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIMatrix();
   CRect viewPort; // absolute positions of corners

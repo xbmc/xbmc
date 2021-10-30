@@ -13,6 +13,7 @@
 
 #include "GLContextEGL.h"
 
+#include "RenderingGL.hpp"
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
@@ -22,8 +23,6 @@
 #include <mutex>
 
 #include <EGL/eglext.h>
-
-#include "system_gl.h"
 
 #define EGL_NO_CONFIG (EGLConfig)0
 
@@ -295,7 +294,7 @@ void CGLContextEGL::Destroy()
 {
   if (m_eglContext)
   {
-    glFinish();
+    gl::Finish();
     eglMakeCurrent(m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
     eglDestroyContext(m_eglDisplay, m_eglContext);
     m_eglContext = EGL_NO_CONTEXT;
@@ -320,7 +319,7 @@ void CGLContextEGL::Detach()
 {
   if (m_eglContext)
   {
-    glFinish();
+    gl::Finish();
     eglMakeCurrent(m_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
   }
   if (m_eglSurface)

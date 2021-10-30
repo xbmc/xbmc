@@ -10,8 +10,7 @@
 
 #include "BaseRenderBufferPool.h"
 #include "IRenderBuffer.h"
-
-#include "system_gl.h"
+#include "RenderingGL.hpp"
 
 namespace KODI
 {

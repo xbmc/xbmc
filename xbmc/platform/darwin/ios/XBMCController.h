@@ -6,6 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "RenderingGL.hpp"
 #include "input/XBMC_keysym.h"
 #include "windowing/XBMC_events.h"
 
@@ -13,7 +14,6 @@
 
 #import <AudioToolbox/AudioToolbox.h>
 #import <OpenGLES/EAGL.h>
-#import <OpenGLES/ES2/gl.h>
 #import <UIKit/UIKit.h>
 
 @class IOSEAGLView;

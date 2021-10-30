@@ -48,16 +48,16 @@ CRPRendererOpenGLES::CRPRendererOpenGLES(const CRenderSettings& renderSettings,
                                          std::shared_ptr<IRenderBufferPool> bufferPool)
   : CRPBaseRenderer(renderSettings, context, std::move(bufferPool))
 {
-  glGenBuffers(1, &m_mainIndexVBO);
-  glGenBuffers(1, &m_mainVertexVBO);
-  glGenBuffers(1, &m_blackbarsVertexVBO);
+  gl::GenBuffers(1, &m_mainIndexVBO);
+  gl::GenBuffers(1, &m_mainVertexVBO);
+  gl::GenBuffers(1, &m_blackbarsVertexVBO);
 }
 
 CRPRendererOpenGLES::~CRPRendererOpenGLES()
 {
-  glDeleteBuffers(1, &m_mainIndexVBO);
-  glDeleteBuffers(1, &m_mainVertexVBO);
-  glDeleteBuffers(1, &m_blackbarsVertexVBO);
+  gl::DeleteBuffers(1, &m_mainIndexVBO);
+  gl::DeleteBuffers(1, &m_mainVertexVBO);
+  gl::DeleteBuffers(1, &m_blackbarsVertexVBO);
 }
 
 void CRPRendererOpenGLES::RenderInternal(bool clear, uint8_t alpha)
@@ -72,18 +72,18 @@ void CRPRendererOpenGLES::RenderInternal(bool clear, uint8_t alpha)
 
   if (alpha < 255)
   {
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    gl::Enable(GL_BLEND);
+    gl::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   }
   else
   {
-    glDisable(GL_BLEND);
+    gl::Disable(GL_BLEND);
   }
 
   Render(alpha);
 
-  glEnable(GL_BLEND);
-  glFlush();
+  gl::Enable(GL_BLEND);
+  gl::Flush();
 }
 
 void CRPRendererOpenGLES::FlushInternal()
@@ -91,7 +91,7 @@ void CRPRendererOpenGLES::FlushInternal()
   if (!m_bConfigured)
     return;
 
-  glFinish();
+  gl::Finish();
 }
 
 bool CRPRendererOpenGLES::Supports(RENDERFEATURE feature) const
@@ -107,14 +107,14 @@ bool CRPRendererOpenGLES::SupportsScalingMethod(SCALINGMETHOD method)
 
 void CRPRendererOpenGLES::ClearBackBuffer()
 {
-  glClearColor(m_clearColour, m_clearColour, m_clearColour, 0.0f);
-  glClear(GL_COLOR_BUFFER_BIT);
-  glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+  gl::ClearColor(m_clearColour, m_clearColour, m_clearColour, 0.0f);
+  gl::Clear(GL_COLOR_BUFFER_BIT);
+  gl::ClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
 void CRPRendererOpenGLES::DrawBlackBars()
 {
-  glDisable(GL_BLEND);
+  gl::Disable(GL_BLEND);
 
   struct Svertex
   {
@@ -129,7 +129,8 @@ void CRPRendererOpenGLES::DrawBlackBars()
   GLint posLoc = m_context.GUIShaderGetPos();
   GLint uniCol = m_context.GUIShaderGetUniCol();
 
-  glUniform4f(uniCol, m_clearColour / 255.0f, m_clearColour / 255.0f, m_clearColour / 255.0f, 1.0f);
+  gl::Uniform4f(uniCol, m_clearColour / 255.0f, m_clearColour / 255.0f, m_clearColour / 255.0f,
+                1.0f);
 
   // top quad
   if (m_rotatedDestCoords[0].y > 0.0f)
@@ -215,16 +216,16 @@ void CRPRendererOpenGLES::DrawBlackBars()
     count += 6;
   }
 
-  glBindBuffer(GL_ARRAY_BUFFER, m_blackbarsVertexVBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(Svertex) * count, &vertices[0], GL_STATIC_DRAW);
+  gl::BindBuffer(GL_ARRAY_BUFFER, m_blackbarsVertexVBO);
+  gl::BufferData(GL_ARRAY_BUFFER, sizeof(Svertex) * count, &vertices[0], GL_STATIC_DRAW);
 
-  glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(Svertex), 0);
-  glEnableVertexAttribArray(posLoc);
+  gl::VertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(Svertex), 0);
+  gl::EnableVertexAttribArray(posLoc);
 
-  glDrawArrays(GL_TRIANGLES, 0, count);
+  gl::DrawArrays(GL_TRIANGLES, 0, count);
 
-  glDisableVertexAttribArray(posLoc);
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  gl::DisableVertexAttribArray(posLoc);
+  gl::BindBuffer(GL_ARRAY_BUFFER, 0);
 
   m_context.DisableGUIShader();
 }
@@ -245,15 +246,15 @@ void CRPRendererOpenGLES::Render(uint8_t alpha)
 
   const uint32_t color = (alpha << 24) | 0xFFFFFF;
 
-  glBindTexture(m_textureTarget, renderBuffer->TextureID());
+  gl::BindTexture(m_textureTarget, renderBuffer->TextureID());
 
   GLint filter = GL_NEAREST;
   if (GetRenderSettings().VideoSettings().GetScalingMethod() == SCALINGMETHOD::LINEAR)
     filter = GL_LINEAR;
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, filter);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, filter);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  gl::TexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, filter);
+  gl::TexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, filter);
+  gl::TexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  gl::TexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
   m_context.EnableGUIShader(GL_SHADER_METHOD::TEXTURE_NOALPHA);
 
@@ -289,29 +290,29 @@ void CRPRendererOpenGLES::Render(uint8_t alpha)
   vertex[1].u1 = vertex[2].u1 = rect.x2;
   vertex[2].v1 = vertex[3].v1 = rect.y2;
 
-  glBindBuffer(GL_ARRAY_BUFFER, m_mainVertexVBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex) * 4, &vertex[0], GL_STATIC_DRAW);
+  gl::BindBuffer(GL_ARRAY_BUFFER, m_mainVertexVBO);
+  gl::BufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex) * 4, &vertex[0], GL_STATIC_DRAW);
 
-  glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex),
-                        reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, x)));
-  glVertexAttribPointer(loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
-                        reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u1)));
+  gl::VertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex),
+                          reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, x)));
+  gl::VertexAttribPointer(loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
+                          reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u1)));
 
-  glEnableVertexAttribArray(vertLoc);
-  glEnableVertexAttribArray(loc);
+  gl::EnableVertexAttribArray(vertLoc);
+  gl::EnableVertexAttribArray(loc);
 
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_mainIndexVBO);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte) * 4, idx, GL_STATIC_DRAW);
+  gl::BindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_mainIndexVBO);
+  gl::BufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte) * 4, idx, GL_STATIC_DRAW);
 
-  glUniform4f(uniColLoc, (colour[0] / 255.0f), (colour[1] / 255.0f), (colour[2] / 255.0f),
-              (colour[3] / 255.0f));
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
+  gl::Uniform4f(uniColLoc, (colour[0] / 255.0f), (colour[1] / 255.0f), (colour[2] / 255.0f),
+                (colour[3] / 255.0f));
+  gl::DrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
 
-  glDisableVertexAttribArray(vertLoc);
-  glDisableVertexAttribArray(loc);
+  gl::DisableVertexAttribArray(vertLoc);
+  gl::DisableVertexAttribArray(loc);
 
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  gl::BindBuffer(GL_ARRAY_BUFFER, 0);
+  gl::BindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
   m_context.DisableGUIShader();
 }

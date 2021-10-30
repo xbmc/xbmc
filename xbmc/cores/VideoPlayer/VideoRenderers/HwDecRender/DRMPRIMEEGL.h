@@ -8,11 +8,10 @@
 
 #pragma once
 
+#include "RenderingGL.hpp"
 #include "cores/VideoPlayer/Buffers/VideoBufferDRMPRIME.h"
 #include "utils/EGLImage.h"
 #include "utils/Geometry.h"
-
-#include "system_gl.h"
 
 class CDRMPRIMETexture
 {

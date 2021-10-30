@@ -8,13 +8,8 @@
 
 #pragma once
 
-#ifdef HAS_GL
-#include <OpenGL/gl.h>
-#else
-#include <OpenGLES/ES2/gl.h>
-#endif
-
 #include "DVDVideoCodecFFmpeg.h"
+#include "RenderingGL.hpp"
 #include "cores/VideoPlayer/Buffers/VideoBuffer.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 

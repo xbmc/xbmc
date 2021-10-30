@@ -16,6 +16,7 @@
 
 #include "Application.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
+#include "RenderingGL.hpp"
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/Buffers/VideoBuffer.h"
 #include "cores/VideoPlayer/Interface/DemuxCrypto.h"
@@ -43,8 +44,6 @@
 #include <utility>
 #include <vector>
 
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
 #include <androidjni/ByteBuffer.h>
 #include <androidjni/MediaCodec.h>
 #include <androidjni/MediaCodecBufferInfo.h>
@@ -206,7 +205,7 @@ void CMediaCodecVideoBuffer::UpdateTexImage()
 {
   // updateTexImage will check and spew any prior gl errors,
   // clear them before we call updateTexImage.
-  glGetError();
+  gl::GetError();
 
   // this is key, after calling releaseOutputBuffer, we must
   // wait a little for MediaCodec to render to the surface.
@@ -1632,13 +1631,13 @@ void CDVDVideoCodecAndroidMediaCodec::InitSurfaceTexture(void)
     // localize GLuint so we do not spew gles includes in our header
     GLuint texture_id;
 
-    glGenTextures(1, &texture_id);
-    glBindTexture(  GL_TEXTURE_EXTERNAL_OES, texture_id);
-    glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glBindTexture(  GL_TEXTURE_EXTERNAL_OES, 0);
+    gl::GenTextures(1, &texture_id);
+    gl::BindTexture(GL_TEXTURE_EXTERNAL_OES, texture_id);
+    gl::TexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    gl::TexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    gl::TexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    gl::TexParameterf(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    gl::BindTexture(GL_TEXTURE_EXTERNAL_OES, 0);
     m_textureId = texture_id;
 
     m_surfaceTexture = std::shared_ptr<CJNISurfaceTexture>(new CJNISurfaceTexture(m_textureId));
@@ -1672,7 +1671,7 @@ void CDVDVideoCodecAndroidMediaCodec::ReleaseSurfaceTexture(void)
   if (m_textureId > 0)
   {
     GLuint texture_id = m_textureId;
-    glDeleteTextures(1, &texture_id);
+    gl::DeleteTextures(1, &texture_id);
     m_textureId = 0;
   }
 }

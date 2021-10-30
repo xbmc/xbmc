@@ -117,25 +117,25 @@ BaseYUV2RGBGLSLShader::~BaseYUV2RGBGLSLShader()
 
 void BaseYUV2RGBGLSLShader::OnCompiledAndLinked()
 {
-  m_hYTex = glGetUniformLocation(ProgramHandle(), "m_sampY");
-  m_hUTex = glGetUniformLocation(ProgramHandle(), "m_sampU");
-  m_hVTex = glGetUniformLocation(ProgramHandle(), "m_sampV");
-  m_hYuvMat = glGetUniformLocation(ProgramHandle(), "m_yuvmat");
-  m_hStretch = glGetUniformLocation(ProgramHandle(), "m_stretch");
-  m_hStep = glGetUniformLocation(ProgramHandle(), "m_step");
-  m_hVertex = glGetAttribLocation(ProgramHandle(), "m_attrpos");
-  m_hYcoord = glGetAttribLocation(ProgramHandle(), "m_attrcordY");
-  m_hUcoord = glGetAttribLocation(ProgramHandle(), "m_attrcordU");
-  m_hVcoord = glGetAttribLocation(ProgramHandle(), "m_attrcordV");
-  m_hProj = glGetUniformLocation(ProgramHandle(), "m_proj");
-  m_hModel = glGetUniformLocation(ProgramHandle(), "m_model");
-  m_hAlpha = glGetUniformLocation(ProgramHandle(), "m_alpha");
-  m_hPrimMat = glGetUniformLocation(ProgramHandle(), "m_primMat");
-  m_hGammaSrc = glGetUniformLocation(ProgramHandle(), "m_gammaSrc");
-  m_hGammaDstInv = glGetUniformLocation(ProgramHandle(), "m_gammaDstInv");
-  m_hCoefsDst = glGetUniformLocation(ProgramHandle(), "m_coefsDst");
-  m_hToneP1 = glGetUniformLocation(ProgramHandle(), "m_toneP1");
-  m_hLuminance = glGetUniformLocation(ProgramHandle(), "m_luminance");
+  m_hYTex = gl::GetUniformLocation(ProgramHandle(), "m_sampY");
+  m_hUTex = gl::GetUniformLocation(ProgramHandle(), "m_sampU");
+  m_hVTex = gl::GetUniformLocation(ProgramHandle(), "m_sampV");
+  m_hYuvMat = gl::GetUniformLocation(ProgramHandle(), "m_yuvmat");
+  m_hStretch = gl::GetUniformLocation(ProgramHandle(), "m_stretch");
+  m_hStep = gl::GetUniformLocation(ProgramHandle(), "m_step");
+  m_hVertex = gl::GetAttribLocation(ProgramHandle(), "m_attrpos");
+  m_hYcoord = gl::GetAttribLocation(ProgramHandle(), "m_attrcordY");
+  m_hUcoord = gl::GetAttribLocation(ProgramHandle(), "m_attrcordU");
+  m_hVcoord = gl::GetAttribLocation(ProgramHandle(), "m_attrcordV");
+  m_hProj = gl::GetUniformLocation(ProgramHandle(), "m_proj");
+  m_hModel = gl::GetUniformLocation(ProgramHandle(), "m_model");
+  m_hAlpha = gl::GetUniformLocation(ProgramHandle(), "m_alpha");
+  m_hPrimMat = gl::GetUniformLocation(ProgramHandle(), "m_primMat");
+  m_hGammaSrc = gl::GetUniformLocation(ProgramHandle(), "m_gammaSrc");
+  m_hGammaDstInv = gl::GetUniformLocation(ProgramHandle(), "m_gammaDstInv");
+  m_hCoefsDst = gl::GetUniformLocation(ProgramHandle(), "m_coefsDst");
+  m_hToneP1 = gl::GetUniformLocation(ProgramHandle(), "m_toneP1");
+  m_hLuminance = gl::GetUniformLocation(ProgramHandle(), "m_luminance");
   VerifyGLState();
 
   if (m_glslOutput)
@@ -145,28 +145,28 @@ void BaseYUV2RGBGLSLShader::OnCompiledAndLinked()
 bool BaseYUV2RGBGLSLShader::OnEnabled()
 {
   // set shader attributes once enabled
-  glUniform1i(m_hYTex, 0);
-  glUniform1i(m_hUTex, 1);
-  glUniform1i(m_hVTex, 2);
-  glUniform1f(m_hStretch, m_stretch);
-  glUniform2f(m_hStep, 1.0 / m_width, 1.0 / m_height);
+  gl::Uniform1i(m_hYTex, 0);
+  gl::Uniform1i(m_hUTex, 1);
+  gl::Uniform1i(m_hVTex, 2);
+  gl::Uniform1f(m_hStretch, m_stretch);
+  gl::Uniform2f(m_hStep, 1.0 / m_width, 1.0 / m_height);
 
   m_convMatrix.SetDestinationContrast(m_contrast)
       .SetDestinationBlack(m_black)
       .SetDestinationLimitedRange(!m_convertFullRange);
 
   Matrix4 yuvMat = m_convMatrix.GetYuvMat();
-  glUniformMatrix4fv(m_hYuvMat, 1, GL_FALSE, reinterpret_cast<GLfloat*>(yuvMat.ToRaw()));
-  glUniformMatrix4fv(m_hProj, 1, GL_FALSE, m_proj);
-  glUniformMatrix4fv(m_hModel, 1, GL_FALSE, m_model);
-  glUniform1f(m_hAlpha, m_alpha);
+  gl::UniformMatrix4fv(m_hYuvMat, 1, GL_FALSE, reinterpret_cast<GLfloat*>(yuvMat.ToRaw()));
+  gl::UniformMatrix4fv(m_hProj, 1, GL_FALSE, m_proj);
+  gl::UniformMatrix4fv(m_hModel, 1, GL_FALSE, m_model);
+  gl::Uniform1f(m_hAlpha, m_alpha);
 
   if (m_colorConversion)
   {
     Matrix3 primMat = m_convMatrix.GetPrimMat();
-    glUniformMatrix3fv(m_hPrimMat, 1, GL_FALSE, reinterpret_cast<GLfloat*>(primMat.ToRaw()));
-    glUniform1f(m_hGammaSrc, m_convMatrix.GetGammaSrc());
-    glUniform1f(m_hGammaDstInv, 1 / m_convMatrix.GetGammaDst());
+    gl::UniformMatrix3fv(m_hPrimMat, 1, GL_FALSE, reinterpret_cast<GLfloat*>(primMat.ToRaw()));
+    gl::Uniform1f(m_hGammaSrc, m_convMatrix.GetGammaSrc());
+    gl::Uniform1f(m_hGammaDstInv, 1 / m_convMatrix.GetGammaDst());
   }
 
   if (m_toneMapping)
@@ -186,20 +186,20 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
       param *= m_toneMappingParam;
 
       Matrix3x1 coefs = m_convMatrix.GetRGBYuvCoefs(AVColorSpace::AVCOL_SPC_BT709);
-      glUniform3f(m_hCoefsDst, coefs[0], coefs[1], coefs[2]);
-      glUniform1f(m_hToneP1, param);
+      gl::Uniform3f(m_hCoefsDst, coefs[0], coefs[1], coefs[2]);
+      gl::Uniform1f(m_hToneP1, param);
     }
     else if (m_toneMappingMethod == VS_TONEMAPMETHOD_ACES)
     {
-      glUniform1f(m_hLuminance, GetLuminanceValue());
-      glUniform1f(m_hToneP1, m_toneMappingParam);
+      gl::Uniform1f(m_hLuminance, GetLuminanceValue());
+      gl::Uniform1f(m_hToneP1, m_toneMappingParam);
     }
     else if (m_toneMappingMethod == VS_TONEMAPMETHOD_HABLE)
     {
       float lumin = GetLuminanceValue();
       float param = (10000.0f / lumin) * (2.0f / m_toneMappingParam);
-      glUniform1f(m_hLuminance, lumin);
-      glUniform1f(m_hToneP1, param);
+      gl::Uniform1f(m_hLuminance, lumin);
+      gl::Uniform1f(m_hToneP1, param);
     }
   }
 
@@ -345,14 +345,14 @@ YUV2RGBFilterShader4::YUV2RGBFilterShader4(bool rect,
 YUV2RGBFilterShader4::~YUV2RGBFilterShader4()
 {
   if (m_kernelTex)
-    glDeleteTextures(1, &m_kernelTex);
+    gl::DeleteTextures(1, &m_kernelTex);
   m_kernelTex = 0;
 }
 
 void YUV2RGBFilterShader4::OnCompiledAndLinked()
 {
   BaseYUV2RGBGLSLShader::OnCompiledAndLinked();
-  m_hKernTex = glGetUniformLocation(ProgramHandle(), "m_kernelTex");
+  m_hKernTex = gl::GetUniformLocation(ProgramHandle(), "m_kernelTex");
 
   if (m_scaling != VS_SCALINGMETHOD_LANCZOS3_FAST && m_scaling != VS_SCALINGMETHOD_SPLINE36_FAST)
   {
@@ -365,30 +365,30 @@ void YUV2RGBFilterShader4::OnCompiledAndLinked()
 
   if (m_kernelTex)
   {
-    glDeleteTextures(1, &m_kernelTex);
+    gl::DeleteTextures(1, &m_kernelTex);
     m_kernelTex = 0;
   }
-  glGenTextures(1, &m_kernelTex);
+  gl::GenTextures(1, &m_kernelTex);
 
   //make a kernel texture on GL_TEXTURE2 and set clamping and interpolation
   //TEXTARGET is set to GL_TEXTURE_1D or GL_TEXTURE_2D
-  glActiveTexture(GL_TEXTURE3);
-  glBindTexture(GL_TEXTURE_1D, m_kernelTex);
-  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  gl::ActiveTexture(GL_TEXTURE3);
+  gl::BindTexture(GL_TEXTURE_1D, m_kernelTex);
+  gl::TexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  gl::TexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  gl::TexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 
   GLvoid* data = (GLvoid*)kernel.GetFloatPixels();
-  glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA32F, kernel.GetSize(), 0, GL_RGBA, GL_FLOAT, data);
-  glActiveTexture(GL_TEXTURE0);
+  gl::TexImage1D(GL_TEXTURE_1D, 0, GL_RGBA32F, kernel.GetSize(), 0, GL_RGBA, GL_FLOAT, data);
+  gl::ActiveTexture(GL_TEXTURE0);
   VerifyGLState();
 }
 
 bool YUV2RGBFilterShader4::OnEnabled()
 {
-  glActiveTexture(GL_TEXTURE3);
-  glBindTexture(GL_TEXTURE_1D, m_kernelTex);
-  glUniform1i(m_hKernTex, 3);
+  gl::ActiveTexture(GL_TEXTURE3);
+  gl::BindTexture(GL_TEXTURE_1D, m_kernelTex);
+  gl::Uniform1i(m_hKernTex, 3);
 
   return BaseYUV2RGBGLSLShader::OnEnabled();
 }

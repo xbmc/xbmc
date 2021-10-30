@@ -9,11 +9,10 @@
 #pragma once
 
 #include "GUIFontTTF.h"
+#include "RenderingGL.hpp"
 
 #include <string>
 #include <vector>
-
-#include "system_gl.h"
 
 class CGUIFontTTFGL : public CGUIFontTTF
 {

@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "system_gl.h"
+#include "RenderingGL.hpp"
 
 //
 // CFrameBufferObject
@@ -26,7 +26,7 @@
 //     <normal GL rendering calls>
 //     fbo->EndRender();
 //     bind and use texture anywhere
-//     glBindTexture(GL_TEXTURE_2D, fbo->Texture());
+//     gl::BindTexture(GL_TEXTURE_2D, fbo->Texture());
 //
 
 class CFrameBufferObject

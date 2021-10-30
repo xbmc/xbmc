@@ -9,6 +9,7 @@
 #pragma once
 
 #include "RPBaseRenderer.h"
+#include "RenderingGL.hpp"
 #include "cores/GameSettings.h"
 #include "cores/RetroPlayer/buffers/BaseRenderBufferPool.h"
 #include "cores/RetroPlayer/buffers/video/RenderBufferSysMem.h"
@@ -17,8 +18,6 @@
 #include <atomic>
 #include <stdint.h>
 #include <vector>
-
-#include "system_gl.h"
 
 namespace KODI
 {
@@ -64,7 +63,7 @@ protected:
   /*!
    * \brief Draw black bars around the video quad
    *
-   * This is more efficient than glClear() since it only sets pixels to
+   * This is more efficient than gl::Clear() since it only sets pixels to
    * black that aren't going to be overwritten by the game.
    */
   void DrawBlackBars();

@@ -88,7 +88,7 @@ bool CGUIFontTTFGL::FirstBegin()
 
   if (m_textureStatus == TEXTURE_REALLOCATED)
   {
-    if (glIsTexture(m_nTexture))
+    if (gl::IsTexture(m_nTexture))
       CServiceBroker::GetGUI()->GetTextureManager().ReleaseHwTexture(m_nTexture);
     m_textureStatus = TEXTURE_VOID;
   }
@@ -96,18 +96,18 @@ bool CGUIFontTTFGL::FirstBegin()
   if (m_textureStatus == TEXTURE_VOID)
   {
     // Have OpenGL generate a texture object handle for us
-    glGenTextures(1, static_cast<GLuint*>(&m_nTexture));
+    gl::GenTextures(1, static_cast<GLuint*>(&m_nTexture));
 
     // Bind the texture object
-    glBindTexture(GL_TEXTURE_2D, m_nTexture);
+    gl::BindTexture(GL_TEXTURE_2D, m_nTexture);
 
     // Set the texture's stretching properties
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    gl::TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    gl::TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     // Set the texture image -- THIS WORKS, so the pixels must be wrong.
-    glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_texture->GetWidth(), m_texture->GetHeight(), 0,
-                 pixformat, GL_UNSIGNED_BYTE, 0);
+    gl::TexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_texture->GetWidth(), m_texture->GetHeight(),
+                   0, pixformat, GL_UNSIGNED_BYTE, 0);
 
     VerifyGLState();
     m_textureStatus = TEXTURE_UPDATED;
@@ -115,20 +115,20 @@ bool CGUIFontTTFGL::FirstBegin()
 
   if (m_textureStatus == TEXTURE_UPDATED)
   {
-    glBindTexture(GL_TEXTURE_2D, m_nTexture);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, m_updateY1, m_texture->GetWidth(), m_updateY2 - m_updateY1,
-                    pixformat, GL_UNSIGNED_BYTE,
-                    m_texture->GetPixels() + m_updateY1 * m_texture->GetPitch());
+    gl::BindTexture(GL_TEXTURE_2D, m_nTexture);
+    gl::TexSubImage2D(GL_TEXTURE_2D, 0, 0, m_updateY1, m_texture->GetWidth(),
+                      m_updateY2 - m_updateY1, pixformat, GL_UNSIGNED_BYTE,
+                      m_texture->GetPixels() + m_updateY1 * m_texture->GetPitch());
 
     m_updateY1 = m_updateY2 = 0;
     m_textureStatus = TEXTURE_READY;
   }
 
   // Turn Blending On
-  glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_ONE);
-  glEnable(GL_BLEND);
-  glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, m_nTexture);
+  gl::BlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_ONE);
+  gl::Enable(GL_BLEND);
+  gl::ActiveTexture(GL_TEXTURE0);
+  gl::BindTexture(GL_TEXTURE_2D, m_nTexture);
 
   return true;
 }
@@ -161,9 +161,9 @@ void CGUIFontTTFGL::LastEnd()
     CreateStaticVertexBuffers();
 
     // Enable the attributes used by this shader
-    glEnableVertexAttribArray(posLoc);
-    glEnableVertexAttribArray(colLoc);
-    glEnableVertexAttribArray(tex0Loc);
+    gl::EnableVertexAttribArray(posLoc);
+    gl::EnableVertexAttribArray(colLoc);
+    gl::EnableVertexAttribArray(tex0Loc);
 
     if (!m_vertex.empty())
     {
@@ -185,22 +185,22 @@ void CGUIFontTTFGL::LastEnd()
 
       GLuint VertexVBO;
 
-      glGenBuffers(1, &VertexVBO);
-      glBindBuffer(GL_ARRAY_BUFFER, VertexVBO);
-      glBufferData(GL_ARRAY_BUFFER, sizeof(SVertex) * vecVertices.size(), &vecVertices[0],
-                   GL_STATIC_DRAW);
+      gl::GenBuffers(1, &VertexVBO);
+      gl::BindBuffer(GL_ARRAY_BUFFER, VertexVBO);
+      gl::BufferData(GL_ARRAY_BUFFER, sizeof(SVertex) * vecVertices.size(), &vecVertices[0],
+                     GL_STATIC_DRAW);
 
-      glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(SVertex),
-                            reinterpret_cast<const GLvoid*>(offsetof(SVertex, x)));
-      glVertexAttribPointer(colLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex),
-                            reinterpret_cast<const GLvoid*>(offsetof(SVertex, r)));
-      glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, GL_FALSE, sizeof(SVertex),
-                            reinterpret_cast<const GLvoid*>(offsetof(SVertex, u)));
+      gl::VertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(SVertex),
+                              reinterpret_cast<const GLvoid*>(offsetof(SVertex, x)));
+      gl::VertexAttribPointer(colLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex),
+                              reinterpret_cast<const GLvoid*>(offsetof(SVertex, r)));
+      gl::VertexAttribPointer(tex0Loc, 2, GL_FLOAT, GL_FALSE, sizeof(SVertex),
+                              reinterpret_cast<const GLvoid*>(offsetof(SVertex, u)));
 
-      glDrawArrays(GL_TRIANGLES, 0, vecVertices.size());
+      gl::DrawArrays(GL_TRIANGLES, 0, vecVertices.size());
 
-      glBindBuffer(GL_ARRAY_BUFFER, 0);
-      glDeleteBuffers(1, &VertexVBO);
+      gl::BindBuffer(GL_ARRAY_BUFFER, 0);
+      gl::DeleteBuffers(1, &VertexVBO);
     }
   }
 #endif
@@ -220,9 +220,9 @@ void CGUIFontTTFGL::LastEnd()
     CreateStaticVertexBuffers();
 
     // Enable the attributes used by this shader
-    glEnableVertexAttribArray(posLoc);
-    glEnableVertexAttribArray(colLoc);
-    glEnableVertexAttribArray(tex0Loc);
+    gl::EnableVertexAttribArray(posLoc);
+    gl::EnableVertexAttribArray(colLoc);
+    gl::EnableVertexAttribArray(tex0Loc);
 
     if (!m_vertex.empty())
     {
@@ -243,14 +243,14 @@ void CGUIFontTTFGL::LastEnd()
 
       vertices = &vecVertices[0];
 
-      glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(SVertex),
-                            reinterpret_cast<char*>(vertices) + offsetof(SVertex, x));
-      glVertexAttribPointer(colLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex),
-                            reinterpret_cast<char*>(vertices) + offsetof(SVertex, r));
-      glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, GL_FALSE, sizeof(SVertex),
-                            reinterpret_cast<char*>(vertices) + offsetof(SVertex, u));
+      gl::VertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(SVertex),
+                              reinterpret_cast<char*>(vertices) + offsetof(SVertex, x));
+      gl::VertexAttribPointer(colLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex),
+                              reinterpret_cast<char*>(vertices) + offsetof(SVertex, r));
+      gl::VertexAttribPointer(tex0Loc, 2, GL_FLOAT, GL_FALSE, sizeof(SVertex),
+                              reinterpret_cast<char*>(vertices) + offsetof(SVertex, u));
 
-      glDrawArrays(GL_TRIANGLES, 0, vecVertices.size());
+      gl::DrawArrays(GL_TRIANGLES, 0, vecVertices.size());
     }
   }
 #endif
@@ -260,7 +260,7 @@ void CGUIFontTTFGL::LastEnd()
     // Deal with the vertices that can be hardware clipped and therefore translated
 
     // Bind our pre-calculated array to GL_ELEMENT_ARRAY_BUFFER
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementArrayHandle);
+    gl::BindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementArrayHandle);
     // Store current scissor
     CGraphicContext& context = winSystem->GetGfxContext();
     CRect scissor = context.StereoCorrection(context.GetScissors());
@@ -288,10 +288,10 @@ void CGUIFontTTFGL::LastEnd()
       glMatrixModview.Push();
       glMatrixModview.Get().Translatef(m_vertexTrans[i].m_translateX, m_vertexTrans[i].m_translateY,
                                        m_vertexTrans[i].m_translateZ);
-      glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glMatrixModview.Get());
+      gl::UniformMatrix4fv(modelLoc, 1, GL_FALSE, glMatrixModview.Get());
 
       // Bind the buffer to the OpenGL context's GL_ARRAY_BUFFER binding point
-      glBindBuffer(GL_ARRAY_BUFFER, m_vertexTrans[i].m_vertexBuffer->bufferHandle);
+      gl::BindBuffer(GL_ARRAY_BUFFER, m_vertexTrans[i].m_vertexBuffer->bufferHandle);
 
       // Do the actual drawing operation, split into groups of characters no
       // larger than the pre-determined size of the element array
@@ -303,17 +303,17 @@ void CGUIFontTTFGL::LastEnd()
 
         // Set up the offsets of the various vertex attributes within the buffer
         // object bound to GL_ARRAY_BUFFER
-        glVertexAttribPointer(
+        gl::VertexAttribPointer(
             posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(SVertex),
             reinterpret_cast<GLvoid*>(character * sizeof(SVertex) * 4 + offsetof(SVertex, x)));
-        glVertexAttribPointer(
+        gl::VertexAttribPointer(
             colLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex),
             reinterpret_cast<GLvoid*>(character * sizeof(SVertex) * 4 + offsetof(SVertex, r)));
-        glVertexAttribPointer(
+        gl::VertexAttribPointer(
             tex0Loc, 2, GL_FLOAT, GL_FALSE, sizeof(SVertex),
             reinterpret_cast<GLvoid*>(character * sizeof(SVertex) * 4 + offsetof(SVertex, u)));
 
-        glDrawElements(GL_TRIANGLES, 6 * count, GL_UNSIGNED_SHORT, 0);
+        gl::DrawElements(GL_TRIANGLES, 6 * count, GL_UNSIGNED_SHORT, 0);
       }
 
       glMatrixModview.Pop();
@@ -321,16 +321,16 @@ void CGUIFontTTFGL::LastEnd()
     // Restore the original scissor rectangle
     renderSystem->SetScissors(scissor);
     // Restore the original model view matrix
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glMatrixModview.Get());
+    gl::UniformMatrix4fv(modelLoc, 1, GL_FALSE, glMatrixModview.Get());
     // Unbind GL_ARRAY_BUFFER and GL_ELEMENT_ARRAY_BUFFER
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    gl::BindBuffer(GL_ARRAY_BUFFER, 0);
+    gl::BindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
   }
 
   // Disable the attributes used by this shader
-  glDisableVertexAttribArray(posLoc);
-  glDisableVertexAttribArray(colLoc);
-  glDisableVertexAttribArray(tex0Loc);
+  gl::DisableVertexAttribArray(posLoc);
+  gl::DisableVertexAttribArray(colLoc);
+  gl::DisableVertexAttribArray(tex0Loc);
 
 #ifdef HAS_GL
   if (renderSystemGL)
@@ -351,16 +351,16 @@ CVertexBuffer CGUIFontTTFGL::CreateVertexBuffer(const std::vector<SVertex>& vert
   if (!vertices.empty())
   {
     // Generate a unique buffer object name and put it in bufferHandle
-    glGenBuffers(1, &bufferHandle);
+    gl::GenBuffers(1, &bufferHandle);
     // Bind the buffer to the OpenGL context's GL_ARRAY_BUFFER binding point
-    glBindBuffer(GL_ARRAY_BUFFER, bufferHandle);
+    gl::BindBuffer(GL_ARRAY_BUFFER, bufferHandle);
     // Create a data store for the buffer object bound to the GL_ARRAY_BUFFER
     // binding point (i.e. our buffer object) and initialise it from the
     // specified client-side pointer
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(SVertex), vertices.data(),
-                 GL_STATIC_DRAW);
+    gl::BufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(SVertex), vertices.data(),
+                   GL_STATIC_DRAW);
     // Unbind GL_ARRAY_BUFFER
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    gl::BindBuffer(GL_ARRAY_BUFFER, 0);
   }
 
   return CVertexBuffer(bufferHandle, vertices.size() / 4, this);
@@ -371,7 +371,7 @@ void CGUIFontTTFGL::DestroyVertexBuffer(CVertexBuffer& buffer) const
   if (buffer.bufferHandle != 0)
   {
     // Release the buffer name for reuse
-    glDeleteBuffers(1, static_cast<GLuint*>(&buffer.bufferHandle));
+    gl::DeleteBuffers(1, static_cast<GLuint*>(&buffer.bufferHandle));
     buffer.bufferHandle = 0;
   }
 }
@@ -471,7 +471,7 @@ void CGUIFontTTFGL::DeleteHardwareTexture()
 {
   if (m_textureStatus != TEXTURE_VOID)
   {
-    if (glIsTexture(m_nTexture))
+    if (gl::IsTexture(m_nTexture))
       CServiceBroker::GetGUI()->GetTextureManager().ReleaseHwTexture(m_nTexture);
 
     m_textureStatus = TEXTURE_VOID;
@@ -485,8 +485,8 @@ void CGUIFontTTFGL::CreateStaticVertexBuffers(void)
     return;
 
   // Bind a new buffer to the OpenGL context's GL_ELEMENT_ARRAY_BUFFER binding point
-  glGenBuffers(1, &m_elementArrayHandle);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementArrayHandle);
+  gl::GenBuffers(1, &m_elementArrayHandle);
+  gl::BindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementArrayHandle);
 
   // Create an array holding the mesh indices to convert quads to triangles
   GLushort index[ELEMENT_ARRAY_MAX_CHAR_INDEX][6];
@@ -500,8 +500,8 @@ void CGUIFontTTFGL::CreateStaticVertexBuffers(void)
     index[i][5] = 4 * i + 2;
   }
 
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof index, index, GL_STATIC_DRAW);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  gl::BufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof index, index, GL_STATIC_DRAW);
+  gl::BindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
   m_staticVertexBufferCreated = true;
 }
 
@@ -510,7 +510,7 @@ void CGUIFontTTFGL::DestroyStaticVertexBuffers(void)
   if (!m_staticVertexBufferCreated)
     return;
 
-  glDeleteBuffers(1, &m_elementArrayHandle);
+  gl::DeleteBuffers(1, &m_elementArrayHandle);
   m_staticVertexBufferCreated = false;
 }
 

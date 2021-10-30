@@ -88,7 +88,8 @@ bool CRendererVAAPIGL::Configure(const VideoPicture& picture, float fps, unsigne
     interop.textureTarget = GL_TEXTURE_2D;
     interop.eglCreateImageKHR = (PFNEGLCREATEIMAGEKHRPROC)eglGetProcAddress("eglCreateImageKHR");
     interop.eglDestroyImageKHR = (PFNEGLDESTROYIMAGEKHRPROC)eglGetProcAddress("eglDestroyImageKHR");
-    interop.glEGLImageTargetTexture2DOES = (PFNGLEGLIMAGETARGETTEXTURE2DOESPROC)eglGetProcAddress("glEGLImageTargetTexture2DOES");
+    interop.glEGLImageTargetTexture2DOES =
+        (PFNGLEGLIMAGETARGETTEXTURE2DOESPROC)eglGetProcAddress("glEGLImageTargetTexture2DOES");
     interop.eglDisplay = CRendererVAAPIGL::m_pWinSystem->GetEGLDisplay();
 
     bool useVaapi2 = VAAPI::CVaapi2Texture::TestInteropGeneral(
@@ -257,13 +258,13 @@ bool CRendererVAAPIGL::UploadTexture(int index)
 
   for (int p=0; p<2; p++)
   {
-    glBindTexture(m_textureTarget, planes[p].id);
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    gl::BindTexture(m_textureTarget, planes[p].id);
+    gl::TexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    gl::TexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    gl::TexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    gl::TexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-    glBindTexture(m_textureTarget, 0);
+    gl::BindTexture(m_textureTarget, 0);
     VerifyGLState();
   }
 
@@ -273,24 +274,24 @@ bool CRendererVAAPIGL::UploadTexture(int index)
 
 void CRendererVAAPIGL::AfterRenderHook(int idx)
 {
-  if (glIsSync(m_fences[idx]))
+  if (gl::IsSync(m_fences[idx]))
   {
-    glDeleteSync(m_fences[idx]);
+    gl::DeleteSync(m_fences[idx]);
     m_fences[idx] = {};
   }
-  m_fences[idx] = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+  m_fences[idx] = gl::FenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
 }
 
 bool CRendererVAAPIGL::NeedBuffer(int idx)
 {
-  if (glIsSync(m_fences[idx]))
+  if (gl::IsSync(m_fences[idx]))
   {
     GLint state;
     GLsizei length;
-    glGetSynciv(m_fences[idx], GL_SYNC_STATUS, 1, &length, &state);
+    gl::GetSynciv(m_fences[idx], GL_SYNC_STATUS, 1, &length, &state);
     if (state == GL_SIGNALED)
     {
-      glDeleteSync(m_fences[idx]);
+      gl::DeleteSync(m_fences[idx]);
       m_fences[idx] = {};
     }
     else
@@ -304,9 +305,9 @@ bool CRendererVAAPIGL::NeedBuffer(int idx)
 
 void CRendererVAAPIGL::ReleaseBuffer(int idx)
 {
-  if (glIsSync(m_fences[idx]))
+  if (gl::IsSync(m_fences[idx]))
   {
-    glDeleteSync(m_fences[idx]);
+    gl::DeleteSync(m_fences[idx]);
     m_fences[idx] = {};
   }
   if (m_isVAAPIBuffer)

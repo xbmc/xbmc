@@ -16,6 +16,10 @@
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 
+#ifdef HAS_GL
+#include "rendering/gl/RenderSystemGL.h"
+#endif
+
 #include <map>
 #include <stdexcept>
 #include <utility>
@@ -114,7 +118,7 @@ static void PrintMatrix(const GLfloat* matrix, const std::string& matrixName)
 
 void _VerifyGLState(const char* szfile, const char* szfunction, int lineno)
 {
-  GLenum err = glGetError();
+  GLenum err = gl::GetError();
   if (err == GL_NO_ERROR)
   {
     return;
@@ -132,14 +136,14 @@ void _VerifyGLState(const char* szfile, const char* szfunction, int lineno)
   }
 
   GLboolean scissors;
-  glGetBooleanv(GL_SCISSOR_TEST, &scissors);
+  gl::GetBooleanv(GL_SCISSOR_TEST, &scissors);
   CLog::Log(LOGDEBUG, "Scissor test enabled: {}", scissors == GL_TRUE ? "True" : "False");
 
   GLfloat matrix[16];
-  glGetFloatv(GL_SCISSOR_BOX, matrix);
+  gl::GetFloatv(GL_SCISSOR_BOX, matrix);
   CLog::Log(LOGDEBUG, "Scissor box: {}, {}, {}, {}", matrix[0], matrix[1], matrix[2], matrix[3]);
 
-  glGetFloatv(GL_VIEWPORT, matrix);
+  gl::GetFloatv(GL_VIEWPORT, matrix);
   CLog::Log(LOGDEBUG, "Viewport: {}, {}, {}, {}", matrix[0], matrix[1], matrix[2], matrix[3]);
 
   PrintMatrix(glMatrixProject.Get(), "Projection Matrix");
@@ -151,25 +155,25 @@ void LogGraphicsInfo()
 #if defined(HAS_GL) || defined(HAS_GLES)
   const GLubyte *s;
 
-  s = glGetString(GL_VENDOR);
+  s = gl::GetString(GL_VENDOR);
   if (s)
     CLog::Log(LOGINFO, "GL_VENDOR = {}", s);
   else
     CLog::Log(LOGINFO, "GL_VENDOR = NULL");
 
-  s = glGetString(GL_RENDERER);
+  s = gl::GetString(GL_RENDERER);
   if (s)
     CLog::Log(LOGINFO, "GL_RENDERER = {}", s);
   else
     CLog::Log(LOGINFO, "GL_RENDERER = NULL");
 
-  s = glGetString(GL_VERSION);
+  s = gl::GetString(GL_VERSION);
   if (s)
     CLog::Log(LOGINFO, "GL_VERSION = {}", s);
   else
     CLog::Log(LOGINFO, "GL_VERSION = NULL");
 
-  s = glGetString(GL_SHADING_LANGUAGE_VERSION);
+  s = gl::GetString(GL_SHADING_LANGUAGE_VERSION);
   if (s)
     CLog::Log(LOGINFO, "GL_SHADING_LANGUAGE_VERSION = {}", s);
   else
@@ -186,11 +190,11 @@ void LogGraphicsInfo()
   {
     GLint mem = 0;
 
-    glGetIntegerv(GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX, &mem);
+    gl::GetIntegerv(GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX, &mem);
     CLog::Log(LOGINFO, "GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX = {}", mem);
 
     //this seems to be the amount of ram on the videocard
-    glGetIntegerv(GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX, &mem);
+    gl::GetIntegerv(GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX, &mem);
     CLog::Log(LOGINFO, "GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX = {}", mem);
   }
 
@@ -204,26 +208,26 @@ void LogGraphicsInfo()
     if (renderVersionMajor > 3 || (renderVersionMajor == 3 && renderVersionMinor >= 2))
     {
       GLint n;
-      glGetIntegerv(GL_NUM_EXTENSIONS, &n);
+      gl::GetIntegerv(GL_NUM_EXTENSIONS, &n);
       if (n > 0)
       {
         GLint i;
         for (i = 0; i < n; i++)
         {
-          extensions += (const char*)glGetStringi(GL_EXTENSIONS, i);
+          extensions += (const char*)gl::GetStringi(GL_EXTENSIONS, i);
           extensions += " ";
         }
       }
     }
     else
     {
-      extensions += (const char*)glGetString(GL_EXTENSIONS);
+      extensions += (const char*)gl::GetString(GL_EXTENSIONS);
     }
   }
   else
 #endif
   {
-    extensions += (const char*) glGetString(GL_EXTENSIONS);
+    extensions += (const char*)gl::GetString(GL_EXTENSIONS);
   }
 
   if (!extensions.empty())

@@ -28,8 +28,6 @@
 #include <signal.h>
 #include <stdio.h>
 
-#import <OpenGLES/ES2/gl.h>
-#import <OpenGLES/ES2/glext.h>
 #import <QuartzCore/QuartzCore.h>
 #include <sys/resource.h>
 
@@ -59,7 +57,7 @@
 - (void) resizeFrameBuffer
 {
   auto frame = currentScreen.bounds;
-  CAEAGLLayer *eaglLayer = (CAEAGLLayer *)[self layer];
+  CAEAGLLayer* eaglLayer = (CAEAGLLayer*)[self layer];
   //allow a maximum framebuffer size of 1080p
   //needed for tvout on iPad3/4 and iphone4/5 and maybe AppleTV3
   if(frame.size.width * frame.size.height > 2073600)
@@ -96,7 +94,7 @@
 - (void) setScreen:(UIScreen *)screen withFrameBufferResize:(BOOL)resize
 {
   CGFloat scaleFactor = 1.0;
-  CAEAGLLayer *eaglLayer = (CAEAGLLayer *)[self layer];
+  CAEAGLLayer* eaglLayer = (CAEAGLLayer*)[self layer];
 
   currentScreen = screen;
   scaleFactor = [self getScreenScale: currentScreen];
@@ -118,7 +116,7 @@
   if ((self = [super initWithFrame:frame]))
   {
     // Get the layer
-    CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
+    CAEAGLLayer* eaglLayer = (CAEAGLLayer*)self.layer;
     //set screen, handlescreenscale
     //and set frame size
     [self setScreen:screen withFrameBufferResize:FALSE];
@@ -185,24 +183,28 @@
     [EAGLContext setCurrentContext:context];
 
     // Create default framebuffer object.
-    glGenFramebuffers(1, &defaultFramebuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, defaultFramebuffer);
+    gl::GenFramebuffers(1, &defaultFramebuffer);
+    gl::BindFramebuffer(GL_FRAMEBUFFER, defaultFramebuffer);
 
     // Create color render buffer and allocate backing store.
-    glGenRenderbuffers(1, &colorRenderbuffer);
-    glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
+    gl::GenRenderbuffers(1, &colorRenderbuffer);
+    gl::BindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
     [context renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)self.layer];
-    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &framebufferWidth);
-    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &framebufferHeight);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, colorRenderbuffer);
+    gl::GetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &framebufferWidth);
+    gl::GetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &framebufferHeight);
+    gl::FramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER,
+                                colorRenderbuffer);
 
-    glGenRenderbuffers(1, &depthRenderbuffer);
-    glBindRenderbuffer(GL_RENDERBUFFER, depthRenderbuffer);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, framebufferWidth, framebufferHeight);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderbuffer);
+    gl::GenRenderbuffers(1, &depthRenderbuffer);
+    gl::BindRenderbuffer(GL_RENDERBUFFER, depthRenderbuffer);
+    gl::RenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, framebufferWidth,
+                            framebufferHeight);
+    gl::FramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER,
+                                depthRenderbuffer);
 
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-      ELOG(@"Failed to make complete framebuffer object %x", glCheckFramebufferStatus(GL_FRAMEBUFFER));
+    if (gl::CheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+      ELOG(@"Failed to make complete framebuffer object %x",
+           gl::CheckFramebufferStatus(GL_FRAMEBUFFER));
   }
 }
 //--------------------------------------------------------------
@@ -215,19 +217,19 @@
 
     if (defaultFramebuffer)
     {
-      glDeleteFramebuffers(1, &defaultFramebuffer);
+      gl::DeleteFramebuffers(1, &defaultFramebuffer);
       defaultFramebuffer = 0;
     }
 
     if (colorRenderbuffer)
     {
-      glDeleteRenderbuffers(1, &colorRenderbuffer);
+      gl::DeleteRenderbuffers(1, &colorRenderbuffer);
       colorRenderbuffer = 0;
     }
 
     if (depthRenderbuffer)
     {
-      glDeleteRenderbuffers(1, &depthRenderbuffer);
+      gl::DeleteRenderbuffers(1, &depthRenderbuffer);
       depthRenderbuffer = 0;
     }
   }
@@ -240,16 +242,16 @@
     if ([EAGLContext currentContext] != context)
       [EAGLContext setCurrentContext:context];
 
-    glBindFramebuffer(GL_FRAMEBUFFER, defaultFramebuffer);
+    gl::BindFramebuffer(GL_FRAMEBUFFER, defaultFramebuffer);
 
     if(framebufferHeight > framebufferWidth) {
-      glViewport(0, 0, framebufferHeight, framebufferWidth);
-      glScissor(0, 0, framebufferHeight, framebufferWidth);
+      gl::Viewport(0, 0, framebufferHeight, framebufferWidth);
+      gl::Scissor(0, 0, framebufferHeight, framebufferWidth);
     }
     else
     {
-      glViewport(0, 0, framebufferWidth, framebufferHeight);
-      glScissor(0, 0, framebufferWidth, framebufferHeight);
+      gl::Viewport(0, 0, framebufferWidth, framebufferHeight);
+      gl::Scissor(0, 0, framebufferWidth, framebufferHeight);
     }
   }
 }
@@ -263,7 +265,7 @@
     if ([EAGLContext currentContext] != context)
       [EAGLContext setCurrentContext:context];
 
-    glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
+    gl::BindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
     success = [context presentRenderbuffer:GL_RENDERBUFFER];
   }
 

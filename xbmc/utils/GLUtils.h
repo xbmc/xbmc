@@ -19,7 +19,7 @@
 // if not it's just an empty inline stub, and thus won't affect performance
 // and will be optimized out.
 
-#include "system_gl.h"
+#include "RenderingGL.hpp"
 
 namespace KODI
 {

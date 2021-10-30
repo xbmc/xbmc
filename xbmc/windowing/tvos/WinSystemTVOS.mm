@@ -9,6 +9,7 @@
 #include "WinSystemTVOS.h"
 
 #include "ServiceBroker.h"
+#include "RenderingGL.hpp"
 #import "cores/AudioEngine/Sinks/AESinkDARWINTVOS.h"
 #include "cores/RetroPlayer/process/ios/RPProcessInfoIOS.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererOpenGLES.h"
@@ -43,8 +44,6 @@
 #include <vector>
 
 #import <Foundation/Foundation.h>
-#import <OpenGLES/ES2/gl.h>
-#import <OpenGLES/ES2/glext.h>
 #import <QuartzCore/CADisplayLink.h>
 #import <dlfcn.h>
 
@@ -186,7 +185,7 @@ bool CWinSystemTVOS::CreateNewWindow(const std::string& name, bool fullScreen, R
 
   m_eglext = " ";
 
-  const char* tmpExtensions = reinterpret_cast<const char*>(glGetString(GL_EXTENSIONS));
+  const char* tmpExtensions = reinterpret_cast<const char*>(gl::GetString(GL_EXTENSIONS));
   if (tmpExtensions != nullptr)
   {
     m_eglext += tmpExtensions;

@@ -8,9 +8,8 @@
 
 #pragma once
 
+#include "RenderingGL.hpp"
 #include "cores/RetroPlayer/buffers/video/RenderBufferSysMem.h"
-
-#include "system_gl.h"
 
 namespace KODI
 {

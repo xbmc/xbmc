@@ -10,8 +10,7 @@
 #pragma once
 
 #include "OverlayRenderer.h"
-
-#include "system_gl.h"
+#include "RenderingGL.hpp"
 
 class CDVDOverlay;
 class CDVDOverlayImage;

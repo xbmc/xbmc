@@ -757,10 +757,8 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
     swa.event_mask = ExposureMask;
     mask = CWBackPixel | CWBorderPixel | CWColormap | CWOverrideRedirect | CWColormap | CWEventMask;
 
-    m_glWindow = XCreateWindow(m_dpy, m_mainWindow,
-                    0, 0, width, height, 0, vi->depth,
-                    InputOutput, vi->visual,
-                    mask, &swa);
+    m_glWindow = XCreateWindow(m_dpy, m_mainWindow, 0, 0, width, height, 0, vi->depth, InputOutput,
+                               vi->visual, mask, &swa);
 
     if (fullscreen && hasWM)
     {

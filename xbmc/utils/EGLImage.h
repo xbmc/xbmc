@@ -8,14 +8,13 @@
 
 #pragma once
 
+#include "RenderingGL.hpp"
 #include "system_egl.h"
 
 #include <array>
 
 #include <EGL/eglext.h>
 #include <drm_fourcc.h>
-
-#include "system_gl.h"
 
 class CEGLImage
 {

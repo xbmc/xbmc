@@ -9,11 +9,10 @@
 #pragma once
 
 #include "GUITexture.h"
+#include "RenderingGL.hpp"
 #include "utils/ColorUtils.h"
 
 #include <array>
-
-#include "system_gl.h"
 
 class CRenderSystemGL;
 

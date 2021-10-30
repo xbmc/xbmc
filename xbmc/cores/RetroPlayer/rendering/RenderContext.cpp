@@ -14,12 +14,12 @@
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
-#include "system_gl.h"
-
 #if defined(HAS_GL)
+#include "RenderingGL.hpp"
 #include "rendering/gl/RenderSystemGL.h"
 #endif
 #if HAS_GLES >= 2
+#include "RenderingGL.hpp"
 #include "rendering/gles/RenderSystemGLES.h"
 #endif
 #if defined(TARGET_WINDOWS)

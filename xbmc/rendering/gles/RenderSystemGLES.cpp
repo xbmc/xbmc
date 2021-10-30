@@ -36,7 +36,7 @@ bool CRenderSystemGLES::InitRenderSystem()
 {
   GLint maxTextureSize;
 
-  glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
+  gl::GetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
 
   m_maxTextureSize = maxTextureSize;
 
@@ -44,7 +44,7 @@ bool CRenderSystemGLES::InitRenderSystem()
   m_RenderVersionMajor = 0;
   m_RenderVersionMinor = 0;
 
-  const char* ver = (const char*)glGetString(GL_VERSION);
+  const char* ver = (const char*)gl::GetString(GL_VERSION);
   if (ver != 0)
   {
     sscanf(ver, "%d.%d", &m_RenderVersionMajor, &m_RenderVersionMinor);
@@ -54,19 +54,19 @@ bool CRenderSystemGLES::InitRenderSystem()
   }
 
   // Get our driver vendor and renderer
-  const char *tmpVendor = (const char*) glGetString(GL_VENDOR);
+  const char* tmpVendor = (const char*)gl::GetString(GL_VENDOR);
   m_RenderVendor.clear();
   if (tmpVendor != NULL)
     m_RenderVendor = tmpVendor;
 
-  const char *tmpRenderer = (const char*) glGetString(GL_RENDERER);
+  const char* tmpRenderer = (const char*)gl::GetString(GL_RENDERER);
   m_RenderRenderer.clear();
   if (tmpRenderer != NULL)
     m_RenderRenderer = tmpRenderer;
 
   m_RenderExtensions  = " ";
 
-  const char *tmpExtensions = (const char*) glGetString(GL_EXTENSIONS);
+  const char* tmpExtensions = (const char*)gl::GetString(GL_EXTENSIONS);
   if (tmpExtensions != NULL)
   {
     m_RenderExtensions += tmpExtensions;
@@ -79,14 +79,19 @@ bool CRenderSystemGLES::InitRenderSystem()
   {
     if (IsExtSupported("GL_KHR_debug"))
     {
-      auto glDebugMessageCallback = CEGLUtils::GetRequiredProcAddress<PFNGLDEBUGMESSAGECALLBACKKHRPROC>("glDebugMessageCallbackKHR");
-      auto glDebugMessageControl = CEGLUtils::GetRequiredProcAddress<PFNGLDEBUGMESSAGECONTROLKHRPROC>("glDebugMessageControlKHR");
+      auto gl::DebugMessageCallback =
+          CEGLUtils::GetRequiredProcAddress<PFNGLDEBUGMESSAGECALLBACKKHRPROC>(
+              "glDebugMessageCallbackKHR");
+      auto gl::DebugMessageControl =
+          CEGLUtils::GetRequiredProcAddress<PFNGLDEBUGMESSAGECONTROLKHRPROC>(
+              "glDebugMessageControlKHR");
 
-      glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_KHR);
-      glDebugMessageCallback(KODI::UTILS::GL::GlErrorCallback, nullptr);
+      gl::Enable(GL_DEBUG_OUTPUT_SYNCHRONOUS_KHR);
+      gl::DebugMessageCallback(KODI::UTILS::GL::GlErrorCallback, nullptr);
 
       // ignore shader compilation information
-      glDebugMessageControl(GL_DEBUG_SOURCE_SHADER_COMPILER_KHR, GL_DEBUG_TYPE_OTHER_KHR, GL_DONT_CARE, 0, nullptr, GL_FALSE);
+      gl::DebugMessageControl(GL_DEBUG_SOURCE_SHADER_COMPILER_KHR, GL_DEBUG_TYPE_OTHER_KHR,
+                              GL_DONT_CARE, 0, nullptr, GL_FALSE);
 
       CLog::Log(LOGDEBUG, "OpenGL(ES): debugging enabled");
     }
@@ -113,17 +118,17 @@ bool CRenderSystemGLES::ResetRenderSystem(int width, int height)
   m_width = width;
   m_height = height;
 
-  glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+  gl::ClearColor(0.0f, 0.0f, 0.0f, 0.0f);
   CalculateMaxTexturesize();
 
   CRect rect( 0, 0, width, height );
   SetViewPort( rect );
 
-  glEnable(GL_SCISSOR_TEST);
+  gl::Enable(GL_SCISSOR_TEST);
 
   glMatrixProject.Clear();
   glMatrixProject->LoadIdentity();
-  glMatrixProject->Ortho(0.0f, width-1, height-1, 0.0f, -1.0f, 1.0f);
+  glMatrixProject->Ortho(0.0f, width - 1, height - 1, 0.0f, -1.0f, 1.0f);
   glMatrixProject.Load();
 
   glMatrixModview.Clear();
@@ -134,9 +139,9 @@ bool CRenderSystemGLES::ResetRenderSystem(int width, int height)
   glMatrixTexture->LoadIdentity();
   glMatrixTexture.Load();
 
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-  glEnable(GL_BLEND);          // Turn Blending On
-  glDisable(GL_DEPTH_TEST);
+  gl::BlendFunc(GL_SRC_ALPHA, GL_ONE);
+  gl::Enable(GL_BLEND); // Turn Blending On
+  gl::Disable(GL_DEPTH_TEST);
 
   return true;
 }
@@ -149,7 +154,7 @@ bool CRenderSystemGLES::DestroyRenderSystem()
   dirtyRegions.push_back(dirtyWindow);
 
   ClearBuffers(0);
-  glFinish();
+  gl::Finish();
   PresentRenderImpl(true);
 
   ReleaseShaders();
@@ -194,10 +199,10 @@ bool CRenderSystemGLES::ClearBuffers(UTILS::COLOR::Color color)
   float b = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::B, color) / 255.0f;
   float a = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::A, color) / 255.0f;
 
-  glClearColor(r, g, b, a);
+  gl::ClearColor(r, g, b, a);
 
   GLbitfield flags = GL_COLOR_BUFFER_BIT;
-  glClear(flags);
+  gl::Clear(flags);
 
   return true;
 }
@@ -261,10 +266,10 @@ void CRenderSystemGLES::CaptureStateBlock()
   glMatrixModview.Push();
   glMatrixTexture.Push();
 
-  glDisable(GL_SCISSOR_TEST); // fixes FBO corruption on Macs
-  glActiveTexture(GL_TEXTURE0);
-//! @todo - NOTE: Only for Screensavers & Visualisations
-//  glColor3f(1.0, 1.0, 1.0);
+  gl::Disable(GL_SCISSOR_TEST); // fixes FBO corruption on Macs
+  gl::ActiveTexture(GL_TEXTURE0);
+  //! @todo - NOTE: Only for Screensavers & Visualisations
+  //  gl::Color3f(1.0, 1.0, 1.0);
 }
 
 void CRenderSystemGLES::ApplyStateBlock()
@@ -275,10 +280,10 @@ void CRenderSystemGLES::ApplyStateBlock()
   glMatrixProject.PopLoad();
   glMatrixModview.PopLoad();
   glMatrixTexture.PopLoad();
-  glActiveTexture(GL_TEXTURE0);
-  glEnable(GL_BLEND);
-  glEnable(GL_SCISSOR_TEST);
-  glClear(GL_DEPTH_BUFFER_BIT);
+  gl::ActiveTexture(GL_TEXTURE0);
+  gl::Enable(GL_BLEND);
+  gl::Enable(GL_SCISSOR_TEST);
+  gl::Clear(GL_DEPTH_BUFFER_BIT);
 }
 
 void CRenderSystemGLES::SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight, float stereoFactor)
@@ -297,14 +302,16 @@ void CRenderSystemGLES::SetCameraPosition(const CPoint &camera, int screenWidth,
   glMatrixModview.Load();
 
   glMatrixProject->LoadIdentity();
-  glMatrixProject->Frustum( (-w - offset.x)*0.5f, (w - offset.x)*0.5f, (-h + offset.y)*0.5f, (h + offset.y)*0.5f, h, 100*h);
+  glMatrixProject->Frustum((-w - offset.x) * 0.5f, (w - offset.x) * 0.5f, (-h + offset.y) * 0.5f,
+                           (h + offset.y) * 0.5f, h, 100 * h);
   glMatrixProject.Load();
 }
 
 void CRenderSystemGLES::Project(float &x, float &y, float &z)
 {
   GLfloat coordX, coordY, coordZ;
-  if (CMatrixGL::Project(x, y, z, glMatrixModview.Get(), glMatrixProject.Get(), m_viewPort, &coordX, &coordY, &coordZ))
+  if (CMatrixGL::Project(x, y, z, glMatrixModview.Get(), glMatrixProject.Get(), m_viewPort, &coordX,
+                         &coordY, &coordZ))
   {
     x = coordX;
     y = (float)(m_viewPort[1] + m_viewPort[3] - coordY);
@@ -334,8 +341,10 @@ void CRenderSystemGLES::SetViewPort(const CRect& viewPort)
   if (!m_bRenderCreated)
     return;
 
-  glScissor((GLint) viewPort.x1, (GLint) (m_height - viewPort.y1 - viewPort.Height()), (GLsizei) viewPort.Width(), (GLsizei) viewPort.Height());
-  glViewport((GLint) viewPort.x1, (GLint) (m_height - viewPort.y1 - viewPort.Height()), (GLsizei) viewPort.Width(), (GLsizei) viewPort.Height());
+  gl::Scissor((GLint)viewPort.x1, (GLint)(m_height - viewPort.y1 - viewPort.Height()),
+              (GLsizei)viewPort.Width(), (GLsizei)viewPort.Height());
+  gl::Viewport((GLint)viewPort.x1, (GLint)(m_height - viewPort.y1 - viewPort.Height()),
+               (GLsizei)viewPort.Width(), (GLsizei)viewPort.Height());
   m_viewPort[0] = viewPort.x1;
   m_viewPort[1] = m_height - viewPort.y1 - viewPort.Height();
   m_viewPort[2] = viewPort.Width();
@@ -372,7 +381,7 @@ void CRenderSystemGLES::SetScissors(const CRect &rect)
   GLint y1 = MathUtils::round_int(static_cast<double>(rect.y1));
   GLint x2 = MathUtils::round_int(static_cast<double>(rect.x2));
   GLint y2 = MathUtils::round_int(static_cast<double>(rect.y2));
-  glScissor(x1, m_height - y2, x2-x1, y2-y1);
+  gl::Scissor(x1, m_height - y2, x2 - x1, y2 - y1);
 }
 
 void CRenderSystemGLES::ResetScissors()

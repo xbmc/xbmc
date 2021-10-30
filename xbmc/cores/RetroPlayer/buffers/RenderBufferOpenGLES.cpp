@@ -33,31 +33,31 @@ CRenderBufferOpenGLES::~CRenderBufferOpenGLES()
 
 void CRenderBufferOpenGLES::CreateTexture()
 {
-  glGenTextures(1, &m_textureId);
+  gl::GenTextures(1, &m_textureId);
 
-  glBindTexture(m_textureTarget, m_textureId);
+  gl::BindTexture(m_textureTarget, m_textureId);
 
-  glTexImage2D(m_textureTarget, 0, m_internalformat, m_width, m_height, 0, m_pixelformat,
-               m_pixeltype, NULL);
+  gl::TexImage2D(m_textureTarget, 0, m_internalformat, m_width, m_height, 0, m_pixelformat,
+                 m_pixeltype, NULL);
 
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  gl::TexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  gl::TexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  gl::TexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  gl::TexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-  glBindTexture(m_textureTarget, 0);
+  gl::BindTexture(m_textureTarget, 0);
 }
 
 bool CRenderBufferOpenGLES::UploadTexture()
 {
-  if (!glIsTexture(m_textureId))
+  if (!gl::IsTexture(m_textureId))
     CreateTexture();
 
-  glBindTexture(m_textureTarget, m_textureId);
+  gl::BindTexture(m_textureTarget, m_textureId);
 
   const int stride = GetFrameSize() / m_height;
 
-  glPixelStorei(GL_UNPACK_ALIGNMENT, m_bpp);
+  gl::PixelStorei(GL_UNPACK_ALIGNMENT, m_bpp);
 
   if (m_bpp == 4 && m_pixelformat == GL_RGBA)
   {
@@ -68,34 +68,34 @@ bool CRenderBufferOpenGLES::UploadTexture()
     {
       for (int x = 0; x < stride; x += 4)
         std::swap(pixels[x], pixels[x + 2]);
-      glTexSubImage2D(m_textureTarget, 0, 0, y, m_width, 1, m_pixelformat, m_pixeltype, pixels);
+      gl::TexSubImage2D(m_textureTarget, 0, 0, y, m_width, 1, m_pixelformat, m_pixeltype, pixels);
     }
   }
   else if (m_context.IsExtSupported("GL_EXT_unpack_subimage"))
   {
 #ifdef GL_UNPACK_ROW_LENGTH_EXT
-    glPixelStorei(GL_UNPACK_ROW_LENGTH_EXT, stride / m_bpp);
-    glTexSubImage2D(m_textureTarget, 0, 0, 0, m_width, m_height, m_pixelformat, m_pixeltype,
-                    m_data.data());
-    glPixelStorei(GL_UNPACK_ROW_LENGTH_EXT, 0);
+    gl::PixelStorei(GL_UNPACK_ROW_LENGTH_EXT, stride / m_bpp);
+    gl::TexSubImage2D(m_textureTarget, 0, 0, 0, m_width, m_height, m_pixelformat, m_pixeltype,
+                      m_data.data());
+    gl::PixelStorei(GL_UNPACK_ROW_LENGTH_EXT, 0);
 #endif
   }
   else
   {
     uint8_t* pixels = const_cast<uint8_t*>(m_data.data());
     for (unsigned int y = 0; y < m_height; ++y, pixels += stride)
-      glTexSubImage2D(m_textureTarget, 0, 0, y, m_width, 1, m_pixelformat, m_pixeltype, pixels);
+      gl::TexSubImage2D(m_textureTarget, 0, 0, y, m_width, 1, m_pixelformat, m_pixeltype, pixels);
   }
 
-  glBindTexture(m_textureTarget, 0);
+  gl::BindTexture(m_textureTarget, 0);
 
   return true;
 }
 
 void CRenderBufferOpenGLES::DeleteTexture()
 {
-  if (glIsTexture(m_textureId))
-    glDeleteTextures(1, &m_textureId);
+  if (gl::IsTexture(m_textureId))
+    gl::DeleteTextures(1, &m_textureId);
 
   m_textureId = 0;
 }

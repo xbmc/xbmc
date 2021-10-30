@@ -9,13 +9,12 @@
 #pragma once
 
 #include "GLShader.h"
+#include "RenderingGL.hpp"
 #include "rendering/RenderSystem.h"
 #include "utils/ColorUtils.h"
 
 #include <map>
 #include <memory>
-
-#include "system_gl.h"
 
 enum class ShaderMethodGL
 {

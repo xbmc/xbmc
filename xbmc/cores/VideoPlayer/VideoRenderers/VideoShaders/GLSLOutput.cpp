@@ -10,10 +10,9 @@
 
 #include "GLSLOutput.h"
 
+#include "RenderingGL.hpp"
 #include "dither.h"
 #include "utils/log.h"
-
-#include "system_gl.h"
 
 using namespace Shaders;
 
@@ -64,15 +63,15 @@ void GLSLOutput::OnCompiledAndLinked(GLuint programHandle)
   //   dithering
   if (m_dither)
   {
-    m_hDither = glGetUniformLocation(programHandle, "m_dither");
-    m_hDitherQuant = glGetUniformLocation(programHandle, "m_ditherquant");
-    m_hDitherSize = glGetUniformLocation(programHandle, "m_dithersize");
+    m_hDither = gl::GetUniformLocation(programHandle, "m_dither");
+    m_hDitherQuant = gl::GetUniformLocation(programHandle, "m_ditherquant");
+    m_hDitherSize = gl::GetUniformLocation(programHandle, "m_dithersize");
   }
   //   3DLUT
   if (m_3DLUT)
   {
-    m_hCLUT        = glGetUniformLocation(programHandle, "m_CLUT");
-    m_hCLUTSize    = glGetUniformLocation(programHandle, "m_CLUTsize");
+    m_hCLUT = gl::GetUniformLocation(programHandle, "m_CLUT");
+    m_hCLUTSize = gl::GetUniformLocation(programHandle, "m_CLUTsize");
   }
 
   if (m_dither)
@@ -80,27 +79,28 @@ void GLSLOutput::OnCompiledAndLinked(GLuint programHandle)
     //! @todo create a dither pattern
 
     // create a dither texture
-    glGenTextures(1, &m_tDitherTex);
+    gl::GenTextures(1, &m_tDitherTex);
     if ( m_tDitherTex <= 0 )
     {
       CLog::Log(LOGERROR, "Error creating dither texture");
       return;
     }
     // bind and set texture parameters
-    glActiveTexture(GL_TEXTURE0 + m_uDither);
-    glBindTexture(GL_TEXTURE_2D, m_tDitherTex);
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    gl::ActiveTexture(GL_TEXTURE0 + m_uDither);
+    gl::BindTexture(GL_TEXTURE_2D, m_tDitherTex);
+    gl::PixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    gl::PixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+    gl::TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    gl::TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    gl::TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    gl::TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     // load dither texture data
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_R16, dither_size, dither_size, 0, GL_RED, GL_UNSIGNED_SHORT, dither_matrix);
+    gl::TexImage2D(GL_TEXTURE_2D, 0, GL_R16, dither_size, dither_size, 0, GL_RED, GL_UNSIGNED_SHORT,
+                   dither_matrix);
   }
 
-  glActiveTexture(GL_TEXTURE0);
+  gl::ActiveTexture(GL_TEXTURE0);
 
   VerifyGLState();
 }
@@ -111,33 +111,33 @@ bool GLSLOutput::OnEnabled()
   if (m_dither)
   {
     // set texture units
-    glUniform1i(m_hDither, m_uDither);
+    gl::Uniform1i(m_hDither, m_uDither);
     VerifyGLState();
 
     // bind textures
-    glActiveTexture(GL_TEXTURE0 + m_uDither);
-    glBindTexture(GL_TEXTURE_2D, m_tDitherTex);
-    glActiveTexture(GL_TEXTURE0);
+    gl::ActiveTexture(GL_TEXTURE0 + m_uDither);
+    gl::BindTexture(GL_TEXTURE_2D, m_tDitherTex);
+    gl::ActiveTexture(GL_TEXTURE0);
     VerifyGLState();
 
     // dither settings
-    glUniform1f(m_hDitherQuant, (1<<m_ditherDepth)-1.0);
+    gl::Uniform1f(m_hDitherQuant, (1 << m_ditherDepth) - 1.0);
     VerifyGLState();
-    glUniform2f(m_hDitherSize, dither_size, dither_size);
+    gl::Uniform2f(m_hDitherSize, dither_size, dither_size);
     VerifyGLState();
   }
 
   if (m_3DLUT)
   {
     // set texture units
-    glUniform1i(m_hCLUT, m_uCLUT);
-    glUniform1f(m_hCLUTSize, m_uCLUTSize);
+    gl::Uniform1i(m_hCLUT, m_uCLUT);
+    gl::Uniform1f(m_hCLUTSize, m_uCLUTSize);
     VerifyGLState();
 
     // bind textures
-    glActiveTexture(GL_TEXTURE0 + m_uCLUT);
-    glBindTexture(GL_TEXTURE_3D, m_tCLUTTex);
-    glActiveTexture(GL_TEXTURE0);
+    gl::ActiveTexture(GL_TEXTURE0 + m_uCLUT);
+    gl::BindTexture(GL_TEXTURE_3D, m_tCLUTTex);
+    gl::ActiveTexture(GL_TEXTURE0);
     VerifyGLState();
   }
 
@@ -150,14 +150,14 @@ void GLSLOutput::OnDisabled()
   // disable textures
   if (m_dither)
   {
-    glActiveTexture(GL_TEXTURE0 + m_uDither);
+    gl::ActiveTexture(GL_TEXTURE0 + m_uDither);
   }
   if (m_3DLUT)
   {
-    glActiveTexture(GL_TEXTURE0 + m_uCLUT);
-    glDisable(GL_TEXTURE_3D);
+    gl::ActiveTexture(GL_TEXTURE0 + m_uCLUT);
+    gl::Disable(GL_TEXTURE_3D);
   }
-  glActiveTexture(GL_TEXTURE0);
+  gl::ActiveTexture(GL_TEXTURE0);
   VerifyGLState();
 }
 
@@ -170,7 +170,7 @@ void GLSLOutput::FreeTextures()
 {
   if (m_tDitherTex)
   {
-    glDeleteTextures(1, &m_tDitherTex);
+    gl::DeleteTextures(1, &m_tDitherTex);
     m_tDitherTex = 0;
   }
 }

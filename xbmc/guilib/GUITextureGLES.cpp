@@ -96,12 +96,12 @@ void CGUITextureGLES::Begin(UTILS::COLOR::Color color)
 
   if ( hasAlpha )
   {
-    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_ONE);
-    glEnable( GL_BLEND );
+    gl::BlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA, GL_ONE);
+    gl::Enable(GL_BLEND);
   }
   else
   {
-    glDisable(GL_BLEND);
+    gl::Disable(GL_BLEND);
   }
   m_packedVertices.clear();
 }
@@ -117,31 +117,36 @@ void CGUITextureGLES::End()
 
     if(uniColLoc >= 0)
     {
-      glUniform4f(uniColLoc,(m_col[0] / 255.0f), (m_col[1] / 255.0f), (m_col[2] / 255.0f), (m_col[3] / 255.0f));
+      gl::Uniform4f(uniColLoc, (m_col[0] / 255.0f), (m_col[1] / 255.0f), (m_col[2] / 255.0f),
+                    (m_col[3] / 255.0f));
     }
 
     if(m_diffuse.size())
     {
-      glVertexAttribPointer(tex1Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex), (char*)&m_packedVertices[0] + offsetof(PackedVertex, u2));
-      glEnableVertexAttribArray(tex1Loc);
+      gl::VertexAttribPointer(tex1Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
+                              (char*)&m_packedVertices[0] + offsetof(PackedVertex, u2));
+      gl::EnableVertexAttribArray(tex1Loc);
     }
-    glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex), (char*)&m_packedVertices[0] + offsetof(PackedVertex, x));
-    glEnableVertexAttribArray(posLoc);
-    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex), (char*)&m_packedVertices[0] + offsetof(PackedVertex, u1));
-    glEnableVertexAttribArray(tex0Loc);
+    gl::VertexAttribPointer(posLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex),
+                            (char*)&m_packedVertices[0] + offsetof(PackedVertex, x));
+    gl::EnableVertexAttribArray(posLoc);
+    gl::VertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
+                            (char*)&m_packedVertices[0] + offsetof(PackedVertex, u1));
+    gl::EnableVertexAttribArray(tex0Loc);
 
-    glDrawElements(GL_TRIANGLES, m_packedVertices.size()*6 / 4, GL_UNSIGNED_SHORT, m_idx.data());
+    gl::DrawElements(GL_TRIANGLES, m_packedVertices.size() * 6 / 4, GL_UNSIGNED_SHORT,
+                     m_idx.data());
 
     if (m_diffuse.size())
-      glDisableVertexAttribArray(tex1Loc);
+      gl::DisableVertexAttribArray(tex1Loc);
 
-    glDisableVertexAttribArray(posLoc);
-    glDisableVertexAttribArray(tex0Loc);
+    gl::DisableVertexAttribArray(posLoc);
+    gl::DisableVertexAttribArray(tex0Loc);
   }
 
   if (m_diffuse.size())
-    glActiveTexture(GL_TEXTURE0);
-  glEnable(GL_BLEND);
+    gl::ActiveTexture(GL_TEXTURE0);
+  gl::Enable(GL_BLEND);
   m_renderSystem->DisableGUIShader();
 }
 
@@ -243,8 +248,8 @@ void CGUITextureGLES::DrawQuad(const CRect& rect,
     texture->BindToUnit(0);
   }
 
-  glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-  glEnable(GL_BLEND);          // Turn Blending On
+  gl::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  gl::Enable(GL_BLEND); // Turn Blending On
 
   VerifyGLState();
 
@@ -262,13 +267,13 @@ void CGUITextureGLES::DrawQuad(const CRect& rect,
   GLint tex0Loc  = renderSystem->GUIShaderGetCoord0();
   GLint uniColLoc= renderSystem->GUIShaderGetUniCol();
 
-  glVertexAttribPointer(posLoc,  3, GL_FLOAT, 0, 0, ver);
+  gl::VertexAttribPointer(posLoc, 3, GL_FLOAT, 0, 0, ver);
   if (texture)
-    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, tex);
+    gl::VertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, tex);
 
-  glEnableVertexAttribArray(posLoc);
+  gl::EnableVertexAttribArray(posLoc);
   if (texture)
-    glEnableVertexAttribArray(tex0Loc);
+    gl::EnableVertexAttribArray(tex0Loc);
 
   // Setup Colors
   col[0] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::R, color);
@@ -276,7 +281,7 @@ void CGUITextureGLES::DrawQuad(const CRect& rect,
   col[2] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::B, color);
   col[3] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::A, color);
 
-  glUniform4f(uniColLoc, col[0] / 255.0f, col[1] / 255.0f, col[2] / 255.0f, col[3] / 255.0f);
+  gl::Uniform4f(uniColLoc, col[0] / 255.0f, col[1] / 255.0f, col[2] / 255.0f, col[3] / 255.0f);
 
   ver[0][0] = ver[3][0] = rect.x1;
   ver[0][1] = ver[1][1] = rect.y1;
@@ -293,11 +298,11 @@ void CGUITextureGLES::DrawQuad(const CRect& rect,
     tex[1][0] = tex[2][0] = coords.x2;
     tex[2][1] = tex[3][1] = coords.y2;
   }
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
+  gl::DrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
 
-  glDisableVertexAttribArray(posLoc);
+  gl::DisableVertexAttribArray(posLoc);
   if (texture)
-    glDisableVertexAttribArray(tex0Loc);
+    gl::DisableVertexAttribArray(tex0Loc);
 
   renderSystem->DisableGUIShader();
 }

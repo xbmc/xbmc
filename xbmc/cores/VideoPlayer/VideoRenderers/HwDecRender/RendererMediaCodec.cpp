@@ -113,10 +113,10 @@ bool CRendererMediaCodec::RenderHook(int index)
   CYuvPlane &plane = m_buffers[index].fields[0][0];
   CYuvPlane &planef = m_buffers[index].fields[m_currentField][0];
 
-  glDisable(GL_DEPTH_TEST);
+  gl::Disable(GL_DEPTH_TEST);
 
-  glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_EXTERNAL_OES, plane.id);
+  gl::ActiveTexture(GL_TEXTURE0);
+  gl::BindTexture(GL_TEXTURE_EXTERNAL_OES, plane.id);
 
   CRenderSystemGLES* renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
 
@@ -128,20 +128,20 @@ bool CRendererMediaCodec::RenderHook(int index)
 
     // Y is inverted, so invert fields
     if     (m_currentField == FIELD_TOP)
-      glUniform1i(fieldLoc, 0);
+      gl::Uniform1i(fieldLoc, 0);
     else if(m_currentField == FIELD_BOT)
-      glUniform1i(fieldLoc, 1);
-    glUniform1f(stepLoc, 1.0f / (float)plane.texheight);
+      gl::Uniform1i(fieldLoc, 1);
+    gl::Uniform1f(stepLoc, 1.0f / (float)plane.texheight);
   }
   else
     renderSystem->EnableGUIShader(ShaderMethodGLES::SM_TEXTURE_RGBA_OES);
 
   GLint   contrastLoc = renderSystem->GUIShaderGetContrast();
-  glUniform1f(contrastLoc, m_videoSettings.m_Contrast * 0.02f);
+  gl::Uniform1f(contrastLoc, m_videoSettings.m_Contrast * 0.02f);
   GLint   brightnessLoc = renderSystem->GUIShaderGetBrightness();
-  glUniform1f(brightnessLoc, m_videoSettings.m_Brightness * 0.01f - 0.5f);
+  gl::Uniform1f(brightnessLoc, m_videoSettings.m_Brightness * 0.01f - 0.5f);
 
-  glUniformMatrix4fv(renderSystem->GUIShaderGetCoord0Matrix(), 1, GL_FALSE, m_textureMatrix);
+  gl::UniformMatrix4fv(renderSystem->GUIShaderGetCoord0Matrix(), 1, GL_FALSE, m_textureMatrix);
 
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
   GLfloat ver[4][4];
@@ -151,11 +151,11 @@ bool CRendererMediaCodec::RenderHook(int index)
   GLint   texLoc = renderSystem->GUIShaderGetCoord0();
 
 
-  glVertexAttribPointer(posLoc, 4, GL_FLOAT, 0, 0, ver);
-  glVertexAttribPointer(texLoc, 4, GL_FLOAT, 0, 0, tex);
+  gl::VertexAttribPointer(posLoc, 4, GL_FLOAT, 0, 0, ver);
+  gl::VertexAttribPointer(texLoc, 4, GL_FLOAT, 0, 0, tex);
 
-  glEnableVertexAttribArray(posLoc);
-  glEnableVertexAttribArray(texLoc);
+  gl::EnableVertexAttribArray(posLoc);
+  gl::EnableVertexAttribArray(texLoc);
 
   // Set vertex coordinates
   for(int i = 0; i < 4; i++)
@@ -188,10 +188,10 @@ bool CRendererMediaCodec::RenderHook(int index)
     tex[i][3] = 1.0f;
   }
 
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
+  gl::DrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
 
-  glDisableVertexAttribArray(posLoc);
-  glDisableVertexAttribArray(texLoc);
+  gl::DisableVertexAttribArray(posLoc);
+  gl::DisableVertexAttribArray(texLoc);
 
   const float identity[16] = {
       1.0f, 0.0f, 0.0f, 0.0f,
@@ -199,12 +199,12 @@ bool CRendererMediaCodec::RenderHook(int index)
       0.0f, 0.0f, 1.0f, 0.0f,
       0.0f, 0.0f, 0.0f, 1.0f
   };
-  glUniformMatrix4fv(renderSystem->GUIShaderGetCoord0Matrix(),  1, GL_FALSE, identity);
+  gl::UniformMatrix4fv(renderSystem->GUIShaderGetCoord0Matrix(), 1, GL_FALSE, identity);
 
   renderSystem->DisableGUIShader();
   VerifyGLState();
 
-  glBindTexture(GL_TEXTURE_EXTERNAL_OES, 0);
+  gl::BindTexture(GL_TEXTURE_EXTERNAL_OES, 0);
   VerifyGLState();
 
   return true;

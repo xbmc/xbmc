@@ -51,18 +51,18 @@ BaseVideoFilterShader::BaseVideoFilterShader()
 
 void BaseVideoFilterShader::OnCompiledAndLinked()
 {
-  m_hVertex = glGetAttribLocation(ProgramHandle(),  "m_attrpos");
-  m_hcoord = glGetAttribLocation(ProgramHandle(),  "m_attrcord");
-  m_hAlpha  = glGetUniformLocation(ProgramHandle(), "m_alpha");
-  m_hProj  = glGetUniformLocation(ProgramHandle(), "m_proj");
-  m_hModel = glGetUniformLocation(ProgramHandle(), "m_model");
+  m_hVertex = gl::GetAttribLocation(ProgramHandle(), "m_attrpos");
+  m_hcoord = gl::GetAttribLocation(ProgramHandle(), "m_attrcord");
+  m_hAlpha = gl::GetUniformLocation(ProgramHandle(), "m_alpha");
+  m_hProj = gl::GetUniformLocation(ProgramHandle(), "m_proj");
+  m_hModel = gl::GetUniformLocation(ProgramHandle(), "m_model");
 }
 
 bool BaseVideoFilterShader::OnEnabled()
 {
-  glUniformMatrix4fv(m_hProj,  1, GL_FALSE, m_proj);
-  glUniformMatrix4fv(m_hModel, 1, GL_FALSE, m_model);
-  glUniform1f(m_hAlpha, m_alpha);
+  gl::UniformMatrix4fv(m_hProj, 1, GL_FALSE, m_proj);
+  gl::UniformMatrix4fv(m_hModel, 1, GL_FALSE, m_model);
+  gl::Uniform1f(m_hAlpha, m_alpha);
   return true;
 }
 
@@ -125,19 +125,19 @@ void ConvolutionFilterShader::OnCompiledAndLinked()
   BaseVideoFilterShader::OnCompiledAndLinked();
 
   // obtain shader attribute handles on successful compilation
-  m_hSourceTex = glGetUniformLocation(ProgramHandle(), "img");
-  m_hStepXY    = glGetUniformLocation(ProgramHandle(), "stepxy");
-  m_hKernTex   = glGetUniformLocation(ProgramHandle(), "kernelTex");
+  m_hSourceTex = gl::GetUniformLocation(ProgramHandle(), "img");
+  m_hStepXY = gl::GetUniformLocation(ProgramHandle(), "stepxy");
+  m_hKernTex = gl::GetUniformLocation(ProgramHandle(), "kernelTex");
 
   CConvolutionKernel kernel(m_method, 256);
 
   if (m_kernelTex1)
   {
-    glDeleteTextures(1, &m_kernelTex1);
+    gl::DeleteTextures(1, &m_kernelTex1);
     m_kernelTex1 = 0;
   }
 
-  glGenTextures(1, &m_kernelTex1);
+  gl::GenTextures(1, &m_kernelTex1);
 
   if ((m_kernelTex1<=0))
   {
@@ -146,12 +146,12 @@ void ConvolutionFilterShader::OnCompiledAndLinked()
   }
 
   //make a kernel texture on GL_TEXTURE2 and set clamping and interpolation
-  glActiveTexture(GL_TEXTURE2);
-  glBindTexture(GL_TEXTURE_2D, m_kernelTex1);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  gl::ActiveTexture(GL_TEXTURE2);
+  gl::BindTexture(GL_TEXTURE_2D, m_kernelTex1);
+  gl::TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  gl::TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  gl::TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  gl::TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
   //if float textures are supported, we can load the kernel as a float texture
   //if not we load it as 8 bit unsigned which gets converted back to float in the shader
@@ -169,9 +169,9 @@ void ConvolutionFilterShader::OnCompiledAndLinked()
   }
 
   //upload as 2D texture with height of 1
-  glTexImage2D(GL_TEXTURE_2D, 0, m_internalformat, kernel.GetSize(), 1, 0, GL_RGBA, format, data);
+  gl::TexImage2D(GL_TEXTURE_2D, 0, m_internalformat, kernel.GetSize(), 1, 0, GL_RGBA, format, data);
 
-  glActiveTexture(GL_TEXTURE0);
+  gl::ActiveTexture(GL_TEXTURE0);
 
   VerifyGLState();
 }
@@ -181,13 +181,13 @@ bool ConvolutionFilterShader::OnEnabled()
   BaseVideoFilterShader::OnEnabled();
 
   // set shader attributes once enabled
-  glActiveTexture(GL_TEXTURE2);
-  glBindTexture(GL_TEXTURE_2D, m_kernelTex1);
+  gl::ActiveTexture(GL_TEXTURE2);
+  gl::BindTexture(GL_TEXTURE_2D, m_kernelTex1);
 
-  glActiveTexture(GL_TEXTURE0);
-  glUniform1i(m_hSourceTex, m_sourceTexUnit);
-  glUniform1i(m_hKernTex, 2);
-  glUniform2f(m_hStepXY, m_stepX, m_stepY);
+  gl::ActiveTexture(GL_TEXTURE0);
+  gl::Uniform1i(m_hSourceTex, m_sourceTexUnit);
+  gl::Uniform1i(m_hKernTex, 2);
+  gl::Uniform2f(m_hStepXY, m_stepX, m_stepY);
   VerifyGLState();
 
   return true;
@@ -200,7 +200,7 @@ void ConvolutionFilterShader::OnDisabled()
 void ConvolutionFilterShader::Free()
 {
   if (m_kernelTex1)
-    glDeleteTextures(1, &m_kernelTex1);
+    gl::DeleteTextures(1, &m_kernelTex1);
   m_kernelTex1 = 0;
   BaseVideoFilterShader::Free();
 }
@@ -209,14 +209,14 @@ void DefaultFilterShader::OnCompiledAndLinked()
 {
   BaseVideoFilterShader::OnCompiledAndLinked();
 
-  m_hSourceTex = glGetUniformLocation(ProgramHandle(), "img");
+  m_hSourceTex = gl::GetUniformLocation(ProgramHandle(), "img");
 }
 
 bool DefaultFilterShader::OnEnabled()
 {
   BaseVideoFilterShader::OnEnabled();
 
-  glUniform1i(m_hSourceTex, m_sourceTexUnit);
+  gl::Uniform1i(m_hSourceTex, m_sourceTexUnit);
   VerifyGLState();
   return true;
 }

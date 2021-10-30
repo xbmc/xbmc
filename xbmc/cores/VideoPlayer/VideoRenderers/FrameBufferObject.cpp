@@ -42,7 +42,7 @@ bool CFrameBufferObject::Initialize()
 
   Cleanup();
 
-  glGenFramebuffers(1, &m_fbo);
+  gl::GenFramebuffers(1, &m_fbo);
   VerifyGLState();
 
   if (!m_fbo)
@@ -58,10 +58,10 @@ void CFrameBufferObject::Cleanup()
     return;
 
   if (m_fbo)
-    glDeleteFramebuffers(1, &m_fbo);
+    gl::DeleteFramebuffers(1, &m_fbo);
 
   if (m_texid)
-    glDeleteTextures(1, &m_texid);
+    gl::DeleteTextures(1, &m_texid);
 
   m_texid = 0;
   m_fbo = 0;
@@ -76,24 +76,24 @@ bool CFrameBufferObject::CreateAndBindToTexture(GLenum target, int width, int he
     return false;
 
   if (m_texid)
-    glDeleteTextures(1, &m_texid);
+    gl::DeleteTextures(1, &m_texid);
 
-  glGenTextures(1, &m_texid);
-  glBindTexture(target, m_texid);
-  glTexImage2D(target, 0, format,  width, height, 0, GL_RGBA, type, NULL);
-  glTexParameteri(target, GL_TEXTURE_WRAP_S, clampmode);
-  glTexParameteri(target, GL_TEXTURE_WRAP_T, clampmode);
-  glTexParameteri(target, GL_TEXTURE_MAG_FILTER, filter);
-  glTexParameteri(target, GL_TEXTURE_MIN_FILTER, filter);
+  gl::GenTextures(1, &m_texid);
+  gl::BindTexture(target, m_texid);
+  gl::TexImage2D(target, 0, format, width, height, 0, GL_RGBA, type, NULL);
+  gl::TexParameteri(target, GL_TEXTURE_WRAP_S, clampmode);
+  gl::TexParameteri(target, GL_TEXTURE_WRAP_T, clampmode);
+  gl::TexParameteri(target, GL_TEXTURE_MAG_FILTER, filter);
+  gl::TexParameteri(target, GL_TEXTURE_MIN_FILTER, filter);
   VerifyGLState();
 
   m_bound = false;
-  glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
-  glBindTexture(target, m_texid);
-  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, target, m_texid, 0);
+  gl::BindFramebuffer(GL_FRAMEBUFFER, m_fbo);
+  gl::BindTexture(target, m_texid);
+  gl::FramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, target, m_texid, 0);
   VerifyGLState();
-  GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  GLenum status = gl::CheckFramebufferStatus(GL_FRAMEBUFFER);
+  gl::BindFramebuffer(GL_FRAMEBUFFER, 0);
   if (status != GL_FRAMEBUFFER_COMPLETE)
   {
     VerifyGLState();
@@ -105,9 +105,9 @@ bool CFrameBufferObject::CreateAndBindToTexture(GLenum target, int width, int he
 
 void CFrameBufferObject::SetFiltering(GLenum target, GLenum mode)
 {
-  glBindTexture(target, m_texid);
-  glTexParameteri(target, GL_TEXTURE_MAG_FILTER, mode);
-  glTexParameteri(target, GL_TEXTURE_MIN_FILTER, mode);
+  gl::BindTexture(target, m_texid);
+  gl::TexParameteri(target, GL_TEXTURE_MAG_FILTER, mode);
+  gl::TexParameteri(target, GL_TEXTURE_MIN_FILTER, mode);
 }
 
 // Begin rendering to FBO
@@ -115,7 +115,7 @@ bool CFrameBufferObject::BeginRender()
 {
   if (IsValid() && IsBound())
   {
-    glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
+    gl::BindFramebuffer(GL_FRAMEBUFFER, m_fbo);
     return true;
   }
   return false;
@@ -125,5 +125,5 @@ bool CFrameBufferObject::BeginRender()
 void CFrameBufferObject::EndRender() const
 {
   if (IsValid())
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    gl::BindFramebuffer(GL_FRAMEBUFFER, 0);
 }

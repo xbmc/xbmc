@@ -55,9 +55,9 @@ void CRendererVTB::ReleaseBuffer(int idx)
     VTB::CVideoBufferVTB *vb = dynamic_cast<VTB::CVideoBufferVTB*>(buf.videoBuffer);
     if (vb)
     {
-      if (vb->m_fence && glIsFenceAPPLE(vb->m_fence))
+      if (vb->m_fence && gl::IsFenceAPPLE(vb->m_fence))
       {
-        glDeleteFencesAPPLE(1, &vb->m_fence);
+        gl::DeleteFencesAPPLE(1, &vb->m_fence);
         vb->m_fence = 0;
       }
     }
@@ -110,8 +110,8 @@ bool CRendererVTB::CreateTexture(int index)
     planes[p].pixpertex_y = 1;
   }
 
-  glGenTextures(1, &planes[0].id);
-  glGenTextures(1, &planes[1].id);
+  gl::GenTextures(1, &planes[0].id);
+  gl::GenTextures(1, &planes[1].id);
   planes[2].id = planes[1].id;
 
   return true;
@@ -123,13 +123,13 @@ void CRendererVTB::DeleteTexture(int index)
   CYuvPlane (&planes)[YuvImage::MAX_PLANES] = buf.fields[0];
   buf.loaded = false;
 
-  if (planes[0].id && glIsTexture(planes[0].id))
+  if (planes[0].id && gl::IsTexture(planes[0].id))
   {
-    glDeleteTextures(1, &planes[0].id);
+    gl::DeleteTextures(1, &planes[0].id);
   }
-  if (planes[1].id && glIsTexture(planes[1].id))
+  if (planes[1].id && gl::IsTexture(planes[1].id))
   {
-    glDeleteTextures(1, &planes[1].id);
+    gl::DeleteTextures(1, &planes[1].id);
   }
   planes[0].id = 0;
   planes[1].id = 0;
@@ -173,25 +173,25 @@ bool CRendererVTB::UploadTexture(int index)
   GLsizei heightY = IOSurfaceGetHeightOfPlane(surface, 0);
   GLsizei heightUV = IOSurfaceGetHeightOfPlane(surface, 1);
 
-  glBindTexture(m_textureTarget, planes[0].id);
+  gl::BindTexture(m_textureTarget, planes[0].id);
 
   CGLTexImageIOSurface2D(cgl_ctx, m_textureTarget, GL_RED,
                          widthY, heightY, GL_RED, GL_UNSIGNED_BYTE, surface, 0);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  gl::TexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  gl::TexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  gl::TexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  gl::TexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-  glBindTexture(m_textureTarget, planes[1].id);
+  gl::BindTexture(m_textureTarget, planes[1].id);
 
   CGLTexImageIOSurface2D(cgl_ctx, m_textureTarget, GL_RG,
                          widthUV, heightUV, GL_RG, GL_UNSIGNED_BYTE, surface, 1);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  gl::TexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  gl::TexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  gl::TexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  gl::TexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-  glBindTexture(m_textureTarget, 0);
+  gl::BindTexture(m_textureTarget, 0);
 
   CalculateTextureSourceRects(index, 3);
 
@@ -207,12 +207,12 @@ void CRendererVTB::AfterRenderHook(int idx)
     return;
   }
 
-  if (vb->m_fence && glIsFenceAPPLE(vb->m_fence))
+  if (vb->m_fence && gl::IsFenceAPPLE(vb->m_fence))
   {
-    glDeleteFencesAPPLE(1, &vb->m_fence);
+    gl::DeleteFencesAPPLE(1, &vb->m_fence);
   }
-  glGenFencesAPPLE(1, &vb->m_fence);
-  glSetFenceAPPLE(vb->m_fence);
+  gl::GenFencesAPPLE(1, &vb->m_fence);
+  gl::SetFenceAPPLE(vb->m_fence);
 }
 
 bool CRendererVTB::NeedBuffer(int idx)
@@ -224,9 +224,9 @@ bool CRendererVTB::NeedBuffer(int idx)
     return false;
   }
 
-  if (vb->m_fence && glIsFenceAPPLE(vb->m_fence))
+  if (vb->m_fence && gl::IsFenceAPPLE(vb->m_fence))
   {
-    if (!glTestFenceAPPLE(vb->m_fence))
+    if (!gl::TestFenceAPPLE(vb->m_fence))
       return true;
   }
 

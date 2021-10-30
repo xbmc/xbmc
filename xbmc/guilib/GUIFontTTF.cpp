@@ -31,9 +31,8 @@
 #include <ft2build.h>
 #include <harfbuzz/hb-ft.h>
 #if defined(HAS_GL) || defined(HAS_GLES)
+#include "RenderingGL.hpp"
 #include "utils/GLUtils.h"
-
-#include "system_gl.h"
 #endif
 
 #if defined(HAS_DX)

@@ -14,6 +14,7 @@
 #include "RenderFlags.h"
 #include "RenderInfo.h"
 #include "RendererGLCommon.h"
+#include "RenderingGL.hpp"
 #include "VideoShaders/ShaderFormats.h"
 #include "cores/VideoSettings.h"
 #include "guilib/Shader.h"
@@ -22,8 +23,6 @@
 #include "windowing/GraphicContext.h"
 
 #include <vector>
-
-#include "system_gl.h"
 
 extern "C" {
 #include <libavutil/mastering_display_metadata.h>

@@ -8,9 +8,8 @@
 
 #pragma once
 
+#include "RenderingGL.hpp"
 #include "Texture.h"
-
-#include "system_gl.h"
 
 /************************************************************************/
 /*    CGLTexture                                                       */

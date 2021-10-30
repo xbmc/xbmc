@@ -117,25 +117,25 @@ ConvolutionFilterShader::~ConvolutionFilterShader()
 void ConvolutionFilterShader::OnCompiledAndLinked()
 {
   // obtain shader attribute handles on successful compilation
-  m_hSourceTex = glGetUniformLocation(ProgramHandle(), "img");
-  m_hStepXY = glGetUniformLocation(ProgramHandle(), "stepxy");
-  m_hKernTex = glGetUniformLocation(ProgramHandle(), "kernelTex");
-  m_hStretch = glGetUniformLocation(ProgramHandle(), "m_stretch");
-  m_hAlpha = glGetUniformLocation(ProgramHandle(), "m_alpha");
-  m_hProj = glGetUniformLocation(ProgramHandle(), "m_proj");
-  m_hModel = glGetUniformLocation(ProgramHandle(), "m_model");
-  m_hVertex = glGetAttribLocation(ProgramHandle(), "m_attrpos");
-  m_hCoord = glGetAttribLocation(ProgramHandle(), "m_attrcord");
+  m_hSourceTex = gl::GetUniformLocation(ProgramHandle(), "img");
+  m_hStepXY = gl::GetUniformLocation(ProgramHandle(), "stepxy");
+  m_hKernTex = gl::GetUniformLocation(ProgramHandle(), "kernelTex");
+  m_hStretch = gl::GetUniformLocation(ProgramHandle(), "m_stretch");
+  m_hAlpha = gl::GetUniformLocation(ProgramHandle(), "m_alpha");
+  m_hProj = gl::GetUniformLocation(ProgramHandle(), "m_proj");
+  m_hModel = gl::GetUniformLocation(ProgramHandle(), "m_model");
+  m_hVertex = gl::GetAttribLocation(ProgramHandle(), "m_attrpos");
+  m_hCoord = gl::GetAttribLocation(ProgramHandle(), "m_attrcord");
 
   CConvolutionKernel kernel(m_method, 256);
 
   if (m_kernelTex1)
   {
-    glDeleteTextures(1, &m_kernelTex1);
+    gl::DeleteTextures(1, &m_kernelTex1);
     m_kernelTex1 = 0;
   }
 
-  glGenTextures(1, &m_kernelTex1);
+  gl::GenTextures(1, &m_kernelTex1);
 
   if ((m_kernelTex1<=0))
   {
@@ -145,12 +145,12 @@ void ConvolutionFilterShader::OnCompiledAndLinked()
 
   //make a kernel texture on GL_TEXTURE2 and set clamping and interpolation
   //TEXTARGET is set to GL_TEXTURE_1D or GL_TEXTURE_2D
-  glActiveTexture(GL_TEXTURE2);
-  glBindTexture(TEXTARGET, m_kernelTex1);
-  glTexParameteri(TEXTARGET, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(TEXTARGET, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(TEXTARGET, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(TEXTARGET, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  gl::ActiveTexture(GL_TEXTURE2);
+  gl::BindTexture(TEXTARGET, m_kernelTex1);
+  gl::TexParameteri(TEXTARGET, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  gl::TexParameteri(TEXTARGET, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  gl::TexParameteri(TEXTARGET, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  gl::TexParameteri(TEXTARGET, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
   //if float textures are supported, we can load the kernel as a float texture
   //if not we load it as 8 bit unsigned which gets converted back to float in the shader
@@ -167,9 +167,9 @@ void ConvolutionFilterShader::OnCompiledAndLinked()
     data   = (GLvoid*)kernel.GetUint8Pixels();
   }
 
-  glTexImage1D(TEXTARGET, 0, m_internalformat, kernel.GetSize(), 0, GL_RGBA, format, data);
+  gl::TexImage1D(TEXTARGET, 0, m_internalformat, kernel.GetSize(), 0, GL_RGBA, format, data);
 
-  glActiveTexture(GL_TEXTURE0);
+  gl::ActiveTexture(GL_TEXTURE0);
 
   VerifyGLState();
 
@@ -180,18 +180,18 @@ void ConvolutionFilterShader::OnCompiledAndLinked()
 bool ConvolutionFilterShader::OnEnabled()
 {
   // set shader attributes once enabled
-  glActiveTexture(GL_TEXTURE2);
-  glBindTexture(TEXTARGET, m_kernelTex1);
+  gl::ActiveTexture(GL_TEXTURE2);
+  gl::BindTexture(TEXTARGET, m_kernelTex1);
 
-  glActiveTexture(GL_TEXTURE0);
-  glUniform1i(m_hSourceTex, m_sourceTexUnit);
-  glUniform1i(m_hKernTex, 2);
-  glUniform2f(m_hStepXY, m_stepX, m_stepY);
-  glUniform1f(m_hStretch, m_stretch);
-  glUniform1f(m_hAlpha, m_alpha);
+  gl::ActiveTexture(GL_TEXTURE0);
+  gl::Uniform1i(m_hSourceTex, m_sourceTexUnit);
+  gl::Uniform1i(m_hKernTex, 2);
+  gl::Uniform2f(m_hStepXY, m_stepX, m_stepY);
+  gl::Uniform1f(m_hStretch, m_stretch);
+  gl::Uniform1f(m_hAlpha, m_alpha);
 
-  glUniformMatrix4fv(m_hProj, 1, GL_FALSE, m_proj);
-  glUniformMatrix4fv(m_hModel, 1, GL_FALSE, m_model);
+  gl::UniformMatrix4fv(m_hProj, 1, GL_FALSE, m_proj);
+  gl::UniformMatrix4fv(m_hModel, 1, GL_FALSE, m_model);
 
   VerifyGLState();
   if (m_glslOutput) m_glslOutput->OnEnabled();
@@ -206,7 +206,7 @@ void ConvolutionFilterShader::OnDisabled()
 void ConvolutionFilterShader::Free()
 {
   if (m_kernelTex1)
-    glDeleteTextures(1, &m_kernelTex1);
+    gl::DeleteTextures(1, &m_kernelTex1);
   m_kernelTex1 = 0;
   if (m_glslOutput) m_glslOutput->Free();
   BaseVideoFilterShader::Free();
@@ -223,22 +223,22 @@ StretchFilterShader::StretchFilterShader()
 
 void StretchFilterShader::OnCompiledAndLinked()
 {
-  m_hSourceTex = glGetUniformLocation(ProgramHandle(), "img");
-  m_hStretch = glGetUniformLocation(ProgramHandle(), "m_stretch");
-  m_hAlpha = glGetUniformLocation(ProgramHandle(), "m_alpha");
-  m_hProj = glGetUniformLocation(ProgramHandle(), "m_proj");
-  m_hModel = glGetUniformLocation(ProgramHandle(), "m_model");
-  m_hVertex = glGetAttribLocation(ProgramHandle(), "m_attrpos");
-  m_hCoord = glGetAttribLocation(ProgramHandle(), "m_attrcord");
+  m_hSourceTex = gl::GetUniformLocation(ProgramHandle(), "img");
+  m_hStretch = gl::GetUniformLocation(ProgramHandle(), "m_stretch");
+  m_hAlpha = gl::GetUniformLocation(ProgramHandle(), "m_alpha");
+  m_hProj = gl::GetUniformLocation(ProgramHandle(), "m_proj");
+  m_hModel = gl::GetUniformLocation(ProgramHandle(), "m_model");
+  m_hVertex = gl::GetAttribLocation(ProgramHandle(), "m_attrpos");
+  m_hCoord = gl::GetAttribLocation(ProgramHandle(), "m_attrcord");
 }
 
 bool StretchFilterShader::OnEnabled()
 {
-  glUniform1i(m_hSourceTex, m_sourceTexUnit);
-  glUniform1f(m_hStretch, m_stretch);
-  glUniform1f(m_hAlpha, m_alpha);
-  glUniformMatrix4fv(m_hProj, 1, GL_FALSE, m_proj);
-  glUniformMatrix4fv(m_hModel, 1, GL_FALSE, m_model);
+  gl::Uniform1i(m_hSourceTex, m_sourceTexUnit);
+  gl::Uniform1f(m_hStretch, m_stretch);
+  gl::Uniform1f(m_hAlpha, m_alpha);
+  gl::UniformMatrix4fv(m_hProj, 1, GL_FALSE, m_proj);
+  gl::UniformMatrix4fv(m_hModel, 1, GL_FALSE, m_model);
   VerifyGLState();
   return true;
 }
@@ -249,20 +249,20 @@ bool StretchFilterShader::OnEnabled()
 
 void DefaultFilterShader::OnCompiledAndLinked()
 {
-  m_hSourceTex = glGetUniformLocation(ProgramHandle(), "img");
-  m_hProj = glGetUniformLocation(ProgramHandle(), "m_proj");
-  m_hModel = glGetUniformLocation(ProgramHandle(), "m_model");
-  m_hVertex = glGetAttribLocation(ProgramHandle(), "m_attrpos");
-  m_hCoord = glGetAttribLocation(ProgramHandle(), "m_attrcord");
-  m_hAlpha = glGetUniformLocation(ProgramHandle(), "m_alpha");
+  m_hSourceTex = gl::GetUniformLocation(ProgramHandle(), "img");
+  m_hProj = gl::GetUniformLocation(ProgramHandle(), "m_proj");
+  m_hModel = gl::GetUniformLocation(ProgramHandle(), "m_model");
+  m_hVertex = gl::GetAttribLocation(ProgramHandle(), "m_attrpos");
+  m_hCoord = gl::GetAttribLocation(ProgramHandle(), "m_attrcord");
+  m_hAlpha = gl::GetUniformLocation(ProgramHandle(), "m_alpha");
 }
 
 bool DefaultFilterShader::OnEnabled()
 {
-  glUniform1i(m_hSourceTex, m_sourceTexUnit);
-  glUniform1f(m_hAlpha, m_alpha);
-  glUniformMatrix4fv(m_hProj, 1, GL_FALSE, m_proj);
-  glUniformMatrix4fv(m_hModel, 1, GL_FALSE, m_model);
+  gl::Uniform1i(m_hSourceTex, m_sourceTexUnit);
+  gl::Uniform1f(m_hAlpha, m_alpha);
+  gl::UniformMatrix4fv(m_hProj, 1, GL_FALSE, m_proj);
+  gl::UniformMatrix4fv(m_hModel, 1, GL_FALSE, m_model);
   VerifyGLState();
   return true;
 }

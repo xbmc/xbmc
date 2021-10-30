@@ -39,7 +39,7 @@ bool CRenderSystemGL::InitRenderSystem()
   // Get the GL version number
   m_RenderVersionMajor = 0;
   m_RenderVersionMinor = 0;
-  const char* ver = (const char*)glGetString(GL_VERSION);
+  const char* ver = (const char*)gl::GetString(GL_VERSION);
   if (ver != 0)
   {
     sscanf(ver, "%d.%d", &m_RenderVersionMajor, &m_RenderVersionMinor);
@@ -54,20 +54,20 @@ bool CRenderSystemGL::InitRenderSystem()
       (m_RenderVersionMajor == 3 && m_RenderVersionMinor >= 2))
   {
     GLint n = 0;
-    glGetIntegerv(GL_NUM_EXTENSIONS, &n);
+    gl::GetIntegerv(GL_NUM_EXTENSIONS, &n);
     if (n > 0)
     {
       GLint i;
       for (i = 0; i < n; i++)
       {
-        m_RenderExtensions += (const char*) glGetStringi(GL_EXTENSIONS, i);
+        m_RenderExtensions += (const char*)gl::GetStringi(GL_EXTENSIONS, i);
         m_RenderExtensions += " ";
       }
     }
   }
   else
   {
-    auto extensions = (const char*) glGetString(GL_EXTENSIONS);
+    auto extensions = (const char*)gl::GetString(GL_EXTENSIONS);
     if (extensions)
     {
       m_RenderExtensions += extensions;
@@ -75,7 +75,7 @@ bool CRenderSystemGL::InitRenderSystem()
   }
   m_RenderExtensions += " ";
 
-  ver = (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
+  ver = (const char*)gl::GetString(GL_SHADING_LANGUAGE_VERSION);
   if (ver)
   {
     sscanf(ver, "%d.%d", &m_glslMajor, &m_glslMinor);
@@ -89,12 +89,12 @@ bool CRenderSystemGL::InitRenderSystem()
   LogGraphicsInfo();
 
   // Get our driver vendor and renderer
-  const char* tmpVendor = (const char*) glGetString(GL_VENDOR);
+  const char* tmpVendor = (const char*)gl::GetString(GL_VENDOR);
   m_RenderVendor.clear();
   if (tmpVendor != NULL)
     m_RenderVendor = tmpVendor;
 
-  const char* tmpRenderer = (const char*) glGetString(GL_RENDERER);
+  const char* tmpRenderer = (const char*)gl::GetString(GL_RENDERER);
   m_RenderRenderer.clear();
   if (tmpRenderer != NULL)
     m_RenderRenderer = tmpRenderer;
@@ -104,8 +104,8 @@ bool CRenderSystemGL::InitRenderSystem()
   if (m_RenderVersionMajor > 3 ||
       (m_RenderVersionMajor == 3 && m_RenderVersionMinor >= 2))
   {
-    glGenVertexArrays(1, &m_vertexArray);
-    glBindVertexArray(m_vertexArray);
+    gl::GenVertexArrays(1, &m_vertexArray);
+    gl::BindVertexArray(m_vertexArray);
   }
 
   InitialiseShaders();
@@ -126,27 +126,27 @@ bool CRenderSystemGL::ResetRenderSystem(int width, int height)
   if (m_RenderVersionMajor > 3 ||
       (m_RenderVersionMajor == 3 && m_RenderVersionMinor >= 2))
   {
-    glBindVertexArray(0);
-    glDeleteVertexArrays(1, &m_vertexArray);
-    glGenVertexArrays(1, &m_vertexArray);
-    glBindVertexArray(m_vertexArray);
+    gl::BindVertexArray(0);
+    gl::DeleteVertexArrays(1, &m_vertexArray);
+    gl::GenVertexArrays(1, &m_vertexArray);
+    gl::BindVertexArray(m_vertexArray);
   }
 
   ReleaseShaders();
   InitialiseShaders();
 
-  glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+  gl::ClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
   CalculateMaxTexturesize();
 
   CRect rect( 0, 0, width, height );
   SetViewPort( rect );
 
-  glEnable(GL_SCISSOR_TEST);
+  gl::Enable(GL_SCISSOR_TEST);
 
   glMatrixProject.Clear();
   glMatrixProject->LoadIdentity();
-  glMatrixProject->Ortho(0.0f, width-1, height-1, 0.0f, -1.0f, 1.0f);
+  glMatrixProject->Ortho(0.0f, width - 1, height - 1, 0.0f, -1.0f, 1.0f);
   glMatrixProject.Load();
 
   glMatrixModview.Clear();
@@ -163,10 +163,10 @@ bool CRenderSystemGL::ResetRenderSystem(int width, int height)
     ResetGLErrors();
 
     GLint maxtex;
-    glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &maxtex);
+    gl::GetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &maxtex);
 
     //some sanity checks
-    GLenum error = glGetError();
+    GLenum error = gl::GetError();
     if (error != GL_NO_ERROR)
     {
       CLog::Log(LOGERROR, "ResetRenderSystem() GL_MAX_TEXTURE_IMAGE_UNITS returned error {}",
@@ -184,15 +184,15 @@ bool CRenderSystemGL::ResetRenderSystem(int width, int height)
     //reset texture matrix for all textures
     for (GLint i = 0; i < maxtex; i++)
     {
-      glActiveTexture(GL_TEXTURE0 + i);
+      gl::ActiveTexture(GL_TEXTURE0 + i);
       glMatrixTexture.Load();
     }
-    glActiveTexture(GL_TEXTURE0);
+    gl::ActiveTexture(GL_TEXTURE0);
   }
 
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-  glEnable(GL_BLEND);          // Turn Blending On
-  glDisable(GL_DEPTH_TEST);
+  gl::BlendFunc(GL_SRC_ALPHA, GL_ONE);
+  gl::Enable(GL_BLEND); // Turn Blending On
+  gl::Disable(GL_DEPTH_TEST);
 
   return true;
 }
@@ -201,7 +201,7 @@ bool CRenderSystemGL::DestroyRenderSystem()
 {
   if (m_vertexArray != GL_NONE)
   {
-    glDeleteVertexArrays(1, &m_vertexArray);
+    gl::DeleteVertexArrays(1, &m_vertexArray);
   }
 
   ReleaseShaders();
@@ -249,10 +249,10 @@ bool CRenderSystemGL::ClearBuffers(UTILS::COLOR::Color color)
   float b = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::B, color) / 255.0f;
   float a = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::A, color) / 255.0f;
 
-  glClearColor(r, g, b, a);
+  gl::ClearColor(r, g, b, a);
 
   GLbitfield flags = GL_COLOR_BUFFER_BIT;
-  glClear(flags);
+  gl::Clear(flags);
 
   return true;
 }
@@ -326,8 +326,8 @@ void CRenderSystemGL::CaptureStateBlock()
   glMatrixModview.Push();
   glMatrixTexture.Push();
 
-  glDisable(GL_SCISSOR_TEST); // fixes FBO corruption on Macs
-  glActiveTexture(GL_TEXTURE0);
+  gl::Disable(GL_SCISSOR_TEST); // fixes FBO corruption on Macs
+  gl::ActiveTexture(GL_TEXTURE0);
 }
 
 void CRenderSystemGL::ApplyStateBlock()
@@ -335,17 +335,17 @@ void CRenderSystemGL::ApplyStateBlock()
   if (!m_bRenderCreated)
     return;
 
-  glBindVertexArray(m_vertexArray);
+  gl::BindVertexArray(m_vertexArray);
 
-  glViewport(m_viewPort[0], m_viewPort[1], m_viewPort[2], m_viewPort[3]);
+  gl::Viewport(m_viewPort[0], m_viewPort[1], m_viewPort[2], m_viewPort[3]);
 
   glMatrixProject.PopLoad();
   glMatrixModview.PopLoad();
   glMatrixTexture.PopLoad();
 
-  glActiveTexture(GL_TEXTURE0);
-  glEnable(GL_BLEND);
-  glEnable(GL_SCISSOR_TEST);
+  gl::ActiveTexture(GL_TEXTURE0);
+  gl::Enable(GL_BLEND);
+  gl::Enable(GL_SCISSOR_TEST);
 }
 
 void CRenderSystemGL::SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight, float stereoFactor)
@@ -365,14 +365,16 @@ void CRenderSystemGL::SetCameraPosition(const CPoint &camera, int screenWidth, i
   glMatrixModview.Load();
 
   glMatrixProject->LoadIdentity();
-  glMatrixProject->Frustum( (-w - offset.x)*0.5f, (w - offset.x)*0.5f, (-h + offset.y)*0.5f, (h + offset.y)*0.5f, h, 100*h);
+  glMatrixProject->Frustum((-w - offset.x) * 0.5f, (w - offset.x) * 0.5f, (-h + offset.y) * 0.5f,
+                           (h + offset.y) * 0.5f, h, 100 * h);
   glMatrixProject.Load();
 }
 
 void CRenderSystemGL::Project(float &x, float &y, float &z)
 {
   GLfloat coordX, coordY, coordZ;
-  if (CMatrixGL::Project(x, y, z, glMatrixModview.Get(), glMatrixProject.Get(), m_viewPort, &coordX, &coordY, &coordZ))
+  if (CMatrixGL::Project(x, y, z, glMatrixModview.Get(), glMatrixProject.Get(), m_viewPort, &coordX,
+                         &coordY, &coordZ))
   {
     x = coordX;
     y = (float)(m_viewPort[1] + m_viewPort[3] - coordY);
@@ -390,13 +392,12 @@ void CRenderSystemGL::CalculateMaxTexturesize()
   // max out at 2^(8+8)
   for (int i = 0 ; i<8 ; i++)
   {
-    glTexImage2D(GL_PROXY_TEXTURE_2D, 0, GL_RGBA, width, width, 0, GL_BGRA,
-                 GL_UNSIGNED_BYTE, NULL);
-    glGetTexLevelParameteriv(GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH,
-                             &width);
+    gl::TexImage2D(GL_PROXY_TEXTURE_2D, 0, GL_RGBA, width, width, 0, GL_BGRA, GL_UNSIGNED_BYTE,
+                   NULL);
+    gl::GetTexLevelParameteriv(GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
 
     // GMA950 on OS X sets error instead
-    if (width == 0 || (glGetError() != GL_NO_ERROR) )
+    if (width == 0 || (gl::GetError() != GL_NO_ERROR))
       break;
 
     m_maxTextureSize = width;
@@ -428,8 +429,10 @@ void CRenderSystemGL::SetViewPort(const CRect& viewPort)
   if (!m_bRenderCreated)
     return;
 
-  glScissor((GLint) viewPort.x1, (GLint) (m_height - viewPort.y1 - viewPort.Height()), (GLsizei) viewPort.Width(), (GLsizei) viewPort.Height());
-  glViewport((GLint) viewPort.x1, (GLint) (m_height - viewPort.y1 - viewPort.Height()), (GLsizei) viewPort.Width(), (GLsizei) viewPort.Height());
+  gl::Scissor((GLint)viewPort.x1, (GLint)(m_height - viewPort.y1 - viewPort.Height()),
+              (GLsizei)viewPort.Width(), (GLsizei)viewPort.Height());
+  gl::Viewport((GLint)viewPort.x1, (GLint)(m_height - viewPort.y1 - viewPort.Height()),
+               (GLsizei)viewPort.Width(), (GLsizei)viewPort.Height());
   m_viewPort[0] = viewPort.x1;
   m_viewPort[1] = m_height - viewPort.y1 - viewPort.Height();
   m_viewPort[2] = viewPort.Width();
@@ -466,7 +469,7 @@ void CRenderSystemGL::SetScissors(const CRect &rect)
   GLint y1 = MathUtils::round_int(static_cast<double>(rect.y1));
   GLint x2 = MathUtils::round_int(static_cast<double>(rect.x2));
   GLint y2 = MathUtils::round_int(static_cast<double>(rect.y2));
-  glScissor(x1, m_height - y2, x2-x1, y2-y1);
+  gl::Scissor(x1, m_height - y2, x2 - x1, y2 - y1);
 }
 
 void CRenderSystemGL::ResetScissors()
@@ -483,7 +486,7 @@ void CRenderSystemGL::GetGLSLVersion(int& major, int& minor)
 void CRenderSystemGL::ResetGLErrors()
 {
   int count = 0;
-  while (glGetError() != GL_NO_ERROR)
+  while (gl::GetError() != GL_NO_ERROR)
   {
     count++;
     if (count >= 100)
@@ -536,46 +539,46 @@ void CRenderSystemGL::SetStereoMode(RENDER_STEREO_MODE mode, RENDER_STEREO_VIEW 
 {
   CRenderSystemBase::SetStereoMode(mode, view);
 
-  glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-  glDrawBuffer(GL_BACK);
+  gl::ColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+  gl::DrawBuffer(GL_BACK);
 
   if(m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_RED_CYAN)
   {
     if(m_stereoView == RENDER_STEREO_VIEW_LEFT)
-      glColorMask(GL_TRUE, GL_FALSE, GL_FALSE, GL_TRUE);
+      gl::ColorMask(GL_TRUE, GL_FALSE, GL_FALSE, GL_TRUE);
     else if(m_stereoView == RENDER_STEREO_VIEW_RIGHT)
-      glColorMask(GL_FALSE, GL_TRUE, GL_TRUE, GL_TRUE);
+      gl::ColorMask(GL_FALSE, GL_TRUE, GL_TRUE, GL_TRUE);
   }
   if(m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_GREEN_MAGENTA)
   {
     if(m_stereoView == RENDER_STEREO_VIEW_LEFT)
-      glColorMask(GL_FALSE, GL_TRUE, GL_FALSE, GL_TRUE);
+      gl::ColorMask(GL_FALSE, GL_TRUE, GL_FALSE, GL_TRUE);
     else if(m_stereoView == RENDER_STEREO_VIEW_RIGHT)
-      glColorMask(GL_TRUE, GL_FALSE, GL_TRUE, GL_TRUE);
+      gl::ColorMask(GL_TRUE, GL_FALSE, GL_TRUE, GL_TRUE);
   }
   if(m_stereoMode == RENDER_STEREO_MODE_ANAGLYPH_YELLOW_BLUE)
   {
     if(m_stereoView == RENDER_STEREO_VIEW_LEFT)
-      glColorMask(GL_TRUE, GL_TRUE, GL_FALSE, GL_TRUE);
+      gl::ColorMask(GL_TRUE, GL_TRUE, GL_FALSE, GL_TRUE);
     else if(m_stereoView == RENDER_STEREO_VIEW_RIGHT)
-      glColorMask(GL_FALSE, GL_FALSE, GL_TRUE, GL_TRUE);
+      gl::ColorMask(GL_FALSE, GL_FALSE, GL_TRUE, GL_TRUE);
   }
 
   if(m_stereoMode == RENDER_STEREO_MODE_INTERLACED)
   {
-    glEnable(GL_POLYGON_STIPPLE);
+    gl::Enable(GL_POLYGON_STIPPLE);
     if(m_stereoView == RENDER_STEREO_VIEW_LEFT)
-      glPolygonStipple(stipple_3d);
+      gl::PolygonStipple(stipple_3d);
     else if(m_stereoView == RENDER_STEREO_VIEW_RIGHT)
-      glPolygonStipple(stipple_3d+4);
+      gl::PolygonStipple(stipple_3d + 4);
   }
 
   if(m_stereoMode == RENDER_STEREO_MODE_HARDWAREBASED)
   {
     if(m_stereoView == RENDER_STEREO_VIEW_LEFT)
-      glDrawBuffer(GL_BACK_LEFT);
+      gl::DrawBuffer(GL_BACK_LEFT);
     else if(m_stereoView == RENDER_STEREO_VIEW_RIGHT)
-      glDrawBuffer(GL_BACK_RIGHT);
+      gl::DrawBuffer(GL_BACK_RIGHT);
   }
 
 }
@@ -594,7 +597,7 @@ bool CRenderSystemGL::SupportsStereo(RENDER_STEREO_MODE mode) const
       //luckily if GL doesn't support this, it will just behave as if
       //it was not in effect.
       //GLboolean stereo = GL_FALSE;
-      //glGetBooleanv(GL_STEREO, &stereo);
+      //gl::GetBooleanv(GL_STEREO, &stereo);
       //return stereo == GL_TRUE ? true : false;
       return true;
     }

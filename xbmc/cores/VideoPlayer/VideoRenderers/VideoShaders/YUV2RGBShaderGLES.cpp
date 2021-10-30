@@ -80,51 +80,51 @@ BaseYUV2RGBGLSLShader::~BaseYUV2RGBGLSLShader()
 
 void BaseYUV2RGBGLSLShader::OnCompiledAndLinked()
 {
-  m_hVertex = glGetAttribLocation(ProgramHandle(),  "m_attrpos");
-  m_hYcoord = glGetAttribLocation(ProgramHandle(),  "m_attrcordY");
-  m_hUcoord = glGetAttribLocation(ProgramHandle(),  "m_attrcordU");
-  m_hVcoord = glGetAttribLocation(ProgramHandle(),  "m_attrcordV");
-  m_hProj = glGetUniformLocation(ProgramHandle(), "m_proj");
-  m_hModel = glGetUniformLocation(ProgramHandle(), "m_model");
-  m_hAlpha = glGetUniformLocation(ProgramHandle(), "m_alpha");
-  m_hYTex = glGetUniformLocation(ProgramHandle(), "m_sampY");
-  m_hUTex = glGetUniformLocation(ProgramHandle(), "m_sampU");
-  m_hVTex = glGetUniformLocation(ProgramHandle(), "m_sampV");
-  m_hYuvMat = glGetUniformLocation(ProgramHandle(), "m_yuvmat");
-  m_hStep = glGetUniformLocation(ProgramHandle(), "m_step");
-  m_hPrimMat = glGetUniformLocation(ProgramHandle(), "m_primMat");
-  m_hGammaSrc = glGetUniformLocation(ProgramHandle(), "m_gammaSrc");
-  m_hGammaDstInv = glGetUniformLocation(ProgramHandle(), "m_gammaDstInv");
-  m_hCoefsDst = glGetUniformLocation(ProgramHandle(), "m_coefsDst");
-  m_hToneP1 = glGetUniformLocation(ProgramHandle(), "m_toneP1");
-  m_hLuminance = glGetUniformLocation(ProgramHandle(), "m_luminance");
+  m_hVertex = gl::GetAttribLocation(ProgramHandle(), "m_attrpos");
+  m_hYcoord = gl::GetAttribLocation(ProgramHandle(), "m_attrcordY");
+  m_hUcoord = gl::GetAttribLocation(ProgramHandle(), "m_attrcordU");
+  m_hVcoord = gl::GetAttribLocation(ProgramHandle(), "m_attrcordV");
+  m_hProj = gl::GetUniformLocation(ProgramHandle(), "m_proj");
+  m_hModel = gl::GetUniformLocation(ProgramHandle(), "m_model");
+  m_hAlpha = gl::GetUniformLocation(ProgramHandle(), "m_alpha");
+  m_hYTex = gl::GetUniformLocation(ProgramHandle(), "m_sampY");
+  m_hUTex = gl::GetUniformLocation(ProgramHandle(), "m_sampU");
+  m_hVTex = gl::GetUniformLocation(ProgramHandle(), "m_sampV");
+  m_hYuvMat = gl::GetUniformLocation(ProgramHandle(), "m_yuvmat");
+  m_hStep = gl::GetUniformLocation(ProgramHandle(), "m_step");
+  m_hPrimMat = gl::GetUniformLocation(ProgramHandle(), "m_primMat");
+  m_hGammaSrc = gl::GetUniformLocation(ProgramHandle(), "m_gammaSrc");
+  m_hGammaDstInv = gl::GetUniformLocation(ProgramHandle(), "m_gammaDstInv");
+  m_hCoefsDst = gl::GetUniformLocation(ProgramHandle(), "m_coefsDst");
+  m_hToneP1 = gl::GetUniformLocation(ProgramHandle(), "m_toneP1");
+  m_hLuminance = gl::GetUniformLocation(ProgramHandle(), "m_luminance");
   VerifyGLState();
 }
 
 bool BaseYUV2RGBGLSLShader::OnEnabled()
 {
   // set shader attributes once enabled
-  glUniform1i(m_hYTex, 0);
-  glUniform1i(m_hUTex, 1);
-  glUniform1i(m_hVTex, 2);
-  glUniform2f(m_hStep, 1.0 / m_width, 1.0 / m_height);
+  gl::Uniform1i(m_hYTex, 0);
+  gl::Uniform1i(m_hUTex, 1);
+  gl::Uniform1i(m_hVTex, 2);
+  gl::Uniform2f(m_hStep, 1.0 / m_width, 1.0 / m_height);
 
   m_convMatrix.SetDestinationContrast(m_contrast)
       .SetDestinationBlack(m_black)
       .SetDestinationLimitedRange(!m_convertFullRange);
 
   Matrix4 yuvMat = m_convMatrix.GetYuvMat();
-  glUniformMatrix4fv(m_hYuvMat, 1, GL_FALSE, yuvMat.ToRaw());
-  glUniformMatrix4fv(m_hProj,  1, GL_FALSE, m_proj);
-  glUniformMatrix4fv(m_hModel, 1, GL_FALSE, m_model);
-  glUniform1f(m_hAlpha, m_alpha);
+  gl::UniformMatrix4fv(m_hYuvMat, 1, GL_FALSE, yuvMat.ToRaw());
+  gl::UniformMatrix4fv(m_hProj, 1, GL_FALSE, m_proj);
+  gl::UniformMatrix4fv(m_hModel, 1, GL_FALSE, m_model);
+  gl::Uniform1f(m_hAlpha, m_alpha);
 
   if (m_colorConversion)
   {
     Matrix3 primMat = m_convMatrix.GetPrimMat();
-    glUniformMatrix3fv(m_hPrimMat, 1, GL_FALSE, primMat.ToRaw());
-    glUniform1f(m_hGammaSrc, m_convMatrix.GetGammaSrc());
-    glUniform1f(m_hGammaDstInv, 1 / m_convMatrix.GetGammaDst());
+    gl::UniformMatrix3fv(m_hPrimMat, 1, GL_FALSE, primMat.ToRaw());
+    gl::Uniform1f(m_hGammaSrc, m_convMatrix.GetGammaSrc());
+    gl::Uniform1f(m_hGammaDstInv, 1 / m_convMatrix.GetGammaDst());
   }
 
   if (m_toneMapping)
@@ -152,20 +152,20 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
       param *= m_toneMappingParam;
 
       Matrix3x1 coefs = m_convMatrix.GetRGBYuvCoefs(AVColorSpace::AVCOL_SPC_BT709);
-      glUniform3f(m_hCoefsDst, coefs[0], coefs[1], coefs[2]);
-      glUniform1f(m_hToneP1, param);
+      gl::Uniform3f(m_hCoefsDst, coefs[0], coefs[1], coefs[2]);
+      gl::Uniform1f(m_hToneP1, param);
     }
     else if (m_toneMappingMethod == VS_TONEMAPMETHOD_ACES)
     {
-      glUniform1f(m_hLuminance, GetLuminanceValue());
-      glUniform1f(m_hToneP1, m_toneMappingParam);
+      gl::Uniform1f(m_hLuminance, GetLuminanceValue());
+      gl::Uniform1f(m_hToneP1, m_toneMappingParam);
     }
     else if (m_toneMappingMethod == VS_TONEMAPMETHOD_HABLE)
     {
       float lumin = GetLuminanceValue();
       float param = (10000.0f / lumin) * (2.0f / m_toneMappingParam);
-      glUniform1f(m_hLuminance, lumin);
-      glUniform1f(m_hToneP1, param);
+      gl::Uniform1f(m_hLuminance, lumin);
+      gl::Uniform1f(m_hToneP1, param);
     }
   }
 
@@ -279,9 +279,9 @@ YUV2RGBBobShader::YUV2RGBBobShader(EShaderFormat format,
 void YUV2RGBBobShader::OnCompiledAndLinked()
 {
   BaseYUV2RGBGLSLShader::OnCompiledAndLinked();
-  m_hStepX = glGetUniformLocation(ProgramHandle(), "m_stepX");
-  m_hStepY = glGetUniformLocation(ProgramHandle(), "m_stepY");
-  m_hField = glGetUniformLocation(ProgramHandle(), "m_field");
+  m_hStepX = gl::GetUniformLocation(ProgramHandle(), "m_stepX");
+  m_hStepY = gl::GetUniformLocation(ProgramHandle(), "m_stepY");
+  m_hField = gl::GetUniformLocation(ProgramHandle(), "m_field");
   VerifyGLState();
 }
 
@@ -290,9 +290,9 @@ bool YUV2RGBBobShader::OnEnabled()
   if(!BaseYUV2RGBGLSLShader::OnEnabled())
     return false;
 
-  glUniform1i(m_hField, m_field);
-  glUniform1f(m_hStepX, 1.0f / (float)m_width);
-  glUniform1f(m_hStepY, 1.0f / (float)m_height);
+  gl::Uniform1i(m_hField, m_field);
+  gl::Uniform1f(m_hStepX, 1.0f / (float)m_width);
+  gl::Uniform1f(m_hStepY, 1.0f / (float)m_height);
   VerifyGLState();
   return true;
 }

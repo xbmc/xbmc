@@ -9,8 +9,7 @@
 #pragma once
 
 #include "GLContext.h"
-
-#include <GL/glx.h>
+#include "RenderingGLX.hpp"
 
 namespace KODI
 {

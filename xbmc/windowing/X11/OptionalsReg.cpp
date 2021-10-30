@@ -133,9 +133,9 @@ void VAAPIRegisterRenderGLES(CVaapiProxy* winSystem, bool& general, bool& deepCo
 //-----------------------------------------------------------------------------
 
 #ifdef HAS_GLX
-#include <GL/glx.h>
-#include "VideoSyncGLX.h"
 #include "GLContextGLX.h"
+#include "RenderingGLX.hpp"
+#include "VideoSyncGLX.h"
 
 namespace KODI
 {

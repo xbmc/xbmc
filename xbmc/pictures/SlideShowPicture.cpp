@@ -853,8 +853,8 @@ void CSlideShowPic::Render(float* x, float* y, CTexture* pTexture, UTILS::COLOR:
       pTexture->LoadToGPU();
       pTexture->BindToUnit(0);
 
-      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-      glEnable(GL_BLEND);
+      gl::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      gl::Enable(GL_BLEND);
 
       renderSystemGL->EnableShader(ShaderMethodGL::SM_TEXTURE);
     }
@@ -909,17 +909,17 @@ void CSlideShowPic::Render(float* x, float* y, CTexture* pTexture, UTILS::COLOR:
     GLint tex0Loc = renderSystemGL->ShaderGetCoord0();
     GLint uniColLoc = renderSystemGL->ShaderGetUniCol();
 
-    glGenBuffers(1, &vertexVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex) * 4, &vertex[0], GL_STATIC_DRAW);
+    gl::GenBuffers(1, &vertexVBO);
+    gl::BindBuffer(GL_ARRAY_BUFFER, vertexVBO);
+    gl::BufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex) * 4, &vertex[0], GL_STATIC_DRAW);
 
-    glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex),
-                          reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, x)));
-    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
-                          reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u1)));
+    gl::VertexAttribPointer(posLoc, 3, GL_FLOAT, 0, sizeof(PackedVertex),
+                            reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, x)));
+    gl::VertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
+                            reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u1)));
 
-    glEnableVertexAttribArray(posLoc);
-    glEnableVertexAttribArray(tex0Loc);
+    gl::EnableVertexAttribArray(posLoc);
+    gl::EnableVertexAttribArray(tex0Loc);
 
     // Setup Colour values
     colour[0] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::R, color);
@@ -927,22 +927,22 @@ void CSlideShowPic::Render(float* x, float* y, CTexture* pTexture, UTILS::COLOR:
     colour[2] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::B, color);
     colour[3] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::A, color);
 
-    glUniform4f(uniColLoc, (colour[0] / 255.0f), (colour[1] / 255.0f), (colour[2] / 255.0f),
-                (colour[3] / 255.0f));
+    gl::Uniform4f(uniColLoc, (colour[0] / 255.0f), (colour[1] / 255.0f), (colour[2] / 255.0f),
+                  (colour[3] / 255.0f));
 
-    glGenBuffers(1, &indexVBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte) * 4, idx, GL_STATIC_DRAW);
+    gl::GenBuffers(1, &indexVBO);
+    gl::BindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
+    gl::BufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte) * 4, idx, GL_STATIC_DRAW);
 
-    glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
+    gl::DrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
 
-    glDisableVertexAttribArray(posLoc);
-    glDisableVertexAttribArray(tex0Loc);
+    gl::DisableVertexAttribArray(posLoc);
+    gl::DisableVertexAttribArray(tex0Loc);
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glDeleteBuffers(1, &vertexVBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glDeleteBuffers(1, &indexVBO);
+    gl::BindBuffer(GL_ARRAY_BUFFER, 0);
+    gl::DeleteBuffers(1, &vertexVBO);
+    gl::BindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    gl::DeleteBuffers(1, &indexVBO);
 
     renderSystemGL->DisableShader();
   }
@@ -956,8 +956,8 @@ void CSlideShowPic::Render(float* x, float* y, CTexture* pTexture, UTILS::COLOR:
       pTexture->LoadToGPU();
       pTexture->BindToUnit(0);
 
-      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-      glEnable(GL_BLEND); // Turn Blending On
+      gl::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      gl::Enable(GL_BLEND); // Turn Blending On
 
       renderSystemGLES->EnableGUIShader(ShaderMethodGLES::SM_TEXTURE);
     }
@@ -982,11 +982,11 @@ void CSlideShowPic::Render(float* x, float* y, CTexture* pTexture, UTILS::COLOR:
     GLint tex0Loc = renderSystemGLES->GUIShaderGetCoord0();
     GLint uniColLoc = renderSystemGLES->GUIShaderGetUniCol();
 
-    glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, 0, ver);
-    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, tex);
+    gl::VertexAttribPointer(posLoc, 3, GL_FLOAT, 0, 0, ver);
+    gl::VertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, tex);
 
-    glEnableVertexAttribArray(posLoc);
-    glEnableVertexAttribArray(tex0Loc);
+    gl::EnableVertexAttribArray(posLoc);
+    gl::EnableVertexAttribArray(tex0Loc);
 
     // Setup Colour values
     col[0] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::R, color);
@@ -1014,12 +1014,12 @@ void CSlideShowPic::Render(float* x, float* y, CTexture* pTexture, UTILS::COLOR:
     tex[1][0] = tex[2][0] = u2;
     tex[2][1] = tex[3][1] = v2;
 
-    glUniform4f(uniColLoc, (col[0] / 255.0f), (col[1] / 255.0f), (col[2] / 255.0f),
-                (col[3] / 255.0f));
-    glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
+    gl::Uniform4f(uniColLoc, (col[0] / 255.0f), (col[1] / 255.0f), (col[2] / 255.0f),
+                  (col[3] / 255.0f));
+    gl::DrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
 
-    glDisableVertexAttribArray(posLoc);
-    glDisableVertexAttribArray(tex0Loc);
+    gl::DisableVertexAttribArray(posLoc);
+    gl::DisableVertexAttribArray(tex0Loc);
 
     renderSystemGLES->DisableGUIShader();
   }

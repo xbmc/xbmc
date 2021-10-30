@@ -6,8 +6,9 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "RenderingGL.hpp"
+
 #import <OpenGLES/EAGL.h>
-#import <OpenGLES/ES2/gl.h>
 #import <UIKit/UIKit.h>
 
 // This class wraps the CAEAGLLayer from CoreAnimation into a convenient UIView subclass.

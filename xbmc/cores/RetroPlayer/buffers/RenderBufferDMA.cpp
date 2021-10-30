@@ -70,16 +70,16 @@ void CRenderBufferDMA::ReleaseMemory()
 
 void CRenderBufferDMA::CreateTexture()
 {
-  glGenTextures(1, &m_textureId);
+  gl::GenTextures(1, &m_textureId);
 
-  glBindTexture(m_textureTarget, m_textureId);
+  gl::BindTexture(m_textureTarget, m_textureId);
 
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  gl::TexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  gl::TexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  gl::TexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  gl::TexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-  glBindTexture(m_textureTarget, 0);
+  gl::BindTexture(m_textureTarget, 0);
 }
 
 bool CRenderBufferDMA::UploadTexture()
@@ -87,10 +87,10 @@ bool CRenderBufferDMA::UploadTexture()
   if (m_bo->GetFd() < 0)
     return false;
 
-  if (!glIsTexture(m_textureId))
+  if (!gl::IsTexture(m_textureId))
     CreateTexture();
 
-  glBindTexture(m_textureTarget, m_textureId);
+  gl::BindTexture(m_textureTarget, m_textureId);
 
   std::array<CEGLImage::EglPlane, CEGLImage::MAX_NUM_PLANES> planes;
 
@@ -111,15 +111,15 @@ bool CRenderBufferDMA::UploadTexture()
 
   m_egl->DestroyImage();
 
-  glBindTexture(m_textureTarget, 0);
+  gl::BindTexture(m_textureTarget, 0);
 
   return true;
 }
 
 void CRenderBufferDMA::DeleteTexture()
 {
-  if (glIsTexture(m_textureId))
-    glDeleteTextures(1, &m_textureId);
+  if (gl::IsTexture(m_textureId))
+    gl::DeleteTextures(1, &m_textureId);
 
   m_textureId = 0;
 }

@@ -50,7 +50,7 @@ int GetEGLColorRange(const VideoPicture& picture)
 
 CDRMPRIMETexture::~CDRMPRIMETexture()
 {
-  glDeleteTextures(1, &m_texture);
+  gl::DeleteTextures(1, &m_texture);
 }
 
 void CDRMPRIMETexture::Init(EGLDisplay eglDisplay)
@@ -101,15 +101,15 @@ bool CDRMPRIMETexture::Map(CVideoBufferDRMPRIME* buffer)
       return false;
     }
 
-    if (!glIsTexture(m_texture))
-      glGenTextures(1, &m_texture);
-    glBindTexture(m_textureTarget, m_texture);
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    if (!gl::IsTexture(m_texture))
+      gl::GenTextures(1, &m_texture);
+    gl::BindTexture(m_textureTarget, m_texture);
+    gl::TexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    gl::TexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    gl::TexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    gl::TexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     m_eglImage->UploadImage(m_textureTarget);
-    glBindTexture(m_textureTarget, 0);
+    gl::BindTexture(m_textureTarget, 0);
   }
 
   m_primebuffer = buffer;

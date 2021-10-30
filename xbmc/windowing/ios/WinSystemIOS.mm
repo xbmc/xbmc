@@ -9,6 +9,7 @@
 #include "WinSystemIOS.h"
 
 #include "ServiceBroker.h"
+#include "RenderingGL.hpp"
 #include "VideoSyncIos.h"
 #include "WinEventsIOS.h"
 #include "cores/AudioEngine/Sinks/AESinkDARWINIOS.h"
@@ -40,8 +41,6 @@
 #include <vector>
 
 #import <Foundation/Foundation.h>
-#import <OpenGLES/ES2/gl.h>
-#import <OpenGLES/ES2/glext.h>
 #import <QuartzCore/CADisplayLink.h>
 #import <dlfcn.h>
 
@@ -141,7 +140,7 @@ bool CWinSystemIOS::CreateNewWindow(const std::string& name, bool fullScreen, RE
 
   m_eglext  = " ";
 
-  const char *tmpExtensions = (const char*) glGetString(GL_EXTENSIONS);
+  const char* tmpExtensions = (const char*)gl::GetString(GL_EXTENSIONS);
   if (tmpExtensions != NULL)
   {
     m_eglext += tmpExtensions;

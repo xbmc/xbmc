@@ -85,8 +85,7 @@ set(HEADERS AppParamParser.h
             Util.h
             XBApplicationEx.h
             XBDateTime.h
-            system_egl.h
-            system_gl.h)
+            system_egl.h)
 
 if(ENABLE_OPTICAL)
   list(APPEND SOURCES Autorun.cpp)

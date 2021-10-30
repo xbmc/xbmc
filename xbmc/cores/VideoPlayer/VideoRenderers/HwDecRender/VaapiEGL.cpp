@@ -73,9 +73,9 @@ bool CVaapi1Texture::Map(CVaapiRenderPicture *pic)
       *attrib++ = EGL_DMA_BUF_PLANE0_PITCH_EXT;
       *attrib++ = m_glSurface.vaImage.pitches[0];
       *attrib++ = EGL_NONE;
-      m_glSurface.eglImageY = m_interop.eglCreateImageKHR(m_interop.eglDisplay,
-                                          EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)NULL,
-                                          attribs);
+      m_glSurface.eglImageY =
+          m_interop.eglCreateImageKHR(m_interop.eglDisplay, EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT,
+                                      (EGLClientBuffer)NULL, attribs);
       if (!m_glSurface.eglImageY)
       {
         EGLint err = eglGetError();
@@ -97,9 +97,9 @@ bool CVaapi1Texture::Map(CVaapiRenderPicture *pic)
       *attrib++ = EGL_DMA_BUF_PLANE0_PITCH_EXT;
       *attrib++ = m_glSurface.vaImage.pitches[1];
       *attrib++ = EGL_NONE;
-      m_glSurface.eglImageVU = m_interop.eglCreateImageKHR(m_interop.eglDisplay,
-                                          EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)NULL,
-                                          attribs);
+      m_glSurface.eglImageVU =
+          m_interop.eglCreateImageKHR(m_interop.eglDisplay, EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT,
+                                      (EGLClientBuffer)NULL, attribs);
       if (!m_glSurface.eglImageVU)
       {
         EGLint err = eglGetError();
@@ -107,23 +107,23 @@ bool CVaapi1Texture::Map(CVaapiRenderPicture *pic)
         return false;
       }
 
-      glGenTextures(1, &m_textureY);
-      glBindTexture(m_interop.textureTarget, m_textureY);
-      glTexParameteri(m_interop.textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri(m_interop.textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glTexParameteri(m_interop.textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-      glTexParameteri(m_interop.textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+      gl::GenTextures(1, &m_textureY);
+      gl::BindTexture(m_interop.textureTarget, m_textureY);
+      gl::TexParameteri(m_interop.textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      gl::TexParameteri(m_interop.textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      gl::TexParameteri(m_interop.textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      gl::TexParameteri(m_interop.textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
       m_interop.glEGLImageTargetTexture2DOES(m_interop.textureTarget, m_glSurface.eglImageY);
 
-      glGenTextures(1, &m_textureVU);
-      glBindTexture(m_interop.textureTarget, m_textureVU);
-      glTexParameteri(m_interop.textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri(m_interop.textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glTexParameteri(m_interop.textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-      glTexParameteri(m_interop.textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+      gl::GenTextures(1, &m_textureVU);
+      gl::BindTexture(m_interop.textureTarget, m_textureVU);
+      gl::TexParameteri(m_interop.textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      gl::TexParameteri(m_interop.textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      gl::TexParameteri(m_interop.textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      gl::TexParameteri(m_interop.textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
       m_interop.glEGLImageTargetTexture2DOES(m_interop.textureTarget, m_glSurface.eglImageVU);
 
-      glBindTexture(m_interop.textureTarget, 0);
+      gl::BindTexture(m_interop.textureTarget, 0);
 
       break;
     }
@@ -143,9 +143,9 @@ bool CVaapi1Texture::Map(CVaapiRenderPicture *pic)
       *attrib++ = EGL_DMA_BUF_PLANE0_PITCH_EXT;
       *attrib++ = m_glSurface.vaImage.pitches[0];
       *attrib++ = EGL_NONE;
-      m_glSurface.eglImageY = m_interop.eglCreateImageKHR(m_interop.eglDisplay,
-                                          EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)NULL,
-                                          attribs);
+      m_glSurface.eglImageY =
+          m_interop.eglCreateImageKHR(m_interop.eglDisplay, EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT,
+                                      (EGLClientBuffer)NULL, attribs);
       if (!m_glSurface.eglImageY)
       {
         EGLint err = eglGetError();
@@ -167,9 +167,9 @@ bool CVaapi1Texture::Map(CVaapiRenderPicture *pic)
       *attrib++ = EGL_DMA_BUF_PLANE0_PITCH_EXT;
       *attrib++ = m_glSurface.vaImage.pitches[1];
       *attrib++ = EGL_NONE;
-      m_glSurface.eglImageVU = m_interop.eglCreateImageKHR(m_interop.eglDisplay,
-                                          EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT, (EGLClientBuffer)NULL,
-                                          attribs);
+      m_glSurface.eglImageVU =
+          m_interop.eglCreateImageKHR(m_interop.eglDisplay, EGL_NO_CONTEXT, EGL_LINUX_DMA_BUF_EXT,
+                                      (EGLClientBuffer)NULL, attribs);
       if (!m_glSurface.eglImageVU)
       {
         EGLint err = eglGetError();
@@ -177,23 +177,23 @@ bool CVaapi1Texture::Map(CVaapiRenderPicture *pic)
         return false;
       }
 
-      glGenTextures(1, &m_textureY);
-      glBindTexture(m_interop.textureTarget, m_textureY);
-      glTexParameteri(m_interop.textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri(m_interop.textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glTexParameteri(m_interop.textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-      glTexParameteri(m_interop.textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+      gl::GenTextures(1, &m_textureY);
+      gl::BindTexture(m_interop.textureTarget, m_textureY);
+      gl::TexParameteri(m_interop.textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      gl::TexParameteri(m_interop.textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      gl::TexParameteri(m_interop.textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      gl::TexParameteri(m_interop.textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
       m_interop.glEGLImageTargetTexture2DOES(m_interop.textureTarget, m_glSurface.eglImageY);
 
-      glGenTextures(1, &m_textureVU);
-      glBindTexture(m_interop.textureTarget, m_textureVU);
-      glTexParameteri(m_interop.textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri(m_interop.textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glTexParameteri(m_interop.textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-      glTexParameteri(m_interop.textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+      gl::GenTextures(1, &m_textureVU);
+      gl::BindTexture(m_interop.textureTarget, m_textureVU);
+      gl::TexParameteri(m_interop.textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      gl::TexParameteri(m_interop.textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      gl::TexParameteri(m_interop.textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      gl::TexParameteri(m_interop.textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
       m_interop.glEGLImageTargetTexture2DOES(m_interop.textureTarget, m_glSurface.eglImageVU);
 
-      glBindTexture(m_interop.textureTarget, 0);
+      gl::BindTexture(m_interop.textureTarget, 0);
 
       break;
     }
@@ -209,10 +209,9 @@ bool CVaapi1Texture::Map(CVaapiRenderPicture *pic)
       *attrib++ = EGL_DRM_BUFFER_STRIDE_MESA;
       *attrib++ = m_glSurface.vaImage.pitches[0] / 4;
       *attrib++ = EGL_NONE;
-      m_glSurface.eglImage = m_interop.eglCreateImageKHR(m_interop.eglDisplay, EGL_NO_CONTEXT,
-                                         EGL_DRM_BUFFER_MESA,
-                                         (EGLClientBuffer)m_glSurface.vBufInfo.handle,
-                                         attribs);
+      m_glSurface.eglImage =
+          m_interop.eglCreateImageKHR(m_interop.eglDisplay, EGL_NO_CONTEXT, EGL_DRM_BUFFER_MESA,
+                                      (EGLClientBuffer)m_glSurface.vBufInfo.handle, attribs);
       if (!m_glSurface.eglImage)
       {
         EGLint err = eglGetError();
@@ -220,16 +219,16 @@ bool CVaapi1Texture::Map(CVaapiRenderPicture *pic)
         return false;
       }
 
-      glGenTextures(1, &m_texture);
-      glBindTexture(m_interop.textureTarget, m_texture);
-      glTexParameteri(m_interop.textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri(m_interop.textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glTexParameteri(m_interop.textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-      glTexParameteri(m_interop.textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+      gl::GenTextures(1, &m_texture);
+      gl::BindTexture(m_interop.textureTarget, m_texture);
+      gl::TexParameteri(m_interop.textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      gl::TexParameteri(m_interop.textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      gl::TexParameteri(m_interop.textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      gl::TexParameteri(m_interop.textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
       m_interop.glEGLImageTargetTexture2DOES(m_interop.textureTarget, m_glSurface.eglImage);
 
-      glBindTexture(m_interop.textureTarget, 0);
+      gl::BindTexture(m_interop.textureTarget, 0);
 
       break;
     }
@@ -268,8 +267,8 @@ void CVaapi1Texture::Unmap()
 
   m_glSurface.vaImage.image_id = VA_INVALID_ID;
 
-  glDeleteTextures(1, &m_textureY);
-  glDeleteTextures(1, &m_textureVU);
+  gl::DeleteTextures(1, &m_textureY);
+  gl::DeleteTextures(1, &m_textureVU);
 
   m_vaapiPic->Release();
   m_vaapiPic = nullptr;
@@ -547,10 +546,10 @@ bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
       return false;
     }
 
-    glGenTextures(1, &texture->glTexture);
-    glBindTexture(m_interop.textureTarget, texture->glTexture);
+    gl::GenTextures(1, &texture->glTexture);
+    gl::BindTexture(m_interop.textureTarget, texture->glTexture);
     m_interop.glEGLImageTargetTexture2DOES(m_interop.textureTarget, texture->eglImage);
-    glBindTexture(m_interop.textureTarget, 0);
+    gl::BindTexture(m_interop.textureTarget, 0);
   }
 
   return true;
@@ -570,7 +569,7 @@ void CVaapi2Texture::Unmap()
     {
       m_interop.eglDestroyImageKHR(m_interop.eglDisplay, texture->eglImage);
       texture->eglImage = EGL_NO_IMAGE_KHR;
-      glDeleteTextures(1, &texture->glTexture);
+      gl::DeleteTextures(1, &texture->glTexture);
     }
   }
 

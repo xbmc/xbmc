@@ -19,14 +19,14 @@ CRenderCaptureGL::~CRenderCaptureGL()
   {
     if (m_pbo)
     {
-      glBindBuffer(GL_PIXEL_PACK_BUFFER, m_pbo);
-      glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
-      glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
-      glDeleteBuffers(1, &m_pbo);
+      gl::BindBuffer(GL_PIXEL_PACK_BUFFER, m_pbo);
+      gl::UnmapBuffer(GL_PIXEL_PACK_BUFFER);
+      gl::BindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+      gl::DeleteBuffers(1, &m_pbo);
     }
 
     if (m_query)
-      glDeleteQueries(1, &m_query);
+      gl::DeleteQueries(1, &m_query);
   }
 
   delete[] m_pixels;
@@ -73,34 +73,34 @@ void CRenderCaptureGL::BeginRender()
   if (m_asyncSupported)
   {
     if (!m_pbo)
-      glGenBuffers(1, &m_pbo);
+      gl::GenBuffers(1, &m_pbo);
 
     if (UseOcclusionQuery() && m_occlusionQuerySupported)
     {
       //generate an occlusion query if we don't have one
       if (!m_query)
-        glGenQueries(1, &m_query);
+        gl::GenQueries(1, &m_query);
     }
     else
     {
       //don't use an occlusion query, clean up any old one
       if (m_query)
       {
-        glDeleteQueries(1, &m_query);
+        gl::DeleteQueries(1, &m_query);
         m_query = 0;
       }
     }
 
     //start the occlusion query
     if (m_query)
-      glBeginQuery(GL_SAMPLES_PASSED, m_query);
+      gl::BeginQuery(GL_SAMPLES_PASSED, m_query);
 
     //allocate data on the pbo and pixel buffer
-    glBindBuffer(GL_PIXEL_PACK_BUFFER, m_pbo);
+    gl::BindBuffer(GL_PIXEL_PACK_BUFFER, m_pbo);
     if (m_bufferSize != m_width * m_height * 4)
     {
       m_bufferSize = m_width * m_height * 4;
-      glBufferData(GL_PIXEL_PACK_BUFFER, m_bufferSize, 0, GL_STREAM_READ);
+      gl::BufferData(GL_PIXEL_PACK_BUFFER, m_bufferSize, 0, GL_STREAM_READ);
       delete[] m_pixels;
       m_pixels = new uint8_t[m_bufferSize];
     }
@@ -120,10 +120,10 @@ void CRenderCaptureGL::EndRender()
 {
   if (m_asyncSupported)
   {
-    glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+    gl::BindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 
     if (m_query)
-      glEndQuery(GL_SAMPLES_PASSED);
+      gl::EndQuery(GL_SAMPLES_PASSED);
 
     if (m_flags & CAPTUREFLAG_IMMEDIATELY)
       PboToBuffer();
@@ -158,7 +158,7 @@ void CRenderCaptureGL::ReadOut()
 
     GLuint readout = 1;
     if (m_query)
-      glGetQueryObjectuiv(m_query, GL_QUERY_RESULT_AVAILABLE, &readout);
+      gl::GetQueryObjectuiv(m_query, GL_QUERY_RESULT_AVAILABLE, &readout);
 
     if (readout)
       PboToBuffer();
@@ -167,8 +167,8 @@ void CRenderCaptureGL::ReadOut()
 
 void CRenderCaptureGL::PboToBuffer()
 {
-  glBindBuffer(GL_PIXEL_PACK_BUFFER, m_pbo);
-  GLvoid* pboPtr = glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
+  gl::BindBuffer(GL_PIXEL_PACK_BUFFER, m_pbo);
+  GLvoid* pboPtr = gl::MapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
 
   if (pboPtr)
   {
@@ -181,6 +181,6 @@ void CRenderCaptureGL::PboToBuffer()
     SetState(CAPTURESTATE_FAILED);
   }
 
-  glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
-  glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+  gl::UnmapBuffer(GL_PIXEL_PACK_BUFFER);
+  gl::BindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 }

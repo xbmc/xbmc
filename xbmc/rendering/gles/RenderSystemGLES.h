@@ -9,12 +9,11 @@
 #pragma once
 
 #include "GLESShader.h"
+#include "RenderingGL.hpp"
 #include "rendering/RenderSystem.h"
 #include "utils/ColorUtils.h"
 
 #include <map>
-
-#include "system_gl.h"
 
 enum class ShaderMethodGLES
 {

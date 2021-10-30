@@ -126,7 +126,7 @@ protected:
   float m_fps = 0.0f;
 
   unsigned int m_renderOrientation = 0; // orientation of the video in degrees counter clockwise
-  // for drawing the texture with glVertex4f (holds all 4 corner points of the destination rect
+  // for drawing the texture with gl::Vertex4f (holds all 4 corner points of the destination rect
   // with correct orientation based on m_renderOrientation
   // 0 - top left, 1 - top right, 2 - bottom right, 3 - bottom left
   CPoint m_rotatedDestCoords[4];

@@ -9,10 +9,9 @@
 #pragma once
 
 #include "GLSLOutput.h"
+#include "RenderingGL.hpp"
 #include "cores/VideoSettings.h"
 #include "guilib/Shader.h"
-
-#include "system_gl.h"
 
 namespace Shaders {
 

@@ -82,14 +82,14 @@ bool CRendererVDPAU::ConfigChanged(const VideoPicture &picture)
 
 bool CRendererVDPAU::NeedBuffer(int idx)
 {
-  if (glIsSync(m_fences[idx]))
+  if (gl::IsSync(m_fences[idx]))
   {
     GLint state;
     GLsizei length;
-    glGetSynciv(m_fences[idx], GL_SYNC_STATUS, 1, &length, &state);
+    gl::GetSynciv(m_fences[idx], GL_SYNC_STATUS, 1, &length, &state);
     if (state == GL_SIGNALED)
     {
-      glDeleteSync(m_fences[idx]);
+      gl::DeleteSync(m_fences[idx]);
       m_fences[idx] = {};
     }
     else
@@ -112,9 +112,9 @@ bool CRendererVDPAU::Flush(bool saveBuffers)
 
 void CRendererVDPAU::ReleaseBuffer(int idx)
 {
-  if (glIsSync(m_fences[idx]))
+  if (gl::IsSync(m_fences[idx]))
   {
-    glDeleteSync(m_fences[idx]);
+    gl::DeleteSync(m_fences[idx]);
     m_fences[idx] = {};
   }
   m_vdpauTextures[idx].Unmap();
@@ -251,12 +251,12 @@ bool CRendererVDPAU::RenderHook(int idx)
 
 void CRendererVDPAU::AfterRenderHook(int idx)
 {
-  if (glIsSync(m_fences[idx]))
+  if (gl::IsSync(m_fences[idx]))
   {
-    glDeleteSync(m_fences[idx]);
+    gl::DeleteSync(m_fences[idx]);
     m_fences[idx] = None;
   }
-  m_fences[idx] = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+  m_fences[idx] = gl::FenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
 }
 
 bool CRendererVDPAU::CreateTexture(int index)
@@ -457,13 +457,13 @@ bool CRendererVDPAU::UploadVDPAUTexture420(int index)
   {
     for (int p=0; p<2; p++)
     {
-      glBindTexture(m_textureTarget, buf.fields[f][p].id);
-      glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-      glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+      gl::BindTexture(m_textureTarget, buf.fields[f][p].id);
+      gl::TexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      gl::TexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      gl::TexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      gl::TexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-      glBindTexture(m_textureTarget,0);
+      gl::BindTexture(m_textureTarget, 0);
       VerifyGLState();
     }
   }
