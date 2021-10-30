@@ -758,46 +758,77 @@ bool CAddonInstallJob::DoWork()
   }
   else
   {
-    // we only do pinning/unpinning for non-zip installs and not system origin
-    if (!m_addon->Origin().empty() && m_addon->Origin() != ORIGIN_SYSTEM)
+    // we only do pinning/unpinning for non-system add-ons
+    if (m_addon->Origin() != ORIGIN_SYSTEM)
     {
       // get all compatible versions of an addon-id regardless of their origin
+      // from all installed repositories
       std::vector<std::shared_ptr<IAddon>> compatibleVersions =
           CServiceBroker::GetAddonMgr().GetCompatibleVersions(m_addon->ID());
 
-      // find the latest version for the origin we installed from
-      AddonVersion latestVersion; // initializes to 0.0.0
-      for (const auto& compatibleVersion : compatibleVersions)
+      if (!m_addon->Origin().empty())
       {
-        if (compatibleVersion->Origin() == m_addon->Origin() &&
-            compatibleVersion->Version() > latestVersion)
-        {
-          latestVersion = compatibleVersion->Version();
-        }
-      }
+        // handle add-ons that originate from a repository
 
-      if (m_addon->Version() == latestVersion)
-      {
-        // unpin the installed addon if it's the latest of its origin
-        CServiceBroker::GetAddonMgr().RemoveUpdateRuleFromList(m_addon->ID(),
-                                                               AddonUpdateRule::PIN_OLD_VERSION);
-        CLog::Log(LOGDEBUG, "ADDONS: unpinned: [{}] Origin: {} Version: {}", m_addon->ID(),
-                  m_addon->Origin(), m_addon->Version().asString());
+        // find the latest version for the origin we installed from
+        AddonVersion latestVersion;
+        for (const auto& compatibleVersion : compatibleVersions)
+        {
+          if (compatibleVersion->Origin() == m_addon->Origin() &&
+              compatibleVersion->Version() > latestVersion)
+          {
+            latestVersion = compatibleVersion->Version();
+          }
+        }
+
+        if (m_addon->Version() == latestVersion)
+        {
+          // unpin the installed addon if it's the latest of its origin
+          CServiceBroker::GetAddonMgr().RemoveUpdateRuleFromList(m_addon->ID(),
+                                                                 AddonUpdateRule::PIN_OLD_VERSION);
+          CLog::Log(LOGDEBUG, "ADDONS: unpinned Addon: [{}] Origin: [{}] Version: [{}]",
+                    m_addon->ID(), m_addon->Origin(), m_addon->Version().asString());
+        }
+        else
+        {
+          // pin if it is not the latest
+          CServiceBroker::GetAddonMgr().AddUpdateRuleToList(m_addon->ID(),
+                                                            AddonUpdateRule::PIN_OLD_VERSION);
+          CLog::Log(LOGDEBUG, "ADDONS: pinned Addon: [{}] Origin: [{}] Version: [{}]",
+                    m_addon->ID(), m_addon->Origin(), m_addon->Version().asString());
+        }
       }
       else
       {
-        // ..pin if it is NOT the latest
-        CServiceBroker::GetAddonMgr().AddUpdateRuleToList(m_addon->ID(),
-                                                          AddonUpdateRule::PIN_OLD_VERSION);
-        CLog::Log(LOGDEBUG, "ADDONS: pinned: [{}] Origin: {} Version: {}", m_addon->ID(),
-                  m_addon->Origin(), m_addon->Version().asString());
+        // handle manually installed add-ons
+
+        // find the latest version of any origin/repository
+        AddonVersion latestVersion;
+        for (const auto& compatibleVersion : compatibleVersions)
+        {
+          if (compatibleVersion->Version() > latestVersion)
+          {
+            latestVersion = compatibleVersion->Version();
+          }
+        }
+
+        if (m_addon->Version() < latestVersion)
+        {
+          // pin zip version if it's lesser than latest from repo(s)
+          CServiceBroker::GetAddonMgr().AddUpdateRuleToList(m_addon->ID(),
+                                                            AddonUpdateRule::PIN_ZIP_INSTALL);
+          CLog::Log(LOGDEBUG, "ADDONS: pinned zip installed Addon: [{}] Version: [{}]",
+                    m_addon->ID(), m_addon->Version().asString());
+        }
+        else
+        {
+          // unpin zip version if it's >= the latest from repos
+          CServiceBroker::GetAddonMgr().RemoveUpdateRuleFromList(m_addon->ID(),
+                                                                 AddonUpdateRule::PIN_ZIP_INSTALL);
+          CLog::Log(LOGDEBUG, "ADDONS: unpinned zip installed Addon: [{}] Version: [{}]",
+                    m_addon->ID(), m_addon->Version().asString());
+        }
       }
-    }
-    else
-    {
-      CLog::Log(LOGDEBUG,
-                "ADDONS: zip installed addon [{}] will not be version checked and unpinned",
-                m_addon->ID());
     }
   }
 
