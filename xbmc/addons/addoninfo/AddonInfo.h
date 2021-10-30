@@ -59,7 +59,8 @@ enum class AddonUpdateRule
 {
   ANY = 0, //!< used internally, not to be explicitly set
   USER_DISABLED_AUTO_UPDATE = 1, //!< automatic updates disabled via AddonInfo dialog
-  PIN_OLD_VERSION = 2 //!< user downgraded to an older version
+  PIN_OLD_VERSION = 2, //!< user downgraded to an older version
+  PIN_ZIP_INSTALL = 3, //!< user installed manually from zip
 };
 
 /*!
