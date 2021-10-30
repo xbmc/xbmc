@@ -48,6 +48,7 @@
 
 extern "C" {
 #include "libavutil/dovi_meta.h"
+
 #include <libavutil/dict.h>
 #include <libavutil/opt.h>
 }
@@ -1669,7 +1670,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
           stereoMode = GetStereoModeFromMetadata(m_pFormatContext->metadata);
         if (!stereoMode.empty())
           st->stereo_mode = stereoMode;
-	  
+
         if (m_bMatroska)
         {
           int size;

@@ -1447,13 +1447,13 @@ int CDVDVideoCodecAndroidMediaCodec::GetOutputPicture(void)
     xbmc_jnienv()->ExceptionClear();
     CLog::Log(LOGERROR,
               "CDVDVideoCodecAndroidMediaCodec:GetOutputPicture dequeueOutputBuffer failed");
-    
+
     if (m_mime == "video/dolby-vision")
     {
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_STOP);
-    m_state = MEDIACODEC_STATE_STOPPED;
-    } 
-    
+      CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_STOP);
+      m_state = MEDIACODEC_STATE_STOPPED;
+    }
+
     return -2;
   }
 
