@@ -31,11 +31,13 @@ if(NOT TARGET TexturePacker::TexturePacker)
   else()
     if(WITH_TEXTUREPACKER)
       get_filename_component(_tppath ${WITH_TEXTUREPACKER} ABSOLUTE)
+      get_filename_component(_tppath ${_tppath} DIRECTORY)
       find_program(TEXTUREPACKER_EXECUTABLE NAMES "${APP_NAME_LC}-TexturePacker" TexturePacker
-                                            PATHS ${_tppath})
+                                            HINTS ${_tppath})
 
       include(FindPackageHandleStandardArgs)
-      find_package_handle_standard_args(TexturePacker DEFAULT_MSG TEXTUREPACKER_EXECUTABLE)
+      find_package_handle_standard_args(TexturePacker "Could not find '${APP_NAME_LC}-TexturePacker' or 'TexturePacker' executable in ${_tppath} supplied by -DWITH_TEXTUREPACKER. Make sure the executable file name matches these names!"
+                                        TEXTUREPACKER_EXECUTABLE)
       if(TEXTUREPACKER_FOUND)
         add_executable(TexturePacker::TexturePacker IMPORTED GLOBAL)
         set_target_properties(TexturePacker::TexturePacker PROPERTIES
