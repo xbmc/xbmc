@@ -157,6 +157,7 @@ install(FILES ${CMAKE_SOURCE_DIR}/privacy-policy.txt
 if(NOT WITH_TEXTUREPACKER)
   install(PROGRAMS $<TARGET_FILE:TexturePacker::TexturePacker>
           DESTINATION ${bindir}
+          RENAME "${APP_NAME_LC}-TexturePacker"
           COMPONENT kodi-tools-texturepacker)
 endif()
 
