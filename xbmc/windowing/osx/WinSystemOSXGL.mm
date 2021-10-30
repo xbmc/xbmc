@@ -12,6 +12,7 @@
 #include "rendering/gl/RenderSystemGL.h"
 #include "windowing/WindowSystemFactory.h"
 
+#include <dlfcn.h>
 #include <unistd.h>
 
 void CWinSystemOSXGL::Register()
@@ -22,6 +23,15 @@ void CWinSystemOSXGL::Register()
 std::unique_ptr<CWinSystemBase> CWinSystemOSXGL::CreateWinSystem()
 {
   return std::make_unique<CWinSystemOSXGL>();
+}
+
+CWinSystemOSXGL::~CWinSystemOSXGL()
+{
+  if (m_glLibrary)
+  {
+    dlclose(m_glLibrary);
+    m_glLibrary = nullptr;
+  }
 }
 
 void CWinSystemOSXGL::PresentRenderImpl(bool rendered)
@@ -77,3 +87,17 @@ bool CWinSystemOSXGL::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
   return true;
 }
 
+void* CWinSystemOSXGL::GetProcAddressGL(const char* name)
+{
+  if (!m_glLibrary)
+  {
+    const char* glLibPath = "/System/Library/Frameworks/OpenGL.framework/OpenGL";
+
+    m_glLibrary = dlopen(glLibPath, RTLD_LAZY);
+
+    if (!m_glLibrary)
+      throw std::runtime_error("failed to load OpenGL library: " + std::string(dlerror()));
+  }
+
+  return dlsym(m_glLibrary, name);
+}

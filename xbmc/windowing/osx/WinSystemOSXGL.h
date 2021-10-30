@@ -17,7 +17,7 @@ class CWinSystemOSXGL : public CWinSystemOSX, public CRenderSystemGL
 {
 public:
   CWinSystemOSXGL() = default;
-  ~CWinSystemOSXGL() override = default;
+  ~CWinSystemOSXGL() override;
 
   static void Register();
   static std::unique_ptr<CWinSystemBase> CreateWinSystem();
@@ -27,7 +27,12 @@ public:
   bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) override;
   bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
 
+  void* GetProcAddressGL(const char* name) override;
+
 protected:
   void PresentRenderImpl(bool rendered) override;
   void SetVSyncImpl(bool enable) override;
+
+private:
+  void* m_glLibrary = nullptr;
 };

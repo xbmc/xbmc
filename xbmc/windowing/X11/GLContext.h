@@ -30,6 +30,8 @@ public:
   virtual uint64_t GetVblankTiming(uint64_t& msc, uint64_t& interval) { return 0; }
   bool IsExtSupported(const char* extension) const;
 
+  virtual void* GetProcAddressGL(const char* name) = 0;
+
   std::string ExtPrefix() { return m_extPrefix; }
   std::string m_extPrefix;
   std::string m_extensions;

@@ -330,6 +330,14 @@ uint64_t CWinSystemX11GLContext::GetVblankTiming(uint64_t &msc, uint64_t &interv
   return 0;
 }
 
+void* CWinSystemX11GLContext::GetProcAddressGL(const char* name)
+{
+  if (!m_pGLContext)
+    return nullptr;
+
+  return m_pGLContext->GetProcAddressGL(name);
+}
+
 void CWinSystemX11GLContext::delete_CVaapiProxy::operator()(CVaapiProxy *p) const
 {
   VaapiProxyDelete(p);

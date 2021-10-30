@@ -41,6 +41,8 @@ public:
   bool IsHDRDisplay() override;
   bool SetHDR(const VideoPicture* videoPicture) override;
 
+  void* GetProcAddressGL(const char* name) override;
+
   EGLDisplay GetEGLDisplay() const;
   EGLSurface GetEGLSurface() const;
   EGLContext GetEGLContext() const;

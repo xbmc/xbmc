@@ -265,3 +265,8 @@ bool CWinSystemAndroidGLESContext::SetHDR(const VideoPicture* videoPicture)
 
   return m_HDRColorSpace == HDRColorSpace;
 }
+
+void* CWinSystemAndroidGLESContext::GetProcAddressGL(const char* name)
+{
+  return reinterpret_cast<void*>(eglGetProcAddress(name));
+}

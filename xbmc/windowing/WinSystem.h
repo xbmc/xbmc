@@ -175,6 +175,8 @@ public:
 
   virtual std::vector<std::string> GetConnectedOutputs() { return {}; }
 
+  virtual void* GetProcAddressGL(const char* name) { return nullptr; }
+
 protected:
   void UpdateDesktopResolution(RESOLUTION_INFO& newRes, const std::string &output, int width, int height, float refreshRate, uint32_t dwFlags);
   virtual std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() { return nullptr; }

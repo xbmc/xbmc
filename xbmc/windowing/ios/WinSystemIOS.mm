@@ -110,6 +110,12 @@ CWinSystemIOS::CWinSystemIOS() : CWinSystemBase()
 CWinSystemIOS::~CWinSystemIOS()
 {
   delete m_pDisplayLink;
+
+  if (m_glLibrary)
+  {
+    dlclose(m_glLibrary);
+    m_glLibrary = nullptr;
+  }
 }
 
 bool CWinSystemIOS::InitWindowSystem()
@@ -498,4 +504,19 @@ std::unique_ptr<CVideoSync> CWinSystemIOS::GetVideoSync(void *clock)
 bool CWinSystemIOS::MessagePump()
 {
   return m_winEvents->MessagePump();
+}
+
+void* CWinSystemIOS::GetProcAddressGL(const char* name)
+{
+  if (!m_glLibrary)
+  {
+    const char* glLibPath = "/System/Library/Frameworks/OpenGLES.framework/OpenGLES";
+
+    m_glLibrary = dlopen(glLibPath, RTLD_LAZY);
+
+    if (!m_glLibrary)
+      throw std::runtime_error("failed to load OpenGLES library: " + std::string(dlerror()));
+  }
+
+  return dlsym(m_glLibrary, name);
 }

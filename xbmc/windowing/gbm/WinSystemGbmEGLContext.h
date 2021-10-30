@@ -34,6 +34,8 @@ public:
                        RESOLUTION_INFO& res) override;
   bool DestroyWindow() override;
 
+  void* GetProcAddressGL(const char* name) override;
+
 protected:
   CWinSystemGbmEGLContext(EGLenum platform, std::string const& platformExtension)
     : CWinSystemEGL{platform, platformExtension}

@@ -34,6 +34,8 @@ public:
   bool DestroyWindow() override;
   bool DestroyWindowSystem() override;
 
+  void* GetProcAddressGL(const char* name) override;
+
 protected:
   /**
    * Inheriting classes should override InitWindowSystem() without parameters

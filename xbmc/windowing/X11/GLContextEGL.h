@@ -30,6 +30,8 @@ public:
   void QueryExtensions() override;
   uint64_t GetVblankTiming(uint64_t &msc, uint64_t &interval) override;
 
+  void* GetProcAddressGL(const char* name) override;
+
   EGLint m_renderingApi;
   EGLDisplay m_eglDisplay;
   EGLSurface m_eglSurface;

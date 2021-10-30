@@ -64,6 +64,8 @@ public:
 
   std::vector<std::string> GetConnectedOutputs() override;
 
+  void* GetProcAddressGL(const char* name) override;
+
   bool InitDisplayLink(CVideoSyncIos *syncImpl);
   void DeinitDisplayLink(void);
   void OnAppFocusChange(bool focus);
@@ -93,5 +95,7 @@ private:
   CADisplayLinkWrapper *m_pDisplayLink;
   int m_internalTouchscreenResolutionWidth = -1;
   int m_internalTouchscreenResolutionHeight = -1;
+
+  void* m_glLibrary = nullptr;
 };
 

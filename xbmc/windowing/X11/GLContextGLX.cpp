@@ -293,3 +293,8 @@ void CGLContextGLX::QueryExtensions()
   else
     m_glXSwapIntervalEXT = NULL;
 }
+
+void* CGLContextGLX::GetProcAddressGL(const char* name)
+{
+  return reinterpret_cast<void*>(glXGetProcAddress(reinterpret_cast<const GLubyte*>(name)));
+}

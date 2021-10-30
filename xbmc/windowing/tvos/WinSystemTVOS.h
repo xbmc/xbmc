@@ -76,6 +76,8 @@ public:
 
   std::vector<std::string> GetConnectedOutputs() override;
 
+  void* GetProcAddressGL(const char* name) override;
+
   bool InitDisplayLink(CVideoSyncTVos* syncImpl);
   void DeinitDisplayLink(void);
   void OnAppFocusChange(bool focus);
@@ -104,4 +106,6 @@ private:
   void FillInVideoModes(int screenIdx);
   bool SwitchToVideoMode(int width, int height, double refreshrate);
   CADisplayLinkWrapper* m_pDisplayLink;
+
+  void* m_glLibrary = nullptr;
 };

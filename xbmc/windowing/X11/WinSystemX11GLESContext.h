@@ -41,6 +41,8 @@ public:
 
   bool IsExtSupported(const char* extension) const override;
 
+  void* GetProcAddressGL(const char* name) override;
+
   EGLDisplay GetEGLDisplay() const;
   EGLSurface GetEGLSurface() const;
   EGLContext GetEGLContext() const;
