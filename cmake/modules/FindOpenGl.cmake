@@ -33,7 +33,6 @@ find_package_handle_standard_args(OpenGl
 
 if(OPENGL_FOUND)
   set(OPENGL_INCLUDE_DIRS ${OPENGL_INCLUDE_DIR})
-  set(OPENGL_LIBRARIES ${OPENGL_gl_LIBRARY})
   set(OPENGL_DEFINITIONS -DHAS_GL=1)
 
   if(NOT TARGET opengl-bindings)
