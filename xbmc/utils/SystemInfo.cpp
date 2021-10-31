@@ -725,8 +725,11 @@ std::string CSysInfo::GetOsPrettyNameWithVersion(void)
     osNameVer.append(" unknown");
 #elif defined(TARGET_WINDOWS_STORE)
   osNameVer = GetKernelName() + " " + GetOsVersion();
-#elif defined(TARGET_FREEBSD) || defined(TARGET_DARWIN)
+#elif defined(TARGET_FREEBSD)
   osNameVer = GetOsName() + " " + GetOsVersion();
+#elif defined(TARGET_DARWIN)
+  osNameVer = StringUtils::Format("{} {} ({})", GetOsName(), GetOsVersion(),
+                                  CDarwinUtils::GetOSVersionString());
 #elif defined(TARGET_ANDROID)
   osNameVer =
       GetOsName() + " " + GetOsVersion() + " API level " + std::to_string(CJNIBuild::SDK_INT);
