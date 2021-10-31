@@ -41,14 +41,10 @@ extern "C"
   } ImageFormat;
   //----------------------------------------------------------------------------
 
-  typedef struct AddonProps_ImageDecoder
-  {
-    const char* mimetype;
-  } AddonProps_ImageDecoder;
-
   typedef struct AddonToKodiFuncTable_ImageDecoder
   {
     KODI_HANDLE kodi_instance;
+    char* (*get_mime_type)(KODI_HANDLE hdl);
   } AddonToKodiFuncTable_ImageDecoder;
 
   typedef struct KodiToAddonFuncTable_ImageDecoder
@@ -69,7 +65,6 @@ extern "C"
 
   typedef struct AddonInstance_ImageDecoder
   {
-    struct AddonProps_ImageDecoder* props;
     struct AddonToKodiFuncTable_ImageDecoder* toKodi;
     struct KodiToAddonFuncTable_ImageDecoder* toAddon;
   } AddonInstance_ImageDecoder;

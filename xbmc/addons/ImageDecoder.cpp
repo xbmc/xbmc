@@ -18,22 +18,31 @@ static const std::map<int, ImageFormat> KodiToAddonFormat = {
 namespace ADDON
 {
 
-CImageDecoder::CImageDecoder(const AddonInfoPtr& addonInfo)
-  : IAddonInstanceHandler(ADDON_INSTANCE_IMAGEDECODER, addonInfo)
+namespace
+{
+char* cb_get_mime_type(KODI_HANDLE kodiInstance)
+{
+  if (!kodiInstance)
+    return nullptr;
+  return strdup(static_cast<CImageDecoder*>(kodiInstance)->GetMimeType().c_str());
+}
+} /* namespace */
+
+CImageDecoder::CImageDecoder(const AddonInfoPtr& addonInfo, const std::string& mimetype)
+  : IAddonInstanceHandler(ADDON_INSTANCE_IMAGEDECODER, addonInfo), m_mimetype(mimetype)
 {
   // Create all interface parts independent to make API changes easier if
   // something is added
   m_ifc.imagedecoder = new AddonInstance_ImageDecoder;
-  m_ifc.imagedecoder->props = new AddonProps_ImageDecoder();
-  m_ifc.imagedecoder->toKodi = new AddonToKodiFuncTable_ImageDecoder();
   m_ifc.imagedecoder->toAddon = new KodiToAddonFuncTable_ImageDecoder();
+  m_ifc.imagedecoder->toKodi = new AddonToKodiFuncTable_ImageDecoder();
+  m_ifc.imagedecoder->toKodi->get_mime_type = cb_get_mime_type;
 }
 
 CImageDecoder::~CImageDecoder()
 {
   DestroyInstance();
 
-  delete m_ifc.imagedecoder->props;
   delete m_ifc.imagedecoder->toKodi;
   delete m_ifc.imagedecoder->toAddon;
   delete m_ifc.imagedecoder;
@@ -74,9 +83,8 @@ bool CImageDecoder::Decode(unsigned char* const pixels,
   return result;
 }
 
-bool CImageDecoder::Create(const std::string& mimetype)
+bool CImageDecoder::Create()
 {
-  m_ifc.imagedecoder->props->mimetype = mimetype.c_str();
   return (CreateInstance() == ADDON_STATUS_OK);
 }
 
