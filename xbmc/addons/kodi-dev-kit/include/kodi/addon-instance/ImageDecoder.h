@@ -12,6 +12,9 @@
 #include "../c-api/addon-instance/image_decoder.h"
 
 #ifdef __cplusplus
+
+#include <stdexcept>
+
 namespace kodi
 {
 namespace addon
