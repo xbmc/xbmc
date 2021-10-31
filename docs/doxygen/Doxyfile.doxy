@@ -268,7 +268,7 @@ ALIASES                = "table_start=<table width=\"100%\" style=\"border\" bgc
                          "skinning_v16=\xrefitem skinning_v16 \"v16 Skinning engine changes\" \"\"" \
                          "skinning_v17=\xrefitem skinning_v17 \"v17 Skinning engine changes\" \"\"" \
                          "skinning_v18=\xrefitem skinning_v18 \"v18 Skinning engine changes\" \"\"" \
-                         "skinning_v19=\xrefitem skinning_v19 \"v19 Skinning engine changes\" \"\""
+                         "skinning_v19=\xrefitem skinning_v19 \"v19 Skinning engine changes\" \"\"" \
                          "skinning_v20=\xrefitem skinning_v20 \"v20 Skinning engine changes\" \"\""
 
 # This tag can be used to specify a number of word-keyword mappings (TCL only).
