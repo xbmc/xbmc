@@ -41,28 +41,32 @@ extern "C"
   } ADDON_IMG_FMT;
   //----------------------------------------------------------------------------
 
+  typedef bool(ATTR_APIENTRYP PFN_KODI_ADDON_IMAGEDECODER_LOAD_IMAGE_FROM_MEMORY_V1)(
+      const KODI_ADDON_IMAGEDECODER_HDL hdl,
+      const uint8_t* buffer,
+      size_t buf_size,
+      unsigned int* width,
+      unsigned int* height);
+  typedef bool(ATTR_APIENTRYP PFN_KODI_ADDON_IMAGEDECODER_DECODE_V1)(
+      const KODI_ADDON_IMAGEDECODER_HDL hdl,
+      uint8_t* pixels,
+      size_t pixels_size,
+      unsigned int width,
+      unsigned int height,
+      unsigned int pitch,
+      enum ADDON_IMG_FMT format);
+
+  typedef struct KodiToAddonFuncTable_ImageDecoder
+  {
+    PFN_KODI_ADDON_IMAGEDECODER_LOAD_IMAGE_FROM_MEMORY_V1 load_image_from_memory;
+    PFN_KODI_ADDON_IMAGEDECODER_DECODE_V1 decode;
+  } KodiToAddonFuncTable_ImageDecoder;
+
   typedef struct AddonToKodiFuncTable_ImageDecoder
   {
     KODI_HANDLE kodi_instance;
     char* (*get_mime_type)(KODI_HANDLE hdl);
   } AddonToKodiFuncTable_ImageDecoder;
-
-  typedef struct KodiToAddonFuncTable_ImageDecoder
-  {
-    bool(__cdecl* load_image_from_memory)(const KODI_ADDON_IMAGEDECODER_HDL hdl,
-                                          const uint8_t* buffer,
-                                          size_t buf_size,
-                                          unsigned int* width,
-                                          unsigned int* height);
-
-    bool(__cdecl* decode)(const KODI_ADDON_IMAGEDECODER_HDL hdl,
-                          uint8_t* pixels,
-                          size_t pixels_size,
-                          unsigned int width,
-                          unsigned int height,
-                          unsigned int pitch,
-                          enum ADDON_IMG_FMT format);
-  } KodiToAddonFuncTable_ImageDecoder;
 
   typedef struct AddonInstance_ImageDecoder
   {
