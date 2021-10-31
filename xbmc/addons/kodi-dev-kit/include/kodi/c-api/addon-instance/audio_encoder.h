@@ -16,11 +16,6 @@ extern "C"
 {
 #endif /* __cplusplus */
 
-  typedef struct AddonProps_AudioEncoder
-  {
-    int dummy;
-  } AddonProps_AudioEncoder;
-
   typedef struct AddonToKodiFuncTable_AudioEncoder
   {
     KODI_HANDLE kodiInstance;
@@ -53,7 +48,6 @@ extern "C"
 
   typedef struct AddonInstance_AudioEncoder
   {
-    struct AddonProps_AudioEncoder* props;
     struct AddonToKodiFuncTable_AudioEncoder* toKodi;
     struct KodiToAddonFuncTable_AudioEncoder* toAddon;
   } AddonInstance_AudioEncoder;

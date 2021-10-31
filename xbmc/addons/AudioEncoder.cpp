@@ -14,7 +14,6 @@ CAudioEncoder::CAudioEncoder(const AddonInfoPtr& addonInfo)
   : IAddonInstanceHandler(ADDON_INSTANCE_AUDIOENCODER, addonInfo)
 {
   // Create "C" interface structures, used as own parts to prevent API problems on update
-  m_struct.props = new AddonProps_AudioEncoder();
   m_struct.toAddon = new KodiToAddonFuncTable_AudioEncoder();
   m_struct.toKodi = new AddonToKodiFuncTable_AudioEncoder();
 }
@@ -24,7 +23,6 @@ CAudioEncoder::~CAudioEncoder()
   // Delete "C" interface structures
   delete m_struct.toAddon;
   delete m_struct.toKodi;
-  delete m_struct.props;
 }
 
 bool CAudioEncoder::Init(AddonToKodiFuncTable_AudioEncoder& callbacks)
