@@ -16,6 +16,8 @@ extern "C"
 {
 #endif /* __cplusplus */
 
+  typedef void* KODI_ADDON_IMAGEDECODER_HDL;
+
   //============================================================================
   /// @ingroup cpp_kodi_addon_imagedecoder_Defs
   /// @brief **Image format types**\n
@@ -49,17 +51,15 @@ extern "C"
     KODI_HANDLE kodi_instance;
   } AddonToKodiFuncTable_ImageDecoder;
 
-  struct AddonInstance_ImageDecoder;
   typedef struct KodiToAddonFuncTable_ImageDecoder
   {
-    KODI_HANDLE addonInstance;
-    bool(__cdecl* load_image_from_memory)(const struct AddonInstance_ImageDecoder* instance,
+    bool(__cdecl* load_image_from_memory)(const KODI_ADDON_IMAGEDECODER_HDL hdl,
                                           unsigned char* buffer,
                                           unsigned int buf_size,
                                           unsigned int* width,
                                           unsigned int* height);
 
-    bool(__cdecl* decode)(const struct AddonInstance_ImageDecoder* instance,
+    bool(__cdecl* decode)(const KODI_ADDON_IMAGEDECODER_HDL hdl,
                           unsigned char* pixels,
                           unsigned int width,
                           unsigned int height,
