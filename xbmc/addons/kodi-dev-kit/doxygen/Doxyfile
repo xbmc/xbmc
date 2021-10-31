@@ -832,34 +832,38 @@ INPUT                  = main.txt \
                          Modules/modules_python.dox \
                          Skin/skin.dox \
                          ../../../../cmake/scripts/common/AddonHelpers.dox \
-                         ../../../guilib/GUIRenderingControl.dox \
+                         ../../../cores/RetroPlayer/guicontrols/GUIGameControl.dox \
+                         ../../../pvr/guilib/GUIEPGGridContainer.dox \
                          ../../../guilib/GUIButtonControl.dox \
+                         ../../../guilib/GUIColorButtonControl.dox \
+                         ../../../guilib/GUIControlGroup.dox \
                          ../../../guilib/GUIEditControl.dox \
-                         ../../../epg/GUIEPGGridContainer.dox \
                          ../../../guilib/GUIFadeLabelControl.dox \
                          ../../../guilib/GUIFixedListContainer.dox \
-                         ../../../guilib/GUIControlGroup.dox \
-                         ../../../guilib/GUIListContainer.dox \
                          ../../../guilib/GUIImage.dox \
                          ../../../guilib/GUILabelControl.dox \
+                         ../../../guilib/GUIListContainer.dox \
                          ../../../guilib/GUIListGroup.dox \
                          ../../../guilib/GUIMoverControl.dox \
                          ../../../guilib/GUIMultiImage.dox \
                          ../../../guilib/GUIPanelContainer.dox \
                          ../../../guilib/GUIProgressControl.dox \
                          ../../../guilib/GUIRadioButtonControl.dox \
+                         ../../../guilib/GUIRangesControl.dox \
+                         ../../../guilib/GUIRenderingControl.dox \
                          ../../../guilib/GUIResizeControl.dox \
                          ../../../guilib/GUIRSSControl.dox \
                          ../../../guilib/GUIScrollBarControl.dox \
                          ../../../guilib/GUISettingsSliderControl.dox \
-                         ../../../guilib/GUISpinControlEx.dox \
                          ../../../guilib/GUISliderControl.dox \
                          ../../../guilib/GUISpinControl.dox \
+                         ../../../guilib/GUISpinControlEx.dox \
                          ../../../guilib/GUITextBox.dox \
                          ../../../guilib/GUIToggleButtonControl.dox \
                          ../../../guilib/GUIVideoControl.dox \
                          ../../../guilib/GUIVisualisationControl.dox \
                          ../../../guilib/GUIWrappingListContainer.dox \
+                         ../../../guilib/WindowIDs.dox \
                          ../../../guilib/_Controls.dox \
                          ../../../interfaces/builtins/AddonBuiltins.cpp \
                          ../../../interfaces/builtins/AndroidBuiltins.cpp \
@@ -877,27 +881,31 @@ INPUT                  = main.txt \
                          ../../../interfaces/builtins/SkinBuiltins.cpp \
                          ../../../interfaces/builtins/SystemBuiltins.cpp \
                          ../../../interfaces/builtins/WeatherBuiltins.cpp \
-                         ../../../interfaces/legacy/Keyboard.h \
-                         ../../../interfaces/legacy/InfoTagMusic.h \
-                         ../../../interfaces/legacy/InfoTagVideo.h \
                          ../../../interfaces/legacy/Addon.h \
-                         ../../../interfaces/legacy/Dialog.h \
-                         ../../../interfaces/legacy/ModuleXbmc.h \
-                         ../../../interfaces/legacy/ModuleXbmcgui.h \
-                         ../../../interfaces/legacy/File.h \
-                         ../../../interfaces/legacy/ListItem.h \
-                         ../../../interfaces/legacy/Monitor.h \
-                         ../../../interfaces/legacy/ModuleXbmcvfs.h \
-                         ../../../interfaces/legacy/ModuleXbmcplugin.h \
-                         ../../../interfaces/legacy/InfoTagRadioRDS.h \
-                         ../../../interfaces/legacy/Window.h \
-                         ../../../interfaces/legacy/WindowDialog.h \
-                         ../../../interfaces/legacy/WindowXML.h \
-                         ../../../interfaces/legacy/Stat.h \
-                         ../../../interfaces/legacy/PlayList.h \
-                         ../../../interfaces/legacy/Player.h \
-                         ../../../interfaces/legacy/RenderCapture.h \
                          ../../../interfaces/legacy/Control.h \
+                         ../../../interfaces/legacy/Dialog.h \
+                         ../../../interfaces/legacy/DrmCryptoSession.h \
+                         ../../../interfaces/legacy/File.h \
+                         ../../../interfaces/legacy/InfoTagGame.h \
+                         ../../../interfaces/legacy/InfoTagMusic.h \
+                         ../../../interfaces/legacy/InfoTagPicture.h \
+                         ../../../interfaces/legacy/InfoTagRadioRDS.h \
+                         ../../../interfaces/legacy/InfoTagVideo.h \
+                         ../../../interfaces/legacy/Keyboard.h \
+                         ../../../interfaces/legacy/ListItem.h \
+                         ../../../interfaces/legacy/ModuleXbmcgui.h \
+                         ../../../interfaces/legacy/ModuleXbmc.h \
+                         ../../../interfaces/legacy/ModuleXbmcplugin.h \
+                         ../../../interfaces/legacy/ModuleXbmcvfs.h \
+                         ../../../interfaces/legacy/Monitor.h \
+                         ../../../interfaces/legacy/Player.h \
+                         ../../../interfaces/legacy/PlayList.h \
+                         ../../../interfaces/legacy/RenderCapture.h \
+                         ../../../interfaces/legacy/Settings.h \
+                         ../../../interfaces/legacy/Stat.h \
+                         ../../../interfaces/legacy/WindowDialog.h \
+                         ../../../interfaces/legacy/Window.h \
+                         ../../../interfaces/legacy/WindowXML.h \
                          ../../../interfaces/legacy/wsgi/WsgiErrorStream.h \
                          ../../../interfaces/legacy/wsgi/WsgiInputStream.h \
                          ../../../interfaces/legacy/wsgi/WsgiResponseBody.h \

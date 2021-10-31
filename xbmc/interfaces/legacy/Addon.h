@@ -101,10 +101,9 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcaddon
       /// @brief \python_func{ xbmcaddon.Addon([id]).getSettings() }
-      ///-----------------------------------------------------------------------
       /// Returns a wrapper around the addon's settings.
       ///
-      /// @return                        `Settings` wrapper
+      /// @return                        @ref python_settings wrapper
       ///
       ///
       ///-----------------------------------------------------------------------

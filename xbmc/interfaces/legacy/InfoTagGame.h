@@ -235,7 +235,6 @@ public:
   ///
   /// \ingroup python_InfoTagGame
   /// @brief \python_func{ setTitle(title) }
-  ///-----------------------------------------------------------------------
   /// Sets the title of the game.
   ///
   /// @param title              string - title.
@@ -253,7 +252,6 @@ public:
   ///
   /// \ingroup python_InfoTagGame
   /// @brief \python_func{ setPlatform(platform) }
-  ///-----------------------------------------------------------------------
   /// Sets the platform on which the game is run.
   ///
   /// @param platform           string - platform.
@@ -271,7 +269,6 @@ public:
   ///
   /// \ingroup python_InfoTagGame
   /// @brief \python_func{ setGenres(genres) }
-  ///-----------------------------------------------------------------------
   /// Sets the genres of the game.
   ///
   /// @param genres             list - genres.
@@ -289,7 +286,6 @@ public:
   ///
   /// \ingroup python_InfoTagGame
   /// @brief \python_func{ setPublisher(publisher) }
-  ///-----------------------------------------------------------------------
   /// Sets the publisher of the game.
   ///
   /// @param publisher          string - publisher.
@@ -307,7 +303,6 @@ public:
   ///
   /// \ingroup python_InfoTagGame
   /// @brief \python_func{ setDeveloper(developer) }
-  ///-----------------------------------------------------------------------
   /// Sets the developer of the game.
   ///
   /// @param developer          string - title.
@@ -325,7 +320,6 @@ public:
   ///
   /// \ingroup python_InfoTagGame
   /// @brief \python_func{ setOverview(overview) }
-  ///-----------------------------------------------------------------------
   /// Sets the overview of the game.
   ///
   /// @param overview           string - overview.
@@ -343,7 +337,6 @@ public:
   ///
   /// \ingroup python_InfoTagGame
   /// @brief \python_func{ setYear(year) }
-  ///-----------------------------------------------------------------------
   /// Sets the year in which the game was published.
   ///
   /// @param year               integer - year.
@@ -361,7 +354,6 @@ public:
   ///
   /// \ingroup python_InfoTagGame
   /// @brief \python_func{ setGameClient(gameClient) }
-  ///-----------------------------------------------------------------------
   /// Sets the add-on ID of the game client executing the game.
   ///
   /// @param gameClient         string - game client.

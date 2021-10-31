@@ -30,7 +30,7 @@ XBMCCOMMONS_STANDARD_EXCEPTION(SettingCallbacksNotSupportedException);
 
 //
 /// \defgroup python_settings Settings
-/// \ingroup python_settings
+/// \ingroup python_xbmcaddon
 /// @{
 /// @brief **Add-on settings**
 ///
@@ -48,6 +48,7 @@ XBMCCOMMONS_STANDARD_EXCEPTION(SettingCallbacksNotSupportedException);
 /// settings = xbmc.Addon('id').getSettings()
 /// ...
 /// ~~~~~~~~~~~~~
+//
 class Settings : public AddonClass
 {
 public:
@@ -65,7 +66,6 @@ public:
   ///
   /// \ingroup python_settings
   /// @brief \python_func{ getBool(id) }
-  ///-----------------------------------------------------------------------
   /// Returns the value of a setting as a boolean.
   ///
   /// @param id                     string - id of the setting that the module needs to access.
@@ -91,7 +91,6 @@ public:
   ///
   /// \ingroup python_settings
   /// @brief \python_func{ getInt(id) }
-  ///-----------------------------------------------------------------------
   /// Returns the value of a setting as an integer.
   ///
   /// @param id                     string - id of the setting that the module needs to access.
@@ -117,7 +116,6 @@ public:
   ///
   /// \ingroup python_settings
   /// @brief \python_func{ getNumber(id) }
-  ///-----------------------------------------------------------------------
   /// Returns the value of a setting as a floating point number.
   ///
   /// @param id                     string - id of the setting that the module needs to access.
@@ -143,7 +141,6 @@ public:
   ///
   /// \ingroup python_settings
   /// @brief \python_func{ getString(id) }
-  ///-----------------------------------------------------------------------
   /// Returns the value of a setting as a unicode string.
   ///
   /// @param id                     string - id of the setting that the module needs to access.
@@ -169,7 +166,6 @@ public:
   ///
   /// \ingroup python_settings
   /// @brief \python_func{ getBoolList(id) }
-  ///-----------------------------------------------------------------------
   /// Returns the value of a setting as a list of booleans.
   ///
   /// @param id                     string - id of the setting that the module needs to access.
@@ -195,7 +191,6 @@ public:
   ///
   /// \ingroup python_settings
   /// @brief \python_func{ getIntList(id) }
-  ///-----------------------------------------------------------------------
   /// Returns the value of a setting as a list of integers.
   ///
   /// @param id                     string - id of the setting that the module needs to access.
@@ -221,7 +216,6 @@ public:
   ///
   /// \ingroup python_settings
   /// @brief \python_func{ getNumberList(id) }
-  ///-----------------------------------------------------------------------
   /// Returns the value of a setting as a list of floating point numbers.
   ///
   /// @param id                     string - id of the setting that the module needs to access.
@@ -247,7 +241,6 @@ public:
   ///
   /// \ingroup python_settings
   /// @brief \python_func{ getStringList(id) }
-  ///-----------------------------------------------------------------------
   /// Returns the value of a setting as a list of unicode strings.
   ///
   /// @param id                     string - id of the setting that the module needs to access.
@@ -273,7 +266,6 @@ public:
   ///
   /// \ingroup python_settings
   /// @brief \python_func{ setBool(id, value) }
-  ///-----------------------------------------------------------------------
   /// Sets the value of a setting.
   ///
   /// @param id                     string - id of the setting that the module needs to access.
@@ -303,7 +295,6 @@ public:
   ///
   /// \ingroup python_settings
   /// @brief \python_func{ setInt(id, value) }
-  ///-----------------------------------------------------------------------
   /// Sets the value of a setting.
   ///
   /// @param id                     string - id of the setting that the module needs to access.
@@ -333,7 +324,6 @@ public:
   ///
   /// \ingroup python_settings
   /// @brief \python_func{ setNumber(id, value) }
-  ///-----------------------------------------------------------------------
   /// Sets the value of a setting.
   ///
   /// @param id                     string - id of the setting that the module needs to access.
@@ -363,7 +353,6 @@ public:
   ///
   /// \ingroup python_settings
   /// @brief \python_func{ setString(id, value) }
-  ///-----------------------------------------------------------------------
   /// Sets the value of a setting.
   ///
   /// @param id                     string - id of the setting that the module needs to access.
@@ -393,7 +382,6 @@ public:
   ///
   /// \ingroup python_settings
   /// @brief \python_func{ setBoolList(id, values) }
-  ///-----------------------------------------------------------------------
   /// Sets the boolean values of a list setting.
   ///
   /// @param id                     string - id of the setting that the module needs to access.
@@ -423,7 +411,6 @@ public:
   ///
   /// \ingroup python_settings
   /// @brief \python_func{ setIntList(id, value) }
-  ///-----------------------------------------------------------------------
   /// Sets the integer values of a list setting.
   ///
   /// @param id                     string - id of the setting that the module needs to access.
@@ -453,7 +440,6 @@ public:
   ///
   /// \ingroup python_settings
   /// @brief \python_func{ setNumberList(id, value) }
-  ///-----------------------------------------------------------------------
   /// Sets the floating point values of a list setting.
   ///
   /// @param id                     string - id of the setting that the module needs to access.
@@ -483,7 +469,6 @@ public:
   ///
   /// \ingroup python_settings
   /// @brief \python_func{ setStringList(id, value) }
-  ///-----------------------------------------------------------------------
   /// Sets the string values of a list setting.
   ///
   /// @param id                     string - id of the setting that the module needs to access.
@@ -509,6 +494,7 @@ public:
   void setStringList(const char* id, const std::vector<String>& values);
 #endif
 };
+//@}
 
 } // namespace xbmcaddon
 } // namespace XBMCAddon

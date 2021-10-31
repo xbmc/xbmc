@@ -219,7 +219,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ getDateTime() }
-      ///-----------------------------------------------------------------------
       /// Returns the list item's datetime in W3C format (YYYY-MM-DDThh:mm:ssTZD).
       ///
       /// @return                   string or unicode - datetime string (W3C).
@@ -245,7 +244,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ setDateTime(dateTime) }
-      ///-----------------------------------------------------------------------
       /// Sets the list item's datetime in W3C format.
       /// The following formats are supported:
       /// - YYYY
@@ -479,7 +477,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ isFolder() }
-      ///-----------------------------------------------------------------------
       /// Returns whether the item is a folder or not.
       ///
       ///-----------------------------------------------------------------------

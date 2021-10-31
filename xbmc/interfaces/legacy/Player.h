@@ -462,7 +462,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_Player
       /// @brief \python_func{ getPlayingItem() }
-      ///-----------------------------------------------------------------------
       /// Returns the current playing item.
       ///
       /// @return                    Playing item
