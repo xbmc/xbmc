@@ -267,28 +267,26 @@ private:
     instance->imagedecoder->toAddon->load_image_from_memory = ADDON_LoadImageFromMemory;
     instance->imagedecoder->toAddon->decode = ADDON_Decode;
     m_instanceData = instance->imagedecoder;
-    m_instanceData->toAddon->addonInstance = this;
   }
 
-  inline static bool ADDON_LoadImageFromMemory(const AddonInstance_ImageDecoder* instance,
+  inline static bool ADDON_LoadImageFromMemory(const KODI_ADDON_IMAGEDECODER_HDL hdl,
                                                unsigned char* buffer,
                                                unsigned int bufSize,
                                                unsigned int* width,
                                                unsigned int* height)
   {
-    return static_cast<CInstanceImageDecoder*>(instance->toAddon->addonInstance)
-        ->LoadImageFromMemory(buffer, bufSize, *width, *height);
+    return static_cast<CInstanceImageDecoder*>(hdl)->LoadImageFromMemory(buffer, bufSize, *width,
+                                                                         *height);
   }
 
-  inline static bool ADDON_Decode(const AddonInstance_ImageDecoder* instance,
+  inline static bool ADDON_Decode(const KODI_ADDON_IMAGEDECODER_HDL hdl,
                                   unsigned char* pixels,
                                   unsigned int width,
                                   unsigned int height,
                                   unsigned int pitch,
                                   enum ImageFormat format)
   {
-    return static_cast<CInstanceImageDecoder*>(instance->toAddon->addonInstance)
-        ->Decode(pixels, width, height, pitch, format);
+    return static_cast<CInstanceImageDecoder*>(hdl)->Decode(pixels, width, height, pitch, format);
   }
 
   AddonInstance_ImageDecoder* m_instanceData;

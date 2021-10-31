@@ -47,8 +47,8 @@ bool CImageDecoder::LoadImageFromMemory(unsigned char* buffer, unsigned int bufS
 
   m_width = width;
   m_height = height;
-  return m_ifc.imagedecoder->toAddon->load_image_from_memory(m_ifc.imagedecoder, buffer, bufSize,
-                                                             &m_width, &m_height);
+  return m_ifc.imagedecoder->toAddon->load_image_from_memory(m_ifc.hdl, buffer, bufSize, &m_width,
+                                                             &m_height);
 }
 
 bool CImageDecoder::Decode(unsigned char* const pixels, unsigned int width,
@@ -62,8 +62,8 @@ bool CImageDecoder::Decode(unsigned char* const pixels, unsigned int width,
   if (it == KodiToAddonFormat.end())
     return false;
 
-  bool result = m_ifc.imagedecoder->toAddon->decode(m_ifc.imagedecoder, pixels, width, height,
-                                                    pitch, it->second);
+  bool result =
+      m_ifc.imagedecoder->toAddon->decode(m_ifc.hdl, pixels, width, height, pitch, it->second);
   m_width = width;
   m_height = height;
 
@@ -73,7 +73,6 @@ bool CImageDecoder::Decode(unsigned char* const pixels, unsigned int width,
 bool CImageDecoder::Create(const std::string& mimetype)
 {
   m_ifc.imagedecoder->props->mimetype = mimetype.c_str();
-  m_ifc.imagedecoder->toKodi->kodi_instance = this;
   return (CreateInstance() == ADDON_STATUS_OK);
 }
 
