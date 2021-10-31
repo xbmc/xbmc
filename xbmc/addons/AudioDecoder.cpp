@@ -16,10 +16,8 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
+using namespace ADDON;
 using namespace KODI::ADDONS;
-
-namespace ADDON
-{
 
 CAudioDecoder::CAudioDecoder(const AddonInfoPtr& addonInfo)
   : IAddonInstanceHandler(ADDON_INSTANCE_AUDIODECODER, addonInfo)
@@ -254,5 +252,3 @@ int CAudioDecoder::GetTrackCount(const std::string& strPath)
 
   return result;
 }
-
-} /* namespace ADDON */

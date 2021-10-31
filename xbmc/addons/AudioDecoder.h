@@ -15,17 +15,19 @@
 #include "filesystem/MusicFileDirectory.h"
 #include "music/tags/ImusicInfoTagLoader.h"
 
-namespace ADDON
+namespace KODI
+{
+namespace ADDONS
 {
 
-class CAudioDecoder : public IAddonInstanceHandler,
-                      public KODI::ADDONS::IAddonSupportCheck,
+class CAudioDecoder : public ADDON::IAddonInstanceHandler,
+                      public IAddonSupportCheck,
                       public ICodec,
                       public MUSIC_INFO::IMusicInfoTagLoader,
                       public XFILE::CMusicFileDirectory
 {
 public:
-  explicit CAudioDecoder(const AddonInfoPtr& addonInfo);
+  explicit CAudioDecoder(const ADDON::AddonInfoPtr& addonInfo);
   ~CAudioDecoder() override;
 
   // Things that MUST be supplied by the child classes
@@ -46,4 +48,5 @@ private:
   bool m_hasTags;
 };
 
-} /* namespace ADDON */
+} /* namespace ADDONS */
+} /* namespace KODI */

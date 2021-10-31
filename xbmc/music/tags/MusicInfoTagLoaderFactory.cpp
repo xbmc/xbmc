@@ -20,7 +20,6 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
-using namespace ADDON;
 using namespace KODI::ADDONS;
 using namespace MUSIC_INFO;
 
