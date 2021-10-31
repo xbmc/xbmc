@@ -257,7 +257,16 @@ public:
   ///
   /// @remarks Only called from addon itself.
   ///
-  inline std::string MimeType() { return m_instanceData->props->mimetype; }
+  inline std::string GetMimeType()
+  {
+    char* mimetype = m_instanceData->toKodi->get_mime_type(m_instanceData->toKodi->kodi_instance);
+    if (!mimetype)
+      return "";
+
+    std::string ret = mimetype;
+    free(mimetype);
+    return ret;
+  }
   //----------------------------------------------------------------------------
 
 private:

@@ -17,10 +17,10 @@ namespace ADDON
 class CImageDecoder : public IAddonInstanceHandler, public IImage
 {
 public:
-  explicit CImageDecoder(const AddonInfoPtr& addonInfo);
+  explicit CImageDecoder(const AddonInfoPtr& addonInfo, const std::string& mimetype);
   ~CImageDecoder() override;
 
-  bool Create(const std::string& mimetype);
+  bool Create();
 
   bool CreateThumbnailFromSurface(unsigned char*,
                                   unsigned int,
@@ -43,6 +43,12 @@ public:
               unsigned int height,
               unsigned int pitch,
               unsigned int format) override;
+
+  // Addon callback functions
+  const std::string& GetMimeType() const { return m_mimetype; }
+
+private:
+  const std::string m_mimetype;
 };
 
 } /* namespace ADDON */

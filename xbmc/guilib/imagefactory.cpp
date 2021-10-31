@@ -45,8 +45,8 @@ IImage* ImageFactory::CreateLoaderFromMimeType(const std::string& strMimeType)
     if (std::find(mime.begin(), mime.end(), strMimeType) != mime.end())
     {
       CSingleLock lock(m_createSec);
-      CImageDecoder* result = new CImageDecoder(addonInfo);
-      result->Create(strMimeType);
+      CImageDecoder* result = new CImageDecoder(addonInfo, strMimeType);
+      result->Create();
       return result;
     }
   }
