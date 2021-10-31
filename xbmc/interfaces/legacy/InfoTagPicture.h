@@ -128,7 +128,6 @@ public:
   ///
   /// \ingroup python_InfoTagPicture
   /// @brief \python_func{ setResolution(width, height) }
-  ///-----------------------------------------------------------------------
   /// Sets the resolution of the picture.
   ///
   /// @param width              int - Width of the picture in pixels.
