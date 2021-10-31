@@ -13,24 +13,36 @@
 
 namespace ADDON
 {
-  class CImageDecoder : public IAddonInstanceHandler,
-                        public IImage
+
+class CImageDecoder : public IAddonInstanceHandler, public IImage
+{
+public:
+  explicit CImageDecoder(const AddonInfoPtr& addonInfo);
+  ~CImageDecoder() override;
+
+  bool Create(const std::string& mimetype);
+
+  bool CreateThumbnailFromSurface(unsigned char*,
+                                  unsigned int,
+                                  unsigned int,
+                                  unsigned int,
+                                  unsigned int,
+                                  const std::string&,
+                                  unsigned char*&,
+                                  unsigned int&) override
   {
-  public:
-    explicit CImageDecoder(const AddonInfoPtr& addonInfo);
-    ~CImageDecoder() override;
+    return false;
+  }
 
-    bool Create(const std::string& mimetype);
+  bool LoadImageFromMemory(unsigned char* buffer,
+                           unsigned int bufSize,
+                           unsigned int width,
+                           unsigned int height) override;
+  bool Decode(unsigned char* const pixels,
+              unsigned int width,
+              unsigned int height,
+              unsigned int pitch,
+              unsigned int format) override;
+};
 
-    bool CreateThumbnailFromSurface(unsigned char*, unsigned int, unsigned int,
-                                    unsigned int, unsigned int, const std::string&,
-                                    unsigned char*&, unsigned int&) override { return false; }
-
-    bool LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize,
-                             unsigned int width, unsigned int height) override;
-    bool Decode(unsigned char* const pixels, unsigned int width,
-                unsigned int height, unsigned int pitch,
-                unsigned int format) override;
-  };
-
-} /*namespace ADDON*/
+} /* namespace ADDON */

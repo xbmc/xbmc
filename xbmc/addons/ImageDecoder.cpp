@@ -39,8 +39,10 @@ CImageDecoder::~CImageDecoder()
   delete m_ifc.imagedecoder;
 }
 
-bool CImageDecoder::LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize,
-                                        unsigned int width, unsigned int height)
+bool CImageDecoder::LoadImageFromMemory(unsigned char* buffer,
+                                        unsigned int bufSize,
+                                        unsigned int width,
+                                        unsigned int height)
 {
   if (!m_ifc.imagedecoder->toAddon->load_image_from_memory)
     return false;
@@ -51,8 +53,10 @@ bool CImageDecoder::LoadImageFromMemory(unsigned char* buffer, unsigned int bufS
                                                              &m_height);
 }
 
-bool CImageDecoder::Decode(unsigned char* const pixels, unsigned int width,
-                           unsigned int height, unsigned int pitch,
+bool CImageDecoder::Decode(unsigned char* const pixels,
+                           unsigned int width,
+                           unsigned int height,
+                           unsigned int pitch,
                            unsigned int format)
 {
   if (!m_ifc.imagedecoder->toAddon->decode)
@@ -76,4 +80,4 @@ bool CImageDecoder::Create(const std::string& mimetype)
   return (CreateInstance() == ADDON_STATUS_OK);
 }
 
-} /*namespace ADDON*/
+} /* namespace ADDON */
