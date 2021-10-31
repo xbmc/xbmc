@@ -10,8 +10,7 @@ set(SOURCES CharsetConverter.cpp
             PlatformWin32.cpp
             WIN32Util.cpp
             WindowHelper.cpp
-            WinRtUtil.cpp
-            XTimeUtils.cpp)
+            WinRtUtil.cpp)
 
 set(HEADERS CharsetConverter.h
             CPUInfoWin32.h

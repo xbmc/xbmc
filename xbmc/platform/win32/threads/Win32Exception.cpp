@@ -66,12 +66,13 @@ bool win32_exception::write_minidump(EXCEPTION_POINTERS* pEp)
   bool returncode = false;
   std::string dumpFileName;
   std::wstring dumpFileNameW;
-  KODI::TIME::SystemTime stLocalTime;
-  KODI::TIME::GetLocalTime(&stLocalTime);
+  SYSTEMTIME stLocalTime;
+  GetLocalTime(&stLocalTime);
 
-  dumpFileName = StringUtils::Format("kodi_crashlog-{}-{:04}{:02}{:02}-{:02}{:02}{:02}.dmp",
-                                     mVersion, stLocalTime.year, stLocalTime.month, stLocalTime.day,
-                                     stLocalTime.hour, stLocalTime.minute, stLocalTime.second);
+  dumpFileName =
+      StringUtils::Format("kodi_crashlog-{}-{:04}{:02}{:02}-{:02}{:02}{:02}.dmp", mVersion,
+                          stLocalTime.wYear, stLocalTime.wMonth, stLocalTime.wDay,
+                          stLocalTime.wHour, stLocalTime.wMinute, stLocalTime.wSecond);
 
   dumpFileName = CWIN32Util::SmbToUnc(
       URIUtils::AddFileToFolder(CWIN32Util::GetProfilePath(m_platformDir),
@@ -143,8 +144,8 @@ bool win32_exception::write_stacktrace(EXCEPTION_POINTERS* pEp)
   std::wstring dumpFileNameW;
   CHAR cTemp[STACKWALK_MAX_NAMELEN];
   DWORD dwBytes;
-  KODI::TIME::SystemTime stLocalTime;
-  KODI::TIME::GetLocalTime(&stLocalTime);
+  SYSTEMTIME stLocalTime;
+  GetLocalTime(&stLocalTime);
   bool returncode = false;
   STACKFRAME64 frame = {};
   HANDLE hCurProc = GetCurrentProcess();
@@ -186,9 +187,10 @@ bool win32_exception::write_stacktrace(EXCEPTION_POINTERS* pEp)
      pSFTA == NULL || pSGMB == NULL)
     goto cleanup;
 
-  dumpFileName = StringUtils::Format("kodi_stacktrace-{}-{:04}{:02}{:02}-{:02}{:02}{:02}.txt",
-                                     mVersion, stLocalTime.year, stLocalTime.month, stLocalTime.day,
-                                     stLocalTime.hour, stLocalTime.minute, stLocalTime.second);
+  dumpFileName =
+      StringUtils::Format("kodi_stacktrace-{}-{:04}{:02}{:02}-{:02}{:02}{:02}.txt", mVersion,
+                          stLocalTime.wYear, stLocalTime.wMonth, stLocalTime.wDay,
+                          stLocalTime.wHour, stLocalTime.wMinute, stLocalTime.wSecond);
 
   dumpFileName = CWIN32Util::SmbToUnc(
       URIUtils::AddFileToFolder(CWIN32Util::GetProfilePath(m_platformDir),
