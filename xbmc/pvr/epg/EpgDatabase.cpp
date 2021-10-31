@@ -389,6 +389,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::CreateEpgTag(
     newTag->m_strEpisodeName = m_pDS->fv("sEpisodeName").get_asString();
     newTag->m_iSeriesNumber = m_pDS->fv("iSeriesId").get_asInt();
     newTag->m_iFlags = m_pDS->fv("iFlags").get_asInt();
+    newTag->m_strSeriesLink = m_pDS->fv("sSeriesLink").get_asString();
     newTag->m_strParentalRatingCode = m_pDS->fv("sParentalRatingCode").get_asString();
     newTag->SetGenre(m_pDS->fv("iGenreType").get_asInt(), m_pDS->fv("iGenreSubType").get_asInt(),
                      m_pDS->fv("sGenre").get_asString().c_str());
