@@ -61,7 +61,7 @@ CCDDARipJob::~CCDDARipJob() = default;
 
 bool CCDDARipJob::DoWork()
 {
-  CLog::Log(LOGINFO, "Start ripping track {} to {}", m_input, m_output);
+  CLog::Log(LOGINFO, "CCDDARipJob::{} - Start ripping track {} to {}", __func__, m_input, m_output);
 
   // if we are ripping to a samba share, rip it to hd first and then copy it it the share
   CFileItem file(m_output, false);
@@ -70,7 +70,7 @@ bool CCDDARipJob::DoWork()
 
   if (m_output.empty())
   {
-    CLog::Log(LOGERROR, "CCDDARipper: Error opening file");
+    CLog::Log(LOGERROR, "CCDDARipJob::{} - Error opening file", __func__);
     return false;
   }
 
@@ -79,7 +79,7 @@ bool CCDDARipJob::DoWork()
   std::unique_ptr<CEncoder> encoder{};
   if (!reader.Open(m_input, READ_CACHED) || !(encoder = SetupEncoder(reader)))
   {
-    CLog::Log(LOGERROR, "Error: CCDDARipper::Init failed");
+    CLog::Log(LOGERROR, "CCDDARipJob::{} - Opening failed");
     return false;
   }
 
@@ -119,7 +119,8 @@ bool CCDDARipJob::DoWork()
     // copy the ripped track to the share
     if (!CFile::Copy(m_output, file.GetPath()))
     {
-      CLog::Log(LOGERROR, "CDDARipper: Error copying file from {} to {}", m_output, file.GetPath());
+      CLog::Log(LOGERROR, "CCDDARipJob::{} - Error copying file from {} to {}", __func__, m_output,
+                file.GetPath());
       CFile::Delete(m_output);
       return false;
     }
@@ -129,19 +130,19 @@ bool CCDDARipJob::DoWork()
 
   if (cancelled)
   {
-    CLog::Log(LOGWARNING, "User Cancelled CDDA Rip");
+    CLog::Log(LOGWARNING, "CCDDARipJob::{} - User Cancelled CDDA Rip", __func__);
     CFile::Delete(m_output);
   }
   else if (result == 1)
-    CLog::Log(LOGERROR, "CDDARipper: Error ripping {}", m_input);
+    CLog::Log(LOGERROR, "CCDDARipJob::{} - Error ripping {}", __func__, m_input);
   else if (result < 0)
-    CLog::Log(LOGERROR, "CDDARipper: Error encoding {}", m_input);
+    CLog::Log(LOGERROR, "CCDDARipJob::{} - Error encoding {}", __func__, m_input);
   else
   {
-    CLog::Log(LOGINFO, "Finished ripping {}", m_input);
+    CLog::Log(LOGINFO, "CCDDARipJob::{} - Finished ripping {}", __func__, m_input);
     if (m_eject)
     {
-      CLog::Log(LOGINFO, "Ejecting CD");
+      CLog::Log(LOGINFO, "CCDDARipJob::{} - Ejecting CD", __func__);
       CServiceBroker::GetMediaManager().EjectTray();
     }
   }

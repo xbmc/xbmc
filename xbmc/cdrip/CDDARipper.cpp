@@ -60,7 +60,8 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
   // don't rip non cdda items
   if (!URIUtils::HasExtension(pItem->GetPath(), ".cdda"))
   {
-    CLog::Log(LOGDEBUG, "cddaripper: file is not a cdda track");
+    CLog::Log(LOGDEBUG, "CCDDARipper::{} - File '{}' is not a cdda track", __func__,
+              pItem->GetPath());
     return false;
   }
 
@@ -84,9 +85,9 @@ bool CCDDARipper::RipCD()
 {
   // return here if cd is not a CDDA disc
   MEDIA_DETECT::CCdInfo* pInfo = CServiceBroker::GetMediaManager().GetCdInfo();
-  if (pInfo == NULL || !pInfo->IsAudio(1))
+  if (pInfo == nullptr || !pInfo->IsAudio(1))
   {
-    CLog::Log(LOGDEBUG, "cddaripper: CD is not an audio cd");
+    CLog::Log(LOGDEBUG, "CCDDARipper::{} - CD is not an audio cd", __func__);
     return false;
   }
 
@@ -145,7 +146,7 @@ bool CCDDARipper::CreateAlbumDir(const MUSIC_INFO::CMusicInfoTag& infoTag,
   std::shared_ptr<CSettingPath> recordingpathSetting = std::static_pointer_cast<CSettingPath>(
       CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(
           CSettings::SETTING_AUDIOCDS_RECORDINGPATH));
-  if (recordingpathSetting != NULL)
+  if (recordingpathSetting != nullptr)
   {
     strDirectory = recordingpathSetting->GetValue();
     if (strDirectory.empty())
@@ -159,7 +160,7 @@ bool CCDDARipper::CreateAlbumDir(const MUSIC_INFO::CMusicInfoTag& infoTag,
   if (strDirectory.size() < 3)
   {
     // no rip path has been set, show error
-    CLog::Log(LOGERROR, "Error: CDDARipPath has not been set");
+    CLog::Log(LOGERROR, "CCDDARipper::{} - Required path has not been set", __func__);
     HELPERS::ShowOKDialogText(CVariant{257}, CVariant{608});
     return false;
   }
@@ -186,7 +187,8 @@ bool CCDDARipper::CreateAlbumDir(const MUSIC_INFO::CMusicInfoTag& infoTag,
   // Create directory if it doesn't exist
   if (!CUtil::CreateDirectoryEx(strDirectory))
   {
-    CLog::Log(LOGERROR, "Unable to create directory '{}'", strDirectory);
+    CLog::Log(LOGERROR, "CCDDARipper::{} - Unable to create directory '{}'", __func__,
+              strDirectory);
     return false;
   }
 
