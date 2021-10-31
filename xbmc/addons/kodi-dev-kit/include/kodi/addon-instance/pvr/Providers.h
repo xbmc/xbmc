@@ -57,7 +57,7 @@ public:
   /// | **Provider type** | @ref PVR_PROVIDER_TYPE | @ref PVRProvider::SetType "SetType" | @ref PVRProvider::GetType "GetType" | *optional*
   /// | **Icon path** | `std::string` | @ref PVRProvider::SetIconPath "SetIconPath" | @ref PVRProvider::GetIconPath "GetIconPath" | *optional*
   /// | **Countries** | `std::vecotr<std::string>` | @ref PVRProvider::SetCountries "SetCountries" | @ref PVRProvider::GetCountries "GetCountries" | *optional*
-  /// | **Langauges** | `std::vecotr<std::string>` | @ref PVRProvider::SetLangauges "SetLangauges" | @ref PVRProvider::GetLangauges "GetLangauges" | *optional*
+  /// | **Langauges** | `std::vecotr<std::string>` | @ref PVRProvider::SetLanguages "SetLanguages" | @ref PVRProvider::GetLanguages "GetLanguages" | *optional*
   ///
 
   /// @addtogroup cpp_kodi_addon_pvr_Defs_PVRProvider
@@ -83,7 +83,7 @@ public:
   /// @brief **optional**\n
   /// Provider type.
   ///
-  /// Set to @ref PVR_PVR_PROVIDER_TYPE_UNKNOWN if the type cannot be
+  /// Set to @ref PVR_PROVIDER_TYPE_UNKNOWN if the type cannot be
   /// determined.
   ///
   /// --------------------------------------------------------------------------
