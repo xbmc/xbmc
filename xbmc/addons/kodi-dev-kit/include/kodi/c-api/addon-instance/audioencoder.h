@@ -40,6 +40,13 @@ extern "C"
     const char* comment;
   };
 
+  typedef bool(ATTR_APIENTRYP PFN_KODI_ADDON_AUDIOENCODER_START_V1)(
+      KODI_ADDON_AUDIOENCODER_HDL hdl, const struct KODI_ADDON_AUDIOENCODER_INFO_TAG* tag);
+  typedef ssize_t(ATTR_APIENTRYP PFN_KODI_ADDON_AUDIOENCODER_ENCODE_V1)(
+      KODI_ADDON_AUDIOENCODER_HDL hdl, const uint8_t* pbt_stream, size_t num_bytes_read);
+  typedef bool(ATTR_APIENTRYP PFN_KODI_ADDON_AUDIOENCODER_FINISH_V1)(
+      KODI_ADDON_AUDIOENCODER_HDL hdl);
+
   typedef struct AddonToKodiFuncTable_AudioEncoder
   {
     KODI_HANDLE kodiInstance;
@@ -50,12 +57,9 @@ extern "C"
   typedef struct KodiToAddonFuncTable_AudioEncoder
   {
     KODI_HANDLE addonInstance;
-    bool(__cdecl* start)(const KODI_ADDON_AUDIOENCODER_HDL hdl,
-                         const struct KODI_ADDON_AUDIOENCODER_INFO_TAG* tag);
-    ssize_t(__cdecl* encode)(const KODI_ADDON_AUDIOENCODER_HDL hdl,
-                             const uint8_t* pbt_stream,
-                             size_t num_bytes_read);
-    bool(__cdecl* finish)(const KODI_ADDON_AUDIOENCODER_HDL hdl);
+    PFN_KODI_ADDON_AUDIOENCODER_START_V1 start;
+    PFN_KODI_ADDON_AUDIOENCODER_ENCODE_V1 encode;
+    PFN_KODI_ADDON_AUDIOENCODER_FINISH_V1 finish;
   } KodiToAddonFuncTable_AudioEncoder;
 
   typedef struct AddonInstance_AudioEncoder
