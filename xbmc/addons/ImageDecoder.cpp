@@ -9,7 +9,7 @@
 
 #include "guilib/TextureFormats.h"
 
-static const std::map<int, ImageFormat> KodiToAddonFormat = {
+static const std::map<int, ADDON_IMG_FMT> KodiToAddonFormat = {
     {XB_FMT_A8R8G8B8, ADDON_IMG_FMT_A8R8G8B8},
     {XB_FMT_A8, ADDON_IMG_FMT_A8},
     {XB_FMT_RGBA8, ADDON_IMG_FMT_RGBA8},
