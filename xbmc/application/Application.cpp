@@ -261,7 +261,9 @@ bool CApplication::Create()
   CServiceBroker::RegisterJobManager(std::make_shared<CJobManager>());
 
   // Initialize,timezone
+#if defined(TARGET_POSIX)
   g_timezone.Init();
+#endif
 
   // Announcement service
   m_pAnnouncementManager = std::make_shared<ANNOUNCEMENT::CAnnouncementManager>();
