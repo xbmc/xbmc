@@ -124,7 +124,7 @@ namespace addon
 ///               unsigned int width,
 ///               unsigned int height,
 ///               unsigned int pitch,
-///               ImageFormat format) override;
+///               ADDON_IMG_FMT format) override;
 ///
 ///   ...
 /// };
@@ -148,7 +148,7 @@ namespace addon
 ///                              unsigned int width,
 ///                              unsigned int height,
 ///                              unsigned int pitch,
-///                              ImageFormat format) override;
+///                              ADDON_IMG_FMT format) override;
 /// {
 ///   ...
 ///   return true;
@@ -245,7 +245,7 @@ public:
                       unsigned int width,
                       unsigned int height,
                       unsigned int pitch,
-                      ImageFormat format) = 0;
+                      ADDON_IMG_FMT format) = 0;
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -294,7 +294,7 @@ private:
                                   unsigned int width,
                                   unsigned int height,
                                   unsigned int pitch,
-                                  enum ImageFormat format)
+                                  enum ADDON_IMG_FMT format)
   {
     return static_cast<CInstanceImageDecoder*>(hdl)->Decode(pixels, width, height, pitch, format);
   }

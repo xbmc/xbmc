@@ -24,7 +24,7 @@ extern "C"
   /// Used to define wanted target format where image decoder should give to
   /// Kodi.
   ///
-  typedef enum ImageFormat
+  typedef enum ADDON_IMG_FMT
   {
     /// @brief A 32-bit ARGB pixel format, with alpha, that uses 8 bits per
     /// channel, ARGBARGB...
@@ -38,7 +38,7 @@ extern "C"
 
     /// @brief RGB 8:8:8, with alpha, 24bpp, RGBRGB...
     ADDON_IMG_FMT_RGB8 = 4
-  } ImageFormat;
+  } ADDON_IMG_FMT;
   //----------------------------------------------------------------------------
 
   typedef struct AddonToKodiFuncTable_ImageDecoder
@@ -61,7 +61,7 @@ extern "C"
                           unsigned int width,
                           unsigned int height,
                           unsigned int pitch,
-                          enum ImageFormat format);
+                          enum ADDON_IMG_FMT format);
   } KodiToAddonFuncTable_ImageDecoder;
 
   typedef struct AddonInstance_ImageDecoder
