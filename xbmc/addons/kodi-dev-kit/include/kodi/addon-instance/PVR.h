@@ -154,7 +154,15 @@ namespace addon
 //------------------------------------------------------------------------------
 
 //##############################################################################
-/// @defgroup cpp_kodi_addon_pvr_Defs_Menuhook 7. Menuhook
+/// @defgroup cpp_kodi_addon_pvr_Defs_Provider 7. Provider
+/// @ingroup cpp_kodi_addon_pvr_Defs
+/// @brief **Representation of a provider**\n
+/// For list of all providers from the backend.
+///
+//------------------------------------------------------------------------------
+
+//##############################################################################
+/// @defgroup cpp_kodi_addon_pvr_Defs_Menuhook 8. Menuhook
 /// @ingroup cpp_kodi_addon_pvr_Defs
 /// @brief **PVR Context menu data**\n
 /// Define data for the context menus available to the user
@@ -162,7 +170,7 @@ namespace addon
 //------------------------------------------------------------------------------
 
 //##############################################################################
-/// @defgroup cpp_kodi_addon_pvr_Defs_EDLEntry 8. Edit decision list (EDL)
+/// @defgroup cpp_kodi_addon_pvr_Defs_EDLEntry 9. Edit decision list (EDL)
 /// @ingroup cpp_kodi_addon_pvr_Defs
 /// @brief **An edit decision list or EDL is used in the post-production process
 /// of film editing and video editing**\n
@@ -172,7 +180,7 @@ namespace addon
 //------------------------------------------------------------------------------
 
 //##############################################################################
-/// @defgroup cpp_kodi_addon_pvr_Defs_Stream 9. Inputstream
+/// @defgroup cpp_kodi_addon_pvr_Defs_Stream 10. Inputstream
 /// @ingroup cpp_kodi_addon_pvr_Defs
 /// @brief **Inputstream**\n
 /// This includes classes and values that are used in the PVR inputstream.
@@ -856,9 +864,9 @@ public:
   //============================================================================
   /// @brief Request the list of all providers from the backend.
   ///
-  /// @param[out] results The channels defined with @ref
-  ///                     cpp_kodi_addon_pvr_Defs_PVRProviders
-  ///                     and available at the addon, then transferred with
+  /// @param[out] results The channels defined with
+  ///                     @ref cpp_kodi_addon_pvr_Defs_PVRProvider and
+  ///                     available at the addon, then transferred with
   ///                     @ref cpp_kodi_addon_pvr_Defs_PVRProvidersResultSet.
   /// @return @ref PVR_ERROR_NO_ERROR if the list has been fetched successfully.
   ///
@@ -867,12 +875,7 @@ public:
   ///
   /// --------------------------------------------------------------------------
   ///
-  /// @copydetails cpp_kodi_addon_pvr_Defs_PVRProviders_Help
-  ///
-  ///
-  /// --------------------------------------------------------------------------
-  ///
-  ///
+  /// @copydetails cpp_kodi_addon_pvr_Defs_PVRProvider_Help
   ///
   ///---------------------------------------------------------------------------
   ///
