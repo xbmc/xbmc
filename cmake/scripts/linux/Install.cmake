@@ -154,8 +154,8 @@ install(FILES ${CMAKE_SOURCE_DIR}/privacy-policy.txt
         COMPONENT kodi)
 
 # Install kodi-tools-texturepacker
-if(NOT WITH_TEXTUREPACKER)
-  install(PROGRAMS $<TARGET_FILE:TexturePacker::TexturePacker>
+if(INTERNAL_TEXTUREPACKER_INSTALLABLE)
+  install(PROGRAMS $<TARGET_FILE:TexturePacker::TexturePacker::Installable>
           DESTINATION ${bindir}
           COMPONENT kodi-tools-texturepacker)
 endif()

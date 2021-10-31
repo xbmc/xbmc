@@ -293,7 +293,7 @@ foreach(skin ${SKINS})
 endforeach()
 
 add_custom_target(pack-skins ALL
-                  DEPENDS TexturePacker::TexturePacker export-files ${XBT_FILES})
+                  DEPENDS TexturePacker::TexturePacker::Executable export-files ${XBT_FILES})
 set_target_properties(pack-skins PROPERTIES FOLDER "Build Utilities")
 
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/system/players/VideoPlayer)
