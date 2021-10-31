@@ -15,7 +15,6 @@
 #include "addons/ExtsMimeSupportList.h"
 #include "utils/StringUtils.h"
 
-using namespace ADDON;
 using namespace KODI::ADDONS;
 
 ICodec* CodecFactory::CreateCodec(const CURL& urlFile)
