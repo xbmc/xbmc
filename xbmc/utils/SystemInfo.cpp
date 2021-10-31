@@ -598,7 +598,7 @@ std::string CSysInfo::GetOsName(bool emptyIfUnknown /* = false*/)
 #elif defined(TARGET_DARWIN_TVOS)
     osName = "tvOS";
 #elif defined(TARGET_DARWIN_OSX)
-    osName = "OS X";
+    osName = "macOS";
 #elif defined (TARGET_ANDROID)
     osName = "Android";
 #elif defined(TARGET_LINUX)
@@ -1270,7 +1270,7 @@ std::string CSysInfo::GetBuildDate()
 std::string CSysInfo::GetBuildTargetPlatformName(void)
 {
 #if defined(TARGET_DARWIN_OSX)
-  return "OS X";
+  return "macOS";
 #elif defined(TARGET_DARWIN_IOS)
   return "iOS";
 #elif defined(TARGET_DARWIN_TVOS)
