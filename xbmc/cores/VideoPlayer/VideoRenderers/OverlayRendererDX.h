@@ -29,7 +29,6 @@ namespace OVERLAY {
     void Render(SRenderState& state);
 
     unsigned int m_count;
-    DWORD                  m_fvf;
     CD3DTexture            m_texture;
     CD3DBuffer             m_vertex;
   };
@@ -45,7 +44,6 @@ namespace OVERLAY {
     void Load(uint32_t* rgba, int width, int height, int stride);
     void Render(SRenderState& state);
 
-    DWORD                  m_fvf;
     CD3DTexture            m_texture;
     CD3DBuffer             m_vertex;
     bool                   m_pma;
