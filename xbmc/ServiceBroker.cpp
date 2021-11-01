@@ -72,6 +72,11 @@ ADDON::CBinaryAddonCache &CServiceBroker::GetBinaryAddonCache()
   return g_application.m_ServiceManager->GetBinaryAddonCache();
 }
 
+ADDONS::CExtsMimeSupportList& CServiceBroker::GetExtsMimeSupportList()
+{
+  return g_application.m_ServiceManager->GetExtsMimeSupportList();
+}
+
 ADDON::CVFSAddonCache &CServiceBroker::GetVFSAddonCache()
 {
   return g_application.m_ServiceManager->GetVFSAddonCache();

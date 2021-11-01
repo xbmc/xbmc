@@ -11,7 +11,9 @@
 #include "ContextMenuManager.h"
 #include "DatabaseManager.h"
 #include "PlayListPlayer.h"
+#include "addons/AudioDecoder.h"
 #include "addons/BinaryAddonCache.h"
+#include "addons/ExtsMimeSupportList.h"
 #include "addons/RepositoryUpdater.h"
 #include "addons/VFSEntry.h"
 #include "addons/binary-addons/BinaryAddonManager.h"
@@ -73,6 +75,7 @@ bool CServiceManager::InitForTesting()
     return false;
   }
 
+  m_extsMimeSupportList.reset(new ADDONS::CExtsMimeSupportList(*m_addonMgr));
   m_fileExtensionProvider.reset(new CFileExtensionProvider(*m_addonMgr));
 
   init_level = 1;
@@ -83,6 +86,7 @@ void CServiceManager::DeinitTesting()
 {
   init_level = 0;
   m_fileExtensionProvider.reset();
+  m_extsMimeSupportList.reset();
   m_binaryAddonManager.reset();
   m_addonMgr.reset();
   m_databaseManager.reset();
@@ -122,6 +126,8 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params, const std::str
   }
 
   m_repositoryUpdater.reset(new ADDON::CRepositoryUpdater(*m_addonMgr));
+
+  m_extsMimeSupportList.reset(new ADDONS::CExtsMimeSupportList(*m_addonMgr));
 
   m_vfsAddonCache.reset(new ADDON::CVFSAddonCache());
   m_vfsAddonCache->Init();
@@ -238,6 +244,7 @@ void CServiceManager::DeinitStageTwo()
   m_binaryAddonCache.reset();
   m_dataCacheCore.reset();
   m_PVRManager.reset();
+  m_extsMimeSupportList.reset();
   m_vfsAddonCache.reset();
   m_repositoryUpdater.reset();
   m_binaryAddonManager.reset();
@@ -271,6 +278,11 @@ WSDiscovery::IWSDiscovery& CServiceManager::GetWSDiscovery()
 ADDON::CAddonMgr &CServiceManager::GetAddonMgr()
 {
   return *m_addonMgr;
+}
+
+ADDONS::CExtsMimeSupportList& CServiceManager::GetExtsMimeSupportList()
+{
+  return *m_extsMimeSupportList;
 }
 
 ADDON::CBinaryAddonCache &CServiceManager::GetBinaryAddonCache()

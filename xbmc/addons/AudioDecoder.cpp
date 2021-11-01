@@ -9,7 +9,6 @@
 
 #include "addons/interfaces/AudioEngine.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
-#include "music/tags/MusicInfoTag.h"
 #include "music/tags/TagLoaderTagLib.h"
 #include "utils/log.h"
 
