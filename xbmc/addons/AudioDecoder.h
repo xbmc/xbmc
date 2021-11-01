@@ -43,27 +43,6 @@ public:
             MUSIC_INFO::CMusicInfoTag& tag,
             EmbeddedArt* art = nullptr) override;
   int GetTrackCount(const std::string& strPath) override;
-
-  static inline std::string GetExtensions(const AddonInfoPtr& addonInfo)
-  {
-    return addonInfo->Type(ADDON_AUDIODECODER)->GetValue("@extension").asString();
-  }
-
-  static inline std::string GetMimetypes(const AddonInfoPtr& addonInfo)
-  {
-    return addonInfo->Type(ADDON_AUDIODECODER)->GetValue("@mimetype").asString();
-  }
-
-  static inline bool HasTags(const AddonInfoPtr& addonInfo)
-  {
-    return addonInfo->Type(ADDON_AUDIODECODER)->GetValue("@tags").asBoolean();
-  }
-
-  static inline bool HasTracks(const AddonInfoPtr& addonInfo)
-  {
-    return addonInfo->Type(ADDON_AUDIODECODER)->GetValue("@tracks").asBoolean();
-  }
-
   bool SupportsFile(const std::string& filename) override;
 
 private:

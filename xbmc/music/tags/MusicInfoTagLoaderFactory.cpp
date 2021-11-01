@@ -15,13 +15,13 @@
 #include "MusicInfoTagLoaderShn.h"
 #include "ServiceBroker.h"
 #include "TagLoaderTagLib.h"
-#include "addons/AddonManager.h"
 #include "addons/AudioDecoder.h"
+#include "addons/ExtsMimeSupportList.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
 using namespace ADDON;
-
+using namespace KODI::ADDONS;
 using namespace MUSIC_INFO;
 
 CMusicInfoTagLoaderFactory::CMusicInfoTagLoaderFactory() = default;
@@ -44,23 +44,17 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CFileItem& i
   if (strExtension.empty())
     return NULL;
 
-  std::vector<AddonInfoPtr> addonInfos;
-  CServiceBroker::GetAddonMgr().GetAddonInfos(addonInfos, true, ADDON_AUDIODECODER);
+  const auto addonInfos = CServiceBroker::GetExtsMimeSupportList().GetExtensionSupportedAddonInfos(
+      "." + strExtension, CExtsMimeSupportList::FilterSelect::hasTags);
   for (const auto& addonInfo : addonInfos)
   {
-    if (CAudioDecoder::HasTags(addonInfo))
+    if (addonInfo.first == ADDON::ADDON_AUDIODECODER)
     {
-      auto exts = StringUtils::Split(CAudioDecoder::GetExtensions(addonInfo), "|");
-      if (std::find(exts.begin(), exts.end(), "." + strExtension) != exts.end())
-      {
-        CAudioDecoder* result = new CAudioDecoder(addonInfo);
-        if (!result->CreateDecoder())
-        {
-          delete result;
-          return nullptr;
-        }
-        return result;
-      }
+      std::unique_ptr<CAudioDecoder> result = std::make_unique<CAudioDecoder>(addonInfo.second);
+      if (!result->CreateDecoder() && result->SupportsFile(item.GetPath()))
+        continue;
+
+      return result.release();
     }
   }
 
