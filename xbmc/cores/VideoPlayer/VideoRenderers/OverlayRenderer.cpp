@@ -39,13 +39,15 @@ using namespace OVERLAY;
 
 COverlay::COverlay()
 {
-  m_x      = 0.0f;
-  m_y      = 0.0f;
-  m_width  = 0.0;
-  m_height = 0.0;
-  m_type   = TYPE_NONE;
-  m_align  = ALIGN_SCREEN;
-  m_pos    = POSITION_RELATIVE;
+  m_x = 0.0f;
+  m_y = 0.0f;
+  m_width = 0.0f;
+  m_height = 0.0f;
+  m_type = TYPE_NONE;
+  m_align = ALIGN_SCREEN;
+  m_pos = POSITION_RELATIVE;
+  m_source_width = 0.0f;
+  m_source_height = 0.0f;
 }
 
 COverlay::~COverlay() = default;
