@@ -161,12 +161,19 @@ std::string ConvertStyleToCloseTags(int flagTags[],
   return tags;
 }
 
-void TranslateDirectionalChars(std::string& text)
+void TranslateEscapeChars(std::string& text)
 {
-  StringUtils::Replace(text, "&lrm;", u8"\u200e");
-  StringUtils::Replace(text, "&rlm;", u8"\u200f");
-  StringUtils::Replace(text, "&#x2068;", u8"\u2068");
-  StringUtils::Replace(text, "&#x2069;", u8"\u2069");
+  if (text.find('&') != std::string::npos)
+  {
+    StringUtils::Replace(text, "&lrm;", u8"\u200e");
+    StringUtils::Replace(text, "&rlm;", u8"\u200f");
+    StringUtils::Replace(text, "&#x2068;", u8"\u2068");
+    StringUtils::Replace(text, "&#x2069;", u8"\u2069");
+    StringUtils::Replace(text, "&amp;", "&");
+    StringUtils::Replace(text, "&lt;", "<");
+    StringUtils::Replace(text, "&gt;", ">");
+    StringUtils::Replace(text, "&nbsp;", " ");
+  }
 }
 
 } // unnamed namespace
@@ -333,7 +340,7 @@ void CWebVTTHandler::DecodeLine(std::string line, std::vector<subtitleData>* sub
         if (!m_subtitleData.text.empty())
           m_subtitleData.text += "\n";
 
-        TranslateDirectionalChars(line);
+        TranslateEscapeChars(line);
 
         // We need to calculate the text position right here,
         // when we have the first subtitle text line
