@@ -75,7 +75,7 @@ public:
   /// @brief Provides input.
   ///
   /// False for multitaps
-  bool provides_input;
+  bool provides_input{false};
 
   /// @brief Digital buttons.
   std::vector<std::string> digital_buttons;
