@@ -46,7 +46,7 @@ namespace OVERLAY {
 
     CD3DTexture            m_texture;
     CD3DBuffer             m_vertex;
-    bool                   m_pma;
+    bool m_pma{false};
   };
 
 }
