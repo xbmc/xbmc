@@ -17,9 +17,9 @@
 
 using namespace ADDON;
 
-ICodec* CodecFactory::CreateCodec(const std::string &strFileType)
+ICodec* CodecFactory::CreateCodec(const CURL& urlFile)
 {
-  std::string fileType = strFileType;
+  std::string fileType = urlFile.GetFileType();
   StringUtils::ToLower(fileType);
 
   std::vector<AddonInfoPtr> addonInfos;
@@ -110,6 +110,6 @@ ICodec* CodecFactory::CreateCodecDemux(const CFileItem& file, unsigned int filec
     return dvdcodec;
   }
   else
-    return CreateCodec(urlFile.GetFileType());
+    return CreateCodec(urlFile);
 }
 
