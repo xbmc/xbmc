@@ -55,8 +55,6 @@ public:
   int GetAudioStreamCount() override { return 1; }
   int GetAudioStream() override { return 0; }
 
-  static bool HandlesType(const std::string &type);
-
   // implementation of IJobCallback
   void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
 

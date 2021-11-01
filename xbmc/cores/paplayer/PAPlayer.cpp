@@ -63,18 +63,6 @@ PAPlayer::~PAPlayer()
   CloseFile();
 }
 
-bool PAPlayer::HandlesType(const std::string &type)
-{
-  ICodec* codec = CodecFactory::CreateCodec(type);
-  if (codec && codec->CanInit())
-  {
-    delete codec;
-    return true;
-  }
-
-  return false;
-}
-
 void PAPlayer::SoftStart(bool wait/* = false */)
 {
   CSingleLock lock(m_streamsLock);
