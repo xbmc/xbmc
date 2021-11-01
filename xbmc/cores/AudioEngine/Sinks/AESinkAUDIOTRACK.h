@@ -62,11 +62,14 @@ private:
   double                m_duration_written;
   unsigned int          m_min_buffer_size;
   uint64_t              m_headPos;
-  uint64_t m_timestampPos = 0;
+  int64_t               m_offset;
+  uint64_t              m_timestampPos = 0;
   // Moving Average computes the weighted average delay over
   // a fixed size of delay values - current size: 20 values
   double                GetMovingAverageDelay(double newestdelay);
-
+  // When AddPause is called the m_pause_time is increased
+  // by the package duration. This is only used for non IEC passthrough
+  XbmcThreads::EndTime  m_extTimer;
   // We maintain our linear weighted average delay counter in here
   // The n-th value (timely oldest value) is weighted with 1/n
   // the newest value gets a weight of 1

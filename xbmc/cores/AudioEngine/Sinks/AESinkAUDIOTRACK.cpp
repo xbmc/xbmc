@@ -247,10 +247,12 @@ CAESinkAUDIOTRACK::CAESinkAUDIOTRACK()
   m_at_jni = NULL;
   m_duration_written = 0;
   m_headPos = 0;
+  m_offset = -1;
   m_timestampPos = 0;
   m_sink_sampleRate = 0;
   m_passthrough = false;
   m_min_buffer_size = 0;
+  m_extTimer.SetExpired();
 }
 
 CAESinkAUDIOTRACK::~CAESinkAUDIOTRACK()
@@ -314,9 +316,11 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
 
   m_format      = format;
   m_headPos = 0;
+  m_offset = -1;
   m_timestampPos = 0;
   m_linearmovingaverage.clear();
   m_pause_ms = 0.0;
+  m_extTimer.SetExpired();
   CLog::Log(LOGDEBUG,
             "CAESinkAUDIOTRACK::Initialize requested: sampleRate {}; format: {}; channels: {}",
             format.m_sampleRate, CAEUtil::DataFormatToStr(format.m_dataFormat),
@@ -449,7 +453,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
         case CAEStreamInfo::STREAM_TYPE_TRUEHD:
           m_min_buffer_size = MAX_RAW_AUDIO_BUFFER_HD;
           m_format.m_frames = m_min_buffer_size;
-          rawlength_in_seconds = 8 * m_format.m_streamInfo.GetDuration() / 1000; // on average
+          rawlength_in_seconds = 8 * m_format.m_streamInfo.GetDuration(true) / 1000; // on average
           break;
         case CAEStreamInfo::STREAM_TYPE_DTSHD_MA:
         case CAEStreamInfo::STREAM_TYPE_DTSHD:
@@ -597,9 +601,11 @@ void CAESinkAUDIOTRACK::Deinitialize()
 
   m_duration_written = 0;
   m_headPos = 0;
+  m_offset = -1;
   m_timestampPos = 0;
   m_stampTimer.SetExpired();
 
+  m_extTimer.SetExpired();
   m_linearmovingaverage.clear();
 
   delete m_at_jni;
@@ -634,8 +640,25 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
   // clear lower 32 bit values, e.g. 0x0001 FFFF FFFF -> 0x0001 0000 0000
   // and add head_pos which wrapped around, e.g. 0x0001 0000 0000 -> 0x0001 0000 0004
   m_headPos = (m_headPos & UINT64_UPPER_BYTES) | (uint64_t)head_pos;
+  
+  // head_pos does not necessarily start at the beginning
+  if (m_offset == -1 && m_at_jni->getPlayState() == CJNIAudioTrack::PLAYSTATE_PLAYING)
+  {
+    m_offset = m_headPos;
+  }
 
-  double gone = static_cast<double>(m_headPos) / m_sink_sampleRate;
+  if (m_offset != -1 && (uint64_t) m_offset > m_headPos)
+  {
+    CLog::Log(LOGDEBUG, "You did it wrong man - fully wrong! offset %lld head pos %llu", m_offset, m_headPos);
+    m_offset = 0;
+  }
+
+  // we might not yet be running here, but we need m_offset to track first PT fillup
+  uint64_t normHead_pos = m_headPos;
+  if (m_offset > 0)
+    m_headPos -= m_offset;
+
+  double gone = static_cast<double>(normHead_pos) / m_sink_sampleRate;
 
   // if sink is run dry without buffer time written anymore
   if (gone > m_duration_written)
@@ -770,11 +793,22 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
   uint8_t *out_buf = buffer;
   int size = frames * m_format.m_frameSize;
 
+  //For TrueHD Atmos Fix, the standard package is sent into 2 smaller packets.
+  int ratio = 1;
+  if (m_isTrueHD)
+    ratio = 2;
+
   // write as many frames of audio as we can fit into our internal buffer.
   int written = 0;
   int loop_written = 0;
   if (frames)
   {
+    if (m_extTimer.MillisLeft() > 0)
+    {
+      double sleeptime = std::min((double) m_extTimer.MillisLeft(), m_format.m_streamInfo.GetDuration(m_isTrueHD));
+      usleep(sleeptime * 1000);
+    }
+
     if (m_at_jni->getPlayState() != CJNIAudioTrack::PLAYSTATE_PLAYING)
       m_at_jni->play();
 
@@ -802,12 +836,12 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
           double sleep_time = 0;
           if (m_passthrough && !m_info.m_wantsIECPassthrough)
           {
-            sleep_time = m_format.m_streamInfo.GetDuration();
+            sleep_time = m_format.m_streamInfo.GetDuration(m_isTrueHD);
             usleep(sleep_time * 1000);
           }
           else
           {
-            sleep_time = 1000.0 * m_format.m_frames / (m_sink_frameSize * m_format.m_sampleRate);
+            sleep_time = (1000.0 * m_format.m_frames / (m_sink_frameSize * m_format.m_sampleRate)) / ratio;
             usleep(sleep_time * 1000);
           }
           bool playing = m_at_jni->getPlayState() == CJNIAudioTrack::PLAYSTATE_PLAYING;
@@ -825,7 +859,7 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
       if (m_passthrough && !m_info.m_wantsIECPassthrough)
       {
         if (written == size)
-          m_duration_written += m_format.m_streamInfo.GetDuration() / 1000;
+          m_duration_written += m_format.m_streamInfo.GetDuration(m_isTrueHD) / 1000;
         else
         {
           CLog::Log(LOGDEBUG, "Error writing full package to sink, left: {}", size_left);
@@ -836,11 +870,8 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
       }
       else
       {
-        //For TrueHD Atmos Fix, adjust duration as we received a half packet
-        if (m_isTrueHD)
-          m_duration_written += ((double) loop_written / m_format.m_frameSize) / m_format.m_sampleRate / 2;
-        else
-          m_duration_written += ((double) loop_written / m_format.m_frameSize) / m_format.m_sampleRate;
+        //TODO For TrueHD Atmos Fix, adjust duration as we received a half packet
+        m_duration_written += ((double) loop_written / m_format.m_frameSize) / m_format.m_sampleRate / ratio;
       }
 
 
@@ -855,50 +886,30 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
   double time_to_add_ms = 1000.0 * (CurrentHostCounter() - startTime) / CurrentHostFrequency();
   if (m_passthrough && !m_info.m_wantsIECPassthrough)
   {
-
     // AT does not consume in a blocking way - it runs ahead and blocks
     // exactly once with the last package for some 100 ms
     // help it sleeping a bit - but don't run dry -> at least 0.128 seconds of
     // audio in buffer (e.g. 4 AC3 packages)
-    if (time_to_add_ms < m_format.m_streamInfo.GetDuration())
+    double duration = m_format.m_streamInfo.GetDuration(m_isTrueHD);
+    if (time_to_add_ms < duration / 2.0)
     {
       // leave enough head room for eventualities
-      double extra_sleep = (m_format.m_streamInfo.GetDuration() - time_to_add_ms) / 2.0;
-      // warmup
-      if (m_pause_ms > 0)
-      {
-        m_pause_ms -= m_format.m_streamInfo.GetDuration();
-        extra_sleep /= 4; // fillup after Addpause
-      }
-      else if (m_delay < 0.128)
-      {
-        // care for underrun
-        extra_sleep /= 2;
-      }
-
+      double extra_sleep = m_format.m_streamInfo.GetDuration(m_isTrueHD) / 4.0;
       usleep(extra_sleep * 1000);
-    }
-    else
-    {
-      if (m_pause_ms > 0)
-        m_pause_ms -= time_to_add_ms;
-      else
-        m_pause_ms = 0;
     }
   }
   else
   {
     // waiting should only be done if sink is not run dry
-    double period_time = m_format.m_frames / static_cast<double>(m_sink_sampleRate);
+    double period_time = m_format.m_frames / static_cast<double>(m_sink_sampleRate) / ratio;
     if (m_delay >= (m_audiotrackbuffer_sec - period_time))
     {
-      double time_should_ms = 1000.0 * written_frames / m_format.m_sampleRate;
+      double time_should_ms = 1000.0 * written_frames / m_format.m_sampleRate / ratio;
       double time_off = time_should_ms - time_to_add_ms;
       if (time_off > 0)
         usleep(time_off * 500); // sleep half the error away
     }
   }
-
   return written_frames;
 }
 
@@ -907,18 +918,22 @@ void CAESinkAUDIOTRACK::AddPause(unsigned int millis)
   if (!m_at_jni)
     return;
 
+  if (m_isTrueHD)
+    millis = (unsigned int) (millis / 2);
+
   // just sleep out the frames
   if (m_at_jni->getPlayState() != CJNIAudioTrack::PLAYSTATE_PAUSED)
     m_at_jni->pause();
 
-  // This is a mixture to get it right between
-  // blocking, sleeping roughly and GetDelay smoothing
-  // In short: Shit in, shit out
-  usleep(millis * 1000);
-  if (m_pause_ms < 0)
-    m_pause_ms = 0.0;
-
-  m_pause_ms += millis;
+  // on startup the buffer is empty, it "should" take the silence if we would really send some
+  // without any delay. In between we need to sleep out the frames though
+  if (m_extTimer.MillisLeft() + millis <= m_audiotrackbuffer_sec * 1000 && m_offset == -1)
+    m_extTimer.Set(m_extTimer.MillisLeft() + millis);
+  else
+  {
+    usleep(millis * 1000);
+    m_extTimer.Set(m_extTimer.MillisLeft() + millis);
+  }
 }
 
 void CAESinkAUDIOTRACK::Drain()
@@ -935,9 +950,11 @@ void CAESinkAUDIOTRACK::Drain()
   }
   m_duration_written = 0;
   m_headPos = 0;
+  m_offset = -1;
   m_timestampPos = 0;
   m_linearmovingaverage.clear();
   m_stampTimer.SetExpired();
+  m_extTimer.SetExpired();
   m_pause_ms = 0.0;
 }
 

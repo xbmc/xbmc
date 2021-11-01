@@ -66,11 +66,16 @@ void CEngineStats::AddSamples(int samples, std::list<CActiveAEStream*> &streams)
 void CEngineStats::GetDelay(AEDelayStatus& status)
 {
   CSingleLock lock(m_lock);
+
+  bool isTrueHD = false;
+  if (m_sinkFormat.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
+    isTrueHD = true;
+
   status = m_sinkDelay;
   if (m_pcmOutput)
     status.delay += (double)m_bufferedSamples / m_sinkSampleRate;
   else
-    status.delay += (double)m_bufferedSamples * m_sinkFormat.m_streamInfo.GetDuration() / 1000;
+    status.delay += (double)m_bufferedSamples * m_sinkFormat.m_streamInfo.GetDuration(isTrueHD) / 1000;
 }
 
 void CEngineStats::AddStream(unsigned int streamid)
@@ -116,6 +121,10 @@ void CEngineStats::UpdateStream(CActiveAEStream *stream)
         str.m_resampleRatio = 1.0;
       }
 
+      bool isTrueHD = false;
+      if (stream->m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
+        isTrueHD = true;
+
       CSingleLock lock(stream->m_statsLock);
       std::deque<CSampleBuffer*>::iterator itBuf;
       for(itBuf=stream->m_processingSamples.begin(); itBuf!=stream->m_processingSamples.end(); ++itBuf)
@@ -123,7 +132,7 @@ void CEngineStats::UpdateStream(CActiveAEStream *stream)
         if (m_pcmOutput)
           delay += (float)(*itBuf)->pkt->nb_samples / (*itBuf)->pkt->config.sample_rate;
         else
-          delay += static_cast<float>(m_sinkFormat.m_streamInfo.GetDuration() / 1000.0);
+          delay += static_cast<float>(m_sinkFormat.m_streamInfo.GetDuration(isTrueHD) / 1000.0);
       }
       str.m_bufferedTime = static_cast<double>(delay);
       stream->m_bufferedTime = 0;
@@ -138,10 +147,15 @@ void CEngineStats::GetDelay(AEDelayStatus& status, CActiveAEStream *stream)
   CSingleLock lock(m_lock);
   status = m_sinkDelay;
   status.delay += static_cast<double>(m_sinkLatency);
+  
+  bool isTrueHD = false;
+  if (stream->m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
+    isTrueHD = true;
+
   if (m_pcmOutput)
     status.delay += (double)m_bufferedSamples / m_sinkSampleRate;
   else
-    status.delay += (double)m_bufferedSamples * m_sinkFormat.m_streamInfo.GetDuration() / 1000;
+    status.delay += (double)m_bufferedSamples * m_sinkFormat.m_streamInfo.GetDuration(isTrueHD) / 1000;
 
   for (auto &str : m_streamStats)
   {
@@ -161,10 +175,15 @@ void CEngineStats::GetSyncInfo(CAESyncInfo& info, CActiveAEStream *stream)
   CSingleLock lock(m_lock);
   AEDelayStatus status;
   status = m_sinkDelay;
+
+  bool isTrueHD = false;
+  if (stream->m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
+    isTrueHD = true;
+
   if (m_pcmOutput)
     status.delay += (double)m_bufferedSamples / m_sinkSampleRate;
   else
-    status.delay += (double)m_bufferedSamples * m_sinkFormat.m_streamInfo.GetDuration() / 1000;
+    status.delay += (double)m_bufferedSamples * m_sinkFormat.m_streamInfo.GetDuration(isTrueHD) / 1000;
 
   status.delay += static_cast<double>(m_sinkLatency);
 
@@ -217,10 +236,15 @@ float CEngineStats::GetMaxDelay() const
 float CEngineStats::GetWaterLevel()
 {
   CSingleLock lock(m_lock);
+  
+  bool isTrueHD = false;
+  if (m_sinkFormat.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
+    isTrueHD = true;
+
   if (m_pcmOutput)
     return static_cast<float>(m_bufferedSamples) / m_sinkSampleRate;
   else
-    return static_cast<float>(m_bufferedSamples * m_sinkFormat.m_streamInfo.GetDuration()) / 1000;
+    return static_cast<float>(m_bufferedSamples * m_sinkFormat.m_streamInfo.GetDuration(isTrueHD)) / 1000;
 }
 
 void CEngineStats::SetSuspended(bool state)
@@ -1910,7 +1934,13 @@ bool CActiveAE::RunStages()
     {
       float buftime = (float)(*it)->m_inputBuffers->m_format.m_frames / (*it)->m_inputBuffers->m_format.m_sampleRate;
       if ((*it)->m_inputBuffers->m_format.m_dataFormat == AE_FMT_RAW)
-        buftime = (*it)->m_inputBuffers->m_format.m_streamInfo.GetDuration() / 1000;
+      {
+        bool isTrueHD = false;
+        if ((*it)->m_inputBuffers->m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
+          isTrueHD = true;
+
+        buftime = (*it)->m_inputBuffers->m_format.m_streamInfo.GetDuration(isTrueHD) / 1000;
+      }
       while ((time < static_cast<float>(MAX_CACHE_LEVEL) || (*it)->m_streamIsBuffering) &&
              !(*it)->m_inputBuffers->m_freeSamples.empty())
       {
@@ -2372,6 +2402,11 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
     CLog::Log(LOGDEBUG,"ActiveAE - start sync of audio stream");
   }
 
+  //Apply TrueHD Atmos fix duration
+  bool isTrueHD = false;
+  if (stream->m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
+    isTrueHD = true;
+
   double error;
   double threshold = 100;
   if (stream->m_resampleMode)
@@ -2410,7 +2445,7 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
     if (m_mode == MODE_RAW)
     {
       buf->pkt->nb_samples = 0;
-      buf->pkt->pause_burst_ms = stream->m_processingBuffers->m_inputFormat.m_streamInfo.GetDuration();
+      buf->pkt->pause_burst_ms = stream->m_processingBuffers->m_inputFormat.m_streamInfo.GetDuration(isTrueHD);
     }
     else
     {
@@ -2444,8 +2479,8 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
         {
           ret->pkt->nb_samples = 0;
           ret->pkt->pause_burst_ms = error;
-          if (error > stream->m_format.m_streamInfo.GetDuration())
-            ret->pkt->pause_burst_ms = stream->m_format.m_streamInfo.GetDuration();
+          if (error > stream->m_format.m_streamInfo.GetDuration(isTrueHD))
+            ret->pkt->pause_burst_ms = stream->m_format.m_streamInfo.GetDuration(isTrueHD);
 
           stream->m_syncError.Correction(-ret->pkt->pause_burst_ms);
           error -= ret->pkt->pause_burst_ms;
@@ -2482,10 +2517,10 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
       }
       if (m_mode == MODE_RAW)
       {
-        if (-error > stream->m_format.m_streamInfo.GetDuration() / 2)
+        if (-error > stream->m_format.m_streamInfo.GetDuration(isTrueHD) / 2)
         {
-          stream->m_syncError.Correction(stream->m_format.m_streamInfo.GetDuration());
-          error += stream->m_format.m_streamInfo.GetDuration();
+          stream->m_syncError.Correction(stream->m_format.m_streamInfo.GetDuration(isTrueHD));
+          error += stream->m_format.m_streamInfo.GetDuration(isTrueHD);
           buf->pkt->nb_samples = 0;
         }
       }
