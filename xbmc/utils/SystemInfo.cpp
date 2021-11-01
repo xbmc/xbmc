@@ -996,6 +996,8 @@ const std::string& CSysInfo::GetKernelCpuFamily(void)
         kernelCpuFamily = "s390";
       else if (machine.compare(0, 3, "ppc", 3) == 0 || machine.compare(0, 5, "power", 5) == 0)
         kernelCpuFamily = "PowerPC";
+      else if (machine.compare(0, 5, "riscv", 5) == 0)
+        kernelCpuFamily = "RISC-V";
     }
 #endif
     if (kernelCpuFamily.empty())
@@ -1377,6 +1379,8 @@ std::string CSysInfo::GetBuildTargetCpuFamily(void)
   return "s390";
 #elif defined(__powerpc) || defined(__powerpc__) || defined(__powerpc64__) || defined(__ppc__) || defined(__ppc64__) || defined(_M_PPC)
   return "PowerPC";
+#elif defined(__riscv)
+  return "RISC-V";
 #else
   return "unknown CPU family";
 #endif
