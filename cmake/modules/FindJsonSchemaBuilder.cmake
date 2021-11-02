@@ -31,11 +31,13 @@ if(NOT TARGET JsonSchemaBuilder::JsonSchemaBuilder)
   else()
     if(WITH_JSONSCHEMABUILDER)
       get_filename_component(_jsbpath ${WITH_JSONSCHEMABUILDER} ABSOLUTE)
+      get_filename_component(_jsbpath ${_jsbpath} DIRECTORY)
       find_program(JSONSCHEMABUILDER_EXECUTABLE NAMES "${APP_NAME_LC}-JsonSchemaBuilder" JsonSchemaBuilder
-                                                PATHS ${_jsbpath})
+                                                HINTS ${_jsbpath})
 
       include(FindPackageHandleStandardArgs)
-      find_package_handle_standard_args(JsonSchemaBuilder DEFAULT_MSG JSONSCHEMABUILDER_EXECUTABLE)
+      find_package_handle_standard_args(JsonSchemaBuilder "Could not find '${APP_NAME_LC}-JsonSchemaBuilder' or 'JsonSchemaBuilder' executable in ${_jsbpath} supplied by -DWITH_JSONSCHEMABUILDER. Make sure the executable file name matches these names!"
+                                        JSONSCHEMABUILDER_EXECUTABLE)
       if(JSONSCHEMABUILDER_FOUND)
         add_executable(JsonSchemaBuilder::JsonSchemaBuilder IMPORTED GLOBAL)
         set_target_properties(JsonSchemaBuilder::JsonSchemaBuilder PROPERTIES
