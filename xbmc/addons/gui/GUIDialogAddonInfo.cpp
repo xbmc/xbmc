@@ -438,10 +438,12 @@ void CGUIDialogAddonInfo::OnInstall()
   {
     if (m_localAddon->Origin() != origin && m_localAddon->Origin() != ORIGIN_SYSTEM)
     {
-      const std::string& header = g_localizeStrings.Get(19098); // Warning!
+      const std::string header = g_localizeStrings.Get(19098); // Warning!
+      const std::string origin =
+          !m_localAddon->Origin().empty() ? m_localAddon->Origin() : g_localizeStrings.Get(39029);
       const std::string text =
-          StringUtils::Format(g_localizeStrings.Get(39028), m_localAddon->ID(),
-                              m_localAddon->Origin(), m_localAddon->Version().asString());
+          StringUtils::Format(g_localizeStrings.Get(39028), m_localAddon->Name(), origin,
+                              m_localAddon->Version().asString());
 
       if (CGUIDialogYesNo::ShowAndGetInput(header, text))
       {
