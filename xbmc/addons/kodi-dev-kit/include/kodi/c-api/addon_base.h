@@ -61,11 +61,15 @@
 
 // Generic helper definitions for shared library support
 //@{
-#if defined _WIN32 || defined __CYGWIN__
+#if defined _WIN32 || defined _WIN64 || defined __CYGWIN__
 #define ATTR_DLL_IMPORT __declspec(dllimport)
 #define ATTR_DLL_EXPORT __declspec(dllexport)
 #define ATTR_DLL_LOCAL
+#ifdef _WIN64
 #define ATTR_APIENTRY __stdcall
+#else
+#define ATTR_APIENTRY __cdecl
+#endif
 #else
 #if __GNUC__ >= 4
 #define ATTR_DLL_IMPORT __attribute__((visibility("default")))
