@@ -31,14 +31,6 @@ if(GLX_FOUND)
   set(GLX_LIBRARIES ${GLX_LIBRARY})
   set(GLX_INCLUDE_DIRS ${GLX_INCLUDE_DIR})
   set(GLX_DEFINITIONS -DHAS_GLX=1)
-
-  if(NOT TARGET GLX::GLX)
-    add_library(GLX::GLX UNKNOWN IMPORTED)
-    set_target_properties(GLX::GLX PROPERTIES
-                               IMPORTED_LOCATION "${GLX_LIBRARY}"
-                               INTERFACE_INCLUDE_DIRECTORIES "${GLX_INCLUDE_DIR}"
-                               INTERFACE_COMPILE_DEFINITIONS HAS_GLX=1)
-  endif()
 endif()
 
 mark_as_advanced(GLX_INCLUDE_DIR GLX_LIBRARY)
