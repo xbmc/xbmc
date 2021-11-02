@@ -20,7 +20,7 @@ endif()
 
 find_path(GLX_INCLUDE_DIR NAMES GL/glx.h
                           PATHS ${PC_GLX_INCLUDEDIR})
-find_library(GLX_LIBRARY NAMES GL
+find_library(GLX_LIBRARY NAMES GLX
                          PATHS ${PC_GLX_LIBDIR})
 
 include(FindPackageHandleStandardArgs)
