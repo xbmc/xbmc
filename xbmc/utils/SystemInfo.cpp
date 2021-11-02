@@ -598,7 +598,7 @@ std::string CSysInfo::GetOsName(bool emptyIfUnknown /* = false*/)
 #elif defined(TARGET_DARWIN_TVOS)
     osName = "tvOS";
 #elif defined(TARGET_DARWIN_OSX)
-    osName = "OS X";
+    osName = "macOS";
 #elif defined (TARGET_ANDROID)
     osName = "Android";
 #elif defined(TARGET_LINUX)
@@ -725,8 +725,11 @@ std::string CSysInfo::GetOsPrettyNameWithVersion(void)
     osNameVer.append(" unknown");
 #elif defined(TARGET_WINDOWS_STORE)
   osNameVer = GetKernelName() + " " + GetOsVersion();
-#elif defined(TARGET_FREEBSD) || defined(TARGET_DARWIN)
+#elif defined(TARGET_FREEBSD)
   osNameVer = GetOsName() + " " + GetOsVersion();
+#elif defined(TARGET_DARWIN)
+  osNameVer = StringUtils::Format("{} {} ({})", GetOsName(), GetOsVersion(),
+                                  CDarwinUtils::GetOSVersionString());
 #elif defined(TARGET_ANDROID)
   osNameVer =
       GetOsName() + " " + GetOsVersion() + " API level " + std::to_string(CJNIBuild::SDK_INT);
@@ -1270,7 +1273,7 @@ std::string CSysInfo::GetBuildDate()
 std::string CSysInfo::GetBuildTargetPlatformName(void)
 {
 #if defined(TARGET_DARWIN_OSX)
-  return "OS X";
+  return "macOS";
 #elif defined(TARGET_DARWIN_IOS)
   return "iOS";
 #elif defined(TARGET_DARWIN_TVOS)

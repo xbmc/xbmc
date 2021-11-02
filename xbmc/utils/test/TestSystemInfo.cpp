@@ -107,8 +107,10 @@ TEST_F(TestSystemInfo, GetOsName)
   EXPECT_STREQ("tvOS", g_sysinfo.GetOsName(false).c_str())
       << "'GetOsName(false)' must return 'tvOS'";
 #elif defined(TARGET_DARWIN_OSX)
-  EXPECT_STREQ("OS X", g_sysinfo.GetOsName(true).c_str()) << "'GetOsName(true)' must return 'OS X'";
-  EXPECT_STREQ("OS X", g_sysinfo.GetOsName(false).c_str()) << "'GetOsName(false)' must return 'OS X'";
+  EXPECT_STREQ("macOS", g_sysinfo.GetOsName(true).c_str())
+      << "'GetOsName(true)' must return 'macOS'";
+  EXPECT_STREQ("macOS", g_sysinfo.GetOsName(false).c_str())
+      << "'GetOsName(false)' must return 'macOS'";
 #elif defined(TARGET_ANDROID)
   EXPECT_STREQ("Android", g_sysinfo.GetOsName(true).c_str()) << "'GetOsName(true)' must return 'Android'";
   EXPECT_STREQ("Android", g_sysinfo.GetOsName(false).c_str()) << "'GetOsName(false)' must return 'Android'";
