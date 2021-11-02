@@ -1613,7 +1613,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_InfoTagVideo
       /// @brief \python_func{ getUniqueID(key) }
-      ///-----------------------------------------------------------------------
       /// Get the unique ID of the given key.
       /// A unique ID is an identifier used by a (online) video database used to
       /// identify a video in its database.
@@ -1662,7 +1661,6 @@ namespace XBMCAddon
       ///
       /// \ingroup python_InfoTagVideo
       /// @brief \python_func{ setUniqueIDs(values, defaultUniqueID) }
-      ///-----------------------------------------------------------------------
       /// Set the given unique IDs.
       /// A unique ID is an identifier used by a (online) video database used to
       /// identify a video in its database.

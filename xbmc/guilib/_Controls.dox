@@ -7,6 +7,7 @@ manual will explain each and every control in detail.
 
 - \subpage Addon_Rendering_control - Control where rendering becomes performed from add-on
 - \subpage skin_Button_control - a standard push button control.
+- \subpage Color_button_control - used for creating push buttons in Kodi with a box for color preview.
 - \subpage EPGGrid_control - used to display the EPG guide in the PVR section.
 - \subpage skin_Edit_control - used as an input control for the osd keyboard and other input fields.
 - \subpage Fade_Label_Control - used to show multiple pieces of text in the same position, by fading from one to the other.
@@ -26,7 +27,6 @@ manual will explain each and every control in detail.
 - \subpage Radio_button_control - a radio button control (as used for on/off settings).
 - \subpage Resize_Control - used to set the pixel ratio in Video Calibration.
 - \subpage Scroll_Bar_Control - used for a implementing a scroll bar.
-- \subpage Select_Button_Control - Button with multi selection choice.
 - \subpage Settings_Slider_Control - used for a slider control in the settings menus.
 - \subpage Settings_Spin_Control - used for cycling up/down controls in the settings menus.
 - \subpage Slider_Control - used for a volume slider.
