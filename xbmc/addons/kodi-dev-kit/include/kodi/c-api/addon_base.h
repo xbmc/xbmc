@@ -45,17 +45,17 @@
 // Generic helper definitions for inline function support
 //@{
 #ifdef _MSC_VER
-#define ATTRIBUTE_FORCEINLINE __forceinline
+#define ATTR_FORCEINLINE __forceinline
 #elif defined(__GNUC__)
-#define ATTRIBUTE_FORCEINLINE inline __attribute__((__always_inline__))
+#define ATTR_FORCEINLINE inline __attribute__((__always_inline__))
 #elif defined(__CLANG__)
 #if __has_attribute(__always_inline__)
-#define ATTRIBUTE_FORCEINLINE inline __attribute__((__always_inline__))
+#define ATTR_FORCEINLINE inline __attribute__((__always_inline__))
 #else
-#define ATTRIBUTE_FORCEINLINE inline
+#define ATTR_FORCEINLINE inline
 #endif
 #else
-#define ATTRIBUTE_FORCEINLINE inline
+#define ATTR_FORCEINLINE inline
 #endif
 //@}
 
@@ -88,6 +88,7 @@
 #endif
 
 // Fallbacks to old
+#define ATTRIBUTE_FORCEINLINE ATTR_FORCEINLINE
 #define ATTRIBUTE_DLL_IMPORT ATTR_DLL_IMPORT
 #define ATTRIBUTE_DLL_EXPORT ATTR_DLL_EXPORT
 #define ATTRIBUTE_DLL_LOCAL ATTR_DLL_LOCAL
