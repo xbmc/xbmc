@@ -719,11 +719,12 @@ private:
       std::string mimetype;
       size_t size = 0;
       const uint8_t* mem = cppTag.GetCoverArtByMem(size, mimetype);
-      if (mem)
+      if (mem && size > 0)
       {
         tag->cover_art_mem_mimetype = strdup(mimetype.c_str());
         tag->cover_art_mem_size = size;
         tag->cover_art_mem = static_cast<uint8_t*>(malloc(size));
+        memcpy(tag->cover_art_mem, mem, size);
       }
       else
       {
