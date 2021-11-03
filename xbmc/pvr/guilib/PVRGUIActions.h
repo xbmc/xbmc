@@ -447,6 +447,34 @@ namespace PVR
      */
     bool OnInfo(const std::shared_ptr<CFileItem>& item);
 
+    /*!
+     * @brief Execute a saved search. Displays result in search window if it is open.
+     * @param item The item containing a search filter.
+     * @return True on success, false otherwise.
+     */
+    bool ExecuteSavedSearch(const std::shared_ptr<CFileItem>& item);
+
+    /*!
+     * @brief Edit a saved search. Opens the search dialog.
+     * @param item The item containing a search filter.
+     * @return True on success, false otherwise.
+     */
+    bool EditSavedSearch(const std::shared_ptr<CFileItem>& item);
+
+    /*!
+     * @brief Rename a saved search. Opens a title input dialog.
+     * @param item The item containing a search filter.
+     * @return True on success, false otherwise.
+     */
+    bool RenameSavedSearch(const std::shared_ptr<CFileItem>& item);
+
+    /*!
+     * @brief Delete a saved search. Opens confirmation dialog before deleting.
+     * @param item The item containing a search filter.
+     * @return True on success, false otherwise.
+     */
+    bool DeleteSavedSearch(const std::shared_ptr<CFileItem>& item);
+
   private:
     CPVRGUIActions(const CPVRGUIActions&) = delete;
     CPVRGUIActions const& operator=(CPVRGUIActions const&) = delete;

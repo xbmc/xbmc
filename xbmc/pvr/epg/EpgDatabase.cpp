@@ -13,18 +13,45 @@
 #include "pvr/epg/Epg.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/epg/EpgSearchData.h"
+#include "pvr/epg/EpgSearchFilter.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
-#include <cstdlib>
 #include <memory>
 #include <string>
 #include <vector>
 
 using namespace dbiplus;
 using namespace PVR;
+
+namespace
+{
+const std::string sqlCreateSavedSearchesTable = "CREATE TABLE savedsearches ("
+                                                "idSearch                  integer primary key,"
+                                                "sTitle                    varchar(255), "
+                                                "sLastExecutedDateTime     varchar(20), "
+                                                "sSearchTerm               varchar(255), "
+                                                "bSearchInDescription      bool, "
+                                                "iGenreType                integer, "
+                                                "sStartDateTime            varchar(20), "
+                                                "sEndDateTime              varchar(20), "
+                                                "bIsCaseSensitive          bool, "
+                                                "iMinimumDuration          integer, "
+                                                "iMaximumDuration          integer, "
+                                                "bIsRadio                  bool, "
+                                                "iClientId                 integer, "
+                                                "iChannelUid               integer, "
+                                                "bIncludeUnknownGenres     bool, "
+                                                "bRemoveDuplicates         bool, "
+                                                "bIgnoreFinishedBroadcasts bool, "
+                                                "bIgnoreFutureBroadcasts   bool, "
+                                                "bFreeToAirOnly            bool, "
+                                                "bIgnorePresentTimers      bool, "
+                                                "bIgnorePresentRecordings  bool"
+                                                ")";
+} // unnamed namespace
 
 bool CPVREpgDatabase::Open()
 {
@@ -104,6 +131,9 @@ void CPVREpgDatabase::CreateTables()
         "sLastScan varchar(20)"
       ")"
   );
+
+  CLog::LogFC(LOGDEBUG, LOGEPG, "Creating table 'savedsearches'");
+  m_pDS->exec(sqlCreateSavedSearchesTable);
 }
 
 void CPVREpgDatabase::CreateAnalytics()
@@ -263,6 +293,11 @@ void CPVREpgDatabase::UpdateTables(int iVersion)
   if (iVersion < 14)
   {
     m_pDS->exec("ALTER TABLE epgtags ADD sParentalRatingCode varchar(64);");
+  }
+
+  if (iVersion < 15)
+  {
+    m_pDS->exec(sqlCreateSavedSearchesTable);
   }
 }
 
@@ -461,46 +496,6 @@ CDateTime CPVREpgDatabase::GetMaxEndTime(int iEpgID, const CDateTime& maxEnd)
 namespace
 {
 
-CDateTime ConvertLocalTimeToUTC(const CDateTime& local)
-{
-  time_t time = 0;
-  local.GetAsTime(time);
-
-  struct tm* tms;
-
-  // obtain dst flag for given datetime
-#ifdef HAVE_LOCALTIME_R
-  struct tm loc_buf;
-  tms = localtime_r(&time, &loc_buf);
-#else
-  tms = localtime(&time);
-#endif
-
-  if (!tms)
-  {
-    CLog::LogF(LOGWARNING, "localtime() returned NULL!");
-    return {};
-  }
-
-  int isdst = tms->tm_isdst;
-
-#ifdef HAVE_GMTIME_R
-  struct tm gm_buf;
-  tms = gmtime_r(&time, &gm_buf);
-#else
-  tms = gmtime(&time);
-#endif
-
-  if (!tms)
-  {
-    CLog::LogF(LOGWARNING, "gmtime() returned NULL!");
-    return {};
-  }
-
-  tms->tm_isdst = isdst;
-  return CDateTime(mktime(tms));
-}
-
 class CSearchTermConverter
 {
 public:
@@ -633,31 +628,46 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetEpgTags(
   Filter filter;
 
   /////////////////////////////////////////////////////////////////////////////////////////////
-  // broadcast UID
-  /////////////////////////////////////////////////////////////////////////////////////////////
-
-  if (searchData.m_iUniqueBroadcastId != EPG_TAG_INVALID_UID)
-  {
-    filter.AppendWhere(PrepareSQL("iBroadcastUid = %u", searchData.m_iUniqueBroadcastId));
-  }
-
-  /////////////////////////////////////////////////////////////////////////////////////////////
   // min start datetime
   /////////////////////////////////////////////////////////////////////////////////////////////
 
-  const CDateTime minStartTime = ConvertLocalTimeToUTC(searchData.m_startDateTime);
-  time_t minStart;
-  minStartTime.GetAsTime(minStart);
-  filter.AppendWhere(PrepareSQL("iStartTime >= %u", static_cast<unsigned int>(minStart)));
+  if (searchData.m_startDateTime.IsValid())
+  {
+    time_t minStart;
+    searchData.m_startDateTime.GetAsTime(minStart);
+    filter.AppendWhere(PrepareSQL("iStartTime >= %u", static_cast<unsigned int>(minStart)));
+  }
 
   /////////////////////////////////////////////////////////////////////////////////////////////
   // max end datetime
   /////////////////////////////////////////////////////////////////////////////////////////////
 
-  const CDateTime maxEndTime = ConvertLocalTimeToUTC(searchData.m_endDateTime);
-  time_t maxEnd;
-  maxEndTime.GetAsTime(maxEnd);
-  filter.AppendWhere(PrepareSQL("iEndTime <= %u", static_cast<unsigned int>(maxEnd)));
+  if (searchData.m_endDateTime.IsValid())
+  {
+    time_t maxEnd;
+    searchData.m_endDateTime.GetAsTime(maxEnd);
+    filter.AppendWhere(PrepareSQL("iEndTime <= %u", static_cast<unsigned int>(maxEnd)));
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////
+  // ignore finished broadcasts
+  /////////////////////////////////////////////////////////////////////////////////////////////
+
+  if (searchData.m_bIgnoreFinishedBroadcasts)
+  {
+    const time_t minEnd = std::time(nullptr); // now
+    filter.AppendWhere(PrepareSQL("iEndTime > %u", static_cast<unsigned int>(minEnd)));
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////
+  // ignore future broadcasts
+  /////////////////////////////////////////////////////////////////////////////////////////////
+
+  if (searchData.m_bIgnoreFutureBroadcasts)
+  {
+    const time_t maxStart = std::time(nullptr); // now
+    filter.AppendWhere(PrepareSQL("iStartTime < %u", static_cast<unsigned int>(maxStart)));
+  }
 
   /////////////////////////////////////////////////////////////////////////////////////////////
   // genre type
@@ -1215,4 +1225,185 @@ int CPVREpgDatabase::GetLastEPGId()
   if (!strValue.empty())
     return std::atoi(strValue.c_str());
   return 0;
+}
+
+/********** Saved searches methods **********/
+
+std::vector<std::shared_ptr<CPVREpgSearchFilter>> CPVREpgDatabase::GetSavedSearches(bool bRadio)
+{
+  std::vector<std::shared_ptr<CPVREpgSearchFilter>> result;
+
+  CSingleLock lock(m_critSection);
+  const std::string strQuery =
+      PrepareSQL("SELECT * FROM savedsearches WHERE bIsRadio = %u", bRadio);
+  if (ResultQuery(strQuery))
+  {
+    try
+    {
+      while (!m_pDS->eof())
+      {
+        const auto newSearch = std::make_shared<CPVREpgSearchFilter>(bRadio);
+
+        newSearch->SetDatabaseId(m_pDS->fv("idSearch").get_asInt());
+        newSearch->SetTitle(m_pDS->fv("sTitle").get_asString());
+
+        const std::string lastExec = m_pDS->fv("sLastExecutedDateTime").get_asString();
+        if (!lastExec.empty())
+          newSearch->SetLastExecutedDateTime(CDateTime::FromDBDateTime(lastExec));
+
+        newSearch->SetSearchTerm(m_pDS->fv("sSearchTerm").get_asString());
+        newSearch->SetSearchInDescription(m_pDS->fv("bSearchInDescription").get_asBool());
+        newSearch->SetGenreType(m_pDS->fv("iGenreType").get_asInt());
+
+        const std::string start = m_pDS->fv("sStartDateTime").get_asString();
+        if (!start.empty())
+          newSearch->SetStartDateTime(CDateTime::FromDBDateTime(start));
+
+        const std::string end = m_pDS->fv("sEndDateTime").get_asString();
+        if (!end.empty())
+          newSearch->SetEndDateTime(CDateTime::FromDBDateTime(end));
+
+        newSearch->SetCaseSensitive(m_pDS->fv("bIsCaseSensitive").get_asBool());
+        newSearch->SetMinimumDuration(m_pDS->fv("iMinimumDuration").get_asInt());
+        newSearch->SetMaximumDuration(m_pDS->fv("iMaximumDuration").get_asInt());
+        newSearch->SetClientID(m_pDS->fv("iClientId").get_asInt());
+        newSearch->SetChannelUID(m_pDS->fv("iChannelUid").get_asInt());
+        newSearch->SetIncludeUnknownGenres(m_pDS->fv("bIncludeUnknownGenres").get_asBool());
+        newSearch->SetRemoveDuplicates(m_pDS->fv("bRemoveDuplicates").get_asBool());
+        newSearch->SetIgnoreFinishedBroadcasts(m_pDS->fv("bIgnoreFinishedBroadcasts").get_asBool());
+        newSearch->SetIgnoreFutureBroadcasts(m_pDS->fv("bIgnoreFutureBroadcasts").get_asBool());
+        newSearch->SetFreeToAirOnly(m_pDS->fv("bFreeToAirOnly").get_asBool());
+        newSearch->SetIgnorePresentTimers(m_pDS->fv("bIgnorePresentTimers").get_asBool());
+        newSearch->SetIgnorePresentRecordings(m_pDS->fv("bIgnorePresentRecordings").get_asBool());
+
+        newSearch->SetChanged(false);
+
+        result.emplace_back(newSearch);
+
+        m_pDS->next();
+      }
+      m_pDS->close();
+    }
+    catch (...)
+    {
+      CLog::LogF(LOGERROR, "Could not load EPG search data from the database");
+    }
+  }
+  return result;
+}
+
+bool CPVREpgDatabase::Persist(CPVREpgSearchFilter& epgSearch)
+{
+  CSingleLock lock(m_critSection);
+
+  // Insert a new entry if this is a new search, replace the existing otherwise
+  std::string strQuery;
+  if (epgSearch.GetDatabaseId() == -1)
+    strQuery = PrepareSQL(
+        "INSERT INTO savedsearches "
+        "(sTitle, sLastExecutedDateTime, sSearchTerm, bSearchInDescription, bIsCaseSensitive, "
+        "iGenreType, bIncludeUnknownGenres, sStartDateTime, sEndDateTime, iMinimumDuration, "
+        "iMaximumDuration, bIsRadio, iClientId, iChannelUid, bRemoveDuplicates, "
+        "bIgnoreFinishedBroadcasts, bIgnoreFutureBroadcasts, bFreeToAirOnly, bIgnorePresentTimers, "
+        "bIgnorePresentRecordings) "
+        "VALUES ('%s', '%s', '%s', %i, %i, %i, %i, '%s', '%s', %i, %i, %i, %i, %i, %i, %i, %i, "
+        "%i, %i, %i);",
+        epgSearch.GetTitle().c_str(),
+        epgSearch.GetLastExecutedDateTime().IsValid()
+            ? epgSearch.GetLastExecutedDateTime().GetAsDBDateTime().c_str()
+            : "",
+        epgSearch.GetSearchTerm().c_str(), epgSearch.ShouldSearchInDescription() ? 1 : 0,
+        epgSearch.IsCaseSensitive() ? 1 : 0, epgSearch.GetGenreType(),
+        epgSearch.ShouldIncludeUnknownGenres() ? 1 : 0,
+        epgSearch.GetStartDateTime().IsValid()
+            ? epgSearch.GetStartDateTime().GetAsDBDateTime().c_str()
+            : "",
+        epgSearch.GetEndDateTime().IsValid() ? epgSearch.GetEndDateTime().GetAsDBDateTime().c_str()
+                                             : "",
+        epgSearch.GetMinimumDuration(), epgSearch.GetMaximumDuration(), epgSearch.IsRadio() ? 1 : 0,
+        epgSearch.GetClientID(), epgSearch.GetChannelUID(),
+        epgSearch.ShouldRemoveDuplicates() ? 1 : 0,
+        epgSearch.ShouldIgnoreFinishedBroadcasts() ? 1 : 0,
+        epgSearch.ShouldIgnoreFutureBroadcasts() ? 1 : 0, epgSearch.IsFreeToAirOnly() ? 1 : 0,
+        epgSearch.ShouldIgnorePresentTimers() ? 1 : 0,
+        epgSearch.ShouldIgnorePresentRecordings() ? 1 : 0);
+  else
+    strQuery = PrepareSQL(
+        "REPLACE INTO savedsearches "
+        "(idSearch, sTitle, sLastExecutedDateTime, sSearchTerm, bSearchInDescription, "
+        "bIsCaseSensitive, iGenreType, bIncludeUnknownGenres, sStartDateTime, sEndDateTime, "
+        "iMinimumDuration, iMaximumDuration, bIsRadio, iClientId, iChannelUid, bRemoveDuplicates, "
+        "bIgnoreFinishedBroadcasts, bIgnoreFutureBroadcasts, bFreeToAirOnly, bIgnorePresentTimers, "
+        "bIgnorePresentRecordings) "
+        "VALUES (%i, '%s', '%s', '%s', %i, %i, %i, %i, '%s', '%s', %i, %i, %i, %i, %i, %i, %i, %i, "
+        "%i, %i, %i);",
+        epgSearch.GetDatabaseId(), epgSearch.GetTitle().c_str(),
+        epgSearch.GetLastExecutedDateTime().IsValid()
+            ? epgSearch.GetLastExecutedDateTime().GetAsDBDateTime().c_str()
+            : "",
+        epgSearch.GetSearchTerm().c_str(), epgSearch.ShouldSearchInDescription() ? 1 : 0,
+        epgSearch.IsCaseSensitive() ? 1 : 0, epgSearch.GetGenreType(),
+        epgSearch.ShouldIncludeUnknownGenres() ? 1 : 0,
+        epgSearch.GetStartDateTime().IsValid()
+            ? epgSearch.GetStartDateTime().GetAsDBDateTime().c_str()
+            : "",
+        epgSearch.GetEndDateTime().IsValid() ? epgSearch.GetEndDateTime().GetAsDBDateTime().c_str()
+                                             : "",
+        epgSearch.GetMinimumDuration(), epgSearch.GetMaximumDuration(), epgSearch.IsRadio() ? 1 : 0,
+        epgSearch.GetClientID(), epgSearch.GetChannelUID(),
+        epgSearch.ShouldRemoveDuplicates() ? 1 : 0,
+        epgSearch.ShouldIgnoreFinishedBroadcasts() ? 1 : 0,
+        epgSearch.ShouldIgnoreFutureBroadcasts() ? 1 : 0, epgSearch.IsFreeToAirOnly() ? 1 : 0,
+        epgSearch.ShouldIgnorePresentTimers() ? 1 : 0,
+        epgSearch.ShouldIgnorePresentRecordings() ? 1 : 0);
+
+  bool bReturn = ExecuteQuery(strQuery);
+
+  if (bReturn)
+  {
+    // Set the database id for searches persisted for the first time
+    if (epgSearch.GetDatabaseId() == -1)
+      epgSearch.SetDatabaseId(static_cast<int>(m_pDS->lastinsertid()));
+
+    epgSearch.SetChanged(false);
+  }
+
+  return bReturn;
+}
+
+bool CPVREpgDatabase::UpdateSavedSearchLastExecuted(const CPVREpgSearchFilter& epgSearch)
+{
+  if (epgSearch.GetDatabaseId() == -1)
+    return false;
+
+  CSingleLock lock(m_critSection);
+
+  const std::string strQuery = PrepareSQL(
+      "UPDATE savedsearches SET sLastExecutedDateTime = '%s' WHERE idSearch = %i",
+      epgSearch.GetLastExecutedDateTime().GetAsDBDateTime().c_str(), epgSearch.GetDatabaseId());
+  return ExecuteQuery(strQuery);
+}
+
+bool CPVREpgDatabase::Delete(const CPVREpgSearchFilter& epgSearch)
+{
+  if (epgSearch.GetDatabaseId() == -1)
+    return false;
+
+  CLog::LogFC(LOGDEBUG, LOGEPG, "Deleting saved search '{}' from the database",
+              epgSearch.GetTitle());
+
+  CSingleLock lock(m_critSection);
+
+  Filter filter;
+  filter.AppendWhere(PrepareSQL("idSearch = '%i'", epgSearch.GetDatabaseId()));
+
+  return DeleteValues("savedsearches", filter);
+}
+
+bool CPVREpgDatabase::DeleteSavedSearches()
+{
+  CLog::LogFC(LOGDEBUG, LOGEPG, "Deleting all saved searches from the database");
+
+  CSingleLock lock(m_critSection);
+  return DeleteValues("savedsearches");
 }

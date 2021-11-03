@@ -38,6 +38,7 @@
 #include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
+#include "pvr/epg/EpgSearchFilter.h"
 #include "pvr/guilib/PVRGUIActions.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
@@ -193,6 +194,24 @@ CFileItem::CFileItem(const std::shared_ptr<PVR::CPVREpgInfoTag>& tag,
   }
 
   FillMusicInfoTag(groupMember, tag);
+  FillInMimeType(false);
+}
+
+CFileItem::CFileItem(const std::shared_ptr<PVR::CPVREpgSearchFilter>& filter)
+{
+  Initialize();
+
+  m_bIsFolder = false;
+  m_epgSearchFilter = filter;
+  m_strPath = filter->GetPath();
+  SetLabel(filter->GetTitle());
+
+  const CDateTime lastExec = filter->GetLastExecutedDateTime();
+  if (lastExec.IsValid())
+    m_dateTime.SetFromUTCDateTime(lastExec);
+
+  SetArt("icon", "DefaultPVRSearch.png");
+
   FillInMimeType(false);
 }
 
@@ -479,6 +498,7 @@ CFileItem& CFileItem::operator=(const CFileItem& item)
   }
 
   m_epgInfoTag = item.m_epgInfoTag;
+  m_epgSearchFilter = item.m_epgSearchFilter;
   m_pvrChannelGroupMemberInfoTag = item.m_pvrChannelGroupMemberInfoTag;
   m_pvrRecordingInfoTag = item.m_pvrRecordingInfoTag;
   m_pvrTimerInfoTag = item.m_pvrTimerInfoTag;
@@ -552,6 +572,7 @@ void CFileItem::Reset()
   delete m_videoInfoTag;
   m_videoInfoTag=NULL;
   m_epgInfoTag.reset();
+  m_epgSearchFilter.reset();
   m_pvrChannelGroupMemberInfoTag.reset();
   m_pvrRecordingInfoTag.reset();
   m_pvrTimerInfoTag.reset();

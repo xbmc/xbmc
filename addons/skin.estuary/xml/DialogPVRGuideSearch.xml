@@ -5,12 +5,12 @@
 	<controls>
 		<control type="group">
 			<centertop>50%</centertop>
-			<height>820</height>
+			<height>890</height>
 			<centerleft>50%</centerleft>
 			<width>1780</width>
 			<include content="DialogBackgroundCommons">
 				<param name="width" value="1780" />
-				<param name="height" value="820" />
+				<param name="height" value="890" />
 				<param name="header_label" value="$LOCALIZE[19142]" />
 				<param name="header_id" value="2" />
 			</include>
@@ -41,7 +41,7 @@
 				<left>10</left>
 				<top>210</top>
 				<width>1460</width>
-				<height>600</height>
+				<height>675</height>
 				<texture border="40">buttons/dialogbutton-nofo.png</texture>
 			</control>
 			<control type="grouplist" id="5000">
@@ -79,6 +79,13 @@
 					<onright>17</onright>
 					<include>DefaultSettingButton</include>
 					<label>$LOCALIZE[19129]</label>
+				</control>
+				<control type="radiobutton" id="30">
+					<description>Ignore finished broadcasts</description>
+					<width>710</width>
+					<onright>31</onright>
+					<include>DefaultSettingButton</include>
+					<label>$LOCALIZE[19339]</label>
 				</control>
 				<control type="spincontrolex" id="18">
 					<description>Genre</description>
@@ -145,6 +152,13 @@
 					<include>DefaultSettingButton</include>
 					<label>$LOCALIZE[19127]</label>
 				</control>
+				<control type="radiobutton" id="31">
+					<description>Ignore future broadcasts</description>
+					<width>710</width>
+					<onleft>30</onleft>
+					<include>DefaultSettingButton</include>
+					<label>$LOCALIZE[19340]</label>
+				</control>
 				<control type="radiobutton" id="19">
 					<description>avoid repeats</description>
 					<width>710</width>
@@ -186,6 +200,10 @@
 				<include content="DefaultDialogButton">
 					<param name="id" value="26" />
 					<param name="label" value="$LOCALIZE[137]" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="id" value="29" />
+					<param name="label" value="$LOCALIZE[190]" />
 				</include>
 				<include content="DefaultDialogButton">
 					<param name="id" value="28" />

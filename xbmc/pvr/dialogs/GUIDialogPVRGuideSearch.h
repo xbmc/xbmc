@@ -10,14 +10,15 @@
 
 #include "XBDateTime.h"
 #include "guilib/GUIDialog.h"
-#include "pvr/channels/PVRChannelNumber.h"
 
 #include <map>
+#include <memory>
 #include <string>
 
 namespace PVR
 {
   class CPVREpgSearchFilter;
+  class CPVRChannelGroupMember;
 
   class CGUIDialogPVRGuideSearch : public CGUIDialog
   {
@@ -27,15 +28,21 @@ namespace PVR
     bool OnMessage(CGUIMessage& message) override;
     void OnWindowLoaded() override;
 
-    void SetFilterData(CPVREpgSearchFilter* searchFilter) { m_searchFilter = searchFilter; }
-    bool IsConfirmed() const { return m_bConfirmed; }
-    bool IsCanceled() const { return m_bCanceled; }
+    void SetFilterData(const std::shared_ptr<CPVREpgSearchFilter>& searchFilter);
+
+    enum class Result
+    {
+      SEARCH,
+      SAVE,
+      CANCEL
+    };
+    Result GetResult() const { return m_result; }
 
   protected:
     void OnInitWindow() override;
 
   private:
-    void OnSearch();
+    void UpdateSearchFilter();
     void UpdateChannelSpin();
     void UpdateGroupsSpin();
     void UpdateGenreSpin();
@@ -47,9 +54,11 @@ namespace PVR
     int GetSpinValue(int controlID);
     std::string GetEditValue(int controlID);
 
-    bool m_bConfirmed = false;
-    bool m_bCanceled = false;
-    CPVREpgSearchFilter* m_searchFilter;
-    std::map<int, CPVRChannelNumber> m_channelNumbersMap;
+    Result m_result = Result::CANCEL;
+    std::shared_ptr<CPVREpgSearchFilter> m_searchFilter;
+    std::map<int, std::shared_ptr<CPVRChannelGroupMember>> m_channelsMap;
+
+    CDateTime m_startDateTime;
+    CDateTime m_endDateTime;
   };
 }

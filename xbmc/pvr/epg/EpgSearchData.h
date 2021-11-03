@@ -9,7 +9,6 @@
 #pragma once
 
 #include "XBDateTime.h"
-#include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_epg.h"
 
 #include <string>
 
@@ -23,11 +22,21 @@ struct PVREpgSearchData
   std::string m_strSearchTerm; /*!< The term to search for */
   bool m_bSearchInDescription = false; /*!< Search for strSearchTerm in the description too */
   int m_iGenreType = EPG_SEARCH_UNSET; /*!< The genre type for an entry */
+  bool m_bIgnoreFinishedBroadcasts; /*!< True to ignore finished broadcasts, false if not */
+  bool m_bIgnoreFutureBroadcasts; /*!< True to ignore future broadcasts, false if not */
   CDateTime m_startDateTime; /*!< The minimum start time for an entry */
   CDateTime m_endDateTime; /*!< The maximum end time for an entry */
-  unsigned int m_iUniqueBroadcastId = EPG_TAG_INVALID_UID; /*!< The broadcastid to search for */
 
-  void Reset();
+  void Reset()
+  {
+    m_strSearchTerm.clear();
+    m_bSearchInDescription = false;
+    m_iGenreType = EPG_SEARCH_UNSET;
+    m_bIgnoreFinishedBroadcasts = true;
+    m_bIgnoreFutureBroadcasts = false;
+    m_startDateTime.SetValid(false);
+    m_endDateTime.SetValid(false);
+  }
 };
 
 } // namespace PVR

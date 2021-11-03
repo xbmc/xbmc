@@ -457,12 +457,14 @@ msgctxt "#116"
 msgid "Move"
 msgstr ""
 
+#: xbmc/pvr/PVRContextMenus.cpp
 #: xbmc/windows/GUIWindowFileManager.cpp
 msgctxt "#117"
 msgid "Delete"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogFavourites.cpp
+#: xbmc/pvr/PVRContextMenus.cpp
 #: xbmc/windows/GUIWindowFileManager.cpp
 msgctxt "#118"
 msgid "Rename"
@@ -583,6 +585,8 @@ msgid "Playlists"
 msgstr ""
 
 #: xbmc/addons/GUIViewStateAddonBrowser.cpp
+#: xbmc/pvr/PVRContextMenus.cpp
+#: xbmc/pvr/dialogs/GUIDialogPVRGuideSearch.cpp
 #: addons/skin.estuary/xml/Includes_MediaMenu.xml
 #: addons/skin.estuary/xml/Variables.xml
 msgctxt "#137"
@@ -4845,6 +4849,7 @@ msgid "Not available"
 msgstr ""
 
 #. Abbreviation of "Not Available"
+#: xbmc/pvr/guilib/guiinfo/PVRGUIInfo.cpp
 #: xbmc/utils/SystemInfo.cpp
 msgctxt "#10006"
 msgid "N/A"
@@ -11238,7 +11243,61 @@ msgctxt "#19334"
 msgid "Providers"
 msgstr ""
 
-#empty strings from id 19335 to 19498
+#. label for special PVR search window list item
+#: xbmc/pvr/windows/GUIWindowPVRSearch.cpp
+msgctxt "#19335"
+msgid "New search..."
+msgstr ""
+
+#. label for special PVR search window list item
+#: xbmc/pvr/windows/GUIWindowPVRSearch.cpp
+msgctxt "#19336"
+msgid "Edit search..."
+msgstr ""
+
+#. label for special PVR search window list item
+#: xbmc/pvr/windows/GUIWindowPVRSearch.cpp
+msgctxt "#19337"
+msgid "Saved searches"
+msgstr ""
+
+#. delete saved search confirmation message box text
+#: xbmc/pvr/PVRGUIActions.cpp
+msgctxt "#19338"
+msgid "Delete this saved search?"
+msgstr ""
+
+#. PVR guide search dialog label
+#: addons/skin.estuary/xml/DialogPVRGuideSearch.xml
+msgctxt "#19339"
+msgid "Ignore finished broadcasts"
+msgstr ""
+
+#. PVR guide search dialog label
+#: addons/skin.estuary/xml/DialogPVRGuideSearch.xml
+msgctxt "#19340"
+msgid "Ignore future broadcasts"
+msgstr ""
+
+#. label to ask user to save an EPG search
+#: xbmc/pvr/windows/GUIWindowPVRSearch.cpp
+msgctxt "#19341"
+msgid "Save the current search?"
+msgstr ""
+
+#. "search not saved" label, used in PVR search window breadcrumb
+#: xbmc/pvr/windows/GUIWindowPVRSearch.cpp
+msgctxt "#19342"
+msgid "[not saved]"
+msgstr ""
+
+#. "search saved" label, used in PVR search window breadcrumb
+#: xbmc/pvr/windows/GUIWindowPVRSearch.cpp
+msgctxt "#19343"
+msgid "[saved]"
+msgstr ""
+
+#empty strings from id 19344 to 19498
 
 #. label for epg genre value
 #: xbmc/pvr/epg/Epg.cpp
