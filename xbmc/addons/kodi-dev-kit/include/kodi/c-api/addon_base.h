@@ -45,27 +45,31 @@
 // Generic helper definitions for inline function support
 //@{
 #ifdef _MSC_VER
-#define ATTRIBUTE_FORCEINLINE __forceinline
+#define ATTR_FORCEINLINE __forceinline
 #elif defined(__GNUC__)
-#define ATTRIBUTE_FORCEINLINE inline __attribute__((__always_inline__))
+#define ATTR_FORCEINLINE inline __attribute__((__always_inline__))
 #elif defined(__CLANG__)
 #if __has_attribute(__always_inline__)
-#define ATTRIBUTE_FORCEINLINE inline __attribute__((__always_inline__))
+#define ATTR_FORCEINLINE inline __attribute__((__always_inline__))
 #else
-#define ATTRIBUTE_FORCEINLINE inline
+#define ATTR_FORCEINLINE inline
 #endif
 #else
-#define ATTRIBUTE_FORCEINLINE inline
+#define ATTR_FORCEINLINE inline
 #endif
 //@}
 
 // Generic helper definitions for shared library support
 //@{
-#if defined _WIN32 || defined __CYGWIN__
+#if defined _WIN32 || defined _WIN64 || defined __CYGWIN__
 #define ATTR_DLL_IMPORT __declspec(dllimport)
 #define ATTR_DLL_EXPORT __declspec(dllexport)
 #define ATTR_DLL_LOCAL
+#ifdef _WIN64
 #define ATTR_APIENTRY __stdcall
+#else
+#define ATTR_APIENTRY __cdecl
+#endif
 #else
 #if __GNUC__ >= 4
 #define ATTR_DLL_IMPORT __attribute__((visibility("default")))
@@ -84,6 +88,7 @@
 #endif
 
 // Fallbacks to old
+#define ATTRIBUTE_FORCEINLINE ATTR_FORCEINLINE
 #define ATTRIBUTE_DLL_IMPORT ATTR_DLL_IMPORT
 #define ATTRIBUTE_DLL_EXPORT ATTR_DLL_EXPORT
 #define ATTRIBUTE_DLL_LOCAL ATTR_DLL_LOCAL
