@@ -11,31 +11,29 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "VideoPlayerCodec.h"
-#include "addons/AddonManager.h"
 #include "addons/AudioDecoder.h"
+#include "addons/ExtsMimeSupportList.h"
 #include "utils/StringUtils.h"
 
-using namespace ADDON;
+using namespace KODI::ADDONS;
 
 ICodec* CodecFactory::CreateCodec(const CURL& urlFile)
 {
   std::string fileType = urlFile.GetFileType();
   StringUtils::ToLower(fileType);
 
-  std::vector<AddonInfoPtr> addonInfos;
-  CServiceBroker::GetAddonMgr().GetAddonInfos(addonInfos, true, ADDON_AUDIODECODER);
+  auto addonInfos = CServiceBroker::GetExtsMimeSupportList().GetExtensionSupportedAddonInfos(
+      "." + fileType, CExtsMimeSupportList::FilterSelect::all);
   for (const auto& addonInfo : addonInfos)
   {
-    auto exts = StringUtils::Split(CAudioDecoder::GetExtensions(addonInfo), "|");
-    if (std::find(exts.begin(), exts.end(), "." + fileType) != exts.end())
+    // Check asked and given extension is supported by only for here allowed audiodecoder addons.
+    if (addonInfo.first == ADDON::ADDON_AUDIODECODER)
     {
-      CAudioDecoder* result = new CAudioDecoder(addonInfo);
+      std::unique_ptr<CAudioDecoder> result = std::make_unique<CAudioDecoder>(addonInfo.second);
       if (!result->CreateDecoder())
-      {
-        delete result;
-        return nullptr;
-      }
-      return result;
+        continue;
+
+      return result.release();
     }
   }
 
@@ -50,20 +48,18 @@ ICodec* CodecFactory::CreateCodecDemux(const CFileItem& file, unsigned int filec
   StringUtils::ToLower(content);
   if (!content.empty())
   {
-    std::vector<AddonInfoPtr> addonInfos;
-    CServiceBroker::GetAddonMgr().GetAddonInfos(addonInfos, true, ADDON_AUDIODECODER);
+    auto addonInfos = CServiceBroker::GetExtsMimeSupportList().GetMimetypeSupportedAddonInfos(
+        content, CExtsMimeSupportList::FilterSelect::all);
     for (const auto& addonInfo : addonInfos)
     {
-      auto types = StringUtils::Split(CAudioDecoder::GetMimetypes(addonInfo), "|");
-      if (std::find(types.begin(), types.end(), content) != types.end())
+      // Check asked and given mime type is supported by only for here allowed audiodecoder addons.
+      if (addonInfo.first == ADDON::ADDON_AUDIODECODER)
       {
-        CAudioDecoder* result = new CAudioDecoder(addonInfo);
-        if (!result->CreateDecoder())
-        {
-          delete result;
-          return nullptr;
-        }
-        return result;
+        std::unique_ptr<CAudioDecoder> result = std::make_unique<CAudioDecoder>(addonInfo.second);
+        if (!result->CreateDecoder() && result->SupportsFile(file.GetPath()))
+          continue;
+
+        return result.release();
       }
     }
   }

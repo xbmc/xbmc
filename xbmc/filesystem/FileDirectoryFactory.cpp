@@ -29,8 +29,8 @@
 #include "URL.h"
 #include "XbtDirectory.h"
 #include "ZipDirectory.h"
-#include "addons/AddonManager.h"
 #include "addons/AudioDecoder.h"
+#include "addons/ExtsMimeSupportList.h"
 #include "addons/VFSEntry.h"
 #include "playlists/PlayListFactory.h"
 #include "playlists/SmartPlayList.h"
@@ -38,6 +38,7 @@
 #include "utils/log.h"
 
 using namespace ADDON;
+using namespace KODI::ADDONS;
 using namespace XFILE;
 using namespace PLAYLIST;
 
@@ -73,30 +74,22 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
      * @note: Do not check audio decoder files that are already open, they cannot
      * contain any further sub-folders.
      */
-    if (!StringUtils::EndsWith(strExtension, "stream"))
+    if (!StringUtils::EndsWith(strExtension, KODI_ADDON_AUDIODECODER_TRACK_EXT))
     {
-      std::vector<AddonInfoPtr> addonInfos;
-      CServiceBroker::GetAddonMgr().GetAddonInfos(addonInfos, true, ADDON_AUDIODECODER);
+      auto addonInfos = CServiceBroker::GetExtsMimeSupportList().GetExtensionSupportedAddonInfos(
+          strExtension, CExtsMimeSupportList::FilterSelect::hasTracks);
       for (const auto& addonInfo : addonInfos)
       {
-        if (CAudioDecoder::HasTracks(addonInfo))
+        std::unique_ptr<CAudioDecoder> result = std::make_unique<CAudioDecoder>(addonInfo.second);
+        if (!result->CreateDecoder() || !result->ContainsFiles(url))
         {
-          auto exts = StringUtils::Split(CAudioDecoder::GetExtensions(addonInfo), "|");
-          if (std::find(exts.begin(), exts.end(), strExtension) != exts.end())
-          {
-            CAudioDecoder* result = new CAudioDecoder(addonInfo);
-            if (!result->CreateDecoder() || !result->ContainsFiles(url))
-            {
-              delete result;
-              CLog::Log(LOGINFO,
-                        "CFileDirectoryFactory::{}: Addon '{}' support extension '{}' but creation "
-                        "failed (seems not supported), trying other addons and Kodi",
-                        __func__, addonInfo->ID(), strExtension);
-              continue;
-            }
-            return result;
-          }
+          CLog::Log(LOGINFO,
+                    "CFileDirectoryFactory::{}: Addon '{}' support extension '{}' but creation "
+                    "failed (seems not supported), trying other addons and Kodi",
+                    __func__, addonInfo.second->ID(), strExtension);
+          continue;
         }
+        return result.release();
       }
     }
 

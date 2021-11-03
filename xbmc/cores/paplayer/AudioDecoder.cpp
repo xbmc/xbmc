@@ -254,8 +254,10 @@ int CAudioDecoder::ReadSamples(int numsamples)
     numsamples -= (numsamples % GetFormat().m_channelLayout.Count());  // make sure it's divisible by our number of channels
     if (numsamples)
     {
-      int readSize = 0;
-      int result = m_codec->ReadPCM(m_pcmInputBuffer, numsamples * (m_codec->m_bitsPerSample >> 3), &readSize);
+      size_t readSize = 0;
+      int result = m_codec->ReadPCM(
+          m_pcmInputBuffer, static_cast<size_t>(numsamples * (m_codec->m_bitsPerSample >> 3)),
+          &readSize);
 
       if (result != READ_ERROR && readSize)
       {

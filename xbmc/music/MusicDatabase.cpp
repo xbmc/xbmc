@@ -23,6 +23,7 @@
 #include "addons/AddonManager.h"
 #include "addons/AddonSystemSettings.h"
 #include "addons/Scraper.h"
+#include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/audiodecoder.h"
 #include "dbwrappers/dataset.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogProgress.h"
@@ -4102,10 +4103,11 @@ bool CMusicDatabase::CleanupSongsByIds(const std::string& strSongIds)
       std::string strFileName = URIUtils::AddFileToFolder(
           m_pDS->fv("path.strPath").get_asString(), m_pDS->fv("song.strFileName").get_asString());
 
-      //  Special case for streams inside an ogg file. (oggstream)
-      //  The last dir in the path is the ogg file that
+      //  Special case for streams inside an audio decoder package file.
+      //  The last dir in the path is the audio file that
       //  contains the stream, so test if its there
-      if (URIUtils::HasExtension(strFileName, ".oggstream|.nsfstream"))
+      if (StringUtils::EndsWith(URIUtils::GetExtension(strFileName),
+                                KODI_ADDON_AUDIODECODER_TRACK_EXT))
       {
         strFileName = URIUtils::GetDirectory(strFileName);
         // we are dropping back to a file, so remove the slash at end

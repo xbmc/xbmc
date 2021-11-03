@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/AudioDecoder.h"
+#include "addons/ExtsMimeSupportList.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
@@ -19,6 +20,7 @@
 #include <vector>
 
 using namespace ADDON;
+using namespace KODI::ADDONS;
 
 const std::vector<TYPE> ADDON_TYPES = {
   ADDON_VFS,
@@ -97,8 +99,7 @@ std::string CFileExtensionProvider::GetFileFolderExtensions() const
 bool CFileExtensionProvider::CanOperateExtension(const std::string& path) const
 {
   /*!
-   * @todo Improve this function to support all cases and not only audio decoder
-   * with tracks inside.
+   * @todo Improve this function to support all cases and not only audio decoder.
    */
 
   // Get file extensions to find addon related to it.
@@ -106,37 +107,41 @@ bool CFileExtensionProvider::CanOperateExtension(const std::string& path) const
   StringUtils::ToLower(strExtension);
   if (!strExtension.empty() && CServiceBroker::IsBinaryAddonCacheUp())
   {
-    std::vector<AddonInfoPtr> addonInfos;
-    m_addonManager.GetAddonInfos(addonInfos, true, ADDON_AUDIODECODER);
+    std::vector<std::unique_ptr<KODI::ADDONS::IAddonSupportCheck>> supportList;
+
+    auto addonInfos = CServiceBroker::GetExtsMimeSupportList().GetExtensionSupportedAddonInfos(
+        strExtension, CExtsMimeSupportList::FilterSelect::all);
     for (const auto& addonInfo : addonInfos)
     {
-      if (CAudioDecoder::HasTracks(addonInfo))
-      {
-        const auto exts = StringUtils::Split(CAudioDecoder::GetExtensions(addonInfo), "|");
-        if (std::find(exts.begin(), exts.end(), strExtension) != exts.end())
-        {
-          /* Call addon to start a dir read about given file, if success, return
-           * as true.
-           */
-          CAudioDecoder result(addonInfo);
-          if (result.CreateDecoder() && result.ContainsFiles(CURL(path)))
-            return true;
-
-          /* If extension is supported and addon creation failed, we expect the
-           * file is not usable and return false here.
-           */
-          return false;
-        }
-      }
+      if (addonInfo.first == ADDON_AUDIODECODER)
+        supportList.emplace_back(new CAudioDecoder(addonInfo.second));
     }
 
     /*!
-     * We expect that VFS addons can support the file, and return true.
+     * We expect that other addons can support the file, and return true if
+     * list empty.
      *
-     * @todo Check VFS addons can also be types in conflict with Kodi's
+     * @todo Check addons can also be types in conflict with Kodi's
      * supported parts!
+     *
+     * @warning This part is really big ugly at the moment and as soon as possible
+     * add about other addons where works with extensions!!!
+     * Due to @ref GetFileFolderExtensions() call from outside place before here, becomes
+     * it usable in this way, as there limited to AudioDecoder and VFS addons.
      */
-    return true;
+    if (supportList.empty())
+    {
+      return true;
+    }
+
+    /*!
+     * Check all found addons about support of asked file.
+     */
+    for (const auto& addon : supportList)
+    {
+      if (addon->SupportsFile(path))
+        return true;
+    }
   }
 
   /*!
@@ -175,23 +180,37 @@ void CFileExtensionProvider::SetAddonExtensions(const TYPE& type)
 {
   std::vector<std::string> extensions;
   std::vector<std::string> fileFolderExtensions;
-  std::vector<AddonInfoPtr> addonInfos;
-  m_addonManager.GetAddonInfos(addonInfos, true, type);
-  for (const auto& addonInfo : addonInfos)
+
+  if (type == ADDON_AUDIODECODER)
   {
-    std::string info = ADDON_VFS == type ? "@extensions" : "@extension";
-    std::string ext = addonInfo->Type(type)->GetValue(info).asString();
-    if (!ext.empty())
+    auto addonInfos = CServiceBroker::GetExtsMimeSupportList().GetSupportedAddonInfos(
+        CExtsMimeSupportList::FilterSelect::all);
+    for (const auto& addonInfo : addonInfos)
     {
-      extensions.push_back(ext);
-      if (type == ADDON_VFS || type == ADDON_AUDIODECODER)
+      if (addonInfo.m_addonType != type)
+        continue;
+
+      for (const auto& ext : addonInfo.m_supportedExtensions)
       {
-        std::string info2 = ADDON_VFS == type ? "@filedirectories" : "@tracks";
-        if (addonInfo->Type(type)->GetValue(info2).asBoolean())
-          fileFolderExtensions.push_back(ext);
+        extensions.push_back(ext.first);
+        if (addonInfo.m_hasTracks)
+          fileFolderExtensions.push_back(ext.first);
       }
-      if (type == ADDON_VFS)
+    }
+  }
+  else if (type == ADDON_VFS)
+  {
+    std::vector<AddonInfoPtr> addonInfos;
+    m_addonManager.GetAddonInfos(addonInfos, true, type);
+    for (const auto& addonInfo : addonInfos)
+    {
+      std::string ext = addonInfo->Type(type)->GetValue("@extensions").asString();
+      if (!ext.empty())
       {
+        extensions.push_back(ext);
+        if (addonInfo->Type(type)->GetValue("@filedirectories").asBoolean())
+          fileFolderExtensions.push_back(ext);
+
         if (addonInfo->Type(type)->GetValue("@encodedhostname").asBoolean())
         {
           std::string prot = addonInfo->Type(type)->GetValue("@protocols").asString();
