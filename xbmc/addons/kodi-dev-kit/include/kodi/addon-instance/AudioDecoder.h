@@ -742,8 +742,7 @@ private:
     return static_cast<CInstanceAudioDecoder*>(hdl)->TrackCount(file);
   }
 
-  std::vector<AudioEngineChannel> m_channelList;
-  AddonInstance_AudioDecoder* m_instanceData;
+  AddonInstance_AudioDecoder* m_instanceData{nullptr};
 };
 
 } /* namespace addon */
