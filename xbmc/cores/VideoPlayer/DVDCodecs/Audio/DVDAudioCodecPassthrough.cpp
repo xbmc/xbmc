@@ -7,13 +7,15 @@
  */
 
 #include "DVDAudioCodecPassthrough.h"
+
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDStreamInfo.h"
 #include "utils/log.h"
 
 #include <algorithm>
 
-extern "C" {
+extern "C"
+{
 #include <libavcodec/avcodec.h>
 }
 
@@ -26,6 +28,7 @@ CDVDAudioCodecPassthrough::CDVDAudioCodecPassthrough(CProcessInfo &processInfo, 
   CDVDAudioCodec(processInfo)
 {
   m_format.m_streamInfo.m_type = streamType;
+  m_deviceIsRAW = processInfo.WantsRawPassthrough();
 }
 
 CDVDAudioCodecPassthrough::~CDVDAudioCodecPassthrough(void)
@@ -61,6 +64,9 @@ bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &op
 
     case CAEStreamInfo::STREAM_TYPE_TRUEHD:
       m_codecName = "pt-truehd";
+
+      CLog::Log(LOGDEBUG, "CDVDAudioCodecPassthrough::{} - passthrough output device is {}",
+                __func__, m_deviceIsRAW ? "RAW" : "IEC");
       break;
 
     default:
@@ -180,7 +186,7 @@ bool CDVDAudioCodecPassthrough::AddData(const DemuxPacket &packet)
 
   if (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
   {
-    if (m_trueHDBuffer.size() < TRUEHD_BUF_SIZE)
+    if (m_trueHDBuffer.empty())
     {
       m_trueHDBuffer.resize(TRUEHD_BUF_SIZE);
       m_trueHDoffset = 0;
@@ -195,8 +201,11 @@ bool CDVDAudioCodecPassthrough::AddData(const DemuxPacket &packet)
     m_trueHDframes++;
 
     // Only 12 audio units are packed in the buffer to avoid overflows and reduce latency.
-    // Compensates for the small increased latency in CAEBitstreamPacker::PackTrueHD
-    if (m_trueHDframes == 12)
+    // Compensates for the small increased latency in CAEBitstreamPacker::PackTrueHD (IEC)
+    // Android IEC packer (RAW) needs 24 audio units.
+    const int nFrames = m_deviceIsRAW ? 24 : 12;
+
+    if (m_trueHDframes == nFrames)
     {
       m_dataSize = TRUEHD_BUF_SIZE;
       m_trueHDoffset = 0;
