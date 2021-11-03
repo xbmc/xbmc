@@ -8,6 +8,10 @@
 
 #include "ProcessInfoAndroid.h"
 
+#include "ServiceBroker.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+
 using namespace VIDEOPLAYER;
 
 CProcessInfo* CProcessInfoAndroid::Create()
@@ -23,4 +27,15 @@ void CProcessInfoAndroid::Register()
 EINTERLACEMETHOD CProcessInfoAndroid::GetFallbackDeintMethod()
 {
   return EINTERLACEMETHOD::VS_INTERLACEMETHOD_DEINTERLACE_HALF;
+}
+
+bool CProcessInfoAndroid::WantsRawPassthrough()
+{
+  const std::string device = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+      CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE);
+
+  if (std::string::npos != device.find("(RAW)"))
+    return true;
+
+  return false;
 }
