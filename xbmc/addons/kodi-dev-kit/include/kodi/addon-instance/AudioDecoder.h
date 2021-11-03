@@ -691,6 +691,10 @@ private:
                                     const char* file,
                                     struct KODI_ADDON_AUDIODECODER_INFO_TAG* tag)
   {
+#ifdef _WIN32
+#pragma warning(push)
+#pragma warning(disable : 4996)
+#endif // _WIN32
     kodi::addon::AudioDecoderInfoTag cppTag;
     bool ret = static_cast<CInstanceAudioDecoder*>(hdl)->ReadTag(file, cppTag);
     if (ret)
@@ -727,6 +731,9 @@ private:
       }
     }
     return ret;
+#ifdef _WIN32
+#pragma warning(pop)
+#endif // _WIN32
   }
 
   inline static int ADDON_track_count(const KODI_ADDON_AUDIODECODER_HDL hdl, const char* file)
