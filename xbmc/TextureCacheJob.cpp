@@ -175,6 +175,16 @@ std::string CTextureCacheJob::DecodeImageURL(const std::string &url, unsigned in
     if (thumbURL.HasOption("scaling_algorithm"))
       scalingAlgorithm = CPictureScalingAlgorithm::FromString(thumbURL.GetOption("scaling_algorithm"));
   }
+
+  // Handle special case about audiodecoder addon music files, e.g. SACD
+  if (StringUtils::EndsWith(URIUtils::GetExtension(image), KODI_ADDON_AUDIODECODER_TRACK_EXT))
+  {
+    std::string addonImageURL = URIUtils::GetDirectory(image);
+    URIUtils::RemoveSlashAtEnd(addonImageURL);
+    if (XFILE::CFile::Exists(addonImageURL))
+      image = addonImageURL;
+  }
+
   return image;
 }
 
@@ -233,19 +243,8 @@ std::string CTextureCacheJob::GetImageHash(const std::string &url)
   if (URIUtils::IsProtocol(url,"addons") || URIUtils::IsProtocol(url,"plugin"))
     return "";
 
-  std::string statURL = url;
-
-  // Handle special case about audiodecoder addon music files, e.g. SACD
-  if (StringUtils::EndsWith(URIUtils::GetExtension(url), KODI_ADDON_AUDIODECODER_TRACK_EXT))
-  {
-    std::string addonImageURL = URIUtils::GetDirectory(url);
-    URIUtils::RemoveSlashAtEnd(addonImageURL);
-    if (XFILE::CFile::Exists(addonImageURL))
-      statURL = addonImageURL;
-  }
-
   struct __stat64 st;
-  if (XFILE::CFile::Stat(statURL, &st) == 0)
+  if (XFILE::CFile::Stat(url, &st) == 0)
   {
     int64_t time = st.st_mtime;
     if (!time)
