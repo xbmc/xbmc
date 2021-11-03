@@ -4,6 +4,8 @@
 
 #include "cc_decoder708.h"
 
+#include "utils/log.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -342,8 +344,8 @@ int handle_708_C2 (cc708_service_decoder *decoder, unsigned char *data, int data
 
 int handle_708_C3 (cc708_service_decoder *decoder, unsigned char *data, int data_length)
 {
-  if (data[0]<0x80 || data[0]>0x9F)
-    ;//ccx_common_logging.fatal_ftn (CCX_COMMON_EXIT_BUG_BUG, "Entry in handle_708_C3 with an out of range value.");
+  if (data[0] < 0x80 || data[0] > 0x9F)
+    CLog::Log(LOGERROR, "{} - Entry in handle_708_C3 with an out of range value", __FUNCTION__);
   if (data[0]<=0x87) // 80-87...
     return 5; // ... Five-byte control bytes (4 additional bytes)
   else if (data[0]<=0x8F) // 88-8F ...
@@ -479,40 +481,38 @@ int handle_708_C0 (cc708_service_decoder *decoder, unsigned char *data, int data
 }
 
 
-void process_character (cc708_service_decoder *decoder, unsigned char internal_char)
+void process_character(cc708_service_decoder* decoder, unsigned char internal_char)
 {
-  if (decoder->current_window==-1 ||
-      !decoder->windows[decoder->current_window].is_defined) // Writing to a non existing window, skipping
+  if (decoder->current_window == -1 ||
+      !decoder->windows[decoder->current_window]
+           .is_defined) // Writing to a non existing window, skipping
     return;
-  switch (internal_char)
+  decoder->windows[decoder->current_window].is_empty = 0;
+  decoder->windows[decoder->current_window]
+      .rows[decoder->windows[decoder->current_window].pen_row]
+           [decoder->windows[decoder->current_window].pen_column] = internal_char;
+  /* Not positive this interpretation is correct. Word wrapping is optional, so
+                        let's assume we don't need to autoscroll */
+  switch (decoder->windows[decoder->current_window].attribs.print_dir)
   {
-  default:
-    decoder->windows[decoder->current_window].is_empty=0;
-    decoder->windows[decoder->current_window].
-      rows[decoder->windows[decoder->current_window].pen_row]
-          [decoder->windows[decoder->current_window].pen_column]=internal_char;
-    /* Not positive this interpretation is correct. Word wrapping is optional, so
-                           let's assume we don't need to autoscroll */
-    switch (decoder->windows[decoder->current_window].attribs.print_dir)
-    {
     case pd_left_to_right:
-      if (decoder->windows[decoder->current_window].pen_column+1 < decoder->windows[decoder->current_window].col_count)
+      if (decoder->windows[decoder->current_window].pen_column + 1 <
+          decoder->windows[decoder->current_window].col_count)
         decoder->windows[decoder->current_window].pen_column++;
       break;
     case pd_right_to_left:
-      if (decoder->windows->pen_column>0)
+      if (decoder->windows->pen_column > 0)
         decoder->windows[decoder->current_window].pen_column--;
       break;
     case pd_top_to_bottom:
-      if (decoder->windows[decoder->current_window].pen_row+1 < decoder->windows[decoder->current_window].row_count)
+      if (decoder->windows[decoder->current_window].pen_row + 1 <
+          decoder->windows[decoder->current_window].row_count)
         decoder->windows[decoder->current_window].pen_row++;
       break;
     case pd_bottom_to_top:
-      if (decoder->windows[decoder->current_window].pen_row>0)
+      if (decoder->windows[decoder->current_window].pen_row > 0)
         decoder->windows[decoder->current_window].pen_row--;
       break;
-    }
-    break;
   }
 }
 

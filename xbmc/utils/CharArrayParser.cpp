@@ -53,6 +53,11 @@ bool CCharArrayParser::SkipChars(int nChars)
 uint8_t CCharArrayParser::ReadNextUnsignedChar()
 {
   m_position++;
+  if (!m_data)
+  {
+    CLog::Log(LOGERROR, "{} - No data to read", __FUNCTION__);
+    return 0;
+  }
   if (m_position > m_limit)
     CLog::Log(LOGERROR, "{} - Position out of range", __FUNCTION__);
   return static_cast<uint8_t>(m_data[m_position - 1]) & 0xFF;
@@ -60,6 +65,11 @@ uint8_t CCharArrayParser::ReadNextUnsignedChar()
 
 uint16_t CCharArrayParser::ReadNextUnsignedShort()
 {
+  if (!m_data)
+  {
+    CLog::Log(LOGERROR, "{} - No data to read", __FUNCTION__);
+    return 0;
+  }
   m_position += 2;
   if (m_position > m_limit)
     CLog::Log(LOGERROR, "{} - Position out of range", __FUNCTION__);
@@ -69,6 +79,11 @@ uint16_t CCharArrayParser::ReadNextUnsignedShort()
 
 uint32_t CCharArrayParser::ReadNextUnsignedInt()
 {
+  if (!m_data)
+  {
+    CLog::Log(LOGERROR, "{} - No data to read", __FUNCTION__);
+    return 0;
+  }
   m_position += 4;
   if (m_position > m_limit)
     CLog::Log(LOGERROR, "{} - Position out of range", __FUNCTION__);
@@ -80,6 +95,11 @@ uint32_t CCharArrayParser::ReadNextUnsignedInt()
 
 std::string CCharArrayParser::ReadNextString(int length)
 {
+  if (!m_data)
+  {
+    CLog::Log(LOGERROR, "{} - No data to read", __FUNCTION__);
+    return "";
+  }
   std::string str(m_data + m_position, length);
   m_position += length;
   if (m_position > m_limit)

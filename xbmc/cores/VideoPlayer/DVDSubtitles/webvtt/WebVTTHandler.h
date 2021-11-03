@@ -73,7 +73,7 @@ struct webvttCueSettings
   webvttAutoValue line;
   webvttAutoValue position;
   WebvttAlign positionAlign;
-  int size;
+  double size;
   WebvttAlign align;
 };
 
@@ -169,9 +169,9 @@ private:
   void LoadColors();
 
   std::string m_previousLines[3];
-  bool m_overrideStyle;
-  bool m_overridePositions;
-  WebvttSection m_currentSection;
+  bool m_overrideStyle{false};
+  bool m_overridePositions{false};
+  WebvttSection m_currentSection{WebvttSection::UNDEFINED};
   uint64_t m_mpegTsOffset = 0;
   CRegExp m_cueTimeRegex;
   std::map<std::string, CRegExp> m_cuePropsMapRegex;

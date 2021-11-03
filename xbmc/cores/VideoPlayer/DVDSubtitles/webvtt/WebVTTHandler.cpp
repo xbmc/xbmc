@@ -93,7 +93,7 @@ bool ValidateSignature(const char* data, const char* signature)
 void InsertTextPos(std::string& text, std::string insert, int& pos)
 {
   text.insert(pos, insert);
-  pos += insert.length();
+  pos += static_cast<int>(insert.length());
 }
 
 std::string ConvertStyleToOpenTags(int flagTags[], webvttCssStyle& style)
@@ -134,26 +134,26 @@ std::string ConvertStyleToCloseTags(int flagTags[],
   std::string tags;
   if (style.isFontBold)
   {
-    flagTags[FLAG_TAG_BOLD] = flagTags[FLAG_TAG_BOLD] > 0 ? --flagTags[FLAG_TAG_BOLD] : 0;
+    flagTags[FLAG_TAG_BOLD] = flagTags[FLAG_TAG_BOLD] > 0 ? (flagTags[FLAG_TAG_BOLD] - 1) : 0;
     if (flagTags[FLAG_TAG_BOLD] == 0)
       tags += "{\\b0}";
   }
   if (style.isFontItalic)
   {
-    flagTags[FLAG_TAG_ITALIC] = flagTags[FLAG_TAG_ITALIC] > 0 ? --flagTags[FLAG_TAG_ITALIC] : 0;
+    flagTags[FLAG_TAG_ITALIC] = flagTags[FLAG_TAG_ITALIC] > 0 ? (flagTags[FLAG_TAG_ITALIC] - 1) : 0;
     if (flagTags[FLAG_TAG_ITALIC] == 0)
       tags += "{\\i0}";
   }
   if (style.isFontUnderline)
   {
     flagTags[FLAG_TAG_UNDERLINE] =
-        flagTags[FLAG_TAG_UNDERLINE] > 0 ? --flagTags[FLAG_TAG_UNDERLINE] : 0;
+        flagTags[FLAG_TAG_UNDERLINE] > 0 ? (flagTags[FLAG_TAG_UNDERLINE] - 1) : 0;
     if (flagTags[FLAG_TAG_UNDERLINE] == 0)
       tags += "{\\u0}";
   }
   if (!style.color.empty())
   {
-    flagTags[FLAG_TAG_COLOR] = flagTags[FLAG_TAG_COLOR] > 0 ? --flagTags[FLAG_TAG_COLOR] : 0;
+    flagTags[FLAG_TAG_COLOR] = flagTags[FLAG_TAG_COLOR] > 0 ? (flagTags[FLAG_TAG_COLOR] - 1) : 0;
     tags += "{\\c}";
     if (flagTags[FLAG_TAG_COLOR] > 0 && !baseStyle.color.empty())
       tags += "{\\c&H" + baseStyle.color + "&}";
@@ -464,7 +464,7 @@ void CWebVTTHandler::DecodeLine(std::string line, std::vector<subtitleData>* sub
         if (m_feedCssStyle.selectorType == WebvttSelector::TYPE)
         {
           // If there are multiple type selectors, copy the style for each one
-          for (int i = 1; i < m_cueCurrentCssStyleSelectors.size(); i++)
+          for (size_t i = 1; i < m_cueCurrentCssStyleSelectors.size(); i++)
           {
             webvttCssStyle cssStyleCopy = m_feedCssStyle;
             cssStyleCopy.selectorName = m_cueCurrentCssStyleSelectors[i];
@@ -875,7 +875,7 @@ void CWebVTTHandler::ConvertSubtitle(std::string& text)
     }
     else if (fullTag == "</b>" && flagTags[FLAG_TAG_BOLD] > 0)
     {
-      flagTags[FLAG_TAG_BOLD] = flagTags[FLAG_TAG_BOLD] > 0 ? --flagTags[FLAG_TAG_BOLD] : 0;
+      flagTags[FLAG_TAG_BOLD] = flagTags[FLAG_TAG_BOLD] > 0 ? (flagTags[FLAG_TAG_BOLD] - 1) : 0;
       if (flagTags[FLAG_TAG_BOLD] == 0)
         InsertTextPos(text, "{\\b0}", pos);
     }
@@ -887,7 +887,8 @@ void CWebVTTHandler::ConvertSubtitle(std::string& text)
     }
     else if (fullTag == "</i>" && flagTags[FLAG_TAG_ITALIC] > 0)
     {
-      flagTags[FLAG_TAG_ITALIC] = flagTags[FLAG_TAG_ITALIC] > 0 ? --flagTags[FLAG_TAG_ITALIC] : 0;
+      flagTags[FLAG_TAG_ITALIC] =
+          flagTags[FLAG_TAG_ITALIC] > 0 ? (flagTags[FLAG_TAG_ITALIC] - 1) : 0;
       if (flagTags[FLAG_TAG_ITALIC] == 0)
         InsertTextPos(text, "{\\i0}", pos);
     }
@@ -900,7 +901,7 @@ void CWebVTTHandler::ConvertSubtitle(std::string& text)
     else if (fullTag == "</u>" && flagTags[FLAG_TAG_UNDERLINE] > 0)
     {
       flagTags[FLAG_TAG_UNDERLINE] =
-          flagTags[FLAG_TAG_UNDERLINE] > 0 ? --flagTags[FLAG_TAG_UNDERLINE] : 0;
+          flagTags[FLAG_TAG_UNDERLINE] > 0 ? (flagTags[FLAG_TAG_UNDERLINE] - 1) : 0;
       if (flagTags[FLAG_TAG_UNDERLINE] == 0)
         InsertTextPos(text, "{\\u0}", pos);
     }
@@ -964,7 +965,7 @@ void CWebVTTHandler::InsertCssStyleStartTag(std::string& tagName,
     auto& cssStyle = *itCssStyle;
     std::string tags = ConvertStyleToOpenTags(flagTags, cssStyle);
     text.insert(pos, tags);
-    pos += tags.length();
+    pos += static_cast<int>(tags.length());
     // Keep track of the opened tag to be closed
     // or when we have to insert the closing tags we do not know what style we are closing
     cssTagsOpened.insert({tagName, cssStyle.selectorName});
@@ -988,7 +989,7 @@ void CWebVTTHandler::InsertCssStyleCloseTag(std::string& tagName,
     {
       std::string tags = ConvertStyleToCloseTags(flagTags, *itCssStyle, baseStyle);
       text.insert(pos, tags);
-      pos += tags.length();
+      pos += static_cast<int>(tags.length());
       cssTagsOpened.erase(itCssTagToClose);
     }
   }

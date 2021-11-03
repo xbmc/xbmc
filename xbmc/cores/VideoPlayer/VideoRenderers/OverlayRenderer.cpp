@@ -39,13 +39,15 @@ using namespace OVERLAY;
 
 COverlay::COverlay()
 {
-  m_x      = 0.0f;
-  m_y      = 0.0f;
-  m_width  = 0.0;
-  m_height = 0.0;
-  m_type   = TYPE_NONE;
-  m_align  = ALIGN_SCREEN;
-  m_pos    = POSITION_RELATIVE;
+  m_x = 0.0f;
+  m_y = 0.0f;
+  m_width = 0.0f;
+  m_height = 0.0f;
+  m_type = TYPE_NONE;
+  m_align = ALIGN_SCREEN;
+  m_pos = POSITION_RELATIVE;
+  m_source_width = 0.0f;
+  m_source_height = 0.0f;
 }
 
 COverlay::~COverlay() = default;
@@ -370,13 +372,13 @@ COverlay* CRenderer::ConvertLibass(CDVDOverlayLibass* o,
   if (m_stereomode == "left_right" || m_stereomode == "right_left")
   {
     // only half-sbs video, sbs video don't need to change source size
-    if ((double)rOpts.sourceWidth / rOpts.sourceHeight < 1.2)
+    if (rOpts.sourceWidth / rOpts.sourceHeight < 1.2f)
       rOpts.sourceWidth = m_rs.Width() * 2;
   }
   else if (m_stereomode == "top_bottom" || m_stereomode == "bottom_top")
   {
     // only half-ou video, ou video don't need to change source size
-    if ((double)rOpts.sourceWidth / rOpts.sourceHeight > 2.5)
+    if (rOpts.sourceWidth / rOpts.sourceHeight > 2.5f)
       rOpts.sourceHeight = m_rs.Height() * 2;
   }
 
@@ -436,10 +438,10 @@ COverlay* CRenderer::ConvertLibass(CDVDOverlayLibass* o,
   // scale to video dimensions
   if (overlay)
   {
-    overlay->m_width = (float)rOpts.frameWidth / rOpts.videoWidth;
-    overlay->m_height = (float)rOpts.frameHeight / rOpts.videoHeight;
-    overlay->m_x = ((float)rOpts.videoWidth - rOpts.frameWidth) / 2 / rOpts.videoWidth;
-    overlay->m_y = ((float)rOpts.videoHeight - rOpts.frameHeight) / 2 / rOpts.videoHeight;
+    overlay->m_width = rOpts.frameWidth / rOpts.videoWidth;
+    overlay->m_height = rOpts.frameHeight / rOpts.videoHeight;
+    overlay->m_x = (rOpts.videoWidth - rOpts.frameWidth) / 2 / rOpts.videoWidth;
+    overlay->m_y = (rOpts.videoHeight - rOpts.frameHeight) / 2 / rOpts.videoHeight;
   }
   m_textureCache[m_textureid] = overlay;
   o->m_textureid = m_textureid;

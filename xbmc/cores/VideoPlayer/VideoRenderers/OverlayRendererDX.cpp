@@ -58,7 +58,7 @@ static bool LoadTexture(int width, int height, int stride
   return true;
 }
 
-COverlayQuadsDX::COverlayQuadsDX(ASS_Image* images, int width, int height)
+COverlayQuadsDX::COverlayQuadsDX(ASS_Image* images, float width, float height)
 {
   m_width  = 1.0;
   m_height = 1.0;
@@ -69,7 +69,7 @@ COverlayQuadsDX::COverlayQuadsDX(ASS_Image* images, int width, int height)
   m_count  = 0;
 
   SQuads quads;
-  if(!convert_quad(images, quads, width))
+  if (!convert_quad(images, quads, static_cast<int>(width)))
     return;
 
   float u, v;
@@ -127,10 +127,10 @@ COverlayQuadsDX::COverlayQuadsDX(ASS_Image* images, int width, int height)
   }
 
   vt = vt_orig;
-  m_count = quads.quad.size();
+  m_count = static_cast<unsigned int>(quads.quad.size());
 
-  if (!m_vertex.Create(D3D11_BIND_VERTEX_BUFFER, 6 * quads.quad.size(), sizeof(Vertex),
-                       DXGI_FORMAT_UNKNOWN, D3D11_USAGE_IMMUTABLE, vt))
+  if (!m_vertex.Create(D3D11_BIND_VERTEX_BUFFER, 6 * m_count, sizeof(Vertex), DXGI_FORMAT_UNKNOWN,
+                       D3D11_USAGE_IMMUTABLE, vt))
   {
     CLog::Log(LOGERROR, "{} - failed to create vertex buffer", __FUNCTION__);
     m_texture.Release();

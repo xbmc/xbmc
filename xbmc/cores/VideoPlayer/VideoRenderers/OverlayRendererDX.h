@@ -23,13 +23,12 @@ namespace OVERLAY {
     : public COverlay
   {
   public:
-    COverlayQuadsDX(ASS_Image* images, int width, int height);
+    COverlayQuadsDX(ASS_Image* images, float width, float height);
     virtual ~COverlayQuadsDX();
 
     void Render(SRenderState& state);
 
-    int                    m_count;
-    DWORD                  m_fvf;
+    unsigned int m_count;
     CD3DTexture            m_texture;
     CD3DBuffer             m_vertex;
   };
@@ -45,10 +44,9 @@ namespace OVERLAY {
     void Load(uint32_t* rgba, int width, int height, int stride);
     void Render(SRenderState& state);
 
-    DWORD                  m_fvf;
     CD3DTexture            m_texture;
     CD3DBuffer             m_vertex;
-    bool                   m_pma;
+    bool m_pma{false};
   };
 
 }

@@ -94,7 +94,7 @@ OverlayMessage CDVDOverlayCodecSSA::Decode(DemuxPacket* pPacket)
 
       line2 = StringUtils::Format("{},{},{}", m_order++, layer.get(), line.substr(pos + 1));
 
-      m_libass->DecodeDemuxPkt(line2.c_str(), line2.length(), beg, end - beg);
+      m_libass->DecodeDemuxPkt(line2.c_str(), static_cast<int>(line2.length()), beg, end - beg);
     }
   }
   else
