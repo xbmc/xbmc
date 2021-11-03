@@ -116,7 +116,7 @@
 		<pulseonselect>no</pulseonselect>
 	</default>
 	<default type="colorbutton">
-		<colorwidth>170</colorwidth>
+		<colorwidth>150</colorwidth>
 		<colorheight>76</colorheight>
 		<texturecolormask>buttons/color-button-box.png</texturecolormask>
 		<texturecolordisabledmask colordiffuse="disabled">buttons/color-button-box.png</texturecolordisabledmask>

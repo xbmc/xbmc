@@ -168,7 +168,7 @@ void CGUIDialogColorPicker::LoadColors(const std::string filePath)
     for (auto& color : colors)
     {
       CFileItem* item = new CFileItem(color.first);
-      item->SetLabel2(StringUtils::Format("{:8x}", color.second.colorARGB));
+      item->SetLabel2(StringUtils::Format("{:08X}", color.second.colorARGB));
       m_vecList->Add(CFileItemPtr(item));
     }
   }
