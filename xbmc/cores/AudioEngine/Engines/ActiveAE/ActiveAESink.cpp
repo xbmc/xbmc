@@ -924,8 +924,7 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
   unsigned int maxFrames;
   int retry = 0;
   unsigned int written = 0;
-  std::unique_ptr<uint8_t[]> mergebuffer;
-  uint8_t* p_mergebuffer = NULL;
+  uint8_t* p_mergeBuffer = nullptr;
   AEDelayStatus status;
 
   if (m_requestedFormat.m_dataFormat == AE_FMT_RAW)
@@ -992,25 +991,28 @@ unsigned int CActiveAESink::OutputSamples(CSampleBuffer* samples)
           break;
       }
     }
-    else
+    else // Android IEC packer (RAW)
     {
       if (m_sinkFormat.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD && frames == 61440)
       {
-        unsigned int size = 0;
-        mergebuffer.reset(new uint8_t[MAX_IEC61937_PACKET]);
-        p_mergebuffer = mergebuffer.get();
+        if (m_mergeBuffer.empty())
+          m_mergeBuffer.resize(MAX_IEC61937_PACKET);
 
-        for (int i = 0, offset = 0; i < 12; i++)
+        p_mergeBuffer = m_mergeBuffer.data();
+        unsigned int size = 0;
+
+        for (int i = 0, of = 0; i < 24; i++)
         {
           // calculates length of each audio unit using raw data of stream
-          uint16_t len = ((*(buffer[0] + offset) & 0x0F) << 8 | *(buffer[0] + offset + 1)) << 1;
+          const uint16_t len = ((*(buffer[0] + of) & 0x0F) << 8 | *(buffer[0] + of + 1)) << 1;
 
-          memcpy(&(mergebuffer.get())[size], buffer[0] + offset, len);
+          memcpy(m_mergeBuffer.data() + of, buffer[0] + of, len);
           size += len;
-          offset += len;
+          of += len;
         }
-        buffer = &p_mergebuffer;
-        totalFrames = size / m_sinkFormat.m_frameSize;
+
+        buffer = &p_mergeBuffer;
+        totalFrames = size / m_sinkFormat.m_frameSize; // m_frameSize = 1
         frames = totalFrames;
       }
       if (samples->pkt->pause_burst_ms > 0)

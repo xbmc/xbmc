@@ -52,5 +52,5 @@ private:
   std::vector<uint8_t> m_trueHDBuffer;
   unsigned int m_trueHDoffset = 0;
   unsigned int m_trueHDframes = 0;
+  bool m_deviceIsRAW{false};
 };
-
