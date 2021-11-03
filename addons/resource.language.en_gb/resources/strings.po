@@ -22394,10 +22394,14 @@ msgstr ""
 #. Text for yes/no dialog when silently uninstalling an addon
 #: xbmc/addons/gui/GUIDialogAddonInfo.cpp
 msgctxt "#39028"
-msgid "Addon \"{0:s}\"[CR]Origin \"{1:s}\"[CR]Version \"{2:s}\"[CR]- will uninstall and be replaced. Would you like to proceed?"
+msgid "Addon: {0:s}[CR]Origin: {1:s}[CR]Version: {2:s}[CR]- will be uninstalled and replaced. Would you like to proceed?"
 msgstr ""
 
-#empty string with id 39029
+#. Text for yes/no dialog to indicate that an add-on was manually installed
+#: xbmc/addons/gui/GUIDialogAddonInfo.cpp
+msgctxt "#39029"
+msgid "Manually installed"
+msgstr ""
 
 #. Media source, a filter and smart playlist rule option
 #: xbmc/dialogs/GUIDialogMediaFilter.cpp
