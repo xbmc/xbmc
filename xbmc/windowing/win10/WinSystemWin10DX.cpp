@@ -154,14 +154,6 @@ bool CWinSystemWin10DX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, boo
   return result;
 }
 
-void CWinSystemWin10DX::UninitHooks()
-{
-}
-
-void CWinSystemWin10DX::InitHooks(IDXGIOutput* pOutput)
-{
-}
-
 bool CWinSystemWin10DX::IsHDRDisplay()
 {
   return false; // use tone mapping by default on Xbox

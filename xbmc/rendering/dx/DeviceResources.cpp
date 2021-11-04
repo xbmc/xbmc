@@ -34,8 +34,9 @@ extern "C"
 
 #ifdef _DEBUG
 #include <dxgidebug.h>
-#pragma comment(lib, "dxgi.lib")
 #endif // _DEBUG
+
+#pragma comment(lib, "dxgi.lib")
 
 using namespace DirectX;
 using namespace Microsoft::WRL;
@@ -1010,8 +1011,6 @@ void DX::DeviceResources::HandleOutputChange(const std::function<bool(DXGI_OUTPU
           m_adapter = adapter;
           CLog::LogF(LOGDEBUG, "selected {} adapter. ",
                      KODI::PLATFORM::WINDOWS::FromW(foundDesc.Description));
-          // (re)init hooks into new driver
-          Windowing()->InitHooks(output.Get());
           // recreate d3d11 device on new adapter
           if (m_d3dDevice)
             HandleDeviceLost(false);
