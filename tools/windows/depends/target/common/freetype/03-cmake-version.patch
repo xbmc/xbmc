@@ -1,0 +1,46 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -85,7 +85,7 @@
+ # FreeType explicitly marks the API to be exported and relies on the compiler
+ # to hide all other symbols. CMake supports a C_VISBILITY_PRESET property
+ # starting with 2.8.12.
+-cmake_minimum_required(VERSION 2.8.12)
++cmake_minimum_required(VERSION 3.0)
+ 
+ if (NOT CMAKE_VERSION VERSION_LESS 3.3)
+   # Allow symbol visibility settings also on static libraries. CMake < 3.3
+@@ -131,12 +131,12 @@
+ endif ()
+ 
+ 
+-project(freetype C)
+-
+ set(VERSION_MAJOR "2")
+ set(VERSION_MINOR "10")
+ set(VERSION_PATCH "1")
+ 
++project(freetype LANGUAGES C VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH})
++
+ # SOVERSION scheme: CURRENT.AGE.REVISION
+ #   If there was an incompatible interface change:
+ #     Increment CURRENT. Set AGE and REVISION to 0
+@@ -499,6 +499,19 @@
+       DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/freetype
+       FILE freetype-config.cmake
+       COMPONENT headers)
++
++  include(CMakePackageConfigHelpers)
++  write_basic_package_version_file(
++    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
++    VERSION ${PROJECT_VERSION}
++    COMPATIBILITY AnyNewerVersion
++  )
++
++  #  cmake/freetype-config.cmake
++  install(FILES
++    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
++    DESTINATION lib/cmake/freetype
++  )
+ endif ()
+ 
+ 
