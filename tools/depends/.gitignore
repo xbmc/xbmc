@@ -48,3 +48,6 @@ config.site.native
 /target/rapidjson/rapidjson-*.tar.gz
 /target/flatbuffers/*.tar.gz
 /target/libspdlog/spdlog-*.tar.gz
+
+/xbmc-depends/downloads/
+/xbmc-depends/*-windows-native/
