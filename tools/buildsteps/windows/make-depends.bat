@@ -10,4 +10,6 @@ call %~dp0\.helpers\pathChanged.bat %WORKSPACE%\tools\depends\xbmc-depends && ex
 
 call %~dp0\make-native-depends.bat || exit /b
 
+call %~dp0\make-target-depends.bat || exit /b
+
 call %~dp0\.helpers\tagSuccessfulBuild.bat %WORKSPACE%\tools\depends\xbmc-depends

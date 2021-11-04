@@ -6,14 +6,10 @@ PUSHD %~dp0\..\..\..
 SET WORKSPACE=%CD%
 POPD
 cd %WORKSPACE%\kodi-build.%TARGET_PLATFORM%
-SET builddeps_dir=%WORKSPACE%\project\BuildDependencies
-SET msys_dir=%builddeps_dir%\msys64
-IF NOT EXIST %msys_dir% (SET msys_dir=%builddeps_dir%\msys32)
-SET awk_exe=%msys_dir%\usr\bin\awk.exe
-SET sed_exe=%msys_dir%\usr\bin\sed.exe
+set sed_exe=%WORKSPACE%\tools\depends\xbmc-depends\%NATIVE_PLATFORM%\msys2\usr\bin\sed.exe
 
 REM read the version values from version.txt
-FOR /f %%i IN ('%awk_exe% "/APP_NAME/ {print $2}" %WORKSPACE%\version.txt') DO SET APP_NAME=%%i
+FOR /f "tokens=2*" %%i IN ('findstr /b /c:"APP_NAME " %WORKSPACE%\version.txt') DO SET APP_NAME=%%i
 
 CLS
 COLOR 1B

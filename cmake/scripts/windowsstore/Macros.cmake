@@ -111,22 +111,6 @@ macro(add_deployment_content_group path link match exclude)
 endmacro()
 
 macro(winstore_append_props target)
-  # exclude debug dlls from packaging
-  set(DEBUG_DLLS zlibd.dll)
-  foreach(_dll ${DEBUG_DLLS})
-    if (DEBUG_DLLS_EXCLUDE)
-      list(APPEND DEBUG_DLLS_EXCLUDE "\;$(BuildRootPath)/dlls/${_dll}")
-    else()
-      list(APPEND DEBUG_DLLS_EXCLUDE "$(BuildRootPath)/dlls/${_dll}")
-    endif()
-    string(CONCAT DEBUG_DLLS_LINKAGE_PROPS "${DEBUG_DLLS_LINKAGE_PROPS}"
-    "  <ItemGroup Label=\"Binaries\">\n"
-    "    <None Include=\"$(BinPath)\\${_dll}\" Condition=\"'$(Configuration)'=='Debug'\">\n"
-    "      <DeploymentContent>true</DeploymentContent>\n"
-    "    </None>\n"
-    "  </ItemGroup>\n")
-  endforeach(_dll DEBUG_DLLS)
-
   add_deployment_content_group($(BuildRootPath)/dlls "" *.dll "${DEBUG_DLLS_EXCLUDE}")
   add_deployment_content_group($(BuildRootPath)/system system **/* "$(BuildRootPath)/**/shaders/**")
   add_deployment_content_group($(BuildRootPath)/system/shaders system/shaders **/*.fx "")
@@ -148,7 +132,6 @@ macro(winstore_append_props target)
   endforeach()
 
   set(VCPROJECT_PROPS_FILE "${CMAKE_CURRENT_BINARY_DIR}/${target}.props")
-  file(TO_NATIVE_PATH ${DEPENDENCIES_DIR} DEPENDENCIES_DIR_NATIVE)
   file(TO_NATIVE_PATH ${CMAKE_CURRENT_BINARY_DIR} CMAKE_CURRENT_BINARY_DIR_NATIVE)
   file(TO_NATIVE_PATH ${CMAKE_SOURCE_DIR}/project/Win32BuildSetup/BUILD_WIN32/addons BINARY_ADDONS_DIR_NATIVE)
 
@@ -157,7 +140,6 @@ macro(winstore_append_props target)
     "<Project ToolsVersion=\"4.0\" xmlns=\"http://schemas.microsoft.com/developer/msbuild/2003\">\n"
     "  <ImportGroup Label=\"PropertySheets\" />\n"
     "  <PropertyGroup Label=\"APP_DLLS\">\n"
-    "    <BinPath>${DEPENDENCIES_DIR_NATIVE}\\bin</BinPath>\n"
     "    <BuildRootPath>${CMAKE_CURRENT_BINARY_DIR_NATIVE}</BuildRootPath>\n"
     "    <BinaryAddonsPath>${BINARY_ADDONS_DIR_NATIVE}</BinaryAddonsPath>\n"
     "  </PropertyGroup>\n"

@@ -13,3 +13,7 @@ if "%architecture%"=="9" (
 	echo unsupported %architecture%
 	exit 1
 )
+
+if "%Configuration%"=="Default" (
+	set Configuration=RelWithDebInfo
+)

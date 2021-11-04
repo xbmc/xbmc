@@ -3,11 +3,6 @@ REM setup all paths
 PUSHD %~dp0\..\..\..
 SET base_dir=%CD%
 POPD
-SET builddeps_dir=%base_dir%\project\BuildDependencies
-SET bin_dir=%builddeps_dir%\bin
-SET msys_dir=%builddeps_dir%\msys64
-IF NOT EXIST %msys_dir% (SET msys_dir=%builddeps_dir%\msys32)
-SET sed_exe=%msys_dir%\usr\bin\sed.exe
 
 REM read the version values from version.txt
 SET version_props=^
@@ -17,7 +12,7 @@ VERSION_CODE ^
 WEBSITE
 
 FOR %%p IN (%version_props%) DO (
-  FOR /f "delims=" %%v IN ('%sed_exe% -n "/%%p/ s/%%p *//p" %base_dir%\version.txt') DO SET %%p=%%v
+  FOR /f "tokens=2*" %%v IN ('findstr /b /c:"%%p " %base_dir%\version.txt') DO SET %%p=%%v
 )
 
 rem ----Usage----
@@ -72,10 +67,18 @@ set WORKSPACE=%base_dir%\kodi-build.%TARGET_PLATFORM%
   MKDIR %WORKSPACE%
   PUSHD %WORKSPACE%
 
-  cmake.exe -G "%TARGET_CMAKE_GENERATOR%" -A %TARGET_CMAKE_GENERATOR_PLATFORM% -T host=x64 -DCMAKE_PREFIX_PATH=%base_dir%\tools\depends\xbmc-depends\%NATIVE_PLATFORM% %TARGET_CMAKE_OPTIONS% %base_dir%
-  IF %errorlevel%==1 (
-    set DIETEXT="%APP_NAME%.EXE failed to build!"
-    goto DIE
+  if "%TARGET_PLATFORM%" NEQ "" (
+    cmake -G "%TARGET_CMAKE_GENERATOR%" -A %TARGET_CMAKE_GENERATOR_PLATFORM% -T host=x64 -DCMAKE_TOOLCHAIN_FILE:FILEPATH=%base_dir%\tools\depends\xbmc-depends\%TARGET_PLATFORM%\Toolchain.cmake %base_dir%
+    if errorlevel 1 (
+      set DIETEXT="%APP_NAME%.EXE failed to build!"
+      goto DIE
+    )
+  ) else (
+    cmake.exe -G "%TARGET_CMAKE_GENERATOR%" -A %TARGET_CMAKE_GENERATOR_PLATFORM% -T host=x64 -DCMAKE_PREFIX_PATH=%base_dir%\tools\depends\xbmc-depends\%NATIVE_PLATFORM% %base_dir%
+    IF %errorlevel%==1 (
+      set DIETEXT="%APP_NAME%.EXE failed to build!"
+      goto DIE
+    )
   )
 
   cmake.exe --build . --config "%BUILD_TYPE%"

@@ -8,51 +8,21 @@ RM=/bin/rm
 NOPROMPT=0
 MAKECLEAN=""
 MAKEFLAGS=""
-TRIPLET=""
+TRIPLET=x64
 
 while true; do
   case $1 in
-    --build32=* ) build32="${1#*=}"; shift ;;
-    --build64=* ) build64="${1#*=}"; shift ;;
-    --buildArm=* ) buildArm="${1#*=}"; shift ;;
     --prompt=* ) PROMPTLEVEL="${1#*=}"; shift ;;
     --mode=* ) BUILDMODE="${1#*=}"; shift ;;
-    --win10=* ) win10="${1#*=}"; shift ;;
     -- ) shift; break ;;
     -* ) shift ;;
     * ) break ;;
   esac
 done
 
-if [[ $build32 = "yes" ]]; then
-  TRIPLET=win32
-  ARCH=x86
-elif [[ $build64 = "yes" ]]; then
-  TRIPLET=x64
-  ARCH=x86_64
-elif [[ $buildArm = "yes" ]]; then
-  TRIPLET=arm
-  ARCH=arm
-else
-  echo "-------------------------------------------------------------------------------"
-  echo " none of build types (build32, build64 or buildArm) was specified "
-  echo "-------------------------------------------------------------------------------"
-  # wait for key press
-  if [ "$PROMPTLEVEL" != "noprompt" ]; then
-    echo press a key to close the window
-    read
-  fi
-  exit
-fi
-
-if [[ $win10 = "no" ]]; then
-  export _WIN32_WINNT=0x0600
-  export NTDDI_VERSION=0x06000000
-elif [[ $win10 = "yes" ]]; then
-  TRIPLET=win10-$TRIPLET
-fi
-
-export TRIPLET ARCH
+export _WIN32_WINNT=0x0600
+export NTDDI_VERSION=0x06000000
+export TRIPLET
 
 throwerror() {
   $TOUCH $ERRORFILE
@@ -111,13 +81,7 @@ tagSuccessFulBuild $PREFIX /xbmc/tools/buildsteps/windows /xbmc/tools/depends/ta
 
 run_builds() {
     local profile_path=""
-    if [[ $build32 = "yes" ]]; then
-      profile_path=/local32/etc/profile.local
-    elif [[ $build64 = "yes" ]]; then
-      profile_path=/local64/etc/profile.local
-    elif [[ $buildArm = "yes" ]]; then
-      profile_path=/local32/etc/profile.local
-    fi
+    profile_path=/local64/etc/profile.local
 
     if [ ! -z $profile_path ]; then
         if [[ ! -f "$profile_path" ]]; then
