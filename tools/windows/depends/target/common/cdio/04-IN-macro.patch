@@ -1,0 +1,71 @@
+--- a/include/cdio/util.h
++++ b/include/cdio/util.h
+@@ -47,8 +47,8 @@
+ #undef  MIN
+ #define MIN(a, b)  (((a) < (b)) ? (a) : (b))
+ 
+-#undef  IN
+-#define IN(x, low, high) ((x) >= (low) && (x) <= (high))
++#undef  IN_RANGE
++#define IN_RANGE(x, low, high) ((x) >= (low) && (x) <= (high))
+ 
+ #undef  CLAMP
+ #define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
+--- a/lib/driver/image/nrg.c
++++ b/lib/driver/image/nrg.c
+@@ -930,7 +930,7 @@
+   _CDIO_LIST_FOREACH (node, p_env->mapping) {
+     _mapping_t *_map = _cdio_list_node_data (node);
+ 
+-    if (IN (lsn, _map->start_lsn, (_map->start_lsn + _map->sec_count - 1))) {
++    if (IN_RANGE(lsn, _map->start_lsn, (_map->start_lsn + _map->sec_count - 1))) {
+       int ret;
+       long int img_offset = _map->img_offset;
+ 
+@@ -971,7 +971,7 @@
+   _CDIO_LIST_FOREACH (node, p_env->mapping) {
+     _mapping_t *_map = _cdio_list_node_data (node);
+ 
+-    if (IN (lsn, _map->start_lsn, (_map->start_lsn + _map->sec_count - 1))) {
++    if (IN_RANGE(lsn, _map->start_lsn, (_map->start_lsn + _map->sec_count - 1))) {
+       int ret;
+       long int img_offset = _map->img_offset;
+ 
+@@ -1042,7 +1042,7 @@
+   _CDIO_LIST_FOREACH (node, p_env->mapping) {
+     _mapping_t *_map = _cdio_list_node_data (node);
+ 
+-    if (IN (lsn, _map->start_lsn, (_map->start_lsn + _map->sec_count - 1))) {
++    if (IN_RANGE(lsn, _map->start_lsn, (_map->start_lsn + _map->sec_count - 1))) {
+       int ret;
+       long int img_offset = _map->img_offset;
+ 
+--- a/lib/iso9660/iso9660.c
++++ b/lib/iso9660/iso9660.c
+@@ -562,9 +562,9 @@
+ bool
+ iso9660_is_dchar (int c)
+ {
+-  if (!IN (c, 0x30, 0x5f)
+-      || IN (c, 0x3a, 0x40)
+-      || IN (c, 0x5b, 0x5e))
++  if (!IN_RANGE (c, 0x30, 0x5f)
++      || IN_RANGE(c, 0x3a, 0x40)
++      || IN_RANGE(c, 0x5b, 0x5e))
+     return false;
+ 
+   return true;
+@@ -579,10 +579,10 @@
+ bool
+ iso9660_is_achar (int c)
+ {
+-  if (!IN (c, 0x20, 0x5f)
+-      || IN (c, 0x23, 0x24)
++  if (!IN_RANGE(c, 0x20, 0x5f)
++      || IN_RANGE(c, 0x23, 0x24)
+       || c == 0x40
+-      || IN (c, 0x5b, 0x5e))
++      || IN_RANGE(c, 0x5b, 0x5e))
+     return false;
+ 
+   return true;

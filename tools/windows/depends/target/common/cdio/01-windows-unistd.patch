@@ -1,0 +1,24 @@
+--- a/include/cdio/types.h
++++ b/include/cdio/types.h
+@@ -54,8 +54,9 @@
+    to compensate for missing UNIX types is to include a custom
+    unistd.h that defines them. Such a file is provided with
+    the libcdio source, in the MSVC/missing directory */
+-#if defined(_MSC_VER)
+-#include <unistd.h>
++#if defined(_MSC_VER) && !defined(__cplusplus)
++typedef int64_t ssize_t;
++typedef uint32_t mode_t;
+ #endif
+ 
+   /* default HP/UX macros are broken */
+--- a/lib/driver/MSWindows/aspi32.c
++++ b/lib/driver/MSWindows/aspi32.c
+@@ -41,7 +41,6 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <errno.h>
+-#include <unistd.h>
+ #include <fcntl.h>
+ 
+ #include <windows.h>
