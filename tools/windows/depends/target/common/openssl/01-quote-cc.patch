@@ -1,0 +1,24 @@
+--- a/Configurations/windows-makefile.tmpl
++++ b/Configurations/windows-makefile.tmpl
+@@ -164,8 +164,8 @@
+ 
+ ##### User defined commands and flags ################################
+ 
+-CC={- $config{CC} -}
+-CPP={- $config{CPP} -}
++CC="{- $config{CC} -}"
++CPP="{- $config{CPP} -}"
+ CPPFLAGS={- our $cppflags1 = join(" ",
+                                   (map { "-D".$_} @{$config{CPPDEFINES}}),
+                                   (map { " /I ".$_} @{$config{CPPINCLUDES}}),
+--- a/ms/uplink-x86_64.pl
++++ b/ms/uplink-x86_64.pl
+@@ -8,7 +8,7 @@
+ 
+ $output=pop;
+ $0 =~ m/(.*[\/\\])[^\/\\]+$/; $dir=$1;
+-open OUT,"| \"$^X\" \"${dir}../crypto/perlasm/x86_64-xlate.pl\" \"$output\"";
++open OUT,"| \"$^X\" \"${dir}/../crypto/perlasm/x86_64-xlate.pl\" \"$output\"";
+ *STDOUT=*OUT;
+ push(@INC,"${dir}.");
+ 
