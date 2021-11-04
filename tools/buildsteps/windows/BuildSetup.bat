@@ -84,7 +84,7 @@ set WORKSPACE=%base_dir%\kodi-build.%TARGET_PLATFORM%
   MKDIR %WORKSPACE%
   PUSHD %WORKSPACE%
 
-  cmake.exe -G "%cmakeGenerator%" -A %cmakeArch% -T host=x64 -DCMAKE_PREFIX_PATH=%base_dir%\tools\depends\xbmc-depends\%NATIVE_PLATFORM% %cmakeProps% %base_dir%
+  cmake.exe -G "%TARGET_CMAKE_GENERATOR%" -A %TARGET_CMAKE_GENERATOR_PLATFORM% -T host=x64 -DCMAKE_PREFIX_PATH=%base_dir%\tools\depends\xbmc-depends\%NATIVE_PLATFORM% %TARGET_CMAKE_OPTIONS% %base_dir%
   IF %errorlevel%==1 (
     set DIETEXT="%APP_NAME%.EXE failed to build!"
     goto DIE
@@ -103,7 +103,7 @@ set WORKSPACE=%base_dir%\kodi-build.%TARGET_PLATFORM%
   POPD
   ECHO Done!
   ECHO ------------------------------------------------------------
-  IF "%cmakeProps%" NEQ "" GOTO MAKE_APPX
+  IF "%TARGET_CMAKE_OPTIONS%" NEQ "" GOTO MAKE_APPX
   GOTO MAKE_BUILD_EXE
 
 
