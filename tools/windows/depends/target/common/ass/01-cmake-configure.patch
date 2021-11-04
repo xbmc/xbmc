@@ -1,0 +1,148 @@
+--- a/config.h.in
++++ b/config.h.in
+@@ -1,109 +1,109 @@
+ /* config.h.in.  Generated from configure.ac by autoheader.  */
+ 
+ /* ASM enabled */
+-#undef CONFIG_ASM
++#cmakedefine CONFIG_ASM
+ 
+ /* found CoreText framework */
+-#undef CONFIG_CORETEXT
++#cmakedefine CONFIG_CORETEXT
+ 
+ /* found DirectWrite */
+-#undef CONFIG_DIRECTWRITE
++#cmakedefine CONFIG_DIRECTWRITE
+ 
+ /* found fontconfig via pkg-config */
+-#undef CONFIG_FONTCONFIG
++#cmakedefine CONFIG_FONTCONFIG
+ 
+ /* found freetype2 via pkg-config */
+-#undef CONFIG_FREETYPE
++#cmakedefine CONFIG_FREETYPE
+ 
+ /* found fribidi via pkg-config */
+-#undef CONFIG_FRIBIDI
++#cmakedefine CONFIG_FRIBIDI
+ 
+ /* found harfbuzz-ng via pkg-config */
+-#undef CONFIG_HARFBUZZ
++#cmakedefine CONFIG_HARFBUZZ
+ 
+ /* use iconv */
+-#undef CONFIG_ICONV
++#cmakedefine CONFIG_ICONV
+ 
+ /* use small tiles */
+-#undef CONFIG_LARGE_TILES
++#cmakedefine CONFIG_LARGE_TILES
+ 
+ /* found libpng via pkg-config */
+-#undef CONFIG_LIBPNG
++#cmakedefine CONFIG_LIBPNG
+ 
+ /* Define to 1 if you have the <dlfcn.h> header file. */
+-#undef HAVE_DLFCN_H
++#cmakedefine HAVE_DLFCN_H
+ 
+ /* Define to 1 if you have the <iconv.h> header file. */
+-#undef HAVE_ICONV_H
++#cmakedefine HAVE_ICONV_H
+ 
+ /* Define to 1 if you have the <inttypes.h> header file. */
+-#undef HAVE_INTTYPES_H
++#cmakedefine HAVE_INTTYPES_H
+ 
+ /* Define to 1 if you have the `m' library (-lm). */
+-#undef HAVE_LIBM
++#cmakedefine HAVE_LIBM
+ 
+ /* Define to 1 if you have the <memory.h> header file. */
+-#undef HAVE_MEMORY_H
++#cmakedefine HAVE_MEMORY_H
+ 
+ /* Define to 1 if stdbool.h conforms to C99. */
+-#undef HAVE_STDBOOL_H
++#cmakedefine HAVE_STDBOOL_H
+ 
+ /* Define to 1 if you have the <stdint.h> header file. */
+-#undef HAVE_STDINT_H
++#cmakedefine HAVE_STDINT_H
+ 
+ /* Define to 1 if you have the <stdlib.h> header file. */
+-#undef HAVE_STDLIB_H
++#cmakedefine HAVE_STDLIB_H
+ 
+ /* Define to 1 if you have the `strdup' function. */
+-#undef HAVE_STRDUP
++#cmakedefine HAVE_STRDUP
+ 
+ /* Define to 1 if you have the <strings.h> header file. */
+-#undef HAVE_STRINGS_H
++#cmakedefine HAVE_STRINGS_H
+ 
+ /* Define to 1 if you have the <string.h> header file. */
+-#undef HAVE_STRING_H
++#cmakedefine HAVE_STRING_H
+ 
+ /* Define to 1 if you have the `strndup' function. */
+-#undef HAVE_STRNDUP
++#cmakedefine HAVE_STRNDUP
+ 
+ /* Define to 1 if you have the <sys/stat.h> header file. */
+-#undef HAVE_SYS_STAT_H
++#cmakedefine HAVE_SYS_STAT_H
+ 
+ /* Define to 1 if you have the <sys/types.h> header file. */
+-#undef HAVE_SYS_TYPES_H
++#cmakedefine HAVE_SYS_TYPES_H
+ 
+ /* Define to 1 if you have the <unistd.h> header file. */
+-#undef HAVE_UNISTD_H
++#cmakedefine HAVE_UNISTD_H
+ 
+ /* Define to 1 if the system has the type `_Bool'. */
+-#undef HAVE__BOOL
++#cmakedefine HAVE__BOOL
+ 
+ /* Define to the sub-directory where libtool stores uninstalled libraries. */
+-#undef LT_OBJDIR
++#cmakedefine LT_OBJDIR
+ 
+ /* Name of package */
+-#undef PACKAGE
++#cmakedefine PACKAGE
+ 
+ /* Define to the address where bug reports for this package should be sent. */
+-#undef PACKAGE_BUGREPORT
++#cmakedefine PACKAGE_BUGREPORT
+ 
+ /* Define to the full name of this package. */
+-#undef PACKAGE_NAME
++#cmakedefine PACKAGE_NAME
+ 
+ /* Define to the full name and version of this package. */
+-#undef PACKAGE_STRING
++#cmakedefine PACKAGE_STRING
+ 
+ /* Define to the one symbol short name of this package. */
+-#undef PACKAGE_TARNAME
++#cmakedefine PACKAGE_TARNAME
+ 
+ /* Define to the home page for this package. */
+-#undef PACKAGE_URL
++#cmakedefine PACKAGE_URL
+ 
+ /* Define to the version of this package. */
+-#undef PACKAGE_VERSION
++#cmakedefine PACKAGE_VERSION
+ 
+ /* Define to 1 if you have the ANSI C header files. */
+-#undef STDC_HEADERS
++#cmakedefine STDC_HEADERS
+ 
+ /* Version number of package */
+-#undef VERSION
++#cmakedefine VERSION
