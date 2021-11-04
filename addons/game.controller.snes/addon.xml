@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="game.controller.snes"
         name="SNES Controller"
-        version="1.0.14"
+        version="1.0.15"
         provider-name="Team Kodi">
     <extension point="kodi.game.controller" library="resources/layout.xml"/>
     <extension point="xbmc.addon.metadata">
@@ -56,6 +56,7 @@
         <disclaimer lang="ko_KR">이미지 제공: OpenEmu(openemu.org)</disclaimer>
         <disclaimer lang="lt_LT">Atvaizdo šaltinis: OpenEmu (openemu.org)</disclaimer>
         <disclaimer lang="nl_NL">Bron afbeelding: OpenEmu (openemu.org)</disclaimer>
+        <disclaimer lang="oc_FR">Crèdit imatge : OpenEmu (openemu.org)</disclaimer>
         <disclaimer lang="pl_PL">Pochodzenie obrazu: OpenEmu (openemu.org)</disclaimer>
         <disclaimer lang="pt_BR">Crédito da imagem: OpenEmu (openemu.org)</disclaimer>
         <disclaimer lang="ru_RU">Источник изображения : OpenEmu (openemu.org)</disclaimer>
