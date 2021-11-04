@@ -1,0 +1,21 @@
+--- a/lib/iconv.c
++++ b/lib/iconv.c
+@@ -22,7 +22,6 @@
+ #include <limits.h>
+ #include <stdlib.h>
+ #include <string.h>
+-#include "config.h"
+ #include "localcharset.h"
+ 
+ #ifdef __CYGWIN__
+--- a/libcharset/lib/localcharset.c
++++ b/libcharset/lib/localcharset.c
+@@ -17,8 +17,6 @@
+ 
+ /* Written by Bruno Haible <bruno@clisp.org>.  */
+ 
+-#include <config.h>
+-
+ /* Specification.  */
+ #include "localcharset.h"
+ 
