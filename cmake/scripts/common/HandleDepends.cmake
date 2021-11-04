@@ -54,7 +54,7 @@ function(add_addon_depends addon searchpath)
         if(EXISTS ${dir}/flags.txt)
           set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${dir}/flags.txt)
           file(STRINGS ${dir}/flags.txt extraflags)
-          string(REPLACE " " ";" extraflags ${extraflags})
+          string(REPLACE " " ";" extraflags "${extraflags}")
 
           message(STATUS "${id} extraflags: ${extraflags}")
         endif()
