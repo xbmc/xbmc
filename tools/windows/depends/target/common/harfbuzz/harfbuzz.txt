@@ -1,0 +1,1 @@
+harfbuzz https://github.com/harfbuzz/harfbuzz/releases/download/2.8.2/harfbuzz-2.8.2.tar.xz
