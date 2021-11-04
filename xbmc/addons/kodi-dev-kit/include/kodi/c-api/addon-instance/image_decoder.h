@@ -41,6 +41,8 @@ extern "C"
   } ADDON_IMG_FMT;
   //----------------------------------------------------------------------------
 
+  typedef bool(ATTR_APIENTRYP PFN_KODI_ADDON_IMAGEDECODER_SUPPORTS_FILE_V1)(
+      const KODI_ADDON_IMAGEDECODER_HDL hdl, const char* file);
   typedef bool(ATTR_APIENTRYP PFN_KODI_ADDON_IMAGEDECODER_LOAD_IMAGE_FROM_MEMORY_V1)(
       const KODI_ADDON_IMAGEDECODER_HDL hdl,
       const uint8_t* buffer,
@@ -58,6 +60,7 @@ extern "C"
 
   typedef struct KodiToAddonFuncTable_ImageDecoder
   {
+    PFN_KODI_ADDON_IMAGEDECODER_SUPPORTS_FILE_V1 supports_file;
     PFN_KODI_ADDON_IMAGEDECODER_LOAD_IMAGE_FROM_MEMORY_V1 load_image_from_memory;
     PFN_KODI_ADDON_IMAGEDECODER_DECODE_V1 decode;
   } KodiToAddonFuncTable_ImageDecoder;

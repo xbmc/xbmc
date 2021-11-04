@@ -48,6 +48,15 @@ CImageDecoder::~CImageDecoder()
   delete m_ifc.imagedecoder;
 }
 
+bool CImageDecoder::SupportsFile(const std::string& filename)
+{
+  // Create in case not available, possible as this done by IAddonSupportCheck
+  if ((!m_ifc.hdl && !Create()) || !m_ifc.imagedecoder->toAddon->supports_file)
+    return false;
+
+  return m_ifc.imagedecoder->toAddon->supports_file(m_ifc.hdl, filename.c_str());
+}
+
 bool CImageDecoder::LoadImageFromMemory(unsigned char* buffer,
                                         unsigned int bufSize,
                                         unsigned int width,

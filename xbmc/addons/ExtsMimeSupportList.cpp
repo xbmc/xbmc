@@ -28,6 +28,14 @@ CExtsMimeSupportList::CExtsMimeSupportList(CAddonMgr& addonMgr) : m_addonMgr(add
     for (const auto& addonInfo : addonInfos)
       m_supportedList.emplace_back(ScanAddonProperties(ADDON_AUDIODECODER, addonInfo));
   }
+
+  addonInfos.clear();
+
+  if (m_addonMgr.GetAddonInfos(addonInfos, true, ADDON_IMAGEDECODER))
+  {
+    for (const auto& addonInfo : addonInfos)
+      m_supportedList.emplace_back(ScanAddonProperties(ADDON_IMAGEDECODER, addonInfo));
+  }
 }
 
 CExtsMimeSupportList::~CExtsMimeSupportList()
@@ -41,7 +49,8 @@ void CExtsMimeSupportList::OnEvent(const AddonEvent& event)
       typeid(event) == typeid(AddonEvents::Disabled) ||
       typeid(event) == typeid(AddonEvents::ReInstalled))
   {
-    if (m_addonMgr.HasType(event.id, ADDON_AUDIODECODER))
+    if (m_addonMgr.HasType(event.id, ADDON_AUDIODECODER) ||
+        m_addonMgr.HasType(event.id, ADDON_IMAGEDECODER))
       Update(event.id);
   }
   else if (typeid(event) == typeid(AddonEvents::UnInstalled))
@@ -71,6 +80,17 @@ void CExtsMimeSupportList::Update(const std::string& id)
   if (addonInfo && !m_addonMgr.IsAddonDisabled(id))
   {
     SupportValues values = ScanAddonProperties(ADDON_AUDIODECODER, addonInfo);
+    {
+      CSingleLock lock(m_critSection);
+      m_supportedList.emplace_back(values);
+    }
+  }
+
+  // Create and init the new image decoder addon instance
+  addonInfo = m_addonMgr.GetAddonInfo(id, ADDON_IMAGEDECODER);
+  if (addonInfo && !m_addonMgr.IsAddonDisabled(id))
+  {
+    SupportValues values = ScanAddonProperties(ADDON_IMAGEDECODER, addonInfo);
     {
       CSingleLock lock(m_critSection);
       m_supportedList.emplace_back(values);
@@ -119,7 +139,12 @@ CExtsMimeSupportList::SupportValues CExtsMimeSupportList::ScanAddonProperties(
         values.m_supportedExtensions.emplace(name, SupportValue(description, icon));
       }
       else if (i.first == "mimetype")
+      {
         values.m_supportedMimetypes.emplace(name, SupportValue(description, icon));
+        const std::string extension = i.second.GetValue("extension").asString();
+        if (!extension.empty())
+          values.m_supportedExtensions.emplace(extension, SupportValue(description, icon));
+      }
     }
 
     // Scan here about small defined xml groups without anything

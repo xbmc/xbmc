@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include "addons/IAddonSupportCheck.h"
 #include "addons/binary-addons/AddonInstanceHandler.h"
 #include "addons/kodi-dev-kit/include/kodi/addon-instance/ImageDecoder.h"
 #include "guilib/iimage.h"
@@ -14,7 +15,9 @@
 namespace ADDON
 {
 
-class CImageDecoder : public IAddonInstanceHandler, public IImage
+class CImageDecoder : public IAddonInstanceHandler,
+                      public KODI::ADDONS::IAddonSupportCheck,
+                      public IImage
 {
 public:
   explicit CImageDecoder(const AddonInfoPtr& addonInfo, const std::string& mimetype);
@@ -43,6 +46,9 @@ public:
               unsigned int height,
               unsigned int pitch,
               unsigned int format) override;
+
+  // KODI::ADDONS::IAddonSupportCheck related function
+  bool SupportsFile(const std::string& filename) override;
 
   // Addon callback functions
   const std::string& GetMimeType() const { return m_mimetype; }
