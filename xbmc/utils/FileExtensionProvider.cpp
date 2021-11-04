@@ -12,6 +12,7 @@
 #include "addons/AddonManager.h"
 #include "addons/AudioDecoder.h"
 #include "addons/ExtsMimeSupportList.h"
+#include "addons/ImageDecoder.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
@@ -113,8 +114,17 @@ bool CFileExtensionProvider::CanOperateExtension(const std::string& path) const
         strExtension, CExtsMimeSupportList::FilterSelect::all);
     for (const auto& addonInfo : addonInfos)
     {
-      if (addonInfo.first == ADDON_AUDIODECODER)
-        supportList.emplace_back(new CAudioDecoder(addonInfo.second));
+      switch (addonInfo.first)
+      {
+        case ADDON_AUDIODECODER:
+          supportList.emplace_back(new CAudioDecoder(addonInfo.second));
+          break;
+        case ADDON_IMAGEDECODER:
+          supportList.emplace_back(new CImageDecoder(addonInfo.second, ""));
+          break;
+        default:
+          break;
+      }
     }
 
     /*!
@@ -181,7 +191,7 @@ void CFileExtensionProvider::SetAddonExtensions(const TYPE& type)
   std::vector<std::string> extensions;
   std::vector<std::string> fileFolderExtensions;
 
-  if (type == ADDON_AUDIODECODER)
+  if (type == ADDON_AUDIODECODER || type == ADDON_IMAGEDECODER)
   {
     auto addonInfos = CServiceBroker::GetExtsMimeSupportList().GetSupportedAddonInfos(
         CExtsMimeSupportList::FilterSelect::all);

@@ -215,6 +215,18 @@ public:
 
   ~CInstanceImageDecoder() override = default;
 
+  //==========================================================================
+  /// @ingroup cpp_kodi_addon_imagedecoder
+  /// @brief Checks addon support given file path.
+  ///
+  /// @param[in] filename The file to read
+  /// @return true if successfully done and supported, otherwise false
+  ///
+  /// @note Optional to add, as default becomes `true` used.
+  ///
+  virtual bool SupportsFile(const std::string& filename) { return true; }
+  //--------------------------------------------------------------------------
+
   //============================================================================
   /// @ingroup cpp_kodi_addon_imagedecoder
   /// @brief Initialize an encoder.
@@ -276,9 +288,15 @@ private:
   void SetAddonStruct(KODI_ADDON_INSTANCE_STRUCT* instance)
   {
     instance->hdl = this;
+    instance->imagedecoder->toAddon->supports_file = ADDON_supports_file;
     instance->imagedecoder->toAddon->load_image_from_memory = ADDON_LoadImageFromMemory;
     instance->imagedecoder->toAddon->decode = ADDON_Decode;
     m_instanceData = instance->imagedecoder;
+  }
+
+  inline static bool ADDON_supports_file(const KODI_ADDON_IMAGEDECODER_HDL hdl, const char* file)
+  {
+    return static_cast<CInstanceImageDecoder*>(hdl)->SupportsFile(file);
   }
 
   inline static bool ADDON_LoadImageFromMemory(const KODI_ADDON_IMAGEDECODER_HDL hdl,

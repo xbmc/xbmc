@@ -532,7 +532,8 @@ bool CGUIDialogAddonInfo::CanUse() const
 
 bool CGUIDialogAddonInfo::CanShowSupportList() const
 {
-  return m_localAddon && m_localAddon->Type() == ADDON_AUDIODECODER;
+  return m_localAddon &&
+         (m_localAddon->Type() == ADDON_AUDIODECODER || m_localAddon->Type() == ADDON_IMAGEDECODER);
 }
 
 bool CGUIDialogAddonInfo::PromptIfDependency(int heading, int line2)
@@ -741,7 +742,7 @@ bool CGUIDialogAddonInfo::ShowDependencyList(Reactivate reactivate, EntryPoint e
 void CGUIDialogAddonInfo::ShowSupportList()
 {
   std::vector<KODI::ADDONS::AddonSupportEntry> list;
-  if (m_localAddon->Type() == ADDON_AUDIODECODER)
+  if (CanShowSupportList())
     list =
         CServiceBroker::GetExtsMimeSupportList().GetSupportedExtsAndMimeTypes(m_localAddon->ID());
 
