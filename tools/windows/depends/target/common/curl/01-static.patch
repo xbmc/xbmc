@@ -1,0 +1,11 @@
+--- a/include/curl/curl.h
++++ b/include/curl/curl.h
+@@ -120,7 +120,7 @@
+ #  if defined(BUILDING_LIBCURL)
+ #    define CURL_EXTERN  __declspec(dllexport)
+ #  else
+-#    define CURL_EXTERN  __declspec(dllimport)
++#    define CURL_EXTERN
+ #  endif
+ #elif defined(BUILDING_LIBCURL) && defined(CURL_HIDDEN_SYMBOLS)
+ #  define CURL_EXTERN CURL_EXTERN_SYMBOL
