@@ -13,22 +13,11 @@ REM read the version values from version.txt
 SET version_props=^
 APP_NAME ^
 COMPANY_NAME ^
-PACKAGE_DESCRIPTION ^
-PACKAGE_IDENTITY ^
-PACKAGE_PUBLISHER ^
-VERSION_MAJOR ^
-VERSION_MINOR ^
-VERSION_TAG ^
 VERSION_CODE ^
 WEBSITE
 
 FOR %%p IN (%version_props%) DO (
   FOR /f "delims=" %%v IN ('%sed_exe% -n "/%%p/ s/%%p *//p" %base_dir%\version.txt') DO SET %%p=%%v
-)
-
-SET APP_VERSION=%VERSION_MAJOR%.%VERSION_MINOR%
-IF NOT [%VERSION_TAG%] == [] (
-  SET APP_VERSION=%APP_VERSION%-%VERSION_TAG%
 )
 
 rem ----Usage----
@@ -153,22 +142,12 @@ set WORKSPACE=%base_dir%\kodi-build.%TARGET_PLATFORM%
   copy %base_dir%\privacy-policy.txt BUILD_WIN32\application > NUL
   copy %base_dir%\known_issues.txt BUILD_WIN32\application > NUL
 
+  xcopy %WORKSPACE%\AppxManifest.xml BUILD_WIN32\application > NUL
   xcopy %WORKSPACE%\addons BUILD_WIN32\application\addons /E /Q /I /Y /EXCLUDE:exclude.txt > NUL
   xcopy %WORKSPACE%\*.dll BUILD_WIN32\application /Q /I /Y > NUL
   xcopy %WORKSPACE%\libbluray-*.jar BUILD_WIN32\application /Q /I /Y > NUL
   xcopy %WORKSPACE%\system BUILD_WIN32\application\system /E /Q /I /Y /EXCLUDE:exclude.txt+exclude_dll.txt  > NUL
   xcopy %WORKSPACE%\media BUILD_WIN32\application\media /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
-
-  REM create AppxManifest.xml
-  "%sed_exe%" ^
-    -e 's/@APP_NAME@/%APP_NAME%/g' ^
-    -e 's/@COMPANY_NAME@/%COMPANY_NAME%/g' ^
-    -e 's/@TARGET_ARCHITECTURE@/%TARGET_ARCHITECTURE%/g' ^
-    -e 's/@VERSION_CODE@/%VERSION_CODE%/g' ^
-    -e 's/@PACKAGE_IDENTITY@/%PACKAGE_IDENTITY%/g' ^
-    -e 's/@PACKAGE_PUBLISHER@/%PACKAGE_PUBLISHER%/g' ^
-    -e 's/@PACKAGE_DESCRIPTION@/%PACKAGE_DESCRIPTION%/g' ^
-    "AppxManifest.xml.in" > "BUILD_WIN32\application\AppxManifest.xml"
 
   SET build_path=%CD%
   IF %buildbinaryaddons%==true (
