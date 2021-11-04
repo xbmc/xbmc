@@ -10,7 +10,13 @@ if ERRORLEVEL 1 (
 )
 popd
 
+if "%Configuration%"=="" (
+	set BUILD_TYPE=Debug
+) else (
+	set BUILD_TYPE=%Configuration%
+)
+
 set TARGET_CMAKE_GENERATOR=Visual Studio %vsver%
 set TARGET_CMAKE_GENERATOR_PLATFORM=Win32
 set TARGET_ARCHITECTURE=x86
-set TARGET_PLATFORM=%TARGET_ARCHITECTURE%
+set TARGET_PLATFORM=x86-windows-%BUILD_TYPE%

@@ -1,8 +1,6 @@
 @ECHO OFF
 
+call %~dp0\default.bat
 PUSHD %~dp0\..
-
-SET TARGET_PLATFORM=x86
-
 CALL run-tests.bat
 POPD

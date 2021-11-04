@@ -62,7 +62,6 @@ FOR %%b in (%*) DO (
 )
 
 SET PreferredToolArchitecture=x64
-SET buildconfig=Release
 set WORKSPACE=%base_dir%\kodi-build.%TARGET_PLATFORM%
 
 
@@ -90,14 +89,14 @@ set WORKSPACE=%base_dir%\kodi-build.%TARGET_PLATFORM%
     goto DIE
   )
 
-  cmake.exe --build . --config "%buildconfig%"
+  cmake.exe --build . --config "%BUILD_TYPE%"
   IF %errorlevel%==1 (
     set DIETEXT="%APP_NAME%.EXE failed to build!"
     goto DIE
   )
 
-  set EXE="%WORKSPACE%\%buildconfig%\%APP_NAME%.exe"
-  set PDB="%WORKSPACE%\%buildconfig%\%APP_NAME%.pdb"
+  set EXE="%WORKSPACE%\%BUILD_TYPE%\%APP_NAME%.exe"
+  set PDB="%WORKSPACE%\%BUILD_TYPE%\%APP_NAME%.pdb"
   set D3D="%WORKSPACE%\D3DCompile*.DLL"
 
   POPD
@@ -259,7 +258,7 @@ set WORKSPACE=%base_dir%\kodi-build.%TARGET_PLATFORM%
   set app_path=%base_dir%\project\UWPBuildSetup
   if not exist "%app_path%" mkdir %app_path%
   call %base_dir%\project\Win32BuildSetup\extract_git_rev.bat > NUL
-  for /F %%a IN ('dir /B /S %WORKSPACE%\AppPackages ^| findstr /I /R "%APP_NAME%_.*_%TARGET_ARCHITECTURE%_%buildconfig%\.%app_ext%$"') DO (
+  for /F %%a IN ('dir /B /S %WORKSPACE%\AppPackages ^| findstr /I /R "%APP_NAME%_.*_%TARGET_ARCHITECTURE%_%BUILD_TYPE%\.%app_ext%$"') DO (
     copy /Y %%a %app_path%\%APP_NAME%-%GIT_REV%-%BRANCH%-%TARGET_ARCHITECTURE%.%app_ext%
     copy /Y %%~dpna.cer %app_path%\%APP_NAME%-%GIT_REV%-%BRANCH%-%TARGET_ARCHITECTURE%.cer
     copy /Y %%~dpna.appxsym %app_path%\%APP_NAME%-%GIT_REV%-%BRANCH%-%TARGET_ARCHITECTURE%.appxsym
@@ -275,7 +274,7 @@ set WORKSPACE=%base_dir%\kodi-build.%TARGET_PLATFORM%
 
   rem apxx file has win32 instead of x86 in it's name
   if %TARGET_ARCHITECTURE%==x86 (
-    for /F %%a IN ('dir /B /S %WORKSPACE%\AppPackages ^| findstr /I /R "%APP_NAME%_.*_win32_%buildconfig%\.%app_ext%$"') DO (
+    for /F %%a IN ('dir /B /S %WORKSPACE%\AppPackages ^| findstr /I /R "%APP_NAME%_.*_win32_%BUILD_TYPE%\.%app_ext%$"') DO (
       copy /Y %%a %app_path%\%APP_NAME%-%GIT_REV%-%BRANCH%-%TARGET_ARCHITECTURE%.%app_ext%
       copy /Y %%~dpna.cer %app_path%\%APP_NAME%-%GIT_REV%-%BRANCH%-%TARGET_ARCHITECTURE%.cer
       copy /Y %%~dpna.appxsym %app_path%\%APP_NAME%-%GIT_REV%-%BRANCH%-%TARGET_ARCHITECTURE%.appxsym

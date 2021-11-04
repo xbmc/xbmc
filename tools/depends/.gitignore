@@ -51,3 +51,9 @@ config.site.native
 
 /xbmc-depends/downloads/
 /xbmc-depends/*-windows-native/
+/xbmc-depends/*-windows-Debug/
+/xbmc-depends/*-windowsstore-Debug/
+/xbmc-depends/*-windows-Release/
+/xbmc-depends/*-windowsstore-Release/
+/xbmc-depends/*-windows-RelWithDebInfo/
+/xbmc-depends/*-windowsstore-RelWithDebInfo/
