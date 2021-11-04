@@ -1,0 +1,1 @@
+lzo2 http://www.oberhumer.com/opensource/lzo/download/lzo-2.10.tar.gz

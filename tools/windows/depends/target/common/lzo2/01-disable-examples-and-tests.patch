@@ -1,0 +1,56 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -44,10 +44,6 @@
+     message(FATAL_ERROR "ERROR: In-source builds are not allowed.")
+ endif()
+ 
+-if(NOT CMAKE_BUILD_TYPE)
+-    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
+-endif()
+-
+ project(lzo VERSION 2.10 LANGUAGES C)
+ 
+ # configuration options
+@@ -60,6 +56,9 @@
+     cmake_minimum_required(VERSION 3.4.3 FATAL_ERROR) # needed for WINDOWS_EXPORT_ALL_SYMBOLS
+ endif()
+ 
++option(BUILD_TEST "Build test" OFF)
++option(BUILD_EXAMPLES "Build examples" OFF)
++
+ # install directories
+ if(NOT CMAKE_INSTALL_PREFIX)
+     message(FATAL_ERROR "ERROR: CMAKE_INSTALL_PREFIX is not defined.")
+@@ -127,8 +126,11 @@
+     endif()
+ endmacro()
+ # main test driver
++if(BUILD_TESTS)
+ lzo_add_executable(lzotest  lzotest/lzotest.c)
++endif(BUILD_TESTS)
+ # examples
++if(BUILD_EXAMPLES)
+ lzo_add_executable(dict     examples/dict.c)
+ lzo_add_executable(lzopack  examples/lzopack.c)
+ lzo_add_executable(overlap  examples/overlap.c)
+@@ -142,9 +144,10 @@
+     lzo_add_executable(promote  tests/promote.c)
+     lzo_add_executable(sizes    tests/sizes.c)
+ endif()
++endif(BUILD_EXAMPLES)
+ 
+ # miniLZO
+-if(1)
++if(BUILD_TESTS)
+     add_executable(testmini minilzo/testmini.c minilzo/minilzo.c)
+     target_include_directories(testmini PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include/lzo") # needed for "lzoconf.h"
+ endif()
+@@ -285,7 +288,7 @@
+     )
+ endif()
+ 
+-if(1)
++if(BUILD_EXAMPLES)
+     set(f lzopack lzotest simple testmini) # examples
+     install(TARGETS ${f} DESTINATION "${CMAKE_INSTALL_FULL_LIBEXECDIR}/lzo/examples")
+ endif()
