@@ -1,4 +1,11 @@
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
+cmake_minimum_required(VERSION 3.5)
+project(TexturePacker VERSION 1.1.1 LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../../cmake/modules)
 
 if(APPLE)
   set(CMAKE_FIND_ROOT_PATH ${NATIVEPREFIX})
@@ -33,7 +40,14 @@ set(SOURCES src/md5.cpp
             src/decoder/GifHelper.cpp
             src/decoder/JPGDecoder.cpp
             src/decoder/PNGDecoder.cpp
-            ${CMAKE_SOURCE_DIR}/xbmc/guilib/XBTF.cpp)
+            ${CMAKE_CURRENT_SOURCE_DIR}/../../../../xbmc/guilib/XBTF.cpp)
+
+if(MSVC)
+  list(APPEND SOURCES
+    src/Win32/dirent.h
+    src/Win32/dirent.c
+    )
+endif()
 
 set(CMAKE_POSITITION_INDEPENDENT_CODE 1)
 
@@ -42,9 +56,16 @@ target_include_directories(TexturePacker
                            PRIVATE ${PNG_INCLUDE_DIRS}
                                     ${JPEG_INCLUDE_DIR}
                                     ${GIF_INCLUDE_DIR}
-                                    ${CMAKE_SOURCE_DIR}/xbmc
+                                    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../xbmc
                                     ${CMAKE_CURRENT_SOURCE_DIR}/src
                                     ${CMAKE_CURRENT_SOURCE_DIR}/src/decoder)
+
+if(MSVC)
+  target_include_directories(TexturePacker
+                             PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/Win32)
+  target_compile_definitions(TexturePacker PRIVATE TARGET_WINDOWS)
+endif()
+
 target_link_libraries(TexturePacker
                       PRIVATE ${SYSTEM_LDFLAGS}
                               ${GIF_LIBRARIES}
