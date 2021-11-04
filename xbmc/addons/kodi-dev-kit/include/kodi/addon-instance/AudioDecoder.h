@@ -691,6 +691,10 @@ private:
                                     const char* file,
                                     struct KODI_ADDON_AUDIODECODER_INFO_TAG* tag)
   {
+#ifdef _WIN32
+#pragma warning(push)
+#pragma warning(disable : 4996)
+#endif // _WIN32
     kodi::addon::AudioDecoderInfoTag cppTag;
     bool ret = static_cast<CInstanceAudioDecoder*>(hdl)->ReadTag(file, cppTag);
     if (ret)
@@ -715,11 +719,12 @@ private:
       std::string mimetype;
       size_t size = 0;
       const uint8_t* mem = cppTag.GetCoverArtByMem(size, mimetype);
-      if (mem)
+      if (mem && size > 0)
       {
         tag->cover_art_mem_mimetype = strdup(mimetype.c_str());
         tag->cover_art_mem_size = size;
         tag->cover_art_mem = static_cast<uint8_t*>(malloc(size));
+        memcpy(tag->cover_art_mem, mem, size);
       }
       else
       {
@@ -727,6 +732,9 @@ private:
       }
     }
     return ret;
+#ifdef _WIN32
+#pragma warning(pop)
+#endif // _WIN32
   }
 
   inline static int ADDON_track_count(const KODI_ADDON_AUDIODECODER_HDL hdl, const char* file)
@@ -734,8 +742,7 @@ private:
     return static_cast<CInstanceAudioDecoder*>(hdl)->TrackCount(file);
   }
 
-  std::vector<AudioEngineChannel> m_channelList;
-  AddonInstance_AudioDecoder* m_instanceData;
+  AddonInstance_AudioDecoder* m_instanceData{nullptr};
 };
 
 } /* namespace addon */
