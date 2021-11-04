@@ -93,6 +93,10 @@ function(add_addon_depends addon searchpath)
           message(${BUILD_ARGS})
         endif()
 
+        if(TARBALL_DIR)
+          list(APPEND BUILD_ARGS -DTARBALL_DIR=${TARBALL_DIR})
+        endif()
+
         # used for addons where need special folders to store there content (if
         # not set the addon define it byself).
         # e.g. Google Chromium addon where his git bring:
