@@ -1,6 +1,7 @@
 @ECHO OFF
 
 PUSHD %~dp0\..
+call .helpers\default.bat
 CALL vswhere.bat x86 store
 IF ERRORLEVEL 1 (
   ECHO ERROR! BuildSetup.bat: Something went wrong when calling vswhere.bat

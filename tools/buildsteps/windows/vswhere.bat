@@ -27,22 +27,16 @@ SET vcvars=no
 SET sdkver=
 
 SET vsver=
-SET toolsdir=%arch%
 
 IF "%arch%" NEQ "x64" (
   SET vcarch=%vcarch%_%arch%
 )
 
-IF "%arch%"=="x86" (
-  SET toolsdir=win32
-)
-
 IF "%vcstore%"=="store" (
   SET sdkver=10.0.18362.0
-  SET toolsdir="win10-%toolsdir%"
 )
 
-SET vswhere="%builddeps%\%toolsdir%\tools\vswhere\vswhere.exe"
+SET vswhere="%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe"
 
 FOR /f "usebackq tokens=1* delims=" %%i in (`%vswhere% -latest -property installationPath`) do (
   IF EXIST "%%i\VC\Auxiliary\Build\vcvarsall.bat" (

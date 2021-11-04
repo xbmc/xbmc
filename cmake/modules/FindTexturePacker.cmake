@@ -20,24 +20,24 @@ if(NOT TARGET TexturePacker::TexturePacker)
     add_executable(TexturePacker::TexturePacker IMPORTED GLOBAL)
     set_target_properties(TexturePacker::TexturePacker PROPERTIES
                                                        IMPORTED_LOCATION "${TEXTUREPACKER_EXECUTABLE}")
-  elseif(WIN32)
-    get_filename_component(_tppath "${DEPENDENCIES_DIR}/tools/TexturePacker" ABSOLUTE)
-    find_program(TEXTUREPACKER_EXECUTABLE NAMES "${APP_NAME_LC}-TexturePacker.exe" TexturePacker.exe
-                                          HINTS ${_tppath})
-
-    add_executable(TexturePacker::TexturePacker IMPORTED GLOBAL)
-    set_target_properties(TexturePacker::TexturePacker PROPERTIES
-                                                       IMPORTED_LOCATION "${TEXTUREPACKER_EXECUTABLE}")
   else()
-    if(WITH_TEXTUREPACKER)
-      get_filename_component(_tppath ${WITH_TEXTUREPACKER} ABSOLUTE)
-      get_filename_component(_tppath ${_tppath} DIRECTORY)
+    if(WITH_TEXTUREPACKER OR WIN32)
+      if(WITH_TEXTUREPACKER)
+        get_filename_component(_tppath ${WITH_TEXTUREPACKER} ABSOLUTE)
+        get_filename_component(_tppath ${_tppath} DIRECTORY)
+      else()
+        get_filename_component(_tppath "${DEPENDENCIES_DIR}/tools/TexturePacker" ABSOLUTE)
+      endif()
       find_program(TEXTUREPACKER_EXECUTABLE NAMES "${APP_NAME_LC}-TexturePacker" TexturePacker
                                             HINTS ${_tppath})
 
       include(FindPackageHandleStandardArgs)
-      find_package_handle_standard_args(TexturePacker "Could not find '${APP_NAME_LC}-TexturePacker' or 'TexturePacker' executable in ${_tppath} supplied by -DWITH_TEXTUREPACKER. Make sure the executable file name matches these names!"
-                                        TEXTUREPACKER_EXECUTABLE)
+      if(WITH_TEXTUREPACKER)
+        find_package_handle_standard_args(TexturePacker "Could not find '${APP_NAME_LC}-TexturePacker' or 'TexturePacker' executable in ${_tppath} supplied by -DWITH_TEXTUREPACKER. Make sure the executable file name matches these names!"
+                                          TEXTUREPACKER_EXECUTABLE)
+      else()
+        find_package_handle_standard_args(TexturePacker DEFAULT_MSG TEXTUREPACKER_EXECUTABLE)
+      endif()
       if(TEXTUREPACKER_FOUND)
         add_executable(TexturePacker::TexturePacker IMPORTED GLOBAL)
         set_target_properties(TexturePacker::TexturePacker PROPERTIES

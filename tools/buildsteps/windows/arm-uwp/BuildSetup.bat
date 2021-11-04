@@ -2,6 +2,7 @@
 
 PUSHD %~dp0\..
 
+call .helpers\default.bat
 CALL vswhere.bat arm store
 IF ERRORLEVEL 1 (
   ECHO ERROR! BuildSetup.bat: Something went wrong when calling vswhere.bat

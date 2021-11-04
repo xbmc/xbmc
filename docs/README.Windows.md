@@ -47,6 +47,7 @@ Several different strategies are used to draw your attention to certain pieces o
 ## 2. Prerequisites
 To build Kodi:
 * **[CMake](https://cmake.org/download/)** (version 3.15 or greater is required)
+* **[Doxygen](www.doxygen.org/download.html)** (Only needed if you want to generate the documentation)
 * **[Git for Windows](https://gitforwindows.org/)**
 * **[Java Runtime Environment (JRE)](http://www.oracle.com/technetwork/java/javase/downloads/index.html)**
 * **[Nullsoft scriptable install system (NSIS)](http://nsis.sourceforge.net/Download)** (Only needed if you want to generate an installer file)
@@ -134,6 +135,12 @@ To set up the build environment, several scripts must be called.
 Kodi can be built as either a normal 32bit or 64bit program, UWP 32bit and 64bit and UWP ARM 32bit. Unless there is a reason to prefer 32bit builds, we advise you to build Kodi for 64bit.
 
 **TIP:** Look for comments starting with `Or ...` and only execute the command(s) you need.
+
+Build native dependencies:
+```
+cd %userprofile%\kodi\tools\buildsteps\windows
+make-native-depends.bat
+```
 
 Change to the 64bit build directory (**recommended**):
 ```
@@ -224,27 +231,27 @@ cd kodi-build
 
 Configure build for 64bit (**recommended**):
 ```
-cmake -G "Visual Studio 16 2019" -A x64 -T host=x64 %userprofile%\kodi
+cmake -G "Visual Studio 16 2019" -A x64 -T host=x64 -DCMAKE_PREFIX_PATH=%userprofile%\kodi\tools\depends\xbmc-depends\x86_64-windows-native %userprofile%\kodi
 ```
 
 Or configure build for 32bit:
 ```
-cmake -G "Visual Studio 16 2019" -A Win32 -T host=x64 %userprofile%\kodi
+cmake -G "Visual Studio 16 2019" -A Win32 -T host=x64 -DCMAKE_PREFIX_PATH=%userprofile%\kodi\tools\depends\xbmc-depends\x86_64-windows-native %userprofile%\kodi
 ```
 
 Or configure build for UWP 64bit:
 ```
-cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 -T host=x64 %userprofile%\kodi
+cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 -T host=x64 -DCMAKE_PREFIX_PATH=%userprofile%\kodi\tools\depends\xbmc-depends\x86_64-windows-native %userprofile%\kodi
 ```
 
 Or configure build for UWP 32bit:
 ```
-cmake -G "Visual Studio 16 2019" -A Win32 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 -T host=x64 %userprofile%\kodi
+cmake -G "Visual Studio 16 2019" -A Win32 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 -T host=x64 -DCMAKE_PREFIX_PATH=%userprofile%\kodi\tools\depends\xbmc-depends\x86_64-windows-native %userprofile%\kodi
 ```
 
 Or configure build for UWP ARM 32bit:
 ```
-cmake -G "Visual Studio 16 2019" -A ARM -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 -T host=x64 %userprofile%\kodi
+cmake -G "Visual Studio 16 2019" -A ARM -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 -T host=x64 -DCMAKE_PREFIX_PATH=%userprofile%\kodi\tools\depends\xbmc-depends\x86_64-windows-native %userprofile%\kodi
 ```
 
 **Visual Studio 2017:**
