@@ -6,195 +6,205 @@ extern "C"{
 #include "cc_decoder.h"
 }
 
-#define MAX_708_PACKET_LENGTH   128
-#define CCX_DECODERS_708_MAX_SERVICES 8
+#define CC708_MAX_PACKET_LENGTH 128 //According to EIA-708B, part 5
+#define CC708_MAX_SERVICES 63
 #define I708_MAX_ROWS 15
-#define I708_MAX_COLUMNS 42
+/*
+ * This value should be 32, but there were 16-bit encoded samples (from Korea),
+ * where RowCount calculated another way and equals 46 (23[8bit]*2)
+ */
+#define I708_MAX_COLUMNS (32 * 2)
 #define I708_SCREENGRID_ROWS 75
 #define I708_SCREENGRID_COLUMNS 210
 #define I708_MAX_WINDOWS 8
+#define CC708_NO_LAST_SEQUENCE -1
 
-enum COMMANDS_C0_CODES
+#define NTSC_CC_FIELD_1 0
+#define NTSC_CC_FIELD_2 1
+#define DTVCC_PACKET_DATA 2
+#define DTVCC_PACKET_START 3
+
+enum class CommandCodeC0
 {
-  NUL=0,
-  ETX=3,
-  BS=8,
-  FF=0xC,
-  CR=0xD,
-  HCR=0xE,
-  EXT1=0x10,
-  P16=0x18
+  NUL = 0x00,
+  ETX = 0x03,
+  BS = 0x08,
+  FF = 0x0c,
+  CR = 0x0d,
+  HCR = 0x0e,
+  EXT1 = 0x10,
+  P16 = 0x18
 };
 
-enum COMMANDS_C1_CODES
+enum class CommandCodeC1
 {
-  CW0=0x80,
-  CW1=0x81,
-  CW2=0x82,
-  CW3=0x83,
-  CW4=0x84,
-  CW5=0x85,
-  CW6=0x86,
-  CW7=0x87,
-  CLW=0x88,
-  DSW=0x89,
-  HDW=0x8A,
-  TGW=0x8B,
-  DLW=0x8C,
-  DLY=0x8D,
-  DLC=0x8E,
-  RST=0x8F,
-  SPA=0x90,
-  SPC=0x91,
-  SPL=0x92,
-  RSV93=0x93,
-  RSV94=0x94,
-  RSV95=0x95,
-  RSV96=0x96,
-  SWA=0x97,
-  DF0=0x98,
-  DF1=0x99,
-  DF2=0x9A,
-  DF3=0x9B,
-  DF4=0x9C,
-  DF5=0x9D,
-  DF6=0x9E,
-  DF7=0x9F
+  CW0 = 0x80,
+  CW1 = 0x81,
+  CW2 = 0x82,
+  CW3 = 0x83,
+  CW4 = 0x84,
+  CW5 = 0x85,
+  CW6 = 0x86,
+  CW7 = 0x87,
+  CLW = 0x88,
+  DSW = 0x89,
+  HDW = 0x8A,
+  TGW = 0x8B,
+  DLW = 0x8C,
+  DLY = 0x8D,
+  DLC = 0x8E,
+  RST = 0x8F,
+  SPA = 0x90,
+  SPC = 0x91,
+  SPL = 0x92,
+  RSV93 = 0x93,
+  RSV94 = 0x94,
+  RSV95 = 0x95,
+  RSV96 = 0x96,
+  SWA = 0x97,
+  DF0 = 0x98,
+  DF1 = 0x99,
+  DF2 = 0x9A,
+  DF3 = 0x9B,
+  DF4 = 0x9C,
+  DF5 = 0x9D,
+  DF6 = 0x9E,
+  DF7 = 0x9F
 };
 
-struct S_COMMANDS_C1
+struct commandC1
 {
-  int code;
+  CommandCodeC1 code;
   const char *name;
   const char *description;
   int length;
 };
 
 
-enum eWindowsAttribJustify
+enum class WindowJustify
 {
-  left=0,
-  right=1,
-  center=2,
-  full=3
+  LEFT = 0,
+  RIGHT = 1,
+  CENTER = 2,
+  FULL = 3
 };
 
-enum eWindowsAttribPrintDirection
+enum class WindowPrintDirection
 {
-  pd_left_to_right=0,
-  pd_right_to_left=1,
-  pd_top_to_bottom=2,
-  pd_bottom_to_top=3
+  LEFT_TO_RIGHT = 0,
+  RIGHT_TO_LEFT = 1,
+  TOP_TO_BOTTOM = 2,
+  BOTTOM_TO_TOP = 3
 };
 
-enum eWindowsAttribScrollDirection
+enum class WindowScrollDirection
 {
-  sd_left_to_right=0,
-  sd_right_to_left=1,
-  sd_top_to_bottom=2,
-  sd_bottom_to_top=3
+  LEFT_TO_RIGHT = 0,
+  RIGHT_TO_LEFT = 1,
+  TOP_TO_BOTTOM = 2,
+  BOTTOM_TO_TOP = 3
 };
 
-enum eWindowsAttribScrollDisplayEffect
+enum class WindowScrollDisplayEffect
 {
-  snap=0,
-  fade=1,
-  wipe=2
+  SNAP = 0,
+  FADE = 1,
+  WIPE = 2
 };
 
-enum eWindowsAttribEffectDirection
+enum class WindowEffectDirection
 {
-  left_to_right=0,
-  right_to_left=1,
-  top_to_bottom=2,
-  bottom_to_top=3
+  LEFT_TO_RIGHT = 0,
+  RIGHT_TO_LEFT = 1,
+  TOP_TO_BOTTOM = 2,
+  BOTTOM_TO_TOP = 3
 };
 
-enum eWindowsAttribFillOpacity
+enum class WindowFillOpacity
 {
-  solid=0,
-  flash=1,
-  translucent=2,
-  transparent=3
+  FO_SOLID = 0,
+  FO_FLASH = 1,
+  FO_TRANSLUCENT = 2,
+  FO_TRANSPARENT = 3
 };
 
-enum eWindowsAttribBorderType
+enum class WindowBorderType
 {
-  none=0,
-  raised=1,
-  depressed=2,
-  uniform=3,
-  shadow_left=4,
-  shadow_right=5
+  NONE = 0,
+  RAISED = 1,
+  DEPRESSED = 2,
+  UNIFORM = 3,
+  SHADOW_LEFT = 4,
+  SHADOW_RIGHT = 5
 };
 
-enum ePenAttribSize
+enum class PenSize
 {
-  pensize_small=0,
-  pensize_standard=1,
-  pensize_large=2
+  SMALL = 0,
+  STANDARD = 1,
+  LARGE = 2
 };
 
-enum ePenAttribFontStyle
+enum class PenFontStyle
 {
-  fontstyle_default_or_undefined=0,
-  monospaced_with_serifs=1,
-  proportionally_spaced_with_serifs=2,
-  monospaced_without_serifs=3,
-  proportionally_spaced_without_serifs=4,
-  casual_font_type=5,
-  cursive_font_type=6,
-  small_capitals=7
+  DEFAULT_OR_UNDEFINED = 0,
+  MONOSPACED_WITH_SERIFS = 1,
+  PROPORTIONALLY_SPACED_WITH_SERIFS = 2,
+  MONOSPACED_WITHOUT_SERIFS = 3,
+  PROPORTIONALLY_SPACED_WITHOUT_SERIFS = 4,
+  CASUAL_FONT_TYPE = 5,
+  CURSIVE_FONT_TYPE = 6,
+  SMALL_CAPITALS = 7
 };
 
-enum ePanAttribTextTag
+enum class PenTextTag
 {
-  texttag_dialog=0,
-  texttag_source_or_speaker_id=1,
-  texttag_electronic_voice=2,
-  texttag_foreign_language=3,
-  texttag_voiceover=4,
-  texttag_audible_translation=5,
-  texttag_subtitle_translation=6,
-  texttag_voice_quality_description=7,
-  texttag_song_lyrics=8,
-  texttag_sound_effect_description=9,
-  texttag_musical_score_description=10,
-  texttag_expletive=11,
-  texttag_undefined_12=12,
-  texttag_undefined_13=13,
-  texttag_undefined_14=14,
-  texttag_not_to_be_displayed=15
+  DIALOG = 0,
+  SOURCE_OR_SPEAKER_ID = 1,
+  ELECTRONIC_VOICE = 2,
+  FOREIGN_LANGUAGE = 3,
+  VOICEOVER = 4,
+  AUDIBLE_TRANSLATION = 5,
+  SUBTITLE_TRANSLATION = 6,
+  VOICE_QUALITY_DESCRIPTION = 7,
+  SONG_LYRICS = 8,
+  SOUND_EFFECT_DESCRIPTION = 9,
+  MUSICAL_SCORE_DESCRIPTION = 10,
+  EXPLETIVE = 11,
+  UNDEFINED_12 = 12,
+  UNDEFINED_13 = 13,
+  UNDEFINED_14 = 14,
+  NOT_TO_BE_DISPLAYED = 15
 };
 
-enum ePanAttribOffset
+enum class PenOffset
 {
-  offset_subscript=0,
-  offset_normal=1,
-  offset_superscript=2
+  SUBSCRIPT = 0,
+  NORMAL = 1,
+  SUPERSCRIPT = 2
 };
 
-enum ePanAttribEdgeType
+enum class PenEdgeType
 {
-  edgetype_none=0,
-  edgetype_raised=1,
-  edgetype_depressed=2,
-  edgetype_uniform=3,
-  edgetype_left_drop_shadow=4,
-  edgetype_right_drop_shadow=5
+  NONE = 0,
+  RAISED = 1,
+  DEPRESSED = 2,
+  UNIFORM = 3,
+  SHADOW_LEFT = 4,
+  SHADOW_RIGHT = 5
 };
 
-enum eAnchorPoints
+enum class PenAnchorPoint
 {
-  anchorpoint_top_left = 0,
-  anchorpoint_top_center = 1,
-  anchorpoint_top_right =2,
-  anchorpoint_middle_left = 3,
-  anchorpoint_middle_center = 4,
-  anchorpoint_middle_right = 5,
-  anchorpoint_bottom_left = 6,
-  anchorpoint_bottom_center = 7,
-  anchorpoint_bottom_right = 8
+  TOP_LEFT = 0,
+  TOP_CENTER = 1,
+  TOP_RIGHT = 2,
+  MIDDLE_LEFT = 3,
+  MIDDLE_CENTER = 4,
+  MIDDLE_RIGHT = 5,
+  BOTTOM_LEFT = 6,
+  BOTTOM_CENTER = 7,
+  BOTTOM_RIGHT = 8
 };
 
 typedef struct e708Pen_color
@@ -208,30 +218,57 @@ typedef struct e708Pen_color
 
 typedef struct e708Pen_attribs
 {
-  int pen_size;
+  PenSize pen_size;
   int offset;
-  int text_tag;
-  int font_tag;
-  int edge_type;
+  PenTextTag text_tag;
+  PenFontStyle font_tag;
+  PenEdgeType edge_type;
   int underline;
   int italic;
 } e708Pen_attribs;
 
 typedef struct e708Window_attribs
 {
-  int fill_color;
-  int fill_opacity;
-  int border_color;
-  int border_type01;
-  int justify;
-  int scroll_dir;
-  int print_dir;
+  WindowJustify justify;
+  WindowPrintDirection print_direction;
+  WindowScrollDirection scroll_direction;
   int word_wrap;
-  int border_type;
-  int display_eff;
-  int effect_dir;
+  WindowScrollDisplayEffect display_effect;
+  WindowEffectDirection effect_direction;
   int effect_speed;
+  int fill_color;
+  WindowFillOpacity fill_opacity;
+  WindowBorderType border_type;
+  int border_color;
 } e708Window_attribs;
+
+/**
+ * Since 1-byte and 2-byte symbols could appear in captions and
+ * since we have to keep symbols alignment and several windows could appear on a screen at one time,
+ * we use special structure for holding symbols
+ */
+typedef struct e708_symbol
+{
+  unsigned short sym; //symbol itself, at least 16 bit
+  unsigned char len; //length. could be 1 or 2
+} e708_symbol;
+
+#define CCX_DTVCC_SYM_SET(x, c) \
+  { \
+    x.len = 1; \
+    x.sym = c; \
+  }
+#define CCX_DTVCC_SYM_SET_16(x, c1, c2) \
+  { \
+    x.len = 2; \
+    x.sym = (c1 << 8) | c2; \
+  }
+#define CCX_DTVCC_SYM_IS_16(x) (x.len == 2)
+#define CCX_DTVCC_SYM(x) ((unsigned char)(x.sym))
+#define CCX_DTVCC_SYM_16_FIRST(x) ((unsigned char)(x.sym >> 8))
+#define CCX_DTVCC_SYM_16_SECOND(x) ((unsigned char)(x.sym & 0xff))
+#define CCX_DTVCC_SYM_IS_EMPTY(x) (x.len == 0)
+#define CCX_DTVCC_SYM_IS_SET(x) (x.len > 0)
 
 typedef struct e708Window
 {
@@ -245,24 +282,28 @@ typedef struct e708Window
   int relative_pos;
   int anchor_horizontal;
   int row_count;
-  int anchor_point;
+  PenAnchorPoint anchor_point;
   int col_count;
   int pen_style;
   int win_style;
   unsigned char commands[6]; // Commands used to create this window
   e708Window_attribs attribs;
-  e708Pen_attribs pen;
-  e708Pen_color pen_color;
   int pen_row;
   int pen_column;
-  unsigned char *rows[I708_MAX_ROWS+1]; // Max is 15, but we define an extra one for convenience
-  int memory_reserved;
+  e708_symbol *rows[I708_MAX_ROWS];
+  e708Pen_color pen_colors[I708_MAX_ROWS];
+  e708Pen_attribs pen_attribs[I708_MAX_ROWS];
+  int memory_reserved = 0;
   int is_empty;
 } e708Window;
 
 typedef struct tvscreen
 {
-  unsigned char chars[I708_SCREENGRID_ROWS][I708_SCREENGRID_COLUMNS+1];
+  e708_symbol chars[I708_SCREENGRID_ROWS][I708_SCREENGRID_COLUMNS];
+  e708Pen_color pen_colors[I708_SCREENGRID_ROWS];
+  e708Pen_attribs pen_attribs[I708_SCREENGRID_ROWS];
+  unsigned int cc_count;
+  int service_number;
 }
 tvscreen;
 
@@ -271,20 +312,17 @@ typedef struct cc708_service_decoder
 {
   e708Window windows[I708_MAX_WINDOWS];
   int current_window;
-  int inited;
-  int service;
   tvscreen tv;
-  int is_empty_tv;
-  int srt_counter;
+  int cc_count;
   void *userdata;
   void (*callback)(int service, void *userdata);
-  char text[I708_SCREENGRID_ROWS*I708_SCREENGRID_COLUMNS+1];
+  char text[I708_SCREENGRID_ROWS * I708_SCREENGRID_COLUMNS + 1];
   int textlen;
   CDecoderCC708 *parent;
 }
 cc708_service_decoder;
 
-void process_character (cc708_service_decoder *decoder, unsigned char internal_char);
+void process_character(cc708_service_decoder* decoder, e708_symbol symbol);
 
 class CDecoderCC708
 {
@@ -292,13 +330,15 @@ public:
   CDecoderCC708();
   virtual ~CDecoderCC708();
   void Init(void (*handler)(int service, void *userdata), void *userdata);
-  void Decode(const unsigned char *data, int datalength);
-  bool m_inited;
+  void Decode(unsigned char *data, int datalength);
+  bool m_servicesActive[CC708_MAX_SERVICES]{};
   cc708_service_decoder* m_cc708decoders;
   cc_decoder_t *m_cc608decoder;
-  unsigned char m_current_packet[MAX_708_PACKET_LENGTH]; // Length according to EIA-708B, part 5
+  unsigned char m_current_packet[CC708_MAX_PACKET_LENGTH];
   int m_current_packet_length;
-  int m_last_seq;
+  bool m_is_current_packet_header_parsed;
+  int m_last_sequence;
   bool m_seen708;
   bool m_seen608;
+  bool m_no_rollup;
 };
