@@ -127,6 +127,8 @@ OverlayMessage CDVDOverlayCodecTX3G::Decode(DemuxPacket* pPacket)
     text = data + sampleData.GetPosition();
     sampleData.SkipChars(textLength);
   }
+  if (!text)
+    return OverlayMessage::OC_ERROR;
 
   std::vector<StyleRecord> styleRecords;
 
