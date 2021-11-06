@@ -20,18 +20,22 @@
 using namespace VAAPI;
 using namespace KODI::UTILS::EGL;
 
-IVaapiWinSystem *CRendererVAAPI::m_pWinSystem = nullptr;
+IVaapiWinSystem* CRendererVAAPIGLES::m_pWinSystem = nullptr;
 
-CBaseRenderer* CRendererVAAPI::Create(CVideoBuffer *buffer)
+CBaseRenderer* CRendererVAAPIGLES::Create(CVideoBuffer* buffer)
 {
   CVaapiRenderPicture *vb = dynamic_cast<CVaapiRenderPicture*>(buffer);
   if (vb)
-    return new CRendererVAAPI();
+    return new CRendererVAAPIGLES();
 
   return nullptr;
 }
 
-void CRendererVAAPI::Register(IVaapiWinSystem *winSystem, VADisplay vaDpy, EGLDisplay eglDisplay, bool &general, bool &deepColor)
+void CRendererVAAPIGLES::Register(IVaapiWinSystem* winSystem,
+                                  VADisplay vaDpy,
+                                  EGLDisplay eglDisplay,
+                                  bool& general,
+                                  bool& deepColor)
 {
   general = deepColor = false;
 
@@ -56,14 +60,14 @@ void CRendererVAAPI::Register(IVaapiWinSystem *winSystem, VADisplay vaDpy, EGLDi
 
   if (general)
   {
-    VIDEOPLAYER::CRendererFactory::RegisterRenderer("vaapi", CRendererVAAPI::Create);
+    VIDEOPLAYER::CRendererFactory::RegisterRenderer("vaapi", CRendererVAAPIGLES::Create);
     m_pWinSystem = winSystem;
   }
 }
 
-CRendererVAAPI::CRendererVAAPI() = default;
+CRendererVAAPIGLES::CRendererVAAPIGLES() = default;
 
-CRendererVAAPI::~CRendererVAAPI()
+CRendererVAAPIGLES::~CRendererVAAPIGLES()
 {
   for (int i = 0; i < NUM_BUFFERS; ++i)
   {
@@ -71,7 +75,7 @@ CRendererVAAPI::~CRendererVAAPI()
   }
 }
 
-bool CRendererVAAPI::Configure(const VideoPicture &picture, float fps, unsigned int orientation)
+bool CRendererVAAPIGLES::Configure(const VideoPicture& picture, float fps, unsigned int orientation)
 {
   CVaapiRenderPicture *pic = dynamic_cast<CVaapiRenderPicture*>(picture.videoBuffer);
   if (pic->procPic.videoSurface != VA_INVALID_ID)
@@ -86,7 +90,8 @@ bool CRendererVAAPI::Configure(const VideoPicture &picture, float fps, unsigned 
   interop.glEGLImageTargetTexture2DOES = (PFNGLEGLIMAGETARGETTEXTURE2DOESPROC)eglGetProcAddress("glEGLImageTargetTexture2DOES");
   interop.eglDisplay = m_pWinSystem->GetEGLDisplay();
 
-  bool useVaapi2 = VAAPI::CVaapi2Texture::TestInteropGeneral(pic->vadsp, CRendererVAAPI::m_pWinSystem->GetEGLDisplay());
+  bool useVaapi2 = VAAPI::CVaapi2Texture::TestInteropGeneral(
+      pic->vadsp, CRendererVAAPIGLES::m_pWinSystem->GetEGLDisplay());
 
   for (auto &tex : m_vaapiTextures)
   {
@@ -103,13 +108,13 @@ bool CRendererVAAPI::Configure(const VideoPicture &picture, float fps, unsigned 
 
   for (auto& fence : m_fences)
   {
-    fence.reset(new CEGLFence(CRendererVAAPI::m_pWinSystem->GetEGLDisplay()));
+    fence.reset(new CEGLFence(CRendererVAAPIGLES::m_pWinSystem->GetEGLDisplay()));
   }
 
   return CLinuxRendererGLES::Configure(picture, fps, orientation);
 }
 
-bool CRendererVAAPI::ConfigChanged(const VideoPicture &picture)
+bool CRendererVAAPIGLES::ConfigChanged(const VideoPicture& picture)
 {
   CVaapiRenderPicture *pic = dynamic_cast<CVaapiRenderPicture*>(picture.videoBuffer);
   if (pic->procPic.videoSurface != VA_INVALID_ID && !m_isVAAPIBuffer)
@@ -118,7 +123,7 @@ bool CRendererVAAPI::ConfigChanged(const VideoPicture &picture)
   return false;
 }
 
-EShaderFormat CRendererVAAPI::GetShaderFormat()
+EShaderFormat CRendererVAAPIGLES::GetShaderFormat()
 {
   EShaderFormat ret = SHADER_NONE;
 
@@ -130,17 +135,17 @@ EShaderFormat CRendererVAAPI::GetShaderFormat()
   return ret;
 }
 
-bool CRendererVAAPI::LoadShadersHook()
+bool CRendererVAAPIGLES::LoadShadersHook()
 {
   return false;
 }
 
-bool CRendererVAAPI::RenderHook(int idx)
+bool CRendererVAAPIGLES::RenderHook(int idx)
 {
   return false;
 }
 
-bool CRendererVAAPI::CreateTexture(int index)
+bool CRendererVAAPIGLES::CreateTexture(int index)
 {
   if (!m_isVAAPIBuffer)
   {
@@ -165,7 +170,7 @@ bool CRendererVAAPI::CreateTexture(int index)
   return true;
 }
 
-void CRendererVAAPI::DeleteTexture(int index)
+void CRendererVAAPIGLES::DeleteTexture(int index)
 {
   ReleaseBuffer(index);
 
@@ -181,7 +186,7 @@ void CRendererVAAPI::DeleteTexture(int index)
   buf.fields[FIELD_FULL][2].id = 0;
 }
 
-bool CRendererVAAPI::UploadTexture(int index)
+bool CRendererVAAPIGLES::UploadTexture(int index)
 {
   if (!m_isVAAPIBuffer)
   {
@@ -238,17 +243,17 @@ bool CRendererVAAPI::UploadTexture(int index)
   return true;
 }
 
-void CRendererVAAPI::AfterRenderHook(int index)
+void CRendererVAAPIGLES::AfterRenderHook(int index)
 {
   m_fences[index]->CreateFence();
 }
 
-bool CRendererVAAPI::NeedBuffer(int index)
+bool CRendererVAAPIGLES::NeedBuffer(int index)
 {
   return !m_fences[index]->IsSignaled();
 }
 
-void CRendererVAAPI::ReleaseBuffer(int index)
+void CRendererVAAPIGLES::ReleaseBuffer(int index)
 {
   m_fences[index]->DestroyFence();
 

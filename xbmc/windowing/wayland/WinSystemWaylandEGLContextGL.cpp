@@ -49,7 +49,7 @@ bool CWinSystemWaylandEGLContextGL::InitWindowSystem()
   m_vaapiProxy.reset(WAYLAND::VaapiProxyCreate());
   WAYLAND::VaapiProxyConfig(m_vaapiProxy.get(), GetConnection()->GetDisplay(),
                             m_eglContext.GetEGLDisplay());
-  WAYLAND::VAAPIRegisterRender(m_vaapiProxy.get(), general, deepColor);
+  WAYLAND::VAAPIRegisterRenderGL(m_vaapiProxy.get(), general, deepColor);
   if (general)
   {
     WAYLAND::VAAPIRegister(m_vaapiProxy.get(), deepColor);
