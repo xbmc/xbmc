@@ -92,7 +92,6 @@ void CDVDAudioCodecPassthrough::Dispose()
 
 bool CDVDAudioCodecPassthrough::AddData(const DemuxPacket &packet)
 {
-  int used = 0;
   if (m_backlogSize)
   {
     m_dataSize = m_bufferSize;
@@ -134,7 +133,7 @@ bool CDVDAudioCodecPassthrough::AddData(const DemuxPacket &packet)
       return true;
 
     m_dataSize = m_bufferSize;
-    used = m_parser.AddData(pData, iSize, &m_buffer, &m_dataSize);
+    int used = m_parser.AddData(pData, iSize, &m_buffer, &m_dataSize);
     m_bufferSize = std::max(m_bufferSize, m_dataSize);
 
     if (used != iSize)
@@ -146,7 +145,6 @@ bool CDVDAudioCodecPassthrough::AddData(const DemuxPacket &packet)
       }
       m_backlogSize = iSize - used;
       memcpy(m_backlogBuffer, pData + used, m_backlogSize);
-      used = iSize;
     }
   }
   else if (pData)
@@ -158,7 +156,6 @@ bool CDVDAudioCodecPassthrough::AddData(const DemuxPacket &packet)
     }
     memcpy(m_backlogBuffer + m_backlogSize, pData, iSize);
     m_backlogSize += iSize;
-    used = iSize;
   }
 
   if (!m_dataSize)
