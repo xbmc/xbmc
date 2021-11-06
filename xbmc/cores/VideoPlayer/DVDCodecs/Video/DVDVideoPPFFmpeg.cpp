@@ -96,7 +96,7 @@ void CDVDVideoPPFFmpeg::Process(VideoPicture* pPicture)
   }
 
   uint8_t* srcPlanes[YuvImage::MAX_PLANES], *dstPlanes[YuvImage::MAX_PLANES];
-  int srcStrides[YuvImage::MAX_PLANES];
+  int srcStrides[YuvImage::MAX_PLANES]{};
   pSource->videoBuffer->GetPlanes(srcPlanes);
   pSource->videoBuffer->GetStrides(srcStrides);
 
