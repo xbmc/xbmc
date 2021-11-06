@@ -1766,8 +1766,6 @@ bool CLinuxRendererGL::UploadTexture(int index)
 
   if (!m_buffers[index].loaded)
   {
-    ret = false;
-
     YuvImage &dst = m_buffers[index].image;
     YuvImage src;
     m_buffers[index].videoBuffer->GetPlanes(src.plane);
