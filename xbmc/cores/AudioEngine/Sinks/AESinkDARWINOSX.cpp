@@ -516,7 +516,7 @@ OSStatus CAESinkDARWINOSX::renderCallback(AudioDeviceID inDevice, const AudioTim
       {
         for (unsigned int i = startIdx; i < endIdx; i++)
         {
-          int16_t src;
+          int16_t src = 0;
           sink->m_buffer->Read((unsigned char *)&src, sizeof(int16_t), i);
           if (i < outOutputData->mNumberBuffers && outOutputData->mBuffers[i].mData)
           {

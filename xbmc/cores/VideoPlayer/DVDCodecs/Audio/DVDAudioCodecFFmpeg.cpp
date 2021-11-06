@@ -184,7 +184,7 @@ void CDVDAudioCodecFFmpeg::GetData(DVDAudioFrame &frame)
 {
   frame.nb_frames = 0;
 
-  uint8_t* data[16];
+  uint8_t* data[16]{};
   int bytes = GetData(data);
   if (!bytes)
   {

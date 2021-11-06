@@ -474,7 +474,9 @@ void CGUIDialogMediaFilter::InitializeSettings()
 
       if (filter.settingType == SettingType::Integer)
       {
-        int min, interval, max;
+        int min = 0;
+        int interval = 0;
+        int max = 0;
         GetRange(filter, min, interval, max);
 
         // don't create the filter if there's no real range
@@ -495,7 +497,9 @@ void CGUIDialogMediaFilter::InitializeSettings()
       }
       else if (filter.settingType == SettingType::Number)
       {
-        float min, interval, max;
+        float min = 0;
+        float interval = 0;
+        float max = 0;
         GetRange(filter, min, interval, max);
 
         // don't create the filter if there's no real range
