@@ -8728,7 +8728,13 @@ msgctxt "#15314"
 msgid "Save progress"
 msgstr ""
 
-#empty strings from id 15315 to 15999
+#. Caption for "Save progress" button in the in-game savestate manager
+#: xbmc/games/dialogs/osd/DialogInGameSaves.cpp
+msgctxt "#15315"
+msgid "Save progress to new save file"
+msgstr ""
+
+#empty strings from id 15316 to 15999
 
 #: system/settings/settings.xml
 msgctxt "#16000"

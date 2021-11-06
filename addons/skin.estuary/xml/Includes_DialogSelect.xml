@@ -160,7 +160,7 @@
 			<width>1220</width>
 			<include content="DialogBackgroundCommons">
 				<param name="width" value="1220" />
-				<param name="height" value="750" />
+				<param name="height" value="780" />
 				<param name="header_label" value="" />
 				<param name="header_id" value="1" />
 			</include>
@@ -303,6 +303,18 @@
 					<param name="id" value="7" />
 					<param name="label" value="$LOCALIZE[222]" />
 				</include>
+			</control>
+			<control type="label" id="12">
+				<description>Caption area</description>
+				<left>14</left>
+				<right>14</right>
+				<bottom>0</bottom>
+				<height>20</height>
+				<font>font12</font>
+				<align>left</align>
+				<shadowcolor>text_shadow</shadowcolor>
+				<autoscroll time="3000" delay="5000" repeat="5000">true</autoscroll>
+				<label></label>
 			</control>
 		</control>
 	</include>
@@ -596,6 +608,7 @@
 				<align>justify</align>
 				<shadowcolor>text_shadow</shadowcolor>
 				<autoscroll time="3000" delay="5000" repeat="5000">true</autoscroll>
+				<label>$INFO[ListItem.Property(savestate.caption)]</label>
 			</control>
 		</control>
 	</include>

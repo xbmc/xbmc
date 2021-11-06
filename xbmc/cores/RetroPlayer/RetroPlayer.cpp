@@ -16,6 +16,7 @@
 #include "addons/AddonManager.h"
 #include "cores/DataCacheCore.h"
 #include "cores/IPlayerCallback.h"
+#include "cores/RetroPlayer/cheevos/Cheevos.h"
 #include "cores/RetroPlayer/guibridge/GUIGameRenderManager.h"
 #include "cores/RetroPlayer/guiplayback/GUIPlaybackControl.h"
 #include "cores/RetroPlayer/playback/IPlayback.h"
@@ -180,6 +181,12 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
     // Switch to fullscreen
     CServiceBroker::GetAppMessenger()->PostMsg(TMSG_SWITCHTOFULLSCREEN);
 
+    m_cheevos = std::make_shared<CCheevos>(m_gameClient.get(),
+                                           m_gameServices.GameSettings().GetRAUsername(),
+                                           m_gameServices.GameSettings().GetRAToken());
+
+    m_cheevos->EnableRichPresence();
+
     // Initialize gameplay
     CreatePlayback(m_gameServices.GameSettings().AutosaveEnabled(), savestatePath);
     RegisterWindowCallbacks();
@@ -232,6 +239,8 @@ bool CRetroPlayer::CloseFile(bool reopen /* = false */)
 
   m_input.reset();
   m_streamManager.reset();
+
+  m_cheevos.reset();
 
   if (m_gameClient)
     m_gameClient->Unload();
@@ -408,6 +417,7 @@ bool CRetroPlayer::OnAction(const CAction& action)
         m_playback->SetSpeed(0.0);
 
         CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Sending reset command via ACTION_PLAYER_RESET");
+        m_cheevos->ResetRuntime();
         m_gameClient->Input().HardwareReset();
 
         // If rewinding or paused, begin playback
@@ -583,9 +593,9 @@ void CRetroPlayer::CreatePlayback(bool bRestoreState, const std::string& savesta
   if (m_gameClient->RequiresGameLoop())
   {
     m_playback->Deinitialize();
-    m_playback.reset(new CReversiblePlayback(m_gameClient.get(), *m_renderManager,
-                                             m_gameClient->GetFrameRate(),
-                                             m_gameClient->GetSerializeSize()));
+    m_playback = std::make_unique<CReversiblePlayback>(
+        m_gameClient.get(), *m_renderManager, m_cheevos.get(), m_gameClient->GetFrameRate(),
+        m_gameClient->GetSerializeSize());
   }
   else
     ResetPlayback();

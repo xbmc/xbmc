@@ -38,6 +38,7 @@ public:
   SAVE_TYPE Type() const override;
   uint8_t Slot() const override;
   std::string Label() const override;
+  std::string Caption() const override;
   CDateTime Created() const override;
   std::string GameFileName() const override;
   uint64_t TimestampFrames() const override;
@@ -49,6 +50,7 @@ public:
   void SetType(SAVE_TYPE type) override;
   void SetSlot(uint8_t slot) override;
   void SetLabel(const std::string& label) override;
+  void SetCaption(const std::string& caption) override;
   void SetCreated(const CDateTime& createdUTC) override;
   void SetGameFileName(const std::string& gameFileName) override;
   void SetTimestampFrames(uint64_t timestampFrames) override;
@@ -86,6 +88,7 @@ private:
   SAVE_TYPE m_type = SAVE_TYPE::UNKNOWN;
   uint8_t m_slot = 0;
   std::unique_ptr<StringOffset> m_labelOffset;
+  std::unique_ptr<StringOffset> m_captionOffset;
   std::unique_ptr<StringOffset> m_createdOffset;
   std::unique_ptr<StringOffset> m_gameFileNameOffset;
   uint64_t m_timestampFrames = 0;

@@ -15,6 +15,7 @@
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/IFileTypes.h"
+#include "games/dialogs/DialogGameDefines.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
@@ -157,6 +158,7 @@ bool CSavestateDatabase::GetSavestatesNav(CFileItemList& items,
     }
 
     items[i]->SetArt("icon", MakeThumbnailPath(items[i]->GetPath()));
+    items[i]->SetProperty(SAVESTATE_CAPTION, savestate->Caption());
     items[i]->m_dateTime = dateUTC;
   }
 
@@ -172,6 +174,7 @@ bool CSavestateDatabase::RenameSavestate(const std::string& savestatePath, const
   std::unique_ptr<ISavestate> newSavestate = AllocateSavestate();
 
   newSavestate->SetLabel(label);
+  newSavestate->SetCaption(savestate->Caption());
   newSavestate->SetType(savestate->Type());
   newSavestate->SetCreated(savestate->Created());
   newSavestate->SetGameFileName(savestate->GameFileName());

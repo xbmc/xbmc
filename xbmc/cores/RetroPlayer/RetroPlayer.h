@@ -27,6 +27,7 @@ class CGameServices;
 
 namespace RETRO
 {
+class CCheevos;
 class CRetroPlayerInput;
 class CRPProcessInfo;
 class CRPRenderManager;
@@ -128,6 +129,7 @@ private:
   std::unique_ptr<IPlayback> m_playback;
   std::unique_ptr<IPlaybackControl> m_playbackControl;
   std::unique_ptr<CRetroPlayerAutoSave> m_autoSave;
+  std::shared_ptr<CCheevos> m_cheevos;
 
   // Game parameters
   GAME::GameClientPtr m_gameClient;
