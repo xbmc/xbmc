@@ -637,11 +637,7 @@ bool Interface_Filesystem::get_http_header(void* kodiBase,
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (addon == nullptr || url == nullptr || headers == nullptr || headers->handle == nullptr)
   {
-    CLog::Log(LOGERROR,
-              "Interface_Filesystem::{} - invalid data (addon='{}', url='{}', headers='{}', "
-              "headers->handle='{}')",
-              __FUNCTION__, kodiBase, static_cast<const void*>(url),
-              static_cast<const void*>(headers), headers->handle);
+    CLog::Log(LOGERROR, "Interface_Filesystem::{} - invalid data pointer given", __func__);
     return false;
   }
 
