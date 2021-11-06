@@ -55,8 +55,9 @@ private:
                     uint32_t next,
                     const struct spa_pod* param);
 
-  const pw_node_events m_nodeEvents = {
-      .version = PW_VERSION_NODE_EVENTS, .info = Info, .param = Param};
+  static pw_node_events CreateNodeEvents();
+
+  const pw_node_events m_nodeEvents;
 
   spa_hook m_objectListener;
 

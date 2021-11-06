@@ -41,12 +41,9 @@ private:
   static void Bound(void* userdata, uint32_t id);
   static void Removed(void* userdata);
 
-  const pw_proxy_events m_proxyEvents = {.version = PW_VERSION_PROXY_EVENTS,
-                                         .destroy = nullptr,
-                                         .bound = Bound,
-                                         .removed = Removed,
-                                         .done = nullptr,
-                                         .error = nullptr};
+  static pw_proxy_events CreateProxyEvents();
+
+  const pw_proxy_events m_proxyEvents;
 
   spa_hook m_proxyListener;
 };
