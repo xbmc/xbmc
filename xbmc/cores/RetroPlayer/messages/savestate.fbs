@@ -9,7 +9,7 @@
 namespace KODI.RETRO;
 
 // Savestate schema
-// Version 1
+// Version 2
 
 file_identifier "SAV_";
 
@@ -21,27 +21,28 @@ enum SaveType : uint8 {
 
 table Savestate {
   // Schema version
-  version:uint8;
+  version:uint8 (id: 0);
 
   // Savestate properties
-  type:SaveType;
-  slot:uint8;
-  label:string;
-  created:string; // W3C date time [ISO 8601 : 1988 (E)] with timezone info
+  type:SaveType (id: 1);
+  slot:uint8 (id: 2);
+  label:string (id: 3);
+  caption:string (id: 11);
+  created:string (id: 4); // W3C date time [ISO 8601 : 1988 (E)] with timezone info
 
   // Game properties
-  game_file_name:string;
+  game_file_name:string (id: 5);
 
   // Environment properties
-  timestamp_frames:uint64;
-  timestamp_wall_clock_ns:uint64;
+  timestamp_frames:uint64 (id: 6);
+  timestamp_wall_clock_ns:uint64 (id: 7);
 
   // Emulator properties
-  emulator_addon_id:string;
-  emulator_version:string; // Semantic version
+  emulator_addon_id:string (id: 8);
+  emulator_version:string (id: 9); // Semantic version
 
   // Memory properties
-  memory_data:[uint8];
+  memory_data:[uint8] (id: 10);
 }
 
 root_type Savestate;

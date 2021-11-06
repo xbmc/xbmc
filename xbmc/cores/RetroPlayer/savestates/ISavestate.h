@@ -55,6 +55,11 @@ public:
   virtual std::string Label() const = 0;
 
   /*!
+   * \brief A caption that describes the state of the game for this savestate
+   */
+  virtual std::string Caption() const = 0;
+
+  /*!
    * \brief The timestamp of this savestate's creation
    */
   virtual CDateTime Created() const = 0;
@@ -111,6 +116,7 @@ public:
   virtual void SetType(SAVE_TYPE type) = 0;
   virtual void SetSlot(uint8_t slot) = 0;
   virtual void SetLabel(const std::string& label) = 0;
+  virtual void SetCaption(const std::string& caption) = 0;
   virtual void SetCreated(const CDateTime& createdUTC) = 0;
   virtual void SetGameFileName(const std::string& gameFileName) = 0;
   virtual void SetTimestampFrames(uint64_t timestampFrames) = 0;
