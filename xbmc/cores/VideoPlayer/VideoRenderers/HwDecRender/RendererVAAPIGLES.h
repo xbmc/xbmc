@@ -30,11 +30,11 @@ namespace VAAPI
 class IVaapiWinSystem;
 }
 
-class CRendererVAAPI : public CLinuxRendererGLES
+class CRendererVAAPIGLES : public CLinuxRendererGLES
 {
 public:
-  CRendererVAAPI();
-  ~CRendererVAAPI() override;
+  CRendererVAAPIGLES();
+  ~CRendererVAAPIGLES() override;
 
   static CBaseRenderer* Create(CVideoBuffer *buffer);
   static void Register(VAAPI::IVaapiWinSystem *winSystem, VADisplay vaDpy, EGLDisplay eglDisplay, bool &general, bool &deepColor);

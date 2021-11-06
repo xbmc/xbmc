@@ -60,7 +60,7 @@ bool CWinSystemGbmGLContext::InitWindowSystem()
   bool general, deepColor;
   m_vaapiProxy.reset(VaapiProxyCreate(m_DRM->GetRenderNodeFileDescriptor()));
   VaapiProxyConfig(m_vaapiProxy.get(), m_eglContext.GetEGLDisplay());
-  VAAPIRegisterRender(m_vaapiProxy.get(), general, deepColor);
+  VAAPIRegisterRenderGL(m_vaapiProxy.get(), general, deepColor);
 
   if (general)
   {

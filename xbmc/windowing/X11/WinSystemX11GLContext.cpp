@@ -269,7 +269,7 @@ bool CWinSystemX11GLContext::RefreshGLContext(bool force)
                               static_cast<CGLContextEGL*>(m_pGLContext)->m_eglDisplay);
         bool general = false;
         bool deepColor = false;
-        VAAPIRegisterRender(m_vaapiProxy.get(), general, deepColor);
+        VAAPIRegisterRenderGL(m_vaapiProxy.get(), general, deepColor);
         if (general)
         {
           VAAPIRegister(m_vaapiProxy.get(), deepColor);
