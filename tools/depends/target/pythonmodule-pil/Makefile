@@ -27,6 +27,10 @@ else ifeq ($(OS),darwin_embedded)
 PILPATH=$(PREFIX)/share/$(APP_NAME)/addons/script.module.pil
 PILPATHLIB=$(PILPATH)/lib
 PYTHONPATH=$(PILPATH):$(PYTHON_SITE_PKG)
+
+# Work around an issue with xcode 11 stripping -arch arm64 flags.
+# Not required for xcode 12+, but doesnt hurt either.
+CFLAGS+= -target arm64-apple-darwin
 endif
 
 ifeq (darwin, $(findstring darwin, $(HOST)))
@@ -36,7 +40,7 @@ ZLIB_ROOT=ZLIB_ROOT="$(SDKROOT)/usr"
 endif
 
 BUILD_OPTS=--plat-name $(OS)-$(CPU) --disable-jpeg2000 --disable-webp --disable-imagequant --disable-tiff --disable-webp --disable-webpmux --disable-xcb --disable-lcms --disable-platform-guessing
-CROSSFLAGS=$(ZLIB_ROOT) PYTHONXCPREFIX="$(PREFIX)" CC="$(CC) $(CFLAGS)" LDSHARED="$(LDSHARED)" LDFLAGS="$(LDFLAGS) $(EXTRALDFLAGS)" PYTHONPATH="$(PYTHONPATH)"
+CROSSFLAGS=$(ZLIB_ROOT) PYTHONXINCLUDE="$(PREFIX)/include/python$(PYTHON_VERSION)" PYTHONXCPREFIX="$(PREFIX)" CC="$(CC) $(CFLAGS)" LDSHARED="$(LDSHARED)" LDFLAGS="$(LDFLAGS) $(EXTRALDFLAGS)" PYTHONPATH="$(PYTHONPATH)"
 
 all: .installed-$(PLATFORM)
 

@@ -11,7 +11,8 @@ NATIVE= m4 gettext heimdal autoconf automake \
         libpng libjpeg-turbo liblzo2 giflib \
         setuptools JsonSchemaBuilder TexturePacker \
         flatbuffers \
-        meson ninja
+        meson ninja \
+        autoconf-archive
 
 ifneq ($(NATIVE_OS),osx)
   NATIVE += libffi
@@ -39,6 +40,7 @@ all: native
 # Dependency layout for parallel builds
 autoconf: m4
 automake: autoconf
+autoconf-archive: autoconf
 dpkg: automake gettext libtool pkg-config tar
 flatbuffers: cmake
 heimdal: libtool
@@ -50,7 +52,7 @@ ninja: meson
 openssl: zlib
 swig: pcre
 tar: xz automake
-python3: $(EXPAT) $(LIBFFI) pkg-config zlib openssl
+python3: $(EXPAT) $(LIBFFI) pkg-config zlib openssl autoconf-archive
 setuptools: python3
 wayland-scanner: expat pkg-config
 waylandpp-scanner: cmake pugixml
