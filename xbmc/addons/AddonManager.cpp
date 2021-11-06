@@ -829,7 +829,9 @@ bool CAddonMgr::DisableAddon(const std::string& id, AddonDisabledReason disabled
   AddonPtr addon;
   if (GetAddon(id, addon, ADDON_UNKNOWN, OnlyEnabled::NO) && addon != NULL)
   {
-    CServiceBroker::GetEventLog().Add(EventPtr(new CAddonManagementEvent(addon, 24141)));
+    auto eventLog = CServiceBroker::GetEventLog();
+    if (eventLog)
+      eventLog->Add(EventPtr(new CAddonManagementEvent(addon, 24141)));
   }
 
   m_events.Publish(AddonEvents::Disabled(id));
@@ -863,10 +865,14 @@ bool CAddonMgr::EnableSingle(const std::string& id)
   if (!GetAddon(id, addon, ADDON_UNKNOWN, OnlyEnabled::NO) || addon == nullptr)
     return false;
 
+  auto eventLog = CServiceBroker::GetEventLog();
+
   if (!IsCompatible(*addon))
   {
     CLog::Log(LOGERROR, "Add-on '{}' is not compatible with Kodi", addon->ID());
-    CServiceBroker::GetEventLog().AddWithNotification(EventPtr(new CNotificationEvent(addon->Name(), 24152, EventLevel::Error)));
+    if (eventLog)
+      eventLog->AddWithNotification(
+          EventPtr(new CNotificationEvent(addon->Name(), 24152, EventLevel::Error)));
     UpdateDisabledReason(addon->ID(), AddonDisabledReason::INCOMPATIBLE);
     return false;
   }
@@ -879,7 +885,8 @@ bool CAddonMgr::EnableSingle(const std::string& id)
   if (addon->HasType(ADDON_REPOSITORY) && addon->Origin().empty())
     SetAddonOrigin(id, id, false);
 
-  CServiceBroker::GetEventLog().Add(EventPtr(new CAddonManagementEvent(addon, 24064)));
+  if (eventLog)
+    eventLog->Add(EventPtr(new CAddonManagementEvent(addon, 24064)));
 
   CLog::Log(LOGDEBUG, "CAddonMgr: enabled {}", addon->ID());
   m_events.Publish(AddonEvents::Enabled(id));
