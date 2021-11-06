@@ -28,7 +28,7 @@
 #include "windowing/GraphicContext.h"
 #include "windowing/X11/WinSystemX11.h"
 
-#include <dlfcn.h>
+#include <vdpau/vdpau_x11.h>
 
 using namespace Actor;
 using namespace VDPAU;
@@ -80,7 +80,6 @@ static float studioCSCKCoeffs709[3] = {0.2126, 0.7152, 0.0722}; //BT709 {Kr, Kg,
 CVDPAUContext *CVDPAUContext::m_context = 0;
 CCriticalSection CVDPAUContext::m_section;
 Display *CVDPAUContext::m_display = 0;
-void *CVDPAUContext::m_dlHandle = 0;
 
 CVDPAUContext::CVDPAUContext()
 {
@@ -122,7 +121,7 @@ bool CVDPAUContext::EnsureContext(CVDPAUContext **ctx)
   *ctx = m_context;
   {
     CSingleLock gLock(CServiceBroker::GetWinSystem()->GetGfxContext());
-    if (!m_context->LoadSymbols() || !m_context->CreateContext())
+    if (!m_context->CreateContext())
     {
       delete m_context;
       m_context = 0;
@@ -152,35 +151,6 @@ int CVDPAUContext::GetFeatureCount()
   return m_featureCount;
 }
 
-bool CVDPAUContext::LoadSymbols()
-{
-  if (!m_dlHandle)
-  {
-    m_dlHandle  = dlopen("libvdpau.so.1", RTLD_LAZY);
-    if (!m_dlHandle)
-    {
-      const char* error = dlerror();
-      if (!error)
-        error = "dlerror() returned NULL";
-
-      CLog::Log(LOGERROR, "VDPAU::LoadSymbols: Unable to get handle to lib: {}", error);
-      return false;
-    }
-  }
-
-  char* error;
-  (void)dlerror();
-  dl_vdp_device_create_x11 = (VdpStatus (*)(Display*, int, VdpDevice*, VdpStatus (**)(VdpDevice, VdpFuncId, void**)))dlsym(m_dlHandle, (const char*)"vdp_device_create_x11");
-  error = dlerror();
-  if (error)
-  {
-    CLog::Log(LOGERROR, "(VDPAU) - {} in {}", error, __FUNCTION__);
-    m_vdpDevice = VDP_INVALID_HANDLE;
-    return false;
-  }
-  return true;
-}
-
 bool CVDPAUContext::CreateContext()
 {
   CLog::Log(LOGINFO, "VDPAU::CreateContext - creating decoder context");
@@ -199,10 +169,7 @@ bool CVDPAUContext::CreateContext()
 
   VdpStatus vdp_st;
   // Create Device
-  vdp_st = dl_vdp_device_create_x11(m_display,
-                                    screen,
-                                   &m_vdpDevice,
-                                   &m_vdpProcs.vdp_get_proc_address);
+  vdp_st = vdp_device_create_x11(m_display, screen, &m_vdpDevice, &m_vdpProcs.vdp_get_proc_address);
 
   CLog::Log(LOGINFO, "vdp_device = {:#08x} vdp_st = {:#08x}", m_vdpDevice, vdp_st);
   if (vdp_st != VDP_STATUS_OK)
