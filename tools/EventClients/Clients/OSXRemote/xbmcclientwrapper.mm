@@ -412,10 +412,11 @@ void XBMCClientWrapperImpl::populateMultiRemoteModeMap(){
   return [self initWithMode:DEFAULT_MODE serverAddress:@"localhost" port:9777 verbose: false];
 }
 - (id) initWithMode:(eRemoteMode) f_mode serverAddress:(NSString*) fp_server port:(int) f_port verbose:(bool) f_verbose{
-	if( ![super init] )
-		return nil;
-	mp_impl = new XBMCClientWrapperImpl(f_mode, [fp_server UTF8String], f_port, f_verbose);
-	return self;
+  self = [super init];
+  if (self)
+    mp_impl = new XBMCClientWrapperImpl(f_mode, [fp_server UTF8String], f_port, f_verbose);
+
+  return self;
 }
 
 - (void) setUniversalModeTimeout:(double) f_timeout{
