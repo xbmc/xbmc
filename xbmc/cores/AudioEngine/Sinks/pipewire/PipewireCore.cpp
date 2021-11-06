@@ -21,7 +21,7 @@ namespace SINK
 namespace PIPEWIRE
 {
 
-CPipewireCore::CPipewireCore(pw_context* context)
+CPipewireCore::CPipewireCore(pw_context* context) : m_coreEvents(CreateCoreEvents())
 {
   m_core.reset(pw_context_connect(context, nullptr, 0));
   if (!m_core)
@@ -54,6 +54,15 @@ void CPipewireCore::OnCoreDone(void* userdata, uint32_t id, int seq)
 
   if (core->GetSync() == seq)
     loop->Signal(false);
+}
+
+pw_core_events CPipewireCore::CreateCoreEvents()
+{
+  pw_core_events coreEvents = {};
+  coreEvents.version = PW_VERSION_CORE_EVENTS;
+  coreEvents.done = OnCoreDone;
+
+  return coreEvents;
 }
 
 } // namespace PIPEWIRE

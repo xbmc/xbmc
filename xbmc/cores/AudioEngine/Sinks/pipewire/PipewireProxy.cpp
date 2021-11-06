@@ -25,6 +25,7 @@ CPipewireProxy::CPipewireProxy(pw_registry* registry,
                                uint32_t id,
                                const char* type,
                                uint32_t version)
+  : m_proxyEvents(CreateProxyEvents())
 {
   m_proxy.reset(reinterpret_cast<pw_proxy*>(pw_registry_bind(registry, id, type, version, 0)));
   if (!m_proxy)
@@ -60,6 +61,16 @@ void CPipewireProxy::Removed(void* userdata)
   auto AE = CServiceBroker::GetActiveAE();
   if (AE)
     AE->DeviceCountChange("PIPEWIRE");
+}
+
+pw_proxy_events CPipewireProxy::CreateProxyEvents()
+{
+  pw_proxy_events proxyEvents = {};
+  proxyEvents.version = PW_VERSION_PROXY_EVENTS;
+  proxyEvents.bound = Bound;
+  proxyEvents.removed = Removed;
+
+  return proxyEvents;
 }
 
 } // namespace PIPEWIRE

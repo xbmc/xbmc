@@ -35,15 +35,9 @@ public:
 private:
   static void OnCoreDone(void* userdata, uint32_t id, int seq);
 
-  const pw_core_events m_coreEvents = {.version = PW_VERSION_CORE_EVENTS,
-                                       .info = nullptr,
-                                       .done = OnCoreDone,
-                                       .ping = nullptr,
-                                       .error = nullptr,
-                                       .remove_id = nullptr,
-                                       .bound_id = nullptr,
-                                       .add_mem = nullptr,
-                                       .remove_mem = nullptr};
+  static pw_core_events CreateCoreEvents();
+
+  const pw_core_events m_coreEvents;
 
   spa_hook m_coreListener;
 

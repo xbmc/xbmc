@@ -25,7 +25,7 @@ namespace SINK
 namespace PIPEWIRE
 {
 
-CPipewireRegistry::CPipewireRegistry(pw_core* core)
+CPipewireRegistry::CPipewireRegistry(pw_core* core) : m_registryEvents(CreateRegistryEvents())
 {
   m_registry.reset(pw_core_get_registry(core, PW_VERSION_REGISTRY, 0));
   if (!m_registry)
@@ -94,6 +94,16 @@ void CPipewireRegistry::OnGlobalRemoved(void* userdata, uint32_t id)
 
     globals.erase(global);
   }
+}
+
+pw_registry_events CPipewireRegistry::CreateRegistryEvents()
+{
+  pw_registry_events registryEvents = {};
+  registryEvents.version = PW_VERSION_REGISTRY_EVENTS;
+  registryEvents.global = OnGlobalAdded;
+  registryEvents.global_remove = OnGlobalRemoved;
+
+  return registryEvents;
 }
 
 } // namespace PIPEWIRE

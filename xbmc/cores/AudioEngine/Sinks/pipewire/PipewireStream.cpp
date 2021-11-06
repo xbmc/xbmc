@@ -25,7 +25,7 @@ namespace SINK
 namespace PIPEWIRE
 {
 
-CPipewireStream::CPipewireStream(pw_core* core)
+CPipewireStream::CPipewireStream(pw_core* core) : m_streamEvents(CreateStreamEvents())
 {
   m_stream.reset(pw_stream_new(core, nullptr, pw_properties_new(nullptr, nullptr)));
   if (!m_stream)
@@ -143,6 +143,17 @@ void CPipewireStream::Drained(void* userdata)
   CLog::Log(LOGDEBUG, "CPipewireStream::{}", __FUNCTION__);
 
   loop->Signal(false);
+}
+
+pw_stream_events CPipewireStream::CreateStreamEvents()
+{
+  pw_stream_events streamEvents = {};
+  streamEvents.version = PW_VERSION_STREAM_EVENTS;
+  streamEvents.state_changed = StateChanged;
+  streamEvents.process = Process;
+  streamEvents.drained = Drained;
+
+  return streamEvents;
 }
 
 } // namespace PIPEWIRE
