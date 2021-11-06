@@ -35,8 +35,11 @@ bool CPVREventLogJob::DoWork()
         event.m_bError ? CGUIDialogKaiToast::Error : CGUIDialogKaiToast::Info, event.m_label.c_str(), event.m_msg, 5000, true);
 
     // Write event log entry.
-    CServiceBroker::GetEventLog().Add(
-      std::make_shared<CNotificationEvent>(event.m_label, event.m_msg, event.m_icon, event.m_bError ? EventLevel::Error : EventLevel::Information));
+    auto eventLog = CServiceBroker::GetEventLog();
+    if (eventLog)
+      eventLog->Add(std::make_shared<CNotificationEvent>(event.m_label, event.m_msg, event.m_icon,
+                                                         event.m_bError ? EventLevel::Error
+                                                                        : EventLevel::Information));
   }
   return true;
 }

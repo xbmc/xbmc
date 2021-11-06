@@ -248,9 +248,16 @@ CDatabaseManager& CServiceBroker::GetDatabaseManager()
   return g_application.m_ServiceManager->GetDatabaseManager();
 }
 
-CEventLog& CServiceBroker::GetEventLog()
+CEventLog* CServiceBroker::GetEventLog()
 {
-  return g_serviceBroker.m_pSettingsComponent->GetProfileManager()->GetEventLog();
+  if (!g_serviceBroker.m_pSettingsComponent)
+    return nullptr;
+
+  auto profileManager = g_serviceBroker.m_pSettingsComponent->GetProfileManager();
+  if (!profileManager)
+    return nullptr;
+
+  return &profileManager->GetEventLog();
 }
 
 CMediaManager& CServiceBroker::GetMediaManager()

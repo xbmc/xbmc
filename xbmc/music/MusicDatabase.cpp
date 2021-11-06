@@ -12606,8 +12606,10 @@ bool CMusicDatabase::ImportSongHistory(const std::string& xmlFile,
     // "Importing song history {1} of {2} songs matched", total - unmatched, total)
     std::string strLine =
         StringUtils::Format(g_localizeStrings.Get(38353), total - unmatched, total);
-    CServiceBroker::GetEventLog().Add(
-        EventPtr(new CNotificationEvent(20197, strLine, EventLevel::Information)));
+
+    auto eventLog = CServiceBroker::GetEventLog();
+    if (eventLog)
+      eventLog->Add(EventPtr(new CNotificationEvent(20197, strLine, EventLevel::Information)));
 
     return true;
   }

@@ -21,12 +21,12 @@ bool CEventsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   items.ClearProperties();
   items.SetContent("events");
 
-  CEventLog& log = CServiceBroker::GetEventLog();
+  auto log = CServiceBroker::GetEventLog();
   Events events;
 
   std::string hostname = url.GetHostName();
   if (hostname.empty())
-    events = log.Get();
+    events = log->Get();
   else
   {
     bool includeHigherLevels = false;
@@ -43,7 +43,7 @@ bool CEventsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     EventLevel level = CEventLog::EventLevelFromString(hostname);
 
     // get the events of the specified level(s)
-    events = log.Get(level, includeHigherLevels);
+    events = log->Get(level, includeHigherLevels);
   }
 
   for (const auto& eventItem : events)

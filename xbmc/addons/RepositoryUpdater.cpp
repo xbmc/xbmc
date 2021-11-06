@@ -94,8 +94,12 @@ void CRepositoryUpdater::OnJobComplete(unsigned int jobID, bool success, CJob* j
               "", g_localizeStrings.Get(24001), g_localizeStrings.Get(24061),
               TOAST_DISPLAY_TIME, false, TOAST_DISPLAY_TIME);
 
+        auto eventLog = CServiceBroker::GetEventLog();
         for (const auto &addon : updates)
-          CServiceBroker::GetEventLog().Add(EventPtr(new CAddonManagementEvent(addon, 24068)));
+        {
+          if (eventLog)
+            eventLog->Add(EventPtr(new CAddonManagementEvent(addon, 24068)));
+        }
       }
     }
 

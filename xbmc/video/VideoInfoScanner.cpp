@@ -492,11 +492,14 @@ namespace VIDEO
           mediaType = MediaTypeTvShow;
         else if (info2->Content() == CONTENT_MUSICVIDEOS)
           mediaType = MediaTypeMusicVideo;
-        CServiceBroker::GetEventLog().Add(EventPtr(new CMediaLibraryEvent(
-            mediaType, pItem->GetPath(), 24145,
-            StringUtils::Format(g_localizeStrings.Get(24147), mediaType,
-                                URIUtils::GetFileName(pItem->GetPath())),
-            pItem->GetArt("thumb"), CURL::GetRedacted(pItem->GetPath()), EventLevel::Warning)));
+
+        auto eventLog = CServiceBroker::GetEventLog();
+        if (eventLog)
+          eventLog->Add(EventPtr(new CMediaLibraryEvent(
+              mediaType, pItem->GetPath(), 24145,
+              StringUtils::Format(g_localizeStrings.Get(24147), mediaType,
+                                  URIUtils::GetFileName(pItem->GetPath())),
+              pItem->GetArt("thumb"), CURL::GetRedacted(pItem->GetPath()), EventLevel::Warning)));
       }
 
       pURL = NULL;

@@ -1919,8 +1919,10 @@ void CPVRClient::cb_recording_notification(void* kodiInstance,
     // display a notification for 5 seconds
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, strLine1, strLine2, 5000,
                                           false);
-    CServiceBroker::GetEventLog().Add(
-        EventPtr(new CNotificationEvent(client->Name(), strLine1, client->Icon(), strLine2)));
+    auto eventLog = CServiceBroker::GetEventLog();
+    if (eventLog)
+      eventLog->Add(
+          EventPtr(new CNotificationEvent(client->Name(), strLine1, client->Icon(), strLine2)));
 
     CLog::LogFC(LOGDEBUG, LOGPVR, "Recording {} on client '{}'. name='{}' filename='{}'",
                 bOnOff ? "started" : "finished", client->Name(), strName, strFileName);
