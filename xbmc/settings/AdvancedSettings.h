@@ -221,6 +221,10 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     unsigned int m_imageRes;  ///< \brief the maximal resolution to cache images at (assumes 16x9)
     CPictureScalingAlgorithm::Algorithm m_imageScalingAlgorithm;
 
+    bool m_imageMipMappingGlobal;
+    float m_imageMipMappingGlobalSharpen;
+    float m_imageMipMappingSpecialSharpen;
+
     int m_sambaclienttimeout;
     std::string m_sambadoscodepage;
     bool m_sambastatfiles;
