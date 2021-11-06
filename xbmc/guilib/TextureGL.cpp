@@ -109,6 +109,7 @@ void CGLTexture::LoadToGPU()
 #ifndef HAS_GLES
   GLenum format = GL_BGRA;
   GLint numcomponents = GL_RGBA;
+  bool uncompressed = false;
 
   switch (m_format)
   {
@@ -125,13 +126,31 @@ void CGLTexture::LoadToGPU()
   case XB_FMT_RGB8:
     format = GL_RGB;
     numcomponents = GL_RGB;
+    uncompressed = true;
+    break;
+  case XB_FMT_ETC1:
+  case XB_FMT_ETC2_RGB:
+    format = GL_COMPRESSED_RGB8_ETC2;
+    break;
+  case XB_FMT_ETC2_RGBA:
+    format = GL_COMPRESSED_RGBA8_ETC2_EAC;
+    break;
+  case XB_FMT_ETC2_R:
+    format = GL_COMPRESSED_R11_EAC;
+    break;
+  case XB_FMT_ASTC_4x4:
+    format = GL_COMPRESSED_RGBA_ASTC_4x4_KHR;
+    break;
+  case XB_FMT_ASTC_8x8:
+    format = GL_COMPRESSED_RGBA_ASTC_8x8_KHR;
     break;
   case XB_FMT_A8R8G8B8:
   default:
+    uncompressed = true;
     break;
   }
 
-  if ((m_format & XB_FMT_DXT_MASK) == 0)
+  if (uncompressed)
   {
     glTexImage2D(GL_TEXTURE_2D, 0, numcomponents,
                  m_textureWidth, m_textureHeight, 0,
@@ -164,15 +183,18 @@ void CGLTexture::LoadToGPU()
 
   GLint internalformat;
   GLenum pixelformat;
+  bool uncompressed = false;
 
   switch (m_format)
   {
     default:
     case XB_FMT_RGBA8:
       internalformat = pixelformat = GL_RGBA;
+      uncompressed = true;
       break;
     case XB_FMT_RGB8:
       internalformat = pixelformat = GL_RGB;
+      uncompressed = true;
       break;
     case XB_FMT_A8R8G8B8:
       if (CServiceBroker::GetRenderSystem()->IsExtSupported("GL_EXT_texture_format_BGRA8888") ||
@@ -192,10 +214,39 @@ void CGLTexture::LoadToGPU()
         SwapBlueRed(m_pixels, m_textureHeight, GetPitch());
         internalformat = pixelformat = GL_RGBA;
       }
+      uncompressed = true;
+      break;
+    case XB_FMT_ETC1:
+      internalformat = GL_ETC1_RGB8_OES;
+      break;
+    case XB_FMT_ETC2_RGB:
+      internalformat = GL_COMPRESSED_RGB8_ETC2;
+      break;
+    case XB_FMT_ETC2_RGBA:
+      internalformat = GL_COMPRESSED_RGBA8_ETC2_EAC;
+      break;
+    case XB_FMT_ETC2_R:
+      internalformat = GL_COMPRESSED_R11_EAC;
+      break;
+    case XB_FMT_ASTC_4x4:
+      internalformat = GL_COMPRESSED_RGBA_ASTC_4x4_KHR;
+      break;
+    case XB_FMT_ASTC_8x8:
+      internalformat = GL_COMPRESSED_RGBA_ASTC_8x8_KHR;
       break;
   }
-  glTexImage2D(GL_TEXTURE_2D, 0, internalformat, m_textureWidth, m_textureHeight, 0,
-    pixelformat, GL_UNSIGNED_BYTE, m_pixels);
+
+  if (uncompressed)
+  {
+    glTexImage2D(GL_TEXTURE_2D, 0, internalformat, m_textureWidth, m_textureHeight, 0,
+                  pixelformat, GL_UNSIGNED_BYTE, m_pixels);
+  }
+  else
+  {
+    glCompressedTexImage2D(GL_TEXTURE_2D, 0, internalformat,
+                            m_textureWidth, m_textureHeight, 0,
+                            GetPitch() * GetRows(), m_pixels);
+  }
 
   if (IsMipmapped())
   {
@@ -220,3 +271,63 @@ void CGLTexture::BindToUnit(unsigned int unit)
   glBindTexture(GL_TEXTURE_2D, m_texture);
 }
 
+bool CGLTexture::IsTexSupported(uint32_t textureFormat) const
+{
+  unsigned int renderVersionMajor;
+  unsigned int renderVersionMinor;
+  CServiceBroker::GetRenderSystem()->GetRenderVersion(renderVersionMajor, renderVersionMinor);
+#ifndef HAS_GLES
+  switch(textureFormat)
+  {
+    case XB_FMT_UNKNOWN:
+    case XB_FMT_A8R8G8B8:
+    case XB_FMT_A8:
+    case XB_FMT_RGBA8:
+    case XB_FMT_RGB8:
+    case XB_FMT_OPAQUE:
+      return true;
+    case XB_FMT_ETC1:
+    case XB_FMT_ETC2_R:
+    case XB_FMT_ETC2_RGB:
+    case XB_FMT_ETC2_RGBA:
+      return (renderVersionMajor > 4 || (renderVersionMajor == 4 && renderVersionMinor >= 3));
+    case XB_FMT_ASTC_4x4:
+    case XB_FMT_ASTC_8x8:
+      return (CServiceBroker::GetRenderSystem()->IsExtSupported("GL_KHR_texture_compression_astc_ldr"));
+    case XB_FMT_DXT1:
+    case XB_FMT_DXT3:
+    case XB_FMT_DXT5:
+    case XB_FMT_DXT5_YCoCg:
+      return (CServiceBroker::GetRenderSystem()->IsExtSupported("GL_EXT_texture_compression_s3tc"));
+    default:
+      return false;
+  }
+#else	// GLES version
+  switch(textureFormat)
+  {
+    case XB_FMT_UNKNOWN:
+    case XB_FMT_A8R8G8B8:
+    case XB_FMT_A8:
+    case XB_FMT_RGBA8:
+    case XB_FMT_RGB8:
+    case XB_FMT_OPAQUE:
+      return true;
+    case XB_FMT_ETC1:
+      return (CServiceBroker::GetRenderSystem()->IsExtSupported("GL_OES_compressed_ETC1_RGB8_texture"));
+    case XB_FMT_ETC2_R:
+    case XB_FMT_ETC2_RGB:
+    case XB_FMT_ETC2_RGBA:
+      return (renderVersionMajor >= 3);
+    case XB_FMT_ASTC_4x4:
+    case XB_FMT_ASTC_8x8:
+      return (CServiceBroker::GetRenderSystem()->IsExtSupported("GL_KHR_texture_compression_astc_ldr") || CServiceBroker::GetRenderSystem()->IsExtSupported("GL_OES_texture_compression_astc"));
+    case XB_FMT_DXT1:
+    case XB_FMT_DXT3:
+    case XB_FMT_DXT5:
+    case XB_FMT_DXT5_YCoCg:
+      return (CServiceBroker::GetRenderSystem()->IsExtSupported("GL_EXT_texture_compression_s3tc"));
+    default:
+      return false;
+  }
+#endif
+}

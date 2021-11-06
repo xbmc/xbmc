@@ -25,6 +25,7 @@ public:
   void DestroyTextureObject() override;
   void LoadToGPU() override;
   void BindToUnit(unsigned int unit) override;
+  bool IsTexSupported(uint32_t textureFormat) const override;
 
 protected:
   GLuint m_texture = 0;

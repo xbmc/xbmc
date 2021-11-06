@@ -83,8 +83,10 @@ public:
   virtual void DestroyTextureObject() = 0;
   virtual void LoadToGPU() = 0;
   virtual void BindToUnit(unsigned int unit) = 0;
+  virtual bool IsTexSupported(uint32_t textureFormat) const = 0;
 
   unsigned char* GetPixels() const { return m_pixels; }
+  unsigned int GetFormat() const { return m_format; }
   unsigned int GetPitch() const { return GetPitch(m_textureWidth); }
   unsigned int GetRows() const { return GetRows(m_textureHeight); }
   unsigned int GetTextureWidth() const { return m_textureWidth; }
