@@ -44,7 +44,6 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
     std::vector<std::string> filenames;
     filenames.push_back(file);
     CUtil::ScanForExternalAudio(file, filenames);
-    CUtil::ScanForExternalDemuxSub(file, filenames);
     if (filenames.size() >= 2)
     {
       return CreateInputStream(pPlayer, fileitem, filenames);

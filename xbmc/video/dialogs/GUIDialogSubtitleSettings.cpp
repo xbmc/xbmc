@@ -126,10 +126,10 @@ std::string CGUIDialogSubtitleSettings::BrowseForSubtitle()
   }
 
   std::string strMask =
-      ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.vtt|.idx|.zip";
+      ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.vtt|.idx|.zip|.sup";
 
   if (g_application.GetCurrentPlayer() == "VideoPlayer")
-    strMask = ".srt|.zip|.ifo|.smi|.sub|.idx|.ass|.ssa|.vtt|.txt";
+    strMask = ".srt|.zip|.ifo|.smi|.sub|.idx|.ass|.ssa|.vtt|.txt|.sup";
 
   strMask += extras;
 

@@ -4494,23 +4494,46 @@ int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string
 {
   std::string ext = URIUtils::GetExtension(filename);
   std::string vobsubfile = subfilename;
-  if (ext == ".idx")
+  if (ext == ".idx" || ext == ".sup")
   {
-    if (vobsubfile.empty()) {
-      // find corresponding .sub (e.g. in case of manually selected .idx sub)
-      vobsubfile = CUtil::GetVobSubSubFromIdx(filename);
+    std::shared_ptr<CDVDDemux> pDemux;
+    if (ext == ".idx")
+    {
       if (vobsubfile.empty())
+      {
+        // find corresponding .sub (e.g. in case of manually selected .idx sub)
+        vobsubfile = CUtil::GetVobSubSubFromIdx(filename);
+        if (vobsubfile.empty())
+          return -1;
+      }
+
+      auto pDemuxVobsub = std::make_shared<CDVDDemuxVobsub>();
+      if (!pDemuxVobsub->Open(filename, STREAM_SOURCE_NONE, vobsubfile))
         return -1;
+
+      m_SelectionStreams.Update(nullptr, pDemuxVobsub.get(), vobsubfile);
+      pDemux = pDemuxVobsub;
+    }
+    else // .sup file
+    {
+      CFileItem item(filename, false);
+      std::shared_ptr<CDVDInputStream> pInput;
+      pInput = CDVDFactoryInputStream::CreateInputStream(nullptr, item);
+      if (!pInput || !pInput->Open())
+        return -1;
+
+      auto pDemuxFFmpeg = std::make_shared<CDVDDemuxFFmpeg>();
+      if (!pDemuxFFmpeg->Open(pInput, false))
+        return -1;
+
+      m_SelectionStreams.Update(nullptr, pDemuxFFmpeg.get(), filename);
+      pDemux = pDemuxFFmpeg;
     }
 
-    auto v = std::make_shared<CDVDDemuxVobsub>();
-    if (!v->Open(filename, STREAM_SOURCE_NONE, vobsubfile))
-      return -1;
-    m_SelectionStreams.Update(NULL, v.get(), vobsubfile);
+    ExternalStreamInfo info =
+        CUtil::GetExternalStreamDetailsFromFilename(m_item.GetDynPath(), filename);
 
-    ExternalStreamInfo info = CUtil::GetExternalStreamDetailsFromFilename(m_item.GetDynPath(), vobsubfile);
-
-    for (auto sub : v->GetStreams())
+    for (auto sub : pDemux->GetStreams())
     {
       if (sub->type != STREAM_SUBTITLE)
         continue;
@@ -4529,12 +4552,15 @@ int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string
       if (static_cast<StreamFlags>(info.flag) != StreamFlags::FLAG_NONE)
         stream.flags = static_cast<StreamFlags>(info.flag);
     }
+
     UpdateContent();
     // the demuxer id is unique
-    m_subtitleDemuxerMap[v->GetDemuxerId()] = v;
-    return m_SelectionStreams.TypeIndexOf(STREAM_SUBTITLE,
-      m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename), v->GetDemuxerId(), 0);
+    m_subtitleDemuxerMap[pDemux->GetDemuxerId()] = pDemux;
+    return m_SelectionStreams.TypeIndexOf(
+        STREAM_SUBTITLE, m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename),
+        pDemux->GetDemuxerId(), 0);
   }
+
   if(ext == ".sub")
   {
     // if this looks like vobsub file (i.e. .idx found), add it as such
@@ -4542,6 +4568,7 @@ int CVideoPlayer::AddSubtitleFile(const std::string& filename, const std::string
     if (!vobsubidx.empty())
       return AddSubtitleFile(vobsubidx, filename);
   }
+
   SelectionStream s;
   s.source   = m_SelectionStreams.Source(STREAM_SOURCE_TEXT, filename);
   s.type     = STREAM_SUBTITLE;
