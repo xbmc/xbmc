@@ -438,7 +438,7 @@
 			</item>
 		</content>
 	</include>
-	<include name="WidgetListChannels">
+	<include name="WidgetListPVR">
 		<param name="item_treshold">0</param>
 		<param name="item_limit">15</param>
 		<param name="icon">$INFO[ListItem.Icon]</param>
