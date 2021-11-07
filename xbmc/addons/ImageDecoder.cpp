@@ -10,23 +10,25 @@
 #include "guilib/TextureFormats.h"
 #include "pictures/PictureInfoTag.h"
 
-static const std::map<int, ADDON_IMG_FMT> KodiToAddonFormat = {
-    {XB_FMT_A8R8G8B8, ADDON_IMG_FMT_A8R8G8B8},
-    {XB_FMT_A8, ADDON_IMG_FMT_A8},
-    {XB_FMT_RGBA8, ADDON_IMG_FMT_RGBA8},
-    {XB_FMT_RGB8, ADDON_IMG_FMT_RGB8}};
-
 using namespace ADDON;
 using namespace KODI::ADDONS;
 
 namespace
 {
-char* cb_get_mime_type(KODI_HANDLE kodiInstance)
+
+constexpr std::array<std::pair<unsigned int, ADDON_IMG_FMT>, 4> KodiToAddonFormat = {
+    {{XB_FMT_A8R8G8B8, ADDON_IMG_FMT_A8R8G8B8},
+     {XB_FMT_A8, ADDON_IMG_FMT_A8},
+     {XB_FMT_RGBA8, ADDON_IMG_FMT_RGBA8},
+     {XB_FMT_RGB8, ADDON_IMG_FMT_RGB8}}};
+
+static char* cb_get_mime_type(KODI_HANDLE kodiInstance)
 {
   if (!kodiInstance)
     return nullptr;
   return strdup(static_cast<CImageDecoder*>(kodiInstance)->GetMimeType().c_str());
 }
+
 } /* namespace */
 
 CImageDecoder::CImageDecoder(const AddonInfoPtr& addonInfo, const std::string& mimetype)
@@ -197,7 +199,8 @@ bool CImageDecoder::Decode(unsigned char* const pixels,
   if (!m_ifc.imagedecoder->toAddon->decode)
     return false;
 
-  auto it = KodiToAddonFormat.find(format & XB_FMT_MASK);
+  auto it = std::find_if(KodiToAddonFormat.begin(), KodiToAddonFormat.end(),
+                         [format](auto& p) { return p.first == format; });
   if (it == KodiToAddonFormat.end())
     return false;
 
