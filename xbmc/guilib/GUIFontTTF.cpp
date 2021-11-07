@@ -614,7 +614,7 @@ float CGUIFontTTF::GetTextWidthInternal(const vecText& text, std::vector<Glyph>&
       // If last character in line, we want to add render width
       // and not advance distance - this makes sure that italic text isn't
       // choped on the end (as render width is larger than advance then).
-      if (it == glyphs.end())
+      if (std::next(it) == glyphs.end())
         width += std::max(c->right - c->left + c->offsetX, c->advance);
       else if ((c->letter & 0xffff) == static_cast<character_t>('\t'))
         width += GetTabSpaceLength();
