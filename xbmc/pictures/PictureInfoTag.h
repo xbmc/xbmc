@@ -17,16 +17,19 @@
 #include <string>
 #include <vector>
 
-namespace ADDON
+namespace KODI
+{
+namespace ADDONS
 {
 class CImageDecoder;
-}
+} /* namespace ADDONS */
+} /* namespace KODI */
 
 class CVariant;
 
 class CPictureInfoTag : public IArchivable, public ISerializable, public ISortable
 {
-  friend class ADDON::CImageDecoder;
+  friend class KODI::ADDONS::CImageDecoder;
 
   // Mimic structs from libexif.h but with C++ types instead of arrays
   struct ExifInfo

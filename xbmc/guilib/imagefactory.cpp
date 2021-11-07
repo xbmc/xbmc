@@ -43,8 +43,8 @@ IImage* ImageFactory::CreateLoaderFromMimeType(const std::string& strMimeType)
       continue;
 
     CSingleLock lock(m_createSec);
-    std::unique_ptr<ADDON::CImageDecoder> result =
-        std::make_unique<ADDON::CImageDecoder>(addonInfo.second, strMimeType);
+    std::unique_ptr<CImageDecoder> result =
+        std::make_unique<CImageDecoder>(addonInfo.second, strMimeType);
     if (!result->Create())
     {
       continue;
