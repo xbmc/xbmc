@@ -11,9 +11,13 @@
 #include "utils/MemUtils.h"
 #include "utils/log.h"
 
-CTexture* CTexture::CreateTexture(unsigned int width, unsigned int height, unsigned int format)
+#include <memory>
+
+std::unique_ptr<CTexture> CTexture::CreateTexture(unsigned int width,
+                                                  unsigned int height,
+                                                  unsigned int format)
 {
-  return new CDXTexture(width, height, format);
+  return std::make_unique<CDXTexture>(width, height, format);
 }
 
 CDXTexture::CDXTexture(unsigned int width, unsigned int height, unsigned int format)

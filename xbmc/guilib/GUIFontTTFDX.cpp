@@ -45,11 +45,6 @@ CGUIFontTTFDX::~CGUIFontTTFDX(void)
 {
   DX::Windowing()->Unregister(this);
 
-  if (m_speedupTexture)
-  {
-    delete m_speedupTexture;
-    m_speedupTexture = nullptr;
-  }
   m_vertexBuffer = nullptr;
   m_staticIndexBuffer = nullptr;
   if (!m_buffers.empty())
@@ -220,26 +215,23 @@ void CGUIFontTTFDX::ClearReference(CGUIFontTTFDX* font, CD3DBuffer* pBuffer)
     font->m_buffers.erase(it);
 }
 
-CTexture* CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
+std::unique_ptr<CTexture> CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
 {
   assert(newHeight != 0);
   assert(m_textureWidth != 0);
   if(m_textureHeight == 0)
   {
-    delete m_texture;
-    m_texture = nullptr;
-    delete m_speedupTexture;
-    m_speedupTexture = nullptr;
+    m_texture.reset();
+    m_speedupTexture.reset();
   }
   m_staticCache.Flush();
   m_dynamicCache.Flush();
 
-  CDXTexture* pNewTexture = new CDXTexture(m_textureWidth, newHeight, XB_FMT_A8);
-  CD3DTexture* newSpeedupTexture = new CD3DTexture();
+  std::unique_ptr<CDXTexture> pNewTexture =
+      std::make_unique<CDXTexture>(m_textureWidth, newHeight, XB_FMT_A8);
+  std::unique_ptr<CD3DTexture> newSpeedupTexture = std::make_unique<CD3DTexture>();
   if (!newSpeedupTexture->Create(m_textureWidth, newHeight, 1, D3D11_USAGE_DEFAULT, DXGI_FORMAT_R8_UNORM))
   {
-    delete newSpeedupTexture;
-    delete pNewTexture;
     return nullptr;
   }
 
@@ -251,19 +243,11 @@ CTexture* CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
     pContext->CopySubresourceRegion(newSpeedupTexture->Get(), 0, 0, 0, 0, m_speedupTexture->Get(), 0, &rect);
   }
 
-  if (m_texture)
-  {
-    delete m_texture;
-    m_texture = nullptr;
-  }
-  if (m_speedupTexture)
-  {
-    delete m_speedupTexture;
-    m_speedupTexture = nullptr;
-  }
+  m_texture.reset();
+
   m_textureHeight = newHeight;
   m_textureScaleY = 1.0f / m_textureHeight;
-  m_speedupTexture = newSpeedupTexture;
+  m_speedupTexture = std::move(newSpeedupTexture);
 
   return pNewTexture;
 }

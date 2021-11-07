@@ -38,7 +38,7 @@ CGUITextureGL* CGUITextureGL::Clone() const
 
 void CGUITextureGL::Begin(UTILS::COLOR::Color color)
 {
-  CTexture* texture = m_texture.m_textures[m_currentFrame];
+  CTexture* texture = m_texture.m_textures[m_currentFrame].get();
   texture->LoadToGPU();
   if (m_diffuse.size())
     m_diffuse.m_textures[0]->LoadToGPU();

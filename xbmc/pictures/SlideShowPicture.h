@@ -18,6 +18,8 @@
 #include <wrl/client.h>
 #endif
 
+#include <memory>
+
 class CTexture;
 
 class CSlideShowPic
@@ -37,10 +39,10 @@ public:
   ~CSlideShowPic();
 
   void SetTexture(int iSlideNumber,
-                  CTexture* pTexture,
+                  std::unique_ptr<CTexture> pTexture,
                   DISPLAY_EFFECT dispEffect = EFFECT_RANDOM,
                   TRANSITION_EFFECT transEffect = FADEIN_FADEOUT);
-  void UpdateTexture(CTexture* pTexture);
+  void UpdateTexture(std::unique_ptr<CTexture> pTexture);
 
   bool IsLoaded() const { return m_bIsLoaded; }
   void UnLoad() { m_bIsLoaded = false; }
@@ -81,12 +83,12 @@ public:
   bool m_bCanMoveVertically;
 private:
   void SetTexture_Internal(int iSlideNumber,
-                           CTexture* pTexture,
+                           std::unique_ptr<CTexture> pTexture,
                            DISPLAY_EFFECT dispEffect = EFFECT_RANDOM,
                            TRANSITION_EFFECT transEffect = FADEIN_FADEOUT);
   void UpdateVertices(float cur_x[4], float cur_y[4], const float new_x[4], const float new_y[4], CDirtyRegionList &dirtyregions);
   void Render(float* x, float* y, CTexture* pTexture, UTILS::COLOR::Color color);
-  CTexture* m_pImage;
+  std::unique_ptr<CTexture> m_pImage;
 
   int m_iOriginalWidth;
   int m_iOriginalHeight;
