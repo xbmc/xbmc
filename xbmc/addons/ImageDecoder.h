@@ -14,15 +14,17 @@
 
 class CPictureInfoTag;
 
-namespace ADDON
+namespace KODI
+{
+namespace ADDONS
 {
 
-class CImageDecoder : public IAddonInstanceHandler,
+class CImageDecoder : public ADDON::IAddonInstanceHandler,
                       public KODI::ADDONS::IAddonSupportCheck,
                       public IImage
 {
 public:
-  explicit CImageDecoder(const AddonInfoPtr& addonInfo, const std::string& mimetype);
+  explicit CImageDecoder(const ADDON::AddonInfoPtr& addonInfo, const std::string& mimetype);
   ~CImageDecoder() override;
 
   bool Create();
@@ -61,4 +63,5 @@ private:
   const std::string m_mimetype;
 };
 
-} /* namespace ADDON */
+} /* namespace ADDONS */
+} /* namespace KODI */

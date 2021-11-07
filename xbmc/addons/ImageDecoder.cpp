@@ -16,8 +16,8 @@ static const std::map<int, ADDON_IMG_FMT> KodiToAddonFormat = {
     {XB_FMT_RGBA8, ADDON_IMG_FMT_RGBA8},
     {XB_FMT_RGB8, ADDON_IMG_FMT_RGB8}};
 
-namespace ADDON
-{
+using namespace ADDON;
+using namespace KODI::ADDONS;
 
 namespace
 {
@@ -229,5 +229,3 @@ bool CImageDecoder::Create()
 {
   return (CreateInstance() == ADDON_STATUS_OK);
 }
-
-} /* namespace ADDON */

@@ -142,8 +142,7 @@ bool CPictureInfoTag::Load(const std::string &path)
       if (addonInfo.first != ADDON::ADDON_IMAGEDECODER)
         continue;
 
-      std::unique_ptr<ADDON::CImageDecoder> result =
-          std::make_unique<ADDON::CImageDecoder>(addonInfo.second, "");
+      std::unique_ptr<CImageDecoder> result = std::make_unique<CImageDecoder>(addonInfo.second, "");
       if (result->Create() && result->LoadInfoTag(path, this))
       {
         m_isLoaded = true;
