@@ -251,6 +251,90 @@
 					<onclick>Skin.ToggleSetting(HomeMenuNoWeatherButton)</onclick>
 				</control>
 			</control>
+			<control type="grouplist" id="620">
+				<top>133</top>
+				<left>0</left>
+				<right>0</right>
+				<bottom>140</bottom>
+				<onleft>9000</onleft>
+				<onright>60</onright>
+				<onup>620</onup>
+				<pagecontrol>60</pagecontrol>
+				<ondown>620</ondown>
+				<visible>Container(9000).HasFocus(4)</visible>
+				<control type="radiobutton" id="621">
+					<label>$LOCALIZE[31172]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(tv_show_recent_channels_widget)</selected>
+					<onclick>Skin.ToggleSetting(tv_show_recent_channels_widget)</onclick>
+				</control>
+				<control type="radiobutton" id="622">
+					<label>$LOCALIZE[31174]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(tv_show_recent_recordings_widget)</selected>
+					<onclick>Skin.ToggleSetting(tv_show_recent_recordings_widget)</onclick>
+				</control>
+				<control type="radiobutton" id="623">
+					<label>$LOCALIZE[31176]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(tv_show_timers_widget)</selected>
+					<onclick>Skin.ToggleSetting(tv_show_timers_widget)</onclick>
+				</control>
+				<control type="radiobutton" id="624">
+					<label>$LOCALIZE[31178]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(tv_show_channelgroups_widget)</selected>
+					<onclick>Skin.ToggleSetting(tv_show_channelgroups_widget)</onclick>
+				</control>
+				<control type="radiobutton" id="625">
+					<label>$LOCALIZE[31180]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(tv_show_saved_searches_widget)</selected>
+					<onclick>Skin.ToggleSetting(tv_show_saved_searches_widget)</onclick>
+				</control>
+			</control>
+			<control type="grouplist" id="630">
+				<top>133</top>
+				<left>0</left>
+				<right>0</right>
+				<bottom>140</bottom>
+				<onleft>9000</onleft>
+				<onright>60</onright>
+				<onup>630</onup>
+				<pagecontrol>60</pagecontrol>
+				<ondown>630</ondown>
+				<visible>Container(9000).HasFocus(5)</visible>
+				<control type="radiobutton" id="631">
+					<label>$LOCALIZE[31173]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(radio_show_recent_channels_widget)</selected>
+					<onclick>Skin.ToggleSetting(radio_show_recent_channels_widget)</onclick>
+				</control>
+				<control type="radiobutton" id="632">
+					<label>$LOCALIZE[31175]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(radio_show_recent_recordings_widget)</selected>
+					<onclick>Skin.ToggleSetting(radio_show_recent_recordings_widget)</onclick>
+				</control>
+				<control type="radiobutton" id="633">
+					<label>$LOCALIZE[31177]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(radio_show_timers_widget)</selected>
+					<onclick>Skin.ToggleSetting(radio_show_timers_widget)</onclick>
+				</control>
+				<control type="radiobutton" id="634">
+					<label>$LOCALIZE[31179]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(radio_show_channelgroups_widget)</selected>
+					<onclick>Skin.ToggleSetting(radio_show_channelgroups_widget)</onclick>
+				</control>
+				<control type="radiobutton" id="635">
+					<label>$LOCALIZE[31181]</label>
+					<include>DefaultSettingButton</include>
+					<selected>!Skin.HasSetting(radio_show_saved_searches_widget)</selected>
+					<onclick>Skin.ToggleSetting(radio_show_saved_searches_widget)</onclick>
+				</control>
+			</control>
 			<control type="image">
 				<description>Dialog Header image</description>
 				<left>0</left>
@@ -322,6 +406,14 @@
 					</item>
 					<item id="3">
 						<label>$LOCALIZE[31159]</label>
+						<onclick>noop</onclick>
+					</item>
+					<item id="4">
+						<label>$LOCALIZE[31170]</label>
+						<onclick>noop</onclick>
+					</item>
+					<item id="5">
+						<label>$LOCALIZE[31171]</label>
 						<onclick>noop</onclick>
 					</item>
 				</content>

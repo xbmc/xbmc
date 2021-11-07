@@ -109,10 +109,10 @@ msgctxt "#31015"
 msgid "Recent recordings"
 msgstr ""
 
-#. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
+#. home screen channel widget: recently watched tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 #: /xml/Home.xml
 msgctxt "#31016"
-msgid "Recently played channels"
+msgid "Recent channels"
 msgstr ""
 
 #: /xml/DialogVideoInfo.xml
@@ -120,10 +120,10 @@ msgctxt "#31017"
 msgid "Rated"
 msgstr ""
 
-#. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
+#. home screen channel widget: recently listened radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 #: /xml/Home.xml
 msgctxt "#31018"
-msgid "Recently played channels"
+msgid "Recent channels"
 msgstr ""
 
 #: /xml/Home.xml /xml/MyWeather.xml
@@ -806,4 +806,88 @@ msgstr ""
 #: /xml/Variables.xml
 msgctxt "#31169"
 msgid "Artwork related settings."
+msgstr ""
+
+#. Label for "TV" settings section
+#: /xml/SkinSettings.xml
+msgctxt "#31170"
+msgid "TV"
+msgstr ""
+
+#. Label for "Radio" settings section
+#: /xml/SkinSettings.xml
+msgctxt "#31171"
+msgid "Radio"
+msgstr ""
+
+#. "TV" settings section, label for show/hide widget setting
+#: /xml/SkinSettings.xml
+msgctxt "#31172"
+msgid "Show 'Recent channels' widget"
+msgstr ""
+
+#. "Radio" settings section, label for show/hide widget setting
+#: /xml/SkinSettings.xml
+msgctxt "#31173"
+msgid "Show 'Recent channels' widget"
+msgstr ""
+
+#. "TV" settings section, label for show/hide widget setting
+#: /xml/SkinSettings.xml
+msgctxt "#31174"
+msgid "Show 'Recent recordings' widget"
+msgstr ""
+
+#. "Radio" settings section, label for show/hide widget setting
+#: /xml/SkinSettings.xml
+msgctxt "#31175"
+msgid "Show 'Recent recordings' widget"
+msgstr ""
+
+#. "TV" settings section, label for show/hide widget setting
+#: /xml/SkinSettings.xml
+msgctxt "#31176"
+msgid "Show 'Timers' widget"
+msgstr ""
+
+#. "Radio" settings section, label for show/hide widget setting
+#: /xml/SkinSettings.xml
+msgctxt "#31177"
+msgid "Show 'Timers' widget"
+msgstr ""
+
+#. "TV" settings section, label for show/hide widget setting
+#: /xml/SkinSettings.xml
+msgctxt "#31178"
+msgid "Show 'TV channel groups' widget"
+msgstr ""
+
+#. "Radio" settings section, label for show/hide widget setting
+#: /xml/SkinSettings.xml
+msgctxt "#31179"
+msgid "Show 'Radio channel groups' widget"
+msgstr ""
+
+#. "TV" settings section, label for show/hide widget setting
+#: /xml/SkinSettings.xml
+msgctxt "#31180"
+msgid "Show 'Saved searches' widget"
+msgstr ""
+
+#. "Radio" settings section, label for show/hide widget setting
+#: /xml/SkinSettings.xml
+msgctxt "#31181"
+msgid "Show 'Saved searches' widget"
+msgstr ""
+
+#. Description label for skin settings area
+#: /xml/Variables.xml
+msgctxt "#31182"
+msgid "TV related settings"
+msgstr ""
+
+#. Description label for skin settings area
+#: /xml/Variables.xml
+msgctxt "#31183"
+msgid "Radio related settings"
 msgstr ""

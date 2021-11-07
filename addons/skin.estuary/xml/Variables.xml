@@ -287,6 +287,8 @@
 		<value condition="Container(9000).HasFocus(1)">$LOCALIZE[31129]</value>
 		<value condition="Container(9000).HasFocus(2)">$LOCALIZE[31130]</value>
 		<value condition="Container(9000).HasFocus(3)">$LOCALIZE[31169]</value>
+		<value condition="Container(9000).HasFocus(4)">$LOCALIZE[31182]</value>
+		<value condition="Container(9000).HasFocus(5)">$LOCALIZE[31183]</value>
 	</variable>
 	<variable name="VolumeIconVar">
 		<value condition="Player.Muted">dialogs/volume/mute.png</value>
