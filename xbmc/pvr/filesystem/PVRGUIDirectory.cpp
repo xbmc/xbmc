@@ -68,15 +68,6 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
 
   const std::shared_ptr<CPVRClients> clients = CServiceBroker::GetPVRManager().Clients();
 
-  // Channels
-  item.reset(new CFileItem(
-      bRadio ? CPVRChannelsPath::PATH_RADIO_CHANNELS : CPVRChannelsPath::PATH_TV_CHANNELS, true));
-  item->SetLabel(g_localizeStrings.Get(19019)); // Channels
-  item->SetProperty("node.target", CWindowTranslator::TranslateWindow(bRadio ? WINDOW_RADIO_CHANNELS
-                                                                             : WINDOW_TV_CHANNELS));
-  item->SetArt("icon", "DefaultPVRChannels.png");
-  results.Add(item);
-
   // EPG
   const bool bAnyClientSupportingEPG = clients->AnyClientSupportingEPG();
   if (bAnyClientSupportingEPG)
@@ -89,6 +80,15 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
     item->SetArt("icon", "DefaultPVRGuide.png");
     results.Add(item);
   }
+
+  // Channels
+  item.reset(new CFileItem(
+      bRadio ? CPVRChannelsPath::PATH_RADIO_CHANNELS : CPVRChannelsPath::PATH_TV_CHANNELS, true));
+  item->SetLabel(g_localizeStrings.Get(19019)); // Channels
+  item->SetProperty("node.target", CWindowTranslator::TranslateWindow(bRadio ? WINDOW_RADIO_CHANNELS
+                                                                             : WINDOW_TV_CHANNELS));
+  item->SetArt("icon", "DefaultPVRChannels.png");
+  results.Add(item);
 
   // Recordings
   if (clients->AnyClientSupportingRecordings())
