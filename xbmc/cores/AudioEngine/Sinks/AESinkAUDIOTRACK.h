@@ -63,7 +63,6 @@ private:
   unsigned int          m_min_buffer_size;
   uint64_t              m_headPos;
   int64_t               m_offset;
-  uint64_t              m_timestampPos = 0;
   // Moving Average computes the weighted average delay over
   // a fixed size of delay values - current size: 20 values
   double                GetMovingAverageDelay(double newestdelay);
@@ -91,11 +90,6 @@ private:
   bool               m_passthrough;
   double             m_audiotrackbuffer_sec;
   int                m_encoding;
-  double m_pause_ms = 0.0;
-  double m_delay = 0.0;
-  double m_hw_delay = 0.0;
-  CJNIAudioTimestamp m_timestamp;
-  XbmcThreads::EndTime m_stampTimer;
 
   std::vector<float> m_floatbuf;
   std::vector<int16_t> m_shortbuf;
