@@ -34,7 +34,7 @@ using namespace jni;
 // is the max TrueHD package
 const unsigned int MAX_RAW_AUDIO_BUFFER_HD = 61440;
 const unsigned int MAX_RAW_AUDIO_BUFFER = 16384;
-const unsigned int MOVING_AVERAGE_MAX_MEMBERS = 3;
+const unsigned int MOVING_AVERAGE_MAX_MEMBERS = 5;
 const uint64_t UINT64_LOWER_BYTES = 0x00000000FFFFFFFF;
 const uint64_t UINT64_UPPER_BYTES = 0xFFFFFFFF00000000;
 
@@ -248,7 +248,6 @@ CAESinkAUDIOTRACK::CAESinkAUDIOTRACK()
   m_duration_written = 0;
   m_headPos = 0;
   m_offset = -1;
-  m_timestampPos = 0;
   m_sink_sampleRate = 0;
   m_passthrough = false;
   m_min_buffer_size = 0;
@@ -317,9 +316,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   m_format      = format;
   m_headPos = 0;
   m_offset = -1;
-  m_timestampPos = 0;
   m_linearmovingaverage.clear();
-  m_pause_ms = 0.0;
   m_extTimer.SetExpired();
   CLog::Log(LOGDEBUG,
             "CAESinkAUDIOTRACK::Initialize requested: sampleRate {}; format: {}; channels: {}",
@@ -466,15 +463,15 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
         case CAEStreamInfo::STREAM_TYPE_DTSHD_CORE:
           // max 2012 bytes
           // depending on sample rate between 156 ms and 312 ms
-          m_min_buffer_size = 16 * 2012;
+          m_min_buffer_size = 8 * 2012;
           m_format.m_frames = m_min_buffer_size;
-          rawlength_in_seconds = 16 * m_format.m_streamInfo.GetDuration() / 1000;
+          rawlength_in_seconds = 8 * m_format.m_streamInfo.GetDuration() / 1000;
           break;
         case CAEStreamInfo::STREAM_TYPE_DTS_1024:
         case CAEStreamInfo::STREAM_TYPE_DTS_2048:
-          m_min_buffer_size = 8 * 5462;
+          m_min_buffer_size = 4 * 5462;
           m_format.m_frames = m_min_buffer_size;
-          rawlength_in_seconds = 8 * m_format.m_streamInfo.GetDuration() / 1000;
+          rawlength_in_seconds = 4 * m_format.m_streamInfo.GetDuration() / 1000;
           break;
         case CAEStreamInfo::STREAM_TYPE_AC3:
            ac3FrameSize = m_format.m_streamInfo.m_ac3FrameSize;
@@ -487,10 +484,10 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
           break;
           // EAC3 is currently not supported
         case CAEStreamInfo::STREAM_TYPE_EAC3:
-          m_min_buffer_size = 2 * 10752; // least common multiple of 1792 and 1536
-          m_format.m_frames = m_min_buffer_size; // needs testing
-          rawlength_in_seconds = 8 * m_format.m_streamInfo.GetDuration() / 1000;
-          break;
+           m_min_buffer_size = 10752; // least common multiple of 1792 and 1536
+           m_format.m_frames = m_min_buffer_size; // needs testing
+           rawlength_in_seconds = 4 * m_format.m_streamInfo.GetDuration() / 1000;
+           break;
         default:
           m_min_buffer_size = MAX_RAW_AUDIO_BUFFER;
           m_format.m_frames = m_min_buffer_size;
@@ -592,6 +589,7 @@ void CAESinkAUDIOTRACK::Deinitialize()
   if (!m_at_jni)
     return;
 
+  uint64_t before = CurrentHostCounter();
   if (IsInitialized())
   {
     m_at_jni->pause();
@@ -602,16 +600,19 @@ void CAESinkAUDIOTRACK::Deinitialize()
   m_duration_written = 0;
   m_headPos = 0;
   m_offset = -1;
-  m_timestampPos = 0;
-  m_stampTimer.SetExpired();
-
   m_extTimer.SetExpired();
   m_linearmovingaverage.clear();
 
   delete m_at_jni;
   m_at_jni = NULL;
-  m_delay = 0.0;
-  m_hw_delay = 0.0;
+  uint64_t gone = CurrentHostCounter() - before;
+  uint64_t delta_ms = 1000 * gone / CurrentHostFrequency();
+  int64_t diff = m_audiotrackbuffer_sec * 1000 - delta_ms;
+  if (diff > 0)
+  {
+    CLog::Log(LOGDEBUG, "Flushing might not be properly implemented, sleeping: %d ms", diff);
+    usleep(diff * 1000);
+  }
 }
 
 bool CAESinkAUDIOTRACK::IsInitialized()
@@ -658,109 +659,30 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
   if (m_offset > 0)
     m_headPos -= m_offset;
 
-  double gone = static_cast<double>(normHead_pos) / m_sink_sampleRate;
+  if (m_passthrough && !m_info.m_wantsIECPassthrough)
+  {
+    double timer = m_extTimer.MillisLeft();
+    if (timer > 0)
+    {
+      const double d = GetMovingAverageDelay(GetCacheTotal());
+      status.SetDelay(d);
+      //CLog::Log(LOGINFO, "CAESinkAUDIOTRACK::GetDelay RAW delay {} ms when pause {} ms", d, timer);
+      return;
+    }
+  }
+  
+  double gone = (double) normHead_pos / (double) m_sink_sampleRate;
 
   // if sink is run dry without buffer time written anymore
   if (gone > m_duration_written)
     gone = m_duration_written;
 
   double delay = m_duration_written - gone;
-  if (m_pause_ms > 0.0)
-    delay = m_audiotrackbuffer_sec;
-
-  if (m_stampTimer.IsTimePast())
-  {
-    if (!m_at_jni->getTimestamp(m_timestamp))
-    {
-      CLog::Log(LOGDEBUG, "Could not acquire timestamp");
-      m_stampTimer.Set(100);
-    }
-    else
-    {
-      // check if frameposition is valid and nano timer less than 50 ms outdated
-      if (m_timestamp.get_framePosition() > 0 &&
-          (CurrentHostCounter() - m_timestamp.get_nanoTime()) < 50 * 1000 * 1000)
-        m_stampTimer.Set(1000);
-      else
-        m_stampTimer.Set(100);
-    }
-  }
-  // check if last value was received less than 2 seconds ago
-  if (m_timestamp.get_framePosition() > 0 &&
-      (CurrentHostCounter() - m_timestamp.get_nanoTime()) < 2 * 1000 * 1000 * 1000)
-  {
-    if (usesAdvancedLogging)
-    {
-      CLog::Log(LOGINFO, "Framecounter: {} Time: {} Current-Time: {}",
-                (m_timestamp.get_framePosition() & UINT64_LOWER_BYTES), m_timestamp.get_nanoTime(),
-                CurrentHostCounter());
-    }
-    uint64_t delta = static_cast<uint64_t>(CurrentHostCounter() - m_timestamp.get_nanoTime());
-    uint64_t stamphead =
-        static_cast<uint64_t>(m_timestamp.get_framePosition() & UINT64_LOWER_BYTES) +
-        delta * m_sink_sampleRate / 1000000000.0;
-    // wrap around
-    // e.g. 0xFFFFFFFFFFFF0123 -> 0x0000000000002478
-    // because we only query each second the simple smaller comparison won't suffice
-    // as delay can fluctuate minimally
-    if (stamphead < m_timestampPos && (m_timestampPos - stamphead) > 0x7FFFFFFFFFFFFFFFULL)
-    {
-      uint64_t stamp = m_timestampPos;
-      stamp += (1ULL << 32);
-      stamphead = (stamp & UINT64_UPPER_BYTES) | stamphead;
-      CLog::Log(LOGDEBUG, "Wraparound happend old: {} new: {}", m_timestampPos, stamphead);
-    }
-    m_timestampPos = stamphead;
-
-    double playtime = m_timestampPos / static_cast<double>(m_sink_sampleRate);
-
-    if (usesAdvancedLogging)
-    {
-      CLog::Log(LOGINFO,
-                "Delay - Timestamp: {} (ms) delta: {} (ms) playtime: {} (ms) Duration: {} ms",
-                1000.0 * (m_duration_written - playtime), delta / 1000000.0, playtime * 1000,
-                m_duration_written * 1000);
-      CLog::Log(LOGINFO, "Head-Position {} Timestamp Position {} Delay-Offset: {} ms", m_headPos,
-                m_timestampPos, 1000.0 * (m_headPos - m_timestampPos) / m_sink_sampleRate);
-    }
-    double hw_delay = m_duration_written - playtime;
-    // correct by subtracting above measured delay, if lower delay gets automatically reduced
-    hw_delay -= delay;
-    // sometimes at the beginning of the stream m_timestampPos is more accurate and ahead of
-    // m_headPos - don't use the computed value then and wait
-    if (hw_delay > -1.0 && hw_delay < 1.0)
-      m_hw_delay = hw_delay;
-    else
-      m_hw_delay = 0.0;
-    if (usesAdvancedLogging)
-    {
-      CLog::Log(LOGINFO, "HW-Delay (1): {} ms", hw_delay * 1000);
-    }
-  }
-
-  delay += m_hw_delay;
-
-  // stop smoothing if we have the new API available
-  // though normal RAW still is really bad delay wise
-  bool rawPt = m_passthrough && !m_info.m_wantsIECPassthrough;
-  if ((m_hw_delay != 0) && !rawPt)
-    m_linearmovingaverage.clear();
-
-  if (usesAdvancedLogging)
-  {
-    CLog::Log(LOGINFO, "Combined Delay: {} ms", delay * 1000);
-  }
-  if (delay < 0.0)
-    delay = 0.0;
+  if (delay < 0)
+    delay = 0;
 
   const double d = GetMovingAverageDelay(delay);
 
-  // Audiotrack is caching more than we though it would
-  if (d > m_audiotrackbuffer_sec)
-    m_audiotrackbuffer_sec = d;
-
-  // track delay in local member
-  m_delay = d;
   if (usesAdvancedLogging)
   {
     CLog::Log(LOGINFO, "Delay Current: {:f} ms", d * 1000);
@@ -793,10 +715,12 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
   uint8_t *out_buf = buffer;
   int size = frames * m_format.m_frameSize;
 
-  //For TrueHD Atmos Fix, the standard package is sent into 2 smaller packets.
+  //For TrueHD Atmos Fix, need to adjust delay as it's now half (24 audio units to 12)
   int ratio = 1;
   if (m_isTrueHD)
+  {
     ratio = 2;
+  }
 
   // write as many frames of audio as we can fit into our internal buffer.
   int written = 0;
@@ -870,7 +794,7 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
       }
       else
       {
-        //TODO For TrueHD Atmos Fix, adjust duration as we received a half packet
+        //For TrueHD Atmos Fix, adjust duration as it's now half (24 audio units to 12)
         m_duration_written += ((double) loop_written / m_format.m_frameSize) / m_format.m_sampleRate / ratio;
       }
 
@@ -900,14 +824,12 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
   }
   else
   {
-    // waiting should only be done if sink is not run dry
-    double period_time = m_format.m_frames / static_cast<double>(m_sink_sampleRate) / ratio;
-    if (m_delay >= (m_audiotrackbuffer_sec - period_time))
+    double time_should_ms = written_frames / (double) m_format.m_sampleRate * 1000.0;
+    double time_off = time_should_ms - time_to_add_ms;
+    if (time_off > 0 && time_off > time_should_ms / 2.0)
     {
-      double time_should_ms = 1000.0 * written_frames / m_format.m_sampleRate / ratio;
-      double time_off = time_should_ms - time_to_add_ms;
-      if (time_off > 0)
-        usleep(time_off * 500); // sleep half the error away
+      usleep(time_should_ms / 4.0 * 1000);
+      time_to_add_ms += time_should_ms / 4.0;
     }
   }
   return written_frames;
@@ -918,12 +840,17 @@ void CAESinkAUDIOTRACK::AddPause(unsigned int millis)
   if (!m_at_jni)
     return;
 
-  if (m_isTrueHD)
-    millis = (unsigned int) (millis / 2);
+  
 
   // just sleep out the frames
   if (m_at_jni->getPlayState() != CJNIAudioTrack::PLAYSTATE_PAUSED)
     m_at_jni->pause();
+
+  //for RAW TrueHD, duration is now half (24 audio units to 12)
+  if (m_isTrueHD)
+  {
+    millis = (unsigned int) (millis / 2);
+  }
 
   // on startup the buffer is empty, it "should" take the silence if we would really send some
   // without any delay. In between we need to sleep out the frames though
@@ -951,11 +878,8 @@ void CAESinkAUDIOTRACK::Drain()
   m_duration_written = 0;
   m_headPos = 0;
   m_offset = -1;
-  m_timestampPos = 0;
-  m_linearmovingaverage.clear();
-  m_stampTimer.SetExpired();
+    m_linearmovingaverage.clear();
   m_extTimer.SetExpired();
-  m_pause_ms = 0.0;
 }
 
 void CAESinkAUDIOTRACK::Register()

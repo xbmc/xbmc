@@ -68,8 +68,11 @@ void CEngineStats::GetDelay(AEDelayStatus& status)
   CSingleLock lock(m_lock);
 
   bool isTrueHD = false;
+#if defined(TARGET_ANDROID)
+  //Need to ajdust duration for TrueHD as duration is now half (24 audio units to 12)
   if (m_sinkFormat.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
     isTrueHD = true;
+#endif
 
   status = m_sinkDelay;
   if (m_pcmOutput)
@@ -122,8 +125,11 @@ void CEngineStats::UpdateStream(CActiveAEStream *stream)
       }
 
       bool isTrueHD = false;
+#if defined(TARGET_ANDROID)
+      //Need to ajdust duration for TrueHD as duration is now half (24 audio units to 12)
       if (stream->m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
         isTrueHD = true;
+#endif
 
       CSingleLock lock(stream->m_statsLock);
       std::deque<CSampleBuffer*>::iterator itBuf;
@@ -149,8 +155,11 @@ void CEngineStats::GetDelay(AEDelayStatus& status, CActiveAEStream *stream)
   status.delay += static_cast<double>(m_sinkLatency);
   
   bool isTrueHD = false;
+#if defined(TARGET_ANDROID)
+  //Need to ajdust duration for TrueHD as duration is now half (24 audio units to 12)
   if (stream->m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
     isTrueHD = true;
+#endif
 
   if (m_pcmOutput)
     status.delay += (double)m_bufferedSamples / m_sinkSampleRate;
@@ -177,8 +186,11 @@ void CEngineStats::GetSyncInfo(CAESyncInfo& info, CActiveAEStream *stream)
   status = m_sinkDelay;
 
   bool isTrueHD = false;
+#if defined(TARGET_ANDROID)
+  //Need to ajdust duration for TrueHD as duration is now half (24 audio units to 12)
   if (stream->m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
     isTrueHD = true;
+#endif
 
   if (m_pcmOutput)
     status.delay += (double)m_bufferedSamples / m_sinkSampleRate;
@@ -238,8 +250,11 @@ float CEngineStats::GetWaterLevel()
   CSingleLock lock(m_lock);
   
   bool isTrueHD = false;
+#if defined(TARGET_ANDROID)
+  //Need to ajdust duration for TrueHD as duration is now half (24 audio units to 12)
   if (m_sinkFormat.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
     isTrueHD = true;
+#endif
 
   if (m_pcmOutput)
     return static_cast<float>(m_bufferedSamples) / m_sinkSampleRate;
@@ -1936,9 +1951,11 @@ bool CActiveAE::RunStages()
       if ((*it)->m_inputBuffers->m_format.m_dataFormat == AE_FMT_RAW)
       {
         bool isTrueHD = false;
+#if defined(TARGET_ANDROID)
+        //Need to ajdust duration for TrueHD as duration is now half (24 audio units to 12)
         if ((*it)->m_inputBuffers->m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
           isTrueHD = true;
-
+#endif
         buftime = (*it)->m_inputBuffers->m_format.m_streamInfo.GetDuration(isTrueHD) / 1000;
       }
       while ((time < static_cast<float>(MAX_CACHE_LEVEL) || (*it)->m_streamIsBuffering) &&
@@ -2402,10 +2419,12 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
     CLog::Log(LOGDEBUG,"ActiveAE - start sync of audio stream");
   }
 
-  //Apply TrueHD Atmos fix duration
   bool isTrueHD = false;
+#if defined(TARGET_ANDROID)
+  //Need to ajdust duration for TrueHD as duration is now half (24 audio units to 12)
   if (stream->m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
     isTrueHD = true;
+#endif
 
   double error;
   double threshold = 100;
