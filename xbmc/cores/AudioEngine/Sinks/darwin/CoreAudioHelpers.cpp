@@ -13,7 +13,7 @@
 // Helper Functions
 std::string GetError(OSStatus error)
 {
-  char buffer[128];
+  char buffer[128] = {};
 
   *(UInt32 *)(buffer + 1) = CFSwapInt32HostToBig(error);
   if (isprint(buffer[1]) && isprint(buffer[2]) &&
