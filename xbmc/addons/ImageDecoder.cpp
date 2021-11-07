@@ -16,11 +16,11 @@ using namespace KODI::ADDONS;
 namespace
 {
 
-constexpr std::array<std::pair<unsigned int, ADDON_IMG_FMT>, 4> KodiToAddonFormat = {
-    {{XB_FMT_A8R8G8B8, ADDON_IMG_FMT_A8R8G8B8},
-     {XB_FMT_A8, ADDON_IMG_FMT_A8},
-     {XB_FMT_RGBA8, ADDON_IMG_FMT_RGBA8},
-     {XB_FMT_RGB8, ADDON_IMG_FMT_RGB8}}};
+constexpr std::array<std::tuple<unsigned int, ADDON_IMG_FMT, size_t>, 4> KodiToAddonFormat = {
+    {{XB_FMT_A8R8G8B8, ADDON_IMG_FMT_A8R8G8B8, sizeof(uint8_t) * 4},
+     {XB_FMT_A8, ADDON_IMG_FMT_A8, sizeof(uint8_t) * 1},
+     {XB_FMT_RGBA8, ADDON_IMG_FMT_RGBA8, sizeof(uint8_t) * 4},
+     {XB_FMT_RGB8, ADDON_IMG_FMT_RGB8, sizeof(uint8_t) * 3}}};
 
 static char* cb_get_mime_type(KODI_HANDLE kodiInstance)
 {
@@ -199,29 +199,15 @@ bool CImageDecoder::Decode(unsigned char* const pixels,
   if (!m_ifc.imagedecoder->toAddon->decode)
     return false;
 
-  auto it = std::find_if(KodiToAddonFormat.begin(), KodiToAddonFormat.end(),
-                         [format](auto& p) { return p.first == format; });
+  const auto it = std::find_if(KodiToAddonFormat.begin(), KodiToAddonFormat.end(),
+                               [format](auto& p) { return std::get<0>(p) == format; });
   if (it == KodiToAddonFormat.end())
     return false;
 
-  size_t size;
-  switch (format)
-  {
-    case XB_FMT_A8:
-      size = width * height * sizeof(uint8_t) * 1;
-      break;
-    case XB_FMT_RGB8:
-      size = width * height * sizeof(uint8_t) * 3;
-      break;
-    case XB_FMT_A8R8G8B8:
-    case XB_FMT_RGBA8:
-    default:
-      size = width * height * sizeof(uint8_t) * 4;
-      break;
-  }
-
-  bool result = m_ifc.imagedecoder->toAddon->decode(m_ifc.hdl, pixels, size, width, height, pitch,
-                                                    it->second);
+  const ADDON_IMG_FMT addonFmt = std::get<1>(*it);
+  const size_t size = width * height * std::get<2>(*it);
+  const bool result =
+      m_ifc.imagedecoder->toAddon->decode(m_ifc.hdl, pixels, size, width, height, pitch, addonFmt);
   m_width = width;
   m_height = height;
 
