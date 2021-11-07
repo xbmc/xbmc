@@ -840,8 +840,6 @@ void CAESinkAUDIOTRACK::AddPause(unsigned int millis)
   if (!m_at_jni)
     return;
 
-  
-
   // just sleep out the frames
   if (m_at_jni->getPlayState() != CJNIAudioTrack::PLAYSTATE_PAUSED)
     m_at_jni->pause();
