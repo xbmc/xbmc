@@ -86,9 +86,12 @@ void CGameClientInput::Start(IGameInputCallback* input)
   // Connect/disconnect active controllers
   for (const CPortNode& port : controllers.GetPorts())
   {
-    const ControllerPtr activeController = port.GetActiveController().GetController();
-    if (port.IsConnected() && activeController)
-      ConnectController(port.GetAddress(), activeController);
+    if (port.IsConnected())
+    {
+      const ControllerPtr& activeController = port.GetActiveController().GetController();
+      if (activeController)
+        ConnectController(port.GetAddress(), activeController);
+    }
     else
       DisconnectController(port.GetAddress());
   }
@@ -336,9 +339,12 @@ bool CGameClientInput::ConnectController(const std::string& portAddress, Control
     const PortVec& childPorts = updatedPort.GetActiveController().GetHub().GetPorts();
     for (const CPortNode& childPort : childPorts)
     {
-      const ControllerPtr childController = childPort.GetActiveController().GetController();
-      if (childPort.IsConnected() && childController)
-        bSuccess &= ConnectController(childPort.GetAddress(), childController);
+      if (childPort.IsConnected())
+      {
+        const ControllerPtr& childController = childPort.GetActiveController().GetController();
+        if (childController)
+          bSuccess &= ConnectController(childPort.GetAddress(), childController);
+      }
     }
   }
 
