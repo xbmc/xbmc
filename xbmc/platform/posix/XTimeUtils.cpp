@@ -94,7 +94,8 @@ int FileTimeToLocalFileTime(const FileTime* fileTime, FileTime* localFileTime)
   time_t ft;
   struct tm tm_ft;
   FileTimeToTimeT(fileTime, &ft);
-  localtime_r(&ft, &tm_ft);
+  if (!localtime_r(&ft, &tm_ft))
+    return 0;
 
   l.QuadPart += static_cast<unsigned long long>(tm_ft.tm_gmtoff) * 10000000;
 
@@ -109,6 +110,10 @@ int SystemTimeToFileTime(const SystemTime* systemTime, FileTime* fileTime)
 #if defined(TARGET_DARWIN)
   static std::atomic_flag timegm_lock = ATOMIC_FLAG_INIT;
 #endif
+
+  // Prevent out of bounds access in dayoffset array
+  if (systemTime->month < 1 || systemTime->month > 12)
+    return 0;
 
   struct tm sysTime = {};
   sysTime.tm_year = systemTime->year - 1900;
@@ -134,6 +139,9 @@ int SystemTimeToFileTime(const SystemTime* systemTime, FileTime* fileTime)
 #else
   time_t t = timegm(&sysTime);
 #endif
+
+  if (t == -1 && errno != 0)
+    return 0;
 
   LARGE_INTEGER result;
   result.QuadPart = (long long)t * 10000000 + (long long)systemTime->milliseconds * 10000;
@@ -177,7 +185,8 @@ int FileTimeToSystemTime(const FileTime* fileTime, SystemTime* systemTime)
   time_t ft = file.QuadPart;
 
   struct tm tm_ft;
-  gmtime_r(&ft,&tm_ft);
+  if (!gmtime_r(&ft, &tm_ft))
+    return 0;
 
   systemTime->year = tm_ft.tm_year + 1900;
   systemTime->month = tm_ft.tm_mon + 1;
@@ -221,10 +230,14 @@ int FileTimeToTimeT(const FileTime* localFileTime, time_t* pTimeT)
   time_t ft = fileTime.QuadPart;
 
   struct tm tm_ft;
-  localtime_r(&ft,&tm_ft);
+  if (!localtime_r(&ft, &tm_ft))
+    return 0;
 
   *pTimeT = mktime(&tm_ft);
-  return 1;
+  if (*pTimeT == -1 && errno != 0)
+    return 0;
+  else
+    return 1;
 }
 
 int TimeTToFileTime(time_t timeT, FileTime* localFileTime)
