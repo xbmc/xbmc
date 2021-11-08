@@ -24,7 +24,7 @@ void CControllerGrid::SetControllerTree(const CControllerTree& controllerTree)
   // Clear the result
   m_grid.clear();
 
-  m_height = AddPorts(controllerTree.Ports(), m_grid);
+  m_height = AddPorts(controllerTree.GetPorts(), m_grid);
   SetHeight(m_height, m_grid);
 }
 
@@ -49,25 +49,25 @@ unsigned int CControllerGrid::AddPorts(const PortVec& ports, ControllerGrid& gri
   unsigned int height = 0;
 
   auto itKeyboard = std::find_if(ports.begin(), ports.end(), [](const CPortNode port) {
-    return port.PortType() == PORT_TYPE::KEYBOARD;
+    return port.GetPortType() == PORT_TYPE::KEYBOARD;
   });
 
   auto itMouse = std::find_if(ports.begin(), ports.end(), [](const CPortNode port) {
-    return port.PortType() == PORT_TYPE::MOUSE;
+    return port.GetPortType() == PORT_TYPE::MOUSE;
   });
 
   auto itController = std::find_if(ports.begin(), ports.end(), [](const CPortNode port) {
-    return port.PortType() == PORT_TYPE::CONTROLLER;
+    return port.GetPortType() == PORT_TYPE::CONTROLLER;
   });
 
   // Keyboard and mouse are not allowed to have ports because they might
   // overlap with controllers
-  if (itKeyboard != ports.end() && itKeyboard->ActiveController().Hub().HasPorts())
+  if (itKeyboard != ports.end() && itKeyboard->GetActiveController().GetHub().HasPorts())
   {
     CLog::Log(LOGERROR, "Found keyboard with controller ports, skipping");
     itKeyboard = ports.end();
   }
-  if (itMouse != ports.end() && itMouse->ActiveController().Hub().HasPorts())
+  if (itMouse != ports.end() && itMouse->GetActiveController().GetHub().HasPorts())
   {
     CLog::Log(LOGERROR, "Found mouse with controller ports, skipping");
     itMouse = ports.end();
@@ -81,7 +81,7 @@ unsigned int CControllerGrid::AddPorts(const PortVec& ports, ControllerGrid& gri
     {
       ControllerColumn column;
 
-      if (port.PortType() == PORT_TYPE::CONTROLLER)
+      if (port.GetPortType() == PORT_TYPE::CONTROLLER)
       {
         // Add controller
         height =
@@ -139,23 +139,23 @@ unsigned int CControllerGrid::AddController(const CPortNode port,
   while (column.size() < height)
     AddInvisible(column);
 
-  const CControllerNode& activeController = port.ActiveController();
+  const CControllerNode& activeController = port.GetActiveController();
 
   // Add vertex
   ControllerVertex vertex;
   vertex.bVisible = true;
   vertex.bConnected = port.IsConnected();
-  vertex.portType = port.PortType();
-  vertex.controller = activeController.Controller();
-  vertex.address = activeController.Address();
-  for (const CControllerNode& node : port.CompatibleControllers())
-    vertex.compatible.emplace_back(node.Controller());
+  vertex.portType = port.GetPortType();
+  vertex.controller = activeController.GetController();
+  vertex.address = activeController.GetAddress();
+  for (const CControllerNode& node : port.GetCompatibleControllers())
+    vertex.compatible.emplace_back(node.GetController());
   column.emplace_back(std::move(vertex));
 
   height++;
 
   // Process ports
-  const PortVec& ports = activeController.Hub().Ports();
+  const PortVec& ports = activeController.GetHub().GetPorts();
   if (!ports.empty())
   {
     switch (GetDirection(activeController))

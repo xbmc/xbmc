@@ -45,7 +45,7 @@ public:
    *
    * \sa IsValid()
    */
-  const ControllerPtr& Controller() const { return m_controller; }
+  const ControllerPtr& GetController() const { return m_controller; }
   void SetController(ControllerPtr controller);
 
   void GetControllers(ControllerVector& controllers) const;
@@ -53,7 +53,7 @@ public:
   /*!
    * \brief Address given to the node by the implementation
    */
-  const std::string& Address() const { return m_address; }
+  const std::string& GetAddress() const { return m_address; }
   void SetAddress(std::string address);
 
   /*!
@@ -62,8 +62,8 @@ public:
    * \return A hub with controller ports, or an empty hub if this controller
    *         has no available ports
    */
-  const CControllerHub& Hub() const { return *m_hub; }
-  CControllerHub& Hub() { return *m_hub; }
+  const CControllerHub& GetHub() const { return *m_hub; }
+  CControllerHub& GetHub() { return *m_hub; }
   void SetHub(CControllerHub hub);
 
   /*!

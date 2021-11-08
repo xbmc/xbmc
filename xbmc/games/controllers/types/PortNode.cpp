@@ -50,7 +50,7 @@ CPortNode& CPortNode::operator=(CPortNode&& rhs)
   return *this;
 }
 
-const CControllerNode& CPortNode::ActiveController() const
+const CControllerNode& CPortNode::GetActiveController() const
 {
   if (m_bConnected && m_active < m_controllers.size())
     return m_controllers[m_active];
@@ -59,7 +59,7 @@ const CControllerNode& CPortNode::ActiveController() const
   return invalid;
 }
 
-CControllerNode& CPortNode::ActiveController()
+CControllerNode& CPortNode::GetActiveController()
 {
   if (m_bConnected && m_active < m_controllers.size())
     return m_controllers[m_active];
@@ -131,7 +131,7 @@ void CPortNode::GetPort(CPhysicalPort& port) const
 {
   std::vector<std::string> accepts;
   for (const CControllerNode& node : m_controllers)
-    accepts.emplace_back(node.Controller()->ID());
+    accepts.emplace_back(node.GetController()->ID());
 
   port = CPhysicalPort(m_portId, std::move(accepts));
 }
