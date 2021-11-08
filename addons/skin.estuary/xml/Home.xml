@@ -410,6 +410,14 @@
 							<param name="list_id" value="12500"/>
 							<param name="item_treshold" value="1"/>
 						</include>
+						<include content="WidgetListPVR" condition="System.HasPVRAddon">
+							<param name="content_path" value="pvr://search/tv/savedsearches"/>
+							<param name="sortorder" value="descending"/>
+							<param name="sortby" value="date"/>
+							<param name="widget_header" value="$LOCALIZE[19337]"/>
+							<param name="widget_target" value="tvsearch"/>
+							<param name="list_id" value="12600"/>
+						</include>
 					</control>
 					<include content="ImageWidget" condition="!System.HasPVRAddon">
 						<param name="text_label" value="$LOCALIZE[31143]" />
@@ -467,6 +475,14 @@
 							<param name="widget_target" value="radioguide"/>
 							<param name="list_id" value="13500"/>
 							<param name="item_treshold" value="1"/>
+						</include>
+						<include content="WidgetListPVR" condition="System.HasPVRAddon">
+							<param name="content_path" value="pvr://search/radio/savedsearches"/>
+							<param name="sortorder" value="descending"/>
+							<param name="sortby" value="date"/>
+							<param name="widget_header" value="$LOCALIZE[19337]"/>
+							<param name="widget_target" value="radiosearch"/>
+							<param name="list_id" value="13600"/>
 						</include>
 					</control>
 					<include content="ImageWidget" condition="!System.HasPVRAddon">

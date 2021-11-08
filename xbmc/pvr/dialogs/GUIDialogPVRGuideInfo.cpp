@@ -247,8 +247,3 @@ void CGUIDialogPVRGuideInfo::OnInitWindow()
   if (bHideSetReminder)
     SET_CONTROL_HIDDEN(CONTROL_BTN_SET_REMINDER);
 }
-
-void CGUIDialogPVRGuideInfo::ShowFor(const CFileItemPtr& item)
-{
-  CServiceBroker::GetPVRManager().GUIActions()->ShowEPGInfo(item);
-}

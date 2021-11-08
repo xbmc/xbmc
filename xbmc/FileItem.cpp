@@ -201,7 +201,7 @@ CFileItem::CFileItem(const std::shared_ptr<PVR::CPVREpgSearchFilter>& filter)
 {
   Initialize();
 
-  m_bIsFolder = false;
+  m_bIsFolder = true;
   m_epgSearchFilter = filter;
   m_strPath = filter->GetPath();
   SetLabel(filter->GetTitle());

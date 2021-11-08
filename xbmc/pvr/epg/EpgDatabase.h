@@ -306,6 +306,14 @@ namespace PVR
     std::vector<std::shared_ptr<CPVREpgSearchFilter>> GetSavedSearches(bool bRadio);
 
     /*!
+     * @brief Get the saved search matching the given id.
+     * @param bRadio Whether to fetch a TV or radio saved search.
+     * @param iId The id.
+     * @return The saved search or nullptr if not found.
+     */
+    std::shared_ptr<CPVREpgSearchFilter> GetSavedSearchById(bool bRadio, int iId);
+
+    /*!
      * @brief Persist a search.
      * @param epgSearch The search.
      * @return True on success, false otherwise.
@@ -354,6 +362,9 @@ namespace PVR
     int GetMinSchemaVersion() const override { return 4; }
 
     std::shared_ptr<CPVREpgInfoTag> CreateEpgTag(const std::unique_ptr<dbiplus::Dataset>& pDS);
+
+    std::shared_ptr<CPVREpgSearchFilter> CreateEpgSearchFilter(
+        bool bRadio, const std::unique_ptr<dbiplus::Dataset>& pDS);
 
     CCriticalSection m_critSection;
   };

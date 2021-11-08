@@ -101,9 +101,3 @@ CFileItemPtr CGUIDialogPVRRecordingInfo::GetCurrentListItem(int offset)
 {
   return m_recordItem;
 }
-
-void CGUIDialogPVRRecordingInfo::ShowFor(const CFileItemPtr& item)
-{
-  CServiceBroker::GetPVRManager().GUIActions()->ShowRecordingInfo(item);
-}
-

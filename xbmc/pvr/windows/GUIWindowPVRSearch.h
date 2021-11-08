@@ -9,6 +9,7 @@
 #pragma once
 
 #include "dialogs/GUIDialogContextMenu.h"
+#include "pvr/dialogs/GUIDialogPVRGuideSearch.h"
 #include "pvr/windows/GUIWindowPVRBase.h"
 
 #include <memory>
@@ -42,8 +43,9 @@ namespace PVR
     /*!
      * @brief Open the search dialog for the given search filter item.
      * @param item the epg search filter.
+     * @return The result of the dialog
      */
-    void OpenDialogSearch(const std::shared_ptr<CFileItem>& item);
+    CGUIDialogPVRGuideSearch::Result OpenDialogSearch(const std::shared_ptr<CFileItem>& item);
 
   protected:
     void OnPrepareFileItems(CFileItemList& items) override;
@@ -51,7 +53,8 @@ namespace PVR
   private:
     bool OnContextButtonClear(CFileItem* item, CONTEXT_BUTTON button);
 
-    void OpenDialogSearch(const std::shared_ptr<CPVREpgSearchFilter>& searchFilter);
+    CGUIDialogPVRGuideSearch::Result OpenDialogSearch(
+        const std::shared_ptr<CPVREpgSearchFilter>& searchFilter);
 
     void ExecuteSearch();
 
