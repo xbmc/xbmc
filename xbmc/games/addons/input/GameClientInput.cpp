@@ -309,42 +309,43 @@ bool CGameClientInput::ConnectController(const std::string& portAddress, Control
   const CPortNode& currentPort = m_topology->GetControllerTree().GetPort(portAddress);
   CloseJoysticks(currentPort);
 
-  bool bSuccess = false;
-
   {
     CSingleLock lock(m_clientAccess);
 
-    if (m_gameClient.Initialized())
+    if (!m_gameClient.Initialized())
+      return false;
+
+    try
     {
-      try
+      if (!m_struct.toAddon->ConnectController(&m_struct, true, portAddress.c_str(),
+                                               controller->ID().c_str()))
       {
-        bSuccess = m_struct.toAddon->ConnectController(&m_struct, true, portAddress.c_str(),
-                                                       controller->ID().c_str());
+        return false;
       }
-      catch (...)
-      {
-        m_gameClient.LogException("ConnectController()");
-      }
+    }
+    catch (...)
+    {
+      m_gameClient.LogException("ConnectController()");
+      return false;
     }
   }
 
-  if (bSuccess)
-  {
-    // Update player input
-    if (controller->Layout().Topology().ProvidesInput())
-      OpenJoystick(portAddress, controller);
+  // Update player input
+  if (controller->Layout().Topology().ProvidesInput())
+    OpenJoystick(portAddress, controller);
 
-    // If port is a multitap, we need to activate its children
-    const CPortNode& updatedPort = m_topology->GetControllerTree().GetPort(portAddress);
-    const PortVec& childPorts = updatedPort.GetActiveController().GetHub().GetPorts();
-    for (const CPortNode& childPort : childPorts)
+  bool bSuccess = false;
+
+  // If port is a multitap, we need to activate its children
+  const CPortNode& updatedPort = m_topology->GetControllerTree().GetPort(portAddress);
+  const PortVec& childPorts = updatedPort.GetActiveController().GetHub().GetPorts();
+  for (const CPortNode& childPort : childPorts)
+  {
+    if (childPort.IsConnected())
     {
-      if (childPort.IsConnected())
-      {
-        const ControllerPtr& childController = childPort.GetActiveController().GetController();
-        if (childController)
-          bSuccess &= ConnectController(childPort.GetAddress(), childController);
-      }
+      const ControllerPtr& childController = childPort.GetActiveController().GetController();
+      if (childController)
+        bSuccess &= ConnectController(childPort.GetAddress(), childController);
     }
   }
 
@@ -357,31 +358,27 @@ bool CGameClientInput::DisconnectController(const std::string& portAddress)
   const CPortNode& currentPort = m_topology->GetControllerTree().GetPort(portAddress);
   CloseJoysticks(currentPort);
 
-  bool bSuccess = false;
-
   {
     CSingleLock lock(m_clientAccess);
 
-    if (m_gameClient.Initialized())
+    if (!m_gameClient.Initialized())
+      return false;
+
+    try
     {
-      try
-      {
-        bSuccess = m_struct.toAddon->ConnectController(&m_struct, false, portAddress.c_str(), "");
-      }
-      catch (...)
-      {
-        m_gameClient.LogException("ConnectController()");
-      }
+      if (!m_struct.toAddon->ConnectController(&m_struct, false, portAddress.c_str(), ""))
+        return false;
+    }
+    catch (...)
+    {
+      m_gameClient.LogException("ConnectController()");
+      return false;
     }
   }
+  // Update player input
+  CloseJoystick(portAddress);
 
-  if (bSuccess)
-  {
-    // Update player input
-    CloseJoystick(portAddress);
-  }
-
-  return bSuccess;
+  return true;
 }
 
 bool CGameClientInput::HasAgent() const
