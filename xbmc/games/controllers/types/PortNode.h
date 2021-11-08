@@ -38,7 +38,7 @@ public:
    *
    * \return True if a controller is connected, false otherwise
    */
-  bool Connected() const { return m_bConnected; }
+  bool IsConnected() const { return m_bConnected; }
   void SetConnected(bool bConnected) { m_bConnected = bConnected; }
 
   /*!

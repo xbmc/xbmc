@@ -144,7 +144,7 @@ unsigned int CControllerGrid::AddController(const CPortNode port,
   // Add vertex
   ControllerVertex vertex;
   vertex.bVisible = true;
-  vertex.bConnected = port.Connected();
+  vertex.bConnected = port.IsConnected();
   vertex.portType = port.PortType();
   vertex.controller = activeController.Controller();
   vertex.address = activeController.Address();
