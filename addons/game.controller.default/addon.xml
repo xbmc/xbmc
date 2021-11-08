@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="game.controller.default"
         name="Default Controller"
-        version="1.0.15"
+        version="1.0.16"
         provider-name="Team Kodi">
     <extension point="kodi.game.controller" library="resources/layout.xml"/>
     <extension point="xbmc.addon.metadata">
@@ -16,11 +16,13 @@
         <summary lang="es_ES">Mando por defecto</summary>
         <summary lang="es_MX">Mando por defecto</summary>
         <summary lang="fa_IR">دستهٔ پیش‌گزیده</summary>
+        <summary lang="fi_FI">Oletusohjain</summary>
         <summary lang="he_IL">בקר בררת מחדל</summary>
         <summary lang="hu_HU">Alap kontroller</summary>
         <summary lang="ko_KR">기본 콘트롤러</summary>
         <summary lang="lt_LT">Numatytasis valdiklis</summary>
         <summary lang="nl_NL">Standaard Controller</summary>
+        <summary lang="oc_FR">Contrarotlaire per defaut</summary>
         <summary lang="pl_PL">Kontroler domyślny</summary>
         <summary lang="pt_BR">Controlador Padrão</summary>
         <summary lang="ru_RU">Стандартный контроллер</summary>
@@ -33,6 +35,7 @@
         <description lang="es_ES">El mando por defecto del media center está basado en el mando de Xbox 360.</description>
         <description lang="es_MX">El mando por defecto de Kodi se basa en el control de Xbox 360.</description>
         <description lang="fa_IR">دستهٔ پیش‌گزیدهٔ مرکز رسانه، بر پایهٔ دستهٔ اکس‌باکس ۳۶۰ است.</description>
+        <description lang="fi_FI">Mediakeskuksen oletusohjain perustuu Xbox 360 ohjaimeen.</description>
         <description lang="he_IL">בקר בררת המחדל של מרכז המדיה מבוסס על הבקר של Xbox 360.</description>
         <description lang="hu_HU">Az alapértelmezett médiaközpont -vezérlő az Xbox 360 vezérlőn alapul.</description>
         <description lang="ko_KR">기본 미디어 센터 컨트롤러는 Xbox 360 컨트롤러를 기반으로 합니다.</description>
@@ -54,6 +57,7 @@
         <disclaimer lang="ko_KR">이미지 제공: Wikipedia(wikipedia.org)</disclaimer>
         <disclaimer lang="lt_LT">Atvaizdo šaltinis: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="nl_NL">Bron afbeelding: Wikipedia (wikipedia.org)</disclaimer>
+        <disclaimer lang="oc_FR">Crèdit imatge : Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="pl_PL">Pochodzenie obrazu: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="pt_BR">Crédito da imagem: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="ru_RU">Источник изображения: Wikipedia (wikipedia.org)</disclaimer>
