@@ -50,26 +50,26 @@ void CGameClientInput::Initialize()
 {
   LoadTopology();
 
-  ActivateControllers(m_topology->ControllerTree());
+  ActivateControllers(m_topology->GetControllerTree());
 
-  SetControllerLayouts(m_topology->ControllerTree().GetControllers());
+  SetControllerLayouts(m_topology->GetControllerTree().GetControllers());
 }
 
 void CGameClientInput::Start(IGameInputCallback* input)
 {
   m_inputCallback = input;
 
-  const CControllerTree& controllers = m_topology->ControllerTree();
+  const CControllerTree& controllers = m_topology->GetControllerTree();
 
   // Open keyboard
   //! @todo Move to player manager
   if (SupportsKeyboard())
   {
-    auto it =
-        std::find_if(controllers.Ports().begin(), controllers.Ports().end(),
-                     [](const CPortNode& port) { return port.PortType() == PORT_TYPE::KEYBOARD; });
+    auto it = std::find_if(
+        controllers.GetPorts().begin(), controllers.GetPorts().end(),
+        [](const CPortNode& port) { return port.GetPortType() == PORT_TYPE::KEYBOARD; });
 
-    OpenKeyboard(it->ActiveController().Controller());
+    OpenKeyboard(it->GetActiveController().GetController());
   }
 
   // Open mouse
@@ -77,20 +77,20 @@ void CGameClientInput::Start(IGameInputCallback* input)
   if (SupportsMouse())
   {
     auto it =
-        std::find_if(controllers.Ports().begin(), controllers.Ports().end(),
-                     [](const CPortNode& port) { return port.PortType() == PORT_TYPE::MOUSE; });
+        std::find_if(controllers.GetPorts().begin(), controllers.GetPorts().end(),
+                     [](const CPortNode& port) { return port.GetPortType() == PORT_TYPE::MOUSE; });
 
-    OpenMouse(it->ActiveController().Controller());
+    OpenMouse(it->GetActiveController().GetController());
   }
 
   // Connect/disconnect active controllers
-  for (const CPortNode& port : controllers.Ports())
+  for (const CPortNode& port : controllers.GetPorts())
   {
-    const ControllerPtr activeController = port.ActiveController().Controller();
+    const ControllerPtr activeController = port.GetActiveController().GetController();
     if (port.IsConnected() && activeController)
-      ConnectController(port.Address(), activeController);
+      ConnectController(port.GetAddress(), activeController);
     else
-      DisconnectController(port.Address());
+      DisconnectController(port.GetAddress());
   }
 
   // Ensure hardware is open to receive events
@@ -227,11 +227,11 @@ void CGameClientInput::LoadTopology()
 
 void CGameClientInput::ActivateControllers(CControllerHub& hub)
 {
-  for (auto& port : hub.Ports())
+  for (auto& port : hub.GetPorts())
   {
     port.SetConnected(true);
     port.SetActiveController(0);
-    ActivateControllers(port.ActiveController().Hub());
+    ActivateControllers(port.GetActiveController().GetHub());
   }
 }
 
@@ -264,33 +264,34 @@ void CGameClientInput::SetControllerLayouts(const ControllerVector& controllers)
 
 const CControllerTree& CGameClientInput::GetControllerTree() const
 {
-  return m_topology->ControllerTree();
+  return m_topology->GetControllerTree();
 }
 
 bool CGameClientInput::SupportsKeyboard() const
 {
-  const CControllerTree& controllers = m_topology->ControllerTree();
+  const CControllerTree& controllers = m_topology->GetControllerTree();
 
   auto it =
-      std::find_if(controllers.Ports().begin(), controllers.Ports().end(),
-                   [](const CPortNode& port) { return port.PortType() == PORT_TYPE::KEYBOARD; });
+      std::find_if(controllers.GetPorts().begin(), controllers.GetPorts().end(),
+                   [](const CPortNode& port) { return port.GetPortType() == PORT_TYPE::KEYBOARD; });
 
-  return it != controllers.Ports().end() && !it->CompatibleControllers().empty();
+  return it != controllers.GetPorts().end() && !it->GetCompatibleControllers().empty();
 }
 
 bool CGameClientInput::SupportsMouse() const
 {
-  const CControllerTree& controllers = m_topology->ControllerTree();
+  const CControllerTree& controllers = m_topology->GetControllerTree();
 
-  auto it = std::find_if(controllers.Ports().begin(), controllers.Ports().end(),
-                         [](const CPortNode& port) { return port.PortType() == PORT_TYPE::MOUSE; });
+  auto it =
+      std::find_if(controllers.GetPorts().begin(), controllers.GetPorts().end(),
+                   [](const CPortNode& port) { return port.GetPortType() == PORT_TYPE::MOUSE; });
 
-  return it != controllers.Ports().end() && !it->CompatibleControllers().empty();
+  return it != controllers.GetPorts().end() && !it->GetCompatibleControllers().empty();
 }
 
 bool CGameClientInput::ConnectController(const std::string& portAddress, ControllerPtr controller)
 {
-  const CControllerTree& controllerTree = m_topology->ControllerTree();
+  const CControllerTree& controllerTree = m_topology->GetControllerTree();
 
   // Validate controller
   const CPortNode& port = controllerTree.GetPort(portAddress);
@@ -302,7 +303,7 @@ bool CGameClientInput::ConnectController(const std::string& portAddress, Control
   }
 
   // Close current ports if any are open
-  const CPortNode& currentPort = m_topology->ControllerTree().GetPort(portAddress);
+  const CPortNode& currentPort = m_topology->GetControllerTree().GetPort(portAddress);
   CloseJoysticks(currentPort);
 
   bool bSuccess = false;
@@ -331,13 +332,13 @@ bool CGameClientInput::ConnectController(const std::string& portAddress, Control
       OpenJoystick(portAddress, controller);
 
     // If port is a multitap, we need to activate its children
-    const CPortNode& updatedPort = m_topology->ControllerTree().GetPort(portAddress);
-    const PortVec& childPorts = updatedPort.ActiveController().Hub().Ports();
+    const CPortNode& updatedPort = m_topology->GetControllerTree().GetPort(portAddress);
+    const PortVec& childPorts = updatedPort.GetActiveController().GetHub().GetPorts();
     for (const CPortNode& childPort : childPorts)
     {
-      const ControllerPtr childController = childPort.ActiveController().Controller();
+      const ControllerPtr childController = childPort.GetActiveController().GetController();
       if (childPort.IsConnected() && childController)
-        bSuccess &= ConnectController(childPort.Address(), childController);
+        bSuccess &= ConnectController(childPort.GetAddress(), childController);
     }
   }
 
@@ -347,7 +348,7 @@ bool CGameClientInput::ConnectController(const std::string& portAddress, Control
 bool CGameClientInput::DisconnectController(const std::string& portAddress)
 {
   // If port is a multitap, we need to deactivate its children
-  const CPortNode& currentPort = m_topology->ControllerTree().GetPort(portAddress);
+  const CPortNode& currentPort = m_topology->GetControllerTree().GetPort(portAddress);
   CloseJoysticks(currentPort);
 
   bool bSuccess = false;
@@ -570,11 +571,11 @@ void CGameClientInput::CloseJoystick(const std::string& portAddress)
 
 void CGameClientInput::CloseJoysticks(const CPortNode& port)
 {
-  const PortVec& childPorts = port.ActiveController().Hub().Ports();
+  const PortVec& childPorts = port.GetActiveController().GetHub().GetPorts();
   for (const CPortNode& childPort : childPorts)
     CloseJoysticks(childPort);
 
-  CloseJoystick(port.Address());
+  CloseJoystick(port.GetAddress());
 }
 
 void CGameClientInput::HardwareReset()
@@ -720,7 +721,7 @@ CGameClientInput::PortMap CGameClientInput::MapJoysticks(
       break;
 
     // Check topology player limit
-    const int playerLimit = m_topology->PlayerLimit();
+    const int playerLimit = m_topology->GetPlayerLimit();
     if (playerLimit >= 0 && static_cast<int>(i) >= playerLimit)
       break;
 

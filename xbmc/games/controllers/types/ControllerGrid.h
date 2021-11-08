@@ -62,7 +62,7 @@ public:
   /*!
    * \brief Get the width of the controller grid
    */
-  unsigned int Width() const { return static_cast<unsigned int>(m_grid.size()); }
+  unsigned int GetWidth() const { return static_cast<unsigned int>(m_grid.size()); }
 
   /*!
    * \brief Get the height (deepest controller) of the controller grid
@@ -70,12 +70,12 @@ public:
    * The height is cached when the controller grid is created to avoid
    * iterating the grid
    */
-  unsigned int Height() const { return m_height; }
+  unsigned int GetHeight() const { return m_height; }
 
   /*!
    * \brief Access the controller grid
    */
-  const ControllerGrid& Grid() const { return m_grid; }
+  const ControllerGrid& GetGrid() const { return m_grid; }
 
   /*!
    * \brief Get the controllers in use by the specified player

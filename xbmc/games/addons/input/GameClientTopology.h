@@ -25,10 +25,10 @@ public:
 
   void Clear();
 
-  int PlayerLimit() const { return m_playerLimit; }
+  int GetPlayerLimit() const { return m_playerLimit; }
 
-  const CControllerTree& ControllerTree() const { return m_controllers; }
-  CControllerTree& ControllerTree() { return m_controllers; }
+  const CControllerTree& GetControllerTree() const { return m_controllers; }
+  CControllerTree& GetControllerTree() { return m_controllers; }
 
 private:
   static CControllerTree GetControllerTree(const GameClientPortVec& ports);

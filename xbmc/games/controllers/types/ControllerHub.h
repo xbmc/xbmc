@@ -33,8 +33,8 @@ public:
   void Clear();
 
   bool HasPorts() const { return !m_ports.empty(); }
-  PortVec& Ports() { return m_ports; }
-  const PortVec& Ports() const { return m_ports; }
+  PortVec& GetPorts() { return m_ports; }
+  const PortVec& GetPorts() const { return m_ports; }
   void SetPorts(PortVec ports);
 
   bool IsControllerAccepted(const std::string& controllerId) const;

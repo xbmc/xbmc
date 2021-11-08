@@ -46,8 +46,8 @@ public:
    *
    * \return The active controller, or invalid if port is disconnected
    */
-  const CControllerNode& ActiveController() const;
-  CControllerNode& ActiveController();
+  const CControllerNode& GetActiveController() const;
+  CControllerNode& GetActiveController();
   void SetActiveController(unsigned int controllerIndex) { m_active = controllerIndex; }
 
   /*!
@@ -55,7 +55,7 @@ public:
    *
    * \return The port type, if known
    */
-  PORT_TYPE PortType() const { return m_portType; }
+  PORT_TYPE GetPortType() const { return m_portType; }
   void SetPortType(PORT_TYPE type) { m_portType = type; }
 
   /*!
@@ -64,13 +64,13 @@ public:
    * \return The port ID of the hardware port or controller port, or empty if
    *         the port is only identified by its type
    */
-  const std::string& PortID() const { return m_portId; }
+  const std::string& GetPortID() const { return m_portId; }
   void SetPortID(std::string portId);
 
   /*!
    * \brief Address given to the node by the implementation
    */
-  const std::string& Address() const { return m_address; }
+  const std::string& GetAddress() const { return m_address; }
   void SetAddress(std::string address);
 
   /*!
@@ -79,7 +79,7 @@ public:
    * \return The controller profiles, or empty if this port doesn't support
    *         any controller profiles
    */
-  const ControllerNodeVec& CompatibleControllers() const { return m_controllers; }
+  const ControllerNodeVec& GetCompatibleControllers() const { return m_controllers; }
   void SetCompatibleControllers(ControllerNodeVec controllers);
 
   /*!
