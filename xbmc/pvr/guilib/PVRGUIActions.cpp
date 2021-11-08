@@ -2631,13 +2631,15 @@ namespace PVR
   {
     if (item->HasPVRRecordingInfoTag())
     {
-      CGUIDialogPVRRecordingInfo::ShowFor(item);
-      return true;
+      return ShowRecordingInfo(item);
     }
     else if (item->HasPVRChannelInfoTag() || item->HasPVRTimerInfoTag())
     {
-      CGUIDialogPVRGuideInfo::ShowFor(item);
-      return true;
+      return ShowEPGInfo(item);
+    }
+    else if (item->HasEPGSearchFilter())
+    {
+      return EditSavedSearch(item);
     }
     return false;
   }
@@ -2657,6 +2659,7 @@ namespace PVR
       return false;
 
     windowSearch->SetItemToSearch(item);
+    CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(windowSearch->GetID());
     return true;
   }
 
@@ -2674,7 +2677,9 @@ namespace PVR
     if (!windowSearch)
       return false;
 
-    windowSearch->OpenDialogSearch(item);
+    if (windowSearch->OpenDialogSearch(item) == CGUIDialogPVRGuideSearch::Result::SEARCH)
+      CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(windowSearch->GetID());
+
     return true;
   }
 

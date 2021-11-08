@@ -33,6 +33,7 @@ public:
   bool IsRadio() const { return m_bRadio; }
   bool IsSavedSearchesRoot() const { return m_bSavedSearchesRoot; }
   bool IsSavedSearch() const { return m_bSavedSearch; }
+  int GetId() const { return m_iId; }
 
 private:
   bool Init(const std::string& strPath);
@@ -43,5 +44,6 @@ private:
   bool m_bRadio = false;
   bool m_bSavedSearchesRoot = false;
   bool m_bSavedSearch = false;
+  int m_iId = -1;
 };
 } // namespace PVR

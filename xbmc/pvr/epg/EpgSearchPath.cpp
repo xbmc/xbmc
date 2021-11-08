@@ -12,6 +12,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
+#include <cstdlib>
 #include <string>
 #include <vector>
 
@@ -56,6 +57,8 @@ bool CPVREpgSearchPath::Init(const std::string& strPath)
   m_bSavedSearchesRoot =
       (m_bValid && (segments.size() == 4) && (segments.at(3) == "savedsearches"));
   m_bSavedSearch = (m_bValid && (segments.size() == 5));
+  if (m_bSavedSearch)
+    m_iId = std::stoi(segments.at(4));
 
   return m_bValid;
 }

@@ -30,8 +30,6 @@ namespace PVR
 
     void SetProgInfo(const std::shared_ptr<CPVREpgInfoTag>& tag);
 
-    static void ShowFor(const CFileItemPtr& item);
-
   protected:
     void OnInitWindow() override;
 

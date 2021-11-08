@@ -225,6 +225,7 @@ bool CGUIWindowPVRSearchBase::OnMessage(CGUIMessage& message)
           {
             const CPVREpgSearchPath path(pItem->GetPath());
             const bool bIsSavedSearch = (path.IsValid() && path.IsSavedSearch());
+            const bool bIsSavedSearchesRoot = (path.IsValid() && path.IsSavedSearchesRoot());
 
             if (message.GetParam1() != ACTION_SHOW_INFO)
             {
@@ -235,7 +236,7 @@ bool CGUIWindowPVRSearchBase::OnMessage(CGUIMessage& message)
                 break; // handled by base class
               }
 
-              if (pItem->m_bIsFolder)
+              if (bIsSavedSearchesRoot)
               {
                 // List saved searches
                 m_bSearchConfirmed = false;
@@ -305,6 +306,21 @@ bool CGUIWindowPVRSearchBase::OnMessage(CGUIMessage& message)
           if (!bFound)
             SetSearchFilter(nullptr);
         }
+      }
+    }
+  }
+  else if (message.GetMessage() == GUI_MSG_WINDOW_INIT)
+  {
+    const CPVREpgSearchPath path(message.GetStringParam(0));
+    if (path.IsValid() && path.IsSavedSearch())
+    {
+      const std::shared_ptr<CPVREpgSearchFilter> filter =
+          CServiceBroker::GetPVRManager().EpgContainer().GetSavedSearchById(path.IsRadio(),
+                                                                            path.GetId());
+      if (filter)
+      {
+        SetSearchFilter(filter);
+        m_bSearchConfirmed = true;
       }
     }
   }
@@ -384,16 +400,17 @@ bool CGUIWindowPVRSearchBase::OnContextButtonClear(CFileItem* item, CONTEXT_BUTT
   return bReturn;
 }
 
-void CGUIWindowPVRSearchBase::OpenDialogSearch(const std::shared_ptr<CFileItem>& item)
+CGUIDialogPVRGuideSearch::Result CGUIWindowPVRSearchBase::OpenDialogSearch(
+    const std::shared_ptr<CFileItem>& item)
 {
   const auto searchFilter = item->GetEPGSearchFilter();
   if (!searchFilter)
-    return;
+    return CGUIDialogPVRGuideSearch::Result::CANCEL;
 
-  OpenDialogSearch(searchFilter);
+  return OpenDialogSearch(searchFilter);
 }
 
-void CGUIWindowPVRSearchBase::OpenDialogSearch(
+CGUIDialogPVRGuideSearch::Result CGUIWindowPVRSearchBase::OpenDialogSearch(
     const std::shared_ptr<CPVREpgSearchFilter>& searchFilter)
 {
   CGUIDialogPVRGuideSearch* dlgSearch =
@@ -401,7 +418,7 @@ void CGUIWindowPVRSearchBase::OpenDialogSearch(
           WINDOW_DIALOG_PVR_GUIDE_SEARCH);
 
   if (!dlgSearch)
-    return;
+    return CGUIDialogPVRGuideSearch::Result::CANCEL;
 
   const std::shared_ptr<CPVREpgSearchFilter> tmpSearchFilter =
       searchFilter != nullptr ? std::make_shared<CPVREpgSearchFilter>(*searchFilter)
@@ -430,6 +447,8 @@ void CGUIWindowPVRSearchBase::OpenDialogSearch(
       ExecuteSearch();
     }
   }
+
+  return result;
 }
 
 void CGUIWindowPVRSearchBase::ExecuteSearch()
