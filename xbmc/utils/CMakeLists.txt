@@ -164,7 +164,8 @@ set(HEADERS ActorProtocol.h
             VC1BitstreamParser.h
             Vector.h
             XBMCTinyXML.h
-            XMLUtils.h)
+            XMLUtils.h
+            XTimeUtils.h)
 
 if(XSLT_FOUND)
   list(APPEND SOURCES XSLTUtils.cpp)
