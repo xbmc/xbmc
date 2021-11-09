@@ -32,6 +32,7 @@
 		</assets>
 		<summary lang="af_ZA">Oortreksel vir raakskerm toestelle</summary>
 		<summary lang="am_ET">ለ ተችስክሪን አካሎች ቆዳ</summary>
+		<summary lang="ar_SA">مظهر للواجهة مخصص للأجهزة التي تعمل باللمس</summary>
 		<summary lang="be_BY">Абалонка для сэнсарных прылад</summary>
 		<summary lang="bg_BG">Облик за устройства със сензорен екран</summary>
 		<summary lang="ca_ES">Aparença per als dispositius amb pantalla tàctil</summary>
@@ -79,6 +80,7 @@
 		<summary lang="zh_CN">针对触屏设备的皮肤</summary>
 		<summary lang="zh_TW">為具有觸控螢幕的裝置所製作的佈景主題</summary>
 		<description lang="af_ZA">Oortreksel ontwerp om op raakskerm toestelle soos tablette en slimfone te gebruik</description>
+		<description lang="ar_SA">مظهر للواجهة مصمم للأجهزة التي تعمل باللمس مثل الجوالات الذكية والأجهزة اللوحية</description>
 		<description lang="be_BY">Абалонка распрацаваная для выкарыстання на сэнсарных прыладах, такіх як планшэты і смартфоны</description>
 		<description lang="bg_BG">Обликът е разработен за ползване на устройства със сензорен екран, като таблети и телефони.</description>
 		<description lang="ca_ES">Aparença dissenyada perquè s'utilitzi en dispositius amb pantalla tàctil com taules i telèfons intel·ligents</description>
@@ -123,6 +125,6 @@
 		<description lang="uk_UA">Ця обкладинка призначена для пристроїв із сенсорним екраном, наприклад планшетів чи смартфонів.</description>
 		<description lang="vi_VN">Giao diện được thiết kế để sử dụng trên thiết bị màn hình cảm ứng như máy tính bảng và điện thoại thông minh</description>
 		<description lang="zh_CN">为触屏设备如平板电脑和智能手机而设计的皮肤</description>
-		<description lang="zh_TW">本佈景主題專為平板及手機等具有觸控螢幕的裝置而設計。</description>
+		<description lang="zh_TW">本佈景主題專為平板及手機等具有觸控螢幕的裝置而設計</description>
 	</extension>
 </addon>
