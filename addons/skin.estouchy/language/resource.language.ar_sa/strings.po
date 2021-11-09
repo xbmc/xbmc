@@ -5,29 +5,29 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2021-07-05 22:17+0000\n"
-"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"PO-Revision-Date: 2021-11-04 23:10+0000\n"
+"Last-Translator: psp2111-ADSLGATE <psp100000@hotmail.com>\n"
 "Language-Team: Arabic (Saudi Arabia) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/ar_sa/>\n"
 "Language: ar_sa\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
-"X-Generator: Weblate 4.7.1\n"
+"X-Generator: Weblate 4.8.1\n"
 
 msgctxt "Addon Summary"
 msgid "Skin for touchscreen devices"
-msgstr ""
+msgstr "مظهر للواجهة مخصص للأجهزة التي تعمل باللمس"
 
 msgctxt "Addon Description"
 msgid "Skin designed to be used on touchscreen devices like tablets and smartphones"
-msgstr ""
+msgstr "مظهر للواجهة مصمم للأجهزة التي تعمل باللمس مثل الجوالات الذكية والأجهزة اللوحية"
 
 msgctxt "#31002"
 msgid "Audio Settings"
-msgstr "اعدادات الصوت"
+msgstr "إعدادات الصوت"
 
 msgctxt "#31003"
 msgid "IP"
@@ -43,20 +43,20 @@ msgstr "خيارات المؤثرات البصرية"
 
 msgctxt "#31006"
 msgid "Visualization Presets"
-msgstr "المؤثرات البصرية المسبقة"
+msgstr "أوضاع المؤثرات البصرية المسبقة"
 
 msgctxt "#31007"
 msgid "Context Menu"
-msgstr "القائمة"
+msgstr "قائمة السياق"
 
 msgctxt "#31009"
 msgid "Working..."
-msgstr "...جاري التشغيل"
+msgstr "جارٍ العمل..."
 
 # empty string with id 31010
 msgctxt "#31011"
 msgid "Recent"
-msgstr ""
+msgstr "حديث"
 
 msgctxt "#31013"
 msgid "Movies"
@@ -68,31 +68,31 @@ msgstr "الحلقات"
 
 msgctxt "#31015"
 msgid "Player info"
-msgstr ""
+msgstr "معلومات مشغل الوسائط"
 
 msgctxt "#31016"
 msgid "Albums"
-msgstr "ألبومات"
+msgstr "الألبومات"
 
 msgctxt "#31017"
 msgid "PVR info"
-msgstr ""
+msgstr "معلومات PVR"
 
 msgctxt "#31018"
 msgid "Player process info"
-msgstr ""
+msgstr "معلومات المعالجة لمشغل الوسائط"
 
 msgctxt "#31019"
 msgid "Video decoder"
-msgstr ""
+msgstr "وحدة فك ترميز الفيديو"
 
 msgctxt "#31020"
 msgid "Pixel format"
-msgstr ""
+msgstr "تنسيق البكسل"
 
 msgctxt "#31021"
 msgid "System memory usage"
-msgstr ""
+msgstr "استخدام الذاكرة العشوائية للنظام"
 
 msgctxt "#31024"
 msgid "Page"
@@ -108,23 +108,23 @@ msgstr "تسجيل الدخول"
 
 msgctxt "#31039"
 msgid "Updated:"
-msgstr ""
+msgstr "محدثة:"
 
 msgctxt "#31040"
 msgid "Select + X"
-msgstr ""
+msgstr "Select + X"
 
 msgctxt "#31041"
 msgid "Select + B"
-msgstr ""
+msgstr "Select + B"
 
 msgctxt "#31042"
 msgid "Select + Start"
-msgstr ""
+msgstr "Select + Start"
 
 msgctxt "#31043"
 msgid "PAUSED"
-msgstr "متوقف"
+msgstr "توقف مؤقت"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
@@ -132,11 +132,11 @@ msgstr "تقديم سريع"
 
 msgctxt "#31045"
 msgid "REWIND"
-msgstr "إرجاع"
+msgstr "تراجع"
 
 msgctxt "#31046"
 msgid "Play speed"
-msgstr ""
+msgstr "سرعة التشغيل"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -180,7 +180,7 @@ msgstr "الموقع"
 
 msgctxt "#31202"
 msgid "View"
-msgstr "عرض"
+msgstr "العرض"
 
 msgctxt "#31300"
 msgid "Current Temp"
@@ -188,16 +188,16 @@ msgstr "درجة الحرارة الحالية"
 
 msgctxt "#31301"
 msgid "Last Updated"
-msgstr "اخر تحديث"
+msgstr "محدثة مؤخراً"
 
 msgctxt "#31303"
 msgid "Data provider"
-msgstr ": مزود البيانات"
+msgstr "مزود البيانات"
 
 # empty strings from id 31304 to 31308
 msgctxt "#31309"
 msgid "System Memory Used:"
-msgstr ""
+msgstr "ذاكرة النظام المستخدمة:"
 
 msgctxt "#31320"
 msgid "Last Logged In"
@@ -218,11 +218,11 @@ msgstr "تحميل الترجمات"
 # empty string with id 31357
 msgctxt "#31358"
 msgid "Teletext"
-msgstr ""
+msgstr "نصوص التلفاز"
 
 msgctxt "#31390"
 msgid "Skin default"
-msgstr "القالب الإفتراضي"
+msgstr "المظهر الافتراضي"
 
 msgctxt "#31391"
 msgid "Arial based"
@@ -230,98 +230,98 @@ msgstr "Arial based"
 
 msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
-msgstr "تغيير القالب. ضبط اللغة و المنطقة. تغيير خيارات إدراج الملف. إعداد شاشة التوقف"
+msgstr "تغيير المظهر. ضبط اللغة و المنطقة. تغيير خيارات إدراج الملف. إعداد شاشة التوقف"
 
 # empty strings from id 31401 to 31404
 msgctxt "#31405"
 msgid "Configure & manage media sharing services · Configure & manage the weather service"
-msgstr ""
+msgstr "تكوين وإدارة خدمات مشاركة الوسائط · تكوين وإدارة خدمة الطقس"
 
 msgctxt "#31406"
 msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
-msgstr ""
+msgstr "تكوين الشاشة · تكوين الصوت · تكوين الوصول إلى الإنترنت · تكوين توفير الطاقة · تكوين الأخطاء والأحداث"
 
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
-msgstr ""
+msgstr "إدارة الإضافات المثبتة الخاصة بك · تصفح وتثبيت الإضافات من kodi.tv · تعديل إعدادات الإضافة"
 
 msgctxt "#31408"
 msgid "Configure actions that can be used during playback · Configure how media content is played"
-msgstr ""
+msgstr "تكوين الإجراءات التي يمكن استخدامها أثناء تشغيل الوسائط · تكوين كيفية تشغيل محتوى الوسائط"
 
 msgctxt "#31409"
 msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
-msgstr ""
+msgstr "تكوين مصادر المكتبة · إظهار محتوى قوائم الوسائط · تكوين كيفية التنقل في قوائم المكتبة"
 
 msgctxt "#31410"
 msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
-msgstr ""
+msgstr "تكوين المظهر · تكوين المنطقة · تكوين التحكم · تكوين شاشة التوقف · تكوين القفل الرئيسي"
 
 msgctxt "#31411"
 msgid "Configure your profiles · Set locking options · Enable login screen"
-msgstr ""
+msgstr "تكوين ملفات التعريف الخاصة بك · تعيين خيارات القفل · تمكين شاشة تسجيل الدخول"
 
 msgctxt "#31412"
 msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
-msgstr ""
+msgstr "عرض معلومات النظام · إحصائيات الأجهزة · التحقق من توفر المساحة التخزينية · عرض تكوين الشبكة"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
-msgstr "للدخول والإستمرارا [CR]Kodi حدد ملفك الشخصي الخاص بـ"
+msgstr "حدد ملف تعريف مستخدم Kodi الخاص بك[CR]لتسجيل الدخول والمتابعة"
 
 # empty strings from id 31422 to 31547
 # Skin Setting Options
 msgctxt "#31548"
 msgid "Home menu"
-msgstr ""
+msgstr "القائمة الرئيسية"
 
 msgctxt "#31549"
 msgid "Home Add-ons"
-msgstr ""
+msgstr "إضافات الصفحة الرئيسية"
 
 msgctxt "#31550"
 msgid "Backgrounds"
-msgstr "الخلفية"
+msgstr "الخلفيات"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"
-msgstr "اختصار إصافة"
+msgstr "اختصار الإضافة"
 
 msgctxt "#31552"
 msgid "SYNC"
-msgstr ""
+msgstr "مزامنة"
 
 msgctxt "#31553"
 msgid "Use Custom Background"
-msgstr ""
+msgstr "استخدم خلفية مخصصة"
 
 msgctxt "#31554"
 msgid "Background:"
-msgstr ""
+msgstr "الخلفية:"
 
 msgctxt "#31555"
 msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
-msgstr ""
+msgstr "تكوين إعدادات التلفزيون · تغيير معلومات ملء الشاشة · إدارة إعدادات بيانات دليل البرامج الإلكتروني"
 
 msgctxt "#31556"
 msgid "Live TV"
-msgstr "تي في مباشر"
+msgstr "التلفاز"
 
 msgctxt "#31557"
 msgid "Hide video background"
-msgstr ""
+msgstr "إخفاء خلفية الفيديو"
 
 msgctxt "#31558"
 msgid "Hide visualization background"
-msgstr ""
+msgstr "إخفاء خلفية المؤثرات البصرية"
 
 msgctxt "#31559"
 msgid "Channel settings"
-msgstr ""
+msgstr "إعدادات القناة"
 
 msgctxt "#31560"
 msgid "Available groups"
-msgstr ""
+msgstr "المجموعات المتاحة"
 
 msgctxt "#31561"
 msgid "Add Group"
@@ -329,37 +329,37 @@ msgstr "إضافة مجموعة"
 
 msgctxt "#31562"
 msgid "Rename Group"
-msgstr "إعادة تسمية مجموعة"
+msgstr "إعادة تسمية المجموعة"
 
 msgctxt "#31563"
 msgid "Delete Group"
-msgstr "حذف مجموعة"
+msgstr "حذف المجموعة"
 
 msgctxt "#31564"
 msgid "Show hidden"
-msgstr ""
+msgstr "إظهار المخفية"
 
 msgctxt "#31565"
 msgid "Show deleted"
-msgstr ""
+msgstr "إظهار المحذوفة"
 
 # empty strings from id 31566 to 31899
 msgctxt "#31900"
 msgid "First Run"
-msgstr ""
+msgstr "التشغيل لأول مرة"
 
 msgctxt "#31901"
 msgid "There are two things to know about navigating Estouchy"
-msgstr ""
+msgstr "هناك أمران يجب معرفتهما عن التنقل في Estouchy"
 
 msgctxt "#31902"
 msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
-msgstr ""
+msgstr "يعمل شعار Kodi كزر \"الصفحة الرئيسية\". عندما تلمسه ، ستتم إعادتك إلى الشاشة الرئيسية."
 
 msgctxt "#31903"
 msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
-msgstr ""
+msgstr "عند تشغيل ملف فيديو أو صوت ، سيظهر عنوان العنصر في أعلى الشاشة. سينقلك لمسها إلى وضع \"نافذة الفيديو\" أو \"المؤثرات الصورية بملء الشاشة\"."
 
 msgctxt "#31904"
 msgid "Now Playing Title..."
-msgstr ""
+msgstr "يتم الآن تشغيل \"العنوان\"..."
