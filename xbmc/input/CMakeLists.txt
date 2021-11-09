@@ -3,7 +3,6 @@ set(SOURCES AppTranslator.cpp
             CustomControllerTranslator.cpp
             GamepadTranslator.cpp
             InertialScrollingHandler.cpp
-            InputCodingTableBaiduPY.cpp
             InputCodingTableBasePY.cpp
             InputCodingTableFactory.cpp
             InputCodingTableKorean.cpp
@@ -34,7 +33,6 @@ set(HEADERS hardware/IHardwareInput.h
             IKeymapEnvironment.h
             InertialScrollingHandler.h
             InputCodingTable.h
-            InputCodingTableBaiduPY.h
             InputCodingTableBasePY.h
             InputCodingTableFactory.h
             InputCodingTableKorean.h

@@ -8,7 +8,6 @@
 
 #include "InputCodingTableFactory.h"
 
-#include "InputCodingTableBaiduPY.h"
 #include "InputCodingTableBasePY.h"
 #include "InputCodingTableKorean.h"
 #include "utils/XBMCTinyXML.h"
@@ -17,16 +16,6 @@
 IInputCodingTable* CInputCodingTableFactory::CreateCodingTable(const std::string& strTableName,
                                                                const TiXmlElement* element)
 {
-  if (strTableName == "BaiduPY")
-  {
-    const char* apiurl = element->Attribute("apiurl");
-    if (apiurl == nullptr)
-    {
-      CLog::Log(LOGWARNING, "CInputCodingTableFactory: invalid \"apiurl\" attribute");
-      return nullptr;
-    }
-    return new CInputCodingTableBaiduPY(apiurl);
-  }
   if (strTableName == "BasePY")
     return new CInputCodingTableBasePY();
   if (strTableName == "Korean")
