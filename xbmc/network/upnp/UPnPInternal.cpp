@@ -659,7 +659,7 @@ BuildObject(CFileItem&                    item,
             /* Hardcoded check for extension is not the best way, but it can't be allowed to pass all
                subtitle extension (ex. rar or zip). There are the most popular extensions support by UPnP devices.*/
             if (ext == "txt" || ext == "srt" || ext == "ssa" || ext == "ass" || ext == "sub" ||
-                ext == "smi" || ext == "vtt")
+                ext == "smi" || ext == "vtt" || ext == "sup")
             {
                 subtitles.push_back(filenames[i]);
             }
