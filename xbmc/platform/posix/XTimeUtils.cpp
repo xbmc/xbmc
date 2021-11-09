@@ -177,7 +177,7 @@ int FileTimeToSystemTime(const FileTime* fileTime, SystemTime* systemTime)
   time_t ft = file.QuadPart;
 
   struct tm tm_ft;
-  gmtime_r(&ft,&tm_ft);
+  gmtime_r(&ft, &tm_ft);
 
   systemTime->year = tm_ft.tm_year + 1900;
   systemTime->month = tm_ft.tm_mon + 1;
@@ -221,7 +221,7 @@ int FileTimeToTimeT(const FileTime* localFileTime, time_t* pTimeT)
   time_t ft = fileTime.QuadPart;
 
   struct tm tm_ft;
-  localtime_r(&ft,&tm_ft);
+  localtime_r(&ft, &tm_ft);
 
   *pTimeT = mktime(&tm_ft);
   return 1;
