@@ -22,6 +22,12 @@
 	<string>@APP_VERSION_MAJOR@.@APP_VERSION_MINOR@.@APP_VERSION_TAG_LC@</string>
 	<key>CFBundleVersion</key>
 	<string>r####</string>
+	<!-- delete after raising SDK to 11 or later -->
+	<key>LSEnvironment</key>
+	<dict>
+		<key>SYSTEM_VERSION_COMPAT</key>
+		<string></string>
+	</dict>
 	<key>LSMinimumSystemVersion</key>
 	<string>@CMAKE_OSX_DEPLOYMENT_TARGET@</string>
 	<key>CFBundleSignature</key>
