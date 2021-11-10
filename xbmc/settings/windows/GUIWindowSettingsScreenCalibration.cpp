@@ -157,17 +157,9 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
       else
       {
         SET_CONTROL_HIDDEN(CONTROL_VIDEO);
-        m_iCurRes = (unsigned int)-1;
         CServiceBroker::GetWinSystem()->GetGfxContext().GetAllowedResolutions(m_Res);
         // find our starting resolution
         m_iCurRes = FindCurrentResolution();
-      }
-      if (m_iCurRes==(unsigned int)-1)
-      {
-        CLog::Log(LOGERROR, "CALIBRATION: Reported current resolution: {}",
-                  (int)CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution());
-        CLog::Log(LOGERROR, "CALIBRATION: Could not determine current resolution, falling back to default");
-        m_iCurRes = 0;
       }
 
       // Setup the first control
@@ -220,6 +212,10 @@ unsigned int CGUIWindowSettingsScreenCalibration::FindCurrentResolution()
     else if (m_Res[i] == CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution())
       return i;
   }
+  CLog::Log(LOGERROR, "CALIBRATION: Reported current resolution: {}",
+            CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution());
+  CLog::Log(LOGERROR,
+            "CALIBRATION: Could not determine current resolution, falling back to default");
   return 0;
 }
 
