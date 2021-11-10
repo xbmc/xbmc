@@ -20,6 +20,9 @@
 #if defined(TARGET_DARWIN_OSX)
 #include "platform/darwin/osx/smc.h"
 #endif
+#include "guilib/guiinfo/GUIInfo.h"
+#include "guilib/guiinfo/GUIInfoHelper.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
 #include "powermanagement/PowerManager.h"
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
@@ -30,16 +33,13 @@
 #include "storage/MediaManager.h"
 #include "utils/AlarmClock.h"
 #include "utils/CPUInfo.h"
+#include "utils/HDRCapabilities.h"
 #include "utils/MemUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
 #include "utils/TimeUtils.h"
 #include "windowing/WinSystem.h"
 #include "windows/GUIMediaWindow.h"
-
-#include "guilib/guiinfo/GUIInfo.h"
-#include "guilib/guiinfo/GUIInfoHelper.h"
-#include "guilib/guiinfo/GUIInfoLabels.h"
 
 using namespace KODI::GUILIB;
 using namespace KODI::GUILIB::GUIINFO;
@@ -320,6 +320,27 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       StringUtils::ToCapitalize(value);
       return true;
 #endif
+    case SYSTEM_SUPPORTED_HDR_TYPES:
+    {
+      if (CServiceBroker::GetWinSystem()->IsHDRDisplay())
+      {
+        // Assumes HDR10 minimum requirement for HDR
+        std::string types = "HDR10";
+
+        const CHDRCapabilities caps = CServiceBroker::GetWinSystem()->GetDisplayHDRCapabilities();
+
+        if (caps.SupportsHLG())
+          types += ", HLG";
+        if (caps.SupportsHDR10Plus())
+          types += ", HDR10+";
+        if (caps.SupportsDolbyVision())
+          types += ", Dolby Vision";
+
+        value = types;
+      }
+
+      return true;
+    }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // NETWORK_*

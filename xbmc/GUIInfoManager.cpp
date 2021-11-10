@@ -1728,6 +1728,14 @@ const infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
 ///     @skinning_v19 **[New Boolean Condition]** \link  System_SupportsCPUUsage `
 ///     System.SupportsCPUUsage`\endlink <p>
 ///   }
+///   \table_row3{   <b>`System.SupportedHDRTypes`</b>,
+///                  \anchor System_SupportedHDRTypes
+///                  _string_,
+///     @return The display's supported HDR types.
+///     <p><hr>
+///     @skinning_v20 **[New Infolabel]** \link `System_SupportedHDRTypes`\endlink
+///     <p>
+///   }
 const infomap system_labels[] = {{"hasnetwork", SYSTEM_ETHERNET_LINK_ACTIVE},
                                  {"hasmediadvd", SYSTEM_MEDIA_DVD},
                                  {"hasmediaaudiocd", SYSTEM_MEDIA_AUDIO_CD},
@@ -1799,7 +1807,8 @@ const infomap system_labels[] = {{"hasnetwork", SYSTEM_ETHERNET_LINK_ACTIVE},
                                  {"privacypolicy", SYSTEM_PRIVACY_POLICY},
                                  {"haspvraddon", SYSTEM_HAS_PVR_ADDON},
                                  {"addonupdatecount", SYSTEM_ADDON_UPDATE_COUNT},
-                                 {"supportscpuusage", SYSTEM_SUPPORTS_CPU_USAGE}};
+                                 {"supportscpuusage", SYSTEM_SUPPORTS_CPU_USAGE},
+                                 {"supportedhdrtypes", SYSTEM_SUPPORTED_HDR_TYPES}};
 
 /// \page modules__infolabels_boolean_conditions
 ///   \table_row3{   <b>`System.HasAddon(id)`</b>,
