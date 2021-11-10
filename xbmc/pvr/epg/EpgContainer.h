@@ -43,10 +43,12 @@ namespace PVR
     friend class CPVREpgDatabase;
 
   public:
+    CPVREpgContainer() = delete;
+
     /*!
      * @brief Create a new EPG table container.
      */
-    CPVREpgContainer();
+    explicit CPVREpgContainer(CEventSource<PVREvent>& eventSource);
 
     /*!
      * @brief Destroy this instance.
@@ -58,11 +60,6 @@ namespace PVR
      * @return A pointer to the database instance.
      */
     std::shared_ptr<CPVREpgDatabase> GetEpgDatabase() const;
-
-    /*!
-     * @brief Query the events available for CEventStream
-     */
-    CEventStream<PVREvent>& Events() { return m_events; }
 
     /*!
      * @brief Start the EPG update thread.
@@ -353,7 +350,7 @@ namespace PVR
 
     bool m_bUpdateNotificationPending = false; /*!< true while an epg updated notification to observers is pending. */
     CPVRSettings m_settings;
-    CEventSource<PVREvent> m_events;
+    CEventSource<PVREvent>& m_events;
 
     std::atomic<bool> m_bSuspended = {false};
   };

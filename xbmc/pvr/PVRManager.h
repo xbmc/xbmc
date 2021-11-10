@@ -432,6 +432,8 @@ namespace PVR
 
     bool IsCurrentlyParentalLocked(const std::shared_ptr<CPVRChannel>& channel, bool bGenerallyLocked) const;
 
+    CEventSource<PVREvent> m_events;
+
     /** @name containers */
     //@{
     std::shared_ptr<CPVRProviders> m_providers; /*!< pointer to the providers container */
@@ -456,10 +458,7 @@ namespace PVR
 
     CCriticalSection m_startStopMutex; // mutex for protecting pvr manager's start/restart/stop sequence */
 
-    CEventSource<PVREvent> m_events;
-
     const std::shared_ptr<CPVRPlaybackState> m_playbackState;
-
     CPVRGUIActionListener m_actionListener;
     CPVRSettings m_settings;
   };

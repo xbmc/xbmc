@@ -124,14 +124,14 @@ void CPVRTimers::Start()
 {
   Stop();
 
-  CServiceBroker::GetPVRManager().EpgContainer().Events().Subscribe(this, &CPVRTimers::Notify);
+  CServiceBroker::GetPVRManager().Events().Subscribe(this, &CPVRTimers::Notify);
   Create();
 }
 
 void CPVRTimers::Stop()
 {
   StopThread();
-  CServiceBroker::GetPVRManager().EpgContainer().Events().Unsubscribe(this);
+  CServiceBroker::GetPVRManager().Events().Unsubscribe(this);
 }
 
 bool CPVRTimers::Update()
