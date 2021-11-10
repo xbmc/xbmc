@@ -161,6 +161,12 @@ void CGUIWindowSystemInfo::FrameMove()
     }
 
     SetControlLabel(i++, "{} {}", 22010, SYSTEM_GPU_TEMPERATURE);
+
+    const std::string hdrTypes =
+        CServiceBroker::GetGUI()->GetInfoManager().GetLabel(SYSTEM_SUPPORTED_HDR_TYPES);
+    SET_CONTROL_LABEL(
+        i++, StringUtils::Format("{}: {}", g_localizeStrings.Get(39174),
+                                 hdrTypes.empty() ? g_localizeStrings.Get(231) : hdrTypes));
   }
 
   else if (m_section == CONTROL_BT_HARDWARE)
