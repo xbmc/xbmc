@@ -96,13 +96,10 @@ CGUIWindowPVRSearchBase::CGUIWindowPVRSearchBase(bool bRadio, int id, const std:
   CGUIWindowPVRBase(bRadio, id, xmlFile),
   m_bSearchConfirmed(false)
 {
-  CServiceBroker::GetPVRManager().Events().Subscribe(static_cast<CGUIWindowPVRBase*>(this),
-                                                     &CGUIWindowPVRBase::Notify);
 }
 
 CGUIWindowPVRSearchBase::~CGUIWindowPVRSearchBase()
 {
-  CServiceBroker::GetPVRManager().Events().Unsubscribe(this);
 }
 
 void CGUIWindowPVRSearchBase::GetContextButtons(int itemNumber, CContextButtons& buttons)

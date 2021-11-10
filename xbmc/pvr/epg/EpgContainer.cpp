@@ -99,15 +99,13 @@ void CEpgTagStateChange::Deliver()
   epg->UpdateEntry(m_epgtag, m_state);
 }
 
-CPVREpgContainer::CPVREpgContainer() :
-  CThread("EPGUpdater"),
-  m_database(new CPVREpgDatabase),
-  m_settings({
-    CSettings::SETTING_EPG_EPGUPDATE,
-    CSettings::SETTING_EPG_FUTURE_DAYSTODISPLAY,
-    CSettings::SETTING_EPG_PAST_DAYSTODISPLAY,
-    CSettings::SETTING_EPG_PREVENTUPDATESWHILEPLAYINGTV
-  })
+CPVREpgContainer::CPVREpgContainer(CEventSource<PVREvent>& eventSource)
+  : CThread("EPGUpdater"),
+    m_database(new CPVREpgDatabase),
+    m_settings({CSettings::SETTING_EPG_EPGUPDATE, CSettings::SETTING_EPG_FUTURE_DAYSTODISPLAY,
+                CSettings::SETTING_EPG_PAST_DAYSTODISPLAY,
+                CSettings::SETTING_EPG_PREVENTUPDATESWHILEPLAYINGTV}),
+    m_events(eventSource)
 {
   m_bStop = true; // base class member
   m_updateEvent.Reset();
@@ -213,8 +211,6 @@ void CPVREpgContainer::Unload()
     epg->Events().Unsubscribe(this);
     epg->RemovedFromContainer();
   }
-
-  m_events.Publish(PVREvent::EpgContainer);
 }
 
 void CPVREpgContainer::Notify(const PVREvent& event)
@@ -229,6 +225,11 @@ void CPVREpgContainer::Notify(const PVREvent& event)
   else if (event == PVREvent::EpgUpdatePending)
   {
     SetHasPendingUpdates(true);
+    return;
+  }
+  else if (event == PVREvent::EpgActiveItem)
+  {
+    // No need to propagate the change. See CPVREpgContainer::CheckPlayingEvents
     return;
   }
 
@@ -981,7 +982,7 @@ bool CPVREpgContainer::PersistSavedSearch(CPVREpgSearchFilter& search)
 
   if (database->Persist(search))
   {
-    CServiceBroker::GetPVRManager().PublishEvent(PVREvent::SavedSearchesInvalidated);
+    m_events.Publish(PVREvent::SavedSearchesInvalidated);
     return true;
   }
   return false;
@@ -1010,7 +1011,7 @@ bool CPVREpgContainer::DeleteSavedSearch(const CPVREpgSearchFilter& search)
 
   if (database->Delete(search))
   {
-    CServiceBroker::GetPVRManager().PublishEvent(PVREvent::SavedSearchesInvalidated);
+    m_events.Publish(PVREvent::SavedSearchesInvalidated);
     return true;
   }
   return false;
