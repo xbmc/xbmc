@@ -15,6 +15,7 @@
 #include "WinEvents.h"
 #include "cores/VideoPlayer/VideoRenderers/DebugInfo.h"
 #include "guilib/DispResource.h"
+#include "utils/HDRCapabilities.h"
 
 #include <memory>
 #include <vector>
@@ -165,6 +166,7 @@ public:
   virtual bool IsHDRDisplay() { return false; }
   virtual HDR_STATUS ToggleHDR() { return HDR_STATUS::HDR_UNSUPPORTED; }
   virtual HDR_STATUS GetOSHDRStatus() { return HDR_STATUS::HDR_UNSUPPORTED; }
+  virtual CHDRCapabilities GetDisplayHDRCapabilities() const { return {}; }
 
   static const char* SETTING_WINSYSTEM_IS_HDR_DISPLAY;
 

@@ -6442,6 +6442,7 @@ msgstr ""
 #: xbmc/video/dialogs/GUIDialogAudioSubtitleSettings.cpp
 #: xbmc/video/PlayerController.cpp
 #: xbmc/video/dialogs/GUIDialogAudioSettings.cpp
+#: xbmc/windowing/android/AndroidUtils.cpp
 msgctxt "#13205"
 msgid "Unknown"
 msgstr ""

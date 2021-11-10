@@ -123,6 +123,24 @@ static void fetchDisplayModes()
   }
 }
 
+namespace
+{
+const std::map<int, std::string> hdrTypeMap = {
+    {CAndroidUtils::HDRTypes::HDR10, "HDR10"},
+    {CAndroidUtils::HDRTypes::HLG, "HLG"},
+    {CAndroidUtils::HDRTypes::HDR10_PLUS, "HDR10+"},
+    {CAndroidUtils::HDRTypes::DOLBY_VISION, "Dolby Vision"}};
+
+std::string HdrTypeString(int type)
+{
+  auto hdr = hdrTypeMap.find(type);
+  if (hdr != hdrTypeMap.end())
+    return hdr->second;
+
+  return "Unknown";
+}
+} // unnamed namespace
+
 const std::string CAndroidUtils::SETTING_LIMITGUI = "videoscreen.limitgui";
 
 CAndroidUtils::CAndroidUtils()
@@ -192,6 +210,8 @@ CAndroidUtils::CAndroidUtils()
   CServiceBroker::GetSettingsComponent()->GetSettings()->GetSettingsManager()->RegisterCallback(this, {
     CAndroidUtils::SETTING_LIMITGUI
   });
+
+  LogDisplaySupportedHdrTypes();
 }
 
 bool CAndroidUtils::GetNativeResolution(RESOLUTION_INFO* res) const
@@ -347,4 +367,40 @@ void CAndroidUtils::OnSettingChanged(const std::shared_ptr<const CSetting>& sett
   /* Calibration (overscan / subtitles) are based on GUI size -> reset required */
   if (settingId == CAndroidUtils::SETTING_LIMITGUI)
     CDisplaySettings::GetInstance().ClearCalibrations();
+}
+
+std::vector<int> CAndroidUtils::GetDisplaySupportedHdrTypes() const
+{
+  CJNIWindow window = CXBMCApp::getWindow();
+
+  if (window)
+  {
+    CJNIView view = window.getDecorView();
+    if (view)
+    {
+      CJNIDisplay display = view.getDisplay();
+      if (display)
+      {
+        CJNIDisplayHdrCapabilities caps = display.getHdrCapabilities();
+        if (caps)
+          return caps.getSupportedHdrTypes();
+      }
+    }
+  }
+
+  return {};
+}
+
+void CAndroidUtils::LogDisplaySupportedHdrTypes() const
+{
+  const std::vector<int> hdrTypes = GetDisplaySupportedHdrTypes();
+  std::string text;
+
+  for (const int& type : hdrTypes)
+  {
+    text += " " + HdrTypeString(type);
+  }
+
+  CLog::Log(LOGDEBUG, "CAndroidUtils: Display supported HDR types:{}",
+            text.empty() ? " None" : text);
 }

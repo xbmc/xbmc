@@ -13,6 +13,7 @@
 #include "system_egl.h"
 #include "threads/CriticalSection.h"
 #include "threads/Timer.h"
+#include "utils/HDRCapabilities.h"
 #include "windowing/WinSystem.h"
 
 class CDecoderFilterManager;
@@ -52,6 +53,8 @@ public:
   // winevents override
   bool MessagePump() override;
   bool IsHDRDisplay() override;
+
+  CHDRCapabilities GetDisplayHDRCapabilities() const override;
 
 protected:
   std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() override;

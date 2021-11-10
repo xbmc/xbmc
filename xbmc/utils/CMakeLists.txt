@@ -102,6 +102,7 @@ set(HEADERS ActorProtocol.h
             Geometry.h
             GlobalsHandling.h
             GroupUtils.h
+            HDRCapabilities.h
             HTMLUtil.h
             HttpHeader.h
             HttpParser.h

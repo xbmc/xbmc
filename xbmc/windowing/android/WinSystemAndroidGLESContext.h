@@ -58,5 +58,6 @@ private:
   std::unique_ptr<AVMasteringDisplayMetadata> m_displayMetadata;
   std::unique_ptr<AVContentLightMetadata> m_lightMetadata;
   EGLint m_HDRColorSpace = EGL_NONE;
-  bool m_hasEGLHDRExtensions = false;
+  bool m_hasEGL_ST2086_Extension = false;
+  bool m_hasEGL_BT2020_PQ_Colorspace_Extension = false;
 };
