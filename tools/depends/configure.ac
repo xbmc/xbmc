@@ -171,9 +171,9 @@ case $build in
   *darwin*)
     build_os="osx"
     if test "x$build_cpu" = "xx86_64"; then
-      host_includes=-mmacosx-version-min=10.13
+      host_includes=-arch x86_64 -mmacosx-version-min=10.13
     else
-      host_includes=-mmacosx-version-min=11.0
+      host_includes=-arch arm64 -mmacosx-version-min=11.0
     fi
     use_xcodepath=`xcode-select -print-path`
     use_build_toolchain=$use_xcodepath
