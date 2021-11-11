@@ -5,7 +5,7 @@ set(HEADERS
   audiodecoder.h
   audioencoder.h
   game.h
-  image_decoder.h
+  imagedecoder.h
   inputstream.h
   peripheral.h
   pvr.h

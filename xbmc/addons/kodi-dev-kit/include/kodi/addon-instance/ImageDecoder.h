@@ -9,7 +9,7 @@
 #pragma once
 
 #include "../AddonBase.h"
-#include "../c-api/addon-instance/image_decoder.h"
+#include "../c-api/addon-instance/imagedecoder.h"
 
 #ifdef __cplusplus
 
