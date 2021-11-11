@@ -176,9 +176,12 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_NOTIFY_ALL:
     {
-      if (message.GetParam1() == GUI_MSG_WINDOW_RESIZE)
+      if (message.GetParam1() == GUI_MSG_WINDOW_RESIZE && IsActive())
       {
+        m_Res.clear();
+        CServiceBroker::GetWinSystem()->GetGfxContext().GetAllowedResolutions(m_Res);
         m_iCurRes = FindCurrentResolution();
+        ResetControls();
       }
     }
     break;
