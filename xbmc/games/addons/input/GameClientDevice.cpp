@@ -15,6 +15,7 @@
 #include "games/controllers/Controller.h"
 #include "games/controllers/input/PhysicalTopology.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
 
 #include <algorithm>
 
@@ -62,7 +63,11 @@ ControllerPtr CGameClientDevice::GetController(const char* controllerId)
   ControllerPtr controller;
 
   if (controllerId != nullptr)
+  {
     controller = CServiceBroker::GetGameServices().GetController(controllerId);
+    if (!controller)
+      CLog::Log(LOGERROR, "Invalid controller ID: {}", controllerId);
+  }
 
   return controller;
 }
