@@ -56,10 +56,8 @@ public:
   // KODI::ADDONS::IAddonSupportCheck related function
   bool SupportsFile(const std::string& filename) override;
 
-  // Addon callback functions
-  const std::string& GetMimeType() const { return m_mimetype; }
-
 private:
+  /*! @note m_mimetype not set in all cases, only available if @ref LoadImageFromMemory is used. */
   const std::string m_mimetype;
 };
 

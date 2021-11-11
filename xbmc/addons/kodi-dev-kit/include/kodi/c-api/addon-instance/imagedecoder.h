@@ -410,6 +410,7 @@ extern "C"
       struct KODI_ADDON_IMAGEDECODER_INFO_TAG* info);
   typedef bool(ATTR_APIENTRYP PFN_KODI_ADDON_IMAGEDECODER_LOAD_IMAGE_FROM_MEMORY_V1)(
       const KODI_ADDON_IMAGEDECODER_HDL hdl,
+      const char* mimetype,
       const uint8_t* buffer,
       size_t buf_size,
       unsigned int* width,
@@ -434,7 +435,6 @@ extern "C"
   typedef struct AddonToKodiFuncTable_ImageDecoder
   {
     KODI_HANDLE kodi_instance;
-    char* (*get_mime_type)(KODI_HANDLE hdl);
   } AddonToKodiFuncTable_ImageDecoder;
 
   typedef struct AddonInstance_ImageDecoder

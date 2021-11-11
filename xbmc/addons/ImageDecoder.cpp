@@ -22,13 +22,6 @@ constexpr std::array<std::tuple<unsigned int, ADDON_IMG_FMT, size_t>, 4> KodiToA
      {XB_FMT_RGBA8, ADDON_IMG_FMT_RGBA8, sizeof(uint8_t) * 4},
      {XB_FMT_RGB8, ADDON_IMG_FMT_RGB8, sizeof(uint8_t) * 3}}};
 
-static char* cb_get_mime_type(KODI_HANDLE kodiInstance)
-{
-  if (!kodiInstance)
-    return nullptr;
-  return strdup(static_cast<CImageDecoder*>(kodiInstance)->GetMimeType().c_str());
-}
-
 } /* namespace */
 
 CImageDecoder::CImageDecoder(const AddonInfoPtr& addonInfo, const std::string& mimetype)
@@ -39,7 +32,6 @@ CImageDecoder::CImageDecoder(const AddonInfoPtr& addonInfo, const std::string& m
   m_ifc.imagedecoder = new AddonInstance_ImageDecoder;
   m_ifc.imagedecoder->toAddon = new KodiToAddonFuncTable_ImageDecoder();
   m_ifc.imagedecoder->toKodi = new AddonToKodiFuncTable_ImageDecoder();
-  m_ifc.imagedecoder->toKodi->get_mime_type = cb_get_mime_type;
 }
 
 CImageDecoder::~CImageDecoder()
@@ -186,8 +178,8 @@ bool CImageDecoder::LoadImageFromMemory(unsigned char* buffer,
 
   m_width = width;
   m_height = height;
-  return m_ifc.imagedecoder->toAddon->load_image_from_memory(m_ifc.hdl, buffer, bufSize, &m_width,
-                                                             &m_height);
+  return m_ifc.imagedecoder->toAddon->load_image_from_memory(m_ifc.hdl, m_mimetype.c_str(), buffer,
+                                                             bufSize, &m_width, &m_height);
 }
 
 bool CImageDecoder::Decode(unsigned char* const pixels,
