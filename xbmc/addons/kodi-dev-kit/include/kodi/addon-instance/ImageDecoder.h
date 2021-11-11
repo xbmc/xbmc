@@ -574,6 +574,7 @@ public:
   /// @ingroup cpp_kodi_addon_imagedecoder
   /// @brief Initialize an encoder.
   ///
+  /// @param[in] mimetype The mimetype wanted from Kodi
   /// @param[in] buffer The data to read from memory
   /// @param[in] bufSize The buffer size
   /// @param[in,out] width The optimal width of image on entry, obtained width
@@ -582,7 +583,8 @@ public:
   ///                       on return
   /// @return true if successful done, false on error
   ///
-  virtual bool LoadImageFromMemory(const uint8_t* buffer,
+  virtual bool LoadImageFromMemory(const std::string& mimetype,
+                                   const uint8_t* buffer,
                                    size_t bufSize,
                                    unsigned int& width,
                                    unsigned int& height) = 0;
@@ -604,27 +606,6 @@ public:
                       unsigned int height,
                       unsigned int pitch,
                       ADDON_IMG_FMT format) = 0;
-  //----------------------------------------------------------------------------
-
-  //============================================================================
-  /// @ingroup cpp_kodi_addon_imagedecoder
-  /// @brief **Callback to Kodi Function**\n
-  /// Get the wanted mime type from Kodi.
-  ///
-  /// @return the mimetype wanted from Kodi
-  ///
-  /// @remarks Only called from addon itself.
-  ///
-  inline std::string GetMimeType()
-  {
-    char* mimetype = m_instanceData->toKodi->get_mime_type(m_instanceData->toKodi->kodi_instance);
-    if (!mimetype)
-      return "";
-
-    std::string ret = mimetype;
-    free(mimetype);
-    return ret;
-  }
   //----------------------------------------------------------------------------
 
 private:
@@ -688,13 +669,14 @@ private:
   }
 
   inline static bool ADDON_LoadImageFromMemory(const KODI_ADDON_IMAGEDECODER_HDL hdl,
+                                               const char* mimetype,
                                                const uint8_t* buffer,
                                                size_t bufSize,
                                                unsigned int* width,
                                                unsigned int* height)
   {
-    return static_cast<CInstanceImageDecoder*>(hdl)->LoadImageFromMemory(buffer, bufSize, *width,
-                                                                         *height);
+    return static_cast<CInstanceImageDecoder*>(hdl)->LoadImageFromMemory(mimetype, buffer, bufSize,
+                                                                         *width, *height);
   }
 
   inline static bool ADDON_Decode(const KODI_ADDON_IMAGEDECODER_HDL hdl,
