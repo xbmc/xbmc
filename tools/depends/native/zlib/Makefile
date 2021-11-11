@@ -9,7 +9,7 @@ VERSION=1.2.11
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 # configuration settings
-CONFIGURE= CC="$(CC_FOR_BUILD)" CFLAGS="$(BUILD_CFLAGS)" ./configure --prefix=$(PREFIX)
+CONFIGURE= CC="$(CC_FOR_BUILD)" CFLAGS="$(NATIVE_CFLAGS)" ./configure --prefix=$(PREFIX)
 
 LIBDYLIB=$(PLATFORM)/$(LIBNAME).a
 
