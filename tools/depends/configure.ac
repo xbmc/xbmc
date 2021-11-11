@@ -186,6 +186,9 @@ case $build in
     native_sdk_path=[`$use_xcodebuild -version -sdk $build_platform | grep ^Path | awk '{ print $2}'`]
     host_includes+=" -isysroot $native_sdk_path"
 
+    CC_FOR_BUILD=[`$use_xcrun --find clang`]
+    CXX_FOR_BUILD=[`$use_xcrun --find clang++`]
+
     android_toolchain_name="darwin-x86_64"
 
     if test "x$prefix" = "xNONE"; then
@@ -210,8 +213,8 @@ AC_PATH_PROG([STRIP_FOR_BUILD], [strip], strip, $PATH_FOR_BUILD)
 AC_PATH_PROG([AS_FOR_BUILD], [as], as, $PATH_FOR_BUILD)
 AC_PATH_PROG([NM_FOR_BUILD], [nm], nm, $PATH_FOR_BUILD)
 AC_PATH_PROG([OBJDUMP_FOR_BUILD], [objdump], objdump, $PATH_FOR_BUILD)
-AC_PATH_PROG([CC_FOR_BUILD],[gcc llvm-gcc $platform_cc], gcc, $PATH_FOR_BUILD)
-AC_PATH_PROG([CXX_FOR_BUILD],[g++ llvm-g++ $platform_cxx], g++, $PATH_FOR_BUILD)
+AC_PATH_PROG([CC_FOR_BUILD],[clang gcc llvm-gcc $platform_cc], gcc, $PATH_FOR_BUILD)
+AC_PATH_PROG([CXX_FOR_BUILD],[clang++ g++ llvm-g++ $platform_cxx], g++, $PATH_FOR_BUILD)
 
 
 platform_cc=gcc
