@@ -176,14 +176,11 @@ case $build in
     else
       host_includes="-arch arm64 -mmacosx-version-min=11.0"
     fi
-    use_xcodepath=`xcode-select -print-path`
-    use_build_toolchain=$use_xcodepath
-    use_xcodebuild=$use_xcodepath/usr/bin/xcodebuild
-    AC_MSG_RESULT(found xcodebuild at $use_xcodebuild)
+    use_xcrun=xcrun
 
     # acquire build platform (native) sdk sysroot.
     build_platform=macosx
-    native_sdk_path=[`$use_xcodebuild -version -sdk $build_platform | grep ^Path | awk '{ print $2}'`]
+    native_sdk_path=[`$use_xcrun --show-sdk-path`]
     host_includes+=" -isysroot $native_sdk_path"
 
     CC_FOR_BUILD=[`$use_xcrun --find clang`]
@@ -232,9 +229,8 @@ case $host in
     esac
   ;;
   *darwin*)
-    use_toolchain="${use_xcodepath}/Toolchains/XcodeDefault.xctoolchain"
-    platform_cc=clang
-    platform_cxx=clang++
+    CC=[`$use_xcrun --find clang`]
+    CXX=[`$use_xcrun --find clang++`]
 esac
 
 if test -n $use_build_toolchain; then
@@ -387,17 +383,10 @@ case $host in
       ;;
     esac
 
-    found_sdk_version=[`$use_xcodebuild -showsdks | grep "\-sdk $target_platform" | awk '{ print $2}'`]
+    found_sdk_version=[`$use_xcrun --sdk $target_platform --show-sdk-version`]
     use_sdk="${use_sdk:-$found_sdk_version}"
+    use_sdk_path=$($use_xcrun --sdk $target_platform --show-sdk-path)
     sdk_name=$target_platform$use_sdk
-
-    use_sdk_path=$($use_xcodebuild -version -sdk $sdk_name Path 2>&1)
-    # test if sdk is available to xcodebuild, otherwise error out
-    valid_sdk=[`echo $use_sdk_path | grep "error:"`]
-
-    if test "x$valid_sdk" != "x"; then
-      AC_MSG_ERROR("invalid SDK version provided (--with-sdk=$use_sdk) is not available in xcodebuild -showsdks")
-    fi
 
     case $host in
       x86_64-apple-darwin)
@@ -682,7 +671,7 @@ AC_OUTPUT
 
 if test "$platform_os" == "darwin_embedded"; then
   if test "$use_platform" = "ios"; then
-    simulator_sdk_path=[`$use_xcodebuild -version -sdk iphonesimulator$use_sdk  | grep ^Path | awk '{ print $2}'`]
+    simulator_sdk_path=[`$use_xcrun --sdk iphonesimulator --show-sdk-path`]
     echo -e "use simulator:\t $simulator_sdk_path"
   fi
 fi
