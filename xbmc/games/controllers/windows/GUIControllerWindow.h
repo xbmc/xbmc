@@ -58,7 +58,7 @@ private:
   IControllerList* m_controllerList = nullptr;
   IFeatureList* m_featureList = nullptr;
 
-  // Game paremeters
+  // Game parameters
   GameClientPtr m_gameClient;
 
   // Controller parameters

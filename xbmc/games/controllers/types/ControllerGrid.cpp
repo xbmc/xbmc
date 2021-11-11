@@ -24,7 +24,7 @@ void CControllerGrid::SetControllerTree(const CControllerTree& controllerTree)
   // Clear the result
   m_grid.clear();
 
-  m_height = AddPorts(controllerTree.Ports(), m_grid);
+  m_height = AddPorts(controllerTree.GetPorts(), m_grid);
   SetHeight(m_height, m_grid);
 }
 
@@ -44,30 +44,30 @@ ControllerVector CControllerGrid::GetControllers(unsigned int playerIndex) const
   return controllers;
 }
 
-unsigned int CControllerGrid::AddPorts(const ControllerPortVec& ports, ControllerGrid& grid)
+unsigned int CControllerGrid::AddPorts(const PortVec& ports, ControllerGrid& grid)
 {
   unsigned int height = 0;
 
-  auto itKeyboard = std::find_if(ports.begin(), ports.end(), [](const CControllerPortNode& port) {
-    return port.PortType() == PORT_TYPE::KEYBOARD;
+  auto itKeyboard = std::find_if(ports.begin(), ports.end(), [](const CPortNode port) {
+    return port.GetPortType() == PORT_TYPE::KEYBOARD;
   });
 
-  auto itMouse = std::find_if(ports.begin(), ports.end(), [](const CControllerPortNode& port) {
-    return port.PortType() == PORT_TYPE::MOUSE;
+  auto itMouse = std::find_if(ports.begin(), ports.end(), [](const CPortNode port) {
+    return port.GetPortType() == PORT_TYPE::MOUSE;
   });
 
-  auto itController = std::find_if(ports.begin(), ports.end(), [](const CControllerPortNode& port) {
-    return port.PortType() == PORT_TYPE::CONTROLLER;
+  auto itController = std::find_if(ports.begin(), ports.end(), [](const CPortNode port) {
+    return port.GetPortType() == PORT_TYPE::CONTROLLER;
   });
 
   // Keyboard and mouse are not allowed to have ports because they might
   // overlap with controllers
-  if (itKeyboard != ports.end() && itKeyboard->ActiveController().Hub().HasPorts())
+  if (itKeyboard != ports.end() && itKeyboard->GetActiveController().GetHub().HasPorts())
   {
     CLog::Log(LOGERROR, "Found keyboard with controller ports, skipping");
     itKeyboard = ports.end();
   }
-  if (itMouse != ports.end() && itMouse->ActiveController().Hub().HasPorts())
+  if (itMouse != ports.end() && itMouse->GetActiveController().GetHub().HasPorts())
   {
     CLog::Log(LOGERROR, "Found mouse with controller ports, skipping");
     itMouse = ports.end();
@@ -77,11 +77,11 @@ unsigned int CControllerGrid::AddPorts(const ControllerPortVec& ports, Controlle
   {
     // Add controller ports
     bool bFirstPlayer = true;
-    for (const CControllerPortNode& port : ports)
+    for (const CPortNode port : ports)
     {
       ControllerColumn column;
 
-      if (port.PortType() == PORT_TYPE::CONTROLLER)
+      if (port.GetPortType() == PORT_TYPE::CONTROLLER)
       {
         // Add controller
         height =
@@ -130,7 +130,7 @@ unsigned int CControllerGrid::AddPorts(const ControllerPortVec& ports, Controlle
   return height;
 }
 
-unsigned int CControllerGrid::AddController(const CControllerPortNode& port,
+unsigned int CControllerGrid::AddController(const CPortNode port,
                                             unsigned int height,
                                             std::vector<ControllerVertex>& column,
                                             ControllerGrid& grid)
@@ -139,23 +139,23 @@ unsigned int CControllerGrid::AddController(const CControllerPortNode& port,
   while (column.size() < height)
     AddInvisible(column);
 
-  const CControllerNode& activeController = port.ActiveController();
+  const CControllerNode& activeController = port.GetActiveController();
 
   // Add vertex
   ControllerVertex vertex;
   vertex.bVisible = true;
-  vertex.bConnected = port.Connected();
-  vertex.portType = port.PortType();
-  vertex.controller = activeController.Controller();
-  vertex.address = activeController.Address();
-  for (const CControllerNode& node : port.CompatibleControllers())
-    vertex.compatible.emplace_back(node.Controller());
+  vertex.bConnected = port.IsConnected();
+  vertex.portType = port.GetPortType();
+  vertex.controller = activeController.GetController();
+  vertex.address = activeController.GetAddress();
+  for (const CControllerNode& node : port.GetCompatibleControllers())
+    vertex.compatible.emplace_back(node.GetController());
   column.emplace_back(std::move(vertex));
 
   height++;
 
   // Process ports
-  const ControllerPortVec& ports = activeController.Hub().Ports();
+  const PortVec& ports = activeController.GetHub().GetPorts();
   if (!ports.empty())
   {
     switch (GetDirection(activeController))
@@ -170,7 +170,7 @@ unsigned int CControllerGrid::AddController(const CControllerPortNode& port,
         const unsigned int row = height;
 
         // Add the first controller to the column
-        const CControllerPortNode& firstController = ports.at(0);
+        const CPortNode firstController = ports.at(0);
         height = std::max(height, AddController(firstController, row, column, grid));
 
         // Add the remaining controllers on the same row
@@ -184,7 +184,7 @@ unsigned int CControllerGrid::AddController(const CControllerPortNode& port,
   return height;
 }
 
-unsigned int CControllerGrid::AddHub(const ControllerPortVec& ports,
+unsigned int CControllerGrid::AddHub(const PortVec& ports,
                                      unsigned int height,
                                      bool bSkipFirst,
                                      ControllerGrid& grid)

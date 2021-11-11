@@ -23,6 +23,7 @@
 #include "addons/kodi-dev-kit/include/kodi/addon-instance/Game.h"
 #include "games/controllers/ControllerTypes.h"
 
+#include <string>
 #include <vector>
 
 namespace KODI

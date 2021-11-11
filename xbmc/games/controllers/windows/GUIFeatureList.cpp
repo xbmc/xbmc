@@ -13,11 +13,11 @@
 #include "games/addons/GameClient.h"
 #include "games/addons/input/GameClientInput.h"
 #include "games/controllers/Controller.h"
-#include "games/controllers/ControllerFeature.h"
 #include "games/controllers/guicontrols/GUIFeatureButton.h"
 #include "games/controllers/guicontrols/GUIFeatureControls.h"
 #include "games/controllers/guicontrols/GUIFeatureFactory.h"
 #include "games/controllers/guicontrols/GUIFeatureTranslator.h"
+#include "games/controllers/input/PhysicalFeature.h"
 #include "guilib/GUIButtonControl.h"
 #include "guilib/GUIControlGroupList.h"
 #include "guilib/GUIImage.h"
@@ -87,7 +87,7 @@ void CGUIFeatureList::Load(const ControllerPtr& controller)
   m_controller = controller;
 
   // Get features
-  const std::vector<CControllerFeature>& features = controller->Features();
+  const std::vector<CPhysicalFeature>& features = controller->Features();
 
   // Split into groups
   auto featureGroups = GetFeatureGroups(features);
@@ -184,13 +184,13 @@ void CGUIFeatureList::CleanupButtons(void)
 }
 
 std::vector<CGUIFeatureList::FeatureGroup> CGUIFeatureList::GetFeatureGroups(
-    const std::vector<CControllerFeature>& features) const
+    const std::vector<CPhysicalFeature>& features) const
 {
   std::vector<FeatureGroup> groups;
 
   // Get group names
   std::vector<std::string> groupNames;
-  for (const CControllerFeature& feature : features)
+  for (const CPhysicalFeature& feature : features)
   {
     // Skip features not supported by the game client
     if (m_gameClient)
@@ -258,13 +258,13 @@ bool CGUIFeatureList::HasButton(JOYSTICK::FEATURE_TYPE type) const
 }
 
 std::vector<CGUIButtonControl*> CGUIFeatureList::GetButtons(
-    const std::vector<CControllerFeature>& features, unsigned int startIndex)
+    const std::vector<CPhysicalFeature>& features, unsigned int startIndex)
 {
   std::vector<CGUIButtonControl*> buttons;
 
   // Create buttons
   unsigned int buttonIndex = startIndex;
-  for (const CControllerFeature& feature : features)
+  for (const CPhysicalFeature& feature : features)
   {
     BUTTON_TYPE buttonType = CGUIFeatureTranslator::GetButtonType(feature.Type());
 
@@ -283,15 +283,15 @@ std::vector<CGUIButtonControl*> CGUIFeatureList::GetButtons(
 }
 
 CGUIButtonControl* CGUIFeatureList::GetSelectKeyButton(
-    const std::vector<CControllerFeature>& features, unsigned int buttonIndex)
+    const std::vector<CPhysicalFeature>& features, unsigned int buttonIndex)
 {
   // Expose keycodes to the wizard
-  for (const CControllerFeature& feature : features)
+  for (const CPhysicalFeature& feature : features)
   {
     if (feature.Type() == JOYSTICK::FEATURE_TYPE::KEY)
       m_wizard->RegisterKey(feature);
   }
 
   return CGUIFeatureFactory::CreateButton(BUTTON_TYPE::SELECT_KEY, *m_guiButtonTemplate, m_wizard,
-                                          CControllerFeature(), buttonIndex);
+                                          CPhysicalFeature(), buttonIndex);
 }

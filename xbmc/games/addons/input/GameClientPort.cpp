@@ -12,7 +12,7 @@
 #include "addons/kodi-dev-kit/include/kodi/addon-instance/Game.h"
 #include "games/addons/GameClientTranslator.h"
 #include "games/controllers/Controller.h"
-#include "games/controllers/ControllerTopology.h"
+#include "games/controllers/input/PhysicalTopology.h"
 #include "utils/StringUtils.h"
 
 #include <algorithm>
@@ -22,7 +22,8 @@ using namespace GAME;
 
 CGameClientPort::CGameClientPort(const game_input_port& port)
   : m_type(CGameClientTranslator::TranslatePortType(port.type)),
-    m_portId(port.port_id ? port.port_id : "")
+    m_portId(port.port_id ? port.port_id : ""),
+    m_forceConnected(port.force_connected)
 {
   if (port.accepted_devices != nullptr)
   {
@@ -44,8 +45,10 @@ CGameClientPort::CGameClientPort(const ControllerVector& controllers)
 }
 
 CGameClientPort::CGameClientPort(const game_input_port& logicalPort,
-                                 const CControllerPort& physicalPort)
-  : m_type(PORT_TYPE::CONTROLLER), m_portId(physicalPort.ID())
+                                 const CPhysicalPort& physicalPort)
+  : m_type(PORT_TYPE::CONTROLLER),
+    m_portId(physicalPort.ID()),
+    m_forceConnected(logicalPort.force_connected)
 {
   if (logicalPort.accepted_devices != nullptr)
   {

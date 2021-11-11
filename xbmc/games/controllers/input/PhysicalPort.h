@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017-2018 Team Kodi
+ *  Copyright (C) 2017-2021 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -18,10 +18,10 @@ namespace KODI
 namespace GAME
 {
 
-class CControllerPort
+class CPhysicalPort
 {
 public:
-  CControllerPort() = default;
+  CPhysicalPort() = default;
 
   /*!
    * \brief Create a controller port
@@ -29,7 +29,7 @@ public:
    * \param portId The port's ID
    * \param accepts A list of controller IDs that this port accepts
    */
-  CControllerPort(std::string portId, std::vector<std::string> accepts);
+  CPhysicalPort(std::string portId, std::vector<std::string> accepts);
 
   void Reset();
 
@@ -60,44 +60,5 @@ private:
   std::string m_portId;
   std::vector<std::string> m_accepts;
 };
-
-/*!
- * \brief Represents the physical topology of controller add-ons
- *
- * The physical topology of a controller defines how many ports it has and
- * whether it can provide player input (hubs like the Super Multitap don't
- * provide input).
- */
-class CControllerTopology
-{
-public:
-  CControllerTopology() = default;
-  CControllerTopology(bool bProvidesInput, std::vector<CControllerPort> ports);
-
-  void Reset();
-
-  /*!
-   * \brief Check if the controller can provide player input
-   *
-   * This allows hubs to specify that they provide no input
-   *
-   * \return True if the controller can provide player input, false otherwise
-   */
-  bool ProvidesInput() const { return m_bProvidesInput; }
-
-  /*!
-   * \brief Get a list of ports provided by this controller
-   *
-   * \return The ports
-   */
-  const std::vector<CControllerPort>& Ports() const { return m_ports; }
-
-  bool Deserialize(const TiXmlElement* pElement);
-
-private:
-  bool m_bProvidesInput = true;
-  std::vector<CControllerPort> m_ports;
-};
-
 } // namespace GAME
 } // namespace KODI

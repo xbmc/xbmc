@@ -9,7 +9,7 @@
 #pragma once
 
 #include "IConfigurationWindow.h"
-#include "games/controllers/ControllerFeature.h"
+#include "games/controllers/input/PhysicalFeature.h"
 #include "input/XBMC_keysym.h"
 #include "input/joysticks/DriverPrimitive.h"
 #include "input/joysticks/interfaces/IButtonMapper.h"
@@ -50,7 +50,7 @@ public:
            const std::vector<IFeatureButton*>& buttons) override;
   void OnUnfocus(IFeatureButton* button) override;
   bool Abort(bool bWait = true) override;
-  void RegisterKey(const CControllerFeature& key) override;
+  void RegisterKey(const CPhysicalFeature& key) override;
   void UnregisterKeys() override;
 
   // implementation of IButtonMapper
@@ -111,7 +111,7 @@ private:
 
   // Keyboard handling
   std::unique_ptr<KEYBOARD::IActionMap> m_actionMap;
-  std::map<XBMCKey, CControllerFeature> m_keyMap; // Keycode -> feature
+  std::map<XBMCKey, CPhysicalFeature> m_keyMap; // Keycode -> feature
 };
 } // namespace GAME
 } // namespace KODI

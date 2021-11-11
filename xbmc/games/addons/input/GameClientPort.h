@@ -20,7 +20,7 @@ namespace KODI
 {
 namespace GAME
 {
-class CControllerPort;
+class CPhysicalPort;
 
 /*!
  * \ingroup games
@@ -60,7 +60,7 @@ public:
    * Obviously, the controllers specified by the logical port must be a subset
    * of the controllers supported by the physical port.
    */
-  CGameClientPort(const game_input_port& logicalPort, const CControllerPort& physicalPort);
+  CGameClientPort(const game_input_port& logicalPort, const CPhysicalPort& physicalPort);
 
   /*!
    * \brief Destructor
@@ -83,6 +83,12 @@ public:
   const std::string& ID() const { return m_portId; }
 
   /*!
+   * \brief True if a controller must be connected, preventing the disconnected
+   * option from being shown to the user
+   */
+  bool ForceConnected() const { return m_forceConnected; }
+
+  /*!
    * \brief Get the list of devices accepted by this port
    */
   const GameClientDeviceVec& Devices() const { return m_acceptedDevices; }
@@ -90,6 +96,7 @@ public:
 private:
   PORT_TYPE m_type;
   std::string m_portId;
+  bool m_forceConnected{false};
   GameClientDeviceVec m_acceptedDevices;
 };
 } // namespace GAME
