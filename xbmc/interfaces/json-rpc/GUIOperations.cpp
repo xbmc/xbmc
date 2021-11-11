@@ -166,3 +166,12 @@ CVariant CGUIOperations::GetStereoModeObjectFromGuiMode(const RENDER_STEREO_MODE
   modeObj["label"] = stereoscopicsManager.GetLabelForStereoMode(mode);
   return modeObj;
 }
+JSONRPC_STATUS CGUIOperations::ActivateScreenSaver(const std::string& method,
+                                                   ITransportLayer* transport,
+                                                   IClient* client,
+                                                   const CVariant& parameterObject,
+                                                   CVariant& result)
+{
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_ACTIVATESCREENSAVER);
+  return ACK;
+}

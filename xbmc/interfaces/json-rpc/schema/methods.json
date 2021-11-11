@@ -1970,6 +1970,14 @@
     ],
     "returns": "string"
   },
+  "GUI.ActivateScreenSaver": {
+    "type": "method",
+    "description": "Activates currently used screensaver",
+    "transport": "Response",
+    "permission": "ControlGUI",
+    "params": [],
+    "returns": "string"
+  },
   "GUI.ShowNotification": {
     "type": "method",
     "description": "Shows a GUI notification",

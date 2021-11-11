@@ -37,6 +37,7 @@ CJSONServiceDescription::CJsonRpcMethodMap CJSONServiceDescription::m_actionMap;
 std::map<std::string, JSONSchemaTypeDefinitionPtr> CJSONServiceDescription::m_types = std::map<std::string, JSONSchemaTypeDefinitionPtr>();
 CJSONServiceDescription::IncompleteSchemaDefinitionMap CJSONServiceDescription::m_incompleteDefinitions = CJSONServiceDescription::IncompleteSchemaDefinitionMap();
 
+// clang-format off
 JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
 // JSON-RPC
   { "JSONRPC.Introspect",                           CJSONRPC::Introspect },
@@ -168,6 +169,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "GUI.SetFullscreen",                            CGUIOperations::SetFullscreen },
   { "GUI.SetStereoscopicMode",                      CGUIOperations::SetStereoscopicMode },
   { "GUI.GetStereoscopicModes",                     CGUIOperations::GetStereoscopicModes },
+  { "GUI.ActivateScreenSaver",                      CGUIOperations::ActivateScreenSaver},
 
 // PVR operations
   { "PVR.GetProperties",                            CPVROperations::GetProperties },
@@ -245,6 +247,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "XBMC.GetInfoLabels",                           CXBMCOperations::GetInfoLabels },
   { "XBMC.GetInfoBooleans",                         CXBMCOperations::GetInfoBooleans }
 };
+// clang-format on
 
 JSONSchemaTypeDefinition::JSONSchemaTypeDefinition()
   : missingReference(),
