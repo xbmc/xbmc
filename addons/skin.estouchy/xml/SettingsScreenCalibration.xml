@@ -70,8 +70,8 @@
 			<description>pixel aspect ratio box</description>
 			<posx>0</posx>
 			<posy>232</posy>
-			<width>256</width>
-			<height>256</height>
+			<width>500</width>
+			<height>500</height>
 			<texturefocus>calibrate_aspect.png</texturefocus>
 			<texturenofocus></texturenofocus>
 		</control>
