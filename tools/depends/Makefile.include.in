@@ -9,6 +9,7 @@ TARBALLS_LOCATION=@use_tarballs@
 PLATFORM=@deps_dir@
 HOST=@use_host@
 BUILD=@use_build@
+BUILD_CPU=@use_buildcpu@
 CPU=@use_cpu@
 MESON_CPU=@meson_cpu@
 MESON_SYSTEM=@meson_system@

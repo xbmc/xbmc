@@ -143,6 +143,7 @@ fi
 
 use_host=$host_alias
 use_build=$build_cpu-$build_vendor-$build_os
+use_buildcpu=$build_cpu
 
 cross_compiling="yes"
 if test "x$host" = "x$build"; then
@@ -171,9 +172,9 @@ case $build in
   *darwin*)
     build_os="osx"
     if test "x$build_cpu" = "xx86_64"; then
-      host_includes=-arch x86_64 -mmacosx-version-min=10.13
+      host_includes="-arch x86_64 -mmacosx-version-min=10.13"
     else
-      host_includes=-arch arm64 -mmacosx-version-min=11.0
+      host_includes="-arch arm64 -mmacosx-version-min=11.0"
     fi
     use_xcodepath=`xcode-select -print-path`
     use_build_toolchain=$use_xcodepath
@@ -647,6 +648,7 @@ AC_SUBST(use_host)
 AC_SUBST(use_build)
 AC_SUBST(deps_dir)
 AC_SUBST(tool_dir)
+AC_SUBST(use_buildcpu)
 AC_SUBST(use_cpu)
 AC_SUBST(use_toolchain)
 AC_SUBST(use_build_toolchain)
@@ -692,6 +694,9 @@ cp -vf native/config.site.native $prefix/$tool_dir/share/config.site
 echo -e "\n\n#------- configuration -------#"
 echo -e "ccache:\t\t $use_ccache"
 echo -e "build type:\t\t $build_type"
+echo -e "build system:\t $use_build"
+echo -e "build cpu:\t\t $use_buildcpu"
+echo -e "build includes:\t $host_includes"
 echo -e "toolchain:\t\t $use_toolchain"
 echo -e "cpu:\t\t\t $use_cpu"
 echo -e "host:\t\t $use_host"
