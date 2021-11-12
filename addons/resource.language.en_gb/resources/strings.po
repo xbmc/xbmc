@@ -13861,7 +13861,19 @@ msgctxt "#21345"
 msgid "Uncategorized"
 msgstr ""
 
-#empty strings from id 21346 to 21357
+#. Used to give heading list entry for an file extension description, e.g. to show as 'Extension: ".mp3"'
+#: xbmc/addons/GUIDialogAddonInfo.cpp
+msgctxt "#21346"
+msgid "Extension: \"{0:s}\""
+msgstr ""
+
+#. Used to give heading list entry for an mimetype description, e.g. to show as 'MIME type: "audio/mpeg3"'
+#: xbmc/addons/GUIDialogAddonInfo.cpp
+msgctxt "#21347"
+msgid "MIME type: \"{0:s}\""
+msgstr ""
+
+#empty strings from id 21348 to 21357
 
 #: system/settings/settings.xml
 msgctxt "#21358"

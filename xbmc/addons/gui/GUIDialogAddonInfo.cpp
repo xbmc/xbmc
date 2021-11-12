@@ -752,7 +752,15 @@ void CGUIDialogAddonInfo::ShowSupportList()
     if (StringUtils::EndsWith(entry.m_name, KODI_ADDON_AUDIODECODER_TRACK_EXT))
       continue;
 
-    const CFileItemPtr item = std::make_shared<CFileItem>(entry.m_name);
+    std::string label;
+    if (entry.m_type == AddonSupportType::Extension)
+      label = StringUtils::Format(g_localizeStrings.Get(21346), entry.m_name);
+    else if (entry.m_type == AddonSupportType::Mimetype)
+      label = StringUtils::Format(g_localizeStrings.Get(21347), entry.m_name);
+    else
+      label = entry.m_name;
+
+    const CFileItemPtr item = std::make_shared<CFileItem>(label);
     item->SetLabel2(entry.m_description);
     if (!entry.m_icon.empty())
       item->SetArt("icon", entry.m_icon);
