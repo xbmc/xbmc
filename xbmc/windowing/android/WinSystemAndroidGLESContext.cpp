@@ -55,12 +55,16 @@ bool CWinSystemAndroidGLESContext::InitWindowSystem()
 
   m_hasHDRConfig = m_pGLContext.ChooseConfig(EGL_OPENGL_ES2_BIT, 0, true);
 
-  m_hasEGLHDRExtensions = CEGLUtils::HasExtension(m_pGLContext.GetEGLDisplay(), "EGL_EXT_gl_colorspace_bt2020_pq")
-    && CEGLUtils::HasExtension(m_pGLContext.GetEGLDisplay(), "EGL_EXT_surface_SMPTE2086_metadata");
+  m_hasEGL_BT2020_PQ_Colorspace_Extension =
+      CEGLUtils::HasExtension(m_pGLContext.GetEGLDisplay(), "EGL_EXT_gl_colorspace_bt2020_pq");
+  m_hasEGL_ST2086_Extension =
+      CEGLUtils::HasExtension(m_pGLContext.GetEGLDisplay(), "EGL_EXT_surface_SMPTE2086_metadata");
+
+  bool hasEGLHDRExtensions = m_hasEGL_BT2020_PQ_Colorspace_Extension && m_hasEGL_ST2086_Extension;
 
   CLog::Log(LOGDEBUG,
             "CWinSystemAndroidGLESContext::InitWindowSystem: HDRConfig: {}, HDRExtensions: {}",
-            static_cast<int>(m_hasHDRConfig), static_cast<int>(m_hasEGLHDRExtensions));
+            static_cast<int>(m_hasHDRConfig), static_cast<int>(hasEGLHDRExtensions));
 
   CEGLAttributesVec contextAttribs;
   contextAttribs.Add({{EGL_CONTEXT_CLIENT_VERSION, 2}});
@@ -207,7 +211,8 @@ bool CWinSystemAndroidGLESContext::CreateSurface()
 
 bool CWinSystemAndroidGLESContext::IsHDRDisplay()
 {
-  return m_hasHDRConfig && m_hasEGLHDRExtensions && CWinSystemAndroid::IsHDRDisplay();
+  return m_hasHDRConfig && (m_hasEGL_BT2020_PQ_Colorspace_Extension || m_hasEGL_ST2086_Extension) &&
+         CWinSystemAndroid::IsHDRDisplay();
 }
 
 bool CWinSystemAndroidGLESContext::SetHDR(const VideoPicture* videoPicture)
@@ -218,7 +223,7 @@ bool CWinSystemAndroidGLESContext::SetHDR(const VideoPicture* videoPicture)
   EGLint HDRColorSpace = 0;
 
 #if EGL_EXT_gl_colorspace_bt2020_linear
-  if (m_hasHDRConfig && m_hasEGLHDRExtensions)
+  if (m_hasHDRConfig && m_hasEGL_BT2020_PQ_Colorspace_Extension && m_hasEGL_ST2086_Extension)
   {
     HDRColorSpace = EGL_NONE;
     if (videoPicture && videoPicture->hasDisplayMetadata)

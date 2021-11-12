@@ -22846,3 +22846,9 @@ msgstr ""
 msgctxt "#39173"
 msgid "Blur"
 msgstr ""
+
+#. SystemInfo string for the display's supported HDR types
+#: xbmc/windows/GUIWindowSystemInfo.cpp
+msgctxt "#39174"
+msgid "Display supported HDR types"
+msgstr ""

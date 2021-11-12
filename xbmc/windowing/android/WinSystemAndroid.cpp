@@ -26,6 +26,7 @@
 #include "settings/SettingsComponent.h"
 #include "system_egl.h"
 #include "threads/SingleLock.h"
+#include "utils/HDRCapabilities.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/Resolution.h"
@@ -323,4 +324,24 @@ std::unique_ptr<WINDOWING::IOSScreenSaver> CWinSystemAndroid::GetOSScreenSaverIm
 {
   std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> ret(new COSScreenSaverAndroid());
   return ret;
+}
+
+CHDRCapabilities CWinSystemAndroid::GetDisplayHDRCapabilities() const
+{
+  CHDRCapabilities caps;
+  const std::vector<int> types = m_android->GetDisplaySupportedHdrTypes();
+
+  if (std::find(types.begin(), types.end(), CAndroidUtils::HDRTypes::HDR10) != types.end())
+    caps.SetHDR10();
+
+  if (std::find(types.begin(), types.end(), CAndroidUtils::HDRTypes::HLG) != types.end())
+    caps.SetHLG();
+
+  if (std::find(types.begin(), types.end(), CAndroidUtils::HDRTypes::HDR10_PLUS) != types.end())
+    caps.SetHDR10Plus();
+
+  if (std::find(types.begin(), types.end(), CAndroidUtils::HDRTypes::DOLBY_VISION) != types.end())
+    caps.SetDolbyVision();
+
+  return caps;
 }
