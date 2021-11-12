@@ -614,9 +614,8 @@ private:
     instance->hdl = this;
     instance->imagedecoder->toAddon->supports_file = ADDON_supports_file;
     instance->imagedecoder->toAddon->read_tag = ADDON_read_tag;
-    instance->imagedecoder->toAddon->load_image_from_memory = ADDON_LoadImageFromMemory;
-    instance->imagedecoder->toAddon->decode = ADDON_Decode;
-    m_instanceData = instance->imagedecoder;
+    instance->imagedecoder->toAddon->load_image_from_memory = ADDON_load_image_from_memory;
+    instance->imagedecoder->toAddon->decode = ADDON_decode;
   }
 
   inline static bool ADDON_supports_file(const KODI_ADDON_IMAGEDECODER_HDL hdl, const char* file)
@@ -668,18 +667,18 @@ private:
 #endif // _WIN32
   }
 
-  inline static bool ADDON_LoadImageFromMemory(const KODI_ADDON_IMAGEDECODER_HDL hdl,
-                                               const char* mimetype,
-                                               const uint8_t* buffer,
-                                               size_t bufSize,
-                                               unsigned int* width,
-                                               unsigned int* height)
+  inline static bool ADDON_load_image_from_memory(const KODI_ADDON_IMAGEDECODER_HDL hdl,
+                                                  const char* mimetype,
+                                                  const uint8_t* buffer,
+                                                  size_t bufSize,
+                                                  unsigned int* width,
+                                                  unsigned int* height)
   {
     return static_cast<CInstanceImageDecoder*>(hdl)->LoadImageFromMemory(mimetype, buffer, bufSize,
                                                                          *width, *height);
   }
 
-  inline static bool ADDON_Decode(const KODI_ADDON_IMAGEDECODER_HDL hdl,
+  inline static bool ADDON_decode(const KODI_ADDON_IMAGEDECODER_HDL hdl,
                                   uint8_t* pixels,
                                   size_t pixels_size,
                                   unsigned int width,
@@ -689,8 +688,6 @@ private:
   {
     return static_cast<CInstanceImageDecoder*>(hdl)->Decode(pixels, width, height, pitch, format);
   }
-
-  AddonInstance_ImageDecoder* m_instanceData;
 };
 
 } /* namespace addon */
