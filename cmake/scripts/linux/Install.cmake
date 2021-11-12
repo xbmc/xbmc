@@ -173,8 +173,7 @@ install(FILES ${CORE_ADDON_BINDINGS_FILES}
         COMPONENT kodi-addon-dev)
 
 # Install kodi-addon-dev add-on bindings
-install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/scripts/${APP_NAME}Config.cmake
-              ${CMAKE_SOURCE_DIR}/cmake/scripts/common/AddonHelpers.cmake
+install(FILES ${CMAKE_SOURCE_DIR}/cmake/scripts/common/AddonHelpers.cmake
               ${CMAKE_SOURCE_DIR}/cmake/scripts/common/AddOptions.cmake
               ${CMAKE_SOURCE_DIR}/cmake/scripts/common/ArchSetup.cmake
               ${CMAKE_SOURCE_DIR}/cmake/scripts/common/CheckCommits.cmake
@@ -187,6 +186,11 @@ install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/scripts/${APP_NAME}Config.cm
               ${CMAKE_SOURCE_DIR}/cmake/scripts/common/ProjectMacros.cmake
               ${CMAKE_SOURCE_DIR}/cmake/scripts/linux/PathSetup.cmake
         DESTINATION ${datarootdir}/${APP_NAME_LC}/cmake
+        COMPONENT kodi-addon-dev)
+# ${APP_NAME}Config.cmake contains architecture-specific paths so it
+# should be installed in ${libdir}/${APP_NAME_LC}/${dir}
+install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/scripts/${APP_NAME}Config.cmake
+        DESTINATION ${libdir}/${APP_NAME_LC}/cmake
         COMPONENT kodi-addon-dev)
 
 if(ENABLE_EVENTCLIENTS)
