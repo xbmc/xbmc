@@ -56,8 +56,9 @@ set(CMAKE_NM @NM@ CACHE FILEPATH "Nm")
 set(CMAKE_OBJDUMP @OBJDUMP@ CACHE FILEPATH "Objdump")
 set(CMAKE_RANLIB @RANLIB@ CACHE FILEPATH "Ranlib")
 
-if(@use_ccache@ STREQUAL "yes")
-  set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "@CCACHE@")
+if(NOT "@use_ccache@" STREQUAL "")
+  set(CMAKE_CXX_COMPILER_LAUNCHER @CCACHE@)
+  set(CMAKE_C_COMPILER_LAUNCHER @CCACHE@)
 endif()
 
 # where is the target environment
