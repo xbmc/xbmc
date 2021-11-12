@@ -22,15 +22,11 @@ CONFIGURE = $(NATIVEPREFIX)/bin/python3 $(NATIVEPREFIX)/bin/meson \
 	-Dbin=false \
 	-Ddefault_library=static
 
-ifeq ($(CROSS_COMPILING), yes)
 CONFIGURE += --cross-file $(PREFIX)/share/cross-file.meson
-export CC=$(CC_FOR_BUILD)
-export CXX=$(CXX_FOR_BUILD)
-export CFLAGS=$(CFLAGS_FOR_BUILD)
-export CXXFLAGS=$(CXXFLAGS_FOR_BUILD)
-else
-export CC CXX CFLAGS CXXFLAGS
-endif
+export CC_FOR_BUILD
+export CFLAGS_FOR_BUILD = $(NATIVE_CFLAGS)
+export LDFLAGS_FOR_BUILD = $(NATIVE_LDFLAGS)
+
 export PKG_CONFIG_LIBDIR=$(PREFIX)/lib/pkgconfig
 
 LIBDYLIB=$(PLATFORM)/build/lib/lib$(LIBNAME).a
