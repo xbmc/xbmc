@@ -8,6 +8,7 @@
 #include "ImageDecoder.h"
 
 #include "guilib/TextureFormats.h"
+#include "pictures/PictureInfoTag.h"
 
 static const std::map<int, ADDON_IMG_FMT> KodiToAddonFormat = {
     {XB_FMT_A8R8G8B8, ADDON_IMG_FMT_A8R8G8B8},
@@ -55,6 +56,122 @@ bool CImageDecoder::SupportsFile(const std::string& filename)
     return false;
 
   return m_ifc.imagedecoder->toAddon->supports_file(m_ifc.hdl, filename.c_str());
+}
+
+bool CImageDecoder::LoadInfoTag(const std::string& fileName, CPictureInfoTag* tag)
+{
+  if (!m_ifc.imagedecoder->toAddon->read_tag || !tag)
+    return false;
+
+  KODI_ADDON_IMAGEDECODER_INFO_TAG ifcTag = {};
+  bool ret = m_ifc.imagedecoder->toAddon->read_tag(m_ifc.hdl, fileName.c_str(), &ifcTag);
+  if (ret)
+  {
+    /*!
+     * List of values currently not used on addon interface.
+     *
+     * struct ExifInfo:
+     *   - int Process{};
+     *   - float CCDWidth{};
+     *   - int Whitebalance{};
+     *   - int CommentsCharset{};
+     *   - int XPCommentsCharset{};
+     *   - std::string Comments;
+     *   - std::string FileComment;
+     *   - std::string XPComment;
+     *   - unsigned ThumbnailOffset{};
+     *   - unsigned ThumbnailSize{};
+     *   - unsigned LargestExifOffset{};
+     *   - char ThumbnailAtEnd{};
+     *   - int ThumbnailSizeOffset{};
+     *   - std::vector<int> DateTimeOffsets;
+     *
+     * struct IPTCInfo:
+     *   - std::string RecordVersion;
+     *   - std::string SupplementalCategories;
+     *   - std::string Keywords;
+     *   - std::string Caption;
+     *   - std::string Headline;
+     *   - std::string SpecialInstructions;
+     *   - std::string Category;
+     *   - std::string Byline;
+     *   - std::string BylineTitle;
+     *   - std::string Credit;
+     *   - std::string Source;
+     *   - std::string ObjectName;
+     *   - std::string City;
+     *   - std::string State;
+     *   - std::string Country;
+     *   - std::string TransmissionReference;
+     *   - std::string Date;
+     *   - std::string Urgency;
+     *   - std::string ReferenceService;
+     *   - std::string CountryCode;
+     *   - std::string SubLocation;
+     *   - std::string ImageType;
+     *
+     * @todo Rework @ref CPictureInfoTag to not limit on fixed structures ExifInfo & IPTCInfo.
+     */
+
+    tag->m_exifInfo.Width = ifcTag.width;
+    tag->m_exifInfo.Height = ifcTag.height;
+    tag->m_exifInfo.Distance = ifcTag.distance;
+    tag->m_exifInfo.Orientation = ifcTag.orientation;
+    tag->m_exifInfo.IsColor = ifcTag.color == ADDON_IMG_COLOR_COLORED ? 1 : 0;
+    tag->m_exifInfo.ApertureFNumber = ifcTag.aperture_f_number;
+    tag->m_exifInfo.FlashUsed = ifcTag.flash_used ? 1 : 0;
+    tag->m_exifInfo.LightSource = ifcTag.light_source;
+    tag->m_exifInfo.FocalLength = ifcTag.focal_length;
+    tag->m_exifInfo.FocalLength35mmEquiv = ifcTag.focal_length_in_35mm_format;
+    tag->m_exifInfo.MeteringMode = ifcTag.metering_mode;
+    tag->m_exifInfo.DigitalZoomRatio = ifcTag.digital_zoom_ratio;
+    tag->m_exifInfo.ExposureTime = ifcTag.exposure_time;
+    tag->m_exifInfo.ExposureBias = ifcTag.exposure_bias;
+    tag->m_exifInfo.ExposureProgram = ifcTag.exposure_program;
+    tag->m_exifInfo.ExposureMode = ifcTag.exposure_mode;
+    tag->m_exifInfo.ISOequivalent = static_cast<int>(ifcTag.iso_speed);
+    tag->m_iptcInfo.TimeCreated = CDateTime(ifcTag.time_created).GetAsLocalizedDateTime();
+    tag->m_exifInfo.GpsInfoPresent = ifcTag.gps_info_present;
+    if (tag->m_exifInfo.GpsInfoPresent)
+    {
+      tag->m_exifInfo.GpsLat =
+          StringUtils::Format("{}{:.0f}°{:.0f}'{:.2f}\"", ifcTag.latitude_ref, ifcTag.latitude[0],
+                              ifcTag.latitude[1], ifcTag.latitude[2]);
+      tag->m_exifInfo.GpsLong =
+          StringUtils::Format("{}{:.0f}°{:.0f}'{:.2f}\"", ifcTag.longitude_ref, ifcTag.longitude[0],
+                              ifcTag.longitude[1], ifcTag.longitude[2]);
+      tag->m_exifInfo.GpsAlt =
+          StringUtils::Format("{}{:.2f} m", ifcTag.altitude_ref ? '-' : '+', ifcTag.altitude);
+    }
+
+    if (ifcTag.camera_manufacturer)
+    {
+      tag->m_exifInfo.CameraMake = ifcTag.camera_manufacturer;
+      free(ifcTag.camera_manufacturer);
+    }
+    if (ifcTag.camera_model)
+    {
+      tag->m_exifInfo.CameraModel = ifcTag.camera_model;
+      free(ifcTag.camera_model);
+    }
+    if (ifcTag.author)
+    {
+      tag->m_iptcInfo.Author = ifcTag.author;
+      free(ifcTag.author);
+    }
+    if (ifcTag.description)
+    {
+      tag->m_exifInfo.Description = ifcTag.description;
+      free(ifcTag.description);
+    }
+    if (ifcTag.copyright)
+    {
+      tag->m_iptcInfo.CopyrightNotice = ifcTag.copyright;
+      free(ifcTag.copyright);
+    }
+  }
+
+  return ret;
 }
 
 bool CImageDecoder::LoadImageFromMemory(unsigned char* buffer,

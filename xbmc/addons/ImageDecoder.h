@@ -12,6 +12,8 @@
 #include "addons/kodi-dev-kit/include/kodi/addon-instance/ImageDecoder.h"
 #include "guilib/iimage.h"
 
+class CPictureInfoTag;
+
 namespace ADDON
 {
 
@@ -46,6 +48,8 @@ public:
               unsigned int height,
               unsigned int pitch,
               unsigned int format) override;
+
+  bool LoadInfoTag(const std::string& fileName, CPictureInfoTag* tag);
 
   // KODI::ADDONS::IAddonSupportCheck related function
   bool SupportsFile(const std::string& filename) override;
