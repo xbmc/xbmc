@@ -1077,7 +1077,7 @@ int64_t StringUtils::AlphaNumericCompare(const wchar_t* left, const wchar_t* rig
   bool lsym, rsym;
 
 #ifdef TARGET_ANDROID
-  if (!g_langInfo.UseLocaleCollation())
+  if (g_langInfo.UseLocaleCollation())
   {
     UErrorCode ustatus = U_ZERO_ERROR;
     try
@@ -1287,7 +1287,7 @@ int StringUtils::AlphaNumericCollation(int nKey1, const void* pKey1, int nKey2, 
     return nKey1 - nKey2;
 
 #ifdef TARGET_ANDROID
-  if (!g_langInfo.UseLocaleCollation())
+  if (g_langInfo.UseLocaleCollation())
   {
     UErrorCode ustatus = U_ZERO_ERROR;
     try

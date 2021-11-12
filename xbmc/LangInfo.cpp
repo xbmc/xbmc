@@ -31,6 +31,10 @@
 #include "utils/log.h"
 #include "weather/WeatherManager.h"
 
+#if defined(TARGET_ANDROID)
+#include <unicode/ucol.h>
+#endif
+
 #include <algorithm>
 #include <stdexcept>
 
@@ -577,9 +581,19 @@ bool CLangInfo::UseLocaleCollation()
       wchar_t lc = L'z';
       wchar_t rc = 0x00E2; // Latin small letter a with circumflex
       int comp_result = coll.compare(&lc, &lc + 1, &rc, &rc + 1);
-      if (comp_result > 0)
+      if (comp_result > 0) {
         // Latin small letter a with circumflex put before z - collation works
         m_collationtype = 2;
+      } else {
+        #ifdef TARGET_ANDROID
+        UErrorCode ustatus = U_ZERO_ERROR;
+        auto ucoll = std::unique_ptr<UCollator, decltype(&ucol_close)>(
+            ucol_open(g_langInfo.GetISOLocale().c_str(), &ustatus), &ucol_close);
+        if (U_SUCCESS(ustatus)) {
+          m_collationtype = 2;
+        }
+        #endif
+      }
     }
   }
   return m_collationtype == 2;

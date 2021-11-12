@@ -169,6 +169,13 @@ public:
   static std::string GetLanguagePath() { return "resource://"; }
   static std::string GetLanguagePath(const std::string &language);
   static std::string GetLanguageInfoPath(const std::string &language);
+
+  /**
+   * @brief Returns whether the localized collation (libicu or C++ locale) should be used.
+   * 
+   * @return True when localized collation should be used,
+   * or otherwise when it should be disabled (e.g. when e.g. MySQL is used, locale not supported or the user chose not to use).
+   */
   bool UseLocaleCollation();
 
   static void LoadTokens(const TiXmlNode* pTokens, std::set<std::string>& vecTokens);
