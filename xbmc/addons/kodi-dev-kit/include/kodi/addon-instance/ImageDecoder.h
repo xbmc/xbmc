@@ -383,9 +383,20 @@ private:
 ///   <requires>@ADDON_DEPENDS@</requires>
 ///   <extension
 ///     point="kodi.imagedecoder"
-///     extension=".imga|.imgb"
-///     mimetype="image/mymimea|image/mymimea"
-///     library_@PLATFORM@="@LIBRARY_FILENAME@"/>
+///     library_@PLATFORM@="@LIBRARY_FILENAME@">
+///     <support>
+///       <mimetype name="image/mymimea">
+///         <extension>.imga</extension>
+///         <description>30100</description>
+///         <icon>resources/file_format_icon_a.png</icon>
+///       </mimetype>
+///       <mimetype name="image/mymimeb">
+///         <extension>.imgb</extension>
+///         <description>30101</description>
+///         <icon>resources/file_format_icon_b.png</icon>
+///       </mimetype>
+///     </support>
+///   </extension>
 ///   <extension point="xbmc.addon.metadata">
 ///     <summary lang="en_GB">My image decoder addon summary</summary>
 ///     <description lang="en_GB">My image decoder description</description>
@@ -406,24 +417,29 @@ private:
 ///                  string,
 ///     The identification of the addon instance to image decoder is mandatory
 ///     <b>`kodi.imagedecoder`</b>. In addition\, the instance declared in the
-///     first <b>`<extension ... />`</b> is also the main type of addon.
-///   }
-///   \table_row3{   <b>`extension`</b>,
-///                  @anchor cpp_kodi_addon_imagedecoder_defaultPort
-///                  string,
-///     The from addon operated and supported image file endings.\n
-///     Use a <b>`|`</b> to separate between different ones.
-///   }
-///   \table_row3{   <b>`defaultPort`</b>,
-///                  @anchor cpp_kodi_addon_imagedecoder_defaultPort
-///                  string,
-///     The from addon operated image [mimetypes](https://en.wikipedia.org/wiki/Media_type).\n
-///     Use a <b>`|`</b> to separate between different ones.
+///     first <b>`<support>`</b> is also the main type of addon.
 ///   }
 ///   \table_row3{   <b>`library_@PLATFORM@`</b>,
 ///                  @anchor cpp_kodi_addon_imagedecoder_library
 ///                  string,
 ///     The runtime library used for the addon. This is usually declared by `cmake` and correctly displayed in the translated <b>`addon.xml`</b>.
+///   }
+///   \table_row3{   <b>`<support>...</support>`</b>,
+///                  @anchor cpp_kodi_addon_imagedecoder_support
+///                  XML group,
+///     Contains the formats supported by the addon.
+///   }
+///   \table_row3{   <b>`<mimetype name="image/mymimea">...</mimetype>`</b>,
+///                  @anchor cpp_kodi_addon_imagedecoder_mimetype
+///                  string / group,
+///     The from addon operated image [mimetypes](https://en.wikipedia.org/wiki/Media_type).\n
+///     Optional can be with `<description>` and `<icon>` additional info added where used for list views in Kodi.
+///   }
+///   \table_row3{   <b>`<mimetype ...><extension>...</extension></mimetype>`</b>,
+///                  @anchor cpp_kodi_addon_imagedecoder_mimetype
+///                  string,
+///     The file extensions / styles supported by this addon and relates to given mimetype before.\n
+///     @note Required to use about info support by @ref CInstanceImageDecoder::SupportsFile and @ref CInstanceImageDecoder::ReadTag!
 ///   }
 /// \table_end
 ///
