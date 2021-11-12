@@ -27,8 +27,10 @@ public:
   explicit CImageDecoder(const ADDON::AddonInfoPtr& addonInfo, const std::string& mimetype);
   ~CImageDecoder() override;
 
-  bool Create();
+  bool IsCreated() const { return m_created; }
 
+  /*! @ref IImage related functions */
+  ///@{
   bool CreateThumbnailFromSurface(unsigned char*,
                                   unsigned int,
                                   unsigned int,
@@ -40,7 +42,6 @@ public:
   {
     return false;
   }
-
   bool LoadImageFromMemory(unsigned char* buffer,
                            unsigned int bufSize,
                            unsigned int width,
@@ -50,15 +51,22 @@ public:
               unsigned int height,
               unsigned int pitch,
               unsigned int format) override;
+  ///@}
 
+  /*! From @ref CPictureInfoTag used function to get information from addon */
+  ///@{
   bool LoadInfoTag(const std::string& fileName, CPictureInfoTag* tag);
+  ///@}
 
-  // KODI::ADDONS::IAddonSupportCheck related function
+  /*! @ref KODI::ADDONS::IAddonSupportCheck related function */
+  ///@{
   bool SupportsFile(const std::string& filename) override;
+  ///@}
 
 private:
   /*! @note m_mimetype not set in all cases, only available if @ref LoadImageFromMemory is used. */
   const std::string m_mimetype;
+  bool m_created{false};
 };
 
 } /* namespace ADDONS */

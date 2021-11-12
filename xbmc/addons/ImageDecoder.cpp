@@ -32,6 +32,11 @@ CImageDecoder::CImageDecoder(const AddonInfoPtr& addonInfo, const std::string& m
   m_ifc.imagedecoder = new AddonInstance_ImageDecoder;
   m_ifc.imagedecoder->toAddon = new KodiToAddonFuncTable_ImageDecoder();
   m_ifc.imagedecoder->toKodi = new AddonToKodiFuncTable_ImageDecoder();
+
+  if (CreateInstance() != ADDON_STATUS_OK)
+    return;
+
+  m_created = true;
 }
 
 CImageDecoder::~CImageDecoder()
@@ -46,7 +51,7 @@ CImageDecoder::~CImageDecoder()
 bool CImageDecoder::SupportsFile(const std::string& filename)
 {
   // Create in case not available, possible as this done by IAddonSupportCheck
-  if ((!m_ifc.hdl && !Create()) || !m_ifc.imagedecoder->toAddon->supports_file)
+  if (!m_created || !m_ifc.imagedecoder->toAddon->supports_file)
     return false;
 
   return m_ifc.imagedecoder->toAddon->supports_file(m_ifc.hdl, filename.c_str());
@@ -54,7 +59,7 @@ bool CImageDecoder::SupportsFile(const std::string& filename)
 
 bool CImageDecoder::LoadInfoTag(const std::string& fileName, CPictureInfoTag* tag)
 {
-  if (!m_ifc.imagedecoder->toAddon->read_tag || !tag)
+  if (!m_created || !m_ifc.imagedecoder->toAddon->read_tag || !tag)
     return false;
 
   KODI_ADDON_IMAGEDECODER_INFO_TAG ifcTag = {};
@@ -173,7 +178,7 @@ bool CImageDecoder::LoadImageFromMemory(unsigned char* buffer,
                                         unsigned int width,
                                         unsigned int height)
 {
-  if (!m_ifc.imagedecoder->toAddon->load_image_from_memory)
+  if (!m_created || !m_ifc.imagedecoder->toAddon->load_image_from_memory)
     return false;
 
   m_width = width;
@@ -188,7 +193,7 @@ bool CImageDecoder::Decode(unsigned char* const pixels,
                            unsigned int pitch,
                            unsigned int format)
 {
-  if (!m_ifc.imagedecoder->toAddon->decode)
+  if (!m_created || !m_ifc.imagedecoder->toAddon->decode)
     return false;
 
   const auto it = std::find_if(KodiToAddonFormat.begin(), KodiToAddonFormat.end(),
@@ -204,9 +209,4 @@ bool CImageDecoder::Decode(unsigned char* const pixels,
   m_height = height;
 
   return result;
-}
-
-bool CImageDecoder::Create()
-{
-  return (CreateInstance() == ADDON_STATUS_OK);
 }
