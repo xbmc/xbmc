@@ -284,7 +284,7 @@ void CLinuxRendererGLES::LoadPlane(CYuvPlane& plane, int type,
                                    int stride, int bpp, void* data)
 {
   const GLvoid *pixelData = data;
-  int bps = bpp * glFormatElementByteCount(type);
+  int bps = bpp * KODI::UTILS::GL::glFormatElementByteCount(type);
 
   glBindTexture(m_textureTarget, plane.id);
 

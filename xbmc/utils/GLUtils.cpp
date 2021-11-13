@@ -229,7 +229,7 @@ void LogGraphicsInfo()
 #endif /* !HAS_GL */
 }
 
-int glFormatElementByteCount(GLenum format)
+int KODI::UTILS::GL::glFormatElementByteCount(GLenum format)
 {
   switch (format)
   {

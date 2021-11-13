@@ -55,7 +55,7 @@ static void LoadTexture(GLenum target
   GLenum externalFormat = alpha ? GL_RED : GL_BGRA;
 #endif
 
-  int bytesPerPixel = glFormatElementByteCount(externalFormat);
+  int bytesPerPixel = KODI::UTILS::GL::glFormatElementByteCount(externalFormat);
 
 #ifdef HAS_GLES
   bool bgraSupported = false;
