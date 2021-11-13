@@ -139,17 +139,17 @@ unsigned int CFileAndroidApp::ReadIcon(unsigned char** lpBuf, unsigned int* widt
     return 0;
   }
 
-  *width = info.width;
-  *height = info.height;
-
-  int imgsize = *width * *height * 4;
-  *lpBuf = new unsigned char[imgsize];
-
   AndroidBitmap_lockPixels(env, bmp.get_raw(), &bitmapBuf);
   if (bitmapBuf)
   {
+    const int imgsize = info.width * info.height * 4;
+    *lpBuf = new unsigned char[imgsize];
+    *width = info.width;
+    *height = info.height;
+
     memcpy(*lpBuf, bitmapBuf, imgsize);
     AndroidBitmap_unlockPixels(env, bmp.get_raw());
+
     return imgsize;
   }
   return 0;
