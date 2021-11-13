@@ -361,7 +361,7 @@ bool CPVRProviders::PersistUserChanges(const std::vector<std::shared_ptr<CPVRPro
   return true;
 }
 
-std::shared_ptr<CPVRProvider> CPVRProviders::GetById(unsigned int iProviderId) const
+std::shared_ptr<CPVRProvider> CPVRProviders::GetById(int iProviderId) const
 {
   CSingleLock lock(m_critSection);
   for (const auto& provider : m_providers)
