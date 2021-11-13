@@ -212,6 +212,7 @@ std::unique_ptr<CTexture> CTexture::LoadFromFile(const std::string& texturePath,
 
       std::unique_ptr<CTexture> texture = CTexture::CreateTexture();
       texture->LoadFromMemory(width, height, width*4, XB_FMT_RGBA8, true, inputBuff);
+      delete[] inputBuff;
       return texture;
     }
   }
