@@ -165,7 +165,7 @@ ssize_t CXbtFile::Read(void* lpBuf, size_t uiBufSize)
     const CXBTFFrame& frame = frames[m_frameIndex];
 
     // check if we have already unpacked the current frame
-    if (!m_unpackedFrames[m_frameIndex].empty())
+    if (m_unpackedFrames[m_frameIndex].empty())
     {
       // unpack the data from the current frame
       std::vector<uint8_t> unpackedFrame =
