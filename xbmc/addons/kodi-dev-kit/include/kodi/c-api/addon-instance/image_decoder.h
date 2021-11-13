@@ -50,13 +50,14 @@ extern "C"
   typedef struct KodiToAddonFuncTable_ImageDecoder
   {
     bool(__cdecl* load_image_from_memory)(const KODI_ADDON_IMAGEDECODER_HDL hdl,
-                                          unsigned char* buffer,
-                                          unsigned int buf_size,
+                                          const uint8_t* buffer,
+                                          size_t buf_size,
                                           unsigned int* width,
                                           unsigned int* height);
 
     bool(__cdecl* decode)(const KODI_ADDON_IMAGEDECODER_HDL hdl,
-                          unsigned char* pixels,
+                          uint8_t* pixels,
+                          size_t pixels_size,
                           unsigned int width,
                           unsigned int height,
                           unsigned int pitch,

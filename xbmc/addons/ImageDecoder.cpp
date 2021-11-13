@@ -75,8 +75,24 @@ bool CImageDecoder::Decode(unsigned char* const pixels,
   if (it == KodiToAddonFormat.end())
     return false;
 
-  bool result =
-      m_ifc.imagedecoder->toAddon->decode(m_ifc.hdl, pixels, width, height, pitch, it->second);
+  size_t size;
+  switch (format)
+  {
+    case XB_FMT_A8:
+      size = width * height * sizeof(uint8_t) * 1;
+      break;
+    case XB_FMT_RGB8:
+      size = width * height * sizeof(uint8_t) * 3;
+      break;
+    case XB_FMT_A8R8G8B8:
+    case XB_FMT_RGBA8:
+    default:
+      size = width * height * sizeof(uint8_t) * 4;
+      break;
+  }
+
+  bool result = m_ifc.imagedecoder->toAddon->decode(m_ifc.hdl, pixels, size, width, height, pitch,
+                                                    it->second);
   m_width = width;
   m_height = height;
 
