@@ -15069,7 +15069,7 @@ msgid "Click \"OK\" when playback has ended"
 msgstr ""
 
 #empty strings from id 23105 to 23999
-#strings 24000 thru 24299 reserved for the Add-ons framework
+#strings 24000 thru 24299 reserved for the add-ons framework
 
 #: xbmc/addons/GUIDialogAddonSettings.cpp
 #: xbmc/addons/GUIViewStateAddonBrowser.cpp
@@ -15257,7 +15257,7 @@ msgctxt "#24034"
 msgid "Check for updates"
 msgstr ""
 
-#: Name of an Add-on category
+#: Name of an add-on category
 #: xbmc/addons/Addon.cpp
 msgctxt "#24035"
 msgid "Image collections"
@@ -15312,7 +15312,7 @@ msgstr ""
 #. Used as an event log description for add-ons failed to install from zip
 #: xbmc/addons/AddonInstaller.cpp
 msgctxt "#24045"
-msgid "Failed to install Add-on from zip file"
+msgid "Failed to install add-on from zip file"
 msgstr ""
 
 #: xbmc/addons/GUIDialogAddonInfo.cpp
@@ -15807,10 +15807,10 @@ msgctxt "#24138"
 msgid "Update"
 msgstr ""
 
-#. Label for the action provided by addon management events to jump to a specific Add-on
+#. Label for the action provided by addon management events to jump to a specific add-on
 #: xbmc/events/AddonManagementEvent.cpp
 msgctxt "#24139"
-msgid "View Add-on"
+msgid "View add-on"
 msgstr ""
 
 #. Label for the action provided by media library events to jump to a specific path/file
@@ -15834,7 +15834,7 @@ msgstr ""
 #. Installing the addon from zip file located at <path to zip file> failed due to an invalid structure.
 #: xbmc/addons/AddonInstaller.cpp
 msgctxt "#24143"
-msgid "Installing the Add-on from zip file located at {0:s} failed due to an invalid structure."
+msgid "Installing the add-on from zip file located at {0:s} failed due to an invalid structure."
 msgstr ""
 
 #. Used as an event log description for add-ons that have been uninstalled
@@ -16738,7 +16738,7 @@ msgstr ""
 #strings 30000 thru 30999 reserved for plug-ins and plug-in settings
 #strings 31000 thru 31999 reserved for skins
 #strings 32000 thru 32999 reserved for scripts
-#strings 33000 thru 33999 reserved for common strings used in Add-ons
+#strings 33000 thru 33999 reserved for common strings used in add-ons
 
 #: unknown
 msgctxt "#33001"
