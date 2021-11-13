@@ -115,12 +115,12 @@ namespace addon
 /// public:
 ///   CMyImageDecoder(const kodi::addon::IInstanceInfo& instance);
 ///
-///   bool LoadImageFromMemory(unsigned char* buffer,
-///                            unsigned int bufSize,
+///   bool LoadImageFromMemory(const uint8_t* buffer,
+///                            size_t bufSize,
 ///                            unsigned int& width,
 ///                            unsigned int& height) override;
 ///
-///   bool Decode(unsigned char* pixels,
+///   bool Decode(uint8_t* pixels,
 ///               unsigned int width,
 ///               unsigned int height,
 ///               unsigned int pitch,
@@ -135,8 +135,8 @@ namespace addon
 ///   ...
 /// }
 ///
-/// bool CMyImageDecoder::LoadImageFromMemory(unsigned char* buffer,
-///                                           unsigned int bufSize,
+/// bool CMyImageDecoder::LoadImageFromMemory(const uint8_t* buffer,
+///                                           size_t bufSize,
 ///                                           unsigned int& width,
 ///                                           unsigned int& height)
 /// {
@@ -144,7 +144,7 @@ namespace addon
 ///   return true;
 /// }
 ///
-/// bool CMyImageDecoder::Decode(unsigned char* pixels,
+/// bool CMyImageDecoder::Decode(uint8_t* pixels,
 ///                              unsigned int width,
 ///                              unsigned int height,
 ///                              unsigned int pitch,
@@ -224,8 +224,8 @@ public:
   ///                       on return
   /// @return true if successful done, false on error
   ///
-  virtual bool LoadImageFromMemory(unsigned char* buffer,
-                                   unsigned int bufSize,
+  virtual bool LoadImageFromMemory(const uint8_t* buffer,
+                                   size_t bufSize,
                                    unsigned int& width,
                                    unsigned int& height) = 0;
   //----------------------------------------------------------------------------
@@ -241,7 +241,7 @@ public:
   /// @param[in] format Format of output image
   /// @return true if successful done, false on error
   ///
-  virtual bool Decode(unsigned char* pixels,
+  virtual bool Decode(uint8_t* pixels,
                       unsigned int width,
                       unsigned int height,
                       unsigned int pitch,
@@ -279,8 +279,8 @@ private:
   }
 
   inline static bool ADDON_LoadImageFromMemory(const KODI_ADDON_IMAGEDECODER_HDL hdl,
-                                               unsigned char* buffer,
-                                               unsigned int bufSize,
+                                               const uint8_t* buffer,
+                                               size_t bufSize,
                                                unsigned int* width,
                                                unsigned int* height)
   {
@@ -289,7 +289,8 @@ private:
   }
 
   inline static bool ADDON_Decode(const KODI_ADDON_IMAGEDECODER_HDL hdl,
-                                  unsigned char* pixels,
+                                  uint8_t* pixels,
+                                  size_t pixels_size,
                                   unsigned int width,
                                   unsigned int height,
                                   unsigned int pitch,
