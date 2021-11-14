@@ -27,6 +27,19 @@ CGUIListItemLayout::CGUIListItemLayout()
   m_group.SetPushUpdates(true);
 }
 
+CGUIListItemLayout::CGUIListItemLayout(const CGUIListItemLayout& from)
+  : m_group(from.m_group),
+    m_width(from.m_width),
+    m_height(from.m_height),
+    m_focused(from.m_focused),
+    m_invalidated(from.m_invalidated),
+    m_condition(from.m_condition),
+    m_isPlaying(from.m_isPlaying),
+    m_infoUpdateMillis(from.m_infoUpdateMillis)
+{
+  m_infoUpdateTimeout.Set(m_infoUpdateMillis);
+}
+
 CGUIListItemLayout::CGUIListItemLayout(const CGUIListItemLayout &from, CGUIControl *control)
 : m_group(from.m_group), m_isPlaying(from.m_isPlaying)
 {
@@ -34,6 +47,8 @@ CGUIListItemLayout::CGUIListItemLayout(const CGUIListItemLayout &from, CGUIContr
   m_height = from.m_height;
   m_focused = from.m_focused;
   m_condition = from.m_condition;
+  m_infoUpdateMillis = from.m_infoUpdateMillis;
+  m_infoUpdateTimeout.Set(m_infoUpdateMillis);
   m_invalidated = true;
   m_group.SetParentControl(control);
 }
@@ -67,6 +82,15 @@ void CGUIListItemLayout::Process(CGUIListItem *item, int parentID, unsigned int 
     // delete our temporary fileitem
     if (!item->IsFileItem())
       delete fileItem;
+
+    m_infoUpdateTimeout.Set(m_infoUpdateMillis);
+  }
+  else if (m_infoUpdateTimeout.IsTimePast())
+  {
+    m_isPlaying.Update(item);
+    m_group.UpdateInfo(item);
+
+    m_infoUpdateTimeout.Set(m_infoUpdateMillis);
   }
 
   // update visibility, and render
@@ -162,6 +186,12 @@ void CGUIListItemLayout::LoadLayout(TiXmlElement *layout, int context, bool focu
   const char *condition = layout->Attribute("condition");
   if (condition)
     m_condition = CServiceBroker::GetGUI()->GetInfoManager().Register(condition, context);
+  unsigned int infoupdatemillis = 0;
+  layout->QueryUnsignedAttribute("infoupdate", &infoupdatemillis);
+  if (infoupdatemillis > 0)
+    m_infoUpdateMillis = infoupdatemillis;
+
+  m_infoUpdateTimeout.Set(m_infoUpdateMillis);
   m_isPlaying.Parse("listitem.isplaying", context);
   // ensure width and height are valid
   if (!m_width)
