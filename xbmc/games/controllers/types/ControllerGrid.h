@@ -114,7 +114,7 @@ private:
    *
    * \return The height of the grid
    */
-  static unsigned int AddController(const CPortNode port,
+  static unsigned int AddController(const CPortNode& port,
                                     unsigned int height,
                                     std::vector<ControllerVertex>& column,
                                     ControllerGrid& grid);
