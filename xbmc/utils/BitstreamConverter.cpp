@@ -37,32 +37,35 @@ enum {
   AVC_NAL_AUXILIARY_SLICE=19
 };
 
-enum {
-  HEVC_NAL_TRAIL_N    = 0,
-  HEVC_NAL_TRAIL_R    = 1,
-  HEVC_NAL_TSA_N      = 2,
-  HEVC_NAL_TSA_R      = 3,
-  HEVC_NAL_STSA_N     = 4,
-  HEVC_NAL_STSA_R     = 5,
-  HEVC_NAL_RADL_N     = 6,
-  HEVC_NAL_RADL_R     = 7,
-  HEVC_NAL_RASL_N     = 8,
-  HEVC_NAL_RASL_R     = 9,
-  HEVC_NAL_BLA_W_LP   = 16,
+enum
+{
+  HEVC_NAL_TRAIL_N = 0,
+  HEVC_NAL_TRAIL_R = 1,
+  HEVC_NAL_TSA_N = 2,
+  HEVC_NAL_TSA_R = 3,
+  HEVC_NAL_STSA_N = 4,
+  HEVC_NAL_STSA_R = 5,
+  HEVC_NAL_RADL_N = 6,
+  HEVC_NAL_RADL_R = 7,
+  HEVC_NAL_RASL_N = 8,
+  HEVC_NAL_RASL_R = 9,
+  HEVC_NAL_BLA_W_LP = 16,
   HEVC_NAL_BLA_W_RADL = 17,
-  HEVC_NAL_BLA_N_LP   = 18,
+  HEVC_NAL_BLA_N_LP = 18,
   HEVC_NAL_IDR_W_RADL = 19,
-  HEVC_NAL_IDR_N_LP   = 20,
-  HEVC_NAL_CRA_NUT    = 21,
-  HEVC_NAL_VPS        = 32,
-  HEVC_NAL_SPS        = 33,
-  HEVC_NAL_PPS        = 34,
-  HEVC_NAL_AUD        = 35,
-  HEVC_NAL_EOS_NUT    = 36,
-  HEVC_NAL_EOB_NUT    = 37,
-  HEVC_NAL_FD_NUT     = 38,
+  HEVC_NAL_IDR_N_LP = 20,
+  HEVC_NAL_CRA_NUT = 21,
+  HEVC_NAL_VPS = 32,
+  HEVC_NAL_SPS = 33,
+  HEVC_NAL_PPS = 34,
+  HEVC_NAL_AUD = 35,
+  HEVC_NAL_EOS_NUT = 36,
+  HEVC_NAL_EOB_NUT = 37,
+  HEVC_NAL_FD_NUT = 38,
   HEVC_NAL_SEI_PREFIX = 39,
-  HEVC_NAL_SEI_SUFFIX = 40
+  HEVC_NAL_SEI_SUFFIX = 40,
+  HEVC_NAL_UNSPEC62 = 62, // Dolby Vision RPU
+  HEVC_NAL_UNSPEC63 = 63 // Dolby Vision EL
 };
 
 enum {
@@ -926,13 +929,13 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **
     // prepend only to the first access unit of an IDR picture, if no sps/pps already present
     if (m_sps_pps_context.first_idr && IsIDR(unit_type) && !m_sps_pps_context.idr_sps_pps_seen)
     {
-      BitstreamAllocAndCopy(poutbuf, poutbuf_size,
-        m_sps_pps_context.sps_pps_data, m_sps_pps_context.size, buf, nal_size);
+      BitstreamAllocAndCopy(poutbuf, poutbuf_size, m_sps_pps_context.sps_pps_data,
+                            m_sps_pps_context.size, buf, nal_size, unit_type);
       m_sps_pps_context.first_idr = 0;
     }
     else
     {
-      BitstreamAllocAndCopy(poutbuf, poutbuf_size, NULL, 0, buf, nal_size);
+      BitstreamAllocAndCopy(poutbuf, poutbuf_size, NULL, 0, buf, nal_size, unit_type);
       if (!m_sps_pps_context.first_idr && IsSlice(unit_type))
       {
           m_sps_pps_context.first_idr = 1;
@@ -952,8 +955,13 @@ fail:
   return false;
 }
 
-void CBitstreamConverter::BitstreamAllocAndCopy( uint8_t **poutbuf, int *poutbuf_size,
-    const uint8_t *sps_pps, uint32_t sps_pps_size, const uint8_t *in, uint32_t in_size)
+void CBitstreamConverter::BitstreamAllocAndCopy(uint8_t** poutbuf,
+                                                int* poutbuf_size,
+                                                const uint8_t* sps_pps,
+                                                uint32_t sps_pps_size,
+                                                const uint8_t* in,
+                                                uint32_t in_size,
+                                                uint8_t nal_type)
 {
   // based on h264_mp4toannexb_bsf.c (ffmpeg)
   // which is Copyright (c) 2007 Benoit Fouet <benoit.fouet@free.fr>
@@ -962,6 +970,11 @@ void CBitstreamConverter::BitstreamAllocAndCopy( uint8_t **poutbuf, int *poutbuf
   uint32_t offset = *poutbuf_size;
   uint8_t nal_header_size = offset ? 3 : 4;
   void *tmp;
+
+  // According to x265, this type is always encoded with four-sized header
+  // https://bitbucket.org/multicoreware/x265_git/src/4bf31dc15fb6d1f93d12ecf21fad5e695f0db5c0/source/encoder/nal.cpp#lines-100
+  if (nal_type == HEVC_NAL_UNSPEC62)
+    nal_header_size = 4;
 
   *poutbuf_size += sps_pps_size + in_size + nal_header_size;
   tmp = av_realloc(*poutbuf, *poutbuf_size);
@@ -975,6 +988,13 @@ void CBitstreamConverter::BitstreamAllocAndCopy( uint8_t **poutbuf, int *poutbuf
   if (!offset)
   {
     BS_WB32(*poutbuf + sps_pps_size, 1);
+  }
+  else if (nal_header_size == 4)
+  {
+    (*poutbuf + offset + sps_pps_size)[0] = 0;
+    (*poutbuf + offset + sps_pps_size)[1] = 0;
+    (*poutbuf + offset + sps_pps_size)[2] = 0;
+    (*poutbuf + offset + sps_pps_size)[3] = 1;
   }
   else
   {
