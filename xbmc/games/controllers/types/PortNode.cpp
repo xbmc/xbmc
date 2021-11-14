@@ -132,7 +132,10 @@ void CPortNode::GetPort(CPhysicalPort& port) const
 {
   std::vector<std::string> accepts;
   for (const CControllerNode& node : m_controllers)
-    accepts.emplace_back(node.GetController()->ID());
+  {
+    if (node.GetController())
+      accepts.emplace_back(node.GetController()->ID());
+  }
 
   port = CPhysicalPort(m_portId, std::move(accepts));
 }

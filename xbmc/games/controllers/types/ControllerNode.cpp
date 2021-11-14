@@ -63,15 +63,18 @@ void CControllerNode::SetController(ControllerPtr controller)
 
 void CControllerNode::GetControllers(ControllerVector& controllers) const
 {
-  const ControllerPtr& myController = m_controller;
+  if (m_controller)
+  {
+    const ControllerPtr& myController = m_controller;
 
-  auto it = std::find_if(controllers.begin(), controllers.end(),
-                         [&myController](const ControllerPtr& controller) {
-                           return myController->ID() == controller->ID();
-                         });
+    auto it = std::find_if(controllers.begin(), controllers.end(),
+                           [&myController](const ControllerPtr& controller) {
+                             return myController->ID() == controller->ID();
+                           });
 
-  if (it == controllers.end())
-    controllers.emplace_back(m_controller);
+    if (it == controllers.end())
+      controllers.emplace_back(m_controller);
+  }
 
   m_hub->GetControllers(controllers);
 }
