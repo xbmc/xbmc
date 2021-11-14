@@ -100,8 +100,9 @@
 		<param name="only_label_condition">false</param>
 		<param name="has_info_icon">false</param>
 		<param name="has_status_icon">false</param>
+		<param name="info_update">0</param>
 		<definition>
-			<itemlayout height="100">
+			<itemlayout height="100" infoupdate="$PARAM[info_update]">
 				<control type="progress">
 					<left>20</left>
 					<top>66</top>
@@ -125,7 +126,7 @@
 					<param name="label4" value="[COLOR grey]$INFO[ListItem.Comment][/COLOR]" />
 				</include>
 			</itemlayout>
-			<focusedlayout height="100">
+			<focusedlayout height="100" infoupdate="$PARAM[info_update]">
 				<control type="image">
 					<left>0</left>
 					<top>0</top>

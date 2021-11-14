@@ -27,6 +27,7 @@
 						<param name="list_id" value="11" />
 						<param name="label1" value="$INFO[ListItem.Label]" />
 						<param name="has_status_icon" value="true" />
+						<param name="info_update" value="5000" />
 					</include>
 				</control>
 				<control type="scrollbar" id="60">
