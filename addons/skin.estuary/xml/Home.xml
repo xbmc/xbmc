@@ -383,6 +383,7 @@
 							<param name="sortorder" value="descending"/>
 							<param name="widget_header" value="$LOCALIZE[31016]"/>
 							<param name="list_id" value="12200"/>
+							<param name="info_update" value="5000"/>
 						</include>
 						<include content="WidgetListPVR" condition="System.HasPVRAddon">
 							<param name="content_path" value="pvr://recordings/tv/active?view=flat"/>
@@ -449,6 +450,7 @@
 							<param name="sortorder" value="descending"/>
 							<param name="widget_header" value="$LOCALIZE[31018]"/>
 							<param name="list_id" value="13200"/>
+							<param name="info_update" value="5000"/>
 						</include>
 						<include content="WidgetListPVR" condition="System.HasPVRAddon">
 							<param name="content_path" value="pvr://recordings/radio/active?view=flat"/>
