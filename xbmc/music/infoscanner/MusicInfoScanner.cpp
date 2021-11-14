@@ -1318,11 +1318,13 @@ CMusicInfoScanner::UpdateDatabaseAlbumInfo(CAlbum& album,
       }
       else
       {
-        CServiceBroker::GetEventLog().Add(EventPtr(new CMediaLibraryEvent(
-            MediaTypeAlbum, album.strPath, 24146,
-            StringUtils::Format(g_localizeStrings.Get(24147), MediaTypeAlbum, album.strAlbum),
-            CScraperUrl::GetThumbUrl(album.thumbURL.GetFirstUrlByType()),
-            CURL::GetRedacted(album.strPath), EventLevel::Warning)));
+        auto eventLog = CServiceBroker::GetEventLog();
+        if (eventLog)
+          eventLog->Add(EventPtr(new CMediaLibraryEvent(
+              MediaTypeAlbum, album.strPath, 24146,
+              StringUtils::Format(g_localizeStrings.Get(24147), MediaTypeAlbum, album.strAlbum),
+              CScraperUrl::GetThumbUrl(album.thumbURL.GetFirstUrlByType()),
+              CURL::GetRedacted(album.strPath), EventLevel::Warning)));
       }
     }
   }
@@ -1386,11 +1388,13 @@ CMusicInfoScanner::UpdateDatabaseArtistInfo(CArtist& artist,
       }
       else
       {
-        CServiceBroker::GetEventLog().Add(EventPtr(new CMediaLibraryEvent(
-            MediaTypeArtist, artist.strPath, 24146,
-            StringUtils::Format(g_localizeStrings.Get(24147), MediaTypeArtist, artist.strArtist),
-            CScraperUrl::GetThumbUrl(artist.thumbURL.GetFirstUrlByType()),
-            CURL::GetRedacted(artist.strPath), EventLevel::Warning)));
+        auto eventLog = CServiceBroker::GetEventLog();
+        if (eventLog)
+          eventLog->Add(EventPtr(new CMediaLibraryEvent(
+              MediaTypeArtist, artist.strPath, 24146,
+              StringUtils::Format(g_localizeStrings.Get(24147), MediaTypeArtist, artist.strArtist),
+              CScraperUrl::GetThumbUrl(artist.thumbURL.GetFirstUrlByType()),
+              CURL::GetRedacted(artist.strPath), EventLevel::Warning)));
       }
     }
   }

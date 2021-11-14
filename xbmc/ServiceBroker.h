@@ -136,7 +136,7 @@ public:
   static CWeatherManager& GetWeatherManager();
   static CPlayerCoreFactory &GetPlayerCoreFactory();
   static CDatabaseManager &GetDatabaseManager();
-  static CEventLog &GetEventLog();
+  static CEventLog* GetEventLog();
   static CMediaManager& GetMediaManager();
 
   static CGUIComponent* GetGUI();
