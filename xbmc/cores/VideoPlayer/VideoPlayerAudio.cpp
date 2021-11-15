@@ -385,9 +385,14 @@ void CVideoPlayerAudio::Process()
       DemuxPacket* pPacket = std::static_pointer_cast<CDVDMsgDemuxerPacket>(pMsg)->GetPacket();
       bool bPacketDrop = std::static_pointer_cast<CDVDMsgDemuxerPacket>(pMsg)->GetPacketDrop();
 
-      if (bPacketDrop ||
-          (!m_processInfo.IsTempoAllowed(static_cast<float>(m_speed)/DVD_PLAYSPEED_NORMAL) &&
-           m_syncState == IDVDStreamPlayer::SYNC_INSYNC))
+      if (bPacketDrop)
+      {
+        m_syncState = IDVDStreamPlayer::SYNC_STARTING;
+        continue;
+      }
+
+      if (!m_processInfo.IsTempoAllowed(static_cast<float>(m_speed) / DVD_PLAYSPEED_NORMAL) &&
+          m_syncState == IDVDStreamPlayer::SYNC_INSYNC)
       {
         continue;
       }
