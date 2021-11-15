@@ -535,9 +535,12 @@ if test "$platform_os" == "android"; then
     AC_MSG_ERROR("Missing program: aapt")
   fi
 
-  AC_PATH_PROG(DX,dx,"no",$build_tools_path)
-  if test "x$DX" = "xno" ; then
-    AC_MSG_ERROR("Missing program: dx")
+  AC_PATH_PROG(D8,d8,"no",$build_tools_path)
+  if test "x$D8" = "xno" ; then
+    AC_PATH_PROG(DX,dx,"no",$build_tools_path)
+    if test "x$DX" = "xno" ; then
+      AC_MSG_ERROR("Missing program: dx or d8")
+    fi
   fi
 
   AC_PATH_PROG(ZIPALIGN,zipalign,"no",$build_tools_path)
