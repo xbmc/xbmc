@@ -9,13 +9,244 @@
 #pragma once
 
 #include "../AddonBase.h"
-#include "../c-api/addon-instance/audio_encoder.h"
+#include "../c-api/addon-instance/audioencoder.h"
 
 #ifdef __cplusplus
+
+#include <stdexcept>
+
 namespace kodi
 {
 namespace addon
 {
+
+class CInstanceAudioEncoder;
+
+//==============================================================================
+/// @defgroup cpp_kodi_addon_audioencoder_Defs_AudioEncoderInfoTag class AudioEncoderInfoTag
+/// @ingroup cpp_kodi_addon_audioencoder_Defs
+/// @brief **Info tag data structure**\n
+/// Representation of available information of processed audio file.
+///
+/// This is used to get all the necessary data of audio stream and to have on
+/// created files by encoders.
+///
+/// ----------------------------------------------------------------------------
+///
+/// @copydetails cpp_kodi_addon_audioencoder_Defs_AudioEncoderInfoTag_Help
+///
+///@{
+class ATTR_DLL_LOCAL AudioEncoderInfoTag
+{
+public:
+  /*! \cond PRIVATE */
+  AudioEncoderInfoTag() = default;
+  /*! \endcond */
+
+  /// @defgroup cpp_kodi_addon_audioencoder_Defs_AudioEncoderInfoTag_Help Value Help
+  /// @ingroup cpp_kodi_addon_audioencoder_Defs_AudioEncoderInfoTag
+  ///
+  /// <b>The following table contains values that can be set with @ref cpp_kodi_addon_audioencoder_Defs_AudioEncoderInfoTag :</b>
+  /// | Name | Type | Set call | Get call
+  /// |------|------|----------|----------
+  /// | **Title** | `std::string` | @ref AudioEncoderInfoTag::SetTitle "SetTitle" | @ref AudioEncoderInfoTag::GetTitle "GetTitle"
+  /// | **Artist** | `std::string` | @ref AudioEncoderInfoTag::SetArtist "SetArtist" | @ref AudioEncoderInfoTag::GetArtist "GetArtist"
+  /// | **Album** | `std::string` | @ref AudioEncoderInfoTag::SetAlbum "SetAlbum" | @ref AudioEncoderInfoTag::GetAlbum "GetAlbum"
+  /// | **Album artist** | `std::string` | @ref AudioEncoderInfoTag::SetAlbumArtist "SetAlbumArtist" | @ref AudioEncoderInfoTag::GetAlbumArtist "GetAlbumArtist"
+  /// | **Media type** | `std::string` | @ref AudioEncoderInfoTag::SetMediaType "SetMediaType" | @ref AudioEncoderInfoTag::GetMediaType "GetMediaType"
+  /// | **Genre** | `std::string` | @ref AudioEncoderInfoTag::SetGenre "SetGenre" | @ref AudioEncoderInfoTag::GetGenre "GetGenre"
+  /// | **Duration** | `int` | @ref AudioEncoderInfoTag::SetDuration "SetDuration" | @ref AudioEncoderInfoTag::GetDuration "GetDuration"
+  /// | **Track number** | `int` | @ref AudioEncoderInfoTag::SetTrack "SetTrack" | @ref AudioEncoderInfoTag::GetTrack "GetTrack"
+  /// | **Disc number** | `int` | @ref AudioEncoderInfoTag::SetDisc "SetDisc" | @ref AudioEncoderInfoTag::GetDisc "GetDisc"
+  /// | **Disc subtitle name** | `std::string` | @ref AudioEncoderInfoTag::SetDiscSubtitle "SetDiscSubtitle" | @ref AudioEncoderInfoTag::GetDiscSubtitle "GetDiscSubtitle"
+  /// | **Disc total amount** | `int` | @ref AudioEncoderInfoTag::SetDiscTotal "SetDiscTotal" | @ref AudioEncoderInfoTag::GetDiscTotal "GetDiscTotal"
+  /// | **Release date** | `std::string` | @ref AudioEncoderInfoTag::SetReleaseDate "SetReleaseDate" | @ref AudioEncoderInfoTag::GetReleaseDate "GetReleaseDate"
+  /// | **Lyrics** | `std::string` | @ref AudioEncoderInfoTag::SetLyrics "SetLyrics" | @ref AudioEncoderInfoTag::GetLyrics "GetLyrics"
+  /// | **Samplerate** | `int` | @ref AudioEncoderInfoTag::SetSamplerate "SetSamplerate" | @ref AudioEncoderInfoTag::GetSamplerate "GetSamplerate"
+  /// | **Channels amount** | `int` | @ref AudioEncoderInfoTag::SetChannels "SetChannels" | @ref AudioEncoderInfoTag::GetChannels "GetChannels"
+  /// | **Bits per sample** | `int` | @ref AudioEncoderInfoTag::SetBitsPerSample "SetBitsPerSample" | @ref AudioEncoderInfoTag::GetBitsPerSample "GetBitsPerSample"
+  /// | **Track length** | `int` | @ref AudioEncoderInfoTag::SetTrackLength "SetTrackLength" | @ref AudioEncoderInfoTag::GetTrackLength "GetTrackLength"
+  /// | **Comment text** | `std::string` | @ref AudioEncoderInfoTag::SetComment "SetComment" | @ref AudioEncoderInfoTag::GetComment "GetComment"
+  ///
+  /// @addtogroup cpp_kodi_addon_audioencoder_Defs_AudioEncoderInfoTag
+  ///@{
+
+  /// @brief Set the title from music as string on info tag.
+  void SetTitle(const std::string& title) { m_title = title; }
+
+  /// @brief Get title name
+  const std::string& GetTitle() const { return m_title; }
+
+  /// @brief Set artist name
+  void SetArtist(const std::string& artist) { m_artist = artist; }
+
+  /// @brief Get artist name
+  const std::string& GetArtist() const { return m_artist; }
+
+  /// @brief Set album name
+  void SetAlbum(const std::string& album) { m_album = album; }
+
+  /// @brief Get album name
+  const std::string& GetAlbum() const { return m_album; }
+
+  /// @brief Set album artist name
+  void SetAlbumArtist(const std::string& albumArtist) { m_album_artist = albumArtist; }
+
+  /// @brief Get album artist name
+  const std::string& GetAlbumArtist() const { return m_album_artist; }
+
+  /// @brief Set the media type of the music item.
+  ///
+  /// Available strings about media type for music:
+  /// | String         | Description                                       |
+  /// |---------------:|:--------------------------------------------------|
+  /// | artist         | If it is defined as an artist
+  /// | album          | If it is defined as an album
+  /// | music          | If it is defined as an music
+  /// | song           | If it is defined as a song
+  ///
+  void SetMediaType(const std::string& mediaType) { m_media_type = mediaType; }
+
+  /// @brief Get the media type of the music item.
+  const std::string& GetMediaType() const { return m_media_type; }
+
+  /// @brief Set genre name from music as string if present.
+  void SetGenre(const std::string& genre) { m_genre = genre; }
+
+  /// @brief Get genre name from music as string if present.
+  const std::string& GetGenre() const { return m_genre; }
+
+  /// @brief Set the duration of music as integer from info.
+  void SetDuration(int duration) { m_duration = duration; }
+
+  /// @brief Get the duration of music as integer from info.
+  int GetDuration() const { return m_duration; }
+
+  /// @brief Set track number (if present) from music info as integer.
+  void SetTrack(int track) { m_track = track; }
+
+  /// @brief Get track number (if present).
+  int GetTrack() const { return m_track; }
+
+  /// @brief Set disk number (if present) from music info as integer.
+  void SetDisc(int disc) { m_disc = disc; }
+
+  /// @brief Get disk number (if present)
+  int GetDisc() const { return m_disc; }
+
+  /// @brief Set disk subtitle name (if present) from music info.
+  void SetDiscSubtitle(const std::string& discSubtitle) { m_disc_subtitle = discSubtitle; }
+
+  /// @brief Get disk subtitle name (if present) from music info.
+  const std::string& GetDiscSubtitle() const { return m_disc_subtitle; }
+
+  /// @brief Set disks amount quantity (if present) from music info as integer.
+  void SetDiscTotal(int discTotal) { m_disc_total = discTotal; }
+
+  /// @brief Get disks amount quantity (if present)
+  int GetDiscTotal() const { return m_disc_total; }
+
+  /// @brief Set release date as string from music info (if present).\n
+  /// [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) date YYYY, YYYY-MM or YYYY-MM-DD
+  void SetReleaseDate(const std::string& releaseDate) { m_release_date = releaseDate; }
+
+  /// @brief Get release date as string from music info (if present).
+  const std::string& GetReleaseDate() const { return m_release_date; }
+
+  /// @brief Set string from lyrics.
+  void SetLyrics(const std::string& lyrics) { m_lyrics = lyrics; }
+
+  /// @brief Get string from lyrics.
+  const std::string& GetLyrics() const { return m_lyrics; }
+
+  /// @brief Set related stream samplerate.
+  void SetSamplerate(int samplerate) { m_samplerate = samplerate; }
+
+  /// @brief Get related stream samplerate.
+  int GetSamplerate() const { return m_samplerate; }
+
+  /// @brief Set related stream channels amount.
+  void SetChannels(int channels) { m_channels = channels; }
+
+  /// @brief Get related stream channels amount.
+  int GetChannels() const { return m_channels; }
+
+  /// @brief Set related stream bits per sample.
+  void SetBitsPerSample(int bits_per_sample) { m_bits_per_sample = bits_per_sample; }
+
+  /// @brief Get related stream bits per sample.
+  int GetBitsPerSample() const { return m_bits_per_sample; }
+
+  /// @brief Set related stream track length.
+  void SetTrackLength(int track_length) { m_track_length = track_length; }
+
+  /// @brief Get related stream track length.
+  int GetTrackLength() const { return m_track_length; }
+
+  /// @brief Set additional information comment (if present).
+  void SetComment(const std::string& comment) { m_comment = comment; }
+
+  /// @brief Get additional information comment (if present).
+  const std::string& GetComment() const { return m_comment; }
+
+  ///@}
+
+private:
+  friend class CInstanceAudioEncoder;
+
+  AudioEncoderInfoTag(const struct KODI_ADDON_AUDIOENCODER_INFO_TAG* tag)
+  {
+    if (tag->title)
+      m_title = tag->title;
+    if (tag->artist)
+      m_artist = tag->artist;
+    if (tag->album)
+      m_album = tag->album;
+    if (tag->album_artist)
+      m_album_artist = tag->album_artist;
+    if (tag->media_type)
+      m_media_type = tag->media_type;
+    if (tag->genre)
+      m_genre = tag->genre;
+    m_duration = tag->duration;
+    m_track = tag->track;
+    m_disc = tag->disc;
+    if (tag->artist)
+      m_disc_subtitle = tag->artist;
+    m_disc_total = tag->disc_total;
+    if (tag->release_date)
+      m_release_date = tag->release_date;
+    if (tag->lyrics)
+      m_lyrics = tag->lyrics;
+    m_samplerate = tag->samplerate;
+    m_channels = tag->channels;
+    m_bits_per_sample = tag->bits_per_sample;
+    m_track_length = tag->track_length;
+    if (tag->comment)
+      m_comment = tag->comment;
+  }
+
+  std::string m_title;
+  std::string m_artist;
+  std::string m_album;
+  std::string m_album_artist;
+  std::string m_media_type;
+  std::string m_genre;
+  int m_duration{0};
+  int m_track{0};
+  int m_disc{0};
+  std::string m_disc_subtitle;
+  int m_disc_total{0};
+  std::string m_release_date;
+  std::string m_lyrics;
+  int m_samplerate{0};
+  int m_channels{0};
+  int m_bits_per_sample{0};
+  int m_track_length{0};
+  std::string m_comment;
+};
+///@}
+//------------------------------------------------------------------------------
 
 //==============================================================================
 /// @addtogroup cpp_kodi_addon_audioencoder
@@ -53,17 +284,13 @@ namespace addon
 /// ~~~~~~~~~~~~~{.cpp}
 /// #include <kodi/addon-instance/AudioEncoder.h>
 ///
-/// class ATTRIBUTE_HIDDEN CMyAudioEncoder : public kodi::addon::CInstanceAudioEncoder
+/// class ATTR_DLL_LOCAL CMyAudioEncoder : public kodi::addon::CInstanceAudioEncoder
 /// {
 /// public:
 ///   CMyAudioEncoder(KODI_HANDLE instance, const std::string& kodiVersion)
 ///     : kodi::addon::CInstanceAudioEncoder(instance, kodiVersion)
 ///
-///   bool Init(const std::string& filename, unsigned int filecache,
-///             int& channels, int& samplerate,
-///             int& bitspersample, int64_t& totaltime,
-///             int& bitrate, AEDataFormat& format,
-///             std::vector<AEChannel>& channellist) override;
+///   bool Start(const kodi::addon::AudioEncoderInfoTag& tag) override;
 ///   int Encode(int numBytesRead, const uint8_t* pbtStream) override;
 ///   bool Finish() override; // Optional
 /// };
@@ -74,27 +301,16 @@ namespace addon
 ///   ...
 /// }
 ///
-/// bool CMyAudioEncoder::Start(int inChannels,
-///                             int inRate,
-///                             int inBits,
-///                             const std::string& title,
-///                             const std::string& artist,
-///                             const std::string& albumartist,
-///                             const std::string& album,
-///                             const std::string& year,
-///                             const std::string& track,
-///                             const std::string& genre,
-///                             const std::string& comment,
-///                             int trackLength)
+/// bool CMyAudioEncoder::Start(const kodi::addon::AudioEncoderInfoTag& tag)
 /// {
 ///   ...
 ///   return true;
 /// }
 ///
-/// int CMyAudioEncoder::Encode(int numBytesRead, const uint8_t* pbtStream)
+/// ssize_t CMyAudioEncoder::Encode(const uint8_t* pbtStream, size_t numBytesRead)
 /// {
 ///   uint8_t* data = nullptr;
-///   int length = 0;
+///   size_t length = 0;
 ///   ...
 ///   kodi::addon::CInstanceAudioEncoder::Write(data, length);
 ///
@@ -148,7 +364,7 @@ namespace addon
 /// The destruction of the example class `CMyAudioEncoder` is called from
 /// Kodi's header. Manually deleting the add-on instance is not required.
 ///
-class ATTRIBUTE_HIDDEN CInstanceAudioEncoder : public IAddonInstance
+class ATTR_DLL_LOCAL CInstanceAudioEncoder : public IAddonInstance
 {
 public:
   //============================================================================
@@ -208,42 +424,21 @@ public:
   /// @ingroup cpp_kodi_addon_audioencoder
   /// @brief Start encoder (**required**)
   ///
-  /// @param[in] inChannels Number of channels
-  /// @param[in] inRate Sample rate of input data
-  /// @param[in] inBits Bits per sample in input data
-  /// @param[in] title The title of the song
-  /// @param[in] artist The artist of the song
-  /// @param[in] albumartist The albumartist of the song
-  /// @param[in] year The year of the song
-  /// @param[in] track The track number of the song
-  /// @param[in] genre The genre of the song
-  /// @param[in] comment A comment to attach to the song
-  /// @param[in] trackLength Total track length in seconds
+  /// @param[in] tag Information tag about
   /// @return True on success, false on failure.
   ///
-  virtual bool Start(int inChannels,
-                     int inRate,
-                     int inBits,
-                     const std::string& title,
-                     const std::string& artist,
-                     const std::string& albumartist,
-                     const std::string& album,
-                     const std::string& year,
-                     const std::string& track,
-                     const std::string& genre,
-                     const std::string& comment,
-                     int trackLength) = 0;
+  virtual bool Start(const kodi::addon::AudioEncoderInfoTag& tag) = 0;
   //----------------------------------------------------------------------------
 
   //============================================================================
   /// @ingroup cpp_kodi_addon_audioencoder
   /// @brief Encode a chunk of audio (**required**)
   ///
-  /// @param[in] numBytesRead Number of bytes in input buffer
   /// @param[in] pbtStream The input buffer
+  /// @param[in] numBytesRead Number of bytes in input buffer
   /// @return Number of bytes consumed
   ///
-  virtual int Encode(int numBytesRead, const uint8_t* pbtStream) = 0;
+  virtual ssize_t Encode(const uint8_t* pbtStream, size_t numBytesRead) = 0;
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -265,7 +460,7 @@ public:
   ///
   /// @remarks Only called from addon itself.
   ///
-  int Write(const uint8_t* data, int length)
+  ssize_t Write(const uint8_t* data, size_t length)
   {
     return m_instanceData->toKodi->write(m_instanceData->toKodi->kodiInstance, data, length);
   }
@@ -292,7 +487,7 @@ public:
   ///
   /// @remarks Only called from addon itself.
   ///
-  int64_t Seek(int64_t position, int whence = SEEK_SET)
+  ssize_t Seek(ssize_t position, int whence = SEEK_SET)
   {
     return m_instanceData->toKodi->seek(m_instanceData->toKodi->kodiInstance, position, whence);
   }
@@ -307,41 +502,27 @@ private:
 
     m_instanceData = static_cast<AddonInstance_AudioEncoder*>(instance);
     m_instanceData->toAddon->addonInstance = this;
-    m_instanceData->toAddon->start = ADDON_Start;
-    m_instanceData->toAddon->encode = ADDON_Encode;
-    m_instanceData->toAddon->finish = ADDON_Finish;
+    m_instanceData->toAddon->start = ADDON_start;
+    m_instanceData->toAddon->encode = ADDON_encode;
+    m_instanceData->toAddon->finish = ADDON_finish;
   }
 
-  inline static bool ADDON_Start(const AddonInstance_AudioEncoder* instance,
-                                 int inChannels,
-                                 int inRate,
-                                 int inBits,
-                                 const char* title,
-                                 const char* artist,
-                                 const char* albumartist,
-                                 const char* album,
-                                 const char* year,
-                                 const char* track,
-                                 const char* genre,
-                                 const char* comment,
-                                 int trackLength)
+  inline static bool ADDON_start(const KODI_ADDON_AUDIOENCODER_HDL hdl,
+                                 const struct KODI_ADDON_AUDIOENCODER_INFO_TAG* tag)
   {
-    return static_cast<CInstanceAudioEncoder*>(instance->toAddon->addonInstance)
-        ->Start(inChannels, inRate, inBits, title, artist, albumartist, album, year, track, genre,
-                comment, trackLength);
+    return static_cast<CInstanceAudioEncoder*>(hdl)->Start(tag);
   }
 
-  inline static int ADDON_Encode(const AddonInstance_AudioEncoder* instance,
-                                 int numBytesRead,
-                                 const uint8_t* pbtStream)
+  inline static ssize_t ADDON_encode(const KODI_ADDON_AUDIOENCODER_HDL hdl,
+                                     const uint8_t* pbtStream,
+                                     size_t num_bytes_read)
   {
-    return static_cast<CInstanceAudioEncoder*>(instance->toAddon->addonInstance)
-        ->Encode(numBytesRead, pbtStream);
+    return static_cast<CInstanceAudioEncoder*>(hdl)->Encode(pbtStream, num_bytes_read);
   }
 
-  inline static bool ADDON_Finish(const AddonInstance_AudioEncoder* instance)
+  inline static bool ADDON_finish(const KODI_ADDON_AUDIOENCODER_HDL hdl)
   {
-    return static_cast<CInstanceAudioEncoder*>(instance->toAddon->addonInstance)->Finish();
+    return static_cast<CInstanceAudioEncoder*>(hdl)->Finish();
   }
 
   AddonInstance_AudioEncoder* m_instanceData;

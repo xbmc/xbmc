@@ -36,7 +36,7 @@ static int Eject(const std::vector<std::string>& params)
 static int RipCD(const std::vector<std::string>& params)
 {
 #ifdef HAS_CDDA_RIPPER
-  CCDDARipper::GetInstance().RipCD();
+  KODI::CDRIP::CCDDARipper::GetInstance().RipCD();
 #endif
 
   return 0;

@@ -699,7 +699,7 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
 #ifdef HAS_CDDA_RIPPER
   case CONTEXT_BUTTON_CANCEL_RIP_CD:
-    CCDDARipper::GetInstance().CancelJobs();
+    KODI::CDRIP::CCDDARipper::GetInstance().CancelJobs();
     return true;
 #endif
 
@@ -739,7 +739,7 @@ void CGUIWindowMusicBase::OnRipCD()
     if (!g_application.CurrentFileItem().IsCDDA())
     {
 #ifdef HAS_CDDA_RIPPER
-      CCDDARipper::GetInstance().RipCD();
+      KODI::CDRIP::CCDDARipper::GetInstance().RipCD();
 #endif
     }
     else
@@ -755,7 +755,7 @@ void CGUIWindowMusicBase::OnRipTrack(int iItem)
     {
 #ifdef HAS_CDDA_RIPPER
       CFileItemPtr item = m_vecItems->Get(iItem);
-      CCDDARipper::GetInstance().RipTrack(item.get());
+      KODI::CDRIP::CCDDARipper::GetInstance().RipTrack(item.get());
 #endif
     }
     else

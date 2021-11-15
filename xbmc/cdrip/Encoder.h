@@ -9,52 +9,55 @@
 #pragma once
 
 #include "IEncoder.h"
+#include "filesystem/File.h"
 
 #include <memory>
 #include <stdint.h>
 #include <stdio.h>
 #include <string>
 
-#define WRITEBUFFER_SIZE 131072 // 128k buffer
+namespace KODI
+{
+namespace CDRIP
+{
 
-namespace XFILE { class CFile; }
+constexpr size_t WRITEBUFFER_SIZE = 131072; // 128k buffer
 
-class CEncoder
+class CEncoder : public IEncoder
 {
 public:
-  explicit CEncoder(std::shared_ptr<IEncoder> encoder);
+  CEncoder() = default;
   virtual ~CEncoder();
-  virtual bool Init(const char* strFile, int iInChannels, int iInRate, int iInBits);
-  virtual int Encode(int nNumBytesRead, uint8_t* pbtStream);
-  virtual bool CloseEncode();
 
-  void SetComment(const std::string& str) { m_impl->m_strComment = str; }
-  void SetArtist(const std::string& str) { m_impl->m_strArtist = str; }
-  void SetTitle(const std::string& str) { m_impl->m_strTitle = str; }
-  void SetAlbum(const std::string& str) { m_impl->m_strAlbum = str; }
-  void SetAlbumArtist(const std::string& str) { m_impl->m_strAlbumArtist = str; }
-  void SetGenre(const std::string& str) { m_impl->m_strGenre = str; }
-  void SetTrack(const std::string& str) { m_impl->m_strTrack = str; }
-  void SetTrackLength(int length) { m_impl->m_iTrackLength = length; }
-  void SetYear(const std::string& str) { m_impl->m_strYear = str; }
+  bool EncoderInit(const std::string& strFile, int iInChannels, int iInRate, int iInBits);
+  ssize_t EncoderEncode(uint8_t* pbtStream, size_t nNumBytesRead);
+  bool EncoderClose();
 
-  bool FileCreate(const char* filename);
-  bool FileClose();
-  int FileWrite(const void *pBuffer, uint32_t iBytes);
-  int64_t FileSeek(int64_t iFilePosition, int iWhence = SEEK_SET);
+  void SetComment(const std::string& str) { m_strComment = str; }
+  void SetArtist(const std::string& str) { m_strArtist = str; }
+  void SetTitle(const std::string& str) { m_strTitle = str; }
+  void SetAlbum(const std::string& str) { m_strAlbum = str; }
+  void SetAlbumArtist(const std::string& str) { m_strAlbumArtist = str; }
+  void SetGenre(const std::string& str) { m_strGenre = str; }
+  void SetTrack(const std::string& str) { m_strTrack = str; }
+  void SetTrackLength(int length) { m_iTrackLength = length; }
+  void SetYear(const std::string& str) { m_strYear = str; }
+
 protected:
+  virtual ssize_t Write(const uint8_t* pBuffer, size_t iBytes);
+  virtual ssize_t Seek(ssize_t iFilePosition, int iWhence);
 
-  int WriteStream(const void *pBuffer, uint32_t iBytes);
-  int FlushStream();
+private:
+  bool FileCreate(const std::string& filename);
+  bool FileClose();
+  ssize_t FileWrite(const uint8_t* pBuffer, size_t iBytes);
+  ssize_t FlushStream();
 
-  static int WriteCallback(void *opaque, const uint8_t *data, int size);
-  static int64_t SeekCallback(void *opaque, int64_t offset, int whence);
-
-  std::shared_ptr<IEncoder> m_impl;
-
-  XFILE::CFile *m_file;
+  std::unique_ptr<XFILE::CFile> m_file;
 
   uint8_t m_btWriteBuffer[WRITEBUFFER_SIZE]; // 128k buffer for writing to disc
-  uint32_t m_dwWriteBufferPointer;
+  size_t m_dwWriteBufferPointer{0};
 };
 
+} /* namespace CDRIP */
+} /* namespace KODI */

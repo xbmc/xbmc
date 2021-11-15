@@ -1,9 +1,11 @@
 set(SOURCES CDDARipJob.cpp
             Encoder.cpp
+            EncoderAddon.cpp
             EncoderFFmpeg.cpp)
 
 set(HEADERS CDDARipJob.h
             Encoder.h
+            EncoderAddon.h
             EncoderFFmpeg.h
             IEncoder.h)
 

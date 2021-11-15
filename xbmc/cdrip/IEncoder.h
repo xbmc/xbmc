@@ -8,17 +8,22 @@
 
 #pragma once
 
-#include "addons/kodi-dev-kit/include/kodi/addon-instance/AudioEncoder.h"
-
 #include <stdint.h>
 #include <string>
+
+#include "PlatformDefs.h" // for ssize_t
+
+namespace KODI
+{
+namespace CDRIP
+{
 
 class IEncoder
 {
 public:
   virtual ~IEncoder() = default;
-  virtual bool Init(AddonToKodiFuncTable_AudioEncoder& callbacks) = 0;
-  virtual int Encode(int nNumBytesRead, uint8_t* pbtStream) = 0;
+  virtual bool Init() = 0;
+  virtual ssize_t Encode(uint8_t* pbtStream, size_t nNumBytesRead) = 0;
   virtual bool Close() = 0;
 
   // tag info
@@ -37,3 +42,5 @@ public:
   int m_iInBitsPerSample = 0;
 };
 
+} /* namespace CDRIP */
+} /* namespace KODI */
