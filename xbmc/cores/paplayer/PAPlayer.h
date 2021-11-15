@@ -10,6 +10,7 @@
 
 #include "AudioDecoder.h"
 #include "FileItem.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/AudioEngine/Interfaces/IAudioCallback.h"
 #include "cores/IPlayer.h"
 #include "threads/CriticalSection.h"
@@ -102,7 +103,7 @@ private:
     int m_seekNextAtFrame;               /* the FF/RR sample to seek at */
     int m_seekFrame;                     /* the exact position to seek too, -1 for none */
 
-    IAEStream* m_stream;                 /* the playback stream */
+    IAE::StreamPtr m_stream; /* the playback stream */
     float m_volume;                      /* the initial volume level to set the stream to on creation */
 
     bool m_isSlaved;                     /* true if the stream has been slaved to another */

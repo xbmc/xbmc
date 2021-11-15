@@ -246,12 +246,12 @@ public:
   bool IsMuted() override;
 
   /* returns a new stream for data in the specified format */
-  IAEStream *MakeStream(AEAudioFormat &audioFormat, unsigned int options = 0, IAEClockCallback *clock = NULL) override;
-  bool FreeStream(IAEStream *stream, bool finish) override;
+  IAE::StreamPtr MakeStream(AEAudioFormat& audioFormat,
+                            unsigned int options = 0,
+                            IAEClockCallback* clock = NULL) override;
 
   /* returns a new sound object */
-  IAESound *MakeSound(const std::string& file) override;
-  void FreeSound(IAESound *sound) override;
+  IAE::SoundPtr MakeSound(const std::string& file) override;
 
   void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough) override;
   bool SupportsRaw(AEAudioFormat &format) override;
@@ -272,6 +272,10 @@ public:
   void OnLostDisplay() override;
   void OnResetDisplay() override;
   void OnAppFocusChange(bool focus) override;
+
+private:
+  bool FreeStream(IAEStream* stream, bool finish) override;
+  void FreeSound(IAESound* sound) override;
 
 protected:
   void PlaySound(CActiveAESound *sound);

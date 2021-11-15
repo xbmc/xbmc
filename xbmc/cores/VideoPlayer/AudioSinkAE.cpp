@@ -34,8 +34,6 @@ CAudioSinkAE::CAudioSinkAE(CDVDClock *clock) : m_pClock(clock)
 CAudioSinkAE::~CAudioSinkAE()
 {
   CSingleLock lock (m_critSection);
-  if (m_pAudioStream)
-    CServiceBroker::GetActiveAE()->FreeStream(m_pAudioStream, true);
 }
 
 bool CAudioSinkAE::Create(const DVDAudioFrame &audioframe, AVCodecID codec, bool needresampler)
@@ -73,7 +71,10 @@ void CAudioSinkAE::Destroy(bool finish)
   CSingleLock lock (m_critSection);
 
   if (m_pAudioStream)
-    CServiceBroker::GetActiveAE()->FreeStream(m_pAudioStream, finish);
+  {
+    m_pAudioStream.get_deleter().setFinish(finish);
+    m_pAudioStream.reset();
+  }
 
   m_pAudioStream = NULL;
   m_sampleRate = 0;

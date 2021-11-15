@@ -8,12 +8,14 @@
 
 #pragma once
 
-#include "threads/CriticalSection.h"
-#include "PlatformDefs.h"
-
-#include "cores/AudioEngine/Utils/AEChannelInfo.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/AudioEngine/Interfaces/AEStream.h"
+#include "cores/AudioEngine/Utils/AEChannelInfo.h"
+#include "threads/CriticalSection.h"
+
 #include <atomic>
+
+#include "PlatformDefs.h"
 
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -62,8 +64,7 @@ public:
   CAEStreamInfo::DataType GetPassthroughStreamType(AVCodecID codecId, int samplerate, int profile);
 
 protected:
-
-  IAEStream *m_pAudioStream;
+  IAE::StreamPtr m_pAudioStream;
   double m_playingPts;
   double m_timeOfPts;
   double m_syncError;
