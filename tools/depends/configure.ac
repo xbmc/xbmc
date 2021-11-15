@@ -184,8 +184,9 @@ case $build in
     host_includes+=" -isysroot $native_sdk_path"
 
     CC_FOR_BUILD=[`$use_xcrun --find clang`]
-    CXX_FOR_BUILD=[`$use_xcrun --find clang++`]
+    use_build_toolchain=[`$CC_FOR_BUILD --version | grep InstalledDir | awk '{ print $2}'`]
 
+    # Android NDK currently only x86_64 prebuilts - Arctic Fox 2020.3.1
     android_toolchain_name="darwin-x86_64"
 
     if test "x$prefix" = "xNONE"; then
@@ -205,14 +206,13 @@ fi
 AC_PATH_PROG([RANLIB_FOR_BUILD], [ranlib], ranlib, $PATH_FOR_BUILD)
 AC_PATH_PROG([LD_FOR_BUILD], [ld], ld, $PATH_FOR_BUILD)
 AC_PATH_PROG([AR_FOR_BUILD], [ar], ar, $PATH_FOR_BUILD)
-AC_PATH_PROG([READELF_FOR_BUILD], [readelf], readelf, $PATH_FOR_BUILD)
+AC_PATH_PROG([READELF_FOR_BUILD], [readelf],, $PATH_FOR_BUILD)
 AC_PATH_PROG([STRIP_FOR_BUILD], [strip], strip, $PATH_FOR_BUILD)
 AC_PATH_PROG([AS_FOR_BUILD], [as], as, $PATH_FOR_BUILD)
 AC_PATH_PROG([NM_FOR_BUILD], [nm], nm, $PATH_FOR_BUILD)
 AC_PATH_PROG([OBJDUMP_FOR_BUILD], [objdump], objdump, $PATH_FOR_BUILD)
-AC_PATH_PROG([CC_FOR_BUILD],[clang gcc llvm-gcc $platform_cc], gcc, $PATH_FOR_BUILD)
-AC_PATH_PROG([CXX_FOR_BUILD],[clang++ g++ llvm-g++ $platform_cxx], g++, $PATH_FOR_BUILD)
-
+AC_PATH_PROG([CC_FOR_BUILD],[clang gcc llvm-gcc], gcc, $PATH_FOR_BUILD)
+AC_PATH_PROG([CXX_FOR_BUILD],[clang++ g++ llvm-g++], g++, $PATH_FOR_BUILD)
 
 platform_cc=gcc
 platform_cxx=g++
@@ -222,6 +222,9 @@ case $host in
     use_toolchain="${use_toolchain:-$use_ndk_path/toolchains/llvm/prebuilt/$android_toolchain_name}"
     platform_cc=$use_host$use_ndk_api-clang
     platform_cxx=$use_host$use_ndk_api-clang++
+
+    platform_tool_prefix=llvm-
+
     case $host in
       arm*-*linux-android*)
         platform_cc=armv7a-linux-androideabi$use_ndk_api-clang
@@ -230,23 +233,24 @@ case $host in
   ;;
   *darwin*)
     CC=[`$use_xcrun --find clang`]
-    CXX=[`$use_xcrun --find clang++`]
+    platform_cxx=clang++
+    use_toolchain=[`$CC --version | grep InstalledDir | awk '{ print $2}'`]
 esac
 
-if test -n $use_build_toolchain; then
+if test -n $use_toolchain; then
   PATH_FOR_HOST=$use_toolchain:$use_toolchain/usr/bin:$use_toolchain/bin:$PATH
 else
   PATH_FOR_HOST=$PATH
 fi
 
-AC_PATH_TOOL([RANLIB], [ranlib],, $PATH_FOR_HOST)
-AC_PATH_TOOL([LD], [ld],, $PATH_FOR_HOST)
-AC_PATH_TOOL([AR], [ar],, $PATH_FOR_HOST)
-AC_PATH_TOOL([READELF], [readelf],, $PATH_FOR_HOST)
-AC_PATH_TOOL([STRIP], [strip],, $PATH_FOR_HOST)
-AC_PATH_TOOL([AS], [as],, $PATH_FOR_HOST)
-AC_PATH_TOOL([NM], [nm],, $PATH_FOR_HOST)
-AC_PATH_TOOL([OBJDUMP], [objdump],, $PATH_FOR_HOST)
+AC_PATH_TOOL([RANLIB], [${platform_tool_prefix}ranlib],, $PATH_FOR_HOST)
+AC_PATH_TOOL([LD], [${platform_tool_prefix}ld],, $PATH_FOR_HOST)
+AC_PATH_TOOL([AR], [${platform_tool_prefix}ar],, $PATH_FOR_HOST)
+AC_PATH_TOOL([READELF], [${platform_tool_prefix}readelf],, $PATH_FOR_HOST)
+AC_PATH_TOOL([STRIP], [${platform_tool_prefix}strip],, $PATH_FOR_HOST)
+AC_PATH_TOOL([AS], [${platform_tool_prefix}as],, $PATH_FOR_HOST)
+AC_PATH_TOOL([NM], [${platform_tool_prefix}nm],, $PATH_FOR_HOST)
+AC_PATH_TOOL([OBJDUMP], [${platform_tool_prefix}objdump],, $PATH_FOR_HOST)
 AC_PATH_TOOL([CC],[$platform_cc],,$PATH_FOR_HOST)
 AC_PATH_TOOL([CXX],[$platform_cxx],,$PATH_FOR_HOST)
 
