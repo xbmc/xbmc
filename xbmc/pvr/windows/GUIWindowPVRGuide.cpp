@@ -55,13 +55,10 @@ CGUIWindowPVRGuideBase::CGUIWindowPVRGuideBase(bool bRadio, int id, const std::s
 {
   m_bRefreshTimelineItems = false;
   m_bSyncRefreshTimelineItems = false;
-  CServiceBroker::GetPVRManager().EpgContainer().Events().Subscribe(static_cast<CGUIWindowPVRBase*>(this), &CGUIWindowPVRBase::Notify);
 }
 
 CGUIWindowPVRGuideBase::~CGUIWindowPVRGuideBase()
 {
-  CServiceBroker::GetPVRManager().EpgContainer().Events().Unsubscribe(this);
-
   m_bRefreshTimelineItems = false;
   m_bSyncRefreshTimelineItems = false;
   StopRefreshTimelineItemsThread();

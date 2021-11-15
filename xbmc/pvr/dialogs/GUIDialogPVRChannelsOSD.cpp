@@ -44,7 +44,6 @@ CGUIDialogPVRChannelsOSD::CGUIDialogPVRChannelsOSD()
 CGUIDialogPVRChannelsOSD::~CGUIDialogPVRChannelsOSD()
 {
   CServiceBroker::GetPVRManager().Events().Unsubscribe(this);
-  CServiceBroker::GetPVRManager().EpgContainer().Events().Unsubscribe(this);
 }
 
 bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
@@ -166,7 +165,6 @@ void CGUIDialogPVRChannelsOSD::Update()
 {
   CPVRManager& pvrMgr = CServiceBroker::GetPVRManager();
   pvrMgr.Events().Subscribe(this, &CGUIDialogPVRChannelsOSD::Notify);
-  pvrMgr.EpgContainer().Events().Subscribe(this, &CGUIDialogPVRChannelsOSD::Notify);
 
   const std::shared_ptr<CPVRChannel> channel = pvrMgr.PlaybackState()->GetPlayingChannel();
   if (channel)

@@ -188,8 +188,8 @@ void CPVRManagerJobQueue::ExecutePendingJobs()
   }
 }
 
-CPVRManager::CPVRManager() :
-    CThread("PVRManager"),
+CPVRManager::CPVRManager()
+  : CThread("PVRManager"),
     m_providers(new CPVRProviders),
     m_channelGroups(new CPVRChannelGroupsContainer),
     m_recordings(new CPVRRecordings),
@@ -197,16 +197,14 @@ CPVRManager::CPVRManager() :
     m_addons(new CPVRClients),
     m_guiInfo(new CPVRGUIInfo),
     m_guiActions(new CPVRGUIActions),
+    m_epgContainer(m_events),
     m_pendingUpdates(new CPVRManagerJobQueue),
     m_database(new CPVRDatabase),
     m_parentalTimer(new CStopWatch),
     m_playbackState(new CPVRPlaybackState),
-    m_settings({
-      CSettings::SETTING_PVRPOWERMANAGEMENT_ENABLED,
-      CSettings::SETTING_PVRPOWERMANAGEMENT_SETWAKEUPCMD,
-      CSettings::SETTING_PVRPARENTAL_ENABLED,
-      CSettings::SETTING_PVRPARENTAL_DURATION
-    })
+    m_settings({CSettings::SETTING_PVRPOWERMANAGEMENT_ENABLED,
+                CSettings::SETTING_PVRPOWERMANAGEMENT_SETWAKEUPCMD,
+                CSettings::SETTING_PVRPARENTAL_ENABLED, CSettings::SETTING_PVRPARENTAL_DURATION})
 {
   CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
   m_actionListener.Init(*this);

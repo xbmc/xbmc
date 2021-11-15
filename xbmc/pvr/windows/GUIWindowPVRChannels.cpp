@@ -45,13 +45,9 @@ CGUIWindowPVRChannelsBase::CGUIWindowPVRChannelsBase(bool bRadio, int id, const 
   CGUIWindowPVRBase(bRadio, id, xmlFile),
   m_bShowHiddenChannels(false)
 {
-  CServiceBroker::GetPVRManager().EpgContainer().Events().Subscribe(static_cast<CGUIWindowPVRBase*>(this), &CGUIWindowPVRBase::Notify);
 }
 
-CGUIWindowPVRChannelsBase::~CGUIWindowPVRChannelsBase()
-{
-  CServiceBroker::GetPVRManager().EpgContainer().Events().Unsubscribe(this);
-}
+CGUIWindowPVRChannelsBase::~CGUIWindowPVRChannelsBase() = default;
 
 void CGUIWindowPVRChannelsBase::GetContextButtons(int itemNumber, CContextButtons& buttons)
 {
