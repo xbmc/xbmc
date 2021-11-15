@@ -38,6 +38,7 @@ public:
     m_textureid = 0;
     m_enableTextAlign = false;
     m_overlayContainerFlushable = true;
+    m_setForcedMargins = false;
   }
 
   CDVDOverlay(const CDVDOverlay& src)
@@ -51,6 +52,7 @@ public:
     m_textureid = 0;
     m_enableTextAlign = src.m_enableTextAlign;
     m_overlayContainerFlushable = src.m_overlayContainerFlushable;
+    m_setForcedMargins = src.m_setForcedMargins;
   }
 
   virtual ~CDVDOverlay()
@@ -118,6 +120,15 @@ public:
    */
   bool IsOverlayContainerFlushable() { return m_overlayContainerFlushable; }
 
+  /*
+   * \brief Specify if the margins are handled by the subtitle codec/parser.
+   */
+  void SetForcedMargins(bool setForcedMargins) { m_setForcedMargins = setForcedMargins; }
+
+  /*
+   * \brief Return true if the margins are handled by the subtitle codec/parser.
+   */
+  bool IsForcedMargins() { return m_setForcedMargins; }
 
   double iPTSStartTime;
   double iPTSStopTime;
@@ -129,6 +140,7 @@ protected:
   DVDOverlayType m_type;
   bool m_enableTextAlign;
   bool m_overlayContainerFlushable;
+  bool m_setForcedMargins;
 
 private:
   std::atomic_int m_references;

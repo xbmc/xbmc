@@ -8,6 +8,7 @@
 
 #include "SubtitleParserWebVTT.h"
 
+#include "DVDCodecs/Overlay/DVDOverlay.h"
 #include "SubtitlesStyle.h"
 #include "cores/VideoPlayer/DVDSubtitles/webvtt/WebVTTHandler.h"
 #include "utils/StringUtils.h"
@@ -72,7 +73,9 @@ bool CSubtitleParserWebVTT::Open(CDVDStreamInfo& hints)
     AddSubtitle(subData.text.c_str(), subData.startTime, subData.stopTime, &opts);
   }
 
-  m_collection.Add(CreateOverlay());
+  CDVDOverlay* overlay = CreateOverlay();
+  overlay->SetForcedMargins(true);
+  m_collection.Add(overlay);
 
   return true;
 }
