@@ -57,11 +57,11 @@ void CGUITextureGL::Begin(UTILS::COLOR::Color color)
   {
     if (m_col[0] == 255 && m_col[1] == 255 && m_col[2] == 255 && m_col[3] == 255 )
     {
-      m_renderSystem->EnableShader(SM_MULTI);
+      m_renderSystem->EnableShader(ShaderMethodGL::SM_MULTI);
     }
     else
     {
-      m_renderSystem->EnableShader(SM_MULTI_BLENDCOLOR);
+      m_renderSystem->EnableShader(ShaderMethodGL::SM_MULTI_BLENDCOLOR);
     }
 
     hasAlpha |= m_diffuse.m_textures[0]->HasAlpha();
@@ -72,11 +72,11 @@ void CGUITextureGL::Begin(UTILS::COLOR::Color color)
   {
     if (m_col[0] == 255 && m_col[1] == 255 && m_col[2] == 255 && m_col[3] == 255)
     {
-      m_renderSystem->EnableShader(SM_TEXTURE_NOBLEND);
+      m_renderSystem->EnableShader(ShaderMethodGL::SM_TEXTURE_NOBLEND);
     }
     else
     {
-      m_renderSystem->EnableShader(SM_TEXTURE);
+      m_renderSystem->EnableShader(ShaderMethodGL::SM_TEXTURE);
     }
   }
 
@@ -274,9 +274,9 @@ void CGUITexture::DrawQuad(const CRect& rect,
   }vertex[4];
 
   if (texture)
-    renderSystem->EnableShader(SM_TEXTURE);
+    renderSystem->EnableShader(ShaderMethodGL::SM_TEXTURE);
   else
-    renderSystem->EnableShader(SM_DEFAULT);
+    renderSystem->EnableShader(ShaderMethodGL::SM_DEFAULT);
 
   GLint posLoc = renderSystem->ShaderGetPos();
   GLint tex0Loc = renderSystem->ShaderGetCoord0();

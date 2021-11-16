@@ -845,11 +845,11 @@ void CSlideShowPic::Render(float* x, float* y, CTexture* pTexture, UTILS::COLOR:
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
 
-    renderSystem->EnableShader(SM_TEXTURE);
+    renderSystem->EnableShader(ShaderMethodGL::SM_TEXTURE);
   }
   else
   {
-    renderSystem->EnableShader(SM_DEFAULT);
+    renderSystem->EnableShader(ShaderMethodGL::SM_DEFAULT);
   }
 
   float u1 = 0, u2 = 1, v1 = 0, v2 = 1;
@@ -945,11 +945,11 @@ void CSlideShowPic::Render(float* x, float* y, CTexture* pTexture, UTILS::COLOR:
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);          // Turn Blending On
 
-    renderSystem->EnableGUIShader(SM_TEXTURE);
+    renderSystem->EnableGUIShader(ShaderMethodGLES::SM_TEXTURE);
   }
   else
   {
-    renderSystem->EnableGUIShader(SM_DEFAULT);
+    renderSystem->EnableGUIShader(ShaderMethodGLES::SM_DEFAULT);
   }
 
   float u1 = 0, u2 = 1, v1 = 0, v2 = 1;

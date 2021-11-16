@@ -65,11 +65,11 @@ void CGUITextureGLES::Begin(UTILS::COLOR::Color color)
   {
     if (m_col[0] == 255 && m_col[1] == 255 && m_col[2] == 255 && m_col[3] == 255 )
     {
-      m_renderSystem->EnableGUIShader(SM_MULTI);
+      m_renderSystem->EnableGUIShader(ShaderMethodGLES::SM_MULTI);
     }
     else
     {
-      m_renderSystem->EnableGUIShader(SM_MULTI_BLENDCOLOR);
+      m_renderSystem->EnableGUIShader(ShaderMethodGLES::SM_MULTI_BLENDCOLOR);
     }
 
     hasAlpha |= m_diffuse.m_textures[0]->HasAlpha();
@@ -81,11 +81,11 @@ void CGUITextureGLES::Begin(UTILS::COLOR::Color color)
   {
     if (m_col[0] == 255 && m_col[1] == 255 && m_col[2] == 255 && m_col[3] == 255)
     {
-      m_renderSystem->EnableGUIShader(SM_TEXTURE_NOBLEND);
+      m_renderSystem->EnableGUIShader(ShaderMethodGLES::SM_TEXTURE_NOBLEND);
     }
     else
     {
-      m_renderSystem->EnableGUIShader(SM_TEXTURE);
+      m_renderSystem->EnableGUIShader(ShaderMethodGLES::SM_TEXTURE);
     }
   }
 
@@ -249,9 +249,9 @@ void CGUITexture::DrawQuad(const CRect& rect,
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
 
   if (texture)
-    renderSystem->EnableGUIShader(SM_TEXTURE);
+    renderSystem->EnableGUIShader(ShaderMethodGLES::SM_TEXTURE);
   else
-    renderSystem->EnableGUIShader(SM_DEFAULT);
+    renderSystem->EnableGUIShader(ShaderMethodGLES::SM_DEFAULT);
 
   GLint posLoc   = renderSystem->GUIShaderGetPos();
   GLint tex0Loc  = renderSystem->GUIShaderGetCoord0();

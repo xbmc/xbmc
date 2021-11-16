@@ -12,12 +12,12 @@
 #include "rendering/RenderSystem.h"
 #include "utils/ColorUtils.h"
 
-#include <array>
+#include <map>
 #include <memory>
 
 #include "system_gl.h"
 
-enum ESHADERMETHOD
+enum class ShaderMethodGL
 {
   SM_DEFAULT = 0,
   SM_TEXTURE,
@@ -25,8 +25,7 @@ enum ESHADERMETHOD
   SM_MULTI,
   SM_FONTS,
   SM_TEXTURE_NOBLEND,
-  SM_MULTI_BLENDCOLOR,
-  SM_MAX
+  SM_MULTI_BLENDCOLOR
 };
 
 class CRenderSystemGL : public CRenderSystemBase
@@ -74,7 +73,7 @@ public:
   void ResetGLErrors();
 
   // shaders
-  void EnableShader(ESHADERMETHOD method);
+  void EnableShader(ShaderMethodGL method);
   void DisableShader();
   GLint ShaderGetPos();
   GLint ShaderGetCol();
@@ -101,7 +100,7 @@ protected:
 
   GLint m_viewPort[4];
 
-  std::array<std::unique_ptr<CGLShader>, SM_MAX> m_pShader;
-  ESHADERMETHOD m_method = SM_DEFAULT;
+  std::map<ShaderMethodGL, std::unique_ptr<CGLShader>> m_pShader;
+  ShaderMethodGL m_method = ShaderMethodGL::SM_DEFAULT;
   GLuint m_vertexArray = GL_NONE;
 };

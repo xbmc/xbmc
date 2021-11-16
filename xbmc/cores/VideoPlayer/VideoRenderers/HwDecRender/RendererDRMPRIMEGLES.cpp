@@ -219,7 +219,7 @@ void CRendererDRMPRIMEGLES::DrawBlackBars()
   if (!renderSystem)
     return;
 
-  renderSystem->EnableGUIShader(SM_DEFAULT);
+  renderSystem->EnableGUIShader(ShaderMethodGLES::SM_DEFAULT);
   GLint posLoc = renderSystem->GUIShaderGetPos();
   GLint uniCol = renderSystem->GUIShaderGetUniCol();
 
@@ -311,7 +311,7 @@ void CRendererDRMPRIMEGLES::Render(unsigned int flags, int index)
 
   glBindTexture(GL_TEXTURE_EXTERNAL_OES, buf.texture.GetTexture());
 
-  renderSystem->EnableGUIShader(SM_TEXTURE_RGBA_OES);
+  renderSystem->EnableGUIShader(ShaderMethodGLES::SM_TEXTURE_RGBA_OES);
 
   GLubyte idx[4] = {0, 1, 3, 2}; // Determines order of triangle strip
   GLuint vertexVBO;
