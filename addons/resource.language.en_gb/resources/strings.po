@@ -6614,7 +6614,12 @@ msgctxt "#13297"
 msgid "Not connected. Check network settings."
 msgstr ""
 
-#empty string with id 13298
+#. Label of the button used to disconnect a game controller from the emulated game port
+#: xbmc/games/controllers/windows/ControllerSelect.cpp
+#: xbmc/games/controllers/windows/GUIPortList.cpp
+msgctxt "#13298"
+msgid "Disconnected"
+msgstr ""
 
 msgctxt "#13299"
 msgid "Target temperature"
@@ -17843,7 +17848,37 @@ msgctxt "#35109"
 msgid "Keypad"
 msgstr ""
 
-#empty strings from id 35110 to 35149
+#. Label for the button that opens the port setup dialog
+#: addons/skin.estuary/xml/Custom_1101_SettingsList.xml
+msgctxt "#35110"
+msgid "Ports"
+msgstr ""
+
+#. Title of the window for setting up controller ports used by the game
+#: xbmc/games/controllers/windows/GUIPortWindow.cpp
+msgctxt "#35111"
+msgid "Port Setup"
+msgstr ""
+
+#. Label of a port with a numeric identifier. {0:s} is the port ID, e.g. "1" for "Port 1"
+#: xbmc/games/controllers/windows/GUIPortList.cpp
+msgctxt "#35112"
+msgid "Port {0:s}"
+msgstr ""
+
+#. Title of the dialog for selecting a game controller
+#: xbmc/games/controllers/windows/ControllerSelect.cpp
+msgctxt "#35113"
+msgid "Select a Controller"
+msgstr ""
+
+#. Title of the error dialog when changing a controller port fails
+#: xbmc/games/controllers/windows/GUIPowerList.cpp
+msgctxt "#35114"
+msgid "Failed to change controller"
+msgstr ""
+
+#empty strings from id 35115 to 35149
 
 #. Name of keyboard category in the settings category window
 #: system/settings/settings.xml

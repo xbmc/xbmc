@@ -127,7 +127,7 @@
 					<defaultcontrol always="true">14101</defaultcontrol>
 					<visible>String.IsEqual(window(home).Property(settingslist_content),games)</visible>
 					<width>700</width>
-					<height>430</height>
+					<height>500</height>
 					<itemgap>0</itemgap>
 					<onup>14100</onup>
 					<ondown>14100</ondown>
@@ -167,6 +167,13 @@
 						<include>DialogSettingButton</include>
 						<label>$LOCALIZE[35234]</label>
 						<onclick>ActivateWindow(GameControllers)</onclick>
+					</control>
+					<control type="button" id="14107">
+						<description>Controller port configuration</description>
+						<width>700</width>
+						<include>DialogSettingButton</include>
+						<label>$LOCALIZE[35110]</label>
+						<onclick>ActivateWindow(GamePorts)</onclick>
 					</control>
 					<control type="button" id="14105">
 						<description>Advanced settings</description>
