@@ -21076,7 +21076,7 @@ msgstr ""
 #. Description of setting with label #729 "Enable SSL"
 #: system/settings/settings.xml
 msgctxt "#36899"
-msgid "Enables SSL encryption in the webserver. Certificate special://userdata/server.key and Key special://userdata/server.pem must be created manually"
+msgid "Enables SSL encryption in the webserver. Certificate special://userdata/server.pem and Key special://userdata/server.key must be created manually"
 msgstr ""
 
 #: xbmc/media/MediaType.cpp
