@@ -1229,6 +1229,52 @@ int CPVREpgDatabase::GetLastEPGId()
 
 /********** Saved searches methods **********/
 
+std::shared_ptr<CPVREpgSearchFilter> CPVREpgDatabase::CreateEpgSearchFilter(
+    bool bRadio, const std::unique_ptr<dbiplus::Dataset>& pDS)
+{
+  if (!pDS->eof())
+  {
+    const auto newSearch = std::make_shared<CPVREpgSearchFilter>(bRadio);
+
+    newSearch->SetDatabaseId(m_pDS->fv("idSearch").get_asInt());
+    newSearch->SetTitle(m_pDS->fv("sTitle").get_asString());
+
+    const std::string lastExec = m_pDS->fv("sLastExecutedDateTime").get_asString();
+    if (!lastExec.empty())
+      newSearch->SetLastExecutedDateTime(CDateTime::FromDBDateTime(lastExec));
+
+    newSearch->SetSearchTerm(m_pDS->fv("sSearchTerm").get_asString());
+    newSearch->SetSearchInDescription(m_pDS->fv("bSearchInDescription").get_asBool());
+    newSearch->SetGenreType(m_pDS->fv("iGenreType").get_asInt());
+
+    const std::string start = m_pDS->fv("sStartDateTime").get_asString();
+    if (!start.empty())
+      newSearch->SetStartDateTime(CDateTime::FromDBDateTime(start));
+
+    const std::string end = m_pDS->fv("sEndDateTime").get_asString();
+    if (!end.empty())
+      newSearch->SetEndDateTime(CDateTime::FromDBDateTime(end));
+
+    newSearch->SetCaseSensitive(m_pDS->fv("bIsCaseSensitive").get_asBool());
+    newSearch->SetMinimumDuration(m_pDS->fv("iMinimumDuration").get_asInt());
+    newSearch->SetMaximumDuration(m_pDS->fv("iMaximumDuration").get_asInt());
+    newSearch->SetClientID(m_pDS->fv("iClientId").get_asInt());
+    newSearch->SetChannelUID(m_pDS->fv("iChannelUid").get_asInt());
+    newSearch->SetIncludeUnknownGenres(m_pDS->fv("bIncludeUnknownGenres").get_asBool());
+    newSearch->SetRemoveDuplicates(m_pDS->fv("bRemoveDuplicates").get_asBool());
+    newSearch->SetIgnoreFinishedBroadcasts(m_pDS->fv("bIgnoreFinishedBroadcasts").get_asBool());
+    newSearch->SetIgnoreFutureBroadcasts(m_pDS->fv("bIgnoreFutureBroadcasts").get_asBool());
+    newSearch->SetFreeToAirOnly(m_pDS->fv("bFreeToAirOnly").get_asBool());
+    newSearch->SetIgnorePresentTimers(m_pDS->fv("bIgnorePresentTimers").get_asBool());
+    newSearch->SetIgnorePresentRecordings(m_pDS->fv("bIgnorePresentRecordings").get_asBool());
+
+    newSearch->SetChanged(false);
+
+    return newSearch;
+  }
+  return {};
+}
+
 std::vector<std::shared_ptr<CPVREpgSearchFilter>> CPVREpgDatabase::GetSavedSearches(bool bRadio)
 {
   std::vector<std::shared_ptr<CPVREpgSearchFilter>> result;
@@ -1242,44 +1288,7 @@ std::vector<std::shared_ptr<CPVREpgSearchFilter>> CPVREpgDatabase::GetSavedSearc
     {
       while (!m_pDS->eof())
       {
-        const auto newSearch = std::make_shared<CPVREpgSearchFilter>(bRadio);
-
-        newSearch->SetDatabaseId(m_pDS->fv("idSearch").get_asInt());
-        newSearch->SetTitle(m_pDS->fv("sTitle").get_asString());
-
-        const std::string lastExec = m_pDS->fv("sLastExecutedDateTime").get_asString();
-        if (!lastExec.empty())
-          newSearch->SetLastExecutedDateTime(CDateTime::FromDBDateTime(lastExec));
-
-        newSearch->SetSearchTerm(m_pDS->fv("sSearchTerm").get_asString());
-        newSearch->SetSearchInDescription(m_pDS->fv("bSearchInDescription").get_asBool());
-        newSearch->SetGenreType(m_pDS->fv("iGenreType").get_asInt());
-
-        const std::string start = m_pDS->fv("sStartDateTime").get_asString();
-        if (!start.empty())
-          newSearch->SetStartDateTime(CDateTime::FromDBDateTime(start));
-
-        const std::string end = m_pDS->fv("sEndDateTime").get_asString();
-        if (!end.empty())
-          newSearch->SetEndDateTime(CDateTime::FromDBDateTime(end));
-
-        newSearch->SetCaseSensitive(m_pDS->fv("bIsCaseSensitive").get_asBool());
-        newSearch->SetMinimumDuration(m_pDS->fv("iMinimumDuration").get_asInt());
-        newSearch->SetMaximumDuration(m_pDS->fv("iMaximumDuration").get_asInt());
-        newSearch->SetClientID(m_pDS->fv("iClientId").get_asInt());
-        newSearch->SetChannelUID(m_pDS->fv("iChannelUid").get_asInt());
-        newSearch->SetIncludeUnknownGenres(m_pDS->fv("bIncludeUnknownGenres").get_asBool());
-        newSearch->SetRemoveDuplicates(m_pDS->fv("bRemoveDuplicates").get_asBool());
-        newSearch->SetIgnoreFinishedBroadcasts(m_pDS->fv("bIgnoreFinishedBroadcasts").get_asBool());
-        newSearch->SetIgnoreFutureBroadcasts(m_pDS->fv("bIgnoreFutureBroadcasts").get_asBool());
-        newSearch->SetFreeToAirOnly(m_pDS->fv("bFreeToAirOnly").get_asBool());
-        newSearch->SetIgnorePresentTimers(m_pDS->fv("bIgnorePresentTimers").get_asBool());
-        newSearch->SetIgnorePresentRecordings(m_pDS->fv("bIgnorePresentRecordings").get_asBool());
-
-        newSearch->SetChanged(false);
-
-        result.emplace_back(newSearch);
-
+        result.emplace_back(CreateEpgSearchFilter(bRadio, m_pDS));
         m_pDS->next();
       }
       m_pDS->close();
@@ -1290,6 +1299,29 @@ std::vector<std::shared_ptr<CPVREpgSearchFilter>> CPVREpgDatabase::GetSavedSearc
     }
   }
   return result;
+}
+
+std::shared_ptr<CPVREpgSearchFilter> CPVREpgDatabase::GetSavedSearchById(bool bRadio, int iId)
+{
+  CSingleLock lock(m_critSection);
+  const std::string strQuery =
+      PrepareSQL("SELECT * FROM savedsearches WHERE bIsRadio = %u AND idSearch = %u;", bRadio, iId);
+
+  if (ResultQuery(strQuery))
+  {
+    try
+    {
+      const std::shared_ptr<CPVREpgSearchFilter> filter = CreateEpgSearchFilter(bRadio, m_pDS);
+      m_pDS->close();
+      return filter;
+    }
+    catch (...)
+    {
+      CLog::LogF(LOGERROR, "Could not load EPG search filter with id ({}) from the database", iId);
+    }
+  }
+
+  return {};
 }
 
 bool CPVREpgDatabase::Persist(CPVREpgSearchFilter& epgSearch)

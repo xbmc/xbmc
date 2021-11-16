@@ -971,6 +971,18 @@ std::vector<std::shared_ptr<CPVREpgSearchFilter>> CPVREpgContainer::GetSavedSear
   return database->GetSavedSearches(bRadio);
 }
 
+std::shared_ptr<CPVREpgSearchFilter> CPVREpgContainer::GetSavedSearchById(bool bRadio, int iId)
+{
+  const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
+  if (!database)
+  {
+    CLog::LogF(LOGERROR, "No EPG database");
+    return {};
+  }
+
+  return database->GetSavedSearchById(bRadio, iId);
+}
+
 bool CPVREpgContainer::PersistSavedSearch(CPVREpgSearchFilter& search)
 {
   const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();

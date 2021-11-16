@@ -221,7 +221,7 @@ bool CPVRGUIDirectory::GetDirectory(CFileItemList& results) const
   {
     if (path.IsSavedSearchesRoot())
       return GetSavedSearchesDirectory(path.IsRadio(), results);
-    else if (path.IsSearchRoot())
+    else
       return true; // handled by search window
   }
 
