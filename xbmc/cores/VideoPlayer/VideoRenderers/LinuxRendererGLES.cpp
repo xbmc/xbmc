@@ -31,6 +31,7 @@
 #include "windowing/WinSystem.h"
 
 using namespace Shaders;
+using namespace Shaders::GLES;
 
 CLinuxRendererGLES::CLinuxRendererGLES()
 {
@@ -898,7 +899,7 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
   glActiveTexture(GL_TEXTURE0);
   VerifyGLState();
 
-  Shaders::BaseYUV2RGBGLSLShader *pYUVShader;
+  Shaders::GLES::BaseYUV2RGBGLSLShader* pYUVShader;
   if (field != FIELD_FULL)
   {
     pYUVShader = m_pYUVBobShader;
@@ -1052,7 +1053,7 @@ void CLinuxRendererGLES::RenderToFBO(int index, int field)
   glActiveTexture(GL_TEXTURE0);
   VerifyGLState();
 
-  Shaders::BaseYUV2RGBGLSLShader *pYUVShader = m_pYUVProgShader;
+  Shaders::GLES::BaseYUV2RGBGLSLShader* pYUVShader = m_pYUVProgShader;
   // make sure the yuv shader is loaded and ready to go
   if (!pYUVShader || (!pYUVShader->OK()))
   {

@@ -32,8 +32,14 @@ class CRenderCapture;
 class CRenderSystemGL;
 
 class CTexture;
-namespace Shaders { class BaseYUV2RGBGLSLShader; }
-namespace Shaders { class BaseVideoFilterShader; }
+namespace Shaders
+{
+namespace GL
+{
+class BaseYUV2RGBGLSLShader;
+class BaseVideoFilterShader;
+}
+} // namespace Shaders
 
 struct DRAWRECT
 {
@@ -213,8 +219,8 @@ protected:
   // field index 0 is full image, 1 is odd scanlines, 2 is even scanlines
   CPictureBuffer m_buffers[NUM_BUFFERS];
 
-  Shaders::BaseYUV2RGBGLSLShader *m_pYUVShader = nullptr;
-  Shaders::BaseVideoFilterShader *m_pVideoFilterShader = nullptr;
+  Shaders::GL::BaseYUV2RGBGLSLShader* m_pYUVShader = nullptr;
+  Shaders::GL::BaseVideoFilterShader* m_pVideoFilterShader = nullptr;
   ESCALINGMETHOD m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
   ESCALINGMETHOD m_scalingMethodGui = VS_SCALINGMETHOD_MAX;
   bool m_useDithering;

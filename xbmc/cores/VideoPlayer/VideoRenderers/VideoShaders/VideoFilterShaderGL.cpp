@@ -20,7 +20,7 @@
 
 #define TEXTARGET GL_TEXTURE_1D
 
-using namespace Shaders;
+using namespace Shaders::GL;
 
 //////////////////////////////////////////////////////////////////////
 // BaseVideoFilterShader - base class for video filter shaders
