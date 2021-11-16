@@ -42,16 +42,6 @@ CLinuxRendererGLES::CLinuxRendererGLES()
 
   m_renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
 
-#if HAS_GLES >= 3
-  unsigned int verMajor, verMinor;
-  m_renderSystem->GetRenderVersion(verMajor, verMinor);
-
-  if (verMajor >= 3)
-  {
-    m_pixelStoreKey = GL_UNPACK_ROW_LENGTH;
-  }
-#endif
-
 #if defined (GL_UNPACK_ROW_LENGTH_EXT)
   if (m_renderSystem->IsExtSupported("GL_EXT_unpack_subimage"))
   {

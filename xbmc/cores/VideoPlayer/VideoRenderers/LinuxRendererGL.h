@@ -41,14 +41,6 @@ class BaseVideoFilterShader;
 }
 } // namespace Shaders
 
-struct DRAWRECT
-{
-  float left;
-  float top;
-  float right;
-  float bottom;
-};
-
 enum RenderMethod
 {
   RENDER_GLSL=0x01,
@@ -61,10 +53,6 @@ enum RenderQuality
   RQ_SINGLEPASS,
   RQ_MULTIPASS,
 };
-
-#define PLANE_Y 0
-#define PLANE_U 1
-#define PLANE_V 2
 
 #define FIELD_FULL 0
 #define FIELD_TOP 1
