@@ -23,7 +23,7 @@ namespace PIPEWIRE
 {
 
 CPipewireNode::CPipewireNode(pw_registry* registry, uint32_t id, const char* type)
-  : CPipewireProxy(registry, id, type, PW_VERSION_NODE)
+  : CPipewireProxy(registry, id, type, PW_VERSION_NODE), m_nodeEvents(CreateNodeEvents())
 {
 }
 
@@ -190,6 +190,16 @@ void CPipewireNode::Param(void* userdata,
   node->Parse(SPA_POD_TYPE(param), SPA_POD_BODY(param), SPA_POD_BODY_SIZE(param));
 
   loop->Signal(false);
+}
+
+pw_node_events CPipewireNode::CreateNodeEvents()
+{
+  pw_node_events nodeEvents = {};
+  nodeEvents.version = PW_VERSION_NODE_EVENTS;
+  nodeEvents.info = Info;
+  nodeEvents.param = Param;
+
+  return nodeEvents;
 }
 
 } // namespace PIPEWIRE

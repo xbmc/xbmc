@@ -39,11 +39,9 @@ private:
                             const struct spa_dict* props);
   static void OnGlobalRemoved(void* userdata, uint32_t id);
 
-  const pw_registry_events m_registryEvents = {
-      .version = PW_VERSION_REGISTRY_EVENTS,
-      .global = OnGlobalAdded,
-      .global_remove = OnGlobalRemoved,
-  };
+  static pw_registry_events CreateRegistryEvents();
+
+  const pw_registry_events m_registryEvents;
 
   spa_hook m_registryListener;
   struct PipewireRegistryDeleter
