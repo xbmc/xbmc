@@ -24,7 +24,7 @@ else
 endif
 
 ifeq ($(OS),darwin_embedded)
-  EXCLUDED_DEPENDS = libcec libusb
+  EXCLUDED_DEPENDS = libcec libusb googletest
   ifeq ($(TARGET_PLATFORM),appletvos)
     DEPENDS += boblight
     EXCLUDED_DEPENDS += libshairplay libplist
@@ -43,7 +43,7 @@ ifeq ($(OS),osx)
 endif
 
 ifeq ($(OS),android)
-  EXCLUDED_DEPENDS = libcec libusb
+  EXCLUDED_DEPENDS = libcec libusb googletest
   DEPENDS += dummy-libxbmc libuuid libandroidjni libzip
   PYMODULE_DEPS = dummy-libxbmc
   LIBUUID = libuuid
