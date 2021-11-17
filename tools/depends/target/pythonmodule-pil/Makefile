@@ -33,6 +33,11 @@ PYTHONPATH=$(PILPATH):$(PYTHON_SITE_PKG)
 CFLAGS+= -target arm64-apple-darwin
 endif
 
+SED_FLAG=-i
+ifeq (darwin, $(findstring darwin, $(BUILD)))
+  SED_FLAG=-i ''
+endif
+
 ifeq (darwin, $(findstring darwin, $(HOST)))
 #ensure that only our target ldflags are passed to the python build
 LDSHARED=$(CC) -bundle -undefined dynamic_lookup
@@ -64,9 +69,10 @@ endif
 ifeq ($(OS),android)
 	cd $(PILPATHLIB) && unzip -o ../Pillow-*.egg
 	cd $(PILPATHLIB)/PIL && \
-          sed -i -e 's/import sys/import os, sys /' \
-                 -e '/__file__/ s/_imaging/lib_imaging/g' \
-                 -e 's/pkg_resources.resource_filename(__name__,/os.path.join(os.environ["KODI_ANDROID_LIBS"], /'  _imaging*.py
+          sed $(SED_FLAG) -e 's/import sys/import os, sys /' \
+                          -e '/__file__/ s/_imaging/lib_imaging/g' \
+                          -e 's/pkg_resources.resource_filename(__name__,/os.path.join(os.environ["KODI_ANDROID_LIBS"], /' \
+                              _imaging*.py
 	cd $(PILPATH) && rm -rf Pillow-*.egg
 else ifeq ($(OS),darwin_embedded)
 	cd $(PILPATHLIB) && unzip -o ../Pillow-*.egg
