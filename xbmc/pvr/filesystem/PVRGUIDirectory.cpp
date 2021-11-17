@@ -217,12 +217,14 @@ bool CPVRGUIDirectory::GetDirectory(CFileItemList& results) const
   }
 
   const CPVREpgSearchPath path(m_url.Get());
-  if (path.IsValid() && CServiceBroker::GetPVRManager().IsStarted())
+  if (path.IsValid())
   {
-    if (path.IsSavedSearchesRoot())
-      return GetSavedSearchesDirectory(path.IsRadio(), results);
-    else
-      return true; // handled by search window
+    if (CServiceBroker::GetPVRManager().IsStarted())
+    {
+      if (path.IsSavedSearchesRoot())
+        return GetSavedSearchesDirectory(path.IsRadio(), results);
+    }
+    return true;
   }
 
   return false;
