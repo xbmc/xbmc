@@ -55,6 +55,7 @@
             android:configChanges="orientation|keyboard|keyboardHidden|navigation|touchscreen|screenLayout|screenSize|colorMode"
             android:finishOnTaskLaunch="true"
             android:launchMode="singleInstance"
+            android:exported="true"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/AppTheme">
             <intent-filter>
@@ -100,6 +101,7 @@
             android:finishOnTaskLaunch="true"
             android:label="@string/app_name"
             android:launchMode="singleInstance"
+            android:exported="true"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/AppTheme">
 
@@ -109,7 +111,8 @@
                 android:value="@APP_NAME_LC@" />
         </activity>
 
-        <receiver android:name=".XBMCBroadcastReceiver">
+        <receiver android:name=".XBMCBroadcastReceiver"
+                  android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.DREAMING_STOPPED" />
                 <action android:name="android.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED" />
@@ -132,7 +135,8 @@
             android:authorities="@APP_PACKAGE@.ytdl"
             android:exported="true" />
 
-        <activity android:name=".XBMCSearchableActivity" >
+        <activity android:name=".XBMCSearchableActivity" 
+                  android:exported="true">
              <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
 
