@@ -27,6 +27,8 @@ configure_file(${CMAKE_SOURCE_DIR}/tools/android/packaging/Makefile.in
                ${CMAKE_BINARY_DIR}/tools/android/packaging/Makefile @ONLY)
 configure_file(${CMAKE_SOURCE_DIR}/tools/android/packaging/apksign
                ${CMAKE_BINARY_DIR}/tools/android/packaging/apksign COPYONLY)
+configure_file(${CMAKE_SOURCE_DIR}/tools/android/packaging/gradle.properties
+               ${CMAKE_BINARY_DIR}/tools/android/packaging/gradle.properties COPYONLY)
 configure_file(${CMAKE_SOURCE_DIR}/tools/android/packaging/make_symbols.sh
                ${CMAKE_BINARY_DIR}/tools/android/packaging/make_symbols.sh COPYONLY)
 configure_file(${CMAKE_SOURCE_DIR}/tools/android/packaging/build.gradle
