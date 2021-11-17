@@ -350,7 +350,7 @@ else()
   endif()
 endif()
 add_dependencies(${APP_NAME_LC} ${APP_NAME_LC}-libraries export-files pack-skins)
-whole_archive(_MAIN_LIBRARIES ${core_DEPENDS})
+whole_archive(_MAIN_LIBRARIES ${FSTRCMP_LIBRARY} ${core_DEPENDS})
 target_link_libraries(${APP_NAME_LC} ${_MAIN_LIBRARIES} lib${APP_NAME_LC} ${DEPLIBS})
 unset(_MAIN_LIBRARIES)
 
