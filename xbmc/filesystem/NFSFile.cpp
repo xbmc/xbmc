@@ -327,7 +327,7 @@ void CNfsConnection::Deinit()
     m_pNfsContext = NULL;
   }
   clearMembers();
-  // clear any keep alive timouts on deinit
+  // clear any keep alive timeouts on deinit
   m_KeepAliveTimeouts.clear();
 }
 
@@ -335,7 +335,7 @@ void CNfsConnection::Deinit()
 void CNfsConnection::CheckIfIdle()
 {
   /* We check if there are open connections. This is done without a lock to not halt the mainthread. It should be thread safe as
-   worst case scenario is that m_OpenConnections could read 0 and then changed to 1 if this happens it will enter the if wich will lead to another check, wich is locked.  */
+   worst case scenario is that m_OpenConnections could read 0 and then changed to 1 if this happens it will enter the if which will lead to another check, which is locked.  */
   if (m_OpenConnections == 0 && m_pNfsContext != NULL)
   { /* I've set the the maximum IDLE time to be 1 min and 30 sec. */
     CSingleLock lock(*this);
@@ -394,7 +394,7 @@ void CNfsConnection::resetKeepAlive(const std::string& _exportPath, struct nfsfh
     m_lastAccessedTime = std::chrono::steady_clock::now();
   }
 
-  //adds new keys - refreshs existing ones
+  //adds new keys - refreshes existing ones
   m_KeepAliveTimeouts[_pFileHandle].exportPath = _exportPath;
   m_KeepAliveTimeouts[_pFileHandle].refreshCounter = KEEP_ALIVE_TIMEOUT;
 }
@@ -406,7 +406,7 @@ void CNfsConnection::keepAlive(const std::string& _exportPath, struct nfsfh* _pF
 {
   uint64_t offset = 0;
   char buffer[32];
-  // this also refreshs the last accessed time for the context
+  // this also refreshes the last accessed time for the context
   // true forces a cachehit regardless the context is timedout
   // on this call we are sure its not timedout even if the last accessed
   // time suggests it.
@@ -473,7 +473,7 @@ void CNfsConnection::AddIdleConnection()
 {
   CSingleLock lock(*this);
   m_OpenConnections--;
-  /* If we close a file we reset the idle timer so that we don't have any wierd behaviours if a user
+  /* If we close a file we reset the idle timer so that we don't have any weird behaviours if a user
    leaves the movie paused for a long while and then press stop */
   m_IdleTimeout = 180;
 }

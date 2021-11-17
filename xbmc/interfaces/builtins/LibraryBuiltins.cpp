@@ -238,7 +238,7 @@ Avoiding breaking change to original ExportLibrary routine parameters
 *           params[1] = export type "singlefile", "separate", or "library".
 *           params[2] = path of destination folder.
 *           params[3,...] = "unscraped" to include unscraped items
-*           params[3,...] = "overwrite" to overwrite exitsing files.
+*           params[3,...] = "overwrite" to overwrite existing files.
 *           params[3,...] = "artwork" to include images such as thumbs and fanart.
 *           params[3,...] = "skipnfo" to not include nfo files (just art).
 *           params[3,...] = "ablums" to include albums.
@@ -378,7 +378,7 @@ static int SearchVideoLibrary(const std::vector<std::string>& params)
 ///     @param[in] exportFiletype        "singlefile"\, "separate" or "library".
 ///     @param[in] path                  Path to destination folder.
 ///     @param[in] unscraped             Add "unscraped" to include unscraped items.
-///     @param[in] overwrite             Add "overwrite" to overwrite exitsing files.
+///     @param[in] overwrite             Add "overwrite" to overwrite existing files.
 ///     @param[in] artwork               Add "artwork" to include images such as thumbs and fanart.
 ///     @param[in] skipnfo               Add "skipnfo" to not include nfo files(just art).
 ///     @param[in] albums                Add "ablums" to include albums.

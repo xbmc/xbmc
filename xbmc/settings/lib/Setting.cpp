@@ -1430,7 +1430,7 @@ bool CSettingString::Deserialize(const TiXmlNode *node, bool update /* = false *
     // get allowempty (needs to be parsed before parsing the default value)
     XMLUtils::GetBoolean(constraints, SETTING_XML_ELM_ALLOWEMPTY, m_allowEmpty);
 
-    // Values other than those in options contraints allowed to be added
+    // Values other than those in options constraints allowed to be added
     XMLUtils::GetBoolean(constraints, SETTING_XML_ELM_ALLOWNEWOPTION, m_allowNewOption);
 
     // get the entries

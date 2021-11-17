@@ -143,14 +143,14 @@ public:
 
   static double AlbumRelevance(const std::string& strAlbumTemp1, const std::string& strAlbum1, const std::string& strArtistTemp1, const std::string& strArtist1);
   static bool MakeShortenPath(std::string StrInput, std::string& StrOutput, size_t iTextMaxLength);
-  /*! \brief Checks wether the supplied path supports Write file operations (e.g. Rename, Delete, ...)
+  /*! \brief Checks whether the supplied path supports Write file operations (e.g. Rename, Delete, ...)
 
    \param strPath the path to be checked
 
    \return true if Write file operations are supported, false otherwise
    */
   static bool SupportsWriteFileOperations(const std::string& strPath);
-  /*! \brief Checks wether the supplied path supports Read file operations (e.g. Copy, ...)
+  /*! \brief Checks whether the supplied path supports Read file operations (e.g. Copy, ...)
 
    \param strPath the path to be checked
 

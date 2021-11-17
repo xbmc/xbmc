@@ -440,7 +440,7 @@ bool CContext::GetFormatAndConfig(AVCodecContext* avctx, D3D11_VIDEO_DECODER_DES
       HRESULT res = m_pD3D11Device->CheckVideoDecoderFormat(mode.guid, render_targets_dxgi[j], &format_supported);
       if (FAILED(res) || !format_supported)
       {
-        CLog::LogFunction(LOGINFO, "DXVA", "Ouput format {} is not supported by '{}'",
+        CLog::LogFunction(LOGINFO, "DXVA", "Output format {} is not supported by '{}'",
                           render_targets_dxgi[j], mode.name);
         continue;
       }

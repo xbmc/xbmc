@@ -849,7 +849,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
           album artist as the artist with Musicbrainz ID 89ad4ac3-39f7-470e-963a-56509c546377.
           If adding this artist for the first time then the name will be set to either the primary
           artist read from tags when 3a, or the localized value for "various artists" when not 3a.
-          This means that tag values are no longer translated into the current langauge.
+          This means that tag values are no longer translated into the current language.
           */
           album.artistCredits.emplace_back(various, VARIOUSARTISTS_MBID);
         else
@@ -1347,7 +1347,7 @@ CMusicInfoScanner::UpdateDatabaseAlbumInfo(CAlbum& album,
 
   // Check album art.
   // Fill any gaps with local art files or use first available from scraped URL list (when it has
-  // been successfuly scraped) as controlled by whitelist. Do this even when no info added
+  // been successfully scraped) as controlled by whitelist. Do this even when no info added
   // (cancelled, not found or error), there may be new local art files.
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
           CSettings::SETTING_MUSICLIBRARY_ARTWORKLEVEL) !=
@@ -1417,7 +1417,7 @@ CMusicInfoScanner::UpdateDatabaseArtistInfo(CArtist& artist,
 
   // Check artist art.
   // Fill any gaps with local art files, or use first available from scraped
-  // list (when it has been successfuly scraped). Do this even when no info
+  // list (when it has been successfully scraped). Do this even when no info
   // added (cancelled, not found or error), there may be new local art files.
   // Get individual artist subfolder within the Artist Information Folder
   m_musicDatabase.GetArtistPath(artist, artist.strPath);
@@ -2169,7 +2169,7 @@ bool CMusicInfoScanner::AddLocalArtwork(std::map<std::string, std::string>& art,
                   CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
                       CSettings::SETTING_MUSICLIBRARY_USEALLLOCALART));
 
-  // Not useall and empty whiltelist means no extra art is picked up from either place
+  // Not useall and empty whitelist means no extra art is picked up from either place
   if (!bUseAll && whitelistarttypes.empty())
     return false;
 
@@ -2260,7 +2260,7 @@ bool CMusicInfoScanner::AddRemoteArtwork(std::map<std::string, std::string>& art
                   CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
                       CSettings::SETTING_MUSICLIBRARY_USEALLREMOTEART));
 
-  // not useall and empty whiltelist means no extra art is picked up from either place
+  // not useall and empty whitelist means no extra art is picked up from either place
   if (!bUseAll && whitelistarttypes.empty())
     return false;
 

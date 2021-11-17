@@ -151,7 +151,7 @@ namespace PVR
 
     /*!
      * @brief Get the timer rule for a given timer
-     * @param item containg an item to query the timer rule for. item must be a timer or an epg tag.
+     * @param item containing an item to query the timer rule for. item must be a timer or an epg tag.
      * @return The timer rule item, or nullptr if none was found.
      */
     std::shared_ptr<CFileItem> GetTimerRule(const std::shared_ptr<CFileItem>& item) const;
@@ -403,7 +403,7 @@ namespace PVR
     /*!
      * @brief Get a channel group member for the given channel, either from the currently active
      * group or if not found there, from the 'all channels' group.
-     * @param cahnnel the channel.
+     * @param channel the channel.
      * @return the group member or nullptr if not found.
      */
     std::shared_ptr<CPVRChannelGroupMember> GetChannelGroupMember(
@@ -575,7 +575,7 @@ namespace PVR
     /*!
      * @brief Start playback of the given item.
      * @param bFullscreen start playback fullscreen or not.
-     * @param epgProps propeties to be used instead of calling to the client if supplied.
+     * @param epgProps properties to be used instead of calling to the client if supplied.
      * @param item containing a channel or a recording.
      */
     void StartPlayback(CFileItem* item,

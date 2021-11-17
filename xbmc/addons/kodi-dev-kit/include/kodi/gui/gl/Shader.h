@@ -421,7 +421,7 @@ public:
   /// @ingroup cpp_kodi_gui_helpers_gl_CShaderProgram
   /// @brief To activate the shader and use it on the GPU.
   ///
-  /// @return true if enable was successfull done
+  /// @return true if enable was successfully done
   ///
   ///
   /// @note During this call, the @ref OnEnabled stored in the child is also
@@ -480,7 +480,7 @@ public:
   /// @ingroup cpp_kodi_gui_helpers_gl_CShaderProgram
   /// @brief Used to check if shader has been loaded before.
   ///
-  /// @return true if enable was successfull done
+  /// @return true if enable was successfully done
   ///
   /// @note The CompileAndLink call sets these values
   ///
@@ -534,7 +534,7 @@ public:
   /// @brief Optional function to exchange data between CPU and GPU while
   /// activating the shader
   ///
-  /// @return true if enable was successfull done
+  /// @return true if enable was successfully done
   ///
   virtual bool OnEnabled() { return true; }
   //--------------------------------------------------------------------------

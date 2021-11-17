@@ -217,10 +217,10 @@ void CVideoDatabase::CreateForeignLinkIndex(const char *table, const char *forei
 
 void CVideoDatabase::CreateAnalytics()
 {
-  /* indexes should be added on any columns that are used in in  */
+  /* indexes should be added on any columns that are used in     */
   /* a where or a join. primary key on a column is the same as a */
   /* unique index on that column, so there is no need to add any */
-  /* index if no other columns are refered                       */
+  /* index if no other columns are referred                      */
 
   /* order of indexes are important, for an index to be considered all  */
   /* columns up to the column in question have to have been specified   */
@@ -3347,7 +3347,7 @@ void CVideoDatabase::ClearBookMarkOfFile(const std::string& strFilenameAndPath, 
     if (nullptr == m_pDS)
       return;
 
-    /* a little bit uggly, we clear first bookmark that is within one second of given */
+    /* a little bit ugly, we clear first bookmark that is within one second of given */
     /* should be no problem since we never add bookmarks that are closer than that   */
     double mintime = bookmark.timeInSeconds - 0.5;
     double maxtime = bookmark.timeInSeconds + 0.5;
@@ -11077,7 +11077,7 @@ CDateTime CVideoDatabase::GetDateAdded(const std::string& filename,
 {
   if (!dateAdded.IsValid())
   {
-    // supress warnings if we have plugin source
+    // suppress warnings if we have plugin source
     if (!URIUtils::IsPlugin(filename))
     {
       const auto dateAddedSetting =

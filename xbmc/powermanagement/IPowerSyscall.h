@@ -27,7 +27,7 @@ class IPowerSyscall
 public:
   /**\brief Called by power manager to create platform power system adapter
   *
-  * This method used to create platfrom specified power system adapter
+  * This method used to create platform specified power system adapter
   */
   static IPowerSyscall* CreateInstance();
   static void RegisterPowerSyscall(CreatePowerSyscallFunc createFunc);

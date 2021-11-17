@@ -3,7 +3,7 @@
 # Pack a skin xbt file
 # Arguments:
 #   input  input directory to pack
-#   output ouput xbt file
+#   output output xbt file
 # On return:
 #   xbt is added to ${XBT_FILES}
 function(pack_xbt input output)

@@ -79,7 +79,7 @@ Start doxygen documentation for add-ons always with `///` and on Kodi itself wit
 - \verbatim /// @throws ERROR_TYPE                    ERROR_TEXT\endverbatim - If also exception becomes handled, can you use this for description.
 - \verbatim /// TEXT_FIELD\endverbatim - Add a much bigger text there if needed.
 - \verbatim /// ------------------\endverbatim - Use this to define a field line, e.g. if you add example add this always before, further must you make two empty lines before to prevent add of them on string before!
-- \verbatim /// ~~~~~~~~~~~~~ \endverbatim - Here can you define a code example which must start and end with the defination string, also can you define the code style with e.g. <b>{.py}</b> for Python or <b>{.cpp}</b> for CPP code on the first line of them.
+- \verbatim /// ~~~~~~~~~~~~~ \endverbatim - Here can you define a code example which must start and end with the definition string, also can you define the code style with e.g. <b>{.py}</b> for Python or <b>{.cpp}</b> for CPP code on the first line of them.
 
 @note Start all `VALUE_TEXT` at same character to hold a clean code on <c>*.cpp</c> or <c>*.h</c> files.\n\n
       The `#ifdef DOXYGEN_SHOULD_USE_THIS` on example above can be becomes used

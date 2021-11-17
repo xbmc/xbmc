@@ -141,7 +141,7 @@ void CGUIWindowHome::OnJobComplete(unsigned int jobID, bool success, CJob *job)
     CSingleLock lockMe(*this);
 
     // the job is finished.
-    // did one come in in the meantime?
+    // did one come in the meantime?
     flag = m_cumulativeUpdateFlag;
     m_recentlyAddedRunning = false; /// we're done.
   }

@@ -79,7 +79,7 @@
     dict[MPNowPlayingInfoPropertyPlaybackQueueCount] = total;
 
   /*! @Todo additional properties?
-   other properities can be set:
+   other properties can be set:
    MPMediaItemPropertyAlbumTrackCount
    MPMediaItemPropertyComposer
    MPMediaItemPropertyDiscCount

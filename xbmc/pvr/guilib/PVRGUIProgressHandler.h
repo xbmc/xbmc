@@ -42,7 +42,7 @@ namespace PVR
     void UpdateProgress(const std::string& strText, int iCurrent, int iMax);
 
     /*!
-     * @brief Destroy the progress dialog. This happens asynchrounous, instance must not be touched anymore after calling this method.
+     * @brief Destroy the progress dialog. This happens asynchronous, instance must not be touched anymore after calling this method.
      */
     void DestroyProgress();
 

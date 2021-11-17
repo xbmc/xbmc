@@ -4078,7 +4078,7 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
           // if we remember the old vobunits boundaries
           // when a packet comes out of demuxer that has
           // pts values outside that boundary, it belongs
-          // to the new vobunit, wich has new timestamps
+          // to the new vobunit, which has new timestamps
           UpdatePlayState(0);
       }
       break;

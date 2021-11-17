@@ -338,7 +338,7 @@ bool CWinLibraryFile::OpenIntenal(const CURL &url, FileAccessMode mode)
   catch (const winrt::hresult_error& ex)
   {
     std::string error = FromW(ex.message().c_str());
-    CLog::LogF(LOGERROR, "an exception occurs while openning a file '{}' (mode: {}) : {}",
+    CLog::LogF(LOGERROR, "an exception occurs while opening a file '{}' (mode: {}) : {}",
                url.GetRedacted(), mode == FileAccessMode::Read ? "r" : "rw", error);
     return false;
   }
@@ -379,7 +379,7 @@ StorageFile CWinLibraryFile::GetFile(const CURL& url)
     winrt::hstring token = GetTokenFromList(url, list);
     if (token.empty())
     {
-      // serach in MRU list
+      // search in MRU list
       list = StorageApplicationPermissions::MostRecentlyUsedList();
       token = GetTokenFromList(url, list);
     }

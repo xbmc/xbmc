@@ -27,7 +27,7 @@ extern "C"
     /// @brief Noop
     VC_NONE = 0,
 
-    /// @brief An error occured, no other messages will be returned
+    /// @brief An error occurred, no other messages will be returned
     VC_ERROR,
 
     /// @brief The decoder needs more data

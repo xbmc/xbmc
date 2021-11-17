@@ -84,7 +84,7 @@ protected:
   void SetExports(Export* exports) { m_pStaticExports = exports; }
 
 protected:
-  // Just pointers; dont' delete...
+  // Just pointers; don't delete...
   ImportDirTable_t *ImportDirTable;
   ExportDirTable_t *ExportDirTable;
   bool m_bTrack;

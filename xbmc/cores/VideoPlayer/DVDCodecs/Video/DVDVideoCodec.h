@@ -126,14 +126,14 @@ public:
 
   /**
    * Open the decoder, returns true on success
-   * Decoders not capable of runnung multiple instances should return false in case
+   * Decoders not capable of running multiple instances should return false in case
    * there is already a instance open
    */
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) = 0;
 
   /**
    * Reconfigure the decoder, returns true on success
-   * Decoders not capable of runnung multiple instances may be capable of reconfiguring
+   * Decoders not capable of running multiple instances may be capable of reconfiguring
    * the running instance. If Reconfigure returns false, player will close / open
    * the decoder
    */

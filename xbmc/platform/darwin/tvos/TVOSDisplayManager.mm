@@ -181,7 +181,7 @@
       // when isDisplayModeSwitchInProgress == NO, we have switched
       // and stablized. We might have switched to some other
       // rate than what we requested. setting preferredDisplayCriteria is
-      // only a request. For example, 30Hz might only be avaliable in HDR
+      // only a request. For example, 30Hz might only be available in HDR
       // and asking for 30Hz/SDR might result in 60Hz/SDR and
       // g_graphicsContext.SetFPS needs the actual refresh rate.
       refreshRate = [self getDisplayRate];

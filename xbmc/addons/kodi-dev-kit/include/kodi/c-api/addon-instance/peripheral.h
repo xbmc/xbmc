@@ -510,7 +510,7 @@ extern "C"
     /// @brief Type relative pointer
     JOYSTICK_FEATURE_TYPE_RELPOINTER,
 
-    /// @brief Type absolut pointer
+    /// @brief Type absolute pointer
     JOYSTICK_FEATURE_TYPE_ABSPOINTER,
 
     /// @brief Type wheel

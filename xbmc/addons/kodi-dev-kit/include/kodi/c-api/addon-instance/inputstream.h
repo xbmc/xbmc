@@ -272,7 +272,7 @@ extern "C"
     /// @brief **2 :** To set stream is unspecified
     INPUTSTREAM_COLORSPACE_UNSPECIFIED = 2,
 
-    /// @brief **2 :** To set stream is unkown
+    /// @brief **2 :** To set stream is unknown
     /// @note Same as @ref INPUTSTREAM_COLORSPACE_UNSPECIFIED
     INPUTSTREAM_COLORSPACE_UNKNOWN = INPUTSTREAM_COLORSPACE_UNSPECIFIED, // compatibility
 
@@ -398,7 +398,7 @@ extern "C"
   ///@{
   enum INPUTSTREAM_COLORRANGE
   {
-    /// @brief **0 :** To define as unkown
+    /// @brief **0 :** To define as unknown
     INPUTSTREAM_COLORRANGE_UNKNOWN = 0,
 
     /// @brief **1 :** The normal 219*2^(n-8) "MPEG" YUV ranges

@@ -119,7 +119,7 @@ bool CAutoSwitch::ByFiles(bool bHideParentDirItems, const CFileItemList& vecItem
   bool bThumbs = false;
   int iCompare = 0;
 
-  // parent directorys are visible, increment
+  // parent directories are visible, increment
   if (!bHideParentDirItems)
   {
     iCompare = 1;

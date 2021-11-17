@@ -39,7 +39,7 @@ uses a handful of custom modules to expose Kodi functionality to Python.
 | \ref python_xbmcgui    "xbmcgui"    | Offers classes and functions that manipulate the Graphical User Interface through windows, dialogs, and various control widgets.
 | \ref python_xbmcplugin "xbmcplugin" | Offers classes and functions that allow a developer to present information through Kodi's standard menu structure. While plugins don't have the same flexibility as scripts, they boast significantly quicker development time and a more consistent user experience.
 | \ref python_xbmcaddon  "xbmcaddon"  | Offers classes and functions that manipulate the add-on settings, information and localization.
-| \ref python_xbmcvfs    "xbmcvfs"    | Offers classes and functions that alow access to the Virtual File Server (VFS) which you can use to manipulate files and folders.
+| \ref python_xbmcvfs    "xbmcvfs"    | Offers classes and functions that allow access to the Virtual File Server (VFS) which you can use to manipulate files and folders.
 | \ref python_xbmcwsgi   "xbmcwsgi"   | The [<b>Web Server Gateway Interface (WSGI)</b>](https://en.wikipedia.org/wiki/Web_Server_Gateway_Interface) is a specification for simple and universal interface between web servers and web applications or frameworks for the Python programming language.
 | \ref python_xbmcdrm    "xbmcdrm"    | Offers classes and functions to create and manipulate a DRM CryptoSession .
 

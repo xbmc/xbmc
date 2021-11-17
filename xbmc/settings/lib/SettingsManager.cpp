@@ -1061,7 +1061,7 @@ bool CSettingsManager::LoadSetting(const TiXmlNode* node, const SettingPtr& sett
     settingId = setting->GetReferencedId();
 
   const TiXmlElement* settingElement = nullptr;
-  // try to split the setting identifier into category and subsetting identifer (v1-)
+  // try to split the setting identifier into category and subsetting identifier (v1-)
   std::string categoryTag, settingTag;
   if (ParseSettingIdentifier(settingId, categoryTag, settingTag))
   {

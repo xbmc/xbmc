@@ -312,7 +312,7 @@ void CWinSystemWin32DX::InitHooks(IDXGIOutput* pOutput)
           }
           else
           {
-            CLog::Log(LOGDEBUG, __FUNCTION__": Unable ot install and activate D3D11 hook.");
+            CLog::Log(LOGDEBUG, __FUNCTION__": Unable to install and activate D3D11 hook.");
             s_fnOpenAdapter10_2 = nullptr;
             FreeLibrary(m_hDriverModule);
             m_hDriverModule = nullptr;

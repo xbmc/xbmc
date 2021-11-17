@@ -98,7 +98,7 @@ public:
   /*!
   \brief Recursively removes the directory
   \param url Directory to remove.
-  \return Returns \e false if not succesful
+  \return Returns \e false if not successful
   */
   virtual bool RemoveRecursive(const CURL& url) { return false; }
 

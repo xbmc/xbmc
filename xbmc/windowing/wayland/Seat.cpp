@@ -227,7 +227,7 @@ void CSeat::HandlePointerCapability()
   };
   // Wayland groups pointer events, but right now there is no benefit in
   // treating them in groups. The main use case for doing so seems to be
-  // multi-axis (i.e. diagnoal) scrolling, but we do not support this anyway.
+  // multi-axis (i.e. diagonal) scrolling, but we do not support this anyway.
   /*m_pointer.on_frame() = [this]()
   {
 

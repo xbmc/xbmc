@@ -1451,7 +1451,7 @@ unsigned int CDVDRadioRDSData::DecodeRTPlus(uint8_t *msgElement, unsigned int le
           printf("  RTp-Unkn. : %02i - %s\n", rtp_typ[i], m_RTPlus_Temptext);
           break;
 #endif // RDS_IMPROVE_CHECK
-        /// Unused and not needed data informations
+        /// Unused and not needed data information
         case RTPLUS_STATIONNAME_SHORT:  //!< Must be rechecked under DAB
         case RTPLUS_INFO_DATE_TIME:
           break;

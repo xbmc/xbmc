@@ -65,7 +65,7 @@ def musicbrainz_albumfind(data, artist, album):
         if item.get('score'):
             releasescore = item['score'] / 100.0
             # if the release is in the releasegroup with most releases, it is considered the most accurate one
-            # (this also helps with prefering official releases over bootlegs, assuming there are more variations of an official release than of a bootleg)
+            # (this also helps with preferring official releases over bootlegs, assuming there are more variations of an official release than of a bootleg)
             if item['release-group']['id'] not in topgroups:
                 releasescore -= 0.001
             # if the release is an album, prefer it over singles/ep's
@@ -151,7 +151,7 @@ def musicbrainz_albumart(data):
             discartdata['preview'] = item['thumbnails']['small']
             discartdata['aspect'] = 'discart'
             extras.append(discartdata)
-        # exculde spine+back images
+        # exclude spine+back images
         if 'Spine' in item['types'] and len(item['types']) == 1:
             spinedata = {}
             spinedata['image'] = item['image']

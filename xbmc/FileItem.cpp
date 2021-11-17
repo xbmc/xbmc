@@ -2067,7 +2067,7 @@ bool CFileItem::LoadTracksFromCueDocument(CFileItemList& scannedItems)
       }
       if ( tag.Loaded() && oneFilePerTrack && ! ( tag.GetAlbum().empty() || tag.GetArtist().empty() || tag.GetTitle().empty() ) )
       {
-        // If there are multiple files in a cue file, the tags from the files should be prefered if they exist.
+        // If there are multiple files in a cue file, the tags from the files should be preferred if they exist.
         scannedItems.Add(CFileItemPtr(new CFileItem(song, tag)));
       }
       else

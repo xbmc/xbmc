@@ -1152,7 +1152,7 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecAndroidMediaCodec::GetPicture(VideoPictur
     // try to fetch an input buffer
     if (m_indexInputBuffer < 0)
     {
-      m_indexInputBuffer = m_codec->dequeueInputBuffer(5000 /*timout*/);
+      m_indexInputBuffer = m_codec->dequeueInputBuffer(5000 /*timeout*/);
       if (xbmc_jnienv()->ExceptionCheck())
       {
         xbmc_jnienv()->ExceptionClear();

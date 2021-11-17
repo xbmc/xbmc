@@ -82,7 +82,7 @@ static inline int _private_gettimeofday( struct timeval *tv, void *tz )
 #endif
 
 typedef enum {
-  DSI_ILVU_PRE   = 1 << 15, /* set during the last 3 VOBU preceeding an interleaved block. */
+  DSI_ILVU_PRE   = 1 << 15, /* set during the last 3 VOBU preceding an interleaved block. */
   DSI_ILVU_BLOCK = 1 << 14, /* set for all VOBU in an interleaved block */
   DSI_ILVU_FIRST = 1 << 13, /* set for the first VOBU for a given angle or scene within a ILVU, or the first VOBU in the preparation (PREU) sequence */
   DSI_ILVU_LAST  = 1 << 12, /* set for the last VOBU for a given angle or scene within a ILVU, or the last VOBU in the preparation (PREU) sequence */

@@ -196,7 +196,7 @@ namespace MUSIC_UTILS
     }
   }
 
-  // Add art types currently assigned to to the media item
+  // Add art types currently assigned to the media item
   void AddCurrentArtTypes(std::vector<std::string>& artTypes, const CMusicInfoTag& tag,
     CMusicDatabase& db)
   {

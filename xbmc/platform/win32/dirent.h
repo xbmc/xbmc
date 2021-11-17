@@ -537,7 +537,7 @@ dirent_next(
             /* Got a file */
             p = &dirp->data;
         } else {
-            /* The very last entry has been processed or an error occured */
+            /* The very last entry has been processed or an error occurred */
             FindClose (dirp->handle);
             dirp->handle = INVALID_HANDLE_VALUE;
             p = NULL;

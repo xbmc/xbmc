@@ -576,7 +576,7 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
           break;
         }
 
-        /* if we have any buttons or are not in vts domain we assume we are in meny */
+        /* if we have any buttons or are not in vts domain we assume we are in menu */
         bool menu = pci->hli.hl_gi.hli_ss || (0 == m_dll.dvdnav_is_domain_vts(m_dvdnav));
         if (menu != m_bInMenu)
         {

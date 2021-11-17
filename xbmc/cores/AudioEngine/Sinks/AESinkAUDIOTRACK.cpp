@@ -678,7 +678,7 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
       uint64_t stamp = m_timestampPos;
       stamp += (1ULL << 32);
       stamphead = (stamp & UINT64_UPPER_BYTES) | stamphead;
-      CLog::Log(LOGDEBUG, "Wraparound happend old: {} new: {}", m_timestampPos, stamphead);
+      CLog::Log(LOGDEBUG, "Wraparound happened old: {} new: {}", m_timestampPos, stamphead);
     }
     m_timestampPos = stamphead;
 

@@ -169,7 +169,7 @@ std::string CMusicInfoTag::GetYearString() const
 {
   /* Get year as YYYY from release or original dates depending on setting
      This is how GUI and by year sorting swiches to using original year.
-     For ripper and non-library items (libray entries have both values):
+     For ripper and non-library items (library entries have both values):
      when release date missing try to fallback to original date
      when original date missing use release date
   */
@@ -795,7 +795,7 @@ void CMusicInfoTag::SetArtist(const CArtist& artist)
 void CMusicInfoTag::SetAlbum(const CAlbum& album)
 {
   Clear();
-  //Set all artist infomation from album artist credits and artist description
+  //Set all artist information from album artist credits and artist description
   SetArtistDesc(album.GetAlbumArtistString());
   SetArtist(album.GetAlbumArtist());
   SetArtistSort(album.GetAlbumArtistSort());
@@ -839,7 +839,7 @@ void CMusicInfoTag::SetSong(const CSong& song)
   Clear();
   SetTitle(song.strTitle);
   SetGenre(song.genre);
-  /* Set all artist infomation from song artist credits and artist description.
+  /* Set all artist information from song artist credits and artist description.
      During processing e.g. Cue Sheets, song may only have artist description string
      rather than a fully populated artist credits vector.
   */

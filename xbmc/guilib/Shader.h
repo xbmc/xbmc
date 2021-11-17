@@ -124,11 +124,11 @@ namespace Shaders {
     // compile and link the shaders
     virtual bool CompileAndLink() = 0;
 
-    // override to to perform custom tasks on successful compilation
+    // override to perform custom tasks on successful compilation
     // and linkage. E.g. obtaining handles to shader attributes.
     virtual void OnCompiledAndLinked() {}
 
-    // override to to perform custom tasks before shader is enabled
+    // override to perform custom tasks before shader is enabled
     // and after it is disabled. Return false in OnDisabled() to
     // disable shader.
     // E.g. setting attributes, disabling texture unites, etc

@@ -231,7 +231,7 @@ TEST_F(TestAddonVersion, LessThan)
   // ref: https://www.python.org/dev/peps/pep-0440/#local-version-identifiers
   // Python addons use this kind of versioning particularly for script.module
   // addons. The "same" version number may exist in different branches or
-  // targetting different kodi versions while keeping consistency with the
+  // targeting different kodi versions while keeping consistency with the
   // upstream module version. The addon version available in upper repos
   // (let's say matrix) must have a higher version than the one stored in
   // lower branches (e.g. leia) so that users receive the addon update

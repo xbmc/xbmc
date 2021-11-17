@@ -61,7 +61,7 @@ extern "C" HMODULE __stdcall dllLoadLibraryExtended(const char* lib_file, const 
 
   if (sourcedll)
   {
-    /* also check for invalid paths wich begin with a \ */
+    /* also check for invalid paths which begin with a \ */
     if( libpath[0] == '\0' || libpath[0] == PATH_SEPARATOR_CHAR )
     {
       /* use calling dll's path as base address for this call */

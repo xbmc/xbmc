@@ -245,7 +245,7 @@ inline std::string ATTRIBUTE_HIDDEN URLEncode(const std::string& url)
 ///
 /// @param[in] hostName   The code of the message to get.
 /// @param[out] ipAddress Returned address
-/// @return true if successfull
+/// @return true if successful
 ///
 ///
 /// ------------------------------------------------------------------------

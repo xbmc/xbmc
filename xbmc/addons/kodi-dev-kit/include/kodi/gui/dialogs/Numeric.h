@@ -106,7 +106,7 @@ inline bool ATTRIBUTE_HIDDEN ShowAndVerifyNewPassword(std::string& newPassword)
 ///   ret = kodi::gui::dialogs::Numeric::ShowAndVerifyPassword(password, "Demo numeric password call for PW '1234'", i);
 ///   if (ret == 0)
 ///   {
-///     fprintf(stderr, "Numeric password successfull confirmed after '%i' tries\n", i+1);
+///     fprintf(stderr, "Numeric password successfully confirmed after '%i' tries\n", i+1);
 ///     break;
 ///   }
 ///   else if (ret < 0)

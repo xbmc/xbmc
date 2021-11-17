@@ -259,7 +259,7 @@ class ATTRIBUTE_HIDDEN CAEStream
 public:
   //==========================================================================
   /// @ingroup cpp_kodi_audioengine_CAEStream
-  /// @brief Contructs new class to an Kodi IAEStream in the format specified.
+  /// @brief Constructs new class to a Kodi IAEStream in the format specified.
   ///
   /// @param[in] format       The data format the incoming audio will be in
   ///                         (e.g. @ref AUDIOENGINE_FMT_S16LE)
