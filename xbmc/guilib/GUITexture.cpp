@@ -14,6 +14,11 @@
 #include "utils/StringUtils.h"
 #include "windowing/GraphicContext.h"
 
+#include <stdexcept>
+
+CreateGUITextureFunc CGUITexture::m_createGUITextureFunc;
+DrawQuadFunc CGUITexture::m_drawQuadFunc;
+
 CTextureInfo::CTextureInfo()
 {
   orientation = 0;
@@ -25,6 +30,35 @@ CTextureInfo::CTextureInfo(const std::string &file):
 {
   orientation = 0;
   useLarge = false;
+}
+
+void CGUITexture::Register(const CreateGUITextureFunc& createFunction,
+                           const DrawQuadFunc& drawQuadFunction)
+{
+  m_createGUITextureFunc = createFunction;
+  m_drawQuadFunc = drawQuadFunction;
+}
+
+CGUITexture* CGUITexture::CreateTexture(
+    float posX, float posY, float width, float height, const CTextureInfo& texture)
+{
+  if (!m_createGUITextureFunc)
+    throw std::runtime_error(
+        "No GUITexture Create function available. Did you forget to register?");
+
+  return m_createGUITextureFunc(posX, posY, width, height, texture);
+}
+
+void CGUITexture::DrawQuad(const CRect& coords,
+                           UTILS::COLOR::Color color,
+                           CTexture* texture,
+                           const CRect* texCoords)
+{
+  if (!m_drawQuadFunc)
+    throw std::runtime_error(
+        "No GUITexture DrawQuad function available. Did you forget to register?");
+
+  m_drawQuadFunc(coords, color, texture, texCoords);
 }
 
 CGUITexture::CGUITexture(

@@ -14,6 +14,15 @@
 class CGUITextureD3D : public CGUITexture
 {
 public:
+  static void Register();
+  static CGUITexture* CreateTexture(
+      float posX, float posY, float width, float height, const CTextureInfo& texture);
+
+  static void DrawQuad(const CRect& coords,
+                       UTILS::COLOR::Color color,
+                       CTexture* texture = nullptr,
+                       const CRect* texCoords = nullptr);
+
   CGUITextureD3D(float posX, float posY, float width, float height, const CTextureInfo& texture);
   ~CGUITextureD3D() override = default;
 

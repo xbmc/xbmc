@@ -9,6 +9,7 @@
 #include "RenderSystemGL.h"
 
 #include "filesystem/File.h"
+#include "guilib/GUITextureGL.h"
 #include "rendering/MatrixGL.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
@@ -106,6 +107,8 @@ bool CRenderSystemGL::InitRenderSystem()
   }
 
   InitialiseShaders();
+
+  CGUITextureGL::Register();
 
   return true;
 }
