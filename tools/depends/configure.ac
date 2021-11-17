@@ -469,13 +469,19 @@ XBMC_SETUP_ARCH_DEFINES()
 
 case $build in
   *darwin*)
-    # MacOS 11 requires explicit isysroot for autoconf link tests
-    # However we do not want to pollute LDFLAGS once lib link tests are complete
-    LDFLAGS="$platform_includes"
-    AC_CHECK_LIB([z], [main], has_zlib=1, AC_MSG_WARN("No zlib support in toolchain. Will build libz."); has_zlib=0)
+    if test "$platform_os" != "android"; then
+      # MacOS 11 requires explicit isysroot for autoconf link tests
+      # However we do not want to pollute LDFLAGS once lib link tests are complete
+      LDFLAGS="$platform_includes"
+      AC_CHECK_LIB([z], [main], has_zlib=1, AC_MSG_WARN("No zlib support in toolchain. Will build libz."); has_zlib=0)
+    fi
 esac
 
-AC_SEARCH_LIBS([iconv_open],iconv, link_iconv=$ac_cv_search_iconv_open, link_iconv=-liconv; AC_MSG_WARN("No iconv support in toolchain. Will build libiconv."); need_libiconv=1)
+if test "$platform_os" == "android"; then
+  need_libiconv=1
+else
+  AC_SEARCH_LIBS([iconv_open],iconv, link_iconv=$ac_cv_search_iconv_open, link_iconv=-liconv; AC_MSG_WARN("No iconv support in toolchain. Will build libiconv."); need_libiconv=1)
+fi
 
 case $build in
   *darwin*)
