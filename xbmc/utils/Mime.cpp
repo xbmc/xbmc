@@ -323,7 +323,7 @@ const std::map<std::string, std::string> CMime::m_mimetypes = {
      {"psd", "application/octet-stream"},
      {"pvu", "paleovu/x-pv"},
      {"pwz", "application/vnd.ms-powerpoint"},
-     {"py", "text/x-script.phyton"},
+     {"py", "text/x-script.python"},
      {"pyc", "application/x-bytecode.python"},
      {"qcp", "audio/vnd.qcelp"},
      {"qd3", "x-world/x-3dmf"},
