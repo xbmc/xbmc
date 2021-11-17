@@ -70,7 +70,7 @@ namespace
 {
 
 #ifdef HAS_GL
-static ShaderMethodGL TranslatShaderMethodGL(GL_SHADER_METHOD method)
+static ShaderMethodGL TranslateShaderMethodGL(GL_SHADER_METHOD method)
 {
   switch (method)
   {
@@ -86,7 +86,7 @@ static ShaderMethodGL TranslatShaderMethodGL(GL_SHADER_METHOD method)
 }
 #endif
 #ifdef HAS_GLES
-static ShaderMethodGLES TranslatShaderMethodGLES(GL_SHADER_METHOD method)
+static ShaderMethodGLES TranslateShaderMethodGLES(GL_SHADER_METHOD method)
 {
   switch (method)
   {
@@ -112,11 +112,11 @@ void CRenderContext::EnableGUIShader(GL_SHADER_METHOD method)
 #if defined(HAS_GL)
   CRenderSystemGL* rendering = dynamic_cast<CRenderSystemGL*>(m_rendering);
   if (rendering != nullptr)
-    rendering->EnableShader(TranslatShaderMethodGL(method));
+    rendering->EnableShader(TranslateShaderMethodGL(method));
 #elif HAS_GLES >= 2
   CRenderSystemGLES* renderingGLES = dynamic_cast<CRenderSystemGLES*>(m_rendering);
   if (renderingGLES != nullptr)
-    renderingGLES->EnableGUIShader(TranslatShaderMethodGLES(method));
+    renderingGLES->EnableGUIShader(TranslateShaderMethodGLES(method));
 #endif
 }
 
