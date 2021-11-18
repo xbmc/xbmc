@@ -849,7 +849,6 @@ bool CWinSystemOSX::DestroyWindow()
   return true;
 }
 
-extern "C" void SDL_SetWidthHeight(int w, int h);
 void ResizeWindowInternal(int newWidth, int newHeight, int newLeft, int newTop, NSView* last_view)
 {
   if (last_view && [last_view window])
