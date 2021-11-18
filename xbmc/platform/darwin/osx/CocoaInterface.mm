@@ -42,26 +42,18 @@ uint32_t Cocoa_GL_GetCurrentDisplayID(void)
   // Find which display we are on from the current context (default to main display)
   CGDirectDisplayID display_id = kCGDirectMainDisplay;
 
-  NSOpenGLContext* context = Cocoa_GL_GetCurrentContext();
-  if (context)
-  {
-    NSView* view;
+  NSNumber* __block screenID;
+  auto getScreenNumber = ^{
+    screenID = Cocoa_GL_GetCurrentContext().view.window.screen.deviceDescription[@"NSScreenNumber"];
+  };
+  if (NSThread.isMainThread)
+    getScreenNumber();
+  else
+    dispatch_sync(dispatch_get_main_queue(), getScreenNumber);
+  if (screenID)
+    display_id = static_cast<CGDirectDisplayID>(screenID.unsignedIntValue);
 
-    view = [context view];
-    if (view)
-    {
-      NSWindow* window;
-      window = [view window];
-      if (window)
-      {
-        NSDictionary* screenInfo = [[window screen] deviceDescription];
-        NSNumber* screenID = [screenInfo objectForKey:@"NSScreenNumber"];
-        display_id = (CGDirectDisplayID)[screenID longValue];
-      }
-    }
-  }
-
-  return((uint32_t)display_id);
+  return static_cast<uint32_t>(display_id);
 }
 
 bool Cocoa_CVDisplayLinkCreate(void *displayLinkcallback, void *displayLinkContext)
