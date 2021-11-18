@@ -50,7 +50,7 @@ ifeq ($(OS), android)
 endif
 ifeq ($(OS), darwin_embedded)
   ffmpg_config += --as="$(NATIVEPREFIX)/bin/gas-preprocessor.pl -arch aarch64 -- $(CC)"
-  ffmpg_config += --x86asmexe=$(NATIVEPREFIX)/bin/yasm
+  ffmpg_config += --x86asmexe=$(NATIVEPREFIX)/bin/nasm
   ffmpg_config += --disable-crystalhd --enable-videotoolbox
   ffmpg_config += --target-os=darwin
 endif
@@ -60,7 +60,7 @@ ifeq ($(OS), osx)
   ffmpg_config += --disable-securetransport
 ifeq ($(CPU),arm64)
   ffmpg_config += --as="$(NATIVEPREFIX)/bin/gas-preprocessor.pl -arch aarch64 -- $(CC)"
-  ffmpg_config += --x86asmexe=$(NATIVEPREFIX)/bin/yasm
+  ffmpg_config += --x86asmexe=$(NATIVEPREFIX)/bin/nasm
 endif
 endif
 ifeq ($(findstring arm, $(CPU)), arm)
