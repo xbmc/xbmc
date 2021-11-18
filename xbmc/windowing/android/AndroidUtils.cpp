@@ -13,6 +13,7 @@
 #include "settings/SettingsComponent.h"
 #include "settings/lib/SettingsManager.h"
 #include "system_egl.h"
+#include "utils/HDRCapabilities.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
@@ -24,6 +25,8 @@
 
 #include <androidjni/Build.h>
 #include <androidjni/Display.h>
+#include <androidjni/MediaCodecInfo.h>
+#include <androidjni/MediaCodecList.h>
 #include <androidjni/System.h>
 #include <androidjni/SystemProperties.h>
 #include <androidjni/View.h>
@@ -369,7 +372,7 @@ void CAndroidUtils::OnSettingChanged(const std::shared_ptr<const CSetting>& sett
     CDisplaySettings::GetInstance().ClearCalibrations();
 }
 
-std::vector<int> CAndroidUtils::GetDisplaySupportedHdrTypes() const
+std::vector<int> CAndroidUtils::GetDisplaySupportedHdrTypes()
 {
   CJNIWindow window = CXBMCApp::getWindow();
 
@@ -391,7 +394,7 @@ std::vector<int> CAndroidUtils::GetDisplaySupportedHdrTypes() const
   return {};
 }
 
-void CAndroidUtils::LogDisplaySupportedHdrTypes() const
+void CAndroidUtils::LogDisplaySupportedHdrTypes()
 {
   const std::vector<int> hdrTypes = GetDisplaySupportedHdrTypes();
   std::string text;
@@ -403,4 +406,41 @@ void CAndroidUtils::LogDisplaySupportedHdrTypes() const
 
   CLog::Log(LOGDEBUG, "CAndroidUtils: Display supported HDR types:{}",
             text.empty() ? " None" : text);
+}
+
+CHDRCapabilities CAndroidUtils::GetDisplayHDRCapabilities()
+{
+  CHDRCapabilities caps;
+  const std::vector<int> types = GetDisplaySupportedHdrTypes();
+
+  if (std::find(types.begin(), types.end(), CAndroidUtils::HDRTypes::HDR10) != types.end())
+    caps.SetHDR10();
+
+  if (std::find(types.begin(), types.end(), CAndroidUtils::HDRTypes::HLG) != types.end())
+    caps.SetHLG();
+
+  if (std::find(types.begin(), types.end(), CAndroidUtils::HDRTypes::HDR10_PLUS) != types.end())
+    caps.SetHDR10Plus();
+
+  if (std::find(types.begin(), types.end(), CAndroidUtils::HDRTypes::DOLBY_VISION) != types.end())
+    caps.SetDolbyVision();
+
+  return caps;
+}
+
+bool CAndroidUtils::SupportsMediaCodecMimeType(const std::string& mimeType)
+{
+  int num_codecs = CJNIMediaCodecList::getCodecCount();
+  for (int i = 0; i < num_codecs; i++)
+  {
+    CJNIMediaCodecInfo codec_info = CJNIMediaCodecList::getCodecInfoAt(i);
+    if (codec_info.isEncoder())
+      continue;
+
+    std::vector<std::string> types = codec_info.getSupportedTypes();
+    if (std::find(types.begin(), types.end(), mimeType) != types.end())
+      return true;
+  }
+
+  return false;
 }
