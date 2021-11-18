@@ -31,7 +31,7 @@ ifeq ($(OS), android)
 CONFIGURE_FLAGS=--with-pic
 endif
 ifeq ($(NATIVE_OS), osx)
-CONFIGURE_FLAGS+= CC_FOR_BUILD="$(CC_FOR_BUILD)" CPP_FOR_BUILD="$(CC_FOR_BUILD) -E"
+CONFIGURE_FLAGS+= CC_FOR_BUILD="$(CC_FOR_BUILD) $(NATIVE_CFLAGS)"
 endif
 
 # configuration settings

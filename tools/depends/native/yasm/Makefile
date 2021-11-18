@@ -11,6 +11,8 @@ ARCHIVE=$(SOURCE).tar.gz
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) --disable-nls --disable-python
 
+BUILDFLAGS=CFLAGS_FOR_BUILD="$(NATIVE_CFLAGS)" INCLUDES="$(NATIVE_CFLAGS)" LIBS="$(NATIVE_LDFLAGS)"
+
 APP=$(PLATFORM)/$(APPNAME)
 
 all: .installed-$(PLATFORM)
@@ -24,7 +26,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(APP): $(PLATFORM)
-	$(MAKE) -C $(PLATFORM)
+	$(MAKE) -C $(PLATFORM) $(BUILDFLAGS)
 
 .installed-$(PLATFORM): $(APP)
 	$(MAKE) -C $(PLATFORM) install

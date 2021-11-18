@@ -21,7 +21,11 @@ ifeq ($(OS), darwin_embedded)
   endif
 endif
 ifeq ($(OS), osx)
-  CONFIGURE=./Configure darwin64-$(CPU)-cc zlib no-asm no-shared --prefix=$(PREFIX)
+  ifeq ($(BUILD_CPU), x86_64)
+    CONFIGURE=./Configure darwin64-$(CPU)-cc zlib no-asm no-shared --prefix=$(PREFIX)
+  else
+    CONFIGURE=./Configure darwin64-arm64-cc zlib no-asm no-shared --prefix=$(PREFIX)
+  endif
 endif
 LIBDYLIB=$(PLATFORM)/libssl.a
 

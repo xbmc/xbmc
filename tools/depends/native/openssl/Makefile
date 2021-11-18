@@ -12,8 +12,11 @@ ARCHIVE=$(SOURCE).tar.gz
 CONFIGURE=MACHINE=$(PLATFORM) ./config no-shared zlib no-asm --prefix=$(NATIVEPREFIX) --with-zlib-include=$(NATIVEPREFIX)/include --with-zlib-lib=$(NATIVEPREFIX)/lib
 
 ifeq ($(NATIVE_OS), osx)
-  # Todo: Apple silicon host
-  CONFIGURE=./Configure darwin64-x86_64-cc zlib no-asm no-shared --prefix=$(NATIVEPREFIX)
+  ifeq ($(BUILD_CPU), x86_64)
+    CONFIGURE=./Configure darwin64-$(BUILD_CPU)-cc zlib no-asm no-shared --prefix=$(NATIVEPREFIX)
+  else
+    CONFIGURE=./Configure darwin64-arm64-cc zlib no-asm no-shared --prefix=$(NATIVEPREFIX)
+  endif
 endif
 
 CFLAGS=$(NATIVE_CFLAGS)
