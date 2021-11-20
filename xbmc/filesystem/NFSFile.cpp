@@ -82,7 +82,6 @@ std::list<std::string> CNfsConnection::GetExportList(const CURL& url)
 #else
   exportlist = mount_getexports(m_resolvedHostName.c_str());
 #endif
-  tmp = exportlist;
 
   for (tmp = exportlist; tmp != NULL; tmp = tmp->ex_next)
   {

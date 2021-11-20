@@ -278,7 +278,7 @@ int CDVDInputStreamNavigator::Read(uint8_t* buf, int buf_size)
     return -1;
   }
 
-  int iBytesRead;
+  int iBytesRead = 0;
 
   int NOPcount = 0;
   while (true)
@@ -500,7 +500,8 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
         // information only when necessary and update the decoding/displaying
         // accordingly.
 
-        uint32_t pos, len;
+        uint32_t pos = 0;
+        uint32_t len = 0;
 
         m_dll.dvdnav_current_title_info(m_dvdnav, &m_iTitle, &m_iPart);
         m_dll.dvdnav_get_number_of_titles(m_dvdnav, &m_iTitleCount);
@@ -721,7 +722,7 @@ void CDVDInputStreamNavigator::SelectButton(int iButton)
 
 int CDVDInputStreamNavigator::GetCurrentButton()
 {
-  int button;
+  int button = 0;
   if (m_dvdnav)
   {
     m_dll.dvdnav_get_current_highlight(m_dvdnav, &button);
@@ -1617,7 +1618,8 @@ VideoStreamInfo CDVDInputStreamNavigator::GetVideoStreamInfo()
 
   info.angles = GetAngleCount();
   info.videoAspectRatio = GetVideoAspectRatio();
-  uint32_t width, height = 0;
+  uint32_t width = 0;
+  uint32_t height = 0;
   GetVideoResolution(&width, &height);
 
   info.width = static_cast<int>(width);
