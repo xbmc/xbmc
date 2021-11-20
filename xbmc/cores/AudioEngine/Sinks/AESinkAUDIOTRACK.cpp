@@ -763,6 +763,9 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
   uint8_t *out_buf = buffer;
   int size = frames * m_format.m_frameSize;
 
+  // TrueHD IEC has 12 audio units (half packet and half duration) on CDVDAudioCodecPassthrough
+  double ratio = (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD) ? 2.0 : 1.0;
+
   // write as many frames of audio as we can fit into our internal buffer.
   int written = 0;
   int loop_written = 0;
@@ -828,7 +831,12 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
         }
       }
       else
-        m_duration_written += ((double) loop_written / m_format.m_frameSize) / m_format.m_sampleRate;
+      {
+        double duration =
+            (static_cast<double>(loop_written) / m_format.m_frameSize) / m_format.m_sampleRate;
+        duration /= ratio;
+        m_duration_written += duration;
+      }
 
       // just try again to care for fragmentation
       if (written < size)
