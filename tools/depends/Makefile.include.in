@@ -28,6 +28,7 @@ TARGET_PLATFORM=@target_platform@
 RENDER_SYSTEM=@app_rendersystem@
 AAPT=@AAPT@
 DX=@DX@
+D8=@D8@
 ZIPALIGN=@ZIPALIGN@
 
 HAS_ZLIB=@has_zlib@
