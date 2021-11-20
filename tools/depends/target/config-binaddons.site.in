@@ -26,8 +26,7 @@ CXXFLAGS="@platform_cxxflags@ @platform_includes@ $CXXFLAGS"
 CPPFLAGS="@platform_cflags@ @platform_includes@ $CPPFLAGS"
 
 export PKG_CONFIG=@prefix@/@tool_dir@/bin/pkg-config
-export YASM=@prefix@/@tool_dir@/bin/yasm
-export NASM=@prefix@/@tool_dir@/bin/yasm
+export NASM=@prefix@/@tool_dir@/bin/nasm
 
 PATH=@prefix@/@tool_dir@/bin:@use_toolchain@/usr/bin:@use_toolchain@/bin:$PATH
 LD_LIBRARY_PATH=@prefix@/@tool_dir@/lib:$LD_LIBRARY_PATH

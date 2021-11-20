@@ -5,7 +5,7 @@ ifneq ($(shell test -f $(NATIVEPREFIX)/share/config.site && echo 1),1)
 endif
 
 NATIVE= m4 gettext heimdal autoconf automake \
-        libtool pkg-config yasm nasm cmake \
+        libtool pkg-config nasm cmake \
         gas-preprocessor python3 zlib \
         pcre swig openssl \
         libpng libjpeg-turbo liblzo2 giflib \
@@ -45,7 +45,7 @@ dpkg: automake gettext libtool pkg-config tar
 flatbuffers: cmake
 heimdal: libtool
 libtool: automake
-libjpeg-turbo: cmake yasm
+libjpeg-turbo: cmake nasm
 libpng: zlib automake
 meson: python3 setuptools
 ninja: meson
