@@ -185,7 +185,16 @@ void CAdvancedSettings::Initialize()
   m_videoCleanDateTimeRegExp = "(.*[^ _\\,\\.\\(\\)\\[\\]\\-])[ _\\.\\(\\)\\[\\]\\-]+(19[0-9][0-9]|20[0-9][0-9])([ _\\,\\.\\(\\)\\[\\]\\-]|[^0-9]$)?";
 
   m_videoCleanStringRegExps.clear();
-  m_videoCleanStringRegExps.emplace_back("[ _\\,\\.\\(\\)\\[\\]\\-](aka|ac3|dts|custom|dc|remastered|divx|divx5|dsr|dsrip|dutch|dvd|dvd5|dvd9|dvdrip|dvdscr|dvdscreener|screener|dvdivx|cam|fragment|fs|hdtv|hdrip|hdtvrip|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r3|r5|bd5|se|svcd|swedish|german|read.nfo|nfofix|unrated|extended|ws|telesync|ts|telecine|tc|brrip|bdrip|480p|480i|576p|576i|720p|720i|1080p|1080i|3d|hrhd|hrhdtv|hddvd|bluray|x264|h264|xvid|xvidvd|xxx|www.www|cd[1-9]|\\[.*\\])([ _\\,\\.\\(\\)\\[\\]\\-]|$)");
+  m_videoCleanStringRegExps.emplace_back(
+      "[ "
+      "_\\,\\.\\(\\)\\[\\]\\-](10bit|480p|480i|576p|576i|720p|720i|1080p|1080i|2160p|3d|aac|ac3|"
+      "aka|atmos|avi|bd5|bdrip|bluray|brrip|cam|cd[1-9]|custom|dc|ddp|divx|divx5|dolbydigital|"
+      "dolbyvision|dsr|dsrip|dts|dts-hdma|dts-hra|dts-x|dv|dvd|dvd5|dvd9|dvdivx|dvdrip|dvdscr|"
+      "dvdscreener|extended|fragment|fs|h264|h265|hdr|hdr10|hevc|hddvd|hdrip|hdtv|hdtvrip|hrhd|"
+      "hrhdtv|internal|limited|multisubs|nfofix|ntsc|ogg|ogm|pal|pdtv|proper|r3|r5|read.nfo|"
+      "remastered|remux|repack|rerip|retail|screener|se|svcd|tc|telecine|telesync|truehd|ts|uhd|"
+      "unrated|ws|x264|x265|xvid|xvidvd|xxx|web-dl|webrip|www.www|\\[.*\\])([ "
+      "_\\,\\.\\(\\)\\[\\]\\-]|$)");
   m_videoCleanStringRegExps.emplace_back("(\\[.*\\])");
 
   // this vector will be inserted at the end to
