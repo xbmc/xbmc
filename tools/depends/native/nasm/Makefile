@@ -4,9 +4,9 @@ PLATFORM=$(NATIVEPLATFORM)
 DEPS= ../../Makefile.include Makefile
 
 APPNAME=nasm
-VERSION=2.14.02
+VERSION=2.15.05
 SOURCE=$(APPNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
+ARCHIVE=$(SOURCE).tar.xz
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX)
