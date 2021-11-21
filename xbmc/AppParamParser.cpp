@@ -47,9 +47,7 @@ Arguments:
 
 } // namespace
 
-CAppParamParser::CAppParamParser()
-: m_logLevel(LOG_LEVEL_NORMAL),
-  m_playlist(new CFileItemList())
+CAppParamParser::CAppParamParser() : m_playlist(new CFileItemList())
 {
 }
 

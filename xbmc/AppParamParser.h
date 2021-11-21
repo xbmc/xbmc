@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "commons/ilog.h"
+
 #include <memory>
 #include <string>
 
@@ -25,7 +27,7 @@ public:
 
   const CFileItemList& GetPlaylist() const;
 
-  int m_logLevel;
+  int m_logLevel = LOG_LEVEL_NORMAL;
   bool m_startFullScreen = false;
   bool m_platformDirectories = true;
   bool m_testmode = false;
