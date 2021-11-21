@@ -47,7 +47,7 @@ Arguments:
 
 } // namespace
 
-CAppParamParser::CAppParamParser() : m_playlist(new CFileItemList())
+CAppParamParser::CAppParamParser() : m_playlist(std::make_unique<CFileItemList>())
 {
 }
 
