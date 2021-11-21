@@ -21,6 +21,32 @@
 #include <string>
 #include <vector>
 
+namespace
+{
+
+constexpr const char* versionText =
+    R"""({0} Media Center {1}
+Copyright (C) {2} Team {0} - http://kodi.tv
+)""";
+
+constexpr const char* helpText =
+    R"""(Usage: {0} [OPTION]... [FILE]...
+
+Arguments:
+  -fs                   Runs {1} in full screen
+  --standalone          {1} runs in a stand alone environment without a window
+                        manager and supporting applications. For example, that
+                        enables network settings.
+  -p or --portable      {1} will look for configurations in install folder instead of ~/.{0}
+  --debug               Enable debug logging
+  --version             Print version information
+  --test                Enable test mode. [FILE] required.
+  --settings=<filename> Loads specified file after advancedsettings.xml replacing any settings specified
+                        specified file must exist in special://xbmc/system/
+)""";
+
+} // namespace
+
 CAppParamParser::CAppParamParser()
 : m_logLevel(LOG_LEVEL_NORMAL),
   m_playlist(new CFileItemList())
@@ -44,9 +70,8 @@ void CAppParamParser::Parse(const char* const* argv, int nArgs)
 
 void CAppParamParser::DisplayVersion()
 {
-  printf("%s Media Center %s\n", CSysInfo::GetVersion().c_str(), CSysInfo::GetAppName().c_str());
-  printf("Copyright (C) %s Team %s - http://kodi.tv\n",
-         CCompileInfo::GetCopyrightYears(), CSysInfo::GetAppName().c_str());
+  std::cout << StringUtils::Format(versionText, CSysInfo::GetAppName(), CSysInfo::GetVersion(),
+                                   CCompileInfo::GetCopyrightYears());
   exit(0);
 }
 
@@ -54,18 +79,8 @@ void CAppParamParser::DisplayHelp()
 {
   std::string lcAppName = CSysInfo::GetAppName();
   StringUtils::ToLower(lcAppName);
-  printf("Usage: %s [OPTION]... [FILE]...\n\n", lcAppName.c_str());
-  printf("Arguments:\n");
-  printf("  -fs\t\t\tRuns %s in full screen\n", CSysInfo::GetAppName().c_str());
-  printf("  --standalone\t\t%s runs in a stand alone environment without a window \n", CSysInfo::GetAppName().c_str());
-  printf("\t\t\tmanager and supporting applications. For example, that\n");
-  printf("\t\t\tenables network settings.\n");
-  printf("  -p or --portable\t%s will look for configurations in install folder instead of ~/.%s\n", CSysInfo::GetAppName().c_str(), lcAppName.c_str());
-  printf("  --debug\t\tEnable debug logging\n");
-  printf("  --version\t\tPrint version information\n");
-  printf("  --test\t\tEnable test mode. [FILE] required.\n");
-  printf("  --settings=<filename>\t\tLoads specified file after advancedsettings.xml replacing any settings specified\n");
-  printf("  \t\t\t\tspecified file must exist in special://xbmc/system/\n");
+
+  std::cout << StringUtils::Format(helpText, lcAppName, CSysInfo::GetAppName());
 }
 
 void CAppParamParser::ParseArg(const std::string &arg)
