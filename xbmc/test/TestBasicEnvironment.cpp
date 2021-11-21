@@ -37,7 +37,7 @@ TestBasicEnvironment::TestBasicEnvironment() = default;
 void TestBasicEnvironment::SetUp()
 {
   CAppParamParser params;
-  params.m_platformDirectories = false;
+  params.SetPlatformDirectories(false);
 
   CServiceBroker::CreateLogging();
 

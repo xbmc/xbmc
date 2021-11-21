@@ -322,11 +322,11 @@ bool CApplication::Create(const CAppParamParser &params)
   // Grab a handle to our thread to be used later in identifying the render thread.
   m_threadID = CThread::GetCurrentThreadId();
 
-  m_bPlatformDirectories = params.m_platformDirectories;
-  m_bTestMode = params.m_testmode;
-  m_bStandalone = params.m_standAlone;
-  m_windowing = params.m_windowing;
-  m_logTarget = params.m_logTarget;
+  m_bPlatformDirectories = params.HasPlatformDirectories();
+  m_bTestMode = params.IsTestMode();
+  m_bStandalone = params.IsStandAlone();
+  m_windowing = params.GetWindowing();
+  m_logTarget = params.GetLogTarget();
 
   CServiceBroker::CreateLogging();
 

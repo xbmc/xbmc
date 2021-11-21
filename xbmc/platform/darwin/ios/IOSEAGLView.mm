@@ -341,9 +341,9 @@ using namespace KODI::MESSAGING;
 
     CAppParamParser appParamParser;
 #ifdef _DEBUG
-    appParamParser.m_logLevel = LOG_LEVEL_DEBUG;
+    appParamParser.SetLogLevel(LOG_LEVEL_DEBUG);
 #else
-    appParamParser.m_logLevel = LOG_LEVEL_NORMAL;
+    appParamParser.SetLogLevel(LOG_LEVEL_NORMAL);
 #endif
 
     // Prevent child processes from becoming zombies on exit if not waited upon. See also Util::Command
