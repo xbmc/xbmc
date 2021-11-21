@@ -33,9 +33,11 @@ public:
   std::string m_windowing;
   std::string m_logTarget;
 
+protected:
+  virtual void ParseArg(const std::string& arg);
+  virtual void DisplayHelp();
+
 private:
-  void ParseArg(const std::string &arg);
-  void DisplayHelp();
   void DisplayVersion();
 
   std::string m_settingsFile;
