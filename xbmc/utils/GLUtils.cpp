@@ -17,6 +17,7 @@
 #include "utils/StringUtils.h"
 
 #include <map>
+#include <stdexcept>
 #include <utility>
 
 namespace
@@ -258,4 +259,22 @@ int KODI::UTILS::GL::glFormatElementByteCount(GLenum format)
     CLog::Log(LOGERROR, "glFormatElementByteCount - Unknown format {}", format);
     return 1;
   }
+}
+
+uint8_t KODI::UTILS::GL::GetChannelFromARGB(const KODI::UTILS::GL::ColorChannel colorChannel,
+                                            const uint32_t argb)
+{
+  switch (colorChannel)
+  {
+    case KODI::UTILS::GL::ColorChannel::A:
+      return (argb >> 24) & 0xFF;
+    case KODI::UTILS::GL::ColorChannel::R:
+      return (argb >> 16) & 0xFF;
+    case KODI::UTILS::GL::ColorChannel::G:
+      return (argb >> 8) & 0xFF;
+    case KODI::UTILS::GL::ColorChannel::B:
+      return (argb >> 0) & 0xFF;
+    default:
+      throw std::runtime_error("KODI::UTILS::GL::GetChannelFromARGB: ColorChannel not handled");
+  };
 }
