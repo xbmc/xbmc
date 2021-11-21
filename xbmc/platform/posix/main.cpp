@@ -17,6 +17,10 @@
 #include "PlatformPosix.h"
 #include "platform/xbmc.h"
 
+#if defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
+#include "platform/linux/AppParamParserLinux.h"
+#endif
+
 #include <cstdio>
 #include <cstring>
 #include <errno.h>
@@ -55,7 +59,11 @@ int main(int argc, char* argv[])
 
   setlocale(LC_NUMERIC, "C");
 
+#if defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
+  CAppParamParserLinux appParamParser;
+#else
   CAppParamParser appParamParser;
+#endif
   appParamParser.Parse(argv, argc);
 
   return XBMC_Run(true, appParamParser);

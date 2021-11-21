@@ -1,11 +1,13 @@
-set(SOURCES CPUInfoLinux.cpp
+set(SOURCES AppParamParserLinux.cpp
+            CPUInfoLinux.cpp
             MemUtils.cpp
             OptionalsReg.cpp
             PlatformLinux.cpp
             SysfsPath.cpp
             TimeUtils.cpp)
 
-set(HEADERS CPUInfoLinux.h
+set(HEADERS AppParamParserLinux.h
+            CPUInfoLinux.h
             OptionalsReg.h
             PlatformLinux.h
             SysfsPath.h
