@@ -9,6 +9,7 @@
 #include "AppParamParserLinux.h"
 
 #include "CompileInfo.h"
+#include "utils/StringUtils.h"
 
 #include <algorithm>
 #include <array>
@@ -19,6 +20,28 @@ namespace
 {
 std::vector<std::string> availableWindowSystems = CCompileInfo::GetAvailableWindowSystems();
 std::array<std::string, 1> availableLogTargets = {"console"};
+
+constexpr const char* windowingText =
+    R"""(
+Selected window system not available: {}
+    Available window systems: {}
+)""";
+
+constexpr const char* loggingText =
+    R"""(
+Selected logging target not available: {}
+    Available log targest: {}
+)""";
+
+constexpr const char* helpText =
+    R"""(
+Linux Specific Arguments:
+  --windowing=<system>  Select which windowing method to use.
+                          Available window systems are: {}
+  --logging=<target>    Select which log target to use (log file will always be used in conjunction).
+                          Available log targets are: {}
+)""";
+
 
 } // namespace
 
@@ -39,11 +62,8 @@ void CAppParamParserLinux::ParseArg(const std::string& arg)
       m_windowing = arg.substr(12);
     else
     {
-      std::cout << "Selected window system not available: " << arg << std::endl;
-      std::cout << "    Available window systems:";
-      for (const auto& windowSystem : availableWindowSystems)
-        std::cout << " " << windowSystem;
-      std::cout << std::endl;
+      std::cout << StringUtils::Format(windowingText, arg.substr(12),
+                                       StringUtils::Join(availableWindowSystems, ", "));
       exit(0);
     }
   }
@@ -56,11 +76,8 @@ void CAppParamParserLinux::ParseArg(const std::string& arg)
     }
     else
     {
-      std::cout << "Selected logging target not available: " << arg << std::endl;
-      std::cout << "    Available log targets:";
-      for (const auto& logTarget : availableLogTargets)
-        std::cout << " " << logTarget;
-      std::cout << std::endl;
+      std::cout << StringUtils::Format(loggingText, arg.substr(10),
+                                       StringUtils::Join(availableLogTargets, ", "));
       exit(0);
     }
   }
@@ -70,18 +87,6 @@ void CAppParamParserLinux::DisplayHelp()
 {
   CAppParamParser::DisplayHelp();
 
-  printf("\n");
-  printf("Linux Specific Arguments:\n");
-
-  printf("  --windowing=<system>\tSelect which windowing method to use.\n");
-  printf("  \t\t\t\tAvailable window systems are:");
-  for (const auto& windowSystem : availableWindowSystems)
-    printf(" %s", windowSystem.c_str());
-  printf("\n");
-  printf("  --logging=<target>\tSelect which log target to use (log file will always be used in "
-         "conjunction).\n");
-  printf("  \t\t\t\tAvailable log targets are:");
-  for (const auto& logTarget : availableLogTargets)
-    printf(" %s", logTarget.c_str());
-  printf("\n");
+  std::cout << StringUtils::Format(helpText, StringUtils::Join(availableWindowSystems, ", "),
+                                   StringUtils::Join(availableLogTargets, ", "));
 }
