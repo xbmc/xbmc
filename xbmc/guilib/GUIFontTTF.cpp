@@ -31,6 +31,8 @@
 #include <ft2build.h>
 #include <harfbuzz/hb-ft.h>
 #if defined(HAS_GL) || defined(HAS_GLES)
+#include "utils/GLUtils.h"
+
 #include "system_gl.h"
 #endif
 
@@ -1048,10 +1050,10 @@ void CGUIFontTTF::RenderCharacter(float posX,
   m_color = color;
 
 #if !defined(HAS_DX)
-  unsigned char r = GET_R(color)
-              , g = GET_G(color)
-              , b = GET_B(color)
-              , a = GET_A(color);
+  uint8_t r = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::R, color);
+  uint8_t g = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::G, color);
+  uint8_t b = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::B, color);
+  uint8_t a = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::A, color);
 #endif
 
   for(int i = 0; i < 4; i++)

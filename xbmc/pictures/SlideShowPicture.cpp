@@ -15,6 +15,7 @@
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "windowing/WinSystem.h"
+
 #ifndef _USE_MATH_DEFINES
 #define _USE_MATH_DEFINES
 #endif
@@ -22,8 +23,10 @@
 
 #if defined(HAS_GL)
 #include "rendering/gl/RenderSystemGL.h"
+#include "utils/GLUtils.h"
 #elif defined(HAS_GLES)
 #include "rendering/gles/RenderSystemGLES.h"
+#include "utils/GLUtils.h"
 #elif defined(TARGET_WINDOWS)
 #include "guilib/TextureDX.h"
 #include "rendering/dx/DeviceResources.h"
@@ -911,10 +914,10 @@ void CSlideShowPic::Render(float* x, float* y, CTexture* pTexture, UTILS::COLOR:
   glEnableVertexAttribArray(tex0Loc);
 
   // Setup Colour values
-  colour[0] = (GLubyte)GET_R(color);
-  colour[1] = (GLubyte)GET_G(color);
-  colour[2] = (GLubyte)GET_B(color);
-  colour[3] = (GLubyte)GET_A(color);
+  colour[0] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::R, color);
+  colour[1] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::G, color);
+  colour[2] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::B, color);
+  colour[3] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::A, color);
 
   glUniform4f(uniColLoc,(colour[0] / 255.0f), (colour[1] / 255.0f),
                         (colour[2] / 255.0f), (colour[3] / 255.0f));
@@ -975,10 +978,10 @@ void CSlideShowPic::Render(float* x, float* y, CTexture* pTexture, UTILS::COLOR:
   glEnableVertexAttribArray(tex0Loc);
 
   // Setup Colour values
-  col[0] = (GLubyte)GET_R(color);
-  col[1] = (GLubyte)GET_G(color);
-  col[2] = (GLubyte)GET_B(color);
-  col[3] = (GLubyte)GET_A(color);
+  col[0] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::R, color);
+  col[1] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::G, color);
+  col[2] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::B, color);
+  col[3] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::A, color);
 
   if (CServiceBroker::GetWinSystem()->UseLimitedColor())
   {

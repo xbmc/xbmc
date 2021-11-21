@@ -187,10 +187,10 @@ bool CRenderSystemGLES::ClearBuffers(UTILS::COLOR::Color color)
   if (!m_bRenderCreated)
     return false;
 
-  float r = GET_R(color) / 255.0f;
-  float g = GET_G(color) / 255.0f;
-  float b = GET_B(color) / 255.0f;
-  float a = GET_A(color) / 255.0f;
+  float r = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::R, color) / 255.0f;
+  float g = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::G, color) / 255.0f;
+  float b = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::B, color) / 255.0f;
+  float a = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::A, color) / 255.0f;
 
   glClearColor(r, g, b, a);
 

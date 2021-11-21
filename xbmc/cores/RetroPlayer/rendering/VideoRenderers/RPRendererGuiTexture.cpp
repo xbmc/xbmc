@@ -21,6 +21,8 @@ using namespace DirectX;
 #endif
 
 #if defined(HAS_GL) || defined(HAS_GLES)
+#include "utils/GLUtils.h"
+
 #include "system_gl.h"
 #endif
 
@@ -196,10 +198,10 @@ void CRPRendererGuiTexture::RenderInternal(bool clear, uint8_t alpha)
   glEnableVertexAttribArray(tex0Loc);
 
   // Setup Colour values
-  colour[0] = static_cast<GLubyte>(GET_R(color));
-  colour[1] = static_cast<GLubyte>(GET_G(color));
-  colour[2] = static_cast<GLubyte>(GET_B(color));
-  colour[3] = static_cast<GLubyte>(GET_A(color));
+  colour[0] = UTILS::GL::GetChannelFromARGB(UTILS::GL::ColorChannel::R, color);
+  colour[1] = UTILS::GL::GetChannelFromARGB(UTILS::GL::ColorChannel::G, color);
+  colour[2] = UTILS::GL::GetChannelFromARGB(UTILS::GL::ColorChannel::B, color);
+  colour[3] = UTILS::GL::GetChannelFromARGB(UTILS::GL::ColorChannel::A, color);
 
   if (m_context.UseLimitedColor())
   {
@@ -252,10 +254,10 @@ void CRPRendererGuiTexture::RenderInternal(bool clear, uint8_t alpha)
   glEnableVertexAttribArray(tex0Loc);
 
   // Setup color values
-  col[0] = static_cast<GLubyte>(GET_R(color));
-  col[1] = static_cast<GLubyte>(GET_G(color));
-  col[2] = static_cast<GLubyte>(GET_B(color));
-  col[3] = static_cast<GLubyte>(GET_A(color));
+  col[0] = UTILS::GL::GetChannelFromARGB(UTILS::GL::ColorChannel::R, color);
+  col[1] = UTILS::GL::GetChannelFromARGB(UTILS::GL::ColorChannel::G, color);
+  col[2] = UTILS::GL::GetChannelFromARGB(UTILS::GL::ColorChannel::B, color);
+  col[3] = UTILS::GL::GetChannelFromARGB(UTILS::GL::ColorChannel::A, color);
 
   for (unsigned int i = 0; i < 4; i++)
   {
