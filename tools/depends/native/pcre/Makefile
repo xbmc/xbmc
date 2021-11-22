@@ -5,9 +5,9 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=pcre
-VERSION=8.42
+VERSION=8.45
 SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
+ARCHIVE=$(SOURCE).tar.bz2
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) --disable-cpp \
