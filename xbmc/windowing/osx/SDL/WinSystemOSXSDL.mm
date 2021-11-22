@@ -849,7 +849,6 @@ bool CWinSystemOSX::DestroyWindow()
   return true;
 }
 
-extern "C" void SDL_SetWidthHeight(int w, int h);
 void ResizeWindowInternal(int newWidth, int newHeight, int newLeft, int newTop, NSView* last_view)
 {
   if (last_view && [last_view window])
@@ -1018,6 +1017,19 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     [windowedFullScreenwindow setContentSize:NSMakeSize(m_nWidth, m_nHeight)];
     [windowedFullScreenwindow update];
     [blankView setFrameSize:NSMakeSize(m_nWidth, m_nHeight)];
+
+    // force SDL's window origin to be at zero:
+    // on Monterey, X coordinate becomes non-zero somewhere after this method returns
+    const auto twoSeconds = dispatch_time(DISPATCH_TIME_NOW, 2LL * NSEC_PER_SEC);
+    dispatch_after(twoSeconds, dispatch_get_main_queue(), ^{
+      for (NSWindow* w in NSApp.windows)
+      {
+        if (w == windowedFullScreenwindow)
+          continue;
+        [w setFrameOrigin:NSZeroPoint];
+        break;
+      }
+    });
 
     // Obtain windowed pixel format and create a new context.
     newContext = CreateWindowedContext(cur_context);
