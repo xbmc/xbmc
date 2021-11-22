@@ -51,9 +51,9 @@ bool CEventPacket::Parse(int datasize, const void *data)
 
   // get payload size
   buf += 4;
-  m_iPayloadSize = ntohs(*((uint16_t*)buf));
+  uint16_t payloadSize = ntohs(*(reinterpret_cast<uint16_t*>(buf)));
 
-  if ((m_iPayloadSize + HEADER_SIZE) != (unsigned int)datasize)
+  if ((payloadSize + HEADER_SIZE) != static_cast<uint16_t>(datasize))
     return false;
 
   // get the client's token
@@ -63,25 +63,18 @@ bool CEventPacket::Parse(int datasize, const void *data)
   buf += 4;
 
   // get payload
-  if (m_iPayloadSize)
+  if (payloadSize > 0)
   {
     // forward past reserved bytes
     buf += 10;
 
-    if (m_pPayload)
-    {
-      free(m_pPayload);
-      m_pPayload = NULL;
-    }
-
-    m_pPayload = malloc(m_iPayloadSize);
-    if (!m_pPayload)
-    {
-      CLog::Log(LOGERROR, "ES: Out of memory");
-      return false;
-    }
-    memcpy(m_pPayload, buf, (size_t)m_iPayloadSize);
+    m_pPayload = std::vector<uint8_t>(buf, buf + payloadSize);
   }
   m_bValid = true;
   return true;
+}
+
+void CEventPacket::SetPayload(std::vector<uint8_t> payload)
+{
+  m_pPayload = std::move(payload);
 }

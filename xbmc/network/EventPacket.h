@@ -8,7 +8,9 @@
 
 #pragma once
 
+#include <cstdint>
 #include <stdlib.h>
+#include <vector>
 
 namespace EVENTPACKET
 {
@@ -194,61 +196,31 @@ namespace EVENTPACKET
   class CEventPacket
   {
   public:
-    CEventPacket()
-    {
-      m_bValid = false;
-      m_iSeq = 0;
-      m_iTotalPackets = 0;
-      m_pPayload = NULL;
-      m_iPayloadSize = 0;
-      m_iClientToken = 0;
-      m_cMajVer = '0';
-      m_cMinVer = '0';
-      m_eType = PT_LAST;
-    }
+    CEventPacket() = default;
 
-    CEventPacket(int datasize, const void* data)
-    {
-      m_bValid = false;
-      m_iSeq = 0;
-      m_iTotalPackets = 0;
-      m_pPayload = NULL;
-      m_iPayloadSize = 0;
-      m_iClientToken = 0;
-      m_cMajVer = '0';
-      m_cMinVer = '0';
-      m_eType = PT_LAST;
+    explicit CEventPacket(int datasize, const void* data) { Parse(datasize, data); }
 
-      Parse(datasize, data);
-    }
-
-    virtual      ~CEventPacket() { free(m_pPayload); }
+    virtual ~CEventPacket() = default;
     virtual bool Parse(int datasize, const void *data);
     bool         IsValid() const { return m_bValid; }
     PacketType   Type() const { return m_eType; }
     unsigned int Size() const { return m_iTotalPackets; }
     unsigned int Sequence() const { return m_iSeq; }
-    void*        Payload() { return m_pPayload; }
-    unsigned int PayloadSize() const { return m_iPayloadSize; }
+    const uint8_t* Payload() const { return m_pPayload.data(); }
+    unsigned int PayloadSize() const { return m_pPayload.size(); }
     unsigned int ClientToken() const { return m_iClientToken; }
-    void         SetPayload(unsigned int psize, void *payload)
-    {
-      free(m_pPayload);
-      m_pPayload = payload;
-      m_iPayloadSize = psize;
-    }
+    void SetPayload(std::vector<uint8_t> payload);
 
   protected:
-    bool           m_bValid;
-    unsigned int   m_iSeq;
-    unsigned int   m_iTotalPackets;
+    bool m_bValid{false};
+    unsigned int m_iSeq{0};
+    unsigned int m_iTotalPackets{0};
     unsigned char  m_header[32];
-    void*          m_pPayload;
-    unsigned int   m_iPayloadSize;
-    unsigned int   m_iClientToken;
-    unsigned char  m_cMajVer;
-    unsigned char  m_cMinVer;
-    PacketType     m_eType;
+    std::vector<uint8_t> m_pPayload;
+    unsigned int m_iClientToken{0};
+    unsigned char m_cMajVer{'0'};
+    unsigned char m_cMinVer{'0'};
+    PacketType m_eType{PT_LAST};
   };
 
 }
