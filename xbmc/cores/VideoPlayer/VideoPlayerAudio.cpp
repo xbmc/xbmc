@@ -387,6 +387,12 @@ void CVideoPlayerAudio::Process()
 
       if (bPacketDrop)
       {
+        if (m_syncState != IDVDStreamPlayer::SYNC_STARTING)
+        {
+          m_audioSink.Drain();
+          m_audioSink.Flush();
+          audioframe.nb_frames = 0;
+        }
         m_syncState = IDVDStreamPlayer::SYNC_STARTING;
         continue;
       }
