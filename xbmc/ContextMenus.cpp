@@ -81,7 +81,8 @@ bool CAddRemoveFavourite::IsVisible(const CFileItem& item) const
           !URIUtils::IsProtocol(item.GetPath(), "newsmartplaylist") &&
           !URIUtils::IsProtocol(item.GetPath(), "newtag") &&
           !URIUtils::IsProtocol(item.GetPath(), "musicsearch") &&
-          // hide this item for all PVR EPG/timers/search except EPG/timer/timer rules root folders
+          // Hide this item for all PVR EPG/timers/search except EPG/timer/timer rules/search root
+          // folders.
           !StringUtils::StartsWith(item.GetPath(), "pvr://guide/") &&
           !StringUtils::StartsWith(item.GetPath(), "pvr://timers/") &&
           !StringUtils::StartsWith(item.GetPath(), "pvr://search/")) ||
@@ -89,7 +90,8 @@ bool CAddRemoveFavourite::IsVisible(const CFileItem& item) const
          item.GetPath() == "pvr://timers/tv/timers/" ||
          item.GetPath() == "pvr://timers/radio/timers/" ||
          item.GetPath() == "pvr://timers/tv/rules/" ||
-         item.GetPath() == "pvr://timers/radio/rules/";
+         item.GetPath() == "pvr://timers/radio/rules/" || item.GetPath() == "pvr://search/tv/" ||
+         item.GetPath() == "pvr://search/radio/";
 }
 
 bool CAddRemoveFavourite::Execute(const CFileItemPtr& item) const
