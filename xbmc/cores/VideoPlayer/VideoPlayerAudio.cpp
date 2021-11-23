@@ -390,9 +390,21 @@ void CVideoPlayerAudio::Process()
       DemuxPacket* pPacket = static_cast<CDVDMsgDemuxerPacket*>(pMsg)->GetPacket();
       bool bPacketDrop  = static_cast<CDVDMsgDemuxerPacket*>(pMsg)->GetPacketDrop();
 
-      if (bPacketDrop ||
-          (!m_processInfo.IsTempoAllowed(static_cast<float>(m_speed)/DVD_PLAYSPEED_NORMAL) &&
-           m_syncState == IDVDStreamPlayer::SYNC_INSYNC))
+      if (bPacketDrop)
+      {
+        pMsg->Release();
+        if (m_syncState != IDVDStreamPlayer::SYNC_STARTING)
+        {
+          m_audioSink.Drain();
+          m_audioSink.Flush();
+          audioframe.nb_frames = 0;
+        }
+        m_syncState = IDVDStreamPlayer::SYNC_STARTING;
+        continue;
+      }
+
+      if (!m_processInfo.IsTempoAllowed(static_cast<float>(m_speed) / DVD_PLAYSPEED_NORMAL) &&
+          m_syncState == IDVDStreamPlayer::SYNC_INSYNC)
       {
         pMsg->Release();
         continue;
