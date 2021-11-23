@@ -14,7 +14,12 @@
 #if defined (HAVE_LIBVA)
 #include <va/va_drm.h>
 #include "cores/VideoPlayer/DVDCodecs/Video/VAAPI.h"
+#if defined(HAS_GL)
+#include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererVAAPIGL.h"
+#endif
+#if defined(HAS_GLES)
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererVAAPIGLES.h"
+#endif
 
 namespace KODI
 {
@@ -64,11 +69,21 @@ void VAAPIRegister(CVaapiProxy *winSystem, bool deepColor)
   VAAPI::CDecoder::Register(winSystem, deepColor);
 }
 
-void VAAPIRegisterRender(CVaapiProxy *winSystem, bool &general, bool &deepColor)
+#if defined(HAS_GL)
+void VAAPIRegisterRenderGL(CVaapiProxy* winSystem, bool& general, bool& deepColor)
 {
-  CRendererVAAPI::Register(winSystem, winSystem->vaDpy, winSystem->eglDisplay, general, deepColor);
+  CRendererVAAPIGL::Register(winSystem, winSystem->vaDpy, winSystem->eglDisplay, general,
+                             deepColor);
 }
+#endif
 
+#if defined(HAS_GLES)
+void VAAPIRegisterRenderGLES(CVaapiProxy* winSystem, bool& general, bool& deepColor)
+{
+  CRendererVAAPIGLES::Register(winSystem, winSystem->vaDpy, winSystem->eglDisplay, general,
+                               deepColor);
+}
+#endif
 }
 }
 }
@@ -105,11 +120,18 @@ void VAAPIRegister(CVaapiProxy *winSystem, bool deepColor)
 
 }
 
-void VAAPIRegisterRender(CVaapiProxy *winSystem, bool &general, bool &deepColor)
+#if defined(HAS_GL)
+void VAAPIRegisterRenderGL(CVaapiProxy* winSystem, bool& general, bool& deepColor)
 {
 
 }
+#endif
 
+#if defined(HAS_GLES)
+void VAAPIRegisterRenderGLES(CVaapiProxy* winSystem, bool& general, bool& deepColor)
+{
+}
+#endif
 }
 }
 }
