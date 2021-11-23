@@ -54,7 +54,7 @@ if [ "@APP_VERSION_TAG_LC@" != "" ]; then
   REVISION=$REVISION~@APP_VERSION_TAG_LC@
 fi
 
-ARCHIVE=${PACKAGE}_${VERSION}-${REVISION}_macosx-intel-${ARCHITECTURE}
+ARCHIVE=${PACKAGE}_${VERSION}-${REVISION}_macosx-${ARCHITECTURE}
 
 echo Creating $PACKAGE package version $VERSION revision $REVISION
 dmgPath="$DIRNAME/$ARCHIVE.dmg"

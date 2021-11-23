@@ -34,10 +34,7 @@ endif
 
 ifeq ($(OS),osx)
   EXCLUDED_DEPENDS = libusb
-  ifeq ($(CPU),arm64)
-    # ToDo: support all regular depends for apple silicon
-    EXCLUDED_DEPENDS += pythonmodule-pil pythonmodule-pycryptodome pythonmodule-setuptools
-  else
+  ifneq ($(CPU),arm64)
     DEPENDS += libsdl
   endif
 endif
