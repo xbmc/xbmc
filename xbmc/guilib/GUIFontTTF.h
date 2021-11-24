@@ -127,8 +127,8 @@ protected:
 
   struct RunInfo
   {
-    int startOffset;
-    int endOffset;
+    unsigned int startOffset;
+    unsigned int endOffset;
     hb_buffer_t* buffer;
     hb_script_t script;
     hb_glyph_info_t* glyphInfos;
