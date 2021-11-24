@@ -303,8 +303,6 @@ bool CGUIFontTTF::Load(
   m_maxChars = 0;
   m_numChars = 0;
 
-  m_strFilename = strFilename;
-
   m_textureHeight = 0;
   m_textureWidth = ((m_cellHeight * CHARS_PER_TEXTURE_LINE) & ~63) + 64;
 

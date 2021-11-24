@@ -157,7 +157,6 @@ protected:
                         bool scrolling);
 
   float m_height{0.0f};
-  std::string m_strFilename;
 
   // Stuff for pre-rendering for speed
   Character* GetCharacter(character_t letter, FT_UInt glyphIndex);
