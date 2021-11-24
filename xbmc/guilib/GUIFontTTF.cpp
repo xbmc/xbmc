@@ -328,7 +328,7 @@ bool CGUIFontTTF::Load(
 
 void CGUIFontTTF::Begin()
 {
-  if (m_nestedBeginCount == 0 && m_texture != nullptr && FirstBegin())
+  if (m_nestedBeginCount == 0 && m_texture && FirstBegin())
   {
     m_vertexTrans.clear();
     m_vertex.clear();
@@ -885,7 +885,7 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch, 
         }
 
         std::unique_ptr<CTexture> newTexture = ReallocTexture(newHeight);
-        if (newTexture == nullptr)
+        if (!newTexture)
         {
           FT_Done_Glyph(glyph);
           CLog::Log(LOGDEBUG, "CGUIFontTTF::{}: Failed to allocate new texture of height {}",
@@ -896,7 +896,7 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch, 
       }
     }
 
-    if (m_texture == nullptr)
+    if (!m_texture)
     {
       FT_Done_Glyph(glyph);
       CLog::Log(LOGDEBUG, "CGUIFontTTF::{}: no texture to cache character to", __func__);
