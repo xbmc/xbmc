@@ -34,12 +34,12 @@
 
 #define ELEMENT_ARRAY_MAX_CHAR_INDEX (1000)
 
-CGUIFontTTF* CGUIFontTTF::CreateGUIFontTTF(const std::string& fileName)
+CGUIFontTTF* CGUIFontTTF::CreateGUIFontTTF(const std::string& fontIdent)
 {
-  return new CGUIFontTTFGL(fileName);
+  return new CGUIFontTTFGL(fontIdent);
 }
 
-CGUIFontTTFGL::CGUIFontTTFGL(const std::string& strFileName) : CGUIFontTTF(strFileName)
+CGUIFontTTFGL::CGUIFontTTFGL(const std::string& fontIdent) : CGUIFontTTF(fontIdent)
 {
   m_updateY1 = 0;
   m_updateY2 = 0;

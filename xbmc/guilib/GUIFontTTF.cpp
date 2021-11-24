@@ -158,8 +158,8 @@ private:
 XBMC_GLOBAL_REF(CFreeTypeLibrary, g_freeTypeLibrary); // our freetype library
 #define g_freeTypeLibrary XBMC_GLOBAL_USE(CFreeTypeLibrary)
 
-CGUIFontTTF::CGUIFontTTF(const std::string& strFileName)
-  : m_staticCache(*this), m_dynamicCache(*this)
+CGUIFontTTF::CGUIFontTTF(const std::string& fontIdent)
+  : m_fontIdent(fontIdent), m_staticCache(*this), m_dynamicCache(*this)
 {
   m_texture = NULL;
   m_char = NULL;
@@ -171,7 +171,6 @@ CGUIFontTTF::CGUIFontTTF(const std::string& strFileName)
   m_face = NULL;
   m_stroker = NULL;
   memset(m_charquick, 0, sizeof(m_charquick));
-  m_strFileName = strFileName;
   m_referenceCount = 0;
   m_originX = m_originY = 0.0f;
   m_cellBaseLine = m_cellHeight = 0;
@@ -249,7 +248,6 @@ void CGUIFontTTF::Clear()
   m_vertexTrans.clear();
   m_vertex.clear();
 
-  m_strFileName.clear();
   m_fontFileInMemory.clear();
 }
 

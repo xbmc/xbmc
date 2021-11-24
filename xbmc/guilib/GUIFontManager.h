@@ -85,7 +85,7 @@ protected:
   void ReloadTTFFonts();
   static void RescaleFontSizeAndAspect(float *size, float *aspect, const RESOLUTION_INFO &sourceRes, bool preserveAspect);
   void LoadFonts(const TiXmlNode* fontNode);
-  CGUIFontTTF* GetFontFile(const std::string& strFontFile);
+  CGUIFontTTF* GetFontFile(const std::string& fontIdent);
   static void GetStyle(const TiXmlNode *fontNode, int &iStyle);
 
   std::vector<CGUIFont*> m_vecFonts;
