@@ -15,13 +15,20 @@ COPYDIRS = system addons media
 GCC_VERSION=$(shell $(CC) -dumpversion)
 ZIP=zip
 
-SIGN_STORE=~/.android/debug.keystore
-SIGN_STOREPASS=android
-SIGN_KEY=androiddebugkey
-SIGN_KEYPASS=
+ifeq ($(KODI_ANDROID_STORE_FILE),)
+export KODI_ANDROID_STORE_FILE:=$(HOME)/.android/debug.keystore
+endif
 
-ifneq ($(strip $(SIGN_KEYPASS)),)
-SIGN_KEYPASS_OPT=-keypass $(SIGN_KEYPASS)
+ifeq ($(KODI_ANDROID_STORE_PASSWORD),)
+export KODI_ANDROID_STORE_PASSWORD:=android
+endif
+
+ifeq ($(KODI_ANDROID_KEY_ALIAS),)
+export KODI_ANDROID_KEY_ALIAS:=androiddebugkey
+endif
+
+ifeq ($(KODI_ANDROID_KEY_PASSWORD),)
+export KODI_ANDROID_KEY_PASSWORD:=android
 endif
 
 #this fixes a android ndk fuckup where the paths to
@@ -54,17 +61,11 @@ libs= $(DSTLIBS)
 
 all: apk
 
-apk: apk-clean sharedapk package apk-sign
+apk: apk-clean sharedapk package
 
 obb: apk-clean sharedobb
 
-apk-unsigned: apk-clean sharedapk package
-
-apk-obb: apk-clean sharedobb package apk-sign
-
-apk-obb-unsigned: apk-clean sharedobb package
-
-apk-noobb: apk-clean package apk-sign
+apk-obb: apk-clean sharedobb package
 
 xbmc/assets:
 	mkdir -p xbmc/assets
@@ -134,16 +135,9 @@ java: res
 	@cp -R xbmc/src/* xbmc/java/$(APP_PACKAGE_DIR)/
 
 package: libs python java
-	@echo "Gradle build..."
-	ANDROID_HOME=$(SDKROOT) ./gradlew assemble$(BUILD_TYPE)Unsigned
-	@cp xbmc/build/outputs/apk/$(BUILD_TYPE_LC)Unsigned/xbmc-$(BUILD_TYPE_LC)Unsigned-unsigned.apk images/@APP_NAME_LC@app-debug-$(CPU)-unaligned.apk
-
-apk-sign:
-	@echo "Signing..."
-	@jarsigner -sigalg MD5withRSA -digestalg SHA1 -keystore $(SIGN_STORE) -storepass $(SIGN_STOREPASS) $(SIGN_KEYPASS_OPT) images/@APP_NAME_LC@app-debug-$(CPU)-unaligned.apk $(SIGN_KEY)
-	@$(ZIPALIGN) -f 4 images/@APP_NAME_LC@app-debug-$(CPU)-unaligned.apk $(CMAKE_SOURCE_DIR)/@APP_NAME_LC@app-$(CPU)-debug.apk
-	@rm images/@APP_NAME_LC@app-debug-$(CPU)-unaligned.apk
-	@echo "$(CMAKE_SOURCE_DIR)/@APP_NAME_LC@app-$(CPU)-debug.apk created"
+	@echo "Gradle build and sign..."
+	ANDROID_HOME=$(SDKROOT) ./gradlew assemble$(BUILD_TYPE)
+	@cp xbmc/build/outputs/apk/$(BUILD_TYPE_LC)/xbmc-$(BUILD_TYPE_LC).apk $(CMAKE_SOURCE_DIR)/@APP_NAME_LC@app-$(CPU)-$(BUILD_TYPE_LC).apk
 
 $(PREFIX)/lib/xbmc/lib@APP_NAME_LC@.so: $(SRCLIBS)
 	$(MAKE) -C ../../depends/target/xbmc

@@ -3,13 +3,12 @@ XBMC_PLATFORM_DIR=android
 . $WORKSPACE/tools/buildsteps/defaultenv
 
 if [ "x$BUILD_OBB" == "xtrue" ]; then
-  TARGET=apk-obb-unsigned
+  TARGET=apk-obb
 else
-  TARGET=apk-unsigned
+  TARGET=apk
 fi
 
 cd $WORKSPACE/build;make -j$BUILDTHREADS $TARGET
-$RUN_SIGNSTEP
 
 cd $WORKSPACE
 
