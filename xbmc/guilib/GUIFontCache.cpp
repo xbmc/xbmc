@@ -132,7 +132,7 @@ Value& CGUIFontCache<Position, Value>::Lookup(Position& pos,
                                               unsigned int nowMillis,
                                               bool& dirtyCache)
 {
-  if (m_impl == nullptr)
+  if (!m_impl)
     m_impl = new CGUIFontCacheImpl<Position, Value>(this);
 
   return m_impl->Lookup(pos, colors, text, alignment, maxPixelWidth, scrolling, nowMillis,
@@ -241,6 +241,6 @@ template void CGUIFontCache<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicVa
 
 void CVertexBuffer::clear()
 {
-  if (m_font != nullptr)
+  if (m_font)
     m_font->DestroyVertexBuffer(*this);
 }
