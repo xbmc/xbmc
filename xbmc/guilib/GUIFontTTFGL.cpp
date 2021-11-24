@@ -351,9 +351,8 @@ std::unique_ptr<CTexture> CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
 
   if (!newTexture || newTexture->GetPixels() == nullptr)
   {
-    CLog::Log(LOGERROR,
-              "GUIFontTTFGL::CacheCharacter: Error creating new cache texture for size {:f}",
-              m_height);
+    CLog::Log(LOGERROR, "GUIFontTTFGL::{}: Error creating new cache texture for size {:f}",
+              __func__, m_height);
     return nullptr;
   }
   m_textureHeight = newTexture->GetHeight();
@@ -361,8 +360,8 @@ std::unique_ptr<CTexture> CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
   m_textureWidth = newTexture->GetWidth();
   m_textureScaleX = 1.0f / m_textureWidth;
   if (m_textureHeight < newHeight)
-    CLog::Log(LOGWARNING, "{}: allocated new texture with height of {}, requested {}", __FUNCTION__,
-              m_textureHeight, newHeight);
+    CLog::Log(LOGWARNING, "GUIFontTTFGL::{}: allocated new texture with height of {}, requested {}",
+              __func__, m_textureHeight, newHeight);
   m_staticCache.Flush();
   m_dynamicCache.Flush();
 

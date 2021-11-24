@@ -79,7 +79,7 @@ public:
       FT_Init_FreeType(&m_library);
     if (!m_library)
     {
-      CLog::Log(LOGERROR, "Unable to initialize freetype library");
+      CLog::Log(LOGERROR, "CFreeTypeLibrary::{}: Unable to initialize freetype library", __func__);
       return nullptr;
     }
 
@@ -780,13 +780,15 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr, FT_UInt glyph
     End();
   if (!CacheCharacter(letter, style, m_char + low, glyphIndex))
   { // unable to cache character - try clearing them all out and starting over
-    CLog::Log(LOGDEBUG, "{}: Unable to cache character.  Clearing character cache of {} characters",
-              __FUNCTION__, m_numChars);
+    CLog::Log(
+        LOGDEBUG,
+        "CGUIFontTTF::{}: Unable to cache character.  Clearing character cache of {} characters",
+        __func__, m_numChars);
     ClearCharacterCache();
     low = 0;
     if (!CacheCharacter(letter, style, m_char + low, glyphIndex))
     {
-      CLog::Log(LOGERROR, "{}: Unable to cache character (out of memory?)", __FUNCTION__);
+      CLog::Log(LOGERROR, "CGUIFontTTF::{}: Unable to cache character (out of memory?)", __func__);
       if (nestedBeginCount)
         Begin();
       m_nestedBeginCount = nestedBeginCount;
@@ -821,7 +823,7 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch, 
   FT_Glyph glyph = nullptr;
   if (FT_Load_Glyph(m_face, glyphIndex, FT_LOAD_TARGET_LIGHT))
   {
-    CLog::Log(LOGDEBUG, "{} Failed to load glyph {:x}", __FUNCTION__,
+    CLog::Log(LOGDEBUG, "CGUIFontTTF::{}: Failed to load glyph {:x}", __func__,
               static_cast<uint32_t>(letter));
     return false;
   }
@@ -837,7 +839,8 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch, 
   // grab the glyph
   if (FT_Get_Glyph(m_face->glyph, &glyph))
   {
-    CLog::Log(LOGDEBUG, "{} Failed to get glyph {:x}", __FUNCTION__, static_cast<uint32_t>(letter));
+    CLog::Log(LOGDEBUG, "CGUIFontTTF::{}: Failed to get glyph {:x}", __func__,
+              static_cast<uint32_t>(letter));
     return false;
   }
   if (m_stroker)
@@ -845,7 +848,7 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch, 
   // render the glyph
   if (FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, nullptr, 1))
   {
-    CLog::Log(LOGDEBUG, "{} Failed to render glyph {:x} to a bitmap", __FUNCTION__,
+    CLog::Log(LOGDEBUG, "CGUIFontTTF::{}: Failed to render glyph {:x} to a bitmap", __func__,
               static_cast<uint32_t>(letter));
     return false;
   }
@@ -874,8 +877,9 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch, 
         // check for max height
         if (newHeight > m_renderSystem->GetMaxTextureSize())
         {
-          CLog::Log(LOGDEBUG, "{}: New cache texture is too large ({} > {} pixels long)",
-                    __FUNCTION__, newHeight, m_renderSystem->GetMaxTextureSize());
+          CLog::Log(LOGDEBUG,
+                    "CGUIFontTTF::{}: New cache texture is too large ({} > {} pixels long)",
+                    __func__, newHeight, m_renderSystem->GetMaxTextureSize());
           FT_Done_Glyph(glyph);
           return false;
         }
@@ -884,8 +888,8 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch, 
         if (newTexture == nullptr)
         {
           FT_Done_Glyph(glyph);
-          CLog::Log(LOGDEBUG, "{}: Failed to allocate new texture of height {}", __FUNCTION__,
-                    newHeight);
+          CLog::Log(LOGDEBUG, "CGUIFontTTF::{}: Failed to allocate new texture of height {}",
+                    __func__, newHeight);
           return false;
         }
         m_texture = std::move(newTexture);
@@ -895,7 +899,7 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch, 
     if (m_texture == nullptr)
     {
       FT_Done_Glyph(glyph);
-      CLog::Log(LOGDEBUG, "{}: no texture to cache character to", __FUNCTION__);
+      CLog::Log(LOGDEBUG, "CGUIFontTTF::{}: no texture to cache character to", __func__);
       return false;
     }
   }
