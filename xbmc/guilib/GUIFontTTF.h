@@ -156,7 +156,7 @@ protected:
                         float maxPixelWidth,
                         bool scrolling);
 
-  float m_height;
+  float m_height{0.0f};
   std::string m_strFilename;
 
   // Stuff for pre-rendering for speed
@@ -185,40 +185,40 @@ protected:
   std::unique_ptr<CTexture>
       m_texture; // texture that holds our rendered characters (8bit alpha only)
 
-  unsigned int m_textureWidth; // width of our texture
-  unsigned int m_textureHeight; // height of our texture
-  int m_posX; // current position in the texture
-  int m_posY;
+  unsigned int m_textureWidth{0}; // width of our texture
+  unsigned int m_textureHeight{0}; // height of our texture
+  int m_posX{0}; // current position in the texture
+  int m_posY{0};
 
   /*! \brief the height of each line in the texture.
    Accounts for spacing between lines to avoid characters overlapping.
    */
   unsigned int GetTextureLineHeight() const;
 
-  UTILS::COLOR::Color m_color;
+  UTILS::COLOR::Color m_color{UTILS::COLOR::NONE};
 
-  Character* m_char; // our characters
-  Character* m_charquick[LOOKUPTABLE_SIZE]; // ascii chars (7 styles) here
-  int m_maxChars; // size of character array (can be incremented)
-  int m_numChars; // the current number of cached characters
+  Character* m_char{nullptr}; // our characters
+  Character* m_charquick[LOOKUPTABLE_SIZE]{nullptr}; // ascii chars (7 styles) here
+  int m_maxChars{0}; // size of character array (can be incremented)
+  int m_numChars{0}; // the current number of cached characters
 
-  float m_ellipsesWidth; // this is used every character (width of '.')
+  float m_ellipsesWidth{0.0f}; // this is used every character (width of '.')
 
-  unsigned int m_cellBaseLine;
-  unsigned int m_cellHeight;
+  unsigned int m_cellBaseLine{0};
+  unsigned int m_cellHeight{0};
 
-  unsigned int m_nestedBeginCount; // speedups
+  unsigned int m_nestedBeginCount{0}; // speedups
 
   // freetype stuff
-  FT_Face m_face;
-  FT_Stroker m_stroker;
+  FT_Face m_face{nullptr};
+  FT_Stroker m_stroker{nullptr};
 
-  hb_font_t* m_hbFont = nullptr;
+  hb_font_t* m_hbFont{nullptr};
 
-  float m_originX;
-  float m_originY;
+  float m_originX{0.0f};
+  float m_originY{0.0f};
 
-  unsigned int m_nTexture;
+  unsigned int m_nTexture{0};
 
   struct CTranslatedVertices
   {
@@ -243,8 +243,8 @@ protected:
   std::vector<CTranslatedVertices> m_vertexTrans;
   std::vector<SVertex> m_vertex;
 
-  float m_textureScaleX;
-  float m_textureScaleY;
+  float m_textureScaleX{0.0f};
+  float m_textureScaleY{0.0f};
 
   const std::string m_fontIdent;
   std::vector<uint8_t>
@@ -253,7 +253,7 @@ protected:
   CGUIFontCache<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue> m_staticCache;
   CGUIFontCache<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue> m_dynamicCache;
 
-  CRenderSystemBase* m_renderSystem = nullptr;
+  CRenderSystemBase* m_renderSystem;
 
 private:
   float GetTabSpaceLength();
@@ -262,5 +262,5 @@ private:
   virtual void LastEnd() = 0;
   CGUIFontTTF(const CGUIFontTTF&) = delete;
   CGUIFontTTF& operator=(const CGUIFontTTF&) = delete;
-  int m_referenceCount;
+  int m_referenceCount{0};
 };

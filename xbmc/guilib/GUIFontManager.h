@@ -47,8 +47,8 @@ struct OrigFontInfo
 class GUIFontManager : public IMsgTargetCallback
 {
 public:
-  GUIFontManager(void);
-  ~GUIFontManager(void) override;
+  GUIFontManager() = default;
+  ~GUIFontManager() override;
 
   bool OnMessage(CGUIMessage& message) override;
 
@@ -95,7 +95,7 @@ protected:
   std::vector<CGUIFontTTF*> m_vecFontFiles;
   std::vector<OrigFontInfo> m_vecFontInfo;
   RESOLUTION_INFO m_skinResolution;
-  bool m_canReload;
+  bool m_canReload{true};
 };
 
 /*!

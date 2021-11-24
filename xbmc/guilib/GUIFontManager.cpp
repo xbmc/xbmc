@@ -39,12 +39,7 @@
 
 using namespace ADDON;
 
-GUIFontManager::GUIFontManager(void)
-{
-  m_canReload = true;
-}
-
-GUIFontManager::~GUIFontManager(void)
+GUIFontManager::~GUIFontManager()
 {
   Clear();
 }

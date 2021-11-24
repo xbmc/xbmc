@@ -41,8 +41,8 @@ protected:
   static GLuint m_elementArrayHandle;
 
 private:
-  unsigned int m_updateY1;
-  unsigned int m_updateY2;
+  unsigned int m_updateY1{0};
+  unsigned int m_updateY2{0};
 
   enum TextureStatus
   {
@@ -52,7 +52,7 @@ private:
     TEXTURE_UPDATED,
   };
 
-  TextureStatus m_textureStatus;
+  TextureStatus m_textureStatus{TEXTURE_VOID};
 
   static bool m_staticVertexBufferCreated;
 };
