@@ -59,7 +59,7 @@
 class CFreeTypeLibrary
 {
 public:
-  CFreeTypeLibrary() { m_library = NULL; }
+  CFreeTypeLibrary() { m_library = nullptr; }
 
   virtual ~CFreeTypeLibrary()
   {
@@ -78,7 +78,7 @@ public:
     if (!m_library)
     {
       CLog::Log(LOGERROR, "Unable to initialize freetype library");
-      return NULL;
+      return nullptr;
     }
 
     FT_Face face;
@@ -86,7 +86,7 @@ public:
     // ok, now load the font face
     CURL realFile(CSpecialProtocol::TranslatePath(filename));
     if (realFile.GetFileName().empty())
-      return NULL;
+      return nullptr;
 
     memoryBuf.clear();
 #ifndef TARGET_WINDOWS
@@ -98,14 +98,14 @@ public:
       //                   but freetype expect filename in ANSI encoding
       XFILE::CFile f;
       if (f.LoadFile(realFile, memoryBuf) <= 0)
-        return NULL;
+        return nullptr;
       if (FT_New_Memory_Face(m_library, reinterpret_cast<const FT_Byte*>(memoryBuf.data()),
                              memoryBuf.size(), 0, &face) != 0)
-        return NULL;
+        return nullptr;
     }
 #ifndef TARGET_WINDOWS
     else if (FT_New_Face(m_library, realFile.GetFileName().c_str(), 0, &face))
-      return NULL;
+      return nullptr;
 #endif // ! TARGET_WINDOWS
 
     unsigned int ydpi = 72; // 72 points to the inch is the freetype default
@@ -118,7 +118,7 @@ public:
     if (FT_Set_Char_Size(face, 0, (int)(size * 64 + 0.5f), xdpi, ydpi))
     {
       FT_Done_Face(face);
-      return NULL;
+      return nullptr;
     }
 
     return face;
@@ -127,11 +127,11 @@ public:
   FT_Stroker GetStroker()
   {
     if (!m_library)
-      return NULL;
+      return nullptr;
 
     FT_Stroker stroker;
     if (FT_Stroker_New(m_library, &stroker))
-      return NULL;
+      return nullptr;
 
     return stroker;
   };
@@ -158,15 +158,15 @@ XBMC_GLOBAL_REF(CFreeTypeLibrary, g_freeTypeLibrary); // our freetype library
 CGUIFontTTF::CGUIFontTTF(const std::string& fontIdent)
   : m_fontIdent(fontIdent), m_staticCache(*this), m_dynamicCache(*this)
 {
-  m_texture = NULL;
-  m_char = NULL;
+  m_texture = nullptr;
+  m_char = nullptr;
   m_maxChars = 0;
   m_nestedBeginCount = 0;
 
   m_vertex.reserve(4 * 1024);
 
-  m_face = NULL;
-  m_stroker = NULL;
+  m_face = nullptr;
+  m_stroker = nullptr;
   memset(m_charquick, 0, sizeof(m_charquick));
   m_referenceCount = 0;
   m_originX = m_originY = 0.0f;
@@ -207,7 +207,7 @@ void CGUIFontTTF::ClearCharacterCache()
 
   DeleteHardwareTexture();
 
-  m_texture = NULL;
+  m_texture = nullptr;
   delete[] m_char;
   m_char = new Character[CHAR_CHUNK];
   memset(m_charquick, 0, sizeof(m_charquick));
@@ -222,10 +222,10 @@ void CGUIFontTTF::ClearCharacterCache()
 void CGUIFontTTF::Clear()
 {
   m_texture.reset();
-  m_texture = NULL;
+  m_texture = nullptr;
   delete[] m_char;
   memset(m_charquick, 0, sizeof(m_charquick));
-  m_char = NULL;
+  m_char = nullptr;
   m_maxChars = 0;
   m_numChars = 0;
   m_posX = 0;
@@ -237,10 +237,10 @@ void CGUIFontTTF::Clear()
   m_hbFont = nullptr;
   if (m_face)
     g_freeTypeLibrary.ReleaseFont(m_face);
-  m_face = NULL;
+  m_face = nullptr;
   if (m_stroker)
     g_freeTypeLibrary.ReleaseStroker(m_stroker);
-  m_stroker = NULL;
+  m_stroker = nullptr;
 
   m_vertexTrans.clear();
   m_vertex.clear();
@@ -311,9 +311,9 @@ bool CGUIFontTTF::Load(
   m_height = height;
 
   m_texture.reset();
-  m_texture = NULL;
+  m_texture = nullptr;
   delete[] m_char;
-  m_char = NULL;
+  m_char = nullptr;
 
   m_maxChars = 0;
   m_numChars = 0;
@@ -343,7 +343,7 @@ bool CGUIFontTTF::Load(
 
 void CGUIFontTTF::Begin()
 {
-  if (m_nestedBeginCount == 0 && m_texture != NULL && FirstBegin())
+  if (m_nestedBeginCount == 0 && m_texture != nullptr && FirstBegin())
   {
     m_vertexTrans.clear();
     m_vertex.clear();
@@ -744,7 +744,7 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr, FT_UInt glyph
 
   // ignore linebreaks
   if (letter == L'\r')
-    return NULL;
+    return nullptr;
 
   // quick access to ascii chars
   if (letter < 255 && glyphIndex < 255)
@@ -807,7 +807,7 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr, FT_UInt glyph
       if (nestedBeginCount)
         Begin();
       m_nestedBeginCount = nestedBeginCount;
-      return NULL;
+      return nullptr;
     }
   }
   if (nestedBeginCount)
@@ -835,7 +835,7 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch, 
   if (!glyphIndex)
     glyphIndex = FT_Get_Char_Index(m_face, letter);
 
-  FT_Glyph glyph = NULL;
+  FT_Glyph glyph = nullptr;
   if (FT_Load_Glyph(m_face, glyphIndex, FT_LOAD_TARGET_LIGHT))
   {
     CLog::Log(LOGDEBUG, "{} Failed to load glyph {:x}", __FUNCTION__,
@@ -860,7 +860,7 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch, 
   if (m_stroker)
     FT_Glyph_StrokeBorder(&glyph, m_stroker, 0, 1);
   // render the glyph
-  if (FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, NULL, 1))
+  if (FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, nullptr, 1))
   {
     CLog::Log(LOGDEBUG, "{} Failed to render glyph {:x} to a bitmap", __FUNCTION__,
               static_cast<uint32_t>(letter));
@@ -898,7 +898,7 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch, 
         }
 
         std::unique_ptr<CTexture> newTexture = ReallocTexture(newHeight);
-        if (newTexture == NULL)
+        if (newTexture == nullptr)
         {
           FT_Done_Glyph(glyph);
           CLog::Log(LOGDEBUG, "{}: Failed to allocate new texture of height {}", __FUNCTION__,
@@ -909,7 +909,7 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch, 
       }
     }
 
-    if (m_texture == NULL)
+    if (m_texture == nullptr)
     {
       FT_Done_Glyph(glyph);
       CLog::Log(LOGDEBUG, "{}: no texture to cache character to", __FUNCTION__);
