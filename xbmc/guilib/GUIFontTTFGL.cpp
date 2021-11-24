@@ -45,9 +45,6 @@ CGUIFontTTF* CGUIFontTTF::CreateGUIFontTTF(const std::string& fontIdent)
 
 CGUIFontTTFGL::CGUIFontTTFGL(const std::string& fontIdent) : CGUIFontTTF(fontIdent)
 {
-  m_updateY1 = 0;
-  m_updateY2 = 0;
-  m_textureStatus = TEXTURE_VOID;
 }
 
 CGUIFontTTFGL::~CGUIFontTTFGL(void)
@@ -477,5 +474,5 @@ void CGUIFontTTFGL::DestroyStaticVertexBuffers(void)
   m_staticVertexBufferCreated = false;
 }
 
-GLuint CGUIFontTTFGL::m_elementArrayHandle;
-bool CGUIFontTTFGL::m_staticVertexBufferCreated;
+GLuint CGUIFontTTFGL::m_elementArrayHandle{0};
+bool CGUIFontTTFGL::m_staticVertexBufferCreated{false};

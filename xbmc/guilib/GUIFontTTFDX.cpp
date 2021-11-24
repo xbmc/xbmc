@@ -39,10 +39,6 @@ CGUIFontTTF* CGUIFontTTF::CreateGUIFontTTF(const std::string& fontIdent)
 
 CGUIFontTTFDX::CGUIFontTTFDX(const std::string& fontIdent) : CGUIFontTTF(fontIdent)
 {
-  m_speedupTexture = nullptr;
-  m_vertexBuffer = nullptr;
-  m_vertexWidth = 0;
-  m_buffers.clear();
   DX::Windowing()->Register(this);
 }
 

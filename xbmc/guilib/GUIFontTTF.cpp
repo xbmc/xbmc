@@ -62,8 +62,7 @@ constexpr int TAB_SPACE_LENGTH = 4;
 class CFreeTypeLibrary
 {
 public:
-  CFreeTypeLibrary() { m_library = nullptr; }
-
+  CFreeTypeLibrary() = default;
   virtual ~CFreeTypeLibrary()
   {
     if (m_library)
@@ -152,37 +151,19 @@ public:
   }
 
 private:
-  FT_Library m_library;
+  FT_Library m_library{nullptr};
 };
 
 XBMC_GLOBAL_REF(CFreeTypeLibrary, g_freeTypeLibrary); // our freetype library
 #define g_freeTypeLibrary XBMC_GLOBAL_USE(CFreeTypeLibrary)
 
 CGUIFontTTF::CGUIFontTTF(const std::string& fontIdent)
-  : m_fontIdent(fontIdent), m_staticCache(*this), m_dynamicCache(*this)
+  : m_fontIdent(fontIdent),
+    m_staticCache(*this),
+    m_dynamicCache(*this),
+    m_renderSystem(CServiceBroker::GetRenderSystem())
 {
-  m_texture = nullptr;
-  m_char = nullptr;
-  m_maxChars = 0;
-  m_nestedBeginCount = 0;
-
   m_vertex.reserve(4 * 1024);
-
-  m_face = nullptr;
-  m_stroker = nullptr;
-  memset(m_charquick, 0, sizeof(m_charquick));
-  m_referenceCount = 0;
-  m_originX = m_originY = 0.0f;
-  m_cellBaseLine = m_cellHeight = 0;
-  m_numChars = 0;
-  m_posX = m_posY = 0;
-  m_textureHeight = m_textureWidth = 0;
-  m_textureScaleX = m_textureScaleY = 0.0;
-  m_ellipsesWidth = m_height = 0.0f;
-  m_color = 0;
-  m_nTexture = 0;
-
-  m_renderSystem = CServiceBroker::GetRenderSystem();
 }
 
 CGUIFontTTF::~CGUIFontTTF(void)
