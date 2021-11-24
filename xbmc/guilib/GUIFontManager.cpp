@@ -144,13 +144,13 @@ CGUIFont* GUIFontManager::LoadTTF(const std::string& strFontName,
   }
 
   // check if we already have this font file loaded (font object could differ only by color or style)
-  std::string TTFfontName =
+  const std::string fontIdent =
       StringUtils::Format("{}_{:f}_{:f}{}", strFilename, newSize, aspect, border ? "_border" : "");
 
-  CGUIFontTTF* pFontFile = GetFontFile(TTFfontName);
+  CGUIFontTTF* pFontFile = GetFontFile(fontIdent);
   if (!pFontFile)
   {
-    pFontFile = CGUIFontTTF::CreateGUIFontTTF(TTFfontName);
+    pFontFile = CGUIFontTTF::CreateGUIFontTTF(fontIdent);
     bool bFontLoaded = pFontFile->Load(strPath, newSize, aspect, 1.0f, border);
 
     if (!bFontLoaded)
@@ -239,12 +239,12 @@ void GUIFontManager::ReloadTTFFonts(void)
 
     RescaleFontSizeAndAspect(&newSize, &aspect, fontInfo.sourceRes, fontInfo.preserveAspect);
 
-    std::string TTFfontName = StringUtils::Format("{}_{:f}_{:f}{}", strFilename, newSize, aspect,
-                                                  fontInfo.border ? "_border" : "");
-    CGUIFontTTF* pFontFile = GetFontFile(TTFfontName);
+    const std::string fontIdent = StringUtils::Format("{}_{:f}_{:f}{}", strFilename, newSize,
+                                                      aspect, fontInfo.border ? "_border" : "");
+    CGUIFontTTF* pFontFile = GetFontFile(fontIdent);
     if (!pFontFile)
     {
-      pFontFile = CGUIFontTTF::CreateGUIFontTTF(TTFfontName);
+      pFontFile = CGUIFontTTF::CreateGUIFontTTF(fontIdent);
       if (!pFontFile || !pFontFile->Load(strPath, newSize, aspect, 1.0f, fontInfo.border))
       {
         delete pFontFile;
@@ -287,12 +287,12 @@ void GUIFontManager::FreeFontFile(CGUIFontTTF* pFont)
   }
 }
 
-CGUIFontTTF* GUIFontManager::GetFontFile(const std::string& strFileName)
+CGUIFontTTF* GUIFontManager::GetFontFile(const std::string& fontIdent)
 {
   for (int i = 0; i < (int)m_vecFontFiles.size(); ++i)
   {
     CGUIFontTTF* pFont = m_vecFontFiles[i];
-    if (StringUtils::EqualsNoCase(pFont->GetFileName(), strFileName))
+    if (StringUtils::EqualsNoCase(pFont->GetFontIdent(), fontIdent))
       return pFont;
   }
   return NULL;

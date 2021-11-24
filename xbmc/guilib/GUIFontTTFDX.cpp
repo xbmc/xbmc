@@ -27,12 +27,12 @@ using namespace Microsoft::WRL;
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
 
-CGUIFontTTF* CGUIFontTTF::CreateGUIFontTTF(const std::string& fileName)
+CGUIFontTTF* CGUIFontTTF::CreateGUIFontTTF(const std::string& fontIdent)
 {
-  return new CGUIFontTTFDX(fileName);
+  return new CGUIFontTTFDX(fontIdent);
 }
 
-CGUIFontTTFDX::CGUIFontTTFDX(const std::string& strFileName) : CGUIFontTTF(strFileName)
+CGUIFontTTFDX::CGUIFontTTFDX(const std::string& fontIdent) : CGUIFontTTF(fontIdent)
 {
   m_speedupTexture = nullptr;
   m_vertexBuffer   = nullptr;

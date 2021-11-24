@@ -18,7 +18,7 @@
 class CGUIFontTTFGL : public CGUIFontTTF
 {
 public:
-  explicit CGUIFontTTFGL(const std::string& strFileName);
+  explicit CGUIFontTTFGL(const std::string& fontIdent);
   ~CGUIFontTTFGL(void) override;
 
   bool FirstBegin() override;

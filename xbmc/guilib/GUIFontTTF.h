@@ -75,7 +75,7 @@ class CGUIFontTTF
 public:
   virtual ~CGUIFontTTF();
 
-  static CGUIFontTTF* CreateGUIFontTTF(const std::string& fileName);
+  static CGUIFontTTF* CreateGUIFontTTF(const std::string& fontIdent);
 
   void Clear();
 
@@ -87,10 +87,10 @@ public:
   virtual CVertexBuffer CreateVertexBuffer(const std::vector<SVertex> &vertices) const { assert(false); return CVertexBuffer(); }
   virtual void DestroyVertexBuffer(CVertexBuffer &bufferHandle) const {}
 
-  const std::string& GetFileName() const { return m_strFileName; }
+  const std::string& GetFontIdent() const { return m_fontIdent; }
 
 protected:
-  explicit CGUIFontTTF(const std::string& strFileName);
+  explicit CGUIFontTTF(const std::string& fontIdent);
 
 
   struct Glyph
@@ -224,7 +224,7 @@ protected:
   float    m_textureScaleX;
   float    m_textureScaleY;
 
-  std::string m_strFileName;
+  const std::string m_fontIdent;
   std::vector<uint8_t>
       m_fontFileInMemory; // used only in some cases, see CFreeTypeLibrary::GetFont()
 

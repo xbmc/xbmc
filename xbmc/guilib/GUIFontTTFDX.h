@@ -31,7 +31,7 @@
 class CGUIFontTTFDX : public CGUIFontTTF, public ID3DResource
 {
 public:
-  explicit CGUIFontTTFDX(const std::string& strFileName);
+  explicit CGUIFontTTFDX(const std::string& fontIdent);
   virtual ~CGUIFontTTFDX(void);
 
   bool FirstBegin() override;
