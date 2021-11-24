@@ -648,7 +648,7 @@ std::vector<CGUIFontTTF::Glyph> CGUIFontTTF::GetHarfBuzzShapedGlyphs(const vecTe
   }
 
   // HB_SCRIPT_COMMON or HB_SCRIPT_INHERITED should be replaced with previous script
-  for (unsigned int i = 0; i < scripts.size(); i++)
+  for (int i = 0; i < static_cast<int>(scripts.size()); ++i)
   {
     if (scripts[i] == HB_SCRIPT_COMMON || scripts[i] == HB_SCRIPT_INHERITED)
     {
@@ -671,7 +671,7 @@ std::vector<CGUIFontTTF::Glyph> CGUIFontTTF::GetHarfBuzzShapedGlyphs(const vecTe
   lastScript = scripts[0];
   int lastRunStart = 0;
 
-  for (unsigned int i = 0; i <= scripts.size(); i++)
+  for (unsigned int i = 0; i <= static_cast<unsigned int>(scripts.size()); ++i)
   {
     if (i == scripts.size() || scripts[i] != lastScript)
     {
@@ -699,7 +699,7 @@ std::vector<CGUIFontTTF::Glyph> CGUIFontTTF::GetHarfBuzzShapedGlyphs(const vecTe
     hb_buffer_set_direction(run.buffer, static_cast<hb_direction_t>(HB_DIRECTION_LTR));
     hb_buffer_set_script(run.buffer, run.script);
 
-    for (int j = run.startOffset; j < run.endOffset; j++)
+    for (unsigned int j = run.startOffset; j < run.endOffset; j++)
     {
       hb_buffer_add(run.buffer, static_cast<wchar_t>(0xffff & text[j]), j);
     }
