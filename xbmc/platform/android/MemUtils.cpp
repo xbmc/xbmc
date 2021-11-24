@@ -35,13 +35,14 @@ void GetMemoryStatus(MemoryStatus* buffer)
   if (!buffer)
     return;
 
-  long availMem, totalMem;
+  long availMem = 0;
+  long totalMem = 0;
 
   if (CXBMCApp::get()->GetMemoryInfo(availMem, totalMem))
   {
     *buffer = {};
-    buffer->totalPhys = totalMem;
-    buffer->availPhys = availMem;
+    buffer->totalPhys = static_cast<unsigned long>(totalMem);
+    buffer->availPhys = static_cast<unsigned long>(availMem);
   }
 }
 
