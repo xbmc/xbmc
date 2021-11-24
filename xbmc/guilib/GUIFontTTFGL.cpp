@@ -346,12 +346,12 @@ std::unique_ptr<CTexture> CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
   std::unique_ptr<CTexture> newTexture =
       CTexture::CreateTexture(m_textureWidth, newHeight, XB_FMT_A8);
 
-  if (!newTexture || newTexture->GetPixels() == NULL)
+  if (!newTexture || newTexture->GetPixels() == nullptr)
   {
     CLog::Log(LOGERROR,
               "GUIFontTTFGL::CacheCharacter: Error creating new cache texture for size {:f}",
               m_height);
-    return NULL;
+    return nullptr;
   }
   m_textureHeight = newTexture->GetHeight();
   m_textureScaleY = 1.0f / m_textureHeight;

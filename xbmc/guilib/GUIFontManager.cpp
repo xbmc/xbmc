@@ -170,7 +170,7 @@ CGUIFont* GUIFontManager::LoadTTF(const std::string& strFontName,
       }
       CLog::Log(LOGERROR, "Couldn't load font name:{} file:{}", strFontName, strPath);
 
-      return NULL;
+      return nullptr;
     }
 
     m_vecFontFiles.push_back(pFontFile);
@@ -302,7 +302,7 @@ CGUIFontTTF* GUIFontManager::GetFontFile(const std::string& fontIdent)
     if (StringUtils::EqualsNoCase(pFont->GetFontIdent(), fontIdent))
       return pFont;
   }
-  return NULL;
+  return nullptr;
 }
 
 CGUIFont* GUIFontManager::GetFont(const std::string& strFontName, bool fallback /*= true*/)
@@ -316,14 +316,14 @@ CGUIFont* GUIFontManager::GetFont(const std::string& strFontName, bool fallback 
   // fall back to "font13" if we have none
   if (fallback && !strFontName.empty() && !StringUtils::EqualsNoCase(strFontName, "font13"))
     return GetFont("font13");
-  return NULL;
+  return nullptr;
 }
 
 CGUIFont* GUIFontManager::GetDefaultFont(bool border)
 {
   // first find "font13" or "__defaultborder__"
   unsigned int font13index = m_vecFonts.size();
-  CGUIFont* font13border = NULL;
+  CGUIFont* font13border = nullptr;
   for (unsigned int i = 0; i < m_vecFonts.size(); i++)
   {
     CGUIFont* font = m_vecFonts[i];
@@ -336,7 +336,7 @@ CGUIFont* GUIFontManager::GetDefaultFont(bool border)
   if (font13index == m_vecFonts.size())
   {
     if (m_vecFonts.empty())
-      return NULL;
+      return nullptr;
     font13index = 0;
   }
 

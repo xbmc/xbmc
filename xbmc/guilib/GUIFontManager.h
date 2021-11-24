@@ -63,13 +63,13 @@ public:
                     bool border = false,
                     float lineSpacing = 1.0f,
                     float aspect = 1.0f,
-                    const RESOLUTION_INFO* res = NULL,
+                    const RESOLUTION_INFO* res = nullptr,
                     bool preserveAspect = false);
   CGUIFont* GetFont(const std::string& strFontName, bool fallback = true);
 
   /*! \brief return a default font
    \param border whether the font should be a font with an outline
-   \return the font.  NULL if no default font can be found.
+   \return the font. `nullptr` if no default font can be found.
    */
   CGUIFont* GetDefaultFont(bool border = false);
 
