@@ -124,12 +124,16 @@ bool IsMasterUser(const std::string& condition,
   return g_passwordManager.bMasterUser;
 }
 
-bool IsUsingTTFSubtitles(const std::string& condition,
-                         const std::string& value,
-                         const SettingConstPtr& setting,
-                         void* data)
+bool HasSubtitlesFontExtensions(const std::string& condition,
+                                const std::string& value,
+                                const SettingConstPtr& setting,
+                                void* data)
 {
-  return CUtil::IsUsingTTFSubtitles();
+  auto settingStr = std::dynamic_pointer_cast<const CSettingString>(setting);
+  if (!settingStr)
+    return false;
+
+  return CUtil::IsSupportedFontExtension(settingStr->GetValue());
 }
 
 bool ProfileCanWriteDatabase(const std::string& condition,
@@ -436,7 +440,8 @@ void CSettingConditions::Initialize()
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("isfullscreen",                  IsFullscreen));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("ishdrdisplay",                  IsHDRDisplay));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("ismasteruser",                  IsMasterUser));
-  m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("isusingttfsubtitles",           IsUsingTTFSubtitles));
+  m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>(
+      "hassubtitlesfontextensions", HasSubtitlesFontExtensions));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("profilecanwritedatabase",       ProfileCanWriteDatabase));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("profilecanwritesources",        ProfileCanWriteSources));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("profilehasaddons",              ProfileHasAddons));

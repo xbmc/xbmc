@@ -532,7 +532,7 @@
             <options>charsets</options>
           </constraints>
           <dependencies>
-            <dependency type="enable" on="property" name="IsUsingTTFSubtitles" setting="subtitles.font" />
+            <dependency type="enable" on="property" name="HasSubtitlesFontExtensions" setting="subtitles.font" />
           </dependencies>
           <control type="list" format="string" />
         </setting>
@@ -561,7 +561,7 @@
             </options>
           </constraints>
           <dependencies>
-            <dependency type="enable" on="property" name="IsUsingTTFSubtitles" setting="subtitles.font" />
+            <dependency type="enable" on="property" name="HasSubtitlesFontExtensions" setting="subtitles.font" />
           </dependencies>
           <control type="list" format="string" />
         </setting>
@@ -569,7 +569,7 @@
           <level>3</level>
           <default>FFFFFFFF</default> <!-- White -->
           <dependencies>
-            <dependency type="enable" on="property" name="IsUsingTTFSubtitles" setting="subtitles.font" />
+            <dependency type="enable" on="property" name="HasSubtitlesFontExtensions" setting="subtitles.font" />
           </dependencies>
           <control type="colorbutton" />
         </setting>
@@ -577,7 +577,7 @@
           <level>3</level>
           <default>100</default>
           <dependencies>
-            <dependency type="enable" on="property" name="IsUsingTTFSubtitles" setting="subtitles.font" />
+            <dependency type="enable" on="property" name="HasSubtitlesFontExtensions" setting="subtitles.font" />
           </dependencies>
           <control type="slider" format="percentage" range="0,100" />
         </setting>
@@ -587,7 +587,7 @@
           <dependencies>
             <dependency type="enable">
               <and>
-                <condition on="property" name="IsUsingTTFSubtitles" setting="subtitles.font"/>
+                <condition on="property" name="HasSubtitlesFontExtensions" setting="subtitles.font"/>
                 <condition setting="subtitles.backgroundtype" operator="!is">2</condition>
               </and>
             </dependency>
@@ -600,7 +600,7 @@
           <dependencies>
             <dependency type="enable">
               <and>
-                <condition on="property" name="IsUsingTTFSubtitles" setting="subtitles.font"/>
+                <condition on="property" name="HasSubtitlesFontExtensions" setting="subtitles.font"/>
                 <condition setting="subtitles.backgroundtype" operator="!is">2</condition>
               </and>
             </dependency>
@@ -611,7 +611,7 @@
           <level>3</level>
           <default>0</default>
           <dependencies>
-            <dependency type="enable" on="property" name="IsUsingTTFSubtitles" setting="subtitles.font" />
+            <dependency type="enable" on="property" name="HasSubtitlesFontExtensions" setting="subtitles.font" />
           </dependencies>
           <control type="slider" format="percentage" range="0,100" />
         </setting>
@@ -627,7 +627,7 @@
             </options>
           </constraints>
           <dependencies>
-            <dependency type="enable" on="property" name="IsUsingTTFSubtitles" setting="subtitles.font" />
+            <dependency type="enable" on="property" name="HasSubtitlesFontExtensions" setting="subtitles.font" />
           </dependencies>
           <control type="list" format="integer" />
         </setting>
@@ -641,7 +641,7 @@
                 <condition setting="subtitles.backgroundtype">3</condition>
               </or>
             </dependency>
-            <dependency type="enable" on="property" name="IsUsingTTFSubtitles" setting="subtitles.font" />
+            <dependency type="enable" on="property" name="HasSubtitlesFontExtensions" setting="subtitles.font" />
           </dependencies>
           <control type="colorbutton" />
         </setting>
@@ -655,7 +655,7 @@
                 <condition setting="subtitles.backgroundtype">3</condition>
               </or>
             </dependency>
-            <dependency type="enable" on="property" name="IsUsingTTFSubtitles" setting="subtitles.font" />
+            <dependency type="enable" on="property" name="HasSubtitlesFontExtensions" setting="subtitles.font" />
           </dependencies>
           <control type="slider" format="percentage" range="0,100" />
         </setting>
@@ -669,7 +669,7 @@
                 <condition setting="subtitles.backgroundtype">2</condition>
               </or>
             </dependency>
-            <dependency type="enable" on="property" name="IsUsingTTFSubtitles" setting="subtitles.font" />
+            <dependency type="enable" on="property" name="HasSubtitlesFontExtensions" setting="subtitles.font" />
           </dependencies>
           <control type="colorbutton" />
         </setting>
@@ -683,7 +683,7 @@
                 <condition setting="subtitles.backgroundtype">2</condition>
               </or>
             </dependency>
-            <dependency type="enable" on="property" name="IsUsingTTFSubtitles" setting="subtitles.font" />
+            <dependency type="enable" on="property" name="HasSubtitlesFontExtensions" setting="subtitles.font" />
           </dependencies>
           <control type="slider" format="percentage" range="0,100" />
         </setting>
@@ -697,7 +697,7 @@
                 <condition setting="subtitles.backgroundtype">2</condition>
               </or>
             </dependency>
-            <dependency type="enable" on="property" name="IsUsingTTFSubtitles" setting="subtitles.font" />
+            <dependency type="enable" on="property" name="HasSubtitlesFontExtensions" setting="subtitles.font" />
           </dependencies>
           <control type="slider" format="percentage" range="0,100" />
         </setting>

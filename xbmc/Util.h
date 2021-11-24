@@ -109,7 +109,12 @@ public:
 #endif
   static std::string ValidatePath(const std::string &path, bool bFixDoubleSlashes = false); ///< return a validated path, with correct directory separators.
 
-  static bool IsUsingTTFSubtitles();
+  /*!
+   * \brief Check if a filename contains a supported font extension.
+   * \param filename The filename to check
+   * \return True if it is supported, otherwise false
+   */
+  static bool IsSupportedFontExtension(const std::string& fileName);
 
   /*! \brief Split a comma separated parameter list into separate parameters.
    Takes care of the case where we may have a quoted string containing commas, or we may
