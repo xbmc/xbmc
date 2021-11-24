@@ -9,17 +9,26 @@ android {
         versionCode @APP_VERSION_CODE_ANDROID@
         versionName "@APP_VERSION@"
     }
+    signingConfigs {
+        release {
+            keyAlias System.getenv("KODI_ANDROID_KEY_ALIAS")
+            keyPassword System.getenv("KODI_ANDROID_KEY_PASSWORD")
+            storeFile file(System.getenv("KODI_ANDROID_STORE_FILE"))
+            storePassword System.getenv("KODI_ANDROID_STORE_PASSWORD")
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+
+    }
     buildTypes {
-        releaseUnsigned.initWith(buildTypes.release)
-        releaseUnsigned {
-            signingConfig null
+        debug {
+            zipAlignEnabled true
+            signingConfig signingConfigs.release
         }
-
-        debugUnsigned.initWith(buildTypes.debug)
-        debugUnsigned {
-            signingConfig null
+        release {
+            zipAlignEnabled true
+            signingConfig signingConfigs.release
         }
-
     }
     aaptOptions {
         ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
