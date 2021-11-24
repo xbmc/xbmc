@@ -61,6 +61,8 @@ Install build dependencies needed to cross-compile Kodi for Android:
 sudo apt install autoconf build-essential curl default-jdk gawk git gperf lib32stdc++6 lib32z1 lib32z1-dev libcurl4-openssl-dev unzip zlib1g-dev
 ```
 **NOTE:** If you're running a 32bit Debian/Ubuntu distribution,  remove `lib32stdc++6 lib32z1 lib32z1-dev` from the command.
+**NOTE:** Gradle 7.0.2+ requires Jave Runtime 11+. Check java version by running `java --version`.  If version is < 11, set JAVA_HOME to java 11+ home directory._
+
 
 **[back to top](#table-of-contents)**
 
@@ -106,7 +108,7 @@ keytool -genkey -keystore ~/.android/debug.keystore -v -alias androiddebugkey -d
 ```
 
 ### 3.4. macOS specific prerequisites
-* **[Java Development Kit (JDK)](http://www.oracle.com/technetwork/java/javase/downloads/index.html)** installed.
+* **[Java Development Kit 11+ (JDK)](http://www.oracle.com/technetwork/java/javase/downloads/index.html)** installed.
 * Normal macOS installations filesystem is case insensitive but compiling for Android requires a case sensitive filesystem. Generate a writeable hdd image and format it with hfs+ (case sensitive) issuing
   * `hdiutil create -type UDIF -fs 'Case-sensitive Journaled HFS+' -size 20g -volname android-dev $HOME/android-dev.dmg`
 * Whenever you want to compile/develop you need to mount the image

@@ -4,10 +4,6 @@ find_program(AAPT_EXECUTABLE aapt PATHS ${SDK_BUILDTOOLS_PATH})
 if(NOT AAPT_EXECUTABLE)
   message(FATAL_ERROR "Could NOT find aapt executable")
 endif()
-find_program(ZIPALIGN_EXECUTABLE zipalign PATHS ${SDK_BUILDTOOLS_PATH})
-if(NOT ZIPALIGN_EXECUTABLE)
-  message(FATAL_ERROR "Could NOT find zipalign executable")
-endif()
 
 if(CMAKE_BUILD_TYPE STREQUAL Debug)
   set(ANDROID_DEBUGGABLE true)
@@ -18,8 +14,6 @@ endif()
 # Configure files into packaging environment.
 configure_file(${CMAKE_SOURCE_DIR}/tools/android/packaging/Makefile.in
                ${CMAKE_BINARY_DIR}/tools/android/packaging/Makefile @ONLY)
-configure_file(${CMAKE_SOURCE_DIR}/tools/android/packaging/apksign
-               ${CMAKE_BINARY_DIR}/tools/android/packaging/apksign COPYONLY)
 configure_file(${CMAKE_SOURCE_DIR}/tools/android/packaging/gradle.properties
                ${CMAKE_BINARY_DIR}/tools/android/packaging/gradle.properties COPYONLY)
 configure_file(${CMAKE_SOURCE_DIR}/tools/android/packaging/make_symbols.sh
@@ -174,7 +168,6 @@ foreach(target apk obb apk-unsigned apk-obb apk-obb-unsigned apk-noobb apk-clean
               SDKROOT=${SDKROOT}
               STRIP=${CMAKE_STRIP}
               AAPT=${AAPT_EXECUTABLE}
-              ZIPALIGN=${ZIPALIGN_EXECUTABLE}
               ${target}
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tools/android/packaging
   )
