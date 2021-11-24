@@ -5,17 +5,59 @@ ifneq ($(shell test -f $(PREFIX)/share/config.site && echo 1),1)
 endif
 
 DEPENDS = \
-	pcre expat gettext sqlite3 libgpg-error \
-	libgcrypt bzip2 libfstrcmp liblzo2 freetype2-noharfbuzz fontconfig \
-	openssl gmp nettle gnutls googletest curl nghttp2 \
-	libjpeg-turbo libpng fribidi harfbuzz libass \
-	libxml2 rapidjson libmicrohttpd mariadb libffi \
-	python3 libshairplay libfmt libspdlog \
-	libplist libcec libbluray tinyxml \
-	taglib libusb libnfs freetype2 \
-	pythonmodule-pil pythonmodule-pycryptodome pythonmodule-setuptools \
-	libxslt ffmpeg crossguid libudfread \
-	libdvdread libdvdnav libdvdcss p8-platform flatbuffers dav1d xz
+  bzip2 \
+  crossguid \
+  curl \
+  dav1d \
+  expat \
+  ffmpeg \
+  flatbuffers \
+  fontconfig \
+  freetype2 \
+  freetype2-noharfbuzz \
+  gettext \
+  gmp \
+  gnutls \
+  googletest \
+  harfbuzz \
+  libass \
+  libbluray \
+  libcec \
+  libdvdcss \
+  libdvdnav \
+  libdvdread \
+  libffi \
+  libfmt \
+  libfstrcmp \
+  libgcrypt \
+  libgpg-error \
+  libjpeg-turbo \
+  liblzo2 \
+  libmicrohttpd \
+  libnfs \
+  libplist \
+  libpng fribidi \
+  libshairplay \
+  libspdlog \
+  libudfread \
+  libusb \
+  libxml2 \
+  libxslt  \
+  mariadb \
+  nettle \
+  nghttp2 \
+  openssl \
+  p8-platform \
+  pcre \
+  python3 \
+  pythonmodule-pil \
+  pythonmodule-pycryptodome \
+  pythonmodule-setuptools \
+  rapidjson \
+  sqlite3 \
+  taglib \
+  tinyxml \
+  xz
 
 ifeq ($(ENABLE_GPLV3),yes)
   DEPENDS+=samba-gplv3 libcdio-gplv3
@@ -88,48 +130,48 @@ endif
 
 all: .installed-$(PLATFORM)
 
-gettext: $(ICONV)
-xz: gettext
-libgcrypt: libgpg-error
-fontconfig: freetype2 expat $(ICONV) $(LIBUUID)
-curl: openssl nghttp2
-harfbuzz: meson-cross-file freetype2-noharfbuzz $(ICONV)
-freetype2: harfbuzz $(ZLIB)
-libass: fontconfig fribidi harfbuzz libpng freetype2 expat $(ICONV)
-libmicrohttpd: gnutls libgcrypt libgpg-error
-python3: expat gettext libxml2 sqlite3 openssl libffi bzip2 xz
-libcdio: $(ICONV)
-libcdio-gplv3: $(ICONV)
-libplist: $(ZLIB)
-libbluray: fontconfig freetype2 $(ICONV) libxml2
-mariadb: openssl $(ICONV) $(ZLIB)
-libzip: bzip2 gnutls $(ZLIB)
-libpng: $(ZLIB)
-openssl: $(ZLIB)
-gnutls: nettle $(ZLIB)
-nettle: gmp
-pythonmodule-pycryptodome: $(PYMODULE_DEPS) python3 pythonmodule-setuptools
-pythonmodule-pil: bzip2 $(PYMODULE_DEPS) $(ZLIB) libjpeg-turbo libpng freetype2 python3 pythonmodule-setuptools
-pythonmodule-setuptools: $(PYMODULE_DEPS) python3
-libxslt: libgcrypt libxml2
-ffmpeg: $(ICONV) $(ZLIB) bzip2 gnutls dav1d $(LIBVA)
-libcec: p8-platform
 crossguid: $(LIBUUID)
+curl: openssl nghttp2
+dav1d: meson-cross-file
+dbus: expat
+ffmpeg: $(ICONV) $(ZLIB) bzip2 gnutls dav1d $(LIBVA)
+fontconfig: freetype2 expat $(ICONV) $(LIBUUID)
+freetype2: harfbuzz $(ZLIB)
+fribidi: meson-cross-file
+gettext: $(ICONV)
+gnutls: nettle $(ZLIB)
+harfbuzz: meson-cross-file freetype2-noharfbuzz $(ICONV)
+libass: fontconfig fribidi harfbuzz libpng freetype2 expat $(ICONV)
+libbluray: fontconfig freetype2 $(ICONV) libxml2
+libcdio-gplv3: $(ICONV)
+libcdio: $(ICONV)
+libcec: p8-platform
+libdrm: meson-cross-file
 libdvdnav: libdvdread
 libdvdread: libdvdcss
-wayland: expat libffi
-waylandpp: wayland $(WAYLANDPP_DEPS)
-dbus: expat
-libinput: mtdev libevdev meson-cross-file
 libevdev: libudev
+libgcrypt: libgpg-error
+libinput: mtdev libevdev meson-cross-file
+libmicrohttpd: gnutls libgcrypt libgpg-error
+libplist: $(ZLIB)
+libpng: $(ZLIB)
+libspdlog: libfmt
+libva: libdrm $(LIBVA_DEPS)
+libxslt: libgcrypt libxml2
+libzip: bzip2 gnutls $(ZLIB)
+mariadb: openssl $(ICONV) $(ZLIB)
+mesa: libdrm meson-cross-file $(MESA_DEPS)
+nettle: gmp
+openssl: $(ZLIB)
+python3: expat gettext libxml2 sqlite3 openssl libffi bzip2 xz
+pythonmodule-pil: bzip2 $(PYMODULE_DEPS) $(ZLIB) libjpeg-turbo libpng freetype2 python3 pythonmodule-setuptools
+pythonmodule-pycryptodome: $(PYMODULE_DEPS) python3 pythonmodule-setuptools
+pythonmodule-setuptools: $(PYMODULE_DEPS) python3
 samba-gplv3: gnutls
 taglib: $(ZLIB)
-dav1d: meson-cross-file
-fribidi: meson-cross-file
-libspdlog: libfmt
-libdrm: meson-cross-file
-mesa: libdrm meson-cross-file $(MESA_DEPS)
-libva: libdrm $(LIBVA_DEPS)
+wayland: expat libffi
+waylandpp: wayland $(WAYLANDPP_DEPS)
+xz: gettext
 
 .installed-$(PLATFORM): $(DEPENDS)
 	touch $@
