@@ -129,7 +129,7 @@ void CAEBitstreamPacker::Reset()
 void CAEBitstreamPacker::PackTrueHD(CAEStreamInfo &info, uint8_t* data, int size)
 {
   /* create the buffer if it doesn't already exist */
-  if (m_trueHD[0].size() == 0)
+  if (m_trueHD[0].empty())
   {
     m_trueHD[0].resize(MAT_FRAME_SIZE);
     m_trueHD[1].resize(MAT_FRAME_SIZE);
@@ -185,8 +185,8 @@ void CAEBitstreamPacker::PackTrueHD(CAEStreamInfo &info, uint8_t* data, int size
     /* padding needed before this frame */
     paddingRem = deltaBytes - m_thd.prevFrameSize;
 
-    /* sanity check */
-    if (paddingRem < 0 || paddingRem >= MAT_FRAME_SIZE / 2)
+    // detects stream discontinuities
+    if (paddingRem < 0 || paddingRem >= MAT_FRAME_SIZE * 2)
     {
       m_thd = {}; // recovering after seek
       return;
