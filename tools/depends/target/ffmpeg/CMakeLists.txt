@@ -82,6 +82,12 @@ if(GNUTLS_FOUND)
   list(APPEND ffmpeg_conf --enable-gnutls)
 endif()
 
+if(ENABLE_LIBDRM)
+  list(APPEND ffmpeg_conf --enable-libdrm)
+else()
+  list(APPEND ffmpeg_conf --disable-libdrm)
+endif()
+
 if(ENABLE_DAV1D)
   list(APPEND ffmpeg_conf --enable-libdav1d)
   set(pkgconf_path "PKG_CONFIG_PATH=${PKG_CONFIG_PATH}")

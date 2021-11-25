@@ -75,14 +75,14 @@ public:
   void SetRef(AVFrame* frame);
   void Unref();
 
-  AVDRMFrameDescriptor* GetDescriptor() const override
-  {
-    return reinterpret_cast<AVDRMFrameDescriptor*>(m_pFrame->data[0]);
-  }
+  AVDRMFrameDescriptor* GetDescriptor() const override;
   bool IsValid() const override;
+  bool AcquireDescriptor() override;
+  void ReleaseDescriptor() override;
 
 protected:
   AVFrame* m_pFrame = nullptr;
+  AVFrame* m_pMapFrame = nullptr;
 };
 
 class CVideoBufferPoolDRMPRIMEFFmpeg : public IVideoBufferPool
