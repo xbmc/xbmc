@@ -429,7 +429,7 @@ void CAdvancedSettings::Initialize()
 
   m_userAgent = g_sysinfo.GetUserAgent();
 
-  m_nfsTimeout = 5;
+  m_nfsTimeout = 30;
   m_nfsRetries = -1;
 
   m_initialized = true;
