@@ -302,13 +302,17 @@ bool CPosixFile::Rename(const CURL& url, const CURL& urlnew)
   if (errno == EACCES || errno == EPERM)
     CLog::LogF(LOGWARNING, "Can't access file \"{}\" for rename to \"{}\"", name, newName);
 
-  // rename across mount points - need to copy/delete
   if (errno == EXDEV)
-  {
     CLog::LogF(LOGDEBUG,
-               "Source file \"{}\" and target file \"{}\" are located on different filesystems, "
-               "copy&delete will be used instead of rename",
+               "Source file \"{}\" and target file \"{}\" are located on different filesystems",
                name, newName);
+
+  // try to copy/delete when
+  // rename across mount points
+  // the reparent/rename permission is blocked by SELinux policy on some Android/Linux devices
+  if (errno == EXDEV || errno == EACCES || errno == EPERM)
+  {
+    CLog::LogF(LOGDEBUG, "copy&delete will be used instead of rename", name, newName);
     if (XFILE::CFile::Copy(name, newName))
     {
       if (XFILE::CFile::Delete(name))
