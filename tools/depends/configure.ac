@@ -365,9 +365,8 @@ case $host in
 
     meson_system="darwin"
 
-    platform_cflags="-fheinous-gnu-extensions -no-cpp-precomp"
+    platform_cflags="-fheinous-gnu-extensions"
     platform_ldflags="-Wl,-search_paths_first"
-    platform_cxxflags="-no-cpp-precomp"
 
     case $use_platform in
       tvos)
