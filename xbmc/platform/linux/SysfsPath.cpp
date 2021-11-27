@@ -23,9 +23,7 @@ std::string CSysfsPath::Get()
 {
   std::ifstream file(m_path);
 
-  std::string value;
-
-  std::getline(file, value);
+  std::string value(std::istreambuf_iterator<char>(file), {});
 
   if (file.bad())
   {
@@ -33,5 +31,5 @@ std::string CSysfsPath::Get()
     throw std::runtime_error("error reading from " + m_path);
   }
 
-  return value;
+  return StringUtils::Trim(value);
 }

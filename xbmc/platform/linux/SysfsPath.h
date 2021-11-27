@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <fstream>

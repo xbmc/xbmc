@@ -84,6 +84,22 @@ TEST_F(TestSysfsPath, SysfsPathTestLongString)
   std::remove(filepath.c_str());
 }
 
+TEST_F(TestSysfsPath, SysfsPathTestMultiLine)
+{
+  std::string filepath = GetTestFilePath();
+  std::ofstream m_output{filepath};
+
+  std::string temp{"line1\nline2\nline3"};
+  m_output << temp;
+  m_output.close();
+
+  CSysfsPath path(filepath);
+  ASSERT_TRUE(path.Exists());
+  EXPECT_EQ(path.Get<std::string>(), "line1\nline2\nline3");
+
+  std::remove(filepath.c_str());
+}
+
 TEST_F(TestSysfsPath, SysfsPathTestPathDoesNotExist)
 {
   CSysfsPath otherPath{"/thispathdoesnotexist"};
