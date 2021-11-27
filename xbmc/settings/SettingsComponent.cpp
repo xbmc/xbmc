@@ -47,11 +47,11 @@ void CSettingsComponent::Init(const CAppParamParser &params)
   if (m_state == State::DEINITED)
   {
     // only the InitDirectories* for the current platform should return true
-    bool inited = InitDirectoriesLinux(params.m_platformDirectories);
+    bool inited = InitDirectoriesLinux(params.HasPlatformDirectories());
     if (!inited)
-      inited = InitDirectoriesOSX(params.m_platformDirectories);
+      inited = InitDirectoriesOSX(params.HasPlatformDirectories());
     if (!inited)
-      inited = InitDirectoriesWin32(params.m_platformDirectories);
+      inited = InitDirectoriesWin32(params.HasPlatformDirectories());
 
     m_settings->Initialize();
 

@@ -21,18 +21,33 @@
 #include <string>
 #include <vector>
 
-#if defined(TARGET_LINUX)
 namespace
 {
-std::vector<std::string> availableWindowSystems = CCompileInfo::GetAvailableWindowSystems();
-std::array<std::string, 1> availableLogTargets = {"console"};
+
+constexpr const char* versionText =
+    R"""({0} Media Center {1}
+Copyright (C) {2} Team {0} - http://kodi.tv
+)""";
+
+constexpr const char* helpText =
+    R"""(Usage: {0} [OPTION]... [FILE]...
+
+Arguments:
+  -fs                   Runs {1} in full screen
+  --standalone          {1} runs in a stand alone environment without a window
+                        manager and supporting applications. For example, that
+                        enables network settings.
+  -p or --portable      {1} will look for configurations in install folder instead of ~/.{0}
+  --debug               Enable debug logging
+  --version             Print version information
+  --test                Enable test mode. [FILE] required.
+  --settings=<filename> Loads specified file after advancedsettings.xml replacing any settings specified
+                        specified file must exist in special://xbmc/system/
+)""";
 
 } // namespace
-#endif
 
-CAppParamParser::CAppParamParser()
-: m_logLevel(LOG_LEVEL_NORMAL),
-  m_playlist(new CFileItemList())
+CAppParamParser::CAppParamParser() : m_playlist(std::make_unique<CFileItemList>())
 {
 }
 
@@ -53,9 +68,8 @@ void CAppParamParser::Parse(const char* const* argv, int nArgs)
 
 void CAppParamParser::DisplayVersion()
 {
-  printf("%s Media Center %s\n", CSysInfo::GetVersion().c_str(), CSysInfo::GetAppName().c_str());
-  printf("Copyright (C) %s Team %s - http://kodi.tv\n",
-         CCompileInfo::GetCopyrightYears(), CSysInfo::GetAppName().c_str());
+  std::cout << StringUtils::Format(versionText, CSysInfo::GetAppName(), CSysInfo::GetVersion(),
+                                   CCompileInfo::GetCopyrightYears());
   exit(0);
 }
 
@@ -63,32 +77,8 @@ void CAppParamParser::DisplayHelp()
 {
   std::string lcAppName = CSysInfo::GetAppName();
   StringUtils::ToLower(lcAppName);
-  printf("Usage: %s [OPTION]... [FILE]...\n\n", lcAppName.c_str());
-  printf("Arguments:\n");
-  printf("  -fs\t\t\tRuns %s in full screen\n", CSysInfo::GetAppName().c_str());
-  printf("  --standalone\t\t%s runs in a stand alone environment without a window \n", CSysInfo::GetAppName().c_str());
-  printf("\t\t\tmanager and supporting applications. For example, that\n");
-  printf("\t\t\tenables network settings.\n");
-  printf("  -p or --portable\t%s will look for configurations in install folder instead of ~/.%s\n", CSysInfo::GetAppName().c_str(), lcAppName.c_str());
-  printf("  --debug\t\tEnable debug logging\n");
-  printf("  --version\t\tPrint version information\n");
-  printf("  --test\t\tEnable test mode. [FILE] required.\n");
-  printf("  --settings=<filename>\t\tLoads specified file after advancedsettings.xml replacing any settings specified\n");
-  printf("  \t\t\t\tspecified file must exist in special://xbmc/system/\n");
-#if defined(TARGET_LINUX)
-  printf("  --windowing=<system>\tSelect which windowing method to use.\n");
-  printf("  \t\t\t\tAvailable window systems are:");
-  for (const auto& windowSystem : availableWindowSystems)
-    printf(" %s", windowSystem.c_str());
-  printf("\n");
-  printf("  --logging=<target>\tSelect which log target to use (log file will always be used in "
-         "conjunction).\n");
-  printf("  \t\t\t\tAvailable log targets are:");
-  for (const auto& logTarget : availableLogTargets)
-    printf(" %s", logTarget.c_str());
-  printf("\n");
-#endif
-  exit(0);
+
+  std::cout << StringUtils::Format(helpText, lcAppName, CSysInfo::GetAppName());
 }
 
 void CAppParamParser::ParseArg(const std::string &arg)
@@ -96,7 +86,10 @@ void CAppParamParser::ParseArg(const std::string &arg)
   if (arg == "-fs" || arg == "--fullscreen")
     m_startFullScreen = true;
   else if (arg == "-h" || arg == "--help")
+  {
     DisplayHelp();
+    exit(0);
+  }
   else if (arg == "-v" || arg == "--version")
     DisplayVersion();
   else if (arg == "--standalone")
@@ -109,40 +102,6 @@ void CAppParamParser::ParseArg(const std::string &arg)
     m_testmode = true;
   else if (arg.substr(0, 11) == "--settings=")
     m_settingsFile = arg.substr(11);
-#if defined(TARGET_LINUX)
-  else if (arg.substr(0, 12) == "--windowing=")
-  {
-    if (std::find(availableWindowSystems.begin(), availableWindowSystems.end(), arg.substr(12)) !=
-        availableWindowSystems.end())
-      m_windowing = arg.substr(12);
-    else
-    {
-      std::cout << "Selected window system not available: " << arg << std::endl;
-      std::cout << "    Available window systems:";
-      for (const auto& windowSystem : availableWindowSystems)
-        std::cout << " " << windowSystem;
-      std::cout << std::endl;
-      exit(0);
-    }
-  }
-  else if (arg.substr(0, 10) == "--logging=")
-  {
-    if (std::find(availableLogTargets.begin(), availableLogTargets.end(), arg.substr(10)) !=
-        availableLogTargets.end())
-    {
-      m_logTarget = arg.substr(10);
-    }
-    else
-    {
-      std::cout << "Selected logging target not available: " << arg << std::endl;
-      std::cout << "    Available log targets:";
-      for (const auto& logTarget : availableLogTargets)
-        std::cout << " " << logTarget;
-      std::cout << std::endl;
-      exit(0);
-    }
-  }
-#endif
   else if (arg.length() != 0 && arg[0] != '-')
   {
     const CFileItemPtr item = std::make_shared<CFileItem>(arg);
