@@ -52,10 +52,10 @@ void CGUITextureGLES::Begin(UTILS::COLOR::Color color)
   texture->BindToUnit(0);
 
   // Setup Colors
-  m_col[0] = (GLubyte)GET_R(color);
-  m_col[1] = (GLubyte)GET_G(color);
-  m_col[2] = (GLubyte)GET_B(color);
-  m_col[3] = (GLubyte)GET_A(color);
+  m_col[0] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::R, color);
+  m_col[1] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::G, color);
+  m_col[2] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::B, color);
+  m_col[3] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::A, color);
 
   if (CServiceBroker::GetWinSystem()->UseLimitedColor())
   {
@@ -271,10 +271,10 @@ void CGUITextureGLES::DrawQuad(const CRect& rect,
     glEnableVertexAttribArray(tex0Loc);
 
   // Setup Colors
-  col[0] = (GLubyte)GET_R(color);
-  col[1] = (GLubyte)GET_G(color);
-  col[2] = (GLubyte)GET_B(color);
-  col[3] = (GLubyte)GET_A(color);
+  col[0] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::R, color);
+  col[1] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::G, color);
+  col[2] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::B, color);
+  col[3] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::A, color);
 
   glUniform4f(uniColLoc, col[0] / 255.0f, col[1] / 255.0f, col[2] / 255.0f, col[3] / 255.0f);
 
