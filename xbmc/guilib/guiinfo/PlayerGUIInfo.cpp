@@ -331,6 +331,14 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     case PLAYER_PROCESS_VIDEOHEIGHT:
       value = StringUtils::FormatNumber(CServiceBroker::GetDataCacheCore().GetVideoHeight());
       return true;
+    case PLAYER_PROCESS_VIDEOBITRATE:
+    {
+      unsigned int bitrate = CServiceBroker::GetDataCacheCore().GetVideoBitrate();
+      if (bitrate > 0)
+        value = StringUtils::FormatNumber(bitrate);
+
+      return true;
+    }
     case PLAYER_PROCESS_AUDIODECODER:
       value = CServiceBroker::GetDataCacheCore().GetAudioDecoderName();
       return true;

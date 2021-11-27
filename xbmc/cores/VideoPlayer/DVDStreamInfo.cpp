@@ -281,6 +281,7 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     height    = stream->iHeight;
     width     = stream->iWidth;
     aspect    = stream->fAspect;
+    bitrate = stream->iBitRate;
     vfr       = stream->bVFR;
     ptsinvalid = stream->bPTSInvalid;
     forced_aspect = stream->bForcedAspect;

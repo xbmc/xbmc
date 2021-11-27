@@ -71,6 +71,7 @@ void CProcessInfo::ResetVideoCodecInfo()
   m_videoHeight = 0;
   m_videoFPS = 0.0;
   m_videoDAR = 0.0;
+  m_videoBitrate = 0;
   m_videoIsInterlaced = false;
   m_deintMethods.clear();
   m_deintMethods.push_back(EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE);
@@ -85,6 +86,7 @@ void CProcessInfo::ResetVideoCodecInfo()
     m_dataCache->SetVideoDimensions(m_videoWidth, m_videoHeight);
     m_dataCache->SetVideoFps(m_videoFPS);
     m_dataCache->SetVideoDAR(m_videoDAR);
+    m_dataCache->SetVideoBitrate(m_videoBitrate);
     m_dataCache->SetStateSeeking(m_stateSeeking);
     m_dataCache->SetVideoStereoMode(m_videoStereoMode);
   }
@@ -231,6 +233,23 @@ bool CProcessInfo::GetVideoInterlaced()
   CSingleLock lock(m_videoCodecSection);
 
   return m_videoIsInterlaced;
+}
+
+void CProcessInfo::SetVideoBitrate(unsigned int bitrate)
+{
+  CSingleLock lock(m_videoCodecSection);
+
+  m_videoBitrate = bitrate;
+
+  if (m_dataCache)
+    m_dataCache->SetVideoBitrate(m_videoBitrate);
+}
+
+unsigned int CProcessInfo::GetVideoBitrate()
+{
+  CSingleLock lock(m_videoCodecSection);
+
+  return m_videoBitrate;
 }
 
 EINTERLACEMETHOD CProcessInfo::GetFallbackDeintMethod()

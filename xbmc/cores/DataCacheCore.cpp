@@ -189,6 +189,20 @@ float CDataCacheCore::GetVideoDAR()
   return m_playerVideoInfo.dar;
 }
 
+void CDataCacheCore::SetVideoBitrate(unsigned int bitrate)
+{
+  CSingleLock lock(m_videoPlayerSection);
+
+  m_playerVideoInfo.bitrate = bitrate;
+}
+
+unsigned int CDataCacheCore::GetVideoBitrate()
+{
+  CSingleLock lock(m_videoPlayerSection);
+
+  return m_playerVideoInfo.bitrate;
+}
+
 // player audio info
 void CDataCacheCore::SetAudioDecoderName(std::string name)
 {

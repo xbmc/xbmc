@@ -153,6 +153,9 @@ bool CAddonVideoCodec::CopyToInitData(VIDEOCODEC_INITDATA &initData, CDVDStreamI
   m_height = hints.height;
 
   m_processInfo.SetVideoDimensions(hints.width, hints.height);
+  if (hints.bitrate > 0)
+    m_processInfo.SetVideoBitrate(hints.bitrate);
+
   m_processInfo.SetVideoDAR(m_displayAspect);
   if (hints.fpsscale)
     m_processInfo.SetVideoFps(static_cast<float>(hints.fpsrate) / hints.fpsscale);

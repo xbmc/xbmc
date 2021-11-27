@@ -48,6 +48,8 @@ public:
   float GetVideoFps();
   void SetVideoDAR(float dar);
   float GetVideoDAR();
+  void SetVideoBitrate(unsigned int bitrate);
+  unsigned int GetVideoBitrate();
 
   // player audio info
   void SetAudioDecoderName(std::string name);
@@ -141,6 +143,7 @@ protected:
     int height;
     float fps;
     float dar;
+    unsigned int bitrate;
   } m_playerVideoInfo;
 
   CCriticalSection m_audioPlayerSection;

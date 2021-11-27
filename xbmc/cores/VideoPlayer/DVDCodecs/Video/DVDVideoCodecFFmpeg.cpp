@@ -437,6 +437,9 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   UpdateName();
   const char* pixFmtName = av_get_pix_fmt_name(m_pCodecContext->pix_fmt);
   m_processInfo.SetVideoDimensions(m_pCodecContext->coded_width, m_pCodecContext->coded_height);
+  // Set hint bitrate, ffmpeg seem not provide this info
+  // and InputStream can provide its values
+  m_processInfo.SetVideoBitrate(hints.bitrate);
   m_processInfo.SetVideoPixelFormat(pixFmtName ? pixFmtName : "");
 
   m_dropCtrl.Reset(true);
