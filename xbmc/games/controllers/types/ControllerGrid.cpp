@@ -77,7 +77,7 @@ unsigned int CControllerGrid::AddPorts(const PortVec& ports, ControllerGrid& gri
   {
     // Add controller ports
     bool bFirstPlayer = true;
-    for (const CPortNode port : ports)
+    for (const CPortNode& port : ports)
     {
       ControllerColumn column;
 
