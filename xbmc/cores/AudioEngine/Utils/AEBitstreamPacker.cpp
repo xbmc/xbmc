@@ -10,7 +10,6 @@
 
 #include "AEPackIEC61937.h"
 #include "AEStreamInfo.h"
-#include "Util.h"
 #include "utils/log.h"
 
 #include <stddef.h>
@@ -22,11 +21,6 @@ extern "C"
 #include <libavutil/intreadwrite.h>
 }
 
-#define MAT_CODE(position, data) \
-  { \
-    position, data, sizeof(data) \
-  }
-
 namespace
 {
 constexpr auto BURST_HEADER_SIZE = 8;
@@ -36,24 +30,31 @@ constexpr auto MAT_PKT_OFFSET = 61440;
 constexpr auto MAT_FRAME_SIZE = 61424;
 
 /* magic MAT format values, meaning is unknown at this point */
-const uint8_t mat_start_code[20] = {
+constexpr std::array<uint8_t, 20> mat_start_code = {
     0x07, 0x9E, 0x00, 0x03, 0x84, 0x01, 0x01, 0x01, 0x80, 0x00,
     0x56, 0xA5, 0x3B, 0xF4, 0x81, 0x83, 0x49, 0x80, 0x77, 0xE0,
 };
-const uint8_t mat_middle_code[12] = {
+
+constexpr std::array<uint8_t, 12> mat_middle_code = {
     0xC3, 0xC1, 0x42, 0x49, 0x3B, 0xFA, 0x82, 0x83, 0x49, 0x80, 0x77, 0xE0,
 };
-const uint8_t mat_end_code[16] = {
+
+constexpr std::array<uint8_t, 16> mat_end_code = {
     0xC3, 0xC2, 0xC0, 0xC4, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x97, 0x11,
 };
 
-const struct
+struct MatCode
 {
   int pos;
   const uint8_t* code;
   unsigned int len;
-} MatCodes[] = {MAT_CODE(0, mat_start_code), MAT_CODE(30708, mat_middle_code),
-                MAT_CODE(MAT_FRAME_SIZE - sizeof(mat_end_code), mat_end_code)};
+};
+
+std::array<MatCode, 3> MatCodes = {{
+    {0, mat_start_code.data(), mat_start_code.size()},
+    {30708, mat_middle_code.data(), mat_middle_code.size()},
+    {MAT_FRAME_SIZE - mat_end_code.size(), mat_end_code.data(), mat_end_code.size()},
+}};
 
 } // unnamed namespace
 
@@ -228,11 +229,11 @@ void CAEBitstreamPacker::PackTrueHD(CAEStreamInfo &info, uint8_t* data, int size
     }
   }
 
-  for (nextCodeIdx = 0; nextCodeIdx < ARRAY_SIZE(MatCodes); nextCodeIdx++)
+  for (nextCodeIdx = 0; nextCodeIdx < static_cast<int>(MatCodes.size()); nextCodeIdx++)
     if (m_thd.bufferFilled <= MatCodes[nextCodeIdx].pos)
       break;
 
-  if (nextCodeIdx >= ARRAY_SIZE(MatCodes))
+  if (nextCodeIdx >= static_cast<int>(MatCodes.size()))
     return;
 
   while (paddingRem || dataRem || MatCodes[nextCodeIdx].pos == m_thd.bufferFilled)
@@ -246,7 +247,7 @@ void CAEBitstreamPacker::PackTrueHD(CAEStreamInfo &info, uint8_t* data, int size
       m_thd.bufferFilled += codeLen;
 
       nextCodeIdx++;
-      if (nextCodeIdx == ARRAY_SIZE(MatCodes))
+      if (nextCodeIdx == static_cast<int>(MatCodes.size()))
       {
         nextCodeIdx = 0;
 
