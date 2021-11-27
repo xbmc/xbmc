@@ -48,15 +48,6 @@ const struct
 } MatCodes[] = {MAT_CODE(0, mat_start_code), MAT_CODE(30708, mat_middle_code),
                 MAT_CODE(MAT_FRAME_SIZE - sizeof(mat_end_code), mat_end_code)};
 
-struct TrueHD
-{
-  int prevFrameSize;
-  int samplesPerFrame;
-  int bufferFilled;
-  int bufferIndex;
-  uint16_t prevFrameTime;
-  uint8_t* outputBuffer;
-};
 } // unnamed namespace
 
 class CAEStreamInfo;
@@ -82,6 +73,17 @@ private:
 
   /* we keep the trueHD and dtsHD buffers separate so that we can handle a fast stream switch */
   std::vector<uint8_t> m_trueHD[2];
+
+  struct TrueHD
+  {
+    int prevFrameSize;
+    int samplesPerFrame;
+    int bufferFilled;
+    int bufferIndex;
+    uint16_t prevFrameTime;
+    uint8_t* outputBuffer;
+  };
+
   TrueHD m_thd{};
 
   std::vector<uint8_t> m_dtsHD;
