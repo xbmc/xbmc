@@ -65,7 +65,7 @@ sudo apt install autoconf build-essential curl default-jdk gawk git gperf lib32s
 **[back to top](#table-of-contents)**
 
 ## 3. Prerequisites
-Building Kodi for Android requires Android NDK revision 20b. For the SDK just use the latest available.
+Building Kodi for Android requires Android NDK revision 21e. For the SDK just use the latest available.
 Kodi CI/CD platforms currently use r21e for build testing and releases, so we recommend using r21e for the most tested build experience
 
 * **[Android SDK](https://developer.android.com/studio/index.html)** (Look for `Get just the command line tools`)
