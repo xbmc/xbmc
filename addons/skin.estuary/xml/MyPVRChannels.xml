@@ -28,6 +28,7 @@
 						<param name="list_id" value="50" />
 						<param name="label1" value="$INFO[ListItem.Label]" />
 						<param name="has_status_icon" value="true" />
+						<param name="info_update" value="5000" />
 					</include>
 				</control>
 				<control type="fixedlist" id="51">
@@ -44,7 +45,7 @@
 					<ondown>51</ondown>
 					<viewtype label="535">list</viewtype>
 					<pagecontrol>73</pagecontrol>
-					<itemlayout height="70">
+					<itemlayout height="70" infoupdate="5000">
 						<control type="progress">
 							<right>10</right>
 							<top>30</top>
@@ -94,7 +95,7 @@
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 					</itemlayout>
-					<focusedlayout height="70">
+					<focusedlayout height="70" infoupdate="5000">
 						<control type="image">
 							<left>0</left>
 							<top>0</top>

@@ -408,6 +408,7 @@
 		<param name="icon">$INFO[ListItem.Icon]</param>
 		<param name="label">$INFO[ListItem.Label]</param>
 		<param name="label2">$INFO[ListItem.Title]</param>
+		<param name="info_update">0</param>
 		<definition>
 			<include content="CategoryLabel">
 				<param name="label">$PARAM[widget_header]</param>
@@ -427,7 +428,7 @@
 					<param name="list_id" value="$PARAM[list_id]"/>
 				</include>
 				<visible>Integer.IsGreater(Container($PARAM[list_id]).NumItems,$PARAM[item_treshold]) | [Container($PARAM[list_id]).IsUpdating + Integer.IsEqual(Container($PARAM[list_id]).NumItems,0)]</visible>
-				<itemlayout width="310" height="500">
+				<itemlayout width="310" height="500" infoupdate="$PARAM[info_update]">
 					<control type="group">
 						<left>70</left>
 						<control type="image">
@@ -484,9 +485,19 @@
 							<info>ListItem.PercentPlayed</info>
 							<visible>!Integer.IsEqual(ListItem.PercentPlayed,0)</visible>
 						</control>
+						<control type="progress">
+							<left>20</left>
+							<top>300</top>
+							<width>280</width>
+							<height>1</height>
+							<texturebg></texturebg>
+							<midtexture colordiffuse="button_focus" border="3">progress/texturebg_alt_white.png</midtexture>
+							<info>ListItem.Progress</info>
+							<visible>!Integer.IsEqual(ListItem.Progress,0)</visible>
+						</control>
 					</control>
 				</itemlayout>
-				<focusedlayout width="310" height="500">
+				<focusedlayout width="310" height="500" infoupdate="$PARAM[info_update]">
 					<control type="group">
 						<depth>DepthContentPopout</depth>
 						<left>70</left>
@@ -558,6 +569,16 @@
 							<midtexture colordiffuse="button_focus" border="3">progress/texturebg_alt_white.png</midtexture>
 							<info>ListItem.PercentPlayed</info>
 							<visible>!Integer.IsEqual(ListItem.PercentPlayed,0)</visible>
+						</control>
+						<control type="progress">
+							<left>20</left>
+							<top>300</top>
+							<width>280</width>
+							<height>1</height>
+							<texturebg></texturebg>
+							<midtexture colordiffuse="button_focus" border="3">progress/texturebg_alt_white.png</midtexture>
+							<info>ListItem.Progress</info>
+							<visible>!Integer.IsEqual(ListItem.Progress,0)</visible>
 						</control>
 					</control>
 				</focusedlayout>
