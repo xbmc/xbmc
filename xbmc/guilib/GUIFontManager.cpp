@@ -223,6 +223,7 @@ bool GUIFontManager::OnMessage(CGUIMessage& message)
       return true;
     }
   }
+
   return false;
 }
 
@@ -299,6 +300,7 @@ CGUIFontTTF* GUIFontManager::GetFontFile(const std::string& fontIdent)
     if (StringUtils::EqualsNoCase(pFont->GetFontIdent(), fontIdent))
       return pFont;
   }
+
   return nullptr;
 }
 
@@ -310,9 +312,11 @@ CGUIFont* GUIFontManager::GetFont(const std::string& strFontName, bool fallback 
     if (StringUtils::EqualsNoCase(pFont->GetFontName(), strFontName))
       return pFont;
   }
+
   // fall back to "font13" if we have none
   if (fallback && !strFontName.empty() && !StringUtils::EqualsNoCase(strFontName, "font13"))
     return GetFont("font13");
+
   return nullptr;
 }
 
@@ -334,6 +338,7 @@ CGUIFont* GUIFontManager::GetDefaultFont(bool border)
   {
     if (m_vecFonts.empty())
       return nullptr;
+
     font13index = 0;
   }
 
@@ -349,6 +354,7 @@ CGUIFont* GUIFontManager::GetDefaultFont(bool border)
     }
     return font13border;
   }
+
   return m_vecFonts[font13index];
 }
 
@@ -389,6 +395,7 @@ void GUIFontManager::LoadFonts(const std::string& fontSet)
               strPath);
     return;
   }
+
   // Resolve includes in Font.xml
   g_SkinInfo->ResolveIncludes(pRootElement);
   // take note of the first font available in case we can't load the one specified

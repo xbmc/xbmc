@@ -40,6 +40,7 @@ float CScrollInfo::GetPixelsPerFrame()
 
   if (0 == pixelSpeed)
     return 0; // not scrolling
+
   unsigned int currentTime = CTimeUtils::GetFrameTime();
   float delta =
       m_lastFrameTime ? static_cast<float>(currentTime - m_lastFrameTime) : m_averageFrameTime;
@@ -164,8 +165,8 @@ bool CGUIFont::UpdateScrollInfo(const vecText& text, CScrollInfo& scrollInfo)
 
   if (scrollInfo.pixelPos != old.pixelPos)
     return true;
-  else
-    return false;
+
+  return false;
 }
 
 void CGUIFont::DrawScrollingText(float x,
@@ -179,6 +180,7 @@ void CGUIFont::DrawScrollingText(float x,
 {
   if (!m_font)
     return;
+
   if (!shadowColor)
     shadowColor = m_shadowColor;
 
@@ -244,6 +246,7 @@ wchar_t CGUIFont::RemapGlyph(wchar_t letter)
     return 0x0027; // single quotes
   else if (letter == 0x201c || letter == 0x201d)
     return 0x0022;
+
   return 0; // no decent character map
 }
 
@@ -265,6 +268,7 @@ float CGUIFont::GetTextWidth(const vecText& text)
 {
   if (!m_font)
     return 0;
+
   CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
   return m_font->GetTextWidthInternal(text) *
          CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIScaleX();
@@ -274,6 +278,7 @@ float CGUIFont::GetCharWidth(character_t ch)
 {
   if (!m_font)
     return 0;
+
   CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
   return m_font->GetCharWidthInternal(ch) *
          CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIScaleX();
@@ -283,6 +288,7 @@ float CGUIFont::GetTextHeight(int numLines) const
 {
   if (!m_font)
     return 0;
+
   return m_font->GetTextHeight(m_lineSpacing, numLines) *
          CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIScaleY();
 }
@@ -291,6 +297,7 @@ float CGUIFont::GetTextBaseLine() const
 {
   if (!m_font)
     return 0;
+
   return m_font->GetTextBaseLine() * CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIScaleY();
 }
 
@@ -298,6 +305,7 @@ float CGUIFont::GetLineHeight() const
 {
   if (!m_font)
     return 0;
+
   return m_font->GetLineHeight(m_lineSpacing) *
          CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIScaleY();
 }
@@ -306,6 +314,7 @@ float CGUIFont::GetScaleFactor() const
 {
   if (!m_font)
     return 1.0f;
+
   return m_font->GetFontHeight() / m_origHeight;
 }
 
@@ -313,6 +322,7 @@ void CGUIFont::Begin()
 {
   if (!m_font)
     return;
+
   m_font->Begin();
 }
 
@@ -320,6 +330,7 @@ void CGUIFont::End()
 {
   if (!m_font)
     return;
+
   m_font->End();
 }
 
@@ -327,8 +338,10 @@ void CGUIFont::SetFont(CGUIFontTTF* font)
 {
   if (m_font == font)
     return; // no need to update the font if we already have it
+
   if (m_font)
     m_font->RemoveReference();
+
   m_font = font;
   if (m_font)
     m_font->AddReference();
