@@ -1015,12 +1015,12 @@ static void set_gamma_info(output_t* output)
       output->brightness = v2;
     else
       output->brightness = exp((log(v2) * log(i1) - log(v1) * log(i2)) / log(i1 / i2));
-    output->gamma.red = log((double)(gamma->red[last_red / 2]) / output->brightness / 65535) /
-                        log((double)((last_red / 2) + 1) / size);
-    output->gamma.green = log((double)(gamma->green[last_green / 2]) / output->brightness / 65535) /
-                          log((double)((last_green / 2) + 1) / size);
-    output->gamma.blue = log((double)(gamma->blue[last_blue / 2]) / output->brightness / 65535) /
-                         log((double)((last_blue / 2) + 1) / size);
+    output->gamma.red = logf((gamma->red[last_red / 2]) / output->brightness / 65535) /
+                        logf(((last_red / 2) + 1) / size);
+    output->gamma.green = logf((gamma->green[last_green / 2]) / output->brightness / 65535) /
+                          logf(((last_green / 2) + 1) / size);
+    output->gamma.blue = logf((gamma->blue[last_blue / 2]) / output->brightness / 65535) /
+                         logf(((last_blue / 2) + 1) / size);
   }
 
   XRRFreeGamma(gamma);
@@ -1332,33 +1332,32 @@ static void set_gamma(void)
       continue;
     }
 
-    if (output->gamma.red == 0.0 && output->gamma.green == 0.0 && output->gamma.blue == 0.0)
-      output->gamma.red = output->gamma.green = output->gamma.blue = 1.0;
+    if (output->gamma.red == 0.0f && output->gamma.green == 0.0f && output->gamma.blue == 0.0f)
+      output->gamma.red = output->gamma.green = output->gamma.blue = 1.0f;
 
     for (i = 0; i < size; i++)
     {
-      if (output->gamma.red == 1.0 && output->brightness == 1.0)
+      if (output->gamma.red == 1.0f && output->brightness == 1.0f)
         gamma->red[i] = (i << 8) + i;
       else
         gamma->red[i] =
-            dmin(pow((double)i / (double)(size - 1), output->gamma.red) * output->brightness, 1.0) *
-            65535.0;
+            min(powf((float)i / (float)(size - 1), output->gamma.red) * output->brightness, 1.0f) *
+            65535.0f;
 
-      if (output->gamma.green == 1.0 && output->brightness == 1.0)
+      if (output->gamma.green == 1.0f && output->brightness == 1.0f)
         gamma->green[i] = (i << 8) + i;
       else
         gamma->green[i] =
-            dmin(pow((double)i / (double)(size - 1), output->gamma.green) * output->brightness,
-                 1.0) *
-            65535.0;
+            min(powf((float)i / (float)(size - 1), output->gamma.green) * output->brightness,
+                1.0f) *
+            65535.0f;
 
-      if (output->gamma.blue == 1.0 && output->brightness == 1.0)
+      if (output->gamma.blue == 1.0f && output->brightness == 1.0f)
         gamma->blue[i] = (i << 8) + i;
       else
         gamma->blue[i] =
-            dmin(pow((double)i / (double)(size - 1), output->gamma.blue) * output->brightness,
-                 1.0) *
-            65535.0;
+            min(powf((float)i / (float)(size - 1), output->gamma.blue) * output->brightness, 1.0f) *
+            65535.0f;
     }
 
     XRRSetCrtcGamma(dpy, crtc->crtc.xid, gamma);
@@ -3132,11 +3131,11 @@ int main(int argc, char** argv)
         printf("\tIdentifier: 0x%x\n", (int)output->output.xid);
         printf("\tTimestamp:  %d\n", (int)output_info->timestamp);
         printf("\tSubpixel:   %s\n", order[output_info->subpixel_order]);
-        if (output->gamma.red != 0.0 && output->gamma.green != 0.0 && output->gamma.blue != 0.0)
+        if (output->gamma.red != 0.0f && output->gamma.green != 0.0f && output->gamma.blue != 0.0f)
         {
-          printf("\tGamma:      %#.2g:%#.2g:%#.2g\n", output->gamma.red, output->gamma.green,
-                 output->gamma.blue);
-          printf("\tBrightness: %#.2g\n", output->brightness);
+          printf("\tGamma:      %#.2g:%#.2g:%#.2g\n", (double)output->gamma.red,
+                 (double)output->gamma.green, (double)output->gamma.blue);
+          printf("\tBrightness: %#.2g\n", (double)output->brightness);
         }
         printf("\tClones:    ");
         for (j = 0; j < output_info->nclone; j++)
