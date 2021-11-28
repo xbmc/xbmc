@@ -1976,9 +1976,9 @@ static void set_screen_size(void)
         pan = &output->panning;
       else
         pan = output->crtc_info ? output->crtc_info->panning_info : NULL;
-      if (pan && pan->left + pan->width > fb_width)
+      if (pan && pan->left + pan->width > (unsigned int)fb_width)
         fb_width = pan->left + pan->width;
-      if (pan && pan->top + pan->height > fb_height)
+      if (pan && pan->top + pan->height > (unsigned int)fb_height)
         fb_height = pan->top + pan->height;
     }
   }
@@ -2980,7 +2980,8 @@ int main(int argc, char** argv)
 		 * When this output covers the whole screen, just use
 		 * the known physical size
 		 */
-        if (fb_width == mode_info->width && fb_height == mode_info->height)
+        if ((unsigned int)fb_width == mode_info->width &&
+            (unsigned int)fb_height == mode_info->height)
         {
           fb_width_mm = output_info->mm_width;
           fb_height_mm = output_info->mm_height;
@@ -3204,7 +3205,7 @@ int main(int argc, char** argv)
             int k;
 
             printf("\t%s:\n", XGetAtomName(dpy, props[j]));
-            for (k = 0; k < nitems; k++)
+            for (k = 0; k < (long)nitems; k++)
             {
               if (k % 16 == 0)
                 printf("\t\t");
@@ -3216,7 +3217,7 @@ int main(int argc, char** argv)
           else if (actual_type == XA_INTEGER && actual_format == 32)
           {
             printf("\t%s: ", XGetAtomName(dpy, props[j]));
-            for (k = 0; k < nitems; k++)
+            for (k = 0; k < (long)nitems; k++)
             {
               if (k > 0)
                 printf("\n\t\t\t");
@@ -3238,7 +3239,7 @@ int main(int argc, char** argv)
           else if (actual_type == XA_ATOM && actual_format == 32)
           {
             printf("\t%s:", XGetAtomName(dpy, props[j]));
-            for (k = 0; k < nitems; k++)
+            for (k = 0; k < (long)nitems; k++)
             {
               if (k > 0 && (k & 1) == 0)
                 printf("\n\t\t");
