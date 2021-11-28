@@ -27,6 +27,7 @@ class CGUIFontCacheImpl
       auto r(hashMap.insert(typename HashMap::value_type(hash, v)));
       if (r->second)
         ageMap.insert(typename AgeMap::value_type(r->second->m_lastUsedMillis, r));
+
       return r;
     }
     void Flush()
@@ -48,6 +49,7 @@ class CGUIFontCacheImpl
           return ret;
         }
       }
+
       return hashMap.end();
     }
     void UpdateAge(HashIter it, size_t millis)
@@ -176,6 +178,7 @@ Value& CGUIFontCacheImpl<Position, Value>::Lookup(Position& pos,
       entry = new CGUIFontCacheEntry<Position, Value>(*m_parent, key, nowMillis);
     else
       entry->Assign(key, nowMillis);
+
     return m_list.Insert(hashgen(key), entry)->second->m_value;
   }
   else
@@ -189,6 +192,7 @@ Value& CGUIFontCacheImpl<Position, Value>::Lookup(Position& pos,
     m_list.UpdateAge(i, nowMillis);
 
     dirtyCache = false;
+
     return i->second->m_value;
   }
 }

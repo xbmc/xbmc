@@ -101,6 +101,7 @@ public:
       XFILE::CFile f;
       if (f.LoadFile(realFile, memoryBuf) <= 0)
         return nullptr;
+
       if (FT_New_Memory_Face(m_library, reinterpret_cast<const FT_Byte*>(memoryBuf.data()),
                              memoryBuf.size(), 0, &face) != 0)
         return nullptr;
@@ -239,9 +240,9 @@ bool CGUIFontTTF::Load(
   // we now know that this object is unique - only the GUIFont objects are non-unique, so no need
   // for reference tracking these fonts
   m_face = g_freeTypeLibrary.GetFont(strFilename, height, aspect, m_fontFileInMemory);
-
   if (!m_face)
     return false;
+
   m_hbFont = hb_ft_font_create(m_face, 0);
   if (!m_hbFont)
     return false;
@@ -593,6 +594,7 @@ float CGUIFontTTF::GetTextWidthInternal(const vecText& text, std::vector<Glyph>&
         width += c->advance;
     }
   }
+
   return width;
 }
 
@@ -606,6 +608,7 @@ float CGUIFontTTF::GetCharWidthInternal(character_t ch)
     else
       return c->advance;
   }
+
   return 0;
 }
 
@@ -616,9 +619,10 @@ float CGUIFontTTF::GetTextHeight(float lineSpacing, int numLines) const
 
 float CGUIFontTTF::GetLineHeight(float lineSpacing) const
 {
-  if (m_face)
-    return lineSpacing * m_face->size->metrics.height / 64.0f;
-  return 0.0f;
+  if (!m_face)
+    return 0.0f;
+
+  return lineSpacing * m_face->size->metrics.height / 64.0f;
 }
 
 unsigned int CGUIFontTTF::GetTextureLineHeight() const
@@ -633,6 +637,7 @@ std::vector<CGUIFontTTF::Glyph> CGUIFontTTF::GetHarfBuzzShapedGlyphs(const vecTe
   {
     return glyphs;
   }
+
   std::vector<hb_script_t> scripts;
   std::vector<RunInfo> runs;
   hb_unicode_funcs_t* ufuncs = hb_unicode_funcs_get_default();
@@ -715,6 +720,7 @@ std::vector<CGUIFontTTF::Glyph> CGUIFontTTF::GetHarfBuzzShapedGlyphs(const vecTe
 
     hb_buffer_destroy(run.buffer);
   }
+
   return glyphs;
 }
 
@@ -793,6 +799,7 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr, FT_UInt glyph
       return nullptr;
     }
   }
+
   if (nestedBeginCount)
     Begin();
   m_nestedBeginCount = nestedBeginCount;
@@ -825,6 +832,7 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch, 
               static_cast<uint32_t>(letter));
     return false;
   }
+
   // make bold if applicable
   if (style & FONT_STYLE_BOLD)
     SetGlyphStrength(m_face->glyph, GLYPH_STRENGTH_BOLD);
@@ -850,6 +858,7 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch, 
               static_cast<uint32_t>(letter));
     return false;
   }
+
   FT_BitmapGlyph bitGlyph = (FT_BitmapGlyph)glyph;
   FT_Bitmap bitmap = bitGlyph->bitmap;
   bool isEmptyGlyph = (bitmap.width == 0 || bitmap.rows == 0);
@@ -901,6 +910,7 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch, 
       return false;
     }
   }
+
   // set the character in our table
   ch->glyphAndStyle = (style << 16) | glyphIndex;
   ch->glyphIndex = glyphIndex;

@@ -116,6 +116,7 @@ bool CGUIFontTTFGL::FirstBegin()
   glEnable(GL_BLEND);
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, m_nTexture);
+
   return true;
 }
 
@@ -355,6 +356,7 @@ std::unique_ptr<CTexture> CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
               __func__, m_height);
     return nullptr;
   }
+
   m_textureHeight = newTexture->GetHeight();
   m_textureScaleY = 1.0f / m_textureHeight;
   m_textureWidth = newTexture->GetWidth();
@@ -452,6 +454,7 @@ void CGUIFontTTFGL::CreateStaticVertexBuffers(void)
   // Bind a new buffer to the OpenGL context's GL_ELEMENT_ARRAY_BUFFER binding point
   glGenBuffers(1, &m_elementArrayHandle);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementArrayHandle);
+
   // Create an array holding the mesh indices to convert quads to triangles
   GLushort index[ELEMENT_ARRAY_MAX_CHAR_INDEX][6];
   for (size_t i = 0; i < ELEMENT_ARRAY_MAX_CHAR_INDEX; i++)
@@ -463,6 +466,7 @@ void CGUIFontTTFGL::CreateStaticVertexBuffers(void)
     index[i][4] = 4 * i + 3;
     index[i][5] = 4 * i + 2;
   }
+
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof index, index, GL_STATIC_DRAW);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
   m_staticVertexBufferCreated = true;
@@ -472,6 +476,7 @@ void CGUIFontTTFGL::DestroyStaticVertexBuffers(void)
 {
   if (!m_staticVertexBufferCreated)
     return;
+
   glDeleteBuffers(1, &m_elementArrayHandle);
   m_staticVertexBufferCreated = false;
 }

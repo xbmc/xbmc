@@ -317,9 +317,11 @@ bool CGUIFontTTFDX::UpdateDynamicVertexBuffer(const SVertex* pSysMem, unsigned i
       CLog::LogF(LOGERROR, "Failed to update the vertex buffer.");
       return false;
     }
+
     memcpy(resource.pData, pSysMem, width);
     pContext->Unmap(m_vertexBuffer.Get(), 0);
   }
+
   return true;
 }
 
