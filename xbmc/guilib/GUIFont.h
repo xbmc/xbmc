@@ -162,8 +162,6 @@ public:
 
   uint32_t GetStyle() const { return m_style; }
 
-  static wchar_t RemapGlyph(wchar_t letter);
-
   CGUIFontTTF* GetFont() const { return m_font; }
 
   void SetFont(CGUIFontTTF* font);
