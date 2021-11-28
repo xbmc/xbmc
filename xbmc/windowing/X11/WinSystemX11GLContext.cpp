@@ -247,56 +247,47 @@ bool CWinSystemX11GLContext::RefreshGLContext(bool force)
 
   CScreenshotSurfaceGL::Register();
 
-  std::string gpuvendor;
-  const char* vend = (const char*) glGetString(GL_VENDOR);
-  if (vend)
-    gpuvendor = vend;
-  std::transform(gpuvendor.begin(), gpuvendor.end(), gpuvendor.begin(), ::tolower);
-  bool isNvidia = (gpuvendor.compare(0, 6, "nvidia") == 0);
-  bool isIntel = (gpuvendor.compare(0, 5, "intel") == 0);
-  std::string gli = (getenv("KODI_GL_INTERFACE") != nullptr) ? getenv("KODI_GL_INTERFACE") : "";
+  //! @todo: move to using a runtime switch param instead of an env variable?
+  std::string gli = (getenv("KODI_GL_INTERFACE") != nullptr) ? getenv("KODI_GL_INTERFACE") : "EGL";
 
-  if (gli != "GLX")
+  if (gli == "EGL")
   {
     m_pGLContext = new CGLContextEGL(m_dpy, EGL_OPENGL_API);
     success = m_pGLContext->Refresh(force, m_screen, m_glWindow, m_newGlContext);
     if (success)
     {
-      if (!isNvidia)
-      {
-        m_vaapiProxy.reset(VaapiProxyCreate());
-        VaapiProxyConfig(m_vaapiProxy.get(), GetDisplay(),
-                              static_cast<CGLContextEGL*>(m_pGLContext)->m_eglDisplay);
-        bool general = false;
-        bool deepColor = false;
-        VAAPIRegisterRenderGL(m_vaapiProxy.get(), general, deepColor);
-        if (general)
-        {
-          VAAPIRegister(m_vaapiProxy.get(), deepColor);
-          return true;
-        }
-        if (isIntel || gli == "EGL")
-          return true;
-      }
-    }
-    else if (gli == "EGL_PB")
-    {
-      success = m_pGLContext->CreatePB();
-      if (success)
-        return true;
+      m_vaapiProxy.reset(VaapiProxyCreate());
+      VaapiProxyConfig(m_vaapiProxy.get(), GetDisplay(),
+                       static_cast<CGLContextEGL*>(m_pGLContext)->m_eglDisplay);
+      bool general = false;
+      bool deepColor = false;
+      VAAPIRegisterRenderGL(m_vaapiProxy.get(), general, deepColor);
+      if (general)
+        VAAPIRegister(m_vaapiProxy.get(), deepColor);
+
+      return true;
     }
   }
 
-  delete m_pGLContext;
-
-  // fallback for vdpau
-  m_pGLContext = GLXContextCreate(m_dpy);
-  success = m_pGLContext->Refresh(force, m_screen, m_glWindow, m_newGlContext);
-  if (success)
+  if (gli == "EGL_PB")
   {
-    VDPAURegister();
-    VDPAURegisterRender();
+    m_pGLContext = new CGLContextEGL(m_dpy, EGL_OPENGL_API);
+    success = m_pGLContext->CreatePB();
+    if (success)
+      return true;
   }
+
+  if (gli == "GLX")
+  {
+    m_pGLContext = GLXContextCreate(m_dpy);
+    success = m_pGLContext->Refresh(force, m_screen, m_glWindow, m_newGlContext);
+    if (success)
+    {
+      VDPAURegister();
+      VDPAURegisterRender();
+    }
+  }
+
   return success;
 }
 
