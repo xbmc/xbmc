@@ -239,17 +239,6 @@ void CGUIFont::DrawScrollingText(float x,
   CServiceBroker::GetWinSystem()->GetGfxContext().RestoreClipRegion();
 }
 
-// remaps unsupported font glyphs to other suitable ones
-wchar_t CGUIFont::RemapGlyph(wchar_t letter)
-{
-  if (letter == 0x2019 || letter == 0x2018)
-    return 0x0027; // single quotes
-  else if (letter == 0x201c || letter == 0x201d)
-    return 0x0022;
-
-  return 0; // no decent character map
-}
-
 bool CGUIFont::ClippedRegionIsEmpty(float x, float y, float width, uint32_t alignment) const
 {
   if (alignment & XBFONT_CENTER_X)
