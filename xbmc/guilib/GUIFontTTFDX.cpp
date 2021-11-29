@@ -73,8 +73,9 @@ bool CGUIFontTTFDX::FirstBegin()
 
 void CGUIFontTTFDX::LastEnd()
 {
+  CWinSystemBase* const winSystem = CServiceBroker::GetWinSystem();
   ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetD3DContext();
-  if (!pContext)
+  if (!pContext || !winSystem)
     return;
 
   typedef CGUIFontTTF::CTranslatedVertices trans;
@@ -128,8 +129,8 @@ void CGUIFontTTFDX::LastEnd()
     // Store current GPU transform
     XMMATRIX view = pGUIShader->GetView();
     // Store current scissor
-    CRect scissor = CServiceBroker::GetWinSystem()->GetGfxContext().StereoCorrection(
-        CServiceBroker::GetWinSystem()->GetGfxContext().GetScissors());
+    CGraphicContext& context = winSystem->GetGfxContext();
+    CRect scissor = context.StereoCorrection(context.GetScissors());
 
     for (size_t i = 0; i < m_vertexTrans.size(); i++)
     {

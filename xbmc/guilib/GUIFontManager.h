@@ -83,7 +83,8 @@ public:
 
 protected:
   void ReloadTTFFonts();
-  static void RescaleFontSizeAndAspect(float* size,
+  static void RescaleFontSizeAndAspect(CGraphicContext& context,
+                                       float* size,
                                        float* aspect,
                                        const RESOLUTION_INFO& sourceRes,
                                        bool preserveAspect);

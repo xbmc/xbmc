@@ -28,6 +28,7 @@ using namespace DirectX;
 using namespace DirectX::PackedVector;
 #endif
 
+class CGraphicContext;
 class CTexture;
 class CRenderSystemBase;
 
@@ -148,7 +149,8 @@ protected:
   float GetLineHeight(float lineSpacing) const;
   float GetFontHeight() const { return m_height; }
 
-  void DrawTextInternal(float x,
+  void DrawTextInternal(CGraphicContext& context,
+                        float x,
                         float y,
                         const std::vector<UTILS::COLOR::Color>& colors,
                         const vecText& text,
@@ -161,7 +163,8 @@ protected:
   // Stuff for pre-rendering for speed
   Character* GetCharacter(character_t letter, FT_UInt glyphIndex);
   bool CacheCharacter(wchar_t letter, uint32_t style, Character* ch, FT_UInt glyphIndex);
-  void RenderCharacter(float posX,
+  void RenderCharacter(CGraphicContext& context,
+                       float posX,
                        float posY,
                        const Character* ch,
                        UTILS::COLOR::Color color,

@@ -347,7 +347,8 @@ void CGUIFontTTF::End()
   LastEnd();
 }
 
-void CGUIFontTTF::DrawTextInternal(float x,
+void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
+                                   float x,
                                    float y,
                                    const std::vector<UTILS::COLOR::Color>& colors,
                                    const vecText& text,
@@ -369,22 +370,21 @@ void CGUIFontTTF::DrawTextInternal(float x,
   CGUIFontCacheDynamicPosition dynamicPos;
   if (hardwareClipping)
   {
-    dynamicPos = CGUIFontCacheDynamicPosition(
-        CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalXCoord(x, y),
-        CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalYCoord(x, y),
-        CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalZCoord(x, y));
+    dynamicPos =
+        CGUIFontCacheDynamicPosition(context.ScaleFinalXCoord(x, y), context.ScaleFinalYCoord(x, y),
+                                     context.ScaleFinalZCoord(x, y));
   }
   CVertexBuffer unusedVertexBuffer;
   CVertexBuffer& vertexBuffer =
       hardwareClipping
-          ? m_dynamicCache.Lookup(dynamicPos, colors, text, alignment, maxPixelWidth, scrolling,
-                                  XbmcThreads::SystemClockMillis(), dirtyCache)
+          ? m_dynamicCache.Lookup(context, dynamicPos, colors, text, alignment, maxPixelWidth,
+                                  scrolling, XbmcThreads::SystemClockMillis(), dirtyCache)
           : unusedVertexBuffer;
   std::shared_ptr<std::vector<SVertex>> tempVertices = std::make_shared<std::vector<SVertex>>();
   std::shared_ptr<std::vector<SVertex>>& vertices =
       hardwareClipping ? tempVertices
                        : static_cast<std::shared_ptr<std::vector<SVertex>>&>(m_staticCache.Lookup(
-                             staticPos, colors, text, alignment, maxPixelWidth, scrolling,
+                             context, staticPos, colors, text, alignment, maxPixelWidth, scrolling,
                              XbmcThreads::SystemClockMillis(), dirtyCache));
   if (dirtyCache)
   {
@@ -509,7 +509,8 @@ void CGUIFontTTF::DrawTextInternal(float x,
 
           for (int i = 0; i < 3; i++)
           {
-            RenderCharacter(startX + cursorX, startY, period, color, !scrolling, *tempVertices);
+            RenderCharacter(context, startX + cursorX, startY, period, color, !scrolling,
+                            *tempVertices);
             cursorX += period->advance;
           }
           break;
@@ -522,7 +523,7 @@ void CGUIFontTTF::DrawTextInternal(float x,
           MathUtils::round_int(static_cast<double>(glyph.glyphPosition.x_offset) / 64));
       offsetY = static_cast<float>(
           MathUtils::round_int(static_cast<double>(glyph.glyphPosition.y_offset) / 64));
-      RenderCharacter(startX + cursorX + offsetX, startY - offsetY, ch, color, !scrolling,
+      RenderCharacter(context, startX + cursorX + offsetX, startY - offsetY, ch, color, !scrolling,
                       *tempVertices);
       if (alignment & XBFONT_JUSTIFIED)
       {
@@ -538,16 +539,15 @@ void CGUIFontTTF::DrawTextInternal(float x,
     if (hardwareClipping)
     {
       CVertexBuffer& vertexBuffer =
-          m_dynamicCache.Lookup(dynamicPos, colors, text, rawAlignment, maxPixelWidth, scrolling,
-                                XbmcThreads::SystemClockMillis(), dirtyCache);
+          m_dynamicCache.Lookup(context, dynamicPos, colors, text, rawAlignment, maxPixelWidth,
+                                scrolling, XbmcThreads::SystemClockMillis(), dirtyCache);
       CVertexBuffer newVertexBuffer = CreateVertexBuffer(*tempVertices);
       vertexBuffer = newVertexBuffer;
-      m_vertexTrans.emplace_back(0, 0, 0, &vertexBuffer,
-                                 CServiceBroker::GetWinSystem()->GetGfxContext().GetClipRegion());
+      m_vertexTrans.emplace_back(0, 0, 0, &vertexBuffer, context.GetClipRegion());
     }
     else
     {
-      m_staticCache.Lookup(staticPos, colors, text, rawAlignment, maxPixelWidth, scrolling,
+      m_staticCache.Lookup(context, staticPos, colors, text, rawAlignment, maxPixelWidth, scrolling,
                            XbmcThreads::SystemClockMillis(), dirtyCache) =
           *static_cast<CGUIFontCacheStaticValue*>(&tempVertices);
       /* Append the new vertices to the set collected since the first Begin() call */
@@ -558,7 +558,7 @@ void CGUIFontTTF::DrawTextInternal(float x,
   {
     if (hardwareClipping)
       m_vertexTrans.emplace_back(dynamicPos.m_x, dynamicPos.m_y, dynamicPos.m_z, &vertexBuffer,
-                                 CServiceBroker::GetWinSystem()->GetGfxContext().GetClipRegion());
+                                 context.GetClipRegion());
     else
       /* Append the vertices from the cache to the set collected since the first Begin() call */
       m_vertex.insert(m_vertex.end(), vertices->begin(), vertices->end());
@@ -946,7 +946,8 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch, 
   return true;
 }
 
-void CGUIFontTTF::RenderCharacter(float posX,
+void CGUIFontTTF::RenderCharacter(CGraphicContext& context,
+                                  float posX,
                                   float posY,
                                   const Character* ch,
                                   UTILS::COLOR::Color color,
@@ -964,24 +965,22 @@ void CGUIFontTTF::RenderCharacter(float posX,
 
   // posX and posY are relative to our origin, and the textcell is offset
   // from our (posX, posY).  Plus, these are unscaled quantities compared to the underlying GUI resolution
-  CRect vertex(
-      (posX + ch->offsetX) * CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIScaleX(),
-      (posY + ch->offsetY) * CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIScaleY(),
-      (posX + ch->offsetX + width) * CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIScaleX(),
-      (posY + ch->offsetY + height) *
-          CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIScaleY());
+  CRect vertex((posX + ch->offsetX) * context.GetGUIScaleX(),
+               (posY + ch->offsetY) * context.GetGUIScaleY(),
+               (posX + ch->offsetX + width) * context.GetGUIScaleX(),
+               (posY + ch->offsetY + height) * context.GetGUIScaleY());
   vertex += CPoint(m_originX, m_originY);
   CRect texture(ch->left, ch->top, ch->right, ch->bottom);
   if (!m_renderSystem->ScissorsCanEffectClipping())
-    CServiceBroker::GetWinSystem()->GetGfxContext().ClipRect(vertex, texture);
+    context.ClipRect(vertex, texture);
 
   // transform our positions - note, no scaling due to GUI calibration/resolution occurs
   float x[4], y[4], z[4];
 
-  x[0] = CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalXCoord(vertex.x1, vertex.y1);
-  x[1] = CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalXCoord(vertex.x2, vertex.y1);
-  x[2] = CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalXCoord(vertex.x2, vertex.y2);
-  x[3] = CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalXCoord(vertex.x1, vertex.y2);
+  x[0] = context.ScaleFinalXCoord(vertex.x1, vertex.y1);
+  x[1] = context.ScaleFinalXCoord(vertex.x2, vertex.y1);
+  x[2] = context.ScaleFinalXCoord(vertex.x2, vertex.y2);
+  x[3] = context.ScaleFinalXCoord(vertex.x1, vertex.y2);
 
   if (roundX)
   {
@@ -1008,23 +1007,23 @@ void CGUIFontTTF::RenderCharacter(float posX,
     x[3] = rx3;
   }
 
-  y[0] = static_cast<float>(MathUtils::round_int(static_cast<double>(
-      CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalYCoord(vertex.x1, vertex.y1))));
-  y[1] = static_cast<float>(MathUtils::round_int(static_cast<double>(
-      CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalYCoord(vertex.x2, vertex.y1))));
-  y[2] = static_cast<float>(MathUtils::round_int(static_cast<double>(
-      CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalYCoord(vertex.x2, vertex.y2))));
-  y[3] = static_cast<float>(MathUtils::round_int(static_cast<double>(
-      CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalYCoord(vertex.x1, vertex.y2))));
+  y[0] = static_cast<float>(
+      MathUtils::round_int(static_cast<double>(context.ScaleFinalYCoord(vertex.x1, vertex.y1))));
+  y[1] = static_cast<float>(
+      MathUtils::round_int(static_cast<double>(context.ScaleFinalYCoord(vertex.x2, vertex.y1))));
+  y[2] = static_cast<float>(
+      MathUtils::round_int(static_cast<double>(context.ScaleFinalYCoord(vertex.x2, vertex.y2))));
+  y[3] = static_cast<float>(
+      MathUtils::round_int(static_cast<double>(context.ScaleFinalYCoord(vertex.x1, vertex.y2))));
 
-  z[0] = static_cast<float>(MathUtils::round_int(static_cast<double>(
-      CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalZCoord(vertex.x1, vertex.y1))));
-  z[1] = static_cast<float>(MathUtils::round_int(static_cast<double>(
-      CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalZCoord(vertex.x2, vertex.y1))));
-  z[2] = static_cast<float>(MathUtils::round_int(static_cast<double>(
-      CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalZCoord(vertex.x2, vertex.y2))));
-  z[3] = static_cast<float>(MathUtils::round_int(static_cast<double>(
-      CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalZCoord(vertex.x1, vertex.y2))));
+  z[0] = static_cast<float>(
+      MathUtils::round_int(static_cast<double>(context.ScaleFinalZCoord(vertex.x1, vertex.y1))));
+  z[1] = static_cast<float>(
+      MathUtils::round_int(static_cast<double>(context.ScaleFinalZCoord(vertex.x2, vertex.y1))));
+  z[2] = static_cast<float>(
+      MathUtils::round_int(static_cast<double>(context.ScaleFinalZCoord(vertex.x2, vertex.y2))));
+  z[3] = static_cast<float>(
+      MathUtils::round_int(static_cast<double>(context.ScaleFinalZCoord(vertex.x1, vertex.y2))));
 
   // tex coords converted to 0..1 range
   float tl = texture.x1 * m_textureScaleX;
