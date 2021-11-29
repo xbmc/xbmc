@@ -122,6 +122,10 @@ bool CGUIFontTTFGL::FirstBegin()
 
 void CGUIFontTTFGL::LastEnd()
 {
+  CWinSystemBase* const winSystem = CServiceBroker::GetWinSystem();
+  if (!winSystem)
+    return;
+
 #ifdef HAS_GL
   CRenderSystemGL* renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
   renderSystem->EnableShader(ShaderMethodGL::SM_FONTS);
@@ -232,8 +236,8 @@ void CGUIFontTTFGL::LastEnd()
     // Bind our pre-calculated array to GL_ELEMENT_ARRAY_BUFFER
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementArrayHandle);
     // Store current scissor
-    CRect scissor = CServiceBroker::GetWinSystem()->GetGfxContext().StereoCorrection(
-        CServiceBroker::GetWinSystem()->GetGfxContext().GetScissors());
+    CGraphicContext& context = winSystem->GetGfxContext();
+    CRect scissor = context.StereoCorrection(context.GetScissors());
 
     for (size_t i = 0; i < m_vertexTrans.size(); i++)
     {

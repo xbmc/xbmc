@@ -76,7 +76,8 @@ class CGUIFontCacheImpl
 
 public:
   explicit CGUIFontCacheImpl(CGUIFontCache<Position, Value>* parent) : m_parent(parent) {}
-  Value& Lookup(Position& pos,
+  Value& Lookup(const CGraphicContext& context,
+                Position& pos,
                 const std::vector<UTILS::COLOR::Color>& colors,
                 const vecText& text,
                 uint32_t alignment,
@@ -125,7 +126,8 @@ CGUIFontCache<Position, Value>::~CGUIFontCache()
 }
 
 template<class Position, class Value>
-Value& CGUIFontCache<Position, Value>::Lookup(Position& pos,
+Value& CGUIFontCache<Position, Value>::Lookup(const CGraphicContext& context,
+                                              Position& pos,
                                               const std::vector<UTILS::COLOR::Color>& colors,
                                               const vecText& text,
                                               uint32_t alignment,
@@ -137,12 +139,13 @@ Value& CGUIFontCache<Position, Value>::Lookup(Position& pos,
   if (!m_impl)
     m_impl = new CGUIFontCacheImpl<Position, Value>(this);
 
-  return m_impl->Lookup(pos, colors, text, alignment, maxPixelWidth, scrolling, nowMillis,
+  return m_impl->Lookup(context, pos, colors, text, alignment, maxPixelWidth, scrolling, nowMillis,
                         dirtyCache);
 }
 
 template<class Position, class Value>
-Value& CGUIFontCacheImpl<Position, Value>::Lookup(Position& pos,
+Value& CGUIFontCacheImpl<Position, Value>::Lookup(const CGraphicContext& context,
+                                                  Position& pos,
                                                   const std::vector<UTILS::COLOR::Color>& colors,
                                                   const vecText& text,
                                                   uint32_t alignment,
@@ -151,12 +154,10 @@ Value& CGUIFontCacheImpl<Position, Value>::Lookup(Position& pos,
                                                   unsigned int nowMillis,
                                                   bool& dirtyCache)
 {
-  const CGUIFontCacheKey<Position> key(
-      pos, const_cast<std::vector<UTILS::COLOR::Color>&>(colors), const_cast<vecText&>(text),
-      alignment, maxPixelWidth, scrolling,
-      CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIMatrix(),
-      CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIScaleX(),
-      CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIScaleY());
+  const CGUIFontCacheKey<Position> key(pos, const_cast<std::vector<UTILS::COLOR::Color>&>(colors),
+                                       const_cast<vecText&>(text), alignment, maxPixelWidth,
+                                       scrolling, context.GetGUIMatrix(), context.GetGUIScaleX(),
+                                       context.GetGUIScaleY());
 
   auto i = m_list.FindKey(key);
   if (i == m_list.hashMap.end())
@@ -216,7 +217,8 @@ template CGUIFontCacheEntry<CGUIFontCacheStaticPosition,
                             CGUIFontCacheStaticValue>::~CGUIFontCacheEntry();
 template CGUIFontCacheStaticValue& CGUIFontCache<
     CGUIFontCacheStaticPosition,
-    CGUIFontCacheStaticValue>::Lookup(CGUIFontCacheStaticPosition&,
+    CGUIFontCacheStaticValue>::Lookup(const CGraphicContext& context,
+                                      CGUIFontCacheStaticPosition&,
                                       const std::vector<UTILS::COLOR::Color>&,
                                       const vecText&,
                                       uint32_t,
@@ -233,7 +235,8 @@ template CGUIFontCacheEntry<CGUIFontCacheDynamicPosition,
                             CGUIFontCacheDynamicValue>::~CGUIFontCacheEntry();
 template CGUIFontCacheDynamicValue& CGUIFontCache<
     CGUIFontCacheDynamicPosition,
-    CGUIFontCacheDynamicValue>::Lookup(CGUIFontCacheDynamicPosition&,
+    CGUIFontCacheDynamicValue>::Lookup(const CGraphicContext& context,
+                                       CGUIFontCacheDynamicPosition&,
                                        const std::vector<UTILS::COLOR::Color>&,
                                        const vecText&,
                                        uint32_t,

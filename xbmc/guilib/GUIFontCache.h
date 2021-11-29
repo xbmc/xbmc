@@ -27,6 +27,8 @@
 constexpr unsigned int FONT_CACHE_TIME_LIMIT = 1000;
 constexpr float FONT_CACHE_DIST_LIMIT = 0.01f;
 
+class CGraphicContext;
+
 template<class Position, class Value>
 class CGUIFontCache;
 class CGUIFontTTF;
@@ -153,7 +155,8 @@ public:
 
   ~CGUIFontCache();
 
-  Value& Lookup(Position& pos,
+  Value& Lookup(const CGraphicContext& context,
+                Position& pos,
                 const std::vector<UTILS::COLOR::Color>& colors,
                 const vecText& text,
                 uint32_t alignment,

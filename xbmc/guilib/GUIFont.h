@@ -25,6 +25,7 @@ typedef uint32_t character_t;
 typedef std::vector<character_t> vecText;
 
 class CGUIFontTTF;
+class CGraphicContext;
 
 ///
 /// \defgroup kodi_gui_font_alignment Font alignment flags
@@ -176,5 +177,6 @@ protected:
   CGUIFontTTF* m_font; // the font object has the size information
 
 private:
-  bool ClippedRegionIsEmpty(float x, float y, float width, uint32_t alignment) const;
+  bool ClippedRegionIsEmpty(
+      CGraphicContext& context, float x, float y, float width, uint32_t alignment) const;
 };

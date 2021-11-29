@@ -44,7 +44,8 @@ GUIFontManager::~GUIFontManager()
   Clear();
 }
 
-void GUIFontManager::RescaleFontSizeAndAspect(float* size,
+void GUIFontManager::RescaleFontSizeAndAspect(CGraphicContext& context,
+                                              float* size,
                                               float* aspect,
                                               const RESOLUTION_INFO& sourceRes,
                                               bool preserveAspect)
@@ -53,12 +54,12 @@ void GUIFontManager::RescaleFontSizeAndAspect(float* size,
   // as fonts aren't scaled at render time (due to aliasing) we must scale
   // the size of the fonts before they are drawn to bitmaps
   float scaleX, scaleY;
-  CServiceBroker::GetWinSystem()->GetGfxContext().GetGUIScaling(sourceRes, scaleX, scaleY);
+  context.GetGUIScaling(sourceRes, scaleX, scaleY);
 
   if (preserveAspect)
   {
     // font always displayed in the aspect specified by the aspect parameter
-    *aspect /= CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo().fPixelRatio;
+    *aspect /= context.GetResInfo().fPixelRatio;
   }
   else
   {
@@ -99,6 +100,18 @@ CGUIFont* GUIFontManager::LoadTTF(const std::string& strFontName,
                                   const RESOLUTION_INFO* sourceRes,
                                   bool preserveAspect)
 {
+  CWinSystemBase* const winSystem = CServiceBroker::GetWinSystem();
+  if (!winSystem)
+  {
+    CLog::Log(LOGFATAL,
+              "GUIFontManager::{}: Something tries to call function without an available GUI "
+              "window system",
+              __func__);
+    return nullptr;
+  }
+
+  CGraphicContext& context = winSystem->GetGfxContext();
+
   float originalAspect = aspect;
 
   //check if font already exists
@@ -110,14 +123,13 @@ CGUIFont* GUIFontManager::LoadTTF(const std::string& strFontName,
     sourceRes = &m_skinResolution;
 
   float newSize = static_cast<float>(iSize);
-  RescaleFontSizeAndAspect(&newSize, &aspect, *sourceRes, preserveAspect);
+  RescaleFontSizeAndAspect(context, &newSize, &aspect, *sourceRes, preserveAspect);
 
   // First try to load the font from the skin
   std::string strPath;
   if (!CURL::IsFullPath(strFilename))
   {
-    strPath = URIUtils::AddFileToFolder(
-        CServiceBroker::GetWinSystem()->GetGfxContext().GetMediaDir(), "fonts", strFilename);
+    strPath = URIUtils::AddFileToFolder(context.GetMediaDir(), "fonts", strFilename);
   }
   else
     strPath = strFilename;
@@ -229,7 +241,8 @@ bool GUIFontManager::OnMessage(CGUIMessage& message)
 
 void GUIFontManager::ReloadTTFFonts(void)
 {
-  if (m_vecFonts.empty())
+  CWinSystemBase* const winSystem = CServiceBroker::GetWinSystem();
+  if (m_vecFonts.empty() || !winSystem)
     return; // we haven't even loaded fonts in yet
 
   for (size_t i = 0; i < m_vecFonts.size(); ++i)
@@ -242,7 +255,8 @@ void GUIFontManager::ReloadTTFFonts(void)
     std::string& strPath = fontInfo.fontFilePath;
     std::string& strFilename = fontInfo.fileName;
 
-    RescaleFontSizeAndAspect(&newSize, &aspect, fontInfo.sourceRes, fontInfo.preserveAspect);
+    RescaleFontSizeAndAspect(winSystem->GetGfxContext(), &newSize, &aspect, fontInfo.sourceRes,
+                             fontInfo.preserveAspect);
 
     const std::string fontIdent = StringUtils::Format("{}_{:f}_{:f}{}", strFilename, newSize,
                                                       aspect, fontInfo.border ? "_border" : "");
