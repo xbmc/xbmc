@@ -2,55 +2,57 @@ include ../../Makefile.include
 include FFMPEG-VERSION
 DEPS= ../../Makefile.include FFMPEG-VERSION Makefile
 
-# set to "yes" to enable patching
-# we don't apply patches until we move to a vanilla ffmpeg tarball
-APPLY_PATCHES=no
+export PKG_CONFIG_LIBDIR=$(PREFIX)/lib/pkgconfig
 
 # configuration settings
 ffmpg_config = --prefix=$(PREFIX) --extra-version="kodi-$(VERSION)"
 ffmpg_config += --cc="$(CC)" --cxx="$(CXX)" --ar=$(AR) --ranlib=$(RANLIB) --strip=$(STRIP)
-ffmpg_config += --disable-devices --disable-doc
-ffmpg_config += --disable-ffplay --disable-ffmpeg
-ffmpg_config += --disable-ffprobe
+ffmpg_config += --extra-cflags="$(CFLAGS)"
+ffmpg_config += --extra-cxxflags="$(CXXFLAGS)"
+ffmpg_config += --extra-ldflags="$(LDFLAGS)"
+ffmpg_config += --pkg-config=$(NATIVEPREFIX)/bin/pkg-config
+
+ffmpg_config += --disable-doc
+ffmpg_config += --disable-devices
+ffmpg_config += --disable-programs
 ffmpg_config += --disable-sdl2
-ffmpg_config += --enable-gpl --enable-runtime-cpudetect
-ffmpg_config += --enable-postproc --enable-pthreads
-ffmpg_config += --enable-muxer=spdif --enable-muxer=adts
-ffmpg_config += --enable-muxer=asf --enable-muxer=ipod
-ffmpg_config += --enable-encoder=ac3 --enable-encoder=aac
-ffmpg_config += --enable-encoder=wmav2 --enable-protocol=http
+ffmpg_config += --enable-gpl
+ffmpg_config += --enable-postproc
+ffmpg_config += --enable-runtime-cpudetect
+ffmpg_config += --enable-pthreads
 ffmpg_config += --enable-gnutls
-ffmpg_config += --enable-encoder=png --enable-encoder=mjpeg
 ffmpg_config += --enable-libdav1d
 ffmpg_config += $(FFMPEG_CONFIGURE_OPTIONS)
 
+CONFIGARCH= --arch=$(CPU)
+
 ifeq ($(CROSS_COMPILING), yes)
-  ffmpg_config += --arch=$(CPU) --enable-cross-compile
+  ffmpg_config += --enable-cross-compile
+  ffmpg_config += --pkg-config-flags=--static
+  ffmpg_config += --enable-pic
 endif
 ifeq ($(OS), linux)
   ffmpg_config += --target-os=$(OS)
-  ffmpg_config += --enable-pic
 endif
 ifeq ($(OS), android)
   ifeq ($(findstring arm64, $(CPU)), arm64)
-    ffmpg_config += --arch=aarch64 --cpu=cortex-a53
+    ffmpg_config += --cpu=cortex-a53
+    CONFIGARCH= --arch=aarch64
   else
     ifeq ($(findstring arm, $(CPU)), arm)
       ffmpg_config += --cpu=cortex-a9
     else
       ifeq ($(CPU), x86_64)
-        ffmpg_config += --cpu=x86_64 --enable-pic
+        ffmpg_config += --cpu=$(CPU)
       else
         ffmpg_config += --cpu=i686 --disable-mmx
       endif
-      ffmpg_config += --extra-cflags='-no-integrated-as -mno-stackrealign'
+      ffmpg_config += --extra-cflags='-mno-stackrealign'
     endif
   endif
-  ffmpg_config += --target-os=linux --extra-libs=-liconv --disable-linux-perf
+  ffmpg_config += --target-os=$(OS) --extra-libs=-liconv
 endif
 ifeq ($(OS), darwin_embedded)
-  ffmpg_config += --as="$(NATIVEPREFIX)/bin/gas-preprocessor.pl -arch aarch64 -- $(CC)"
-  ffmpg_config += --x86asmexe=$(NATIVEPREFIX)/bin/nasm
   ffmpg_config += --disable-crystalhd --enable-videotoolbox
   ffmpg_config += --target-os=darwin
 endif
@@ -58,20 +60,23 @@ ifeq ($(OS), osx)
   ffmpg_config += --disable-crystalhd --enable-videotoolbox
   ffmpg_config += --target-os=darwin
   ffmpg_config += --disable-securetransport
-ifeq ($(CPU),arm64)
-  ffmpg_config += --as="$(NATIVEPREFIX)/bin/gas-preprocessor.pl -arch aarch64 -- $(CC)"
-  ffmpg_config += --x86asmexe=$(NATIVEPREFIX)/bin/nasm
-endif
 endif
 ifeq ($(findstring arm, $(CPU)), arm)
-  ffmpg_config += --enable-pic --disable-armv5te --disable-armv6t2
+  ffmpg_config += --disable-armv5te --disable-armv6t2
 endif
 ifeq ($(findstring mips, $(CPU)), mips)
   ffmpg_config += --disable-mips32r2 --disable-mipsdsp --disable-mipsdspr2
 endif
+ifeq ($(CPU),x86)
+  ffmpg_config += --x86asmexe=$(NATIVEPREFIX)/bin/nasm
+else ifeq ($(CPU),x86_64)
+  ffmpg_config += --x86asmexe=$(NATIVEPREFIX)/bin/nasm
+endif
 ifeq ($(Configuration), Release)
   ffmpg_config += --disable-debug
 endif
+
+ffmpg_config +=$(CONFIGARCH)
 
 all: .installed-$(PLATFORM)
 
@@ -81,10 +86,7 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); sed -i".bak" -e "s%pkg_config_default=pkg-config%export PKG_CONFIG_LIBDIR=$(PREFIX)/lib/pkgconfig \&\& pkg_config_default=$(NATIVEPREFIX)/bin/pkg-config%" configure
-	cd $(PLATFORM);\
-	CFLAGS="$(CFLAGS)" CXXFLAGS="$(CXXFLAGS)" CPPFLAGS="$(CPPFLAGS)" LDFLAGS="$(LDFLAGS)" \
-	./configure $(ffmpg_config)
+	cd $(PLATFORM);	./configure $(ffmpg_config)
 
 .build-$(PLATFORM): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM)
