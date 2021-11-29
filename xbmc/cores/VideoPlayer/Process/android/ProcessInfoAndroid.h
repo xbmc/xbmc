@@ -13,14 +13,15 @@
 
 namespace VIDEOPLAYER
 {
-  class CProcessInfoAndroid : public CProcessInfo
-  {
-  public:
-    CProcessInfoAndroid() = default;
-    static CProcessInfo* Create();
-    static void Register();
-    EINTERLACEMETHOD GetFallbackDeintMethod() override;
 
-  //protected:
-  };
-}
+class CProcessInfoAndroid : public CProcessInfo
+{
+public:
+  CProcessInfoAndroid() = default;
+  static CProcessInfo* Create();
+  static void Register();
+  EINTERLACEMETHOD GetFallbackDeintMethod() override;
+  bool WantsRawPassthrough() override;
+};
+
+} // namespace VIDEOPLAYER
