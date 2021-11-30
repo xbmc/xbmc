@@ -34,6 +34,11 @@ CNetworkInterfaceFreebsd::CNetworkInterfaceFreebsd(CNetworkPosix* network,
 {
 }
 
+const std::string& CNetworkInterfaceFreebsd::GetName(void) const
+{
+  return m_interfaceName;
+}
+
 std::string CNetworkInterfaceFreebsd::GetCurrentDefaultGateway() const
 {
   std::string result;

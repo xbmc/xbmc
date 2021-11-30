@@ -23,6 +23,8 @@ public:
                          char interfaceMacAddrRaw[6]);
   virtual ~CNetworkInterfacePosix() override = default;
 
+  const std::string& GetName(void) const override;
+
   bool IsEnabled() const override;
   bool IsConnected() const override;
   std::string GetCurrentIPAddress() const override;
@@ -46,7 +48,7 @@ public:
   virtual ~CNetworkPosix() override;
 
   std::vector<CNetworkInterface*>& GetInterfaceList() override;
-  CNetworkInterface* GetFirstConnectedInterface() override;
+  CNetworkInterface* GetDefaultInterface() override;
 
   int GetSocket() { return m_sock; }
 

@@ -9,9 +9,11 @@
 #include "NetworkWin32.h"
 
 #include "threads/SingleLock.h"
+#include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#include "platform/win32/CharsetConverter.h"
 #include "platform/win32/WIN32Util.h"
 
 #include <errno.h>
@@ -25,13 +27,22 @@
 
 #pragma comment(lib, "Ntdll.lib")
 
+using namespace KODI::PLATFORM::WINDOWS;
+
 CNetworkInterfaceWin32::CNetworkInterfaceWin32(const IP_ADAPTER_ADDRESSES& adapter)
+  : m_adaptername(adapter.AdapterName)
 {
   m_adapter = adapter;
+  g_charsetConverter.unknownToUTF8(m_adaptername);
 }
 
 CNetworkInterfaceWin32::~CNetworkInterfaceWin32(void)
 {
+}
+
+const std::string& CNetworkInterfaceWin32::GetName(void) const
+{
+  return m_adaptername;
 }
 
 bool CNetworkInterfaceWin32::IsEnabled() const

@@ -31,6 +31,11 @@ CNetworkInterfaceOsx::CNetworkInterfaceOsx(CNetworkPosix* network,
 {
 }
 
+const std::string& CNetworkInterfaceOsx::GetName(void) const
+{
+  return m_interfaceName;
+}
+
 std::string CNetworkInterfaceOsx::GetCurrentDefaultGateway() const
 {
   std::string result;

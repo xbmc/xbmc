@@ -23,24 +23,28 @@ class CNetworkWin32;
 class CNetworkInterfaceWin32 : public CNetworkInterface
 {
 public:
-   CNetworkInterfaceWin32(const IP_ADAPTER_ADDRESSES& adapter);
-   ~CNetworkInterfaceWin32(void) override;
+  CNetworkInterfaceWin32(CNetworkWin32* network, const IP_ADAPTER_ADDRESSES& adapter);
+  ~CNetworkInterfaceWin32(void) override;
 
-   bool IsEnabled(void) const override;
-   bool IsConnected(void) const override;
+  const std::string& GetName(void) const override;
 
-   std::string GetMacAddress(void) const override;
-   void GetMacAddressRaw(char rawMac[6]) const override;
+  bool IsEnabled(void) const override;
+  bool IsConnected(void) const override;
 
-   bool GetHostMacAddress(unsigned long host, std::string& mac) const override;
-   bool GetHostMacAddress(struct sockaddr* host, std::string& mac) const;
+  std::string GetMacAddress(void) const override;
+  void GetMacAddressRaw(char rawMac[6]) const override;
 
-   std::string GetCurrentIPAddress() const override;
-   std::string GetCurrentNetmask() const override;
-   std::string GetCurrentDefaultGateway(void) const override;
+  bool GetHostMacAddress(unsigned long host, std::string& mac) const override;
+  bool GetHostMacAddress(struct sockaddr* host, std::string& mac) const;
+
+  std::string GetCurrentIPAddress() const override;
+  std::string GetCurrentNetmask() const override;
+  std::string GetCurrentDefaultGateway(void) const override;
 
 private:
    IP_ADAPTER_ADDRESSES m_adapter;
+   CNetworkWin32* m_network;
+   std::string m_adaptername;
 };
 
 class CNetworkWin32 : public CNetworkBase
@@ -72,3 +76,4 @@ private:
    CCriticalSection m_critSection;
 };
 
+using CNetwork = CNetworkWin32;

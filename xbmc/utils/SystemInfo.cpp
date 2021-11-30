@@ -299,7 +299,7 @@ CSysData::INTERNET_STATE CSysInfoJob::GetInternetState()
 
 std::string CSysInfoJob::GetMACAddress()
 {
-  CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
+  CNetworkInterface* iface = CServiceBroker::GetNetwork().GetDefaultInterface();
   if (iface)
     return iface->GetMacAddress();
 

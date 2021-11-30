@@ -20,6 +20,8 @@ class CNetworkInterface
 public:
    virtual ~CNetworkInterface() = default;
 
+   virtual const std::string& GetName(void) const = 0;
+
    virtual bool IsEnabled(void) const = 0;
    virtual bool IsConnected(void) const = 0;
 
@@ -59,9 +61,10 @@ public:
 
   // Return the list of interfaces
   virtual std::vector<CNetworkInterface*>& GetInterfaceList(void) = 0;
+  CNetworkInterface* GetInterfaceByName(const std::string& name);
 
   // Return the first interface which is active
-  virtual CNetworkInterface* GetFirstConnectedInterface(void);
+  virtual CNetworkInterface* GetDefaultInterface(void);
 
   // Return true if there is a interface for the same network as address
   bool HasInterfaceForIP(unsigned long address);

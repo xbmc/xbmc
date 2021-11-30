@@ -712,7 +712,7 @@ bool URIUtils::IsHostOnLAN(const std::string& host, bool offLineCheck)
         return true;
     }
     // check if we are on the local subnet
-    if (!CServiceBroker::GetNetwork().GetFirstConnectedInterface())
+    if (!CServiceBroker::GetNetwork().GetDefaultInterface())
       return false;
 
     if (CServiceBroker::GetNetwork().HasInterfaceForIP(address))

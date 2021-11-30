@@ -8,6 +8,9 @@
 
 #include "NetworkPosix.h"
 
+#include "ServiceBroker.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -33,6 +36,11 @@ CNetworkInterfacePosix::CNetworkInterfacePosix(CNetworkPosix* network,
 {
   m_network = network;
   memcpy(m_interfaceMacAddrRaw, interfaceMacAddrRaw, sizeof(m_interfaceMacAddrRaw));
+}
+
+const std::string& CNetworkInterfacePosix::GetName(void) const
+{
+  return m_interfaceName;
 }
 
 bool CNetworkInterfacePosix::IsEnabled() const
@@ -129,22 +137,38 @@ std::vector<CNetworkInterface*>& CNetworkPosix::GetInterfaceList()
 }
 
 //! @bug
-//! Overwrite the GetFirstConnectedInterface and requery
+//! Overwrite the GetDefaultInterface and requery
 //! the interface list if no connected device is found
 //! this fixes a bug when no network is available after first start of xbmc
 //! and the interface comes up during runtime
-CNetworkInterface* CNetworkPosix::GetFirstConnectedInterface()
+CNetworkInterface* CNetworkPosix::GetDefaultInterface()
 {
-  CNetworkInterface* pNetIf = CNetworkBase::GetFirstConnectedInterface();
-
-  // no connected Interfaces found? - requeryInterfaceList
-  if (!pNetIf)
+  if (CServiceBroker::GetSettingsComponent()
+          ->GetAdvancedSettings()
+          ->m_defaultNetworkInterfaceName.empty())
   {
-    CLog::Log(LOGDEBUG, "{} no connected interface found - requery list", __FUNCTION__);
-    queryInterfaceList();
-    //retry finding a connected if
-    pNetIf = CNetworkBase::GetFirstConnectedInterface();
-  }
+    CLog::Log(LOGDEBUG, "Detecting network interface");
+    CNetworkInterface* pNetIf = CNetworkBase::GetDefaultInterface();
 
-  return pNetIf;
+    // no connected Interfaces found? - requeryInterfaceList
+    if (!pNetIf)
+    {
+      CLog::Log(LOGDEBUG, "{} no connected interface found - requery list", __FUNCTION__);
+      queryInterfaceList();
+      //retry finding a connected if
+      pNetIf = CNetworkBase::GetDefaultInterface();
+    }
+
+    return pNetIf;
+  }
+  else
+  {
+    CLog::Log(LOGDEBUG, "Using network interface {}",
+              CServiceBroker::GetSettingsComponent()
+                  ->GetAdvancedSettings()
+                  ->m_defaultNetworkInterfaceName);
+    return CNetworkBase::GetInterfaceByName(CServiceBroker::GetSettingsComponent()
+                                                ->GetAdvancedSettings()
+                                                ->m_defaultNetworkInterfaceName);
+  }
 }

@@ -7,22 +7,27 @@
  */
 
 #include "NetworkWin10.h"
+
 #include "filesystem/SpecialProtocol.h"
-#include "platform/win10/AsyncHelpers.h"
-#include "platform/win32/WIN32Util.h"
-#include "settings/Settings.h"
+#include "ServiceBroker.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
+
+#include "platform/win10/AsyncHelpers.h"
+#include "platform/win32/CharsetConverter.h"
+#include "platform/win32/WIN32Util.h"
 
 #include <errno.h>
-#include <iphlpapi.h>
-#include <ppltasks.h>
 #include <string.h>
-#include <Ws2tcpip.h>
-#include <ws2ipdef.h>
 
 #include <Ipexport.h>
+#include <Ws2tcpip.h>
+#include <iphlpapi.h>
+#include <ppltasks.h>
+#include <ws2ipdef.h>
 #ifndef IP_STATUS_BASE
 
 // --- c&p from Ipexport.h ----------------
@@ -55,14 +60,25 @@ typedef struct icmp_echo_reply {
 #endif //! IP_STATUS_BASE
 #include <Icmpapi.h>
 
+using namespace winrt::Windows::Networking;
 using namespace winrt::Windows::Networking::Connectivity;
+using namespace KODI::PLATFORM::WINDOWS;
 
-CNetworkInterfaceWin10::CNetworkInterfaceWin10(const PIP_ADAPTER_ADDRESSES address)
+CNetworkInterfaceWin10::CNetworkInterfaceWin10(const PIP_ADAPTER_ADDRESSES address,
+                                               IUnknown* winRTadapter)
 {
   m_adapterAddr = address;
+  m_adaptername = address->AdapterName;
+  winrt::attach_abi(m_winRT, winRTadapter);
+  m_profile = nullptr;
 }
 
 CNetworkInterfaceWin10::~CNetworkInterfaceWin10(void) = default;
+
+const std::string& CNetworkInterfaceWin10::GetName(void) const
+{
+  return m_adaptername;
+}
 
 bool CNetworkInterfaceWin10::IsEnabled() const
 {
@@ -184,17 +200,33 @@ std::vector<CNetworkInterface*>& CNetworkWin10::GetInterfaceList(void)
   return m_interfaces;
 }
 
-CNetworkInterface* CNetworkWin10::GetFirstConnectedInterface()
+CNetworkInterface* CNetworkWin10::GetDefaultInterface()
 {
   CSingleLock lock(m_critSection);
-  for (CNetworkInterface* intf : m_interfaces)
+  if (CServiceBroker::GetSettingsComponent()
+          ->GetAdvancedSettings()
+          ->m_defaultNetworkInterfaceName.empty())
   {
-    if (intf->IsEnabled() && intf->IsConnected() && !intf->GetCurrentDefaultGateway().empty())
-      return intf;
+    CLog::Log(LOGDEBUG, "Detecting network interface");
+    for (CNetworkInterface* intf : m_interfaces)
+    {
+      if (intf->IsEnabled() && intf->IsConnected() && !intf->GetCurrentDefaultGateway().empty())
+        return intf;
+    }
+  }
+  else
+  {
+    CLog::Log(LOGDEBUG, "Using network interface {}",
+              CServiceBroker::GetSettingsComponent()
+                  ->GetAdvancedSettings()
+                  ->m_defaultNetworkInterfaceName);
+    return CNetworkBase::GetInterfaceByName(CServiceBroker::GetSettingsComponent()
+                                                ->GetAdvancedSettings()
+                                                ->m_defaultNetworkInterfaceName);
   }
 
   // fallback to default
-  return CNetworkBase::GetFirstConnectedInterface();
+  return CNetworkBase::GetDefaultInterface();
 }
 
 std::unique_ptr<CNetworkBase> CNetworkBase::GetNetwork()
@@ -242,6 +274,7 @@ void CNetworkWin10::queryInterfaceList()
 
   const ULONG flags = GAA_FLAG_INCLUDE_GATEWAYS | GAA_FLAG_INCLUDE_PREFIX;
   ULONG ulOutBufLen;
+  NetworkAdapter winRTAdapter = nullptr;
 
   if (GetAdaptersAddresses(AF_INET, flags, nullptr, nullptr, &ulOutBufLen) != ERROR_BUFFER_OVERFLOW)
     return;
@@ -257,7 +290,9 @@ void CNetworkWin10::queryInterfaceList()
       if (adapter->IfType == IF_TYPE_SOFTWARE_LOOPBACK)
         continue;
 
-      m_interfaces.push_back(new CNetworkInterfaceWin10(adapter));
+      std::wstring name = ToW(adapter->AdapterName);
+      m_interfaces.push_back(new CNetworkInterfaceWin10(adapter, adapters[name]));
+      winRTAdapter = nullptr;
     }
   }
 }

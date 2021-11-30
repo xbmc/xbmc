@@ -27,6 +27,11 @@ CNetworkInterfaceLinux::CNetworkInterfaceLinux(CNetworkPosix* network,
 {
 }
 
+const std::string& CNetworkInterfaceLinux::GetName(void) const
+{
+  return m_interfaceName;
+}
+
 std::string CNetworkInterfaceLinux::GetCurrentDefaultGateway() const
 {
   std::string result;

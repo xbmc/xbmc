@@ -347,7 +347,7 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     ///////////////////////////////////////////////////////////////////////////////////////////////
     case NETWORK_IP_ADDRESS:
     {
-      CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
+      CNetworkInterface* iface = CServiceBroker::GetNetwork().GetDefaultInterface();
       if (iface)
       {
         value = iface->GetCurrentIPAddress();
@@ -357,7 +357,7 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     }
     case NETWORK_SUBNET_MASK:
     {
-      CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
+      CNetworkInterface* iface = CServiceBroker::GetNetwork().GetDefaultInterface();
       if (iface)
       {
         value = iface->GetCurrentNetmask();
@@ -367,7 +367,7 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     }
     case NETWORK_GATEWAY_ADDRESS:
     {
-      CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
+      CNetworkInterface* iface = CServiceBroker::GetNetwork().GetDefaultInterface();
       if (iface)
       {
         value = iface->GetCurrentDefaultGateway();
@@ -406,7 +406,7 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     {
       std::string linkStatus = g_localizeStrings.Get(151);
       linkStatus += " ";
-      CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
+      CNetworkInterface* iface = CServiceBroker::GetNetwork().GetDefaultInterface();
       if (iface && iface->IsConnected())
         linkStatus += g_localizeStrings.Get(15207);
       else

@@ -68,7 +68,7 @@ char* Interface_Network::get_ip_address(void* kodiBase)
   }
 
   std::string titleIP;
-  CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
+  CNetworkInterface* iface = CServiceBroker::GetNetwork().GetDefaultInterface();
   if (iface)
     titleIP = iface->GetCurrentIPAddress();
   else

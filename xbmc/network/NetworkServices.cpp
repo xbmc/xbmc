@@ -771,7 +771,7 @@ bool CNetworkServices::StartAirPlayServer()
 
 #ifdef HAS_ZEROCONF
   std::vector<std::pair<std::string, std::string> > txt;
-  CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
+  CNetworkInterface* iface = CServiceBroker::GetNetwork().GetDefaultInterface();
   txt.emplace_back("deviceid", iface != nullptr ? iface->GetMacAddress() : "FF:FF:FF:FF:FF:F2");
   txt.emplace_back("model", "Xbmc,1");
   txt.emplace_back("srcvers", AIRPLAY_SERVER_VERSION_STR);

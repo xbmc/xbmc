@@ -29,6 +29,7 @@ public:
 
   // CNetworkInterface interface
 public:
+  virtual const std::string& GetName() const override;
   bool IsEnabled() const override;
   bool IsConnected() const override;
   std::string GetMacAddress() const override;
@@ -60,7 +61,7 @@ public:
 public:
   bool GetHostName(std::string& hostname) override;
   std::vector<CNetworkInterface*>& GetInterfaceList() override;
-  CNetworkInterface* GetFirstConnectedInterface() override;
+  CNetworkInterface* GetDefaultInterface() override;
   std::vector<std::string> GetNameServers() override;
 
   // Ping remote host

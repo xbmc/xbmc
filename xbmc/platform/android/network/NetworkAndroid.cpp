@@ -6,9 +6,11 @@
  *  See LICENSES/README.md for more information.
  */
 
-
 #include "NetworkAndroid.h"
 
+#include "ServiceBroker.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -45,6 +47,11 @@ std::vector<std::string> CNetworkInterfaceAndroid::GetNameServers()
   }
 
   return ret;
+}
+
+const std::string& CNetworkInterfaceAndroid::GetName() const
+{
+  return m_name;
 }
 
 bool CNetworkInterfaceAndroid::IsEnabled() const
@@ -248,7 +255,7 @@ CNetworkAndroid::~CNetworkAndroid()
 
 bool CNetworkAndroid::GetHostName(std::string& hostname)
 {
-  CNetworkInterfaceAndroid* intf = dynamic_cast<CNetworkInterfaceAndroid*>(GetFirstConnectedInterface());
+  CNetworkInterfaceAndroid* intf = dynamic_cast<CNetworkInterfaceAndroid*>(GetDefaultInterface());
   if (intf)
   {
     hostname = intf->GetHostName();
@@ -263,14 +270,30 @@ std::vector<CNetworkInterface*>& CNetworkAndroid::GetInterfaceList()
   return m_interfaces;
 }
 
-CNetworkInterface* CNetworkAndroid::GetFirstConnectedInterface()
+CNetworkInterface* CNetworkAndroid::GetDefaultInterface()
 {
   CSingleLock lock(m_refreshMutex);
 
-  for(CNetworkInterface* intf : m_interfaces)
+  if (CServiceBroker::GetSettingsComponent()
+          ->GetAdvancedSettings()
+          ->m_defaultNetworkInterfaceName.empty())
   {
-    if (intf->IsEnabled() && intf->IsConnected() && !intf->GetCurrentDefaultGateway().empty())
-      return intf;
+    CLog::Log(LOGDEBUG, "Detecting network interface");
+    for (CNetworkInterface* intf : m_interfaces)
+    {
+      if (intf->IsEnabled() && intf->IsConnected() && !intf->GetCurrentDefaultGateway().empty())
+        return intf;
+    }
+  }
+  else
+  {
+    CLog::Log(LOGDEBUG, "Using network interface {}",
+              CServiceBroker::GetSettingsComponent()
+                  ->GetAdvancedSettings()
+                  ->m_defaultNetworkInterfaceName);
+    return CNetworkBase::GetInterfaceByName(CServiceBroker::GetSettingsComponent()
+                                                ->GetAdvancedSettings()
+                                                ->m_defaultNetworkInterfaceName);
   }
 
   return nullptr;
@@ -278,7 +301,7 @@ CNetworkInterface* CNetworkAndroid::GetFirstConnectedInterface()
 
 std::vector<std::string> CNetworkAndroid::GetNameServers()
 {
-  CNetworkInterfaceAndroid* intf = static_cast<CNetworkInterfaceAndroid*>(GetFirstConnectedInterface());
+  CNetworkInterfaceAndroid* intf = static_cast<CNetworkInterfaceAndroid*>(GetDefaultInterface());
   if (intf)
     return intf->GetNameServers();
 

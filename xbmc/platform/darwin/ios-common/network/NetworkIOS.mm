@@ -8,6 +8,7 @@
 
 #import "NetworkIOS.h"
 
+#import "ServiceBroker.h"
 #import "utils/StringUtils.h"
 #import "utils/log.h"
 
@@ -36,7 +37,7 @@ CNetworkInterfaceIOS::CNetworkInterfaceIOS(CNetworkIOS* network, std::string int
 
 CNetworkInterfaceIOS::~CNetworkInterfaceIOS() = default;
 
-std::string CNetworkInterfaceIOS::GetInterfaceName() const
+std::string& CNetworkInterfaceIOS::GetName() const
 {
   return m_interfaceName;
 }
@@ -294,7 +295,7 @@ std::vector<CNetworkInterface*>& CNetworkIOS::GetInterfaceList()
   return reinterpret_cast<std::vector<CNetworkInterface*>&>(m_interfaces);
 }
 
-CNetworkInterface* CNetworkIOS::GetFirstConnectedInterface()
+CNetworkInterface* CNetworkIOS::GetDefaultInterface()
 {
   // Renew m_interfaces to be able to handle hard interface changes (adapters removed/added)
   // This allows interfaces to be discovered if none are available at start eg. (Airplane mode on)
@@ -315,36 +316,53 @@ CNetworkInterface* CNetworkIOS::GetFirstConnectedInterface()
   std::string ifWiredName = "en0";
 #endif
 
-  for (auto iteriface : ifaces)
+  if (CServiceBroker::GetSettingsComponent()
+          ->GetAdvancedSettings()
+          ->m_defaultNetworkInterfaceName.empty())
   {
-    if (iteriface && iteriface->IsConnected())
-    {
-      // VPN interface
-      if (StringUtils::StartsWith(iteriface->GetInterfaceName(), "utun"))
-        ifVPN = static_cast<CNetworkInterface*>(iteriface);
-      // Wired interface
-      else if (StringUtils::StartsWith(iteriface->GetInterfaceName(), ifWiredName))
-        ifWired = static_cast<CNetworkInterface*>(iteriface);
-      // Wifi interface
-      else if (StringUtils::StartsWith(iteriface->GetInterfaceName(), ifWifiName))
-        ifWifi = static_cast<CNetworkInterface*>(iteriface);
-      // Cellular interface
-      else if (StringUtils::StartsWith(iteriface->GetInterfaceName(), "pdp_ip"))
-        ifCell = static_cast<CNetworkInterface*>(iteriface);
-    }
-  }
+    CLog::Log(LOGDEBUG, "Detecting network interface");
 
-  // Priority = VPN -> Wired -> Wifi -> Cell
-  if (ifVPN != nullptr)
-    return ifVPN;
-  else if (ifWired != nullptr)
-    return ifWired;
-  else if (ifWifi != nullptr)
-    return ifWifi;
-  else if (ifCell != nullptr)
-    return ifCell;
+    for (auto iteriface : ifaces)
+    {
+      if (iteriface && iteriface->IsConnected())
+      {
+        // VPN interface
+        if (StringUtils::StartsWith(iteriface->GetName(), "utun"))
+          ifVPN = static_cast<CNetworkInterface*>(iteriface);
+        // Wired interface
+        else if (StringUtils::StartsWith(iteriface->GetName(), ifWiredName))
+          ifWired = static_cast<CNetworkInterface*>(iteriface);
+        // Wifi interface
+        else if (StringUtils::StartsWith(iteriface->GetName(), ifWifiName))
+          ifWifi = static_cast<CNetworkInterface*>(iteriface);
+        // Cellular interface
+        else if (StringUtils::StartsWith(iteriface->GetName(), "pdp_ip"))
+          ifCell = static_cast<CNetworkInterface*>(iteriface);
+      }
+    }
+
+    // Priority = VPN -> Wired -> Wifi -> Cell
+    if (ifVPN != nullptr)
+      return ifVPN;
+    else if (ifWired != nullptr)
+      return ifWired;
+    else if (ifWifi != nullptr)
+      return ifWifi;
+    else if (ifCell != nullptr)
+      return ifCell;
+    else
+      return nullptr;
+  }
   else
-    return nullptr;
+  {
+    CLog::Log(LOGDEBUG, "Using network interface {}",
+              CServiceBroker::GetSettingsComponent()
+                  ->GetAdvancedSettings()
+                  ->m_defaultNetworkInterfaceName);
+    return CNetworkBase::GetInterfaceByName(CServiceBroker::GetSettingsComponent()
+                                                ->GetAdvancedSettings()
+                                                ->m_defaultNetworkInterfaceName);
+  }
 }
 
 void CNetworkIOS::queryInterfaceList()

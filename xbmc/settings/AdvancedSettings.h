@@ -289,6 +289,8 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_curlDisableIPV6;
     bool m_curlDisableHTTP2;
 
+    std::string m_defaultNetworkInterfaceName;
+
     std::string m_caTrustFile;
 
     bool m_minimizeToTray; /* win32 only */

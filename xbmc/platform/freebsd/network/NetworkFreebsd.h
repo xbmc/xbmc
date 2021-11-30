@@ -21,6 +21,8 @@ public:
                            char interfaceMacAddrRaw[6]);
   ~CNetworkInterfaceFreebsd() override = default;
 
+  const std::string& GetName(void) const override;
+
   std::string GetCurrentDefaultGateway() const override;
   bool GetHostMacAddress(unsigned long host, std::string& mac) const override;
 };

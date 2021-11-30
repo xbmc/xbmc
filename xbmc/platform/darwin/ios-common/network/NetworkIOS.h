@@ -33,7 +33,7 @@ public:
   std::string GetCurrentNetmask() const override;
   std::string GetCurrentDefaultGateway() const override;
 
-  std::string GetInterfaceName() const;
+  std::string& GetName() const;
 
 private:
   std::string m_interfaceName;
@@ -48,7 +48,7 @@ public:
 
   // Return the list of interfaces
   std::vector<CNetworkInterface*>& GetInterfaceList() override;
-  CNetworkInterface* GetFirstConnectedInterface() override;
+  CNetworkInterface* GetDefaultInterface() override;
 
   // Ping remote host
   bool PingHost(unsigned long host, unsigned int timeout_ms = 2000) override;

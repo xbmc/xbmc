@@ -6,18 +6,20 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <netdb.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-
 #include "Network.h"
+
 #include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 #include "network/NetworkServices.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
+
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
 #ifdef TARGET_WINDOWS
 #include "platform/win32/WIN32Util.h"
 #include "utils/CharsetConverter.h"
@@ -159,18 +161,34 @@ bool CNetworkBase::IsLocalHost(const std::string& hostname)
   return false;
 }
 
-CNetworkInterface* CNetworkBase::GetFirstConnectedInterface()
+CNetworkInterface* CNetworkBase::GetDefaultInterface()
 {
   CNetworkInterface* fallbackInterface = nullptr;
-  for (CNetworkInterface* iface : GetInterfaceList())
+  if (CServiceBroker::GetSettingsComponent()
+          ->GetAdvancedSettings()
+          ->m_defaultNetworkInterfaceName.empty())
   {
-    if (iface && iface->IsConnected())
+    CLog::Log(LOGDEBUG, "Detecting network interface");
+    for (CNetworkInterface* iface : GetInterfaceList())
     {
-      if (!iface->GetCurrentDefaultGateway().empty())
-        return iface;
-      else if (fallbackInterface == nullptr)
-        fallbackInterface = iface;
+      if (iface && iface->IsConnected())
+      {
+        if (!iface->GetCurrentDefaultGateway().empty())
+          return iface;
+        else if (fallbackInterface == nullptr)
+          fallbackInterface = iface;
+      }
     }
+  }
+  else
+  {
+    CLog::Log(LOGDEBUG, "Using network interface {}",
+              CServiceBroker::GetSettingsComponent()
+                  ->GetAdvancedSettings()
+                  ->m_defaultNetworkInterfaceName);
+    return CNetworkBase::GetInterfaceByName(CServiceBroker::GetSettingsComponent()
+                                                ->GetAdvancedSettings()
+                                                ->m_defaultNetworkInterfaceName);
   }
 
   return fallbackInterface;
@@ -206,7 +224,22 @@ bool CNetworkBase::IsAvailable(void)
 
 bool CNetworkBase::IsConnected()
 {
-   return GetFirstConnectedInterface() != NULL;
+  return GetDefaultInterface() != NULL;
+}
+
+CNetworkInterface* CNetworkBase::GetInterfaceByName(const std::string& name)
+{
+  std::vector<CNetworkInterface*>& ifaces = GetInterfaceList();
+  std::vector<CNetworkInterface*>::const_iterator iter = ifaces.begin();
+  while (iter != ifaces.end())
+  {
+    CNetworkInterface* iface = *iter;
+    if (iface && iface->GetName() == name)
+      return iface;
+    ++iter;
+  }
+
+  return NULL;
 }
 
 void CNetworkBase::NetworkMessage(EMESSAGE message, int param)

@@ -569,7 +569,7 @@ bool CAirTunesServer::StartServer(int port, bool nonlocal, bool usePassword, con
 {
   bool success = false;
   std::string pw = password;
-  CNetworkInterface *net = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
+  CNetworkInterface* net = CServiceBroker::GetNetwork().GetDefaultInterface();
   StopServer(true);
 
   if (net)
@@ -713,7 +713,7 @@ bool CAirTunesServer::Initialize(const std::string &password)
 
     raop_set_log_callback(m_pRaop, shairplay_log, NULL);
 
-    CNetworkInterface* net = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
+    CNetworkInterface* net = CServiceBroker::GetNetwork().GetDefaultInterface();
 
     if (net)
     {

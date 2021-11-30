@@ -342,6 +342,8 @@ void CAdvancedSettings::Initialize()
                                   //with ipv6.
   m_curlDisableHTTP2 = false;
 
+  m_defaultNetworkInterfaceName = "";
+
 #if defined(TARGET_WINDOWS_DESKTOP)
   m_minimizeToTray = false;
 #endif
@@ -838,6 +840,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetInt(pElement, "curllowspeedtime", m_curllowspeedtime, 1, 1000);
     XMLUtils::GetInt(pElement, "curlretries", m_curlretries, 0, 10);
     XMLUtils::GetInt(pElement, "curlkeepaliveinterval", m_curlKeepAliveInterval, 0, 300);
+    XMLUtils::GetString(pElement, "defaultInterfaceName", m_defaultNetworkInterfaceName);
     XMLUtils::GetBoolean(pElement, "disableipv6", m_curlDisableIPV6);
     XMLUtils::GetBoolean(pElement, "disablehttp2", m_curlDisableHTTP2);
     XMLUtils::GetString(pElement, "catrustfile", m_caTrustFile);

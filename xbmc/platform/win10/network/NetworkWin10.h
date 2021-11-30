@@ -23,8 +23,12 @@ class CNetworkWin10;
 class CNetworkInterfaceWin10 : public CNetworkInterface
 {
 public:
-  CNetworkInterfaceWin10(const PIP_ADAPTER_ADDRESSES adapter);
+  CNetworkInterfaceWin10(CNetworkWin10* network,
+                         const PIP_ADAPTER_ADDRESSES adapter,
+                         ::IUnknown* winRTadapter);
   ~CNetworkInterfaceWin10(void);
+
+  virtual const std::string& GetName(void) const;
 
   virtual bool IsEnabled(void) const;
   virtual bool IsConnected(void) const;
@@ -39,7 +43,12 @@ public:
   virtual std::string GetCurrentDefaultGateway(void) const;
 
 private:
+  CNetworkWin10* m_network;
+
+  std::string m_adaptername;
   PIP_ADAPTER_ADDRESSES m_adapterAddr;
+  winrt::Windows::Networking::Connectivity::NetworkAdapter m_winRT = nullptr;
+  mutable winrt::Windows::Networking::Connectivity::ConnectionProfile m_profile = nullptr;
 };
 
 
@@ -50,7 +59,7 @@ public:
     virtual ~CNetworkWin10(void);
 
     std::vector<CNetworkInterface*>& GetInterfaceList(void) override;
-    CNetworkInterface* GetFirstConnectedInterface() override;
+    CNetworkInterface* GetDefaultInterface() override;
     std::vector<std::string> GetNameServers(void) override;
 
     bool PingHost(unsigned long host, unsigned int timeout_ms = 2000) override;
@@ -68,3 +77,4 @@ private:
     PIP_ADAPTER_ADDRESSES m_adapterAddresses;
 };
 
+using CNetwork = CNetworkWin10;
