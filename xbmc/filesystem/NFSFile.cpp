@@ -223,6 +223,8 @@ bool CNfsConnection::splitUrlIntoExportAndPath(const CURL& url,std::string &expo
 
       std::string path = url.GetFileName();
 
+      StringUtils::Replace(path, std::string("\%3F"), std::string("?"));
+
       //GetFileName returns path without leading "/"
       //but we need it because the export paths start with "/"
       //and path.Find(*it) wouldn't work else
@@ -257,9 +259,6 @@ bool CNfsConnection::splitUrlIntoExportAndPath(const CURL& url,std::string &expo
           break;
         }
       }
-
-      exportPath = CURL::Decode(exportPath);
-      relativePath = CURL::Decode(relativePath);
     }
     return ret;
 }
