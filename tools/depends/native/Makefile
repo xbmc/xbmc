@@ -4,6 +4,7 @@ ifneq ($(shell test -f $(NATIVEPREFIX)/share/config.site && echo 1),1)
   $(error Error: $(NATIVEPREFIX)/share/config.site  is missing. Please reconfigure depends to generate it)
 endif
 
+# Keep in alphabetical order
 NATIVE= \
   autoconf \
   autoconf-archive \
@@ -12,10 +13,11 @@ NATIVE= \
   flatbuffers \
   gas-preprocessor \
   gettext \
+  giflib \
   heimdal \
   JsonSchemaBuilder \
   libjpeg-turbo \
-  liblzo2 giflib \
+  liblzo2 \
   libpng \
   libtool \
   m4 \
