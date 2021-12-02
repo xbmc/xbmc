@@ -4,6 +4,7 @@ ifneq ($(shell test -f $(PREFIX)/share/config.site && echo 1),1)
   $(error Error: $(PREFIX)/share/config.site  is missing. Please reconfigure depends to generate it)
 endif
 
+# Keep in alphabetical order
 DEPENDS = \
   bzip2 \
   crossguid \
@@ -15,6 +16,7 @@ DEPENDS = \
   fontconfig \
   freetype2 \
   freetype2-noharfbuzz \
+  fribidi \
   gettext \
   gmp \
   gnutls \
@@ -36,13 +38,13 @@ DEPENDS = \
   libmicrohttpd \
   libnfs \
   libplist \
-  libpng fribidi \
+  libpng \
   libshairplay \
   libspdlog \
   libudfread \
   libusb \
   libxml2 \
-  libxslt  \
+  libxslt \
   mariadb \
   nettle \
   nghttp2 \
