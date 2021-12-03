@@ -54,7 +54,8 @@ if(PYTHON_VER)
 endif()
 
 find_package(Python3 ${VERSION} ${EXACT_VER} COMPONENTS Development)
-if(CORE_SYSTEM_NAME STREQUAL linux)
+
+if (NOT CORE_PLATFORM_NAME_LC STREQUAL windows AND NOT CORE_PLATFORM_NAME_LC STREQUAL windowsstore)
   find_package(Python3 ${VERSION} ${EXACT_VER} COMPONENTS Interpreter)
 endif()
 
