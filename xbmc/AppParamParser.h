@@ -27,7 +27,7 @@ public:
 
   const CFileItemList& GetPlaylist() const;
 
-  void SetLogLevel(int logLevel) { m_logTarget = logLevel; }
+  void SetLogLevel(int logLevel) { m_logLevel = logLevel; }
   void SetStartFullScreen(bool startFullScreen) { m_startFullScreen = startFullScreen; }
   void SetPlatformDirectories(bool platformDirectories)
   {
