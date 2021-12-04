@@ -690,7 +690,15 @@ void CCurlFile::SetCommonOptions(CReadState* state, bool failOnError /* = true *
   g_curlInterface.easy_setopt(h, CURLOPT_CAINFO, "system\\certs\\cacert.pem");
 #endif
   if (!caCert.empty() && XFILE::CFile::Exists(caCert))
+  {
     g_curlInterface.easy_setopt(h, CURLOPT_CAINFO, caCert.c_str());
+  }
+#if defined(TARGET_ANDROID)
+  else
+  {
+    g_curlInterface.easy_setopt(h, CURLOPT_CAINFO, CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem").c_str());
+  }
+#endif
 }
 
 void CCurlFile::SetRequestHeaders(CReadState* state)
