@@ -181,9 +181,7 @@ protected:
     // Content-Type must be "text/html"
     EXPECT_STREQ("text/plain", httpHeader.GetMimeType().c_str());
     // check Content-Length
-    if (empty)
-      EXPECT_STREQ("0", httpHeader.GetValue(MHD_HTTP_HEADER_CONTENT_LENGTH).c_str());
-    else
+    if (!empty)
       EXPECT_STREQ("20", httpHeader.GetValue(MHD_HTTP_HEADER_CONTENT_LENGTH).c_str());
     // Accept-Ranges must be "bytes"
     EXPECT_STREQ("bytes", httpHeader.GetValue(MHD_HTTP_HEADER_ACCEPT_RANGES).c_str());
