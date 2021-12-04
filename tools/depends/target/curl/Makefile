@@ -7,6 +7,8 @@ VERSION=7.80.0
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
 
+BASE_URL=https://curl.se/download
+
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
           ./configure --prefix=$(PREFIX) --disable-shared --disable-ldap \
