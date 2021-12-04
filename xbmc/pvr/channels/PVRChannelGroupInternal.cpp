@@ -168,14 +168,12 @@ std::vector<std::shared_ptr<CPVRChannelGroupMember>> CPVRChannelGroupInternal::
 
 bool CPVRChannelGroupInternal::AppendToGroup(const std::shared_ptr<CPVRChannel>& channel)
 {
-  bool bReturn = false;
-
   if (IsGroupMember(channel))
-    return bReturn;
+    return false;
 
   const std::shared_ptr<CPVRChannelGroupMember> groupMember = GetByUniqueID(channel->StorageId());
   if (!groupMember)
-    return bReturn;
+    return false;
 
   channel->SetHidden(false);
 
@@ -188,7 +186,7 @@ bool CPVRChannelGroupInternal::AppendToGroup(const std::shared_ptr<CPVRChannel>&
   groupMember->SetChannelNumber(CPVRChannelNumber(iChannelNumber, 0));
 
   SortAndRenumber();
-  return bReturn;
+  return true;
 }
 
 bool CPVRChannelGroupInternal::RemoveFromGroup(const std::shared_ptr<CPVRChannel>& channel)
