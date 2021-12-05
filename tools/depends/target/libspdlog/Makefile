@@ -1,9 +1,9 @@
 -include ../../Makefile.include
-DEPS = Makefile 0001-fix_fmt_version.patch
+DEPS = Makefile
 
 # lib name, version
 LIBNAME=spdlog
-VERSION=1.5.0
+VERSION=1.9.2
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
@@ -49,10 +49,8 @@ ifeq ($(PREFIX),)
 	@echo "ERROR: please set PREFIX to the kodi install path e.g. make PREFIX=/usr/local"
 	@exit 1
 endif
-	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
+	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)/build
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); rm -rf build; mkdir -p build
-	cd $(PLATFORM); patch -p1 -i ../0001-fix_fmt_version.patch
 	cd $(PLATFORM)/build; $(CMAKE) $(CMAKE_OPTIONS) ..
 
 $(LIBDYLIB): $(PLATFORM)
