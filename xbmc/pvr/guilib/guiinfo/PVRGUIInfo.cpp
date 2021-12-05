@@ -198,39 +198,54 @@ void CPVRGUIInfo::Process()
 
 void CPVRGUIInfo::UpdateQualityData()
 {
+  if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_PVRPLAYBACK_SIGNALQUALITY))
+    return;
+
+  const std::shared_ptr<CPVRPlaybackState> playbackState =
+      CServiceBroker::GetPVRManager().PlaybackState();
+  if (!playbackState)
+    return;
+
   PVR_SIGNAL_STATUS qualityInfo;
   ClearQualityInfo(qualityInfo);
 
-  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_PVRPLAYBACK_SIGNALQUALITY))
+  const int channelUid = playbackState->GetPlayingChannelUniqueID();
+  if (channelUid > 0)
   {
-    const int channelUid = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannelUniqueID();
-    if (channelUid > 0)
-    {
-      std::shared_ptr<CPVRClient> client;
-      CServiceBroker::GetPVRManager().Clients()->GetCreatedClient(CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingClientID(), client);
-      if (client && client->SignalQuality(channelUid, qualityInfo) == PVR_ERROR_NO_ERROR)
-      {
-        m_qualityInfo = qualityInfo;
-      }
-    }
+    std::shared_ptr<CPVRClient> client;
+    CServiceBroker::GetPVRManager().Clients()->GetCreatedClient(playbackState->GetPlayingClientID(),
+                                                                client);
+    if (client)
+      client->SignalQuality(channelUid, qualityInfo);
   }
+
+  CSingleLock lock(m_critSection);
+  m_qualityInfo = qualityInfo;
 }
 
 void CPVRGUIInfo::UpdateDescrambleData()
 {
+  const std::shared_ptr<CPVRPlaybackState> playbackState =
+      CServiceBroker::GetPVRManager().PlaybackState();
+  if (!playbackState)
+    return;
+
   PVR_DESCRAMBLE_INFO descrambleInfo;
   ClearDescrambleInfo(descrambleInfo);
 
-  const int channelUid = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannelUniqueID();
+  const int channelUid = playbackState->GetPlayingChannelUniqueID();
   if (channelUid > 0)
   {
     std::shared_ptr<CPVRClient> client;
-    CServiceBroker::GetPVRManager().Clients()->GetCreatedClient(CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingClientID(), client);
-    if (client && client->GetDescrambleInfo(channelUid, descrambleInfo) == PVR_ERROR_NO_ERROR)
-    {
-      m_descrambleInfo = descrambleInfo;
-    }
+    CServiceBroker::GetPVRManager().Clients()->GetCreatedClient(playbackState->GetPlayingClientID(),
+                                                                client);
+    if (client)
+      client->GetDescrambleInfo(channelUid, descrambleInfo);
   }
+
+  CSingleLock lock(m_critSection);
+  m_descrambleInfo = descrambleInfo;
 }
 
 void CPVRGUIInfo::UpdateMisc()
