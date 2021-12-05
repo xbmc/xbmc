@@ -235,20 +235,6 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
       for (const auto& it : paths)
         addPath(it);
     }
-    else
-    { // for backwards compatibility.
-      // we don't have any addon so just add all addon modules installed
-      CLog::Log(
-          LOGWARNING,
-          "CPythonInvoker({}): Script invoked without an addon. Adding all addon "
-          "modules installed to python path as fallback. This behaviour will be removed in future "
-          "version.",
-          GetId());
-      ADDON::VECADDONS addons;
-      CServiceBroker::GetAddonMgr().GetAddons(addons, ADDON::ADDON_SCRIPT_MODULE);
-      for (unsigned int i = 0; i < addons.size(); ++i)
-        addPath(CSpecialProtocol::TranslatePath(addons[i]->LibPath()));
-    }
 
     // we want to use sys.path so it includes site-packages
     // if this fails, default to using Py_GetPath
