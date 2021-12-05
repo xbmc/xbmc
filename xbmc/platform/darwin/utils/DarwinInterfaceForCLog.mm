@@ -11,9 +11,8 @@
 #include <string>
 
 #import <Foundation/Foundation.h>
-#include <spdlog/common.h>
-#include <spdlog/details/pattern_formatter.h>
 #include <spdlog/sinks/dist_sink.h>
+#include <spdlog/spdlog.h>
 
 std::unique_ptr<IPlatformLog> IPlatformLog::CreatePlatformLog()
 {
