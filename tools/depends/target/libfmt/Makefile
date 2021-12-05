@@ -3,7 +3,7 @@ DEPS = Makefile
 
 # lib name, version
 LIBNAME=fmt
-VERSION=6.1.2
+VERSION=8.0.1
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
