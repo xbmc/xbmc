@@ -3,9 +3,9 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=gmp
-VERSION=6.2.0
+VERSION=6.2.1
 SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.bz2
+ARCHIVE=$(SOURCE).tar.xz
 
 # ABI selection
 ifeq ($(OS),linux)
