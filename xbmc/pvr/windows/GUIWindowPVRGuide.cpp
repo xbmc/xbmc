@@ -22,6 +22,7 @@
 #include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
+#include "pvr/PVRItem.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRPlaybackState.h"
 #include "pvr/channels/PVRChannel.h"
@@ -466,11 +467,22 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
                         CServiceBroker::GetPVRManager().GUIActions()->EditTimer(pItem);
                       else
                       {
-                        HELPERS::DialogResponse ret
-                          = HELPERS::ShowYesNoDialogText(CVariant{19096}, // "Smart select"
-                                                          CVariant{19302}, // "Do you want to record the selected programme or to switch to the current programme?"
-                                                          CVariant{264}, // No => "Record"
-                                                          CVariant{19165}); // Yes => "Switch"
+                        bool bCanRecord = true;
+                        const std::shared_ptr<CPVRChannel> channel = CPVRItem(pItem).GetChannel();
+                        if (channel)
+                          bCanRecord = channel->CanRecord();
+
+                        const int iTextID =
+                            bCanRecord
+                                ? 19302 // "Do you want to record the selected programme or to switch to the current programme?"
+                                : 19344; // "Do you want to set a reminder for the selected programme or to switch to the current programme?"
+                        const int iNoButtonID = bCanRecord ? 264 // No => "Record"
+                                                           : 826; // "Set reminder"
+
+                        HELPERS::DialogResponse ret =
+                            HELPERS::ShowYesNoDialogText(CVariant{19096}, // "Smart select"
+                                                         CVariant{iTextID}, CVariant{iNoButtonID},
+                                                         CVariant{19165}); // Yes => "Switch"
                         if (ret == HELPERS::DialogResponse::NO)
                           CServiceBroker::GetPVRManager().GUIActions()->AddTimer(pItem, false);
                         else if (ret == HELPERS::DialogResponse::YES)
