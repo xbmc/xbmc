@@ -771,7 +771,7 @@ void CGUIDialogPVRChannelManager::Update()
     channelFile->SetProperty("ActiveChannel", !channel->IsHidden());
     channelFile->SetProperty("Name", channel->ChannelName());
     channelFile->SetProperty("UseEPG", channel->EPGEnabled());
-    channelFile->SetProperty("Icon", channel->IconPath());
+    channelFile->SetProperty("Icon", channel->ClientIconPath());
     channelFile->SetProperty("EPGSource", 0);
     channelFile->SetProperty("ParentalLocked", channel->IsLocked());
     channelFile->SetProperty("Number", member->ChannelNumber().FormattedChannelNumber());
