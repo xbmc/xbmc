@@ -104,36 +104,40 @@ protected:
 
   struct Glyph
   {
-    hb_glyph_info_t glyphInfo;
-    hb_glyph_position_t glyphPosition;
+    hb_glyph_info_t m_glyphInfo;
+    hb_glyph_position_t m_glyphPosition;
 
     // converter for harfbuzz library
     Glyph(hb_glyph_info_t gInfo, hb_glyph_position_t gPos)
     {
-      glyphInfo = gInfo;
-      glyphPosition = gPos;
+      m_glyphInfo = gInfo;
+      m_glyphPosition = gPos;
     }
     Glyph() {}
   };
 
   struct Character
   {
-    short offsetX, offsetY;
-    float left, top, right, bottom;
-    float advance;
-    FT_UInt glyphIndex;
-    character_t glyphAndStyle;
-    wchar_t letter;
+    short m_offsetX;
+    short m_offsetY;
+    float m_left;
+    float m_top;
+    float m_right;
+    float m_bottom;
+    float m_advance;
+    FT_UInt m_glyphIndex;
+    character_t m_glyphAndStyle;
+    wchar_t m_letter;
   };
 
   struct RunInfo
   {
-    unsigned int startOffset;
-    unsigned int endOffset;
-    hb_buffer_t* buffer;
-    hb_script_t script;
-    hb_glyph_info_t* glyphInfos;
-    hb_glyph_position_t* glyphPositions;
+    unsigned int m_startOffset;
+    unsigned int m_endOffset;
+    hb_buffer_t* m_buffer;
+    hb_script_t m_script;
+    hb_glyph_info_t* m_glyphInfos;
+    hb_glyph_position_t* m_glyphPositions;
   };
 
   void AddReference();
@@ -224,21 +228,21 @@ protected:
 
   struct CTranslatedVertices
   {
-    float translateX;
-    float translateY;
-    float translateZ;
-    const CVertexBuffer* vertexBuffer;
-    CRect clip;
+    float m_translateX;
+    float m_translateY;
+    float m_translateZ;
+    const CVertexBuffer* m_vertexBuffer;
+    CRect m_clip;
     CTranslatedVertices(float translateX,
                         float translateY,
                         float translateZ,
                         const CVertexBuffer* vertexBuffer,
                         const CRect& clip)
-      : translateX(translateX),
-        translateY(translateY),
-        translateZ(translateZ),
-        vertexBuffer(vertexBuffer),
-        clip(clip)
+      : m_translateX(translateX),
+        m_translateY(translateY),
+        m_translateZ(translateZ),
+        m_vertexBuffer(vertexBuffer),
+        m_clip(clip)
     {
     }
   };

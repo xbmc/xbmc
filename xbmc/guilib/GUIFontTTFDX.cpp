@@ -80,7 +80,7 @@ void CGUIFontTTFDX::LastEnd()
 
   typedef CGUIFontTTF::CTranslatedVertices trans;
   bool transIsEmpty = std::all_of(m_vertexTrans.begin(), m_vertexTrans.end(),
-                                  [](trans& _) { return _.vertexBuffer->size <= 0; });
+                                  [](trans& _) { return _.m_vertexBuffer->size <= 0; });
   // no chars to render
   if (m_vertex.empty() && transIsEmpty)
     return;
@@ -135,11 +135,11 @@ void CGUIFontTTFDX::LastEnd()
     for (size_t i = 0; i < m_vertexTrans.size(); i++)
     {
       // ignore empty buffers
-      if (m_vertexTrans[i].vertexBuffer->size == 0)
+      if (m_vertexTrans[i].m_vertexBuffer->size == 0)
         continue;
 
       // Apply the clip rectangle
-      CRect clip = DX::Windowing()->ClipRectToScissorRect(m_vertexTrans[i].clip);
+      CRect clip = DX::Windowing()->ClipRectToScissorRect(m_vertexTrans[i].m_clip);
       // Intersect with current scissors
       clip.Intersect(scissor);
 
@@ -150,22 +150,23 @@ void CGUIFontTTFDX::LastEnd()
       DX::Windowing()->SetScissors(clip);
 
       // Apply the translation to the model view matrix
-      XMMATRIX translation = XMMatrixTranslation(
-          m_vertexTrans[i].translateX, m_vertexTrans[i].translateY, m_vertexTrans[i].translateZ);
+      XMMATRIX translation =
+          XMMatrixTranslation(m_vertexTrans[i].m_translateX, m_vertexTrans[i].m_translateY,
+                              m_vertexTrans[i].m_translateZ);
       pGUIShader->SetView(XMMatrixMultiply(translation, view));
 
       CD3DBuffer* vbuffer =
-          reinterpret_cast<CD3DBuffer*>(m_vertexTrans[i].vertexBuffer->bufferHandle);
+          reinterpret_cast<CD3DBuffer*>(m_vertexTrans[i].m_vertexBuffer->bufferHandle);
       // Set the static vertex buffer to active in the input assembler
       ID3D11Buffer* buffers[1] = {vbuffer->Get()};
       pContext->IASetVertexBuffers(0, 1, buffers, &stride, &offset);
 
       // Do the actual drawing operation, split into groups of characters no
       // larger than the pre-determined size of the element array
-      for (size_t character = 0; m_vertexTrans[i].vertexBuffer->size > character;
+      for (size_t character = 0; m_vertexTrans[i].m_vertexBuffer->size > character;
            character += ELEMENT_ARRAY_MAX_CHAR_INDEX)
       {
-        size_t count = m_vertexTrans[i].vertexBuffer->size - character;
+        size_t count = m_vertexTrans[i].m_vertexBuffer->size - character;
         count = std::min<size_t>(count, ELEMENT_ARRAY_MAX_CHAR_INDEX);
 
         // 6 indices and 4 vertices per character

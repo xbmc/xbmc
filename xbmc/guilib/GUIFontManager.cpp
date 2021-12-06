@@ -170,10 +170,8 @@ CGUIFont* GUIFontManager::LoadTTF(const std::string& strFontName,
       // font could not be loaded - try Arial.ttf, which we distribute
       if (strFilename != "arial.ttf")
       {
-        CLog::Log(
-            LOGERROR,
-            "GUIFontManager::{}: Couldn't load font name: {}({}), trying to substitute arial.ttf",
-            __func__, strFontName, strFilename);
+        CLog::Log(LOGERROR, "GUIFontManager::{}: Couldn't load font name: {}({}), trying arial.ttf",
+                  __func__, strFontName, strFilename);
         return LoadTTF(strFontName, "arial.ttf", textColor, shadowColor, iSize, iStyle, border,
                        lineSpacing, originalAspect);
       }
@@ -188,8 +186,8 @@ CGUIFont* GUIFontManager::LoadTTF(const std::string& strFontName,
 
   // font file is loaded, create our CGUIFont
   CGUIFont* pNewFont = new CGUIFont(strFontName, iStyle, textColor, shadowColor, lineSpacing,
-                                    (float)iSize, pFontFile);
-  m_vecFonts.push_back(pNewFont);
+                                    static_cast<float>(iSize), pFontFile);
+  m_vecFonts.emplace_back(pNewFont);
 
   // Store the original TTF font info in case we need to reload it in a different resolution
   OrigFontInfo fontInfo;
