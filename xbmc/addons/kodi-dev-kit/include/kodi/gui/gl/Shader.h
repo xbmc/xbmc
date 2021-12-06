@@ -484,7 +484,7 @@ public:
   ///
   /// @note The CompileAndLink call sets these values
   ///
-  ATTRIBUTE_FORCEINLINE bool ShaderOK() const { return m_ok; }
+  ATTR_FORCEINLINE bool ShaderOK() const { return m_ok; }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -493,7 +493,7 @@ public:
   ///
   /// @return pointer to vertex shader class
   ///
-  ATTRIBUTE_FORCEINLINE CVertexShader& VertexShader() { return m_pVP; }
+  ATTR_FORCEINLINE CVertexShader& VertexShader() { return m_pVP; }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -502,7 +502,7 @@ public:
   ///
   /// @return pointer to fragment shader class
   ///
-  ATTRIBUTE_FORCEINLINE CPixelShader& PixelShader() { return m_pFP; }
+  ATTR_FORCEINLINE CPixelShader& PixelShader() { return m_pFP; }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -511,7 +511,7 @@ public:
   ///
   /// @return GLuint of GL shader program handler
   ///
-  ATTRIBUTE_FORCEINLINE GLuint ProgramHandle() { return m_shaderProgram; }
+  ATTR_FORCEINLINE GLuint ProgramHandle() { return m_shaderProgram; }
   //--------------------------------------------------------------------------
 
   //==========================================================================
