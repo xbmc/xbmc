@@ -320,7 +320,7 @@ bool CGUIFontTTF::Load(
   // cache the ellipses width
   Character* ellipse = GetCharacter(L'.', 0);
   if (ellipse)
-    m_ellipsesWidth = ellipse->advance;
+    m_ellipsesWidth = ellipse->m_advance;
 
   return true;
 }
@@ -430,12 +430,12 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
       float linePixels = 0;
       for (const auto& glyph : glyphs)
       {
-        Character* ch = GetCharacter(text[glyph.glyphInfo.cluster], glyph.glyphInfo.codepoint);
+        Character* ch = GetCharacter(text[glyph.m_glyphInfo.cluster], glyph.m_glyphInfo.codepoint);
         if (ch)
         {
-          if ((text[glyph.glyphInfo.cluster] & 0xffff) == L' ')
+          if ((text[glyph.m_glyphInfo.cluster] & 0xffff) == L' ')
             numSpaces += 1;
-          linePixels += ch->advance;
+          linePixels += ch->m_advance;
         }
       }
       if (numSpaces > 0)
@@ -454,7 +454,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
       GetCharacter(L'.', 0);
     for (const auto& glyph : glyphs)
     {
-      Character* ch = GetCharacter(text[glyph.glyphInfo.cluster], glyph.glyphInfo.codepoint);
+      Character* ch = GetCharacter(text[glyph.m_glyphInfo.cluster], glyph.m_glyphInfo.codepoint);
       if (!ch)
       {
         Character null = {};
@@ -464,30 +464,30 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
       characters.push(*ch);
 
       if (maxPixelWidth > 0 &&
-          cursorX + ((alignment & XBFONT_TRUNCATED) ? ch->advance + 3 * m_ellipsesWidth : 0) >
+          cursorX + ((alignment & XBFONT_TRUNCATED) ? ch->m_advance + 3 * m_ellipsesWidth : 0) >
               maxPixelWidth)
         break;
-      cursorX += ch->advance;
+      cursorX += ch->m_advance;
     }
     cursorX = 0;
     for (const auto& glyph : glyphs)
     {
       // If starting text on a new line, determine justification effects
       // Get the current letter in the CStdString
-      UTILS::COLOR::Color color = (text[glyph.glyphInfo.cluster] & 0xff0000) >> 16;
+      UTILS::COLOR::Color color = (text[glyph.m_glyphInfo.cluster] & 0xff0000) >> 16;
       if (color >= colors.size())
         color = 0;
       color = colors[color];
 
       // grab the next character
       Character* ch = &characters.front();
-      if (ch->letter == 0)
+      if (ch->m_letter == 0)
       {
         characters.pop();
         continue;
       }
 
-      if ((text[glyph.glyphInfo.cluster] & 0xffff) == static_cast<character_t>('\t'))
+      if ((text[glyph.m_glyphInfo.cluster] & 0xffff) == static_cast<character_t>('\t'))
       {
         const float tabwidth = GetTabSpaceLength();
         const float a = cursorX / tabwidth;
@@ -499,7 +499,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
       if (alignment & XBFONT_TRUNCATED)
       {
         // Check if we will be exceeded the max allowed width
-        if (cursorX + ch->advance + 3 * m_ellipsesWidth > maxPixelWidth)
+        if (cursorX + ch->m_advance + 3 * m_ellipsesWidth > maxPixelWidth)
         {
           // Yup. Let's draw the ellipses, then bail
           // Perhaps we should really bail to the next line in this case??
@@ -511,7 +511,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
           {
             RenderCharacter(context, startX + cursorX, startY, period, color, !scrolling,
                             *tempVertices);
-            cursorX += period->advance;
+            cursorX += period->m_advance;
           }
           break;
         }
@@ -520,20 +520,20 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
         break; // exceeded max allowed width - stop rendering
 
       offsetX = static_cast<float>(
-          MathUtils::round_int(static_cast<double>(glyph.glyphPosition.x_offset) / 64));
+          MathUtils::round_int(static_cast<double>(glyph.m_glyphPosition.x_offset) / 64));
       offsetY = static_cast<float>(
-          MathUtils::round_int(static_cast<double>(glyph.glyphPosition.y_offset) / 64));
+          MathUtils::round_int(static_cast<double>(glyph.m_glyphPosition.y_offset) / 64));
       RenderCharacter(context, startX + cursorX + offsetX, startY - offsetY, ch, color, !scrolling,
                       *tempVertices);
       if (alignment & XBFONT_JUSTIFIED)
       {
-        if ((text[glyph.glyphInfo.cluster] & 0xffff) == L' ')
-          cursorX += ch->advance + spacePerSpaceCharacter;
+        if ((text[glyph.m_glyphInfo.cluster] & 0xffff) == L' ')
+          cursorX += ch->m_advance + spacePerSpaceCharacter;
         else
-          cursorX += ch->advance;
+          cursorX += ch->m_advance;
       }
       else
-        cursorX += ch->advance;
+        cursorX += ch->m_advance;
       characters.pop();
     }
     if (hardwareClipping)
@@ -580,18 +580,18 @@ float CGUIFontTTF::GetTextWidthInternal(const vecText& text, std::vector<Glyph>&
   float width = 0;
   for (auto it = glyphs.begin(); it != glyphs.end(); it++)
   {
-    Character* c = GetCharacter(text[(*it).glyphInfo.cluster], (*it).glyphInfo.codepoint);
+    Character* c = GetCharacter(text[(*it).m_glyphInfo.cluster], (*it).m_glyphInfo.codepoint);
     if (c)
     {
       // If last character in line, we want to add render width
       // and not advance distance - this makes sure that italic text isn't
       // choped on the end (as render width is larger than advance then).
       if (std::next(it) == glyphs.end())
-        width += std::max(c->right - c->left + c->offsetX, c->advance);
-      else if ((c->letter & 0xffff) == static_cast<character_t>('\t'))
+        width += std::max(c->m_right - c->m_left + c->m_offsetX, c->m_advance);
+      else if ((c->m_letter & 0xffff) == static_cast<character_t>('\t'))
         width += GetTabSpaceLength();
       else
-        width += c->advance;
+        width += c->m_advance;
     }
   }
 
@@ -603,10 +603,10 @@ float CGUIFontTTF::GetCharWidthInternal(character_t ch)
   Character* c = GetCharacter(ch, 0);
   if (c)
   {
-    if ((c->letter & 0xffff) == static_cast<character_t>('\t'))
+    if ((c->m_letter & 0xffff) == static_cast<character_t>('\t'))
       return GetTabSpaceLength();
     else
-      return c->advance;
+      return c->m_advance;
   }
 
   return 0;
@@ -679,9 +679,9 @@ std::vector<CGUIFontTTF::Glyph> CGUIFontTTF::GetHarfBuzzShapedGlyphs(const vecTe
     if (i == scripts.size() || scripts[i] != lastScript)
     {
       RunInfo run{};
-      run.startOffset = lastRunStart;
-      run.endOffset = i;
-      run.script = lastScript;
+      run.m_startOffset = lastRunStart;
+      run.m_endOffset = i;
+      run.m_script = lastScript;
       runs.emplace_back(run);
 
       if (i < scripts.size())
@@ -698,27 +698,27 @@ std::vector<CGUIFontTTF::Glyph> CGUIFontTTF::GetHarfBuzzShapedGlyphs(const vecTe
 
   for (auto& run : runs)
   {
-    run.buffer = hb_buffer_create();
-    hb_buffer_set_direction(run.buffer, static_cast<hb_direction_t>(HB_DIRECTION_LTR));
-    hb_buffer_set_script(run.buffer, run.script);
+    run.m_buffer = hb_buffer_create();
+    hb_buffer_set_direction(run.m_buffer, static_cast<hb_direction_t>(HB_DIRECTION_LTR));
+    hb_buffer_set_script(run.m_buffer, run.m_script);
 
-    for (unsigned int j = run.startOffset; j < run.endOffset; j++)
+    for (unsigned int j = run.m_startOffset; j < run.m_endOffset; j++)
     {
-      hb_buffer_add(run.buffer, static_cast<wchar_t>(0xffff & text[j]), j);
+      hb_buffer_add(run.m_buffer, static_cast<wchar_t>(0xffff & text[j]), j);
     }
 
-    hb_buffer_set_content_type(run.buffer, HB_BUFFER_CONTENT_TYPE_UNICODE);
-    hb_shape(m_hbFont, run.buffer, nullptr, 0);
+    hb_buffer_set_content_type(run.m_buffer, HB_BUFFER_CONTENT_TYPE_UNICODE);
+    hb_shape(m_hbFont, run.m_buffer, nullptr, 0);
     unsigned int glyphCount;
-    run.glyphInfos = hb_buffer_get_glyph_infos(run.buffer, &glyphCount);
-    run.glyphPositions = hb_buffer_get_glyph_positions(run.buffer, &glyphCount);
+    run.m_glyphInfos = hb_buffer_get_glyph_infos(run.m_buffer, &glyphCount);
+    run.m_glyphPositions = hb_buffer_get_glyph_positions(run.m_buffer, &glyphCount);
 
     for (size_t k = 0; k < glyphCount; k++)
     {
-      glyphs.emplace_back(run.glyphInfos[k], run.glyphPositions[k]);
+      glyphs.emplace_back(run.m_glyphInfos[k], run.m_glyphPositions[k]);
     }
 
-    hb_buffer_destroy(run.buffer);
+    hb_buffer_destroy(run.m_buffer);
   }
 
   return glyphs;
@@ -750,9 +750,9 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr, FT_UInt glyph
   while (low <= high)
   {
     int mid = (low + high) >> 1;
-    if (ch > m_char[mid].glyphAndStyle)
+    if (ch > m_char[mid].m_glyphAndStyle)
       low = mid + 1;
-    else if (ch < m_char[mid].glyphAndStyle)
+    else if (ch < m_char[mid].m_glyphAndStyle)
       high = mid - 1;
     else
       return &m_char[mid];
@@ -808,9 +808,9 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr, FT_UInt glyph
   memset(m_charquick, 0, sizeof(m_charquick));
   for (int i = 0; i < m_numChars; i++)
   {
-    if (m_char[i].letter < 255 && m_char[i].glyphIndex < 255)
+    if (m_char[i].m_letter < 255 && m_char[i].m_glyphIndex < 255)
     {
-      character_t ch = ((m_char[i].glyphAndStyle & 0xffff0000) >> 8) | m_char[i].glyphIndex;
+      character_t ch = ((m_char[i].m_glyphAndStyle & 0xffff0000) >> 8) | m_char[i].m_glyphIndex;
 
       if (ch < LOOKUPTABLE_SIZE)
         m_charquick[ch] = m_char + i;
@@ -912,31 +912,31 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch, 
   }
 
   // set the character in our table
-  ch->glyphAndStyle = (style << 16) | glyphIndex;
-  ch->glyphIndex = glyphIndex;
-  ch->letter = letter;
-  ch->offsetX = static_cast<short>(bitGlyph->left);
-  ch->offsetY = static_cast<short>(m_cellBaseLine - bitGlyph->top);
-  ch->left = isEmptyGlyph ? 0.0f : (static_cast<float>(m_posX) + ch->offsetX);
-  ch->top = isEmptyGlyph ? 0.0f : (static_cast<float>(m_posY) + ch->offsetY);
-  ch->right = ch->left + bitmap.width;
-  ch->bottom = ch->top + bitmap.rows;
-  ch->advance =
+  ch->m_glyphAndStyle = (style << 16) | glyphIndex;
+  ch->m_glyphIndex = glyphIndex;
+  ch->m_letter = letter;
+  ch->m_offsetX = static_cast<short>(bitGlyph->left);
+  ch->m_offsetY = static_cast<short>(m_cellBaseLine - bitGlyph->top);
+  ch->m_left = isEmptyGlyph ? 0.0f : (static_cast<float>(m_posX) + ch->m_offsetX);
+  ch->m_top = isEmptyGlyph ? 0.0f : (static_cast<float>(m_posY) + ch->m_offsetY);
+  ch->m_right = ch->m_left + bitmap.width;
+  ch->m_bottom = ch->m_top + bitmap.rows;
+  ch->m_advance =
       static_cast<float>(MathUtils::round_int(static_cast<double>(m_face->glyph->advance.x) / 64));
 
   // we need only render if we actually have some pixels
   if (!isEmptyGlyph)
   {
     // ensure our rect will stay inside the texture (it *should* but we need to be certain)
-    unsigned int x1 = std::max(m_posX + ch->offsetX, 0);
-    unsigned int y1 = std::max(m_posY + ch->offsetY, 0);
+    unsigned int x1 = std::max(m_posX + ch->m_offsetX, 0);
+    unsigned int y1 = std::max(m_posY + ch->m_offsetY, 0);
     unsigned int x2 = std::min(x1 + bitmap.width, m_textureWidth);
     unsigned int y2 = std::min(y1 + bitmap.rows, m_textureHeight);
     CopyCharToTexture(bitGlyph, x1, y1, x2, y2);
 
-    m_posX +=
-        SPACING_BETWEEN_CHARACTERS_IN_TEXTURE +
-        static_cast<unsigned short>(std::max(ch->right - ch->left + ch->offsetX, ch->advance));
+    m_posX += SPACING_BETWEEN_CHARACTERS_IN_TEXTURE +
+              static_cast<unsigned short>(
+                  std::max(ch->m_right - ch->m_left + ch->m_offsetX, ch->m_advance));
   }
   m_numChars++;
 
@@ -956,8 +956,8 @@ void CGUIFontTTF::RenderCharacter(CGraphicContext& context,
 {
   // actual image width isn't same as the character width as that is
   // just baseline width and height should include the descent
-  const float width = ch->right - ch->left;
-  const float height = ch->bottom - ch->top;
+  const float width = ch->m_right - ch->m_left;
+  const float height = ch->m_bottom - ch->m_top;
 
   // return early if nothing to render
   if (width == 0 || height == 0)
@@ -965,12 +965,12 @@ void CGUIFontTTF::RenderCharacter(CGraphicContext& context,
 
   // posX and posY are relative to our origin, and the textcell is offset
   // from our (posX, posY).  Plus, these are unscaled quantities compared to the underlying GUI resolution
-  CRect vertex((posX + ch->offsetX) * context.GetGUIScaleX(),
-               (posY + ch->offsetY) * context.GetGUIScaleY(),
-               (posX + ch->offsetX + width) * context.GetGUIScaleX(),
-               (posY + ch->offsetY + height) * context.GetGUIScaleY());
+  CRect vertex((posX + ch->m_offsetX) * context.GetGUIScaleX(),
+               (posY + ch->m_offsetY) * context.GetGUIScaleY(),
+               (posX + ch->m_offsetX + width) * context.GetGUIScaleX(),
+               (posY + ch->m_offsetY + height) * context.GetGUIScaleY());
   vertex += CPoint(m_originX, m_originY);
-  CRect texture(ch->left, ch->top, ch->right, ch->bottom);
+  CRect texture(ch->m_left, ch->m_top, ch->m_right, ch->m_bottom);
   if (!m_renderSystem->ScissorsCanEffectClipping())
     context.ClipRect(vertex, texture);
 
@@ -1158,5 +1158,5 @@ void CGUIFontTTF::SetGlyphStrength(FT_GlyphSlot slot, int glyphStrength)
 float CGUIFontTTF::GetTabSpaceLength()
 {
   const Character* c = GetCharacter(static_cast<character_t>('X'), 0);
-  return c ? c->advance * TAB_SPACE_LENGTH : 28.0f * TAB_SPACE_LENGTH;
+  return c ? c->m_advance * TAB_SPACE_LENGTH : 28.0f * TAB_SPACE_LENGTH;
 }
