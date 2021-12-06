@@ -48,7 +48,7 @@ namespace controls
 /// @brief **Library definition values**
 ///
 
-class ATTRIBUTE_HIDDEN CEdit : public CAddonGUIControlBase
+class ATTR_DLL_LOCAL CEdit : public CAddonGUIControlBase
 {
 public:
   //============================================================================

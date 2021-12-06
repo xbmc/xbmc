@@ -36,7 +36,7 @@ namespace controls
 /// @note The call of the control is only possible from the corresponding
 /// window as its class and identification number is required.
 ///
-class ATTRIBUTE_HIDDEN CImage : public CAddonGUIControlBase
+class ATTR_DLL_LOCAL CImage : public CAddonGUIControlBase
 {
 public:
   //==========================================================================

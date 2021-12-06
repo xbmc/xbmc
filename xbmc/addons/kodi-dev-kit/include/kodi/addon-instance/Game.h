@@ -113,7 +113,7 @@ public:
 ///
 /// This class is created at addon by Kodi.
 ///
-class ATTRIBUTE_HIDDEN CInstanceGame : public IAddonInstance
+class ATTR_DLL_LOCAL CInstanceGame : public IAddonInstance
 {
 public:
   //============================================================================
@@ -139,7 +139,7 @@ public:
   /// #include <kodi/addon-instance/Game.h>
   /// ...
   ///
-  /// class ATTRIBUTE_HIDDEN CGameExample
+  /// class ATTR_DLL_LOCAL CGameExample
   ///   : public kodi::addon::CAddonBase,
   ///     public kodi::addon::CInstanceGame
   /// {

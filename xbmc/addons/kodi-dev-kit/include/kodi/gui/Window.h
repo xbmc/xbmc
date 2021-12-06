@@ -106,7 +106,7 @@ class CListItem;
 /// ~~~~~~~~~~~~~
 ///
 ///
-class ATTRIBUTE_HIDDEN CWindow : public CAddonGUIControlBase
+class ATTR_DLL_LOCAL CWindow : public CAddonGUIControlBase
 {
 public:
   //============================================================================

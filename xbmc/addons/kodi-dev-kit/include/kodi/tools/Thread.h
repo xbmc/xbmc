@@ -44,7 +44,7 @@ namespace tools
 /// #include <kodi/tools/Thread.h>
 /// #include <kodi/AddonBase.h>
 ///
-/// class ATTRIBUTE_HIDDEN CTestAddon
+/// class ATTR_DLL_LOCAL CTestAddon
 ///   : public kodi::addon::CAddonBase,
 ///     public kodi::tools::CThread
 /// {

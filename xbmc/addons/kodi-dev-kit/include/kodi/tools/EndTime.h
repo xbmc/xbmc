@@ -33,7 +33,7 @@ namespace tools
 /// ~~~~~~~~~~~~~{.cpp}
 /// #include <kodi/tools/EndTime.h>
 ///
-/// class ATTRIBUTE_HIDDEN CExample
+/// class ATTR_DLL_LOCAL CExample
 /// {
 /// public:
 ///   CExample()

@@ -36,7 +36,7 @@ namespace tools
 /// ~~~~~~~~~~~~~{.cpp}
 /// #include <kodi/tools/Timer.h>
 ///
-/// class ATTRIBUTE_HIDDEN CExample
+/// class ATTR_DLL_LOCAL CExample
 /// {
 /// public:
 ///   CExample() : m_timer([this](){TimerCall();})

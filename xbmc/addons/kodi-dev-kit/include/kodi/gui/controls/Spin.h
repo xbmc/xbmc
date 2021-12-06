@@ -114,7 +114,7 @@ typedef enum AddonGUISpinControlType
 } AddonGUISpinControlType;
 //------------------------------------------------------------------------------
 
-class ATTRIBUTE_HIDDEN CSpin : public CAddonGUIControlBase
+class ATTR_DLL_LOCAL CSpin : public CAddonGUIControlBase
 {
 public:
   //============================================================================

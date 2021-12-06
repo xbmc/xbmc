@@ -31,7 +31,7 @@ namespace gl
 
 //========================================================================
 /// CShader - base class
-class ATTRIBUTE_HIDDEN CShader
+class ATTR_DLL_LOCAL CShader
 {
 public:
   CShader() = default;
@@ -69,7 +69,7 @@ protected:
 
 //========================================================================
 /// CVertexShader
-class ATTRIBUTE_HIDDEN CVertexShader : public CShader
+class ATTR_DLL_LOCAL CVertexShader : public CShader
 {
 public:
   CVertexShader() = default;
@@ -130,7 +130,7 @@ protected:
 
 //========================================================================
 /// CPixelShader
-class ATTRIBUTE_HIDDEN CPixelShader : public CShader
+class ATTR_DLL_LOCAL CPixelShader : public CShader
 {
 public:
   CPixelShader() = default;
@@ -208,7 +208,7 @@ protected:
 /// #include <kodi/gui/gl/Shader.h>
 /// ...
 ///
-/// class ATTRIBUTE_HIDDEN CExample
+/// class ATTR_DLL_LOCAL CExample
 ///   : ...,
 ///     public kodi::gui::gl::CShaderProgram
 /// {
@@ -273,7 +273,7 @@ protected:
 /// ADDONCREATOR(CExample);
 /// ~~~~~~~~~~~~~
 ///
-class ATTRIBUTE_HIDDEN CShaderProgram
+class ATTR_DLL_LOCAL CShaderProgram
 {
 public:
   //==========================================================================

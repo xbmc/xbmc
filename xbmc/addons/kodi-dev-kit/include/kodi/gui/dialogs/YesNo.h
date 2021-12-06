@@ -71,11 +71,11 @@ namespace YesNo
 ///          canceled ? "canceled" : "not canceled");
 /// ~~~~~~~~~~~~~
 ///
-inline bool ATTRIBUTE_HIDDEN ShowAndGetInput(const std::string& heading,
-                                             const std::string& text,
-                                             bool& canceled,
-                                             const std::string& noLabel = "",
-                                             const std::string& yesLabel = "")
+inline bool ATTR_DLL_LOCAL ShowAndGetInput(const std::string& heading,
+                                           const std::string& text,
+                                           bool& canceled,
+                                           const std::string& noLabel = "",
+                                           const std::string& yesLabel = "")
 {
   using namespace ::kodi::addon;
   return CPrivateBase::m_interface->toKodi->kodi_gui->dialogYesNo->show_and_get_input_single_text(
@@ -114,12 +114,12 @@ inline bool ATTRIBUTE_HIDDEN ShowAndGetInput(const std::string& heading,
 ///          ret ? "yes" : "no");
 /// ~~~~~~~~~~~~~
 ///
-inline bool ATTRIBUTE_HIDDEN ShowAndGetInput(const std::string& heading,
-                                             const std::string& line0,
-                                             const std::string& line1,
-                                             const std::string& line2,
-                                             const std::string& noLabel = "",
-                                             const std::string& yesLabel = "")
+inline bool ATTR_DLL_LOCAL ShowAndGetInput(const std::string& heading,
+                                           const std::string& line0,
+                                           const std::string& line1,
+                                           const std::string& line2,
+                                           const std::string& noLabel = "",
+                                           const std::string& yesLabel = "")
 {
   using namespace ::kodi::addon;
   return CPrivateBase::m_interface->toKodi->kodi_gui->dialogYesNo->show_and_get_input_line_text(
@@ -163,13 +163,13 @@ inline bool ATTRIBUTE_HIDDEN ShowAndGetInput(const std::string& heading,
 ///          canceled ? "canceled" : "not canceled");
 /// ~~~~~~~~~~~~~
 ///
-inline bool ATTRIBUTE_HIDDEN ShowAndGetInput(const std::string& heading,
-                                             const std::string& line0,
-                                             const std::string& line1,
-                                             const std::string& line2,
-                                             bool& canceled,
-                                             const std::string& noLabel = "",
-                                             const std::string& yesLabel = "")
+inline bool ATTR_DLL_LOCAL ShowAndGetInput(const std::string& heading,
+                                           const std::string& line0,
+                                           const std::string& line1,
+                                           const std::string& line2,
+                                           bool& canceled,
+                                           const std::string& noLabel = "",
+                                           const std::string& yesLabel = "")
 {
   using namespace ::kodi::addon;
   return CPrivateBase::m_interface->toKodi->kodi_gui->dialogYesNo
