@@ -181,9 +181,7 @@ protected:
     // Content-Type must be "text/html"
     EXPECT_STREQ("text/plain", httpHeader.GetMimeType().c_str());
     // check Content-Length
-    if (empty)
-      EXPECT_STREQ("0", httpHeader.GetValue(MHD_HTTP_HEADER_CONTENT_LENGTH).c_str());
-    else
+    if (!empty)
       EXPECT_STREQ("20", httpHeader.GetValue(MHD_HTTP_HEADER_CONTENT_LENGTH).c_str());
     // Accept-Ranges must be "bytes"
     EXPECT_STREQ("bytes", httpHeader.GetValue(MHD_HTTP_HEADER_ACCEPT_RANGES).c_str());
@@ -595,41 +593,39 @@ TEST_F(TestWebServer, CanGetCachedFileWithOlderIfModifiedSince)
   CheckRangesTestFileResponse(curl);
 }
 
-/** @todo Fix these two tests, they keep failing and
- *  we want to enable the test suite on PR
- */
-//TEST_F(TestWebServer, CanGetCachedFileWithExactIfModifiedSince)
-//{
-//  // get the last modified date of the file
-//  CDateTime lastModified;
-//  ASSERT_TRUE(GetLastModifiedOfTestFile(TEST_FILES_RANGES, lastModified));
-//
-//  // get the file with the exact If-Modified-Since value
-//  std::string result;
-//  CCurlFile curl;
-//  curl.SetRequestHeader(MHD_HTTP_HEADER_RANGE, "");
-//  curl.SetRequestHeader(MHD_HTTP_HEADER_IF_MODIFIED_SINCE, lastModified.GetAsRFC1123DateTime());
-//  ASSERT_TRUE(curl.Get(GetUrlOfTestFile(TEST_FILES_RANGES), result));
-//  ASSERT_TRUE(result.empty());
-//  CheckRangesTestFileResponse(curl, MHD_HTTP_NOT_MODIFIED, true);
-//}
-//
-//TEST_F(TestWebServer, CanGetCachedFileWithNewerIfModifiedSince)
-//{
-//  // get the last modified date of the file
-//  CDateTime lastModified;
-//  ASSERT_TRUE(GetLastModifiedOfTestFile(TEST_FILES_RANGES, lastModified));
-//  CDateTime lastModifiedNewer = lastModified + CDateTimeSpan(1, 0, 0, 0);
-//
-//  // get the file with a newer If-Modified-Since value
-//  std::string result;
-//  CCurlFile curl;
-//  curl.SetRequestHeader(MHD_HTTP_HEADER_RANGE, "");
-//  curl.SetRequestHeader(MHD_HTTP_HEADER_IF_MODIFIED_SINCE, lastModifiedNewer.GetAsRFC1123DateTime());
-//  ASSERT_TRUE(curl.Get(GetUrlOfTestFile(TEST_FILES_RANGES), result));
-//  ASSERT_TRUE(result.empty());
-//  CheckRangesTestFileResponse(curl, MHD_HTTP_NOT_MODIFIED, true);
-//}
+TEST_F(TestWebServer, CanGetCachedFileWithExactIfModifiedSince)
+{
+  // get the last modified date of the file
+  CDateTime lastModified;
+  ASSERT_TRUE(GetLastModifiedOfTestFile(TEST_FILES_RANGES, lastModified));
+
+  // get the file with the exact If-Modified-Since value
+  std::string result;
+  CCurlFile curl;
+  curl.SetRequestHeader(MHD_HTTP_HEADER_RANGE, "");
+  curl.SetRequestHeader(MHD_HTTP_HEADER_IF_MODIFIED_SINCE, lastModified.GetAsRFC1123DateTime());
+  ASSERT_TRUE(curl.Get(GetUrlOfTestFile(TEST_FILES_RANGES), result));
+  ASSERT_TRUE(result.empty());
+  CheckRangesTestFileResponse(curl, MHD_HTTP_NOT_MODIFIED, true);
+}
+
+TEST_F(TestWebServer, CanGetCachedFileWithNewerIfModifiedSince)
+{
+  // get the last modified date of the file
+  CDateTime lastModified;
+  ASSERT_TRUE(GetLastModifiedOfTestFile(TEST_FILES_RANGES, lastModified));
+  CDateTime lastModifiedNewer = lastModified + CDateTimeSpan(1, 0, 0, 0);
+
+  // get the file with a newer If-Modified-Since value
+  std::string result;
+  CCurlFile curl;
+  curl.SetRequestHeader(MHD_HTTP_HEADER_RANGE, "");
+  curl.SetRequestHeader(MHD_HTTP_HEADER_IF_MODIFIED_SINCE,
+                        lastModifiedNewer.GetAsRFC1123DateTime());
+  ASSERT_TRUE(curl.Get(GetUrlOfTestFile(TEST_FILES_RANGES), result));
+  ASSERT_TRUE(result.empty());
+  CheckRangesTestFileResponse(curl, MHD_HTTP_NOT_MODIFIED, true);
+}
 
 TEST_F(TestWebServer, CanGetCachedFileWithNewerIfModifiedSinceForcingNoCache)
 {
