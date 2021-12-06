@@ -34,24 +34,24 @@ class CGUIFontTTF;
 ///
 /// Flags are used as bits to have several together, e.g. `XBFONT_LEFT | XBFONT_CENTER_Y`
 ///
-#define XBFONT_LEFT 0x00000000 ///< Align X left
-#define XBFONT_RIGHT 0x00000001 ///< Align X right
-#define XBFONT_CENTER_X 0x00000002 ///< Align X center
-#define XBFONT_CENTER_Y 0x00000004 ///< Align Y center
-#define XBFONT_TRUNCATED 0x00000008 ///< Truncated text
-#define XBFONT_JUSTIFIED 0x00000010 ///< Justify text
+constexpr int XBFONT_LEFT = 0; ///< Align X left
+constexpr int XBFONT_RIGHT = (1 << 0); ///< Align X right
+constexpr int XBFONT_CENTER_X = (1 << 1); ///< Align X center
+constexpr int XBFONT_CENTER_Y = (1 << 2); ///< Align Y center
+constexpr int XBFONT_TRUNCATED = (1 << 3); ///< Truncated text
+constexpr int XBFONT_JUSTIFIED = (1 << 4); ///< Justify text
 /// @}
 
 // flags for font style. lower 16 bits are the unicode code
 // points, 16-24 are color bits and 24-32 are style bits
-#define FONT_STYLE_NORMAL 0
-#define FONT_STYLE_BOLD 1
-#define FONT_STYLE_ITALICS 2
-#define FONT_STYLE_LIGHT 4
-#define FONT_STYLE_UPPERCASE 8
-#define FONT_STYLE_LOWERCASE 16
-#define FONT_STYLE_CAPITALIZE 32
-#define FONT_STYLE_MASK 0xFF
+constexpr int FONT_STYLE_NORMAL = 0;
+constexpr int FONT_STYLE_BOLD = (1 << 0);
+constexpr int FONT_STYLE_ITALICS = (1 << 1);
+constexpr int FONT_STYLE_LIGHT = (1 << 2);
+constexpr int FONT_STYLE_UPPERCASE = (1 << 3);
+constexpr int FONT_STYLE_LOWERCASE = (1 << 4);
+constexpr int FONT_STYLE_CAPITALIZE = (1 << 5);
+constexpr int FONT_STYLE_MASK = 0xFF;
 
 class CScrollInfo
 {

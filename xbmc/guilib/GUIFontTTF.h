@@ -28,8 +28,6 @@ using namespace DirectX;
 using namespace DirectX::PackedVector;
 #endif
 
-constexpr size_t LOOKUPTABLE_SIZE = 256 * 8;
-
 class CTexture;
 class CRenderSystemBase;
 
@@ -70,6 +68,8 @@ struct SVertex
 
 class CGUIFontTTF
 {
+  static constexpr size_t LOOKUPTABLE_SIZE = 256 * 8;
+
   friend class CGUIFont;
 
 public:
@@ -194,7 +194,6 @@ protected:
    Accounts for spacing between lines to avoid characters overlapping.
    */
   unsigned int GetTextureLineHeight() const;
-  static const unsigned int spacing_between_characters_in_texture;
 
   UTILS::COLOR::Color m_color;
 

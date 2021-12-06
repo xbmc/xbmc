@@ -27,6 +27,11 @@ using namespace Microsoft::WRL;
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
 
+namespace
+{
+constexpr size_t ELEMENT_ARRAY_MAX_CHAR_INDEX = 2000;
+} /* namespace */
+
 CGUIFontTTF* CGUIFontTTF::CreateGUIFontTTF(const std::string& fontIdent)
 {
   return new CGUIFontTTFDX(fontIdent);

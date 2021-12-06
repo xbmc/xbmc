@@ -49,12 +49,15 @@
 #include FT_OUTLINE_H
 #include FT_STROKER_H
 
-#define CHARS_PER_TEXTURE_LINE 20 // number of characters to cache per texture line
-#define CHAR_CHUNK 64 // 64 chars allocated at a time (1024 bytes)
-#define GLYPH_STRENGTH_BOLD 24
-#define GLYPH_STRENGTH_LIGHT -48
-
-#define TAB_SPACE_LENGTH 4
+namespace
+{
+constexpr int CHARS_PER_TEXTURE_LINE = 20; // number characters to cache per texture line
+constexpr unsigned int SPACING_BETWEEN_CHARACTERS_IN_TEXTURE = 1;
+constexpr int CHAR_CHUNK = 64; // 64 chars allocated at a time (1024 bytes)
+constexpr int GLYPH_STRENGTH_BOLD = 24;
+constexpr int GLYPH_STRENGTH_LIGHT = -48;
+constexpr int TAB_SPACE_LENGTH = 4;
+} /* namespace */
 
 class CFreeTypeLibrary
 {
@@ -638,11 +641,9 @@ float CGUIFontTTF::GetLineHeight(float lineSpacing) const
   return 0.0f;
 }
 
-const unsigned int CGUIFontTTF::spacing_between_characters_in_texture = 1;
-
 unsigned int CGUIFontTTF::GetTextureLineHeight() const
 {
-  return m_cellHeight + spacing_between_characters_in_texture;
+  return m_cellHeight + SPACING_BETWEEN_CHARACTERS_IN_TEXTURE;
 }
 
 std::vector<CGUIFontTTF::Glyph> CGUIFontTTF::GetHarfBuzzShapedGlyphs(const vecText& text)
@@ -939,7 +940,7 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch, 
     unsigned int y2 = std::min(y1 + bitmap.rows, m_textureHeight);
     CopyCharToTexture(bitGlyph, x1, y1, x2, y2);
 
-    m_posX += spacing_between_characters_in_texture +
+    m_posX += SPACING_BETWEEN_CHARACTERS_IN_TEXTURE +
               (unsigned short)std::max(ch->right - ch->left + ch->offsetX, ch->advance);
   }
   m_numChars++;
