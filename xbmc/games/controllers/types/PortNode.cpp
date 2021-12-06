@@ -70,6 +70,21 @@ CControllerNode& CPortNode::GetActiveController()
   return invalid;
 }
 
+bool CPortNode::SetActiveController(const std::string& controllerId)
+{
+  for (size_t i = 0; i < m_controllers.size(); ++i)
+  {
+    const ControllerPtr& controller = m_controllers.at(i).GetController();
+    if (controller && controller->ID() == controllerId)
+    {
+      m_active = i;
+      return true;
+    }
+  }
+
+  return false;
+}
+
 void CPortNode::SetPortID(std::string portId)
 {
   m_portId = std::move(portId);
@@ -132,7 +147,10 @@ void CPortNode::GetPort(CPhysicalPort& port) const
 {
   std::vector<std::string> accepts;
   for (const CControllerNode& node : m_controllers)
-    accepts.emplace_back(node.GetController()->ID());
+  {
+    if (node.GetController())
+      accepts.emplace_back(node.GetController()->ID());
+  }
 
   port = CPhysicalPort(m_portId, std::move(accepts));
 }

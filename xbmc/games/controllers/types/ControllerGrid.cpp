@@ -48,15 +48,15 @@ unsigned int CControllerGrid::AddPorts(const PortVec& ports, ControllerGrid& gri
 {
   unsigned int height = 0;
 
-  auto itKeyboard = std::find_if(ports.begin(), ports.end(), [](const CPortNode port) {
+  auto itKeyboard = std::find_if(ports.begin(), ports.end(), [](const CPortNode& port) {
     return port.GetPortType() == PORT_TYPE::KEYBOARD;
   });
 
-  auto itMouse = std::find_if(ports.begin(), ports.end(), [](const CPortNode port) {
+  auto itMouse = std::find_if(ports.begin(), ports.end(), [](const CPortNode& port) {
     return port.GetPortType() == PORT_TYPE::MOUSE;
   });
 
-  auto itController = std::find_if(ports.begin(), ports.end(), [](const CPortNode port) {
+  auto itController = std::find_if(ports.begin(), ports.end(), [](const CPortNode& port) {
     return port.GetPortType() == PORT_TYPE::CONTROLLER;
   });
 
@@ -77,7 +77,7 @@ unsigned int CControllerGrid::AddPorts(const PortVec& ports, ControllerGrid& gri
   {
     // Add controller ports
     bool bFirstPlayer = true;
-    for (const CPortNode port : ports)
+    for (const CPortNode& port : ports)
     {
       ControllerColumn column;
 
@@ -130,7 +130,7 @@ unsigned int CControllerGrid::AddPorts(const PortVec& ports, ControllerGrid& gri
   return height;
 }
 
-unsigned int CControllerGrid::AddController(const CPortNode port,
+unsigned int CControllerGrid::AddController(const CPortNode& port,
                                             unsigned int height,
                                             std::vector<ControllerVertex>& column,
                                             ControllerGrid& grid)

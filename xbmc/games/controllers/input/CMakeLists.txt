@@ -3,6 +3,7 @@ set(SOURCES InputSink.cpp
             PhysicalPort.cpp
             PhysicalTopology.cpp
             PortInput.cpp
+            PortManager.cpp
 )
 
 set(HEADERS InputSink.h
@@ -10,6 +11,7 @@ set(HEADERS InputSink.h
             PhysicalPort.h
             PhysicalTopology.h
             PortInput.h
+            PortManager.h
 )
 
 core_add_library(games_controller_input)
