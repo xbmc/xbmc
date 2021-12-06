@@ -303,8 +303,8 @@ public:
   /// ~~~~~~~~~~~~~
   ///
   CAEStream(AudioEngineFormat& format, unsigned int options = 0)
-    : m_kodiBase(::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase),
-      m_cb(::kodi::addon::CAddonBase::m_interface->toKodi->kodi_audioengine)
+    : m_kodiBase(::kodi::addon::CPrivateBase::m_interface->toKodi->kodiBase),
+      m_cb(::kodi::addon::CPrivateBase::m_interface->toKodi->kodi_audioengine)
   {
     m_StreamHandle = m_cb->make_stream(m_kodiBase, format, options);
     if (m_StreamHandle == nullptr)
@@ -606,8 +606,8 @@ private:
 inline bool ATTRIBUTE_HIDDEN GetCurrentSinkFormat(AudioEngineFormat& format)
 {
   using namespace kodi::addon;
-  return CAddonBase::m_interface->toKodi->kodi_audioengine->get_current_sink_format(
-      CAddonBase::m_interface->toKodi->kodiBase, format);
+  return CPrivateBase::m_interface->toKodi->kodi_audioengine->get_current_sink_format(
+      CPrivateBase::m_interface->toKodi->kodiBase, format);
 }
 //----------------------------------------------------------------------------
 

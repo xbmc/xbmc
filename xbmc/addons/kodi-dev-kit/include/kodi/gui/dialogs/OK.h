@@ -55,8 +55,8 @@ namespace OK
 inline void ATTRIBUTE_HIDDEN ShowAndGetInput(const std::string& heading, const std::string& text)
 {
   using namespace ::kodi::addon;
-  CAddonBase::m_interface->toKodi->kodi_gui->dialogOK->show_and_get_input_single_text(
-      CAddonBase::m_interface->toKodi->kodiBase, heading.c_str(), text.c_str());
+  CPrivateBase::m_interface->toKodi->kodi_gui->dialogOK->show_and_get_input_single_text(
+      CPrivateBase::m_interface->toKodi->kodiBase, heading.c_str(), text.c_str());
 }
 //------------------------------------------------------------------------------
 
@@ -86,8 +86,8 @@ inline void ATTRIBUTE_HIDDEN ShowAndGetInput(const std::string& heading,
                                              const std::string& line2)
 {
   using namespace ::kodi::addon;
-  CAddonBase::m_interface->toKodi->kodi_gui->dialogOK->show_and_get_input_line_text(
-      CAddonBase::m_interface->toKodi->kodiBase, heading.c_str(), line0.c_str(), line1.c_str(),
+  CPrivateBase::m_interface->toKodi->kodi_gui->dialogOK->show_and_get_input_line_text(
+      CPrivateBase::m_interface->toKodi->kodiBase, heading.c_str(), line0.c_str(), line1.c_str(),
       line2.c_str());
 }
 //------------------------------------------------------------------------------

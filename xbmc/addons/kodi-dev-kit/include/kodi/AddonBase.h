@@ -172,6 +172,16 @@ private:
 namespace addon
 {
 
+/*!
+ * @brief Internal used structure to have stored C API data above and
+ * available for everything below.
+ */
+struct ATTR_DLL_LOCAL CPrivateBase
+{
+  // Interface function table to hold addresses on add-on and from kodi
+  static AddonGlobalInterface* m_interface;
+};
+
 //==============================================================================
 /*
  * Internal class to control various instance types with general parts defined
@@ -327,10 +337,10 @@ public:
   ///
   CAddonBase()
   {
-    m_interface->toAddon->destroy = ADDONBASE_Destroy;
-    m_interface->toAddon->create_instance = ADDONBASE_CreateInstance;
-    m_interface->toAddon->destroy_instance = ADDONBASE_DestroyInstance;
-    m_interface->toAddon->set_setting = ADDONBASE_SetSetting;
+    CPrivateBase::m_interface->toAddon->destroy = ADDONBASE_Destroy;
+    CPrivateBase::m_interface->toAddon->create_instance = ADDONBASE_CreateInstance;
+    CPrivateBase::m_interface->toAddon->destroy_instance = ADDONBASE_DestroyInstance;
+    CPrivateBase::m_interface->toAddon->set_setting = ADDONBASE_SetSetting;
   }
   //----------------------------------------------------------------------------
 
@@ -512,20 +522,16 @@ public:
   /* Background helper for GUI render systems, e.g. Screensaver or Visualization */
   std::shared_ptr<kodi::gui::IRenderHelper> m_renderHelper;
 
-  /* Global variables of class */
-  static AddonGlobalInterface*
-      m_interface; // Interface function table to hold addresses on add-on and from kodi
-
 private:
   static inline void ADDONBASE_Destroy()
   {
-    delete static_cast<CAddonBase*>(m_interface->addonBase);
-    m_interface->addonBase = nullptr;
+    delete static_cast<CAddonBase*>(CPrivateBase::m_interface->addonBase);
+    CPrivateBase::m_interface->addonBase = nullptr;
   }
 
   static inline ADDON_STATUS ADDONBASE_SetSetting(const char* settingName, const void* settingValue)
   {
-    return static_cast<CAddonBase*>(m_interface->addonBase)
+    return static_cast<CAddonBase*>(CPrivateBase::m_interface->addonBase)
         ->SetSetting(settingName, CSettingValue(settingValue));
   }
 
@@ -536,7 +542,7 @@ private:
                                                       KODI_HANDLE* addonInstance,
                                                       KODI_HANDLE parent)
   {
-    CAddonBase* base = static_cast<CAddonBase*>(m_interface->addonBase);
+    CAddonBase* base = static_cast<CAddonBase*>(CPrivateBase::m_interface->addonBase);
 
     ADDON_STATUS status = ADDON_STATUS_NOT_IMPLEMENTED;
 
@@ -545,13 +551,15 @@ private:
      * 2. The addon side instance pointer must be set
      * 3. And the requested type must be equal with used add-on class
      */
-    if (m_interface->firstKodiInstance == instance && m_interface->globalSingleInstance &&
-        static_cast<IAddonInstance*>(m_interface->globalSingleInstance)->m_type == instanceType)
+    if (CPrivateBase::m_interface->firstKodiInstance == instance &&
+        CPrivateBase::m_interface->globalSingleInstance &&
+        static_cast<IAddonInstance*>(CPrivateBase::m_interface->globalSingleInstance)->m_type ==
+            instanceType)
     {
       /* The handling here is intended for the case of the add-on only one
        * instance and this is integrated in the add-on base class.
        */
-      *addonInstance = m_interface->globalSingleInstance;
+      *addonInstance = CPrivateBase::m_interface->globalSingleInstance;
       status = ADDON_STATUS_OK;
     }
     else
@@ -576,9 +584,10 @@ private:
     {
       if (status == ADDON_STATUS_OK)
       {
-        m_interface->toKodi->addon_log_msg(m_interface->toKodi->kodiBase, ADDON_LOG_FATAL,
-                                           "kodi::addon::CAddonBase CreateInstance returned an "
-                                           "empty instance pointer, but reported OK!");
+        CPrivateBase::m_interface->toKodi->addon_log_msg(
+            CPrivateBase::m_interface->toKodi->kodiBase, ADDON_LOG_FATAL,
+            "kodi::addon::CAddonBase CreateInstance returned an "
+            "empty instance pointer, but reported OK!");
         return ADDON_STATUS_PERMANENT_FAILURE;
       }
       else
@@ -589,8 +598,8 @@ private:
 
     if (static_cast<IAddonInstance*>(*addonInstance)->m_type != instanceType)
     {
-      m_interface->toKodi->addon_log_msg(
-          m_interface->toKodi->kodiBase, ADDON_LOG_FATAL,
+      CPrivateBase::m_interface->toKodi->addon_log_msg(
+          CPrivateBase::m_interface->toKodi->kodiBase, ADDON_LOG_FATAL,
           "kodi::addon::CAddonBase CreateInstance difference between given and returned");
       delete static_cast<IAddonInstance*>(*addonInstance);
       *addonInstance = nullptr;
@@ -605,9 +614,9 @@ private:
 
   static inline void ADDONBASE_DestroyInstance(int instanceType, KODI_HANDLE instance)
   {
-    CAddonBase* base = static_cast<CAddonBase*>(m_interface->addonBase);
+    CAddonBase* base = static_cast<CAddonBase*>(CPrivateBase::m_interface->addonBase);
 
-    if (m_interface->globalSingleInstance == nullptr && instance != base)
+    if (CPrivateBase::m_interface->globalSingleInstance == nullptr && instance != base)
     {
       base->DestroyInstance(instanceType, static_cast<IAddonInstance*>(instance)->m_id, instance);
       delete static_cast<IAddonInstance*>(instance);
@@ -631,10 +640,10 @@ inline std::string ATTRIBUTE_HIDDEN GetKodiTypeVersion(int type)
 {
   using namespace kodi::addon;
 
-  char* str = CAddonBase::m_interface->toKodi->get_type_version(
-      CAddonBase::m_interface->toKodi->kodiBase, type);
+  char* str = CPrivateBase::m_interface->toKodi->get_type_version(
+      CPrivateBase::m_interface->toKodi->kodiBase, type);
   std::string ret = str;
-  CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase, str);
+  CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase, str);
   return ret;
 }
 //------------------------------------------------------------------------------
@@ -650,10 +659,10 @@ inline std::string ATTRIBUTE_HIDDEN GetAddonPath(const std::string& append = "")
 {
   using namespace kodi::addon;
 
-  char* str =
-      CAddonBase::m_interface->toKodi->get_addon_path(CAddonBase::m_interface->toKodi->kodiBase);
+  char* str = CPrivateBase::m_interface->toKodi->get_addon_path(
+      CPrivateBase::m_interface->toKodi->kodiBase);
   std::string ret = str;
-  CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase, str);
+  CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase, str);
   if (!append.empty())
   {
     if (append.at(0) != '\\' && append.at(0) != '/')
@@ -682,10 +691,10 @@ inline std::string ATTRIBUTE_HIDDEN GetBaseUserPath(const std::string& append = 
 {
   using namespace kodi::addon;
 
-  char* str = CAddonBase::m_interface->toKodi->get_base_user_path(
-      CAddonBase::m_interface->toKodi->kodiBase);
+  char* str = CPrivateBase::m_interface->toKodi->get_base_user_path(
+      CPrivateBase::m_interface->toKodi->kodiBase);
   std::string ret = str;
-  CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase, str);
+  CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase, str);
   if (!append.empty())
   {
     if (append.at(0) != '\\' && append.at(0) != '/')
@@ -719,7 +728,7 @@ inline std::string ATTRIBUTE_HIDDEN GetLibPath()
 {
   using namespace kodi::addon;
 
-  return CAddonBase::m_interface->libBasePath;
+  return CPrivateBase::m_interface->libBasePath;
 }
 //------------------------------------------------------------------------------
 
@@ -754,8 +763,8 @@ inline void ATTRIBUTE_HIDDEN Log(const AddonLog loglevel, const char* format, ..
   va_start(args, format);
   const std::string str = kodi::tools::StringUtils::FormatV(format, args);
   va_end(args);
-  CAddonBase::m_interface->toKodi->addon_log_msg(CAddonBase::m_interface->toKodi->kodiBase,
-                                                 loglevel, str.c_str());
+  CPrivateBase::m_interface->toKodi->addon_log_msg(CPrivateBase::m_interface->toKodi->kodiBase,
+                                                   loglevel, str.c_str());
 }
 //------------------------------------------------------------------------------
 
@@ -784,8 +793,8 @@ inline void ATTRIBUTE_HIDDEN Log(const AddonLog loglevel, const char* format, ..
 inline bool ATTRIBUTE_HIDDEN IsSettingUsingDefault(const std::string& settingName)
 {
   using namespace kodi::addon;
-  return CAddonBase::m_interface->toKodi->is_setting_using_default(
-      CAddonBase::m_interface->toKodi->kodiBase, settingName.c_str());
+  return CPrivateBase::m_interface->toKodi->is_setting_using_default(
+      CPrivateBase::m_interface->toKodi->kodiBase, settingName.c_str());
 }
 //------------------------------------------------------------------------------
 
@@ -818,13 +827,14 @@ inline bool ATTRIBUTE_HIDDEN CheckSettingString(const std::string& settingName,
   using namespace kodi::addon;
 
   char* buffer = nullptr;
-  bool ret = CAddonBase::m_interface->toKodi->get_setting_string(
-      CAddonBase::m_interface->toKodi->kodiBase, settingName.c_str(), &buffer);
+  bool ret = CPrivateBase::m_interface->toKodi->get_setting_string(
+      CPrivateBase::m_interface->toKodi->kodiBase, settingName.c_str(), &buffer);
   if (buffer)
   {
     if (ret)
       settingValue = buffer;
-    CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase, buffer);
+    CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase,
+                                                   buffer);
   }
   return ret;
 }
@@ -882,8 +892,8 @@ inline void ATTRIBUTE_HIDDEN SetSettingString(const std::string& settingName,
 {
   using namespace kodi::addon;
 
-  CAddonBase::m_interface->toKodi->set_setting_string(CAddonBase::m_interface->toKodi->kodiBase,
-                                                      settingName.c_str(), settingValue.c_str());
+  CPrivateBase::m_interface->toKodi->set_setting_string(CPrivateBase::m_interface->toKodi->kodiBase,
+                                                        settingName.c_str(), settingValue.c_str());
 }
 //------------------------------------------------------------------------------
 
@@ -914,8 +924,8 @@ inline bool ATTRIBUTE_HIDDEN CheckSettingInt(const std::string& settingName, int
 {
   using namespace kodi::addon;
 
-  return CAddonBase::m_interface->toKodi->get_setting_int(CAddonBase::m_interface->toKodi->kodiBase,
-                                                          settingName.c_str(), &settingValue);
+  return CPrivateBase::m_interface->toKodi->get_setting_int(
+      CPrivateBase::m_interface->toKodi->kodiBase, settingName.c_str(), &settingValue);
 }
 //------------------------------------------------------------------------------
 
@@ -969,8 +979,8 @@ inline void ATTRIBUTE_HIDDEN SetSettingInt(const std::string& settingName, int s
 {
   using namespace kodi::addon;
 
-  CAddonBase::m_interface->toKodi->set_setting_int(CAddonBase::m_interface->toKodi->kodiBase,
-                                                   settingName.c_str(), settingValue);
+  CPrivateBase::m_interface->toKodi->set_setting_int(CPrivateBase::m_interface->toKodi->kodiBase,
+                                                     settingName.c_str(), settingValue);
 }
 //------------------------------------------------------------------------------
 
@@ -1001,8 +1011,8 @@ inline bool ATTRIBUTE_HIDDEN CheckSettingBoolean(const std::string& settingName,
 {
   using namespace kodi::addon;
 
-  return CAddonBase::m_interface->toKodi->get_setting_bool(
-      CAddonBase::m_interface->toKodi->kodiBase, settingName.c_str(), &settingValue);
+  return CPrivateBase::m_interface->toKodi->get_setting_bool(
+      CPrivateBase::m_interface->toKodi->kodiBase, settingName.c_str(), &settingValue);
 }
 //------------------------------------------------------------------------------
 
@@ -1057,8 +1067,8 @@ inline void ATTRIBUTE_HIDDEN SetSettingBoolean(const std::string& settingName, b
 {
   using namespace kodi::addon;
 
-  CAddonBase::m_interface->toKodi->set_setting_bool(CAddonBase::m_interface->toKodi->kodiBase,
-                                                    settingName.c_str(), settingValue);
+  CPrivateBase::m_interface->toKodi->set_setting_bool(CPrivateBase::m_interface->toKodi->kodiBase,
+                                                      settingName.c_str(), settingValue);
 }
 //------------------------------------------------------------------------------
 
@@ -1089,8 +1099,8 @@ inline bool ATTRIBUTE_HIDDEN CheckSettingFloat(const std::string& settingName, f
 {
   using namespace kodi::addon;
 
-  return CAddonBase::m_interface->toKodi->get_setting_float(
-      CAddonBase::m_interface->toKodi->kodiBase, settingName.c_str(), &settingValue);
+  return CPrivateBase::m_interface->toKodi->get_setting_float(
+      CPrivateBase::m_interface->toKodi->kodiBase, settingName.c_str(), &settingValue);
 }
 //------------------------------------------------------------------------------
 
@@ -1145,8 +1155,8 @@ inline void ATTRIBUTE_HIDDEN SetSettingFloat(const std::string& settingName, flo
 {
   using namespace kodi::addon;
 
-  CAddonBase::m_interface->toKodi->set_setting_float(CAddonBase::m_interface->toKodi->kodiBase,
-                                                     settingName.c_str(), settingValue);
+  CPrivateBase::m_interface->toKodi->set_setting_float(CPrivateBase::m_interface->toKodi->kodiBase,
+                                                       settingName.c_str(), settingValue);
 }
 //------------------------------------------------------------------------------
 
@@ -1188,8 +1198,8 @@ inline bool ATTRIBUTE_HIDDEN CheckSettingEnum(const std::string& settingName,
   using namespace kodi::addon;
 
   int settingValueInt = static_cast<int>(settingValue);
-  bool ret = CAddonBase::m_interface->toKodi->get_setting_int(
-      CAddonBase::m_interface->toKodi->kodiBase, settingName.c_str(), &settingValueInt);
+  bool ret = CPrivateBase::m_interface->toKodi->get_setting_int(
+      CPrivateBase::m_interface->toKodi->kodiBase, settingName.c_str(), &settingValueInt);
   if (ret)
     settingValue = static_cast<enumType>(settingValueInt);
   return ret;
@@ -1267,9 +1277,9 @@ inline void ATTRIBUTE_HIDDEN SetSettingEnum(const std::string& settingName, enum
 {
   using namespace kodi::addon;
 
-  CAddonBase::m_interface->toKodi->set_setting_int(CAddonBase::m_interface->toKodi->kodiBase,
-                                                   settingName.c_str(),
-                                                   static_cast<int>(settingValue));
+  CPrivateBase::m_interface->toKodi->set_setting_int(CPrivateBase::m_interface->toKodi->kodiBase,
+                                                     settingName.c_str(),
+                                                     static_cast<int>(settingValue));
 }
 //------------------------------------------------------------------------------
 
@@ -1329,7 +1339,7 @@ inline void* GetInterface(const std::string& name, const std::string& version)
 {
   using namespace kodi::addon;
 
-  AddonToKodiFuncTable_Addon* toKodi = CAddonBase::m_interface->toKodi;
+  AddonToKodiFuncTable_Addon* toKodi = CPrivateBase::m_interface->toKodi;
 
   return toKodi->get_interface(toKodi->kodiBase, name.c_str(), version.c_str());
 }
@@ -1435,9 +1445,10 @@ inline void* GetInterface(const std::string& name, const std::string& version)
   extern "C" ATTRIBUTE_DLL_EXPORT ADDON_STATUS ADDON_Create( \
       KODI_HANDLE addonInterface, const char* /*globalApiVersion*/, void* /*unused*/) \
   { \
-    kodi::addon::CAddonBase::m_interface = static_cast<AddonGlobalInterface*>(addonInterface); \
-    kodi::addon::CAddonBase::m_interface->addonBase = new AddonClass; \
-    return static_cast<kodi::addon::CAddonBase*>(kodi::addon::CAddonBase::m_interface->addonBase) \
+    kodi::addon::CPrivateBase::m_interface = static_cast<AddonGlobalInterface*>(addonInterface); \
+    kodi::addon::CPrivateBase::m_interface->addonBase = new AddonClass; \
+    return static_cast<kodi::addon::CAddonBase*>( \
+               kodi::addon::CPrivateBase::m_interface->addonBase) \
         ->Create(); \
   } \
   extern "C" ATTRIBUTE_DLL_EXPORT const char* ADDON_GetTypeVersion(int type) \
@@ -1448,7 +1459,7 @@ inline void* GetInterface(const std::string& name, const std::string& version)
   { \
     return kodi::addon::GetTypeMinVersion(type); \
   } \
-  AddonGlobalInterface* kodi::addon::CAddonBase::m_interface = nullptr;
+  AddonGlobalInterface* kodi::addon::CPrivateBase::m_interface = nullptr;
 //------------------------------------------------------------------------------
 
 #endif /* __cplusplus */

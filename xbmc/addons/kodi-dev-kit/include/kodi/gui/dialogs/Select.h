@@ -115,8 +115,8 @@ inline int ATTRIBUTE_HIDDEN Show(const std::string& heading,
   {
     cEntries[i] = entries[i].c_str();
   }
-  int ret = CAddonBase::m_interface->toKodi->kodi_gui->dialogSelect->open(
-      CAddonBase::m_interface->toKodi->kodiBase, heading.c_str(), cEntries, size, selected,
+  int ret = CPrivateBase::m_interface->toKodi->kodi_gui->dialogSelect->open(
+      CPrivateBase::m_interface->toKodi->kodiBase, heading.c_str(), cEntries, size, selected,
       autoclose);
   free(cEntries);
   return ret;
@@ -176,8 +176,8 @@ inline int ATTRIBUTE_HIDDEN Show(const std::string& heading,
     if (selected == -1 && entries[i].selected)
       selected = i;
   }
-  int ret = CAddonBase::m_interface->toKodi->kodi_gui->dialogSelect->open(
-      CAddonBase::m_interface->toKodi->kodiBase, heading.c_str(), cEntries, size, selected,
+  int ret = CPrivateBase::m_interface->toKodi->kodi_gui->dialogSelect->open(
+      CPrivateBase::m_interface->toKodi->kodiBase, heading.c_str(), cEntries, size, selected,
       autoclose);
   if (ret >= 0)
   {
@@ -245,8 +245,8 @@ inline bool ATTRIBUTE_HIDDEN ShowMultiSelect(const std::string& heading,
     cEntryNames[i] = entries[i].name.c_str();
     cEntriesSelected[i] = entries[i].selected;
   }
-  bool ret = CAddonBase::m_interface->toKodi->kodi_gui->dialogSelect->open_multi_select(
-      CAddonBase::m_interface->toKodi->kodiBase, heading.c_str(), cEntryIDs, cEntryNames,
+  bool ret = CPrivateBase::m_interface->toKodi->kodi_gui->dialogSelect->open_multi_select(
+      CPrivateBase::m_interface->toKodi->kodiBase, heading.c_str(), cEntryIDs, cEntryNames,
       cEntriesSelected, size, autoclose);
   if (ret)
   {

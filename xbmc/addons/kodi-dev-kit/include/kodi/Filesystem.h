@@ -301,8 +301,8 @@ public:
   {
     using namespace ::kodi::addon;
 
-    CAddonBase::m_interface->toKodi->kodi_filesystem->http_header_create(
-        CAddonBase::m_interface->toKodi->kodiBase, &m_handle);
+    CPrivateBase::m_interface->toKodi->kodi_filesystem->http_header_create(
+        CPrivateBase::m_interface->toKodi->kodiBase, &m_handle);
   }
   //--------------------------------------------------------------------------
 
@@ -313,8 +313,8 @@ public:
   {
     using namespace ::kodi::addon;
 
-    CAddonBase::m_interface->toKodi->kodi_filesystem->http_header_free(
-        CAddonBase::m_interface->toKodi->kodiBase, &m_handle);
+    CPrivateBase::m_interface->toKodi->kodi_filesystem->http_header_free(
+        CPrivateBase::m_interface->toKodi->kodiBase, &m_handle);
   }
   //--------------------------------------------------------------------------
 
@@ -350,13 +350,13 @@ public:
       return "";
 
     std::string protoLine;
-    char* string = m_handle.get_value(CAddonBase::m_interface->toKodi->kodiBase, m_handle.handle,
+    char* string = m_handle.get_value(CPrivateBase::m_interface->toKodi->kodiBase, m_handle.handle,
                                       param.c_str());
     if (string != nullptr)
     {
       protoLine = string;
-      CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase,
-                                                   string);
+      CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase,
+                                                     string);
     }
     return protoLine;
   }
@@ -377,7 +377,7 @@ public:
       return std::vector<std::string>();
 
     int numValues = 0;
-    char** res(m_handle.get_values(CAddonBase::m_interface->toKodi->kodiBase, m_handle.handle,
+    char** res(m_handle.get_values(CPrivateBase::m_interface->toKodi->kodiBase, m_handle.handle,
                                    param.c_str(), &numValues));
     if (res)
     {
@@ -387,8 +387,8 @@ public:
       {
         vecReturn.emplace_back(res[i]);
       }
-      CAddonBase::m_interface->toKodi->free_string_array(CAddonBase::m_interface->toKodi->kodiBase,
-                                                         res, numValues);
+      CPrivateBase::m_interface->toKodi->free_string_array(
+          CPrivateBase::m_interface->toKodi->kodiBase, res, numValues);
       return vecReturn;
     }
     return std::vector<std::string>();
@@ -408,12 +408,13 @@ public:
       return "";
 
     std::string header;
-    char* string = m_handle.get_header(CAddonBase::m_interface->toKodi->kodiBase, m_handle.handle);
+    char* string =
+        m_handle.get_header(CPrivateBase::m_interface->toKodi->kodiBase, m_handle.handle);
     if (string != nullptr)
     {
       header = string;
-      CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase,
-                                                   string);
+      CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase,
+                                                     string);
     }
     return header;
   }
@@ -433,12 +434,12 @@ public:
 
     std::string protoLine;
     char* string =
-        m_handle.get_mime_type(CAddonBase::m_interface->toKodi->kodiBase, m_handle.handle);
+        m_handle.get_mime_type(CPrivateBase::m_interface->toKodi->kodiBase, m_handle.handle);
     if (string != nullptr)
     {
       protoLine = string;
-      CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase,
-                                                   string);
+      CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase,
+                                                     string);
     }
     return protoLine;
   }
@@ -457,12 +458,13 @@ public:
       return "";
 
     std::string protoLine;
-    char* string = m_handle.get_charset(CAddonBase::m_interface->toKodi->kodiBase, m_handle.handle);
+    char* string =
+        m_handle.get_charset(CPrivateBase::m_interface->toKodi->kodiBase, m_handle.handle);
     if (string != nullptr)
     {
       protoLine = string;
-      CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase,
-                                                   string);
+      CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase,
+                                                     string);
     }
     return protoLine;
   }
@@ -482,12 +484,12 @@ public:
 
     std::string protoLine;
     char* string =
-        m_handle.get_proto_line(CAddonBase::m_interface->toKodi->kodiBase, m_handle.handle);
+        m_handle.get_proto_line(CPrivateBase::m_interface->toKodi->kodiBase, m_handle.handle);
     if (string != nullptr)
     {
       protoLine = string;
-      CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase,
-                                                   string);
+      CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase,
+                                                     string);
     }
     return protoLine;
   }
@@ -774,8 +776,8 @@ inline bool ATTRIBUTE_HIDDEN CreateDirectory(const std::string& path)
 {
   using namespace kodi::addon;
 
-  return CAddonBase::m_interface->toKodi->kodi_filesystem->create_directory(
-      CAddonBase::m_interface->toKodi->kodiBase, path.c_str());
+  return CPrivateBase::m_interface->toKodi->kodi_filesystem->create_directory(
+      CPrivateBase::m_interface->toKodi->kodiBase, path.c_str());
 }
 //------------------------------------------------------------------------------
 
@@ -806,8 +808,8 @@ inline bool ATTRIBUTE_HIDDEN DirectoryExists(const std::string& path)
 {
   using namespace kodi::addon;
 
-  return CAddonBase::m_interface->toKodi->kodi_filesystem->directory_exists(
-      CAddonBase::m_interface->toKodi->kodiBase, path.c_str());
+  return CPrivateBase::m_interface->toKodi->kodi_filesystem->directory_exists(
+      CPrivateBase::m_interface->toKodi->kodiBase, path.c_str());
 }
 //------------------------------------------------------------------------------
 
@@ -841,11 +843,11 @@ inline bool ATTRIBUTE_HIDDEN RemoveDirectory(const std::string& path, bool recur
   using namespace kodi::addon;
 
   if (!recursive)
-    return CAddonBase::m_interface->toKodi->kodi_filesystem->remove_directory(
-        CAddonBase::m_interface->toKodi->kodiBase, path.c_str());
+    return CPrivateBase::m_interface->toKodi->kodi_filesystem->remove_directory(
+        CPrivateBase::m_interface->toKodi->kodiBase, path.c_str());
   else
-    return CAddonBase::m_interface->toKodi->kodi_filesystem->remove_directory_recursive(
-        CAddonBase::m_interface->toKodi->kodiBase, path.c_str());
+    return CPrivateBase::m_interface->toKodi->kodi_filesystem->remove_directory_recursive(
+        CPrivateBase::m_interface->toKodi->kodiBase, path.c_str());
 }
 //------------------------------------------------------------------------------
 
@@ -893,8 +895,8 @@ inline bool ATTRIBUTE_HIDDEN GetDirectory(const std::string& path,
 
   VFSDirEntry* dir_list = nullptr;
   unsigned int num_items = 0;
-  if (CAddonBase::m_interface->toKodi->kodi_filesystem->get_directory(
-          CAddonBase::m_interface->toKodi->kodiBase, path.c_str(), mask.c_str(), &dir_list,
+  if (CPrivateBase::m_interface->toKodi->kodi_filesystem->get_directory(
+          CPrivateBase::m_interface->toKodi->kodiBase, path.c_str(), mask.c_str(), &dir_list,
           &num_items))
   {
     if (dir_list)
@@ -902,8 +904,8 @@ inline bool ATTRIBUTE_HIDDEN GetDirectory(const std::string& path,
       for (unsigned int i = 0; i < num_items; ++i)
         items.emplace_back(dir_list[i]);
 
-      CAddonBase::m_interface->toKodi->kodi_filesystem->free_directory(
-          CAddonBase::m_interface->toKodi->kodiBase, dir_list, num_items);
+      CPrivateBase::m_interface->toKodi->kodi_filesystem->free_directory(
+          CPrivateBase::m_interface->toKodi->kodiBase, dir_list, num_items);
     }
 
     return true;
@@ -941,8 +943,8 @@ inline bool ATTRIBUTE_HIDDEN FileExists(const std::string& filename, bool usecac
 {
   using namespace kodi::addon;
 
-  return CAddonBase::m_interface->toKodi->kodi_filesystem->file_exists(
-      CAddonBase::m_interface->toKodi->kodiBase, filename.c_str(), usecache);
+  return CPrivateBase::m_interface->toKodi->kodi_filesystem->file_exists(
+      CPrivateBase::m_interface->toKodi->kodiBase, filename.c_str(), usecache);
 }
 //------------------------------------------------------------------------------
 
@@ -996,8 +998,8 @@ inline bool ATTRIBUTE_HIDDEN StatFile(const std::string& filename, kodi::vfs::Fi
 {
   using namespace kodi::addon;
 
-  return CAddonBase::m_interface->toKodi->kodi_filesystem->stat_file(
-      CAddonBase::m_interface->toKodi->kodiBase, filename.c_str(), buffer);
+  return CPrivateBase::m_interface->toKodi->kodi_filesystem->stat_file(
+      CPrivateBase::m_interface->toKodi->kodiBase, filename.c_str(), buffer);
 }
 //------------------------------------------------------------------------------
 
@@ -1034,8 +1036,8 @@ inline bool ATTRIBUTE_HIDDEN DeleteFile(const std::string& filename)
 {
   using namespace kodi::addon;
 
-  return CAddonBase::m_interface->toKodi->kodi_filesystem->delete_file(
-      CAddonBase::m_interface->toKodi->kodiBase, filename.c_str());
+  return CPrivateBase::m_interface->toKodi->kodi_filesystem->delete_file(
+      CPrivateBase::m_interface->toKodi->kodiBase, filename.c_str());
 }
 //------------------------------------------------------------------------------
 
@@ -1052,8 +1054,8 @@ inline bool ATTRIBUTE_HIDDEN RenameFile(const std::string& filename, const std::
 {
   using namespace kodi::addon;
 
-  return CAddonBase::m_interface->toKodi->kodi_filesystem->rename_file(
-      CAddonBase::m_interface->toKodi->kodiBase, filename.c_str(), newFileName.c_str());
+  return CPrivateBase::m_interface->toKodi->kodi_filesystem->rename_file(
+      CPrivateBase::m_interface->toKodi->kodiBase, filename.c_str(), newFileName.c_str());
 }
 //------------------------------------------------------------------------------
 
@@ -1070,8 +1072,8 @@ inline bool ATTRIBUTE_HIDDEN CopyFile(const std::string& filename, const std::st
 {
   using namespace kodi::addon;
 
-  return CAddonBase::m_interface->toKodi->kodi_filesystem->copy_file(
-      CAddonBase::m_interface->toKodi->kodiBase, filename.c_str(), destination.c_str());
+  return CPrivateBase::m_interface->toKodi->kodi_filesystem->copy_file(
+      CPrivateBase::m_interface->toKodi->kodiBase, filename.c_str(), destination.c_str());
 }
 //------------------------------------------------------------------------------
 
@@ -1112,13 +1114,14 @@ inline std::string ATTRIBUTE_HIDDEN GetFileMD5(const std::string& path)
   using namespace kodi::addon;
 
   std::string strReturn;
-  char* strMd5 = CAddonBase::m_interface->toKodi->kodi_filesystem->get_file_md5(
-      CAddonBase::m_interface->toKodi->kodiBase, path.c_str());
+  char* strMd5 = CPrivateBase::m_interface->toKodi->kodi_filesystem->get_file_md5(
+      CPrivateBase::m_interface->toKodi->kodiBase, path.c_str());
   if (strMd5 != nullptr)
   {
     if (std::strlen(strMd5))
       strReturn = strMd5;
-    CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase, strMd5);
+    CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase,
+                                                   strMd5);
   }
   return strReturn;
 }
@@ -1155,14 +1158,14 @@ inline std::string ATTRIBUTE_HIDDEN GetCacheThumbName(const std::string& filenam
   using namespace kodi::addon;
 
   std::string strReturn;
-  char* strThumbName = CAddonBase::m_interface->toKodi->kodi_filesystem->get_cache_thumb_name(
-      CAddonBase::m_interface->toKodi->kodiBase, filename.c_str());
+  char* strThumbName = CPrivateBase::m_interface->toKodi->kodi_filesystem->get_cache_thumb_name(
+      CPrivateBase::m_interface->toKodi->kodiBase, filename.c_str());
   if (strThumbName != nullptr)
   {
     if (std::strlen(strThumbName))
       strReturn = strThumbName;
-    CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase,
-                                                 strThumbName);
+    CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase,
+                                                   strThumbName);
   }
   return strReturn;
 }
@@ -1198,14 +1201,14 @@ inline std::string ATTRIBUTE_HIDDEN MakeLegalFileName(const std::string& filenam
   using namespace kodi::addon;
 
   std::string strReturn;
-  char* strLegalFileName = CAddonBase::m_interface->toKodi->kodi_filesystem->make_legal_filename(
-      CAddonBase::m_interface->toKodi->kodiBase, filename.c_str());
+  char* strLegalFileName = CPrivateBase::m_interface->toKodi->kodi_filesystem->make_legal_filename(
+      CPrivateBase::m_interface->toKodi->kodiBase, filename.c_str());
   if (strLegalFileName != nullptr)
   {
     if (std::strlen(strLegalFileName))
       strReturn = strLegalFileName;
-    CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase,
-                                                 strLegalFileName);
+    CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase,
+                                                   strLegalFileName);
   }
   return strReturn;
 }
@@ -1241,14 +1244,14 @@ inline std::string ATTRIBUTE_HIDDEN MakeLegalPath(const std::string& path)
   using namespace kodi::addon;
 
   std::string strReturn;
-  char* strLegalPath = CAddonBase::m_interface->toKodi->kodi_filesystem->make_legal_path(
-      CAddonBase::m_interface->toKodi->kodiBase, path.c_str());
+  char* strLegalPath = CPrivateBase::m_interface->toKodi->kodi_filesystem->make_legal_path(
+      CPrivateBase::m_interface->toKodi->kodiBase, path.c_str());
   if (strLegalPath != nullptr)
   {
     if (std::strlen(strLegalPath))
       strReturn = strLegalPath;
-    CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase,
-                                                 strLegalPath);
+    CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase,
+                                                   strLegalPath);
   }
   return strReturn;
 }
@@ -1289,14 +1292,14 @@ inline std::string ATTRIBUTE_HIDDEN TranslateSpecialProtocol(const std::string& 
   using namespace kodi::addon;
 
   std::string strReturn;
-  char* protocol = CAddonBase::m_interface->toKodi->kodi_filesystem->translate_special_protocol(
-      CAddonBase::m_interface->toKodi->kodiBase, source.c_str());
+  char* protocol = CPrivateBase::m_interface->toKodi->kodi_filesystem->translate_special_protocol(
+      CPrivateBase::m_interface->toKodi->kodiBase, source.c_str());
   if (protocol != nullptr)
   {
     if (std::strlen(protocol))
       strReturn = protocol;
-    CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase,
-                                                 protocol);
+    CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase,
+                                                   protocol);
   }
   return strReturn;
 }
@@ -1345,8 +1348,8 @@ inline bool ATTRIBUTE_HIDDEN GetDiskSpace(const std::string& path,
 {
   using namespace kodi::addon;
 
-  return CAddonBase::m_interface->toKodi->kodi_filesystem->get_disk_space(
-      CAddonBase::m_interface->toKodi->kodiBase, path.c_str(), &capacity, &free, &available);
+  return CPrivateBase::m_interface->toKodi->kodi_filesystem->get_disk_space(
+      CPrivateBase::m_interface->toKodi->kodiBase, path.c_str(), &capacity, &free, &available);
 }
 //------------------------------------------------------------------------------
 
@@ -1510,8 +1513,8 @@ inline bool ATTRIBUTE_HIDDEN IsInternetStream(const std::string& path, bool stri
 {
   using namespace kodi::addon;
 
-  return CAddonBase::m_interface->toKodi->kodi_filesystem->is_internet_stream(
-      CAddonBase::m_interface->toKodi->kodiBase, path.c_str(), strictCheck);
+  return CPrivateBase::m_interface->toKodi->kodi_filesystem->is_internet_stream(
+      CPrivateBase::m_interface->toKodi->kodiBase, path.c_str(), strictCheck);
 }
 //------------------------------------------------------------------------------
 
@@ -1542,8 +1545,8 @@ inline bool ATTRIBUTE_HIDDEN IsOnLAN(const std::string& path)
 {
   using namespace kodi::addon;
 
-  return CAddonBase::m_interface->toKodi->kodi_filesystem->is_on_lan(
-      CAddonBase::m_interface->toKodi->kodiBase, path.c_str());
+  return CPrivateBase::m_interface->toKodi->kodi_filesystem->is_on_lan(
+      CPrivateBase::m_interface->toKodi->kodiBase, path.c_str());
 }
 //------------------------------------------------------------------------------
 
@@ -1571,8 +1574,8 @@ inline bool ATTRIBUTE_HIDDEN IsRemote(const std::string& path)
 {
   using namespace kodi::addon;
 
-  return CAddonBase::m_interface->toKodi->kodi_filesystem->is_remote(
-      CAddonBase::m_interface->toKodi->kodiBase, path.c_str());
+  return CPrivateBase::m_interface->toKodi->kodi_filesystem->is_remote(
+      CPrivateBase::m_interface->toKodi->kodiBase, path.c_str());
 }
 //------------------------------------------------------------------------------
 
@@ -1587,8 +1590,8 @@ inline bool ATTRIBUTE_HIDDEN IsLocal(const std::string& path)
 {
   using namespace kodi::addon;
 
-  return CAddonBase::m_interface->toKodi->kodi_filesystem->is_local(
-      CAddonBase::m_interface->toKodi->kodiBase, path.c_str());
+  return CPrivateBase::m_interface->toKodi->kodi_filesystem->is_local(
+      CPrivateBase::m_interface->toKodi->kodiBase, path.c_str());
 }
 //------------------------------------------------------------------------------
 
@@ -1618,8 +1621,8 @@ inline bool ATTRIBUTE_HIDDEN IsURL(const std::string& path)
 {
   using namespace kodi::addon;
 
-  return CAddonBase::m_interface->toKodi->kodi_filesystem->is_url(
-      CAddonBase::m_interface->toKodi->kodiBase, path.c_str());
+  return CPrivateBase::m_interface->toKodi->kodi_filesystem->is_url(
+      CPrivateBase::m_interface->toKodi->kodiBase, path.c_str());
 }
 //--------------------------------------------------------------------------
 
@@ -1651,8 +1654,8 @@ inline bool ATTRIBUTE_HIDDEN GetHttpHeader(const std::string& url, HttpHeader& h
 {
   using namespace ::kodi::addon;
 
-  return CAddonBase::m_interface->toKodi->kodi_filesystem->get_http_header(
-      CAddonBase::m_interface->toKodi->kodiBase, url.c_str(), &header.m_handle);
+  return CPrivateBase::m_interface->toKodi->kodi_filesystem->get_http_header(
+      CPrivateBase::m_interface->toKodi->kodiBase, url.c_str(), &header.m_handle);
 }
 //----------------------------------------------------------------------------
 
@@ -1685,13 +1688,13 @@ inline bool ATTRIBUTE_HIDDEN GetMimeType(const std::string& url,
   using namespace ::kodi::addon;
 
   char* cMimeType = nullptr;
-  bool ret = CAddonBase::m_interface->toKodi->kodi_filesystem->get_mime_type(
-      CAddonBase::m_interface->toKodi->kodiBase, url.c_str(), &cMimeType, useragent.c_str());
+  bool ret = CPrivateBase::m_interface->toKodi->kodi_filesystem->get_mime_type(
+      CPrivateBase::m_interface->toKodi->kodiBase, url.c_str(), &cMimeType, useragent.c_str());
   if (cMimeType != nullptr)
   {
     mimeType = cMimeType;
-    CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase,
-                                                 cMimeType);
+    CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase,
+                                                   cMimeType);
   }
   return ret;
 }
@@ -1726,13 +1729,13 @@ inline bool ATTRIBUTE_HIDDEN GetContentType(const std::string& url,
   using namespace ::kodi::addon;
 
   char* cContent = nullptr;
-  bool ret = CAddonBase::m_interface->toKodi->kodi_filesystem->get_content_type(
-      CAddonBase::m_interface->toKodi->kodiBase, url.c_str(), &cContent, useragent.c_str());
+  bool ret = CPrivateBase::m_interface->toKodi->kodi_filesystem->get_content_type(
+      CPrivateBase::m_interface->toKodi->kodiBase, url.c_str(), &cContent, useragent.c_str());
   if (cContent != nullptr)
   {
     content = cContent;
-    CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase,
-                                                 cContent);
+    CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase,
+                                                   cContent);
   }
   return ret;
 }
@@ -1766,13 +1769,13 @@ inline bool ATTRIBUTE_HIDDEN GetCookies(const std::string& url, std::string& coo
   using namespace ::kodi::addon;
 
   char* cCookies = nullptr;
-  bool ret = CAddonBase::m_interface->toKodi->kodi_filesystem->get_cookies(
-      CAddonBase::m_interface->toKodi->kodiBase, url.c_str(), &cCookies);
+  bool ret = CPrivateBase::m_interface->toKodi->kodi_filesystem->get_cookies(
+      CPrivateBase::m_interface->toKodi->kodiBase, url.c_str(), &cCookies);
   if (cCookies != nullptr)
   {
     cookies = cCookies;
-    CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase,
-                                                 cCookies);
+    CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase,
+                                                   cCookies);
   }
   return ret;
 }
@@ -1857,8 +1860,8 @@ public:
     using namespace kodi::addon;
 
     Close();
-    m_file = CAddonBase::m_interface->toKodi->kodi_filesystem->open_file(
-        CAddonBase::m_interface->toKodi->kodiBase, filename.c_str(), flags);
+    m_file = CPrivateBase::m_interface->toKodi->kodi_filesystem->open_file(
+        CPrivateBase::m_interface->toKodi->kodiBase, filename.c_str(), flags);
     return m_file != nullptr;
   }
   //--------------------------------------------------------------------------
@@ -1883,17 +1886,17 @@ public:
 
     // Try to open the file. If it fails, check if we need to create the directory first
     // This way we avoid checking if the directory exists every time
-    m_file = CAddonBase::m_interface->toKodi->kodi_filesystem->open_file_for_write(
-        CAddonBase::m_interface->toKodi->kodiBase, filename.c_str(), overwrite);
+    m_file = CPrivateBase::m_interface->toKodi->kodi_filesystem->open_file_for_write(
+        CPrivateBase::m_interface->toKodi->kodiBase, filename.c_str(), overwrite);
     if (!m_file)
     {
       std::string cacheDirectory = kodi::vfs::GetDirectoryName(filename);
-      if (CAddonBase::m_interface->toKodi->kodi_filesystem->directory_exists(
-              CAddonBase::m_interface->toKodi->kodiBase, cacheDirectory.c_str()) ||
-          CAddonBase::m_interface->toKodi->kodi_filesystem->create_directory(
-              CAddonBase::m_interface->toKodi->kodiBase, cacheDirectory.c_str()))
-        m_file = CAddonBase::m_interface->toKodi->kodi_filesystem->open_file_for_write(
-            CAddonBase::m_interface->toKodi->kodiBase, filename.c_str(), overwrite);
+      if (CPrivateBase::m_interface->toKodi->kodi_filesystem->directory_exists(
+              CPrivateBase::m_interface->toKodi->kodiBase, cacheDirectory.c_str()) ||
+          CPrivateBase::m_interface->toKodi->kodi_filesystem->create_directory(
+              CPrivateBase::m_interface->toKodi->kodiBase, cacheDirectory.c_str()))
+        m_file = CPrivateBase::m_interface->toKodi->kodi_filesystem->open_file_for_write(
+            CPrivateBase::m_interface->toKodi->kodiBase, filename.c_str(), overwrite);
     }
     return m_file != nullptr;
   }
@@ -1918,8 +1921,8 @@ public:
 
     if (!m_file)
       return;
-    CAddonBase::m_interface->toKodi->kodi_filesystem->close_file(
-        CAddonBase::m_interface->toKodi->kodiBase, m_file);
+    CPrivateBase::m_interface->toKodi->kodi_filesystem->close_file(
+        CPrivateBase::m_interface->toKodi->kodiBase, m_file);
     m_file = nullptr;
   }
   //--------------------------------------------------------------------------
@@ -1935,8 +1938,8 @@ public:
   {
     using namespace kodi::addon;
 
-    m_file = CAddonBase::m_interface->toKodi->kodi_filesystem->curl_create(
-        CAddonBase::m_interface->toKodi->kodiBase, url.c_str());
+    m_file = CPrivateBase::m_interface->toKodi->kodi_filesystem->curl_create(
+        CPrivateBase::m_interface->toKodi->kodiBase, url.c_str());
     return m_file != nullptr;
   }
   //--------------------------------------------------------------------------
@@ -1959,8 +1962,8 @@ public:
       kodi::Log(ADDON_LOG_ERROR, "kodi::vfs::CURLCreate(...) needed to call before!");
       return false;
     }
-    return CAddonBase::m_interface->toKodi->kodi_filesystem->curl_add_option(
-        CAddonBase::m_interface->toKodi->kodiBase, m_file, type, name.c_str(), value.c_str());
+    return CPrivateBase::m_interface->toKodi->kodi_filesystem->curl_add_option(
+        CPrivateBase::m_interface->toKodi->kodiBase, m_file, type, name.c_str(), value.c_str());
   }
   //--------------------------------------------------------------------------
 
@@ -1980,8 +1983,8 @@ public:
       kodi::Log(ADDON_LOG_ERROR, "kodi::vfs::CURLCreate(...) needed to call before!");
       return false;
     }
-    return CAddonBase::m_interface->toKodi->kodi_filesystem->curl_open(
-        CAddonBase::m_interface->toKodi->kodiBase, m_file, flags);
+    return CPrivateBase::m_interface->toKodi->kodi_filesystem->curl_open(
+        CPrivateBase::m_interface->toKodi->kodiBase, m_file, flags);
   }
   //--------------------------------------------------------------------------
 
@@ -2002,8 +2005,8 @@ public:
 
     if (!m_file)
       return -1;
-    return CAddonBase::m_interface->toKodi->kodi_filesystem->read_file(
-        CAddonBase::m_interface->toKodi->kodiBase, m_file, ptr, size);
+    return CPrivateBase::m_interface->toKodi->kodi_filesystem->read_file(
+        CPrivateBase::m_interface->toKodi->kodiBase, m_file, ptr, size);
   }
   //--------------------------------------------------------------------------
 
@@ -2025,8 +2028,8 @@ public:
     // chars, we didn't hit a newline. Otherwise, if file position is 1 or 2
     // past the number of bytes read, we read (and skipped) a newline sequence.
     char buffer[1025];
-    if (CAddonBase::m_interface->toKodi->kodi_filesystem->read_file_string(
-            CAddonBase::m_interface->toKodi->kodiBase, m_file, buffer, sizeof(buffer)))
+    if (CPrivateBase::m_interface->toKodi->kodi_filesystem->read_file_string(
+            CPrivateBase::m_interface->toKodi->kodiBase, m_file, buffer, sizeof(buffer)))
     {
       line = buffer;
       return !line.empty();
@@ -2051,8 +2054,8 @@ public:
 
     if (!m_file)
       return -1;
-    return CAddonBase::m_interface->toKodi->kodi_filesystem->write_file(
-        CAddonBase::m_interface->toKodi->kodiBase, m_file, ptr, size);
+    return CPrivateBase::m_interface->toKodi->kodi_filesystem->write_file(
+        CPrivateBase::m_interface->toKodi->kodiBase, m_file, ptr, size);
   }
   //--------------------------------------------------------------------------
 
@@ -2076,8 +2079,8 @@ public:
 
     if (!m_file)
       return;
-    CAddonBase::m_interface->toKodi->kodi_filesystem->flush_file(
-        CAddonBase::m_interface->toKodi->kodiBase, m_file);
+    CPrivateBase::m_interface->toKodi->kodi_filesystem->flush_file(
+        CPrivateBase::m_interface->toKodi->kodiBase, m_file);
   }
   //--------------------------------------------------------------------------
 
@@ -2105,8 +2108,8 @@ public:
 
     if (!m_file)
       return -1;
-    return CAddonBase::m_interface->toKodi->kodi_filesystem->seek_file(
-        CAddonBase::m_interface->toKodi->kodiBase, m_file, position, whence);
+    return CPrivateBase::m_interface->toKodi->kodi_filesystem->seek_file(
+        CPrivateBase::m_interface->toKodi->kodiBase, m_file, position, whence);
   }
   //--------------------------------------------------------------------------
 
@@ -2123,8 +2126,8 @@ public:
 
     if (!m_file)
       return -1;
-    return CAddonBase::m_interface->toKodi->kodi_filesystem->truncate_file(
-        CAddonBase::m_interface->toKodi->kodiBase, m_file, size);
+    return CPrivateBase::m_interface->toKodi->kodi_filesystem->truncate_file(
+        CPrivateBase::m_interface->toKodi->kodiBase, m_file, size);
   }
   //--------------------------------------------------------------------------
 
@@ -2140,8 +2143,8 @@ public:
 
     if (!m_file)
       return -1;
-    return CAddonBase::m_interface->toKodi->kodi_filesystem->get_file_position(
-        CAddonBase::m_interface->toKodi->kodiBase, m_file);
+    return CPrivateBase::m_interface->toKodi->kodi_filesystem->get_file_position(
+        CPrivateBase::m_interface->toKodi->kodiBase, m_file);
   }
   //--------------------------------------------------------------------------
 
@@ -2157,8 +2160,8 @@ public:
 
     if (!m_file)
       return -1;
-    return CAddonBase::m_interface->toKodi->kodi_filesystem->get_file_length(
-        CAddonBase::m_interface->toKodi->kodiBase, m_file);
+    return CPrivateBase::m_interface->toKodi->kodi_filesystem->get_file_length(
+        CPrivateBase::m_interface->toKodi->kodiBase, m_file);
   }
   //--------------------------------------------------------------------------
 
@@ -2174,10 +2177,10 @@ public:
 
     if (!m_file)
       return true;
-    int64_t length = CAddonBase::m_interface->toKodi->kodi_filesystem->get_file_length(
-        CAddonBase::m_interface->toKodi->kodiBase, m_file);
-    int64_t position = CAddonBase::m_interface->toKodi->kodi_filesystem->get_file_position(
-        CAddonBase::m_interface->toKodi->kodiBase, m_file);
+    int64_t length = CPrivateBase::m_interface->toKodi->kodi_filesystem->get_file_length(
+        CPrivateBase::m_interface->toKodi->kodiBase, m_file);
+    int64_t position = CPrivateBase::m_interface->toKodi->kodi_filesystem->get_file_position(
+        CPrivateBase::m_interface->toKodi->kodiBase, m_file);
     return position >= length;
   }
   //--------------------------------------------------------------------------
@@ -2194,8 +2197,8 @@ public:
 
     if (!m_file)
       return -1;
-    return CAddonBase::m_interface->toKodi->kodi_filesystem->get_file_chunk_size(
-        CAddonBase::m_interface->toKodi->kodiBase, m_file);
+    return CPrivateBase::m_interface->toKodi->kodi_filesystem->get_file_chunk_size(
+        CPrivateBase::m_interface->toKodi->kodiBase, m_file);
   }
   //--------------------------------------------------------------------------
 
@@ -2211,8 +2214,8 @@ public:
 
     if (!m_file)
       return false;
-    return CAddonBase::m_interface->toKodi->kodi_filesystem->io_control_get_seek_possible(
-        CAddonBase::m_interface->toKodi->kodiBase, m_file);
+    return CPrivateBase::m_interface->toKodi->kodi_filesystem->io_control_get_seek_possible(
+        CPrivateBase::m_interface->toKodi->kodiBase, m_file);
   }
   //--------------------------------------------------------------------------
 
@@ -2232,8 +2235,8 @@ public:
 
     if (!m_file)
       return false;
-    return CAddonBase::m_interface->toKodi->kodi_filesystem->io_control_get_cache_status(
-        CAddonBase::m_interface->toKodi->kodiBase, m_file, status);
+    return CPrivateBase::m_interface->toKodi->kodi_filesystem->io_control_get_cache_status(
+        CPrivateBase::m_interface->toKodi->kodiBase, m_file, status);
   }
   //--------------------------------------------------------------------------
 
@@ -2250,8 +2253,8 @@ public:
 
     if (!m_file)
       return false;
-    return CAddonBase::m_interface->toKodi->kodi_filesystem->io_control_set_cache_rate(
-        CAddonBase::m_interface->toKodi->kodiBase, m_file, rate);
+    return CPrivateBase::m_interface->toKodi->kodi_filesystem->io_control_set_cache_rate(
+        CPrivateBase::m_interface->toKodi->kodiBase, m_file, rate);
   }
   //--------------------------------------------------------------------------
 
@@ -2268,8 +2271,8 @@ public:
 
     if (!m_file)
       return false;
-    return CAddonBase::m_interface->toKodi->kodi_filesystem->io_control_set_retry(
-        CAddonBase::m_interface->toKodi->kodiBase, m_file, retry);
+    return CPrivateBase::m_interface->toKodi->kodi_filesystem->io_control_set_retry(
+        CPrivateBase::m_interface->toKodi->kodiBase, m_file, retry);
   }
   //--------------------------------------------------------------------------
 
@@ -2320,8 +2323,8 @@ public:
       return std::vector<std::string>();
     }
     int numValues = 0;
-    char** res(CAddonBase::m_interface->toKodi->kodi_filesystem->get_property_values(
-        CAddonBase::m_interface->toKodi->kodiBase, m_file, type, name.c_str(), &numValues));
+    char** res(CPrivateBase::m_interface->toKodi->kodi_filesystem->get_property_values(
+        CPrivateBase::m_interface->toKodi->kodiBase, m_file, type, name.c_str(), &numValues));
     if (res)
     {
       std::vector<std::string> vecReturn;
@@ -2330,8 +2333,8 @@ public:
       {
         vecReturn.emplace_back(res[i]);
       }
-      CAddonBase::m_interface->toKodi->free_string_array(CAddonBase::m_interface->toKodi->kodiBase,
-                                                         res, numValues);
+      CPrivateBase::m_interface->toKodi->free_string_array(
+          CPrivateBase::m_interface->toKodi->kodiBase, res, numValues);
       return vecReturn;
     }
     return std::vector<std::string>();
@@ -2350,8 +2353,8 @@ public:
 
     if (!m_file)
       return 0.0;
-    return CAddonBase::m_interface->toKodi->kodi_filesystem->get_file_download_speed(
-        CAddonBase::m_interface->toKodi->kodiBase, m_file);
+    return CPrivateBase::m_interface->toKodi->kodi_filesystem->get_file_download_speed(
+        CPrivateBase::m_interface->toKodi->kodiBase, m_file);
   }
   //--------------------------------------------------------------------------
 

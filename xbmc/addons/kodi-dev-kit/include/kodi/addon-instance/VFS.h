@@ -456,7 +456,7 @@ public:
     : IAddonInstance(ADDON_INSTANCE_VFS,
                      !kodiVersion.empty() ? kodiVersion : GetKodiTypeVersion(ADDON_INSTANCE_VFS))
   {
-    if (CAddonBase::m_interface->globalSingleInstance != nullptr)
+    if (CPrivateBase::m_interface->globalSingleInstance != nullptr)
       throw std::logic_error("kodi::addon::CInstanceVFS: Creation of multiple together with single "
                              "instance way is not allowed!");
 
@@ -820,8 +820,8 @@ public:
       if (cInput)
       {
         input = cInput;
-        ::kodi::addon::CAddonBase::m_interface->toKodi->free_string(
-            ::kodi::addon::CAddonBase::m_interface->toKodi->kodiBase, cInput);
+        ::kodi::addon::CPrivateBase::m_interface->toKodi->free_string(
+            ::kodi::addon::CPrivateBase::m_interface->toKodi->kodiBase, cInput);
       }
       return ret;
     }
