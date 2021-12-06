@@ -109,7 +109,7 @@ CGUIFont* GUIFontManager::LoadTTF(const std::string& strFontName,
   if (!sourceRes) // no source res specified, so assume the skin res
     sourceRes = &m_skinResolution;
 
-  float newSize = (float)iSize;
+  float newSize = static_cast<float>(iSize);
   RescaleFontSizeAndAspect(&newSize, &aspect, *sourceRes, preserveAspect);
 
   // First try to load the font from the skin
@@ -225,16 +225,16 @@ bool GUIFontManager::OnMessage(CGUIMessage& message)
 
 void GUIFontManager::ReloadTTFFonts(void)
 {
-  if (!m_vecFonts.size())
+  if (m_vecFonts.empty())
     return; // we haven't even loaded fonts in yet
 
-  for (unsigned int i = 0; i < m_vecFonts.size(); i++)
+  for (size_t i = 0; i < m_vecFonts.size(); ++i)
   {
     CGUIFont* font = m_vecFonts[i];
     OrigFontInfo fontInfo = m_vecFontInfo[i];
 
     float aspect = fontInfo.aspect;
-    float newSize = (float)fontInfo.size;
+    float newSize = static_cast<float>(fontInfo.size);
     std::string& strPath = fontInfo.fontFilePath;
     std::string& strFilename = fontInfo.fileName;
 
@@ -263,8 +263,7 @@ void GUIFontManager::ReloadTTFFonts(void)
 
 void GUIFontManager::Unload(const std::string& strFontName)
 {
-  for (std::vector<CGUIFont*>::iterator iFont = m_vecFonts.begin(); iFont != m_vecFonts.end();
-       ++iFont)
+  for (auto iFont = m_vecFonts.begin(); iFont != m_vecFonts.end(); ++iFont)
   {
     if (StringUtils::EqualsNoCase((*iFont)->GetFontName(), strFontName))
     {
@@ -277,8 +276,7 @@ void GUIFontManager::Unload(const std::string& strFontName)
 
 void GUIFontManager::FreeFontFile(CGUIFontTTF* pFont)
 {
-  for (std::vector<CGUIFontTTF*>::iterator it = m_vecFontFiles.begin(); it != m_vecFontFiles.end();
-       ++it)
+  for (auto it = m_vecFontFiles.begin(); it != m_vecFontFiles.end(); ++it)
   {
     if (pFont == *it)
     {
@@ -291,9 +289,9 @@ void GUIFontManager::FreeFontFile(CGUIFontTTF* pFont)
 
 CGUIFontTTF* GUIFontManager::GetFontFile(const std::string& fontIdent)
 {
-  for (int i = 0; i < (int)m_vecFontFiles.size(); ++i)
+  for (const auto& it : m_vecFontFiles)
   {
-    CGUIFontTTF* pFont = m_vecFontFiles[i];
+    CGUIFontTTF* pFont = it;
     if (StringUtils::EqualsNoCase(pFont->GetFontIdent(), fontIdent))
       return pFont;
   }
@@ -302,9 +300,9 @@ CGUIFontTTF* GUIFontManager::GetFontFile(const std::string& fontIdent)
 
 CGUIFont* GUIFontManager::GetFont(const std::string& strFontName, bool fallback /*= true*/)
 {
-  for (int i = 0; i < (int)m_vecFonts.size(); ++i)
+  for (const auto& it : m_vecFonts)
   {
-    CGUIFont* pFont = m_vecFonts[i];
+    CGUIFont* pFont = it;
     if (StringUtils::EqualsNoCase(pFont->GetFontName(), strFontName))
       return pFont;
   }
@@ -317,9 +315,9 @@ CGUIFont* GUIFontManager::GetFont(const std::string& strFontName, bool fallback 
 CGUIFont* GUIFontManager::GetDefaultFont(bool border)
 {
   // first find "font13" or "__defaultborder__"
-  unsigned int font13index = m_vecFonts.size();
+  size_t font13index = m_vecFonts.size();
   CGUIFont* font13border = nullptr;
-  for (unsigned int i = 0; i < m_vecFonts.size(); i++)
+  for (size_t i = 0; i < m_vecFonts.size(); i++)
   {
     CGUIFont* font = m_vecFonts[i];
     if (font->GetFontName() == "font13")
@@ -341,9 +339,9 @@ CGUIFont* GUIFontManager::GetDefaultFont(bool border)
     { // create it
       CGUIFont* font13 = m_vecFonts[font13index];
       OrigFontInfo fontInfo = m_vecFontInfo[font13index];
-      font13border = LoadTTF("__defaultborder__", fontInfo.fileName, 0xFF000000, 0, fontInfo.size,
-                             font13->GetStyle(), true, 1.0f, fontInfo.aspect, &fontInfo.sourceRes,
-                             fontInfo.preserveAspect);
+      font13border = LoadTTF("__defaultborder__", fontInfo.fileName, UTILS::COLOR::BLACK, 0,
+                             fontInfo.size, font13->GetStyle(), true, 1.0f, fontInfo.aspect,
+                             &fontInfo.sourceRes, fontInfo.preserveAspect);
     }
     return font13border;
   }
@@ -352,9 +350,9 @@ CGUIFont* GUIFontManager::GetDefaultFont(bool border)
 
 void GUIFontManager::Clear()
 {
-  for (int i = 0; i < (int)m_vecFonts.size(); ++i)
+  for (const auto& it : m_vecFonts)
   {
-    CGUIFont* pFont = m_vecFonts[i];
+    CGUIFont* pFont = it;
     delete pFont;
   }
 

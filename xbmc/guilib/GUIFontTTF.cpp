@@ -111,13 +111,14 @@ public:
 #endif // ! TARGET_WINDOWS
 
     unsigned int ydpi = 72; // 72 points to the inch is the freetype default
-    unsigned int xdpi = (unsigned int)MathUtils::round_int(static_cast<double>(ydpi * aspect));
+    unsigned int xdpi =
+        static_cast<unsigned int>(MathUtils::round_int(static_cast<double>(ydpi * aspect)));
 
     // we set our screen res currently to 96dpi in both directions (windows default)
     // we cache our characters (for rendering speed) so it's probably
     // not a good idea to allow free scaling of fonts - rather, just
     // scaling to pixel ratio on screen perhaps?
-    if (FT_Set_Char_Size(face, 0, (int)(size * 64 + 0.5f), xdpi, ydpi))
+    if (FT_Set_Char_Size(face, 0, static_cast<int>(size * 64 + 0.5f), xdpi, ydpi))
     {
       FT_Done_Face(face);
       return nullptr;
@@ -199,7 +200,7 @@ void CGUIFontTTF::ClearCharacterCache()
   m_maxChars = CHAR_CHUNK;
   // set the posX and posY so that our texture will be created on first character write.
   m_posX = m_textureWidth;
-  m_posY = -(int)GetTextureLineHeight();
+  m_posY = -static_cast<int>(GetTextureLineHeight());
   m_textureHeight = 0;
 }
 
@@ -315,7 +316,7 @@ bool CGUIFontTTF::Load(
 
   // set the posX and posY so that our texture will be created on first character write.
   m_posX = m_textureWidth;
-  m_posY = -(int)GetTextureLineHeight();
+  m_posY = -static_cast<int>(GetTextureLineHeight());
 
   // cache the ellipses width
   Character* ellipse = GetCharacter(L'.', 0);
@@ -612,7 +613,7 @@ float CGUIFontTTF::GetCharWidthInternal(character_t ch)
 
 float CGUIFontTTF::GetTextHeight(float lineSpacing, int numLines) const
 {
-  return (float)(numLines - 1) * GetLineHeight(lineSpacing) + m_cellHeight;
+  return static_cast<float>(numLines - 1) * GetLineHeight(lineSpacing) + m_cellHeight;
 }
 
 float CGUIFontTTF::GetLineHeight(float lineSpacing) const
@@ -902,10 +903,10 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch, 
   ch->glyphAndStyle = (style << 16) | glyphIndex;
   ch->glyphIndex = glyphIndex;
   ch->letter = letter;
-  ch->offsetX = (short)bitGlyph->left;
-  ch->offsetY = (short)m_cellBaseLine - bitGlyph->top;
-  ch->left = isEmptyGlyph ? 0 : ((float)m_posX + ch->offsetX);
-  ch->top = isEmptyGlyph ? 0 : ((float)m_posY + ch->offsetY);
+  ch->offsetX = static_cast<short>(bitGlyph->left);
+  ch->offsetY = static_cast<short>(m_cellBaseLine - bitGlyph->top);
+  ch->left = isEmptyGlyph ? 0.0f : (static_cast<float>(m_posX) + ch->offsetX);
+  ch->top = isEmptyGlyph ? 0.0f : (static_cast<float>(m_posY) + ch->offsetY);
   ch->right = ch->left + bitmap.width;
   ch->bottom = ch->top + bitmap.rows;
   ch->advance =
@@ -921,8 +922,9 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch, 
     unsigned int y2 = std::min(y1 + bitmap.rows, m_textureHeight);
     CopyCharToTexture(bitGlyph, x1, y1, x2, y2);
 
-    m_posX += SPACING_BETWEEN_CHARACTERS_IN_TEXTURE +
-              (unsigned short)std::max(ch->right - ch->left + ch->offsetX, ch->advance);
+    m_posX +=
+        SPACING_BETWEEN_CHARACTERS_IN_TEXTURE +
+        static_cast<unsigned short>(std::max(ch->right - ch->left + ch->offsetX, ch->advance));
   }
   m_numChars++;
 
