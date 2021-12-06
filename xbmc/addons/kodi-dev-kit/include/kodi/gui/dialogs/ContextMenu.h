@@ -75,8 +75,8 @@ inline int ATTRIBUTE_HIDDEN Show(const std::string& heading,
   {
     cEntries[i] = entries[i].c_str();
   }
-  int ret = CAddonBase::m_interface->toKodi->kodi_gui->dialogContextMenu->open(
-      CAddonBase::m_interface->toKodi->kodiBase, heading.c_str(), cEntries, size);
+  int ret = CPrivateBase::m_interface->toKodi->kodi_gui->dialogContextMenu->open(
+      CPrivateBase::m_interface->toKodi->kodiBase, heading.c_str(), cEntries, size);
   free(cEntries);
   return ret;
 }
@@ -123,8 +123,8 @@ inline int ATTRIBUTE_HIDDEN Show(const std::string& heading,
   {
     cEntries[i] = entries[i].second.c_str();
   }
-  int ret = CAddonBase::m_interface->toKodi->kodi_gui->dialogContextMenu->open(
-      CAddonBase::m_interface->toKodi->kodiBase, heading.c_str(), cEntries, size);
+  int ret = CPrivateBase::m_interface->toKodi->kodi_gui->dialogContextMenu->open(
+      CPrivateBase::m_interface->toKodi->kodiBase, heading.c_str(), cEntries, size);
   free(cEntries);
   return ret;
 }
@@ -171,8 +171,8 @@ inline int ATTRIBUTE_HIDDEN Show(const std::string& heading,
   {
     cEntries[i] = entries[i].second.c_str();
   }
-  int ret = CAddonBase::m_interface->toKodi->kodi_gui->dialogContextMenu->open(
-      CAddonBase::m_interface->toKodi->kodiBase, heading.c_str(), cEntries, size);
+  int ret = CPrivateBase::m_interface->toKodi->kodi_gui->dialogContextMenu->open(
+      CPrivateBase::m_interface->toKodi->kodiBase, heading.c_str(), cEntries, size);
   free(cEntries);
   return ret;
 }

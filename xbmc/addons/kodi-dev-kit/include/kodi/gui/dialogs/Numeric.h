@@ -51,12 +51,13 @@ inline bool ATTRIBUTE_HIDDEN ShowAndVerifyNewPassword(std::string& newPassword)
 {
   using namespace ::kodi::addon;
   char* pw = nullptr;
-  bool ret = CAddonBase::m_interface->toKodi->kodi_gui->dialogNumeric->show_and_verify_new_password(
-      CAddonBase::m_interface->toKodi->kodiBase, &pw);
+  bool ret =
+      CPrivateBase::m_interface->toKodi->kodi_gui->dialogNumeric->show_and_verify_new_password(
+          CPrivateBase::m_interface->toKodi->kodiBase, &pw);
   if (pw != nullptr)
   {
     newPassword = pw;
-    CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase, pw);
+    CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase, pw);
   }
   return ret;
 }
@@ -126,8 +127,8 @@ inline int ATTRIBUTE_HIDDEN ShowAndVerifyPassword(const std::string& password,
                                                   int retries)
 {
   using namespace ::kodi::addon;
-  return CAddonBase::m_interface->toKodi->kodi_gui->dialogNumeric->show_and_verify_password(
-      CAddonBase::m_interface->toKodi->kodiBase, password.c_str(), heading.c_str(), retries);
+  return CPrivateBase::m_interface->toKodi->kodi_gui->dialogNumeric->show_and_verify_password(
+      CPrivateBase::m_interface->toKodi->kodiBase, password.c_str(), heading.c_str(), retries);
 }
 //------------------------------------------------------------------------------
 
@@ -148,14 +149,14 @@ inline bool ATTRIBUTE_HIDDEN ShowAndVerifyInput(std::string& toVerify,
 {
   using namespace ::kodi::addon;
   char* retString = nullptr;
-  bool ret = CAddonBase::m_interface->toKodi->kodi_gui->dialogNumeric->show_and_verify_input(
-      CAddonBase::m_interface->toKodi->kodiBase, toVerify.c_str(), &retString, heading.c_str(),
+  bool ret = CPrivateBase::m_interface->toKodi->kodi_gui->dialogNumeric->show_and_verify_input(
+      CPrivateBase::m_interface->toKodi->kodiBase, toVerify.c_str(), &retString, heading.c_str(),
       verifyInput);
   if (retString != nullptr)
   {
     toVerify = retString;
-    CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase,
-                                                 retString);
+    CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase,
+                                                   retString);
   }
   return ret;
 }
@@ -194,8 +195,8 @@ inline bool ATTRIBUTE_HIDDEN ShowAndVerifyInput(std::string& toVerify,
 inline bool ATTRIBUTE_HIDDEN ShowAndGetTime(tm& time, const std::string& heading)
 {
   using namespace ::kodi::addon;
-  return CAddonBase::m_interface->toKodi->kodi_gui->dialogNumeric->show_and_get_time(
-      CAddonBase::m_interface->toKodi->kodiBase, &time, heading.c_str());
+  return CPrivateBase::m_interface->toKodi->kodi_gui->dialogNumeric->show_and_get_time(
+      CPrivateBase::m_interface->toKodi->kodiBase, &time, heading.c_str());
 }
 //------------------------------------------------------------------------------
 
@@ -232,8 +233,8 @@ inline bool ATTRIBUTE_HIDDEN ShowAndGetTime(tm& time, const std::string& heading
 inline bool ATTRIBUTE_HIDDEN ShowAndGetDate(tm& date, const std::string& heading)
 {
   using namespace ::kodi::addon;
-  return CAddonBase::m_interface->toKodi->kodi_gui->dialogNumeric->show_and_get_date(
-      CAddonBase::m_interface->toKodi->kodiBase, &date, heading.c_str());
+  return CPrivateBase::m_interface->toKodi->kodi_gui->dialogNumeric->show_and_get_date(
+      CPrivateBase::m_interface->toKodi->kodiBase, &date, heading.c_str());
 }
 //------------------------------------------------------------------------------
 
@@ -251,13 +252,13 @@ inline bool ATTRIBUTE_HIDDEN ShowAndGetIPAddress(std::string& ipAddress, const s
 {
   using namespace ::kodi::addon;
   char* retString = nullptr;
-  bool ret = CAddonBase::m_interface->toKodi->kodi_gui->dialogNumeric->show_and_get_ip_address(
-      CAddonBase::m_interface->toKodi->kodiBase, ipAddress.c_str(), &retString, heading.c_str());
+  bool ret = CPrivateBase::m_interface->toKodi->kodi_gui->dialogNumeric->show_and_get_ip_address(
+      CPrivateBase::m_interface->toKodi->kodiBase, ipAddress.c_str(), &retString, heading.c_str());
   if (retString != nullptr)
   {
     ipAddress = retString;
-    CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase,
-                                                 retString);
+    CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase,
+                                                   retString);
   }
   return ret;
 }
@@ -298,14 +299,14 @@ inline bool ATTRIBUTE_HIDDEN ShowAndGetNumber(std::string& input,
 {
   using namespace ::kodi::addon;
   char* retString = nullptr;
-  bool ret = CAddonBase::m_interface->toKodi->kodi_gui->dialogNumeric->show_and_get_number(
-      CAddonBase::m_interface->toKodi->kodiBase, input.c_str(), &retString, heading.c_str(),
+  bool ret = CPrivateBase::m_interface->toKodi->kodi_gui->dialogNumeric->show_and_get_number(
+      CPrivateBase::m_interface->toKodi->kodiBase, input.c_str(), &retString, heading.c_str(),
       autoCloseTimeoutMs);
   if (retString != nullptr)
   {
     input = retString;
-    CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase,
-                                                 retString);
+    CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase,
+                                                   retString);
   }
   return ret;
 }
@@ -325,13 +326,13 @@ inline bool ATTRIBUTE_HIDDEN ShowAndGetSeconds(std::string& time, const std::str
 {
   using namespace ::kodi::addon;
   char* retString = nullptr;
-  bool ret = CAddonBase::m_interface->toKodi->kodi_gui->dialogNumeric->show_and_get_seconds(
-      CAddonBase::m_interface->toKodi->kodiBase, time.c_str(), &retString, heading.c_str());
+  bool ret = CPrivateBase::m_interface->toKodi->kodi_gui->dialogNumeric->show_and_get_seconds(
+      CPrivateBase::m_interface->toKodi->kodiBase, time.c_str(), &retString, heading.c_str());
   if (retString != nullptr)
   {
     time = retString;
-    CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase,
-                                                 retString);
+    CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase,
+                                                   retString);
   }
   return ret;
 }

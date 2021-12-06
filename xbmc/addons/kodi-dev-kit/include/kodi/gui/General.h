@@ -35,7 +35,7 @@ namespace gui
 inline void ATTRIBUTE_HIDDEN Lock()
 {
   using namespace ::kodi::addon;
-  CAddonBase::m_interface->toKodi->kodi_gui->general->lock();
+  CPrivateBase::m_interface->toKodi->kodi_gui->general->lock();
 }
 //------------------------------------------------------------------------------
 
@@ -46,7 +46,7 @@ inline void ATTRIBUTE_HIDDEN Lock()
 inline void ATTRIBUTE_HIDDEN Unlock()
 {
   using namespace ::kodi::addon;
-  CAddonBase::m_interface->toKodi->kodi_gui->general->unlock();
+  CPrivateBase::m_interface->toKodi->kodi_gui->general->unlock();
 }
 //------------------------------------------------------------------------------
 
@@ -59,8 +59,8 @@ inline void ATTRIBUTE_HIDDEN Unlock()
 inline int ATTRIBUTE_HIDDEN GetScreenHeight()
 {
   using namespace ::kodi::addon;
-  return CAddonBase::m_interface->toKodi->kodi_gui->general->get_screen_height(
-      CAddonBase::m_interface->toKodi->kodiBase);
+  return CPrivateBase::m_interface->toKodi->kodi_gui->general->get_screen_height(
+      CPrivateBase::m_interface->toKodi->kodiBase);
 }
 //------------------------------------------------------------------------------
 
@@ -73,8 +73,8 @@ inline int ATTRIBUTE_HIDDEN GetScreenHeight()
 inline int ATTRIBUTE_HIDDEN GetScreenWidth()
 {
   using namespace ::kodi::addon;
-  return CAddonBase::m_interface->toKodi->kodi_gui->general->get_screen_width(
-      CAddonBase::m_interface->toKodi->kodiBase);
+  return CPrivateBase::m_interface->toKodi->kodi_gui->general->get_screen_width(
+      CPrivateBase::m_interface->toKodi->kodiBase);
 }
 //------------------------------------------------------------------------------
 
@@ -87,8 +87,8 @@ inline int ATTRIBUTE_HIDDEN GetScreenWidth()
 inline int ATTRIBUTE_HIDDEN GetVideoResolution()
 {
   using namespace ::kodi::addon;
-  return CAddonBase::m_interface->toKodi->kodi_gui->general->get_video_resolution(
-      CAddonBase::m_interface->toKodi->kodiBase);
+  return CPrivateBase::m_interface->toKodi->kodi_gui->general->get_video_resolution(
+      CPrivateBase::m_interface->toKodi->kodiBase);
 }
 //------------------------------------------------------------------------------
 
@@ -111,8 +111,8 @@ inline int ATTRIBUTE_HIDDEN GetVideoResolution()
 inline int ATTRIBUTE_HIDDEN GetCurrentWindowDialogId()
 {
   using namespace ::kodi::addon;
-  return CAddonBase::m_interface->toKodi->kodi_gui->general->get_current_window_dialog_id(
-      CAddonBase::m_interface->toKodi->kodiBase);
+  return CPrivateBase::m_interface->toKodi->kodi_gui->general->get_current_window_dialog_id(
+      CPrivateBase::m_interface->toKodi->kodiBase);
 }
 //------------------------------------------------------------------------------
 
@@ -135,8 +135,8 @@ inline int ATTRIBUTE_HIDDEN GetCurrentWindowDialogId()
 inline int ATTRIBUTE_HIDDEN GetCurrentWindowId()
 {
   using namespace ::kodi::addon;
-  return CAddonBase::m_interface->toKodi->kodi_gui->general->get_current_window_id(
-      CAddonBase::m_interface->toKodi->kodiBase);
+  return CPrivateBase::m_interface->toKodi->kodi_gui->general->get_current_window_id(
+      CPrivateBase::m_interface->toKodi->kodiBase);
 }
 //------------------------------------------------------------------------------
 
@@ -165,8 +165,8 @@ inline int ATTRIBUTE_HIDDEN GetCurrentWindowId()
 inline kodi::HardwareContext GetHWContext()
 {
   using namespace ::kodi::addon;
-  return CAddonBase::m_interface->toKodi->kodi_gui->general->get_hw_context(
-      CAddonBase::m_interface->toKodi->kodiBase);
+  return CPrivateBase::m_interface->toKodi->kodi_gui->general->get_hw_context(
+      CPrivateBase::m_interface->toKodi->kodiBase);
 }
 //------------------------------------------------------------------------------
 

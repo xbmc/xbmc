@@ -78,8 +78,8 @@ inline bool ATTRIBUTE_HIDDEN ShowAndGetInput(const std::string& heading,
                                              const std::string& yesLabel = "")
 {
   using namespace ::kodi::addon;
-  return CAddonBase::m_interface->toKodi->kodi_gui->dialogYesNo->show_and_get_input_single_text(
-      CAddonBase::m_interface->toKodi->kodiBase, heading.c_str(), text.c_str(), &canceled,
+  return CPrivateBase::m_interface->toKodi->kodi_gui->dialogYesNo->show_and_get_input_single_text(
+      CPrivateBase::m_interface->toKodi->kodiBase, heading.c_str(), text.c_str(), &canceled,
       noLabel.c_str(), yesLabel.c_str());
 }
 //------------------------------------------------------------------------------
@@ -122,8 +122,8 @@ inline bool ATTRIBUTE_HIDDEN ShowAndGetInput(const std::string& heading,
                                              const std::string& yesLabel = "")
 {
   using namespace ::kodi::addon;
-  return CAddonBase::m_interface->toKodi->kodi_gui->dialogYesNo->show_and_get_input_line_text(
-      CAddonBase::m_interface->toKodi->kodiBase, heading.c_str(), line0.c_str(), line1.c_str(),
+  return CPrivateBase::m_interface->toKodi->kodi_gui->dialogYesNo->show_and_get_input_line_text(
+      CPrivateBase::m_interface->toKodi->kodiBase, heading.c_str(), line0.c_str(), line1.c_str(),
       line2.c_str(), noLabel.c_str(), yesLabel.c_str());
 }
 //------------------------------------------------------------------------------
@@ -172,10 +172,10 @@ inline bool ATTRIBUTE_HIDDEN ShowAndGetInput(const std::string& heading,
                                              const std::string& yesLabel = "")
 {
   using namespace ::kodi::addon;
-  return CAddonBase::m_interface->toKodi->kodi_gui->dialogYesNo
+  return CPrivateBase::m_interface->toKodi->kodi_gui->dialogYesNo
       ->show_and_get_input_line_button_text(
-          CAddonBase::m_interface->toKodi->kodiBase, heading.c_str(), line0.c_str(), line1.c_str(),
-          line2.c_str(), &canceled, noLabel.c_str(), yesLabel.c_str());
+          CPrivateBase::m_interface->toKodi->kodiBase, heading.c_str(), line0.c_str(),
+          line1.c_str(), line2.c_str(), &canceled, noLabel.c_str(), yesLabel.c_str());
 }
 //------------------------------------------------------------------------------
 }; // namespace YesNo

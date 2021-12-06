@@ -412,7 +412,7 @@ public:
                      !kodiVersion.empty() ? kodiVersion
                                           : GetKodiTypeVersion(ADDON_INSTANCE_AUDIOENCODER))
   {
-    if (CAddonBase::m_interface->globalSingleInstance != nullptr)
+    if (CPrivateBase::m_interface->globalSingleInstance != nullptr)
       throw std::logic_error("kodi::addon::CInstanceAudioEncoder: Creation of multiple together "
                              "with single instance way is not allowed!");
 

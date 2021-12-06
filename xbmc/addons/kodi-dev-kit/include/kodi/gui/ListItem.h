@@ -30,7 +30,7 @@ public:
 protected:
   explicit CAddonGUIControlBase(CAddonGUIControlBase* window)
     : m_controlHandle(nullptr),
-      m_interface(::kodi::addon::CAddonBase::m_interface->toKodi),
+      m_interface(::kodi::addon::CPrivateBase::m_interface->toKodi),
       m_Window(window)
   {
   }
