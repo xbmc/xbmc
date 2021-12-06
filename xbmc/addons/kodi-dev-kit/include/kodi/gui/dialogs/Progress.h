@@ -49,7 +49,7 @@ namespace dialogs
 /// delete progress;
 /// ~~~~~~~~~~~~~
 ///
-class ATTRIBUTE_HIDDEN CProgress
+class ATTR_DLL_LOCAL CProgress
 {
 public:
   //============================================================================

@@ -93,7 +93,7 @@ namespace controls
 /// }
 /// ~~~~~~~~~~~~
 ///
-class ATTRIBUTE_HIDDEN CRadioButton : public CAddonGUIControlBase
+class ATTR_DLL_LOCAL CRadioButton : public CAddonGUIControlBase
 {
 public:
   //============================================================================

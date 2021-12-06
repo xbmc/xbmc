@@ -392,7 +392,7 @@ private:
 /// The destruction of the example class `CMyVisualization` is called from
 /// Kodi's header. Manually deleting the add-on instance is not required.
 ///
-class ATTRIBUTE_HIDDEN CInstanceVisualization : public IAddonInstance
+class ATTR_DLL_LOCAL CInstanceVisualization : public IAddonInstance
 {
 public:
   //============================================================================

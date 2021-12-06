@@ -67,10 +67,10 @@ namespace FileBrowser
 /// fprintf(stderr, "Selected directory is : %s and was %s\n", directory.c_str(), ret ? "OK" : "Canceled");
 /// ~~~~~~~~~~~~~
 ///
-inline bool ATTRIBUTE_HIDDEN ShowAndGetDirectory(const std::string& shares,
-                                                 const std::string& heading,
-                                                 std::string& path,
-                                                 bool writeOnly = false)
+inline bool ATTR_DLL_LOCAL ShowAndGetDirectory(const std::string& shares,
+                                               const std::string& heading,
+                                               std::string& path,
+                                               bool writeOnly = false)
 {
   using namespace ::kodi::addon;
   char* retString = nullptr;
@@ -102,12 +102,12 @@ inline bool ATTRIBUTE_HIDDEN ShowAndGetDirectory(const std::string& shares,
 ///                               handled as directories.
 /// @return False if selection becomes canceled
 ///
-inline bool ATTRIBUTE_HIDDEN ShowAndGetFile(const std::string& shares,
-                                            const std::string& mask,
-                                            const std::string& heading,
-                                            std::string& path,
-                                            bool useThumbs = false,
-                                            bool useFileDirectories = false)
+inline bool ATTR_DLL_LOCAL ShowAndGetFile(const std::string& shares,
+                                          const std::string& mask,
+                                          const std::string& heading,
+                                          std::string& path,
+                                          bool useThumbs = false,
+                                          bool useFileDirectories = false)
 {
   using namespace ::kodi::addon;
   char* retString = nullptr;
@@ -141,13 +141,13 @@ inline bool ATTRIBUTE_HIDDEN ShowAndGetFile(const std::string& shares,
 /// @param[in] singleList [opt]
 /// @return False if selection becomes canceled
 ///
-inline bool ATTRIBUTE_HIDDEN ShowAndGetFileFromDir(const std::string& directory,
-                                                   const std::string& mask,
-                                                   const std::string& heading,
-                                                   std::string& path,
-                                                   bool useThumbs = false,
-                                                   bool useFileDirectories = false,
-                                                   bool singleList = false)
+inline bool ATTR_DLL_LOCAL ShowAndGetFileFromDir(const std::string& directory,
+                                                 const std::string& mask,
+                                                 const std::string& heading,
+                                                 std::string& path,
+                                                 bool useThumbs = false,
+                                                 bool useFileDirectories = false,
+                                                 bool singleList = false)
 {
   using namespace ::kodi::addon;
   char* retString = nullptr;
@@ -179,12 +179,12 @@ inline bool ATTRIBUTE_HIDDEN ShowAndGetFileFromDir(const std::string& directory,
 ///                               handled as directories.
 /// @return False if selection becomes canceled.
 ///
-inline bool ATTRIBUTE_HIDDEN ShowAndGetFileList(const std::string& shares,
-                                                const std::string& mask,
-                                                const std::string& heading,
-                                                std::vector<std::string>& fileList,
-                                                bool useThumbs = false,
-                                                bool useFileDirectories = false)
+inline bool ATTR_DLL_LOCAL ShowAndGetFileList(const std::string& shares,
+                                              const std::string& mask,
+                                              const std::string& heading,
+                                              std::vector<std::string>& fileList,
+                                              bool useThumbs = false,
+                                              bool useFileDirectories = false)
 {
   using namespace ::kodi::addon;
   char** list = nullptr;
@@ -215,10 +215,10 @@ inline bool ATTRIBUTE_HIDDEN ShowAndGetFileList(const std::string& shares,
 /// @param[in] type [opt]
 /// @return False if selection becomes canceled
 ///
-inline bool ATTRIBUTE_HIDDEN ShowAndGetSource(std::string& path,
-                                              bool allowNetworkShares,
-                                              const std::string& additionalShare = "",
-                                              const std::string& type = "")
+inline bool ATTR_DLL_LOCAL ShowAndGetSource(std::string& path,
+                                            bool allowNetworkShares,
+                                            const std::string& additionalShare = "",
+                                            const std::string& type = "")
 {
   using namespace ::kodi::addon;
   char* retString = nullptr;
@@ -245,9 +245,9 @@ inline bool ATTRIBUTE_HIDDEN ShowAndGetSource(std::string& path,
 /// @param[out] path Return value about selected image
 /// @return False if selection becomes canceled
 ///
-inline bool ATTRIBUTE_HIDDEN ShowAndGetImage(const std::string& shares,
-                                             const std::string& heading,
-                                             std::string& path)
+inline bool ATTR_DLL_LOCAL ShowAndGetImage(const std::string& shares,
+                                           const std::string& heading,
+                                           std::string& path)
 {
   using namespace ::kodi::addon;
   char* retString = nullptr;
@@ -274,9 +274,9 @@ inline bool ATTRIBUTE_HIDDEN ShowAndGetImage(const std::string& shares,
 /// @param[out] file_list Return value about selected images
 /// @return False if selection becomes canceled
 ///
-inline bool ATTRIBUTE_HIDDEN ShowAndGetImageList(const std::string& shares,
-                                                 const std::string& heading,
-                                                 std::vector<std::string>& file_list)
+inline bool ATTR_DLL_LOCAL ShowAndGetImageList(const std::string& shares,
+                                               const std::string& heading,
+                                               std::vector<std::string>& file_list)
 {
   using namespace ::kodi::addon;
   char** list = nullptr;

@@ -47,7 +47,7 @@ using VFSFileHandle = VFS_FILE_HANDLE;
 /// @copydetails cpp_kodi_addon_vfs_Defs_VFSUrl_Help
 ///
 ///@{
-class ATTRIBUTE_HIDDEN VFSUrl : public CStructHdl<VFSUrl, VFSURL>
+class ATTR_DLL_LOCAL VFSUrl : public CStructHdl<VFSUrl, VFSURL>
 {
   /*! \cond PRIVATE */
   friend class CInstanceVFS;
@@ -433,7 +433,7 @@ private:
 /// Kodi's header. Manually deleting the add-on instance is not required.
 ///
 //------------------------------------------------------------------------------
-class ATTRIBUTE_HIDDEN CInstanceVFS : public IAddonInstance
+class ATTR_DLL_LOCAL CInstanceVFS : public IAddonInstance
 {
 public:
   //============================================================================

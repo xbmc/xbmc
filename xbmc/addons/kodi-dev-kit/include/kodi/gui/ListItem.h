@@ -22,7 +22,7 @@ namespace gui
 
 class CWindow;
 
-class ATTRIBUTE_HIDDEN CAddonGUIControlBase
+class ATTR_DLL_LOCAL CAddonGUIControlBase
 {
 public:
   KODI_GUI_LISTITEM_HANDLE GetControlHandle() const { return m_controlHandle; }
@@ -61,7 +61,7 @@ class CListItem;
 /// class is used to create a item entry for a list on window and to support it's
 /// control.
 ///
-class ATTRIBUTE_HIDDEN CListItem : public CAddonGUIControlBase
+class ATTR_DLL_LOCAL CListItem : public CAddonGUIControlBase
 {
 public:
   //============================================================================

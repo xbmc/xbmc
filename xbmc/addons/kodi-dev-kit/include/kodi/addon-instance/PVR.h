@@ -404,7 +404,7 @@ namespace addon
 /// The destruction of the example class `CMyPVRClient` is called from
 /// Kodi's header. Manually deleting the add-on instance is not required.
 ///
-class ATTRIBUTE_HIDDEN CInstancePVRClient : public IAddonInstance
+class ATTR_DLL_LOCAL CInstancePVRClient : public IAddonInstance
 {
 public:
   //============================================================================
@@ -443,7 +443,7 @@ public:
   /// #include <kodi/addon-instance/PVR.h>
   /// ...
   ///
-  /// class ATTRIBUTE_HIDDEN CPVRExample
+  /// class ATTR_DLL_LOCAL CPVRExample
   ///   : public kodi::addon::CAddonBase,
   ///     public kodi::addon::CInstancePVRClient
   /// {
@@ -1045,7 +1045,7 @@ public:
   /// #include <kodi/addon-instance/PVR.h>
   /// ...
   ///
-  /// class ATTRIBUTE_HIDDEN CPVRExample
+  /// class ATTR_DLL_LOCAL CPVRExample
   ///   : public kodi::addon::CAddonBase,
   ///     public kodi::addon::CInstancePVRClient
   /// {

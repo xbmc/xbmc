@@ -64,7 +64,7 @@ namespace kodi
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline std::string ATTRIBUTE_HIDDEN GetAddonInfo(const std::string& id)
+inline std::string ATTR_DLL_LOCAL GetAddonInfo(const std::string& id)
 {
   using namespace kodi::addon;
 
@@ -99,7 +99,7 @@ inline std::string ATTRIBUTE_HIDDEN GetAddonInfo(const std::string& id)
 /// ..
 /// ~~~~~~~~~~~~~
 ///
-inline bool ATTRIBUTE_HIDDEN OpenSettings()
+inline bool ATTR_DLL_LOCAL OpenSettings()
 {
   using namespace kodi::addon;
   return CPrivateBase::m_interface->toKodi->kodi->open_settings_dialog(
@@ -134,8 +134,8 @@ inline bool ATTRIBUTE_HIDDEN OpenSettings()
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline std::string ATTRIBUTE_HIDDEN GetLocalizedString(uint32_t labelId,
-                                                       const std::string& defaultStr = "")
+inline std::string ATTR_DLL_LOCAL GetLocalizedString(uint32_t labelId,
+                                                     const std::string& defaultStr = "")
 {
   using namespace kodi::addon;
 
@@ -175,9 +175,9 @@ inline std::string ATTRIBUTE_HIDDEN GetLocalizedString(uint32_t labelId,
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline bool ATTRIBUTE_HIDDEN UnknownToUTF8(const std::string& stringSrc,
-                                           std::string& utf8StringDst,
-                                           bool failOnBadChar = false)
+inline bool ATTR_DLL_LOCAL UnknownToUTF8(const std::string& stringSrc,
+                                         std::string& utf8StringDst,
+                                         bool failOnBadChar = false)
 {
   using namespace kodi::addon;
 
@@ -219,8 +219,8 @@ inline bool ATTRIBUTE_HIDDEN UnknownToUTF8(const std::string& stringSrc,
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline std::string ATTRIBUTE_HIDDEN GetLanguage(LangFormats format = LANG_FMT_ENGLISH_NAME,
-                                                bool region = false)
+inline std::string ATTR_DLL_LOCAL GetLanguage(LangFormats format = LANG_FMT_ENGLISH_NAME,
+                                              bool region = false)
 {
   using namespace kodi::addon;
 
@@ -314,7 +314,7 @@ inline std::string ATTRIBUTE_HIDDEN GetLanguage(LangFormats format = LANG_FMT_EN
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline void ATTRIBUTE_HIDDEN QueueFormattedNotification(QueueMsg type, const char* format, ...)
+inline void ATTR_DLL_LOCAL QueueFormattedNotification(QueueMsg type, const char* format, ...)
 {
   using namespace kodi::addon;
 
@@ -372,13 +372,13 @@ inline void ATTRIBUTE_HIDDEN QueueFormattedNotification(QueueMsg type, const cha
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline void ATTRIBUTE_HIDDEN QueueNotification(QueueMsg type,
-                                               const std::string& header,
-                                               const std::string& message,
-                                               const std::string& imageFile = "",
-                                               unsigned int displayTime = 5000,
-                                               bool withSound = true,
-                                               unsigned int messageTime = 1000)
+inline void ATTR_DLL_LOCAL QueueNotification(QueueMsg type,
+                                             const std::string& header,
+                                             const std::string& message,
+                                             const std::string& imageFile = "",
+                                             unsigned int displayTime = 5000,
+                                             bool withSound = true,
+                                             unsigned int messageTime = 1000)
 {
   using namespace kodi::addon;
 
@@ -407,7 +407,7 @@ inline void ATTRIBUTE_HIDDEN QueueNotification(QueueMsg type,
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline std::string ATTRIBUTE_HIDDEN GetMD5(const std::string& text)
+inline std::string ATTR_DLL_LOCAL GetMD5(const std::string& text)
 {
   using namespace kodi::addon;
 
@@ -431,7 +431,7 @@ inline std::string ATTRIBUTE_HIDDEN GetMD5(const std::string& text)
 /// @param[in] append A string to append to returned temporary path
 /// @return Individual path for the addon
 ///
-inline std::string ATTRIBUTE_HIDDEN GetTempAddonPath(const std::string& append = "")
+inline std::string ATTR_DLL_LOCAL GetTempAddonPath(const std::string& append = "")
 {
   using namespace kodi::addon;
 
@@ -476,7 +476,7 @@ inline std::string ATTRIBUTE_HIDDEN GetTempAddonPath(const std::string& append =
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline std::string ATTRIBUTE_HIDDEN GetRegion(const std::string& id)
+inline std::string ATTR_DLL_LOCAL GetRegion(const std::string& id)
 {
   using namespace kodi::addon;
 
@@ -517,7 +517,7 @@ inline std::string ATTRIBUTE_HIDDEN GetRegion(const std::string& id)
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline void ATTRIBUTE_HIDDEN GetFreeMem(long& free, long& total, bool asBytes = false)
+inline void ATTR_DLL_LOCAL GetFreeMem(long& free, long& total, bool asBytes = false)
 {
   using namespace kodi::addon;
 
@@ -545,7 +545,7 @@ inline void ATTRIBUTE_HIDDEN GetFreeMem(long& free, long& total, bool asBytes = 
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline int ATTRIBUTE_HIDDEN GetGlobalIdleTime()
+inline int ATTR_DLL_LOCAL GetGlobalIdleTime()
 {
   using namespace kodi::addon;
 
@@ -575,7 +575,7 @@ inline int ATTRIBUTE_HIDDEN GetGlobalIdleTime()
 /// ..
 /// ~~~~~~~~~~~~~
 ///
-inline std::string ATTRIBUTE_HIDDEN GetCurrentSkinId()
+inline std::string ATTR_DLL_LOCAL GetCurrentSkinId()
 {
   using namespace kodi::addon;
 
@@ -615,9 +615,9 @@ inline std::string ATTRIBUTE_HIDDEN GetCurrentSkinId()
 ///            ret ? version.c_str() : "not installed", enabled ? "yes" : "no");
 /// ~~~~~~~~~~~~~
 ///
-inline bool ATTRIBUTE_HIDDEN IsAddonAvailable(const std::string& id,
-                                              std::string& version,
-                                              bool& enabled)
+inline bool ATTR_DLL_LOCAL IsAddonAvailable(const std::string& id,
+                                            std::string& version,
+                                            bool& enabled)
 {
   using namespace kodi::addon;
 
@@ -673,7 +673,7 @@ inline bool ATTRIBUTE_HIDDEN IsAddonAvailable(const std::string& id,
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline void ATTRIBUTE_HIDDEN KodiVersion(kodi_version_t& version)
+inline void ATTR_DLL_LOCAL KodiVersion(kodi_version_t& version)
 {
   using namespace kodi::addon;
 
@@ -741,9 +741,9 @@ inline void ATTRIBUTE_HIDDEN KodiVersion(kodi_version_t& version)
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline bool ATTRIBUTE_HIDDEN GetKeyboardLayout(int modifierKey,
-                                               std::string& layout_name,
-                                               std::vector<std::vector<std::string>>& layout)
+inline bool ATTR_DLL_LOCAL GetKeyboardLayout(int modifierKey,
+                                             std::string& layout_name,
+                                             std::vector<std::vector<std::string>>& layout)
 {
   using namespace kodi::addon;
 
@@ -813,7 +813,7 @@ inline bool ATTRIBUTE_HIDDEN GetKeyboardLayout(int modifierKey,
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline bool ATTRIBUTE_HIDDEN ChangeKeyboardLayout(std::string& layout_name)
+inline bool ATTR_DLL_LOCAL ChangeKeyboardLayout(std::string& layout_name)
 {
   using namespace kodi::addon;
 

@@ -42,7 +42,7 @@ namespace platform
 /// #endif
 /// ~~~~~~~~~~~~~
 ///
-class ATTRIBUTE_HIDDEN CInterfaceAndroidSystem
+class ATTR_DLL_LOCAL CInterfaceAndroidSystem
 {
 public:
   CInterfaceAndroidSystem()

@@ -92,7 +92,7 @@ namespace vfs
 /// Used on kodi::vfs::StatFile() to get detailed information about a file.
 ///
 ///@{
-class ATTRIBUTE_HIDDEN FileStatus : public kodi::addon::CStructHdl<FileStatus, STAT_STRUCTURE>
+class ATTR_DLL_LOCAL FileStatus : public kodi::addon::CStructHdl<FileStatus, STAT_STRUCTURE>
 {
 public:
   /*! \cond PRIVATE */
@@ -221,7 +221,7 @@ public:
 /// status of processed stream.
 ///
 ///@{
-class ATTRIBUTE_HIDDEN CacheStatus
+class ATTR_DLL_LOCAL CacheStatus
   : public kodi::addon::CStructHdl<CacheStatus, VFS_CACHE_STATUS_DATA>
 {
 public:
@@ -291,7 +291,7 @@ public:
 /// @copydetails cpp_kodi_vfs_Defs_HttpHeader_Help
 ///
 ///@{
-class ATTRIBUTE_HIDDEN HttpHeader
+class ATTR_DLL_LOCAL HttpHeader
 {
 public:
   //==========================================================================
@@ -541,7 +541,7 @@ public:
 /// to enjoy it.
 ///
 ///@{
-class ATTRIBUTE_HIDDEN CDirEntry
+class ATTR_DLL_LOCAL CDirEntry
 {
 public:
   //============================================================================
@@ -772,7 +772,7 @@ private:
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline bool ATTRIBUTE_HIDDEN CreateDirectory(const std::string& path)
+inline bool ATTR_DLL_LOCAL CreateDirectory(const std::string& path)
 {
   using namespace kodi::addon;
 
@@ -804,7 +804,7 @@ inline bool ATTRIBUTE_HIDDEN CreateDirectory(const std::string& path)
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline bool ATTRIBUTE_HIDDEN DirectoryExists(const std::string& path)
+inline bool ATTR_DLL_LOCAL DirectoryExists(const std::string& path)
 {
   using namespace kodi::addon;
 
@@ -838,7 +838,7 @@ inline bool ATTRIBUTE_HIDDEN DirectoryExists(const std::string& path)
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline bool ATTRIBUTE_HIDDEN RemoveDirectory(const std::string& path, bool recursive = false)
+inline bool ATTR_DLL_LOCAL RemoveDirectory(const std::string& path, bool recursive = false)
 {
   using namespace kodi::addon;
 
@@ -887,9 +887,9 @@ inline bool ATTRIBUTE_HIDDEN RemoveDirectory(const std::string& path, bool recur
 ///             items[i].Path().c_str());
 /// }
 /// ~~~~~~~~~~~~~
-inline bool ATTRIBUTE_HIDDEN GetDirectory(const std::string& path,
-                                          const std::string& mask,
-                                          std::vector<kodi::vfs::CDirEntry>& items)
+inline bool ATTR_DLL_LOCAL GetDirectory(const std::string& path,
+                                        const std::string& mask,
+                                        std::vector<kodi::vfs::CDirEntry>& items)
 {
   using namespace kodi::addon;
 
@@ -939,7 +939,7 @@ inline bool ATTRIBUTE_HIDDEN GetDirectory(const std::string& path,
 /// fprintf(stderr, "Log file should be always present, is it present? %s\n", exists ? "yes" : "no");
 /// ~~~~~~~~~~~~~
 ///
-inline bool ATTRIBUTE_HIDDEN FileExists(const std::string& filename, bool usecache = false)
+inline bool ATTR_DLL_LOCAL FileExists(const std::string& filename, bool usecache = false)
 {
   using namespace kodi::addon;
 
@@ -994,7 +994,7 @@ inline bool ATTRIBUTE_HIDDEN FileExists(const std::string& filename, bool usecac
 ///                      ret);
 /// ~~~~~~~~~~~~~
 ///
-inline bool ATTRIBUTE_HIDDEN StatFile(const std::string& filename, kodi::vfs::FileStatus& buffer)
+inline bool ATTR_DLL_LOCAL StatFile(const std::string& filename, kodi::vfs::FileStatus& buffer)
 {
   using namespace kodi::addon;
 
@@ -1032,7 +1032,7 @@ inline bool ATTRIBUTE_HIDDEN StatFile(const std::string& filename, kodi::vfs::Fi
 /// }
 /// ~~~~~~~~~~~~~
 ///
-inline bool ATTRIBUTE_HIDDEN DeleteFile(const std::string& filename)
+inline bool ATTR_DLL_LOCAL DeleteFile(const std::string& filename)
 {
   using namespace kodi::addon;
 
@@ -1050,7 +1050,7 @@ inline bool ATTRIBUTE_HIDDEN DeleteFile(const std::string& filename)
 /// @return true if successfully renamed
 ///
 ///
-inline bool ATTRIBUTE_HIDDEN RenameFile(const std::string& filename, const std::string& newFileName)
+inline bool ATTR_DLL_LOCAL RenameFile(const std::string& filename, const std::string& newFileName)
 {
   using namespace kodi::addon;
 
@@ -1068,7 +1068,7 @@ inline bool ATTRIBUTE_HIDDEN RenameFile(const std::string& filename, const std::
 /// @return true if successfully copied
 ///
 ///
-inline bool ATTRIBUTE_HIDDEN CopyFile(const std::string& filename, const std::string& destination)
+inline bool ATTR_DLL_LOCAL CopyFile(const std::string& filename, const std::string& destination)
 {
   using namespace kodi::addon;
 
@@ -1109,7 +1109,7 @@ inline bool ATTRIBUTE_HIDDEN CopyFile(const std::string& filename, const std::st
 /// }
 /// ~~~~~~~~~~~~~
 ///
-inline std::string ATTRIBUTE_HIDDEN GetFileMD5(const std::string& path)
+inline std::string ATTR_DLL_LOCAL GetFileMD5(const std::string& path)
 {
   using namespace kodi::addon;
 
@@ -1153,7 +1153,7 @@ inline std::string ATTRIBUTE_HIDDEN GetFileMD5(const std::string& path)
 /// }
 /// ~~~~~~~~~~~~~
 ///
-inline std::string ATTRIBUTE_HIDDEN GetCacheThumbName(const std::string& filename)
+inline std::string ATTR_DLL_LOCAL GetCacheThumbName(const std::string& filename)
 {
   using namespace kodi::addon;
 
@@ -1196,7 +1196,7 @@ inline std::string ATTRIBUTE_HIDDEN GetCacheThumbName(const std::string& filenam
 /// /* Returns as legal: 'jk___lj____.mpg' */
 /// ~~~~~~~~~~~~~
 ///
-inline std::string ATTRIBUTE_HIDDEN MakeLegalFileName(const std::string& filename)
+inline std::string ATTR_DLL_LOCAL MakeLegalFileName(const std::string& filename)
 {
   using namespace kodi::addon;
 
@@ -1239,7 +1239,7 @@ inline std::string ATTRIBUTE_HIDDEN MakeLegalFileName(const std::string& filenam
 /// /* Returns as legal: '/jk___lj____/hgjkg' */
 /// ~~~~~~~~~~~~~
 ///
-inline std::string ATTRIBUTE_HIDDEN MakeLegalPath(const std::string& path)
+inline std::string ATTR_DLL_LOCAL MakeLegalPath(const std::string& path)
 {
   using namespace kodi::addon;
 
@@ -1287,7 +1287,7 @@ inline std::string ATTRIBUTE_HIDDEN MakeLegalPath(const std::string& path)
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline std::string ATTRIBUTE_HIDDEN TranslateSpecialProtocol(const std::string& source)
+inline std::string ATTR_DLL_LOCAL TranslateSpecialProtocol(const std::string& source)
 {
   using namespace kodi::addon;
 
@@ -1341,10 +1341,10 @@ inline std::string ATTRIBUTE_HIDDEN TranslateSpecialProtocol(const std::string& 
 /// fprintf(stderr, " - available: %lu MByte\n", available / 1024 / 1024);
 /// ~~~~~~~~~~~~~
 ///
-inline bool ATTRIBUTE_HIDDEN GetDiskSpace(const std::string& path,
-                                          uint64_t& capacity,
-                                          uint64_t& free,
-                                          uint64_t& available)
+inline bool ATTR_DLL_LOCAL GetDiskSpace(const std::string& path,
+                                        uint64_t& capacity,
+                                        uint64_t& free,
+                                        uint64_t& available)
 {
   using namespace kodi::addon;
 
@@ -1371,7 +1371,7 @@ inline bool ATTRIBUTE_HIDDEN GetDiskSpace(const std::string& path,
 /// fprintf(stderr, "File name is '%s'\n", fileName.c_str());
 /// ~~~~~~~~~~~~~
 ///
-inline std::string ATTRIBUTE_HIDDEN GetFileName(const std::string& path)
+inline std::string ATTR_DLL_LOCAL GetFileName(const std::string& path)
 {
   /* find the last slash */
   const size_t slash = path.find_last_of("/\\");
@@ -1397,7 +1397,7 @@ inline std::string ATTRIBUTE_HIDDEN GetFileName(const std::string& path)
 /// fprintf(stderr, "Directory name is '%s'\n", dirName.c_str());
 /// ~~~~~~~~~~~~~
 ///
-inline std::string ATTRIBUTE_HIDDEN GetDirectoryName(const std::string& path)
+inline std::string ATTR_DLL_LOCAL GetDirectoryName(const std::string& path)
 {
   // Will from a full filename return the directory the file resides in.
   // Keeps the final slash at end and possible |option=foo options.
@@ -1432,7 +1432,7 @@ inline std::string ATTRIBUTE_HIDDEN GetDirectoryName(const std::string& path)
 /// fprintf(stderr, "Directory name is '%s'\n", dirName.c_str());
 /// ~~~~~~~~~~~~~
 ///
-inline void ATTRIBUTE_HIDDEN RemoveSlashAtEnd(std::string& path)
+inline void ATTR_DLL_LOCAL RemoveSlashAtEnd(std::string& path)
 {
   if (!path.empty())
   {
@@ -1452,7 +1452,7 @@ inline void ATTRIBUTE_HIDDEN RemoveSlashAtEnd(std::string& path)
 /// @param[in] minimum The minimum size (or maybe the minimum number of chunks?)
 /// @return The aligned size
 ///
-inline unsigned int ATTRIBUTE_HIDDEN GetChunkSize(unsigned int chunk, unsigned int minimum)
+inline unsigned int ATTR_DLL_LOCAL GetChunkSize(unsigned int chunk, unsigned int minimum)
 {
   if (chunk)
     return chunk * ((minimum + chunk - 1) / chunk);
@@ -1509,7 +1509,7 @@ inline unsigned int ATTRIBUTE_HIDDEN GetChunkSize(unsigned int chunk, unsigned i
 ///                     kodi::vfs::IsInternetStream("ftp://do-somewhere.com/the-file.mkv") ? "yes" : "no", true);
 /// ~~~~~~~~~~~~~
 ///
-inline bool ATTRIBUTE_HIDDEN IsInternetStream(const std::string& path, bool strictCheck = false)
+inline bool ATTR_DLL_LOCAL IsInternetStream(const std::string& path, bool strictCheck = false)
 {
   using namespace kodi::addon;
 
@@ -1541,7 +1541,7 @@ inline bool ATTRIBUTE_HIDDEN IsInternetStream(const std::string& path, bool stri
 /// bool lan = kodi::vfs::IsOnLAN("smb://path/to/file");
 /// ~~~~~~~~~~~~~
 ///
-inline bool ATTRIBUTE_HIDDEN IsOnLAN(const std::string& path)
+inline bool ATTR_DLL_LOCAL IsOnLAN(const std::string& path)
 {
   using namespace kodi::addon;
 
@@ -1570,7 +1570,7 @@ inline bool ATTRIBUTE_HIDDEN IsOnLAN(const std::string& path)
 /// bool remote = kodi::vfs::IsRemote("http://path/to/file");
 /// ~~~~~~~~~~~~~
 ///
-inline bool ATTRIBUTE_HIDDEN IsRemote(const std::string& path)
+inline bool ATTR_DLL_LOCAL IsRemote(const std::string& path)
 {
   using namespace kodi::addon;
 
@@ -1586,7 +1586,7 @@ inline bool ATTRIBUTE_HIDDEN IsRemote(const std::string& path)
 /// @param[in] path To checked path
 /// @return True if path is local, false otherwise
 ///
-inline bool ATTRIBUTE_HIDDEN IsLocal(const std::string& path)
+inline bool ATTR_DLL_LOCAL IsLocal(const std::string& path)
 {
   using namespace kodi::addon;
 
@@ -1617,7 +1617,7 @@ inline bool ATTRIBUTE_HIDDEN IsLocal(const std::string& path)
 /// isURL = kodi::vfs::IsURL("/path/to/file");
 /// ~~~~~~~~~~~~~
 ///
-inline bool ATTRIBUTE_HIDDEN IsURL(const std::string& path)
+inline bool ATTR_DLL_LOCAL IsURL(const std::string& path)
 {
   using namespace kodi::addon;
 
@@ -1650,7 +1650,7 @@ inline bool ATTRIBUTE_HIDDEN IsURL(const std::string& path)
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline bool ATTRIBUTE_HIDDEN GetHttpHeader(const std::string& url, HttpHeader& header)
+inline bool ATTR_DLL_LOCAL GetHttpHeader(const std::string& url, HttpHeader& header)
 {
   using namespace ::kodi::addon;
 
@@ -1681,9 +1681,9 @@ inline bool ATTRIBUTE_HIDDEN GetHttpHeader(const std::string& url, HttpHeader& h
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline bool ATTRIBUTE_HIDDEN GetMimeType(const std::string& url,
-                                         std::string& mimeType,
-                                         const std::string& useragent = "")
+inline bool ATTR_DLL_LOCAL GetMimeType(const std::string& url,
+                                       std::string& mimeType,
+                                       const std::string& useragent = "")
 {
   using namespace ::kodi::addon;
 
@@ -1722,9 +1722,9 @@ inline bool ATTRIBUTE_HIDDEN GetMimeType(const std::string& url,
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline bool ATTRIBUTE_HIDDEN GetContentType(const std::string& url,
-                                            std::string& content,
-                                            const std::string& useragent = "")
+inline bool ATTR_DLL_LOCAL GetContentType(const std::string& url,
+                                          std::string& content,
+                                          const std::string& useragent = "")
 {
   using namespace ::kodi::addon;
 
@@ -1764,7 +1764,7 @@ inline bool ATTRIBUTE_HIDDEN GetContentType(const std::string& url,
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline bool ATTRIBUTE_HIDDEN GetCookies(const std::string& url, std::string& cookies)
+inline bool ATTR_DLL_LOCAL GetCookies(const std::string& url, std::string& cookies)
 {
   using namespace ::kodi::addon;
 
@@ -1828,7 +1828,7 @@ inline bool ATTRIBUTE_HIDDEN GetCookies(const std::string& url, std::string& coo
 /// ~~~~~~~~~~~~~
 ///
 ///@{
-class ATTRIBUTE_HIDDEN CFile
+class ATTR_DLL_LOCAL CFile
 {
 public:
   //============================================================================

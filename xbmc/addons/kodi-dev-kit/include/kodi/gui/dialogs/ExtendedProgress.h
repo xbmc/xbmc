@@ -55,7 +55,7 @@ namespace dialogs
 /// delete ext_progress;
 /// ~~~~~~~~~~~~~
 ///
-class ATTRIBUTE_HIDDEN CExtendedProgress
+class ATTR_DLL_LOCAL CExtendedProgress
 {
 public:
   //============================================================================
