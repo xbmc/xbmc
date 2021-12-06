@@ -22,8 +22,6 @@
 
 #include <wrl/client.h>
 
-#define ELEMENT_ARRAY_MAX_CHAR_INDEX (2000)
-
 /*!
  \ingroup textures
  \brief

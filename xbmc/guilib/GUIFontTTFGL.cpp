@@ -33,7 +33,10 @@
 #include FT_GLYPH_H
 #include FT_OUTLINE_H
 
-#define ELEMENT_ARRAY_MAX_CHAR_INDEX (1000)
+namespace
+{
+constexpr size_t ELEMENT_ARRAY_MAX_CHAR_INDEX = 1000;
+} /* namespace */
 
 CGUIFontTTF* CGUIFontTTF::CreateGUIFontTTF(const std::string& fontIdent)
 {

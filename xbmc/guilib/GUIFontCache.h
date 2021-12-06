@@ -24,8 +24,8 @@
 #include <stdint.h>
 #include <vector>
 
-#define FONT_CACHE_TIME_LIMIT (1000)
-#define FONT_CACHE_DIST_LIMIT (0.01f)
+constexpr unsigned int FONT_CACHE_TIME_LIMIT = 1000;
+constexpr float FONT_CACHE_DIST_LIMIT = 0.01f;
 
 template<class Position, class Value>
 class CGUIFontCache;
