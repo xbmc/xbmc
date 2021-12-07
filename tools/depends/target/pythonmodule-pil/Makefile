@@ -3,7 +3,7 @@ DEPS= ../../Makefile.include Makefile pillow-crosscompile.patch
 
 # lib name, version
 LIBNAME=Pillow
-VERSION=7.1.2
+VERSION=8.4.0
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
