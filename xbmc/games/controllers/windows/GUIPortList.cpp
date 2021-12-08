@@ -181,7 +181,7 @@ bool CGUIPortList::AddItems(const CPortNode& port,
   if (port.IsConnected())
   {
     const CControllerNode& controllerNode = port.GetActiveController();
-    ControllerPtr controller = controllerNode.GetController();
+    const ControllerPtr& controller = controllerNode.GetController();
 
     // Create the list item
     CFileItemPtr item = std::make_shared<CFileItem>(itemLabel);
@@ -313,7 +313,7 @@ std::string CGUIPortList::GetLabel(const CPortNode& port)
       else
       {
         // "Port {0:s}"
-        const std::string portString = g_localizeStrings.Get(35112);
+        const std::string& portString = g_localizeStrings.Get(35112);
         return StringUtils::Format(portString, portId);
       }
       break;
