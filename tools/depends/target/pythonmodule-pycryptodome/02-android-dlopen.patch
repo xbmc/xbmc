@@ -1,9 +1,9 @@
 --- a/lib/Crypto/Util/_raw_api.py
 +++ b/lib/Crypto/Util/_raw_api.py
-@@ -101,11 +101,14 @@
-     def load_lib(name, cdecl):
-         import platform
-         bits, linkage = platform.architecture()
+@@ -182,11 +182,14 @@
+             import platform
+             cached_architecture[:] = platform.architecture()
+         bits, linkage = cached_architecture
 -        if "." not in name and not linkage.startswith("Win"):
 -            full_name = find_library(name)
 -            if full_name is None:
@@ -20,12 +20,12 @@
          return CDLL(name)
  
      def get_c_string(c_string):
-@@ -165,7 +168,7 @@
-     for ext, mod, typ in imp.get_suffixes():
-         if typ == imp.C_EXTENSION:
-             try:
--                return load_lib(pycryptodome_filename(dir_comps, basename + ext), cdecl)
-+                return load_lib("lib" + name.replace(".", "_") + ".so", cdecl)
-             except OSError:
-                 pass
-     raise OSError("Cannot load native module '%s'" % name)
+@@ -303,7 +306,7 @@
+             if not os.path.isfile(full_name):
+                 attempts.append("Not found '%s'" % filename)
+                 continue
+-            return load_lib(full_name, cdecl)
++            return load_lib("lib" + name.replace(".", "_") + ".so", cdecl)
+         except OSError as exp:
+             attempts.append("Cannot load '%s': %s" % (filename, str(exp)))
+     raise OSError("Cannot load native module '%s': %s" % (name, ", ".join(attempts)))
