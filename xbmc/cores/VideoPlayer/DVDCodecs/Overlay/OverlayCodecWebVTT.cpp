@@ -138,5 +138,6 @@ CDVDOverlay* COverlayCodecWebVTT::GetOverlay()
     return nullptr;
   m_pOverlay = CreateOverlay();
   m_pOverlay->SetOverlayContainerFlushable(false);
+  m_pOverlay->SetForcedMargins(true);
   return m_pOverlay->Acquire();
 }
