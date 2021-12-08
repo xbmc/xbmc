@@ -29,7 +29,7 @@ CControllerHub& CControllerHub::operator=(const CControllerHub& rhs)
   return *this;
 }
 
-CControllerHub& CControllerHub::operator=(CControllerHub&& rhs)
+CControllerHub& CControllerHub::operator=(CControllerHub&& rhs) noexcept
 {
   if (this != &rhs)
   {

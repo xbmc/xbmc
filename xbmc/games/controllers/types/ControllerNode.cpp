@@ -37,7 +37,7 @@ CControllerNode& CControllerNode::operator=(const CControllerNode& rhs)
   return *this;
 }
 
-CControllerNode& CControllerNode::operator=(CControllerNode&& rhs)
+CControllerNode& CControllerNode::operator=(CControllerNode&& rhs) noexcept
 {
   if (this != &rhs)
   {

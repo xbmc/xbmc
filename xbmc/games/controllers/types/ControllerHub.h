@@ -27,7 +27,7 @@ public:
   CControllerHub(const CControllerHub& other) { *this = other; }
   CControllerHub(CControllerHub&& other) = default;
   CControllerHub& operator=(const CControllerHub& rhs);
-  CControllerHub& operator=(CControllerHub&& rhs);
+  CControllerHub& operator=(CControllerHub&& rhs) noexcept;
   ~CControllerHub();
 
   void Clear();
