@@ -387,7 +387,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::CreateEpgTag(
 {
   if (!pDS->eof())
   {
-    const std::shared_ptr<CPVREpgInfoTag> newTag(
+    std::shared_ptr<CPVREpgInfoTag> newTag(
         new CPVREpgInfoTag(m_pDS->fv("idEpg").get_asInt(), m_pDS->fv("sIconPath").get_asString()));
 
     time_t iStartTime;
@@ -1234,7 +1234,7 @@ std::shared_ptr<CPVREpgSearchFilter> CPVREpgDatabase::CreateEpgSearchFilter(
 {
   if (!pDS->eof())
   {
-    const auto newSearch = std::make_shared<CPVREpgSearchFilter>(bRadio);
+    auto newSearch = std::make_shared<CPVREpgSearchFilter>(bRadio);
 
     newSearch->SetDatabaseId(m_pDS->fv("idSearch").get_asInt());
     newSearch->SetTitle(m_pDS->fv("sTitle").get_asString());
@@ -1311,7 +1311,7 @@ std::shared_ptr<CPVREpgSearchFilter> CPVREpgDatabase::GetSavedSearchById(bool bR
   {
     try
     {
-      const std::shared_ptr<CPVREpgSearchFilter> filter = CreateEpgSearchFilter(bRadio, m_pDS);
+      std::shared_ptr<CPVREpgSearchFilter> filter = CreateEpgSearchFilter(bRadio, m_pDS);
       m_pDS->close();
       return filter;
     }
