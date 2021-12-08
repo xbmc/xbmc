@@ -812,6 +812,9 @@ public:
   VECFILEITEMS::const_iterator end() const { return m_items.end(); }
   VECFILEITEMS::const_iterator cbegin() const { return m_items.cbegin(); }
   VECFILEITEMS::const_iterator cend() const { return m_items.cend(); }
+  std::reverse_iterator<VECFILEITEMS::const_iterator> rbegin() const { return m_items.rbegin(); }
+  std::reverse_iterator<VECFILEITEMS::const_iterator> rend() const { return m_items.rend(); }
+
 private:
   void Sort(FILEITEMLISTCOMPARISONFUNC func);
   void FillSortFields(FILEITEMFILLFUNC func);

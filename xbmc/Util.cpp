@@ -1023,9 +1023,9 @@ std::string CUtil::ValidatePath(const std::string &path, bool bFixDoubleSlashes 
   return result;
 }
 
-bool CUtil::IsUsingTTFSubtitles()
+bool CUtil::IsSupportedFontExtension(const std::string& fileName)
 {
-  return URIUtils::HasExtension(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SUBTITLES_FONT), ".ttf");
+  return URIUtils::HasExtension(fileName, ".ttf|.otf");
 }
 
 void CUtil::SplitExecFunction(const std::string &execString, std::string &function, std::vector<std::string> &parameters)

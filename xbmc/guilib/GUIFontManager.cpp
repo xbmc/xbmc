@@ -6,30 +6,32 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "GUIComponent.h"
 #include "GUIFontManager.h"
-#include "windowing/GraphicContext.h"
+
+#include "GUIComponent.h"
+#include "GUIFontTTF.h"
 #include "GUIWindowManager.h"
-#include "addons/Skin.h"
 #include "addons/AddonManager.h"
 #include "addons/FontResource.h"
-#include "GUIFontTTF.h"
-#if defined(HAS_GLES) || defined (HAS_GL)
+#include "addons/Skin.h"
+#include "windowing/GraphicContext.h"
+#if defined(HAS_GLES) || defined(HAS_GL)
 #include "GUIFontTTFGL.h"
 #endif
-#include "GUIFont.h"
-#include "utils/XMLUtils.h"
+#include "FileItem.h"
 #include "GUIControlFactory.h"
+#include "GUIFont.h"
+#include "ServiceBroker.h"
+#include "URL.h"
+#include "Util.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDefinitions.h"
-#include "utils/log.h"
-#include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
-#include "FileItem.h"
-#include "URL.h"
-#include "ServiceBroker.h"
+#include "utils/URIUtils.h"
+#include "utils/XMLUtils.h"
+#include "utils/log.h"
 
 #ifdef TARGET_POSIX
 #include "filesystem/SpecialProtocol.h"
@@ -479,24 +481,23 @@ void GUIFontManager::SettingOptionsFontsFiller(const SettingConstPtr& setting,
                                                std::string& current,
                                                void* data)
 {
+  CFileItemList itemsRoot;
   CFileItemList items;
-  CFileItemList items2;
 
-  // find TTF fonts
-  XFILE::CDirectory::GetDirectory("special://home/media/Fonts/", items2, "", XFILE::DIR_FLAG_DEFAULTS);
+  // Find font files
+  XFILE::CDirectory::GetDirectory("special://xbmc/media/Fonts/", itemsRoot, "",
+                                  XFILE::DIR_FLAG_DEFAULTS);
+  XFILE::CDirectory::GetDirectory("special://home/media/Fonts/", items, "",
+                                  XFILE::DIR_FLAG_DEFAULTS);
 
-  if (XFILE::CDirectory::GetDirectory("special://xbmc/media/Fonts/", items, "", XFILE::DIR_FLAG_DEFAULTS))
+  for (auto itItem = itemsRoot.rbegin(); itItem != itemsRoot.rend(); ++itItem)
+    items.AddFront(*itItem, 0);
+
+  for (const auto& item : items)
   {
-    items.Append(items2);
-    for (int i = 0; i < items.Size(); ++i)
+    if (!item->m_bIsFolder && CUtil::IsSupportedFontExtension(item->GetLabel()))
     {
-      CFileItemPtr pItem = items[i];
-
-      if (!pItem->m_bIsFolder
-          && URIUtils::HasExtension(pItem->GetLabel(), ".ttf"))
-      {
-        list.emplace_back(pItem->GetLabel(), pItem->GetLabel());
-      }
+      list.emplace_back(item->GetLabel(), item->GetLabel());
     }
   }
 }
