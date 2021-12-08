@@ -1,0 +1,47 @@
+--- a/lib/Crypto/Util/_raw_api.py
++++ b/lib/Crypto/Util/_raw_api.py
+@@ -182,11 +182,14 @@
+             import platform
+             cached_architecture[:] = platform.architecture()
+         bits, linkage = cached_architecture
+-        if "." not in name and not linkage.startswith("Win"):
+-            full_name = find_library(name)
+-            if full_name is None:
+-                raise OSError("Cannot load library '%s'" % name)
+-            name = full_name
++        try:
++            if "." not in name and not linkage.startswith("Win"):
++                full_name = find_library(name)
++                if full_name is None:
++                    raise OSError("Cannot load library '%s'" % name)
++                name = full_name
++        except IOError:
++            raise OSError("Cannot load library '%s'" % name)
+         return CDLL(name)
+ 
+     def get_c_string(c_string):
+@@ -287,20 +290,10 @@
+     @cdecl, the C function declarations.
+     """
+ 
+-    split = name.split(".")
+-    dir_comps, basename = split[:-1], split[-1]
+-    attempts = []
+-    for ext in extension_suffixes:
+-        try:
+-            filename = basename + ext
+-            full_name = pycryptodome_filename(dir_comps, filename)
+-            if not os.path.isfile(full_name):
+-                attempts.append("Not found '%s'" % filename)
+-                continue
+-            return load_lib(full_name, cdecl)
+-        except OSError as exp:
+-            attempts.append("Cannot load '%s': %s" % (filename, str(exp)))
+-    raise OSError("Cannot load native module '%s': %s" % (name, ", ".join(attempts)))
++    try:
++        return load_lib("lib" + name.replace(".", "_") + ".so", cdecl)
++    except OSError as exp:
++        raise OSError("Cannot load '%s': %s" % ("lib" + name.replace(".", "_") + ".so"))
+ 
+ 
+ def is_buffer(x):
