@@ -373,7 +373,7 @@ CGUIControlColorButtonSetting::CGUIControlColorButtonSetting(
     int id,
     const std::shared_ptr<CSetting>& pSetting,
     ILocalizer* localizer)
-  : CGUIControlBaseSetting(id, std::move(pSetting), localizer)
+  : CGUIControlBaseSetting(id, pSetting, localizer)
 {
   m_pColorButton = pColorControl;
   if (!m_pColorButton)
