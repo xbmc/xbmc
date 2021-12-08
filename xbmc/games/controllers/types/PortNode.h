@@ -30,7 +30,7 @@ public:
   CPortNode(const CPortNode& other) { *this = other; }
   CPortNode(CPortNode&& other) = default;
   CPortNode& operator=(const CPortNode& rhs);
-  CPortNode& operator=(CPortNode&& rhs);
+  CPortNode& operator=(CPortNode&& rhs) noexcept;
   ~CPortNode();
 
   /*!

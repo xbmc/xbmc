@@ -36,7 +36,7 @@ CPortNode& CPortNode::operator=(const CPortNode& rhs)
   return *this;
 }
 
-CPortNode& CPortNode::operator=(CPortNode&& rhs)
+CPortNode& CPortNode::operator=(CPortNode&& rhs) noexcept
 {
   if (this != &rhs)
   {
