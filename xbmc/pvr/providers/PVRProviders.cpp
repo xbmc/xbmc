@@ -350,7 +350,7 @@ std::shared_ptr<CPVRProvider> CPVRProviders::CheckAndPersistEntry(
 
 bool CPVRProviders::PersistUserChanges(const std::vector<std::shared_ptr<CPVRProvider>>& providers)
 {
-  for (auto provider : providers)
+  for (const auto& provider : providers)
   {
     provider->Persist(true);
 

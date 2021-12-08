@@ -3334,7 +3334,7 @@ std::string CFileItem::GetThumbHideIfUnwatched(const CFileItem* item) const
                                     CSettings::VIDEOLIBRARY_THUMB_SHOW_UNWATCHED_EPISODE) &&
       item->HasArt("thumb"))
   {
-    const std::string fanArt = item->GetArt("fanart");
+    std::string fanArt = item->GetArt("fanart");
     if (fanArt.empty())
       return "OverlaySpoiler.png";
     else

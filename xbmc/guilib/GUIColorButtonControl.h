@@ -54,7 +54,7 @@ public:
   std::string GetDescription() const override;
   void SetColorDimensions(float posX, float posY, float width, float height);
   bool IsSelected() const { return m_bSelected; }
-  void SetImageBoxColor(std::string hexColor);
+  void SetImageBoxColor(const std::string& hexColor);
   void SetImageBoxColor(KODI::GUILIB::GUIINFO::CGUIInfoColor color);
 
 protected:

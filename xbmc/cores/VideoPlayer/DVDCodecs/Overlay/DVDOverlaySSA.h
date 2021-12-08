@@ -16,7 +16,7 @@
 class CDVDOverlaySSA : public CDVDOverlayLibass
 {
 public:
-  explicit CDVDOverlaySSA(std::shared_ptr<CDVDSubtitlesLibass> libass)
+  explicit CDVDOverlaySSA(const std::shared_ptr<CDVDSubtitlesLibass>& libass)
     : CDVDOverlayLibass(libass, DVDOVERLAY_TYPE_SSA)
   {
     replace = true;

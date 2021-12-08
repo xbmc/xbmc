@@ -90,7 +90,7 @@ bool ValidateSignature(const char* data, const char* signature)
   return false;
 }
 
-void InsertTextPos(std::string& text, std::string insert, int& pos)
+void InsertTextPos(std::string& text, const std::string& insert, int& pos)
 {
   text.insert(pos, insert);
   pos += static_cast<int>(insert.length());
@@ -394,9 +394,9 @@ void CWebVTTHandler::DecodeLine(std::string line, std::vector<subtitleData>* sub
         m_feedCssStyle.selectorType = WebvttSelector::ANY;
       else if (m_feedCssStyle.selectorName.compare(0, 1, "#") == 0)
         m_feedCssStyle.selectorType = WebvttSelector::ID;
-      else if (m_feedCssStyle.selectorName.find(".") != std::string::npos)
+      else if (m_feedCssStyle.selectorName.find('.') != std::string::npos)
         m_feedCssStyle.selectorType = WebvttSelector::CLASS;
-      else if (m_feedCssStyle.selectorName.find("[") !=
+      else if (m_feedCssStyle.selectorName.find('[') !=
                std::string::npos) // Attribute selector not implemented
         m_feedCssStyle.selectorType = WebvttSelector::UNSUPPORTED;
       else if (m_feedCssStyle.selectorName.compare(0, 1, ":") ==
@@ -776,7 +776,7 @@ void CWebVTTHandler::CalculateTextPosition(std::string& subtitleText)
   m_subtitleData.marginVertical = marginVertical;
 }
 
-std::string CWebVTTHandler::GetCueSettingValue(std::string propName,
+std::string CWebVTTHandler::GetCueSettingValue(const std::string& propName,
                                                std::string& text,
                                                std::string defaultValue)
 {
@@ -786,7 +786,7 @@ std::string CWebVTTHandler::GetCueSettingValue(std::string propName,
   return defaultValue;
 }
 
-std::string CWebVTTHandler::GetCueCssValue(std::string cssPropName, std::string& line)
+std::string CWebVTTHandler::GetCueCssValue(const std::string& cssPropName, std::string& line)
 {
   if (m_cueCssStyleMapRegex[cssPropName].RegFind(line) >= 0)
     return m_cueCssStyleMapRegex[cssPropName].GetMatch(1);

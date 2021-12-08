@@ -138,7 +138,7 @@ namespace OVERLAY {
     COverlay* ConvertLibass(CDVDOverlayLibass* o,
                             double pts,
                             bool updateStyle,
-                            std::shared_ptr<struct KODI::SUBTITLES::style> overlayStyle);
+                            const std::shared_ptr<struct KODI::SUBTITLES::style>& overlayStyle);
 
     void CreateSubtitlesStyle();
 

@@ -159,7 +159,7 @@ void CGUIColorButtonControl::SetImageBoxColor(KODI::GUILIB::GUIINFO::CGUIInfoCol
   m_imgBoxColor = color;
 }
 
-void CGUIColorButtonControl::SetImageBoxColor(std::string hexColor)
+void CGUIColorButtonControl::SetImageBoxColor(const std::string& hexColor)
 {
   if (hexColor.empty())
     m_imgBoxColor = UTILS::COLOR::NONE;

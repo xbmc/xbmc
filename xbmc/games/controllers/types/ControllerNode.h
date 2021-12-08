@@ -33,7 +33,7 @@ public:
   CControllerNode(const CControllerNode& other) { *this = other; }
   CControllerNode(CControllerNode&& other) = default;
   CControllerNode& operator=(const CControllerNode& rhs);
-  CControllerNode& operator=(CControllerNode&& rhs);
+  CControllerNode& operator=(CControllerNode&& rhs) noexcept;
   ~CControllerNode();
 
   void Clear();

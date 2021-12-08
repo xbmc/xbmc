@@ -64,7 +64,7 @@ public:
   const CControllerTree& GetActiveControllerTree() const;
   bool SupportsKeyboard() const;
   bool SupportsMouse() const;
-  bool ConnectController(const std::string& portAddress, ControllerPtr controller);
+  bool ConnectController(const std::string& portAddress, const ControllerPtr& controller);
   bool DisconnectController(const std::string& portAddress);
   void SavePorts();
   void ResetPorts();

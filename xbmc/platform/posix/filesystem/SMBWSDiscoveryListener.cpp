@@ -438,7 +438,7 @@ void CWSDiscoveryListenerUDP::ParseBuffer(const std::string& buffer)
     std::string tmpxaddrs = info.xaddrs.substr(found + delim1.size());
     if (tmpxaddrs[0] != '[')
     {
-      found = std::min(tmpxaddrs.find(delim2), tmpxaddrs.find("/"));
+      found = std::min(tmpxaddrs.find(delim2), tmpxaddrs.find('/'));
       info.xaddrs_host = tmpxaddrs.substr(0, found);
     }
   }
