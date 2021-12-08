@@ -112,7 +112,7 @@ struct webvttCssStyle
 class FindCssStyleName
 {
 public:
-  FindCssStyleName(std::string name) : m_name(name) {}
+  FindCssStyleName(std::string name) : m_name(std::move(name)) {}
   bool operator()(const webvttCssStyle& other) const { return other.selectorName == m_name; }
 
 private:
@@ -151,8 +151,10 @@ protected:
 private:
   bool IsCueLine(std::string& line);
   void GetCueData(std::string& cueText);
-  std::string GetCueSettingValue(std::string propName, std::string& text, std::string defaultValue);
-  std::string GetCueCssValue(std::string cssPropName, std::string& line);
+  std::string GetCueSettingValue(const std::string& propName,
+                                 std::string& text,
+                                 std::string defaultValue);
+  std::string GetCueCssValue(const std::string& cssPropName, std::string& line);
   void AddDefaultCssClasses();
   void InsertCssStyleStartTag(std::string& tagName,
                               std::string& text,

@@ -59,7 +59,7 @@ private:
   void OnItemSelect(unsigned int itemIndex);
 
   // Controller selection callback
-  void OnControllerSelected(const CPortNode& port, ControllerPtr controller);
+  void OnControllerSelected(const CPortNode& port, const ControllerPtr& controller);
 
   static std::string GetLabel(const CPortNode& port);
 

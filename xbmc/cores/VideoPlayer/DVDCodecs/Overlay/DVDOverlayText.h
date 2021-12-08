@@ -16,7 +16,7 @@
 class CDVDOverlayText : public CDVDOverlayLibass
 {
 public:
-  explicit CDVDOverlayText(std::shared_ptr<CDVDSubtitlesLibass> libass)
+  explicit CDVDOverlayText(const std::shared_ptr<CDVDSubtitlesLibass>& libass)
     : CDVDOverlayLibass(libass, DVDOVERLAY_TYPE_TEXT)
   {
     replace = true;

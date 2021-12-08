@@ -42,7 +42,7 @@ public:
   ASS_Image* RenderImage(double pts,
                          KODI::SUBTITLES::renderOpts opts,
                          bool updateStyle,
-                         std::shared_ptr<struct KODI::SUBTITLES::style> subStyle,
+                         const std::shared_ptr<struct KODI::SUBTITLES::style>& subStyle,
                          int* changes = NULL);
 
   ASS_Event* GetEvents();

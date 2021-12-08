@@ -37,7 +37,7 @@ public:
   /*! \brief Load a list of colors from the specified xml file path
       \param filePath The xml file path
   */
-  void LoadColors(const std::string filePath);
+  void LoadColors(const std::string& filePath);
   /*! \brief Get the hex value of the selected color */
   std::string GetSelectedColor() const;
   /*! \brief Set the selected color by hex value */

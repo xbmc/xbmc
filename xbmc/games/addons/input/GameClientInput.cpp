@@ -312,7 +312,8 @@ bool CGameClientInput::SupportsMouse() const
   return it != controllers.GetPorts().end() && !it->GetCompatibleControllers().empty();
 }
 
-bool CGameClientInput::ConnectController(const std::string& portAddress, ControllerPtr controller)
+bool CGameClientInput::ConnectController(const std::string& portAddress,
+                                         const ControllerPtr& controller)
 {
   // Validate parameters
   if (portAddress.empty() || !controller)
