@@ -394,9 +394,9 @@ void CWebVTTHandler::DecodeLine(std::string line, std::vector<subtitleData>* sub
         m_feedCssStyle.selectorType = WebvttSelector::ANY;
       else if (m_feedCssStyle.selectorName.compare(0, 1, "#") == 0)
         m_feedCssStyle.selectorType = WebvttSelector::ID;
-      else if (m_feedCssStyle.selectorName.find(".") != std::string::npos)
+      else if (m_feedCssStyle.selectorName.find('.') != std::string::npos)
         m_feedCssStyle.selectorType = WebvttSelector::CLASS;
-      else if (m_feedCssStyle.selectorName.find("[") !=
+      else if (m_feedCssStyle.selectorName.find('[') !=
                std::string::npos) // Attribute selector not implemented
         m_feedCssStyle.selectorType = WebvttSelector::UNSUPPORTED;
       else if (m_feedCssStyle.selectorName.compare(0, 1, ":") ==
