@@ -13,6 +13,8 @@
 #include "addons/IAddonSupportList.h"
 #include "threads/CriticalSection.h"
 
+#include <utility>
+
 namespace ADDON
 {
 class CAddonMgr;
@@ -57,7 +59,10 @@ public:
    */
   struct SupportValue
   {
-    SupportValue(int description, std::string icon) : m_description(description), m_icon(icon) {}
+    SupportValue(int description, std::string icon)
+      : m_description(description), m_icon(std::move(icon))
+    {
+    }
 
     // Description text about supported part
     int m_description;

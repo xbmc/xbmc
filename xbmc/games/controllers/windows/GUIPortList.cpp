@@ -249,16 +249,15 @@ void CGUIPortList::OnItemSelect(unsigned int itemIndex)
   // Get current controller to give initial focus
   ControllerPtr controller = port.GetActiveController().GetController();
 
-  auto callback = [this, &port](ControllerPtr controller) {
-    OnControllerSelected(port, std::move(controller));
-  };
+  auto callback = [this, &port](const ControllerPtr& controller)
+  { OnControllerSelected(port, controller); };
 
   const bool showDisconnect = !port.IsForceConnected();
   m_controllerSelectDialog.Initialize(std::move(controllers), std::move(controller), showDisconnect,
                                       callback);
 }
 
-void CGUIPortList::OnControllerSelected(const CPortNode& port, ControllerPtr controller)
+void CGUIPortList::OnControllerSelected(const CPortNode& port, const ControllerPtr& controller)
 {
   // Translate parameter
   const bool bConnected = static_cast<bool>(controller);

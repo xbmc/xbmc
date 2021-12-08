@@ -90,7 +90,7 @@ bool ValidateSignature(const char* data, const char* signature)
   return false;
 }
 
-void InsertTextPos(std::string& text, std::string insert, int& pos)
+void InsertTextPos(std::string& text, const std::string& insert, int& pos)
 {
   text.insert(pos, insert);
   pos += static_cast<int>(insert.length());
@@ -776,7 +776,7 @@ void CWebVTTHandler::CalculateTextPosition(std::string& subtitleText)
   m_subtitleData.marginVertical = marginVertical;
 }
 
-std::string CWebVTTHandler::GetCueSettingValue(std::string propName,
+std::string CWebVTTHandler::GetCueSettingValue(const std::string& propName,
                                                std::string& text,
                                                std::string defaultValue)
 {
@@ -786,7 +786,7 @@ std::string CWebVTTHandler::GetCueSettingValue(std::string propName,
   return defaultValue;
 }
 
-std::string CWebVTTHandler::GetCueCssValue(std::string cssPropName, std::string& line)
+std::string CWebVTTHandler::GetCueCssValue(const std::string& cssPropName, std::string& line)
 {
   if (m_cueCssStyleMapRegex[cssPropName].RegFind(line) >= 0)
     return m_cueCssStyleMapRegex[cssPropName].GetMatch(1);

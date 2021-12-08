@@ -33,7 +33,7 @@ CControllerSelect::~CControllerSelect() = default;
 void CControllerSelect::Initialize(ControllerVector controllers,
                                    ControllerPtr defaultController,
                                    bool showDisconnect,
-                                   std::function<void(ControllerPtr)> callback)
+                                   const std::function<void(ControllerPtr)>& callback)
 {
   // Validate parameters
   if (!callback)

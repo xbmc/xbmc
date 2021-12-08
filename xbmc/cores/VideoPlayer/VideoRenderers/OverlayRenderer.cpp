@@ -351,10 +351,11 @@ void CRenderer::CreateSubtitlesStyle()
   m_overlayStyle->blur = settings->GetInt(CSettings::SETTING_SUBTITLES_BLUR);
 }
 
-COverlay* CRenderer::ConvertLibass(CDVDOverlayLibass* o,
-                                   double pts,
-                                   bool updateStyle,
-                                   std::shared_ptr<struct KODI::SUBTITLES::style> overlayStyle)
+COverlay* CRenderer::ConvertLibass(
+    CDVDOverlayLibass* o,
+    double pts,
+    bool updateStyle,
+    const std::shared_ptr<struct KODI::SUBTITLES::style>& overlayStyle)
 {
   KODI::SUBTITLES::renderOpts rOpts;
 

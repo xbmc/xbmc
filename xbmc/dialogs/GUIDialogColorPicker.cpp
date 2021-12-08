@@ -159,7 +159,7 @@ void CGUIDialogColorPicker::LoadColors()
   LoadColors(CSpecialProtocol::TranslatePathConvertCase("special://xbmc/system/dialogcolors.xml"));
 }
 
-void CGUIDialogColorPicker::LoadColors(const std::string filePath)
+void CGUIDialogColorPicker::LoadColors(const std::string& filePath)
 {
   CGUIColorManager colorManager;
   std::vector<std::pair<std::string, UTILS::COLOR::ColorInfo>> colors;

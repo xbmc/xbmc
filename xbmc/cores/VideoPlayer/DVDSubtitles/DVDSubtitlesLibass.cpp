@@ -214,11 +214,12 @@ bool CDVDSubtitlesLibass::CreateTrack(char* buf, size_t size)
   return true;
 }
 
-ASS_Image* CDVDSubtitlesLibass::RenderImage(double pts,
-                                            renderOpts opts,
-                                            bool updateStyle,
-                                            std::shared_ptr<struct KODI::SUBTITLES::style> subStyle,
-                                            int* changes)
+ASS_Image* CDVDSubtitlesLibass::RenderImage(
+    double pts,
+    renderOpts opts,
+    bool updateStyle,
+    const std::shared_ptr<struct KODI::SUBTITLES::style>& subStyle,
+    int* changes)
 {
   CSingleLock lock(m_section);
   if (!m_renderer || !m_track)

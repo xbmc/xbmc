@@ -26,7 +26,7 @@ public:
   void Initialize(ControllerVector controllers,
                   ControllerPtr defaultController,
                   bool showDisconnect,
-                  std::function<void(ControllerPtr)> callback);
+                  const std::function<void(ControllerPtr)>& callback);
   void Deinitialize();
 
 protected:
