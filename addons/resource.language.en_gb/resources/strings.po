@@ -6524,7 +6524,6 @@ msgid "Hardware:"
 msgstr ""
 
 #: xbmc/windows/GUIWindowSystemInfo.cpp
-#: addons/skin.estuary/xml/SettingsSystemInfo.xml
 msgctxt "#13271"
 msgid "System CPU usage:"
 msgstr ""
