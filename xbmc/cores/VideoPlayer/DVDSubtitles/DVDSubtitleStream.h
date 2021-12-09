@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "utils/CharArrayParser.h"
+
 #include <sstream>
 #include <string>
 #include <vector>
@@ -30,12 +32,34 @@ public:
    */
   bool IsIncompatible(CDVDInputStream* pInputStream, std::vector<uint8_t>& buf, size_t* bytesRead);
 
-  int Read(char* buf, int buf_size);
-  long Seek(long offset, int whence);
+  /*!
+   *  \brief Read some data of specified length, from the current position
+   *  \param length The length of data to be read
+   *  \return The string read
+   */
+  std::string Read(int length);
 
-  char* ReadLine(char* pBuffer, int iLen);
-  //wchar* ReadLineW(wchar* pBuffer, int iLen) { return NULL; }
+  /*!
+   *  \brief Change the current data position to the specified offset
+   *  \param offset The new position
+   *  \return True if success, otherwise false
+   */
+  bool Seek(int offset);
 
-  std::stringstream m_stringstream;
+  /*!
+   *  \brief Read a line of data
+   *  \param[OUT] line The data read
+   *  \return True if read, otherwise false if EOF
+   */
+  bool ReadLine(std::string& line);
+
+  /*!
+   *  \brief Get the full data
+   *  \return The data
+   */
+  const std::string& GetData() { return m_subtitleData; }
+
+private:
+  std::string m_subtitleData;
+  CCharArrayParser m_arrayParser;
 };
-

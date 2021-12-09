@@ -17,9 +17,9 @@
 #include "utils/Utf8Utils.h"
 #include "utils/log.h"
 
+#include <cstdio>
 #include <cstring>
 #include <memory>
-
 
 CDVDSubtitleStream::CDVDSubtitleStream() = default;
 
@@ -67,7 +67,7 @@ bool CDVDSubtitleStream::Open(const std::string& strFile)
 
     std::string enc(CCharsetDetection::GetBomEncoding(tmpStr));
     if (enc == "UTF-8" || (enc.empty() && CUtf8Utils::isValidUtf8(tmpStr)))
-      m_stringstream << tmpStr;
+      m_subtitleData = tmpStr;
     else if (!enc.empty())
     {
       std::string converted;
@@ -75,7 +75,7 @@ bool CDVDSubtitleStream::Open(const std::string& strFile)
       if (converted.empty())
         return false;
 
-      m_stringstream << converted;
+      m_subtitleData = converted;
     }
     else
     {
@@ -84,9 +84,10 @@ bool CDVDSubtitleStream::Open(const std::string& strFile)
       if (converted.empty())
         return false;
 
-      m_stringstream << converted;
+      m_subtitleData = converted;
     }
 
+    m_arrayParser.Reset(m_subtitleData.c_str(), m_subtitleData.size());
     return true;
   }
 
@@ -122,39 +123,17 @@ bool CDVDSubtitleStream::IsIncompatible(CDVDInputStream* pInputStream,
   return false;
 }
 
-int CDVDSubtitleStream::Read(char* buf, int buf_size)
+std::string CDVDSubtitleStream::Read(int length)
 {
-  return (int)m_stringstream.readsome(buf, buf_size);
+  return m_arrayParser.ReadNextString(length);
 }
 
-long CDVDSubtitleStream::Seek(long offset, int whence)
+bool CDVDSubtitleStream::Seek(int offset)
 {
-  switch (whence)
-  {
-    case SEEK_CUR:
-    {
-      m_stringstream.seekg(offset, std::ios::cur);
-      break;
-    }
-    case SEEK_END:
-    {
-      m_stringstream.seekg(offset, std::ios::end);
-      break;
-    }
-    case SEEK_SET:
-    {
-      m_stringstream.seekg(offset, std::ios::beg);
-      break;
-    }
-  }
-  return (int)m_stringstream.tellg();
+  return m_arrayParser.SetPosition(offset);
 }
 
-char* CDVDSubtitleStream::ReadLine(char* buf, int iLen)
+bool CDVDSubtitleStream::ReadLine(std::string& line)
 {
-  if (m_stringstream.getline(buf, iLen))
-    return buf;
-  else
-    return NULL;
+  return m_arrayParser.ReadNextLine(line);
 }
-

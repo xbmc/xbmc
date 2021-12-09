@@ -133,7 +133,7 @@ public:
   /*!
   * \brief Verify the validity of the WebVTT signature
   */
-  bool CheckSignature(const char* buffer);
+  bool CheckSignature(const std::string& data);
 
   /*!
   * \brief Decode a line of the WebVTT text data

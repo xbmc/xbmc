@@ -25,6 +25,9 @@ public:
   void Flush() override;
   CDVDOverlay* GetOverlay() override;
 
+  // Specialization of CSubtitlesAdapter
+  void PostProcess(std::string& text) override;
+
 private:
   void Dispose() override;
   CDVDOverlay* m_pOverlay;
