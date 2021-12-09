@@ -11579,16 +11579,22 @@ msgstr ""
 #. label for "music/ballet/dance" epg subgenre value
 #: xbmc/pvr/epg/Epg.cpp
 msgctxt "#19584"
-msgid "Musical / Opera"
+msgid "Jazz"
 msgstr ""
 
 #. label for "music/ballet/dance" epg subgenre value
 #: xbmc/pvr/epg/Epg.cpp
 msgctxt "#19585"
+msgid "Musical / Opera"
+msgstr ""
+
+#. label for "music/ballet/dance" epg subgenre value
+#: xbmc/pvr/epg/Epg.cpp
+msgctxt "#19586"
 msgid "Ballet"
 msgstr ""
 
-#empty strings from id 19586 to 19595
+#empty strings from id 19587 to 19595
 
 #. label for "arts/culture" epg genre value
 #: xbmc/pvr/epg/Epg.cpp
