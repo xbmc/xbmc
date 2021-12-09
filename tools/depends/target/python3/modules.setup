@@ -378,7 +378,7 @@ _sqlite3 _sqlite/connection.c  \
 	-I$(prefix)/include -L$(prefix)/lib -lsqlite3 $(SQLITEDEFINES)
 
 _ctypes _ctypes/callbacks.c  _ctypes/callproc.c  _ctypes/cfield.c  _ctypes/_ctypes.c  \
-        _ctypes/malloc_closure.c  _ctypes/stgdict.c -DPy_BUILD_CORE_MODULE \
+        _ctypes/stgdict.c -DPy_BUILD_CORE_MODULE \
         -I$(prefix)/include/ffi -L$(prefix)/lib -lffi
 
 _queue _queuemodule.c -DPy_BUILD_CORE_MODULE
