@@ -11,6 +11,7 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#include <array>
 #include <errno.h>
 
 #include <arpa/inet.h>
@@ -24,8 +25,6 @@
 #include <resolv.h>
 #include <sys/sockio.h>
 #include <sys/wait.h>
-
-#define ARRAY_SIZE(X) (sizeof(X) / sizeof((X)[0]))
 
 CNetworkInterfaceFreebsd::CNetworkInterfaceFreebsd(CNetworkPosix* network,
                                                    std::string interfaceName,
@@ -92,23 +91,18 @@ bool CNetworkInterfaceFreebsd::GetHostMacAddress(unsigned long host_ip, std::str
   struct rt_msghdr* rtm;
   struct sockaddr_inarp* sin;
   struct sockaddr_dl* sdl;
-  int mib[6];
+  constexpr std::array<int, 6> mib = {
+      CTL_NET, PF_ROUTE, 0, AF_INET, NET_RT_FLAGS, RTF_LLINFO,
+  };
 
   mac = "";
 
-  mib[0] = CTL_NET;
-  mib[1] = PF_ROUTE;
-  mib[2] = 0;
-  mib[3] = AF_INET;
-  mib[4] = NET_RT_FLAGS;
-  mib[5] = RTF_LLINFO;
-
-  if (sysctl(mib, ARRAY_SIZE(mib), NULL, &needed, NULL, 0) == 0)
+  if (sysctl(mib.data(), mib.size(), nullptr, &needed, nullptr, 0) == 0)
   {
     buf = (char*)malloc(needed);
     if (buf)
     {
-      if (sysctl(mib, ARRAY_SIZE(mib), buf, &needed, NULL, 0) == 0)
+      if (sysctl(mib.data(), mib.size(), buf, &needed, nullptr, 0) == 0)
       {
         for (next = buf; next < buf + needed; next += rtm->rtm_msglen)
         {

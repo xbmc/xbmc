@@ -13,8 +13,10 @@
 #include "guilib/D3DResource.h"
 #include "utils/Geometry.h"
 
-#include <DirectXMath.h>
+#include <array>
 #include <vector>
+
+#include <DirectXMath.h>
 #include <wrl/client.h>
 
 extern "C" {
@@ -140,7 +142,7 @@ private:
   CRect m_sourceRect = {};
   CPoint m_dest[4] = {};
   AVPixelFormat m_format = AV_PIX_FMT_NONE;
-  float m_texSteps[2] = {};
+  std::array<float, 2> m_texSteps = {};
   std::shared_ptr<COutputShader> m_pOutShader = nullptr;
   CConvertMatrix m_convMatrix;
   bool m_colorConversion{false};

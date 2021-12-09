@@ -15,19 +15,21 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 
+#include <array>
+
 namespace KODI
 {
 namespace WINDOWING
 {
 namespace WINDOWS
 {
-static XBMCKey VK_keymap[XBMCK_LAST];
+
+static std::array<XBMCKey, XBMCK_LAST> VK_keymap;
 
 static void DIB_InitOSKeymap()
 {
   /* Map the VK keysyms */
-  for (int i = 0; i < ARRAY_SIZE(VK_keymap); ++i)
-    VK_keymap[i] = XBMCK_UNKNOWN;
+  VK_keymap.fill(XBMCK_UNKNOWN);
 
   VK_keymap[VK_BACK] = XBMCK_BACKSPACE;
   VK_keymap[VK_TAB] = XBMCK_TAB;
@@ -173,6 +175,7 @@ static void DIB_InitOSKeymap()
     VK_keymap[VK_LAUNCH_APP2] = XBMCK_LAUNCH_APP2;
   }
 }
+
 } // namespace WINDOWS
 } // namespace WINDOWING
 } // namespace KODI
