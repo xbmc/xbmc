@@ -15,6 +15,7 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <array>
 #include <iostream>
 #include <set>
 #include <string>
@@ -616,7 +617,7 @@ std::string MysqlDatabase::vprepare(const char *format, va_list args)
     pos += 6;
   }
 
-  // Replace some dataypes in CAST statements: 
+  // Replace some dataypes in CAST statements:
   // before: CAST(iFoo AS TEXT), CAST(foo AS INTEGER)
   // after:  CAST(iFoo AS CHAR), CAST(foo AS SIGNED INTEGER)
   pos = strResult.find("CAST(");
@@ -717,28 +718,30 @@ struct StrAccum {
 */
 static const char aDigits[] = "0123456789ABCDEF0123456789abcdef";
 static const char aPrefix[] = "-x0\000X0";
-static const et_info fmtinfo[] = {
-  {  'd', 10, 1, etRADIX,      0,  0 },
-  {  's',  0, 4, etSTRING,     0,  0 },
-  {  'g',  0, 1, etGENERIC,    30, 0 },
-  {  'z',  0, 4, etDYNSTRING,  0,  0 },
-  {  'q',  0, 4, etSQLESCAPE,  0,  0 },
-  {  'Q',  0, 4, etSQLESCAPE2, 0,  0 },
-  {  'w',  0, 4, etSQLESCAPE3, 0,  0 },
-  {  'c',  0, 0, etCHARX,      0,  0 },
-  {  'o',  8, 0, etRADIX,      0,  2 },
-  {  'u', 10, 0, etRADIX,      0,  0 },
-  {  'x', 16, 0, etRADIX,      16, 1 },
-  {  'X', 16, 0, etRADIX,      0,  4 },
-  {  'f',  0, 1, etFLOAT,      0,  0 },
-  {  'e',  0, 1, etEXP,        30, 0 },
-  {  'E',  0, 1, etEXP,        14, 0 },
-  {  'G',  0, 1, etGENERIC,    14, 0 },
-  {  'i', 10, 1, etRADIX,      0,  0 },
-  {  'n',  0, 0, etSIZE,       0,  0 },
-  {  '%',  0, 0, etPERCENT,    0,  0 },
-  {  'p', 16, 0, etPOINTER,    0,  1 },
-};
+// clang-format off
+constexpr std::array<et_info, 20> fmtinfo = {{
+  {'d', 10, 1, etRADIX, 0, 0},
+  {'s', 0, 4, etSTRING, 0, 0},
+  {'g', 0, 1, etGENERIC, 30, 0},
+  {'z', 0, 4, etDYNSTRING, 0, 0},
+  {'q', 0, 4, etSQLESCAPE, 0, 0},
+  {'Q', 0, 4, etSQLESCAPE2, 0, 0},
+  {'w', 0, 4, etSQLESCAPE3, 0, 0},
+  {'c', 0, 0, etCHARX, 0, 0},
+  {'o', 8, 0, etRADIX, 0, 2},
+  {'u', 10, 0, etRADIX, 0, 0},
+  {'x', 16, 0, etRADIX, 16, 1},
+  {'X', 16, 0, etRADIX, 0, 4},
+  {'f', 0, 1, etFLOAT, 0, 0},
+  {'e', 0, 1, etEXP, 30, 0},
+  {'E', 0, 1, etEXP, 14, 0},
+  {'G', 0, 1, etGENERIC, 14, 0},
+  {'i', 10, 1, etRADIX, 0, 0},
+  {'n', 0, 0, etSIZE, 0, 0},
+  {'%', 0, 0, etPERCENT, 0, 0},
+  {'p', 16, 0, etPOINTER, 0, 1},
+}};
+// clang-format on
 
 /*
 ** "*val" is a double such that 0.1 <= *val < 10.0
@@ -941,7 +944,8 @@ void MysqlDatabase::mysqlVXPrintf(
     /* Fetch the info entry for the field */
     infop = &fmtinfo[0];
     xtype = etINVALID;
-    for(idx2=0; idx2<ARRAY_SIZE(fmtinfo); idx2++){
+    for (idx2 = 0; idx2 < fmtinfo.size(); idx2++)
+    {
       if( c==fmtinfo[idx2].fmttype ){
         infop = &fmtinfo[idx2];
         if( useExtended || (infop->flags & FLAG_INTERN)==0 ){

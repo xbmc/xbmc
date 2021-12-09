@@ -19,6 +19,7 @@
 
 #include "platform/android/activity/XBMCApp.h"
 
+#include <array>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -29,9 +30,27 @@
 #include <androidjni/StorageManager.h>
 #include <androidjni/StorageVolume.h>
 
-static const char * typeWL[] = { "vfat", "exfat", "sdcardfs", "fuse", "ntfs", "fat32", "ext3", "ext4", "esdfs", "cifs" };
-static const char * mountWL[] = { "/mnt", "/Removable", "/storage" };
-static const char * mountBL[] = {
+// clang-format off
+constexpr std::array<const char*, 10> typeWL = {
+  "vfat",
+  "exfat",
+  "sdcardfs",
+  "fuse",
+  "ntfs",
+  "fat32",
+  "ext3",
+  "ext4",
+  "esdfs",
+  "cifs"
+};
+
+constexpr std::array<const char*, 3> mountWL = {
+  "/mnt",
+  "/Removable",
+  "/storage"
+};
+
+constexpr std::array<const char*, 9> mountBL = {
   "/mnt/secure",
   "/mnt/shell",
   "/mnt/asec",
@@ -42,12 +61,14 @@ static const char * mountBL[] = {
   "/storage/emulated",
   "/mnt/runtime"
 };
-static const char * deviceWL[] = {
+
+constexpr std::array<const char*, 4> deviceWL = {
   "/dev/block/vold",
   "/dev/fuse",
   "/mnt/media_rw",
   "//" // SMB
 };
+// clang-format on
 
 IStorageProvider* IStorageProvider::CreateInstance()
 {
@@ -293,7 +314,7 @@ std::set<std::string> CAndroidStorageProvider::GetRemovableDrivesLinux()
         bool bl_ok = true;
 
         // What mount points are rejected
-        for (unsigned int i=0; i < ARRAY_SIZE(mountBL); ++i)
+        for (size_t i = 0; i < mountBL.size(); ++i)
         {
           if (StringUtils::StartsWithNoCase(mountStr, mountBL[i]))
           {
@@ -306,7 +327,7 @@ std::set<std::string> CAndroidStorageProvider::GetRemovableDrivesLinux()
         {
           // What filesystems are accepted
           bool fsok = false;
-          for (unsigned int i=0; i < ARRAY_SIZE(typeWL); ++i)
+          for (size_t i = 0; i < typeWL.size(); ++i)
           {
             if (StringUtils::StartsWithNoCase(fsStr, typeWL[i]))
             {
@@ -316,7 +337,7 @@ std::set<std::string> CAndroidStorageProvider::GetRemovableDrivesLinux()
           }
           // What devices are accepted
           bool devok = false;
-          for (unsigned int i=0; i < ARRAY_SIZE(deviceWL); ++i)
+          for (size_t i = 0; i < deviceWL.size(); ++i)
           {
             if (StringUtils::StartsWithNoCase(deviceStr, deviceWL[i]))
             {
@@ -327,7 +348,7 @@ std::set<std::string> CAndroidStorageProvider::GetRemovableDrivesLinux()
 
           // What mount points are accepted
           bool mountok = false;
-          for (unsigned int i=0; i < ARRAY_SIZE(mountWL); ++i)
+          for (size_t i = 0; i < mountWL.size(); ++i)
           {
             if (StringUtils::StartsWithNoCase(mountStr, mountWL[i]))
             {
