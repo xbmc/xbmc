@@ -3706,9 +3706,10 @@ msgctxt "#825"
 msgid "Recording: {0:s}"
 msgstr ""
 
-#. Label for a context menu entry to add a reminder timer
+#. Label for buttons to add a PVR reminder timer
 #: addons/skin.estuary/xml/DialogPVRInfo.xml
 #: xbmc/pvr/PVRContextMenus.cpp
+#: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
 msgctxt "#826"
 msgid "Set reminder"
 msgstr ""
@@ -11302,7 +11303,13 @@ msgctxt "#19343"
 msgid "[saved]"
 msgstr ""
 
-#empty strings from id 19344 to 19498
+#. text for yes no dialog shown when user selects a future programme in the guide window and default select action is 'smart select'
+#: xbmc/pvr/windows/GUIWindowPVRGuide.cpp
+msgctxt "#19344"
+msgid "Do you want to set a reminder for the selected programme or to switch to the current programme?"
+msgstr ""
+
+#empty strings from id 19345 to 19498
 
 #. label for epg genre value
 #: xbmc/pvr/epg/Epg.cpp
