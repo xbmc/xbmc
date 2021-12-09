@@ -13,10 +13,10 @@
 #include "DVDStreamInfo.h"
 #include "cores/VideoPlayer/DVDSubtitles/SubtitlesStyle.h"
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
+#include "utils/CharArrayParser.h"
 
 #include <cstring>
 #include <memory>
-#include <sstream>
 
 COverlayCodecWebVTT::COverlayCodecWebVTT() : CDVDOverlayCodec("WebVTT Subtitle Decoder")
 {
@@ -62,7 +62,7 @@ OverlayMessage COverlayCodecWebVTT::Decode(DemuxPacket* pPacket)
   if (!pPacket)
     return OverlayMessage::OC_ERROR;
 
-  char* data = reinterpret_cast<char*>(pPacket->pData);
+  const char* data = reinterpret_cast<const char*>(pPacket->pData);
   std::vector<subtitleData> subtitleList;
 
   if (m_isISOFormat)
@@ -87,17 +87,16 @@ OverlayMessage COverlayCodecWebVTT::Decode(DemuxPacket* pPacket)
     if (!m_webvttHandler.CheckSignature(data))
       return OverlayMessage::OC_ERROR;
 
-    std::string strData(data, pPacket->iSize);
-    std::istringstream streamData(strData);
-
+    CCharArrayParser charArrayParser;
+    charArrayParser.Reset(data, pPacket->iSize);
     std::string line;
-    while (std::getline(streamData, line))
+
+    while (charArrayParser.ReadNextLine(line))
     {
       m_webvttHandler.DecodeLine(line, &subtitleList);
     }
 
-    // It is mandatory to decode an empty line to mark the end
-    // of the last WebVTT Cue in case it is missing
+    // We send an empty line to mark the end of the last Cue
     m_webvttHandler.DecodeLine("", &subtitleList);
   }
 
@@ -109,7 +108,7 @@ OverlayMessage COverlayCodecWebVTT::Decode(DemuxPacket* pPacket)
     opts.marginRight = subData.marginRight;
     opts.marginVertical = subData.marginVertical;
 
-    int subId = AddSubtitle(subData.text.c_str(), subData.startTime, subData.stopTime, &opts);
+    int subId = AddSubtitle(subData.text, subData.startTime, subData.stopTime, &opts);
 
     if (m_isISOFormat)
       m_previousSubIds.emplace_back(subId);

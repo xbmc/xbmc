@@ -248,12 +248,16 @@ OverlayMessage CDVDOverlayCodecTX3G::Decode(DemuxPacket* pPacket)
   if (strUTF8.empty())
     return OverlayMessage::OC_BUFFER;
 
-  if (strUTF8[strUTF8.size() - 1] == '\n')
-    strUTF8.erase(strUTF8.size() - 1);
-
-  AddSubtitle(strUTF8.c_str(), PTSStartTime, PTSStopTime);
+  AddSubtitle(strUTF8, PTSStartTime, PTSStopTime);
 
   return m_pOverlay ? OverlayMessage::OC_DONE : OverlayMessage::OC_OVERLAY;
+}
+
+void CDVDOverlayCodecTX3G::PostProcess(std::string& text)
+{
+  if (text[text.size() - 1] == '\n')
+    text.erase(text.size() - 1);
+  CSubtitlesAdapter::PostProcess(text);
 }
 
 void CDVDOverlayCodecTX3G::Reset()

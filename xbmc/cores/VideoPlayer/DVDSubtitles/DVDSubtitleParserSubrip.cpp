@@ -35,20 +35,18 @@ bool CDVDSubtitleParserSubrip::Open(CDVDStreamInfo& hints)
   if (!TagConv.Init())
     return false;
 
-  char line[1024];
-  std::string currLine;
+  std::string line;
 
-  while (m_pStream->ReadLine(line, sizeof(line)))
+  while (m_pStream->ReadLine(line))
   {
-    currLine = line;
-    StringUtils::Trim(currLine);
+    StringUtils::Trim(line);
 
-    if (currLine.length() > 0)
+    if (line.length() > 0)
     {
       char sep;
       int hh1, mm1, ss1, ms1, hh2, mm2, ss2, ms2;
-      int c = sscanf(currLine.c_str(), "%d%c%d%c%d%c%d --> %d%c%d%c%d%c%d\n", &hh1, &sep, &mm1,
-                     &sep, &ss1, &sep, &ms1, &hh2, &sep, &mm2, &sep, &ss2, &sep, &ms2);
+      int c = sscanf(line.c_str(), "%d%c%d%c%d%c%d --> %d%c%d%c%d%c%d\n", &hh1, &sep, &mm1, &sep,
+                     &ss1, &sep, &ms1, &hh2, &sep, &mm2, &sep, &ss2, &sep, &ms2);
 
       if (c == 1)
       {
@@ -62,25 +60,24 @@ bool CDVDSubtitleParserSubrip::Open(CDVDStreamInfo& hints)
             ((double)(((hh2 * 60 + mm2) * 60) + ss2) * 1000 + ms2) * (DVD_TIME_BASE / 1000);
 
         std::string convText;
-        while (m_pStream->ReadLine(line, sizeof(line)))
+        while (m_pStream->ReadLine(line))
         {
-          currLine.assign(line);
-          StringUtils::Trim(currLine);
+          StringUtils::Trim(line);
 
           // empty line, next subtitle is about to start
-          if (currLine.length() <= 0)
+          if (line.length() <= 0)
             break;
 
           if (convText.size() > 0)
             convText += "\n";
-          TagConv.ConvertLine(currLine);
-          convText += currLine;
+          TagConv.ConvertLine(line);
+          convText += line;
         }
 
         if (!convText.empty())
         {
           TagConv.CloseTag(convText);
-          AddSubtitle(convText.c_str(), iPTSStartTime, iPTSStopTime);
+          AddSubtitle(convText, iPTSStartTime, iPTSStopTime);
         }
       }
     }

@@ -74,7 +74,7 @@ protected:
   {
     if(m_pStream)
     {
-      if(m_pStream->Seek(0, SEEK_SET) == 0)
+      if (m_pStream->Seek(0))
         return true;
     }
     else

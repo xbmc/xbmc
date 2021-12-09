@@ -162,13 +162,4 @@ void CDVDSubtitleTagMicroDVD::ConvertLine(std::string& strUTF8)
       }
     }
   }
-
-  if (strUTF8.empty())
-    return;
-
-  if (strUTF8[strUTF8.size() - 1] == '\n')
-    strUTF8.erase(strUTF8.size() - 1);
-
-  // We have to remove all \r because it causes the line to display empty box "tofu"
-  StringUtils::Replace(strUTF8, "\r", "");
 }

@@ -85,6 +85,26 @@ public:
   std::string ReadNextString(int length);
 
   /*!
+   * \brief Reads the next chars array of specified length (it is assumed that
+   * the caller has already checked the availability of the data for its length)
+   * \param length The length to be read
+   * \param data[OUT] The data read
+   * \return True if success, otherwise false
+   */
+  bool ReadNextArray(int length, char* data);
+
+  /*!
+   * \brief Reads a line of text.
+   * A line is considered to be terminated by any one of a carriage return ('\\r'),
+   * a line feed ('\\n'), or a carriage return followed by a line feed ('\\r\\n'),
+   * this method discards leading UTF-8 byte order marks, if present.
+   * \param line [OUT] The line read without line-termination characters
+   * \return True if read, otherwise false if the end of the data has already
+   *         been reached
+   */
+  bool ReadNextLine(std::string& line);
+
+  /*!
    * \brief Get the current data
    * \return The char pointer to the current data
    */

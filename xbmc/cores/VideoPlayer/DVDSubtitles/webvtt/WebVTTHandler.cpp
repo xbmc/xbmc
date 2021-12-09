@@ -76,14 +76,15 @@ enum FlagTags
   FLAG_TAG_COUNT
 };
 
-bool ValidateSignature(const char* data, const char* signature)
+bool ValidateSignature(const std::string& data, const char* signature)
 {
-  if (std::strlen(data) > std::strlen(signature))
+  const size_t signatureLen = std::strlen(signature);
+  if (data.size() > signatureLen)
   {
-    if (std::strncmp(data, signature, std::strlen(signature)) == 0)
+    if (data.compare(0, signatureLen, signature) == 0)
     {
       // Check if last char is valid
-      if (std::strchr(signatureLastChars, data[std::strlen(signature)]) != nullptr)
+      if (std::strchr(signatureLastChars, data[signatureLen]) != nullptr)
         return true;
     }
   }
@@ -217,10 +218,10 @@ bool CWebVTTHandler::Initialize()
   return true;
 }
 
-bool CWebVTTHandler::CheckSignature(const char* buffer)
+bool CWebVTTHandler::CheckSignature(const std::string& data)
 {
   // Check the sequence of chars to identify WebVTT signature
-  if (ValidateSignature(buffer, signatureCharsBOM) || ValidateSignature(buffer, signatureChars))
+  if (ValidateSignature(data, signatureCharsBOM) || ValidateSignature(data, signatureChars))
     return true;
 
   CLog::Log(LOGERROR, "{} - WebVTT signature not valid", __FUNCTION__);

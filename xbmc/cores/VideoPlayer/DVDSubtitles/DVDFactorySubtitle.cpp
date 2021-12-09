@@ -23,7 +23,7 @@
 
 CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(std::string& strFile)
 {
-  char line[1024];
+  std::string line;
   int i;
 
   std::unique_ptr<CDVDSubtitleStream> pStream(new CDVDSubtitleStream());
@@ -34,24 +34,25 @@ CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(std::string& strFile)
 
   for (int t = 0; t < 256; t++)
   {
-    if (pStream->ReadLine(line, sizeof(line)))
+    if (pStream->ReadLine(line))
     {
-      if ((sscanf (line, "{%d}{}", &i)==1) ||
-          (sscanf (line, "{%d}{%d}", &i, &i)==2))
+      if ((sscanf(line.c_str(), "{%d}{}", &i) == 1) ||
+          (sscanf(line.c_str(), "{%d}{%d}", &i, &i) == 2))
       {
-        return new CDVDSubtitleParserMicroDVD(std::move(pStream), strFile.c_str());
+        return new CDVDSubtitleParserMicroDVD(std::move(pStream), strFile);
       }
-      else if (sscanf(line, "[%d][%d]", &i, &i) == 2)
+      else if (sscanf(line.c_str(), "[%d][%d]", &i, &i) == 2)
       {
-        return new CDVDSubtitleParserMPL2(std::move(pStream), strFile.c_str());
+        return new CDVDSubtitleParserMPL2(std::move(pStream), strFile);
       }
-      else if (sscanf(line, "%d:%d:%d%*c%d --> %d:%d:%d%*c%d", &i, &i, &i, &i, &i, &i, &i, &i) == 8)
+      else if (sscanf(line.c_str(), "%d:%d:%d%*c%d --> %d:%d:%d%*c%d", &i, &i, &i, &i, &i, &i, &i,
+                      &i) == 8)
       {
-        return new CDVDSubtitleParserSubrip(std::move(pStream), strFile.c_str());
+        return new CDVDSubtitleParserSubrip(std::move(pStream), strFile);
       }
-      else if (sscanf(line, "%d:%d:%d:", &i, &i, &i) == 3)
+      else if (sscanf(line.c_str(), "%d:%d:%d:", &i, &i, &i) == 3)
       {
-        return new CDVDSubtitleParserVplayer(std::move(pStream), strFile.c_str());
+        return new CDVDSubtitleParserVplayer(std::move(pStream), strFile);
       }
       else if (!StringUtils::CompareNoCase(line, "!: This is a Sub Station Alpha v", 32) ||
                !StringUtils::CompareNoCase(line, "ScriptType: v4.00", 17) ||
@@ -59,15 +60,15 @@ CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(std::string& strFile)
                !StringUtils::CompareNoCase(line, "Dialogue: ", 10) ||
                !StringUtils::CompareNoCase(line, "[Events]", 8))
       {
-        return new CDVDSubtitleParserSSA(std::move(pStream), strFile.c_str());
+        return new CDVDSubtitleParserSSA(std::move(pStream), strFile);
       }
-      else if (strstr (line, "<SAMI>"))
+      else if (line == "<SAMI>")
       {
-        return new CDVDSubtitleParserSami(std::move(pStream), strFile.c_str());
+        return new CDVDSubtitleParserSami(std::move(pStream), strFile);
       }
-      else if (strstr(line, "WEBVTT"))
+      else if (!StringUtils::CompareNoCase(line, "WEBVTT", 6))
       {
-        return new CSubtitleParserWebVTT(std::move(pStream), strFile.c_str());
+        return new CSubtitleParserWebVTT(std::move(pStream), strFile);
       }
     }
     else

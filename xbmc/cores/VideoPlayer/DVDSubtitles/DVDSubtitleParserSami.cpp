@@ -34,10 +34,8 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo& hints)
   if (!Initialize())
     return false;
 
-  char line[1024];
-
-  CRegExp reg(true);
-  if (!reg.RegComp("<SYNC START=\"?([0-9]+)\"?>"))
+  CRegExp regLine(true);
+  if (!regLine.RegComp("<SYNC START=\"?([0-9]+)\"?>(.+)"))
     return false;
   CRegExp regClassID(true);
   if (!regClassID.RegComp("<P Class=\"?([\\w\\d]+)\"?>"))
@@ -88,8 +86,9 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo& hints)
   // that, could, be an empty string with a "&nbsp;" tag.
   // Last line could not have the stop time then we set as default 4 secs.
   int defaultDuration = 4 * DVD_TIME_BASE;
+  std::string line;
 
-  while (m_pStream->ReadLine(line, sizeof(line)))
+  while (m_pStream->ReadLine(line))
   {
     // Find the language Class ID in current line (if exist)
     if (regClassID.RegFind(line) > -1)
@@ -98,20 +97,20 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo& hints)
       StringUtils::ToLower(lastLangClassID);
     }
 
-    int pos = reg.RegFind(line);
+    int pos = regLine.RegFind(line);
     if (pos > -1) // Sync tag found
     {
-      double currStartTime = (double)atoi(reg.GetMatch(1).c_str());
+      double currStartTime = (double)atoi(regLine.GetMatch(1).c_str());
       double currPTSStartTime = currStartTime * DVD_TIME_BASE / 1000;
+      std::string text = regLine.GetMatch(2);
 
       // We set the duration for the previous line (Event) by using the current start time
       ChangeSubtitleStopTime(prevSubId, currPTSStartTime);
 
       // We try to get text after Sync tag (if exists)
-      std::string text(line + pos + reg.GetFindLen());
       TagConv.ConvertLine(text, langClassID);
       TagConv.CloseTag(text);
-      prevSubId = AddSubtitle(text.c_str(), currPTSStartTime, currPTSStartTime + defaultDuration);
+      prevSubId = AddSubtitle(text, currPTSStartTime, currPTSStartTime + defaultDuration);
       lastPTSStartTime = currPTSStartTime;
     }
     else
@@ -131,7 +130,7 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo& hints)
       }
       else
       {
-        prevSubId = AddSubtitle(text.c_str(), lastPTSStartTime, lastPTSStartTime + defaultDuration);
+        prevSubId = AddSubtitle(text, lastPTSStartTime, lastPTSStartTime + defaultDuration);
       }
     }
   }

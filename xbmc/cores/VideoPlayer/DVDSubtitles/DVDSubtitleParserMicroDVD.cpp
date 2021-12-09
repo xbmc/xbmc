@@ -14,6 +14,8 @@
 #include "utils/RegExp.h"
 #include "utils/log.h"
 
+#include <cstdlib>
+
 CDVDSubtitleParserMicroDVD::CDVDSubtitleParserMicroDVD(std::unique_ptr<CDVDSubtitleStream>&& stream,
                                                        const std::string& filename)
   : CDVDSubtitleParserText(std::move(stream), filename, "MicroDVD Subtitle Parser"),
@@ -43,30 +45,26 @@ bool CDVDSubtitleParserMicroDVD::Open(CDVDStreamInfo& hints)
   else
     m_framerate = DVD_TIME_BASE / 25.0;
 
-  char line[1024];
-
   CRegExp reg;
-  if (!reg.RegComp("\\{([0-9]+)\\}\\{([0-9]+)\\}"))
+  if (!reg.RegComp("\\{([0-9]+)\\}\\{([0-9]+)\\}(.+)"))
     return false;
   CDVDSubtitleTagMicroDVD TagConv;
+  std::string line;
 
-  while (m_pStream->ReadLine(line, sizeof(line)))
+  while (m_pStream->ReadLine(line))
   {
-    if ((strlen(line) > 0) && (line[strlen(line) - 1] == '\r'))
-      line[strlen(line) - 1] = 0;
-
     int pos = reg.RegFind(line);
     if (pos > -1)
     {
-      std::string text(line + pos + reg.GetFindLen());
       std::string startFrame(reg.GetMatch(1));
       std::string endFrame(reg.GetMatch(2));
+      std::string text(reg.GetMatch(3));
 
-      double iPTSStartTime = m_framerate * atoi(startFrame.c_str());
-      double iPTSStopTime = m_framerate * atoi(endFrame.c_str());
+      double iPTSStartTime = m_framerate * std::atoi(startFrame.c_str());
+      double iPTSStopTime = m_framerate * std::atoi(endFrame.c_str());
 
       TagConv.ConvertLine(text);
-      AddSubtitle(text.c_str(), iPTSStartTime, iPTSStopTime);
+      AddSubtitle(text, iPTSStartTime, iPTSStopTime);
     }
   }
 

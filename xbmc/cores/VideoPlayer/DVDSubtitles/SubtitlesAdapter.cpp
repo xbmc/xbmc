@@ -30,17 +30,18 @@ bool CSubtitlesAdapter::Initialize()
   return m_libass->CreateTrack() && m_libass->CreateStyle();
 }
 
-int CSubtitlesAdapter::AddSubtitle(const char* text, double startTime, double stopTime)
+int CSubtitlesAdapter::AddSubtitle(std::string& text, double startTime, double stopTime)
 {
   return AddSubtitle(text, startTime, stopTime, nullptr);
 }
 
-int CSubtitlesAdapter::AddSubtitle(const char* text,
+int CSubtitlesAdapter::AddSubtitle(std::string& text,
                                    double startTime,
                                    double stopTime,
                                    KODI::SUBTITLES::subtitleOpts* opts)
 {
-  int ret = m_libass->AddEvent(text, startTime, stopTime, opts);
+  PostProcess(text);
+  int ret = m_libass->AddEvent(text.c_str(), startTime, stopTime, opts);
   if (ret == ASS_NO_ID)
     return NO_SUBTITLE_ID;
   return ret;

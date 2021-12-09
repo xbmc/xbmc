@@ -202,17 +202,11 @@ void CDVDSubtitleTagSami::ConvertLine(std::string& strUTF8, const char* langClas
     strUTF8.clear();
     return;
   }
-  if (strUTF8[strUTF8.size() - 1] == '\n')
-    strUTF8.erase(strUTF8.size() - 1);
 
   std::wstring wStrHtml, wStr;
   g_charsetConverter.utf8ToW(strUTF8, wStrHtml, false);
   HTML::CHTMLUtil::ConvertHTMLToW(wStrHtml, wStr);
   g_charsetConverter.wToUTF8(wStr, strUTF8);
-
-  // Many subtitle formats use \r\n as line break,
-  // we have to remove all \r because it causes the line to display empty box "tofu"
-  StringUtils::Replace(strUTF8, "\r", "");
 }
 
 void CDVDSubtitleTagSami::CloseTag(std::string& text)
@@ -247,16 +241,15 @@ void CDVDSubtitleTagSami::CloseTag(std::string& text)
 
 void CDVDSubtitleTagSami::LoadHead(CDVDSubtitleStream* samiStream)
 {
-  char cLine[1024];
   bool inSTYLE = false;
   CRegExp reg(true);
   if (!reg.RegComp("\\.([a-z]+)[ \t]*\\{[ \t]*name:([^;]*?);[ \t]*lang:([^;]*?);[ "
                    "\t]*SAMIType:([^;]*?);[ \t]*\\}"))
     return;
 
-  while (samiStream->ReadLine(cLine, sizeof(cLine)))
+  std::string line;
+  while (samiStream->ReadLine(line))
   {
-    std::string line = cLine;
     StringUtils::Trim(line);
 
     if (StringUtils::EqualsNoCase(line, "<BODY>"))

@@ -82,12 +82,20 @@ OverlayMessage CDVDOverlayCodecText::Decode(DemuxPacket* pPacket)
   {
     TagConv.ConvertLine(text);
     TagConv.CloseTag(text);
-    AddSubtitle(text.c_str(), PTSStartTime, PTSStopTime);
+    AddSubtitle(text, PTSStartTime, PTSStopTime);
   }
   else
     CLog::Log(LOGERROR, "{} - Failed to initialize tag converter", __FUNCTION__);
 
   return m_pOverlay ? OverlayMessage::OC_DONE : OverlayMessage::OC_OVERLAY;
+}
+
+void CDVDOverlayCodecText::PostProcess(std::string& text)
+{
+  // The data that come from InputStream could contains \r chars
+  // we have to remove them all because it causes to display empty box "tofu"
+  StringUtils::Replace(text, "\r", "");
+  CSubtitlesAdapter::PostProcess(text);
 }
 
 void CDVDOverlayCodecText::Reset()
