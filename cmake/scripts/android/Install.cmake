@@ -155,6 +155,7 @@ endforeach()
 add_bundle_file(${ASS_LIBRARY} ${libdir} "")
 add_bundle_file(${SHAIRPLAY_LIBRARY} ${libdir} "")
 add_bundle_file(${SMBCLIENT_LIBRARY} ${libdir} "")
+add_bundle_file(${PYTHON_LIBRARY} ${libdir} "")
 
 # Main targets from Makefile.in
 if(CPU MATCHES i686)

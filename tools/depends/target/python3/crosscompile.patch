@@ -1,5 +1,13 @@
 --- a/configure.ac
 +++ b/configure.ac
+@@ -1159,7 +1159,6 @@
+ 	  LDLIBRARY='libpython$(LDVERSION).so'
+ 	  BLDLIBRARY='-L. -lpython$(LDVERSION)'
+ 	  RUNSHARED=LD_LIBRARY_PATH=`pwd`${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+-	  INSTSONAME="$LDLIBRARY".$SOVERSION
+ 	  if test "$with_pydebug" != yes
+           then
+ 	      PY3LIBRARY=libpython3.so
 @@ -1214,15 +1214,6 @@
          ARFLAGS="rcs"
  fi

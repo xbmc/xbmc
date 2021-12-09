@@ -27,3 +27,14 @@
      {"tcflush", termios_tcflush,
       METH_VARARGS, termios_tcflush__doc__},
      {"tcflow", termios_tcflow,
+--- a/Lib/ctypes/__init__.py
++++ b/Lib/ctypes/__init__.py
+@@ -461,7 +461,7 @@
+ elif _sys.platform == "cygwin":
+     pythonapi = PyDLL("libpython%d.%d.dll" % _sys.version_info[:2])
+ else:
+-    pythonapi = PyDLL(None)
++    pythonapi = PyDLL("libpython%d.%d.so" % _sys.version_info[:2])
+ 
+ 
+ if _os.name == "nt":

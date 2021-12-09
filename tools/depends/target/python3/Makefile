@@ -9,9 +9,16 @@ SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
 BASE_URL=https://www.python.org/ftp/python/$(VERSION)
 
+FFI_INC=$(prefix)/include/ffi
+FFI_LIB=$(prefix)/lib
+
 ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
   HOSTPLATFORM=_PYTHON_HOST_PLATFORM="darwin"
   LINK_ICONV=-liconv
+
+  FFI_INC=$(SDKROOT)/usr/include/ffi
+  FFI_LIB=$(SDKROOT)/usr/lib
+
   ifeq ($(OS), darwin_embedded)
     EXTRA_CONFIGURE=ac_cv_func_wait3=no ac_cv_func_wait4=no ac_cv_func_waitpid=no \
                     ac_cv_func_execv=no ac_cv_func_fexecv=no ac_cv_func_getentropy=no \
@@ -28,13 +35,15 @@ endif
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) \
-                      --disable-shared \
+                      --enable-shared \
+                      --disable-static \
                       --without-ensurepip \
                       --disable-framework \
                       --without-pymalloc \
                       --enable-ipv6 \
                       $(EXTRA_CONFIGURE)
 
+export FFI_INC FFI_LIB
 
 LIBDYLIB=$(PLATFORM)/libpython$(PYTHON_VERSION).a
 

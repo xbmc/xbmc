@@ -170,11 +170,10 @@ _symtable symtablemodule.c
 # Modules that should always be present (non UNIX dependent):
 
 array arraymodule.c	-DPy_BUILD_CORE_MODULE # array objects
-cmath cmathmodule.c _math.c -DPy_BUILD_CORE_MODULE # -lm # complex math library functions
-math mathmodule.c _math.c -DPy_BUILD_CORE_MODULE # -lm # math library functions, e.g. sin()
+math mathmodule.c _math.o -DPy_BUILD_CORE_MODULE # -lm # math library functions, e.g. sin()
+cmath cmathmodule.c -I$(srcdir)/Include/internal -DPy_BUILD_CORE_MODULE # -lm # complex math library functions
 _contextvars _contextvarsmodule.c  # Context Variables
 _struct _struct.c	# binary structure packing/unpacking
-_weakref _weakref.c	# basic weak reference support
 #_testcapi _testcapimodule.c    # Python C API test module
 #_testinternalcapi _testinternalcapi.c -I$(srcdir)/Include/internal -DPy_BUILD_CORE_MODULE  # Python internal C API test module
 _random _randommodule.c -DPy_BUILD_CORE_MODULE	# Random number generator
@@ -378,8 +377,8 @@ _sqlite3 _sqlite/connection.c  \
 	-I$(prefix)/include -L$(prefix)/lib -lsqlite3 $(SQLITEDEFINES)
 
 _ctypes _ctypes/callbacks.c  _ctypes/callproc.c  _ctypes/cfield.c  _ctypes/_ctypes.c  \
-        _ctypes/malloc_closure.c  _ctypes/stgdict.c -DPy_BUILD_CORE_MODULE \
-        -I$(prefix)/include/ffi -L$(prefix)/lib -lffi
+        _ctypes/stgdict.c -DPy_BUILD_CORE_MODULE \
+        -I$(FFI_INC) -L$(FFI_LIB) -lffi
 
 _queue _queuemodule.c -DPy_BUILD_CORE_MODULE
 
