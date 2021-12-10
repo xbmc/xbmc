@@ -12,6 +12,8 @@
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 
+#include <cstdlib>
+
 CDVDSubtitleParserVplayer::CDVDSubtitleParserVplayer(std::unique_ptr<CDVDSubtitleStream>&& pStream,
                                                      const std::string& strFile)
   : CDVDSubtitleParserText(std::move(pStream), strFile, "VPlayer Subtitle Parser"),
@@ -40,22 +42,21 @@ bool CDVDSubtitleParserVplayer::Open(CDVDStreamInfo& hints)
   // for 4 seconds, to not have text hanging around in silent scenes...
   int defaultDuration = 4 * (int)m_framerate;
 
-  char line[1024];
-
   CRegExp reg;
   if (!reg.RegComp("([0-9]+):([0-9]+):([0-9]+):(.+)$"))
     return false;
 
   int prevSubId = NO_SUBTITLE_ID;
   double prevPTSStartTime = 0.;
+  std::string line;
 
-  while (m_pStream->ReadLine(line, sizeof(line)))
+  while (m_pStream->ReadLine(line))
   {
     if (reg.RegFind(line) > -1)
     {
-      int hour = atoi(reg.GetMatch(1).c_str());
-      int min = atoi(reg.GetMatch(2).c_str());
-      int sec = atoi(reg.GetMatch(3).c_str());
+      int hour = std::atoi(reg.GetMatch(1).c_str());
+      int min = std::atoi(reg.GetMatch(2).c_str());
+      int sec = std::atoi(reg.GetMatch(3).c_str());
       std::string currText = reg.GetMatch(4);
 
       double currPTSStartTime = m_framerate * (3600 * hour + 60 * min + sec);
@@ -70,11 +71,8 @@ bool CDVDSubtitleParserVplayer::Open(CDVDStreamInfo& hints)
 
       // A single line can contain multiple lines split by |
       StringUtils::Replace(currText, "|", "\n");
-      // We have to remove all \r because it causes the line to display empty box "tofu"
-      StringUtils::Replace(currText, "\r", "");
 
-      prevSubId =
-          AddSubtitle(currText.c_str(), currPTSStartTime, currPTSStartTime + defaultDuration);
+      prevSubId = AddSubtitle(currText, currPTSStartTime, currPTSStartTime + defaultDuration);
 
       prevPTSStartTime = currPTSStartTime;
     }

@@ -10,6 +10,8 @@
 
 #include "utils/log.h"
 
+#include <cstring>
+
 void CCharArrayParser::Reset()
 {
   m_limit = 0;
@@ -105,4 +107,62 @@ std::string CCharArrayParser::ReadNextString(int length)
   if (m_position > m_limit)
     CLog::Log(LOGERROR, "{} - Position out of range", __FUNCTION__);
   return str;
+}
+
+bool CCharArrayParser::ReadNextArray(int length, char* data)
+{
+  if (!m_data)
+  {
+    CLog::Log(LOGERROR, "{} - No data to read", __FUNCTION__);
+    return false;
+  }
+  if (m_position + length > m_limit)
+  {
+    CLog::Log(LOGERROR, "{} - Position out of range", __FUNCTION__);
+    return false;
+  }
+  std::strncpy(data, m_data + m_position, length);
+  data[length] = '\0';
+  return true;
+}
+
+bool CCharArrayParser::ReadNextLine(std::string& line)
+{
+  if (!m_data)
+  {
+    CLog::Log(LOGERROR, "{} - No data to read", __FUNCTION__);
+    return false;
+  }
+  if (CharsLeft() == 0)
+  {
+    line.clear();
+    return false;
+  }
+
+  int lineLimit = m_position;
+  while (lineLimit < m_limit && !(m_data[lineLimit] == '\n' || m_data[lineLimit] == '\r'))
+  {
+    lineLimit++;
+  }
+
+  if (lineLimit - m_position >= 3 && m_data[m_position] == '\xEF' &&
+      m_data[m_position + 1] == '\xBB' && m_data[m_position + 2] == '\xBF')
+  {
+    // There's a UTF-8 byte order mark at the start of the line. Discard it.
+    m_position += 3;
+  }
+
+  line.assign(m_data + m_position, lineLimit - m_position);
+  m_position = lineLimit;
+
+  if (m_data[m_position] == '\r')
+  {
+    m_position++;
+  }
+  if (m_data[m_position] == '\n')
+  {
+    m_position++;
+  }
+
+  return true;
 }

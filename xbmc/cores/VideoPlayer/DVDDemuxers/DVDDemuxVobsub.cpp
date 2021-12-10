@@ -16,8 +16,7 @@
 #include "DVDSubtitles/DVDSubtitleStream.h"
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
-
-#include <string.h>
+#include "utils/StringUtils.h"
 
 CDVDDemuxVobsub::CDVDDemuxVobsub() = default;
 
@@ -72,35 +71,39 @@ bool CDVDDemuxVobsub::Open(const std::string& filename, int source, const std::s
   CDVDCodecOptions options;
   hints.codec = AV_CODEC_ID_DVD_SUBTITLE;
 
-  char line[2048];
+  std::string line;
 
   SState state;
   state.delay = 0;
   state.id = -1;
 
-  while( pStream->ReadLine(line, sizeof(line)) )
+  while (pStream->ReadLine(line))
   {
-    if (*line == 0 || *line == '\r' || *line == '\n' || *line == '#')
+    if (line[0] == '#')
       continue;
-    else if (strncmp("langidx:", line, 8) == 0)
-      ParseLangIdx(state, line + 8);
-    else if (strncmp("delay:", line, 6) == 0)
-      ParseDelay(state, line + 6);
-    else if (strncmp("id:", line, 3) == 0)
-      ParseId(state, line + 3);
-    else if (strncmp("timestamp:", line, 10) == 0)
-      ParseTimestamp(state, line + 10);
-    else if (strncmp("palette:", line, 8) == 0
-         ||  strncmp("size:", line, 5) == 0
-         ||  strncmp("org:", line, 4) == 0
-         ||  strncmp("custom colors:", line, 14) == 0
-         ||  strncmp("scale:", line, 6) == 0
-         ||  strncmp("alpha:", line, 6) == 0
-         ||  strncmp("fadein/out:", line, 11) == 0
-         ||  strncmp("forced subs:", line, 12) == 0)
-      ParseExtra(state, line);
-    else
-      continue;
+
+    size_t pos = line.find_first_of(":");
+    if (pos != std::string::npos)
+    {
+      pos += 1;
+      std::string param = line.substr(0, pos);
+      std::string data = line.substr(pos, line.size() - pos);
+
+      if (param == "langidx:")
+        ParseLangIdx(state, data);
+      else if (param == "delay:")
+        ParseDelay(state, data);
+      else if (param == "id:")
+        ParseId(state, data);
+      else if (param == "timestamp:")
+        ParseTimestamp(state, data);
+      else if (param == "palette:" || param == "size:" || param == "org:" ||
+               param == "custom colors:" || param == "scale:" || param == "alpha:" ||
+               param == "fadein/out:" || param == "forced subs:")
+        ParseExtra(state, line);
+      else
+        continue;
+    }
   }
 
   struct sorter s;
@@ -168,23 +171,25 @@ DemuxPacket* CDVDDemuxVobsub::Read()
   return packet;
 }
 
-bool CDVDDemuxVobsub::ParseLangIdx(SState& state, char* line)
+bool CDVDDemuxVobsub::ParseLangIdx(SState& state, std::string& line)
 {
   return true;
 }
 
-bool CDVDDemuxVobsub::ParseDelay(SState& state, char* line)
+bool CDVDDemuxVobsub::ParseDelay(SState& state, std::string& line)
 {
   int h,m,s,ms;
   bool negative = false;
 
-  while(*line == ' ') line++;
-  if(*line == '-')
+  StringUtils::Trim(line);
+
+  if (line[0] == '-')
   {
-	  line++;
-	  negative = true;
+    negative = true;
+    line.erase(0, 1);
   }
-  if(sscanf(line, "%d:%d:%d:%d", &h, &m, &s, &ms) != 4)
+
+  if (sscanf(line.c_str(), "%d:%d:%d:%d", &h, &m, &s, &ms) != 4)
     return false;
   state.delay = h*3600.0 + m*60.0 + s + ms*0.001;
   if(negative)
@@ -192,20 +197,25 @@ bool CDVDDemuxVobsub::ParseDelay(SState& state, char* line)
   return true;
 }
 
-bool CDVDDemuxVobsub::ParseId(SState& state, char* line)
+bool CDVDDemuxVobsub::ParseId(SState& state, std::string& line)
 {
   std::unique_ptr<CStream> stream(new CStream(this));
 
-  while(*line == ' ') line++;
-  stream->language = std::string(line, 2);
-  line+=2;
+  StringUtils::Trim(line);
+  stream->language = line.substr(0, 2);
 
-  while(*line == ' ' || *line == ',') line++;
-  if (strncmp("index:", line, 6) == 0)
+  size_t pos = line.find_first_of(",");
+  if (pos != std::string::npos)
   {
-    line+=6;
-    while(*line == ' ') line++;
-    stream->uniqueId = atoi(line);
+    pos += 1;
+    line.erase(0, pos);
+  }
+  StringUtils::TrimLeft(line);
+  pos = line.find_first_of(":");
+  if (pos != std::string::npos && line.substr(0, pos + 1) == "index:")
+  {
+    pos += 1;
+    stream->uniqueId = std::atoi(line.substr(pos, line.size() - pos).c_str());
   }
   else
     stream->uniqueId = -1;
@@ -220,14 +230,14 @@ bool CDVDDemuxVobsub::ParseId(SState& state, char* line)
   return true;
 }
 
-bool CDVDDemuxVobsub::ParseExtra(SState& state, char* line)
+bool CDVDDemuxVobsub::ParseExtra(SState& state, std::string& line)
 {
   state.extra += line;
   state.extra += '\n';
   return true;
 }
 
-bool CDVDDemuxVobsub::ParseTimestamp(SState& state, char* line)
+bool CDVDDemuxVobsub::ParseTimestamp(SState& state, std::string& line)
 {
   if(state.id < 0)
     return false;
@@ -235,8 +245,8 @@ bool CDVDDemuxVobsub::ParseTimestamp(SState& state, char* line)
   int h,m,s,ms;
   STimestamp timestamp;
 
-  while(*line == ' ') line++;
-  if(sscanf(line, "%d:%d:%d:%d, filepos:%" PRIx64, &h, &m, &s, &ms, &timestamp.pos) != 5)
+  StringUtils::Trim(line);
+  if (sscanf(line.c_str(), "%d:%d:%d:%d, filepos:%" PRIx64, &h, &m, &s, &ms, &timestamp.pos) != 5)
     return false;
 
   timestamp.id  = state.id;

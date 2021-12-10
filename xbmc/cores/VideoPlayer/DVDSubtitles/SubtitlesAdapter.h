@@ -11,6 +11,7 @@
 #include "SubtitlesStyle.h"
 
 #include <memory>
+#include <string>
 
 class CDVDOverlay;
 class CDVDSubtitlesLibass;
@@ -21,7 +22,7 @@ class CSubtitlesAdapter
 {
 public:
   CSubtitlesAdapter();
-  ~CSubtitlesAdapter();
+  virtual ~CSubtitlesAdapter();
 
   /*!
   * \brief Initialize the subtitles adapter
@@ -31,20 +32,22 @@ public:
 
   /*!
   * \brief Add a subtitle
+  * \param text The subtitle text
   * \param startTime The PTS start time of the subtitle
   * \param stopTime The PTS stop time of the subtitle
   * \return Return the subtitle ID, otherwise NO_SUBTITLE_ID if fails
   */
-  int AddSubtitle(const char* text, double startTime, double stopTime);
+  int AddSubtitle(std::string& text, double startTime, double stopTime);
 
   /*!
   * \brief Add a subtitle with supplementary options
+  * \param text The subtitle text
   * \param startTime The PTS start time of the subtitle
   * \param stopTime The PTS stop time of the subtitle
   * \param opts Subtitle options
   * \return Return the subtitle ID, otherwise NO_SUBTITLE_ID if fails
   */
-  int AddSubtitle(const char* text,
+  int AddSubtitle(std::string& text,
                   double startTime,
                   double stopTime,
                   KODI::SUBTITLES::subtitleOpts* opts);
@@ -74,6 +77,14 @@ public:
   void FlushSubtitles();
 
   CDVDOverlay* CreateOverlay();
+
+protected:
+  /*!
+  * \brief Post processing of subtitle, will be called before processing
+  *        AddSubtitle method
+  * \param text The subtitle text
+  */
+  virtual void PostProcess(std::string& text){};
 
 private:
   std::shared_ptr<CDVDSubtitlesLibass> m_libass;

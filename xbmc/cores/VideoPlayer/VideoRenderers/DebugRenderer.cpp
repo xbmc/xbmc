@@ -72,10 +72,10 @@ void CDebugRenderer::SetInfo(DEBUG_INFO_PLAYER& info)
   // provide a way to allow fixed on-screen text display
   // without use all these fixed values.
   m_adapter->FlushSubtitles();
-  m_adapter->AddSubtitle(info.audio.c_str(), 0., 5000000.);
-  m_adapter->AddSubtitle(info.video.c_str(), 0., 5000000.);
-  m_adapter->AddSubtitle(info.player.c_str(), 0., 5000000.);
-  m_adapter->AddSubtitle(info.vsync.c_str(), 0., 5000000.);
+  m_adapter->AddSubtitle(info.audio, 0., 5000000.);
+  m_adapter->AddSubtitle(info.video, 0., 5000000.);
+  m_adapter->AddSubtitle(info.player, 0., 5000000.);
+  m_adapter->AddSubtitle(info.vsync, 0., 5000000.);
 }
 
 void CDebugRenderer::SetInfo(DEBUG_INFO_VIDEO& video, DEBUG_INFO_RENDER& render)
@@ -89,12 +89,12 @@ void CDebugRenderer::SetInfo(DEBUG_INFO_VIDEO& video, DEBUG_INFO_RENDER& render)
   // provide a way to allow fixed on-screen text display
   // without use all these fixed values.
   m_adapter->FlushSubtitles();
-  m_adapter->AddSubtitle(video.videoSource.c_str(), 0., 5000000.);
-  m_adapter->AddSubtitle(video.metaPrim.c_str(), 0., 5000000.);
-  m_adapter->AddSubtitle(video.metaLight.c_str(), 0., 5000000.);
-  m_adapter->AddSubtitle(video.shader.c_str(), 0., 5000000.);
-  m_adapter->AddSubtitle(render.renderFlags.c_str(), 0., 5000000.);
-  m_adapter->AddSubtitle(render.videoOutput.c_str(), 0., 5000000.);
+  m_adapter->AddSubtitle(video.videoSource, 0., 5000000.);
+  m_adapter->AddSubtitle(video.metaPrim, 0., 5000000.);
+  m_adapter->AddSubtitle(video.metaLight, 0., 5000000.);
+  m_adapter->AddSubtitle(video.shader, 0., 5000000.);
+  m_adapter->AddSubtitle(render.renderFlags, 0., 5000000.);
+  m_adapter->AddSubtitle(render.videoOutput, 0., 5000000.);
 }
 
 void CDebugRenderer::Render(CRect& src, CRect& dst, CRect& view)
