@@ -21,11 +21,11 @@ msgctxt "Addon Summary"
 msgid "AAC Audio Encoder"
 msgstr "Encodeur Audio AAC"
 
-#, fuzzy
 msgctxt "Addon Description"
 msgid "AAC is a set of codecs designed to provide better compression than MP3s, and are improved versions of MPEG audio."
 msgstr "AAC est un ensemble de codecs conçus pour fournir une meilleur compression que le MP3, et sont des versions améliorés de MPEG audio."
 
+#, fuzzy
 #. Bitrate to use on for compression
 #: resources/settings.xml
 msgctxt "#30000"
