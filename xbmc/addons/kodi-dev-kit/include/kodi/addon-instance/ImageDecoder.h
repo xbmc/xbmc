@@ -110,7 +110,7 @@ namespace addon
 /// ~~~~~~~~~~~~~{.cpp}
 /// #include <kodi/addon-instance/ImageDecoder.h>
 ///
-/// class ATTRIBUTE_HIDDEN CMyImageDecoder : public kodi::addon::CInstanceImageDecoder
+/// class ATTR_DLL_LOCAL CMyImageDecoder : public kodi::addon::CInstanceImageDecoder
 /// {
 /// public:
 ///   CMyImageDecoder(KODI_HANDLE instance, const std::string& kodiVersion);
@@ -156,7 +156,7 @@ namespace addon
 ///
 /// //----------------------------------------------------------------------
 ///
-/// class ATTRIBUTE_HIDDEN CMyAddon : public kodi::addon::CAddonBase
+/// class ATTR_DLL_LOCAL CMyAddon : public kodi::addon::CAddonBase
 /// {
 /// public:
 ///   CMyAddon() = default;
@@ -195,7 +195,7 @@ namespace addon
 /// Kodi's header. Manually deleting the add-on instance is not required.
 ///
 //------------------------------------------------------------------------------
-class ATTRIBUTE_HIDDEN CInstanceImageDecoder : public IAddonInstance
+class ATTR_DLL_LOCAL CInstanceImageDecoder : public IAddonInstance
 {
 public:
   //============================================================================
@@ -215,7 +215,7 @@ public:
                      !kodiVersion.empty() ? kodiVersion
                                           : GetKodiTypeVersion(ADDON_INSTANCE_IMAGEDECODER))
   {
-    if (CAddonBase::m_interface->globalSingleInstance != nullptr)
+    if (CPrivateBase::m_interface->globalSingleInstance != nullptr)
       throw std::logic_error("kodi::addon::CInstanceImageDecoder: Creation of multiple together "
                              "with single instance way is not allowed!");
 

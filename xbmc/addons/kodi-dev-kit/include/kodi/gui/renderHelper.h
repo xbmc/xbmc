@@ -16,7 +16,7 @@ namespace kodi
 {
 namespace gui
 {
-struct ATTRIBUTE_HIDDEN IRenderHelper
+struct ATTR_DLL_LOCAL IRenderHelper
 {
   virtual ~IRenderHelper() = default;
   virtual bool Init() = 0;
@@ -36,7 +36,7 @@ namespace kodi
 {
 namespace gui
 {
-struct ATTRIBUTE_HIDDEN CRenderHelperStub : public IRenderHelper
+struct ATTR_DLL_LOCAL CRenderHelperStub : public IRenderHelper
 {
   bool Init() override { return true; }
   void Begin() override {}
@@ -61,17 +61,17 @@ namespace gui
  *
  * Function defines here and not in CAddonBase because of a hen and egg problem.
  */
-inline std::shared_ptr<IRenderHelper> ATTRIBUTE_HIDDEN GetRenderHelper()
+inline std::shared_ptr<IRenderHelper> ATTR_DLL_LOCAL GetRenderHelper()
 {
   using namespace ::kodi::addon;
-  if (static_cast<CAddonBase*>(CAddonBase::m_interface->addonBase)->m_renderHelper)
-    return static_cast<CAddonBase*>(CAddonBase::m_interface->addonBase)->m_renderHelper;
+  if (static_cast<CAddonBase*>(CPrivateBase::m_interface->addonBase)->m_renderHelper)
+    return static_cast<CAddonBase*>(CPrivateBase::m_interface->addonBase)->m_renderHelper;
 
   std::shared_ptr<kodi::gui::IRenderHelper> renderHelper(new CRenderHelper());
   if (!renderHelper->Init())
     return nullptr;
 
-  static_cast<CAddonBase*>(CAddonBase::m_interface->addonBase)->m_renderHelper =
+  static_cast<CAddonBase*>(CPrivateBase::m_interface->addonBase)->m_renderHelper =
       renderHelper; // Hold on base for other types
   return renderHelper;
 }

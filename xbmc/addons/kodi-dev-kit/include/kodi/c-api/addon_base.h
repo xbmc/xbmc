@@ -27,17 +27,17 @@
 
 // Generic helper definitions for smallest possible alignment
 //@{
-#undef ATTRIBUTE_PACKED
+#undef ATTR_PACKED
 #undef PRAGMA_PACK_BEGIN
 #undef PRAGMA_PACK_END
 
 #if defined(__GNUC__)
-#define ATTRIBUTE_PACKED __attribute__((packed))
+#define ATTR_PACKED __attribute__((packed))
 #define PRAGMA_PACK 0
 #endif
 
-#if !defined(ATTRIBUTE_PACKED)
-#define ATTRIBUTE_PACKED
+#if !defined(ATTR_PACKED)
+#define ATTR_PACKED
 #define PRAGMA_PACK 1
 #endif
 //@}
@@ -93,6 +93,7 @@
 #define ATTRIBUTE_DLL_EXPORT ATTR_DLL_EXPORT
 #define ATTRIBUTE_DLL_LOCAL ATTR_DLL_LOCAL
 #define ATTRIBUTE_HIDDEN ATTR_DLL_LOCAL
+#define ATTRIBUTE_PACKED ATTR_PACKED
 //@}
 
 #ifdef _WIN32 // windows

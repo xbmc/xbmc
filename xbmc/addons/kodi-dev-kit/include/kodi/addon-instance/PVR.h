@@ -404,7 +404,7 @@ namespace addon
 /// The destruction of the example class `CMyPVRClient` is called from
 /// Kodi's header. Manually deleting the add-on instance is not required.
 ///
-class ATTRIBUTE_HIDDEN CInstancePVRClient : public IAddonInstance
+class ATTR_DLL_LOCAL CInstancePVRClient : public IAddonInstance
 {
 public:
   //============================================================================
@@ -443,7 +443,7 @@ public:
   /// #include <kodi/addon-instance/PVR.h>
   /// ...
   ///
-  /// class ATTRIBUTE_HIDDEN CPVRExample
+  /// class ATTR_DLL_LOCAL CPVRExample
   ///   : public kodi::addon::CAddonBase,
   ///     public kodi::addon::CInstancePVRClient
   /// {
@@ -464,12 +464,12 @@ public:
   ///
   CInstancePVRClient() : IAddonInstance(ADDON_INSTANCE_PVR, GetKodiTypeVersion(ADDON_INSTANCE_PVR))
   {
-    if (CAddonBase::m_interface->globalSingleInstance != nullptr)
+    if (CPrivateBase::m_interface->globalSingleInstance != nullptr)
       throw std::logic_error("kodi::addon::CInstancePVRClient: Creation of more as one in single "
                              "instance way is not allowed!");
 
-    SetAddonStruct(CAddonBase::m_interface->firstKodiInstance, m_kodiVersion);
-    CAddonBase::m_interface->globalSingleInstance = this;
+    SetAddonStruct(CPrivateBase::m_interface->firstKodiInstance, m_kodiVersion);
+    CPrivateBase::m_interface->globalSingleInstance = this;
   }
   //----------------------------------------------------------------------------
 
@@ -517,7 +517,7 @@ public:
     : IAddonInstance(ADDON_INSTANCE_PVR,
                      !kodiVersion.empty() ? kodiVersion : GetKodiTypeVersion(ADDON_INSTANCE_PVR))
   {
-    if (CAddonBase::m_interface->globalSingleInstance != nullptr)
+    if (CPrivateBase::m_interface->globalSingleInstance != nullptr)
       throw std::logic_error("kodi::addon::CInstancePVRClient: Creation of multiple together with "
                              "single instance way is not allowed!");
 
@@ -1045,7 +1045,7 @@ public:
   /// #include <kodi/addon-instance/PVR.h>
   /// ...
   ///
-  /// class ATTRIBUTE_HIDDEN CPVRExample
+  /// class ATTR_DLL_LOCAL CPVRExample
   ///   : public kodi::addon::CAddonBase,
   ///     public kodi::addon::CInstancePVRClient
   /// {

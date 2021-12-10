@@ -33,8 +33,7 @@ class CInstanceVideoCodec;
 /// @copydetails cpp_kodi_addon_videocodec_Defs_VideoCodecInitdata_Help
 ///
 ///@{
-class ATTRIBUTE_HIDDEN VideoCodecInitdata
-  : public CStructHdl<VideoCodecInitdata, VIDEOCODEC_INITDATA>
+class ATTR_DLL_LOCAL VideoCodecInitdata : public CStructHdl<VideoCodecInitdata, VIDEOCODEC_INITDATA>
 {
   /*! \cond PRIVATE */
   friend class CInstanceVideoCodec;
@@ -256,7 +255,7 @@ private:
 /// Kodi's header. Manually deleting the add-on instance is not required.
 ///
 ///
-class ATTRIBUTE_HIDDEN CInstanceVideoCodec : public IAddonInstance
+class ATTR_DLL_LOCAL CInstanceVideoCodec : public IAddonInstance
 {
 public:
   //============================================================================
@@ -274,7 +273,7 @@ public:
                      !kodiVersion.empty() ? kodiVersion
                                           : GetKodiTypeVersion(ADDON_INSTANCE_VIDEOCODEC))
   {
-    if (CAddonBase::m_interface->globalSingleInstance != nullptr)
+    if (CPrivateBase::m_interface->globalSingleInstance != nullptr)
       throw std::logic_error("kodi::addon::CInstanceVideoCodec: Creation of multiple together with "
                              "single instance way is not allowed!");
 

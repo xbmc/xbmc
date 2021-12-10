@@ -121,7 +121,7 @@ class CInstanceInputStream;
 /// on other places on addon.
 ///
 ///@{
-class ATTRIBUTE_HIDDEN InputstreamProperty
+class ATTR_DLL_LOCAL InputstreamProperty
   : public CStructHdl<InputstreamProperty, INPUTSTREAM_PROPERTY>
 {
   /*! \cond PRIVATE */
@@ -201,7 +201,7 @@ private:
 /// @copydetails cpp_kodi_addon_inputstream_Defs_Interface_InputstreamCapabilities_Help
 ///
 ///@{
-class ATTRIBUTE_HIDDEN InputstreamCapabilities
+class ATTR_DLL_LOCAL InputstreamCapabilities
   : public CStructHdl<InputstreamCapabilities, INPUTSTREAM_CAPABILITIES>
 {
   /*! \cond PRIVATE */
@@ -257,7 +257,7 @@ private:
 /// @copydetails cpp_kodi_addon_inputstream_Defs_Interface_InputstreamMasteringMetadata_Help
 ///
 ///@{
-class ATTRIBUTE_HIDDEN InputstreamMasteringMetadata
+class ATTR_DLL_LOCAL InputstreamMasteringMetadata
   : public CStructHdl<InputstreamMasteringMetadata, INPUTSTREAM_MASTERING_METADATA>
 {
   /*! \cond PRIVATE */
@@ -420,7 +420,7 @@ private:
 /// @copydetails cpp_kodi_addon_inputstream_Defs_Interface_InputstreamContentlightMetadata_Help
 ///
 ///@{
-class ATTRIBUTE_HIDDEN InputstreamContentlightMetadata
+class ATTR_DLL_LOCAL InputstreamContentlightMetadata
   : public CStructHdl<InputstreamContentlightMetadata, INPUTSTREAM_CONTENTLIGHT_METADATA>
 {
   /*! \cond PRIVATE */
@@ -504,7 +504,7 @@ private:
 /// @copydetails cpp_kodi_addon_inputstream_Defs_Interface_InputstreamInfo_Help
 ///
 ///@{
-class ATTRIBUTE_HIDDEN InputstreamInfo : public CStructHdl<InputstreamInfo, INPUTSTREAM_INFO>
+class ATTR_DLL_LOCAL InputstreamInfo : public CStructHdl<InputstreamInfo, INPUTSTREAM_INFO>
 {
   /*! \cond PRIVATE */
   friend class CInstanceInputStream;
@@ -947,7 +947,7 @@ private:
 /// @copydetails cpp_kodi_addon_inputstream_Defs_Interface_InputstreamTimes_Help
 ///
 ///@{
-class ATTRIBUTE_HIDDEN InputstreamTimes : public CStructHdl<InputstreamTimes, INPUTSTREAM_TIMES>
+class ATTR_DLL_LOCAL InputstreamTimes : public CStructHdl<InputstreamTimes, INPUTSTREAM_TIMES>
 {
   /*! \cond PRIVATE */
   friend class CInstanceInputStream;
@@ -1150,7 +1150,7 @@ private:
 /// Kodi's header. Manually deleting the add-on instance is not required.
 ///
 //------------------------------------------------------------------------------
-class ATTRIBUTE_HIDDEN CInstanceInputStream : public IAddonInstance
+class ATTR_DLL_LOCAL CInstanceInputStream : public IAddonInstance
 {
 public:
   //============================================================================
@@ -1169,7 +1169,7 @@ public:
                      !kodiVersion.empty() ? kodiVersion
                                           : GetKodiTypeVersion(ADDON_INSTANCE_INPUTSTREAM))
   {
-    if (CAddonBase::m_interface->globalSingleInstance != nullptr)
+    if (CPrivateBase::m_interface->globalSingleInstance != nullptr)
       throw std::logic_error("kodi::addon::CInstanceInputStream: Creation of multiple together "
                              "with single instance way is not allowed!");
 

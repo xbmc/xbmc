@@ -392,7 +392,7 @@ private:
 /// The destruction of the example class `CMyVisualization` is called from
 /// Kodi's header. Manually deleting the add-on instance is not required.
 ///
-class ATTRIBUTE_HIDDEN CInstanceVisualization : public IAddonInstance
+class ATTR_DLL_LOCAL CInstanceVisualization : public IAddonInstance
 {
 public:
   //============================================================================
@@ -405,12 +405,12 @@ public:
   CInstanceVisualization()
     : IAddonInstance(ADDON_INSTANCE_VISUALIZATION, GetKodiTypeVersion(ADDON_INSTANCE_VISUALIZATION))
   {
-    if (CAddonBase::m_interface->globalSingleInstance != nullptr)
+    if (CPrivateBase::m_interface->globalSingleInstance != nullptr)
       throw std::logic_error(
           "kodi::addon::CInstanceVisualization: Cannot create multiple instances of add-on.");
 
-    SetAddonStruct(CAddonBase::m_interface->firstKodiInstance);
-    CAddonBase::m_interface->globalSingleInstance = this;
+    SetAddonStruct(CPrivateBase::m_interface->firstKodiInstance);
+    CPrivateBase::m_interface->globalSingleInstance = this;
   }
   //----------------------------------------------------------------------------
 
@@ -460,7 +460,7 @@ public:
                      !kodiVersion.empty() ? kodiVersion
                                           : GetKodiTypeVersion(ADDON_INSTANCE_VISUALIZATION))
   {
-    if (CAddonBase::m_interface->globalSingleInstance != nullptr)
+    if (CPrivateBase::m_interface->globalSingleInstance != nullptr)
       throw std::logic_error("kodi::addon::CInstanceVisualization: Creation of multiple together "
                              "with single instance way is not allowed!");
 

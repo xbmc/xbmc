@@ -91,7 +91,7 @@ extern "C"
     uint16_t vendor_id; /*!< vendor ID of peripheral, 0x0000 if unknown */
     uint16_t product_id; /*!< product ID of peripheral, 0x0000 if unknown */
     unsigned int index; /*!< the order in which the add-on identified this peripheral */
-  } ATTRIBUTE_PACKED PERIPHERAL_INFO;
+  } ATTR_PACKED PERIPHERAL_INFO;
 
   /*!
    * @brief Peripheral add-on capabilities.
@@ -102,7 +102,7 @@ extern "C"
     bool provides_joystick_rumble;
     bool provides_joystick_power_off;
     bool provides_buttonmaps; /*!< true if the add-on provides button maps */
-  } ATTRIBUTE_PACKED PERIPHERAL_CAPABILITIES;
+  } ATTR_PACKED PERIPHERAL_CAPABILITIES;
 
   //}
 
@@ -225,7 +225,7 @@ extern "C"
     JOYSTICK_STATE_HAT driver_hat_state;
     JOYSTICK_STATE_AXIS driver_axis_state;
     JOYSTICK_STATE_MOTOR motor_state;
-  } ATTRIBUTE_PACKED PERIPHERAL_EVENT;
+  } ATTR_PACKED PERIPHERAL_EVENT;
 
   //}
 
@@ -245,7 +245,7 @@ extern "C"
     unsigned int axis_count; /*!< @brief number of axes reported by the driver */
     unsigned int motor_count; /*!< @brief number of motors reported by the driver */
     bool supports_poweroff; /*!< @brief whether the joystick supports being powered off */
-  } ATTRIBUTE_PACKED JOYSTICK_INFO;
+  } ATTR_PACKED JOYSTICK_INFO;
 
   //============================================================================
   /// @defgroup cpp_kodi_addon_peripheral_Defs_Joystick_JOYSTICK_DRIVER_PRIMITIVE_TYPE enum JOYSTICK_DRIVER_PRIMITIVE_TYPE
@@ -295,7 +295,7 @@ extern "C"
   typedef struct JOYSTICK_DRIVER_BUTTON
   {
     int index;
-  } ATTRIBUTE_PACKED JOYSTICK_DRIVER_BUTTON;
+  } ATTR_PACKED JOYSTICK_DRIVER_BUTTON;
 
   //============================================================================
   /// @defgroup cpp_kodi_addon_peripheral_Defs_Joystick_JOYSTICK_DRIVER_HAT_DIRECTION enum JOYSTICK_DRIVER_HAT_DIRECTION
@@ -330,7 +330,7 @@ extern "C"
   {
     int index;
     JOYSTICK_DRIVER_HAT_DIRECTION direction;
-  } ATTRIBUTE_PACKED JOYSTICK_DRIVER_HAT;
+  } ATTR_PACKED JOYSTICK_DRIVER_HAT;
 
   //============================================================================
   /// @defgroup cpp_kodi_addon_peripheral_Defs_Joystick_JOYSTICK_DRIVER_SEMIAXIS_DIRECTION enum JOYSTICK_DRIVER_SEMIAXIS_DIRECTION
@@ -361,7 +361,7 @@ extern "C"
     int center;
     JOYSTICK_DRIVER_SEMIAXIS_DIRECTION direction;
     unsigned int range;
-  } ATTRIBUTE_PACKED JOYSTICK_DRIVER_SEMIAXIS;
+  } ATTR_PACKED JOYSTICK_DRIVER_SEMIAXIS;
 
   /*!
    * @brief Motor primitive
@@ -369,7 +369,7 @@ extern "C"
   typedef struct JOYSTICK_DRIVER_MOTOR
   {
     int index;
-  } ATTRIBUTE_PACKED JOYSTICK_DRIVER_MOTOR;
+  } ATTR_PACKED JOYSTICK_DRIVER_MOTOR;
 
   /*!
    * @brief Keyboard key primitive
@@ -377,7 +377,7 @@ extern "C"
   typedef struct JOYSTICK_DRIVER_KEY
   {
     char keycode[16];
-  } ATTRIBUTE_PACKED JOYSTICK_DRIVER_KEY;
+  } ATTR_PACKED JOYSTICK_DRIVER_KEY;
 
   //============================================================================
   /// @defgroup cpp_kodi_addon_peripheral_Defs_Joystick_JOYSTICK_DRIVER_MOUSE_INDEX enum JOYSTICK_DRIVER_MOUSE_INDEX
@@ -426,7 +426,7 @@ extern "C"
   typedef struct JOYSTICK_DRIVER_MOUSE_BUTTON
   {
     JOYSTICK_DRIVER_MOUSE_INDEX button;
-  } ATTRIBUTE_PACKED JOYSTICK_DRIVER_MOUSE_BUTTON;
+  } ATTR_PACKED JOYSTICK_DRIVER_MOUSE_BUTTON;
 
   //============================================================================
   /// @defgroup cpp_kodi_addon_peripheral_Defs_Joystick_JOYSTICK_DRIVER_RELPOINTER_DIRECTION enum JOYSTICK_DRIVER_RELPOINTER_DIRECTION
@@ -460,7 +460,7 @@ extern "C"
   typedef struct JOYSTICK_DRIVER_RELPOINTER
   {
     JOYSTICK_DRIVER_RELPOINTER_DIRECTION direction;
-  } ATTRIBUTE_PACKED JOYSTICK_DRIVER_RELPOINTER;
+  } ATTR_PACKED JOYSTICK_DRIVER_RELPOINTER;
 
   /*!
    * @brief Driver primitive struct
@@ -478,7 +478,7 @@ extern "C"
       struct JOYSTICK_DRIVER_MOUSE_BUTTON mouse;
       struct JOYSTICK_DRIVER_RELPOINTER relpointer;
     };
-  } ATTRIBUTE_PACKED JOYSTICK_DRIVER_PRIMITIVE;
+  } ATTR_PACKED JOYSTICK_DRIVER_PRIMITIVE;
 
   //============================================================================
   /// @defgroup cpp_kodi_addon_peripheral_Defs_Joystick_JOYSTICK_FEATURE_TYPE enum JOYSTICK_FEATURE_TYPE
@@ -595,14 +595,14 @@ extern "C"
     char* name;
     JOYSTICK_FEATURE_TYPE type;
     struct JOYSTICK_DRIVER_PRIMITIVE primitives[JOYSTICK_PRIMITIVE_MAX];
-  } ATTRIBUTE_PACKED JOYSTICK_FEATURE;
+  } ATTR_PACKED JOYSTICK_FEATURE;
   //}
 
   typedef struct AddonProps_Peripheral
   {
     const char* user_path; /*!< @brief path to the user profile */
     const char* addon_path; /*!< @brief path to this add-on */
-  } ATTRIBUTE_PACKED AddonProps_Peripheral;
+  } ATTR_PACKED AddonProps_Peripheral;
 
   struct AddonInstance_Peripheral;
 

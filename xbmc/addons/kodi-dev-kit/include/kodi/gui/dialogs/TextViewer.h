@@ -92,11 +92,11 @@ namespace TextViewer
 ///  "interspersed renderings from classical composers.\n");
 /// ~~~~~~~~~~~~~
 ///
-inline void ATTRIBUTE_HIDDEN Show(const std::string& heading, const std::string& text)
+inline void ATTR_DLL_LOCAL Show(const std::string& heading, const std::string& text)
 {
   using namespace ::kodi::addon;
-  CAddonBase::m_interface->toKodi->kodi_gui->dialogTextViewer->open(
-      CAddonBase::m_interface->toKodi->kodiBase, heading.c_str(), text.c_str());
+  CPrivateBase::m_interface->toKodi->kodi_gui->dialogTextViewer->open(
+      CPrivateBase::m_interface->toKodi->kodiBase, heading.c_str(), text.c_str());
 }
 //------------------------------------------------------------------------------
 }; // namespace TextViewer

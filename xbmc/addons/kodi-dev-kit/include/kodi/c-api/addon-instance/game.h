@@ -163,7 +163,7 @@ extern "C"
   {
     GAME_PCM_FORMAT format;
     const GAME_AUDIO_CHANNEL* channel_map;
-  } ATTRIBUTE_PACKED game_stream_audio_properties;
+  } ATTR_PACKED game_stream_audio_properties;
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -178,7 +178,7 @@ extern "C"
 
     /// @brief Size of data array
     size_t size;
-  } ATTRIBUTE_PACKED game_stream_audio_packet;
+  } ATTR_PACKED game_stream_audio_packet;
   //----------------------------------------------------------------------------
 
   ///@}
@@ -260,7 +260,7 @@ extern "C"
     ///
     /// @note If aspect_ratio is <= 0.0, an aspect ratio of nominal_width / nominal_height is assumed
     float aspect_ratio;
-  } ATTRIBUTE_PACKED game_stream_video_properties;
+  } ATTR_PACKED game_stream_video_properties;
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -284,7 +284,7 @@ extern "C"
 
     /// @brief Size of data array
     size_t size;
-  } ATTRIBUTE_PACKED game_stream_video_packet;
+  } ATTR_PACKED game_stream_video_packet;
   //----------------------------------------------------------------------------
 
   ///@}
@@ -377,7 +377,7 @@ extern "C"
 
     /// @brief Creates a debug context.
     bool debug_context;
-  } ATTRIBUTE_PACKED game_stream_hw_framebuffer_properties;
+  } ATTR_PACKED game_stream_hw_framebuffer_properties;
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -387,7 +387,7 @@ extern "C"
   {
     /// @brief
     uintptr_t framebuffer;
-  } ATTRIBUTE_PACKED game_stream_hw_framebuffer_buffer;
+  } ATTR_PACKED game_stream_hw_framebuffer_buffer;
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -397,7 +397,7 @@ extern "C"
   {
     /// @brief
     uintptr_t framebuffer;
-  } ATTRIBUTE_PACKED game_stream_hw_framebuffer_packet;
+  } ATTR_PACKED game_stream_hw_framebuffer_packet;
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -431,7 +431,7 @@ extern "C"
     GAME_PIXEL_FORMAT format;
     uint8_t* data;
     size_t size;
-  } ATTRIBUTE_PACKED game_stream_sw_framebuffer_buffer;
+  } ATTR_PACKED game_stream_sw_framebuffer_buffer;
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -497,7 +497,7 @@ extern "C"
       /// @brief
       game_stream_sw_framebuffer_properties sw_framebuffer;
     };
-  } ATTRIBUTE_PACKED game_stream_properties;
+  } ATTR_PACKED game_stream_properties;
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -515,7 +515,7 @@ extern "C"
       /// @brief
       game_stream_sw_framebuffer_buffer sw_framebuffer;
     };
-  } ATTRIBUTE_PACKED game_stream_buffer;
+  } ATTR_PACKED game_stream_buffer;
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -543,7 +543,7 @@ extern "C"
       /// @brief
       game_stream_sw_framebuffer_packet sw_framebuffer;
     };
-  } ATTRIBUTE_PACKED game_stream_packet;
+  } ATTR_PACKED game_stream_packet;
   //----------------------------------------------------------------------------
 
   ///@}
@@ -809,7 +809,7 @@ extern "C"
     unsigned int abs_pointer_count;
     char** motors;
     unsigned int motor_count;
-  } ATTRIBUTE_PACKED game_controller_layout;
+  } ATTR_PACKED game_controller_layout;
   /*! @endcond */
 
   struct game_input_port;
@@ -829,7 +829,7 @@ extern "C"
 
     /// @brief
     unsigned int port_count;
-  } ATTRIBUTE_PACKED game_input_device;
+  } ATTR_PACKED game_input_device;
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -859,7 +859,7 @@ extern "C"
 
     /// @brief
     unsigned int device_count;
-  } ATTRIBUTE_PACKED game_input_port;
+  } ATTR_PACKED game_input_port;
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -879,7 +879,7 @@ extern "C"
 
     /// @brief A limit on the number of input-providing devices, or -1 for no limit
     int player_limit;
-  } ATTRIBUTE_PACKED game_input_topology;
+  } ATTR_PACKED game_input_topology;
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -888,7 +888,7 @@ extern "C"
   {
     /// @brief
     bool pressed;
-  } ATTRIBUTE_PACKED game_digital_button_event;
+  } ATTR_PACKED game_digital_button_event;
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -897,7 +897,7 @@ extern "C"
   {
     /// @brief
     float magnitude;
-  } ATTRIBUTE_PACKED game_analog_button_event;
+  } ATTR_PACKED game_analog_button_event;
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -906,7 +906,7 @@ extern "C"
   {
     /// @brief
     float position;
-  } ATTRIBUTE_PACKED game_axis_event;
+  } ATTR_PACKED game_axis_event;
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -918,7 +918,7 @@ extern "C"
 
     /// @brief
     float y;
-  } ATTRIBUTE_PACKED game_analog_stick_event;
+  } ATTR_PACKED game_analog_stick_event;
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -933,7 +933,7 @@ extern "C"
 
     /// @brief
     float z;
-  } ATTRIBUTE_PACKED game_accelerometer_event;
+  } ATTR_PACKED game_accelerometer_event;
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -952,7 +952,7 @@ extern "C"
 
     /// @brief
     GAME_KEY_MOD modifiers;
-  } ATTRIBUTE_PACKED game_key_event;
+  } ATTR_PACKED game_key_event;
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -964,7 +964,7 @@ extern "C"
 
     /// @brief
     int y;
-  } ATTRIBUTE_PACKED game_rel_pointer_event;
+  } ATTR_PACKED game_rel_pointer_event;
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -979,7 +979,7 @@ extern "C"
 
     /// @brief
     float y;
-  } ATTRIBUTE_PACKED game_abs_pointer_event;
+  } ATTR_PACKED game_abs_pointer_event;
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -988,7 +988,7 @@ extern "C"
   {
     /// @brief
     float magnitude;
-  } ATTRIBUTE_PACKED game_motor_event;
+  } ATTR_PACKED game_motor_event;
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -1038,7 +1038,7 @@ extern "C"
       /// @brief
       struct game_motor_event motor;
     };
-  } ATTRIBUTE_PACKED game_input_event;
+  } ATTR_PACKED game_input_event;
   //----------------------------------------------------------------------------
 
   ///@}
