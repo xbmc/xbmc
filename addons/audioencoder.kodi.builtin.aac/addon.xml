@@ -13,6 +13,7 @@
     <assets>
       <icon>icon.png</icon>
     </assets>
+    <summary lang="bs_BA">AAC Audio Enkoder</summary>
     <summary lang="da_DK">AAC Lydindkoder</summary>
     <summary lang="de_DE">AAC Audio Encoder</summary>
     <summary lang="en_AU">AAC Audio Encoder</summary>
@@ -22,7 +23,9 @@
     <summary lang="es_ES">Codificador de Audio AAC</summary>
     <summary lang="es_MX">Codificador de audio AAC</summary>
     <summary lang="fi_FI">AAC äänikooderi</summary>
+    <summary lang="fr_FR">Encodeur Audio AAC</summary>
     <summary lang="hu_HU">AAC Audio Encoder</summary>
+    <summary lang="id_ID">Enkoder Audio AAC</summary>
     <summary lang="is_IS">AAC-hljóðkóðari</summary>
     <summary lang="ko_KR">AAC 오디오 인코더</summary>
     <summary lang="oc_FR">Encodador àudio AAC</summary>
@@ -31,15 +34,19 @@
     <summary lang="ru_RU">Кодировщик аудио AAC</summary>
     <summary lang="tr_TR">AAC Ses Kodlayıcı</summary>
     <summary lang="zh_CN">AAC 音频编码器</summary>
+    <description lang="bs_BA">AAC je skupina kodeka dizajnirana da pruži bolje sabijanje od MP3-a, te su poboljšane verzije MPEG audia.</description>
     <description lang="da_DK">AAC er et sæt codecs designet til at give bedre komprimering end MP3'er og er forbedrede versioner af MPEG-lyd.</description>
     <description lang="de_DE">AAC ist eine Sammlung von Codecs mit einer besseren Komprimierung als MP3. Sie sind verbesserte Versionen von MPEG-Audio.</description>
     <description lang="en_AU">AAC is a set of codecs designed to provide better compression than MP3s, and are improved versions of MPEG audio.</description>
     <description lang="en_GB">AAC is a set of codecs designed to provide better compression than MP3s, and are improved versions of MPEG audio.</description>
     <description lang="en_NZ">AAC is a set of codecs designed to provide better compression than MP3s, and are improved versions of MPEG audio.</description>
     <description lang="en_US">AAC is a set of codecs designed to provide better compression than MP3s, and are improved versions of MPEG audio.</description>
+    <description lang="es_ES">ACC es un conjunto de codificadores diseñados para comprimir mejor que MP3, y son versiones mejoradas de audio MPEG.</description>
     <description lang="es_MX">AAc es un conjunto de códecs diseñados para proveer mejor compresión que los MP3, y son versiones mejoradas de audio MPEG.</description>
     <description lang="fi_FI">AAC on joukko koodekkeja, jotka on suunniteltu tarjoamaan parempaa pakkausta kuin MP3 tiedostot, ja ne ovat parannettuja MPEG äänen versioita.</description>
+    <description lang="fr_FR">AAC est un ensemble de codecs conçus pour fournir une meilleur compression que le MP3, et sont des versions améliorés de MPEG audio.</description>
     <description lang="hu_HU">Az AAC az MP3 -oknál jobb tömörítést biztosító kodekkészlet, és az MPEG audió továbbfejlesztett változata</description>
+    <description lang="id_ID">AAC adalah seperangkat codec yang dirancang untuk memberikan kompresi yang lebih baik daripada MP3, dan merupakan versi audio MPEG yang ditingkatkan.</description>
     <description lang="is_IS">AAC er sett af kóðunarlyklum sem hannaðir eru til að gefa betri þjöppun en MP3 og eru endurbættar útgáfur af MPEG-hljóði.</description>
     <description lang="ko_KR">AAC는 MP3보다 더 나은 압축을 제공하도록 설계된 코덱 세트이며 MPEG 오디오의 개선된 버전입니다.</description>
     <description lang="oc_FR">AAC es un ensem de codecs concebuts per fornir una compression melhora que ço dels MP3, e son de versions melhoradas de MPEG audio.</description>
