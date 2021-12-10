@@ -94,6 +94,36 @@ static int SetFocus(const std::vector<std::string>& params)
   return 0;
 }
 
+/*! \brief Set a control to visible.
+ *  \param params The parameters.
+ *  \details params[0] = ID of control.
+ */
+static int SetVisible(const std::vector<std::string>& params)
+{
+  int controlID = std::stol(params[0]);
+  CGUIMessage msg{GUI_MSG_VISIBLE,
+                  CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog(),
+                  controlID};
+  CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
+
+  return 0;
+}
+
+/*! \brief Set a control to hidden.
+ *  \param params The parameters.
+ *  \details params[0] = ID of control.
+ */
+static int SetHidden(const std::vector<std::string>& params)
+{
+  int controlID = std::stol(params[0]);
+  CGUIMessage msg{GUI_MSG_HIDDEN,
+                  CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindowOrDialog(),
+                  controlID};
+  CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
+
+  return 0;
+}
+
 /*! \brief Shift page in a control.
  *  \param params The parameters.
  *  \details params[0] = ID of control
@@ -145,6 +175,24 @@ static int ShiftPage(const std::vector<std::string>& params)
 ///     @param[in] absolute              "absolute" to focus the absolute position instead of the relative one (optional).
 ///   }
 ///   \table_row2_l{
+///     <b>`control.setvisible(controlId)`</b>
+///     \anchor Builtin_SetVisible,
+///     Set the control id to visible
+///     @param[in] controlId             ID of control.
+///     <p><hr>
+///     @skinning_v20 **[New builtin]** \link Builtin_SetVisible `SetVisible(id)`\endlink
+///     <p>
+///   }
+///   \table_row2_l{
+///     <b>`control.sethidden(controlId)`</b>
+///     \anchor Builtin_SetHidden,
+///     Set the control id to hidden
+///     @param[in] controlId             ID of control.
+///     <p><hr>
+///     @skinning_v20 **[New builtin]** \link Builtin_SetHidden `SetHidden(id)`\endlink
+///     <p>
+///   }
+///   \table_row2_l{
 ///     <b>`pagedown(controlId)`</b>
 ///     ,
 ///     Send a page down event to the pagecontrol with given id
@@ -180,6 +228,8 @@ CBuiltins::CommandMap CGUIControlBuiltins::GetOperations() const
            {"control.message",  {"Send a given message to a control within a given window", 2, SendMessage}},
            {"control.move",     {"Tells the specified control to 'move' to another entry specified by offset", 2, ControlMove}},
            {"control.setfocus", {"Change current focus to a different control id", 1, SetFocus}},
+           {"control.setvisible", {"Set the control id to visible", 1, SetVisible}},
+           {"control.sethidden", {"Set the control id to Hidden", 1, SetHidden}},
            {"pagedown",         {"Send a page down event to the pagecontrol with given id", 1, ShiftPage<GUI_MSG_PAGE_DOWN>}},
            {"pageup",           {"Send a page up event to the pagecontrol with given id", 1, ShiftPage<GUI_MSG_PAGE_UP>}},
            {"sendclick",        {"Send a click message from the given control to the given window", 1, SendClick}},
