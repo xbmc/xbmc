@@ -5,24 +5,25 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Indonesian (Indonesia) (http://www.transifex.com/projects/p/kodi-main/language/id_ID/)\n"
-"Language: id_ID\n"
+"PO-Revision-Date: 2021-11-29 21:07+0000\n"
+"Last-Translator: Nao3Line Prez <n.yazawa6932@gmail.com>\n"
+"Language-Team: Indonesian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/id_id/>\n"
+"Language: id_id\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.9.1\n"
 
 msgctxt "Addon Summary"
 msgid "Skin for touchscreen devices"
-msgstr ""
+msgstr "Skin untuk perangkat layar sentuh"
 
 msgctxt "Addon Description"
 msgid "Skin designed to be used on touchscreen devices like tablets and smartphones"
-msgstr ""
+msgstr "Skin dirancang untuk digunakan pada perangkat layar sentuh seperti tablet dan smartphone"
 
 msgctxt "#31002"
 msgid "Audio Settings"
@@ -55,7 +56,7 @@ msgstr "Mengerjakan..."
 # empty string with id 31010
 msgctxt "#31011"
 msgid "Recent"
-msgstr ""
+msgstr "Baru"
 
 msgctxt "#31013"
 msgid "Movies"
@@ -67,7 +68,7 @@ msgstr "Episode"
 
 msgctxt "#31015"
 msgid "Player info"
-msgstr ""
+msgstr "Informasi pemutar"
 
 msgctxt "#31016"
 msgid "Albums"
@@ -75,7 +76,7 @@ msgstr "Album"
 
 msgctxt "#31017"
 msgid "PVR info"
-msgstr ""
+msgstr "Info PVR"
 
 msgctxt "#31018"
 msgid "Player process info"
@@ -83,15 +84,15 @@ msgstr "Informasi proses player"
 
 msgctxt "#31019"
 msgid "Video decoder"
-msgstr ""
+msgstr "Dekoder video"
 
 msgctxt "#31020"
 msgid "Pixel format"
-msgstr ""
+msgstr "Format piksel"
 
 msgctxt "#31021"
 msgid "System memory usage"
-msgstr ""
+msgstr "Penggunaan memori sistem"
 
 msgctxt "#31024"
 msgid "Page"
@@ -107,19 +108,19 @@ msgstr "Masuk"
 
 msgctxt "#31039"
 msgid "Updated:"
-msgstr ""
+msgstr "Diperbarui:"
 
 msgctxt "#31040"
 msgid "Select + X"
-msgstr ""
+msgstr "Select + X"
 
 msgctxt "#31041"
 msgid "Select + B"
-msgstr ""
+msgstr "Select + B"
 
 msgctxt "#31042"
 msgid "Select + Start"
-msgstr ""
+msgstr "Select + Start"
 
 msgctxt "#31043"
 msgid "PAUSED"
@@ -135,7 +136,7 @@ msgstr "PUTAR ULANG"
 
 msgctxt "#31046"
 msgid "Play speed"
-msgstr ""
+msgstr "Kecepatan putar"
 
 msgctxt "#31049"
 msgid "End Time"
@@ -196,7 +197,7 @@ msgstr "Penyedia data"
 # empty strings from id 31304 to 31308
 msgctxt "#31309"
 msgid "System Memory Used:"
-msgstr ""
+msgstr "Memori Sistem yang Digunakan:"
 
 msgctxt "#31320"
 msgid "Last Logged In"
@@ -233,35 +234,35 @@ msgstr "Ubah Tampilan . Tetapkan bahasa dan wilayah . Ubah file Opsi daftar . Te
 # empty strings from id 31401 to 31404
 msgctxt "#31405"
 msgid "Configure & manage media sharing services · Configure & manage the weather service"
-msgstr ""
+msgstr "Konfigurasi & kelola layanan berbagi media · Konfigurasi & kelola layanan cuaca"
 
 msgctxt "#31406"
 msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
-msgstr ""
+msgstr "Konfigurasikan tampilan · Konfigurasikan audio · Konfigurasikan akses internet · Konfigurasikan penghematan daya · Konfigurasikan pencatatan"
 
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
-msgstr ""
+msgstr "Kelola pengaya yang Anda instal · Jelajahi dan instal pengaya dari kodi.tv · Ubah pengaturan pengaya"
 
 msgctxt "#31408"
 msgid "Configure actions that can be used during playback · Configure how media content is played"
-msgstr ""
+msgstr "Konfigurasikan tindakan yang dapat digunakan selama pemutaran · Konfigurasikan cara konten media diputar"
 
 msgctxt "#31409"
 msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
-msgstr ""
+msgstr "Mengonfigurasi sumber pustaka · Menampilkan daftar media menampilkan konten · Mengonfigurasi bagaimana daftar pustaka dinavigasi"
 
 msgctxt "#31410"
 msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
-msgstr ""
+msgstr "Konfigurasikan skin · Konfigurasikan wilayah · Konfigurasikan kontrol · Konfigurasikan screensaver · Konfigurasikan kunci master"
 
 msgctxt "#31411"
 msgid "Configure your profiles · Set locking options · Enable login screen"
-msgstr ""
+msgstr "Konfigurasikan profil Anda · Setel opsi penguncian · Aktifkan layar masuk"
 
 msgctxt "#31412"
 msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
-msgstr ""
+msgstr "Tampilkan informasi sistem · Statistik perangkat keras · Periksa ketersediaan penyimpanan · Lihat konfigurasi jaringan"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
@@ -271,11 +272,11 @@ msgstr "Pilih profil pengguna Kodi Anda [CR]untuk login dan meneruskan"
 # Skin Setting Options
 msgctxt "#31548"
 msgid "Home menu"
-msgstr ""
+msgstr "Menu beranda"
 
 msgctxt "#31549"
 msgid "Home Add-ons"
-msgstr ""
+msgstr "Pengaya Beranda"
 
 msgctxt "#31550"
 msgid "Backgrounds"
@@ -287,19 +288,19 @@ msgstr "Tambahan jalan pintas"
 
 msgctxt "#31552"
 msgid "SYNC"
-msgstr ""
+msgstr "Sinkron"
 
 msgctxt "#31553"
 msgid "Use Custom Background"
-msgstr ""
+msgstr "Gunakan Latar Belakang Kustom"
 
 msgctxt "#31554"
 msgid "Background:"
-msgstr ""
+msgstr "Latar belakang:"
 
 msgctxt "#31555"
 msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
-msgstr ""
+msgstr "Konfigurasikan pengaturan TV · Ubah info layar penuh · Kelola pengaturan data EPG"
 
 msgctxt "#31556"
 msgid "Live TV"
@@ -307,19 +308,19 @@ msgstr "Siaran TV Langsung"
 
 msgctxt "#31557"
 msgid "Hide video background"
-msgstr ""
+msgstr "Sembunyikan latar belakang video"
 
 msgctxt "#31558"
 msgid "Hide visualization background"
-msgstr ""
+msgstr "Sembunyikan latar belakang visualisasi"
 
 msgctxt "#31559"
 msgid "Channel settings"
-msgstr ""
+msgstr "Pengaturan saluran"
 
 msgctxt "#31560"
 msgid "Available groups"
-msgstr ""
+msgstr "Grup yang tersedia"
 
 msgctxt "#31561"
 msgid "Add Group"
@@ -335,29 +336,29 @@ msgstr "Hapus Grup"
 
 msgctxt "#31564"
 msgid "Show hidden"
-msgstr ""
+msgstr "Tampilkan yang disembunyikan"
 
 msgctxt "#31565"
 msgid "Show deleted"
-msgstr ""
+msgstr "Tampilkan yang dihapus"
 
 # empty strings from id 31566 to 31899
 msgctxt "#31900"
 msgid "First Run"
-msgstr ""
+msgstr "Dijalankan Pertama"
 
 msgctxt "#31901"
 msgid "There are two things to know about navigating Estouchy"
-msgstr ""
+msgstr "Ada dua hal yang perlu diketahui tentang menavigasi Estouchy"
 
 msgctxt "#31902"
 msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
-msgstr ""
+msgstr "Logo Kodi berfungsi sebagai tombol 'HOME'. Setiap kali Anda menyentuhnya, Anda akan dibawa kembali ke layar beranda."
 
 msgctxt "#31903"
 msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
-msgstr ""
+msgstr "Saat Anda memutar audio atau video, judul item akan muncul di bagian atas layar. Menyentuhnya akan membawa Anda ke visualisasi layar penuh atau jendela video."
 
 msgctxt "#31904"
 msgid "Now Playing Title..."
-msgstr ""
+msgstr "Sekarang Memutar Judul..."

@@ -7,27 +7,27 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2021-07-22 14:57+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2021-11-18 05:06+0000\n"
+"Last-Translator: Nao3Line Prez <n.yazawa6932@gmail.com>\n"
 "Language-Team: Indonesian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/id_id/>\n"
 "Language: id_id\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.7.2\n"
+"X-Generator: Weblate 4.9\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
-msgstr ""
+msgstr "Skin Estuary oleh phil65. (Skin default Kodi)"
 
 msgctxt "Addon Description"
 msgid "Estuary is the default skin for Kodi 17.0 and above. It attempts to be easy for first time Kodi users to understand and use."
-msgstr ""
+msgstr "Estuary adalah skin default untuk Kodi 17.0 dan di atasnya. Ini untuk mudah dipahami dan digunakan oleh pengguna Kodi yang pertama kali."
 
 msgctxt "Addon Disclaimer"
 msgid "Estuary is the default skin for Kodi, removing it may cause issues"
-msgstr ""
+msgstr "Estuary adalah skin default untuk Kodi, menghapusnya dapat menyebabkan masalah"
 
 msgctxt "#31000"
 msgid "Now playing"
@@ -39,11 +39,11 @@ msgstr "Cari..."
 
 msgctxt "#31002"
 msgid "Show media fanart as background"
-msgstr ""
+msgstr "Tampilkan fanart sebagai latar belakang"
 
 msgctxt "#31003"
 msgid "Cinema mode"
-msgstr ""
+msgstr "Mode bioskop"
 
 msgctxt "#31004"
 msgid "Change mode"
@@ -55,58 +55,58 @@ msgstr "Tonton sebagai 2D"
 
 msgctxt "#31006"
 msgid "Random movies"
-msgstr ""
+msgstr "Film acak"
 
 msgctxt "#31007"
 msgid "Unwatched movies"
-msgstr ""
+msgstr "Film yang belum ditonton"
 
 msgctxt "#31008"
 msgid "Enable category widgets"
-msgstr ""
+msgstr "Aktifkan widget kategori"
 
 msgctxt "#31009"
 msgid "Download icons"
-msgstr ""
+msgstr "Unduh ikon"
 
 msgctxt "#31010"
 msgid "In progress movies"
-msgstr ""
+msgstr "Film yang dalam proses"
 
 msgctxt "#31011"
 msgid "Most played albums"
-msgstr ""
+msgstr "Album yang paling sering diputar"
 
 msgctxt "#31012"
 msgid "Random albums"
-msgstr ""
+msgstr "Album acak"
 
 msgctxt "#31013"
 msgid "Random artists"
-msgstr ""
+msgstr "Artis acak"
 
 msgctxt "#31014"
 msgid "Unplayed albums"
-msgstr ""
+msgstr "Album yang belum diputar"
 
 #. home screen recordings widget: recent tv / radio recordings
 msgctxt "#31015"
 msgid "Recent recordings"
-msgstr ""
+msgstr "Rekaman terbaru"
 
 #. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31016"
 msgid "Recently played channels"
-msgstr ""
+msgstr "Saluran yang baru diputar"
 
 msgctxt "#31017"
 msgid "Rated"
-msgstr ""
+msgstr "Dinilai"
 
 #. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
 msgid "Recently played channels"
-msgstr ""
+msgstr "Saluran yang baru diputar"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -122,19 +122,19 @@ msgstr "Pilihan Misc"
 
 msgctxt "#31022"
 msgid "Sort by"
-msgstr ""
+msgstr "Urut berdasarkan"
 
 msgctxt "#31023"
 msgid "Viewtype"
-msgstr ""
+msgstr "Jenis tampilan"
 
 msgctxt "#31024"
 msgid "Choose rating to display for media items"
-msgstr ""
+msgstr "Pilih peringkat yang akan ditampilkan untuk item media"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
-msgstr ""
+msgstr "Tidak ada favorit yang ditemukan. Anda dapat menambahkan item apa pun dari tampilan media ke daftar ini dengan menggunakan menu konteks."
 
 msgctxt "#31026"
 msgid "Timeshift"
@@ -142,11 +142,11 @@ msgstr "Pergeseran waktu"
 
 msgctxt "#31027"
 msgid "Next aired"
-msgstr ""
+msgstr "Ditayangkan selanjutnya"
 
 msgctxt "#31028"
 msgid "Show fanart"
-msgstr ""
+msgstr "Tampilkan fanart"
 
 msgctxt "#31029"
 msgid "Last logged in"
@@ -154,35 +154,35 @@ msgstr "Login terakhir"
 
 msgctxt "#31030"
 msgid "System memory usage"
-msgstr ""
+msgstr "Penggunaan memori sistem"
 
 msgctxt "#31031"
 msgid "Version info"
-msgstr ""
+msgstr "Info versi"
 
 msgctxt "#31032"
 msgid "Order"
-msgstr ""
+msgstr "Urut"
 
 msgctxt "#31033"
 msgid "Your rating"
-msgstr ""
+msgstr "Penialianmu"
 
 msgctxt "#31034"
 msgid "Extended info"
-msgstr ""
+msgstr "Info tambahan"
 
 msgctxt "#31035"
 msgid "Pages"
-msgstr ""
+msgstr "Halaman"
 
 msgctxt "#31036"
 msgid "items"
-msgstr ""
+msgstr "Item"
 
 msgctxt "#31037"
 msgid "Selected track"
-msgstr ""
+msgstr "Trek dipilih"
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -195,7 +195,7 @@ msgstr "Mempercepat"
 # empty string with id 31040
 msgctxt "#31041"
 msgid "Camera manufacturer"
-msgstr ""
+msgstr "Produsen kamera"
 
 msgctxt "#31042"
 msgid "Playlist options"
@@ -203,7 +203,7 @@ msgstr "Opsi Daftar Main"
 
 msgctxt "#31043"
 msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
-msgstr ""
+msgstr "Tetapkan jenis dan tambahkan aturan untuk membuat daftar putar cerdas. Daftar putar ini dinamis dan mencakup semua item media dari database Anda yang berlaku untuk aturan yang Anda pilih."
 
 msgctxt "#31044"
 msgid "Add group"
@@ -220,12 +220,12 @@ msgstr "Hapus grup"
 # empty string with id 31047
 msgctxt "#31048"
 msgid "Available"
-msgstr ""
+msgstr "Tersedia"
 
 # empty strings from id 31049 to 31051
 msgctxt "#31052"
 msgid "filtered"
-msgstr ""
+msgstr "disaring"
 
 msgctxt "#31053"
 msgid "Arial based"
@@ -233,48 +233,48 @@ msgstr "berbasis Arial"
 
 msgctxt "#31054"
 msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
-msgstr ""
+msgstr "Tekan [B]Kiri[/B] untuk kembali, atau [B]Kanan[/B] untuk maju"
 
 msgctxt "#31055"
 msgid "Press [B]Right[/B] to frame advance"
-msgstr ""
+msgstr "Tekan [B]Kanan[/B] untuk bingkai lanjutan"
 
 msgctxt "#31056"
 msgid "Go to playlist"
-msgstr ""
+msgstr "Ke daftar putar"
 
 msgctxt "#31057"
 msgid "Show login screen on startup"
-msgstr ""
+msgstr "Tampilkan layar masuk saat mulai"
 
 msgctxt "#31058"
 msgid "Automatic Login on startup"
-msgstr ""
+msgstr "Login Otomatis saat mulai"
 
 msgctxt "#31059"
 msgid "Select + X"
-msgstr ""
+msgstr "Select + X"
 
 msgctxt "#31060"
 msgid "Select + Start"
-msgstr ""
+msgstr "Select + Start"
 
 msgctxt "#31061"
 msgid "Main menu items"
-msgstr ""
+msgstr "Item menu utama"
 
 msgctxt "#31062"
 msgid "Choose weather fanart pack"
-msgstr ""
+msgstr "Pilih paket fanart cuaca"
 
 msgctxt "#31063"
 msgid "Sections"
-msgstr ""
+msgstr "Bagian"
 
 # empty string with id 31064
 msgctxt "#31065"
 msgid "Video playlist"
-msgstr ""
+msgstr "Daftar putar video"
 
 msgctxt "#31066"
 msgid "Music playlist"
@@ -286,7 +286,7 @@ msgstr "Log event"
 
 msgctxt "#31068"
 msgid "Choose presets"
-msgstr ""
+msgstr "Pilih preset"
 
 msgctxt "#31069"
 msgid "Last Updated"
@@ -295,7 +295,7 @@ msgstr "Terakhir diperbarui"
 # empty string with id 31070
 msgctxt "#31071"
 msgid "by"
-msgstr ""
+msgstr "oleh"
 
 msgctxt "#31072"
 msgid "Power Options"
@@ -303,7 +303,7 @@ msgstr "Pilihan Batere"
 
 msgctxt "#31073"
 msgid "Total length"
-msgstr ""
+msgstr "Total panjang"
 
 msgctxt "#31074"
 msgid "Total duration"
@@ -311,91 +311,91 @@ msgstr "Total durasi"
 
 msgctxt "#31075"
 msgid "Movie sets"
-msgstr ""
+msgstr "Set film"
 
 # empty strings from id 31076 to 31078
 msgctxt "#31079"
 msgid "Cast not available"
-msgstr ""
+msgstr "Pemeran tidak tersedia"
 
 msgctxt "#31080"
 msgid "Ends at"
-msgstr ""
+msgstr "Berakhir di"
 
 msgctxt "#31082"
 msgid "Lyrics add-on"
-msgstr "Add-on lirik"
+msgstr "Pengaya lirik"
 
 msgctxt "#31083"
 msgid "Lyrics add-on settings"
-msgstr ""
+msgstr "Pengaturan penya lirik"
 
 msgctxt "#31084"
 msgid "Visualisation settings"
-msgstr ""
+msgstr "Pengaturan visualisasi"
 
 # empty strings from id 31085 to 31088
 msgctxt "#31089"
 msgid "Available groups"
-msgstr ""
+msgstr "Grup tersedia"
 
 # empty strings from id 31090 to 31091
 msgctxt "#31092"
 msgid "Video menu"
-msgstr ""
+msgstr "Menu video"
 
 msgctxt "#31093"
 msgid "Show weather info in top bar"
-msgstr ""
+msgstr "Tampilkan info cuaca di bar atas"
 
 # empty string with id 31094
 msgctxt "#31095"
 msgid "Use slide animations"
-msgstr ""
+msgstr "Gunakan animasi slide"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
-msgstr "Subtitle lokal tersedia"
+msgstr "Takarir lokal tersedia"
 
 msgctxt "#31097"
 msgid "Channel options"
-msgstr "Pilihan saluran"
+msgstr "Opsi saluran"
 
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
-msgstr "Pilih profil pengguna Kodi Anda [CR] untuk login dan lanjutkan"
+msgstr "Pilih profil pengguna Kodi Anda[CR]untuk masuk dan lanjutkan"
 
 #. viewtype name
 msgctxt "#31099"
 msgid "IconWall"
-msgstr ""
+msgstr "Ikon dinding"
 
 #. viewtype name
 msgctxt "#31100"
 msgid "Shift"
-msgstr "Shift"
+msgstr "Daftar tetap"
 
 #. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
-msgstr ""
+msgstr "Dinding info"
 
 #. viewtype name
 msgctxt "#31102"
 msgid "Wall"
-msgstr ""
+msgstr "Dinding"
 
 msgctxt "#31103"
 msgid "Enter text here..."
-msgstr ""
+msgstr "Masukkan teks disini..."
 
 msgctxt "#31104"
 msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
-msgstr ""
+msgstr "Perpustakaan Anda saat ini kosong. Untuk mengisinya dengan media pribadi Anda, masukkan bagian \"File\", tambahkan sumber media dan konfigurasikan. Setelah sumber ditambahkan dan diindeks, Anda akan dapat menelusuri perpustakaan Anda."
 
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
-msgstr ""
+msgstr "Tambahkan sumber video dan atur jenis konten yang sesuai untuk mengisi perpustakaan video anda."
 
 msgctxt "#31106"
 msgid "Teletext"
@@ -404,226 +404,226 @@ msgstr "Teleteks"
 #. viewtype name
 msgctxt "#31107"
 msgid "WideList"
-msgstr ""
+msgstr "Daftar lebar"
 
 # empty strings from id 31108 to 31109
 msgctxt "#31110"
 msgid "Enter files section"
-msgstr ""
+msgstr "Masukan bagian berkas"
 
 msgctxt "#31111"
 msgid "View your personal pictures or download one of the many image add-ons from the official repository."
-msgstr ""
+msgstr "Lihat gambar pribadi Anda atau unduh salah satu dari banyak pengaya gambar dari repositori resmi."
 
 msgctxt "#31112"
 msgid "Toggle audio stream"
-msgstr ""
+msgstr "Alihkan aliran audio"
 
 msgctxt "#31113"
 msgid "Search local library"
-msgstr ""
+msgstr "Cari pustaka lokal"
 
 msgctxt "#31114"
 msgid "Search YouTube"
-msgstr ""
+msgstr "Cari YouTube"
 
 msgctxt "#31115"
 msgid "Toggle subtitle"
-msgstr ""
+msgstr "Alihkan takarir"
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
-msgstr ""
+msgstr "Hapus item menu utama ini"
 
 msgctxt "#31117"
 msgid "Edit nodes"
-msgstr ""
+msgstr "Sunting nodes"
 
 msgctxt "#31118"
 msgid "Enter add-on browser"
-msgstr ""
+msgstr "Masuk jelajah pengaya"
 
 msgctxt "#31119"
 msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
-msgstr ""
+msgstr "Anda belum menginstal pengaya. Kunjungi jelajah pengaya kami untuk menelusuri koleksi kami dan meningkatkan pengalaman Kodi Anda."
 
 msgctxt "#31120"
 msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
-msgstr ""
+msgstr "Anda belum menyiapkan penyedia cuaca. Untuk melihat informasi cuaca, pilih penyedia cuaca dan atur lokasi Anda."
 
 msgctxt "#31121"
 msgid "Set weather provider"
-msgstr ""
+msgstr "Atur penyedia cuaca"
 
 msgctxt "#31122"
 msgid "Unwatched TV Shows"
-msgstr ""
+msgstr "Acara TV yang Belum Ditonton"
 
 msgctxt "#31123"
 msgid "Same director"
-msgstr ""
+msgstr "Sutradara yang sama"
 
 # empty string with id 31124
 msgctxt "#31125"
 msgid "Press up for actor info"
-msgstr ""
+msgstr "Tekan atas untuk info aktor"
 
 msgctxt "#31126"
 msgid "Press OK to read plot"
-msgstr ""
+msgstr "Tekan OK untuk membaca alur"
 
 msgctxt "#31127"
 msgid "Show icons"
-msgstr ""
+msgstr "Tampilkan ikon"
 
 msgctxt "#31128"
 msgid "Contributors"
-msgstr ""
+msgstr "Kontributor"
 
 msgctxt "#31129"
 msgid "General settings applying to all areas of the skin."
-msgstr ""
+msgstr "Pengaturan umum berlaku untuk semua area skin."
 
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
-msgstr ""
+msgstr "Pengaturan terkait menu utama: Konfigurasikan layar beranda sesuai keinginan Anda."
 
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
-msgstr ""
+msgstr "Pilih paket skin fanart"
 
 msgctxt "#31132"
 msgid "Select Program"
-msgstr ""
+msgstr "Pilih Program"
 
 msgctxt "#31133"
 msgid "Select Resolution"
-msgstr ""
+msgstr "Pilih Resolusi"
 
 msgctxt "#31134"
 msgid "Remaining"
-msgstr ""
+msgstr "Tersisa"
 
 msgctxt "#31135"
 msgid "Binary"
-msgstr ""
+msgstr "Biner"
 
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
-msgstr ""
+msgstr "Klik di sini untuk melihat perubahan terakhir..."
 
 msgctxt "#31137"
 msgid "PVR info"
-msgstr ""
+msgstr "Info PVR"
 
 msgctxt "#31138"
 msgid "Player process info"
-msgstr "Informasi proses player"
+msgstr "Info proses pemain"
 
 msgctxt "#31139"
 msgid "Video decoder"
-msgstr ""
+msgstr "Dekoder video"
 
 msgctxt "#31140"
 msgid "Pixel format"
-msgstr ""
+msgstr "Format piksel"
 
 msgctxt "#31141"
 msgid "Changes for version"
-msgstr ""
+msgstr "Perubahan untuk versi"
 
 msgctxt "#31142"
 msgid "Play speed"
-msgstr ""
+msgstr "Kecepatan putar"
 
 msgctxt "#31143"
 msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
-msgstr ""
+msgstr "Anda belum menyiapkan PVR. Untuk menggunakan PVR, pilih pengaya klien PVR dan konfigurasikan. Silakan kunjungi http://kodi.wiki/view/PVR untuk mempelajari lebih lanjut."
 
 msgctxt "#31144"
 msgid "Enter add-on browser"
-msgstr ""
+msgstr "Masuk ke jelajah pengaya"
 
 msgctxt "#31145"
 msgid "Search add-ons"
-msgstr ""
+msgstr "Cari pengaya"
 
 msgctxt "#31146"
 msgid "In cinemas"
-msgstr ""
+msgstr "Di bioskop"
 
 msgctxt "#31147"
 msgid "In cinemas soon"
-msgstr ""
+msgstr "Segera di bioskop"
 
 msgctxt "#31148"
 msgid "Categories"
-msgstr ""
+msgstr "Kategori"
 
 msgctxt "#31149"
 msgid "Select genre fanart pack"
-msgstr ""
+msgstr "Pilih paket fanart genre"
 
 msgctxt "#31150"
 msgid "Origin"
-msgstr ""
+msgstr "Asal"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
-msgstr ""
+msgstr "Video musik yang belum ditonton"
 
 msgctxt "#31152"
 msgid "Random music videos"
-msgstr ""
+msgstr "Video musik acak"
 
 msgctxt "#31153"
 msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
-msgstr ""
+msgstr "Anda tidak menginstal pengaya jenis ini. Masuk ke jelajah pengaya untuk mengunduh pengaya yang dibuat oleh komunitas kami."
 
 msgctxt "#31154"
 msgid "Press OK to switch between locations"
-msgstr ""
+msgstr "Tekan OK untuk beralih antar lokasi"
 
 msgctxt "#31155"
 msgid "No bookmarks created yet."
-msgstr ""
+msgstr "Belum ada penanda yang dibuat."
 
 msgctxt "#31156"
 msgid "Choose background pattern"
-msgstr ""
+msgstr "Pilih pola latar belakang"
 
 msgctxt "#31157"
 msgid "Edit categories"
-msgstr ""
+msgstr "Sunting kategori"
 
 msgctxt "#31158"
 msgid "Touch mode"
-msgstr ""
+msgstr "Mode sentuh"
 
 msgctxt "#31159"
 msgid "Artwork"
-msgstr ""
+msgstr "Karya seni"
 
 msgctxt "#31160"
 msgid "Show media flags"
-msgstr ""
+msgstr "Tampilkan bendera media"
 
 msgctxt "#31161"
 msgid "Numeric pad"
-msgstr ""
+msgstr "Papan nomor"
 
 msgctxt "#31162"
 msgid "Play your personal games or download one of the many game add-ons from the official repository."
-msgstr ""
+msgstr "Mainkan game pribadi Anda atau unduh salah satu dari banyak pengaya permainan dari repositori resmi."
 
 msgctxt "#31163"
 msgid "Show Fanart background"
-msgstr ""
+msgstr "Tampilkan latar belakang Fanart"
 
 #. Choose profile identifier
 msgctxt "#31164"
 msgid "Choose kind of profile identification"
-msgstr ""
+msgstr "Pilih jenis identifikasi profil"
 
 #. Label for the kind of profile identification
 msgctxt "#31165"
@@ -633,19 +633,19 @@ msgstr "Nama profil"
 #. Label for the kind of profile identification
 msgctxt "#31166"
 msgid "Profile avatar"
-msgstr ""
+msgstr "Gambar profil"
 
 #. Label of a setting
 msgctxt "#31167"
 msgid "Animate background"
-msgstr ""
+msgstr "Animasi latar belakang"
 
 #. Label of a setting
 msgctxt "#31168"
 msgid "Show posters instead of thumbs for musicvideos"
-msgstr ""
+msgstr "Tampilkan poster alih-alih gambar mini untuk video musik"
 
 #. Description label for skin settings area
 msgctxt "#31169"
 msgid "Artwork related settings."
-msgstr ""
+msgstr "Pengaturan terkait karya seni."
