@@ -244,9 +244,10 @@ void CGUIDialogAddonInfo::UpdateControls(PerformButtonFocus performButtonFocus)
                            CServiceBroker::GetAddonMgr().IsAutoUpdateable(m_localAddon->ID()));
   SET_CONTROL_LABEL(CONTROL_BTN_AUTOUPDATE, 21340);
 
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SELECT,
-                              m_addonEnabled && (CanShowSupportList() || CanOpen() || CanRun() ||
-                                                 (CanUse() && !m_localAddon->IsInUse())));
+  const bool active = CAddonSystemSettings::GetInstance().IsActive(*m_localAddon); // In settings
+  CONTROL_ENABLE_ON_CONDITION(
+      CONTROL_BTN_SELECT,
+      m_addonEnabled && (CanShowSupportList() || CanOpen() || CanRun() || (CanUse() && !active)));
 
   int label;
   if (CanShowSupportList())
@@ -525,7 +526,8 @@ bool CGUIDialogAddonInfo::CanUse() const
          (m_localAddon->Type() == ADDON_SKIN || m_localAddon->Type() == ADDON_SCREENSAVER ||
           m_localAddon->Type() == ADDON_VIZ || m_localAddon->Type() == ADDON_SCRIPT_WEATHER ||
           m_localAddon->Type() == ADDON_RESOURCE_LANGUAGE ||
-          m_localAddon->Type() == ADDON_RESOURCE_UISOUNDS);
+          m_localAddon->Type() == ADDON_RESOURCE_UISOUNDS ||
+          m_localAddon->Type() == ADDON_AUDIOENCODER);
 }
 
 bool CGUIDialogAddonInfo::CanShowSupportList() const
