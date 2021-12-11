@@ -1,0 +1,61 @@
+--- a/crypto/armcap.c
++++ b/crypto/armcap.c
+@@ -68,12 +68,6 @@
+ #   include <sys/auxv.h>
+ #   define OSSL_IMPLEMENT_GETAUXVAL
+ #  endif
+-# elif defined(__ANDROID_API__)
+-/* see https://developer.android.google.cn/ndk/guides/cpu-features */
+-#  if __ANDROID_API__ >= 18
+-#   include <sys/auxv.h>
+-#   define OSSL_IMPLEMENT_GETAUXVAL
+-#  endif
+ # endif
+ # if defined(__FreeBSD__)
+ #  include <sys/param.h>
+@@ -94,15 +88,6 @@
+ # endif
+ 
+ /*
+- * Android: according to https://developer.android.com/ndk/guides/cpu-features,
+- * getauxval is supported starting with API level 18
+- */
+-#  if defined(__ANDROID__) && defined(__ANDROID_API__) && __ANDROID_API__ >= 18
+-#   include <sys/auxv.h>
+-#   define OSSL_IMPLEMENT_GETAUXVAL
+-#  endif
+-
+-/*
+  * ARM puts the feature bits for Crypto Extensions in AT_HWCAP2, whereas
+  * AArch64 used AT_HWCAP.
+  */
+--- a/crypto/ppccap.c
++++ b/crypto/ppccap.c
+@@ -211,12 +211,6 @@
+ # if __GLIBC_PREREQ(2, 16)
+ #  include <sys/auxv.h>
+ #  define OSSL_IMPLEMENT_GETAUXVAL
+-# elif defined(__ANDROID_API__)
+-/* see https://developer.android.google.cn/ndk/guides/cpu-features */
+-#  if __ANDROID_API__ >= 18
+-#   include <sys/auxv.h>
+-#   define OSSL_IMPLEMENT_GETAUXVAL
+-#  endif
+ # endif
+ #endif
+ 
+--- a/crypto/uid.c
++++ b/crypto/uid.c
+@@ -36,12 +36,6 @@
+ #   include <sys/auxv.h>
+ #   define OSSL_IMPLEMENT_GETAUXVAL
+ #  endif
+-# elif defined(__ANDROID_API__)
+-/* see https://developer.android.google.cn/ndk/guides/cpu-features */
+-#  if __ANDROID_API__ >= 18
+-#   include <sys/auxv.h>
+-#   define OSSL_IMPLEMENT_GETAUXVAL
+-#  endif
+ # endif
+ 
+ int OPENSSL_issetugid(void)
