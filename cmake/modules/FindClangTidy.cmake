@@ -18,6 +18,9 @@ find_package_handle_standard_args(ClangTidy REQUIRED_VARS CLANG_TIDY_EXECUTABLE
                                   VERSION_VAR CLANG_TIDY_VERSION)
 
 if(CLANGTIDY_FOUND)
+  if(CORE_SYSTEM_NAME STREQUAL android)
+    set(CLANG_TIDY_EXECUTABLE ${CLANG_TIDY_EXECUTABLE};--extra-arg-before=--target=${HOST})
+  endif()
   # Supports Unix Makefiles and Ninja
   set(CMAKE_C_CLANG_TIDY "${CLANG_TIDY_EXECUTABLE}" PARENT_SCOPE)
   set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXECUTABLE}" PARENT_SCOPE)
