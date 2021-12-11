@@ -79,7 +79,7 @@ bool CCDDARipJob::DoWork()
   std::unique_ptr<CEncoder> encoder{};
   if (!reader.Open(m_input, READ_CACHED) || !(encoder = SetupEncoder(reader)))
   {
-    CLog::Log(LOGERROR, "CCDDARipJob::{} - Opening failed");
+    CLog::Log(LOGERROR, "CCDDARipJob::{} - Opening failed", __func__);
     return false;
   }
 
