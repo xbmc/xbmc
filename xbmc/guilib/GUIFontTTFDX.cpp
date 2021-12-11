@@ -203,7 +203,7 @@ CVertexBuffer CGUIFontTTFDX::CreateVertexBuffer(const std::vector<SVertex>& vert
 
 void CGUIFontTTFDX::AddReference(CGUIFontTTFDX* font, CD3DBuffer* pBuffer)
 {
-  font->m_buffers.push_back(pBuffer);
+  font->m_buffers.emplace_back(pBuffer);
 }
 
 void CGUIFontTTFDX::DestroyVertexBuffer(CVertexBuffer& buffer) const
