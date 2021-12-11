@@ -47,7 +47,8 @@ enum StreamType
   STREAM_DATA, // data stream
   STREAM_SUBTITLE, // subtitle stream
   STREAM_TELETEXT, // Teletext data stream
-  STREAM_RADIO_RDS // Radio RDS data stream
+  STREAM_RADIO_RDS, // Radio RDS data stream
+  STREAM_ENUM_COUNT
 };
 
 enum StreamSource

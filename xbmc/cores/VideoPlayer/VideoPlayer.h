@@ -430,6 +430,12 @@ protected:
   bool OpenDemuxStream();
   void CloseDemuxer();
   void OpenDefaultStreams(bool reset = true);
+  void OpenDefaultVideoStream(bool reset = true);
+  void OpenDefaultAudioStream(bool reset = true);
+  void OpenDefaultSubtitlesStream(bool reset = true);
+  void OpenDefaultTeletextStream(bool reset = true);
+  void OpenDefaultRDSStream(bool reset = true);
+  void DisableDemuxStreams();
 
   void UpdatePlayState(double timeout);
   void GetGeneralInfo(std::string& strVideoInfo);

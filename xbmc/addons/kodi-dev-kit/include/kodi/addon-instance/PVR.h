@@ -2423,7 +2423,9 @@ public:
   /// created by calling @ref AllocateDemuxPacket(0) on the callback.
   /// If the stream changed and Kodi's player needs to be reinitialised, then,
   /// the add-on should call @ref AllocateDemuxPacket(0) on the callback, and set
-  /// the streamid to @ref DMX_SPECIALID_STREAMCHANGE and return the value.
+  /// the streamid to @ref DMX_SPECIALID_STREAMCHANGE or
+  /// DMX_SPECIALID_STREAMCHANGE_AV to reinitialize audio/video only,
+  /// then return the value.
   /// The add-on should return `nullptr` if an error occurred.
   ///
   /// @remarks Required, and only used if addon has its own demuxer.
