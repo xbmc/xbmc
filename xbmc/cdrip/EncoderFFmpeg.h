@@ -35,15 +35,18 @@ public:
 private:
   static int avio_write_callback(void* opaque, uint8_t* buf, int buf_size);
   static int64_t avio_seek_callback(void* opaque, int64_t offset, int whence);
+
   void SetTag(const std::string& tag, const std::string& value);
   bool WriteFrame();
+  AVSampleFormat GetInputFormat(int inBitsPerSample);
+  std::string FFmpegErrorToString(int err);
 
-  AVFormatContext* m_Format{nullptr};
-  AVCodecContext* m_CodecCtx{nullptr};
-  SwrContext* m_SwrCtx{nullptr};
-  AVStream* m_Stream{nullptr};
-  AVSampleFormat m_InFormat;
-  AVSampleFormat m_OutFormat;
+  AVFormatContext* m_formatCtx{nullptr};
+  AVCodecContext* m_codecCtx{nullptr};
+  SwrContext* m_swrCtx{nullptr};
+  AVStream* m_stream{nullptr};
+  AVSampleFormat m_inFormat;
+  AVSampleFormat m_outFormat;
 
   /* From libavformat/avio.h:
    * The buffer size is very important for performance.
@@ -51,17 +54,20 @@ private:
    * blocksize.
    * For others a typical size is a cache page, e.g. 4kb.
    */
-  unsigned char m_BCBuffer[4096];
+  static constexpr size_t BUFFER_SIZE = 4096;
+  uint8_t* m_bcBuffer{nullptr};
 
-  unsigned int m_NeededFrames;
-  size_t m_NeededBytes;
-  uint8_t* m_Buffer{nullptr};
-  size_t m_BufferSize{0};
-  AVFrame* m_BufferFrame{nullptr};
-  uint8_t* m_ResampledBuffer{nullptr};
-  size_t m_ResampledBufferSize{0};
-  AVFrame* m_ResampledFrame{nullptr};
-  bool m_NeedConversion{false};
+  unsigned int m_neededFrames{0};
+  size_t m_neededBytes{0};
+  uint8_t* m_buffer{nullptr};
+  size_t m_bufferSize{0};
+  AVFrame* m_bufferFrame{nullptr};
+  uint8_t* m_resampledBuffer{nullptr};
+  size_t m_resampledBufferSize{0};
+  AVFrame* m_resampledFrame{nullptr};
+  bool m_needConversion{false};
+  int64_t m_samplesCount{0};
+  int64_t m_samplesCountMultiply{1000};
 };
 
 } /* namespace CDRIP */
