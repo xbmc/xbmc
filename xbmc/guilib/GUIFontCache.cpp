@@ -21,13 +21,10 @@ class CGUIFontCacheImpl
     using HashIter = typename HashMap::iterator;
     using AgeMap = std::multimap<size_t, HashIter>;
 
-    ~EntryList()
+    ~EntryList() { Flush(); }
+    HashIter Insert(size_t hash, CGUIFontCacheEntry<Position, Value>* v)
     {
-      Flush();
-    }
-    HashIter Insert(size_t hash, CGUIFontCacheEntry<Position, Value> *v)
-    {
-      auto r (hashMap.insert(typename HashMap::value_type(hash, v)));
+      auto r(hashMap.insert(typename HashMap::value_type(hash, v)));
       if (r->second)
         ageMap.insert(typename AgeMap::value_type(r->second->m_lastUsedMillis, r));
       return r;
@@ -36,7 +33,7 @@ class CGUIFontCacheImpl
     {
       ageMap.clear();
       for (auto it = hashMap.begin(); it != hashMap.end(); ++it)
-        delete(it->second);
+        delete (it->second);
       hashMap.clear();
     }
     typename HashMap::iterator FindKey(CGUIFontCacheKey<Position> key)
@@ -73,10 +70,9 @@ class CGUIFontCacheImpl
   };
 
   EntryList m_list;
-  CGUIFontCache<Position, Value> *m_parent;
+  CGUIFontCache<Position, Value>* m_parent;
 
 public:
-
   explicit CGUIFontCacheImpl(CGUIFontCache<Position, Value>* parent) : m_parent(parent) {}
   Value& Lookup(Position& pos,
                 const std::vector<UTILS::COLOR::Color>& colors,
@@ -98,7 +94,8 @@ CGUIFontCacheEntry<Position, Value>::~CGUIFontCacheEntry()
 }
 
 template<class Position, class Value>
-void CGUIFontCacheEntry<Position, Value>::Assign(const CGUIFontCacheKey<Position> &key, unsigned int nowMillis)
+void CGUIFontCacheEntry<Position, Value>::Assign(const CGUIFontCacheKey<Position>& key,
+                                                 unsigned int nowMillis)
 {
   m_key.m_pos = key.m_pos;
   m_key.m_colors.assign(key.m_colors.begin(), key.m_colors.end());
@@ -138,7 +135,8 @@ Value& CGUIFontCache<Position, Value>::Lookup(Position& pos,
   if (m_impl == nullptr)
     m_impl = new CGUIFontCacheImpl<Position, Value>(this);
 
-  return m_impl->Lookup(pos, colors, text, alignment, maxPixelWidth, scrolling, nowMillis, dirtyCache);
+  return m_impl->Lookup(pos, colors, text, alignment, maxPixelWidth, scrolling, nowMillis,
+                        dirtyCache);
 }
 
 template<class Position, class Value>
@@ -163,8 +161,9 @@ Value& CGUIFontCacheImpl<Position, Value>::Lookup(Position& pos,
   {
     // Cache miss
     dirtyCache = true;
-    CGUIFontCacheEntry<Position, Value> *entry = nullptr;
-    if (!m_list.ageMap.empty() && (nowMillis - m_list.ageMap.begin()->first) > FONT_CACHE_TIME_LIMIT)
+    CGUIFontCacheEntry<Position, Value>* entry = nullptr;
+    if (!m_list.ageMap.empty() &&
+        (nowMillis - m_list.ageMap.begin()->first) > FONT_CACHE_TIME_LIMIT)
     {
       entry = m_list.ageMap.begin()->second->second;
       m_list.hashMap.erase(m_list.ageMap.begin()->second);
@@ -209,7 +208,8 @@ void CGUIFontCacheImpl<Position, Value>::Flush()
 template CGUIFontCache<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue>::CGUIFontCache(
     CGUIFontTTF& font);
 template CGUIFontCache<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue>::~CGUIFontCache();
-template CGUIFontCacheEntry<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue>::~CGUIFontCacheEntry();
+template CGUIFontCacheEntry<CGUIFontCacheStaticPosition,
+                            CGUIFontCacheStaticValue>::~CGUIFontCacheEntry();
 template CGUIFontCacheStaticValue& CGUIFontCache<
     CGUIFontCacheStaticPosition,
     CGUIFontCacheStaticValue>::Lookup(CGUIFontCacheStaticPosition&,
@@ -225,7 +225,8 @@ template void CGUIFontCache<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValu
 template CGUIFontCache<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue>::CGUIFontCache(
     CGUIFontTTF& font);
 template CGUIFontCache<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue>::~CGUIFontCache();
-template CGUIFontCacheEntry<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue>::~CGUIFontCacheEntry();
+template CGUIFontCacheEntry<CGUIFontCacheDynamicPosition,
+                            CGUIFontCacheDynamicValue>::~CGUIFontCacheEntry();
 template CGUIFontCacheDynamicValue& CGUIFontCache<
     CGUIFontCacheDynamicPosition,
     CGUIFontCacheDynamicValue>::Lookup(CGUIFontCacheDynamicPosition&,

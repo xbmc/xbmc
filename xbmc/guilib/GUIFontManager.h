@@ -31,13 +31,13 @@ struct StringSettingOption;
 
 struct OrigFontInfo
 {
-   int size;
-   float aspect;
-   std::string fontFilePath;
-   std::string fileName;
-   RESOLUTION_INFO sourceRes;
-   bool preserveAspect;
-   bool border;
+  int size;
+  float aspect;
+  std::string fontFilePath;
+  std::string fileName;
+  RESOLUTION_INFO sourceRes;
+  bool preserveAspect;
+  bool border;
 };
 
 /*!
@@ -50,10 +50,10 @@ public:
   GUIFontManager(void);
   ~GUIFontManager(void) override;
 
-  bool OnMessage(CGUIMessage &message) override;
+  bool OnMessage(CGUIMessage& message) override;
 
   void Unload(const std::string& strFontName);
-  void LoadFonts(const std::string &fontSet);
+  void LoadFonts(const std::string& fontSet);
   CGUIFont* LoadTTF(const std::string& strFontName,
                     const std::string& strFilename,
                     UTILS::COLOR::Color textColor,
@@ -83,10 +83,13 @@ public:
 
 protected:
   void ReloadTTFFonts();
-  static void RescaleFontSizeAndAspect(float *size, float *aspect, const RESOLUTION_INFO &sourceRes, bool preserveAspect);
+  static void RescaleFontSizeAndAspect(float* size,
+                                       float* aspect,
+                                       const RESOLUTION_INFO& sourceRes,
+                                       bool preserveAspect);
   void LoadFonts(const TiXmlNode* fontNode);
   CGUIFontTTF* GetFontFile(const std::string& fontIdent);
-  static void GetStyle(const TiXmlNode *fontNode, int &iStyle);
+  static void GetStyle(const TiXmlNode* fontNode, int& iStyle);
 
   std::vector<CGUIFont*> m_vecFonts;
   std::vector<CGUIFontTTF*> m_vecFontFiles;
@@ -101,4 +104,3 @@ protected:
  */
 XBMC_GLOBAL_REF(GUIFontManager, g_fontManager);
 #define g_fontManager XBMC_GLOBAL_USE(GUIFontManager)
-

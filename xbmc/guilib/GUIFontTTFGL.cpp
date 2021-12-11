@@ -6,16 +6,17 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "GUIFont.h"
 #include "GUIFontTTFGL.h"
+
+#include "GUIFont.h"
 #include "GUIFontManager.h"
+#include "ServiceBroker.h"
 #include "Texture.h"
 #include "TextureManager.h"
-#include "windowing/GraphicContext.h"
-#include "ServiceBroker.h"
 #include "gui3d.h"
-#include "utils/log.h"
 #include "utils/GLUtils.h"
+#include "utils/log.h"
+#include "windowing/GraphicContext.h"
 #ifdef HAS_GL
 #include "rendering/gl/RenderSystemGL.h"
 #elif HAS_GLES
@@ -82,7 +83,7 @@ bool CGUIFontTTFGL::FirstBegin()
   if (m_textureStatus == TEXTURE_VOID)
   {
     // Have OpenGL generate a texture object handle for us
-    glGenTextures(1, (GLuint*) &m_nTexture);
+    glGenTextures(1, (GLuint*)&m_nTexture);
 
     // Bind the texture object
     glBindTexture(GL_TEXTURE_2D, m_nTexture);
@@ -93,7 +94,7 @@ bool CGUIFontTTFGL::FirstBegin()
 
     // Set the texture image -- THIS WORKS, so the pixels must be wrong.
     glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_texture->GetWidth(), m_texture->GetHeight(), 0,
-        pixformat, GL_UNSIGNED_BYTE, 0);
+                 pixformat, GL_UNSIGNED_BYTE, 0);
 
     VerifyGLState();
     m_textureStatus = TEXTURE_UPDATED;
@@ -102,8 +103,9 @@ bool CGUIFontTTFGL::FirstBegin()
   if (m_textureStatus == TEXTURE_UPDATED)
   {
     glBindTexture(GL_TEXTURE_2D, m_nTexture);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, m_updateY1, m_texture->GetWidth(), m_updateY2 - m_updateY1, pixformat, GL_UNSIGNED_BYTE,
-        m_texture->GetPixels() + m_updateY1 * m_texture->GetPitch());
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, m_updateY1, m_texture->GetWidth(), m_updateY2 - m_updateY1,
+                    pixformat, GL_UNSIGNED_BYTE,
+                    m_texture->GetPixels() + m_updateY1 * m_texture->GetPitch());
 
     m_updateY1 = m_updateY2 = 0;
     m_textureStatus = TEXTURE_READY;
@@ -140,16 +142,16 @@ void CGUIFontTTFGL::LastEnd()
 
     // Deal with vertices that had to use software clipping
     std::vector<SVertex> vecVertices(6 * (m_vertex.size() / 4));
-    SVertex *vertices = &vecVertices[0];
-    for (size_t i=0; i<m_vertex.size(); i+=4)
+    SVertex* vertices = &vecVertices[0];
+    for (size_t i = 0; i < m_vertex.size(); i += 4)
     {
       *vertices++ = m_vertex[i];
-      *vertices++ = m_vertex[i+1];
-      *vertices++ = m_vertex[i+2];
+      *vertices++ = m_vertex[i + 1];
+      *vertices++ = m_vertex[i + 2];
 
-      *vertices++ = m_vertex[i+1];
-      *vertices++ = m_vertex[i+3];
-      *vertices++ = m_vertex[i+2];
+      *vertices++ = m_vertex[i + 1];
+      *vertices++ = m_vertex[i + 3];
+      *vertices++ = m_vertex[i + 2];
     }
     vertices = &vecVertices[0];
 
@@ -157,7 +159,8 @@ void CGUIFontTTFGL::LastEnd()
 
     glGenBuffers(1, &VertexVBO);
     glBindBuffer(GL_ARRAY_BUFFER, VertexVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(SVertex)*vecVertices.size(), &vecVertices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(SVertex) * vecVertices.size(), &vecVertices[0],
+                 GL_STATIC_DRAW);
 
     glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(SVertex),
                           reinterpret_cast<const GLvoid*>(offsetof(SVertex, x)));
@@ -174,11 +177,12 @@ void CGUIFontTTFGL::LastEnd()
 
 #else
   // GLES 2.0 version.
-  CRenderSystemGLES* renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
+  CRenderSystemGLES* renderSystem =
+      dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
   renderSystem->EnableGUIShader(ShaderMethodGLES::SM_FONTS);
 
-  GLint posLoc  = renderSystem->GUIShaderGetPos();
-  GLint colLoc  = renderSystem->GUIShaderGetCol();
+  GLint posLoc = renderSystem->GUIShaderGetPos();
+  GLint colLoc = renderSystem->GUIShaderGetCol();
   GLint tex0Loc = renderSystem->GUIShaderGetCoord0();
   GLint modelLoc = renderSystem->GUIShaderGetModel();
 
@@ -193,25 +197,28 @@ void CGUIFontTTFGL::LastEnd()
   if (!m_vertex.empty())
   {
     // Deal with vertices that had to use software clipping
-    std::vector<SVertex> vecVertices( 6 * (m_vertex.size() / 4) );
-    SVertex *vertices = &vecVertices[0];
+    std::vector<SVertex> vecVertices(6 * (m_vertex.size() / 4));
+    SVertex* vertices = &vecVertices[0];
 
-    for (size_t i=0; i<m_vertex.size(); i+=4)
+    for (size_t i = 0; i < m_vertex.size(); i += 4)
     {
       *vertices++ = m_vertex[i];
-      *vertices++ = m_vertex[i+1];
-      *vertices++ = m_vertex[i+2];
+      *vertices++ = m_vertex[i + 1];
+      *vertices++ = m_vertex[i + 2];
 
-      *vertices++ = m_vertex[i+1];
-      *vertices++ = m_vertex[i+3];
-      *vertices++ = m_vertex[i+2];
+      *vertices++ = m_vertex[i + 1];
+      *vertices++ = m_vertex[i + 3];
+      *vertices++ = m_vertex[i + 2];
     }
 
     vertices = &vecVertices[0];
 
-    glVertexAttribPointer(posLoc,  3, GL_FLOAT, GL_FALSE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, x));
-    glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, r));
-    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,  GL_FALSE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, u));
+    glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(SVertex),
+                          (char*)vertices + offsetof(SVertex, x));
+    glVertexAttribPointer(colLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex),
+                          (char*)vertices + offsetof(SVertex, r));
+    glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, GL_FALSE, sizeof(SVertex),
+                          (char*)vertices + offsetof(SVertex, u));
 
     glDrawArrays(GL_TRIANGLES, 0, vecVertices.size());
   }
@@ -224,7 +231,8 @@ void CGUIFontTTFGL::LastEnd()
     // Bind our pre-calculated array to GL_ELEMENT_ARRAY_BUFFER
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_elementArrayHandle);
     // Store current scissor
-    CRect scissor = CServiceBroker::GetWinSystem()->GetGfxContext().StereoCorrection(CServiceBroker::GetWinSystem()->GetGfxContext().GetScissors());
+    CRect scissor = CServiceBroker::GetWinSystem()->GetGfxContext().StereoCorrection(
+        CServiceBroker::GetWinSystem()->GetGfxContext().GetScissors());
 
     for (size_t i = 0; i < m_vertexTrans.size(); i++)
     {
@@ -247,7 +255,8 @@ void CGUIFontTTFGL::LastEnd()
 
       // Apply the translation to the currently active (top-of-stack) model view matrix
       glMatrixModview.Push();
-      glMatrixModview.Get().Translatef(m_vertexTrans[i].translateX, m_vertexTrans[i].translateY, m_vertexTrans[i].translateZ);
+      glMatrixModview.Get().Translatef(m_vertexTrans[i].translateX, m_vertexTrans[i].translateY,
+                                       m_vertexTrans[i].translateZ);
       glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glMatrixModview.Get());
 
       // Bind the buffer to the OpenGL context's GL_ARRAY_BUFFER binding point
@@ -255,16 +264,20 @@ void CGUIFontTTFGL::LastEnd()
 
       // Do the actual drawing operation, split into groups of characters no
       // larger than the pre-determined size of the element array
-      for (size_t character = 0; m_vertexTrans[i].vertexBuffer->size > character; character += ELEMENT_ARRAY_MAX_CHAR_INDEX)
+      for (size_t character = 0; m_vertexTrans[i].vertexBuffer->size > character;
+           character += ELEMENT_ARRAY_MAX_CHAR_INDEX)
       {
         size_t count = m_vertexTrans[i].vertexBuffer->size - character;
         count = std::min<size_t>(count, ELEMENT_ARRAY_MAX_CHAR_INDEX);
 
         // Set up the offsets of the various vertex attributes within the buffer
         // object bound to GL_ARRAY_BUFFER
-        glVertexAttribPointer(posLoc,  3, GL_FLOAT,         GL_FALSE, sizeof(SVertex), (GLvoid *) (character*sizeof(SVertex)*4 + offsetof(SVertex, x)));
-        glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, GL_TRUE,  sizeof(SVertex), (GLvoid *) (character*sizeof(SVertex)*4 + offsetof(SVertex, r)));
-        glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,         GL_FALSE, sizeof(SVertex), (GLvoid *) (character*sizeof(SVertex)*4 + offsetof(SVertex, u)));
+        glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(SVertex),
+                              (GLvoid*)(character * sizeof(SVertex) * 4 + offsetof(SVertex, x)));
+        glVertexAttribPointer(colLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex),
+                              (GLvoid*)(character * sizeof(SVertex) * 4 + offsetof(SVertex, r)));
+        glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, GL_FALSE, sizeof(SVertex),
+                              (GLvoid*)(character * sizeof(SVertex) * 4 + offsetof(SVertex, u)));
 
         glDrawElements(GL_TRIANGLES, 6 * count, GL_UNSIGNED_SHORT, 0);
       }
@@ -292,7 +305,7 @@ void CGUIFontTTFGL::LastEnd()
 #endif
 }
 
-CVertexBuffer CGUIFontTTFGL::CreateVertexBuffer(const std::vector<SVertex> &vertices) const
+CVertexBuffer CGUIFontTTFGL::CreateVertexBuffer(const std::vector<SVertex>& vertices) const
 {
   assert(vertices.size() % 4 == 0);
   GLuint bufferHandle = 0;
@@ -307,7 +320,8 @@ CVertexBuffer CGUIFontTTFGL::CreateVertexBuffer(const std::vector<SVertex> &vert
     // Create a data store for the buffer object bound to the GL_ARRAY_BUFFER
     // binding point (i.e. our buffer object) and initialise it from the
     // specified client-side pointer
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(SVertex), vertices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(SVertex), vertices.data(),
+                 GL_STATIC_DRAW);
     // Unbind GL_ARRAY_BUFFER
     glBindBuffer(GL_ARRAY_BUFFER, 0);
   }
@@ -315,12 +329,12 @@ CVertexBuffer CGUIFontTTFGL::CreateVertexBuffer(const std::vector<SVertex> &vert
   return CVertexBuffer(bufferHandle, vertices.size() / 4, this);
 }
 
-void CGUIFontTTFGL::DestroyVertexBuffer(CVertexBuffer &buffer) const
+void CGUIFontTTFGL::DestroyVertexBuffer(CVertexBuffer& buffer) const
 {
   if (buffer.bufferHandle != 0)
   {
     // Release the buffer name for reuse
-    glDeleteBuffers(1, (GLuint *) &buffer.bufferHandle);
+    glDeleteBuffers(1, (GLuint*)&buffer.bufferHandle);
     buffer.bufferHandle = 0;
   }
 }
@@ -370,7 +384,8 @@ std::unique_ptr<CTexture> CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
   return newTexture;
 }
 
-bool CGUIFontTTFGL::CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2)
+bool CGUIFontTTFGL::CopyCharToTexture(
+    FT_BitmapGlyph bitGlyph, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2)
 {
   FT_Bitmap bitmap = bitGlyph->bitmap;
 
@@ -379,21 +394,21 @@ bool CGUIFontTTFGL::CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, 
 
   for (unsigned int y = y1; y < y2; y++)
   {
-    memcpy(target, source, x2-x1);
+    memcpy(target, source, x2 - x1);
     source += bitmap.width;
     target += m_texture->GetPitch();
   }
 
   switch (m_textureStatus)
   {
-  case TEXTURE_UPDATED:
+    case TEXTURE_UPDATED:
     {
       m_updateY1 = std::min(m_updateY1, y1);
       m_updateY2 = std::max(m_updateY2, y2);
     }
     break;
 
-  case TEXTURE_READY:
+    case TEXTURE_READY:
     {
       m_updateY1 = y1;
       m_updateY2 = y2;
@@ -401,15 +416,15 @@ bool CGUIFontTTFGL::CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, 
     }
     break;
 
-  case TEXTURE_REALLOCATED:
+    case TEXTURE_REALLOCATED:
     {
       m_updateY2 = std::max(m_updateY2, y2);
     }
     break;
 
-  case TEXTURE_VOID:
-  default:
-    break;
+    case TEXTURE_VOID:
+    default:
+      break;
   }
 
   return true;
@@ -439,12 +454,12 @@ void CGUIFontTTFGL::CreateStaticVertexBuffers(void)
   GLushort index[ELEMENT_ARRAY_MAX_CHAR_INDEX][6];
   for (size_t i = 0; i < ELEMENT_ARRAY_MAX_CHAR_INDEX; i++)
   {
-    index[i][0] = 4*i;
-    index[i][1] = 4*i+1;
-    index[i][2] = 4*i+2;
-    index[i][3] = 4*i+1;
-    index[i][4] = 4*i+3;
-    index[i][5] = 4*i+2;
+    index[i][0] = 4 * i;
+    index[i][1] = 4 * i + 1;
+    index[i][2] = 4 * i + 2;
+    index[i][3] = 4 * i + 1;
+    index[i][4] = 4 * i + 3;
+    index[i][5] = 4 * i + 2;
   }
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof index, index, GL_STATIC_DRAW);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -461,4 +476,3 @@ void CGUIFontTTFGL::DestroyStaticVertexBuffers(void)
 
 GLuint CGUIFontTTFGL::m_elementArrayHandle;
 bool CGUIFontTTFGL::m_staticVertexBufferCreated;
-
