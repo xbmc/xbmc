@@ -39,11 +39,11 @@ struct FT_GlyphSlotRec_;
 struct FT_BitmapGlyphRec_;
 struct FT_StrokerRec_;
 
-typedef struct FT_FaceRec_ *FT_Face;
-typedef struct FT_LibraryRec_ *FT_Library;
-typedef struct FT_GlyphSlotRec_ *FT_GlyphSlot;
-typedef struct FT_BitmapGlyphRec_ *FT_BitmapGlyph;
-typedef struct FT_StrokerRec_ *FT_Stroker;
+typedef struct FT_FaceRec_* FT_Face;
+typedef struct FT_LibraryRec_* FT_Library;
+typedef struct FT_GlyphSlotRec_* FT_GlyphSlot;
+typedef struct FT_BitmapGlyphRec_* FT_BitmapGlyph;
+typedef struct FT_StrokerRec_* FT_Stroker;
 
 typedef uint32_t character_t;
 typedef std::vector<character_t> vecText;
@@ -79,13 +79,21 @@ public:
 
   void Clear();
 
-  bool Load(const std::string& strFilename, float height = 20.0f, float aspect = 1.0f, float lineSpacing = 1.0f, bool border = false);
+  bool Load(const std::string& strFilename,
+            float height = 20.0f,
+            float aspect = 1.0f,
+            float lineSpacing = 1.0f,
+            bool border = false);
 
   void Begin();
   void End();
   /* The next two should only be called if we've declared we can do hardware clipping */
-  virtual CVertexBuffer CreateVertexBuffer(const std::vector<SVertex> &vertices) const { assert(false); return CVertexBuffer(); }
-  virtual void DestroyVertexBuffer(CVertexBuffer &bufferHandle) const {}
+  virtual CVertexBuffer CreateVertexBuffer(const std::vector<SVertex>& vertices) const
+  {
+    assert(false);
+    return CVertexBuffer();
+  }
+  virtual void DestroyVertexBuffer(CVertexBuffer& bufferHandle) const {}
 
   const std::string& GetFontIdent() const { return m_fontIdent; }
 
@@ -163,7 +171,11 @@ protected:
   void ClearCharacterCache();
 
   virtual std::unique_ptr<CTexture> ReallocTexture(unsigned int& newHeight) = 0;
-  virtual bool CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2) = 0;
+  virtual bool CopyCharToTexture(FT_BitmapGlyph bitGlyph,
+                                 unsigned int x1,
+                                 unsigned int y1,
+                                 unsigned int x2,
+                                 unsigned int y2) = 0;
   virtual void DeleteHardwareTexture() = 0;
 
   // modifying glyphs
@@ -173,9 +185,9 @@ protected:
   std::unique_ptr<CTexture>
       m_texture; // texture that holds our rendered characters (8bit alpha only)
 
-  unsigned int m_textureWidth;       // width of our texture
-  unsigned int m_textureHeight;      // height of our texture
-  int m_posX;                        // current position in the texture
+  unsigned int m_textureWidth; // width of our texture
+  unsigned int m_textureHeight; // height of our texture
+  int m_posX; // current position in the texture
   int m_posY;
 
   /*! \brief the height of each line in the texture.
@@ -186,20 +198,20 @@ protected:
 
   UTILS::COLOR::Color m_color;
 
-  Character *m_char;                 // our characters
-  Character *m_charquick[LOOKUPTABLE_SIZE];     // ascii chars (7 styles) here
-  int m_maxChars;                    // size of character array (can be incremented)
-  int m_numChars;                    // the current number of cached characters
+  Character* m_char; // our characters
+  Character* m_charquick[LOOKUPTABLE_SIZE]; // ascii chars (7 styles) here
+  int m_maxChars; // size of character array (can be incremented)
+  int m_numChars; // the current number of cached characters
 
-  float m_ellipsesWidth;               // this is used every character (width of '.')
+  float m_ellipsesWidth; // this is used every character (width of '.')
 
   unsigned int m_cellBaseLine;
   unsigned int m_cellHeight;
 
-  unsigned int m_nestedBeginCount;             // speedups
+  unsigned int m_nestedBeginCount; // speedups
 
   // freetype stuff
-  FT_Face    m_face;
+  FT_Face m_face;
   FT_Stroker m_stroker;
 
   hb_font_t* m_hbFont = nullptr;
@@ -214,15 +226,26 @@ protected:
     float translateX;
     float translateY;
     float translateZ;
-    const CVertexBuffer *vertexBuffer;
+    const CVertexBuffer* vertexBuffer;
     CRect clip;
-    CTranslatedVertices(float translateX, float translateY, float translateZ, const CVertexBuffer *vertexBuffer, const CRect &clip) : translateX(translateX), translateY(translateY), translateZ(translateZ), vertexBuffer(vertexBuffer), clip(clip) {}
+    CTranslatedVertices(float translateX,
+                        float translateY,
+                        float translateZ,
+                        const CVertexBuffer* vertexBuffer,
+                        const CRect& clip)
+      : translateX(translateX),
+        translateY(translateY),
+        translateZ(translateZ),
+        vertexBuffer(vertexBuffer),
+        clip(clip)
+    {
+    }
   };
   std::vector<CTranslatedVertices> m_vertexTrans;
   std::vector<SVertex> m_vertex;
 
-  float    m_textureScaleX;
-  float    m_textureScaleY;
+  float m_textureScaleX;
+  float m_textureScaleY;
 
   const std::string m_fontIdent;
   std::vector<uint8_t>
@@ -231,7 +254,7 @@ protected:
   CGUIFontCache<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue> m_staticCache;
   CGUIFontCache<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue> m_dynamicCache;
 
-  CRenderSystemBase *m_renderSystem = nullptr;
+  CRenderSystemBase* m_renderSystem = nullptr;
 
 private:
   float GetTabSpaceLength();

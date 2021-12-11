@@ -36,8 +36,8 @@ public:
 
   bool FirstBegin() override;
   void LastEnd() override;
-  CVertexBuffer CreateVertexBuffer(const std::vector<SVertex> &vertices) const override;
-  void DestroyVertexBuffer(CVertexBuffer &bufferHandle) const override;
+  CVertexBuffer CreateVertexBuffer(const std::vector<SVertex>& vertices) const override;
+  void DestroyVertexBuffer(CVertexBuffer& bufferHandle) const override;
 
   void OnDestroyDevice(bool fatal) override;
   void OnCreateDevice() override;
@@ -47,7 +47,11 @@ public:
 
 protected:
   std::unique_ptr<CTexture> ReallocTexture(unsigned int& newHeight) override;
-  bool CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2) override;
+  bool CopyCharToTexture(FT_BitmapGlyph bitGlyph,
+                         unsigned int x1,
+                         unsigned int y1,
+                         unsigned int x2,
+                         unsigned int y2) override;
   void DeleteHardwareTexture() override;
 
 private:
@@ -63,4 +67,3 @@ private:
   static bool m_staticIndexBufferCreated;
   static Microsoft::WRL::ComPtr<ID3D11Buffer> m_staticIndexBuffer;
 };
-
