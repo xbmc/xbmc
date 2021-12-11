@@ -39,6 +39,8 @@
 
 using namespace ADDON;
 
+GUIFontManager::GUIFontManager() = default;
+
 GUIFontManager::~GUIFontManager()
 {
   Clear();
@@ -245,7 +247,7 @@ void GUIFontManager::ReloadTTFFonts(void)
 
   for (size_t i = 0; i < m_vecFonts.size(); ++i)
   {
-    CGUIFont* font = m_vecFonts[i];
+    const auto& font = m_vecFonts[i];
     OrigFontInfo fontInfo = m_vecFontInfo[i];
 
     float aspect = fontInfo.aspect;
@@ -284,7 +286,6 @@ void GUIFontManager::Unload(const std::string& strFontName)
   {
     if (StringUtils::EqualsNoCase((*iFont)->GetFontName(), strFontName))
     {
-      delete (*iFont);
       m_vecFonts.erase(iFont);
       return;
     }
@@ -295,10 +296,9 @@ void GUIFontManager::FreeFontFile(CGUIFontTTF* pFont)
 {
   for (auto it = m_vecFontFiles.begin(); it != m_vecFontFiles.end(); ++it)
   {
-    if (pFont == *it)
+    if (pFont == it->get())
     {
       m_vecFontFiles.erase(it);
-      delete pFont;
       return;
     }
   }
@@ -308,9 +308,8 @@ CGUIFontTTF* GUIFontManager::GetFontFile(const std::string& fontIdent)
 {
   for (const auto& it : m_vecFontFiles)
   {
-    CGUIFontTTF* pFont = it;
-    if (StringUtils::EqualsNoCase(pFont->GetFontIdent(), fontIdent))
-      return pFont;
+    if (StringUtils::EqualsNoCase(it->GetFontIdent(), fontIdent))
+      return it.get();
   }
 
   return nullptr;
@@ -320,7 +319,7 @@ CGUIFont* GUIFontManager::GetFont(const std::string& strFontName, bool fallback 
 {
   for (const auto& it : m_vecFonts)
   {
-    CGUIFont* pFont = it;
+    CGUIFont* pFont = it.get();
     if (StringUtils::EqualsNoCase(pFont->GetFontName(), strFontName))
       return pFont;
   }
@@ -339,7 +338,7 @@ CGUIFont* GUIFontManager::GetDefaultFont(bool border)
   CGUIFont* font13border = nullptr;
   for (size_t i = 0; i < m_vecFonts.size(); i++)
   {
-    CGUIFont* font = m_vecFonts[i];
+    CGUIFont* font = m_vecFonts[i].get();
     if (font->GetFontName() == "font13")
       font13index = i;
     else if (font->GetFontName() == "__defaultborder__")
@@ -358,7 +357,7 @@ CGUIFont* GUIFontManager::GetDefaultFont(bool border)
   {
     if (!font13border)
     { // create it
-      CGUIFont* font13 = m_vecFonts[font13index];
+      const auto& font13 = m_vecFonts[font13index];
       OrigFontInfo fontInfo = m_vecFontInfo[font13index];
       font13border = LoadTTF("__defaultborder__", fontInfo.fileName, UTILS::COLOR::BLACK, 0,
                              fontInfo.size, font13->GetStyle(), true, 1.0f, fontInfo.aspect,
@@ -367,17 +366,11 @@ CGUIFont* GUIFontManager::GetDefaultFont(bool border)
     return font13border;
   }
 
-  return m_vecFonts[font13index];
+  return m_vecFonts[font13index].get();
 }
 
 void GUIFontManager::Clear()
 {
-  for (const auto& it : m_vecFonts)
-  {
-    CGUIFont* pFont = it;
-    delete pFont;
-  }
-
   m_vecFonts.clear();
   m_vecFontFiles.clear();
   m_vecFontInfo.clear();
