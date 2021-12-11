@@ -427,6 +427,19 @@ namespace ADDON
     bool GetAddonInfos(AddonInfos& addonInfos, bool onlyEnabled, TYPE type) const;
 
     /*!
+     * @brief Get a list of add-on's with info's for the on system available
+     * ones.
+     *
+     * @param[in] onlyEnabled If true are only enabled ones given back,
+     *                        if false all on system available. Default is true.
+     * @param[in] types List about requested types.
+     * @return List where finded addon information becomes returned.
+     *
+     * @note @ref ADDON_UNKNOWN should not used for here!
+     */
+    std::vector<AddonInfoPtr> GetAddonInfos(bool onlyEnabled, const std::vector<TYPE>& types) const;
+
+    /*!
      * @brief Get a list of disabled add-on's with info's
      *
      * @param[out] addonInfos list where finded addon information becomes stored
