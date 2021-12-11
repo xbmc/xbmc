@@ -181,7 +181,7 @@ CGUIFont* GUIFontManager::LoadTTF(const std::string& strFontName,
       return nullptr;
     }
 
-    m_vecFontFiles.push_back(pFontFile);
+    m_vecFontFiles.emplace_back(pFontFile);
   }
 
   // font file is loaded, create our CGUIFont
@@ -198,7 +198,7 @@ CGUIFont* GUIFontManager::LoadTTF(const std::string& strFontName,
   fontInfo.sourceRes = *sourceRes;
   fontInfo.preserveAspect = preserveAspect;
   fontInfo.border = border;
-  m_vecFontInfo.push_back(fontInfo);
+  m_vecFontInfo.emplace_back(fontInfo);
 
   return pNewFont;
 }
@@ -271,7 +271,7 @@ void GUIFontManager::ReloadTTFFonts(void)
         return;
       }
 
-      m_vecFontFiles.push_back(pFontFile);
+      m_vecFontFiles.emplace_back(pFontFile);
     }
 
     font->SetFont(pFontFile);
