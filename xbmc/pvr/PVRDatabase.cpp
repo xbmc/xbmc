@@ -516,7 +516,10 @@ bool CPVRDatabase::QueueDeleteQuery(const CPVRChannel& channel)
 {
   /* invalid channel */
   if (channel.ChannelID() <= 0)
+  {
+    CLog::LogF(LOGERROR, "Invalid channel id: {}", channel.ChannelID());
     return false;
+  }
 
   CLog::LogFC(LOGDEBUG, LOGPVR, "Queueing delete for channel '{}' from the database",
               channel.ChannelName());
@@ -696,6 +699,13 @@ std::vector<std::shared_ptr<CPVRChannelGroupMember>> CPVRDatabase::Get(
 
 bool CPVRDatabase::PersistChannels(CPVRChannelGroup& group)
 {
+  /* invalid group id */
+  if (group.GroupID() < 0)
+  {
+    CLog::LogF(LOGERROR, "Invalid channel group id: {}", group.GroupID());
+    return false;
+  }
+
   bool bReturn(true);
 
   std::shared_ptr<CPVRChannel> channel;
@@ -738,6 +748,13 @@ bool CPVRDatabase::PersistChannels(CPVRChannelGroup& group)
 
 bool CPVRDatabase::PersistGroupMembers(const CPVRChannelGroup& group)
 {
+  /* invalid group id */
+  if (group.GroupID() < 0)
+  {
+    CLog::LogF(LOGERROR, "Invalid channel group id: {}", group.GroupID());
+    return false;
+  }
+
   bool bReturn = true;
 
   if (group.HasChannels())
@@ -746,6 +763,12 @@ bool CPVRDatabase::PersistGroupMembers(const CPVRChannelGroup& group)
     {
       if (groupMember->NeedsSave())
       {
+        if (groupMember->ChannelDatabaseID() <= 0)
+        {
+          CLog::LogF(LOGERROR, "Invalid channel id: {}", groupMember->ChannelDatabaseID());
+          continue;
+        }
+
         const std::string strWhereClause =
             PrepareSQL("idChannel = %i AND idGroup = %i AND iChannelNumber = %u AND "
                        "iSubChannelNumber = %u AND "
