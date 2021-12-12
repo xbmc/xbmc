@@ -39,7 +39,7 @@ CMediaCodecDecoderFilterManager::CMediaCodecDecoderFilterManager()
     NULL
   };
 
-  unsigned int num_codecs = CJNIMediaCodecList::getCodecCount();
+  int num_codecs = CJNIMediaCodecList::getCodecCount();
   for (int i = 0; i < num_codecs; i++)
   {
     CJNIMediaCodecInfo codec_info = CJNIMediaCodecList::getCodecInfoAt(i);
