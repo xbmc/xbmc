@@ -1022,7 +1022,7 @@ bool Interface_Filesystem::io_control_get_cache_status(void* kodiBase,
     status->forward = data.forward;
     status->maxrate = data.maxrate;
     status->currate = data.currate;
-    status->lowspeed = data.lowspeed;
+    status->lowrate = data.lowrate;
     return true;
   }
   return false;

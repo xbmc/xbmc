@@ -221,7 +221,7 @@ extern "C"
     uint64_t forward;
     unsigned int maxrate;
     unsigned int currate;
-    bool lowspeed;
+    unsigned int lowrate;
   };
 
   struct VFSProperty
