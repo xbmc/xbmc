@@ -242,7 +242,7 @@ public:
   /// | **Number of bytes cached** | `uint64_t` | @ref CacheStatus::SetForward "SetForward" | @ref CacheStatus::GetForward "GetForward"
   /// | **Maximum number of bytes per second** | `unsigned int` | @ref CacheStatus::SetMaxRate "SetMaxRate" | @ref CacheStatus::GetMaxRate "GetMaxRate"
   /// | **Average read rate from source file** | `unsigned int` | @ref CacheStatus::SetCurrentRate "SetCurrentRate" | @ref CacheStatus::GetCurrentRate "GetCurrentRate"
-  /// | **Cache low speed condition detected** | `bool` | @ref CacheStatus::SetLowspeed "SetLowspeed" | @ref CacheStatus::GetLowspeed "GetLowspeed"
+  /// | **Cache low speed rate detected** | `unsigned int` | @ref CacheStatus::SetLowRate "SetLowRate" | @ref CacheStatus::GetLowRate "GetLowRate"
   ///
 
   /// @addtogroup cpp_kodi_vfs_Defs_CacheStatus
@@ -261,17 +261,17 @@ public:
   /// @brief Set maximum number of bytes per second cache is allowed to fill.
   unsigned int GetMaxRate() { return m_cStructure->maxrate; }
 
-  /// @brief Set average read rate from source file since last position change.
+  /// @brief Set number of bytes per second for average read rate from source file since last position change.
   void SetCurrentRate(unsigned int currate) { m_cStructure->currate = currate; }
 
-  /// @brief Get average read rate from source file since last position change.
+  /// @brief Get number of bytes per second for average read rate from source file since last position change.
   unsigned int GetCurrentRate() { return m_cStructure->currate; }
 
-  /// @brief Set cache low speed condition detected.
-  void SetLowspeed(bool lowspeed) { m_cStructure->lowspeed = lowspeed; }
+  /// @brief Set number of bytes per second for low speed rate.
+  void SetLowRate(unsigned int lowrate) { m_cStructure->lowrate = lowrate; }
 
-  /// @brief Get cache low speed condition detected.
-  bool GetLowspeed() { return m_cStructure->lowspeed; }
+  /// @brief Get number of bytes per second for low speed rate.
+  unsigned int GetLowRate() { return m_cStructure->lowrate; }
 
   ///@}
 };

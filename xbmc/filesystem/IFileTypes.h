@@ -48,10 +48,10 @@ struct SNativeIoControl
 
 struct SCacheStatus
 {
-  uint64_t forward;  /**< number of bytes cached forward of current position */
-  unsigned maxrate;  /**< maximum number of bytes per second cache is allowed to fill */
-  unsigned currate;  /**< average read rate from source file since last position change */
-  bool     lowspeed; /**< cache low speed condition detected? */
+  uint64_t forward; /**< number of bytes cached forward of current position */
+  unsigned maxrate; /**< maximum allowed read(fill) rate (bytes/second) */
+  unsigned currate; /**< average read rate (bytes/second) since last position change */
+  unsigned lowrate; /**< low speed read rate (bytes/second) (if any, else 0) */
 };
 
 typedef enum {
