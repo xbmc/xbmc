@@ -146,6 +146,9 @@ static pa_encoding AEFormatToPulseEncoding(AEDataFormat format)
   }
 }
 
+namespace
+{
+
 // clang-format off
 constexpr std::array<AEDataFormat, 6> defaultDataFormats = {
   AE_FMT_U8,
@@ -173,6 +176,8 @@ constexpr std::array<unsigned int, 14> defaultSampleRates = {
   384000
 };
 // clang-format on
+
+} // namespace
 
 /* Static callback functions */
 
