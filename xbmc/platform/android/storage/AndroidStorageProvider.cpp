@@ -30,6 +30,9 @@
 #include <androidjni/StorageManager.h>
 #include <androidjni/StorageVolume.h>
 
+namespace
+{
+
 // clang-format off
 constexpr std::array<const char*, 10> typeWL = {
   "vfat",
@@ -69,6 +72,8 @@ constexpr std::array<const char*, 4> deviceWL = {
   "//" // SMB
 };
 // clang-format on
+
+} // namespace
 
 IStorageProvider* IStorageProvider::CreateInstance()
 {
