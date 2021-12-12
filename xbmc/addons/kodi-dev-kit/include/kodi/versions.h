@@ -62,8 +62,8 @@
 #define ADDON_GLOBAL_VERSION_AUDIOENGINE_DEPENDS      "AudioEngine.h" \
                                                       "c-api/audio_engine.h"
 
-#define ADDON_GLOBAL_VERSION_FILESYSTEM               "1.1.6"
-#define ADDON_GLOBAL_VERSION_FILESYSTEM_MIN           "1.1.0"
+#define ADDON_GLOBAL_VERSION_FILESYSTEM               "1.1.7"
+#define ADDON_GLOBAL_VERSION_FILESYSTEM_MIN           "1.1.7"
 #define ADDON_GLOBAL_VERSION_FILESYSTEM_XML_ID        "kodi.binary.global.filesystem"
 #define ADDON_GLOBAL_VERSION_FILESYSTEM_DEPENDS       "Filesystem.h" \
                                                       "c-api/filesystem.h" \
@@ -162,8 +162,8 @@
 #define ADDON_INSTANCE_VERSION_SCREENSAVER_DEPENDS    "c-api/addon-instance/screensaver.h" \
                                                       "addon-instance/Screensaver.h"
 
-#define ADDON_INSTANCE_VERSION_VFS                    "3.0.0"
-#define ADDON_INSTANCE_VERSION_VFS_MIN                "3.0.0"
+#define ADDON_INSTANCE_VERSION_VFS                    "3.0.1"
+#define ADDON_INSTANCE_VERSION_VFS_MIN                "3.0.1"
 #define ADDON_INSTANCE_VERSION_VFS_XML_ID             "kodi.binary.instance.vfs"
 #define ADDON_INSTANCE_VERSION_VFS_DEPENDS            "c-api/addon-instance/vfs.h" \
                                                       "addon-instance/VFS.h"

@@ -1742,10 +1742,10 @@ bool CVideoPlayer::GetCachingTimes(double& level, double& delay, double& offset)
   if (!m_pInputStream->GetCacheStatus(&status))
     return false;
 
-  const uint64_t &cached = status.forward;
-  const unsigned &currate = status.currate;
-  const unsigned &maxrate = status.maxrate;
-  const bool &lowspeed = status.lowspeed;
+  const uint64_t& cached = status.forward;
+  const unsigned& currate = status.currate;
+  const unsigned& maxrate = status.maxrate;
+  const unsigned& lowrate = status.lowrate;
 
   int64_t length = m_pInputStream->GetLength();
   int64_t remain = length - m_pInputStream->Seek(0, SEEK_CUR);
@@ -1770,9 +1770,9 @@ bool CVideoPlayer::GetCachingTimes(double& level, double& delay, double& offset)
 
   delay = cache_left - play_left;
 
-  if (lowspeed)
+  if (lowrate > 0)
   {
-    CLog::Log(LOGDEBUG, "Readrate {} is too low with {} required", currate, maxrate);
+    CLog::Log(LOGDEBUG, "Readrate {} was too low with {} required", lowrate, maxrate);
     level = -1.0;                          /* buffer is full & our read rate is too low  */
   }
   else
