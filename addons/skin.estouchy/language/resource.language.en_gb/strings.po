@@ -78,22 +78,32 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr ""
 
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show PVR info page
 msgctxt "#31017"
-msgid "PVR info"
+msgid "PVR"
 msgstr ""
 
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show player info page
 msgctxt "#31018"
-msgid "Player process info"
+msgid "Player"
 msgstr ""
 
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show video decoder name
 msgctxt "#31019"
 msgid "Video decoder"
 msgstr ""
 
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show the video pixel format
 msgctxt "#31020"
 msgid "Pixel format"
 msgstr ""
 
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show the system memory usage
 msgctxt "#31021"
 msgid "System memory usage"
 msgstr ""
@@ -386,7 +396,81 @@ msgctxt "#31565"
 msgid "Show deleted"
 msgstr ""
 
-#empty strings from id 31566 to 31899
+#empty strings from id 31566 to 31599
+
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show the video codec name
+msgctxt "#31600"
+msgid "Video codec"
+msgstr ""
+
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show the video resolution
+msgctxt "#31601"
+msgid "Video resolution"
+msgstr ""
+
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show the video aspect
+msgctxt "#31602"
+msgid "Video aspect"
+msgstr ""
+
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show the video bitrate
+msgctxt "#31603"
+msgid "Video bitrate"
+msgstr ""
+
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show the audio codec name
+msgctxt "#31604"
+msgid "Audio codec"
+msgstr ""
+
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show the number of audio channels
+msgctxt "#31605"
+msgid "Audio channels"
+msgstr ""
+
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show the audio bitrate
+msgctxt "#31606"
+msgid "Audio bitrate"
+msgstr ""
+
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show the screen resolution
+msgctxt "#31607"
+msgid "Screen resolution"
+msgstr ""
+
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show the system rendering speed
+msgctxt "#31608"
+msgid "System rendering speed"
+msgstr ""
+
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show the system CPU usage
+msgctxt "#31609"
+msgid "System CPU usage"
+msgstr ""
+
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show the media (metadata) info page
+msgctxt "#31610"
+msgid "Media"
+msgstr ""
+
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show the system info page
+msgctxt "#31611"
+msgid "System"
+msgstr ""
+
+#empty strings from id 31612 to 31899
 
 msgctxt "#31900"
 msgid "First Run"
