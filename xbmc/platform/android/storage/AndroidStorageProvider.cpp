@@ -314,9 +314,9 @@ std::set<std::string> CAndroidStorageProvider::GetRemovableDrivesLinux()
         bool bl_ok = true;
 
         // What mount points are rejected
-        for (size_t i = 0; i < mountBL.size(); ++i)
+        for (const auto& mount : mountBL)
         {
-          if (StringUtils::StartsWithNoCase(mountStr, mountBL[i]))
+          if (StringUtils::StartsWithNoCase(mountStr, mount))
           {
             bl_ok = false;
             break;
@@ -327,9 +327,9 @@ std::set<std::string> CAndroidStorageProvider::GetRemovableDrivesLinux()
         {
           // What filesystems are accepted
           bool fsok = false;
-          for (size_t i = 0; i < typeWL.size(); ++i)
+          for (const auto& type : typeWL)
           {
-            if (StringUtils::StartsWithNoCase(fsStr, typeWL[i]))
+            if (StringUtils::StartsWithNoCase(fsStr, type))
             {
               fsok = true;
               break;
@@ -337,9 +337,9 @@ std::set<std::string> CAndroidStorageProvider::GetRemovableDrivesLinux()
           }
           // What devices are accepted
           bool devok = false;
-          for (size_t i = 0; i < deviceWL.size(); ++i)
+          for (const auto& device : deviceWL)
           {
-            if (StringUtils::StartsWithNoCase(deviceStr, deviceWL[i]))
+            if (StringUtils::StartsWithNoCase(deviceStr, device))
             {
               devok = true;
               break;
@@ -348,9 +348,9 @@ std::set<std::string> CAndroidStorageProvider::GetRemovableDrivesLinux()
 
           // What mount points are accepted
           bool mountok = false;
-          for (size_t i = 0; i < mountWL.size(); ++i)
+          for (const auto& mount : mountWL)
           {
-            if (StringUtils::StartsWithNoCase(mountStr, mountWL[i]))
+            if (StringUtils::StartsWithNoCase(mountStr, mount))
             {
               mountok = true;
               break;
