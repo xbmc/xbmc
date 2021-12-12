@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
+	<defaultcontrol always="true">5553</defaultcontrol>
 	<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
 	<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
 	<include>16x9_xPos_Relocation</include>
-	<onunload>ClearProperty(PlayerPVRInfo,Home)</onunload>
+	<onload>SetProperty(PlayerInfoDialogFocus,5553,Home)</onload>
+	<onunload>ClearProperty(PlayerInfoDialogFocus,Home)</onunload>
 	<controls>
 		<control type="group">
 			<posy>80</posy>
@@ -20,9 +22,9 @@
 				<include>DialogCloseButtonCommons</include>
 			</control>
 			<control type="grouplist">
-				<posx>52</posx>
+				<posx>50</posx>
 				<posy>50</posy>
-				<visible>!String.IsEmpty(Window(Home).Property(PlayerPVRInfo))</visible>
+				<visible>String.IsEqual(Window(Home).Property(PlayerInfoDialogFocus),5551)</visible>
 				<control type="label">
 					<width>800</width>
 					<height>30</height>
@@ -75,7 +77,7 @@
 			<control type="grouplist">
 				<posx>850</posx>
 				<posy>50</posy>
-				<visible>!String.IsEmpty(Window(Home).Property(PlayerPVRInfo))</visible>
+				<visible>String.IsEqual(Window(Home).Property(PlayerInfoDialogFocus),5551)</visible>
 				<control type="label">
 					<width>400</width>
 					<height>30</height>
@@ -131,9 +133,82 @@
 				</control>
 			</control>
 			<control type="grouplist">
-				<posx>52</posx>
+				<posx>50</posx>
 				<posy>20</posy>
-				<visible>String.IsEmpty(Window(Home).Property(PlayerPVRInfo))</visible>
+				<visible>String.IsEqual(Window(Home).Property(PlayerInfoDialogFocus),5552)</visible>
+				<control type="label">
+					<width>600</width>
+					<height>30</height>
+					<aligny>bottom</aligny>
+					<label>$INFO[VideoPlayer.VideoCodec,[COLOR blue]$LOCALIZE[31600]:[/COLOR] ]</label>
+					<font>font25</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>Player.HasVideo</visible>
+				</control>
+				<control type="label">
+					<width>600</width>
+					<height>30</height>
+					<aligny>bottom</aligny>
+					<label>$INFO[VideoPlayer.VideoResolution,[COLOR blue]$LOCALIZE[31601]:[/COLOR] ]</label>
+					<font>font25</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>Player.HasVideo</visible>
+				</control>
+				<control type="label">
+					<width>600</width>
+					<height>30</height>
+					<aligny>bottom</aligny>
+					<label>$INFO[VideoPlayer.VideoAspect,[COLOR blue]$LOCALIZE[31602]:[/COLOR] ]</label>
+					<font>font25</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>Player.HasVideo</visible>
+				</control>
+				<control type="label">
+					<width>600</width>
+					<height>30</height>
+					<aligny>bottom</aligny>
+					<label>$INFO[VideoPlayer.VideoBitrate,[COLOR blue]$LOCALIZE[31603]:[/COLOR] , kb/s]</label>
+					<font>font25</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>Player.HasVideo</visible>
+				</control>
+			</control>
+			<control type="grouplist">
+				<posx>650</posx>
+				<posy>20</posy>
+				<visible>String.IsEqual(Window(Home).Property(PlayerInfoDialogFocus),5552)</visible>
+				<control type="label">
+					<width>600</width>
+					<height>30</height>
+					<aligny>bottom</aligny>
+					<label>$INFO[VideoPlayer.AudioCodec,[COLOR blue]$LOCALIZE[31604]:[/COLOR] ]</label>
+					<font>font25</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>Player.HasVideo</visible>
+				</control>
+				<control type="label">
+					<width>600</width>
+					<height>30</height>
+					<aligny>bottom</aligny>
+					<label>$INFO[VideoPlayer.AudioChannels,[COLOR blue]$LOCALIZE[31605]:[/COLOR] ]</label>
+					<font>font25</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>Player.HasVideo</visible>
+				</control>
+				<control type="label">
+					<width>600</width>
+					<height>30</height>
+					<aligny>bottom</aligny>
+					<label>$INFO[VideoPlayer.AudioBitrate,[COLOR blue]$LOCALIZE[31606]:[/COLOR] , kb/s]</label>
+					<font>font25</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>Player.HasVideo</visible>
+				</control>
+			</control>
+			<control type="grouplist">
+				<posx>50</posx>
+				<posy>20</posy>
+				<visible>String.IsEqual(Window(Home).Property(PlayerInfoDialogFocus),5553)</visible>
 				<control type="label">
 					<width>1000</width>
 					<height>30</height>
@@ -178,22 +253,53 @@
 					<font>font25</font>
 					<shadowcolor>black</shadowcolor>
 				</control>
+			</control>
+			<control type="grouplist">
+				<posx>50</posx>
+				<posy>20</posy>
+				<visible>String.IsEqual(Window(Home).Property(PlayerInfoDialogFocus),5554)</visible>
 				<control type="label">
 					<width>1000</width>
 					<height>30</height>
 					<aligny>bottom</aligny>
-					<label>$INFO[System.Memory(used.percent),[COLOR blue]$LOCALIZE[31021]:[/COLOR] ,       ]</label>
+					<label>$INFO[System.ScreenResolution,[COLOR blue]$LOCALIZE[31607]:[/COLOR] ]</label>
 					<font>font25</font>
 					<shadowcolor>black</shadowcolor>
 				</control>
 				<control type="label">
 					<width>1000</width>
-					<height>60</height>
+					<height>30</height>
 					<aligny>bottom</aligny>
-					<label>$INFO[System.CpuUsage,[COLOR blue]$LOCALIZE[13271][/COLOR] ]</label>
+					<label>$INFO[System.FPS,[COLOR blue]$LOCALIZE[31608]:[/COLOR] , fps]</label>
 					<font>font25</font>
 					<shadowcolor>black</shadowcolor>
-					<wrapmultiline>true</wrapmultiline>
+				</control>
+				<control type="label">
+					<width>1000</width>
+					<height>30</height>
+					<aligny>bottom</aligny>
+					<label>$INFO[System.Memory(used.percent),[COLOR blue]$LOCALIZE[31021]:[/COLOR] ]</label>
+					<font>font25</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>System.SupportsCPUUsage</visible>
+				</control>
+				<control type="label">
+					<width>1000</width>
+					<height>30</height>
+					<aligny>bottom</aligny>
+					<label>$INFO[System.CpuUsage,[COLOR blue]$LOCALIZE[31609]:[/COLOR] ]</label>
+					<font>font25</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>System.SupportsCPUUsage</visible>
+				</control>
+				<control type="label">
+					<width>1000</width>
+					<height>30</height>
+					<aligny>bottom</aligny>
+					<label>$INFO[System.Memory(used.percent),[COLOR blue]$LOCALIZE[31021]:[/COLOR] ]</label>
+					<font>font25</font>
+					<shadowcolor>black</shadowcolor>
+					<visible>!System.SupportsCPUUsage</visible>
 				</control>
 			</control>
 			<control type="grouplist" id="5550">
@@ -204,20 +310,34 @@
 				<align>center</align>
 				<orientation>horizontal</orientation>
 				<itemgap>10</itemgap>
-				<control type="button" id="5552">
-					<width>250</width>
-					<height>60</height>
-					<include>ButtonInfoDialogsCommonValues</include>
-					<onclick>ClearProperty(PlayerPVRInfo,Home)</onclick>
-					<label>$LOCALIZE[31018]</label>
-				</control>
 				<control type="button" id="5551">
 					<width>250</width>
 					<height>60</height>
 					<include>ButtonInfoDialogsCommonValues</include>
 					<label>$LOCALIZE[31017]</label>
-					<onclick>SetProperty(PlayerPVRInfo,true,Home)</onclick>
 					<visible>VideoPlayer.Content(livetv)</visible>
+					<onclick>SetProperty(PlayerInfoDialogFocus,5551,Home)</onclick>
+				</control>
+				<control type="button" id="5552">
+					<width>250</width>
+					<height>60</height>
+					<include>ButtonInfoDialogsCommonValues</include>
+					<label>$LOCALIZE[31610]</label>
+					<onclick>SetProperty(PlayerInfoDialogFocus,5552,Home)</onclick>
+				</control>
+				<control type="button" id="5553">
+					<width>250</width>
+					<height>60</height>
+					<include>ButtonInfoDialogsCommonValues</include>
+					<label>$LOCALIZE[31018]</label>
+					<onclick>SetProperty(PlayerInfoDialogFocus,5553,Home)</onclick>
+				</control>
+				<control type="button" id="5554">
+					<width>250</width>
+					<height>60</height>
+					<include>ButtonInfoDialogsCommonValues</include>
+					<label>$LOCALIZE[31611]</label>
+					<onclick>SetProperty(PlayerInfoDialogFocus,5554,Home)</onclick>
 				</control>
 			</control>
 		</control>
