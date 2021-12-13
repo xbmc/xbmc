@@ -251,6 +251,10 @@ set_target_properties(compileinfo PROPERTIES FOLDER "Build Utilities")
 target_compile_options(compileinfo PRIVATE "${SYSTEM_DEFINES} ${ARCH_DEFINES}")
 add_dependencies(compileinfo fmt)
 
+if(NOT MSVC)
+  target_compile_options(compileinfo PUBLIC ${CORE_COMPILE_OPTIONS})
+endif()
+
 # RC File
 if(WIN32)
   configure_file(${CMAKE_SOURCE_DIR}/xbmc/platform/win32/XBMC_PC.rc.in
