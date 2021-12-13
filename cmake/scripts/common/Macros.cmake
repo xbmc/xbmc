@@ -75,6 +75,10 @@ function(core_add_library name)
     add_dependencies(${name} ${GLOBAL_TARGET_DEPS})
     set(CORE_LIBRARY ${name} PARENT_SCOPE)
 
+    if(NOT MSVC)
+      target_compile_options(${name} PUBLIC ${CORE_COMPILE_OPTIONS})
+    endif()
+
     # Add precompiled headers to Kodi main libraries
     if(CORE_SYSTEM_NAME MATCHES windows)
       add_precompiled_header(${name} pch.h ${CMAKE_SOURCE_DIR}/xbmc/platform/win32/pch.cpp PCH_TARGET kodi)
@@ -104,6 +108,11 @@ function(core_add_test_library name)
                                              FOLDER "Build Utilities/tests")
     add_dependencies(${name} ${GLOBAL_TARGET_DEPS})
     set(test_archives ${test_archives} ${name} CACHE STRING "" FORCE)
+
+    if(NOT MSVC)
+      target_compile_options(${name} PUBLIC ${CORE_COMPILE_OPTIONS})
+    endif()
+
   endif()
   foreach(src IN LISTS SOURCES SUPPORTED_SOURCES HEADERS OTHERS)
     get_filename_component(src_path "${src}" ABSOLUTE)
@@ -166,6 +175,10 @@ function(core_add_shared_library name)
     add_library(${name} STATIC ${SOURCES} ${HEADERS} ${OTHERS})
     set_target_properties(${name} PROPERTIES POSITION_INDEPENDENT_CODE 1)
     core_link_library(${name} ${OUTPUT_DIRECTORY}/lib${name})
+
+    if(NOT MSVC)
+      target_compile_options(${name} PUBLIC ${CORE_COMPILE_OPTIONS})
+    endif()
   endif()
 endfunction()
 
