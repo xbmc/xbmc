@@ -144,13 +144,13 @@ bool CPVRProviders::Update()
   for (const auto& clientInfo : clientProviderInfos)
   {
     auto addonProvider = std::make_shared<CPVRProvider>(
-        clientInfo["clientid"].asInteger(), clientInfo["name"].asString(),
+        clientInfo["clientid"].asInteger32(), clientInfo["name"].asString(),
         clientInfo["icon"].asString(), clientInfo["thumb"].asString());
 
     newAddonProviderList.CheckAndAddEntry(addonProvider, ProviderUpdateMode::BY_CLIENT);
 
     if (!clientInfo["enabled"].asBoolean())
-      disabledClients.emplace_back(clientInfo["clientid"].asInteger());
+      disabledClients.emplace_back(clientInfo["clientid"].asInteger32());
   }
   UpdateDefaultEntries(newAddonProviderList);
 
