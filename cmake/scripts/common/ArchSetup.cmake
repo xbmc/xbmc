@@ -149,8 +149,15 @@ endif()
 
 if(NOT MSVC)
   # these options affect all code built by cmake including external projects.
-  add_options(ALL_LANGUAGES ALL_BUILDS "-Wall" "-Wdouble-promotion" "-Wmissing-field-initializers")
-  add_options(ALL_LANGUAGES DEBUG "-g" "-D_DEBUG")
+  add_options(ALL_LANGUAGES ALL_BUILDS
+    -Wall
+    -Wdouble-promotion
+    -Wmissing-field-initializers
+  )
+  add_options(ALL_LANGUAGES DEBUG
+    -g
+    -D_DEBUG
+  )
 
   # these options affect only core code
   if(NOT CORE_COMPILE_OPTIONS)
