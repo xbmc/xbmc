@@ -475,7 +475,7 @@ void CDVDVideoCodecDRMPRIME::SetPictureParams(VideoPicture* pVideoPicture)
 
   if (aspect_ratio <= 0.0)
     aspect_ratio =
-        static_cast<float>(pVideoPicture->iWidth) / static_cast<float>(pVideoPicture->iHeight);
+        static_cast<double>(pVideoPicture->iWidth) / static_cast<double>(pVideoPicture->iHeight);
 
   if (m_DAR != aspect_ratio)
   {
