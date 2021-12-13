@@ -34,6 +34,16 @@
 							<bordertexture border="21">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
+						<control type="group">
+							<description>Banner View - TV show banner image</description>
+							<visible>!Skin.String(show_tvshowcertificationrating,$LOCALIZE[16018]) + [String.IsEqual(ListItem.DbType,tvshow) | String.IsEqual(ListItem.DbType,season) | String.IsEqual(ListItem.DbType,episode)]</visible>
+							<include content="TVShowCertificationRatingImage">
+								<param name="left" value="25"/>
+								<param name="top" value="25"/>
+								<param name="height" value="60" />
+								<param name="width" value="60" />
+							</include>
+						</control>
 						<control type="label">
 							<left>70</left>
 							<top>20</top>
@@ -70,6 +80,16 @@
 							<aspectratio aligny="center">scale</aspectratio>
 							<bordertexture border="21">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
+						</control>
+						<control type="group">
+							<description>Banner View - TV show banner image</description>
+							<visible>!Skin.String(show_tvshowcertificationrating,$LOCALIZE[16018]) + [String.IsEqual(ListItem.DbType,tvshow) | String.IsEqual(ListItem.DbType,season) | String.IsEqual(ListItem.DbType,episode)]</visible>
+							<include content="TVShowCertificationRatingImage">
+								<param name="left" value="25"/>
+								<param name="top" value="25"/>
+								<param name="height" value="60" />
+								<param name="width" value="60" />
+							</include>
 						</control>
 						<control type="label">
 							<left>70</left>

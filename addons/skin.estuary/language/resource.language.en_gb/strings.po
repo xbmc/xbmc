@@ -807,3 +807,13 @@ msgstr ""
 msgctxt "#31169"
 msgid "Artwork related settings."
 msgstr ""
+
+#: /xml/SkinSettings.xml
+msgctxt "#31170"
+msgid "Show Movie certification ratings"
+msgstr ""
+
+#: /xml/SkinSettings.xml
+msgctxt "#31171"
+msgid "Show TV show certification ratings"
+msgstr ""
