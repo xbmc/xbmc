@@ -153,6 +153,7 @@ if(NOT MSVC)
     -Wall
     -Wdouble-promotion
     -Wmissing-field-initializers
+    -Wsign-compare
   )
   add_options(ALL_LANGUAGES DEBUG
     -g
