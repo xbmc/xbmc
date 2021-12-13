@@ -1053,7 +1053,8 @@ namespace XBMCAddon
     void ListItem::addSubtitlesRaw(const std::vector<std::string>& subtitles)
     {
       for (size_t i = 0; i < subtitles.size(); ++i)
-        addPropertyRaw(StringUtils::Format("subtitle:{}", i), subtitles[i]);
+        // subtitle:{} index starts from 1
+        addPropertyRaw(StringUtils::Format("subtitle:{}", i + 1), subtitles[i]);
     }
   }
 }
