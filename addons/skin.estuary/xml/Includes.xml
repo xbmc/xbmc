@@ -1579,4 +1579,26 @@
 			</control>
 		</focusedlayout>
 	</include>
+	<include name="MovieCertificationRatingImage">
+		<control type="image">
+			<top>$PARAM[top]</top>
+			<left>$PARAM[left]</left>
+			<width>$PARAM[width]</width>
+			<height>$PARAM[height]</height>
+			<description>Control to display certification rating image</description>
+			<aspectratio>keep</aspectratio>
+			<texture>special://skin/extras/certification-ratings/movie/$VAR[MovieCertificationRatingCountryVar]/$VAR[CertificationRatingVar].png</texture>
+		</control>
+	</include>
+	<include name="TVShowCertificationRatingImage">
+		<control type="image">
+			<top>$PARAM[top]</top>
+			<left>$PARAM[left]</left>
+			<width>$PARAM[width]</width>
+			<height>$PARAM[height]</height>
+			<description>Control to display certification rating image</description>
+			<aspectratio>keep</aspectratio>
+			<texture>special://skin/extras/certification-ratings/tvshow/$VAR[TVShowCertificationRatingCountryVar]/$VAR[CertificationRatingVar].png</texture>
+		</control>
+	</include>
 </includes>

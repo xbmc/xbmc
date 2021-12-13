@@ -154,6 +154,16 @@
 				<aspectratio>scale</aspectratio>
 				<bordersize>20</bordersize>
 			</control>
+			<control type="group">
+				<description>InfoWall View - TV Show  episode select image</description>
+				<visible>!Skin.String(show_moviecertificationrating,$LOCALIZE[16018]) + [String.IsEqual(ListItem.DbType,tvshow) | String.IsEqual(ListItem.DbType,season) | String.IsEqual(ListItem.DbType,episode)]</visible>
+				<include content="TVShowCertificationRatingImage">
+					<param name="left" value="28"/>
+					<param name="top" value="38"/>
+					<param name="height" value="40"/>
+					<param name="width" value="40"/>
+				</include>
+			</control>
 			<control type="image">
 				<left>20</left>
 				<top>138</top>
@@ -345,6 +355,26 @@
 				<left>135</left>
 				<top>-8</top>
 				<include condition="Skin.HasSetting(circle_rating) | Skin.HasSetting(circle_userrating)">RatingCircle</include>
+			</control>
+			<control type="group">
+				<description>InfoWall View - movie poster</description>
+				<visible>!Skin.String(show_moviecertificationrating,$LOCALIZE[16018]) + String.IsEqual(ListItem.DbType,movie)</visible>
+				<include content="MovieCertificationRatingImage">
+					<param name="left" value="240"/>
+					<param name="top" value="326"/>
+					<param name="height" value="42"/>
+					<param name="width" value="42"/>
+				</include>
+			</control>
+			<control type="group">
+				<description>InfoWall View - TV Show - show select images</description>
+				<visible>!Skin.String(show_tvshowcertificationrating,$LOCALIZE[16018]) + [String.IsEqual(ListItem.DbType,tvshow) | String.IsEqual(ListItem.DbType,season) | String.IsEqual(ListItem.DbType,episode)]</visible>
+				<include content="TVShowCertificationRatingImage">
+					<param name="left" value="49"/>
+					<param name="top" value="286"/>
+					<param name="height" value="50"/>
+					<param name="width" value="50"/>
+				</include>
 			</control>
 			<control type="progress">
 				<left>35</left>

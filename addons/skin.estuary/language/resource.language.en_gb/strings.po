@@ -814,7 +814,17 @@ msgctxt "#31169"
 msgid "Artwork related settings."
 msgstr ""
 
-#empty strings from id 31170 to 31599
+#: /xml/SkinSettings.xml
+msgctxt "#31170"
+msgid "Show Movie certification ratings"
+msgstr ""
+
+#: /xml/SkinSettings.xml
+msgctxt "#31171"
+msgid "Show TV show certification ratings"
+msgstr ""
+
+#empty strings from id 31172 to 31599
 
 #: /xml/DialogPlayerProcessInfo.xml
 #. Label to show the video codec name

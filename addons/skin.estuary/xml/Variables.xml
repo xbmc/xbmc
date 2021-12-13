@@ -600,4 +600,53 @@
 		<value condition="VideoPlayer.SubtitlesEnabled">[B]$INFO[VideoPlayer.SubtitlesLanguage][/B]</value>
 		<value>[B]$LOCALIZE[1223][/B]</value>
 	</variable>
+	<variable name="MovieCertificationRatingCountryVar">
+	<!-- Set Certification Country variable for use in path to images -->
+		<value condition="Skin.String(show_moviecertificationrating,gb)">gb</value>
+		<value condition="Skin.String(show_moviecertificationrating,us)">us</value>
+	</variable>
+	<variable name="MovieCertificationRatingLongCountryVar">
+	<!-- Set Certifcation Country long name for use in settings selection -->
+		<value condition="Skin.String(show_moviecertificationrating,$LOCALIZE[231])">$LOCALIZE[231]</value>
+		<value condition="Skin.String(show_moviecertificationrating,gb)">Great Britain</value>
+		<value condition="Skin.String(show_moviecertificationrating,us)">United States</value>
+		<value>$LOCALIZE[231]</value>
+	</variable>
+	<variable name="TVShowCertificationRatingCountryVar">
+	<!-- Set Certification Country variable for use in path to images -->
+		<value condition="Skin.String(show_tvshowcertificationrating,gb)">gb</value>
+		<value condition="Skin.String(show_tvshowcertificationrating,us)">us</value>
+	</variable>
+	<variable name="TVShowCertificationRatingLongCountryVar">
+	<!-- Set Certifcation Country long name for use in settings selection -->
+		<value condition="Skin.String(show_tvshowcertificationrating,$LOCALIZE[231])">$LOCALIZE[231]</value>
+		<value condition="Skin.String(show_tvshowcertificationrating,gb)">Great Britain</value>
+		<value condition="Skin.String(show_tvshowcertificationrating,us)">United States</value>
+		<value>$LOCALIZE[231]</value>
+	</variable>
+	<variable name="CertificationRatingVar">
+		<!-- Match GB movie certification ratings to images -->
+		<value condition="Skin.String(show_moviecertificationrating,gb) + String.IsEqual(ListItem.DbType,movie) + String.EndsWith(ListItem.mpaa,Uc)">Uc</value>
+		<value condition="Skin.String(show_moviecertificationrating,gb) + String.IsEqual(ListItem.DbType,movie) + String.EndsWith(ListItem.mpaa,U)">U</value>
+		<value condition="Skin.String(show_moviecertificationrating,gb) + String.IsEqual(ListItem.DbType,movie) + String.EndsWith(ListItem.mpaa,PG)">PG</value>
+		<value condition="Skin.String(show_moviecertificationrating,gb) + String.IsEqual(ListItem.DbType,movie) + String.EndsWith(ListItem.mpaa,12A)">12A</value>
+		<value condition="Skin.String(show_moviecertificationrating,gb) + String.IsEqual(ListItem.DbType,movie) + String.EndsWith(ListItem.mpaa,12)">12</value>
+		<value condition="Skin.String(show_moviecertificationrating,gb) + String.IsEqual(ListItem.DbType,movie) + String.EndsWith(ListItem.mpaa,15)">15</value>
+		<value condition="Skin.String(show_moviecertificationrating,gb) + String.IsEqual(ListItem.DbType,movie) + String.EndsWith(ListItem.mpaa,18)">18</value>
+		<value condition="Skin.String(show_moviecertificationrating,gb) + String.IsEqual(ListItem.DbType,movie) + String.EndsWith(ListItem.mpaa,R18)">R18</value>
+		<!-- Match US movie certification ratings to images -->
+		<value condition="Skin.String(show_moviecertificationrating,us) + String.IsEqual(ListItem.DbType,movie) + String.EndsWith(ListItem.mpaa,NR)">NR</value>
+		<value condition="Skin.String(show_moviecertificationrating,us) + String.IsEqual(ListItem.DbType,movie) + String.EndsWith(ListItem.mpaa,PG)">PG</value>
+		<value condition="Skin.String(show_moviecertificationrating,us) + String.IsEqual(ListItem.DbType,movie) + String.EndsWith(ListItem.mpaa,G)">G</value>		
+		<value condition="Skin.String(show_moviecertificationrating,us) + String.IsEqual(ListItem.DbType,movie) + String.EndsWith(ListItem.mpaa,PG-13)">PG-13</value>
+		<value condition="Skin.String(show_moviecertificationrating,us) + String.IsEqual(ListItem.DbType,movie) + String.EndsWith(ListItem.mpaa,R)">R</value>
+		<value condition="Skin.String(show_moviecertificationrating,us) + String.IsEqual(ListItem.DbType,movie) + String.EndsWith(ListItem.mpaa,NC-17)">NC-17</value>
+		<!-- Match TV certification ratings to images-->
+		<value condition="Skin.String(show_tvshowcertificationrating,us) + String.IsEqual(ListItem.mpaa,TV-Y)">TV-Y</value>
+		<value condition="Skin.String(show_tvshowcertificationrating,us) + String.IsEqual(ListItem.mpaa,TV-Y7)">TV-Y7</value>
+		<value condition="Skin.String(show_tvshowcertificationrating,us) + String.IsEqual(ListItem.mpaa,TV-G)">TV-G</value>
+		<value condition="Skin.String(show_tvshowcertificationrating,us) + String.IsEqual(ListItem.mpaa,TV-PG)">TV-PG</value>
+		<value condition="Skin.String(show_tvshowcertificationrating,us) + String.IsEqual(ListItem.mpaa,TV-14)">TV-14</value>
+		<value condition="Skin.String(show_tvshowcertificationrating,us) + String.IsEqual(ListItem.mpaa,TV-MA)">TV-MA</value>
+	</variable> 
 </includes>
