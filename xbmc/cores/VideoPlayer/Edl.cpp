@@ -155,8 +155,8 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
         std::vector<std::string> fieldParts = StringUtils::Split(strFields[i], '.');
         if (fieldParts.size() == 1) // No ms
         {
-          editStartEnd[i] =
-              StringUtils::TimeStringToSeconds(fieldParts[0]) * (int64_t)1000; // seconds to ms
+          editStartEnd[i] = StringUtils::TimeStringToSeconds(fieldParts[0]) *
+                            static_cast<int64_t>(1000); // seconds to ms
         }
         else if (fieldParts.size() == 2) // Has ms. Everything after the dot (.) is ms
         {
@@ -175,8 +175,9 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
           {
             fieldParts[1] = fieldParts[1].substr(0, 3);
           }
-          editStartEnd[i] = (int64_t)StringUtils::TimeStringToSeconds(fieldParts[0]) * 1000 +
-                            atoi(fieldParts[1].c_str()); // seconds to ms
+          editStartEnd[i] =
+              static_cast<int64_t>(StringUtils::TimeStringToSeconds(fieldParts[0])) * 1000 +
+              atoi(fieldParts[1].c_str()); // seconds to ms
         }
         else
         {
@@ -202,7 +203,7 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
       }
       else // Plain old seconds in float format, e.g. 123.45
       {
-        editStartEnd[i] = (int64_t)(atof(strFields[i].c_str()) * 1000); // seconds to ms
+        editStartEnd[i] = static_cast<int64_t>(atof(strFields[i].c_str()) * 1000); // seconds to ms
       }
     }
 
@@ -422,8 +423,8 @@ bool CEdl::ReadVideoReDo(const std::string& strMovie)
          *  Times need adjusting by 1/10,000 to get ms.
          */
         Edit edit;
-        edit.start = (int64_t)(dStart / 10000);
-        edit.end = (int64_t)(dEnd / 10000);
+        edit.start = static_cast<int64_t>(dStart / 10000);
+        edit.end = static_cast<int64_t>(dEnd / 10000);
         edit.action = Action::CUT;
         bValid = AddEdit(edit);
       }
@@ -521,8 +522,8 @@ bool CEdl::ReadBeyondTV(const std::string& strMovie)
        * atof() returns 0 if there were any problems and will subsequently be rejected in AddEdit().
        */
       Edit edit;
-      edit.start = (int64_t)(atof(pStart->FirstChild()->Value()) / 10000);
-      edit.end = (int64_t)(atof(pEnd->FirstChild()->Value()) / 10000);
+      edit.start = static_cast<int64_t>((atof(pStart->FirstChild()->Value()) / 10000));
+      edit.end = static_cast<int64_t>((atof(pEnd->FirstChild()->Value()) / 10000));
       edit.action = Action::COMM_BREAK;
       bValid = AddEdit(edit);
     }
@@ -633,7 +634,7 @@ bool CEdl::AddEdit(const Edit& newEdit)
     return false;
   }
 
-  for (int i = 0; i < (int)m_vecEdits.size(); i++)
+  for (size_t i = 0; i < m_vecEdits.size(); ++i)
   {
     if (edit.start < m_vecEdits[i].start && edit.end > m_vecEdits[i].end)
     {
@@ -737,7 +738,7 @@ int CEdl::RemoveCutTime(int iSeek) const
    * total duration for display.
    */
   int iCutTime = 0;
-  for (int i = 0; i < (int)m_vecEdits.size(); i++)
+  for (size_t i = 0; i < m_vecEdits.size(); ++i)
   {
     if (m_vecEdits[i].action == Action::CUT)
     {
@@ -757,7 +758,7 @@ double CEdl::RestoreCutTime(double dClock) const
     return dClock;
 
   double dSeek = dClock;
-  for (int i = 0; i < (int)m_vecEdits.size(); i++)
+  for (size_t i = 0; i < m_vecEdits.size(); ++i)
   {
     if (m_vecEdits[i].action == Action::CUT && dSeek >= m_vecEdits[i].start)
       dSeek += static_cast<double>(m_vecEdits[i].end - m_vecEdits[i].start);
@@ -777,7 +778,7 @@ std::string CEdl::GetInfo() const
   if (HasEdits())
   {
     int cutCount = 0, muteCount = 0, commBreakCount = 0;
-    for (int i = 0; i < (int)m_vecEdits.size(); i++)
+    for (size_t i = 0; i < m_vecEdits.size(); ++i)
     {
       switch (m_vecEdits[i].action)
       {
@@ -809,7 +810,7 @@ std::string CEdl::GetInfo() const
 
 bool CEdl::InEdit(const int iSeek, Edit* pEdit)
 {
-  for (int i = 0; i < (int)m_vecEdits.size(); i++)
+  for (size_t i = 0; i < m_vecEdits.size(); ++i)
   {
     if (iSeek < m_vecEdits[i].start) // Early exit if not even up to the edit start time.
       return false;
@@ -860,7 +861,7 @@ bool CEdl::GetNearestEdit(bool bPlus, const int iSeek, Edit* pEdit) const
   else
   {
     // Searching backwards
-    for (int i = (int)m_vecEdits.size() - 1; i >= 0; i--)
+    for (size_t i = m_vecEdits.size() - 1; i >= 0; i--)
     {
       if (iSeek - 20000 >= m_vecEdits[i].start && iSeek <= m_vecEdits[i].end)
       // Inside edit. We ignore if we're closer to 20 seconds inside
@@ -953,7 +954,7 @@ void CEdl::MergeShortCommBreaks()
   const std::shared_ptr<CAdvancedSettings> advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
   if (advancedSettings->m_bEdlMergeShortCommBreaks)
   {
-    for (int i = 0; i < static_cast<int>(m_vecEdits.size()) - 1; i++)
+    for (size_t i = 0; i < m_vecEdits.size() - 1; ++i)
     {
       if ((m_vecEdits[i].action == Action::COMM_BREAK &&
            m_vecEdits[i + 1].action == Action::COMM_BREAK) &&
@@ -1003,7 +1004,7 @@ void CEdl::MergeShortCommBreaks()
     /*
      * Remove any commercial breaks shorter than the minimum (unless at the start)
      */
-    for (int i = 0; i < static_cast<int>(m_vecEdits.size()); i++)
+    for (size_t i = 0; i < m_vecEdits.size(); ++i)
     {
       if (m_vecEdits[i].action == Action::COMM_BREAK && m_vecEdits[i].start > 0 &&
           (m_vecEdits[i].end - m_vecEdits[i].start) <
@@ -1024,7 +1025,7 @@ void CEdl::MergeShortCommBreaks()
   /*
    * Add in scene markers at the start and end of the commercial breaks.
    */
-  for (int i = 0; i < (int)m_vecEdits.size(); i++)
+  for (size_t i = 0; i < m_vecEdits.size(); ++i)
   {
     if (m_vecEdits[i].action == Action::COMM_BREAK)
     {
