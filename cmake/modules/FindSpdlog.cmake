@@ -39,7 +39,6 @@ if(ENABLE_INTERNAL_SPDLOG)
   externalproject_add(spdlog
                       URL ${SPDLOG_URL}
                       DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
-                      PATCH_COMMAND patch -p1 -i ${CMAKE_SOURCE_DIR}/tools/depends/target/libspdlog/0001-fix_fmt_version.patch
                       PREFIX ${CORE_BUILD_DIR}/spdlog
                       CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
                                  -DCMAKE_CXX_EXTENSIONS=${CMAKE_CXX_EXTENSIONS}
@@ -95,12 +94,12 @@ if(SPDLOG_FOUND)
                                    -DSPDLOG_WCHAR_TO_UTF8_SUPPORT)
   endif()
 
-  if(NOT TARGET Spdlog::Spdlog)
-    add_library(Spdlog::Spdlog UNKNOWN IMPORTED)
-    set_target_properties(Spdlog::Spdlog PROPERTIES
-                                         IMPORTED_LOCATION "${SPDLOG_LIBRARY}"
-                                         INTERFACE_INCLUDE_DIRECTORIES "${SPDLOG_INCLUDE_DIR}"
-                                         INTERFACE_COMPILE_DEFINITIONS "${SPDLOG_DEFINITIONS}")
+  if(NOT TARGET spdlog)
+    add_library(spdlog UNKNOWN IMPORTED)
+    set_target_properties(spdlog PROPERTIES
+                                 IMPORTED_LOCATION "${SPDLOG_LIBRARY}"
+                                 INTERFACE_INCLUDE_DIRECTORIES "${SPDLOG_INCLUDE_DIR}"
+                                 INTERFACE_COMPILE_DEFINITIONS "${SPDLOG_DEFINITIONS}")
   endif()
 endif()
 
