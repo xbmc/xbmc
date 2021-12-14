@@ -60,8 +60,19 @@ public:
   int GetAudioBitsPerSample();
 
   // content info
+
+  /*!
+   * @brief Set the EDL edit list.
+   * @param editList The vector of edits to fill.
+   */
   void SetEditList(const std::vector<EDL::Edit>& editList);
+
+  /*!
+   * @brief Get the EDL edit list.
+   * @return The EDL edits or an empty vector if no edits exist.
+   */
   std::vector<EDL::Edit> GetEditList() const;
+
   void SetChapters(const std::vector<std::pair<std::string, int64_t>>& chapters);
   std::vector<std::pair<std::string, int64_t>> GetChapters() const;
 
