@@ -14,8 +14,8 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
-#include "cores/Cut.h"
 #include "cores/DataCacheCore.h"
+#include "cores/EdlEdit.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIDialog.h"
 #include "guilib/GUIWindowManager.h"
@@ -619,7 +619,7 @@ std::string CPlayerGUIInfo::GetContentRanges(int iInfo) const
     switch (iInfo)
     {
       case PLAYER_CUTLIST:
-        ranges = GetCutList(data, duration);
+        ranges = GetEditList(data, duration);
         break;
       case PLAYER_CHAPTERS:
         ranges = GetChapters(data, duration);
@@ -640,19 +640,19 @@ std::string CPlayerGUIInfo::GetContentRanges(int iInfo) const
   return values;
 }
 
-std::vector<std::pair<float, float>> CPlayerGUIInfo::GetCutList(CDataCacheCore& data, time_t duration) const
+std::vector<std::pair<float, float>> CPlayerGUIInfo::GetEditList(CDataCacheCore& data,
+                                                                 time_t duration) const
 {
   std::vector<std::pair<float, float>> ranges;
 
-  const std::vector<EDL::Cut> cuts = data.GetCutList();
-  for (const auto& cut : cuts)
+  const std::vector<EDL::Edit> edits = data.GetEditList();
+  for (const auto& edit : edits)
   {
-    if (cut.action != EDL::Action::CUT &&
-        cut.action != EDL::Action::COMM_BREAK)
+    if (edit.action != EDL::Action::CUT && edit.action != EDL::Action::COMM_BREAK)
       continue;
 
-    float cutStart = cut.start * 100.0f / duration;
-    float cutEnd = cut.end * 100.0f / duration;
+    float cutStart = edit.start * 100.0f / duration;
+    float cutEnd = edit.end * 100.0f / duration;
     ranges.emplace_back(std::make_pair(cutStart, cutEnd));
   }
   return ranges;

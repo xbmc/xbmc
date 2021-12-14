@@ -13,7 +13,7 @@
 
 namespace EDL
 {
-  struct Cut;
+struct Edit;
 }
 
 class CFileItem;
@@ -26,20 +26,20 @@ public:
   bool ReadEditDecisionLists(const CFileItem& fileItem, const float fFramesPerSecond);
   void Clear();
 
-  bool HasCut() const;
+  bool HasEdits() const;
   bool HasSceneMarker() const;
   std::string GetInfo() const;
   int GetTotalCutTime() const;
   int RemoveCutTime(int iSeek) const;
   double RestoreCutTime(double dClock) const;
 
-  const std::vector<EDL::Cut>& GetCutList() const { return m_vecCuts; }
+  const std::vector<EDL::Edit>& GetEditList() const { return m_vecEdits; }
 
-  bool InCut(int iSeek, EDL::Cut* pCut = nullptr);
-  bool GetNearestCut(bool bPlus, const int iSeek, EDL::Cut* pCut) const;
+  bool InEdit(int iSeek, EDL::Edit* pEdit = nullptr);
+  bool GetNearestEdit(bool bPlus, const int iSeek, EDL::Edit* pEdit) const;
 
-  int GetLastCutTime() const;
-  void SetLastCutTime(const int iCutTime);
+  int GetLastEditTime() const;
+  void SetLastEditTime(const int editTime);
 
   bool GetNextSceneMarker(bool bPlus, const int iClock, int *iSceneMarker);
 
@@ -47,9 +47,9 @@ public:
 
 private:
   int m_iTotalCutTime; // ms
-  std::vector<EDL::Cut> m_vecCuts;
+  std::vector<EDL::Edit> m_vecEdits;
   std::vector<int> m_vecSceneMarkers;
-  int m_lastCutTime;
+  int m_lastEditTime;
 
   bool ReadEdl(const std::string& strMovie, const float fFramesPerSecond);
   bool ReadComskip(const std::string& strMovie, const float fFramesPerSecond);
@@ -57,7 +57,7 @@ private:
   bool ReadBeyondTV(const std::string& strMovie);
   bool ReadPvr(const CFileItem& fileItem);
 
-  bool AddCut(const EDL::Cut& newCut);
+  bool AddEdit(const EDL::Edit& newEdit);
   bool AddSceneMarker(const int sceneMarker);
 
   void MergeShortCommBreaks();

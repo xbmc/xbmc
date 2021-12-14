@@ -10,7 +10,7 @@
 
 #include "FileItem.h"
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_edl.h"
-#include "cores/Cut.h"
+#include "cores/EdlEdit.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "utils/log.h"
@@ -18,7 +18,7 @@
 namespace PVR
 {
 
-std::vector<EDL::Cut> CPVREdl::GetCuts(const CFileItem& item)
+std::vector<EDL::Edit> CPVREdl::GetEdits(const CFileItem& item)
 {
   std::vector<PVR_EDL_ENTRY> edl;
 
@@ -34,35 +34,35 @@ std::vector<EDL::Cut> CPVREdl::GetCuts(const CFileItem& item)
     edl = item.GetEPGInfoTag()->GetEdl();
   }
 
-  std::vector<EDL::Cut> cutlist;
+  std::vector<EDL::Edit> editlist;
   for (const auto& entry : edl)
   {
-    EDL::Cut cut;
-    cut.start = entry.start;
-    cut.end = entry.end;
+    EDL::Edit edit;
+    edit.start = entry.start;
+    edit.end = entry.end;
 
     switch (entry.type)
     {
     case PVR_EDL_TYPE_CUT:
-      cut.action = EDL::Action::CUT;
+      edit.action = EDL::Action::CUT;
       break;
     case PVR_EDL_TYPE_MUTE:
-      cut.action = EDL::Action::MUTE;
+      edit.action = EDL::Action::MUTE;
       break;
     case PVR_EDL_TYPE_SCENE:
-      cut.action = EDL::Action::SCENE;
+      edit.action = EDL::Action::SCENE;
       break;
     case PVR_EDL_TYPE_COMBREAK:
-      cut.action = EDL::Action::COMM_BREAK;
+      edit.action = EDL::Action::COMM_BREAK;
       break;
     default:
       CLog::LogF(LOGWARNING, "Ignoring entry of unknown EDL type: {}", entry.type);
       continue;
     }
 
-    cutlist.emplace_back(cut);
+    editlist.emplace_back(edit);
   }
-  return cutlist;
+  return editlist;
 }
 
 } // namespace PVR

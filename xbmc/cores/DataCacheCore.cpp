@@ -9,7 +9,7 @@
 #include "DataCacheCore.h"
 
 #include "ServiceBroker.h"
-#include "cores/Cut.h"
+#include "cores/EdlEdit.h"
 #include "threads/SingleLock.h"
 
 #include <utility>
@@ -48,7 +48,7 @@ void CDataCacheCore::Reset()
     CSingleLock lock(m_contentSection);
 
     m_contentInfo.m_chapters.clear();
-    m_contentInfo.m_cutList.clear();
+    m_contentInfo.m_editList.clear();
   }
 }
 
@@ -246,16 +246,16 @@ int CDataCacheCore::GetAudioBitsPerSample()
   return m_playerAudioInfo.bitsPerSample;
 }
 
-void CDataCacheCore::SetCutList(const std::vector<EDL::Cut>& cutList)
+void CDataCacheCore::SetEditList(const std::vector<EDL::Edit>& editList)
 {
   CSingleLock lock(m_contentSection);
-  m_contentInfo.m_cutList = cutList;
+  m_contentInfo.m_editList = editList;
 }
 
-std::vector<EDL::Cut> CDataCacheCore::GetCutList() const
+std::vector<EDL::Edit> CDataCacheCore::GetEditList() const
 {
   CSingleLock lock(m_contentSection);
-  return m_contentInfo.m_cutList;
+  return m_contentInfo.m_editList;
 }
 
 void CDataCacheCore::SetChapters(const std::vector<std::pair<std::string, int64_t>>& chapters)
