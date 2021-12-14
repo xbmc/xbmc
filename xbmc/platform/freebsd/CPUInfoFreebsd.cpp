@@ -60,7 +60,7 @@ CCPUInfoFreebsd::CCPUInfoFreebsd()
   if (sysctlbyname("hw.model", cpuModel.data(), &length, nullptr, 0) == 0)
     m_cpuModel = cpuModel.data();
 
-  for (size_t i = 0; i < m_cpuCount; i++)
+  for (int i = 0; i < m_cpuCount; i++)
   {
     CoreInfo core;
     core.m_id = i;
@@ -189,7 +189,7 @@ int CCPUInfoFreebsd::GetUsedPercentage()
 
   std::vector<CpuData> cpuData;
 
-  for (size_t i = 0; i < m_cpuCount; i++)
+  for (int i = 0; i < m_cpuCount; i++)
   {
     CpuData info;
 
