@@ -181,6 +181,8 @@ msgid "Last logged in"
 msgstr ""
 
 #: /xml/SettingsSystemInfo.xml
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show the system memory usage
 msgctxt "#31030"
 msgid "System memory usage"
 msgstr ""
@@ -640,21 +642,25 @@ msgid "Click here to see latest changes..."
 msgstr ""
 
 #: /xml/DialogPlayerProcessInfo.xml
+#. Label to show PVR info page
 msgctxt "#31137"
-msgid "PVR info"
+msgid "PVR"
 msgstr ""
 
 #: /xml/DialogPlayerProcessInfo.xml
+#. Label to show player info page
 msgctxt "#31138"
-msgid "Player process info"
+msgid "Player"
 msgstr ""
 
 #: /xml/DialogPlayerProcessInfo.xml
+#. Label to show video decoder name
 msgctxt "#31139"
 msgid "Video decoder"
 msgstr ""
 
 #: /xml/DialogPlayerProcessInfo.xml
+#. Label to show the video pixel format
 msgctxt "#31140"
 msgid "Pixel format"
 msgstr ""
