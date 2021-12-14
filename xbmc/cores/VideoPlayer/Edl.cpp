@@ -730,6 +730,9 @@ int CEdl::GetTotalCutTime() const
 
 int CEdl::RemoveCutTime(int iSeek) const
 {
+  // FIXME - This should actually be HasCuts and not HasEdits
+  // since if the file HasEdits but not any EDL cut there's
+  // no time to remove
   if (!HasEdits())
     return iSeek;
 
@@ -755,6 +758,9 @@ int CEdl::RemoveCutTime(int iSeek) const
 
 double CEdl::RestoreCutTime(double dClock) const
 {
+  // FIXME - This should actually be HasCuts and not HasEdits
+  // since if the file HasEdits but not any EDL cut there's
+  // no time to restore
   if (!HasEdits())
     return dClock;
 

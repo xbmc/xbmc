@@ -23,6 +23,9 @@ class CEdl
 public:
   CEdl();
 
+  // FIXME: remove const modifier for fFramesPerSecond as it makes no sense as it means nothing
+  // for the reader of the interface, but limits the implementation
+  // to not modify the parameter on stack
   bool ReadEditDecisionLists(const CFileItem& fileItem, const float fFramesPerSecond);
   void Clear();
 
@@ -78,8 +81,14 @@ public:
   */
   void SetLastEditTime(int editTime);
 
+  // FIXME: remove const modifier for iClock as it makes no sense as it means nothing
+  // for the reader of the interface, but limits the implementation
+  // to not modify the parameter on stack
   bool GetNextSceneMarker(bool bPlus, const int iClock, int *iSceneMarker);
 
+  // FIXME: remove const modifier as it makes no sense as it means nothing
+  // for the reader of the interface, but limits the implementation
+  // to not modify the parameter on stack
   static std::string MillisecondsToTimeString(const int iMilliseconds);
 
 private:
@@ -88,9 +97,21 @@ private:
   std::vector<int> m_vecSceneMarkers;
   int m_lastEditTime;
 
+  // FIXME: remove const modifier for fFramesPerSecond as it makes no sense as it means nothing
+  // for the reader of the interface, but limits the implementation
+  // to not modify the parameter on stack
   bool ReadEdl(const std::string& strMovie, const float fFramesPerSecond);
+  // FIXME: remove const modifier for fFramesPerSecond as it makes no sense as it means nothing
+  // for the reader of the interface, but limits the implementation
+  // to not modify the parameter on stack
   bool ReadComskip(const std::string& strMovie, const float fFramesPerSecond);
+  // FIXME: remove const modifier for strMovie as it makes no sense as it means nothing
+  // for the reader of the interface, but limits the implementation
+  // to not modify the parameter on stack
   bool ReadVideoReDo(const std::string& strMovie);
+  // FIXME: remove const modifier for strMovie as it makes no sense as it means nothing
+  // for the reader of the interface, but limits the implementation
+  // to not modify the parameter on stack
   bool ReadBeyondTV(const std::string& strMovie);
   bool ReadPvr(const CFileItem& fileItem);
 
@@ -100,6 +121,10 @@ private:
    * @return true if the operation succeeds, false otherwise
   */
   bool AddEdit(const EDL::Edit& newEdit);
+
+  // FIXME: remove const modifier for strMovie as it makes no sense as it means nothing
+  // for the reader of the interface, but limits the implementation
+  // to not modify the parameter on stack
   bool AddSceneMarker(const int sceneMarker);
 
   void MergeShortCommBreaks();
