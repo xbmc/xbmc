@@ -817,3 +817,77 @@ msgstr ""
 msgctxt "#31171"
 msgid "Show TV show certification ratings"
 msgstr ""
+
+#empty strings from id 31172 to 31599
+
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show the video codec name
+msgctxt "#31600"
+msgid "Video codec"
+msgstr ""
+
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show the video resolution
+msgctxt "#31601"
+msgid "Video resolution"
+msgstr ""
+
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show the video aspect
+msgctxt "#31602"
+msgid "Video aspect"
+msgstr ""
+
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show the video bitrate
+msgctxt "#31603"
+msgid "Video bitrate"
+msgstr ""
+
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show the audio codec name
+msgctxt "#31604"
+msgid "Audio codec"
+msgstr ""
+
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show the number of audio channels
+msgctxt "#31605"
+msgid "Audio channels"
+msgstr ""
+
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show the audio bitrate
+msgctxt "#31606"
+msgid "Audio bitrate"
+msgstr ""
+
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show the screen resolution
+msgctxt "#31607"
+msgid "Screen resolution"
+msgstr ""
+
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show the system rendering speed
+msgctxt "#31608"
+msgid "System rendering speed"
+msgstr ""
+
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show the system CPU usage
+msgctxt "#31609"
+msgid "System CPU usage"
+msgstr ""
+
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show the media (metadata) info page
+msgctxt "#31610"
+msgid "Media"
+msgstr ""
+
+#: /xml/DialogPlayerProcessInfo.xml
+#. Label to show the system info page
+msgctxt "#31611"
+msgid "System"
+msgstr ""
