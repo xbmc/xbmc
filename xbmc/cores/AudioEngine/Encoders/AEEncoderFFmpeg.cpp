@@ -259,6 +259,7 @@ int CAEEncoderFFmpeg::Encode(uint8_t *in, int in_size, uint8_t *out, int out_siz
   frame->nb_samples = m_CodecCtx->frame_size;
   frame->format = m_CodecCtx->sample_fmt;
   frame->channel_layout = m_CodecCtx->channel_layout;
+  frame->channels = m_CodecCtx->channels;
 
   avcodec_fill_audio_frame(frame, m_CodecCtx->channels, m_CodecCtx->sample_fmt,
                     in, in_size, 0);
