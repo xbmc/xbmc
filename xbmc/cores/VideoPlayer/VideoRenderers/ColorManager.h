@@ -149,7 +149,7 @@ private:
 
 
   // create a gamma curve
-  cmsToneCurve* CreateToneCurve(CMS_TRC_TYPE gammaType, float gammaValue, cmsCIEXYZ blackPoint);
+  cmsToneCurve* CreateToneCurve(CMS_TRC_TYPE gammaType, double gammaValue, cmsCIEXYZ blackPoint);
 
   // create a source profile
   cmsHPROFILE CreateSourceProfile(CMS_PRIMARIES primaries, cmsToneCurve *gamma, CMS_WHITEPOINT whitepoint);
