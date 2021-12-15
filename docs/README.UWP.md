@@ -50,7 +50,7 @@ To build Kodi:
 * **[Git for Windows](https://gitforwindows.org/)**
 * **[Java Runtime Environment (JRE)](http://www.oracle.com/technetwork/java/javase/downloads/index.html)**
 * **[Nullsoft scriptable install system (NSIS)](http://nsis.sourceforge.net/Download)** (Only needed if you want to generate an installer file)
-* **[Visual Studio 2019](https://visualstudio.microsoft.com/downloads/)** or **[Visual Studio 2017](https://visualstudio.microsoft.com/vs/older-downloads/)** (Community Edition is fine)
+* **[Visual Studio 2019](https://visualstudio.microsoft.com/downloads/)** (Community Edition is fine)
 
 To run Kodi you need a relatively recent CPU with integrated GPU or discrete GPU with up-to-date graphics device-drivers installed from the manufacturer's website.
 * **[AMD](https://support.amd.com/en-us/download)**
@@ -77,24 +77,15 @@ Default options are fine.
 Start the VS2019 installer and click **Workloads** select
 * Under **Desktop & Mobile** section select
   * `Desktop development with C++`
+  * `Universal Windows Platform development`
 
 Click in **Individual components** select
+* Under **Compilers, build tools and runtimes** section select
+  * `MSVC v142 - VS 2019 C++ ARM build tools (Latest)`
 * Under **SDKs, libraries, and frameworks** section select
   * `Windows 10 SDK (10.0.18362.0)`
 
-### Visual Studio 2017 install notes
-Start the VS2017 installer and click `Individual components`.
-* Under **Compilers, build tools and runtimes** select
-  * `Msbuild`
-  * `VC++ 2017 version 15.x v14.x latest v141 tools`
-  * `Visual C++ 2017 Redistributable Update`
-  * `Windows Universal CRT SDK`
-* Under **Development activities** select
-  * `Visual Studio C++ core features`
-* Under **SDKs, libraries, and frameworks** select
-  * `Windows 10 SDK (10.0.17763.0)`
-
-Hit `Install`. Yes, it will download and install almost 7GB of stuff.
+Hit `Install`. It will download and install an extra 12GB of whatever for a grand total of almost 20GB. Yes, seriously!
 
 **[back to top](#table-of-contents)** | **[back to section top](#2-prerequisites)**
 
@@ -116,18 +107,23 @@ To set up the build environment, several scripts must be called.
 
 **WARNING:** The scripts may fail if you have a space in the path to the bat files.
 
-Kodi can be built as either a normal 32bit or 64bit program. Unless there is a reason to prefer 32bit builds, we advise you to build Kodi for 64bit.
+Kodi can be built as either UWP 32bit and 64bit and UWP ARM 32bit. Unless there is a reason to prefer 32bit builds, we advise you to build Kodi for 64bit.
 
 **TIP:** Look for comments starting with `Or ...` and only execute the command(s) you need.
 
-Change to the 64bit build directory (**recommended**):
+Change to the UWP 64bit build directory (**recommended**):
 ```
-cd %userprofile%\kodi\tools\buildsteps\windows\x64
+cd %userprofile%\kodi\tools\buildsteps\windows\x64-uwp
 ```
 
-Or change to the 32bit build directory:
+Or change to the UWP 32bit build directory:
 ```
-cd %userprofile%\kodi\tools\buildsteps\windows\win32
+cd %userprofile%\kodi\tools\buildsteps\windows\win32-uwp
+```
+
+Or change to the UWP ARM 32bit build directory:
+```
+cd %userprofile%\kodi\tools\buildsteps\windows\arm-uwp
 ```
 
 Download dependencies:
@@ -156,9 +152,7 @@ Build a package ready to install:
 BuildSetup.bat
 ```
 
-*Normal* 32bit and 64bit builds generate an `exe` file ready to run, located at `%userprofile%\kodi\kodi-build\Debug` or `%userprofile%\kodi\kodi-build\Release`, depending on the build config. An installer `exe` file, located at `%userprofile%\kodi\project\Win32BuildSetup`, is also generated.
-
-**NOTE:** To generate an exact replica of the official Kodi Windows installer, some additional steps are required:
+UWP builds generate `msix`, `appxsym` and `cer` files, located at `%userprofile%\kodi\project\UWPBuildSetup`. You can install them following this **[guide](https://kodi.wiki/view/HOW-TO:Install_Kodi_for_Universal_Windows_Platform)**.
 
 Build built-in add-ons (peripheral.joystick only) with command line:
 ```
@@ -190,26 +184,19 @@ Change to build directory:
 cd kodi-build
 ```
 
-Configure build for 64bit (**recommended**):
+Configure build for UWP 64bit (**recommended**):
 ```
-cmake -G "Visual Studio 16 2019" -A x64 -T host=x64 %userprofile%\kodi
-```
-
-Or configure build for 32bit:
-```
-cmake -G "Visual Studio 16 2019" -A Win32 -T host=x64 %userprofile%\kodi
+cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 -T host=x64 %userprofile%\kodi
 ```
 
-**Visual Studio 2017:**
-
-Replace:
+Or configure build for UWP 32bit:
 ```
--G "Visual Studio 16 2019"
+cmake -G "Visual Studio 16 2019" -A Win32 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 -T host=x64 %userprofile%\kodi
 ```
 
-With:
+Or configure build for UWP ARM 32bit:
 ```
--G "Visual Studio 15 2017"
+cmake -G "Visual Studio 16 2019" -A ARM -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 -T host=x64 %userprofile%\kodi
 ```
 
 Build Kodi:
@@ -223,6 +210,7 @@ Or build a `Release` binary:
 cmake --build . --config "Release"
 ```
 
-*Normal* 32bit and 64bit builds generate an `exe` file ready to run, located at `%userprofile%\kodi-build\Debug` or `%userprofile%\kodi-build\Release`, depending on the build config.
+UWP builds generate `msix`, `appxsym` and `cer` files, located inside directories at `%userprofile%\kodi-build\AppPackages\kodi\`. You can install them following this **[guide](https://kodi.wiki/view/HOW-TO:Install_Kodi_for_Universal_Windows_Platform)**.
+
 
 **[back to top](#table-of-contents)** | **[back to section top](#6-build-kodi-manually)**
