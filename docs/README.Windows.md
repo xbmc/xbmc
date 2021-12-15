@@ -98,8 +98,7 @@ Start the VS2017 installer and click `Individual components`.
 * Under **Development activities** select
   * `Visual Studio C++ core features`
 * Under **SDKs, libraries, and frameworks** select
-  * `Windows 10 SDK (10.0.x.0) for Desktop C++ [x86 and x64]`
-  * `Windows 10 SDK (10.0.x.0) for UWP: C++`
+  * `Windows 10 SDK (10.0.x.0)` (select the latest version)
 
 Hit `Install`. Yes, it will download and install almost 7GB of stuff.
 
