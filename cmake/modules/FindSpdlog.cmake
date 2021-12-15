@@ -56,6 +56,9 @@ if(ENABLE_INTERNAL_SPDLOG)
 
   if(ENABLE_INTERNAL_FMT)
     add_dependencies(spdlog fmt)
+  else()
+    # spdlog 1.9.2 fails to build with fmt < 8.0.0
+    find_package(fmt 8.0.0 CONFIG REQUIRED QUIET)
   endif()
 else()
   find_package(spdlog 1.5.0 CONFIG REQUIRED QUIET)
