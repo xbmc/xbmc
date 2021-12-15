@@ -289,8 +289,8 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
     // swap in my thread m_threadState
     PyThreadState_Swap(m_threadState);
 
-  // set current directory and python's path.
-  PySys_SetArgv(argc, &argv[0]);
+  // initialize python's sys.argv
+  PySys_SetArgvEx(argc, &argv[0], 0);
 
   CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): entering source directory %s", GetId(),
             m_sourceFile.c_str(), scriptDir.c_str());
