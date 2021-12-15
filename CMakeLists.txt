@@ -134,7 +134,7 @@ set(required_deps ASS
                   Fmt
                   FreeType
                   FriBidi
-                  fstrcmp
+                  Fstrcmp
                   HarfBuzz
                   Iconv
                   KissFFT

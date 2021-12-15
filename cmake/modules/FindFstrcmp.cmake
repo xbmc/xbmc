@@ -1,5 +1,5 @@
 #.rst:
-# Findfstrcmp
+# FindFstrcmp
 # --------
 # Finds the fstrcmp library
 #
@@ -11,7 +11,9 @@
 #
 
 if(ENABLE_INTERNAL_FSTRCMP)
+  find_program(LIBTOOL libtool REQUIRED)
   include(ExternalProject)
+
   file(STRINGS ${CMAKE_SOURCE_DIR}/tools/depends/target/libfstrcmp/Makefile VER)
   string(REGEX MATCH "VERSION=[^ ]*" FSTRCMP_VER "${VER}")
   list(GET FSTRCMP_VER 0 FSTRCMP_VER)
@@ -34,18 +36,14 @@ if(ENABLE_INTERNAL_FSTRCMP)
                       URL ${FSTRCMP_URL}
                       DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
                       PREFIX ${CORE_BUILD_DIR}/fstrcmp
-                      CONFIGURE_COMMAND autoreconf -vif && ./configure --prefix ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
+                      PATCH_COMMAND autoreconf -vif
+                      CONFIGURE_COMMAND ./configure --prefix ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
                       BUILD_BYPRODUCTS ${FSTRCMP_LIBRARY}
-                      BUILD_IN_SOURCE 1)
+                      BUILD_COMMAND make lib/libfstrcmp.la
+                      BUILD_IN_SOURCE 1
+                      INSTALL_COMMAND make install-libdir install-include)
+
   set_target_properties(fstrcmp PROPERTIES FOLDER "External Projects")
-
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(fstrcmp
-                                    REQUIRED_VARS FSTRCMP_LIBRARY FSTRCMP_INCLUDE_DIR
-                                    VERSION_VAR FSTRCMP_VER)
-
-  set(FSTRCMP_LIBRARIES -Wl,-Bstatic ${FSTRCMP_LIBRARY} -Wl,-Bdynamic)
-  set(FSTRCMP_INCLUDE_DIRS ${FSTRCMP_INCLUDE_DIR})
 else()
   if(PKG_CONFIG_FOUND)
     pkg_check_modules(PC_FSTRCMP fstrcmp QUIET)
@@ -58,23 +56,22 @@ else()
                                 PATHS ${PC_FSTRCMP_LIBDIR})
 
   set(FSTRCMP_VERSION ${PC_FSTRCMP_VERSION})
-
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(fstrcmp
-                                    REQUIRED_VARS FSTRCMP_LIBRARY FSTRCMP_INCLUDE_DIR
-                                    VERSION_VAR FSTRCMP_VERSION)
-
-  if(FSTRCMP_FOUND)
-    set(FSTRCMP_INCLUDE_DIRS ${FSTRCMP_INCLUDE_DIR})
-    set(FSTRCMP_LIBRARIES ${FSTRCMP_LIBRARY})
-  endif()
-
-  if(NOT TARGET fstrcmp)
-    add_library(fstrcmp UNKNOWN IMPORTED)
-    set_target_properties(fstrcmp PROPERTIES
-                                  IMPORTED_LOCATION "${FSTRCMP_LIBRARY}"
-                                  INTERFACE_INCLUDE_DIRECTORIES "${FSTRCMP_INCLUDE_DIR}")
-  endif()
 endif()
 
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(Fstrcmp
+                                  REQUIRED_VARS FSTRCMP_LIBRARY FSTRCMP_INCLUDE_DIR
+                                  VERSION_VAR FSTRCMP_VER)
+
+if(FSTRCMP_FOUND)
+  set(FSTRCMP_INCLUDE_DIRS ${FSTRCMP_INCLUDE_DIR})
+  set(FSTRCMP_LIBRARIES ${FSTRCMP_LIBRARY})
+endif()
+
+if(NOT TARGET fstrcmp)
+  add_library(fstrcmp UNKNOWN IMPORTED)
+  set_target_properties(fstrcmp PROPERTIES
+                                IMPORTED_LOCATION "${FSTRCMP_LIBRARY}"
+                                INTERFACE_INCLUDE_DIRECTORIES "${FSTRCMP_INCLUDE_DIR}")
+endif()
 mark_as_advanced(FSTRCMP_INCLUDE_DIR FSTRCMP_LIBRARY)
