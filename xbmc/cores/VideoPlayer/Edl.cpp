@@ -832,7 +832,7 @@ int CEdl::GetLastEditTime() const
   return m_lastEditTime;
 }
 
-void CEdl::SetLastEditTime(const int editTime)
+void CEdl::SetLastEditTime(int editTime)
 {
   m_lastEditTime = editTime;
 }

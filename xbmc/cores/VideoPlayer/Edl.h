@@ -76,7 +76,7 @@ public:
    * edit is surpassed)
    * @param editTime The last processed EDL edit time (ms)
   */
-  void SetLastEditTime(const int editTime);
+  void SetLastEditTime(int editTime);
 
   bool GetNextSceneMarker(bool bPlus, const int iClock, int *iSceneMarker);
 
