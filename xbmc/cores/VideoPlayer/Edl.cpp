@@ -680,7 +680,7 @@ bool CEdl::AddEdit(const Edit& newEdit)
     CLog::Log(LOGDEBUG, "{} - Pushing new edit to back [{} - {}], {}", __FUNCTION__,
               MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
               static_cast<int>(edit.action));
-    m_vecEdits.push_back(edit);
+    m_vecEdits.emplace_back(edit);
   }
   else
   {
