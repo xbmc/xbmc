@@ -245,12 +245,16 @@ float CCPUInfoFreebsd::GetCPUFrequency()
 
 bool CCPUInfoFreebsd::GetTemperature(CTemperature& temperature)
 {
+  if (CCPUInfoPosix::GetTemperature(temperature))
+    return true;
+
   int value;
   size_t len = sizeof(value);
 
   /* Temperature is in Kelvin * 10 */
   if (sysctlbyname("dev.cpu.0.temperature", &value, &len, nullptr, 0) != 0)
-    return CCPUInfoPosix::GetTemperature(temperature);
+    return false;
+
   temperature = CTemperature::CreateFromKelvin(static_cast<double>(value) / 10.0);
   temperature.SetValid(true);
 
