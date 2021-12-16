@@ -859,7 +859,6 @@ void MysqlDatabase::mysqlVXPrintf(
   etByte flag_rtz;           /* True if trailing zeros should be removed */
   etByte flag_exp;           /* True to force display of the exponent */
   int nsd;                   /* Number of significant digits returned */
-  size_t idx2;
 
   length = 0;
   bufpt = 0;
@@ -942,20 +941,28 @@ void MysqlDatabase::mysqlVXPrintf(
       flag_long = flag_longlong = 0;
     }
     /* Fetch the info entry for the field */
-    infop = &fmtinfo[0];
+    infop = fmtinfo.data();
     xtype = etINVALID;
-    for (idx2 = 0; idx2 < fmtinfo.size(); idx2++)
+
+    for (const auto& info : fmtinfo)
     {
-      if( c==fmtinfo[idx2].fmttype ){
-        infop = &fmtinfo[idx2];
-        if( useExtended || (infop->flags & FLAG_INTERN)==0 ){
-          xtype = infop->type;
-        }else{
-          return;
-        }
-        break;
+      if (c != info.fmttype)
+        continue;
+
+      infop = &info;
+
+      if (useExtended || (infop->flags & FLAG_INTERN) == 0)
+      {
+        xtype = infop->type;
       }
+      else
+      {
+        return;
+      }
+
+      break;
     }
+
     zExtra = 0;
 
     /* Limit the precision to prevent overflowing buf[] during conversion */
