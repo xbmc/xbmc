@@ -843,23 +843,23 @@ void CEdl::SetLastEditTime(int editTime)
   m_lastEditTime = editTime;
 }
 
-bool CEdl::GetNearestEdit(bool bPlus, const int iSeek, Edit* pEdit) const
+bool CEdl::GetNearestEdit(bool forward, int seekTime, Edit* nearestEdit) const
 {
-  if (bPlus)
+  if (forward)
   {
     // Searching forwards
     for (auto& edit : m_vecEdits)
     {
-      if (iSeek >= edit.start && iSeek <= edit.end) // Inside edit.
+      if (seekTime >= edit.start && seekTime <= edit.end) // Inside edit.
       {
-        if (pEdit)
-          *pEdit = edit;
+        if (nearestEdit)
+          *nearestEdit = edit;
         return true;
       }
-      else if (iSeek < edit.start) // before this edit
+      else if (seekTime < edit.start) // before this edit
       {
-        if (pEdit)
-          *pEdit = edit;
+        if (nearestEdit)
+          *nearestEdit = edit;
         return true;
       }
     }
@@ -870,17 +870,17 @@ bool CEdl::GetNearestEdit(bool bPlus, const int iSeek, Edit* pEdit) const
     // Searching backwards
     for (size_t i = m_vecEdits.size() - 1; i >= 0; i--)
     {
-      if (iSeek - 20000 >= m_vecEdits[i].start && iSeek <= m_vecEdits[i].end)
+      if (seekTime - 20000 >= m_vecEdits[i].start && seekTime <= m_vecEdits[i].end)
       // Inside edit. We ignore if we're closer to 20 seconds inside
       {
-        if (pEdit)
-          *pEdit = m_vecEdits[i];
+        if (nearestEdit)
+          *nearestEdit = m_vecEdits[i];
         return true;
       }
-      else if (iSeek > m_vecEdits[i].end) // after this edit
+      else if (seekTime > m_vecEdits[i].end) // after this edit
       {
-        if (pEdit)
-          *pEdit = m_vecEdits[i];
+        if (nearestEdit)
+          *nearestEdit = m_vecEdits[i];
         return true;
       }
     }

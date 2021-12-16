@@ -60,12 +60,12 @@ public:
 
   /*!
    * @brief Get the nearest edit provided a given seek time
-   * @param bPlus if searching should be done forward (true) or backwards (false)
-   * @param iSeek the seek time
-   * @param[in,out] pEdit a pointer to the nearest edit
+   * @param forward if searching should be done forward (true) or backwards (false)
+   * @param seekTime the seek time
+   * @param[in,out] nearestEdit a pointer to the nearest edit
    * @return true if the nearest EDL edit was found, false otherwise
   */
-  bool GetNearestEdit(bool bPlus, const int iSeek, EDL::Edit* pEdit) const;
+  bool GetNearestEdit(bool forward, int seekTime, EDL::Edit* nearestEdit) const;
 
   /*!
    * @brief Get the last processed edit time (set during playback when a given
