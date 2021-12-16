@@ -191,16 +191,16 @@ std::string CNetworkInterfaceAndroid::GetCurrentNetmask() const
 std::string CNetworkInterfaceAndroid::GetCurrentDefaultGateway() const
 {
   CJNIList<CJNIRouteInfo> ris = m_lp.getRoutes();
+
   for (int i = 0; i < ris.size(); ++i)
   {
     CJNIRouteInfo ri = ris.get(i);
     if (!ri.isDefaultRoute())
       continue;
 
-    CJNIInetAddress ia = ri.getGateway();
-    std::vector<char> adr = ia.getAddress();
-    return StringUtils::Format("{}.{}.{}.{}", adr[0], adr[1], adr[2], adr[3]);
+    return ri.getGateway().getHostAddress();
   }
+
   return "";
 }
 
