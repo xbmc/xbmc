@@ -43,6 +43,8 @@ using namespace winrt::Windows::Graphics::Display::Core;
 using namespace winrt::Windows::UI::Core;
 using namespace winrt::Windows::UI::ViewManagement;
 
+using namespace std::chrono_literals;
+
 CWinSystemWin10::CWinSystemWin10()
   : CWinSystemBase()
   , m_ValidWindowedPosition(false)
@@ -581,11 +583,14 @@ void CWinSystemWin10::OnDisplayReset()
 
 void CWinSystemWin10::OnDisplayBack()
 {
-  int delay = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt("videoscreen.delayrefreshchange");
-  if (delay > 0)
+  auto delay =
+      std::chrono::milliseconds(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+                                    "videoscreen.delayrefreshchange") *
+                                100);
+  if (delay > 0ms)
   {
     m_delayDispReset = true;
-    m_dispResetTimer.Set(delay * 100);
+    m_dispResetTimer.Set(delay);
   }
   OnDisplayReset();
 }

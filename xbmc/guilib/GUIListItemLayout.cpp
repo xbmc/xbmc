@@ -189,7 +189,7 @@ void CGUIListItemLayout::LoadLayout(TiXmlElement *layout, int context, bool focu
   unsigned int infoupdatemillis = 0;
   layout->QueryUnsignedAttribute("infoupdate", &infoupdatemillis);
   if (infoupdatemillis > 0)
-    m_infoUpdateMillis = infoupdatemillis;
+    m_infoUpdateMillis = std::chrono::milliseconds(infoupdatemillis);
 
   m_infoUpdateTimeout.Set(m_infoUpdateMillis);
   m_isPlaying.Parse("listitem.isplaying", context);

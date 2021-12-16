@@ -105,7 +105,7 @@ protected:
   // stereo interlaced/checkerboard intermediate target
   CD3DTexture m_rightEyeTex;
 
-  XbmcThreads::EndTime m_decodingTimer;
+  XbmcThreads::EndTime<> m_decodingTimer;
   XbmcThreads::ConditionVariable m_decodingEvent;
 
   std::shared_ptr<DX::DeviceResources> m_deviceResources;

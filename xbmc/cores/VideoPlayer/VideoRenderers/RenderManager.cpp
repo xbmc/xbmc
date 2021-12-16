@@ -113,7 +113,7 @@ bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned 
   // make sure any queued frame was fully presented
   {
     CSingleLock lock(m_presentlock);
-    XbmcThreads::EndTime endtime(5000);
+    XbmcThreads::EndTime<> endtime(5000ms);
     m_forceNext = true;
     while (m_presentstep != PRESENT_IDLE)
     {
@@ -123,7 +123,7 @@ bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned 
         m_forceNext = false;
         return false;
       }
-      m_presentevent.wait(lock, std::chrono::milliseconds(endtime.MillisLeft()));
+      m_presentevent.wait(lock, endtime.MillisLeft());
     }
     m_forceNext = false;
   }
@@ -262,10 +262,10 @@ void CRenderManager::ShowVideo(bool enable)
 
 void CRenderManager::FrameWait(int ms)
 {
-  XbmcThreads::EndTime timeout(ms);
+  XbmcThreads::EndTime<> timeout{std::chrono::milliseconds(ms)};
   CSingleLock lock(m_presentlock);
   while(m_presentstep == PRESENT_IDLE && !timeout.IsTimePast())
-    m_presentevent.wait(lock, std::chrono::milliseconds(timeout.MillisLeft()));
+    m_presentevent.wait(lock, timeout.MillisLeft());
 }
 
 bool CRenderManager::IsPresenting()
@@ -311,7 +311,7 @@ void CRenderManager::FrameMove()
     }
     else
     {
-      m_presentTimer.Set(1000);
+      m_presentTimer.Set(1000ms);
     }
 
     if (m_presentstep == PRESENT_READY)
@@ -765,7 +765,7 @@ void CRenderManager::Render(bool clear, DWORD flags, DWORD alpha, bool gui)
 
       m_debugRenderer.Render(src, dst, view);
 
-      m_debugTimer.Set(1000);
+      m_debugTimer.Set(1000ms);
       m_renderedOverlay = true;
     }
   }
@@ -1020,7 +1020,7 @@ bool CRenderManager::AddVideoPicture(const VideoPicture& picture, volatile std::
   if (wait)
   {
     m_forceNext = true;
-    XbmcThreads::EndTime endtime(200);
+    XbmcThreads::EndTime<> endtime(200ms);
     while (m_presentstep == PRESENT_READY)
     {
       m_presentevent.wait(lock, 20ms);
@@ -1097,7 +1097,7 @@ int CRenderManager::WaitForBuffer(volatile std::atomic_bool&bStop, int timeout)
     return 0;
   }
 
-  XbmcThreads::EndTime endtime(timeout);
+  XbmcThreads::EndTime<> endtime{std::chrono::milliseconds(timeout)};
   while(m_free.empty())
   {
     m_presentevent.wait(lock, std::min(50ms, std::chrono::milliseconds(timeout)));

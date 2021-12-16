@@ -192,7 +192,7 @@ int64_t CCircularCache::WaitForData(uint32_t minimum, uint32_t millis)
   if(minimum > m_size - m_size_back)
     minimum = m_size - m_size_back;
 
-  XbmcThreads::EndTime endtime(millis);
+  XbmcThreads::EndTime<> endtime{std::chrono::milliseconds(millis)};
   while (!IsEndOfInput() && avail < minimum && !endtime.IsTimePast() )
   {
     lock.Leave();

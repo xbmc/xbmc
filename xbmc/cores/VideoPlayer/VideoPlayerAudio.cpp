@@ -307,7 +307,7 @@ void CVideoPlayerAudio::Process()
       if (m_speed != DVD_PLAYSPEED_PAUSE)
         m_audioSink.Resume();
       m_syncState = IDVDStreamPlayer::SYNC_INSYNC;
-      m_syncTimer.Set(3000);
+      m_syncTimer.Set(3000ms);
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_RESET))
     {
@@ -506,7 +506,7 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
 
     m_audioSink.SetDynamicRangeCompression(
         static_cast<long>(m_processInfo.GetVideoSettings().m_VolumeAmplification * 100));
-    
+
     SetSyncType(audioframe.passthrough);
 
     // downmix

@@ -91,7 +91,7 @@ private:
   double m_delay = 0.0;
   double m_hw_delay = 0.0;
   CJNIAudioTimestamp m_timestamp;
-  XbmcThreads::EndTime m_stampTimer;
+  XbmcThreads::EndTime<> m_stampTimer;
 
   std::vector<float> m_floatbuf;
   std::vector<int16_t> m_shortbuf;

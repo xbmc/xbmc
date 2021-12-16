@@ -216,6 +216,8 @@ using namespace std::chrono_literals;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
 
+using namespace std::chrono_literals;
+
 #define MAX_FFWD_SPEED 5
 
 CApplication::CApplication(void)
@@ -2327,7 +2329,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
     if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiSmartRedraw && m_guiRefreshTimer.IsTimePast())
     {
       CServiceBroker::GetGUI()->GetWindowManager().SendMessage(GUI_MSG_REFRESH_TIMER, 0, 0);
-      m_guiRefreshTimer.Set(500);
+      m_guiRefreshTimer.Set(500ms);
     }
 
     if (!m_bStop)
@@ -2463,7 +2465,7 @@ void CApplication::Stop(int exitCode)
   {
     // close inbound port
     CServiceBroker::UnregisterAppPort();
-    XbmcThreads::EndTime timer(1000);
+    XbmcThreads::EndTime<> timer(1000ms);
     while (m_pAppPort.use_count() > 1)
     {
       KODI::TIME::Sleep(100);

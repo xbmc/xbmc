@@ -36,6 +36,8 @@
 using namespace KODI::MESSAGING;
 using namespace KODI::WINDOWING::X11;
 
+using namespace std::chrono_literals;
+
 #define EGL_NO_CONFIG (EGLConfig)0
 
 CWinSystemX11::CWinSystemX11() : CWinSystemBase()
@@ -277,11 +279,14 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
         OnLostDevice();
         m_bIsInternalXrr = true;
         g_xrandr.SetMode(out, mode);
-        int delay = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt("videoscreen.delayrefreshchange");
-        if (delay > 0)
+        auto delay =
+            std::chrono::milliseconds(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+                                          "videoscreen.delayrefreshchange") *
+                                      100);
+        if (delay > 0ms)
         {
           m_delayDispReset = true;
-          m_dispResetTimer.Set(delay * 100);
+          m_dispResetTimer.Set(delay);
         }
         return true;
       }

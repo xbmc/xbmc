@@ -144,7 +144,7 @@ protected:
   bool m_renderedOverlay = false;
   bool m_renderDebug = false;
   bool m_renderDebugVideo = false;
-  XbmcThreads::EndTime m_debugTimer;
+  XbmcThreads::EndTime<> m_debugTimer;
   std::atomic_bool m_showVideo = {false};
 
   enum EPRESENTSTEP
@@ -206,7 +206,7 @@ protected:
   int m_lateframes = -1;
   double m_presentpts = 0.0;
   EPRESENTSTEP m_presentstep = PRESENT_IDLE;
-  XbmcThreads::EndTime m_presentTimer;
+  XbmcThreads::EndTime<> m_presentTimer;
   bool m_forceNext = false;
   int m_presentsource = 0;
   int m_presentsourcePast = -1;

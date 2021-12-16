@@ -77,7 +77,5 @@ private:
   pa_context *m_Context;
   pa_threaded_mainloop *m_MainLoop;
 
-  XbmcThreads::EndTime m_extTimer;
-
   static std::unique_ptr<CDriverMonitor> m_pMonitor;
 };

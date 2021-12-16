@@ -19,9 +19,6 @@
 class PLT_MediaController;
 class CGUIDialogBusy;
 
-namespace XbmcThreads { class EndTime; }
-
-
 namespace UPNP
 {
 
@@ -60,7 +57,10 @@ public:
 
   void FrameMove() override;
 
-  int PlayFile(const CFileItem& file, const CPlayerOptions& options, CGUIDialogBusy*& dialog, XbmcThreads::EndTime& timeout);
+  int PlayFile(const CFileItem& file,
+               const CPlayerOptions& options,
+               CGUIDialogBusy*& dialog,
+               XbmcThreads::EndTime<>& timeout);
 
 private:
   bool IsPaused() const;
@@ -74,7 +74,7 @@ private:
   std::string m_current_meta;
   bool m_started;
   bool m_stopremote;
-  XbmcThreads::EndTime m_updateTimer;
+  XbmcThreads::EndTime<> m_updateTimer;
 
   Logger m_logger;
 };

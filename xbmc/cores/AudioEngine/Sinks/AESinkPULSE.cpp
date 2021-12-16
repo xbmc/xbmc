@@ -1089,20 +1089,21 @@ unsigned int CAESinkPULSE::AddPackets(uint8_t **data, unsigned int frames, unsig
   unsigned int available = frames * m_format.m_frameSize;
   unsigned int length = m_periodSize;
   void *buffer = data[0]+offset*m_format.m_frameSize;
-  unsigned int wait_time = static_cast<unsigned int>(1000.0 * m_BufferSize / m_BytesPerSecond);
-  m_extTimer.Set(wait_time);
+  auto wait_time =
+      std::chrono::duration<double>(static_cast<double>(m_BufferSize) / m_BytesPerSecond);
+  XbmcThreads::EndTime<std::chrono::duration<double>> timer(wait_time);
   // we don't want to block forever - if timer expires pa_stream_write will
   // fail - therefore we don't care and just return 0;
-  while (!m_extTimer.IsTimePast())
+  while (!timer.IsTimePast())
   {
     if (m_requestedBytes > 0)
       break;
     pa_threaded_mainloop_wait(m_MainLoop);
   }
 
-  if (m_extTimer.IsTimePast())
+  if (timer.IsTimePast())
   {
-    CLog::Log(LOGERROR, "Sink Timer expired for more than buffer time: {}", wait_time);
+    CLog::Log(LOGERROR, "Sink Timer expired for more than buffer time: {}s", wait_time.count());
     pa_threaded_mainloop_unlock(m_MainLoop);
     return 0;
   }

@@ -30,6 +30,8 @@
 
 using namespace jni;
 
+using namespace std::chrono_literals;
+
 // those are empirical values while the HD buffer
 // is the max TrueHD package
 const unsigned int MAX_RAW_AUDIO_BUFFER_HD = 61440;
@@ -643,16 +645,16 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
     if (!m_at_jni->getTimestamp(m_timestamp))
     {
       CLog::Log(LOGDEBUG, "Could not acquire timestamp");
-      m_stampTimer.Set(100);
+      m_stampTimer.Set(100ms);
     }
     else
     {
       // check if frameposition is valid and nano timer less than 50 ms outdated
       if (m_timestamp.get_framePosition() > 0 &&
           (CurrentHostCounter() - m_timestamp.get_nanoTime()) < 50 * 1000 * 1000)
-        m_stampTimer.Set(1000);
+        m_stampTimer.Set(1000ms);
       else
-        m_stampTimer.Set(100);
+        m_stampTimer.Set(100ms);
     }
   }
   // check if last value was received less than 2 seconds ago

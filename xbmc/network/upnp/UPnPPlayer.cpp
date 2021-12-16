@@ -189,7 +189,9 @@ CUPnPPlayer::~CUPnPPlayer()
   delete m_delegate;
 }
 
-static NPT_Result WaitOnEvent(CEvent& event, XbmcThreads::EndTime& timeout, CGUIDialogBusy*& dialog)
+static NPT_Result WaitOnEvent(CEvent& event,
+                              XbmcThreads::EndTime<>& timeout,
+                              CGUIDialogBusy*& dialog)
 {
   if (event.Wait(0ms))
     return NPT_SUCCESS;
@@ -200,7 +202,10 @@ static NPT_Result WaitOnEvent(CEvent& event, XbmcThreads::EndTime& timeout, CGUI
   return NPT_SUCCESS;
 }
 
-int CUPnPPlayer::PlayFile(const CFileItem& file, const CPlayerOptions& options, CGUIDialogBusy*& dialog, XbmcThreads::EndTime& timeout)
+int CUPnPPlayer::PlayFile(const CFileItem& file,
+                          const CPlayerOptions& options,
+                          CGUIDialogBusy*& dialog,
+                          XbmcThreads::EndTime<>& timeout)
 {
   CFileItem item(file);
   NPT_Reference<CThumbLoader> thumb_loader;
@@ -347,7 +352,7 @@ failed:
 bool CUPnPPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
 {
   CGUIDialogBusy* dialog = NULL;
-  XbmcThreads::EndTime timeout(10000);
+  XbmcThreads::EndTime<> timeout(10s);
 
   /* if no path we want to attach to a already playing player */
   if(file.GetPath() == "")
@@ -382,7 +387,7 @@ bool CUPnPPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
   if(dialog)
     dialog->Close();
 
-  m_updateTimer.Set(0);
+  m_updateTimer.Set(0ms);
 
   return true;
 failed:
@@ -618,7 +623,7 @@ void CUPnPPlayer::FrameMove()
   if (m_updateTimer.IsTimePast())
   {
     CDataCacheCore::GetInstance().SetPlayTimes(0, GetTime(), 0, GetTotalTime());
-    m_updateTimer.Set(500);
+    m_updateTimer.Set(500ms);
   }
 }
 

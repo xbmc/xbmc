@@ -331,11 +331,11 @@ CAirPlayServer::~CAirPlayServer()
 void handleZeroconfAnnouncement()
 {
 #if defined(HAS_ZEROCONF)
-  static XbmcThreads::EndTime timeout(10000);
+  static XbmcThreads::EndTime<> timeout(10s);
   if(timeout.IsTimePast())
   {
     CZeroconf::GetInstance()->ForceReAnnounceService("servers.airplay");
-    timeout.Set(10000);
+    timeout.Set(10s);
   }
 #endif
 }

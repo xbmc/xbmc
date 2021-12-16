@@ -369,7 +369,7 @@ protected:
   CStopWatch m_navigationTimer;
   CStopWatch m_slowTimer;
   CStopWatch m_shutdownTimer;
-  XbmcThreads::EndTime m_guiRefreshTimer;
+  XbmcThreads::EndTime<> m_guiRefreshTimer;
 
   bool m_bInhibitIdleShutdown = false;
   bool m_bInhibitScreenSaver = false;

@@ -26,7 +26,7 @@ constexpr unsigned int defaultTimeout{20000};
  */
 template<typename L> inline bool poll(unsigned int timeoutMillis, L lambda)
 {
-  XbmcThreads::EndTime endTime(timeoutMillis);
+  XbmcThreads::EndTime<> endTime{std::chrono::milliseconds(timeoutMillis)};
   bool lastValue = false;
   while (!endTime.IsTimePast() && (lastValue = lambda()) == false)
     std::this_thread::sleep_for(std::chrono::milliseconds(50));

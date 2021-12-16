@@ -55,7 +55,7 @@ namespace PVR
 
     std::shared_ptr<CPVRChannelGroup> m_group;
     std::map<int, std::string> m_groupSelectedItemPaths;
-    XbmcThreads::EndTime m_refreshTimeout;
+    XbmcThreads::EndTime<> m_refreshTimeout;
   };
 }
 

@@ -286,7 +286,7 @@ bool CPVREpgContainer::PersistAll(unsigned int iMaxTimeslice) const
     // Note: We must lock the db the whole time, otherwise races may occur.
     database->Lock();
 
-    XbmcThreads::EndTime processTimeslice(iMaxTimeslice);
+    XbmcThreads::EndTime<> processTimeslice{std::chrono::milliseconds(iMaxTimeslice)};
     for (const auto& epg : changedEpgs)
     {
       if (!processTimeslice.IsTimePast())
@@ -376,7 +376,8 @@ void CPVREpgContainer::Process()
     if (!m_bStop && !m_bSuspended && CServiceBroker::GetPVRManager().EpgsCreated())
     {
       unsigned int iProcessed = 0;
-      XbmcThreads::EndTime processTimeslice(1000); // max 1 sec per cycle, regardless of how many events are in the queue
+      XbmcThreads::EndTime<> processTimeslice(
+          1000ms); // max 1 sec per cycle, regardless of how many events are in the queue
 
       while (!InterruptUpdate())
       {

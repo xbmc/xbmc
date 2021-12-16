@@ -34,7 +34,9 @@
 using namespace PVR;
 using namespace KODI::MESSAGING;
 
-#define MAX_INVALIDATION_FREQUENCY 2000 // limit to one invalidation per X milliseconds
+using namespace std::chrono_literals;
+
+#define MAX_INVALIDATION_FREQUENCY 2000ms // limit to one invalidation per X milliseconds
 
 CGUIDialogPVRChannelsOSD::CGUIDialogPVRChannelsOSD()
 : CGUIDialogPVRItemsViewBase(WINDOW_DIALOG_PVR_OSD_CHANNELS, "DialogPVRChannelsOSD.xml")

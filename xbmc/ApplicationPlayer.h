@@ -167,11 +167,11 @@ private:
   CSeekHandler m_seekHandler;
 
   // cache player state
-  XbmcThreads::EndTime m_audioStreamUpdate;
+  XbmcThreads::EndTime<> m_audioStreamUpdate;
   int m_iAudioStream;
-  XbmcThreads::EndTime m_videoStreamUpdate;
+  XbmcThreads::EndTime<> m_videoStreamUpdate;
   int m_iVideoStream;
-  XbmcThreads::EndTime m_subtitleStreamUpdate;
+  XbmcThreads::EndTime<> m_subtitleStreamUpdate;
   int m_iSubtitleStream;
 
   struct SNextItem

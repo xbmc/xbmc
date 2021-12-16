@@ -81,7 +81,7 @@ protected:
   std::vector<IDispResource*>  m_resources;
 
   bool m_dispReset = false;
-  XbmcThreads::EndTime m_dispResetTimer;
+  XbmcThreads::EndTime<> m_dispResetTimer;
   std::unique_ptr<CLibInputHandler> m_libinput;
 };
 

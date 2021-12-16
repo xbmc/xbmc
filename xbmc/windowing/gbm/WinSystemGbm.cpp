@@ -28,6 +28,8 @@
 
 using namespace KODI::WINDOWING::GBM;
 
+using namespace std::chrono_literals;
+
 CWinSystemGbm::CWinSystemGbm() :
   m_DRM(nullptr),
   m_GBM(new CGBMUtils),
@@ -170,9 +172,12 @@ bool CWinSystemGbm::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 
   auto result = m_DRM->SetVideoMode(res, bo);
 
-  int delay = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt("videoscreen.delayrefreshchange");
-  if (delay > 0)
-    m_dispResetTimer.Set(delay * 100);
+  auto delay =
+      std::chrono::milliseconds(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+                                    "videoscreen.delayrefreshchange") *
+                                100);
+  if (delay > 0ms)
+    m_dispResetTimer.Set(delay);
 
   return result;
 }

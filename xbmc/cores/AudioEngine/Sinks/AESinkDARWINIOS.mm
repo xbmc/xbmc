@@ -23,6 +23,8 @@
 
 #include <AudioToolbox/AudioToolbox.h>
 
+using namespace std::chrono_literals;
+
 #define CA_MAX_CHANNELS 8
 static enum AEChannel CAChannelMap[CA_MAX_CHANNELS + 1] = {
   AE_CH_FL , AE_CH_FR , AE_CH_BL , AE_CH_BR , AE_CH_FC , AE_CH_LFE , AE_CH_SL , AE_CH_SR ,
@@ -223,17 +225,17 @@ unsigned int CAAudioUnitSink::write(uint8_t *data, unsigned int frames)
   if (m_buffer->GetWriteSize() < frames * m_frameSize)
   { // no space to write - wait for a bit
     CSingleLock lock(mutex);
-    unsigned int timeout = 900 * frames / m_sampleRate;
+    auto timeout = std::chrono::milliseconds(900 * frames / m_sampleRate);
     if (!m_started)
-      timeout = 4500;
+      timeout = 4500ms;
 
     // we are using a timer here for being sure for timeouts
     // condvar can be woken spuriously as signaled
-    XbmcThreads::EndTime timer(timeout);
-    condVar.wait(mutex, std::chrono::milliseconds(timeout));
+    XbmcThreads::EndTime<> timer(timeout);
+    condVar.wait(mutex, timeout);
     if (!m_started && timer.IsTimePast())
     {
-      CLog::Log(LOGERROR, "{} engine didn't start in {} ms!", __FUNCTION__, timeout);
+      CLog::Log(LOGERROR, "{} engine didn't start in {} ms!", __FUNCTION__, timeout.count());
       return INT_MAX;
     }
   }
@@ -250,12 +252,12 @@ void CAAudioUnitSink::drain()
   unsigned int bytes = m_buffer->GetReadSize();
   unsigned int totalBytes = bytes;
   int maxNumTimeouts = 3;
-  unsigned int timeout = 900 * bytes / (m_sampleRate * m_frameSize);
+  auto timeout = std::chrono::milliseconds(900 * bytes / (m_sampleRate * m_frameSize));
   while (bytes && maxNumTimeouts > 0)
   {
     CSingleLock lock(mutex);
-    XbmcThreads::EndTime timer(timeout);
-    condVar.wait(mutex, std::chrono::milliseconds(timeout));
+    XbmcThreads::EndTime<> timer(timeout);
+    condVar.wait(mutex, timeout);
 
     bytes = m_buffer->GetReadSize();
     // if we timeout and don't
