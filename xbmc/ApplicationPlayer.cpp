@@ -19,6 +19,8 @@
 #include "guilib/GUIWindowManager.h"
 #include "settings/MediaSettings.h"
 
+using namespace std::chrono_literals;
+
 std::shared_ptr<IPlayer> CApplicationPlayer::GetInternal() const
 {
   CSingleLock lock(m_playerLock);
@@ -437,7 +439,7 @@ int CApplicationPlayer::GetAudioStream()
   if (player)
   {
     m_iAudioStream = player->GetAudioStream();
-    m_audioStreamUpdate.Set(1000);
+    m_audioStreamUpdate.Set(1000ms);
     return m_iAudioStream;
   }
   else
@@ -453,7 +455,7 @@ int CApplicationPlayer::GetSubtitle()
   if (player)
   {
     m_iSubtitleStream = player->GetSubtitle();
-    m_subtitleStreamUpdate.Set(1000);
+    m_subtitleStreamUpdate.Set(1000ms);
     return m_iSubtitleStream;
   }
   else
@@ -630,7 +632,7 @@ int CApplicationPlayer::GetVideoStream()
   if (player)
   {
     m_iVideoStream = player->GetVideoStream();
-    m_videoStreamUpdate.Set(1000);
+    m_videoStreamUpdate.Set(1000ms);
     return m_iVideoStream;
   }
   else
@@ -653,7 +655,7 @@ void CApplicationPlayer::SetAudioStream(int iStream)
   {
     player->SetAudioStream(iStream);
     m_iAudioStream = iStream;
-    m_audioStreamUpdate.Set(1000);
+    m_audioStreamUpdate.Set(1000ms);
   }
 }
 
@@ -671,7 +673,7 @@ void CApplicationPlayer::SetSubtitle(int iStream)
   {
     player->SetSubtitle(iStream);
     m_iSubtitleStream = iStream;
-    m_subtitleStreamUpdate.Set(1000);
+    m_subtitleStreamUpdate.Set(1000ms);
   }
 }
 
@@ -705,7 +707,7 @@ void CApplicationPlayer::SetVideoStream(int iStream)
   {
     player->SetVideoStream(iStream);
     m_iVideoStream = iStream;
-    m_videoStreamUpdate.Set(1000);
+    m_videoStreamUpdate.Set(1000ms);
   }
 }
 

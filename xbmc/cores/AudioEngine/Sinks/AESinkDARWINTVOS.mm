@@ -26,6 +26,8 @@
 #import <AVFoundation/AVAudioSession.h>
 #include <AudioToolbox/AudioToolbox.h>
 
+using namespace std::chrono_literals;
+
 enum CAChannelIndex
 {
   CAChannel_PCM_6CHAN = 0,
@@ -359,17 +361,17 @@ unsigned int CAAudioUnitSink::write(uint8_t* data, unsigned int frames, unsigned
   if (m_buffer->GetWriteSize() < frames * framesize)
   { // no space to write - wait for a bit
     CSingleLock lock(mutex);
-    unsigned int timeout = 900 * frames / m_sampleRate;
+    auto timeout = std::chrono::milliseconds(900 * frames / m_sampleRate);
     if (!m_started)
-      timeout = 4500;
+      timeout = 4500ms;
 
     // we are using a timer here for being sure for timeouts
     // condvar can be woken spuriously as signaled
-    XbmcThreads::EndTime timer(timeout);
-    condVar.wait(mutex, std::chrono::milliseconds(timeout));
+    XbmcThreads::EndTime<> timer(timeout);
+    condVar.wait(mutex, timeout);
     if (!m_started && timer.IsTimePast())
     {
-      CLog::Log(LOGERROR, "{} engine didn't start in {} ms!", __FUNCTION__, timeout);
+      CLog::Log(LOGERROR, "{} engine didn't start in {} ms!", __FUNCTION__, timeout.count());
       return INT_MAX;
     }
   }
@@ -386,13 +388,13 @@ void CAAudioUnitSink::drain()
   unsigned int bytes = m_buffer->GetReadSize();
   unsigned int totalBytes = bytes;
   int maxNumTimeouts = 3;
-  unsigned int timeout = buffertime();
+  auto timeout = std::chrono::milliseconds(static_cast<int>(buffertime()));
 
   while (bytes && maxNumTimeouts > 0)
   {
     CSingleLock lock(mutex);
-    XbmcThreads::EndTime timer(timeout);
-    condVar.wait(mutex, std::chrono::milliseconds(timeout));
+    XbmcThreads::EndTime<> timer(timeout);
+    condVar.wait(mutex, timeout);
 
     bytes = m_buffer->GetReadSize();
     // if we timeout and do not consume bytes,

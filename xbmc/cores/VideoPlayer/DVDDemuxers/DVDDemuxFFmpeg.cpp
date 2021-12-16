@@ -51,6 +51,7 @@ extern "C" {
 #include <libavutil/opt.h>
 }
 
+using namespace std::chrono_literals;
 
 struct StereoModeConversionMap
 {
@@ -265,7 +266,7 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
   m_pFormatContext->interrupt_callback = int_cb;
 
   // try to abort after 30 seconds
-  m_timeout.Set(30000);
+  m_timeout.Set(30s);
 
   if (m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG))
   {
@@ -1022,7 +1023,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
       m_pkt.pkt.data = NULL;
 
       // timeout reads after 100ms
-      m_timeout.Set(20000);
+      m_timeout.Set(20s);
       m_pkt.result = av_read_frame(m_pFormatContext, &m_pkt.pkt);
       m_timeout.SetInfinite();
     }
@@ -1250,7 +1251,7 @@ bool CDVDDemuxFFmpeg::SeekTime(double time, bool backwards, double* startpts)
 
   if (m_checkTransportStream)
   {
-    XbmcThreads::EndTime timer(1000);
+    XbmcThreads::EndTime<> timer(1000ms);
 
     while (!IsTransportStreamReady())
     {

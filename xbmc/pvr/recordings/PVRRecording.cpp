@@ -34,6 +34,8 @@
 
 using namespace PVR;
 
+using namespace std::chrono_literals;
+
 CPVRRecordingUid::CPVRRecordingUid(int iClientId, const std::string& strRecordingId) :
   m_iClientId(iClientId),
   m_strRecordingId(strRecordingId)
@@ -313,7 +315,7 @@ CBookmark CPVRRecording::GetResumePoint() const
       m_resumePointRefetchTimeout.IsTimePast())
   {
     // @todo: root cause should be fixed. details: https://github.com/xbmc/xbmc/pull/14961
-    m_resumePointRefetchTimeout.Set(10000); // update resume point from backend at most every 10 secs
+    m_resumePointRefetchTimeout.Set(10s); // update resume point from backend at most every 10 secs
 
     int pos = -1;
     client->GetRecordingLastPlayedPosition(*this, pos);
@@ -336,7 +338,7 @@ bool CPVRRecording::UpdateRecordingSize()
       m_recordingSizeRefetchTimeout.IsTimePast())
   {
     // @todo: root cause should be fixed. details: https://github.com/xbmc/xbmc/pull/14961
-    m_recordingSizeRefetchTimeout.Set(10000); // update size from backend at most every 10 secs
+    m_recordingSizeRefetchTimeout.Set(10s); // update size from backend at most every 10 secs
 
     int64_t sizeInBytes = -1;
     client->GetRecordingSize(*this, sizeInBytes);

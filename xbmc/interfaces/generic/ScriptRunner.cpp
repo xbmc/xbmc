@@ -155,7 +155,7 @@ bool CScriptRunner::WaitOnScriptResult(int scriptId,
       ;
 
     // give the script 30 seconds to exit before we attempt to stop it
-    XbmcThreads::EndTime timer(30000);
+    XbmcThreads::EndTime<> timer(30s);
     while (!timer.IsTimePast() && CScriptInvocationManager::GetInstance().IsRunning(scriptId) &&
            !m_scriptDone.Wait(20ms))
       ;

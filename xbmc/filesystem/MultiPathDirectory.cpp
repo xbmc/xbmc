@@ -24,6 +24,8 @@
 
 using namespace XFILE;
 
+using namespace std::chrono_literals;
+
 //
 // multipath://{path1}/{path2}/{path3}/.../{path-N}
 //
@@ -43,7 +45,7 @@ bool CMultiPathDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   if (!GetPaths(url, vecPaths))
     return false;
 
-  XbmcThreads::EndTime progressTime(3000); // 3 seconds before showing progress bar
+  XbmcThreads::EndTime<> progressTime(3000ms); // 3 seconds before showing progress bar
   CGUIDialogProgress* dlgProgress = NULL;
 
   unsigned int iFailures = 0;

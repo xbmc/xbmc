@@ -267,7 +267,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
             m_device = *(data->device);
           }
           m_extError = false;
-          m_extSilenceTimer.Set(0);
+          m_extSilenceTimer.Set(0ms);
           m_extStreaming = false;
           ReturnBuffers();
           OpenSink();
@@ -288,7 +288,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
             reply.latency = m_sink->GetLatency();
             reply.hasVolume = m_sink->HasVolume();
             m_state = S_TOP_CONFIGURED_IDLE;
-            m_extTimeout = 10000;
+            m_extTimeout = 10s;
             m_sinkLatency = (int64_t)(reply.latency * 1000);
             msg->Reply(CSinkControlProtocol::ACC, &reply, sizeof(SinkReply));
           }
@@ -320,7 +320,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
         case CSinkControlProtocol::APPFOCUSED:
           m_extAppFocused = *(bool*)msg->data;
           SetSilenceTimer();
-          m_extTimeout = 0;
+          m_extTimeout = 0ms;
           return;
 
         case CSinkControlProtocol::STREAMING:
@@ -328,7 +328,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
           return;
 
         case CSinkControlProtocol::SETSILENCETIMEOUT:
-          m_silenceTimeOut = *(int*)msg->data;
+          m_silenceTimeOut = std::chrono::milliseconds(*reinterpret_cast<int*>(msg->data));
           return;
 
         case CSinkControlProtocol::SETNOISETYPE:
@@ -346,7 +346,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
         case CSinkDataProtocol::DRAIN:
           msg->Reply(CSinkDataProtocol::ACC);
           m_state = S_TOP_UNCONFIGURED;
-          m_extTimeout = 0;
+          m_extTimeout = 0ms;
           return;
         default:
           break;
@@ -366,7 +366,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
         switch (signal)
         {
         case CSinkControlProtocol::TIMEOUT:
-          m_extTimeout = 1000;
+          m_extTimeout = 1000ms;
           return;
         default:
           break;
@@ -382,7 +382,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
           CThread::Sleep(std::chrono::milliseconds(1000 * samples->pkt->nb_samples /
                                                    samples->pkt->config.sample_rate));
           msg->Reply(CSinkDataProtocol::RETURNSAMPLE, &samples, sizeof(CSampleBuffer*));
-          m_extTimeout = 0;
+          m_extTimeout = 0ms;
           return;
         default:
           break;
@@ -402,7 +402,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
           {
             m_state = S_TOP_CONFIGURED_SILENCE;
           }
-          m_extTimeout = 0;
+          m_extTimeout = 0ms;
           return;
         case CSinkControlProtocol::VOLUME:
           m_volume = *(float*)msg->data;
@@ -431,7 +431,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
           m_sink->Drain();
           msg->Reply(CSinkDataProtocol::ACC);
           m_state = S_TOP_CONFIGURED_IDLE;
-          m_extTimeout = 10000;
+          m_extTimeout = 10s;
           return;
         case CSinkDataProtocol::SAMPLE:
           CSampleBuffer *samples;
@@ -445,12 +445,12 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
             delete m_sink;
             m_sink = nullptr;
             m_state = S_TOP_CONFIGURED_SUSPEND;
-            m_extTimeout = 0;
+            m_extTimeout = 0ms;
           }
           else
           {
             m_state = S_TOP_CONFIGURED_PLAY;
-            m_extTimeout = delay / 2;
+            m_extTimeout = std::chrono::milliseconds(delay / 2);
             m_extSilenceTimer.Set(m_extSilenceTimeout);
           }
           return;
@@ -468,7 +468,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
         case CSinkControlProtocol::STREAMING:
           m_extStreaming = *(bool*)msg->data;
           SetSilenceTimer();
-          m_extTimeout = 0;
+          m_extTimeout = 0ms;
           return;
         case CSinkControlProtocol::VOLUME:
           m_volume = *(float*)msg->data;
@@ -488,7 +488,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
           {
             OutputSamples(&m_sampleOfSilence);
             m_state = S_TOP_CONFIGURED_PLAY;
-            m_extTimeout = 0;
+            m_extTimeout = 0ms;
             m_bStateMachineSelfTrigger = true;
           }
           else
@@ -508,7 +508,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
         switch (signal)
         {
         case CSinkControlProtocol::TIMEOUT:
-          m_extTimeout = 10000;
+          m_extTimeout = 10s;
           return;
         default:
           break;
@@ -524,7 +524,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
         case CSinkDataProtocol::SAMPLE:
           OutputSamples(&m_sampleOfSilence);
           m_state = S_TOP_CONFIGURED_PLAY;
-          m_extTimeout = 0;
+          m_extTimeout = 0ms;
           m_bStateMachineSelfTrigger = true;
           return;
         default:
@@ -540,7 +540,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
           delete m_sink;
           m_sink = nullptr;
           m_state = S_TOP_CONFIGURED_SUSPEND;
-          m_extTimeout = 10000;
+          m_extTimeout = 10s;
           return;
         default:
           break;
@@ -557,16 +557,16 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
           if (!m_extSilenceTimer.IsTimePast())
           {
             m_state = S_TOP_CONFIGURED_SILENCE;
-            m_extTimeout = 0;
+            m_extTimeout = 0ms;
           }
           else
           {
             m_sink->Drain();
             m_state = S_TOP_CONFIGURED_IDLE;
             if (m_extAppFocused)
-              m_extTimeout = 10000;
+              m_extTimeout = 10s;
             else
-              m_extTimeout = 0;
+              m_extTimeout = 0ms;
           }
           return;
         default:
@@ -591,7 +591,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
           }
           else
             m_state = S_TOP_CONFIGURED_PLAY;
-          m_extTimeout = 0;
+          m_extTimeout = 0ms;
           return;
         default:
           break;
@@ -611,10 +611,10 @@ void CActiveAESink::Process()
   Message *msg = nullptr;
   Protocol *port = nullptr;
   bool gotMsg;
-  XbmcThreads::EndTime timer;
+  XbmcThreads::EndTime<> timer;
 
   m_state = S_TOP_UNCONFIGURED;
-  m_extTimeout = 1000;
+  m_extTimeout = 1000ms;
   m_bStateMachineSelfTrigger = false;
   m_extAppFocused = true;
 
@@ -660,7 +660,7 @@ void CActiveAESink::Process()
     }
 
     // wait for message
-    else if (m_outMsgEvent.Wait(std::chrono::milliseconds(m_extTimeout)))
+    else if (m_outMsgEvent.Wait(m_extTimeout))
     {
       m_extTimeout = timer.MillisLeft();
       continue;
@@ -1146,11 +1146,11 @@ void CActiveAESink::GenerateNoise()
 void CActiveAESink::SetSilenceTimer()
 {
   if (m_extStreaming)
-    m_extSilenceTimeout = std::numeric_limits<unsigned int>::max();
+    m_extSilenceTimeout = std::chrono::milliseconds::max();
   else if (m_extAppFocused)
     m_extSilenceTimeout = m_silenceTimeOut;
   else
-    m_extSilenceTimeout = 0;
+    m_extSilenceTimeout = 0ms;
 
   m_extSilenceTimer.Set(m_extSilenceTimeout);
 }

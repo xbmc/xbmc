@@ -294,7 +294,7 @@ void CExternalPlayer::Process()
   /* don't block external player's access to audio device  */
   CServiceBroker::GetActiveAE()->Suspend();
   // wait for AE has completed suspended
-  XbmcThreads::EndTime timer(2000);
+  XbmcThreads::EndTime<> timer(2000ms);
   while (!timer.IsTimePast() && !CServiceBroker::GetActiveAE()->IsSuspended())
   {
     CThread::Sleep(50ms);

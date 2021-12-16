@@ -138,9 +138,9 @@ void CPVRGUIInfo::Notify(const PVREvent& event)
 
 void CPVRGUIInfo::Process()
 {
-  int toggleIntervalMs =
-      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRInfoToggleInterval;
-  XbmcThreads::EndTime cacheTimer(toggleIntervalMs);
+  auto toggleIntervalMs = std::chrono::milliseconds(
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRInfoToggleInterval);
+  XbmcThreads::EndTime<> cacheTimer(toggleIntervalMs);
 
   /* updated on request */
   CServiceBroker::GetPVRManager().Events().Subscribe(this, &CPVRGUIInfo::Notify);

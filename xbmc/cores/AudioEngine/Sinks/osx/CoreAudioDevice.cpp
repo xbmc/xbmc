@@ -865,7 +865,7 @@ bool CCoreAudioDevice::SetBufferSize(UInt32 size)
   return (ret == noErr);
 }
 
-XbmcThreads::EndTime CCoreAudioDevice::m_callbackSuppressTimer;
+XbmcThreads::EndTime<> CCoreAudioDevice::m_callbackSuppressTimer;
 AudioObjectPropertyListenerProc CCoreAudioDevice::m_defaultOutputDeviceChangedCB = NULL;
 
 

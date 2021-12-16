@@ -180,7 +180,7 @@ protected:
   CCriticalSection m_resourceSection;
   std::vector<IDispResource*> m_resources;
   bool m_delayDispReset;
-  XbmcThreads::EndTime m_dispResetTimer;
+  XbmcThreads::EndTime<> m_dispResetTimer;
 
   WINDOW_STATE m_state;                       // the state of the window
   WINDOW_FULLSCREEN_STATE m_fullscreenState;  // the state of the window when in fullscreen

@@ -336,11 +336,11 @@ protected:
   CActiveAEDataProtocol m_dataPort;
   int m_state;
   bool m_bStateMachineSelfTrigger;
-  int m_extTimeout;
+  std::chrono::milliseconds m_extTimeout;
   bool m_extError;
   bool m_extDrain;
-  XbmcThreads::EndTime m_extDrainTimer;
-  unsigned int m_extKeepConfig;
+  XbmcThreads::EndTime<> m_extDrainTimer;
+  std::chrono::milliseconds m_extKeepConfig;
   bool m_extDeferData;
   std::queue<time_t> m_extLastDeviceChange;
   bool m_extSuspended = false;

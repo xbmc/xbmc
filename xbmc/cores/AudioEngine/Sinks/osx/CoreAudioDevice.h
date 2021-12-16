@@ -66,7 +66,10 @@ public:
   static void   RegisterDeviceChangedCB(bool bRegister, AudioObjectPropertyListenerProc callback,  void *ref);
   static void   RegisterDefaultOutputDeviceChangedCB(bool bRegister, AudioObjectPropertyListenerProc callback, void *ref);
   // suppresses the default output device changed callback for given time in ms
-  static void   SuppressDefaultOutputDeviceCB(unsigned int suppressTimeMs){ m_callbackSuppressTimer.Set(suppressTimeMs); }
+  static void SuppressDefaultOutputDeviceCB(unsigned int suppressTimeMs)
+  {
+    m_callbackSuppressTimer.Set(std::chrono::milliseconds(suppressTimeMs));
+  }
 
   bool          AddIOProc(AudioDeviceIOProc ioProc, void* pCallbackData);
   bool          RemoveIOProc();
@@ -83,7 +86,7 @@ protected:
   unsigned int m_OutputBufferIndex = 0;
   unsigned int m_BufferSizeRestore = 0;
 
-  static XbmcThreads::EndTime m_callbackSuppressTimer;
+  static XbmcThreads::EndTime<> m_callbackSuppressTimer;
   static AudioObjectPropertyListenerProc m_defaultOutputDeviceChangedCB;
   static OSStatus defaultOutputDeviceChanged(AudioObjectID                       inObjectID,
                                              UInt32                              inNumberAddresses,

@@ -505,7 +505,7 @@ void CPVRManager::Process()
   m_database->Open();
 
   /* load the pvr data from the db and clients if it's not already loaded */
-  XbmcThreads::EndTime progressTimeout(30000); // 30 secs
+  XbmcThreads::EndTime<> progressTimeout(30s); // 30 secs
   CPVRGUIProgressHandler* progressHandler = new CPVRGUIProgressHandler(g_localizeStrings.Get(19235)); // PVR manager is starting up
   while (!LoadComponents(progressHandler) && IsInitialising())
   {
@@ -549,7 +549,7 @@ void CPVRManager::Process()
   CLog::LogFC(LOGDEBUG, LOGPVR, "PVR Manager entering main loop");
 
   bool bRestart(false);
-  XbmcThreads::EndTime cachedImagesCleanupTimeout(30000); // first timeout after 30 secs
+  XbmcThreads::EndTime<> cachedImagesCleanupTimeout(30s); // first timeout after 30 secs
 
   while (IsStarted() && m_addons->HasCreatedClients() && !bRestart)
   {
@@ -557,7 +557,7 @@ void CPVRManager::Process()
     {
       // start a job to erase stale texture db entries and image files
       TriggerCleanupCachedImages();
-      cachedImagesCleanupTimeout.Set(12 * 60 * 60 * 1000); // following timeouts after 12 hours
+      cachedImagesCleanupTimeout.Set(12h); // following timeouts after 12 hours
     }
 
     /* first startup */

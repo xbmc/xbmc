@@ -274,7 +274,7 @@ void CWinEventsX11::SetXRRFailSafeTimer(int millis)
   if (!m_display)
     return;
 
-  m_xrrFailSafeTimer.Set(millis);
+  m_xrrFailSafeTimer.Set(std::chrono::milliseconds(millis));
   m_xrrEventPending = true;
 }
 

@@ -106,6 +106,6 @@ protected:
   std::vector<IDispResource*>  m_resources;
   CTimer                       m_lostDeviceTimer;
   bool                         m_delayDispReset;
-  XbmcThreads::EndTime         m_dispResetTimer;
+  XbmcThreads::EndTime<> m_dispResetTimer;
   int m_updateGLContext = 0;
 };

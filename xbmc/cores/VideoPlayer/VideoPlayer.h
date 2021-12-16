@@ -451,7 +451,7 @@ protected:
   bool m_bCloseRequest;
 
   ECacheState  m_caching;
-  XbmcThreads::EndTime m_cachingTimer;
+  XbmcThreads::EndTime<> m_cachingTimer;
 
   std::unique_ptr<CProcessInfo> m_processInfo;
 
@@ -534,7 +534,7 @@ protected:
 
   SPlayerState m_State;
   mutable CCriticalSection m_StateSection;
-  XbmcThreads::EndTime m_syncTimer;
+  XbmcThreads::EndTime<> m_syncTimer;
 
   CEdl m_Edl;
   bool m_SkipCommercials;

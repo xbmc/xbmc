@@ -489,9 +489,9 @@ namespace PVR
     bool m_bRadio; /*!< radio or tv recording */
     int m_iGenreType = 0; /*!< genre type */
     int m_iGenreSubType = 0; /*!< genre subtype */
-    mutable XbmcThreads::EndTime m_resumePointRefetchTimeout;
+    mutable XbmcThreads::EndTime<> m_resumePointRefetchTimeout;
     unsigned int m_iFlags = 0; /*!< the flags applicable to this recording */
-    mutable XbmcThreads::EndTime m_recordingSizeRefetchTimeout;
+    mutable XbmcThreads::EndTime<> m_recordingSizeRefetchTimeout;
     int64_t m_sizeInBytes = 0; /*!< the size of the recording in bytes */
     bool m_bDirty = false;
     std::string m_strProviderName; /*!< name of the provider this recording is from */
