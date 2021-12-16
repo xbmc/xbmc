@@ -1277,7 +1277,7 @@ void CVideoPlayer::Prepare()
                   __FUNCTION__, starttime);
       }
 
-      std::string strTimeString =
+      const std::string strTimeString =
           StringUtils::SecondsToTimeString(edit.end / 1000, TIME_FORMAT_MM_SS);
       CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(25011), strTimeString);
     }
@@ -2354,7 +2354,7 @@ void CVideoPlayer::CheckAutoSceneSkip()
     // marker for commbrak may be inaccurate. allow user to skip into break from the back
     if (m_playSpeed >= 0 && m_Edl.GetLastEditTime() != edit.start && clock < edit.end - 1000)
     {
-      std::string strTimeString =
+      const std::string strTimeString =
           StringUtils::SecondsToTimeString((edit.end - edit.start) / 1000, TIME_FORMAT_MM_SS);
       CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(25011), strTimeString);
 
