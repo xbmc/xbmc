@@ -177,7 +177,7 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
           }
           editStartEnd[i] =
               static_cast<int64_t>(StringUtils::TimeStringToSeconds(fieldParts[0])) * 1000 +
-              atoi(fieldParts[1].c_str()); // seconds to ms
+              std::atoi(fieldParts[1].c_str()); // seconds to ms
         }
         else
         {
@@ -203,7 +203,8 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
       }
       else // Plain old seconds in float format, e.g. 123.45
       {
-        editStartEnd[i] = static_cast<int64_t>(atof(strFields[i].c_str()) * 1000); // seconds to ms
+        editStartEnd[i] =
+            static_cast<int64_t>(std::atof(strFields[i].c_str()) * 1000); // seconds to ms
       }
     }
 
@@ -522,8 +523,8 @@ bool CEdl::ReadBeyondTV(const std::string& strMovie)
        * atof() returns 0 if there were any problems and will subsequently be rejected in AddEdit().
        */
       Edit edit;
-      edit.start = static_cast<int64_t>((atof(pStart->FirstChild()->Value()) / 10000));
-      edit.end = static_cast<int64_t>((atof(pEnd->FirstChild()->Value()) / 10000));
+      edit.start = static_cast<int64_t>((std::atof(pStart->FirstChild()->Value()) / 10000));
+      edit.end = static_cast<int64_t>((std::atof(pEnd->FirstChild()->Value()) / 10000));
       edit.action = Action::COMM_BREAK;
       bValid = AddEdit(edit);
     }
