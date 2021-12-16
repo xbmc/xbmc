@@ -66,7 +66,7 @@ private:
   std::string GetSeekTime(TIME_FORMAT format) const;
 
   std::string GetContentRanges(int iInfo) const;
-  std::vector<std::pair<float, float>> GetCutList(CDataCacheCore& data, time_t duration) const;
+  std::vector<std::pair<float, float>> GetEditList(CDataCacheCore& data, time_t duration) const;
   std::vector<std::pair<float, float>> GetChapters(CDataCacheCore& data, time_t duration) const;
 };
 

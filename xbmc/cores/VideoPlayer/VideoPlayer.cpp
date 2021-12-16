@@ -33,8 +33,8 @@
 #include "Util.h"
 #include "VideoPlayerAudio.h"
 #include "VideoPlayerRadioRDS.h"
-#include "cores/Cut.h"
 #include "cores/DataCacheCore.h"
+#include "cores/EdlEdit.h"
 #include "cores/FFmpeg.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
@@ -720,7 +720,7 @@ bool CVideoPlayer::CloseFile(bool reopen)
   }
 
   m_Edl.Clear();
-  CServiceBroker::GetDataCacheCore().SetCutList(m_Edl.GetCutList());
+  CServiceBroker::GetDataCacheCore().SetEditList(m_Edl.GetEditList());
 
   m_HasVideo = false;
   m_HasAudio = false;
@@ -1243,7 +1243,7 @@ void CVideoPlayer::Prepare()
    * if there was a start time specified as part of the "Start from where last stopped" (aka
    * auto-resume) feature or if there is an EDL cut or commercial break that starts at time 0.
    */
-  EDL::Cut cut;
+  EDL::Edit edit;
   int starttime = 0;
   if (m_playerOptions.starttime > 0 || m_playerOptions.startpercent > 0)
   {
@@ -1260,24 +1260,25 @@ void CVideoPlayer::Prepare()
     CLog::Log(LOGDEBUG, "{} - Start position set to last stopped position: {}", __FUNCTION__,
               starttime);
   }
-  else if (m_Edl.InCut(starttime, &cut))
+  else if (m_Edl.InEdit(starttime, &edit))
   {
-    if (cut.action == EDL::Action::CUT)
+    if (edit.action == EDL::Action::CUT)
     {
-      starttime = cut.end;
+      starttime = edit.end;
       CLog::Log(LOGDEBUG, "{} - Start position set to end of first cut: {}", __FUNCTION__,
                 starttime);
     }
-    else if (cut.action == EDL::Action::COMM_BREAK)
+    else if (edit.action == EDL::Action::COMM_BREAK)
     {
       if (m_SkipCommercials)
       {
-        starttime = cut.end;
+        starttime = edit.end;
         CLog::Log(LOGDEBUG, "{} - Start position set to end of first commercial break: {}",
                   __FUNCTION__, starttime);
       }
 
-      std::string strTimeString = StringUtils::SecondsToTimeString(cut.end / 1000, TIME_FORMAT_MM_SS);
+      const std::string strTimeString =
+          StringUtils::SecondsToTimeString(edit.end / 1000, TIME_FORMAT_MM_SS);
       CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(25011), strTimeString);
     }
   }
@@ -1328,7 +1329,7 @@ void CVideoPlayer::Process()
       continue;
     }
 
-    // check if in a cut or commercial break that should be automatically skipped
+    // check if in an edit (cut or commercial break) that should be automatically skipped
     CheckAutoSceneSkip();
 
     // handle messages send to this thread, like seek or demuxer reset requests
@@ -1639,10 +1640,11 @@ void CVideoPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
   /*
    * If CheckSceneSkip() returns true then demux point is inside an EDL cut and the packets are dropped.
    */
-  EDL::Cut cut;
+  EDL::Edit edit;
   if (CheckSceneSkip(m_CurrentAudio))
     drop = true;
-  else if (m_Edl.InCut(DVD_TIME_TO_MSEC(m_CurrentAudio.dts + m_offset_pts), &cut) && cut.action == EDL::Action::MUTE)
+  else if (m_Edl.InEdit(DVD_TIME_TO_MSEC(m_CurrentAudio.dts + m_offset_pts), &edit) &&
+           edit.action == EDL::Action::MUTE)
   {
     drop = true;
   }
@@ -2289,7 +2291,7 @@ bool CVideoPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket
 
 bool CVideoPlayer::CheckSceneSkip(CCurrentStream& current)
 {
-  if(!m_Edl.HasCut())
+  if (!m_Edl.HasEdits())
     return false;
 
   if(current.dts == DVD_NOPTS_VALUE)
@@ -2298,13 +2300,14 @@ bool CVideoPlayer::CheckSceneSkip(CCurrentStream& current)
   if(current.inited == false)
     return false;
 
-  EDL::Cut cut;
-  return m_Edl.InCut(DVD_TIME_TO_MSEC(current.dts + m_offset_pts), &cut) && cut.action == EDL::Action::CUT;
+  EDL::Edit edit;
+  return m_Edl.InEdit(DVD_TIME_TO_MSEC(current.dts + m_offset_pts), &edit) &&
+         edit.action == EDL::Action::CUT;
 }
 
 void CVideoPlayer::CheckAutoSceneSkip()
 {
-  if (!m_Edl.HasCut())
+  if (!m_Edl.HasEdits())
     return;
 
   // Check that there is an audio and video stream.
@@ -2320,21 +2323,21 @@ void CVideoPlayer::CheckAutoSceneSkip()
 
   const int64_t clock = GetTime();
 
-  EDL::Cut cut;
-  if (!m_Edl.InCut(clock, &cut))
+  EDL::Edit edit;
+  if (!m_Edl.InEdit(clock, &edit))
     return;
 
-  if (cut.action == EDL::Action::CUT)
+  if (edit.action == EDL::Action::CUT)
   {
-    if ((m_playSpeed > 0 && clock < cut.end - 1000) ||
-        (m_playSpeed < 0 && clock < cut.start + 1000))
+    if ((m_playSpeed > 0 && clock < edit.end - 1000) ||
+        (m_playSpeed < 0 && clock < edit.start + 1000))
     {
       CLog::Log(LOGDEBUG, "{} - Clock in EDL cut [{} - {}]: {}. Automatically skipping over.",
-                __FUNCTION__, CEdl::MillisecondsToTimeString(cut.start),
-                CEdl::MillisecondsToTimeString(cut.end), CEdl::MillisecondsToTimeString(clock));
+                __FUNCTION__, CEdl::MillisecondsToTimeString(edit.start),
+                CEdl::MillisecondsToTimeString(edit.end), CEdl::MillisecondsToTimeString(clock));
 
-      //Seeking either goes to the start or the end of the cut depending on the play direction.
-      int seek = m_playSpeed >= 0 ? cut.end : cut.start;
+      // Seeking either goes to the start or the end of the cut depending on the play direction.
+      int seek = m_playSpeed >= 0 ? edit.end : edit.start;
 
       CDVDMsgPlayerSeek::CMode mode;
       mode.time = seek;
@@ -2346,26 +2349,27 @@ void CVideoPlayer::CheckAutoSceneSkip()
       m_messenger.Put(std::make_shared<CDVDMsgPlayerSeek>(mode));
     }
   }
-  else if (cut.action == EDL::Action::COMM_BREAK)
+  else if (edit.action == EDL::Action::COMM_BREAK)
   {
     // marker for commbrak may be inaccurate. allow user to skip into break from the back
-    if (m_playSpeed >= 0 && m_Edl.GetLastCutTime() != cut.start && clock < cut.end - 1000)
+    if (m_playSpeed >= 0 && m_Edl.GetLastEditTime() != edit.start && clock < edit.end - 1000)
     {
-      std::string strTimeString = StringUtils::SecondsToTimeString((cut.end - cut.start) / 1000, TIME_FORMAT_MM_SS);
+      const std::string strTimeString =
+          StringUtils::SecondsToTimeString((edit.end - edit.start) / 1000, TIME_FORMAT_MM_SS);
       CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(25011), strTimeString);
 
-      m_Edl.SetLastCutTime(cut.start);
+      m_Edl.SetLastEditTime(edit.start);
 
       if (m_SkipCommercials)
       {
         CLog::Log(LOGDEBUG,
                   "{} - Clock in commercial break [{} - {}]: {}. Automatically skipping to end of "
                   "commercial break",
-                  __FUNCTION__, CEdl::MillisecondsToTimeString(cut.start),
-                  CEdl::MillisecondsToTimeString(cut.end), CEdl::MillisecondsToTimeString(clock));
+                  __FUNCTION__, CEdl::MillisecondsToTimeString(edit.start),
+                  CEdl::MillisecondsToTimeString(edit.end), CEdl::MillisecondsToTimeString(clock));
 
         CDVDMsgPlayerSeek::CMode mode;
-        mode.time = cut.end;
+        mode.time = edit.end;
         mode.backward = true;
         mode.accurate = true;
         mode.restore = false;
@@ -3648,7 +3652,7 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
     if (m_CurrentVideo.hint.fpsscale > 0.0f)
       fFramesPerSecond = static_cast<float>(m_CurrentVideo.hint.fpsrate) / static_cast<float>(m_CurrentVideo.hint.fpsscale);
     m_Edl.ReadEditDecisionLists(m_item, fFramesPerSecond);
-    CServiceBroker::GetDataCacheCore().SetCutList(m_Edl.GetCutList());
+    CServiceBroker::GetDataCacheCore().SetEditList(m_Edl.GetEditList());
 
     static_cast<IDVDStreamPlayerVideo*>(player)->SetSpeed(m_streamPlayerSpeed);
     m_CurrentVideo.syncState = IDVDStreamPlayer::SYNC_STARTING;
@@ -4734,7 +4738,10 @@ void CVideoPlayer::UpdatePlayState(double timeout)
     m_processInfo->SetStateRealtime(realtime);
   }
 
-  if (m_Edl.HasCut())
+  // FIXME - This block of code only makes sense if the item has EDL *cuts*
+  // not any of the other edit types (mute, commbreak, etc). We loop over
+  // the EDL edit list twice unnecessarily.
+  if (m_Edl.HasEdits())
   {
     state.time = (double) m_Edl.RemoveCutTime(llrint(state.time));
     state.timeMax = (double) m_Edl.RemoveCutTime(llrint(state.timeMax));

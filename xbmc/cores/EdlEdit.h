@@ -19,11 +19,11 @@ enum class Action
   COMM_BREAK = 3
 };
 
-struct Cut
+struct Edit
 {
   int start = 0; // ms
-  int end = 0;   // ms
+  int end = 0; // ms
   Action action = Action::CUT;
 };
 
-}
+} // namespace EDL
