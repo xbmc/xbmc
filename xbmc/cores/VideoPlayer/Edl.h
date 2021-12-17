@@ -36,7 +36,6 @@ public:
   bool HasEdits() const;
 
   bool HasSceneMarker() const;
-  std::string GetInfo() const;
   int GetTotalCutTime() const;
   int RemoveCutTime(int iSeek) const;
   double RestoreCutTime(double dClock) const;
@@ -57,15 +56,6 @@ public:
    * @return true if iSeek is within an edit, false otherwise
   */
   bool InEdit(int iSeek, EDL::Edit* pEdit = nullptr);
-
-  /*!
-   * @brief Get the nearest edit provided a given seek time
-   * @param forward if searching should be done forward (true) or backwards (false)
-   * @param seekTime the seek time
-   * @param[in,out] nearestEdit a pointer to the nearest edit
-   * @return true if the nearest EDL edit was found, false otherwise
-  */
-  bool GetNearestEdit(bool forward, int seekTime, EDL::Edit* nearestEdit) const;
 
   /*!
    * @brief Get the last processed edit time (set during playback when a given
