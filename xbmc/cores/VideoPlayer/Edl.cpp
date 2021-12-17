@@ -779,42 +779,6 @@ bool CEdl::HasSceneMarker() const
   return !m_vecSceneMarkers.empty();
 }
 
-std::string CEdl::GetInfo() const
-{
-  std::string strInfo;
-  if (HasEdits())
-  {
-    int cutCount = 0, muteCount = 0, commBreakCount = 0;
-    for (size_t i = 0; i < m_vecEdits.size(); ++i)
-    {
-      switch (m_vecEdits[i].action)
-      {
-      case Action::CUT:
-        cutCount++;
-        break;
-      case Action::MUTE:
-        muteCount++;
-        break;
-      case Action::COMM_BREAK:
-        commBreakCount++;
-        break;
-      default:
-        break;
-      }
-    }
-    if (cutCount > 0)
-      strInfo += StringUtils::Format("c{}", cutCount);
-    if (muteCount > 0)
-      strInfo += StringUtils::Format("m{}", muteCount);
-    if (commBreakCount > 0)
-      strInfo += StringUtils::Format("b{}", commBreakCount);
-  }
-  if (HasSceneMarker())
-    strInfo += StringUtils::Format("s{0}", m_vecSceneMarkers.size());
-
-  return strInfo;
-}
-
 bool CEdl::InEdit(const int iSeek, Edit* pEdit)
 {
   for (size_t i = 0; i < m_vecEdits.size(); ++i)
@@ -841,51 +805,6 @@ int CEdl::GetLastEditTime() const
 void CEdl::SetLastEditTime(int editTime)
 {
   m_lastEditTime = editTime;
-}
-
-bool CEdl::GetNearestEdit(bool forward, int seekTime, Edit* nearestEdit) const
-{
-  if (forward)
-  {
-    // Searching forwards
-    for (auto& edit : m_vecEdits)
-    {
-      if (seekTime >= edit.start && seekTime <= edit.end) // Inside edit.
-      {
-        if (nearestEdit)
-          *nearestEdit = edit;
-        return true;
-      }
-      else if (seekTime < edit.start) // before this edit
-      {
-        if (nearestEdit)
-          *nearestEdit = edit;
-        return true;
-      }
-    }
-    return false;
-  }
-  else
-  {
-    // Searching backwards
-    for (size_t i = m_vecEdits.size() - 1; i >= 0; i--)
-    {
-      if (seekTime - 20000 >= m_vecEdits[i].start && seekTime <= m_vecEdits[i].end)
-      // Inside edit. We ignore if we're closer to 20 seconds inside
-      {
-        if (nearestEdit)
-          *nearestEdit = m_vecEdits[i];
-        return true;
-      }
-      else if (seekTime > m_vecEdits[i].end) // after this edit
-      {
-        if (nearestEdit)
-          *nearestEdit = m_vecEdits[i];
-        return true;
-      }
-    }
-    return false;
-  }
 }
 
 bool CEdl::GetNextSceneMarker(bool bPlus, const int iClock, int *iSceneMarker)
