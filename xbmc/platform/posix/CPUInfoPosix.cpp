@@ -14,9 +14,22 @@
 
 bool CCPUInfoPosix::GetTemperature(CTemperature& temperature)
 {
+  return CheckUserTemperatureCommand(temperature);
+}
+
+bool CCPUInfoPosix::CheckUserTemperatureCommand(CTemperature& temperature)
+{
   temperature.SetValid(false);
 
-  std::string cmd = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cpuTempCmd;
+  auto settingComponent = CServiceBroker::GetSettingsComponent();
+  if (!settingComponent)
+    return false;
+
+  auto advancedSettings = settingComponent->GetAdvancedSettings();
+  if (!advancedSettings)
+    return false;
+
+  std::string cmd = advancedSettings->m_cpuTempCmd;
 
   if (cmd.empty())
     return false;
