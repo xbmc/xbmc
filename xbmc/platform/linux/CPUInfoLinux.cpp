@@ -334,7 +334,7 @@ float CCPUInfoLinux::GetCPUFrequency()
 
 bool CCPUInfoLinux::GetTemperature(CTemperature& temperature)
 {
-  if (CCPUInfoPosix::GetTemperature(temperature))
+  if (CheckUserTemperatureCommand(temperature))
     return true;
 
   if (m_tempPath.empty())

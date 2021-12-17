@@ -243,7 +243,7 @@ float CCPUInfoFreebsd::GetCPUFrequency()
 
 bool CCPUInfoFreebsd::GetTemperature(CTemperature& temperature)
 {
-  if (CCPUInfoPosix::GetTemperature(temperature))
+  if (CheckUserTemperatureCommand(temperature))
     return true;
 
   int value;
