@@ -105,8 +105,8 @@ namespace XBMCAddon
             catch (XbmcCommons::Exception& e) { e.LogThrowMessage(); }
             catch (...)
             {
-              CLog::Log(LOGERROR, "Unknown exception while executing callback 0x{:x}",
-                        (long)(p->cb.get()));
+              CLog::Log(LOGERROR, "Unknown exception while executing callback {:#x}",
+                        reinterpret_cast<int64_t>(p->cb.get()));
             }
           }
         }
