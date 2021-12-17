@@ -18,4 +18,6 @@ public:
 protected:
   CCPUInfoPosix() = default;
   virtual ~CCPUInfoPosix() = default;
+
+  bool CheckUserTemperatureCommand(CTemperature& temperature);
 };
