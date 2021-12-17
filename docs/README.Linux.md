@@ -119,7 +119,9 @@ sudo make -C tools/depends/target/waylandpp PREFIX=/usr/local
 **TIP:** Complete list of dependencies is available **[here](https://github.com/xbmc/xbmc/tree/master/tools/depends/target)**.
 
 ### 3.2. Enable internal dependencies
-Some dependencies can be configured to build before Kodi. That's the case with `flatbuffers`, `crossguid`, `libfmt`, `libspdlog`, `rapidjson` and `dav1d`. To enable the internal build of a dependency, append `-DENABLE_INTERNAL_<DEPENDENCY_NAME>=ON` to the configure command below. For example, configuring an X11 build with internal `fmt` would become `cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DENABLE_INTERNAL_FMT=ON` instead of `cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local`.
+Some dependencies can be configured to build before Kodi. That's the case with `flatbuffers`, `crossguid`, `libfmt`, `libspdlog`, `rapidjson`, `fstrcmp` and `dav1d`. To enable the internal build of a dependency, append `-DENABLE_INTERNAL_<DEPENDENCY_NAME>=ON` to the configure command below. For example, configuring an X11 build with internal `fmt` would become `cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DENABLE_INTERNAL_FMT=ON` instead of `cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local`.
+
+**Note:** fstrcmp requires libtool
 
 **[back to top](#table-of-contents)** | **[back to section top](#3-installing-the-required-packages)**
 
