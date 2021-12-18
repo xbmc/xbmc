@@ -134,6 +134,7 @@ bool CPVRGUIActionListener::OnAction(const CAction& action)
     case ACTION_JUMP_SMS9:
       bIsJumpSMS = true;
       // fallthru is intended
+      [[fallthrough]];
     case REMOTE_0:
     case REMOTE_1:
     case REMOTE_2:

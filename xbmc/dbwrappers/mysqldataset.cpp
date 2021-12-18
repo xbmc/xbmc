@@ -996,6 +996,7 @@ void MysqlDatabase::mysqlVXPrintf(
         flag_longlong = sizeof(char*)==sizeof(int64_t);
         flag_long = sizeof(char*)==sizeof(long int);
         /* Fall through into the next case */
+        [[fallthrough]];
       case etRADIX:
         if( infop->flags & FLAG_SIGNED ){
           int64_t v;

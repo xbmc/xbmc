@@ -373,8 +373,8 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
       return true;
     else if (action.GetID())
       return OnClick(action.GetID());
-    else
-      return false;
+
+    return false;
 
   case ACTION_FIRST_PAGE:
     SelectItem(0);

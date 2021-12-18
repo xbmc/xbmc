@@ -487,6 +487,7 @@ cmsToneCurve* CColorManager::CreateToneCurve(CMS_TRC_TYPE gammaType,
 #undef HALFPT
     }
     // fall through to bt.1886 with calculated technical gamma
+    [[fallthrough]];
 
   case CMS_TRC_BT1886:
     {

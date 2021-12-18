@@ -337,6 +337,7 @@ void CGUIEditControl::OnClick()
     case INPUT_TYPE_PASSWORD_MD5:
       utf8 = ""; //! @todo Ideally we'd send this to the keyboard and tell the keyboard we have this type of input
       // fallthrough
+      [[fallthrough]];
     case INPUT_TYPE_TEXT:
     default:
       textChanged = CGUIKeyboardFactory::ShowAndGetInput(utf8, m_inputHeading, true, m_inputType == INPUT_TYPE_PASSWORD || m_inputType == INPUT_TYPE_PASSWORD_MD5);

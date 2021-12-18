@@ -807,6 +807,8 @@ void CLinuxRendererGL::UpdateVideoFilter()
           return;
         }
       }
+
+      [[fallthrough]];
     }
 
   case VS_SCALINGMETHOD_LANCZOS2:

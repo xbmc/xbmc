@@ -329,8 +329,8 @@ std::string CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFile
       value = music->GetOriginalDate();
       if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bMusicLibraryUseISODates)
         value = StringUtils::ISODateToLocalizedDate(value);
-      break;
     }
+    break;
   case 'd': // date and time
     if (item->m_dateTime.IsValid())
       value = item->m_dateTime.GetAsLocalizedDateTime();
