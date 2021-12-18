@@ -196,8 +196,7 @@ bool CColorManager::GetVideo3dLut(AVColorPrimaries srcPrimaries, int* cmsToken,
       cmsToneCurve* gammaCurve;
       m_m_curIccGammaMode = static_cast<CMS_TRC_TYPE>(settings->GetInt("videoscreen.cmsgammamode"));
       m_curIccGamma = settings->GetInt("videoscreen.cmsgamma");
-      gammaCurve =
-        CreateToneCurve(m_m_curIccGammaMode, m_curIccGamma/100.0f, m_blackPoint);
+      gammaCurve = CreateToneCurve(m_m_curIccGammaMode, m_curIccGamma / 100.0, m_blackPoint);
 
       // create source profile
       m_curIccWhitePoint = static_cast<CMS_WHITEPOINT>(settings->GetInt("videoscreen.cmswhitepoint"));
@@ -436,7 +435,9 @@ cmsHPROFILE CColorManager::LoadIccDisplayProfile(const std::string& filename)
 }
 
 
-cmsToneCurve* CColorManager::CreateToneCurve(CMS_TRC_TYPE gammaType, float gammaValue, cmsCIEXYZ blackPoint)
+cmsToneCurve* CColorManager::CreateToneCurve(CMS_TRC_TYPE gammaType,
+                                             double gammaValue,
+                                             cmsCIEXYZ blackPoint)
 {
   const int tableSize = 1024;
   cmsFloat32Number gammaTable[tableSize];
