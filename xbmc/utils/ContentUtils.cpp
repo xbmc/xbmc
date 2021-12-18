@@ -13,7 +13,7 @@
 
 namespace
 {
-const bool HasPreferredArtType(const CFileItem& item)
+bool HasPreferredArtType(const CFileItem& item)
 {
   return item.HasVideoInfoTag() && (item.GetVideoInfoTag()->m_type == MediaTypeMovie ||
                                     item.GetVideoInfoTag()->m_type == MediaTypeTvShow ||

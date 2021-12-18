@@ -65,7 +65,7 @@ public:
   // unsigned int GetDTSBlocks() const { return m_dtsBlocks; }
   unsigned int GetDTSPeriod() const { return m_info.m_dtsPeriod; }
   unsigned int GetEAC3BlocksDiv() const { return m_info.m_repeat; }
-  enum CAEStreamInfo::DataType const GetDataType() const { return m_info.m_type; }
+  enum CAEStreamInfo::DataType GetDataType() const { return m_info.m_type; }
   bool IsLittleEndian() const { return m_info.m_dataIsLE; }
   unsigned int GetBufferSize() const { return m_bufferSize; }
   CAEStreamInfo& GetStreamInfo() { return m_info; }
