@@ -4741,8 +4741,8 @@ void CVideoPlayer::UpdatePlayState(double timeout)
 
   if (m_Edl.HasCuts())
   {
-    state.time = (double) m_Edl.RemoveCutTime(llrint(state.time));
-    state.timeMax = (double) m_Edl.RemoveCutTime(llrint(state.timeMax));
+    state.time = static_cast<double>(m_Edl.RemoveCutTime(std::lround(state.time)));
+    state.timeMax = std::lround(state.timeMax - static_cast<double>(m_Edl.GetTotalCutTime()));
   }
 
   if (m_caching > CACHESTATE_DONE && m_caching < CACHESTATE_PLAY)
