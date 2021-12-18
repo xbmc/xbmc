@@ -14,7 +14,7 @@
 class IGUIVolumeBarCallback
 {
 public:
-  ~IGUIVolumeBarCallback() = default;
+  virtual ~IGUIVolumeBarCallback() = default;
 
   /*!
    * \brief Return true if the callback is active in the GUI

@@ -39,6 +39,8 @@ using ADDON_INSTANCE_HANDLER = void*;
 class CAddonDllInformer
 {
 public:
+  virtual ~CAddonDllInformer() = default;
+
   virtual bool IsInUse(const std::string& id) = 0;
 };
 

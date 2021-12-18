@@ -27,6 +27,8 @@ namespace XCURL
 class DllLibCurl
 {
 public:
+  virtual ~DllLibCurl() = default;
+
   CURLcode global_init(long flags);
   void global_cleanup();
   CURL_HANDLE* easy_init();

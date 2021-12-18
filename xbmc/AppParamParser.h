@@ -20,7 +20,7 @@ class CAppParamParser
 {
 public:
   CAppParamParser();
-  ~CAppParamParser();
+  virtual ~CAppParamParser();
 
   void Parse(const char* const* argv, int nArgs);
   void SetAdvancedSettings(CAdvancedSettings& advancedSettings) const;
