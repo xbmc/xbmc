@@ -161,6 +161,7 @@ if(NOT MSVC)
 
   add_options(CXX ALL_BUILDS
     -Wno-deprecated-copy # from -Wextra
+    -Wnon-virtual-dtor
   )
 
   add_options(ALL_LANGUAGES DEBUG

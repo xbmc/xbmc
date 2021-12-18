@@ -360,6 +360,8 @@ private:
 class IVaapiWinSystem
 {
 public:
+  virtual ~IVaapiWinSystem() = default;
+
   virtual VADisplay GetVADisplay() = 0;
   virtual void* GetEGLDisplay() { return nullptr; }
 };

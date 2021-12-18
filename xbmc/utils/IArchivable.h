@@ -14,7 +14,7 @@ class IArchivable
 {
 protected:
   /* make sure nobody deletes a pointer to this class */
-  ~IArchivable() = default;
+  virtual ~IArchivable() = default;
 
 public:
   virtual void Archive(CArchive& ar) = 0;
