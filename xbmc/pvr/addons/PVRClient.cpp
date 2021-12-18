@@ -456,7 +456,9 @@ bool CPVRClient::GetAddonProperties()
     return false;
 
   /* display name = backend name:connection string */
-  strFriendlyName = StringUtils::Format("{}:{}", strBackendName, strConnectionString);
+  strFriendlyName = strlen(strConnectionString) == 0 // connection string is optional
+                        ? strBackendName
+                        : StringUtils::Format("{}:{}", strBackendName, strConnectionString);
 
   /* backend version number */
   retVal = DoAddonCall(
