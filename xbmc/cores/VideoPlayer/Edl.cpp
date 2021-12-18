@@ -733,39 +733,47 @@ int CEdl::GetTotalCutTime() const
   return m_totalCutTime; // ms
 }
 
-int CEdl::RemoveCutTime(int iSeek) const
+int CEdl::GetTimeWithoutCuts(int seek) const
 {
   if (!HasCuts())
-    return iSeek;
+    return seek;
 
-  int iCutTime = 0;
-  for (size_t i = 0; i < m_vecEdits.size(); ++i)
+  int cutTime = 0;
+  for (const EDL::Edit& edit : m_vecEdits)
   {
-    if (m_vecEdits[i].action == Action::CUT)
+    if (edit.action != Action::CUT)
+      continue;
+
+    // inside cut
+    if (seek >= edit.start && seek <= edit.end)
     {
-      if (iSeek >= m_vecEdits[i].start && iSeek <= m_vecEdits[i].end) // Inside cut
-        iCutTime += iSeek - m_vecEdits[i].start -
-                    1; // Decrease cut length by 1ms to jump over end boundary.
-      else if (iSeek >= m_vecEdits[i].start) // Cut has already been passed over.
-        iCutTime += m_vecEdits[i].end - m_vecEdits[i].start;
+      // decrease cut lenght by 1 ms to jump over the end boundary.
+      cutTime += seek - edit.start - 1;
+    }
+    // cut has already been passed over
+    else if (seek >= edit.start)
+    {
+      cutTime += edit.end - edit.start;
     }
   }
-  return iSeek - iCutTime;
+  return seek - cutTime;
 }
 
-double CEdl::RestoreCutTime(double dClock) const
+double CEdl::GetTimeAfterRestoringCuts(double seek) const
 {
   if (!HasCuts())
-    return dClock;
+    return seek;
 
-  double dSeek = dClock;
-  for (size_t i = 0; i < m_vecEdits.size(); ++i)
+  for (const EDL::Edit& edit : m_vecEdits)
   {
-    if (m_vecEdits[i].action == Action::CUT && dSeek >= m_vecEdits[i].start)
-      dSeek += static_cast<double>(m_vecEdits[i].end - m_vecEdits[i].start);
+    double cutDuration = static_cast<double>(edit.end - edit.start);
+    // add 1 ms to jump over the start boundary
+    if (edit.action == Action::CUT && seek > edit.start + 1)
+    {
+      seek += cutDuration;
+    }
   }
-
-  return dSeek;
+  return seek;
 }
 
 bool CEdl::HasSceneMarker() const
@@ -801,12 +809,17 @@ void CEdl::SetLastEditTime(int editTime)
   m_lastEditTime = editTime;
 }
 
+void CEdl::ResetLastEditTime()
+{
+  m_lastEditTime = -1;
+}
+
 bool CEdl::GetNextSceneMarker(bool bPlus, const int iClock, int *iSceneMarker)
 {
   if (!HasSceneMarker())
     return false;
 
-  int iSeek = RestoreCutTime(iClock);
+  int iSeek = GetTimeAfterRestoringCuts(iClock);
 
   int iDiff = 10 * 60 * 60 * 1000; // 10 hours to ms.
   bool bFound = false;

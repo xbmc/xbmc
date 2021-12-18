@@ -1251,11 +1251,12 @@ void CVideoPlayer::Prepare()
     {
       int playerStartTime = static_cast<int>((static_cast<double>(
           m_pDemuxer->GetStreamLength() * (m_playerOptions.startpercent / 100.0))));
-      starttime = m_Edl.RestoreCutTime(playerStartTime);
+      starttime = m_Edl.GetTimeAfterRestoringCuts(playerStartTime);
     }
     else
     {
-      starttime = m_Edl.RestoreCutTime(static_cast<int>(m_playerOptions.starttime * 1000)); // s to ms
+      starttime = m_Edl.GetTimeAfterRestoringCuts(
+          static_cast<int>(m_playerOptions.starttime * 1000)); // s to ms
     }
     CLog::Log(LOGDEBUG, "{} - Start position set to last stopped position: {}", __FUNCTION__,
               starttime);
@@ -2323,14 +2324,18 @@ void CVideoPlayer::CheckAutoSceneSkip()
 
   const int64_t clock = GetTime();
 
+  const double correctClock = m_Edl.GetTimeAfterRestoringCuts(clock);
   EDL::Edit edit;
-  if (!m_Edl.InEdit(clock, &edit))
+  if (!m_Edl.InEdit(correctClock, &edit))
+  {
+    m_Edl.ResetLastEditTime();
     return;
+  }
 
   if (edit.action == EDL::Action::CUT)
   {
-    if ((m_playSpeed > 0 && clock < edit.end - 1000) ||
-        (m_playSpeed < 0 && clock < edit.start + 1000))
+    if ((m_playSpeed > 0 && correctClock < (edit.start + 1000)) ||
+        (m_playSpeed < 0 && correctClock < (edit.end - 1000)))
     {
       CLog::Log(LOGDEBUG, "{} - Clock in EDL cut [{} - {}]: {}. Automatically skipping over.",
                 __FUNCTION__, CEdl::MillisecondsToTimeString(edit.start),
@@ -2338,15 +2343,19 @@ void CVideoPlayer::CheckAutoSceneSkip()
 
       // Seeking either goes to the start or the end of the cut depending on the play direction.
       int seek = m_playSpeed >= 0 ? edit.end : edit.start;
+      if (m_Edl.GetLastEditTime() != seek)
+      {
+        CDVDMsgPlayerSeek::CMode mode;
+        mode.time = seek;
+        mode.backward = true;
+        mode.accurate = true;
+        mode.restore = false;
+        mode.trickplay = false;
+        mode.sync = true;
+        m_messenger.Put(std::make_shared<CDVDMsgPlayerSeek>(mode));
 
-      CDVDMsgPlayerSeek::CMode mode;
-      mode.time = seek;
-      mode.backward = true;
-      mode.accurate = true;
-      mode.restore = true;
-      mode.trickplay = false;
-      mode.sync = true;
-      m_messenger.Put(std::make_shared<CDVDMsgPlayerSeek>(mode));
+        m_Edl.SetLastEditTime(seek);
+      }
     }
   }
   else if (edit.action == EDL::Action::COMM_BREAK)
@@ -2585,7 +2594,7 @@ void CVideoPlayer::HandleMessages()
       if (msg.GetRelative())
         time = (m_clock.GetClock() + m_State.time_offset) / 1000l + time;
 
-      time = msg.GetRestore() ? m_Edl.RestoreCutTime(time) : time;
+      time = msg.GetRestore() ? m_Edl.GetTimeAfterRestoringCuts(time) : time;
 
       // if input stream doesn't support ISeekTime, convert back to pts
       //! @todo
@@ -2870,6 +2879,7 @@ void CVideoPlayer::HandleMessages()
         mode.accurate = true;
         mode.trickplay = true;
         mode.sync = true;
+        mode.restore = false;
         m_messenger.Put(std::make_shared<CDVDMsgPlayerSeek>(mode));
       }
 
@@ -3314,6 +3324,16 @@ void CVideoPlayer::SeekTime(int64_t iTime)
 bool CVideoPlayer::SeekTimeRelative(int64_t iTime)
 {
   int64_t abstime = GetTime() + iTime;
+
+  // if the file has EDL cuts we can't rely on m_clock for relative seeks
+  // EDL cuts remove time from the original file, hence we might seek to
+  // positions too far from the current m_clock position. Seek to absolute
+  // time instead
+  if (m_Edl.HasCuts())
+  {
+    SeekTime(abstime);
+    return true;
+  }
 
   CDVDMsgPlayerSeek::CMode mode;
   mode.time = (int)iTime;
@@ -4741,8 +4761,8 @@ void CVideoPlayer::UpdatePlayState(double timeout)
 
   if (m_Edl.HasCuts())
   {
-    state.time = static_cast<double>(m_Edl.RemoveCutTime(std::lround(state.time)));
-    state.timeMax = std::lround(state.timeMax - static_cast<double>(m_Edl.GetTotalCutTime()));
+    state.time = static_cast<double>(m_Edl.GetTimeWithoutCuts(state.time));
+    state.timeMax = state.timeMax - static_cast<double>(m_Edl.GetTotalCutTime());
   }
 
   if (m_caching > CACHESTATE_DONE && m_caching < CACHESTATE_PLAY)
