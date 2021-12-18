@@ -738,11 +738,6 @@ int CEdl::RemoveCutTime(int iSeek) const
   if (!HasCuts())
     return iSeek;
 
-  /**
-   * @todo Consider an optimization of using the (now unused) total cut time if the seek time
-   * requested is later than the end of the last recorded cut. For example, when calculating the
-   * total duration for display.
-   */
   int iCutTime = 0;
   for (size_t i = 0; i < m_vecEdits.size(); ++i)
   {
