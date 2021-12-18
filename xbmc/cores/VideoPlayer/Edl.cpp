@@ -39,7 +39,7 @@ void CEdl::Clear()
 {
   m_vecEdits.clear();
   m_vecSceneMarkers.clear();
-  m_iTotalCutTime = 0;
+  m_totalCutTime = 0;
   m_lastEditTime = -1;
 }
 
@@ -699,7 +699,7 @@ bool CEdl::AddEdit(const Edit& newEdit)
   }
 
   if (edit.action == Action::CUT)
-    m_iTotalCutTime += edit.end - edit.start;
+    m_totalCutTime += edit.end - edit.start;
 
   return true;
 }
@@ -723,17 +723,19 @@ bool CEdl::HasEdits() const
   return !m_vecEdits.empty();
 }
 
+bool CEdl::HasCuts() const
+{
+  return m_totalCutTime > 0;
+}
+
 int CEdl::GetTotalCutTime() const
 {
-  return m_iTotalCutTime; // ms
+  return m_totalCutTime; // ms
 }
 
 int CEdl::RemoveCutTime(int iSeek) const
 {
-  // FIXME - This should actually be HasCuts and not HasEdits
-  // since if the file HasEdits but not any EDL cut there's
-  // no time to remove
-  if (!HasEdits())
+  if (!HasCuts())
     return iSeek;
 
   /**
@@ -758,10 +760,7 @@ int CEdl::RemoveCutTime(int iSeek) const
 
 double CEdl::RestoreCutTime(double dClock) const
 {
-  // FIXME - This should actually be HasCuts and not HasEdits
-  // since if the file HasEdits but not any EDL cut there's
-  // no time to restore
-  if (!HasEdits())
+  if (!HasCuts())
     return dClock;
 
   double dSeek = dClock;

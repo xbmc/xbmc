@@ -4739,10 +4739,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
     m_processInfo->SetStateRealtime(realtime);
   }
 
-  // FIXME - This block of code only makes sense if the item has EDL *cuts*
-  // not any of the other edit types (mute, commbreak, etc). We loop over
-  // the EDL edit list twice unnecessarily.
-  if (m_Edl.HasEdits())
+  if (m_Edl.HasCuts())
   {
     state.time = (double) m_Edl.RemoveCutTime(llrint(state.time));
     state.timeMax = (double) m_Edl.RemoveCutTime(llrint(state.timeMax));
