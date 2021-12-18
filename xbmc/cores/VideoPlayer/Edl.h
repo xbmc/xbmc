@@ -42,9 +42,34 @@ public:
   bool HasCuts() const;
 
   bool HasSceneMarker() const;
+
+  /*!
+   * @brief Get the total cut time removed from the original item
+   * because of EDL cuts
+   * @return the total cut time
+  */
   int GetTotalCutTime() const;
-  int RemoveCutTime(int iSeek) const;
-  double RestoreCutTime(double dClock) const;
+
+  /*!
+   * @brief Providing a given seek time, return the actual time without
+   * considering cut ranges removed from the file
+   * @note VideoPlayer always displays/returns the playback time considering
+   * cut blocks are not part of the playable file
+   * @param seek the desired seek time
+   * @return the seek time without considering EDL cut blocks
+  */
+  int GetTimeWithoutCuts(int seek) const;
+
+  /*!
+   * @brief Provided a given seek time, return the time after correction with
+   * the addition of the already surpassed EDL cut ranges
+   * @note VideoPlayer uses it to restore the correct time after seek since cut blocks
+   * are not part of the playable file
+   * @param seek the desired seek time
+   * @return the seek time after applying the cut blocks already surpassed by the
+   * provided seek time
+  */
+  double GetTimeAfterRestoringCuts(double seek) const;
 
   /*!
    * @brief Get the EDL edit list.
@@ -76,6 +101,11 @@ public:
    * @param editTime The last processed EDL edit time (ms)
   */
   void SetLastEditTime(int editTime);
+
+  /*!
+   * @brief Reset the last recorded edit time (-1)
+  */
+  void ResetLastEditTime();
 
   // FIXME: remove const modifier for iClock as it makes no sense as it means nothing
   // for the reader of the interface, but limits the implementation
