@@ -611,7 +611,7 @@ public:
   /// @brief Class copy constructor.
   ///
   /// @param[in] other Other class to copy on construct here
-  Joystick(const Joystick& other) { *this = other; }
+  Joystick(const Joystick& other) : Peripheral(other) { *this = other; }
 
   /// @brief Destructor.
   ///
