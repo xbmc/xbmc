@@ -652,6 +652,7 @@ CTCPServer::CWebSocketClient::CWebSocketClient(CWebSocket *websocket)
 }
 
 CTCPServer::CWebSocketClient::CWebSocketClient(const CWebSocketClient& client)
+  : CTCPServer::CTCPClient(client)
 {
   *this = client;
   m_buffer.reserve(maxBufferLength);

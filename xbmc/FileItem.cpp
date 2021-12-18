@@ -321,10 +321,11 @@ CFileItem::CFileItem(const CGenre& genre)
 }
 
 CFileItem::CFileItem(const CFileItem& item)
-: m_musicInfoTag(NULL),
-  m_videoInfoTag(NULL),
-  m_pictureInfoTag(NULL),
-  m_gameInfoTag(NULL)
+  : CGUIListItem(item),
+    m_musicInfoTag(NULL),
+    m_videoInfoTag(NULL),
+    m_pictureInfoTag(NULL),
+    m_gameInfoTag(NULL)
 {
   *this = item;
 }
