@@ -602,6 +602,7 @@ bool CUPnPPlayer::OnAction(const CAction &action)
 
         return false; /* let normal code handle the action */
       }
+      [[fallthrough]];
     default:
       return false;
   }

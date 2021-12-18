@@ -247,6 +247,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         if (!g_application.GetAppPlayer().IsPlayingAudio())
           break;
         // fall-thru is intended.
+        [[fallthrough]];
       case MUSICPLAYER_DURATION:
       case LISTITEM_DURATION:
       {

@@ -748,6 +748,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
             return true;
         }
         // fall-thru is intended
+        [[fallthrough]];
       }
       case VIDEOPLAYER_CHANNEL_NAME:
       case LISTITEM_CHANNEL_NAME:

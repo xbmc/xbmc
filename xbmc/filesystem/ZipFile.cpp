@@ -509,6 +509,7 @@ bool CZipFile::DecompressGzip(const std::string& in, std::string& out)
     {
       case Z_NEED_DICT:
         err = Z_DATA_ERROR;
+        [[fallthrough]];
       case Z_DATA_ERROR:
       case Z_MEM_ERROR:
       case Z_STREAM_ERROR:

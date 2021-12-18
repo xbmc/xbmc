@@ -984,6 +984,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
         LOGINFO,
         "Xcddb::queryCDinfo No match found in CDDB database when doing the query shown below:\n{}",
         query_buffer);
+    [[fallthrough]];
   case 403: //Database entry is corrupt
   case 409: //No handshake
   default:

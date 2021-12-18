@@ -860,6 +860,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
             return;
           CLog::Log(LOGDEBUG,"CActiveAE - display reset event");
           displayReset = true;
+          [[fallthrough]];
         case CActiveAEControlProtocol::INIT:
           m_extError = false;
           m_extSuspended = false;

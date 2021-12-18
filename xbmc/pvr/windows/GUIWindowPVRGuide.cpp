@@ -346,6 +346,7 @@ bool CGUIWindowPVRGuideBase::OnAction(const CAction& action)
         break;
       }
       // fall-thru is intended
+      [[fallthrough]];
     case REMOTE_1:
     case REMOTE_2:
     case REMOTE_3:
