@@ -41,6 +41,8 @@
 #include "WinKeyMap.h"
 #include "WinEventsWin32.h"
 
+#include <array>
+
 using namespace KODI::MESSAGING;
 
 HWND g_hWnd = nullptr;
@@ -165,7 +167,7 @@ static XBMC_keysym *TranslateKey(WPARAM vkey, UINT scancode, XBMC_keysym *keysym
 
   if (pressed && XBMC_TranslateUNICODE)
   {
-    uint16_t  wchars[2];
+    std::array<uint16_t, 2> wchars;
 
     /* Numlock isn't taken into account in ToUnicode,
     * so we handle it as a special case here */
@@ -173,7 +175,8 @@ static XBMC_keysym *TranslateKey(WPARAM vkey, UINT scancode, XBMC_keysym *keysym
     {
       keysym->unicode = static_cast<uint16_t>(vkey - VK_NUMPAD0 + '0');
     }
-    else if (ToUnicode(static_cast<UINT>(vkey), scancode, keystate, reinterpret_cast<LPWSTR>(wchars), ARRAY_SIZE(wchars), 0) > 0)
+    else if (ToUnicode(static_cast<UINT>(vkey), scancode, keystate,
+                       reinterpret_cast<LPWSTR>(wchars.data()), wchars.size(), 0) > 0)
     {
       keysym->unicode = wchars[0];
     }
