@@ -35,6 +35,12 @@ public:
    */
   bool HasEdits() const;
 
+  /*!
+   * @brief Check if the edit list has EDL cuts (edits with action CUT)
+   * @return true if EDL has cuts, false otherwise
+   */
+  bool HasCuts() const;
+
   bool HasSceneMarker() const;
   int GetTotalCutTime() const;
   int RemoveCutTime(int iSeek) const;
@@ -82,7 +88,8 @@ public:
   static std::string MillisecondsToTimeString(const int iMilliseconds);
 
 private:
-  int m_iTotalCutTime; // ms
+  // total cut time (edl cuts) in ms
+  int m_totalCutTime;
   std::vector<EDL::Edit> m_vecEdits;
   std::vector<int> m_vecSceneMarkers;
   int m_lastEditTime;
