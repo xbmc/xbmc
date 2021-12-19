@@ -172,20 +172,22 @@
  \brief
  */
 #define CONTROL_SELECT(controlID) \
-do { \
- CGUIMessage msg(GUI_MSG_SET_SELECTED, GetID(), controlID); \
- OnMessage(msg); \
-} while(0)
+  do \
+  { \
+    CGUIMessage _msg(GUI_MSG_SET_SELECTED, GetID(), controlID); \
+    OnMessage(_msg); \
+  } while (0)
 
 /*!
  \ingroup winmsg
  \brief
  */
 #define CONTROL_DESELECT(controlID) \
-do { \
- CGUIMessage msg(GUI_MSG_SET_DESELECTED, GetID(), controlID); \
- OnMessage(msg); \
-} while(0)
+  do \
+  { \
+    CGUIMessage _msg(GUI_MSG_SET_DESELECTED, GetID(), controlID); \
+    OnMessage(_msg); \
+  } while (0)
 
 
 /*!
@@ -193,20 +195,22 @@ do { \
  \brief
  */
 #define CONTROL_ENABLE(controlID) \
-do { \
- CGUIMessage msg(GUI_MSG_ENABLED, GetID(), controlID); \
- OnMessage(msg); \
-} while(0)
+  do \
+  { \
+    CGUIMessage _msg(GUI_MSG_ENABLED, GetID(), controlID); \
+    OnMessage(_msg); \
+  } while (0)
 
 /*!
  \ingroup winmsg
  \brief
  */
 #define CONTROL_DISABLE(controlID) \
-do { \
- CGUIMessage msg(GUI_MSG_DISABLED, GetID(), controlID); \
- OnMessage(msg); \
-} while(0)
+  do \
+  { \
+    CGUIMessage _msg(GUI_MSG_DISABLED, GetID(), controlID); \
+    OnMessage(_msg); \
+  } while (0)
 
 
 /*!
@@ -214,125 +218,137 @@ do { \
  \brief
  */
 #define CONTROL_ENABLE_ON_CONDITION(controlID, bCondition) \
-do { \
- CGUIMessage msg(bCondition ? GUI_MSG_ENABLED:GUI_MSG_DISABLED, GetID(), controlID); \
- OnMessage(msg); \
-} while(0)
+  do \
+  { \
+    CGUIMessage _msg(bCondition ? GUI_MSG_ENABLED : GUI_MSG_DISABLED, GetID(), controlID); \
+    OnMessage(_msg); \
+  } while (0)
 
 
 /*!
  \ingroup winmsg
  \brief
  */
-#define CONTROL_SELECT_ITEM(controlID,iItem) \
-do { \
- CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), controlID,iItem); \
- OnMessage(msg); \
-} while(0)
+#define CONTROL_SELECT_ITEM(controlID, iItem) \
+  do \
+  { \
+    CGUIMessage _msg(GUI_MSG_ITEM_SELECT, GetID(), controlID, iItem); \
+    OnMessage(_msg); \
+  } while (0)
 
 /*!
  \ingroup winmsg
  \brief Set the label of the current control
  */
-#define SET_CONTROL_LABEL(controlID,label) \
-do { \
- CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), controlID); \
- msg.SetLabel(label); \
- OnMessage(msg); \
-} while(0)
+#define SET_CONTROL_LABEL(controlID, label) \
+  do \
+  { \
+    CGUIMessage _msg(GUI_MSG_LABEL_SET, GetID(), controlID); \
+    _msg.SetLabel(label); \
+    OnMessage(_msg); \
+  } while (0)
 
 /*!
  \ingroup winmsg
  \brief Set the label of the current control
  */
-#define SET_CONTROL_LABEL_THREAD_SAFE(controlID,label) \
-{ \
- CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), controlID); \
- msg.SetLabel(label); \
- if(g_application.IsCurrentThread()) \
-   OnMessage(msg); \
- else \
-   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, GetID()); \
-}
+#define SET_CONTROL_LABEL_THREAD_SAFE(controlID, label) \
+  { \
+    CGUIMessage _msg(GUI_MSG_LABEL_SET, GetID(), controlID); \
+    _msg.SetLabel(label); \
+    if (g_application.IsCurrentThread()) \
+      OnMessage(_msg); \
+    else \
+      CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(_msg, GetID()); \
+  }
 
 /*!
  \ingroup winmsg
  \brief Set the second label of the current control
  */
-#define SET_CONTROL_LABEL2(controlID,label) \
-do { \
- CGUIMessage msg(GUI_MSG_LABEL2_SET, GetID(), controlID); \
- msg.SetLabel(label); \
- OnMessage(msg); \
-} while(0)
+#define SET_CONTROL_LABEL2(controlID, label) \
+  do \
+  { \
+    CGUIMessage _msg(GUI_MSG_LABEL2_SET, GetID(), controlID); \
+    _msg.SetLabel(label); \
+    OnMessage(_msg); \
+  } while (0)
 
 /*!
  \ingroup winmsg
  \brief Set a bunch of labels on the given control
  */
 #define SET_CONTROL_LABELS(controlID, defaultValue, labels) \
-do { \
-CGUIMessage msg(GUI_MSG_SET_LABELS, GetID(), controlID, defaultValue); \
-msg.SetPointer(labels); \
-OnMessage(msg); \
-} while(0)
+  do \
+  { \
+    CGUIMessage _msg(GUI_MSG_SET_LABELS, GetID(), controlID, defaultValue); \
+    _msg.SetPointer(labels); \
+    OnMessage(_msg); \
+  } while (0)
 
 /*!
  \ingroup winmsg
  \brief Set the label of the current control
  */
-#define SET_CONTROL_FILENAME(controlID,label) \
-do { \
-CGUIMessage msg(GUI_MSG_SET_FILENAME, GetID(), controlID); \
-msg.SetLabel(label); \
-OnMessage(msg); \
-} while(0)
+#define SET_CONTROL_FILENAME(controlID, label) \
+  do \
+  { \
+    CGUIMessage _msg(GUI_MSG_SET_FILENAME, GetID(), controlID); \
+    _msg.SetLabel(label); \
+    OnMessage(_msg); \
+  } while (0)
 
 /*!
  \ingroup winmsg
  \brief
  */
 #define SET_CONTROL_HIDDEN(controlID) \
-do { \
- CGUIMessage msg(GUI_MSG_HIDDEN, GetID(), controlID); \
- OnMessage(msg); \
-} while(0)
+  do \
+  { \
+    CGUIMessage _msg(GUI_MSG_HIDDEN, GetID(), controlID); \
+    OnMessage(_msg); \
+  } while (0)
 
 /*!
  \ingroup winmsg
  \brief
  */
 #define SET_CONTROL_FOCUS(controlID, dwParam) \
-do { \
- CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), controlID, dwParam); \
- OnMessage(msg); \
-} while(0)
+  do \
+  { \
+    CGUIMessage _msg(GUI_MSG_SETFOCUS, GetID(), controlID, dwParam); \
+    OnMessage(_msg); \
+  } while (0)
 
 /*!
  \ingroup winmsg
  \brief
  */
 #define SET_CONTROL_VISIBLE(controlID) \
-do { \
- CGUIMessage msg(GUI_MSG_VISIBLE, GetID(), controlID); \
- OnMessage(msg); \
-} while(0)
+  do \
+  { \
+    CGUIMessage _msg(GUI_MSG_VISIBLE, GetID(), controlID); \
+    OnMessage(_msg); \
+  } while (0)
 
 #define SET_CONTROL_SELECTED(dwSenderId, controlID, bSelect) \
-do { \
- CGUIMessage msg(bSelect?GUI_MSG_SET_SELECTED:GUI_MSG_SET_DESELECTED, dwSenderId, controlID); \
- OnMessage(msg); \
-} while(0)
+  do \
+  { \
+    CGUIMessage _msg(bSelect ? GUI_MSG_SET_SELECTED : GUI_MSG_SET_DESELECTED, dwSenderId, \
+                     controlID); \
+    OnMessage(_msg); \
+  } while (0)
 
 /*!
 \ingroup winmsg
 \brief Click message sent from controls to windows.
  */
 #define SEND_CLICK_MESSAGE(id, parentID, action) \
-do { \
- CGUIMessage msg(GUI_MSG_CLICKED, id, parentID, action); \
- SendWindowMessage(msg); \
-} while(0)
+  do \
+  { \
+    CGUIMessage _msg(GUI_MSG_CLICKED, id, parentID, action); \
+    SendWindowMessage(_msg); \
+  } while (0)
 
 #include <string>
 #include <vector>
