@@ -18,27 +18,31 @@
 class CGUIFontTTFGL : public CGUIFontTTF
 {
 public:
-  explicit CGUIFontTTFGL(const std::string& strFileName);
+  explicit CGUIFontTTFGL(const std::string& fontIdent);
   ~CGUIFontTTFGL(void) override;
 
   bool FirstBegin() override;
   void LastEnd() override;
 
-  CVertexBuffer CreateVertexBuffer(const std::vector<SVertex> &vertices) const override;
-  void DestroyVertexBuffer(CVertexBuffer &bufferHandle) const override;
+  CVertexBuffer CreateVertexBuffer(const std::vector<SVertex>& vertices) const override;
+  void DestroyVertexBuffer(CVertexBuffer& bufferHandle) const override;
   static void CreateStaticVertexBuffers(void);
   static void DestroyStaticVertexBuffers(void);
 
 protected:
   std::unique_ptr<CTexture> ReallocTexture(unsigned int& newHeight) override;
-  bool CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2) override;
+  bool CopyCharToTexture(FT_BitmapGlyph bitGlyph,
+                         unsigned int x1,
+                         unsigned int y1,
+                         unsigned int x2,
+                         unsigned int y2) override;
   void DeleteHardwareTexture() override;
 
   static GLuint m_elementArrayHandle;
 
 private:
-  unsigned int m_updateY1;
-  unsigned int m_updateY2;
+  unsigned int m_updateY1{0};
+  unsigned int m_updateY2{0};
 
   enum TextureStatus
   {
@@ -48,8 +52,7 @@ private:
     TEXTURE_UPDATED,
   };
 
-  TextureStatus m_textureStatus;
+  TextureStatus m_textureStatus{TEXTURE_VOID};
 
   static bool m_staticVertexBufferCreated;
 };
-

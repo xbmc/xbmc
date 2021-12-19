@@ -85,7 +85,7 @@ void CGUIFadeLabelControl::Process(unsigned int currentTime, CDirtyRegionList &d
     if (width < m_width) // append spaces for scrolling
       numSpaces += (unsigned int)((m_width - width) / spaceWidth) + 1;
     m_shortText = (width + m_label.offsetX) < m_width;
-    m_scrollInfo.suffix.assign(numSpaces, ' ');
+    m_scrollInfo.m_suffix.assign(numSpaces, ' ');
     if (m_resetOnLabelChange)
     {
       m_scrollInfo.Reset();
@@ -110,17 +110,17 @@ void CGUIFadeLabelControl::Process(unsigned int currentTime, CDirtyRegionList &d
     bool moveToNextLabel = false;
     if (!m_scrollOut)
     {
-      if (m_scrollInfo.pixelPos + m_width > m_scrollInfo.m_textWidth)
+      if (m_scrollInfo.m_pixelPos + m_width > m_scrollInfo.m_textWidth)
       {
         if (m_fadeAnim.GetProcess() != ANIM_PROCESS_NORMAL)
           m_fadeAnim.QueueAnimation(ANIM_PROCESS_NORMAL);
         moveToNextLabel = true;
       }
     }
-    else if (m_scrollInfo.pixelPos > m_scrollInfo.m_textWidth)
+    else if (m_scrollInfo.m_pixelPos > m_scrollInfo.m_textWidth)
       moveToNextLabel = true;
 
-    if(m_scrollInfo.pixelSpeed || m_fadeAnim.GetState() == ANIM_STATE_IN_PROCESS)
+    if (m_scrollInfo.m_pixelSpeed || m_fadeAnim.GetState() == ANIM_STATE_IN_PROCESS)
       MarkDirtyRegion();
 
     // apply the fading animation

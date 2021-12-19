@@ -27,17 +27,18 @@ using namespace Microsoft::WRL;
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
 
-CGUIFontTTF* CGUIFontTTF::CreateGUIFontTTF(const std::string& fileName)
+namespace
 {
-  return new CGUIFontTTFDX(fileName);
+constexpr size_t ELEMENT_ARRAY_MAX_CHAR_INDEX = 2000;
+} /* namespace */
+
+CGUIFontTTF* CGUIFontTTF::CreateGUIFontTTF(const std::string& fontIdent)
+{
+  return new CGUIFontTTFDX(fontIdent);
 }
 
-CGUIFontTTFDX::CGUIFontTTFDX(const std::string& strFileName) : CGUIFontTTF(strFileName)
+CGUIFontTTFDX::CGUIFontTTFDX(const std::string& fontIdent) : CGUIFontTTF(fontIdent)
 {
-  m_speedupTexture = nullptr;
-  m_vertexBuffer   = nullptr;
-  m_vertexWidth    = 0;
-  m_buffers.clear();
   DX::Windowing()->Register(this);
 }
 
@@ -50,7 +51,8 @@ CGUIFontTTFDX::~CGUIFontTTFDX(void)
   if (!m_buffers.empty())
   {
     std::for_each(m_buffers.begin(), m_buffers.end(), [](CD3DBuffer* buf) {
-      if (buf) delete buf;
+      if (buf)
+        delete buf;
     });
   }
   m_buffers.clear();
@@ -71,13 +73,14 @@ bool CGUIFontTTFDX::FirstBegin()
 
 void CGUIFontTTFDX::LastEnd()
 {
+  CWinSystemBase* const winSystem = CServiceBroker::GetWinSystem();
   ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetD3DContext();
-  if (!pContext)
+  if (!pContext || !winSystem)
     return;
 
   typedef CGUIFontTTF::CTranslatedVertices trans;
   bool transIsEmpty = std::all_of(m_vertexTrans.begin(), m_vertexTrans.end(),
-                                  [](trans& _) { return _.vertexBuffer->size <= 0; });
+                                  [](trans& _) { return _.m_vertexBuffer->size <= 0; });
   // no chars to render
   if (m_vertex.empty() && transIsEmpty)
     return;
@@ -126,16 +129,17 @@ void CGUIFontTTFDX::LastEnd()
     // Store current GPU transform
     XMMATRIX view = pGUIShader->GetView();
     // Store current scissor
-    CRect scissor = CServiceBroker::GetWinSystem()->GetGfxContext().StereoCorrection(CServiceBroker::GetWinSystem()->GetGfxContext().GetScissors());
+    CGraphicContext& context = winSystem->GetGfxContext();
+    CRect scissor = context.StereoCorrection(context.GetScissors());
 
     for (size_t i = 0; i < m_vertexTrans.size(); i++)
     {
       // ignore empty buffers
-      if (m_vertexTrans[i].vertexBuffer->size == 0)
+      if (m_vertexTrans[i].m_vertexBuffer->size == 0)
         continue;
 
       // Apply the clip rectangle
-      CRect clip = DX::Windowing()->ClipRectToScissorRect(m_vertexTrans[i].clip);
+      CRect clip = DX::Windowing()->ClipRectToScissorRect(m_vertexTrans[i].m_clip);
       // Intersect with current scissors
       clip.Intersect(scissor);
 
@@ -146,19 +150,23 @@ void CGUIFontTTFDX::LastEnd()
       DX::Windowing()->SetScissors(clip);
 
       // Apply the translation to the model view matrix
-      XMMATRIX translation = XMMatrixTranslation(m_vertexTrans[i].translateX, m_vertexTrans[i].translateY, m_vertexTrans[i].translateZ);
+      XMMATRIX translation =
+          XMMatrixTranslation(m_vertexTrans[i].m_translateX, m_vertexTrans[i].m_translateY,
+                              m_vertexTrans[i].m_translateZ);
       pGUIShader->SetView(XMMatrixMultiply(translation, view));
 
-      CD3DBuffer* vbuffer = reinterpret_cast<CD3DBuffer*>(m_vertexTrans[i].vertexBuffer->bufferHandle);
+      CD3DBuffer* vbuffer =
+          reinterpret_cast<CD3DBuffer*>(m_vertexTrans[i].m_vertexBuffer->bufferHandle);
       // Set the static vertex buffer to active in the input assembler
-      ID3D11Buffer* buffers[1] = { vbuffer->Get() };
+      ID3D11Buffer* buffers[1] = {vbuffer->Get()};
       pContext->IASetVertexBuffers(0, 1, buffers, &stride, &offset);
 
       // Do the actual drawing operation, split into groups of characters no
       // larger than the pre-determined size of the element array
-      for (size_t character = 0; m_vertexTrans[i].vertexBuffer->size > character; character += ELEMENT_ARRAY_MAX_CHAR_INDEX)
+      for (size_t character = 0; m_vertexTrans[i].m_vertexBuffer->size > character;
+           character += ELEMENT_ARRAY_MAX_CHAR_INDEX)
       {
-        size_t count = m_vertexTrans[i].vertexBuffer->size - character;
+        size_t count = m_vertexTrans[i].m_vertexBuffer->size - character;
         count = std::min<size_t>(count, ELEMENT_ARRAY_MAX_CHAR_INDEX);
 
         // 6 indices and 4 vertices per character
@@ -176,13 +184,15 @@ void CGUIFontTTFDX::LastEnd()
   pGUIShader->RestoreBuffers();
 }
 
-CVertexBuffer CGUIFontTTFDX::CreateVertexBuffer(const std::vector<SVertex> &vertices) const
+CVertexBuffer CGUIFontTTFDX::CreateVertexBuffer(const std::vector<SVertex>& vertices) const
 {
   CD3DBuffer* buffer = nullptr;
-  if (!vertices.empty()) // do not create empty buffers, leave buffer as nullptr, it will be ignored on drawing stage
+  // do not create empty buffers, leave buffer as nullptr, it will be ignored on drawing stage
+  if (!vertices.empty())
   {
     buffer = new CD3DBuffer();
-    if (!buffer->Create(D3D11_BIND_VERTEX_BUFFER, vertices.size(), sizeof(SVertex), DXGI_FORMAT_UNKNOWN, D3D11_USAGE_IMMUTABLE, &vertices[0]))
+    if (!buffer->Create(D3D11_BIND_VERTEX_BUFFER, vertices.size(), sizeof(SVertex),
+                        DXGI_FORMAT_UNKNOWN, D3D11_USAGE_IMMUTABLE, &vertices[0]))
       CLog::LogF(LOGERROR, "Failed to create vertex buffer.");
     else
       AddReference((CGUIFontTTFDX*)this, buffer);
@@ -193,10 +203,10 @@ CVertexBuffer CGUIFontTTFDX::CreateVertexBuffer(const std::vector<SVertex> &vert
 
 void CGUIFontTTFDX::AddReference(CGUIFontTTFDX* font, CD3DBuffer* pBuffer)
 {
-  font->m_buffers.push_back(pBuffer);
+  font->m_buffers.emplace_back(pBuffer);
 }
 
-void CGUIFontTTFDX::DestroyVertexBuffer(CVertexBuffer &buffer) const
+void CGUIFontTTFDX::DestroyVertexBuffer(CVertexBuffer& buffer) const
 {
   if (nullptr != buffer.bufferHandle)
   {
@@ -210,7 +220,8 @@ void CGUIFontTTFDX::DestroyVertexBuffer(CVertexBuffer &buffer) const
 
 void CGUIFontTTFDX::ClearReference(CGUIFontTTFDX* font, CD3DBuffer* pBuffer)
 {
-  std::list<CD3DBuffer*>::iterator it = std::find(font->m_buffers.begin(), font->m_buffers.end(), pBuffer);
+  std::list<CD3DBuffer*>::iterator it =
+      std::find(font->m_buffers.begin(), font->m_buffers.end(), pBuffer);
   if (it != font->m_buffers.end())
     font->m_buffers.erase(it);
 }
@@ -219,7 +230,7 @@ std::unique_ptr<CTexture> CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
 {
   assert(newHeight != 0);
   assert(m_textureWidth != 0);
-  if(m_textureHeight == 0)
+  if (m_textureHeight == 0)
   {
     m_texture.reset();
     m_speedupTexture.reset();
@@ -230,7 +241,8 @@ std::unique_ptr<CTexture> CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
   std::unique_ptr<CDXTexture> pNewTexture =
       std::make_unique<CDXTexture>(m_textureWidth, newHeight, XB_FMT_A8);
   std::unique_ptr<CD3DTexture> newSpeedupTexture = std::make_unique<CD3DTexture>();
-  if (!newSpeedupTexture->Create(m_textureWidth, newHeight, 1, D3D11_USAGE_DEFAULT, DXGI_FORMAT_R8_UNORM))
+  if (!newSpeedupTexture->Create(m_textureWidth, newHeight, 1, D3D11_USAGE_DEFAULT,
+                                 DXGI_FORMAT_R8_UNORM))
   {
     return nullptr;
   }
@@ -240,7 +252,8 @@ std::unique_ptr<CTexture> CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
   {
     CD3D11_BOX rect(0, 0, 0, m_textureWidth, m_textureHeight, 1);
     ComPtr<ID3D11DeviceContext> pContext = DX::DeviceResources::Get()->GetImmediateContext();
-    pContext->CopySubresourceRegion(newSpeedupTexture->Get(), 0, 0, 0, 0, m_speedupTexture->Get(), 0, &rect);
+    pContext->CopySubresourceRegion(newSpeedupTexture->Get(), 0, 0, 0, 0, m_speedupTexture->Get(),
+                                    0, &rect);
   }
 
   m_texture.reset();
@@ -252,7 +265,8 @@ std::unique_ptr<CTexture> CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
   return pNewTexture;
 }
 
-bool CGUIFontTTFDX::CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2)
+bool CGUIFontTTFDX::CopyCharToTexture(
+    FT_BitmapGlyph bitGlyph, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2)
 {
   FT_Bitmap bitmap = bitGlyph->bitmap;
 
@@ -260,7 +274,8 @@ bool CGUIFontTTFDX::CopyCharToTexture(FT_BitmapGlyph bitGlyph, unsigned int x1, 
   if (m_speedupTexture && m_speedupTexture->Get() && pContext && bitmap.buffer)
   {
     CD3D11_BOX dstBox(x1, y1, 0, x2, y2, 1);
-    pContext->UpdateSubresource(m_speedupTexture->Get(), 0, &dstBox, bitmap.buffer, bitmap.pitch, 0);
+    pContext->UpdateSubresource(m_speedupTexture->Get(), 0, &dstBox, bitmap.buffer, bitmap.pitch,
+                                0);
     return true;
   }
 
@@ -282,11 +297,13 @@ bool CGUIFontTTFDX::UpdateDynamicVertexBuffer(const SVertex* pSysMem, unsigned i
   unsigned width = sizeof(SVertex) * vertex_count;
   if (width > m_vertexWidth) // create or re-create
   {
-    CD3D11_BUFFER_DESC bufferDesc(width, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
+    CD3D11_BUFFER_DESC bufferDesc(width, D3D11_BIND_VERTEX_BUFFER, D3D11_USAGE_DYNAMIC,
+                                  D3D11_CPU_ACCESS_WRITE);
     D3D11_SUBRESOURCE_DATA initData = {};
     initData.pSysMem = pSysMem;
 
-    if (FAILED(pDevice->CreateBuffer(&bufferDesc, &initData, m_vertexBuffer.ReleaseAndGetAddressOf())))
+    if (FAILED(
+            pDevice->CreateBuffer(&bufferDesc, &initData, m_vertexBuffer.ReleaseAndGetAddressOf())))
     {
       CLog::LogF(LOGERROR, "Failed to create the vertex buffer.");
       return false;
@@ -302,9 +319,11 @@ bool CGUIFontTTFDX::UpdateDynamicVertexBuffer(const SVertex* pSysMem, unsigned i
       CLog::LogF(LOGERROR, "Failed to update the vertex buffer.");
       return false;
     }
+
     memcpy(resource.pData, pSysMem, width);
     pContext->Unmap(m_vertexBuffer.Get(), 0);
   }
+
   return true;
 }
 
@@ -332,7 +351,8 @@ void CGUIFontTTFDX::CreateStaticIndexBuffer(void)
   D3D11_SUBRESOURCE_DATA initData = {};
   initData.pSysMem = index;
 
-  if (SUCCEEDED(pDevice->CreateBuffer(&desc, &initData, m_staticIndexBuffer.ReleaseAndGetAddressOf())))
+  if (SUCCEEDED(
+          pDevice->CreateBuffer(&desc, &initData, m_staticIndexBuffer.ReleaseAndGetAddressOf())))
     m_staticIndexBufferCreated = true;
 }
 
