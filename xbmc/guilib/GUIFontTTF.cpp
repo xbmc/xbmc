@@ -651,7 +651,7 @@ std::vector<CGUIFontTTF::Glyph> CGUIFontTTF::GetHarfBuzzShapedGlyphs(const vecTe
   }
 
   // HB_SCRIPT_COMMON or HB_SCRIPT_INHERITED should be replaced with previous script
-  for (int i = 0; i < static_cast<int>(scripts.size()); ++i)
+  for (size_t i = 0; i < scripts.size(); ++i)
   {
     if (scripts[i] == HB_SCRIPT_COMMON || scripts[i] == HB_SCRIPT_INHERITED)
     {
@@ -663,7 +663,7 @@ std::vector<CGUIFontTTF::Glyph> CGUIFontTTF::GetHarfBuzzShapedGlyphs(const vecTe
     }
     else
     {
-      for (unsigned int j = lastSetIndex + 1; j < i; j++)
+      for (size_t j = lastSetIndex + 1; j < i; ++j)
         scripts[j] = scripts[i];
       lastScript = scripts[i];
       lastScriptIndex = i;
