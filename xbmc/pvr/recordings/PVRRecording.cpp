@@ -344,7 +344,6 @@ bool CPVRRecording::UpdateRecordingSize()
     CSingleLock lock(m_critSection);
     if (sizeInBytes >= 0 && sizeInBytes != m_sizeInBytes)
     {
-      CSingleLock lock(m_critSection);
       m_sizeInBytes = sizeInBytes;
       return true;
     }
