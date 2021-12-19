@@ -16,6 +16,8 @@
 #include "guilib/WindowIDs.h"
 #include "input/InputManager.h"
 #include "input/actions/ActionIDs.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 
 using namespace PVR;
 
@@ -56,6 +58,19 @@ bool CGUIDialogVideoOSD::OnAction(const CAction &action)
   }
 
   return CGUIDialog::OnAction(action);
+}
+
+void CGUIDialogVideoOSD::OnInitWindow()
+{
+  std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  if (settings)
+  {
+    if (settings->GetBool(CSettings::SETTING_OSD_AUTOCLOSEVIDEOOSD))
+    {
+      SetAutoClose(settings->GetInt(CSettings::SETTING_OSD_AUTOCLOSEVIDEOOSDTIME) * 1000);
+    }
+  }
+  CGUIDialog::OnInitWindow();
 }
 
 EVENT_RESULT CGUIDialogVideoOSD::OnMouseEvent(const CPoint &point, const CMouseEvent &event)

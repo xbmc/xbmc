@@ -674,6 +674,7 @@ msgid "Free"
 msgstr ""
 
 #: addons/skin.estuary/xml/Includes.xml
+#: system/settings/settings.xml
 msgctxt "#157"
 msgid "Video"
 msgstr ""
@@ -2227,6 +2228,8 @@ msgctxt "#477"
 msgid "Unable to load playlist"
 msgstr ""
 
+#. label for "OSD" setting category
+#: system/settings/settings.xml
 msgctxt "#478"
 msgid "OSD"
 msgstr ""
@@ -22904,4 +22907,34 @@ msgstr ""
 #: xbmc/windows/GUIWindowSystemInfo.cpp
 msgctxt "#39174"
 msgid "Display supported HDR types"
+msgstr ""
+
+#. Description of settings category "OSD" with label #478
+#: system/settings/settings.xml
+msgctxt "#39175"
+msgid "This category contains all the on screen display (OSD) related settings."
+msgstr ""
+
+#. Automatically close video OSD bool setting in Settings/Interface/OSD
+#: system/settings/settings.xml
+msgctxt "#39176"
+msgid "Automatically close video OSD"
+msgstr ""
+
+#. Help text for "Automatically close video OSD" setting in Settings/Interface/OSD
+#: system/settings/settings.xml
+msgctxt "#39177"
+msgid "The video OSD window will be automatically closed if visible after a specified time"
+msgstr ""
+
+#. Video OSD autoclose time (seconds) in Settings/Interface/OSD
+#: system/settings/settings.xml
+msgctxt "#39178"
+msgid "Video OSD autoclose time (seconds)"
+msgstr ""
+
+#. Help text for setting "Video OSD autoclose time (seconds)" of label #39178
+#: system/settings/settings.xml
+msgctxt "#39179"
+msgid "The time in seconds for the video OSD to be automatically closed"
 msgstr ""
