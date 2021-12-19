@@ -589,15 +589,14 @@ bool CPVRTimers::UpdateEntries(int iMaxNotificationDelay)
             if (nextStart.IsValid())
             {
               bool bCreate = false;
-              const auto it = m_tags.find(nextStart);
-              if (it == m_tags.end())
+              const auto it1 = m_tags.find(nextStart);
+              if (it1 == m_tags.end())
                 bCreate = true;
               else
-                bCreate = std::find_if(it->second.cbegin(), it->second.cend(),
-                                       [&timer](const std::shared_ptr<CPVRTimerInfoTag>& tmr)
-                                       {
+                bCreate = std::find_if(it1->second.cbegin(), it1->second.cend(),
+                                       [&timer](const std::shared_ptr<CPVRTimerInfoTag>& tmr) {
                                          return tmr->m_iParentClientIndex == timer->m_iClientIndex;
-                                       }) == it->second.cend();
+                                       }) == it1->second.cend();
               if (bCreate)
               {
                 const CDateTimeSpan duration = timer->EndAsUTC() - timer->StartAsUTC();
