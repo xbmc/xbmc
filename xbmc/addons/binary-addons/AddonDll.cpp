@@ -181,8 +181,7 @@ ADDON_STATUS CAddonDll::Create(KODI_HANDLE firstKodiInstance)
 
   /* Call Create to make connections, initializing data or whatever is
      needed to become the AddOn running */
-  ADDON_STATUS status =
-      m_pDll->Create(&m_interface, kodi::addon::GetTypeVersion(ADDON_GLOBAL_MAIN), nullptr);
+  ADDON_STATUS status = m_pDll->Create(&m_interface);
 
   if (status == ADDON_STATUS_OK)
   {
