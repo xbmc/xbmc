@@ -249,24 +249,33 @@ extern "C"
     bool (*is_setting_using_default)(void* kodiBase, const char* id);
   } AddonToKodiFuncTable_Addon;
 
+  typedef ADDON_STATUS(ATTR_APIENTRYP PFN_KODI_ADDON_CREATE_V1)(const KODI_HANDLE first_instance,
+                                                                KODI_ADDON_HDL* hdl);
+  typedef void(ATTR_APIENTRYP PFN_KODI_ADDON_DESTROY_V1)(const KODI_ADDON_HDL hdl);
+  typedef ADDON_STATUS(ATTR_APIENTRYP PFN_KODI_ADDON_CREATE_INSTANCE_V1)(const KODI_ADDON_HDL hdl,
+                                                                         int instanceType,
+                                                                         const char* instanceID,
+                                                                         KODI_HANDLE instance,
+                                                                         const char* version,
+                                                                         KODI_HANDLE* addonInstance,
+                                                                         KODI_HANDLE parent);
+  typedef void(ATTR_APIENTRYP PFN_KODI_ADDON_DESTROY_INSTANCE_V1)(const KODI_ADDON_HDL hdl,
+                                                                  int instanceType,
+                                                                  KODI_HANDLE instance);
+  typedef ADDON_STATUS(ATTR_APIENTRYP PFN_KODI_ADDON_SET_SETTING_V1)(const KODI_ADDON_HDL hdl,
+                                                                     const char* settingName,
+                                                                     const void* settingValue);
+
   /*!
    * @brief Function tables from Kodi to addon
    */
   typedef struct KodiToAddonFuncTable_Addon
   {
-    ADDON_STATUS (*create)(const KODI_HANDLE first_instance, KODI_ADDON_HDL* hdl);
-    void (*destroy)(const KODI_ADDON_HDL hdl);
-    ADDON_STATUS(*create_instance)
-    (const KODI_ADDON_HDL hdl,
-     int instanceType,
-     const char* instanceID,
-     KODI_HANDLE instance,
-     const char* version,
-     KODI_HANDLE* addonInstance,
-     KODI_HANDLE parent);
-    void (*destroy_instance)(const KODI_ADDON_HDL hdl, int instanceType, KODI_HANDLE instance);
-    ADDON_STATUS(*set_setting)
-    (const KODI_ADDON_HDL hdl, const char* settingName, const void* settingValue);
+    PFN_KODI_ADDON_CREATE_V1 create;
+    PFN_KODI_ADDON_DESTROY_V1 destroy;
+    PFN_KODI_ADDON_CREATE_INSTANCE_V1 create_instance;
+    PFN_KODI_ADDON_DESTROY_INSTANCE_V1 destroy_instance;
+    PFN_KODI_ADDON_SET_SETTING_V1 set_setting;
   } KodiToAddonFuncTable_Addon;
 
   /*!
