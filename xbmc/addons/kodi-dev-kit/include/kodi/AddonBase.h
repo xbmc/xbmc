@@ -1385,7 +1385,7 @@ inline void* GetInterface(const std::string& name, const std::string& version)
 /// As information, the following functions are exported using this macro:
 /// \table_start
 ///   \table_h3{ Function, Use, Description }
-///   \table_row3{   <b>`ADDON_Create(KODI_HANDLE addonInterface\, const char* globalApiVersion\, void* unused)`</b>,
+///   \table_row3{   <b>`ADDON_Create(KODI_HANDLE addonInterface)`</b>,
 ///                  \anchor ADDON_Create
 ///                  _required_,
 ///     <b>Addon creation call.</b>
@@ -1438,8 +1438,7 @@ inline void* GetInterface(const std::string& name, const std::string& version)
 /// \table_end
 ///
 #define ADDONCREATOR(AddonClass) \
-  extern "C" ATTR_DLL_EXPORT ADDON_STATUS ADDON_Create( \
-      KODI_HANDLE addonInterface, const char* /*globalApiVersion*/, void* /*unused*/) \
+  extern "C" ATTR_DLL_EXPORT ADDON_STATUS ADDON_Create(KODI_HANDLE addonInterface) \
   { \
     kodi::addon::CPrivateBase::m_interface = static_cast<AddonGlobalInterface*>(addonInterface); \
     kodi::addon::CPrivateBase::m_interface->addonBase = new AddonClass; \

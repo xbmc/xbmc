@@ -15,7 +15,7 @@ class DllAddonInterface
 {
 public:
   virtual ~DllAddonInterface() = default;
-  virtual ADDON_STATUS Create(void* cb, const char* globalApiVersion, void* info) = 0;
+  virtual ADDON_STATUS Create(void* cb) = 0;
   virtual const char* GetAddonTypeVersion(int type)=0;
   virtual const char* GetAddonTypeMinVersion(int type) = 0;
 };
@@ -24,7 +24,7 @@ class DllAddon : public DllDynamic, public DllAddonInterface
 {
 public:
   DECLARE_DLL_WRAPPER_TEMPLATE(DllAddon)
-  DEFINE_METHOD3(ADDON_STATUS, Create, (void* p1, const char* p2, void* p3))
+  DEFINE_METHOD1(ADDON_STATUS, Create, (void* p1))
   DEFINE_METHOD1(const char*, GetAddonTypeVersion, (int p1))
   DEFINE_METHOD1(const char*, GetAddonTypeMinVersion, (int p1))
   bool GetAddonTypeMinVersion_available() { return m_GetAddonTypeMinVersion != nullptr; }
