@@ -13866,7 +13866,7 @@ msgstr ""
 
 #: system/settings.xml
 msgctxt "#21344"
-msgid "If mp4 or mkv files have tags, use this for library metadata"
+msgid "Enable to use embedded tags in mp4 or mkv files for library metadata. Will prevent scrapers from operating correctly."
 msgstr ""
 
 #. Used in AutoPlayNextItem dialogs for not categorized listItem directories
