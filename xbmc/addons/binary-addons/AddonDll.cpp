@@ -353,9 +353,6 @@ void CAddonDll::SaveSettings()
 
 ADDON_STATUS CAddonDll::TransferSettings()
 {
-  if (!m_interface.toAddon->set_setting)
-    return ADDON_STATUS_NOT_IMPLEMENTED;
-
   bool restart = false;
   ADDON_STATUS reportStatus = ADDON_STATUS_OK;
 
@@ -381,35 +378,43 @@ ADDON_STATUS CAddonDll::TransferSettings()
               case SettingType::Boolean:
               {
                 bool tmp = std::static_pointer_cast<CSettingBool>(setting)->GetValue();
-                status = m_interface.toAddon->set_setting(m_interface.addonBase, id, &tmp);
+                if (m_interface.toAddon->setting_change_boolean)
+                  status =
+                      m_interface.toAddon->setting_change_boolean(m_interface.addonBase, id, tmp);
                 break;
               }
 
               case SettingType::Integer:
               {
                 int tmp = std::static_pointer_cast<CSettingInt>(setting)->GetValue();
-                status = m_interface.toAddon->set_setting(m_interface.addonBase, id, &tmp);
+                if (m_interface.toAddon->setting_change_integer)
+                  status =
+                      m_interface.toAddon->setting_change_integer(m_interface.addonBase, id, tmp);
                 break;
               }
 
               case SettingType::Number:
               {
                 float tmpf = static_cast<float>(std::static_pointer_cast<CSettingNumber>(setting)->GetValue());
-                status = m_interface.toAddon->set_setting(m_interface.addonBase, id, &tmpf);
+                if (m_interface.toAddon->setting_change_float)
+                  status =
+                      m_interface.toAddon->setting_change_float(m_interface.addonBase, id, tmpf);
                 break;
               }
 
               case SettingType::String:
-                status = m_interface.toAddon->set_setting(
-                    m_interface.addonBase, id,
-                    std::static_pointer_cast<CSettingString>(setting)->GetValue().c_str());
+                if (m_interface.toAddon->setting_change_string)
+                  status = m_interface.toAddon->setting_change_string(
+                      m_interface.addonBase, id,
+                      std::static_pointer_cast<CSettingString>(setting)->GetValue().c_str());
                 break;
 
               default:
                 // log unknowns as an error, but go ahead and transfer the string
                 CLog::Log(LOGERROR, "Unknown setting type of '{}' for {}", id, Name());
-                status = m_interface.toAddon->set_setting(m_interface.addonBase, id,
-                                                          setting->ToString().c_str());
+                if (m_interface.toAddon->setting_change_string)
+                  status = m_interface.toAddon->setting_change_string(m_interface.addonBase, id,
+                                                                      setting->ToString().c_str());
                 break;
             }
 

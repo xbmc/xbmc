@@ -262,9 +262,14 @@ extern "C"
   typedef void(ATTR_APIENTRYP PFN_KODI_ADDON_DESTROY_INSTANCE_V1)(const KODI_ADDON_HDL hdl,
                                                                   int instanceType,
                                                                   KODI_HANDLE instance);
-  typedef ADDON_STATUS(ATTR_APIENTRYP PFN_KODI_ADDON_SET_SETTING_V1)(const KODI_ADDON_HDL hdl,
-                                                                     const char* settingName,
-                                                                     const void* settingValue);
+  typedef enum ADDON_STATUS(ATTR_APIENTRYP PFN_KODI_ADDON_SETTING_CHANGE_STRING_V1)(
+      const KODI_ADDON_HDL hdl, const char* name, const char* value);
+  typedef enum ADDON_STATUS(ATTR_APIENTRYP PFN_KODI_ADDON_SETTING_CHANGE_BOOLEAN_V1)(
+      const KODI_ADDON_HDL hdl, const char* name, bool value);
+  typedef enum ADDON_STATUS(ATTR_APIENTRYP PFN_KODI_ADDON_SETTING_CHANGE_INTEGER_V1)(
+      const KODI_ADDON_HDL hdl, const char* name, int value);
+  typedef enum ADDON_STATUS(ATTR_APIENTRYP PFN_KODI_ADDON_SETTING_CHANGE_FLOAT_V1)(
+      const KODI_ADDON_HDL hdl, const char* name, float value);
 
   /*!
    * @brief Function tables from Kodi to addon
@@ -275,7 +280,10 @@ extern "C"
     PFN_KODI_ADDON_DESTROY_V1 destroy;
     PFN_KODI_ADDON_CREATE_INSTANCE_V1 create_instance;
     PFN_KODI_ADDON_DESTROY_INSTANCE_V1 destroy_instance;
-    PFN_KODI_ADDON_SET_SETTING_V1 set_setting;
+    PFN_KODI_ADDON_SETTING_CHANGE_STRING_V1 setting_change_string;
+    PFN_KODI_ADDON_SETTING_CHANGE_BOOLEAN_V1 setting_change_boolean;
+    PFN_KODI_ADDON_SETTING_CHANGE_INTEGER_V1 setting_change_integer;
+    PFN_KODI_ADDON_SETTING_CHANGE_FLOAT_V1 setting_change_float;
   } KodiToAddonFuncTable_Addon;
 
   /*!
