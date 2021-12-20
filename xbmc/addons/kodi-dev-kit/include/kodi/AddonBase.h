@@ -1440,11 +1440,10 @@ inline void* GetInterface(const std::string& name, const std::string& version)
 #define ADDONCREATOR(AddonClass) \
   extern "C" ATTR_DLL_EXPORT ADDON_STATUS ADDON_Create(KODI_HANDLE addonInterface) \
   { \
-    kodi::addon::CPrivateBase::m_interface = static_cast<AddonGlobalInterface*>(addonInterface); \
-    kodi::addon::CPrivateBase::m_interface->addonBase = new AddonClass; \
-    return static_cast<kodi::addon::CAddonBase*>( \
-               kodi::addon::CPrivateBase::m_interface->addonBase) \
-        ->Create(); \
+    using namespace kodi::addon; \
+    CPrivateBase::m_interface = static_cast<AddonGlobalInterface*>(addonInterface); \
+    CPrivateBase::m_interface->addonBase = new AddonClass; \
+    return static_cast<CAddonBase*>(CPrivateBase::m_interface->addonBase)->Create(); \
   } \
   extern "C" ATTR_DLL_EXPORT const char* ADDON_GetTypeVersion(int type) \
   { \
