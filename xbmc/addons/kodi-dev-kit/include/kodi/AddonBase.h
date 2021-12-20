@@ -118,9 +118,9 @@ using HardwareContext = ADDON_HARDWARE_CONTEXT;
 class ATTR_DLL_LOCAL CSettingValue
 {
 public:
-  explicit CSettingValue(const void* settingValue) : m_settingValue(settingValue) {}
+  explicit CSettingValue(const std::string& settingValue) : str(settingValue) {}
 
-  bool empty() const { return (m_settingValue == nullptr) ? true : false; }
+  bool empty() const { return str.empty(); }
 
   /// @defgroup cpp_kodi_addon_addonbase_Defs_CSettingValue_Help Value Help
   /// @ingroup cpp_kodi_addon_addonbase_Defs_CSettingValue
@@ -139,32 +139,32 @@ public:
   ///@{
 
   /// @brief To get settings value as string.
-  std::string GetString() const { return (const char*)m_settingValue; }
+  std::string GetString() const { return str; }
 
   /// @brief To get settings value as integer.
-  int GetInt() const { return *(const int*)m_settingValue; }
+  int GetInt() const { return std::atoi(str.c_str()); }
 
   /// @brief To get settings value as unsigned integer.
-  unsigned int GetUInt() const { return *(const unsigned int*)m_settingValue; }
+  unsigned int GetUInt() const { return std::atoi(str.c_str()); }
 
   /// @brief To get settings value as boolean.
-  bool GetBoolean() const { return *(const bool*)m_settingValue; }
+  bool GetBoolean() const { return std::atoi(str.c_str()) > 0; }
 
   /// @brief To get settings value as floating point.
-  float GetFloat() const { return *(const float*)m_settingValue; }
+  float GetFloat() const { return static_cast<float>(std::atof(str.c_str())); }
 
   /// @brief To get settings value as enum.
   /// @note Inside settings.xml them stored as integer.
   template<typename enumType>
   enumType GetEnum() const
   {
-    return static_cast<enumType>(*(const int*)m_settingValue);
+    return static_cast<enumType>(GetInt());
   }
 
   ///@}
 
 private:
-  const void* m_settingValue;
+  const std::string str;
 };
 ///@}
 //------------------------------------------------------------------------------
@@ -341,7 +341,10 @@ public:
     CPrivateBase::m_interface->toAddon->destroy = ADDONBASE_Destroy;
     CPrivateBase::m_interface->toAddon->create_instance = ADDONBASE_CreateInstance;
     CPrivateBase::m_interface->toAddon->destroy_instance = ADDONBASE_DestroyInstance;
-    CPrivateBase::m_interface->toAddon->set_setting = ADDONBASE_SetSetting;
+    CPrivateBase::m_interface->toAddon->setting_change_string = ADDONBASE_setting_change_string;
+    CPrivateBase::m_interface->toAddon->setting_change_boolean = ADDONBASE_setting_change_boolean;
+    CPrivateBase::m_interface->toAddon->setting_change_integer = ADDONBASE_setting_change_integer;
+    CPrivateBase::m_interface->toAddon->setting_change_float = ADDONBASE_setting_change_float;
   }
   //----------------------------------------------------------------------------
 
@@ -526,13 +529,6 @@ private:
     delete static_cast<CAddonBase*>(hdl);
   }
 
-  static inline ADDON_STATUS ADDONBASE_SetSetting(const KODI_ADDON_HDL hdl,
-                                                  const char* settingName,
-                                                  const void* settingValue)
-  {
-    return static_cast<CAddonBase*>(hdl)->SetSetting(settingName, CSettingValue(settingValue));
-  }
-
   static inline ADDON_STATUS ADDONBASE_CreateInstance(const KODI_ADDON_HDL hdl,
                                                       int instanceType,
                                                       const char* instanceID,
@@ -622,6 +618,34 @@ private:
       base->DestroyInstance(instanceType, static_cast<IAddonInstance*>(instance)->m_id, instance);
       delete static_cast<IAddonInstance*>(instance);
     }
+  }
+
+  static inline ADDON_STATUS ADDONBASE_setting_change_string(const KODI_ADDON_HDL hdl,
+                                                             const char* name,
+                                                             const char* value)
+  {
+    return static_cast<CAddonBase*>(hdl)->SetSetting(name, CSettingValue(value));
+  }
+
+  static inline ADDON_STATUS ADDONBASE_setting_change_boolean(const KODI_ADDON_HDL hdl,
+                                                              const char* name,
+                                                              bool value)
+  {
+    return static_cast<CAddonBase*>(hdl)->SetSetting(name, CSettingValue(value ? "1" : "0"));
+  }
+
+  static inline ADDON_STATUS ADDONBASE_setting_change_integer(const KODI_ADDON_HDL hdl,
+                                                              const char* name,
+                                                              int value)
+  {
+    return static_cast<CAddonBase*>(hdl)->SetSetting(name, CSettingValue(std::to_string(value)));
+  }
+
+  static inline ADDON_STATUS ADDONBASE_setting_change_float(const KODI_ADDON_HDL hdl,
+                                                            const char* name,
+                                                            float value)
+  {
+    return static_cast<CAddonBase*>(hdl)->SetSetting(name, CSettingValue(std::to_string(value)));
   }
 };
 
