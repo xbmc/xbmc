@@ -370,9 +370,6 @@ public:
   virtual ADDON_STATUS Create() { return ADDON_STATUS_OK; }
   //----------------------------------------------------------------------------
 
-  // obsolete
-  virtual ADDON_STATUS GetStatus() { return ADDON_STATUS_OK; }
-
   //============================================================================
   /// @ingroup cpp_kodi_addon_addonbase
   /// @brief To inform addon about changed settings values.
