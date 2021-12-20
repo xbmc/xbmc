@@ -114,6 +114,8 @@ extern "C"
 {
 #endif /* __cplusplus */
 
+  typedef void* KODI_ADDON_HDL;
+
   //============================================================================
   /// @ingroup cpp_kodi_addon_addonbase_Defs
   /// @defgroup cpp_kodi_addon_addonbase_Defs_ADDON_STATUS enum ADDON_STATUS
@@ -252,16 +254,19 @@ extern "C"
    */
   typedef struct KodiToAddonFuncTable_Addon
   {
-    void (*destroy)();
+    ADDON_STATUS (*create)(const KODI_HANDLE first_instance, KODI_ADDON_HDL* hdl);
+    void (*destroy)(const KODI_ADDON_HDL hdl);
     ADDON_STATUS(*create_instance)
-    (int instanceType,
+    (const KODI_ADDON_HDL hdl,
+     int instanceType,
      const char* instanceID,
      KODI_HANDLE instance,
      const char* version,
      KODI_HANDLE* addonInstance,
      KODI_HANDLE parent);
-    void (*destroy_instance)(int instanceType, KODI_HANDLE instance);
-    ADDON_STATUS (*set_setting)(const char* settingName, const void* settingValue);
+    void (*destroy_instance)(const KODI_ADDON_HDL hdl, int instanceType, KODI_HANDLE instance);
+    ADDON_STATUS(*set_setting)
+    (const KODI_ADDON_HDL hdl, const char* settingName, const void* settingValue);
   } KodiToAddonFuncTable_Addon;
 
   /*!

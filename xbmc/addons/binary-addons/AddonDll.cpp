@@ -183,6 +183,10 @@ ADDON_STATUS CAddonDll::Create(KODI_HANDLE firstKodiInstance)
      needed to become the AddOn running */
   ADDON_STATUS status = m_pDll->Create(&m_interface);
 
+  // "C" ABI related call, if on add-on used.
+  if (status == ADDON_STATUS_OK && m_interface.toAddon->create)
+    status = m_interface.toAddon->create(m_interface.firstKodiInstance, &m_interface.addonBase);
+
   if (status == ADDON_STATUS_OK)
   {
     m_initialized = true;
@@ -215,7 +219,7 @@ void CAddonDll::Destroy()
   if (m_pDll)
   {
     if (m_interface.toAddon->destroy)
-      m_interface.toAddon->destroy();
+      m_interface.toAddon->destroy(m_interface.addonBase);
     m_pDll->Unload();
   }
 
@@ -251,9 +255,9 @@ ADDON_STATUS CAddonDll::CreateInstance(ADDON_TYPE instanceType,
     return ADDON_STATUS_PERMANENT_FAILURE;
 
   KODI_HANDLE addonInstance = nullptr;
-  status = m_interface.toAddon->create_instance(instanceType, instanceID.c_str(), instance,
-                                                kodi::addon::GetTypeVersion(instanceType),
-                                                &addonInstance, parentInstance);
+  status = m_interface.toAddon->create_instance(
+      m_interface.addonBase, instanceType, instanceID.c_str(), instance,
+      kodi::addon::GetTypeVersion(instanceType), &addonInstance, parentInstance);
 
   if (addonInstance)
   {
@@ -271,7 +275,8 @@ void CAddonDll::DestroyInstance(ADDON_INSTANCE_HANDLER instanceClass)
   auto it = m_usedInstances.find(instanceClass);
   if (it != m_usedInstances.end())
   {
-    m_interface.toAddon->destroy_instance(it->second.first, it->second.second);
+    m_interface.toAddon->destroy_instance(m_interface.addonBase, it->second.first,
+                                          it->second.second);
     m_usedInstances.erase(it);
   }
 
@@ -376,33 +381,35 @@ ADDON_STATUS CAddonDll::TransferSettings()
               case SettingType::Boolean:
               {
                 bool tmp = std::static_pointer_cast<CSettingBool>(setting)->GetValue();
-                status = m_interface.toAddon->set_setting(id, &tmp);
+                status = m_interface.toAddon->set_setting(m_interface.addonBase, id, &tmp);
                 break;
               }
 
               case SettingType::Integer:
               {
                 int tmp = std::static_pointer_cast<CSettingInt>(setting)->GetValue();
-                status = m_interface.toAddon->set_setting(id, &tmp);
+                status = m_interface.toAddon->set_setting(m_interface.addonBase, id, &tmp);
                 break;
               }
 
               case SettingType::Number:
               {
                 float tmpf = static_cast<float>(std::static_pointer_cast<CSettingNumber>(setting)->GetValue());
-                status = m_interface.toAddon->set_setting(id, &tmpf);
+                status = m_interface.toAddon->set_setting(m_interface.addonBase, id, &tmpf);
                 break;
               }
 
               case SettingType::String:
                 status = m_interface.toAddon->set_setting(
-                    id, std::static_pointer_cast<CSettingString>(setting)->GetValue().c_str());
+                    m_interface.addonBase, id,
+                    std::static_pointer_cast<CSettingString>(setting)->GetValue().c_str());
                 break;
 
               default:
                 // log unknowns as an error, but go ahead and transfer the string
                 CLog::Log(LOGERROR, "Unknown setting type of '{}' for {}", id, Name());
-                status = m_interface.toAddon->set_setting(id, setting->ToString().c_str());
+                status = m_interface.toAddon->set_setting(m_interface.addonBase, id,
+                                                          setting->ToString().c_str());
                 break;
             }
 

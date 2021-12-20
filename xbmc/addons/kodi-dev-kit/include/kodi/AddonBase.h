@@ -337,6 +337,7 @@ public:
   ///
   CAddonBase()
   {
+    CPrivateBase::m_interface->toAddon->create = nullptr;
     CPrivateBase::m_interface->toAddon->destroy = ADDONBASE_Destroy;
     CPrivateBase::m_interface->toAddon->create_instance = ADDONBASE_CreateInstance;
     CPrivateBase::m_interface->toAddon->destroy_instance = ADDONBASE_DestroyInstance;
@@ -520,26 +521,27 @@ public:
   std::shared_ptr<kodi::gui::IRenderHelper> m_renderHelper;
 
 private:
-  static inline void ADDONBASE_Destroy()
+  static inline void ADDONBASE_Destroy(const KODI_ADDON_HDL hdl)
   {
-    delete static_cast<CAddonBase*>(CPrivateBase::m_interface->addonBase);
-    CPrivateBase::m_interface->addonBase = nullptr;
+    delete static_cast<CAddonBase*>(hdl);
   }
 
-  static inline ADDON_STATUS ADDONBASE_SetSetting(const char* settingName, const void* settingValue)
+  static inline ADDON_STATUS ADDONBASE_SetSetting(const KODI_ADDON_HDL hdl,
+                                                  const char* settingName,
+                                                  const void* settingValue)
   {
-    return static_cast<CAddonBase*>(CPrivateBase::m_interface->addonBase)
-        ->SetSetting(settingName, CSettingValue(settingValue));
+    return static_cast<CAddonBase*>(hdl)->SetSetting(settingName, CSettingValue(settingValue));
   }
 
-  static inline ADDON_STATUS ADDONBASE_CreateInstance(int instanceType,
+  static inline ADDON_STATUS ADDONBASE_CreateInstance(const KODI_ADDON_HDL hdl,
+                                                      int instanceType,
                                                       const char* instanceID,
                                                       KODI_HANDLE instance,
                                                       const char* version,
                                                       KODI_HANDLE* addonInstance,
                                                       KODI_HANDLE parent)
   {
-    CAddonBase* base = static_cast<CAddonBase*>(CPrivateBase::m_interface->addonBase);
+    CAddonBase* base = static_cast<CAddonBase*>(hdl);
 
     ADDON_STATUS status = ADDON_STATUS_NOT_IMPLEMENTED;
 
@@ -609,9 +611,11 @@ private:
     return status;
   }
 
-  static inline void ADDONBASE_DestroyInstance(int instanceType, KODI_HANDLE instance)
+  static inline void ADDONBASE_DestroyInstance(const KODI_ADDON_HDL hdl,
+                                               int instanceType,
+                                               KODI_HANDLE instance)
   {
-    CAddonBase* base = static_cast<CAddonBase*>(CPrivateBase::m_interface->addonBase);
+    CAddonBase* base = static_cast<CAddonBase*>(hdl);
 
     if (CPrivateBase::m_interface->globalSingleInstance == nullptr && instance != base)
     {
