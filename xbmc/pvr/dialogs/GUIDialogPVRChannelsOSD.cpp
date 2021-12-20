@@ -146,7 +146,7 @@ bool CGUIDialogPVRChannelsOSD::OnAction(const CAction& action)
     case REMOTE_8:
     case REMOTE_9:
     {
-      AppendChannelNumberCharacter((action.GetID() - REMOTE_0) + '0');
+      AppendChannelNumberCharacter(static_cast<char>(action.GetID() - REMOTE_0) + '0');
       return true;
     }
     case ACTION_CHANNEL_NUMBER_SEP:
