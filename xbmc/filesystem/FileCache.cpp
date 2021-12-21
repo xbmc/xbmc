@@ -58,7 +58,7 @@ public:
     }
   }
 
-  unsigned Rate(int64_t pos, unsigned int time_bias = 0)
+  uint32_t Rate(int64_t pos, uint32_t time_bias = 0)
   {
     auto ts = std::chrono::steady_clock::now();
 
@@ -70,7 +70,7 @@ public:
     if (m_time == std::chrono::milliseconds(0))
       return 0;
 
-    return (unsigned)(1000 * (m_size / (m_time.count() + time_bias)));
+    return static_cast<uint32_t>(1000 * (m_size / (m_time.count() + time_bias)));
   }
 
 private:
@@ -549,7 +549,8 @@ int64_t CFileCache::Seek(int64_t iFilePosition, int iWhence)
     {
       CLog::Log(LOGDEBUG, "CFileCache::{} - <{}> waiting for position {}", __FUNCTION__,
                 m_sourcePath, iTarget);
-      if(m_pCache->WaitForData((unsigned)(iTarget - m_seekPos), 10000) < iTarget - m_seekPos)
+      if (m_pCache->WaitForData(static_cast<uint32_t>(iTarget - m_seekPos), 10000) <
+          iTarget - m_seekPos)
       {
         CLog::Log(LOGWARNING, "CFileCache::{} - <{}> failed to get remaining data", __FUNCTION__,
                   m_sourcePath);
@@ -618,7 +619,7 @@ int CFileCache::IoControl(EIoControl request, void* param)
 
   if (request == IOCTRL_CACHE_SETRATE)
   {
-    m_writeRate = *(unsigned*)param;
+    m_writeRate = *static_cast<uint32_t*>(param);
     return 0;
   }
 
