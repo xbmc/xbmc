@@ -237,11 +237,6 @@ extern "C"
    * @brief Callback function tables from addon to Kodi
    * Set complete from Kodi!
    */
-  struct AddonToKodiFuncTable_kodi;
-  struct AddonToKodiFuncTable_kodi_audioengine;
-  struct AddonToKodiFuncTable_kodi_filesystem;
-  struct AddonToKodiFuncTable_kodi_network;
-  struct AddonToKodiFuncTable_kodi_gui;
   typedef struct AddonToKodiFuncTable_Addon
   {
     // Pointer inside Kodi, used on callback functions to give related handle
