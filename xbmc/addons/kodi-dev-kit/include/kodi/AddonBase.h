@@ -367,7 +367,15 @@ private:
 class ATTR_DLL_LOCAL IAddonInstance
 {
 public:
-  explicit IAddonInstance(const kodi::addon::IInstanceInfo& instance) : m_instance(instance) {}
+  explicit IAddonInstance(const kodi::addon::IInstanceInfo& instance) : m_instance(instance)
+  {
+    m_instance->functions->instance_setting_change_string = INSTANCE_instance_setting_change_string;
+    m_instance->functions->instance_setting_change_integer =
+        INSTANCE_instance_setting_change_integer;
+    m_instance->functions->instance_setting_change_boolean =
+        INSTANCE_instance_setting_change_boolean;
+    m_instance->functions->instance_setting_change_float = INSTANCE_instance_setting_change_float;
+  }
   virtual ~IAddonInstance() = default;
 
   virtual ADDON_STATUS CreateInstance(const kodi::addon::IInstanceInfo& instance,
@@ -378,7 +386,161 @@ public:
 
   std::string GetInstanceAPIVersion() const { return m_instance->info->version; }
 
+  virtual ADDON_STATUS SetInstanceSetting(const std::string& settingName,
+                                          const kodi::addon::CSettingValue& settingValue)
+  {
+    return ADDON_STATUS_UNKNOWN;
+  }
+
+  inline bool IsInstanceSettingUsingDefault(const std::string& settingName)
+  {
+    return m_instance->info->functions->is_instance_setting_using_default(m_instance->info->kodi,
+                                                                          settingName.c_str());
+  }
+
+  inline bool CheckInstanceSettingString(const std::string& settingName, std::string& settingValue)
+  {
+    char* buffer = nullptr;
+    bool ret = m_instance->info->functions->get_instance_setting_string(
+        m_instance->info->kodi, settingName.c_str(), &buffer);
+    if (buffer)
+    {
+      if (ret)
+        settingValue = buffer;
+      free(buffer);
+    }
+    return ret;
+  }
+
+  inline std::string GetInstanceSettingString(const std::string& settingName,
+                                              const std::string& defaultValue = "")
+  {
+    std::string settingValue = defaultValue;
+    CheckInstanceSettingString(settingName, settingValue);
+    return settingValue;
+  }
+
+  inline void SetInstanceSettingString(const std::string& settingName,
+                                       const std::string& settingValue)
+  {
+    m_instance->info->functions->set_instance_setting_string(
+        m_instance->info->kodi, settingName.c_str(), settingValue.c_str());
+  }
+
+  inline bool CheckInstanceSettingInt(const std::string& settingName, int& settingValue)
+  {
+    KODI_ADDON_INSTANCE_FUNC_CB* cb = m_instance->info->functions;
+    return cb->get_instance_setting_int(m_instance->info->kodi, settingName.c_str(), &settingValue);
+  }
+
+  inline int GetInstanceSettingInt(const std::string& settingName, int defaultValue = 0)
+  {
+    int settingValue = defaultValue;
+    CheckInstanceSettingInt(settingName, settingValue);
+    return settingValue;
+  }
+
+  inline void SetInstanceSettingInt(const std::string& settingName, int settingValue)
+  {
+    m_instance->info->functions->set_instance_setting_int(m_instance->info->kodi,
+                                                          settingName.c_str(), settingValue);
+  }
+
+  inline bool CheckInstanceSettingBoolean(const std::string& settingName, bool& settingValue)
+  {
+    return m_instance->info->functions->get_instance_setting_bool(
+        m_instance->info->kodi, settingName.c_str(), &settingValue);
+  }
+
+  inline bool GetInstanceSettingBoolean(const std::string& settingName, bool defaultValue = false)
+  {
+    bool settingValue = defaultValue;
+    CheckInstanceSettingBoolean(settingName, settingValue);
+    return settingValue;
+  }
+
+  inline void SetInstanceSettingBoolean(const std::string& settingName, bool settingValue)
+  {
+    m_instance->info->functions->set_instance_setting_bool(m_instance->info->kodi,
+                                                           settingName.c_str(), settingValue);
+  }
+
+  inline bool CheckInstanceSettingFloat(const std::string& settingName, float& settingValue)
+  {
+    return m_instance->info->functions->get_instance_setting_float(
+        m_instance->info->kodi, settingName.c_str(), &settingValue);
+  }
+
+  inline float GetInstanceSettingFloat(const std::string& settingName, float defaultValue = 0.0f)
+  {
+    float settingValue = defaultValue;
+    CheckInstanceSettingFloat(settingName, settingValue);
+    return settingValue;
+  }
+
+  inline void SetInstanceSettingFloat(const std::string& settingName, float settingValue)
+  {
+    m_instance->info->functions->set_instance_setting_float(m_instance->info->kodi,
+                                                            settingName.c_str(), settingValue);
+  }
+
+  template<typename enumType>
+  inline bool CheckInstanceSettingEnum(const std::string& settingName, enumType& settingValue)
+  {
+    using namespace kodi::addon;
+
+    int settingValueInt = static_cast<int>(settingValue);
+    bool ret = m_instance->info->functions->get_instance_setting_int(
+        m_instance->info->kodi, settingName.c_str(), &settingValueInt);
+    if (ret)
+      settingValue = static_cast<enumType>(settingValueInt);
+    return ret;
+  }
+
+  template<typename enumType>
+  inline enumType GetInstanceSettingEnum(const std::string& settingName,
+                                         enumType defaultValue = static_cast<enumType>(0))
+  {
+    enumType settingValue = defaultValue;
+    CheckInstanceSettingEnum(settingName, settingValue);
+    return settingValue;
+  }
+
+  template<typename enumType>
+  inline void SetInstanceSettingEnum(const std::string& settingName, enumType settingValue)
+  {
+    m_instance->info->functions->set_instance_setting_int(
+        m_instance->info->kodi, settingName.c_str(), static_cast<int>(settingValue));
+  }
+
 private:
+  static inline ADDON_STATUS INSTANCE_instance_setting_change_string(
+      const KODI_ADDON_INSTANCE_HDL hdl, const char* name, const char* value)
+  {
+    return static_cast<IAddonInstance*>(hdl)->SetInstanceSetting(name, CSettingValue(value));
+  }
+
+  static inline ADDON_STATUS INSTANCE_instance_setting_change_boolean(
+      const KODI_ADDON_INSTANCE_HDL hdl, const char* name, bool value)
+  {
+    return static_cast<IAddonInstance*>(hdl)->SetInstanceSetting(name,
+                                                                 CSettingValue(value ? "1" : "0"));
+  }
+
+  static inline ADDON_STATUS INSTANCE_instance_setting_change_integer(
+      const KODI_ADDON_INSTANCE_HDL hdl, const char* name, int value)
+  {
+    return static_cast<IAddonInstance*>(hdl)->SetInstanceSetting(
+        name, CSettingValue(std::to_string(value)));
+  }
+
+  static inline ADDON_STATUS INSTANCE_instance_setting_change_float(
+      const KODI_ADDON_INSTANCE_HDL hdl, const char* name, float value)
+  {
+    return static_cast<IAddonInstance*>(hdl)->SetInstanceSetting(
+        name, CSettingValue(std::to_string(value)));
+  }
+
   friend class CAddonBase;
 
   const KODI_ADDON_INSTANCE_STRUCT* m_instance;
