@@ -398,6 +398,28 @@ public:
                                                                           settingName.c_str());
   }
 
+  inline std::string GetInstanceUserPath(const std::string& append = "")
+  {
+    using namespace kodi::addon;
+
+    char* str = m_instance->info->functions->get_instance_user_path(
+        CPrivateBase::m_interface->toKodi->kodiBase);
+    std::string ret = str;
+    CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase,
+                                                   str);
+    if (!append.empty())
+    {
+      if (append.at(0) != '\\' && append.at(0) != '/')
+#ifdef TARGET_WINDOWS
+        ret.append("\\");
+#else
+        ret.append("/");
+#endif
+      ret.append(append);
+    }
+    return ret;
+  }
+
   inline bool CheckInstanceSettingString(const std::string& settingName, std::string& settingValue)
   {
     char* buffer = nullptr;

@@ -56,6 +56,7 @@ protected:
 private:
   std::shared_ptr<CSetting> GetSetting(const std::string& setting);
 
+  static char* get_instance_user_path(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl);
   static bool is_instance_setting_using_default(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
                                                 const char* id);
   static bool get_instance_setting_bool(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,

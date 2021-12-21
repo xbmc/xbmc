@@ -10,6 +10,8 @@
 
 #include "ServiceBroker.h"
 #include "addons/settings/AddonSettings.h"
+#include "filesystem/Directory.h"
+#include "filesystem/SpecialProtocol.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -38,6 +40,7 @@ IAddonInstanceHandler::IAddonInstanceHandler(ADDON_TYPE type,
   info->parent = m_parentInstance;
   info->first_instance = m_addon && !m_addon->Initialized();
   info->functions = new KODI_ADDON_INSTANCE_FUNC_CB();
+  info->functions->get_instance_user_path = get_instance_user_path;
   info->functions->is_instance_setting_using_default = is_instance_setting_using_default;
   info->functions->get_instance_setting_bool = get_instance_setting_bool;
   info->functions->get_instance_setting_int = get_instance_setting_int;
@@ -138,6 +141,18 @@ std::shared_ptr<CSetting> IAddonInstanceHandler::GetSetting(const std::string& s
   }
 
   return value;
+}
+
+char* IAddonInstanceHandler::get_instance_user_path(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl)
+{
+  IAddonInstanceHandler* instance = static_cast<IAddonInstanceHandler*>(hdl);
+  if (!instance)
+    return nullptr;
+
+  const std::string path = CSpecialProtocol::TranslatePath(instance->m_addon->Profile());
+
+  XFILE::CDirectory::Create(path);
+  return strdup(path.c_str());
 }
 
 bool IAddonInstanceHandler::is_instance_setting_using_default(
