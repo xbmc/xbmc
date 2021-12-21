@@ -286,30 +286,30 @@ extern "C"
 
   typedef struct AddonToKodiFuncTable_kodi_addon
   {
-    char* (*get_addon_path)(void* kodiBase);
-    char* (*get_lib_path)(void* kodiBase);
-    char* (*get_user_path)(void* kodiBase);
-    char* (*get_temp_path)(void* kodiBase);
+    char* (*get_addon_path)(const KODI_ADDON_BACKEND_HDL hdl);
+    char* (*get_lib_path)(const KODI_ADDON_BACKEND_HDL hdl);
+    char* (*get_user_path)(const KODI_ADDON_BACKEND_HDL hdl);
+    char* (*get_temp_path)(const KODI_ADDON_BACKEND_HDL hdl);
 
-    char* (*get_localized_string)(void* kodiBase, long label_id);
+    char* (*get_localized_string)(const KODI_ADDON_BACKEND_HDL hdl, long label_id);
 
-    bool (*open_settings_dialog)(void* kodiBase);
-    bool (*is_setting_using_default)(void* kodiBase, const char* id);
+    bool (*open_settings_dialog)(const KODI_ADDON_BACKEND_HDL hdl);
+    bool (*is_setting_using_default)(const KODI_ADDON_BACKEND_HDL hdl, const char* id);
 
-    bool (*get_setting_bool)(void* kodiBase, const char* id, bool* value);
-    bool (*get_setting_int)(void* kodiBase, const char* id, int* value);
-    bool (*get_setting_float)(void* kodiBase, const char* id, float* value);
-    bool (*get_setting_string)(void* kodiBase, const char* id, char** value);
+    bool (*get_setting_bool)(const KODI_ADDON_BACKEND_HDL hdl, const char* id, bool* value);
+    bool (*get_setting_int)(const KODI_ADDON_BACKEND_HDL hdl, const char* id, int* value);
+    bool (*get_setting_float)(const KODI_ADDON_BACKEND_HDL hdl, const char* id, float* value);
+    bool (*get_setting_string)(const KODI_ADDON_BACKEND_HDL hdl, const char* id, char** value);
 
-    bool (*set_setting_bool)(void* kodiBase, const char* id, bool value);
-    bool (*set_setting_int)(void* kodiBase, const char* id, int value);
-    bool (*set_setting_float)(void* kodiBase, const char* id, float value);
-    bool (*set_setting_string)(void* kodiBase, const char* id, const char* value);
+    bool (*set_setting_bool)(const KODI_ADDON_BACKEND_HDL hdl, const char* id, bool value);
+    bool (*set_setting_int)(const KODI_ADDON_BACKEND_HDL hdl, const char* id, int value);
+    bool (*set_setting_float)(const KODI_ADDON_BACKEND_HDL hdl, const char* id, float value);
+    bool (*set_setting_string)(const KODI_ADDON_BACKEND_HDL hdl, const char* id, const char* value);
 
-    char* (*get_addon_info)(void* kodiBase, const char* id);
+    char* (*get_addon_info)(const KODI_ADDON_BACKEND_HDL hdl, const char* id);
 
-    char* (*get_type_version)(void* kodiBase, int type);
-    void* (*get_interface)(void* kodiBase, const char* name, const char* version);
+    char* (*get_type_version)(const KODI_ADDON_BACKEND_HDL hdl, int type);
+    void* (*get_interface)(const KODI_ADDON_BACKEND_HDL hdl, const char* name, const char* version);
   } AddonToKodiFuncTable_kodi_addon;
 
   /*!
@@ -320,11 +320,11 @@ extern "C"
   {
     // Pointer inside Kodi, used on callback functions to give related handle
     // class, for this ADDON::CAddonDll inside Kodi.
-    KODI_HANDLE kodiBase;
+    KODI_ADDON_BACKEND_HDL kodiBase;
 
-    void (*free_string)(void* kodiBase, char* str);
-    void (*free_string_array)(void* kodiBase, char** arr, int numElements);
-    void (*addon_log_msg)(void* kodiBase, const int loglevel, const char* msg);
+    void (*free_string)(const KODI_ADDON_BACKEND_HDL hdl, char* str);
+    void (*free_string_array)(const KODI_ADDON_BACKEND_HDL hdl, char** arr, int numElements);
+    void (*addon_log_msg)(const KODI_ADDON_BACKEND_HDL hdl, const int loglevel, const char* msg);
 
     struct AddonToKodiFuncTable_kodi* kodi;
     struct AddonToKodiFuncTable_kodi_addon* kodi_addon;
