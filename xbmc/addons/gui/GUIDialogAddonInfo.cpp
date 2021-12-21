@@ -244,7 +244,7 @@ void CGUIDialogAddonInfo::UpdateControls(PerformButtonFocus performButtonFocus)
                            CServiceBroker::GetAddonMgr().IsAutoUpdateable(m_localAddon->ID()));
   SET_CONTROL_LABEL(CONTROL_BTN_AUTOUPDATE, 21340);
 
-  const bool active = CAddonSystemSettings::GetInstance().IsActive(*m_localAddon); // In settings
+  const bool active = m_localAddon && CAddonSystemSettings::GetInstance().IsActive(*m_localAddon);
   CONTROL_ENABLE_ON_CONDITION(
       CONTROL_BTN_SELECT,
       m_addonEnabled && (CanShowSupportList() || CanOpen() || CanRun() || (CanUse() && !active)));
