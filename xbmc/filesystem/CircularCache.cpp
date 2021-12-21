@@ -181,7 +181,7 @@ int CCircularCache::ReadFromCache(char *buf, size_t len)
  * Note that caller needs to make sure there's sufficient space in the forward
  * buffer for "minimum" bytes else we may block the full timeout time
  */
-int64_t CCircularCache::WaitForData(unsigned int minimum, unsigned int millis)
+int64_t CCircularCache::WaitForData(uint32_t minimum, uint32_t millis)
 {
   CSingleLock lock(m_sync);
   int64_t avail = m_end - m_cur;

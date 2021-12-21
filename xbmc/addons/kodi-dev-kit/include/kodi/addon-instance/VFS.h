@@ -641,7 +641,7 @@ public:
   /// @param[in] rate Cache rate size to use
   /// @return true if successfully done, false otherwise
   ///
-  virtual bool IoControlSetCacheRate(kodi::addon::VFSFileHandle context, unsigned int rate)
+  virtual bool IoControlSetCacheRate(kodi::addon::VFSFileHandle context, uint32_t rate)
   {
     return false;
   }
@@ -1017,7 +1017,7 @@ private:
 
   inline static bool ADDON_IoControlSetCacheRate(const struct AddonInstance_VFSEntry* instance,
                                                  VFS_FILE_HANDLE context,
-                                                 unsigned int rate)
+                                                 uint32_t rate)
   {
     return static_cast<CInstanceVFS*>(instance->toAddon->addonInstance)
         ->IoControlSetCacheRate(context, rate);

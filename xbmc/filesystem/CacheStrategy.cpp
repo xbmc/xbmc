@@ -180,7 +180,7 @@ int CSimpleFileCache::ReadFromCache(char *pBuffer, size_t iMaxSize)
   return readBytes;
 }
 
-int64_t CSimpleFileCache::WaitForData(unsigned int iMinAvail, unsigned int iMillis)
+int64_t CSimpleFileCache::WaitForData(uint32_t iMinAvail, uint32_t iMillis)
 {
   if( iMillis == 0 || IsEndOfInput() )
     return GetAvailableRead();
@@ -219,7 +219,7 @@ int64_t CSimpleFileCache::Seek(int64_t iFilePosition)
   }
 
   if (nDiff > 0 &&
-      WaitForData(static_cast<unsigned int>(iTarget - m_nReadPosition), 5000) == CACHE_RC_TIMEOUT)
+      WaitForData(static_cast<uint32_t>(iTarget - m_nReadPosition), 5000) == CACHE_RC_TIMEOUT)
   {
     CLog::Log(LOGDEBUG, "CSimpleFileCache::{} - <{}> Wait for position {} failed. Ended up at {}",
               __FUNCTION__, m_filename, iFilePosition, m_nWritePosition);
@@ -330,7 +330,7 @@ int CDoubleCache::ReadFromCache(char *pBuffer, size_t iMaxSize)
   return m_pCache->ReadFromCache(pBuffer, iMaxSize);
 }
 
-int64_t CDoubleCache::WaitForData(unsigned int iMinAvail, unsigned int iMillis)
+int64_t CDoubleCache::WaitForData(uint32_t iMinAvail, uint32_t iMillis)
 {
   return m_pCache->WaitForData(iMinAvail, iMillis);
 }

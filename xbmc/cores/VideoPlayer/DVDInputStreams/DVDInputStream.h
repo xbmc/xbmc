@@ -163,7 +163,7 @@ public:
    *  This could be used to throttle caching rate. Should
    *  be seen as only a hint
    */
-  virtual void SetReadRate(unsigned rate) {}
+  virtual void SetReadRate(uint32_t rate) {}
 
   /*! \brief Get the cache status
    \return true when cache status was successfully obtained

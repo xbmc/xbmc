@@ -240,9 +240,9 @@ public:
   /// | Name | Type | Set call | Get call
   /// |------|------|----------|----------
   /// | **Number of bytes cached** | `uint64_t` | @ref CacheStatus::SetForward "SetForward" | @ref CacheStatus::GetForward "GetForward"
-  /// | **Maximum number of bytes per second** | `unsigned int` | @ref CacheStatus::SetMaxRate "SetMaxRate" | @ref CacheStatus::GetMaxRate "GetMaxRate"
-  /// | **Average read rate from source file** | `unsigned int` | @ref CacheStatus::SetCurrentRate "SetCurrentRate" | @ref CacheStatus::GetCurrentRate "GetCurrentRate"
-  /// | **Cache low speed rate detected** | `unsigned int` | @ref CacheStatus::SetLowRate "SetLowRate" | @ref CacheStatus::GetLowRate "GetLowRate"
+  /// | **Maximum number of bytes per second** | `uint32_t` | @ref CacheStatus::SetMaxRate "SetMaxRate" | @ref CacheStatus::GetMaxRate "GetMaxRate"
+  /// | **Average read rate from source file** | `uint32_t` | @ref CacheStatus::SetCurrentRate "SetCurrentRate" | @ref CacheStatus::GetCurrentRate "GetCurrentRate"
+  /// | **Cache low speed rate detected** | `uint32_t` | @ref CacheStatus::SetLowRate "SetLowRate" | @ref CacheStatus::GetLowRate "GetLowRate"
   ///
 
   /// @addtogroup cpp_kodi_vfs_Defs_CacheStatus
@@ -256,22 +256,22 @@ public:
   uint64_t GetForward() { return m_cStructure->forward; }
 
   /// @brief Set maximum number of bytes per second cache is allowed to fill.
-  void SetMaxRate(unsigned int maxrate) { m_cStructure->maxrate = maxrate; }
+  void SetMaxRate(uint32_t maxrate) { m_cStructure->maxrate = maxrate; }
 
   /// @brief Set maximum number of bytes per second cache is allowed to fill.
-  unsigned int GetMaxRate() { return m_cStructure->maxrate; }
+  uint32_t GetMaxRate() { return m_cStructure->maxrate; }
 
   /// @brief Set number of bytes per second for average read rate from source file since last position change.
-  void SetCurrentRate(unsigned int currate) { m_cStructure->currate = currate; }
+  void SetCurrentRate(uint32_t currate) { m_cStructure->currate = currate; }
 
   /// @brief Get number of bytes per second for average read rate from source file since last position change.
-  unsigned int GetCurrentRate() { return m_cStructure->currate; }
+  uint32_t GetCurrentRate() { return m_cStructure->currate; }
 
   /// @brief Set number of bytes per second for low speed rate.
-  void SetLowRate(unsigned int lowrate) { m_cStructure->lowrate = lowrate; }
+  void SetLowRate(uint32_t lowrate) { m_cStructure->lowrate = lowrate; }
 
   /// @brief Get number of bytes per second for low speed rate.
-  unsigned int GetLowRate() { return m_cStructure->lowrate; }
+  uint32_t GetLowRate() { return m_cStructure->lowrate; }
 
   ///@}
 };
@@ -2247,7 +2247,7 @@ public:
   /// @param[in] rate Cache rate size to use
   /// @return true if successfully done, false otherwise
   ///
-  bool IoControlSetCacheRate(unsigned int rate)
+  bool IoControlSetCacheRate(uint32_t rate)
   {
     using namespace kodi::addon;
 
