@@ -975,7 +975,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
               }
             }
             else
-              m_extTimeout = m_extDrainTimer.MillisLeft();
+              m_extTimeout = m_extDrainTimer.GetTimeLeft();
           }
           else
             m_extTimeout = 5000ms;
@@ -1109,7 +1109,7 @@ void CActiveAE::Process()
     // wait for message
     else if (m_outMsgEvent.Wait(m_extTimeout))
     {
-      m_extTimeout = timer.MillisLeft();
+      m_extTimeout = timer.GetTimeLeft();
       continue;
     }
     // time out

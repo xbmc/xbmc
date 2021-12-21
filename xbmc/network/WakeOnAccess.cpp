@@ -321,7 +321,7 @@ public:
 
         m_dialog->Progress();
 
-        auto ms_passed = timeOutMs - end_time.MillisLeft();
+        auto ms_passed = timeOutMs - end_time.GetTimeLeft();
 
         int percentage = (ms_passed.count() * 100) / timeOutMs.count();
         m_dialog->SetPercentage(std::max(percentage, 1)); // avoid flickering , keep minimum 1%

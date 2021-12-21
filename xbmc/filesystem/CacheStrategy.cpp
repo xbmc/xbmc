@@ -192,7 +192,7 @@ int64_t CSimpleFileCache::WaitForData(uint32_t iMinAvail, uint32_t iMillis)
     if (iAvail >= iMinAvail)
       return iAvail;
 
-    if (!m_hDataAvailEvent->Wait(endTime.MillisLeft()))
+    if (!m_hDataAvailEvent->Wait(endTime.GetTimeLeft()))
       return CACHE_RC_TIMEOUT;
   }
   return GetAvailableRead();

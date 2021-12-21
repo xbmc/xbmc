@@ -662,7 +662,7 @@ void CActiveAESink::Process()
     // wait for message
     else if (m_outMsgEvent.Wait(m_extTimeout))
     {
-      m_extTimeout = timer.MillisLeft();
+      m_extTimeout = timer.GetTimeLeft();
       continue;
     }
     // time out

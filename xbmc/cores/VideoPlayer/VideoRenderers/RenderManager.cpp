@@ -123,7 +123,7 @@ bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned 
         m_forceNext = false;
         return false;
       }
-      m_presentevent.wait(lock, endtime.MillisLeft());
+      m_presentevent.wait(lock, endtime.GetTimeLeft());
     }
     m_forceNext = false;
   }
@@ -265,7 +265,7 @@ void CRenderManager::FrameWait(int ms)
   XbmcThreads::EndTime<> timeout{std::chrono::milliseconds(ms)};
   CSingleLock lock(m_presentlock);
   while(m_presentstep == PRESENT_IDLE && !timeout.IsTimePast())
-    m_presentevent.wait(lock, timeout.MillisLeft());
+    m_presentevent.wait(lock, timeout.GetTimeLeft());
 }
 
 bool CRenderManager::IsPresenting()

@@ -49,7 +49,7 @@ namespace XBMCAddon
       {
         {
           DelayedCallGuard dg(languageHook);
-          auto timeout = std::min(endTime.MillisLeft(), 100ms);
+          auto timeout = std::min(endTime.GetTimeLeft(), 100ms);
           if (abortEvent.Wait(timeout))
             return true;
         }
