@@ -30,6 +30,8 @@
 
 using namespace XFILE;
 
+using namespace std::chrono_literals;
+
 CCacheStrategy::~CCacheStrategy() = default;
 
 void CCacheStrategy::EndOfInput() {
@@ -180,12 +182,12 @@ int CSimpleFileCache::ReadFromCache(char *pBuffer, size_t iMaxSize)
   return readBytes;
 }
 
-int64_t CSimpleFileCache::WaitForData(uint32_t iMinAvail, uint32_t iMillis)
+int64_t CSimpleFileCache::WaitForData(uint32_t iMinAvail, std::chrono::milliseconds timeout)
 {
-  if( iMillis == 0 || IsEndOfInput() )
+  if (timeout == 0ms || IsEndOfInput())
     return GetAvailableRead();
 
-  XbmcThreads::EndTime<> endTime{std::chrono::milliseconds(iMillis)};
+  XbmcThreads::EndTime<> endTime{timeout};
   while (!IsEndOfInput())
   {
     int64_t iAvail = GetAvailableRead();
@@ -219,7 +221,7 @@ int64_t CSimpleFileCache::Seek(int64_t iFilePosition)
   }
 
   if (nDiff > 0 &&
-      WaitForData(static_cast<uint32_t>(iTarget - m_nReadPosition), 5000) == CACHE_RC_TIMEOUT)
+      WaitForData(static_cast<uint32_t>(iTarget - m_nReadPosition), 5s) == CACHE_RC_TIMEOUT)
   {
     CLog::Log(LOGDEBUG, "CSimpleFileCache::{} - <{}> Wait for position {} failed. Ended up at {}",
               __FUNCTION__, m_filename, iFilePosition, m_nWritePosition);
@@ -330,9 +332,9 @@ int CDoubleCache::ReadFromCache(char *pBuffer, size_t iMaxSize)
   return m_pCache->ReadFromCache(pBuffer, iMaxSize);
 }
 
-int64_t CDoubleCache::WaitForData(uint32_t iMinAvail, uint32_t iMillis)
+int64_t CDoubleCache::WaitForData(uint32_t iMinAvail, std::chrono::milliseconds timeout)
 {
-  return m_pCache->WaitForData(iMinAvail, iMillis);
+  return m_pCache->WaitForData(iMinAvail, timeout);
 }
 
 int64_t CDoubleCache::Seek(int64_t iFilePosition)

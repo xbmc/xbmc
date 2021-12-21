@@ -26,7 +26,7 @@ public:
     size_t GetMaxWriteSize(const size_t& iRequestSize) override;
     int WriteToCache(const char *buf, size_t len) override;
     int ReadFromCache(char *buf, size_t len) override;
-    int64_t WaitForData(uint32_t minimum, uint32_t iMillis) override;
+    int64_t WaitForData(uint32_t minimum, std::chrono::milliseconds timeout) override;
 
     int64_t Seek(int64_t pos) override;
     bool Reset(int64_t pos) override;
