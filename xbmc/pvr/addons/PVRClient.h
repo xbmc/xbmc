@@ -1140,7 +1140,7 @@ private:
    * @param entry The entry to transfer to Kodi
    */
   static void cb_transfer_channel_group(void* kodiInstance,
-                                        const ADDON_HANDLE handle,
+                                        const PVR_HANDLE handle,
                                         const PVR_CHANNEL_GROUP* entry);
 
   /*!
@@ -1150,7 +1150,7 @@ private:
    * @param entry The entry to transfer to Kodi
    */
   static void cb_transfer_channel_group_member(void* kodiInstance,
-                                               const ADDON_HANDLE handle,
+                                               const PVR_HANDLE handle,
                                                const PVR_CHANNEL_GROUP_MEMBER* entry);
 
   /*!
@@ -1160,7 +1160,7 @@ private:
    * @param entry The entry to transfer to Kodi
    */
   static void cb_transfer_epg_entry(void* kodiInstance,
-                                    const ADDON_HANDLE handle,
+                                    const PVR_HANDLE handle,
                                     const EPG_TAG* entry);
 
   /*!
@@ -1170,7 +1170,7 @@ private:
    * @param entry The entry to transfer to Kodi
    */
   static void cb_transfer_channel_entry(void* kodiInstance,
-                                        const ADDON_HANDLE handle,
+                                        const PVR_HANDLE handle,
                                         const PVR_CHANNEL* entry);
 
   /*!
@@ -1180,7 +1180,7 @@ private:
    * @param entry The entry to transfer to Kodi
    */
   static void cb_transfer_provider_entry(void* kodiInstance,
-                                         const ADDON_HANDLE handle,
+                                         const PVR_HANDLE handle,
                                          const PVR_PROVIDER* entry);
 
   /*!
@@ -1190,7 +1190,7 @@ private:
    * @param entry The entry to transfer to Kodi
    */
   static void cb_transfer_timer_entry(void* kodiInstance,
-                                      const ADDON_HANDLE handle,
+                                      const PVR_HANDLE handle,
                                       const PVR_TIMER* entry);
 
   /*!
@@ -1200,7 +1200,7 @@ private:
    * @param entry The entry to transfer to Kodi
    */
   static void cb_transfer_recording_entry(void* kodiInstance,
-                                          const ADDON_HANDLE handle,
+                                          const PVR_HANDLE handle,
                                           const PVR_RECORDING* entry);
 
   /*!

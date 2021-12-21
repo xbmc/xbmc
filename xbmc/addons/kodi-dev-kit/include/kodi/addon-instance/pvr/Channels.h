@@ -209,7 +209,7 @@ class PVRChannelsResultSet
 public:
   /*! \cond PRIVATE */
   PVRChannelsResultSet() = delete;
-  PVRChannelsResultSet(const AddonInstance_PVR* instance, ADDON_HANDLE handle)
+  PVRChannelsResultSet(const AddonInstance_PVR* instance, PVR_HANDLE handle)
     : m_instance(instance), m_handle(handle)
   {
   }
@@ -230,7 +230,7 @@ public:
 
 private:
   const AddonInstance_PVR* m_instance = nullptr;
-  const ADDON_HANDLE m_handle;
+  const PVR_HANDLE m_handle;
 };
 ///@}
 //------------------------------------------------------------------------------

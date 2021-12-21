@@ -697,9 +697,8 @@ PVR_ERROR CPVRClient::GetEPGForChannel(int iChannelUid, CPVREpg* epg, time_t sta
 {
   return DoAddonCall(
       __func__,
-      [this, iChannelUid, epg, start, end](const AddonInstance* addon)
-      {
-        ADDON_HANDLE_STRUCT handle = {};
+      [this, iChannelUid, epg, start, end](const AddonInstance* addon) {
+        PVR_HANDLE_STRUCT handle = {};
         handle.callerAddress = this;
         handle.dataAddress = epg;
 
@@ -903,33 +902,30 @@ PVR_ERROR CPVRClient::GetChannelGroupsAmount(int& iGroups)
 
 PVR_ERROR CPVRClient::GetChannelGroups(CPVRChannelGroups* groups)
 {
-  return DoAddonCall(
-      __func__,
-      [this, groups](const AddonInstance* addon)
-      {
-        ADDON_HANDLE_STRUCT handle = {};
-        handle.callerAddress = this;
-        handle.dataAddress = groups;
-        return addon->toAddon->GetChannelGroups(addon, &handle, groups->IsRadio());
-      },
-      m_clientCapabilities.SupportsChannelGroups());
+  return DoAddonCall(__func__,
+                     [this, groups](const AddonInstance* addon) {
+                       PVR_HANDLE_STRUCT handle = {};
+                       handle.callerAddress = this;
+                       handle.dataAddress = groups;
+                       return addon->toAddon->GetChannelGroups(addon, &handle, groups->IsRadio());
+                     },
+                     m_clientCapabilities.SupportsChannelGroups());
 }
 
 PVR_ERROR CPVRClient::GetChannelGroupMembers(
     CPVRChannelGroup* group, std::vector<std::shared_ptr<CPVRChannelGroupMember>>& groupMembers)
 {
-  return DoAddonCall(
-      __func__,
-      [this, group, &groupMembers](const AddonInstance* addon) {
-        ADDON_HANDLE_STRUCT handle = {};
-        handle.callerAddress = this;
-        handle.dataAddress = &groupMembers;
+  return DoAddonCall(__func__,
+                     [this, group, &groupMembers](const AddonInstance* addon) {
+                       PVR_HANDLE_STRUCT handle = {};
+                       handle.callerAddress = this;
+                       handle.dataAddress = &groupMembers;
 
-        PVR_CHANNEL_GROUP tag;
-        WriteClientGroupInfo(*group, tag);
-        return addon->toAddon->GetChannelGroupMembers(addon, &handle, &tag);
-      },
-      m_clientCapabilities.SupportsChannelGroups());
+                       PVR_CHANNEL_GROUP tag;
+                       WriteClientGroupInfo(*group, tag);
+                       return addon->toAddon->GetChannelGroupMembers(addon, &handle, &tag);
+                     },
+                     m_clientCapabilities.SupportsChannelGroups());
 }
 
 PVR_ERROR CPVRClient::GetProvidersAmount(int& iProviders)
@@ -942,15 +938,14 @@ PVR_ERROR CPVRClient::GetProvidersAmount(int& iProviders)
 
 PVR_ERROR CPVRClient::GetProviders(CPVRProvidersContainer& providers)
 {
-  return DoAddonCall(
-      __func__,
-      [this, &providers](const AddonInstance* addon) {
-        ADDON_HANDLE_STRUCT handle = {};
-        handle.callerAddress = this;
-        handle.dataAddress = &providers;
-        return addon->toAddon->GetProviders(addon, &handle);
-      },
-      m_clientCapabilities.SupportsProviders());
+  return DoAddonCall(__func__,
+                     [this, &providers](const AddonInstance* addon) {
+                       PVR_HANDLE_STRUCT handle = {};
+                       handle.callerAddress = this;
+                       handle.dataAddress = &providers;
+                       return addon->toAddon->GetProviders(addon, &handle);
+                     },
+                     m_clientCapabilities.SupportsProviders());
 }
 
 PVR_ERROR CPVRClient::GetChannelsAmount(int& iChannels)
@@ -963,16 +958,15 @@ PVR_ERROR CPVRClient::GetChannelsAmount(int& iChannels)
 
 PVR_ERROR CPVRClient::GetChannels(bool radio, std::vector<std::shared_ptr<CPVRChannel>>& channels)
 {
-  return DoAddonCall(
-      __func__,
-      [this, radio, &channels](const AddonInstance* addon) {
-        ADDON_HANDLE_STRUCT handle = {};
-        handle.callerAddress = this;
-        handle.dataAddress = &channels;
-        return addon->toAddon->GetChannels(addon, &handle, radio);
-      },
-      (radio && m_clientCapabilities.SupportsRadio()) ||
-          (!radio && m_clientCapabilities.SupportsTV()));
+  return DoAddonCall(__func__,
+                     [this, radio, &channels](const AddonInstance* addon) {
+                       PVR_HANDLE_STRUCT handle = {};
+                       handle.callerAddress = this;
+                       handle.dataAddress = &channels;
+                       return addon->toAddon->GetChannels(addon, &handle, radio);
+                     },
+                     (radio && m_clientCapabilities.SupportsRadio()) ||
+                         (!radio && m_clientCapabilities.SupportsTV()));
 }
 
 PVR_ERROR CPVRClient::GetRecordingsAmount(bool deleted, int& iRecordings)
@@ -989,17 +983,15 @@ PVR_ERROR CPVRClient::GetRecordingsAmount(bool deleted, int& iRecordings)
 
 PVR_ERROR CPVRClient::GetRecordings(CPVRRecordings* results, bool deleted)
 {
-  return DoAddonCall(
-      __func__,
-      [this, results, deleted](const AddonInstance* addon)
-      {
-        ADDON_HANDLE_STRUCT handle = {};
-        handle.callerAddress = this;
-        handle.dataAddress = results;
-        return addon->toAddon->GetRecordings(addon, &handle, deleted);
-      },
-      m_clientCapabilities.SupportsRecordings() &&
-          (!deleted || m_clientCapabilities.SupportsRecordingsUndelete()));
+  return DoAddonCall(__func__,
+                     [this, results, deleted](const AddonInstance* addon) {
+                       PVR_HANDLE_STRUCT handle = {};
+                       handle.callerAddress = this;
+                       handle.dataAddress = results;
+                       return addon->toAddon->GetRecordings(addon, &handle, deleted);
+                     },
+                     m_clientCapabilities.SupportsRecordings() &&
+                         (!deleted || m_clientCapabilities.SupportsRecordingsUndelete()));
 }
 
 PVR_ERROR CPVRClient::DeleteRecording(const CPVRRecording& recording)
@@ -1147,16 +1139,14 @@ PVR_ERROR CPVRClient::GetTimersAmount(int& iTimers)
 
 PVR_ERROR CPVRClient::GetTimers(CPVRTimersContainer* results)
 {
-  return DoAddonCall(
-      __func__,
-      [this, results](const AddonInstance* addon)
-      {
-        ADDON_HANDLE_STRUCT handle = {};
-        handle.callerAddress = this;
-        handle.dataAddress = results;
-        return addon->toAddon->GetTimers(addon, &handle);
-      },
-      m_clientCapabilities.SupportsTimers());
+  return DoAddonCall(__func__,
+                     [this, results](const AddonInstance* addon) {
+                       PVR_HANDLE_STRUCT handle = {};
+                       handle.callerAddress = this;
+                       handle.dataAddress = results;
+                       return addon->toAddon->GetTimers(addon, &handle);
+                     },
+                     m_clientCapabilities.SupportsTimers());
 }
 
 PVR_ERROR CPVRClient::AddTimer(const CPVRTimerInfoTag& timer)
@@ -1735,7 +1725,7 @@ void CPVRClient::HandleAddonCallback(const char* strFunctionName,
 }
 
 void CPVRClient::cb_transfer_channel_group(void* kodiInstance,
-                                           const ADDON_HANDLE handle,
+                                           const PVR_HANDLE handle,
                                            const PVR_CHANNEL_GROUP* group)
 {
   HandleAddonCallback(__func__, kodiInstance, [&](CPVRClient* client) {
@@ -1760,7 +1750,7 @@ void CPVRClient::cb_transfer_channel_group(void* kodiInstance,
 }
 
 void CPVRClient::cb_transfer_channel_group_member(void* kodiInstance,
-                                                  const ADDON_HANDLE handle,
+                                                  const PVR_HANDLE handle,
                                                   const PVR_CHANNEL_GROUP_MEMBER* member)
 {
   HandleAddonCallback(__func__, kodiInstance, [&](CPVRClient* client) {
@@ -1790,7 +1780,7 @@ void CPVRClient::cb_transfer_channel_group_member(void* kodiInstance,
 }
 
 void CPVRClient::cb_transfer_epg_entry(void* kodiInstance,
-                                       const ADDON_HANDLE handle,
+                                       const PVR_HANDLE handle,
                                        const EPG_TAG* epgentry)
 {
   HandleAddonCallback(__func__, kodiInstance, [&](CPVRClient* client) {
@@ -1807,7 +1797,7 @@ void CPVRClient::cb_transfer_epg_entry(void* kodiInstance,
 }
 
 void CPVRClient::cb_transfer_provider_entry(void* kodiInstance,
-                                            const ADDON_HANDLE handle,
+                                            const PVR_HANDLE handle,
                                             const PVR_PROVIDER* provider)
 {
   if (!handle)
@@ -1831,7 +1821,7 @@ void CPVRClient::cb_transfer_provider_entry(void* kodiInstance,
 }
 
 void CPVRClient::cb_transfer_channel_entry(void* kodiInstance,
-                                           const ADDON_HANDLE handle,
+                                           const PVR_HANDLE handle,
                                            const PVR_CHANNEL* channel)
 {
   HandleAddonCallback(__func__, kodiInstance, [&](CPVRClient* client) {
@@ -1847,7 +1837,7 @@ void CPVRClient::cb_transfer_channel_entry(void* kodiInstance,
 }
 
 void CPVRClient::cb_transfer_recording_entry(void* kodiInstance,
-                                             const ADDON_HANDLE handle,
+                                             const PVR_HANDLE handle,
                                              const PVR_RECORDING* recording)
 {
   HandleAddonCallback(__func__, kodiInstance, [&](CPVRClient* client) {
@@ -1866,7 +1856,7 @@ void CPVRClient::cb_transfer_recording_entry(void* kodiInstance,
 }
 
 void CPVRClient::cb_transfer_timer_entry(void* kodiInstance,
-                                         const ADDON_HANDLE handle,
+                                         const PVR_HANDLE handle,
                                          const PVR_TIMER* timer)
 {
   HandleAddonCallback(__func__, kodiInstance, [&](CPVRClient* client) {

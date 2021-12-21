@@ -59,6 +59,17 @@ extern "C"
     char strValue[PVR_ADDON_NAME_STRING_LENGTH];
   } PVR_NAMED_VALUE;
 
+  /*!
+   * @brief Handle used to return data from the PVR add-on to CPVRClient
+   */
+  struct PVR_HANDLE_STRUCT
+  {
+    void* callerAddress; /*!< address of the caller */
+    void* dataAddress; /*!< address to store data in */
+    int dataIdentifier; /*!< parameter to pass back when calling the callback */
+  };
+  typedef struct PVR_HANDLE_STRUCT* PVR_HANDLE;
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
