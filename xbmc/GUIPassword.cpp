@@ -14,6 +14,7 @@
 #include "Util.h"
 #include "dialogs/GUIDialogGamepad.h"
 #include "dialogs/GUIDialogNumeric.h"
+#include "favourites/FavouritesService.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
@@ -28,9 +29,12 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
 #include "view/ViewStateSettings.h"
 
+#include <type_traits>
 #include <utility>
 
 using namespace KODI::MESSAGING;
@@ -87,6 +91,12 @@ bool CGUIPassword::IsItemUnlocked(T pItem,
         CMediaSourceSettings::GetInstance().UpdateSource(strType, strLabel, "badpwdcount",
                                                          std::to_string(pItem->m_iBadPwdCount));
         CMediaSourceSettings::GetInstance().Save();
+
+        // a mediasource has been unlocked successfully
+        // => refresh favourites due to possible visibility changes
+        // only if this template is instantiated for a CMediaSource item
+        if (std::is_same<T, CMediaSource*>::value)
+          CServiceBroker::GetFavouritesService().RefreshFavourites();
         break;
       }
     case 1:
@@ -549,7 +559,7 @@ bool CGUIPassword::IsDatabasePathUnlocked(const std::string& strPath, VECSOURCES
 }
 
 bool CGUIPassword::IsMediaPathUnlocked(const std::shared_ptr<CProfileManager>& profileManager,
-                                       const std::string& strType)
+                                       const std::string& strType) const
 {
   if (!StringUtils::StartsWithNoCase(m_strMediaSourcePath, "root") &&
       !StringUtils::StartsWithNoCase(m_strMediaSourcePath, "library://"))
@@ -566,6 +576,31 @@ bool CGUIPassword::IsMediaPathUnlocked(const std::shared_ptr<CProfileManager>& p
       }
     }
   }
+
+  return true;
+}
+
+bool CGUIPassword::IsMediaFileUnlocked(const std::string& type, const std::string& file) const
+{
+  std::vector<CMediaSource>* vecSources = CMediaSourceSettings::GetInstance().GetSources(type);
+
+  if (!vecSources)
+  {
+    CLog::Log(LOGERROR,
+              "{}: CMediaSourceSettings::GetInstance().GetSources(\"{}\") returned nullptr.",
+              __func__, type);
+    return true;
+  }
+
+  // try to find the best matching source for this file
+
+  bool isSourceName{false};
+  const std::string fileBasePath = URIUtils::GetBasePath(file);
+
+  int iIndex = CUtil::GetMatchingSource(fileBasePath, *vecSources, isSourceName);
+
+  if (iIndex > -1 && iIndex < static_cast<int>(vecSources->size()))
+    return (*vecSources)[iIndex].m_iHasLock < LOCK_STATE_LOCKED;
 
   return true;
 }

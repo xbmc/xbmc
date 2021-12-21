@@ -66,6 +66,15 @@ public:
   void RemoveSourceLocks();
   bool IsDatabasePathUnlocked(const std::string& strPath, VECSOURCES& vecSources);
 
+  /*! \brief Helper function to test if a matching mediasource is currently unlocked
+   for a given media file
+   \note this function only returns the lock state. it does not provide unlock functionality
+   \param type The type of share being accessed, e.g. "music", "video", etc.
+   \param file The file to check lock state for
+   \return If access is granted, returns \e true
+   */
+  bool IsMediaFileUnlocked(const std::string& type, const std::string& file) const;
+
   void SetMediaSourcePath(const std::string& strMediaSourcePath)
   {
     m_strMediaSourcePath = strMediaSourcePath;
@@ -84,7 +93,7 @@ private:
    \return If access is granted, returns \e true
    */
   bool IsMediaPathUnlocked(const std::shared_ptr<CProfileManager>& profileManager,
-                           const std::string& strType);
+                           const std::string& strType) const;
 
   std::string m_strMediaSourcePath;
   int VerifyPassword(LockType btnType, const std::string& strPassword, const std::string& strHeading);

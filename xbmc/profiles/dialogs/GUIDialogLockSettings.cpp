@@ -13,6 +13,7 @@
 #include "dialogs/GUIDialogGamepad.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogSelect.h"
+#include "favourites/FavouritesService.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
@@ -75,6 +76,11 @@ bool CGUIDialogLockSettings::ShowAndGetLock(CProfile::CLock &locks, int buttonLa
     return false;
 
   locks = dialog->m_locks;
+
+  // changed lock settings for certain sections (e.g. video, audio, or pictures)
+  // => refresh favourites due to possible visibility changes
+  CServiceBroker::GetFavouritesService().RefreshFavourites();
+
   return true;
 }
 
