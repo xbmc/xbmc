@@ -49,6 +49,18 @@ bool CPVRChannelGroupInternal::Load(
 {
   if (CPVRChannelGroup::Load(channels))
   {
+    for (const auto& groupMember : m_members)
+    {
+      const std::shared_ptr<CPVRChannel> channel = groupMember.second->Channel();
+
+      // create the EPG for the channel
+      if (channel->CreateEPG())
+      {
+        CLog::LogFC(LOGDEBUG, LOGPVR, "Created EPG for {} channel '{}'", IsRadio() ? "radio" : "TV",
+                    channel->ChannelName());
+      }
+    }
+
     UpdateChannelPaths();
     CServiceBroker::GetPVRManager().Events().Subscribe(this, &CPVRChannelGroupInternal::OnPVRManagerEvent);
     return true;
