@@ -61,7 +61,7 @@ public:
   void GetVideoRect(CRect &source, CRect &dest, CRect &view);
   float GetAspectRatio();
   void FrameMove();
-  void FrameWait(int ms);
+  void FrameWait(std::chrono::milliseconds duration);
   void Render(bool clear, DWORD flags = 0, DWORD alpha = 255, bool gui = true);
   bool IsVideoLayer();
   RESOLUTION GetResolution();
