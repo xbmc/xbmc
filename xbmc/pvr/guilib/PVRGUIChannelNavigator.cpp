@@ -24,16 +24,19 @@
 #include "utils/JobManager.h"
 #include "utils/XTimeUtils.h"
 
+using namespace std::chrono_literals;
+
 namespace
 {
 class CPVRChannelTimeoutJobBase : public CJob, public IJobCallback
 {
 public:
   CPVRChannelTimeoutJobBase() = delete;
-  CPVRChannelTimeoutJobBase(PVR::CPVRGUIChannelNavigator& channelNavigator, int iTimeout)
-  : m_channelNavigator(channelNavigator)
+  CPVRChannelTimeoutJobBase(PVR::CPVRGUIChannelNavigator& channelNavigator,
+                            std::chrono::milliseconds timeout)
+    : m_channelNavigator(channelNavigator)
   {
-    m_delayTimer.Set(std::chrono::milliseconds(iTimeout));
+    m_delayTimer.Set(timeout);
   }
 
   ~CPVRChannelTimeoutJobBase() override = default;
@@ -66,8 +69,11 @@ private:
 class CPVRChannelEntryTimeoutJob : public CPVRChannelTimeoutJobBase
 {
 public:
-  CPVRChannelEntryTimeoutJob(PVR::CPVRGUIChannelNavigator& channelNavigator, int iTimeout)
-  : CPVRChannelTimeoutJobBase(channelNavigator, iTimeout) {}
+  CPVRChannelEntryTimeoutJob(PVR::CPVRGUIChannelNavigator& channelNavigator,
+                             std::chrono::milliseconds timeout)
+    : CPVRChannelTimeoutJobBase(channelNavigator, timeout)
+  {
+  }
   ~CPVRChannelEntryTimeoutJob() override = default;
   const char* GetType() const override { return "pvr-channel-entry-timeout-job"; }
   void OnTimeout() override { m_channelNavigator.SwitchToCurrentChannel(); }
@@ -76,8 +82,11 @@ public:
 class CPVRChannelInfoTimeoutJob : public CPVRChannelTimeoutJobBase
 {
 public:
-  CPVRChannelInfoTimeoutJob(PVR::CPVRGUIChannelNavigator& channelNavigator, int iTimeout)
-  : CPVRChannelTimeoutJobBase(channelNavigator, iTimeout) {}
+  CPVRChannelInfoTimeoutJob(PVR::CPVRGUIChannelNavigator& channelNavigator,
+                            std::chrono::milliseconds timeout)
+    : CPVRChannelTimeoutJobBase(channelNavigator, timeout)
+  {
+  }
   ~CPVRChannelInfoTimeoutJob() override = default;
   const char* GetType() const override { return "pvr-channel-info-timeout-job"; }
   void OnTimeout() override { m_channelNavigator.HideInfo(); }
@@ -144,14 +153,16 @@ namespace PVR
 
     if (IsPreview() && eSwitchMode == ChannelSwitchMode::INSTANT_OR_DELAYED_SWITCH)
     {
-      int iTimeout = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT);
-      if (iTimeout > 0)
+      auto timeout =
+          std::chrono::milliseconds(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+              CSettings::SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT));
+      if (timeout > 0ms)
       {
         // delayed switch
         if (m_iChannelEntryJobId >= 0)
           CJobManager::GetInstance().CancelJob(m_iChannelEntryJobId);
 
-        CPVRChannelEntryTimeoutJob* job = new CPVRChannelEntryTimeoutJob(*this, iTimeout);
+        CPVRChannelEntryTimeoutJob* job = new CPVRChannelEntryTimeoutJob(*this, timeout);
         m_iChannelEntryJobId = CJobManager::GetInstance().AddJob(job, dynamic_cast<IJobCallback*>(job));
       }
       else
@@ -200,9 +211,11 @@ namespace PVR
 
   void CPVRGUIChannelNavigator::ShowInfo(bool bForce)
   {
-    int iTimeout = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO);
+    auto timeout =
+        std::chrono::seconds(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+            CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO));
 
-    if (bForce || iTimeout > 0)
+    if (bForce || timeout > 0s)
     {
       CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().SetShowInfo(true);
 
@@ -214,9 +227,9 @@ namespace PVR
         m_iChannelInfoJobId = -1;
       }
 
-      if (!bForce && iTimeout > 0)
+      if (!bForce && timeout > 0s)
       {
-        CPVRChannelInfoTimeoutJob* job = new CPVRChannelInfoTimeoutJob(*this, iTimeout * 1000);
+        CPVRChannelInfoTimeoutJob* job = new CPVRChannelInfoTimeoutJob(*this, timeout);
         m_iChannelInfoJobId = CJobManager::GetInstance().AddJob(job, dynamic_cast<IJobCallback*>(job));
       }
     }
