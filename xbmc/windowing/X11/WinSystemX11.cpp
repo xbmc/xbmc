@@ -631,7 +631,7 @@ void CWinSystemX11::OnLostDevice()
       (*i)->OnLostDisplay();
   }
 
-  m_winEventsX11->SetXRRFailSafeTimer(3000);
+  m_winEventsX11->SetXRRFailSafeTimer(3s);
 }
 
 void CWinSystemX11::Register(IDispResource *resource)

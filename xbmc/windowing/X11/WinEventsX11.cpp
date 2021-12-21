@@ -269,12 +269,12 @@ bool CWinEventsX11::HasStructureChanged()
   return ret;
 }
 
-void CWinEventsX11::SetXRRFailSafeTimer(int millis)
+void CWinEventsX11::SetXRRFailSafeTimer(std::chrono::milliseconds duration)
 {
   if (!m_display)
     return;
 
-  m_xrrFailSafeTimer.Set(std::chrono::milliseconds(millis));
+  m_xrrFailSafeTimer.Set(duration);
   m_xrrEventPending = true;
 }
 
