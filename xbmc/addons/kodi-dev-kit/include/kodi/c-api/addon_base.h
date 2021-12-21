@@ -320,9 +320,6 @@ extern "C"
    */
   typedef struct AddonGlobalInterface
   {
-    // Master API version of Kodi itself (ADDON_GLOBAL_VERSION_MAIN)
-    const char* kodi_base_api_version;
-
     // Pointer of first created instance, used in case this add-on goes with single way
     // Set from Kodi!
     struct KODI_ADDON_INSTANCE_STRUCT* firstKodiInstance;

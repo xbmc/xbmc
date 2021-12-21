@@ -39,7 +39,6 @@ bool Interface_Base::InitInterface(CAddonDll* addon,
 {
   addonInterface = {};
 
-  addonInterface.kodi_base_api_version = strdup(kodi::addon::GetTypeVersion(ADDON_GLOBAL_MAIN));
   addonInterface.addonBase = nullptr;
   addonInterface.globalSingleInstance = nullptr;
   addonInterface.firstKodiInstance = firstKodiInstance;
@@ -93,9 +92,6 @@ void Interface_Base::DeInitInterface(AddonGlobalInterface& addonInterface)
   Interface_Filesystem::DeInit(&addonInterface);
   Interface_AudioEngine::DeInit(&addonInterface);
   Interface_General::DeInit(&addonInterface);
-
-  if (addonInterface.kodi_base_api_version)
-    free(const_cast<char*>(addonInterface.kodi_base_api_version));
 
   if (addonInterface.toKodi)
     delete addonInterface.toKodi->kodi_addon;
