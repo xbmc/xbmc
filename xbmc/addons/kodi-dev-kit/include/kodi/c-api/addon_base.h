@@ -234,17 +234,6 @@ extern "C"
   typedef void* KODI_HANDLE;
 
   /*!
-   * @brief Handle used to return data from the PVR add-on to CPVRClient
-   */
-  struct ADDON_HANDLE_STRUCT
-  {
-    void* callerAddress; /*!< address of the caller */
-    void* dataAddress; /*!< address to store data in */
-    int dataIdentifier; /*!< parameter to pass back when calling the callback */
-  };
-  typedef struct ADDON_HANDLE_STRUCT* ADDON_HANDLE;
-
-  /*!
    * @brief Callback function tables from addon to Kodi
    * Set complete from Kodi!
    */

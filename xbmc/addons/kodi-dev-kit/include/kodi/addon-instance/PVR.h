@@ -2910,7 +2910,7 @@ private:
   }
 
   inline static PVR_ERROR ADDON_GetChannels(const AddonInstance_PVR* instance,
-                                            ADDON_HANDLE handle,
+                                            PVR_HANDLE handle,
                                             bool radio)
   {
     PVRChannelsResultSet result(instance, handle);
@@ -2969,7 +2969,7 @@ private:
         ->GetProvidersAmount(*amount);
   }
 
-  inline static PVR_ERROR ADDON_GetProviders(const AddonInstance_PVR* instance, ADDON_HANDLE handle)
+  inline static PVR_ERROR ADDON_GetProviders(const AddonInstance_PVR* instance, PVR_HANDLE handle)
   {
     PVRProvidersResultSet result(instance, handle);
     return static_cast<CInstancePVRClient*>(instance->toAddon->addonInstance)->GetProviders(result);
@@ -2985,7 +2985,7 @@ private:
   }
 
   inline static PVR_ERROR ADDON_GetChannelGroups(const AddonInstance_PVR* instance,
-                                                 ADDON_HANDLE handle,
+                                                 PVR_HANDLE handle,
                                                  bool radio)
   {
     PVRChannelGroupsResultSet result(instance, handle);
@@ -2994,7 +2994,7 @@ private:
   }
 
   inline static PVR_ERROR ADDON_GetChannelGroupMembers(const AddonInstance_PVR* instance,
-                                                       ADDON_HANDLE handle,
+                                                       PVR_HANDLE handle,
                                                        const PVR_CHANNEL_GROUP* group)
   {
     PVRChannelGroupMembersResultSet result(instance, handle);
@@ -3049,7 +3049,7 @@ private:
   //--==----==----==----==----==----==----==----==----==----==----==----==----==
 
   inline static PVR_ERROR ADDON_GetEPGForChannel(const AddonInstance_PVR* instance,
-                                                 ADDON_HANDLE handle,
+                                                 PVR_HANDLE handle,
                                                  int channelUid,
                                                  time_t start,
                                                  time_t end)
@@ -3160,7 +3160,7 @@ private:
   }
 
   inline static PVR_ERROR ADDON_GetRecordings(const AddonInstance_PVR* instance,
-                                              ADDON_HANDLE handle,
+                                              PVR_HANDLE handle,
                                               bool deleted)
   {
     PVRRecordingsResultSet result(instance, handle);
@@ -3325,7 +3325,7 @@ private:
         ->GetTimersAmount(*amount);
   }
 
-  inline static PVR_ERROR ADDON_GetTimers(const AddonInstance_PVR* instance, ADDON_HANDLE handle)
+  inline static PVR_ERROR ADDON_GetTimers(const AddonInstance_PVR* instance, PVR_HANDLE handle)
   {
     PVRTimersResultSet result(instance, handle);
     return static_cast<CInstancePVRClient*>(instance->toAddon->addonInstance)->GetTimers(result);
