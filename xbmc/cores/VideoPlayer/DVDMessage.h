@@ -108,12 +108,12 @@ class CDVDMsgGeneralSynchronizePriv;
 class CDVDMsgGeneralSynchronize : public CDVDMsg
 {
 public:
-  CDVDMsgGeneralSynchronize(unsigned int timeout, unsigned int sources);
- ~CDVDMsgGeneralSynchronize() override;
+  CDVDMsgGeneralSynchronize(std::chrono::milliseconds timeout, unsigned int sources);
+  ~CDVDMsgGeneralSynchronize() override;
 
   // waits until all threads waiting, released the object
   // if abort is set somehow
-  bool Wait(unsigned int ms, unsigned int source);
+  bool Wait(std::chrono::milliseconds ms, unsigned int source);
   void Wait(std::atomic<bool>& abort, unsigned int source);
 
 private:
