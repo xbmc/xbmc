@@ -15,6 +15,8 @@
 
 #include <math.h>
 
+using namespace std::chrono_literals;
+
 CDVDMessageQueue::CDVDMessageQueue(const std::string &owner) : m_hEvent(true), m_owner(owner)
 {
   m_iDataSize     = 0;
@@ -296,7 +298,7 @@ void CDVDMessageQueue::WaitUntilEmpty()
   }
 
   CLog::Log(LOGINFO, "CDVDMessageQueue({})::WaitUntilEmpty", m_owner);
-  auto msg = std::make_shared<CDVDMsgGeneralSynchronize>(40000, SYNCSOURCE_ANY);
+  auto msg = std::make_shared<CDVDMsgGeneralSynchronize>(40s, SYNCSOURCE_ANY);
   Put(msg);
   msg->Wait(m_bAbortRequest, 0);
 

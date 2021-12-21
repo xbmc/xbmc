@@ -2425,7 +2425,7 @@ void CVideoPlayer::SynchronizeDemuxer()
   if(!m_messenger.IsInited())
     return;
 
-  auto message = std::make_shared<CDVDMsgGeneralSynchronize>(500, SYNCSOURCE_PLAYER);
+  auto message = std::make_shared<CDVDMsgGeneralSynchronize>(500ms, SYNCSOURCE_PLAYER);
   m_messenger.Put(message);
   message->Wait(m_bStop, 0);
 }
@@ -2981,7 +2981,7 @@ void CVideoPlayer::HandleMessages()
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_SYNCHRONIZE))
     {
-      if (std::static_pointer_cast<CDVDMsgGeneralSynchronize>(pMsg)->Wait(100, SYNCSOURCE_PLAYER))
+      if (std::static_pointer_cast<CDVDMsgGeneralSynchronize>(pMsg)->Wait(100ms, SYNCSOURCE_PLAYER))
         CLog::Log(LOGDEBUG, "CVideoPlayer - CDVDMsg::GENERAL_SYNCHRONIZE");
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_AVCHANGE))
@@ -3883,8 +3883,7 @@ void CVideoPlayer::FlushBuffers(double pts, bool accurate, bool sync)
       m_playSpeed == DVD_PLAYSPEED_PAUSE)
   {
     // make sure players are properly flushed, should put them in stalled state
-    auto msg =
-        std::make_shared<CDVDMsgGeneralSynchronize>(1000, SYNCSOURCE_AUDIO | SYNCSOURCE_VIDEO);
+    auto msg = std::make_shared<CDVDMsgGeneralSynchronize>(1s, SYNCSOURCE_AUDIO | SYNCSOURCE_VIDEO);
     m_VideoPlayerAudio->SendMessage(msg, 1);
     m_VideoPlayerVideo->SendMessage(msg, 1);
     msg->Wait(m_bStop, 0);

@@ -402,7 +402,7 @@ void CVideoPlayerVideo::Process()
 
     if (pMsg->IsType(CDVDMsg::GENERAL_SYNCHRONIZE))
     {
-      if (std::static_pointer_cast<CDVDMsgGeneralSynchronize>(pMsg)->Wait(100, SYNCSOURCE_VIDEO))
+      if (std::static_pointer_cast<CDVDMsgGeneralSynchronize>(pMsg)->Wait(100ms, SYNCSOURCE_VIDEO))
       {
         CLog::Log(LOGDEBUG, "CVideoPlayerVideo - CDVDMsg::GENERAL_SYNCHRONIZE");
       }
