@@ -666,7 +666,7 @@ void CRenderManager::RemoveCaptures()
       entry.second->GetEvent().Set();
     }
     CSingleExit lockexit(m_captCritSect);
-    KODI::TIME::Sleep(10);
+    KODI::TIME::Sleep(10ms);
   }
 
   for (auto entry : m_captures)

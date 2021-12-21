@@ -18,6 +18,8 @@
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
+using namespace std::chrono_literals;
+
 CAudioSinkAE::CAudioSinkAE(CDVDClock *clock) : m_pClock(clock)
 {
   m_pAudioStream = NULL;
@@ -144,7 +146,7 @@ unsigned int CAudioSinkAE::AddPackets(const DVDAudioFrame &audioframe)
     }
 
     lock.Leave();
-    KODI::TIME::Sleep(1);
+    KODI::TIME::Sleep(1ms);
     lock.Enter();
   } while (!m_bAbort);
 

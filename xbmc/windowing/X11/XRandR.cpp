@@ -214,7 +214,7 @@ bool CXRandR::TurnOnOutput(const std::string& name)
     if (output && output->h > 0)
       return true;
 
-    KODI::TIME::Sleep(200);
+    KODI::TIME::Sleep(200ms);
   }
 
   return false;

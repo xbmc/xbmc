@@ -17,6 +17,8 @@
 
 #include "platform/win32/WIN32Util.h"
 
+using namespace std::chrono_literals;
+
 void CWinSystemWin10DX::Register()
 {
   KODI::WINDOWING::CWindowSystemFactory::RegisterWindowSystem(CreateWinSystem);
@@ -47,7 +49,7 @@ void CWinSystemWin10DX::PresentRenderImpl(bool rendered)
   }
 
   if (!rendered)
-    KODI::TIME::Sleep(40);
+    KODI::TIME::Sleep(40ms);
 }
 
 bool CWinSystemWin10DX::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res)

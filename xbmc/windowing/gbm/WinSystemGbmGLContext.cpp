@@ -29,6 +29,8 @@
 
 using namespace KODI::WINDOWING::GBM;
 
+using namespace std::chrono_literals;
+
 CWinSystemGbmGLContext::CWinSystemGbmGLContext()
 : CWinSystemGbmEGLContext(EGL_PLATFORM_GBM_MESA, "EGL_MESA_platform_gbm")
 {}
@@ -136,7 +138,7 @@ void CWinSystemGbmGLContext::PresentRender(bool rendered, bool videoLayer)
   }
   else
   {
-    KODI::TIME::Sleep(10);
+    KODI::TIME::Sleep(10ms);
   }
 }
 

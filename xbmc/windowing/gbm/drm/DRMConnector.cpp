@@ -14,6 +14,8 @@
 
 using namespace KODI::WINDOWING::GBM;
 
+using namespace std::chrono_literals;
+
 namespace
 {
 
@@ -64,7 +66,7 @@ bool CDRMConnector::CheckConnector()
   {
     CLog::Log(LOGDEBUG, "CDRMConnector::{} - connector is disconnected", __FUNCTION__);
     retryCnt--;
-    KODI::TIME::Sleep(1000);
+    KODI::TIME::Sleep(1s);
 
     m_connector.reset(drmModeGetConnector(m_fd, m_connector->connector_id));
   }

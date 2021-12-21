@@ -45,6 +45,8 @@ using namespace XFILE;
 using namespace PLAYLIST;
 using namespace KODI::MESSAGING;
 
+using namespace std::chrono_literals;
+
 #define CONTROL_BTNSLIDESHOW   6
 #define CONTROL_BTNSLIDESHOW_RECURSIVE   7
 #define CONTROL_SHUFFLE      9
@@ -225,7 +227,7 @@ void CGUIWindowPictures::OnPrepareFileItems(CFileItemList& items)
         m_dlgProgress->Progress();
       }
     } // if (bShowProgress)
-    KODI::TIME::Sleep(1);
+    KODI::TIME::Sleep(1ms);
   } // while (loader.IsLoading())
 
   if (bProgressVisible && m_dlgProgress)

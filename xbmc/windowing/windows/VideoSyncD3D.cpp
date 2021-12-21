@@ -17,6 +17,8 @@
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
+using namespace std::chrono_literals;
+
 void CVideoSyncD3D::OnLostDisplay()
 {
   if (!m_displayLost)
@@ -102,7 +104,7 @@ void CVideoSyncD3D::Run(CEvent& stopEvent)
   m_lostEvent.Set();
   while (!stopEvent.Signaled() && m_displayLost && !m_displayReset)
   {
-    KODI::TIME::Sleep(10);
+    KODI::TIME::Sleep(10ms);
   }
 }
 

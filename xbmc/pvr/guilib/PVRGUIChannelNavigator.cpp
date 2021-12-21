@@ -24,6 +24,8 @@
 #include "utils/JobManager.h"
 #include "utils/XTimeUtils.h"
 
+using namespace std::chrono_literals;
+
 namespace
 {
 class CPVRChannelTimeoutJobBase : public CJob, public IJobCallback
@@ -51,7 +53,7 @@ public:
         OnTimeout();
         return true;
       }
-      KODI::TIME::Sleep(10);
+      KODI::TIME::Sleep(10ms);
     }
     return false;
   }

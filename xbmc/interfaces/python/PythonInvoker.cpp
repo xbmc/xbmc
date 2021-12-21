@@ -417,7 +417,7 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
 
       lock.Leave();
       CPyThreadState pyState;
-      KODI::TIME::Sleep(100);
+      KODI::TIME::Sleep(100ms);
       pyState.Restore();
       lock.Enter();
     }

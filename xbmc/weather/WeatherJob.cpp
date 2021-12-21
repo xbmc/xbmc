@@ -38,6 +38,8 @@
 
 using namespace ADDON;
 
+using namespace std::chrono_literals;
+
 CWeatherJob::CWeatherJob(int location)
 {
   m_location = location;
@@ -73,7 +75,7 @@ bool CWeatherJob::DoWork()
     {
       if (!CScriptInvocationManager::GetInstance().IsRunning(scriptId))
         break;
-      KODI::TIME::Sleep(100);
+      KODI::TIME::Sleep(100ms);
     }
 
     SetFromProperties();
