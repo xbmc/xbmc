@@ -2391,8 +2391,10 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
     }
   }
 
-  int timeout = (stream->m_syncState != CAESyncInfo::AESyncState::SYNC_INSYNC) ? 100 : stream->GetErrorInterval();
-  bool newerror = stream->m_syncError.Get(error, std::chrono::milliseconds(timeout));
+  std::chrono::milliseconds timeout = (stream->m_syncState != CAESyncInfo::AESyncState::SYNC_INSYNC)
+                                          ? 100ms
+                                          : stream->GetErrorInterval();
+  bool newerror = stream->m_syncError.Get(error, timeout);
 
   if (newerror && fabs(error) > threshold && stream->m_syncState == CAESyncInfo::AESyncState::SYNC_INSYNC)
   {
@@ -2548,7 +2550,7 @@ CSampleBuffer* CActiveAE::SyncStream(CActiveAEStream *stream)
     stream->m_processingBuffers->SetRR(1.0, m_settings.atempoThreshold);
   }
 
-  stream->m_syncError.SetErrorInterval(std::chrono::milliseconds(stream->GetErrorInterval()));
+  stream->m_syncError.SetErrorInterval(stream->GetErrorInterval());
 
   return ret;
 }
