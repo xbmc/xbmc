@@ -41,6 +41,8 @@
 using namespace XFILE;
 using namespace XCURL;
 
+using namespace std::chrono_literals;
+
 #define FITS_INT(a) (((a) <= INT_MAX) && ((a) >= INT_MIN))
 
 curl_proxytype proxyType2CUrlProxyType[] = {
@@ -1044,7 +1046,7 @@ void CCurlFile::Cancel()
 {
   m_state->m_cancelled = true;
   while (m_opened)
-    KODI::TIME::Sleep(1);
+    KODI::TIME::Sleep(1ms);
 }
 
 void CCurlFile::Reset()
@@ -1848,7 +1850,7 @@ int8_t CCurlFile::CReadState::FillBuffer(unsigned int want)
              * socket. Instead use Windows' Sleep() and sleep for 100ms which is the
              * minimum suggested value in the curl_multi_fdset() doc.
              */
-            KODI::TIME::Sleep(100);
+            KODI::TIME::Sleep(100ms);
             rc = 0;
 #else
             /* Portable sleep for platforms other than Windows. */

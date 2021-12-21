@@ -22,6 +22,8 @@
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
+using namespace std::chrono_literals;
+
 CRenderSystemGL::CRenderSystemGL() : CRenderSystemBase()
 {
 }
@@ -293,7 +295,7 @@ void CRenderSystemGL::PresentRender(bool rendered, bool videoLayer)
   PresentRenderImpl(rendered);
 
   if (!rendered)
-    KODI::TIME::Sleep(40);
+    KODI::TIME::Sleep(40ms);
 }
 
 void CRenderSystemGL::SetVSync(bool enable)

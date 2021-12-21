@@ -8,7 +8,9 @@
 
 #pragma once
 
+#include <chrono>
 #include <string>
+#include <thread>
 
 #if !defined(TARGET_WINDOWS)
 #include "PlatformDefs.h"
@@ -62,7 +64,17 @@ struct FileTime
 void GetLocalTime(SystemTime* systemTime);
 uint32_t GetTimeZoneInformation(TimeZoneInformation* timeZoneInformation);
 
-void Sleep(uint32_t milliSeconds);
+template<typename Rep, typename Period>
+void Sleep(std::chrono::duration<Rep, Period> duration)
+{
+  if (duration == std::chrono::duration<Rep, Period>::zero())
+  {
+    std::this_thread::yield();
+    return;
+  }
+
+  std::this_thread::sleep_for(duration);
+}
 
 int FileTimeToLocalFileTime(const FileTime* fileTime, FileTime* localFileTime);
 int SystemTimeToFileTime(const SystemTime* systemTime, FileTime* fileTime);

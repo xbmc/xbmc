@@ -2307,7 +2307,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
       if (!m_appPlayer.IsPlayingVideo() || m_appPlayer.IsPausedPlayback())
         max_sleep = 80;
       unsigned int sleepTime = std::max(static_cast<unsigned int>(2), std::min(m_ProcessedExternalCalls >> 2, max_sleep));
-      KODI::TIME::Sleep(sleepTime);
+      KODI::TIME::Sleep(std::chrono::milliseconds(sleepTime));
       m_frameMoveGuard.lock();
       m_ProcessedExternalDecay = 5;
     }
@@ -2476,7 +2476,7 @@ void CApplication::Stop(int exitCode)
     XbmcThreads::EndTime<> timer(1000ms);
     while (m_pAppPort.use_count() > 1)
     {
-      KODI::TIME::Sleep(100);
+      KODI::TIME::Sleep(100ms);
       if (timer.IsTimePast())
       {
         CLog::Log(LOGERROR, "CApplication::Stop - CAppPort still in use, app may crash");
@@ -2589,7 +2589,7 @@ void CApplication::Stop(int exitCode)
 
   cleanup_emu_environ();
 
-  KODI::TIME::Sleep(200);
+  KODI::TIME::Sleep(200ms);
 }
 
 bool CApplication::PlayMedia(CFileItem& item, const std::string &player, int iPlaylist)

@@ -146,7 +146,7 @@ namespace XBMCAddon
           long nextSleep = endTime.GetTimeLeft().count();
           if (nextSleep > 100)
             nextSleep = 100; // only sleep for 100 millis
-          KODI::TIME::Sleep(nextSleep);
+          KODI::TIME::Sleep(std::chrono::milliseconds(nextSleep));
         }
         if (lh != NULL)
           lh->MakePendingCalls();

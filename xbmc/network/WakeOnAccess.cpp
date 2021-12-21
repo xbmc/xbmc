@@ -50,6 +50,8 @@
 #define DEFAULT_WAIT_FOR_ONLINE_SEC_2 (40)   // same for extended wait
 #define DEFAULT_WAIT_FOR_SERVICES_SEC (5)    // wait 5 seconds after host go online to launch file sharing daemons
 
+using namespace std::chrono_literals;
+
 static CDateTime upnpInitReady;
 
 static int GetTotalSeconds(const CDateTimeSpan& ts)
@@ -126,7 +128,7 @@ static void AddMatchingUPnPServers(std::vector<UPnPServer>& list, const std::str
 {
 #ifdef HAS_UPNP
   while (CDateTime::GetCurrentDateTime() < upnpInitReady)
-    KODI::TIME::Sleep(1000);
+    KODI::TIME::Sleep(1s);
 
   PLT_SyncMediaBrowser* browser = UPNP::CUPnP::GetInstance()->m_MediaBrowser;
 
@@ -327,7 +329,7 @@ public:
         m_dialog->SetPercentage(std::max(percentage, 1)); // avoid flickering , keep minimum 1%
       }
 
-      KODI::TIME::Sleep(m_dialog ? 20 : 200);
+      KODI::TIME::Sleep(m_dialog ? 20ms : 200ms);
     }
 
     return TimedOut;
@@ -399,7 +401,7 @@ public:
 
       if (host.empty())
       {
-        KODI::TIME::Sleep(timeOutMs);
+        KODI::TIME::Sleep(std::chrono::milliseconds(timeOutMs));
 
         host = LookupUPnPHost(server.upnpUuid);
       }

@@ -75,7 +75,7 @@ int CXBApplicationEx::Run(const CAppParamParser &params)
       auto now = std::chrono::steady_clock::now();
       frameTime = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastFrameTime);
       if (frameTime.count() < noRenderFrameTime)
-        KODI::TIME::Sleep(noRenderFrameTime - frameTime.count());
+        KODI::TIME::Sleep(std::chrono::milliseconds(noRenderFrameTime - frameTime.count()));
     }
 
   }

@@ -25,6 +25,8 @@
 #include "utils/EGLUtils.h"
 #endif
 
+using namespace std::chrono_literals;
+
 CRenderSystemGLES::CRenderSystemGLES()
  : CRenderSystemBase()
 {
@@ -229,7 +231,7 @@ void CRenderSystemGLES::PresentRender(bool rendered, bool videoLayer)
 
   // if video is rendered to a separate layer, we should not block this thread
   if (!rendered && !videoLayer)
-    KODI::TIME::Sleep(40);
+    KODI::TIME::Sleep(40ms);
 }
 
 void CRenderSystemGLES::SetVSync(bool enable)

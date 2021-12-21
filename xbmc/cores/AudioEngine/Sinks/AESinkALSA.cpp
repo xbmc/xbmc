@@ -27,6 +27,8 @@
 
 #include <sys/utsname.h>
 
+using namespace std::chrono_literals;
+
 #define ALSA_OPTIONS (SND_PCM_NO_AUTO_FORMAT | SND_PCM_NO_AUTO_CHANNELS | SND_PCM_NO_AUTO_RESAMPLE)
 
 #define ALSA_MAX_CHANNELS 16
@@ -954,7 +956,7 @@ void CAESinkALSA::HandleError(const char* name, int err)
 
       /* try to resume the stream */
       while((err = snd_pcm_resume(m_pcm)) == -EAGAIN)
-        KODI::TIME::Sleep(1);
+        KODI::TIME::Sleep(1ms);
 
       /* if the hardware doesn't support resume, prepare the stream */
       if (err == -ENOSYS)

@@ -54,7 +54,7 @@ public:
         OnTimeout();
         return true;
       }
-      KODI::TIME::Sleep(10);
+      KODI::TIME::Sleep(10ms);
     }
     return false;
   }

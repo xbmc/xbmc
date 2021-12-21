@@ -478,7 +478,7 @@ void CNetworkBase::WaitForNet()
   for(int i=0; i < numMaxTries; ++i)
   {
     if (i > 0)
-      KODI::TIME::Sleep(intervalMs);
+      KODI::TIME::Sleep(std::chrono::milliseconds(intervalMs));
 
     if (IsConnected())
     {

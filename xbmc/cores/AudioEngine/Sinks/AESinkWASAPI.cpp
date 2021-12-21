@@ -966,7 +966,7 @@ void CAESinkWASAPI::Drain()
   AEDelayStatus status;
   GetDelay(status);
 
-  KODI::TIME::Sleep((DWORD)(status.GetDelay() * 500));
+  KODI::TIME::Sleep(std::chrono::milliseconds(static_cast<int>(status.GetDelay() * 500)));
 
   if (m_running)
   {

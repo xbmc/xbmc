@@ -41,6 +41,8 @@
 
 using KODI::PLATFORM::WINDOWS::FromW;
 
+using namespace std::chrono_literals;
+
 // User Mode Driver hooks definitions
 void APIENTRY HookCreateResource(D3D10DDI_HDEVICE hDevice, const D3D10DDIARG_CREATERESOURCE* pResource, D3D10DDI_HRESOURCE hResource, D3D10DDI_HRTRESOURCE hRtResource);
 HRESULT APIENTRY HookCreateDevice(D3D10DDI_HADAPTER hAdapter, D3D10DDIARG_CREATEDEVICE* pCreateData);
@@ -80,7 +82,7 @@ void CWinSystemWin32DX::PresentRenderImpl(bool rendered)
   }
 
   if (!rendered)
-    KODI::TIME::Sleep(40);
+    KODI::TIME::Sleep(40ms);
 }
 
 bool CWinSystemWin32DX::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res)

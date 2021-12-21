@@ -39,6 +39,7 @@
 
 using namespace XFILE;
 
+using namespace std::chrono_literals;
 
 static int read_blocks(void* handle, void* buf, int lba, int num_blocks)
 {
@@ -569,7 +570,7 @@ void CDVDInputStreamBluray::ProcessEvent() {
     break;
 
   case BD_EVENT_IDLE:
-    KODI::TIME::Sleep(100);
+    KODI::TIME::Sleep(100ms);
     break;
 
   case BD_EVENT_SOUND_EFFECT:

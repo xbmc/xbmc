@@ -21,6 +21,8 @@
 #include <sstream>
 #include <string>
 
+using namespace std::chrono_literals;
+
 namespace {
 #define X(VAL) std::make_pair(VAL, #VAL)
 //!@todo Remove ifdefs when sqlite version requirement has been bumped to at least 3.26.0
@@ -197,7 +199,7 @@ int callback(void* res_ptr,int ncol, char** result,char** cols)
 
 static int busy_callback(void*, int busyCount)
 {
-  KODI::TIME::Sleep(100);
+  KODI::TIME::Sleep(100ms);
   return 1;
 }
 

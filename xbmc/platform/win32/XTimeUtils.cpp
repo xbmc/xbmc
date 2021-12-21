@@ -46,11 +46,6 @@ void KodiTimeToSystemTime(const SystemTime& st, SYSTEMTIME& sst)
 }
 } // namespace
 
-void Sleep(uint32_t milliSeconds)
-{
-  ::Sleep(milliSeconds);
-}
-
 uint32_t GetTimeZoneInformation(TimeZoneInformation* timeZoneInformation)
 {
   if (!timeZoneInformation)
