@@ -213,6 +213,7 @@ extern "C"
 
   typedef struct KODI_ADDON_INSTANCE_FUNC_CB
   {
+    char* (*get_instance_user_path)(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl);
     bool (*is_instance_setting_using_default)(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
                                               const char* id);
 
