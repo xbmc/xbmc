@@ -74,7 +74,7 @@ public:
     return ((now - m_startTime) >= m_totalWaitTime);
   }
 
-  T MillisLeft() const
+  T GetTimeLeft() const
   {
     if (m_totalWaitTime == m_infinity)
       return m_infinity;

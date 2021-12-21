@@ -143,7 +143,7 @@ namespace XBMCAddon
         {
           DelayedCallGuard dcguard;
           lh = dcguard.getLanguageHook(); // borrow this
-          long nextSleep = endTime.MillisLeft().count();
+          long nextSleep = endTime.GetTimeLeft().count();
           if (nextSleep > 100)
             nextSleep = 100; // only sleep for 100 millis
           KODI::TIME::Sleep(nextSleep);

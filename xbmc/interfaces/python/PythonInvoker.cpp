@@ -523,7 +523,7 @@ bool CPythonInvoker::stop(bool abort)
     // Useful for add-on performance metrics
     if (!timeout.IsTimePast())
       CLog::Log(LOGDEBUG, "CPythonInvoker({}, {}): script termination took {}ms", GetId(),
-                m_sourceFile, (PYTHON_SCRIPT_TIMEOUT - timeout.MillisLeft()).count());
+                m_sourceFile, (PYTHON_SCRIPT_TIMEOUT - timeout.GetTimeLeft()).count());
 
     // Since we released the m_critical it's possible that the state is cleaned up
     // so we need to recheck for m_threadState == NULL

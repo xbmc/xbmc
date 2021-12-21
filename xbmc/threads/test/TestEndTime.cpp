@@ -21,12 +21,12 @@ void CommonTests(XbmcThreads::EndTime<>& endTime)
   EXPECT_LT(0ms, endTime.GetStartTime());
 
   EXPECT_FALSE(endTime.IsTimePast());
-  EXPECT_LT(0ms, endTime.MillisLeft());
+  EXPECT_LT(0ms, endTime.GetTimeLeft());
 
   std::this_thread::sleep_for(100ms);
 
   EXPECT_TRUE(endTime.IsTimePast());
-  EXPECT_EQ(0ms, endTime.MillisLeft());
+  EXPECT_EQ(0ms, endTime.GetTimeLeft());
 
   endTime.SetInfinite();
   EXPECT_EQ(std::chrono::milliseconds::max(), endTime.GetInitialTimeoutValue());

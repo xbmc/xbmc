@@ -452,7 +452,7 @@ void CActiveAEStream::Drain(bool wait)
     else if (!wait)
       return;
 
-    m_inMsgEvent.Wait(timer.MillisLeft());
+    m_inMsgEvent.Wait(timer.GetTimeLeft());
   }
   CLog::Log(LOGERROR, "CActiveAEStream::Drain - timeout out");
 }

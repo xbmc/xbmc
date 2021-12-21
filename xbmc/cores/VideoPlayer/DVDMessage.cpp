@@ -60,7 +60,7 @@ bool CDVDMsgGeneralSynchronize::Wait(unsigned int milliseconds, unsigned int sou
 
   while (m_p->reached != m_p->sources)
   {
-    milliseconds = std::min(m_p->timeout.MillisLeft().count(), timeout.MillisLeft().count());
+    milliseconds = std::min(m_p->timeout.GetTimeLeft().count(), timeout.GetTimeLeft().count());
     if (m_p->condition.wait(lock, std::chrono::milliseconds(milliseconds)))
       continue;
 

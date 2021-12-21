@@ -1858,7 +1858,7 @@ int8_t CCurlFile::CReadState::FillBuffer(unsigned int want)
           }
           else
           {
-            unsigned int time_left = endTime.MillisLeft().count();
+            unsigned int time_left = endTime.GetTimeLeft().count();
             struct timeval wait = { (int)time_left / 1000, ((int)time_left % 1000) * 1000 };
             rc = select(maxfd + 1, &fdread, &fdwrite, &fdexcep, &wait);
           }
