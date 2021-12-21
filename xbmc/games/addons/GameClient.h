@@ -53,7 +53,9 @@ public:
     info->kodi = this;
     info->parent = nullptr;
     info->first_instance = true;
+    info->functions = new KODI_ADDON_INSTANCE_FUNC_CB();
     m_ifc.info = info;
+    m_ifc.functions = new KODI_ADDON_INSTANCE_FUNC();
 
     m_ifc.game = new AddonInstance_Game;
     m_ifc.game->props = new AddonProps_Game();
@@ -63,6 +65,10 @@ public:
 
   ~CGameClientStruct()
   {
+    delete m_ifc.functions;
+    if (m_ifc.info)
+      delete m_ifc.info->functions;
+    delete m_ifc.info;
     if (m_ifc.game)
     {
       delete m_ifc.game->toAddon;

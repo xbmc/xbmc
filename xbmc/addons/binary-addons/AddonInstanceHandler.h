@@ -14,6 +14,8 @@
 
 #include <memory>
 
+class CSetting;
+
 namespace ADDON
 {
 
@@ -52,6 +54,35 @@ protected:
   KODI_ADDON_INSTANCE_STRUCT m_ifc{};
 
 private:
+  std::shared_ptr<CSetting> GetSetting(const std::string& setting);
+
+  static bool is_instance_setting_using_default(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                                const char* id);
+  static bool get_instance_setting_bool(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                        const char* id,
+                                        bool* value);
+  static bool get_instance_setting_int(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                       const char* id,
+                                       int* value);
+  static bool get_instance_setting_float(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                         const char* id,
+                                         float* value);
+  static bool get_instance_setting_string(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                          const char* id,
+                                          char** value);
+  static bool set_instance_setting_bool(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                        const char* id,
+                                        bool value);
+  static bool set_instance_setting_int(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                       const char* id,
+                                       int value);
+  static bool set_instance_setting_float(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                         const char* id,
+                                         float value);
+  static bool set_instance_setting_string(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                          const char* id,
+                                          const char* value);
+
   ADDON_TYPE m_type;
   std::string m_instanceId;
   KODI_HANDLE m_parentInstance;

@@ -194,6 +194,55 @@ extern "C"
   ///@}
   //----------------------------------------------------------------------------
 
+  typedef enum ADDON_STATUS(ATTR_APIENTRYP PFN_KODI_ADDON_INSTANCE_SETTING_CHANGE_STRING_V1)(
+      const KODI_ADDON_INSTANCE_HDL hdl, const char* name, const char* value);
+  typedef enum ADDON_STATUS(ATTR_APIENTRYP PFN_KODI_ADDON_INSTANCE_SETTING_CHANGE_BOOLEAN_V1)(
+      const KODI_ADDON_INSTANCE_HDL hdl, const char* name, bool value);
+  typedef enum ADDON_STATUS(ATTR_APIENTRYP PFN_KODI_ADDON_INSTANCE_SETTING_CHANGE_INTEGER_V1)(
+      const KODI_ADDON_INSTANCE_HDL hdl, const char* name, int value);
+  typedef enum ADDON_STATUS(ATTR_APIENTRYP PFN_KODI_ADDON_INSTANCE_SETTING_CHANGE_FLOAT_V1)(
+      const KODI_ADDON_INSTANCE_HDL hdl, const char* name, float value);
+
+  typedef struct KODI_ADDON_INSTANCE_FUNC
+  {
+    PFN_KODI_ADDON_INSTANCE_SETTING_CHANGE_STRING_V1 instance_setting_change_string;
+    PFN_KODI_ADDON_INSTANCE_SETTING_CHANGE_BOOLEAN_V1 instance_setting_change_boolean;
+    PFN_KODI_ADDON_INSTANCE_SETTING_CHANGE_INTEGER_V1 instance_setting_change_integer;
+    PFN_KODI_ADDON_INSTANCE_SETTING_CHANGE_FLOAT_V1 instance_setting_change_float;
+  } KODI_ADDON_INSTANCE_FUNC;
+
+  typedef struct KODI_ADDON_INSTANCE_FUNC_CB
+  {
+    bool (*is_instance_setting_using_default)(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                              const char* id);
+
+    bool (*get_instance_setting_bool)(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                      const char* id,
+                                      bool* value);
+    bool (*get_instance_setting_int)(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                     const char* id,
+                                     int* value);
+    bool (*get_instance_setting_float)(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                       const char* id,
+                                       float* value);
+    bool (*get_instance_setting_string)(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                        const char* id,
+                                        char** value);
+
+    bool (*set_instance_setting_bool)(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                      const char* id,
+                                      bool value);
+    bool (*set_instance_setting_int)(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                     const char* id,
+                                     int value);
+    bool (*set_instance_setting_float)(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                       const char* id,
+                                       float value);
+    bool (*set_instance_setting_string)(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                        const char* id,
+                                        const char* value);
+  } KODI_ADDON_INSTANCE_FUNC_CB;
+
   typedef int KODI_ADDON_INSTANCE_TYPE;
 
   struct KODI_ADDON_INSTANCE_INFO
@@ -214,6 +263,7 @@ extern "C"
     const KODI_ADDON_INSTANCE_INFO* info;
 
     KODI_ADDON_INSTANCE_HDL hdl;
+    struct KODI_ADDON_INSTANCE_FUNC* functions;
     union {
       KODI_ADDON_FUNC_DUMMY dummy;
       struct AddonInstance_AudioDecoder* audiodecoder;
