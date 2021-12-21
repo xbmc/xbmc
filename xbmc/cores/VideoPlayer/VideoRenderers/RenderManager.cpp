@@ -260,9 +260,9 @@ void CRenderManager::ShowVideo(bool enable)
     DiscardBuffer();
 }
 
-void CRenderManager::FrameWait(int ms)
+void CRenderManager::FrameWait(std::chrono::milliseconds duration)
 {
-  XbmcThreads::EndTime<> timeout{std::chrono::milliseconds(ms)};
+  XbmcThreads::EndTime<> timeout{duration};
   CSingleLock lock(m_presentlock);
   while(m_presentstep == PRESENT_IDLE && !timeout.IsTimePast())
     m_presentevent.wait(lock, timeout.GetTimeLeft());
@@ -297,7 +297,7 @@ void CRenderManager::FrameMove()
         return;
 
       firstFrame = true;
-      FrameWait(50);
+      FrameWait(50ms);
     }
 
     CheckEnableClockSync();
