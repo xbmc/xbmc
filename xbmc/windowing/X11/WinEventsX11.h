@@ -34,7 +34,7 @@ public:
   void Quit();
   bool HasStructureChanged();
   void PendingResize(int width, int height);
-  void SetXRRFailSafeTimer(int millis);
+  void SetXRRFailSafeTimer(std::chrono::milliseconds duration);
 
 protected:
   XBMCKey LookupXbmcKeySym(KeySym keysym);
