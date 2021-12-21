@@ -221,12 +221,6 @@ bool CPVRChannelGroupInternal::IsGroupMember(const std::shared_ptr<CPVRChannel>&
   return !channel->IsHidden();
 }
 
-void CPVRChannelGroupInternal::CreateChannelEpg(const std::shared_ptr<CPVRChannel>& channel)
-{
-  if (channel)
-    channel->CreateEPG();
-}
-
 bool CPVRChannelGroupInternal::CreateChannelEpgs(bool bForce /* = false */)
 {
   if (!CServiceBroker::GetPVRManager().EpgContainer().IsStarted())
@@ -235,7 +229,7 @@ bool CPVRChannelGroupInternal::CreateChannelEpgs(bool bForce /* = false */)
   {
     CSingleLock lock(m_critSection);
     for (auto& groupMemberPair : m_members)
-      CreateChannelEpg(groupMemberPair.second->Channel());
+      groupMemberPair.second->Channel()->CreateEPG();
   }
 
   return Persist();
