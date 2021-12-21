@@ -23,9 +23,10 @@
 using namespace KODI::MESSAGING;
 using namespace std::chrono_literals;
 
-CGUIDialogCache::CGUIDialogCache(DWORD dwDelay, const std::string& strHeader, const std::string& strMsg) : CThread("GUIDialogCache"),
-  m_strHeader(strHeader),
-  m_strLinePrev(strMsg)
+CGUIDialogCache::CGUIDialogCache(std::chrono::milliseconds delay,
+                                 const std::string& strHeader,
+                                 const std::string& strMsg)
+  : CThread("GUIDialogCache"), m_strHeader(strHeader), m_strLinePrev(strMsg)
 {
   bSentCancel = false;
 
@@ -36,12 +37,12 @@ CGUIDialogCache::CGUIDialogCache(DWORD dwDelay, const std::string& strHeader, co
 
   /* if progress dialog is already running, take it over */
   if( m_pDlg->IsDialogRunning() )
-    dwDelay = 0;
+    delay = 0ms;
 
-  if(dwDelay == 0)
+  if (delay == 0ms)
     OpenDialog();
   else
-    m_endtime.Set(std::chrono::milliseconds(static_cast<unsigned int>(dwDelay)));
+    m_endtime.Set(delay);
 
   Create(true);
 }
