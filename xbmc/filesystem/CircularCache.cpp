@@ -181,18 +181,18 @@ int CCircularCache::ReadFromCache(char *buf, size_t len)
  * Note that caller needs to make sure there's sufficient space in the forward
  * buffer for "minimum" bytes else we may block the full timeout time
  */
-int64_t CCircularCache::WaitForData(uint32_t minimum, uint32_t millis)
+int64_t CCircularCache::WaitForData(uint32_t minimum, std::chrono::milliseconds timeout)
 {
   CSingleLock lock(m_sync);
   int64_t avail = m_end - m_cur;
 
-  if(millis == 0 || IsEndOfInput())
+  if (timeout == 0ms || IsEndOfInput())
     return avail;
 
   if(minimum > m_size - m_size_back)
     minimum = m_size - m_size_back;
 
-  XbmcThreads::EndTime<> endtime{std::chrono::milliseconds(millis)};
+  XbmcThreads::EndTime<> endtime{timeout};
   while (!IsEndOfInput() && avail < minimum && !endtime.IsTimePast() )
   {
     lock.Leave();
@@ -219,7 +219,7 @@ int64_t CCircularCache::Seek(int64_t pos)
     m_cur = m_end;
 
     lock.Leave();
-    WaitForData((size_t)(pos - m_cur), 5000);
+    WaitForData((size_t)(pos - m_cur), 5s);
     lock.Enter();
 
     if (pos < m_beg || pos > m_end)
