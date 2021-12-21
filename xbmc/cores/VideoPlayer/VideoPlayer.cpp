@@ -853,7 +853,7 @@ bool CVideoPlayer::OpenDemuxStream()
   int64_t len = m_pInputStream->GetLength();
   int64_t tim = m_pDemuxer->GetStreamLength();
   if (len > 0 && tim > 0)
-    m_pInputStream->SetReadRate((unsigned int) (len * 1000 / tim));
+    m_pInputStream->SetReadRate(static_cast<uint32_t>(len * 1000 / tim));
 
   m_offset_pts = 0;
 
@@ -1743,9 +1743,9 @@ bool CVideoPlayer::GetCachingTimes(double& level, double& delay, double& offset)
     return false;
 
   const uint64_t& cached = status.forward;
-  const unsigned& currate = status.currate;
-  const unsigned& maxrate = status.maxrate;
-  const unsigned& lowrate = status.lowrate;
+  const uint32_t& currate = status.currate;
+  const uint32_t& maxrate = status.maxrate;
+  const uint32_t& lowrate = status.lowrate;
 
   int64_t length = m_pInputStream->GetLength();
   int64_t remain = length - m_pInputStream->Seek(0, SEEK_CUR);

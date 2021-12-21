@@ -95,7 +95,7 @@ extern "C"
                                                struct VFS_CACHE_STATUS_DATA* status);
     bool(__cdecl* io_control_set_cache_rate)(const struct AddonInstance_VFSEntry* instance,
                                              VFS_FILE_HANDLE context,
-                                             unsigned int rate);
+                                             uint32_t rate);
     bool(__cdecl* io_control_set_retry)(const struct AddonInstance_VFSEntry* instance,
                                         VFS_FILE_HANDLE context,
                                         bool retry);

@@ -23,7 +23,7 @@ public:
   int64_t GetLength() override;
   BitstreamStats GetBitstreamStats() const override ;
   int GetBlockSize() override;
-  void SetReadRate(unsigned rate) override;
+  void SetReadRate(uint32_t rate) override;
   bool GetCacheStatus(XFILE::SCacheStatus *status) override;
 
 protected:
