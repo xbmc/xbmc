@@ -1,0 +1,48 @@
+name: Doxygen Action
+
+on:
+  push:
+    branches: [ master, main, Matrix, Leia ]
+
+jobs:
+  build:
+    if: github.repository == 'xbmc/xbmc'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.2
+        with:
+          fetch-depth: 0
+
+      - name: Extract branch name
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+
+      - name: Set target dirs
+        run: |
+             mkdir ./build
+             sed -i 's/.*HTML_OUTPUT.*=.*/HTML_OUTPUT = ..\/..\/..\/..\/build\/kodi-dev-kit/' ./xbmc/addons/kodi-dev-kit/doxygen/Doxyfile
+             sed -i 's/.*HTML_OUTPUT.*=.*/HTML_OUTPUT = ..\/build\/kodi-base/' ./docs/doxygen/Doxyfile.doxy
+
+      - name: Doxygen Action kodi-dev-kit
+        uses: mattnotmitt/doxygen-action@v1.1.0
+        with:
+          doxyfile-path: "./Doxyfile"
+          working-directory: "./xbmc/addons/kodi-dev-kit/doxygen"
+
+      - name: Doxygen Action Kodi Base
+        uses: mattnotmitt/doxygen-action@v1.1.0
+        with:
+          doxyfile-path: "./Doxyfile.doxy"
+          working-directory: "./docs/doxygen"
+
+      - name: Deploy docs
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          deploy_key: ${{ secrets.DOC_ACTIONS_DEPLOY_KEY }}
+          external_repository: xbmc/docs.kodi.tv
+          publish_branch: main
+          destination_dir: ${{ steps.extract_branch.outputs.branch }}
+          publish_dir: "./build"
