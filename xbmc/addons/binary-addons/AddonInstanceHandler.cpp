@@ -93,7 +93,7 @@ ADDON_STATUS IAddonInstanceHandler::CreateInstance()
   {
     CLog::Log(LOGERROR,
               "IAddonInstanceHandler::{}: {} returned bad status \"{}\" during instance creation",
-              __FUNCTION__, m_addon->ID(), kodi::TranslateAddonStatus(status));
+              __func__, m_addon->ID(), kodi::addon::TranslateAddonStatus(status));
   }
   return status;
 }

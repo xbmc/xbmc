@@ -40,121 +40,6 @@ namespace kodi
 
 //==============================================================================
 /// \ingroup cpp_kodi
-/// @brief Returns the value of an addon property as a string
-///
-/// @param[in] id id of the property that the module needs to access
-/// |              | Choices are  |              |
-/// |:------------:|:------------:|:------------:|
-/// |  author      | icon         | stars        |
-/// |  changelog   | id           | summary      |
-/// |  description | name         | type         |
-/// |  disclaimer  | path         | version      |
-/// |  fanart      | profile      |              |
-///
-/// @return AddOn property as a string
-///
-///
-/// ------------------------------------------------------------------------
-///
-/// **Example:**
-/// ~~~~~~~~~~~~~{.cpp}
-/// #include <kodi/General.h>
-/// ...
-/// std::string addonName = kodi::GetAddonInfo("name");
-/// ...
-/// ~~~~~~~~~~~~~
-///
-inline std::string ATTR_DLL_LOCAL GetAddonInfo(const std::string& id)
-{
-  using namespace kodi::addon;
-
-  AddonToKodiFuncTable_Addon* toKodi = CPrivateBase::m_interface->toKodi;
-
-  std::string strReturn;
-  char* strMsg = toKodi->kodi->get_addon_info(toKodi->kodiBase, id.c_str());
-  if (strMsg != nullptr)
-  {
-    if (std::strlen(strMsg))
-      strReturn = strMsg;
-    toKodi->free_string(toKodi->kodiBase, strMsg);
-  }
-  return strReturn;
-}
-//------------------------------------------------------------------------------
-
-//==============================================================================
-/// \ingroup cpp_kodi
-/// @brief Opens this Add-Ons settings dialog.
-///
-/// @return true if settings were changed and the dialog confirmed, false otherwise.
-///
-///
-/// --------------------------------------------------------------------------
-///
-/// **Example:**
-/// ~~~~~~~~~~~~~{.cpp}
-/// #include <kodi/General.h>
-/// ..
-/// kodi::OpenSettings();
-/// ..
-/// ~~~~~~~~~~~~~
-///
-inline bool ATTR_DLL_LOCAL OpenSettings()
-{
-  using namespace kodi::addon;
-  return CPrivateBase::m_interface->toKodi->kodi->open_settings_dialog(
-      CPrivateBase::m_interface->toKodi->kodiBase);
-}
-//------------------------------------------------------------------------------
-
-//==============================================================================
-/// \ingroup cpp_kodi
-/// @brief Returns an addon's localized 'unicode string'.
-///
-/// @param[in] labelId    string you want to localize
-/// @param[in] defaultStr [opt] The default message, also helps to identify
-///                       the code that is used <em>(default is
-///                       <b><c>empty</c></b>)</em>
-/// @return               The localized message, or default if the add-on
-///                       helper fails to return a message
-///
-/// @note Label id's \b 30000 to \b 30999 and \b 32000 to \b 32999 are related
-/// to the add-on's own included strings from
-/// <b>./resources/language/resource.language.??_??/strings.po</b>
-/// All other strings are from Kodi core language files.
-///
-///
-/// ------------------------------------------------------------------------
-///
-/// **Example:**
-/// ~~~~~~~~~~~~~{.cpp}
-/// #include <kodi/General.h>
-/// ...
-/// std::string str = kodi::GetLocalizedString(30005, "Use me as default");
-/// ...
-/// ~~~~~~~~~~~~~
-///
-inline std::string ATTR_DLL_LOCAL GetLocalizedString(uint32_t labelId,
-                                                     const std::string& defaultStr = "")
-{
-  using namespace kodi::addon;
-
-  std::string retString = defaultStr;
-  char* strMsg = CPrivateBase::m_interface->toKodi->kodi->get_localized_string(
-      CPrivateBase::m_interface->toKodi->kodiBase, labelId);
-  if (strMsg != nullptr)
-  {
-    if (std::strlen(strMsg))
-      retString = strMsg;
-    CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase,
-                                                   strMsg);
-  }
-  return retString;
-}
-//------------------------------------------------------------------------------
-
-//==============================================================================
-/// \ingroup cpp_kodi
 /// @brief Translate a string with an unknown encoding to UTF8.
 ///
 /// @param[in]  stringSrc       The string to translate.
@@ -422,39 +307,6 @@ inline std::string ATTR_DLL_LOCAL GetMD5(const std::string& text)
 
 //==============================================================================
 /// \ingroup cpp_kodi
-/// @brief To get a temporary path for the addon
-///
-/// This gives a temporary path which the addon can use individually for its things.
-///
-/// The content of this folder will be deleted when Kodi is finished!
-///
-/// @param[in] append A string to append to returned temporary path
-/// @return Individual path for the addon
-///
-inline std::string ATTR_DLL_LOCAL GetTempAddonPath(const std::string& append = "")
-{
-  using namespace kodi::addon;
-
-  char* str = CPrivateBase::m_interface->toKodi->kodi->get_temp_path(
-      CPrivateBase::m_interface->toKodi->kodiBase);
-  std::string ret = str;
-  CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase, str);
-  if (!append.empty())
-  {
-    if (append.at(0) != '\\' && append.at(0) != '/')
-#ifdef TARGET_WINDOWS
-      ret.append("\\");
-#else
-      ret.append("/");
-#endif
-    ret.append(append);
-  }
-  return ret;
-}
-//------------------------------------------------------------------------------
-
-//==============================================================================
-/// \ingroup cpp_kodi
 /// @brief Returns your regions setting as a string for the specified id
 ///
 /// @param[in] id id of setting to return
@@ -594,6 +446,7 @@ inline std::string ATTR_DLL_LOCAL GetCurrentSkinId()
 //------------------------------------------------------------------------------
 
 //==============================================================================
+/// \ingroup cpp_kodi
 /// @brief To check another addon is available and usable inside Kodi.
 ///
 /// @param[in] id The wanted addon identification string to check

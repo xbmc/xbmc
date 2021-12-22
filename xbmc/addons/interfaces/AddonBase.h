@@ -51,10 +51,15 @@ struct Interface_Base
    * class.
    */
   //@{
+  static void addon_log_msg(void* kodiBase, const int addonLogLevel, const char* strMessage);
   static char* get_type_version(void* kodiBase, int type);
   static char* get_addon_path(void* kodiBase);
-  static char* get_base_user_path(void* kodiBase);
-  static void addon_log_msg(void* kodiBase, const int addonLogLevel, const char* strMessage);
+  static char* get_lib_path(void* kodiBase);
+  static char* get_user_path(void* kodiBase);
+  static char* get_temp_path(void* kodiBase);
+  static char* get_localized_string(void* kodiBase, long label_id);
+  static char* get_addon_info(void* kodiBase, const char* id);
+  static bool open_settings_dialog(void* kodiBase);
   static bool is_setting_using_default(void* kodiBase, const char* id);
   static bool get_setting_bool(void* kodiBase, const char* id, bool* value);
   static bool get_setting_int(void* kodiBase, const char* id, int* value);
