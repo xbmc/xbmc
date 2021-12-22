@@ -233,24 +233,17 @@ extern "C"
   /*! @brief Standard undefined pointer handle */
   typedef void* KODI_HANDLE;
 
-  /*!
-   * @brief Callback function tables from addon to Kodi
-   * Set complete from Kodi!
-   */
-  typedef struct AddonToKodiFuncTable_Addon
+  typedef struct AddonToKodiFuncTable_kodi_addon
   {
-    // Pointer inside Kodi, used on callback functions to give related handle
-    // class, for this ADDON::CAddonDll inside Kodi.
-    KODI_HANDLE kodiBase;
-
-    // Function addresses used for callbacks from addon to Kodi
-    char* (*get_type_version)(void* kodiBase, int type);
-
-    void (*free_string)(void* kodiBase, char* str);
-    void (*free_string_array)(void* kodiBase, char** arr, int numElements);
     char* (*get_addon_path)(void* kodiBase);
-    char* (*get_base_user_path)(void* kodiBase);
-    void (*addon_log_msg)(void* kodiBase, const int loglevel, const char* msg);
+    char* (*get_lib_path)(void* kodiBase);
+    char* (*get_user_path)(void* kodiBase);
+    char* (*get_temp_path)(void* kodiBase);
+
+    char* (*get_localized_string)(void* kodiBase, long label_id);
+
+    bool (*open_settings_dialog)(void* kodiBase);
+    bool (*is_setting_using_default)(void* kodiBase, const char* id);
 
     bool (*get_setting_bool)(void* kodiBase, const char* id, bool* value);
     bool (*get_setting_int)(void* kodiBase, const char* id, int* value);
@@ -262,16 +255,32 @@ extern "C"
     bool (*set_setting_float)(void* kodiBase, const char* id, float value);
     bool (*set_setting_string)(void* kodiBase, const char* id, const char* value);
 
+    char* (*get_addon_info)(void* kodiBase, const char* id);
+
+    char* (*get_type_version)(void* kodiBase, int type);
     void* (*get_interface)(void* kodiBase, const char* name, const char* version);
+  } AddonToKodiFuncTable_kodi_addon;
+
+  /*!
+   * @brief Callback function tables from addon to Kodi
+   * Set complete from Kodi!
+   */
+  typedef struct AddonToKodiFuncTable_Addon
+  {
+    // Pointer inside Kodi, used on callback functions to give related handle
+    // class, for this ADDON::CAddonDll inside Kodi.
+    KODI_HANDLE kodiBase;
+
+    void (*free_string)(void* kodiBase, char* str);
+    void (*free_string_array)(void* kodiBase, char** arr, int numElements);
+    void (*addon_log_msg)(void* kodiBase, const int loglevel, const char* msg);
 
     struct AddonToKodiFuncTable_kodi* kodi;
+    struct AddonToKodiFuncTable_kodi_addon* kodi_addon;
     struct AddonToKodiFuncTable_kodi_audioengine* kodi_audioengine;
     struct AddonToKodiFuncTable_kodi_filesystem* kodi_filesystem;
     struct AddonToKodiFuncTable_kodi_gui* kodi_gui;
     struct AddonToKodiFuncTable_kodi_network* kodi_network;
-
-    // Move up by min version change about
-    bool (*is_setting_using_default)(void* kodiBase, const char* id);
   } AddonToKodiFuncTable_Addon;
 
   typedef ADDON_STATUS(ATTR_APIENTRYP PFN_KODI_ADDON_CREATE_V1)(
@@ -311,10 +320,6 @@ extern "C"
    */
   typedef struct AddonGlobalInterface
   {
-    // String with full path where add-on is installed (without his name on end)
-    // Set from Kodi!
-    const char* libBasePath;
-
     // Master API version of Kodi itself (ADDON_GLOBAL_VERSION_MAIN)
     const char* kodi_base_api_version;
 

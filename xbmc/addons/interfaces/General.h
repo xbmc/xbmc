@@ -41,9 +41,6 @@ struct Interface_General
    * class.
    */
   //@{
-  static char* get_addon_info(void* kodiBase, const char* id);
-  static bool open_settings_dialog(void* kodiBase);
-  static char* get_localized_string(void* kodiBase, long label_id);
   static char* unknown_to_utf8(void* kodiBase, const char* source, bool* ret, bool failOnBadChar);
   static char* get_language(void* kodiBase, int format, bool region);
   static bool queue_notification(void* kodiBase,
@@ -55,7 +52,6 @@ struct Interface_General
                                  bool withSound,
                                  unsigned int messageTime);
   static void get_md5(void* kodiBase, const char* text, char* md5);
-  static char* get_temp_path(void* kodiBase);
   static char* get_region(void* kodiBase, const char* id);
   static void get_free_mem(void* kodiInstance, long* free, long* total, bool as_bytes);
   static int get_global_idle_time(void* kodiBase);
