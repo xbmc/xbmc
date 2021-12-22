@@ -182,10 +182,10 @@ void TranslateEscapeChars(std::string& text)
     // U+200E for "&lrm;" and U+200F for "&rlm;"
     // but libass rendering assume the text as left-to-right,
     // to display text in the right order we have to use embedded codes
-    StringUtils::Replace(text, "&lrm;", u8"\u202a");
-    StringUtils::Replace(text, "&rlm;", u8"\u202b");
-    StringUtils::Replace(text, "&#x2068;", u8"\u2068");
-    StringUtils::Replace(text, "&#x2069;", u8"\u2069");
+    StringUtils::Replace(text, "&lrm;", "\u202a");
+    StringUtils::Replace(text, "&rlm;", "\u202b");
+    StringUtils::Replace(text, "&#x2068;", "\u2068");
+    StringUtils::Replace(text, "&#x2069;", "\u2069");
     StringUtils::Replace(text, "&amp;", "&");
     StringUtils::Replace(text, "&lt;", "<");
     StringUtils::Replace(text, "&gt;", ">");
