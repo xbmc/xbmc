@@ -9,8 +9,11 @@
 #pragma once
 
 #include "AEAudioFormat.h"
-#include "PlatformDefs.h"
+
+#include <atomic>
 #include <math.h>
+
+#include "PlatformDefs.h"
 
 extern "C" {
 #include <libavutil/channel_layout.h>
@@ -55,12 +58,12 @@ class CAESpinSection
 {
 public:
   void enter() { m_enter++; }
-  void leave() { m_leave = m_enter; }
+  void leave() { m_leave.store(m_enter); }
 
 protected:
   friend class CAESpinLock;
-  volatile unsigned int m_enter = 0;
-  volatile unsigned int m_leave = 0;
+  std::atomic_uint32_t m_enter = 0;
+  std::atomic_uint32_t m_leave = 0;
 };
 
 class CAESpinLock
