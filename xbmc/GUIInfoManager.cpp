@@ -5201,7 +5201,7 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     values include:
 ///       - <b>"Daylight"</b>
 ///       - <b>"Fluorescent"</b>
-///       - <b>"Incandescent</b>
+///       - <b>"Incandescent"</b>
 ///       - etc
 ///     @note This is the value of the EXIF LightSource tag (hex code 0x9208).
 ///     <p><hr>
