@@ -4,7 +4,7 @@
 	<include>16x9_xPos_Relocation</include>
 	<include>Window_OpenClose_Animation_Zoom</include>
 	<coordinates>
-		<posx>280</posx>
+		<posx>80</posx>
 		<posy>90</posy>
 	</coordinates>
 	<controls>
@@ -12,14 +12,14 @@
 		<control type="image">
 			<posx>0</posx>
 			<posy>0</posy>
-			<width>720</width>
+			<width>1120</width>
 			<height>60</height>
 			<texture border="5">dialog_header.png</texture>
 		</control>
 		<control type="image">
 			<posx>0</posx>
 			<posy>60</posy>
-			<width>720</width>
+			<width>1120</width>
 			<height>720</height>
 			<texture>dialog_back.png</texture>
 		</control>
@@ -28,25 +28,25 @@
 			<posx>20</posx>
 			<posy>0</posy>
 			<include>WindowTitleCommons</include>
-			<width>600</width>
+			<width>1000</width>
 			<label>$LOCALIZE[1036]</label>
 		</control>
 		<control type="group">
-			<posx>650</posx>
+			<posx>1050</posx>
 			<posy>0</posy>
 			<include>DialogCloseButtonCommons</include>
 		</control>
 		<control type="image">
 			<posx>0</posx>
 			<posy>60</posy>
-			<width>670</width>
+			<width>1070</width>
 			<height>720</height>
 			<texture colordiffuse="40000000">panel.png</texture>
 		</control>
-		<control type="list" id="450">
-			<posx>0</posx>
+		<control type="panel" id="450">
+			<posx>1</posx>
 			<posy>60</posy>
-			<width>670</width>
+			<width>1068</width>
 			<height>720</height>
 			<onup>450</onup>
 			<onleft>450</onleft>
@@ -54,58 +54,79 @@
 			<ondown>450</ondown>
 			<pagecontrol>60</pagecontrol>
 			<scrolltime>200</scrolltime>
-			<itemlayout width="670" height="80">
-				<control type="label">
-					<posx>20</posx>
-					<posy>0</posy>
-					<width>570</width>
-					<height>80</height>
+			<itemlayout width="267" height="360">
+				<control type="image">
+					<posx>10</posx>
+					<posy>10</posy>
+					<width>247</width>
+					<height>340</height>
+					<texture colordiffuse="50000000">black.png</texture>
+				</control>
+				<control type="image">
+					<posx>10</posx>
+					<posy>10</posy>
+					<width>247</width>
+					<height>277</height>
+					<aspectratio align="center">keep</aspectratio>
+					<texture>$INFO[ListItem.Icon]</texture>
+				</control>
+				<control type="image">
+					<posx>10</posx>
+					<posy>287</posy>
+					<width>247</width>
+					<height>63</height>
+					<texture colordiffuse="50000000">black.png</texture>
+				</control>
+				<control type="textbox">
+					<posx>10</posx>
+					<posy>287</posy>
+					<width>247</width>
+					<height>63</height>
 					<font>font20</font>
-					<align>left</align>
+					<align>center</align>
 					<aligny>center</aligny>
 					<selectedcolor>selected</selectedcolor>
 					<label>$INFO[ListItem.Label]</label>
-				</control>
-				<control type="image">
-					<posx>595</posx>
-					<posy>5</posy>
-					<width>70</width>
-					<height>70</height>
-					<aspectratio align="right">keep</aspectratio>
-					<texture>$INFO[ListItem.Icon]</texture>
 				</control>
 			</itemlayout>
-			<focusedlayout width="670" height="80">
+			<focusedlayout width="267" height="360">
 				<control type="image">
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>670</width>
-					<height>80</height>
+					<posx>10</posx>
+					<posy>10</posy>
+					<width>247</width>
+					<height>340</height>
 					<texture>list_focus.png</texture>
 				</control>
-				<control type="label">
-					<posx>20</posx>
-					<posy>0</posy>
-					<width>570</width>
-					<height>80</height>
+				<control type="image">
+					<posx>10</posx>
+					<posy>10</posy>
+					<width>247</width>
+					<height>277</height>
+					<aspectratio align="center">keep</aspectratio>
+					<texture>$INFO[ListItem.Icon]</texture>
+				</control>
+				<control type="image">
+					<posx>10</posx>
+					<posy>287</posy>
+					<width>247</width>
+					<height>63</height>
+					<texture colordiffuse="50000000">black.png</texture>
+				</control>
+				<control type="textbox">
+					<posx>10</posx>
+					<posy>287</posy>
+					<width>247</width>
+					<height>63</height>
 					<font>font20</font>
-					<align>left</align>
+					<align>center</align>
 					<aligny>center</aligny>
 					<selectedcolor>selected</selectedcolor>
 					<label>$INFO[ListItem.Label]</label>
-				</control>
-				<control type="image">
-					<posx>595</posx>
-					<posy>5</posy>
-					<width>70</width>
-					<height>70</height>
-					<aspectratio align="right">keep</aspectratio>
-					<texture>$INFO[ListItem.Icon]</texture>
 				</control>
 			</focusedlayout>
 		</control>
 		<control type="scrollbar" id="60">
-			<posx>682</posx>
+			<posx>1082</posx>
 			<posy>90</posy>
 			<width>26</width>
 			<height>660</height>
