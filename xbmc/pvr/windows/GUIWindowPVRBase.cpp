@@ -459,7 +459,9 @@ bool CGUIWindowPVRBase::InitChannelGroup()
       CServiceBroker::GetPVRManager().PlaybackState()->SetActiveChannelGroup(group);
     else
       CLog::LogF(LOGERROR, "Found no {} channel group with path '{}'!", m_bRadio ? "radio" : "TV",
-                 m_vecItems->GetPath());
+                 m_channelGroupPath);
+
+    m_channelGroupPath.clear();
   }
 
   if (group)
