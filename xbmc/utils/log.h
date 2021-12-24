@@ -107,70 +107,15 @@ public:
     Log(level, format, std::forward<Args>(args)...);
   }
 
-  template<typename... Args>
-  static inline void LogFunction(int level,
-                                 const char* functionName,
-                                 const char* format,
-                                 Args&&... args)
-  {
-    LogFunction(MapLogLevel(level), functionName, format, std::forward<Args>(args)...);
-  }
-
-  template<typename... Args>
-  static inline void LogFunction(
-      int level, const char* functionName, uint32_t component, const char* format, Args&&... args)
-  {
-    if (!GetInstance().CanLogComponent(component))
-      return;
-
-    LogFunction(level, functionName, format, std::forward<Args>(args)...);
-  }
-
-  template<typename... Args>
-  static inline void LogFunction(spdlog::level::level_enum level,
-                                 const char* functionName,
-                                 const char* format,
-                                 Args&&... args)
-  {
-    if (functionName == nullptr || strlen(functionName) == 0)
-      GetInstance().FormatAndLogInternal(level, format, std::forward<Args>(args)...);
-    else
-      GetInstance().FormatAndLogFunctionInternal(level, functionName, format,
-                                                 std::forward<Args>(args)...);
-  }
-
-  template<typename... Args>
-  static inline void LogFunction(spdlog::level::level_enum level,
-                                 const char* functionName,
-                                 uint32_t component,
-                                 const char* format,
-                                 Args&&... args)
-  {
-    if (!GetInstance().CanLogComponent(component))
-      return;
-
-    LogFunction(level, functionName, format, std::forward<Args>(args)...);
-  }
-
-#define LogF(level, format, ...) LogFunction((level), __FUNCTION__, (format), ##__VA_ARGS__)
+#define LogF(level, format, ...) \
+  Log((level), ("{}: " DEF_TO_STR_VALUE(format)), __FUNCTION__, ##__VA_ARGS__)
 #define LogFC(level, component, format, ...) \
-  LogFunction((level), __FUNCTION__, (component), (format), ##__VA_ARGS__)
+  Log((level), (component), ("{}: " DEF_TO_STR_VALUE(format)), __FUNCTION__, ##__VA_ARGS__)
 
 private:
   static CLog& GetInstance();
 
   static spdlog::level::level_enum MapLogLevel(int level);
-
-  template<typename... Args>
-  static inline void FormatAndLogFunctionInternal(spdlog::level::level_enum level,
-                                                  const char* functionName,
-                                                  const char* format,
-                                                  Args&&... args)
-  {
-    GetInstance().FormatAndLogInternal(level,
-                                       StringUtils::Format("{0:s}: {1:s}", functionName, format),
-                                       std::forward<Args>(args)...);
-  }
 
   template<typename... Args>
   inline void FormatAndLogInternal(spdlog::level::level_enum level,
