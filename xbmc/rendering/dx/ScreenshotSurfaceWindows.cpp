@@ -102,7 +102,7 @@ bool CScreenshotSurfaceWindows::Capture()
       pImdContext->Unmap(pCopyTexture.Get(), 0);
     }
     else
-      CLog::LogFunction(LOGERROR, __FUNCTION__, "MAP_READ failed.");
+      CLog::LogF(LOGERROR, "MAP_READ failed.");
   }
 
   return m_buffer != nullptr;

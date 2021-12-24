@@ -808,8 +808,8 @@ PVR_ERROR CPVRClients::ForCreatedClients(const char* strFunctionName,
 
     if (currentError != PVR_ERROR_NO_ERROR && currentError != PVR_ERROR_NOT_IMPLEMENTED)
     {
-      CLog::LogFunction(LOGERROR, strFunctionName, "PVR client '{}' returned an error: {}",
-                        clientEntry.second->GetFriendlyName(), CPVRClient::ToString(currentError));
+      CLog::Log(LOGERROR, "{}: PVR client '{}' returned an error: {}", strFunctionName,
+                clientEntry.second->GetFriendlyName(), CPVRClient::ToString(currentError));
       lastError = currentError;
       failedClients.emplace_back(clientEntry.first);
     }

@@ -248,7 +248,7 @@ void CContext::Release(CDecoder* decoder)
 
 void CContext::Close()
 {
-  CLog::LogFunction(LOGINFO, "DXVA", "closing decoder context.");
+  CLog::Log(LOGINFO, "DXVA: closing decoder context.");
   DestroyContext();
 }
 
@@ -377,14 +377,14 @@ void CContext::QueryCaps()
   {
     if (FAILED(m_pD3D11Device->GetVideoDecoderProfile(i, &m_input_list[i])))
     {
-      CLog::LogFunction(LOGINFO, "DXVA", "failed getting video decoder profile");
+      CLog::Log(LOGINFO, "DXVA: failed getting video decoder profile");
       return;
     }
     const dxva2_mode_t* mode = dxva2_find_mode(&m_input_list[i]);
     if (mode)
-      CLog::LogFunction(LOGDEBUG, "DXVA", "supports '{}'", mode->name);
+      CLog::Log(LOGDEBUG, "DXVA: supports '{}'", mode->name);
     else
-      CLog::LogFunction(LOGDEBUG, "DXVA", "supports {}", GUIDToString(m_input_list[i]));
+      CLog::Log(LOGDEBUG, "DXVA: supports {}", GUIDToString(m_input_list[i]));
   }
 }
 
@@ -422,13 +422,12 @@ bool CContext::GetFormatAndConfig(AVCodecContext* avctx, D3D11_VIDEO_DECODER_DES
           }
         }
       if (!supported)
-        CLog::LogFunction(LOGDEBUG, "DXVA", "Unsupported profile {} for {}.", avctx->profile,
-                          mode.name);
+        CLog::Log(LOGDEBUG, "DXVA: Unsupported profile {} for {}.", avctx->profile, mode.name);
     }
     if (!supported)
       continue;
 
-    CLog::LogFunction(LOGDEBUG, "DXVA", "trying '{}'.", mode.name);
+    CLog::Log(LOGDEBUG, "DXVA: trying '{}'.", mode.name);
     for (unsigned j = 0; render_targets_dxgi[j]; ++j)
     {
       bool bHighBits = (avctx->codec_id == AV_CODEC_ID_HEVC && (avctx->sw_pix_fmt == AV_PIX_FMT_YUV420P10 || avctx->profile == FF_PROFILE_HEVC_MAIN_10))
@@ -440,8 +439,8 @@ bool CContext::GetFormatAndConfig(AVCodecContext* avctx, D3D11_VIDEO_DECODER_DES
       HRESULT res = m_pD3D11Device->CheckVideoDecoderFormat(mode.guid, render_targets_dxgi[j], &format_supported);
       if (FAILED(res) || !format_supported)
       {
-        CLog::LogFunction(LOGINFO, "DXVA", "Output format {} is not supported by '{}'",
-                          render_targets_dxgi[j], mode.name);
+        CLog::Log(LOGINFO, "DXVA: Output format {} is not supported by '{}'",
+                  render_targets_dxgi[j], mode.name);
         continue;
       }
 
@@ -491,9 +490,9 @@ bool CContext::GetConfig(const D3D11_VIDEO_DECODER_DESC &format, D3D11_VIDEO_DEC
       return false;
     }
 
-    CLog::LogFunction(
-        LOGDEBUG, "DXVA", "config {}: bitstream type {}{}.", i, pConfig.ConfigBitstreamRaw,
-        IsEqualGUID(pConfig.guidConfigBitstreamEncryption, DXVA_NoEncrypt) ? "" : ", encrypted");
+    CLog::Log(LOGDEBUG, "DXVA: config {}: bitstream type {}{}.", i, pConfig.ConfigBitstreamRaw,
+              IsEqualGUID(pConfig.guidConfigBitstreamEncryption, DXVA_NoEncrypt) ? ""
+                                                                                 : ", encrypted");
 
     // select first available
     if (config.ConfigBitstreamRaw == 0 && pConfig.ConfigBitstreamRaw != 0)
@@ -505,7 +504,7 @@ bool CContext::GetConfig(const D3D11_VIDEO_DECODER_DESC &format, D3D11_VIDEO_DEC
 
   if (!config.ConfigBitstreamRaw)
   {
-    CLog::LogFunction(LOGDEBUG, "DXVA", "failed to find a raw input bitstream.");
+    CLog::Log(LOGDEBUG, "DXVA: failed to find a raw input bitstream.");
     return false;
   }
 
@@ -540,8 +539,7 @@ bool CContext::CreateSurfaces(const D3D11_VIDEO_DECODER_DESC& format, uint32_t c
     texDesc.MiscFlags |= D3D11_RESOURCE_MISC_SHARED;
   }
 
-  CLog::LogFunction(LOGDEBUG, "DXVA", "allocating {} surfaces with format {}.", count,
-                    format.OutputFormat);
+  CLog::Log(LOGDEBUG, "DXVA: allocating {} surfaces with format {}.", count, format.OutputFormat);
 
   ComPtr<ID3D11Texture2D> texture;
   if (FAILED(pD3DDevice->CreateTexture2D(&texDesc, NULL, texture.GetAddressOf())))
@@ -1092,9 +1090,9 @@ static bool CheckCompatibility(AVCodecContext* avctx)
   // Macroblock width incompatibility
   if (HasVP3WidthBug(avctx))
   {
-    CLog::LogFunction(LOGWARNING, "DXVA",
-                      "width {} is not supported with nVidia VP3 hardware. DXVA will not be used.",
-                      avctx->coded_width);
+    CLog::Log(LOGWARNING,
+              "DXVA: width {} is not supported with nVidia VP3 hardware. DXVA will not be used.",
+              avctx->coded_width);
     return false;
   }
 
@@ -1111,8 +1109,8 @@ static bool CheckCompatibility(AVCodecContext* avctx)
 
   if (checkcompat && !CheckH264L41(avctx))
   {
-      CLog::LogFunction(LOGWARNING, "DXVA", "compatibility check: video exceeds L4.1. DXVA will not be used.");
-      return false;
+    CLog::Log(LOGWARNING, "DXVA: compatibility check: video exceeds L4.1. DXVA will not be used.");
+    return false;
   }
 
   return true;
@@ -1132,28 +1130,28 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, enum AVPixel
 
   if (m_state == DXVA_LOST)
   {
-    CLog::LogFunction(LOGDEBUG, "DXVA", "device is in lost state, we can't start.");
+    CLog::Log(LOGDEBUG, "DXVA: device is in lost state, we can't start.");
     return false;
   }
 
-  CLog::LogFunction(LOGDEBUG, "DXVA", "open decoder.");
+  CLog::Log(LOGDEBUG, "DXVA: open decoder.");
   m_dxvaContext = CContext::EnsureContext(this);
   if (!m_dxvaContext)
     return false;
 
   if (!m_dxvaContext->GetFormatAndConfig(avctx, m_format, *m_avD3D11Context->cfg))
   {
-    CLog::LogFunction(LOGDEBUG, "DXVA", "unable to find an input/output format combination.");
+    CLog::Log(LOGDEBUG, "DXVA: unable to find an input/output format combination.");
     return false;
   }
 
-  CLog::LogFunction(LOGDEBUG, "DXVA", "selected output format: {}.", m_format.OutputFormat);
-  CLog::LogFunction(LOGDEBUG, "DXVA", "source requires {} references.", avctx->refs);
+  CLog::Log(LOGDEBUG, "DXVA: selected output format: {}.", m_format.OutputFormat);
+  CLog::Log(LOGDEBUG, "DXVA: source requires {} references.", avctx->refs);
   if (m_format.Guid == DXVADDI_Intel_ModeH264_E && avctx->refs > 11)
   {
     const dxva2_mode_t* mode = dxva2_find_mode(&m_format.Guid);
-    CLog::LogFunction(LOGWARNING, "DXVA", "too many references {} for selected decoder '{}'.",
-                      avctx->refs, mode->name);
+    CLog::Log(LOGWARNING, "DXVA: too many references {} for selected decoder '{}'.", avctx->refs,
+              mode->name);
     return false;
   }
 
@@ -1242,7 +1240,9 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, enum AVPixel
 #ifdef FF_DXVA2_WORKAROUND_INTEL_CLEARVIDEO
     m_avD3D11Context->workaround |= FF_DXVA2_WORKAROUND_INTEL_CLEARVIDEO;
 #else
-    CLog::LogFunction(LOGWARNING, "DXVA", "used Intel ClearVideo decoder, but no support workaround for it in libavcodec.");
+    CLog::Log(
+        LOGWARNING,
+        "DXVA: used Intel ClearVideo decoder, but no support workaround for it in libavcodec.");
 #endif
   }
   else if (ad.VendorId == PCIV_ATI && IsL41LimitedATI())
@@ -1250,7 +1250,8 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, enum AVPixel
 #ifdef FF_DXVA2_WORKAROUND_SCALING_LIST_ZIGZAG
     m_avD3D11Context->workaround |= FF_DXVA2_WORKAROUND_SCALING_LIST_ZIGZAG;
 #else
-    CLog::LogFunction(LOGWARNING, "DXVA", "video card with different scaling list zigzag order detected, but no support in libavcodec.");
+    CLog::Log(LOGWARNING, "DXVA: video card with different scaling list zigzag order detected, but "
+                          "no support in libavcodec.");
 #endif
   }
 
@@ -1279,14 +1280,14 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
       m_videoBuffer = reinterpret_cast<CVideoBuffer*>(m_bufferPool->Get());
       if (!m_videoBuffer)
       {
-        CLog::LogFunction(ERROR, "DXVA", "ran out of buffers.");
+        CLog::Log(LOGERROR, "DXVA: ran out of buffers.");
         return CDVDVideoCodec::VC_ERROR;
       }
       m_videoBuffer->SetRef(frame);
       m_videoBuffer->Initialize(this);
       return CDVDVideoCodec::VC_PICTURE;
     }
-    CLog::LogFunction(LOGWARNING, "DXVA", "ignoring invalid surface.");
+    CLog::Log(LOGWARNING, "DXVA: ignoring invalid surface.");
     return CDVDVideoCodec::VC_BUFFER;
   }
 
@@ -1405,21 +1406,21 @@ CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
   HRESULT hr;
   if (FAILED(hr = m_pD3D11Context->DecoderExtension(m_pD3D11Decoder.Get(), &data)))
   {
-    CLog::LogFunction(LOGWARNING, "DXVA", "failed to get decoder status - {:#08X}.", hr);
+    CLog::Log(LOGWARNING, "DXVA: failed to get decoder status - {:#08X}.", hr);
     return CDVDVideoCodec::VC_ERROR;
   }
 
   if (avctx->codec_id == AV_CODEC_ID_H264)
   {
     if (status.h264.bStatus)
-      CLog::LogFunction(LOGWARNING, "DXVA", "decoder problem of status {} with {}.",
-                        status.h264.bStatus, status.h264.bBufType);
+      CLog::Log(LOGWARNING, "DXVA: decoder problem of status {} with {}.", status.h264.bStatus,
+                status.h264.bBufType);
   }
   else
   {
     if (status.vc1.bStatus)
-      CLog::LogFunction(LOGWARNING, "DXVA", "decoder problem of status {} with {}.",
-                        status.vc1.bStatus, status.vc1.bBufType);
+      CLog::Log(LOGWARNING, "DXVA: decoder problem of status {} with {}.", status.vc1.bStatus,
+                status.vc1.bBufType);
   }
 #endif
   return CDVDVideoCodec::VC_NONE;

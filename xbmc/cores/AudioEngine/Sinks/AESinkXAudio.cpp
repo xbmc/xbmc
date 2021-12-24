@@ -79,7 +79,7 @@ CAESinkXAudio::CAESinkXAudio() :
   HRESULT hr = XAudio2Create(m_xAudio2.ReleaseAndGetAddressOf(), 0);
   if (FAILED(hr))
   {
-    CLog::LogFunction(LOGERROR, __FUNCTION__, "XAudio initialization failed.");
+    CLog::LogF(LOGERROR, "XAudio initialization failed.");
   }
 #ifdef  _DEBUG
   else
