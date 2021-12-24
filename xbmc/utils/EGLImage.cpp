@@ -309,9 +309,8 @@ bool CEGLImage::SupportsFormatAndModifier(uint32_t format, uint64_t modifier)
     return true;
   }
 
-  CLog::Log(LOGERROR, "CEGLImage::{} - modifier ({:#x}) not supported for format ({})",
-            __FUNCTION__, DRMHELPERS::ModifierToString(modifier),
-            DRMHELPERS::FourCCToString(format));
+  CLog::Log(LOGERROR, "CEGLImage::{} - modifier ({}) not supported for format ({})", __FUNCTION__,
+            DRMHELPERS::ModifierToString(modifier), DRMHELPERS::FourCCToString(format));
 
   return false;
 }
