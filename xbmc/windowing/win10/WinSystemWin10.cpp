@@ -58,12 +58,8 @@ CWinSystemWin10::CWinSystemWin10()
 
   AE::CAESinkFactory::ClearSinks();
   CAESinkXAudio::Register();
+  CAESinkWASAPI::Register();
   CScreenshotSurfaceWindows::Register();
-
-  if (CSysInfo::GetWindowsDeviceFamily() == CSysInfo::WindowsDeviceFamily::Desktop)
-  {
-    CAESinkWASAPI::Register();
-  }
 }
 
 CWinSystemWin10::~CWinSystemWin10()
