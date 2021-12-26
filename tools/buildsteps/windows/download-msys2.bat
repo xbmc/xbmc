@@ -26,7 +26,7 @@ PUSHD %~dp0\..\..\..
 SET WORKSPACE=%CD%
 POPD
 
-set msysver=20161025
+set msysver=20210725
 set msys2=msys64
 set instdir=%WORKSPACE%\project\BuildDependencies
 set msyspackages=diffutils gcc make patch perl tar yasm
