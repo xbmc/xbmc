@@ -11,6 +11,7 @@
 #include "guilib/GUIMessage.h"
 #include "messaging/IMessageTarget.h"
 #include "threads/SingleLock.h"
+#include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
 #include <memory>
@@ -242,12 +243,14 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
   CSingleLock lock(m_critSection);
   int mask = pMsg->dwMessage & TMSG_MASK_MESSAGE;
 
-  auto target = m_mapTargets.at(mask);
-  if (target != nullptr)
+  const auto it = m_mapTargets.find(mask);
+  if (it != m_mapTargets.end())
   {
     CSingleExit exit(m_critSection);
-    target->OnApplicationMessage(pMsg);
+    it->second->OnApplicationMessage(pMsg);
   }
+  else
+    CLog::LogF(LOGERROR, "receiver {} is not defined", mask);
 }
 
 void CApplicationMessenger::ProcessWindowMessages()
