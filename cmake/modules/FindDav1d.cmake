@@ -24,19 +24,26 @@ set(DAV1D_VERSION ${PC_DAV1D_VERSION})
 if(ENABLE_INTERNAL_DAV1D)
   include(ExternalProject)
 
-  # Extract version
-  file(STRINGS ${CMAKE_SOURCE_DIR}/tools/depends/target/dav1d/DAV1D-VERSION VER)
+  # Parse DAV1D-VERSION
+  set(DAV1D_FILE "${CMAKE_SOURCE_DIR}/tools/depends/target/dav1d/DAV1D-VERSION")
 
-  string(REGEX MATCH "VERSION=[^ ]*$.*" DAV1D_VER "${VER}")
-  list(GET DAV1D_VER 0 DAV1D_VER)
-  string(SUBSTRING "${DAV1D_VER}" 8 -1 DAV1D_VER)
+  file(STRINGS ${DAV1D_FILE} DAV1D_LNAME REGEX "^[ \t]*LIBNAME=")
+  file(STRINGS ${DAV1D_FILE} DAV1D_VER REGEX "^[ \t]*VERSION=")
+  file(STRINGS ${DAV1D_FILE} DAV1D_ARCHIVE REGEX "^[ \t]*ARCHIVE=")
+
+  string(REGEX REPLACE ".*LIBNAME=([^ \t]*).*" "\\1" DAV1D_LNAME "${DAV1D_LNAME}")
+  string(REGEX REPLACE ".*VERSION=([^ \t]*).*" "\\1" DAV1D_VER "${DAV1D_VER}")
+  string(REGEX REPLACE ".*ARCHIVE=([^ \t]*).*" "\\1" DAV1D_ARCHIVE "${DAV1D_ARCHIVE}")
+
+  string(REGEX REPLACE "\\$\\(LIBNAME\\)" "${DAV1D_LNAME}" DAV1D_ARCHIVE "${DAV1D_ARCHIVE}")
+  string(REGEX REPLACE "\\$\\(VERSION\\)" "${DAV1D_VER}" DAV1D_ARCHIVE "${DAV1D_ARCHIVE}")
 
   # allow user to override the download URL with a local tarball
   # needed for offline build envs
   if(DAV1D_URL)
     get_filename_component(DAV1D_URL "${DAV1D_URL}" ABSOLUTE)
   else()
-    set(DAV1D_URL http://mirrors.kodi.tv/build-deps/sources/dav1d-${DAV1D_VER}.tar.gz)
+    set(DAV1D_URL http://mirrors.kodi.tv/build-deps/sources/${DAV1D_ARCHIVE})
   endif()
 
   if(VERBOSE)
@@ -49,7 +56,7 @@ if(ENABLE_INTERNAL_DAV1D)
 
   externalproject_add(dav1d
                       URL ${DAV1D_URL}
-                      DOWNLOAD_NAME dav1d-${DAV1D_VER}.tar.gz
+                      DOWNLOAD_NAME ${DAV1D_ARCHIVE}
                       DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
                       PREFIX ${CORE_BUILD_DIR}/dav1d
                       CONFIGURE_COMMAND meson
