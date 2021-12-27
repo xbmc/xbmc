@@ -1739,7 +1739,7 @@ inline std::string ATTR_DLL_LOCAL TranslateAddonStatus(ADDON_STATUS status)
 ///
 /// ~~~~~~~~~~~~~
 ///
-inline void ATTR_DLL_LOCAL Log(const AddonLog loglevel, const char* format, ...)
+inline void ATTR_DLL_LOCAL Log(const ADDON_LOG loglevel, const char* format, ...)
 {
   using namespace kodi::addon;
 

@@ -157,7 +157,7 @@ extern "C"
   //----------------------------------------------------------------------------
 
   //============================================================================
-  /// @defgroup cpp_kodi_Defs_AddonLog enum AddonLog
+  /// @defgroup cpp_kodi_Defs_ADDON_LOG enum ADDON_LOG
   /// @ingroup cpp_kodi_Defs
   /// @brief **Log file type definitions**\n
   /// These define the types of log entries given with @ref kodi::Log() to Kodi.
@@ -173,7 +173,7 @@ extern "C"
   /// ~~~~~~~~~~~~~
   ///
   ///@{
-  typedef enum AddonLog
+  typedef enum ADDON_LOG
   {
     /// @brief **0** : To include debug information in the log file.
     ADDON_LOG_DEBUG = 0,
@@ -190,7 +190,7 @@ extern "C"
     /// @brief **4** : To notify fatal unrecoverable errors, which can may also indicate
     /// upcoming crashes.
     ADDON_LOG_FATAL = 4
-  } AddonLog;
+  } ADDON_LOG;
   ///@}
   //----------------------------------------------------------------------------
 
