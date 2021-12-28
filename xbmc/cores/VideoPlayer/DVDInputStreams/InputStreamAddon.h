@@ -111,7 +111,6 @@ private:
 
   int m_streamCount = 0;
 
-  AddonInstance_InputStream m_struct;
   std::shared_ptr<CInputStreamProvider> m_subAddonProvider;
 
   /*!

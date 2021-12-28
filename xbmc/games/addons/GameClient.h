@@ -46,19 +46,33 @@ public:
   CGameClientStruct()
   {
     // Create "C" interface structures, used as own parts to prevent API problems on update
-    m_struct.props = new AddonProps_Game();
-    m_struct.toKodi = new AddonToKodiFuncTable_Game();
-    m_struct.toAddon = new KodiToAddonFuncTable_Game();
+    KODI_ADDON_INSTANCE_INFO* info = new KODI_ADDON_INSTANCE_INFO();
+    info->id = "";
+    info->version = kodi::addon::GetTypeVersion(ADDON_INSTANCE_GAME);
+    info->type = ADDON_INSTANCE_GAME;
+    info->kodi = this;
+    info->parent = nullptr;
+    info->first_instance = true;
+    m_ifc.info = info;
+
+    m_ifc.game = new AddonInstance_Game;
+    m_ifc.game->props = new AddonProps_Game();
+    m_ifc.game->toKodi = new AddonToKodiFuncTable_Game();
+    m_ifc.game->toAddon = new KodiToAddonFuncTable_Game();
   }
 
   ~CGameClientStruct()
   {
-    delete m_struct.toAddon;
-    delete m_struct.toKodi;
-    delete m_struct.props;
+    if (m_ifc.game)
+    {
+      delete m_ifc.game->toAddon;
+      delete m_ifc.game->toKodi;
+      delete m_ifc.game->props;
+      delete m_ifc.game;
+    }
   }
 
-  AddonInstance_Game m_struct;
+  KODI_ADDON_INSTANCE_STRUCT m_ifc;
 };
 
 /*!
@@ -148,7 +162,7 @@ public:
    * @todo This function becomes removed after old callback library system
    * is removed.
    */
-  AddonInstance_Game* GetInstanceInterface() { return &m_struct; }
+  AddonInstance_Game* GetInstanceInterface() { return m_ifc.game; }
 
   // Helper functions
   bool LogError(GAME_ERROR error, const char* strMethod) const;

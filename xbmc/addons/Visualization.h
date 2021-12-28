@@ -46,8 +46,6 @@ private:
   std::string m_profilePath; /*!< To add-on sended profile path */
   std::vector<std::string> m_presets; /*!< cached preset list */
 
-  AddonInstance_Visualization m_struct; /*!< Interface table who contains function addresses and fixed values */
-
   // Static function to transfer data from add-on to kodi
   static void transfer_preset(void* kodiInstance, const char* preset);
   static void clear_presets(void* kodiInstance);

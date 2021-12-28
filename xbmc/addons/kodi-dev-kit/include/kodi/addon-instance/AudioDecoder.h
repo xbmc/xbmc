@@ -360,7 +360,7 @@ private:
 /// class CMyAudioDecoder : public kodi::addon::CInstanceAudioDecoder
 /// {
 /// public:
-///   CMyAudioDecoder(KODI_HANDLE instance, const std::string& version);
+///   CMyAudioDecoder(const kodi::addon::IInstanceInfo& instance);
 ///
 ///   bool Init(const std::string& filename, unsigned int filecache,
 ///             int& channels, int& samplerate,
@@ -370,8 +370,8 @@ private:
 ///   int ReadPCM(uint8_t* buffer, int size, int& actualsize) override;
 /// };
 ///
-/// CMyAudioDecoder::CMyAudioDecoder(KODI_HANDLE instance, const std::string& version)
-///   : kodi::addon::CInstanceAudioDecoder(instance, version)
+/// CMyAudioDecoder::CMyAudioDecoder(const kodi::addon::IInstanceInfo& instance)
+///   : kodi::addon::CInstanceAudioDecoder(instance)
 /// {
 ///   ...
 /// }
@@ -398,26 +398,20 @@ private:
 /// class CMyAddon : public kodi::addon::CAddonBase
 /// {
 /// public:
-///   CMyAddon() { }
-///   ADDON_STATUS CreateInstance(int instanceType,
-///                               const std::string& instanceID,
-///                               KODI_HANDLE instance,
-///                               const std::string& version,
-///                               KODI_HANDLE& addonInstance) override;
+///   CMyAddon() = default;
+///   ADDON_STATUS CreateInstance(const kodi::addon::IInstanceInfo& instance,
+///                               KODI_ADDON_INSTANCE_HDL& hdl) override;
 /// };
 ///
 /// // If you use only one instance in your add-on, can be instanceType and
 /// // instanceID ignored
-/// ADDON_STATUS CMyAddon::CreateInstance(int instanceType,
-///                                       const std::string& instanceID,
-///                                       KODI_HANDLE instance,
-///                                       const std::string& version,
-///                                       KODI_HANDLE& addonInstance)
+/// ADDON_STATUS CMyAddon::CreateInstance(const kodi::addon::IInstanceInfo& instance,
+///                                       KODI_ADDON_INSTANCE_HDL& hdl)
 /// {
-///   if (instanceType == ADDON_INSTANCE_AUDIODECODER)
+///   if (instance.IsType(ADDON_INSTANCE_AUDIODECODER))
 ///   {
 ///     kodi::Log(ADDON_LOG_INFO, "Creating my audio decoder");
-///     addonInstance = new CMyAudioDecoder(instance, version);
+///     hdl = new CMyAudioDecoder(instance);
 ///     return ADDON_STATUS_OK;
 ///   }
 ///   else if (...)
@@ -443,10 +437,6 @@ public:
   ///
   /// @param[in] instance The instance value given to
   ///                     <b>`kodi::addon::CAddonBase::CreateInstance(...)`</b>.
-  /// @param[in] kodiVersion [opt] Version used in Kodi for this instance, to
-  ///                        allow compatibility to older Kodi versions.
-  ///
-  /// @note Recommended to set <b>`kodiVersion`</b>.
   ///
   ///
   /// --------------------------------------------------------------------------
@@ -456,8 +446,8 @@ public:
   /// class CMyAudioDecoder : public kodi::addon::CInstanceAudioDecoder
   /// {
   /// public:
-  ///   CMyAudioDecoder(KODI_HANDLE instance, const std::string& kodiVersion)
-  ///     : kodi::addon::CInstanceAudioDecoder(instance, kodiVersion)
+  ///   CMyAudioDecoder(KODI_HANDLE instance)
+  ///     : kodi::addon::CInstanceAudioDecoder(instance)
   ///   {
   ///      ...
   ///   }
@@ -465,22 +455,17 @@ public:
   ///   ...
   /// };
   ///
-  /// ADDON_STATUS CMyAddon::CreateInstance(int instanceType,
-  ///                                       const std::string& instanceID,
-  ///                                       KODI_HANDLE instance,
-  ///                                       const std::string& version,
-  ///                                       KODI_HANDLE& addonInstance)
+  /// ADDON_STATUS CMyAddon::CreateInstance(const kodi::addon::IInstanceInfo& instance,
+  ///                                       KODI_ADDON_INSTANCE_HDL& hdl)
   /// {
   ///   kodi::Log(ADDON_LOG_INFO, "Creating my audio decoder");
-  ///   addonInstance = new CMyAudioDecoder(instance, version);
+  ///   hdl = new CMyAudioDecoder(instance);
   ///   return ADDON_STATUS_OK;
   /// }
   /// ~~~~~~~~~~~~~
   ///
-  explicit CInstanceAudioDecoder(KODI_HANDLE instance, const std::string& kodiVersion = "")
-    : IAddonInstance(ADDON_INSTANCE_AUDIODECODER,
-                     !kodiVersion.empty() ? kodiVersion
-                                          : GetKodiTypeVersion(ADDON_INSTANCE_AUDIODECODER))
+  explicit CInstanceAudioDecoder(const kodi::addon::IInstanceInfo& instance)
+    : IAddonInstance(instance)
   {
     if (CPrivateBase::m_interface->globalSingleInstance != nullptr)
       throw std::logic_error("kodi::addon::CInstanceAudioDecoder: Creation of multiple together with single instance way is not allowed!");
@@ -623,20 +608,15 @@ public:
   //--------------------------------------------------------------------------
 
 private:
-  void SetAddonStruct(KODI_HANDLE instance)
+  void SetAddonStruct(KODI_ADDON_INSTANCE_STRUCT* instance)
   {
-    if (instance == nullptr)
-      throw std::logic_error("kodi::addon::CInstanceAudioDecoder: Creation with empty addon structure not allowed, table must be given from Kodi!");
-
-    m_instanceData = static_cast<AddonInstance_AudioDecoder*>(instance);
-
-    m_instanceData->toAddon->addonInstance = this;
-    m_instanceData->toAddon->supports_file = ADDON_supports_file;
-    m_instanceData->toAddon->init = ADDON_init;
-    m_instanceData->toAddon->read_pcm = ADDON_read_pcm;
-    m_instanceData->toAddon->seek = ADDON_seek;
-    m_instanceData->toAddon->read_tag = ADDON_read_tag;
-    m_instanceData->toAddon->track_count = ADDON_track_count;
+    instance->hdl = this;
+    instance->audiodecoder->toAddon->supports_file = ADDON_supports_file;
+    instance->audiodecoder->toAddon->init = ADDON_init;
+    instance->audiodecoder->toAddon->read_pcm = ADDON_read_pcm;
+    instance->audiodecoder->toAddon->seek = ADDON_seek;
+    instance->audiodecoder->toAddon->read_tag = ADDON_read_tag;
+    instance->audiodecoder->toAddon->track_count = ADDON_track_count;
   }
 
   inline static bool ADDON_supports_file(const KODI_ADDON_AUDIODECODER_HDL hdl, const char* file)
@@ -741,8 +721,6 @@ private:
   {
     return static_cast<CInstanceAudioDecoder*>(hdl)->TrackCount(file);
   }
-
-  AddonInstance_AudioDecoder* m_instanceData{nullptr};
 };
 
 } /* namespace addon */

@@ -23,35 +23,37 @@ CVisualization::CVisualization(const AddonInfoPtr& addonInfo, float x, float y, 
   m_presetsPath = CSpecialProtocol::TranslatePath(Path());
   m_profilePath = CSpecialProtocol::TranslatePath(Profile());
 
-  m_struct.props = new AddonProps_Visualization;
-  m_struct.props->x = static_cast<int>(x);
-  m_struct.props->y = static_cast<int>(y);
-  m_struct.props->width = static_cast<int>(w);
-  m_struct.props->height = static_cast<int>(h);
-  m_struct.props->device = CServiceBroker::GetWinSystem()->GetHWContext();
-  m_struct.props->pixelRatio = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo().fPixelRatio;
-  m_struct.props->name = m_name.c_str();
-  m_struct.props->presets = m_presetsPath.c_str();
-  m_struct.props->profile = m_profilePath.c_str();
+  m_ifc.visualization = new AddonInstance_Visualization;
 
-  m_struct.toKodi = new AddonToKodiFuncTable_Visualization;
-  m_struct.toKodi->kodiInstance = this;
-  m_struct.toKodi->transfer_preset = transfer_preset;
-  m_struct.toKodi->clear_presets = clear_presets;
+  m_ifc.visualization->props = new AddonProps_Visualization();
+  m_ifc.visualization->props->x = static_cast<int>(x);
+  m_ifc.visualization->props->y = static_cast<int>(y);
+  m_ifc.visualization->props->width = static_cast<int>(w);
+  m_ifc.visualization->props->height = static_cast<int>(h);
+  m_ifc.visualization->props->device = CServiceBroker::GetWinSystem()->GetHWContext();
+  m_ifc.visualization->props->pixelRatio =
+      CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo().fPixelRatio;
+  m_ifc.visualization->props->name = m_name.c_str();
+  m_ifc.visualization->props->presets = m_presetsPath.c_str();
+  m_ifc.visualization->props->profile = m_profilePath.c_str();
 
-  m_struct.toAddon = new KodiToAddonFuncTable_Visualization;
-  memset(m_struct.toAddon, 0, sizeof(KodiToAddonFuncTable_Visualization));
+  m_ifc.visualization->toKodi = new AddonToKodiFuncTable_Visualization();
+  m_ifc.visualization->toKodi->kodiInstance = this;
+  m_ifc.visualization->toKodi->transfer_preset = transfer_preset;
+  m_ifc.visualization->toKodi->clear_presets = clear_presets;
+
+  m_ifc.visualization->toAddon = new KodiToAddonFuncTable_Visualization();
 
   /* Open the class "kodi::addon::CInstanceVisualization" on add-on side */
-  if (CreateInstance(&m_struct) != ADDON_STATUS_OK)
+  if (CreateInstance() != ADDON_STATUS_OK)
   {
     CLog::Log(LOGFATAL, "Visualization: failed to create instance for '{}' and not usable!", ID());
     return;
   }
 
   /* presets becomes send with "transfer_preset" during call of function below */
-  if (m_struct.toAddon->get_presets)
-    m_struct.toAddon->get_presets(&m_struct);
+  if (m_ifc.visualization->toAddon->get_presets)
+    m_ifc.visualization->toAddon->get_presets(m_ifc.visualization);
 }
 
 CVisualization::~CVisualization()
@@ -59,102 +61,105 @@ CVisualization::~CVisualization()
   /* Destroy the class "kodi::addon::CInstanceVisualization" on add-on side */
   DestroyInstance();
 
-  delete m_struct.toAddon;
-  delete m_struct.toKodi;
-  delete m_struct.props;
+  delete m_ifc.visualization->toAddon;
+  delete m_ifc.visualization->toKodi;
+  delete m_ifc.visualization->props;
+  delete m_ifc.visualization;
 }
 
 bool CVisualization::Start(int channels, int samplesPerSec, int bitsPerSample, const std::string& songName)
 {
-  if (m_struct.toAddon->start)
-    return m_struct.toAddon->start(&m_struct, channels, samplesPerSec, bitsPerSample, songName.c_str());
+  if (m_ifc.visualization->toAddon->start)
+    return m_ifc.visualization->toAddon->start(m_ifc.visualization, channels, samplesPerSec,
+                                               bitsPerSample, songName.c_str());
   return false;
 }
 
 void CVisualization::Stop()
 {
-  if (m_struct.toAddon->stop)
-    m_struct.toAddon->stop(&m_struct);
+  if (m_ifc.visualization->toAddon->stop)
+    m_ifc.visualization->toAddon->stop(m_ifc.visualization);
 }
 
 void CVisualization::AudioData(const float* audioData, int audioDataLength, float *freqData, int freqDataLength)
 {
-  if (m_struct.toAddon->audio_data)
-    m_struct.toAddon->audio_data(&m_struct, audioData, audioDataLength, freqData, freqDataLength);
+  if (m_ifc.visualization->toAddon->audio_data)
+    m_ifc.visualization->toAddon->audio_data(m_ifc.visualization, audioData, audioDataLength,
+                                             freqData, freqDataLength);
 }
 
 bool CVisualization::IsDirty()
 {
-  if (m_struct.toAddon->is_dirty)
-    return m_struct.toAddon->is_dirty(&m_struct);
+  if (m_ifc.visualization->toAddon->is_dirty)
+    return m_ifc.visualization->toAddon->is_dirty(m_ifc.visualization);
   return false;
 }
 
 void CVisualization::Render()
 {
-  if (m_struct.toAddon->render)
-    m_struct.toAddon->render(&m_struct);
+  if (m_ifc.visualization->toAddon->render)
+    m_ifc.visualization->toAddon->render(m_ifc.visualization);
 }
 
 void CVisualization::GetInfo(VIS_INFO *info)
 {
-  if (m_struct.toAddon->get_info)
-    m_struct.toAddon->get_info(&m_struct, info);
+  if (m_ifc.visualization->toAddon->get_info)
+    m_ifc.visualization->toAddon->get_info(m_ifc.visualization, info);
 }
 
 bool CVisualization::NextPreset()
 {
-  if (m_struct.toAddon->next_preset)
-    return m_struct.toAddon->next_preset(&m_struct);
+  if (m_ifc.visualization->toAddon->next_preset)
+    return m_ifc.visualization->toAddon->next_preset(m_ifc.visualization);
   return false;
 }
 
 bool CVisualization::PrevPreset()
 {
-  if (m_struct.toAddon->prev_preset)
-    return m_struct.toAddon->prev_preset(&m_struct);
+  if (m_ifc.visualization->toAddon->prev_preset)
+    return m_ifc.visualization->toAddon->prev_preset(m_ifc.visualization);
   return false;
 }
 
 bool CVisualization::LoadPreset(int select)
 {
-  if (m_struct.toAddon->load_preset)
-    return m_struct.toAddon->load_preset(&m_struct, select);
+  if (m_ifc.visualization->toAddon->load_preset)
+    return m_ifc.visualization->toAddon->load_preset(m_ifc.visualization, select);
   return false;
 }
 
 bool CVisualization::RandomPreset()
 {
-  if (m_struct.toAddon->random_preset)
-    return m_struct.toAddon->random_preset(&m_struct);
+  if (m_ifc.visualization->toAddon->random_preset)
+    return m_ifc.visualization->toAddon->random_preset(m_ifc.visualization);
   return false;
 }
 
 bool CVisualization::LockPreset()
 {
-  if (m_struct.toAddon->lock_preset)
-    return m_struct.toAddon->lock_preset(&m_struct);
+  if (m_ifc.visualization->toAddon->lock_preset)
+    return m_ifc.visualization->toAddon->lock_preset(m_ifc.visualization);
   return false;
 }
 
 bool CVisualization::RatePreset(bool plus_minus)
 {
-  if (m_struct.toAddon->rate_preset)
-    return m_struct.toAddon->rate_preset(&m_struct, plus_minus);
+  if (m_ifc.visualization->toAddon->rate_preset)
+    return m_ifc.visualization->toAddon->rate_preset(m_ifc.visualization, plus_minus);
   return false;
 }
 
 bool CVisualization::UpdateAlbumart(const char* albumart)
 {
-  if (m_struct.toAddon->update_albumart)
-    return m_struct.toAddon->update_albumart(&m_struct, albumart);
+  if (m_ifc.visualization->toAddon->update_albumart)
+    return m_ifc.visualization->toAddon->update_albumart(m_ifc.visualization, albumart);
   return false;
 }
 
 bool CVisualization::UpdateTrack(const VIS_TRACK* track)
 {
-  if (m_struct.toAddon->update_track)
-    return m_struct.toAddon->update_track(&m_struct, track);
+  if (m_ifc.visualization->toAddon->update_track)
+    return m_ifc.visualization->toAddon->update_track(m_ifc.visualization, track);
   return false;
 }
 
@@ -171,8 +176,8 @@ bool CVisualization::GetPresetList(std::vector<std::string> &vecpresets)
 
 int CVisualization::GetActivePreset()
 {
-  if (m_struct.toAddon->get_active_preset)
-    return m_struct.toAddon->get_active_preset(&m_struct);
+  if (m_ifc.visualization->toAddon->get_active_preset)
+    return m_ifc.visualization->toAddon->get_active_preset(m_ifc.visualization);
   return -1;
 }
 
@@ -185,8 +190,8 @@ std::string CVisualization::GetActivePresetName()
 
 bool CVisualization::IsLocked()
 {
-  if (m_struct.toAddon->is_locked)
-    return m_struct.toAddon->is_locked(&m_struct);
+  if (m_ifc.visualization->toAddon->is_locked)
+    return m_ifc.visualization->toAddon->is_locked(m_ifc.visualization);
   return false;
 }
 

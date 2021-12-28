@@ -322,15 +322,15 @@ private:
 /// class CMyVisualization : public kodi::addon::CInstanceVisualization
 /// {
 /// public:
-///   CMyVisualization(KODI_HANDLE instance, const std::string& version);
+///   CMyVisualization(const kodi::addon::IInstanceInfo& instance);
 ///
 ///   bool Start(int channels, int samplesPerSec, int bitsPerSample, std::string songName) override;
 ///   void AudioData(const float* audioData, int audioDataLength, float* freqData, int freqDataLength) override;
 ///   void Render() override;
 /// };
 ///
-/// CMyVisualization::CMyVisualization(KODI_HANDLE instance, const std::string& version)
-///   : kodi::addon::CInstanceAudioDecoder(instance, version)
+/// CMyVisualization::CMyVisualization(const kodi::addon::IInstanceInfo& instance)
+///   : kodi::addon::CInstanceAudioDecoder(instance)
 /// {
 ///   ...
 /// }
@@ -357,26 +357,20 @@ private:
 /// class CMyAddon : public kodi::addon::CAddonBase
 /// {
 /// public:
-///   CMyAddon() { }
-///   ADDON_STATUS CreateInstance(int instanceType,
-///                               const std::string& instanceID,
-///                               KODI_HANDLE instance,
-///                               const std::string& version,
-///                               KODI_HANDLE& addonInstance) override;
+///   CMyAddon() = default;
+///   ADDON_STATUS CreateInstance(const kodi::addon::IInstanceInfo& instance,
+///                               KODI_ADDON_INSTANCE_HDL& hdl) override;
 /// };
 ///
 /// // If you use only one instance in your add-on, can be instanceType and
 /// // instanceID ignored
-/// ADDON_STATUS CMyAddon::CreateInstance(int instanceType,
-///                                       const std::string& instanceID,
-///                                       KODI_HANDLE instance,
-///                                       const std::string& version,
-///                                       KODI_HANDLE& addonInstance)
+/// ADDON_STATUS CMyAddon::CreateInstance(const kodi::addon::IInstanceInfo& instance,
+///                                       KODI_ADDON_INSTANCE_HDL& hdl)
 /// {
-///   if (instanceType == ADDON_INSTANCE_VISUALIZATION)
+///   if (instance.IsType(ADDON_INSTANCE_VISUALIZATION))
 ///   {
 ///     kodi::Log(ADDON_LOG_INFO, "Creating my visualization");
-///     addonInstance = new CMyVisualization(instance, version);
+///     hdl = new CMyVisualization(instance);
 ///     return ADDON_STATUS_OK;
 ///   }
 ///   else if (...)
@@ -403,7 +397,7 @@ public:
   /// Used by an add-on that only supports visualizations.
   ///
   CInstanceVisualization()
-    : IAddonInstance(ADDON_INSTANCE_VISUALIZATION, GetKodiTypeVersion(ADDON_INSTANCE_VISUALIZATION))
+    : IAddonInstance(IInstanceInfo(CPrivateBase::m_interface->firstKodiInstance))
   {
     if (CPrivateBase::m_interface->globalSingleInstance != nullptr)
       throw std::logic_error(
@@ -434,8 +428,8 @@ public:
   /// class CMyVisualization : public kodi::addon::CInstanceAudioDecoder
   /// {
   /// public:
-  ///   CMyVisualization(KODI_HANDLE instance, const std::string& kodiVersion)
-  ///     : kodi::addon::CInstanceAudioDecoder(instance, kodiVersion)
+  ///   CMyVisualization(const kodi::addon::IInstanceInfo& instance)
+  ///     : kodi::addon::CInstanceAudioDecoder(instance)
   ///   {
   ///      ...
   ///   }
@@ -443,22 +437,16 @@ public:
   ///   ...
   /// };
   ///
-  /// ADDON_STATUS CMyAddon::CreateInstance(int instanceType,
-  ///                                       const std::string& instanceID,
-  ///                                       KODI_HANDLE instance,
-  ///                                       const std::string& version,
-  ///                                       KODI_HANDLE& addonInstance)
+  /// ADDON_STATUS CMyAddon::CreateInstance(const kodi::addon::IInstanceInfo& instance,
+  ///                                       KODI_ADDON_INSTANCE_HDL& hdl)
   /// {
   ///   kodi::Log(ADDON_LOG_INFO, "Creating my visualization");
-  ///   addonInstance = new CMyVisualization(instance, version);
+  ///   hdl = new CMyVisualization(instance);
   ///   return ADDON_STATUS_OK;
   /// }
   /// ~~~~~~~~~~~~~
   ///
-  explicit CInstanceVisualization(KODI_HANDLE instance, const std::string& kodiVersion = "")
-    : IAddonInstance(ADDON_INSTANCE_VISUALIZATION,
-                     !kodiVersion.empty() ? kodiVersion
-                                          : GetKodiTypeVersion(ADDON_INSTANCE_VISUALIZATION))
+  explicit CInstanceVisualization(const IInstanceInfo& instance) : IAddonInstance(instance)
   {
     if (CPrivateBase::m_interface->globalSingleInstance != nullptr)
       throw std::logic_error("kodi::addon::CInstanceVisualization: Creation of multiple together "
@@ -720,9 +708,11 @@ public:
   ///
   inline void TransferPresets(const std::vector<std::string>& presets)
   {
-    m_instanceData->toKodi->clear_presets(m_instanceData->toKodi->kodiInstance);
+    m_instanceData->visualization->toKodi->clear_presets(
+        m_instanceData->visualization->toKodi->kodiInstance);
     for (const auto& it : presets)
-      m_instanceData->toKodi->transfer_preset(m_instanceData->toKodi->kodiInstance, it.c_str());
+      m_instanceData->visualization->toKodi->transfer_preset(
+          m_instanceData->visualization->toKodi->kodiInstance, it.c_str());
   }
   //----------------------------------------------------------------------------
 
@@ -747,7 +737,7 @@ public:
   /// ..
   /// ~~~~~~~~~~~~~
   ///
-  inline kodi::HardwareContext Device() { return m_instanceData->props->device; }
+  inline kodi::HardwareContext Device() { return m_instanceData->visualization->props->device; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -756,7 +746,7 @@ public:
   ///
   /// @return The X position, in pixels
   ///
-  inline int X() { return m_instanceData->props->x; }
+  inline int X() { return m_instanceData->visualization->props->x; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -765,7 +755,7 @@ public:
   ///
   /// @return The Y position, in pixels
   ///
-  inline int Y() { return m_instanceData->props->y; }
+  inline int Y() { return m_instanceData->visualization->props->y; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -774,7 +764,7 @@ public:
   ///
   /// @return The width, in pixels
   ///
-  inline int Width() { return m_instanceData->props->width; }
+  inline int Width() { return m_instanceData->visualization->props->width; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -783,7 +773,7 @@ public:
   ///
   /// @return The height, in pixels
   ///
-  inline int Height() { return m_instanceData->props->height; }
+  inline int Height() { return m_instanceData->visualization->props->height; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -793,7 +783,7 @@ public:
   ///
   /// @return The pixel aspect ratio used by the display
   ///
-  inline float PixelRatio() { return m_instanceData->props->pixelRatio; }
+  inline float PixelRatio() { return m_instanceData->visualization->props->pixelRatio; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -802,7 +792,7 @@ public:
   ///
   /// @return The add-on name
   ///
-  inline std::string Name() { return m_instanceData->props->name; }
+  inline std::string Name() { return m_instanceData->visualization->props->name; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -811,7 +801,7 @@ public:
   ///
   /// @return The add-on installation path
   ///
-  inline std::string Presets() { return m_instanceData->props->presets; }
+  inline std::string Presets() { return m_instanceData->visualization->props->presets; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -824,36 +814,34 @@ public:
   ///
   /// @return Path to the user profile
   ///
-  inline std::string Profile() { return m_instanceData->props->profile; }
+  inline std::string Profile() { return m_instanceData->visualization->props->profile; }
   //----------------------------------------------------------------------------
 
   ///@}
 
 private:
-  void SetAddonStruct(KODI_HANDLE instance)
+  void SetAddonStruct(KODI_ADDON_INSTANCE_STRUCT* instance)
   {
-    if (instance == nullptr)
-      throw std::logic_error("kodi::addon::CInstanceVisualization: Null pointer instance passed.");
-
-    m_instanceData = static_cast<AddonInstance_Visualization*>(instance);
-    m_instanceData->toAddon->addonInstance = this;
-    m_instanceData->toAddon->start = ADDON_Start;
-    m_instanceData->toAddon->stop = ADDON_Stop;
-    m_instanceData->toAddon->audio_data = ADDON_AudioData;
-    m_instanceData->toAddon->is_dirty = ADDON_IsDirty;
-    m_instanceData->toAddon->render = ADDON_Render;
-    m_instanceData->toAddon->get_info = ADDON_GetInfo;
-    m_instanceData->toAddon->prev_preset = ADDON_PrevPreset;
-    m_instanceData->toAddon->next_preset = ADDON_NextPreset;
-    m_instanceData->toAddon->load_preset = ADDON_LoadPreset;
-    m_instanceData->toAddon->random_preset = ADDON_RandomPreset;
-    m_instanceData->toAddon->lock_preset = ADDON_LockPreset;
-    m_instanceData->toAddon->rate_preset = ADDON_RatePreset;
-    m_instanceData->toAddon->update_albumart = ADDON_UpdateAlbumart;
-    m_instanceData->toAddon->update_track = ADDON_UpdateTrack;
-    m_instanceData->toAddon->get_presets = ADDON_GetPresets;
-    m_instanceData->toAddon->get_active_preset = ADDON_GetActivePreset;
-    m_instanceData->toAddon->is_locked = ADDON_IsLocked;
+    m_instanceData = instance;
+    m_instanceData->hdl = this;
+    m_instanceData->visualization->toAddon->addonInstance = this;
+    m_instanceData->visualization->toAddon->start = ADDON_Start;
+    m_instanceData->visualization->toAddon->stop = ADDON_Stop;
+    m_instanceData->visualization->toAddon->audio_data = ADDON_AudioData;
+    m_instanceData->visualization->toAddon->is_dirty = ADDON_IsDirty;
+    m_instanceData->visualization->toAddon->render = ADDON_Render;
+    m_instanceData->visualization->toAddon->get_info = ADDON_GetInfo;
+    m_instanceData->visualization->toAddon->prev_preset = ADDON_PrevPreset;
+    m_instanceData->visualization->toAddon->next_preset = ADDON_NextPreset;
+    m_instanceData->visualization->toAddon->load_preset = ADDON_LoadPreset;
+    m_instanceData->visualization->toAddon->random_preset = ADDON_RandomPreset;
+    m_instanceData->visualization->toAddon->lock_preset = ADDON_LockPreset;
+    m_instanceData->visualization->toAddon->rate_preset = ADDON_RatePreset;
+    m_instanceData->visualization->toAddon->update_albumart = ADDON_UpdateAlbumart;
+    m_instanceData->visualization->toAddon->update_track = ADDON_UpdateTrack;
+    m_instanceData->visualization->toAddon->get_presets = ADDON_GetPresets;
+    m_instanceData->visualization->toAddon->get_active_preset = ADDON_GetActivePreset;
+    m_instanceData->visualization->toAddon->is_locked = ADDON_IsLocked;
   }
 
   inline static bool ADDON_Start(const AddonInstance_Visualization* addon,
@@ -916,7 +904,8 @@ private:
     if (thisClass->GetPresets(presets))
     {
       for (const auto& it : presets)
-        thisClass->m_instanceData->toKodi->transfer_preset(addon->toKodi->kodiInstance, it.c_str());
+        thisClass->m_instanceData->visualization->toKodi->transfer_preset(
+            addon->toKodi->kodiInstance, it.c_str());
     }
 
     return static_cast<unsigned int>(presets.size());
@@ -984,7 +973,7 @@ private:
 
   std::shared_ptr<kodi::gui::IRenderHelper> m_renderHelper;
   bool m_presetLockedByUser = false;
-  AddonInstance_Visualization* m_instanceData;
+  KODI_ADDON_INSTANCE_STRUCT* m_instanceData{nullptr};
 };
 
 } /* namespace addon */

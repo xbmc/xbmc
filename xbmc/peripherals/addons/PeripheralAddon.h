@@ -182,8 +182,6 @@ private:
   /* @brief Thread synchronization */
   mutable CCriticalSection m_critSection;
 
-  AddonInstance_Peripheral m_struct;
-
   CSharedSection m_dllSection;
 };
 } // namespace PERIPHERALS

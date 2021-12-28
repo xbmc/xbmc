@@ -31,9 +31,6 @@ namespace ADDON
     bool Decode(unsigned char* const pixels, unsigned int width,
                 unsigned int height, unsigned int pitch,
                 unsigned int format) override;
-
-  protected:
-    AddonInstance_ImageDecoder m_struct = {};
   };
 
 } /*namespace ADDON*/

@@ -43,8 +43,6 @@ public:
   bool SupportsFile(const std::string& filename) override;
 
 private:
-  AddonInstance_AudioDecoder m_struct;
-  KODI_HANDLE m_addonInstance{nullptr};
   bool m_hasTags;
 };
 

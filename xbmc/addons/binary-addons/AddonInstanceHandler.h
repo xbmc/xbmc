@@ -37,7 +37,7 @@ public:
   std::string Profile() const;
   AddonVersion Version() const;
 
-  ADDON_STATUS CreateInstance(KODI_HANDLE instance);
+  ADDON_STATUS CreateInstance();
   void DestroyInstance();
   const AddonDllPtr& Addon() const { return m_addon; }
   AddonInfoPtr GetAddonInfo() const { return m_addonInfo; }
@@ -46,6 +46,10 @@ public:
   virtual void OnPostInstall(bool update, bool modal) {}
   virtual void OnPreUnInstall() {}
   virtual void OnPostUnInstall() {}
+
+protected:
+  KODI_ADDON_INSTANCE_INFO m_info{};
+  KODI_ADDON_INSTANCE_STRUCT m_ifc{};
 
 private:
   ADDON_TYPE m_type;

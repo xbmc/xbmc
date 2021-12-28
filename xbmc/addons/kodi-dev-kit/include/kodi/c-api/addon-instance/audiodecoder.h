@@ -130,7 +130,6 @@ extern "C"
 
   typedef struct KodiToAddonFuncTable_AudioDecoder
   {
-    KODI_HANDLE addonInstance;
     PFN_KODI_ADDON_AUDIODECODER_SUPPORTS_FILE_V1 supports_file;
     PFN_KODI_ADDON_AUDIODECODER_INIT_V1 init;
     PFN_KODI_ADDON_AUDIODECODER_READ_PCM_V1 read_pcm;

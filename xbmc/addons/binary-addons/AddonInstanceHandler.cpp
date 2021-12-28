@@ -27,11 +27,23 @@ IAddonInstanceHandler::IAddonInstanceHandler(ADDON_TYPE type,
   // faster as unique id and also safe enough for them).
   m_instanceId = !instanceID.empty() ? instanceID : StringUtils::Format("{}", fmt::ptr(this));
   m_addonBase = CServiceBroker::GetBinaryAddonManager().GetAddonBase(addonInfo, this, m_addon);
+
+  KODI_ADDON_INSTANCE_INFO* info = new KODI_ADDON_INSTANCE_INFO();
+  info->number = 0;
+  info->id = m_instanceId.c_str();
+  info->version = kodi::addon::GetTypeVersion(m_type);
+  info->type = m_type;
+  info->kodi = this;
+  info->parent = m_parentInstance;
+  info->first_instance = m_addon && !m_addon->Initialized();
+  m_ifc.info = info;
 }
 
 IAddonInstanceHandler::~IAddonInstanceHandler()
 {
   CServiceBroker::GetBinaryAddonManager().ReleaseAddonBase(m_addonBase, this);
+
+  delete m_ifc.info;
 }
 
 std::string IAddonInstanceHandler::ID() const
@@ -69,15 +81,14 @@ AddonVersion IAddonInstanceHandler::Version() const
   return m_addon ? m_addon->Version() : AddonVersion();
 }
 
-ADDON_STATUS IAddonInstanceHandler::CreateInstance(KODI_HANDLE instance)
+ADDON_STATUS IAddonInstanceHandler::CreateInstance()
 {
   if (!m_addon)
     return ADDON_STATUS_UNKNOWN;
 
   CSingleLock lock(m_cdSec);
 
-  ADDON_STATUS status =
-      m_addon->CreateInstance(m_type, this, m_instanceId, instance, m_parentInstance);
+  ADDON_STATUS status = m_addon->CreateInstance(&m_ifc);
   if (status != ADDON_STATUS_OK)
   {
     CLog::Log(LOGERROR,
@@ -91,7 +102,7 @@ void IAddonInstanceHandler::DestroyInstance()
 {
   CSingleLock lock(m_cdSec);
   if (m_addon)
-    m_addon->DestroyInstance(this);
+    m_addon->DestroyInstance(&m_ifc);
 }
 
 } /* namespace ADDON */

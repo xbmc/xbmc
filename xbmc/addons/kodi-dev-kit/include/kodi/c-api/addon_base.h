@@ -115,6 +115,11 @@ extern "C"
 #endif /* __cplusplus */
 
   typedef void* KODI_ADDON_HDL;
+  typedef void* KODI_ADDON_BACKEND_HDL;
+  typedef void* KODI_ADDON_INSTANCE_HDL;
+  typedef void* KODI_ADDON_INSTANCE_BACKEND_HDL;
+
+  typedef void* KODI_ADDON_FUNC_DUMMY;
 
   //============================================================================
   /// @ingroup cpp_kodi_addon_addonbase_Defs
@@ -189,6 +194,42 @@ extern "C"
   ///@}
   //----------------------------------------------------------------------------
 
+  typedef int KODI_ADDON_INSTANCE_TYPE;
+
+  struct KODI_ADDON_INSTANCE_INFO
+  {
+    KODI_ADDON_INSTANCE_TYPE type;
+    uint32_t number;
+    const char* id;
+    const char* version;
+    KODI_ADDON_INSTANCE_BACKEND_HDL kodi;
+    KODI_ADDON_INSTANCE_HDL parent;
+    bool first_instance;
+
+    struct KODI_ADDON_INSTANCE_FUNC_CB* functions;
+  };
+
+  typedef struct KODI_ADDON_INSTANCE_STRUCT
+  {
+    const KODI_ADDON_INSTANCE_INFO* info;
+
+    KODI_ADDON_INSTANCE_HDL hdl;
+    union {
+      KODI_ADDON_FUNC_DUMMY dummy;
+      struct AddonInstance_AudioDecoder* audiodecoder;
+      struct AddonInstance_AudioEncoder* audioencoder;
+      struct AddonInstance_ImageDecoder* imagedecoder;
+      struct AddonInstance_Game* game;
+      struct AddonInstance_InputStream* inputstream;
+      struct AddonInstance_Peripheral* peripheral;
+      struct AddonInstance_PVR* pvr;
+      struct AddonInstance_Screensaver* screensaver;
+      struct AddonInstance_VFSEntry* vfs;
+      struct AddonInstance_VideoCodec* videocodec;
+      struct AddonInstance_Visualization* visualization;
+    };
+  } KODI_ADDON_INSTANCE_STRUCT;
+
   /*! @brief Standard undefined pointer handle */
   typedef void* KODI_HANDLE;
 
@@ -249,19 +290,13 @@ extern "C"
     bool (*is_setting_using_default)(void* kodiBase, const char* id);
   } AddonToKodiFuncTable_Addon;
 
-  typedef ADDON_STATUS(ATTR_APIENTRYP PFN_KODI_ADDON_CREATE_V1)(const KODI_HANDLE first_instance,
-                                                                KODI_ADDON_HDL* hdl);
+  typedef ADDON_STATUS(ATTR_APIENTRYP PFN_KODI_ADDON_CREATE_V1)(
+      const KODI_ADDON_INSTANCE_BACKEND_HDL first_instance, KODI_ADDON_HDL* hdl);
   typedef void(ATTR_APIENTRYP PFN_KODI_ADDON_DESTROY_V1)(const KODI_ADDON_HDL hdl);
-  typedef ADDON_STATUS(ATTR_APIENTRYP PFN_KODI_ADDON_CREATE_INSTANCE_V1)(const KODI_ADDON_HDL hdl,
-                                                                         int instanceType,
-                                                                         const char* instanceID,
-                                                                         KODI_HANDLE instance,
-                                                                         const char* version,
-                                                                         KODI_HANDLE* addonInstance,
-                                                                         KODI_HANDLE parent);
-  typedef void(ATTR_APIENTRYP PFN_KODI_ADDON_DESTROY_INSTANCE_V1)(const KODI_ADDON_HDL hdl,
-                                                                  int instanceType,
-                                                                  KODI_HANDLE instance);
+  typedef ADDON_STATUS(ATTR_APIENTRYP PFN_KODI_ADDON_CREATE_INSTANCE_V1)(
+      const KODI_ADDON_HDL hdl, struct KODI_ADDON_INSTANCE_STRUCT* instance);
+  typedef void(ATTR_APIENTRYP PFN_KODI_ADDON_DESTROY_INSTANCE_V1)(
+      const KODI_ADDON_HDL hdl, struct KODI_ADDON_INSTANCE_STRUCT* instance);
   typedef enum ADDON_STATUS(ATTR_APIENTRYP PFN_KODI_ADDON_SETTING_CHANGE_STRING_V1)(
       const KODI_ADDON_HDL hdl, const char* name, const char* value);
   typedef enum ADDON_STATUS(ATTR_APIENTRYP PFN_KODI_ADDON_SETTING_CHANGE_BOOLEAN_V1)(
@@ -301,15 +336,15 @@ extern "C"
 
     // Pointer of first created instance, used in case this add-on goes with single way
     // Set from Kodi!
-    KODI_HANDLE firstKodiInstance;
+    struct KODI_ADDON_INSTANCE_STRUCT* firstKodiInstance;
 
     // Pointer to master base class inside add-on
     // Set from addon header (kodi::addon::CAddonBase)!
-    KODI_HANDLE addonBase;
+    KODI_ADDON_HDL addonBase;
 
     // Pointer to a instance used on single way (together with this class)
     // Set from addon header (kodi::addon::IAddonInstance)!
-    KODI_HANDLE globalSingleInstance;
+    KODI_ADDON_INSTANCE_HDL globalSingleInstance;
 
     // Callback function tables from addon to Kodi
     // Set from Kodi!

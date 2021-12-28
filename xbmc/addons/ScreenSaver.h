@@ -28,8 +28,6 @@ private:
   std::string m_name; /*!< To add-on sended name */
   std::string m_presets; /*!< To add-on sended preset path */
   std::string m_profile; /*!< To add-on sended profile path */
-
-  AddonInstance_Screensaver m_struct;
 };
 
 } /* namespace ADDON */
