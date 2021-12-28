@@ -26,7 +26,7 @@
       <group id="3">
         <setting id="audiooutput.passthroughdevice">
           <level>1</level>
-          <default>XAUDIO:default</default>
+          <default>WASAPI:default</default>
         </setting>
       </group>
     </category>
