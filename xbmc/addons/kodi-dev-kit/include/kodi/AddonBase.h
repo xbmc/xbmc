@@ -183,6 +183,71 @@ struct ATTR_DLL_LOCAL CPrivateBase
 };
 
 //==============================================================================
+/// @ingroup cpp_kodi_addon_addonbase_Defs
+/// @defgroup cpp_kodi_addon_addonbase_Defs_IInstanceInfo class IInstanceInfo
+/// @brief **Instance informations**\n
+/// Class to get any instance information when creating a new one.
+///
+///@{
+class ATTR_DLL_LOCAL IInstanceInfo
+{
+public:
+  explicit IInstanceInfo(KODI_ADDON_INSTANCE_STRUCT* instance) : m_instance(instance) {}
+
+  /// @defgroup cpp_kodi_addon_addonbase_Defs_IInstanceInfo_Help Value Help
+  /// @ingroup cpp_kodi_addon_addonbase_Defs_IInstanceInfo
+  ///
+  /// <b>The following table contains values that can be set with @ref cpp_kodi_addon_addonbase_Defs_IInstanceInfo :</b>
+  /// | Name | Type | Get call
+  /// |------|------|----------
+  /// | **Used type identifier** | @ref KODI_ADDON_INSTANCE_TYPE | @ref CSettingValue::GetType "GetType"
+  /// | **Check asked type used on this class** | `bool` | @ref CSettingValue::IsType "IsType"
+  /// | **Get optional identification number (usage relate to addon type)** | `uint32_t` | @ref CSettingValue::GetNumber "GetNumber"
+  /// | **Get optional identification string (usage relate to addon type)** | `std::string` | @ref CSettingValue::GetID "GetID"
+  /// | **Get API version from Kodi about instance** | `std::string` | @ref CSettingValue::GetAPIVersion "GetAPIVersion"
+  /// | **Check this is first created instance by Kodi** | `bool` | @ref CSettingValue::FirstInstance "FirstInstance"
+
+  /// @addtogroup cpp_kodi_addon_addonbase_Defs_IInstanceInfo
+  ///@{
+
+  /// @brief To get settings value as string.
+  KODI_ADDON_INSTANCE_TYPE GetType() const { return m_instance->info->type; }
+
+  /// @brief Check asked type used on this class.
+  ///
+  /// @param[in] type Type identifier to check
+  /// @return True if type matches
+  bool IsType(KODI_ADDON_INSTANCE_TYPE type) const { return m_instance->info->type == type; }
+
+  /// @brief Get optional identification number (usage relate to addon type).
+  uint32_t GetNumber() const { return m_instance->info->number; }
+
+  /// @brief Get optional identification string (usage relate to addon type).
+  std::string GetID() const { return m_instance->info->id; }
+
+  /// @brief Get API version from Kodi about instance.
+  std::string GetAPIVersion() const { return m_instance->info->version; }
+
+  /// @brief Check this is first created instance by Kodi.
+  bool FirstInstance() const { return m_instance->info->first_instance; }
+
+  ///@}
+
+  operator KODI_ADDON_INSTANCE_STRUCT*() { return m_instance; }
+
+  operator KODI_ADDON_INSTANCE_STRUCT*() const { return m_instance; }
+
+private:
+  IInstanceInfo() = delete;
+  IInstanceInfo(IInstanceInfo&) = delete;
+  IInstanceInfo(const IInstanceInfo&) = delete;
+
+  KODI_ADDON_INSTANCE_STRUCT* m_instance;
+};
+///@}
+//------------------------------------------------------------------------------
+
+//==============================================================================
 /*
  * Internal class to control various instance types with general parts defined
  * here.
@@ -195,24 +260,21 @@ struct ATTR_DLL_LOCAL CPrivateBase
 class ATTR_DLL_LOCAL IAddonInstance
 {
 public:
-  explicit IAddonInstance(ADDON_TYPE type, const std::string& version)
-    : m_type(type), m_kodiVersion(version)
-  {
-  }
+  explicit IAddonInstance(const kodi::addon::IInstanceInfo& instance) : m_instance(instance) {}
   virtual ~IAddonInstance() = default;
 
-  virtual ADDON_STATUS CreateInstance(int instanceType,
-                                      const std::string& instanceID,
-                                      KODI_HANDLE instance,
-                                      const std::string& version,
-                                      KODI_HANDLE& addonInstance)
+  virtual ADDON_STATUS CreateInstance(const kodi::addon::IInstanceInfo& instance,
+                                      KODI_ADDON_INSTANCE_HDL& hdl)
   {
     return ADDON_STATUS_NOT_IMPLEMENTED;
   }
 
-  const ADDON_TYPE m_type;
-  const std::string m_kodiVersion;
-  std::string m_id;
+  std::string GetInstanceAPIVersion() const { return m_instance->info->version; }
+
+private:
+  friend class CAddonBase;
+
+  const KODI_ADDON_INSTANCE_STRUCT* m_instance;
 };
 
 /*
@@ -435,18 +497,10 @@ public:
   /// @ingroup cpp_kodi_addon_addonbase
   /// @brief Instance created
   ///
-  /// @param[in] instanceType The requested type of required instance, see @ref ADDON_TYPE.
-  /// @param[in] instanceID An individual identification key string given by Kodi.
-  /// @param[in] instance The instance handler used by Kodi must be passed to
-  ///                     the classes created here. See in the example.
-  /// @param[in] version The from Kodi used version of instance. This can be
-  ///                    used to allow compatibility to older versions of
-  ///                    them. Further is this given to the parent instance
-  ///                    that it can handle differences.
-  /// @param[out] addonInstance The pointer to instance class created in addon.
-  ///                           Needed to be able to identify them on calls.
-  /// @return                   @ref ADDON_STATUS_OK if correct, for possible errors
-  ///                           see @ref ADDON_STATUS
+  /// @param[in] instance Instance informations about
+  /// @param[out] hdl The pointer to instance class created in addon.
+  ///                 Needed to be able to identify them on calls.
+  /// @return @ref ADDON_STATUS_OK if correct, for possible errors see @ref ADDON_STATUS
   ///
   ///
   /// --------------------------------------------------------------------------
@@ -460,22 +514,19 @@ public:
   ///
   /// // If you use only one instance in your add-on, can be instanceType and
   /// // instanceID ignored
-  /// ADDON_STATUS CMyAddon::CreateInstance(int instanceType,
-  ///                                       const std::string& instanceID,
-  ///                                       KODI_HANDLE instance,
-  ///                                       const std::string& version,
-  ///                                       KODI_HANDLE& addonInstance)
+  /// ADDON_STATUS CMyAddon::CreateInstance(const kodi::addon::IInstanceInfo& instance,
+  ///                                       KODI_ADDON_INSTANCE_HDL& hdl)
   /// {
-  ///   if (instanceType == ADDON_INSTANCE_SCREENSAVER)
+  ///   if (instance.IsType(ADDON_INSTANCE_SCREENSAVER))
   ///   {
   ///     kodi::Log(ADDON_LOG_INFO, "Creating my Screensaver");
-  ///     addonInstance = new CMyScreensaver(instance);
+  ///     hdl = new CMyScreensaver(instance);
   ///     return ADDON_STATUS_OK;
   ///   }
-  ///   else if (instanceType == ADDON_INSTANCE_VISUALIZATION)
+  ///   else if (instance.IsType(ADDON_INSTANCE_VISUALIZATION))
   ///   {
   ///     kodi::Log(ADDON_LOG_INFO, "Creating my Visualization");
-  ///     addonInstance = new CMyVisualization(instance);
+  ///     hdl = new CMyVisualization(instance);
   ///     return ADDON_STATUS_OK;
   ///   }
   ///   else if (...)
@@ -489,11 +540,8 @@ public:
   ///
   /// ~~~~~~~~~~~~~
   ///
-  virtual ADDON_STATUS CreateInstance(int instanceType,
-                                      const std::string& instanceID,
-                                      KODI_HANDLE instance,
-                                      const std::string& version,
-                                      KODI_HANDLE& addonInstance)
+  virtual ADDON_STATUS CreateInstance(const kodi::addon::IInstanceInfo& instance,
+                                      KODI_ADDON_INSTANCE_HDL& hdl)
   {
     return ADDON_STATUS_NOT_IMPLEMENTED;
   }
@@ -506,18 +554,13 @@ public:
   /// This function is optional and intended to notify addon that the instance
   /// is terminating.
   ///
-  /// @param[in] instanceType   The requested type of required instance, see @ref ADDON_TYPE.
-  /// @param[in] instanceID     An individual identification key string given by Kodi.
-  /// @param[in] addonInstance  The pointer to instance class created in addon.
+  /// @param[in] instance Instance informations about
+  /// @param[in] hdl The pointer to instance class created in addon.
   ///
   /// @warning This call is only used to inform that the associated instance
   /// is terminated. The deletion is carried out in the background.
   ///
-  virtual void DestroyInstance(int instanceType,
-                               const std::string& instanceID,
-                               KODI_HANDLE addonInstance)
-  {
-  }
+  virtual void DestroyInstance(const IInstanceInfo& instance, const KODI_ADDON_INSTANCE_HDL hdl) {}
   //--------------------------------------------------------------------------
 
   /* Background helper for GUI render systems, e.g. Screensaver or Visualization */
@@ -530,12 +573,7 @@ private:
   }
 
   static inline ADDON_STATUS ADDONBASE_CreateInstance(const KODI_ADDON_HDL hdl,
-                                                      int instanceType,
-                                                      const char* instanceID,
-                                                      KODI_HANDLE instance,
-                                                      const char* version,
-                                                      KODI_HANDLE* addonInstance,
-                                                      KODI_HANDLE parent)
+                                                      struct KODI_ADDON_INSTANCE_STRUCT* instance)
   {
     CAddonBase* base = static_cast<CAddonBase*>(hdl);
 
@@ -548,13 +586,13 @@ private:
      */
     if (CPrivateBase::m_interface->firstKodiInstance == instance &&
         CPrivateBase::m_interface->globalSingleInstance &&
-        static_cast<IAddonInstance*>(CPrivateBase::m_interface->globalSingleInstance)->m_type ==
-            instanceType)
+        static_cast<IAddonInstance*>(CPrivateBase::m_interface->globalSingleInstance)
+                ->m_instance->info->type == instance->info->type)
     {
       /* The handling here is intended for the case of the add-on only one
        * instance and this is integrated in the add-on base class.
        */
-      *addonInstance = CPrivateBase::m_interface->globalSingleInstance;
+      instance->hdl = CPrivateBase::m_interface->globalSingleInstance;
       status = ADDON_STATUS_OK;
     }
     else
@@ -563,19 +601,21 @@ private:
        * creation of several on one addon.
        */
 
+      IInstanceInfo instanceInfo(instance);
+
       /* Check first a parent is defined about (e.g. Codec within inputstream) */
-      if (parent != nullptr)
-        status = static_cast<IAddonInstance*>(parent)->CreateInstance(
-            instanceType, instanceID, instance, version, *addonInstance);
+      if (instance->info->parent != nullptr)
+        status = static_cast<IAddonInstance*>(instance->info->parent)
+                     ->CreateInstance(instanceInfo, instance->hdl);
 
       /* if no parent call the main instance creation function to get it */
       if (status == ADDON_STATUS_NOT_IMPLEMENTED)
       {
-        status = base->CreateInstance(instanceType, instanceID, instance, version, *addonInstance);
+        status = base->CreateInstance(instanceInfo, instance->hdl);
       }
     }
 
-    if (*addonInstance == nullptr)
+    if (instance->hdl == nullptr)
     {
       if (status == ADDON_STATUS_OK)
       {
@@ -591,32 +631,29 @@ private:
       }
     }
 
-    if (static_cast<IAddonInstance*>(*addonInstance)->m_type != instanceType)
+    if (static_cast<IAddonInstance*>(instance->hdl)->m_instance->info->type != instance->info->type)
     {
       CPrivateBase::m_interface->toKodi->addon_log_msg(
           CPrivateBase::m_interface->toKodi->kodiBase, ADDON_LOG_FATAL,
           "kodi::addon::CAddonBase CreateInstance difference between given and returned");
-      delete static_cast<IAddonInstance*>(*addonInstance);
-      *addonInstance = nullptr;
+      delete static_cast<IAddonInstance*>(instance->hdl);
+      instance->hdl = nullptr;
       return ADDON_STATUS_PERMANENT_FAILURE;
     }
-
-    // Store the used ID inside instance, to have on destroy calls by addon to identify
-    static_cast<IAddonInstance*>(*addonInstance)->m_id = instanceID;
 
     return status;
   }
 
   static inline void ADDONBASE_DestroyInstance(const KODI_ADDON_HDL hdl,
-                                               int instanceType,
-                                               KODI_HANDLE instance)
+                                               struct KODI_ADDON_INSTANCE_STRUCT* instance)
   {
     CAddonBase* base = static_cast<CAddonBase*>(hdl);
 
-    if (CPrivateBase::m_interface->globalSingleInstance == nullptr && instance != base)
+    if (CPrivateBase::m_interface->globalSingleInstance == nullptr && instance->hdl != base)
     {
-      base->DestroyInstance(instanceType, static_cast<IAddonInstance*>(instance)->m_id, instance);
-      delete static_cast<IAddonInstance*>(instance);
+      IInstanceInfo instanceInfo(instance);
+      base->DestroyInstance(instanceInfo, instance->hdl);
+      delete static_cast<IAddonInstance*>(instance->hdl);
     }
   }
 

@@ -31,7 +31,7 @@ struct Interface_Base
 {
   static bool InitInterface(CAddonDll* addon,
                             AddonGlobalInterface& addonInterface,
-                            KODI_HANDLE firstKodiInstance);
+                            KODI_ADDON_INSTANCE_STRUCT* firstKodiInstance);
   static void DeInitInterface(AddonGlobalInterface& addonInterface);
   static void RegisterInterface(ADDON_GET_INTERFACE_FN fn);
   static bool UpdateSettingInActiveDialog(CAddonDll* addon,

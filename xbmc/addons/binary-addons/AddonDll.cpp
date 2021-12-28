@@ -157,7 +157,7 @@ bool CAddonDll::LoadDll()
   return true;
 }
 
-ADDON_STATUS CAddonDll::Create(KODI_HANDLE firstKodiInstance)
+ADDON_STATUS CAddonDll::Create(KODI_ADDON_INSTANCE_STRUCT* firstKodiInstance)
 {
   CLog::Log(LOGDEBUG, "ADDON: Dll Initializing - {}", Name());
   m_initialized = false;
@@ -237,12 +237,13 @@ void CAddonDll::Destroy()
   m_initialized = false;
 }
 
-ADDON_STATUS CAddonDll::CreateInstance(ADDON_TYPE instanceType,
-                                       ADDON_INSTANCE_HANDLER instanceClass,
-                                       const std::string& instanceID,
-                                       KODI_HANDLE instance,
-                                       KODI_HANDLE parentInstance)
+ADDON_STATUS CAddonDll::CreateInstance(KODI_ADDON_INSTANCE_STRUCT* instance)
 {
+  assert(instance != nullptr);
+  assert(instance->functions != nullptr);
+  assert(instance->info != nullptr);
+  assert(instance->info->functions != nullptr);
+
   ADDON_STATUS status = ADDON_STATUS_OK;
 
   if (!m_initialized)
@@ -251,32 +252,28 @@ ADDON_STATUS CAddonDll::CreateInstance(ADDON_TYPE instanceType,
     return status;
 
   /* Check version of requested instance type */
-  if (!CheckAPIVersion(instanceType))
+  if (!CheckAPIVersion(instance->info->type))
     return ADDON_STATUS_PERMANENT_FAILURE;
 
-  KODI_HANDLE addonInstance = nullptr;
-  status = m_interface.toAddon->create_instance(
-      m_interface.addonBase, instanceType, instanceID.c_str(), instance,
-      kodi::addon::GetTypeVersion(instanceType), &addonInstance, parentInstance);
+  status = m_interface.toAddon->create_instance(m_interface.addonBase, instance);
 
-  if (addonInstance)
+  if (instance->info)
   {
-    m_usedInstances[instanceClass] = std::make_pair(instanceType, addonInstance);
+    m_usedInstances[instance->info->kodi] = instance;
   }
 
   return status;
 }
 
-void CAddonDll::DestroyInstance(ADDON_INSTANCE_HANDLER instanceClass)
+void CAddonDll::DestroyInstance(KODI_ADDON_INSTANCE_STRUCT* instance)
 {
   if (m_usedInstances.empty())
     return;
 
-  auto it = m_usedInstances.find(instanceClass);
+  auto it = m_usedInstances.find(instance->info->kodi);
   if (it != m_usedInstances.end())
   {
-    m_interface.toAddon->destroy_instance(m_interface.addonBase, it->second.first,
-                                          it->second.second);
+    m_interface.toAddon->destroy_instance(m_interface.addonBase, it->second);
     m_usedInstances.erase(it);
   }
 

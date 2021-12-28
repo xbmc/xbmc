@@ -106,7 +106,6 @@ namespace ADDON
     bool m_directories;       //!< VFS entry can list directories.
     bool m_filedirectories;   //!< VFS entry contains file directories.
     ProtocolInfo m_protocolInfo; //!< Info about protocol for network dialog.
-    AddonInstance_VFSEntry m_struct; //!< VFS callback table
   };
 
   //! \brief Wrapper equipping a CVFSEntry with an IFile interface.

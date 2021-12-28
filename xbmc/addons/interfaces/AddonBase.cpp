@@ -31,7 +31,7 @@ std::vector<ADDON_GET_INTERFACE_FN> Interface_Base::s_registeredInterfaces;
 
 bool Interface_Base::InitInterface(CAddonDll* addon,
                                    AddonGlobalInterface& addonInterface,
-                                   KODI_HANDLE firstKodiInstance)
+                                   KODI_ADDON_INSTANCE_STRUCT* firstKodiInstance)
 {
   addonInterface = {};
 

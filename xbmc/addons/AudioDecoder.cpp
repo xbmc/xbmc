@@ -28,40 +28,41 @@ CAudioDecoder::CAudioDecoder(const AddonInfoPtr& addonInfo)
 
   // Create all interface parts independent to make API changes easier if
   // something is added
-  m_struct.toKodi = new AddonToKodiFuncTable_AudioDecoder();
-  m_struct.toAddon = new KodiToAddonFuncTable_AudioDecoder();
+  m_ifc.audiodecoder = new AddonInstance_AudioDecoder;
+  m_ifc.audiodecoder->toAddon = new KodiToAddonFuncTable_AudioDecoder();
+  m_ifc.audiodecoder->toKodi = new AddonToKodiFuncTable_AudioDecoder();
+  m_ifc.audiodecoder->toKodi->kodiInstance = this;
 }
 
 CAudioDecoder::~CAudioDecoder()
 {
   DestroyInstance();
 
-  delete m_struct.toKodi;
-  delete m_struct.toAddon;
+  delete m_ifc.audiodecoder->toKodi;
+  delete m_ifc.audiodecoder->toAddon;
+  delete m_ifc.audiodecoder;
 }
 
 bool CAudioDecoder::CreateDecoder()
 {
-  m_struct.toKodi->kodiInstance = this;
-  if (CreateInstance(&m_struct) != ADDON_STATUS_OK)
+  if (CreateInstance() != ADDON_STATUS_OK)
     return false;
 
-  m_addonInstance = m_struct.toAddon->addonInstance;
   return true;
 }
 
 bool CAudioDecoder::SupportsFile(const std::string& filename)
 {
   // Create in case not available, possible as this done by IAddonSupportCheck
-  if ((!m_addonInstance && !CreateDecoder()) || !m_struct.toAddon->supports_file)
+  if ((!m_ifc.hdl && !CreateDecoder()) || !m_ifc.audiodecoder->toAddon->supports_file)
     return false;
 
-  return m_struct.toAddon->supports_file(m_addonInstance, filename.c_str());
+  return m_ifc.audiodecoder->toAddon->supports_file(m_ifc.hdl, filename.c_str());
 }
 
 bool CAudioDecoder::Init(const CFileItem& file, unsigned int filecache)
 {
-  if (!m_struct.toAddon->init)
+  if (!m_ifc.audiodecoder->toAddon->init)
     return false;
 
   /// for replaygain
@@ -75,9 +76,9 @@ bool CAudioDecoder::Init(const CFileItem& file, unsigned int filecache)
   AudioEngineDataFormat addonFormat = AUDIOENGINE_FMT_INVALID;
   AudioEngineChannel channelList[AUDIOENGINE_CH_MAX] = {AUDIOENGINE_CH_NULL};
 
-  bool ret = m_struct.toAddon->init(m_addonInstance, file.GetDynPath().c_str(), filecache,
-                                    &channels, &sampleRate, &m_bitsPerSample, &m_TotalTime,
-                                    &m_bitRate, &addonFormat, channelList);
+  bool ret = m_ifc.audiodecoder->toAddon->init(m_ifc.hdl, file.GetDynPath().c_str(), filecache,
+                                               &channels, &sampleRate, &m_bitsPerSample,
+                                               &m_TotalTime, &m_bitRate, &addonFormat, channelList);
   if (ret)
   {
     if (channels <= 0 || sampleRate <= 0 || addonFormat == AUDIOENGINE_FMT_INVALID)
@@ -111,18 +112,18 @@ bool CAudioDecoder::Init(const CFileItem& file, unsigned int filecache)
 
 int CAudioDecoder::ReadPCM(uint8_t* buffer, size_t size, size_t* actualsize)
 {
-  if (!m_struct.toAddon->read_pcm)
+  if (!m_ifc.audiodecoder->toAddon->read_pcm)
     return 0;
 
-  return m_struct.toAddon->read_pcm(m_addonInstance, buffer, size, actualsize);
+  return m_ifc.audiodecoder->toAddon->read_pcm(m_ifc.hdl, buffer, size, actualsize);
 }
 
 bool CAudioDecoder::Seek(int64_t time)
 {
-  if (!m_struct.toAddon->seek)
+  if (!m_ifc.audiodecoder->toAddon->seek)
     return false;
 
-  m_struct.toAddon->seek(m_addonInstance, time);
+  m_ifc.audiodecoder->toAddon->seek(m_ifc.hdl, time);
   return true;
 }
 
@@ -130,11 +131,11 @@ bool CAudioDecoder::Load(const std::string& fileName,
                          MUSIC_INFO::CMusicInfoTag& tag,
                          EmbeddedArt* art)
 {
-  if (!m_struct.toAddon->read_tag)
+  if (!m_ifc.audiodecoder->toAddon->read_tag)
     return false;
 
   KODI_ADDON_AUDIODECODER_INFO_TAG ifcTag = {};
-  bool ret = m_struct.toAddon->read_tag(m_addonInstance, fileName.c_str(), &ifcTag);
+  bool ret = m_ifc.audiodecoder->toAddon->read_tag(m_ifc.hdl, fileName.c_str(), &ifcTag);
   if (ret)
   {
     if (ifcTag.title)
@@ -233,10 +234,10 @@ bool CAudioDecoder::Load(const std::string& fileName,
 
 int CAudioDecoder::GetTrackCount(const std::string& strPath)
 {
-  if (!m_struct.toAddon->track_count)
+  if (!m_ifc.audiodecoder->toAddon->track_count)
     return 0;
 
-  int result = m_struct.toAddon->track_count(m_addonInstance, strPath.c_str());
+  int result = m_ifc.audiodecoder->toAddon->track_count(m_ifc.hdl, strPath.c_str());
 
   if (result > 1)
   {

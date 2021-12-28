@@ -287,15 +287,14 @@ private:
 /// class ATTR_DLL_LOCAL CMyAudioEncoder : public kodi::addon::CInstanceAudioEncoder
 /// {
 /// public:
-///   CMyAudioEncoder(KODI_HANDLE instance, const std::string& kodiVersion)
-///     : kodi::addon::CInstanceAudioEncoder(instance, kodiVersion)
+///   CMyAudioEncoder(const kodi::addon::IInstanceInfo& instance);
 ///
 ///   bool Start(const kodi::addon::AudioEncoderInfoTag& tag) override;
 ///   int Encode(int numBytesRead, const uint8_t* pbtStream) override;
 ///   bool Finish() override; // Optional
 /// };
 ///
-/// CMyAudioEncoder::CMyAudioEncoder(KODI_HANDLE instance)
+/// CMyAudioEncoder::CMyAudioEncoder(const kodi::addon::IInstanceInfo& instance)
 ///   : kodi::addon::CInstanceAudioEncoder(instance)
 /// {
 ///   ...
@@ -330,25 +329,19 @@ private:
 /// {
 /// public:
 ///   CMyAddon() = default;
-///   ADDON_STATUS CreateInstance(int instanceType,
-///                               const std::string& instanceID,
-///                               KODI_HANDLE instance,
-///                               const std::string& version,
-///                               KODI_HANDLE& addonInstance) override;
+///   ADDON_STATUS CreateInstance(const kodi::addon::IInstanceInfo& instance,
+///                               KODI_ADDON_INSTANCE_HDL& hdl) override;
 /// };
 ///
 /// // If you use only one instance in your add-on, can be instanceType and
 /// // instanceID ignored
-/// ADDON_STATUS CMyAddon::CreateInstance(int instanceType,
-///                                       const std::string& instanceID,
-///                                       KODI_HANDLE instance,
-///                                       const std::string& version,
-///                                       KODI_HANDLE& addonInstance)
+/// ADDON_STATUS CMyAddon::CreateInstance(const kodi::addon::IInstanceInfo& instance,
+///                                       KODI_ADDON_INSTANCE_HDL& hdl)
 /// {
-///   if (instanceType == ADDON_INSTANCE_AUDIOENCODER)
+///   if (instance.IsType(ADDON_INSTANCE_AUDIOENCODER))
 ///   {
 ///     kodi::Log(ADDON_LOG_INFO, "Creating my audio encoder instance");
-///     addonInstance = new CMyAudioEncoder(instance, version);
+///     hdl = new CMyAudioEncoder(instance);
 ///     return ADDON_STATUS_OK;
 ///   }
 ///   else if (...)
@@ -373,10 +366,6 @@ public:
   ///
   /// @param[in] instance The instance value given to
   ///                     <b>`kodi::addon::CAddonBase::CreateInstance(...)`</b>.
-  /// @param[in] kodiVersion [opt] Version used in Kodi for this instance, to
-  ///                        allow compatibility to older Kodi versions.
-  ///
-  /// @note Recommended to set <b>`kodiVersion`</b>.
   ///
   ///
   /// --------------------------------------------------------------------------
@@ -386,8 +375,8 @@ public:
   /// class CMyAudioEncoder : public kodi::addon::CInstanceAudioEncoder
   /// {
   /// public:
-  ///   CMyAudioEncoder(KODI_HANDLE instance, const std::string& kodiVersion)
-  ///     : kodi::addon::CInstanceAudioEncoder(instance, kodiVersion)
+  ///   CMyAudioEncoder(const kodi::addon::IInstanceInfo& instance)
+  ///     : kodi::addon::CInstanceAudioEncoder(instance)
   ///   {
   ///      ...
   ///   }
@@ -395,22 +384,17 @@ public:
   ///   ...
   /// };
   ///
-  /// ADDON_STATUS CMyAddon::CreateInstance(int instanceType,
-  ///                                       const std::string& instanceID,
-  ///                                       KODI_HANDLE instance,
-  ///                                       const std::string& version,
-  ///                                       KODI_HANDLE& addonInstance)
+  /// ADDON_STATUS CMyAddon::CreateInstance(const kodi::addon::IInstanceInfo& instance,
+  ///                                       KODI_ADDON_INSTANCE_HDL& hdl)
   /// {
   ///   kodi::Log(ADDON_LOG_INFO, "Creating my audio encoder instance");
-  ///   addonInstance = new CMyAudioEncoder(instance, version);
+  ///   hdl = new CMyAudioEncoder(instance);
   ///   return ADDON_STATUS_OK;
   /// }
   /// ~~~~~~~~~~~~~
   ///
-  explicit CInstanceAudioEncoder(KODI_HANDLE instance, const std::string& kodiVersion = "")
-    : IAddonInstance(ADDON_INSTANCE_AUDIOENCODER,
-                     !kodiVersion.empty() ? kodiVersion
-                                          : GetKodiTypeVersion(ADDON_INSTANCE_AUDIOENCODER))
+  explicit CInstanceAudioEncoder(const kodi::addon::IInstanceInfo& instance)
+    : IAddonInstance(instance)
   {
     if (CPrivateBase::m_interface->globalSingleInstance != nullptr)
       throw std::logic_error("kodi::addon::CInstanceAudioEncoder: Creation of multiple together "
@@ -462,7 +446,7 @@ public:
   ///
   ssize_t Write(const uint8_t* data, size_t length)
   {
-    return m_instanceData->toKodi->write(m_instanceData->toKodi->kodiInstance, data, length);
+    return m_kodi->write(m_kodi->kodiInstance, data, length);
   }
   //----------------------------------------------------------------------------
 
@@ -489,22 +473,18 @@ public:
   ///
   ssize_t Seek(ssize_t position, int whence = SEEK_SET)
   {
-    return m_instanceData->toKodi->seek(m_instanceData->toKodi->kodiInstance, position, whence);
+    return m_kodi->seek(m_kodi->kodiInstance, position, whence);
   }
   //----------------------------------------------------------------------------
 
 private:
-  void SetAddonStruct(KODI_HANDLE instance)
+  void SetAddonStruct(KODI_ADDON_INSTANCE_STRUCT* instance)
   {
-    if (instance == nullptr)
-      throw std::logic_error("kodi::addon::CInstanceAudioEncoder: Creation with empty addon "
-                             "structure not allowed, table must be given from Kodi!");
-
-    m_instanceData = static_cast<AddonInstance_AudioEncoder*>(instance);
-    m_instanceData->toAddon->addonInstance = this;
-    m_instanceData->toAddon->start = ADDON_start;
-    m_instanceData->toAddon->encode = ADDON_encode;
-    m_instanceData->toAddon->finish = ADDON_finish;
+    instance->hdl = this;
+    instance->audioencoder->toAddon->start = ADDON_start;
+    instance->audioencoder->toAddon->encode = ADDON_encode;
+    instance->audioencoder->toAddon->finish = ADDON_finish;
+    m_kodi = instance->audioencoder->toKodi;
   }
 
   inline static bool ADDON_start(const KODI_ADDON_AUDIOENCODER_HDL hdl,
@@ -525,7 +505,7 @@ private:
     return static_cast<CInstanceAudioEncoder*>(hdl)->Finish();
   }
 
-  AddonInstance_AudioEncoder* m_instanceData;
+  AddonToKodiFuncTable_AudioEncoder* m_kodi{nullptr};
 };
 
 } /* namespace addon */

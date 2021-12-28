@@ -158,7 +158,7 @@ public:
   /// ADDONCREATOR(CGameExample)
   /// ~~~~~~~~~~~~~
   ///
-  CInstanceGame() : IAddonInstance(ADDON_INSTANCE_GAME, GetKodiTypeVersion(ADDON_INSTANCE_GAME))
+  CInstanceGame() : IAddonInstance(IInstanceInfo(CPrivateBase::m_interface->firstKodiInstance))
   {
     if (CPrivateBase::m_interface->globalSingleInstance != nullptr)
       throw std::logic_error("kodi::addon::CInstanceGame: Creation of more as one in single "
@@ -952,44 +952,42 @@ public:
   ///@}
 
 private:
-  void SetAddonStruct(KODI_HANDLE instance)
+  void SetAddonStruct(KODI_ADDON_INSTANCE_STRUCT* instance)
   {
-    if (instance == nullptr)
-      throw std::logic_error("kodi::addon::CInstanceGame: Creation with empty addon structure not"
-                             "allowed, table must be given from Kodi!");
+    instance->hdl = this;
 
-    m_instanceData = static_cast<AddonInstance_Game*>(instance);
+    instance->game->toAddon->LoadGame = ADDON_LoadGame;
+    instance->game->toAddon->LoadGameSpecial = ADDON_LoadGameSpecial;
+    instance->game->toAddon->LoadStandalone = ADDON_LoadStandalone;
+    instance->game->toAddon->UnloadGame = ADDON_UnloadGame;
+    instance->game->toAddon->GetGameTiming = ADDON_GetGameTiming;
+    instance->game->toAddon->GetRegion = ADDON_GetRegion;
+    instance->game->toAddon->RequiresGameLoop = ADDON_RequiresGameLoop;
+    instance->game->toAddon->RunFrame = ADDON_RunFrame;
+    instance->game->toAddon->Reset = ADDON_Reset;
+
+    instance->game->toAddon->HwContextReset = ADDON_HwContextReset;
+    instance->game->toAddon->HwContextDestroy = ADDON_HwContextDestroy;
+
+    instance->game->toAddon->HasFeature = ADDON_HasFeature;
+    instance->game->toAddon->GetTopology = ADDON_GetTopology;
+    instance->game->toAddon->FreeTopology = ADDON_FreeTopology;
+    instance->game->toAddon->SetControllerLayouts = ADDON_SetControllerLayouts;
+    instance->game->toAddon->EnableKeyboard = ADDON_EnableKeyboard;
+    instance->game->toAddon->EnableMouse = ADDON_EnableMouse;
+    instance->game->toAddon->ConnectController = ADDON_ConnectController;
+    instance->game->toAddon->InputEvent = ADDON_InputEvent;
+
+    instance->game->toAddon->SerializeSize = ADDON_SerializeSize;
+    instance->game->toAddon->Serialize = ADDON_Serialize;
+    instance->game->toAddon->Deserialize = ADDON_Deserialize;
+
+    instance->game->toAddon->CheatReset = ADDON_CheatReset;
+    instance->game->toAddon->GetMemory = ADDON_GetMemory;
+    instance->game->toAddon->SetCheat = ADDON_SetCheat;
+
+    m_instanceData = instance->game;
     m_instanceData->toAddon->addonInstance = this;
-
-    m_instanceData->toAddon->LoadGame = ADDON_LoadGame;
-    m_instanceData->toAddon->LoadGameSpecial = ADDON_LoadGameSpecial;
-    m_instanceData->toAddon->LoadStandalone = ADDON_LoadStandalone;
-    m_instanceData->toAddon->UnloadGame = ADDON_UnloadGame;
-    m_instanceData->toAddon->GetGameTiming = ADDON_GetGameTiming;
-    m_instanceData->toAddon->GetRegion = ADDON_GetRegion;
-    m_instanceData->toAddon->RequiresGameLoop = ADDON_RequiresGameLoop;
-    m_instanceData->toAddon->RunFrame = ADDON_RunFrame;
-    m_instanceData->toAddon->Reset = ADDON_Reset;
-
-    m_instanceData->toAddon->HwContextReset = ADDON_HwContextReset;
-    m_instanceData->toAddon->HwContextDestroy = ADDON_HwContextDestroy;
-
-    m_instanceData->toAddon->HasFeature = ADDON_HasFeature;
-    m_instanceData->toAddon->GetTopology = ADDON_GetTopology;
-    m_instanceData->toAddon->FreeTopology = ADDON_FreeTopology;
-    m_instanceData->toAddon->SetControllerLayouts = ADDON_SetControllerLayouts;
-    m_instanceData->toAddon->EnableKeyboard = ADDON_EnableKeyboard;
-    m_instanceData->toAddon->EnableMouse = ADDON_EnableMouse;
-    m_instanceData->toAddon->ConnectController = ADDON_ConnectController;
-    m_instanceData->toAddon->InputEvent = ADDON_InputEvent;
-
-    m_instanceData->toAddon->SerializeSize = ADDON_SerializeSize;
-    m_instanceData->toAddon->Serialize = ADDON_Serialize;
-    m_instanceData->toAddon->Deserialize = ADDON_Deserialize;
-
-    m_instanceData->toAddon->CheatReset = ADDON_CheatReset;
-    m_instanceData->toAddon->GetMemory = ADDON_GetMemory;
-    m_instanceData->toAddon->SetCheat = ADDON_SetCheat;
   }
 
   // --- Game operations ---------------------------------------------------------

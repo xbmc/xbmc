@@ -113,7 +113,7 @@ namespace addon
 /// class ATTR_DLL_LOCAL CMyImageDecoder : public kodi::addon::CInstanceImageDecoder
 /// {
 /// public:
-///   CMyImageDecoder(KODI_HANDLE instance, const std::string& kodiVersion);
+///   CMyImageDecoder(const kodi::addon::IInstanceInfo& instance);
 ///
 ///   bool LoadImageFromMemory(unsigned char* buffer,
 ///                            unsigned int bufSize,
@@ -129,8 +129,8 @@ namespace addon
 ///   ...
 /// };
 ///
-/// CMyImageDecoder::CMyImageDecoder(KODI_HANDLE instance, const std::string& kodiVersion)
-///   : CInstanceImageDecoder(instance, kodiVersion)
+/// CMyImageDecoder::CMyImageDecoder(const kodi::addon::IInstanceInfo& instance)
+///   : CInstanceImageDecoder(instance)
 /// {
 ///   ...
 /// }
@@ -160,25 +160,19 @@ namespace addon
 /// {
 /// public:
 ///   CMyAddon() = default;
-///   ADDON_STATUS CreateInstance(int instanceType,
-///                               const std::string& instanceID,
-///                               KODI_HANDLE instance,
-///                               const std::string& version,
-///                               KODI_HANDLE& addonInstance) override;
+///   ADDON_STATUS CreateInstance(const kodi::addon::IInstanceInfo& instance,
+///                               KODI_ADDON_INSTANCE_HDL& hdl) override;
 /// };
 ///
 /// // If you use only one instance in your add-on, can be instanceType and
 /// // instanceID ignored
-/// ADDON_STATUS CMyAddon::CreateInstance(int instanceType,
-///                                       const std::string& instanceID,
-///                                       KODI_HANDLE instance,
-///                                       const std::string& version,
-///                                       KODI_HANDLE& addonInstance)
+/// ADDON_STATUS CMyAddon::CreateInstance(const kodi::addon::IInstanceInfo& instance,
+///                                       KODI_ADDON_INSTANCE_HDL& hdl)
 /// {
-///   if (instanceType == ADDON_INSTANCE_IMAGEDECODER)
+///   if (instance.IsType(ADDON_INSTANCE_IMAGEDECODER))
 ///   {
 ///     kodi::Log(ADDON_LOG_INFO, "Creating my image decoder instance");
-///     addonInstance = new CMyImageDecoder(instance, version);
+///     hdl = new CMyImageDecoder(instance);
 ///     return ADDON_STATUS_OK;
 ///   }
 ///   else if (...)
@@ -205,15 +199,8 @@ public:
   /// @param[in] instance The from Kodi given instance given be add-on
   ///                     CreateInstance call with instance id
   ///                     @ref ADDON_INSTANCE_IMAGEDECODER.
-  /// @param[in] kodiVersion [opt] Version used in Kodi for this instance, to
-  ///                        allow compatibility to older Kodi versions.
   ///
-  /// @note Recommended to set <b>`kodiVersion`</b>.
-  ///
-  explicit CInstanceImageDecoder(KODI_HANDLE instance, const std::string& kodiVersion = "")
-    : IAddonInstance(ADDON_INSTANCE_IMAGEDECODER,
-                     !kodiVersion.empty() ? kodiVersion
-                                          : GetKodiTypeVersion(ADDON_INSTANCE_IMAGEDECODER))
+  explicit CInstanceImageDecoder(const IInstanceInfo& instance) : IAddonInstance(instance)
   {
     if (CPrivateBase::m_interface->globalSingleInstance != nullptr)
       throw std::logic_error("kodi::addon::CInstanceImageDecoder: Creation of multiple together "
@@ -274,16 +261,13 @@ public:
   //----------------------------------------------------------------------------
 
 private:
-  void SetAddonStruct(KODI_HANDLE instance)
+  void SetAddonStruct(KODI_ADDON_INSTANCE_STRUCT* instance)
   {
-    if (instance == nullptr)
-      throw std::logic_error("kodi::addon::CInstanceImageDecoder: Creation with empty addon "
-                             "structure not allowed, table must be given from Kodi!");
-
-    m_instanceData = static_cast<AddonInstance_ImageDecoder*>(instance);
+    instance->hdl = this;
+    instance->imagedecoder->toAddon->load_image_from_memory = ADDON_LoadImageFromMemory;
+    instance->imagedecoder->toAddon->decode = ADDON_Decode;
+    m_instanceData = instance->imagedecoder;
     m_instanceData->toAddon->addonInstance = this;
-    m_instanceData->toAddon->load_image_from_memory = ADDON_LoadImageFromMemory;
-    m_instanceData->toAddon->decode = ADDON_Decode;
   }
 
   inline static bool ADDON_LoadImageFromMemory(const AddonInstance_ImageDecoder* instance,

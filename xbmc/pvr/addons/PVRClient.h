@@ -1035,7 +1035,7 @@ public:
    * @brief Get the interface table used between addon and Kodi.
    * @todo This function will be removed after old callback library system is removed.
    */
-  AddonInstance_PVR* GetInstanceInterface() { return &m_struct; }
+  AddonInstance_PVR* GetInstanceInterface() { return m_ifc.pvr; }
 
 private:
   /*!
@@ -1332,7 +1332,5 @@ private:
   std::string m_strClientPath; /*!< @brief translated path to this add-on */
 
   mutable CCriticalSection m_critSection;
-
-  AddonInstance_PVR m_struct;
 };
 } // namespace PVR

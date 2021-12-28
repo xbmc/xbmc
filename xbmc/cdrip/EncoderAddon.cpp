@@ -14,26 +14,26 @@ CEncoderAddon::CEncoderAddon(const AddonInfoPtr& addonInfo)
   : IAddonInstanceHandler(ADDON_INSTANCE_AUDIOENCODER, addonInfo)
 {
   // Create "C" interface structures, used as own parts to prevent API problems on update
-  m_struct.toAddon = new KodiToAddonFuncTable_AudioEncoder();
-  m_struct.toKodi = new AddonToKodiFuncTable_AudioEncoder();
-  m_struct.toKodi->kodiInstance = this;
-  m_struct.toKodi->write = cb_write;
-  m_struct.toKodi->seek = cb_seek;
+  m_ifc.audioencoder = new AddonInstance_AudioEncoder();
+  m_ifc.audioencoder->toAddon = new KodiToAddonFuncTable_AudioEncoder();
+  m_ifc.audioencoder->toKodi = new AddonToKodiFuncTable_AudioEncoder();
+  m_ifc.audioencoder->toKodi->kodiInstance = this;
+  m_ifc.audioencoder->toKodi->write = cb_write;
+  m_ifc.audioencoder->toKodi->seek = cb_seek;
 }
 
 CEncoderAddon::~CEncoderAddon()
 {
   // Delete "C" interface structures
-  delete m_struct.toAddon;
-  delete m_struct.toKodi;
+  delete m_ifc.audioencoder->toKodi;
+  delete m_ifc.audioencoder->toAddon;
+  delete m_ifc.audioencoder;
 }
 
 bool CEncoderAddon::Init()
 {
-  if (CreateInstance(&m_struct) != ADDON_STATUS_OK || !m_struct.toAddon->start)
+  if (CreateInstance() != ADDON_STATUS_OK || !m_ifc.audioencoder->toAddon->start)
     return false;
-
-  m_addonInstance = m_struct.toAddon->addonInstance;
 
   KODI_ADDON_AUDIOENCODER_INFO_TAG tag{};
   tag.channels = m_iInChannels;
@@ -49,21 +49,21 @@ bool CEncoderAddon::Init()
   tag.genre = m_strGenre.c_str();
   tag.comment = m_strComment.c_str();
 
-  return m_struct.toAddon->start(m_addonInstance, &tag);
+  return m_ifc.audioencoder->toAddon->start(m_ifc.hdl, &tag);
 }
 
 ssize_t CEncoderAddon::Encode(uint8_t* pbtStream, size_t nNumBytesRead)
 {
-  if (m_struct.toAddon->encode)
-    return m_struct.toAddon->encode(m_addonInstance, pbtStream, nNumBytesRead);
+  if (m_ifc.audioencoder->toAddon->encode)
+    return m_ifc.audioencoder->toAddon->encode(m_ifc.hdl, pbtStream, nNumBytesRead);
   return 0;
 }
 
 bool CEncoderAddon::Close()
 {
   bool ret = false;
-  if (m_struct.toAddon->finish)
-    ret = m_struct.toAddon->finish(m_addonInstance);
+  if (m_ifc.audioencoder->toAddon->finish)
+    ret = m_ifc.audioencoder->toAddon->finish(m_ifc.hdl);
 
   DestroyInstance();
 
