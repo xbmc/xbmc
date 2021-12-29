@@ -82,7 +82,7 @@ bool CDVDDemuxVobsub::Open(const std::string& filename, int source, const std::s
     if (line[0] == '#')
       continue;
 
-    size_t pos = line.find_first_of(":");
+    size_t pos = line.find_first_of(':');
     if (pos != std::string::npos)
     {
       pos += 1;
@@ -204,14 +204,14 @@ bool CDVDDemuxVobsub::ParseId(SState& state, std::string& line)
   StringUtils::Trim(line);
   stream->language = line.substr(0, 2);
 
-  size_t pos = line.find_first_of(",");
+  size_t pos = line.find_first_of(',');
   if (pos != std::string::npos)
   {
     pos += 1;
     line.erase(0, pos);
   }
   StringUtils::TrimLeft(line);
-  pos = line.find_first_of(":");
+  pos = line.find_first_of(':');
   if (pos != std::string::npos && line.substr(0, pos + 1) == "index:")
   {
     pos += 1;
