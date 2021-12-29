@@ -311,7 +311,17 @@ endif()
 set(GLOBAL_TARGET_DEPS ffmpeg dvdnav crossguid fmt spdlog fstrcmp flatbuffers ${PLATFORM_GLOBAL_TARGET_DEPS})
 
 # main library (used for main binary and tests)
-add_library(lib${APP_NAME_LC} STATIC $<TARGET_OBJECTS:compileinfo>)
+if(CMAKE_GENERATOR STREQUAL Xcode)
+  add_library(compileinfo_obj OBJECT IMPORTED)
+  set_property(TARGET compileinfo_obj PROPERTY IMPORTED_OBJECTS
+    "${CMAKE_BINARY_DIR}/$(PROJECT_NAME).build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/compileinfo.build/$(OBJECT_FILE_DIR_normal:base)/$(CURRENT_ARCH)/CompileInfo.o"
+  )
+  add_library(lib${APP_NAME_LC} STATIC)
+  add_dependencies(lib${APP_NAME_LC} compileinfo)
+  target_link_libraries(lib${APP_NAME_LC} PUBLIC compileinfo_obj)
+else()
+  add_library(lib${APP_NAME_LC} STATIC $<TARGET_OBJECTS:compileinfo>)
+endif()
 add_dependencies(lib${APP_NAME_LC} ${GLOBAL_TARGET_DEPS})
 set_target_properties(lib${APP_NAME_LC} PROPERTIES PREFIX "")
 
