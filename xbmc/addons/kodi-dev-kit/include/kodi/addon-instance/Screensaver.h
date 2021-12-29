@@ -405,27 +405,27 @@ private:
   void SetAddonStruct(KODI_ADDON_INSTANCE_STRUCT* instance)
   {
     instance->hdl = this;
-    instance->screensaver->toAddon->Start = ADDON_Start;
-    instance->screensaver->toAddon->Stop = ADDON_Stop;
-    instance->screensaver->toAddon->Render = ADDON_Render;
+    instance->screensaver->toAddon->start = ADDON_start;
+    instance->screensaver->toAddon->stop = ADDON_stop;
+    instance->screensaver->toAddon->render = ADDON_render;
     m_instanceData = instance->screensaver;
   }
 
-  inline static bool ADDON_Start(const KODI_ADDON_SCREENSAVER_HDL hdl)
+  inline static bool ADDON_start(const KODI_ADDON_SCREENSAVER_HDL hdl)
   {
     CInstanceScreensaver* thisClass = static_cast<CInstanceScreensaver*>(hdl);
     thisClass->m_renderHelper = kodi::gui::GetRenderHelper();
     return thisClass->Start();
   }
 
-  inline static void ADDON_Stop(const KODI_ADDON_SCREENSAVER_HDL hdl)
+  inline static void ADDON_stop(const KODI_ADDON_SCREENSAVER_HDL hdl)
   {
     CInstanceScreensaver* thisClass = static_cast<CInstanceScreensaver*>(hdl);
     thisClass->Stop();
     thisClass->m_renderHelper = nullptr;
   }
 
-  inline static void ADDON_Render(const KODI_ADDON_SCREENSAVER_HDL hdl)
+  inline static void ADDON_render(const KODI_ADDON_SCREENSAVER_HDL hdl)
   {
     CInstanceScreensaver* thisClass = static_cast<CInstanceScreensaver*>(hdl);
 
