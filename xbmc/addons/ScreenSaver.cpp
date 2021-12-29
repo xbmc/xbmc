@@ -73,6 +73,8 @@ void CScreenSaver::GetProperties(struct KODI_ADDON_SCREENSAVER_PROPS* props)
     return;
 
   const auto winSystem = CServiceBroker::GetWinSystem();
+  if (!winSystem)
+    return;
 
   props->x = 0;
   props->y = 0;
@@ -80,7 +82,4 @@ void CScreenSaver::GetProperties(struct KODI_ADDON_SCREENSAVER_PROPS* props)
   props->width = winSystem->GetGfxContext().GetWidth();
   props->height = winSystem->GetGfxContext().GetHeight();
   props->pixelRatio = winSystem->GetGfxContext().GetResInfo().fPixelRatio;
-  props->name = strdup(Name().c_str());
-  props->presets = strdup(CSpecialProtocol::TranslatePath(Path()).c_str());
-  props->profile = strdup(CSpecialProtocol::TranslatePath(Profile()).c_str());
 }
