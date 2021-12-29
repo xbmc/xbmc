@@ -16,7 +16,7 @@ extern "C"
 {
 #endif /* __cplusplus */
 
-  struct AddonInstance_Screensaver;
+  typedef void* KODI_ADDON_SCREENSAVER_HDL;
 
   /*!
    * @brief Screensaver properties
@@ -53,10 +53,9 @@ extern "C"
    */
   typedef struct KodiToAddonFuncTable_Screensaver
   {
-    KODI_HANDLE addonInstance;
-    bool(__cdecl* Start)(struct AddonInstance_Screensaver* instance);
-    void(__cdecl* Stop)(struct AddonInstance_Screensaver* instance);
-    void(__cdecl* Render)(struct AddonInstance_Screensaver* instance);
+    bool(__cdecl* Start)(const KODI_ADDON_SCREENSAVER_HDL hdl);
+    void(__cdecl* Stop)(const KODI_ADDON_SCREENSAVER_HDL hdl);
+    void(__cdecl* Render)(const KODI_ADDON_SCREENSAVER_HDL hdl);
   } KodiToAddonFuncTable_Screensaver;
 
   /*!

@@ -409,29 +409,25 @@ private:
     instance->screensaver->toAddon->Stop = ADDON_Stop;
     instance->screensaver->toAddon->Render = ADDON_Render;
     m_instanceData = instance->screensaver;
-    m_instanceData->toAddon->addonInstance = this;
   }
 
-  inline static bool ADDON_Start(AddonInstance_Screensaver* instance)
+  inline static bool ADDON_Start(const KODI_ADDON_SCREENSAVER_HDL hdl)
   {
-    CInstanceScreensaver* thisClass =
-        static_cast<CInstanceScreensaver*>(instance->toAddon->addonInstance);
+    CInstanceScreensaver* thisClass = static_cast<CInstanceScreensaver*>(hdl);
     thisClass->m_renderHelper = kodi::gui::GetRenderHelper();
     return thisClass->Start();
   }
 
-  inline static void ADDON_Stop(AddonInstance_Screensaver* instance)
+  inline static void ADDON_Stop(const KODI_ADDON_SCREENSAVER_HDL hdl)
   {
-    CInstanceScreensaver* thisClass =
-        static_cast<CInstanceScreensaver*>(instance->toAddon->addonInstance);
+    CInstanceScreensaver* thisClass = static_cast<CInstanceScreensaver*>(hdl);
     thisClass->Stop();
     thisClass->m_renderHelper = nullptr;
   }
 
-  inline static void ADDON_Render(AddonInstance_Screensaver* instance)
+  inline static void ADDON_Render(const KODI_ADDON_SCREENSAVER_HDL hdl)
   {
-    CInstanceScreensaver* thisClass =
-        static_cast<CInstanceScreensaver*>(instance->toAddon->addonInstance);
+    CInstanceScreensaver* thisClass = static_cast<CInstanceScreensaver*>(hdl);
 
     if (!thisClass->m_renderHelper)
       return;
