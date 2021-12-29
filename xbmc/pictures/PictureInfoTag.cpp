@@ -8,14 +8,20 @@
 
 #include "PictureInfoTag.h"
 
+#include "ServiceBroker.h"
+#include "addons/ExtsMimeSupportList.h"
+#include "addons/ImageDecoder.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "utils/Archive.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "utils/Variant.h"
 
 #include <algorithm>
 #include <vector>
+
+using namespace KODI::ADDONS;
 
 CPictureInfoTag::ExifInfo::ExifInfo(const ExifInfo_t& other)
   : CameraMake(other.CameraMake),
@@ -123,14 +129,40 @@ bool CPictureInfoTag::Load(const std::string &path)
 {
   m_isLoaded = false;
 
-  ExifInfo_t exifInfo;
-  IPTCInfo_t iptcInfo;
-
-  if (process_jpeg(path.c_str(), &exifInfo, &iptcInfo))
+  // Get file extensions to find addon related to it.
+  std::string strExtension = URIUtils::GetExtension(path);
+  StringUtils::ToLower(strExtension);
+  if (!strExtension.empty() && CServiceBroker::IsBinaryAddonCacheUp())
   {
-    m_exifInfo = ExifInfo(exifInfo);
-    m_iptcInfo = IPTCInfo(iptcInfo);
-    m_isLoaded = true;
+    // Load via available image decoder addons
+    auto addonInfos = CServiceBroker::GetExtsMimeSupportList().GetExtensionSupportedAddonInfos(
+        strExtension, CExtsMimeSupportList::FilterSelect::all);
+    for (const auto& addonInfo : addonInfos)
+    {
+      if (addonInfo.first != ADDON::ADDON_IMAGEDECODER)
+        continue;
+
+      std::unique_ptr<CImageDecoder> result = std::make_unique<CImageDecoder>(addonInfo.second, "");
+      if (result->LoadInfoTag(path, this))
+      {
+        m_isLoaded = true;
+        break;
+      }
+    }
+  }
+
+  // Load by Kodi's included own way
+  if (!m_isLoaded)
+  {
+    ExifInfo_t exifInfo;
+    IPTCInfo_t iptcInfo;
+
+    if (process_jpeg(path.c_str(), &exifInfo, &iptcInfo))
+    {
+      m_exifInfo = ExifInfo(exifInfo);
+      m_iptcInfo = IPTCInfo(iptcInfo);
+      m_isLoaded = true;
+    }
   }
 
   ConvertDateTime();

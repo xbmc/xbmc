@@ -1174,6 +1174,32 @@ bool CAddonMgr::GetAddonInfos(AddonInfos& addonInfos, bool onlyEnabled, TYPE typ
   return !addonInfos.empty();
 }
 
+std::vector<AddonInfoPtr> CAddonMgr::GetAddonInfos(bool onlyEnabled,
+                                                   const std::vector<TYPE>& types) const
+{
+  std::vector<AddonInfoPtr> infos;
+  if (types.empty())
+    return infos;
+
+  CSingleLock lock(m_critSection);
+
+  for (auto& info : m_installedAddons)
+  {
+    if (onlyEnabled && m_disabled.find(info.first) != m_disabled.end())
+      continue;
+
+    if (info.second->MainType() == ADDON_UNKNOWN)
+      continue;
+
+    const auto it = std::find_if(types.begin(), types.end(),
+                                 [info](TYPE t) { return info.second->HasType(t); });
+    if (it != types.end())
+      infos.emplace_back(info.second);
+  }
+
+  return infos;
+}
+
 bool CAddonMgr::GetDisabledAddonInfos(std::vector<AddonInfoPtr>& addonInfos, TYPE type) const
 {
   return GetDisabledAddonInfos(addonInfos, type, AddonDisabledReason::NONE);
