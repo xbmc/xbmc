@@ -46,6 +46,13 @@ extern "C"
     KODI_HANDLE kodiInstance;
   } AddonToKodiFuncTable_Screensaver;
 
+  typedef bool(ATTR_APIENTRYP PFN_KODI_ADDON_SCREENSAVER_START_V1)(
+      const KODI_ADDON_SCREENSAVER_HDL hdl);
+  typedef void(ATTR_APIENTRYP PFN_KODI_ADDON_SCREENSAVER_STOP_V1)(
+      const KODI_ADDON_SCREENSAVER_HDL hdl);
+  typedef void(ATTR_APIENTRYP PFN_KODI_ADDON_SCREENSAVER_RENDER_V1)(
+      const KODI_ADDON_SCREENSAVER_HDL hdl);
+
   /*!
    * @brief Screensaver function hooks
    *
@@ -53,9 +60,9 @@ extern "C"
    */
   typedef struct KodiToAddonFuncTable_Screensaver
   {
-    bool(__cdecl* Start)(const KODI_ADDON_SCREENSAVER_HDL hdl);
-    void(__cdecl* Stop)(const KODI_ADDON_SCREENSAVER_HDL hdl);
-    void(__cdecl* Render)(const KODI_ADDON_SCREENSAVER_HDL hdl);
+    PFN_KODI_ADDON_SCREENSAVER_START_V1 start;
+    PFN_KODI_ADDON_SCREENSAVER_STOP_V1 stop;
+    PFN_KODI_ADDON_SCREENSAVER_RENDER_V1 render;
   } KodiToAddonFuncTable_Screensaver;
 
   /*!

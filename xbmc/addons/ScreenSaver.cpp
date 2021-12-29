@@ -59,21 +59,21 @@ CScreenSaver::~CScreenSaver()
 
 bool CScreenSaver::Start()
 {
-  if (m_ifc.screensaver->toAddon->Start)
-    return m_ifc.screensaver->toAddon->Start(m_ifc.hdl);
+  if (m_ifc.screensaver->toAddon->start)
+    return m_ifc.screensaver->toAddon->start(m_ifc.hdl);
   return false;
 }
 
 void CScreenSaver::Stop()
 {
-  if (m_ifc.screensaver->toAddon->Stop)
-    m_ifc.screensaver->toAddon->Stop(m_ifc.hdl);
+  if (m_ifc.screensaver->toAddon->stop)
+    m_ifc.screensaver->toAddon->stop(m_ifc.hdl);
 }
 
 void CScreenSaver::Render()
 {
-  if (m_ifc.screensaver->toAddon->Render)
-    m_ifc.screensaver->toAddon->Render(m_ifc.hdl);
+  if (m_ifc.screensaver->toAddon->render)
+    m_ifc.screensaver->toAddon->render(m_ifc.hdl);
 }
 
 } /* namespace ADDON */
