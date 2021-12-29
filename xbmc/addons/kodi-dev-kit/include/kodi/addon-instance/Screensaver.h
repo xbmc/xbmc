@@ -318,7 +318,7 @@ public:
   /// ..
   /// ~~~~~~~~~~~~~
   ///
-  inline kodi::HardwareContext Device() { return m_device; }
+  inline kodi::HardwareContext Device() { return m_props.device; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -327,7 +327,7 @@ public:
   ///
   /// @return The X position, in pixels
   ///
-  inline int X() { return m_x; }
+  inline int X() { return m_props.x; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -336,7 +336,7 @@ public:
   ///
   /// @return The Y position, in pixels
   ///
-  inline int Y() { return m_y; }
+  inline int Y() { return m_props.y; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -345,7 +345,7 @@ public:
   ///
   /// @return The width, in pixels
   ///
-  inline int Width() { return m_width; }
+  inline int Width() { return m_props.width; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -354,7 +354,7 @@ public:
   ///
   /// @return The height, in pixels
   ///
-  inline int Height() { return m_height; }
+  inline int Height() { return m_props.height; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -364,39 +364,7 @@ public:
   ///
   /// @return The pixel aspect ratio used by the display
   ///
-  inline float PixelRatio() { return m_pixelRatio; }
-  //----------------------------------------------------------------------------
-
-  //============================================================================
-  /// @ingroup cpp_kodi_addon_screensaver_CB
-  /// @brief Used to get the name of the add-on defined in `addon.xml`.
-  ///
-  /// @return The add-on name
-  ///
-  inline std::string Name() { return m_name; }
-  //----------------------------------------------------------------------------
-
-  //============================================================================
-  ///
-  /// @ingroup cpp_kodi_addon_screensaver_CB
-  /// @brief Used to get the full path where the add-on is installed.
-  ///
-  /// @return The add-on installation path
-  ///
-  inline std::string Presets() { return m_presets; }
-  //----------------------------------------------------------------------------
-
-  //============================================================================
-  /// @ingroup cpp_kodi_addon_screensaver_CB
-  /// @brief Used to get the full path to the add-on's user profile.
-  ///
-  /// @note The trailing folder (consisting of the add-on's ID) is not created
-  /// by default. If it is needed, you must call kodi::vfs::CreateDirectory()
-  /// to create the folder.
-  ///
-  /// @return Path to the user profile
-  ///
-  inline std::string Profile() { return m_profile; }
+  inline float PixelRatio() { return m_props.pixelRatio; }
   //----------------------------------------------------------------------------
 
   ///@}
@@ -409,29 +377,7 @@ private:
     instance->screensaver->toAddon->stop = ADDON_stop;
     instance->screensaver->toAddon->render = ADDON_render;
 
-    SCREENSAVER_PROPS props = {};
-    instance->screensaver->toKodi->get_properties(instance->info->kodi, &props);
-    m_device = props.device;
-    m_x = props.x;
-    m_y = props.y;
-    m_width = props.width;
-    m_height = props.height;
-    m_pixelRatio = props.pixelRatio;
-    if (props.name)
-    {
-      m_name = props.name;
-      free(props.name);
-    }
-    if (props.presets)
-    {
-      m_presets = props.presets;
-      free(props.presets);
-    }
-    if (props.profile)
-    {
-      m_profile = props.profile;
-      free(props.profile);
-    }
+    instance->screensaver->toKodi->get_properties(instance->info->kodi, &m_props);
   }
 
   inline static bool ADDON_start(const KODI_ADDON_SCREENSAVER_HDL hdl)
@@ -470,15 +416,7 @@ private:
    */
   std::shared_ptr<kodi::gui::IRenderHelper> m_renderHelper;
 
-  ADDON_HARDWARE_CONTEXT m_device;
-  int m_x;
-  int m_y;
-  int m_width;
-  int m_height;
-  float m_pixelRatio;
-  std::string m_name;
-  std::string m_presets;
-  std::string m_profile;
+  KODI_ADDON_SCREENSAVER_PROPS m_props = {};
 };
 
 } /* namespace addon */

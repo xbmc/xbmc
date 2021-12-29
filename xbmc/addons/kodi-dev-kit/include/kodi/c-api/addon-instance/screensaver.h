@@ -26,9 +26,6 @@ extern "C"
     int width;
     int height;
     float pixelRatio;
-    char* name;
-    char* presets;
-    char* profile;
   };
 
   typedef bool(ATTR_APIENTRYP PFN_KODI_ADDON_SCREENSAVER_START_V1)(
