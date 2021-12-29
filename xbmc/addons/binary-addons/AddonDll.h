@@ -28,7 +28,7 @@ namespace ADDON
  * After game system is changed should by this also changed to
  * "const IAddonInstanceHandler*" or direct in map below.
  */
-using ADDON_INSTANCE_HANDLER = const void*;
+using ADDON_INSTANCE_HANDLER = void*;
 
 /*!
  * @brief Information class for use on addon type managers.
@@ -82,29 +82,17 @@ public:
   /*!
    * @brief Function to create a addon instance class
    *
-   * @param[in] instanceType The wanted instance type class to open on addon
-   * @param[in] instanceClass The from Kodi used class for active instance
-   * @param[in] instanceID The from addon used ID string of active instance
-   * @param[in] instance Pointer where the interface functions from addon
-   *                     becomes stored during his instance creation.
-   * @param[in] parentInstance In case the instance class is related to another
-   *                           addon instance class becomes with the pointer
-   *                           given to addon. Is optional and most addon types
-   *                           not use it.
+   * @param[in,out] instance The for addon used data structure for active instance
    * @return The status of addon after the creation.
    */
-  ADDON_STATUS CreateInstance(ADDON_TYPE instanceType,
-                              ADDON_INSTANCE_HANDLER instanceClass,
-                              const std::string& instanceID,
-                              KODI_HANDLE instance,
-                              KODI_HANDLE parentInstance = nullptr);
+  ADDON_STATUS CreateInstance(KODI_ADDON_INSTANCE_STRUCT* instance);
 
   /*!
    * @brief Function to destroy a on addon created instance class
    *
-   * @param[in] instanceClass The from Kodi used class for active instance
+   * @param[in] instance The for addon used data structure for active instance
    */
-  void DestroyInstance(ADDON_INSTANCE_HANDLER instanceClass);
+  void DestroyInstance(KODI_ADDON_INSTANCE_STRUCT* instance);
 
   bool IsInUse() const override;
   void RegisterInformer(CAddonDllInformer* informer);
@@ -137,7 +125,7 @@ private:
    *                              This is used then to interact on interface.
    * @return The status of addon after the creation.
    */
-  ADDON_STATUS Create(KODI_HANDLE firstKodiInstance);
+  ADDON_STATUS Create(KODI_ADDON_INSTANCE_STRUCT* firstKodiInstance);
 
   /*!
    * @brief Main addon destroying call function
@@ -152,7 +140,7 @@ private:
   DllAddon* m_pDll = nullptr;
   bool m_initialized = false;
   bool LoadDll();
-  std::map<ADDON_INSTANCE_HANDLER, std::pair<ADDON_TYPE, KODI_HANDLE>> m_usedInstances;
+  std::map<ADDON_INSTANCE_HANDLER, KODI_ADDON_INSTANCE_STRUCT*> m_usedInstances;
   CAddonDllInformer* m_informer = nullptr;
 
   virtual ADDON_STATUS TransferSettings();

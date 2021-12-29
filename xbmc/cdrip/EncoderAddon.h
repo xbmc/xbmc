@@ -36,10 +36,7 @@ private:
   //@{
   static ssize_t cb_write(KODI_HANDLE kodiInstance, const uint8_t* data, size_t len);
   static ssize_t cb_seek(KODI_HANDLE kodiInstance, ssize_t pos, int whence);
-  AddonInstance_AudioEncoder m_struct;
   //@}
-
-  KODI_HANDLE m_addonInstance;
 };
 
 } /* namespace CDRIP */

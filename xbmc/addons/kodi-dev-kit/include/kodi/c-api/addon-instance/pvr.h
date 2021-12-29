@@ -96,25 +96,25 @@ extern "C"
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Transfer functions where give data back to Kodi, e.g. GetChannels calls TransferChannelEntry
     void (*TransferChannelEntry)(void* kodiInstance,
-                                 const ADDON_HANDLE handle,
+                                 const PVR_HANDLE handle,
                                  const struct PVR_CHANNEL* chan);
     void (*TransferProviderEntry)(void* kodiInstance,
-                                  const ADDON_HANDLE handle,
+                                  const PVR_HANDLE handle,
                                   const struct PVR_PROVIDER* chanProvider);
     void (*TransferChannelGroup)(void* kodiInstance,
-                                 const ADDON_HANDLE handle,
+                                 const PVR_HANDLE handle,
                                  const struct PVR_CHANNEL_GROUP* group);
     void (*TransferChannelGroupMember)(void* kodiInstance,
-                                       const ADDON_HANDLE handle,
+                                       const PVR_HANDLE handle,
                                        const struct PVR_CHANNEL_GROUP_MEMBER* member);
     void (*TransferEpgEntry)(void* kodiInstance,
-                             const ADDON_HANDLE handle,
+                             const PVR_HANDLE handle,
                              const struct EPG_TAG* epgentry);
     void (*TransferRecordingEntry)(void* kodiInstance,
-                                   const ADDON_HANDLE handle,
+                                   const PVR_HANDLE handle,
                                    const struct PVR_RECORDING* recording);
     void (*TransferTimerEntry)(void* kodiInstance,
-                               const ADDON_HANDLE handle,
+                               const PVR_HANDLE handle,
                                const struct PVR_TIMER* timer);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
@@ -161,7 +161,7 @@ extern "C"
     // Channel interface functions
 
     enum PVR_ERROR(__cdecl* GetChannelsAmount)(const struct AddonInstance_PVR*, int*);
-    enum PVR_ERROR(__cdecl* GetChannels)(const struct AddonInstance_PVR*, ADDON_HANDLE, bool);
+    enum PVR_ERROR(__cdecl* GetChannels)(const struct AddonInstance_PVR*, PVR_HANDLE, bool);
     enum PVR_ERROR(__cdecl* GetChannelStreamProperties)(const struct AddonInstance_PVR*,
                                                         const struct PVR_CHANNEL*,
                                                         struct PVR_NAMED_VALUE*,
@@ -177,14 +177,14 @@ extern "C"
     // Provider interface functions
 
     enum PVR_ERROR(__cdecl* GetProvidersAmount)(const struct AddonInstance_PVR*, int*);
-    enum PVR_ERROR(__cdecl* GetProviders)(const struct AddonInstance_PVR*, ADDON_HANDLE);
+    enum PVR_ERROR(__cdecl* GetProviders)(const struct AddonInstance_PVR*, PVR_HANDLE);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Channel group interface functions
     enum PVR_ERROR(__cdecl* GetChannelGroupsAmount)(const struct AddonInstance_PVR*, int*);
-    enum PVR_ERROR(__cdecl* GetChannelGroups)(const struct AddonInstance_PVR*, ADDON_HANDLE, bool);
+    enum PVR_ERROR(__cdecl* GetChannelGroups)(const struct AddonInstance_PVR*, PVR_HANDLE, bool);
     enum PVR_ERROR(__cdecl* GetChannelGroupMembers)(const struct AddonInstance_PVR*,
-                                                    ADDON_HANDLE,
+                                                    PVR_HANDLE,
                                                     const struct PVR_CHANNEL_GROUP*);
 
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
@@ -205,7 +205,7 @@ extern "C"
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // EPG interface functions
     enum PVR_ERROR(__cdecl* GetEPGForChannel)(
-        const struct AddonInstance_PVR*, ADDON_HANDLE, int, time_t, time_t);
+        const struct AddonInstance_PVR*, PVR_HANDLE, int, time_t, time_t);
     enum PVR_ERROR(__cdecl* IsEPGTagRecordable)(const struct AddonInstance_PVR*,
                                                 const struct EPG_TAG*,
                                                 bool*);
@@ -229,7 +229,7 @@ extern "C"
     //--==----==----==----==----==----==----==----==----==----==----==----==----==
     // Recording interface functions
     enum PVR_ERROR(__cdecl* GetRecordingsAmount)(const struct AddonInstance_PVR*, bool, int*);
-    enum PVR_ERROR(__cdecl* GetRecordings)(const struct AddonInstance_PVR*, ADDON_HANDLE, bool);
+    enum PVR_ERROR(__cdecl* GetRecordings)(const struct AddonInstance_PVR*, PVR_HANDLE, bool);
     enum PVR_ERROR(__cdecl* DeleteRecording)(const struct AddonInstance_PVR*,
                                              const struct PVR_RECORDING*);
     enum PVR_ERROR(__cdecl* UndeleteRecording)(const struct AddonInstance_PVR*,
@@ -269,7 +269,7 @@ extern "C"
                                            struct PVR_TIMER_TYPE[],
                                            int*);
     enum PVR_ERROR(__cdecl* GetTimersAmount)(const struct AddonInstance_PVR*, int*);
-    enum PVR_ERROR(__cdecl* GetTimers)(const struct AddonInstance_PVR*, ADDON_HANDLE);
+    enum PVR_ERROR(__cdecl* GetTimers)(const struct AddonInstance_PVR*, PVR_HANDLE);
     enum PVR_ERROR(__cdecl* AddTimer)(const struct AddonInstance_PVR*, const struct PVR_TIMER*);
     enum PVR_ERROR(__cdecl* DeleteTimer)(const struct AddonInstance_PVR*,
                                          const struct PVR_TIMER*,

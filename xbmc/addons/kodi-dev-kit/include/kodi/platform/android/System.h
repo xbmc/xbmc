@@ -46,8 +46,8 @@ class ATTR_DLL_LOCAL CInterfaceAndroidSystem
 {
 public:
   CInterfaceAndroidSystem()
-    : m_interface(static_cast<AddonToKodiFuncTable_android_system*>(
-          GetInterface(INTERFACE_ANDROID_SYSTEM_NAME, INTERFACE_ANDROID_SYSTEM_VERSION)))
+    : m_interface(static_cast<AddonToKodiFuncTable_android_system*>(kodi::addon::GetInterface(
+          INTERFACE_ANDROID_SYSTEM_NAME, INTERFACE_ANDROID_SYSTEM_VERSION)))
   {
   }
 

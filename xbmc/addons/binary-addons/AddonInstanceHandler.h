@@ -14,6 +14,8 @@
 
 #include <memory>
 
+class CSetting;
+
 namespace ADDON
 {
 
@@ -37,7 +39,7 @@ public:
   std::string Profile() const;
   AddonVersion Version() const;
 
-  ADDON_STATUS CreateInstance(KODI_HANDLE instance);
+  ADDON_STATUS CreateInstance();
   void DestroyInstance();
   const AddonDllPtr& Addon() const { return m_addon; }
   AddonInfoPtr GetAddonInfo() const { return m_addonInfo; }
@@ -47,7 +49,41 @@ public:
   virtual void OnPreUnInstall() {}
   virtual void OnPostUnInstall() {}
 
+protected:
+  KODI_ADDON_INSTANCE_INFO m_info{};
+  KODI_ADDON_INSTANCE_STRUCT m_ifc{};
+
 private:
+  std::shared_ptr<CSetting> GetSetting(const std::string& setting);
+
+  static char* get_instance_user_path(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl);
+  static bool is_instance_setting_using_default(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                                const char* id);
+  static bool get_instance_setting_bool(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                        const char* id,
+                                        bool* value);
+  static bool get_instance_setting_int(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                       const char* id,
+                                       int* value);
+  static bool get_instance_setting_float(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                         const char* id,
+                                         float* value);
+  static bool get_instance_setting_string(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                          const char* id,
+                                          char** value);
+  static bool set_instance_setting_bool(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                        const char* id,
+                                        bool value);
+  static bool set_instance_setting_int(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                       const char* id,
+                                       int value);
+  static bool set_instance_setting_float(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                         const char* id,
+                                         float value);
+  static bool set_instance_setting_string(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                          const char* id,
+                                          const char* value);
+
   ADDON_TYPE m_type;
   std::string m_instanceId;
   KODI_HANDLE m_parentInstance;

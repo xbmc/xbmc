@@ -8,13 +8,17 @@
 
 #include "AddonBase.h"
 
+#include "Application.h"
 #include "GUIUserMessages.h"
 #include "addons/binary-addons/AddonDll.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
 #include "addons/settings/AddonSettings.h"
+#include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
+#include "utils/URIUtils.h"
 #include "utils/log.h"
 
 // "C" interface addon callback handle classes
@@ -31,13 +35,10 @@ std::vector<ADDON_GET_INTERFACE_FN> Interface_Base::s_registeredInterfaces;
 
 bool Interface_Base::InitInterface(CAddonDll* addon,
                                    AddonGlobalInterface& addonInterface,
-                                   KODI_HANDLE firstKodiInstance)
+                                   KODI_ADDON_INSTANCE_STRUCT* firstKodiInstance)
 {
   addonInterface = {};
 
-  addonInterface.libBasePath =
-      strdup(CSpecialProtocol::TranslatePath("special://xbmcbinaddons").c_str());
-  addonInterface.kodi_base_api_version = strdup(kodi::addon::GetTypeVersion(ADDON_GLOBAL_MAIN));
   addonInterface.addonBase = nullptr;
   addonInterface.globalSingleInstance = nullptr;
   addonInterface.firstKodiInstance = firstKodiInstance;
@@ -46,22 +47,29 @@ bool Interface_Base::InitInterface(CAddonDll* addon,
   // compatible with other versions
   addonInterface.toKodi = new AddonToKodiFuncTable_Addon();
   addonInterface.toKodi->kodiBase = addon;
-  addonInterface.toKodi->get_type_version = get_type_version;
-  addonInterface.toKodi->get_addon_path = get_addon_path;
-  addonInterface.toKodi->get_base_user_path = get_base_user_path;
   addonInterface.toKodi->addon_log_msg = addon_log_msg;
-  addonInterface.toKodi->is_setting_using_default = is_setting_using_default;
-  addonInterface.toKodi->get_setting_bool = get_setting_bool;
-  addonInterface.toKodi->get_setting_int = get_setting_int;
-  addonInterface.toKodi->get_setting_float = get_setting_float;
-  addonInterface.toKodi->get_setting_string = get_setting_string;
-  addonInterface.toKodi->set_setting_bool = set_setting_bool;
-  addonInterface.toKodi->set_setting_int = set_setting_int;
-  addonInterface.toKodi->set_setting_float = set_setting_float;
-  addonInterface.toKodi->set_setting_string = set_setting_string;
   addonInterface.toKodi->free_string = free_string;
   addonInterface.toKodi->free_string_array = free_string_array;
-  addonInterface.toKodi->get_interface = get_interface;
+
+  addonInterface.toKodi->kodi_addon = new AddonToKodiFuncTable_kodi_addon();
+  addonInterface.toKodi->kodi_addon->get_addon_path = get_addon_path;
+  addonInterface.toKodi->kodi_addon->get_lib_path = get_lib_path;
+  addonInterface.toKodi->kodi_addon->get_user_path = get_user_path;
+  addonInterface.toKodi->kodi_addon->get_temp_path = get_temp_path;
+  addonInterface.toKodi->kodi_addon->get_localized_string = get_localized_string;
+  addonInterface.toKodi->kodi_addon->open_settings_dialog = open_settings_dialog;
+  addonInterface.toKodi->kodi_addon->is_setting_using_default = is_setting_using_default;
+  addonInterface.toKodi->kodi_addon->get_setting_bool = get_setting_bool;
+  addonInterface.toKodi->kodi_addon->get_setting_int = get_setting_int;
+  addonInterface.toKodi->kodi_addon->get_setting_float = get_setting_float;
+  addonInterface.toKodi->kodi_addon->get_setting_string = get_setting_string;
+  addonInterface.toKodi->kodi_addon->set_setting_bool = set_setting_bool;
+  addonInterface.toKodi->kodi_addon->set_setting_int = set_setting_int;
+  addonInterface.toKodi->kodi_addon->set_setting_float = set_setting_float;
+  addonInterface.toKodi->kodi_addon->set_setting_string = set_setting_string;
+  addonInterface.toKodi->kodi_addon->get_addon_info = get_addon_info;
+  addonInterface.toKodi->kodi_addon->get_type_version = get_type_version;
+  addonInterface.toKodi->kodi_addon->get_interface = get_interface;
 
   // Related parts becomes set from addon headers, make here to nullptr to allow
   // checks for right set of them
@@ -85,11 +93,8 @@ void Interface_Base::DeInitInterface(AddonGlobalInterface& addonInterface)
   Interface_AudioEngine::DeInit(&addonInterface);
   Interface_General::DeInit(&addonInterface);
 
-  if (addonInterface.libBasePath)
-    free(const_cast<char*>(addonInterface.libBasePath));
-  if (addonInterface.kodi_base_api_version)
-    free(const_cast<char*>(addonInterface.kodi_base_api_version));
-
+  if (addonInterface.toKodi)
+    delete addonInterface.toKodi->kodi_addon;
   delete addonInterface.toKodi;
   delete addonInterface.toAddon;
   addonInterface = {};
@@ -135,38 +140,11 @@ bool Interface_Base::UpdateSettingInActiveDialog(CAddonDll* addon,
  */
 //@{
 
-char* Interface_Base::get_type_version(void* kodiBase, int type)
+void Interface_Base::addon_log_msg(const KODI_ADDON_BACKEND_HDL hdl,
+                                   const int addonLogLevel,
+                                   const char* strMessage)
 {
-  return strdup(kodi::addon::GetTypeVersion(type));
-}
-
-char* Interface_Base::get_addon_path(void* kodiBase)
-{
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  if (addon == nullptr)
-  {
-    CLog::Log(LOGERROR, "get_addon_path(...) called with empty kodi instance pointer");
-    return nullptr;
-  }
-
-  return strdup(CSpecialProtocol::TranslatePath(addon->Path()).c_str());
-}
-
-char* Interface_Base::get_base_user_path(void* kodiBase)
-{
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
-  if (addon == nullptr)
-  {
-    CLog::Log(LOGERROR, "get_base_user_path(...) called with empty kodi instance pointer");
-    return nullptr;
-  }
-
-  return strdup(CSpecialProtocol::TranslatePath(addon->Profile()).c_str());
-}
-
-void Interface_Base::addon_log_msg(void* kodiBase, const int addonLogLevel, const char* strMessage)
-{
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  CAddonDll* addon = static_cast<CAddonDll*>(hdl);
   if (addon == nullptr)
   {
     CLog::Log(LOGERROR, "addon_log_msg(...) called with empty kodi instance pointer");
@@ -199,13 +177,159 @@ void Interface_Base::addon_log_msg(void* kodiBase, const int addonLogLevel, cons
   CLog::Log(logLevel, "AddOnLog: {}: {}", addon->ID(), strMessage);
 }
 
-bool Interface_Base::is_setting_using_default(void* kodiBase, const char* id)
+char* Interface_Base::get_type_version(const KODI_ADDON_BACKEND_HDL hdl, int type)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  return strdup(kodi::addon::GetTypeVersion(type));
+}
+
+char* Interface_Base::get_addon_path(const KODI_ADDON_BACKEND_HDL hdl)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(hdl);
+  if (addon == nullptr)
+  {
+    CLog::Log(LOGERROR, "get_addon_path(...) called with empty kodi instance pointer");
+    return nullptr;
+  }
+
+  return strdup(CSpecialProtocol::TranslatePath(addon->Path()).c_str());
+}
+
+char* Interface_Base::get_lib_path(const KODI_ADDON_BACKEND_HDL hdl)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(hdl);
+  if (addon == nullptr)
+  {
+    CLog::Log(LOGERROR, "get_lib_path(...) called with empty kodi instance pointer");
+    return nullptr;
+  }
+
+  return strdup(CSpecialProtocol::TranslatePath("special://xbmcbinaddons/" + addon->ID()).c_str());
+}
+
+char* Interface_Base::get_user_path(const KODI_ADDON_BACKEND_HDL hdl)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(hdl);
+  if (addon == nullptr)
+  {
+    CLog::Log(LOGERROR, "get_user_path(...) called with empty kodi instance pointer");
+    return nullptr;
+  }
+
+  return strdup(CSpecialProtocol::TranslatePath(addon->Profile()).c_str());
+}
+
+char* Interface_Base::get_temp_path(const KODI_ADDON_BACKEND_HDL hdl)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(hdl);
+  if (addon == nullptr)
+  {
+    CLog::Log(LOGERROR, "get_temp_path(...) called with empty kodi instance pointer");
+    return nullptr;
+  }
+
+  std::string tempPath =
+      URIUtils::AddFileToFolder(CServiceBroker::GetAddonMgr().GetTempAddonBasePath(), addon->ID());
+  tempPath += "-temp";
+  XFILE::CDirectory::Create(tempPath);
+
+  return strdup(CSpecialProtocol::TranslatePath(tempPath).c_str());
+}
+
+char* Interface_Base::get_localized_string(const KODI_ADDON_BACKEND_HDL hdl, long label_id)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(hdl);
+  if (!addon)
+  {
+    CLog::Log(LOGERROR, "get_localized_string(...) called with empty kodi instance pointer");
+    return nullptr;
+  }
+
+  if (g_application.m_bStop)
+    return nullptr;
+
+  std::string label = g_localizeStrings.GetAddonString(addon->ID(), label_id);
+  if (label.empty())
+    label = g_localizeStrings.Get(label_id);
+  char* buffer = strdup(label.c_str());
+  return buffer;
+}
+
+char* Interface_Base::get_addon_info(const KODI_ADDON_BACKEND_HDL hdl, const char* id)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(hdl);
   if (addon == nullptr || id == nullptr)
   {
-    CLog::Log(LOGERROR, "Interface_Base::{} - invalid data (addon='{}', id='{}')", __func__,
-              kodiBase, static_cast<const void*>(id));
+    CLog::Log(LOGERROR, "get_addon_info(...) called with empty pointer");
+    return nullptr;
+  }
+
+  std::string str;
+  if (StringUtils::CompareNoCase(id, "author") == 0)
+    str = addon->Author();
+  else if (StringUtils::CompareNoCase(id, "changelog") == 0)
+    str = addon->ChangeLog();
+  else if (StringUtils::CompareNoCase(id, "description") == 0)
+    str = addon->Description();
+  else if (StringUtils::CompareNoCase(id, "disclaimer") == 0)
+    str = addon->Disclaimer();
+  else if (StringUtils::CompareNoCase(id, "fanart") == 0)
+    str = addon->FanArt();
+  else if (StringUtils::CompareNoCase(id, "icon") == 0)
+    str = addon->Icon();
+  else if (StringUtils::CompareNoCase(id, "id") == 0)
+    str = addon->ID();
+  else if (StringUtils::CompareNoCase(id, "name") == 0)
+    str = addon->Name();
+  else if (StringUtils::CompareNoCase(id, "path") == 0)
+    str = addon->Path();
+  else if (StringUtils::CompareNoCase(id, "profile") == 0)
+    str = addon->Profile();
+  else if (StringUtils::CompareNoCase(id, "summary") == 0)
+    str = addon->Summary();
+  else if (StringUtils::CompareNoCase(id, "type") == 0)
+    str = ADDON::CAddonInfo::TranslateType(addon->Type());
+  else if (StringUtils::CompareNoCase(id, "version") == 0)
+    str = addon->Version().asString();
+  else
+  {
+    CLog::Log(LOGERROR, "Interface_Base::{} -  add-on '{}' requests invalid id '{}'", __func__,
+              addon->Name(), id);
+    return nullptr;
+  }
+
+  char* buffer = strdup(str.c_str());
+  return buffer;
+}
+
+bool Interface_Base::open_settings_dialog(const KODI_ADDON_BACKEND_HDL hdl)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(hdl);
+  if (addon == nullptr)
+  {
+    CLog::Log(LOGERROR, "open_settings_dialog(...) called with empty kodi instance pointer");
+    return false;
+  }
+
+  // show settings dialog
+  AddonPtr addonInfo;
+  if (!CServiceBroker::GetAddonMgr().GetAddon(addon->ID(), addonInfo, ADDON_UNKNOWN,
+                                              OnlyEnabled::YES))
+  {
+    CLog::Log(LOGERROR, "Interface_Base::{} - Could not get addon information for '{}'", __func__,
+              addon->ID());
+    return false;
+  }
+
+  return CGUIDialogAddonSettings::ShowForAddon(addonInfo);
+}
+
+bool Interface_Base::is_setting_using_default(const KODI_ADDON_BACKEND_HDL hdl, const char* id)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(hdl);
+  if (addon == nullptr || id == nullptr)
+  {
+    CLog::Log(LOGERROR, "Interface_Base::{} - invalid data (addon='{}', id='{}')", __func__, hdl,
+              static_cast<const void*>(id));
 
     return false;
   }
@@ -228,13 +352,13 @@ bool Interface_Base::is_setting_using_default(void* kodiBase, const char* id)
   return setting->IsDefault();
 }
 
-bool Interface_Base::get_setting_bool(void* kodiBase, const char* id, bool* value)
+bool Interface_Base::get_setting_bool(const KODI_ADDON_BACKEND_HDL hdl, const char* id, bool* value)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  CAddonDll* addon = static_cast<CAddonDll*>(hdl);
   if (addon == nullptr || id == nullptr || value == nullptr)
   {
     CLog::Log(LOGERROR, "Interface_Base::{} - invalid data (addon='{}', id='{}', value='{}')",
-              __func__, kodiBase, static_cast<const void*>(id), static_cast<void*>(value));
+              __func__, hdl, static_cast<const void*>(id), static_cast<void*>(value));
 
     return false;
   }
@@ -265,13 +389,13 @@ bool Interface_Base::get_setting_bool(void* kodiBase, const char* id, bool* valu
   return true;
 }
 
-bool Interface_Base::get_setting_int(void* kodiBase, const char* id, int* value)
+bool Interface_Base::get_setting_int(const KODI_ADDON_BACKEND_HDL hdl, const char* id, int* value)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  CAddonDll* addon = static_cast<CAddonDll*>(hdl);
   if (addon == nullptr || id == nullptr || value == nullptr)
   {
     CLog::Log(LOGERROR, "Interface_Base::{} - invalid data (addon='{}', id='{}', value='{}')",
-              __func__, kodiBase, static_cast<const void*>(id), static_cast<void*>(value));
+              __func__, hdl, static_cast<const void*>(id), static_cast<void*>(value));
 
     return false;
   }
@@ -305,13 +429,15 @@ bool Interface_Base::get_setting_int(void* kodiBase, const char* id, int* value)
   return true;
 }
 
-bool Interface_Base::get_setting_float(void* kodiBase, const char* id, float* value)
+bool Interface_Base::get_setting_float(const KODI_ADDON_BACKEND_HDL hdl,
+                                       const char* id,
+                                       float* value)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  CAddonDll* addon = static_cast<CAddonDll*>(hdl);
   if (addon == nullptr || id == nullptr || value == nullptr)
   {
     CLog::Log(LOGERROR, "Interface_Base::{} - invalid data (addon='{}', id='{}', value='{}')",
-              __func__, kodiBase, static_cast<const void*>(id), static_cast<void*>(value));
+              __func__, hdl, static_cast<const void*>(id), static_cast<void*>(value));
 
     return false;
   }
@@ -342,13 +468,15 @@ bool Interface_Base::get_setting_float(void* kodiBase, const char* id, float* va
   return true;
 }
 
-bool Interface_Base::get_setting_string(void* kodiBase, const char* id, char** value)
+bool Interface_Base::get_setting_string(const KODI_ADDON_BACKEND_HDL hdl,
+                                        const char* id,
+                                        char** value)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  CAddonDll* addon = static_cast<CAddonDll*>(hdl);
   if (addon == nullptr || id == nullptr || value == nullptr)
   {
     CLog::Log(LOGERROR, "Interface_Base::{} - invalid data (addon='{}', id='{}', value='{}')",
-              __func__, kodiBase, static_cast<const void*>(id), static_cast<void*>(value));
+              __func__, hdl, static_cast<const void*>(id), static_cast<void*>(value));
 
     return false;
   }
@@ -379,13 +507,13 @@ bool Interface_Base::get_setting_string(void* kodiBase, const char* id, char** v
   return true;
 }
 
-bool Interface_Base::set_setting_bool(void* kodiBase, const char* id, bool value)
+bool Interface_Base::set_setting_bool(const KODI_ADDON_BACKEND_HDL hdl, const char* id, bool value)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  CAddonDll* addon = static_cast<CAddonDll*>(hdl);
   if (addon == nullptr || id == nullptr)
   {
-    CLog::Log(LOGERROR, "Interface_Base::{} - invalid data (addon='{}', id='{}')", __func__,
-              kodiBase, static_cast<const void*>(id));
+    CLog::Log(LOGERROR, "Interface_Base::{} - invalid data (addon='{}', id='{}')", __func__, hdl,
+              static_cast<const void*>(id));
 
     return false;
   }
@@ -404,13 +532,13 @@ bool Interface_Base::set_setting_bool(void* kodiBase, const char* id, bool value
   return true;
 }
 
-bool Interface_Base::set_setting_int(void* kodiBase, const char* id, int value)
+bool Interface_Base::set_setting_int(const KODI_ADDON_BACKEND_HDL hdl, const char* id, int value)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  CAddonDll* addon = static_cast<CAddonDll*>(hdl);
   if (addon == nullptr || id == nullptr)
   {
-    CLog::Log(LOGERROR, "Interface_Base::{} - invalid data (addon='{}', id='{}')", __func__,
-              kodiBase, static_cast<const void*>(id));
+    CLog::Log(LOGERROR, "Interface_Base::{} - invalid data (addon='{}', id='{}')", __func__, hdl,
+              static_cast<const void*>(id));
 
     return false;
   }
@@ -429,13 +557,15 @@ bool Interface_Base::set_setting_int(void* kodiBase, const char* id, int value)
   return true;
 }
 
-bool Interface_Base::set_setting_float(void* kodiBase, const char* id, float value)
+bool Interface_Base::set_setting_float(const KODI_ADDON_BACKEND_HDL hdl,
+                                       const char* id,
+                                       float value)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  CAddonDll* addon = static_cast<CAddonDll*>(hdl);
   if (addon == nullptr || id == nullptr)
   {
-    CLog::Log(LOGERROR, "Interface_Base::{} - invalid data (addon='{}', id='{}')", __func__,
-              kodiBase, static_cast<const void*>(id));
+    CLog::Log(LOGERROR, "Interface_Base::{} - invalid data (addon='{}', id='{}')", __func__, hdl,
+              static_cast<const void*>(id));
 
     return false;
   }
@@ -454,13 +584,15 @@ bool Interface_Base::set_setting_float(void* kodiBase, const char* id, float val
   return true;
 }
 
-bool Interface_Base::set_setting_string(void* kodiBase, const char* id, const char* value)
+bool Interface_Base::set_setting_string(const KODI_ADDON_BACKEND_HDL hdl,
+                                        const char* id,
+                                        const char* value)
 {
-  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  CAddonDll* addon = static_cast<CAddonDll*>(hdl);
   if (addon == nullptr || id == nullptr || value == nullptr)
   {
     CLog::Log(LOGERROR, "Interface_Base::{} - invalid data (addon='{}', id='{}', value='{}')",
-              __func__, kodiBase, static_cast<const void*>(id), static_cast<const void*>(value));
+              __func__, hdl, static_cast<const void*>(id), static_cast<const void*>(value));
 
     return false;
   }
@@ -479,13 +611,15 @@ bool Interface_Base::set_setting_string(void* kodiBase, const char* id, const ch
   return true;
 }
 
-void Interface_Base::free_string(void* kodiBase, char* str)
+void Interface_Base::free_string(const KODI_ADDON_BACKEND_HDL hdl, char* str)
 {
   if (str)
     free(str);
 }
 
-void Interface_Base::free_string_array(void* kodiBase, char** arr, int numElements)
+void Interface_Base::free_string_array(const KODI_ADDON_BACKEND_HDL hdl,
+                                       char** arr,
+                                       int numElements)
 {
   if (arr)
   {
@@ -497,7 +631,9 @@ void Interface_Base::free_string_array(void* kodiBase, char** arr, int numElemen
   }
 }
 
-void* Interface_Base::get_interface(void* kodiBase, const char* name, const char* version)
+void* Interface_Base::get_interface(const KODI_ADDON_BACKEND_HDL hdl,
+                                    const char* name,
+                                    const char* version)
 {
   if (!name || !version)
     return nullptr;

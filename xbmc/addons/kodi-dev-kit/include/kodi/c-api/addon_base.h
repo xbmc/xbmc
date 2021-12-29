@@ -86,14 +86,6 @@
 #ifndef ATTR_APIENTRYP
 #define ATTR_APIENTRYP ATTR_APIENTRY*
 #endif
-
-// Fallbacks to old
-#define ATTRIBUTE_FORCEINLINE ATTR_FORCEINLINE
-#define ATTRIBUTE_DLL_IMPORT ATTR_DLL_IMPORT
-#define ATTRIBUTE_DLL_EXPORT ATTR_DLL_EXPORT
-#define ATTRIBUTE_DLL_LOCAL ATTR_DLL_LOCAL
-#define ATTRIBUTE_HIDDEN ATTR_DLL_LOCAL
-#define ATTRIBUTE_PACKED ATTR_PACKED
 //@}
 
 #ifdef _WIN32 // windows
@@ -121,6 +113,13 @@ typedef intptr_t ssize_t;
 extern "C"
 {
 #endif /* __cplusplus */
+
+  typedef void* KODI_ADDON_HDL;
+  typedef void* KODI_ADDON_BACKEND_HDL;
+  typedef void* KODI_ADDON_INSTANCE_HDL;
+  typedef void* KODI_ADDON_INSTANCE_BACKEND_HDL;
+
+  typedef void* KODI_ADDON_FUNC_DUMMY;
 
   //============================================================================
   /// @ingroup cpp_kodi_addon_addonbase_Defs
@@ -158,7 +157,7 @@ extern "C"
   //----------------------------------------------------------------------------
 
   //============================================================================
-  /// @defgroup cpp_kodi_Defs_AddonLog enum AddonLog
+  /// @defgroup cpp_kodi_Defs_ADDON_LOG enum ADDON_LOG
   /// @ingroup cpp_kodi_Defs
   /// @brief **Log file type definitions**\n
   /// These define the types of log entries given with @ref kodi::Log() to Kodi.
@@ -174,7 +173,7 @@ extern "C"
   /// ~~~~~~~~~~~~~
   ///
   ///@{
-  typedef enum AddonLog
+  typedef enum ADDON_LOG
   {
     /// @brief **0** : To include debug information in the log file.
     ADDON_LOG_DEBUG = 0,
@@ -191,86 +190,179 @@ extern "C"
     /// @brief **4** : To notify fatal unrecoverable errors, which can may also indicate
     /// upcoming crashes.
     ADDON_LOG_FATAL = 4
-  } AddonLog;
+  } ADDON_LOG;
   ///@}
   //----------------------------------------------------------------------------
+
+  typedef enum ADDON_STATUS(ATTR_APIENTRYP PFN_KODI_ADDON_INSTANCE_SETTING_CHANGE_STRING_V1)(
+      const KODI_ADDON_INSTANCE_HDL hdl, const char* name, const char* value);
+  typedef enum ADDON_STATUS(ATTR_APIENTRYP PFN_KODI_ADDON_INSTANCE_SETTING_CHANGE_BOOLEAN_V1)(
+      const KODI_ADDON_INSTANCE_HDL hdl, const char* name, bool value);
+  typedef enum ADDON_STATUS(ATTR_APIENTRYP PFN_KODI_ADDON_INSTANCE_SETTING_CHANGE_INTEGER_V1)(
+      const KODI_ADDON_INSTANCE_HDL hdl, const char* name, int value);
+  typedef enum ADDON_STATUS(ATTR_APIENTRYP PFN_KODI_ADDON_INSTANCE_SETTING_CHANGE_FLOAT_V1)(
+      const KODI_ADDON_INSTANCE_HDL hdl, const char* name, float value);
+
+  typedef struct KODI_ADDON_INSTANCE_FUNC
+  {
+    PFN_KODI_ADDON_INSTANCE_SETTING_CHANGE_STRING_V1 instance_setting_change_string;
+    PFN_KODI_ADDON_INSTANCE_SETTING_CHANGE_BOOLEAN_V1 instance_setting_change_boolean;
+    PFN_KODI_ADDON_INSTANCE_SETTING_CHANGE_INTEGER_V1 instance_setting_change_integer;
+    PFN_KODI_ADDON_INSTANCE_SETTING_CHANGE_FLOAT_V1 instance_setting_change_float;
+  } KODI_ADDON_INSTANCE_FUNC;
+
+  typedef struct KODI_ADDON_INSTANCE_FUNC_CB
+  {
+    char* (*get_instance_user_path)(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl);
+    bool (*is_instance_setting_using_default)(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                              const char* id);
+
+    bool (*get_instance_setting_bool)(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                      const char* id,
+                                      bool* value);
+    bool (*get_instance_setting_int)(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                     const char* id,
+                                     int* value);
+    bool (*get_instance_setting_float)(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                       const char* id,
+                                       float* value);
+    bool (*get_instance_setting_string)(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                        const char* id,
+                                        char** value);
+
+    bool (*set_instance_setting_bool)(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                      const char* id,
+                                      bool value);
+    bool (*set_instance_setting_int)(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                     const char* id,
+                                     int value);
+    bool (*set_instance_setting_float)(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                       const char* id,
+                                       float value);
+    bool (*set_instance_setting_string)(const KODI_ADDON_INSTANCE_BACKEND_HDL hdl,
+                                        const char* id,
+                                        const char* value);
+  } KODI_ADDON_INSTANCE_FUNC_CB;
+
+  typedef int KODI_ADDON_INSTANCE_TYPE;
+
+  struct KODI_ADDON_INSTANCE_INFO
+  {
+    KODI_ADDON_INSTANCE_TYPE type;
+    uint32_t number;
+    const char* id;
+    const char* version;
+    KODI_ADDON_INSTANCE_BACKEND_HDL kodi;
+    KODI_ADDON_INSTANCE_HDL parent;
+    bool first_instance;
+
+    struct KODI_ADDON_INSTANCE_FUNC_CB* functions;
+  };
+
+  typedef struct KODI_ADDON_INSTANCE_STRUCT
+  {
+    const KODI_ADDON_INSTANCE_INFO* info;
+
+    KODI_ADDON_INSTANCE_HDL hdl;
+    struct KODI_ADDON_INSTANCE_FUNC* functions;
+    union {
+      KODI_ADDON_FUNC_DUMMY dummy;
+      struct AddonInstance_AudioDecoder* audiodecoder;
+      struct AddonInstance_AudioEncoder* audioencoder;
+      struct AddonInstance_ImageDecoder* imagedecoder;
+      struct AddonInstance_Game* game;
+      struct AddonInstance_InputStream* inputstream;
+      struct AddonInstance_Peripheral* peripheral;
+      struct AddonInstance_PVR* pvr;
+      struct AddonInstance_Screensaver* screensaver;
+      struct AddonInstance_VFSEntry* vfs;
+      struct AddonInstance_VideoCodec* videocodec;
+      struct AddonInstance_Visualization* visualization;
+    };
+  } KODI_ADDON_INSTANCE_STRUCT;
 
   /*! @brief Standard undefined pointer handle */
   typedef void* KODI_HANDLE;
 
-  /*!
-   * @brief Handle used to return data from the PVR add-on to CPVRClient
-   */
-  struct ADDON_HANDLE_STRUCT
+  typedef struct AddonToKodiFuncTable_kodi_addon
   {
-    void* callerAddress; /*!< address of the caller */
-    void* dataAddress; /*!< address to store data in */
-    int dataIdentifier; /*!< parameter to pass back when calling the callback */
-  };
-  typedef struct ADDON_HANDLE_STRUCT* ADDON_HANDLE;
+    char* (*get_addon_path)(const KODI_ADDON_BACKEND_HDL hdl);
+    char* (*get_lib_path)(const KODI_ADDON_BACKEND_HDL hdl);
+    char* (*get_user_path)(const KODI_ADDON_BACKEND_HDL hdl);
+    char* (*get_temp_path)(const KODI_ADDON_BACKEND_HDL hdl);
+
+    char* (*get_localized_string)(const KODI_ADDON_BACKEND_HDL hdl, long label_id);
+
+    bool (*open_settings_dialog)(const KODI_ADDON_BACKEND_HDL hdl);
+    bool (*is_setting_using_default)(const KODI_ADDON_BACKEND_HDL hdl, const char* id);
+
+    bool (*get_setting_bool)(const KODI_ADDON_BACKEND_HDL hdl, const char* id, bool* value);
+    bool (*get_setting_int)(const KODI_ADDON_BACKEND_HDL hdl, const char* id, int* value);
+    bool (*get_setting_float)(const KODI_ADDON_BACKEND_HDL hdl, const char* id, float* value);
+    bool (*get_setting_string)(const KODI_ADDON_BACKEND_HDL hdl, const char* id, char** value);
+
+    bool (*set_setting_bool)(const KODI_ADDON_BACKEND_HDL hdl, const char* id, bool value);
+    bool (*set_setting_int)(const KODI_ADDON_BACKEND_HDL hdl, const char* id, int value);
+    bool (*set_setting_float)(const KODI_ADDON_BACKEND_HDL hdl, const char* id, float value);
+    bool (*set_setting_string)(const KODI_ADDON_BACKEND_HDL hdl, const char* id, const char* value);
+
+    char* (*get_addon_info)(const KODI_ADDON_BACKEND_HDL hdl, const char* id);
+
+    char* (*get_type_version)(const KODI_ADDON_BACKEND_HDL hdl, int type);
+    void* (*get_interface)(const KODI_ADDON_BACKEND_HDL hdl, const char* name, const char* version);
+  } AddonToKodiFuncTable_kodi_addon;
 
   /*!
    * @brief Callback function tables from addon to Kodi
    * Set complete from Kodi!
    */
-  struct AddonToKodiFuncTable_kodi;
-  struct AddonToKodiFuncTable_kodi_audioengine;
-  struct AddonToKodiFuncTable_kodi_filesystem;
-  struct AddonToKodiFuncTable_kodi_network;
-  struct AddonToKodiFuncTable_kodi_gui;
   typedef struct AddonToKodiFuncTable_Addon
   {
     // Pointer inside Kodi, used on callback functions to give related handle
     // class, for this ADDON::CAddonDll inside Kodi.
-    KODI_HANDLE kodiBase;
+    KODI_ADDON_BACKEND_HDL kodiBase;
 
-    // Function addresses used for callbacks from addon to Kodi
-    char* (*get_type_version)(void* kodiBase, int type);
-
-    void (*free_string)(void* kodiBase, char* str);
-    void (*free_string_array)(void* kodiBase, char** arr, int numElements);
-    char* (*get_addon_path)(void* kodiBase);
-    char* (*get_base_user_path)(void* kodiBase);
-    void (*addon_log_msg)(void* kodiBase, const int loglevel, const char* msg);
-
-    bool (*get_setting_bool)(void* kodiBase, const char* id, bool* value);
-    bool (*get_setting_int)(void* kodiBase, const char* id, int* value);
-    bool (*get_setting_float)(void* kodiBase, const char* id, float* value);
-    bool (*get_setting_string)(void* kodiBase, const char* id, char** value);
-
-    bool (*set_setting_bool)(void* kodiBase, const char* id, bool value);
-    bool (*set_setting_int)(void* kodiBase, const char* id, int value);
-    bool (*set_setting_float)(void* kodiBase, const char* id, float value);
-    bool (*set_setting_string)(void* kodiBase, const char* id, const char* value);
-
-    void* (*get_interface)(void* kodiBase, const char* name, const char* version);
+    void (*free_string)(const KODI_ADDON_BACKEND_HDL hdl, char* str);
+    void (*free_string_array)(const KODI_ADDON_BACKEND_HDL hdl, char** arr, int numElements);
+    void (*addon_log_msg)(const KODI_ADDON_BACKEND_HDL hdl, const int loglevel, const char* msg);
 
     struct AddonToKodiFuncTable_kodi* kodi;
+    struct AddonToKodiFuncTable_kodi_addon* kodi_addon;
     struct AddonToKodiFuncTable_kodi_audioengine* kodi_audioengine;
     struct AddonToKodiFuncTable_kodi_filesystem* kodi_filesystem;
     struct AddonToKodiFuncTable_kodi_gui* kodi_gui;
     struct AddonToKodiFuncTable_kodi_network* kodi_network;
-
-    // Move up by min version change about
-    bool (*is_setting_using_default)(void* kodiBase, const char* id);
   } AddonToKodiFuncTable_Addon;
+
+  typedef ADDON_STATUS(ATTR_APIENTRYP PFN_KODI_ADDON_CREATE_V1)(
+      const KODI_ADDON_INSTANCE_BACKEND_HDL first_instance, KODI_ADDON_HDL* hdl);
+  typedef void(ATTR_APIENTRYP PFN_KODI_ADDON_DESTROY_V1)(const KODI_ADDON_HDL hdl);
+  typedef ADDON_STATUS(ATTR_APIENTRYP PFN_KODI_ADDON_CREATE_INSTANCE_V1)(
+      const KODI_ADDON_HDL hdl, struct KODI_ADDON_INSTANCE_STRUCT* instance);
+  typedef void(ATTR_APIENTRYP PFN_KODI_ADDON_DESTROY_INSTANCE_V1)(
+      const KODI_ADDON_HDL hdl, struct KODI_ADDON_INSTANCE_STRUCT* instance);
+  typedef enum ADDON_STATUS(ATTR_APIENTRYP PFN_KODI_ADDON_SETTING_CHANGE_STRING_V1)(
+      const KODI_ADDON_HDL hdl, const char* name, const char* value);
+  typedef enum ADDON_STATUS(ATTR_APIENTRYP PFN_KODI_ADDON_SETTING_CHANGE_BOOLEAN_V1)(
+      const KODI_ADDON_HDL hdl, const char* name, bool value);
+  typedef enum ADDON_STATUS(ATTR_APIENTRYP PFN_KODI_ADDON_SETTING_CHANGE_INTEGER_V1)(
+      const KODI_ADDON_HDL hdl, const char* name, int value);
+  typedef enum ADDON_STATUS(ATTR_APIENTRYP PFN_KODI_ADDON_SETTING_CHANGE_FLOAT_V1)(
+      const KODI_ADDON_HDL hdl, const char* name, float value);
 
   /*!
    * @brief Function tables from Kodi to addon
    */
   typedef struct KodiToAddonFuncTable_Addon
   {
-    void (*destroy)();
-    ADDON_STATUS (*get_status)(); // TODO unused remove by next min version increase
-    ADDON_STATUS(*create_instance)
-    (int instanceType,
-     const char* instanceID,
-     KODI_HANDLE instance,
-     const char* version,
-     KODI_HANDLE* addonInstance,
-     KODI_HANDLE parent);
-    void (*destroy_instance)(int instanceType, KODI_HANDLE instance);
-    ADDON_STATUS (*set_setting)(const char* settingName, const void* settingValue);
+    PFN_KODI_ADDON_CREATE_V1 create;
+    PFN_KODI_ADDON_DESTROY_V1 destroy;
+    PFN_KODI_ADDON_CREATE_INSTANCE_V1 create_instance;
+    PFN_KODI_ADDON_DESTROY_INSTANCE_V1 destroy_instance;
+    PFN_KODI_ADDON_SETTING_CHANGE_STRING_V1 setting_change_string;
+    PFN_KODI_ADDON_SETTING_CHANGE_BOOLEAN_V1 setting_change_boolean;
+    PFN_KODI_ADDON_SETTING_CHANGE_INTEGER_V1 setting_change_integer;
+    PFN_KODI_ADDON_SETTING_CHANGE_FLOAT_V1 setting_change_float;
   } KodiToAddonFuncTable_Addon;
 
   /*!
@@ -279,24 +371,17 @@ extern "C"
    */
   typedef struct AddonGlobalInterface
   {
-    // String with full path where add-on is installed (without his name on end)
-    // Set from Kodi!
-    const char* libBasePath;
-
-    // Master API version of Kodi itself (ADDON_GLOBAL_VERSION_MAIN)
-    const char* kodi_base_api_version;
-
     // Pointer of first created instance, used in case this add-on goes with single way
     // Set from Kodi!
-    KODI_HANDLE firstKodiInstance;
+    struct KODI_ADDON_INSTANCE_STRUCT* firstKodiInstance;
 
     // Pointer to master base class inside add-on
     // Set from addon header (kodi::addon::CAddonBase)!
-    KODI_HANDLE addonBase;
+    KODI_ADDON_HDL addonBase;
 
     // Pointer to a instance used on single way (together with this class)
     // Set from addon header (kodi::addon::IAddonInstance)!
-    KODI_HANDLE globalSingleInstance;
+    KODI_ADDON_INSTANCE_HDL globalSingleInstance;
 
     // Callback function tables from addon to Kodi
     // Set from Kodi!

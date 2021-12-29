@@ -377,15 +377,15 @@ private:
 /// class CMyVFS : public kodi::addon::CInstanceVFS
 /// {
 /// public:
-///   CMyVFS(KODI_HANDLE instance, const std::string& kodiVersion);
+///   CMyVFS(const kodi::addon::IInstanceInfo& instance);
 ///
 ///   // Add all your required functions, the most CInstanceVFS functions of
 ///   // must be included to have addon working correctly.
 ///   ...
 /// };
 ///
-/// CMyVFS::CMyVFS(KODI_HANDLE instance, const std::string& kodiVersion)
-///   : kodi::addon::CInstanceVFS(instance, kodiVersion)
+/// CMyVFS::CMyVFS(const kodi::addon::IInstanceInfo& instance)
+///   : kodi::addon::CInstanceVFS(instance)
 /// {
 ///   ...
 /// }
@@ -397,26 +397,20 @@ private:
 /// class CMyAddon : public kodi::addon::CAddonBase
 /// {
 /// public:
-///   CMyAddon() { }
-///   ADDON_STATUS CreateInstance(int instanceType,
-///                               const std::string& instanceID,
-///                               KODI_HANDLE instance,
-///                               const std::string& version,
-///                               KODI_HANDLE& addonInstance) override;
+///   CMyAddon() = default;
+///   ADDON_STATUS CreateInstance(const kodi::addon::IInstanceInfo& instance,
+///                               KODI_ADDON_INSTANCE_HDL& hdl) override;
 /// };
 ///
 /// // If you use only one instance in your add-on, can be instanceType and
 /// // instanceID ignored
-/// ADDON_STATUS CMyAddon::CreateInstance(int instanceType,
-///                                       const std::string& instanceID,
-///                                       KODI_HANDLE instance,
-///                                       const std::string& version,
-///                                       KODI_HANDLE& addonInstance)
+/// ADDON_STATUS CMyAddon::CreateInstance(const kodi::addon::IInstanceInfo& instance,
+///                                       KODI_ADDON_INSTANCE_HDL& hdl)
 /// {
-///   if (instanceType == ADDON_INSTANCE_VFS)
+///   if (instance.IsType(ADDON_INSTANCE_VFS))
 ///   {
 ///     kodi::Log(ADDON_LOG_INFO, "Creating my VFS instance");
-///     addonInstance = new CMyVFS(instance, version);
+///     hdl = new CMyVFS(instance);
 ///     return ADDON_STATUS_OK;
 ///   }
 ///   else if (...)
@@ -441,20 +435,14 @@ public:
   /// @brief VFS class constructor used to support multiple instance
   /// types
   ///
-  /// @param[in] instance               The instance value given to
-  ///                                   <b>`kodi::addon::CAddonBase::CreateInstance(...)`</b>.
-  /// @param[in] kodiVersion            [opt] given from Kodi by @ref CAddonBase::CreateInstance
-  ///                                   to identify his instance API version
+  /// @param[in] instance The instance value given to <b>`kodi::addon::CAddonBase::CreateInstance(...)`</b>.
   ///
   /// @note Instance path as a single is not supported by this type. It must
   /// ensure that it can be called up several times.
   ///
-  /// @warning Only use `instance` from the @ref CAddonBase::CreateInstance or
-  /// @ref CAddonBase::CreateInstance call.
+  /// @warning Only use `instance` from the @ref CAddonBase::CreateInstance call.
   ///
-  explicit CInstanceVFS(KODI_HANDLE instance, const std::string& kodiVersion = "")
-    : IAddonInstance(ADDON_INSTANCE_VFS,
-                     !kodiVersion.empty() ? kodiVersion : GetKodiTypeVersion(ADDON_INSTANCE_VFS))
+  explicit CInstanceVFS(const IInstanceInfo& instance) : IAddonInstance(instance)
   {
     if (CPrivateBase::m_interface->globalSingleInstance != nullptr)
       throw std::logic_error("kodi::addon::CInstanceVFS: Creation of multiple together with single "
@@ -912,40 +900,37 @@ public:
   //@}
 
 private:
-  void SetAddonStruct(KODI_HANDLE instance)
+  void SetAddonStruct(KODI_ADDON_INSTANCE_STRUCT* instance)
   {
-    if (instance == nullptr)
-      throw std::logic_error("kodi::addon::CInstanceVFS: Creation with empty addon structure not "
-                             "allowed, table must be given from Kodi!");
-
-    m_instanceData = static_cast<AddonInstance_VFSEntry*>(instance);
-    m_instanceData->toAddon->addonInstance = this;
-    m_instanceData->toAddon->open = ADDON_Open;
-    m_instanceData->toAddon->open_for_write = ADDON_OpenForWrite;
-    m_instanceData->toAddon->read = ADDON_Read;
-    m_instanceData->toAddon->write = ADDON_Write;
-    m_instanceData->toAddon->seek = ADDON_Seek;
-    m_instanceData->toAddon->truncate = ADDON_Truncate;
-    m_instanceData->toAddon->get_length = ADDON_GetLength;
-    m_instanceData->toAddon->get_position = ADDON_GetPosition;
-    m_instanceData->toAddon->get_chunk_size = ADDON_GetChunkSize;
-    m_instanceData->toAddon->io_control_get_seek_possible = ADDON_IoControlGetSeekPossible;
-    m_instanceData->toAddon->io_control_get_cache_status = ADDON_IoControlGetCacheStatus;
-    m_instanceData->toAddon->io_control_set_cache_rate = ADDON_IoControlSetCacheRate;
-    m_instanceData->toAddon->io_control_set_retry = ADDON_IoControlSetRetry;
-    m_instanceData->toAddon->stat = ADDON_Stat;
-    m_instanceData->toAddon->close = ADDON_Close;
-    m_instanceData->toAddon->exists = ADDON_Exists;
-    m_instanceData->toAddon->clear_out_idle = ADDON_ClearOutIdle;
-    m_instanceData->toAddon->disconnect_all = ADDON_DisconnectAll;
-    m_instanceData->toAddon->delete_it = ADDON_Delete;
-    m_instanceData->toAddon->rename = ADDON_Rename;
-    m_instanceData->toAddon->directory_exists = ADDON_DirectoryExists;
-    m_instanceData->toAddon->remove_directory = ADDON_RemoveDirectory;
-    m_instanceData->toAddon->create_directory = ADDON_CreateDirectory;
-    m_instanceData->toAddon->get_directory = ADDON_GetDirectory;
-    m_instanceData->toAddon->free_directory = ADDON_FreeDirectory;
-    m_instanceData->toAddon->contains_files = ADDON_ContainsFiles;
+    m_instanceData = instance;
+    m_instanceData->hdl = this;
+    m_instanceData->vfs->toAddon->addonInstance = this;
+    m_instanceData->vfs->toAddon->open = ADDON_Open;
+    m_instanceData->vfs->toAddon->open_for_write = ADDON_OpenForWrite;
+    m_instanceData->vfs->toAddon->read = ADDON_Read;
+    m_instanceData->vfs->toAddon->write = ADDON_Write;
+    m_instanceData->vfs->toAddon->seek = ADDON_Seek;
+    m_instanceData->vfs->toAddon->truncate = ADDON_Truncate;
+    m_instanceData->vfs->toAddon->get_length = ADDON_GetLength;
+    m_instanceData->vfs->toAddon->get_position = ADDON_GetPosition;
+    m_instanceData->vfs->toAddon->get_chunk_size = ADDON_GetChunkSize;
+    m_instanceData->vfs->toAddon->io_control_get_seek_possible = ADDON_IoControlGetSeekPossible;
+    m_instanceData->vfs->toAddon->io_control_get_cache_status = ADDON_IoControlGetCacheStatus;
+    m_instanceData->vfs->toAddon->io_control_set_cache_rate = ADDON_IoControlSetCacheRate;
+    m_instanceData->vfs->toAddon->io_control_set_retry = ADDON_IoControlSetRetry;
+    m_instanceData->vfs->toAddon->stat = ADDON_Stat;
+    m_instanceData->vfs->toAddon->close = ADDON_Close;
+    m_instanceData->vfs->toAddon->exists = ADDON_Exists;
+    m_instanceData->vfs->toAddon->clear_out_idle = ADDON_ClearOutIdle;
+    m_instanceData->vfs->toAddon->disconnect_all = ADDON_DisconnectAll;
+    m_instanceData->vfs->toAddon->delete_it = ADDON_Delete;
+    m_instanceData->vfs->toAddon->rename = ADDON_Rename;
+    m_instanceData->vfs->toAddon->directory_exists = ADDON_DirectoryExists;
+    m_instanceData->vfs->toAddon->remove_directory = ADDON_RemoveDirectory;
+    m_instanceData->vfs->toAddon->create_directory = ADDON_CreateDirectory;
+    m_instanceData->vfs->toAddon->get_directory = ADDON_GetDirectory;
+    m_instanceData->vfs->toAddon->free_directory = ADDON_FreeDirectory;
+    m_instanceData->vfs->toAddon->contains_files = ADDON_ContainsFiles;
   }
 
   inline static VFS_FILE_HANDLE ADDON_Open(const AddonInstance_VFSEntry* instance,
@@ -1217,7 +1202,7 @@ private:
     return ret;
   }
 
-  AddonInstance_VFSEntry* m_instanceData;
+  KODI_ADDON_INSTANCE_STRUCT* m_instanceData{nullptr};
 };
 
 } /* namespace addon */
