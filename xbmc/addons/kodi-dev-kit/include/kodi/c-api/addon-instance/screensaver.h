@@ -18,11 +18,6 @@ extern "C"
 
   typedef void* KODI_ADDON_SCREENSAVER_HDL;
 
-  /*!
-   * @brief Screensaver properties
-   *
-   * Not to be used outside this header.
-   */
   struct KODI_ADDON_SCREENSAVER_PROPS
   {
     ADDON_HARDWARE_CONTEXT device;
@@ -36,16 +31,6 @@ extern "C"
     char* profile;
   };
 
-  /*!
-   * @brief Screensaver callbacks
-   *
-   * Not to be used outside this header.
-   */
-  typedef struct AddonToKodiFuncTable_Screensaver
-  {
-    void (*get_properties)(const KODI_HANDLE hdl, struct KODI_ADDON_SCREENSAVER_PROPS* props);
-  } AddonToKodiFuncTable_Screensaver;
-
   typedef bool(ATTR_APIENTRYP PFN_KODI_ADDON_SCREENSAVER_START_V1)(
       const KODI_ADDON_SCREENSAVER_HDL hdl);
   typedef void(ATTR_APIENTRYP PFN_KODI_ADDON_SCREENSAVER_STOP_V1)(
@@ -53,11 +38,6 @@ extern "C"
   typedef void(ATTR_APIENTRYP PFN_KODI_ADDON_SCREENSAVER_RENDER_V1)(
       const KODI_ADDON_SCREENSAVER_HDL hdl);
 
-  /*!
-   * @brief Screensaver function hooks
-   *
-   * Not to be used outside this header.
-   */
   typedef struct KodiToAddonFuncTable_Screensaver
   {
     PFN_KODI_ADDON_SCREENSAVER_START_V1 start;
@@ -65,11 +45,11 @@ extern "C"
     PFN_KODI_ADDON_SCREENSAVER_RENDER_V1 render;
   } KodiToAddonFuncTable_Screensaver;
 
-  /*!
-   * @brief Screensaver instance
-   *
-   * Not to be used outside this header.
-   */
+  typedef struct AddonToKodiFuncTable_Screensaver
+  {
+    void (*get_properties)(const KODI_HANDLE hdl, struct KODI_ADDON_SCREENSAVER_PROPS* props);
+  } AddonToKodiFuncTable_Screensaver;
+
   typedef struct AddonInstance_Screensaver
   {
     struct AddonToKodiFuncTable_Screensaver* toKodi;
