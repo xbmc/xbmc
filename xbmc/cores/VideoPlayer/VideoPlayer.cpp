@@ -3857,7 +3857,8 @@ void CVideoPlayer::FlushBuffers(double pts, bool accurate, bool sync)
   UpdatePlayState(0);
 
   m_demuxerSpeed = DVD_PLAYSPEED_NORMAL;
-
+  if (m_pDemuxer)
+    m_pDemuxer->SetSpeed(DVD_PLAYSPEED_NORMAL);
 }
 
 // since we call ffmpeg functions to decode, this is being called in the same thread as ::Process() is
