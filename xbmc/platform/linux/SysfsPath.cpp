@@ -10,12 +10,8 @@
 
 bool CSysfsPath::Exists()
 {
-  std::ifstream file(m_path);
-
-  if (!file.is_open())
-    return false;
-
-  return true;
+  struct stat buffer;
+  return (stat(m_path.c_str(), &buffer) == 0);
 }
 
 template<>
