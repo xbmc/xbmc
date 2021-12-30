@@ -24,10 +24,8 @@ public:
   void Stop();
   void Render();
 
-private:
-  std::string m_name; /*!< To add-on sended name */
-  std::string m_presets; /*!< To add-on sended preset path */
-  std::string m_profile; /*!< To add-on sended profile path */
+  // Addon callback functions
+  void GetProperties(struct KODI_ADDON_SCREENSAVER_PROPS* props);
 };
 
 } /* namespace ADDON */

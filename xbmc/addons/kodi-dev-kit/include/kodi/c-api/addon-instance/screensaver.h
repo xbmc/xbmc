@@ -23,7 +23,7 @@ extern "C"
    *
    * Not to be used outside this header.
    */
-  typedef struct AddonProps_Screensaver
+  struct KODI_ADDON_SCREENSAVER_PROPS
   {
     ADDON_HARDWARE_CONTEXT device;
     int x;
@@ -31,10 +31,10 @@ extern "C"
     int width;
     int height;
     float pixelRatio;
-    const char* name;
-    const char* presets;
-    const char* profile;
-  } AddonProps_Screensaver;
+    char* name;
+    char* presets;
+    char* profile;
+  };
 
   /*!
    * @brief Screensaver callbacks
@@ -43,7 +43,7 @@ extern "C"
    */
   typedef struct AddonToKodiFuncTable_Screensaver
   {
-    KODI_HANDLE kodiInstance;
+    void (*get_properties)(const KODI_HANDLE hdl, struct KODI_ADDON_SCREENSAVER_PROPS* props);
   } AddonToKodiFuncTable_Screensaver;
 
   typedef bool(ATTR_APIENTRYP PFN_KODI_ADDON_SCREENSAVER_START_V1)(
@@ -72,7 +72,6 @@ extern "C"
    */
   typedef struct AddonInstance_Screensaver
   {
-    struct AddonProps_Screensaver* props;
     struct AddonToKodiFuncTable_Screensaver* toKodi;
     struct KodiToAddonFuncTable_Screensaver* toAddon;
   } AddonInstance_Screensaver;

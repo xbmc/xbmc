@@ -318,7 +318,7 @@ public:
   /// ..
   /// ~~~~~~~~~~~~~
   ///
-  inline kodi::HardwareContext Device() { return m_instanceData->props->device; }
+  inline kodi::HardwareContext Device() { return m_device; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -327,7 +327,7 @@ public:
   ///
   /// @return The X position, in pixels
   ///
-  inline int X() { return m_instanceData->props->x; }
+  inline int X() { return m_x; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -336,7 +336,7 @@ public:
   ///
   /// @return The Y position, in pixels
   ///
-  inline int Y() { return m_instanceData->props->y; }
+  inline int Y() { return m_y; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -345,7 +345,7 @@ public:
   ///
   /// @return The width, in pixels
   ///
-  inline int Width() { return m_instanceData->props->width; }
+  inline int Width() { return m_width; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -354,7 +354,7 @@ public:
   ///
   /// @return The height, in pixels
   ///
-  inline int Height() { return m_instanceData->props->height; }
+  inline int Height() { return m_height; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -364,7 +364,7 @@ public:
   ///
   /// @return The pixel aspect ratio used by the display
   ///
-  inline float PixelRatio() { return m_instanceData->props->pixelRatio; }
+  inline float PixelRatio() { return m_pixelRatio; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -373,7 +373,7 @@ public:
   ///
   /// @return The add-on name
   ///
-  inline std::string Name() { return m_instanceData->props->name; }
+  inline std::string Name() { return m_name; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -383,7 +383,7 @@ public:
   ///
   /// @return The add-on installation path
   ///
-  inline std::string Presets() { return m_instanceData->props->presets; }
+  inline std::string Presets() { return m_presets; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -396,7 +396,7 @@ public:
   ///
   /// @return Path to the user profile
   ///
-  inline std::string Profile() { return m_instanceData->props->profile; }
+  inline std::string Profile() { return m_profile; }
   //----------------------------------------------------------------------------
 
   ///@}
@@ -408,7 +408,30 @@ private:
     instance->screensaver->toAddon->start = ADDON_start;
     instance->screensaver->toAddon->stop = ADDON_stop;
     instance->screensaver->toAddon->render = ADDON_render;
-    m_instanceData = instance->screensaver;
+
+    SCREENSAVER_PROPS props = {};
+    instance->screensaver->toKodi->get_properties(instance->info->kodi, &props);
+    m_device = props.device;
+    m_x = props.x;
+    m_y = props.y;
+    m_width = props.width;
+    m_height = props.height;
+    m_pixelRatio = props.pixelRatio;
+    if (props.name)
+    {
+      m_name = props.name;
+      free(props.name);
+    }
+    if (props.presets)
+    {
+      m_presets = props.presets;
+      free(props.presets);
+    }
+    if (props.profile)
+    {
+      m_profile = props.profile;
+      free(props.profile);
+    }
   }
 
   inline static bool ADDON_start(const KODI_ADDON_SCREENSAVER_HDL hdl)
@@ -446,7 +469,16 @@ private:
    * On Kodi with Direct X where angle is present becomes this used.
    */
   std::shared_ptr<kodi::gui::IRenderHelper> m_renderHelper;
-  AddonInstance_Screensaver* m_instanceData;
+
+  ADDON_HARDWARE_CONTEXT m_device;
+  int m_x;
+  int m_y;
+  int m_width;
+  int m_height;
+  float m_pixelRatio;
+  std::string m_name;
+  std::string m_presets;
+  std::string m_profile;
 };
 
 } /* namespace addon */
