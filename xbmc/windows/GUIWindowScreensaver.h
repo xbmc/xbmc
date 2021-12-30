@@ -10,7 +10,15 @@
 
 #include "guilib/GUIWindow.h"
 
-namespace ADDON { class CScreenSaver; }
+#include <memory>
+
+namespace KODI
+{
+namespace ADDONS
+{
+class CScreenSaver;
+} // namespace ADDONS
+} // namespace KODI
 
 class CGUIWindowScreensaver : public CGUIWindow
 {
@@ -26,6 +34,6 @@ protected:
   EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event) override;
 
 private:
-  ADDON::CScreenSaver* m_addon = nullptr;
+  std::unique_ptr<KODI::ADDONS::CScreenSaver> m_addon;
 };
 

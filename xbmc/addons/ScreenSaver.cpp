@@ -13,33 +13,25 @@
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
-namespace ADDON
+using namespace ADDON;
+using namespace KODI::ADDONS;
+
+namespace
 {
+void get_properties(const KODI_HANDLE hdl, struct KODI_ADDON_SCREENSAVER_PROPS* props)
+{
+  if (hdl)
+    static_cast<CScreenSaver*>(hdl)->GetProperties(props);
+}
+} // namespace
 
 CScreenSaver::CScreenSaver(const AddonInfoPtr& addonInfo)
   : IAddonInstanceHandler(ADDON_INSTANCE_SCREENSAVER, addonInfo)
 {
-  m_name = Name();
-  m_presets = CSpecialProtocol::TranslatePath(Path());
-  m_profile = CSpecialProtocol::TranslatePath(Profile());
-
   m_ifc.screensaver = new AddonInstance_Screensaver;
-  m_ifc.screensaver->props = new AddonProps_Screensaver();
-  m_ifc.screensaver->props->x = 0;
-  m_ifc.screensaver->props->y = 0;
-  m_ifc.screensaver->props->device = CServiceBroker::GetWinSystem()->GetHWContext();
-  m_ifc.screensaver->props->width = CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth();
-  m_ifc.screensaver->props->height = CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight();
-  m_ifc.screensaver->props->pixelRatio =
-      CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo().fPixelRatio;
-  m_ifc.screensaver->props->name = m_name.c_str();
-  m_ifc.screensaver->props->presets = m_presets.c_str();
-  m_ifc.screensaver->props->profile = m_profile.c_str();
-
-  m_ifc.screensaver->toKodi = new AddonToKodiFuncTable_Screensaver();
-  m_ifc.screensaver->toKodi->kodiInstance = this;
-
   m_ifc.screensaver->toAddon = new KodiToAddonFuncTable_Screensaver();
+  m_ifc.screensaver->toKodi = new AddonToKodiFuncTable_Screensaver();
+  m_ifc.screensaver->toKodi->get_properties = get_properties;
 
   /* Open the class "kodi::addon::CInstanceScreensaver" on add-on side */
   if (CreateInstance() != ADDON_STATUS_OK)
@@ -53,27 +45,41 @@ CScreenSaver::~CScreenSaver()
 
   delete m_ifc.screensaver->toAddon;
   delete m_ifc.screensaver->toKodi;
-  delete m_ifc.screensaver->props;
   delete m_ifc.screensaver;
 }
 
 bool CScreenSaver::Start()
 {
-  if (m_ifc.screensaver->toAddon->Start)
-    return m_ifc.screensaver->toAddon->Start(m_ifc.screensaver);
+  if (m_ifc.screensaver->toAddon->start)
+    return m_ifc.screensaver->toAddon->start(m_ifc.hdl);
   return false;
 }
 
 void CScreenSaver::Stop()
 {
-  if (m_ifc.screensaver->toAddon->Stop)
-    m_ifc.screensaver->toAddon->Stop(m_ifc.screensaver);
+  if (m_ifc.screensaver->toAddon->stop)
+    m_ifc.screensaver->toAddon->stop(m_ifc.hdl);
 }
 
 void CScreenSaver::Render()
 {
-  if (m_ifc.screensaver->toAddon->Render)
-    m_ifc.screensaver->toAddon->Render(m_ifc.screensaver);
+  if (m_ifc.screensaver->toAddon->render)
+    m_ifc.screensaver->toAddon->render(m_ifc.hdl);
 }
 
-} /* namespace ADDON */
+void CScreenSaver::GetProperties(struct KODI_ADDON_SCREENSAVER_PROPS* props)
+{
+  if (!props)
+    return;
+
+  const auto winSystem = CServiceBroker::GetWinSystem();
+  if (!winSystem)
+    return;
+
+  props->x = 0;
+  props->y = 0;
+  props->device = winSystem->GetHWContext();
+  props->width = winSystem->GetGfxContext().GetWidth();
+  props->height = winSystem->GetGfxContext().GetHeight();
+  props->pixelRatio = winSystem->GetGfxContext().GetResInfo().fPixelRatio;
+}

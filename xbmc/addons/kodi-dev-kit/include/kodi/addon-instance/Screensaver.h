@@ -318,7 +318,7 @@ public:
   /// ..
   /// ~~~~~~~~~~~~~
   ///
-  inline kodi::HardwareContext Device() { return m_instanceData->props->device; }
+  inline kodi::HardwareContext Device() { return m_props.device; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -327,7 +327,7 @@ public:
   ///
   /// @return The X position, in pixels
   ///
-  inline int X() { return m_instanceData->props->x; }
+  inline int X() { return m_props.x; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -336,7 +336,7 @@ public:
   ///
   /// @return The Y position, in pixels
   ///
-  inline int Y() { return m_instanceData->props->y; }
+  inline int Y() { return m_props.y; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -345,7 +345,7 @@ public:
   ///
   /// @return The width, in pixels
   ///
-  inline int Width() { return m_instanceData->props->width; }
+  inline int Width() { return m_props.width; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -354,7 +354,7 @@ public:
   ///
   /// @return The height, in pixels
   ///
-  inline int Height() { return m_instanceData->props->height; }
+  inline int Height() { return m_props.height; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -364,39 +364,7 @@ public:
   ///
   /// @return The pixel aspect ratio used by the display
   ///
-  inline float PixelRatio() { return m_instanceData->props->pixelRatio; }
-  //----------------------------------------------------------------------------
-
-  //============================================================================
-  /// @ingroup cpp_kodi_addon_screensaver_CB
-  /// @brief Used to get the name of the add-on defined in `addon.xml`.
-  ///
-  /// @return The add-on name
-  ///
-  inline std::string Name() { return m_instanceData->props->name; }
-  //----------------------------------------------------------------------------
-
-  //============================================================================
-  ///
-  /// @ingroup cpp_kodi_addon_screensaver_CB
-  /// @brief Used to get the full path where the add-on is installed.
-  ///
-  /// @return The add-on installation path
-  ///
-  inline std::string Presets() { return m_instanceData->props->presets; }
-  //----------------------------------------------------------------------------
-
-  //============================================================================
-  /// @ingroup cpp_kodi_addon_screensaver_CB
-  /// @brief Used to get the full path to the add-on's user profile.
-  ///
-  /// @note The trailing folder (consisting of the add-on's ID) is not created
-  /// by default. If it is needed, you must call kodi::vfs::CreateDirectory()
-  /// to create the folder.
-  ///
-  /// @return Path to the user profile
-  ///
-  inline std::string Profile() { return m_instanceData->props->profile; }
+  inline float PixelRatio() { return m_props.pixelRatio; }
   //----------------------------------------------------------------------------
 
   ///@}
@@ -405,33 +373,30 @@ private:
   void SetAddonStruct(KODI_ADDON_INSTANCE_STRUCT* instance)
   {
     instance->hdl = this;
-    instance->screensaver->toAddon->Start = ADDON_Start;
-    instance->screensaver->toAddon->Stop = ADDON_Stop;
-    instance->screensaver->toAddon->Render = ADDON_Render;
-    m_instanceData = instance->screensaver;
-    m_instanceData->toAddon->addonInstance = this;
+    instance->screensaver->toAddon->start = ADDON_start;
+    instance->screensaver->toAddon->stop = ADDON_stop;
+    instance->screensaver->toAddon->render = ADDON_render;
+
+    instance->screensaver->toKodi->get_properties(instance->info->kodi, &m_props);
   }
 
-  inline static bool ADDON_Start(AddonInstance_Screensaver* instance)
+  inline static bool ADDON_start(const KODI_ADDON_SCREENSAVER_HDL hdl)
   {
-    CInstanceScreensaver* thisClass =
-        static_cast<CInstanceScreensaver*>(instance->toAddon->addonInstance);
+    CInstanceScreensaver* thisClass = static_cast<CInstanceScreensaver*>(hdl);
     thisClass->m_renderHelper = kodi::gui::GetRenderHelper();
     return thisClass->Start();
   }
 
-  inline static void ADDON_Stop(AddonInstance_Screensaver* instance)
+  inline static void ADDON_stop(const KODI_ADDON_SCREENSAVER_HDL hdl)
   {
-    CInstanceScreensaver* thisClass =
-        static_cast<CInstanceScreensaver*>(instance->toAddon->addonInstance);
+    CInstanceScreensaver* thisClass = static_cast<CInstanceScreensaver*>(hdl);
     thisClass->Stop();
     thisClass->m_renderHelper = nullptr;
   }
 
-  inline static void ADDON_Render(AddonInstance_Screensaver* instance)
+  inline static void ADDON_render(const KODI_ADDON_SCREENSAVER_HDL hdl)
   {
-    CInstanceScreensaver* thisClass =
-        static_cast<CInstanceScreensaver*>(instance->toAddon->addonInstance);
+    CInstanceScreensaver* thisClass = static_cast<CInstanceScreensaver*>(hdl);
 
     if (!thisClass->m_renderHelper)
       return;
@@ -450,7 +415,8 @@ private:
    * On Kodi with Direct X where angle is present becomes this used.
    */
   std::shared_ptr<kodi::gui::IRenderHelper> m_renderHelper;
-  AddonInstance_Screensaver* m_instanceData;
+
+  KODI_ADDON_SCREENSAVER_PROPS m_props = {};
 };
 
 } /* namespace addon */

@@ -16,14 +16,9 @@ extern "C"
 {
 #endif /* __cplusplus */
 
-  struct AddonInstance_Screensaver;
+  typedef void* KODI_ADDON_SCREENSAVER_HDL;
 
-  /*!
-   * @brief Screensaver properties
-   *
-   * Not to be used outside this header.
-   */
-  typedef struct AddonProps_Screensaver
+  struct KODI_ADDON_SCREENSAVER_PROPS
   {
     ADDON_HARDWARE_CONTEXT device;
     int x;
@@ -31,42 +26,29 @@ extern "C"
     int width;
     int height;
     float pixelRatio;
-    const char* name;
-    const char* presets;
-    const char* profile;
-  } AddonProps_Screensaver;
+  };
 
-  /*!
-   * @brief Screensaver callbacks
-   *
-   * Not to be used outside this header.
-   */
-  typedef struct AddonToKodiFuncTable_Screensaver
-  {
-    KODI_HANDLE kodiInstance;
-  } AddonToKodiFuncTable_Screensaver;
+  typedef bool(ATTR_APIENTRYP PFN_KODI_ADDON_SCREENSAVER_START_V1)(
+      const KODI_ADDON_SCREENSAVER_HDL hdl);
+  typedef void(ATTR_APIENTRYP PFN_KODI_ADDON_SCREENSAVER_STOP_V1)(
+      const KODI_ADDON_SCREENSAVER_HDL hdl);
+  typedef void(ATTR_APIENTRYP PFN_KODI_ADDON_SCREENSAVER_RENDER_V1)(
+      const KODI_ADDON_SCREENSAVER_HDL hdl);
 
-  /*!
-   * @brief Screensaver function hooks
-   *
-   * Not to be used outside this header.
-   */
   typedef struct KodiToAddonFuncTable_Screensaver
   {
-    KODI_HANDLE addonInstance;
-    bool(__cdecl* Start)(struct AddonInstance_Screensaver* instance);
-    void(__cdecl* Stop)(struct AddonInstance_Screensaver* instance);
-    void(__cdecl* Render)(struct AddonInstance_Screensaver* instance);
+    PFN_KODI_ADDON_SCREENSAVER_START_V1 start;
+    PFN_KODI_ADDON_SCREENSAVER_STOP_V1 stop;
+    PFN_KODI_ADDON_SCREENSAVER_RENDER_V1 render;
   } KodiToAddonFuncTable_Screensaver;
 
-  /*!
-   * @brief Screensaver instance
-   *
-   * Not to be used outside this header.
-   */
+  typedef struct AddonToKodiFuncTable_Screensaver
+  {
+    void (*get_properties)(const KODI_HANDLE hdl, struct KODI_ADDON_SCREENSAVER_PROPS* props);
+  } AddonToKodiFuncTable_Screensaver;
+
   typedef struct AddonInstance_Screensaver
   {
-    struct AddonProps_Screensaver* props;
     struct AddonToKodiFuncTable_Screensaver* toKodi;
     struct KodiToAddonFuncTable_Screensaver* toAddon;
   } AddonInstance_Screensaver;

@@ -60,8 +60,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
       if (m_addon)
       {
         m_addon->Stop();
-        delete m_addon;
-        m_addon = nullptr;
+        m_addon.reset();
       }
 
       CServiceBroker::GetWinSystem()->GetGfxContext().ApplyStateBlock();
@@ -80,7 +79,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
           CServiceBroker::GetAddonMgr().GetAddonInfo(addon, ADDON::ADDON_SCREENSAVER);
       if (!addonBase)
         return false;
-      m_addon = new ADDON::CScreenSaver(addonBase);
+      m_addon = std::make_unique<KODI::ADDONS::CScreenSaver>(addonBase);
       return m_addon->Start();
     }
 
