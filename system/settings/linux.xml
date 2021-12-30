@@ -137,6 +137,18 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <setting id="videoplayer.usevaapiav1" type="boolean" parent="videoplayer.usevaapi" label="13468" help="13469">
+          <requirement>HAVE_LIBVA</requirement>
+          <visible>false</visible>
+          <dependencies>
+            <dependency type="enable">
+              <condition setting="videoplayer.usevaapi" operator="is">true</condition>
+            </dependency>
+          </dependencies>
+          <level>3</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
         <setting id="videoplayer.prefervaapirender" type="boolean" parent="videoplayer.usevaapi" label="13457" help="36433">
           <requirement>HAVE_LIBVA</requirement>
           <visible>false</visible>

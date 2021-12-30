@@ -33,6 +33,11 @@
 #include <sstream>
 #include <utility>
 
+extern "C"
+{
+#include "libavutil/pixdesc.h"
+}
+
 #ifdef HAVE_LIBBLURAY
 #include "DVDInputStreams/DVDInputStreamBluray.h"
 #endif
@@ -1639,6 +1644,11 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         st->iOrientation = 0;
         st->iBitsPerPixel = pStream->codecpar->bits_per_coded_sample;
         st->iBitRate = static_cast<int>(pStream->codecpar->bit_rate);
+        st->bitDepth = 8;
+        const AVPixFmtDescriptor* desc =
+            av_pix_fmt_desc_get(static_cast<AVPixelFormat>(pStream->codecpar->format));
+        if (desc != nullptr && desc->comp != nullptr)
+          st->bitDepth = desc->comp[0].depth;
 
         st->colorPrimaries = pStream->codecpar->color_primaries;
         st->colorSpace = pStream->codecpar->color_space;

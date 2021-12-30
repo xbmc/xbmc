@@ -326,7 +326,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_hints = hints;
   m_options = options;
 
-  AVCodec* pCodec;
+  AVCodec* pCodec = nullptr;
 
   m_iOrientation = hints.orientation;
 
@@ -336,7 +336,16 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_processInfo.SetSwDeinterlacingMethods();
   m_processInfo.SetVideoInterlaced(false);
 
-  pCodec = avcodec_find_decoder(hints.codec);
+  // libdav1d av1 sw decoding is implemented as a separate decoder
+  // in ffmpeg which is always found first when calling `avcodec_find_decoder`.
+  // To get hwaccels we look for decoders registered for `av1`.
+  // The decoder state check is needed to succesfully fallback to sw decoding if
+  // necessary.
+  if (hints.codec == AV_CODEC_ID_AV1 && m_decoderState != STATE_HW_FAILED)
+    pCodec = avcodec_find_decoder_by_name("av1");
+
+  if (!pCodec)
+    pCodec = avcodec_find_decoder(hints.codec);
 
   if(pCodec == NULL)
   {
@@ -381,6 +390,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_pCodecContext->coded_height = hints.height;
   m_pCodecContext->coded_width = hints.width;
   m_pCodecContext->bits_per_coded_sample = hints.bitsperpixel;
+  m_pCodecContext->bits_per_raw_sample = hints.bitdepth;
 
   if( hints.extradata && hints.extrasize > 0 )
   {

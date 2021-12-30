@@ -54,6 +54,7 @@ using namespace std::chrono_literals;
 #define NUM_RENDER_PICS 7
 
 constexpr auto SETTING_VIDEOPLAYER_USEVAAPI = "videoplayer.usevaapi";
+constexpr auto SETTING_VIDEOPLAYER_USEVAAPIAV1 = "videoplayer.usevaapiav1";
 constexpr auto SETTING_VIDEOPLAYER_USEVAAPIHEVC = "videoplayer.usevaapihevc";
 constexpr auto SETTING_VIDEOPLAYER_USEVAAPIMPEG2 = "videoplayer.usevaapimpeg2";
 constexpr auto SETTING_VIDEOPLAYER_USEVAAPIMPEG4 = "videoplayer.usevaapimpeg4";
@@ -532,14 +533,15 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
 
   // check if user wants to decode this format with VAAPI
   std::map<AVCodecID, std::string> settings_map = {
-    { AV_CODEC_ID_H263, SETTING_VIDEOPLAYER_USEVAAPIMPEG4 },
-    { AV_CODEC_ID_MPEG4, SETTING_VIDEOPLAYER_USEVAAPIMPEG4 },
-    { AV_CODEC_ID_WMV3, SETTING_VIDEOPLAYER_USEVAAPIVC1 },
-    { AV_CODEC_ID_VC1, SETTING_VIDEOPLAYER_USEVAAPIVC1 },
-    { AV_CODEC_ID_MPEG2VIDEO, SETTING_VIDEOPLAYER_USEVAAPIMPEG2 },
-    { AV_CODEC_ID_VP8, SETTING_VIDEOPLAYER_USEVAAPIVP8 },
-    { AV_CODEC_ID_VP9, SETTING_VIDEOPLAYER_USEVAAPIVP9 },
-    { AV_CODEC_ID_HEVC, SETTING_VIDEOPLAYER_USEVAAPIHEVC },
+      {AV_CODEC_ID_H263, SETTING_VIDEOPLAYER_USEVAAPIMPEG4},
+      {AV_CODEC_ID_MPEG4, SETTING_VIDEOPLAYER_USEVAAPIMPEG4},
+      {AV_CODEC_ID_WMV3, SETTING_VIDEOPLAYER_USEVAAPIVC1},
+      {AV_CODEC_ID_VC1, SETTING_VIDEOPLAYER_USEVAAPIVC1},
+      {AV_CODEC_ID_MPEG2VIDEO, SETTING_VIDEOPLAYER_USEVAAPIMPEG2},
+      {AV_CODEC_ID_VP8, SETTING_VIDEOPLAYER_USEVAAPIVP8},
+      {AV_CODEC_ID_VP9, SETTING_VIDEOPLAYER_USEVAAPIVP9},
+      {AV_CODEC_ID_HEVC, SETTING_VIDEOPLAYER_USEVAAPIHEVC},
+      {AV_CODEC_ID_AV1, SETTING_VIDEOPLAYER_USEVAAPIAV1},
   };
 
   auto entry = settings_map.find(avctx->codec_id);
@@ -585,6 +587,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
   m_vaapiConfig.surfaceWidth = avctx->coded_width;
   m_vaapiConfig.surfaceHeight = avctx->coded_height;
   m_vaapiConfig.aspect = avctx->sample_aspect_ratio;
+  m_vaapiConfig.bitDepth = avctx->bits_per_raw_sample;
   m_DisplayState = VAAPI_OPEN;
   m_vaapiConfigured = false;
   m_presentPicture = nullptr;
@@ -672,6 +675,20 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
       if (!m_vaapiConfig.context->SupportsProfile(profile))
         return false;
       break;
+#if VA_CHECK_VERSION(1, 8, 0)
+    case AV_CODEC_ID_AV1:
+    {
+      if (avctx->profile == FF_PROFILE_AV1_MAIN)
+        profile = VAProfileAV1Profile0;
+      else if (avctx->profile == FF_PROFILE_AV1_HIGH)
+        profile = VAProfileAV1Profile1;
+      else
+        profile = VAProfileNone;
+      if (!m_vaapiConfig.context->SupportsProfile(profile))
+        return false;
+      break;
+    }
+#endif
     default:
       return false;
   }
@@ -696,6 +713,8 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
     m_vaapiConfig.maxReferences = 16;
   else if (avctx->codec_id == AV_CODEC_ID_VP9)
     m_vaapiConfig.maxReferences = 8;
+  else if (avctx->codec_id == AV_CODEC_ID_AV1)
+    m_vaapiConfig.maxReferences = 18;
   else
     m_vaapiConfig.maxReferences = 2;
 
@@ -1134,7 +1153,12 @@ bool CDecoder::ConfigVAAPI()
   unsigned int format = VA_RT_FORMAT_YUV420;
   std::int32_t pixelFormat = VA_FOURCC_NV12;
 
-  if (m_vaapiConfig.profile == VAProfileHEVCMain10)
+  if ((m_vaapiConfig.profile == VAProfileHEVCMain10
+#if VA_CHECK_VERSION(1, 8, 0)
+       || m_vaapiConfig.profile == VAProfileAV1Profile0
+#endif
+       ) &&
+      m_vaapiConfig.bitDepth == 10)
   {
     format = VA_RT_FORMAT_YUV420_10BPP;
     pixelFormat = VA_FOURCC_P010;
@@ -1256,11 +1280,12 @@ void CDecoder::Register(IVaapiWinSystem *winSystem, bool deepColor)
   if (!settings)
     return;
 
-  constexpr std::array<const char*, 8> vaapiSettings = {
+  constexpr std::array<const char*, 9> vaapiSettings = {
       SETTING_VIDEOPLAYER_USEVAAPI,     SETTING_VIDEOPLAYER_USEVAAPIMPEG4,
       SETTING_VIDEOPLAYER_USEVAAPIVC1,  SETTING_VIDEOPLAYER_USEVAAPIMPEG2,
       SETTING_VIDEOPLAYER_USEVAAPIVP8,  SETTING_VIDEOPLAYER_USEVAAPIVP9,
-      SETTING_VIDEOPLAYER_USEVAAPIHEVC, SETTING_VIDEOPLAYER_PREFERVAAPIRENDER};
+      SETTING_VIDEOPLAYER_USEVAAPIHEVC, SETTING_VIDEOPLAYER_PREFERVAAPIRENDER,
+      SETTING_VIDEOPLAYER_USEVAAPIAV1};
 
   for (const auto vaapiSetting : vaapiSettings)
   {
