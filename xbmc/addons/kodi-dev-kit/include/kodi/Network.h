@@ -36,12 +36,12 @@ namespace network
 /// @param[in] mac Network address of the host to wake.
 /// @return True if the magic packet was successfully sent, false otherwise.
 ///
-inline bool ATTRIBUTE_HIDDEN WakeOnLan(const std::string& mac)
+inline bool ATTR_DLL_LOCAL WakeOnLan(const std::string& mac)
 {
   using namespace ::kodi::addon;
 
-  return CAddonBase::m_interface->toKodi->kodi_network->wake_on_lan(
-      CAddonBase::m_interface->toKodi->kodiBase, mac.c_str());
+  return CPrivateBase::m_interface->toKodi->kodi_network->wake_on_lan(
+      CPrivateBase::m_interface->toKodi->kodiBase, mac.c_str());
 }
 //----------------------------------------------------------------------------
 
@@ -63,17 +63,18 @@ inline bool ATTRIBUTE_HIDDEN WakeOnLan(const std::string& mac)
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline std::string ATTRIBUTE_HIDDEN GetIPAddress()
+inline std::string ATTR_DLL_LOCAL GetIPAddress()
 {
   using namespace ::kodi::addon;
 
   std::string ip;
-  char* string = CAddonBase::m_interface->toKodi->kodi_network->get_ip_address(
-      CAddonBase::m_interface->toKodi->kodiBase);
+  char* string = CPrivateBase::m_interface->toKodi->kodi_network->get_ip_address(
+      CPrivateBase::m_interface->toKodi->kodiBase);
   if (string != nullptr)
   {
     ip = string;
-    CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase, string);
+    CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase,
+                                                   string);
   }
   return ip;
 }
@@ -97,17 +98,18 @@ inline std::string ATTRIBUTE_HIDDEN GetIPAddress()
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline std::string ATTRIBUTE_HIDDEN GetHostname()
+inline std::string ATTR_DLL_LOCAL GetHostname()
 {
   using namespace ::kodi::addon;
 
   std::string ip;
-  char* string = CAddonBase::m_interface->toKodi->kodi_network->get_hostname(
-      CAddonBase::m_interface->toKodi->kodiBase);
+  char* string = CPrivateBase::m_interface->toKodi->kodi_network->get_hostname(
+      CPrivateBase::m_interface->toKodi->kodiBase);
   if (string != nullptr)
   {
     ip = string;
-    CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase, string);
+    CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase,
+                                                   string);
   }
   return ip;
 }
@@ -132,17 +134,18 @@ inline std::string ATTRIBUTE_HIDDEN GetHostname()
 /// example output:
 ///   Kodi/19.0-ALPHA1 (X11; Linux x86_64) Ubuntu/20.04 App_Bitness/64 Version/19.0-ALPHA1-Git:20200522-0076d136d3-dirty
 ///
-inline std::string ATTRIBUTE_HIDDEN GetUserAgent()
+inline std::string ATTR_DLL_LOCAL GetUserAgent()
 {
   using namespace ::kodi::addon;
 
   std::string agent;
-  char* string = CAddonBase::m_interface->toKodi->kodi_network->get_user_agent(
-      CAddonBase::m_interface->toKodi->kodiBase);
+  char* string = CPrivateBase::m_interface->toKodi->kodi_network->get_user_agent(
+      CPrivateBase::m_interface->toKodi->kodiBase);
   if (string != nullptr)
   {
     agent = string;
-    CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase, string);
+    CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase,
+                                                   string);
   }
   return agent;
 }
@@ -167,12 +170,12 @@ inline std::string ATTRIBUTE_HIDDEN GetUserAgent()
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline bool ATTRIBUTE_HIDDEN IsLocalHost(const std::string& hostname)
+inline bool ATTR_DLL_LOCAL IsLocalHost(const std::string& hostname)
 {
   using namespace ::kodi::addon;
 
-  return CAddonBase::m_interface->toKodi->kodi_network->is_local_host(
-      CAddonBase::m_interface->toKodi->kodiBase, hostname.c_str());
+  return CPrivateBase::m_interface->toKodi->kodi_network->is_local_host(
+      CPrivateBase::m_interface->toKodi->kodiBase, hostname.c_str());
 }
 //----------------------------------------------------------------------------
 
@@ -184,12 +187,12 @@ inline bool ATTRIBUTE_HIDDEN IsLocalHost(const std::string& hostname)
 /// @param[in] offLineCheck Check if in private range, see https://en.wikipedia.org/wiki/Private_network
 /// @return True if host is on a LAN, false otherwise
 ///
-inline bool ATTRIBUTE_HIDDEN IsHostOnLAN(const std::string& hostname, bool offLineCheck = false)
+inline bool ATTR_DLL_LOCAL IsHostOnLAN(const std::string& hostname, bool offLineCheck = false)
 {
   using namespace kodi::addon;
 
-  return CAddonBase::m_interface->toKodi->kodi_network->is_host_on_lan(
-      CAddonBase::m_interface->toKodi->kodiBase, hostname.c_str(), offLineCheck);
+  return CPrivateBase::m_interface->toKodi->kodi_network->is_host_on_lan(
+      CPrivateBase::m_interface->toKodi->kodiBase, hostname.c_str(), offLineCheck);
 }
 //------------------------------------------------------------------------------
 
@@ -218,17 +221,18 @@ inline bool ATTRIBUTE_HIDDEN IsHostOnLAN(const std::string& hostname, bool offLi
 /// ~~~~~~~~~~~~~
 /// For example, the string: François ,would be encoded as: Fran%C3%A7ois
 ///
-inline std::string ATTRIBUTE_HIDDEN URLEncode(const std::string& url)
+inline std::string ATTR_DLL_LOCAL URLEncode(const std::string& url)
 {
   using namespace ::kodi::addon;
 
   std::string retString;
-  char* string = CAddonBase::m_interface->toKodi->kodi_network->url_encode(
-      CAddonBase::m_interface->toKodi->kodiBase, url.c_str());
+  char* string = CPrivateBase::m_interface->toKodi->kodi_network->url_encode(
+      CPrivateBase::m_interface->toKodi->kodiBase, url.c_str());
   if (string != nullptr)
   {
     retString = string;
-    CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase, string);
+    CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase,
+                                                   string);
   }
   return retString;
 }
@@ -260,17 +264,18 @@ inline std::string ATTRIBUTE_HIDDEN URLEncode(const std::string& url)
 /// ...
 /// ~~~~~~~~~~~~~
 ///
-inline bool ATTRIBUTE_HIDDEN DNSLookup(const std::string& hostName, std::string& ipAddress)
+inline bool ATTR_DLL_LOCAL DNSLookup(const std::string& hostName, std::string& ipAddress)
 {
   using namespace ::kodi::addon;
 
   bool ret = false;
-  char* string = CAddonBase::m_interface->toKodi->kodi_network->dns_lookup(
-      CAddonBase::m_interface->toKodi->kodiBase, hostName.c_str(), &ret);
+  char* string = CPrivateBase::m_interface->toKodi->kodi_network->dns_lookup(
+      CPrivateBase::m_interface->toKodi->kodiBase, hostName.c_str(), &ret);
   if (string != nullptr)
   {
     ipAddress = string;
-    CAddonBase::m_interface->toKodi->free_string(CAddonBase::m_interface->toKodi->kodiBase, string);
+    CPrivateBase::m_interface->toKodi->free_string(CPrivateBase::m_interface->toKodi->kodiBase,
+                                                   string);
   }
   return ret;
 }

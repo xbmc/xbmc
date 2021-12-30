@@ -14,7 +14,7 @@ class CFileItem;
 
 namespace EDL
 {
-struct Cut;
+struct Edit;
 }
 
 namespace PVR
@@ -24,11 +24,11 @@ class CPVREdl
 {
 public:
   /*!
-   * @brief Get the cuts for the given item.
+   * @brief Get the EDL edits for the given item.
    * @param item The item.
-   * @return The EDL cuts or enpty vector if no cuts exist.
+   * @return The EDL edits or an empty vector if no edits exist.
    */
-  static std::vector<EDL::Cut> GetCuts(const CFileItem& item);
+  static std::vector<EDL::Edit> GetEdits(const CFileItem& item);
 };
 
 } // namespace PVR

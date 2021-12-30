@@ -157,7 +157,7 @@ bool CAddonDll::LoadDll()
   return true;
 }
 
-ADDON_STATUS CAddonDll::Create(KODI_HANDLE firstKodiInstance)
+ADDON_STATUS CAddonDll::Create(KODI_ADDON_INSTANCE_STRUCT* firstKodiInstance)
 {
   CLog::Log(LOGDEBUG, "ADDON: Dll Initializing - {}", Name());
   m_initialized = false;
@@ -181,8 +181,11 @@ ADDON_STATUS CAddonDll::Create(KODI_HANDLE firstKodiInstance)
 
   /* Call Create to make connections, initializing data or whatever is
      needed to become the AddOn running */
-  ADDON_STATUS status =
-      m_pDll->Create(&m_interface, kodi::addon::GetTypeVersion(ADDON_GLOBAL_MAIN), nullptr);
+  ADDON_STATUS status = m_pDll->Create(&m_interface);
+
+  // "C" ABI related call, if on add-on used.
+  if (status == ADDON_STATUS_OK && m_interface.toAddon->create)
+    status = m_interface.toAddon->create(m_interface.firstKodiInstance, &m_interface.addonBase);
 
   if (status == ADDON_STATUS_OK)
   {
@@ -216,7 +219,7 @@ void CAddonDll::Destroy()
   if (m_pDll)
   {
     if (m_interface.toAddon->destroy)
-      m_interface.toAddon->destroy();
+      m_interface.toAddon->destroy(m_interface.addonBase);
     m_pDll->Unload();
   }
 
@@ -234,12 +237,13 @@ void CAddonDll::Destroy()
   m_initialized = false;
 }
 
-ADDON_STATUS CAddonDll::CreateInstance(ADDON_TYPE instanceType,
-                                       ADDON_INSTANCE_HANDLER instanceClass,
-                                       const std::string& instanceID,
-                                       KODI_HANDLE instance,
-                                       KODI_HANDLE parentInstance)
+ADDON_STATUS CAddonDll::CreateInstance(KODI_ADDON_INSTANCE_STRUCT* instance)
 {
+  assert(instance != nullptr);
+  assert(instance->functions != nullptr);
+  assert(instance->info != nullptr);
+  assert(instance->info->functions != nullptr);
+
   ADDON_STATUS status = ADDON_STATUS_OK;
 
   if (!m_initialized)
@@ -248,31 +252,28 @@ ADDON_STATUS CAddonDll::CreateInstance(ADDON_TYPE instanceType,
     return status;
 
   /* Check version of requested instance type */
-  if (!CheckAPIVersion(instanceType))
+  if (!CheckAPIVersion(instance->info->type))
     return ADDON_STATUS_PERMANENT_FAILURE;
 
-  KODI_HANDLE addonInstance = nullptr;
-  status = m_interface.toAddon->create_instance(instanceType, instanceID.c_str(), instance,
-                                                kodi::addon::GetTypeVersion(instanceType),
-                                                &addonInstance, parentInstance);
+  status = m_interface.toAddon->create_instance(m_interface.addonBase, instance);
 
-  if (addonInstance)
+  if (instance->info)
   {
-    m_usedInstances[instanceClass] = std::make_pair(instanceType, addonInstance);
+    m_usedInstances[instance->info->kodi] = instance;
   }
 
   return status;
 }
 
-void CAddonDll::DestroyInstance(ADDON_INSTANCE_HANDLER instanceClass)
+void CAddonDll::DestroyInstance(KODI_ADDON_INSTANCE_STRUCT* instance)
 {
   if (m_usedInstances.empty())
     return;
 
-  auto it = m_usedInstances.find(instanceClass);
+  auto it = m_usedInstances.find(instance->info->kodi);
   if (it != m_usedInstances.end())
   {
-    m_interface.toAddon->destroy_instance(it->second.first, it->second.second);
+    m_interface.toAddon->destroy_instance(m_interface.addonBase, it->second);
     m_usedInstances.erase(it);
   }
 
@@ -349,9 +350,6 @@ void CAddonDll::SaveSettings()
 
 ADDON_STATUS CAddonDll::TransferSettings()
 {
-  if (!m_interface.toAddon->set_setting)
-    return ADDON_STATUS_NOT_IMPLEMENTED;
-
   bool restart = false;
   ADDON_STATUS reportStatus = ADDON_STATUS_OK;
 
@@ -377,33 +375,43 @@ ADDON_STATUS CAddonDll::TransferSettings()
               case SettingType::Boolean:
               {
                 bool tmp = std::static_pointer_cast<CSettingBool>(setting)->GetValue();
-                status = m_interface.toAddon->set_setting(id, &tmp);
+                if (m_interface.toAddon->setting_change_boolean)
+                  status =
+                      m_interface.toAddon->setting_change_boolean(m_interface.addonBase, id, tmp);
                 break;
               }
 
               case SettingType::Integer:
               {
                 int tmp = std::static_pointer_cast<CSettingInt>(setting)->GetValue();
-                status = m_interface.toAddon->set_setting(id, &tmp);
+                if (m_interface.toAddon->setting_change_integer)
+                  status =
+                      m_interface.toAddon->setting_change_integer(m_interface.addonBase, id, tmp);
                 break;
               }
 
               case SettingType::Number:
               {
                 float tmpf = static_cast<float>(std::static_pointer_cast<CSettingNumber>(setting)->GetValue());
-                status = m_interface.toAddon->set_setting(id, &tmpf);
+                if (m_interface.toAddon->setting_change_float)
+                  status =
+                      m_interface.toAddon->setting_change_float(m_interface.addonBase, id, tmpf);
                 break;
               }
 
               case SettingType::String:
-                status = m_interface.toAddon->set_setting(
-                    id, std::static_pointer_cast<CSettingString>(setting)->GetValue().c_str());
+                if (m_interface.toAddon->setting_change_string)
+                  status = m_interface.toAddon->setting_change_string(
+                      m_interface.addonBase, id,
+                      std::static_pointer_cast<CSettingString>(setting)->GetValue().c_str());
                 break;
 
               default:
                 // log unknowns as an error, but go ahead and transfer the string
                 CLog::Log(LOGERROR, "Unknown setting type of '{}' for {}", id, Name());
-                status = m_interface.toAddon->set_setting(id, setting->ToString().c_str());
+                if (m_interface.toAddon->setting_change_string)
+                  status = m_interface.toAddon->setting_change_string(m_interface.addonBase, id,
+                                                                      setting->ToString().c_str());
                 break;
             }
 

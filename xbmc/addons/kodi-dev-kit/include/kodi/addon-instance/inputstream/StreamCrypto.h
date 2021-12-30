@@ -38,7 +38,7 @@ class VideoCodecInitdata;
 /// @copydetails cpp_kodi_addon_inputstream_Defs_Info_StreamCryptoSession_Help
 ///
 ///@{
-class ATTRIBUTE_HIDDEN StreamCryptoSession
+class ATTR_DLL_LOCAL StreamCryptoSession
   : public CStructHdl<StreamCryptoSession, STREAM_CRYPTO_SESSION>
 {
   /*! \cond PRIVATE */

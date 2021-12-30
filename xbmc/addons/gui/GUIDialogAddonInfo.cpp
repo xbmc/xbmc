@@ -244,9 +244,10 @@ void CGUIDialogAddonInfo::UpdateControls(PerformButtonFocus performButtonFocus)
                            CServiceBroker::GetAddonMgr().IsAutoUpdateable(m_localAddon->ID()));
   SET_CONTROL_LABEL(CONTROL_BTN_AUTOUPDATE, 21340);
 
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SELECT,
-                              m_addonEnabled && (CanShowSupportList() || CanOpen() || CanRun() ||
-                                                 (CanUse() && !m_localAddon->IsInUse())));
+  const bool active = m_localAddon && CAddonSystemSettings::GetInstance().IsActive(*m_localAddon);
+  CONTROL_ENABLE_ON_CONDITION(
+      CONTROL_BTN_SELECT,
+      m_addonEnabled && (CanShowSupportList() || CanOpen() || CanRun() || (CanUse() && !active)));
 
   int label;
   if (CanShowSupportList())
@@ -525,12 +526,14 @@ bool CGUIDialogAddonInfo::CanUse() const
          (m_localAddon->Type() == ADDON_SKIN || m_localAddon->Type() == ADDON_SCREENSAVER ||
           m_localAddon->Type() == ADDON_VIZ || m_localAddon->Type() == ADDON_SCRIPT_WEATHER ||
           m_localAddon->Type() == ADDON_RESOURCE_LANGUAGE ||
-          m_localAddon->Type() == ADDON_RESOURCE_UISOUNDS);
+          m_localAddon->Type() == ADDON_RESOURCE_UISOUNDS ||
+          m_localAddon->Type() == ADDON_AUDIOENCODER);
 }
 
 bool CGUIDialogAddonInfo::CanShowSupportList() const
 {
-  return m_localAddon && m_localAddon->Type() == ADDON_AUDIODECODER;
+  return m_localAddon &&
+         (m_localAddon->Type() == ADDON_AUDIODECODER || m_localAddon->Type() == ADDON_IMAGEDECODER);
 }
 
 bool CGUIDialogAddonInfo::PromptIfDependency(int heading, int line2)
@@ -739,7 +742,7 @@ bool CGUIDialogAddonInfo::ShowDependencyList(Reactivate reactivate, EntryPoint e
 void CGUIDialogAddonInfo::ShowSupportList()
 {
   std::vector<KODI::ADDONS::AddonSupportEntry> list;
-  if (m_localAddon->Type() == ADDON_AUDIODECODER)
+  if (CanShowSupportList())
     list =
         CServiceBroker::GetExtsMimeSupportList().GetSupportedExtsAndMimeTypes(m_localAddon->ID());
 

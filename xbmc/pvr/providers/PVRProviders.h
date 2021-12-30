@@ -47,7 +47,7 @@ protected:
   void InsertEntry(const std::shared_ptr<CPVRProvider>& newProvider, ProviderUpdateMode updateMode);
 
   mutable CCriticalSection m_critSection;
-  unsigned int m_iLastId = 0;
+  int m_iLastId = 0;
   std::vector<std::shared_ptr<CPVRProvider>> m_providers;
 };
 
@@ -108,7 +108,7 @@ public:
      * @param iProviderId The ID to find
      * @return The provider, or an empty one when not found
      */
-  std::shared_ptr<CPVRProvider> GetById(unsigned int iProviderId) const;
+  std::shared_ptr<CPVRProvider> GetById(int iProviderId) const;
 
   /*!
     * @brief Erase stale texture db entries and image files.

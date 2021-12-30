@@ -455,8 +455,8 @@ bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
 
   if (status != VA_STATUS_SUCCESS)
   {
-    CLog::LogFunction(LOGWARNING, "CVaapi2Texture::Map",
-                      "vaExportSurfaceHandle failed - Error: {} ({})", vaErrorStr(status), status);
+    CLog::Log(LOGWARNING, "CVaapi2Texture::Map: vaExportSurfaceHandle failed - Error: {} ({})",
+              vaErrorStr(status), status);
     return false;
   }
 
@@ -472,8 +472,8 @@ bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
   status = vaSyncSurface(pic->vadsp, pic->procPic.videoSurface);
   if (status != VA_STATUS_SUCCESS)
   {
-    CLog::LogFunction(LOGERROR, "CVaapi2Texture::Map", "vaSyncSurface - Error: {} ({})",
-                      vaErrorStr(status), status);
+    CLog::Log(LOGERROR, "CVaapi2Texture::Map: vaSyncSurface - Error: {} ({})", vaErrorStr(status),
+              status);
     return false;
   }
 
@@ -485,8 +485,9 @@ bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
     auto const& layer = surface.layers[layerNo];
     if (layer.num_planes != 1)
     {
-      CLog::LogFunction(LOGDEBUG, "CVaapi2Texture::Map",
-                        "DRM-exported layer has {} planes - only 1 supported", layer.num_planes);
+      CLog::Log(LOGDEBUG,
+                "CVaapi2Texture::Map: DRM-exported layer has {} planes - only 1 supported",
+                layer.num_planes);
       return false;
     }
     auto const& object = surface.objects[layer.object_index[plane]];
@@ -517,8 +518,9 @@ bool CVaapi2Texture::Map(CVaapiRenderPicture* pic)
         }
         break;
       default:
-        CLog::LogFunction(LOGDEBUG, "CVaapi2Texture::Map",
-                          "DRM-exported surface {} layers - only 2 supported", surface.num_layers);
+        CLog::Log(LOGDEBUG,
+                  "CVaapi2Texture::Map: DRM-exported surface {} layers - only 2 supported",
+                  surface.num_layers);
         return false;
     }
 

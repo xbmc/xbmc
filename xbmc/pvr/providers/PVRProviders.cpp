@@ -144,13 +144,13 @@ bool CPVRProviders::Update()
   for (const auto& clientInfo : clientProviderInfos)
   {
     auto addonProvider = std::make_shared<CPVRProvider>(
-        clientInfo["clientid"].asInteger(), clientInfo["name"].asString(),
+        clientInfo["clientid"].asInteger32(), clientInfo["name"].asString(),
         clientInfo["icon"].asString(), clientInfo["thumb"].asString());
 
     newAddonProviderList.CheckAndAddEntry(addonProvider, ProviderUpdateMode::BY_CLIENT);
 
     if (!clientInfo["enabled"].asBoolean())
-      disabledClients.emplace_back(clientInfo["clientid"].asInteger());
+      disabledClients.emplace_back(clientInfo["clientid"].asInteger32());
   }
   UpdateDefaultEntries(newAddonProviderList);
 
@@ -361,7 +361,7 @@ bool CPVRProviders::PersistUserChanges(const std::vector<std::shared_ptr<CPVRPro
   return true;
 }
 
-std::shared_ptr<CPVRProvider> CPVRProviders::GetById(unsigned int iProviderId) const
+std::shared_ptr<CPVRProvider> CPVRProviders::GetById(int iProviderId) const
 {
   CSingleLock lock(m_critSection);
   for (const auto& provider : m_providers)
@@ -377,11 +377,13 @@ void CPVRProviders::RemoveEntry(const std::shared_ptr<CPVRProvider>& provider)
 {
   CSingleLock lock(m_critSection);
 
-  std::remove_if(m_providers.begin(), m_providers.end(),
-                 [&provider](const std::shared_ptr<CPVRProvider>& providerToRemove) {
-                   return provider->GetClientId() == providerToRemove->GetClientId() &&
-                          provider->GetUniqueId() == providerToRemove->GetUniqueId();
-                 });
+  m_providers.erase(
+      std::remove_if(m_providers.begin(), m_providers.end(),
+                     [&provider](const std::shared_ptr<CPVRProvider>& providerToRemove) {
+                       return provider->GetClientId() == providerToRemove->GetClientId() &&
+                              provider->GetUniqueId() == providerToRemove->GetUniqueId();
+                     }),
+      m_providers.end());
 }
 
 int CPVRProviders::CleanupCachedImages()

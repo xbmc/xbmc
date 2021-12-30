@@ -58,12 +58,8 @@ CWinSystemWin10::CWinSystemWin10()
 
   AE::CAESinkFactory::ClearSinks();
   CAESinkXAudio::Register();
+  CAESinkWASAPI::Register();
   CScreenshotSurfaceWindows::Register();
-
-  if (CSysInfo::GetWindowsDeviceFamily() == CSysInfo::WindowsDeviceFamily::Desktop)
-  {
-    CAESinkWASAPI::Register();
-  }
 }
 
 CWinSystemWin10::~CWinSystemWin10()
@@ -356,7 +352,7 @@ bool CWinSystemWin10::ChangeResolution(const RESOLUTION_INFO& res, bool forceCha
     return changed;
   }
 
-  CLog::LogFunction(LOGDEBUG, __FUNCTION__, "Not supported.");
+  CLog::LogF(LOGDEBUG, "Not supported.");
   return false;
 }
 

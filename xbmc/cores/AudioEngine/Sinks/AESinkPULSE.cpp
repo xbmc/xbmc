@@ -9,11 +9,12 @@
 
 #include "Application.h"
 #include "ServiceBroker.h"
-#include "Util.h"
 #include "cores/AudioEngine/AESinkFactory.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
+
+#include <array>
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
@@ -145,7 +146,11 @@ static pa_encoding AEFormatToPulseEncoding(AEDataFormat format)
   }
 }
 
-static AEDataFormat defaultDataFormats[] = {
+namespace
+{
+
+// clang-format off
+constexpr std::array<AEDataFormat, 6> defaultDataFormats = {
   AE_FMT_U8,
   AE_FMT_S16NE,
   AE_FMT_S24NE3,
@@ -154,7 +159,7 @@ static AEDataFormat defaultDataFormats[] = {
   AE_FMT_FLOAT
 };
 
-static unsigned int defaultSampleRates[] = {
+constexpr std::array<unsigned int, 14> defaultSampleRates = {
   5512,
   8000,
   11025,
@@ -170,6 +175,9 @@ static unsigned int defaultSampleRates[] = {
   192000,
   384000
 };
+// clang-format on
+
+} // namespace
 
 /* Static callback functions */
 
@@ -482,9 +490,10 @@ static void SinkInfoRequestCallback(pa_context *c, const pa_sink_info *i, int eo
     defaultDevice.m_deviceName = std::string("Default");
     defaultDevice.m_displayName = std::string("Default");
     defaultDevice.m_displayNameExtra = std::string("Default Output Device (PULSEAUDIO)");
-    defaultDevice.m_dataFormats.insert(defaultDevice.m_dataFormats.end(), defaultDataFormats, defaultDataFormats + ARRAY_SIZE(defaultDataFormats));
+    defaultDevice.m_dataFormats.insert(defaultDevice.m_dataFormats.end(),
+                                       defaultDataFormats.begin(), defaultDataFormats.end());
     defaultDevice.m_channels = CAEChannelInfo(AE_CH_LAYOUT_2_0);
-    defaultDevice.m_sampleRates.assign(defaultSampleRates, defaultSampleRates + ARRAY_SIZE(defaultSampleRates));
+    defaultDevice.m_sampleRates.assign(defaultSampleRates.begin(), defaultSampleRates.end());
     defaultDevice.m_deviceType = AE_DEVTYPE_PCM;
     defaultDevice.m_wantsIECPassthrough = true;
     sinkStruct->list->push_back(defaultDevice);
@@ -507,7 +516,7 @@ static void SinkInfoRequestCallback(pa_context *c, const pa_sink_info *i, int eo
     if(device.m_channels.Count() == 0)
       valid = false;
 
-    device.m_sampleRates.assign(defaultSampleRates, defaultSampleRates + ARRAY_SIZE(defaultSampleRates));
+    device.m_sampleRates.assign(defaultSampleRates.begin(), defaultSampleRates.end());
 
     for (unsigned int j = 0; j < i->n_formats; j++)
     {
@@ -529,7 +538,8 @@ static void SinkInfoRequestCallback(pa_context *c, const pa_sink_info *i, int eo
           device_type = AE_DEVTYPE_IEC958;
           break;
         case PA_ENCODING_PCM:
-          device.m_dataFormats.insert(device.m_dataFormats.end(), defaultDataFormats, defaultDataFormats + ARRAY_SIZE(defaultDataFormats));
+          device.m_dataFormats.insert(device.m_dataFormats.end(), defaultDataFormats.begin(),
+                                      defaultDataFormats.end());
           break;
         default:
           break;

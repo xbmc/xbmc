@@ -1521,10 +1521,10 @@ void StringUtils::RemoveCRLF(std::string& strLine)
 std::string StringUtils::SizeToString(int64_t size)
 {
   std::string strLabel;
-  const char prefixes[] = {' ', 'k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'};
+  constexpr std::array<char, 9> prefixes = {' ', 'k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'};
   unsigned int i = 0;
   double s = (double)size;
-  while (i < ARRAY_SIZE(prefixes) && s >= 1000.0)
+  while (i < prefixes.size() && s >= 1000.0)
   {
     s /= 1024.0;
     i++;
@@ -1532,7 +1532,7 @@ std::string StringUtils::SizeToString(int64_t size)
 
   if (!i)
     strLabel = StringUtils::Format("{:.2f} B", s);
-  else if (i == ARRAY_SIZE(prefixes))
+  else if (i == prefixes.size())
   {
     if (s >= 1000.0)
       strLabel = StringUtils::Format(">999.99 {}B", prefixes[i - 1]);

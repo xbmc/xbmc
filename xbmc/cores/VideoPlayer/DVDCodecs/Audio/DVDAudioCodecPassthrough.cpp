@@ -200,7 +200,7 @@ bool CDVDAudioCodecPassthrough::AddData(const DemuxPacket &packet)
     // Only 12 audio units are packed in the buffer to avoid overflows and reduce latency.
     // Compensates for the small increased latency in CAEBitstreamPacker::PackTrueHD (IEC)
     // Android IEC packer (RAW) needs 24 audio units.
-    const int nFrames = m_deviceIsRAW ? 24 : 12;
+    const unsigned int nFrames = m_deviceIsRAW ? 24 : 12;
 
     if (m_trueHDframes == nFrames)
     {

@@ -722,7 +722,7 @@ void CYUV2RGBShader::SetShaderParameters(CRenderBuffer* videoBuffer)
   for (unsigned i = 0, max_i = videoBuffer->GetViewCount(); i < max_i; i++)
     ppSRView[i] = reinterpret_cast<ID3D11ShaderResourceView*>(videoBuffer->GetView(i));
   m_effect.SetResources("g_Texture", ppSRView, videoBuffer->GetViewCount());
-  m_effect.SetFloatArray("g_StepXY", m_texSteps, ARRAY_SIZE(m_texSteps));
+  m_effect.SetFloatArray("g_StepXY", m_texSteps.data(), m_texSteps.size());
 
   Matrix4 yuvMat = m_convMatrix.GetYuvMat();
   m_effect.SetMatrix("g_ColorMatrix", yuvMat.ToRaw());
@@ -871,9 +871,9 @@ void CConvolutionShader1Pass::Render(CD3DTexture& sourceTexture, CD3DTexture& ta
   const unsigned int sourceHeight = sourceTexture.GetHeight();
 
   PrepareParameters(sourceWidth, sourceHeight, sourceRect, destRect);
-  float texSteps[] = {1.0f / static_cast<float>(sourceWidth),
-                      1.0f / static_cast<float>(sourceHeight)};
-  SetShaderParameters(sourceTexture, &texSteps[0], ARRAY_SIZE(texSteps), useLimitRange);
+  std::array<float, 2> texSteps = {1.0f / static_cast<float>(sourceWidth),
+                                   1.0f / static_cast<float>(sourceHeight)};
+  SetShaderParameters(sourceTexture, texSteps.data(), texSteps.size(), useLimitRange);
   Execute({ &target }, 4);
 }
 

@@ -16,7 +16,7 @@
 
 namespace EDL
 {
-  struct Cut;
+struct Edit;
 }
 
 class CDataCacheCore
@@ -60,8 +60,19 @@ public:
   int GetAudioBitsPerSample();
 
   // content info
-  void SetCutList(const std::vector<EDL::Cut>& cutList);
-  std::vector<EDL::Cut> GetCutList() const;
+
+  /*!
+   * @brief Set the EDL edit list.
+   * @param editList The vector of edits to fill.
+   */
+  void SetEditList(const std::vector<EDL::Edit>& editList);
+
+  /*!
+   * @brief Get the EDL edit list.
+   * @return The EDL edits or an empty vector if no edits exist.
+   */
+  std::vector<EDL::Edit> GetEditList() const;
+
   void SetChapters(const std::vector<std::pair<std::string, int64_t>>& chapters);
   std::vector<std::pair<std::string, int64_t>> GetChapters() const;
 
@@ -155,7 +166,7 @@ protected:
   mutable CCriticalSection m_contentSection;
   struct SContentInfo
   {
-    std::vector<EDL::Cut> m_cutList;
+    std::vector<EDL::Edit> m_editList;
     std::vector<std::pair<std::string, int64_t>> m_chapters; // name and position for chapters
   } m_contentInfo;
 

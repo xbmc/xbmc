@@ -37,8 +37,8 @@
 // because cmake uses this area in this form to perform its addon dependency
 // check.
 // clang-format off
-#define ADDON_GLOBAL_VERSION_MAIN                     "1.3.0"
-#define ADDON_GLOBAL_VERSION_MAIN_MIN                 "1.2.0"
+#define ADDON_GLOBAL_VERSION_MAIN                     "2.0.0"
+#define ADDON_GLOBAL_VERSION_MAIN_MIN                 "2.0.0"
 #define ADDON_GLOBAL_VERSION_MAIN_XML_ID              "kodi.binary.global.main"
 #define ADDON_GLOBAL_VERSION_MAIN_DEPENDS             "AddonBase.h" \
                                                       "addon-instance/" \
@@ -102,10 +102,11 @@
 #define ADDON_INSTANCE_VERSION_GAME_XML_ID            "kodi.binary.instance.game"
 #define ADDON_INSTANCE_VERSION_GAME_DEPENDS           "addon-instance/Game.h"
 
-#define ADDON_INSTANCE_VERSION_IMAGEDECODER           "2.1.1"
-#define ADDON_INSTANCE_VERSION_IMAGEDECODER_MIN       "2.1.0"
+#define ADDON_INSTANCE_VERSION_IMAGEDECODER           "3.0.0"
+#define ADDON_INSTANCE_VERSION_IMAGEDECODER_MIN       "3.0.0"
 #define ADDON_INSTANCE_VERSION_IMAGEDECODER_XML_ID    "kodi.binary.instance.imagedecoder"
-#define ADDON_INSTANCE_VERSION_IMAGEDECODER_DEPENDS   "addon-instance/ImageDecoder.h"
+#define ADDON_INSTANCE_VERSION_IMAGEDECODER_DEPENDS   "c-api/addon-instance/imagedecoder.h" \
+                                                      "addon-instance/ImageDecoder.h"
 
 #define ADDON_INSTANCE_VERSION_INPUTSTREAM            "3.0.2"
 #define ADDON_INSTANCE_VERSION_INPUTSTREAM_MIN        "3.0.1"

@@ -2074,11 +2074,11 @@ bool CMixer::GenerateStudioCSCMatrix(VdpColorStandard colorStandard, VdpCSCMatri
    int G = 1;
    int B = 2;
    // colour standard coefficients for red, geen, blue
-   double Kr, Kg, Kb;
+   float Kr, Kg, Kb;
    // colour diff zero position (use standard 8-bit coding precision)
-   double CDZ = 128; //256*0.5
+   float CDZ = 128; //256*0.5
    // range excursion (use standard 8-bit coding precision)
-   double EXC = 255; //256-1
+   float EXC = 255; //256-1
 
    if (colorStandard == VDP_COLOR_STANDARD_ITUR_BT_601)
    {
@@ -2093,21 +2093,21 @@ bool CMixer::GenerateStudioCSCMatrix(VdpColorStandard colorStandard, VdpCSCMatri
       Kb = studioCSCKCoeffs709[2];
    }
    // we keep luma unscaled to retain the levels present in source so that 16-235 luma is converted to RGB 16-235
-   studioCSCMatrix[R][Y] = 1.0;
-   studioCSCMatrix[G][Y] = 1.0;
-   studioCSCMatrix[B][Y] = 1.0;
+   studioCSCMatrix[R][Y] = 1.0f;
+   studioCSCMatrix[G][Y] = 1.0f;
+   studioCSCMatrix[B][Y] = 1.0f;
 
-   studioCSCMatrix[R][Cb] = 0.0;
-   studioCSCMatrix[G][Cb] = (double)-2 * Kb * (1 - Kb) / Kg;
-   studioCSCMatrix[B][Cb] = (double)(1 - Kb) / 0.5;
+   studioCSCMatrix[R][Cb] = 0.0f;
+   studioCSCMatrix[G][Cb] = -2 * Kb * (1 - Kb) / Kg;
+   studioCSCMatrix[B][Cb] = (1 - Kb) / 0.5f;
 
-   studioCSCMatrix[R][Cr] = (double)(1 - Kr) / 0.5;
-   studioCSCMatrix[G][Cr] = (double)-2 * Kr * (1 - Kr) / Kg;
-   studioCSCMatrix[B][Cr] = 0.0;
+   studioCSCMatrix[R][Cr] = (1 - Kr) / 0.5f;
+   studioCSCMatrix[G][Cr] = -2 * Kr * (1 - Kr) / Kg;
+   studioCSCMatrix[B][Cr] = 0.0f;
 
-   studioCSCMatrix[R][C] = (double)-1 * studioCSCMatrix[R][Cr] * CDZ/EXC;
-   studioCSCMatrix[G][C] = (double)-1 * (studioCSCMatrix[G][Cb] + studioCSCMatrix[G][Cr]) * CDZ/EXC;
-   studioCSCMatrix[B][C] = (double)-1 * studioCSCMatrix[B][Cb] * CDZ/EXC;
+   studioCSCMatrix[R][C] = -1 * studioCSCMatrix[R][Cr] * CDZ / EXC;
+   studioCSCMatrix[G][C] = -1 * (studioCSCMatrix[G][Cb] + studioCSCMatrix[G][Cr]) * CDZ / EXC;
+   studioCSCMatrix[B][C] = -1 * studioCSCMatrix[B][Cb] * CDZ / EXC;
 
    return true;
 }

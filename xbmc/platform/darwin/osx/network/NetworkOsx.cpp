@@ -11,6 +11,7 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#include <array>
 #include <errno.h>
 
 #include <arpa/inet.h>
@@ -21,8 +22,6 @@
 #include <net/route.h>
 #include <netinet/if_ether.h>
 #include <sys/sockio.h>
-
-#define ARRAY_SIZE(X) (sizeof(X) / sizeof((X)[0]))
 
 CNetworkInterfaceOsx::CNetworkInterfaceOsx(CNetworkPosix* network,
                                            const std::string& interfaceName,
@@ -59,23 +58,18 @@ bool CNetworkInterfaceOsx::GetHostMacAddress(unsigned long host_ip, std::string&
 {
   bool ret = false;
   size_t needed;
-  int mib[6];
+  constexpr std::array<int, 6> mib = {
+      CTL_NET, PF_ROUTE, 0, AF_INET, NET_RT_FLAGS, RTF_LLINFO,
+  };
 
   mac = "";
 
-  mib[0] = CTL_NET;
-  mib[1] = PF_ROUTE;
-  mib[2] = 0;
-  mib[3] = AF_INET;
-  mib[4] = NET_RT_FLAGS;
-  mib[5] = RTF_LLINFO;
-
-  if (sysctl(mib, ARRAY_SIZE(mib), NULL, &needed, NULL, 0) == 0)
+  if (sysctl(const_cast<int*>(mib.data()), mib.size(), nullptr, &needed, nullptr, 0) == 0)
   {
     char* buf = static_cast<char*>(malloc(needed));
     if (buf)
     {
-      if (sysctl(mib, ARRAY_SIZE(mib), buf, &needed, NULL, 0) == 0)
+      if (sysctl(const_cast<int*>(mib.data()), mib.size(), buf, &needed, nullptr, 0) == 0)
       {
         struct rt_msghdr* rtm;
         for (char* next = buf; next < buf + needed; next += rtm->rtm_msglen)

@@ -11,6 +11,7 @@
 #include "DVDDemux.h"
 
 #include <memory>
+#include <string>
 #include <vector>
 
 class CDVDOverlayCodecFFmpeg;
@@ -79,9 +80,9 @@ private:
     }
   };
 
-  bool ParseLangIdx(SState& state, char* line);
-  bool ParseDelay(SState& state, char* line);
-  bool ParseId(SState& state, char* line);
-  bool ParseExtra(SState& state, char* line);
-  bool ParseTimestamp(SState& state, char* line);
+  bool ParseLangIdx(SState& state, std::string& line);
+  bool ParseDelay(SState& state, std::string& line);
+  bool ParseId(SState& state, std::string& line);
+  bool ParseExtra(SState& state, std::string& line);
+  bool ParseTimestamp(SState& state, std::string& line);
 };

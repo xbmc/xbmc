@@ -10,7 +10,6 @@
 
 #include "AEPackIEC61937.h"
 #include "AEStreamInfo.h"
-#include "Util.h"
 #include "utils/log.h"
 
 #include <stddef.h>
@@ -21,6 +20,43 @@ extern "C"
 {
 #include <libavutil/intreadwrite.h>
 }
+
+namespace
+{
+constexpr auto BURST_HEADER_SIZE = 8;
+constexpr auto EAC3_MAX_BURST_PAYLOAD_SIZE = 24576 - BURST_HEADER_SIZE;
+
+constexpr auto MAT_PKT_OFFSET = 61440;
+constexpr auto MAT_FRAME_SIZE = 61424;
+
+/* magic MAT format values, meaning is unknown at this point */
+constexpr std::array<uint8_t, 20> mat_start_code = {
+    0x07, 0x9E, 0x00, 0x03, 0x84, 0x01, 0x01, 0x01, 0x80, 0x00,
+    0x56, 0xA5, 0x3B, 0xF4, 0x81, 0x83, 0x49, 0x80, 0x77, 0xE0,
+};
+
+constexpr std::array<uint8_t, 12> mat_middle_code = {
+    0xC3, 0xC1, 0x42, 0x49, 0x3B, 0xFA, 0x82, 0x83, 0x49, 0x80, 0x77, 0xE0,
+};
+
+constexpr std::array<uint8_t, 16> mat_end_code = {
+    0xC3, 0xC2, 0xC0, 0xC4, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x97, 0x11,
+};
+
+struct MatCode
+{
+  int pos;
+  const uint8_t* code;
+  unsigned int len;
+};
+
+std::array<MatCode, 3> MatCodes = {{
+    {0, mat_start_code.data(), mat_start_code.size()},
+    {30708, mat_middle_code.data(), mat_middle_code.size()},
+    {MAT_FRAME_SIZE - mat_end_code.size(), mat_end_code.data(), mat_end_code.size()},
+}};
+
+} // unnamed namespace
 
 CAEBitstreamPacker::CAEBitstreamPacker()
 {
@@ -193,11 +229,11 @@ void CAEBitstreamPacker::PackTrueHD(CAEStreamInfo &info, uint8_t* data, int size
     }
   }
 
-  for (nextCodeIdx = 0; nextCodeIdx < ARRAY_SIZE(MatCodes); nextCodeIdx++)
+  for (nextCodeIdx = 0; nextCodeIdx < static_cast<int>(MatCodes.size()); nextCodeIdx++)
     if (m_thd.bufferFilled <= MatCodes[nextCodeIdx].pos)
       break;
 
-  if (nextCodeIdx >= ARRAY_SIZE(MatCodes))
+  if (nextCodeIdx >= static_cast<int>(MatCodes.size()))
     return;
 
   while (paddingRem || dataRem || MatCodes[nextCodeIdx].pos == m_thd.bufferFilled)
@@ -211,7 +247,7 @@ void CAEBitstreamPacker::PackTrueHD(CAEStreamInfo &info, uint8_t* data, int size
       m_thd.bufferFilled += codeLen;
 
       nextCodeIdx++;
-      if (nextCodeIdx == ARRAY_SIZE(MatCodes))
+      if (nextCodeIdx == static_cast<int>(MatCodes.size()))
       {
         nextCodeIdx = 0;
 

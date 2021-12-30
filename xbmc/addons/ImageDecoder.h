@@ -7,33 +7,67 @@
 
 #pragma once
 
+#include "addons/IAddonSupportCheck.h"
 #include "addons/binary-addons/AddonInstanceHandler.h"
 #include "addons/kodi-dev-kit/include/kodi/addon-instance/ImageDecoder.h"
 #include "guilib/iimage.h"
 
-namespace ADDON
+class CPictureInfoTag;
+
+namespace KODI
 {
-  class CImageDecoder : public IAddonInstanceHandler,
-                        public IImage
+namespace ADDONS
+{
+
+class CImageDecoder : public ADDON::IAddonInstanceHandler,
+                      public KODI::ADDONS::IAddonSupportCheck,
+                      public IImage
+{
+public:
+  explicit CImageDecoder(const ADDON::AddonInfoPtr& addonInfo, const std::string& mimetype);
+  ~CImageDecoder() override;
+
+  bool IsCreated() const { return m_created; }
+
+  /*! @ref IImage related functions */
+  ///@{
+  bool CreateThumbnailFromSurface(unsigned char*,
+                                  unsigned int,
+                                  unsigned int,
+                                  unsigned int,
+                                  unsigned int,
+                                  const std::string&,
+                                  unsigned char*&,
+                                  unsigned int&) override
   {
-  public:
-    explicit CImageDecoder(const AddonInfoPtr& addonInfo);
-    ~CImageDecoder() override;
+    return false;
+  }
+  bool LoadImageFromMemory(unsigned char* buffer,
+                           unsigned int bufSize,
+                           unsigned int width,
+                           unsigned int height) override;
+  bool Decode(unsigned char* const pixels,
+              unsigned int width,
+              unsigned int height,
+              unsigned int pitch,
+              unsigned int format) override;
+  ///@}
 
-    bool Create(const std::string& mimetype);
+  /*! From @ref CPictureInfoTag used function to get information from addon */
+  ///@{
+  bool LoadInfoTag(const std::string& fileName, CPictureInfoTag* tag);
+  ///@}
 
-    bool CreateThumbnailFromSurface(unsigned char*, unsigned int, unsigned int,
-                                    unsigned int, unsigned int, const std::string&,
-                                    unsigned char*&, unsigned int&) override { return false; }
+  /*! @ref KODI::ADDONS::IAddonSupportCheck related function */
+  ///@{
+  bool SupportsFile(const std::string& filename) override;
+  ///@}
 
-    bool LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize,
-                             unsigned int width, unsigned int height) override;
-    bool Decode(unsigned char* const pixels, unsigned int width,
-                unsigned int height, unsigned int pitch,
-                unsigned int format) override;
+private:
+  /*! @note m_mimetype not set in all cases, only available if @ref LoadImageFromMemory is used. */
+  const std::string m_mimetype;
+  bool m_created{false};
+};
 
-  protected:
-    AddonInstance_ImageDecoder m_struct = {};
-  };
-
-} /*namespace ADDON*/
+} /* namespace ADDONS */
+} /* namespace KODI */

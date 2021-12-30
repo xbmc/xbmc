@@ -60,7 +60,7 @@ CCPUInfoFreebsd::CCPUInfoFreebsd()
   if (sysctlbyname("hw.model", cpuModel.data(), &length, nullptr, 0) == 0)
     m_cpuModel = cpuModel.data();
 
-  for (size_t i = 0; i < m_cpuCount; i++)
+  for (int i = 0; i < m_cpuCount; i++)
   {
     CoreInfo core;
     core.m_id = i;
@@ -189,7 +189,7 @@ int CCPUInfoFreebsd::GetUsedPercentage()
 
   std::vector<CpuData> cpuData;
 
-  for (size_t i = 0; i < m_cpuCount; i++)
+  for (int i = 0; i < m_cpuCount; i++)
   {
     CpuData info;
 
@@ -222,7 +222,7 @@ int CCPUInfoFreebsd::GetUsedPercentage()
     auto idleTime = cpuData[core].GetIdleTime() - m_cores[core].m_idleTime;
     auto totalTime = cpuData[core].GetTotalTime() - m_cores[core].m_totalTime;
 
-    m_cores[core].m_usagePercent = activeTime * 100.0f / totalTime;
+    m_cores[core].m_usagePercent = activeTime * 100.0 / totalTime;
 
     m_cores[core].m_activeTime += activeTime;
     m_cores[core].m_idleTime += idleTime;
@@ -245,12 +245,16 @@ float CCPUInfoFreebsd::GetCPUFrequency()
 
 bool CCPUInfoFreebsd::GetTemperature(CTemperature& temperature)
 {
+  if (CheckUserTemperatureCommand(temperature))
+    return true;
+
   int value;
   size_t len = sizeof(value);
 
   /* Temperature is in Kelvin * 10 */
   if (sysctlbyname("dev.cpu.0.temperature", &value, &len, nullptr, 0) != 0)
-    return CCPUInfoPosix::GetTemperature(temperature);
+    return false;
+
   temperature = CTemperature::CreateFromKelvin(static_cast<double>(value) / 10.0);
   temperature.SetValid(true);
 

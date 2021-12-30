@@ -148,8 +148,26 @@ if(NOT DEFINED NEON OR NEON)
 endif()
 
 if(NOT MSVC)
-  add_options(ALL_LANGUAGES ALL_BUILDS "-Wall" "-Wdouble-promotion" "-Wmissing-field-initializers")
-  add_options(ALL_LANGUAGES DEBUG "-g" "-D_DEBUG")
+  # these options affect all code built by cmake including external projects.
+  add_options(ALL_LANGUAGES ALL_BUILDS
+    -Wall
+    -Wdouble-promotion
+    -Wmissing-field-initializers
+    -Wsign-compare
+  )
+  add_options(ALL_LANGUAGES DEBUG
+    -g
+    -D_DEBUG
+  )
+
+  # these options affect only core code
+  if(NOT CORE_COMPILE_OPTIONS)
+    set(CORE_COMPILE_OPTIONS
+      -Werror=double-promotion
+      -Werror=missing-field-initializers
+      -Werror=sign-compare
+    )
+  endif()
 endif()
 
 # set for compile info to help detect binary addons

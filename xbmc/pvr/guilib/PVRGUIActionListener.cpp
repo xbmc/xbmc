@@ -164,7 +164,7 @@ bool CPVRGUIActionListener::OnAction(const CAction& action)
         else
         {
           int iRemote = bIsJumpSMS ? action.GetID() - (ACTION_JUMP_SMS2 - REMOTE_2) : action.GetID();
-          cCharacter = (iRemote - REMOTE_0) + '0';
+          cCharacter = static_cast<char>(iRemote - REMOTE_0) + '0';
         }
         CServiceBroker::GetPVRManager().GUIActions()->GetChannelNumberInputHandler().AppendChannelNumberCharacter(cCharacter);
         return true;

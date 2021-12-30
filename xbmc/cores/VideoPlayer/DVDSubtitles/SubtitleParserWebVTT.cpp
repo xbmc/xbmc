@@ -11,6 +11,7 @@
 #include "DVDCodecs/Overlay/DVDOverlay.h"
 #include "SubtitlesStyle.h"
 #include "cores/VideoPlayer/DVDSubtitles/webvtt/WebVTTHandler.h"
+#include "utils/CharArrayParser.h"
 #include "utils/StringUtils.h"
 
 #include <vector>
@@ -39,27 +40,22 @@ bool CSubtitleParserWebVTT::Open(CDVDStreamInfo& hints)
   if (!m_webvttHandler.Initialize())
     return false;
 
-  char line[1024];
-
   // Get the first chars to check WebVTT signature
-  if (m_pStream->Read(line, 10) > 0 && !m_webvttHandler.CheckSignature(line))
+  if (!m_webvttHandler.CheckSignature(m_pStream->Read(10)))
     return false;
-  m_pStream->Seek(0, SEEK_SET);
+  m_pStream->Seek(0);
 
   // Start decoding all lines
-  std::string strLine;
   std::vector<subtitleData> subtitleList;
+  std::string line;
 
-  while (m_pStream->ReadLine(line, sizeof(line)))
+  while (m_pStream->ReadLine(line))
   {
-    strLine.assign(line);
-    m_webvttHandler.DecodeLine(strLine, &subtitleList);
+    m_webvttHandler.DecodeLine(line, &subtitleList);
   }
 
-  // "ReadLine" ignore the last empty line of the file and could also be missing,
-  // it is mandatory to send it to mark the end of the last Cue
-  strLine.clear();
-  m_webvttHandler.DecodeLine(strLine, &subtitleList);
+  // We send an empty line to mark the end of the last Cue
+  m_webvttHandler.DecodeLine("", &subtitleList);
 
   // Send decoded lines to the renderer
   for (auto& subData : subtitleList)
@@ -70,7 +66,7 @@ bool CSubtitleParserWebVTT::Open(CDVDStreamInfo& hints)
     opts.marginRight = subData.marginRight;
     opts.marginVertical = subData.marginVertical;
 
-    AddSubtitle(subData.text.c_str(), subData.startTime, subData.stopTime, &opts);
+    AddSubtitle(subData.text, subData.startTime, subData.stopTime, &opts);
   }
 
   CDVDOverlay* overlay = CreateOverlay();

@@ -22,32 +22,6 @@ extern "C"
   typedef void* KODI_GUI_LISTITEM_HANDLE;
   typedef void* KODI_GUI_WINDOW_HANDLE;
 
-  struct AddonToKodiFuncTable_kodi_gui_general;
-  struct AddonToKodiFuncTable_kodi_gui_control_button;
-  struct AddonToKodiFuncTable_kodi_gui_control_edit;
-  struct AddonToKodiFuncTable_kodi_gui_control_fade_label;
-  struct AddonToKodiFuncTable_kodi_gui_control_label;
-  struct AddonToKodiFuncTable_kodi_gui_control_image;
-  struct AddonToKodiFuncTable_kodi_gui_control_progress;
-  struct AddonToKodiFuncTable_kodi_gui_control_radio_button;
-  struct AddonToKodiFuncTable_kodi_gui_control_rendering;
-  struct AddonToKodiFuncTable_kodi_gui_control_settings_slider;
-  struct AddonToKodiFuncTable_kodi_gui_control_slider;
-  struct AddonToKodiFuncTable_kodi_gui_control_spin;
-  struct AddonToKodiFuncTable_kodi_gui_control_text_box;
-  struct AddonToKodiFuncTable_kodi_gui_dialogContextMenu;
-  struct AddonToKodiFuncTable_kodi_gui_dialogExtendedProgress;
-  struct AddonToKodiFuncTable_kodi_gui_dialogFileBrowser;
-  struct AddonToKodiFuncTable_kodi_gui_dialogKeyboard;
-  struct AddonToKodiFuncTable_kodi_gui_dialogNumeric;
-  struct AddonToKodiFuncTable_kodi_gui_dialogOK;
-  struct AddonToKodiFuncTable_kodi_gui_dialogProgress;
-  struct AddonToKodiFuncTable_kodi_gui_dialogSelect;
-  struct AddonToKodiFuncTable_kodi_gui_dialogTextViewer;
-  struct AddonToKodiFuncTable_kodi_gui_dialogYesNo;
-  struct AddonToKodiFuncTable_kodi_gui_listItem;
-  struct AddonToKodiFuncTable_kodi_gui_window;
-
   typedef struct AddonToKodiFuncTable_kodi_gui
   {
     struct AddonToKodiFuncTable_kodi_gui_general* general;

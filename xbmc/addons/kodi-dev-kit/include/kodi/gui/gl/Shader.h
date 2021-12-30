@@ -31,7 +31,7 @@ namespace gl
 
 //========================================================================
 /// CShader - base class
-class ATTRIBUTE_HIDDEN CShader
+class ATTR_DLL_LOCAL CShader
 {
 public:
   CShader() = default;
@@ -69,7 +69,7 @@ protected:
 
 //========================================================================
 /// CVertexShader
-class ATTRIBUTE_HIDDEN CVertexShader : public CShader
+class ATTR_DLL_LOCAL CVertexShader : public CShader
 {
 public:
   CVertexShader() = default;
@@ -130,7 +130,7 @@ protected:
 
 //========================================================================
 /// CPixelShader
-class ATTRIBUTE_HIDDEN CPixelShader : public CShader
+class ATTR_DLL_LOCAL CPixelShader : public CShader
 {
 public:
   CPixelShader() = default;
@@ -208,7 +208,7 @@ protected:
 /// #include <kodi/gui/gl/Shader.h>
 /// ...
 ///
-/// class ATTRIBUTE_HIDDEN CExample
+/// class ATTR_DLL_LOCAL CExample
 ///   : ...,
 ///     public kodi::gui::gl::CShaderProgram
 /// {
@@ -273,7 +273,7 @@ protected:
 /// ADDONCREATOR(CExample);
 /// ~~~~~~~~~~~~~
 ///
-class ATTRIBUTE_HIDDEN CShaderProgram
+class ATTR_DLL_LOCAL CShaderProgram
 {
 public:
   //==========================================================================
@@ -484,7 +484,7 @@ public:
   ///
   /// @note The CompileAndLink call sets these values
   ///
-  ATTRIBUTE_FORCEINLINE bool ShaderOK() const { return m_ok; }
+  ATTR_FORCEINLINE bool ShaderOK() const { return m_ok; }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -493,7 +493,7 @@ public:
   ///
   /// @return pointer to vertex shader class
   ///
-  ATTRIBUTE_FORCEINLINE CVertexShader& VertexShader() { return m_pVP; }
+  ATTR_FORCEINLINE CVertexShader& VertexShader() { return m_pVP; }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -502,7 +502,7 @@ public:
   ///
   /// @return pointer to fragment shader class
   ///
-  ATTRIBUTE_FORCEINLINE CPixelShader& PixelShader() { return m_pFP; }
+  ATTR_FORCEINLINE CPixelShader& PixelShader() { return m_pFP; }
   //--------------------------------------------------------------------------
 
   //==========================================================================
@@ -511,7 +511,7 @@ public:
   ///
   /// @return GLuint of GL shader program handler
   ///
-  ATTRIBUTE_FORCEINLINE GLuint ProgramHandle() { return m_shaderProgram; }
+  ATTR_FORCEINLINE GLuint ProgramHandle() { return m_shaderProgram; }
   //--------------------------------------------------------------------------
 
   //==========================================================================

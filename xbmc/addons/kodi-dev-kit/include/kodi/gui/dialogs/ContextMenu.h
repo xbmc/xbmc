@@ -65,8 +65,7 @@ namespace ContextMenu
 ///   fprintf(stderr, "Selected item is: %i\n", selected);
 /// ~~~~~~~~~~~~~
 ///
-inline int ATTRIBUTE_HIDDEN Show(const std::string& heading,
-                                 const std::vector<std::string>& entries)
+inline int ATTR_DLL_LOCAL Show(const std::string& heading, const std::vector<std::string>& entries)
 {
   using namespace ::kodi::addon;
   unsigned int size = static_cast<unsigned int>(entries.size());
@@ -75,8 +74,8 @@ inline int ATTRIBUTE_HIDDEN Show(const std::string& heading,
   {
     cEntries[i] = entries[i].c_str();
   }
-  int ret = CAddonBase::m_interface->toKodi->kodi_gui->dialogContextMenu->open(
-      CAddonBase::m_interface->toKodi->kodiBase, heading.c_str(), cEntries, size);
+  int ret = CPrivateBase::m_interface->toKodi->kodi_gui->dialogContextMenu->open(
+      CPrivateBase::m_interface->toKodi->kodiBase, heading.c_str(), cEntries, size);
   free(cEntries);
   return ret;
 }
@@ -113,8 +112,8 @@ inline int ATTRIBUTE_HIDDEN Show(const std::string& heading,
 ///   fprintf(stderr, "Selected item is: %i\n", selected);
 /// ~~~~~~~~~~~~~
 ///
-inline int ATTRIBUTE_HIDDEN Show(const std::string& heading,
-                                 const std::vector<std::pair<std::string, std::string>>& entries)
+inline int ATTR_DLL_LOCAL Show(const std::string& heading,
+                               const std::vector<std::pair<std::string, std::string>>& entries)
 {
   using namespace ::kodi::addon;
   unsigned int size = static_cast<unsigned int>(entries.size());
@@ -123,8 +122,8 @@ inline int ATTRIBUTE_HIDDEN Show(const std::string& heading,
   {
     cEntries[i] = entries[i].second.c_str();
   }
-  int ret = CAddonBase::m_interface->toKodi->kodi_gui->dialogContextMenu->open(
-      CAddonBase::m_interface->toKodi->kodiBase, heading.c_str(), cEntries, size);
+  int ret = CPrivateBase::m_interface->toKodi->kodi_gui->dialogContextMenu->open(
+      CPrivateBase::m_interface->toKodi->kodiBase, heading.c_str(), cEntries, size);
   free(cEntries);
   return ret;
 }
@@ -161,8 +160,8 @@ inline int ATTRIBUTE_HIDDEN Show(const std::string& heading,
 ///   fprintf(stderr, "Selected item is: %i\n", selected);
 /// ~~~~~~~~~~~~~
 ///
-inline int ATTRIBUTE_HIDDEN Show(const std::string& heading,
-                                 const std::vector<std::pair<int, std::string>>& entries)
+inline int ATTR_DLL_LOCAL Show(const std::string& heading,
+                               const std::vector<std::pair<int, std::string>>& entries)
 {
   using namespace ::kodi::addon;
   unsigned int size = static_cast<unsigned int>(entries.size());
@@ -171,8 +170,8 @@ inline int ATTRIBUTE_HIDDEN Show(const std::string& heading,
   {
     cEntries[i] = entries[i].second.c_str();
   }
-  int ret = CAddonBase::m_interface->toKodi->kodi_gui->dialogContextMenu->open(
-      CAddonBase::m_interface->toKodi->kodiBase, heading.c_str(), cEntries, size);
+  int ret = CPrivateBase::m_interface->toKodi->kodi_gui->dialogContextMenu->open(
+      CPrivateBase::m_interface->toKodi->kodiBase, heading.c_str(), cEntries, size);
   free(cEntries);
   return ret;
 }

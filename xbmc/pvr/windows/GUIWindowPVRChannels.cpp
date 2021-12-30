@@ -112,7 +112,7 @@ bool CGUIWindowPVRChannelsBase::OnAction(const CAction& action)
     case REMOTE_7:
     case REMOTE_8:
     case REMOTE_9:
-      AppendChannelNumberCharacter((action.GetID() - REMOTE_0) + '0');
+      AppendChannelNumberCharacter(static_cast<char>(action.GetID() - REMOTE_0) + '0');
       return true;
 
     case ACTION_CHANNEL_NUMBER_SEP:
@@ -244,10 +244,10 @@ bool CGUIWindowPVRChannelsBase::OnContextButtonManage(const CFileItemPtr& item, 
     buttons.Add(CONTEXT_BUTTON_UPDATE_EPG, 19251);
 
     // Get the response
-    int button = CGUIDialogContextMenu::ShowAndGetChoice(buttons);
-    if (button >= 0)
+    int choice = CGUIDialogContextMenu::ShowAndGetChoice(buttons);
+    if (choice >= 0)
     {
-      switch ((CONTEXT_BUTTON)button)
+      switch (static_cast<CONTEXT_BUTTON>(choice))
       {
         case CONTEXT_BUTTON_GROUP_MANAGER:
           ShowGroupManager();

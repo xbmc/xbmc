@@ -111,7 +111,7 @@ void CGUIRSSControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyre
 
       if (CRssManager::GetInstance().GetReader(GetID(), GetParentID(), this, m_pReader))
       {
-        m_scrollInfo.pixelPos = m_pReader->m_savedScrollPixelPos;
+        m_scrollInfo.m_pixelPos = m_pReader->m_savedScrollPixelPos;
       }
       else
       {
@@ -167,7 +167,7 @@ void CGUIRSSControl::Render()
     if (m_pReader)
     {
       m_pReader->CheckForUpdates();
-      m_pReader->m_savedScrollPixelPos = m_scrollInfo.pixelPos;
+      m_pReader->m_savedScrollPixelPos = m_scrollInfo.m_pixelPos;
     }
   }
   CGUIControl::Render();

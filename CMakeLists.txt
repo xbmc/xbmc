@@ -134,7 +134,7 @@ set(required_deps ASS
                   Fmt
                   FreeType
                   FriBidi
-                  fstrcmp
+                  Fstrcmp
                   HarfBuzz
                   Iconv
                   KissFFT
@@ -251,6 +251,10 @@ set_target_properties(compileinfo PROPERTIES FOLDER "Build Utilities")
 target_compile_options(compileinfo PRIVATE "${SYSTEM_DEFINES} ${ARCH_DEFINES}")
 add_dependencies(compileinfo fmt)
 
+if(NOT MSVC)
+  target_compile_options(compileinfo PUBLIC ${CORE_COMPILE_OPTIONS})
+endif()
+
 # RC File
 if(WIN32)
   configure_file(${CMAKE_SOURCE_DIR}/xbmc/platform/win32/XBMC_PC.rc.in
@@ -304,10 +308,20 @@ elseif(CORE_SYSTEM_NAME STREQUAL android)
                  ${CORE_BUILD_DIR}/DllPaths_generated_android.h @ONLY)
 endif()
 
-set(GLOBAL_TARGET_DEPS ffmpeg dvdnav crossguid fmt Spdlog::Spdlog fstrcmp flatbuffers ${PLATFORM_GLOBAL_TARGET_DEPS})
+set(GLOBAL_TARGET_DEPS ffmpeg dvdnav crossguid fmt spdlog fstrcmp flatbuffers ${PLATFORM_GLOBAL_TARGET_DEPS})
 
 # main library (used for main binary and tests)
-add_library(lib${APP_NAME_LC} STATIC $<TARGET_OBJECTS:compileinfo>)
+if(CMAKE_GENERATOR STREQUAL Xcode)
+  add_library(compileinfo_obj OBJECT IMPORTED)
+  set_property(TARGET compileinfo_obj PROPERTY IMPORTED_OBJECTS
+    "${CMAKE_BINARY_DIR}/$(PROJECT_NAME).build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/compileinfo.build/$(OBJECT_FILE_DIR_normal:base)/$(CURRENT_ARCH)/CompileInfo.o"
+  )
+  add_library(lib${APP_NAME_LC} STATIC)
+  add_dependencies(lib${APP_NAME_LC} compileinfo)
+  target_link_libraries(lib${APP_NAME_LC} PUBLIC compileinfo_obj)
+else()
+  add_library(lib${APP_NAME_LC} STATIC $<TARGET_OBJECTS:compileinfo>)
+endif()
 add_dependencies(lib${APP_NAME_LC} ${GLOBAL_TARGET_DEPS})
 set_target_properties(lib${APP_NAME_LC} PROPERTIES PREFIX "")
 

@@ -126,14 +126,14 @@ namespace addon
 /// class CMyScreenSaver : public kodi::addon::CInstanceScreensaver
 /// {
 /// public:
-///   CMyScreenSaver(KODI_HANDLE instance, const std::string& version);
+///   CMyScreenSaver(const kodi::addon::IInstanceInfo& instance);
 ///
 ///   bool Start() override;
 ///   void Render() override;
 /// };
 ///
-/// CMyScreenSaver::CMyScreenSaver(KODI_HANDLE instance, const std::string& version)
-///   : CInstanceScreensaver(instance, version)
+/// CMyScreenSaver::CMyScreenSaver(const kodi::addon::IInstanceInfo& instance)
+///   : CInstanceScreensaver(instance)
 /// {
 ///   ...
 /// }
@@ -156,25 +156,19 @@ namespace addon
 /// {
 /// public:
 ///   CMyAddon() = default;
-///   ADDON_STATUS CreateInstance(int instanceType,
-///                               const std::string& instanceID,
-///                               KODI_HANDLE instance,
-///                               const std::string& version,
-///                               KODI_HANDLE& addonInstance) override;
+///   ADDON_STATUS CreateInstance(const kodi::addon::IInstanceInfo& instance,
+///                               KODI_ADDON_INSTANCE_HDL& hdl) override;
 /// };
 ///
 /// // If you use only one instance in your add-on, can be instanceType and
 /// // instanceID ignored
-/// ADDON_STATUS CMyAddon::CreateInstance(int instanceType,
-///                                       const std::string& instanceID,
-///                                       KODI_HANDLE instance,
-///                                       const std::string& version,
-///                                       KODI_HANDLE& addonInstance)
+/// ADDON_STATUS CMyAddon::CreateInstance(const kodi::addon::IInstanceInfo& instance,
+///                                       KODI_ADDON_INSTANCE_HDL& hdl)
 /// {
-///   if (instanceType == ADDON_INSTANCE_SCREENSAVER)
+///   if (instance.IsType(ADDON_INSTANCE_SCREENSAVER))
 ///   {
 ///     kodi::Log(ADDON_LOG_INFO, "Creating my Screensaver");
-///     addonInstance = new CMyScreenSaver(instance, version);
+///     hdl = new CMyScreenSaver(instance, version);
 ///     return ADDON_STATUS_OK;
 ///   }
 ///   else if (...)
@@ -190,7 +184,7 @@ namespace addon
 /// The destruction of the example class `CMyScreenSaver` is called from
 /// Kodi's header. Manually deleting the add-on instance is not required.
 ///
-class ATTRIBUTE_HIDDEN CInstanceScreensaver : public IAddonInstance
+class ATTR_DLL_LOCAL CInstanceScreensaver : public IAddonInstance
 {
 public:
   //============================================================================
@@ -200,14 +194,14 @@ public:
   /// Used by an add-on that only supports screensavers.
   ///
   CInstanceScreensaver()
-    : IAddonInstance(ADDON_INSTANCE_SCREENSAVER, GetKodiTypeVersion(ADDON_INSTANCE_SCREENSAVER))
+    : IAddonInstance(IInstanceInfo(CPrivateBase::m_interface->firstKodiInstance))
   {
-    if (CAddonBase::m_interface->globalSingleInstance != nullptr)
+    if (CPrivateBase::m_interface->globalSingleInstance != nullptr)
       throw std::logic_error("kodi::addon::CInstanceScreensaver: Creation of more as one in single "
                              "instance way is not allowed!");
 
-    SetAddonStruct(CAddonBase::m_interface->firstKodiInstance);
-    CAddonBase::m_interface->globalSingleInstance = this;
+    SetAddonStruct(CPrivateBase::m_interface->firstKodiInstance);
+    CPrivateBase::m_interface->globalSingleInstance = this;
   }
   //----------------------------------------------------------------------------
 
@@ -252,12 +246,9 @@ public:
   /// }
   /// ~~~~~~~~~~~~~
   ///
-  explicit CInstanceScreensaver(KODI_HANDLE instance, const std::string& kodiVersion = "")
-    : IAddonInstance(ADDON_INSTANCE_SCREENSAVER,
-                     !kodiVersion.empty() ? kodiVersion
-                                          : GetKodiTypeVersion(ADDON_INSTANCE_SCREENSAVER))
+  explicit CInstanceScreensaver(const IInstanceInfo& instance) : IAddonInstance(instance)
   {
-    if (CAddonBase::m_interface->globalSingleInstance != nullptr)
+    if (CPrivateBase::m_interface->globalSingleInstance != nullptr)
       throw std::logic_error("kodi::addon::CInstanceScreensaver: Creation of multiple together "
                              "with single instance way is not allowed!");
 
@@ -411,17 +402,14 @@ public:
   ///@}
 
 private:
-  void SetAddonStruct(KODI_HANDLE instance)
+  void SetAddonStruct(KODI_ADDON_INSTANCE_STRUCT* instance)
   {
-    if (instance == nullptr)
-      throw std::logic_error("kodi::addon::CInstanceScreensaver: Creation with empty addon "
-                             "structure not allowed, table must be given from Kodi!");
-
-    m_instanceData = static_cast<AddonInstance_Screensaver*>(instance);
+    instance->hdl = this;
+    instance->screensaver->toAddon->Start = ADDON_Start;
+    instance->screensaver->toAddon->Stop = ADDON_Stop;
+    instance->screensaver->toAddon->Render = ADDON_Render;
+    m_instanceData = instance->screensaver;
     m_instanceData->toAddon->addonInstance = this;
-    m_instanceData->toAddon->Start = ADDON_Start;
-    m_instanceData->toAddon->Stop = ADDON_Stop;
-    m_instanceData->toAddon->Render = ADDON_Render;
   }
 
   inline static bool ADDON_Start(AddonInstance_Screensaver* instance)

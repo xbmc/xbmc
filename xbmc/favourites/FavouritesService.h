@@ -15,6 +15,11 @@
 #include <string>
 #include <vector>
 
+enum class FavAction : int
+{
+  PLAYMEDIA,
+  SHOWPICTURE,
+};
 
 class CFavouritesService
 {
@@ -31,6 +36,10 @@ public:
   std::string GetExecutePath(const CFileItem &item, const std::string &contextWindow) const;
   bool AddOrRemove(const CFileItem& item, int contextWindow);
   bool Save(const CFileItemList& items);
+
+  /*! \brief Refresh favourites for directory providers, e.g. the GUI needs to be updated
+   */
+  void RefreshFavourites();
 
   struct FavouritesUpdated { };
 
