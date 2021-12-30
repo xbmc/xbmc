@@ -80,7 +80,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
           CServiceBroker::GetAddonMgr().GetAddonInfo(addon, ADDON::ADDON_SCREENSAVER);
       if (!addonBase)
         return false;
-      m_addon = new ADDON::CScreenSaver(addonBase);
+      m_addon = new KODI::ADDONS::CScreenSaver(addonBase);
       return m_addon->Start();
     }
 

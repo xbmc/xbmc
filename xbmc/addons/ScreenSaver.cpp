@@ -13,8 +13,8 @@
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
-namespace ADDON
-{
+using namespace ADDON;
+using namespace KODI::ADDONS;
 
 namespace
 {
@@ -84,5 +84,3 @@ void CScreenSaver::GetProperties(struct KODI_ADDON_SCREENSAVER_PROPS* props)
   props->presets = strdup(CSpecialProtocol::TranslatePath(Path()).c_str());
   props->profile = strdup(CSpecialProtocol::TranslatePath(Profile()).c_str());
 }
-
-} /* namespace ADDON */
