@@ -12,6 +12,7 @@
 #include "threads/CriticalSection.h"
 
 #include <map>
+#include <memory>
 #include <set>
 
 class CFileItem;
@@ -24,12 +25,14 @@ namespace XFILE
     {
     public:
       explicit CDir(DIR_CACHE_TYPE cacheType);
+      CDir(CDir&& dir) = default;
+      CDir& operator=(CDir&& dir) = default;
       virtual ~CDir();
 
       void SetLastAccess(unsigned int &accessCounter);
       unsigned int GetLastAccess() const { return m_lastAccess; }
 
-      CFileItemList* m_Items;
+      std::unique_ptr<CFileItemList> m_Items;
       DIR_CACHE_TYPE m_cacheType;
     private:
       CDir(const CDir&) = delete;
@@ -55,10 +58,7 @@ namespace XFILE
     void ClearCache(std::set<std::string>& dirs);
     void CheckIfFull();
 
-    std::map<std::string, CDir*> m_cache;
-    typedef std::map<std::string, CDir*>::iterator iCache;
-    typedef std::map<std::string, CDir*>::const_iterator ciCache;
-    void Delete(iCache i);
+    std::map<std::string, CDir> m_cache;
 
     mutable CCriticalSection m_cs;
 

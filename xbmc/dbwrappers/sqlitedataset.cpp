@@ -314,8 +314,8 @@ int SqliteDatabase::connect(bool create) {
     {
       sqlite3_extended_result_codes(conn, 1);
       sqlite3_busy_handler(conn, busy_callback, NULL);
-      char* err=NULL;
-      if (setErr(sqlite3_exec(getHandle(),"PRAGMA empty_result_callbacks=ON",NULL,NULL,&err),"PRAGMA empty_result_callbacks=ON") != SQLITE_OK)
+      if (setErr(sqlite3_exec(getHandle(), "PRAGMA empty_result_callbacks=ON", NULL, NULL, NULL),
+                 "PRAGMA empty_result_callbacks=ON") != SQLITE_OK)
       {
         throw DbErrors("%s", getErrorMsg());
       }
@@ -791,9 +791,15 @@ int SqliteDataset::exec(const std::string &sql) {
   else
     {
       if (errmsg)
-        throw DbErrors("%s (%s)", db->getErrorMsg(), errmsg);
+      {
+        DbErrors err("%s (%s)", db->getErrorMsg(), errmsg);
+        sqlite3_free(errmsg);
+        throw err;
+      }
       else
+      {
         throw DbErrors("%s", db->getErrorMsg());
+      }
     }
 }
 

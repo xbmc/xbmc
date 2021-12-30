@@ -26,6 +26,7 @@ TEST(TestFileUtils, DeleteItem_CFileItemPtr)
   item->Select(true);
   tmpfile->Close();  //Close tmpfile before we try to delete it
   EXPECT_TRUE(CFileUtils::DeleteItem(item));
+  EXPECT_FALSE(XBMC_DELETETEMPFILE(tmpfile));
 }
 
 TEST(TestFileUtils, DeleteItemString)
@@ -35,6 +36,7 @@ TEST(TestFileUtils, DeleteItemString)
   ASSERT_NE(nullptr, (tmpfile = XBMC_CREATETEMPFILE("")));
   tmpfile->Close();  //Close tmpfile before we try to delete it
   EXPECT_TRUE(CFileUtils::DeleteItem(XBMC_TEMPFILEPATH(tmpfile)));
+  EXPECT_FALSE(XBMC_DELETETEMPFILE(tmpfile));
 }
 
 /* Executing RenameFile() requires input from the user */
