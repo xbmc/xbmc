@@ -3,9 +3,9 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=libzip
-VERSION=1.6.1
+VERSION=1.8.0
 SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
+ARCHIVE=$(SOURCE).tar.xz
 
 LIBDYLIB=$(PLATFORM)/build/lib/libzip.a
 
