@@ -2350,7 +2350,7 @@ void CVideoPlayer::CheckAutoSceneSkip()
         mode.backward = true;
         mode.accurate = true;
         mode.restore = false;
-        mode.trickplay = false;
+        mode.trickplay = true;
         mode.sync = true;
         m_messenger.Put(std::make_shared<CDVDMsgPlayerSeek>(mode));
 
@@ -2382,7 +2382,7 @@ void CVideoPlayer::CheckAutoSceneSkip()
         mode.backward = true;
         mode.accurate = true;
         mode.restore = false;
-        mode.trickplay = false;
+        mode.trickplay = true;
         mode.sync = true;
         m_messenger.Put(std::make_shared<CDVDMsgPlayerSeek>(mode));
       }

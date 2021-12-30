@@ -200,6 +200,12 @@ public:
     bool accurate = true;
     bool sync = true;
     bool restore = true;
+    /** Trick player to avoid calling SetDisplayAfterSeek
+     *  (which sets the Player.DisplayAfterSeek infolabel) 
+     *  used by the GUI layer/skins to show the player is seeking.
+     *  This is mainly used when VideoPlayer is in DVD menus,
+     *  Bluray menus or EDL skips - i.e., not user initiated seeks.
+     */
     bool trickplay = false;
   };
 
