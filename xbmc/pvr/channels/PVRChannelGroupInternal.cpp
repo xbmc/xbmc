@@ -49,6 +49,18 @@ bool CPVRChannelGroupInternal::Load(
 {
   if (CPVRChannelGroup::Load(channels))
   {
+    for (const auto& groupMember : m_members)
+    {
+      const std::shared_ptr<CPVRChannel> channel = groupMember.second->Channel();
+
+      // create the EPG for the channel
+      if (channel->CreateEPG())
+      {
+        CLog::LogFC(LOGDEBUG, LOGPVR, "Created EPG for {} channel '{}'", IsRadio() ? "radio" : "TV",
+                    channel->ChannelName());
+      }
+    }
+
     UpdateChannelPaths();
     CServiceBroker::GetPVRManager().Events().Subscribe(this, &CPVRChannelGroupInternal::OnPVRManagerEvent);
     return true;
@@ -209,12 +221,6 @@ bool CPVRChannelGroupInternal::IsGroupMember(const std::shared_ptr<CPVRChannel>&
   return !channel->IsHidden();
 }
 
-void CPVRChannelGroupInternal::CreateChannelEpg(const std::shared_ptr<CPVRChannel>& channel)
-{
-  if (channel)
-    channel->CreateEPG();
-}
-
 bool CPVRChannelGroupInternal::CreateChannelEpgs(bool bForce /* = false */)
 {
   if (!CServiceBroker::GetPVRManager().EpgContainer().IsStarted())
@@ -223,7 +229,7 @@ bool CPVRChannelGroupInternal::CreateChannelEpgs(bool bForce /* = false */)
   {
     CSingleLock lock(m_critSection);
     for (auto& groupMemberPair : m_members)
-      CreateChannelEpg(groupMemberPair.second->Channel());
+      groupMemberPair.second->Channel()->CreateEPG();
   }
 
   return Persist();
