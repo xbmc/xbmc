@@ -352,7 +352,7 @@ bool CWinSystemWin10::ChangeResolution(const RESOLUTION_INFO& res, bool forceCha
     return changed;
   }
 
-  CLog::LogFunction(LOGDEBUG, __FUNCTION__, "Not supported.");
+  CLog::LogF(LOGDEBUG, "Not supported.");
   return false;
 }
 

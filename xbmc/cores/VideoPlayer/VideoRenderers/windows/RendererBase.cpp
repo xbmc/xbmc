@@ -370,7 +370,7 @@ void CRendererBase::OnCMSConfigChanged(AVColorPrimaries srcPrimaries)
       success = COutputShader::CreateLUTView(lutSize, lutData, false, m_pLUTView.ReleaseAndGetAddressOf());
     }
     else
-      CLog::LogFunction(LOGERROR, "CRendererBase::OnCMSConfigChanged", "unable to loading the 3dlut data.");
+      CLog::Log(LOGERROR, "CRendererBase::OnCMSConfigChanged: unable to loading the 3dlut data.");
 
     KODI::MEMORY::AlignedFree(lutData);
     if (!success)

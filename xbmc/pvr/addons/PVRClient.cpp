@@ -1435,8 +1435,8 @@ PVR_ERROR CPVRClient::DoAddonCall(const char* strFunctionName,
 
   // Log error, if any.
   if (error != PVR_ERROR_NO_ERROR && error != PVR_ERROR_NOT_IMPLEMENTED)
-    CLog::LogFunction(LOGERROR, strFunctionName, "Add-on '{}' returned an error: {}",
-                      GetFriendlyName(), ToString(error));
+    CLog::Log(LOGERROR, "{}: Add-on '{}' returned an error: {}", strFunctionName, GetFriendlyName(),
+              ToString(error));
 
   return error;
 }
@@ -1709,14 +1709,14 @@ void CPVRClient::HandleAddonCallback(const char* strFunctionName,
   CPVRClient* client = static_cast<CPVRClient*>(kodiInstance);
   if (!client)
   {
-    CLog::LogFunction(LOGERROR, strFunctionName, "No instance pointer given!");
+    CLog::Log(LOGERROR, "{}: No instance pointer given!", strFunctionName);
     return;
   }
 
   if (!bForceCall && client->m_bBlockAddonCalls && client->m_iAddonCalls == 0)
   {
-    CLog::LogFunction(LOGWARNING, strFunctionName, LOGPVR, "Ignoring callback from PVR client '{}'",
-                      client->GetFriendlyName());
+    CLog::Log(LOGWARNING, LOGPVR, "{}: Ignoring callback from PVR client '{}'", strFunctionName,
+              client->GetFriendlyName());
     return;
   }
 
