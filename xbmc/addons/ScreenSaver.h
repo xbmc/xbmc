@@ -11,13 +11,15 @@
 #include "addons/binary-addons/AddonInstanceHandler.h"
 #include "addons/kodi-dev-kit/include/kodi/addon-instance/Screensaver.h"
 
-namespace ADDON
+namespace KODI
+{
+namespace ADDONS
 {
 
-class CScreenSaver : public IAddonInstanceHandler
+class CScreenSaver : public ADDON::IAddonInstanceHandler
 {
 public:
-  explicit CScreenSaver(const AddonInfoPtr& addonInfo);
+  explicit CScreenSaver(const ADDON::AddonInfoPtr& addonInfo);
   ~CScreenSaver() override;
 
   bool Start();
@@ -28,4 +30,5 @@ public:
   void GetProperties(struct KODI_ADDON_SCREENSAVER_PROPS* props);
 };
 
-} /* namespace ADDON */
+} /* namespace ADDONS */
+} /* namespace KODI */
