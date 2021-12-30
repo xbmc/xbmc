@@ -39,7 +39,7 @@ void CEdl::Clear()
 {
   m_vecEdits.clear();
   m_vecSceneMarkers.clear();
-  m_iTotalCutTime = 0;
+  m_totalCutTime = 0;
   m_lastEditTime = -1;
 }
 
@@ -699,7 +699,7 @@ bool CEdl::AddEdit(const Edit& newEdit)
   }
 
   if (edit.action == Action::CUT)
-    m_iTotalCutTime += edit.end - edit.start;
+    m_totalCutTime += edit.end - edit.start;
 
   return true;
 }
@@ -723,55 +723,57 @@ bool CEdl::HasEdits() const
   return !m_vecEdits.empty();
 }
 
+bool CEdl::HasCuts() const
+{
+  return m_totalCutTime > 0;
+}
+
 int CEdl::GetTotalCutTime() const
 {
-  return m_iTotalCutTime; // ms
+  return m_totalCutTime; // ms
 }
 
-int CEdl::RemoveCutTime(int iSeek) const
+int CEdl::GetTimeWithoutCuts(int seek) const
 {
-  // FIXME - This should actually be HasCuts and not HasEdits
-  // since if the file HasEdits but not any EDL cut there's
-  // no time to remove
-  if (!HasEdits())
-    return iSeek;
+  if (!HasCuts())
+    return seek;
 
-  /**
-   * @todo Consider an optimization of using the (now unused) total cut time if the seek time
-   * requested is later than the end of the last recorded cut. For example, when calculating the
-   * total duration for display.
-   */
-  int iCutTime = 0;
-  for (size_t i = 0; i < m_vecEdits.size(); ++i)
+  int cutTime = 0;
+  for (const EDL::Edit& edit : m_vecEdits)
   {
-    if (m_vecEdits[i].action == Action::CUT)
+    if (edit.action != Action::CUT)
+      continue;
+
+    // inside cut
+    if (seek >= edit.start && seek <= edit.end)
     {
-      if (iSeek >= m_vecEdits[i].start && iSeek <= m_vecEdits[i].end) // Inside cut
-        iCutTime += iSeek - m_vecEdits[i].start -
-                    1; // Decrease cut length by 1ms to jump over end boundary.
-      else if (iSeek >= m_vecEdits[i].start) // Cut has already been passed over.
-        iCutTime += m_vecEdits[i].end - m_vecEdits[i].start;
+      // decrease cut lenght by 1 ms to jump over the end boundary.
+      cutTime += seek - edit.start - 1;
+    }
+    // cut has already been passed over
+    else if (seek >= edit.start)
+    {
+      cutTime += edit.end - edit.start;
     }
   }
-  return iSeek - iCutTime;
+  return seek - cutTime;
 }
 
-double CEdl::RestoreCutTime(double dClock) const
+double CEdl::GetTimeAfterRestoringCuts(double seek) const
 {
-  // FIXME - This should actually be HasCuts and not HasEdits
-  // since if the file HasEdits but not any EDL cut there's
-  // no time to restore
-  if (!HasEdits())
-    return dClock;
+  if (!HasCuts())
+    return seek;
 
-  double dSeek = dClock;
-  for (size_t i = 0; i < m_vecEdits.size(); ++i)
+  for (const EDL::Edit& edit : m_vecEdits)
   {
-    if (m_vecEdits[i].action == Action::CUT && dSeek >= m_vecEdits[i].start)
-      dSeek += static_cast<double>(m_vecEdits[i].end - m_vecEdits[i].start);
+    double cutDuration = static_cast<double>(edit.end - edit.start);
+    // add 1 ms to jump over the start boundary
+    if (edit.action == Action::CUT && seek > edit.start + 1)
+    {
+      seek += cutDuration;
+    }
   }
-
-  return dSeek;
+  return seek;
 }
 
 bool CEdl::HasSceneMarker() const
@@ -807,12 +809,17 @@ void CEdl::SetLastEditTime(int editTime)
   m_lastEditTime = editTime;
 }
 
+void CEdl::ResetLastEditTime()
+{
+  m_lastEditTime = -1;
+}
+
 bool CEdl::GetNextSceneMarker(bool bPlus, const int iClock, int *iSceneMarker)
 {
   if (!HasSceneMarker())
     return false;
 
-  int iSeek = RestoreCutTime(iClock);
+  int iSeek = GetTimeAfterRestoringCuts(iClock);
 
   int iDiff = 10 * 60 * 60 * 1000; // 10 hours to ms.
   bool bFound = false;
