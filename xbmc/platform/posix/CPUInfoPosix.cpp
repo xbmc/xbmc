@@ -14,24 +14,37 @@
 
 bool CCPUInfoPosix::GetTemperature(CTemperature& temperature)
 {
-  std::string cmd = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cpuTempCmd;
+  return CheckUserTemperatureCommand(temperature);
+}
 
+bool CCPUInfoPosix::CheckUserTemperatureCommand(CTemperature& temperature)
+{
   temperature.SetValid(false);
 
-  int value{-1};
-  char scale{'c'};
+  auto settingComponent = CServiceBroker::GetSettingsComponent();
+  if (!settingComponent)
+    return false;
 
-  if (!cmd.empty())
+  auto advancedSettings = settingComponent->GetAdvancedSettings();
+  if (!advancedSettings)
+    return false;
+
+  std::string cmd = advancedSettings->m_cpuTempCmd;
+
+  if (cmd.empty())
+    return false;
+
+  int value = {};
+  char scale = {};
+
+  auto p = popen(cmd.c_str(), "r");
+  if (p)
   {
-    auto p = popen(cmd.c_str(), "r");
-    if (p)
-    {
-      int ret = fscanf(p, "%d %c", &value, &scale);
-      pclose(p);
+    int ret = fscanf(p, "%d %c", &value, &scale);
+    pclose(p);
 
-      if (ret < 2)
-        return false;
-    }
+    if (ret < 2)
+      return false;
   }
 
   if (scale == 'C' || scale == 'c')

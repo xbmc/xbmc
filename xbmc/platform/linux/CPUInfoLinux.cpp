@@ -334,8 +334,11 @@ float CCPUInfoLinux::GetCPUFrequency()
 
 bool CCPUInfoLinux::GetTemperature(CTemperature& temperature)
 {
+  if (CheckUserTemperatureCommand(temperature))
+    return true;
+
   if (m_tempPath.empty())
-    return CCPUInfoPosix::GetTemperature(temperature);
+    return false;
 
   CSysfsPath path{m_tempPath};
   double value = path.Get<double>() / 1000.0;
