@@ -10,6 +10,8 @@
 
 #include "guilib/GUIWindow.h"
 
+#include <memory>
+
 namespace KODI
 {
 namespace ADDONS
@@ -32,6 +34,6 @@ protected:
   EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event) override;
 
 private:
-  KODI::ADDONS::CScreenSaver* m_addon = nullptr;
+  std::unique_ptr<KODI::ADDONS::CScreenSaver> m_addon;
 };
 
