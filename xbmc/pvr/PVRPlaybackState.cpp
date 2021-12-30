@@ -450,22 +450,49 @@ void CPVRPlaybackState::SetActiveChannelGroup(
   SetActiveChannelGroup(group);
 }
 
+namespace
+{
+std::shared_ptr<CPVRChannelGroup> GetFirstNonDeletedAndNonHiddenChannelGroup(bool bRadio)
+{
+  CPVRChannelGroups* groups = CServiceBroker::GetPVRManager().ChannelGroups()->Get(bRadio);
+  if (groups)
+  {
+    const std::vector<std::shared_ptr<CPVRChannelGroup>> members =
+        groups->GetMembers(true); // exclude hidden
+    for (const auto& group : members)
+    {
+      if (!group->IsDeleted())
+        return group;
+    }
+  }
+
+  CLog::LogFC(LOGERROR, LOGPVR, "Failed to obtain any non-deleted and non-hidden group");
+  return {};
+}
+} // unnamed namespace
+
 std::shared_ptr<CPVRChannelGroup> CPVRPlaybackState::GetActiveChannelGroup(bool bRadio) const
 {
   if (bRadio)
   {
-    if (m_activeGroupRadio && m_activeGroupRadio->IsDeleted())
-      const_cast<CPVRPlaybackState*>(this)->SetActiveChannelGroup(
-          CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAllRadio());
-
+    if (m_activeGroupRadio && (m_activeGroupRadio->IsDeleted() || m_activeGroupRadio->IsHidden()))
+    {
+      // switch to first non-deleted and non-hidden group
+      const auto group = GetFirstNonDeletedAndNonHiddenChannelGroup(bRadio);
+      if (group)
+        const_cast<CPVRPlaybackState*>(this)->SetActiveChannelGroup(group);
+    }
     return m_activeGroupRadio;
   }
   else
   {
-    if (m_activeGroupTV && m_activeGroupTV->IsDeleted())
-      const_cast<CPVRPlaybackState*>(this)->SetActiveChannelGroup(
-          CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAllTV());
-
+    if (m_activeGroupTV && (m_activeGroupTV->IsDeleted() || m_activeGroupTV->IsHidden()))
+    {
+      // switch to first non-deleted and non-hidden group
+      const auto group = GetFirstNonDeletedAndNonHiddenChannelGroup(bRadio);
+      if (group)
+        const_cast<CPVRPlaybackState*>(this)->SetActiveChannelGroup(group);
+    }
     return m_activeGroupTV;
   }
 }
