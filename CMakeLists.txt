@@ -274,7 +274,6 @@ add_compile_options(${ARCH_DEFINES} "${SYSTEM_DEFINES}" ${DEP_DEFINES} ${PATH_DE
 set(core_DEPENDS "" CACHE STRING "" FORCE)
 set(test_archives "" CACHE STRING "" FORCE)
 set(test_sources "" CACHE STRING "" FORCE)
-set(sca_sources "" CACHE STRING "" FORCE)
 mark_as_advanced(core_DEPENDS)
 mark_as_advanced(test_archives)
 mark_as_advanced(test_sources)
@@ -405,9 +404,6 @@ if(CORE_HOST_IS_TARGET AND ENABLE_TESTING)
   # Enable unit-test related targets
   enable_testing()
   gtest_add_tests(${APP_NAME_LC}-test "" ${test_sources})
-  if(NOT WIN32)
-    sca_add_tests()
-  endif()
   add_custom_target(check ${CMAKE_CTEST_COMMAND} WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
   add_dependencies(check ${APP_NAME_LC}-test)
 
@@ -425,6 +421,8 @@ if(CORE_HOST_IS_TARGET AND ENABLE_TESTING)
   add_custom_target(check-commits ${CMAKE_COMMAND} -P ${CMAKE_SOURCE_DIR}/cmake/scripts/common/CheckCommits.cmake
                                                    -DCMAKE_BINARY_DIR=${CMAKE_BINARY_DIR})
   set_target_properties(check-commits PROPERTIES FOLDER "Build Utilities")
+
+  include(${CMAKE_SOURCE_DIR}/cmake/scripts/common/StaticAnalysis.cmake)
 
   # code coverage
   if(CMAKE_BUILD_TYPE STREQUAL Coverage)
