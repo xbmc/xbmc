@@ -97,7 +97,7 @@ public:
 
   T GetInitialTimeoutValue() const { return m_totalWaitTime; }
 
-  T GetStartTime() const { return m_startTime.time_since_epoch(); }
+  std::chrono::steady_clock::time_point GetStartTime() const { return m_startTime; }
 
 private:
   std::chrono::steady_clock::time_point m_startTime;

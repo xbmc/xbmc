@@ -18,7 +18,7 @@ namespace
 void CommonTests(XbmcThreads::EndTime<>& endTime)
 {
   EXPECT_EQ(100ms, endTime.GetInitialTimeoutValue());
-  EXPECT_LT(0ms, endTime.GetStartTime());
+  EXPECT_LT(0ms, endTime.GetStartTime().time_since_epoch());
 
   EXPECT_FALSE(endTime.IsTimePast());
   EXPECT_LT(0ms, endTime.GetTimeLeft());
