@@ -569,6 +569,19 @@ bool CPVRChannelGroups::AddGroup(const std::string& strName)
   return bPersist ? group->Persist() : true;
 }
 
+std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetFirstNonHiddenChannelGroup() const
+{
+  CSingleLock lock(m_critSection);
+  for (const auto& group : m_groups)
+  {
+    if (!group->IsHidden())
+      return group;
+  }
+
+  CLog::LogFC(LOGERROR, LOGPVR, "Failed to obtain any non-deleted and non-hidden group");
+  return {};
+}
+
 bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup& group)
 {
   // don't delete internal groups
@@ -591,7 +604,7 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup& group)
         // update the selected group in the gui if it's deleted
         std::shared_ptr<CPVRChannelGroup> selectedGroup = GetSelectedGroup();
         if (selectedGroup && *selectedGroup == group)
-          playingGroup = GetGroupAll();
+          playingGroup = GetFirstNonHiddenChannelGroup();
 
         it = m_groups.erase(it);
         bFound = true;
@@ -625,6 +638,18 @@ bool CPVRChannelGroups::HideGroup(const std::shared_ptr<CPVRChannelGroup>& group
   {
     if (group->SetHidden(bHide))
     {
+      if (bHide)
+      {
+        // update the selected group in the gui if it's now hidden
+        std::shared_ptr<CPVRChannelGroup> selectedGroup = GetSelectedGroup();
+        if (selectedGroup && *selectedGroup == *group)
+        {
+          selectedGroup = GetFirstNonHiddenChannelGroup();
+          if (selectedGroup)
+            SetSelectedGroup(selectedGroup);
+        }
+      }
+
       // state changed
       CServiceBroker::GetPVRManager().PublishEvent(PVREvent::ChannelGroupsInvalidated);
     }

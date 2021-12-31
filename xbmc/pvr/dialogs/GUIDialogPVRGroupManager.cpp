@@ -454,7 +454,9 @@ void CGUIDialogPVRGroupManager::Update()
   if (m_selectedGroup)
   {
     /* set this group in the pvrmanager, so it becomes the selected group in other dialogs too */
-    CServiceBroker::GetPVRManager().PlaybackState()->SetPlayingGroup(m_selectedGroup);
+    if (!m_selectedGroup->IsHidden())
+      CServiceBroker::GetPVRManager().PlaybackState()->SetPlayingGroup(m_selectedGroup);
+
     SET_CONTROL_LABEL(CONTROL_CURRENT_GROUP_LABEL, m_selectedGroup->GroupName());
     SET_CONTROL_SELECTED(GetID(), BUTTON_HIDE_GROUP, m_selectedGroup->IsHidden());
 
