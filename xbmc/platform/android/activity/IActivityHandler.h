@@ -24,6 +24,7 @@ typedef enum
 class IActivityHandler
 {
 public:
+  virtual ~IActivityHandler() = default;
 
   virtual void onStart() {}
   virtual void onResume() {}

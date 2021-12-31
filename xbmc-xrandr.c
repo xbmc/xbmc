@@ -2479,12 +2479,15 @@ int main(int argc, char** argv)
         case 2:
           pan->left = pan->top = 0;
           /* fall through */
+          __attribute__((fallthrough));
         case 4:
           pan->track_left = pan->track_top = pan->track_width = pan->track_height = 0;
           /* fall through */
+          __attribute__((fallthrough));
         case 8:
           pan->border_left = pan->border_top = pan->border_right = pan->border_bottom = 0;
           /* fall through */
+          __attribute__((fallthrough));
         case 12:
           break;
         default:

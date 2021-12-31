@@ -61,7 +61,7 @@ public:
   */
   bool GetServerList(CFileItemList& items);
 
-  const long long GetInstanceID() { return wsd_instance_id; }
+  long long GetInstanceID() const { return wsd_instance_id; }
 
   /*
    * Set List of WSD info request
@@ -78,7 +78,7 @@ public:
   */
   bool GetCached(const std::string& strHostName, std::string& strIpAddress);
 
-  static const bool IsInitialized() { return m_isInitialized; }
+  static bool IsInitialized() { return m_isInitialized; }
 
 private:
   CCriticalSection m_critWSD;

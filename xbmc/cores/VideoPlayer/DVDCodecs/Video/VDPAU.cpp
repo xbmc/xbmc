@@ -2311,6 +2311,7 @@ void CMixer::SetHWUpscaling()
           vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
           break;
        }
+       [[fallthrough]];
     case 8:
        if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L8))
        {
@@ -2318,6 +2319,7 @@ void CMixer::SetHWUpscaling()
           vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
           break;
        }
+       [[fallthrough]];
     case 7:
        if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L7))
        {
@@ -2325,6 +2327,7 @@ void CMixer::SetHWUpscaling()
           vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
           break;
        }
+       [[fallthrough]];
     case 6:
        if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L6))
        {
@@ -2332,6 +2335,7 @@ void CMixer::SetHWUpscaling()
           vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
           break;
        }
+       [[fallthrough]];
     case 5:
        if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L5))
        {
@@ -2339,6 +2343,7 @@ void CMixer::SetHWUpscaling()
           vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
           break;
        }
+       [[fallthrough]];
     case 4:
        if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L4))
        {
@@ -2346,6 +2351,7 @@ void CMixer::SetHWUpscaling()
           vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
           break;
        }
+       [[fallthrough]];
     case 3:
        if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L3))
        {
@@ -2353,6 +2359,7 @@ void CMixer::SetHWUpscaling()
           vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
           break;
        }
+       [[fallthrough]];
     case 2:
        if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L2))
        {
@@ -2360,6 +2367,7 @@ void CMixer::SetHWUpscaling()
           vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
           break;
        }
+       [[fallthrough]];
     case 1:
        if (m_config.vdpau->Supports(VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1))
        {
@@ -2367,6 +2375,7 @@ void CMixer::SetHWUpscaling()
           vdp_st = m_config.context->GetProcs().vdp_video_mixer_set_feature_enables(m_videoMixer, ARSIZE(feature), feature, enabled);
           break;
        }
+       [[fallthrough]];
     default:
        DisableHQScaling();
        return;

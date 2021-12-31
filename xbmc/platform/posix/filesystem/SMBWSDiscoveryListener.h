@@ -94,8 +94,8 @@ private:
   void PrintWSDInfo(const WSDiscovery::wsd_req_info& info);
 
   // compare WSD entry address
-  const bool equalsAddress(const WSDiscovery::wsd_req_info& lhs,
-                           const WSDiscovery::wsd_req_info& rhs);
+  bool equalsAddress(const WSDiscovery::wsd_req_info& lhs,
+                     const WSDiscovery::wsd_req_info& rhs) const;
 
   // Socket FD for send/recv
   int fd;

@@ -154,7 +154,16 @@ if(NOT MSVC)
     -Wdouble-promotion
     -Wmissing-field-initializers
     -Wsign-compare
+    -Wextra
+    -Wno-cast-function-type # from -Wextra
+    -Wno-unused-parameter # from -Wextra
   )
+
+  add_options(CXX ALL_BUILDS
+    -Wno-deprecated-copy # from -Wextra
+    -Wnon-virtual-dtor
+  )
+
   add_options(ALL_LANGUAGES DEBUG
     -g
     -D_DEBUG

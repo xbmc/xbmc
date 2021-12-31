@@ -553,7 +553,7 @@ const std::string CWSDiscoveryListenerUDP::wsd_tag_find(
   return "";
 }
 
-const bool CWSDiscoveryListenerUDP::equalsAddress(const wsd_req_info& lhs, const wsd_req_info& rhs)
+bool CWSDiscoveryListenerUDP::equalsAddress(const wsd_req_info& lhs, const wsd_req_info& rhs) const
 {
   return lhs.address == rhs.address;
 }
