@@ -32,7 +32,7 @@ public:
   virtual size_t GetMaxWriteSize(const size_t& iRequestSize) = 0;
   virtual int WriteToCache(const char *pBuffer, size_t iSize) = 0;
   virtual int ReadFromCache(char *pBuffer, size_t iMaxSize) = 0;
-  virtual int64_t WaitForData(unsigned int iMinAvail, unsigned int iMillis) = 0;
+  virtual int64_t WaitForData(uint32_t iMinAvail, uint32_t iMillis) = 0;
 
   virtual int64_t Seek(int64_t iFilePosition) = 0;
 
@@ -73,7 +73,7 @@ public:
   size_t GetMaxWriteSize(const size_t& iRequestSize) override;
   int WriteToCache(const char *pBuffer, size_t iSize) override;
   int ReadFromCache(char *pBuffer, size_t iMaxSize) override;
-  int64_t WaitForData(unsigned int iMinAvail, unsigned int iMillis) override;
+  int64_t WaitForData(uint32_t iMinAvail, uint32_t iMillis) override;
 
   int64_t Seek(int64_t iFilePosition) override;
   bool Reset(int64_t iSourcePosition) override;
@@ -109,7 +109,7 @@ public:
   size_t GetMaxWriteSize(const size_t& iRequestSize) override;
   int WriteToCache(const char *pBuffer, size_t iSize) override;
   int ReadFromCache(char *pBuffer, size_t iMaxSize) override;
-  int64_t WaitForData(unsigned int iMinAvail, unsigned int iMillis) override;
+  int64_t WaitForData(uint32_t iMinAvail, uint32_t iMillis) override;
 
   int64_t Seek(int64_t iFilePosition) override;
   bool Reset(int64_t iSourcePosition) override;

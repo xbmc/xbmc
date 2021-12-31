@@ -136,7 +136,7 @@ int64_t CInputStreamMultiSource::Seek(int64_t offset, int whence)
   return -1;
 }
 
-void CInputStreamMultiSource::SetReadRate(unsigned rate)
+void CInputStreamMultiSource::SetReadRate(uint32_t rate)
 {
   for (const auto& iter : m_InputStreams)
     iter->SetReadRate(rate);

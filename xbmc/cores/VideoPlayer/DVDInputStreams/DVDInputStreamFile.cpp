@@ -150,10 +150,10 @@ int CDVDInputStreamFile::GetBlockSize()
     return 0;
 }
 
-void CDVDInputStreamFile::SetReadRate(unsigned rate)
+void CDVDInputStreamFile::SetReadRate(uint32_t rate)
 {
   // Increase requested rate by 10%:
-  unsigned maxrate = (unsigned) (1.1 * rate);
+  uint32_t maxrate = static_cast<uint32_t>(1.1 * rate);
 
   if(m_pFile->IoControl(IOCTRL_CACHE_SETRATE, &maxrate) >= 0)
     CLog::Log(LOGDEBUG,

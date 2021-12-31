@@ -399,7 +399,7 @@ int CVFSEntry::IoControl(void* ctx, XFILE::EIoControl request, void* param)
         kodiData->forward = status.forward;
         kodiData->maxrate = status.maxrate;
         kodiData->currate = status.currate;
-        kodiData->lowspeed = status.lowspeed;
+        kodiData->lowrate = status.lowrate;
       }
       return ret;
     }
@@ -408,7 +408,7 @@ int CVFSEntry::IoControl(void* ctx, XFILE::EIoControl request, void* param)
       if (!m_ifc.vfs->toAddon->io_control_set_cache_rate)
         return -1;
 
-      unsigned int& iParam = *static_cast<unsigned int*>(param);
+      uint32_t& iParam = *static_cast<uint32_t*>(param);
       return m_ifc.vfs->toAddon->io_control_set_cache_rate(m_ifc.vfs, ctx, iParam) ? 1 : 0;
     }
     case XFILE::EIoControl::IOCTRL_SET_RETRY:

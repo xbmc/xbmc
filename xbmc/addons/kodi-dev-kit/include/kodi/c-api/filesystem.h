@@ -219,9 +219,9 @@ extern "C"
   struct VFS_CACHE_STATUS_DATA
   {
     uint64_t forward;
-    unsigned int maxrate;
-    unsigned int currate;
-    bool lowspeed;
+    uint32_t maxrate;
+    uint32_t currate;
+    uint32_t lowrate;
   };
 
   struct VFSProperty
@@ -298,7 +298,7 @@ extern "C"
     bool (*io_control_get_cache_status)(void* kodiBase,
                                         void* file,
                                         struct VFS_CACHE_STATUS_DATA* status);
-    bool (*io_control_set_cache_rate)(void* kodiBase, void* file, unsigned int rate);
+    bool (*io_control_set_cache_rate)(void* kodiBase, void* file, uint32_t rate);
     bool (*io_control_set_retry)(void* kodiBase, void* file, bool retry);
     char** (*get_property_values)(
         void* kodiBase, void* file, int type, const char* name, int* numValues);

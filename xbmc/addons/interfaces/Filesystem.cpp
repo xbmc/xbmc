@@ -1022,13 +1022,13 @@ bool Interface_Filesystem::io_control_get_cache_status(void* kodiBase,
     status->forward = data.forward;
     status->maxrate = data.maxrate;
     status->currate = data.currate;
-    status->lowspeed = data.lowspeed;
+    status->lowrate = data.lowrate;
     return true;
   }
   return false;
 }
 
-bool Interface_Filesystem::io_control_set_cache_rate(void* kodiBase, void* file, unsigned int rate)
+bool Interface_Filesystem::io_control_set_cache_rate(void* kodiBase, void* file, uint32_t rate)
 {
   CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
   if (addon == nullptr || file == nullptr)

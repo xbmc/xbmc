@@ -58,7 +58,7 @@ public:
     }
   }
 
-  unsigned Rate(int64_t pos, unsigned int time_bias = 0)
+  uint32_t Rate(int64_t pos, uint32_t time_bias = 0)
   {
     auto ts = std::chrono::steady_clock::now();
 
@@ -70,7 +70,7 @@ public:
     if (m_time == std::chrono::milliseconds(0))
       return 0;
 
-    return (unsigned)(1000 * (m_size / (m_time.count() + time_bias)));
+    return static_cast<uint32_t>(1000 * (m_size / (m_time.count() + time_bias)));
   }
 
 private:
@@ -82,20 +82,20 @@ private:
 
 
 CFileCache::CFileCache(const unsigned int flags)
-  : CThread("FileCache")
-  , m_seekPossible(0)
-  , m_nSeekResult(0)
-  , m_seekPos(0)
-  , m_readPos(0)
-  , m_writePos(0)
-  , m_chunkSize(0)
-  , m_writeRate(0)
-  , m_writeRateActual(0)
-  , m_forwardCacheSize(0)
-  , m_bFilling(false)
-  , m_bLowSpeedDetected(false)
-  , m_fileSize(0)
-  , m_flags(flags)
+  : CThread("FileCache"),
+    m_seekPossible(0),
+    m_nSeekResult(0),
+    m_seekPos(0),
+    m_readPos(0),
+    m_writePos(0),
+    m_chunkSize(0),
+    m_writeRate(0),
+    m_writeRateActual(0),
+    m_writeRateLowSpeed(0),
+    m_forwardCacheSize(0),
+    m_bFilling(false),
+    m_fileSize(0),
+    m_flags(flags)
 {
 }
 
@@ -215,8 +215,8 @@ bool CFileCache::Open(const CURL& url)
   m_writePos = 0;
   m_writeRate = 1024 * 1024;
   m_writeRateActual = 0;
+  m_writeRateLowSpeed = 0;
   m_bFilling = true;
-  m_bLowSpeedDetected = false;
   m_seekEvent.Reset();
   m_seekEnded.Reset();
 
@@ -286,7 +286,7 @@ void CFileCache::Process()
                     "CFileCache::{} - <{}> cache completely reset for seek to position {}",
                     __FUNCTION__, m_sourcePath, m_seekPos);
           m_bFilling = true;
-          m_bLowSpeedDetected = false;
+          m_writeRateLowSpeed = 0;
         }
       }
 
@@ -428,7 +428,7 @@ void CFileCache::Process()
       if (forward + m_chunkSize >= m_forwardCacheSize)
       {
         if (m_writeRateActual < m_writeRate)
-          m_bLowSpeedDetected = true;
+          m_writeRateLowSpeed = m_writeRateActual;
 
         m_bFilling = false;
       }
@@ -549,7 +549,8 @@ int64_t CFileCache::Seek(int64_t iFilePosition, int iWhence)
     {
       CLog::Log(LOGDEBUG, "CFileCache::{} - <{}> waiting for position {}", __FUNCTION__,
                 m_sourcePath, iTarget);
-      if(m_pCache->WaitForData((unsigned)(iTarget - m_seekPos), 10000) < iTarget - m_seekPos)
+      if (m_pCache->WaitForData(static_cast<uint32_t>(iTarget - m_seekPos), 10000) <
+          iTarget - m_seekPos)
       {
         CLog::Log(LOGWARNING, "CFileCache::{} - <{}> failed to get remaining data", __FUNCTION__,
                   m_sourcePath);
@@ -611,14 +612,14 @@ int CFileCache::IoControl(EIoControl request, void* param)
     status->forward = m_pCache->WaitForData(0, 0);
     status->maxrate = m_writeRate;
     status->currate = m_writeRateActual;
-    status->lowspeed = m_bLowSpeedDetected;
-    m_bLowSpeedDetected = false; // Reset flag
+    status->lowrate = m_writeRateLowSpeed;
+    m_writeRateLowSpeed = 0; // Reset low speed condition
     return 0;
   }
 
   if (request == IOCTRL_CACHE_SETRATE)
   {
-    m_writeRate = *(unsigned*)param;
+    m_writeRate = *static_cast<uint32_t*>(param);
     return 0;
   }
 
