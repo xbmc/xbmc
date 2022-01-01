@@ -733,6 +733,35 @@ int CEdl::GetTotalCutTime() const
   return m_totalCutTime; // ms
 }
 
+const std::vector<EDL::Edit> CEdl::GetEditList() const
+{
+  // the sum of cut durations while we iterate over them
+  // note: edits are ordered by start time
+  int surpassedSumOfCutDurations{0};
+  std::vector<EDL::Edit> editList;
+
+  // @note we should not modify the original edits since
+  // they are used during playback. However we need to correct
+  // the start and end times to present on the GUI by removing
+  // the already surpassed cut time. The copy here is intentional
+  // \sa Player_Editlist
+  for (EDL::Edit edit : m_vecEdits)
+  {
+    if (edit.action == Action::CUT)
+    {
+      surpassedSumOfCutDurations += edit.end - edit.start;
+      continue;
+    }
+
+    // substract the duration of already surpassed cuts
+    edit.start -= surpassedSumOfCutDurations;
+    edit.end -= surpassedSumOfCutDurations;
+    editList.emplace_back(edit);
+  }
+
+  return editList;
+}
+
 int CEdl::GetTimeWithoutCuts(int seek) const
 {
   if (!HasCuts())

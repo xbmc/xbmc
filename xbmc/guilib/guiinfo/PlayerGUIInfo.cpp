@@ -302,6 +302,7 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       if (fallback)
         *fallback = item->GetArt("icon");
       return true;
+    case PLAYER_EDITLIST:
     case PLAYER_CUTLIST:
     case PLAYER_CHAPTERS:
       value = GetContentRanges(info.m_info);
@@ -618,6 +619,7 @@ std::string CPlayerGUIInfo::GetContentRanges(int iInfo) const
   {
     switch (iInfo)
     {
+      case PLAYER_EDITLIST:
       case PLAYER_CUTLIST:
         ranges = GetEditList(data, duration);
         break;

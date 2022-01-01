@@ -73,6 +73,7 @@
 #define PLAYER_ICON                  66
 #define PLAYER_CUTLIST               67
 #define PLAYER_CHAPTERS              68
+#define PLAYER_EDITLIST 69
 // Keep player infolabels that work with offset and position together
 #define PLAYER_PATH                  81
 #define PLAYER_FILEPATH              82

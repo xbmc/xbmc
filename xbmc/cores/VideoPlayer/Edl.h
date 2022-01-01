@@ -72,10 +72,19 @@ public:
   double GetTimeAfterRestoringCuts(double seek) const;
 
   /*!
-   * @brief Get the EDL edit list.
-   * @return The EDL edits or an empty vector if no edits exist.
+   * @brief Get the raw EDL edit list.
+   * @return The EDL edits or an empty vector if no edits exist. Edits are
+   * provided with respect to the original media item timeline.
   */
-  const std::vector<EDL::Edit>& GetEditList() const { return m_vecEdits; }
+  const std::vector<EDL::Edit>& GetRawEditList() const { return m_vecEdits; }
+
+  /*!
+   * @brief Get the EDL edit list.
+   * @return The EDL edits or an empty vector if no edits exist. Edits are
+   * provided with respect to the actual timeline, i.e. considering EDL cuts
+   * are not part of the media item.
+  */
+  const std::vector<EDL::Edit> GetEditList() const;
 
   /*!
    * @brief Check if for the provided seek time is contained within an EDL
