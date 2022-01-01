@@ -1,6 +1,6 @@
 --- a/configure.ac
 +++ b/configure.ac
-@@ -2083,10 +2083,6 @@
+@@ -2574,10 +2574,6 @@
        arm*-*-*)
           # Build with the assembly implementation
           GCRYPT_CIPHERS="$GCRYPT_CIPHERS rijndael-arm.lo"
@@ -11,7 +11,7 @@
        ;;
        aarch64-*-*)
           # Build with the assembly implementation
-@@ -2355,10 +2351,6 @@
+@@ -2904,10 +2904,6 @@
           GCRYPT_DIGESTS="$GCRYPT_DIGESTS sha256-avx-amd64.lo"
           GCRYPT_DIGESTS="$GCRYPT_DIGESTS sha256-avx2-bmi2-amd64.lo"
        ;;
@@ -22,7 +22,7 @@
        aarch64-*-*)
           # Build with the assembly implementation
           GCRYPT_DIGESTS="$GCRYPT_DIGESTS sha256-armv8-aarch64-ce.lo"
-@@ -2448,7 +2440,6 @@
+@@ -3043,7 +3043,6 @@
    arm*-*-*)
      # Build with the assembly implementation
      GCRYPT_DIGESTS="$GCRYPT_DIGESTS sha1-armv7-neon.lo"
