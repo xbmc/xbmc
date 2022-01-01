@@ -8,16 +8,13 @@
 
 #pragma once
 
+#include "EdlEdit.h"
 #include "threads/CriticalSection.h"
 
 #include <atomic>
 #include <string>
 #include <vector>
 
-namespace EDL
-{
-struct Edit;
-}
 
 class CDataCacheCore
 {
@@ -62,19 +59,24 @@ public:
   // content info
 
   /*!
-   * @brief Set the EDL edit list.
+   * @brief Set the EDL edit list to cache.
    * @param editList The vector of edits to fill.
    */
   void SetEditList(const std::vector<EDL::Edit>& editList);
 
   /*!
-   * @brief Get the EDL edit list.
+   * @brief Get the EDL edit list in cache.
    * @return The EDL edits or an empty vector if no edits exist.
    */
-  std::vector<EDL::Edit> GetEditList() const;
+  const std::vector<EDL::Edit>& GetEditList() const;
 
   void SetChapters(const std::vector<std::pair<std::string, int64_t>>& chapters);
-  std::vector<std::pair<std::string, int64_t>> GetChapters() const;
+
+  /*!
+   * @brief Get the chapter list in cache.
+   * @return The list of chapters or an empty vector if no chapters exist.
+   */
+  const std::vector<std::pair<std::string, int64_t>>& GetChapters() const;
 
   // render info
   void SetRenderClockSync(bool enabled);
@@ -166,8 +168,48 @@ protected:
   mutable CCriticalSection m_contentSection;
   struct SContentInfo
   {
+  public:
+    /*!
+      * @brief Set the EDL edit list in cache.
+      * @param editList the list of edits to store in cache
+      */
+    void SetEditList(const std::vector<EDL::Edit>& editList) { m_editList = editList; }
+
+    /*!
+      * @brief Get the EDL edit list in cache.
+      * @return the list of edits in cache
+      */
+    const std::vector<EDL::Edit>& GetEditList() const { return m_editList; }
+
+    /*!
+      * @brief Save the chapter list in cache.
+      * @param chapters the list of chapters to store in cache
+      */
+    void SetChapters(const std::vector<std::pair<std::string, int64_t>>& chapters)
+    {
+      m_chapters = chapters;
+    }
+
+    /*!
+      * @brief Get the list of chapters in cache.
+      * @return the list of chapters in cache
+      */
+    const std::vector<std::pair<std::string, int64_t>>& GetChapters() const { return m_chapters; }
+
+    /*!
+      * @brief Reset the content cache to the original values (all empty)
+      */
+    void Reset()
+    {
+      m_editList.clear();
+      m_chapters.clear();
+    }
+
+  private:
+    /*!< list of EDL edits */
     std::vector<EDL::Edit> m_editList;
-    std::vector<std::pair<std::string, int64_t>> m_chapters; // name and position for chapters
+    /*!< name and position for chapters */
+    std::vector<std::pair<std::string, int64_t>> m_chapters;
   } m_contentInfo;
 
   CCriticalSection m_renderSection;
