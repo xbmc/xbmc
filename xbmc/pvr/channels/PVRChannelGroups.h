@@ -235,6 +235,12 @@ namespace PVR
      */
     void RemoveFromAllGroups(const std::shared_ptr<CPVRChannel>& channel);
 
+    /*!
+     * @brief Obtain the first non-hidden channel group.
+     * @return The group or nullptr, if none found.
+     */
+    std::shared_ptr<CPVRChannelGroup> GetFirstNonHiddenChannelGroup() const;
+
     bool m_bRadio; /*!< true if this is a container for radio channels, false if it is for tv channels */
     std::shared_ptr<CPVRChannelGroup> m_selectedGroup; /*!< the group that's currently selected in the UI */
     std::vector<std::shared_ptr<CPVRChannelGroup>> m_groups; /*!< the groups in this container */
