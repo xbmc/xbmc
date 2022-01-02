@@ -1,7 +1,7 @@
 ![Kodi Logo](resources/banner_slim.png)
 
 # Windows build guide
-This guide has been tested with Windows 10 Pro x64, version 20H2, build 19042.928. Please read it in full before you proceed to familiarize yourself with the build procedure.
+This guide has been tested with Windows 10 Pro x64, version 21H2, build 19044.1415. Please read it in full before you proceed to familiarize yourself with the build procedure.
 
 ## Table of Contents
 1. **[Document conventions](#1-document-conventions)**
@@ -12,7 +12,7 @@ This guide has been tested with Windows 10 Pro x64, version 20H2, build 19042.92
 6. **[Build Kodi manually](#6-build-kodi-manually)**
 
 ## 1. Document conventions
-This guide assumes you are using `Developer Command Prompt for VS 2019`, also known as `terminal`, `console`, `command-line` or simply `cli`. Commands need to be run at the terminal, one at a time and in the provided order.
+This guide assumes you are using `Developer Command Prompt for VS 2022`, also known as `terminal`, `console`, `command-line` or simply `cli`. Commands need to be run at the terminal, one at a time and in the provided order.
 
 This is a comment that provides context:
 ```
@@ -50,7 +50,7 @@ To build Kodi:
 * **[Git for Windows](https://gitforwindows.org/)**
 * **[Java Runtime Environment (JRE)](http://www.oracle.com/technetwork/java/javase/downloads/index.html)**
 * **[Nullsoft scriptable install system (NSIS)](http://nsis.sourceforge.net/Download)** (Only needed if you want to generate an installer file)
-* **[Visual Studio 2019](https://visualstudio.microsoft.com/downloads/)** or **[Visual Studio 2017](https://visualstudio.microsoft.com/vs/older-downloads/)** (Community Edition is fine)
+* **[Visual Studio 2022](https://visualstudio.microsoft.com/downloads/)** or **[Visual Studio 2019](https://visualstudio.microsoft.com/vs/older-downloads/)** (Community Edition is fine)
 
 To run Kodi you need a relatively recent CPU with integrated GPU or discrete GPU with up-to-date graphics device-drivers installed from the manufacturer's website.
 * **[AMD](https://support.amd.com/en-us/download)**
@@ -68,48 +68,24 @@ All install screens should remain at their default values with the exception of 
 
 ### JRE install notes
 Default options are fine.
-After install finishes, add java's executable file path to your `PATH` **[environment variable](http://www.java.com/en/download/help/path.xml)**. Should be similar to `C:\Program Files (x86)\Java\jre1.8.0_251\bin`.
+After install finishes, add java's executable file path to your `PATH` **[environment variable](http://www.java.com/en/download/help/path.xml)**. Should be similar to `C:\Program Files\Java\jre1.8.0_311\bin`.
 
 ### NSIS install notes
 Default options are fine.
 
-### Visual Studio 2019 install notes
-Start the VS2019 installer and click **Workloads** select
+### Visual Studio 2022/2019 install notes
+Start the Visual Studio installer and click **Workloads** select
 * Under **Desktop & Mobile** section select
   * `Desktop development with C++`
   * `Universal Windows Platform development` (if compiling for UWP or UWP-ARM)
 
 Click in **Individual components** select
 * Under **Compilers, build tools and runtimes** section select
-  * `MSVC v142 - VS 2019 C++ ARM build tools (Latest)` (if compiling for UWP-ARM)
+  * `MSVC v142/3 - VS 2019/22 C++ ARM build tools (Latest)` (if compiling for UWP-ARM)
 * Under **SDKs, libraries, and frameworks** section select
   * `Windows 10 SDK (10.0.18362.0)` (if compiling for UWP or UWP-ARM)
 
-### Visual Studio 2017 install notes
-Start the VS2017 installer and click `Individual components`.
-* Under **Compilers, build tools and runtimes** select
-  * `Msbuild`
-  * `VC++ 2017 version 15.x v14.x latest v141 tools`
-  * `Visual C++ 2017 Redistributable Update`
-  * `Visual C++ compilers and libraries for ARM` (if compiling for ARM or UWP)
-  * `Visual C++ compilers and libraries for ARM64` (if compiling for ARM64 or UWP)
-  * `Visual C++ runtime for UWP` (if compiling for UWP)
-  * `Windows Universal CRT SDK`
-* Under **Development activities** select
-  * `Visual Studio C++ core features`
-* Under **SDKs, libraries, and frameworks** select
-  * `Windows 10 SDK (10.0.x.0) for Desktop C++ [x86 and x64]`
-  * `Windows 10 SDK (10.0.x.0) for UWP: C++`
-
-Hit `Install`. Yes, it will download and install almost 7GB of stuff.
-
-This is all you need to do a *normal* Kodi build for 32 or 64bit. Building for UWP (Universal Windows Platform) requires the above listed and quite a lot more.
-
-Under `Workloads` select
- * `Universal Windows Platform development`
- * `Desktop development with C++`
-
-Hit `Install`. It will download and install an extra 12GB of whatever for a grand total of almost 20GB. Yes, seriously!
+Hit `Install`. Yes, it will download and install almost 8GB of stuff for x64 only or up to 20GB if everything is selected for UWP / UWP-ARM as well.
 
 **[back to top](#table-of-contents)** | **[back to section top](#2-prerequisites)**
 
@@ -224,39 +200,39 @@ cd kodi-build
 
 Configure build for 64bit (**recommended**):
 ```
-cmake -G "Visual Studio 16 2019" -A x64 -T host=x64 %userprofile%\kodi
+cmake -G "Visual Studio 17 2022" -A x64 -T host=x64 %userprofile%\kodi
 ```
 
 Or configure build for 32bit:
 ```
-cmake -G "Visual Studio 16 2019" -A Win32 -T host=x64 %userprofile%\kodi
+cmake -G "Visual Studio 17 2022" -A Win32 -T host=x64 %userprofile%\kodi
 ```
 
 Or configure build for UWP 64bit:
 ```
-cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 -T host=x64 %userprofile%\kodi
+cmake -G "Visual Studio 17 2022" -A x64 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0.18362.0 -T host=x64 %userprofile%\kodi
 ```
 
 Or configure build for UWP 32bit:
 ```
-cmake -G "Visual Studio 16 2019" -A Win32 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 -T host=x64 %userprofile%\kodi
+cmake -G "Visual Studio 17 2022" -A Win32 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0.18362.0 -T host=x64 %userprofile%\kodi
 ```
 
 Or configure build for UWP ARM 32bit:
 ```
-cmake -G "Visual Studio 16 2019" -A ARM -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 -T host=x64 %userprofile%\kodi
+cmake -G "Visual Studio 17 2022" -A ARM -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0.18362.0 -T host=x64 %userprofile%\kodi
 ```
 
-**Visual Studio 2017:**
+**Visual Studio 2019:**
 
 Replace:
 ```
--G "Visual Studio 16 2019"
+-G "Visual Studio 17 2022"
 ```
 
 With:
 ```
--G "Visual Studio 15 2017"
+-G "Visual Studio 16 2019"
 ```
 
 Build Kodi:
