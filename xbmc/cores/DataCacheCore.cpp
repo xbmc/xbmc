@@ -47,8 +47,7 @@ void CDataCacheCore::Reset()
   {
     CSingleLock lock(m_contentSection);
 
-    m_contentInfo.m_chapters.clear();
-    m_contentInfo.m_editList.clear();
+    m_contentInfo.Reset();
   }
 }
 
@@ -249,25 +248,25 @@ int CDataCacheCore::GetAudioBitsPerSample()
 void CDataCacheCore::SetEditList(const std::vector<EDL::Edit>& editList)
 {
   CSingleLock lock(m_contentSection);
-  m_contentInfo.m_editList = editList;
+  m_contentInfo.SetEditList(editList);
 }
 
-std::vector<EDL::Edit> CDataCacheCore::GetEditList() const
+const std::vector<EDL::Edit>& CDataCacheCore::GetEditList() const
 {
   CSingleLock lock(m_contentSection);
-  return m_contentInfo.m_editList;
+  return m_contentInfo.GetEditList();
 }
 
 void CDataCacheCore::SetChapters(const std::vector<std::pair<std::string, int64_t>>& chapters)
 {
   CSingleLock lock(m_contentSection);
-  m_contentInfo.m_chapters = chapters;
+  m_contentInfo.SetChapters(chapters);
 }
 
-std::vector<std::pair<std::string, int64_t>> CDataCacheCore::GetChapters() const
+const std::vector<std::pair<std::string, int64_t>>& CDataCacheCore::GetChapters() const
 {
   CSingleLock lock(m_contentSection);
-  return m_contentInfo.m_chapters;
+  return m_contentInfo.GetChapters();
 }
 
 void CDataCacheCore::SetRenderClockSync(bool enable)

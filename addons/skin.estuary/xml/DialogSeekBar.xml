@@ -247,7 +247,7 @@
 				<lefttexture>colors/white.png</lefttexture>
 				<midtexture colordiffuse="FFFF0000">colors/white.png</midtexture>
 				<righttexture>colors/white.png</righttexture>
-				<info>Player.Cutlist</info>
+				<info>Player.Editlist</info>
 			</control>
 			<control type="ranges">
 				<left>0</left>
