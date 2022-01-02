@@ -1,0 +1,11 @@
+--- a/wscript
++++ b/wscript
+@@ -169,7 +169,7 @@
+ 
+     conf.CHECK_CFG(package='zlib', minversion='1.2.3',
+                    args='--cflags --libs',
+-                   mandatory=True)
++                   mandatory=False)
+     conf.CHECK_FUNCS_IN('inflateInit2', 'z')
+ 
+     if conf.CHECK_FOR_THIRD_PARTY():

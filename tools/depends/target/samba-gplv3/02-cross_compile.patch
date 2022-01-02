@@ -1,6 +1,6 @@
 --- a/buildtools/wafsamba/samba_autoconf.py
 +++ b/buildtools/wafsamba/samba_autoconf.py
-@@ -319,7 +319,7 @@
+@@ -318,7 +318,7 @@
  
  
  @conf
@@ -9,7 +9,7 @@
      '''check the size of a type'''
      for v in TO_LIST(vars):
          v_define = define
-@@ -332,6 +332,7 @@
+@@ -331,6 +331,7 @@
                        define=v_define,
                        quote=False,
                        headers=headers,
@@ -17,7 +17,7 @@
                        local_include=False,
                        msg="Checking if size of %s == %d" % (v, size)):
                  conf.DEFINE(v_define, size)
-@@ -828,7 +829,6 @@
+@@ -840,7 +840,6 @@
      for key in conf.env.define_key:
          conf.undefine(key, from_env=False)
      conf.env.define_key = []
@@ -68,7 +68,7 @@
      return False
 --- a/buildtools/wafsamba/wscript
 +++ b/buildtools/wafsamba/wscript
-@@ -302,7 +302,7 @@
+@@ -314,7 +314,7 @@
      conf.CHECK_CODE('printf("hello world")',
                      define='HAVE_SIMPLE_C_PROG',
                      mandatory=True,
@@ -84,10 +84,10 @@
      conf.CHECK_HEADERS('acl/libacl.h attr/xattr.h compat.h ctype.h dustat.h')
      conf.CHECK_HEADERS('fcntl.h fnmatch.h glob.h history.h krb5.h langinfo.h')
 +    conf.CHECK_FUNCS('nl_langinfo', headers='langinfo.h')
-     conf.CHECK_HEADERS('libaio.h locale.h ndir.h pwd.h')
+     conf.CHECK_HEADERS('locale.h ndir.h pwd.h')
      conf.CHECK_HEADERS('shadow.h sys/acl.h')
      conf.CHECK_HEADERS('sys/attributes.h attr/attributes.h sys/capability.h sys/dir.h sys/epoll.h')
-@@ -680,7 +680,7 @@
+@@ -692,7 +692,7 @@
      conf.CHECK_CODE('''#define LIBREPLACE_CONFIGURE_TEST_STRPTIME
                         #include "tests/strptime.c"''',
                         define='HAVE_WORKING_STRPTIME',
@@ -96,7 +96,7 @@
                         addmain=False,
                         msg='Checking for working strptime')
  
-@@ -695,7 +695,7 @@
+@@ -707,7 +707,7 @@
  
      conf.CHECK_CODE('#include "tests/snprintf.c"',
                      define="HAVE_C99_VSNPRINTF",
@@ -105,7 +105,7 @@
                      addmain=False,
                      msg="Checking for C99 vsnprintf")
  
-@@ -792,7 +792,7 @@
+@@ -804,7 +804,7 @@
                      exit(0);
                      ''',
                      define='HAVE_SECURE_MKSTEMP',
@@ -114,7 +114,7 @@
                      mandatory=True) # lets see if we get a mandatory failure for this one
  
      # look for a method of finding the list of network interfaces
-@@ -804,6 +804,7 @@
+@@ -816,6 +816,7 @@
                             #define %s 1
                             #define NO_CONFIG_H 1
                             #define AUTOCONF_TEST 1
@@ -122,7 +122,7 @@
                             #include "replace.c"
                             #include "inet_ntop.c"
                             #include "snprintf.c"
-@@ -814,7 +815,7 @@
+@@ -826,7 +826,7 @@
                             method,
                             lib='nsl socket' + bsd_for_strlcpy,
                             addmain=False,
@@ -155,7 +155,7 @@
  enum protocol_types get_Protocol(void)
 --- a/source3/wscript
 +++ b/source3/wscript
-@@ -137,7 +137,7 @@
+@@ -138,7 +138,7 @@
  
      # Check for inotify support (Skip if we are SunOS)
      #NOTE: illumos provides sys/inotify.h but is not an exact match for linux
@@ -164,7 +164,7 @@
      if host_os.rfind('sunos') == -1:
          conf.CHECK_HEADERS('sys/inotify.h')
          if conf.env.HAVE_SYS_INOTIFY_H:
-@@ -416,8 +416,8 @@
+@@ -460,8 +460,8 @@
  
      # FIXME: these should be tests for features, but the old build system just
      # checks for OSes.
@@ -175,7 +175,7 @@
  
      # Python doesn't have case switches... :/
      # FIXME: original was *linux* | gnu* | k*bsd*-gnu | kopensolaris*-gnu | *qnx*)
-@@ -989,7 +989,7 @@
+@@ -1033,7 +1033,7 @@
                                  ''',
                                  'USE_SETREUID',
                                  addmain=False,
@@ -184,7 +184,7 @@
                                  msg="Checking whether setreuid is available")
      if not seteuid:
          seteuid = conf.CHECK_CODE('''
-@@ -1055,7 +1055,7 @@
+@@ -1099,7 +1099,7 @@
  ''',
                  'HAVE_FCNTL_LOCK',
                  addmain=False,
