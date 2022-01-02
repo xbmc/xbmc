@@ -35,6 +35,22 @@
 using namespace XFILE;
 using namespace std::chrono_literals;
 
+namespace
+{
+// The default size of read requests (before limitations from underlying cache
+// has been applied)
+// Guiding light: If sufficient bandwidth is available, things
+// should work even if the latency is large, for distant servers.
+// For example: Bluray Ultra HD can reach a bitrate of about 144Mbit/s.
+// So that's roughly 20MiB/s. In a high throughput/high latency network,
+// one read roundtrip might might take 500ms.
+// At steady state, we must read at least as much as the player
+// consumes over a given time period, so during 500ms we must
+// read 10MiB. This is obviously a simplified view of the network,
+// but for now it's better than nothing.
+constexpr int DEFAULT_READ_LIMIT = 10 * 1024 * 1024;
+}
+
 class CWriteRate
 {
 public:
@@ -136,9 +152,9 @@ bool CFileCache::Open(const CURL& url)
   m_seekPossible = m_source.IoControl(IOCTRL_SEEK_POSSIBLE, NULL);
 
   // Determine the best chunk size we can use
-  m_chunkSize = CFile::DetermineChunkSize(
-      m_source.GetChunkSize(),
-      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cacheChunkSize);
+  m_chunkSize = m_source.GetChunkSize();
+  if (m_chunkSize == 0)
+    m_chunkSize = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cacheChunkSize;
   CLog::Log(LOGDEBUG,
             "CFileCache::{} - <{}> source chunk size is {}, setting cache chunk size to {}",
             __FUNCTION__, m_sourcePath, m_source.GetChunkSize(), m_chunkSize);
@@ -234,8 +250,27 @@ void CFileCache::Process()
     return;
   }
 
+  // How much should we request? Well if we have a front buffer size, use that.
+  // Note however that if more than half of the forward buffer is empty,
+  // that would mean that we're falling behind and if we try to read more
+  // than what is in the buffer now in that situation, we will run out of bytes
+  // before the next read call completes. Hence it never makes sense to read
+  // more than half of the forward cache size at a time as even if that were
+  // to improve throughput, we have too little buffer space to keep up.
+  int64_t requestSize;
+  if (m_forwardCacheSize != 0)
+  {
+    requestSize = m_forwardCacheSize / 2;
+  }
+  else
+  {
+    // We have "unlimited" buffer capabilities, but still we must bound the
+    // request size to something.
+    requestSize = DEFAULT_READ_LIMIT;
+  }
+
   // create our read buffer
-  std::unique_ptr<char[]> buffer(new char[m_chunkSize]);
+  std::unique_ptr<char[]> buffer(new char[requestSize]);
   if (buffer == nullptr)
   {
     CLog::Log(LOGERROR, "CFileCache::{} - <{}> failed to allocate read buffer", __FUNCTION__,
@@ -312,8 +347,19 @@ void CFileCache::Process()
       }
     }
 
-    const int64_t maxWrite = m_pCache->GetMaxWriteSize(m_chunkSize);
-    int64_t maxSourceRead = m_chunkSize;
+    const int64_t maxWrite = m_pCache->GetMaxWriteSize(requestSize);
+    // Make maxSourceRead a multiple of the chunk size, bounded by maxWrite
+    // If we are falling behind we will use larger and larger reads which
+    // over network file systems will hopefully increase throughput.
+    // Special case: m_chunkSize == 1 (non-buffered file) fits
+    // right into this calculation.
+    int64_t maxSourceRead = maxWrite;
+    // Allow a non-m_chunkSize read if only the last chunk remains,
+    // otherwise we won't read to the end.
+    if (m_fileSize == 0 || m_fileSize - m_writePos >= m_chunkSize)
+      // *not* near the end of the file, so round down to nearest chunk size
+      maxSourceRead -= maxWrite % m_chunkSize;
+
     // Cap source read size by space available between current write position and EOF
     if (m_fileSize != 0)
       maxSourceRead = std::min(maxSourceRead, m_fileSize - m_writePos);
@@ -321,16 +367,16 @@ void CFileCache::Process()
     /* Only read from source if there's enough write space in the cache
      * else we may keep disposing data and seeking back on (slow) source
      */
-    if (maxWrite < maxSourceRead)
+    if (maxSourceRead <= 0)
     {
       // Wait until sufficient cache write space is available
       m_pCache->m_space.Wait(5ms);
       continue;
     }
 
-    ssize_t iRead = 0;
-    if (maxSourceRead > 0)
-      iRead = m_source.Read(buffer.get(), maxSourceRead);
+    CLog::Log(LOGDEBUG, "CFileCache::{} Reading {} bytes from source. maxWrite: {}",
+              __FUNCTION__, maxSourceRead, maxWrite);
+    ssize_t iRead = m_source.Read(buffer.get(), maxSourceRead);
     if (iRead <= 0)
     {
       // Check for actual EOF and retry as long as we still have data in our cache
@@ -425,7 +471,7 @@ void CFileCache::Process()
     if (m_bFilling && m_forwardCacheSize != 0)
     {
       const int64_t forward = m_pCache->WaitForData(0, 0);
-      if (forward + m_chunkSize >= m_forwardCacheSize)
+      if (forward + requestSize >= m_forwardCacheSize)
       {
         if (m_writeRateActual < m_writeRate)
           m_writeRateLowSpeed = m_writeRateActual;
