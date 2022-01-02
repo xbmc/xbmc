@@ -899,6 +899,9 @@ void CGUIEPGGridContainer::ProgrammesScroll(int amount)
 
 void CGUIEPGGridContainer::OnUp()
 {
+  if (!HasData())
+    return CGUIControl::OnUp();
+
   if (m_orientation == VERTICAL)
   {
     CGUIAction action = GetAction(ACTION_MOVE_UP);
@@ -948,6 +951,9 @@ void CGUIEPGGridContainer::OnUp()
 
 void CGUIEPGGridContainer::OnDown()
 {
+  if (!HasData())
+    return CGUIControl::OnDown();
+
   if (m_orientation == VERTICAL)
   {
     CGUIAction action = GetAction(ACTION_MOVE_DOWN);
@@ -998,6 +1004,9 @@ void CGUIEPGGridContainer::OnDown()
 
 void CGUIEPGGridContainer::OnLeft()
 {
+  if (!HasData())
+    return CGUIControl::OnLeft();
+
   if (m_orientation == VERTICAL)
   {
     if (m_gridModel->GetGridItemStartBlock(m_channelCursor + m_channelOffset,
@@ -1047,6 +1056,9 @@ void CGUIEPGGridContainer::OnLeft()
 
 void CGUIEPGGridContainer::OnRight()
 {
+  if (!HasData())
+    return CGUIControl::OnRight();
+
   if (m_orientation == VERTICAL)
   {
     if (m_gridModel->GetGridItemEndBlock(m_channelCursor + m_channelOffset,
