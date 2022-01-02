@@ -204,7 +204,9 @@ void CGUIWindowPVRGuideBase::UpdateButtons()
   CGUIWindowPVRBase::UpdateButtons();
 
   SET_CONTROL_LABEL(CONTROL_LABEL_HEADER1, g_localizeStrings.Get(19032));
-  SET_CONTROL_LABEL(CONTROL_LABEL_HEADER2, GetChannelGroup()->GroupName());
+
+  const std::shared_ptr<CPVRChannelGroup> group = GetChannelGroup();
+  SET_CONTROL_LABEL(CONTROL_LABEL_HEADER2, group ? group->GroupName() : "");
 }
 
 bool CGUIWindowPVRGuideBase::Update(const std::string& strDirectory, bool updateFilterPath /* = true */)
