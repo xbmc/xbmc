@@ -84,6 +84,15 @@ public:
   const std::vector<EDL::Edit> GetEditList() const;
 
   /*!
+   * @brief Get the list of EDL cut markers.
+   * @return The list of EDL cut markers or an empty vector if no EDL cuts exist.
+   * The returned values are accurate with respect to cut durations. I.e. if the file
+   * has multiple cuts, the positions of subsquent cuts are automatically corrected by
+   * substracting the previous cut durations.
+  */
+  const std::vector<int64_t> GetCutMarkers() const;
+
+  /*!
    * @brief Check if for the provided seek time is contained within an EDL
    * edit and fill pEdit with the respective edit struct.
    * @note seek time refers to the time in the original file timeline (i.e. without

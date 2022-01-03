@@ -257,6 +257,18 @@ const std::vector<EDL::Edit>& CDataCacheCore::GetEditList() const
   return m_contentInfo.GetEditList();
 }
 
+void CDataCacheCore::SetCuts(const std::vector<int64_t>& cuts)
+{
+  CSingleLock lock(m_contentSection);
+  m_contentInfo.SetCuts(cuts);
+}
+
+const std::vector<int64_t>& CDataCacheCore::GetCuts() const
+{
+  CSingleLock lock(m_contentSection);
+  return m_contentInfo.GetCuts();
+}
+
 void CDataCacheCore::SetChapters(const std::vector<std::pair<std::string, int64_t>>& chapters)
 {
   CSingleLock lock(m_contentSection);

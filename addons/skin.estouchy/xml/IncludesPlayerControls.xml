@@ -101,6 +101,15 @@
 					<texturebg colordiffuse="002C2C2C">white.png</texturebg>
 				</control>
 				<control type="ranges">
+					<description>Cuts</description>
+					<posx>0</posx>
+					<posy>50</posy>
+					<width>552</width>
+					<height>8</height>
+					<info>Player.Cuts</info>
+					<righttexture>red.png</righttexture>
+				</control>
+				<control type="ranges">
 					<description>Chapters</description>
 					<posx>0</posx>
 					<posy>50</posy>

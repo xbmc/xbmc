@@ -139,6 +139,15 @@
 				<left>0</left>
 				<top>67</top>
 				<width>100%</width>
+				<height>8</height>
+				<texturebg border="3" colordiffuse="00FFFFFF">colors/red50.png</texturebg>
+				<righttexture>colors/red.png</righttexture>
+				<info>Player.Cuts</info>
+			</control>
+			<control type="ranges">
+				<left>0</left>
+				<top>67</top>
+				<width>100%</width>
 				<height>4</height>
 				<texturebg border="3" colordiffuse="00FFFFFF">colors/white50.png</texturebg>
 				<righttexture>colors/white.png</righttexture>

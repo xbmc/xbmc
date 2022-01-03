@@ -762,6 +762,21 @@ const std::vector<EDL::Edit> CEdl::GetEditList() const
   return editList;
 }
 
+const std::vector<int64_t> CEdl::GetCutMarkers() const
+{
+  int surpassedSumOfCutDurations{0};
+  std::vector<int64_t> cutList;
+  for (const EDL::Edit& edit : m_vecEdits)
+  {
+    if (edit.action != Action::CUT)
+      continue;
+
+    cutList.emplace_back(edit.start - surpassedSumOfCutDurations);
+    surpassedSumOfCutDurations += edit.end - edit.start;
+  }
+  return cutList;
+}
+
 int CEdl::GetTimeWithoutCuts(int seek) const
 {
   if (!HasCuts())
