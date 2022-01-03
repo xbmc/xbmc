@@ -27,6 +27,7 @@
 #include <chrono>
 #include <inttypes.h>
 #include <memory>
+#include <vector>
 
 #ifdef TARGET_POSIX
 #include "platform/posix/ConvUtils.h"
@@ -167,7 +168,7 @@ bool CFileCache::Open(const CURL& url)
     if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cacheMemSize == 0)
     {
       // Use cache on disk
-      m_pCache = std::unique_ptr<CSimpleFileCache>(new CSimpleFileCache()); // C++14 - Replace with std::make_unique
+      m_pCache = std::make_unique<CSimpleFileCache>();
       m_forwardCacheSize = 0;
     }
     else
@@ -209,14 +210,14 @@ bool CFileCache::Open(const CURL& url)
       const size_t back = cacheSize / 4;
       const size_t front = cacheSize - back;
 
-      m_pCache = std::unique_ptr<CCircularCache>(new CCircularCache(front, back)); // C++14 - Replace with std::make_unique
+      m_pCache = std::make_unique<CCircularCache>(front, back);
       m_forwardCacheSize = front;
     }
 
     if (m_flags & READ_MULTI_STREAM)
     {
       // If READ_MULTI_STREAM flag is set: Double buffering is required
-      m_pCache = std::unique_ptr<CDoubleCache>(new CDoubleCache(m_pCache.release())); // C++14 - Replace with std::make_unique
+      m_pCache = std::make_unique<CDoubleCache>(m_pCache.release());
     }
   }
 
@@ -291,13 +292,7 @@ void CFileCache::Process()
   }
 
   // create our read buffer
-  std::unique_ptr<char[]> buffer(new char[m_readSize]);
-  if (buffer == nullptr)
-  {
-    CLog::Log(LOGERROR, "CFileCache::{} - <{}> failed to allocate read buffer", __FUNCTION__,
-              m_sourcePath);
-    return;
-  }
+  std::vector<char> buffer(m_readSize);
 
   CWriteRate limiter;
   CWriteRate average;
@@ -368,7 +363,7 @@ void CFileCache::Process()
       }
     }
 
-    const int64_t maxWrite = m_pCache->GetMaxWriteSize(requestSize);
+    const int64_t maxWrite = m_pCache->GetMaxWriteSize(buffer.size());
     // Make maxSourceRead a multiple of the chunk size, bounded by maxWrite
     // If we are falling behind we will use larger and larger reads which
     // over network file systems will hopefully increase throughput.
@@ -397,7 +392,8 @@ void CFileCache::Process()
 
     CLog::Log(LOGDEBUG, "CFileCache::{} Reading {} bytes from source. maxWrite: {}",
               __FUNCTION__, maxSourceRead, maxWrite);
-    ssize_t iRead = m_source.Read(buffer.get(), maxSourceRead);
+    assert(buffer.size() >= maxSourceRead);
+    ssize_t iRead = m_source.Read(buffer.data(), maxSourceRead);
     if (iRead <= 0)
     {
       // Check for actual EOF and retry as long as we still have data in our cache
@@ -451,7 +447,7 @@ void CFileCache::Process()
     while (!m_bStop && (iTotalWrite < iRead))
     {
       int iWrite = 0;
-      iWrite = m_pCache->WriteToCache(buffer.get() + iTotalWrite, iRead - iTotalWrite);
+      iWrite = m_pCache->WriteToCache(buffer.data() + iTotalWrite, iRead - iTotalWrite);
 
       // write should always work. all handling of buffering and errors should be
       // done inside the cache strategy. only if unrecoverable error happened, WriteToCache would return error and we break.
