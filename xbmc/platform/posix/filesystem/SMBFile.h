@@ -80,6 +80,7 @@ public:
   bool Delete(const CURL& url) override;
   bool Rename(const CURL& url, const CURL& urlnew) override;
   int GetChunkSize() override { return 1; }
+  ssize_t GetMaxReadSize() override { return XFILE::ReadSizeRequestCode::ANY_SIZE; }
   int IoControl(EIoControl request, void* param) override;
 
 protected:

@@ -39,6 +39,14 @@ class CURL;
 namespace XFILE
 {
 
+enum ReadSizeRequestCode
+{
+  // 0, to match the invalid return value in IFile::GetMaxReadSizeRequest
+  INVALID = 0,
+  ONE_CHUNK = -1,
+  ANY_SIZE = -2,
+};
+
 class IFile
 {
 public:
@@ -106,7 +114,23 @@ public:
    * to meet the requirement of CFile.                             *
    * It can also be used to indicate a file system is non buffered *
    * but accepts any read size, have it return the value 1         */
-  virtual int  GetChunkSize() {return 0;}
+  virtual int GetChunkSize() { return 0; }
+  /*!
+   * @brief Returns the maximum wanted read size.
+   *
+   * The chunk size does not limit the read size itself,
+   * it only specifies that the read size should be a multiple of it.
+   * This specifies the largest largest wanted read call either as a positive
+   * size or as a \ref SpecialReadSizeRequest value (which are negative or 0).
+   * ANY_SIZE: Size can be any positive integer. CFileCache will tune itself freely.
+   * ONE_CHUNK: Exactly one chunk per read call, either as returned by ::GetChunkSize() or,
+   *             if applicable, after consulting the advanced settings.
+   * 0: Invalid
+   * > 1: Use at most this size
+
+   * @return The maximum wanted size of reads. See description for special cases.
+   */
+  virtual ssize_t GetMaxReadSize();
   virtual double GetDownloadSpeed() { return 0.0; }
 
   virtual bool Delete(const CURL& url) { return false; }

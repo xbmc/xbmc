@@ -111,7 +111,8 @@ CFileCache::CFileCache(const unsigned int flags)
     m_forwardCacheSize(0),
     m_bFilling(false),
     m_fileSize(0),
-    m_flags(flags)
+    m_flags(flags),
+    m_readSize(0)
 {
 }
 
@@ -219,6 +220,45 @@ bool CFileCache::Open(const CURL& url)
     }
   }
 
+  // Now determine the max read size
+  m_readSize = m_source.GetMaxReadSize();
+  // We just opened the file, so this should never happen
+  assert(m_readSize != ReadSizeRequestCode::INVALID);
+  if (m_readSize == ReadSizeRequestCode::ONE_CHUNK)
+  {
+    m_readSize = m_chunkSize;
+  }
+  else
+  {
+    // How much should we read? Well if we have a front buffer size, use that.
+    // Note however that if more than half of the forward buffer is empty,
+    // that would mean that we're falling behind and if we try to read more
+    // than what is in the buffer now in that situation, we will run out of bytes
+    // before the next read call completes. Hence it never makes sense to read
+    // more than half of the forward cache size at a time as even if that were
+    // to improve throughput, we have too little buffer space to keep up.
+    ssize_t bufferBasedLimit;
+    if (m_forwardCacheSize != 0)
+      bufferBasedLimit = m_forwardCacheSize / 2;
+    else
+      bufferBasedLimit = DEFAULT_READ_LIMIT;
+
+    if (m_readSize == ReadSizeRequestCode::ANY_SIZE)
+    {
+      // Whatever we want, so just use the buffer limit
+      m_readSize = bufferBasedLimit;
+    }
+    else
+    {
+      // The IFile implementation knows what it wants, but limit based on buffer size anyway
+      m_readSize = std::min(m_readSize, bufferBasedLimit);
+    }
+  }
+
+  CLog::Log(LOGINFO, "CFileCache::{} Buffering parameters selected. read size: {}, chunk size: {}",
+            __FUNCTION__, m_readSize, m_chunkSize);
+  assert(m_readSize > 0);
+
   // open cache strategy
   if (!m_pCache || m_pCache->Open() != CACHE_RC_OK)
   {
@@ -250,27 +290,8 @@ void CFileCache::Process()
     return;
   }
 
-  // How much should we request? Well if we have a front buffer size, use that.
-  // Note however that if more than half of the forward buffer is empty,
-  // that would mean that we're falling behind and if we try to read more
-  // than what is in the buffer now in that situation, we will run out of bytes
-  // before the next read call completes. Hence it never makes sense to read
-  // more than half of the forward cache size at a time as even if that were
-  // to improve throughput, we have too little buffer space to keep up.
-  int64_t requestSize;
-  if (m_forwardCacheSize != 0)
-  {
-    requestSize = m_forwardCacheSize / 2;
-  }
-  else
-  {
-    // We have "unlimited" buffer capabilities, but still we must bound the
-    // request size to something.
-    requestSize = DEFAULT_READ_LIMIT;
-  }
-
   // create our read buffer
-  std::unique_ptr<char[]> buffer(new char[requestSize]);
+  std::unique_ptr<char[]> buffer(new char[m_readSize]);
   if (buffer == nullptr)
   {
     CLog::Log(LOGERROR, "CFileCache::{} - <{}> failed to allocate read buffer", __FUNCTION__,
@@ -471,7 +492,7 @@ void CFileCache::Process()
     if (m_bFilling && m_forwardCacheSize != 0)
     {
       const int64_t forward = m_pCache->WaitForData(0, 0);
-      if (forward + requestSize >= m_forwardCacheSize)
+      if (forward + m_readSize >= m_forwardCacheSize)
       {
         if (m_writeRateActual < m_writeRate)
           m_writeRateLowSpeed = m_writeRateActual;

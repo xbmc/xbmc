@@ -74,6 +74,7 @@ namespace XFILE
     std::atomic<int64_t> m_fileSize;
     unsigned int m_flags;
     CCriticalSection m_sync;
+    ssize_t m_readSize;
   };
 
 }

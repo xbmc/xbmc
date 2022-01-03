@@ -576,6 +576,11 @@ ssize_t CFile::Read(void *lpBuf, size_t uiBufSize)
   if (lpBuf == NULL && uiBufSize != 0)
     return -1;
 
+  ssize_t maxReadSize = GetMaxReadSize();
+  if (maxReadSize > 0 && uiBufSize > static_cast<size_t>(maxReadSize))
+    CLog::Log(LOGWARNING, "Trying to read {} bytes, which is more than the max read size {}",
+              uiBufSize, maxReadSize);
+
   if (uiBufSize > SSIZE_MAX)
     uiBufSize = SSIZE_MAX;
 
@@ -948,6 +953,13 @@ int CFile::GetChunkSize()
   if (m_pFile)
     return m_pFile->GetChunkSize();
   return 0;
+}
+
+ssize_t CFile::GetMaxReadSize()
+{
+  if (m_pFile)
+    return m_pFile->GetMaxReadSize();
+  return ReadSizeRequestCode::INVALID;
 }
 
 const std::string CFile::GetProperty(XFILE::FileProperty type, const std::string &name) const

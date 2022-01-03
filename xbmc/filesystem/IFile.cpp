@@ -78,6 +78,27 @@ bool IFile::ReadString(char *szLine, int iLineLength)
   return true;
 }
 
+ssize_t IFile::GetMaxReadSize()
+{
+  int chunkSize = GetChunkSize();
+
+  switch (chunkSize)
+  {
+    case 0:
+    case 1:
+      // Backwards compatibility:
+      // CFileCache used to handle a chunk size of 0 or 1 by
+      // a) Getting the chunk size from advanced settings
+      // b) Reading one chunk at a time (the only way it knew how!)
+      // To not change this behavior for IFile implementations,
+      // Assume the ONE_CHUNK behavior in those cases and let the IFiles
+      // that want something different override this method.
+      return ReadSizeRequestCode::ONE_CHUNK;
+    default:
+      return chunkSize;
+  }
+}
+
 CRedirectException::CRedirectException() :
   m_pNewFileImp(NULL), m_pNewUrl(NULL)
 {
