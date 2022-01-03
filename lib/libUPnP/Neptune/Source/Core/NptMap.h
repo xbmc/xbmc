@@ -43,8 +43,8 @@
 /*----------------------------------------------------------------------
 |   NPT_Map
 +---------------------------------------------------------------------*/
-template <typename K, typename V> 
-class NPT_Map 
+template<typename K, typename V>
+class NPT_Map
 {
 public:
     // types
@@ -53,12 +53,12 @@ public:
         // constructor
         Entry(const K& key, const V& value) : m_Key(key), m_Value(value) {}
         Entry(const K& key) : m_Key(key), m_Value() {}
-        
+
         // accessors
         const K& GetKey()   const { return m_Key;   }
         const V& GetValue() const { return m_Value; }
 
-        // operators 
+        // operators
         bool operator==(const Entry& other) const {
             return m_Key == other.m_Key && m_Value == other.m_Value;
         }
@@ -76,11 +76,11 @@ public:
     };
 
     // constructors
-    NPT_Map<K,V>() {}
-    NPT_Map<K,V>(const NPT_Map<K,V>& copy);
+    NPT_Map() {}
+    NPT_Map(const NPT_Map<K, V>& copy);
 
     // destructor
-    ~NPT_Map<K,V>();
+    ~NPT_Map();
 
     // methods
     NPT_Result   Put(const K& key, const V& value);
@@ -310,15 +310,15 @@ NPT_Map<K,V>::operator[](const K& key)
         entry = new Entry(key);
         m_Entries.Add(entry);
     }
-     
+
     return entry->m_Value;
 }
 
 /*----------------------------------------------------------------------
 |   NPT_HashMap
 +---------------------------------------------------------------------*/
-template <typename K, typename V, typename HF = NPT_Hash<K> > 
-class NPT_HashMap 
+template<typename K, typename V, typename HF = NPT_Hash<K>>
+class NPT_HashMap
 {
 public:
     // types
@@ -327,13 +327,13 @@ public:
         // constructor
         Entry(NPT_UInt32 hash_value, const K& key, const V& value) : m_HashValue(hash_value), m_Key(key), m_Value(value) {}
         Entry(NPT_UInt32 hash_value, const K& key)                 : m_HashValue(hash_value), m_Key(key), m_Value()      {}
-        
+
         // accessors
         const K&   GetKey()       const { return m_Key;   }
         const V&   GetValue()     const { return m_Value; }
         NPT_UInt32 GetHashValue() const { return m_HashValue; }
-        
-        // operators 
+
+        // operators
         bool operator==(const Entry& other) const {
             return m_HashValue == other.m_HashValue && m_Key == other.m_Key && m_Value == other.m_Value;
         }
@@ -368,7 +368,7 @@ public:
                     }
                 } while (m_Entry);
             }
-            return (*this); 
+            return (*this);
         }
         Iterator operator++(int) { // postfix
             Iterator saved_this = *this;
@@ -399,12 +399,12 @@ public:
     };
 
     // constructors
-    NPT_HashMap<K,V,HF>();
-    NPT_HashMap<K,V,HF>(const HF& hasher);
-    NPT_HashMap<K,V,HF>(const NPT_HashMap<K,V,HF>& copy);
+    NPT_HashMap();
+    NPT_HashMap(const HF& hasher);
+    NPT_HashMap(const NPT_HashMap<K, V, HF>& copy);
 
     // destructor
-    ~NPT_HashMap<K,V,HF>();
+    ~NPT_HashMap();
 
     // methods
     NPT_Result   Put(const K& key, const V& value);
@@ -415,19 +415,21 @@ public:
     NPT_Cardinal GetEntryCount() const { return m_EntryCount; }
     Iterator     GetEntries() const;
     NPT_Result   Clear();
-    
+
     // list operations
     // keep these template members defined here because MSV6 does not let
     // us define them later
-    template <typename X> 
+    template<typename X>
     NPT_Result Apply(const X& function) const
-    {                          
-        for (int i=0; i<(1<<m_BucketCountLog); i++) {
-            if (m_Buckets[i]) {
-                function(m_Buckets[i]);
-            }
+    {
+      for (int i = 0; i < (1 << m_BucketCountLog); i++)
+      {
+        if (m_Buckets[i])
+        {
+          function(m_Buckets[i]);
         }
-        return NPT_SUCCESS;
+      }
+      return NPT_SUCCESS;
     }
 
     // operators
@@ -442,7 +444,7 @@ private:
     NPT_Result AddEntry(Entry* entry);
     void       AllocateBuckets(unsigned int count_log);
     void       AdjustBuckets(NPT_Cardinal entry_count, bool allow_shrink=false);
-    
+
     // members
     HF           m_Hasher;
     Entry**      m_Buckets;
@@ -553,7 +555,7 @@ NPT_HashMap<K,V,HF>::Clear()
     }
     m_EntryCount = 0;
     AllocateBuckets(4);
-    
+
     return NPT_SUCCESS;
 }
 
@@ -591,7 +593,7 @@ NPT_HashMap<K,V,HF>::GetEntry(const K& key, NPT_UInt32* position) const
         }
         cursor = (cursor + 1) & mask;
     }
-    
+
     return NULL;
 }
 
@@ -612,7 +614,7 @@ NPT_HashMap<K,V,HF>::AddEntry(Entry* entry)
     }
     m_Buckets[cursor] = entry;
     ++m_EntryCount;
-    
+
     return NPT_SUCCESS;
 }
 
@@ -682,10 +684,10 @@ NPT_HashMap<K,V,HF>::Erase(const K& key)
     if (entry == NULL) {
         return NPT_ERROR_NO_SUCH_ITEM;
     }
-    
+
     // mark the bucket as unoccupied
     m_Buckets[position] = NULL;
-    
+
     // look for buckets that need to be relocated:
     // there should be no empty bucket between an entry's ideal hash bucket
     // and its actual bucket.
@@ -700,13 +702,13 @@ NPT_HashMap<K,V,HF>::Erase(const K& key)
              ((position < target) || (target <= cursor)) ) {
              continue;
         }
-        
+
         // move the bucket back
         m_Buckets[position] = m_Buckets[cursor];
         m_Buckets[cursor] = NULL;
         position = cursor;
     }
-        
+
     // cleanup and adjust the counter and buckets
     delete entry;
     --m_EntryCount;
@@ -730,16 +732,15 @@ NPT_HashMap<K,V,HF>::operator=(const NPT_HashMap<K,V,HF>& copy)
 
     // prepare to receive all the entries
     AdjustBuckets(copy.m_EntryCount);
-    
+
     // copy all entries
     for (int i=0; i<1<<copy.m_BucketCountLog; i++) {
         if (copy.m_Buckets[i]) {
-            AddEntry(new Entry(m_Hasher(copy.m_Buckets[i]->GetKey()),
-                               copy.m_Buckets[i]->GetKey(), 
-                               copy.m_Buckets[i]->GetValue()));
+          AddEntry(new Entry(m_Hasher(copy.m_Buckets[i]->GetKey()), copy.m_Buckets[i]->GetKey(),
+                             copy.m_Buckets[i]->GetValue()));
         }
     }
-    
+
     return *this;
 }
 
@@ -752,7 +753,7 @@ NPT_HashMap<K,V,HF>::operator==(const NPT_HashMap<K,V,HF>& other) const
 {
     // quick check
     if (m_EntryCount != other.m_EntryCount) return false;
-    
+
     // compare all entries to all other entries
     for (int i=0; i<(1<<m_BucketCountLog); i++) {
         Entry* entry = m_Buckets[i];
@@ -762,7 +763,7 @@ NPT_HashMap<K,V,HF>::operator==(const NPT_HashMap<K,V,HF>& other) const
             return false;
         }
     }
-    
+
     return true;
 }
 
@@ -789,7 +790,7 @@ NPT_HashMap<K,V,HF>::operator[](const K& key)
         entry = new Entry(m_Hasher(key), key);
         AddEntry(entry);
     }
-     
+
     return entry->m_Value;
 }
 
