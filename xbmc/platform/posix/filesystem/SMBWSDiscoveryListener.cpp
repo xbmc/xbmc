@@ -37,7 +37,7 @@ namespace WSDiscovery
 {
 
 // Templates for SOAPXML messages for WS-Discovery messages
-static const std::string soap_msg_templ =
+static constexpr std::string_view soap_msg_templ =
     "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
     "<soap:Envelope "
     "xmlns:soap=\"http://www.w3.org/2003/05/soap-envelope\" "
@@ -57,41 +57,41 @@ static const std::string soap_msg_templ =
     "{}"
     "</soap:Envelope>\n";
 
-static const std::string hello_body = "<soap:Body>\n"
-                                      "<wsd:Hello>\n"
-                                      "<wsa:EndpointReference>\n"
-                                      "<wsa:Address>urn:uuid:{}</wsa:Address>\n"
-                                      "</wsa:EndpointReference>\n"
-                                      "<wsd:Types>wsdp:Device pub:Computer</wsd:Types>\n"
-                                      "<wsd:MetadataVersion>1</wsd:MetadataVersion>\n"
-                                      "</wsd:Hello>\n"
-                                      "</soap:Body>\n";
+static constexpr std::string_view hello_body = "<soap:Body>\n"
+                                               "<wsd:Hello>\n"
+                                               "<wsa:EndpointReference>\n"
+                                               "<wsa:Address>urn:uuid:{}</wsa:Address>\n"
+                                               "</wsa:EndpointReference>\n"
+                                               "<wsd:Types>wsdp:Device pub:Computer</wsd:Types>\n"
+                                               "<wsd:MetadataVersion>1</wsd:MetadataVersion>\n"
+                                               "</wsd:Hello>\n"
+                                               "</soap:Body>\n";
 
-static const std::string bye_body = "<soap:Body>\n"
-                                    "<wsd:Bye>\n"
-                                    "<wsa:EndpointReference>\n"
-                                    "<wsa:Address>urn:uuid:{}</wsa:Address>\n"
-                                    "</wsa:EndpointReference>\n"
-                                    "<wsd:Types>wsdp:Device pub:Computer</wsd:Types>\n"
-                                    "<wsd:MetadataVersion>2</wsd:MetadataVersion>\n"
-                                    "</wsd:Bye>\n"
-                                    "</soap:Body>\n";
+static constexpr std::string_view bye_body = "<soap:Body>\n"
+                                             "<wsd:Bye>\n"
+                                             "<wsa:EndpointReference>\n"
+                                             "<wsa:Address>urn:uuid:{}</wsa:Address>\n"
+                                             "</wsa:EndpointReference>\n"
+                                             "<wsd:Types>wsdp:Device pub:Computer</wsd:Types>\n"
+                                             "<wsd:MetadataVersion>2</wsd:MetadataVersion>\n"
+                                             "</wsd:Bye>\n"
+                                             "</soap:Body>\n";
 
-static const std::string probe_body = "<soap:Body>\n"
-                                      "<wsd:Probe>\n"
-                                      "<wsd:Types>wsdp:Device</wsd:Types>\n"
-                                      "</wsd:Probe>\n"
-                                      "</soap:Body>\n";
+static constexpr std::string_view probe_body = "<soap:Body>\n"
+                                               "<wsd:Probe>\n"
+                                               "<wsd:Types>wsdp:Device</wsd:Types>\n"
+                                               "</wsd:Probe>\n"
+                                               "</soap:Body>\n";
 
-static const std::string resolve_body = "<soap:Body>\n"
-                                        "<wsd:Resolve>\n"
-                                        "<wsa:EndpointReference>\n"
-                                        "<wsa:Address>"
-                                        "{}"
-                                        "</wsa:Address>\n"
-                                        "</wsa:EndpointReference>\n"
-                                        "</wsd:Resolve>\n"
-                                        "</soap:Body>\n";
+static constexpr std::string_view resolve_body = "<soap:Body>\n"
+                                                 "<wsd:Resolve>\n"
+                                                 "<wsa:EndpointReference>\n"
+                                                 "<wsa:Address>"
+                                                 "{}"
+                                                 "</wsa:Address>\n"
+                                                 "</wsa:EndpointReference>\n"
+                                                 "</wsd:Resolve>\n"
+                                                 "</soap:Body>\n";
 
 // These are the only actions we concern ourselves with for our WS-D implementation
 static const std::string WSD_ACT_HELLO = "http://schemas.xmlsoap.org/ws/2005/04/discovery/Hello";
@@ -123,7 +123,7 @@ static const std::array<std::pair<std::string, std::string>, 1> address_tag{
 static const std::array<std::pair<std::string, std::string>, 1> types_tag{
     {{"<wsd:Types>", "</wsd:Types>"}}};
 
-static const std::string get_msg =
+static constexpr std::string_view get_msg =
     "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
     "<soap:Envelope "
     "xmlns:pnpx=\"http://schemas.microsoft.com/windows/pnpx/2005/10\" "
