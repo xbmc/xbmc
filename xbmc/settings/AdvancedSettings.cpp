@@ -327,6 +327,7 @@ void CAdvancedSettings::Initialize()
                                                   only if 'displayupdatepopup' is also enabled. */
 
   m_bEdlMergeShortCommBreaks = false;      // Off by default
+  m_EdlDisplayCommbreakNotifications = true; // On by default
   m_iEdlMaxCommBreakLength = 8 * 30 + 10;  // Just over 8 * 30 second commercial break.
   m_iEdlMinCommBreakLength = 3 * 30;       // 3 * 30 second commercial breaks.
   m_iEdlMaxCommBreakGap = 4 * 30;          // 4 * 30 second commercial breaks.
@@ -940,6 +941,8 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   if (pElement)
   {
     XMLUtils::GetBoolean(pElement, "mergeshortcommbreaks", m_bEdlMergeShortCommBreaks);
+    XMLUtils::GetBoolean(pElement, "displaycommbreaknotifications",
+                         m_EdlDisplayCommbreakNotifications);
     XMLUtils::GetInt(pElement, "maxcommbreaklength", m_iEdlMaxCommBreakLength, 0, 10 * 60); // Between 0 and 10 minutes
     XMLUtils::GetInt(pElement, "mincommbreaklength", m_iEdlMinCommBreakLength, 0, 5 * 60);  // Between 0 and 5 minutes
     XMLUtils::GetInt(pElement, "maxcommbreakgap", m_iEdlMaxCommBreakGap, 0, 5 * 60);        // Between 0 and 5 minutes.
