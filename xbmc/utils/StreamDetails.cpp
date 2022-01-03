@@ -615,7 +615,11 @@ std::string CStreamDetails::VideoAspectToAspectDescription(float fAspect)
   // aspect ratios, particularly when cropping prior to video encoding is taken into account
   // the best we can do is take the "common" aspect ratios, and return the closest one available.
   // The cutoffs are the geometric mean of the two aspect ratios either side.
-  if (fAspect < 1.3499f) // sqrt(1.33*1.37)
+  if (fAspect < 1.0909f) // sqrt(1.00*1.19)
+    return "1.00";
+  else if (fAspect < 1.2581f) // sqrt(1.19*1.33)
+    return "1.19";
+  else if (fAspect < 1.3499f) // sqrt(1.33*1.37)
     return "1.33";
   else if (fAspect < 1.5080f) // sqrt(1.37*1.66)
     return "1.37";
@@ -623,8 +627,10 @@ std::string CStreamDetails::VideoAspectToAspectDescription(float fAspect)
     return "1.66";
   else if (fAspect < 1.8147f) // sqrt(1.78*1.85)
     return "1.78";
-  else if (fAspect < 2.0174f) // sqrt(1.85*2.20)
+  else if (fAspect < 1.9235f) // sqrt(1.85*2.00)
     return "1.85";
+  else if (fAspect < 2.0976f) // sqrt(2.00*2.20)
+    return "2.00";
   else if (fAspect < 2.2738f) // sqrt(2.20*2.35)
     return "2.20";
   else if (fAspect < 2.3749f) // sqrt(2.35*2.40)
