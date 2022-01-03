@@ -34,7 +34,6 @@
 #include "utils/log.h"
 #include "view/ViewStateSettings.h"
 
-#include <type_traits>
 #include <utility>
 
 using namespace KODI::MESSAGING;
@@ -94,9 +93,7 @@ bool CGUIPassword::IsItemUnlocked(T pItem,
 
         // a mediasource has been unlocked successfully
         // => refresh favourites due to possible visibility changes
-        // only if this template is instantiated for a CMediaSource item
-        if (std::is_same<T, CMediaSource*>::value)
-          CServiceBroker::GetFavouritesService().RefreshFavourites();
+        CServiceBroker::GetFavouritesService().RefreshFavourites();
         break;
       }
     case 1:
