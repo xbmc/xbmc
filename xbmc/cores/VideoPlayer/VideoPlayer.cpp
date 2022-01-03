@@ -1263,6 +1263,10 @@ void CVideoPlayer::Prepare()
   }
   else if (m_Edl.InEdit(starttime, &edit))
   {
+    // save last edit times
+    m_Edl.SetLastEditTime(edit.start);
+    m_Edl.SetLastEditActionType(edit.action);
+
     if (edit.action == EDL::Action::CUT)
     {
       starttime = edit.end;
@@ -2333,7 +2337,12 @@ void CVideoPlayer::CheckAutoSceneSkip()
   EDL::Edit edit;
   if (!m_Edl.InEdit(correctClock, &edit))
   {
-    m_Edl.ResetLastEditTime();
+    // @note: Users are allowed to jump back into EDL commercial breaks
+    // do not reset the last edit time if the last surpassed edit is a commercial break
+    if (m_Edl.GetLastEditActionType() != EDL::Action::COMM_BREAK)
+    {
+      m_Edl.ResetLastEditTime();
+    }
     return;
   }
 
@@ -2360,12 +2369,13 @@ void CVideoPlayer::CheckAutoSceneSkip()
         m_messenger.Put(std::make_shared<CDVDMsgPlayerSeek>(mode));
 
         m_Edl.SetLastEditTime(seek);
+        m_Edl.SetLastEditActionType(edit.action);
       }
     }
   }
   else if (edit.action == EDL::Action::COMM_BREAK)
   {
-    // marker for commbrak may be inaccurate. allow user to skip into break from the back
+    // marker for commbreak may be inaccurate. allow user to skip into break from the back
     if (m_playSpeed >= 0 && m_Edl.GetLastEditTime() != edit.start && clock < edit.end - 1000)
     {
       const std::shared_ptr<CAdvancedSettings> advancedSettings =
@@ -2378,6 +2388,7 @@ void CVideoPlayer::CheckAutoSceneSkip()
       }
 
       m_Edl.SetLastEditTime(edit.start);
+      m_Edl.SetLastEditActionType(edit.action);
 
       if (m_SkipCommercials)
       {

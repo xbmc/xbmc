@@ -843,6 +843,16 @@ void CEdl::ResetLastEditTime()
   m_lastEditTime = -1;
 }
 
+void CEdl::SetLastEditActionType(EDL::Action action)
+{
+  m_lastEditActionType = action;
+}
+
+EDL::Action CEdl::GetLastEditActionType() const
+{
+  return m_lastEditActionType;
+}
+
 bool CEdl::GetNextSceneMarker(bool bPlus, const int iClock, int *iSceneMarker)
 {
   if (!HasSceneMarker())

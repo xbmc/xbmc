@@ -11,6 +11,8 @@
 namespace EDL
 {
 
+constexpr int EDL_ACTION_NONE = -1;
+
 enum class Action
 {
   CUT = 0,
