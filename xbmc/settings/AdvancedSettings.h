@@ -275,6 +275,8 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     // EDL Commercial Break
     bool m_bEdlMergeShortCommBreaks;
+    /*!< @brief If GUI notifications should be shown when reaching the start of commercial breaks */
+    bool m_EdlDisplayCommbreakNotifications;
     int m_iEdlMaxCommBreakLength;   // seconds
     int m_iEdlMinCommBreakLength;   // seconds
     int m_iEdlMaxCommBreakGap;      // seconds
