@@ -303,6 +303,7 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
         *fallback = item->GetArt("icon");
       return true;
     case PLAYER_EDITLIST:
+    case PLAYER_CUTS:
     case PLAYER_CUTLIST:
     case PLAYER_CHAPTERS:
       value = GetContentRanges(info.m_info);
@@ -623,6 +624,9 @@ std::string CPlayerGUIInfo::GetContentRanges(int iInfo) const
       case PLAYER_CUTLIST:
         ranges = GetEditList(data, duration);
         break;
+      case PLAYER_CUTS:
+        ranges = GetCuts(data, duration);
+        break;
       case PLAYER_CHAPTERS:
         ranges = GetChapters(data, duration);
         break;
@@ -656,6 +660,24 @@ std::vector<std::pair<float, float>> CPlayerGUIInfo::GetEditList(CDataCacheCore&
     float cutStart = edit.start * 100.0f / duration;
     float cutEnd = edit.end * 100.0f / duration;
     ranges.emplace_back(std::make_pair(cutStart, cutEnd));
+  }
+  return ranges;
+}
+
+std::vector<std::pair<float, float>> CPlayerGUIInfo::GetCuts(CDataCacheCore& data,
+                                                             time_t duration) const
+{
+  std::vector<std::pair<float, float>> ranges;
+
+  const std::vector<int64_t> cuts = data.GetCuts();
+  float lastMarker = 0.0f;
+  for (const auto& cut : cuts)
+  {
+    float marker = cut * 100.0f / duration;
+    if (marker != 0)
+      ranges.emplace_back(std::make_pair(lastMarker, marker));
+
+    lastMarker = marker;
   }
   return ranges;
 }

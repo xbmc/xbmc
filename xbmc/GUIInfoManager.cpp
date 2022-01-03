@@ -743,6 +743,15 @@ const infomap integer_bools[] =  {{ "isequal",          INTEGER_IS_EQUAL },
 ///     @skinning_v20 **[New Infolabel]** \link Player_Editlist `Player.Editlist`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`Player.Cuts`</b>,
+///                  \anchor Player_Cuts
+///                  _string_,
+///     @return The EDL cut markers of the currently playing item as csv in the format start1\,end1\,start2\,end2\,...
+///     Tokens must have values in the range from 0.0 to 100.0. end token must be less or equal than start token.
+///     <p><hr>
+///     @skinning_v20 **[New Infolabel]** \link Player_Cuts `Player.Cuts`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`Player.Chapters`</b>,
 ///                  \anchor Player_Chapters
 ///                  _string_,
@@ -805,6 +814,7 @@ const infomap player_labels[] = {{"hasmedia", PLAYER_HAS_MEDIA},
                                  {"icon", PLAYER_ICON},
                                  {"cutlist", PLAYER_CUTLIST},
                                  {"editlist", PLAYER_EDITLIST},
+                                 {"cuts", PLAYER_CUTS},
                                  {"chapters", PLAYER_CHAPTERS}};
 
 /// \page modules__infolabels_boolean_conditions
