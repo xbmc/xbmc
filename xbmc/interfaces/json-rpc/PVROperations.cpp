@@ -520,3 +520,21 @@ JSONRPC_STATUS CPVROperations::GetRecordingDetails(const std::string &method, IT
 
   return OK;
 }
+
+std::shared_ptr<CFileItem> CPVROperations::GetRecordingFileItem(int recordingId)
+{
+  if (CServiceBroker::GetPVRManager().IsStarted())
+  {
+    const std::shared_ptr<PVR::CPVRRecordings> recordings =
+        CServiceBroker::GetPVRManager().Recordings();
+
+    if (recordings)
+    {
+      const std::shared_ptr<PVR::CPVRRecording> recording = recordings->GetById(recordingId);
+      if (recording)
+        return std::make_shared<CFileItem>(recording);
+    }
+  }
+
+  return {};
+}

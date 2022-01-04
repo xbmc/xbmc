@@ -49,6 +49,8 @@ namespace JSONRPC
     static JSONRPC_STATUS Record(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
     static JSONRPC_STATUS Scan(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
 
+    static std::shared_ptr<CFileItem> GetRecordingFileItem(int recordingId);
+
   private:
     static JSONRPC_STATUS GetPropertyValue(const std::string &property, CVariant &result);
     static void FillChannelGroupDetails(const std::shared_ptr<PVR::CPVRChannelGroup> &channelGroup, const CVariant &parameterObject, CVariant &result, bool append = false);
