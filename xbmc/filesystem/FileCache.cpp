@@ -390,8 +390,15 @@ void CFileCache::Process()
       continue;
     }
 
-    CLog::Log(LOGDEBUG, "CFileCache::{} Reading {} bytes from source. maxWrite: {}",
-              __FUNCTION__, maxSourceRead, maxWrite);
+    auto avail = m_pCache->WaitForData(0, 0);
+    // If we have less than 1/4 second worth of data left, or if we're about
+    // to read more than what is available, treat that as an early warning
+    // for underrun and log some diagnostic data.
+    if (avail * 4 < m_writeRate || avail < maxSourceRead)
+      CLog::Log(LOGDEBUG,
+                "CFileCache::{} Reading {} bytes from source. maxWrite: {}, avail: {}, writeRate: {}",
+                __FUNCTION__, maxSourceRead, maxWrite, avail, m_writeRate);
+
     assert(buffer.size() >= maxSourceRead);
     ssize_t iRead = m_source.Read(buffer.data(), maxSourceRead);
     if (iRead <= 0)
