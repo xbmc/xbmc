@@ -225,26 +225,24 @@ COverlayImageDX::COverlayImageDX(CDVDOverlayImage* o)
 
   if(o->source_width && o->source_height)
   {
-    float center_x = (float)(0.5f * o->width + o->x) / o->source_width;
-    float center_y = (float)(0.5f * o->height + o->y) / o->source_height;
+    float center_x = (0.5f * o->width + o->x) / o->source_width;
+    float center_y = (0.5f * o->height + o->y) / o->source_height;
 
-    m_align = ALIGN_SCREEN_AR;
+    m_align = ALIGN_VIDEO;
     m_pos = POSITION_RELATIVE;
     m_x = center_x;
     m_y = center_y;
-    m_width = static_cast<float>(o->width);
-    m_height = static_cast<float>(o->height);
-    m_source_width = static_cast<float>(o->source_width);
-    m_source_height = static_cast<float>(o->source_height);
+    m_width = static_cast<float>(o->width) / o->source_width;
+    m_height = static_cast<float>(o->height) / o->source_height;
   }
   else
   {
     m_align  = ALIGN_VIDEO;
     m_pos    = POSITION_ABSOLUTE;
-    m_x      = (float)o->x;
-    m_y      = (float)o->y;
-    m_width  = (float)o->width;
-    m_height = (float)o->height;
+    m_x = static_cast<float>(o->x);
+    m_y = static_cast<float>(o->y);
+    m_width = static_cast<float>(o->width);
+    m_height = static_cast<float>(o->height);
   }
 }
 
