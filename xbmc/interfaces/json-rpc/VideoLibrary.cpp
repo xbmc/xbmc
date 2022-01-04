@@ -8,6 +8,7 @@
 
 #include "VideoLibrary.h"
 
+#include "PVROperations.h"
 #include "TextureDatabase.h"
 #include "Util.h"
 #include "messaging/ApplicationMessenger.h"
@@ -1041,6 +1042,7 @@ bool CVideoLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
   int movieID = (int)parameterObject["movieid"].asInteger(-1);
   int episodeID = (int)parameterObject["episodeid"].asInteger(-1);
   int musicVideoID = (int)parameterObject["musicvideoid"].asInteger(-1);
+  int recordingID = static_cast<int>(parameterObject["recordingid"].asInteger());
 
   bool success = false;
   CFileItemPtr fileItem(new CFileItem());
@@ -1076,6 +1078,17 @@ bool CVideoLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
     if (!details.IsEmpty())
     {
       list.Add(CFileItemPtr(new CFileItem(details)));
+      success = true;
+    }
+  }
+  if (recordingID > 0)
+  {
+    std::shared_ptr<CFileItem> recordingFileItem =
+        CPVROperations::GetRecordingFileItem(recordingID);
+
+    if (recordingFileItem)
+    {
+      list.Add(recordingFileItem);
       success = true;
     }
   }
