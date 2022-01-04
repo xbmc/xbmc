@@ -75,6 +75,7 @@ namespace XFILE
     unsigned int m_flags;
     CCriticalSection m_sync;
     ssize_t m_readSize;
+    ssize_t m_slowStartReadSize;
   };
 
 }

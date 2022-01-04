@@ -50,6 +50,11 @@ namespace
 // read 10MiB. This is obviously a simplified view of the network,
 // but for now it's better than nothing.
 constexpr int DEFAULT_READ_LIMIT = 10 * 1024 * 1024;
+
+// A smaller size to use in the beginning to get some bytes quickly.
+// Not really tuned except that in situations where streaming can
+// reasonably be expected to work, this should be pretty quick to fetch.
+constexpr ssize_t SLOW_START_READ_SIZE = 128 * 1024;
 }
 
 class CWriteRate
@@ -113,7 +118,8 @@ CFileCache::CFileCache(const unsigned int flags)
     m_bFilling(false),
     m_fileSize(0),
     m_flags(flags),
-    m_readSize(0)
+    m_readSize(0),
+    m_slowStartReadSize(SLOW_START_READ_SIZE)
 {
 }
 
@@ -338,6 +344,7 @@ void CFileCache::Process()
                     __FUNCTION__, m_sourcePath, m_seekPos);
           m_bFilling = true;
           m_writeRateLowSpeed = 0;
+          m_slowStartReadSize = SLOW_START_READ_SIZE;
         }
       }
 
@@ -365,11 +372,13 @@ void CFileCache::Process()
 
     const int64_t maxWrite = m_pCache->GetMaxWriteSize(buffer.size());
     // Make maxSourceRead a multiple of the chunk size, bounded by maxWrite
+    // and m_slowStartReadRate.
     // If we are falling behind we will use larger and larger reads which
     // over network file systems will hopefully increase throughput.
     // Special case: m_chunkSize == 1 (non-buffered file) fits
     // right into this calculation.
-    int64_t maxSourceRead = maxWrite;
+    int64_t maxSourceRead = std::min(maxWrite, m_slowStartReadSize);
+
     // Allow a non-m_chunkSize read if only the last chunk remains,
     // otherwise we won't read to the end.
     if (m_fileSize == 0 || m_fileSize - m_writePos >= m_chunkSize)
@@ -394,12 +403,19 @@ void CFileCache::Process()
     // If we have less than 1/4 second worth of data left, or if we're about
     // to read more than what is available, treat that as an early warning
     // for underrun and log some diagnostic data.
-    if (avail * 4 < m_writeRate || avail < maxSourceRead)
+    // Also log during slow start.
+    if (avail * 4 < m_writeRate || avail < maxSourceRead || m_slowStartReadSize < buffer.size())
       CLog::Log(LOGDEBUG,
-                "CFileCache::{} Reading {} bytes from source. maxWrite: {}, avail: {}, writeRate: {}",
-                __FUNCTION__, maxSourceRead, maxWrite, avail, m_writeRate);
+                "CFileCache::{} Reading {} bytes from source. maxWrite: {}, avail: {}, writeRate: {}, slowStartReadSize: {}",
+                __FUNCTION__, maxSourceRead, maxWrite, avail, m_writeRate, m_slowStartReadSize);
 
     assert(buffer.size() >= maxSourceRead);
+
+    // Update m_slowStartReadSize for the next round. Once it has reached
+    // buffer.size() it has served it's purpose.
+    if (static_cast<size_t>(m_slowStartReadSize) < buffer.size())
+	m_slowStartReadSize *= 2;
+
     ssize_t iRead = m_source.Read(buffer.data(), maxSourceRead);
     if (iRead <= 0)
     {
