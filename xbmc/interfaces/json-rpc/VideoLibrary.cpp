@@ -19,6 +19,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoDbUrl.h"
 #include "video/VideoLibraryQueue.h"
@@ -1406,4 +1407,36 @@ void CVideoLibrary::UpdateVideoTag(const CVariant& parameterObject,
     SetFromDBDateTime(parameterObject["dateadded"], details.m_dateAdded);
     updatedDetails.insert("dateadded");
   }
+}
+
+JSONRPC_STATUS CVideoLibrary::AddMovie(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  CVideoDatabase videodatabase;
+  if (!videodatabase.Open())
+    return InternalError;
+
+  CVideoInfoTag infos;
+  std::string filepath = parameterObject["filepath"].asString();
+  infos.SetPath(filepath);
+  std::string title = CUtil::GetTitleFromPath(filepath, false);
+  infos.SetTitle(title);
+
+  CLog::Log(LOGDEBUG, "VideoLibrary::AddVideo \"{}\" with title \"{}\"", filepath, title);
+
+  int libraryId = videodatabase.AddNewMovie(infos);
+  if (libraryId < 0)
+  {
+    return InternalError;
+  }
+
+  // Set filename as movie title to avoid an empty title
+  std::map<std::string, std::string> artwork;
+  int setDetailsResult = videodatabase.SetDetailsForMovie(infos, artwork, libraryId);
+  if (setDetailsResult < 0)
+  {
+    CLog::Log(LOGWARNING, "VideoLibrary::AddVideo Setting title for \"{}\" failed", filepath);
+  }
+
+  result["libraryid"] = libraryId;
+  return OK;
 }
