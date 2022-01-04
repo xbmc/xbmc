@@ -79,6 +79,8 @@ that each tag is lower case only. This is important, as xml tags are case-sensit
 | onfocus           | Specifies the action to perform when the button is focused. Should be a built in function. The action is performed after any focus animations have completed. See here for more information.
 | onunfocus         | Specifies the action to perform when the button loses focus. Should be a built in function.
 | wrapmultiline     | Allows wrapping on the label across multiple lines. Defaults to false.
+| onlongclick       | Specifies the action to perform when the button is long clicked. You may have more than one <b>`<onlongclick>`</b> tag, and they'll be executed in sequence.<p><hr>@skinning_v20 <b>onlongclick</b> New tag added<p>
+
 
 
 --------------------------------------------------------------------------------

@@ -72,6 +72,7 @@ important, as xml tags are case-sensitive.
 | onclick       | Specifies the action to perform when the button is pressed. Should be a built in function. [See here for more information](http://kodi.wiki/view/Built-in_functions_available_to_FTP,_Webserver,_skins,_keymap_and_to_python). You may have more than one <b>`<onclick>`</b> tag, and they'll be executed in sequence.
 | onfocus       | Specifies the action to perform when the button is focused. Should be a built in function. The action is performed after any focus animations have completed. [See here for more information](http://kodi.wiki/view/Built-in_functions_available_to_FTP,_Webserver,_skins,_keymap_and_to_python).
 | onunfocus     | Specifies the action to perform when the button loses focus. Should be a built in function.
+| onlongclick   | Specifies the action to perform when the button is long clicked. You may have more than one <b>`<onlongclick>`</b> tag, and they'll be executed in sequence.<p><hr>@skinning_v20 <b>onlongclick</b> New tag added<p>
 | wrapmultiline | Will wrap the label across multiple lines if the label exceeds the control width.
 
 

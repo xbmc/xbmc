@@ -127,8 +127,14 @@ bool CInputManager::ProcessMouse(int windowId)
   if (g_application.WakeUpScreenSaverAndDPMS())
     return true;
 
-  // Retrieve the corresponding action
   CKey key(mousekey, (unsigned int)0);
+
+  // if this is a long press try to propagate ACTION_LONGCLICK to GUI
+  // before translating the button press (GUI controls might implement <onlongclick>)
+  if (key.GetButtonCode() - KEY_MOUSE_LONG_CLICK <= MOUSE_MAX_BUTTON)
+    g_application.OnAction(ACTION_LONGCLICK);
+
+  // Retrieve the corresponding action
   CAction mouseaction = m_buttonTranslator->GetAction(windowId, key);
 
   // Deactivate mouse if non-mouse action
@@ -398,6 +404,14 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
         g_application.OnAction(
             CAction(ACTION_MOUSE_MOVE, 0, newEvent.touch.x, newEvent.touch.y, 0, 0));
       }
+
+      // propagate ACTION_LONGCLICK to GUI on touch longpress as GUI controls might implement
+      // <onlongclick>
+      if (newEvent.touch.action == ACTION_TOUCH_LONGPRESS)
+      {
+        g_application.OnAction(ACTION_LONGCLICK);
+      }
+
       int actionId = 0;
       std::string actionString;
       if (newEvent.touch.action == ACTION_GESTURE_BEGIN ||
@@ -492,8 +506,13 @@ bool CInputManager::OnKey(const CKey& key)
         if (key.GetButtonCode() != m_LastKey.GetButtonCode() &&
             (key.GetButtonCode() & CKey::MODIFIER_LONG))
         {
-          m_LastKey = key; // OnKey is reentrant; need to do this before entering
-          bHandled = HandleKey(key);
+          // OnKey is reentrant; need to do this before entering
+          m_LastKey = key;
+          // this is a long click, try to propagate the event before translation
+          // GUI controls might implement <onlongclick>
+          bHandled = g_application.OnAction(ACTION_LONGCLICK);
+          if (!bHandled)
+            bHandled = HandleKey(key);
         }
 
         m_LastKey = key;

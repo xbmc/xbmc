@@ -49,6 +49,16 @@ public:
   virtual void SetLabel(const std::string & aLabel);
   virtual void SetLabel2(const std::string & aLabel2);
   void SetClickActions(const CGUIAction& clickActions) { m_clickActions = clickActions; }
+
+  /*!
+   * @brief Set the actions to run once the item is longclicked
+   * @param longClickActions the actions to run when the item is longclicked
+   */
+  void SetLongClickActions(const CGUIAction& longClickActions)
+  {
+    m_longClickActions = longClickActions;
+  }
+
   const CGUIAction& GetClickActions() const { return m_clickActions; }
   void SetFocusActions(const CGUIAction& focusActions) { m_focusActions = focusActions; }
   void SetUnFocusActions(const CGUIAction& unfocusActions) { m_unfocusActions = unfocusActions; }
@@ -106,6 +116,10 @@ protected:
   CGUIAction m_clickActions;
   CGUIAction m_focusActions;
   CGUIAction m_unfocusActions;
+  /*!
+   * @brief actions to run once the control is long clicked
+   */
+  CGUIAction m_longClickActions;
 
   bool m_bSelected;
 };

@@ -208,6 +208,11 @@ bool CGUIButtonControl::OnAction(const CAction &action)
     OnClick();
     return true;
   }
+  else if (action.GetID() == ACTION_LONGCLICK)
+  {
+    m_longClickActions.ExecuteActions(GetID(), GetParentID());
+  }
+
   return CGUIControl::OnAction(action);
 }
 

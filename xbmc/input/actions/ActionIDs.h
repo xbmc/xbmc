@@ -438,6 +438,9 @@
 // Voice actions
 #define ACTION_VOICE_RECOGNIZE 300
 
+#define ACTION_LONGCLICK \
+  310 //!< triggered when a long click happens (e.g. in a keyboard key, touch longpress or a mouse button)
+
 // Touch actions
 #define ACTION_TOUCH_TAP 401 //!< touch actions
 #define ACTION_TOUCH_TAP_TEN 410 //!< touch actions

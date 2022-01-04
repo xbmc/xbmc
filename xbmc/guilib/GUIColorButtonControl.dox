@@ -78,6 +78,7 @@ important, as xml tags are case-sensitive.
 | colorheight   | Height in Pixels of the preview color box
 | texturecolormask | Specifies the image mask which should be displayed to see the color preview. [See here for additional information about textures](http://kodi.wiki/view/Texture_Attributes).
 | texturecolordisabledmask | Specifies the image mask which should be displayed when the control is disabled. [See here for additional information about textures](http://kodi.wiki/view/Texture_Attributes).
+| onlongclick   | Specifies the action to perform when the button is long clicked. You may have more than one <b>`<onlongclick>`</b> tag, and they'll be executed in sequence.<p><hr>@skinning_v20 <b>onlongclick</b> New tag added<p>
 
 
 --------------------------------------------------------------------------------

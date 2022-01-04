@@ -721,6 +721,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
   bool bHasPath = false;
   CGUIAction clickActions;
+  CGUIAction longClickActions;
   CGUIAction altclickActions;
   CGUIAction focusActions;
   CGUIAction unfocusActions;
@@ -868,6 +869,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     labelInfo.align |= XBFONT_TRUNCATED;
 
   GetActions(pControlNode, "onclick", clickActions);
+  GetActions(pControlNode, "onlongclick", longClickActions);
   GetActions(pControlNode, "ontextchange", textChangeActions);
   GetActions(pControlNode, "onfocus", focusActions);
   GetActions(pControlNode, "onunfocus", unfocusActions);
@@ -1153,6 +1155,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       GUIINFO::CGUIInfoLabel hint_text;
       GetInfoLabel(pControlNode, "hinttext", hint_text, parentID);
       static_cast<CGUIEditControl*>(control)->SetHint(hint_text);
+      static_cast<CGUIEditControl*>(control)->SetLongClickActions(longClickActions);
 
       if (bPassword)
         static_cast<CGUIEditControl*>(control)->SetInputType(CGUIEditControl::INPUT_TYPE_PASSWORD, 0);
@@ -1217,6 +1220,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       bcontrol->SetLabel2(strLabel2);
       bcontrol->SetMinWidth(minWidth);
       bcontrol->SetClickActions(clickActions);
+      bcontrol->SetLongClickActions(longClickActions);
       bcontrol->SetFocusActions(focusActions);
       bcontrol->SetUnFocusActions(unfocusActions);
     }
@@ -1234,6 +1238,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       tcontrol->SetAltLabel(altLabel);
       tcontrol->SetMinWidth(minWidth);
       tcontrol->SetClickActions(clickActions);
+      tcontrol->SetLongClickActions(longClickActions);
       tcontrol->SetAltClickActions(altclickActions);
       tcontrol->SetFocusActions(focusActions);
       tcontrol->SetUnFocusActions(unfocusActions);
@@ -1254,6 +1259,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       rcontrol->SetRadioDimensions(radioPosX, radioPosY, radioWidth, radioHeight);
       rcontrol->SetToggleSelect(toggleSelect);
       rcontrol->SetClickActions(clickActions);
+      rcontrol->SetLongClickActions(longClickActions);
       rcontrol->SetFocusActions(focusActions);
       rcontrol->SetUnFocusActions(unfocusActions);
     }
@@ -1506,6 +1512,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     rcontrol->SetClickActions(clickActions);
     rcontrol->SetFocusActions(focusActions);
     rcontrol->SetUnFocusActions(unfocusActions);
+    rcontrol->SetLongClickActions(longClickActions);
   }
   break;
   default:

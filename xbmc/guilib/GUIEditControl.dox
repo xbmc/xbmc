@@ -47,6 +47,7 @@ important, as `xml` tags are case-sensitive.
 | font          | Specifies the font to use from the **font.xml** file.
 | textcolor     | Specifies the color the text should be, in hex **AARRGGBB** format, or a name from the [colour theme](http://kodi.wiki/view/Colour_Themes).
 | textwidth     | Will truncate any text that's too long.
+| onlongclick   | Specifies the action to perform when the button is long clicked. You may have more than one <b>`<onlongclick>`</b> tag, and they'll be executed in sequence.<p><hr>@skinning_v20 <b>onlongclick</b> New tag added<p>
 
 
 --------------------------------------------------------------------------------
