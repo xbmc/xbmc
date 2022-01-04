@@ -54,6 +54,8 @@ CGUIViewStateWindowPVRRecordings::CGUIViewStateWindowPVRRecordings(const int win
     // "Size" : Filename, Size | Foldername, Size
     AddSortMethod(SortBySize, 553, LABEL_MASKS("%L", "%I", "%L", "%I"));
   }
+  // "Episode" : Series title/Season num/episode num/episode title, DateTime | Foldername, empty
+  AddSortMethod(SortByEpisodeNumber, 20359, LABEL_MASKS("%Z - %H. %T", "%d", "%L", ""));
 
   SetSortMethod(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()
                 ->m_PVRDefaultSortOrder);
