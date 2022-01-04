@@ -180,6 +180,7 @@
 							<param name="texture" value="osd/fullscreen/buttons/information.png"/>
 						</include>
 						<onclick>Info</onclick>
+						<onlongclick>PlayerProcessInfo</onlongclick>
 					</control>
 					<control type="radiobutton" id="70044">
 						<include content="OSDButton">

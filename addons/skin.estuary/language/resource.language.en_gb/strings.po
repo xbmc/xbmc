@@ -271,7 +271,13 @@ msgctxt "#31048"
 msgid "Available"
 msgstr ""
 
-#empty strings from id 31049 to 31051
+#empty string with id 31049
+
+#: /xml/Variables.xml
+#: Help text for info button on video OSD
+msgctxt "#31050"
+msgid "Press [B]info[/B] to display plot, or long press [B]info[/B] to display player info"
+msgstr ""
 
 #: /xml/Includes.xml
 msgctxt "#31052"
