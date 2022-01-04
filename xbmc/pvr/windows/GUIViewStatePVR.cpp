@@ -50,7 +50,12 @@ CGUIViewStateWindowPVRRecordings::CGUIViewStateWindowPVRRecordings(const int win
   AddSortMethod(SortByTime,  180, LABEL_MASKS("%L", "%D", "%L", ""));   // "Duration" : Filename, Duration | Foldername, empty
   AddSortMethod(SortByFile,  561, LABEL_MASKS("%L", "%d", "%L", ""));   // "File"     : Filename, DateTime | Foldername, empty
   if (CServiceBroker::GetPVRManager().Clients()->AnyClientSupportingRecordingsSize())
-    AddSortMethod(SortBySize,  553, LABEL_MASKS("%L", "%I", "%L", "%I")); // "Size"   : Filename, DateTime | Foldername, empty
+  {
+    // "Size" : Filename, Size | Foldername, Size
+    AddSortMethod(SortBySize, 553, LABEL_MASKS("%L", "%I", "%L", "%I"));
+  }
+  // "Episode" : Series title/Season num/episode num/episode title, DateTime | Foldername, empty
+  AddSortMethod(SortByEpisodeNumber, 20359, LABEL_MASKS("%Z - %H. %T", "%d", "%L", ""));
 
   SetSortMethod(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()
                 ->m_PVRDefaultSortOrder);
