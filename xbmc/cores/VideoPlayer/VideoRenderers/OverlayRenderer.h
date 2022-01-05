@@ -76,7 +76,6 @@ namespace OVERLAY {
     enum EAlign
     {
       ALIGN_SCREEN,
-      ALIGN_SCREEN_AR,
       ALIGN_VIDEO,
       ALIGN_SUBTITLE
     } m_align;
@@ -92,8 +91,6 @@ namespace OVERLAY {
     float m_y;
     float m_width;
     float m_height;
-    float m_source_width; // Video source width resolution used to calculate aspect ratio
-    float m_source_height; // Video source height resolution used to calculate aspect ratio
   };
 
   class CRenderer : public Observer
