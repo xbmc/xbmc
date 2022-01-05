@@ -407,6 +407,8 @@ void CFileItemHandler::HandleFileItem(const char* ID,
       {
         if (item->HasPVRChannelInfoTag())
           object["type"] = "channel";
+        else if (item->HasPVRRecordingInfoTag())
+          object["type"] = "recording";
         else if (item->HasMusicInfoTag())
         {
           std::string type = item->GetMusicInfoTag()->GetType();
