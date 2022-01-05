@@ -101,6 +101,18 @@
 					<texturebg colordiffuse="002C2C2C">white.png</texturebg>
 				</control>
 				<control type="ranges">
+					<description>EdlEdits</description>
+					<posx>0</posx>
+					<posy>46</posy>
+					<width>552</width>
+					<height>10</height>
+					<info>Player.Editlist</info>
+					<texturebg border="3" colordiffuse="00FFFFFF">white.png</texturebg>
+					<lefttexture>white.png</lefttexture>
+					<midtexture colordiffuse="FFFF0000">white.png</midtexture>
+					<righttexture>white.png</righttexture>
+				</control>
+				<control type="ranges">
 					<description>Cuts</description>
 					<posx>0</posx>
 					<posy>50</posy>
