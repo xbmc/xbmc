@@ -1503,7 +1503,7 @@
     "extends": [ "Video.Details.File", "Audio.Details.Media" ],
     "properties": {
       "id": { "$ref": "Library.Id" },
-      "type": { "type": "string", "enum": [ "unknown", "movie", "episode", "musicvideo", "song", "picture", "channel" ] },
+      "type": { "type": "string", "enum": [ "unknown", "movie", "episode", "musicvideo", "song", "picture", "channel", "recording" ] },
       "albumartist": { "$ref": "Array.String" },
       "album": { "type": "string" },
       "track": { "type": "integer" },
