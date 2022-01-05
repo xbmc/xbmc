@@ -1627,7 +1627,7 @@
                 "specialsortseason", "specialsortepisode", "sortartist", "musicbrainzreleasegroupid",
                 "isboxset", "totaldiscs", "disctitle", "releasedate", "originaldate", "bpm",
                 "bitrate", "samplerate", "channels", "datemodified", "datenew", "customproperties",
-                "albumduration"]
+                "albumduration", "userrating"]
     }
   },
   "List.Item.File": {
