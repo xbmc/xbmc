@@ -752,6 +752,23 @@ const infomap integer_bools[] =  {{ "isequal",          INTEGER_IS_EQUAL },
 ///     @skinning_v20 **[New Infolabel]** \link Player_Cuts `Player.Cuts`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`Player.SceneMarkers`</b>,
+///                  \anchor Player_SceneMarkers
+///                  _string_,
+///     @return The EDL scene markers of the currently playing item as csv in the format start1\,end1\,start2\,end2\,...
+///     Tokens must have values in the range from 0.0 to 100.0. end token must be less or equal than start token.
+///     <p><hr>
+///     @skinning_v20 **[New Infolabel]** \link Player_SceneMarkers `Player.SceneMarkers`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Player.HasSceneMarkers`</b>,
+///                  \anchor Player_HasSceneMarkers
+///                  _boolean_,
+///     @return **True** if the item being played has scene markers\, **False** otherwise
+///     <p><hr>
+///     @skinning_v20 **[New Infolabel]** \link Player_HasSceneMarkers `Player.HasSceneMarkers`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`Player.Chapters`</b>,
 ///                  \anchor Player_Chapters
 ///                  _string_,
@@ -815,6 +832,8 @@ const infomap player_labels[] = {{"hasmedia", PLAYER_HAS_MEDIA},
                                  {"cutlist", PLAYER_CUTLIST},
                                  {"editlist", PLAYER_EDITLIST},
                                  {"cuts", PLAYER_CUTS},
+                                 {"scenemarkers", PLAYER_SCENE_MARKERS},
+                                 {"hasscenemarkers", PLAYER_HAS_SCENE_MARKERS},
                                  {"chapters", PLAYER_CHAPTERS}};
 
 /// \page modules__infolabels_boolean_conditions
