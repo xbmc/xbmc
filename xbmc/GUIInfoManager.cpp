@@ -481,7 +481,7 @@ const infomap integer_bools[] =  {{ "isequal",          INTEGER_IS_EQUAL },
 ///                  \anchor Player_Position_Title
 ///                  _string_,
 ///     @return The title of the audio or video which has an offset `number` with respect to the start of the playlist.
-///     <p>><hr>
+///     <p><hr>
 ///     @skinning_v19 **[New Infolabel]** \link Player_Position_Title `Player.position(number).Title`\endlink
 ///     <p>
 ///   }
@@ -581,7 +581,7 @@ const infomap integer_bools[] =  {{ "isequal",          INTEGER_IS_EQUAL },
 ///                  \anchor Player_Position_Folderpath
 ///                  _string_,
 ///     @return The full path of the audio or video file which has an offset `number` with respect to the start of the playlist.
-///     <p>><hr>
+///     <p><hr>
 ///     @skinning_v19 **[New Infolabel]** \link Player_Position_Folderpath `Player.position(number).Folderpath`\endlink
 ///     <p>
 ///   }
@@ -604,7 +604,7 @@ const infomap integer_bools[] =  {{ "isequal",          INTEGER_IS_EQUAL },
 ///                  \anchor Player_Position_FilenameAndPath
 ///                  _string_,
 ///     @return The full path with filename of the audio or video file which has an offset `number` with respect to the start of the playlist.
-///     <p>><hr>
+///     <p><hr>
 ///     @skinning_v19 **[New Infolabel]** \link Player_Position_FilenameAndPath `Player.position(number).FilenameAndPath`\endlink
 ///     <p>
 ///   }
@@ -628,7 +628,7 @@ const infomap integer_bools[] =  {{ "isequal",          INTEGER_IS_EQUAL },
 ///                  \anchor Player_Position_Filename
 ///                  _string_,
 ///     @return The filename of the audio or video file which has an offset `number` with respect to the start of the playlist.
-///     <p>><hr>
+///     <p><hr>
 ///     @skinning_v19 **[New Infolabel]** \link Player_Position_Filename `Player.position(number).Filename`\endlink
 ///     <p>
 ///   }
@@ -2879,7 +2879,7 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///                  _string_,
 ///     @return The title of the video which has an offset `number` with respect to the start of the playlist.
 ///     @note If it's in the database it will return the database title\, else the filename.
-///     <p>><hr>
+///     <p><hr>
 ///     @skinning_v19 **[New Infolabel]** \link VideoPlayer_Position_Title `VideoPlayer.position(number).Title`\endlink
 ///     <p>
 ///   }
