@@ -51,7 +51,7 @@
 							<param name="texture" value="osd/fullscreen/buttons/previous.png"/>
 						</include>
 						<onclick>PlayerControl(Previous)</onclick>
-						<visible>Player.ChapterCount | Integer.IsGreater(Playlist.Length(video),1) | [Player.SeekEnabled + VideoPlayer.Content(livetv)]</visible>
+						<visible>Player.HasSceneMarkers | Player.ChapterCount | Integer.IsGreater(Playlist.Length(video),1) | [Player.SeekEnabled + VideoPlayer.Content(livetv)]</visible>
 					</control>
 					<control type="radiobutton" id="601">
 						<include content="OSDButton">
@@ -106,7 +106,7 @@
 							<param name="texture" value="osd/fullscreen/buttons/next.png"/>
 						</include>
 						<onclick>PlayerControl(Next)</onclick>
-						<visible>Player.ChapterCount | Integer.IsGreater(Playlist.Length(video),1) | PVR.IsTimeShift</visible>
+						<visible>Player.HasSceneMarkers | Player.ChapterCount | Integer.IsGreater(Playlist.Length(video),1) | PVR.IsTimeShift</visible>
 					</control>
 					<control type="radiobutton" id="608">
 						<textureradioonfocus colordiffuse="white">osd/fullscreen/buttons/record-white.png</textureradioonfocus>

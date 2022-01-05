@@ -777,6 +777,16 @@ const std::vector<int64_t> CEdl::GetCutMarkers() const
   return cutList;
 }
 
+const std::vector<int64_t> CEdl::GetSceneMarkers() const
+{
+  std::vector<int64_t> sceneMarkers;
+  for (const int& scene : m_vecSceneMarkers)
+  {
+    sceneMarkers.emplace_back(GetTimeWithoutCuts(scene));
+  }
+  return sceneMarkers;
+}
+
 int CEdl::GetTimeWithoutCuts(int seek) const
 {
   if (!HasCuts())

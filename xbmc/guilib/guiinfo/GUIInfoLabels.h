@@ -75,6 +75,8 @@
 #define PLAYER_CHAPTERS              68
 #define PLAYER_EDITLIST 69
 #define PLAYER_CUTS 70
+#define PLAYER_SCENE_MARKERS 71
+#define PLAYER_HAS_SCENE_MARKERS 72
 // Keep player infolabels that work with offset and position together
 #define PLAYER_PATH                  81
 #define PLAYER_FILEPATH              82

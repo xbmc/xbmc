@@ -281,6 +281,18 @@ const std::vector<int64_t>& CDataCacheCore::GetCuts() const
   return m_contentInfo.GetCuts();
 }
 
+void CDataCacheCore::SetSceneMarkers(const std::vector<int64_t>& sceneMarkers)
+{
+  CSingleLock lock(m_contentSection);
+  m_contentInfo.SetSceneMarkers(sceneMarkers);
+}
+
+const std::vector<int64_t>& CDataCacheCore::GetSceneMarkers() const
+{
+  CSingleLock lock(m_contentSection);
+  return m_contentInfo.GetSceneMarkers();
+}
+
 void CDataCacheCore::SetChapters(const std::vector<std::pair<std::string, int64_t>>& chapters)
 {
   CSingleLock lock(m_contentSection);

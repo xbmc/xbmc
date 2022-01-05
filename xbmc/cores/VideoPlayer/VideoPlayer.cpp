@@ -722,6 +722,7 @@ bool CVideoPlayer::CloseFile(bool reopen)
   m_Edl.Clear();
   CServiceBroker::GetDataCacheCore().SetEditList(m_Edl.GetEditList());
   CServiceBroker::GetDataCacheCore().SetCuts(m_Edl.GetCutMarkers());
+  CServiceBroker::GetDataCacheCore().SetSceneMarkers(m_Edl.GetSceneMarkers());
 
   m_HasVideo = false;
   m_HasAudio = false;
@@ -3699,6 +3700,7 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
     m_Edl.ReadEditDecisionLists(m_item, fFramesPerSecond);
     CServiceBroker::GetDataCacheCore().SetEditList(m_Edl.GetEditList());
     CServiceBroker::GetDataCacheCore().SetCuts(m_Edl.GetCutMarkers());
+    CServiceBroker::GetDataCacheCore().SetSceneMarkers(m_Edl.GetSceneMarkers());
 
     static_cast<IDVDStreamPlayerVideo*>(player)->SetSpeed(m_streamPlayerSpeed);
     m_CurrentVideo.syncState = IDVDStreamPlayer::SYNC_STARTING;

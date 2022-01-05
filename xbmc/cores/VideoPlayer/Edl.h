@@ -93,6 +93,15 @@ public:
   const std::vector<int64_t> GetCutMarkers() const;
 
   /*!
+   * @brief Get the list of EDL scene markers.
+   * @return The list of EDL scene markers or an empty vector if no EDL scene exist.
+   * The returned values are accurate with respect to cut durations. I.e. if the file
+   * has multiple cuts, the positions of scene markers are automatically corrected by
+   * substracting the surpassed cut durations until the scene marker point.
+  */
+  const std::vector<int64_t> GetSceneMarkers() const;
+
+  /*!
    * @brief Check if for the provided seek time is contained within an EDL
    * edit and fill pEdit with the respective edit struct.
    * @note seek time refers to the time in the original file timeline (i.e. without
