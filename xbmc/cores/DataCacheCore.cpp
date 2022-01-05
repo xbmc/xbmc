@@ -188,6 +188,18 @@ float CDataCacheCore::GetVideoDAR()
   return m_playerVideoInfo.dar;
 }
 
+void CDataCacheCore::SetVideoInterlaced(bool isInterlaced)
+{
+  CSingleLock lock(m_videoPlayerSection);
+  m_playerVideoInfo.m_isInterlaced = isInterlaced;
+}
+
+bool CDataCacheCore::IsVideoInterlaced()
+{
+  CSingleLock lock(m_videoPlayerSection);
+  return m_playerVideoInfo.m_isInterlaced;
+}
+
 // player audio info
 void CDataCacheCore::SetAudioDecoderName(std::string name)
 {

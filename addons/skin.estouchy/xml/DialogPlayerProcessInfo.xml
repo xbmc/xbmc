@@ -240,7 +240,7 @@
 					<width>1000</width>
 					<height>30</height>
 					<aligny>bottom</aligny>
-					<label>$INFO[Player.Process(videowidth),[COLOR blue]$LOCALIZE[38031]:[/COLOR] ,x]$INFO[Player.Process(videoheight),, px]$INFO[Player.Process(videodar),$COMMA , AR]$INFO[Player.Process(videofps),$COMMA , FPS]</label>
+					<label>$INFO[Player.Process(videowidth),[COLOR blue]$LOCALIZE[38031]:[/COLOR] ,x]$INFO[Player.Process(videoheight)]$INFO[Player.Process(videoscantype)]$INFO[Player.Process(videodar),$COMMA , AR]$INFO[Player.Process(videofps),$COMMA , FPS]</label>
 					<font>font25</font>
 					<shadowcolor>black</shadowcolor>
 					<visible>Player.HasVideo</visible>
