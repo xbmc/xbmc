@@ -386,9 +386,10 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
   EnableControl(m_iControl);
 }
 
-void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
+bool CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
 {
   RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(m_Res[m_iCurRes]);
+  RESOLUTION_INFO infoPrev = info;
   std::string labelDescription;
   std::string labelValue;
 
@@ -507,6 +508,13 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
                                   info.iScreenHeight, g_localizeStrings.Get(242));
   }
   SET_CONTROL_LABEL(CONTROL_LABEL_RES, resInfo);
+
+  // Detect overscan changes
+  bool overscanChanged = info.Overscan.bottom != infoPrev.Overscan.bottom ||
+                         info.Overscan.top != infoPrev.Overscan.top ||
+                         info.Overscan.left != infoPrev.Overscan.left ||
+                         info.Overscan.right != infoPrev.Overscan.right;
+  return overscanChanged;
 }
 
 void CGUIWindowSettingsScreenCalibration::FrameMove()
@@ -514,7 +522,12 @@ void CGUIWindowSettingsScreenCalibration::FrameMove()
   m_iControl = GetFocusedControlID();
   if (m_iControl >= 0)
   {
-    UpdateFromControl(m_iControl);
+    if (UpdateFromControl(m_iControl))
+    {
+      // Send GUI_MSG_WINDOW_RESIZE to rescale font size/aspect for label controls
+      CServiceBroker::GetGUI()->GetWindowManager().SendMessage(
+          GUI_MSG_NOTIFY_ALL, WINDOW_SCREEN_CALIBRATION, 0, GUI_MSG_WINDOW_RESIZE);
+    }
   }
   else
   {

@@ -32,7 +32,7 @@ protected:
   void NextControl();
   void ResetControls();
   void EnableControl(int iControl);
-  void UpdateFromControl(int iControl);
+  bool UpdateFromControl(int iControl);
   void ResetCalibration();
   unsigned int m_iCurRes;
   std::vector<RESOLUTION> m_Res;

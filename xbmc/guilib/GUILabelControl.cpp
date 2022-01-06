@@ -203,7 +203,13 @@ bool CGUILabelControl::OnMessage(CGUIMessage& message)
     }
   }
   if (message.GetMessage() == GUI_MSG_REFRESH_TIMER && IsVisible())
+  {
     UpdateInfo();
+  }
+  else if (message.GetMessage() == GUI_MSG_WINDOW_RESIZE && IsVisible())
+  {
+    m_label.SetInvalid();
+  }
 
   return CGUIControl::OnMessage(message);
 }
