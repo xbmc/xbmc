@@ -18,13 +18,13 @@
 
 #include <algorithm>
 #include <cassert>
+#include <chrono>
 #include <cstddef>
 #include <cstring>
 #include <memory>
 #include <stdint.h>
 #include <vector>
 
-constexpr unsigned int FONT_CACHE_TIME_LIMIT = 1000;
 constexpr float FONT_CACHE_DIST_LIMIT = 0.01f;
 
 class CGraphicContext;
@@ -77,12 +77,12 @@ struct CGUIFontCacheEntry
   const CGUIFontCache<Position, Value>& m_cache;
   CGUIFontCacheKey<Position> m_key;
   TransformMatrix m_matrix;
-  unsigned int m_lastUsedMillis;
+  std::chrono::steady_clock::time_point m_lastUsed;
   Value m_value;
 
   CGUIFontCacheEntry(const CGUIFontCache<Position, Value>& cache,
                      const CGUIFontCacheKey<Position>& key,
-                     unsigned int nowMillis)
+                     std::chrono::steady_clock::time_point now)
     : m_cache(cache),
       m_key(key.m_pos,
             *new std::vector<UTILS::COLOR::Color>,
@@ -93,7 +93,7 @@ struct CGUIFontCacheEntry
             m_matrix,
             key.m_scaleX,
             key.m_scaleY),
-      m_lastUsedMillis(nowMillis)
+      m_lastUsed(now)
   {
     m_key.m_colors.assign(key.m_colors.begin(), key.m_colors.end());
     m_key.m_text.assign(key.m_text.begin(), key.m_text.end());
@@ -102,7 +102,7 @@ struct CGUIFontCacheEntry
 
   ~CGUIFontCacheEntry();
 
-  void Assign(const CGUIFontCacheKey<Position>& key, unsigned int nowMillis);
+  void Assign(const CGUIFontCacheKey<Position>& key, std::chrono::steady_clock::time_point now);
 };
 
 template<class Position>
@@ -143,7 +143,7 @@ struct CGUIFontCacheKeysMatch
 template<class Position, class Value>
 class CGUIFontCache
 {
-  CGUIFontCacheImpl<Position, Value>* m_impl;
+  std::unique_ptr<CGUIFontCacheImpl<Position, Value>> m_impl;
 
   CGUIFontCache(const CGUIFontCache<Position, Value>&) = delete;
   const CGUIFontCache<Position, Value>& operator=(const CGUIFontCache<Position, Value>&) = delete;
@@ -162,7 +162,7 @@ public:
                 uint32_t alignment,
                 float maxPixelWidth,
                 bool scrolling,
-                unsigned int nowMillis,
+                std::chrono::steady_clock::time_point now,
                 bool& dirtyCache);
   void Flush();
 };
