@@ -1165,11 +1165,11 @@ void CRenderManager::PrepareNextRender()
     m_dvdClock.SetVsyncAdjust(0);
   }
 
-  CLog::LogF(LOGDEBUG, LOGAVTIMING,
-             "frameOnScreen: {:f} renderPts: {:f} nextFramePts: {:f} -> diff: {:f}  render: {} "
-             "forceNext: {}",
-             frameOnScreen, renderPts, nextFramePts, (renderPts - nextFramePts),
-             renderPts >= nextFramePts, m_forceNext);
+  CLog::LogFC(LOGDEBUG, LOGAVTIMING,
+              "frameOnScreen: {:f} renderPts: {:f} nextFramePts: {:f} -> diff: {:f}  render: {} "
+              "forceNext: {}",
+              frameOnScreen, renderPts, nextFramePts, (renderPts - nextFramePts),
+              renderPts >= nextFramePts, m_forceNext);
 
   bool combined = false;
   if (m_presentsourcePast >= 0)
