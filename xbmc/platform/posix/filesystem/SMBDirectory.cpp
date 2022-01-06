@@ -272,7 +272,7 @@ int CSMBDirectory::OpenDir(const CURL& url, std::string& strAuth)
     s.erase(len - 1, 1);
   }
 
-  CLog::LogF(LOGDEBUG, LOGSAMBA, "Using authentication url {}", CURL::GetRedacted(s));
+  CLog::LogFC(LOGDEBUG, LOGSAMBA, "Using authentication url {}", CURL::GetRedacted(s));
 
   { CSingleLock lock(smb);
     if (!smb.IsSmbValid())

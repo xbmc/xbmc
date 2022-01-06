@@ -45,7 +45,7 @@ const char *WASAPIErrToStr(HRESULT err)
     ERRTOSTR(E_OUTOFMEMORY);
   default: break;
   }
-  return NULL;
+  return "Undefined";
 }
 
   void CAESinkFactoryWin::AEChannelsFromSpeakerMask(CAEChannelInfo& channelLayout, DWORD speakers)

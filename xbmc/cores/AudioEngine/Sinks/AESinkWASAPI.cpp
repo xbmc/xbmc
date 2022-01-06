@@ -747,9 +747,9 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
   else if (format.m_dataFormat == AE_FMT_RAW) //No sense in trying other formats for passthrough.
     return false;
 
-  CLog::LogF(LOGDEBUG, LOGAUDIO,
-             "IsFormatSupported failed ({}) - trying to find a compatible format",
-             WASAPIErrToStr(hr));
+  CLog::LogFC(LOGDEBUG, LOGAUDIO,
+              "IsFormatSupported failed ({}) - trying to find a compatible format",
+              WASAPIErrToStr(hr));
 
   requestedChannels = wfxex.Format.nChannels;
   desired_map = CAESinkFactoryWin::SpeakerMaskFromAEChannels(format.m_channelLayout);
