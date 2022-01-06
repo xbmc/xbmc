@@ -84,6 +84,11 @@ std::vector<std::shared_ptr<CPVRProvider>> CPVRProvidersContainer::GetProvidersL
   return m_providers;
 }
 
+std::size_t CPVRProvidersContainer::GetNumProviders() const
+{
+  CSingleLock lock(m_critSection);
+  return m_providers.size();
+}
 
 bool CPVRProviders::Load()
 {
