@@ -43,6 +43,12 @@ public:
      */
   std::vector<std::shared_ptr<CPVRProvider>> GetProvidersList() const;
 
+  /*!
+     * Get the number of providers in this container
+     * @return The total number of providers
+     */
+  std::size_t GetNumProviders() const;
+
 protected:
   void InsertEntry(const std::shared_ptr<CPVRProvider>& newProvider, ProviderUpdateMode updateMode);
 

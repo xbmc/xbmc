@@ -30,6 +30,7 @@
 #include "pvr/epg/EpgSearchFilter.h"
 #include "pvr/guilib/PVRGUIActions.h"
 #include "pvr/providers/PVRProvider.h"
+#include "pvr/providers/PVRProviders.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
@@ -478,7 +479,11 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
         break;
       }
       case LISTITEM_ICON:
-        if (!recording->Channel())
+        if (recording->ClientIconPath().empty() && recording->ClientThumbnailPath().empty() &&
+            // Only use a fallback if there is more than a single provider available
+            // Note: an add-on itself is a provider, hence we don't use > 0
+            CServiceBroker::GetPVRManager().Providers()->GetNumProviders() > 1 &&
+            !recording->Channel())
         {
           auto provider = recording->GetProvider();
           if (!provider->GetIconPath().empty())
