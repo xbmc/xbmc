@@ -122,6 +122,15 @@
 					<righttexture>red.png</righttexture>
 				</control>
 				<control type="ranges">
+					<description>SceneMarkers</description>
+					<posx>0</posx>
+					<posy>50</posy>
+					<width>552</width>
+					<height>8</height>
+					<info>Player.SceneMarkers</info>
+					<righttexture>white.png</righttexture>
+				</control>
+				<control type="ranges">
 					<description>Chapters</description>
 					<posx>0</posx>
 					<posy>50</posy>

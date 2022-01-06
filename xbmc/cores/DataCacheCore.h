@@ -94,6 +94,18 @@ public:
    */
   const std::vector<int64_t>& GetCuts() const;
 
+  /*!
+   * @brief Set the list of scene markers in cache.
+   * @return The list of scene markers or an empty list if no scene markers exist
+   */
+  void SetSceneMarkers(const std::vector<int64_t>& sceneMarkers);
+
+  /*!
+   * @brief Get the list of scene markers markers from cache.
+   * @return The list of scene markers or an empty vector if no scene exist.
+   */
+  const std::vector<int64_t>& GetSceneMarkers() const;
+
   void SetChapters(const std::vector<std::pair<std::string, int64_t>>& chapters);
 
   /*!
@@ -219,6 +231,21 @@ protected:
     const std::vector<int64_t>& GetCuts() const { return m_cuts; }
 
     /*!
+      * @brief Save the list of scene markers in cache.
+      * @param sceneMarkers the list of scene markers to store in cache
+      */
+    void SetSceneMarkers(const std::vector<int64_t>& sceneMarkers)
+    {
+      m_sceneMarkers = sceneMarkers;
+    }
+
+    /*!
+      * @brief Get the list of scene markers in cache.
+      * @return the list of scene markers in cache
+      */
+    const std::vector<int64_t>& GetSceneMarkers() const { return m_sceneMarkers; }
+
+    /*!
       * @brief Save the chapter list in cache.
       * @param chapters the list of chapters to store in cache
       */
@@ -241,6 +268,7 @@ protected:
       m_editList.clear();
       m_chapters.clear();
       m_cuts.clear();
+      m_sceneMarkers.clear();
     }
 
   private:
@@ -250,6 +278,8 @@ protected:
     std::vector<std::pair<std::string, int64_t>> m_chapters;
     /*!< position for EDL cuts */
     std::vector<int64_t> m_cuts;
+    /*!< position for EDL scene markers */
+    std::vector<int64_t> m_sceneMarkers;
   } m_contentInfo;
 
   CCriticalSection m_renderSection;
