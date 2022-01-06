@@ -224,6 +224,9 @@ void CProcessInfo::SetVideoInterlaced(bool interlaced)
   CSingleLock lock(m_videoCodecSection);
 
   m_videoIsInterlaced = interlaced;
+
+  if (m_dataCache)
+    m_dataCache->SetVideoInterlaced(interlaced);
 }
 
 bool CProcessInfo::GetVideoInterlaced()

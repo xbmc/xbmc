@@ -981,6 +981,14 @@ const infomap player_times[] =   {{ "seektime",         PLAYER_SEEKTIME },
 ///     @skinning_v17 **[New Infolabel]** \link Player_Process_videoheight `Player.Process(videoheight)`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`Player.Process(videoscantype)`</b>,
+///                  \anchor Player_Process_videoscantype
+///                  _string_,
+///     @return The scan type identifier of the currently playing video **p** (for progressive) or **i** (for interlaced).
+///     <p><hr>
+///     @skinning_v20 **[New Infolabel]** \link Player_Process_videoscantype `Player.Process(videoscantype)`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`Player.Process(videofps)`</b>,
 ///                  \anchor Player_Process_videofps
 ///                  _string_,
@@ -1033,21 +1041,19 @@ const infomap player_times[] =   {{ "seektime",         PLAYER_SEEKTIME },
 ///
 /// -----------------------------------------------------------------------------
 
-const infomap player_process[] =
-{
-  { "videodecoder", PLAYER_PROCESS_VIDEODECODER },
-  { "deintmethod", PLAYER_PROCESS_DEINTMETHOD },
-  { "pixformat", PLAYER_PROCESS_PIXELFORMAT },
-  { "videowidth", PLAYER_PROCESS_VIDEOWIDTH },
-  { "videoheight", PLAYER_PROCESS_VIDEOHEIGHT },
-  { "videofps", PLAYER_PROCESS_VIDEOFPS },
-  { "videodar", PLAYER_PROCESS_VIDEODAR },
-  { "videohwdecoder", PLAYER_PROCESS_VIDEOHWDECODER },
-  { "audiodecoder", PLAYER_PROCESS_AUDIODECODER },
-  { "audiochannels", PLAYER_PROCESS_AUDIOCHANNELS },
-  { "audiosamplerate", PLAYER_PROCESS_AUDIOSAMPLERATE },
-  { "audiobitspersample", PLAYER_PROCESS_AUDIOBITSPERSAMPLE }
-};
+const infomap player_process[] = {{"videodecoder", PLAYER_PROCESS_VIDEODECODER},
+                                  {"deintmethod", PLAYER_PROCESS_DEINTMETHOD},
+                                  {"pixformat", PLAYER_PROCESS_PIXELFORMAT},
+                                  {"videowidth", PLAYER_PROCESS_VIDEOWIDTH},
+                                  {"videoheight", PLAYER_PROCESS_VIDEOHEIGHT},
+                                  {"videofps", PLAYER_PROCESS_VIDEOFPS},
+                                  {"videodar", PLAYER_PROCESS_VIDEODAR},
+                                  {"videohwdecoder", PLAYER_PROCESS_VIDEOHWDECODER},
+                                  {"audiodecoder", PLAYER_PROCESS_AUDIODECODER},
+                                  {"audiochannels", PLAYER_PROCESS_AUDIOCHANNELS},
+                                  {"audiosamplerate", PLAYER_PROCESS_AUDIOSAMPLERATE},
+                                  {"audiobitspersample", PLAYER_PROCESS_AUDIOBITSPERSAMPLE},
+                                  {"videoscantype", PLAYER_PROCESS_VIDEOSCANTYPE}};
 
 /// \page modules__infolabels_boolean_conditions
 /// \subsection modules__infolabels_boolean_conditions_Weather Weather

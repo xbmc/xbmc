@@ -46,6 +46,18 @@ public:
   void SetVideoDAR(float dar);
   float GetVideoDAR();
 
+  /*!
+   * @brief Set if the video is interlaced in cache.
+   * @param isInterlaced Set true when the video is interlaced
+   */
+  void SetVideoInterlaced(bool isInterlaced);
+
+  /*!
+   * @brief Check if the video is interlaced from cache
+   * @return True if interlaced, otherwise false
+   */
+  bool IsVideoInterlaced();
+
   // player audio info
   void SetAudioDecoderName(std::string name);
   std::string GetAudioDecoderName();
@@ -166,6 +178,7 @@ protected:
     int height;
     float fps;
     float dar;
+    bool m_isInterlaced;
   } m_playerVideoInfo;
 
   CCriticalSection m_audioPlayerSection;
