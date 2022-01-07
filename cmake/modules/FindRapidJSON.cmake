@@ -10,15 +10,16 @@
 #
 if(ENABLE_INTERNAL_RapidJSON)
   include(ExternalProject)
-  file(STRINGS ${CMAKE_SOURCE_DIR}/tools/depends/target/rapidjson/Makefile VER REGEX "^[ ]*VERSION[ ]*=.+$")
-  string(REGEX REPLACE "^[ ]*VERSION[ ]*=[ ]*" "" RJSON_VER "${VER}")
+  include(cmake/scripts/common/ModuleHelpers.cmake)
+
+  get_archive_name(rapidjson)
 
   # allow user to override the download URL with a local tarball
   # needed for offline build envs
   if(RapidJSON_URL)
     get_filename_component(RapidJSON_URL "${RapidJSON_URL}" ABSOLUTE)
   else()
-    set(RapidJSON_URL http://mirrors.kodi.tv/build-deps/sources/rapidjson-${RJSON_VER}.tar.gz)
+    set(RapidJSON_URL http://mirrors.kodi.tv/build-deps/sources/${ARCHIVE})
   endif()
   if(VERBOSE)
     message(STATUS "RapidJSON_URL: ${RapidJSON_URL}")
@@ -48,7 +49,7 @@ if(ENABLE_INTERNAL_RapidJSON)
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(rapidjson
                                     REQUIRED_VARS RapidJSON_LIBRARY RapidJSON_INCLUDE_DIR
-                                    VERSION_VAR RJSON_VER)
+                                    VERSION_VAR RAPIDJSON_VER)
 
   set(RapidJSON_LIBRARIES ${RapidJSON_LIBRARY})
   set(RapidJSON_INCLUDE_DIRS ${RapidJSON_INCLUDE_DIR})
