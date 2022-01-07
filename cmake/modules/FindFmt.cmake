@@ -14,15 +14,16 @@
 
 if(ENABLE_INTERNAL_FMT)
   include(ExternalProject)
-  file(STRINGS ${CMAKE_SOURCE_DIR}/tools/depends/target/libfmt/Makefile VER REGEX "^[ ]*VERSION[ ]*=.+$")
-  string(REGEX REPLACE "^[ ]*VERSION[ ]*=[ ]*" "" FMT_VERSION "${VER}")
+  include(cmake/scripts/common/ModuleHelpers.cmake)
+
+  get_archive_name(libfmt)
 
   # allow user to override the download URL with a local tarball
   # needed for offline build envs
   if(FMT_URL)
       get_filename_component(FMT_URL "${FMT_URL}" ABSOLUTE)
   else()
-      set(FMT_URL http://mirrors.kodi.tv/build-deps/sources/fmt-${FMT_VERSION}.tar.gz)
+    set(FMT_URL http://mirrors.kodi.tv/build-deps/sources/${ARCHIVE})
   endif()
   if(VERBOSE)
       message(STATUS "FMT_URL: ${FMT_URL}")
@@ -52,7 +53,7 @@ if(ENABLE_INTERNAL_FMT)
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(Fmt
                                     REQUIRED_VARS FMT_LIBRARY FMT_INCLUDE_DIR
-                                    VERSION_VAR FMT_VERSION)
+                                    VERSION_VAR FMT_VER)
 
   set(FMT_LIBRARIES ${FMT_LIBRARY})
   set(FMT_INCLUDE_DIRS ${FMT_INCLUDE_DIR})
