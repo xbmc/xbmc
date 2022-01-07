@@ -11,15 +11,16 @@
 
 if(ENABLE_INTERNAL_FLATBUFFERS)
   include(ExternalProject)
-  file(STRINGS ${CMAKE_SOURCE_DIR}/tools/depends/native/flatbuffers/Makefile VER REGEX "^[ ]*VERSION[ ]*=.+$")
-  string(REGEX REPLACE "^[ ]*VERSION[ ]*=[ ]*" "" FLATBUFFERS_VER "${VER}")
+  include(cmake/scripts/common/ModuleHelpers.cmake)
+
+  get_archive_name(flatbuffers)
 
   # Allow user to override the download URL with a local tarball
   # Needed for offline build envs
   if(FLATBUFFERS_URL)
     get_filename_component(FLATBUFFERS_URL "${FLATBUFFERS_URL}" ABSOLUTE)
   else()
-    set(FLATBUFFERS_URL http://mirrors.kodi.tv/build-deps/sources/flatbuffers-${FLATBUFFERS_VER}.tar.gz)
+    set(FLATBUFFERS_URL http://mirrors.kodi.tv/build-deps/sources/${ARCHIVE})
   endif()
   if(VERBOSE)
     message(STATUS "FLATBUFFERS_URL: ${FLATBUFFERS_URL}")

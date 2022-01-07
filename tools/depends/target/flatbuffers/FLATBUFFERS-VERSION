@@ -1,0 +1,3 @@
+LIBNAME=flatbuffers
+VERSION=2.0.0
+ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
