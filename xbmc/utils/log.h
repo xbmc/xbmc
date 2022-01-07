@@ -112,9 +112,9 @@ public:
     Log(level, format, std::forward<Args>(args)...);
   }
 
-#define LogF(level, format, ...) Log((level), ("{}: " format), __FUNCTION__, ##__VA_ARGS__)
+#define LogF(level, format, ...) Log((level), ("{}: " format), __func__, ##__VA_ARGS__)
 #define LogFC(level, component, format, ...) \
-  Log((level), (component), ("{}: " format), __FUNCTION__, ##__VA_ARGS__)
+  Log((level), (component), ("{}: " format), __func__, ##__VA_ARGS__)
 
 private:
   static CLog& GetInstance();
