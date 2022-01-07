@@ -15,15 +15,17 @@
 
 if(ENABLE_INTERNAL_SPDLOG)
   include(ExternalProject)
-  file(STRINGS ${CMAKE_SOURCE_DIR}/tools/depends/target/libspdlog/Makefile VER REGEX "^[ ]*VERSION[ ]*=.+$")
-  string(REGEX REPLACE "^[ ]*VERSION[ ]*=[ ]*" "" SPDLOG_VERSION "${VER}")
+  include(cmake/scripts/common/ModuleHelpers.cmake)
+
+  get_archive_name(libspdlog)
+  set(SPDLOG_VERSION ${SPDLOG_VER})
 
   # allow user to override the download URL with a local tarball
   # needed for offline build envs
   if(SPDLOG_URL)
       get_filename_component(SPDLOG_URL "${SPDLOG_URL}" ABSOLUTE)
   else()
-      set(SPDLOG_URL http://mirrors.kodi.tv/build-deps/sources/spdlog-${SPDLOG_VERSION}.tar.gz)
+      set(SPDLOG_URL http://mirrors.kodi.tv/build-deps/sources/${ARCHIVE})
   endif()
   if(VERBOSE)
       message(STATUS "SPDLOG_URL: ${SPDLOG_URL}")
