@@ -1,11 +1,5 @@
-include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile
-
-# lib name, version
-LIBNAME=fstrcmp
-VERSION=0.7.D001
-SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
+include ../../Makefile.include LIBFSTRCMP-VERSION
+DEPS= ../../Makefile.include Makefile LIBFSTRCMP-VERSION
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX)

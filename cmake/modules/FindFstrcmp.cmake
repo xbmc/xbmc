@@ -13,18 +13,16 @@
 if(ENABLE_INTERNAL_FSTRCMP)
   find_program(LIBTOOL libtool REQUIRED)
   include(ExternalProject)
+  include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  file(STRINGS ${CMAKE_SOURCE_DIR}/tools/depends/target/libfstrcmp/Makefile VER)
-  string(REGEX MATCH "VERSION=[^ ]*" FSTRCMP_VER "${VER}")
-  list(GET FSTRCMP_VER 0 FSTRCMP_VER)
-  string(SUBSTRING "${FSTRCMP_VER}" 8 -1 FSTRCMP_VER)
+  get_archive_name(libfstrcmp)
 
   # allow user to override the download URL with a local tarball
   # needed for offline build envs
   if(FSTRCMP_URL)
     get_filename_component(FSTRCMP_URL "${FSTRCMP_URL}" ABSOLUTE)
   else()
-    set(FSTRCMP_URL http://mirrors.kodi.tv/build-deps/sources/fstrcmp-${FSTRCMP_VER}.tar.gz)
+    set(FSTRCMP_URL http://mirrors.kodi.tv/build-deps/sources/${ARCHIVE})
   endif()
   if(VERBOSE)
     message(STATUS "FSTRCMPURL: ${FSTRCMP_URL}")
@@ -55,7 +53,7 @@ else()
   find_library(FSTRCMP_LIBRARY NAMES fstrcmp
                                 PATHS ${PC_FSTRCMP_LIBDIR})
 
-  set(FSTRCMP_VERSION ${PC_FSTRCMP_VERSION})
+  set(FSTRCMP_VER ${PC_FSTRCMP_VERSION})
 endif()
 
 include(FindPackageHandleStandardArgs)
