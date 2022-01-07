@@ -209,19 +209,17 @@ endif()
 # Internal FFMPEG
 if(NOT FFMPEG_FOUND)
   include(ExternalProject)
-  file(STRINGS ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/FFMPEG-VERSION VER)
-  string(REGEX MATCH "VERSION=[^ ]*$.*" FFMPEG_VER "${VER}")
-  list(GET FFMPEG_VER 0 FFMPEG_VER)
-  string(SUBSTRING "${FFMPEG_VER}" 8 -1 FFMPEG_VER)
-  string(REGEX MATCH "BASE_URL=([^ ]*)" FFMPEG_BASE_URL "${VER}")
-  list(GET FFMPEG_BASE_URL 0 FFMPEG_BASE_URL)
-  string(SUBSTRING "${FFMPEG_BASE_URL}" 9 -1 FFMPEG_BASE_URL)
+  include(cmake/scripts/common/ModuleHelpers.cmake)
+
+  get_archive_name(ffmpeg)
 
   # allow user to override the download URL with a local tarball
   # needed for offline build envs
   if(FFMPEG_URL)
     get_filename_component(FFMPEG_URL "${FFMPEG_URL}" ABSOLUTE)
   else()
+    # github tarball format is tagname.tar.gz (eg 4.4-N-Alpha1.tar.gz)
+    # tagname is our FFMPEG_VER from VERSION file.
     set(FFMPEG_URL ${FFMPEG_BASE_URL}/archive/${FFMPEG_VER}.tar.gz)
   endif()
   if(VERBOSE)
@@ -252,7 +250,7 @@ if(NOT FFMPEG_FOUND)
 
   externalproject_add(ffmpeg
                       URL ${FFMPEG_URL}
-                      DOWNLOAD_NAME ffmpeg-${FFMPEG_VER}.tar.gz
+                      DOWNLOAD_NAME ${ARCHIVE}
                       DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
                       PREFIX ${CORE_BUILD_DIR}/ffmpeg
                       CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
