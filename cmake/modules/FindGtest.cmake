@@ -16,17 +16,17 @@
 if(ENABLE_INTERNAL_GTEST)
   include(ExternalProject)
 
-  file(STRINGS ${CMAKE_SOURCE_DIR}/tools/depends/target/googletest/Makefile VER)
-  string(REGEX MATCH "VERSION=[^ ]*" GTEST_VERSION "${VER}")
-  list(GET GTEST_VERSION 0 GTEST_VERSION)
-  string(SUBSTRING "${GTEST_VERSION}" 8 -1 GTEST_VERSION)
+  include(cmake/scripts/common/ModuleHelpers.cmake)
+
+  get_archive_name(googletest)
+  set(GTEST_VERSION ${GOOGLETEST_VER})
 
   # allow user to override the download URL with a local tarball
   # needed for offline build envs
   if(GTEST_URL)
     get_filename_component(GTEST_URL "${GTEST_URL}" ABSOLUTE)
   else()
-    set(GTEST_URL http://mirrors.kodi.tv/build-deps/sources/googletest-${GTEST_VERSION}.tar.gz)
+    set(GTEST_URL http://mirrors.kodi.tv/build-deps/sources/${ARCHIVE})
   endif()
 
   if(VERBOSE)
