@@ -1,16 +1,15 @@
 if(ENABLE_INTERNAL_CROSSGUID)
   include(ExternalProject)
-  file(STRINGS ${CMAKE_SOURCE_DIR}/tools/depends/target/crossguid/Makefile VER)
-  string(REGEX MATCH "VERSION=[^ ]*" CGUID_VER "${VER}")
-  list(GET CGUID_VER 0 CGUID_VER)
-  string(SUBSTRING "${CGUID_VER}" 8 -1 CGUID_VER)
+  include(cmake/scripts/common/ModuleHelpers.cmake)
+
+  get_archive_name(crossguid)
 
   # allow user to override the download URL with a local tarball
   # needed for offline build envs
   if(CROSSGUID_URL)
     get_filename_component(CROSSGUID_URL "${CROSSGUID_URL}" ABSOLUTE)
   else()
-    set(CROSSGUID_URL http://mirrors.kodi.tv/build-deps/sources/crossguid-${CGUID_VER}.tar.gz)
+    set(CROSSGUID_URL http://mirrors.kodi.tv/build-deps/sources/${ARCHIVE})
   endif()
   if(VERBOSE)
     message(STATUS "CROSSGUID_URL: ${CROSSGUID_URL}")
@@ -41,7 +40,7 @@ if(ENABLE_INTERNAL_CROSSGUID)
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(CrossGUID
                                     REQUIRED_VARS CROSSGUID_LIBRARY CROSSGUID_INCLUDE_DIR
-                                    VERSION_VAR CGUID_VER)
+                                    VERSION_VAR CROSSGUID_VER)
 
   set(CROSSGUID_LIBRARIES ${CROSSGUID_LIBRARY})
   set(CROSSGUID_INCLUDE_DIRS ${CROSSGUID_INCLUDE_DIR})

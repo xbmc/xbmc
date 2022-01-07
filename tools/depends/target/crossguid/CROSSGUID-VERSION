@@ -1,0 +1,3 @@
+LIBNAME=crossguid
+VERSION=8f399e8bd4
+ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz

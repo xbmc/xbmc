@@ -1,12 +1,6 @@
 -include ../../Makefile.include
-DEPS = Makefile
-
-# lib name, version
-LIBNAME=crossguid
-VERSION=8f399e8bd4
-SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
-
+include CROSSGUID-VERSION
+DEPS = Makefile CROSSGUID-VERSION
 
 ifeq ($(CROSS_COMPILING), yes)
   DEPS += ../../Makefile.include
