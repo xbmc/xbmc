@@ -158,7 +158,7 @@ static int ActivateAndFocus(const std::vector<std::string>& params)
  */
 static int AlarmClock(const std::vector<std::string>& params)
 {
-  // format is alarmclock(name,command[,seconds,true]);
+  // format is alarmclock(name,command[,time,true,false]);
   float seconds = 0;
   if (params.size() > 2)
   {
@@ -408,7 +408,7 @@ static int ToggleDirty(const std::vector<std::string>&)
 ///     @param[in] silent                Send "true" or "silent" to silently cancel alarm (optional).
 ///   }
 ///   \table_row2_l{
-///     <b>`AlarmClock(name\,command\,time[\,silent\,loop])`</b>
+///     <b>`AlarmClock(name\,command[\,time\,silent\,loop])`</b>
 ///     ,
 ///     Pops up a dialog asking for the length of time for the alarm (unless the
 ///     parameter time is specified)\, and starts a timer. When the timer runs out\,
@@ -416,11 +416,22 @@ static int ToggleDirty(const std::vector<std::string>&)
 ///     specified\, otherwise it'll pop up an alarm notice. Add silent to hide the
 ///     alarm notification. Add loop for the alarm to execute the command each
 ///     time the specified time interval expires.
+///     @note if using any of the last optional parameters (silent or loop)\, both must
+///     be provided for any to take effect.
+///     <p>
+///     <b>Example:</b>
+///     The following example will create an alarmclock named `mytimer` which will silently
+///     fire (a single time) and set a property (timerelapsed) with value 1 in the window with
+///     id 1109 after 5 seconds have passed.
+///     ~~~~~~~~~~~~~
+///     AlarmClock(mytimer\,SetProperty(timerelapsed\,1\,1109)\,00:00:05\,silent\,false])
+///     ~~~~~~~~~~~~~
+///     <p>
 ///     @param[in] name                  name
 ///     @param[in] command               command
-///     @param[in] time                  Length in seconds (optional).
-///     @param[in] silent                Send "silent" to suppress notifications.
-///     @param[in] loop                  Send "loop" to loop the alarm.
+///     @param[in] time                  [opt] <b>(a)</b> Length in minutes or <b>(b)</b> a timestring in the format `hh:mm:ss` or `mm min`.
+///     @param[in] silent                [opt] Send "silent" to suppress notifications.
+///     @param[in] loop                  [opt] Send "loop" to loop the alarm.
 ///   }
 ///   \table_row2_l{
 ///     <b>`ActivateWindow(window[\,dir\, return])`</b>
