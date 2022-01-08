@@ -1237,7 +1237,8 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const std::string& filters, bool scale)
     char* graphDump = avfilter_graph_dump(m_pFilterGraph, nullptr);
     if (graphDump)
     {
-      CLog::Log(LOGDEBUG, "CDVDVideoCodecFFmpeg::FilterOpen - Final filter graph:\n{}", graphDump);
+      CLog::LogMultiline(LOGDEBUG, "CDVDVideoCodecFFmpeg::FilterOpen - Final filter graph:\n{}",
+                         graphDump);
       av_freep(&graphDump);
     }
   }

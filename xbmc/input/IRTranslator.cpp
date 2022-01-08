@@ -62,7 +62,8 @@ bool CIRTranslator::LoadIRMap(const std::string& irMapPath)
   CLog::Log(LOGINFO, "Loading {}", irMapPath);
   if (!xmlDoc.LoadFile(irMapPath))
   {
-    CLog::Log(LOGERROR, "{}, Line {}\n{}", irMapPath, xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    CLog::LogMultiline(LOGERROR, "{}, Line {}\n{}", irMapPath, xmlDoc.ErrorRow(),
+                       xmlDoc.ErrorDesc());
     return false;
   }
 

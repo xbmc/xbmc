@@ -181,7 +181,7 @@ bool CEGLImage::CreateImage(EglAttrs imageAttrs)
       eglString.append(StringUtils::Format("{}: {}\n", keyStr, valueStr));
     }
 
-    CLog::Log(LOGDEBUG, "CEGLImage::{} - attributes:\n{}", __FUNCTION__, eglString);
+    CLog::LogMultiline(LOGDEBUG, "CEGLImage::{} - attributes:\n{}", __FUNCTION__, eglString);
   }
 
   if (!m_image)
@@ -235,7 +235,7 @@ bool CEGLImage::SupportsFormat(uint32_t format)
     for (const auto& supportedFormat : formats)
       formatStr.append("\n" + DRMHELPERS::FourCCToString(supportedFormat));
 
-    CLog::Log(LOGDEBUG, "CEGLImage::{} - supported formats:{}", __FUNCTION__, formatStr);
+    CLog::LogMultiline(LOGDEBUG, "CEGLImage::{} - supported formats:{}", __FUNCTION__, formatStr);
   }
 
   if (foundFormat != formats.end())
@@ -299,7 +299,8 @@ bool CEGLImage::SupportsFormatAndModifier(uint32_t format, uint64_t modifier)
     for (const auto& supportedModifier : modifiers)
       modifierStr.append("\n" + DRMHELPERS::ModifierToString(supportedModifier));
 
-    CLog::Log(LOGDEBUG, "CEGLImage::{} - supported modifiers:{}", __FUNCTION__, modifierStr);
+    CLog::LogMultiline(LOGDEBUG, "CEGLImage::{} - supported modifiers:{}", __FUNCTION__,
+                       modifierStr);
   }
 
   if (foundModifier != modifiers.end())

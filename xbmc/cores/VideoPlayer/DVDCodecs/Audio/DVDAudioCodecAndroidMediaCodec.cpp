@@ -363,7 +363,8 @@ bool CDVDAudioCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
     if (xbmc_jnienv()->ExceptionCheck())
     {
       std::string err = CJNIBase::ExceptionToString();
-      CLog::Log(LOGERROR, "CDVDAudioCodecAndroidMediaCodec::AddData ExceptionCheck \n {}", err);
+      CLog::LogMultiline(LOGERROR, "CDVDAudioCodecAndroidMediaCodec::AddData ExceptionCheck \n {}",
+                         err);
     }
     else if (index >= 0)
     {
@@ -630,9 +631,9 @@ int CDVDAudioCodecAndroidMediaCodec::GetData(uint8_t** dst)
   if (xbmc_jnienv()->ExceptionCheck())
   {
     std::string err = CJNIBase::ExceptionToString();
-    CLog::Log(LOGERROR,
-              "CDVDAudioCodecAndroidMediaCodec::GetData ExceptionCheck; dequeueOutputBuffer \n {}",
-              err);
+    CLog::LogMultiline(
+        LOGERROR,
+        "CDVDAudioCodecAndroidMediaCodec::GetData ExceptionCheck; dequeueOutputBuffer \n {}", err);
     xbmc_jnienv()->ExceptionDescribe();
     xbmc_jnienv()->ExceptionClear();
     return 0;

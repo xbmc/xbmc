@@ -561,15 +561,18 @@ bool CWSDiscoveryListenerUDP::equalsAddress(const wsd_req_info& lhs, const wsd_r
 
 void CWSDiscoveryListenerUDP::PrintWSDInfo(const wsd_req_info& info)
 {
-  CLog::Log(LOGDEBUG, LOGWSDISCOVERY,
-            "CWSDiscoveryUtils::printstruct - message contents\n"
-            "\tAction: {}\n"
-            "\tMsgID: {}\n"
-            "\tAddress: {}\n"
-            "\tTypes: {}\n"
-            "\tXAddrs: {}\n"
-            "\tComputer: {}\n",
-            info.action, info.msgid, info.address, info.types, info.xaddrs, info.computer);
+  if (!CServiceBroker::GetLogging().CanLogComponent(LOGWSDISCOVERY))
+    return;
+
+  CLog::LogMultiline(LOGDEBUG,
+                     "CWSDiscoveryUtils::printstruct - message contents\n"
+                     "\tAction: {}\n"
+                     "\tMsgID: {}\n"
+                     "\tAddress: {}\n"
+                     "\tTypes: {}\n"
+                     "\tXAddrs: {}\n"
+                     "\tComputer: {}\n",
+                     info.action, info.msgid, info.address, info.types, info.xaddrs, info.computer);
 }
 
 void CWSDiscoveryListenerUDP::UnicastGet(wsd_req_info& info)

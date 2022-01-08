@@ -242,7 +242,8 @@ bool CGUIAudioManager::Load()
   //  Load the config file
   if (!xmlDoc.LoadFile(strSoundsXml))
   {
-    CLog::Log(LOGINFO, "{}, Line {}\n{}", strSoundsXml, xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    CLog::LogMultiline(LOGINFO, "{}, Line {}\n{}", strSoundsXml, xmlDoc.ErrorRow(),
+                       xmlDoc.ErrorDesc());
     return false;
   }
 

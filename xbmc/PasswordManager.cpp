@@ -147,8 +147,8 @@ void CPasswordManager::Load()
     CXBMCTinyXML doc;
     if (!doc.LoadFile(passwordsFile))
     {
-      CLog::Log(LOGERROR, "{} - Unable to load: {}, Line {}\n{}", __FUNCTION__, passwordsFile,
-                doc.ErrorRow(), doc.ErrorDesc());
+      CLog::LogMultiline(LOGERROR, "{} - Unable to load: {}, Line {}\n{}", __FUNCTION__,
+                         passwordsFile, doc.ErrorRow(), doc.ErrorDesc());
       return;
     }
     const TiXmlElement *root = doc.RootElement();

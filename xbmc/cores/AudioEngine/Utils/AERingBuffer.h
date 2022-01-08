@@ -206,7 +206,7 @@ public:
       }
     }
     bufferContents[m_iSize*m_planes] = '\0';
-    CLog::Log(LOGDEBUG, "AERingBuffer::Dump()\n{}", bufferContents);
+    CLog::LogMultiline(LOGDEBUG, "AERingBuffer::Dump()\n{}", bufferContents);
     KODI::MEMORY::AlignedFree(bufferContents);
   }
 

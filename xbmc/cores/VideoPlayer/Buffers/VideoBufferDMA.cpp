@@ -96,8 +96,8 @@ void CVideoBufferDMA::SetDimensions(int width,
       planeStr.append(fmt::format("\nplane[{}]: stride={}\toffset={}", plane, strides[plane],
                                   planeOffsets[plane]));
 
-    CLog::Log(LOGDEBUG, LOGVIDEO, "CVideoBufferDMA::{} - frame layout id={} fourcc={}{}",
-              __FUNCTION__, m_id, DRMHELPERS::FourCCToString(m_fourcc), planeStr);
+    CLog::LogMultiline(LOGDEBUG, "CVideoBufferDMA::{} - frame layout id={} fourcc={}{}",
+                       __FUNCTION__, m_id, DRMHELPERS::FourCCToString(m_fourcc), planeStr);
   }
 }
 
@@ -141,8 +141,8 @@ void CVideoBufferDMA::Export(AVFrame* frame, uint32_t width, uint32_t height)
       planeStr.append(fmt::format("\nplane[{}]: stride={}\toffset={}", plane, m_strides[plane],
                                   m_offsets[plane]));
 
-    CLog::Log(LOGDEBUG, LOGVIDEO, "CVideoBufferDMA::{} - frame layout id={} fourcc={}{}",
-              __FUNCTION__, m_id, DRMHELPERS::FourCCToString(m_fourcc), planeStr);
+    CLog::LogMultiline(LOGDEBUG, "CVideoBufferDMA::{} - frame layout id={} fourcc={}{}",
+                       __FUNCTION__, m_id, DRMHELPERS::FourCCToString(m_fourcc), planeStr);
   }
 
   for (uint32_t i = 0; i < AV_NUM_DATA_POINTERS; i++)

@@ -421,6 +421,6 @@ void CResolutionUtils::PrintWhitelist()
       modeStr.append("\n" + info.strMode);
     }
 
-    CLog::Log(LOGDEBUG, "[WHITELIST] whitelisted modes:{}", modeStr);
+    CLog::LogMultiline(LOGDEBUG, "[WHITELIST] whitelisted modes:{}", modeStr);
   }
 }

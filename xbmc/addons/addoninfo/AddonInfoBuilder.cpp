@@ -58,11 +58,9 @@ AddonInfoPtr CAddonInfoBuilder::Generate(const std::string& addonPath, bool plat
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(URIUtils::AddFileToFolder(addonRealPath, "addon.xml")))
   {
-    CLog::Log(LOGERROR, "CAddonInfoBuilder::{}: Unable to load '{}', Line {}\n{}",
-                                               __FUNCTION__,
-                                               URIUtils::AddFileToFolder(addonRealPath, "addon.xml"),
-                                               xmlDoc.ErrorRow(),
-                                               xmlDoc.ErrorDesc());
+    CLog::LogMultiline(LOGERROR, "CAddonInfoBuilder::{}: Unable to load '{}', Line {}\n{}",
+                       __FUNCTION__, URIUtils::AddFileToFolder(addonRealPath, "addon.xml"),
+                       xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return nullptr;
   }
 

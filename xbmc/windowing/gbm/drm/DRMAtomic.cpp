@@ -335,7 +335,7 @@ void CDRMAtomic::CDRMAtomicRequest::LogAtomicRequest(
                      "\tValue: " + std::to_string(property.second));
   }
 
-  CLog::Log(logLevel, "{}", message);
+  CLog::LogMultiline(logLevel, "{}", message);
 }
 
 void CDRMAtomic::CDRMAtomicRequest::DrmModeAtomicReqDeleter::operator()(drmModeAtomicReqPtr p) const

@@ -103,7 +103,8 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method, bool str
     defines += m_glslOutput->GetDefines();
   }
 
-  CLog::Log(LOGDEBUG, "GL: ConvolutionFilterShader: using {} defines:\n{}", shadername, defines);
+  CLog::LogMultiline(LOGDEBUG, "GL: ConvolutionFilterShader: using {} defines:\n{}", shadername,
+                     defines);
   PixelShader()->LoadSource(shadername, defines);
   PixelShader()->AppendSource("gl_output.glsl");
 }

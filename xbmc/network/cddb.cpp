@@ -980,7 +980,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
     return false; //This is actually good. The calling method will handle this
 
   case 202: //No match found
-    CLog::Log(
+    CLog::LogMultiline(
         LOGINFO,
         "Xcddb::queryCDinfo No match found in CDDB database when doing the query shown below:\n{}",
         query_buffer);

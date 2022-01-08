@@ -88,9 +88,9 @@ bool CAddon::LoadSettings(bool bForce, bool loadUserSettings /* = true */)
   {
     if (CFile::Exists(addonSettingsDefinitionFile))
     {
-      CLog::Log(LOGERROR, "CAddon[{}]: unable to load: {}, Line {}\n{}", ID(),
-                addonSettingsDefinitionFile, addonSettingsDefinitionDoc.ErrorRow(),
-                addonSettingsDefinitionDoc.ErrorDesc());
+      CLog::LogMultiline(LOGERROR, "CAddon[{}]: unable to load: {}, Line {}\n{}", ID(),
+                         addonSettingsDefinitionFile, addonSettingsDefinitionDoc.ErrorRow(),
+                         addonSettingsDefinitionDoc.ErrorDesc());
     }
 
     return false;

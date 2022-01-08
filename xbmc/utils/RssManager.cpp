@@ -106,8 +106,8 @@ bool CRssManager::Load()
   CXBMCTinyXML rssDoc;
   if (!rssDoc.LoadFile(rssXML))
   {
-    CLog::Log(LOGERROR, "CRssManager: error loading {}, Line {}\n{}", rssXML, rssDoc.ErrorRow(),
-              rssDoc.ErrorDesc());
+    CLog::LogMultiline(LOGERROR, "CRssManager: error loading {}, Line {}\n{}", rssXML,
+                       rssDoc.ErrorRow(), rssDoc.ErrorDesc());
     return false;
   }
 

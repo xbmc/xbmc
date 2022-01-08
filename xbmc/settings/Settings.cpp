@@ -626,8 +626,9 @@ bool CSettings::Initialize(const std::string &file)
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(file.c_str()))
   {
-    CLog::Log(LOGERROR, "CSettings: error loading settings definition from {}, Line {}\n{}", file,
-              xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    CLog::LogMultiline(LOGERROR,
+                       "CSettings: error loading settings definition from {}, Line {}\n{}", file,
+                       xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return false;
   }
 

@@ -179,8 +179,8 @@ bool CProfileManager::Load()
     }
     else
     {
-      CLog::Log(LOGERROR, "CProfileManager: error loading {}, Line {}\n{}", file,
-                profilesDoc.ErrorRow(), profilesDoc.ErrorDesc());
+      CLog::LogMultiline(LOGERROR, "CProfileManager: error loading {}, Line {}\n{}", file,
+                         profilesDoc.ErrorRow(), profilesDoc.ErrorDesc());
       ret = false;
     }
   }

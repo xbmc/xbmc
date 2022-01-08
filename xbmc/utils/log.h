@@ -94,11 +94,17 @@ public:
   }
 
   template<typename... Args>
+  static inline void LogMultiline(int level, const std::string_view& format, Args&&... args)
+  {
+    GetInstance().FormatAndLogInternal(MapLogLevel(level), format, std::forward<Args>(args)...);
+  }
+
+  template<typename... Args>
   static inline void Log(spdlog::level::level_enum level,
                          const std::string_view& format,
                          Args&&... args)
   {
-    GetInstance().FormatAndLogInternal(level, format, std::forward<Args>(args)...);
+    GetInstance().LogInternal(level, format, std::forward<Args>(args)...);
   }
 
   template<typename... Args>
@@ -121,6 +127,14 @@ private:
   static CLog& GetInstance();
 
   static spdlog::level::level_enum MapLogLevel(int level);
+
+  template<typename... Args>
+  inline void LogInternal(spdlog::level::level_enum level,
+                          const std::string_view& format,
+                          Args&&... args)
+  {
+    m_defaultLogger->log(level, format, std::forward<Args>(args)...);
+  }
 
   template<typename... Args>
   inline void FormatAndLogInternal(spdlog::level::level_enum level,

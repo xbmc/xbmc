@@ -310,7 +310,7 @@ void CDRMUtils::PrintDrmDeviceInfo(drmDevicePtr device)
     message.append("\n    unhandled bus type");
   // clang-format on
 
-  CLog::Log(LOGDEBUG, "{}", message);
+  CLog::LogMultiline(LOGDEBUG, "{}", message);
 }
 
 bool CDRMUtils::OpenDrm(bool needConnector)

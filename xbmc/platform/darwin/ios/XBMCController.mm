@@ -732,9 +732,9 @@ public:
   else
     dispatch_sync(dispatch_get_main_queue(), getInsets);
 
-  CLog::Log(LOGDEBUG, "insets: {}\nwindow: {}\nscreen: {}",
-            NSStringFromUIEdgeInsets(insets).UTF8String, m_window.description.UTF8String,
-            m_glView.currentScreen.description.UTF8String);
+  CLog::LogMultiline(LOGDEBUG, "insets: {}\nwindow: {}\nscreen: {}",
+                     NSStringFromUIEdgeInsets(insets).UTF8String, m_window.description.UTF8String,
+                     m_glView.currentScreen.description.UTF8String);
   if (UIEdgeInsetsEqualToEdgeInsets(insets, UIEdgeInsetsZero))
     return;
 

@@ -130,8 +130,8 @@ bool CButtonTranslator::LoadKeymap(const std::string& keymapPath)
   CLog::Log(LOGINFO, "Loading {}", keymapPath);
   if (!xmlDoc.LoadFile(keymapPath))
   {
-    CLog::Log(LOGERROR, "Error loading keymap: {}, Line {}\n{}", keymapPath, xmlDoc.ErrorRow(),
-              xmlDoc.ErrorDesc());
+    CLog::LogMultiline(LOGERROR, "Error loading keymap: {}, Line {}\n{}", keymapPath,
+                       xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return false;
   }
 

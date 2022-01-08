@@ -281,7 +281,8 @@ bool CGLSLShaderProgram::CompileAndLink()
   if (!m_pVP->Compile())
   {
     CLog::Log(LOGERROR, "GL: Error compiling vertex shader: {}", m_pVP->GetName());
-    CLog::Log(LOGDEBUG, "GL: vertex shader source:\n{}", m_pVP->GetSourceWithLineNumbers());
+    CLog::LogMultiline(LOGDEBUG, "GL: vertex shader source:\n{}",
+                       m_pVP->GetSourceWithLineNumbers());
     return false;
   }
 
@@ -290,7 +291,8 @@ bool CGLSLShaderProgram::CompileAndLink()
   {
     m_pVP->Free();
     CLog::Log(LOGERROR, "GL: Error compiling fragment shader: {}", m_pFP->GetName());
-    CLog::Log(LOGDEBUG, "GL: fragment shader source:\n{}", m_pFP->GetSourceWithLineNumbers());
+    CLog::LogMultiline(LOGDEBUG, "GL: fragment shader source:\n{}",
+                       m_pFP->GetSourceWithLineNumbers());
     return false;
   }
 

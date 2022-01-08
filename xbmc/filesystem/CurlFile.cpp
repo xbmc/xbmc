@@ -1111,8 +1111,8 @@ bool CCurlFile::Open(const CURL& url)
       ReadString(&error[0], 4095);
     }
 
-    CLog::Log(LOGERROR, "CCurlFile::{} - <{}> Failed with code {}:\n{}", __FUNCTION__,
-              redactPath, m_httpresponse, error);
+    CLog::LogMultiline(LOGERROR, "CCurlFile::{} - <{}> Failed with code {}:\n{}", __FUNCTION__,
+                       redactPath, m_httpresponse, error);
 
     return false;
   }

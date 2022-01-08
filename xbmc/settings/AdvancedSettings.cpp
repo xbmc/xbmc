@@ -491,8 +491,8 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 
   if (!advancedXML.LoadFile(file))
   {
-    CLog::Log(LOGERROR, "Error loading {}, Line {}\n{}", file, advancedXML.ErrorRow(),
-              advancedXML.ErrorDesc());
+    CLog::LogMultiline(LOGERROR, "Error loading {}, Line {}\n{}", file, advancedXML.ErrorRow(),
+                       advancedXML.ErrorDesc());
     return;
   }
 
@@ -560,8 +560,8 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   advancedXMLCopy.Accept(&printer);
   // redact User/pass in URLs
   std::regex redactRe("(\\w+://)\\S+:\\S+@");
-  CLog::Log(LOGINFO, "Contents of {} are...\n{}", file,
-            std::regex_replace(printer.CStr(), redactRe, "$1USERNAME:PASSWORD@"));
+  CLog::LogMultiline(LOGINFO, "Contents of {} are...\n{}", file,
+                     std::regex_replace(printer.CStr(), redactRe, "$1USERNAME:PASSWORD@"));
 
   TiXmlElement *pElement = pRootElement->FirstChildElement("audio");
   if (pElement)

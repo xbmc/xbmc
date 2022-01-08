@@ -265,8 +265,8 @@ bool CApplicationSkinHandling::LoadCustomWindows()
           CXBMCTinyXML xmlDoc;
           if (!xmlDoc.LoadFile(item->GetPath()))
           {
-            CLog::Log(LOGERROR, "Unable to load custom window XML {}. Line {}\n{}", item->GetPath(),
-                      xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+            CLog::LogMultiline(LOGERROR, "Unable to load custom window XML {}. Line {}\n{}",
+                               item->GetPath(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
             continue;
           }
 
