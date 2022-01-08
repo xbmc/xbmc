@@ -1,6 +1,6 @@
 -include ../../Makefile.include
-include UDFREAD-VERSION
-DEPS = Makefile UDFREAD-VERSION
+include LIBUDFREAD-VERSION
+DEPS = Makefile LIBUDFREAD-VERSION
 
 ifeq ($(CROSS_COMPILING), yes)
   DEPS += ../../Makefile.include

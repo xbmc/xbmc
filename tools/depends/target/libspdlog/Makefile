@@ -1,11 +1,6 @@
 -include ../../Makefile.include
-DEPS = Makefile
-
-# lib name, version
-LIBNAME=spdlog
-VERSION=1.9.2
-SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
+include LIBSPDLOG-VERSION
+DEPS = Makefile LIBSPDLOG-VERSION
 
 CMAKE_OPTIONS= \
 	-DSPDLOG_BUILD_EXAMPLE=OFF \

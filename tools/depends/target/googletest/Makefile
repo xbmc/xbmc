@@ -1,11 +1,5 @@
-include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile
-
-# lib name, version
-LIBNAME=googletest
-VERSION=1.10.0
-SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
+include ../../Makefile.include GOOGLETEST-VERSION
+DEPS= ../../Makefile.include Makefile GOOGLETEST-VERSION
 
 LIBDYLIB=$(PLATFORM)/build/lib/libgtest.a
 
