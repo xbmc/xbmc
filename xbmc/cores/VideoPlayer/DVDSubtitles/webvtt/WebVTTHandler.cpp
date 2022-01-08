@@ -45,7 +45,7 @@ constexpr char cueTimePattern[] =
 
 // Regex patterns for cue properties
 const std::map<std::string, std::string> cuePropsPatterns = {
-    {"position", "position\\:(\\d+\\.\\d+|auto)%"},
+    {"position", "position\\:(\\d+|\\d+\\.\\d+|auto)%"},
     {"positionAlign", "position\\:\\d+\\.\\d+%,([a-z]+)"},
     {"size", "size\\:((\\d+\\.)?\\d+%?)"},
     {"line", "line\\:(\\d+%|\\d+\\.\\d+%|-?\\d+|auto)(,|\\s|$)"},
