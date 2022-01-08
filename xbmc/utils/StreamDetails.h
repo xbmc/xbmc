@@ -9,6 +9,7 @@
 #pragma once
 
 #include "ISerializable.h"
+#include "cores/VideoPlayer/Interface/StreamInfo.h"
 #include "utils/IArchivable.h"
 
 #include <memory>
@@ -57,6 +58,7 @@ public:
   std::string m_strCodec;
   std::string m_strStereoMode;
   std::string m_strLanguage;
+  std::string m_strHdrType;
 };
 
 class CStreamDetailAudio final : public CStreamDetail
@@ -103,12 +105,14 @@ public:
   int GetVideoStreamCount(void) const;
   int GetAudioStreamCount(void) const;
   int GetSubtitleStreamCount(void) const;
+  static std::string HdrTypeToString(StreamHdrType hdrType);
   const CStreamDetail* GetNthStream(CStreamDetail::StreamType type, int idx) const;
 
   std::string GetVideoCodec(int idx = 0) const;
   float GetVideoAspect(int idx = 0) const;
   int GetVideoWidth(int idx = 0) const;
   int GetVideoHeight(int idx = 0) const;
+  std::string GetVideoHdrType (int idx = 0) const;
   int GetVideoDuration(int idx = 0) const;
   void SetVideoDuration(int idx, const int duration);
   std::string GetStereoMode(int idx = 0) const;

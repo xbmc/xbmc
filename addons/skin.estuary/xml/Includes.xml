@@ -403,6 +403,10 @@
 					<param name="visible" value="!String.IsEmpty($PARAM[infolabel_prefix]ListItem.VideoResolution)" />
 				</include>
 				<include content="MediaFlag">
+					<param name="texture" value="$INFO[ListItem.HdrType,flags/videohdr/,.png]" />
+					<param name="visible" value="!String.IsEmpty($PARAM[infolabel_prefix]ListItem.HdrType)" />
+				</include>
+				<include content="MediaFlag">
 					<param name="texture" value="$INFO[ListItem.VideoAspect,flags/aspectratio/,.png]" />
 					<param name="visible" value="!String.IsEmpty($PARAM[infolabel_prefix]ListItem.VideoAspect)" />
 				</include>

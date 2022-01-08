@@ -396,6 +396,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
       p->m_iDuration = pDemux->GetStreamLength();
       p->m_strStereoMode = vstream->stereo_mode;
       p->m_strLanguage = vstream->language;
+      p->m_strHdrType = CStreamDetails::HdrTypeToString(vstream->hdr_type);
 
       // stack handling
       if (URIUtils::IsStack(path))
