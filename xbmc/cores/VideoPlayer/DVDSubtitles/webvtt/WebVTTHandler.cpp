@@ -45,7 +45,7 @@ constexpr char cueTimePattern[] =
 
 // Regex patterns for cue properties
 const std::map<std::string, std::string> cuePropsPatterns = {
-    {"position", "position\\:(\\d+\\.\\d+|auto)%"},
+    {"position", "position\\:(\\d+|\\d+\\.\\d+|auto)%"},
     {"positionAlign", "position\\:\\d+\\.\\d+%,([a-z]+)"},
     {"size", "size\\:((\\d+\\.)?\\d+%?)"},
     {"line", "line\\:(\\d+%|\\d+\\.\\d+%|-?\\d+|auto)(,|\\s|$)"},
@@ -177,6 +177,9 @@ void TranslateEscapeChars(std::string& text)
   }
 }
 
+constexpr int MICROS_PER_SECOND = 1000000;
+constexpr int MPEG_TIMESCALE = 90000;
+
 } // unnamed namespace
 
 bool CWebVTTHandler::Initialize()
@@ -253,14 +256,44 @@ void CWebVTTHandler::DecodeLine(std::string line, std::vector<subtitleData>* sub
     }
     else if (StringUtils::StartsWith(line, "X-TIMESTAMP-MAP")) // HLS streaming spec
     {
-      // Get the MPEGTS timestamp offset value, to sync the subtitles with video
-      CRegExp reg;
-      if (reg.RegComp("MPEGTS:(\\d+)") && reg.RegFind(line) >= 0)
+      // Get the HLS timestamp values to sync the subtitles with video
+      CRegExp regLocal;
+      CRegExp regMpegTs;
+
+      if (regLocal.RegComp("LOCAL:((?:(\\d{1,}):)?(\\d{2}):(\\d{2}\\.\\d{3}))") &&
+          regMpegTs.RegComp("MPEGTS:(\\d+)"))
       {
-        m_mpegTsOffset = std::stoull(reg.GetMatch(1));
+        if ((regLocal.RegFind(line) >= 0 && regLocal.GetSubCount() == 4) &&
+            regMpegTs.RegFind(line) >= 0)
+        {
+          int locHrs = 0;
+          int locMins;
+          double locSecs;
+          if (!regLocal.GetMatch(1).empty())
+            locHrs = std::stoi(regLocal.GetMatch(1).c_str());
+          locMins = std::stoi(regLocal.GetMatch(2).c_str());
+          locSecs = std::atof(regLocal.GetMatch(3).c_str());
+          m_hlsTimestampLocalUs =
+              (static_cast<double>(locHrs * 3600 + locMins * 60) + locSecs) * DVD_TIME_BASE;
+          // Converts a 90 kHz clock timestamp to a timestamp in microseconds
+          m_hlsTimestampMpegTsUs =
+              std::stod(regMpegTs.GetMatch(1)) * MICROS_PER_SECOND / MPEG_TIMESCALE;
+        }
+        else
+        {
+          m_hlsTimestampLocalUs = 0;
+          m_hlsTimestampMpegTsUs = 0;
+          CLog::Log(LOGERROR,
+                    "{} - Failed to get X-TIMESTAMP-MAP values, subtitles could be out of sync",
+                    __FUNCTION__);
+        }
       }
       else
-        CLog::Log(LOGERROR, "{} - Wrong MPEGTS timestamp string or regex has failed", __FUNCTION__);
+      {
+        CLog::Log(LOGERROR,
+                  "{} - Failed to compile X-TIMESTAMP-MAP regexes, subtitles could be out of sync",
+                  __FUNCTION__);
+      }
     }
     else if (IsCueLine(line))
     {
@@ -523,11 +556,11 @@ void CWebVTTHandler::GetCueData(std::string& cueText)
     eSeconds = std::atof(m_cueTimeRegex.GetMatch(6).c_str());
 
     m_subtitleData.startTime =
-        (static_cast<double>(sHours * 3600 + sMinutes * 60) + sSeconds + m_mpegTsOffset) *
-        DVD_TIME_BASE;
+        (static_cast<double>(sHours * 3600 + sMinutes * 60) + sSeconds) * DVD_TIME_BASE +
+        m_hlsTimestampMpegTsUs - m_hlsTimestampLocalUs;
     m_subtitleData.stopTime =
-        (static_cast<double>(eHours * 3600 + eMinutes * 60) + eSeconds + m_mpegTsOffset) *
-        DVD_TIME_BASE;
+        (static_cast<double>(eHours * 3600 + eMinutes * 60) + eSeconds) * DVD_TIME_BASE +
+        m_hlsTimestampMpegTsUs - m_hlsTimestampLocalUs;
     cueSettings =
         cueText.substr(m_cueTimeRegex.GetFindLen(), cueText.length() - m_cueTimeRegex.GetFindLen());
     StringUtils::Trim(cueSettings);
