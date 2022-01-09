@@ -737,7 +737,7 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
   else if (format.m_dataFormat == AE_FMT_RAW) //No sense in trying other formats for passthrough.
     return false;
 
-  CLog::LogF(LOGDEBUG, LOGAUDIO,
+  CLog::LogFC(LOGDEBUG, LOGAUDIO,
              "IsFormatSupported failed (%s) - trying to find a compatible format",
              WASAPIErrToStr(hr));
 

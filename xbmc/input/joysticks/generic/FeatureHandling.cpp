@@ -246,7 +246,8 @@ void CAxisFeature::ProcessMotions(void)
   const bool bWasActivated = (m_state != 0.0f);
 
   if (!bActivated && bWasActivated)
-    CLog::Log(LOGDEBUG, "Feature [ %s ] on %s deactivated", m_name.c_str());
+    CLog::Log(LOGDEBUG, "Feature [ %s ] on %s deactivated", m_name.c_str(),
+              m_handler->ControllerID().c_str());
   else if (bActivated && !bWasActivated)
   {
     CLog::Log(LOGDEBUG, "Feature [ %s ] on %s activated %s", m_name.c_str(),
