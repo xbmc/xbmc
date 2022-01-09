@@ -5,9 +5,10 @@ PUSHD %~dp0\..\..\..
 SET WORKDIR=%CD%
 POPD
 
-REM recreates ffmpeg build dir in case it does not exist
+REM forces delete build folder and creates it clean
 SET BUILD_DIR=%WORKDIR%\project\BuildDependencies\build
-IF NOT EXIST %BUILD_DIR% mkdir %BUILD_DIR%
+IF EXIST %BUILD_DIR% rmdir /S /Q %BUILD_DIR%
+mkdir %BUILD_DIR%
 
 SET PROMPTLEVEL=prompt
 SET BUILDMODE=clean

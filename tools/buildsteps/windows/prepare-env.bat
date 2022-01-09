@@ -18,8 +18,3 @@ SET GIT_CLEAN_CMD=git clean -xffd -e "project/BuildDependencies/downloads" -e "p
 
 ECHO running %GIT_CLEAN_CMD%
 %GIT_CLEAN_CMD%
-
-REM 'build' dir is necessary to extract ffmpeg code
-REM we prevents missing under certain circumstances (early creation)
-SET BUILD_FFMPEG=%WORKSPACE%\project\BuildDependencies\build
-IF NOT EXIST %BUILD_FFMPEG% mkdir %BUILD_FFMPEG%
