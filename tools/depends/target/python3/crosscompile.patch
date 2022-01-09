@@ -34,6 +34,15 @@
  SOABI=		@SOABI@
  LDVERSION=	@LDVERSION@
  LIBPYTHON=	@LIBPYTHON@
+@@ -475,7 +475,7 @@
+ # Default target
+ all:		@DEF_MAKE_ALL_RULE@
+ build_all:	check-clean-src $(BUILDPYTHON) oldsharedmods sharedmods gdbhooks \
+-		Programs/_testembed python-config
++		python-config
+ 
+ # Check that the source is clean when building out of source.
+ check-clean-src:
 @@ -635,7 +635,7 @@
  		$(PYTHON_FOR_BUILD) $(srcdir)/setup.py $$quiet build"; \
  	$(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' \
