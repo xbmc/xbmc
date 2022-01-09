@@ -679,7 +679,7 @@ std::vector<std::pair<float, float>> CPlayerGUIInfo::GetCuts(CDataCacheCore& dat
 {
   std::vector<std::pair<float, float>> ranges;
 
-  const std::vector<int64_t> cuts = data.GetCuts();
+  const std::vector<int64_t>& cuts = data.GetCuts();
   float lastMarker = 0.0f;
   for (const auto& cut : cuts)
   {
