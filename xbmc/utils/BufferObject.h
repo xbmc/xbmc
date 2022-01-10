@@ -28,6 +28,7 @@ public:
    */
   static std::unique_ptr<CBufferObject> GetBufferObject(bool needsCreateBySize);
 
+  virtual bool CreateBufferObject(uint32_t format, uint32_t width, uint32_t height) override = 0;
   bool CreateBufferObject(uint64_t size) override { return false; }
 
   int GetFd() override;
