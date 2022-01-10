@@ -11,7 +11,7 @@
  		}
 --- a/lib/util/fault.c
 +++ b/lib/util/fault.c
-@@ -147,7 +147,7 @@
+@@ -137,7 +137,7 @@
  			snprintf(pidstr, sizeof(pidstr), "%d", (int) getpid());
  			all_string_sub(cmdstring, "%d", pidstr, sizeof(cmdstring));
  			DEBUG(0, ("smb_panic(): calling panic action [%s]\n", cmdstring));
@@ -42,7 +42,7 @@
  			  "'%s': %s\n", command, strerror(errno));
 --- a/lib/util/tfork.c
 +++ b/lib/util/tfork.c
-@@ -510,7 +510,7 @@
+@@ -511,7 +511,7 @@
  	ready_pipe_worker_fd = p[0];
  	ready_pipe_caller_fd = p[1];
  
@@ -51,7 +51,7 @@
  	if (pid == -1) {
  		close(status_sp_caller_fd);
  		close(status_sp_waiter_fd);
-@@ -578,7 +578,7 @@
+@@ -580,7 +580,7 @@
  	close(event_pipe_caller_fd);
  	close(ready_pipe_caller_fd);
  
@@ -148,7 +148,7 @@
  	return 1;
 --- a/source3/lib/util.c
 +++ b/source3/lib/util.c
-@@ -844,7 +844,7 @@
+@@ -840,7 +840,7 @@
  	cmd = lp_panic_action(talloc_tos(), lp_sub);
  	if (cmd && *cmd) {
  		DEBUG(0, ("smb_panic(): calling panic action [%s]\n", cmd));
