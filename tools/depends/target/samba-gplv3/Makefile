@@ -1,9 +1,9 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile 01-fix-dependencies.patch 02-cross_compile.patch 03-builtin-heimdal.patch 04-built-static.patch samba_android.patch no_fork_and_exec.patch crt_extensions.patch
+DEPS= ../../Makefile.include Makefile 01-fix-dependencies.patch 02-cross_compile.patch 03-builtin-heimdal.patch 04-built-static.patch samba_android.patch no_fork_and_exec.patch crt_extensions.patch 05-apple-disable-zlib-pkgconfig.patch
 
 # lib name, version
 LIBNAME=samba
-VERSION=4.11.13
+VERSION=4.12.15
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
@@ -31,6 +31,20 @@ ifeq ($(OS), darwin_embedded)
   CFLAGS+= -Wno-error=implicit-function-declaration
 endif
 
+ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
+  # perlmodule-parseyapp install location for darwin host
+  PERLMODULE=$(NATIVEPREFIX)/lib/perl5/site_perl
+else
+  ifeq ($(findstring -linux-, $(HOST)), -linux-)
+    # linux host installs to $NATIVEPREFIX/share with perl version as folder
+    # just do a find for the Parse folder to handle variable versions
+    location:=$(shell find $(NATIVEPREFIX)/share/ -type d -name Parse | sed 's|$(NATIVEPREFIX)/||' | sed 's|/Parse||')
+    PERLMODULE=$(NATIVEPREFIX)/$(location)
+  endif
+endif
+
+export PERL5LIB:=$(PERLMODULE):$(PERL5LIB)
+
 export CC CXX CPP AR RANLIB LD AS NM STRIP TOOLCHAIN
 export CFLAGS CXXFLAGS CPPFLAGS LDFLAGS
 export HOST
@@ -54,6 +68,9 @@ endif
 ifeq ($(OS), darwin_embedded)
 	cd $(PLATFORM); patch -p1 -i ../no_fork_and_exec.patch
 	cd $(PLATFORM); patch -p1 -i ../crt_extensions.patch
+endif
+ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
+	cd $(PLATFORM); patch -p1 -i ../05-apple-disable-zlib-pkgconfig.patch
 endif
 	cd $(PLATFORM); $(CONFIGURE)
 

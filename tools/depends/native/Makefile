@@ -26,6 +26,7 @@ NATIVE= \
   ninja \
   openssl \
   pcre \
+  perlmodule-parseyapp \
   pkg-config \
   python3 \
   setuptools \

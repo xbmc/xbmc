@@ -1,8 +1,8 @@
 --- a/lib/util/charset/iconv.c
 +++ b/lib/util/charset/iconv.c
-@@ -28,6 +28,10 @@
- #include "libcli/util/ntstatus.h"
- #include "lib/util/util_str_hex.h"
+@@ -33,6 +33,10 @@
+ #include <unicode/utrans.h>
+ #endif
  
 +#if defined(ANDROID) && (!defined(__ANDROID_API__) || __ANDROID_API__ < 28)
 +#include <byteswap.h>
@@ -11,7 +11,7 @@
  #ifdef strcasecmp
  #undef strcasecmp
  #endif
-@@ -592,6 +596,19 @@
+@@ -756,6 +756,19 @@
  	return 0;
  }
  
@@ -58,7 +58,7 @@
  		goto fail;
 --- a/nsswitch/libwbclient/wbc_sid.c
 +++ b/nsswitch/libwbclient/wbc_sid.c
-@@ -1052,9 +1052,13 @@
+@@ -1054,9 +1054,13 @@
  
  		wbcFreeMemory(name);
  
