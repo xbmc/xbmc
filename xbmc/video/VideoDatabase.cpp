@@ -9354,7 +9354,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
       // Otherwise there is a mismatch between the path contents and the hash in the
       // database, leading to potentially missed items on re-scan (if deleted files are
       // later re-added to a source)
-      CLog::LogF(LOGDEBUG, LOGDATABASE, "Cleaning path hashes");
+      CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning path hashes");
       m_pDS->query("SELECT DISTINCT strPath FROM path JOIN files ON files.idPath=path.idPath WHERE files.idFile IN " + filesToDelete);
       int pathHashCount = m_pDS->num_rows();
       while (!m_pDS->eof())
@@ -9362,7 +9362,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
         InvalidatePathHash(m_pDS->fv("strPath").get_asString());
         m_pDS->next();
       }
-      CLog::LogF(LOGDEBUG, LOGDATABASE, "Cleaned {} path hashes", pathHashCount);
+      CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaned {} path hashes", pathHashCount);
 
       CLog::Log(LOGDEBUG, LOGDATABASE, "%s: Cleaning files table", __FUNCTION__);
       sql = "DELETE FROM files WHERE idFile IN " + filesToDelete;

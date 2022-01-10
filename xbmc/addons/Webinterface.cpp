@@ -26,7 +26,7 @@ CWebinterface::CWebinterface(const AddonInfoPtr& addonInfo)
   if (StringUtils::EqualsNoCase(webinterfaceType, "wsgi"))
     m_type = WebinterfaceTypeWsgi;
   else if (!webinterfaceType.empty() && !StringUtils::EqualsNoCase(webinterfaceType, "static") && !StringUtils::EqualsNoCase(webinterfaceType, "html"))
-    CLog::Log(LOGWARNING, "CWebinterface::{}: Addon \"{}\" has specified an unsupported type \"{}\"", ID(), webinterfaceType);
+    CLog::Log(LOGWARNING, "CWebinterface::CWebinterface: Addon \"{}\" has specified an unsupported type \"{}\"", ID(), webinterfaceType);
 
   // determine the entry point of the webinterface
   std::string entry = Type(ADDON_WEB_INTERFACE)->GetValue("@entry").asString();

@@ -139,7 +139,7 @@ bool CDRMLegacy::SetActive(bool active)
 {
   if (!m_connector->SetProperty("DPMS", active ? DRM_MODE_DPMS_ON : DRM_MODE_DPMS_OFF))
   {
-    CLog::Log(LOGDEBUG, "CDRMLegacy::{} - failed to set DPMS property");
+    CLog::Log(LOGDEBUG, "CDRMLegacy::{} - failed to set DPMS property", __FUNCTION__);
     return false;
   }
 
