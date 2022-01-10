@@ -1,6 +1,6 @@
 --- a/lib/ldb/wscript
 +++ b/lib/ldb/wscript
-@@ -518,10 +518,6 @@
+@@ -519,10 +519,6 @@
                           install=False)
  
          bld.SAMBA_BINARY('ldb_key_value_sub_txn_tdb_test',
