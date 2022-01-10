@@ -7,7 +7,10 @@
  */
 
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "cores/VideoPlayer/Edl.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "test/TestUtils.h"
 
 #include <gtest/gtest.h>
@@ -264,7 +267,7 @@ TEST_F(TestEdl, TestComSkipVersion2EDL)
   const bool found = edl.ReadEditDecisionLists(mediaItem, 0);
   EXPECT_EQ(found, true);
   // fps is obtained from the file as it always takes precedence (note we supplied 0 above),
-  //the EDL file has the value of 2500 for fps. kodi converts this to 25 fps by dividing by a factor of 100
+  // the EDL file has the value of 2500 for fps. kodi converts this to 25 fps by dividing by a factor of 100
   const float fpsInEdlFile = 2500 / 100;
   // this format only supports commbreak types
   EXPECT_EQ(edl.HasEdits(), true);
@@ -283,4 +286,136 @@ TEST_F(TestEdl, TestRuntimeSetEDL)
   edl.SetLastEditActionType(Action::COMM_BREAK);
   EXPECT_EQ(edl.GetLastEditTime(), 1000);
   EXPECT_EQ(edl.GetLastEditActionType(), Action::COMM_BREAK);
+}
+
+TEST_F(TestEdl, TestCommBreakAdvancedSettings)
+{
+  CEdl edl;
+  const std::shared_ptr<CAdvancedSettings> advancedSettings =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+  // make sure autowind and autowait are set to default values 0
+  EXPECT_EQ(advancedSettings->m_iEdlCommBreakAutowait, 0);
+  EXPECT_EQ(advancedSettings->m_iEdlCommBreakAutowind, 0);
+  // create a dummy "media" fileitem whose corresponding edl file is testdata/edlautowindautowait.txt
+  CFileItem mediaItem;
+  mediaItem.SetPath(
+      XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/test/edl/testdata/edlautowindautowait.mkv"));
+  bool found = edl.ReadEditDecisionLists(mediaItem, 0);
+  EXPECT_EQ(found, true);
+  // confirm the start and end times of all the commbreaks match
+  EXPECT_EQ(edl.GetEditList().size(), 5);
+  EXPECT_EQ(edl.GetEditList().at(0).start, 10 * 1000);
+  EXPECT_EQ(edl.GetEditList().at(0).end, 22 * 1000);
+  EXPECT_EQ(edl.GetEditList().at(1).start, 30 * 1000);
+  EXPECT_EQ(edl.GetEditList().at(1).end, 32 * 1000);
+  EXPECT_EQ(edl.GetEditList().at(2).start, 37 * 1000);
+  EXPECT_EQ(edl.GetEditList().at(2).end, 50 * 1000);
+  EXPECT_EQ(edl.GetEditList().at(3).start, 52 * 1000);
+  EXPECT_EQ(edl.GetEditList().at(3).end, 60 * 1000);
+  EXPECT_EQ(edl.GetEditList().at(4).start, 62 * 1000);
+  EXPECT_EQ(edl.GetEditList().at(4).end, static_cast<int>(65.1 * 1000));
+  // now lets change autowait and autowind and check the edits are correcly adjusted
+  edl.Clear();
+  advancedSettings->m_iEdlCommBreakAutowait = 3; // secs
+  advancedSettings->m_iEdlCommBreakAutowind = 3; // secs
+  EXPECT_EQ(advancedSettings->m_iEdlCommBreakAutowait, 3);
+  EXPECT_EQ(advancedSettings->m_iEdlCommBreakAutowind, 3);
+  found = edl.ReadEditDecisionLists(mediaItem, 0);
+  EXPECT_EQ(edl.GetEditList().size(), 5);
+  // the second edit has a duration smaller than the autowait
+  // this moves the start time to the end of the edit
+  EXPECT_EQ(edl.GetEditList().at(1).start, 32 * 1000);
+  EXPECT_EQ(edl.GetEditList().at(1).end, edl.GetEditList().at(1).start);
+  // the others should be adjusted + 3 secs at the start and -3 secs at the end
+  // due to the provided values for autowait and autowind.
+  EXPECT_EQ(edl.GetEditList().at(0).start, (10 + 3) * 1000);
+  EXPECT_EQ(edl.GetEditList().at(0).end, (22 - 3) * 1000);
+  EXPECT_EQ(edl.GetEditList().at(2).start, (37 + 3) * 1000);
+  EXPECT_EQ(edl.GetEditList().at(2).end, (50 - 3) * 1000);
+  EXPECT_EQ(edl.GetEditList().at(3).start, (52 + 3) * 1000);
+  EXPECT_EQ(edl.GetEditList().at(3).end, (60 - 3) * 1000);
+  // since we adjust the start to second 65 and the autowind is 3 seconds kodi should
+  // shift the end time not by 3 seconds but by the "excess" time (in this case 0.1 sec)
+  // this means start and end will be exactly the same. The commbreak would be removed if
+  // mergeshortcommbreaks was active and advancedsetting m_iEdlMinCommBreakLength
+  // was set to a reasonable threshold.
+  EXPECT_EQ(edl.GetEditList().at(4).start, (62 + 3) * 1000);
+  EXPECT_EQ(edl.GetEditList().at(4).end, (65.1 - 0.1) * 1000);
+  EXPECT_EQ(edl.GetEditList().at(4).start, edl.GetEditList().at(4).end);
+}
+
+TEST_F(TestEdl, TestCommBreakAdvancedSettingsRemoveSmallCommbreaks)
+{
+  // this is a variation of TestCommBreakAdvancedSettings
+  // should make sure the number of commbreaks in the file is now 3 instead of 5
+  // since two of them have duration smaller than 1 sec
+  CEdl edl;
+  const std::shared_ptr<CAdvancedSettings> advancedSettings =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+  advancedSettings->m_iEdlCommBreakAutowait = 3; // secs
+  advancedSettings->m_iEdlCommBreakAutowind = 3; // secs
+  advancedSettings->m_bEdlMergeShortCommBreaks = true;
+  advancedSettings->m_iEdlMinCommBreakLength = 1; // sec
+  advancedSettings->m_iEdlMaxCommBreakLength = 0; // deactivate
+  advancedSettings->m_iEdlMaxStartGap = 0; // deactivate
+  EXPECT_EQ(advancedSettings->m_iEdlCommBreakAutowait, 3);
+  EXPECT_EQ(advancedSettings->m_iEdlCommBreakAutowind, 3);
+  EXPECT_EQ(advancedSettings->m_bEdlMergeShortCommBreaks, true);
+  EXPECT_EQ(advancedSettings->m_iEdlMinCommBreakLength, 1);
+  EXPECT_EQ(advancedSettings->m_iEdlMaxCommBreakLength, 0);
+  EXPECT_EQ(advancedSettings->m_iEdlMaxStartGap, 0);
+
+  CFileItem mediaItem;
+  mediaItem.SetPath(
+      XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/test/edl/testdata/edlautowindautowait.mkv"));
+  const bool found = edl.ReadEditDecisionLists(mediaItem, 0);
+  EXPECT_EQ(found, true);
+  EXPECT_EQ(edl.GetEditList().size(), 3);
+}
+
+TEST_F(TestEdl, TestMergeSmallCommbreaks)
+{
+  CEdl edl;
+  const std::shared_ptr<CAdvancedSettings> advancedSettings =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+  // keep any other settings to default
+  advancedSettings->m_bEdlMergeShortCommBreaks = true;
+  EXPECT_EQ(advancedSettings->m_bEdlMergeShortCommBreaks, true);
+  CFileItem mediaItem;
+  mediaItem.SetPath(
+      XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/test/edl/testdata/edlautowindautowait.mkv"));
+  const bool found = edl.ReadEditDecisionLists(mediaItem, 0);
+  EXPECT_EQ(found, true);
+  // kodi should merge all commbreaks into a single one starting at the first point (0)
+  // and ending at the last edit time
+  EXPECT_EQ(edl.GetEditList().size(), 1);
+  EXPECT_EQ(edl.GetEditList().at(0).start, 0);
+  EXPECT_EQ(edl.GetEditList().at(0).end, static_cast<int>(65.1 * 1000));
+}
+
+TEST_F(TestEdl, TestMergeSmallCommbreaksAdvanced)
+{
+  CEdl edl;
+  const std::shared_ptr<CAdvancedSettings> advancedSettings =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+  advancedSettings->m_bEdlMergeShortCommBreaks = true;
+  advancedSettings->m_iEdlMaxCommBreakLength = 30; // 30 secs
+  advancedSettings->m_iEdlMinCommBreakLength = 1; // 1 sec
+  advancedSettings->m_iEdlMaxStartGap = 2; // 2 secs
+  EXPECT_EQ(advancedSettings->m_bEdlMergeShortCommBreaks, true);
+  EXPECT_EQ(advancedSettings->m_iEdlMaxCommBreakLength, 30);
+  EXPECT_EQ(advancedSettings->m_iEdlMinCommBreakLength, 1);
+  EXPECT_EQ(advancedSettings->m_iEdlMaxStartGap, 2);
+  CFileItem mediaItem;
+  mediaItem.SetPath(
+      XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/test/edl/testdata/edlautowindautowait.mkv"));
+  const bool found = edl.ReadEditDecisionLists(mediaItem, 0);
+  EXPECT_EQ(found, true);
+  // kodi should merge all commbreaks into two
+  EXPECT_EQ(edl.GetEditList().size(), 2);
+  // second edit of the original file + third one
+  EXPECT_EQ(edl.GetEditList().at(0).end - edl.GetEditList().at(0).start, (32 - 10) * 1000);
+  // 4th, 5th and 6th commbreaks joined
+  EXPECT_EQ(edl.GetEditList().at(1).end - edl.GetEditList().at(1).start,
+            static_cast<int>((65.1 - 37) * 1000));
 }
