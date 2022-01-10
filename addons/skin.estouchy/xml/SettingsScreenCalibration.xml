@@ -33,7 +33,7 @@
 			<font></font>
 			<onclick>Back</onclick>
 			<texturefocus>DialogCloseButton-focus.png</texturefocus>
-			<texturenofocus>DialogCloseButton.png</texturenofocus>
+			<texturenofocus colordiffuse="grey3">DialogCloseButton.png</texturenofocus>
 			<onleft>1</onleft>
 			<onright>1</onright>
 			<onup>1</onup>
@@ -46,7 +46,7 @@
 			<width>128</width>
 			<height>128</height>
 			<texturefocus>calibrate_top.png</texturefocus>
-			<texturenofocus></texturenofocus>
+			<texturenofocus colordiffuse="grey3">calibrate_top.png</texturenofocus>
 		</control>
 		<control type="mover" id="9">
 			<description>right bottom mover</description>
@@ -55,47 +55,74 @@
 			<width>128</width>
 			<height>128</height>
 			<texturefocus>calibrate_bottom.png</texturefocus>
-			<texturenofocus></texturenofocus>
-		</control>
-		<control type="mover" id="10">
-			<description>subtitle position mover</description>
-			<posx>200</posx>
-			<posy>500</posy>
-			<width>512</width>
-			<height>128</height>
-			<texturefocus>calibrate_subtitles.png</texturefocus>
-			<texturenofocus></texturenofocus>
+			<texturenofocus colordiffuse="grey3">calibrate_bottom.png</texturenofocus>
 		</control>
 		<control type="resize" id="11">
 			<description>pixel aspect ratio box</description>
 			<posx>0</posx>
 			<posy>232</posy>
-			<width>256</width>
-			<height>256</height>
+			<width>500</width>
+			<height>500</height>
 			<texturefocus>calibrate_aspect.png</texturefocus>
-			<texturenofocus></texturenofocus>
+			<texturenofocus colordiffuse="grey3">calibrate_aspect.png</texturenofocus>
+		</control>
+		<control type="mover" id="10">
+			<description>subtitle position mover</description>
+			<posx>200</posx>
+			<posy>500</posy>
+			<width>380</width>
+			<height>90</height>
+			<!-- NOTE: The image must have 40px of trasparent on top and bottom the bar -->
+			<texturefocus>calibrate_subtitles.png</texturefocus>
+			<texturenofocus colordiffuse="grey3">calibrate_subtitles.png</texturenofocus>
+		</control>
+		<control type="mover" id="12">
+			<description>reset calibration</description>
+			<posx>0</posx>
+			<posy>900</posy>
+			<width>100</width>
+			<height>100</height>
+			<texturefocus>calibrate_reset.png</texturefocus>
+			<texturenofocus colordiffuse="grey3">calibrate_reset.png</texturenofocus>
 		</control>
 		<control type="group">
-			<posx>20</posx>
-			<posy>80</posy>
-			<include>16x9_xPos_Relocation</include>
-			<control type="label" id="2">
-				<description>coordinates label</description>
+			<posx>0</posx>
+			<posy>10</posy>
+			<control type="label">
+				<description>window title</description>
 				<posx>0</posx>
-				<posy>10</posy>
-				<width>1280</width>
+				<posy>0</posy>
+				<width>100%</width>
+				<label>$LOCALIZE[214]</label>
+				<align>center</align>
+				<font>font38_title</font>
+			</control>
+			<control type="label" id="2">
+				<description>resolution info</description>
+				<posx>0</posx>
+				<posy>50</posy>
+				<width>100%</width>
 				<label></label>
 				<align>center</align>
-				<font>font24_title</font>
+				<font>font22</font>
 			</control>
 			<control type="label" id="3">
-				<description>help information</description>
+				<description>control description and help</description>
 				<posx>0</posx>
-				<posy>40</posy>
-				<width>1280</width>
+				<posy>90</posy>
+				<width>100%</width>
 				<label></label>
 				<align>center</align>
-				<font>font24_title</font>
+				<font>font30</font>
+			</control>
+			<control type="label" id="4">
+				<description>calibration value</description>
+				<posx>0</posx>
+				<posy>180</posy>
+				<width>100%</width>
+				<label></label>
+				<align>center</align>
+				<font>font25</font>
 			</control>
 		</control>
 	</controls>

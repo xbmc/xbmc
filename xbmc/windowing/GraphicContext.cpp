@@ -571,17 +571,9 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 {
   RESOLUTION_INFO& info = CDisplaySettings::GetInstance().GetResolutionInfo(res);
 
-  switch (res)
-  {
-  case RES_WINDOW:
-    info.iSubtitles = (int)(0.965 * info.iHeight);
-    info.fPixelRatio = 1.0;
-    break;
-  default:
-    break;
-  }
-
-  info.iScreenWidth  = info.iWidth;
+  info.iSubtitles = static_cast<int>(0.965 * info.iHeight);
+  info.fPixelRatio = 1.0f;
+  info.iScreenWidth = info.iWidth;
   info.iScreenHeight = info.iHeight;
   ResetOverscan(res, info.Overscan);
 }
