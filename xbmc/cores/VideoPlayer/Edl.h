@@ -201,4 +201,10 @@ private:
   bool AddSceneMarker(const int sceneMarker);
 
   void MergeShortCommBreaks();
+
+  /*!
+   * @brief Adds scene markers at the start and end of some edits
+   * (currently only for commercial breaks)
+  */
+  void AddSceneMarkersAtStartAndEndOfEdits();
 };

@@ -80,7 +80,10 @@ bool CEdl::ReadEditDecisionLists(const CFileItem& fileItem, const float fFramesP
   }
 
   if (bFound)
+  {
     MergeShortCommBreaks();
+    AddSceneMarkersAtStartAndEndOfEdits();
+  }
 
   return bFound;
 }
@@ -1018,17 +1021,19 @@ void CEdl::MergeShortCommBreaks()
       }
     }
   }
+}
 
-  /*
-   * Add in scene markers at the start and end of the commercial breaks.
-   */
-  for (size_t i = 0; i < m_vecEdits.size(); ++i)
+void CEdl::AddSceneMarkersAtStartAndEndOfEdits()
+{
+  for (const EDL::Edit& edit : m_vecEdits)
   {
-    if (m_vecEdits[i].action == Action::COMM_BREAK)
+    // Add scene markers at the start and end of commercial breaks
+    if (edit.action == Action::COMM_BREAK)
     {
-      if (m_vecEdits[i].start > 0) // Don't add a scene marker at the start.
-        AddSceneMarker(m_vecEdits[i].start);
-      AddSceneMarker(m_vecEdits[i].end);
+      // Don't add a scene marker at the start.
+      if (edit.start > 0)
+        AddSceneMarker(edit.start);
+      AddSceneMarker(edit.end);
     }
   }
 }
