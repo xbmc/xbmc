@@ -338,7 +338,7 @@ int CCPUInfoLinux::GetUsedPercentage()
     auto idleTime = cpuData[core].GetIdleTime() - m_cores[core].m_idleTime;
     auto totalTime = cpuData[core].GetTotalTime() - m_cores[core].m_totalTime;
 
-    m_cores[core].m_usagePercent = activeTime * 100.0f / totalTime;
+    m_cores[core].m_usagePercent = activeTime * 100.0 / totalTime;
 
     m_cores[core].m_activeTime += activeTime;
     m_cores[core].m_idleTime += idleTime;
