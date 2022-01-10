@@ -479,7 +479,8 @@ bool DatabaseUtils::GetDatabaseResults(const MediaType &mediaType, const FieldLi
                   resultSet.record_header[fieldIndex].name);
 
       if (value.first == FieldYear &&
-         (mediaType == MediaTypeTvShow || mediaType == MediaTypeEpisode))
+          (mediaType == MediaTypeTvShow || mediaType == MediaTypeEpisode ||
+           mediaType == MediaTypeMovie))
       {
         CDateTime dateTime;
         dateTime.SetFromDBDate(value.second.asString());
