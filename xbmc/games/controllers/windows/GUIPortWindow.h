@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "addons/RepositoryUpdater.h"
 #include "games/GameTypes.h"
 #include "guilib/GUIDialog.h"
 
