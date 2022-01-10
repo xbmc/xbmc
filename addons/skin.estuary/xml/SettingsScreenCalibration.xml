@@ -21,15 +21,6 @@
 			<texturefocus colordiffuse="button_focus">calibrate/cal_br.png</texturefocus>
 			<texturenofocus>calibrate/cal_br.png</texturenofocus>
 		</control>
-		<control type="mover" id="10">
-			<description>subtitle position mover</description>
-			<left>200</left>
-			<top>500</top>
-			<width>384</width>
-			<height>128</height>
-			<texturefocus colordiffuse="button_focus">calibrate/cal_sub.png</texturefocus>
-			<texturenofocus>calibrate/cal_sub.png</texturenofocus>
-		</control>
 		<control type="resize" id="11">
 			<description>pixel aspect ratio</description>
 			<left>0</left>
@@ -39,24 +30,63 @@
 			<texturefocus colordiffuse="button_focus">calibrate/cal_ratio.png</texturefocus>
 			<texturenofocus>calibrate/cal_ratio.png</texturenofocus>
 		</control>
-		<control type="label" id="2">
-			<description>coordinates label</description>
+		<control type="mover" id="10">
+			<description>subtitle position mover</description>
+			<left>200</left>
+			<top>500</top>
+			<width>380</width>
+			<height>90</height>
+			<!-- NOTE: The image must have 40px of trasparent on top and bottom the bar -->
+			<texturefocus colordiffuse="button_focus">calibrate/cal_sub.png</texturefocus>
+			<texturenofocus>calibrate/cal_sub.png</texturenofocus>
+		</control>
+		<control type="mover" id="12">
+			<description>reset calibration</description>
 			<left>0</left>
-			<top>150</top>
+			<top>900</top>
+			<width>100</width>
+			<height>100</height>
+			<texturefocus colordiffuse="button_focus">calibrate/reset.png</texturefocus>
+			<texturenofocus>calibrate/reset.png</texturenofocus>
+		</control>
+		<control type="label">
+			<description>window title</description>
+			<left>0</left>
+			<top>10</top>
+			<width>100%</width>
+			<align>center</align>
+			<label>$LOCALIZE[214]</label>
+			<font>font40_title</font>
+			<shadowcolor>FF000000</shadowcolor>
+		</control>
+		<control type="label" id="2">
+			<description>resolution info</description>
+			<left>0</left>
+			<top>60</top>
+			<width>100%</width>
+			<align>center</align>
+			<label></label>
+			<font>font27</font>
+			<shadowcolor>FF000000</shadowcolor>
+		</control>
+		<control type="label" id="3">
+			<description>control description and help</description>
+			<left>0</left>
+			<top>110</top>
 			<width>100%</width>
 			<align>center</align>
 			<label></label>
 			<font>font37</font>
 			<shadowcolor>FF000000</shadowcolor>
 		</control>
-		<control type="label" id="3">
-			<description>help information</description>
+		<control type="label" id="4">
+			<description>calibration value</description>
 			<left>0</left>
 			<top>210</top>
 			<width>100%</width>
 			<align>center</align>
 			<label></label>
-			<font>font37</font>
+			<font>font32</font>
 			<shadowcolor>FF000000</shadowcolor>
 		</control>
 	</controls>

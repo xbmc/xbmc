@@ -10,6 +10,8 @@
 
 #include "guilib/GUIWindow.h"
 
+#include <map>
+#include <utility>
 #include <vector>
 
 class CGUIWindowSettingsScreenCalibration : public CGUIWindow
@@ -31,8 +33,13 @@ protected:
   void ResetControls();
   void EnableControl(int iControl);
   void UpdateFromControl(int iControl);
+  void ResetCalibration();
   unsigned int m_iCurRes;
   std::vector<RESOLUTION> m_Res;
   int m_iControl;
   float m_fPixelRatioBoxHeight;
+
+private:
+  std::map<int, std::pair<float, float>> m_controlsSize;
+  int m_subtitlesHalfSpace{0};
 };
