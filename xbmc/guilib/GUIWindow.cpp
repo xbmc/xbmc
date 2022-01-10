@@ -618,6 +618,15 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
       if (HasID(message.GetSenderId()))
       {
         m_focusedControl = message.GetControlId();
+        // We ensure that all others childrens have focus disabled,
+        // this can happen when one control overlap the other one in the same
+        // coordinates with similar sizes and the mouse pointer is over them
+        // in this case only the control in the highest layer will have the focus
+        for (CGUIControl* control : m_children)
+        {
+          if (control->GetID() != m_focusedControl)
+            control->SetFocus(false);
+        }
         return true;
       }
       break;

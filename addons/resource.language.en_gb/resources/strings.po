@@ -979,10 +979,12 @@ msgctxt "#213"
 msgid "Calibrate user interface..."
 msgstr ""
 
+#. To open window screen calibration and as window title
 #: system/settings/settings.xml
 #: xbmc/video/dialogs/GUIDialogVideoSettings.cpp
+#: skins/xml/SettingsScreenCalibration.xml
 msgctxt "#214"
-msgid "Video calibration..."
+msgid "Video calibration"
 msgstr ""
 
 msgctxt "#215"
@@ -1275,32 +1277,46 @@ msgctxt "#271"
 msgid "Top 100"
 msgstr ""
 
+#. Window screen calibration: calibration from the rectangle box
+#: xbmc/settings/windows/GUIWindowSettingsScreenCalibration.cpp
 msgctxt "#272"
-msgid "Top-Left overscan compensation"
-msgstr ""
-
-msgctxt "#273"
-msgid "Bottom-Right overscan compensation"
-msgstr ""
-
-msgctxt "#274"
-msgid "Subtitle positioning"
-msgstr ""
-
-msgctxt "#275"
 msgid "Pixel ratio adjustment"
 msgstr ""
 
+#. Window screen calibration: calibration by using the rectangle box
+#: xbmc/settings/windows/GUIWindowSettingsScreenCalibration.cpp
+msgctxt "#273"
+msgid "Adjust the rectangle so it is perfectly square"
+msgstr ""
+
+#. Window screen calibration: calibration from the top-left angle
+#: xbmc/settings/windows/GUIWindowSettingsScreenCalibration.cpp
+msgctxt "#274"
+msgid "Top-Left overscan compensation"
+msgstr ""
+
+#. Window screen calibration: calibration from the bottom-right angle
+#: xbmc/settings/windows/GUIWindowSettingsScreenCalibration.cpp
+msgctxt "#275"
+msgid "Bottom-Right overscan compensation"
+msgstr ""
+
+#. Window screen calibration: calibration by using the top-left or bottom-right arrows
+#: xbmc/settings/windows/GUIWindowSettingsScreenCalibration.cpp
 msgctxt "#276"
 msgid "Adjust the arrow to change the amount of overscan"
 msgstr ""
 
+#. Window screen calibration: calibration of subtitle bar
+#: xbmc/settings/windows/GUIWindowSettingsScreenCalibration.cpp
 msgctxt "#277"
-msgid "Adjust the bar to change the subtitles position"
+msgid "Subtitle positioning"
 msgstr ""
 
+#. Window screen calibration: calibration by using the subtitle bar
+#: xbmc/settings/windows/GUIWindowSettingsScreenCalibration.cpp
 msgctxt "#278"
-msgid "Adjust the rectangle so it is perfectly square"
+msgid "Adjust the bar to change the subtitles position"
 msgstr ""
 
 msgctxt "#279"
@@ -6588,6 +6604,7 @@ msgid "Video encoder:"
 msgstr ""
 
 #: xbmc/windows/GUIWindowSystemInfo.cpp
+#: xbmc/settings/windows/GUIWindowSettingsScreenCalibration.cpp
 msgctxt "#13287"
 msgid "Screen resolution:"
 msgstr ""
@@ -13043,16 +13060,22 @@ msgctxt "#20324"
 msgid "Play part..."
 msgstr ""
 
+#. Window screen calibration: as title to reset calibration settings
+#: xbmc/settings/windows/GUIWindowSettingsScreenCalibration.cpp
 msgctxt "#20325"
 msgid "Calibration reset"
 msgstr ""
 
+#. Window screen calibration: ask to reset calibration settings
+#: xbmc/settings/windows/GUIWindowSettingsScreenCalibration.cpp
 msgctxt "#20326"
-msgid "This will reset the calibration values for {0:s}"
+msgid "Do you want reset the calibration to their defaults for \"{0:s}\" resolution?"
 msgstr ""
 
+#. Window screen calibration: the current calibration value
+#: xbmc/settings/windows/GUIWindowSettingsScreenCalibration.cpp
 msgctxt "#20327"
-msgid "to its default values."
+msgid "Current value: {}"
 msgstr ""
 
 msgctxt "#20328"
