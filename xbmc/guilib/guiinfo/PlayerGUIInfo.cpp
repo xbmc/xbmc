@@ -656,7 +656,7 @@ std::string CPlayerGUIInfo::GetContentRanges(int iInfo) const
   return values;
 }
 
-std::vector<std::pair<float, float>> CPlayerGUIInfo::GetEditList(CDataCacheCore& data,
+std::vector<std::pair<float, float>> CPlayerGUIInfo::GetEditList(const CDataCacheCore& data,
                                                                  time_t duration) const
 {
   std::vector<std::pair<float, float>> ranges;
@@ -674,7 +674,7 @@ std::vector<std::pair<float, float>> CPlayerGUIInfo::GetEditList(CDataCacheCore&
   return ranges;
 }
 
-std::vector<std::pair<float, float>> CPlayerGUIInfo::GetCuts(CDataCacheCore& data,
+std::vector<std::pair<float, float>> CPlayerGUIInfo::GetCuts(const CDataCacheCore& data,
                                                              time_t duration) const
 {
   std::vector<std::pair<float, float>> ranges;
@@ -692,7 +692,7 @@ std::vector<std::pair<float, float>> CPlayerGUIInfo::GetCuts(CDataCacheCore& dat
   return ranges;
 }
 
-std::vector<std::pair<float, float>> CPlayerGUIInfo::GetSceneMarkers(CDataCacheCore& data,
+std::vector<std::pair<float, float>> CPlayerGUIInfo::GetSceneMarkers(const CDataCacheCore& data,
                                                                      time_t duration) const
 {
   std::vector<std::pair<float, float>> ranges;
@@ -710,7 +710,8 @@ std::vector<std::pair<float, float>> CPlayerGUIInfo::GetSceneMarkers(CDataCacheC
   return ranges;
 }
 
-std::vector<std::pair<float, float>> CPlayerGUIInfo::GetChapters(CDataCacheCore& data, time_t duration) const
+std::vector<std::pair<float, float>> CPlayerGUIInfo::GetChapters(const CDataCacheCore& data,
+                                                                 time_t duration) const
 {
   std::vector<std::pair<float, float>> ranges;
 
