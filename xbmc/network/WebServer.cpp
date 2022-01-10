@@ -597,7 +597,9 @@ bool CWebServer::ProcessPostData(const HTTPRequest& request,
     if (!postDataHandled)
     {
       m_logger->error("failed to handle HTTP POST data for {}", request.pathUrl);
-#if (MHD_VERSION >= 0x00095213)
+#if (MHD_VERSION >= 0x00097400)
+      connectionHandler->errorStatus = MHD_HTTP_CONTENT_TOO_LARGE;
+#elif (MHD_VERSION >= 0x00095213)
       connectionHandler->errorStatus = MHD_HTTP_PAYLOAD_TOO_LARGE;
 #else
       connectionHandler->errorStatus = MHD_HTTP_REQUEST_ENTITY_TOO_LARGE;
