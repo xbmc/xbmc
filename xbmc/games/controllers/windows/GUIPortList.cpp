@@ -144,7 +144,9 @@ void CGUIPortList::OnSelect()
 
 void CGUIPortList::ResetPorts()
 {
+  // Update the game client
   m_gameClient->Input().ResetPorts();
+  m_gameClient->Input().SavePorts();
 
   // Refresh the GUI
   using namespace MESSAGING;
