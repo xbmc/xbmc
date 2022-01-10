@@ -391,8 +391,8 @@
 							<param name="sortorder" value="descending"/>
 							<param name="widget_header" value="$LOCALIZE[31015]"/>
 							<param name="list_id" value="12300"/>
-							<param name="label" value="$INFO[ListItem.ChannelName]"/>
-							<param name="label2" value="$INFO[ListItem.Title]$INFO[ListItem.EpisodeName, (,)]"/>
+							<param name="label" value="$INFO[ListItem.Title]$INFO[ListItem.Date, (,)]"/>
+							<param name="label2" value="$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName]"/>
 						</include>
 						<include content="WidgetListPVR" condition="System.HasPVRAddon">
 							<param name="content_path" value="pvr://timers/tv/timers/?view=hidedisabled"/>
@@ -401,8 +401,8 @@
 							<param name="widget_header" value="$LOCALIZE[19040]"/>
 							<param name="widget_target" value="tvtimers"/>
 							<param name="list_id" value="12400"/>
-							<param name="label" value="$INFO[ListItem.Date]"/>
-							<param name="label2" value="$INFO[ListItem.Title]$INFO[ListItem.EpisodeName, (,)] - $INFO[ListItem.ChannelName]"/>
+							<param name="label" value="$INFO[ListItem.Title]$INFO[ListItem.Date, (,)]"/>
+							<param name="label2" value="$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName]"/>
 						</include>
 						<include content="WidgetListPVR" condition="System.HasPVRAddon">
 							<param name="content_path" value="pvr://channels/tv"/>
@@ -458,8 +458,8 @@
 							<param name="sortorder" value="descending"/>
 							<param name="widget_header" value="$LOCALIZE[31015]"/>
 							<param name="list_id" value="13300"/>
-							<param name="label" value="$INFO[ListItem.ChannelName]"/>
-							<param name="label2" value="$INFO[ListItem.Title]$INFO[ListItem.EpisodeName, (,)]"/>
+							<param name="label" value="$INFO[ListItem.Title]$INFO[ListItem.Date, (,)]"/>
+							<param name="label2" value="$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName]"/>
 						</include>
 						<include content="WidgetListPVR" condition="System.HasPVRAddon">
 							<param name="content_path" value="pvr://timers/radio/timers/?view=hidedisabled"/>
@@ -468,8 +468,8 @@
 							<param name="widget_header" value="$LOCALIZE[19040]"/>
 							<param name="widget_target" value="radiotimers"/>
 							<param name="list_id" value="13400"/>
-							<param name="label" value="$INFO[ListItem.Date]"/>
-							<param name="label2" value="$INFO[ListItem.Title]$INFO[ListItem.EpisodeName, (,)] - $INFO[ListItem.ChannelName]"/>
+							<param name="label" value="$INFO[ListItem.Title]$INFO[ListItem.Date, (,)]"/>
+							<param name="label2" value="$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName]"/>
 						</include>
 						<include content="WidgetListPVR" condition="System.HasPVRAddon">
 							<param name="content_path" value="pvr://channels/radio"/>
