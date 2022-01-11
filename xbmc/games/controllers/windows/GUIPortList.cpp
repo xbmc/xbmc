@@ -144,7 +144,9 @@ void CGUIPortList::OnSelect()
 
 void CGUIPortList::ResetPorts()
 {
+  // Update the game client
   m_gameClient->Input().ResetPorts();
+  m_gameClient->Input().SavePorts();
 
   // Refresh the GUI
   using namespace MESSAGING;
@@ -263,9 +265,9 @@ void CGUIPortList::OnControllerSelected(const CPortNode& port, const ControllerP
   const bool bConnected = static_cast<bool>(controller);
 
   // Update the game client
-  const bool bSuccess =
-      bConnected ? m_gameClient->Input().DisconnectController(port.GetAddress())
-                 : m_gameClient->Input().ConnectController(port.GetAddress(), controller);
+  const bool bSuccess = bConnected
+                            ? m_gameClient->Input().ConnectController(port.GetAddress(), controller)
+                            : m_gameClient->Input().DisconnectController(port.GetAddress());
 
   if (bSuccess)
   {
