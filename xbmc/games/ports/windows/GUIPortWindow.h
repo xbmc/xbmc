@@ -17,7 +17,6 @@ namespace KODI
 {
 namespace GAME
 {
-class IControllerList;
 class IPortList;
 
 class CGUIPortWindow : public CGUIDialog

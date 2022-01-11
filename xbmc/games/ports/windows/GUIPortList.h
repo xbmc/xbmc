@@ -16,7 +16,7 @@
 #include "games/controllers/types/ControllerTree.h"
 
 #include <map>
-#include <set>
+#include <memory>
 #include <string>
 
 class CFileItemList;
@@ -27,9 +27,6 @@ namespace KODI
 {
 namespace GAME
 {
-class CGameClientTopology;
-class CGUIPortWindow;
-
 class CGUIPortList : public IPortList
 {
 public:
