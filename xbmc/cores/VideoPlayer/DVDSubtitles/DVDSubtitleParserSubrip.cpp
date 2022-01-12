@@ -65,7 +65,7 @@ bool CDVDSubtitleParserSubrip::Open(CDVDStreamInfo& hints)
           StringUtils::Trim(line);
 
           // empty line, next subtitle is about to start
-          if (line.length() <= 0)
+          if (line.empty())
             break;
 
           if (convText.size() > 0)
