@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "PortNode.h"
 #include "games/controllers/ControllerTypes.h"
+#include "games/ports/types/PortNode.h"
 
 #include <string>
 

@@ -8,7 +8,6 @@
 
 #include "GUIControllerWindow.h"
 
-#include "ControllerInstaller.h"
 #include "GUIControllerDefines.h"
 #include "GUIControllerList.h"
 #include "GUIFeatureList.h"
@@ -19,6 +18,7 @@
 #include "cores/RetroPlayer/guibridge/GUIGameRenderManager.h"
 #include "cores/RetroPlayer/guibridge/GUIGameSettingsHandle.h"
 #include "games/addons/GameClient.h"
+#include "games/controllers/dialogs/ControllerInstaller.h"
 #include "games/controllers/dialogs/GUIDialogIgnoreInput.h"
 #include "guilib/GUIButtonControl.h"
 #include "guilib/GUIControl.h"

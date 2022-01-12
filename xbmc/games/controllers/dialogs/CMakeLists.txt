@@ -1,9 +1,13 @@
-set(SOURCES GUIDialogAxisDetection.cpp
+set(SOURCES ControllerInstaller.cpp
+            ControllerSelect.cpp
+            GUIDialogAxisDetection.cpp
             GUIDialogButtonCapture.cpp
             GUIDialogIgnoreInput.cpp
 )
 
-set(HEADERS GUIDialogAxisDetection.h
+set(HEADERS ControllerInstaller.h
+            ControllerSelect.h
+            GUIDialogAxisDetection.h
             GUIDialogButtonCapture.h
             GUIDialogIgnoreInput.h
 )

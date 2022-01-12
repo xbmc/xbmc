@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "PhysicalPort.h"
+#include "games/ports/input/PhysicalPort.h"
 
 #include <vector>
 

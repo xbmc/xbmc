@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "ControllerNode.h"
 #include "games/controllers/ControllerTypes.h"
+#include "games/controllers/types/ControllerNode.h"
 
 #include <string>
 #include <vector>

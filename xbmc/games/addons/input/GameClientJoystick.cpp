@@ -11,7 +11,7 @@
 #include "GameClientInput.h"
 #include "games/addons/GameClient.h"
 #include "games/controllers/Controller.h"
-#include "games/controllers/input/PortInput.h"
+#include "games/ports/input/PortInput.h"
 #include "input/joysticks/interfaces/IInputReceiver.h"
 #include "utils/log.h"
 
