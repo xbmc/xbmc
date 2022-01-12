@@ -251,8 +251,8 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_iVideoLibraryRecentlyAddedItems;
     bool m_bVideoLibraryCleanOnUpdate;
     bool m_bVideoLibraryUseFastHash;
-    bool m_bVideoLibraryImportWatchedState;
-    bool m_bVideoLibraryImportResumePoint;
+    bool m_bVideoLibraryImportWatchedState{true};
+    bool m_bVideoLibraryImportResumePoint{true};
     std::vector<std::string> m_videoEpisodeExtraArt;
     std::vector<std::string> m_videoTvShowExtraArt;
     std::vector<std::string> m_videoTvSeasonExtraArt;

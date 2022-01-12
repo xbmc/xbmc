@@ -298,8 +298,6 @@ void CAdvancedSettings::Initialize()
   m_iVideoLibraryRecentlyAddedItems = 25;
   m_bVideoLibraryCleanOnUpdate = false;
   m_bVideoLibraryUseFastHash = true;
-  m_bVideoLibraryImportWatchedState = false;
-  m_bVideoLibraryImportResumePoint = false;
   m_bVideoScannerIgnoreErrors = false;
   m_iVideoLibraryDateAdded = 1; // prefer mtime over ctime and current time
 
