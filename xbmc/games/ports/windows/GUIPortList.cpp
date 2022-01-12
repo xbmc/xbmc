@@ -19,7 +19,7 @@
 #include "games/controllers/ControllerLayout.h"
 #include "games/controllers/types/ControllerHub.h"
 #include "games/controllers/types/ControllerTree.h"
-#include "games/controllers/types/PortNode.h"
+#include "games/ports/types/PortNode.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindow.h"
 #include "guilib/LocalizeStrings.h"
