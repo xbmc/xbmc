@@ -26,9 +26,15 @@ class CUDisks2Provider : public IStorageProvider
     explicit Drive(const char *object);
     ~Drive() = default;
 
-    bool IsOptical();
+    /*! \brief Check if the drive is optical
+      * @return true if the drive is optical, false otherwise
+    */
+    bool IsOptical() const;
 
-    std::string toString();
+    /*! \brief Get a representation of the drive as a readable string
+      * @return drive as a string
+    */
+    std::string ToString() const;
   };
 
   class Block
@@ -47,31 +53,86 @@ class CUDisks2Provider : public IStorageProvider
 
     bool IsReady();
 
-    std::string toString();
+    /*! \brief Get a representation of the block as a readable string
+      * @return block as a string
+    */
+    std::string ToString() const;
   };
 
   class Filesystem
   {
   public:
     Block *m_block = nullptr;
-    std::string m_object;
-    std::string m_mountPoint;
-    bool m_isMounted = false;
 
     explicit Filesystem(const char *object);
     ~Filesystem() = default;
 
-    bool IsReady();
-    bool IsOptical();
-
     bool Mount();
     bool Unmount();
 
-    std::string GetDisplayName();
-    CMediaSource ToMediaShare();
-    bool IsApproved();
+    /*! \brief Get the device display name/label
+     * @return the device display name/label
+    */
+    std::string GetDisplayName() const;
 
-    std::string toString();
+    /*! \brief Check if the device is approved/whitelisted
+     * @return true if the device is approved/whitelisted, false otherwise
+    */
+    bool IsApproved() const;
+
+    /*! \brief Check if the device is mounted
+     * @return true if the device is mounted, false otherwise
+    */
+    bool IsMounted() const;
+
+    /*! \brief Check if the device is ready
+     * @return true if the device is ready, false otherwise
+    */
+    bool IsReady() const;
+
+    /*! \brief Check if the device is optical
+     * @return true if the device is optical, false otherwise
+    */
+    bool IsOptical() const;
+
+    /*! \brief Get the device mount point
+     * @return the device mount point
+    */
+    std::string GetMountPoint() const;
+
+    /*! \brief Reset the device mount point
+    */
+    void ResetMountPoint();
+
+    /*! \brief Set the device mount point
+     * @param mountPoint the device mount point
+    */
+    void SetMountPoint(const std::string& mountPoint);
+
+    /*! \brief Get the device dbus object
+     * @return the device dbus object
+    */
+    std::string GetObject() const;
+
+    /*! \brief Get a representation of the device as a readable string
+     * @return device as a string
+    */
+    std::string ToString() const;
+
+    /*! \brief Get a representation of the device as a media share
+     * @return the media share
+    */
+    CMediaSource ToMediaShare() const;
+
+    /*! \brief Get a representation of the device as a storage device abstraction
+     * @return the storage device abstraction of the device
+    */
+    MEDIA_DETECT::StorageDevice ToStorageDevice() const;
+
+  private:
+    bool m_isMounted = false;
+    std::string m_object;
+    std::string m_mountPoint;
   };
 
   typedef std::map<std::string, Drive *> DriveMap;

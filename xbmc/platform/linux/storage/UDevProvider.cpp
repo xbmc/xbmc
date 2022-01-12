@@ -232,26 +232,29 @@ bool CUDevProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
     const char *action  = udev_device_get_action(dev);
     if (action)
     {
-      std::string label;
+      MEDIA_DETECT::StorageDevice storageDevice;
       const char *udev_label = udev_device_get_property_value(dev, "ID_FS_LABEL");
       const char *mountpoint = get_mountpoint(udev_device_get_devnode(dev));
       if (udev_label)
-        label = udev_label;
+        storageDevice.label = udev_label;
       else if (mountpoint)
-        label = URIUtils::GetFileName(mountpoint);
+      {
+        storageDevice.label = URIUtils::GetFileName(mountpoint);
+        storageDevice.path = mountpoint;
+      }
 
       const char *fs_usage = udev_device_get_property_value(dev, "ID_FS_USAGE");
       if (mountpoint && strcmp(action, "add") == 0 && (fs_usage && strcmp(fs_usage, "filesystem") == 0))
       {
         CLog::Log(LOGINFO, "UDev: Added {}", mountpoint);
         if (callback)
-          callback->OnStorageAdded(label, mountpoint);
+          callback->OnStorageAdded(storageDevice);
         changed = true;
       }
       if (strcmp(action, "remove") == 0 && (fs_usage && strcmp(fs_usage, "filesystem") == 0))
       {
         if (callback)
-          callback->OnStorageSafelyRemoved(label);
+          callback->OnStorageSafelyRemoved(storageDevice);
         changed = true;
       }
       // browse disk dialog is not wanted for blu-rays
@@ -259,18 +262,21 @@ bool CUDevProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
       if (strcmp(action, "change") == 0 && !(bd && strcmp(bd, "1") == 0))
       {
         const char *optical = udev_device_get_property_value(dev, "ID_CDROM");
-        if (mountpoint && (optical && strcmp(optical, "1") == 0))
+        bool isOptical = optical && (strcmp(optical, "1") != 0);
+        storageDevice.optical = isOptical;
+
+        if (mountpoint && !isOptical)
         {
           CLog::Log(LOGINFO, "UDev: Changed / Added {}", mountpoint);
           if (callback)
-            callback->OnStorageAdded(label, mountpoint);
+            callback->OnStorageAdded(storageDevice);
           changed = true;
         }
         const char *eject_request = udev_device_get_property_value(dev, "DISK_EJECT_REQUEST");
         if (eject_request && strcmp(eject_request, "1") == 0)
         {
           if (callback)
-            callback->OnStorageSafelyRemoved(label);
+            callback->OnStorageSafelyRemoved(storageDevice);
           changed = true;
         }
       }
