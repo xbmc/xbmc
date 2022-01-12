@@ -20,8 +20,8 @@ public:
   CGUIWindowSettingsScreenCalibration(void);
   ~CGUIWindowSettingsScreenCalibration(void) override;
   bool OnMessage(CGUIMessage& message) override;
-  bool OnAction(const CAction &action) override;
-  void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
+  bool OnAction(const CAction& action) override;
+  void DoProcess(unsigned int currentTime, CDirtyRegionList& dirtyregions) override;
   void FrameMove() override;
   void DoRender() override;
   void AllocResources(bool forceLoad = false) override;
