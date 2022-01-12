@@ -450,7 +450,7 @@ void CDVDSubtitlesLibass::ApplyStyle(style subStyle, renderOpts opts)
   }
 }
 
-void CDVDSubtitlesLibass::ConfigureAssOverride(style& subStyle, ASS_Style* style)
+void CDVDSubtitlesLibass::ConfigureAssOverride(const style& subStyle, ASS_Style* style)
 {
   // Default behaviour, disable ASS embedded styles override (if has been changed)
   int stylesFlags = ASS_OVERRIDE_BIT_SELECTIVE_FONT_SCALE;
