@@ -48,7 +48,7 @@ struct StyleRecord
 constexpr uint32_t BOX_TYPE_UUID = StreamUtils::MakeFourCC('u', 'u', 'i', 'd');
 constexpr uint32_t BOX_TYPE_STYL = StreamUtils::MakeFourCC('s', 't', 'y', 'l'); // TextStyleBox
 
-void ConvertStyleToTags(std::string& strUTF8, StyleRecord& style, bool closingTags)
+void ConvertStyleToTags(std::string& strUTF8, const StyleRecord& style, bool closingTags)
 {
   if (style.faceStyleFlags & BOLD)
     strUTF8.append(closingTags ? "{\\b0}" : "{\\b1}");
