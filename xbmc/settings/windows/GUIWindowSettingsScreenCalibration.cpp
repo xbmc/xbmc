@@ -247,7 +247,7 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
 unsigned int CGUIWindowSettingsScreenCalibration::FindCurrentResolution()
 {
   RESOLUTION curRes = CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution();
-  for (unsigned int i = 0; i < m_Res.size(); i++)
+  for (size_t i = 0; i < m_Res.size(); i++)
   {
     // If it's a CUSTOM (monitor) resolution, then CServiceBroker::GetWinSystem()->GetGfxContext().GetAllowedResolutions()
     // returns just one entry with CUSTOM in it. Update that entry to point to the current
