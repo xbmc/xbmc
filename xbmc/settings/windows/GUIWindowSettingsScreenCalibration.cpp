@@ -39,7 +39,6 @@ constexpr int CONTROL_SUBTITLES = 10;
 constexpr int CONTROL_PIXEL_RATIO = 11;
 constexpr int CONTROL_RESET = 12;
 constexpr int CONTROL_VIDEO = 20;
-constexpr int CONTROL_NONE = 0;
 
 constexpr int DEFAULT_GUI_HEIGHT = 1080;
 constexpr int DEFAULT_GUI_WIDTH = 1920;
