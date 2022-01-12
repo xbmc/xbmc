@@ -71,6 +71,7 @@ void CDVDStreamInfo::Clear()
   channellayout = 0;
 
   orientation = 0;
+  bitdepth = 0;
 }
 
 bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, int compare)
@@ -91,22 +92,26 @@ bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, int compare)
   }
 
   // VIDEO
-  if( fpsscale != right.fpsscale
-  ||  fpsrate  != right.fpsrate
-  ||  height   != right.height
-  ||  width    != right.width
-  ||  stills   != right.stills
-  ||  level    != right.level
-  ||  profile  != right.profile
-  ||  ptsinvalid != right.ptsinvalid
-  ||  forced_aspect != right.forced_aspect
-  ||  bitsperpixel != right.bitsperpixel
-  ||  vfr      != right.vfr
-  ||  colorSpace != right.colorSpace
-  ||  colorRange != right.colorRange
-  ||  colorPrimaries != right.colorPrimaries
-  ||  colorTransferCharacteristic != right.colorTransferCharacteristic
-  ||  stereo_mode != right.stereo_mode ) return false;
+  // clang-format off
+  if (fpsscale != right.fpsscale
+  || fpsrate != right.fpsrate
+  || height != right.height
+  || width != right.width
+  || stills != right.stills
+  || level != right.level
+  || profile != right.profile
+  || ptsinvalid != right.ptsinvalid
+  || forced_aspect != right.forced_aspect
+  || bitsperpixel != right.bitsperpixel
+  || bitdepth != right.bitdepth
+  || vfr != right.vfr
+  || colorSpace != right.colorSpace
+  || colorRange != right.colorRange
+  || colorPrimaries != right.colorPrimaries
+  || colorTransferCharacteristic != right.colorTransferCharacteristic
+  || stereo_mode != right.stereo_mode)
+    return false;
+  // clang-format on
 
   if (masteringMetadata && right.masteringMetadata)
   {
@@ -217,6 +222,7 @@ void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
   forced_aspect = right.forced_aspect;
   orientation = right.orientation;
   bitsperpixel = right.bitsperpixel;
+  bitdepth = right.bitdepth;
   vfr = right.vfr;
   codecOptions = right.codecOptions;
   colorSpace = right.colorSpace;
@@ -286,6 +292,7 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     forced_aspect = stream->bForcedAspect;
     orientation = stream->iOrientation;
     bitsperpixel = stream->iBitsPerPixel;
+    bitdepth = stream->bitDepth;
     colorSpace = stream->colorSpace;
     colorRange = stream->colorRange;
     colorPrimaries = stream->colorPrimaries;
