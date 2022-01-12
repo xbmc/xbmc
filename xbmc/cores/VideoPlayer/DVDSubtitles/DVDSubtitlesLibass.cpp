@@ -311,8 +311,7 @@ void CDVDSubtitlesLibass::ApplyStyle(style subStyle, renderOpts opts)
     // It is mandatory set the FontName, the text is case sensitive
     style->FontName = strdup(subStyle.fontName.c_str());
 
-    if (m_subtitleType != NATIVE ||
-        (m_subtitleType == NATIVE && subStyle.assOverrideStyles != OverrideStyles::POSITIONS))
+    if (m_subtitleType != NATIVE || subStyle.assOverrideStyles != OverrideStyles::POSITIONS)
     {
       // Configure the font properties
       // FIXME: The font size need to be scaled to be shown in right PT size
