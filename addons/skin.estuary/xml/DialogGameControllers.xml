@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
+	<description>
+		Window for game functionality. This dialog was originally for controllers,
+		but adding new XML windows breaks old skins, so it has been repurposed
+		for any game-related windows.
+	</description>
 	<defaultcontrol>3</defaultcontrol>
 	<include>Animation_DialogPopupOpenClose</include>
 	<controls>
