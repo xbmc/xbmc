@@ -397,8 +397,8 @@ bool CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
       float fHeight = pControl->GetHeight();
       info.fPixelRatio = fHeight / fWidth;
       // recenter our control...
-      pControl->SetPosition((info.iWidth - pControl->GetWidth()) / 2,
-                            (info.iHeight - pControl->GetHeight()) / 2);
+      pControl->SetPosition((static_cast<float>(info.iWidth) - pControl->GetWidth()) / 2,
+                            (static_cast<float>(info.iHeight) - pControl->GetHeight()) / 2);
       labelDescription = StringUtils::Format("[B]{}[/B][CR]{}", g_localizeStrings.Get(272),
                                              g_localizeStrings.Get(273));
       labelValue = StringUtils::Format("{:5.3f}", info.fPixelRatio);
