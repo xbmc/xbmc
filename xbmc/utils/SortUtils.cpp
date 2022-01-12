@@ -276,6 +276,22 @@ std::string BySortTitle(SortAttribute attributes, const SortItem &values)
   return title;
 }
 
+std::string ByOriginalTitle(SortAttribute attributes, const SortItem& values)
+{
+
+  std::string title = values.at(FieldOriginalTitle).asString();
+  if (title.empty())
+    title = values.at(FieldSortTitle).asString();
+
+  if (title.empty())
+    title = values.at(FieldTitle).asString();
+
+  if (attributes & SortAttributeIgnoreArticle)
+    title = SortUtils::RemoveArticles(title);
+
+  return title;
+}
+
 std::string ByRating(SortAttribute attributes, const SortItem &values)
 {
   return StringUtils::Format("{:f} {}", values.at(FieldRating).asFloat(),
@@ -666,6 +682,7 @@ std::map<SortBy, SortUtils::SortPreparator> fillPreparators()
   preparators[SortByTotalDiscs]               = ByTotalDiscs;
   preparators[SortByOrigDate]                 = ByOrigDate;
   preparators[SortByBPM]                      = ByBPM;
+  preparators[SortByOriginalTitle]            = ByOriginalTitle;
 
   return preparators;
 }
@@ -760,6 +777,9 @@ std::map<SortBy, Fields> fillSortingFields()
   sortingFields[SortByOrigDate].insert(FieldAlbum);
   sortingFields[SortByOrigDate].insert(FieldTrackNumber);
   sortingFields[SortByBPM].insert(FieldBPM);
+  sortingFields[SortByOriginalTitle].insert(FieldOriginalTitle);
+  sortingFields[SortByOriginalTitle].insert(FieldTitle);
+  sortingFields[SortByOriginalTitle].insert(FieldSortTitle);
   sortingFields.insert(std::pair<SortBy, Fields>(SortByRandom, Fields()));
 
   return sortingFields;
@@ -1144,6 +1164,8 @@ const sort_map table[] = {
   { SortByUserRating,               SORT_METHOD_VIDEO_USER_RATING,            SortAttributeIgnoreFolders, 38018 },
   { SortBySortTitle,                SORT_METHOD_VIDEO_SORT_TITLE,             SortAttributeIgnoreFolders, 171 },
   { SortBySortTitle,                SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE,  (SortAttribute)(SortAttributeIgnoreFolders | SortAttributeIgnoreArticle), 171 },
+  { SortByOriginalTitle,            SORT_METHOD_VIDEO_ORIGINAL_TITLE,         SortAttributeIgnoreFolders, 20376 },
+  { SortByOriginalTitle,            SORT_METHOD_VIDEO_ORIGINAL_TITLE_IGNORE_THE,  (SortAttribute)(SortAttributeIgnoreFolders | SortAttributeIgnoreArticle), 20376 },
   { SortByYear,                     SORT_METHOD_YEAR,                         SortAttributeIgnoreFolders, 562 },
   { SortByProductionCode,           SORT_METHOD_PRODUCTIONCODE,               SortAttributeNone,          20368 },
   { SortByProgramCount,             SORT_METHOD_PROGRAM_COUNT,                SortAttributeNone,          567 }, // label is "play count"
@@ -1261,61 +1283,62 @@ const std::string& TypeToString(const std::map<std::string, T>& typeMap, const T
  * for documentation!
  */
 const std::map<std::string, SortBy> sortMethods = {
-  { "label",            SortByLabel },
-  { "date",             SortByDate },
-  { "size",             SortBySize },
-  { "file",             SortByFile },
-  { "path",             SortByPath },
-  { "drivetype",        SortByDriveType },
-  { "title",            SortByTitle },
-  { "track",            SortByTrackNumber },
-  { "time",             SortByTime },
-  { "artist",           SortByArtist },
-  { "artistyear",       SortByArtistThenYear },
-  { "album",            SortByAlbum },
-  { "albumtype",        SortByAlbumType },
-  { "genre",            SortByGenre },
-  { "country",          SortByCountry },
-  { "year",             SortByYear },
-  { "rating",           SortByRating },
-  { "votes",            SortByVotes },
-  { "top250",           SortByTop250 },
-  { "programcount",     SortByProgramCount },
-  { "playlist",         SortByPlaylistOrder },
-  { "episode",          SortByEpisodeNumber },
-  { "season",           SortBySeason },
-  { "totalepisodes",    SortByNumberOfEpisodes },
-  { "watchedepisodes",  SortByNumberOfWatchedEpisodes },
-  { "tvshowstatus",     SortByTvShowStatus },
-  { "tvshowtitle",      SortByTvShowTitle },
-  { "sorttitle",        SortBySortTitle },
-  { "productioncode",   SortByProductionCode },
-  { "mpaa",             SortByMPAA },
-  { "videoresolution",  SortByVideoResolution },
-  { "videocodec",       SortByVideoCodec },
-  { "videoaspectratio", SortByVideoAspectRatio },
-  { "audiochannels",    SortByAudioChannels },
-  { "audiocodec",       SortByAudioCodec },
-  { "audiolanguage",    SortByAudioLanguage },
-  { "subtitlelanguage", SortBySubtitleLanguage },
-  { "studio",           SortByStudio },
-  { "dateadded",        SortByDateAdded },
-  { "lastplayed",       SortByLastPlayed },
-  { "playcount",        SortByPlaycount },
-  { "listeners",        SortByListeners },
-  { "bitrate",          SortByBitrate },
-  { "random",           SortByRandom },
-  { "channel",          SortByChannel },
-  { "channelnumber",    SortByChannelNumber },
-  { "clientchannelorder", SortByClientChannelOrder },
-  { "datetaken",        SortByDateTaken },
-  { "userrating",       SortByUserRating },
-  { "installdate",      SortByInstallDate },
-  { "lastupdated",      SortByLastUpdated },
-  { "lastused",         SortByLastUsed },
-  { "totaldiscs",       SortByTotalDiscs },
-  { "originaldate",     SortByOrigDate },
-  { "bpm",              SortByBPM },
+    {"label", SortByLabel},
+    {"date", SortByDate},
+    {"size", SortBySize},
+    {"file", SortByFile},
+    {"path", SortByPath},
+    {"drivetype", SortByDriveType},
+    {"title", SortByTitle},
+    {"track", SortByTrackNumber},
+    {"time", SortByTime},
+    {"artist", SortByArtist},
+    {"artistyear", SortByArtistThenYear},
+    {"album", SortByAlbum},
+    {"albumtype", SortByAlbumType},
+    {"genre", SortByGenre},
+    {"country", SortByCountry},
+    {"year", SortByYear},
+    {"rating", SortByRating},
+    {"votes", SortByVotes},
+    {"top250", SortByTop250},
+    {"programcount", SortByProgramCount},
+    {"playlist", SortByPlaylistOrder},
+    {"episode", SortByEpisodeNumber},
+    {"season", SortBySeason},
+    {"totalepisodes", SortByNumberOfEpisodes},
+    {"watchedepisodes", SortByNumberOfWatchedEpisodes},
+    {"tvshowstatus", SortByTvShowStatus},
+    {"tvshowtitle", SortByTvShowTitle},
+    {"sorttitle", SortBySortTitle},
+    {"productioncode", SortByProductionCode},
+    {"mpaa", SortByMPAA},
+    {"videoresolution", SortByVideoResolution},
+    {"videocodec", SortByVideoCodec},
+    {"videoaspectratio", SortByVideoAspectRatio},
+    {"audiochannels", SortByAudioChannels},
+    {"audiocodec", SortByAudioCodec},
+    {"audiolanguage", SortByAudioLanguage},
+    {"subtitlelanguage", SortBySubtitleLanguage},
+    {"studio", SortByStudio},
+    {"dateadded", SortByDateAdded},
+    {"lastplayed", SortByLastPlayed},
+    {"playcount", SortByPlaycount},
+    {"listeners", SortByListeners},
+    {"bitrate", SortByBitrate},
+    {"random", SortByRandom},
+    {"channel", SortByChannel},
+    {"channelnumber", SortByChannelNumber},
+    {"clientchannelorder", SortByClientChannelOrder},
+    {"datetaken", SortByDateTaken},
+    {"userrating", SortByUserRating},
+    {"installdate", SortByInstallDate},
+    {"lastupdated", SortByLastUpdated},
+    {"lastused", SortByLastUsed},
+    {"totaldiscs", SortByTotalDiscs},
+    {"originaldate", SortByOrigDate},
+    {"bpm", SortByBPM},
+    {"originaltitle", SortByOriginalTitle},
 };
 
 SortBy SortUtils::SortMethodFromString(const std::string& sortMethod)

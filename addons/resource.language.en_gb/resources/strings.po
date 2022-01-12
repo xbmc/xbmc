@@ -13336,6 +13336,9 @@ msgctxt "#20375"
 msgid "Unassign content"
 msgstr ""
 
+#. Original title of the movie/tvshow (could differ from local distributor title) (ListItem.OriginalTitle)
+#: xbmc/video/GUIViewStateVideo.cpp
+#: xbmc/playlists/SmartPlayList.cpp
 msgctxt "#20376"
 msgid "Original title"
 msgstr ""
