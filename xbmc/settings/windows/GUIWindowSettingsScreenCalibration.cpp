@@ -318,7 +318,8 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
     auto& size = m_controlsSize[CONTROL_TOP_LEFT];
     pControl->SetHeight(size.first / DEFAULT_GUI_HEIGHT * info.iHeight);
     pControl->SetWidth(size.second / DEFAULT_GUI_WIDTH * info.iWidth);
-    pControl->SetPosition((float)info.Overscan.left, (float)info.Overscan.top);
+    pControl->SetPosition(static_cast<float>(info.Overscan.left),
+                          static_cast<float>(info.Overscan.top));
     pControl->SetLocation(info.Overscan.left, info.Overscan.top, false);
   }
   pControl = dynamic_cast<CGUIMoverControl*>(GetControl(CONTROL_BOTTOM_RIGHT));
@@ -329,8 +330,8 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
     auto& size = m_controlsSize[CONTROL_BOTTOM_RIGHT];
     pControl->SetHeight(size.first / DEFAULT_GUI_HEIGHT * info.iHeight);
     pControl->SetWidth(size.second / DEFAULT_GUI_WIDTH * info.iWidth);
-    pControl->SetPosition((float)info.Overscan.right - (int)pControl->GetWidth(),
-                          (float)info.Overscan.bottom - (int)pControl->GetHeight());
+    pControl->SetPosition(static_cast<float>(info.Overscan.right) - pControl->GetWidth(),
+                          static_cast<float>(info.Overscan.bottom) - pControl->GetHeight());
     pControl->SetLocation(info.Overscan.right, info.Overscan.bottom, false);
   }
   // Subtitles and OSD controls can only move up and down
