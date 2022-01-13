@@ -18,6 +18,7 @@
 #include "utils/Stopwatch.h"
 
 #include <list>
+#include <memory>
 #include <utility>
 #include <vector>
 
@@ -34,7 +35,7 @@ class CGUIBaseContainer : public IGUIContainer
 {
 public:
   CGUIBaseContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, const CScroller& scroller, int preloadItems);
-  CGUIBaseContainer(const CGUIBaseContainer &);
+  explicit CGUIBaseContainer(const CGUIBaseContainer& other);
   ~CGUIBaseContainer(void) override;
 
   bool OnAction(const CAction &action) override;
@@ -75,7 +76,7 @@ public:
   /*! \brief Set the list provider for this container (for python).
    \param provider the list provider to use for this container.
    */
-  void SetListProvider(IListProvider *provider);
+  void SetListProvider(std::unique_ptr<IListProvider> provider);
 
   /*! \brief Set the offset of the first item in the container from the container's position
    Useful for lists/panels where the focused item may be larger than the non-focused items and thus
@@ -147,8 +148,8 @@ protected:
   std::list<CGUIListItemLayout> m_layouts;
   std::list<CGUIListItemLayout> m_focusedLayouts;
 
-  CGUIListItemLayout *m_layout;
-  CGUIListItemLayout *m_focusedLayout;
+  CGUIListItemLayout* m_layout{nullptr};
+  CGUIListItemLayout* m_focusedLayout{nullptr};
   bool m_layoutCondition = false;
   bool m_focusedLayoutCondition = false;
 
@@ -158,7 +159,7 @@ protected:
 
   CScroller m_scroller;
 
-  IListProvider *m_listProvider;
+  std::unique_ptr<IListProvider> m_listProvider;
 
   bool m_wasReset;  // true if we've received a Reset message until we've rendered once.  Allows
                     // us to make sure we don't tell the infomanager that we've been moving when

@@ -1406,8 +1406,8 @@ namespace XBMCAddon
       }
 
       // set static list
-      IListProvider *provider = new CStaticListProvider(items);
-      static_cast<CGUIBaseContainer*>(pGUIControl)->SetListProvider(provider);
+      std::unique_ptr<IListProvider> provider = std::make_unique<CStaticListProvider>(items);
+      static_cast<CGUIBaseContainer*>(pGUIControl)->SetListProvider(std::move(provider));
     }
 
     // ============================================================

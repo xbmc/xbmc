@@ -13,28 +13,28 @@
 #include "StaticProvider.h"
 #include "utils/XBMCTinyXML.h"
 
-IListProvider *IListProvider::Create(const TiXmlNode *node, int parentID)
+std::unique_ptr<IListProvider> IListProvider::Create(const TiXmlNode* node, int parentID)
 {
   const TiXmlNode *root = node->FirstChild("content");
   if (root)
   {
     const TiXmlNode *next = root->NextSibling("content");
     if (next)
-      return new CMultiProvider(root, parentID);
+      return std::make_unique<CMultiProvider>(root, parentID);
 
     return CreateSingle(root, parentID);
   }
-  return NULL;
+  return std::unique_ptr<IListProvider>{};
 }
 
-IListProvider *IListProvider::CreateSingle(const TiXmlNode *content, int parentID)
+std::unique_ptr<IListProvider> IListProvider::CreateSingle(const TiXmlNode* content, int parentID)
 {
   const TiXmlElement *item = content->FirstChildElement("item");
   if (item)
-    return new CStaticListProvider(content->ToElement(), parentID);
+    return std::make_unique<CStaticListProvider>(content->ToElement(), parentID);
 
   if (!content->NoChildren())
-    return new CDirectoryProvider(content->ToElement(), parentID);
+    return std::make_unique<CDirectoryProvider>(content->ToElement(), parentID);
 
-  return NULL;
+  return std::unique_ptr<IListProvider>{};
 }

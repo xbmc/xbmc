@@ -18,8 +18,11 @@ class CStaticListProvider : public IListProvider
 public:
   CStaticListProvider(const TiXmlElement *element, int parentID);
   explicit CStaticListProvider(const std::vector<CGUIStaticItemPtr> &items); // for python
+  explicit CStaticListProvider(const CStaticListProvider& other);
   ~CStaticListProvider() override;
 
+  // Implementation of IListProvider
+  std::unique_ptr<IListProvider> Clone() override;
   bool Update(bool forceRefresh) override;
   void Fetch(std::vector<CGUIListItemPtr> &items) override;
   bool OnClick(const CGUIListItemPtr &item) override;
