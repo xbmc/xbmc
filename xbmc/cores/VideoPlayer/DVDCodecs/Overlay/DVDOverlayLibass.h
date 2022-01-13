@@ -18,9 +18,8 @@ class CDVDOverlayLibass : public CDVDOverlay
 public:
   explicit CDVDOverlayLibass(const std::shared_ptr<CDVDSubtitlesLibass>& libass,
                              DVDOverlayType type)
-    : CDVDOverlay(type)
+    : CDVDOverlay(type), m_libass(libass)
   {
-    m_libass = libass;
   }
 
   CDVDOverlayLibass(const CDVDOverlayLibass& src) : CDVDOverlay(src), m_libass(src.m_libass) {}

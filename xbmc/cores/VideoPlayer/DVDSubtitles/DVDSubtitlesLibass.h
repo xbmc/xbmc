@@ -144,7 +144,7 @@ protected:
 
 
 private:
-  void ConfigureAssOverride(KODI::SUBTITLES::style& subStyle, ASS_Style* style);
+  void ConfigureAssOverride(const KODI::SUBTITLES::style& subStyle, ASS_Style* style);
   void ConfigureFont(bool overrideFont, std::string fontName);
   void ApplyStyle(KODI::SUBTITLES::style subStyle, KODI::SUBTITLES::renderOpts opts);
 
