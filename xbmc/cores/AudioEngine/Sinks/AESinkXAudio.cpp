@@ -577,6 +577,7 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
 
     /* Store the device info */
     deviceInfo.m_wantsIECPassthrough = true;
+    deviceInfo.m_onlyPCM = true;
 
     if (!deviceInfo.m_streamTypes.empty())
       deviceInfo.m_dataFormats.push_back(AE_FMT_RAW);
@@ -589,6 +590,7 @@ void CAESinkXAudio::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
       deviceInfo.m_displayName = std::string("default");
       deviceInfo.m_displayNameExtra = std::string("");
       deviceInfo.m_wantsIECPassthrough = true;
+      deviceInfo.m_onlyPCM = true;
       deviceInfoList.push_back(deviceInfo);
     }
   }
