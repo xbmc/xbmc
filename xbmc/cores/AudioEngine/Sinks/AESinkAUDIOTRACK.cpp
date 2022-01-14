@@ -983,6 +983,10 @@ void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   UpdateAvailablePassthroughCapabilities(isRaw);
   m_info_raw = m_info;
 
+  // no need to display two PCM sinks - as they are the same
+  if (!list.empty())
+    m_info_raw.m_onlyPassthrough = true;
+
   list.push_back(m_info_raw);
 }
 

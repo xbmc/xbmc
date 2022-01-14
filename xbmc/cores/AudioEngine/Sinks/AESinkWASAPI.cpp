@@ -12,6 +12,7 @@
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "utils/StringUtils.h"
+#include "utils/SystemInfo.h"
 #include "utils/TimeUtils.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
@@ -399,6 +400,8 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
   WAVEFORMATEXTENSIBLE wfxex = {0};
   HRESULT              hr;
 
+  const bool onlyPT = (CSysInfo::GetWindowsDeviceFamily() == CSysInfo::WindowsDeviceFamily::Xbox);
+
   for(RendererDetail& details : CAESinkFactoryWin::GetRendererDetails())
   {
     deviceInfo.m_channels.Reset();
@@ -633,18 +636,20 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
 
     /* Store the device info */
     deviceInfo.m_wantsIECPassthrough = true;
+    deviceInfo.m_onlyPassthrough = onlyPT;
 
     if (!deviceInfo.m_streamTypes.empty())
       deviceInfo.m_dataFormats.push_back(AE_FMT_RAW);
 
     deviceInfoList.push_back(deviceInfo);
 
-    if(details.bDefault)
+    if (details.bDefault)
     {
       deviceInfo.m_deviceName = std::string("default");
       deviceInfo.m_displayName = std::string("default");
       deviceInfo.m_displayNameExtra = std::string("");
       deviceInfo.m_wantsIECPassthrough = true;
+      deviceInfo.m_onlyPassthrough = onlyPT;
       deviceInfoList.push_back(deviceInfo);
     }
 
