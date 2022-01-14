@@ -44,6 +44,10 @@ CGUIListItemLayout::CGUIListItemLayout(const CGUIListItemLayout& from, CGUIContr
 {
   m_group.SetParentControl(control);
   m_infoUpdateTimeout.Set(m_infoUpdateMillis);
+
+  // m_group was just created, cloned controls with resources must be allocated
+  // before use
+  m_group.AllocResources();
 }
 
 bool CGUIListItemLayout::IsAnimating(ANIMATION_TYPE animType)
