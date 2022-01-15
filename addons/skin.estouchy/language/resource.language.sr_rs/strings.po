@@ -73,22 +73,27 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "Албуми"
 
+#. Label to show PVR info page
 msgctxt "#31017"
-msgid "PVR info"
-msgstr "PVR информације"
+msgid "PVR"
+msgstr ""
 
+#. Label to show player info page
 msgctxt "#31018"
-msgid "Player process info"
-msgstr "Информације процеса уређаја за репродукцију"
+msgid "Player"
+msgstr ""
 
+#. Label to show video decoder name
 msgctxt "#31019"
 msgid "Video decoder"
 msgstr "Видео декодер"
 
+#. Label to show the video pixel format
 msgctxt "#31020"
 msgid "Pixel format"
 msgstr "Облик приказа пиксела"
 
+#. Label to show the system memory usage
 msgctxt "#31021"
 msgid "System memory usage"
 msgstr "Коришћење меморије система"
@@ -337,6 +342,67 @@ msgctxt "#31565"
 msgid "Show deleted"
 msgstr "Прикажи избрисано"
 
+# empty strings from id 31566 to 31599
+#. Label to show the video codec name
+msgctxt "#31600"
+msgid "Video codec"
+msgstr ""
+
+#. Label to show the video resolution
+msgctxt "#31601"
+msgid "Video resolution"
+msgstr ""
+
+#. Label to show the video aspect
+msgctxt "#31602"
+msgid "Video aspect"
+msgstr ""
+
+#. Label to show the video bitrate
+msgctxt "#31603"
+msgid "Video bitrate"
+msgstr ""
+
+#. Label to show the audio codec name
+msgctxt "#31604"
+msgid "Audio codec"
+msgstr ""
+
+#. Label to show the number of audio channels
+msgctxt "#31605"
+msgid "Audio channels"
+msgstr ""
+
+#. Label to show the audio bitrate
+msgctxt "#31606"
+msgid "Audio bitrate"
+msgstr ""
+
+#. Label to show the screen resolution
+msgctxt "#31607"
+msgid "Screen resolution"
+msgstr ""
+
+#. Label to show the system rendering speed
+msgctxt "#31608"
+msgid "System rendering speed"
+msgstr ""
+
+#. Label to show the system CPU usage
+msgctxt "#31609"
+msgid "System CPU usage"
+msgstr ""
+
+#. Label to show the media (metadata) info page
+msgctxt "#31610"
+msgid "Media"
+msgstr ""
+
+#. Label to show the system info page
+msgctxt "#31611"
+msgid "System"
+msgstr ""
+
 msgctxt "#31900"
 msgid "First Run"
 msgstr "Прво покретање"
@@ -356,3 +422,11 @@ msgstr "Када пуштате аудио или видео, назив ста�
 msgctxt "#31904"
 msgid "Now Playing Title..."
 msgstr "Назив Сада Пуштено..."
+
+#~ msgctxt "#31017"
+#~ msgid "PVR info"
+#~ msgstr "PVR информације"
+
+#~ msgctxt "#31018"
+#~ msgid "Player process info"
+#~ msgstr "Информације процеса уређаја за репродукцију"

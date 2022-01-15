@@ -7,15 +7,15 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2021-11-23 03:23+0000\n"
-"Last-Translator: Édouard Duliège <edouard@duliege.com>\n"
+"PO-Revision-Date: 2022-01-13 10:47+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: French (France) <https://kodi.weblate.cloud/projects/kodi-core/audioencoder-kodi-builtin-aac/fr_fr/>\n"
 "Language: fr_fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.9\n"
+"X-Generator: Weblate 4.10.1\n"
 
 msgctxt "Addon Summary"
 msgid "AAC Audio Encoder"
@@ -25,7 +25,6 @@ msgctxt "Addon Description"
 msgid "AAC is a set of codecs designed to provide better compression than MP3s, and are improved versions of MPEG audio."
 msgstr "AAC est un ensemble de codecs conçus pour fournir une meilleur compression que le MP3, et sont des versions améliorés de MPEG audio."
 
-#, fuzzy
 #. Bitrate to use on for compression
 #: resources/settings.xml
 msgctxt "#30000"
