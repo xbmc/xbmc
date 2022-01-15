@@ -435,10 +435,15 @@ void CUDisks2Provider::FilesystemAdded(Filesystem *fs, bool isNew)
     m_filesystems[fs->GetObject()] = fs;
   }
 
-  if (fs->IsReady() && !fs->IsMounted() &&
-      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_handleMounting)
+  if (fs->IsReady() && !fs->IsMounted())
   {
-    fs->Mount();
+    // optical drives should be always mounted by default unless explicitly disabled by the user
+    if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_handleMounting ||
+        (fs->IsOptical() &&
+         CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_autoMountOpticalMedia))
+    {
+      fs->Mount();
+    }
   }
 }
 

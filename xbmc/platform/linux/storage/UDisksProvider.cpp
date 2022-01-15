@@ -304,8 +304,13 @@ void CUDisksProvider::DeviceAdded(const char *object, IStorageEventsCallback *ca
     device = new CUDiskDevice(object);
   m_AvailableDevices[object] = device;
 
-  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_handleMounting)
+  // optical drives should be always mounted by default unless explicitly disabled by the user
+  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_handleMounting ||
+      (device->IsOptical() &&
+       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_autoMountOpticalMedia))
+  {
     device->Mount();
+  }
 
   CLog::Log(LOGDEBUG, LOGDBUS, "UDisks: DeviceAdded - {}", device->ToString());
 
@@ -345,12 +350,16 @@ void CUDisksProvider::DeviceChanged(const char *object, IStorageEventsCallback *
   else
   {
     bool mounted = device->IsMounted();
-    /* make sure to not silently remount ejected usb thumb drives
-       that user wants to eject, but make sure to mount blurays */
-    if (!mounted &&
-        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_handleMounting &&
-        device->IsOptical())
-      device->Mount();
+    // make sure to not silently remount ejected usb thumb drives that user wants to eject
+    // optical drives should be always mounted by default unless explicitly disabled by the user
+    const auto advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+    if (!mounted && device->IsOptical())
+    {
+      if (advancedSettings->m_handleMounting || advancedSettings->m_autoMountOpticalMedia)
+      {
+        device->Mount();
+      }
+    }
 
     device->Update();
     if (!mounted && device->IsMounted() && callback)

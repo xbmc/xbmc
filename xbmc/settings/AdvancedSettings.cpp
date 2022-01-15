@@ -909,6 +909,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   XMLUtils::GetInt(pRootElement,     "airplayport", m_airPlayPort);
 
   XMLUtils::GetBoolean(pRootElement, "handlemounting", m_handleMounting);
+  XMLUtils::GetBoolean(pRootElement, "automountopticalmedia", m_autoMountOpticalMedia);
 
 #if defined(TARGET_WINDOWS_DESKTOP)
   XMLUtils::GetBoolean(pRootElement, "minimizetotray", m_minimizeToTray);

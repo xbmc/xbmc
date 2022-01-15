@@ -191,7 +191,16 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_airTunesPort;
     int m_airPlayPort;
 
+    /*! \brief Only used in linux for the udisks and udisks2 providers
+    * defines if kodi should automount media drives
+    * @note if kodi is running standalone (--standalone option) it will
+    * be set to tue
+    */
     bool m_handleMounting;
+    /*! \brief Only used in linux for the udisks and udisks2 providers
+    * defines if kodi should automount optical discs
+    */
+    bool m_autoMountOpticalMedia{true};
 
     bool m_fullScreenOnMovieStart;
     std::string m_cachePath;
