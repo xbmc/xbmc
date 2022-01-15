@@ -1,6 +1,6 @@
 --- a/configure.ac
 +++ b/configure.ac
-@@ -1214,15 +1214,6 @@
+@@ -1221,15 +1221,6 @@
          ARFLAGS="rcs"
  fi
  
@@ -26,7 +26,7 @@
  SOABI=		@SOABI@
  LDVERSION=	@LDVERSION@
  LIBPYTHON=	@LIBPYTHON@
-@@ -635,7 +635,7 @@
+@@ -634,7 +634,7 @@
  		$(PYTHON_FOR_BUILD) $(srcdir)/setup.py $$quiet build"; \
  	$(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' \
  		_TCLTK_INCLUDES='$(TCLTK_INCLUDES)' _TCLTK_LIBS='$(TCLTK_LIBS)' \
@@ -35,7 +35,7 @@
  
  
  # Build static library
-@@ -1695,10 +1595,11 @@
+@@ -1694,10 +1694,11 @@
  # This goes into $(exec_prefix)
  sharedinstall: sharedmods
  	$(RUNSHARED) $(PYTHON_FOR_BUILD) $(srcdir)/setup.py install \
@@ -70,12 +70,11 @@
  HOST_PLATFORM = get_platform()
  MS_WINDOWS = (HOST_PLATFORM == 'win32')
  CYGWIN = (HOST_PLATFORM == 'cygwin')
-@@ -442,6 +442,7 @@
+@@ -445,6 +445,7 @@
          self.compiler.set_executables(**args)
  
      def build_extensions(self):
 +        return
          self.set_srcdir()
- 
-         # Detect which modules should be compiled
- 
+         self.set_compiler_executables()
+         self.configure_compiler()

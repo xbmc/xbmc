@@ -1,15 +1,9 @@
-include ../../Makefile.include
+include ../../Makefile.include PYTHON3-VERSION
 PLATFORM=$(NATIVEPLATFORM)
-DEPS= ../../Makefile.include Makefile 01-distutil-flags.patch
+DEPS= ../../Makefile.include Makefile PYTHON3-VERSION 01-distutil-flags.patch
 
-# lib name, version
-LIBNAME=Python
-VERSION=3.9.7
-SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.xz
 CWD=$(shell pwd)
 HOSTPYTHONDIR=$(CWD)/$(PLATFORM)/hostpython
-BASE_URL=https://www.python.org/ftp/python/$(VERSION)
 
 CONFIGURE=./configure --prefix=$(NATIVEPREFIX) --disable-shared --disable-framework --without-pymalloc --with-system-ffi
 ifeq ($(OS),linux)

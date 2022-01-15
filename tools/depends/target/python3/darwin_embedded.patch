@@ -10,7 +10,7 @@
          except OSError as e:
 --- a/Lib/platform.py
 +++ b/Lib/platform.py
-@@ -614,7 +614,7 @@
+@@ -615,7 +615,7 @@
          default in case the command should fail.
  
      """
