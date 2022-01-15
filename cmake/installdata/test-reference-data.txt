@@ -1,3 +1,12 @@
+xbmc/cores/VideoPlayer/test/edl/testdata/mplayertimebased.edl
+xbmc/cores/VideoPlayer/test/edl/testdata/mplayertimebasedinterleavedcuts.edl
+xbmc/cores/VideoPlayer/test/edl/testdata/mplayerframebased.edl
+xbmc/cores/VideoPlayer/test/edl/testdata/mplayertimebasedmixed.edl
+xbmc/cores/VideoPlayer/test/edl/testdata/videoredo.Vprj
+xbmc/cores/VideoPlayer/test/edl/testdata/snapstream.mkv.chapters.xml
+xbmc/cores/VideoPlayer/test/edl/testdata/comskipversion1.txt
+xbmc/cores/VideoPlayer/test/edl/testdata/comskipversion2.txt
+xbmc/cores/VideoPlayer/test/edl/testdata/edlautowindautowait.edl
 xbmc/utils/test/CXBMCTinyXML-test.xml
 xbmc/utils/test/data/language/Spanish/strings.po
 xbmc/filesystem/test/extendedlocalheader.zip
