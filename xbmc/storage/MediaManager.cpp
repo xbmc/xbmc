@@ -689,28 +689,50 @@ std::vector<std::string> CMediaManager::GetDiskUsage()
   return m_platformStorage->GetDiskUsage();
 }
 
-void CMediaManager::OnStorageAdded(const std::string &label, const std::string &path)
+void CMediaManager::OnStorageAdded(const MEDIA_DETECT::StorageDevice& device)
 {
 #ifdef HAS_DVD_DRIVE
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   if (settings->GetInt(CSettings::SETTING_AUDIOCDS_AUTOACTION) != AUTOCD_NONE || settings->GetBool(CSettings::SETTING_DVDS_AUTORUN))
+  {
     if (settings->GetInt(CSettings::SETTING_AUDIOCDS_AUTOACTION) == AUTOCD_RIP)
-      CJobManager::GetInstance().AddJob(new CAutorunMediaJob(label, path), this, CJob::PRIORITY_LOW);
+    {
+      CJobManager::GetInstance().AddJob(new CAutorunMediaJob(device.label, device.path), this,
+                                        CJob::PRIORITY_LOW);
+    }
     else
-      CJobManager::GetInstance().AddJob(new CAutorunMediaJob(label, path), this, CJob::PRIORITY_HIGH);
+    {
+      if (device.optical)
+      {
+        if (MEDIA_DETECT::CAutorun::ExecuteAutorun(device.path))
+        {
+          return;
+        }
+        CLog::Log(LOGDEBUG, "{}: Could not execute autorun for optical disc with path {}",
+                  __FUNCTION__, device.path);
+      }
+      CJobManager::GetInstance().AddJob(new CAutorunMediaJob(device.label, device.path), this,
+                                        CJob::PRIORITY_HIGH);
+    }
+  }
   else
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(13021), label, TOAST_DISPLAY_TIME, false);
+  {
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(13021),
+                                          device.label, TOAST_DISPLAY_TIME, false);
+  }
 #endif
 }
 
-void CMediaManager::OnStorageSafelyRemoved(const std::string &label)
+void CMediaManager::OnStorageSafelyRemoved(const MEDIA_DETECT::StorageDevice& device)
 {
-  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(13023), label, TOAST_DISPLAY_TIME, false);
+  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(13023),
+                                        device.label, TOAST_DISPLAY_TIME, false);
 }
 
-void CMediaManager::OnStorageUnsafelyRemoved(const std::string &label)
+void CMediaManager::OnStorageUnsafelyRemoved(const MEDIA_DETECT::StorageDevice& device)
 {
-  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(13022), label);
+  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(13022),
+                                        device.label);
 }
 
 CMediaManager::DiscInfo CMediaManager::GetDiscInfo(const std::string& mediaPath)

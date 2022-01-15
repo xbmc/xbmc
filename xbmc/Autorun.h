@@ -53,7 +53,12 @@ public:
   void Enable();
   void Disable();
   void HandleAutorun();
-  static void ExecuteAutorun(const std::string& path = "", bool bypassSettings = false, bool ignoreplaying = true, bool startFromBeginning = false);
+
+  /*! \brief Execute the autorun. Used for example to automatically rip cds or play optical discs
+    * @param path the path for the item (e.g. the disc path)
+    * @return true if some action was executed, false otherwise
+    */
+  static bool ExecuteAutorun(const std::string& path);
 
   static void SettingOptionAudioCdActionsFiller(const std::shared_ptr<const CSetting>& setting,
                                                 std::vector<IntegerSettingOption>& list,
