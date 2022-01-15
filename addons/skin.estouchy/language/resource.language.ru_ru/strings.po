@@ -7,15 +7,15 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2021-10-21 14:14+0000\n"
-"Last-Translator: Dmitry Petrov <dimakrm361@gmail.com>\n"
+"PO-Revision-Date: 2021-12-17 19:58+0000\n"
+"Last-Translator: vdkbsd <valexgus@gmail.com>\n"
 "Language-Team: Russian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/ru_ru/>\n"
 "Language: ru_ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
-"X-Generator: Weblate 4.8\n"
+"X-Generator: Weblate 4.10\n"
 
 msgctxt "Addon Summary"
 msgid "Skin for touchscreen devices"
@@ -73,22 +73,27 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "Альбомы"
 
+#. Label to show PVR info page
 msgctxt "#31017"
-msgid "PVR info"
-msgstr "Сведения PVR"
+msgid "PVR"
+msgstr "PVR"
 
+#. Label to show player info page
 msgctxt "#31018"
-msgid "Player process info"
-msgstr "Сведения о проигрывателе"
+msgid "Player"
+msgstr "Проигрыватель"
 
+#. Label to show video decoder name
 msgctxt "#31019"
 msgid "Video decoder"
 msgstr "Видеодекодер"
 
+#. Label to show the video pixel format
 msgctxt "#31020"
 msgid "Pixel format"
 msgstr "Формат пикселей"
 
+#. Label to show the system memory usage
 msgctxt "#31021"
 msgid "System memory usage"
 msgstr "Использование памяти"
@@ -337,6 +342,67 @@ msgctxt "#31565"
 msgid "Show deleted"
 msgstr "Показать удаленное"
 
+# empty strings from id 31566 to 31599
+#. Label to show the video codec name
+msgctxt "#31600"
+msgid "Video codec"
+msgstr "Видеокодек"
+
+#. Label to show the video resolution
+msgctxt "#31601"
+msgid "Video resolution"
+msgstr "Разрешение видео"
+
+#. Label to show the video aspect
+msgctxt "#31602"
+msgid "Video aspect"
+msgstr "Соотношение сторон видео"
+
+#. Label to show the video bitrate
+msgctxt "#31603"
+msgid "Video bitrate"
+msgstr "Битрейт видео"
+
+#. Label to show the audio codec name
+msgctxt "#31604"
+msgid "Audio codec"
+msgstr "Аудиокодек"
+
+#. Label to show the number of audio channels
+msgctxt "#31605"
+msgid "Audio channels"
+msgstr "Аудиоканалы"
+
+#. Label to show the audio bitrate
+msgctxt "#31606"
+msgid "Audio bitrate"
+msgstr "Битрейт аудио"
+
+#. Label to show the screen resolution
+msgctxt "#31607"
+msgid "Screen resolution"
+msgstr "Разрешение экрана"
+
+#. Label to show the system rendering speed
+msgctxt "#31608"
+msgid "System rendering speed"
+msgstr "Скорость отрисовки системы"
+
+#. Label to show the system CPU usage
+msgctxt "#31609"
+msgid "System CPU usage"
+msgstr "Использование ЦП системы"
+
+#. Label to show the media (metadata) info page
+msgctxt "#31610"
+msgid "Media"
+msgstr "Медиа"
+
+#. Label to show the system info page
+msgctxt "#31611"
+msgid "System"
+msgstr "Система"
+
 msgctxt "#31900"
 msgid "First Run"
 msgstr "Первый запуск"
@@ -356,3 +422,11 @@ msgstr "Когда вы воспроизводите аудио или виде�
 msgctxt "#31904"
 msgid "Now Playing Title..."
 msgstr "Сейчас играет название..."
+
+#~ msgctxt "#31017"
+#~ msgid "PVR info"
+#~ msgstr "Сведения PVR"
+
+#~ msgctxt "#31018"
+#~ msgid "Player process info"
+#~ msgstr "Сведения о проигрывателе"

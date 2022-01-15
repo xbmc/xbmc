@@ -5,16 +5,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Spanish (Spain) (http://www.transifex.com/projects/p/kodi-main/language/es_ES/)\n"
-"Language: es_ES\n"
+"PO-Revision-Date: 2022-01-03 13:36+0000\n"
+"Last-Translator: Alfonso Cachero <alfonso.cachero@gmail.com>\n"
+"Language-Team: Spanish (Spain) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/es_es/>\n"
+"Language: es_es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.10.1\n"
 
 msgctxt "Addon Summary"
 msgid "Skin for touchscreen devices"
@@ -72,22 +73,27 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "Álbumes"
 
+#. Label to show PVR info page
 msgctxt "#31017"
-msgid "PVR info"
-msgstr "Información de PVR"
+msgid "PVR"
+msgstr "PVR"
 
+#. Label to show player info page
 msgctxt "#31018"
-msgid "Player process info"
-msgstr "Información de procesos del Reproductor"
+msgid "Player"
+msgstr "Reproductor"
 
+#. Label to show video decoder name
 msgctxt "#31019"
 msgid "Video decoder"
 msgstr "Decodificador de vídeo"
 
+#. Label to show the video pixel format
 msgctxt "#31020"
 msgid "Pixel format"
 msgstr "Formato de Píxel"
 
+#. Label to show the system memory usage
 msgctxt "#31021"
 msgid "System memory usage"
 msgstr "Uso de memoria del sistema"
@@ -336,6 +342,67 @@ msgctxt "#31565"
 msgid "Show deleted"
 msgstr "Mostrar eliminados"
 
+# empty strings from id 31566 to 31599
+#. Label to show the video codec name
+msgctxt "#31600"
+msgid "Video codec"
+msgstr "Códec de vídeo"
+
+#. Label to show the video resolution
+msgctxt "#31601"
+msgid "Video resolution"
+msgstr "Resolución de Vídeo"
+
+#. Label to show the video aspect
+msgctxt "#31602"
+msgid "Video aspect"
+msgstr "Aspecto de vídeo"
+
+#. Label to show the video bitrate
+msgctxt "#31603"
+msgid "Video bitrate"
+msgstr "Tasa de bits de vídeo"
+
+#. Label to show the audio codec name
+msgctxt "#31604"
+msgid "Audio codec"
+msgstr "Códec de audio"
+
+#. Label to show the number of audio channels
+msgctxt "#31605"
+msgid "Audio channels"
+msgstr "Canales de audio"
+
+#. Label to show the audio bitrate
+msgctxt "#31606"
+msgid "Audio bitrate"
+msgstr "Tasa de bits de audio"
+
+#. Label to show the screen resolution
+msgctxt "#31607"
+msgid "Screen resolution"
+msgstr "Resolución de pantalla"
+
+#. Label to show the system rendering speed
+msgctxt "#31608"
+msgid "System rendering speed"
+msgstr "Velocidad de renderizado del sistema"
+
+#. Label to show the system CPU usage
+msgctxt "#31609"
+msgid "System CPU usage"
+msgstr "Uso de CPU del sistema"
+
+#. Label to show the media (metadata) info page
+msgctxt "#31610"
+msgid "Media"
+msgstr "Contenido"
+
+#. Label to show the system info page
+msgctxt "#31611"
+msgid "System"
+msgstr "Sistema"
+
 msgctxt "#31900"
 msgid "First Run"
 msgstr "Primer uso"
@@ -355,3 +422,11 @@ msgstr "Cuando esté reproduciendo vídeo o audio, el título del elemento apare
 msgctxt "#31904"
 msgid "Now Playing Title..."
 msgstr "Título de la reproducción actual..."
+
+#~ msgctxt "#31017"
+#~ msgid "PVR info"
+#~ msgstr "Información de PVR"
+
+#~ msgctxt "#31018"
+#~ msgid "Player process info"
+#~ msgstr "Información de procesos del Reproductor"

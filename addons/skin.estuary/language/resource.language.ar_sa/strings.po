@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2021-12-04 20:15+0000\n"
+"PO-Revision-Date: 2022-01-15 13:04+0000\n"
 "Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Arabic (Saudi Arabia) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/ar_sa/>\n"
 "Language: ar_sa\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
-"X-Generator: Weblate 4.9.1\n"
+"X-Generator: Weblate 4.10.1\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -27,7 +27,7 @@ msgstr "Estuary هو المظهر الافتراضي ل كودي الإصدار 
 
 msgctxt "Addon Disclaimer"
 msgid "Estuary is the default skin for Kodi, removing it may cause issues"
-msgstr ""
+msgstr "Estuary هو المظهر الافتراضي ل كودي, إزالته قد تسبب بعض المشاكل"
 
 msgctxt "#31000"
 msgid "Now playing"
@@ -133,12 +133,8 @@ msgid "Choose rating to display for media items"
 msgstr "اختر التصنيف الذي تريد عرضه لعناصر الوسائط"
 
 msgctxt "#31025"
-msgid ""
-"No favourites found. You can add any item from media views to this list by "
-"using the context menu."
-msgstr ""
-"لم يتم العثور على مفضلات. يمكنك إضافة أي عنصر من عروض الوسائط إلى هذه "
-"القائمة باستخدام قائمة السياق."
+msgid "No favourites found. You can add any item from media views to this list by using the context menu."
+msgstr "لم يتم العثور على مفضلات. يمكنك إضافة أي عنصر من عروض الوسائط إلى هذه القائمة باستخدام قائمة السياق."
 
 msgctxt "#31026"
 msgid "Timeshift"
@@ -156,6 +152,7 @@ msgctxt "#31029"
 msgid "Last logged in"
 msgstr "آخر تسجيل دخول"
 
+#. Label to show the system memory usage
 msgctxt "#31030"
 msgid "System memory usage"
 msgstr "استخدام الذاكرة العشوائية للنظام"
@@ -206,14 +203,8 @@ msgid "Playlist options"
 msgstr "خيارات قائمة التشغيل"
 
 msgctxt "#31043"
-msgid ""
-"Set the type and add rules to create a smart playlist. These playlists are "
-"dynamic and include all media items from your database which apply to your "
-"chosen rules."
-msgstr ""
-"عيّن النوع وأضف الأوامر لإنشاء قائمة تشغيل ذكية. قوائم التشغيل هذه ديناميكية "
-"وتتضمن جميع عناصر الوسائط من قاعدة البيانات الخاصة بك والتي تنطبق على "
-"الأوامر التي اخترتها."
+msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
+msgstr "عيّن النوع وأضف الأوامر لإنشاء قائمة تشغيل ذكية. قوائم التشغيل هذه ديناميكية وتتضمن جميع عناصر الوسائط من قاعدة البيانات الخاصة بك والتي تنطبق على الأوامر التي اخترتها."
 
 msgctxt "#31044"
 msgid "Add group"
@@ -401,22 +392,12 @@ msgid "Enter text here..."
 msgstr "أدخل النص هنا..."
 
 msgctxt "#31104"
-msgid ""
-"Your library is currently empty. In order to populate it with your personal "
-"media, enter \"Files\" section, add a media source and configure it. After "
-"the source has been added and indexed you will be able to browse your "
-"library."
-msgstr ""
-"مكتبتك فارغة حاليا. لتعبئتها بوسائطك الشخصية ، أدخل قسم \"الملفات\" وأضف "
-"مصدر وسائط وقم بتكوينه. بعد إضافة المصدر وفهرسته ، ستتمكن من تصفح مكتبتك."
+msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
+msgstr "مكتبتك فارغة حاليا. لتعبئتها بوسائطك الشخصية ، أدخل قسم \"الملفات\" وأضف مصدر وسائط وقم بتكوينه. بعد إضافة المصدر وفهرسته ، ستتمكن من تصفح مكتبتك."
 
 msgctxt "#31105"
-msgid ""
-"Add video sources and set the appropriate content type in order to populate "
-"your video libraries."
-msgstr ""
-"أضف مصادر الفيديو وقم بتعيين نوع المحتوى المناسب لتعبئة مكتبات الفيديو "
-"الخاصة بك."
+msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
+msgstr "أضف مصادر الفيديو وقم بتعيين نوع المحتوى المناسب لتعبئة مكتبات الفيديو الخاصة بك."
 
 msgctxt "#31106"
 msgid "Teletext"
@@ -433,11 +414,8 @@ msgid "Enter files section"
 msgstr "أدخل قسم الملفات"
 
 msgctxt "#31111"
-msgid ""
-"View your personal pictures or download one of the many image add-ons from "
-"the official repository."
-msgstr ""
-"اعرض صورك الشخصية أو قم بتنزيل إحدى إضافات الصور العديدة من المستودع الرسمي."
+msgid "View your personal pictures or download one of the many image add-ons from the official repository."
+msgstr "اعرض صورك الشخصية أو قم بتنزيل إحدى إضافات الصور العديدة من المستودع الرسمي."
 
 msgctxt "#31112"
 msgid "Toggle audio stream"
@@ -468,20 +446,12 @@ msgid "Enter add-on browser"
 msgstr "الدخول الى متصفح الإضافات"
 
 msgctxt "#31119"
-msgid ""
-"You do not have any add-ons installed yet. Visit our add-on browser to "
-"browse through our collection and improve your Kodi experience."
-msgstr ""
-"ليس لديك أي إضافات مثبتة حتى الآن. قم بزيارة متصفح الإضافات لتصفح مجموعتنا "
-"وتحسين تجربة Kodi الخاصة بك."
+msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
+msgstr "ليس لديك أي إضافات مثبتة حتى الآن. قم بزيارة متصفح الإضافات لتصفح مجموعتنا وتحسين تجربة Kodi الخاصة بك."
 
 msgctxt "#31120"
-msgid ""
-"You did not set up a weather provider yet. In order to view weather "
-"information, choose a weather provider and set up your location."
-msgstr ""
-"لم تقم بإعداد مزود الطقس حتى الآن. لعرض معلومات الطقس ، اختر مزود الطقس وقم "
-"بإعداد موقعك."
+msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
+msgstr "لم تقم بإعداد مزود الطقس حتى الآن. لعرض معلومات الطقس ، اختر مزود الطقس وقم بإعداد موقعك."
 
 msgctxt "#31121"
 msgid "Set weather provider"
@@ -518,8 +488,7 @@ msgstr "الإعدادات العامة تنطبق على جميع مناطق ا
 
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
-msgstr ""
-"الإعدادات المتعلقة بالقائمة الرئيسية: قم بتكوين الشاشة الرئيسية حسب رغبتك."
+msgstr "الإعدادات المتعلقة بالقائمة الرئيسية: قم بتكوين الشاشة الرئيسية حسب رغبتك."
 
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
@@ -545,18 +514,22 @@ msgctxt "#31136"
 msgid "Click here to see latest changes..."
 msgstr "انقر هنا لمشاهدة أحدث التغييرات..."
 
+#. Label to show PVR info page
 msgctxt "#31137"
-msgid "PVR info"
-msgstr "معلومات PVR"
+msgid "PVR"
+msgstr ""
 
+#. Label to show player info page
 msgctxt "#31138"
-msgid "Player process info"
-msgstr "معلومات المعالجة لمشغل الوسائط"
+msgid "Player"
+msgstr ""
 
+#. Label to show video decoder name
 msgctxt "#31139"
 msgid "Video decoder"
 msgstr "وحدة فك ترميز الفيديو"
 
+#. Label to show the video pixel format
 msgctxt "#31140"
 msgid "Pixel format"
 msgstr "تنسيق البكسل"
@@ -570,12 +543,8 @@ msgid "Play speed"
 msgstr "سرعة التشغيل"
 
 msgctxt "#31143"
-msgid ""
-"You did not set up PVR yet. In order to use PVR, choose a PVR client addon "
-"and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
-msgstr ""
-"لم تقم بإعداد PVR حتى الآن. من أجل استخدام PVR ، اختر ملحق عميل PVR وقم "
-"بتكوينه. يرجى زيارة http://kodi.wiki/view/PVR لمعرفة المزيد."
+msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
+msgstr "لم تقم بإعداد PVR حتى الآن. من أجل استخدام PVR ، اختر ملحق عميل PVR وقم بتكوينه. يرجى زيارة http://kodi.wiki/view/PVR لمعرفة المزيد."
 
 msgctxt "#31144"
 msgid "Enter add-on browser"
@@ -614,12 +583,8 @@ msgid "Random music videos"
 msgstr "مقاطع موسيقية عشوائية"
 
 msgctxt "#31153"
-msgid ""
-"You do not have any add-ons of this type installed. Enter the add-on browser "
-"to download add-ons created by our community."
-msgstr ""
-"ليس لديك أي إضافات مثبتة من هذا النوع. أدخل إلى متصفح الإضافات لتنزيل "
-"الإضافات التي أنشأها مجتمعنا."
+msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
+msgstr "ليس لديك أي إضافات مثبتة من هذا النوع. أدخل إلى متصفح الإضافات لتنزيل الإضافات التي أنشأها مجتمعنا."
 
 msgctxt "#31154"
 msgid "Press OK to switch between locations"
@@ -654,12 +619,8 @@ msgid "Numeric pad"
 msgstr "لوحة أرقام"
 
 msgctxt "#31162"
-msgid ""
-"Play your personal games or download one of the many game add-ons from the "
-"official repository."
-msgstr ""
-"العب ألعابك الشخصية أو قم بتنزيل إحدى إضافات الألعاب العديدة من المستودع "
-"الرسمي."
+msgid "Play your personal games or download one of the many game add-ons from the official repository."
+msgstr "العب ألعابك الشخصية أو قم بتنزيل إحدى إضافات الألعاب العديدة من المستودع الرسمي."
 
 msgctxt "#31163"
 msgid "Show Fanart background"
@@ -694,3 +655,72 @@ msgstr "اعرض الملصقات بدلاً من صور العرض لمقاطع
 msgctxt "#31169"
 msgid "Artwork related settings."
 msgstr "الإعدادات المتعلقة بال Artwork."
+
+# empty strings from id 31170 to 31599
+#. Label to show the video codec name
+msgctxt "#31600"
+msgid "Video codec"
+msgstr ""
+
+#. Label to show the video resolution
+msgctxt "#31601"
+msgid "Video resolution"
+msgstr ""
+
+#. Label to show the video aspect
+msgctxt "#31602"
+msgid "Video aspect"
+msgstr ""
+
+#. Label to show the video bitrate
+msgctxt "#31603"
+msgid "Video bitrate"
+msgstr ""
+
+#. Label to show the audio codec name
+msgctxt "#31604"
+msgid "Audio codec"
+msgstr ""
+
+#. Label to show the number of audio channels
+msgctxt "#31605"
+msgid "Audio channels"
+msgstr ""
+
+#. Label to show the audio bitrate
+msgctxt "#31606"
+msgid "Audio bitrate"
+msgstr ""
+
+#. Label to show the screen resolution
+msgctxt "#31607"
+msgid "Screen resolution"
+msgstr ""
+
+#. Label to show the system rendering speed
+msgctxt "#31608"
+msgid "System rendering speed"
+msgstr ""
+
+#. Label to show the system CPU usage
+msgctxt "#31609"
+msgid "System CPU usage"
+msgstr ""
+
+#. Label to show the media (metadata) info page
+msgctxt "#31610"
+msgid "Media"
+msgstr ""
+
+#. Label to show the system info page
+msgctxt "#31611"
+msgid "System"
+msgstr ""
+
+#~ msgctxt "#31137"
+#~ msgid "PVR info"
+#~ msgstr "معلومات PVR"
+
+#~ msgctxt "#31138"
+#~ msgid "Player process info"
+#~ msgstr "معلومات المعالجة لمشغل الوسائط"
