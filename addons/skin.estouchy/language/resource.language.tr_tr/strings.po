@@ -7,15 +7,15 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2021-07-19 13:06+0000\n"
-"Last-Translator: queeup <queeup@zoho.com>\n"
+"PO-Revision-Date: 2021-12-22 21:54+0000\n"
+"Last-Translator: Emir Sarı <bitigchi@me.com>\n"
 "Language-Team: Turkish <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/tr_tr/>\n"
 "Language: tr_tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Weblate 4.7.1\n"
+"X-Generator: Weblate 4.10.1\n"
 
 msgctxt "Addon Summary"
 msgid "Skin for touchscreen devices"
@@ -73,22 +73,27 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "Albümler"
 
+#. Label to show PVR info page
 msgctxt "#31017"
-msgid "PVR info"
-msgstr "PVR bilgisi"
+msgid "PVR"
+msgstr "PVR"
 
+#. Label to show player info page
 msgctxt "#31018"
-msgid "Player process info"
-msgstr "Yürütücü işlem bilgisi"
+msgid "Player"
+msgstr "Oynatıcı"
 
+#. Label to show video decoder name
 msgctxt "#31019"
 msgid "Video decoder"
 msgstr "Video kod çözücü"
 
+#. Label to show the video pixel format
 msgctxt "#31020"
 msgid "Pixel format"
 msgstr "Piksel biçimi"
 
+#. Label to show the system memory usage
 msgctxt "#31021"
 msgid "System memory usage"
 msgstr "Sistem bellek kullanımı"
@@ -337,6 +342,67 @@ msgctxt "#31565"
 msgid "Show deleted"
 msgstr "Silinenleri göster"
 
+# empty strings from id 31566 to 31599
+#. Label to show the video codec name
+msgctxt "#31600"
+msgid "Video codec"
+msgstr "Video kodlaması"
+
+#. Label to show the video resolution
+msgctxt "#31601"
+msgid "Video resolution"
+msgstr "Video çözünürlüğü"
+
+#. Label to show the video aspect
+msgctxt "#31602"
+msgid "Video aspect"
+msgstr "Video açısı"
+
+#. Label to show the video bitrate
+msgctxt "#31603"
+msgid "Video bitrate"
+msgstr "Video bit oranı"
+
+#. Label to show the audio codec name
+msgctxt "#31604"
+msgid "Audio codec"
+msgstr "Ses kodlaması"
+
+#. Label to show the number of audio channels
+msgctxt "#31605"
+msgid "Audio channels"
+msgstr "Ses kanalları"
+
+#. Label to show the audio bitrate
+msgctxt "#31606"
+msgid "Audio bitrate"
+msgstr "Ses bit oranı"
+
+#. Label to show the screen resolution
+msgctxt "#31607"
+msgid "Screen resolution"
+msgstr "Ekran çözünürlüğü"
+
+#. Label to show the system rendering speed
+msgctxt "#31608"
+msgid "System rendering speed"
+msgstr "Sistem dokuma hızı"
+
+#. Label to show the system CPU usage
+msgctxt "#31609"
+msgid "System CPU usage"
+msgstr "Sistem CPU kullanımı"
+
+#. Label to show the media (metadata) info page
+msgctxt "#31610"
+msgid "Media"
+msgstr "Ortam"
+
+#. Label to show the system info page
+msgctxt "#31611"
+msgid "System"
+msgstr "Sistem"
+
 msgctxt "#31900"
 msgid "First Run"
 msgstr "İlk Çalıştırma"
@@ -356,3 +422,11 @@ msgstr "Ses veya video oynatılırken, oynatılan öğenin başlığı ekranın 
 msgctxt "#31904"
 msgid "Now Playing Title..."
 msgstr "Şimdi Oynatılan Öğenin Başlığı..."
+
+#~ msgctxt "#31017"
+#~ msgid "PVR info"
+#~ msgstr "PVR bilgisi"
+
+#~ msgctxt "#31018"
+#~ msgid "Player process info"
+#~ msgstr "Yürütücü işlem bilgisi"

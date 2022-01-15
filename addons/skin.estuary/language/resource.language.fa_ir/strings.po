@@ -7,15 +7,15 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2021-12-09 18:24+0000\n"
-"Last-Translator: mohammad RaoofNia <mraoofnia@gmail.com>\n"
+"PO-Revision-Date: 2022-01-15 12:56+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Persian (Iran) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/fa_ir/>\n"
 "Language: fa_ir\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.9.1\n"
+"X-Generator: Weblate 4.10.1\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -152,6 +152,7 @@ msgctxt "#31029"
 msgid "Last logged in"
 msgstr "واپسین ورود"
 
+#. Label to show the system memory usage
 msgctxt "#31030"
 msgid "System memory usage"
 msgstr "استفادهٔ حافظهٔ سامانه"
@@ -512,18 +513,22 @@ msgctxt "#31136"
 msgid "Click here to see latest changes..."
 msgstr "برای دیدن جدیدترین تغییرها، این‌جا را بزنید…"
 
+#. Label to show PVR info page
 msgctxt "#31137"
-msgid "PVR info"
-msgstr "اطَلاعات PVR"
+msgid "PVR"
+msgstr ""
 
+#. Label to show player info page
 msgctxt "#31138"
-msgid "Player process info"
-msgstr "اطَلاعات فرایند پخش‌کننده"
+msgid "Player"
+msgstr "پخش کننده"
 
+#. Label to show video decoder name
 msgctxt "#31139"
 msgid "Video decoder"
 msgstr "رمزگشای ویدیو"
 
+#. Label to show the video pixel format
 msgctxt "#31140"
 msgid "Pixel format"
 msgstr "قالب پیکسل"
@@ -649,3 +654,72 @@ msgstr "نمایش پوستر به جای بندانگشتی‌ها برای ن�
 msgctxt "#31169"
 msgid "Artwork related settings."
 msgstr "تنظمیات مربوط به اثر هنری."
+
+# empty strings from id 31170 to 31599
+#. Label to show the video codec name
+msgctxt "#31600"
+msgid "Video codec"
+msgstr ""
+
+#. Label to show the video resolution
+msgctxt "#31601"
+msgid "Video resolution"
+msgstr ""
+
+#. Label to show the video aspect
+msgctxt "#31602"
+msgid "Video aspect"
+msgstr ""
+
+#. Label to show the video bitrate
+msgctxt "#31603"
+msgid "Video bitrate"
+msgstr ""
+
+#. Label to show the audio codec name
+msgctxt "#31604"
+msgid "Audio codec"
+msgstr ""
+
+#. Label to show the number of audio channels
+msgctxt "#31605"
+msgid "Audio channels"
+msgstr ""
+
+#. Label to show the audio bitrate
+msgctxt "#31606"
+msgid "Audio bitrate"
+msgstr ""
+
+#. Label to show the screen resolution
+msgctxt "#31607"
+msgid "Screen resolution"
+msgstr "رزولوشن صفحه"
+
+#. Label to show the system rendering speed
+msgctxt "#31608"
+msgid "System rendering speed"
+msgstr ""
+
+#. Label to show the system CPU usage
+msgctxt "#31609"
+msgid "System CPU usage"
+msgstr "مصرف cpu سیتسم"
+
+#. Label to show the media (metadata) info page
+msgctxt "#31610"
+msgid "Media"
+msgstr "رسانه"
+
+#. Label to show the system info page
+msgctxt "#31611"
+msgid "System"
+msgstr "سیستم"
+
+#~ msgctxt "#31137"
+#~ msgid "PVR info"
+#~ msgstr "اطَلاعات PVR"
+
+#~ msgctxt "#31138"
+#~ msgid "Player process info"
+#~ msgstr "اطَلاعات فرایند پخش‌کننده"

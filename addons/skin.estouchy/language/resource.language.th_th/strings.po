@@ -73,22 +73,27 @@ msgctxt "#31016"
 msgid "Albums"
 msgstr "อัลบั้ม"
 
+#. Label to show PVR info page
 msgctxt "#31017"
-msgid "PVR info"
-msgstr "ข้อมูล PVR"
+msgid "PVR"
+msgstr ""
 
+#. Label to show player info page
 msgctxt "#31018"
-msgid "Player process info"
-msgstr "ข้อมูลการดำเนินการของตัวเล่น"
+msgid "Player"
+msgstr ""
 
+#. Label to show video decoder name
 msgctxt "#31019"
 msgid "Video decoder"
 msgstr "ตัวถอดรหัสวิดีโอ"
 
+#. Label to show the video pixel format
 msgctxt "#31020"
 msgid "Pixel format"
 msgstr "รูปแบบพิกเซล"
 
+#. Label to show the system memory usage
 msgctxt "#31021"
 msgid "System memory usage"
 msgstr "หน่วยความจำของระบบที่ใช้"
@@ -337,6 +342,67 @@ msgctxt "#31565"
 msgid "Show deleted"
 msgstr "แสดงที่ลบไป"
 
+# empty strings from id 31566 to 31599
+#. Label to show the video codec name
+msgctxt "#31600"
+msgid "Video codec"
+msgstr ""
+
+#. Label to show the video resolution
+msgctxt "#31601"
+msgid "Video resolution"
+msgstr ""
+
+#. Label to show the video aspect
+msgctxt "#31602"
+msgid "Video aspect"
+msgstr ""
+
+#. Label to show the video bitrate
+msgctxt "#31603"
+msgid "Video bitrate"
+msgstr ""
+
+#. Label to show the audio codec name
+msgctxt "#31604"
+msgid "Audio codec"
+msgstr ""
+
+#. Label to show the number of audio channels
+msgctxt "#31605"
+msgid "Audio channels"
+msgstr ""
+
+#. Label to show the audio bitrate
+msgctxt "#31606"
+msgid "Audio bitrate"
+msgstr ""
+
+#. Label to show the screen resolution
+msgctxt "#31607"
+msgid "Screen resolution"
+msgstr ""
+
+#. Label to show the system rendering speed
+msgctxt "#31608"
+msgid "System rendering speed"
+msgstr ""
+
+#. Label to show the system CPU usage
+msgctxt "#31609"
+msgid "System CPU usage"
+msgstr ""
+
+#. Label to show the media (metadata) info page
+msgctxt "#31610"
+msgid "Media"
+msgstr ""
+
+#. Label to show the system info page
+msgctxt "#31611"
+msgid "System"
+msgstr ""
+
 msgctxt "#31900"
 msgid "First Run"
 msgstr "เล่นครั้งแรก"
@@ -356,3 +422,11 @@ msgstr "เมื่อคุณทำการเล่นเสียงหร
 msgctxt "#31904"
 msgid "Now Playing Title..."
 msgstr "ชื่อเรื่องที่กำลังเล่น..."
+
+#~ msgctxt "#31017"
+#~ msgid "PVR info"
+#~ msgstr "ข้อมูล PVR"
+
+#~ msgctxt "#31018"
+#~ msgid "Player process info"
+#~ msgstr "ข้อมูลการดำเนินการของตัวเล่น"
