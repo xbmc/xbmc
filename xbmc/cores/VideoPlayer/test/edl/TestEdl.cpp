@@ -293,9 +293,24 @@ TEST_F(TestEdl, TestCommBreakAdvancedSettings)
   CEdl edl;
   const std::shared_ptr<CAdvancedSettings> advancedSettings =
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
-  // make sure autowind and autowait are set to default values 0
+
+  // the test goal is to test m_iEdlCommBreakAutowait and m_iEdlCommBreakAutowind
+  // lets check first the behaviour with default values (both disabled)
+  // Keep all EDL advanced settings to default
+  advancedSettings->m_iEdlCommBreakAutowait = 0; // disabled (default)
+  advancedSettings->m_iEdlCommBreakAutowind = 0; // disabled (default)
+  advancedSettings->m_bEdlMergeShortCommBreaks = false; // disabled (default)
+  advancedSettings->m_iEdlMinCommBreakLength = 3 * 30; // 3*30 secs (default)
+  advancedSettings->m_iEdlMaxCommBreakLength = 8 * 30 + 10; // 8*30+10 secs (default value)
+  advancedSettings->m_iEdlMaxStartGap = 5 * 60; // 5 minutes (default)
   EXPECT_EQ(advancedSettings->m_iEdlCommBreakAutowait, 0);
   EXPECT_EQ(advancedSettings->m_iEdlCommBreakAutowind, 0);
+  EXPECT_EQ(advancedSettings->m_bEdlMergeShortCommBreaks, false);
+  EXPECT_EQ(advancedSettings->m_iEdlMinCommBreakLength, 3 * 30);
+  EXPECT_EQ(advancedSettings->m_iEdlMinCommBreakLength, 3 * 30);
+  EXPECT_EQ(advancedSettings->m_iEdlMaxCommBreakLength, 8 * 30 + 10);
+  EXPECT_EQ(advancedSettings->m_iEdlMaxStartGap, 5 * 60);
+
   // create a dummy "media" fileitem whose corresponding edl file is testdata/edlautowindautowait.txt
   CFileItem mediaItem;
   mediaItem.SetPath(
@@ -352,6 +367,8 @@ TEST_F(TestEdl, TestCommBreakAdvancedSettingsRemoveSmallCommbreaks)
   CEdl edl;
   const std::shared_ptr<CAdvancedSettings> advancedSettings =
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+
+  // set EDL advanced settings specific for the test case
   advancedSettings->m_iEdlCommBreakAutowait = 3; // secs
   advancedSettings->m_iEdlCommBreakAutowind = 3; // secs
   advancedSettings->m_bEdlMergeShortCommBreaks = true;
@@ -378,9 +395,22 @@ TEST_F(TestEdl, TestMergeSmallCommbreaks)
   CEdl edl;
   const std::shared_ptr<CAdvancedSettings> advancedSettings =
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
-  // keep any other settings to default
+
+  // set EDL advanced settings specific for the test case
   advancedSettings->m_bEdlMergeShortCommBreaks = true;
   EXPECT_EQ(advancedSettings->m_bEdlMergeShortCommBreaks, true);
+  // keep any other EDL advanced settings to default
+  advancedSettings->m_iEdlCommBreakAutowait = 0; // disabled (default)
+  advancedSettings->m_iEdlCommBreakAutowind = 0; // disabled (default)
+  advancedSettings->m_iEdlMinCommBreakLength = 3 * 30; // 3*30 secs (default)
+  advancedSettings->m_iEdlMaxCommBreakLength = 8 * 30 + 10; // 8*30+10 secs (default value)
+  advancedSettings->m_iEdlMaxStartGap = 5 * 60; // 5 minutes (default)
+  EXPECT_EQ(advancedSettings->m_iEdlCommBreakAutowait, 0);
+  EXPECT_EQ(advancedSettings->m_iEdlCommBreakAutowind, 0);
+  EXPECT_EQ(advancedSettings->m_iEdlMinCommBreakLength, 3 * 30);
+  EXPECT_EQ(advancedSettings->m_iEdlMaxCommBreakLength, 8 * 30 + 10);
+  EXPECT_EQ(advancedSettings->m_iEdlMaxStartGap, 5 * 60);
+
   CFileItem mediaItem;
   mediaItem.SetPath(
       XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/test/edl/testdata/edlautowindautowait.mkv"));
@@ -398,6 +428,8 @@ TEST_F(TestEdl, TestMergeSmallCommbreaksAdvanced)
   CEdl edl;
   const std::shared_ptr<CAdvancedSettings> advancedSettings =
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+
+  // set EDL advanced settings specific for the test case
   advancedSettings->m_bEdlMergeShortCommBreaks = true;
   advancedSettings->m_iEdlMaxCommBreakLength = 30; // 30 secs
   advancedSettings->m_iEdlMinCommBreakLength = 1; // 1 sec
@@ -406,6 +438,12 @@ TEST_F(TestEdl, TestMergeSmallCommbreaksAdvanced)
   EXPECT_EQ(advancedSettings->m_iEdlMaxCommBreakLength, 30);
   EXPECT_EQ(advancedSettings->m_iEdlMinCommBreakLength, 1);
   EXPECT_EQ(advancedSettings->m_iEdlMaxStartGap, 2);
+  // keep any other EDL advanced settings to default
+  advancedSettings->m_iEdlCommBreakAutowait = 0; // disabled (default)
+  advancedSettings->m_iEdlCommBreakAutowind = 0; // disabled (default)
+  EXPECT_EQ(advancedSettings->m_iEdlCommBreakAutowait, 0);
+  EXPECT_EQ(advancedSettings->m_iEdlCommBreakAutowind, 0);
+
   CFileItem mediaItem;
   mediaItem.SetPath(
       XBMC_REF_FILE_PATH("xbmc/cores/VideoPlayer/test/edl/testdata/edlautowindautowait.mkv"));
