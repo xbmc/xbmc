@@ -1,6 +1,6 @@
 -include ../../Makefile.include
-include DVDREAD-VERSION
-DEPS = DVDREAD-VERSION Makefile
+include LIBDVDREAD-VERSION
+DEPS = LIBDVDREAD-VERSION Makefile
 
 # configuration settings
 config = --prefix=$(PREFIX) --disable-shared --enable-static --with-pic --with-libdvdcss
