@@ -38,6 +38,7 @@ if(ENABLE_INTERNAL_GTEST)
 
   externalproject_add(gtest
                       URL ${GTEST_URL}
+                      URL_HASH ${GTEST_HASH}
                       DOWNLOAD_DIR ${TARBALL_DIR}
                       PREFIX ${CORE_BUILD_DIR}/gtest
                       INSTALL_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}

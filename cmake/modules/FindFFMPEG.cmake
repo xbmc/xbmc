@@ -250,6 +250,7 @@ if(NOT FFMPEG_FOUND)
 
   externalproject_add(ffmpeg
                       URL ${FFMPEG_URL}
+                      URL_HASH ${FFMPEG_HASH}
                       DOWNLOAD_NAME ${FFMPEG_ARCHIVE}
                       DOWNLOAD_DIR ${TARBALL_DIR}
                       PREFIX ${CORE_BUILD_DIR}/ffmpeg

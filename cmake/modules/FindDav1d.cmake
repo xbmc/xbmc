@@ -46,6 +46,7 @@ if(ENABLE_INTERNAL_DAV1D)
 
   externalproject_add(dav1d
                       URL ${DAV1D_URL}
+                      URL_HASH ${DAV1D_HASH}
                       DOWNLOAD_NAME ${DAV1D_ARCHIVE}
                       DOWNLOAD_DIR ${TARBALL_DIR}
                       PREFIX ${CORE_BUILD_DIR}/dav1d
