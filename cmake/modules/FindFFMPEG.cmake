@@ -251,7 +251,7 @@ if(NOT FFMPEG_FOUND)
   externalproject_add(ffmpeg
                       URL ${FFMPEG_URL}
                       DOWNLOAD_NAME ${ARCHIVE}
-                      DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
+                      DOWNLOAD_DIR ${TARBALL_DIR}
                       PREFIX ${CORE_BUILD_DIR}/ffmpeg
                       CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
                                  -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}

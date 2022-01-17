@@ -23,6 +23,10 @@ else()
   endif()
 endif()
 
+if(NOT TARBALL_DIR)
+  set(TARBALL_DIR "/Users/Shared/xbmc-depends/xbmc-tarballs")
+endif()
+
 set(CMAKE_OSX_ARCHITECTURES ${CPU})
 
 # Additional SYSTEM_DEFINES

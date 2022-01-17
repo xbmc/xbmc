@@ -37,7 +37,7 @@ if(ENABLE_INTERNAL_FMT)
   set(FMT_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
   externalproject_add(fmt
                       URL ${FMT_URL}
-                      DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
+                      DOWNLOAD_DIR ${TARBALL_DIR}
                       PREFIX ${CORE_BUILD_DIR}/fmt
                       CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
                                  -DCMAKE_CXX_EXTENSIONS=${CMAKE_CXX_EXTENSIONS}

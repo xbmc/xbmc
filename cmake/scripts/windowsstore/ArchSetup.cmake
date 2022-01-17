@@ -54,6 +54,9 @@ list(APPEND CMAKE_LIBRARY_PATH ${MINGW_LIBS_DIR}/bin)
 # dependencies
 list(PREPEND CMAKE_PREFIX_PATH ${DEPENDENCIES_DIR})
 
+if(NOT TARBALL_DIR)
+  set(TARBALL_DIR "${CMAKE_SOURCE_DIR}/project/BuildDependencies/downloads")
+endif()
 
 # -------- Compiler options ---------
 

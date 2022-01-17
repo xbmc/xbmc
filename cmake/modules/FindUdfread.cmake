@@ -47,7 +47,7 @@ if(ENABLE_INTERNAL_UDFREAD)
   externalproject_add(udfread
                       URL ${UDFREAD_URL}
                       DOWNLOAD_NAME libudfread-${UDFREAD_VER}.tar.gz
-                      DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
+                      DOWNLOAD_DIR ${TARBALL_DIR}
                       PREFIX ${CORE_BUILD_DIR}/libudfread
                       CONFIGURE_COMMAND autoreconf -vif &&
                                         ./configure
