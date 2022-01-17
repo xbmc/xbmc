@@ -47,7 +47,7 @@ if(ENABLE_INTERNAL_DAV1D)
   externalproject_add(dav1d
                       URL ${DAV1D_URL}
                       DOWNLOAD_NAME ${ARCHIVE}
-                      DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
+                      DOWNLOAD_DIR ${TARBALL_DIR}
                       PREFIX ${CORE_BUILD_DIR}/dav1d
                       CONFIGURE_COMMAND meson
                                         --buildtype=release

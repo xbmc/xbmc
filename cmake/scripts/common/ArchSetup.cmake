@@ -74,6 +74,11 @@ if(NOT EXISTS ${CMAKE_SOURCE_DIR}/cmake/scripts/${CORE_SYSTEM_NAME}/ArchSetup.cm
 endif()
 include(${CMAKE_SOURCE_DIR}/cmake/scripts/${CORE_SYSTEM_NAME}/ArchSetup.cmake)
 
+# No TARBALL_DIR given, or no arch specific default set
+if(NOT TARBALL_DIR)
+  set(TARBALL_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download)
+endif()
+
 message(STATUS "Core system type: ${CORE_SYSTEM_NAME}")
 message(STATUS "Platform: ${CORE_PLATFORM_NAME}")
 message(STATUS "CPU: ${CPU}, ARCH: ${ARCH}")

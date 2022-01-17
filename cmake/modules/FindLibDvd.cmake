@@ -111,7 +111,7 @@ else()
       set(DVDCSS_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdcss.a)
       ExternalProject_Add(dvdcss URL ${LIBDVDCSS_URL}
                                   DOWNLOAD_NAME libdvdcss-${libdvdcss_VER}.tar.gz
-                                  DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
+                                  DOWNLOAD_DIR ${TARBALL_DIR}
                                   PREFIX ${CORE_BUILD_DIR}/libdvd
                                   CONFIGURE_COMMAND ac_cv_path_GIT= <SOURCE_DIR>/configure
                                                     --target=${HOST_ARCH}
@@ -135,7 +135,7 @@ else()
     else()
       ExternalProject_Add(dvdcss
         URL ${LIBDVDCSS_URL}
-        DOWNLOAD_DIR ${CMAKE_SOURCE_DIR}/project/BuildDependencies/downloads
+        DOWNLOAD_DIR ${TARBALL_DIR}
         DOWNLOAD_NAME libdvdcss-${libdvdcss_VER}.tar.gz
         CMAKE_ARGS
           ${LIBDVD_ADDITIONAL_ARGS}
@@ -154,7 +154,7 @@ else()
     set(DVDREAD_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdread.a)
     ExternalProject_Add(dvdread URL ${LIBDVDREAD_URL}
                                 DOWNLOAD_NAME libdvdread-${libdvdread_VER}.tar.gz
-                                DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
+                                DOWNLOAD_DIR ${TARBALL_DIR}
                                 PREFIX ${CORE_BUILD_DIR}/libdvd
                                 CONFIGURE_COMMAND ac_cv_path_GIT= <SOURCE_DIR>/configure
                                                   --target=${HOST_ARCH}
@@ -177,7 +177,7 @@ else()
   else()
     ExternalProject_Add(dvdread
       URL ${LIBDVDREAD_URL}
-      DOWNLOAD_DIR ${CMAKE_SOURCE_DIR}/project/BuildDependencies/downloads
+      DOWNLOAD_DIR ${TARBALL_DIR}
       DOWNLOAD_NAME libdvdread-${libdvdread_VER}.tar.gz
       CMAKE_ARGS
         ${LIBDVD_ADDITIONAL_ARGS}
@@ -199,7 +199,7 @@ else()
     set(DVDNAV_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdnav.a)
     ExternalProject_Add(dvdnav URL ${LIBDVDNAV_URL}
                                 DOWNLOAD_NAME libdvdnav-${libdvdnav_VER}.tar.gz
-                                DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/download
+                                DOWNLOAD_DIR ${TARBALL_DIR}
                                 PREFIX ${CORE_BUILD_DIR}/libdvd
                                 CONFIGURE_COMMAND ac_cv_path_GIT= <SOURCE_DIR>/configure
                                                   --target=${HOST_ARCH}
@@ -226,7 +226,7 @@ else()
     set(DVDNAV_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdnav.lib)
     ExternalProject_Add(dvdnav
       URL ${LIBDVDNAV_URL}
-      DOWNLOAD_DIR ${CMAKE_SOURCE_DIR}/project/BuildDependencies/downloads
+      DOWNLOAD_DIR ${TARBALL_DIR}
       DOWNLOAD_NAME libdvdnav-${libdvdnav_VER}.tar.gz
       CMAKE_ARGS
         ${LIBDVD_ADDITIONAL_ARGS}
