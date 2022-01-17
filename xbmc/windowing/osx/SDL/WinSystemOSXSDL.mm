@@ -1780,11 +1780,14 @@ void CWinSystemOSX::AnnounceOnLostDevice()
 void CWinSystemOSX::HandleOnResetDevice()
 {
 
-  int delay = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt("videoscreen.delayrefreshchange");
-  if (delay > 0)
+  auto delay =
+      std::chrono::milliseconds(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+                                    "videoscreen.delayrefreshchange") *
+                                100);
+  if (delay > 0ms)
   {
     m_delayDispReset = true;
-    m_dispResetTimer.Set(delay * 100);
+    m_dispResetTimer.Set(delay);
   }
   else
   {

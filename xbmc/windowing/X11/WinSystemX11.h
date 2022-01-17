@@ -95,7 +95,7 @@ protected:
   CCriticalSection m_resourceSection;
   std::vector<IDispResource*>  m_resources;
   bool m_delayDispReset;
-  XbmcThreads::EndTime m_dispResetTimer;
+  XbmcThreads::EndTime<> m_dispResetTimer;
   std::string m_currentOutput;
   std::string m_userOutput;
   bool m_windowDirty;

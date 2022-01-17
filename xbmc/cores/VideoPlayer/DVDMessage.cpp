@@ -21,15 +21,13 @@ class CDVDMsgGeneralSynchronizePriv
 {
 public:
   CDVDMsgGeneralSynchronizePriv(unsigned int timeout, unsigned int sources)
-    : sources(sources)
-    , reached(0)
-    , timeout(timeout)
+    : sources(sources), reached(0), timeout(std::chrono::milliseconds(timeout))
   {}
   unsigned int sources;
   unsigned int reached;
   CCriticalSection section;
   XbmcThreads::ConditionVariable condition;
-  XbmcThreads::EndTime timeout;
+  XbmcThreads::EndTime<> timeout;
 };
 
 /**
@@ -52,7 +50,7 @@ bool CDVDMsgGeneralSynchronize::Wait(unsigned int milliseconds, unsigned int sou
 {
   CSingleLock lock(m_p->section);
 
-  XbmcThreads::EndTime timeout(milliseconds);
+  XbmcThreads::EndTime<> timeout{std::chrono::milliseconds(milliseconds)};
 
   m_p->reached |= (source & m_p->sources);
   if ((m_p->sources & SYNCSOURCE_ANY) && source)
@@ -62,7 +60,7 @@ bool CDVDMsgGeneralSynchronize::Wait(unsigned int milliseconds, unsigned int sou
 
   while (m_p->reached != m_p->sources)
   {
-    milliseconds = std::min(m_p->timeout.MillisLeft(), timeout.MillisLeft());
+    milliseconds = std::min(m_p->timeout.GetTimeLeft().count(), timeout.GetTimeLeft().count());
     if (m_p->condition.wait(lock, std::chrono::milliseconds(milliseconds)))
       continue;
 

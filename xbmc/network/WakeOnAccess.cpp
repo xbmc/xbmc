@@ -295,7 +295,7 @@ public:
 
   wait_result ShowAndWait (const WaitCondition& waitObj, unsigned timeOutSec, const std::string& line1)
   {
-    unsigned timeOutMs = timeOutSec * 1000;
+    auto timeOutMs = std::chrono::milliseconds(timeOutSec * 1000);
 
     if (m_dialog)
     {
@@ -304,7 +304,7 @@ public:
       m_dialog->SetPercentage(1); // avoid flickering by starting at 1% ..
     }
 
-    XbmcThreads::EndTime end_time (timeOutMs);
+    XbmcThreads::EndTime<> end_time(timeOutMs);
 
     while (!end_time.IsTimePast())
     {
@@ -321,9 +321,9 @@ public:
 
         m_dialog->Progress();
 
-        unsigned ms_passed = timeOutMs - end_time.MillisLeft();
+        auto ms_passed = timeOutMs - end_time.GetTimeLeft();
 
-        int percentage = (ms_passed * 100) / timeOutMs;
+        int percentage = (ms_passed.count() * 100) / timeOutMs.count();
         m_dialog->SetPercentage(std::max(percentage, 1)); // avoid flickering , keep minimum 1%
       }
 
@@ -349,12 +349,12 @@ public:
     bool online = CServiceBroker::GetNetwork().HasInterfaceForIP(address);
 
     if (!online) // setup endtime so we dont return true until network is consistently connected
-      m_end.Set (m_settle_time_ms);
+      m_end.Set(std::chrono::milliseconds(m_settle_time_ms));
 
     return online && m_end.IsTimePast();
   }
 private:
-  mutable XbmcThreads::EndTime m_end;
+  mutable XbmcThreads::EndTime<> m_end;
   unsigned m_settle_time_ms;
   const std::string m_host;
 };

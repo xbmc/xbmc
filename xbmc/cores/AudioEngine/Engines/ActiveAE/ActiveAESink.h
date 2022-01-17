@@ -122,13 +122,13 @@ protected:
   CEvent *m_inMsgEvent;
   int m_state;
   bool m_bStateMachineSelfTrigger;
-  int m_extTimeout;
-  int m_silenceTimeOut;
+  std::chrono::milliseconds m_extTimeout;
+  std::chrono::milliseconds m_silenceTimeOut;
   bool m_extError;
-  unsigned int m_extSilenceTimeout;
+  std::chrono::milliseconds m_extSilenceTimeout;
   bool m_extAppFocused;
   bool m_extStreaming;
-  XbmcThreads::EndTime m_extSilenceTimer;
+  XbmcThreads::EndTime<> m_extSilenceTimer;
 
   CSampleBuffer m_sampleOfSilence;
   enum

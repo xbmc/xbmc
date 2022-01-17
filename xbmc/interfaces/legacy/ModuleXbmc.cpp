@@ -136,14 +136,14 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
 
-      XbmcThreads::EndTime endTime(timemillis);
+      XbmcThreads::EndTime<> endTime{std::chrono::milliseconds(timemillis)};
       while (!endTime.IsTimePast())
       {
         LanguageHook* lh = NULL;
         {
           DelayedCallGuard dcguard;
           lh = dcguard.getLanguageHook(); // borrow this
-          long nextSleep = endTime.MillisLeft();
+          long nextSleep = endTime.GetTimeLeft().count();
           if (nextSleep > 100)
             nextSleep = 100; // only sleep for 100 millis
           KODI::TIME::Sleep(nextSleep);

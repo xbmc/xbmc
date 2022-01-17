@@ -429,7 +429,7 @@ void CActiveAEStream::Drain(bool wait)
   if (wait)
     Resume();
 
-  XbmcThreads::EndTime timer(2000);
+  XbmcThreads::EndTime<> timer(2000ms);
   while (!timer.IsTimePast())
   {
     if (m_streamPort->ReceiveInMessage(&msg))
@@ -452,7 +452,7 @@ void CActiveAEStream::Drain(bool wait)
     else if (!wait)
       return;
 
-    m_inMsgEvent.Wait(std::chrono::milliseconds(timer.MillisLeft()));
+    m_inMsgEvent.Wait(timer.GetTimeLeft());
   }
   CLog::Log(LOGERROR, "CActiveAEStream::Drain - timeout out");
 }

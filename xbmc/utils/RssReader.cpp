@@ -139,7 +139,7 @@ void CRssReader::Process()
     }
     else
     {
-      XbmcThreads::EndTime timeout(15000);
+      XbmcThreads::EndTime<> timeout(15s);
       while (!m_bStop && nRetries > 0)
       {
         if (timeout.IsTimePast())

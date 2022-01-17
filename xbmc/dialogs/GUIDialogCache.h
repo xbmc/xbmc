@@ -37,7 +37,7 @@ protected:
 
   void OpenDialog();
 
-  XbmcThreads::EndTime m_endtime;
+  XbmcThreads::EndTime<> m_endtime;
   CGUIDialogProgress* m_pDlg;
   std::string m_strHeader;
   std::string m_strLinePrev;

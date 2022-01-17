@@ -35,7 +35,7 @@ public:
     m_count++;
   }
 
-  void Flush(int interval = 100)
+  void Flush(std::chrono::milliseconds interval = std::chrono::milliseconds(100))
   {
     m_buffer = 0.0;
     m_lastError = 0.0;
@@ -43,14 +43,14 @@ public:
     m_timer.Set(interval);
   }
 
-  void SetErrorInterval(int interval = 100)
+  void SetErrorInterval(std::chrono::milliseconds interval = std::chrono::milliseconds(100))
   {
     m_buffer = 0.0;
     m_count = 0;
     m_timer.Set(interval);
   }
 
-  bool Get(double& error, int interval = 100)
+  bool Get(double& error, std::chrono::milliseconds interval = std::chrono::milliseconds(100))
   {
     if(m_timer.IsTimePast())
     {
@@ -68,7 +68,7 @@ public:
 
   double GetLastError(unsigned int &time)
   {
-    time = m_timer.GetStartTime();
+    time = m_timer.GetStartTime().time_since_epoch().count();
     return m_lastError;
   }
 
@@ -88,7 +88,7 @@ protected:
   double m_buffer;
   double m_lastError;
   int m_count;
-  XbmcThreads::EndTime m_timer;
+  XbmcThreads::EndTime<> m_timer;
 };
 
 class CActiveAEStreamBuffers

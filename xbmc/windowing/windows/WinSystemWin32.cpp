@@ -39,6 +39,8 @@
 
 #include <tpcshrd.h>
 
+using namespace std::chrono_literals;
+
 CWinSystemWin32::CWinSystemWin32()
   : CWinSystemBase()
   , PtrGetGestureInfo(nullptr)
@@ -214,14 +216,14 @@ bool CWinSystemWin32::CreateNewWindow(const std::string& name, bool fullScreen, 
   // Show the window
   ShowWindow( m_hWnd, SW_SHOWDEFAULT );
   UpdateWindow( m_hWnd );
-  
+
   // Configure the tray icon.
   m_trayIcon.cbSize = sizeof(m_trayIcon);
   m_trayIcon.hWnd = m_hWnd;
   m_trayIcon.hIcon = m_hIcon;
   wcsncpy(m_trayIcon.szTip, nameW.c_str(), sizeof(m_trayIcon.szTip) / sizeof(WCHAR));
   m_trayIcon.uCallbackMessage = TRAY_ICON_NOTIFY;
-  m_trayIcon.uFlags = NIF_ICON | NIF_TIP | NIF_MESSAGE;  
+  m_trayIcon.uFlags = NIF_ICON | NIF_TIP | NIF_MESSAGE;
 
   return true;
 }
@@ -1085,11 +1087,14 @@ void CWinSystemWin32::OnDisplayReset()
 
 void CWinSystemWin32::OnDisplayBack()
 {
-  int delay = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt("videoscreen.delayrefreshchange");
-  if (delay > 0)
+  auto delay =
+      std::chrono::milliseconds(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+                                    "videoscreen.delayrefreshchange") *
+                                100);
+  if (delay > 0ms)
   {
     m_delayDispReset = true;
-    m_dispResetTimer.Set(delay * 100);
+    m_dispResetTimer.Set(delay);
   }
   OnDisplayReset();
 }

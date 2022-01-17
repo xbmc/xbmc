@@ -282,8 +282,8 @@ void CRenderSystemDX::PresentRender(bool rendered, bool videoLayer)
   // time for decoder that may require the context
   {
     CSingleLock lock(m_decoderSection);
-    XbmcThreads::EndTime timer;
-    timer.Set(5);
+    XbmcThreads::EndTime<> timer;
+    timer.Set(5ms);
     while (!m_decodingTimer.IsTimePast() && !timer.IsTimePast())
     {
       m_decodingEvent.wait(lock, 1ms);
@@ -296,7 +296,7 @@ void CRenderSystemDX::PresentRender(bool rendered, bool videoLayer)
 void CRenderSystemDX::RequestDecodingTime()
 {
   CSingleLock lock(m_decoderSection);
-  m_decodingTimer.Set(3);
+  m_decodingTimer.Set(3ms);
 }
 
 void CRenderSystemDX::ReleaseDecodingTime()

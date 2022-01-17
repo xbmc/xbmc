@@ -13,6 +13,8 @@
 #include <algorithm>
 #include <math.h>
 
+using namespace std::chrono_literals;
+
 namespace XBMCAddon
 {
   namespace xbmc
@@ -38,7 +40,7 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
       int timeoutMS = ceil(timeout * 1000);
-      XbmcThreads::EndTime endTime(timeoutMS);
+      XbmcThreads::EndTime<> endTime{std::chrono::milliseconds(timeoutMS)};
 
       if (timeoutMS <= 0)
         endTime.SetInfinite();
@@ -47,8 +49,8 @@ namespace XBMCAddon
       {
         {
           DelayedCallGuard dg(languageHook);
-          unsigned int t = std::min(endTime.MillisLeft(), 100u);
-          if (abortEvent.Wait(std::chrono::milliseconds(t)))
+          auto timeout = std::min(endTime.GetTimeLeft(), 100ms);
+          if (abortEvent.Wait(timeout))
             return true;
         }
         if (languageHook)

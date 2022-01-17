@@ -125,7 +125,7 @@ void PAPlayer::SoftStop(bool wait/* = false */, bool close/* = true */)
   if(wait)
   {
     // fail safe timer, do not wait longer than 1000ms
-    XbmcThreads::EndTime timer(1000);
+    XbmcThreads::EndTime<> timer(1000ms);
 
     /* wait for them to fade out */
     lock.Leave();

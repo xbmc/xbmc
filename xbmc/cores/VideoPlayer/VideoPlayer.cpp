@@ -2020,7 +2020,7 @@ void CVideoPlayer::HandlePlaySpeed()
       SetCaching(CACHESTATE_DONE);
       UpdatePlayState(0);
 
-      m_syncTimer.Set(3000);
+      m_syncTimer.Set(3000ms);
 
       if (!m_State.streamsReady)
       {
@@ -3028,7 +3028,7 @@ void CVideoPlayer::SetCaching(ECacheState state)
     m_VideoPlayerVideo->SetSpeed(DVD_PLAYSPEED_PAUSE);
     m_streamPlayerSpeed = DVD_PLAYSPEED_PAUSE;
 
-    m_cachingTimer.Set(5000);
+    m_cachingTimer.Set(5000ms);
   }
 
   if (state == CACHESTATE_PLAY ||

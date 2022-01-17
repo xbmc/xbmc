@@ -33,7 +33,7 @@ public:
   CPVRChannelTimeoutJobBase(PVR::CPVRGUIChannelNavigator& channelNavigator, int iTimeout)
   : m_channelNavigator(channelNavigator)
   {
-    m_delayTimer.Set(iTimeout);
+    m_delayTimer.Set(std::chrono::milliseconds(iTimeout));
   }
 
   ~CPVRChannelTimeoutJobBase() override = default;
@@ -60,7 +60,7 @@ protected:
   PVR::CPVRGUIChannelNavigator& m_channelNavigator;
 
 private:
-  XbmcThreads::EndTime m_delayTimer;
+  XbmcThreads::EndTime<> m_delayTimer;
 };
 
 class CPVRChannelEntryTimeoutJob : public CPVRChannelTimeoutJobBase

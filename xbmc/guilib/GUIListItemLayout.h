@@ -62,7 +62,8 @@ protected:
 
   INFO::InfoPtr m_condition;
   KODI::GUILIB::GUIINFO::CGUIInfoBool m_isPlaying;
-  unsigned int m_infoUpdateMillis = std::numeric_limits<unsigned int>::max();
-  XbmcThreads::EndTime m_infoUpdateTimeout;
+  std::chrono::milliseconds m_infoUpdateMillis =
+      std::chrono::milliseconds(std::numeric_limits<std::chrono::milliseconds::rep>::max());
+  XbmcThreads::EndTime<> m_infoUpdateTimeout;
 };
 

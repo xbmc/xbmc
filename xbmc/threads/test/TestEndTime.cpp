@@ -10,41 +10,51 @@
 
 #include <gtest/gtest.h>
 
+using namespace std::chrono_literals;
+
 namespace
 {
 
-void CommonTests(XbmcThreads::EndTime& endTime)
+template<typename T = std::chrono::milliseconds>
+void CommonTests(XbmcThreads::EndTime<T>& endTime)
 {
-  EXPECT_EQ(static_cast<unsigned int>(100), endTime.GetInitialTimeoutValue());
-  EXPECT_LT(static_cast<unsigned int>(0), endTime.GetStartTime());
+  EXPECT_EQ(100ms, endTime.GetInitialTimeoutValue());
+  EXPECT_LT(T::zero(), endTime.GetStartTime().time_since_epoch());
 
   EXPECT_FALSE(endTime.IsTimePast());
-  EXPECT_LT(static_cast<unsigned int>(0), endTime.MillisLeft());
+  EXPECT_LT(T::zero(), endTime.GetTimeLeft());
 
-  std::this_thread::sleep_for(std::chrono::milliseconds(100));
+  std::this_thread::sleep_for(100ms);
 
   EXPECT_TRUE(endTime.IsTimePast());
-  EXPECT_EQ(static_cast<unsigned int>(0), endTime.MillisLeft());
+  EXPECT_EQ(T::zero(), endTime.GetTimeLeft());
 
   endTime.SetInfinite();
-  EXPECT_EQ(std::numeric_limits<unsigned int>::max(), endTime.GetInitialTimeoutValue());
+  EXPECT_EQ(T::max(), endTime.GetInitialTimeoutValue());
   endTime.SetExpired();
-  EXPECT_EQ(static_cast<unsigned int>(0), endTime.GetInitialTimeoutValue());
+  EXPECT_EQ(T::zero(), endTime.GetInitialTimeoutValue());
 }
 
 } // namespace
 
 TEST(TestEndTime, DefaultConstructor)
 {
-  XbmcThreads::EndTime endTime;
-  endTime.Set(static_cast<unsigned int>(100));
+  XbmcThreads::EndTime<> endTime;
+  endTime.Set(100ms);
 
   CommonTests(endTime);
 }
 
 TEST(TestEndTime, ExplicitConstructor)
 {
-  XbmcThreads::EndTime endTime(static_cast<unsigned int>(100));
+  XbmcThreads::EndTime<> endTime(100ms);
+
+  CommonTests(endTime);
+}
+
+TEST(TestEndTime, DoubleMicroSeconds)
+{
+  XbmcThreads::EndTime<std::chrono::duration<double, std::micro>> endTime(100ms);
 
   CommonTests(endTime);
 }

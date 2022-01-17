@@ -26,6 +26,8 @@
 #include <sys/wait.h>
 #endif
 
+using namespace std::chrono_literals;
+
 CXRandR::CXRandR(bool query)
 {
   m_bInit = false;
@@ -202,7 +204,7 @@ bool CXRandR::TurnOnOutput(const std::string& name)
   if (!SetMode(*output, mode))
     return false;
 
-  XbmcThreads::EndTime timeout(5000);
+  XbmcThreads::EndTime<> timeout(5s);
   while (!timeout.IsTimePast())
   {
     if (!Query(true))

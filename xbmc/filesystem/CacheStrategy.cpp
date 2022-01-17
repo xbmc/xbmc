@@ -185,14 +185,14 @@ int64_t CSimpleFileCache::WaitForData(uint32_t iMinAvail, uint32_t iMillis)
   if( iMillis == 0 || IsEndOfInput() )
     return GetAvailableRead();
 
-  XbmcThreads::EndTime endTime(iMillis);
+  XbmcThreads::EndTime<> endTime{std::chrono::milliseconds(iMillis)};
   while (!IsEndOfInput())
   {
     int64_t iAvail = GetAvailableRead();
     if (iAvail >= iMinAvail)
       return iAvail;
 
-    if (!m_hDataAvailEvent->Wait(std::chrono::milliseconds(endTime.MillisLeft())))
+    if (!m_hDataAvailEvent->Wait(endTime.GetTimeLeft()))
       return CACHE_RC_TIMEOUT;
   }
   return GetAvailableRead();

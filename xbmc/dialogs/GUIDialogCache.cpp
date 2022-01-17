@@ -41,7 +41,7 @@ CGUIDialogCache::CGUIDialogCache(DWORD dwDelay, const std::string& strHeader, co
   if(dwDelay == 0)
     OpenDialog();
   else
-    m_endtime.Set((unsigned int)dwDelay);
+    m_endtime.Set(std::chrono::milliseconds(static_cast<unsigned int>(dwDelay)));
 
   Create(true);
 }

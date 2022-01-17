@@ -56,7 +56,7 @@ extern "C" FILE* fopen_utf8(const char* _Filename, const char* _Mode);
 #define PY_PATH_SEP DELIM
 
 // Time before ill-behaved scripts are terminated
-#define PYTHON_SCRIPT_TIMEOUT 5000 // ms
+#define PYTHON_SCRIPT_TIMEOUT 5000ms // ms
 
 using namespace XFILE;
 using namespace KODI::MESSAGING;
@@ -495,14 +495,15 @@ bool CPythonInvoker::stop(bool abort)
       //Release the lock while waiting for threads to finish
       lock.Leave();
 
-    XbmcThreads::EndTime timeout(PYTHON_SCRIPT_TIMEOUT);
+    XbmcThreads::EndTime<> timeout(PYTHON_SCRIPT_TIMEOUT);
     while (!m_stoppedEvent.Wait(15ms))
     {
       if (timeout.IsTimePast())
       {
         CLog::Log(LOGERROR,
                   "CPythonInvoker({}, {}): script didn't stop in {} seconds - let's kill it",
-                  GetId(), m_sourceFile, PYTHON_SCRIPT_TIMEOUT / 1000);
+                  GetId(), m_sourceFile,
+                  std::chrono::duration_cast<std::chrono::seconds>(PYTHON_SCRIPT_TIMEOUT).count());
         break;
       }
 
@@ -522,7 +523,7 @@ bool CPythonInvoker::stop(bool abort)
     // Useful for add-on performance metrics
     if (!timeout.IsTimePast())
       CLog::Log(LOGDEBUG, "CPythonInvoker({}, {}): script termination took {}ms", GetId(),
-                m_sourceFile, PYTHON_SCRIPT_TIMEOUT - timeout.MillisLeft());
+                m_sourceFile, (PYTHON_SCRIPT_TIMEOUT - timeout.GetTimeLeft()).count());
 
     // Since we released the m_critical it's possible that the state is cleaned up
     // so we need to recheck for m_threadState == NULL

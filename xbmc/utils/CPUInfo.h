@@ -11,6 +11,7 @@
 #include "threads/SystemClock.h"
 #include "utils/Temperature.h"
 
+#include <chrono>
 #include <memory>
 #include <string>
 #include <vector>
@@ -71,7 +72,7 @@ public:
   const unsigned int CPUID_80000001_EDX_3DNOW = (1 << 31);
 
   // In milliseconds
-  const int MINIMUM_TIME_BETWEEN_READS{500};
+  const std::chrono::milliseconds MINIMUM_TIME_BETWEEN_READS{500};
 
   static std::shared_ptr<CCPUInfo> GetCPUInfo();
 
@@ -99,7 +100,7 @@ protected:
   virtual ~CCPUInfo() = default;
 
   int m_lastUsedPercentage;
-  XbmcThreads::EndTime m_nextUsedReadTime;
+  XbmcThreads::EndTime<> m_nextUsedReadTime;
   std::string m_cpuVendor;
   std::string m_cpuModel;
   std::string m_cpuBogoMips;

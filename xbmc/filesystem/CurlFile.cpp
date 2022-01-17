@@ -1830,7 +1830,7 @@ int8_t CCurlFile::CReadState::FillBuffer(unsigned int want)
         if (CURLM_OK != g_curlInterface.multi_timeout(m_multiHandle, &timeout) || timeout == -1 || timeout < 200)
           timeout = 200;
 
-        XbmcThreads::EndTime endTime(timeout);
+        XbmcThreads::EndTime<> endTime{std::chrono::milliseconds(timeout)};
         int rc;
 
         do
@@ -1858,7 +1858,7 @@ int8_t CCurlFile::CReadState::FillBuffer(unsigned int want)
           }
           else
           {
-            unsigned int time_left = endTime.MillisLeft();
+            unsigned int time_left = endTime.GetTimeLeft().count();
             struct timeval wait = { (int)time_left / 1000, ((int)time_left % 1000) * 1000 };
             rc = select(maxfd + 1, &fdread, &fdwrite, &fdexcep, &wait);
           }
