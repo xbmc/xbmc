@@ -1,0 +1,5 @@
+LIBNAME=libdvdcss
+BASE_URL=https://github.com/xbmc/libdvdcss
+VERSION=1.4.2-Leia-Beta-5
+ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
+SHA512=5185dbdbeb1bd13ea9d8723f1f4ab599d6f3102f5ba1096cd085aa1cda252c045f327c719227bba8e1b742352ade5e335106c8d0c1637a5a6b93ce661620dd7e

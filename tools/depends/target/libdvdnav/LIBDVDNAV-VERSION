@@ -1,0 +1,5 @@
+LIBNAME=libdvdnav
+BASE_URL=https://github.com/xbmc/libdvdnav
+VERSION=6.0.0-Leia-Alpha-3
+ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
+SHA512=11c93eaacd156f8fd7dec7c43d366438b201f31ad55b2870463a9e286912b6ada08882319a021fb7992190f87b909a49f2b83e0321cc17aedc29f7fe5898fa72

@@ -1,6 +1,6 @@
 -include ../../Makefile.include
-include DVDCSS-VERSION
-DEPS= DVDCSS-VERSION Makefile
+include LIBDVDCSS-VERSION
+DEPS= LIBDVDCSS-VERSION Makefile
 
 ifeq ($(CROSS_COMPILING), yes)
   DEPS += ../../Makefile.include
