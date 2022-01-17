@@ -56,39 +56,32 @@ CAutorun::CAutorun()
 
 CAutorun::~CAutorun() = default;
 
-void CAutorun::ExecuteAutorun(const std::string& path, bool bypassSettings, bool ignoreplaying, bool startFromBeginning )
+bool CAutorun::ExecuteAutorun(const std::string& path)
 {
-  if (!ignoreplaying)
-  {
-    if (g_application.GetAppPlayer().IsPlayingAudio() ||
-        g_application.GetAppPlayer().IsPlayingVideo() ||
-        CServiceBroker::GetGUI()->GetWindowManager().HasModalDialog(true))
-    {
-      return;
-    }
-  }
-
   if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_LOGIN_SCREEN)
-    return;
+    return false;
 
   CCdInfo* pInfo = CServiceBroker::GetMediaManager().GetCdInfo(path);
 
   if ( pInfo == NULL )
-    return ;
+    return false;
 
   g_application.ResetScreenSaver();
   g_application.WakeUpScreenSaverAndDPMS();  // turn off the screensaver if it's active
+
+  bool success = false;
 
 #ifdef HAS_CDDA_RIPPER
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_AUDIOCDS_AUTOACTION) == AUTOCD_RIP &&
       pInfo->IsAudio(1) && !CServiceBroker::GetSettingsComponent()->GetProfileManager()->GetCurrentProfile().musicLocked())
   {
-    CCDDARipper::GetInstance().RipCD();
+    success = CCDDARipper::GetInstance().RipCD();
   }
   else
 #endif
 
-  PlayDisc(path, bypassSettings, startFromBeginning);
+    success = PlayDisc(path, false, false);
+  return success;
 }
 
 bool CAutorun::PlayDisc(const std::string& path, bool bypassSettings, bool startFromBeginning)
@@ -485,7 +478,8 @@ void CAutorun::HandleAutorun()
 
   if (CDetectDVDMedia::m_evAutorun.WaitMSec(0))
   {
-    ExecuteAutorun();
+    if (!ExecuteAutorun(""))
+      CLog::Log(LOGDEBUG, "{}: Could not execute autorun", __func__);
     CDetectDVDMedia::m_evAutorun.Reset();
   }
 #endif
