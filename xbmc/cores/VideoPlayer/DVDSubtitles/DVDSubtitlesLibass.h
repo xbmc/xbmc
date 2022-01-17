@@ -144,9 +144,11 @@ protected:
 
 
 private:
-  void ConfigureAssOverride(const KODI::SUBTITLES::style& subStyle, ASS_Style* style);
+  void ConfigureAssOverride(const std::shared_ptr<struct KODI::SUBTITLES::style>& subStyle,
+                            ASS_Style* style);
   void ConfigureFont(bool overrideFont, std::string fontName);
-  void ApplyStyle(KODI::SUBTITLES::style subStyle, KODI::SUBTITLES::renderOpts opts);
+  void ApplyStyle(const std::shared_ptr<struct KODI::SUBTITLES::style>& subStyle,
+                  KODI::SUBTITLES::renderOpts opts);
 
   ASS_Library* m_library = nullptr;
   ASS_Track* m_track = nullptr;

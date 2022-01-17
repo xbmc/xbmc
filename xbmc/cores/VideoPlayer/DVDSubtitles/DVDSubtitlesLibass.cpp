@@ -225,18 +225,18 @@ ASS_Image* CDVDSubtitlesLibass::RenderImage(
   if (!m_renderer || !m_track)
   {
     CLog::Log(LOGERROR, "{} - ASS renderer/ASS track not initialized.", __FUNCTION__);
-    return NULL;
+    return nullptr;
   }
 
   if (!subStyle)
   {
     CLog::Log(LOGERROR, "{} - The subtitle overlay style is not set.", __FUNCTION__);
-    return NULL;
+    return nullptr;
   }
 
   if (updateStyle || m_currentDefaultStyleId == ASS_NO_ID)
   {
-    ApplyStyle(*subStyle.get(), opts);
+    ApplyStyle(subStyle, opts);
     m_drawWithinBlackBars = subStyle->drawWithinBlackBars;
   }
 
@@ -266,18 +266,25 @@ ASS_Image* CDVDSubtitlesLibass::RenderImage(
   return ass_render_frame(m_renderer, m_track, DVD_TIME_TO_MSEC(pts), changes);
 }
 
-void CDVDSubtitlesLibass::ApplyStyle(style subStyle, renderOpts opts)
+void CDVDSubtitlesLibass::ApplyStyle(const std::shared_ptr<struct KODI::SUBTITLES::style>& subStyle,
+                                     renderOpts opts)
 {
   CLog::Log(LOGDEBUG, "{} - Start setting up the LibAss style", __FUNCTION__);
 
-  ConfigureFont((m_subtitleType == NATIVE && subStyle.assOverrideFont), subStyle.fontName);
+  if (!subStyle)
+  {
+    CLog::Log(LOGERROR, "{} - The subtitle overlay style is not set.", __FUNCTION__);
+    return;
+  }
+
+  ConfigureFont((m_subtitleType == NATIVE && subStyle->assOverrideFont), subStyle->fontName);
 
   // ASS_Style is a POD struct need to be initialized with {}
   ASS_Style defaultStyle{};
   ASS_Style* style = nullptr;
 
   if (m_subtitleType == ADAPTED ||
-      (m_subtitleType == NATIVE && subStyle.assOverrideStyles != OverrideStyles::DISABLED))
+      (m_subtitleType == NATIVE && subStyle->assOverrideStyles != OverrideStyles::DISABLED))
   {
     m_currentDefaultStyleId = m_defaultKodiStyleId;
 
@@ -296,8 +303,8 @@ void CDVDSubtitlesLibass::ApplyStyle(style subStyle, renderOpts opts)
     double scale = 1.0;
     int playResY;
     if (m_subtitleType == NATIVE &&
-        (subStyle.assOverrideStyles == OverrideStyles::STYLES ||
-         subStyle.assOverrideStyles == OverrideStyles::STYLES_POSITIONS))
+        (subStyle->assOverrideStyles == OverrideStyles::STYLES ||
+         subStyle->assOverrideStyles == OverrideStyles::STYLES_POSITIONS))
     {
       // With styles overridden the PlayResY will be changed to 288
       playResY = 288;
@@ -309,13 +316,13 @@ void CDVDSubtitlesLibass::ApplyStyle(style subStyle, renderOpts opts)
     }
 
     // It is mandatory set the FontName, the text is case sensitive
-    style->FontName = strdup(subStyle.fontName.c_str());
+    style->FontName = strdup(subStyle->fontName.c_str());
 
-    if (m_subtitleType != NATIVE || subStyle.assOverrideStyles != OverrideStyles::POSITIONS)
+    if (m_subtitleType != NATIVE || subStyle->assOverrideStyles != OverrideStyles::POSITIONS)
     {
       // Configure the font properties
       // FIXME: The font size need to be scaled to be shown in right PT size
-      style->FontSize = (subStyle.fontSize / 720) * playResY;
+      style->FontSize = (subStyle->fontSize / 720) * playResY;
       // Modifies the width/height of the font (1 = 100%)
       style->ScaleX = 1.0;
       style->ScaleY = 1.0;
@@ -328,14 +335,14 @@ void CDVDSubtitlesLibass::ApplyStyle(style subStyle, renderOpts opts)
       style->Encoding = ASS_FONT_ENCODING_AUTO;
 
       bool isFontBold =
-          (subStyle.fontStyle == FontStyle::BOLD || subStyle.fontStyle == FontStyle::BOLD_ITALIC);
-      bool isFontItalic =
-          (subStyle.fontStyle == FontStyle::ITALIC || subStyle.fontStyle == FontStyle::BOLD_ITALIC);
+          (subStyle->fontStyle == FontStyle::BOLD || subStyle->fontStyle == FontStyle::BOLD_ITALIC);
+      bool isFontItalic = (subStyle->fontStyle == FontStyle::ITALIC ||
+                           subStyle->fontStyle == FontStyle::BOLD_ITALIC);
       style->Bold = isFontBold * -1;
       style->Italic = isFontItalic * -1;
 
       // Compute the font color, depending on the opacity
-      COLOR::Color subColor = ConvColor(subStyle.fontColor, subStyle.fontOpacity);
+      COLOR::Color subColor = ConvColor(subStyle->fontColor, subStyle->fontOpacity);
       // Set default subtitles color
       style->PrimaryColour = subColor;
       // Set SecondaryColour may be used to prevent an onscreen collision
@@ -343,13 +350,13 @@ void CDVDSubtitlesLibass::ApplyStyle(style subStyle, renderOpts opts)
 
       // Configure the effects
       double lineSpacing = 0.0;
-      if (subStyle.borderStyle == BorderStyle::OUTLINE ||
-          subStyle.borderStyle == BorderStyle::OUTLINE_NO_SHADOW)
+      if (subStyle->borderStyle == BorderStyle::OUTLINE ||
+          subStyle->borderStyle == BorderStyle::OUTLINE_NO_SHADOW)
       {
         style->BorderStyle = ASS_BORDER_STYLE_OUTLINE;
-        style->Outline = (10.00 / 100 * subStyle.fontBorderSize) * scale;
-        style->OutlineColour = ConvColor(subStyle.fontBorderColor, subStyle.fontOpacity);
-        if (subStyle.borderStyle == BorderStyle::OUTLINE_NO_SHADOW)
+        style->Outline = (10.00 / 100 * subStyle->fontBorderSize) * scale;
+        style->OutlineColour = ConvColor(subStyle->fontBorderColor, subStyle->fontOpacity);
+        if (subStyle->borderStyle == BorderStyle::OUTLINE_NO_SHADOW)
         {
           style->BackColour = ConvColor(COLOR::NONE, 0); // Set the shadow color
           style->Shadow = 0; // Set the shadow size
@@ -357,37 +364,37 @@ void CDVDSubtitlesLibass::ApplyStyle(style subStyle, renderOpts opts)
         else
         {
           style->BackColour =
-              ConvColor(subStyle.shadowColor, subStyle.shadowOpacity); // Set the shadow color
-          style->Shadow = (10.00 / 100 * subStyle.shadowSize) * scale; // Set the shadow size
+              ConvColor(subStyle->shadowColor, subStyle->shadowOpacity); // Set the shadow color
+          style->Shadow = (10.00 / 100 * subStyle->shadowSize) * scale; // Set the shadow size
         }
       }
-      else if (subStyle.borderStyle == BorderStyle::BOX)
+      else if (subStyle->borderStyle == BorderStyle::BOX)
       {
         // This BorderStyle not support outline color/size
         style->BorderStyle = ASS_BORDER_STYLE_BOX;
         style->Outline = 4 * scale; // Space between the text and the box edges
         style->OutlineColour =
-            ConvColor(subStyle.backgroundColor,
-                      subStyle.backgroundOpacity); // Set the background border color
+            ConvColor(subStyle->backgroundColor,
+                      subStyle->backgroundOpacity); // Set the background border color
         style->BackColour =
-            ConvColor(subStyle.shadowColor, subStyle.shadowOpacity); // Set the box shadow color
-        style->Shadow = (10.00 / 100 * subStyle.shadowSize) * scale; // Set the box shadow size
+            ConvColor(subStyle->shadowColor, subStyle->shadowOpacity); // Set the box shadow color
+        style->Shadow = (10.00 / 100 * subStyle->shadowSize) * scale; // Set the box shadow size
         // By default a box overlaps the other, then we increase a bit the line spacing
         lineSpacing = 6.0;
       }
-      else if (subStyle.borderStyle == BorderStyle::SQUARE_BOX)
+      else if (subStyle->borderStyle == BorderStyle::SQUARE_BOX)
       {
         // This BorderStyle not support shadow color/size
         style->BorderStyle = ASS_BORDER_STYLE_SQUARE_BOX;
-        style->Outline = (10.00 / 100 * subStyle.fontBorderSize) * scale;
-        style->OutlineColour = ConvColor(subStyle.fontBorderColor, subStyle.fontOpacity);
-        style->BackColour = ConvColor(subStyle.backgroundColor, subStyle.backgroundOpacity);
+        style->Outline = (10.00 / 100 * subStyle->fontBorderSize) * scale;
+        style->OutlineColour = ConvColor(subStyle->fontBorderColor, subStyle->fontOpacity);
+        style->BackColour = ConvColor(subStyle->backgroundColor, subStyle->backgroundOpacity);
         style->Shadow = 4 * scale; // Space between the text and the box edges
       }
 
       ass_set_line_spacing(m_renderer, lineSpacing);
 
-      style->Blur = (10.00 / 100 * subStyle.blur);
+      style->Blur = (10.00 / 100 * subStyle->blur);
 
       double marginLR = 20;
       if (opts.horizontalAlignment != HorizontalAlignment::DISABLED)
@@ -405,21 +412,21 @@ void CDVDSubtitlesLibass::ApplyStyle(style subStyle, renderOpts opts)
       if (opts.usePosition)
         style->MarginV = 0;
       else
-        style->MarginV = static_cast<int>(subStyle.marginVertical * scale);
+        style->MarginV = static_cast<int>(subStyle->marginVertical * scale);
     }
 
     // Set the vertical alignment
-    if (subStyle.alignment == FontAlignment::TOP_LEFT ||
-        subStyle.alignment == FontAlignment::TOP_CENTER ||
-        subStyle.alignment == FontAlignment::TOP_RIGHT)
+    if (subStyle->alignment == FontAlignment::TOP_LEFT ||
+        subStyle->alignment == FontAlignment::TOP_CENTER ||
+        subStyle->alignment == FontAlignment::TOP_RIGHT)
       style->Alignment = VALIGN_TOP;
-    else if (subStyle.alignment == FontAlignment::MIDDLE_LEFT ||
-             subStyle.alignment == FontAlignment::MIDDLE_CENTER ||
-             subStyle.alignment == FontAlignment::MIDDLE_RIGHT)
+    else if (subStyle->alignment == FontAlignment::MIDDLE_LEFT ||
+             subStyle->alignment == FontAlignment::MIDDLE_CENTER ||
+             subStyle->alignment == FontAlignment::MIDDLE_RIGHT)
       style->Alignment = VALIGN_CENTER;
-    else if (subStyle.alignment == FontAlignment::SUB_LEFT ||
-             subStyle.alignment == FontAlignment::SUB_CENTER ||
-             subStyle.alignment == FontAlignment::SUB_RIGHT)
+    else if (subStyle->alignment == FontAlignment::SUB_LEFT ||
+             subStyle->alignment == FontAlignment::SUB_CENTER ||
+             subStyle->alignment == FontAlignment::SUB_RIGHT)
       style->Alignment = VALIGN_SUB;
 
     // Set the horizontal alignment, giving priority to horizontalFontAlign property when set
@@ -429,17 +436,17 @@ void CDVDSubtitlesLibass::ApplyStyle(style subStyle, renderOpts opts)
       style->Alignment |= HALIGN_CENTER;
     else if (opts.horizontalAlignment == HorizontalAlignment::RIGHT)
       style->Alignment |= HALIGN_RIGHT;
-    else if (subStyle.alignment == FontAlignment::TOP_LEFT ||
-             subStyle.alignment == FontAlignment::MIDDLE_LEFT ||
-             subStyle.alignment == FontAlignment::SUB_LEFT)
+    else if (subStyle->alignment == FontAlignment::TOP_LEFT ||
+             subStyle->alignment == FontAlignment::MIDDLE_LEFT ||
+             subStyle->alignment == FontAlignment::SUB_LEFT)
       style->Alignment |= HALIGN_LEFT;
-    else if (subStyle.alignment == FontAlignment::TOP_CENTER ||
-             subStyle.alignment == FontAlignment::MIDDLE_CENTER ||
-             subStyle.alignment == FontAlignment::SUB_CENTER)
+    else if (subStyle->alignment == FontAlignment::TOP_CENTER ||
+             subStyle->alignment == FontAlignment::MIDDLE_CENTER ||
+             subStyle->alignment == FontAlignment::SUB_CENTER)
       style->Alignment |= HALIGN_CENTER;
-    else if (subStyle.alignment == FontAlignment::TOP_RIGHT ||
-             subStyle.alignment == FontAlignment::MIDDLE_RIGHT ||
-             subStyle.alignment == FontAlignment::SUB_RIGHT)
+    else if (subStyle->alignment == FontAlignment::TOP_RIGHT ||
+             subStyle->alignment == FontAlignment::MIDDLE_RIGHT ||
+             subStyle->alignment == FontAlignment::SUB_RIGHT)
       style->Alignment |= HALIGN_RIGHT;
   }
 
@@ -450,27 +457,34 @@ void CDVDSubtitlesLibass::ApplyStyle(style subStyle, renderOpts opts)
   }
 }
 
-void CDVDSubtitlesLibass::ConfigureAssOverride(const style& subStyle, ASS_Style* style)
+void CDVDSubtitlesLibass::ConfigureAssOverride(
+    const std::shared_ptr<struct KODI::SUBTITLES::style>& subStyle, ASS_Style* style)
 {
+  if (!subStyle)
+  {
+    CLog::Log(LOGERROR, "{} - The subtitle overlay style is not set.", __FUNCTION__);
+    return;
+  }
+
   // Default behaviour, disable ASS embedded styles override (if has been changed)
   int stylesFlags = ASS_OVERRIDE_BIT_SELECTIVE_FONT_SCALE;
 
   if (style)
   {
     // Manage override cases with ASS embedded styles
-    if (subStyle.assOverrideStyles == OverrideStyles::STYLES)
+    if (subStyle->assOverrideStyles == OverrideStyles::STYLES)
     {
       stylesFlags = ASS_OVERRIDE_BIT_FONT_SIZE_FIELDS | ASS_OVERRIDE_BIT_FONT_NAME |
                     ASS_OVERRIDE_BIT_COLORS | ASS_OVERRIDE_BIT_ATTRIBUTES |
                     ASS_OVERRIDE_BIT_BORDER | ASS_OVERRIDE_BIT_MARGINS;
     }
-    else if (subStyle.assOverrideStyles == OverrideStyles::STYLES_POSITIONS)
+    else if (subStyle->assOverrideStyles == OverrideStyles::STYLES_POSITIONS)
     {
       stylesFlags = ASS_OVERRIDE_BIT_FONT_SIZE_FIELDS | ASS_OVERRIDE_BIT_FONT_NAME |
                     ASS_OVERRIDE_BIT_COLORS | ASS_OVERRIDE_BIT_ATTRIBUTES |
                     ASS_OVERRIDE_BIT_BORDER | ASS_OVERRIDE_BIT_MARGINS | ASS_OVERRIDE_BIT_ALIGNMENT;
     }
-    else if (subStyle.assOverrideStyles == OverrideStyles::POSITIONS)
+    else if (subStyle->assOverrideStyles == OverrideStyles::POSITIONS)
     {
       stylesFlags = ASS_OVERRIDE_BIT_ALIGNMENT;
     }
