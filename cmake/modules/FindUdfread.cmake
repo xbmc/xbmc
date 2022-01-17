@@ -33,7 +33,7 @@ if(ENABLE_INTERNAL_UDFREAD)
   if(UDFREAD_URL)
     get_filename_component(UDFREAD_URL "${UDFREAD_URL}" ABSOLUTE)
   else()
-    set(UDFREAD_URL http://mirrors.kodi.tv/build-deps/sources/${ARCHIVE})
+    set(UDFREAD_URL http://mirrors.kodi.tv/build-deps/sources/${UDFREAD_ARCHIVE})
   endif()
 
   if(VERBOSE)
@@ -46,7 +46,7 @@ if(ENABLE_INTERNAL_UDFREAD)
 
   externalproject_add(udfread
                       URL ${UDFREAD_URL}
-                      DOWNLOAD_NAME libudfread-${UDFREAD_VER}.tar.gz
+                      DOWNLOAD_NAME ${UDFREAD_ARCHIVE}
                       DOWNLOAD_DIR ${TARBALL_DIR}
                       PREFIX ${CORE_BUILD_DIR}/libudfread
                       CONFIGURE_COMMAND autoreconf -vif &&
