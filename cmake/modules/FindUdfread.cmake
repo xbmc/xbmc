@@ -46,6 +46,7 @@ if(ENABLE_INTERNAL_UDFREAD)
 
   externalproject_add(udfread
                       URL ${UDFREAD_URL}
+                      URL_HASH ${UDFREAD_HASH}
                       DOWNLOAD_NAME ${UDFREAD_ARCHIVE}
                       DOWNLOAD_DIR ${TARBALL_DIR}
                       PREFIX ${CORE_BUILD_DIR}/libudfread

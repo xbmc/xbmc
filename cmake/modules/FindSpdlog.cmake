@@ -40,6 +40,7 @@ if(ENABLE_INTERNAL_SPDLOG)
 
   externalproject_add(spdlog
                       URL ${SPDLOG_URL}
+                      URL_HASH ${SPDLOG_HASH}
                       DOWNLOAD_DIR ${TARBALL_DIR}
                       PREFIX ${CORE_BUILD_DIR}/spdlog
                       CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}

@@ -23,6 +23,7 @@ if(ENABLE_INTERNAL_CROSSGUID)
   set(CROSSGUID_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
   externalproject_add(crossguid
                       URL ${CROSSGUID_URL}
+                      URL_HASH ${CROSSGUID_HASH}
                       DOWNLOAD_DIR ${TARBALL_DIR}
                       PREFIX ${CORE_BUILD_DIR}/crossguid
                       CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
