@@ -664,12 +664,9 @@ std::vector<std::pair<float, float>> CPlayerGUIInfo::GetEditList(const CDataCach
   const std::vector<EDL::Edit> edits = data.GetEditList();
   for (const auto& edit : edits)
   {
-    if (edit.action != EDL::Action::CUT && edit.action != EDL::Action::COMM_BREAK)
-      continue;
-
-    float cutStart = edit.start * 100.0f / duration;
-    float cutEnd = edit.end * 100.0f / duration;
-    ranges.emplace_back(std::make_pair(cutStart, cutEnd));
+    float editStart = edit.start * 100.0f / duration;
+    float editEnd = edit.end * 100.0f / duration;
+    ranges.emplace_back(std::make_pair(editStart, editEnd));
   }
   return ranges;
 }
