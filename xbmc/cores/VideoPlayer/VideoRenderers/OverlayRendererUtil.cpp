@@ -16,7 +16,8 @@
 #include "settings/SettingsComponent.h"
 #include "windowing/GraphicContext.h"
 
-namespace OVERLAY {
+namespace OVERLAY
+{
 
 static uint32_t build_rgba(int a, int r, int g, int b, bool mergealpha)
 {
@@ -43,32 +44,31 @@ static uint32_t build_rgba(int yuv[3], int alpha, bool mergealpha)
 }
 #undef clamp
 
-std::vector<uint32_t> convert_rgba(CDVDOverlayImage* o, bool mergealpha)
+void convert_rgba(CDVDOverlayImage* o, bool mergealpha, std::vector<uint32_t>& rgba)
 {
-  std::vector<uint32_t> rgba(o->width * o->height);
-
   uint32_t palette[256] = {};
-  for(int i = 0; i < o->palette_colors; i++)
+  for (size_t i = 0; i < o->palette.size(); i++)
     palette[i] = build_rgba((o->palette[i] >> PIXEL_ASHIFT) & 0xff
                           , (o->palette[i] >> PIXEL_RSHIFT) & 0xff
                           , (o->palette[i] >> PIXEL_GSHIFT) & 0xff
                           , (o->palette[i] >> PIXEL_BSHIFT) & 0xff
                           , mergealpha);
 
-  for(int row = 0; row < o->height; row++)
-    for(int col = 0; col < o->width; col++)
-      rgba[row * o->width + col] = palette[ o->data[row * o->linesize + col] ];
-
-  return rgba;
+  for (int row = 0; row < o->height; row++)
+    for (int col = 0; col < o->width; col++)
+      rgba[row * o->width + col] = palette[o->pixels[row * o->linesize + col]];
 }
 
-std::vector<uint32_t> convert_rgba(
-    CDVDOverlaySpu* o, bool mergealpha, int& min_x, int& max_x, int& min_y, int& max_y)
+void convert_rgba(CDVDOverlaySpu* o,
+                  bool mergealpha,
+                  int& min_x,
+                  int& max_x,
+                  int& min_y,
+                  int& max_y,
+                  std::vector<uint32_t>& rgba)
 {
-  std::vector<uint32_t> rgba(o->width * o->height);
-
   uint32_t palette[8];
-  for(int i = 0; i < 4; i++)
+  for (int i = 0; i < 4; i++)
   {
     palette[i]   = build_rgba(o->color[i]          , o->alpha[i]          , mergealpha);
     palette[i+4] = build_rgba(o->highlight_color[i], o->highlight_alpha[i], mergealpha);
@@ -159,20 +159,17 @@ std::vector<uint32_t> convert_rgba(
     max_y = max_x = 1;
     min_y = min_x = 0;
   }
-
-  return rgba;
 }
 
 bool convert_quad(ASS_Image* images, SQuads& quads, int max_x)
 {
   ASS_Image* img;
+  int count = 0;
 
   if (!images)
     return false;
 
   // first calculate how many glyph we have and the total x length
-
-  int count{0};
 
   for(img = images; img; img = img->next)
   {
@@ -217,21 +214,20 @@ bool convert_quad(ASS_Image* images, SQuads& quads, int max_x)
   quads.size_y += curr_y + 1;
 
   // allocate space for the glyph positions and texturedata
-
-  quads.quad = std::vector<SQuad>(count);
-  quads.data = std::vector<uint8_t>(quads.size_x * quads.size_y);
+  quads.quad.resize(count);
+  quads.texture.resize(quads.size_x * quads.size_y);
 
   SQuad* v = quads.quad.data();
-  uint8_t* data = quads.data.data();
+  uint8_t* data = quads.texture.data();
 
   int y = 0;
 
   curr_x = 0;
   curr_y = 0;
 
-  for(img = images; img; img = img->next)
+  for (img = images; img; img = img->next)
   {
-    if((img->color & 0xff) == 0xff || img->w == 0 || img->h == 0)
+    if ((img->color & 0xff) == 0xff || img->w == 0 || img->h == 0)
       continue;
 
     unsigned int color = img->color;
@@ -240,9 +236,9 @@ bool convert_quad(ASS_Image* images, SQuads& quads, int max_x)
     if (curr_x + img->w >= quads.size_x)
     {
       curr_y += y + 1;
-      curr_x  = 0;
-      y       = 0;
-      data = quads.data.data() + curr_y * quads.size_x;
+      curr_x = 0;
+      y = 0;
+      data = quads.texture.data() + curr_y * quads.size_x;
     }
 
     unsigned int r = ((color >> 24) & 0xff);
@@ -265,10 +261,8 @@ bool convert_quad(ASS_Image* images, SQuads& quads, int max_x)
 
     v++;
 
-    for(int i=0; i<img->h; i++)
-      memcpy(data        + quads.size_x * i
-           , img->bitmap + img->stride  * i
-           , img->w);
+    for (int i = 0; i < img->h; i++)
+      memcpy(data + quads.size_x * i, img->bitmap + img->stride * i, img->w);
 
     if (img->h > y)
       y = img->h;

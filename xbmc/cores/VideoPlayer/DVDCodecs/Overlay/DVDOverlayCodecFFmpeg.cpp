@@ -264,31 +264,30 @@ CDVDOverlay* CDVDOverlayCodecFFmpeg::GetOverlay()
     CDVDOverlayImage* overlay = new CDVDOverlayImage();
 
     overlay->iPTSStartTime = m_StartTime;
-    overlay->iPTSStopTime  = m_StopTime;
-    overlay->replace  = true;
+    overlay->iPTSStopTime = m_StopTime;
+    overlay->replace = true;
     overlay->linesize = rect.w;
-    overlay->data = std::vector<uint8_t>(rect.w * rect.h);
-    overlay->palette = std::vector<uint32_t>(rect.nb_colors);
-    overlay->palette_colors = rect.nb_colors;
-    overlay->x        = rect.x;
-    overlay->y        = rect.y;
-    overlay->width    = rect.w;
-    overlay->height   = rect.h;
-    overlay->bForced  = rect.flags != 0;
-
-    overlay->source_width  = m_width;
+    overlay->pixels.resize(rect.w * rect.h);
+    overlay->palette.resize(rect.nb_colors);
+    overlay->x = rect.x;
+    overlay->y = rect.y;
+    overlay->width = rect.w;
+    overlay->height = rect.h;
+    overlay->bForced = rect.flags != 0;
+    overlay->source_width = m_width;
     overlay->source_height = m_height;
 
     uint8_t* s = rect.data[0];
-    uint8_t* t = overlay->data.data();
-    for(int i=0;i<rect.h;i++)
+    uint8_t* t = overlay->pixels.data();
+
+    for (int i = 0; i < rect.h; i++)
     {
       memcpy(t, s, rect.w);
       s += rect.linesize[0];
       t += overlay->linesize;
     }
 
-    for(int i=0;i<rect.nb_colors;i++)
+    for (int i = 0; i < rect.nb_colors; i++)
       overlay->palette[i] = Endian_SwapLE32(((uint32_t *)rect.data[1])[i]);
 
     m_SubtitleIndex++;

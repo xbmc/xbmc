@@ -74,12 +74,13 @@ COverlayQuadsDX::COverlayQuadsDX(ASS_Image* images, float width, float height)
 
   float u, v;
   if (!LoadTexture(quads.size_x, quads.size_y, quads.size_x, DXGI_FORMAT_R8_UNORM,
-                   quads.data.data(), &u, &v, &m_texture))
+                   quads.texture.data(), &u, &v, &m_texture))
   {
     return;
   }
 
-  Vertex *vt = new Vertex[6 * quads.quad.size()], *vt_orig = vt;
+  Vertex* vt = new Vertex[6 * quads.quad.size()];
+  Vertex* vt_orig = vt;
   SQuad* vs = quads.quad.data();
 
   float scale_u = u / quads.size_x;
@@ -198,32 +199,21 @@ COverlayImageDX::~COverlayImageDX()
 
 COverlayImageDX::COverlayImageDX(CDVDOverlayImage* o)
 {
-  std::vector<uint32_t> rgba;
-  int stride;
-  if (!o->palette.empty())
+  if (o->palette.empty())
   {
-    m_pma  = !!USE_PREMULTIPLIED_ALPHA;
-    rgba   = convert_rgba(o, m_pma);
-    stride = o->width * 4;
+    m_pma = false;
+    uint32_t* rgba = reinterpret_cast<uint32_t*>(o->pixels.data());
+    Load(rgba, o->width, o->height, o->linesize);
   }
   else
   {
-    m_pma  = false;
-    rgba = std::vector<uint32_t>(o->data.data(), o->data.data() + o->data.size());
-    stride = o->linesize;
+    std::vector<uint32_t> rgba(o->width * o->height);
+    m_pma = !!USE_PREMULTIPLIED_ALPHA;
+    convert_rgba(o, m_pma, rgba);
+    Load(rgba.data(), o->width, o->height, o->width * 4);
   }
 
-  if (rgba.empty())
-  {
-    CLog::Log(LOGERROR, "COverlayImageDX::COverlayImageDX - failed to convert overlay to rgb");
-    return;
-  }
-
-  Load(rgba.data(), o->width, o->height, stride);
-  if (reinterpret_cast<uint8_t*>(rgba.data()) != o->data.data())
-    rgba.clear();
-
-  if(o->source_width && o->source_height)
+  if (o->source_width && o->source_height)
   {
     float center_x = (0.5f * o->width + o->x) / o->source_width;
     float center_y = (0.5f * o->height + o->y) / o->source_height;
@@ -237,8 +227,8 @@ COverlayImageDX::COverlayImageDX(CDVDOverlayImage* o)
   }
   else
   {
-    m_align  = ALIGN_VIDEO;
-    m_pos    = POSITION_ABSOLUTE;
+    m_align = ALIGN_VIDEO;
+    m_pos = POSITION_ABSOLUTE;
     m_x = static_cast<float>(o->x);
     m_y = static_cast<float>(o->y);
     m_width = static_cast<float>(o->width);
@@ -249,20 +239,17 @@ COverlayImageDX::COverlayImageDX(CDVDOverlayImage* o)
 COverlayImageDX::COverlayImageDX(CDVDOverlaySpu* o)
 {
   int min_x, max_x, min_y, max_y;
-  std::vector<uint32_t> rgba = convert_rgba(o, USE_PREMULTIPLIED_ALPHA, min_x, max_x, min_y, max_y);
-  if (rgba.empty())
-  {
-    CLog::Log(LOGERROR, "COverlayImageDX::COverlayImageDX - failed to convert overlay to rgb");
-    return;
-  }
+  std::vector<uint32_t> rgba(o->width * o->height);
+
+  convert_rgba(o, USE_PREMULTIPLIED_ALPHA, min_x, max_x, min_y, max_y, rgba);
   Load(rgba.data() + min_x + min_y * o->width, max_x - min_x, max_y - min_y, o->width * 4);
 
-  m_align  = ALIGN_VIDEO;
-  m_pos    = POSITION_ABSOLUTE;
-  m_x      = (float)(min_x + o->x);
-  m_y      = (float)(min_y + o->y);
-  m_width  = (float)(max_x - min_x);
-  m_height = (float)(max_y - min_y);
+  m_align = ALIGN_VIDEO;
+  m_pos = POSITION_ABSOLUTE;
+  m_x = static_cast<float>(min_x + o->x);
+  m_y = static_cast<float>(min_y + o->y);
+  m_width = static_cast<float>(max_x - min_x);
+  m_height = static_cast<float>(max_y - min_y);
 }
 
 void COverlayImageDX::Load(uint32_t* rgba, int width, int height, int stride)

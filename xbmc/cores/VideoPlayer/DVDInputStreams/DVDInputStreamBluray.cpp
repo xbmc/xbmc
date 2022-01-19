@@ -809,10 +809,8 @@ void CDVDInputStreamBluray::OverlayCallback(const BD_OVERLAY * const ov)
     return;
   }
 
-  if (ov->cmd == BD_OVERLAY_DRAW
-  ||  ov->cmd == BD_OVERLAY_WIPE)
+  if (ov->cmd == BD_OVERLAY_DRAW || ov->cmd == BD_OVERLAY_WIPE)
     OverlayClear(plane, ov->x, ov->y, ov->w, ov->h);
-
 
   /* uncompress and draw bitmap */
   if (ov->img && ov->cmd == BD_OVERLAY_DRAW)
@@ -821,34 +819,32 @@ void CDVDInputStreamBluray::OverlayCallback(const BD_OVERLAY * const ov)
 
     if (ov->palette)
     {
-      overlay->palette_colors = 256;
-      overlay->palette = std::vector<uint32_t>(overlay->palette_colors);
+      overlay->palette.resize(256);
 
       for(unsigned i = 0; i < 256; i++)
         overlay->palette[i] = build_rgba(ov->palette[i]);
     }
+    else
+      overlay->palette.clear();
 
     const BD_PG_RLE_ELEM *rlep = ov->img;
+    size_t bytes = ov->w * ov->h;
+    overlay->pixels.resize(bytes);
 
-    unsigned pixels = ov->w * ov->h;
+    for (size_t i = 0; i < bytes; i += rlep->len, rlep++)
+      memset(overlay->pixels.data() + i, rlep->color, rlep->len);
 
-    std::vector<uint8_t> img(pixels);
-
-    for (unsigned i = 0; i < pixels; i += rlep->len, rlep++)
-      memset(img.data() + i, rlep->color, rlep->len);
-
-    overlay->data     = img;
     overlay->linesize = ov->w;
-    overlay->x        = ov->x;
-    overlay->y        = ov->y;
-    overlay->height   = ov->h;
-    overlay->width    = ov->w;
+    overlay->x = ov->x;
+    overlay->y = ov->y;
+    overlay->height = ov->h;
+    overlay->width = ov->w;
     overlay->source_height = plane.h;
-    overlay->source_width  = plane.w;
+    overlay->source_width = plane.w;
     plane.o.push_back(overlay);
   }
 
-  if(ov->cmd == BD_OVERLAY_FLUSH)
+  if (ov->cmd == BD_OVERLAY_FLUSH)
     OverlayFlush(ov->pts);
 #endif
 }
@@ -884,19 +880,18 @@ void CDVDInputStreamBluray::OverlayCallbackARGB(const struct bd_argb_overlay_s *
   {
     SOverlay overlay(new CDVDOverlayImage(), [](CDVDOverlay* ov) { CDVDOverlay::Release(ov); });
 
-    overlay->palette_colors = 0;
-    overlay->palette = {};
-
+    overlay->palette.clear();
     size_t bytes = static_cast<size_t>(ov->stride * ov->h * 4);
+    overlay->pixels.resize(bytes);
+    memcpy(overlay->pixels.data(), ov->argb, bytes);
 
-    overlay->data = std::vector<uint8_t>(ov->argb, ov->argb + bytes);
     overlay->linesize = ov->stride * 4;
-    overlay->x        = ov->x;
-    overlay->y        = ov->y;
-    overlay->height   = ov->h;
-    overlay->width    = ov->w;
+    overlay->x = ov->x;
+    overlay->y = ov->y;
+    overlay->height = ov->h;
+    overlay->width = ov->w;
     overlay->source_height = plane.h;
-    overlay->source_width  = plane.w;
+    overlay->source_width = plane.w;
     plane.o.push_back(overlay);
   }
 

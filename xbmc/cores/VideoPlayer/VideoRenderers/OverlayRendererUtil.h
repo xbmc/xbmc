@@ -17,28 +17,34 @@ class CDVDOverlaySpu;
 class CDVDOverlaySSA;
 typedef struct ass_image ASS_Image;
 
-namespace OVERLAY {
+namespace OVERLAY
+{
 
-  struct SQuad
-  {
-     int           u, v;
-     unsigned char r, g, b, a;
-     int           x, y;
-     int           w, h;
-  };
+struct SQuad
+{
+  int u, v;
+  unsigned char r, g, b, a;
+  int x, y;
+  int w, h;
+};
 
-  struct SQuads
-  {
-    int size_x{0};
-    int size_y{0};
-    std::vector<uint8_t> data;
-    std::vector<SQuad> quad;
-  };
+struct SQuads
+{
+  int size_x{0};
+  int size_y{0};
+  std::vector<uint8_t> texture;
+  std::vector<SQuad> quad;
+};
 
-  std::vector<uint32_t> convert_rgba(CDVDOverlayImage* o, bool mergealpha);
-  std::vector<uint32_t> convert_rgba(
-      CDVDOverlaySpu* o, bool mergealpha, int& min_x, int& max_x, int& min_y, int& max_y);
-  bool      convert_quad(ASS_Image* images, SQuads& quads, int max_x);
-  int       GetStereoscopicDepth();
+void convert_rgba(CDVDOverlayImage* o, bool mergealpha, std::vector<uint32_t>& rgba);
+void convert_rgba(CDVDOverlaySpu* o,
+                  bool mergealpha,
+                  int& min_x,
+                  int& max_x,
+                  int& min_y,
+                  int& max_y,
+                  std::vector<uint32_t>& rgba);
+bool convert_quad(ASS_Image* images, SQuads& quads, int max_x);
+int GetStereoscopicDepth();
 
-}
+} // namespace OVERLAY

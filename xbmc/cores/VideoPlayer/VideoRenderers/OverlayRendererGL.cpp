@@ -161,27 +161,6 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlayImage* o)
 {
   m_texture = 0;
 
-  std::vector<uint32_t> rgba;
-  int stride;
-  if (!o->palette.empty())
-  {
-    m_pma  = !!USE_PREMULTIPLIED_ALPHA;
-    rgba   = convert_rgba(o, m_pma);
-    stride = o->width * 4;
-  }
-  else
-  {
-    m_pma  = false;
-    rgba = std::vector<uint32_t>(o->data.data(), o->data.data() + o->data.size());
-    stride = o->linesize;
-  }
-
-  if (rgba.empty())
-  {
-    CLog::Log(LOGERROR, "COverlayTextureGL::COverlayTextureGL - failed to convert overlay to rgb");
-    return;
-  }
-
   glGenTextures(1, &m_texture);
   glBindTexture(GL_TEXTURE_2D, m_texture);
 
@@ -190,14 +169,23 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlayImage* o)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-  LoadTexture(GL_TEXTURE_2D, o->width, o->height, stride, &m_u, &m_v, false, rgba.data());
-
-  if (reinterpret_cast<uint8_t*>(rgba.data()) != o->data.data())
-    rgba.clear();
+  if (o->palette.empty())
+  {
+    m_pma = false;
+    uint32_t* rgba = reinterpret_cast<uint32_t*>(o->pixels.data());
+    LoadTexture(GL_TEXTURE_2D, o->width, o->height, o->linesize, &m_u, &m_v, false, rgba);
+  }
+  else
+  {
+    std::vector<uint32_t> rgba(o->width * o->height);
+    m_pma = !!USE_PREMULTIPLIED_ALPHA;
+    convert_rgba(o, m_pma, rgba);
+    LoadTexture(GL_TEXTURE_2D, o->width, o->height, o->width * 4, &m_u, &m_v, false, rgba.data());
+  }
 
   glBindTexture(GL_TEXTURE_2D, 0);
 
-  if(o->source_width && o->source_height)
+  if (o->source_width && o->source_height)
   {
     float center_x = (0.5f * o->width  + o->x) / o->source_width;
     float center_y = (0.5f * o->height + o->y) / o->source_height;
@@ -211,8 +199,8 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlayImage* o)
   }
   else
   {
-    m_align  = ALIGN_VIDEO;
-    m_pos    = POSITION_ABSOLUTE;
+    m_align = ALIGN_VIDEO;
+    m_pos = POSITION_ABSOLUTE;
     m_x = static_cast<float>(o->x);
     m_y = static_cast<float>(o->y);
     m_width = static_cast<float>(o->width);
@@ -225,13 +213,9 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlaySpu* o)
   m_texture = 0;
 
   int min_x, max_x, min_y, max_y;
-  std::vector<uint32_t> rgba = convert_rgba(o, USE_PREMULTIPLIED_ALPHA, min_x, max_x, min_y, max_y);
+  std::vector<uint32_t> rgba(o->width * o->height);
 
-  if (rgba.empty())
-  {
-    CLog::Log(LOGERROR, "COverlayTextureGL::COverlayTextureGL - failed to convert overlay to rgb");
-    return;
-  }
+  convert_rgba(o, USE_PREMULTIPLIED_ALPHA, min_x, max_x, min_y, max_y, rgba);
 
   glGenTextures(1, &m_texture);
   glBindTexture(GL_TEXTURE_2D, m_texture);
@@ -246,13 +230,13 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlaySpu* o)
 
   glBindTexture(GL_TEXTURE_2D, 0);
 
-  m_align  = ALIGN_VIDEO;
-  m_pos    = POSITION_ABSOLUTE;
-  m_x      = (float)(min_x + o->x);
-  m_y      = (float)(min_y + o->y);
-  m_width  = (float)(max_x - min_x);
-  m_height = (float)(max_y - min_y);
-  m_pma    = !!USE_PREMULTIPLIED_ALPHA;
+  m_align = ALIGN_VIDEO;
+  m_pos = POSITION_ABSOLUTE;
+  m_x = static_cast<float>(min_x + o->x);
+  m_y = static_cast<float>(min_y + o->y);
+  m_width = static_cast<float>(max_x - min_x);
+  m_height = static_cast<float>(max_y - min_y);
+  m_pma = !!USE_PREMULTIPLIED_ALPHA;
 }
 
 COverlayGlyphGL::COverlayGlyphGL(ASS_Image* images, float width, float height)
@@ -273,7 +257,7 @@ COverlayGlyphGL::COverlayGlyphGL(ASS_Image* images, float width, float height)
   glBindTexture(GL_TEXTURE_2D, m_texture);
 
   LoadTexture(GL_TEXTURE_2D, quads.size_x, quads.size_y, quads.size_x, &m_u, &m_v, true,
-              quads.data.data());
+              quads.texture.data());
 
 
   float scale_u = m_u / quads.size_x;
