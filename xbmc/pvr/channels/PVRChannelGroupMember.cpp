@@ -68,7 +68,7 @@ void CPVRChannelGroupMember::SetGroupID(int iGroupID)
   if (m_iGroupID != iGroupID)
   {
     m_iGroupID = iGroupID;
-    m_bChanged = true;
+    m_bNeedsSave = true;
   }
 }
 
@@ -86,7 +86,7 @@ void CPVRChannelGroupMember::SetChannelNumber(const CPVRChannelNumber& channelNu
   if (m_channelNumber != channelNumber)
   {
     m_channelNumber = channelNumber;
-    m_bChanged = true;
+    m_bNeedsSave = true;
   }
 }
 
@@ -95,7 +95,7 @@ void CPVRChannelGroupMember::SetClientChannelNumber(const CPVRChannelNumber& cli
   if (m_clientChannelNumber != clientChannelNumber)
   {
     m_clientChannelNumber = clientChannelNumber;
-    m_bChanged = true;
+    m_bNeedsSave = true;
   }
 }
 
@@ -104,7 +104,7 @@ void CPVRChannelGroupMember::SetClientPriority(int iClientPriority)
   if (m_iClientPriority != iClientPriority)
   {
     m_iClientPriority = iClientPriority;
-    m_bChanged = true;
+    // Note: do not set m_bNeedsSave here as priority is not stored in database
   }
 }
 
@@ -113,7 +113,7 @@ void CPVRChannelGroupMember::SetOrder(int iOrder)
   if (m_iOrder != iOrder)
   {
     m_iOrder = iOrder;
-    m_bChanged = true;
+    m_bNeedsSave = true;
   }
 }
 

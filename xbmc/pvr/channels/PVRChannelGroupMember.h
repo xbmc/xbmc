@@ -25,7 +25,7 @@ class CPVRChannelGroupMember : public ISerializable, public ISortable
   friend class CPVRDatabase;
 
 public:
-  CPVRChannelGroupMember() : m_bChanged(false) {}
+  CPVRChannelGroupMember() : m_bNeedsSave(false) {}
 
   CPVRChannelGroupMember(int iGroupID,
                          const std::string& groupName,
@@ -60,8 +60,8 @@ public:
   int Order() const { return m_iOrder; }
   void SetOrder(int iOrder);
 
-  bool NeedsSave() const { return m_bChanged; }
-  void SetSaved() { m_bChanged = false; }
+  bool NeedsSave() const { return m_bNeedsSave; }
+  void SetSaved() { m_bNeedsSave = false; }
 
   int ClientID() const { return m_iClientID; }
 
@@ -91,7 +91,7 @@ private:
   int m_iClientPriority = 0;
   int m_iOrder = 0; // The value denoting the order of this member in the group
 
-  bool m_bChanged = true;
+  bool m_bNeedsSave = true;
 };
 
 } // namespace PVR
