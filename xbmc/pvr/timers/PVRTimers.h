@@ -23,6 +23,7 @@ namespace PVR
   enum class PVREvent;
 
   class CPVRChannel;
+  class CPVRClient;
   class CPVREpgInfoTag;
   class CPVRTimerInfoTag;
   class CPVRTimersPath;
@@ -68,37 +69,34 @@ namespace PVR
     CPVRTimers();
     ~CPVRTimers() override = default;
 
-    /**
+    /*!
      * @brief start the timer update thread.
      */
     void Start();
 
-    /**
+    /*!
      * @brief stop the timer update thread.
      */
     void Stop();
 
-    /**
-     * @brief (re)load the timers from the clients.
-     * @return True if loaded successfully, false otherwise.
+    /*!
+     * @brief Update all timers from PVR database and from given clients.
+     * @param clients The PVR clients data should be loaded for. Leave empty for all clients.
+     * @return True on success, false otherwise.
      */
-    bool Load();
+    bool Update(const std::vector<std::shared_ptr<CPVRClient>>& clients);
 
-    /**
+    /*!
      * @brief unload all timers.
      */
     void Unload();
 
-    /**
-     * @brief refresh the timer list from the clients.
+    /*!
+     * @brief Update data with recordings from the given clients, sync with local data.
+     * @param clients The clients to fetch data from. Leave empty to fetch data from all created clients.
+     * @return True on success, false otherwise.
      */
-    bool Update();
-
-    /**
-     * @brief load the local timers from database.
-     * @return True if loaded successfully, false otherwise.
-     */
-    bool LoadFromDatabase();
+    bool UpdateFromClients(const std::vector<std::shared_ptr<CPVRClient>>& clients);
 
     /*!
      * @param bIgnoreReminders include or ignore reminders
@@ -268,6 +266,13 @@ namespace PVR
 
   private:
     void Process() override;
+
+    /*!
+     * @brief Load all timers from PVR database.
+     * @param clients The PVR clients data should be loaded for. Leave empty for all clients.
+     * @return True on success, false otherwise.
+     */
+    bool LoadFromDatabase(const std::vector<std::shared_ptr<CPVRClient>>& clients);
 
     void RemoveEntry(const std::shared_ptr<CPVRTimerInfoTag>& tag);
     bool UpdateEntries(const CPVRTimersContainer& timers, const std::vector<int>& failedClients);

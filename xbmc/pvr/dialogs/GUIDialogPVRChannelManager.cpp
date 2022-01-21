@@ -706,7 +706,7 @@ bool CGUIDialogPVRChannelManager::OnContextButton(int itemNumber, CONTEXT_BUTTON
               CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio);
           if (groups)
           {
-            groups->Update();
+            groups->UpdateFromClients({});
             Update();
           }
         }
@@ -754,10 +754,10 @@ void CGUIDialogPVRChannelManager::Update()
   std::shared_ptr<CPVRChannelGroup> channels = CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(m_bIsRadio);
 
   // No channels available, nothing to do.
-  if(!channels)
+  if (!channels)
     return;
 
-  channels->Update();
+  channels->UpdateFromClients({});
 
   const std::vector<std::shared_ptr<CPVRChannelGroupMember>> groupMembers = channels->GetMembers();
   std::shared_ptr<CFileItem> channelFile;

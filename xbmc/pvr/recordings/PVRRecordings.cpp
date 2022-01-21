@@ -34,16 +34,21 @@ CPVRRecordings::~CPVRRecordings()
     m_database->Close();
 }
 
-void CPVRRecordings::UpdateFromClients()
+bool CPVRRecordings::UpdateFromClients(const std::vector<std::shared_ptr<CPVRClient>>& clients)
 {
   CSingleLock lock(m_critSection);
+
+  if (m_bIsUpdating)
+    return false;
+
+  m_bIsUpdating = true;
 
   for (const auto& recording : m_recordings)
     recording.second->SetDirty(true);
 
   std::vector<int> failedClients;
-  CServiceBroker::GetPVRManager().Clients()->GetRecordings(this, false, failedClients);
-  CServiceBroker::GetPVRManager().Clients()->GetRecordings(this, true, failedClients);
+  CServiceBroker::GetPVRManager().Clients()->GetRecordings(clients, this, false, failedClients);
+  CServiceBroker::GetPVRManager().Clients()->GetRecordings(clients, this, true, failedClients);
 
   // remove recordings that were deleted at the backend
   for (auto it = m_recordings.begin(); it != m_recordings.end();)
@@ -54,13 +59,15 @@ void CPVRRecordings::UpdateFromClients()
     else
       ++it;
   }
+
+  m_bIsUpdating = false;
+  CServiceBroker::GetPVRManager().PublishEvent(PVREvent::RecordingsInvalidated);
+  return true;
 }
 
-int CPVRRecordings::Load()
+bool CPVRRecordings::Update(const std::vector<std::shared_ptr<CPVRClient>>& clients)
 {
-  Unload();
-  Update();
-  return m_recordings.size();
+  return UpdateFromClients(clients);
 }
 
 void CPVRRecordings::Unload()
@@ -71,24 +78,6 @@ void CPVRRecordings::Unload()
   m_iTVRecordings = 0;
   m_iRadioRecordings = 0;
   m_recordings.clear();
-}
-
-void CPVRRecordings::Update()
-{
-  CSingleLock lock(m_critSection);
-  if (m_bIsUpdating)
-    return;
-  m_bIsUpdating = true;
-  lock.Leave();
-
-  CLog::LogFC(LOGDEBUG, LOGPVR, "Updating recordings");
-  UpdateFromClients();
-
-  lock.Enter();
-  m_bIsUpdating = false;
-  lock.Leave();
-
-  CServiceBroker::GetPVRManager().PublishEvent(PVREvent::RecordingsInvalidated);
 }
 
 void CPVRRecordings::UpdateInProgressSize()

@@ -11,6 +11,7 @@
 #include "threads/CriticalSection.h"
 
 #include <memory>
+#include <vector>
 
 namespace PVR
 {
@@ -18,6 +19,7 @@ namespace PVR
   class CPVRChannelGroup;
   class CPVRChannelGroupMember;
   class CPVRChannelGroups;
+  class CPVRClient;
   class CPVREpgInfoTag;
 
   class CPVRChannelGroupsContainer
@@ -34,28 +36,25 @@ namespace PVR
     virtual ~CPVRChannelGroupsContainer();
 
     /*!
-     * @brief Load all channel groups and all channels in those channel groups.
-     * @return True if all groups were loaded, false otherwise.
+     * @brief Update all channel groups and all channels from PVR database and from given clients.
+     * @param clients The PVR clients data should be loaded for. Leave empty for all clients.
+     * @return True on success, false otherwise.
      */
-    bool Load();
+    bool Update(const std::vector<std::shared_ptr<CPVRClient>>& clients);
 
     /*!
-     * @brief Checks whether groups were already loaded.
-     * @return True if groups were successfully loaded, false otherwise.
+     * @brief Update data with groups and channels from the given clients, sync with local data.
+     * @param clients The clients to fetch data from. Leave empty to fetch data from all created clients.
+     * @param bChannelsOnly Set to true to only update channels, not the groups themselves.
+     * @return True on success, false otherwise.
      */
-    bool Loaded() const;
+    bool UpdateFromClients(const std::vector<std::shared_ptr<CPVRClient>>& clients,
+                           bool bChannelsOnly = false);
 
     /*!
      * @brief Unload and destruct all channel groups and all channels in them.
      */
     void Unload();
-
-    /*!
-     * @brief Update the contents of all the groups in this container.
-     * @param bChannelsOnly Set to true to only update channels, not the groups themselves.
-     * @return True if the update was successful, false otherwise.
-     */
-    bool Update(bool bChannelsOnly = false);
 
     /*!
      * @brief Get the TV channel groups.
@@ -161,10 +160,16 @@ namespace PVR
     CPVRChannelGroupsContainer& operator=(const CPVRChannelGroupsContainer&) = delete;
     CPVRChannelGroupsContainer(const CPVRChannelGroupsContainer&) = delete;
 
+    /*!
+     * @brief Load all channel groups and all channels from PVR database.
+     * @param clients The PVR clients data should be loaded for. Leave empty for all clients.
+     * @return True on success, false otherwise.
+     */
+    bool LoadFromDatabase(const std::vector<std::shared_ptr<CPVRClient>>& clients);
+
     CPVRChannelGroups* m_groupsRadio; /*!< all radio channel groups */
     CPVRChannelGroups* m_groupsTV; /*!< all TV channel groups */
     CCriticalSection m_critSection;
     bool m_bIsUpdating = false;
-    bool m_bLoaded = false;
   };
 }

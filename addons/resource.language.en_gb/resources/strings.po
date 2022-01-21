@@ -10697,11 +10697,7 @@ msgctxt "#19238"
 msgid "Loading recordings from clients"
 msgstr ""
 
-#. label 'starting background tasks' for progress dialog text
-#: xbmc/pvr/PVRManager.cpp
-msgctxt "#19239"
-msgid "Starting background threads"
-msgstr ""
+#empty string with id 19239
 
 #. label for pvr settings client priorities control and client priorities dialog heading.
 #: system/settings/settings.xml

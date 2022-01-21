@@ -93,18 +93,19 @@ std::shared_ptr<CPVRChannelGroupSettings> CPVRChannelGroup::GetSettings() const
   return m_settings;
 }
 
-bool CPVRChannelGroup::Load(
-    const std::map<std::pair<int, int>, std::shared_ptr<CPVRChannel>>& channels)
+bool CPVRChannelGroup::LoadFromDatabase(
+    const std::map<std::pair<int, int>, std::shared_ptr<CPVRChannel>>& channels,
+    const std::vector<std::shared_ptr<CPVRClient>>& clients)
 {
-  /* make sure this container is empty before loading */
-  Unload();
-
-  int iChannelCount = m_iGroupId > 0 ? LoadFromDb() : 0;
+  const int iChannelCount = m_iGroupId > 0 ? LoadFromDatabase(clients) : 0;
   CLog::LogFC(LOGDEBUG, LOGPVR, "Fetched {} {} group members from the database for group '{}'",
               iChannelCount, IsRadio() ? "radio" : "TV", GroupName());
 
   for (const auto& groupMember : m_members)
   {
+    if (groupMember.second->Channel())
+      continue;
+
     auto channel = channels.find(groupMember.first);
     if (channel == channels.end())
     {
@@ -127,14 +128,14 @@ void CPVRChannelGroup::Unload()
   m_failedClients.clear();
 }
 
-bool CPVRChannelGroup::Update()
+bool CPVRChannelGroup::UpdateFromClients(const std::vector<std::shared_ptr<CPVRClient>>& clients)
 {
   if (GroupType() == PVR_GROUP_TYPE_USER_DEFINED || !GetSettings()->SyncChannelGroups())
     return true;
 
   // get the channel group members from the backends.
   std::vector<std::shared_ptr<CPVRChannelGroupMember>> groupMembers;
-  CServiceBroker::GetPVRManager().Clients()->GetChannelGroupMembers(this, groupMembers,
+  CServiceBroker::GetPVRManager().Clients()->GetChannelGroupMembers(clients, this, groupMembers,
                                                                     m_failedClients);
   return UpdateGroupEntries(groupMembers);
 }
@@ -470,26 +471,32 @@ void CPVRChannelGroup::GetChannelNumbers(std::vector<std::string>& channelNumber
   }
 }
 
-int CPVRChannelGroup::LoadFromDb()
+int CPVRChannelGroup::LoadFromDatabase(const std::vector<std::shared_ptr<CPVRClient>>& clients)
 {
   const std::shared_ptr<CPVRDatabase> database(CServiceBroker::GetPVRManager().GetTVDatabase());
   if (!database)
     return -1;
 
-  const int iChannelCount = Size();
-  const std::vector<std::shared_ptr<CPVRChannelGroupMember>> results = database->Get(*this);
+  const std::vector<std::shared_ptr<CPVRChannelGroupMember>> results =
+      database->Get(*this, clients);
 
   std::vector<std::shared_ptr<CPVRChannelGroupMember>> membersToDelete;
   if (!results.empty())
   {
+    const std::shared_ptr<CPVRClients> clients = CServiceBroker::GetPVRManager().Clients();
+
     CSingleLock lock(m_critSection);
     for (const auto& member : results)
     {
       // Consistency check.
       if (member->ClientID() > 0 && member->ChannelUID() > 0 && member->IsRadio() == IsRadio())
       {
-        m_sortedMembers.emplace_back(member);
-        m_members.emplace(std::make_pair(member->ClientID(), member->ChannelUID()), member);
+        // Ignore data from unknown/disabled clients
+        if (clients->IsEnabledClient(member->ClientID()))
+        {
+          m_sortedMembers.emplace_back(member);
+          m_members.emplace(std::make_pair(member->ClientID(), member->ChannelUID()), member);
+        }
       }
       else
       {
@@ -506,7 +513,7 @@ int CPVRChannelGroup::LoadFromDb()
 
   DeleteGroupMembersFromDb(membersToDelete);
 
-  return results.size() - membersToDelete.size() - iChannelCount;
+  return results.size() - membersToDelete.size();
 }
 
 void CPVRChannelGroup::DeleteGroupMembersFromDb(
@@ -661,15 +668,13 @@ std::vector<std::shared_ptr<CPVRChannelGroupMember>> CPVRChannelGroup::RemoveDel
         CLog::Log(LOGINFO, "Removed stale {} channel '{}' from group '{}'",
                   IsRadio() ? "radio" : "TV", channel->ChannelName(), GroupName());
         membersToRemove.emplace_back(*it);
-      }
 
-      m_members.erase(channel->StorageId());
-      it = m_sortedMembers.erase(it);
+        m_members.erase(channel->StorageId());
+        it = m_sortedMembers.erase(it);
+        continue;
+      }
     }
-    else
-    {
-      ++it;
-    }
+    ++it;
   }
 
   DeleteGroupMembersFromDb(membersToRemove);
