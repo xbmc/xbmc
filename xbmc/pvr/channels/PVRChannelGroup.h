@@ -32,6 +32,7 @@ namespace PVR
 
   class CPVRChannel;
   class CPVRChannelGroupMember;
+  class CPVRClient;
   class CPVREpgInfoTag;
 
   enum EpgDateType
@@ -82,11 +83,14 @@ namespace PVR
     CEventStream<PVREvent>& Events() { return m_events; }
 
     /*!
-     * @brief Load the channels from the database, update and sync data from clients.
+     * @brief Load the channels from the database.
      * @param channels All available channels.
+     * @param clients The PVR clients data should be loaded for. Leave empty for all clients.
      * @return True when loaded successfully, false otherwise.
      */
-    virtual bool Load(const std::map<std::pair<int, int>, std::shared_ptr<CPVRChannel>>& channels);
+    virtual bool LoadFromDatabase(
+        const std::map<std::pair<int, int>, std::shared_ptr<CPVRChannel>>& channels,
+        const std::vector<std::shared_ptr<CPVRClient>>& clients);
 
     /*!
      * @brief Clear all data.
@@ -99,10 +103,11 @@ namespace PVR
     size_t Size() const;
 
     /*!
-     * @brief Refresh the channel list from the clients, sync with local data.
+     * @brief Update data with channel group members from the given clients, sync with local data.
+     * @param clients The clients to fetch data from. Leave empty to fetch data from all created clients.
      * @return True on success, false otherwise.
      */
-    virtual bool Update();
+    virtual bool UpdateFromClients(const std::vector<std::shared_ptr<CPVRClient>>& clients);
 
     /*!
      * @brief Get the path of this group.
@@ -514,9 +519,10 @@ namespace PVR
   private:
     /*!
      * @brief Load the channel group members stored in the database.
+     * @param clients The PVR clients to load data for. Leave empty for all clients.
      * @return The amount of channel group members that were added.
      */
-    int LoadFromDb();
+    int LoadFromDatabase(const std::vector<std::shared_ptr<CPVRClient>>& clients);
 
     /*!
      * @brief Delete channel group members from database.

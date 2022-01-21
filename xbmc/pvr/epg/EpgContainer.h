@@ -312,7 +312,7 @@ namespace PVR
     /*!
      * @brief Load all tables from the database
      */
-    void LoadFromDB();
+    void LoadFromDatabase();
 
     /*!
      * @brief Insert data from database

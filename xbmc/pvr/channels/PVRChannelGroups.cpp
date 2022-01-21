@@ -39,12 +39,15 @@ CPVRChannelGroups::CPVRChannelGroups(bool bRadio) :
 
 CPVRChannelGroups::~CPVRChannelGroups()
 {
-  Clear();
+  Unload();
 }
 
-void CPVRChannelGroups::Clear()
+void CPVRChannelGroups::Unload()
 {
   CSingleLock lock(m_critSection);
+  for (const auto& group : m_groups)
+    group->Unload();
+
   m_groups.clear();
   m_failedClientsForChannelGroups.clear();
 }
@@ -195,7 +198,8 @@ bool CPVRChannelGroups::HasValidDataForAllClients() const
   return m_failedClientsForChannelGroups.empty();
 }
 
-bool CPVRChannelGroups::Update(bool bChannelsOnly /* = false */)
+bool CPVRChannelGroups::UpdateFromClients(const std::vector<std::shared_ptr<CPVRClient>>& clients,
+                                          bool bChannelsOnly /* = false */)
 {
   bool bSyncWithBackends = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
       CSettings::SETTING_PVRMANAGER_SYNCCHANNELGROUPS);
@@ -207,7 +211,7 @@ bool CPVRChannelGroups::Update(bool bChannelsOnly /* = false */)
   if (bUpdateAllGroups)
   {
     // get channel groups from the clients
-    CServiceBroker::GetPVRManager().Clients()->GetChannelGroups(this,
+    CServiceBroker::GetPVRManager().Clients()->GetChannelGroups(clients, this,
                                                                 m_failedClientsForChannelGroups);
     CLog::LogFC(LOGDEBUG, LOGPVR, "{} new user defined {} channel groups fetched from clients",
                 (m_groups.size() - iSize), m_bRadio ? "radio" : "TV");
@@ -231,7 +235,7 @@ bool CPVRChannelGroups::Update(bool bChannelsOnly /* = false */)
     if (bUpdateAllGroups || group->IsInternalGroup())
     {
       const int iMemberCount = group->Size();
-      if (!group->Update())
+      if (!group->UpdateFromClients(clients))
       {
         CLog::LogFC(LOGERROR, LOGPVR, "Failed to update channel group '{}'", group->GroupName());
         bReturn = false;
@@ -298,18 +302,29 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::CreateChannelGroup(
     return std::make_shared<CPVRChannelGroup>(path, GetGroupAll());
 }
 
-bool CPVRChannelGroups::LoadFromDb()
+bool CPVRChannelGroups::LoadFromDatabase(const std::vector<std::shared_ptr<CPVRClient>>& clients)
 {
   const std::shared_ptr<CPVRDatabase> database(CServiceBroker::GetPVRManager().GetTVDatabase());
   if (!database)
     return false;
+
+  CSingleLock lock(m_critSection);
+
+  // Ensure we have an internal group. It is important that the internal group is created before
+  // loading contents from database and that it gets inserted in front of m_groups. Look at
+  // GetGroupAll() implementation to see why.
+  if (m_groups.empty())
+  {
+    const auto internalGroup = std::make_shared<CPVRChannelGroupInternal>(m_bRadio);
+    m_groups.emplace_back(internalGroup);
+  }
 
   CLog::LogFC(LOGDEBUG, LOGPVR, "Loading all {} channel groups and members",
               m_bRadio ? "radio" : "TV");
 
   // load all channels from the database
   std::map<std::pair<int, int>, std::shared_ptr<CPVRChannel>> channels;
-  database->Get(m_bRadio, channels);
+  database->Get(m_bRadio, clients, channels);
   CLog::LogFC(LOGDEBUG, LOGPVR, "Fetched {} {} channels from the database", channels.size(),
               m_bRadio ? "radio" : "TV");
 
@@ -321,41 +336,24 @@ bool CPVRChannelGroups::LoadFromDb()
   // load all group members from the database
   for (const auto& group : m_groups)
   {
-    if (!group->Load(channels))
+    if (!group->LoadFromDatabase(channels, clients))
     {
-      CLog::LogFC(LOGERROR, LOGPVR, "Failed to load {} channel group '{}'",
+      CLog::LogFC(LOGERROR, LOGPVR,
+                  "Failed to load members of {} channel group '{}' from the database",
                   m_bRadio ? "radio" : "TV", group->GroupName());
     }
   }
-  return true;
-}
 
-bool CPVRChannelGroups::Load()
-{
+  // Hide empty groups
+  for (auto it = m_groups.begin(); it != m_groups.end();)
   {
-    CSingleLock lock(m_critSection);
-
-    // Remove previous contents
-    Clear();
-
-    // Ensure we have an internal group. It is important that the internal group is created before
-    // loading contents from database and that it gets inserted in front of m_groups. Look at
-    // GetGroupAll() implementation to see why.
-    const auto internalGroup = std::make_shared<CPVRChannelGroupInternal>(m_bRadio);
-    m_groups.emplace_back(internalGroup);
-
-    // Load groups, group members and channels from database
-    LoadFromDb();
+    if ((*it)->Size() == 0 && !(*it)->IsInternalGroup())
+      it = m_groups.erase(it);
+    else
+      ++it;
   }
 
-  // Load data from clients and sync with local data
-  Update();
-
-  CLog::LogFC(LOGDEBUG, LOGPVR, "{} {} channel groups loaded", m_groups.size(),
-              m_bRadio ? "radio" : "TV");
-
-  // need at least 1 group
-  return m_groups.size() > 0;
+  return true;
 }
 
 bool CPVRChannelGroups::PersistAll()

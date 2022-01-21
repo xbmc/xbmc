@@ -32,10 +32,11 @@ namespace PVR
     virtual ~CPVRRecordings();
 
     /*!
-     * @brief (re)load the recordings from the clients.
-     * @return the number of recordings loaded.
+     * @brief Update all recordings from the given PVR clients.
+     * @param clients The PVR clients data should be loaded for. Leave empty for all clients.
+     * @return True on success, false otherwise.
      */
-    int Load();
+    bool Update(const std::vector<std::shared_ptr<CPVRClient>>& clients);
 
     /*!
      * @brief unload all recordings.
@@ -43,16 +44,18 @@ namespace PVR
     void Unload();
 
     /*!
+     * @brief Update data with recordings from the given clients, sync with local data.
+     * @param clients The clients to fetch data from. Leave empty to fetch data from all created clients.
+     * @return True on success, false otherwise.
+     */
+    bool UpdateFromClients(const std::vector<std::shared_ptr<CPVRClient>>& clients);
+
+    /*!
      * @brief client has delivered a new/updated recording.
      * @param tag The recording
      * @param client The client the recording belongs to.
      */
     void UpdateFromClient(const std::shared_ptr<CPVRRecording>& tag, const CPVRClient& client);
-
-    /*!
-     * @brief refresh the recordings list from the clients.
-     */
-    void Update();
 
     /*!
      * @brief refresh the size of any in progress recordings from the clients.
@@ -112,8 +115,6 @@ namespace PVR
     bool m_bDeletedRadioRecordings = false;
     unsigned int m_iTVRecordings = 0;
     unsigned int m_iRadioRecordings = 0;
-
-    void UpdateFromClients();
 
     /*!
      * @brief Get/Open the video database.

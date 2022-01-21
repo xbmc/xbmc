@@ -200,8 +200,7 @@ bool CPVRGUIDirectory::GetDirectory(CFileItemList& results) const
   }
   else if (StringUtils::StartsWith(fileName, "channels"))
   {
-    if (CServiceBroker::GetPVRManager().ChannelGroups() &&
-        CServiceBroker::GetPVRManager().ChannelGroups()->Loaded())
+    if (CServiceBroker::GetPVRManager().IsStarted())
     {
       return GetChannelsDirectory(results);
     }

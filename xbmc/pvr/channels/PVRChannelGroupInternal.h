@@ -82,17 +82,21 @@ namespace PVR
         const std::vector<std::shared_ptr<CPVRChannelGroupMember>>& groupMembers) override;
 
     /*!
-     * @brief Refresh the channel list from the clients, sync with local data.
+     * @brief Update data with 'all channels' group members from the given clients, sync with local data.
+     * @param clients The clients to fetch data from. Leave empty to fetch data from all created clients.
      * @return True on success, false otherwise.
      */
-    bool Update() override;
+    bool UpdateFromClients(const std::vector<std::shared_ptr<CPVRClient>>& clients) override;
 
     /*!
-     * @brief Load the channels from the database, update and sync data from clients.
+     * @brief Load the channels from the database.
      * @param channels All available channels.
+     * @param clients The PVR clients data should be loaded for. Leave empty for all clients.
      * @return True when loaded successfully, false otherwise.
      */
-    bool Load(const std::map<std::pair<int, int>, std::shared_ptr<CPVRChannel>>& channels) override;
+    bool LoadFromDatabase(
+        const std::map<std::pair<int, int>, std::shared_ptr<CPVRChannel>>& channels,
+        const std::vector<std::shared_ptr<CPVRClient>>& clients) override;
 
     /*!
      * @brief Clear all data.

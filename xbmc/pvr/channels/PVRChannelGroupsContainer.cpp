@@ -27,11 +27,24 @@ CPVRChannelGroupsContainer::CPVRChannelGroupsContainer() :
 
 CPVRChannelGroupsContainer::~CPVRChannelGroupsContainer()
 {
+  Unload();
   delete m_groupsRadio;
   delete m_groupsTV;
 }
 
-bool CPVRChannelGroupsContainer::Update(bool bChannelsOnly /* = false */)
+bool CPVRChannelGroupsContainer::Update(const std::vector<std::shared_ptr<CPVRClient>>& clients)
+{
+  return LoadFromDatabase(clients) && UpdateFromClients(clients);
+}
+
+bool CPVRChannelGroupsContainer::LoadFromDatabase(
+    const std::vector<std::shared_ptr<CPVRClient>>& clients)
+{
+  return m_groupsTV->LoadFromDatabase(clients) && m_groupsRadio->LoadFromDatabase(clients);
+}
+
+bool CPVRChannelGroupsContainer::UpdateFromClients(
+    const std::vector<std::shared_ptr<CPVRClient>>& clients, bool bChannelsOnly /* = false */)
 {
   CSingleLock lock(m_critSection);
   if (m_bIsUpdating)
@@ -40,7 +53,8 @@ bool CPVRChannelGroupsContainer::Update(bool bChannelsOnly /* = false */)
   lock.Leave();
 
   CLog::LogFC(LOGDEBUG, LOGPVR, "Updating {}", bChannelsOnly ? "channels" : "channel groups");
-  bool bReturn = m_groupsTV->Update(bChannelsOnly) && m_groupsRadio->Update(bChannelsOnly);
+  bool bReturn = m_groupsTV->UpdateFromClients(clients, bChannelsOnly) &&
+                 m_groupsRadio->UpdateFromClients(clients, bChannelsOnly);
 
   lock.Enter();
   m_bIsUpdating = false;
@@ -49,23 +63,10 @@ bool CPVRChannelGroupsContainer::Update(bool bChannelsOnly /* = false */)
   return bReturn;
 }
 
-bool CPVRChannelGroupsContainer::Load()
-{
-  Unload();
-  m_bLoaded = m_groupsTV->Load() && m_groupsRadio->Load();
-  return m_bLoaded;
-}
-
-bool CPVRChannelGroupsContainer::Loaded() const
-{
-  return m_bLoaded;
-}
-
 void CPVRChannelGroupsContainer::Unload()
 {
-  m_groupsRadio->Clear();
-  m_groupsTV->Clear();
-  m_bLoaded = false;
+  m_groupsRadio->Unload();
+  m_groupsTV->Unload();
 }
 
 CPVRChannelGroups* CPVRChannelGroupsContainer::Get(bool bRadio) const

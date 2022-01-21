@@ -15,6 +15,7 @@
 
 namespace PVR
 {
+class CPVRClient;
 class CPVRProvider;
 
 enum class ProviderUpdateMode;
@@ -64,10 +65,11 @@ public:
   ~CPVRProviders() = default;
 
   /**
-     * @brief (re)load the providers from the clients.
-     * @return True if loaded successfully, false otherwise.
+   * @brief Update all providers from PVR database and from given clients.
+   * @param clients The PVR clients data should be loaded for. Leave empty for all clients.
+   * @return True on success, false otherwise.
      */
-  bool Load();
+  bool Update(const std::vector<std::shared_ptr<CPVRClient>>& clients);
 
   /**
      * @brief unload all providers.
@@ -75,15 +77,18 @@ public:
   void Unload();
 
   /**
-     * @brief refresh the providers list from the clients.
+   * @brief Update data with providers from the given clients, sync with local data.
+   * @param clients The clients to fetch data from. Leave empty to fetch data from all created clients.
+   * @return True on success, false otherwise.
      */
-  bool Update();
+  bool UpdateFromClients(const std::vector<std::shared_ptr<CPVRClient>>& clients);
 
   /**
-     * @brief load the local providers from database.
-     * @return True if loaded successfully, false otherwise.
+   * @brief Load all local providers from PVR database.
+   * @param clients The PVR clients data should be loaded for. Leave empty for all clients.
+   * @return True on success, false otherwise.
      */
-  bool LoadFromDatabase();
+  bool LoadFromDatabase(const std::vector<std::shared_ptr<CPVRClient>>& clients);
 
   /*!
      * @brief Check if the entry exists in the container, if it does update it otherwise add it

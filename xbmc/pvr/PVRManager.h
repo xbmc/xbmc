@@ -276,7 +276,9 @@ namespace PVR
 
     /*!
      * @brief Let the background thread update the recordings list.
+     * @param clientId The id of the PVR client to update.
      */
+    void TriggerRecordingsUpdate(int clientId);
     void TriggerRecordingsUpdate();
 
     /*!
@@ -286,22 +288,30 @@ namespace PVR
 
     /*!
      * @brief Let the background thread update the timer list.
+     * @param clientId The id of the PVR client to update.
      */
+    void TriggerTimersUpdate(int clientId);
     void TriggerTimersUpdate();
 
     /*!
      * @brief Let the background thread update the channel list.
+     * @param clientId The id of the PVR client to update.
      */
+    void TriggerChannelsUpdate(int clientId);
     void TriggerChannelsUpdate();
 
     /*!
      * @brief Let the background thread update the provider list.
+     * @param clientId The id of the PVR client to update.
      */
+    void TriggerProvidersUpdate(int clientId);
     void TriggerProvidersUpdate();
 
     /*!
      * @brief Let the background thread update the channel groups list.
+     * @param clientId The id of the PVR client to update.
      */
+    void TriggerChannelGroupsUpdate(int clientId);
     void TriggerChannelGroupsUpdate();
 
     /*!
@@ -381,33 +391,6 @@ namespace PVR
      */
     bool SetWakeupCommand();
 
-    /*!
-     * @brief Load at least one client and load all other PVR data (channelgroups, timers, recordings) after loading the client.
-     * @param progressHandler The progress handler to use for showing the different load stages.
-     * @return If at least one client and all pvr data was loaded, false otherwise.
-     */
-    bool LoadComponents(CPVRGUIProgressHandler* progressHandler);
-
-    /*!
-     * @brief Unload all PVR data (recordings, timers, channelgroups).
-     */
-    void UnloadComponents();
-
-    /*!
-     * @brief Reset all properties.
-     */
-    void ResetProperties();
-
-    /*!
-     * @brief Destroy PVRManager's objects.
-     */
-    void Clear();
-
-    /*!
-     * @brief Continue playback on the last played channel.
-     */
-    void TriggerPlayChannelOnStartup();
-
     enum ManagerState
     {
       ManagerStateError = 0,
@@ -429,6 +412,45 @@ namespace PVR
      * @param state the new state.
      */
     void SetState(ManagerState state);
+
+    /*!
+     * @brief Wait until at least one client is up. Update all data from database and the given PVR clients.
+     * @param knownClients [inout] List of last known active clients.
+     * @param stateToCheck Required state of the PVR manager while this method gets called.
+     */
+    void UpdateComponents(std::vector<std::shared_ptr<CPVRClient>>& knownClients,
+                          ManagerState stateToCheck);
+
+    /*!
+     * @brief Update all data from database and the given PVR clients.
+     * @param knownClients [inout] List of last known active clients.
+     * @param stateToCheck Required state of the PVR manager while this method gets called.
+     * @param progressHandler The progress handler to use for showing the different stages.
+     * @return True if at least one client is known and successfully loaded, false otherwise.
+     */
+    bool UpdateComponents(std::vector<std::shared_ptr<CPVRClient>>& knownClients,
+                          ManagerState stateToCheck,
+                          CPVRGUIProgressHandler* progressHandler);
+
+    /*!
+     * @brief Unload all PVR data (recordings, timers, channelgroups).
+     */
+    void UnloadComponents();
+
+    /*!
+     * @brief Reset all properties.
+     */
+    void ResetProperties();
+
+    /*!
+     * @brief Destroy PVRManager's objects.
+     */
+    void Clear();
+
+    /*!
+     * @brief Continue playback on the last played channel.
+     */
+    void TriggerPlayChannelOnStartup();
 
     bool IsCurrentlyParentalLocked(const std::shared_ptr<CPVRChannel>& channel, bool bGenerallyLocked) const;
 

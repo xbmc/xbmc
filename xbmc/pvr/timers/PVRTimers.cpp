@@ -99,18 +99,30 @@ CPVRTimers::CPVRTimers()
 {
 }
 
-bool CPVRTimers::Load()
+bool CPVRTimers::Update(const std::vector<std::shared_ptr<CPVRClient>>& clients)
 {
-  // unload previous timers
-  Unload();
+  return LoadFromDatabase(clients) && UpdateFromClients(clients);
+}
 
+bool CPVRTimers::LoadFromDatabase(const std::vector<std::shared_ptr<CPVRClient>>& clients)
+{
   // load local timers from database
-  bool bReturn = LoadFromDatabase();
+  const std::shared_ptr<CPVRDatabase> database = CServiceBroker::GetPVRManager().GetTVDatabase();
+  if (database)
+  {
+    bool bChanged = false;
 
-  // update from clients
-  Update();
+    const std::vector<std::shared_ptr<CPVRTimerInfoTag>> timers =
+        database->GetTimers(*this, clients);
+    for (const auto& timer : timers)
+    {
+      bChanged |= !!UpdateEntry(timer);
+    }
 
-  return bReturn;
+    if (bChanged)
+      NotifyTimersEvent();
+  }
+  return true;
 }
 
 void CPVRTimers::Unload()
@@ -134,7 +146,7 @@ void CPVRTimers::Stop()
   CServiceBroker::GetPVRManager().Events().Unsubscribe(this);
 }
 
-bool CPVRTimers::Update()
+bool CPVRTimers::UpdateFromClients(const std::vector<std::shared_ptr<CPVRClient>>& clients)
 {
   {
     CSingleLock lock(m_critSection);
@@ -146,27 +158,8 @@ bool CPVRTimers::Update()
   CLog::LogFC(LOGDEBUG, LOGPVR, "Updating timers");
   CPVRTimersContainer newTimerList;
   std::vector<int> failedClients;
-  CServiceBroker::GetPVRManager().Clients()->GetTimers(&newTimerList, failedClients);
+  CServiceBroker::GetPVRManager().Clients()->GetTimers(clients, &newTimerList, failedClients);
   return UpdateEntries(newTimerList, failedClients);
-}
-
-bool CPVRTimers::LoadFromDatabase()
-{
-  const std::shared_ptr<CPVRDatabase> database = CServiceBroker::GetPVRManager().GetTVDatabase();
-  if (database)
-  {
-    bool bChanged = false;
-
-    const std::vector<std::shared_ptr<CPVRTimerInfoTag>> timers = database->GetTimers(*this);
-    for (const auto& timer : timers)
-    {
-      bChanged |= !!UpdateEntry(timer);
-    }
-
-    if (bChanged)
-      NotifyTimersEvent();
-  }
-  return true;
 }
 
 void CPVRTimers::Process()
@@ -404,7 +397,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimersContainer& timers, const std::vec
     }
   }
 
-  return bChanged;
+  return true;
 }
 
 namespace
