@@ -110,7 +110,6 @@ private:
   // -----------------------------------------------------------------------------------
   void SetThreadInfo(); // called from the spawned thread
   void TermHandler();
-  void SetSignalHandlers();
   // -----------------------------------------------------------------------------------
 
   bool m_bAutoDelete = false;
