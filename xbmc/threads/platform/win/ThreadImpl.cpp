@@ -70,13 +70,3 @@ bool CThread::SetPriority(const int iPriority)
 
   return bReturn;
 }
-
-int CThread::GetPriority()
-{
-  CSingleLock lock(m_CriticalSection);
-
-  int iReturn = THREAD_PRIORITY_NORMAL;
-  if (m_thread)
-    iReturn = GetThreadPriority(m_lwpId);
-  return iReturn;
-}
