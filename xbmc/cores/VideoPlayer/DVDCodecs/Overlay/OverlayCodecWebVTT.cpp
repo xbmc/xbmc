@@ -17,6 +17,7 @@
 
 #include <cstring>
 #include <memory>
+#include <string>
 
 COverlayCodecWebVTT::COverlayCodecWebVTT() : CDVDOverlayCodec("WebVTT Subtitle Decoder")
 {
@@ -38,11 +39,21 @@ bool COverlayCodecWebVTT::Open(CDVDStreamInfo& hints, CDVDCodecOptions& options)
   if (!m_webvttHandler.Initialize())
     return false;
 
-  // "fmp4" extradata is provided by InputStream Adaptive to identify
-  // WebVTT in MP4 encapsulated subtitles (ISO/IEC 14496-30:2014)
-  if (hints.extradata && std::strncmp(static_cast<const char*>(hints.extradata), "fmp4", 4) == 0)
+  // Extradata can be provided by Inputstream addons (e.g. inputstream.adaptive)
+  if (hints.extradata)
   {
-    m_isISOFormat = true;
+    std::string extradata{static_cast<char*>(hints.extradata), hints.extrasize};
+    if (extradata == "file")
+    {
+      // WebVTT data like single file are sent one time only,
+      // then we have to prevent the flush performed by video seek
+      m_allowFlush = false;
+    }
+    else if (extradata == "fmp4")
+    {
+      // WebVTT in MP4 encapsulated subtitles (ISO/IEC 14496-30:2014)
+      m_isISOFormat = true;
+    }
   }
 
   return true;
@@ -124,7 +135,7 @@ void COverlayCodecWebVTT::Reset()
 
 void COverlayCodecWebVTT::Flush()
 {
-  if (m_isISOFormat)
+  if (m_allowFlush)
   {
     m_previousSubIds.clear();
     FlushSubtitles();
