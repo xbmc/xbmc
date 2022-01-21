@@ -73,7 +73,7 @@ void CUdpClient::Destroy()
 
 void CUdpClient::OnStartup()
 {
-  SetPriority( GetMinPriority() );
+  SetPriority(ThreadPriority::LOWEST);
 }
 
 bool CUdpClient::Broadcast(int aPort, const std::string& aMessage)

@@ -43,7 +43,7 @@ CJobWorker::~CJobWorker()
 
 void CJobWorker::Process()
 {
-  SetPriority( GetMinPriority() );
+  SetPriority(ThreadPriority::LOWEST);
   while (true)
   {
     // request an item from our manager (this call is blocking)

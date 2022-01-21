@@ -150,7 +150,7 @@ void CPVREpgContainer::Start()
     CheckPlayingEvents();
 
     Create();
-    SetPriority(-1);
+    SetPriority(ThreadPriority::BELOW_NORMAL);
 
     m_bStarted = true;
   }
@@ -330,7 +330,7 @@ void CPVREpgContainer::Process()
   bool bUpdateEpg = true;
   bool bHasPendingUpdates = false;
 
-  SetPriority(GetMinPriority());
+  SetPriority(ThreadPriority::LOWEST);
 
   while (!m_bStop)
   {

@@ -394,7 +394,7 @@ void CPVRManager::Start()
 
   /* create the pvrmanager thread, which will ensure that all data will be loaded */
   Create();
-  SetPriority(-1);
+  SetPriority(ThreadPriority::BELOW_NORMAL);
 }
 
 void CPVRManager::Stop(bool bRestart /* = false */)

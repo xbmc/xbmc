@@ -25,6 +25,21 @@
 #include <string>
 #include <thread>
 
+enum class ThreadPriority
+{
+  LOWEST,
+  BELOW_NORMAL,
+  NORMAL,
+  ABOVE_NORMAL,
+  HIGHEST,
+};
+
+struct ThreadPriorityStruct
+{
+  ThreadPriority priority;
+  int nativePriority;
+};
+
 class IRunnable;
 
 class CThread
@@ -61,12 +76,9 @@ public:
   // -----------------------------------------------------------------------------------
   // These are platform specific and can be found in ./platform/[platform]/ThreadImpl.cpp
   // -----------------------------------------------------------------------------------
-  static int GetMinPriority(void);
-  static int GetMaxPriority(void);
-  static int GetNormalPriority(void);
 
   // Get and set the thread's priority
-  bool SetPriority(const int iPriority);
+  bool SetPriority(const ThreadPriority& priority);
 
   // -----------------------------------------------------------------------------------
 

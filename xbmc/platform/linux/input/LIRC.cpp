@@ -40,7 +40,7 @@ CLirc::~CLirc()
 void CLirc::Start()
 {
   Create();
-  SetPriority(GetMinPriority());
+  SetPriority(ThreadPriority::LOWEST);
 }
 
 void CLirc::Process()
