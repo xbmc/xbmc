@@ -147,7 +147,7 @@ namespace XFILE
   std::string CStackDirectory::GetFirstStackedFile(const std::string &strPath)
   {
     // the stacked files are always in volume order, so just get up to the first filename
-    // occurence of " , "
+    // occurrence of " , "
     std::string file, folder;
     size_t pos = strPath.find(" , ");
     if (pos != std::string::npos)
@@ -191,7 +191,7 @@ namespace XFILE
     std::string folder, file;
     URIUtils::Split(items[stack[0]]->GetPath(), folder, file);
     stackedPath += folder;
-    // double escape any occurence of commas
+    // double escape any occurrence of commas
     StringUtils::Replace(file, ",", ",,");
     stackedPath += file;
     for (unsigned int i = 1; i < stack.size(); ++i)
@@ -199,7 +199,7 @@ namespace XFILE
       stackedPath += " , ";
       file = items[stack[i]]->GetPath();
 
-      // double escape any occurence of commas
+      // double escape any occurrence of commas
       StringUtils::Replace(file, ",", ",,");
       stackedPath += file;
     }
@@ -214,7 +214,7 @@ namespace XFILE
     std::string folder, file;
     URIUtils::Split(paths[0], folder, file);
     stackedPath += folder;
-    // double escape any occurence of commas
+    // double escape any occurrence of commas
     StringUtils::Replace(file, ",", ",,");
     stackedPath += file;
     for (unsigned int i = 1; i < paths.size(); ++i)
@@ -222,7 +222,7 @@ namespace XFILE
       stackedPath += " , ";
       file = paths[i];
 
-      // double escape any occurence of commas
+      // double escape any occurrence of commas
       StringUtils::Replace(file, ",", ",,");
       stackedPath += file;
     }
