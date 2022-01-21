@@ -211,20 +211,3 @@ int CThread::GetPriority()
 
   return iReturn;
 }
-
-void term_handler(int signum)
-{
-  CLog::Log(
-      LOGERROR,
-      "thread 0x{:x} ({}) got signal {}. calling OnException and terminating thread abnormally.",
-      (long unsigned int)pthread_self(), (long unsigned int)pthread_self(), signum);
-  CThread* curThread = CThread::GetCurrentThread();
-  if (curThread)
-  {
-    curThread->StopThread(false);
-    curThread->OnException();
-    if (curThread->IsAutoDelete())
-      delete curThread;
-  }
-  pthread_exit(NULL);
-}
