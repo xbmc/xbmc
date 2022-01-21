@@ -28,7 +28,7 @@
    # On AIX 4 and 5.1, mbstate_t is defined only when _XOPEN_SOURCE == 500 but
    # used in wcsnrtombs() and mbsnrtowcs() even if _XOPEN_SOURCE is not defined
    # or has another value. By not (re)defining it, the defaults come in place.
-@@ -2485,7 +2485,7 @@
+@@ -2492,7 +2492,7 @@
        	  return 1;
        }
      }
