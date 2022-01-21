@@ -107,7 +107,6 @@ private:
   // These are platform specific and can be found in ./platform/[platform]/ThreadImpl.cpp
   // -----------------------------------------------------------------------------------
   void SetThreadInfo(); // called from the spawned thread
-  void TermHandler();
   // -----------------------------------------------------------------------------------
 
   bool m_bAutoDelete = false;

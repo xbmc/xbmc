@@ -138,12 +138,6 @@ void CThread::Create(bool bAutoDelete)
 
         pThread->Action();
 
-        // lock during termination
-        {
-          CSingleLock lock(pThread->m_CriticalSection);
-          pThread->TermHandler();
-        }
-
         if (autodelete)
         {
           CLog::Log(LOGDEBUG, "Thread {} {} terminating (autodelete)", name, id);
@@ -224,10 +218,6 @@ bool CThread::IsCurrentThread() const
 CThread* CThread::GetCurrentThread()
 {
   return currentThread;
-}
-
-void CThread::TermHandler()
-{
 }
 
 bool CThread::Join(std::chrono::milliseconds duration)
