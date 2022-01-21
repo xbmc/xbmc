@@ -66,7 +66,6 @@ public:
   static int GetNormalPriority(void);
 
   // Get and set the thread's priority
-  int GetPriority(void);
   bool SetPriority(const int iPriority);
 
   // -----------------------------------------------------------------------------------

@@ -186,14 +186,3 @@ bool CThread::SetPriority(const int iPriority)
 
   return bReturn;
 }
-
-int CThread::GetPriority()
-{
-  int iReturn;
-
-  int appNice = getpriority(PRIO_PROCESS, getpid());
-  int prio = getpriority(PRIO_PROCESS, m_lwpId);
-  iReturn = appNice - prio;
-
-  return iReturn;
-}
