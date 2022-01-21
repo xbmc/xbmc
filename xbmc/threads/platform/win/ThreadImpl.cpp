@@ -45,11 +45,6 @@ void CThread::SetThreadInfo()
   CWIN32Util::SetThreadLocalLocale(true); // avoid crashing with setlocale(), see https://connect.microsoft.com/VisualStudio/feedback/details/794122
 }
 
-uint64_t CThread::GetCurrentThreadNativeId()
-{
-  return static_cast<uint64_t>(::GetCurrentThreadId());
-}
-
 int CThread::GetMinPriority(void)
 {
   return(THREAD_PRIORITY_IDLE);
