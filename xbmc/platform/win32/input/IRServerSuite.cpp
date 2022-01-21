@@ -62,7 +62,7 @@ void CIRServerSuite::Close()
 void CIRServerSuite::Initialize()
 {
   Create();
-  SetPriority(GetMinPriority());
+  SetPriority(ThreadPriority::LOWEST);
 }
 
 void CIRServerSuite::Process()

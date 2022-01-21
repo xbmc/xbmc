@@ -176,7 +176,7 @@ void CWSDiscoveryListenerUDP::Start()
 
   // Create thread and set low priority
   Create();
-  SetPriority(GetMinPriority());
+  SetPriority(ThreadPriority::LOWEST);
   CLog::Log(LOGINFO, "CWSDiscoveryListenerUDP::Start - Started");
 }
 

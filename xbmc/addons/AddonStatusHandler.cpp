@@ -72,7 +72,7 @@ CAddonStatusHandler::~CAddonStatusHandler()
 
 void CAddonStatusHandler::OnStartup()
 {
-  SetPriority(GetMinPriority());
+  SetPriority(ThreadPriority::LOWEST);
 }
 
 void CAddonStatusHandler::OnExit()

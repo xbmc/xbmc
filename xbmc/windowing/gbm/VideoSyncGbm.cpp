@@ -76,7 +76,7 @@ bool CVideoSyncGbm::Setup(PUPDATECLOCK func)
 void CVideoSyncGbm::Run(CEvent& stopEvent)
 {
   /* This shouldn't be very busy and timing is important so increase priority */
-  CThread::GetCurrentThread()->SetPriority(GetMaxPriority());
+  CThread::GetCurrentThread()->SetPriority(ThreadPriority::ABOVE_NORMAL);
 
   if (m_fd < 0)
   {

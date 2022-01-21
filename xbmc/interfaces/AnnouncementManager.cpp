@@ -312,7 +312,7 @@ void CAnnouncementManager::DoAnnounce(AnnouncementFlag flag,
 
 void CAnnouncementManager::Process()
 {
-  SetPriority(GetMinPriority());
+  SetPriority(ThreadPriority::LOWEST);
 
   while (!m_bStop)
   {
