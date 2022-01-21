@@ -228,14 +228,3 @@ void term_handler(int signum)
   }
   pthread_exit(NULL);
 }
-
-void CThread::SetSignalHandlers()
-{
-  struct sigaction action;
-  action.sa_handler = term_handler;
-  sigemptyset(&action.sa_mask);
-  action.sa_flags = 0;
-  //sigaction (SIGABRT, &action, NULL);
-  //sigaction (SIGSEGV, &action, NULL);
-}
-

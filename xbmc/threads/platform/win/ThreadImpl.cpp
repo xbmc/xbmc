@@ -90,7 +90,3 @@ int CThread::GetPriority()
     iReturn = GetThreadPriority(m_lwpId);
   return iReturn;
 }
-
-void CThread::SetSignalHandlers()
-{
-}
