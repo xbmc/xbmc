@@ -155,6 +155,14 @@ bool CUDiskDevice::IsOptical() const
   return m_isOptical;
 }
 
+MEDIA_DETECT::STORAGE::Type CUDiskDevice::GetStorageType() const
+{
+  if (IsOptical())
+    return MEDIA_DETECT::STORAGE::Type::OPTICAL;
+
+  return MEDIA_DETECT::STORAGE::Type::UNKNOWN;
+}
+
 bool CUDiskDevice::IsMounted() const
 {
   return m_isMounted;
@@ -175,12 +183,12 @@ bool CUDiskDevice::IsSystemInternal() const
   return m_isSystemInternal;
 }
 
-MEDIA_DETECT::StorageDevice CUDiskDevice::ToStorageDevice() const
+MEDIA_DETECT::STORAGE::StorageDevice CUDiskDevice::ToStorageDevice() const
 {
-  MEDIA_DETECT::StorageDevice device;
+  MEDIA_DETECT::STORAGE::StorageDevice device;
   device.label = GetDisplayName();
   device.path = GetMountPoint();
-  device.optical = IsOptical();
+  device.type = GetStorageType();
   return device;
 }
 

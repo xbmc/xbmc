@@ -88,19 +88,19 @@ public:
     * \sa IStorageEventsCallback
     * @param device the storage device
   */
-  void OnStorageAdded(const MEDIA_DETECT::StorageDevice& device) override;
+  void OnStorageAdded(const MEDIA_DETECT::STORAGE::StorageDevice& device) override;
 
   /*! \brief Callback executed when a new storage device is safely removed
     * \sa IStorageEventsCallback
     * @param device the storage device
   */
-  void OnStorageSafelyRemoved(const MEDIA_DETECT::StorageDevice& device) override;
+  void OnStorageSafelyRemoved(const MEDIA_DETECT::STORAGE::StorageDevice& device) override;
 
   /*! \brief Callback executed when a new storage device is unsafely removed
     * \sa IStorageEventsCallback
     * @param device the storage device
   */
-  void OnStorageUnsafelyRemoved(const MEDIA_DETECT::StorageDevice& device) override;
+  void OnStorageUnsafelyRemoved(const MEDIA_DETECT::STORAGE::StorageDevice& device) override;
 
   void OnJobComplete(unsigned int jobID, bool success, CJob *job) override { }
 

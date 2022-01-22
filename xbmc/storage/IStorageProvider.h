@@ -18,16 +18,26 @@
 
 namespace MEDIA_DETECT
 {
+namespace STORAGE
+{
+/*! \brief Abstracts a generic storage device type*/
+enum class Type
+{
+  UNKNOWN, /*!< the storage type is unknown */
+  OPTICAL /*!< an optical device (e.g. DVD or Bluray) */
+};
+
 /*! \brief Abstracts a generic storage device */
 struct StorageDevice
 {
   /*! Device name/label */
-  std::string label;
+  std::string label{};
   /*! Device mountpoint/path */
-  std::string path;
-  /*! If the device is optical */
-  bool optical;
+  std::string path{};
+  /*! The storage type (e.g. OPTICAL) */
+  STORAGE::Type type{STORAGE::Type::UNKNOWN};
 };
+} // namespace STORAGE
 } // namespace MEDIA_DETECT
 
 class IStorageEventsCallback
@@ -38,17 +48,17 @@ public:
   /*! \brief Callback executed when a new storage device is added
     * @param device the storage device
     */
-  virtual void OnStorageAdded(const MEDIA_DETECT::StorageDevice& device) = 0;
+  virtual void OnStorageAdded(const MEDIA_DETECT::STORAGE::StorageDevice& device) = 0;
 
   /*! \brief Callback executed when a new storage device is safely removed
     * @param device the storage device
     */
-  virtual void OnStorageSafelyRemoved(const MEDIA_DETECT::StorageDevice& device) = 0;
+  virtual void OnStorageSafelyRemoved(const MEDIA_DETECT::STORAGE::StorageDevice& device) = 0;
 
   /*! \brief Callback executed when a new storage device is unsafely removed
     * @param device the storage device
     */
-  virtual void OnStorageUnsafelyRemoved(const MEDIA_DETECT::StorageDevice& device) = 0;
+  virtual void OnStorageUnsafelyRemoved(const MEDIA_DETECT::STORAGE::StorageDevice& device) = 0;
 };
 
 class IStorageProvider

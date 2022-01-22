@@ -232,7 +232,7 @@ bool CUDevProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
     const char *action  = udev_device_get_action(dev);
     if (action)
     {
-      MEDIA_DETECT::StorageDevice storageDevice;
+      MEDIA_DETECT::STORAGE::StorageDevice storageDevice;
       const char *udev_label = udev_device_get_property_value(dev, "ID_FS_LABEL");
       const char *mountpoint = get_mountpoint(udev_device_get_devnode(dev));
       if (udev_label)
@@ -263,7 +263,8 @@ bool CUDevProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
       {
         const char *optical = udev_device_get_property_value(dev, "ID_CDROM");
         bool isOptical = optical && (strcmp(optical, "1") != 0);
-        storageDevice.optical = isOptical;
+        storageDevice.type =
+            isOptical ? MEDIA_DETECT::STORAGE::Type::OPTICAL : MEDIA_DETECT::STORAGE::Type::UNKNOWN;
 
         if (mountpoint && !isOptical)
         {

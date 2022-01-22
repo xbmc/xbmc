@@ -78,12 +78,12 @@ std::string CUDisks2Provider::Filesystem::ToString() const
                              BOOL2SZ(m_isMounted), m_mountPoint.empty() ? "none" : m_mountPoint);
 }
 
-MEDIA_DETECT::StorageDevice CUDisks2Provider::Filesystem::ToStorageDevice() const
+MEDIA_DETECT::STORAGE::StorageDevice CUDisks2Provider::Filesystem::ToStorageDevice() const
 {
-  MEDIA_DETECT::StorageDevice device;
+  MEDIA_DETECT::STORAGE::StorageDevice device;
   device.label = GetDisplayName();
   device.path = GetMountPoint();
-  device.optical = IsOptical();
+  device.type = GetStorageType();
   return device;
 }
 
@@ -95,6 +95,17 @@ bool CUDisks2Provider::Filesystem::IsReady() const
 bool CUDisks2Provider::Filesystem::IsOptical() const
 {
   return m_block->m_drive->IsOptical();
+}
+
+MEDIA_DETECT::STORAGE::Type CUDisks2Provider::Filesystem::GetStorageType() const
+{
+  if (m_block == nullptr || !m_block->IsReady())
+    return MEDIA_DETECT::STORAGE::Type::UNKNOWN;
+
+  if (IsOptical())
+    return MEDIA_DETECT::STORAGE::Type::OPTICAL;
+
+  return MEDIA_DETECT::STORAGE::Type::UNKNOWN;
 }
 
 std::string CUDisks2Provider::Filesystem::GetMountPoint() const
