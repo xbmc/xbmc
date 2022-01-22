@@ -33,5 +33,6 @@ private:
   CDVDOverlay* m_pOverlay;
   CWebVTTISOHandler m_webvttHandler;
   bool m_isISOFormat{false};
+  bool m_allowFlush{true};
   std::vector<int> m_previousSubIds;
 };
