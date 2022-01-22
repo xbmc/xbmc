@@ -197,6 +197,24 @@ case $build in
     AC_MSG_ERROR(unsupported native build platform: $build)
 esac
 
+
+if test "x$build_os" = "xosx"; then
+  AC_PATH_PROG(SHASUM,shasum,"no")
+  if test "x$SHASUM" = "xno" ; then
+    AC_MSG_ERROR("Missing program: shasum")
+  fi
+else
+  AC_PATH_PROG(SHA512SUM,sha512sum,"no")
+  if test "x$SHA512SUM" = "xno" ; then
+    AC_MSG_ERROR("Missing program: sha512sum")
+  fi
+
+  AC_PATH_PROG(SHA256SUM,sha256sum,"no")
+  if test "x$SHA256SUM" = "xno" ; then
+    AC_MSG_ERROR("Missing program: sha256sum")
+  fi
+fi
+
 if test -n $use_build_toolchain; then
   PATH_FOR_BUILD=$use_build_toolchain:$use_build_toolchain/usr/bin:$use_toolchain/bin:$PATH
 else
