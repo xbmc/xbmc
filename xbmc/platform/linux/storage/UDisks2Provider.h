@@ -95,6 +95,12 @@ class CUDisks2Provider : public IStorageProvider
     */
     bool IsOptical() const;
 
+    /*! \brief Get the storage type of this device
+     * @return the storage type (e.g. OPTICAL) or UNKNOWN if
+     * the type couldn't be detected
+    */
+    MEDIA_DETECT::STORAGE::Type GetStorageType() const;
+
     /*! \brief Get the device mount point
      * @return the device mount point
     */
@@ -127,7 +133,7 @@ class CUDisks2Provider : public IStorageProvider
     /*! \brief Get a representation of the device as a storage device abstraction
      * @return the storage device abstraction of the device
     */
-    MEDIA_DETECT::StorageDevice ToStorageDevice() const;
+    MEDIA_DETECT::STORAGE::StorageDevice ToStorageDevice() const;
 
   private:
     bool m_isMounted = false;
