@@ -6,6 +6,8 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "ThreadImpl.h"
+
 #include "utils/log.h"
 
 #include "platform/win32/WIN32Util.h"
@@ -43,11 +45,18 @@ int ThreadPriorityToNativePriority(const ThreadPriority& priority)
 
 } // namespace
 
-void CThread::SetThreadInfo()
+std::unique_ptr<IThreadImpl> IThreadImpl::CreateThreadImpl(std::thread::native_handle_type handle)
+{
+  return std::make_unique<CThreadImplWin>(handle);
+}
+
+CThreadImplWin::CThreadImplWin(std::thread::native_handle_type handle) : IThreadImpl(handle)
+{
+}
+
+void CThreadImplWin::SetThreadInfo(const std::string& name)
 {
   const unsigned int MS_VC_EXCEPTION = 0x406d1388;
-
-  m_lwpId = m_thread->native_handle();
 
 #pragma pack(push,8)
   struct THREADNAME_INFO
@@ -60,8 +69,8 @@ void CThread::SetThreadInfo()
 #pragma pack(pop)
 
   info.dwType = 0x1000;
-  info.szName = m_ThreadName.c_str();
-  info.dwThreadID = reinterpret_cast<std::uintptr_t>(m_lwpId);
+  info.szName = name.c_str();
+  info.dwThreadID = reinterpret_cast<std::uintptr_t>(m_handle);
   info.dwFlags = 0;
 
   __try
@@ -75,13 +84,13 @@ void CThread::SetThreadInfo()
   CWIN32Util::SetThreadLocalLocale(true); // avoid crashing with setlocale(), see https://connect.microsoft.com/VisualStudio/feedback/details/794122
 }
 
-bool CThread::SetPriority(const ThreadPriority& priority)
+bool CThreadImplWin::SetPriority(const ThreadPriority& priority)
 {
   bool bReturn = false;
 
-  std::unique_lock<CCriticalSection> lock(m_CriticalSection);
-  if (m_thread)
-    bReturn = SetThreadPriority(m_lwpId, ThreadPriorityToNativePriority(priority)) == TRUE;
+  std::unique_lock<CCriticalSection> lock(m_criticalSection);
+  if (m_handle)
+    bReturn = SetThreadPriority(m_handle, ThreadPriorityToNativePriority(priority)) == TRUE;
 
   return bReturn;
 }

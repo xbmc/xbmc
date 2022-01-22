@@ -14,8 +14,6 @@
 
 #include "Event.h"
 
-#include "threads/platform/ThreadImpl.h"
-
 #include <atomic>
 #include <future>
 #ifdef TARGET_DARWIN
@@ -41,7 +39,7 @@ struct ThreadPriorityStruct
 };
 
 class IRunnable;
-
+class IThreadImpl;
 class CThread
 {
 protected:
@@ -73,14 +71,12 @@ public:
     return std::this_thread::get_id();
   }
 
-  // -----------------------------------------------------------------------------------
-  // These are platform specific and can be found in ./platform/[platform]/ThreadImpl.cpp
-  // -----------------------------------------------------------------------------------
-
-  // Get and set the thread's priority
+  /*!
+   * \brief Set the threads priority. This uses the platforms
+   *        native threading library to do so.
+   *
+   */
   bool SetPriority(const ThreadPriority& priority);
-
-  // -----------------------------------------------------------------------------------
 
   static CThread* GetCurrentThread();
 
@@ -114,12 +110,6 @@ protected:
 private:
   void Action();
 
-  // -----------------------------------------------------------------------------------
-  // These are platform specific and can be found in ./platform/[platform]/ThreadImpl.cpp
-  // -----------------------------------------------------------------------------------
-  void SetThreadInfo(); // called from the spawned thread
-  // -----------------------------------------------------------------------------------
-
   bool m_bAutoDelete = false;
   CEvent m_StopEvent;
   CEvent m_StartEvent;
@@ -130,6 +120,5 @@ private:
   std::thread* m_thread = nullptr;
   std::future<bool> m_future;
 
-  // Platform specific hangers-on
-  ThreadLwpId m_lwpId = 0;
+  std::unique_ptr<IThreadImpl> m_impl;
 };
