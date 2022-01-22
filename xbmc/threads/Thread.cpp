@@ -12,6 +12,7 @@
 
 #include "IRunnable.h"
 #include "commons/Exception.h"
+#include "threads/IThreadImpl.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 
@@ -22,9 +23,6 @@
 #include <stdlib.h>
 
 static thread_local CThread* currentThread;
-
-// This is including .cpp code so should be after the other #includes
-#include "threads/platform/ThreadImpl.cpp"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -129,7 +127,8 @@ void CThread::Create(bool bAutoDelete)
         std::string id = ss.str();
         autodelete = pThread->m_bAutoDelete;
 
-        pThread->SetThreadInfo();
+        pThread->m_impl = IThreadImpl::CreateThreadImpl(pThread->m_thread->native_handle());
+        pThread->m_impl->SetThreadInfo(name);
 
         CLog::Log(LOGDEBUG, "Thread {} start, auto delete: {}", name,
                   (autodelete ? "true" : "false"));
@@ -176,6 +175,11 @@ bool CThread::IsRunning() const
     return true; // otherwise the thread is still active.
   } else
     return false;
+}
+
+bool CThread::SetPriority(const ThreadPriority& priority)
+{
+  return m_impl->SetPriority(priority);
 }
 
 bool CThread::IsAutoDelete() const
