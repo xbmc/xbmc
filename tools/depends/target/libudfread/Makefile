@@ -1,6 +1,6 @@
 -include ../../Makefile.include
 include LIBUDFREAD-VERSION
-DEPS = Makefile LIBUDFREAD-VERSION
+DEPS = Makefile LIBUDFREAD-VERSION ../../download-files.include ../../download-files.include
 
 ifeq ($(CROSS_COMPILING), yes)
   DEPS += ../../Makefile.include
@@ -12,6 +12,8 @@ else
   ARCHIVE_TOOL := tar --strip-components=1 -xf
 endif
 
+include ../../download-files.include
+
 # configuration settings
 CONFIGURE = ./configure --prefix=$(PREFIX) --disable-shared --enable-static
 
@@ -20,10 +22,8 @@ LIBDYLIB=$(PLATFORM)/.libs/$(LIBNAME).a
 all: .installed-$(PLATFORM)
 download: $(TARBALLS_LOCATION)/$(ARCHIVE)
 
-$(TARBALLS_LOCATION)/$(ARCHIVE):
-	cd $(TARBALLS_LOCATION); $(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
 
-$(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
+$(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); $(AUTORECONF) -vif

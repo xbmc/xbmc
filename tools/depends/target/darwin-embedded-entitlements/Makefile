@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile darwin_embedded_entitlements.xml
+DEPS = ../../Makefile.include Makefile darwin_embedded_entitlements.xml
 
 DARWIN_EMBEDDED_ENT=$(PREFIX)/share/darwin_embedded_entitlements.xml
 
