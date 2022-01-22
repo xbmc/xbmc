@@ -14,11 +14,19 @@
 #include <pthread.h>
 namespace XbmcThreads
 {
+
+/*!
+ * \brief This class exists purely for the ability to
+ *        set mutex attribute PTHREAD_PRIO_INHERIT.
+ *        Currently there is no way to set this using
+ *        std::recursive_mutex.
+ *
+ */
 class CRecursiveMutex
 {
+private:
   pthread_mutex_t m_mutex;
 
-  // implementation is in threads/platform/pthreads/ThreadImpl.cpp
   static pthread_mutexattr_t* getRecursiveAttr();
 
 public:
@@ -37,6 +45,7 @@ public:
 
   inline std::recursive_mutex::native_handle_type native_handle() { return &m_mutex; }
 };
+
 } // namespace XbmcThreads
 #elif (defined TARGET_WINDOWS)
 namespace XbmcThreads

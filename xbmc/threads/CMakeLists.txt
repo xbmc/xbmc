@@ -14,6 +14,11 @@ set(HEADERS Atomics.h
             SystemClock.h
             Thread.h
             Timer.h
+            platform/RecursiveMutex.h
             platform/ThreadImpl.h)
+
+if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL windowsstore)
+    list(APPEND SOURCES platform/RecursiveMutex.cpp)
+endif()
 
 core_add_library(threads)
