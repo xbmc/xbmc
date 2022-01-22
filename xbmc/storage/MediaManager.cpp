@@ -685,7 +685,7 @@ std::vector<std::string> CMediaManager::GetDiskUsage()
   return m_platformStorage->GetDiskUsage();
 }
 
-void CMediaManager::OnStorageAdded(const MEDIA_DETECT::StorageDevice& device)
+void CMediaManager::OnStorageAdded(const MEDIA_DETECT::STORAGE::StorageDevice& device)
 {
 #ifdef HAS_DVD_DRIVE
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
@@ -698,7 +698,7 @@ void CMediaManager::OnStorageAdded(const MEDIA_DETECT::StorageDevice& device)
     }
     else
     {
-      if (device.optical)
+      if (device.type == MEDIA_DETECT::STORAGE::Type::OPTICAL)
       {
         if (MEDIA_DETECT::CAutorun::ExecuteAutorun(device.path))
         {
@@ -719,13 +719,13 @@ void CMediaManager::OnStorageAdded(const MEDIA_DETECT::StorageDevice& device)
 #endif
 }
 
-void CMediaManager::OnStorageSafelyRemoved(const MEDIA_DETECT::StorageDevice& device)
+void CMediaManager::OnStorageSafelyRemoved(const MEDIA_DETECT::STORAGE::StorageDevice& device)
 {
   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(13023),
                                         device.label, TOAST_DISPLAY_TIME, false);
 }
 
-void CMediaManager::OnStorageUnsafelyRemoved(const MEDIA_DETECT::StorageDevice& device)
+void CMediaManager::OnStorageUnsafelyRemoved(const MEDIA_DETECT::STORAGE::StorageDevice& device)
 {
   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(13022),
                                         device.label);
