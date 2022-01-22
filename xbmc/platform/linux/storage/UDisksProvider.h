@@ -30,6 +30,12 @@ public:
   */
   bool IsApproved() const;
 
+  /*! \brief Get the storage type of this device
+   * @return the storage type (e.g. OPTICAL) or UNKNOWN if
+   * the type couldn't be detected
+  */
+  MEDIA_DETECT::STORAGE::Type GetStorageType() const;
+
   /*! \brief Check if the device is optical
     * @return true if the device is optical, false otherwise
   */
@@ -68,7 +74,7 @@ public:
   /*! \brief Get a representation of the device as a storage device abstraction
     * @return the storage device abstraction of the device
   */
-  MEDIA_DETECT::StorageDevice ToStorageDevice() const;
+  MEDIA_DETECT::STORAGE::StorageDevice ToStorageDevice() const;
 
 private:
   std::string m_UDI;
