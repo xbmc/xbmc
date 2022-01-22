@@ -1,0 +1,39 @@
+#
+HASH_FOUND = yes
+ifneq ($(SHA512),)
+  HASH_TYPE = sha512
+  HASH_TOOL ?= $(SHA512SUM)
+else ifneq ($(SHA256),)
+  HASH_TYPE = sha256
+  HASH_TOOL ?= $(SHA256SUM)
+else
+  HASH_FOUND = no
+  HASH_TYPE = sha512
+  HASH_TOOL = sha512sum
+endif
+
+SED_FLAG = -i
+ifeq ($(NATIVE_OS), osx)
+  HASH_TOOL = $(SHASUM) -a $(shell echo $(HASH_TYPE) | sed 's/^sha//')
+  SED_FLAG = -i ''
+endif
+
+HASH_SUM = $($(shell echo $(HASH_TYPE) | tr  '[:lower:]' '[:upper:]'))
+
+.PHONY: $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
+all: $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
+
+$(TARBALLS_LOCATION)/$(ARCHIVE):
+	cd $(TARBALLS_LOCATION); $(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
+
+$(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE): $(TARBALLS_LOCATION)/$(ARCHIVE)
+ifeq ($(HASH_FOUND),no)
+	cd $(TARBALLS_LOCATION); $(HASH_TOOL) $(ARCHIVE) > $(ARCHIVE).$(HASH_TYPE)
+	$(HASH_TYPE)=$$(cat $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE) | cut -d ' ' -f 1) && \
+          sed $(SED_FLAG) -e "s/#SHA512#/SHA512=$${sha512}/" -e "s/#SHA256#/SHA256=$${sha256}/" Makefile
+endif
+ifeq ($(HASH_FOUND),yes)
+#	we really need 2 spaces between sha hash and file name!
+	@cd $(TARBALLS_LOCATION); echo "$(HASH_SUM)  $(ARCHIVE)" > $(ARCHIVE).$(HASH_TYPE) && $(HASH_TOOL) $(HASH_TOOL_FLAGS) $(ARCHIVE).$(HASH_TYPE) \
+          || { echo "Error: failed to verify hash sum of $(ARCHIVE), expected type: $(HASH_TYPE) value $(HASH_SUM)"; exit 3; }
+endif
