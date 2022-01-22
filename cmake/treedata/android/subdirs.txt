@@ -17,5 +17,6 @@ xbmc/platform/android/utils                 platform/android/utils
 xbmc/platform/linux/peripherals             platform/linux/peripherals
 xbmc/platform/posix                         platform/posix
 xbmc/platform/posix/filesystem              platform/posix/filesystem
+xbmc/platform/posix/threads                 platform/posix/threads
 xbmc/platform/posix/utils                   platform/posix/utils
 xbmc/windowing/android                      windowing/android

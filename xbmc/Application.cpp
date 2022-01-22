@@ -111,7 +111,7 @@
 #include "PartyModeManager.h"
 #include "network/ZeroconfBrowser.h"
 #ifndef TARGET_POSIX
-#include "threads/platform/win/Win32Exception.h"
+#include "platform/win32/threads/Win32Exception.h"
 #endif
 #include "interfaces/json-rpc/JSONRPC.h"
 #include "interfaces/AnnouncementManager.h"
