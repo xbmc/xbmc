@@ -1,9 +1,11 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile 01-android.patch 04-pthread.patch
+DEPS = ../../Makefile.include Makefile 01-android.patch 04-pthread.patch ../../download-files.include
 
 LIBNAME=mariadb
 VERSION=3.1.15
 ARCHIVE=$(LIBNAME)-connector-c-$(VERSION).tar.gz
+SHA512=c64a69fecf1e0053748fb24b82614fc8d862de79d139f848283a504d72b521bc6bf29119a86fc9cca57c3578812702483cc408c8a684e35887108f172eaa3c56
+include ../../download-files.include
 
 LIBDYLIB=$(PLATFORM)/build/lib$(LIBNAME)/lib$(LIBNAME)client.a
 
@@ -19,10 +21,8 @@ endif
 
 all: .installed-$(PLATFORM)
 
-$(TARBALLS_LOCATION)/$(ARCHIVE):
-	cd $(TARBALLS_LOCATION); $(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
 
-$(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
+$(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)/build
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../01-android.patch

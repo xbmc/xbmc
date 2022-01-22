@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile 01-fix_fpermissive.patch 02-fixandroid.patch 03-fixtvos.patch
+DEPS = ../../Makefile.include Makefile 01-fix_fpermissive.patch 02-fixandroid.patch 03-fixtvos.patch ../../download-files.include
 
 #hint for building a fat lib - "lipo -arch i386 libboblight-i386.dylib -arch x86_64 libboblight-x86_64.dylib -output libboblight-fat.dylib"
 
@@ -8,6 +8,8 @@ LIBNAME=libboblight
 VERSION=r478
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
+SHA512=382e0b0f1ef2fca676cd64ec4190d3cfb791fed0f9477af8436e461cebfbc268058abc1fbba97a0337d3152a9b292580160b42157b4076d59b3847071deb1881
+include ../../download-files.include
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) \
@@ -20,10 +22,8 @@ LIBDYLIB=$(PLATFORM)/src/.libs/$(LIBNAME).a
 
 all: $(LIBDYLIB) .installed-$(PLATFORM)
 
-$(TARBALLS_LOCATION)/$(ARCHIVE):
-	cd $(TARBALLS_LOCATION); $(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
 
-$(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
+$(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../01-fix_fpermissive.patch

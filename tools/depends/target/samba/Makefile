@@ -1,5 +1,6 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile samba30-3.0.37-configure.in.patch \
+DEPS = ../../Makefile.include Makefile ../../download-files.include
+      samba30-3.0.37-configure.in.patch \
       samba30-3.0.37-CVE-2010-2063.patch \
       samba30-3.0.37-silence-receive-warning.patch \
       samba30-3.0.37-vfs_default.c.patch samba30-3.0.37-wle-fix.patch \
@@ -10,6 +11,8 @@ LIBNAME=samba
 VERSION=3.0.37
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
+SHA512=7311a38abc271b461086d088a2a1b6ba74dc706c57cc34b18088e344e313e7a65f42ab6155a31f5467bc3f9e7bfb1d554288a1553d25503aed2a636f58868c6d
+include ../../download-files.include
 
 # configuration settings
 # android does not really support LFS but we can force it
@@ -49,10 +52,8 @@ LIBDYLIB=$(PLATFORM)/source/bin/libsmbclient.a
 
 all: .installed-$(PLATFORM)
 
-$(TARBALLS_LOCATION)/$(ARCHIVE):
-	cd $(TARBALLS_LOCATION); $(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
 
-$(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
+$(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../samba30-3.0.37-configure.in.patch

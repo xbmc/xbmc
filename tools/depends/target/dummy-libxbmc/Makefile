@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile dummy-libxbmc.c
+DEPS = ../../Makefile.include Makefile dummy-libxbmc.c
 
 LIBDYLIB=lib$(APP_NAME).so
 

@@ -1,6 +1,6 @@
 -include ../../Makefile.include
 include CROSSGUID-VERSION
-DEPS = Makefile CROSSGUID-VERSION
+DEPS = Makefile CROSSGUID-VERSION ../../download-files.include
 
 ifeq ($(CROSS_COMPILING), yes)
   DEPS += ../../Makefile.include
@@ -15,6 +15,8 @@ else
     BASE_URL := http://mirrors.kodi.tv/build-deps/sources
     RETRIEVE_TOOL := curl -Ls --create-dirs -f -O
     ARCHIVE_TOOL := tar --strip-components=1 -xf
+    HASH_TOOL = sha512sum
+    HASH_TOOL_FLAGS = -c --status
   endif
 endif
 
@@ -30,14 +32,14 @@ endif
 
 LIBDYLIB=$(PLATFORM)/lib$(LIBNAME).a
 
+include ../../download-files.include
+
 .PHONY: .installed-native
 
 all: .installed-$(PLATFORM)
 
-$(TARBALLS_LOCATION)/$(ARCHIVE):
-	cd $(TARBALLS_LOCATION); $(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
 
-$(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
+$(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE) $(DEPS)
 ifeq ($(PREFIX),)
 	@echo
 	@echo "ERROR: please set PREFIX to the kodi install path e.g. make PREFIX=/usr/local"

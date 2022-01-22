@@ -1,6 +1,7 @@
-include ../../Makefile.include PYTHON3-VERSION
-DEPS= ../../Makefile.include Makefile PYTHON3-VERSION apple.patch crosscompile.patch \
-       android.patch modules.setup darwin_embedded.patch
+include ../../Makefile.include PYTHON3-VERSION ../../download-files.include
+DEPS = ../../Makefile.include ../../download-files.include Makefile PYTHON3-VERSION ../../download-files.include \
+       apple.patch crosscompile.patch android.patch \
+       modules.setup darwin_embedded.patch
 
 ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
   HOSTPLATFORM=_PYTHON_HOST_PLATFORM="darwin"
@@ -33,10 +34,8 @@ LIBDYLIB=$(PLATFORM)/libpython$(PYTHON_VERSION).a
 
 all: .installed-$(PLATFORM)
 
-$(TARBALLS_LOCATION)/$(ARCHIVE):
-	cd $(TARBALLS_LOCATION); $(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
 
-$(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
+$(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../crosscompile.patch

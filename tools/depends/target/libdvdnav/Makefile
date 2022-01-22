@@ -1,6 +1,6 @@
 -include ../../Makefile.include
 include LIBDVDNAV-VERSION
-DEPS = LIBDVDNAV-VERSION Makefile
+DEPS = LIBDVDNAV-VERSION Makefile ../../download-files.include
 
 # configuration settings
 config = --prefix=$(PREFIX) --disable-shared --enable-static --with-pic
@@ -32,6 +32,7 @@ endif
 RETRIEVE_TOOL := curl -Ls --create-dirs --retry 10 --retry-delay 3
 ARCHIVE_TOOL := tar --strip-components=1 -xf
 
+include ../../download-files.include
 all: .installed-$(PLATFORM)
 
 download: $(TARBALLS_LOCATION)/$(ARCHIVE)
@@ -39,7 +40,7 @@ download: $(TARBALLS_LOCATION)/$(ARCHIVE)
 $(TARBALLS_LOCATION)/$(ARCHIVE):
 	cd $(TARBALLS_LOCATION); $(RETRIEVE_TOOL) -o $(TARBALLS_LOCATION)/$(ARCHIVE) $(BASE_URL)/archive/$(VERSION).tar.gz
 
-$(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
+$(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); $(AUTORECONF) -vif && $(PKGCONFIGPATH) CFLAGS="$(CFLAGS) $(EXTRA_CFLAGS)" ac_cv_path_GIT= ./configure $(config)

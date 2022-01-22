@@ -1,13 +1,15 @@
 include ../../Makefile.include
 PREFIX=$(NATIVEPREFIX)
 PLATFORM=$(NATIVEPLATFORM)
-DEPS= ../../Makefile.include Makefile 01-no-gnu-patch.patch 02-perl-min-version.patch 03-lzma-compression.patch
+DEPS = ../../Makefile.include Makefile 01-no-gnu-patch.patch 02-perl-min-version.patch 03-lzma-compression.patch ../../download-files.include
 
 # lib name, version
 LIBNAME=dpkg
 VERSION=1.19.7
 SOURCE=$(LIBNAME)_$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
+SHA512=9ca441dc265baf5359c71617aef1c57504a7097c26ea57108b88dadc511bfa9918fcc765d8c67cec9def9916c5df92d6cabe508446dbc7223a29b45260445e81
+include ../../download-files.include
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) --enable-static --disable-shared --disable-devel-docs \
@@ -18,10 +20,8 @@ LIBDYLIB=$(PLATFORM)/dpkg-deb/dpkg-deb
 
 all: .installed-$(PLATFORM)
 
-$(TARBALLS_LOCATION)/$(ARCHIVE):
-	cd $(TARBALLS_LOCATION); $(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
 
-$(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
+$(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../01-no-gnu-patch.patch
