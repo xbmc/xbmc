@@ -359,9 +359,14 @@ void CGUIDialogAddonInfo::OnSelectVersion()
           std::string path(items[i]->GetPath());
           if (database.GetPackageHash(processAddonId, items[i]->GetPath(), hash))
           {
-            std::string md5 = CUtil::GetFileDigest(path, KODI::UTILITY::CDigest::Type::MD5);
-            if (StringUtils::EqualsNoCase(md5, hash))
-              versions.emplace_back(AddonVersion(versionString), LOCAL_CACHE);
+            std::string sha256 = CUtil::GetFileDigest(path, KODI::UTILITY::CDigest::Type::SHA256);
+
+            // don't offer locally cached packages that result in an invalid version.
+            // usually this happens when the package filename gets malformed on the fs
+            // e.g. downloading "http://localhost/a+b.zip" ends up in "a b.zip"
+            const AddonVersion version(versionString);
+            if (StringUtils::EqualsNoCase(sha256, hash) && !version.empty())
+              versions.emplace_back(version, LOCAL_CACHE);
           }
         }
       }
