@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2021-12-22 21:54+0000\n"
-"Last-Translator: Emir Sarı <bitigchi@me.com>\n"
+"PO-Revision-Date: 2022-01-22 12:30+0000\n"
+"Last-Translator: queeup <queeup@zoho.com>\n"
 "Language-Team: Turkish <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/tr_tr/>\n"
 "Language: tr_tr\n"
 "MIME-Version: 1.0\n"
@@ -505,12 +505,12 @@ msgstr "En son değişiklikleri görmek için tıklayınız..."
 #. Label to show PVR info page
 msgctxt "#31137"
 msgid "PVR"
-msgstr ""
+msgstr "PVR"
 
 #. Label to show player info page
 msgctxt "#31138"
 msgid "Player"
-msgstr ""
+msgstr "Oynatıcı"
 
 #. Label to show video decoder name
 msgctxt "#31139"
@@ -648,7 +648,7 @@ msgstr "Resimle ilgili ayarlar."
 #. Label to show the video codec name
 msgctxt "#31600"
 msgid "Video codec"
-msgstr "Video kodlaması"
+msgstr "Video codec"
 
 #. Label to show the video resolution
 msgctxt "#31601"
@@ -658,7 +658,7 @@ msgstr "Video çözünürlüğü"
 #. Label to show the video aspect
 msgctxt "#31602"
 msgid "Video aspect"
-msgstr "Video açısı"
+msgstr "Video en boy oranı"
 
 #. Label to show the video bitrate
 msgctxt "#31603"
@@ -668,7 +668,7 @@ msgstr "Video bit oranı"
 #. Label to show the audio codec name
 msgctxt "#31604"
 msgid "Audio codec"
-msgstr "Ses kodlaması"
+msgstr "Ses codec"
 
 #. Label to show the number of audio channels
 msgctxt "#31605"
@@ -688,7 +688,7 @@ msgstr "Ekran çözünürlüğü"
 #. Label to show the system rendering speed
 msgctxt "#31608"
 msgid "System rendering speed"
-msgstr "Sistem dokuma hızı"
+msgstr "Sistem işleme hızı"
 
 #. Label to show the system CPU usage
 msgctxt "#31609"
@@ -698,7 +698,7 @@ msgstr "Sistem CPU kullanımı"
 #. Label to show the media (metadata) info page
 msgctxt "#31610"
 msgid "Media"
-msgstr "Ortam"
+msgstr "Medya"
 
 #. Label to show the system info page
 msgctxt "#31611"
