@@ -126,6 +126,12 @@
               "position": { "$ref": "Playlist.Position", "default": 0 }
             }
           },
+          { "type": "object", "required": true, "additionalProperties": false,
+            "properties": {
+              "file": { "type": "string", "required": true },
+              "properties": { "$ref": "List.Item.Properties", "required": false }
+            }
+          },
           { "$ref": "Playlist.Item", "required": true },
           { "type": "object", "required": true, "additionalProperties": false,
             "properties": {

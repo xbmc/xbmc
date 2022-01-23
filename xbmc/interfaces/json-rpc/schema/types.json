@@ -1651,6 +1651,15 @@
       }
     }
   },
+  "List.Item.Properties": {
+    "type": "array",
+    "items": { "type": "object",
+      "properties": {
+        "key": { "type": "string", "required": true },
+        "value": { "type": "string", "required": true }
+      }
+    }
+  },
   "Addon.Content": {
     "type": "string",
     "enum": [ "unknown", "video", "audio", "image", "executable" ],

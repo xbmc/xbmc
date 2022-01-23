@@ -43,6 +43,31 @@ using namespace MUSIC_INFO;
 using namespace JSONRPC;
 using namespace XFILE;
 
+namespace
+{
+/**
+   * @brief Append the provided listitem properties to the item
+   *
+   * @param parameterObject the parameters passed on the request. Must include a "properties" array of objects
+   *  (e.g. "properties": [{"key": "inputstream", "value": "inputstream.adaptive"}, ...})
+   * @param item the listitem to append properties
+   */
+void AppendUserProvidedListItemProperties(const CVariant& parameterObject, const CFileItemPtr& item)
+{
+  if (parameterObject.isMember("properties") && parameterObject["properties"].isArray())
+  {
+    for (CVariant::const_iterator_array field = parameterObject["properties"].begin_array();
+         field != parameterObject["properties"].end_array(); field++)
+    {
+      if (field->isMember("key") && field->isMember("value"))
+      {
+        item->SetProperty((*field)["key"].asString(), (*field)["value"].asString());
+      }
+    }
+  }
+}
+} // namespace
+
 bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, const CFileItemPtr &item, CVariant &result, bool &fetchedArt, CThumbLoader *thumbLoader /* = NULL */)
 {
   if (result.isMember(field) && !result[field].empty())
@@ -506,6 +531,7 @@ bool CFileItemHandler::FillFileItemList(const CVariant &parameterObject, CFileIt
           list[index]->GetMusicInfoTag()->GetURL() == file || list[index]->GetVideoInfoTag()->GetPath() == file)
       {
         added = true;
+        AppendUserProvidedListItemProperties(parameterObject, list[index]);
         break;
       }
     }
@@ -525,6 +551,7 @@ bool CFileItemHandler::FillFileItemList(const CVariant &parameterObject, CFileIt
         if (item->GetLabel().empty())
           item->SetLabel(URIUtils::GetFileName(file));
       }
+      AppendUserProvidedListItemProperties(parameterObject, item);
       list.Add(item);
     }
   }
