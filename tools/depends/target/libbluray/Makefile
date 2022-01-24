@@ -1,9 +1,9 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile tvos.patch
+DEPS= ../../Makefile.include Makefile 001-darwinembed_DiskArbitration-revert.patch tvos.patch
 
 # lib name, version
 LIBNAME=libbluray
-VERSION=1.1.2
+VERSION=1.3.0
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
 
@@ -22,10 +22,11 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	# libbluray has borked Makefile.am with respect to CFLAGS, remove the offending line
-	sed -i -e "s|CFLAGS=|#CFLAGS=|" $(PLATFORM)/Makefile.am
 	cd $(PLATFORM); ./bootstrap
 	cd $(PLATFORM); $(CONFIGURE)
+ifeq ($(OS),darwin_embedded)
+	cd $(PLATFORM); patch -p1 -i ../001-darwinembed_DiskArbitration-revert.patch
+endif
 ifeq ($(TARGET_PLATFORM),appletvos)
 	cd $(PLATFORM); patch -p1 -i ../tvos.patch
 endif

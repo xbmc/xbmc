@@ -1,0 +1,88 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -46,7 +46,6 @@
+     ;;
+   *darwin*)
+     SYS=darwin
+-    EXTRA_LIBS="${EXTRA_LIBS} -framework CoreFoundation -framework DiskArbitration"
+     ;;
+   netbsd*)
+     SYS=netbsd
+--- a/src/file/mount_darwin.c
++++ b/src/file/mount_darwin.c
+@@ -29,53 +29,36 @@
+ 
+ #define _DARWIN_C_SOURCE
+ #include <sys/stat.h>
++#include <sys/param.h>
++#include <sys/ucred.h>
++#include <sys/mount.h>
+ 
+-#include <DiskArbitration/DADisk.h>
+-
+-static char *bsdname_get_mountpoint(const char *device_path)
++char *mount_get_mountpoint(const char *device_path)
+ {
+-    char *result = NULL;
++    struct stat st;
++    if (stat (device_path, &st) ) {
++        return str_dup(device_path);
++    }
+ 
+-    DASessionRef session = DASessionCreate(kCFAllocatorDefault);
+-    if (session) {
+-        DADiskRef disk = DADiskCreateFromBSDName(kCFAllocatorDefault, session, device_path);
+-        if (disk) {
+-            CFDictionaryRef desc = DADiskCopyDescription(disk);
+-            if (desc) {
+-                // Get Volume path as CFURL
+-                CFURLRef url = CFDictionaryGetValue(desc, kDADiskDescriptionVolumePathKey);
+-                if (url) {
+-                    // Copy Volume path as C char array
+-                    char tmp_path[PATH_MAX];
+-                    if (CFURLGetFileSystemRepresentation(url, true, (UInt8*)tmp_path, sizeof(tmp_path))) {
+-                        result = str_dup(tmp_path);
+-                    }
+-                }
+-                CFRelease(desc);
+-            }
+-            CFRelease(disk);
+-        }
+-        CFRelease(session);
++    /* If it's a directory, all is good */
++    if (S_ISDIR(st.st_mode)) {
++        return str_dup(device_path);
+     }
+ 
+-    return result;
+-}
++    struct statfs mbuf[128];
++    int fs_count;
+ 
++    if ( (fs_count = getfsstat (NULL, 0, MNT_NOWAIT)) != -1 ) {
+ 
+-char *mount_get_mountpoint(const char *device_path)
+-{
+-    struct stat st;
+-    if (stat(device_path, &st) == 0) {
+-        // If it's a directory, all is good
+-        if (S_ISDIR(st.st_mode)) {
+-            return str_dup(device_path);
+-        }
+-    }
++        getfsstat (mbuf, fs_count * sizeof(mbuf[0]), MNT_NOWAIT);
+ 
+-    char *mountpoint = bsdname_get_mountpoint(device_path);
+-    if (mountpoint) {
+-        return mountpoint;
++        for ( int i = 0; i < fs_count; ++i) {
++            if (!strcmp (mbuf[i].f_mntfromname, device_path)) {
++                return str_dup (mbuf[i].f_mntonname);
++            }
++        }
+     }
+ 
+-    return str_dup(device_path);
++    return str_dup (device_path);
+ }
++
