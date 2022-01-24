@@ -23,13 +23,13 @@ class CDVDMsgGeneralSynchronizePriv
 {
 public:
   CDVDMsgGeneralSynchronizePriv(std::chrono::milliseconds timeout, unsigned int sources)
-    : sources(sources), reached(0), timeout(timeout)
+    : sources(sources), reached(0), m_timer(timeout)
   {}
   unsigned int sources;
   unsigned int reached;
   CCriticalSection section;
   XbmcThreads::ConditionVariable condition;
-  XbmcThreads::EndTime<> timeout;
+  XbmcThreads::EndTime<> m_timer;
 };
 
 /**
@@ -48,11 +48,11 @@ CDVDMsgGeneralSynchronize::~CDVDMsgGeneralSynchronize()
   delete m_p;
 }
 
-bool CDVDMsgGeneralSynchronize::Wait(std::chrono::milliseconds milliseconds, unsigned int source)
+bool CDVDMsgGeneralSynchronize::Wait(std::chrono::milliseconds timeout, unsigned int source)
 {
   CSingleLock lock(m_p->section);
 
-  XbmcThreads::EndTime<> timeout{milliseconds};
+  XbmcThreads::EndTime<> timer{timeout};
 
   m_p->reached |= (source & m_p->sources);
   if ((m_p->sources & SYNCSOURCE_ANY) && source)
@@ -62,16 +62,16 @@ bool CDVDMsgGeneralSynchronize::Wait(std::chrono::milliseconds milliseconds, uns
 
   while (m_p->reached != m_p->sources)
   {
-    milliseconds = std::min(m_p->timeout.GetTimeLeft(), timeout.GetTimeLeft());
-    if (m_p->condition.wait(lock, milliseconds))
+    timeout = std::min(m_p->m_timer.GetTimeLeft(), timer.GetTimeLeft());
+    if (m_p->condition.wait(lock, timeout))
       continue;
 
-    if (m_p->timeout.IsTimePast())
+    if (m_p->m_timer.IsTimePast())
     {
       CLog::Log(LOGDEBUG, "CDVDMsgGeneralSynchronize - global timeout");
       return true;  // global timeout, we are done
     }
-    if (timeout.IsTimePast())
+    if (timer.IsTimePast())
     {
       return false; /* request timeout, should be retried */
     }
