@@ -5844,11 +5844,14 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///                  \anchor ListItem_VideoAspect
 ///                  _string_,
 ///     @return The aspect ratio of the currently selected video. Possible values:
+///      - <b>1.00</b>
+///      - <b>1.19</b>
 ///      - <b>1.33</b>
 ///      - <b>1.37</b>
 ///      - <b>1.66</b>
 ///      - <b>1.78</b>
 ///      - <b>1.85</b>
+///      - <b>2.00</b>
 ///      - <b>2.20</b>
 ///      - <b>2.35</b>
 ///      - <b>2.40</b>
