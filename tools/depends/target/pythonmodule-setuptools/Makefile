@@ -1,26 +1,5 @@
-include ../../Makefile.include
-DEPS = ../../Makefile.include Makefile ../../download-files.include
-
-# lib name, version
-LIBNAME=setuptools
-VERSION=53.0.0
-SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
-SHA512=d045198210f09c5f2acbd487d3dd291cd7ce814bebe331f1876c133cd28f56d368717c7bd4a875b439c9cc8c9488dc9a7d3e27ab791cce419f78b87fcfd8fff6
-include ../../download-files.include
-
-CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" CC="$(CC) $(CFLAGS)" LDSHARED="$(CC) -shared" LDFLAGS="$(LDFLAGS)" PYTHONPATH="$(PYTHON_SITE_PKG)"
-ifeq ($(OS),android)
-#PYTHONPATH=$(PREFIX)/share/$(APP_NAME)/addons/script.module.pil
-CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" CC="$(CC) $(CFLAGS)" LDSHARED="$(CC) -shared" LDFLAGS="$(LDFLAGS) -L$(PREFIX)/lib/dummy-lib$(APP_NAME)/ -l$(APP_NAME) -lm" PYTHONPATH="$(PYTHON_SITE_PKG)"
-endif
-ifeq ($(OS),osx)
-CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" CC="$(CC)" LDSHARED="$(CC) -shared" LDFLAGS="$(LDFLAGS) -lpython" PYTHONPATH="$(PYTHON_SITE_PKG)"
-endif
-ifeq ($(OS),darwin_embedded)
-PYTHON_O=$(abs_top_srcdir)/target/python3/$(PLATFORM)/Programs/python.o
-CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" CC="$(CC) $(CFLAGS)" CCSHARED="$(CC) $(CFLAGS) $(PYTHON_O)" LDFLAGS="$(LDFLAGS)" PYTHONPATH="$(PYTHON_SITE_PKG)"
-endif
+include ../../Makefile.include PYTHONMODULE-SETUPTOOLS-VERSION ../../download-files.include
+DEPS= ../../Makefile.include Makefile PYTHONMODULE-SETUPTOOLS-VERSION ../../download-files.include
 
 LIBDYLIB=$(PLATFORM)/dist/$(LIBNAME)-$(VERSION)-py$(PYTHON_VERSION).egg
 
@@ -31,11 +10,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 
-$(LIBDYLIB): $(PLATFORM)
-	mkdir -p $(PLATFORM)/output
-	cd $(PLATFORM); $(CROSSFLAGS) $(NATIVEPREFIX)/bin/python3 setup.py build_ext --plat-name $(OS)-$(CPU)
-
-.installed-$(PLATFORM): $(LIBDYLIB)
+.installed-$(PLATFORM): $(PLATFORM)
 	cd $(PLATFORM); $(CROSSFLAGS) $(NATIVEPREFIX)/bin/python3 setup.py install --prefix=$(PREFIX)
 	touch $@
 
