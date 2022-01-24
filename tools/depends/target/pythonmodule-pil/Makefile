@@ -1,13 +1,5 @@
-include ../../Makefile.include
-DEPS = ../../Makefile.include Makefile pillow-crosscompile.patch ../../download-files.include
-
-# lib name, version
-LIBNAME=Pillow
-VERSION=8.4.0
-SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
-SHA512=d395f69ccb37c52a3b6f45836700ffbc3173afae31848cc61d7b47db88ca1594541023beb9a14fd9067aca664e182c7d6e3300ab3e3095c31afe8dcbc6e08233
-include ../../download-files.include
+include ../../Makefile.include PYTHONMODULE-PIL-VERSION ../../download-files.include
+DEPS= ../../Makefile.include Makefile PYTHONMODULE-PIL-VERSION ../../download-files.include pillow-crosscompile.patch
 
 PYTHONPATH=$(PYTHON_SITE_PKG)
 PILPATH=$(PYTHONPATH)
@@ -15,24 +7,24 @@ LDSHARED=$(CC) -shared
 
 # Clear pkg-config data, as it will pull from Native pkg-config incorrectly
 ifeq ($(CROSS_COMPILING), yes)
-export PKG_CONFIG_PATH=
-export PKG_CONFIG_LIBDIR=${PREFIX}/lib/pkgconfig
-export PKG_CONFIG_SYSROOT_DIR=${SDKROOT}
+  export PKG_CONFIG_PATH=
+  export PKG_CONFIG_LIBDIR=${PREFIX}/lib/pkgconfig
+  export PKG_CONFIG_SYSROOT_DIR=${SDKROOT}
 endif
 
 ifeq ($(OS),android)
-PILPATH=$(PREFIX)/share/$(APP_NAME)/addons/script.module.pil
-PILPATHLIB=$(PILPATH)/lib
-PYTHONPATH=$(PILPATH):$(PYTHON_SITE_PKG)
-EXTRALDFLAGS=-L$(PREFIX)/lib/dummy-lib$(APP_NAME)/ -l$(APP_NAME) -lm
+  PILPATH=$(PREFIX)/share/$(APP_NAME)/addons/script.module.pil
+  PILPATHLIB=$(PILPATH)/lib
+  PYTHONPATH=$(PILPATH):$(PYTHON_SITE_PKG)
+  LDFLAGS+= -L$(PREFIX)/lib/dummy-lib$(APP_NAME)/ -l$(APP_NAME) -lm
 else ifeq ($(OS),darwin_embedded)
-PILPATH=$(PREFIX)/share/$(APP_NAME)/addons/script.module.pil
-PILPATHLIB=$(PILPATH)/lib
-PYTHONPATH=$(PILPATH):$(PYTHON_SITE_PKG)
+  PILPATH=$(PREFIX)/share/$(APP_NAME)/addons/script.module.pil
+  PILPATHLIB=$(PILPATH)/lib
+  PYTHONPATH=$(PILPATH):$(PYTHON_SITE_PKG)
 
-# Work around an issue with xcode 11 stripping -arch arm64 flags.
-# Not required for xcode 12+, but doesnt hurt either.
-CFLAGS+= -target arm64-apple-darwin
+  # Work around an issue with xcode 11 stripping -arch arm64 flags.
+  # Not required for xcode 12+, but doesnt hurt either.
+  CFLAGS+= -target arm64-apple-darwin
 endif
 
 SED_FLAG=-i
@@ -41,13 +33,23 @@ ifeq (darwin, $(findstring darwin, $(BUILD)))
 endif
 
 ifeq (darwin, $(findstring darwin, $(HOST)))
-#ensure that only our target ldflags are passed to the python build
-LDSHARED=$(CC) -bundle -undefined dynamic_lookup
-ZLIB_ROOT=ZLIB_ROOT="$(SDKROOT)/usr"
+  LDSHARED:=$(CC) -bundle -undefined dynamic_lookup
+  export ZLIB_ROOT=$(SDKROOT)/usr
 endif
 
 BUILD_OPTS=--plat-name $(OS)-$(CPU) --disable-jpeg2000 --disable-webp --disable-imagequant --disable-tiff --disable-webp --disable-webpmux --disable-xcb --disable-lcms --disable-platform-guessing
-CROSSFLAGS=$(ZLIB_ROOT) PYTHONXINCLUDE="$(PREFIX)/include/python$(PYTHON_VERSION)" PYTHONXCPREFIX="$(PREFIX)" CC="$(CC) $(CFLAGS)" LDSHARED="$(LDSHARED)" LDFLAGS="$(LDFLAGS) $(EXTRALDFLAGS)" PYTHONPATH="$(PYTHONPATH)"
+
+ifeq ($(TARGET_PLATFORM),appletvos)
+  # We cant export CFLAGS directly for tvos
+  # CFLAGS are added to linker command, having -bundle (LDSHARED) and -fembed_bitcode (CFLAGS)
+  # causes a failure: ld: -bundle and -bitcode_bundle (Xcode setting ENABLE_BITCODE=YES) cannot be used together
+  export CC:=$(CC) $(CFLAGS)
+else
+  export CC CFLAGS
+endif
+
+export PYTHONXINCLUDE=$(PREFIX)/include/python$(PYTHON_VERSION)
+export LDSHARED LDFLAGS PYTHONPATH
 
 all: .installed-$(PLATFORM)
 
@@ -65,7 +67,7 @@ else ifeq ($(OS),darwin_embedded)
 endif
 
 .installed-$(PLATFORM): $(PLATFORM) $(PILPATHLIB)
-	cd $(PLATFORM); $(CROSSFLAGS) $(NATIVEPREFIX)/bin/python3 setup.py build_ext $(BUILD_OPTS) install --install-lib $(PILPATH)
+	cd $(PLATFORM); $(NATIVEPREFIX)/bin/python3 setup.py build_ext $(BUILD_OPTS) install --install-lib $(PILPATH)
 ifeq ($(OS),android)
 	cd $(PILPATHLIB) && unzip -o ../Pillow-*.egg
 	cd $(PILPATHLIB)/PIL && \
