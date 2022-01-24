@@ -55,8 +55,9 @@ namespace PVR
     CCriticalSection m_critSection;
     const std::string m_strTitle;
     std::string m_strText;
-    float m_fProgress;
-    bool m_bChanged;
+    float m_fProgress{0.0f};
+    bool m_bChanged{false};
+    bool m_bCreated{false};
   };
 
 } // namespace PVR
