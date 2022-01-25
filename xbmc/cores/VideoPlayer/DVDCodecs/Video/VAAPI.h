@@ -115,6 +115,7 @@ struct CVaapiConfig
   VAConfigAttrib attrib;
   CProcessInfo *processInfo;
   bool driverIsMesa;
+  int bitDepth;
 };
 
 /**

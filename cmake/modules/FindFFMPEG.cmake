@@ -33,7 +33,7 @@
 #
 
 # required ffmpeg library versions
-set(REQUIRED_FFMPEG_VERSION 4.4)
+set(REQUIRED_FFMPEG_VERSION 4.4.1)
 set(_avcodec_ver ">=58.134.100")
 set(_avfilter_ver ">=7.110.100")
 set(_avformat_ver ">=58.76.100")

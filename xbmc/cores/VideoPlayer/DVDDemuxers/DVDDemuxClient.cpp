@@ -668,6 +668,8 @@ std::string CDVDDemuxClient::GetStreamCodecName(int iStreamId)
       strName = "vp9";
     else if (stream->codec == AV_CODEC_ID_HEVC)
       strName = "hevc";
+    else if (stream->codec == AV_CODEC_ID_AV1)
+      strName = "av1";
   }
   return strName;
 }
