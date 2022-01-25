@@ -1,6 +1,6 @@
 -include ../../Makefile.include
-include DVDNAV-VERSION
-DEPS = DVDNAV-VERSION Makefile
+include LIBDVDNAV-VERSION
+DEPS = LIBDVDNAV-VERSION Makefile
 
 # configuration settings
 config = --prefix=$(PREFIX) --disable-shared --enable-static --with-pic

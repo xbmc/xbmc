@@ -33,7 +33,7 @@ if(ENABLE_INTERNAL_DAV1D)
   if(DAV1D_URL)
     get_filename_component(DAV1D_URL "${DAV1D_URL}" ABSOLUTE)
   else()
-    set(DAV1D_URL http://mirrors.kodi.tv/build-deps/sources/${ARCHIVE})
+    set(DAV1D_URL http://mirrors.kodi.tv/build-deps/sources/${DAV1D_ARCHIVE})
   endif()
 
   if(VERBOSE)
@@ -46,7 +46,8 @@ if(ENABLE_INTERNAL_DAV1D)
 
   externalproject_add(dav1d
                       URL ${DAV1D_URL}
-                      DOWNLOAD_NAME ${ARCHIVE}
+                      URL_HASH ${DAV1D_HASH}
+                      DOWNLOAD_NAME ${DAV1D_ARCHIVE}
                       DOWNLOAD_DIR ${TARBALL_DIR}
                       PREFIX ${CORE_BUILD_DIR}/dav1d
                       CONFIGURE_COMMAND meson

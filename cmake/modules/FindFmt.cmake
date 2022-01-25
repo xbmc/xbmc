@@ -23,7 +23,7 @@ if(ENABLE_INTERNAL_FMT)
   if(FMT_URL)
       get_filename_component(FMT_URL "${FMT_URL}" ABSOLUTE)
   else()
-    set(FMT_URL http://mirrors.kodi.tv/build-deps/sources/${ARCHIVE})
+    set(FMT_URL http://mirrors.kodi.tv/build-deps/sources/${FMT_ARCHIVE})
   endif()
   if(VERBOSE)
       message(STATUS "FMT_URL: ${FMT_URL}")
@@ -37,6 +37,7 @@ if(ENABLE_INTERNAL_FMT)
   set(FMT_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
   externalproject_add(fmt
                       URL ${FMT_URL}
+                      URL_HASH ${FMT_HASH}
                       DOWNLOAD_DIR ${TARBALL_DIR}
                       PREFIX ${CORE_BUILD_DIR}/fmt
                       CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}

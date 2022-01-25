@@ -20,7 +20,7 @@ if(ENABLE_INTERNAL_FLATBUFFERS)
   if(FLATBUFFERS_URL)
     get_filename_component(FLATBUFFERS_URL "${FLATBUFFERS_URL}" ABSOLUTE)
   else()
-    set(FLATBUFFERS_URL http://mirrors.kodi.tv/build-deps/sources/${ARCHIVE})
+    set(FLATBUFFERS_URL http://mirrors.kodi.tv/build-deps/sources/${FLATBUFFERS_ARCHIVE})
   endif()
   if(VERBOSE)
     message(STATUS "FLATBUFFERS_URL: ${FLATBUFFERS_URL}")
@@ -31,6 +31,7 @@ if(ENABLE_INTERNAL_FLATBUFFERS)
 
   externalproject_add(flatbuffers
                       URL ${FLATBUFFERS_URL}
+                      URL_HASH ${FLATBUFFERS_HASH}
                       DOWNLOAD_DIR ${TARBALL_DIR}
                       PREFIX ${CORE_BUILD_DIR}/flatbuffers
                       CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}

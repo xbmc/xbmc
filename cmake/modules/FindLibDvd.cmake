@@ -1,3 +1,28 @@
+# Generic externaproject_add call for windows platforms
+function(windows_externalprojectadd module_name)
+  string(TOUPPER ${module_name} DVDLIB)
+  string(PREPEND DVDLIB "LIB")
+  ExternalProject_Add(${module_name}
+    URL ${${DVDLIB}_URL}
+    URL_HASH ${${DVDLIB}_HASH}
+    DOWNLOAD_DIR ${TARBALL_DIR}
+    DOWNLOAD_NAME ${${DVDLIB}_ARCHIVE}
+    CMAKE_ARGS
+      ${LIBDVD_ADDITIONAL_ARGS}
+      -DCMAKE_PREFIX_PATH:PATH=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd
+      -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd
+  )
+endfunction()
+
+# Generic autoreconf step
+function(addstep_autoreconf module_name)
+  ExternalProject_Add_Step(${module_name} autoreconf
+                                  DEPENDEES download update patch
+                                  DEPENDERS configure
+                                  COMMAND PATH=${NATIVEPREFIX}/bin:$ENV{PATH} autoreconf -vif
+                                  WORKING_DIRECTORY <SOURCE_DIR>)
+endfunction()
+
 if(KODI_DEPENDSBUILD)
   set(_dvdlibs dvdread dvdnav)
   set(_handlevars LIBDVD_INCLUDE_DIRS DVDREAD_LIBRARY DVDNAV_LIBRARY)
@@ -43,20 +68,16 @@ if(KODI_DEPENDSBUILD)
     mark_as_advanced(LIBDVD_INCLUDE_DIRS LIBDVD_LIBRARIES)
   endif()
 else()
+  include(cmake/scripts/common/ModuleHelpers.cmake)
+
   set(dvdlibs libdvdread libdvdnav)
   if(ENABLE_DVDCSS)
     list(APPEND dvdlibs libdvdcss)
   endif()
   set(DEPENDS_TARGETS_DIR ${CMAKE_SOURCE_DIR}/tools/depends/target)
   foreach(dvdlib ${dvdlibs})
-    file(GLOB VERSION_FILE ${DEPENDS_TARGETS_DIR}/${dvdlib}/DVD*-VERSION)
-    file(STRINGS ${VERSION_FILE} VER)
-    string(REGEX MATCH "VERSION=[^ ]*$.*" ${dvdlib}_VER "${VER}")
-    list(GET ${dvdlib}_VER 0 ${dvdlib}_VER)
-    string(SUBSTRING "${${dvdlib}_VER}" 8 -1 ${dvdlib}_VER)
-    string(REGEX MATCH "BASE_URL=([^ ]*)" ${dvdlib}_BASE_URL "${VER}")
-    list(GET ${dvdlib}_BASE_URL 0 ${dvdlib}_BASE_URL)
-    string(SUBSTRING "${${dvdlib}_BASE_URL}" 9 -1 ${dvdlib}_BASE_URL)
+
+    get_archive_name(${dvdlib})
     string(TOUPPER ${dvdlib} DVDLIB)
 
     # allow user to override the download URL with a local tarball
@@ -68,7 +89,8 @@ else()
     if(${DVDLIB}_URL)
       get_filename_component(${DVDLIB}_URL "${${DVDLIB}_URL}" ABSOLUTE)
     else()
-      set(${DVDLIB}_URL ${${dvdlib}_BASE_URL}/archive/${${dvdlib}_VER}.tar.gz)
+      # github tarball format is tagname.tar.gz where tagname is VERSION in lib VERSION file
+      set(${DVDLIB}_URL ${${DVDLIB}_BASE_URL}/archive/${${DVDLIB}_VER}.tar.gz)
     endif()
     if(VERBOSE)
       message(STATUS "${DVDLIB}_URL: ${${DVDLIB}_URL}")
@@ -78,7 +100,10 @@ else()
   set(DVDREAD_CFLAGS "${DVDREAD_CFLAGS} -I${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/include")
 
   if(APPLE)
-    set(CMAKE_LD_FLAGS "-framework IOKit -framework CoreFoundation")
+    string(APPEND CMAKE_EXE_LINKER_FLAGS "-framework CoreFoundation")
+    if(NOT CORE_SYSTEM_NAME STREQUAL darwin_embedded)
+      string(APPEND CMAKE_EXE_LINKER_FLAGS " -framework IOKit")
+    endif()
   endif()
 
   set(HOST_ARCH ${ARCH})
@@ -110,7 +135,8 @@ else()
     if(NOT CORE_SYSTEM_NAME MATCHES windows)
       set(DVDCSS_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdcss.a)
       ExternalProject_Add(dvdcss URL ${LIBDVDCSS_URL}
-                                  DOWNLOAD_NAME libdvdcss-${libdvdcss_VER}.tar.gz
+                                  URL_HASH ${LIBDVDCSS_HASH}
+                                  DOWNLOAD_NAME ${LIBDVDCSS_ARCHIVE}
                                   DOWNLOAD_DIR ${TARBALL_DIR}
                                   PREFIX ${CORE_BUILD_DIR}/libdvd
                                   CONFIGURE_COMMAND ac_cv_path_GIT= <SOURCE_DIR>/configure
@@ -124,23 +150,12 @@ else()
                                                     --libdir=<INSTALL_DIR>/lib
                                                     "CC=${CMAKE_C_COMPILER}"
                                                     "CFLAGS=${CMAKE_C_FLAGS} ${DVDREAD_CFLAGS}"
-                                                    "LDFLAGS=${CMAKE_LD_FLAGS}"
+                                                    "LDFLAGS=${CMAKE_EXE_LINKER_FLAGS}"
                                   BUILD_COMMAND ${MAKE_COMMAND}
                                   BUILD_BYPRODUCTS ${DVDCSS_LIBRARY})
-      ExternalProject_Add_Step(dvdcss autoreconf
-                                      DEPENDEES download update patch
-                                      DEPENDERS configure
-                                      COMMAND PATH=${NATIVEPREFIX}/bin:$ENV{PATH} autoreconf -vif
-                                      WORKING_DIRECTORY <SOURCE_DIR>)
+      addstep_autoreconf("dvdcss")
     else()
-      ExternalProject_Add(dvdcss
-        URL ${LIBDVDCSS_URL}
-        DOWNLOAD_DIR ${TARBALL_DIR}
-        DOWNLOAD_NAME libdvdcss-${libdvdcss_VER}.tar.gz
-        CMAKE_ARGS
-          ${LIBDVD_ADDITIONAL_ARGS}
-          -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd
-      )
+      windows_externalprojectadd("dvdcss")
     endif()
     set_target_properties(dvdcss PROPERTIES FOLDER "External Projects")
   endif()
@@ -153,7 +168,8 @@ else()
   if(NOT CORE_SYSTEM_NAME MATCHES windows)
     set(DVDREAD_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdread.a)
     ExternalProject_Add(dvdread URL ${LIBDVDREAD_URL}
-                                DOWNLOAD_NAME libdvdread-${libdvdread_VER}.tar.gz
+                                URL_HASH ${LIBDVDREAD_HASH}
+                                DOWNLOAD_NAME ${LIBDVDREAD_ARCHIVE}
                                 DOWNLOAD_DIR ${TARBALL_DIR}
                                 PREFIX ${CORE_BUILD_DIR}/libdvd
                                 CONFIGURE_COMMAND ac_cv_path_GIT= <SOURCE_DIR>/configure
@@ -166,24 +182,12 @@ else()
                                                   --libdir=<INSTALL_DIR>/lib
                                                   "CC=${CMAKE_C_COMPILER}"
                                                   "CFLAGS=${CMAKE_C_FLAGS} ${DVDREAD_CFLAGS}"
-                                                  "LDFLAGS=${CMAKE_LD_FLAGS}"
+                                                  "LDFLAGS=${CMAKE_EXE_LINKER_FLAGS}"
                                 BUILD_COMMAND ${MAKE_COMMAND}
                                 BUILD_BYPRODUCTS ${DVDREAD_LIBRARY})
-    ExternalProject_Add_Step(dvdread autoreconf
-                                      DEPENDEES download update patch
-                                      DEPENDERS configure
-                                      COMMAND PATH=${NATIVEPREFIX}/bin:$ENV{PATH} autoreconf -vif
-                                      WORKING_DIRECTORY <SOURCE_DIR>)
+    addstep_autoreconf("dvdread")
   else()
-    ExternalProject_Add(dvdread
-      URL ${LIBDVDREAD_URL}
-      DOWNLOAD_DIR ${TARBALL_DIR}
-      DOWNLOAD_NAME libdvdread-${libdvdread_VER}.tar.gz
-      CMAKE_ARGS
-        ${LIBDVD_ADDITIONAL_ARGS}
-        -DCMAKE_PREFIX_PATH:PATH=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd
-        -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd
-    )
+    windows_externalprojectadd("dvdread")
   endif()
   if(ENABLE_DVDCSS)
     add_dependencies(dvdread dvdcss)
@@ -198,7 +202,8 @@ else()
   if(NOT CORE_SYSTEM_NAME MATCHES windows)
     set(DVDNAV_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdnav.a)
     ExternalProject_Add(dvdnav URL ${LIBDVDNAV_URL}
-                                DOWNLOAD_NAME libdvdnav-${libdvdnav_VER}.tar.gz
+                                URL_HASH ${LIBDVDNAV_HASH}
+                                DOWNLOAD_NAME ${LIBDVDNAV_ARCHIVE}
                                 DOWNLOAD_DIR ${TARBALL_DIR}
                                 PREFIX ${CORE_BUILD_DIR}/libdvd
                                 CONFIGURE_COMMAND ac_cv_path_GIT= <SOURCE_DIR>/configure
@@ -210,29 +215,17 @@ else()
                                                   --prefix=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd
                                                   --libdir=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib
                                                   "CC=${CMAKE_C_COMPILER}"
-                                                  "LDFLAGS=${CMAKE_LD_FLAGS} -L${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib"
+                                                  "LDFLAGS=${CMAKE_EXE_LINKER_FLAGS} -L${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib"
                                                   "CFLAGS=${CMAKE_C_FLAGS} ${DVDREAD_CFLAGS}"
                                                   "DVDREAD_CFLAGS=${DVDREAD_CFLAGS}"
                                                   "DVDREAD_LIBS=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdread.la"
                                                   "LIBS=${DVDNAV_LIBS}"
                                 BUILD_COMMAND ${MAKE_COMMAND}
                                 BUILD_BYPRODUCTS ${DVDNAV_LIBRARY})
-    ExternalProject_Add_Step(dvdnav autoreconf
-                                    DEPENDEES download update patch
-                                    DEPENDERS configure
-                                    COMMAND PATH=${NATIVEPREFIX}/bin:$ENV{PATH} autoreconf -vif
-                                    WORKING_DIRECTORY <SOURCE_DIR>)
+    addstep_autoreconf("dvdnav")
   else()
     set(DVDNAV_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd/lib/libdvdnav.lib)
-    ExternalProject_Add(dvdnav
-      URL ${LIBDVDNAV_URL}
-      DOWNLOAD_DIR ${TARBALL_DIR}
-      DOWNLOAD_NAME libdvdnav-${libdvdnav_VER}.tar.gz
-      CMAKE_ARGS
-        ${LIBDVD_ADDITIONAL_ARGS}
-        -DCMAKE_PREFIX_PATH:PATH=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd
-        -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/libdvd
-    )
+    windows_externalprojectadd("dvdnav")
   endif()
   add_dependencies(dvdnav dvdread)
   set_target_properties(dvdnav PROPERTIES FOLDER "External Projects")

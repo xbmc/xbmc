@@ -25,7 +25,7 @@ if(ENABLE_INTERNAL_SPDLOG)
   if(SPDLOG_URL)
       get_filename_component(SPDLOG_URL "${SPDLOG_URL}" ABSOLUTE)
   else()
-      set(SPDLOG_URL http://mirrors.kodi.tv/build-deps/sources/${ARCHIVE})
+      set(SPDLOG_URL http://mirrors.kodi.tv/build-deps/sources/${SPDLOG_ARCHIVE})
   endif()
   if(VERBOSE)
       message(STATUS "SPDLOG_URL: ${SPDLOG_URL}")
@@ -40,6 +40,7 @@ if(ENABLE_INTERNAL_SPDLOG)
 
   externalproject_add(spdlog
                       URL ${SPDLOG_URL}
+                      URL_HASH ${SPDLOG_HASH}
                       DOWNLOAD_DIR ${TARBALL_DIR}
                       PREFIX ${CORE_BUILD_DIR}/spdlog
                       CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}

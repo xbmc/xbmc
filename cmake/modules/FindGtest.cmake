@@ -26,7 +26,7 @@ if(ENABLE_INTERNAL_GTEST)
   if(GTEST_URL)
     get_filename_component(GTEST_URL "${GTEST_URL}" ABSOLUTE)
   else()
-    set(GTEST_URL http://mirrors.kodi.tv/build-deps/sources/${ARCHIVE})
+    set(GTEST_URL http://mirrors.kodi.tv/build-deps/sources/${GTEST_ARCHIVE})
   endif()
 
   if(VERBOSE)
@@ -38,6 +38,7 @@ if(ENABLE_INTERNAL_GTEST)
 
   externalproject_add(gtest
                       URL ${GTEST_URL}
+                      URL_HASH ${GTEST_HASH}
                       DOWNLOAD_DIR ${TARBALL_DIR}
                       PREFIX ${CORE_BUILD_DIR}/gtest
                       INSTALL_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}

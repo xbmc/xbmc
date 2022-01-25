@@ -19,7 +19,7 @@ if(ENABLE_INTERNAL_RapidJSON)
   if(RapidJSON_URL)
     get_filename_component(RapidJSON_URL "${RapidJSON_URL}" ABSOLUTE)
   else()
-    set(RapidJSON_URL http://mirrors.kodi.tv/build-deps/sources/${ARCHIVE})
+    set(RapidJSON_URL http://mirrors.kodi.tv/build-deps/sources/${RAPIDJSON_ARCHIVE})
   endif()
   if(VERBOSE)
     message(STATUS "RapidJSON_URL: ${RapidJSON_URL}")
@@ -33,6 +33,7 @@ if(ENABLE_INTERNAL_RapidJSON)
   set(RapidJSON_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
   externalproject_add(rapidjson
                       URL ${RapidJSON_URL}
+                      URL_HASH ${RAPIDJSON_HASH}
                       DOWNLOAD_DIR ${TARBALL_DIR}
                       PREFIX ${CORE_BUILD_DIR}/rapidjson
                       CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}

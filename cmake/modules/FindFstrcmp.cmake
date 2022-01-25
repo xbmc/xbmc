@@ -22,7 +22,7 @@ if(ENABLE_INTERNAL_FSTRCMP)
   if(FSTRCMP_URL)
     get_filename_component(FSTRCMP_URL "${FSTRCMP_URL}" ABSOLUTE)
   else()
-    set(FSTRCMP_URL http://mirrors.kodi.tv/build-deps/sources/${ARCHIVE})
+    set(FSTRCMP_URL http://mirrors.kodi.tv/build-deps/sources/${FSTRCMP_ARCHIVE})
   endif()
   if(VERBOSE)
     message(STATUS "FSTRCMPURL: ${FSTRCMP_URL}")
@@ -32,6 +32,7 @@ if(ENABLE_INTERNAL_FSTRCMP)
   set(FSTRCMP_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
   externalproject_add(fstrcmp
                       URL ${FSTRCMP_URL}
+                      URL_HASH ${FSTRCMP_HASH}
                       DOWNLOAD_DIR ${TARBALL_DIR}
                       PREFIX ${CORE_BUILD_DIR}/fstrcmp
                       PATCH_COMMAND autoreconf -vif
