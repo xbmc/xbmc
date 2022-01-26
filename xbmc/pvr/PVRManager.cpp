@@ -390,7 +390,7 @@ void CPVRManager::Start()
     return;
 
   CLog::Log(LOGINFO, "PVR Manager: Starting");
-  SetState(ManagerStateStarting);
+  SetState(ManagerState::STATE_STARTING);
 
   /* create the pvrmanager thread, which will ensure that all data will be loaded */
   Create();
@@ -413,7 +413,7 @@ void CPVRManager::Stop(bool bRestart /* = false */)
   }
 
   CLog::Log(LOGINFO, "PVR Manager: Stopping");
-  SetState(ManagerStateStopping);
+  SetState(ManagerState::STATE_SSTOPPING);
 
   StopThread();
 }
@@ -453,22 +453,22 @@ void CPVRManager::SetState(CPVRManager::ManagerState state)
   PVREvent event;
   switch (state)
   {
-    case ManagerStateError:
+    case ManagerState::STATE_ERROR:
       event = PVREvent::ManagerError;
       break;
-    case ManagerStateStopped:
+    case ManagerState::STATE_STOPPED:
       event = PVREvent::ManagerStopped;
       break;
-    case ManagerStateStarting:
+    case ManagerState::STATE_STARTING:
       event = PVREvent::ManagerStarting;
       break;
-    case ManagerStateStopping:
+    case ManagerState::STATE_SSTOPPING:
       event = PVREvent::ManagerStopped;
       break;
-    case ManagerStateInterrupted:
+    case ManagerState::STATE_INTERRUPTED:
       event = PVREvent::ManagerInterrupted;
       break;
-    case ManagerStateStarted:
+    case ManagerState::STATE_STARTED:
       event = PVREvent::ManagerStarted;
       break;
     default:
@@ -504,7 +504,7 @@ void CPVRManager::Process()
 
   // Wait for at least one client to come up and load/update data
   std::vector<std::shared_ptr<CPVRClient>> knownClients;
-  UpdateComponents(knownClients, ManagerStateStarting);
+  UpdateComponents(knownClients, ManagerState::STATE_STARTING);
 
   if (!IsInitialising())
   {
@@ -523,7 +523,7 @@ void CPVRManager::Process()
   m_timers->Start();
   m_pendingUpdates->Start();
 
-  SetState(ManagerStateStarted);
+  SetState(ManagerState::STATE_STARTED);
   CLog::Log(LOGINFO, "PVR Manager: Started");
 
   bool bRestart(false);
@@ -532,7 +532,7 @@ void CPVRManager::Process()
   while (IsStarted() && m_addons->HasCreatedClients() && !bRestart)
   {
     // In case any new client connected, load from db and fetch data update from new client(s)
-    UpdateComponents(knownClients, ManagerStateStarted);
+    UpdateComponents(knownClients, ManagerState::STATE_STARTED);
 
     if (cachedImagesCleanupTimeout.IsTimePast())
     {
@@ -588,7 +588,7 @@ void CPVRManager::Process()
   m_epgContainer.Stop();
   m_guiInfo->Stop();
 
-  SetState(ManagerStateInterrupted);
+  SetState(ManagerState::STATE_INTERRUPTED);
 
   UnloadComponents();
   m_database->Close();
@@ -596,7 +596,7 @@ void CPVRManager::Process()
   ResetProperties();
 
   CLog::Log(LOGINFO, "PVR Manager: Stopped");
-  SetState(ManagerStateStopped);
+  SetState(ManagerState::STATE_STOPPED);
 }
 
 bool CPVRManager::SetWakeupCommand()
