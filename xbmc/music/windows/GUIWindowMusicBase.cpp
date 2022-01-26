@@ -417,7 +417,7 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem, bool first)
   CLog::Log(LOGDEBUG, "Adding file {}{} to music playlist", item->GetPath(),
             item->m_bIsFolder ? " (folder) " : "");
   CFileItemList queuedItems;
-  m_queueAndPlayUtils.AddItemToPlayList(item, queuedItems);
+  m_queueAndPlayUtils.AddItemToPlayList(item, queuedItems, true); // true - show busy dialog
 
   // select next item
   m_viewControl.SetSelectedItem(iItem + 1);
@@ -707,7 +707,7 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
       return;
 
     CFileItemList queuedItems;
-    m_queueAndPlayUtils.AddItemToPlayList(item, queuedItems);
+    m_queueAndPlayUtils.AddItemToPlayList(item, queuedItems, true);
     if (g_partyModeManager.IsEnabled())
     {
       g_partyModeManager.AddUserSongs(queuedItems, true);

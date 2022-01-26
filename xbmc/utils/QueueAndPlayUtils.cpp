@@ -16,7 +16,6 @@
 #include "filesystem/File.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "music/tags/MusicInfoTag.h"
 #include "playlists/PlayList.h"
 #include "playlists/PlayListFactory.h"
 #include "profiles/ProfileManager.h"
@@ -53,13 +52,12 @@ public:
   }
 };
 
-bool CQueueAndPlayUtils::PlayItem(const CFileItemPtr& itemToPlay,
-                                  const bool bShowBusyDialog /* = true */)
+bool CQueueAndPlayUtils::PlayItem(const CFileItemPtr& itemToPlay, bool bShowBusyDialog)
 {
   if (itemToPlay->m_bIsFolder) // build a playlist and play it
   {
     XFILE::CMusicDatabaseDirectory dir;
-    // Don't add top level nodes to the playlist - should be excluded by the calling code already
+    // Exclude any top level nodes
     XFILE::MUSICDATABASEDIRECTORY::NODE_TYPE Node =
         dir.GetDirectoryParentType(itemToPlay->GetPath());
     if (Node == XFILE::MUSICDATABASEDIRECTORY::NODE_TYPE_OVERVIEW)
@@ -74,15 +72,14 @@ bool CQueueAndPlayUtils::PlayItem(const CFileItemPtr& itemToPlay,
   }
   else // song, so just play it
   {
-    const CFileItem item(itemToPlay->GetItemToPlay());
-    PlaySong(item);
+    PlaySong(itemToPlay);
   }
   return true;
 }
 
 bool CQueueAndPlayUtils::AddItemToPlayList(const CFileItemPtr& pItem,
                                            CFileItemList& queuedItems,
-                                           const bool bShowBusyDialog /* = true */)
+                                           bool bShowBusyDialog)
 {
   int jobid = CServiceBroker::GetJobManager()->AddJob(new CAddItemToPlaylistJob(pItem, queuedItems),
                                                       nullptr, CJob::PRIORITY_NORMAL);
@@ -102,10 +99,10 @@ bool CQueueAndPlayUtils::AddItemToPlayList(const CFileItemPtr& pItem,
   return true;
 }
 
-void CQueueAndPlayUtils::PlaySong(const CFileItem& item)
+void CQueueAndPlayUtils::PlaySong(const CFileItemPtr& itemToPlay)
 {
-  if (item.HasMusicInfoTag())
-    CServiceBroker::GetPlaylistPlayer().Play(std::make_shared<CFileItem>(item), "");
+  if (itemToPlay->HasMusicInfoTag())
+    CServiceBroker::GetPlaylistPlayer().Play(itemToPlay, "");
 }
 
 void CQueueAndPlayUtils::AddToPlayList(const CFileItemPtr& pItem, CFileItemList& queuedItems)
@@ -161,7 +158,10 @@ void CQueueAndPlayUtils::AddToPlayList(const CFileItemPtr& pItem, CFileItemList&
       {
         // load it
         if (!pPlayList->Load(pItem->GetPath()))
-          return; // failed to load playlist for some reason - just silently fail for now
+        {
+          CLog::Log(LOGERROR, "{} failed to load playlist {}", __FUNCTION__, pItem->GetPath());
+          return; // failed to load playlist for some reason - Log the error and fail
+        }
 
         PLAYLIST::CPlayList playlist = *pPlayList;
         for (int i = 0; i < playlist.size(); ++i)
@@ -182,7 +182,7 @@ void CQueueAndPlayUtils::AddToPlayList(const CFileItemPtr& pItem, CFileItemList&
     }
     else if (!pItem->IsNFO() && (pItem->IsAudio() || pItem->IsVideo()))
     {
-      CFileItemPtr itemCheck = queuedItems.Get(pItem->GetPath());
+      const CFileItemPtr itemCheck = queuedItems.Get(pItem->GetPath());
       if (!itemCheck || itemCheck->m_lStartOffset != pItem->m_lStartOffset)
       { // add item
         const CFileItemPtr item = std::make_shared<CFileItem>(*pItem);
@@ -223,7 +223,7 @@ bool CQueueAndPlayUtils::GetDirectoryItems(CURL& url, CFileItemList& items, bool
 void CQueueAndPlayUtils::FormatAndSort(CFileItemList& items)
 {
   const int winID = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
-  std::unique_ptr<CGUIViewState> viewState(CGUIViewState::GetViewState(winID, items));
+  const std::unique_ptr<CGUIViewState> viewState(CGUIViewState::GetViewState(winID, items));
 
   if (viewState)
   {
@@ -237,8 +237,8 @@ void CQueueAndPlayUtils::FormatAndSort(CFileItemList& items)
 
 void CQueueAndPlayUtils::FormatItemLabels(CFileItemList& items, const LABEL_MASKS& labelMasks)
 {
-  CLabelFormatter fileFormatter(labelMasks.m_strLabelFile, labelMasks.m_strLabel2File);
-  CLabelFormatter folderFormatter(labelMasks.m_strLabelFolder, labelMasks.m_strLabel2Folder);
+  const CLabelFormatter fileFormatter(labelMasks.m_strLabelFile, labelMasks.m_strLabel2File);
+  const CLabelFormatter folderFormatter(labelMasks.m_strLabelFolder, labelMasks.m_strLabel2Folder);
   for (int i = 0; i < items.Size(); ++i)
   {
     CFileItemPtr pItem = items[i];
@@ -258,7 +258,7 @@ void CQueueAndPlayUtils::FormatItemLabels(CFileItemList& items, const LABEL_MASK
 
 void CQueueAndPlayUtils::SetupShares()
 {
-  CFileItemList items;
+  const CFileItemList items;
   const int winID = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
   CGUIViewState* viewState = CGUIViewState::GetViewState(winID, items);
   if (viewState)
@@ -271,7 +271,7 @@ void CQueueAndPlayUtils::SetupShares()
 
 void CQueueAndPlayUtils::QueueItem(const CFileItemPtr& itemIn,
                                    bool first,
-                                   const bool bShowBusyDialog)
+                                   bool bShowBusyDialog)
 {
   int playlist = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
   if (playlist == PLAYLIST_NONE)
@@ -279,7 +279,7 @@ void CQueueAndPlayUtils::QueueItem(const CFileItemPtr& itemIn,
   if (playlist == PLAYLIST_NONE)
     playlist = PLAYLIST_MUSIC;
 
-  int iOldSize = CServiceBroker::GetPlaylistPlayer().GetPlaylist(playlist).size();
+  const int iOldSize = CServiceBroker::GetPlaylistPlayer().GetPlaylist(playlist).size();
 
   // Check for the partymode playlist item, do nothing when "PartyMode.xsp" not exist
   if (itemIn->IsSmartPlayList())

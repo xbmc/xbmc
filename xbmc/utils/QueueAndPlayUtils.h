@@ -22,10 +22,10 @@ class CQueueAndPlayUtils
 public:
   virtual ~CQueueAndPlayUtils() = default;
   bool PlayItem(const CFileItemPtr& itemToPlay, const bool showBusyDialog = true);
-  void PlaySong(const CFileItem& item);
+  void PlaySong(const CFileItemPtr& itemToPlay);
   bool AddItemToPlayList(const CFileItemPtr& pItem,
                          CFileItemList& queuedItems,
-                         const bool bShowBusyDialog = true);
+                         bool bShowBusyDialog);
   void AddToPlayList(const CFileItemPtr& pItem, CFileItemList& queuedItems);
   bool GetDirectory(const std::string& strDirectory, CFileItemList& items);
   void FormatAndSort(CFileItemList& items);
@@ -33,13 +33,11 @@ public:
   void JobFinish();
   void QueueItem(const CFileItemPtr& itemIn, bool first = false, const bool showBusyDialog = true);
 
-protected:
-  XFILE::CVirtualDirectory m_rootDir;
-  virtual void SetupShares();
-
 private:
   bool GetDirectoryItems(CURL& url, CFileItemList& items, bool useDir);
   void FormatItemLabels(CFileItemList& items, const LABEL_MASKS& labelMasks);
+  void SetupShares();
+  XFILE::CVirtualDirectory m_rootDir;
   static CEvent m_utilsJobEvent;
   CMusicDatabase m_musicDatabase;
 };
