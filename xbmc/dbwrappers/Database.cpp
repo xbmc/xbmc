@@ -390,7 +390,7 @@ bool CDatabase::ExecuteQuery(const std::string &strQuery)
   return bReturn;
 }
 
-bool CDatabase::ResultQuery(const std::string &strQuery)
+bool CDatabase::ResultQuery(const std::string& strQuery) const
 {
   bool bReturn = false;
 
