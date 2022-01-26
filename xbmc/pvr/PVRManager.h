@@ -211,39 +211,10 @@ namespace PVR
     std::shared_ptr<CPVRDatabase> GetTVDatabase() const;
 
     /*!
-     * @return True while the PVRManager is initialising.
-     */
-    inline bool IsInitialising() const
-    {
-      return GetState() == ManagerStateStarting;
-    }
-
-    /*!
      * @brief Check whether the PVRManager has fully started.
      * @return True if started, false otherwise.
      */
-    inline bool IsStarted() const
-    {
-      return GetState() == ManagerStateStarted;
-    }
-
-    /*!
-     * @brief Check whether the PVRManager is stopping
-     * @return True while the PVRManager is stopping.
-     */
-    inline bool IsStopping() const
-    {
-      return GetState() == ManagerStateStopping;
-    }
-
-    /*!
-     * @brief Check whether the PVRManager has been stopped.
-     * @return True if stopped, false otherwise.
-     */
-    inline bool IsStopped() const
-    {
-      return GetState() == ManagerStateStopped;
-    }
+    bool IsStarted() const { return GetState() == ManagerState::STATE_STARTED; }
 
     /*!
      * @brief Check whether EPG tags for channels have been created.
@@ -391,15 +362,26 @@ namespace PVR
      */
     bool SetWakeupCommand();
 
-    enum ManagerState
+    enum class ManagerState
     {
-      ManagerStateError = 0,
-      ManagerStateStopped,
-      ManagerStateStarting,
-      ManagerStateStopping,
-      ManagerStateInterrupted,
-      ManagerStateStarted
+      STATE_ERROR = 0,
+      STATE_STOPPED,
+      STATE_STARTING,
+      STATE_SSTOPPING,
+      STATE_INTERRUPTED,
+      STATE_STARTED
     };
+
+    /*!
+     * @return True while the PVRManager is initialising.
+     */
+    bool IsInitialising() const { return GetState() == ManagerState::STATE_STARTING; }
+
+    /*!
+     * @brief Check whether the PVRManager has been stopped.
+     * @return True if stopped, false otherwise.
+     */
+    bool IsStopped() const { return GetState() == ManagerState::STATE_STOPPED; }
 
     /*!
      * @brief Get the current state of the PVR manager.
@@ -475,7 +457,7 @@ namespace PVR
     bool m_bEpgsCreated = false; /*!< true if epg data for channels has been created */
 
     mutable CCriticalSection m_managerStateMutex;
-    ManagerState m_managerState = ManagerStateStopped;
+    ManagerState m_managerState = ManagerState::STATE_STOPPED;
     std::unique_ptr<CStopWatch> m_parentalTimer;
 
     CCriticalSection m_startStopMutex; // mutex for protecting pvr manager's start/restart/stop sequence */
