@@ -504,9 +504,9 @@ if test -z $use_tarballs; then
   use_tarballs=$prefix/xbmc-tarballs
 fi
 
-if test -n "$app_rendersystem"; then
+if test "$platform_os" == "linux"; then
   if test "$app_rendersystem" != "gl" && test "$app_rendersystem" != "gles"; then
-    AC_MSG_ERROR(Rendersystem must be gl or gles)
+    AC_MSG_ERROR(Rendersystem is required for linux - must be gl or gles)
   fi
 fi
 

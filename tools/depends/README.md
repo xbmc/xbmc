@@ -48,9 +48,9 @@ Paths below are examples. If you want to build Kodi, follow our **[build guides]
 
 ### Linux
 **ARM (codesourcery/lenaro/etc)**
-`./configure --with-toolchain=/opt/toolchains/my-example-toolchain/ --prefix=/opt/xbmc-deps --host=arm-linux-gnueabi`
+`./configure --with-toolchain=/opt/toolchains/my-example-toolchain/ --prefix=/opt/xbmc-deps --host=arm-linux-gnueabi --with-rendersystem=gles`
 
 **Native**
-`./configure --with-toolchain=/usr --prefix=/opt/xbmc-deps --host=x86_64-linux-gnu`
+`./configure --with-toolchain=/usr --prefix=/opt/xbmc-deps --host=x86_64-linux-gnu --with-rendersystem=gl`
 
 Cross compiling is a PITA.
