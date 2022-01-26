@@ -426,7 +426,7 @@ bool CPVRDatabase::Delete(const CPVRProvider& provider)
 }
 
 bool CPVRDatabase::Get(CPVRProviders& results,
-                       const std::vector<std::shared_ptr<CPVRClient>>& clients)
+                       const std::vector<std::shared_ptr<CPVRClient>>& clients) const
 {
   bool bReturn = false;
 
@@ -477,7 +477,7 @@ bool CPVRDatabase::Get(CPVRProviders& results,
 
 int CPVRDatabase::Get(bool bRadio,
                       const std::vector<std::shared_ptr<CPVRClient>>& clients,
-                      std::map<std::pair<int, int>, std::shared_ptr<CPVRChannel>>& results)
+                      std::map<std::pair<int, int>, std::shared_ptr<CPVRChannel>>& results) const
 {
   int iReturn = 0;
 
@@ -621,7 +621,7 @@ bool CPVRDatabase::Delete(const CPVRChannelGroup& group)
   return RemoveChannelsFromGroup(group) && DeleteValues("channelgroups", filter);
 }
 
-int CPVRDatabase::Get(CPVRChannelGroups& results)
+int CPVRDatabase::Get(CPVRChannelGroups& results) const
 {
   int iLoaded = 0;
   CSingleLock lock(m_critSection);
@@ -666,7 +666,7 @@ int CPVRDatabase::Get(CPVRChannelGroups& results)
 }
 
 std::vector<std::shared_ptr<CPVRChannelGroupMember>> CPVRDatabase::Get(
-    const CPVRChannelGroup& group, const std::vector<std::shared_ptr<CPVRClient>>& clients)
+    const CPVRChannelGroup& group, const std::vector<std::shared_ptr<CPVRClient>>& clients) const
 {
   std::vector<std::shared_ptr<CPVRChannelGroupMember>> results;
 
@@ -997,7 +997,7 @@ bool CPVRDatabase::UpdateLastOpened(const CPVRChannelGroup& group)
 /********** Timer methods **********/
 
 std::vector<std::shared_ptr<CPVRTimerInfoTag>> CPVRDatabase::GetTimers(
-    CPVRTimers& timers, const std::vector<std::shared_ptr<CPVRClient>>& clients)
+    CPVRTimers& timers, const std::vector<std::shared_ptr<CPVRClient>>& clients) const
 {
   std::vector<std::shared_ptr<CPVRTimerInfoTag>> result;
 
