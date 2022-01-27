@@ -876,50 +876,50 @@ EDL::Action CEdl::GetLastEditActionType() const
   return m_lastEditActionType;
 }
 
-bool CEdl::GetNextSceneMarker(bool bPlus, const int iClock, int *iSceneMarker)
+bool CEdl::GetNextSceneMarker(bool forward, int clock, int* sceneMarker)
 {
   if (!HasSceneMarker())
     return false;
 
-  int iSeek = GetTimeAfterRestoringCuts(iClock);
+  int seekTime = GetTimeAfterRestoringCuts(clock);
 
-  int iDiff = 10 * 60 * 60 * 1000; // 10 hours to ms.
-  bool bFound = false;
+  int diff = 10 * 60 * 60 * 1000; // 10 hours to ms.
+  bool found = false;
 
-  if (bPlus) // Find closest scene forwards
+  // Find closest scene forwards
+  if (forward)
   {
-    for (int i = 0; i < (int)m_vecSceneMarkers.size(); i++)
+    for (const int& scene : m_vecSceneMarkers)
     {
-      if ((m_vecSceneMarkers[i] > iSeek) && ((m_vecSceneMarkers[i] - iSeek) < iDiff))
+      if ((scene > seekTime) && ((scene - seekTime) < diff))
       {
-        iDiff = m_vecSceneMarkers[i] - iSeek;
-        *iSceneMarker = m_vecSceneMarkers[i];
-        bFound = true;
+        diff = scene - seekTime;
+        *sceneMarker = scene;
+        found = true;
       }
     }
   }
-  else // Find closest scene backwards
+  // Find closest scene backwards
+  else
   {
-    for (int i = 0; i < (int)m_vecSceneMarkers.size(); i++)
+    for (const int& scene : m_vecSceneMarkers)
     {
-      if ((m_vecSceneMarkers[i] < iSeek) && ((iSeek - m_vecSceneMarkers[i]) < iDiff))
+      if ((scene < seekTime) && ((seekTime - scene) < diff))
       {
-        iDiff = iSeek - m_vecSceneMarkers[i];
-        *iSceneMarker = m_vecSceneMarkers[i];
-        bFound = true;
+        diff = seekTime - scene;
+        *sceneMarker = scene;
+        found = true;
       }
     }
   }
 
-  /*
-   * If the scene marker is in a cut then return the end of the cut. Can't guarantee that this is
-   * picked up when scene markers are added.
-   */
+  // If the scene marker is in a cut then return the end of the cut. Can't guarantee that this is
+  // picked up when scene markers are added.
   Edit edit;
-  if (bFound && InEdit(*iSceneMarker, &edit) && edit.action == Action::CUT)
-    *iSceneMarker = edit.end;
+  if (found && InEdit(*sceneMarker, &edit) && edit.action == Action::CUT)
+    *sceneMarker = edit.end;
 
-  return bFound;
+  return found;
 }
 
 std::string CEdl::MillisecondsToTimeString(const int iMilliseconds)

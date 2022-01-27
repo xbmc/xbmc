@@ -157,10 +157,16 @@ public:
   */
   EDL::Action GetLastEditActionType() const;
 
-  // FIXME: remove const modifier for iClock as it makes no sense as it means nothing
-  // for the reader of the interface, but limits the implementation
-  // to not modify the parameter on stack
-  bool GetNextSceneMarker(bool bPlus, const int iClock, int *iSceneMarker);
+  /*!
+   * @brief Get the closest scenemarker by providing the given clock time and the search
+   * direction (forward vs backwards)
+   * @param forward If the search should be performed forward (true) with respect to the provided
+   * clock time or backwards (false)
+   * @param clock The clock time
+   * @param[in,out] sceneMarker The closest scene marker
+   * @return true if it could find a next scene marker, false otherwise
+  */
+  bool GetNextSceneMarker(bool forward, int clock, int* sceneMarker);
 
   // FIXME: remove const modifier as it makes no sense as it means nothing
   // for the reader of the interface, but limits the implementation
