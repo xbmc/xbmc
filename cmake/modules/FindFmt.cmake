@@ -16,18 +16,9 @@ if(ENABLE_INTERNAL_FMT)
   include(ExternalProject)
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  get_archive_name(libfmt)
+  set(MODULE_LC libfmt)
 
-  # allow user to override the download URL with a local tarball
-  # needed for offline build envs
-  if(FMT_URL)
-      get_filename_component(FMT_URL "${FMT_URL}" ABSOLUTE)
-  else()
-    set(FMT_URL http://mirrors.kodi.tv/build-deps/sources/${LIBFMT_ARCHIVE})
-  endif()
-  if(VERBOSE)
-      message(STATUS "FMT_URL: ${FMT_URL}")
-  endif()
+  SETUP_BUILD_VARS()
 
   if(APPLE)
     set(EXTRA_ARGS "-DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}")
@@ -35,12 +26,13 @@ if(ENABLE_INTERNAL_FMT)
 
   set(FMT_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/libfmt.a)
   set(FMT_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
-  set(FMT_VERSION ${LIBFMT_VER})
+  set(FMT_VERSION ${${MODULE}_VER})
 
   externalproject_add(fmt
-                      URL ${FMT_URL}
-                      URL_HASH ${LIBFMT_HASH}
+                      URL ${${MODULE}_URL}
+                      URL_HASH ${${MODULE}_HASH}
                       DOWNLOAD_DIR ${TARBALL_DIR}
+                      DOWNLOAD_NAME ${${MODULE}_ARCHIVE}
                       PREFIX ${CORE_BUILD_DIR}/fmt
                       CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
                                  -DCMAKE_CXX_EXTENSIONS=${CMAKE_CXX_EXTENSIONS}
