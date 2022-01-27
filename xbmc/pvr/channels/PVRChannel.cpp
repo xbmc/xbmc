@@ -260,14 +260,9 @@ bool CPVRChannel::SetHidden(bool bIsHidden)
   if (m_bIsHidden != bIsHidden)
   {
     m_bIsHidden = bIsHidden;
-    m_bEPGEnabled = !bIsHidden;
 
-    const std::shared_ptr<CPVREpg> epg = GetEPG();
-    if (epg)
-    {
-      epg->GetChannelData()->SetHidden(m_bIsHidden);
-      epg->GetChannelData()->SetEPGEnabled(m_bEPGEnabled);
-    }
+    if (m_epg)
+      m_epg->GetChannelData()->SetHidden(m_bIsHidden);
 
     m_bChanged = true;
     return true;
@@ -576,15 +571,6 @@ std::shared_ptr<CPVREpgInfoTag> CPVRChannel::CreateEPGGapTag(const CDateTime& st
                                             end, true);
 }
 
-bool CPVRChannel::ClearEPG() const
-{
-  const std::shared_ptr<CPVREpg> epg = GetEPG();
-  if (epg)
-    epg->Clear();
-
-  return true;
-}
-
 std::shared_ptr<CPVREpgInfoTag> CPVRChannel::GetEPGNow() const
 {
   std::shared_ptr<CPVREpgInfoTag> tag;
@@ -623,16 +609,17 @@ bool CPVRChannel::SetEPGEnabled(bool bEPGEnabled)
   {
     m_bEPGEnabled = bEPGEnabled;
 
-    const std::shared_ptr<CPVREpg> epg = GetEPG();
-    if (epg)
-      epg->GetChannelData()->SetEPGEnabled(m_bEPGEnabled);
+    if (m_epg)
+    {
+      m_epg->GetChannelData()->SetEPGEnabled(m_bEPGEnabled);
+
+      if (m_bEPGEnabled)
+        m_epg->ForceUpdate();
+      else
+        m_epg->Clear();
+    }
 
     m_bChanged = true;
-
-    /* clear the previous EPG entries if needed */
-    if (!m_bEPGEnabled && m_epg)
-      ClearEPG();
-
     return true;
   }
 
@@ -648,12 +635,11 @@ bool CPVRChannel::SetEPGScraper(const std::string& strScraper)
     bool bCleanEPG = !m_strEPGScraper.empty() || strScraper.empty();
 
     m_strEPGScraper = strScraper;
+
+    if (bCleanEPG && m_epg)
+      m_epg->Clear();
+
     m_bChanged = true;
-
-    /* clear the previous EPG entries if needed */
-    if (bCleanEPG && m_bEPGEnabled && m_epg)
-      ClearEPG();
-
     return true;
   }
 
