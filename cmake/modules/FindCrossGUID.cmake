@@ -2,18 +2,9 @@ if(ENABLE_INTERNAL_CROSSGUID)
   include(ExternalProject)
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  get_archive_name(crossguid)
+  set(MODULE_LC crossguid)
 
-  # allow user to override the download URL with a local tarball
-  # needed for offline build envs
-  if(CROSSGUID_URL)
-    get_filename_component(CROSSGUID_URL "${CROSSGUID_URL}" ABSOLUTE)
-  else()
-    set(CROSSGUID_URL http://mirrors.kodi.tv/build-deps/sources/${CROSSGUID_ARCHIVE})
-  endif()
-  if(VERBOSE)
-    message(STATUS "CROSSGUID_URL: ${CROSSGUID_URL}")
-  endif()
+  SETUP_BUILD_VARS()
 
   if(APPLE)
     set(EXTRA_ARGS "-DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}")
@@ -21,11 +12,14 @@ if(ENABLE_INTERNAL_CROSSGUID)
 
   set(CROSSGUID_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/libcrossguid.a)
   set(CROSSGUID_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
-  externalproject_add(crossguid
-                      URL ${CROSSGUID_URL}
-                      URL_HASH ${CROSSGUID_HASH}
+  set(CROSSGUID_VER ${${MODULE}_VER})
+
+  externalproject_add(${MODULE_LC}
+                      URL ${${MODULE}_URL}
+                      URL_HASH ${${MODULE}_HASH}
                       DOWNLOAD_DIR ${TARBALL_DIR}
-                      PREFIX ${CORE_BUILD_DIR}/crossguid
+                      DOWNLOAD_NAME ${${MODULE}_ARCHIVE}
+                      PREFIX ${CORE_BUILD_DIR}/${MODULE_LC}
                       CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
                                  -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
                                  "${EXTRA_ARGS}"
@@ -45,7 +39,6 @@ else()
 
   include(SelectLibraryConfigurations)
   select_library_configurations(CROSSGUID)
-
 endif()
 
 include(FindPackageHandleStandardArgs)
