@@ -86,84 +86,83 @@ bool CEdl::ReadEditDecisionLists(const CFileItem& fileItem, float fps)
   return found;
 }
 
-bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
+bool CEdl::ReadEdl(const std::string& path, float fps)
 {
   Clear();
 
-  std::string edlFilename(URIUtils::ReplaceExtension(strMovie, ".edl"));
+  std::string edlFilename{URIUtils::ReplaceExtension(path, ".edl")};
   if (!CFile::Exists(edlFilename))
     return false;
 
   CFile edlFile;
   if (!edlFile.Open(edlFilename))
   {
-    CLog::Log(LOGERROR, "{} - Could not open EDL file: {}", __FUNCTION__,
-              CURL::GetRedacted(edlFilename));
+    CLog::LogF(LOGERROR, "Could not open EDL file: {}", CURL::GetRedacted(edlFilename));
     return false;
   }
 
-  bool bError = false;
-  int iLine = 0;
-  std::string strBuffer;
-  strBuffer.resize(1024);
-  while (edlFile.ReadString(&strBuffer[0], 1024))
+  bool error{false};
+  int line{0};
+  std::array<char, 1024> buffer{};
+  while (edlFile.ReadString(&buffer[0], 1024))
   {
     // Log any errors from previous run in the loop
-    if (bError)
-      CLog::Log(LOGWARNING, "{} - Error on line {} in EDL file: {}", __FUNCTION__, iLine,
-                CURL::GetRedacted(edlFilename));
+    if (error)
+      CLog::LogF(LOGWARNING, "Error on line {} in EDL file: {}", line,
+                 CURL::GetRedacted(edlFilename));
 
-    bError = false;
+    error = false;
+    line++;
 
-    iLine++;
+    std::array<char, 513> buffer1{};
+    std::array<char, 513> buffer2{};
+    int action{EDL::EDL_ACTION_NONE};
 
-    char buffer1[513];
-    char buffer2[513];
-    int iAction;
-    int iFieldsRead = sscanf(strBuffer.c_str(), "%512s %512s %i", buffer1,
-                             buffer2, &iAction);
-    if (iFieldsRead != 2 && iFieldsRead != 3) // Make sure we read the right number of fields
+    int fieldsRead =
+        sscanf(buffer.data(), "%512s %512s %i", buffer1.data(), buffer2.data(), &action);
+    // Make sure we read the right number of fields
+    if (fieldsRead != 2 && fieldsRead != 3)
     {
-      bError = true;
+      error = true;
       continue;
     }
 
-    std::vector<std::string> strFields(2);
-    strFields[0] = buffer1;
-    strFields[1] = buffer2;
+    std::array<std::string, 2> fields{};
+    fields[0] = buffer1.data();
+    fields[1] = buffer2.data();
 
-    if (iFieldsRead == 2) // If only 2 fields read, then assume it's a scene marker.
+    // If only 2 fields read, then assume it's a scene marker.
+    if (fieldsRead == 2)
     {
-      iAction = atoi(strFields[1].c_str());
-      strFields[1] = strFields[0];
+      action = atoi(fields[1].c_str());
+      fields[1] = fields[0];
     }
 
-    if (StringUtils::StartsWith(strFields[0], "##"))
+    if (StringUtils::StartsWith(fields[0], "##"))
     {
-      CLog::Log(LOGDEBUG, "Skipping comment line {} in EDL file: {}", iLine,
-                CURL::GetRedacted(edlFilename));
+      CLog::LogF(LOGDEBUG, "Skipping comment line {} in EDL file: {}", line,
+                 CURL::GetRedacted(edlFilename));
       continue;
     }
-    /*
-     * For each of the first two fields read, parse based on whether it is a time string
-     * (HH:MM:SS.sss), frame marker (#12345), or normal seconds string (123.45).
-     */
-    int64_t editStartEnd[2];
-    for (int i = 0; i < 2; i++)
+
+    // For each of the first two fields read, parse based on whether it is a time string
+    // (HH:MM:SS.sss), frame marker (#12345), or normal seconds string (123.45).
+    std::array<int64_t, 2> editStartEnd{};
+    for (size_t i = 0; i < fields.size(); i++)
     {
-      if (strFields[i].find(':') != std::string::npos) // HH:MM:SS.sss format
+      // HH:MM:SS.sss format
+      if (fields[i].find(':') != std::string::npos)
       {
-        std::vector<std::string> fieldParts = StringUtils::Split(strFields[i], '.');
+        std::vector<std::string> fieldParts = StringUtils::Split(fields[i], '.');
         if (fieldParts.size() == 1) // No ms
         {
           editStartEnd[i] = StringUtils::TimeStringToSeconds(fieldParts[0]) *
                             static_cast<int64_t>(1000); // seconds to ms
         }
-        else if (fieldParts.size() == 2) // Has ms. Everything after the dot (.) is ms
+        // Has ms. Everything after the dot (.) is ms
+        else if (fieldParts.size() == 2)
         {
-          /*
-           * Have to pad or truncate the ms portion to 3 characters before converting to ms.
-           */
+          // Have to pad or truncate the ms portion to 3 characters before converting to ms.
           if (fieldParts[1].length() == 1)
           {
             fieldParts[1] = fieldParts[1] + "00";
@@ -182,48 +181,51 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
         }
         else
         {
-          bError = true;
+          error = true;
           continue;
         }
       }
-      else if (strFields[i][0] == '#') // #12345 format for frame number
+      // #12345 format for frame number
+      else if (fields[i][0] == '#')
       {
-        if (fFramesPerSecond > 0.0f)
+        if (fps > 0.0f)
         {
-          editStartEnd[i] = static_cast<int64_t>(std::atol(strFields[i].substr(1).c_str()) /
-                                                 fFramesPerSecond * 1000); // frame number to ms
+          editStartEnd[i] = static_cast<int64_t>(std::atol(fields[i].substr(1).c_str()) / fps *
+                                                 1000); // frame number to ms
         }
         else
         {
-          CLog::Log(LOGERROR,
-                    "Edl::ReadEdl - Frame number not supported in EDL files when frame rate is "
-                    "unavailable (ts) - supplied frame number: {}",
-                    strFields[i].substr(1));
+          CLog::LogF(LOGERROR,
+                     "Frame number not supported in EDL files when frame rate is "
+                     "unavailable (ts) - supplied frame number: {}",
+                     fields[i].substr(1));
           return false;
         }
       }
-      else // Plain old seconds in float format, e.g. 123.45
+      // Plain old seconds in float format, e.g. 123.45
+      else
       {
         editStartEnd[i] =
-            static_cast<int64_t>(std::atof(strFields[i].c_str()) * 1000); // seconds to ms
+            static_cast<int64_t>(std::atof(fields[i].c_str()) * 1000); // seconds to ms
       }
     }
 
-    if (bError) // If there was an error in the for loop, ignore and continue with the next line
+    // If there was an error in the for loop, ignore and continue with the next line
+    if (error)
       continue;
 
     Edit edit;
     edit.start = editStartEnd[0];
     edit.end = editStartEnd[1];
 
-    switch (iAction)
+    switch (action)
     {
     case 0:
       edit.action = Action::CUT;
       if (!AddEdit(edit))
       {
-        CLog::Log(LOGWARNING, "{} - Error adding cut from line {} in EDL file: {}", __FUNCTION__,
-                  iLine, CURL::GetRedacted(edlFilename));
+        CLog::LogF(LOGWARNING, "Error adding cut from line {} in EDL file: {}", line,
+                   CURL::GetRedacted(edlFilename));
         continue;
       }
       break;
@@ -231,16 +233,16 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
       edit.action = Action::MUTE;
       if (!AddEdit(edit))
       {
-        CLog::Log(LOGWARNING, "{} - Error adding mute from line {} in EDL file: {}", __FUNCTION__,
-                  iLine, CURL::GetRedacted(edlFilename));
+        CLog::LogF(LOGWARNING, "Error adding mute from line {} in EDL file: {}", line,
+                   CURL::GetRedacted(edlFilename));
         continue;
       }
       break;
     case 2:
       if (!AddSceneMarker(edit.end))
       {
-        CLog::Log(LOGWARNING, "{} - Error adding scene marker from line {} in EDL file: {}",
-                  __FUNCTION__, iLine, CURL::GetRedacted(edlFilename));
+        CLog::LogF(LOGWARNING, "Error adding scene marker from line {} in EDL file: {}", line,
+                   CURL::GetRedacted(edlFilename));
         continue;
       }
       break;
@@ -248,34 +250,34 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
       edit.action = Action::COMM_BREAK;
       if (!AddEdit(edit))
       {
-        CLog::Log(LOGWARNING, "{} - Error adding commercial break from line {} in EDL file: {}",
-                  __FUNCTION__, iLine, CURL::GetRedacted(edlFilename));
+        CLog::LogF(LOGWARNING, "Error adding commercial break from line {} in EDL file: {}", line,
+                   CURL::GetRedacted(edlFilename));
         continue;
       }
       break;
     default:
-      CLog::Log(LOGWARNING, "{} - Invalid action on line {} in EDL file: {}", __FUNCTION__, iLine,
-                CURL::GetRedacted(edlFilename));
+      CLog::LogF(LOGWARNING, "Invalid action on line {} in EDL file: {}", line,
+                 CURL::GetRedacted(edlFilename));
       continue;
     }
   }
 
-  if (bError) // Log last line warning, if there was one, since while loop will have terminated.
-    CLog::Log(LOGWARNING, "{} - Error on line {} in EDL file: {}", __FUNCTION__, iLine,
-              CURL::GetRedacted(edlFilename));
+  // Log last line warning, if there was one, since while loop will have terminated.
+  if (error)
+    CLog::Log(LOGWARNING, "Error on line {} in EDL file: {}", line, CURL::GetRedacted(edlFilename));
 
   edlFile.Close();
 
   if (HasEdits() || HasSceneMarker())
   {
-    CLog::Log(LOGDEBUG, "{0} - Read {1} edits and {2} scene markers in EDL file: {3}", __FUNCTION__,
-              m_vecEdits.size(), m_vecSceneMarkers.size(), CURL::GetRedacted(edlFilename));
+    CLog::LogF(LOGDEBUG, "Read {} edits and {} scene markers in EDL file: {}", m_vecEdits.size(),
+               m_vecSceneMarkers.size(), CURL::GetRedacted(edlFilename));
     return true;
   }
   else
   {
-    CLog::Log(LOGDEBUG, "{} - No edits or scene markers found in EDL file: {}", __FUNCTION__,
-              CURL::GetRedacted(edlFilename));
+    CLog::LogF(LOGDEBUG, "No edits or scene markers found in EDL file: {}",
+               CURL::GetRedacted(edlFilename));
     return false;
   }
 }
