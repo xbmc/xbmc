@@ -700,7 +700,7 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
     hw_delay -= delay;
     // sometimes at the beginning of the stream m_timestampPos is more accurate and ahead of
     // m_headPos - don't use the computed value then and wait
-    if (hw_delay > -1.0 && hw_delay < 1.0)
+    if (hw_delay >= 0.0 && hw_delay < 1.0)
       m_hw_delay = hw_delay;
     else
       m_hw_delay = 0.0;
