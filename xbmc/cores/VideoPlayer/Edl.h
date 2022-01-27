@@ -106,11 +106,11 @@ public:
    * edit and fill pEdit with the respective edit struct.
    * @note seek time refers to the time in the original file timeline (i.e. without
    * considering cut blocks)
-   * @param iSeek The seek time (on the original timeline)
-   * @param[in,out] pEdit The edit pointer (or nullptr if iSeek not within an edit)
-   * @return true if iSeek is within an edit, false otherwise
+   * @param seekTime The seek time (on the original timeline)
+   * @param[in,out] edit The edit pointer (or nullptr if seekTime not within an edit)
+   * @return true if seekTime is within an edit, false otherwise
   */
-  bool InEdit(int iSeek, EDL::Edit* pEdit = nullptr);
+  bool InEdit(int seekTime, EDL::Edit* edit = nullptr);
 
   /*!
    * @brief Get the last processed edit time (set during playback when a given

@@ -838,21 +838,22 @@ bool CEdl::HasSceneMarker() const
   return !m_vecSceneMarkers.empty();
 }
 
-bool CEdl::InEdit(const int iSeek, Edit* pEdit)
+bool CEdl::InEdit(int seekTime, Edit* edit)
 {
-  for (size_t i = 0; i < m_vecEdits.size(); ++i)
+  for (const EDL::Edit& editItem : m_vecEdits)
   {
-    if (iSeek < m_vecEdits[i].start) // Early exit if not even up to the edit start time.
+    // Early exit if not even up to the edit start time.
+    if (seekTime < editItem.start)
       return false;
 
-    if (iSeek >= m_vecEdits[i].start && iSeek <= m_vecEdits[i].end) // Inside edit.
+    // Inside edit.
+    if (seekTime >= editItem.start && seekTime <= editItem.end)
     {
-      if (pEdit)
-        *pEdit = m_vecEdits[i];
+      if (edit)
+        *edit = editItem;
       return true;
     }
   }
-
   return false;
 }
 
