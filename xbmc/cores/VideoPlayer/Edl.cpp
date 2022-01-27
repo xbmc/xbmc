@@ -477,86 +477,81 @@ bool CEdl::ReadVideoReDo(const std::string& strMovie)
   }
 }
 
-bool CEdl::ReadBeyondTV(const std::string& strMovie)
+bool CEdl::ReadBeyondTV(const std::string& path)
 {
   Clear();
 
-  std::string beyondTVFilename(URIUtils::ReplaceExtension(strMovie, URIUtils::GetExtension(strMovie) + ".chapters.xml"));
+  std::string beyondTVFilename{
+      URIUtils::ReplaceExtension(path, URIUtils::GetExtension(path) + ".chapters.xml")};
   if (!CFile::Exists(beyondTVFilename))
     return false;
 
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(beyondTVFilename))
   {
-    CLog::Log(LOGERROR, "{} - Could not load Beyond TV file: {}. {}", __FUNCTION__,
-              CURL::GetRedacted(beyondTVFilename), xmlDoc.ErrorDesc());
+    CLog::LogF(LOGERROR, "Could not load Beyond TV file: {}. {}",
+               CURL::GetRedacted(beyondTVFilename), xmlDoc.ErrorDesc());
     return false;
   }
 
   if (xmlDoc.Error())
   {
-    CLog::Log(LOGERROR, "{} - Could not parse Beyond TV file: {}. {}", __FUNCTION__,
-              CURL::GetRedacted(beyondTVFilename), xmlDoc.ErrorDesc());
+    CLog::LogF(LOGERROR, "Could not parse Beyond TV file: {}. {}",
+               CURL::GetRedacted(beyondTVFilename), xmlDoc.ErrorDesc());
     return false;
   }
 
-  TiXmlElement *pRoot = xmlDoc.RootElement();
-  if (!pRoot || strcmp(pRoot->Value(), "cutlist"))
+  TiXmlElement* rootElement = xmlDoc.RootElement();
+  if (!rootElement || strcmp(rootElement->Value(), "cutlist"))
   {
-    CLog::Log(LOGERROR, "{} - Invalid Beyond TV file: {}. Expected root node to be <cutlist>",
-              __FUNCTION__, CURL::GetRedacted(beyondTVFilename));
+    CLog::LogF(LOGERROR, "Invalid Beyond TV file: {}. Expected root node to be <cutlist>",
+               CURL::GetRedacted(beyondTVFilename));
     return false;
   }
 
-  bool bValid = true;
-  TiXmlElement *pRegion = pRoot->FirstChildElement("Region");
-  while (bValid && pRegion)
+  bool valid{true};
+  TiXmlElement* regionElement = rootElement->FirstChildElement("Region");
+  while (valid && regionElement)
   {
-    TiXmlElement *pStart = pRegion->FirstChildElement("start");
-    TiXmlElement *pEnd = pRegion->FirstChildElement("end");
-    if (pStart && pEnd && pStart->FirstChild() && pEnd->FirstChild())
+    TiXmlElement* startElement = regionElement->FirstChildElement("start");
+    TiXmlElement* endElement = regionElement->FirstChildElement("end");
+    if (startElement && endElement && startElement->FirstChild() && endElement->FirstChild())
     {
-      /*
-       * Need to divide the start and end times by a factor of 10,000 to get msec.
-       * E.g. <start comment="00:02:44.9980867">1649980867</start>
-       *
-       * Use atof so doesn't overflow 32 bit float or integer / long.
-       * E.g. <end comment="0:26:49.0000009">16090090000</end>
-       *
-       * Don't use atoll even though it is more correct as it isn't natively supported by
-       * Visual Studio.
-       *
-       * atof() returns 0 if there were any problems and will subsequently be rejected in AddEdit().
-       */
+      // Need to divide the start and end times by a factor of 10,000 to get msec.
+      // E.g. <start comment="00:02:44.9980867">1649980867</start>
+      // Use atof so doesn't overflow 32 bit float or integer / long.
+      // E.g. <end comment="0:26:49.0000009">16090090000</end>
+      // Don't use atoll even though it is more correct as it isn't natively supported by
+      // Visual Studio.
+      // atof() returns 0 if there were any problems and will subsequently be rejected in AddEdit().
       Edit edit;
-      edit.start = static_cast<int64_t>((std::atof(pStart->FirstChild()->Value()) / 10000));
-      edit.end = static_cast<int64_t>((std::atof(pEnd->FirstChild()->Value()) / 10000));
+      edit.start = static_cast<int64_t>((std::atof(startElement->FirstChild()->Value()) / 10000));
+      edit.end = static_cast<int64_t>((std::atof(endElement->FirstChild()->Value()) / 10000));
       edit.action = Action::COMM_BREAK;
-      bValid = AddEdit(edit);
+      valid = AddEdit(edit);
     }
     else
-      bValid = false;
+      valid = false;
 
-    pRegion = pRegion->NextSiblingElement("Region");
+    regionElement = regionElement->NextSiblingElement("Region");
   }
-  if (!bValid)
+  if (!valid)
   {
-    CLog::Log(LOGERROR,
-              "{} - Invalid Beyond TV file: {}. Clearing any valid commercial breaks found.",
-              __FUNCTION__, CURL::GetRedacted(beyondTVFilename));
+    CLog::LogF(LOGERROR, "Invalid Beyond TV file: {}. Clearing any valid commercial breaks found.",
+               CURL::GetRedacted(beyondTVFilename));
     Clear();
     return false;
   }
   else if (HasEdits())
   {
-    CLog::Log(LOGDEBUG, "{0} - Read {1} commercial breaks from Beyond TV file: {2}", __FUNCTION__,
-              m_vecEdits.size(), CURL::GetRedacted(beyondTVFilename));
+    CLog::LogF(LOGDEBUG, "Read {} commercial breaks from Beyond TV file: {}", m_vecEdits.size(),
+               CURL::GetRedacted(beyondTVFilename));
     return true;
   }
   else
   {
-    CLog::Log(LOGDEBUG, "{} - No commercial breaks found in Beyond TV file: {}", __FUNCTION__,
-              CURL::GetRedacted(beyondTVFilename));
+    CLog::LogF(LOGDEBUG, "No commercial breaks found in Beyond TV file: {}",
+               CURL::GetRedacted(beyondTVFilename));
     return false;
   }
 }

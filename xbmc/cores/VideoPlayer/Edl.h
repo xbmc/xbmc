@@ -202,10 +202,13 @@ private:
   // for the reader of the interface, but limits the implementation
   // to not modify the parameter on stack
   bool ReadVideoReDo(const std::string& strMovie);
-  // FIXME: remove const modifier for strMovie as it makes no sense as it means nothing
-  // for the reader of the interface, but limits the implementation
-  // to not modify the parameter on stack
-  bool ReadBeyondTV(const std::string& strMovie);
+
+  /*!
+   * @brief Read edl files (SnapStream BeyondTV format)
+   * @param path the path of the media item being played
+   * @return true if the file is correctly parsed and edits added, false otherwise
+  */
+  bool ReadBeyondTV(const std::string& path);
 
   /*!
    * @brief Read edl edits provided by a PVR backend for a given fileitem
