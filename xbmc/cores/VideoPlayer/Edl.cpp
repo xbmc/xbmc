@@ -921,11 +921,13 @@ bool CEdl::GetNextSceneMarker(bool forward, int clock, int* sceneMarker)
   return found;
 }
 
-std::string CEdl::MillisecondsToTimeString(const int iMilliseconds)
+std::string CEdl::MillisecondsToTimeString(int msec)
 {
-  std::string strTimeString = StringUtils::SecondsToTimeString((long)(iMilliseconds / 1000), TIME_FORMAT_HH_MM_SS); // milliseconds to seconds
-  strTimeString += StringUtils::Format(".{:03}", iMilliseconds % 1000);
-  return strTimeString;
+  // milliseconds to seconds
+  std::string timeString =
+      StringUtils::SecondsToTimeString(static_cast<long>(msec / 1000), TIME_FORMAT_HH_MM_SS);
+  timeString += StringUtils::Format(".{:03}", msec % 1000);
+  return timeString;
 }
 
 void CEdl::MergeShortCommBreaks()

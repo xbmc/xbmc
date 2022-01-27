@@ -168,10 +168,11 @@ public:
   */
   bool GetNextSceneMarker(bool forward, int clock, int* sceneMarker);
 
-  // FIXME: remove const modifier as it makes no sense as it means nothing
-  // for the reader of the interface, but limits the implementation
-  // to not modify the parameter on stack
-  static std::string MillisecondsToTimeString(const int iMilliseconds);
+  /*!
+   * @brief Provided the time in msec, returns a timestring (\sa TIME_FORMAT_HH_MM_SS)
+   * return the timestring correspondent to the provided time in msec
+  */
+  static std::string MillisecondsToTimeString(int msec);
 
 private:
   // total cut time (edl cuts) in ms
