@@ -198,10 +198,13 @@ private:
    * @return true if the file is correctly parsed and edits added, false otherwise
   */
   bool ReadComskip(const std::string& path, float fps);
-  // FIXME: remove const modifier for strMovie as it makes no sense as it means nothing
-  // for the reader of the interface, but limits the implementation
-  // to not modify the parameter on stack
-  bool ReadVideoReDo(const std::string& strMovie);
+
+  /*!
+   * @brief Read edl files (VideoReDo format)
+   * @param path the path of the media item being played
+   * @return true if the file is correctly parsed and edits added, false otherwise
+  */
+  bool ReadVideoReDo(const std::string& path);
 
   /*!
    * @brief Read edl files (SnapStream BeyondTV format)

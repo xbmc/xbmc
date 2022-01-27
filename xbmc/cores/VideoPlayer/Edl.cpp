@@ -379,100 +379,96 @@ bool CEdl::ReadComskip(const std::string& path, float fps)
   }
 }
 
-bool CEdl::ReadVideoReDo(const std::string& strMovie)
+bool CEdl::ReadVideoReDo(const std::string& path)
 {
-  /*
-   * VideoReDo file is strange. Tags are XML like, but it isn't an XML file.
-   *
-   * http://www.videoredo.com/
-   */
+  // VideoReDo file is strange. Tags are XML like, but it isn't an XML file.
+  // http://www.videoredo.com/
 
   Clear();
-  std::string videoReDoFilename(URIUtils::ReplaceExtension(strMovie, ".Vprj"));
+  std::string videoReDoFilename{URIUtils::ReplaceExtension(path, ".Vprj")};
   if (!CFile::Exists(videoReDoFilename))
     return false;
 
   CFile videoReDoFile;
   if (!videoReDoFile.Open(videoReDoFilename))
   {
-    CLog::Log(LOGERROR, "{} - Could not open VideoReDo file: {}", __FUNCTION__,
-              CURL::GetRedacted(videoReDoFilename));
+    CLog::LogF(LOGERROR, "Could not open VideoReDo file: {}", CURL::GetRedacted(videoReDoFilename));
     return false;
   }
 
-  char szBuffer[1024];
-  if (videoReDoFile.ReadString(szBuffer, 1023) &&
-      strncmp(szBuffer, VideoredoHeader, strlen(VideoredoHeader)) != 0)
+  std::array<char, 1024> buffer{};
+  if (videoReDoFile.ReadString(buffer.data(), 1023) &&
+      strncmp(buffer.data(), VideoredoHeader, strlen(VideoredoHeader)) != 0)
   {
-    CLog::Log(LOGERROR,
-              "{} - Invalid VideoReDo file: {}. Error reading line 1 - expected {}. Only version 2 "
-              "files are supported.",
-              __FUNCTION__, CURL::GetRedacted(videoReDoFilename), VideoredoHeader);
+    CLog::LogF(LOGERROR,
+               "Invalid VideoReDo file: {}. Error reading line 1 - expected {}. Only version 2 "
+               "files are supported.",
+               CURL::GetRedacted(videoReDoFilename), VideoredoHeader);
     videoReDoFile.Close();
     return false;
   }
 
-  int iLine = 1;
-  bool bValid = true;
-  while (bValid && videoReDoFile.ReadString(szBuffer, 1023))
+  int line{1};
+  bool valid{true};
+  while (valid && videoReDoFile.ReadString(buffer.data(), 1023))
   {
-    iLine++;
-    if (strncmp(szBuffer, VideoredoTagCut, strlen(VideoredoTagCut)) == 0) // Found the <Cut> tag
+    line++;
+    if (strncmp(buffer.data(), VideoredoTagCut, strlen(VideoredoTagCut)) == 0)
     {
-      /*
-       * double is used as 32 bit float would overflow.
-       */
-      double dStart, dEnd;
-      if (sscanf(szBuffer + strlen(VideoredoTagCut), "%lf:%lf", &dStart, &dEnd) == 2)
+      // Found the <Cut> tag
+      // double is used as 32 bit float would overflow.
+      double start{0};
+      double end{0};
+      if (sscanf(buffer.data() + strlen(VideoredoTagCut), "%lf:%lf", &start, &end) == 2)
       {
-        /*
-         *  Times need adjusting by 1/10,000 to get ms.
-         */
+        // Times need adjusting by 1/10,000 to get ms.
         Edit edit;
-        edit.start = static_cast<int64_t>(dStart / 10000);
-        edit.end = static_cast<int64_t>(dEnd / 10000);
+        edit.start = static_cast<int64_t>(start / 10000);
+        edit.end = static_cast<int64_t>(end / 10000);
         edit.action = Action::CUT;
-        bValid = AddEdit(edit);
+        valid = AddEdit(edit);
       }
       else
-        bValid = false;
+        valid = false;
     }
-    else if (strncmp(szBuffer, VideoredoTagScene, strlen(VideoredoTagScene)) ==
-             0) // Found the <SceneMarker > tag
+    else if (strncmp(buffer.data(), VideoredoTagScene, strlen(VideoredoTagScene)) == 0)
     {
-      int iScene;
-      double dSceneMarker;
-      if (sscanf(szBuffer + strlen(VideoredoTagScene), " %i>%lf", &iScene, &dSceneMarker) == 2)
-        bValid = AddSceneMarker((int64_t)(dSceneMarker / 10000)); // Times need adjusting by 1/10,000 to get ms.
+      // Found the <SceneMarker > tag
+      int scene{0};
+      double sceneMarker{0};
+      if (sscanf(buffer.data() + strlen(VideoredoTagScene), " %i>%lf", &scene, &sceneMarker) == 2)
+      {
+        // Times need adjusting by 1/10,000 to get ms.
+        valid = AddSceneMarker(static_cast<int64_t>(sceneMarker / 10000));
+      }
       else
-        bValid = false;
+      {
+        valid = false;
+      }
     }
-    /*
-     * Ignore any other tags.
-     */
+    // Ignore any other tags.
   }
   videoReDoFile.Close();
 
-  if (!bValid)
+  if (!valid)
   {
-    CLog::Log(LOGERROR,
-              "{} - Invalid VideoReDo file: {}. Error in line {}. Clearing any valid edits or "
-              "scenes found.",
-              __FUNCTION__, CURL::GetRedacted(videoReDoFilename), iLine);
+    CLog::LogF(LOGERROR,
+               "Invalid VideoReDo file: {}. Error in line {}. Clearing any valid edits or "
+               "scenes found.",
+               CURL::GetRedacted(videoReDoFilename), line);
     Clear();
     return false;
   }
   else if (HasEdits() || HasSceneMarker())
   {
-    CLog::Log(LOGDEBUG, "{0} - Read {1} edits and {2} scene markers in VideoReDo file: {3}",
-              __FUNCTION__, m_vecEdits.size(), m_vecSceneMarkers.size(),
-              CURL::GetRedacted(videoReDoFilename));
+    CLog::Log(LOGDEBUG, "Read {} edits and {} scene markers in VideoReDo file: {}",
+              m_vecEdits.size(), m_vecSceneMarkers.size(), CURL::GetRedacted(videoReDoFilename));
     return true;
   }
   else
   {
-    CLog::Log(LOGDEBUG, "{} - No edits or scene markers found in VideoReDo file: {}", __FUNCTION__,
-              CURL::GetRedacted(videoReDoFilename));
+    CLog::LogF(LOGDEBUG, "No edits or scene markers found in VideoReDo file: {}",
+               CURL::GetRedacted(videoReDoFilename));
     return false;
   }
 }
