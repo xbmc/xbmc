@@ -432,6 +432,8 @@ void DX::DeviceResources::CreateDeviceResources()
              KODI::PLATFORM::WINDOWS::FromW(aDesc.Description),
              GetFeatureLevelDescription(m_d3dFeatureLevel));
 
+  CheckDXVA2SharedDecoderSurfaces();
+
   m_bDeviceCreated = true;
 }
 
@@ -1094,6 +1096,45 @@ void DX::DeviceResources::CheckNV12SharedTexturesSupport()
   m_NV12SharedTexturesSupport = SUCCEEDED(hr) && !!op4.ExtendedNV12SharedTextureSupported;
   CLog::LogF(LOGINFO, "extended NV12 shared textures is{}supported",
              m_NV12SharedTexturesSupport ? " " : " NOT ");
+}
+
+void DX::DeviceResources::CheckDXVA2SharedDecoderSurfaces()
+{
+  if (CSysInfo::GetWindowsDeviceFamily() != CSysInfo::Desktop)
+    return;
+
+  VideoDriverInfo driver = GetVideoDriverVersion();
+
+  if (!m_NV12SharedTexturesSupport)
+    return;
+
+  DXGI_ADAPTER_DESC ad = {};
+  GetAdapterDesc(&ad);
+
+  m_DXVA2SharedDecoderSurfaces =
+      ad.VendorId == PCIV_Intel ||
+      (ad.VendorId == PCIV_NVIDIA && driver.valid && driver.majorVersion >= 465) ||
+      (ad.VendorId == PCIV_AMD && driver.valid && driver.majorVersion >= 30);
+
+  CLog::LogF(LOGINFO, "DXVA2 shared decoder surfaces is{}supported",
+             m_DXVA2SharedDecoderSurfaces ? " " : " NOT ");
+}
+
+VideoDriverInfo DX::DeviceResources::GetVideoDriverVersion()
+{
+  DXGI_ADAPTER_DESC ad = {};
+  GetAdapterDesc(&ad);
+
+  VideoDriverInfo driver = CWIN32Util::GetVideoDriverInfo(ad.VendorId, ad.Description);
+
+  if (ad.VendorId == PCIV_NVIDIA)
+    CLog::LogF(LOGINFO, "video driver version is {} {}.{} ({})", GetGFXProviderName(ad.VendorId),
+               driver.majorVersion, driver.minorVersion, driver.version);
+  else
+    CLog::LogF(LOGINFO, "video driver version is {} {}", GetGFXProviderName(ad.VendorId),
+               driver.version);
+
+  return driver;
 }
 
 #if defined(TARGET_WINDOWS_DESKTOP)
