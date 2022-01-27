@@ -40,8 +40,8 @@ CEdl::CEdl()
 
 void CEdl::Clear()
 {
-  m_vecEdits.clear();
-  m_vecSceneMarkers.clear();
+  m_edits.clear();
+  m_sceneMarkers.clear();
   m_totalCutTime = 0;
   m_lastEditTime = -1;
 }
@@ -270,8 +270,8 @@ bool CEdl::ReadEdl(const std::string& path, float fps)
 
   if (HasEdits() || HasSceneMarker())
   {
-    CLog::LogF(LOGDEBUG, "Read {} edits and {} scene markers in EDL file: {}", m_vecEdits.size(),
-               m_vecSceneMarkers.size(), CURL::GetRedacted(edlFilename));
+    CLog::LogF(LOGDEBUG, "Read {} edits and {} scene markers in EDL file: {}", m_edits.size(),
+               m_sceneMarkers.size(), CURL::GetRedacted(edlFilename));
     return true;
   }
   else
@@ -367,7 +367,7 @@ bool CEdl::ReadComskip(const std::string& path, float fps)
   }
   else if (HasEdits())
   {
-    CLog::LogF(LOGDEBUG, "Read {} commercial breaks from Comskip file: {}", m_vecEdits.size(),
+    CLog::LogF(LOGDEBUG, "Read {} commercial breaks from Comskip file: {}", m_edits.size(),
                CURL::GetRedacted(comskipFilename));
     return true;
   }
@@ -461,8 +461,8 @@ bool CEdl::ReadVideoReDo(const std::string& path)
   }
   else if (HasEdits() || HasSceneMarker())
   {
-    CLog::Log(LOGDEBUG, "Read {} edits and {} scene markers in VideoReDo file: {}",
-              m_vecEdits.size(), m_vecSceneMarkers.size(), CURL::GetRedacted(videoReDoFilename));
+    CLog::Log(LOGDEBUG, "Read {} edits and {} scene markers in VideoReDo file: {}", m_edits.size(),
+              m_sceneMarkers.size(), CURL::GetRedacted(videoReDoFilename));
     return true;
   }
   else
@@ -540,7 +540,7 @@ bool CEdl::ReadBeyondTV(const std::string& path)
   }
   else if (HasEdits())
   {
-    CLog::LogF(LOGDEBUG, "Read {} commercial breaks from Beyond TV file: {}", m_vecEdits.size(),
+    CLog::LogF(LOGDEBUG, "Read {} commercial breaks from Beyond TV file: {}", m_edits.size(),
                CURL::GetRedacted(beyondTVFilename));
     return true;
   }
@@ -630,7 +630,7 @@ bool CEdl::AddEdit(const Edit& newEdit)
     return false;
   }
 
-  for (const EDL::Edit& editItem : m_vecEdits)
+  for (const EDL::Edit& editItem : m_edits)
   {
     if (edit.start < editItem.start && edit.end > editItem.end)
     {
@@ -666,24 +666,24 @@ bool CEdl::AddEdit(const Edit& newEdit)
   }
 
   // Insert edit in the list in the right position (ALL algorithms assume edits are in ascending order)
-  if (m_vecEdits.empty() || edit.start > m_vecEdits.back().start)
+  if (m_edits.empty() || edit.start > m_edits.back().start)
   {
     CLog::LogF(LOGDEBUG, "Pushing new edit to back [{} - {}], {}",
                MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
                static_cast<int>(edit.action));
-    m_vecEdits.emplace_back(edit);
+    m_edits.emplace_back(edit);
   }
   else
   {
     std::vector<Edit>::iterator currentEdit;
-    for (currentEdit = m_vecEdits.begin(); currentEdit != m_vecEdits.end(); ++currentEdit)
+    for (currentEdit = m_edits.begin(); currentEdit != m_edits.end(); ++currentEdit)
     {
       if (edit.start < currentEdit->start)
       {
         CLog::LogF(LOGDEBUG, "Inserting new edit [{} - {}], {}",
                    MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
                    static_cast<int>(edit.action));
-        m_vecEdits.insert(currentEdit, edit);
+        m_edits.insert(currentEdit, edit);
         break;
       }
     }
@@ -703,14 +703,14 @@ bool CEdl::AddSceneMarker(int sceneMarker)
     return false;
 
   CLog::LogF(LOGDEBUG, "Inserting new scene marker: {}", MillisecondsToTimeString(sceneMarker));
-  m_vecSceneMarkers.push_back(sceneMarker); // Unsorted
+  m_sceneMarkers.push_back(sceneMarker); // Unsorted
 
   return true;
 }
 
 bool CEdl::HasEdits() const
 {
-  return !m_vecEdits.empty();
+  return !m_edits.empty();
 }
 
 bool CEdl::HasCuts() const
@@ -735,7 +735,7 @@ const std::vector<EDL::Edit> CEdl::GetEditList() const
   // the start and end times to present on the GUI by removing
   // the already surpassed cut time. The copy here is intentional
   // \sa Player_Editlist
-  for (EDL::Edit edit : m_vecEdits)
+  for (EDL::Edit edit : m_edits)
   {
     if (edit.action == Action::CUT)
     {
@@ -756,7 +756,7 @@ const std::vector<int64_t> CEdl::GetCutMarkers() const
 {
   int surpassedSumOfCutDurations{0};
   std::vector<int64_t> cutList;
-  for (const EDL::Edit& edit : m_vecEdits)
+  for (const EDL::Edit& edit : m_edits)
   {
     if (edit.action != Action::CUT)
       continue;
@@ -770,7 +770,7 @@ const std::vector<int64_t> CEdl::GetCutMarkers() const
 const std::vector<int64_t> CEdl::GetSceneMarkers() const
 {
   std::vector<int64_t> sceneMarkers;
-  for (const int& scene : m_vecSceneMarkers)
+  for (const int& scene : m_sceneMarkers)
   {
     sceneMarkers.emplace_back(GetTimeWithoutCuts(scene));
   }
@@ -783,7 +783,7 @@ int CEdl::GetTimeWithoutCuts(int seek) const
     return seek;
 
   int cutTime = 0;
-  for (const EDL::Edit& edit : m_vecEdits)
+  for (const EDL::Edit& edit : m_edits)
   {
     if (edit.action != Action::CUT)
       continue;
@@ -808,7 +808,7 @@ double CEdl::GetTimeAfterRestoringCuts(double seek) const
   if (!HasCuts())
     return seek;
 
-  for (const EDL::Edit& edit : m_vecEdits)
+  for (const EDL::Edit& edit : m_edits)
   {
     double cutDuration = static_cast<double>(edit.end - edit.start);
     // add 1 ms to jump over the start boundary
@@ -822,12 +822,12 @@ double CEdl::GetTimeAfterRestoringCuts(double seek) const
 
 bool CEdl::HasSceneMarker() const
 {
-  return !m_vecSceneMarkers.empty();
+  return !m_sceneMarkers.empty();
 }
 
 bool CEdl::InEdit(int seekTime, Edit* edit)
 {
-  for (const EDL::Edit& editItem : m_vecEdits)
+  for (const EDL::Edit& editItem : m_edits)
   {
     // Early exit if not even up to the edit start time.
     if (seekTime < editItem.start)
@@ -882,7 +882,7 @@ bool CEdl::GetNextSceneMarker(bool forward, int clock, int* sceneMarker)
   // Find closest scene forwards
   if (forward)
   {
-    for (const int& scene : m_vecSceneMarkers)
+    for (const int& scene : m_sceneMarkers)
     {
       if ((scene > seekTime) && ((scene - seekTime) < diff))
       {
@@ -895,7 +895,7 @@ bool CEdl::GetNextSceneMarker(bool forward, int clock, int* sceneMarker)
   // Find closest scene backwards
   else
   {
-    for (const int& scene : m_vecSceneMarkers)
+    for (const int& scene : m_sceneMarkers)
     {
       if ((scene < seekTime) && ((seekTime - scene) < diff))
       {
@@ -929,43 +929,42 @@ void CEdl::MergeShortCommBreaks()
   // mythcommflag routinely seems to put a 20-40ms commercial break at the start of the recording.
   // Remove any spurious short commercial breaks at the very start so they don't interfere with
   // the algorithms below.
-  if (!m_vecEdits.empty() && m_vecEdits.front().action == Action::COMM_BREAK &&
-      (m_vecEdits.front().end - m_vecEdits.front().start) < 5 * 1000) // 5 seconds
+  if (!m_edits.empty() && m_edits.front().action == Action::COMM_BREAK &&
+      (m_edits.front().end - m_edits.front().start) < 5 * 1000) // 5 seconds
   {
     CLog::LogF(LOGDEBUG, "Removing short commercial break at start [{} - {}]. <5 seconds",
-               MillisecondsToTimeString(m_vecEdits[0].start),
-               MillisecondsToTimeString(m_vecEdits[0].end));
-    m_vecEdits.erase(m_vecEdits.begin());
+               MillisecondsToTimeString(m_edits[0].start),
+               MillisecondsToTimeString(m_edits[0].end));
+    m_edits.erase(m_edits.begin());
   }
 
   const std::shared_ptr<CAdvancedSettings> advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
   if (advancedSettings->m_bEdlMergeShortCommBreaks)
   {
-    for (size_t i = 0; i < m_vecEdits.size() - 1; ++i)
+    for (size_t i = 0; i < m_edits.size() - 1; ++i)
     {
-      if ((m_vecEdits[i].action == Action::COMM_BREAK &&
-           m_vecEdits[i + 1].action == Action::COMM_BREAK) &&
-          (m_vecEdits[i + 1].end - m_vecEdits[i].start <
+      if ((m_edits[i].action == Action::COMM_BREAK &&
+           m_edits[i + 1].action == Action::COMM_BREAK) &&
+          (m_edits[i + 1].end - m_edits[i].start <
            advancedSettings->m_iEdlMaxCommBreakLength * 1000) // s to ms
-          && (m_vecEdits[i + 1].start - m_vecEdits[i].end <
+          && (m_edits[i + 1].start - m_edits[i].end <
               advancedSettings->m_iEdlMaxCommBreakGap * 1000)) // s to ms
       {
         Edit commBreak;
         commBreak.action = Action::COMM_BREAK;
-        commBreak.start = m_vecEdits[i].start;
-        commBreak.end = m_vecEdits[i + 1].end;
+        commBreak.start = m_edits[i].start;
+        commBreak.end = m_edits[i + 1].end;
 
-        CLog::LogF(LOGDEBUG, "Consolidating commercial break [{} - {}] and [{} - {}] to: [{} - {}]",
-                   MillisecondsToTimeString(m_vecEdits[i].start),
-                   MillisecondsToTimeString(m_vecEdits[i].end),
-                   MillisecondsToTimeString(m_vecEdits[i + 1].start),
-                   MillisecondsToTimeString(m_vecEdits[i + 1].end),
-                   MillisecondsToTimeString(commBreak.start),
-                   MillisecondsToTimeString(commBreak.end));
+        CLog::LogF(
+            LOGDEBUG, "Consolidating commercial break [{} - {}] and [{} - {}] to: [{} - {}]",
+            MillisecondsToTimeString(m_edits[i].start), MillisecondsToTimeString(m_edits[i].end),
+            MillisecondsToTimeString(m_edits[i + 1].start),
+            MillisecondsToTimeString(m_edits[i + 1].end), MillisecondsToTimeString(commBreak.start),
+            MillisecondsToTimeString(commBreak.end));
 
         // Erase old edits and insert the new merged one.
-        m_vecEdits.erase(m_vecEdits.begin() + i, m_vecEdits.begin() + i + 2);
-        m_vecEdits.insert(m_vecEdits.begin() + i, commBreak);
+        m_edits.erase(m_edits.begin() + i, m_edits.begin() + i + 2);
+        m_edits.insert(m_edits.begin() + i, commBreak);
 
         // Reduce i to see if the next break is also within the max commercial break length.
         i--;
@@ -976,28 +975,26 @@ void CEdl::MergeShortCommBreaks()
     // before the TV show starts, expand the first commercial break to the very beginning if it
     // starts within the maximum start gap. This is done outside of the consolidation to prevent
     // the maximum commercial break length being triggered.
-    if (!m_vecEdits.empty() && m_vecEdits.front().action == Action::COMM_BREAK &&
-        m_vecEdits.front().start < advancedSettings->m_iEdlMaxStartGap * 1000)
+    if (!m_edits.empty() && m_edits.front().action == Action::COMM_BREAK &&
+        m_edits.front().start < advancedSettings->m_iEdlMaxStartGap * 1000)
     {
       CLog::Log(LOGDEBUG, "Expanding first commercial break back to start [{} - {}].",
-                MillisecondsToTimeString(m_vecEdits.front().start),
-                MillisecondsToTimeString(m_vecEdits.front().end));
-      m_vecEdits.front().start = 0;
+                MillisecondsToTimeString(m_edits.front().start),
+                MillisecondsToTimeString(m_edits.front().end));
+      m_edits.front().start = 0;
     }
 
     // Remove any commercial breaks shorter than the minimum (unless at the start)
-    for (size_t i = 0; i < m_vecEdits.size(); ++i)
+    for (size_t i = 0; i < m_edits.size(); ++i)
     {
-      if (m_vecEdits[i].action == Action::COMM_BREAK && m_vecEdits[i].start > 0 &&
-          (m_vecEdits[i].end - m_vecEdits[i].start) <
-              advancedSettings->m_iEdlMinCommBreakLength * 1000)
+      if (m_edits[i].action == Action::COMM_BREAK && m_edits[i].start > 0 &&
+          (m_edits[i].end - m_edits[i].start) < advancedSettings->m_iEdlMinCommBreakLength * 1000)
       {
-        CLog::LogF(LOGDEBUG,
-                   "Removing short commercial break [{} - {}]. Minimum length: {} seconds",
-                   MillisecondsToTimeString(m_vecEdits[i].start),
-                   MillisecondsToTimeString(m_vecEdits[i].end),
-                   advancedSettings->m_iEdlMinCommBreakLength);
-        m_vecEdits.erase(m_vecEdits.begin() + i);
+        CLog::LogF(
+            LOGDEBUG, "Removing short commercial break [{} - {}]. Minimum length: {} seconds",
+            MillisecondsToTimeString(m_edits[i].start), MillisecondsToTimeString(m_edits[i].end),
+            advancedSettings->m_iEdlMinCommBreakLength);
+        m_edits.erase(m_edits.begin() + i);
 
         i--;
       }
@@ -1007,7 +1004,7 @@ void CEdl::MergeShortCommBreaks()
 
 void CEdl::AddSceneMarkersAtStartAndEndOfEdits()
 {
-  for (const EDL::Edit& edit : m_vecEdits)
+  for (const EDL::Edit& edit : m_edits)
   {
     // Add scene markers at the start and end of commercial breaks
     if (edit.action == Action::COMM_BREAK)

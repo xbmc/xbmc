@@ -89,7 +89,7 @@ public:
    * @return The EDL edits or an empty vector if no edits exist. Edits are
    * provided with respect to the original media item timeline.
   */
-  const std::vector<EDL::Edit>& GetRawEditList() const { return m_vecEdits; }
+  const std::vector<EDL::Edit>& GetRawEditList() const { return m_edits; }
 
   /*!
    * @brief Get the EDL edit list.
@@ -178,16 +178,22 @@ public:
   static std::string MillisecondsToTimeString(int msec);
 
 private:
-  // total cut time (edl cuts) in ms
+  /*!
+   * @brief total cut time (EDL cuts) in ms
+  */
   int m_totalCutTime;
-  std::vector<EDL::Edit> m_vecEdits;
-  std::vector<int> m_vecSceneMarkers;
-
+  /*!
+   * @brief the list of EDL edits
+  */
+  std::vector<EDL::Edit> m_edits;
+  /*!
+   * @brief the list of EDL scene markers
+  */
+  std::vector<int> m_sceneMarkers;
   /*!
    * @brief Last processed EDL edit time (ms)
   */
   int m_lastEditTime;
-
   /*!
    * @brief Last processed EDL edit action type
   */
