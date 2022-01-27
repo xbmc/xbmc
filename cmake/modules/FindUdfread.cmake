@@ -14,30 +14,20 @@ if(ENABLE_INTERNAL_UDFREAD)
   include(ExternalProject)
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  get_archive_name(libudfread)
+  set(MODULE_LC libudfread)
 
-  # allow user to override the download URL with a local tarball
-  # needed for offline build envs
-  if(UDFREAD_URL)
-    get_filename_component(UDFREAD_URL "${UDFREAD_URL}" ABSOLUTE)
-  else()
-    set(UDFREAD_URL http://mirrors.kodi.tv/build-deps/sources/${LIBUDFREAD_ARCHIVE})
-  endif()
-
-  if(VERBOSE)
-    message(STATUS "UDFREAD_URL: ${UDFREAD_URL}")
-  endif()
+  SETUP_BUILD_VARS()
 
   set(UDFREAD_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/libudfread.a)
   set(UDFREAD_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
-  set(UDFREAD_VERSION ${LIBUDFREAD_VER})
+  set(UDFREAD_VERSION ${${MODULE}_VER})
 
   externalproject_add(udfread
-                      URL ${UDFREAD_URL}
-                      URL_HASH ${LIBUDFREAD_HASH}
-                      DOWNLOAD_NAME ${LIBUDFREAD_ARCHIVE}
+                      URL ${${MODULE}_URL}
+                      URL_HASH ${${MODULE}_HASH}
+                      DOWNLOAD_NAME ${${MODULE}_ARCHIVE}
                       DOWNLOAD_DIR ${TARBALL_DIR}
-                      PREFIX ${CORE_BUILD_DIR}/libudfread
+                      PREFIX ${CORE_BUILD_DIR}/${MODULE_LC}
                       CONFIGURE_COMMAND autoreconf -vif &&
                                         ./configure
                                         --enable-static
