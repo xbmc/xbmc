@@ -30,6 +30,9 @@ public:
    */
   bool ReadEditDecisionLists(const CFileItem& fileItem, float fps);
 
+  /*!
+   * @brief Reset the CEdl member variables (clear all entries)
+  */
   void Clear();
 
   /*!
