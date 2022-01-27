@@ -13,31 +13,20 @@ if(ENABLE_INTERNAL_DAV1D)
   include(ExternalProject)
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  get_archive_name(dav1d)
-  set(DAV1D_VERSION ${DAV1D_VER})
+  set(MODULE_LC dav1d)
 
-  # allow user to override the download URL with a local tarball
-  # needed for offline build envs
-  if(DAV1D_URL)
-    get_filename_component(DAV1D_URL "${DAV1D_URL}" ABSOLUTE)
-  else()
-    set(DAV1D_URL http://mirrors.kodi.tv/build-deps/sources/${DAV1D_ARCHIVE})
-  endif()
-
-  if(VERBOSE)
-    message(STATUS "DAV1D_URL: ${DAV1D_URL}")
-  endif()
+  SETUP_BUILD_VARS()
 
   set(DAV1D_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/libdav1d.a)
   set(DAV1D_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
   set(DAV1D_VERSION ${DAV1D_VER})
 
-  externalproject_add(dav1d
-                      URL ${DAV1D_URL}
-                      URL_HASH ${DAV1D_HASH}
-                      DOWNLOAD_NAME ${DAV1D_ARCHIVE}
+  externalproject_add(${MODULE_LC}
+                      URL ${${MODULE}_URL}
+                      URL_HASH ${${MODULE}_HASH}
+                      DOWNLOAD_NAME ${${MODULE}_ARCHIVE}
                       DOWNLOAD_DIR ${TARBALL_DIR}
-                      PREFIX ${CORE_BUILD_DIR}/dav1d
+                      PREFIX ${CORE_BUILD_DIR}/${MODULE_LC}
                       CONFIGURE_COMMAND meson
                                         --buildtype=release
                                         --default-library=static
@@ -52,7 +41,7 @@ if(ENABLE_INTERNAL_DAV1D)
                       INSTALL_COMMAND ninja install
                       BUILD_BYPRODUCTS ${DAV1D_LIBRARY})
 
-  set_target_properties(dav1d PROPERTIES FOLDER "External Projects")
+  set_target_properties(${MODULE_LC} PROPERTIES FOLDER "External Projects")
 else()
   if(PKG_CONFIG_FOUND)
     pkg_check_modules(PC_DAV1D dav1d QUIET)
