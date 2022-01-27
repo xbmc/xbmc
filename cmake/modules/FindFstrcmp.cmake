@@ -15,25 +15,19 @@ if(ENABLE_INTERNAL_FSTRCMP)
   include(ExternalProject)
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  get_archive_name(libfstrcmp)
+  set(MODULE_LC libfstrcmp)
 
-  # allow user to override the download URL with a local tarball
-  # needed for offline build envs
-  if(FSTRCMP_URL)
-    get_filename_component(FSTRCMP_URL "${FSTRCMP_URL}" ABSOLUTE)
-  else()
-    set(FSTRCMP_URL http://mirrors.kodi.tv/build-deps/sources/${LIBFSTRCMP_ARCHIVE})
-  endif()
-  if(VERBOSE)
-    message(STATUS "FSTRCMPURL: ${FSTRCMP_URL}")
-  endif()
+  SETUP_BUILD_VARS()
 
   set(FSTRCMP_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/libfstrcmp.a)
   set(FSTRCMP_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
+  set(FSTRCMP_VER ${${MODULE}_VER})
+
   externalproject_add(fstrcmp
-                      URL ${FSTRCMP_URL}
-                      URL_HASH ${FSTRCMP_HASH}
+                      URL ${${MODULE}_URL}
+                      URL_HASH ${${MODULE}_HASH}
                       DOWNLOAD_DIR ${TARBALL_DIR}
+                      DOWNLOAD_NAME ${${MODULE}_ARCHIVE}
                       PREFIX ${CORE_BUILD_DIR}/fstrcmp
                       PATCH_COMMAND autoreconf -vif
                       CONFIGURE_COMMAND ./configure --prefix ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
