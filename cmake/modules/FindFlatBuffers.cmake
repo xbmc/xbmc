@@ -13,27 +13,20 @@ if(ENABLE_INTERNAL_FLATBUFFERS)
   include(ExternalProject)
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  get_archive_name(flatbuffers)
+  set(MODULE_LC flatbuffers)
 
-  # Allow user to override the download URL with a local tarball
-  # Needed for offline build envs
-  if(FLATBUFFERS_URL)
-    get_filename_component(FLATBUFFERS_URL "${FLATBUFFERS_URL}" ABSOLUTE)
-  else()
-    set(FLATBUFFERS_URL http://mirrors.kodi.tv/build-deps/sources/${FLATBUFFERS_ARCHIVE})
-  endif()
-  if(VERBOSE)
-    message(STATUS "FLATBUFFERS_URL: ${FLATBUFFERS_URL}")
-  endif()
+  SETUP_BUILD_VARS()
 
   set(FLATBUFFERS_FLATC_EXECUTABLE ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/bin/flatc CACHE INTERNAL "FlatBuffer compiler")
   set(FLATBUFFERS_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include CACHE INTERNAL "FlatBuffer include dir")
+  set(FLATBUFFERS_VER ${${MODULE}_VER})
 
-  externalproject_add(flatbuffers
-                      URL ${FLATBUFFERS_URL}
-                      URL_HASH ${FLATBUFFERS_HASH}
+  externalproject_add(${MODULE_LC}
+                      URL ${${MODULE}_URL}
+                      URL_HASH ${${MODULE}_HASH}
                       DOWNLOAD_DIR ${TARBALL_DIR}
-                      PREFIX ${CORE_BUILD_DIR}/flatbuffers
+                      DOWNLOAD_NAME ${${MODULE}_ARCHIVE}
+                      PREFIX ${CORE_BUILD_DIR}/${MODULE_LC}
                       CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
                                  -DCMAKE_BUILD_TYPE=Release
                                  -DFLATBUFFERS_CODE_COVERAGE=OFF
@@ -46,8 +39,8 @@ if(ENABLE_INTERNAL_FLATBUFFERS)
                                  -DFLATBUFFERS_BUILD_SHAREDLIB=OFF
                                  "${EXTRA_ARGS}"
                       BUILD_BYPRODUCTS ${FLATBUFFERS_FLATC_EXECUTABLE})
-  set_target_properties(flatbuffers PROPERTIES FOLDER "External Projects"
-                                    INTERFACE_INCLUDE_DIRECTORIES ${FLATBUFFERS_INCLUDE_DIR})
+  set_target_properties(${MODULE_LC} PROPERTIES FOLDER "External Projects"
+                                     INTERFACE_INCLUDE_DIRECTORIES ${FLATBUFFERS_INCLUDE_DIR})
 else()
   find_program(FLATBUFFERS_FLATC_EXECUTABLE NAMES flatc)
   find_path(FLATBUFFERS_INCLUDE_DIR NAMES flatbuffers/flatbuffers.h)
