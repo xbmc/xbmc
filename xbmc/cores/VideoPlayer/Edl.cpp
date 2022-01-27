@@ -926,18 +926,15 @@ std::string CEdl::MillisecondsToTimeString(int msec)
 
 void CEdl::MergeShortCommBreaks()
 {
-  /*
-   * mythcommflag routinely seems to put a 20-40ms commercial break at the start of the recording.
-   *
-   * Remove any spurious short commercial breaks at the very start so they don't interfere with
-   * the algorithms below.
-   */
-  if (!m_vecEdits.empty() && m_vecEdits[0].action == Action::COMM_BREAK &&
-      (m_vecEdits[0].end - m_vecEdits[0].start) < 5 * 1000) // 5 seconds
+  // mythcommflag routinely seems to put a 20-40ms commercial break at the start of the recording.
+  // Remove any spurious short commercial breaks at the very start so they don't interfere with
+  // the algorithms below.
+  if (!m_vecEdits.empty() && m_vecEdits.front().action == Action::COMM_BREAK &&
+      (m_vecEdits.front().end - m_vecEdits.front().start) < 5 * 1000) // 5 seconds
   {
-    CLog::Log(LOGDEBUG, "{} - Removing short commercial break at start [{} - {}]. <5 seconds",
-              __FUNCTION__, MillisecondsToTimeString(m_vecEdits[0].start),
-              MillisecondsToTimeString(m_vecEdits[0].end));
+    CLog::LogF(LOGDEBUG, "Removing short commercial break at start [{} - {}]. <5 seconds",
+               MillisecondsToTimeString(m_vecEdits[0].start),
+               MillisecondsToTimeString(m_vecEdits[0].end));
     m_vecEdits.erase(m_vecEdits.begin());
   }
 
@@ -958,53 +955,48 @@ void CEdl::MergeShortCommBreaks()
         commBreak.start = m_vecEdits[i].start;
         commBreak.end = m_vecEdits[i + 1].end;
 
-        CLog::Log(
-            LOGDEBUG, "{} - Consolidating commercial break [{} - {}] and [{} - {}] to: [{} - {}]",
-            __FUNCTION__, MillisecondsToTimeString(m_vecEdits[i].start),
-            MillisecondsToTimeString(m_vecEdits[i].end),
-            MillisecondsToTimeString(m_vecEdits[i + 1].start),
-            MillisecondsToTimeString(m_vecEdits[i + 1].end),
-            MillisecondsToTimeString(commBreak.start), MillisecondsToTimeString(commBreak.end));
+        CLog::LogF(LOGDEBUG, "Consolidating commercial break [{} - {}] and [{} - {}] to: [{} - {}]",
+                   MillisecondsToTimeString(m_vecEdits[i].start),
+                   MillisecondsToTimeString(m_vecEdits[i].end),
+                   MillisecondsToTimeString(m_vecEdits[i + 1].start),
+                   MillisecondsToTimeString(m_vecEdits[i + 1].end),
+                   MillisecondsToTimeString(commBreak.start),
+                   MillisecondsToTimeString(commBreak.end));
 
-        /*
-         * Erase old edits and insert the new merged one.
-         */
+        // Erase old edits and insert the new merged one.
         m_vecEdits.erase(m_vecEdits.begin() + i, m_vecEdits.begin() + i + 2);
         m_vecEdits.insert(m_vecEdits.begin() + i, commBreak);
 
-        i--; // Reduce i to see if the next break is also within the max commercial break length.
+        // Reduce i to see if the next break is also within the max commercial break length.
+        i--;
       }
     }
 
-    /*
-     * To cater for recordings that are started early and then have a commercial break identified
-     * before the TV show starts, expand the first commercial break to the very beginning if it
-     * starts within the maximum start gap. This is done outside of the consolidation to prevent
-     * the maximum commercial break length being triggered.
-     */
-    if (!m_vecEdits.empty() && m_vecEdits[0].action == Action::COMM_BREAK &&
-        m_vecEdits[0].start < advancedSettings->m_iEdlMaxStartGap * 1000)
+    // To cater for recordings that are started early and then have a commercial break identified
+    // before the TV show starts, expand the first commercial break to the very beginning if it
+    // starts within the maximum start gap. This is done outside of the consolidation to prevent
+    // the maximum commercial break length being triggered.
+    if (!m_vecEdits.empty() && m_vecEdits.front().action == Action::COMM_BREAK &&
+        m_vecEdits.front().start < advancedSettings->m_iEdlMaxStartGap * 1000)
     {
-      CLog::Log(LOGDEBUG, "{} - Expanding first commercial break back to start [{} - {}].",
-                __FUNCTION__, MillisecondsToTimeString(m_vecEdits[0].start),
-                MillisecondsToTimeString(m_vecEdits[0].end));
-      m_vecEdits[0].start = 0;
+      CLog::Log(LOGDEBUG, "Expanding first commercial break back to start [{} - {}].",
+                MillisecondsToTimeString(m_vecEdits.front().start),
+                MillisecondsToTimeString(m_vecEdits.front().end));
+      m_vecEdits.front().start = 0;
     }
 
-    /*
-     * Remove any commercial breaks shorter than the minimum (unless at the start)
-     */
+    // Remove any commercial breaks shorter than the minimum (unless at the start)
     for (size_t i = 0; i < m_vecEdits.size(); ++i)
     {
       if (m_vecEdits[i].action == Action::COMM_BREAK && m_vecEdits[i].start > 0 &&
           (m_vecEdits[i].end - m_vecEdits[i].start) <
               advancedSettings->m_iEdlMinCommBreakLength * 1000)
       {
-        CLog::Log(LOGDEBUG,
-                  "{} - Removing short commercial break [{} - {}]. Minimum length: {} seconds",
-                  __FUNCTION__, MillisecondsToTimeString(m_vecEdits[i].start),
-                  MillisecondsToTimeString(m_vecEdits[i].end),
-                  advancedSettings->m_iEdlMinCommBreakLength);
+        CLog::LogF(LOGDEBUG,
+                   "Removing short commercial break [{} - {}]. Minimum length: {} seconds",
+                   MillisecondsToTimeString(m_vecEdits[i].start),
+                   MillisecondsToTimeString(m_vecEdits[i].end),
+                   advancedSettings->m_iEdlMinCommBreakLength);
         m_vecEdits.erase(m_vecEdits.begin() + i);
 
         i--;

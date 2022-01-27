@@ -245,6 +245,9 @@ private:
   */
   bool AddSceneMarker(int sceneMarker);
 
+  /*!
+   * @brief Merge all short commbreaks, depending on EDL advanced settings
+  */
   void MergeShortCommBreaks();
 
   /*!
