@@ -22,6 +22,7 @@
 
 struct RESOLUTION_INFO;
 struct DEBUG_INFO_RENDER;
+struct VideoDriverInfo;
 
 namespace DX
 {
@@ -112,6 +113,7 @@ namespace DX
     void SetWindowPos(winrt::Windows::Foundation::Rect rect);
 #endif // TARGET_WINDOWS_STORE
     bool IsNV12SharedTexturesSupported() const { return m_NV12SharedTexturesSupport; }
+    bool IsDXVA2SharedDecoderSurfaces() const { return m_DXVA2SharedDecoderSurfaces; }
 
     // Gets debug info from swapchain
     DEBUG_INFO_RENDER GetDebugInfo() const;
@@ -136,6 +138,8 @@ namespace DX
     void HandleOutputChange(const std::function<bool(DXGI_OUTPUT_DESC)>& cmpFunc);
     bool CreateFactory();
     void CheckNV12SharedTexturesSupport();
+    VideoDriverInfo GetVideoDriverVersion();
+    void CheckDXVA2SharedDecoderSurfaces();
 
     HWND m_window{ nullptr };
 #if defined(TARGET_WINDOWS_STORE)
@@ -178,5 +182,6 @@ namespace DX
     bool m_IsHDROutput;
     bool m_IsTransferPQ;
     bool m_NV12SharedTexturesSupport{false};
+    bool m_DXVA2SharedDecoderSurfaces{false};
   };
 }

@@ -17,13 +17,6 @@
 
 #include <wrl/client.h>
 
-enum PCI_Vendors
-{
-  PCIV_ATI    = 0x1002,
-  PCIV_nVidia = 0x10DE,
-  PCIV_Intel  = 0x8086
-};
-
 class ID3DResource;
 class CGUIShaderDX;
 enum AVPixelFormat;

@@ -20,6 +20,14 @@
 #define BONJOUR_BROWSER_EVENT     ( WM_USER + 0x110 )
 #define TRAY_ICON_NOTIFY          ( WM_USER + 0x120 )
 
+struct VideoDriverInfo
+{
+  int majorVersion;
+  int minorVersion;
+  bool valid;
+  std::string version;
+};
+
 class CURL; // forward declaration
 
 class CWIN32Util
@@ -74,4 +82,6 @@ public:
   static HDR_STATUS GetWindowsHDRStatus();
 
   static void PlatformSyslog();
+
+  static VideoDriverInfo GetVideoDriverInfo(const UINT vendorId, const std::wstring& driverDesc);
 };
