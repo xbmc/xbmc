@@ -701,16 +701,15 @@ bool CEdl::AddEdit(const Edit& newEdit)
   return true;
 }
 
-bool CEdl::AddSceneMarker(const int iSceneMarker)
+bool CEdl::AddSceneMarker(int sceneMarker)
 {
   Edit edit;
 
-  if (InEdit(iSceneMarker, &edit) && edit.action == Action::CUT) // Only works for current cuts.
+  if (InEdit(sceneMarker, &edit) && edit.action == Action::CUT) // Only works for current cuts.
     return false;
 
-  CLog::Log(LOGDEBUG, "{} - Inserting new scene marker: {}", __FUNCTION__,
-            MillisecondsToTimeString(iSceneMarker));
-  m_vecSceneMarkers.push_back(iSceneMarker); // Unsorted
+  CLog::LogF(LOGDEBUG, "Inserting new scene marker: {}", MillisecondsToTimeString(sceneMarker));
+  m_vecSceneMarkers.push_back(sceneMarker); // Unsorted
 
   return true;
 }

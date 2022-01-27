@@ -233,10 +233,12 @@ private:
   */
   bool AddEdit(const EDL::Edit& newEdit);
 
-  // FIXME: remove const modifier for strMovie as it makes no sense as it means nothing
-  // for the reader of the interface, but limits the implementation
-  // to not modify the parameter on stack
-  bool AddSceneMarker(const int sceneMarker);
+  /*!
+   * @brief Adds a scene marker to the EDL list
+   * @param sceneMarker the scene marker
+   * @return true if the operation succeeds, false otherwise
+  */
+  bool AddSceneMarker(int sceneMarker);
 
   void MergeShortCommBreaks();
 
