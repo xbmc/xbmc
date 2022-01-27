@@ -15,6 +15,31 @@
 
 class CFileItem;
 
+/*!
+ * @brief Edit decision lists (EDL)
+ *
+ * An edit decision list (EDL) contains information about edits that should be made to
+ * the video during playback. Edit decision list information is contained in a separate
+ * file to the video that is read by Kodi just before the video is played.
+ * Examples of use include can be to skip commercials, cut out content inappropriate for children,
+ * or skip over the half hour acid trip in <i>2001: A Space Odyssey</i>.
+ * Kodi supports the following EDL edit types:
+ * - \link CUT_Anchor Cut \endlink
+ * - \link MUTE_Anchor Mute \endlink
+ * - \link SCENE_Anchor Scene Marker \endlink
+ * - \link COMM_BREAK_Anchor Commercial Break \endlink
+ *
+ * Kodi is able to read edit decision lists from multiple file formats. The EDL file for a video
+ * must be in the same folder as the video file and is looked for based on the file extensions for
+ *  the supported formats. For example if the video file is called The Matrix.avi Kodi will look
+ *  for the following files, in order, until a valid file is found. Note the the file name may
+ *  be case-sensitive based on the operating system being used.
+ * - The Matrix.Vprj (VideoReDo)
+ * - The Matrix.edl (MPlayer)
+ * - The Matrix.txt (Comskip)
+ * - The Matrix.avi.chapters.xml (SnapStream BeyondTV)
+ * EDL edits might also be provided by the PVR backend
+*/
 class CEdl
 {
 public:
