@@ -20,10 +20,16 @@ class CEdl
 public:
   CEdl();
 
-  // FIXME: remove const modifier for fFramesPerSecond as it makes no sense as it means nothing
-  // for the reader of the interface, but limits the implementation
-  // to not modify the parameter on stack
-  bool ReadEditDecisionLists(const CFileItem& fileItem, const float fFramesPerSecond);
+  /*!
+   * @brief Searches and reads all possible EDL sources for a given fileItem
+   * until a matching one is found. In case it finds a match, it parses the
+   * file using the appropriate parser (e.g. ReadVideoReDo, ReadComskip, etc).
+   * @param fileItem the fileItem to look for EDL files @note Kodi will use the dynpath
+   * @param fps the frames per second of the playing file
+   * @return true if a matching EDL file was found and parsed correctly, false otherwise
+   */
+  bool ReadEditDecisionLists(const CFileItem& fileItem, float fps);
+
   void Clear();
 
   /*!

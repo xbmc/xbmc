@@ -46,49 +46,44 @@ void CEdl::Clear()
   m_lastEditTime = -1;
 }
 
-bool CEdl::ReadEditDecisionLists(const CFileItem& fileItem, const float fFramesPerSecond)
+bool CEdl::ReadEditDecisionLists(const CFileItem& fileItem, float fps)
 {
-  bool bFound = false;
+  bool found = false;
 
-  /*
-   * Only check for edit decision lists if the movie is on the local hard drive, or accessed over a
-   * network share.
-   */
-  const std::string& strMovie = fileItem.GetDynPath();
-  if ((URIUtils::IsHD(strMovie) || URIUtils::IsOnLAN(strMovie)) &&
-      !URIUtils::IsInternetStream(strMovie))
+  // Only check for edit decision lists if the movie is on the local hard drive, or accessed over a
+  // network share.
+  const std::string& path = fileItem.GetDynPath();
+  if ((URIUtils::IsHD(path) || URIUtils::IsOnLAN(path)) && !URIUtils::IsInternetStream(path))
   {
-    CLog::Log(LOGDEBUG,
-              "{} - Checking for edit decision lists (EDL) on local drive or remote share for: {}",
-              __FUNCTION__, CURL::GetRedacted(strMovie));
+    CLog::LogF(LOGDEBUG,
+               "Checking for edit decision lists (EDL) on local drive or remote share for: {}",
+               CURL::GetRedacted(path));
 
-    /*
-     * Read any available file format until a valid EDL related file is found.
-     */
-    if (!bFound)
-      bFound = ReadVideoReDo(strMovie);
+    // Read any available file format until a valid EDL related file is found.
+    if (!found)
+      found = ReadVideoReDo(path);
 
-    if (!bFound)
-      bFound = ReadEdl(strMovie, fFramesPerSecond);
+    if (!found)
+      found = ReadEdl(path, fps);
 
-    if (!bFound)
-      bFound = ReadComskip(strMovie, fFramesPerSecond);
+    if (!found)
+      found = ReadComskip(path, fps);
 
-    if (!bFound)
-      bFound = ReadBeyondTV(strMovie);
+    if (!found)
+      found = ReadBeyondTV(path);
   }
   else
   {
-    bFound = ReadPvr(fileItem);
+    found = ReadPvr(fileItem);
   }
 
-  if (bFound)
+  if (found)
   {
     MergeShortCommBreaks();
     AddSceneMarkersAtStartAndEndOfEdits();
   }
 
-  return bFound;
+  return found;
 }
 
 bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
