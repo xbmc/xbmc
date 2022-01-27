@@ -47,6 +47,10 @@ public:
    */
   bool HasCuts() const;
 
+  /*!
+   * @brief Check if EDL has scene markers
+   * @return true if EDL has scene markers, false otherwise
+   */
   bool HasSceneMarker() const;
 
   /*!
