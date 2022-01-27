@@ -573,29 +573,29 @@ bool CEdl::ReadPvr(const CFileItem &fileItem)
       case Action::COMM_BREAK:
         if (AddEdit(edit))
         {
-          CLog::Log(LOGDEBUG, "{} - Added break [{} - {}] found in PVR item for: {}.", __FUNCTION__,
-                    MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
-                    CURL::GetRedacted(fileItem.GetDynPath()));
+          CLog::LogF(LOGDEBUG, "Added break [{} - {}] found in PVR item for: {}.",
+                     MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
+                     CURL::GetRedacted(fileItem.GetDynPath()));
         }
         else
         {
-          CLog::Log(LOGERROR,
-                    "{} - Invalid break [{} - {}] found in PVR item for: {}. Continuing anyway.",
-                    __FUNCTION__, MillisecondsToTimeString(edit.start),
-                    MillisecondsToTimeString(edit.end), CURL::GetRedacted(fileItem.GetDynPath()));
+          CLog::LogF(LOGERROR,
+                     "Invalid break [{} - {}] found in PVR item for: {}. Continuing anyway.",
+                     MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
+                     CURL::GetRedacted(fileItem.GetDynPath()));
         }
         break;
 
       case Action::SCENE:
         if (!AddSceneMarker(edit.end))
         {
-          CLog::Log(LOGWARNING, "{} - Error adding scene marker for PVR item", __FUNCTION__);
+          CLog::LogF(LOGWARNING, "Error adding scene marker for PVR item");
         }
         break;
 
       default:
-        CLog::Log(LOGINFO, "{} - Ignoring entry of unknown edit action: {}", __FUNCTION__,
-                  static_cast<int>(edit.action));
+        CLog::LogF(LOGINFO, "Ignoring entry of unknown edit action: {}",
+                   static_cast<int>(edit.action));
         break;
     }
   }

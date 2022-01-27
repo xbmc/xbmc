@@ -206,6 +206,12 @@ private:
   // for the reader of the interface, but limits the implementation
   // to not modify the parameter on stack
   bool ReadBeyondTV(const std::string& strMovie);
+
+  /*!
+   * @brief Read edl edits provided by a PVR backend for a given fileitem
+   * @param fileItem the item being played
+   * @return true if the file has EDL edits provided by PVR, false otherwise
+  */
   bool ReadPvr(const CFileItem& fileItem);
 
   /*!
