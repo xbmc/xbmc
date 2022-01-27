@@ -17,19 +17,9 @@ if(ENABLE_INTERNAL_SPDLOG)
   include(ExternalProject)
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  get_archive_name(libspdlog)
-  set(SPDLOG_VERSION ${SPDLOG_VER})
+  set(MODULE_LC libspdlog)
 
-  # allow user to override the download URL with a local tarball
-  # needed for offline build envs
-  if(SPDLOG_URL)
-      get_filename_component(SPDLOG_URL "${SPDLOG_URL}" ABSOLUTE)
-  else()
-      set(SPDLOG_URL http://mirrors.kodi.tv/build-deps/sources/${LIBSPDLOG_ARCHIVE})
-  endif()
-  if(VERBOSE)
-      message(STATUS "SPDLOG_URL: ${SPDLOG_URL}")
-  endif()
+  SETUP_BUILD_VARS()
 
   if(APPLE)
     set(EXTRA_ARGS "-DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}")
@@ -37,12 +27,14 @@ if(ENABLE_INTERNAL_SPDLOG)
 
   set(SPDLOG_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/libspdlog.a)
   set(SPDLOG_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
+  set(SPDLOG_VERSION ${${MODULE}_VER})
 
   externalproject_add(spdlog
-                      URL ${SPDLOG_URL}
-                      URL_HASH ${SPDLOG_HASH}
+                      URL ${${MODULE}_URL}
+                      URL_HASH ${${MODULE}_HASH}
                       DOWNLOAD_DIR ${TARBALL_DIR}
-                      PREFIX ${CORE_BUILD_DIR}/spdlog
+                      DOWNLOAD_NAME ${${MODULE}_ARCHIVE}
+                      PREFIX ${CORE_BUILD_DIR}/${MODULE_LC}
                       CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
                                  -DCMAKE_CXX_EXTENSIONS=${CMAKE_CXX_EXTENSIONS}
                                  -DCMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}
