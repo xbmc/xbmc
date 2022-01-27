@@ -18,6 +18,9 @@ class CFileItem;
 class CEdl
 {
 public:
+  /*!
+   * @brief EDL class constructor
+  */
   CEdl();
 
   /*!
