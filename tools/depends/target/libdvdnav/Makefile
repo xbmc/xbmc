@@ -32,13 +32,6 @@ endif
 RETRIEVE_TOOL := curl -Ls --create-dirs --retry 10 --retry-delay 3
 ARCHIVE_TOOL := tar --strip-components=1 -xf
 
-GITREV=$(shell git ls-remote $(BASE_URL) $(VERSION) | awk '{print $$1}')
-ifeq ($(GITREV),)
-  ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
-else
-  ARCHIVE=$(LIBNAME)-$(GITREV).tar.gz
-endif
-
 all: .installed-$(PLATFORM)
 
 download: $(TARBALLS_LOCATION)/$(ARCHIVE)
