@@ -39,6 +39,8 @@ function(get_archive_name module_name)
   set(${UPPER_MODULE_NAME}_VER ${${UPPER_MODULE_NAME}_VER} PARENT_SCOPE)
   if (${UPPER_MODULE_NAME}_BASE_URL)
     set(${UPPER_MODULE_NAME}_BASE_URL ${${UPPER_MODULE_NAME}_BASE_URL} PARENT_SCOPE)
+  else()
+    set(${UPPER_MODULE_NAME}_BASE_URL "http://mirrors.kodi.tv/build-deps/sources" PARENT_SCOPE)
   endif()
 
   if (${UPPER_MODULE_NAME}_HASH_SHA256)
@@ -48,3 +50,20 @@ function(get_archive_name module_name)
   endif()
 
 endfunction()
+
+# Macro to factor out the repetitive URL setup
+macro(SETUP_BUILD_VARS)
+  get_archive_name(${MODULE_LC})
+  string(TOUPPER ${MODULE_LC} MODULE)
+
+  # allow user to override the download URL with a local tarball
+  # needed for offline build envs
+  if(${MODULE}_URL)
+    get_filename_component(${MODULE}_URL "${${MODULE}_URL}" ABSOLUTE)
+  else()
+    set(${MODULE}_URL ${${MODULE}_BASE_URL}/${${MODULE}_ARCHIVE})
+  endif()
+  if(VERBOSE)
+    message(STATUS "${MODULE}_URL: ${${MODULE}_URL}")
+  endif()
+endmacro()
