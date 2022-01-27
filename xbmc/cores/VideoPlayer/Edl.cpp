@@ -22,10 +22,13 @@
 
 #include "PlatformDefs.h"
 
-#define COMSKIP_HEADER "FILE PROCESSING COMPLETE"
-#define VIDEOREDO_HEADER "<Version>2"
-#define VIDEOREDO_TAG_CUT "<Cut>"
-#define VIDEOREDO_TAG_SCENE "<SceneMarker "
+namespace
+{
+constexpr const char* ComskipHeader = "FILE PROCESSING COMPLETE";
+constexpr const char* VideoredoHeader = "<Version>2";
+constexpr const char* VideoredoTagCut = "<Cut>";
+constexpr const char* VideoredoTagScene = "<SceneMarker ";
+} // namespace
 
 using namespace EDL;
 using namespace XFILE;
@@ -299,12 +302,12 @@ bool CEdl::ReadComskip(const std::string& strMovie, const float fFramesPerSecond
   }
 
   char szBuffer[1024];
-  if (comskipFile.ReadString(szBuffer, 1023)
-  &&  strncmp(szBuffer, COMSKIP_HEADER, strlen(COMSKIP_HEADER)) != 0) // Line 1.
+  if (comskipFile.ReadString(szBuffer, 1023) &&
+      strncmp(szBuffer, ComskipHeader, strlen(ComskipHeader)) != 0) // Line 1.
   {
     CLog::Log(LOGERROR,
               "{} - Invalid Comskip file: {}. Error reading line 1 - expected '{}' at start.",
-              __FUNCTION__, CURL::GetRedacted(comskipFilename), COMSKIP_HEADER);
+              __FUNCTION__, CURL::GetRedacted(comskipFilename), ComskipHeader);
     comskipFile.Close();
     return false;
   }
@@ -399,13 +402,13 @@ bool CEdl::ReadVideoReDo(const std::string& strMovie)
   }
 
   char szBuffer[1024];
-  if (videoReDoFile.ReadString(szBuffer, 1023)
-  &&  strncmp(szBuffer, VIDEOREDO_HEADER, strlen(VIDEOREDO_HEADER)) != 0)
+  if (videoReDoFile.ReadString(szBuffer, 1023) &&
+      strncmp(szBuffer, VideoredoHeader, strlen(VideoredoHeader)) != 0)
   {
     CLog::Log(LOGERROR,
               "{} - Invalid VideoReDo file: {}. Error reading line 1 - expected {}. Only version 2 "
               "files are supported.",
-              __FUNCTION__, CURL::GetRedacted(videoReDoFilename), VIDEOREDO_HEADER);
+              __FUNCTION__, CURL::GetRedacted(videoReDoFilename), VideoredoHeader);
     videoReDoFile.Close();
     return false;
   }
@@ -415,13 +418,13 @@ bool CEdl::ReadVideoReDo(const std::string& strMovie)
   while (bValid && videoReDoFile.ReadString(szBuffer, 1023))
   {
     iLine++;
-    if (strncmp(szBuffer, VIDEOREDO_TAG_CUT, strlen(VIDEOREDO_TAG_CUT)) == 0) // Found the <Cut> tag
+    if (strncmp(szBuffer, VideoredoTagCut, strlen(VideoredoTagCut)) == 0) // Found the <Cut> tag
     {
       /*
        * double is used as 32 bit float would overflow.
        */
       double dStart, dEnd;
-      if (sscanf(szBuffer + strlen(VIDEOREDO_TAG_CUT), "%lf:%lf", &dStart, &dEnd) == 2)
+      if (sscanf(szBuffer + strlen(VideoredoTagCut), "%lf:%lf", &dStart, &dEnd) == 2)
       {
         /*
          *  Times need adjusting by 1/10,000 to get ms.
@@ -435,11 +438,12 @@ bool CEdl::ReadVideoReDo(const std::string& strMovie)
       else
         bValid = false;
     }
-    else if (strncmp(szBuffer, VIDEOREDO_TAG_SCENE, strlen(VIDEOREDO_TAG_SCENE)) == 0) // Found the <SceneMarker > tag
+    else if (strncmp(szBuffer, VideoredoTagScene, strlen(VideoredoTagScene)) ==
+             0) // Found the <SceneMarker > tag
     {
       int iScene;
       double dSceneMarker;
-      if (sscanf(szBuffer + strlen(VIDEOREDO_TAG_SCENE), " %i>%lf", &iScene, &dSceneMarker) == 2)
+      if (sscanf(szBuffer + strlen(VideoredoTagScene), " %i>%lf", &iScene, &dSceneMarker) == 2)
         bValid = AddSceneMarker((int64_t)(dSceneMarker / 10000)); // Times need adjusting by 1/10,000 to get ms.
       else
         bValid = false;
