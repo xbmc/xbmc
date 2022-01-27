@@ -601,95 +601,89 @@ bool CEdl::AddEdit(const Edit& newEdit)
   if (edit.action != Action::CUT && edit.action != Action::MUTE &&
       edit.action != Action::COMM_BREAK)
   {
-    CLog::Log(LOGERROR,
-              "{} - Not an Action::CUT, Action::MUTE, or Action::COMM_BREAK! [{} - {}], {}",
-              __FUNCTION__, MillisecondsToTimeString(edit.start),
-              MillisecondsToTimeString(edit.end), static_cast<int>(edit.action));
+    CLog::LogF(LOGERROR, "Not an Action::CUT, Action::MUTE, or Action::COMM_BREAK! [{} - {}], {}",
+               MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
+               static_cast<int>(edit.action));
     return false;
   }
 
   if (edit.start < 0)
   {
-    CLog::Log(LOGERROR, "{} - Before start! [{} - {}], {}", __FUNCTION__,
-              MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
-              static_cast<int>(edit.action));
+    CLog::LogF(LOGERROR, "Before start! [{} - {}], {}", MillisecondsToTimeString(edit.start),
+               MillisecondsToTimeString(edit.end), static_cast<int>(edit.action));
     return false;
   }
 
   if (edit.start >= edit.end)
   {
-    CLog::Log(LOGERROR, "{} - Times are around the wrong way or the same! [{} - {}], {}",
-              __FUNCTION__, MillisecondsToTimeString(edit.start),
-              MillisecondsToTimeString(edit.end), static_cast<int>(edit.action));
+    CLog::LogF(LOGERROR, "Times are around the wrong way or the same! [{} - {}], {}",
+               MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
+               static_cast<int>(edit.action));
     return false;
   }
 
   if (InEdit(edit.start) || InEdit(edit.end))
   {
-    CLog::Log(LOGERROR, "{} - Start or end is in an existing edit! [{} - {}], {}", __FUNCTION__,
-              MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
-              static_cast<int>(edit.action));
+    CLog::LogF(LOGERROR, "Start or end is in an existing edit! [{} - {}], {}",
+               MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
+               static_cast<int>(edit.action));
     return false;
   }
 
-  for (size_t i = 0; i < m_vecEdits.size(); ++i)
+  for (const EDL::Edit& editItem : m_vecEdits)
   {
-    if (edit.start < m_vecEdits[i].start && edit.end > m_vecEdits[i].end)
+    if (edit.start < editItem.start && edit.end > editItem.end)
     {
-      CLog::Log(LOGERROR, "{} - Edit surrounds an existing edit! [{} - {}], {}", __FUNCTION__,
-                MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
-                static_cast<int>(edit.action));
+      CLog::LogF(LOGERROR, "Edit surrounds an existing edit! [{} - {}], {}",
+                 MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
+                 static_cast<int>(edit.action));
       return false;
     }
   }
 
   if (edit.action == Action::COMM_BREAK)
   {
-    /*
-     * Detection isn't perfect near the edges of commercial breaks so automatically wait for a bit at
-     * the start (autowait) and automatically rewind by a bit (autowind) at the end of the commercial
-     * break.
-     */
+    // Detection isn't perfect near the edges of commercial breaks so automatically wait for a bit at
+    // the start (autowait) and automatically rewind by a bit (autowind) at the end of the commercial
+    // break.
     int autowait = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iEdlCommBreakAutowait * 1000; // seconds -> ms
     int autowind = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iEdlCommBreakAutowind * 1000; // seconds -> ms
 
     if (edit.start > 0) // Only autowait if not at the start.
     {
-      /* get the edit length so we don't start skipping after the end */
+      // Get the edit length so we don't start skipping after the end
       int editLength = edit.end - edit.start;
-      /* add the lesser of the edit length or the autowait to the start */
+      // Add the lesser of the edit length or the autowait to the start
       edit.start += autowait > editLength ? editLength : autowait;
     }
     if (edit.end > edit.start) // Only autowind if there is any edit time remaining.
     {
-      /* get the remaining edit length so we don't rewind to before the start */
+      // Get the remaining edit length so we don't rewind to before the start
       int editLength = edit.end - edit.start;
-      /* subtract the lesser of the edit length or the autowind from the end */
+      // Subtract the lesser of the edit length or the autowind from the end
       edit.end -= autowind > editLength ? editLength : autowind;
     }
   }
 
-  /*
-   * Insert edit in the list in the right position (ALL algorithms assume edits are in ascending order)
-   */
+  // Insert edit in the list in the right position (ALL algorithms assume edits are in ascending order)
   if (m_vecEdits.empty() || edit.start > m_vecEdits.back().start)
   {
-    CLog::Log(LOGDEBUG, "{} - Pushing new edit to back [{} - {}], {}", __FUNCTION__,
-              MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
-              static_cast<int>(edit.action));
+    CLog::LogF(LOGDEBUG, "Pushing new edit to back [{} - {}], {}",
+               MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
+               static_cast<int>(edit.action));
     m_vecEdits.emplace_back(edit);
   }
   else
   {
-    std::vector<Edit>::iterator pCurrentEdit;
-    for (pCurrentEdit = m_vecEdits.begin(); pCurrentEdit != m_vecEdits.end(); ++pCurrentEdit)
+    std::vector<Edit>::iterator currentEdit;
+    for (currentEdit = m_vecEdits.begin(); currentEdit != m_vecEdits.end(); ++currentEdit)
     {
-      if (edit.start < pCurrentEdit->start)
+      if (edit.start < currentEdit->start)
       {
-        CLog::Log(LOGDEBUG, "{} - Inserting new edit [{} - {}], {}", __FUNCTION__,
-                  MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
-                  static_cast<int>(edit.action));
-        m_vecEdits.insert(pCurrentEdit, edit);
+        CLog::LogF(LOGDEBUG, "Inserting new edit [{} - {}], {}",
+                   MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
+                   static_cast<int>(edit.action));
+        m_vecEdits.insert(currentEdit, edit);
         break;
       }
     }

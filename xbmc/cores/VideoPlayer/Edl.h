@@ -229,6 +229,7 @@ private:
 
   /*!
    * @brief Adds an edit to the list of EDL edits
+   * @note Edits are stored in ascending order
    * @param newEdit the edit to add
    * @return true if the operation succeeds, false otherwise
   */
