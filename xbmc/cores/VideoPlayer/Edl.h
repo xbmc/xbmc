@@ -190,10 +190,14 @@ private:
    * @return true if the file is correctly parsed and edits added, false otherwise
   */
   bool ReadEdl(const std::string& path, float fps);
-  // FIXME: remove const modifier for fFramesPerSecond as it makes no sense as it means nothing
-  // for the reader of the interface, but limits the implementation
-  // to not modify the parameter on stack
-  bool ReadComskip(const std::string& strMovie, const float fFramesPerSecond);
+
+  /*!
+   * @brief Read edl files (Comskip format)
+   * @param path the path of the media item being played
+   * @param fps frames per second of the item being played
+   * @return true if the file is correctly parsed and edits added, false otherwise
+  */
+  bool ReadComskip(const std::string& path, float fps);
   // FIXME: remove const modifier for strMovie as it makes no sense as it means nothing
   // for the reader of the interface, but limits the implementation
   // to not modify the parameter on stack

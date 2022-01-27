@@ -282,97 +282,99 @@ bool CEdl::ReadEdl(const std::string& path, float fps)
   }
 }
 
-bool CEdl::ReadComskip(const std::string& strMovie, const float fFramesPerSecond)
+bool CEdl::ReadComskip(const std::string& path, float fps)
 {
   Clear();
 
-  std::string comskipFilename(URIUtils::ReplaceExtension(strMovie, ".txt"));
+  std::string comskipFilename{URIUtils::ReplaceExtension(path, ".txt")};
   if (!CFile::Exists(comskipFilename))
     return false;
 
   CFile comskipFile;
   if (!comskipFile.Open(comskipFilename))
   {
-    CLog::Log(LOGERROR, "{} - Could not open Comskip file: {}", __FUNCTION__,
-              CURL::GetRedacted(comskipFilename));
+    CLog::LogF(LOGERROR, "Could not open Comskip file: {}", CURL::GetRedacted(comskipFilename));
     return false;
   }
 
-  char szBuffer[1024];
-  if (comskipFile.ReadString(szBuffer, 1023) &&
-      strncmp(szBuffer, ComskipHeader, strlen(ComskipHeader)) != 0) // Line 1.
+  std::array<char, 1024> buffer{};
+  if (comskipFile.ReadString(buffer.data(), 1023) &&
+      strncmp(buffer.data(), ComskipHeader, strlen(ComskipHeader)) != 0) // Line 1.
   {
-    CLog::Log(LOGERROR,
-              "{} - Invalid Comskip file: {}. Error reading line 1 - expected '{}' at start.",
-              __FUNCTION__, CURL::GetRedacted(comskipFilename), ComskipHeader);
+    CLog::LogF(LOGERROR, "Invalid Comskip file: {}. Error reading line 1 - expected '{}' at start.",
+               CURL::GetRedacted(comskipFilename), ComskipHeader);
     comskipFile.Close();
     return false;
   }
 
-  int iFrames;
-  float fFrameRate;
-  if (sscanf(szBuffer, "FILE PROCESSING COMPLETE %i FRAMES AT %f", &iFrames, &fFrameRate) != 2)
+  int frames{0};
+  float frameRate{0};
+  if (sscanf(buffer.data(), "FILE PROCESSING COMPLETE %i FRAMES AT %f", &frames, &frameRate) != 2)
   {
-    /*
-     * Not all generated Comskip files have the frame rate information.
-     */
-    if (fFramesPerSecond > 0.0f)
+    // Not all generated Comskip files have the frame rate information.
+    if (fps > 0.0f)
     {
-      fFrameRate = fFramesPerSecond;
-      CLog::Log(LOGWARNING,
-                "Edl::ReadComskip - Frame rate not in Comskip file. Using detected frames per "
-                "second: {:.3f}",
-                fFrameRate);
+      frameRate = fps;
+      CLog::LogF(LOGWARNING,
+                 "Frame rate not in Comskip file. Using detected frames per "
+                 "second: {:.3f}",
+                 frameRate);
     }
     else
     {
-      CLog::Log(LOGERROR, "Edl::ReadComskip - Frame rate is unavailable and also not in Comskip file (ts).");
+      CLog::LogF(LOGERROR, "Frame rate is unavailable and also not in Comskip file (ts).");
       return false;
     }
   }
   else
-    fFrameRate /= 100; // Reduce by factor of 100 to get fps.
-
-  (void)comskipFile.ReadString(szBuffer, 1023); // Line 2. Ignore "-------------"
-
-  bool bValid = true;
-  int iLine = 2;
-  while (bValid && comskipFile.ReadString(szBuffer, 1023)) // Line 3 and onwards.
   {
-    iLine++;
-    double dStartFrame, dEndFrame;
-    if (sscanf(szBuffer, "%lf %lf", &dStartFrame, &dEndFrame) == 2)
+    // Reduce by factor of 100 to get fps.
+    frameRate /= 100;
+  }
+
+  // Line 2. Ignore "-------------"
+  if (!comskipFile.ReadString(buffer.data(), 1023))
+    CLog::LogF(LOGERROR, "Failed to read comskip buffer");
+
+  bool valid{true};
+  int line{2};
+  while (valid && comskipFile.ReadString(buffer.data(), 1023)) // Line 3 and onwards.
+  {
+    line++;
+    double startFrame{0};
+    double endFrame{0};
+    if (sscanf(buffer.data(), "%lf %lf", &startFrame, &endFrame) == 2)
     {
       Edit edit;
-      edit.start = static_cast<int64_t>(dStartFrame / static_cast<double>(fFrameRate) * 1000.0);
-      edit.end = static_cast<int64_t>(dEndFrame / static_cast<double>(fFrameRate) * 1000.0);
+      edit.start = static_cast<int64_t>(startFrame / static_cast<double>(frameRate) * 1000.0);
+      edit.end = static_cast<int64_t>(endFrame / static_cast<double>(frameRate) * 1000.0);
       edit.action = Action::COMM_BREAK;
-      bValid = AddEdit(edit);
+      valid = AddEdit(edit);
     }
     else
-      bValid = false;
+      valid = false;
   }
   comskipFile.Close();
 
-  if (!bValid)
+  if (!valid)
   {
-    CLog::Log(LOGERROR,
-              "{} - Invalid Comskip file: {}. Error on line {}. Clearing any valid commercial "
-              "breaks found.",
-              __FUNCTION__, CURL::GetRedacted(comskipFilename), iLine);
+    CLog::LogF(LOGERROR,
+               "Invalid Comskip file: {}. Error on line {}. Clearing any valid commercial "
+               "breaks found.",
+               CURL::GetRedacted(comskipFilename), line);
     Clear();
     return false;
   }
   else if (HasEdits())
   {
-    CLog::Log(LOGDEBUG, "{0} - Read {1} commercial breaks from Comskip file: {2}", __FUNCTION__,
-              m_vecEdits.size(), CURL::GetRedacted(comskipFilename));
+    CLog::LogF(LOGDEBUG, "Read {} commercial breaks from Comskip file: {}", m_vecEdits.size(),
+               CURL::GetRedacted(comskipFilename));
     return true;
   }
   else
   {
-    CLog::Log(LOGDEBUG, "{} - No commercial breaks found in Comskip file: {}", __FUNCTION__,
-              CURL::GetRedacted(comskipFilename));
+    CLog::LogF(LOGDEBUG, "No commercial breaks found in Comskip file: {}",
+               CURL::GetRedacted(comskipFilename));
     return false;
   }
 }
