@@ -211,39 +211,10 @@ namespace PVR
     std::shared_ptr<CPVRDatabase> GetTVDatabase() const;
 
     /*!
-     * @return True while the PVRManager is initialising.
-     */
-    inline bool IsInitialising() const
-    {
-      return GetState() == ManagerStateStarting;
-    }
-
-    /*!
      * @brief Check whether the PVRManager has fully started.
      * @return True if started, false otherwise.
      */
-    inline bool IsStarted() const
-    {
-      return GetState() == ManagerStateStarted;
-    }
-
-    /*!
-     * @brief Check whether the PVRManager is stopping
-     * @return True while the PVRManager is stopping.
-     */
-    inline bool IsStopping() const
-    {
-      return GetState() == ManagerStateStopping;
-    }
-
-    /*!
-     * @brief Check whether the PVRManager has been stopped.
-     * @return True if stopped, false otherwise.
-     */
-    inline bool IsStopped() const
-    {
-      return GetState() == ManagerStateStopped;
-    }
+    bool IsStarted() const { return GetState() == ManagerState::STATE_STARTED; }
 
     /*!
      * @brief Check whether EPG tags for channels have been created.
@@ -276,7 +247,9 @@ namespace PVR
 
     /*!
      * @brief Let the background thread update the recordings list.
+     * @param clientId The id of the PVR client to update.
      */
+    void TriggerRecordingsUpdate(int clientId);
     void TriggerRecordingsUpdate();
 
     /*!
@@ -286,22 +259,30 @@ namespace PVR
 
     /*!
      * @brief Let the background thread update the timer list.
+     * @param clientId The id of the PVR client to update.
      */
+    void TriggerTimersUpdate(int clientId);
     void TriggerTimersUpdate();
 
     /*!
      * @brief Let the background thread update the channel list.
+     * @param clientId The id of the PVR client to update.
      */
+    void TriggerChannelsUpdate(int clientId);
     void TriggerChannelsUpdate();
 
     /*!
      * @brief Let the background thread update the provider list.
+     * @param clientId The id of the PVR client to update.
      */
+    void TriggerProvidersUpdate(int clientId);
     void TriggerProvidersUpdate();
 
     /*!
      * @brief Let the background thread update the channel groups list.
+     * @param clientId The id of the PVR client to update.
      */
+    void TriggerChannelGroupsUpdate(int clientId);
     void TriggerChannelGroupsUpdate();
 
     /*!
@@ -381,12 +362,57 @@ namespace PVR
      */
     bool SetWakeupCommand();
 
+    enum class ManagerState
+    {
+      STATE_ERROR = 0,
+      STATE_STOPPED,
+      STATE_STARTING,
+      STATE_SSTOPPING,
+      STATE_INTERRUPTED,
+      STATE_STARTED
+    };
+
     /*!
-     * @brief Load at least one client and load all other PVR data (channelgroups, timers, recordings) after loading the client.
-     * @param progressHandler The progress handler to use for showing the different load stages.
-     * @return If at least one client and all pvr data was loaded, false otherwise.
+     * @return True while the PVRManager is initialising.
      */
-    bool LoadComponents(CPVRGUIProgressHandler* progressHandler);
+    bool IsInitialising() const { return GetState() == ManagerState::STATE_STARTING; }
+
+    /*!
+     * @brief Check whether the PVRManager has been stopped.
+     * @return True if stopped, false otherwise.
+     */
+    bool IsStopped() const { return GetState() == ManagerState::STATE_STOPPED; }
+
+    /*!
+     * @brief Get the current state of the PVR manager.
+     * @return the state.
+     */
+    ManagerState GetState() const;
+
+    /*!
+     * @brief Set the current state of the PVR manager.
+     * @param state the new state.
+     */
+    void SetState(ManagerState state);
+
+    /*!
+     * @brief Wait until at least one client is up. Update all data from database and the given PVR clients.
+     * @param knownClients [inout] List of last known active clients.
+     * @param stateToCheck Required state of the PVR manager while this method gets called.
+     */
+    void UpdateComponents(std::vector<std::shared_ptr<CPVRClient>>& knownClients,
+                          ManagerState stateToCheck);
+
+    /*!
+     * @brief Update all data from database and the given PVR clients.
+     * @param knownClients [inout] List of last known active clients.
+     * @param stateToCheck Required state of the PVR manager while this method gets called.
+     * @param progressHandler The progress handler to use for showing the different stages.
+     * @return True if at least one client is known and successfully loaded, false otherwise.
+     */
+    bool UpdateComponents(std::vector<std::shared_ptr<CPVRClient>>& knownClients,
+                          ManagerState stateToCheck,
+                          CPVRGUIProgressHandler* progressHandler);
 
     /*!
      * @brief Unload all PVR data (recordings, timers, channelgroups).
@@ -407,28 +433,6 @@ namespace PVR
      * @brief Continue playback on the last played channel.
      */
     void TriggerPlayChannelOnStartup();
-
-    enum ManagerState
-    {
-      ManagerStateError = 0,
-      ManagerStateStopped,
-      ManagerStateStarting,
-      ManagerStateStopping,
-      ManagerStateInterrupted,
-      ManagerStateStarted
-    };
-
-    /*!
-     * @brief Get the current state of the PVR manager.
-     * @return the state.
-     */
-    ManagerState GetState() const;
-
-    /*!
-     * @brief Set the current state of the PVR manager.
-     * @param state the new state.
-     */
-    void SetState(ManagerState state);
 
     bool IsCurrentlyParentalLocked(const std::shared_ptr<CPVRChannel>& channel, bool bGenerallyLocked) const;
 
@@ -453,7 +457,7 @@ namespace PVR
     bool m_bEpgsCreated = false; /*!< true if epg data for channels has been created */
 
     mutable CCriticalSection m_managerStateMutex;
-    ManagerState m_managerState = ManagerStateStopped;
+    ManagerState m_managerState = ManagerState::STATE_STOPPED;
     std::unique_ptr<CStopWatch> m_parentalTimer;
 
     CCriticalSection m_startStopMutex; // mutex for protecting pvr manager's start/restart/stop sequence */

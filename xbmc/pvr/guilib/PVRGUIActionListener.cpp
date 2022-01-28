@@ -333,7 +333,7 @@ void CPVRGUIActionListener::OnSettingAction(const std::shared_ptr<const CSetting
       if (dialog)
       {
         dialog->Open();
-        CServiceBroker::GetPVRManager().ChannelGroups()->Update();
+        CServiceBroker::GetPVRManager().ChannelGroups()->UpdateFromClients({});
       }
     }
   }

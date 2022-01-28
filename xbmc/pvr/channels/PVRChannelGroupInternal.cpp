@@ -44,10 +44,11 @@ CPVRChannelGroupInternal::~CPVRChannelGroupInternal()
   Unload();
 }
 
-bool CPVRChannelGroupInternal::Load(
-    const std::map<std::pair<int, int>, std::shared_ptr<CPVRChannel>>& channels)
+bool CPVRChannelGroupInternal::LoadFromDatabase(
+    const std::map<std::pair<int, int>, std::shared_ptr<CPVRChannel>>& channels,
+    const std::vector<std::shared_ptr<CPVRClient>>& clients)
 {
-  if (CPVRChannelGroup::Load(channels))
+  if (CPVRChannelGroup::LoadFromDatabase(channels, clients))
   {
     for (const auto& groupMember : m_members)
     {
@@ -102,11 +103,13 @@ void CPVRChannelGroupInternal::UpdateChannelPaths()
   }
 }
 
-bool CPVRChannelGroupInternal::Update()
+bool CPVRChannelGroupInternal::UpdateFromClients(
+    const std::vector<std::shared_ptr<CPVRClient>>& clients)
 {
-  // get the channels from the backends
+  // get the channels from the given clients
   std::vector<std::shared_ptr<CPVRChannel>> channels;
-  CServiceBroker::GetPVRManager().Clients()->GetChannels(IsRadio(), channels, m_failedClients);
+  CServiceBroker::GetPVRManager().Clients()->GetChannels(clients, IsRadio(), channels,
+                                                         m_failedClients);
 
   // create group members for the channels
   std::vector<std::shared_ptr<CPVRChannelGroupMember>> groupMembers;

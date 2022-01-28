@@ -171,10 +171,14 @@ ADDON_STATUS CPVRClient::Create(int iClientId)
   ResetProperties(iClientId);
 
   /* initialise the add-on */
-  bool bReadyToUse(false);
-  CLog::LogFC(LOGDEBUG, LOGPVR, "Creating PVR add-on instance '{}'", Name());
+  CLog::LogFC(LOGDEBUG, LOGPVR, "Creating PVR add-on instance '{}'", ID());
+
+  bool bReadyToUse = false;
   if ((status = CreateInstance()) == ADDON_STATUS_OK)
     bReadyToUse = GetAddonProperties();
+
+  CLog::LogFC(LOGDEBUG, LOGPVR, "Created PVR add-on instance '{}'. readytouse={} ", ID(),
+              bReadyToUse);
 
   m_bReadyToUse = bReadyToUse;
   return status;
@@ -187,14 +191,14 @@ void CPVRClient::Destroy()
 
   m_bReadyToUse = false;
 
-  CLog::LogFC(LOGDEBUG, LOGPVR, "Destroying PVR add-on instance '{}'", GetFriendlyName());
+  CLog::LogFC(LOGDEBUG, LOGPVR, "Destroying PVR add-on instance '{}'", ID());
 
   m_bBlockAddonCalls = true;
   m_allAddonCallsFinished.Wait();
 
   DestroyInstance();
 
-  CLog::LogFC(LOGDEBUG, LOGPVR, "PVR add-on instance '{}' destroyed", GetFriendlyName());
+  CLog::LogFC(LOGDEBUG, LOGPVR, "Destroyed PVR add-on instance '{}'", ID());
 
   if (m_menuhooks)
     m_menuhooks->Clear();
@@ -561,10 +565,7 @@ bool CPVRClient::GetAddonProperties()
           {
             if (types_array[i].iId == PVR_TIMER_TYPE_NONE)
             {
-              CLog::LogF(LOGERROR,
-                         "Invalid timer type supplied by add-on '{}'. Please contact the developer "
-                         "of this add-on: {}",
-                         GetFriendlyName(), Author());
+              CLog::LogF(LOGERROR, "Invalid timer type supplied by add-on '{}'.", ID());
               continue;
             }
             timerTypes.emplace_back(
@@ -1418,10 +1419,24 @@ PVR_ERROR CPVRClient::DoAddonCall(const char* strFunctionName,
     return PVR_ERROR_NOT_IMPLEMENTED;
 
   if (m_bBlockAddonCalls)
+  {
+    CLog::Log(LOGWARNING, "{}: Blocking call to add-on '{}'.", strFunctionName, ID());
     return PVR_ERROR_SERVER_ERROR;
+  }
 
-  if (bCheckReadyToUse && (!ReadyToUse() || IgnoreClient()))
+  if (bCheckReadyToUse && IgnoreClient())
+  {
+    CLog::Log(LOGWARNING, "{}: Blocking call to add-on '{}'. Add-on not (yet) connected.",
+              strFunctionName, ID());
     return PVR_ERROR_SERVER_ERROR;
+  }
+
+  if (bCheckReadyToUse && !ReadyToUse())
+  {
+    CLog::Log(LOGWARNING, "{}: Blocking call to add-on '{}'. Add-on not ready to use.",
+              strFunctionName, ID());
+    return PVR_ERROR_SERVER_ERROR;
+  }
 
   // Call.
   m_allAddonCallsFinished.Reset();
@@ -1435,7 +1450,7 @@ PVR_ERROR CPVRClient::DoAddonCall(const char* strFunctionName,
 
   // Log error, if any.
   if (error != PVR_ERROR_NO_ERROR && error != PVR_ERROR_NOT_IMPLEMENTED)
-    CLog::Log(LOGERROR, "{}: Add-on '{}' returned an error: {}", strFunctionName, GetFriendlyName(),
+    CLog::Log(LOGERROR, "{}: Add-on '{}' returned an error: {}", strFunctionName, ID(),
               ToString(error));
 
   return error;
@@ -1457,7 +1472,7 @@ PVR_ERROR CPVRClient::OpenLiveStream(const std::shared_ptr<CPVRChannel>& channel
 
     if (!CanPlayChannel(channel))
     {
-      CLog::LogFC(LOGDEBUG, LOGPVR, "Add-on '{}' can not play channel '{}'", GetFriendlyName(),
+      CLog::LogFC(LOGDEBUG, LOGPVR, "Add-on '{}' can not play channel '{}'", ID(),
                   channel->ChannelName());
       return PVR_ERROR_SERVER_ERROR;
     }
@@ -1716,7 +1731,7 @@ void CPVRClient::HandleAddonCallback(const char* strFunctionName,
   if (!bForceCall && client->m_bBlockAddonCalls && client->m_iAddonCalls == 0)
   {
     CLog::Log(LOGWARNING, LOGPVR, "{}: Ignoring callback from PVR client '{}'", strFunctionName,
-              client->GetFriendlyName());
+              client->ID());
     return;
   }
 
@@ -1922,7 +1937,7 @@ void CPVRClient::cb_recording_notification(void* kodiInstance,
           EventPtr(new CNotificationEvent(client->Name(), strLine1, client->Icon(), strLine2)));
 
     CLog::LogFC(LOGDEBUG, LOGPVR, "Recording {} on client '{}'. name='{}' filename='{}'",
-                bOnOff ? "started" : "finished", client->Name(), strName, strFileName);
+                bOnOff ? "started" : "finished", client->ID(), strName, strFileName);
   });
 }
 
@@ -1930,21 +1945,23 @@ void CPVRClient::cb_trigger_channel_update(void* kodiInstance)
 {
   HandleAddonCallback(__func__, kodiInstance, [&](CPVRClient* client) {
     // update channels in the next iteration of the pvrmanager's main loop
-    CServiceBroker::GetPVRManager().TriggerChannelsUpdate();
+    CServiceBroker::GetPVRManager().TriggerChannelsUpdate(client->GetID());
   });
 }
 
 void CPVRClient::cb_trigger_provider_update(void* kodiInstance)
 {
-  /* update the providers table in the next iteration of the pvrmanager's main loop */
-  CServiceBroker::GetPVRManager().TriggerProvidersUpdate();
+  HandleAddonCallback(__func__, kodiInstance, [&](CPVRClient* client) {
+    /* update the providers table in the next iteration of the pvrmanager's main loop */
+    CServiceBroker::GetPVRManager().TriggerProvidersUpdate(client->GetID());
+  });
 }
 
 void CPVRClient::cb_trigger_timer_update(void* kodiInstance)
 {
   HandleAddonCallback(__func__, kodiInstance, [&](CPVRClient* client) {
     // update timers in the next iteration of the pvrmanager's main loop
-    CServiceBroker::GetPVRManager().TriggerTimersUpdate();
+    CServiceBroker::GetPVRManager().TriggerTimersUpdate(client->GetID());
   });
 }
 
@@ -1952,7 +1969,7 @@ void CPVRClient::cb_trigger_recording_update(void* kodiInstance)
 {
   HandleAddonCallback(__func__, kodiInstance, [&](CPVRClient* client) {
     // update recordings in the next iteration of the pvrmanager's main loop
-    CServiceBroker::GetPVRManager().TriggerRecordingsUpdate();
+    CServiceBroker::GetPVRManager().TriggerRecordingsUpdate(client->GetID());
   });
 }
 
@@ -1960,7 +1977,7 @@ void CPVRClient::cb_trigger_channel_groups_update(void* kodiInstance)
 {
   HandleAddonCallback(__func__, kodiInstance, [&](CPVRClient* client) {
     // update all channel groups in the next iteration of the pvrmanager's main loop
-    CServiceBroker::GetPVRManager().TriggerChannelGroupsUpdate();
+    CServiceBroker::GetPVRManager().TriggerChannelGroupsUpdate(client->GetID());
   });
 }
 
@@ -2009,7 +2026,7 @@ void CPVRClient::cb_connection_state_change(void* kodiInstance,
 
     CLog::LogFC(LOGDEBUG, LOGPVR,
                 "State for connection '{}' on client '{}' changed from '{}' to '{}'",
-                strConnectionString, client->Name(), prevState, newState);
+                strConnectionString, client->ID(), prevState, newState);
 
     client->SetConnectionState(newState);
 

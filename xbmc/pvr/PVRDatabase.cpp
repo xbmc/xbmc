@@ -91,6 +91,25 @@ namespace
     ")";
 
   // clang-format on
+
+  std::string GetClientIdsSQL(const std::vector<std::shared_ptr<CPVRClient>>& clients)
+  {
+    if (clients.empty())
+      return {};
+
+    std::string clientIds = "(";
+    for (auto it = clients.cbegin(); it != clients.cend(); ++it)
+    {
+      if (it != clients.cbegin())
+        clientIds += " OR ";
+
+      clientIds += "iClientId = ";
+      clientIds += std::to_string((*it)->GetID());
+    }
+    clientIds += ")";
+    return clientIds;
+  }
+
 } // unnamed namespace
 
 bool CPVRDatabase::Open()
@@ -406,12 +425,18 @@ bool CPVRDatabase::Delete(const CPVRProvider& provider)
   return DeleteValues("providers", filter);
 }
 
-bool CPVRDatabase::Get(CPVRProviders& results)
+bool CPVRDatabase::Get(CPVRProviders& results,
+                       const std::vector<std::shared_ptr<CPVRClient>>& clients) const
 {
   bool bReturn = false;
-  CSingleLock lock(m_critSection);
 
-  const std::string strQuery = PrepareSQL("SELECT * from providers");
+  std::string strQuery = "SELECT * from providers ";
+  const std::string clientIds = GetClientIdsSQL(clients);
+  if (!clientIds.empty())
+    strQuery += "WHERE " + clientIds;
+
+  CSingleLock lock(m_critSection);
+  strQuery = PrepareSQL(strQuery);
   if (ResultQuery(strQuery))
   {
     try
@@ -451,12 +476,18 @@ bool CPVRDatabase::Get(CPVRProviders& results)
 /********** Channel methods **********/
 
 int CPVRDatabase::Get(bool bRadio,
-                      std::map<std::pair<int, int>, std::shared_ptr<CPVRChannel>>& results)
+                      const std::vector<std::shared_ptr<CPVRClient>>& clients,
+                      std::map<std::pair<int, int>, std::shared_ptr<CPVRChannel>>& results) const
 {
   int iReturn = 0;
-  const std::string strQuery = PrepareSQL("SELECT * from channels WHERE bIsRadio = %u", bRadio);
+
+  std::string strQuery = "SELECT * from channels WHERE bIsRadio = %u ";
+  const std::string clientIds = GetClientIdsSQL(clients);
+  if (!clientIds.empty())
+    strQuery += "AND " + clientIds;
 
   CSingleLock lock(m_critSection);
+  strQuery = PrepareSQL(strQuery, bRadio);
   if (ResultQuery(strQuery))
   {
     try
@@ -590,7 +621,7 @@ bool CPVRDatabase::Delete(const CPVRChannelGroup& group)
   return RemoveChannelsFromGroup(group) && DeleteValues("channelgroups", filter);
 }
 
-int CPVRDatabase::Get(CPVRChannelGroups& results)
+int CPVRDatabase::Get(CPVRChannelGroups& results) const
 {
   int iLoaded = 0;
   CSingleLock lock(m_critSection);
@@ -635,7 +666,7 @@ int CPVRDatabase::Get(CPVRChannelGroups& results)
 }
 
 std::vector<std::shared_ptr<CPVRChannelGroupMember>> CPVRDatabase::Get(
-    const CPVRChannelGroup& group)
+    const CPVRChannelGroup& group, const std::vector<std::shared_ptr<CPVRClient>>& clients) const
 {
   std::vector<std::shared_ptr<CPVRChannelGroupMember>> results;
 
@@ -646,22 +677,24 @@ std::vector<std::shared_ptr<CPVRChannelGroupMember>> CPVRDatabase::Get(
     return results;
   }
 
-  const std::string strQuery =
-      PrepareSQL("SELECT map_channelgroups_channels.idChannel, "
-                 "map_channelgroups_channels.iChannelNumber, "
-                 "map_channelgroups_channels.iSubChannelNumber, "
-                 "map_channelgroups_channels.iOrder, "
-                 "map_channelgroups_channels.iClientChannelNumber, "
-                 "map_channelgroups_channels.iClientSubChannelNumber, "
-                 "channels.iClientId, channels.iUniqueId, channels.bIsRadio "
-                 "FROM map_channelgroups_channels "
-                 "LEFT JOIN channels ON channels.idChannel = map_channelgroups_channels.idChannel "
-                 "WHERE map_channelgroups_channels.idGroup = %i ORDER BY "
-                 "map_channelgroups_channels.iChannelNumber",
-                 group.GroupID());
+  std::string strQuery =
+      "SELECT map_channelgroups_channels.idChannel, "
+      "map_channelgroups_channels.iChannelNumber, "
+      "map_channelgroups_channels.iSubChannelNumber, "
+      "map_channelgroups_channels.iOrder, "
+      "map_channelgroups_channels.iClientChannelNumber, "
+      "map_channelgroups_channels.iClientSubChannelNumber, "
+      "channels.iClientId, channels.iUniqueId, channels.bIsRadio "
+      "FROM map_channelgroups_channels "
+      "LEFT JOIN channels ON channels.idChannel = map_channelgroups_channels.idChannel "
+      "WHERE map_channelgroups_channels.idGroup = %i ";
+  const std::string clientIds = GetClientIdsSQL(clients);
+  if (!clientIds.empty())
+    strQuery += "AND " + clientIds;
+  strQuery += " ORDER BY map_channelgroups_channels.iChannelNumber";
 
   CSingleLock lock(m_critSection);
-
+  strQuery = PrepareSQL(strQuery, group.GroupID());
   if (ResultQuery(strQuery))
   {
     try
@@ -963,12 +996,18 @@ bool CPVRDatabase::UpdateLastOpened(const CPVRChannelGroup& group)
 
 /********** Timer methods **********/
 
-std::vector<std::shared_ptr<CPVRTimerInfoTag>> CPVRDatabase::GetTimers(CPVRTimers& timers)
+std::vector<std::shared_ptr<CPVRTimerInfoTag>> CPVRDatabase::GetTimers(
+    CPVRTimers& timers, const std::vector<std::shared_ptr<CPVRClient>>& clients) const
 {
   std::vector<std::shared_ptr<CPVRTimerInfoTag>> result;
 
+  std::string strQuery = "SELECT * FROM timers ";
+  const std::string clientIds = GetClientIdsSQL(clients);
+  if (!clientIds.empty())
+    strQuery += "WHERE " + clientIds;
+
   CSingleLock lock(m_critSection);
-  const std::string strQuery = PrepareSQL("SELECT * FROM timers");
+  strQuery = PrepareSQL(strQuery);
   if (ResultQuery(strQuery))
   {
     try

@@ -19,6 +19,7 @@
 namespace PVR
 {
   class CPVRChannel;
+  class CPVRClient;
 
   /** A container class for channel groups */
 
@@ -33,15 +34,16 @@ namespace PVR
     virtual ~CPVRChannelGroups();
 
     /*!
-     * @brief Remove all channels from this group.
+     * @brief Remove all groups from this container.
      */
-    void Clear();
+    void Unload();
 
     /*!
-     * @brief Load this container's contents from the database or PVR clients.
-     * @return True if it was loaded successfully, false if not.
+     * @brief Load all channel groups and all channels from PVR database.
+     * @param clients The PVR clients data should be loaded for. Leave empty for all clients.
+     * @return True on success, false otherwise.
      */
-    bool Load();
+    bool LoadFromDatabase(const std::vector<std::shared_ptr<CPVRClient>>& clients);
 
     /*!
      * @brief Create a channel group matching the given type.
@@ -199,11 +201,13 @@ namespace PVR
     bool IsRadio() const { return m_bRadio; }
 
     /*!
-     * @brief Update the contents of the groups in this container.
+     * @brief Update data with groups and channels from the given clients, sync with local data.
+     * @param clients The clients to fetch data from. Leave empty to fetch data from all created clients.
      * @param bChannelsOnly Set to true to only update channels, not the groups themselves.
-     * @return True if the update was successful, false otherwise.
+     * @return True on success, false otherwise.
      */
-    bool Update(bool bChannelsOnly = false);
+    bool UpdateFromClients(const std::vector<std::shared_ptr<CPVRClient>>& clients,
+                           bool bChannelsOnly = false);
 
     /*!
      * @brief Update the channel numbers across the channel groups from the all channels group
@@ -218,7 +222,6 @@ namespace PVR
     int CleanupCachedImages();
 
   private:
-    bool LoadFromDb();
     void SortGroups();
 
     /*!

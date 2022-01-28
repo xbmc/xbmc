@@ -114,10 +114,13 @@ namespace PVR
     /*!
      * @brief Get channels from the database.
      * @param bRadio Whether to fetch radio or TV channels.
+     * @param clients The PVR clients the channels should be loaded for. Leave empty for all clients.
      * @param results The container for the channels.
      * @return The number of channels loaded.
      */
-    int Get(bool bRadio, std::map<std::pair<int, int>, std::shared_ptr<CPVRChannel>>& results);
+    int Get(bool bRadio,
+            const std::vector<std::shared_ptr<CPVRClient>>& clients,
+            std::map<std::pair<int, int>, std::shared_ptr<CPVRChannel>>& results) const;
 
     /*!
      * @brief Add or update a channel entry in the database
@@ -175,9 +178,10 @@ namespace PVR
     /*!
      * @brief Get the list of providers from the database
      * @param results The providers to store the results in.
+     * @param clients The PVR clients the providers should be loaded for. Leave empty for all clients.
      * @return The amount of providers that were added.
      */
-    bool Get(CPVRProviders& results);
+    bool Get(CPVRProviders& results, const std::vector<std::shared_ptr<CPVRClient>>& clients) const;
 
     //@}
 
@@ -202,14 +206,17 @@ namespace PVR
      * @param results The container to store the results in.
      * @return The number of groups loaded.
      */
-    int Get(CPVRChannelGroups& results);
+    int Get(CPVRChannelGroups& results) const;
 
     /*!
      * @brief Get the members of a channel group.
      * @param group The group to get the members for.
+     * @param clients The PVR clients the group members should be loaded for. Leave empty for all clients.
      * @return The group members.
      */
-    std::vector<std::shared_ptr<CPVRChannelGroupMember>> Get(const CPVRChannelGroup& group);
+    std::vector<std::shared_ptr<CPVRChannelGroupMember>> Get(
+        const CPVRChannelGroup& group,
+        const std::vector<std::shared_ptr<CPVRClient>>& clients) const;
 
     /*!
      * @brief Add or update a channel group entry in the database.
@@ -230,9 +237,11 @@ namespace PVR
     /*!
      * @brief Get the timers.
      * @param timers The container for the timers.
+     * @param clients The PVR clients the timers should be loaded for. Leave empty for all clients.
      * @return The timers.
      */
-    std::vector<std::shared_ptr<CPVRTimerInfoTag>> GetTimers(CPVRTimers& timers);
+    std::vector<std::shared_ptr<CPVRTimerInfoTag>> GetTimers(
+        CPVRTimers& timers, const std::vector<std::shared_ptr<CPVRClient>>& clients) const;
 
     /*!
      * @brief Add or update a timer entry in the database
@@ -300,6 +309,6 @@ namespace PVR
 
     bool RemoveChannelsFromGroup(const CPVRChannelGroup& group);
 
-    CCriticalSection m_critSection;
+    mutable CCriticalSection m_critSection;
   };
 }

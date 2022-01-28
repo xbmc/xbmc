@@ -90,18 +90,9 @@ std::size_t CPVRProvidersContainer::GetNumProviders() const
   return m_providers.size();
 }
 
-bool CPVRProviders::Load()
+bool CPVRProviders::Update(const std::vector<std::shared_ptr<CPVRClient>>& clients)
 {
-  // unload previous providers
-  Unload();
-
-  // load providers from database
-  bool bReturn = LoadFromDatabase();
-
-  // update from clients
-  Update();
-
-  return bReturn;
+  return LoadFromDatabase(clients) && UpdateFromClients(clients);
 }
 
 void CPVRProviders::Unload()
@@ -111,7 +102,7 @@ void CPVRProviders::Unload()
   m_providers.clear();
 }
 
-bool CPVRProviders::LoadFromDatabase()
+bool CPVRProviders::LoadFromDatabase(const std::vector<std::shared_ptr<CPVRClient>>& clients)
 {
   const std::shared_ptr<CPVRDatabase> database = CServiceBroker::GetPVRManager().GetTVDatabase();
   if (database)
@@ -119,7 +110,7 @@ bool CPVRProviders::LoadFromDatabase()
     bool bChanged = false;
 
     CPVRProviders providers;
-    database->Get(providers);
+    database->Get(providers, clients);
 
     for (auto& provider : providers.GetProvidersList())
     {
@@ -129,7 +120,7 @@ bool CPVRProviders::LoadFromDatabase()
   return true;
 }
 
-bool CPVRProviders::Update()
+bool CPVRProviders::UpdateFromClients(const std::vector<std::shared_ptr<CPVRClient>>& clients)
 {
   {
     CSingleLock lock(m_critSection);
@@ -163,7 +154,7 @@ bool CPVRProviders::Update()
   CLog::LogFC(LOGDEBUG, LOGPVR, "Updating providers");
   CPVRProvidersContainer newProviderList;
   std::vector<int> failedClients;
-  CServiceBroker::GetPVRManager().Clients()->GetProviders(&newProviderList, failedClients);
+  CServiceBroker::GetPVRManager().Clients()->GetProviders(clients, &newProviderList, failedClients);
   return UpdateClientEntries(newProviderList, failedClients, disabledClients);
 }
 
@@ -220,14 +211,12 @@ bool CPVRProviders::UpdateClientEntries(const CPVRProvidersContainer& newProvide
                                         const std::vector<int>& failedClients,
                                         const std::vector<int>& disabledClients)
 {
-  bool bChanged = false;
-
   CSingleLock lock(m_critSection);
 
   // go through the provider list and check for updated or new providers
   for (const auto& newProvider : newProviders.GetProvidersList())
   {
-    bChanged |= (CheckAndPersistEntry(newProvider, ProviderUpdateMode::BY_CLIENT) != nullptr);
+    CheckAndPersistEntry(newProvider, ProviderUpdateMode::BY_CLIENT);
   }
 
   // check for deleted providers
@@ -271,8 +260,6 @@ bool CPVRProviders::UpdateClientEntries(const CPVRProvidersContainer& newProvide
 
       (*it)->DeleteFromDatabase();
       it = m_providers.erase(it);
-
-      bChanged = true;
     }
     else
     {
@@ -282,7 +269,7 @@ bool CPVRProviders::UpdateClientEntries(const CPVRProvidersContainer& newProvide
 
   m_bIsUpdating = false;
 
-  return bChanged;
+  return true;
 }
 
 std::shared_ptr<CPVRProvider> CPVRProviders::CheckAndAddEntry(
