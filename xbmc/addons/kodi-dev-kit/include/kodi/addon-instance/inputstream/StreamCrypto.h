@@ -51,6 +51,7 @@ public:
   /*! \cond PRIVATE */
   StreamCryptoSession() { memset(m_cStructure, 0, sizeof(STREAM_CRYPTO_SESSION)); }
   StreamCryptoSession(const StreamCryptoSession& session) : CStructHdl(session) {}
+  StreamCryptoSession& operator=(const StreamCryptoSession&) = default;
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_inputstream_Defs_Info_StreamCryptoSession_Help Value Help
