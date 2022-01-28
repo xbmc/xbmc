@@ -269,6 +269,8 @@ public:
   /*! \cond PRIVATE */
   InputstreamMasteringMetadata() = default;
   InputstreamMasteringMetadata(const InputstreamMasteringMetadata& stream) : CStructHdl(stream) {}
+  InputstreamMasteringMetadata& operator=(const InputstreamMasteringMetadata&) = default;
+
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_inputstream_Defs_Interface_InputstreamMasteringMetadata_Help Value Help
@@ -435,6 +437,7 @@ public:
     : CStructHdl(stream)
   {
   }
+  InputstreamContentlightMetadata& operator=(const InputstreamContentlightMetadata&) = default;
   /*! \endcond */
 
   /// @defgroup cpp_kodi_addon_inputstream_Defs_Interface_InputstreamContentlightMetadata_Help Value Help
