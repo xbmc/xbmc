@@ -80,6 +80,7 @@ class CDateTimeSpan
 public:
   CDateTimeSpan();
   CDateTimeSpan(const CDateTimeSpan& span);
+  CDateTimeSpan& operator=(const CDateTimeSpan&) = default;
   CDateTimeSpan(int day, int hour, int minute, int second);
 
   bool operator >(const CDateTimeSpan& right) const;
@@ -121,6 +122,7 @@ class CDateTime final : public IArchivable
 public:
   CDateTime();
   CDateTime(const CDateTime& time);
+  CDateTime& operator=(const CDateTime&) = default;
   explicit CDateTime(const KODI::TIME::SystemTime& time);
   explicit CDateTime(const KODI::TIME::FileTime& time);
   explicit CDateTime(const time_t& time);
