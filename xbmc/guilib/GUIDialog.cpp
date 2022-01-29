@@ -38,16 +38,7 @@ CGUIDialog::~CGUIDialog(void) = default;
 
 bool CGUIDialog::Load(TiXmlElement* pRootElement)
 {
-  bool retVal = CGUIWindow::Load(pRootElement);
-
-  if (retVal && IsCustom())
-  {
-    // custom dialog's modality type is modeless if visible condition is specified.
-    if (m_visibleCondition)
-      m_modalityType = DialogModalityType::MODELESS;
-  }
-
-  return retVal;
+  return CGUIWindow::Load(pRootElement);
 }
 
 void CGUIDialog::OnWindowLoaded()
