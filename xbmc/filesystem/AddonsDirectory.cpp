@@ -819,7 +819,7 @@ void CAddonsDirectory::GenerateAddonListing(const CURL& path,
       validUpdateOrigin = mapEntry->second.m_update->Origin();
     }
 
-    bool fromOfficialRepo = CAddonRepos::IsFromOfficialRepo(addon, CheckAddonPath::NO);
+    bool fromOfficialRepo = CAddonRepos::IsFromOfficialRepo(addon, CheckAddonPath::CHOICE_NO);
 
     pItem->SetProperty("Addon.IsInstalled", installed);
     pItem->SetProperty("Addon.IsEnabled", installed && !disabled);

@@ -16,19 +16,19 @@
 #include <utility>
 #include <vector>
 
-enum class Reactivate
+enum class Reactivate : bool
 {
-  YES,
-  NO,
+  CHOICE_YES = true,
+  CHOICE_NO = false,
 };
 
-enum class PerformButtonFocus
+enum class PerformButtonFocus : bool
 {
-  YES,
-  NO,
+  CHOICE_YES = true,
+  CHOICE_NO = false,
 };
 
-enum class EntryPoint
+enum class EntryPoint : int
 {
   INSTALL,
   UPDATE,

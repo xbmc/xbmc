@@ -118,7 +118,7 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTN_DEPENDENCIES)
       {
-        ShowDependencyList(Reactivate::YES, EntryPoint::SHOW_DEPENDENCIES);
+        ShowDependencyList(Reactivate::CHOICE_YES, EntryPoint::SHOW_DEPENDENCIES);
         return true;
       }
       else if (iControl == CONTROL_BTN_AUTOUPDATE)
@@ -166,7 +166,7 @@ void CGUIDialogAddonInfo::OnInitWindow()
 {
   CGUIDialog::OnInitWindow();
   BuildDependencyList();
-  UpdateControls(PerformButtonFocus::YES);
+  UpdateControls(PerformButtonFocus::CHOICE_YES);
 }
 
 void CGUIDialogAddonInfo::UpdateControls(PerformButtonFocus performButtonFocus)
@@ -208,7 +208,7 @@ void CGUIDialogAddonInfo::UpdateControls(PerformButtonFocus performButtonFocus)
     }
 
     CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_INSTALL, canInstall);
-    if (canInstall && performButtonFocus == PerformButtonFocus::YES)
+    if (canInstall && performButtonFocus == PerformButtonFocus::CHOICE_YES)
     {
       SET_CONTROL_FOCUS(CONTROL_BTN_INSTALL, 0);
     }
@@ -261,7 +261,8 @@ void CGUIDialogAddonInfo::UpdateControls(PerformButtonFocus performButtonFocus)
   SET_CONTROL_LABEL(CONTROL_BTN_SELECT, label);
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SETTINGS, isInstalled && m_localAddon->HasSettings());
-  if (isInstalled && m_localAddon->HasSettings() && performButtonFocus == PerformButtonFocus::YES)
+  if (isInstalled && m_localAddon->HasSettings() &&
+      performButtonFocus == PerformButtonFocus::CHOICE_YES)
   {
     SET_CONTROL_FOCUS(CONTROL_BTN_SETTINGS, 0);
   }
@@ -328,7 +329,7 @@ void CGUIDialogAddonInfo::OnUpdate()
 
   Close();
   if (!m_depsInstalledWithAvailable.empty() &&
-      !ShowDependencyList(Reactivate::NO, EntryPoint::UPDATE))
+      !ShowDependencyList(Reactivate::CHOICE_NO, EntryPoint::UPDATE))
     return;
 
   CAddonInstaller::GetInstance().Install(addonId, version, origin);
@@ -403,7 +404,7 @@ void CGUIDialogAddonInfo::OnSelectVersion()
       else
       {
         if (!m_depsInstalledWithAvailable.empty() &&
-            !ShowDependencyList(Reactivate::NO, entryPoint))
+            !ShowDependencyList(Reactivate::CHOICE_NO, entryPoint))
           return;
         CAddonInstaller::GetInstance().Install(processAddonId, versions[i].first,
                                                versions[i].second);
@@ -481,7 +482,7 @@ void CGUIDialogAddonInfo::OnInstall()
 
   Close();
   if (!m_depsInstalledWithAvailable.empty() &&
-      !ShowDependencyList(Reactivate::NO, EntryPoint::INSTALL))
+      !ShowDependencyList(Reactivate::CHOICE_NO, EntryPoint::INSTALL))
     return;
 
   CAddonInstaller::GetInstance().Install(addonId, version, origin);
@@ -618,7 +619,7 @@ void CGUIDialogAddonInfo::OnEnableDisable()
     CServiceBroker::GetAddonMgr().EnableAddon(m_localAddon->ID());
   }
 
-  UpdateControls(PerformButtonFocus::NO);
+  UpdateControls(PerformButtonFocus::CHOICE_NO);
 }
 
 void CGUIDialogAddonInfo::OnSettings()
@@ -680,7 +681,7 @@ bool CGUIDialogAddonInfo::ShowDependencyList(Reactivate reactivate, EntryPoint e
 
           if (entryPoint == EntryPoint::SHOW_DEPENDENCIES ||
               infoAddon->MainType() != ADDON_SCRIPT_MODULE ||
-              !CAddonRepos::IsFromOfficialRepo(infoAddon, CheckAddonPath::NO))
+              !CAddonRepos::IsFromOfficialRepo(infoAddon, CheckAddonPath::CHOICE_NO))
           {
             item->SetLabel2(StringUtils::Format(
                 g_localizeStrings.Get(messageId), it.m_depInfo.versionMin.asString(),
@@ -708,11 +709,11 @@ bool CGUIDialogAddonInfo::ShowDependencyList(Reactivate reactivate, EntryPoint e
       while (true)
       {
         pDialog->Reset();
-        pDialog->SetHeading(reactivate == Reactivate::YES ? 39024 : 39020);
+        pDialog->SetHeading(reactivate == Reactivate::CHOICE_YES ? 39024 : 39020);
         pDialog->SetUseDetails(true);
         for (auto& it : items)
           pDialog->Add(*it);
-        pDialog->EnableButton(reactivate == Reactivate::NO, 186);
+        pDialog->EnableButton(reactivate == Reactivate::CHOICE_NO, 186);
         pDialog->SetButtonFocus(true);
         pDialog->Open();
 
@@ -734,7 +735,7 @@ bool CGUIDialogAddonInfo::ShowDependencyList(Reactivate reactivate, EntryPoint e
           break;
       }
       SetItem(backup_item);
-      if (reactivate == Reactivate::YES)
+      if (reactivate == Reactivate::CHOICE_YES)
         Open();
 
       return false;
@@ -859,7 +860,7 @@ void CGUIDialogAddonInfo::BuildDependencyList()
       // - the dependency is not a script/module                     OR
       // - the script/module is not available at an official repo
       if (!addonAvailable || addonAvailable->MainType() != ADDON_SCRIPT_MODULE ||
-          !CAddonRepos::IsFromOfficialRepo(addonAvailable, CheckAddonPath::NO))
+          !CAddonRepos::IsFromOfficialRepo(addonAvailable, CheckAddonPath::CHOICE_NO))
       {
         m_showDepDialogOnInstall = true;
       }

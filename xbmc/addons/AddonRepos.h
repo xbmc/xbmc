@@ -25,8 +25,8 @@ enum class AddonCheckType : bool;
 
 enum class CheckAddonPath
 {
-  YES,
-  NO,
+  CHOICE_YES = true,
+  CHOICE_NO = false,
 };
 
 /**
@@ -104,7 +104,7 @@ public:
    *        is matching
    * \note if this function is called on locally installed add-ons, for instance when populating
    *       'My add-ons', the local installation path is returned as origin.
-   *       thus parameter CheckAddonPath::NO needs to be passed in such cases
+   *       thus parameter CheckAddonPath::CHOICE_NO needs to be passed in such cases
    * \param addon pointer to addon to be checked
    * \param checkAddonPath also check origin path
    * \return true if the repository id of a given addon is defined as official
