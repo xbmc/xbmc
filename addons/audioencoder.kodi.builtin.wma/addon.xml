@@ -54,7 +54,7 @@
     <description lang="pl_PL">Windows Media Audio, stratny format audio firmy Microsoft.</description>
     <description lang="pt_BR">Windows Media Audio, o formato de áudio com perdas da Microsoft.</description>
     <description lang="ru_RU">Windows Media Audio, звуковой формат с потерями от Microsoft.</description>
-    <description lang="tr_TR">Windows Media Audio, Microsoft'un kayıplı ses biçimi.</description>
+    <description lang="tr_TR">Windows Media Audio, Microsoft&#x27;un kayıplı ses biçimi.</description>
     <description lang="zh_CN">Windows Media Audio，Microsoft 的有损压缩音频格式。</description>
   </extension>
 </addon>
