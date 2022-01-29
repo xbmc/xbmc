@@ -666,8 +666,8 @@ void CPVRManager::UpdateComponents(std::vector<std::shared_ptr<CPVRClient>>& kno
                                    ManagerState stateToCheck)
 {
   XbmcThreads::EndTime<> progressTimeout(30s);
-  CPVRGUIProgressHandler* progressHandler =
-      new CPVRGUIProgressHandler(g_localizeStrings.Get(19235)); // PVR manager is starting up
+  std::unique_ptr<CPVRGUIProgressHandler> progressHandler(
+      new CPVRGUIProgressHandler(g_localizeStrings.Get(19235))); // PVR manager is starting up
 
   // Wait for at least one client to come up and load/update data
   while (!UpdateComponents(knownClients, stateToCheck, progressHandler) &&
@@ -675,23 +675,14 @@ void CPVRManager::UpdateComponents(std::vector<std::shared_ptr<CPVRClient>>& kno
   {
     CThread::Sleep(1000ms);
 
-    if (progressHandler && progressTimeout.IsTimePast())
-    {
-      progressHandler->DestroyProgress();
-      progressHandler = nullptr; // no delete, instance is deleting itself
-    }
-  }
-
-  if (progressHandler)
-  {
-    progressHandler->DestroyProgress();
-    progressHandler = nullptr; // no delete, instance is deleting itself
+    if (progressTimeout.IsTimePast())
+      progressHandler.reset();
   }
 }
 
 bool CPVRManager::UpdateComponents(std::vector<std::shared_ptr<CPVRClient>>& knownClients,
                                    ManagerState stateToCheck,
-                                   CPVRGUIProgressHandler* progressHandler)
+                                   const std::unique_ptr<CPVRGUIProgressHandler>& progressHandler)
 {
   // find clients which disappeared since last check and remove them from known clients
   for (auto it = knownClients.begin(); it != knownClients.end();)

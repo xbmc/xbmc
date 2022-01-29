@@ -38,7 +38,7 @@ void CPVRGUIProgressHandler::UpdateProgress(const std::string& strText, float fP
   if (!m_bCreated)
   {
     m_bCreated = true;
-    Create(true /* bAutoDelete */);
+    Create();
   }
 }
 
@@ -49,13 +49,6 @@ void CPVRGUIProgressHandler::UpdateProgress(const std::string& strText, int iCur
     fPercentage = std::min(100.0f, fPercentage);
 
   UpdateProgress(strText, fPercentage);
-}
-
-void CPVRGUIProgressHandler::DestroyProgress()
-{
-  CSingleLock lock(m_critSection);
-  m_bStop = true;
-  m_bChanged = false;
 }
 
 void CPVRGUIProgressHandler::Process()

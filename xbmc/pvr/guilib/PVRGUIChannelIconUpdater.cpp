@@ -55,7 +55,10 @@ void CPVRGUIChannelIconUpdater::SearchAndUpdateMissingChannelIcons() const
     fileItemMap.insert({baseName, item->GetPath()});
   }
 
-  CPVRGUIProgressHandler* progressHandler = new CPVRGUIProgressHandler(g_localizeStrings.Get(19286)); // Searching for channel icons
+  std::unique_ptr<CPVRGUIProgressHandler> progressHandler;
+  if (!m_groups.empty())
+    progressHandler.reset(
+        new CPVRGUIProgressHandler(g_localizeStrings.Get(19286))); // Searching for channel icons
 
   for (const auto& group : m_groups)
   {
@@ -95,6 +98,4 @@ void CPVRGUIChannelIconUpdater::SearchAndUpdateMissingChannelIcons() const
         channel->Persist();
     }
   }
-
-  progressHandler->DestroyProgress();
 }
