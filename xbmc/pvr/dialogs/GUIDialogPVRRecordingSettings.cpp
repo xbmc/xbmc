@@ -136,7 +136,7 @@ bool CGUIDialogPVRRecordingSettings::OnSettingChanging(
               CVariant{19068}, // "Recording settings"
               StringUtils::Format(g_localizeStrings.Get(19147),
                                   iNewLifetime)) // "Setting the lifetime..."
-          != HELPERS::DialogResponse::YES)
+          != HELPERS::DialogResponse::CHOICE_YES)
         return false;
     }
   }

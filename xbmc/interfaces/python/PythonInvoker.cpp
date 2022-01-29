@@ -724,7 +724,7 @@ void CPythonInvoker::getAddonModuleDeps(const ADDON::AddonPtr& addon, std::set<s
     //Check if dependency is a module addon
     ADDON::AddonPtr dependency;
     if (CServiceBroker::GetAddonMgr().GetAddon(it.id, dependency, ADDON::ADDON_SCRIPT_MODULE,
-                                               ADDON::OnlyEnabled::YES))
+                                               ADDON::OnlyEnabled::CHOICE_YES))
     {
       std::string path = CSpecialProtocol::TranslatePath(dependency->LibPath());
       if (paths.find(path) == paths.end())

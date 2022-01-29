@@ -486,9 +486,9 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
                             HELPERS::ShowYesNoDialogText(CVariant{19096}, // "Smart select"
                                                          CVariant{iTextID}, CVariant{iNoButtonID},
                                                          CVariant{19165}); // Yes => "Switch"
-                        if (ret == HELPERS::DialogResponse::NO)
+                        if (ret == HELPERS::DialogResponse::CHOICE_NO)
                           CServiceBroker::GetPVRManager().GUIActions()->AddTimer(pItem, false);
-                        else if (ret == HELPERS::DialogResponse::YES)
+                        else if (ret == HELPERS::DialogResponse::CHOICE_YES)
                           CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(pItem, true);
                       }
                     }

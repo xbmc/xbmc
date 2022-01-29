@@ -48,7 +48,7 @@ bool CContextMenuItem::Execute(const CFileItemPtr& item) const
 
   ADDON::AddonPtr addon;
   if (!CServiceBroker::GetAddonMgr().GetAddon(m_addonId, addon, ADDON::ADDON_UNKNOWN,
-                                              ADDON::OnlyEnabled::YES))
+                                              ADDON::OnlyEnabled::CHOICE_YES))
     return false;
 
   bool reuseLanguageInvoker = false;

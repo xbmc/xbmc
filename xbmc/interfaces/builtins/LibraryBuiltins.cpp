@@ -135,8 +135,8 @@ static int ExportLibrary(const std::vector<std::string>& params)
   else
   {
     HELPERS::DialogResponse result = HELPERS::ShowYesNoDialogText(CVariant{iHeading}, CVariant{20426}, CVariant{20428}, CVariant{20429});
-    cancelled = result == HELPERS::DialogResponse::CANCELLED;
-    singleFile = result != HELPERS::DialogResponse::YES;
+    cancelled = result == HELPERS::DialogResponse::CHOICE_CANCELLED;
+    singleFile = result != HELPERS::DialogResponse::CHOICE_YES;
   }
 
   if (cancelled)
@@ -149,8 +149,8 @@ static int ExportLibrary(const std::vector<std::string>& params)
     else
     {
       HELPERS::DialogResponse result = HELPERS::ShowYesNoDialogText(CVariant{iHeading}, CVariant{20430});
-      cancelled = result == HELPERS::DialogResponse::CANCELLED;
-      thumbs = result == HELPERS::DialogResponse::YES;
+      cancelled = result == HELPERS::DialogResponse::CHOICE_CANCELLED;
+      thumbs = result == HELPERS::DialogResponse::CHOICE_YES;
     }
   }
 
@@ -164,7 +164,7 @@ static int ExportLibrary(const std::vector<std::string>& params)
     if (movieSetsInfoPath.empty())
     {
       auto result = HELPERS::ShowYesNoDialogText(CVariant{iHeading}, CVariant{36301});
-      cancelled = result != HELPERS::DialogResponse::YES;
+      cancelled = result != HELPERS::DialogResponse::CHOICE_YES;
     }
   }
 
@@ -178,8 +178,8 @@ static int ExportLibrary(const std::vector<std::string>& params)
     else
     {
       HELPERS::DialogResponse result = HELPERS::ShowYesNoDialogText(CVariant{iHeading}, CVariant{20436});
-      cancelled = result == HELPERS::DialogResponse::CANCELLED;
-      actorThumbs = result == HELPERS::DialogResponse::YES;
+      cancelled = result == HELPERS::DialogResponse::CHOICE_CANCELLED;
+      actorThumbs = result == HELPERS::DialogResponse::CHOICE_YES;
     }
   }
 
@@ -193,8 +193,8 @@ static int ExportLibrary(const std::vector<std::string>& params)
     else
     {
       HELPERS::DialogResponse result = HELPERS::ShowYesNoDialogText(CVariant{iHeading}, CVariant{20431});
-      cancelled = result == HELPERS::DialogResponse::CANCELLED;
-      overwrite = result == HELPERS::DialogResponse::YES;
+      cancelled = result == HELPERS::DialogResponse::CHOICE_CANCELLED;
+      overwrite = result == HELPERS::DialogResponse::CHOICE_YES;
     }
   }
 

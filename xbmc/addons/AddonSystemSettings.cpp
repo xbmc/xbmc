@@ -84,9 +84,10 @@ void CAddonSystemSettings::OnSettingChanged(const std::shared_ptr<const CSetting
 {
   using namespace KODI::MESSAGING::HELPERS;
 
-  if (setting->GetId() == CSettings::SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES
-    && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES)
-    && ShowYesNoDialogText(19098, 36618) != DialogResponse::YES)
+  if (setting->GetId() == CSettings::SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES &&
+      CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES) &&
+      ShowYesNoDialogText(19098, 36618) != DialogResponse::CHOICE_YES)
   {
     CServiceBroker::GetSettingsComponent()->GetSettings()->SetBool(CSettings::SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES, false);
   }
@@ -98,7 +99,8 @@ bool CAddonSystemSettings::GetActive(const TYPE& type, AddonPtr& addon)
   if (it != m_activeSettings.end())
   {
     auto settingValue = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(it->second);
-    return CServiceBroker::GetAddonMgr().GetAddon(settingValue, addon, type, OnlyEnabled::YES);
+    return CServiceBroker::GetAddonMgr().GetAddon(settingValue, addon, type,
+                                                  OnlyEnabled::CHOICE_YES);
   }
   return false;
 }

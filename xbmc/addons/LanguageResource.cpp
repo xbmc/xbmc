@@ -97,9 +97,9 @@ void CLanguageResource::OnPostInstall(bool update, bool modal)
   if (!g_SkinInfo)
     return;
 
-  if (IsInUse() ||
-     (!update && !modal &&
-       (HELPERS::ShowYesNoDialogText(CVariant{Name()}, CVariant{24132}) == DialogResponse::YES)))
+  if (IsInUse() || (!update && !modal &&
+                    (HELPERS::ShowYesNoDialogText(CVariant{Name()}, CVariant{24132}) ==
+                     DialogResponse::CHOICE_YES)))
   {
     if (IsInUse())
       g_langInfo.SetLanguage(ID());
@@ -137,7 +137,7 @@ bool CLanguageResource::FindLegacyLanguage(const std::string &locale, std::strin
 
   AddonPtr addon;
   if (!CServiceBroker::GetAddonMgr().GetAddon(addonId, addon, ADDON_RESOURCE_LANGUAGE,
-                                              OnlyEnabled::YES))
+                                              OnlyEnabled::CHOICE_YES))
     return false;
 
   legacyLanguage = addon->Name();

@@ -162,7 +162,8 @@ class UpdateAddons : public IRunnable
   void Run() override
   {
     for (const auto& addon : CServiceBroker::GetAddonMgr().GetAvailableUpdates())
-      CAddonInstaller::GetInstance().InstallOrUpdate(addon->ID(), BackgroundJob::YES, ModalJob::NO);
+      CAddonInstaller::GetInstance().InstallOrUpdate(addon->ID(), BackgroundJob::CHOICE_YES,
+                                                     ModalJob::CHOICE_NO);
   }
 };
 
@@ -172,8 +173,8 @@ class UpdateAllowedAddons : public IRunnable
   {
     for (const auto& addon : CServiceBroker::GetAddonMgr().GetAvailableUpdates())
       if (CServiceBroker::GetAddonMgr().IsAutoUpdateable(addon->ID()))
-        CAddonInstaller::GetInstance().InstallOrUpdate(addon->ID(), BackgroundJob::YES,
-                                                       ModalJob::NO);
+        CAddonInstaller::GetInstance().InstallOrUpdate(addon->ID(), BackgroundJob::CHOICE_YES,
+                                                       ModalJob::CHOICE_NO);
   }
 };
 
@@ -196,13 +197,13 @@ void CGUIWindowAddonBrowser::InstallFromZip()
   if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
           CSettings::SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES))
   {
-    if (ShowYesNoDialogText(13106, 36617, 186, 10004) == DialogResponse::YES)
+    if (ShowYesNoDialogText(13106, 36617, 186, 10004) == DialogResponse::CHOICE_YES)
       CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(
           WINDOW_SETTINGS_SYSTEM, CSettings::SETTING_ADDONS_ALLOW_UNKNOWN_SOURCES);
   }
   else
   {
-    if (ShowYesNoDialogText(19098, 36637) == DialogResponse::YES)
+    if (ShowYesNoDialogText(19098, 36637) == DialogResponse::CHOICE_YES)
     {
       // pop up filebrowser to grab an installed folder
       VECSOURCES shares = *CMediaSourceSettings::GetInstance().GetSources("files");
@@ -329,7 +330,8 @@ bool CGUIWindowAddonBrowser::GetDirectory(const std::string& strDirectory, CFile
           //check if it's installed
           AddonPtr addon;
           if (!CServiceBroker::GetAddonMgr().GetAddon(items[i]->GetProperty("Addon.ID").asString(),
-                                                      addon, ADDON_UNKNOWN, OnlyEnabled::YES))
+                                                      addon, ADDON_UNKNOWN,
+                                                      OnlyEnabled::CHOICE_YES))
             items.Remove(i);
         }
       }
@@ -610,7 +612,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE>& types,
         {
           AddonPtr installedAddon;
           if (!CAddonInstaller::GetInstance().InstallModal(addon->ID(), installedAddon,
-                                                           InstallModalPrompt::NO_PROMPT))
+                                                           InstallModalPrompt::CHOICE_NO))
             continue;
         }
 

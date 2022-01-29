@@ -482,7 +482,8 @@ void CPeripheralBusAddon::PromptEnableAddons(const std::vector<ADDON::AddonInfoP
   {
     // "Unable to configure controllers"
     // "Controller configuration depends on a disabled add-on. Would you like to enable it?"
-    bAccepted = (ShowYesNoDialogLines(CVariant{35017}, CVariant{35018}) == DialogResponse::YES);
+    bAccepted =
+        (ShowYesNoDialogLines(CVariant{35017}, CVariant{35018}) == DialogResponse::CHOICE_YES);
   }
 
   if (bAccepted)

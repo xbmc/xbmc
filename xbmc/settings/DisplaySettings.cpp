@@ -290,8 +290,8 @@ bool CDisplaySettings::OnSettingChanging(const std::shared_ptr<const CSetting>& 
     {
       if (!m_resolutionChangeAborted)
       {
-        if (HELPERS::ShowYesNoDialogText(CVariant{13110}, CVariant{13111}, CVariant{""}, CVariant{""}, 15000) !=
-          DialogResponse::YES)
+        if (HELPERS::ShowYesNoDialogText(CVariant{13110}, CVariant{13111}, CVariant{""},
+                                         CVariant{""}, 15000) != DialogResponse::CHOICE_YES)
         {
           m_resolutionChangeAborted = true;
           return false;
@@ -311,8 +311,8 @@ bool CDisplaySettings::OnSettingChanging(const std::shared_ptr<const CSetting>& 
 
     if (!m_resolutionChangeAborted)
     {
-      if (HELPERS::ShowYesNoDialogText(CVariant{13110}, CVariant{13111}, CVariant{""}, CVariant{""}, 10000) !=
-        DialogResponse::YES)
+      if (HELPERS::ShowYesNoDialogText(CVariant{13110}, CVariant{13111}, CVariant{""}, CVariant{""},
+                                       10000) != DialogResponse::CHOICE_YES)
       {
         m_resolutionChangeAborted = true;
         return false;

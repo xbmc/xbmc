@@ -21,7 +21,7 @@ class CAddonDatabase;
 class CAddonMgr;
 class CRepository;
 class IAddon;
-enum class AddonCheckType;
+enum class AddonCheckType : bool;
 
 enum class CheckAddonPath
 {

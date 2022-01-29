@@ -662,7 +662,7 @@ LanguageResourcePtr CLangInfo::GetLanguageAddon(const std::string& locale /* = "
 
   ADDON::AddonPtr addon;
   if (CServiceBroker::GetAddonMgr().GetAddon(addonId, addon, ADDON::ADDON_RESOURCE_LANGUAGE,
-                                             ADDON::OnlyEnabled::YES) &&
+                                             ADDON::OnlyEnabled::CHOICE_YES) &&
       addon != NULL)
     return std::dynamic_pointer_cast<ADDON::CLanguageResource>(addon);
 
@@ -687,7 +687,8 @@ bool CLangInfo::SetLanguage(std::string language /* = "" */, bool reloadServices
   ADDON::AddonPtr addon;
 
   // Find the chosen language add-on if it's enabled
-  if (!addonMgr.GetAddon(language, addon, ADDON::ADDON_RESOURCE_LANGUAGE, ADDON::OnlyEnabled::YES))
+  if (!addonMgr.GetAddon(language, addon, ADDON::ADDON_RESOURCE_LANGUAGE,
+                         ADDON::OnlyEnabled::CHOICE_YES))
   {
     if (!addonMgr.IsAddonInstalled(language) ||
         (addonMgr.IsAddonDisabled(language) && !addonMgr.EnableAddon(language)))
@@ -701,7 +702,7 @@ bool CLangInfo::SetLanguage(std::string language /* = "" */, bool reloadServices
                      ->GetDefault();
 
       if (!addonMgr.GetAddon(language, addon, ADDON::ADDON_RESOURCE_LANGUAGE,
-                             ADDON::OnlyEnabled::NO))
+                             ADDON::OnlyEnabled::CHOICE_NO))
       {
         CLog::Log(LOGFATAL, "CLangInfo::{}: could not find default language add-on '{}'", __func__,
                   language);

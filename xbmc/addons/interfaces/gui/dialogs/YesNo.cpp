@@ -63,8 +63,8 @@ bool Interface_GUIDialogYesNo::show_and_get_input_single_text(KODI_HANDLE kodiBa
   }
 
   DialogResponse result = HELPERS::ShowYesNoDialogText(heading, text, noLabel, yesLabel);
-  *canceled = (result == DialogResponse::CANCELLED);
-  return (result == DialogResponse::YES);
+  *canceled = (result == DialogResponse::CHOICE_CANCELLED);
+  return (result == DialogResponse::CHOICE_YES);
 }
 
 bool Interface_GUIDialogYesNo::show_and_get_input_line_text(KODI_HANDLE kodiBase,
@@ -95,7 +95,7 @@ bool Interface_GUIDialogYesNo::show_and_get_input_line_text(KODI_HANDLE kodiBase
   }
 
   return HELPERS::ShowYesNoDialogLines(heading, line0, line1, line2, noLabel, yesLabel) ==
-         DialogResponse::YES;
+         DialogResponse::CHOICE_YES;
 }
 
 bool Interface_GUIDialogYesNo::show_and_get_input_line_button_text(KODI_HANDLE kodiBase,
@@ -129,8 +129,8 @@ bool Interface_GUIDialogYesNo::show_and_get_input_line_button_text(KODI_HANDLE k
 
   DialogResponse result =
       HELPERS::ShowYesNoDialogLines(heading, line0, line1, line2, noLabel, yesLabel);
-  *canceled = (result == DialogResponse::CANCELLED);
-  return (result == DialogResponse::YES);
+  *canceled = (result == DialogResponse::CHOICE_CANCELLED);
+  return (result == DialogResponse::CHOICE_YES);
 }
 
 } /* namespace ADDON */

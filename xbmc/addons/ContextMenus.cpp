@@ -25,7 +25,7 @@ bool CAddonSettings::IsVisible(const CFileItem& item) const
   AddonPtr addon;
   return item.HasAddonInfo() &&
          CServiceBroker::GetAddonMgr().GetAddon(item.GetAddonInfo()->ID(), addon, ADDON_UNKNOWN,
-                                                OnlyEnabled::NO) &&
+                                                OnlyEnabled::CHOICE_NO) &&
          addon->HasSettings();
 }
 
@@ -33,7 +33,7 @@ bool CAddonSettings::Execute(const CFileItemPtr& item) const
 {
   AddonPtr addon;
   return CServiceBroker::GetAddonMgr().GetAddon(item->GetAddonInfo()->ID(), addon, ADDON_UNKNOWN,
-                                                OnlyEnabled::NO) &&
+                                                OnlyEnabled::CHOICE_NO) &&
          CGUIDialogAddonSettings::ShowForAddon(addon);
 }
 
@@ -47,7 +47,7 @@ bool CCheckForUpdates::Execute(const CFileItemPtr& item) const
   AddonPtr addon;
   if (item->HasAddonInfo() &&
       CServiceBroker::GetAddonMgr().GetAddon(item->GetAddonInfo()->ID(), addon, ADDON_REPOSITORY,
-                                             OnlyEnabled::YES))
+                                             OnlyEnabled::CHOICE_YES))
   {
     CServiceBroker::GetRepositoryUpdater().CheckForUpdates(std::static_pointer_cast<CRepository>(addon), true);
     return true;

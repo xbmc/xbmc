@@ -133,7 +133,7 @@ bool CGUIDialogSelectGameClient::Install(const std::string& gameClient)
   {
     ADDON::AddonPtr installedAddon;
     bInstalled = ADDON::CAddonInstaller::GetInstance().InstallModal(
-        gameClient, installedAddon, ADDON::InstallModalPrompt::NO_PROMPT);
+        gameClient, installedAddon, ADDON::InstallModalPrompt::CHOICE_NO);
     if (!bInstalled)
     {
       CLog::Log(LOGERROR, "Select game client dialog: Failed to install {}", gameClient);

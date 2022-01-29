@@ -425,7 +425,7 @@ void CGUIDialogSubtitles::OnSubtitleServiceContextMenu(int itemIdx)
     {
       AddonPtr addon;
       if (CServiceBroker::GetAddonMgr().GetAddon(service->GetProperty("Addon.ID").asString(), addon,
-                                                 ADDON_SUBTITLE_MODULE, OnlyEnabled::YES))
+                                                 ADDON_SUBTITLE_MODULE, OnlyEnabled::CHOICE_YES))
       {
         CGUIDialogAddonSettings::ShowForAddon(addon);
       }

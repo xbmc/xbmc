@@ -26,7 +26,7 @@ ControllerPtr CControllerManager::GetController(const std::string& controllerId)
   {
     AddonPtr addon;
     if (CServiceBroker::GetAddonMgr().GetAddon(controllerId, addon, ADDON_GAME_CONTROLLER,
-                                               OnlyEnabled::NO))
+                                               OnlyEnabled::CHOICE_NO))
       cachedController = LoadController(addon);
   }
 

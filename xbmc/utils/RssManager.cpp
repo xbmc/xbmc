@@ -66,10 +66,10 @@ void CRssManager::OnSettingAction(const std::shared_ptr<const CSetting>& setting
   {
     ADDON::AddonPtr addon;
     if (!CServiceBroker::GetAddonMgr().GetAddon("script.rss.editor", addon, ADDON::ADDON_UNKNOWN,
-                                                ADDON::OnlyEnabled::YES))
+                                                ADDON::OnlyEnabled::CHOICE_YES))
     {
-      if (!ADDON::CAddonInstaller::GetInstance().InstallModal("script.rss.editor", addon,
-                                                              ADDON::InstallModalPrompt::PROMPT))
+      if (!ADDON::CAddonInstaller::GetInstance().InstallModal(
+              "script.rss.editor", addon, ADDON::InstallModalPrompt::CHOICE_YES))
         return;
     }
     CBuiltins::GetInstance().Execute("RunScript(script.rss.editor)");

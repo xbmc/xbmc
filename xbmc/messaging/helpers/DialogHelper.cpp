@@ -38,20 +38,20 @@ DialogResponse ShowYesNoCustomDialog(CVariant heading, CVariant text, CVariant n
   switch (CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_DIALOG_YESNO, -1, -1, static_cast<void*>(&options)))
   {
   case -1:
-    return DialogResponse::CANCELLED;
+    return DialogResponse::CHOICE_CANCELLED;
   case 0:
-    return DialogResponse::NO;
+    return DialogResponse::CHOICE_NO;
   case 1:
-    return DialogResponse::YES;
+    return DialogResponse::CHOICE_YES;
   case 2:
-    return DialogResponse::CUSTOM;
+    return DialogResponse::CHOICE_CUSTOM;
   default:
     //If we get here someone changed the return values without updating this code
     assert(false);
   }
   //This is unreachable code but we need to return something to suppress warnings about
   //no return
-  return DialogResponse::CANCELLED;
+  return DialogResponse::CHOICE_CANCELLED;
 }
 
 DialogResponse ShowYesNoDialogLines(CVariant heading, CVariant line0, CVariant line1, CVariant line2,
@@ -70,20 +70,20 @@ DialogResponse ShowYesNoDialogLines(CVariant heading, CVariant line0, CVariant l
   switch (CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_DIALOG_YESNO, -1, -1, static_cast<void*>(&options)))
   {
   case -1:
-    return DialogResponse::CANCELLED;
+    return DialogResponse::CHOICE_CANCELLED;
   case 0:
-    return DialogResponse::NO;
+    return DialogResponse::CHOICE_NO;
   case 1:
-    return DialogResponse::YES;
+    return DialogResponse::CHOICE_YES;
   case 2:
-    return DialogResponse::CUSTOM;
+    return DialogResponse::CHOICE_CUSTOM;
   default:
     //If we get here someone changed the return values without updating this code
     assert(false);
   }
   //This is unreachable code but we need to return something to suppress warnings about
   //no return
-  return DialogResponse::CANCELLED;
+  return DialogResponse::CHOICE_CANCELLED;
 }
 
 }

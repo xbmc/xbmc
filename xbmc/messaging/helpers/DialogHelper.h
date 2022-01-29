@@ -20,12 +20,12 @@ namespace MESSAGING
 namespace HELPERS
 {
 
-enum class DialogResponse
+enum class DialogResponse : int
 {
-  CANCELLED,
-  YES,
-  NO,
-  CUSTOM
+  CHOICE_CANCELLED,
+  CHOICE_YES,
+  CHOICE_NO,
+  CHOICE_CUSTOM,
 };
 
 /*! \struct DialogYesNoMessage DialogHelper.h "messaging/helpers/DialogHelper.h"

@@ -28,28 +28,28 @@ namespace ADDON
 
   enum class AllowCheckForUpdates : bool;
 
-  enum class AddonCheckType
+  enum class AddonCheckType : bool
   {
     OUTDATED_ADDONS,
-    AVAILABLE_UPDATES
+    AVAILABLE_UPDATES,
   };
 
   enum class OnlyEnabled : bool
   {
-    YES = true,
-    NO = false,
+    CHOICE_YES = true,
+    CHOICE_NO = false,
   };
 
   enum class OnlyEnabledRootAddon : bool
   {
-    YES = true,
-    NO = false,
+    CHOICE_YES = true,
+    CHOICE_NO = false,
   };
 
   enum class CheckIncompatible : bool
   {
-    YES = true,
-    NO = false,
+    CHOICE_YES = true,
+    CHOICE_NO = false,
   };
 
   struct CAddonWithUpdate;

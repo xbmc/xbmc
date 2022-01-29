@@ -189,7 +189,7 @@ bool CNetworkServices::OnSettingChanging(const std::shared_ptr<const CSetting>& 
       (!m_settings->GetBool(CSettings::SETTING_SERVICES_WEBSERVER) ||
        (m_settings->GetBool(CSettings::SETTING_SERVICES_WEBSERVER) &&
         !m_settings->GetString(CSettings::SETTING_SERVICES_WEBSERVERPASSWORD).empty())) &&
-      HELPERS::ShowYesNoDialogText(19098, 36634) != DialogResponse::YES)
+      HELPERS::ShowYesNoDialogText(19098, 36634) != DialogResponse::CHOICE_YES)
   {
     // Leave it as-is
     return false;
@@ -227,7 +227,7 @@ bool CNetworkServices::OnSettingChanging(const std::shared_ptr<const CSetting>& 
 
       // Ask for confirmation when enabling the web server
       if (settingId == CSettings::SETTING_SERVICES_WEBSERVER &&
-          HELPERS::ShowYesNoDialogText(19098, 36632) != DialogResponse::YES)
+          HELPERS::ShowYesNoDialogText(19098, 36632) != DialogResponse::CHOICE_YES)
       {
         // Revert change, do not start server
         return false;
@@ -438,7 +438,7 @@ bool CNetworkServices::OnSettingChanging(const std::shared_ptr<const CSetting>& 
   else if (settingId == CSettings::SETTING_SERVICES_ESALLINTERFACES)
   {
     if (m_settings->GetBool(CSettings::SETTING_SERVICES_ESALLINTERFACES) &&
-        HELPERS::ShowYesNoDialogText(19098, 36633) != DialogResponse::YES)
+        HELPERS::ShowYesNoDialogText(19098, 36633) != DialogResponse::CHOICE_YES)
     {
       // Revert change, do not start server
       return false;
@@ -506,7 +506,8 @@ void CNetworkServices::OnSettingChanged(const std::shared_ptr<const CSetting>& s
   {
     // okey we really don't need to restart, only deinit samba, but that could be damn hard if something is playing
     //! @todo - General way of handling setting changes that require restart
-    if (HELPERS::ShowYesNoDialogText(CVariant{14038}, CVariant{14039}) == DialogResponse::YES)
+    if (HELPERS::ShowYesNoDialogText(CVariant{14038}, CVariant{14039}) ==
+        DialogResponse::CHOICE_YES)
     {
       m_settings->Save();
       CApplicationMessenger::GetInstance().PostMsg(TMSG_RESTARTAPP);
@@ -940,8 +941,8 @@ bool CNetworkServices::StopEventServer(bool bWait, bool promptuser)
   {
     if (server->GetNumberOfClients() > 0)
     {
-      if (HELPERS::ShowYesNoDialogText(CVariant{13140}, CVariant{13141}, CVariant{""}, CVariant{""}, 10000) !=
-        DialogResponse::YES)
+      if (HELPERS::ShowYesNoDialogText(CVariant{13140}, CVariant{13141}, CVariant{""}, CVariant{""},
+                                       10000) != DialogResponse::CHOICE_YES)
       {
         CLog::Log(LOGINFO, "ES: Not stopping event server");
         return false;
