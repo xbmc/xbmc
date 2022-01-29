@@ -211,7 +211,7 @@ void CGUIDialogLibExportSettings::OnOK()
     {
       //"Unable to export to library folders as the system artist information folder setting is empty"
       //Settings (YES) button takes user to enter the artist info folder setting
-      if (HELPERS::ShowYesNoDialogText(20223, 38317, 186, 10004) == DialogResponse::YES)
+      if (HELPERS::ShowYesNoDialogText(20223, 38317, 186, 10004) == DialogResponse::CHOICE_YES)
       {
         m_confirmed = false;
         Close();

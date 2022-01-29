@@ -543,7 +543,7 @@ static bool Browse(const CURL& path, CFileItemList &items)
     AddonPtr repoAddon;
     const auto& addonMgr = CServiceBroker::GetAddonMgr();
 
-    if (!addonMgr.GetAddon(repoId, repoAddon, ADDON_REPOSITORY, OnlyEnabled::YES))
+    if (!addonMgr.GetAddon(repoId, repoAddon, ADDON_REPOSITORY, OnlyEnabled::CHOICE_YES))
       return false;
 
     CAddonRepos addonRepos(addonMgr);
@@ -770,7 +770,7 @@ bool CAddonsDirectory::IsRepoDirectory(const CURL& url)
   return url.GetHostName() == "repos" || url.GetHostName() == "all" ||
          url.GetHostName() == "search" ||
          CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), tmp, ADDON_REPOSITORY,
-                                                OnlyEnabled::YES);
+                                                OnlyEnabled::CHOICE_YES);
 }
 
 void CAddonsDirectory::GenerateAddonListing(const CURL& path,

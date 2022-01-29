@@ -8082,7 +8082,7 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath, SScanSe
       AddonPtr addon;
       if (!scraperID.empty() &&
           CServiceBroker::GetAddonMgr().GetAddon(scraperID, addon, ADDON::ADDON_UNKNOWN,
-                                                 ADDON::OnlyEnabled::YES))
+                                                 ADDON::OnlyEnabled::CHOICE_YES))
       {
         scraper = std::dynamic_pointer_cast<CScraper>(addon);
         if (!scraper)
@@ -8130,7 +8130,7 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath, SScanSe
           AddonPtr addon;
           if (content != CONTENT_NONE && CServiceBroker::GetAddonMgr().GetAddon(
                                              m_pDS->fv("path.strScraper").get_asString(), addon,
-                                             ADDON::ADDON_UNKNOWN, ADDON::OnlyEnabled::YES))
+                                             ADDON::ADDON_UNKNOWN, ADDON::OnlyEnabled::CHOICE_YES))
           {
             scraper = std::dynamic_pointer_cast<CScraper>(addon);
             scraper->SetPathSettings(content, m_pDS->fv("path.strSettings").get_asString());
@@ -10434,7 +10434,7 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
         std::string id;
         XMLUtils::GetString(path,"scraperpath",id);
         if (CServiceBroker::GetAddonMgr().GetAddon(id, addon, ADDON::ADDON_UNKNOWN,
-                                                   ADDON::OnlyEnabled::YES))
+                                                   ADDON::OnlyEnabled::CHOICE_YES))
         {
           SScanSettings settings;
           ScraperPtr scraper = std::dynamic_pointer_cast<CScraper>(addon);

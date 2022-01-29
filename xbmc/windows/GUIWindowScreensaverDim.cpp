@@ -38,7 +38,7 @@ void CGUIWindowScreensaverDim::UpdateVisibility()
       m_visible = true;
       ADDON::AddonPtr info;
       bool success = CServiceBroker::GetAddonMgr().GetAddon(usedId, info, ADDON::ADDON_SCREENSAVER,
-                                                            ADDON::OnlyEnabled::YES);
+                                                            ADDON::OnlyEnabled::CHOICE_YES);
       if (success && info && !info->GetSetting("level").empty())
         m_newDimLevel = 100.0f - (float)atof(info->GetSetting("level").c_str());
       else

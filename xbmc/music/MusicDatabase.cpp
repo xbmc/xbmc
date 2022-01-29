@@ -4810,7 +4810,7 @@ void CMusicDatabase::Clean()
     return;
   }
 
-  if (HELPERS::ShowYesNoDialogText(CVariant{313}, CVariant{333}) == DialogResponse::YES)
+  if (HELPERS::ShowYesNoDialogText(CVariant{313}, CVariant{333}) == DialogResponse::CHOICE_YES)
   {
     CMusicDatabase musicdatabase;
     if (musicdatabase.Open())
@@ -11594,7 +11594,7 @@ bool CMusicDatabase::GetScraper(int id, const CONTENT_TYPE& content, ADDON::Scra
       ADDON::AddonPtr addon;
       if (!scraperUUID.empty() &&
           CServiceBroker::GetAddonMgr().GetAddon(scraperUUID, addon, ADDON::ADDON_UNKNOWN,
-                                                 ADDON::OnlyEnabled::YES) &&
+                                                 ADDON::OnlyEnabled::CHOICE_YES) &&
           addon)
       {
         scraper = std::dynamic_pointer_cast<ADDON::CScraper>(addon);

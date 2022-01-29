@@ -909,7 +909,7 @@ void CApplication::OnSettingAction(const std::shared_ptr<const CSetting>& settin
     if (CServiceBroker::GetAddonMgr().GetAddon(
             CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
                 CSettings::SETTING_SCREENSAVER_MODE),
-            addon, ADDON_SCREENSAVER, OnlyEnabled::YES))
+            addon, ADDON_SCREENSAVER, OnlyEnabled::CHOICE_YES))
       CGUIDialogAddonSettings::ShowForAddon(addon);
   }
   else if (settingId == CSettings::SETTING_AUDIOCDS_SETTINGS)
@@ -918,7 +918,7 @@ void CApplication::OnSettingAction(const std::shared_ptr<const CSetting>& settin
     if (CServiceBroker::GetAddonMgr().GetAddon(
             CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
                 CSettings::SETTING_AUDIOCDS_ENCODER),
-            addon, ADDON_AUDIOENCODER, OnlyEnabled::YES))
+            addon, ADDON_AUDIOENCODER, OnlyEnabled::CHOICE_YES))
       CGUIDialogAddonSettings::ShowForAddon(addon);
   }
   else if (settingId == CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION)
@@ -989,8 +989,8 @@ void CApplication::ReloadSkin(bool confirm/*=false*/)
        user as to whether they want to keep the current skin. */
     if (confirm && m_confirmSkinChange)
     {
-      if (HELPERS::ShowYesNoDialogText(CVariant{13123}, CVariant{13111}, CVariant{""}, CVariant{""}, 10000) !=
-        DialogResponse::YES)
+      if (HELPERS::ShowYesNoDialogText(CVariant{13123}, CVariant{13111}, CVariant{""}, CVariant{""},
+                                       10000) != DialogResponse::CHOICE_YES)
       {
         m_confirmSkinChange = false;
         settings->SetString(CSettings::SETTING_LOOKANDFEEL_SKIN, oldSkin);
@@ -1057,7 +1057,7 @@ bool CApplication::LoadSkin(const std::string& skinID)
   SkinPtr skin;
   {
     AddonPtr addon;
-    if (!CServiceBroker::GetAddonMgr().GetAddon(skinID, addon, ADDON_SKIN, OnlyEnabled::YES))
+    if (!CServiceBroker::GetAddonMgr().GetAddon(skinID, addon, ADDON_SKIN, OnlyEnabled::CHOICE_YES))
       return false;
     skin = std::static_pointer_cast<ADDON::CSkinInfo>(addon);
   }
@@ -2654,7 +2654,7 @@ bool CApplication::PlayMedia(CFileItem& item, const std::string &player, int iPl
   {
     AddonPtr addon;
     if (CServiceBroker::GetAddonMgr().GetAddon(path.GetHostName(), addon, ADDON_GAMEDLL,
-                                               OnlyEnabled::YES))
+                                               OnlyEnabled::CHOICE_YES))
     {
       CFileItem addonItem(addon);
       return PlayFile(addonItem, player, false);
@@ -3617,7 +3617,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     return;
   }
   else if (CServiceBroker::GetAddonMgr().GetAddon(m_screensaverIdInUse, m_pythonScreenSaver,
-                                                  ADDON_SCREENSAVER, OnlyEnabled::YES))
+                                                  ADDON_SCREENSAVER, OnlyEnabled::CHOICE_YES))
   {
     std::string libPath = m_pythonScreenSaver->LibPath();
     if (CScriptInvocationManager::GetInstance().HasLanguageInvoker(libPath))
@@ -4051,7 +4051,7 @@ void CApplication::ConfigureAndEnableAddons()
       {
         if (HELPERS::ShowYesNoDialogLines(CVariant{24039}, // Disabled add-ons
                                           CVariant{24059}, // Would you like to enable this add-on?
-                                          CVariant{addon->Name()}) == DialogResponse::YES)
+                                          CVariant{addon->Name()}) == DialogResponse::CHOICE_YES)
         {
           if (addon->HasSettings())
           {

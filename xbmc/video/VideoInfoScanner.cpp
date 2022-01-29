@@ -2166,7 +2166,8 @@ namespace VIDEO
       HELPERS::ShowOKDialogText(CVariant{20448}, CVariant{20449});
       return false;
     }
-    return HELPERS::ShowYesNoDialogText(CVariant{20448}, CVariant{20450}) == DialogResponse::YES;
+    return HELPERS::ShowYesNoDialogText(CVariant{20448}, CVariant{20450}) ==
+           DialogResponse::CHOICE_YES;
   }
 
   bool CVideoInfoScanner::ProgressCancelled(CGUIDialogProgress* progress, int heading, const std::string &line1)

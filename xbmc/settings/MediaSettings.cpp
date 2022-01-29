@@ -301,7 +301,7 @@ void CMediaSettings::OnSettingAction(const std::shared_ptr<const CSetting>& sett
   const std::string &settingId = setting->GetId();
   if (settingId == CSettings::SETTING_MUSICLIBRARY_CLEANUP)
   {
-    if (HELPERS::ShowYesNoDialogText(CVariant{313}, CVariant{333}) == DialogResponse::YES)
+    if (HELPERS::ShowYesNoDialogText(CVariant{313}, CVariant{333}) == DialogResponse::CHOICE_YES)
     {
       if (!CMusicLibraryQueue::GetInstance().IsRunning())
         CMusicLibraryQueue::GetInstance().CleanLibrary(true);
@@ -332,7 +332,7 @@ void CMediaSettings::OnSettingAction(const std::shared_ptr<const CSetting>& sett
   }
   else if (settingId == CSettings::SETTING_VIDEOLIBRARY_CLEANUP)
   {
-    if (HELPERS::ShowYesNoDialogText(CVariant{313}, CVariant{333}) == DialogResponse::YES)
+    if (HELPERS::ShowYesNoDialogText(CVariant{313}, CVariant{333}) == DialogResponse::CHOICE_YES)
     {
       if (!CVideoLibraryQueue::GetInstance().IsRunning())
         CVideoLibraryQueue::GetInstance().CleanLibraryModal();

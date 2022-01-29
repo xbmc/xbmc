@@ -508,9 +508,10 @@ bool CAutorun::IsEnabled() const
 
 bool CAutorun::PlayDiscAskResume(const std::string& path)
 {
-  return PlayDisc(path, true, !CanResumePlayDVD(path) ||
-    HELPERS::ShowYesNoDialogText(CVariant{341}, CVariant{""}, CVariant{13404}, CVariant{12021}) ==
-    DialogResponse::YES);
+  return PlayDisc(path, true,
+                  !CanResumePlayDVD(path) ||
+                      HELPERS::ShowYesNoDialogText(CVariant{341}, CVariant{""}, CVariant{13404},
+                                                   CVariant{12021}) == DialogResponse::CHOICE_YES);
 }
 
 bool CAutorun::CanResumePlayDVD(const std::string& path)

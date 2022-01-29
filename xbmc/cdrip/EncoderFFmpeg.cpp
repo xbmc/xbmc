@@ -43,7 +43,7 @@ bool CEncoderFFmpeg::Init()
     const std::string addonId = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
         CSettings::SETTING_AUDIOCDS_ENCODER);
     bool success = CServiceBroker::GetAddonMgr().GetAddon(addonId, addon, ADDON::ADDON_UNKNOWN,
-                                                          ADDON::OnlyEnabled::YES);
+                                                          ADDON::OnlyEnabled::CHOICE_YES);
     int bitrate;
     if (success && addon)
     {

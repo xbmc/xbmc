@@ -313,7 +313,7 @@ bool Interface_Base::open_settings_dialog(const KODI_ADDON_BACKEND_HDL hdl)
   // show settings dialog
   AddonPtr addonInfo;
   if (!CServiceBroker::GetAddonMgr().GetAddon(addon->ID(), addonInfo, ADDON_UNKNOWN,
-                                              OnlyEnabled::YES))
+                                              OnlyEnabled::CHOICE_YES))
   {
     CLog::Log(LOGERROR, "Interface_Base::{} - Could not get addon information for '{}'", __func__,
               addon->ID());

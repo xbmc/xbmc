@@ -180,7 +180,7 @@ void CGUIDialogInfoProviderSettings::OnSettingAction(const std::shared_ptr<const
     {
       AddonPtr scraperAddon;
       if (CServiceBroker::GetAddonMgr().GetAddon(selectedAddonId, scraperAddon, ADDON_UNKNOWN,
-                                                 OnlyEnabled::YES))
+                                                 OnlyEnabled::CHOICE_YES))
       {
         m_albumscraper = std::dynamic_pointer_cast<CScraper>(scraperAddon);
         SetupView();
@@ -205,7 +205,7 @@ void CGUIDialogInfoProviderSettings::OnSettingAction(const std::shared_ptr<const
     {
       AddonPtr scraperAddon;
       if (CServiceBroker::GetAddonMgr().GetAddon(selectedAddonId, scraperAddon, ADDON_UNKNOWN,
-                                                 OnlyEnabled::YES))
+                                                 OnlyEnabled::CHOICE_YES))
       {
         m_artistscraper = std::dynamic_pointer_cast<CScraper>(scraperAddon);
         SetupView();
