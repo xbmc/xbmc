@@ -11,6 +11,11 @@
 #include "utils/Temperature.h"
 
 #include "platform/posix/CPUInfoPosix.h"
+#include "platform/posix/filesystem/PosixFile.h"
+
+#include <memory>
+
+using namespace XFILE;
 
 class CCPUInfoAndroid : public CCPUInfoPosix
 {
@@ -20,5 +25,8 @@ public:
 
   bool SupportsCPUUsage() const override { return false; }
   int GetUsedPercentage() override { return 0; }
-  float GetCPUFrequency() override { return 0; }
+  float GetCPUFrequency() override;
+
+private:
+  std::unique_ptr<CPosixFile> m_posixFile;
 };
