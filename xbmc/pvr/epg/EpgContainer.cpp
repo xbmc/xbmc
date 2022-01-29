@@ -734,18 +734,17 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
 
   std::vector<std::shared_ptr<CPVREpg>> invalidTables;
 
-  CPVRGUIProgressHandler* progressHandler = nullptr;
-  if (bShowProgress && !bOnlyPending)
-    progressHandler =
-        new CPVRGUIProgressHandler(g_localizeStrings.Get(19004)); // Loading programme guide
-
-  /* load or update all EPG tables */
   unsigned int iCounter = 0;
   const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
 
   m_critSection.lock();
   const auto epgsToUpdate = m_epgIdToEpgMap;
   m_critSection.unlock();
+
+  std::unique_ptr<CPVRGUIProgressHandler> progressHandler;
+  if (bShowProgress && !bOnlyPending && !epgsToUpdate.empty())
+    progressHandler.reset(
+        new CPVRGUIProgressHandler(g_localizeStrings.Get(19004))); // Loading programme guide
 
   for (const auto& epgEntry : epgsToUpdate)
   {
@@ -759,7 +758,7 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
     if (!epg)
       continue;
 
-    if (bShowProgress && !bOnlyPending)
+    if (progressHandler)
       progressHandler->UpdateProgress(epg->GetChannelData()->ChannelName(), ++iCounter,
                                       epgsToUpdate.size());
 
@@ -779,8 +778,7 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
     }
   }
 
-  if (bShowProgress && !bOnlyPending)
-    progressHandler->DestroyProgress();
+  progressHandler.reset();
 
   QueueDeleteEpgs(invalidTables);
 
