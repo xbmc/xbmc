@@ -637,8 +637,6 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
     gone = m_duration_written;
 
   double delay = m_duration_written - gone;
-  if (m_pause_ms > 0.0)
-    delay = m_audiotrackbuffer_sec;
 
   if (m_stampTimer.IsTimePast())
   {
@@ -725,9 +723,30 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
   if (delay < 0.0)
     delay = 0.0;
 
+  // the RAW hack for simulating pause bursts should not come
+  // into the way of hw delay
+  if (m_pause_ms > 0.0)
+  {
+    double difference = (m_audiotrackbuffer_sec - delay) * 1000;
+    if (usesAdvancedLogging)
+    {
+      CLog::Log(LOGINFO, "Faking Pause-Bursts in Delay - returning smoothed {} ms Original {} ms",
+                m_audiotrackbuffer_sec * 1000, delay * 1000);
+      CLog::Log(LOGINFO, "Difference: {} ms m_pause_ms {}", difference, m_pause_ms);
+    }
+    // buffer not yet reached
+    if (difference > 0.0)
+      delay = m_audiotrackbuffer_sec;
+    else
+    {
+      CLog::Log(LOGINFO, "Resetting pause bursts as buffer level was reached! (2)");
+      m_pause_ms = 0.0;
+    }
+  }
+
   const double d = GetMovingAverageDelay(delay);
 
-  // Audiotrack is caching more than we though it would
+  // Audiotrack is caching more than we thought it would
   if (d > m_audiotrackbuffer_sec)
     m_audiotrackbuffer_sec = d;
 
@@ -851,36 +870,28 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
   double time_to_add_ms = 1000.0 * (CurrentHostCounter() - startTime) / CurrentHostFrequency();
   if (m_passthrough && !m_info.m_wantsIECPassthrough)
   {
-
     // AT does not consume in a blocking way - it runs ahead and blocks
     // exactly once with the last package for some 100 ms
-    // help it sleeping a bit - but don't run dry -> at least 0.128 seconds of
-    // audio in buffer (e.g. 4 AC3 packages)
+    double extra_sleep = 0.0;
     if (time_to_add_ms < m_format.m_streamInfo.GetDuration())
-    {
-      // leave enough head room for eventualities
-      double extra_sleep = (m_format.m_streamInfo.GetDuration() - time_to_add_ms) / 2.0;
-      // warmup
-      if (m_pause_ms > 0)
-      {
-        m_pause_ms -= m_format.m_streamInfo.GetDuration();
-        extra_sleep /= 4; // fillup after Addpause
-      }
-      else if (m_delay < 0.128)
-      {
-        // care for underrun
-        extra_sleep /= 2;
-      }
+      extra_sleep = (m_format.m_streamInfo.GetDuration() - time_to_add_ms) / 2.0;
 
-      usleep(extra_sleep * 1000);
-    }
-    else
+    // if there is still place, just add it without blocking
+    if (m_delay < (m_audiotrackbuffer_sec - (m_format.m_streamInfo.GetDuration() / 1000.0)))
+      extra_sleep = 0;
+
+    if (m_pause_ms > 0.0)
     {
-      if (m_pause_ms > 0)
-        m_pause_ms -= time_to_add_ms;
-      else
-        m_pause_ms = 0;
+      extra_sleep = 0;
+      m_pause_ms -= m_format.m_streamInfo.GetDuration();
+      if (m_pause_ms <= 0.0)
+      {
+        m_pause_ms = 0.0;
+        CLog::Log(LOGINFO, "Resetting pause bursts as buffer level was reached! (1)");
+      }
     }
+
+    usleep(extra_sleep * 1000);
   }
   else
   {
@@ -911,9 +922,6 @@ void CAESinkAUDIOTRACK::AddPause(unsigned int millis)
   // blocking, sleeping roughly and GetDelay smoothing
   // In short: Shit in, shit out
   usleep(millis * 1000);
-  if (m_pause_ms < 0)
-    m_pause_ms = 0.0;
-
   m_pause_ms += millis;
 }
 
