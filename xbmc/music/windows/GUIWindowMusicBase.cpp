@@ -1233,15 +1233,15 @@ void CGUIWindowMusicBase::OnAssignContent(const std::string& oldName, const CMed
 
   // "Add to library" yes/no dialog with additional "settings" custom button
   // "Do you want to add the media from this source to your library?"
-  DialogResponse rep = DialogResponse::CUSTOM;
-  while (rep == DialogResponse::CUSTOM)
+  DialogResponse rep = DialogResponse::CHOICE_CUSTOM;
+  while (rep == DialogResponse::CHOICE_CUSTOM)
   {
     rep = HELPERS::ShowYesNoCustomDialog(CVariant{20444}, CVariant{20447}, CVariant{106}, CVariant{107}, CVariant{10004});
-    if (rep == DialogResponse::CUSTOM)
+    if (rep == DialogResponse::CHOICE_CUSTOM)
       // Edit default info provider settings so can be applied during scan
       CGUIDialogInfoProviderSettings::Show();
   }
-  if (rep == DialogResponse::YES)
+  if (rep == DialogResponse::CHOICE_YES)
     CMusicLibraryQueue::GetInstance().ScanLibrary(source.strPath,
                                                   MUSIC_INFO::CMusicInfoScanner::SCAN_NORMAL, true);
 }

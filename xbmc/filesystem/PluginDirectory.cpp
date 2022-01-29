@@ -71,11 +71,11 @@ bool CPluginDirectory::StartScript(const std::string& strPath, bool resume)
   ADDON::AddonPtr addon;
   // try the plugin type first, and if not found, try an unknown type
   if (!CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, ADDON_PLUGIN,
-                                              OnlyEnabled::YES) &&
+                                              OnlyEnabled::CHOICE_YES) &&
       !CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, ADDON_UNKNOWN,
-                                              OnlyEnabled::YES) &&
+                                              OnlyEnabled::CHOICE_YES) &&
       !CAddonInstaller::GetInstance().InstallModal(url.GetHostName(), addon,
-                                                   InstallModalPrompt::PROMPT))
+                                                   InstallModalPrompt::CHOICE_YES))
   {
     CLog::Log(LOGERROR, "Unable to find plugin {}", url.GetHostName());
     return false;
@@ -427,9 +427,9 @@ bool CPluginDirectory::RunScriptWithParams(const std::string& strPath, bool resu
 
   AddonPtr addon;
   if (!CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, ADDON_PLUGIN,
-                                              OnlyEnabled::YES) &&
+                                              OnlyEnabled::CHOICE_YES) &&
       !CAddonInstaller::GetInstance().InstallModal(url.GetHostName(), addon,
-                                                   InstallModalPrompt::PROMPT))
+                                                   InstallModalPrompt::CHOICE_YES))
   {
     CLog::Log(LOGERROR, "Unable to find plugin {}", url.GetHostName());
     return false;
@@ -512,7 +512,7 @@ bool CPluginDirectory::IsMediaLibraryScanningAllowed(const std::string& content,
     return false;
   AddonPtr addon;
   if (!CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, ADDON_PLUGIN,
-                                              OnlyEnabled::YES))
+                                              OnlyEnabled::CHOICE_YES))
   {
     CLog::Log(LOGERROR, "Unable to find plugin {}", url.GetHostName());
     return false;

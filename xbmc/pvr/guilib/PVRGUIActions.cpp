@@ -950,9 +950,11 @@ namespace PVR
       case TimerOperationResult::RECORDING:
       {
         // recording running. ask the user if it should be deleted anyway
-        if (HELPERS::ShowYesNoDialogText(CVariant{122},   // "Confirm delete"
-                                         CVariant{19122}) // "This timer is still recording. Are you sure you want to delete this timer?"
-            != HELPERS::DialogResponse::YES)
+        if (HELPERS::ShowYesNoDialogText(
+                CVariant{122}, // "Confirm delete"
+                CVariant{
+                    19122}) // "This timer is still recording. Are you sure you want to delete this timer?"
+            != HELPERS::DialogResponse::CHOICE_YES)
           return false;
 
         return DeleteTimer(timer, true, bDeleteRule);
@@ -2168,12 +2170,12 @@ namespace PVR
           }
 
           // Inform user about PVR being busy. Ask if user wants to powerdown anyway.
-          bReturn = HELPERS::ShowYesNoDialogText(CVariant{19685}, // "Confirm shutdown"
-                                                 CVariant{text},
-                                                 CVariant{222}, // "Shutdown anyway",
-                                                 CVariant{19696}, // "Cancel"
-                                                 10000) // timeout value before closing
-                    == HELPERS::DialogResponse::YES;
+          bReturn =
+              HELPERS::ShowYesNoDialogText(CVariant{19685}, // "Confirm shutdown"
+                                           CVariant{text}, CVariant{222}, // "Shutdown anyway",
+                                           CVariant{19696}, // "Cancel"
+                                           10000) // timeout value before closing
+              == HELPERS::DialogResponse::CHOICE_YES;
         }
         else
           bReturn = false; // do not powerdown (busy, but no user interaction requested).

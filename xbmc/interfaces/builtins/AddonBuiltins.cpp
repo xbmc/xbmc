@@ -53,7 +53,7 @@ static int InstallAddon(const std::vector<std::string>& params)
   const std::string& addonid = params[0];
 
   AddonPtr addon;
-  CAddonInstaller::GetInstance().InstallModal(addonid, addon, InstallModalPrompt::PROMPT);
+  CAddonInstaller::GetInstance().InstallModal(addonid, addon, InstallModalPrompt::CHOICE_YES);
 
   return 0;
 }
@@ -70,11 +70,12 @@ static int EnableAddon(const std::vector<std::string>& params)
     return -1;
 
   AddonPtr addon;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(addonid, addon, ADDON_UNKNOWN, OnlyEnabled::NO))
+  if (!CServiceBroker::GetAddonMgr().GetAddon(addonid, addon, ADDON_UNKNOWN,
+                                              OnlyEnabled::CHOICE_NO))
     return -1;
 
   auto response = HELPERS::ShowYesNoDialogLines(CVariant{24076}, CVariant{24135}, CVariant{addon->Name()}, CVariant{24136});
-  if (response == DialogResponse::YES)
+  if (response == DialogResponse::CHOICE_YES)
     CServiceBroker::GetAddonMgr().EnableAddon(addonid);
 
   return 0;
@@ -117,7 +118,8 @@ static int RunAddon(const std::vector<std::string>& params)
     const std::string& addonid = params[0];
 
     AddonPtr addon;
-    if (CServiceBroker::GetAddonMgr().GetAddon(addonid, addon, ADDON_PLUGIN, OnlyEnabled::YES))
+    if (CServiceBroker::GetAddonMgr().GetAddon(addonid, addon, ADDON_PLUGIN,
+                                               OnlyEnabled::CHOICE_YES))
     {
       PluginPtr plugin = std::dynamic_pointer_cast<CPluginSource>(addon);
       std::string urlParameters;
@@ -160,13 +162,13 @@ static int RunAddon(const std::vector<std::string>& params)
       CBuiltins::GetInstance().Execute(cmd);
     }
     else if (CServiceBroker::GetAddonMgr().GetAddon(addonid, addon, ADDON_SCRIPT,
-                                                    OnlyEnabled::YES) ||
+                                                    OnlyEnabled::CHOICE_YES) ||
              CServiceBroker::GetAddonMgr().GetAddon(addonid, addon, ADDON_SCRIPT_WEATHER,
-                                                    OnlyEnabled::YES) ||
+                                                    OnlyEnabled::CHOICE_YES) ||
              CServiceBroker::GetAddonMgr().GetAddon(addonid, addon, ADDON_SCRIPT_LYRICS,
-                                                    OnlyEnabled::YES) ||
+                                                    OnlyEnabled::CHOICE_YES) ||
              CServiceBroker::GetAddonMgr().GetAddon(addonid, addon, ADDON_SCRIPT_LIBRARY,
-                                                    OnlyEnabled::YES))
+                                                    OnlyEnabled::CHOICE_YES))
     {
       // Pass the script name (addonid) and all the parameters
       // (params[1] ... params[x]) separated by a comma to RunScript
@@ -174,7 +176,7 @@ static int RunAddon(const std::vector<std::string>& params)
           StringUtils::Format("RunScript({})", StringUtils::Join(params, ",")));
     }
     else if (CServiceBroker::GetAddonMgr().GetAddon(addonid, addon, ADDON_GAMEDLL,
-                                                    OnlyEnabled::YES))
+                                                    OnlyEnabled::CHOICE_YES))
     {
       CFileItem item;
 
@@ -236,17 +238,18 @@ static int RunScript(const std::vector<std::string>& params)
     AddonPtr addon;
     std::string scriptpath;
     // Test to see if the param is an addon ID
-    if (CServiceBroker::GetAddonMgr().GetAddon(params[0], addon, ADDON_UNKNOWN, OnlyEnabled::YES))
+    if (CServiceBroker::GetAddonMgr().GetAddon(params[0], addon, ADDON_UNKNOWN,
+                                               OnlyEnabled::CHOICE_YES))
     {
       //Get the correct extension point to run
       if (CServiceBroker::GetAddonMgr().GetAddon(params[0], addon, ADDON_SCRIPT,
-                                                 OnlyEnabled::YES) ||
+                                                 OnlyEnabled::CHOICE_YES) ||
           CServiceBroker::GetAddonMgr().GetAddon(params[0], addon, ADDON_SCRIPT_WEATHER,
-                                                 OnlyEnabled::YES) ||
+                                                 OnlyEnabled::CHOICE_YES) ||
           CServiceBroker::GetAddonMgr().GetAddon(params[0], addon, ADDON_SCRIPT_LYRICS,
-                                                 OnlyEnabled::YES) ||
+                                                 OnlyEnabled::CHOICE_YES) ||
           CServiceBroker::GetAddonMgr().GetAddon(params[0], addon, ADDON_SCRIPT_LIBRARY,
-                                                 OnlyEnabled::YES))
+                                                 OnlyEnabled::CHOICE_YES))
       {
         scriptpath = addon->LibPath();
       }
@@ -254,7 +257,7 @@ static int RunScript(const std::vector<std::string>& params)
       {
         // Run a random extension point (old behaviour).
         if (CServiceBroker::GetAddonMgr().GetAddon(params[0], addon, ADDON_UNKNOWN,
-                                                   OnlyEnabled::YES))
+                                                   OnlyEnabled::CHOICE_YES))
         {
           scriptpath = addon->LibPath();
           CLog::Log(LOGWARNING,
@@ -330,7 +333,8 @@ static int SetDefaultAddon(const std::vector<std::string>& params)
 static int AddonSettings(const std::vector<std::string>& params)
 {
   AddonPtr addon;
-  if (CServiceBroker::GetAddonMgr().GetAddon(params[0], addon, ADDON_UNKNOWN, OnlyEnabled::YES))
+  if (CServiceBroker::GetAddonMgr().GetAddon(params[0], addon, ADDON_UNKNOWN,
+                                             OnlyEnabled::CHOICE_YES))
     CGUIDialogAddonSettings::ShowForAddon(addon);
 
   return 0;
@@ -358,7 +362,8 @@ static int StopScript(const std::vector<std::string>& params)
   std::string scriptpath(params[0]);
   // Test to see if the param is an addon ID
   AddonPtr script;
-  if (CServiceBroker::GetAddonMgr().GetAddon(params[0], script, ADDON_UNKNOWN, OnlyEnabled::YES))
+  if (CServiceBroker::GetAddonMgr().GetAddon(params[0], script, ADDON_UNKNOWN,
+                                             OnlyEnabled::CHOICE_YES))
     scriptpath = script->LibPath();
   CScriptInvocationManager::GetInstance().Stop(scriptpath);
 

@@ -28,44 +28,44 @@ class CAddonDatabase;
 
 enum class BackgroundJob : bool
 {
-  YES = true,
-  NO = false,
+  CHOICE_YES = true,
+  CHOICE_NO = false,
 };
 
 enum class ModalJob : bool
 {
-  YES = true,
-  NO = false,
+  CHOICE_YES = true,
+  CHOICE_NO = false,
 };
 
 enum class AutoUpdateJob : bool
 {
-  YES = true,
-  NO = false,
+  CHOICE_YES = true,
+  CHOICE_NO = false,
 };
 
 enum class DependencyJob : bool
 {
-  YES = true,
-  NO = false,
+  CHOICE_YES = true,
+  CHOICE_NO = false,
 };
 
 enum class InstallModalPrompt : bool
 {
-  PROMPT = true,
-  NO_PROMPT = false,
+  CHOICE_YES = true,
+  CHOICE_NO = false,
 };
 
 enum class AllowCheckForUpdates : bool
 {
-  YES = true,
-  NO = false,
+  CHOICE_YES = true,
+  CHOICE_NO = false,
 };
 
 enum class RecurseOrphaned : bool
 {
-  YES = true,
-  NO = false,
+  CHOICE_YES = true,
+  CHOICE_NO = false,
 };
 
 class CAddonInstaller : public IJobCallback
@@ -281,8 +281,8 @@ private:
   ADDON::RepositoryPtr m_repo;
   bool m_isUpdate;
   AutoUpdateJob m_isAutoUpdate;
-  DependencyJob m_dependsInstall = DependencyJob::NO;
-  AllowCheckForUpdates m_allowCheckForUpdates = AllowCheckForUpdates::YES;
+  DependencyJob m_dependsInstall = DependencyJob::CHOICE_NO;
+  AllowCheckForUpdates m_allowCheckForUpdates = AllowCheckForUpdates::CHOICE_YES;
   const char* m_currentType = TYPE_DOWNLOAD;
 };
 
@@ -299,7 +299,7 @@ private:
 
   ADDON::AddonPtr m_addon;
   bool m_removeData;
-  RecurseOrphaned m_recurseOrphaned = RecurseOrphaned::YES;
+  RecurseOrphaned m_recurseOrphaned = RecurseOrphaned::CHOICE_YES;
 };
 
 }; // namespace ADDON
