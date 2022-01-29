@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-01-03 13:36+0000\n"
+"PO-Revision-Date: 2022-01-26 11:59+0000\n"
 "Last-Translator: Alfonso Cachero <alfonso.cachero@gmail.com>\n"
 "Language-Team: Spanish (Spain) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/es_es/>\n"
 "Language: es_es\n"
@@ -263,7 +263,7 @@ msgstr "Elementos del menú principal"
 
 msgctxt "#31062"
 msgid "Choose weather fanart pack"
-msgstr "Elegir pack de fanart para el tiempo"
+msgstr "Elegir pack de fanart para la meteorología"
 
 msgctxt "#31063"
 msgid "Sections"
@@ -440,11 +440,11 @@ msgstr "No tiene instalado ningún add-on aún. Visite nuestro navegador de add-
 
 msgctxt "#31120"
 msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
-msgstr "No ha configurado aún un proveedor de Tiempo. Para poder consultar el Tiempo, elija un proveedor y establezca su ubicación."
+msgstr "No ha configurado aún un proveedor de meteorología. Para poder consultar la meteorología, elija un proveedor y establezca su ubicación."
 
 msgctxt "#31121"
 msgid "Set weather provider"
-msgstr "Establecer proveedor de Tiempo"
+msgstr "Establecer proveedor de meteorología"
 
 msgctxt "#31122"
 msgid "Unwatched TV Shows"

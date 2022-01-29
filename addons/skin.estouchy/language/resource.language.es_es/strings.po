@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-01-03 13:36+0000\n"
+"PO-Revision-Date: 2022-01-26 11:59+0000\n"
 "Last-Translator: Alfonso Cachero <alfonso.cachero@gmail.com>\n"
 "Language-Team: Spanish (Spain) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/es_es/>\n"
 "Language: es_es\n"
@@ -236,7 +236,7 @@ msgstr "Cambiar la skin - Seleccionar idioma y zona - Cambiar opciones de listad
 
 msgctxt "#31405"
 msgid "Configure & manage media sharing services · Configure & manage the weather service"
-msgstr "Configurar y gestionar los servicios para compartir contenido · Configurar y gestionar el servicio del Tiempo"
+msgstr "Configurar y gestionar los servicios para compartir contenido · Configurar y gestionar el servicio meteorológico"
 
 msgctxt "#31406"
 msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
