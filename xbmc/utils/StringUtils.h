@@ -395,7 +395,7 @@ private:
 
 struct sortstringbyname
 {
-  bool operator()(const std::string& strItem1, const std::string& strItem2)
+  bool operator()(const std::string& strItem1, const std::string& strItem2) const
   {
     return StringUtils::CompareNoCase(strItem1, strItem2) < 0;
   }
