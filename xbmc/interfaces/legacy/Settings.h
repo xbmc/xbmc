@@ -45,7 +45,7 @@ XBMCCOMMONS_STANDARD_EXCEPTION(SettingCallbacksNotSupportedException);
 /// **Example:**
 /// ~~~~~~~~~~~~~{.py}
 /// ...
-/// settings = xbmc.Addon('id').getSettings()
+/// settings = xbmcaddon.Addon('id').getSettings()
 /// ...
 /// ~~~~~~~~~~~~~
 //
