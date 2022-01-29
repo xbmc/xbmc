@@ -1316,8 +1316,16 @@ bool CApplication::LoadCustomWindows()
 
           if (StringUtils::EqualsNoCase(strType, "dialog"))
           {
+            DialogModalityType modality = DialogModalityType::MODAL;
             hasVisibleCondition = pRootElement->FirstChildElement("visible") != nullptr;
-            pWindow = new CGUIDialog(windowId, skinFile);
+            // By default dialogs that have visible conditions are considered modeless unless explicitly
+            // set to "modal" by the skinner using the "modality" attribute in the root XML element of the window
+            if (hasVisibleCondition &&
+                (!pRootElement->Attribute("modality") ||
+                 !StringUtils::EqualsNoCase(pRootElement->Attribute("modality"), "modal")))
+              modality = DialogModalityType::MODELESS;
+
+            pWindow = new CGUIDialog(windowId, skinFile, modality);
           }
           else if (StringUtils::EqualsNoCase(strType, "submenu"))
           {
