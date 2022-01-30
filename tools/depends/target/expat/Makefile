@@ -1,13 +1,5 @@
-include ../../Makefile.include
-DEPS = ../../Makefile.include Makefile ../../download-files.include
-
-# lib name, version
-LIBNAME=expat
-VERSION=2.4.1
-SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.xz
-SHA512=9dc760dbf701f75e55c4479d81417622f8c750d8473498458a382a4c2932a2976a059cb3589f88855188e5173ec7868d285c4601428e0ca625df7a59cf975191
-include ../../download-files.include
+include ../../Makefile.include EXPAT-VERSION ../../download-files.include
+DEPS= ../../Makefile.include Makefile EXPAT-VERSION ../../download-files.include
 
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) ./conftools; \
