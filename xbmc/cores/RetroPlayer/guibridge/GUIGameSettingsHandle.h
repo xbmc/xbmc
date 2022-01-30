@@ -22,6 +22,12 @@ public:
   CGUIGameSettingsHandle(CGUIGameRenderManager& renderManager);
   virtual ~CGUIGameSettingsHandle();
 
+  /*!
+   * \brief Get the ID of the active game client
+   *
+   * \return The ID of the active game client, or empty string if a game is
+   * not playing
+   */
   std::string GameClientID();
 
 private:
