@@ -21,6 +21,7 @@ namespace XbmcThreads
    *   lock();
    *   try_lock();
    *   unlock();
+   *   IsLocked();
    *
    * "Exitable" specifically means that, no matter how deep the recursion
    * on the mutex/critical section, we can exit from it and then restore
@@ -49,6 +50,12 @@ namespace XbmcThreads
     inline void lock() { mutex.lock(); count++; }
     inline bool try_lock() { return mutex.try_lock() ? count++, true : false; }
     inline void unlock() { count--; mutex.unlock(); }
+
+    /*!
+     * \brief Check if have a lock owned
+     * \return True if have a lock, otherwise false
+     */
+    inline bool IsLocked() const { return count > 0; }
 
     /**
      * This implements the "exitable" behavior mentioned above.
