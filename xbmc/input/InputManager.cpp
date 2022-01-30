@@ -684,7 +684,10 @@ bool CInputManager::AlwaysProcess(const CAction& action)
         builtInFunction == "suspend" || builtInFunction == "hibernate" ||
         builtInFunction == "quit" || builtInFunction == "shutdown" ||
         builtInFunction == "volumeup" || builtInFunction == "volumedown" ||
-        builtInFunction == "mute")
+        builtInFunction == "mute" || builtInFunction == "RunAppleScript" ||
+        builtInFunction == "RunAddon" || builtInFunction == "RunPlugin" ||
+        builtInFunction == "RunScript" || builtInFunction == "System.Exec" ||
+        builtInFunction == "System.ExecWait")
     {
       return true;
     }
