@@ -30,9 +30,38 @@ public:
    * not playing
    */
   std::string GameClientID();
+
+  /*!
+   * \brief Get the full path of the game being played
+   *
+   * \return The game's path, or empty string if a game is not playing
+   */
   std::string GetPlayingGame();
+
+  /*!
+   * \brief Create a savestate of the current game being played
+   *
+   * \param autosave True if the save was invoked automatically, or false if
+   * the save was invoked by a player
+   *
+   * \return The path to the created savestate file, or empty string on
+   * failure or if a game is not playing
+   */
   std::string CreateSavestate(bool autosave);
+
+  /*!
+   * \brief Load a savestate for the current game being played
+   *
+   * \param path The path to the created savestate file returned by
+   * CreateSavestate()
+   *
+   * \return True if the savestate was loaded successfully, false otherwise
+   */
   bool LoadSavestate(const std::string& path);
+
+  /*!
+   * \brief Close the in-game OSD
+   */
   void CloseOSD();
 
 private:
