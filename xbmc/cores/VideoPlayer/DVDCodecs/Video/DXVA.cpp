@@ -1035,7 +1035,7 @@ static bool IsL41LimitedATI()
   DXGI_ADAPTER_DESC AIdentifier = {};
   DX::DeviceResources::Get()->GetAdapterDesc(&AIdentifier);
 
-  if (AIdentifier.VendorId == PCIV_ATI)
+  if (AIdentifier.VendorId == PCIV_AMD)
   {
     for (unsigned idx = 0; UVDDeviceID[idx] != 0; idx++)
     {
@@ -1052,7 +1052,7 @@ static bool HasVP3WidthBug(AVCodecContext* avctx)
   DXGI_ADAPTER_DESC AIdentifier = {};
   DX::DeviceResources::Get()->GetAdapterDesc(&AIdentifier);
 
-  if (AIdentifier.VendorId == PCIV_nVidia &&
+  if (AIdentifier.VendorId == PCIV_NVIDIA &&
       !CDVDCodecUtils::IsVP3CompatibleWidth(avctx->coded_width))
   {
     // Find the card in a known list of problematic VP3 hardware
@@ -1067,7 +1067,7 @@ static bool HasATIMP2Bug(AVCodecContext* avctx)
 {
   DXGI_ADAPTER_DESC AIdentifier = {};
   DX::DeviceResources::Get()->GetAdapterDesc(&AIdentifier);
-  if (AIdentifier.VendorId != PCIV_ATI)
+  if (AIdentifier.VendorId != PCIV_AMD)
     return false;
 
   // AMD/ATI card doesn't like some SD MPEG2 content
@@ -1245,7 +1245,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, enum AVPixel
         "DXVA: used Intel ClearVideo decoder, but no support workaround for it in libavcodec.");
 #endif
   }
-  else if (ad.VendorId == PCIV_ATI && IsL41LimitedATI())
+  else if (ad.VendorId == PCIV_AMD && IsL41LimitedATI())
   {
 #ifdef FF_DXVA2_WORKAROUND_SCALING_LIST_ZIGZAG
     m_avD3D11Context->workaround |= FF_DXVA2_WORKAROUND_SCALING_LIST_ZIGZAG;
@@ -1434,11 +1434,8 @@ bool CDecoder::OpenDecoder()
   m_avD3D11Context->video_context = nullptr;
   m_avD3D11Context->surface_count = m_refs;
 
-  DXGI_ADAPTER_DESC AIdentifier = {};
-  DX::DeviceResources::Get()->GetAdapterDesc(&AIdentifier);
-
-  // use true shared buffers on Intel
-  bool trueShared = m_dxvaContext->IsContextShared() && AIdentifier.VendorId == PCIV_Intel;
+  // use true shared buffers always on Intel or Nvidia/AMD with recent drivers
+  const bool trueShared = DX::DeviceResources::Get()->IsDXVA2SharedDecoderSurfaces();
 
   if (!m_dxvaContext->CreateSurfaces(m_format, m_avD3D11Context->surface_count, m_surface_alignment,
                                      m_avD3D11Context->surface, &m_sharedHandle, trueShared))

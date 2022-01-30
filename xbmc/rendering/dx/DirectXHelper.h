@@ -16,6 +16,13 @@
 #include <d3d11_4.h>
 #include <ppltasks.h> // For create_task
 
+enum PCI_Vendors
+{
+  PCIV_AMD = 0x1002,
+  PCIV_NVIDIA = 0x10DE,
+  PCIV_Intel = 0x8086,
+};
+
 namespace DX
 {
 #define RATIONAL_TO_FLOAT(rational) ((rational.Denominator != 0) ? \
@@ -92,6 +99,25 @@ namespace DX
     uint32_t fl_minor = (featureLevel & 0x0F00u) >> 8;
 
     return StringUtils::Format("D3D_FEATURE_LEVEL_{}_{}", fl_major, fl_minor);
+  }
+
+  inline std::string GetGFXProviderName(UINT vendorId)
+  {
+    std::string name;
+    switch (vendorId)
+    {
+      case PCIV_AMD:
+        name = "AMD";
+        break;
+      case PCIV_Intel:
+        name = "Intel";
+        break;
+      case PCIV_NVIDIA:
+        name = "NVIDIA";
+        break;
+    }
+
+    return name;
   }
 
   template <typename T> struct SizeGen
