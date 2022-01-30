@@ -421,6 +421,7 @@ bool CRetroPlayer::OnAction(const CAction& action)
         CloseOSD();
         return true;
       }
+      break;
     }
     default:
       break;
