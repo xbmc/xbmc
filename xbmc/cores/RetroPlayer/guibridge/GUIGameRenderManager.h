@@ -43,7 +43,7 @@ class IRenderCallback;
  * Access to the player is done through handles. When a handle is no
  * longer needed, it should be destroyed.
  *
- * Two kinds of handles are provided:
+ * Three kinds of handles are provided:
  *
  *   - CGUIRenderHandle
  *         Allows the holder to invoke render events
@@ -51,6 +51,10 @@ class IRenderCallback;
  *   - CGUIGameVideoHandle
  *         Allows the holder to query video properties, such as the filter
  *         or view mode.
+ *
+ *   - CGUIGameSettingsHandle
+ *         Allows the holder to query game properties, such as the ID of the
+ *         game client or the game's filename.
  *
  * Each manager fulfills the following design requirements:
  *
@@ -63,6 +67,7 @@ class IRenderCallback;
  */
 class CGUIGameRenderManager
 {
+  // Classes that call into the protected interface
   friend class CGUIGameSettingsHandle;
   friend class CGUIGameVideoHandle;
   friend class CGUIRenderHandle;
