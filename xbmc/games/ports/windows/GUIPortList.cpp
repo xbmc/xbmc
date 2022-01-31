@@ -104,18 +104,21 @@ void CGUIPortList::Refresh()
 
   CleanupItems();
 
-  unsigned int itemIndex = 0;
-  for (const CPortNode& port : m_gameClient->Input().GetActiveControllerTree().GetPorts())
-    AddItems(port, itemIndex, GetLabel(port));
-
-  m_viewControl->SetItems(*m_vecItems);
-
-  // Try to restore focus to the previously focused port
-  if (!m_focusedPort.empty() && m_addressToItem.find(m_focusedPort) != m_addressToItem.end())
+  if (m_gameClient)
   {
-    const unsigned int itemIndex = m_addressToItem[m_focusedPort];
-    m_viewControl->SetSelectedItem(itemIndex);
-    OnItemFocus(itemIndex);
+    unsigned int itemIndex = 0;
+    for (const CPortNode& port : m_gameClient->Input().GetActiveControllerTree().GetPorts())
+      AddItems(port, itemIndex, GetLabel(port));
+
+    m_viewControl->SetItems(*m_vecItems);
+
+    // Try to restore focus to the previously focused port
+    if (!m_focusedPort.empty() && m_addressToItem.find(m_focusedPort) != m_addressToItem.end())
+    {
+      const unsigned int itemIndex = m_addressToItem[m_focusedPort];
+      m_viewControl->SetSelectedItem(itemIndex);
+      OnItemFocus(itemIndex);
+    }
   }
 }
 
@@ -144,14 +147,17 @@ void CGUIPortList::OnSelect()
 
 void CGUIPortList::ResetPorts()
 {
-  // Update the game client
-  m_gameClient->Input().ResetPorts();
-  m_gameClient->Input().SavePorts();
+  if (m_gameClient)
+  {
+    // Update the game client
+    m_gameClient->Input().ResetPorts();
+    m_gameClient->Input().SavePorts();
 
-  // Refresh the GUI
-  using namespace MESSAGING;
-  CGUIMessage msg(GUI_MSG_REFRESH_LIST, m_guiWindow.GetID(), CONTROL_PORT_LIST);
-  CApplicationMessenger::GetInstance().SendGUIMessage(msg, m_guiWindow.GetID());
+    // Refresh the GUI
+    using namespace MESSAGING;
+    CGUIMessage msg(GUI_MSG_REFRESH_LIST, m_guiWindow.GetID(), CONTROL_PORT_LIST);
+    CApplicationMessenger::GetInstance().SendGUIMessage(msg, m_guiWindow.GetID());
+  }
 }
 
 void CGUIPortList::OnEvent(const ADDON::AddonEvent& event)
@@ -234,58 +240,65 @@ void CGUIPortList::OnItemFocus(unsigned int itemIndex)
 
 void CGUIPortList::OnItemSelect(unsigned int itemIndex)
 {
-  const auto it = m_itemToAddress.find(itemIndex);
-  if (it == m_itemToAddress.end())
-    return;
+  if (m_gameClient)
+  {
+    const auto it = m_itemToAddress.find(itemIndex);
+    if (it == m_itemToAddress.end())
+      return;
 
-  const std::string& portAddress = it->second;
-  if (portAddress.empty())
-    return;
+    const std::string& portAddress = it->second;
+    if (portAddress.empty())
+      return;
 
-  const CPortNode& port = m_gameClient->Input().GetActiveControllerTree().GetPort(portAddress);
+    const CPortNode& port = m_gameClient->Input().GetActiveControllerTree().GetPort(portAddress);
 
-  ControllerVector controllers;
-  for (const CControllerNode& controllerNode : port.GetCompatibleControllers())
-    controllers.emplace_back(controllerNode.GetController());
+    ControllerVector controllers;
+    for (const CControllerNode& controllerNode : port.GetCompatibleControllers())
+      controllers.emplace_back(controllerNode.GetController());
 
-  // Get current controller to give initial focus
-  ControllerPtr controller = port.GetActiveController().GetController();
+    // Get current controller to give initial focus
+    ControllerPtr controller = port.GetActiveController().GetController();
 
-  auto callback = [this, &port](const ControllerPtr& controller)
-  { OnControllerSelected(port, controller); };
+    auto callback = [this, &port](const ControllerPtr& controller) {
+      OnControllerSelected(port, controller);
+    };
 
-  const bool showDisconnect = !port.IsForceConnected();
-  m_controllerSelectDialog.Initialize(std::move(controllers), std::move(controller), showDisconnect,
-                                      callback);
+    const bool showDisconnect = !port.IsForceConnected();
+    m_controllerSelectDialog.Initialize(std::move(controllers), std::move(controller),
+                                        showDisconnect, callback);
+  }
 }
 
 void CGUIPortList::OnControllerSelected(const CPortNode& port, const ControllerPtr& controller)
 {
-  // Translate parameter
-  const bool bConnected = static_cast<bool>(controller);
-
-  // Update the game client
-  const bool bSuccess = bConnected
-                            ? m_gameClient->Input().ConnectController(port.GetAddress(), controller)
-                            : m_gameClient->Input().DisconnectController(port.GetAddress());
-
-  if (bSuccess)
+  if (m_gameClient)
   {
-    m_gameClient->Input().SavePorts();
-  }
-  else
-  {
-    // "Failed to change controller"
-    // "The emulator "%s" had an internal error."
-    MESSAGING::HELPERS::ShowOKDialogText(
-        CVariant{35114},
-        CVariant{StringUtils::Format(g_localizeStrings.Get(35213), m_gameClient->Name())});
-  }
+    // Translate parameter
+    const bool bConnected = static_cast<bool>(controller);
 
-  // Send a GUI message to reload the port list
-  using namespace MESSAGING;
-  CGUIMessage msg(GUI_MSG_REFRESH_LIST, m_guiWindow.GetID(), CONTROL_PORT_LIST);
-  CApplicationMessenger::GetInstance().SendGUIMessage(msg, m_guiWindow.GetID());
+    // Update the game client
+    const bool bSuccess =
+        bConnected ? m_gameClient->Input().ConnectController(port.GetAddress(), controller)
+                   : m_gameClient->Input().DisconnectController(port.GetAddress());
+
+    if (bSuccess)
+    {
+      m_gameClient->Input().SavePorts();
+    }
+    else
+    {
+      // "Failed to change controller"
+      // "The emulator "%s" had an internal error."
+      MESSAGING::HELPERS::ShowOKDialogText(
+          CVariant{35114},
+          CVariant{StringUtils::Format(g_localizeStrings.Get(35213), m_gameClient->Name())});
+    }
+
+    // Send a GUI message to reload the port list
+    using namespace MESSAGING;
+    CGUIMessage msg(GUI_MSG_REFRESH_LIST, m_guiWindow.GetID(), CONTROL_PORT_LIST);
+    CApplicationMessenger::GetInstance().SendGUIMessage(msg, m_guiWindow.GetID());
+  }
 }
 
 std::string CGUIPortList::GetLabel(const CPortNode& port)
