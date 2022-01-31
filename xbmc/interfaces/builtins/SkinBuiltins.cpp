@@ -543,11 +543,12 @@ static int SkinDebug(const std::vector<std::string>& params)
 ///     elsewhere in the skin via the info tag `Skin.String(string)`.
 ///     Skinners can optionally set the color that needs to be preselected in the
 ///     dialog by specifying the hex value of this color.
-///     Also optionally\,skinners can include their own color definition file. If not specified\,
+///     Also optionally\, skinners can include their own color definition file. If not specified\,
 ///     the default colorfile included with Kodi will be used.
 ///     @param[in] string                Name of skin setting.
 ///     @param[in] string                Dialog header text.
-///     @param[in] string                Hex value of the color to preselect (optional).
+///     @param[in] string                Hex value of the color to preselect (optional),
+///                                      example: FF00FF00.
 ///     @param[in] string                Filepath of the color definition file (optional).
 ///     <p><hr>
 ///     @skinning_v20 **[New builtin]** \link Builtin_SetColor `SetColor(string\,header[\,colorfile\,selectedcolor])`\endlink

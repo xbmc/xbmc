@@ -14,6 +14,9 @@
 #include "utils/ColorUtils.h"
 #include "utils/StringUtils.h"
 
+using namespace KODI;
+using namespace GUILIB;
+
 CGUIColorButtonControl::CGUIColorButtonControl(int parentID,
                                                int controlID,
                                                float posX,
@@ -35,7 +38,7 @@ CGUIColorButtonControl::CGUIColorButtonControl(int parentID,
   m_colorPosY = 0;
   m_imgColorMask->SetAspectRatio(CAspectRatio::AR_KEEP);
   m_imgColorDisabledMask->SetAspectRatio(CAspectRatio::AR_KEEP);
-  m_imgBoxColor = UTILS::COLOR::NONE;
+  m_imgBoxColor = GUIINFO::CGUIInfoColor(UTILS::COLOR::NONE);
   ControlType = GUICONTROL_COLORBUTTON;
   // offsetX is like a left/right padding, "hex" label does not require high values
   m_labelInfo.GetLabelInfo().offsetX = 2;
@@ -154,7 +157,7 @@ std::string CGUIColorButtonControl::GetDescription() const
   return CGUIButtonControl::GetDescription();
 }
 
-void CGUIColorButtonControl::SetImageBoxColor(KODI::GUILIB::GUIINFO::CGUIInfoColor color)
+void CGUIColorButtonControl::SetImageBoxColor(GUIINFO::CGUIInfoColor color)
 {
   m_imgBoxColor = color;
 }
@@ -162,14 +165,15 @@ void CGUIColorButtonControl::SetImageBoxColor(KODI::GUILIB::GUIINFO::CGUIInfoCol
 void CGUIColorButtonControl::SetImageBoxColor(const std::string& hexColor)
 {
   if (hexColor.empty())
-    m_imgBoxColor = UTILS::COLOR::NONE;
+    m_imgBoxColor = GUIINFO::CGUIInfoColor(UTILS::COLOR::NONE);
   else
-    m_imgBoxColor = UTILS::COLOR::ConvertHexToColor(hexColor);
+    m_imgBoxColor = GUIINFO::CGUIInfoColor(UTILS::COLOR::ConvertHexToColor(hexColor));
 }
 
 bool CGUIColorButtonControl::UpdateColors(const CGUIListItem* item)
 {
   bool changed = CGUIButtonControl::UpdateColors(nullptr);
+  changed |= m_imgBoxColor.Update();
   changed |= m_imgColorMask->SetDiffuseColor(m_imgBoxColor, item);
   changed |= m_imgColorDisabledMask->SetDiffuseColor(m_diffuseColor);
   changed |= m_labelInfo.UpdateColors();

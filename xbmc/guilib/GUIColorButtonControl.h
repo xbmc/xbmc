@@ -66,6 +66,6 @@ protected:
   std::unique_ptr<CGUITexture> m_imgColorDisabledMask;
   float m_colorPosX;
   float m_colorPosY;
-  UTILS::COLOR::Color m_imgBoxColor;
+  KODI::GUILIB::GUIINFO::CGUIInfoColor m_imgBoxColor;
   CGUILabel m_labelInfo;
 };
