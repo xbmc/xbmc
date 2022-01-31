@@ -910,8 +910,8 @@ void CEdl::MergeShortCommBreaks()
       (m_edits.front().end - m_edits.front().start) < 5 * 1000) // 5 seconds
   {
     CLog::LogF(LOGDEBUG, "Removing short commercial break at start [{} - {}]. <5 seconds",
-               MillisecondsToTimeString(m_edits[0].start),
-               MillisecondsToTimeString(m_edits[0].end));
+               MillisecondsToTimeString(m_edits.front().start),
+               MillisecondsToTimeString(m_edits.front().end));
     m_edits.erase(m_edits.begin());
   }
 
