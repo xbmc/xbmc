@@ -10,6 +10,7 @@
 
 #include "Util.h"
 #include "filesystem/File.h"
+#include "games/controllers/Controller.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/joysticks/interfaces/IInputHandler.h"
 #include "peripherals/Peripherals.h"
@@ -669,8 +670,9 @@ void CPeripheral::UnregisterJoystickButtonMapper(IButtonMapper* mapper)
 
 std::string CPeripheral::GetIcon() const
 {
-  std::string icon = "DefaultAddon.png";
+  std::string icon;
 
+  // Try add-on
   if (m_busType == PERIPHERAL_BUS_ADDON)
   {
     CPeripheralBusAddon* bus = static_cast<CPeripheralBusAddon*>(m_bus);
@@ -684,6 +686,18 @@ std::string CPeripheral::GetIcon() const
         icon = std::move(addonIcon);
     }
   }
+
+  // Try controller profile
+  if (icon.empty())
+  {
+    const GAME::ControllerPtr controller = ControllerProfile();
+    if (controller)
+      icon = controller->Icon();
+  }
+
+  // Fallback
+  if (icon.empty())
+    icon = "DefaultAddon.png";
 
   return icon;
 }

@@ -9,6 +9,9 @@
 #include "PeripheralJoystick.h"
 
 #include "Application.h"
+#include "ServiceBroker.h"
+#include "games/GameServices.h"
+#include "games/controllers/Controller.h"
 #include "games/controllers/ControllerIDs.h"
 #include "input/InputManager.h"
 #include "input/joysticks/DeadzoneFilter.h"
@@ -196,6 +199,14 @@ void CPeripheralJoystick::UnregisterJoystickDriverHandler(IDriverHandler* handle
 IKeymap* CPeripheralJoystick::GetKeymap(const std::string& controllerId)
 {
   return m_appInput->GetKeymap(controllerId);
+}
+
+GAME::ControllerPtr CPeripheralJoystick::ControllerProfile() const
+{
+  //! @todo Allow the user to change which controller profile represents their
+  // controller. For now, just use the default.
+  GAME::CGameServices& gameServices = CServiceBroker::GetGameServices();
+  return gameServices.GetDefaultController();
 }
 
 bool CPeripheralJoystick::OnButtonMotion(unsigned int buttonIndex, bool bPressed)
