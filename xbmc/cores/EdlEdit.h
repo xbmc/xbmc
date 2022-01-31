@@ -8,6 +8,9 @@
 
 #pragma once
 
+#include <array>
+#include <string_view>
+
 namespace EDL
 {
 
@@ -20,6 +23,9 @@ enum class Action
   SCENE = 2,
   COMM_BREAK = 3
 };
+
+constexpr std::array<std::string_view, 4> edlActionDescription{
+    {"Cut", "Mute", "Scene Marker", "Commercial Break"}};
 
 struct Edit
 {

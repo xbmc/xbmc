@@ -127,14 +127,12 @@ bool CEdl::ReadEdl(const std::string& path, float fps)
       continue;
     }
 
-    std::array<std::string, 2> fields{};
-    fields[0] = buffer1.data();
-    fields[1] = buffer2.data();
+    std::array<std::string, 2> fields = {buffer1.data(), buffer2.data()};
 
     // If only 2 fields read, then assume it's a scene marker.
     if (fieldsRead == 2)
     {
-      action = atoi(fields[1].c_str());
+      action = static_cast<int>(Action::SCENE);
       fields[1] = fields[0];
     }
 
@@ -177,7 +175,7 @@ bool CEdl::ReadEdl(const std::string& path, float fps)
           }
           editStartEnd[i] =
               static_cast<int64_t>(StringUtils::TimeStringToSeconds(fieldParts[0])) * 1000 +
-              std::atoi(fieldParts[1].c_str()); // seconds to ms
+              std::stoi(fieldParts[1]); // seconds to ms
         }
         else
         {
@@ -190,7 +188,7 @@ bool CEdl::ReadEdl(const std::string& path, float fps)
       {
         if (fps > 0.0f)
         {
-          editStartEnd[i] = static_cast<int64_t>(std::atol(fields[i].substr(1).c_str()) / fps *
+          editStartEnd[i] = static_cast<int64_t>(std::stol(fields[i].substr(1)) / fps *
                                                  1000); // frame number to ms
         }
         else
@@ -205,8 +203,7 @@ bool CEdl::ReadEdl(const std::string& path, float fps)
       // Plain old seconds in float format, e.g. 123.45
       else
       {
-        editStartEnd[i] =
-            static_cast<int64_t>(std::atof(fields[i].c_str()) * 1000); // seconds to ms
+        editStartEnd[i] = static_cast<int64_t>(std::stod(fields[i]) * 1000); // seconds to ms
       }
     }
 
@@ -218,46 +215,26 @@ bool CEdl::ReadEdl(const std::string& path, float fps)
     edit.start = editStartEnd[0];
     edit.end = editStartEnd[1];
 
-    switch (action)
+    if (action < 0 || action >= static_cast<uint16_t>(EDL::edlActionDescription.size()))
     {
-    case 0:
-      edit.action = Action::CUT;
-      if (!AddEdit(edit))
-      {
-        CLog::LogF(LOGWARNING, "Error adding cut from line {} in EDL file: {}", line,
-                   CURL::GetRedacted(edlFilename));
-        continue;
-      }
-      break;
-    case 1:
-      edit.action = Action::MUTE;
-      if (!AddEdit(edit))
-      {
-        CLog::LogF(LOGWARNING, "Error adding mute from line {} in EDL file: {}", line,
-                   CURL::GetRedacted(edlFilename));
-        continue;
-      }
-      break;
-    case 2:
-      if (!AddSceneMarker(edit.end))
-      {
-        CLog::LogF(LOGWARNING, "Error adding scene marker from line {} in EDL file: {}", line,
-                   CURL::GetRedacted(edlFilename));
-        continue;
-      }
-      break;
-    case 3:
-      edit.action = Action::COMM_BREAK;
-      if (!AddEdit(edit))
-      {
-        CLog::LogF(LOGWARNING, "Error adding commercial break from line {} in EDL file: {}", line,
-                   CURL::GetRedacted(edlFilename));
-        continue;
-      }
-      break;
-    default:
       CLog::LogF(LOGWARNING, "Invalid action on line {} in EDL file: {}", line,
                  CURL::GetRedacted(edlFilename));
+      continue;
+    }
+
+    edit.action = static_cast<EDL::Action>(action);
+
+    bool added{false};
+
+    if (edit.action == Action::SCENE)
+      added = AddSceneMarker(edit.end);
+    else
+      added = AddEdit(edit);
+
+    if (!added)
+    {
+      CLog::LogF(LOGWARNING, "Error adding {} from line {} in EDL file: {}",
+                 EDL::edlActionDescription.at(action), line, CURL::GetRedacted(edlFilename));
       continue;
     }
   }
