@@ -373,6 +373,7 @@ protected:
 
   bool m_bInhibitIdleShutdown = false;
   bool m_bInhibitScreenSaver = false;
+  bool m_bResetScreenSaver = false;
 
   bool m_dpmsIsActive = false;
   bool m_dpmsIsManual = false;
