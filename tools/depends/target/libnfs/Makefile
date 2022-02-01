@@ -1,14 +1,5 @@
-include ../../Makefile.include
-DEPS = ../../Makefile.include Makefile ../../download-files.include
-
-# lib name, version
-LIBNAME=libnfs
-VERSION=17f882fbdbe7f739d1285f173781c1525a29a7fa
-# Github commit date of version hash
-COMMITDATE=2020-06-09
-ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
-SHA512=0a367863ed47cc041007480473da4e936ef81978689d35cd048f5f72cbbf300b6e6982559303c67c2b6efd6c3b90ceea57930440f849f3921a8b2c40395e03f1
-include ../../download-files.include
+include ../../Makefile.include LIBNFS-VERSION ../../download-files.include
+DEPS= ../../Makefile.include Makefile LIBNFS-VERSION ../../download-files.include
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) --disable-shared --disable-utils --disable-examples --disable-werror
