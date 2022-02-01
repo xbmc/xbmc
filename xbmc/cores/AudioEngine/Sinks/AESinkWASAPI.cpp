@@ -52,26 +52,7 @@ inline void SafeRelease(T **ppT)
 
 using namespace Microsoft::WRL;
 
-CAESinkWASAPI::CAESinkWASAPI() :
-  m_needDataEvent(0),
-  m_pDevice(nullptr),
-  m_pAudioClient(nullptr),
-  m_pRenderClient(nullptr),
-  m_pAudioClock(nullptr),
-  m_encodedChannels(0),
-  m_encodedSampleRate(0),
-  sinkReqFormat(AE_FMT_INVALID),
-  sinkRetFormat(AE_FMT_INVALID),
-  m_running(false),
-  m_initialized(false),
-  m_isSuspended(false),
-  m_isDirty(false),
-  m_uiBufferLen(0),
-  m_avgTimeWaiting(50),
-  m_sinkLatency(0.0),
-  m_sinkFrames(0),
-  m_clockFreq(0),
-  m_bufferPtr(0)
+CAESinkWASAPI::CAESinkWASAPI()
 {
   m_channelLayout.Reset();
 }
