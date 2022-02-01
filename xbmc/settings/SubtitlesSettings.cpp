@@ -8,14 +8,22 @@
 
 #include "SubtitlesSettings.h"
 
+#include "FileItem.h"
 #include "ServiceBroker.h"
+#include "filesystem/Directory.h"
+#include "filesystem/File.h"
+#include "guilib/GUIFontManager.h"
+#include "guilib/LocalizeStrings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
+#include "utils/FontUtils.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+
 
 using namespace KODI;
 using namespace SUBTITLES;
-
 
 CSubtitlesSettings::CSubtitlesSettings()
 {
@@ -25,7 +33,7 @@ CSubtitlesSettings::CSubtitlesSettings()
                                       CSettings::SETTING_SUBTITLES_PARSECAPTIONS,
                                       CSettings::SETTING_SUBTITLES_ALIGN,
                                       CSettings::SETTING_SUBTITLES_STEREOSCOPICDEPTH,
-                                      CSettings::SETTING_SUBTITLES_FONT,
+                                      CSettings::SETTING_SUBTITLES_FONTNAME,
                                       CSettings::SETTING_SUBTITLES_FONTSIZE,
                                       CSettings::SETTING_SUBTITLES_STYLE,
                                       CSettings::SETTING_SUBTITLES_COLOR,
@@ -69,4 +77,27 @@ void CSubtitlesSettings::OnSettingChanged(const std::shared_ptr<const CSetting>&
 
   SetChanged();
   NotifyObservers(ObservableMessageSettingsChanged);
+}
+
+void CSubtitlesSettings::SettingOptionsSubtitleFontsFiller(const SettingConstPtr& setting,
+                                                           std::vector<StringSettingOption>& list,
+                                                           std::string& current,
+                                                           void* data)
+{
+  // From application system fonts folder we add the default font only
+  std::string defaultFontPath =
+      URIUtils::AddFileToFolder("special://xbmc/media/Fonts/", UTILS::FONT::FONT_DEFAULT_FILENAME);
+  if (XFILE::CFile::Exists(defaultFontPath))
+  {
+    std::string familyName = UTILS::FONT::GetFontFamily(defaultFontPath);
+    if (!familyName.empty())
+    {
+      list.emplace_back(g_localizeStrings.Get(571) + " " + familyName, FONT_DEFAULT_FAMILYNAME);
+    }
+  }
+  // Add additionals fonts from the user fonts folder
+  for (std::string familyName : g_fontManager.GetUserFontsFamilyNames())
+  {
+    list.emplace_back(familyName, familyName);
+  }
 }

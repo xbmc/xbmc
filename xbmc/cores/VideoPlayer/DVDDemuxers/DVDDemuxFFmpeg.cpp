@@ -25,6 +25,7 @@
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "threads/SystemClock.h"
+#include "utils/FontUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XTimeUtils.h"
@@ -1764,11 +1765,16 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
           }
           else
           {
-            // Note: libass only supports a single font directory to look for additional fonts
-            // (c.f. ass_set_fonts_dir). To support both user defined fonts (those placed in
-            // special://home/media/Fonts/) and fonts extracted by the demuxer, make it extract
-            // fonts to the user directory with a known, easy to identify, prefix (tmp.font.*).
-            fileName += "tmp.font." + CUtil::MakeLegalFileName(nameTag->value, LEGAL_WIN32_COMPAT);
+            // Note: Libass only supports a single additional font directory,
+            // currently set for user fonts (c.f. ass_set_fonts_dir) therefore
+            // we will also use this folder to store fonts extracted by the
+            // demuxer. The extracted fonts will have a prefix in the filename
+            // for easy identification.
+            //! @todo: this font file management system on disk could be completely
+            //! removed, by sending font data to the subtitle renderer and
+            //! using libass ass_add_font to add the fonts directly in memory.
+            fileName += UTILS::FONT::TEMP_FONT_FILENAME_PREFIX +
+                        CUtil::MakeLegalFileName(nameTag->value, LEGAL_WIN32_COMPAT);
             XFILE::CFile file;
             if (pStream->codecpar->extradata && file.OpenForWrite(fileName))
             {
