@@ -13,6 +13,7 @@
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 
 #include <stdint.h>
+#include <vector>
 
 #include <Audioclient.h>
 #include <mmdeviceapi.h>
@@ -68,6 +69,6 @@ private:
     uint64_t            m_sinkFrames;
     uint64_t            m_clockFreq;
 
-    uint8_t            *m_pBuffer;
+    std::vector<uint8_t> m_buffer;
     int                 m_bufferPtr;
 };
