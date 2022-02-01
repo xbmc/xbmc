@@ -80,6 +80,7 @@ class CStreamDetailSubtitle final : public CStreamDetail
 public:
   CStreamDetailSubtitle();
   CStreamDetailSubtitle(const SubtitleStreamInfo &info);
+  CStreamDetailSubtitle(const CStreamDetailSubtitle&) = default;
   CStreamDetailSubtitle& operator=(const CStreamDetailSubtitle &that);
   void Archive(CArchive& ar) override;
   void Serialize(CVariant& value) const override;
