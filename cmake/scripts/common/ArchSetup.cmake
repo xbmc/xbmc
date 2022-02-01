@@ -166,7 +166,6 @@ if(NOT MSVC)
   if(CMAKE_COMPILER_IS_GNUCXX)
     add_options(ALL_LANGUAGES ALL_BUILDS
       -Wno-cast-function-type # from -Wextra
-      -Wno-deprecated-copy # from -Wextra
     )
   elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     add_options(ALL_LANGUAGES ALL_BUILDS
