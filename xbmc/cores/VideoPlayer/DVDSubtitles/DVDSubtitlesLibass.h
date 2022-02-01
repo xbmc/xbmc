@@ -146,7 +146,6 @@ protected:
 private:
   void ConfigureAssOverride(const std::shared_ptr<struct KODI::SUBTITLES::style>& subStyle,
                             ASS_Style* style);
-  void ConfigureFont(bool overrideFont, std::string fontName);
   void ApplyStyle(const std::shared_ptr<struct KODI::SUBTITLES::style>& subStyle,
                   KODI::SUBTITLES::renderOpts opts);
 
@@ -162,4 +161,5 @@ private:
   // default allocated style ID for the kodi user configured subtitle style
   int m_defaultKodiStyleId{ASS_NO_ID};
   bool m_drawWithinBlackBars{false};
+  std::string m_defaultFontFamilyName;
 };

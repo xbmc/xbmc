@@ -14,6 +14,8 @@
 */
 
 #include "IMsgTargetCallback.h"
+#include "threads/CriticalSection.h"
+#include "threads/SingleLock.h"
 #include "utils/ColorUtils.h"
 #include "utils/GlobalsHandling.h"
 #include "windowing/GraphicContext.h"
@@ -40,6 +42,17 @@ struct OrigFontInfo
   bool border;
 };
 
+struct FontMetadata
+{
+  FontMetadata(const std::string& filename, const std::string& familyName)
+    : m_filename{filename}, m_familyName{familyName}
+  {
+  }
+
+  std::string m_filename;
+  std::string m_familyName;
+};
+
 /*!
  \ingroup textures
  \brief
@@ -49,6 +62,14 @@ class GUIFontManager : public IMsgTargetCallback
 public:
   GUIFontManager();
   ~GUIFontManager() override;
+
+  /*!
+   *  \brief Initialize the font manager.
+   *  Checks that fonts cache are up to date, otherwise update it.
+   */
+  void Initialize();
+
+  bool IsUpdating() const { return m_critSection.IsLocked(); }
 
   bool OnMessage(CGUIMessage& message) override;
 
@@ -81,6 +102,12 @@ public:
                                         std::string& current,
                                         void* data);
 
+  /*!
+   * \brief Get the list of user fonts as family names from cache
+   * \return The list of available fonts family names
+   */
+  std::vector<std::string> GetUserFontsFamilyNames();
+
 protected:
   void ReloadTTFFonts();
   static void RescaleFontSizeAndAspect(CGraphicContext& context,
@@ -97,6 +124,12 @@ protected:
   std::vector<OrigFontInfo> m_vecFontInfo;
   RESOLUTION_INFO m_skinResolution;
   bool m_canReload{true};
+
+private:
+  void LoadUserFonts();
+
+  mutable CCriticalSection m_critSection;
+  std::vector<FontMetadata> m_userFontsCache;
 };
 
 /*!

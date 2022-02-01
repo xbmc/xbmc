@@ -164,7 +164,7 @@ constexpr const char* CSettings::SETTING_SUBTITLES_PARSECAPTIONS;
 constexpr const char* CSettings::SETTING_SUBTITLES_CAPTIONSALIGN;
 constexpr const char* CSettings::SETTING_SUBTITLES_ALIGN;
 constexpr const char* CSettings::SETTING_SUBTITLES_STEREOSCOPICDEPTH;
-constexpr const char* CSettings::SETTING_SUBTITLES_FONT;
+constexpr const char* CSettings::SETTING_SUBTITLES_FONTNAME;
 constexpr const char* CSettings::SETTING_SUBTITLES_FONTSIZE;
 constexpr const char* CSettings::SETTING_SUBTITLES_STYLE;
 constexpr const char* CSettings::SETTING_SUBTITLES_COLOR;
@@ -788,6 +788,8 @@ void CSettings::InitializeOptionFillers()
 #endif
   GetSettingsManager()->RegisterSettingOptionsFiller("charsets", CCharsetConverter::SettingOptionsCharsetsFiller);
   GetSettingsManager()->RegisterSettingOptionsFiller("fonts", GUIFontManager::SettingOptionsFontsFiller);
+  GetSettingsManager()->RegisterSettingOptionsFiller(
+      "subtitlesfonts", SUBTITLES::CSubtitlesSettings::SettingOptionsSubtitleFontsFiller);
   GetSettingsManager()->RegisterSettingOptionsFiller("languagenames", CLangInfo::SettingOptionsLanguageNamesFiller);
   GetSettingsManager()->RegisterSettingOptionsFiller("refreshchangedelays", CDisplaySettings::SettingOptionsRefreshChangeDelaysFiller);
   GetSettingsManager()->RegisterSettingOptionsFiller("refreshrates", CDisplaySettings::SettingOptionsRefreshRatesFiller);
@@ -832,6 +834,7 @@ void CSettings::UninitializeOptionFillers()
   GetSettingsManager()->UnregisterSettingOptionsFiller("charsets");
   GetSettingsManager()->UnregisterSettingOptionsFiller("fontheights");
   GetSettingsManager()->UnregisterSettingOptionsFiller("fonts");
+  GetSettingsManager()->UnregisterSettingOptionsFiller("subtitlesfonts");
   GetSettingsManager()->UnregisterSettingOptionsFiller("languagenames");
   GetSettingsManager()->UnregisterSettingOptionsFiller("refreshchangedelays");
   GetSettingsManager()->UnregisterSettingOptionsFiller("refreshrates");

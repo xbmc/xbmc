@@ -25,6 +25,7 @@
 #include "profiles/ProfileManager.h"
 #include "settings/SettingAddon.h"
 #include "settings/SettingsComponent.h"
+#include "utils/FontUtils.h"
 #include "utils/StringUtils.h"
 #include "windowing/WinSystem.h"
 
@@ -134,7 +135,7 @@ bool HasSubtitlesFontExtensions(const std::string& condition,
   if (!settingStr)
     return false;
 
-  return CUtil::IsSupportedFontExtension(settingStr->GetValue());
+  return UTILS::FONT::IsSupportedFontExtension(settingStr->GetValue());
 }
 
 bool ProfileCanWriteDatabase(const std::string& condition,

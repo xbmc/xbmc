@@ -2695,6 +2695,7 @@ msgid "Date added"
 msgstr ""
 
 #: xbmc/playlists/SmartPlaylist.cpp
+#: xbmc/settings/SubtitlesSettings.cpp
 msgctxt "#571"
 msgid "Default"
 msgstr ""
@@ -22982,4 +22983,10 @@ msgstr ""
 #: system/settings/settings.xml
 msgctxt "#39179"
 msgid "The time in seconds for the video OSD to be automatically closed"
+msgstr ""
+
+#. Progress text on splash screen, to build the font cache
+#: xbmc/Application.cpp
+msgctxt "#39180"
+msgid "Building font cache in progress - please wait"
 msgstr ""

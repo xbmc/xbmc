@@ -263,7 +263,7 @@ void CRenderer::CreateSubtitlesStyle()
   m_overlayStyle = std::make_shared<KODI::SUBTITLES::style>();
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 
-  m_overlayStyle->fontName = settings->GetString(CSettings::SETTING_SUBTITLES_FONT);
+  m_overlayStyle->fontName = settings->GetString(CSettings::SETTING_SUBTITLES_FONTNAME);
   m_overlayStyle->fontSize = (double)settings->GetInt(CSettings::SETTING_SUBTITLES_FONTSIZE);
 
   uint32_t fontStyleMask = settings->GetInt(CSettings::SETTING_SUBTITLES_STYLE) & FONT_STYLE_MASK;
