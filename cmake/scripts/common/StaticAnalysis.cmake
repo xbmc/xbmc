@@ -14,9 +14,8 @@ if(CPPCHECK_EXECUTABLE)
             --xml
             --xml-version=2
             --language=c++
+            --relative-paths=${CMAKE_SOURCE_DIR}
             --output-file=${CMAKE_BINARY_DIR}/cppcheck-result.xml
-            xbmc
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     COMMENT "Static code analysis using cppcheck")
 endif()
 
