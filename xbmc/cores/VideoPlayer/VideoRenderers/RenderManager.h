@@ -61,7 +61,7 @@ public:
   void GetVideoRect(CRect &source, CRect &dest, CRect &view);
   float GetAspectRatio();
   void FrameMove();
-  void FrameWait(int ms);
+  void FrameWait(std::chrono::milliseconds duration);
   void Render(bool clear, DWORD flags = 0, DWORD alpha = 255, bool gui = true);
   bool IsVideoLayer();
   RESOLUTION GetResolution();
@@ -97,7 +97,8 @@ public:
    * in case no buffer is available. Player may call this in a loop and decides
    * by itself when it wants to drop a frame.
    */
-  int WaitForBuffer(volatile std::atomic_bool& bStop, int timeout = 100);
+  int WaitForBuffer(volatile std::atomic_bool& bStop,
+                    std::chrono::milliseconds timeout = std::chrono::milliseconds(100));
 
   /**
    * Can be called by player for lateness detection. This is done best by

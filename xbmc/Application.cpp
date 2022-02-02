@@ -2618,7 +2618,8 @@ bool CApplication::PlayMedia(CFileItem& item, const std::string &player, int iPl
   }
   else if (item.IsPlayList() || item.IsInternetStream())
   {
-    CGUIDialogCache* dlgCache = new CGUIDialogCache(5000, g_localizeStrings.Get(10214), item.GetLabel());
+    CGUIDialogCache* dlgCache =
+        new CGUIDialogCache(5s, g_localizeStrings.Get(10214), item.GetLabel());
 
     //is or could be a playlist
     std::unique_ptr<CPlayList> pPlayList (CPlayListFactory::Create(item));

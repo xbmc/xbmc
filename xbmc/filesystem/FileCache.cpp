@@ -334,7 +334,7 @@ void CFileCache::Process()
     if (iRead <= 0)
     {
       // Check for actual EOF and retry as long as we still have data in our cache
-      if (m_writePos < m_fileSize && m_pCache->WaitForData(0, 0) > 0)
+      if (m_writePos < m_fileSize && m_pCache->WaitForData(0, 0ms) > 0)
       {
         CLog::Log(LOGWARNING, "CFileCache::{} - <{}> source read returned {}! Will retry",
                   __FUNCTION__, m_sourcePath, iRead);
@@ -424,7 +424,7 @@ void CFileCache::Process()
     */
     if (m_bFilling && m_forwardCacheSize != 0)
     {
-      const int64_t forward = m_pCache->WaitForData(0, 0);
+      const int64_t forward = m_pCache->WaitForData(0, 0ms);
       if (forward + m_chunkSize >= m_forwardCacheSize)
       {
         if (m_writeRateActual < m_writeRate)
@@ -484,7 +484,7 @@ retry:
   if (iRc == CACHE_RC_WOULD_BLOCK)
   {
     // just wait for some data to show up
-    iRc = m_pCache->WaitForData(1, 10000);
+    iRc = m_pCache->WaitForData(1, 10s);
     if (iRc > 0)
       goto retry;
   }
@@ -549,7 +549,7 @@ int64_t CFileCache::Seek(int64_t iFilePosition, int iWhence)
     {
       CLog::Log(LOGDEBUG, "CFileCache::{} - <{}> waiting for position {}", __FUNCTION__,
                 m_sourcePath, iTarget);
-      if (m_pCache->WaitForData(static_cast<uint32_t>(iTarget - m_seekPos), 10000) <
+      if (m_pCache->WaitForData(static_cast<uint32_t>(iTarget - m_seekPos), 10s) <
           iTarget - m_seekPos)
       {
         CLog::Log(LOGWARNING, "CFileCache::{} - <{}> failed to get remaining data", __FUNCTION__,
@@ -609,7 +609,7 @@ int CFileCache::IoControl(EIoControl request, void* param)
   if (request == IOCTRL_CACHE_STATUS)
   {
     SCacheStatus* status = (SCacheStatus*)param;
-    status->forward = m_pCache->WaitForData(0, 0);
+    status->forward = m_pCache->WaitForData(0, 0ms);
     status->maxrate = m_writeRate;
     status->currate = m_writeRateActual;
     status->lowrate = m_writeRateLowSpeed;

@@ -141,7 +141,7 @@ protected:
   void InitRemapper();
   void RemapBuffer();
   double CalcResampleRatio(double error);
-  int GetErrorInterval();
+  std::chrono::milliseconds GetErrorInterval();
 
 public:
   unsigned int GetSpace() override;
@@ -210,7 +210,7 @@ protected:
   IAEResample *m_remapper;
   double m_lastPts;
   double m_lastPtsJump;
-  std::atomic_int m_errorInterval;
+  std::chrono::milliseconds m_errorInterval{1000};
 
   // only accessed by engine
   CActiveAEBufferPool *m_inputBuffers;

@@ -19,7 +19,9 @@ class CGUIDialogProgress;
 class CGUIDialogCache : public CThread, public XFILE::IFileCallback
 {
 public:
-  CGUIDialogCache(DWORD dwDelay = 0, const std::string& strHeader="", const std::string& strMsg="");
+  CGUIDialogCache(std::chrono::milliseconds delay = std::chrono::milliseconds(100),
+                  const std::string& strHeader = "",
+                  const std::string& strMsg = "");
   ~CGUIDialogCache() override;
   void SetHeader(const std::string& strHeader);
   void SetHeader(int nHeader);

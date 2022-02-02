@@ -260,9 +260,9 @@ void CRenderManager::ShowVideo(bool enable)
     DiscardBuffer();
 }
 
-void CRenderManager::FrameWait(int ms)
+void CRenderManager::FrameWait(std::chrono::milliseconds duration)
 {
-  XbmcThreads::EndTime<> timeout{std::chrono::milliseconds(ms)};
+  XbmcThreads::EndTime<> timeout{duration};
   CSingleLock lock(m_presentlock);
   while(m_presentstep == PRESENT_IDLE && !timeout.IsTimePast())
     m_presentevent.wait(lock, timeout.GetTimeLeft());
@@ -297,7 +297,7 @@ void CRenderManager::FrameMove()
         return;
 
       firstFrame = true;
-      FrameWait(50);
+      FrameWait(50ms);
     }
 
     CheckEnableClockSync();
@@ -1069,7 +1069,8 @@ bool CRenderManager::Supports(ESCALINGMETHOD method)
     return false;
 }
 
-int CRenderManager::WaitForBuffer(volatile std::atomic_bool&bStop, int timeout)
+int CRenderManager::WaitForBuffer(volatile std::atomic_bool& bStop,
+                                  std::chrono::milliseconds timeout)
 {
   CSingleLock lock(m_presentlock);
 
@@ -1097,10 +1098,10 @@ int CRenderManager::WaitForBuffer(volatile std::atomic_bool&bStop, int timeout)
     return 0;
   }
 
-  XbmcThreads::EndTime<> endtime{std::chrono::milliseconds(timeout)};
+  XbmcThreads::EndTime<> endtime{timeout};
   while(m_free.empty())
   {
-    m_presentevent.wait(lock, std::min(50ms, std::chrono::milliseconds(timeout)));
+    m_presentevent.wait(lock, std::min(50ms, timeout));
     if (endtime.IsTimePast() || bStop)
     {
       return -1;

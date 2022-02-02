@@ -51,7 +51,6 @@ CActiveAEStream::CActiveAEStream(AEAudioFormat *format, unsigned int streamid, C
   m_pClock = NULL;
   m_lastPts = 0;
   m_lastPtsJump = 0;
-  m_errorInterval = 1000;
   m_clockSpeed = 1.0;
 }
 
@@ -197,7 +196,7 @@ double CActiveAEStream::CalcResampleRatio(double error)
   double proportional = 0.0;
 
   double proportionaldiv = 2.0;
-  proportional = error / GetErrorInterval() / proportionaldiv;
+  proportional = error / GetErrorInterval().count() / proportionaldiv;
 
   double clockspeed = 1.0;
   if (m_pClock)
@@ -214,9 +213,9 @@ double CActiveAEStream::CalcResampleRatio(double error)
   return ret;
 }
 
-int CActiveAEStream::GetErrorInterval()
+std::chrono::milliseconds CActiveAEStream::GetErrorInterval()
 {
-  int ret = m_errorInterval;
+  std::chrono::milliseconds ret = m_errorInterval;
   double rr = m_processingBuffers->GetRR();
   if (rr > 1.02 || rr < 0.98)
     ret *= 3;
@@ -269,15 +268,15 @@ unsigned int CActiveAEStream::AddData(const uint8_t* const *data, unsigned int o
         {
           if (m_lastPtsJump != 0)
           {
-            int diff = pts - m_lastPtsJump;
+            auto diff = std::chrono::milliseconds(static_cast<int>(pts - m_lastPtsJump));
             if (diff > m_errorInterval)
             {
-              diff += 1000;
-              diff = std::min(diff, 6000);
+              diff += 1s;
+              diff = std::min(diff, 6000ms);
               CLog::Log(LOGINFO,
                         "CActiveAEStream::AddData - messy timestamps, increasing interval for "
                         "measuring average error to {} ms",
-                        diff);
+                        diff.count());
               m_errorInterval = diff;
             }
           }
