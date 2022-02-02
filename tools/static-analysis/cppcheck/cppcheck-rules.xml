@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<def>
+  <type-checks>
+    <unusedvar>
+      <suppress>CSingleLock</suppress>
+      <suppress>CSharedLock</suppress>
+      <suppress>CExclusiveLock</suppress>
+    </unusedvar>
+  </type-checks>
+</def>
