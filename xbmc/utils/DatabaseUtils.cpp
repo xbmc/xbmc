@@ -431,7 +431,8 @@ bool DatabaseUtils::GetDatabaseResults(const MediaType &mediaType, const FieldLi
         CLog::Log(LOGWARNING, "GetDatabaseResults: unable to retrieve value of field %s", resultSet.record_header[fieldIndex].name.c_str());
 
       if (value.first == FieldYear &&
-         (mediaType == MediaTypeTvShow || mediaType == MediaTypeEpisode))
+          (mediaType == MediaTypeTvShow || mediaType == MediaTypeEpisode ||
+           mediaType == MediaTypeMovie))
       {
         CDateTime dateTime;
         dateTime.SetFromDBDate(value.second.asString());
