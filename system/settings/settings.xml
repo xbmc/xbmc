@@ -2758,9 +2758,9 @@
       <group id="2" label="14126">
         <setting id="videoscreen.whitelist" type="list[string]" parent="videoscreen.screen" label="14126" help="36443">
           <level>3</level>
+          <default></default>
           <constraints>
             <options>modes</options>
-            <default></default>
             <delimiter>,</delimiter>
             <minimumitems>0</minimumitems>
           </constraints>
