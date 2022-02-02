@@ -7,7 +7,6 @@ if(CPPCHECK_EXECUTABLE)
   add_custom_target(analyze-cppcheck
     DEPENDS ${APP_NAME_LC} ${APP_NAME_LC}-test
     COMMAND ${CPPCHECK_EXECUTABLE}
-            --template="${CMAKE_SOURCE_DIR}/xbmc/\{file\}\(\{line\}\)\: \{severity\} \(\{id\}\): \{message\}"
             -j${CPU_CORES}
             --project=${CMAKE_BINARY_DIR}/compile_commands.json
             --std=c++${CMAKE_CXX_STANDARD}
