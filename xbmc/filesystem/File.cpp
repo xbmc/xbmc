@@ -803,6 +803,16 @@ bool CFile::ReadString(char *szLine, int iLineLength)
   return false;
 }
 
+bool CFile::ReadString(std::string& buffer, int bufferSize, std::string& line)
+{
+  bool ret = ReadString(buffer.data(), bufferSize);
+  line.resize(std::strlen(buffer.c_str()));
+  line = buffer.c_str();
+  line.erase(std::remove(line.begin(), line.end(), '\n'), line.end());
+  line.erase(std::remove(line.begin(), line.end(), '\r'), line.end());
+  return ret;
+}
+
 ssize_t CFile::Write(const void* lpBuf, size_t uiBufSize)
 {
   if (!m_pFile)

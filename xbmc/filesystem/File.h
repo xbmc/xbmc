@@ -80,6 +80,18 @@ public:
    */
   ssize_t Read(void* bufPtr, size_t bufSize);
   bool ReadString(char *szLine, int iLineLength);
+
+  /**
+   * Attempt to read bufferSize bytes from currently opened file into the std::string buffer.
+   * Parse the buffer to obtain the first line and copy it to line. @note: line will be returned
+   * without line breaks
+   * @param buffer  the string buffer
+   * @param bufferSize size of the read buffer
+   * @param buffer the resulting line
+   * @return true if the operation succeeds, false otherwise
+   */
+  bool ReadString(std::string& buffer, int bufferSize, std::string& line);
+
   /**
    * Attempt to write bufSize bytes from buffer bufPtr into currently opened file.
    * @param bufPtr  pointer to buffer

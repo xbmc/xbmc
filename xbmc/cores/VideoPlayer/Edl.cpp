@@ -15,19 +15,20 @@
 #include "pvr/PVREdl.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
+#include <string_view>
+
 #include "PlatformDefs.h"
 
 namespace
 {
-constexpr const char* ComskipHeader = "FILE PROCESSING COMPLETE";
-constexpr const char* VideoredoHeader = "<Version>2";
-constexpr const char* VideoredoTagCut = "<Cut>";
-constexpr const char* VideoredoTagScene = "<SceneMarker ";
+// default read buffer size for EDL files
+constexpr int defaultReadBufferSize = 1024;
 } // namespace
 
 using namespace EDL;
@@ -102,93 +103,97 @@ bool CEdl::ReadEdl(const std::string& path, float fps)
   }
 
   bool error{false};
-  int line{0};
-  std::array<char, 1024> buffer{};
-  while (edlFile.ReadString(&buffer[0], 1024))
+  int lineno{0};
+
+  std::string buffer;
+  buffer.resize(defaultReadBufferSize);
+  std::string line;
+
+  while (edlFile.ReadString(buffer, defaultReadBufferSize - 1,
+                            line)) // -1 because of the \0 terminator
   {
-    // Log any errors from previous run in the loop
-    if (error)
-      CLog::LogF(LOGWARNING, "Error on line {} in EDL file: {}", line,
-                 CURL::GetRedacted(edlFilename));
-
     error = false;
-    line++;
+    lineno++;
 
-    std::array<char, 513> buffer1{};
-    std::array<char, 513> buffer2{};
-    int action{EDL::EDL_ACTION_NONE};
-
-    int fieldsRead =
-        sscanf(buffer.data(), "%512s %512s %i", buffer1.data(), buffer2.data(), &action);
-    // Make sure we read the right number of fields
-    if (fieldsRead != 2 && fieldsRead != 3)
+    if (StringUtils::StartsWith(line, "##"))
     {
+      CLog::LogF(LOGDEBUG, "Skipping comment line {} in EDL file: {}", lineno,
+                 CURL::GetRedacted(edlFilename));
+      continue;
+    }
+
+    line = StringUtils::RemoveDuplicatedSpacesAndTabs(line);
+    std::vector<std::string> delimiters = {" ", "\t"};
+    std::vector<std::string> fields = StringUtils::Split(line, delimiters);
+
+    // Make sure we read the right number of fields
+    if (fields.size() != 2 && fields.size() != 3)
+    {
+      CLog::Log(LOGWARNING, "Error on line {} in EDL file: {}", lineno,
+                CURL::GetRedacted(edlFilename));
       error = true;
       continue;
     }
 
-    std::array<std::string, 2> fields = {buffer1.data(), buffer2.data()};
+    int action{EDL::EDL_ACTION_NONE};
 
     // If only 2 fields read, then assume it's a scene marker.
-    if (fieldsRead == 2)
+    // set the start and end times (1st and 2nd field) to the
+    // same value
+    if (fields.size() == 2)
     {
       action = static_cast<int>(Action::SCENE);
-      fields[1] = fields[0];
-    }
-
-    if (StringUtils::StartsWith(fields[0], "##"))
-    {
-      CLog::LogF(LOGDEBUG, "Skipping comment line {} in EDL file: {}", line,
-                 CURL::GetRedacted(edlFilename));
-      continue;
+      fields.insert(fields.begin(), fields.at(0));
     }
 
     // For each of the first two fields read, parse based on whether it is a time string
     // (HH:MM:SS.sss), frame marker (#12345), or normal seconds string (123.45).
     std::array<int64_t, 2> editStartEnd{};
-    for (size_t i = 0; i < fields.size(); i++)
+    for (size_t i = 0; i < 2; i++)
     {
       // HH:MM:SS.sss format
-      if (fields[i].find(':') != std::string::npos)
+      if (fields.at(i).find(':') != std::string::npos)
       {
-        std::vector<std::string> fieldParts = StringUtils::Split(fields[i], '.');
+        std::vector<std::string> fieldParts = StringUtils::Split(fields.at(i), '.');
         if (fieldParts.size() == 1) // No ms
         {
-          editStartEnd[i] = StringUtils::TimeStringToSeconds(fieldParts[0]) *
+          editStartEnd.at(i) = StringUtils::TimeStringToSeconds(fieldParts.at(0)) *
                             static_cast<int64_t>(1000); // seconds to ms
         }
         // Has ms. Everything after the dot (.) is ms
         else if (fieldParts.size() == 2)
         {
           // Have to pad or truncate the ms portion to 3 characters before converting to ms.
-          if (fieldParts[1].length() == 1)
+          if (fieldParts.at(1).length() == 1)
           {
-            fieldParts[1] = fieldParts[1] + "00";
+            fieldParts.at(1) = fieldParts[1] + "00";
           }
-          else if (fieldParts[1].length() == 2)
+          else if (fieldParts.at(1).length() == 2)
           {
-            fieldParts[1] = fieldParts[1] + "0";
+            fieldParts.at(1) = fieldParts[1] + "0";
           }
-          else if (fieldParts[1].length() > 3)
+          else if (fieldParts.at(1).length() > 3)
           {
-            fieldParts[1] = fieldParts[1].substr(0, 3);
+            fieldParts.at(1) = fieldParts[1].substr(0, 3);
           }
-          editStartEnd[i] =
+          editStartEnd.at(i) =
               static_cast<int64_t>(StringUtils::TimeStringToSeconds(fieldParts[0])) * 1000 +
               std::stoi(fieldParts[1]); // seconds to ms
         }
         else
         {
           error = true;
+          CLog::LogF(LOGWARNING, "Error on line {} in EDL file: {}", lineno,
+                     CURL::GetRedacted(edlFilename));
           continue;
         }
       }
       // #12345 format for frame number
-      else if (fields[i][0] == '#')
+      else if (StringUtils::StartsWith(fields.at(i), "#"))
       {
         if (fps > 0.0f)
         {
-          editStartEnd[i] = static_cast<int64_t>(std::stol(fields[i].substr(1)) / fps *
+          editStartEnd.at(i) = static_cast<int64_t>(std::stol(fields.at(i).substr(1)) / fps *
                                                  1000); // frame number to ms
         }
         else
@@ -196,14 +201,14 @@ bool CEdl::ReadEdl(const std::string& path, float fps)
           CLog::LogF(LOGERROR,
                      "Frame number not supported in EDL files when frame rate is "
                      "unavailable (ts) - supplied frame number: {}",
-                     fields[i].substr(1));
+                     fields.at(i).substr(1));
           return false;
         }
       }
       // Plain old seconds in float format, e.g. 123.45
       else
       {
-        editStartEnd[i] = static_cast<int64_t>(std::stod(fields[i]) * 1000); // seconds to ms
+        editStartEnd.at(i) = static_cast<int64_t>(std::stod(fields.at(i)) * 1000); // seconds to ms
       }
     }
 
@@ -212,20 +217,24 @@ bool CEdl::ReadEdl(const std::string& path, float fps)
       continue;
 
     Edit edit;
-    edit.start = editStartEnd[0];
-    edit.end = editStartEnd[1];
+    edit.start = editStartEnd.at(0);
+    edit.end = editStartEnd.at(1);
 
-    if (action < 0 || action >= static_cast<uint16_t>(EDL::edlActionDescription.size()))
+    // parse action
+    if (StringUtils::IsInteger(fields.back()))
+      action = std::stoi(fields.back());
+
+    if (action == EDL::EDL_ACTION_NONE ||
+        action >= static_cast<uint16_t>(EDL::edlActionDescription.size()))
     {
-      CLog::LogF(LOGWARNING, "Invalid action on line {} in EDL file: {}", line,
+      CLog::LogF(LOGWARNING, "Invalid action on line {} in EDL file: {}", lineno,
                  CURL::GetRedacted(edlFilename));
       continue;
     }
-
     edit.action = static_cast<EDL::Action>(action);
 
+    // finally try to add the edit
     bool added{false};
-
     if (edit.action == Action::SCENE)
       added = AddSceneMarker(edit.end);
     else
@@ -234,14 +243,10 @@ bool CEdl::ReadEdl(const std::string& path, float fps)
     if (!added)
     {
       CLog::LogF(LOGWARNING, "Error adding {} from line {} in EDL file: {}",
-                 EDL::edlActionDescription.at(action), line, CURL::GetRedacted(edlFilename));
+                 EDL::edlActionDescription.at(action), lineno, CURL::GetRedacted(edlFilename));
       continue;
     }
   }
-
-  // Log last line warning, if there was one, since while loop will have terminated.
-  if (error)
-    CLog::Log(LOGWARNING, "Error on line {} in EDL file: {}", line, CURL::GetRedacted(edlFilename));
 
   edlFile.Close();
 
@@ -263,6 +268,8 @@ bool CEdl::ReadComskip(const std::string& path, float fps)
 {
   Clear();
 
+  constexpr std::string_view ComskipHeader = "FILE PROCESSING COMPLETE";
+
   std::string comskipFilename{URIUtils::ReplaceExtension(path, ".txt")};
   if (!CFile::Exists(comskipFilename))
     return false;
@@ -274,9 +281,13 @@ bool CEdl::ReadComskip(const std::string& path, float fps)
     return false;
   }
 
-  std::array<char, 1024> buffer{};
-  if (comskipFile.ReadString(buffer.data(), 1023) &&
-      strncmp(buffer.data(), ComskipHeader, strlen(ComskipHeader)) != 0) // Line 1.
+  std::string buffer;
+  buffer.resize(defaultReadBufferSize);
+  std::string line;
+
+  if (comskipFile.ReadString(buffer, defaultReadBufferSize - 1,
+                             line) && // -1 because of the \0 terminator
+      buffer.compare(0, ComskipHeader.size(), ComskipHeader) != 0) // Line 1.
   {
     CLog::LogF(LOGERROR, "Invalid Comskip file: {}. Error reading line 1 - expected '{}' at start.",
                CURL::GetRedacted(comskipFilename), ComskipHeader);
@@ -284,9 +295,13 @@ bool CEdl::ReadComskip(const std::string& path, float fps)
     return false;
   }
 
-  int frames{0};
   float frameRate{0};
-  if (sscanf(buffer.data(), "FILE PROCESSING COMPLETE %i FRAMES AT %f", &frames, &frameRate) != 2)
+  CRegExp regex;
+  if (!regex.RegComp("FILE PROCESSING COMPLETE \\d+ FRAMES AT ([0-9]*\\.?[0-9]*)"))
+    return false;
+  regex.RegFind(line);
+
+  if (regex.GetSubCount() != 1)
   {
     // Not all generated Comskip files have the frame rate information.
     if (fps > 0.0f)
@@ -306,25 +321,32 @@ bool CEdl::ReadComskip(const std::string& path, float fps)
   else
   {
     // Reduce by factor of 100 to get fps.
-    frameRate /= 100;
+    frameRate = std::stof(regex.GetMatch(1)) / 100;
   }
 
   // Line 2. Ignore "-------------"
-  if (!comskipFile.ReadString(buffer.data(), 1023))
+  if (!comskipFile.ReadString(buffer, defaultReadBufferSize - 1,
+                              line)) // -1 because of the \0 terminator
     CLog::LogF(LOGERROR, "Failed to read comskip buffer");
 
   bool valid{true};
-  int line{2};
-  while (valid && comskipFile.ReadString(buffer.data(), 1023)) // Line 3 and onwards.
+  int lineno{2};
+  // Line 3 and onwards.
+  while (valid && comskipFile.ReadString(buffer, defaultReadBufferSize - 1,
+                                         line)) // -1 because of the \0 terminator
   {
-    line++;
-    double startFrame{0};
-    double endFrame{0};
-    if (sscanf(buffer.data(), "%lf %lf", &startFrame, &endFrame) == 2)
+    lineno++;
+    line = StringUtils::RemoveDuplicatedSpacesAndTabs(line);
+    std::vector<std::string> delimiters = {" ", "\t"};
+    std::vector<std::string> fields = StringUtils::Split(line, delimiters);
+
+    if (fields.size() == 2)
     {
       Edit edit;
-      edit.start = static_cast<int64_t>(startFrame / static_cast<double>(frameRate) * 1000.0);
-      edit.end = static_cast<int64_t>(endFrame / static_cast<double>(frameRate) * 1000.0);
+      edit.start =
+          static_cast<int64_t>(std::stod(fields.at(0)) / static_cast<double>(frameRate) * 1000.0);
+      edit.end =
+          static_cast<int64_t>(std::stod(fields.at(1)) / static_cast<double>(frameRate) * 1000.0);
       edit.action = Action::COMM_BREAK;
       valid = AddEdit(edit);
     }
@@ -338,7 +360,7 @@ bool CEdl::ReadComskip(const std::string& path, float fps)
     CLog::LogF(LOGERROR,
                "Invalid Comskip file: {}. Error on line {}. Clearing any valid commercial "
                "breaks found.",
-               CURL::GetRedacted(comskipFilename), line);
+               CURL::GetRedacted(comskipFilename), lineno);
     Clear();
     return false;
   }
@@ -360,6 +382,9 @@ bool CEdl::ReadVideoReDo(const std::string& path)
 {
   // VideoReDo file is strange. Tags are XML like, but it isn't an XML file.
   // http://www.videoredo.com/
+  constexpr std::string_view VideoredoHeader = "<Version>2";
+  constexpr std::string_view VideoredoTagCut = "<Cut>";
+  constexpr std::string_view VideoredoTagScene = "<SceneMarker ";
 
   Clear();
   std::string videoReDoFilename{URIUtils::ReplaceExtension(path, ".Vprj")};
@@ -373,9 +398,13 @@ bool CEdl::ReadVideoReDo(const std::string& path)
     return false;
   }
 
-  std::array<char, 1024> buffer{};
-  if (videoReDoFile.ReadString(buffer.data(), 1023) &&
-      strncmp(buffer.data(), VideoredoHeader, strlen(VideoredoHeader)) != 0)
+  std::string buffer;
+  buffer.resize(defaultReadBufferSize);
+  std::string line;
+
+  if (videoReDoFile.ReadString(buffer, defaultReadBufferSize - 1,
+                               line) && // -1 because of the \0 terminator
+      line.compare(0, VideoredoHeader.size(), VideoredoHeader) != 0)
   {
     CLog::LogF(LOGERROR,
                "Invalid VideoReDo file: {}. Error reading line 1 - expected {}. Only version 2 "
@@ -385,38 +414,46 @@ bool CEdl::ReadVideoReDo(const std::string& path)
     return false;
   }
 
-  int line{1};
+  int lineno{1};
   bool valid{true};
-  while (valid && videoReDoFile.ReadString(buffer.data(), 1023))
+
+  while (valid && videoReDoFile.ReadString(buffer, defaultReadBufferSize - 1,
+                                           line)) // -1 because of the \0 terminator
   {
-    line++;
-    if (strncmp(buffer.data(), VideoredoTagCut, strlen(VideoredoTagCut)) == 0)
+    lineno++;
+    if (line.compare(0, VideoredoTagCut.size(), VideoredoTagCut) == 0)
     {
       // Found the <Cut> tag
-      // double is used as 32 bit float would overflow.
-      double start{0};
-      double end{0};
-      if (sscanf(buffer.data() + strlen(VideoredoTagCut), "%lf:%lf", &start, &end) == 2)
+      CRegExp regex;
+      if (!regex.RegComp("<Cut>([0-9]*):([0-9]*)"))
+        return false;
+      regex.RegFind(line);
+
+      if (regex.GetSubCount() == 2)
       {
         // Times need adjusting by 1/10,000 to get ms.
+        // double is used as 32 bit float would overflow.
         Edit edit;
-        edit.start = static_cast<int64_t>(start / 10000);
-        edit.end = static_cast<int64_t>(end / 10000);
+        edit.start = static_cast<int64_t>(std::stod(regex.GetMatch(1)) / 10000);
+        edit.end = static_cast<int64_t>(std::stod(regex.GetMatch(2)) / 10000);
         edit.action = Action::CUT;
         valid = AddEdit(edit);
       }
       else
         valid = false;
     }
-    else if (strncmp(buffer.data(), VideoredoTagScene, strlen(VideoredoTagScene)) == 0)
+    else if (line.compare(0, VideoredoTagScene.size(), VideoredoTagScene) == 0)
     {
       // Found the <SceneMarker > tag
-      int scene{0};
-      double sceneMarker{0};
-      if (sscanf(buffer.data() + strlen(VideoredoTagScene), " %i>%lf", &scene, &sceneMarker) == 2)
+      CRegExp regex;
+      if (!regex.RegComp("<SceneMarker \\d+>([0-9]*)"))
+        return false;
+      regex.RegFind(line);
+
+      if (regex.GetSubCount() == 1)
       {
         // Times need adjusting by 1/10,000 to get ms.
-        valid = AddSceneMarker(static_cast<int64_t>(sceneMarker / 10000));
+        valid = AddSceneMarker(static_cast<int64_t>(std::stod(regex.GetMatch(1)) / 10000));
       }
       else
       {
@@ -432,7 +469,7 @@ bool CEdl::ReadVideoReDo(const std::string& path)
     CLog::LogF(LOGERROR,
                "Invalid VideoReDo file: {}. Error in line {}. Clearing any valid edits or "
                "scenes found.",
-               CURL::GetRedacted(videoReDoFilename), line);
+               CURL::GetRedacted(videoReDoFilename), lineno);
     Clear();
     return false;
   }
