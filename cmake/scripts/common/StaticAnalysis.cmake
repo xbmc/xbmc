@@ -11,8 +11,6 @@ if(CPPCHECK_EXECUTABLE)
             --project=${CMAKE_BINARY_DIR}/compile_commands.json
             --std=c++${CMAKE_CXX_STANDARD}
             --enable=all
-            --verbose
-            --quiet
             --xml
             --xml-version=2
             --language=c++
