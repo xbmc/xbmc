@@ -166,19 +166,19 @@ bool CEdl::ReadEdl(const std::string& path, float fps)
           // Have to pad or truncate the ms portion to 3 characters before converting to ms.
           if (fieldParts.at(1).length() == 1)
           {
-            fieldParts.at(1) = fieldParts[1] + "00";
+            fieldParts.at(1) = fieldParts.at(1) + "00";
           }
           else if (fieldParts.at(1).length() == 2)
           {
-            fieldParts.at(1) = fieldParts[1] + "0";
+            fieldParts.at(1) = fieldParts.at(1) + "0";
           }
           else if (fieldParts.at(1).length() > 3)
           {
-            fieldParts.at(1) = fieldParts[1].substr(0, 3);
+            fieldParts.at(1) = fieldParts.at(1).substr(0, 3);
           }
           editStartEnd.at(i) =
-              static_cast<int64_t>(StringUtils::TimeStringToSeconds(fieldParts[0])) * 1000 +
-              std::stoi(fieldParts[1]); // seconds to ms
+              static_cast<int64_t>(StringUtils::TimeStringToSeconds(fieldParts.at(0))) * 1000 +
+              std::stoi(fieldParts.at(1)); // seconds to ms
         }
         else
         {
@@ -957,24 +957,25 @@ void CEdl::MergeShortCommBreaks()
   {
     for (size_t i = 0; i < m_edits.size() - 1; ++i)
     {
-      if ((m_edits[i].action == Action::COMM_BREAK &&
-           m_edits[i + 1].action == Action::COMM_BREAK) &&
-          (m_edits[i + 1].end - m_edits[i].start <
+      if ((m_edits.at(i).action == Action::COMM_BREAK &&
+           m_edits.at(i + 1).action == Action::COMM_BREAK) &&
+          (m_edits.at(i + 1).end - m_edits.at(i).start <
            advancedSettings->m_iEdlMaxCommBreakLength * 1000) // s to ms
-          && (m_edits[i + 1].start - m_edits[i].end <
+          && (m_edits.at(i + 1).start - m_edits.at(i).end <
               advancedSettings->m_iEdlMaxCommBreakGap * 1000)) // s to ms
       {
         Edit commBreak;
         commBreak.action = Action::COMM_BREAK;
-        commBreak.start = m_edits[i].start;
-        commBreak.end = m_edits[i + 1].end;
+        commBreak.start = m_edits.at(i).start;
+        commBreak.end = m_edits.at(i + 1).end;
 
-        CLog::LogF(
-            LOGDEBUG, "Consolidating commercial break [{} - {}] and [{} - {}] to: [{} - {}]",
-            MillisecondsToTimeString(m_edits[i].start), MillisecondsToTimeString(m_edits[i].end),
-            MillisecondsToTimeString(m_edits[i + 1].start),
-            MillisecondsToTimeString(m_edits[i + 1].end), MillisecondsToTimeString(commBreak.start),
-            MillisecondsToTimeString(commBreak.end));
+        CLog::LogF(LOGDEBUG, "Consolidating commercial break [{} - {}] and [{} - {}] to: [{} - {}]",
+                   MillisecondsToTimeString(m_edits.at(i).start),
+                   MillisecondsToTimeString(m_edits.at(i).end),
+                   MillisecondsToTimeString(m_edits.at(i + 1).start),
+                   MillisecondsToTimeString(m_edits.at(i + 1).end),
+                   MillisecondsToTimeString(commBreak.start),
+                   MillisecondsToTimeString(commBreak.end));
 
         // Erase old edits and insert the new merged one.
         m_edits.erase(m_edits.begin() + i, m_edits.begin() + i + 2);
@@ -1001,13 +1002,15 @@ void CEdl::MergeShortCommBreaks()
     // Remove any commercial breaks shorter than the minimum (unless at the start)
     for (size_t i = 0; i < m_edits.size(); ++i)
     {
-      if (m_edits[i].action == Action::COMM_BREAK && m_edits[i].start > 0 &&
-          (m_edits[i].end - m_edits[i].start) < advancedSettings->m_iEdlMinCommBreakLength * 1000)
+      if (m_edits.at(i).action == Action::COMM_BREAK && m_edits.at(i).start > 0 &&
+          (m_edits.at(i).end - m_edits.at(i).start) <
+              advancedSettings->m_iEdlMinCommBreakLength * 1000)
       {
-        CLog::LogF(
-            LOGDEBUG, "Removing short commercial break [{} - {}]. Minimum length: {} seconds",
-            MillisecondsToTimeString(m_edits[i].start), MillisecondsToTimeString(m_edits[i].end),
-            advancedSettings->m_iEdlMinCommBreakLength);
+        CLog::LogF(LOGDEBUG,
+                   "Removing short commercial break [{} - {}]. Minimum length: {} seconds",
+                   MillisecondsToTimeString(m_edits.at(i).start),
+                   MillisecondsToTimeString(m_edits.at(i).end),
+                   advancedSettings->m_iEdlMinCommBreakLength);
         m_edits.erase(m_edits.begin() + i);
 
         i--;
