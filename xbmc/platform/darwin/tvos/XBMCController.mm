@@ -70,7 +70,7 @@ XBMCController* g_xbmcController;
   [self becomeFirstResponder];
 }
 
-- (void)nativeKeyboardActive:(bool)active;
+- (void)nativeKeyboardActive:(bool)active
 {
   // Not used on tvOS
 }
@@ -171,7 +171,7 @@ XBMCController* g_xbmcController;
 
 #pragma mark - BackgroundTask
 
-- (void)beginEnterBackgroundTask;
+- (void)beginEnterBackgroundTask
 {
   CLog::Log(LOGDEBUG, "{}", __PRETTY_FUNCTION__);
   // we have to alloc the background task for keep network working after screen lock and dark.
@@ -180,7 +180,7 @@ XBMCController* g_xbmcController;
         [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:nil];
 }
 
-- (void)endEnterBackgroundTask;
+- (void)endEnterBackgroundTask
 {
   CLog::Log(LOGDEBUG, "{}", __PRETTY_FUNCTION__);
   if (m_enterBackgroundTaskId != UIBackgroundTaskInvalid)
