@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<suppressions>
+  <suppress>
+    <id>*</id>
+    <fileName>lib/*</fileName>
+  </suppress>
+  <suppress>
+    <id>*</id>
+    <fileName>build/*</fileName>
+  </suppress>
+  <suppress>
+    <id>*</id>
+    <fileName>tools/*</fileName>
+  </suppress>
+  <suppress>
+    <id>*</id>
+    <fileName>*.c</fileName>
+  </suppress>
+</suppressions>

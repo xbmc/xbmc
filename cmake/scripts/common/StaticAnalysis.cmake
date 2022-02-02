@@ -16,6 +16,7 @@ if(CPPCHECK_EXECUTABLE)
             --language=c++
             --relative-paths=${CMAKE_SOURCE_DIR}
             --rule-file=${CMAKE_SOURCE_DIR}/tools/static-analysis/cppcheck/cppcheck-rules.xml
+            --suppress-xml=${CMAKE_SOURCE_DIR}/tools/static-analysis/cppcheck/cppcheck-suppressions.xml
             --output-file=${CMAKE_BINARY_DIR}/cppcheck-result.xml
     COMMENT "Static code analysis using cppcheck")
 endif()
