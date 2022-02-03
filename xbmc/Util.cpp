@@ -678,26 +678,6 @@ void CUtil::ClearSubtitles()
   }
 }
 
-void CUtil::ClearTempFonts()
-{
-  const std::string searchPath = "special://home/media/Fonts/";
-
-  if (!CDirectory::Exists(searchPath))
-    return;
-
-  CFileItemList items;
-  CDirectory::GetDirectory(searchPath, items, UTILS::FONT::SUPPORTED_EXTENSIONS_MASK,
-                           DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_BYPASS_CACHE | DIR_FLAG_GET_HIDDEN);
-  for (const auto &item : items)
-  {
-    if (item->m_bIsFolder)
-      continue;
-
-    if (UTILS::FONT::IsTemporaryFontFile(item->GetPath()))
-      CFile::Delete(item->GetPath());
-  }
-}
-
 int64_t CUtil::ToInt64(uint32_t high, uint32_t low)
 {
   int64_t n;
