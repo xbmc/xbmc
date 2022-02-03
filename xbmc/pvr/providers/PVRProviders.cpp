@@ -107,15 +107,11 @@ bool CPVRProviders::LoadFromDatabase(const std::vector<std::shared_ptr<CPVRClien
   const std::shared_ptr<CPVRDatabase> database = CServiceBroker::GetPVRManager().GetTVDatabase();
   if (database)
   {
-    bool bChanged = false;
-
     CPVRProviders providers;
     database->Get(providers, clients);
 
     for (auto& provider : providers.GetProvidersList())
-    {
-      bChanged |= (CheckAndAddEntry(provider, ProviderUpdateMode::BY_DATABASE) != nullptr);
-    }
+      CheckAndAddEntry(provider, ProviderUpdateMode::BY_DATABASE);
   }
   return true;
 }
