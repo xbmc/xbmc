@@ -50,6 +50,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
+#include "utils/FontUtils.h"
 #include "utils/JobManager.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/StreamDetails.h"
@@ -745,7 +746,7 @@ void CVideoPlayer::OnStartup()
   m_CurrentTeletext.Clear();
   m_CurrentRadioRDS.Clear();
 
-  CUtil::ClearTempFonts();
+  UTILS::FONT::ClearTemporaryFonts();
 }
 
 bool CVideoPlayer::OpenInputStream()

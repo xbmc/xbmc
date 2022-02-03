@@ -45,8 +45,7 @@ using namespace ADDON;
 
 namespace
 {
-constexpr const char* xmlUserFontCachePath = "special://home/media/Fonts/fontcache.xml";
-constexpr const char* userFontsPath = "special://home/media/Fonts/";
+constexpr const char* XML_FONTCACHE_FILENAME = "fontcache.xml";
 
 bool LoadXMLData(const std::string& filepath, CXBMCTinyXML& xmlDoc)
 {
@@ -528,10 +527,10 @@ void GUIFontManager::SettingOptionsFontsFiller(const SettingConstPtr& setting,
   CFileItemList items;
 
   // Find font files
-  XFILE::CDirectory::GetDirectory("special://xbmc/media/Fonts/", itemsRoot,
+  XFILE::CDirectory::GetDirectory(UTILS::FONT::FONTPATH::SYSTEM, itemsRoot,
                                   UTILS::FONT::SUPPORTED_EXTENSIONS_MASK,
                                   XFILE::DIR_FLAG_NO_FILE_DIRS | XFILE::DIR_FLAG_NO_FILE_INFO);
-  XFILE::CDirectory::GetDirectory("special://home/media/Fonts/", items,
+  XFILE::CDirectory::GetDirectory(UTILS::FONT::FONTPATH::USER, items,
                                   UTILS::FONT::SUPPORTED_EXTENSIONS_MASK,
                                   XFILE::DIR_FLAG_NO_FILE_DIRS | XFILE::DIR_FLAG_NO_FILE_INFO);
 
@@ -555,12 +554,14 @@ void GUIFontManager::Initialize()
 
 void GUIFontManager::LoadUserFonts()
 {
-  if (!XFILE::CDirectory::Exists(userFontsPath))
+  if (!XFILE::CDirectory::Exists(UTILS::FONT::FONTPATH::USER))
     return;
 
   CLog::LogF(LOGDEBUG, "Updating user fonts cache...");
   CXBMCTinyXML xmlDoc;
-  if (LoadXMLData(xmlUserFontCachePath, xmlDoc))
+  std::string userFontCacheFilepath =
+      URIUtils::AddFileToFolder(UTILS::FONT::FONTPATH::USER, XML_FONTCACHE_FILENAME);
+  if (LoadXMLData(userFontCacheFilepath, xmlDoc))
   {
     // Load in cache the fonts metadata previously stored in the XML
     TiXmlElement* pRootElement = xmlDoc.RootElement();
@@ -583,7 +584,8 @@ void GUIFontManager::LoadUserFonts()
   size_t previousCacheSize = m_userFontsCache.size();
   CFileItemList dirItems;
   // Get the current files list from user fonts folder
-  XFILE::CDirectory::GetDirectory(userFontsPath, dirItems, UTILS::FONT::SUPPORTED_EXTENSIONS_MASK,
+  XFILE::CDirectory::GetDirectory(UTILS::FONT::FONTPATH::USER, dirItems,
+                                  UTILS::FONT::SUPPORTED_EXTENSIONS_MASK,
                                   XFILE::DIR_FLAG_NO_FILE_DIRS | XFILE::DIR_FLAG_NO_FILE_INFO);
   dirItems.SetFastLookup(true);
 
@@ -591,7 +593,7 @@ void GUIFontManager::LoadUserFonts()
   auto it = m_userFontsCache.begin();
   while (it != m_userFontsCache.end())
   {
-    const std::string filePath = userFontsPath + (*it).m_filename;
+    const std::string filePath = UTILS::FONT::FONTPATH::USER + (*it).m_filename;
     if (!dirItems.Contains(filePath))
     {
       it = m_userFontsCache.erase(it);
@@ -614,7 +616,7 @@ void GUIFontManager::LoadUserFonts()
   for (auto& item : dirItems)
   {
     std::string filepath = item->GetPath();
-    if (item->m_bIsFolder || UTILS::FONT::IsTemporaryFontFile(filepath))
+    if (item->m_bIsFolder)
       continue;
 
     std::string familyName = UTILS::FONT::GetFontFamily(filepath);
@@ -642,8 +644,8 @@ void GUIFontManager::LoadUserFonts()
         XMLUtils::SetString(fontNode, "filename", fontMetadata.m_filename);
         XMLUtils::SetString(fontNode, "familyname", fontMetadata.m_familyName);
       }
-      if (!xmlDoc.SaveFile(xmlUserFontCachePath))
-        CLog::LogF(LOGERROR, "Failed to save fonts cache file '{}'", xmlUserFontCachePath);
+      if (!xmlDoc.SaveFile(userFontCacheFilepath))
+        CLog::LogF(LOGERROR, "Failed to save fonts cache file '{}'", userFontCacheFilepath);
     }
     else
     {
