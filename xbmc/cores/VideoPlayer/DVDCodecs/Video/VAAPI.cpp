@@ -1045,7 +1045,7 @@ CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
   {
     // if there is no other error, sleep for a short while
     // in order not to drain player's message queue
-    KODI::TIME::Sleep(10);
+    KODI::TIME::Sleep(10ms);
 
     return CDVDVideoCodec::VC_NOBUFFER;
   }

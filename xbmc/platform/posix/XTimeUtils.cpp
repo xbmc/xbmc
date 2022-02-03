@@ -13,9 +13,7 @@
 #include <errno.h>
 #include <time.h>
 
-#include <sched.h>
 #include <sys/times.h>
-#include <unistd.h>
 
 #if defined(TARGET_DARWIN)
 #include "threads/Atomics.h"
@@ -37,19 +35,6 @@ namespace TIME
  * divisible by 400
  */
 #define IsLeapYear(y) ((!(y % 4)) ? (((!(y % 400)) && (y % 100)) ? 1 : 0) : 0)
-
-void Sleep(uint32_t milliSeconds)
-{
-#if _POSIX_PRIORITY_SCHEDULING
-  if (milliSeconds == 0)
-  {
-    sched_yield();
-    return;
-  }
-#endif
-
-  usleep(milliSeconds * 1000);
-}
 
 uint32_t GetTimeZoneInformation(TimeZoneInformation* timeZoneInformation)
 {

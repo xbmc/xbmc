@@ -47,6 +47,8 @@ using namespace XFILE;
 using namespace ADDON;
 using namespace KODI::MESSAGING;
 
+using namespace std::chrono_literals;
+
 using KODI::MESSAGING::HELPERS::DialogResponse;
 using KODI::UTILITY::TypedDigest;
 
@@ -982,7 +984,7 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
         if (CAddonInstaller::GetInstance().HasJob(addonID))
         {
           while (CAddonInstaller::GetInstance().HasJob(addonID))
-            KODI::TIME::Sleep(50);
+            KODI::TIME::Sleep(50ms);
 
           if (!CServiceBroker::GetAddonMgr().IsAddonInstalled(addonID))
           {

@@ -338,7 +338,8 @@ unsigned int CAESinkDirectSound::AddPackets(uint8_t **data, unsigned int frames,
       return INT_MAX;
     else
     {
-      KODI::TIME::Sleep(total * 1000 / m_AvgBytesPerSec);
+      KODI::TIME::Sleep(
+          std::chrono::milliseconds(static_cast<int>(total * 1000 / m_AvgBytesPerSec)));
     }
   }
 

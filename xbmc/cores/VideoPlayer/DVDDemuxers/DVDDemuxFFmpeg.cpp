@@ -1264,7 +1264,7 @@ bool CDVDDemuxFFmpeg::SeekTime(double time, bool backwards, double* startpts)
       if (pkt)
         CDVDDemuxUtils::FreeDemuxPacket(pkt);
       else
-        KODI::TIME::Sleep(10);
+        KODI::TIME::Sleep(10ms);
       m_pkt.result = -1;
       av_packet_unref(&m_pkt.pkt);
 
