@@ -51,7 +51,7 @@ void CEvent::Set()
     signaled = true;
   }
 
-  condVar.notifyAll();
+  actualCv.notifyAll();
 
   CSingleLock l(groupListMutex);
   if (groups)
