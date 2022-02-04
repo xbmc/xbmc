@@ -28,16 +28,47 @@
 #include "filesystem/File.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDefinitions.h"
+#include "utils/FontUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
+
+#include <algorithm>
+#include <set>
 
 #ifdef TARGET_POSIX
 #include "filesystem/SpecialProtocol.h"
 #endif
 
 using namespace ADDON;
+
+namespace
+{
+constexpr const char* XML_FONTCACHE_FILENAME = "fontcache.xml";
+
+bool LoadXMLData(const std::string& filepath, CXBMCTinyXML& xmlDoc)
+{
+  if (!XFILE::CFile::Exists(filepath))
+  {
+    CLog::LogF(LOGDEBUG, "Couldn't load '{}' the file don't exists", filepath);
+    return false;
+  }
+  if (!xmlDoc.LoadFile(filepath))
+  {
+    CLog::LogF(LOGERROR, "Couldn't load '{}'", filepath);
+    return false;
+  }
+  TiXmlElement* pRootElement = xmlDoc.RootElement();
+  if (!pRootElement || pRootElement->ValueStr() != "fonts")
+  {
+    CLog::LogF(LOGERROR, "Couldn't load '{}' XML content doesn't start with <fonts>", filepath);
+    return false;
+  }
+  return true;
+}
+} // unnamed namespace
+
 
 GUIFontManager::GUIFontManager() = default;
 
@@ -383,29 +414,18 @@ void GUIFontManager::Clear()
 void GUIFontManager::LoadFonts(const std::string& fontSet)
 {
   // Get the file to load fonts from:
-  const std::string strPath = g_SkinInfo->GetSkinPath("Font.xml", &m_skinResolution);
-  CLog::Log(LOGINFO, "GUIFontManager::{}: Loading fonts from '{}'", __func__, strPath);
+  const std::string filePath = g_SkinInfo->GetSkinPath("Font.xml", &m_skinResolution);
+  CLog::LogF(LOGINFO, "Loading fonts from '{}'", filePath);
 
   CXBMCTinyXML xmlDoc;
-  if (!xmlDoc.LoadFile(strPath))
-  {
-    CLog::Log(LOGERROR, "GUIFontManager::{}: Couldn't load '{}'", __func__, strPath);
+  if (!LoadXMLData(filePath, xmlDoc))
     return;
-  }
 
   TiXmlElement* pRootElement = xmlDoc.RootElement();
-  if (!pRootElement || pRootElement->ValueStr() != "fonts")
-  {
-    CLog::Log(LOGERROR, "GUIFontManager::{}: File {} doesn't start with <fonts>", __func__,
-              strPath);
-    return;
-  }
-
   // Resolve includes in Font.xml
   g_SkinInfo->ResolveIncludes(pRootElement);
   // take note of the first font available in case we can't load the one specified
   std::string firstFont;
-
   const TiXmlElement* pChild = pRootElement->FirstChildElement("fontset");
   while (pChild)
   {
@@ -434,8 +454,7 @@ void GUIFontManager::LoadFonts(const std::string& fontSet)
     LoadFonts(firstFont);
   }
   else
-    CLog::Log(LOGERROR, "GUIFontManager::{}: File '{}' doesn't have a valid <fontset>", __func__,
-              strPath);
+    CLog::LogF(LOGERROR, "File '{}' doesn't have a valid <fontset>", filePath);
 }
 
 void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
@@ -508,19 +527,143 @@ void GUIFontManager::SettingOptionsFontsFiller(const SettingConstPtr& setting,
   CFileItemList items;
 
   // Find font files
-  XFILE::CDirectory::GetDirectory("special://xbmc/media/Fonts/", itemsRoot, "",
-                                  XFILE::DIR_FLAG_DEFAULTS);
-  XFILE::CDirectory::GetDirectory("special://home/media/Fonts/", items, "",
-                                  XFILE::DIR_FLAG_DEFAULTS);
+  XFILE::CDirectory::GetDirectory(UTILS::FONT::FONTPATH::SYSTEM, itemsRoot,
+                                  UTILS::FONT::SUPPORTED_EXTENSIONS_MASK,
+                                  XFILE::DIR_FLAG_NO_FILE_DIRS | XFILE::DIR_FLAG_NO_FILE_INFO);
+  XFILE::CDirectory::GetDirectory(UTILS::FONT::FONTPATH::USER, items,
+                                  UTILS::FONT::SUPPORTED_EXTENSIONS_MASK,
+                                  XFILE::DIR_FLAG_NO_FILE_DIRS | XFILE::DIR_FLAG_NO_FILE_INFO);
 
   for (auto itItem = itemsRoot.rbegin(); itItem != itemsRoot.rend(); ++itItem)
     items.AddFront(*itItem, 0);
 
   for (const auto& item : items)
   {
-    if (!item->m_bIsFolder && CUtil::IsSupportedFontExtension(item->GetLabel()))
+    if (item->m_bIsFolder)
+      continue;
+
+    list.emplace_back(item->GetLabel(), item->GetLabel());
+  }
+}
+
+void GUIFontManager::Initialize()
+{
+  CSingleLock lock(m_critSection);
+  LoadUserFonts();
+}
+
+void GUIFontManager::LoadUserFonts()
+{
+  if (!XFILE::CDirectory::Exists(UTILS::FONT::FONTPATH::USER))
+    return;
+
+  CLog::LogF(LOGDEBUG, "Updating user fonts cache...");
+  CXBMCTinyXML xmlDoc;
+  std::string userFontCacheFilepath =
+      URIUtils::AddFileToFolder(UTILS::FONT::FONTPATH::USER, XML_FONTCACHE_FILENAME);
+  if (LoadXMLData(userFontCacheFilepath, xmlDoc))
+  {
+    // Load in cache the fonts metadata previously stored in the XML
+    TiXmlElement* pRootElement = xmlDoc.RootElement();
+    if (pRootElement)
     {
-      list.emplace_back(item->GetLabel(), item->GetLabel());
+      const TiXmlNode* fontNode = pRootElement->FirstChild("font");
+      while (fontNode)
+      {
+        std::string filename;
+        std::string familyName;
+        XMLUtils::GetString(fontNode, "filename", filename);
+        XMLUtils::GetString(fontNode, "familyname", familyName);
+        m_userFontsCache.emplace_back(filename, familyName);
+        fontNode = fontNode->NextSibling("font");
+      }
     }
   }
+
+  bool isCacheChanged{false};
+  size_t previousCacheSize = m_userFontsCache.size();
+  CFileItemList dirItems;
+  // Get the current files list from user fonts folder
+  XFILE::CDirectory::GetDirectory(UTILS::FONT::FONTPATH::USER, dirItems,
+                                  UTILS::FONT::SUPPORTED_EXTENSIONS_MASK,
+                                  XFILE::DIR_FLAG_NO_FILE_DIRS | XFILE::DIR_FLAG_NO_FILE_INFO);
+  dirItems.SetFastLookup(true);
+
+  // Remove files that no longer exist from cache
+  auto it = m_userFontsCache.begin();
+  while (it != m_userFontsCache.end())
+  {
+    const std::string filePath = UTILS::FONT::FONTPATH::USER + (*it).m_filename;
+    if (!dirItems.Contains(filePath))
+    {
+      it = m_userFontsCache.erase(it);
+    }
+    else
+    {
+      auto item = dirItems.Get(filePath);
+      dirItems.Remove(item.get());
+      ++it;
+    }
+  }
+  isCacheChanged = previousCacheSize != m_userFontsCache.size();
+  previousCacheSize = m_userFontsCache.size();
+
+  // Add new files in cache and generate the metadata
+  //!@todo FIXME: this "for" loop should be replaced with the more performant
+  //! parallel execution std::for_each(std::execution::par, ...
+  //! to halving loading times of fonts list, maybe with C++17 with appropriate
+  //! fix to include parallel execution or future C++20
+  for (auto& item : dirItems)
+  {
+    std::string filepath = item->GetPath();
+    if (item->m_bIsFolder)
+      continue;
+
+    std::string familyName = UTILS::FONT::GetFontFamily(filepath);
+    if (!familyName.empty())
+    {
+      m_userFontsCache.emplace_back(item->GetLabel(), familyName);
+    }
+  }
+  isCacheChanged = isCacheChanged || previousCacheSize != m_userFontsCache.size();
+
+  // If the cache is changed save an updated XML cache file
+  if (isCacheChanged)
+  {
+    CXBMCTinyXML xmlDoc;
+    TiXmlDeclaration decl("1.0", "UTF-8", "yes");
+    xmlDoc.InsertEndChild(decl);
+    TiXmlElement xmlMainElement("fonts");
+    TiXmlNode* fontsNode = xmlDoc.InsertEndChild(xmlMainElement);
+    if (fontsNode)
+    {
+      for (auto& fontMetadata : m_userFontsCache)
+      {
+        TiXmlElement fontElement("font");
+        TiXmlNode* fontNode = fontsNode->InsertEndChild(fontElement);
+        XMLUtils::SetString(fontNode, "filename", fontMetadata.m_filename);
+        XMLUtils::SetString(fontNode, "familyname", fontMetadata.m_familyName);
+      }
+      if (!xmlDoc.SaveFile(userFontCacheFilepath))
+        CLog::LogF(LOGERROR, "Failed to save fonts cache file '{}'", userFontCacheFilepath);
+    }
+    else
+    {
+      CLog::LogF(LOGERROR, "Failed to create XML 'fonts' node");
+    }
+  }
+  CLog::LogF(LOGDEBUG, "Updating user fonts cache... DONE");
+}
+
+std::vector<std::string> GUIFontManager::GetUserFontsFamilyNames()
+{
+  // We ensure to have unique font family names and sorted alphabetically
+  // Duplicated family names can happens for example when a font have each style
+  // on different files
+  std::set<std::string, sortstringbyname> familyNames;
+  for (auto& fontMetadata : m_userFontsCache)
+  {
+    familyNames.insert(fontMetadata.m_familyName);
+  }
+  return std::vector<std::string>(familyNames.begin(), familyNames.end());
 }

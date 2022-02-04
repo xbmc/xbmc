@@ -11,13 +11,19 @@
 #include "settings/lib/ISettingCallback.h"
 #include "utils/Observer.h"
 
+#include <memory>
+
 class CSetting;
 class CSettings;
+struct StringSettingOption;
 
 namespace KODI
 {
 namespace SUBTITLES
 {
+// This is a placeholder to keep the fontname setting valid
+// even if the default app font could be changed
+constexpr const char* FONT_DEFAULT_FAMILYNAME = "DEFAULT";
 
 class CSubtitlesSettings : public ISettingCallback, public Observable
 {
@@ -26,6 +32,11 @@ public:
 
   // Inherited from ISettingCallback
   void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
+
+  static void SettingOptionsSubtitleFontsFiller(const std::shared_ptr<const CSetting>& setting,
+                                                std::vector<StringSettingOption>& list,
+                                                std::string& current,
+                                                void* data);
 
 protected:
   CSubtitlesSettings();

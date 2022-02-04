@@ -640,6 +640,29 @@ bool CApplication::Initialize()
   }
   CServiceBroker::GetRenderSystem()->ShowSplash("");
 
+  // Initialize GUI font manager to build/update fonts cache
+  //! @todo Move GUIFontManager into service broker and drop the global reference
+  event.Reset();
+  GUIFontManager& guiFontManager = g_fontManager;
+  CJobManager::GetInstance().Submit([&guiFontManager, &event]() {
+    guiFontManager.Initialize();
+    event.Set();
+  });
+  localizedStr = g_localizeStrings.Get(39180);
+  iDots = 1;
+  while (!event.Wait(1000ms))
+  {
+    if (g_fontManager.IsUpdating())
+      CServiceBroker::GetRenderSystem()->ShowSplash(std::string(iDots, ' ') + localizedStr +
+                                                    std::string(iDots, '.'));
+
+    if (iDots == 3)
+      iDots = 1;
+    else
+      ++iDots;
+  }
+  CServiceBroker::GetRenderSystem()->ShowSplash("");
+
   // GUI depends on seek handler
   m_appPlayer.GetSeekHandler().Configure();
 

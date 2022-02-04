@@ -670,9 +670,8 @@ bool CGUIControlListSetting::OnClick()
   if (!bAllowNewOption)
   {
     // Do not show dialog if
-    // * there are no items to be chosen or
-    // * only one value can be chosen and there are less than two items available
-    if (!optionsValid || options.Size() <= 0 || (!control->CanMultiSelect() && options.Size() <= 1))
+    // there are no items to be chosen
+    if (!optionsValid || options.Size() <= 0)
       return false;
 
     dialog->Reset();
@@ -851,10 +850,8 @@ void CGUIControlListSetting::Update(bool fromControl, bool updateDisplayOnly)
   if (!updateDisplayOnly)
   {
     // Disable the control if no items can be added and
-    // * there are no items to be chosen
-    // * only one value can be chosen and there are less than two items available
-    if (!m_pButton->IsDisabled() && !bAllowNewOption &&
-        (options.Size() <= 0 || (!control->CanMultiSelect() && options.Size() <= 1)))
+    // there are no items to be chosen
+    if (!m_pButton->IsDisabled() && !bAllowNewOption && (options.Size() <= 0))
       m_pButton->SetEnabled(false);
   }
 }

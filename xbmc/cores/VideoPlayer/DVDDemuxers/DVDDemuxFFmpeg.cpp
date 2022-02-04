@@ -25,6 +25,7 @@
 #include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "threads/SystemClock.h"
+#include "utils/FontUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XTimeUtils.h"
@@ -1748,38 +1749,39 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
       }
       case AVMEDIA_TYPE_ATTACHMENT:
       {
-        // mkv attachments. Only bothering with fonts for now.
+        // MKV attachments. Only bothering with fonts for now.
         AVDictionaryEntry* attachmentMimetype =
             av_dict_get(pStream->metadata, "mimetype", nullptr, 0);
 
         if (pStream->codecpar->codec_id == AV_CODEC_ID_TTF ||
             pStream->codecpar->codec_id == AV_CODEC_ID_OTF || AttachmentIsFont(attachmentMimetype))
         {
-          std::string fileName = "special://home/media/Fonts/";
-          XFILE::CDirectory::Create(fileName);
+          // Temporary fonts are extracted to the temporary fonts path
+          //! @todo: temporary font file management should be completely
+          //! removed, by sending font data to the subtitle renderer and
+          //! using libass ass_add_font to add the fonts directly in memory.
+          std::string filePath{UTILS::FONT::FONTPATH::TEMP};
+          XFILE::CDirectory::Create(filePath);
+
           AVDictionaryEntry* nameTag = av_dict_get(pStream->metadata, "filename", NULL, 0);
-          if (!nameTag)
+          if (nameTag)
           {
-            CLog::Log(LOGERROR, "{}: TTF attachment has no name", __FUNCTION__);
-          }
-          else
-          {
-            // Note: libass only supports a single font directory to look for additional fonts
-            // (c.f. ass_set_fonts_dir). To support both user defined fonts (those placed in
-            // special://home/media/Fonts/) and fonts extracted by the demuxer, make it extract
-            // fonts to the user directory with a known, easy to identify, prefix (tmp.font.*).
-            fileName += "tmp.font." + CUtil::MakeLegalFileName(nameTag->value, LEGAL_WIN32_COMPAT);
+            filePath += CUtil::MakeLegalFileName(nameTag->value, LEGAL_WIN32_COMPAT);
             XFILE::CFile file;
-            if (pStream->codecpar->extradata && file.OpenForWrite(fileName))
+            if (pStream->codecpar->extradata && file.OpenForWrite(filePath))
             {
               if (file.Write(pStream->codecpar->extradata, pStream->codecpar->extradata_size) !=
                   pStream->codecpar->extradata_size)
               {
                 file.Close();
-                XFILE::CFile::Delete(fileName);
-                CLog::Log(LOGDEBUG, "{}: Error saving font file \"{}\"", __FUNCTION__, fileName);
+                XFILE::CFile::Delete(filePath);
+                CLog::LogF(LOGDEBUG, "Error saving font file \"{}\"", filePath);
               }
             }
+          }
+          else
+          {
+            CLog::LogF(LOGERROR, "Attached font has no name");
           }
         }
         stream = new CDemuxStream();

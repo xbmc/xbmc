@@ -21,7 +21,6 @@ constexpr double VIEWPORT_HEIGHT = 1080.0;
 constexpr double VIEWPORT_WIDTH = 1920.0;
 constexpr int MARGIN_VERTICAL = 30;
 
-
 enum class HorizontalAlignment
 {
   DISABLED = 0,
@@ -69,8 +68,8 @@ enum class OverrideStyles
 
 struct style
 {
-  std::string fontName;
-  double fontSize;
+  std::string fontName; // Font family name
+  double fontSize; // Font size in PT
   FontStyle fontStyle = FontStyle::NORMAL;
   UTILS::COLOR::Color fontColor = UTILS::COLOR::WHITE;
   int fontBorderSize = 15; // In %

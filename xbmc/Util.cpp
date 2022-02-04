@@ -70,6 +70,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/Digest.h"
 #include "utils/FileExtensionProvider.h"
+#include "utils/FontUtils.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
@@ -677,26 +678,6 @@ void CUtil::ClearSubtitles()
   }
 }
 
-void CUtil::ClearTempFonts()
-{
-  const std::string searchPath = "special://home/media/Fonts/";
-
-  if (!CDirectory::Exists(searchPath))
-    return;
-
-  CFileItemList items;
-  CDirectory::GetDirectory(searchPath, items, "", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_BYPASS_CACHE | DIR_FLAG_GET_HIDDEN);
-
-  for (const auto &item : items)
-  {
-    if (item->m_bIsFolder)
-      continue;
-
-    if (StringUtils::StartsWithNoCase(URIUtils::GetFileName(item->GetPath()), "tmp.font."))
-      CFile::Delete(item->GetPath());
-  }
-}
-
 int64_t CUtil::ToInt64(uint32_t high, uint32_t low)
 {
   int64_t n;
@@ -1021,11 +1002,6 @@ std::string CUtil::ValidatePath(const std::string &path, bool bFixDoubleSlashes 
     }
   }
   return result;
-}
-
-bool CUtil::IsSupportedFontExtension(const std::string& fileName)
-{
-  return URIUtils::HasExtension(fileName, ".ttf|.otf");
 }
 
 void CUtil::SplitExecFunction(const std::string &execString, std::string &function, std::vector<std::string> &parameters)

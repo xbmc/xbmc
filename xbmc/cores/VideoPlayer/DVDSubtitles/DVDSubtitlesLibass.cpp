@@ -8,13 +8,18 @@
 
 #include "DVDSubtitlesLibass.h"
 
+#include "FileItem.h"
 #include "ServiceBroker.h"
+#include "Util.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
+#include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "settings/SubtitlesSettings.h"
 #include "threads/SingleLock.h"
+#include "utils/FontUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -31,27 +36,6 @@ constexpr int ASS_BORDER_STYLE_BOX = 3; // Box + drop shadow
 constexpr int ASS_BORDER_STYLE_SQUARE_BOX = 4; // Square box + outline
 
 constexpr int ASS_FONT_ENCODING_AUTO = -1;
-
-// Directory where user defined fonts are located (and where mkv fonts are extracted to)
-constexpr const char* userFontPath = "special://home/media/Fonts/";
-// Directory where Kodi bundled fonts (default ones like Arial or Teletext) are located
-constexpr const char* systemFontPath = "special://xbmc/media/Fonts/";
-
-std::string GetDefaultFontPath(std::string& font)
-{
-  constexpr std::array<const char*, 2> fontSources{userFontPath, systemFontPath};
-
-  for (const auto& path : fontSources)
-  {
-    auto fontPath = URIUtils::AddFileToFolder(path, font);
-    if (XFILE::CFile::Exists(fontPath))
-    {
-      return CSpecialProtocol::TranslatePath(fontPath).c_str();
-    }
-  }
-  CLog::Log(LOGERROR, "CDVDSubtitlesLibass: Could not find font {} in font sources", font);
-  return "";
-}
 
 // Convert RGB/ARGB to RGBA by also applying the opacity value
 COLOR::Color ConvColor(COLOR::Color argbColor, int opacity = 100)
@@ -109,9 +93,58 @@ void CDVDSubtitlesLibass::Configure()
   ass_set_margins(m_renderer, 0, 0, 0, 0);
   ass_set_use_margins(m_renderer, 0);
 
-  // libass uses fontconfig (system lib) by default in some platforms (e.g. linux/android) or as
-  // a fallback for all platforms. It is not wrapped so translate the path before calling into libass
-  ass_set_fonts_dir(m_library, CSpecialProtocol::TranslatePath(userFontPath).c_str());
+  // Libass uses system font provider (like fontconfig) by default in some
+  // platforms (e.g. linux/windows), on some other systems like android the
+  // font provider is currenlty not supported, then an user can add his
+  // additionals fonts only by using the user fonts folder.
+  ass_set_fonts_dir(m_library,
+                    CSpecialProtocol::TranslatePath(UTILS::FONT::FONTPATH::USER).c_str());
+
+  // Load additional fonts into Libass memory
+  CFileItemList items;
+  // Get fonts from system directory
+  XFILE::CDirectory::GetDirectory(UTILS::FONT::FONTPATH::SYSTEM, items,
+                                  UTILS::FONT::SUPPORTED_EXTENSIONS_MASK,
+                                  XFILE::DIR_FLAG_NO_FILE_DIRS | XFILE::DIR_FLAG_NO_FILE_INFO);
+  // Get temporary fonts
+  XFILE::CDirectory::GetDirectory(UTILS::FONT::FONTPATH::TEMP, items,
+                                  UTILS::FONT::SUPPORTED_EXTENSIONS_MASK,
+                                  XFILE::DIR_FLAG_NO_FILE_DIRS | XFILE::DIR_FLAG_NO_FILE_INFO);
+  for (const auto& item : items)
+  {
+    if (item->m_bIsFolder)
+      continue;
+    const std::string filepath = item->GetPath();
+    const std::string fileName = item->GetLabel();
+    std::vector<uint8_t> buffer;
+    if (XFILE::CFile().LoadFile(filepath, buffer) <= 0)
+    {
+      CLog::LogF(LOGERROR, "Failed to load file {}", filepath);
+      continue;
+    }
+#if LIBASS_VERSION >= 0x01501000
+    ass_add_font(m_library, fileName.c_str(), reinterpret_cast<const char*>(buffer.data()),
+                 static_cast<int>(buffer.size()));
+#else
+    ass_add_font(m_library, const_cast<char*>(fileName.c_str()),
+                 reinterpret_cast<char*>(buffer.data()), static_cast<int>(buffer.size()));
+#endif
+    if (StringUtils::CompareNoCase(fileName, FONT::FONT_DEFAULT_FILENAME) == 0)
+    {
+      m_defaultFontFamilyName = FONT::GetFontFamily(buffer);
+    }
+  }
+  if (m_defaultFontFamilyName.empty())
+  {
+    CLog::LogF(LOGERROR,
+               "The application font {} is missing. The default subtitle font cannot be set.",
+               FONT::FONT_DEFAULT_FILENAME);
+  }
+
+  ass_set_fonts(m_renderer,
+                UTILS::FONT::FONTPATH::GetSystemFontPath(FONT::FONT_DEFAULT_FILENAME).c_str(),
+                m_defaultFontFamilyName.c_str(), ASS_FONTPROVIDER_AUTODETECT, nullptr, 1);
+
   ass_set_font_scale(m_renderer, 1);
 
   // Extract font must be set before loading ASS/SSA data,
@@ -277,14 +310,13 @@ void CDVDSubtitlesLibass::ApplyStyle(const std::shared_ptr<struct KODI::SUBTITLE
     return;
   }
 
-  ConfigureFont((m_subtitleType == NATIVE && subStyle->assOverrideFont), subStyle->fontName);
-
   // ASS_Style is a POD struct need to be initialized with {}
   ASS_Style defaultStyle{};
   ASS_Style* style = nullptr;
 
   if (m_subtitleType == ADAPTED ||
-      (m_subtitleType == NATIVE && subStyle->assOverrideStyles != OverrideStyles::DISABLED))
+      (m_subtitleType == NATIVE &&
+       (subStyle->assOverrideStyles != OverrideStyles::DISABLED || subStyle->assOverrideFont)))
   {
     m_currentDefaultStyleId = m_defaultKodiStyleId;
 
@@ -297,6 +329,7 @@ void CDVDSubtitlesLibass::ApplyStyle(const std::shared_ptr<struct KODI::SUBTITLE
       style = &m_track->styles[m_currentDefaultStyleId];
     }
 
+    free(style->Name);
     style->Name = strdup("KodiDefault");
 
     // Calculate the scale (influence ASS style properties)
@@ -304,7 +337,8 @@ void CDVDSubtitlesLibass::ApplyStyle(const std::shared_ptr<struct KODI::SUBTITLE
     int playResY;
     if (m_subtitleType == NATIVE &&
         (subStyle->assOverrideStyles == OverrideStyles::STYLES ||
-         subStyle->assOverrideStyles == OverrideStyles::STYLES_POSITIONS))
+         subStyle->assOverrideStyles == OverrideStyles::STYLES_POSITIONS ||
+         subStyle->assOverrideFont))
     {
       // With styles overridden the PlayResY will be changed to 288
       playResY = 288;
@@ -316,104 +350,105 @@ void CDVDSubtitlesLibass::ApplyStyle(const std::shared_ptr<struct KODI::SUBTITLE
     }
 
     // It is mandatory set the FontName, the text is case sensitive
-    style->FontName = strdup(subStyle->fontName.c_str());
+    free(style->FontName);
+    if (subStyle->fontName == FONT_DEFAULT_FAMILYNAME)
+      style->FontName = strdup(m_defaultFontFamilyName.c_str());
+    else
+      style->FontName = strdup(subStyle->fontName.c_str());
 
-    if (m_subtitleType != NATIVE || subStyle->assOverrideStyles != OverrideStyles::POSITIONS)
+    // Configure the font properties
+    // FIXME: The font size need to be scaled to be shown in right PT size
+    style->FontSize = (subStyle->fontSize / 720) * playResY;
+    // Modifies the width/height of the font (1 = 100%)
+    style->ScaleX = 1.0;
+    style->ScaleY = 1.0;
+    // Extra space between characters causes the underlined
+    // text line to become more discontinuous (test on LibAss 15.1)
+    style->Spacing = 0;
+
+    // Set automatic paragraph direction (not VSFilter-compatible)
+    // to fix wrong RTL text direction when there are unicode chars
+    style->Encoding = ASS_FONT_ENCODING_AUTO;
+
+    bool isFontBold =
+        (subStyle->fontStyle == FontStyle::BOLD || subStyle->fontStyle == FontStyle::BOLD_ITALIC);
+    bool isFontItalic =
+        (subStyle->fontStyle == FontStyle::ITALIC || subStyle->fontStyle == FontStyle::BOLD_ITALIC);
+    style->Bold = isFontBold * -1;
+    style->Italic = isFontItalic * -1;
+
+    // Compute the font color, depending on the opacity
+    COLOR::Color subColor = ConvColor(subStyle->fontColor, subStyle->fontOpacity);
+    // Set default subtitles color
+    style->PrimaryColour = subColor;
+    // Set SecondaryColour may be used to prevent an onscreen collision
+    style->SecondaryColour = subColor;
+
+    // Configure the effects
+    double lineSpacing = 0.0;
+    if (subStyle->borderStyle == BorderStyle::OUTLINE ||
+        subStyle->borderStyle == BorderStyle::OUTLINE_NO_SHADOW)
     {
-      // Configure the font properties
-      // FIXME: The font size need to be scaled to be shown in right PT size
-      style->FontSize = (subStyle->fontSize / 720) * playResY;
-      // Modifies the width/height of the font (1 = 100%)
-      style->ScaleX = 1.0;
-      style->ScaleY = 1.0;
-      // Extra space between characters causes the underlined
-      // text line to become more discontinuous (test on LibAss 15.1)
-      style->Spacing = 0;
-
-      // Set automatic paragraph direction (not VSFilter-compatible)
-      // to fix wrong RTL text direction when there are unicode chars
-      style->Encoding = ASS_FONT_ENCODING_AUTO;
-
-      bool isFontBold =
-          (subStyle->fontStyle == FontStyle::BOLD || subStyle->fontStyle == FontStyle::BOLD_ITALIC);
-      bool isFontItalic = (subStyle->fontStyle == FontStyle::ITALIC ||
-                           subStyle->fontStyle == FontStyle::BOLD_ITALIC);
-      style->Bold = isFontBold * -1;
-      style->Italic = isFontItalic * -1;
-
-      // Compute the font color, depending on the opacity
-      COLOR::Color subColor = ConvColor(subStyle->fontColor, subStyle->fontOpacity);
-      // Set default subtitles color
-      style->PrimaryColour = subColor;
-      // Set SecondaryColour may be used to prevent an onscreen collision
-      style->SecondaryColour = subColor;
-
-      // Configure the effects
-      double lineSpacing = 0.0;
-      if (subStyle->borderStyle == BorderStyle::OUTLINE ||
-          subStyle->borderStyle == BorderStyle::OUTLINE_NO_SHADOW)
+      style->BorderStyle = ASS_BORDER_STYLE_OUTLINE;
+      style->Outline = (10.00 / 100 * subStyle->fontBorderSize) * scale;
+      style->OutlineColour = ConvColor(subStyle->fontBorderColor, subStyle->fontOpacity);
+      if (subStyle->borderStyle == BorderStyle::OUTLINE_NO_SHADOW)
       {
-        style->BorderStyle = ASS_BORDER_STYLE_OUTLINE;
-        style->Outline = (10.00 / 100 * subStyle->fontBorderSize) * scale;
-        style->OutlineColour = ConvColor(subStyle->fontBorderColor, subStyle->fontOpacity);
-        if (subStyle->borderStyle == BorderStyle::OUTLINE_NO_SHADOW)
-        {
-          style->BackColour = ConvColor(COLOR::NONE, 0); // Set the shadow color
-          style->Shadow = 0; // Set the shadow size
-        }
-        else
-        {
-          style->BackColour =
-              ConvColor(subStyle->shadowColor, subStyle->shadowOpacity); // Set the shadow color
-          style->Shadow = (10.00 / 100 * subStyle->shadowSize) * scale; // Set the shadow size
-        }
+        style->BackColour = ConvColor(COLOR::NONE, 0); // Set the shadow color
+        style->Shadow = 0; // Set the shadow size
       }
-      else if (subStyle->borderStyle == BorderStyle::BOX)
-      {
-        // This BorderStyle not support outline color/size
-        style->BorderStyle = ASS_BORDER_STYLE_BOX;
-        style->Outline = 4 * scale; // Space between the text and the box edges
-        style->OutlineColour =
-            ConvColor(subStyle->backgroundColor,
-                      subStyle->backgroundOpacity); // Set the background border color
-        style->BackColour =
-            ConvColor(subStyle->shadowColor, subStyle->shadowOpacity); // Set the box shadow color
-        style->Shadow = (10.00 / 100 * subStyle->shadowSize) * scale; // Set the box shadow size
-        // By default a box overlaps the other, then we increase a bit the line spacing
-        lineSpacing = 6.0;
-      }
-      else if (subStyle->borderStyle == BorderStyle::SQUARE_BOX)
-      {
-        // This BorderStyle not support shadow color/size
-        style->BorderStyle = ASS_BORDER_STYLE_SQUARE_BOX;
-        style->Outline = (10.00 / 100 * subStyle->fontBorderSize) * scale;
-        style->OutlineColour = ConvColor(subStyle->fontBorderColor, subStyle->fontOpacity);
-        style->BackColour = ConvColor(subStyle->backgroundColor, subStyle->backgroundOpacity);
-        style->Shadow = 4 * scale; // Space between the text and the box edges
-      }
-
-      ass_set_line_spacing(m_renderer, lineSpacing);
-
-      style->Blur = (10.00 / 100 * subStyle->blur);
-
-      double marginLR = 20;
-      if (opts.horizontalAlignment != HorizontalAlignment::DISABLED)
-      {
-        // If the subtitle text is aligned on the left or right
-        // of the screen, we set an extra left/right margin
-        marginLR += static_cast<double>(opts.frameWidth) / 10;
-      }
-
-      // Set the margins (in pixel)
-      style->MarginL = static_cast<int>(marginLR * scale);
-      style->MarginR = static_cast<int>(marginLR * scale);
-      // Vertical margin (direction depends on alignment)
-      // to be set only when the video calibration position setting is not used
-      if (opts.usePosition)
-        style->MarginV = 0;
       else
-        style->MarginV = static_cast<int>(subStyle->marginVertical * scale);
+      {
+        style->BackColour =
+            ConvColor(subStyle->shadowColor, subStyle->shadowOpacity); // Set the shadow color
+        style->Shadow = (10.00 / 100 * subStyle->shadowSize) * scale; // Set the shadow size
+      }
     }
+    else if (subStyle->borderStyle == BorderStyle::BOX)
+    {
+      // This BorderStyle not support outline color/size
+      style->BorderStyle = ASS_BORDER_STYLE_BOX;
+      style->Outline = 4 * scale; // Space between the text and the box edges
+      style->OutlineColour =
+          ConvColor(subStyle->backgroundColor,
+                    subStyle->backgroundOpacity); // Set the background border color
+      style->BackColour =
+          ConvColor(subStyle->shadowColor, subStyle->shadowOpacity); // Set the box shadow color
+      style->Shadow = (10.00 / 100 * subStyle->shadowSize) * scale; // Set the box shadow size
+      // By default a box overlaps the other, then we increase a bit the line spacing
+      lineSpacing = 6.0;
+    }
+    else if (subStyle->borderStyle == BorderStyle::SQUARE_BOX)
+    {
+      // This BorderStyle not support shadow color/size
+      style->BorderStyle = ASS_BORDER_STYLE_SQUARE_BOX;
+      style->Outline = (10.00 / 100 * subStyle->fontBorderSize) * scale;
+      style->OutlineColour = ConvColor(subStyle->fontBorderColor, subStyle->fontOpacity);
+      style->BackColour = ConvColor(subStyle->backgroundColor, subStyle->backgroundOpacity);
+      style->Shadow = 4 * scale; // Space between the text and the box edges
+    }
+
+    ass_set_line_spacing(m_renderer, lineSpacing);
+
+    style->Blur = (10.00 / 100 * subStyle->blur);
+
+    double marginLR = 20;
+    if (opts.horizontalAlignment != HorizontalAlignment::DISABLED)
+    {
+      // If the subtitle text is aligned on the left or right
+      // of the screen, we set an extra left/right margin
+      marginLR += static_cast<double>(opts.frameWidth) / 10;
+    }
+
+    // Set the margins (in pixel)
+    style->MarginL = static_cast<int>(marginLR * scale);
+    style->MarginR = static_cast<int>(marginLR * scale);
+    // Vertical margin (direction depends on alignment)
+    // to be set only when the video calibration position setting is not used
+    if (opts.usePosition)
+      style->MarginV = 0;
+    else
+      style->MarginV = static_cast<int>(subStyle->marginVertical * scale);
 
     // Set the vertical alignment
     if (subStyle->alignment == FontAlignment::TOP_LEFT ||
@@ -467,42 +502,32 @@ void CDVDSubtitlesLibass::ConfigureAssOverride(
   }
 
   // Default behaviour, disable ASS embedded styles override (if has been changed)
-  int stylesFlags = ASS_OVERRIDE_BIT_SELECTIVE_FONT_SCALE;
-
+  int stylesFlags{ASS_OVERRIDE_DEFAULT};
   if (style)
   {
     // Manage override cases with ASS embedded styles
     if (subStyle->assOverrideStyles == OverrideStyles::STYLES)
     {
-      stylesFlags = ASS_OVERRIDE_BIT_FONT_SIZE_FIELDS | ASS_OVERRIDE_BIT_FONT_NAME |
-                    ASS_OVERRIDE_BIT_COLORS | ASS_OVERRIDE_BIT_ATTRIBUTES |
+      stylesFlags = ASS_OVERRIDE_BIT_COLORS | ASS_OVERRIDE_BIT_ATTRIBUTES |
                     ASS_OVERRIDE_BIT_BORDER | ASS_OVERRIDE_BIT_MARGINS;
     }
     else if (subStyle->assOverrideStyles == OverrideStyles::STYLES_POSITIONS)
     {
-      stylesFlags = ASS_OVERRIDE_BIT_FONT_SIZE_FIELDS | ASS_OVERRIDE_BIT_FONT_NAME |
-                    ASS_OVERRIDE_BIT_COLORS | ASS_OVERRIDE_BIT_ATTRIBUTES |
+      stylesFlags = ASS_OVERRIDE_BIT_COLORS | ASS_OVERRIDE_BIT_ATTRIBUTES |
                     ASS_OVERRIDE_BIT_BORDER | ASS_OVERRIDE_BIT_MARGINS | ASS_OVERRIDE_BIT_ALIGNMENT;
     }
     else if (subStyle->assOverrideStyles == OverrideStyles::POSITIONS)
     {
       stylesFlags = ASS_OVERRIDE_BIT_ALIGNMENT;
     }
+    if (subStyle->assOverrideFont)
+    {
+      stylesFlags |= ASS_OVERRIDE_BIT_FONT_SIZE_FIELDS | ASS_OVERRIDE_BIT_FONT_NAME;
+    }
     ass_set_selective_style_override(m_renderer, style);
   }
-  ass_set_selective_style_override_enabled(m_renderer, stylesFlags);
-}
 
-void CDVDSubtitlesLibass::ConfigureFont(bool overrideFont, std::string fontName)
-{
-  int fontProvider = ASS_FONTPROVIDER_AUTODETECT;
-  std::string fontPath = GetDefaultFontPath(fontName);
-  if ((m_subtitleType == ADAPTED || overrideFont) && !fontPath.empty())
-    fontProvider = ASS_FONTPROVIDER_NONE;
-  // Libass take in consideration of the default font specified only
-  // as last resort so when the builtin list of fallbacks fails,
-  // the be able to use our font we have to set ASS_FONTPROVIDER_NONE
-  ass_set_fonts(m_renderer, fontPath.c_str(), fontName.c_str(), fontProvider, nullptr, 1);
+  ass_set_selective_style_override_enabled(m_renderer, stylesFlags);
 }
 
 ASS_Event* CDVDSubtitlesLibass::GetEvents()
