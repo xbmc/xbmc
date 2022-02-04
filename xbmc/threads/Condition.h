@@ -31,12 +31,32 @@ namespace XbmcThreads
   public:
     ConditionVariable() = default;
 
+    inline void wait(CCriticalSection& lock, std::function<bool()>& predicate)
+    {
+      int count = lock.count;
+      lock.count = 0;
+      cond.wait(lock.get_underlying(), predicate);
+      lock.count = count;
+    }
+
     inline void wait(CCriticalSection& lock)
     {
       int count  = lock.count;
       lock.count = 0;
       cond.wait(lock.get_underlying());
       lock.count = count;
+    }
+
+    template<typename Rep, typename Period>
+    inline bool wait(CCriticalSection& lock,
+                     std::chrono::duration<Rep, Period> duration,
+                     std::function<bool()>& predicate)
+    {
+      int count = lock.count;
+      lock.count = 0;
+      bool ret = cond.wait_for(lock.get_underlying(), duration, predicate);
+      lock.count = count;
+      return ret;
     }
 
     template<typename Rep, typename Period>
@@ -49,7 +69,20 @@ namespace XbmcThreads
       return res == std::cv_status::no_timeout;
     }
 
+    inline void wait(CSingleLock& lock, std::function<bool()>& predicate)
+    {
+      cond.wait(*lock.mutex(), predicate);
+    }
+
     inline void wait(CSingleLock& lock) { wait(*lock.mutex()); }
+
+    template<typename Rep, typename Period>
+    inline bool wait(CSingleLock& lock,
+                     std::chrono::duration<Rep, Period> duration,
+                     std::function<bool()>& predicate)
+    {
+      return wait(*lock.mutex(), duration, predicate);
+    }
 
     template<typename Rep, typename Period>
     inline bool wait(CSingleLock& lock, std::chrono::duration<Rep, Period> duration)
@@ -92,44 +125,13 @@ namespace XbmcThreads
     template<typename L>
     inline void wait(L& lock)
     {
-      while (!predicate())
-        cond.wait(lock);
+      cond.wait(lock, predicate);
     }
 
     template<typename L, typename Rep, typename Period>
     inline bool wait(L& lock, std::chrono::duration<Rep, Period> duration)
     {
-      bool ret = true;
-      if (!predicate())
-      {
-        if (duration == std::chrono::duration<Rep, Period>::zero())
-        {
-          cond.wait(lock, duration /* zero */);
-          return !(!predicate()); // eh? I only require the ! operation on P
-        }
-        else
-        {
-          const auto start = std::chrono::steady_clock::now();
-
-          auto end = std::chrono::steady_clock::now();
-          auto elapsed = end - start;
-
-          auto remaining = duration - elapsed;
-
-          for (bool notdone = true; notdone && ret == true;
-               ret = (notdone = (!predicate()))
-                         ? (remaining > std::chrono::duration<Rep, Period>::zero())
-                         : true)
-          {
-            cond.wait(lock, duration);
-
-            end = std::chrono::steady_clock::now();
-            elapsed = end - start;
-            remaining = duration - elapsed;
-          }
-        }
-      }
-      return ret;
+      return cond.wait(lock, duration, predicate);
     }
 
     inline void notifyAll() { cond.notifyAll(); }
