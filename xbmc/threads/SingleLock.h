@@ -28,8 +28,6 @@ public:
 
   inline void Leave() { unlock(); }
   inline void Enter() { lock(); }
-protected:
-  inline CSingleLock(CCriticalSection& cs, bool dicrim) : XbmcThreads::UniqueLock<CCriticalSection>(cs,true) {}
 };
 
 
