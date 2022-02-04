@@ -21,20 +21,33 @@ class CSharedSection
 {
   CCriticalSection sec;
   XbmcThreads::ConditionVariable actualCv;
-  XbmcThreads::TightConditionVariable cond;
 
   unsigned int sharedCount = 0;
 
 public:
-  inline CSharedSection() : cond(actualCv, [this]() { return sharedCount == 0; }) {}
+  inline CSharedSection() = default;
 
-  inline void lock() { CSingleLock l(sec); while (sharedCount) cond.wait(l); sec.lock(); }
+  inline void lock()
+  {
+    CSingleLock l(sec);
+    while (sharedCount)
+      actualCv.wait(l, [this]() { return sharedCount == 0; });
+    sec.lock();
+  }
   inline bool try_lock() { return (sec.try_lock() ? ((sharedCount == 0) ? true : (sec.unlock(), false)) : false); }
   inline void unlock() { sec.unlock(); }
 
   inline void lock_shared() { CSingleLock l(sec); sharedCount++; }
   inline bool try_lock_shared() { return (sec.try_lock() ? sharedCount++, sec.unlock(), true : false); }
-  inline void unlock_shared() { CSingleLock l(sec); sharedCount--; if (!sharedCount) { cond.notifyAll(); } }
+  inline void unlock_shared()
+  {
+    CSingleLock l(sec);
+    sharedCount--;
+    if (!sharedCount)
+    {
+      actualCv.notifyAll();
+    }
+  }
 };
 
 class CSharedLock : public std::shared_lock<CSharedSection>

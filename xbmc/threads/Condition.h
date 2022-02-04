@@ -31,7 +31,7 @@ namespace XbmcThreads
   public:
     ConditionVariable() = default;
 
-    inline void wait(CCriticalSection& lock, std::function<bool()>& predicate)
+    inline void wait(CCriticalSection& lock, std::function<bool()> predicate)
     {
       int count = lock.count;
       lock.count = 0;
@@ -50,7 +50,7 @@ namespace XbmcThreads
     template<typename Rep, typename Period>
     inline bool wait(CCriticalSection& lock,
                      std::chrono::duration<Rep, Period> duration,
-                     std::function<bool()>& predicate)
+                     std::function<bool()> predicate)
     {
       int count = lock.count;
       lock.count = 0;
@@ -69,7 +69,7 @@ namespace XbmcThreads
       return res == std::cv_status::no_timeout;
     }
 
-    inline void wait(CSingleLock& lock, std::function<bool()>& predicate)
+    inline void wait(CSingleLock& lock, std::function<bool()> predicate)
     {
       cond.wait(*lock.mutex(), predicate);
     }
@@ -79,7 +79,7 @@ namespace XbmcThreads
     template<typename Rep, typename Period>
     inline bool wait(CSingleLock& lock,
                      std::chrono::duration<Rep, Period> duration,
-                     std::function<bool()>& predicate)
+                     std::function<bool()> predicate)
     {
       return wait(*lock.mutex(), duration, predicate);
     }
@@ -101,41 +101,5 @@ namespace XbmcThreads
     }
   };
 
-  /**
-   * This is a condition variable along with its predicate. This allows the use of a
-   *  condition variable without the spurious returns since the state being monitored
-   *  is also part of the condition.
-   *
-   * L should implement the Lockable concept
-   *
-   * The requirements on P are that it can act as a predicate (that is, I can use
-   *  it in an 'while(!predicate){...}' where 'predicate' is of type 'P').
-   */
-  class TightConditionVariable
-  {
-    ConditionVariable& cond;
-    std::function<bool()> predicate;
-
-  public:
-    inline TightConditionVariable(ConditionVariable& cv, std::function<bool()> predicate_)
-      : cond(cv), predicate(predicate_)
-    {
-    }
-
-    template<typename L>
-    inline void wait(L& lock)
-    {
-      cond.wait(lock, predicate);
-    }
-
-    template<typename L, typename Rep, typename Period>
-    inline bool wait(L& lock, std::chrono::duration<Rep, Period> duration)
-    {
-      return cond.wait(lock, duration, predicate);
-    }
-
-    inline void notifyAll() { cond.notifyAll(); }
-    inline void notify() { cond.notify(); }
-  };
 }
 
