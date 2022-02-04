@@ -200,6 +200,16 @@ private:
   std::shared_ptr<CPVREpgInfoTag> CreateGapTag(const CDateTime& start, const CDateTime& end) const;
 
   /*!
+   * @brief Merge m_changedTags tags into given tags, resolving conflicts.
+   * @param minEventEnd The minimum end time of the events to return
+   * @param maxEventStart The maximum start time of the events to return
+   * @param tags The merged tags.
+   */
+  void MergeTags(const CDateTime& minEventEnd,
+                 const CDateTime& maxEventStart,
+                 std::vector<std::shared_ptr<CPVREpgInfoTag>>& tags) const;
+
+  /*!
    * @brief Fix overlapping events.
    * @param tags The events to check/fix.
    */
