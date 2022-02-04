@@ -468,7 +468,7 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker* invoker)
     return false;
 
   XBMC_TRACE;
-  CLog::Log(LOGINFO, "initializing python engine.");
+  CLog::Log(LOGDEBUG, "initializing python engine.");
   CSingleLock lock(m_critSection);
   m_iDllScriptCounter++;
   if (!m_bInitialized)
@@ -592,9 +592,9 @@ void XBPython::OnExecutionEnded(ILanguageInvoker* invoker)
     if (it->id == invoker->GetId())
     {
       if (it->pyThread->IsStopping())
-        CLog::Log(LOGINFO, "Python interpreter interrupted by user");
+        CLog::Log(LOGDEBUG, "Python interpreter interrupted by user");
       else
-        CLog::Log(LOGINFO, "Python interpreter stopped");
+        CLog::Log(LOGDEBUG, "Python interpreter stopped");
       it->bDone = true;
     }
     ++it;
