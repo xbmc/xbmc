@@ -45,13 +45,17 @@ public:
   inline void Leave() { unlock(); }
 };
 
-class CExclusiveLock : public XbmcThreads::UniqueLock<CSharedSection>
+class CExclusiveLock : public std::unique_lock<CSharedSection>
 {
 public:
-  inline explicit CExclusiveLock(CSharedSection& cs) : XbmcThreads::UniqueLock<CSharedSection>(cs) {}
+  inline explicit CExclusiveLock(CSharedSection& cs) : std::unique_lock<CSharedSection>(cs) {}
 
   inline bool IsOwner() const { return owns_lock(); }
   inline void Leave() { unlock(); }
   inline void Enter() { lock(); }
+
+private:
+  CExclusiveLock(const CExclusiveLock&) = delete;
+  CExclusiveLock& operator=(const CExclusiveLock&) = delete;
 };
 
