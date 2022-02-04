@@ -436,6 +436,22 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgTagsContainer::CreateGapTag(const CDateTi
   return std::make_shared<CPVREpgInfoTag>(m_channelData, m_iEpgID, start, end, true);
 }
 
+void CPVREpgTagsContainer::MergeTags(const CDateTime& minEventEnd,
+                                     const CDateTime& maxEventStart,
+                                     std::vector<std::shared_ptr<CPVREpgInfoTag>>& tags) const
+{
+  for (const auto& changedTagsEntry : m_changedTags)
+  {
+    const auto& changedTag = changedTagsEntry.second;
+
+    if (changedTag->EndAsUTC() > minEventEnd && changedTag->StartAsUTC() < maxEventStart)
+      tags.emplace_back(changedTag);
+  }
+
+  if (!tags.empty())
+    FixOverlappingEvents(tags);
+}
+
 std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgTagsContainer::GetTimeline(
     const CDateTime& timelineStart,
     const CDateTime& timelineEnd,
@@ -446,19 +462,19 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgTagsContainer::GetTimeline(
   {
     std::vector<std::shared_ptr<CPVREpgInfoTag>> tags;
 
-    if (!m_changedTags.empty() && !m_database->GetFirstStartTime(m_iEpgID).IsValid())
+    bool loadFromDb = true;
+    if (!m_changedTags.empty())
     {
-      // nothing in the db yet. take what we have in memory.
-      for (const auto& tag : m_changedTags)
+      const CDateTime lastEnd = m_database->GetLastEndTime(m_iEpgID);
+      if (!lastEnd.IsValid() || lastEnd < minEventEnd)
       {
-        if (tag.second->EndAsUTC() > minEventEnd && tag.second->StartAsUTC() < maxEventStart)
-          tags.emplace_back(tag.second);
+        // nothing in the db yet. take what we have in memory.
+        loadFromDb = false;
+        MergeTags(minEventEnd, maxEventStart, tags);
       }
-
-      if (!tags.empty())
-        FixOverlappingEvents(tags);
     }
-    else
+
+    if (loadFromDb)
     {
       tags = m_database->GetEpgTagsByMinEndMaxStartTime(m_iEpgID, minEventEnd, maxEventStart);
 
@@ -475,6 +491,9 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgTagsContainer::GetTimeline(
             ResolveConflictingTags(changedTag, tags);
           }
         }
+
+        // Append missing tags
+        MergeTags(tags.back()->EndAsUTC(), maxEventStart, tags);
       }
     }
 
