@@ -9,6 +9,7 @@
 #pragma once
 
 #include <mutex>
+#include <shared_mutex>
 
 namespace XbmcThreads
 {
@@ -134,25 +135,16 @@ namespace XbmcThreads
    * bool try_lock_shared();
    * void unlock_shared();
    */
-  template<typename L> class SharedLock
+  template<typename L>
+  class SharedLock : public std::shared_lock<L>
   {
+  private:
     SharedLock(const SharedLock&) = delete;
     SharedLock& operator=(const SharedLock&) = delete;
+
   protected:
-    L& mutex;
-    bool owns;
-    inline explicit SharedLock(L& lockable) : mutex(lockable), owns(true) { mutex.lock_shared(); }
-    inline ~SharedLock() { if (owns) mutex.unlock_shared(); }
-
-    inline bool owns_lock() const { return owns; }
-    inline void lock() { mutex.lock_shared(); owns = true; }
-    inline bool try_lock() { return (owns = mutex.try_lock_shared()); }
-    inline void unlock() { if (owns) mutex.unlock_shared(); owns = false; }
-
-    /**
-     * See the note on the same method on CountingLockable
-     */
-    inline L& get_underlying() { return mutex; }
+    inline explicit SharedLock(L& lockable) : std::shared_lock<L>(lockable) {}
+    inline ~SharedLock() = default;
   };
 
 
