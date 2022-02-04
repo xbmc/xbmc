@@ -12,6 +12,7 @@
 
 #include <chrono>
 #include <condition_variable>
+#include <functional>
 
 namespace XbmcThreads
 {
@@ -77,18 +78,21 @@ namespace XbmcThreads
    * The requirements on P are that it can act as a predicate (that is, I can use
    *  it in an 'while(!predicate){...}' where 'predicate' is of type 'P').
    */
-  template <typename P> class TightConditionVariable
+  class TightConditionVariable
   {
     ConditionVariable& cond;
-    P predicate;
+    std::function<bool()> predicate;
 
   public:
-    inline TightConditionVariable(ConditionVariable& cv, P predicate_) : cond(cv), predicate(predicate_) {}
+    inline TightConditionVariable(ConditionVariable& cv, std::function<bool()> predicate_)
+      : cond(cv), predicate(predicate_)
+    {
+    }
 
     template<typename L>
     inline void wait(L& lock)
     {
-      while (!predicate)
+      while (!predicate())
         cond.wait(lock);
     }
 
@@ -96,12 +100,12 @@ namespace XbmcThreads
     inline bool wait(L& lock, std::chrono::duration<Rep, Period> duration)
     {
       bool ret = true;
-      if (!predicate)
+      if (!predicate())
       {
         if (duration == std::chrono::duration<Rep, Period>::zero())
         {
           cond.wait(lock, duration /* zero */);
-          return !(!predicate); // eh? I only require the ! operation on P
+          return !(!predicate()); // eh? I only require the ! operation on P
         }
         else
         {
@@ -113,7 +117,7 @@ namespace XbmcThreads
           auto remaining = duration - elapsed;
 
           for (bool notdone = true; notdone && ret == true;
-               ret = (notdone = (!predicate))
+               ret = (notdone = (!predicate()))
                          ? (remaining > std::chrono::duration<Rep, Period>::zero())
                          : true)
           {

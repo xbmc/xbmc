@@ -47,7 +47,7 @@ class CEvent
    *  states.
    */
   XbmcThreads::ConditionVariable actualCv;
-  XbmcThreads::TightConditionVariable<volatile bool&> condVar;
+  XbmcThreads::TightConditionVariable condVar;
   CCriticalSection mutex;
 
   friend class XbmcThreads::CEventGroup;
@@ -69,7 +69,9 @@ class CEvent
 
 public:
   inline CEvent(bool manual = false, bool signaled_ = false)
-    : manualReset(manual), signaled(signaled_), condVar(actualCv, signaled)
+    : manualReset(manual),
+      signaled(signaled_),
+      condVar(actualCv, std::bind(&CEvent::Signaled, this))
   {
   }
 
@@ -146,7 +148,7 @@ class CEventGroup
   std::vector<CEvent*> events;
   CEvent* signaled{};
   XbmcThreads::ConditionVariable actualCv;
-  XbmcThreads::TightConditionVariable<CEvent*&> condVar{actualCv, signaled};
+  XbmcThreads::TightConditionVariable condVar{actualCv, [this]() { return signaled != nullptr; }};
   CCriticalSection mutex;
 
   unsigned int numWaits{0};
