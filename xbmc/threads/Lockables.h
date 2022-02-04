@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <mutex>
+
 namespace XbmcThreads
 {
 
@@ -109,29 +111,16 @@ namespace XbmcThreads
    * This template can be used to define the base implementation for any UniqueLock
    * (such as CSingleLock) that uses a Lockable as its mutex/critical section.
    */
-  template<typename L> class UniqueLock
+  template<typename L>
+  class UniqueLock : public std::unique_lock<L>
   {
+  private:
     UniqueLock(const UniqueLock&) = delete;
     UniqueLock& operator=(const UniqueLock&) = delete;
+
   protected:
-    L& mutex;
-    bool owns;
-    inline explicit UniqueLock(L& lockable) : mutex(lockable), owns(true) { mutex.lock(); }
-    inline ~UniqueLock() { if (owns) mutex.unlock(); }
-
-  public:
-
-    inline bool owns_lock() const { return owns; }
-
-    //This also implements lockable
-    inline void lock() { mutex.lock(); owns=true; }
-    inline bool try_lock() { return (owns = mutex.try_lock()); }
-    inline void unlock() { if (owns) { mutex.unlock(); owns=false; } }
-
-    /**
-     * See the note on the same method on CountingLockable
-     */
-    inline L& get_underlying() { return mutex; }
+    inline explicit UniqueLock(L& lockable) : std::unique_lock<L>(lockable) {}
+    inline ~UniqueLock() = default;
   };
 
   /**

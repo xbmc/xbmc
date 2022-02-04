@@ -168,7 +168,7 @@ CConverterType::~CConverterType()
 iconv_t CConverterType::GetConverter(CSingleLock& converterLock)
 {
   // ensure that this unique instance is locked externally
-  if (&converterLock.get_underlying() != this)
+  if (converterLock.mutex() != this)
     return NO_ICONV;
 
   if (m_iconv == NO_ICONV)
