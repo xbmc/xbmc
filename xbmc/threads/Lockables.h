@@ -8,8 +8,6 @@
 
 #pragma once
 
-#include <shared_mutex>
-
 namespace XbmcThreads
 {
 
@@ -105,29 +103,5 @@ namespace XbmcThreads
      */
     inline L& get_underlying() { return mutex; }
   };
-
-  /**
-   * This template can be used to define the base implementation for any SharedLock
-   * (such as CSharedLock) that uses a Shared Lockable as its mutex/critical section.
-   *
-   * Something that implements the "Shared Lockable" concept has all of the methods
-   * required by the Lockable concept and also:
-   *
-   * void lock_shared();
-   * bool try_lock_shared();
-   * void unlock_shared();
-   */
-  template<typename L>
-  class SharedLock : public std::shared_lock<L>
-  {
-  private:
-    SharedLock(const SharedLock&) = delete;
-    SharedLock& operator=(const SharedLock&) = delete;
-
-  protected:
-    inline explicit SharedLock(L& lockable) : std::shared_lock<L>(lockable) {}
-    inline ~SharedLock() = default;
-  };
-
 
 }
