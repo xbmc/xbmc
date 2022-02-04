@@ -1966,8 +1966,8 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
   switch (msg)
   {
   case TMSG_POWERDOWN:
-    Stop(EXITCODE_POWERDOWN);
-    CServiceBroker::GetPowerManager().Powerdown();
+    if (Stop(EXITCODE_POWERDOWN))
+      CServiceBroker::GetPowerManager().Powerdown();
     break;
 
   case TMSG_QUIT:
@@ -1992,8 +1992,8 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
 
   case TMSG_RESTART:
   case TMSG_RESET:
-    Stop(EXITCODE_REBOOT);
-    CServiceBroker::GetPowerManager().Reboot();
+    if (Stop(EXITCODE_REBOOT))
+      CServiceBroker::GetPowerManager().Reboot();
     break;
 
   case TMSG_RESTARTAPP:
@@ -2492,8 +2492,19 @@ bool CApplication::Cleanup()
   }
 }
 
-void CApplication::Stop(int exitCode)
+bool CApplication::Stop(int exitCode)
 {
+#if defined(TARGET_ANDROID)
+  // Note: On Android, the app must be stopped asynchronously, once Android has
+  // signalled that the app shall be destroyed. See android_main() implementation.
+  if (!CXBMCApp::get()->Stop(exitCode))
+    return false;
+#endif
+
+  CLog::Log(LOGINFO, "Stopping the application...");
+
+  bool success = true;
+
   CLog::Log(LOGINFO, "Stopping player");
   m_appPlayer.ClosePlayer();
 
@@ -2612,11 +2623,14 @@ void CApplication::Stop(int exitCode)
   catch (...)
   {
     CLog::Log(LOGERROR, "Exception in CApplication::Stop()");
+    success = false;
   }
 
   cleanup_emu_environ();
 
   KODI::TIME::Sleep(200ms);
+
+  return success;
 }
 
 bool CApplication::PlayMedia(CFileItem& item, const std::string &player, int iPlaylist)

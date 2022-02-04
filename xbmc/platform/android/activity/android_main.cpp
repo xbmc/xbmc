@@ -107,6 +107,7 @@ extern void android_main(struct android_app* state)
     {
       start_logger("Kodi");
       eventLoop.run(xbmcApp, inputHandler);
+      xbmcApp.Quit();
     }
     else
       CXBMCApp::android_printf("android_main: setup failed");
