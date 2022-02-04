@@ -20,6 +20,7 @@
 #include "threads/Event.h"
 #include "utils/Geometry.h"
 
+#include <atomic>
 #include <map>
 #include <math.h>
 #include <memory>
@@ -136,6 +137,9 @@ public:
   void Initialize();
   void Deinitialize();
 
+  bool Stop(int exitCode);
+  void Quit();
+
   static ANativeWindow* GetNativeWindow(int timeout);
   static int SetBuffersGeometry(int width, int height, int format);
   static int android_printf(const char *format, ...);
@@ -240,7 +244,8 @@ private:
   static bool m_hasReqVisible;
   bool m_videosurfaceInUse;
   bool m_firstrun;
-  bool m_exiting;
+  std::atomic<bool> m_exiting{false};
+  int m_exitCode{0};
   bool m_bResumePlayback = false;
   pthread_t m_thread;
   static CCriticalSection m_applicationsMutex;
@@ -257,7 +262,6 @@ private:
   std::unique_ptr<CJNIActivityManager> m_activityManager;
 
   void XBMC_Pause(bool pause);
-  void XBMC_Stop();
   bool XBMC_DestroyDisplay();
   bool XBMC_SetupDisplay();
 

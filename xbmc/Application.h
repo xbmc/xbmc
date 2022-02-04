@@ -138,7 +138,7 @@ public:
   bool InitWindow(RESOLUTION res = RES_INVALID);
 
   bool IsCurrentThread() const;
-  void Stop(int exitCode);
+  bool Stop(int exitCode);
   void UnloadSkin();
   bool LoadCustomWindows();
   void ReloadSkin(bool confirm = false);
