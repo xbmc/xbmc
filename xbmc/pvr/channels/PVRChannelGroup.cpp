@@ -1130,7 +1130,7 @@ bool CPVRChannelGroup::UpdateChannel(const std::pair<int, int>& storageId,
 
     RemoveFromGroup(channel);
   }
-  else
+  else if (iChannelNumber > 0)
   {
     SetChannelNumber(channel, CPVRChannelNumber(iChannelNumber, 0));
   }
