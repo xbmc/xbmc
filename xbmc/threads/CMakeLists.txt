@@ -8,7 +8,6 @@ set(HEADERS Atomics.h
             Condition.h
             CriticalSection.h
             Event.h
-            Helpers.h
             Lockables.h
             SharedSection.h
             SingleLock.h
