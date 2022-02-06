@@ -149,13 +149,15 @@ HRESULT STDMETHODCALLTYPE CClientNotificationSink::SearchComplete(LPCWSTR tag)
 {
   CSingleLock lock(m_criticalSection);
 
-  CLog::Log(LOGDEBUG, LOGWSDISCOVERY,
-            "[WS-Discovery]: The initial servers search has completed successfully with {} "
-            "server(s) found:",
-            m_serversIPs.size());
+  std::string list;
 
   for (const auto& ip : GetServersIPs())
-    CLog::Log(LOGDEBUG, "    {}", FromW(ip));
+    list.append('\n' + FromW(ip));
+
+  CLog::Log(LOGDEBUG,
+            "[WS-Discovery]: The initial servers search has completed successfully with {} "
+            "server(s) found:{}",
+            m_serversIPs.size(), list);
 
   return S_OK;
 }
