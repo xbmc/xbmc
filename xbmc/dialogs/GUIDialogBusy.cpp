@@ -14,6 +14,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "threads/IRunnable.h"
 #include "threads/Thread.h"
+#include "utils/log.h"
 
 using namespace std::chrono_literals;
 
@@ -84,6 +85,8 @@ bool CGUIDialogBusy::WaitOnEvent(CEvent &event, unsigned int displaytime /* = 10
     {
       if (dialog->IsDialogRunning())
       {
+        CLog::Log(LOGFATAL, "Logic error due to two concurrent busydialogs, this is a known issue. "
+                            "The application will exit.");
         throw std::logic_error("busy dialog already running");
       }
 
