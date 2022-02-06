@@ -834,6 +834,11 @@ bool CCharsetConverter::utf16BEtoUTF8(const std::u16string& utf16StringSrc, std:
   return CInnerConverter::stdConvert(Utf16BEtoUtf8, utf16StringSrc, utf8StringDst);
 }
 
+bool CCharsetConverter::utf16BEtoUTF8(const std::string& utf16StringSrc, std::string& utf8StringDst)
+{
+  return CInnerConverter::stdConvert(Utf16BEtoUtf8, utf16StringSrc, utf8StringDst);
+}
+
 bool CCharsetConverter::utf16LEtoUTF8(const std::u16string& utf16StringSrc,
                                       std::string& utf8StringDst)
 {
