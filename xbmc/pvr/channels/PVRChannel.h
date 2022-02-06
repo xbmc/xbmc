@@ -348,12 +348,6 @@ namespace PVR
                                                     const CDateTime& end) const;
 
     /*!
-     * @brief Clear the EPG for this channel.
-     * @return True if it was cleared, false if not.
-     */
-    bool ClearEPG() const;
-
-    /*!
      * @brief Get the EPG tag that is now active on this channel.
      *
      * Get the EPG tag that is now active on this channel.
