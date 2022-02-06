@@ -412,7 +412,7 @@ namespace PVR
      */
     bool UpdateComponents(std::vector<std::shared_ptr<CPVRClient>>& knownClients,
                           ManagerState stateToCheck,
-                          CPVRGUIProgressHandler* progressHandler);
+                          const std::unique_ptr<CPVRGUIProgressHandler>& progressHandler);
 
     /*!
      * @brief Unload all PVR data (recordings, timers, channelgroups).
