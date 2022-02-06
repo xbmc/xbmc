@@ -267,6 +267,7 @@ cmake_install.cmake
 /tools/depends/target/ffmpeg/ffmpeg-*-*/
 /tools/depends/target/ffmpeg/ffmpeg-install/
 /tools/depends/target/ffmpeg/ffmpeg-release/
+/tools/depends/target/dav1d/dav1d-*.tar.*
 /tools/depends/target/libdvdcss/dvdcss-install/
 /tools/depends/target/libdvdcss/libdvdcss-*.tar.gz
 /tools/depends/target/libdvdcss/native/
