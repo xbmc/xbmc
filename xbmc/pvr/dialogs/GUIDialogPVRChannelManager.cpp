@@ -288,10 +288,13 @@ bool CGUIDialogPVRChannelManager::OnClickButtonRadioActive(CGUIMessage& message)
     CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
     if (pItem)
     {
-      bool selected(msg.GetParam1() == 1);
-      pItem->SetProperty("ActiveChannel", selected);
-      SetItemChanged(pItem);
-      Renumber();
+      const bool selected = (msg.GetParam1() == 1);
+      if (pItem->GetProperty("ActiveChannel").asBoolean() != selected)
+      {
+        pItem->SetProperty("ActiveChannel", selected);
+        SetItemChanged(pItem);
+        Renumber();
+      }
       return true;
     }
   }
@@ -317,9 +320,12 @@ bool CGUIDialogPVRChannelManager::OnClickButtonRadioParentalLocked(CGUIMessage& 
   CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
   if (pItem)
   {
-    pItem->SetProperty("ParentalLocked", selected);
-    SetItemChanged(pItem);
-    Renumber();
+    if (pItem->GetProperty("ParentalLocked").asBoolean() != selected)
+    {
+      pItem->SetProperty("ParentalLocked", selected);
+      SetItemChanged(pItem);
+      Renumber();
+    }
     return true;
   }
 
@@ -334,9 +340,11 @@ bool CGUIDialogPVRChannelManager::OnClickButtonEditName(CGUIMessage& message)
     CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
     if (pItem)
     {
-      pItem->SetProperty("Name", msg.GetLabel());
-      SetItemChanged(pItem);
-
+      if (pItem->GetProperty("Name").asString() != msg.GetLabel())
+      {
+        pItem->SetProperty("Name", msg.GetLabel());
+        SetItemChanged(pItem);
+      }
       return true;
     }
   }
@@ -400,9 +408,13 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo(CGUIMessage& message)
   if (strThumb == "thumb://None")
     strThumb = "";
 
-  pItem->SetProperty("Icon", strThumb);
-  pItem->SetProperty("UserSetIcon", true);
-  SetItemChanged(pItem);
+  if (pItem->GetProperty("Icon").asString() != strThumb)
+  {
+    pItem->SetProperty("Icon", strThumb);
+    pItem->SetProperty("UserSetIcon", true);
+    SetItemChanged(pItem);
+  }
+
   return true;
 }
 
@@ -414,9 +426,12 @@ bool CGUIDialogPVRChannelManager::OnClickButtonUseEPG(CGUIMessage& message)
     CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
     if (pItem)
     {
-      bool selected(msg.GetParam1() == 1);
-      pItem->SetProperty("UseEPG", selected);
-      SetItemChanged(pItem);
+      const bool selected = (msg.GetParam1() == 1);
+      if (pItem->GetProperty("UseEPG").asBoolean() != selected)
+      {
+        pItem->SetProperty("UseEPG", selected);
+        SetItemChanged(pItem);
+      }
       return true;
     }
   }
@@ -434,8 +449,11 @@ bool CGUIDialogPVRChannelManager::OnClickEPGSourceSpin(CGUIMessage& message)
   //   CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
   //   if (pItem)
   //   {
-  //     pItem->SetProperty("EPGSource", static_cast<int>(0));
-  //     SetItemChanged(pItem);
+  //     if (pItem->GetProperty("EPGSource").asInteger() != 0)
+  //     {
+  //       pItem->SetProperty("EPGSource", static_cast<int>(0));
+  //       SetItemChanged(pItem);
+  //     }
   //     return true;
   //   }
   // }
@@ -773,6 +791,7 @@ void CGUIDialogPVRChannelManager::Update()
     channelFile->SetProperty("Name", channel->ChannelName());
     channelFile->SetProperty("UseEPG", channel->EPGEnabled());
     channelFile->SetProperty("Icon", channel->ClientIconPath());
+    channelFile->SetProperty("UserSetIcon", channel->IsUserSetIcon());
     channelFile->SetProperty("EPGSource", 0);
     channelFile->SetProperty("ParentalLocked", channel->IsLocked());
     channelFile->SetProperty("Number", member->ChannelNumber().FormattedChannelNumber());
@@ -958,21 +977,44 @@ void CGUIDialogPVRChannelManager::SaveList()
 
 bool CGUIDialogPVRChannelManager::HasChangedItems() const
 {
-  for (int iItemPtr = 0; iItemPtr < m_channelItems->Size(); ++iItemPtr)
+  for (const auto& item : *m_channelItems)
   {
-    CFileItemPtr pItem = m_channelItems->Get(iItemPtr);
-    if (pItem && pItem->GetProperty("Changed").asBoolean())
+    if (item && item->GetProperty("Changed").asBoolean())
       return true;
   }
 
   return false;
 }
 
+namespace
+{
+
+bool IsItemChanged(const std::shared_ptr<CFileItem>& item)
+{
+  const std::shared_ptr<CPVRChannelGroupMember> member = item->GetPVRChannelGroupMemberInfoTag();
+  const std::shared_ptr<CPVRChannel> channel = member->Channel();
+
+  return item->GetProperty("ActiveChannel").asBoolean() == channel->IsHidden() ||
+         item->GetProperty("Name").asString() != channel->ChannelName() ||
+         item->GetProperty("UseEPG").asBoolean() != channel->EPGEnabled() ||
+         item->GetProperty("Icon").asString() != channel->ClientIconPath() ||
+         item->GetProperty("UserSetIcon").asBoolean() != channel->IsUserSetIcon() ||
+         item->GetProperty("EPGSource").asInteger() != 0 ||
+         item->GetProperty("ParentalLocked").asBoolean() != channel->IsLocked() ||
+         item->GetProperty("Number").asString() != member->ChannelNumber().FormattedChannelNumber();
+}
+
+} // namespace
+
 void CGUIDialogPVRChannelManager::SetItemChanged(const CFileItemPtr& pItem)
 {
-  pItem->SetProperty("Changed", true);
+  const bool changed = IsItemChanged(pItem);
+  pItem->SetProperty("Changed", changed);
 
-  CONTROL_ENABLE(BUTTON_APPLY);
+  if (changed || HasChangedItems())
+    CONTROL_ENABLE(BUTTON_APPLY);
+  else
+    CONTROL_DISABLE(BUTTON_APPLY);
 }
 
 void CGUIDialogPVRChannelManager::Renumber()
