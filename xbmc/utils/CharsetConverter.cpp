@@ -258,6 +258,7 @@ enum StdConversionType /* Keep it in sync with CCharsetConverter::CInnerConverte
   Utf8ToSystem,
   SystemToUtf8,
   Ucs2CharsetToUtf8,
+  MacintoshToUtf8,
   NumberOfStdConversionTypes /* Dummy sentinel entry */
 };
 
@@ -289,6 +290,7 @@ public:
 const int CCharsetConverter::m_Utf8CharMinSize = 1;
 const int CCharsetConverter::m_Utf8CharMaxSize = 4;
 
+// clang-format off
 CConverterType CCharsetConverter::CInnerConverter::m_stdConversion[NumberOfStdConversionTypes] = /* keep it in sync with enum StdConversionType */
 {
   /* Utf8ToUtf32 */         CConverterType(UTF8_SOURCE,     UTF32_CHARSET),
@@ -306,8 +308,10 @@ CConverterType CCharsetConverter::CInnerConverter::m_stdConversion[NumberOfStdCo
   /* Utf8toW */             CConverterType(UTF8_SOURCE,     WCHAR_CHARSET),
   /* Utf8ToSystem */        CConverterType(UTF8_SOURCE,     SystemCharset),
   /* SystemToUtf8 */        CConverterType(SystemCharset,   UTF8_SOURCE),
-  /* Ucs2CharsetToUtf8 */   CConverterType("UCS-2LE",       "UTF-8", CCharsetConverter::m_Utf8CharMaxSize)
+  /* Ucs2CharsetToUtf8 */   CConverterType("UCS-2LE",       "UTF-8", CCharsetConverter::m_Utf8CharMaxSize),
+  /* MacintoshToUtf8 */     CConverterType("macintosh", "UTF-8", CCharsetConverter::m_Utf8CharMaxSize)
 };
+// clang-format on
 
 CCriticalSection CCharsetConverter::CInnerConverter::m_critSectionFriBiDi;
 
@@ -869,6 +873,11 @@ bool CCharsetConverter::utf8ToSystem(std::string& stringSrcDst, bool failOnBadCh
 bool CCharsetConverter::systemToUtf8(const std::string& sysStringSrc, std::string& utf8StringDst, bool failOnBadChar /*= false*/)
 {
   return CInnerConverter::stdConvert(SystemToUtf8, sysStringSrc, utf8StringDst, failOnBadChar);
+}
+
+bool CCharsetConverter::MacintoshToUTF8(const std::string& macStringSrc, std::string& utf8StringDst)
+{
+  return CInnerConverter::stdConvert(MacintoshToUtf8, macStringSrc, utf8StringDst);
 }
 
 bool CCharsetConverter::utf8logicalToVisualBiDi(const std::string& utf8StringSrc, std::string& utf8StringDst, bool failOnBadString /*= false*/)
