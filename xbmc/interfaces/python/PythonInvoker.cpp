@@ -355,14 +355,14 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
   InvokerState stateToSet;
   if (!failed && !PyErr_Occurred())
   {
-    CLog::Log(LOGINFO, "CPythonInvoker({}, {}): script successfully run", GetId(), m_sourceFile);
+    CLog::Log(LOGDEBUG, "CPythonInvoker({}, {}): script successfully run", GetId(), m_sourceFile);
     stateToSet = InvokerStateScriptDone;
     onSuccess();
   }
   else if (PyErr_ExceptionMatches(PyExc_SystemExit))
   {
     m_systemExitThrown = true;
-    CLog::Log(LOGINFO, "CPythonInvoker({}, {}): script aborted", GetId(), m_sourceFile);
+    CLog::Log(LOGDEBUG, "CPythonInvoker({}, {}): script aborted", GetId(), m_sourceFile);
     stateToSet = InvokerStateFailed;
     onAbort();
   }
