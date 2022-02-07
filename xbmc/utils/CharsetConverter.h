@@ -160,6 +160,15 @@ public:
   static bool utf16LEtoUTF8(const std::u16string& utf16StringSrc, std::string& utf8StringDst);
   static bool ucs2ToUTF8(const std::u16string& ucs2StringSrc, std::string& utf8StringDst);
 
+  /*!
+   *  \brief Convert Macintosh (string) string to UTF-8 string.
+   *  No RTL visual-logical transformation is performed.
+   *  \param macStringSrc Is source Macintosh string to convert
+   *  \param utf8StringDst Is output UTF-8 string, empty on any error
+   *  \return True on successful conversion, false on any error
+   */
+  static bool MacintoshToUTF8(const std::string& macStringSrc, std::string& utf8StringDst);
+
   static bool utf8logicalToVisualBiDi(const std::string& utf8StringSrc, std::string& utf8StringDst, bool failOnBadString = false);
 
   /**
