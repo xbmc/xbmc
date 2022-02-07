@@ -7,19 +7,17 @@ if(CPPCHECK_EXECUTABLE)
   add_custom_target(analyze-cppcheck
     DEPENDS ${APP_NAME_LC} ${APP_NAME_LC}-test
     COMMAND ${CPPCHECK_EXECUTABLE}
-            --template="${CMAKE_SOURCE_DIR}/xbmc/\{file\}\(\{line\}\)\: \{severity\} \(\{id\}\): \{message\}"
             -j${CPU_CORES}
             --project=${CMAKE_BINARY_DIR}/compile_commands.json
             --std=c++${CMAKE_CXX_STANDARD}
             --enable=all
-            --verbose
-            --quiet
             --xml
             --xml-version=2
             --language=c++
+            --relative-paths=${CMAKE_SOURCE_DIR}
+            --rule-file=${CMAKE_SOURCE_DIR}/tools/static-analysis/cppcheck/cppcheck-rules.xml
+            --suppress-xml=${CMAKE_SOURCE_DIR}/tools/static-analysis/cppcheck/cppcheck-suppressions.xml
             --output-file=${CMAKE_BINARY_DIR}/cppcheck-result.xml
-            xbmc
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     COMMENT "Static code analysis using cppcheck")
 endif()
 
