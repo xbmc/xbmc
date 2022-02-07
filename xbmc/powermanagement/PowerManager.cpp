@@ -240,7 +240,7 @@ void CPowerManager::OnLowBattery()
 void CPowerManager::StorePlayerState()
 {
   CApplicationPlayer &appPlayer = g_application.GetAppPlayer();
-  if (appPlayer.IsPlaying())
+  if (appPlayer.IsPlaying() && !appPlayer.IsPaused())
   {
     m_lastUsedPlayer = appPlayer.GetCurrentPlayer();
     m_lastPlayedFileItem.reset(new CFileItem(g_application.CurrentFileItem()));
