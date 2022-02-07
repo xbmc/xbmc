@@ -1,6 +1,6 @@
 -include ../../Makefile.include
 include LIBFMT-VERSION
-DEPS = Makefile LIBFMT-VERSION
+DEPS = Makefile LIBFMT-VERSION ../../download-files.include
 
 CMAKE_OPTIONS=-DCMAKE_CXX_STANDARD=17 -DCMAKE_CXX_EXTENSIONS:BOOL=OFF -DFMT_DOC=OFF -DFMT_INSTALL=ON -DFMT_TEST=OFF
 
@@ -19,19 +19,20 @@ else
     ARCHIVE_TOOL_FLAGS := --strip-components=1 -xf
     CMAKE := cmake
     CMAKE_OPTIONS := -DCMAKE_INSTALL_PREFIX=$(PREFIX) $(CMAKE_OPTIONS)
+    HASH_TOOL := sha512sum
   endif
 endif
 
 LIBDYLIB=$(PLATFORM)/build/libfmt.a
 
+include ../../download-files.include
+
 .PHONY: .installed-native
 
 all: .installed-$(PLATFORM)
 
-$(TARBALLS_LOCATION)/$(ARCHIVE):
-	cd $(TARBALLS_LOCATION); $(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
 
-$(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
+$(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE) $(DEPS)
 ifeq ($(PREFIX),)
 	@echo
 	@echo "ERROR: please set PREFIX to the kodi install path e.g. make PREFIX=/usr/local"

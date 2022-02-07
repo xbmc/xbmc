@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile remove_git_info.patch
+DEPS = ../../Makefile.include Makefile remove_git_info.patch ../../download-files.include
 
 # lib name, version
 LIBNAME=libcec
@@ -10,6 +10,8 @@ VERSION_PATCH=7
 VERSION=$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_PATCH)
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
+SHA512=424540a45f9cae3d5dcccc615d487c45033f9cdeb665b8176832495597e2cd58ef7681e13b52f6a32f8a40e1146c04a1a383f5785ea1e731c5c517a9a7843a81
+include ../../download-files.include
 
 LIBDYLIB=$(PLATFORM)/build/src/$(LIBNAME)/$(LIBNAME).so
 ifeq (darwin, $(findstring darwin, $(HOST)))
@@ -18,10 +20,8 @@ endif
 
 all: .installed-$(PLATFORM)
 
-$(TARBALLS_LOCATION)/$(ARCHIVE):
-	cd $(TARBALLS_LOCATION); $(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
 
-$(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
+$(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)/build
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../remove_git_info.patch

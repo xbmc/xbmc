@@ -30,6 +30,10 @@ AAPT=@AAPT@
 DX=@DX@
 D8=@D8@
 ZIPALIGN=@ZIPALIGN@
+SHA512SUM=@SHA512SUM@
+SHA256SUM=@SHA256SUM@
+SHASUM=@SHASUM@
+HASH_TOOL_FLAGS=-c --status
 
 HAS_ZLIB=@has_zlib@
 NEED_LIBICONV=@need_libiconv@
@@ -40,7 +44,7 @@ BASE_URL=http://mirrors.kodi.tv/build-deps/sources
 ifneq ($(KODI_MIRROR),)
 BASE_URL=$(KODI_MIRROR)/build-deps/sources
 endif
-RETRIEVE_TOOL_FLAGS=-Ls --create-dirs -f -O
+RETRIEVE_TOOL_FLAGS=-LsS --create-dirs --retry 10 --retry-connrefused -O
 ARCHIVE_TOOL_FLAGS=--strip-components=1 -xf
 CONFIG_SUB=@prefix@/@tool_dir@/share/automake-1.16/config.sub
 CONFIG_GUESS=@prefix@/@tool_dir@/share/automake-1.16/config.guess
@@ -124,4 +128,3 @@ export LIBTOOLIZE=@prefix@/@tool_dir@/bin/libtoolize
 
 export AUTORECONF=@prefix@/@tool_dir@/bin/autoreconf
 export JSON_BUILDER=$(NATIVEPREFIX)/bin/JsonSchemaBuilder
-

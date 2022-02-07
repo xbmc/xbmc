@@ -1,6 +1,6 @@
 -include ../../Makefile.include
 include LIBSPDLOG-VERSION
-DEPS = Makefile LIBSPDLOG-VERSION
+DEPS = Makefile LIBSPDLOG-VERSION ../../download-files.include
 
 CMAKE_OPTIONS= \
 	-DSPDLOG_BUILD_EXAMPLE=OFF \
@@ -24,10 +24,14 @@ else
     ARCHIVE_TOOL := tar
     ARCHIVE_TOOL_FLAGS := --strip-components=1 -xf
     CMAKE := cmake -DCMAKE_INSTALL_PREFIX=$(PREFIX) -DCMAKE_PREFIX_PATH=$(PREFIX)
+    HASH_TOOL := sha512sum
+    HASH_TOOL_FLAGS = -c --status
   endif
 endif
 
 LIBDYLIB=$(PLATFORM)/build/libspdlog.a
+
+include ../../download-files.include
 
 .PHONY: .installed-native
 
@@ -35,10 +39,8 @@ all: .installed-$(PLATFORM)
 
 download: $(TARBALLS_LOCATION)/$(ARCHIVE)
 
-$(TARBALLS_LOCATION)/$(ARCHIVE):
-	cd $(TARBALLS_LOCATION); $(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
 
-$(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
+$(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE) $(DEPS)
 ifeq ($(PREFIX),)
 	@echo
 	@echo "ERROR: please set PREFIX to the kodi install path e.g. make PREFIX=/usr/local"

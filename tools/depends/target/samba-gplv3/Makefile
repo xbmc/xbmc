@@ -1,11 +1,13 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile 01-fix-dependencies.patch 02-cross_compile.patch 03-builtin-heimdal.patch 04-built-static.patch samba_android.patch no_fork_and_exec.patch crt_extensions.patch 05-apple-disable-zlib-pkgconfig.patch
+DEPS = ../../Makefile.include Makefile 01-fix-dependencies.patch 02-cross_compile.patch 03-builtin-heimdal.patch 04-built-static.patch samba_android.patch no_fork_and_exec.patch crt_extensions.patch 05-apple-disable-zlib-pkgconfig.patch ../../download-files.include
 
 # lib name, version
 LIBNAME=samba
 VERSION=4.12.15
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
+SHA512=89852e541d08af399578d497c873271dbe1f88e96e60a7e186209d165ef1525a79e57b5d24ee312e44056bb9d1b9b4e2caa18a771a387edf776a05a133372d84
+include ../../download-files.include
 
 CONFIGURE=./configure --prefix=$(PREFIX) \
           --cross-compile --cross-answers=cross-answers.txt \
@@ -52,10 +54,8 @@ export PKG_CONFIG_LIBDIR=$(PREFIX)/lib/pkgconfig
 
 all: .installed-$(PLATFORM)
 
-$(TARBALLS_LOCATION)/$(ARCHIVE):
-	cd $(TARBALLS_LOCATION); $(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
 
-$(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
+$(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../01-fix-dependencies.patch

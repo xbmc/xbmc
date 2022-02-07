@@ -1,6 +1,6 @@
 -include ../../Makefile.include
 include RAPIDJSON-VERSION
-DEPS = Makefile RAPIDJSON-VERSION 0001-remove_custom_cxx_flags.patch
+DEPS = Makefile RAPIDJSON-VERSION 0001-remove_custom_cxx_flags.patch ../../download-files.include
 
 CMAKE_OPTIONS=-DRAPIDJSON_HAS_STDSTRING=ON -DRAPIDJSON_BUILD_DOC=OFF -DRAPIDJSON_BUILD_EXAMPLES=OFF -DRAPIDJSON_BUILD_TESTS=OFF -DRAPIDJSON_BUILD_THIRDPARTY_GTEST=OFF
 
@@ -18,17 +18,19 @@ else
     RETRIEVE_TOOL_FLAGS := -Ls --create-dirs -f -O
     ARCHIVE_TOOL := tar
     ARCHIVE_TOOL_FLAGS := --strip-components=1 -xf
+    HASH_TOOL := sha512sum
+    HASH_TOOL_FLAGS = -c --status
     CMAKE := cmake
     CMAKE_OPTIONS := -DCMAKE_INSTALL_PREFIX=$(PREFIX) $(CMAKE_OPTIONS)
   endif
 endif
 
+include ../../download-files.include
+
 all: .installed-$(PLATFORM)
 
-$(TARBALLS_LOCATION)/$(ARCHIVE):
-	cd $(TARBALLS_LOCATION); $(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
 
-$(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
+$(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE) $(DEPS)
 ifeq ($(PREFIX),)
 	@echo
 	@echo "ERROR: please set PREFIX to the kodi install path e.g. $(MAKE) PREFIX=/usr/local"
