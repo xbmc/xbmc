@@ -346,7 +346,6 @@ public:
 
 private:
   IInstanceInfo() = delete;
-  IInstanceInfo(IInstanceInfo&) = delete;
   IInstanceInfo(const IInstanceInfo&) = delete;
 
   KODI_ADDON_INSTANCE_STRUCT* m_instance;
