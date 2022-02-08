@@ -23,6 +23,8 @@ namespace XBMCAddon
     T2 d2;
 
   public:
+    Alternative() = default;
+
     inline WhichAlternative which() const { return pos; }
 
     inline T1& former()
