@@ -46,8 +46,6 @@ CWin32Directory::~CWin32Directory(void)
 
 bool CWin32Directory::GetDirectory(const CURL& url, CFileItemList &items)
 {
-  items.Clear();
-
   std::string pathWithSlash(url.Get());
   if (!pathWithSlash.empty() && pathWithSlash.back() != '\\')
     pathWithSlash.push_back('\\');
