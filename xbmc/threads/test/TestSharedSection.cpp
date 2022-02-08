@@ -12,6 +12,7 @@
 #include "threads/test/TestHelpers.h"
 
 #include <mutex>
+#include <shared_mutex>
 #include <stdio.h>
 
 using namespace std::chrono_literals;
@@ -61,8 +62,8 @@ TEST(TestSharedSection, General)
 {
   CSharedSection sec;
 
-  CSharedLock l1(sec);
-  CSharedLock l2(sec);
+  std::shared_lock<CSharedSection> l1(sec);
+  std::shared_lock<CSharedSection> l2(sec);
 }
 
 TEST(TestSharedSection, GetSharedLockWhileTryingExclusiveLock)
@@ -72,7 +73,7 @@ TEST(TestSharedSection, GetSharedLockWhileTryingExclusiveLock)
 
   CSharedSection sec;
 
-  CSharedLock l1(sec); // get a shared lock
+  std::shared_lock<CSharedSection> l1(sec); // get a shared lock
 
   locker<CExclusiveLock> l2(sec,&mutex);
   thread waitThread1(l2); // try to get an exclusive lock
@@ -84,7 +85,7 @@ TEST(TestSharedSection, GetSharedLockWhileTryingExclusiveLock)
   EXPECT_TRUE(!l2.obtainedlock);  // this thread is waiting ...
 
   // now try and get a SharedLock
-  locker<CSharedLock> l3(sec,&mutex,&event);
+  locker<std::shared_lock<CSharedSection>> l3(sec, &mutex, &event);
   thread waitThread3(l3); // try to get a shared lock
   EXPECT_TRUE(waitForThread(mutex, 2, 10000ms));
   std::this_thread::sleep_for(10ms);
@@ -116,10 +117,10 @@ TEST(TestSharedSection, TwoCase)
   CEvent event;
   std::atomic<long> mutex(0L);
 
-  locker<CSharedLock> l1(sec,&mutex,&event);
+  locker<std::shared_lock<CSharedSection>> l1(sec, &mutex, &event);
 
   {
-    CSharedLock lock(sec);
+    std::shared_lock<CSharedSection> lock(sec);
     thread waitThread1(l1);
 
     EXPECT_TRUE(waitForWaiters(event, 1, 10000ms));
@@ -130,7 +131,7 @@ TEST(TestSharedSection, TwoCase)
     EXPECT_TRUE(waitThread1.timed_join(10000ms));
   }
 
-  locker<CSharedLock> l2(sec,&mutex,&event);
+  locker<std::shared_lock<CSharedSection>> l2(sec, &mutex, &event);
   {
     CExclusiveLock lock(sec); // get exclusive lock
     thread waitThread2(l2); // thread should block
@@ -159,10 +160,10 @@ TEST(TestMultipleSharedSection, General)
   CEvent event;
   std::atomic<long> mutex(0L);
 
-  locker<CSharedLock> l1(sec,&mutex, &event);
+  locker<std::shared_lock<CSharedSection>> l1(sec, &mutex, &event);
 
   {
-    CSharedLock lock(sec);
+    std::shared_lock<CSharedSection> lock(sec);
     thread waitThread1(l1);
 
     EXPECT_TRUE(waitForThread(mutex, 1, 10000ms));
@@ -175,10 +176,10 @@ TEST(TestMultipleSharedSection, General)
     EXPECT_TRUE(waitThread1.timed_join(10000ms));
   }
 
-  locker<CSharedLock> l2(sec,&mutex,&event);
-  locker<CSharedLock> l3(sec,&mutex,&event);
-  locker<CSharedLock> l4(sec,&mutex,&event);
-  locker<CSharedLock> l5(sec,&mutex,&event);
+  locker<std::shared_lock<CSharedSection>> l2(sec, &mutex, &event);
+  locker<std::shared_lock<CSharedSection>> l3(sec, &mutex, &event);
+  locker<std::shared_lock<CSharedSection>> l4(sec, &mutex, &event);
+  locker<std::shared_lock<CSharedSection>> l5(sec, &mutex, &event);
   {
     CExclusiveLock lock(sec);
     thread waitThread1(l2);

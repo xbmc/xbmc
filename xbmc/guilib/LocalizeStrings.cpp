@@ -18,6 +18,7 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
+#include <shared_mutex>
 
 /*! \brief Tries to load ids and strings from a strings.po file to the `strings` map.
  * It should only be called from the LoadStr2Mem function to have a fallback.
@@ -191,7 +192,7 @@ bool CLocalizeStrings::Load(const std::string& strPathName, const std::string& s
 
 const std::string& CLocalizeStrings::Get(uint32_t dwCode) const
 {
-  CSharedLock lock(m_stringsMutex);
+  std::shared_lock<CSharedSection> lock(m_stringsMutex);
   ciStrings i = m_strings.find(dwCode);
   if (i == m_strings.end())
   {
@@ -235,7 +236,7 @@ bool CLocalizeStrings::LoadAddonStrings(const std::string& path, const std::stri
 
 std::string CLocalizeStrings::GetAddonString(const std::string& addonId, uint32_t code)
 {
-  CSharedLock lock(m_addonStringsMutex);
+  std::shared_lock<CSharedSection> lock(m_addonStringsMutex);
   auto i = m_addonStrings.find(addonId);
   if (i == m_addonStrings.end())
     return StringUtils::Empty;

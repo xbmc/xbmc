@@ -11,6 +11,7 @@
 #include "threads/Condition.h"
 
 #include <mutex>
+#include <shared_mutex>
 
 /**
  * A CSharedSection is a mutex that satisfies the Shared Lockable concept (see Lockables.h).
@@ -50,18 +51,6 @@ public:
       actualCv.notifyAll();
     }
   }
-};
-
-class CSharedLock : public std::shared_lock<CSharedSection>
-{
-public:
-  inline explicit CSharedLock(CSharedSection& cs) : std::shared_lock<CSharedSection>(cs) {}
-
-  inline bool IsOwner() const { return owns_lock(); }
-
-private:
-  CSharedLock(const CSharedLock&) = delete;
-  CSharedLock& operator=(const CSharedLock&) = delete;
 };
 
 class CExclusiveLock : public std::unique_lock<CSharedSection>
