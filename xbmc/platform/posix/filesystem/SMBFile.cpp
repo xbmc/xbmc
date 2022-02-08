@@ -622,7 +622,7 @@ bool CSMBFile::Delete(const CURL& url)
 
   CSingleLock lock(smb);
   if (!smb.IsSmbValid())
-    return -1;
+    return false;
 
   int result = smbc_unlink(strFile.c_str());
 
