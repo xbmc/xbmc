@@ -555,7 +555,7 @@ bool CRSSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       return true;
     m_cache.erase(it);
   }
-  lock.Leave();
+  lock.unlock();
 
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(strPath))

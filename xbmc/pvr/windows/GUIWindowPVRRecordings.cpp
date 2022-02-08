@@ -153,7 +153,7 @@ bool CGUIWindowPVRRecordingsBase::Update(const std::string& strDirectory, bool u
     {
       /* show the normal recordings instead */
       m_bShowDeletedRecordings = false;
-      lock.Leave();
+      lock.unlock();
       Update(GetDirectoryPath());
       return bReturn;
     }

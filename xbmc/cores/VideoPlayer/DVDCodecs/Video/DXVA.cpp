@@ -651,8 +651,7 @@ bool CContext::Reset()
 
     ComPtr<IDXGIDevice> ctxDevice;
     ComPtr<IDXGIAdapter> ctxAdapter;
-    if (SUCCEEDED(m_pD3D11Device.As(&ctxDevice)) && 
-      SUCCEEDED(ctxDevice->GetAdapter(&ctxAdapter)))
+    if (SUCCEEDED(m_pD3D11Device.As(&ctxDevice)) && SUCCEEDED(ctxDevice->GetAdapter(&ctxAdapter)))
     {
       DXGI_ADAPTER_DESC ctxDesc = {};
       ctxAdapter->GetDesc(&ctxDesc);
@@ -1346,10 +1345,10 @@ CDVDVideoCodec::VCReturn CDecoder::Check(AVCodecContext* avctx)
   // app device is lost
   if (m_state == DXVA_LOST)
   {
-    lock.Leave();
+    lock.unlock();
     // wait app device restoration
     m_event.Wait(2000ms);
-    lock.Enter();
+    lock.lock();
 
     // still in lost state after 2sec
     if (m_state == DXVA_LOST)

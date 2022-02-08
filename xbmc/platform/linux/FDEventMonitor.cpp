@@ -118,7 +118,7 @@ void CFDEventMonitor::Process()
      * wake up poll and wait for the processing to pause at
      * the above lock(m_mutex).
      */
-    lock.Leave();
+    lock.unlock();
 
     int err = poll(&m_pollDescs[0], m_pollDescs.size(), -1);
 

@@ -432,7 +432,7 @@ void XBPython::Uninitialize()
   m_vecPyList.clear();
   m_vecPyList.hadSomethingRemoved = true;
 
-  lock.Leave(); //unlock here because the python thread might lock when it exits
+  lock.unlock(); //unlock here because the python thread might lock when it exits
 
   // cleanup threads that are still running
   tmpvec.clear();
@@ -455,7 +455,7 @@ void XBPython::Process()
       else
         ++it;
     }
-    lock.Leave();
+    lock.unlock();
 
     //delete scripts which are done
     tmpvec.clear();

@@ -128,12 +128,12 @@ int CApplicationMessenger::SendMsg(ThreadMessage&& message, bool wait)
     m_vecWindowMessages.push(msg);
   else
     m_vecMessages.push(msg);
-  lock.Leave();  // this releases the lock on the vec of messages and
-                 //   allows the ProcessMessage to execute and therefore
-                 //   delete the message itself. Therefore any access
-                 //   of the message itself after this point constitutes
-                 //   a race condition (yarc - "yet another race condition")
-                 //
+  lock.unlock(); // this releases the lock on the vec of messages and
+      //   allows the ProcessMessage to execute and therefore
+      //   delete the message itself. Therefore any access
+      //   of the message itself after this point constitutes
+      //   a race condition (yarc - "yet another race condition")
+      //
   if (waitEvent) // ... it just so happens we have a spare reference to the
                  //  waitEvent ... just for such contingencies :)
   {
@@ -219,7 +219,7 @@ void CApplicationMessenger::ProcessMessages()
     //thread call processmessages or sendmessage
 
     std::shared_ptr<CEvent> waitEvent = pMsg->waitEvent;
-    lock.Leave(); // <- see the large comment in SendMessage ^
+    lock.unlock(); // <- see the large comment in SendMessage ^
 
     ProcessMessage(pMsg);
 
@@ -227,7 +227,7 @@ void CApplicationMessenger::ProcessMessages()
       waitEvent->Set();
     delete pMsg;
 
-    lock.Enter();
+    lock.lock();
   }
 }
 
@@ -267,14 +267,14 @@ void CApplicationMessenger::ProcessWindowMessages()
     // leave here in case we make more thread messages from this one
 
     std::shared_ptr<CEvent> waitEvent = pMsg->waitEvent;
-    lock.Leave(); // <- see the large comment in SendMessage ^
+    lock.unlock(); // <- see the large comment in SendMessage ^
 
     ProcessMessage(pMsg);
     if (waitEvent)
       waitEvent->Set();
     delete pMsg;
 
-    lock.Enter();
+    lock.lock();
   }
 }
 

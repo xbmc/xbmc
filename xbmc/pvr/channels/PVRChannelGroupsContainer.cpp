@@ -50,15 +50,15 @@ bool CPVRChannelGroupsContainer::UpdateFromClients(
   if (m_bIsUpdating)
     return false;
   m_bIsUpdating = true;
-  lock.Leave();
+  lock.unlock();
 
   CLog::LogFC(LOGDEBUG, LOGPVR, "Updating {}", bChannelsOnly ? "channels" : "channel groups");
   bool bReturn = m_groupsTV->UpdateFromClients(clients, bChannelsOnly) &&
                  m_groupsRadio->UpdateFromClients(clients, bChannelsOnly);
 
-  lock.Enter();
+  lock.lock();
   m_bIsUpdating = false;
-  lock.Leave();
+  lock.unlock();
 
   return bReturn;
 }

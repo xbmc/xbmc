@@ -217,7 +217,7 @@ bool CNFSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
               nfs_get_error(gNfsConnection.GetNfsContext()));
     return false;
   }
-  lock.Leave();
+  lock.unlock();
 
   while((nfsdirent = nfs_readdir(gNfsConnection.GetNfsContext(), nfsdir)) != NULL)
   {
@@ -283,9 +283,9 @@ bool CNFSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     }
   }
 
-  lock.Enter();
+  lock.lock();
   nfs_closedir(gNfsConnection.GetNfsContext(), nfsdir);//close the dir
-  lock.Leave();
+  lock.unlock();
   return true;
 }
 

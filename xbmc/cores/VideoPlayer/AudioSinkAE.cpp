@@ -145,9 +145,9 @@ unsigned int CAudioSinkAE::AddPackets(const DVDAudioFrame &audioframe)
       break;
     }
 
-    lock.Leave();
+    lock.unlock();
     KODI::TIME::Sleep(1ms);
-    lock.Enter();
+    lock.lock();
   } while (!m_bAbort);
 
   m_playingPts = audioframe.pts + audioframe.duration - GetDelay();

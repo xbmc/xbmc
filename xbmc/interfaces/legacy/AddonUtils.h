@@ -53,8 +53,8 @@ namespace XBMCAddonUtils
   {
     CSingleLock& lock;
   public:
-    explicit InvertSingleLockGuard(CSingleLock& _lock) : lock(_lock) { lock.Leave(); }
-    ~InvertSingleLockGuard() { lock.Enter(); }
+    explicit InvertSingleLockGuard(CSingleLock& _lock) : lock(_lock) { lock.unlock(); }
+    ~InvertSingleLockGuard() { lock.lock(); }
   };
 
 

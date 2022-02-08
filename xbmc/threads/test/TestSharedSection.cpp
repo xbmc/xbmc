@@ -194,7 +194,7 @@ TEST(TestMultipleSharedSection, General)
     EXPECT_TRUE(!l4.haslock);
     EXPECT_TRUE(!l5.haslock);
 
-    lock.Leave();
+    lock.unlock();
 
     EXPECT_TRUE(waitForWaiters(event, 4, 10000ms));
 

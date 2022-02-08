@@ -147,7 +147,7 @@ std::string CTextureCache::CacheImage(const std::string& image,
   if (m_processinglist.find(url) == m_processinglist.end())
   {
     m_processinglist.insert(url);
-    lock.Leave();
+    lock.unlock();
     // cache the texture directly
     CTextureCacheJob job(url);
     bool success = job.CacheTexture(texture);
@@ -156,7 +156,7 @@ std::string CTextureCache::CacheImage(const std::string& image,
       *details = job.m_details;
     return success ? GetCachedPath(job.m_details.file) : "";
   }
-  lock.Leave();
+  lock.unlock();
 
   // wait for currently processing job to end.
   while (true)

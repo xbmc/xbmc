@@ -113,7 +113,7 @@ void CPVRSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setti
   CSingleLock lock(m_critSection);
   m_settings[setting->GetId()] = setting->Clone(setting->GetId());
   const auto callbacks(m_callbacks);
-  lock.Leave();
+  lock.unlock();
 
   for (const auto& callback : callbacks)
     callback->OnSettingChanged(setting);

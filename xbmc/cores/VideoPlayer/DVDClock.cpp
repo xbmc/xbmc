@@ -253,7 +253,7 @@ int CDVDClock::UpdateFramerate(double fps, double* interval /*= NULL*/)
       weight = MathUtils::round_int(weight);
   }
   double speed = (rate * 2.0 ) / (fps * weight);
-  lock.Leave();
+  lock.unlock();
 
   m_videoRefClock->SetSpeed(speed);
 

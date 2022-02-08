@@ -647,7 +647,7 @@ ssize_t CNFSFile::Read(void *lpBuf, size_t uiBufSize)
 
   numberOfBytesRead = nfs_read(m_pNfsContext, m_pFileHandle, uiBufSize, (char *)lpBuf);
 
-  lock.Leave();//no need to keep the connection lock after that
+  lock.unlock(); //no need to keep the connection lock after that
 
   gNfsConnection.resetKeepAlive(m_exportPath, m_pFileHandle);//triggers keep alive timer reset for this filehandle
 

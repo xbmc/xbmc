@@ -78,7 +78,7 @@ bool CGUIWindowPVRChannelsBase::Update(const std::string& strDirectory, bool upd
     {
       /* show the visible channels instead */
       m_bShowHiddenChannels = false;
-      lock.Leave();
+      lock.unlock();
       Update(GetDirectoryPath());
     }
   }

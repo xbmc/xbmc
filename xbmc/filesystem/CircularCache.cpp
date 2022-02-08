@@ -195,9 +195,9 @@ int64_t CCircularCache::WaitForData(uint32_t minimum, std::chrono::milliseconds 
   XbmcThreads::EndTime<> endtime{timeout};
   while (!IsEndOfInput() && avail < minimum && !endtime.IsTimePast() )
   {
-    lock.Leave();
+    lock.unlock();
     m_written.Wait(50ms); // may miss the deadline. shouldn't be a problem.
-    lock.Enter();
+    lock.lock();
     avail = m_end - m_cur;
   }
 
@@ -218,9 +218,9 @@ int64_t CCircularCache::Seek(int64_t pos)
      */
     m_cur = m_end;
 
-    lock.Leave();
+    lock.unlock();
     WaitForData((size_t)(pos - m_cur), 5s);
-    lock.Enter();
+    lock.lock();
 
     if (pos < m_beg || pos > m_end)
       CLog::Log(LOGDEBUG,

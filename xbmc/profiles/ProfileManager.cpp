@@ -361,7 +361,7 @@ bool CProfileManager::LoadProfile(unsigned int index)
   CUtil::DeleteDirectoryCache();
   g_directoryCache.Clear();
 
-  lock.Leave();
+  lock.unlock();
 
   UpdateCurrentProfileDate();
   FinalizeLoadProfile();

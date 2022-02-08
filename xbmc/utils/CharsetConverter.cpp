@@ -162,7 +162,7 @@ CConverterType::~CConverterType()
   CSingleLock lock(*this);
   if (m_iconv != NO_ICONV)
     iconv_close(m_iconv);
-  lock.Leave(); // ensure unlocking before final destruction
+  lock.unlock(); // ensure unlocking before final destruction
 }
 
 iconv_t CConverterType::GetConverter(CSingleLock& converterLock)

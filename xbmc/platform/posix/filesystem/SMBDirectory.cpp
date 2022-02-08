@@ -68,7 +68,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   std::string strRoot = url.Get();
   std::string strAuth;
 
-  lock.Leave(); // OpenDir is locked
+  lock.unlock(); // OpenDir is locked
 
   // if url provided does not having anything except smb protocol
   // Do a WS-Discovery search to find possible smb servers to mimic smbv1 behaviour
@@ -110,7 +110,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   std::vector<CachedDirEntry> vecEntries;
   struct smbc_dirent* dirEnt;
 
-  lock.Enter();
+  lock.lock();
   if (!smb.IsSmbValid())
     return false;
   while ((dirEnt = smbc_readdir(fd)))
@@ -121,7 +121,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     vecEntries.push_back(aDir);
   }
   smbc_closedir(fd);
-  lock.Leave();
+  lock.unlock();
 
   for (size_t i=0; i<vecEntries.size(); i++)
   {
@@ -158,7 +158,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
           // make sure we use the authenticated path which contains any default username
           const std::string strFullName = strAuth + smb.URLEncode(strFile);
 
-          lock.Enter();
+          lock.lock();
           if (!smb.IsSmbValid())
           {
             items.ClearItems();
@@ -193,7 +193,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
             CLog::Log(LOGERROR, "{} - Failed to stat file {}", __FUNCTION__,
                       CURL::GetRedacted(strFullName));
 
-          lock.Leave();
+          lock.unlock();
         }
       }
 

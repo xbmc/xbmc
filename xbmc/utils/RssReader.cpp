@@ -124,7 +124,7 @@ void CRssReader::Process()
     http.SetTimeout(2);
     std::string strXML;
     std::string strUrl = m_vecUrls[iFeed];
-    lock.Leave();
+    lock.unlock();
 
     int nRetries = 3;
     CURL url(strUrl);

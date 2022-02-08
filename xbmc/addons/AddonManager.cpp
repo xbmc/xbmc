@@ -733,7 +733,7 @@ bool CAddonMgr::UnloadAddon(const std::string& addonId)
   m_installedAddons.erase(addonId);
   CLog::Log(LOGDEBUG, "CAddonMgr::{}: {} unloaded", __func__, addonId);
 
-  lock.Leave();
+  lock.unlock();
   AddonEvents::Unload event(addonId);
   m_unloadEvents.HandleEvent(event);
 
@@ -765,7 +765,7 @@ bool CAddonMgr::LoadAddon(const std::string& addonId,
     return false;
   }
 
-  lock.Leave();
+  lock.unlock();
 
   AddonEvents::Load event(addon->ID());
   m_unloadEvents.HandleEvent(event);

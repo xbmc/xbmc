@@ -206,13 +206,13 @@ MsgQueueReturnCode CDVDMessageQueue::Get(std::shared_ptr<CDVDMsg>& pMsg,
     else
     {
       m_hEvent.Reset();
-      lock.Leave();
+      lock.unlock();
 
       // wait for a new message
       if (!m_hEvent.Wait(std::chrono::milliseconds(iTimeoutInMilliSeconds)))
         return MSGQ_TIMEOUT;
 
-      lock.Enter();
+      lock.lock();
     }
   }
 
