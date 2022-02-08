@@ -1041,7 +1041,7 @@ bool CPVREpgDatabase::GetLastEpgScanTime(int iEpgId, CDateTime* lastScan)
 
   if (!strValue.empty())
   {
-    lastScan->SetFromDBDateTime(strValue.c_str());
+    lastScan->SetFromDBDateTime(strValue);
     bReturn = true;
   }
   else

@@ -113,7 +113,7 @@ void CProfileManager::OnSettingsLoaded()
   if (strDir == "set default" || strDir.empty())
   {
     strDir = "special://profile/playlists/";
-    m_settings->SetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH, strDir.c_str());
+    m_settings->SetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH, strDir);
   }
 
   CDirectory::Create(strDir);

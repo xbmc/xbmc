@@ -89,7 +89,7 @@ bool CFile::Copy(const CURL& url2, const CURL& dest, XFILE::IFileCallback* pCall
         // fall back to the old method in that case
         if (!CDirectory::Create(url))
         {
-          StringUtils::Tokenize(url.GetFileName(), tokens, pathsep.c_str());
+          StringUtils::Tokenize(url.GetFileName(), tokens, pathsep);
           std::string strCurrPath;
           // Handle special
           if (!url.GetProtocol().empty())
