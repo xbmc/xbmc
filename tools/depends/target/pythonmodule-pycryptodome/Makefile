@@ -1,33 +1,40 @@
-include ../../Makefile.include
-DEPS = ../../Makefile.include Makefile 01-nosetuptool.patch 02-android-dlopen.patch 03-obey-crosscompileflags.patch ../../download-files.include
+include ../../Makefile.include PYTHONMODULE-PYCRYPTODOME-VERSION ../../download-files.include
+DEPS= ../../Makefile.include Makefile PYTHONMODULE-PYCRYPTODOME-VERSION ../../download-files.include \
+                             01-nosetuptool.patch 02-android-dlopen.patch \
+                             03-obey-crosscompileflags.patch
 
-# lib name, version
-LIBNAME=pycryptodome
-VERSION=3.4.3
-SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
-SHA512=066ac92f8c4fc3aa4d2ba955d9e7665938c96b60ab516783a9446e718e2e9467f2411710d5ab203c8ae66945b1c0c3de2149d82d3f6f04e8517a57f82e20a879
-include ../../download-files.include
+LDSHARED=$(CC) -shared
 
-CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" CC="$(CC) $(CFLAGS)" LDSHARED="$(CC) -shared" LDFLAGS="$(LDFLAGS)" PYTHONPATH="$(PYTHON_SITE_PKG)"
 ifeq ($(OS),android)
-CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" CC="$(CC) $(CFLAGS)" LDSHARED="$(CC) -shared" LDFLAGS="$(LDFLAGS) -L$(PREFIX)/lib/dummy-lib$(APP_NAME)/ -l$(APP_NAME) -lm" PYTHONPATH="$(PYTHON_SITE_PKG)"
+  LDFLAGS+= -L$(PREFIX)/lib/dummy-lib$(APP_NAME)/ -l$(APP_NAME) -lm
 endif
 
 ifeq (darwin, $(findstring darwin, $(HOST)))
-ifeq ($(OS),darwin_embedded)
-# Work around an issue with xcode 11 stripping -arch arm64 flags.
-# Not required for xcode 12+, but doesnt hurt either.
-CFLAGS+= -target arm64-apple-darwin
+  ifeq ($(OS),darwin_embedded)
+    # Work around an issue with xcode 11 stripping -arch arm64 flags.
+    # Not required for xcode 12+, but doesnt hurt either.
+    CFLAGS+= -target arm64-apple-darwin
+  endif
+  LDSHARED:=$(CC) -bundle -undefined dynamic_lookup
 endif
-#ensure that only our target ldflags are passed to the python build
-LDSHARED:=$(CC) -bundle -undefined dynamic_lookup $(LDFLAGS)
-CROSSFLAGS=PYTHONXCPREFIX="$(PREFIX)" CC="$(CC) $(CFLAGS)" CCSHARED="$(CC) $(CFLAGS)" LDFLAGS="$(LDFLAGS)" PYTHONPATH="$(PYTHON_SITE_PKG)" LDSHARED="$(LDSHARED)"
+
+ifeq ($(TARGET_PLATFORM),appletvos)
+  # We cant export CFLAGS directly for tvos
+  # CFLAGS are added to linker command, having -bundle (LDSHARED) and -fembed_bitcode (CFLAGS)
+  # causes a failure: ld: -bundle and -bitcode_bundle (Xcode setting ENABLE_BITCODE=YES) cannot be used together
+  export CC:=$(CC) $(CFLAGS)
+else
+  export CC CFLAGS
 endif
+
+export LDSHARED LDFLAGS
+export PYTHONPATH=$(PYTHON_SITE_PKG)
 
 LIBDYLIB=$(PLATFORM)/build/lib.$(OS)-$(CPU)-$(PYTHON_VERSION)/Cryptodome
 ifeq ($(NATIVE_OS), osx)
-	LIBDYLIB=$(PLATFORM)/build/lib.macosx-10.4-x86_64-$(PYTHON_VERSION)/Cryptodome
+  # this module will always recompile. currently the hardcoded 10.4 is incorrect
+  # and would need to be generated based on sdk version that we dont currently collect
+	LIBDYLIB=$(PLATFORM)/build/lib.macosx-10.4-$(CPU)-$(PYTHON_VERSION)/Cryptodome
 endif
 
 all: .installed-$(PLATFORM)
@@ -43,11 +50,10 @@ endif
 	cd $(PLATFORM); patch -p1 -i ../03-obey-crosscompileflags.patch
 
 $(LIBDYLIB): $(PLATFORM)
-	mkdir -p $(PLATFORM)/output
-	cd $(PLATFORM); touch .separate_namespace && $(CROSSFLAGS) $(NATIVEPREFIX)/bin/python3 setup.py build_ext --plat-name $(OS)-$(TARGET_ARCH)
+	cd $(PLATFORM); touch .separate_namespace && $(NATIVEPREFIX)/bin/python3 setup.py build_ext --plat-name $(OS)-$(CPU)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
-	cd $(PLATFORM); $(CROSSFLAGS) $(NATIVEPREFIX)/bin/python3 setup.py install --prefix=$(PREFIX)
+	cd $(PLATFORM); $(NATIVEPREFIX)/bin/python3 setup.py install --prefix=$(PREFIX)
 	touch $@
 
 clean:
