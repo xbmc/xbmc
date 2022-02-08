@@ -101,7 +101,7 @@ TEST(TestSharedSection, GetSharedLockWhileTryingExclusiveLock)
   EXPECT_TRUE(!l2.obtainedlock);  // this thread is waiting ...
 
   // let it go
-  l1.Leave(); // the last shared lock leaves.
+  l1.unlock(); // the last shared lock leaves.
 
   EXPECT_TRUE(waitThread1.timed_join(10000ms));
 

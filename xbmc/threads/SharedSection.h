@@ -55,8 +55,6 @@ public:
   inline explicit CSharedLock(CSharedSection& cs) : std::shared_lock<CSharedSection>(cs) {}
 
   inline bool IsOwner() const { return owns_lock(); }
-  inline void Enter() { lock(); }
-  inline void Leave() { unlock(); }
 
 private:
   CSharedLock(const CSharedLock&) = delete;
