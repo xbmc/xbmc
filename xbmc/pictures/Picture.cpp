@@ -34,7 +34,9 @@ bool CPicture::GetThumbnailFromSurface(const unsigned char* buffer, int width, i
 
   // get an image handler
   IImage* image = ImageFactory::CreateLoader(thumbFile);
-  if (image == NULL || !image->CreateThumbnailFromSurface(const_cast<unsigned char*>(buffer), width, height, XB_FMT_A8R8G8B8, stride, thumbFile.c_str(), thumb, thumbsize))
+  if (image == NULL ||
+      !image->CreateThumbnailFromSurface(const_cast<unsigned char*>(buffer), width, height,
+                                         XB_FMT_A8R8G8B8, stride, thumbFile, thumb, thumbsize))
   {
     delete image;
     return false;

@@ -628,7 +628,7 @@ std::string CGUITextureManager::GetTexturePath(const std::string &textureName, b
     CSingleLock lock(m_section);
     for (const std::string& it : m_texturePaths)
     {
-      std::string path = URIUtils::AddFileToFolder(it.c_str(), "media", textureName);
+      std::string path = URIUtils::AddFileToFolder(it, "media", textureName);
       if (directory)
       {
         if (XFILE::CDirectory::Exists(path))

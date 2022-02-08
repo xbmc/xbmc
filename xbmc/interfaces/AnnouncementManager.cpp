@@ -323,7 +323,8 @@ void CAnnouncementManager::Process()
       m_announcementQueue.pop_front();
       {
         CSingleExit ex(m_queueCritSection);
-        DoAnnounce(announcement.flag, announcement.sender.c_str(), announcement.message.c_str(), announcement.item, announcement.data);
+        DoAnnounce(announcement.flag, announcement.sender, announcement.message, announcement.item,
+                   announcement.data);
       }
     }
     else

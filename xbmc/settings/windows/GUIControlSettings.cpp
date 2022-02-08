@@ -1702,7 +1702,7 @@ void CGUIControlRangeSetting::Update(bool fromControl, bool updateDisplayOnly)
       else
       {
         strTextLower = StringUtils::Format(valueFormat, valueLower);
-        strTextUpper = StringUtils::Format(valueFormat.c_str(), valueUpper);
+        strTextUpper = StringUtils::Format(valueFormat, valueUpper);
       }
 
       if (valueLower != valueUpper)

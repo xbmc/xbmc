@@ -439,7 +439,7 @@ bool CApplication::Create(const CAppParamParser &params)
   {
     if (XFILE::CFile::Exists(caCert))
     {
-      CEnvironment::setenv("SSL_CERT_FILE", caCert.c_str(), 1);
+      CEnvironment::setenv("SSL_CERT_FILE", caCert, 1);
       CLog::Log(LOGDEBUG, "CApplication::Create - SSL_CERT_FILE: {}", caCert);
     }
     else
@@ -2129,7 +2129,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     break;
 
   case TMSG_EXECUTE_BUILT_IN:
-    CBuiltins::GetInstance().Execute(pMsg->strParam.c_str());
+    CBuiltins::GetInstance().Execute(pMsg->strParam);
     break;
 
   case TMSG_PICTURE_SHOW:
