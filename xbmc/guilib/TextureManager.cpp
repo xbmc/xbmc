@@ -205,10 +205,10 @@ bool CTextureMap::IsEmpty() const
 
 void CTextureMap::Add(std::unique_ptr<CTexture> texture, int delay)
 {
-  m_texture.Add(std::move(texture), delay);
-
   if (texture)
     m_memUsage += sizeof(CTexture) + (texture->GetTextureWidth() * texture->GetTextureHeight() * 4);
+
+  m_texture.Add(std::move(texture), delay);
 }
 
 /************************************************************************/
