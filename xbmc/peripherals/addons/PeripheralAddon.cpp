@@ -101,7 +101,7 @@ void CPeripheralAddon::ResetProperties(void)
 
 bool CPeripheralAddon::CreateAddon(void)
 {
-  CExclusiveLock lock(m_dllSection);
+  std::unique_lock<CSharedSection> lock(m_dllSection);
 
   // Reset all properties to defaults
   ResetProperties();
@@ -141,7 +141,7 @@ void CPeripheralAddon::DestroyAddon()
   }
 
   {
-    CExclusiveLock lock(m_dllSection);
+    std::unique_lock<CSharedSection> lock(m_dllSection);
     DestroyInstance();
   }
 }
