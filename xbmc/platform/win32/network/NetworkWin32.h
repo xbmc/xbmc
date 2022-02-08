@@ -70,5 +70,6 @@ private:
    int m_sock;
    CStopWatch m_netrefreshTimer;
    CCriticalSection m_critSection;
+   std::vector<uint8_t> m_adapterAddresses;
 };
 
