@@ -52,16 +52,3 @@ public:
     }
   }
 };
-
-class CExclusiveLock : public std::unique_lock<CSharedSection>
-{
-public:
-  inline explicit CExclusiveLock(CSharedSection& cs) : std::unique_lock<CSharedSection>(cs) {}
-
-  inline bool IsOwner() const { return owns_lock(); }
-
-private:
-  CExclusiveLock(const CExclusiveLock&) = delete;
-  CExclusiveLock& operator=(const CExclusiveLock&) = delete;
-};
-

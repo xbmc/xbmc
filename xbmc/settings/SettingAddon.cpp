@@ -14,6 +14,8 @@
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
+#include <mutex>
+
 CSettingAddon::CSettingAddon(const std::string &id, CSettingsManager *settingsManager /* = nullptr */)
   : CSettingString(id, settingsManager)
 { }
@@ -35,7 +37,7 @@ SettingPtr CSettingAddon::Clone(const std::string &id) const
 
 bool CSettingAddon::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {
-  CExclusiveLock lock(m_critical);
+  std::unique_lock<CSharedSection> lock(m_critical);
 
   if (!CSettingString::Deserialize(node, update))
     return false;
@@ -75,6 +77,6 @@ void CSettingAddon::copyaddontype(const CSettingAddon &setting)
 {
   CSettingString::Copy(setting);
 
-  CExclusiveLock lock(m_critical);
+  std::unique_lock<CSharedSection> lock(m_critical);
   m_addonType = setting.m_addonType;
 }
