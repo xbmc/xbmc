@@ -67,8 +67,6 @@ public:
   inline explicit CExclusiveLock(CSharedSection& cs) : std::unique_lock<CSharedSection>(cs) {}
 
   inline bool IsOwner() const { return owns_lock(); }
-  inline void Leave() { unlock(); }
-  inline void Enter() { lock(); }
 
 private:
   CExclusiveLock(const CExclusiveLock&) = delete;
