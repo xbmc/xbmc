@@ -56,7 +56,7 @@ void CScriptInvocationManager::Process()
     m_scriptPaths.erase(it.script);
 
   // we can leave the lock now
-  lock.Leave();
+  lock.unlock();
 
   // finally remove the finished threads but we do it outside of any locks in
   // case of any callbacks from the destruction of the CLanguageInvokerThread
@@ -86,7 +86,7 @@ void CScriptInvocationManager::Uninitialize()
   m_scriptPaths.clear();
 
   // we can leave the lock now
-  lock.Leave();
+  lock.unlock();
 
   // finally stop and remove the finished threads but we do it outside of any
   // locks in case of any callbacks from the stop or destruction logic of
@@ -97,7 +97,7 @@ void CScriptInvocationManager::Uninitialize()
       it.thread->Stop(true);
   }
 
-  lock.Enter();
+  lock.lock();
 
   tempList.clear();
 
@@ -264,7 +264,7 @@ int CScriptInvocationManager::ExecuteAsync(
 
     // After we leave the lock, m_lastInvokerThread can be released -> copy!
     CLanguageInvokerThreadPtr invokerThread = m_lastInvokerThread;
-    lock.Leave();
+    lock.unlock();
     invokerThread->Execute(script, arguments);
 
     return invokerThread->GetId();
@@ -286,7 +286,7 @@ int CScriptInvocationManager::ExecuteAsync(
   m_scriptPaths.insert(std::make_pair(script, m_lastInvokerThread->GetId()));
   // After we leave the lock, m_lastInvokerThread can be released -> copy!
   CLanguageInvokerThreadPtr invokerThread = m_lastInvokerThread;
-  lock.Leave();
+  lock.unlock();
   invokerThread->Execute(script, arguments);
 
   return invokerThread->GetId();

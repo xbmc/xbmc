@@ -292,7 +292,7 @@ void CRenderManager::FrameMove()
       return;
     else if (m_renderState == STATE_CONFIGURING)
     {
-      lock.Leave();
+      lock.unlock();
       if (!Configure())
         return;
 

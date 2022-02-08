@@ -295,7 +295,7 @@ bool CEventServer::ExecuteNextAction()
     if (iter->second->GetNextAction(actionEvent))
     {
       // Leave critical section before processing action
-      lock.Leave();
+      lock.unlock();
       switch(actionEvent.actionType)
       {
       case AT_EXEC_BUILTIN:

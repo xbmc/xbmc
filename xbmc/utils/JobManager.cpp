@@ -225,10 +225,10 @@ void CJobManager::CancelJobs()
   // tell our workers to finish
   while (m_workers.size())
   {
-    lock.Leave();
+    lock.unlock();
     m_jobEvent.Set();
     std::this_thread::yield(); // yield after setting the event to give the workers some time to die
-    lock.Enter();
+    lock.lock();
   }
 }
 
@@ -372,9 +372,9 @@ CJob *CJobManager::GetNextJob(const CJobWorker *worker)
     if (job)
       return job;
     // no jobs are left - sleep for 30 seconds to allow new jobs to come in
-    lock.Leave();
+    lock.unlock();
     bool newJob = m_jobEvent.Wait(30000ms);
-    lock.Enter();
+    lock.lock();
     if (!newJob)
       break;
   }
@@ -396,7 +396,7 @@ bool CJobManager::OnJobProgress(unsigned int progress, unsigned int total, const
   if (i != m_processing.end())
   {
     CWorkItem item(*i);
-    lock.Leave(); // leave section prior to call
+    lock.unlock(); // leave section prior to call
     if (item.m_callback)
     {
       item.m_callback->OnJobProgress(item.m_id, progress, total, job);
@@ -415,7 +415,7 @@ void CJobManager::OnJobComplete(bool success, CJob *job)
   {
     // tell any listeners we're done with the job, then delete it
     CWorkItem item(*i);
-    lock.Leave();
+    lock.unlock();
     try
     {
       if (item.m_callback)
@@ -425,11 +425,11 @@ void CJobManager::OnJobComplete(bool success, CJob *job)
     {
       CLog::Log(LOGERROR, "{} error processing job {}", __FUNCTION__, item.m_job->GetType());
     }
-    lock.Enter();
+    lock.lock();
     Processing::iterator j = find(m_processing.begin(), m_processing.end(), job);
     if (j != m_processing.end())
       m_processing.erase(j);
-    lock.Leave();
+    lock.unlock();
     item.FreeJob();
   }
 }

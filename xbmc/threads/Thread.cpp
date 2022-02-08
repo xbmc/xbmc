@@ -193,7 +193,7 @@ void CThread::StopThread(bool bWait /*= true*/)
   std::thread* lthread = m_thread;
   if (lthread != nullptr && bWait && !IsCurrentThread())
   {
-    lock.Leave();
+    lock.unlock();
     if (!Join(std::chrono::milliseconds::max())) // eh?
       lthread->join();
     m_thread = nullptr;

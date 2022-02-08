@@ -76,7 +76,7 @@ public:
       for (auto& s: subscriptions)
         s->HandleEvent(event);
     };
-    lock.Leave();
+    lock.unlock();
     m_queue.Submit(std::move(task));
   }
 

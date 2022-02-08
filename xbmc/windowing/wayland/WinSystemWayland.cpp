@@ -249,7 +249,7 @@ bool CWinSystemWayland::CreateNewWindow(const std::string& name,
                 UserFriendlyOutputName(output), output->GetScale(), output->GetCurrentDpi());
       CSingleLock lock(m_surfaceOutputsMutex);
       m_surfaceOutputs.emplace(output);
-      lock.Leave();
+      lock.unlock();
       UpdateBufferScale();
       UpdateTouchDpi();
     }
@@ -265,7 +265,7 @@ bool CWinSystemWayland::CreateNewWindow(const std::string& name,
                 output->GetScale());
       CSingleLock lock(m_surfaceOutputsMutex);
       m_surfaceOutputs.erase(output);
-      lock.Leave();
+      lock.unlock();
       UpdateBufferScale();
       UpdateTouchDpi();
     }

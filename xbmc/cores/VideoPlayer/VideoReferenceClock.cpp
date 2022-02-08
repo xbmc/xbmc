@@ -87,7 +87,7 @@ void CVideoReferenceClock::Process()
     {
       m_UseVblank = true;          //tell other threads we're using vblank as clock
       m_VblankTime = Now;          //initialize the timestamp of the last vblank
-      SingleLock.Leave();
+      SingleLock.unlock();
 
       // we might got signalled while we did not wait
       if (!m_vsyncStopEvent.Signaled())
@@ -99,13 +99,13 @@ void CVideoReferenceClock::Process()
     }
     else
     {
-      SingleLock.Leave();
+      SingleLock.unlock();
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: Setup failed, falling back to CurrentHostCounter()");
     }
 
-    SingleLock.Enter();
+    SingleLock.lock();
     m_UseVblank = false;                       //we're back to using the systemclock
-    SingleLock.Leave();
+    SingleLock.unlock();
 
     //clean up the vblank clock
     if (m_pVideoSync)

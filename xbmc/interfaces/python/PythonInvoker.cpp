@@ -415,11 +415,11 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
         old = s;
       }
 
-      lock.Leave();
+      lock.unlock();
       CPyThreadState pyState;
       KODI::TIME::Sleep(100ms);
       pyState.Restore();
-      lock.Enter();
+      lock.lock();
     }
   }
 
@@ -477,7 +477,7 @@ bool CPythonInvoker::stop(bool abort)
     if (IsRunning())
     {
       setState(InvokerStateStopping);
-      lock.Leave();
+      lock.unlock();
 
       PyEval_RestoreThread((PyThreadState*)m_threadState);
 
@@ -493,7 +493,7 @@ bool CPythonInvoker::stop(bool abort)
     }
     else
       //Release the lock while waiting for threads to finish
-      lock.Leave();
+      lock.unlock();
 
     XbmcThreads::EndTime<> timeout(PYTHON_SCRIPT_TIMEOUT);
     while (!m_stoppedEvent.Wait(15ms))
@@ -516,7 +516,7 @@ bool CPythonInvoker::stop(bool abort)
       }
     }
 
-    lock.Enter();
+    lock.lock();
 
     setState(InvokerStateExecutionDone);
 
@@ -551,7 +551,7 @@ bool CPythonInvoker::stop(bool abort)
 
       PyEval_ReleaseThread(m_threadState);
     }
-    lock.Leave();
+    lock.unlock();
 
     setState(InvokerStateFailed);
   }

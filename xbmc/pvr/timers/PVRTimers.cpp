@@ -371,7 +371,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimersContainer& timers, const std::vec
   if (bChanged)
   {
     UpdateChannels();
-    lock.Leave();
+    lock.unlock();
 
     NotifyTimersEvent(bAddedOrDeleted);
 
@@ -1038,7 +1038,7 @@ bool CPVRTimers::AddLocalTimer(const std::shared_ptr<CPVRTimerInfoTag>& tag, boo
 
   if (bNotify && bReturn)
   {
-    lock.Leave();
+    lock.unlock();
     NotifyTimersEvent();
   }
 
@@ -1082,7 +1082,7 @@ bool CPVRTimers::DeleteLocalTimer(const std::shared_ptr<CPVRTimerInfoTag>& tag, 
 
   if (bNotify && bReturn)
   {
-    lock.Leave();
+    lock.unlock();
     NotifyTimersEvent();
   }
 

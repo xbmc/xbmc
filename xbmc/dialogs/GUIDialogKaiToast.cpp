@@ -108,7 +108,7 @@ bool CGUIDialogKaiToast::DoWork()
 
     Notification toast = m_notifications.front();
     m_notifications.pop();
-    lock.Leave();
+    lock.unlock();
 
     m_toastDisplayTime = toast.displayTime;
     m_toastMessageTime = toast.messageTime;

@@ -79,9 +79,9 @@ void PAPlayer::SoftStart(bool wait/* = false */)
   if (wait)
   {
     /* wait for them to fade in */
-    lock.Leave();
+    lock.unlock();
     CThread::Sleep(std::chrono::milliseconds(FAST_XFADE_TIME));
-    lock.Enter();
+    lock.lock();
 
     /* be sure they have faded in */
     while(wait)
@@ -92,10 +92,10 @@ void PAPlayer::SoftStart(bool wait/* = false */)
         StreamInfo* si = *itt;
         if (si->m_stream->IsFading())
         {
-          lock.Leave();
+          lock.unlock();
           wait = true;
           CThread::Sleep(1ms);
-          lock.Enter();
+          lock.lock();
           break;
         }
       }
@@ -128,9 +128,9 @@ void PAPlayer::SoftStop(bool wait/* = false */, bool close/* = true */)
     XbmcThreads::EndTime<> timer(1000ms);
 
     /* wait for them to fade out */
-    lock.Leave();
+    lock.unlock();
     CThread::Sleep(std::chrono::milliseconds(FAST_XFADE_TIME));
-    lock.Enter();
+    lock.lock();
 
     /* be sure they have faded out */
     while(wait && !CServiceBroker::GetActiveAE()->IsSuspended() && !timer.IsTimePast())
@@ -141,10 +141,10 @@ void PAPlayer::SoftStop(bool wait/* = false */, bool close/* = true */)
         StreamInfo* si = *itt;
         if (si->m_stream && si->m_stream->IsFading())
         {
-          lock.Leave();
+          lock.unlock();
           wait = true;
           CThread::Sleep(1ms);
-          lock.Enter();
+          lock.lock();
           break;
         }
       }
@@ -239,7 +239,7 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     si->m_playNextAtFrame  = si->m_framesSent; //start next track at current frame
     si->m_prepareTriggered = true; //next track is ready to go
   }
-  lock.Leave();
+  lock.unlock();
 
   if (!IsRunning())
     Create();
@@ -517,9 +517,9 @@ bool PAPlayer::CloseFile(bool reopen)
     CSingleLock lock(m_streamsLock);
     while (m_jobCounter > 0)
     {
-      lock.Leave();
+      lock.unlock();
       m_jobEvent.Wait(100ms);
-      lock.Enter();
+      lock.lock();
     }
   }
 
@@ -599,7 +599,7 @@ inline void PAPlayer::ProcessStreams(double &freeBufferTime)
       ++itt;
   }
 
-  sharedLock.Leave();
+  sharedLock.unlock();
   CSingleLock lock(m_streamsLock);
 
   for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)

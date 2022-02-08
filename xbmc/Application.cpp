@@ -1189,7 +1189,7 @@ bool CApplication::LoadSkin(const std::string& skinID)
   CLog::Log(LOGINFO, "  skin loaded...");
 
   // leave the graphics lock
-  lock.Leave();
+  lock.unlock();
 
   // restore active window
   if (currentWindowID != WINDOW_INVALID)

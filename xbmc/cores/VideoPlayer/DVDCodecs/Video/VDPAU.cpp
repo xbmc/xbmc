@@ -741,7 +741,7 @@ void CDecoder::OnLostDisplay()
   m_vdpauConfig.context = 0;
 
   m_DisplayState = VDPAU_LOST;
-  lock.Leave();
+  lock.unlock();
   m_DisplayEvent.Reset();
 
   CServiceBroker::GetWinSystem()->GetGfxContext().restore(count);
@@ -757,7 +757,7 @@ void CDecoder::OnResetDisplay()
   if (m_DisplayState == VDPAU_LOST)
   {
     m_DisplayState = VDPAU_RESET;
-    lock.Leave();
+    lock.unlock();
     m_DisplayEvent.Set();
   }
 

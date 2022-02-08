@@ -55,7 +55,7 @@ void CGUIGameController::ActivateController(const ControllerPtr& controller)
   {
     m_currentController = controller;
 
-    lock.Leave();
+    lock.unlock();
 
     //! @todo Sometimes this fails on window init
     SetFileName(m_currentController->Layout().ImagePath());

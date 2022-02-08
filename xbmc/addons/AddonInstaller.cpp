@@ -73,7 +73,7 @@ void CAddonInstaller::OnJobComplete(unsigned int jobID, bool success, CJob* job)
     m_downloadJobs.erase(i);
   if (m_downloadJobs.empty())
     m_idle.Set();
-  lock.Leave();
+  lock.unlock();
   PrunePackageCache();
 
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
@@ -93,7 +93,7 @@ void CAddonInstaller::OnJobProgress(unsigned int jobID, unsigned int progress, u
     i->second.downloadFinshed = std::string(job->GetType()) == CAddonInstallJob::TYPE_INSTALL;
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM);
     msg.SetStringParam(i->first);
-    lock.Leave();
+    lock.unlock();
     CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
   }
 }
@@ -113,7 +113,7 @@ void CAddonInstaller::GetInstallList(VECADDONS &addons) const
     if (i->second.jobID)
       addonIDs.push_back(i->first);
   }
-  lock.Leave();
+  lock.unlock();
 
   CAddonDatabase database;
   database.Open();
@@ -296,7 +296,7 @@ bool CAddonInstaller::DoInstall(const AddonPtr& addon,
 
   m_downloadJobs.insert(make_pair(addon->ID(), CDownloadJob(0)));
   m_idle.Reset();
-  lock.Leave();
+  lock.unlock();
 
   installJob->SetDependsInstall(dependsInstall);
   installJob->SetAllowCheckForUpdates(allowCheckForUpdates);
@@ -308,7 +308,7 @@ bool CAddonInstaller::DoInstall(const AddonPtr& addon,
     result = installJob->DoWork();
   delete installJob;
 
-  lock.Enter();
+  lock.lock();
   JobMap::iterator i = m_downloadJobs.find(addon->ID());
   m_downloadJobs.erase(i);
   if (m_downloadJobs.empty())
@@ -507,7 +507,7 @@ void CAddonInstaller::InstallAddons(const VECADDONS& addons,
     if (!m_downloadJobs.empty())
     {
       m_idle.Reset();
-      lock.Leave();
+      lock.unlock();
       m_idle.Wait();
     }
   }

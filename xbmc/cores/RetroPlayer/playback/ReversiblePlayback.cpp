@@ -153,7 +153,7 @@ std::string CReversiblePlayback::CreateSavestate()
     }
     else
     {
-      lock.Leave();
+      lock.unlock();
       if (!m_gameClient->Serialize(memoryData, memorySize))
         return "";
     }

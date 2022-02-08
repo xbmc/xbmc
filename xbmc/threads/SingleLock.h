@@ -27,9 +27,6 @@ class CSingleLock : public std::unique_lock<CCriticalSection>
 public:
   inline explicit CSingleLock(CCriticalSection& cs) : std::unique_lock<CCriticalSection>(cs) {}
 
-  inline void Leave() { unlock(); }
-  inline void Enter() { lock(); }
-
 private:
   CSingleLock(const CSingleLock&) = delete;
   CSingleLock& operator=(const CSingleLock&) = delete;

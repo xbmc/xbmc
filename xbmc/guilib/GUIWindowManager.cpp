@@ -1131,7 +1131,7 @@ bool CGUIWindowManager::HandleAction(CAction const& action) const
   while (topmost)
   {
     CGUIWindow *dialog = m_activeDialogs[--topmost];
-    lock.Leave();
+    lock.unlock();
     if (dialog->IsModalDialog())
     { // we have the topmost modal dialog
       if (!dialog->IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
@@ -1151,11 +1151,11 @@ bool CGUIWindowManager::HandleAction(CAction const& action) const
                 __FUNCTION__, action.GetID());
       return true; // do nothing with the action until the anim is finished
     }
-    lock.Enter();
+    lock.lock();
     if (topmost > m_activeDialogs.size())
       topmost = m_activeDialogs.size();
   }
-  lock.Leave();
+  lock.unlock();
   CGUIWindow* window = GetWindow(GetActiveWindow());
   if (window)
     return window->OnAction(action);
@@ -1524,7 +1524,7 @@ void CGUIWindowManager::DispatchThreadMessages()
     int window = m_vecThreadMessages.front().second;
     m_vecThreadMessages.pop_front();
 
-    lock.Leave();
+    lock.unlock();
 
     // XXX: during SendMessage(), there could be a deeper 'xbmc main loop' inited by e.g. doModal
     //      which may loop there and callback to DispatchThreadMessages() multiple times.
@@ -1534,7 +1534,7 @@ void CGUIWindowManager::DispatchThreadMessages()
       SendMessage( *pMsg );
     delete pMsg;
 
-    lock.Enter();
+    lock.lock();
   }
 }
 

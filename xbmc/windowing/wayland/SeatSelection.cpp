@@ -127,7 +127,7 @@ std::string CSeatSelection::GetSelectionText() const
   CFileHandle writeFd{fds[1]};
 
   m_currentSelection.receive(m_matchedMimeType, writeFd);
-  lock.Leave();
+  lock.unlock();
   // Make sure the other party gets the request as soon as possible
   CWinEventsWayland::Flush();
   // Fd now gets sent to the other party -> make sure our write end is closed

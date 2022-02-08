@@ -325,7 +325,7 @@ GroupMemberPair CPVRChannelGroup::GetLastAndPreviousToLastPlayedChannelGroupMemb
     return {};
 
   auto members = m_sortedMembers;
-  lock.Leave();
+  lock.unlock();
 
   std::sort(members.begin(), members.end(), [](const auto& a, const auto& b) {
     return a->Channel()->LastWatched() > b->Channel()->LastWatched();

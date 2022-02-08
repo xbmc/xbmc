@@ -115,7 +115,7 @@ int  Pipe::Read(char *buf, int nMaxSize, int nWaitMillis)
     // at the moment we leave m_listeners unprotected which might be a problem in future
     // but as long as we only have 1 listener attaching at startup and detaching on close we're fine
     AddRef();
-    lock.Leave();
+    lock.unlock();
 
     bool bHasData = false;
     auto nMillisLeft = std::chrono::milliseconds(nWaitMillis);
@@ -131,7 +131,7 @@ int  Pipe::Read(char *buf, int nMaxSize, int nWaitMillis)
       nMillisLeft -= 200ms;
     } while (!bHasData && nMillisLeft > 0ms && !m_bEof);
 
-    lock.Enter();
+    lock.lock();
     DecRef();
 
     if (!m_bOpen)
@@ -166,13 +166,13 @@ bool Pipe::Write(const char *buf, int nSize, int nWaitMillis)
   {
     while ( (int)m_buffer.getMaxWriteSize() < nSize && m_bOpen )
     {
-      lock.Leave();
+      lock.unlock();
       for (size_t l=0; l<m_listeners.size(); l++)
         m_listeners[l]->OnPipeOverFlow();
 
       bool bClear = nWaitMillis < 0 ? m_writeEvent.Wait()
                                     : m_writeEvent.Wait(std::chrono::milliseconds(nWaitMillis));
-      lock.Enter();
+      lock.lock();
       if (bClear && (int)m_buffer.getMaxWriteSize() >= nSize)
       {
         m_buffer.WriteData(buf, nSize);
