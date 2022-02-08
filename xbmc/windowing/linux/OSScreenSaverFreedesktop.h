@@ -24,6 +24,8 @@ namespace LINUX
 class COSScreenSaverFreedesktop : public IOSScreenSaver
 {
 public:
+  COSScreenSaverFreedesktop() = default;
+
   static bool IsAvailable();
   void Inhibit() override;
   void Uninhibit() override;
