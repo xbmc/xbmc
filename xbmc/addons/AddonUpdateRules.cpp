@@ -9,8 +9,9 @@
 #include "AddonUpdateRules.h"
 
 #include "AddonDatabase.h"
-#include "threads/SingleLock.h"
 #include "utils/log.h"
+
+#include <mutex>
 
 using namespace ADDON;
 
@@ -23,13 +24,13 @@ bool CAddonUpdateRules::RefreshRulesMap(const CAddonDatabase& db)
 
 bool CAddonUpdateRules::IsAutoUpdateable(const std::string& id) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_updateRules.find(id) == m_updateRules.end();
 }
 
 bool CAddonUpdateRules::IsUpdateableByRule(const std::string& id, AddonUpdateRule updateRule) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   const auto& updateRulesEntry = m_updateRules.find(id);
   return (updateRulesEntry == m_updateRules.end() ||
           std::none_of(updateRulesEntry->second.begin(), updateRulesEntry->second.end(),
@@ -40,7 +41,7 @@ bool CAddonUpdateRules::AddUpdateRuleToList(CAddonDatabase& db,
                                             const std::string& id,
                                             AddonUpdateRule updateRule)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   if (!IsUpdateableByRule(id, updateRule))
   {
@@ -71,7 +72,7 @@ bool CAddonUpdateRules::RemoveFromUpdateRuleslist(CAddonDatabase& db,
                                                   const std::string& id,
                                                   AddonUpdateRule updateRule)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   const auto& updateRulesEntry = m_updateRules.find(id);
   if (updateRulesEntry != m_updateRules.end())

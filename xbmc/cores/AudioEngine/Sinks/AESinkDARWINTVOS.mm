@@ -21,6 +21,7 @@
 
 #include "platform/darwin/DarwinUtils.h"
 
+#include <mutex>
 #include <sstream>
 
 #import <AVFoundation/AVAudioSession.h>
@@ -360,7 +361,7 @@ unsigned int CAAudioUnitSink::write(uint8_t* data, unsigned int frames, unsigned
   // CAAudioUnitSink owns them.
   if (m_buffer->GetWriteSize() < frames * framesize)
   { // no space to write - wait for a bit
-    CSingleLock lock(mutex);
+    std::unique_lock<CCriticalSection> lock(mutex);
     auto timeout = std::chrono::milliseconds(900 * frames / m_sampleRate);
     if (!m_started)
       timeout = 4500ms;
@@ -392,7 +393,7 @@ void CAAudioUnitSink::drain()
 
   while (bytes && maxNumTimeouts > 0)
   {
-    CSingleLock lock(mutex);
+    std::unique_lock<CCriticalSection> lock(mutex);
     XbmcThreads::EndTime<> timer(timeout);
     condVar.wait(mutex, timeout);
 

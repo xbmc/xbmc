@@ -17,6 +17,7 @@
 #include "utils/log.h"
 
 #include <map>
+#include <mutex>
 
 static thread_local CFFmpegLog* CFFmpegLogTls;
 
@@ -49,7 +50,7 @@ std::map<const CThread*, std::string> g_logbuffer;
 
 void ff_flush_avutil_log_buffers(void)
 {
-  CSingleLock lock(m_logSection);
+  std::unique_lock<CCriticalSection> lock(m_logSection);
   /* Loop through the logbuffer list and remove any blank buffers
      If the thread using the buffer is still active, it will just
      add a new buffer next time it writes to the log */
@@ -63,7 +64,7 @@ void ff_flush_avutil_log_buffers(void)
 
 void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
 {
-  CSingleLock lock(m_logSection);
+  std::unique_lock<CCriticalSection> lock(m_logSection);
   const CThread* threadId = CThread::GetCurrentThread();
   std::string &buffer = g_logbuffer[threadId];
 

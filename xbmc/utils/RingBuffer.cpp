@@ -8,11 +8,10 @@
 
 #include "RingBuffer.h"
 
-#include "threads/SingleLock.h"
-
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>
+#include <mutex>
 
 /* Constructor */
 CRingBuffer::CRingBuffer()
@@ -33,7 +32,7 @@ CRingBuffer::~CRingBuffer()
 /* Create a ring buffer with the specified 'size' */
 bool CRingBuffer::Create(unsigned int size)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   m_buffer = (char*)malloc(size);
   if (m_buffer != NULL)
   {
@@ -46,7 +45,7 @@ bool CRingBuffer::Create(unsigned int size)
 /* Free the ring buffer and set all values to NULL or 0 */
 void CRingBuffer::Destroy()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   if (m_buffer != NULL)
   {
     free(m_buffer);
@@ -61,7 +60,7 @@ void CRingBuffer::Destroy()
 /* Clear the ring buffer */
 void CRingBuffer::Clear()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   m_readPtr = 0;
   m_writePtr = 0;
   m_fillCount = 0;
@@ -72,7 +71,7 @@ void CRingBuffer::Clear()
  */
 bool CRingBuffer::ReadData(char *buf, unsigned int size)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   if (size > m_fillCount)
   {
     return false;
@@ -100,7 +99,7 @@ bool CRingBuffer::ReadData(char *buf, unsigned int size)
  */
 bool CRingBuffer::ReadData(CRingBuffer &rBuf, unsigned int size)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   if (rBuf.getBuffer() == NULL)
     rBuf.Create(size);
 
@@ -123,7 +122,7 @@ bool CRingBuffer::ReadData(CRingBuffer &rBuf, unsigned int size)
  */
 bool CRingBuffer::WriteData(const char *buf, unsigned int size)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   if (size > m_size - m_fillCount)
   {
     return false;
@@ -151,7 +150,7 @@ bool CRingBuffer::WriteData(const char *buf, unsigned int size)
  */
 bool CRingBuffer::WriteData(CRingBuffer &rBuf, unsigned int size)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   if (m_buffer == NULL)
     Create(size);
 
@@ -171,7 +170,7 @@ bool CRingBuffer::WriteData(CRingBuffer &rBuf, unsigned int size)
 /* Skip bytes in buffer to be read */
 bool CRingBuffer::SkipBytes(int skipSize)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   if (skipSize < 0)
   {
     return false; // skipping backwards is not supported
@@ -218,7 +217,7 @@ char *CRingBuffer::getBuffer()
 
 unsigned int CRingBuffer::getSize()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_size;
 }
 
@@ -229,18 +228,18 @@ unsigned int CRingBuffer::getReadPtr() const
 
 unsigned int CRingBuffer::getWritePtr()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_writePtr;
 }
 
 unsigned int CRingBuffer::getMaxReadSize()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_fillCount;
 }
 
 unsigned int CRingBuffer::getMaxWriteSize()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_size - m_fillCount;
 }

@@ -23,6 +23,7 @@
 
 #include <iomanip>
 #include <iterator>
+#include <mutex>
 #include <numeric>
 #include <sstream>
 
@@ -798,7 +799,7 @@ void CVideoPlayerVideo::ProcessOverlays(const VideoPicture* pSource, double pts)
   VecOverlays overlays;
 
   {
-    CSingleLock lock(*m_pOverlayContainer);
+    std::unique_lock<CCriticalSection> lock(*m_pOverlayContainer);
 
     VecOverlays* pVecOverlays = m_pOverlayContainer->GetOverlays();
     VecOverlaysIter it = pVecOverlays->begin();

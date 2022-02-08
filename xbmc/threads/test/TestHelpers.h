@@ -11,6 +11,7 @@
 #include "threads/Thread.h"
 
 #include <memory>
+#include <mutex>
 
 #include <gtest/gtest.h>
 
@@ -39,7 +40,7 @@ inline static bool waitForThread(std::atomic<long>& mutex,
       return true;
 
     {
-      CSingleLock tmplock(sec); // kick any memory syncs
+      std::unique_lock<CCriticalSection> tmplock(sec); // kick any memory syncs
     }
 
     std::this_thread::sleep_for(std::chrono::milliseconds(1));

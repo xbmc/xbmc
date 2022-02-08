@@ -15,6 +15,8 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#include <mutex>
+
 namespace ADDON
 {
 
@@ -104,7 +106,7 @@ ADDON_STATUS IAddonInstanceHandler::CreateInstance()
   if (!m_addon)
     return ADDON_STATUS_UNKNOWN;
 
-  CSingleLock lock(m_cdSec);
+  std::unique_lock<CCriticalSection> lock(m_cdSec);
 
   ADDON_STATUS status = m_addon->CreateInstance(&m_ifc);
   if (status != ADDON_STATUS_OK)
@@ -118,7 +120,7 @@ ADDON_STATUS IAddonInstanceHandler::CreateInstance()
 
 void IAddonInstanceHandler::DestroyInstance()
 {
-  CSingleLock lock(m_cdSec);
+  std::unique_lock<CCriticalSection> lock(m_cdSec);
   if (m_addon)
     m_addon->DestroyInstance(&m_ifc);
 }

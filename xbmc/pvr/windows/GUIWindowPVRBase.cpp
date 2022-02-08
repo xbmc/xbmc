@@ -34,6 +34,7 @@
 
 #include <iterator>
 #include <memory>
+#include <mutex>
 #include <string>
 #include <utility>
 #include <vector>
@@ -150,7 +151,7 @@ void CGUIWindowPVRBase::RegisterObservers()
 {
   CServiceBroker::GetPVRManager().Events().Subscribe(this, &CGUIWindowPVRBase::Notify);
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   if (m_channelGroup)
     m_channelGroup->Events().Subscribe(this, &CGUIWindowPVRBase::Notify);
 };
@@ -158,7 +159,7 @@ void CGUIWindowPVRBase::RegisterObservers()
 void CGUIWindowPVRBase::UnregisterObservers()
 {
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     if (m_channelGroup)
       m_channelGroup->Events().Unsubscribe(this);
   }
@@ -271,7 +272,7 @@ bool CGUIWindowPVRBase::ActivateNextChannelGroup()
 
 void CGUIWindowPVRBase::ClearData()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   m_channelGroup.reset();
   m_channelGroupsSelector.reset(new CGUIPVRChannelGroupsSelector);
 }
@@ -468,7 +469,7 @@ bool CGUIWindowPVRBase::InitChannelGroup()
 
   if (group)
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     if (m_channelGroup != group)
     {
       m_viewControl.SetSelectedItem(0);
@@ -483,7 +484,7 @@ bool CGUIWindowPVRBase::InitChannelGroup()
 
 std::shared_ptr<CPVRChannelGroup> CGUIWindowPVRBase::GetChannelGroup()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_channelGroup;
 }
 
@@ -494,7 +495,7 @@ void CGUIWindowPVRBase::SetChannelGroup(std::shared_ptr<CPVRChannelGroup> &&grou
 
   std::shared_ptr<CPVRChannelGroup> updateChannelGroup;
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     if (m_channelGroup != group)
     {
       if (m_channelGroup)

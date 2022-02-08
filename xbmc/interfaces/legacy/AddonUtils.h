@@ -17,9 +17,10 @@
 
 //#define ENABLE_XBMC_TRACE_API
 
-#include "threads/SingleLock.h"
+#include "threads/CriticalSection.h"
 
 #include <memory>
+#include <mutex>
 #include <vector>
 
 #ifdef TARGET_WINDOWS
@@ -51,9 +52,13 @@ namespace XBMCAddonUtils
 
   class InvertSingleLockGuard
   {
-    CSingleLock& lock;
+    std::unique_lock<CCriticalSection>& lock;
+
   public:
-    explicit InvertSingleLockGuard(CSingleLock& _lock) : lock(_lock) { lock.unlock(); }
+    explicit InvertSingleLockGuard(std::unique_lock<CCriticalSection>& _lock) : lock(_lock)
+    {
+      lock.unlock();
+    }
     ~InvertSingleLockGuard() { lock.lock(); }
   };
 

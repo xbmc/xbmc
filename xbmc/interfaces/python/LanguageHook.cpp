@@ -16,6 +16,8 @@
 #include "interfaces/legacy/AddonUtils.h"
 #include "utils/log.h"
 
+#include <mutex>
+
 namespace XBMCAddon
 {
   namespace Python
@@ -53,14 +55,14 @@ namespace XBMCAddon
     void PythonLanguageHook::RegisterMe()
     {
       XBMC_TRACE;
-      CSingleLock lock(hooksMutex);
+      std::unique_lock<CCriticalSection> lock(hooksMutex);
       hooks[m_interp] = AddonClass::Ref<PythonLanguageHook>(this);
     }
 
     void PythonLanguageHook::UnregisterMe()
     {
       XBMC_TRACE;
-      CSingleLock lock(hooksMutex);
+      std::unique_lock<CCriticalSection> lock(hooksMutex);
       hooks.erase(m_interp);
     }
 
@@ -74,7 +76,7 @@ namespace XBMCAddon
     AddonClass::Ref<PythonLanguageHook> PythonLanguageHook::GetIfExists(PyInterpreterState* interp)
     {
       XBMC_TRACE;
-      CSingleLock lock(hooksMutex);
+      std::unique_lock<CCriticalSection> lock(hooksMutex);
       std::map<PyInterpreterState*,AddonClass::Ref<PythonLanguageHook> >::iterator iter = hooks.find(interp);
       if (iter != hooks.end())
         return iter->second;
@@ -206,7 +208,7 @@ namespace XBMCAddon
     void PythonLanguageHook::RegisterAddonClassInstance(AddonClass* obj)
     {
       XBMC_TRACE;
-      CSingleLock l(*this);
+      std::unique_lock<CCriticalSection> l(*this);
       obj->Acquire();
       currentObjects.insert(obj);
     }
@@ -214,7 +216,7 @@ namespace XBMCAddon
     void PythonLanguageHook::UnregisterAddonClassInstance(AddonClass* obj)
     {
       XBMC_TRACE;
-      CSingleLock l(*this);
+      std::unique_lock<CCriticalSection> l(*this);
       if (currentObjects.erase(obj) > 0)
         obj->Release();
     }
@@ -222,7 +224,7 @@ namespace XBMCAddon
     bool PythonLanguageHook::HasRegisteredAddonClassInstance(AddonClass* obj)
     {
       XBMC_TRACE;
-      CSingleLock l(*this);
+      std::unique_lock<CCriticalSection> l(*this);
       return currentObjects.find(obj) != currentObjects.end();
     }
   }

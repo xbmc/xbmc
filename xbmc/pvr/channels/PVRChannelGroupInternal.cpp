@@ -20,6 +20,7 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
+#include <mutex>
 #include <string>
 #include <utility>
 #include <vector>
@@ -79,7 +80,7 @@ void CPVRChannelGroupInternal::Unload()
 
 void CPVRChannelGroupInternal::CheckGroupName()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   /* check whether the group name is still correct, or channels will fail to load after the language setting changed */
   const std::string& strNewGroupName = g_localizeStrings.Get(19287);
@@ -92,7 +93,7 @@ void CPVRChannelGroupInternal::CheckGroupName()
 
 void CPVRChannelGroupInternal::UpdateChannelPaths()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   m_iHiddenChannels = 0;
   for (auto& groupMemberPair : m_members)
   {
@@ -192,7 +193,7 @@ bool CPVRChannelGroupInternal::AppendToGroup(const std::shared_ptr<CPVRChannel>&
 
   channel->SetHidden(false);
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   if (m_iHiddenChannels > 0)
     m_iHiddenChannels--;
@@ -211,7 +212,7 @@ bool CPVRChannelGroupInternal::RemoveFromGroup(const std::shared_ptr<CPVRChannel
 
   channel->SetHidden(true);
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   ++m_iHiddenChannels;
 
@@ -230,7 +231,7 @@ bool CPVRChannelGroupInternal::CreateChannelEpgs(bool bForce /* = false */)
     return false;
 
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     for (auto& groupMemberPair : m_members)
       groupMemberPair.second->Channel()->CreateEPG();
   }

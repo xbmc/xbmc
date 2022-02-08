@@ -16,10 +16,10 @@
 #include "pvr/epg/EpgSearchFilter.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "threads/SingleLock.h"
 #include "utils/log.h"
 
 #include <memory>
+#include <mutex>
 #include <string>
 #include <vector>
 
@@ -55,13 +55,13 @@ const std::string sqlCreateSavedSearchesTable = "CREATE TABLE savedsearches ("
 
 bool CPVREpgDatabase::Open()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return CDatabase::Open(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseEpg);
 }
 
 void CPVREpgDatabase::Close()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   CDatabase::Close();
 }
 
@@ -81,7 +81,7 @@ void CPVREpgDatabase::CreateTables()
 
   CLog::LogFC(LOGDEBUG, LOGEPG, "Creating table 'epg'");
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   m_pDS->exec(
       "CREATE TABLE epg ("
@@ -140,14 +140,14 @@ void CPVREpgDatabase::CreateAnalytics()
 {
   CLog::LogFC(LOGDEBUG, LOGEPG, "Creating EPG database indices");
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   m_pDS->exec("CREATE UNIQUE INDEX idx_epg_idEpg_iStartTime on epgtags(idEpg, iStartTime desc);");
   m_pDS->exec("CREATE INDEX idx_epg_iEndTime on epgtags(iEndTime);");
 }
 
 void CPVREpgDatabase::UpdateTables(int iVersion)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   if (iVersion < 5)
     m_pDS->exec("ALTER TABLE epgtags ADD sGenre varchar(128);");
 
@@ -306,7 +306,7 @@ bool CPVREpgDatabase::DeleteEpg()
   bool bReturn(false);
   CLog::LogFC(LOGDEBUG, LOGEPG, "Deleting all EPG data from the database");
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   bReturn = DeleteValues("epg") || bReturn;
   bReturn = DeleteValues("epgtags") || bReturn;
@@ -326,7 +326,7 @@ bool CPVREpgDatabase::QueueDeleteEpgQuery(const CPVREpg& table)
 
   Filter filter;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   filter.AppendWhere(PrepareSQL("idEpg = %u", table.EpgID()));
 
   std::string strQuery;
@@ -344,7 +344,7 @@ bool CPVREpgDatabase::QueueDeleteTagQuery(const CPVREpgInfoTag& tag)
 
   Filter filter;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   filter.AppendWhere(PrepareSQL("idBroadcast = %u", tag.DatabaseID()));
 
   std::string strQuery;
@@ -356,7 +356,7 @@ std::vector<std::shared_ptr<CPVREpg>> CPVREpgDatabase::GetAll()
 {
   std::vector<std::shared_ptr<CPVREpg>> result;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   std::string strQuery = PrepareSQL("SELECT idEpg, sName, sScraperName FROM epg;");
   if (ResultQuery(strQuery))
   {
@@ -437,7 +437,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::CreateEpgTag(
 
 CDateTime CPVREpgDatabase::GetFirstStartTime(int iEpgID)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   const std::string strQuery =
       PrepareSQL("SELECT MIN(iStartTime) FROM epgtags WHERE idEpg = %u;", iEpgID);
   std::string strValue = GetSingleValue(strQuery);
@@ -449,7 +449,7 @@ CDateTime CPVREpgDatabase::GetFirstStartTime(int iEpgID)
 
 CDateTime CPVREpgDatabase::GetLastEndTime(int iEpgID)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   const std::string strQuery =
       PrepareSQL("SELECT MAX(iEndTime) FROM epgtags WHERE idEpg = %u;", iEpgID);
   std::string strValue = GetSingleValue(strQuery);
@@ -464,7 +464,7 @@ CDateTime CPVREpgDatabase::GetMinStartTime(int iEpgID, const CDateTime& minStart
   time_t t;
   minStart.GetAsTime(t);
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   const std::string strQuery = PrepareSQL("SELECT MIN(iStartTime) "
                                           "FROM epgtags "
                                           "WHERE idEpg = %u AND iStartTime > %u;",
@@ -481,7 +481,7 @@ CDateTime CPVREpgDatabase::GetMaxEndTime(int iEpgID, const CDateTime& maxEnd)
   time_t t;
   maxEnd.GetAsTime(t);
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   const std::string strQuery = PrepareSQL("SELECT MAX(iEndTime) "
                                           "FROM epgtags "
                                           "WHERE idEpg = %u AND iEndTime <= %u;",
@@ -621,7 +621,7 @@ private:
 std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetEpgTags(
     const PVREpgSearchData& searchData)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   std::string strQuery = PrepareSQL("SELECT * FROM epgtags");
 
@@ -733,7 +733,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetEpgTags(
 std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByUniqueBroadcastID(
     int iEpgID, unsigned int iUniqueBroadcastId)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   const std::string strQuery = PrepareSQL("SELECT * "
                                           "FROM epgtags "
                                           "WHERE idEpg = %u AND iBroadcastUid = %u;",
@@ -759,7 +759,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByUniqueBroadcastID(
 
 std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByDatabaseID(int iEpgID, int iDatabaseId)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   const std::string strQuery = PrepareSQL("SELECT * "
                                           "FROM epgtags "
                                           "WHERE idEpg = %u AND idBroadcast = %u;",
@@ -789,7 +789,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByStartTime(int iEpgID
   time_t start;
   startTime.GetAsTime(start);
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   const std::string strQuery = PrepareSQL("SELECT * "
                                           "FROM epgtags "
                                           "WHERE idEpg = %u AND iStartTime = %u;",
@@ -819,7 +819,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByMinStartTime(
   time_t minStart;
   minStartTime.GetAsTime(minStart);
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   const std::string strQuery =
       PrepareSQL("SELECT * "
                  "FROM epgtags "
@@ -850,7 +850,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByMaxEndTime(int iEpgI
   time_t maxEnd;
   maxEndTime.GetAsTime(maxEnd);
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   const std::string strQuery =
       PrepareSQL("SELECT * "
                  "FROM epgtags "
@@ -884,7 +884,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetEpgTagsByMinSta
   time_t maxEnd;
   maxEndTime.GetAsTime(maxEnd);
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   const std::string strQuery =
       PrepareSQL("SELECT * "
                  "FROM epgtags "
@@ -924,7 +924,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetEpgTagsByMinEnd
   time_t maxStart;
   maxStartTime.GetAsTime(maxStart);
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   const std::string strQuery =
       PrepareSQL("SELECT * "
                  "FROM epgtags "
@@ -967,7 +967,7 @@ bool CPVREpgDatabase::QueueDeleteEpgTagsByMinEndMaxStartTimeQuery(int iEpgID,
 
   Filter filter;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   filter.AppendWhere(PrepareSQL("idEpg = %u AND iEndTime >= %u AND iStartTime <= %u", iEpgID,
                                 static_cast<unsigned int>(minEnd),
                                 static_cast<unsigned int>(maxStart)));
@@ -981,7 +981,7 @@ bool CPVREpgDatabase::QueueDeleteEpgTagsByMinEndMaxStartTimeQuery(int iEpgID,
 
 std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetAllEpgTags(int iEpgID)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   const std::string strQuery =
       PrepareSQL("SELECT * FROM epgtags WHERE idEpg = %u ORDER BY iStartTime;", iEpgID);
   if (ResultQuery(strQuery))
@@ -1007,7 +1007,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetAllEpgTags(int 
 
 std::vector<std::string> CPVREpgDatabase::GetAllIconPaths(int iEpgID)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   const std::string strQuery =
       PrepareSQL("SELECT sIconPath FROM epgtags WHERE idEpg = %u;", iEpgID);
   if (ResultQuery(strQuery))
@@ -1035,7 +1035,7 @@ bool CPVREpgDatabase::GetLastEpgScanTime(int iEpgId, CDateTime* lastScan)
 {
   bool bReturn = false;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   std::string strWhereClause = PrepareSQL("idEpg = %u", iEpgId);
   std::string strValue = GetSingleValue("lastepgscan", "sLastScan", strWhereClause);
 
@@ -1054,7 +1054,7 @@ bool CPVREpgDatabase::GetLastEpgScanTime(int iEpgId, CDateTime* lastScan)
 
 bool CPVREpgDatabase::QueuePersistLastEpgScanTimeQuery(int iEpgId, const CDateTime& lastScanTime)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   std::string strQuery = PrepareSQL("REPLACE INTO lastepgscan(idEpg, sLastScan) VALUES (%u, '%s');",
       iEpgId, lastScanTime.GetAsDBDateTime().c_str());
 
@@ -1071,7 +1071,7 @@ bool CPVREpgDatabase::QueueDeleteLastEpgScanTimeQuery(const CPVREpg& table)
 
   Filter filter;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   filter.AppendWhere(PrepareSQL("idEpg = %u", table.EpgID()));
 
   std::string strQuery;
@@ -1086,7 +1086,7 @@ int CPVREpgDatabase::Persist(const CPVREpg& epg, bool bQueueWrite)
   int iReturn = -1;
   std::string strQuery;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   if (epg.EpgID() > 0)
     strQuery = PrepareSQL("REPLACE INTO epg (idEpg, sName, sScraperName) "
                           "VALUES (%u, '%s', '%s');",
@@ -1117,7 +1117,7 @@ bool CPVREpgDatabase::DeleteEpgTags(int iEpgId, const CDateTime& maxEndTime)
 
   Filter filter;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   filter.AppendWhere(
       PrepareSQL("idEpg = %u AND iEndTime < %u", iEpgId, static_cast<unsigned int>(iMaxEndTime)));
   return DeleteValues("epgtags", filter);
@@ -1127,7 +1127,7 @@ bool CPVREpgDatabase::DeleteEpgTags(int iEpgId)
 {
   Filter filter;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   filter.AppendWhere(PrepareSQL("idEpg = %u", iEpgId));
   return DeleteValues("epgtags", filter);
 }
@@ -1136,7 +1136,7 @@ bool CPVREpgDatabase::QueueDeleteEpgTags(int iEpgId)
 {
   Filter filter;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   filter.AppendWhere(PrepareSQL("idEpg = %u", iEpgId));
 
   std::string strQuery;
@@ -1166,7 +1166,7 @@ bool CPVREpgDatabase::QueuePersistQuery(const CPVREpgInfoTag& tag)
   /* Only store the genre string when needed */
   std::string strGenre = (tag.GenreType() == EPG_GENRE_USE_STRING || tag.GenreSubType() == EPG_GENRE_USE_STRING) ? tag.DeTokenize(tag.Genre()) : "";
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   if (iBroadcastId < 0)
   {
@@ -1219,7 +1219,7 @@ bool CPVREpgDatabase::QueuePersistQuery(const CPVREpgInfoTag& tag)
 
 int CPVREpgDatabase::GetLastEPGId()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   std::string strQuery = PrepareSQL("SELECT MAX(idEpg) FROM epg");
   std::string strValue = GetSingleValue(strQuery);
   if (!strValue.empty())
@@ -1279,7 +1279,7 @@ std::vector<std::shared_ptr<CPVREpgSearchFilter>> CPVREpgDatabase::GetSavedSearc
 {
   std::vector<std::shared_ptr<CPVREpgSearchFilter>> result;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   const std::string strQuery =
       PrepareSQL("SELECT * FROM savedsearches WHERE bIsRadio = %u", bRadio);
   if (ResultQuery(strQuery))
@@ -1303,7 +1303,7 @@ std::vector<std::shared_ptr<CPVREpgSearchFilter>> CPVREpgDatabase::GetSavedSearc
 
 std::shared_ptr<CPVREpgSearchFilter> CPVREpgDatabase::GetSavedSearchById(bool bRadio, int iId)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   const std::string strQuery =
       PrepareSQL("SELECT * FROM savedsearches WHERE bIsRadio = %u AND idSearch = %u;", bRadio, iId);
 
@@ -1326,7 +1326,7 @@ std::shared_ptr<CPVREpgSearchFilter> CPVREpgDatabase::GetSavedSearchById(bool bR
 
 bool CPVREpgDatabase::Persist(CPVREpgSearchFilter& epgSearch)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   // Insert a new entry if this is a new search, replace the existing otherwise
   std::string strQuery;
@@ -1408,7 +1408,7 @@ bool CPVREpgDatabase::UpdateSavedSearchLastExecuted(const CPVREpgSearchFilter& e
   if (epgSearch.GetDatabaseId() == -1)
     return false;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   const std::string strQuery = PrepareSQL(
       "UPDATE savedsearches SET sLastExecutedDateTime = '%s' WHERE idSearch = %i",
@@ -1424,7 +1424,7 @@ bool CPVREpgDatabase::Delete(const CPVREpgSearchFilter& epgSearch)
   CLog::LogFC(LOGDEBUG, LOGEPG, "Deleting saved search '{}' from the database",
               epgSearch.GetTitle());
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   Filter filter;
   filter.AppendWhere(PrepareSQL("idSearch = '%i'", epgSearch.GetDatabaseId()));
@@ -1436,6 +1436,6 @@ bool CPVREpgDatabase::DeleteSavedSearches()
 {
   CLog::LogFC(LOGDEBUG, LOGEPG, "Deleting all saved searches from the database");
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return DeleteValues("savedsearches");
 }

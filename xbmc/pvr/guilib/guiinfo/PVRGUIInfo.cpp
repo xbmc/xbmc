@@ -45,6 +45,7 @@
 #include <cmath>
 #include <ctime>
 #include <memory>
+#include <mutex>
 #include <string>
 #include <vector>
 
@@ -59,7 +60,7 @@ CPVRGUIInfo::CPVRGUIInfo() : CThread("PVRGUIInfo")
 
 void CPVRGUIInfo::ResetProperties()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   m_anyTimersInfo.ResetProperties();
   m_tvTimersInfo.ResetProperties();
@@ -221,7 +222,7 @@ void CPVRGUIInfo::UpdateQualityData()
       client->SignalQuality(channelUid, qualityInfo);
   }
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   m_qualityInfo = qualityInfo;
 }
 
@@ -245,7 +246,7 @@ void CPVRGUIInfo::UpdateDescrambleData()
       client->GetDescrambleInfo(channelUid, descrambleInfo);
   }
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   m_descrambleInfo = descrambleInfo;
 }
 
@@ -274,7 +275,7 @@ void CPVRGUIInfo::UpdateMisc()
   const std::string strPlayingRadioGroup =
       (bStarted && bIsPlayingRadio) ? state->GetActiveChannelGroup(true)->GroupName() : "";
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   m_strPlayingClientName = strPlayingClientName;
   m_bHasTVRecordings = bHasTVRecordings;
   m_bHasRadioRecordings = bHasRadioRecordings;
@@ -495,7 +496,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
         return false;
       case VIDEOPLAYER_CHANNEL_GROUP:
       {
-        CSingleLock lock(m_critSection);
+        std::unique_lock<CCriticalSection> lock(m_critSection);
         strValue = recording->IsRadio() ? m_strPlayingRadioGroup : m_strPlayingTVGroup;
         return true;
       }
@@ -775,7 +776,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
       case MUSICPLAYER_CHANNEL_GROUP:
       case VIDEOPLAYER_CHANNEL_GROUP:
       {
-        CSingleLock lock(m_critSection);
+        std::unique_lock<CCriticalSection> lock(m_critSection);
         strValue = channel->IsRadio() ? m_strPlayingRadioGroup : m_strPlayingTVGroup;
         return true;
       }
@@ -787,7 +788,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
 
 bool CPVRGUIInfo::GetPVRLabel(const CFileItem* item, const CGUIInfo& info, std::string& strValue) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   switch (info.m_info)
   {
@@ -1196,7 +1197,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerInt(const CFileItem* item, const CGUIInfo&
 
 bool CPVRGUIInfo::GetPVRInt(const CFileItem* item, const CGUIInfo& info, int& iValue) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   switch (info.m_info)
   {
@@ -1547,7 +1548,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem* item, const CGUIInfo
 
 bool CPVRGUIInfo::GetPVRBool(const CFileItem* item, const CGUIInfo& info, bool& bValue) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   switch (info.m_info)
   {
@@ -1828,7 +1829,7 @@ void CPVRGUIInfo::CharInfoProvider(std::string& strValue) const
 
 void CPVRGUIInfo::UpdateBackendCache()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   // Update the backend information for all backends if
   // an update has been requested

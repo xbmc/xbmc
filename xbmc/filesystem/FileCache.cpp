@@ -7,16 +7,17 @@
  */
 
 #include "FileCache.h"
-#include "threads/Thread.h"
-#include "File.h"
-#include "URL.h"
-#include "ServiceBroker.h"
 
 #include "CircularCache.h"
-#include "threads/SingleLock.h"
-#include "utils/log.h"
+#include "File.h"
+#include "ServiceBroker.h"
+#include "URL.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "threads/Thread.h"
+#include "utils/log.h"
+
+#include <mutex>
 
 #if !defined(TARGET_WINDOWS)
 #include "platform/posix/ConvUtils.h"
@@ -113,7 +114,7 @@ bool CFileCache::Open(const CURL& url)
 {
   Close();
 
-  CSingleLock lock(m_sync);
+  std::unique_lock<CCriticalSection> lock(m_sync);
 
   m_sourcePath = url.GetRedacted();
 
@@ -460,7 +461,7 @@ int CFileCache::Stat(const CURL& url, struct __stat64* buffer)
 
 ssize_t CFileCache::Read(void* lpBuf, size_t uiBufSize)
 {
-  CSingleLock lock(m_sync);
+  std::unique_lock<CCriticalSection> lock(m_sync);
   if (!m_pCache)
   {
     CLog::Log(LOGERROR, "CFileCache::{} - <{}> sanity failed. no cache strategy!", __FUNCTION__,
@@ -507,7 +508,7 @@ retry:
 
 int64_t CFileCache::Seek(int64_t iFilePosition, int iWhence)
 {
-  CSingleLock lock(m_sync);
+  std::unique_lock<CCriticalSection> lock(m_sync);
 
   if (!m_pCache)
   {
@@ -571,7 +572,7 @@ void CFileCache::Close()
 {
   StopThread();
 
-  CSingleLock lock(m_sync);
+  std::unique_lock<CCriticalSection> lock(m_sync);
   if (m_pCache)
     m_pCache->Close();
 

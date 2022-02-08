@@ -14,10 +14,11 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
-#include "threads/SingleLock.h"
 #include "threads/SystemClock.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
+
+#include <mutex>
 
 
 using namespace KODI::MESSAGING;
@@ -131,7 +132,7 @@ void CGUIDialogCache::Process()
 
       try
       {
-        CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+        std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
         m_pDlg->Progress();
         if( bSentCancel )
         {

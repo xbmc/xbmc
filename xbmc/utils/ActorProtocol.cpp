@@ -11,6 +11,7 @@
 #include "threads/Event.h"
 
 #include <cstring>
+#include <mutex>
 
 using namespace Actor;
 
@@ -89,7 +90,7 @@ Message *Protocol::GetMessage()
 {
   Message *msg;
 
-  CSingleLock lock(criticalSection);
+  std::unique_lock<CCriticalSection> lock(criticalSection);
 
   if (!freeMessageQueue.empty())
   {
@@ -112,7 +113,7 @@ Message *Protocol::GetMessage()
 
 void Protocol::ReturnMessage(Message *msg)
 {
-  CSingleLock lock(criticalSection);
+  std::unique_lock<CCriticalSection> lock(criticalSection);
 
   freeMessageQueue.push(msg);
 }
@@ -140,7 +141,8 @@ bool Protocol::SendOutMessage(int signal,
     memcpy(msg->data, data, size);
   }
 
-  { CSingleLock lock(criticalSection);
+  {
+    std::unique_lock<CCriticalSection> lock(criticalSection);
     outMessages.push(msg);
   }
   if (containerOutEvent)
@@ -162,7 +164,8 @@ bool Protocol::SendOutMessage(int signal, CPayloadWrapBase *payload, Message *ou
 
   msg->payloadObj.reset(payload);
 
-  { CSingleLock lock(criticalSection);
+  {
+    std::unique_lock<CCriticalSection> lock(criticalSection);
     outMessages.push(msg);
   }
   if (containerOutEvent)
@@ -194,7 +197,8 @@ bool Protocol::SendInMessage(int signal,
     memcpy(msg->data, data, size);
   }
 
-  { CSingleLock lock(criticalSection);
+  {
+    std::unique_lock<CCriticalSection> lock(criticalSection);
     inMessages.push(msg);
   }
   if (containerInEvent)
@@ -216,7 +220,8 @@ bool Protocol::SendInMessage(int signal, CPayloadWrapBase *payload, Message *out
 
   msg->payloadObj.reset(payload);
 
-  { CSingleLock lock(criticalSection);
+  {
+    std::unique_lock<CCriticalSection> lock(criticalSection);
     inMessages.push(msg);
   }
   if (containerInEvent)
@@ -237,7 +242,7 @@ bool Protocol::SendOutMessageSync(
 
   if (!msg->event->Wait(std::chrono::milliseconds(timeout)))
   {
-    const CSingleLock lock(criticalSection);
+    const std::unique_lock<CCriticalSection> lock(criticalSection);
     if (msg->replyMessage)
       *retMsg = msg->replyMessage;
     else
@@ -268,7 +273,7 @@ bool Protocol::SendOutMessageSync(int signal, Message **retMsg, int timeout, CPa
 
   if (!msg->event->Wait(std::chrono::milliseconds(timeout)))
   {
-    const CSingleLock lock(criticalSection);
+    const std::unique_lock<CCriticalSection> lock(criticalSection);
     if (msg->replyMessage)
       *retMsg = msg->replyMessage;
     else
@@ -290,7 +295,7 @@ bool Protocol::SendOutMessageSync(int signal, Message **retMsg, int timeout, CPa
 
 bool Protocol::ReceiveOutMessage(Message **msg)
 {
-  CSingleLock lock(criticalSection);
+  std::unique_lock<CCriticalSection> lock(criticalSection);
 
   if (outMessages.empty() || outDefered)
     return false;
@@ -303,7 +308,7 @@ bool Protocol::ReceiveOutMessage(Message **msg)
 
 bool Protocol::ReceiveInMessage(Message **msg)
 {
-  CSingleLock lock(criticalSection);
+  std::unique_lock<CCriticalSection> lock(criticalSection);
 
   if (inMessages.empty() || inDefered)
     return false;
@@ -331,7 +336,7 @@ void Protocol::PurgeIn(int signal)
   Message *msg;
   std::queue<Message*> msgs;
 
-  CSingleLock lock(criticalSection);
+  std::unique_lock<CCriticalSection> lock(criticalSection);
 
   while (!inMessages.empty())
   {
@@ -353,7 +358,7 @@ void Protocol::PurgeOut(int signal)
   Message *msg;
   std::queue<Message*> msgs;
 
-  CSingleLock lock(criticalSection);
+  std::unique_lock<CCriticalSection> lock(criticalSection);
 
   while (!outMessages.empty())
   {

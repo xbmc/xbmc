@@ -39,11 +39,11 @@
 #include "pvr/timers/PVRTimers.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "threads/SingleLock.h"
 #include "view/GUIViewState.h"
 
 #include <functional>
 #include <memory>
+#include <mutex>
 #include <utility>
 #include <vector>
 
@@ -102,7 +102,7 @@ void CGUIWindowPVRGuideBase::InitEpgGridControl()
 void CGUIWindowPVRGuideBase::ClearData()
 {
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     m_cachedChannelGroup.reset();
   }
 
@@ -235,7 +235,7 @@ bool CGUIWindowPVRGuideBase::Update(const std::string& strDirectory, bool update
 bool CGUIWindowPVRGuideBase::GetDirectory(const std::string& strDirectory, CFileItemList& items)
 {
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
 
     if (m_cachedChannelGroup && *m_cachedChannelGroup != *GetChannelGroup())
     {
@@ -732,7 +732,7 @@ bool CGUIWindowPVRGuideBase::RefreshTimelineItems()
       epgGridContainer->SetTimelineItems(channels, startDate, endDate);
 
       {
-        CSingleLock lock(m_critSection);
+        std::unique_lock<CCriticalSection> lock(m_critSection);
         m_cachedChannelGroup = group;
       }
       return true;

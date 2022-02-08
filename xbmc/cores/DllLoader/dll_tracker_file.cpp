@@ -7,10 +7,12 @@
  */
 
 #include "dll_tracker_file.h"
-#include "dll_tracker.h"
+
 #include "DllLoader.h"
-#include "threads/SingleLock.h"
+#include "dll_tracker.h"
 #include "utils/log.h"
+
+#include <mutex>
 #include <stdlib.h>
 
 #ifdef TARGET_POSIX
@@ -29,7 +31,7 @@ extern "C" void tracker_file_track(uintptr_t caller, uintptr_t handle, TrackedFi
   DllTrackInfo* pInfo = tracker_get_dlltrackinfo(caller);
   if (pInfo)
   {
-    CSingleLock lock(g_trackerLock);
+    std::unique_lock<CCriticalSection> lock(g_trackerLock);
     TrackedFile* file = new TrackedFile;
     file->handle = handle;
     file->type = type;
@@ -43,7 +45,7 @@ extern "C" void tracker_file_free(uintptr_t caller, uintptr_t handle, TrackedFil
   DllTrackInfo* pInfo = tracker_get_dlltrackinfo(caller);
   if (pInfo)
   {
-    CSingleLock lock(g_trackerLock);
+    std::unique_lock<CCriticalSection> lock(g_trackerLock);
     for (FileListIter it = pInfo->fileList.begin(); it != pInfo->fileList.end(); ++it)
     {
       TrackedFile* file = *it;
@@ -63,7 +65,7 @@ extern "C" void tracker_file_free_all(DllTrackInfo* pInfo)
 {
   if (!pInfo->fileList.empty())
   {
-    CSingleLock lock(g_trackerLock);
+    std::unique_lock<CCriticalSection> lock(g_trackerLock);
     CLog::Log(LOGDEBUG, "{0}: Detected open files: {1}", pInfo->pDll->GetFileName(), pInfo->fileList.size());
     for (FileListIter it = pInfo->fileList.begin(); it != pInfo->fileList.end(); ++it)
     {

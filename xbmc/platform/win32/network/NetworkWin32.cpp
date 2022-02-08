@@ -8,13 +8,13 @@
 
 #include "NetworkWin32.h"
 
-#include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include "platform/win32/WIN32Util.h"
 
 #include <errno.h>
+#include <mutex>
 
 #include <IcmpAPI.h>
 #include <Mstcpip.h>
@@ -128,7 +128,7 @@ void CNetworkWin32::CleanInterfaceList()
 
 std::vector<CNetworkInterface*>& CNetworkWin32::GetInterfaceList(void)
 {
-  CSingleLock lock (m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   if(m_netrefreshTimer.GetElapsedSeconds() >= 5.0f)
     queryInterfaceList();
 

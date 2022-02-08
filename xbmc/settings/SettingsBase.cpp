@@ -15,6 +15,8 @@
 #include "utils/Variant.h"
 #include "utils/XBMCTinyXML.h"
 
+#include <mutex>
+
 #define SETTINGS_XML_ROOT   "settings"
 
 CSettingsBase::CSettingsBase()
@@ -30,7 +32,7 @@ CSettingsBase::~CSettingsBase()
 
 bool CSettingsBase::Initialize()
 {
-  CSingleLock lock(m_critical);
+  std::unique_lock<CCriticalSection> lock(m_critical);
   if (m_initialized)
     return false;
 
@@ -133,7 +135,7 @@ void CSettingsBase::Unload()
 
 void CSettingsBase::Uninitialize()
 {
-  CSingleLock lock(m_critical);
+  std::unique_lock<CCriticalSection> lock(m_critical);
   if (!m_initialized)
     return;
 

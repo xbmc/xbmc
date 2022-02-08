@@ -15,6 +15,7 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#include <mutex>
 #include <utility>
 
 #if defined(TARGET_WINDOWS)
@@ -57,7 +58,7 @@ void CVFSAddonCache::Init()
   std::vector<AddonInfoPtr> addonInfos;
   CServiceBroker::GetAddonMgr().GetAddonInfos(addonInfos, true, ADDON_VFS);
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   for (const auto& addonInfo : addonInfos)
   {
     VFSEntryPtr vfs = std::make_shared<CVFSEntry>(addonInfo);
@@ -77,7 +78,7 @@ void CVFSAddonCache::Deinit()
 
 const std::vector<VFSEntryPtr> CVFSAddonCache::GetAddonInstances()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_addonsInstances;
 }
 
@@ -85,7 +86,7 @@ VFSEntryPtr CVFSAddonCache::GetAddonInstance(const std::string& strId)
 {
   VFSEntryPtr addon;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   const auto& itAddon = std::find_if(m_addonsInstances.begin(), m_addonsInstances.end(),
     [&strId](const VFSEntryPtr& addon)
@@ -125,7 +126,7 @@ void CVFSAddonCache::OnEvent(const AddonEvent& event)
 
 bool CVFSAddonCache::IsInUse(const std::string& id)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   const auto& itAddon = std::find_if(m_addonsInstances.begin(), m_addonsInstances.end(),
                                      [&id](const VFSEntryPtr& addon) { return addon->ID() == id; });
@@ -140,7 +141,7 @@ void CVFSAddonCache::Update(const std::string& id)
 
   // Stop used instance if present, otherwise the new becomes created on already created addon base one.
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
 
     const auto& itAddon =
         std::find_if(m_addonsInstances.begin(), m_addonsInstances.end(),
@@ -162,7 +163,7 @@ void CVFSAddonCache::Update(const std::string& id)
     if (!vfs->GetZeroconfType().empty())
       CZeroconfBrowser::GetInstance()->AddServiceType(vfs->GetZeroconfType());
 
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     m_addonsInstances.emplace_back(vfs);
   }
 }

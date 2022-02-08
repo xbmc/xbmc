@@ -14,10 +14,11 @@
 #include "cores/RetroPlayer/rendering/RenderContext.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
-#include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
+
+#include <mutex>
 
 extern "C"
 {
@@ -66,7 +67,7 @@ CRPProcessInfo* CRPProcessInfo::CreateInstance()
 {
   CRPProcessInfo* processInfo = nullptr;
 
-  CSingleLock lock(m_createSection);
+  std::unique_lock<CCriticalSection> lock(m_createSection);
 
   if (m_processControl != nullptr)
   {
@@ -90,7 +91,7 @@ void CRPProcessInfo::RegisterProcessControl(CreateRPProcessControl createFunc)
 {
   std::unique_ptr<CRPProcessInfo> processInfo(createFunc());
 
-  CSingleLock lock(m_createSection);
+  std::unique_lock<CCriticalSection> lock(m_createSection);
 
   if (processInfo)
   {
@@ -107,7 +108,7 @@ void CRPProcessInfo::RegisterProcessControl(CreateRPProcessControl createFunc)
 
 void CRPProcessInfo::RegisterRendererFactory(IRendererFactory* factory)
 {
-  CSingleLock lock(m_createSection);
+  std::unique_lock<CCriticalSection> lock(m_createSection);
 
   CLog::Log(LOGINFO, "RetroPlayer[RENDER]: Registering renderer factory for {}",
             factory->RenderSystemName());
@@ -123,7 +124,7 @@ std::string CRPProcessInfo::GetRenderSystemName(IRenderBufferPool* renderBufferP
 CRPBaseRenderer* CRPProcessInfo::CreateRenderer(IRenderBufferPool* renderBufferPool,
                                                 const CRenderSettings& renderSettings)
 {
-  CSingleLock lock(m_createSection);
+  std::unique_lock<CCriticalSection> lock(m_createSection);
 
   for (auto& rendererFactory : m_rendererFactories)
   {

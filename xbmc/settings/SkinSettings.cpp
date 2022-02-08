@@ -14,12 +14,12 @@
 #include "guilib/GUIComponent.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
 #include <memory>
+#include <mutex>
 #include <string>
 
 #define XML_SKINSETTINGS  "skinsettings"
@@ -96,7 +96,7 @@ bool CSkinSettings::Load(const TiXmlNode *settings)
     return true;
   }
 
-  CSingleLock lock(m_critical);
+  std::unique_lock<CCriticalSection> lock(m_critical);
   m_settings.clear();
   m_settings = ADDON::CSkinInfo::ParseSettings(rootElement);
 
@@ -115,7 +115,7 @@ bool CSkinSettings::Save(TiXmlNode *settings) const
 
 void CSkinSettings::Clear()
 {
-  CSingleLock lock(m_critical);
+  std::unique_lock<CCriticalSection> lock(m_critical);
   m_settings.clear();
 }
 
@@ -124,7 +124,7 @@ void CSkinSettings::MigrateSettings(const ADDON::SkinPtr& skin)
   if (skin == nullptr)
     return;
 
-  CSingleLock lock(m_critical);
+  std::unique_lock<CCriticalSection> lock(m_critical);
 
   bool settingsMigrated = false;
   const std::string& skinId = skin->ID();

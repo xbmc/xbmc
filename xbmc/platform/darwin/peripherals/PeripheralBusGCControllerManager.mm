@@ -9,13 +9,14 @@
 #import "PeripheralBusGCControllerManager.h"
 
 #include "peripherals/PeripheralTypes.h"
-#include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include "platform/darwin/peripherals/InputKey.h"
 #import "platform/darwin/peripherals/Input_Gamecontroller.h"
 #include "platform/darwin/peripherals/PeripheralBusGCController.h"
+
+#include <mutex>
 
 #pragma mark - objc implementation
 
@@ -65,14 +66,14 @@
 
 - (void)SetDigitalEvent:(kodi::addon::PeripheralEvent)event
 {
-  CSingleLock lock(m_eventMutex);
+  std::unique_lock<CCriticalSection> lock(m_eventMutex);
 
   m_digitalEvents.emplace_back(event);
 }
 
 - (void)SetAxisEvent:(kodi::addon::PeripheralEvent)event
 {
-  CSingleLock lock(m_eventMutex);
+  std::unique_lock<CCriticalSection> lock(m_eventMutex);
 
   m_axisEvents.emplace_back(event);
 }
@@ -82,7 +83,7 @@
 - (std::vector<kodi::addon::PeripheralEvent>)GetAxisEvents
 {
   std::vector<kodi::addon::PeripheralEvent> events;
-  CSingleLock lock(m_eventMutex);
+  std::unique_lock<CCriticalSection> lock(m_eventMutex);
 
   for (unsigned int i = 0; i < m_axisEvents.size(); i++)
     events.emplace_back(m_axisEvents[i]);
@@ -96,7 +97,7 @@
 {
   std::vector<kodi::addon::PeripheralEvent> events;
 
-  CSingleLock lock(m_eventMutex);
+  std::unique_lock<CCriticalSection> lock(m_eventMutex);
   // Only report a single event per button (avoids dropping rapid presses)
   std::vector<kodi::addon::PeripheralEvent> repeatButtons;
 

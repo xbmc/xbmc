@@ -8,8 +8,9 @@
 
 #include "BinaryAddonBase.h"
 
-#include "threads/SingleLock.h"
 #include "utils/log.h"
+
+#include <mutex>
 
 using namespace ADDON;
 
@@ -27,7 +28,7 @@ AddonDllPtr CBinaryAddonBase::GetAddon(IAddonInstanceHandler* handler)
     return nullptr;
   }
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   // If no 'm_activeAddon' is defined create it new.
   if (m_activeAddon == nullptr)
@@ -48,7 +49,7 @@ void CBinaryAddonBase::ReleaseAddon(IAddonInstanceHandler* handler)
     return;
   }
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   auto presentHandler = m_activeAddonHandlers.find(handler);
   if (presentHandler == m_activeAddonHandlers.end())
@@ -65,13 +66,13 @@ void CBinaryAddonBase::ReleaseAddon(IAddonInstanceHandler* handler)
 
 size_t CBinaryAddonBase::UsedInstanceCount() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_activeAddonHandlers.size();
 }
 
 AddonDllPtr CBinaryAddonBase::GetActiveAddon()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_activeAddon;
 }
 

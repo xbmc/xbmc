@@ -6,13 +6,16 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "FileItem.h"
 #include "MediaManager.h"
+
+#include "FileItem.h"
 #include "ServiceBroker.h"
+#include "URL.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/LocalizeStrings.h"
-#include "URL.h"
 #include "utils/URIUtils.h"
+
+#include <mutex>
 #ifdef TARGET_WINDOWS
 #include "platform/win32/WIN32Util.h"
 #include "utils/CharsetConverter.h"
@@ -38,7 +41,6 @@
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "threads/SingleLock.h"
 #include "utils/JobManager.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
@@ -154,13 +156,13 @@ bool CMediaManager::SaveSources()
 
 void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
 {
-  CSingleLock lock(m_CritSecStorageProvider);
+  std::unique_lock<CCriticalSection> lock(m_CritSecStorageProvider);
   m_platformStorage->GetLocalDrives(localDrives);
 }
 
 void CMediaManager::GetRemovableDrives(VECSOURCES &removableDrives)
 {
-  CSingleLock lock(m_CritSecStorageProvider);
+  std::unique_lock<CCriticalSection> lock(m_CritSecStorageProvider);
   if (m_platformStorage)
     m_platformStorage->GetRemovableDrives(removableDrives);
 }
@@ -318,7 +320,7 @@ void CMediaManager::RemoveAutoSource(const CMediaSource &share)
 
 std::string CMediaManager::TranslateDevicePath(const std::string& devicePath, bool bReturnAsDevice)
 {
-  CSingleLock waitLock(m_muAutoSource);
+  std::unique_lock<CCriticalSection> waitLock(m_muAutoSource);
   std::string strDevice = devicePath;
   // fallback for cdda://local/ and empty devicePath
 #ifdef HAS_DVD_DRIVE
@@ -349,7 +351,7 @@ bool CMediaManager::IsDiscInDrive(const std::string& devicePath)
 
   std::string strDevice = TranslateDevicePath(devicePath, false);
   std::map<std::string,CCdInfo*>::iterator it;
-  CSingleLock waitLock(m_muAutoSource);
+  std::unique_lock<CCriticalSection> waitLock(m_muAutoSource);
   it = m_mapCdInfo.find(strDevice);
   if(it != m_mapCdInfo.end())
     return true;
@@ -442,7 +444,7 @@ CCdInfo* CMediaManager::GetCdInfo(const std::string& devicePath)
   std::string strDevice = TranslateDevicePath(devicePath, false);
   std::map<std::string,CCdInfo*>::iterator it;
   {
-    CSingleLock waitLock(m_muAutoSource);
+    std::unique_lock<CCriticalSection> waitLock(m_muAutoSource);
     it = m_mapCdInfo.find(strDevice);
     if(it != m_mapCdInfo.end())
       return it->second;
@@ -453,7 +455,7 @@ CCdInfo* CMediaManager::GetCdInfo(const std::string& devicePath)
   pCdInfo = cdio.GetCdInfo((char*)strDevice.c_str());
   if(pCdInfo!=NULL)
   {
-    CSingleLock waitLock(m_muAutoSource);
+    std::unique_lock<CCriticalSection> waitLock(m_muAutoSource);
     m_mapCdInfo.insert(std::pair<std::string,CCdInfo*>(strDevice,pCdInfo));
   }
 
@@ -471,7 +473,7 @@ bool CMediaManager::RemoveCdInfo(const std::string& devicePath)
   std::string strDevice = TranslateDevicePath(devicePath, false);
 
   std::map<std::string,CCdInfo*>::iterator it;
-  CSingleLock waitLock(m_muAutoSource);
+  std::unique_lock<CCriticalSection> waitLock(m_muAutoSource);
   it = m_mapCdInfo.find(strDevice);
   if(it != m_mapCdInfo.end())
   {
@@ -575,7 +577,7 @@ std::string CMediaManager::GetDiscPath()
   return CServiceBroker::GetMediaManager().TranslateDevicePath("");
 #else
 
-  CSingleLock lock(m_CritSecStorageProvider);
+  std::unique_lock<CCriticalSection> lock(m_CritSecStorageProvider);
   VECSOURCES drives;
   m_platformStorage->GetRemovableDrives(drives);
   for(unsigned i = 0; i < drives.size(); ++i)
@@ -592,13 +594,13 @@ std::string CMediaManager::GetDiscPath()
 
 void CMediaManager::SetHasOpticalDrive(bool bstatus)
 {
-  CSingleLock waitLock(m_muAutoSource);
+  std::unique_lock<CCriticalSection> waitLock(m_muAutoSource);
   m_bhasoptical = bstatus;
 }
 
 bool CMediaManager::Eject(const std::string& mountpath)
 {
-  CSingleLock lock(m_CritSecStorageProvider);
+  std::unique_lock<CCriticalSection> lock(m_CritSecStorageProvider);
   return m_platformStorage->Eject(mountpath);
 }
 
@@ -666,7 +668,7 @@ void CMediaManager::ToggleTray(const char cDriveLetter)
 
 void CMediaManager::ProcessEvents()
 {
-  CSingleLock lock(m_CritSecStorageProvider);
+  std::unique_lock<CCriticalSection> lock(m_CritSecStorageProvider);
   if (m_platformStorage->PumpDriveChangeEvents(this))
   {
 #if defined(HAS_DVD_DRIVE) && defined(TARGET_DARWIN_OSX)
@@ -685,7 +687,7 @@ void CMediaManager::ProcessEvents()
 
 std::vector<std::string> CMediaManager::GetDiskUsage()
 {
-  CSingleLock lock(m_CritSecStorageProvider);
+  std::unique_lock<CCriticalSection> lock(m_CritSecStorageProvider);
   return m_platformStorage->GetDiskUsage();
 }
 

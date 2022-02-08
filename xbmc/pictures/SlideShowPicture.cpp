@@ -7,14 +7,16 @@
  */
 
 #include "SlideShowPicture.h"
+
 #include "ServiceBroker.h"
-#include "windowing/GraphicContext.h"
 #include "guilib/Texture.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "threads/SingleLock.h"
+#include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
+
+#include <mutex>
 
 #ifndef _USE_MATH_DEFINES
 #define _USE_MATH_DEFINES
@@ -69,7 +71,7 @@ CSlideShowPic::~CSlideShowPic()
 
 void CSlideShowPic::Close()
 {
-  CSingleLock lock(m_textureAccess);
+  std::unique_lock<CCriticalSection> lock(m_textureAccess);
   m_pImage.reset();
   m_bIsLoaded = false;
   m_bIsFinished = false;
@@ -84,7 +86,7 @@ void CSlideShowPic::Close()
 
 void CSlideShowPic::Reset(DISPLAY_EFFECT dispEffect, TRANSITION_EFFECT transEffect)
 {
-  CSingleLock lock(m_textureAccess);
+  std::unique_lock<CCriticalSection> lock(m_textureAccess);
   if (m_pImage)
     SetTexture_Internal(m_iSlideNumber, std::move(m_pImage), dispEffect, transEffect);
   else
@@ -105,7 +107,7 @@ void CSlideShowPic::SetTexture(int iSlideNumber,
                                DISPLAY_EFFECT dispEffect,
                                TRANSITION_EFFECT transEffect)
 {
-  CSingleLock lock(m_textureAccess);
+  std::unique_lock<CCriticalSection> lock(m_textureAccess);
   Close();
   SetTexture_Internal(iSlideNumber, std::move(pTexture), dispEffect, transEffect);
 }
@@ -115,7 +117,7 @@ void CSlideShowPic::SetTexture_Internal(int iSlideNumber,
                                         DISPLAY_EFFECT dispEffect,
                                         TRANSITION_EFFECT transEffect)
 {
-  CSingleLock lock(m_textureAccess);
+  std::unique_lock<CCriticalSection> lock(m_textureAccess);
   m_bPause = false;
   m_bNoEffect = false;
   m_bTransitionImmediately = false;
@@ -258,7 +260,7 @@ int CSlideShowPic::GetOriginalHeight()
 
 void CSlideShowPic::UpdateTexture(std::unique_ptr<CTexture> pTexture)
 {
-  CSingleLock lock(m_textureAccess);
+  std::unique_lock<CCriticalSection> lock(m_textureAccess);
   m_pImage = std::move(pTexture);
   m_fWidth = static_cast<float>(m_pImage->GetWidth());
   m_fHeight = static_cast<float>(m_pImage->GetHeight());
@@ -746,7 +748,7 @@ void CSlideShowPic::Move(float fDeltaX, float fDeltaY)
 
 void CSlideShowPic::Render()
 {
-  CSingleLock lock(m_textureAccess);
+  std::unique_lock<CCriticalSection> lock(m_textureAccess);
 
   Render(m_ax, m_ay, m_pImage.get(), (m_alpha << 24) | 0xFFFFFF);
 

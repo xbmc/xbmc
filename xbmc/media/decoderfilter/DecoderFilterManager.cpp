@@ -18,9 +18,10 @@
 #include "Util.h"
 #include "cores/VideoPlayer/DVDStreamInfo.h"
 #include "filesystem/File.h"
-#include "threads/SingleLock.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
+
+#include <mutex>
 
 static const char* TAG_ROOT = "decoderfilter";
 static const char* TAG_FILTER = "filter";
@@ -99,21 +100,21 @@ bool CDecoderFilter::Save(TiXmlNode *node) const
 
 bool CDecoderFilterManager::isValid(const std::string& name, const CDVDStreamInfo& streamInfo)
 {
-  CSingleLock lock(m_critical);
+  std::unique_lock<CCriticalSection> lock(m_critical);
   std::set<CDecoderFilter>::const_iterator filter(m_filters.find(name));
   return filter != m_filters.end() ? filter->isValid(streamInfo) : m_filters.empty();
 }
 
 void CDecoderFilterManager::add(const CDecoderFilter& filter)
 {
-  CSingleLock lock(m_critical);
+  std::unique_lock<CCriticalSection> lock(m_critical);
   std::pair<std::set<CDecoderFilter>::iterator, bool> res = m_filters.insert(filter);
   m_dirty = m_dirty || res.second;
 }
 
 bool CDecoderFilterManager::Load()
 {
-  CSingleLock lock(m_critical);
+  std::unique_lock<CCriticalSection> lock(m_critical);
 
   m_filters.clear();
 
@@ -151,7 +152,7 @@ bool CDecoderFilterManager::Load()
 
 bool CDecoderFilterManager::Save() const
 {
-  CSingleLock lock(m_critical);
+  std::unique_lock<CCriticalSection> lock(m_critical);
   if (!m_dirty || m_filters.empty())
     return true;
 

@@ -47,7 +47,6 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
-#include "threads/SingleLock.h"
 #include "utils/Archive.h"
 #include "utils/Crc32.h"
 #include "utils/FileExtensionProvider.h"
@@ -64,6 +63,7 @@
 
 #include <algorithm>
 #include <cstdlib>
+#include <mutex>
 
 using namespace KODI;
 using namespace XFILE;
@@ -2135,7 +2135,7 @@ void CFileItemList::SetIgnoreURLOptions(bool ignoreURLOptions)
 
 void CFileItemList::SetFastLookup(bool fastLookup)
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
 
   if (fastLookup && !m_fastLookup)
   { // generate the map
@@ -2153,7 +2153,7 @@ void CFileItemList::SetFastLookup(bool fastLookup)
 
 bool CFileItemList::Contains(const std::string& fileName) const
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
 
   if (m_fastLookup)
     return m_map.find(m_ignoreURLOptions ? CURL(fileName).GetWithoutOptions() : fileName) != m_map.end();
@@ -2170,7 +2170,7 @@ bool CFileItemList::Contains(const std::string& fileName) const
 
 void CFileItemList::Clear()
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
 
   ClearItems();
   m_sortDescription.sortBy = SortByNone;
@@ -2185,7 +2185,7 @@ void CFileItemList::Clear()
 
 void CFileItemList::ClearItems()
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
   // make sure we free the memory of the items (these are GUIControls which may have allocated resources)
   FreeMemory();
   for (unsigned int i = 0; i < m_items.size(); i++)
@@ -2199,7 +2199,7 @@ void CFileItemList::ClearItems()
 
 void CFileItemList::Add(CFileItemPtr pItem)
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
   if (m_fastLookup)
     m_map.insert(MAPFILEITEMSPAIR(m_ignoreURLOptions ? CURL(pItem->GetPath()).GetWithoutOptions() : pItem->GetPath(), pItem));
   m_items.emplace_back(std::move(pItem));
@@ -2207,7 +2207,7 @@ void CFileItemList::Add(CFileItemPtr pItem)
 
 void CFileItemList::Add(CFileItem&& item)
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
   auto ptr = std::make_shared<CFileItem>(std::move(item));
   if (m_fastLookup)
     m_map.insert(MAPFILEITEMSPAIR(m_ignoreURLOptions ? CURL(ptr->GetPath()).GetWithoutOptions() : ptr->GetPath(), ptr));
@@ -2216,7 +2216,7 @@ void CFileItemList::Add(CFileItem&& item)
 
 void CFileItemList::AddFront(const CFileItemPtr &pItem, int itemPosition)
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
 
   if (itemPosition >= 0)
   {
@@ -2234,7 +2234,7 @@ void CFileItemList::AddFront(const CFileItemPtr &pItem, int itemPosition)
 
 void CFileItemList::Remove(CFileItem* pItem)
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
 
   for (IVECFILEITEMS it = m_items.begin(); it != m_items.end(); ++it)
   {
@@ -2252,7 +2252,7 @@ void CFileItemList::Remove(CFileItem* pItem)
 
 void CFileItemList::Remove(int iItem)
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
 
   if (iItem >= 0 && iItem < Size())
   {
@@ -2267,7 +2267,7 @@ void CFileItemList::Remove(int iItem)
 
 void CFileItemList::Append(const CFileItemList& itemlist)
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
 
   for (int i = 0; i < itemlist.Size(); ++i)
     Add(itemlist[i]);
@@ -2275,7 +2275,7 @@ void CFileItemList::Append(const CFileItemList& itemlist)
 
 void CFileItemList::Assign(const CFileItemList& itemlist, bool append)
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
   if (!append)
     Clear();
   Append(itemlist);
@@ -2318,7 +2318,7 @@ bool CFileItemList::Copy(const CFileItemList& items, bool copyItems /* = true */
 
 CFileItemPtr CFileItemList::Get(int iItem)
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
 
   if (iItem > -1 && iItem < (int)m_items.size())
     return m_items[iItem];
@@ -2328,7 +2328,7 @@ CFileItemPtr CFileItemList::Get(int iItem)
 
 const CFileItemPtr CFileItemList::Get(int iItem) const
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
 
   if (iItem > -1 && iItem < (int)m_items.size())
     return m_items[iItem];
@@ -2338,7 +2338,7 @@ const CFileItemPtr CFileItemList::Get(int iItem) const
 
 CFileItemPtr CFileItemList::Get(const std::string& strPath)
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
 
   if (m_fastLookup)
   {
@@ -2361,7 +2361,7 @@ CFileItemPtr CFileItemList::Get(const std::string& strPath)
 
 const CFileItemPtr CFileItemList::Get(const std::string& strPath) const
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
 
   if (m_fastLookup)
   {
@@ -2384,31 +2384,31 @@ const CFileItemPtr CFileItemList::Get(const std::string& strPath) const
 
 int CFileItemList::Size() const
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
   return (int)m_items.size();
 }
 
 bool CFileItemList::IsEmpty() const
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
   return m_items.empty();
 }
 
 void CFileItemList::Reserve(size_t iCount)
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
   m_items.reserve(iCount);
 }
 
 void CFileItemList::Sort(FILEITEMLISTCOMPARISONFUNC func)
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
   std::stable_sort(m_items.begin(), m_items.end(), func);
 }
 
 void CFileItemList::FillSortFields(FILEITEMFILLFUNC func)
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
   std::for_each(m_items.begin(), m_items.end(), func);
 }
 
@@ -2475,13 +2475,13 @@ void CFileItemList::Sort(SortDescription sortDescription)
 
 void CFileItemList::Randomize()
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
   KODI::UTILS::RandomShuffle(m_items.begin(), m_items.end());
 }
 
 void CFileItemList::Archive(CArchive& ar)
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
   if (ar.IsStoring())
   {
     CFileItem::Archive(ar);
@@ -2605,7 +2605,7 @@ void CFileItemList::Archive(CArchive& ar)
 
 void CFileItemList::FillInDefaultIcons()
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
   for (int i = 0; i < (int)m_items.size(); ++i)
   {
     CFileItemPtr pItem = m_items[i];
@@ -2615,7 +2615,7 @@ void CFileItemList::FillInDefaultIcons()
 
 int CFileItemList::GetFolderCount() const
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
   int nFolderCount = 0;
   for (int i = 0; i < (int)m_items.size(); i++)
   {
@@ -2629,7 +2629,7 @@ int CFileItemList::GetFolderCount() const
 
 int CFileItemList::GetObjectCount() const
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
 
   int numObjects = (int)m_items.size();
   if (numObjects && m_items[0]->IsParentFolder())
@@ -2640,7 +2640,7 @@ int CFileItemList::GetObjectCount() const
 
 int CFileItemList::GetFileCount() const
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
   int nFileCount = 0;
   for (int i = 0; i < (int)m_items.size(); i++)
   {
@@ -2654,7 +2654,7 @@ int CFileItemList::GetFileCount() const
 
 int CFileItemList::GetSelectedCount() const
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
   int count = 0;
   for (int i = 0; i < (int)m_items.size(); i++)
   {
@@ -2668,7 +2668,7 @@ int CFileItemList::GetSelectedCount() const
 
 void CFileItemList::FilterCueItems()
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
   // Handle .CUE sheet files...
   std::vector<std::string> itemstodelete;
   for (int i = 0; i < (int)m_items.size(); i++)
@@ -2759,14 +2759,14 @@ void CFileItemList::FilterCueItems()
 // Remove the extensions from the filenames
 void CFileItemList::RemoveExtensions()
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
   for (int i = 0; i < Size(); ++i)
     m_items[i]->RemoveExtension();
 }
 
 void CFileItemList::Stack(bool stackFiles /* = true */)
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
 
   // not allowed here
   if (IsVirtualDirectoryRoot() ||
@@ -3234,7 +3234,7 @@ std::string CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */, b
         StringUtils::Replace(folderThumb1, strFileName, name + ext);
         if (CFile::Exists(folderThumb1)) // folder.JPG
           return folderThumb1;
-        
+
         folderThumb1 = folderThumb;
         std::string firstletter = name.substr(0, 1);
         StringUtils::ToUpper(firstletter);
@@ -3242,7 +3242,7 @@ std::string CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */, b
         StringUtils::Replace(folderThumb1, strFileName, name + ext);
         if (CFile::Exists(folderThumb1)) // Folder.JPG
           return folderThumb1;
-        
+
         folderThumb1 = folderThumb;
         StringUtils::ToLower(ext);
         StringUtils::Replace(folderThumb1, strFileName, name + ext);
@@ -3688,7 +3688,7 @@ bool CFileItemList::UpdateItem(const CFileItem *item)
   if (!item)
     return false;
 
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
   for (unsigned int i = 0; i < m_items.size(); i++)
   {
     CFileItemPtr pItem = m_items[i];

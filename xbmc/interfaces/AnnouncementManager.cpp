@@ -19,6 +19,7 @@
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
 
+#include <mutex>
 #include <stdio.h>
 
 #define LOOKUP_PROPERTY "database-lookup"
@@ -46,7 +47,7 @@ void CAnnouncementManager::Deinitialize()
   m_bStop = true;
   m_queueEvent.Set();
   StopThread();
-  CSingleLock lock (m_announcersCritSection);
+  std::unique_lock<CCriticalSection> lock(m_announcersCritSection);
   m_announcers.clear();
 }
 
@@ -55,7 +56,7 @@ void CAnnouncementManager::AddAnnouncer(IAnnouncer *listener)
   if (!listener)
     return;
 
-  CSingleLock lock (m_announcersCritSection);
+  std::unique_lock<CCriticalSection> lock(m_announcersCritSection);
   m_announcers.push_back(listener);
 }
 
@@ -64,7 +65,7 @@ void CAnnouncementManager::RemoveAnnouncer(IAnnouncer *listener)
   if (!listener)
     return;
 
-  CSingleLock lock (m_announcersCritSection);
+  std::unique_lock<CCriticalSection> lock(m_announcersCritSection);
   for (unsigned int i = 0; i < m_announcers.size(); i++)
   {
     if (m_announcers[i] == listener)
@@ -137,7 +138,7 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag,
     announcement.item = CFileItemPtr(new CFileItem(*item));
 
   {
-    CSingleLock lock (m_queueCritSection);
+    std::unique_lock<CCriticalSection> lock(m_queueCritSection);
     m_announcementQueue.push_back(announcement);
   }
   m_queueEvent.Set();
@@ -150,7 +151,7 @@ void CAnnouncementManager::DoAnnounce(AnnouncementFlag flag,
 {
   CLog::Log(LOGDEBUG, LOGANNOUNCE, "CAnnouncementManager - Announcement: {} from {}", message, sender);
 
-  CSingleLock lock(m_announcersCritSection);
+  std::unique_lock<CCriticalSection> lock(m_announcersCritSection);
 
   // Make a copy of announcers. They may be removed or even remove themselves during execution of IAnnouncer::Announce()!
 
@@ -316,7 +317,7 @@ void CAnnouncementManager::Process()
 
   while (!m_bStop)
   {
-    CSingleLock lock (m_queueCritSection);
+    std::unique_lock<CCriticalSection> lock(m_queueCritSection);
     if (!m_announcementQueue.empty())
     {
       auto announcement = m_announcementQueue.front();

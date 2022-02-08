@@ -9,9 +9,9 @@
 #include "threads/Event.h"
 #include "threads/IRunnable.h"
 #include "threads/SharedSection.h"
-#include "threads/SingleLock.h"
 #include "threads/test/TestHelpers.h"
 
+#include <mutex>
 #include <stdio.h>
 
 using namespace std::chrono_literals;
@@ -53,8 +53,8 @@ TEST(TestCritSection, General)
 {
   CCriticalSection sec;
 
-  CSingleLock l1(sec);
-  CSingleLock l2(sec);
+  std::unique_lock<CCriticalSection> l1(sec);
+  std::unique_lock<CCriticalSection> l2(sec);
 }
 
 TEST(TestSharedSection, General)

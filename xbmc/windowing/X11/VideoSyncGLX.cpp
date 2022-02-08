@@ -8,13 +8,13 @@
 
 #include "VideoSyncGLX.h"
 
-#include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/X11/WinSystemX11GLContext.h"
 
+#include <mutex>
 #include <sstream>
 
 #include <X11/extensions/Xrandr.h>
@@ -41,7 +41,7 @@ void CVideoSyncGLX::OnResetDisplay()
 
 bool CVideoSyncGLX::Setup(PUPDATECLOCK func)
 {
-  CSingleLock lock(m_winSystem.GetGfxContext());
+  std::unique_lock<CCriticalSection> lock(m_winSystem.GetGfxContext());
 
   m_glXWaitVideoSyncSGI = NULL;
   m_glXGetVideoSyncSGI = NULL;
@@ -246,7 +246,7 @@ void CVideoSyncGLX::Cleanup()
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: Cleaning up GLX");
 
   {
-    CSingleLock lock(m_winSystem.GetGfxContext());
+    std::unique_lock<CCriticalSection> lock(m_winSystem.GetGfxContext());
 
     if (m_vInfo)
     {

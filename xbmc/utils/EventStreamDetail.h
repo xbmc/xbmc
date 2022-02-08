@@ -9,7 +9,8 @@
 #pragma once
 
 #include "threads/CriticalSection.h"
-#include "threads/SingleLock.h"
+
+#include <mutex>
 
 namespace detail
 {
@@ -48,21 +49,21 @@ CSubscription<Event, Owner>::CSubscription(Owner* owner, Fn fn)
 template<typename Event, typename Owner>
 bool CSubscription<Event, Owner>::IsOwnedBy(void* obj)
 {
-  CSingleLock lock(m_criticalSection);
+  std::unique_lock<CCriticalSection> lock(m_criticalSection);
   return obj != nullptr && obj == m_owner;
 }
 
 template<typename Event, typename Owner>
 void CSubscription<Event, Owner>::Cancel()
 {
-  CSingleLock lock(m_criticalSection);
+  std::unique_lock<CCriticalSection> lock(m_criticalSection);
   m_owner = nullptr;
 }
 
 template<typename Event, typename Owner>
 void CSubscription<Event, Owner>::HandleEvent(const Event& event)
 {
-  CSingleLock lock(m_criticalSection);
+  std::unique_lock<CCriticalSection> lock(m_criticalSection);
   if (m_owner)
     (m_owner->*m_eventHandler)(event);
 }

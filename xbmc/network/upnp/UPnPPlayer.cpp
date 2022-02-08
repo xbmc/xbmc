@@ -31,6 +31,8 @@
 #include "video/VideoThumbLoader.h"
 #include "windowing/WinSystem.h"
 
+#include <mutex>
+
 #include <Platinum/Source/Devices/MediaRenderer/PltMediaController.h>
 #include <Platinum/Source/Devices/MediaServer/PltDidl.h>
 #include <Platinum/Source/Platinum/Platinum.h>
@@ -95,7 +97,7 @@ public:
 
   void OnGetTransportInfoResult(NPT_Result res, PLT_DeviceDataReference& device, PLT_TransportInfo* info, void* userdata) override
   {
-    CSingleLock lock(m_section);
+    std::unique_lock<CCriticalSection> lock(m_section);
 
     if(NPT_FAILED(res))
     {
@@ -122,7 +124,7 @@ public:
 
   void OnGetPositionInfoResult(NPT_Result res, PLT_DeviceDataReference& device, PLT_PositionInfo* info, void* userdata) override
   {
-    CSingleLock lock(m_section);
+    std::unique_lock<CCriticalSection> lock(m_section);
 
     if(NPT_FAILED(res) || info == NULL)
     {
@@ -292,7 +294,8 @@ int CUPnPPlayer::PlayFile(const CFileItem& file,
                                                      , m_delegate), failed_waitplaying);
 
 
-    { CSingleLock lock(m_delegate->m_section);
+    {
+      std::unique_lock<CCriticalSection> lock(m_delegate->m_section);
       if(m_delegate->m_trainfo.cur_transport_state == "PLAYING"
       || m_delegate->m_trainfo.cur_transport_state == "PAUSED_PLAYBACK")
         break;
@@ -364,7 +367,8 @@ bool CUPnPPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
     NPT_CHECK_LABEL_SEVERE(WaitOnEvent(m_delegate->m_traevnt, timeout, dialog), failed);
 
     /* make sure the attached player is actually playing */
-    { CSingleLock lock(m_delegate->m_section);
+    {
+      std::unique_lock<CCriticalSection> lock(m_delegate->m_section);
       if(m_delegate->m_trainfo.cur_transport_state != "PLAYING"
       && m_delegate->m_trainfo.cur_transport_state != "PAUSED_PLAYBACK")
         goto failed;

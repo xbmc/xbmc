@@ -9,11 +9,11 @@
 #include "AndroidJoystickState.h"
 
 #include "AndroidJoystickTranslator.h"
-#include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>
+#include <mutex>
 #include <utility>
 
 #include <android/input.h>
@@ -269,7 +269,7 @@ void CAndroidJoystickState::GetEvents(std::vector<kodi::addon::PeripheralEvent>&
 
 void CAndroidJoystickState::GetButtonEvents(std::vector<kodi::addon::PeripheralEvent>& events)
 {
-  CSingleLock lock(m_eventMutex);
+  std::unique_lock<CCriticalSection> lock(m_eventMutex);
 
   // Only report a single event per button (avoids dropping rapid presses)
   std::vector<kodi::addon::PeripheralEvent> repeatButtons;
@@ -304,7 +304,7 @@ bool CAndroidJoystickState::SetButtonValue(int axisId, JOYSTICK_STATE_BUTTON but
   if (!GetAxesIndex({ axisId }, m_buttons, buttonIndex) || buttonIndex >= GetButtonCount())
     return false;
 
-  CSingleLock lock(m_eventMutex);
+  std::unique_lock<CCriticalSection> lock(m_eventMutex);
 
   m_digitalEvents.emplace_back(m_deviceId, buttonIndex, buttonValue);
 

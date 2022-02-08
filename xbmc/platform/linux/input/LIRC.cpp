@@ -14,7 +14,10 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "threads/SingleLock.h"
 #include "utils/log.h"
+
+#include <mutex>
 
 #include <fcntl.h>
 #include <lirc/lirc_client.h>
@@ -30,7 +33,7 @@ CLirc::CLirc() : CThread("Lirc")
 CLirc::~CLirc()
 {
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     if (m_fd > 0)
       shutdown(m_fd, SHUT_RDWR);
   }
@@ -67,7 +70,7 @@ void CLirc::Process()
   while (!m_bStop)
   {
     {
-      CSingleLock lock(m_critSection);
+      std::unique_lock<CCriticalSection> lock(m_critSection);
 
       // lirc_client is buggy because it does not close socket, if connect fails
       // work around by checking if daemon is running before calling lirc_init

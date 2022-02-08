@@ -30,6 +30,7 @@
 
 #include <ctime>
 #include <memory>
+#include <mutex>
 #include <stdexcept>
 #include <string>
 
@@ -331,7 +332,7 @@ void CPVRTimerInfoTag::Serialize(CVariant& value) const
 
 void CPVRTimerInfoTag::UpdateSummary()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   m_strSummary.clear();
 
   const std::string startDate(StartAsLocalTime().GetAsLocalizedDate());
@@ -379,7 +380,7 @@ void CPVRTimerInfoTag::SetTimerType(const std::shared_ptr<CPVRTimerType>& type)
   if (!type)
     throw std::logic_error("CPVRTimerInfoTag::SetTimerType - Attempt to set 'null' timer type!");
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   m_timerType = type;
 
   if (m_iClientIndex == PVR_TIMER_NO_CLIENT_INDEX)
@@ -398,7 +399,7 @@ void CPVRTimerInfoTag::SetTimerType(const std::shared_ptr<CPVRTimerType>& type)
 std::string CPVRTimerInfoTag::GetStatus(bool bRadio) const
 {
   std::string strReturn = g_localizeStrings.Get(305);
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   if (URIUtils::PathEquals(m_strFileNameAndPath, CPVRTimersPath::PATH_ADDTIMER))
     strReturn = g_localizeStrings.Get(19026);
   else if (m_state == PVR_TIMER_STATE_CANCELLED || m_state == PVR_TIMER_STATE_ABORTED)
@@ -442,7 +443,7 @@ std::string CPVRTimerInfoTag::GetStatus(bool bRadio) const
  */
 std::string CPVRTimerInfoTag::GetTypeAsString() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_timerType->GetDescription();
 }
 
@@ -527,7 +528,7 @@ std::string CPVRTimerInfoTag::GetWeekdaysString(unsigned int iWeekdays, bool bEp
 
 std::string CPVRTimerInfoTag::GetWeekdaysString() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return GetWeekdaysString(m_iWeekdays, m_timerType->IsEpgBased(), false);
 }
 
@@ -578,7 +579,7 @@ bool CPVRTimerInfoTag::DeleteFromDatabase()
 
 bool CPVRTimerInfoTag::UpdateEntry(const std::shared_ptr<CPVRTimerInfoTag>& tag)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   m_iClientId = tag->m_iClientId;
   m_iClientIndex = tag->m_iClientIndex;
@@ -1167,7 +1168,7 @@ void CPVRTimerInfoTag::SetFirstDayFromLocalTime(const CDateTime& firstDay)
 
 std::string CPVRTimerInfoTag::GetNotificationText() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   int stringID = 0;
 
@@ -1211,7 +1212,7 @@ std::string CPVRTimerInfoTag::GetNotificationText() const
 
 std::string CPVRTimerInfoTag::GetDeletedNotificationText() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   int stringID = 0;
   // The state in this case is the state the timer had when it was last seen
@@ -1233,14 +1234,14 @@ std::string CPVRTimerInfoTag::GetDeletedNotificationText() const
 
 void CPVRTimerInfoTag::SetEpgInfoTag(const std::shared_ptr<CPVREpgInfoTag>& tag)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   m_epgTag = tag;
   m_bProbedEpgTag = true;
 }
 
 void CPVRTimerInfoTag::UpdateEpgInfoTag()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   m_epgTag.reset();
   m_bProbedEpgTag = false;
   GetEpgInfoTag();
@@ -1255,7 +1256,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVRTimerInfoTag::GetEpgInfoTag(bool bCreate /* 
     {
       channel = CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio)->GetGroupAll()->GetByUniqueID(m_iClientChannelUid, m_iClientId);
 
-      CSingleLock lock(m_critSection);
+      std::unique_lock<CCriticalSection> lock(m_critSection);
       m_channel = channel;
     }
 
@@ -1264,7 +1265,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVRTimerInfoTag::GetEpgInfoTag(bool bCreate /* 
       const std::shared_ptr<CPVREpg> epg(channel->GetEPG());
       if (epg)
       {
-        CSingleLock lock(m_critSection);
+        std::unique_lock<CCriticalSection> lock(m_critSection);
         if (!m_epgTag && m_iEpgUid != EPG_TAG_INVALID_UID)
         {
           m_epgTag = epg->GetTagByBroadcastId(m_iEpgUid);
@@ -1308,7 +1309,7 @@ std::shared_ptr<CPVRChannel> CPVRTimerInfoTag::UpdateChannel()
 {
   const std::shared_ptr<CPVRChannel> channel(CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio)->GetGroupAll()->GetByUniqueID(m_iClientChannelUid, m_iClientId));
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   m_channel = channel;
   return m_channel;
 }

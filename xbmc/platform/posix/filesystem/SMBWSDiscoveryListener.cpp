@@ -19,6 +19,7 @@
 
 #include <array>
 #include <chrono>
+#include <mutex>
 #include <stdio.h>
 #include <string>
 #include <utility>
@@ -319,7 +320,7 @@ bool CWSDiscoveryListenerUDP::DispatchCommand()
 {
   Command sendCommand;
   {
-    CSingleLock lock(crit_commandqueue);
+    std::unique_lock<CCriticalSection> lock(crit_commandqueue);
     if (m_commandbuffer.size() <= 0)
       return false;
 
@@ -352,7 +353,7 @@ void CWSDiscoveryListenerUDP::AddCommand(const std::string& message,
                                          const std::string& extraparameter /* = "" */)
 {
 
-  CSingleLock lock(crit_commandqueue);
+  std::unique_lock<CCriticalSection> lock(crit_commandqueue);
 
   std::string msg{};
 
@@ -444,7 +445,7 @@ void CWSDiscoveryListenerUDP::ParseBuffer(const std::string& buffer)
   }
 
   {
-    CSingleLock lock(crit_wsdqueue);
+    std::unique_lock<CCriticalSection> lock(crit_wsdqueue);
     auto searchitem = std::find_if(m_vecWSDInfo.begin(), m_vecWSDInfo.end(),
                                    [info](const wsd_req_info& item) { return item == info; });
 
