@@ -146,9 +146,8 @@ void CNetworkWin32::queryInterfaceList()
   if (GetAdaptersAddresses(AF_INET, flags, nullptr, nullptr, &ulOutBufLen) != ERROR_BUFFER_OVERFLOW)
     return;
 
-  PIP_ADAPTER_ADDRESSES adapterAddresses = static_cast<PIP_ADAPTER_ADDRESSES>(malloc(ulOutBufLen));
-  if (adapterAddresses == nullptr)
-    return;
+  m_adapterAddresses.resize(ulOutBufLen);
+  auto adapterAddresses = reinterpret_cast<PIP_ADAPTER_ADDRESSES>(m_adapterAddresses.data());
 
   if (GetAdaptersAddresses(AF_INET, flags, nullptr, adapterAddresses, &ulOutBufLen) == NO_ERROR)
   {
@@ -173,9 +172,8 @@ std::vector<std::string> CNetworkWin32::GetNameServers(void)
   if (GetAdaptersAddresses(AF_UNSPEC, flags, nullptr, nullptr, &ulOutBufLen) != ERROR_BUFFER_OVERFLOW)
     return result;
 
-  PIP_ADAPTER_ADDRESSES adapterAddresses = static_cast<PIP_ADAPTER_ADDRESSES>(malloc(ulOutBufLen));
-  if (adapterAddresses == nullptr)
-    return result;
+  std::vector<uint8_t> buffer(ulOutBufLen);
+  auto adapterAddresses = reinterpret_cast<PIP_ADAPTER_ADDRESSES>(buffer.data());
 
   if (GetAdaptersAddresses(AF_UNSPEC, flags, nullptr, adapterAddresses, &ulOutBufLen) == NO_ERROR)
   {
@@ -191,7 +189,6 @@ std::vector<std::string> CNetworkWin32::GetNameServers(void)
       }
     }
   }
-  free(adapterAddresses);
 
   return result;
 }
