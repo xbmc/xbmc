@@ -16,6 +16,7 @@
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
+#include <shared_mutex>
 #include <sstream>
 #include <utility>
 
@@ -453,7 +454,7 @@ bool CSettingList::Deserialize(const TiXmlNode *node, bool update /* = false */)
 
 SettingType CSettingList::GetElementType() const
 {
-  CSharedLock lock(m_critical);
+  std::shared_lock<CSharedSection> lock(m_critical);
 
   if (m_definition == nullptr)
     return SettingType::Unknown;
@@ -1063,7 +1064,7 @@ void CSettingInt::SetDefault(int value)
 
 SettingOptionsType CSettingInt::GetOptionsType() const
 {
-  CSharedLock lock(m_critical);
+  std::shared_lock<CSharedSection> lock(m_critical);
   if (!m_translatableOptions.empty())
     return SettingOptionsType::StaticTranslatable;
   if (!m_options.empty())
@@ -1268,7 +1269,7 @@ std::string CSettingNumber::ToString() const
 bool CSettingNumber::Equals(const std::string &value) const
 {
   double dValue;
-  CSharedLock lock(m_critical);
+  std::shared_lock<CSharedSection> lock(m_critical);
   return (fromString(value, dValue) && m_value == dValue);
 }
 
@@ -1283,7 +1284,7 @@ bool CSettingNumber::CheckValidity(const std::string &value) const
 
 bool CSettingNumber::CheckValidity(double value) const
 {
-  CSharedLock lock(m_critical);
+  std::shared_lock<CSharedSection> lock(m_critical);
   if (m_min != m_max &&
      (value < m_min || value > m_max))
     return false;
@@ -1493,7 +1494,7 @@ bool CSettingString::Deserialize(const TiXmlNode *node, bool update /* = false *
 
 bool CSettingString::CheckValidity(const std::string &value) const
 {
-  CSharedLock lock(m_critical);
+  std::shared_lock<CSharedSection> lock(m_critical);
   if (!m_allowEmpty && value.empty())
     return false;
 
@@ -1543,7 +1544,7 @@ bool CSettingString::SetValue(const std::string &value)
 
 void CSettingString::SetDefault(const std::string &value)
 {
-  CSharedLock lock(m_critical);
+  std::shared_lock<CSharedSection> lock(m_critical);
 
   m_default = value;
   if (!m_changed)
@@ -1552,7 +1553,7 @@ void CSettingString::SetDefault(const std::string &value)
 
 SettingOptionsType CSettingString::GetOptionsType() const
 {
-  CSharedLock lock(m_critical);
+  std::shared_lock<CSharedSection> lock(m_critical);
   if (!m_translatableOptions.empty())
     return SettingOptionsType::StaticTranslatable;
   if (!m_options.empty())
@@ -1669,7 +1670,7 @@ void CSettingAction::MergeDetails(const CSetting& other)
 
 bool CSettingAction::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {
-  CSharedLock lock(m_critical);
+  std::shared_lock<CSharedSection> lock(m_critical);
 
   if (!CSetting::Deserialize(node, update))
     return false;

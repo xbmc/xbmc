@@ -24,6 +24,7 @@
 
 #include <algorithm>
 #include <mutex>
+#include <shared_mutex>
 #include <string.h>
 #include <utility>
 
@@ -362,7 +363,7 @@ bool CPeripheralAddon::PerformDeviceScan(PeripheralScanResults& results)
   PERIPHERAL_INFO* pScanResults;
   PERIPHERAL_ERROR retVal;
 
-  CSharedLock lock(m_dllSection);
+  std::shared_lock<CSharedSection> lock(m_dllSection);
 
   if (!m_ifc.peripheral->toAddon->perform_device_scan)
     return false;
@@ -411,7 +412,7 @@ bool CPeripheralAddon::ProcessEvents(void)
   if (!m_bProvidesJoysticks)
     return false;
 
-  CSharedLock lock(m_dllSection);
+  std::shared_lock<CSharedSection> lock(m_dllSection);
 
   if (!m_ifc.peripheral->toAddon->get_events)
     return false;
@@ -490,7 +491,7 @@ bool CPeripheralAddon::SendRumbleEvent(unsigned int peripheralIndex,
   if (!m_bProvidesJoysticks)
     return false;
 
-  CSharedLock lock(m_dllSection);
+  std::shared_lock<CSharedSection> lock(m_dllSection);
 
   if (!m_ifc.peripheral->toAddon->send_event)
     return false;
@@ -510,7 +511,7 @@ bool CPeripheralAddon::GetJoystickProperties(unsigned int index, CPeripheralJoys
   if (!m_bProvidesJoysticks)
     return false;
 
-  CSharedLock lock(m_dllSection);
+  std::shared_lock<CSharedSection> lock(m_dllSection);
 
   if (!m_ifc.peripheral->toAddon->get_joystick_info)
     return false;
@@ -542,7 +543,7 @@ bool CPeripheralAddon::GetFeatures(const CPeripheral* device,
   if (!m_bProvidesButtonMaps)
     return false;
 
-  CSharedLock lock(m_dllSection);
+  std::shared_lock<CSharedSection> lock(m_dllSection);
 
   if (!m_ifc.peripheral->toAddon->get_features)
     return false;
@@ -589,7 +590,7 @@ bool CPeripheralAddon::MapFeature(const CPeripheral* device,
   if (!m_bProvidesButtonMaps)
     return false;
 
-  CSharedLock lock(m_dllSection);
+  std::shared_lock<CSharedSection> lock(m_dllSection);
 
   if (!m_ifc.peripheral->toAddon->map_features)
     return false;
@@ -620,7 +621,7 @@ bool CPeripheralAddon::GetIgnoredPrimitives(const CPeripheral* device, Primitive
   if (!m_bProvidesButtonMaps)
     return false;
 
-  CSharedLock lock(m_dllSection);
+  std::shared_lock<CSharedSection> lock(m_dllSection);
 
   if (!m_ifc.peripheral->toAddon->get_ignored_primitives)
     return false;
@@ -661,7 +662,7 @@ bool CPeripheralAddon::SetIgnoredPrimitives(const CPeripheral* device,
   if (!m_bProvidesButtonMaps)
     return false;
 
-  CSharedLock lock(m_dllSection);
+  std::shared_lock<CSharedSection> lock(m_dllSection);
 
   if (!m_ifc.peripheral->toAddon->set_ignored_primitives)
     return false;
@@ -693,7 +694,7 @@ void CPeripheralAddon::SaveButtonMap(const CPeripheral* device)
   if (!m_bProvidesButtonMaps)
     return;
 
-  CSharedLock lock(m_dllSection);
+  std::shared_lock<CSharedSection> lock(m_dllSection);
 
   if (!m_ifc.peripheral->toAddon->save_button_map)
     return;
@@ -717,7 +718,7 @@ void CPeripheralAddon::RevertButtonMap(const CPeripheral* device)
   if (!m_bProvidesButtonMaps)
     return;
 
-  CSharedLock lock(m_dllSection);
+  std::shared_lock<CSharedSection> lock(m_dllSection);
 
   if (!m_ifc.peripheral->toAddon->revert_button_map)
     return;
@@ -761,7 +762,7 @@ void CPeripheralAddon::PowerOffJoystick(unsigned int index)
   if (!SupportsFeature(FEATURE_POWER_OFF))
     return;
 
-  CSharedLock lock(m_dllSection);
+  std::shared_lock<CSharedSection> lock(m_dllSection);
 
   if (!m_ifc.peripheral->toAddon->power_off_joystick)
     return;
