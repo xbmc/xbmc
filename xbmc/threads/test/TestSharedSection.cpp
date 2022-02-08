@@ -140,7 +140,7 @@ TEST(TestSharedSection, TwoCase)
 
     EXPECT_TRUE(!l2.haslock);
 
-    lock.Leave();
+    lock.unlock();
 
     EXPECT_TRUE(waitForWaiters(event, 1, 10000ms));
     std::this_thread::sleep_for(10ms);
