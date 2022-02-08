@@ -11,9 +11,9 @@
 #include "DllLoader.h"
 #include "dll_tracker_file.h"
 #include "dll_tracker_library.h"
-#include "threads/SingleLock.h"
 #include "utils/log.h"
 
+#include <mutex>
 #include <stdlib.h>
 
 #ifdef _cplusplus
@@ -30,13 +30,13 @@ void tracker_dll_add(DllLoader* pDll)
   trackInfo->pDll = pDll;
   trackInfo->lMinAddr = 0;
   trackInfo->lMaxAddr = 0;
-  CSingleLock locktd(g_trackerLock);
+  std::unique_lock<CCriticalSection> locktd(g_trackerLock);
   g_trackedDlls.push_back(trackInfo);
 }
 
 void tracker_dll_free(DllLoader* pDll)
 {
-  CSingleLock locktd(g_trackerLock);
+  std::unique_lock<CCriticalSection> locktd(g_trackerLock);
   for (TrackedDllsIter it = g_trackedDlls.begin(); it != g_trackedDlls.end();)
   {
     // NOTE: This code assumes that the same dll pointer can be in more than one
@@ -69,7 +69,7 @@ void tracker_dll_free(DllLoader* pDll)
 
 void tracker_dll_set_addr(const DllLoader* pDll, uintptr_t min, uintptr_t max)
 {
-  CSingleLock locktd(g_trackerLock);
+  std::unique_lock<CCriticalSection> locktd(g_trackerLock);
   for (TrackedDllsIter it = g_trackedDlls.begin(); it != g_trackedDlls.end(); ++it)
   {
     if ((*it)->pDll == pDll)
@@ -91,7 +91,7 @@ const char* tracker_getdllname(uintptr_t caller)
 
 DllTrackInfo* tracker_get_dlltrackinfo(uintptr_t caller)
 {
-  CSingleLock locktd(g_trackerLock);
+  std::unique_lock<CCriticalSection> locktd(g_trackerLock);
   for (TrackedDllsIter it = g_trackedDlls.begin(); it != g_trackedDlls.end(); ++it)
   {
     if (caller >= (*it)->lMinAddr && caller <= (*it)->lMaxAddr)
@@ -116,7 +116,7 @@ DllTrackInfo* tracker_get_dlltrackinfo(uintptr_t caller)
 
 DllTrackInfo* tracker_get_dlltrackinfo_byobject(const DllLoader* pDll)
 {
-  CSingleLock locktd(g_trackerLock);
+  std::unique_lock<CCriticalSection> locktd(g_trackerLock);
   for (TrackedDllsIter it = g_trackedDlls.begin(); it != g_trackedDlls.end(); ++it)
   {
     if ((*it)->pDll == pDll)
@@ -129,7 +129,7 @@ DllTrackInfo* tracker_get_dlltrackinfo_byobject(const DllLoader* pDll)
 
 void tracker_dll_data_track(const DllLoader* pDll, uintptr_t addr)
 {
-  CSingleLock locktd(g_trackerLock);
+  std::unique_lock<CCriticalSection> locktd(g_trackerLock);
   for (TrackedDllsIter it = g_trackedDlls.begin(); it != g_trackedDlls.end(); ++it)
   {
     if (pDll == (*it)->pDll)

@@ -19,6 +19,8 @@
 #include "rendering/dx/RenderContext.h"
 #include "utils/log.h"
 
+#include <mutex>
+
 #include <Windows.h>
 #include <d3d11_4.h>
 #include <dxgi1_5.h>
@@ -49,13 +51,13 @@ CProcessorHD::~CProcessorHD()
 
 void CProcessorHD::UnInit()
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
   Close();
 }
 
 void CProcessorHD::Close()
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
   m_pEnumerator = nullptr;
   m_pVideoProcessor = nullptr;
   m_pVideoContext = nullptr;
@@ -256,7 +258,7 @@ bool CProcessorHD::Open(UINT width, UINT height)
 {
   Close();
 
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
 
   m_width = width;
   m_height = height;
@@ -272,7 +274,7 @@ bool CProcessorHD::Open(UINT width, UINT height)
 
 bool CProcessorHD::ReInit()
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
   Close();
 
   if (!InitProcessor())
@@ -286,7 +288,7 @@ bool CProcessorHD::ReInit()
 
 bool CProcessorHD::OpenProcessor()
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
 
   // restore the device if it was lost
   if (!m_pEnumerator && !ReInit())
@@ -451,7 +453,7 @@ DXGI_COLOR_SPACE_TYPE CProcessorHD::GetDXGIColorSpaceTarget(CRenderBuffer* view,
 
 bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderBuffer** views, DWORD flags, UINT frameIdx, UINT rotation, float contrast, float brightness)
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
 
   // restore processor if it was lost
   if (!m_pVideoProcessor && !OpenProcessor())

@@ -9,10 +9,10 @@
 #pragma once
 
 #include "threads/Condition.h"
-#include "threads/SingleLock.h"
 
 #include <initializer_list>
 #include <memory>
+#include <mutex>
 #include <vector>
 
 // forward declare the CEventGroup
@@ -69,7 +69,7 @@ public:
 
   inline void Reset()
   {
-    CSingleLock lock(mutex);
+    std::unique_lock<CCriticalSection> lock(mutex);
     signaled = false;
   }
   void Set();
@@ -80,7 +80,7 @@ public:
    */
   inline bool Signaled()
   {
-    CSingleLock lock(mutex);
+    std::unique_lock<CCriticalSection> lock(mutex);
     return signaled;
   }
 
@@ -93,7 +93,7 @@ public:
   template<typename Rep, typename Period>
   inline bool Wait(std::chrono::duration<Rep, Period> duration)
   {
-    CSingleLock lock(mutex);
+    std::unique_lock<CCriticalSection> lock(mutex);
     numWaits++;
     actualCv.wait(mutex, duration, std::bind(&CEvent::Signaled, this));
     numWaits--;
@@ -108,7 +108,7 @@ public:
    */
   inline bool Wait()
   {
-    CSingleLock lock(mutex);
+    std::unique_lock<CCriticalSection> lock(mutex);
     numWaits++;
     actualCv.wait(mutex, std::bind(&CEvent::Signaled, this));
     numWaits--;
@@ -122,7 +122,7 @@ public:
    */
   inline int getNumWaits()
   {
-    CSingleLock lock(mutex);
+    std::unique_lock<CCriticalSection> lock(mutex);
     return numWaits;
   }
 };
@@ -147,7 +147,7 @@ class CEventGroup
   // This is ONLY called from CEvent::Set.
   inline void Set(CEvent* child)
   {
-    CSingleLock l(mutex);
+    std::unique_lock<CCriticalSection> l(mutex);
     signaled = child;
     actualCv.notifyAll();
   }
@@ -185,7 +185,7 @@ public:
   template<typename Rep, typename Period>
   CEvent* wait(std::chrono::duration<Rep, Period> duration)
   {
-    CSingleLock lock(mutex); // grab CEventGroup::mutex
+    std::unique_lock<CCriticalSection> lock(mutex); // grab CEventGroup::mutex
     numWaits++;
 
     // ==================================================
@@ -196,7 +196,7 @@ public:
     signaled = nullptr;
     for (auto* cur : events)
     {
-      CSingleLock lock2(cur->mutex);
+      std::unique_lock<CCriticalSection> lock2(cur->mutex);
       if (cur->signaled)
         signaled = cur;
     }
@@ -232,7 +232,7 @@ public:
    */
   inline int getNumWaits()
   {
-    CSingleLock lock(mutex);
+    std::unique_lock<CCriticalSection> lock(mutex);
     return numWaits;
   }
 };

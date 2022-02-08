@@ -12,10 +12,10 @@
 #include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/epg/EpgInfoTag.h"
-#include "threads/SingleLock.h"
 #include "utils/log.h"
 
 #include <memory>
+#include <mutex>
 
 using namespace PVR;
 
@@ -46,7 +46,7 @@ bool CPVRChannelGroupsContainer::LoadFromDatabase(
 bool CPVRChannelGroupsContainer::UpdateFromClients(
     const std::vector<std::shared_ptr<CPVRClient>>& clients, bool bChannelsOnly /* = false */)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   if (m_bIsUpdating)
     return false;
   m_bIsUpdating = true;

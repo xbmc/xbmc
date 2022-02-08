@@ -24,9 +24,10 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/SubtitlesSettings.h"
-#include "threads/SingleLock.h"
 #include "utils/ColorUtils.h"
 #include "windowing/GraphicContext.h"
+
+#include <mutex>
 #if defined(HAS_GL) || defined(HAS_GLES)
 #include "OverlayRendererGL.h"
 #elif defined(HAS_DX)
@@ -63,7 +64,7 @@ CRenderer::~CRenderer()
 
 void CRenderer::AddOverlay(CDVDOverlay* o, double pts, int index)
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
 
   SElement   e;
   e.pts = pts;
@@ -85,7 +86,7 @@ void CRenderer::Release(std::vector<SElement>& list)
 
 void CRenderer::Flush()
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
 
   for(std::vector<SElement>& buffer : m_buffers)
     Release(buffer);
@@ -95,7 +96,7 @@ void CRenderer::Flush()
 
 void CRenderer::Release(int idx)
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
   Release(m_buffers[idx]);
 }
 
@@ -139,7 +140,7 @@ void CRenderer::ReleaseUnused()
 
 void CRenderer::Render(int idx)
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
 
   std::vector<SElement>& list = m_buffers[idx];
   for(std::vector<SElement>::iterator it = list.begin(); it != list.end(); ++it)
@@ -232,7 +233,7 @@ bool CRenderer::HasOverlay(int idx)
 {
   bool hasOverlay = false;
 
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
 
   std::vector<SElement>& list = m_buffers[idx];
   for(std::vector<SElement>::iterator it = list.begin(); it != list.end(); ++it)

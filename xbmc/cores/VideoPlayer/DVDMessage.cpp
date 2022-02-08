@@ -16,6 +16,7 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <mutex>
 
 using namespace std::chrono_literals;
 
@@ -50,7 +51,7 @@ CDVDMsgGeneralSynchronize::~CDVDMsgGeneralSynchronize()
 
 bool CDVDMsgGeneralSynchronize::Wait(std::chrono::milliseconds timeout, unsigned int source)
 {
-  CSingleLock lock(m_p->section);
+  std::unique_lock<CCriticalSection> lock(m_p->section);
 
   XbmcThreads::EndTime<> timer{timeout};
 

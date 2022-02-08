@@ -16,6 +16,7 @@
 #include "utils/log.h"
 
 #include <list>
+#include <mutex>
 
 static CCriticalSection g_inputCond;
 
@@ -34,7 +35,7 @@ bool CWinEventsIOS::MessagePump()
     // deeper message loop and call the deeper MessagePump from there.
     XBMC_Event pumpEvent;
     {
-      CSingleLock lock(g_inputCond);
+      std::unique_lock<CCriticalSection> lock(g_inputCond);
       if (events.empty())
         return ret;
       pumpEvent = events.front();
@@ -49,6 +50,6 @@ bool CWinEventsIOS::MessagePump()
 
 size_t CWinEventsIOS::GetQueueSize()
 {
-  CSingleLock lock(g_inputCond);
+  std::unique_lock<CCriticalSection> lock(g_inputCond);
   return events.size();
 }

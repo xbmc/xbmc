@@ -12,6 +12,7 @@
 #include "utils/XTimeUtils.h"
 
 #include <atomic>
+#include <mutex>
 
 #include <gtest/gtest.h>
 
@@ -139,7 +140,7 @@ public:
 
   void FinishAndStopBlocking()
   {
-    CSingleLock lock(m_blockMutex);
+    std::unique_lock<CCriticalSection> lock(m_blockMutex);
 
     m_finish = true;
     m_block.notifyAll();
@@ -153,13 +154,13 @@ public:
   bool DoWork() override
   {
     {
-      CSingleLock lock(m_package.jobCreatedMutex);
+      std::unique_lock<CCriticalSection> lock(m_package.jobCreatedMutex);
 
       m_package.ready = true;
       m_package.jobCreatedCond.notifyAll();
     }
 
-    CSingleLock blockLock(m_blockMutex);
+    std::unique_lock<CCriticalSection> blockLock(m_blockMutex);
 
     // Block until we're told to go away
     while (!m_finish)

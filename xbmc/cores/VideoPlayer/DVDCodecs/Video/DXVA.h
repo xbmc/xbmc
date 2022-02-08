@@ -13,6 +13,7 @@
 #include "guilib/D3DResource.h"
 #include "threads/Event.h"
 
+#include <mutex>
 #include <vector>
 
 #include <wrl/client.h>
@@ -229,13 +230,13 @@ protected:
   // ID3DResource overrides
   void OnCreateDevice() override
   {
-    CSingleLock lock(m_section);
+    std::unique_lock<CCriticalSection> lock(m_section);
     m_state = DXVA_RESET;
     m_event.Set();
   }
   void OnDestroyDevice(bool fatal) override
   {
-    CSingleLock lock(m_section);
+    std::unique_lock<CCriticalSection> lock(m_section);
     m_state = DXVA_LOST;
     m_event.Reset();
   }

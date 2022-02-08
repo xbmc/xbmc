@@ -15,12 +15,12 @@
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
-#include "threads/SingleLock.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
 
 #include <memory>
+#include <mutex>
 #include <utility>
 #include <vector>
 
@@ -36,7 +36,7 @@ CPVRRecordings::~CPVRRecordings()
 
 bool CPVRRecordings::UpdateFromClients(const std::vector<std::shared_ptr<CPVRClient>>& clients)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   if (m_bIsUpdating)
     return false;
@@ -72,7 +72,7 @@ bool CPVRRecordings::Update(const std::vector<std::shared_ptr<CPVRClient>>& clie
 
 void CPVRRecordings::Unload()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   m_bDeletedTVRecordings = false;
   m_bDeletedRadioRecordings = false;
   m_iTVRecordings = 0;
@@ -82,7 +82,7 @@ void CPVRRecordings::Unload()
 
 void CPVRRecordings::UpdateInProgressSize()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   if (m_bIsUpdating)
     return;
   m_bIsUpdating = true;
@@ -106,25 +106,25 @@ void CPVRRecordings::UpdateInProgressSize()
 
 int CPVRRecordings::GetNumTVRecordings() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_iTVRecordings;
 }
 
 bool CPVRRecordings::HasDeletedTVRecordings() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_bDeletedTVRecordings;
 }
 
 int CPVRRecordings::GetNumRadioRecordings() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_iRadioRecordings;
 }
 
 bool CPVRRecordings::HasDeletedRadioRecordings() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_bDeletedRadioRecordings;
 }
 
@@ -132,7 +132,7 @@ std::vector<std::shared_ptr<CPVRRecording>> CPVRRecordings::GetAll() const
 {
   std::vector<std::shared_ptr<CPVRRecording>> recordings;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   for (const auto& recordingEntry : m_recordings)
   {
     recordings.emplace_back(recordingEntry.second);
@@ -143,7 +143,7 @@ std::vector<std::shared_ptr<CPVRRecording>> CPVRRecordings::GetAll() const
 
 std::shared_ptr<CPVRRecording> CPVRRecordings::GetById(unsigned int iId) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   for (const auto& recording : m_recordings)
   {
     if (iId == recording.second->m_iRecordingId)
@@ -155,7 +155,7 @@ std::shared_ptr<CPVRRecording> CPVRRecordings::GetById(unsigned int iId) const
 
 std::shared_ptr<CPVRRecording> CPVRRecordings::GetByPath(const std::string& path) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   CPVRRecordingsPath recPath(path);
   if (recPath.IsValid())
@@ -181,7 +181,7 @@ std::shared_ptr<CPVRRecording> CPVRRecordings::GetByPath(const std::string& path
 std::shared_ptr<CPVRRecording> CPVRRecordings::GetById(int iClientId, const std::string& strRecordingId) const
 {
   std::shared_ptr<CPVRRecording> retVal;
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   const auto it = m_recordings.find(CPVRRecordingUid(iClientId, strRecordingId));
   if (it != m_recordings.end())
     retVal = it->second;
@@ -192,7 +192,7 @@ std::shared_ptr<CPVRRecording> CPVRRecordings::GetById(int iClientId, const std:
 void CPVRRecordings::UpdateFromClient(const std::shared_ptr<CPVRRecording>& tag,
                                       const CPVRClient& client)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   if (tag->IsDeleted())
   {
@@ -225,7 +225,7 @@ std::shared_ptr<CPVRRecording> CPVRRecordings::GetRecordingForEpgTag(const std::
   if (!epgTag)
     return {};
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   for (const auto& recording : m_recordings)
   {
@@ -269,7 +269,7 @@ bool CPVRRecordings::ChangeRecordingsPlayCount(const std::shared_ptr<CPVRRecordi
 {
   if (recording)
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
 
     CVideoDatabase& db = GetVideoDatabase();
     if (db.IsOpen())
@@ -308,7 +308,7 @@ bool CPVRRecordings::ResetResumePoint(const std::shared_ptr<CPVRRecording>& reco
 
   if (recording)
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
 
     CVideoDatabase& db = GetVideoDatabase();
     if (db.IsOpen())
@@ -342,7 +342,7 @@ int CPVRRecordings::CleanupCachedImages()
 {
   std::vector<std::string> urlsToCheck;
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     for (const auto& recording : m_recordings)
     {
       urlsToCheck.emplace_back(recording.second->ClientIconPath());

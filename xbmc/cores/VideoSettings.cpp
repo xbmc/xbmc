@@ -9,7 +9,8 @@
 #include "VideoSettings.h"
 
 #include "threads/CriticalSection.h"
-#include "threads/SingleLock.h"
+
+#include <mutex>
 
 CVideoSettings::CVideoSettings()
 {
@@ -84,43 +85,43 @@ CVideoSettingsLocked::CVideoSettingsLocked(CVideoSettings &vs, CCriticalSection 
 
 void CVideoSettingsLocked::SetSubtitleStream(int stream)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   m_videoSettings.m_SubtitleStream = stream;
 }
 
 void CVideoSettingsLocked::SetSubtitleVisible(bool visible)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   m_videoSettings.m_SubtitleOn = visible;
 }
 
 void CVideoSettingsLocked::SetAudioStream(int stream)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   m_videoSettings.m_AudioStream = stream;
 }
 
 void CVideoSettingsLocked::SetVideoStream(int stream)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   m_videoSettings.m_VideoStream = stream;
 }
 
 void CVideoSettingsLocked::SetAudioDelay(float delay)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   m_videoSettings.m_AudioDelay = delay;
 }
 
 void CVideoSettingsLocked::SetSubtitleDelay(float delay)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   m_videoSettings.m_SubtitleDelay = delay;
 }
 
 void CVideoSettingsLocked::SetViewMode(int mode, float zoom, float par, float shift, bool stretch)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   m_videoSettings.m_ViewMode = mode;
   m_videoSettings.m_CustomZoomAmount = zoom;
   m_videoSettings.m_CustomPixelRatio = par;
@@ -130,6 +131,6 @@ void CVideoSettingsLocked::SetViewMode(int mode, float zoom, float par, float sh
 
 void CVideoSettingsLocked::SetVolumeAmplification(float amp)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   m_videoSettings.m_VolumeAmplification = amp;
 }

@@ -11,10 +11,10 @@
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "threads/SingleLock.h"
 #include "utils/Screenshot.h"
 #include "windowing/GraphicContext.h"
 
+#include <mutex>
 #include <vector>
 
 #include "system_gl.h"
@@ -39,7 +39,7 @@ bool CScreenshotSurfaceGLES::Capture()
   if (!gui)
     return false;
 
-  CSingleLock lock(winsystem->GetGfxContext());
+  std::unique_lock<CCriticalSection> lock(winsystem->GetGfxContext());
   gui->GetWindowManager().Render();
 
   //get current viewport

@@ -10,8 +10,9 @@
 
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerLayout.h"
-#include "threads/SingleLock.h"
 #include "utils/log.h"
+
+#include <mutex>
 
 using namespace KODI;
 using namespace GAME;
@@ -39,7 +40,7 @@ void CGUIGameController::Render(void)
 {
   CGUIImage::Render();
 
-  CSingleLock lock(m_mutex);
+  std::unique_lock<CCriticalSection> lock(m_mutex);
 
   if (m_currentController)
   {
@@ -49,7 +50,7 @@ void CGUIGameController::Render(void)
 
 void CGUIGameController::ActivateController(const ControllerPtr& controller)
 {
-  CSingleLock lock(m_mutex);
+  std::unique_lock<CCriticalSection> lock(m_mutex);
 
   if (controller && controller != m_currentController)
   {

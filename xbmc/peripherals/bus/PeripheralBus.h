@@ -12,6 +12,7 @@
 #include "threads/Thread.h"
 
 #include <memory>
+#include <mutex>
 #include <vector>
 
 class CFileItemList;
@@ -47,7 +48,7 @@ public:
    */
   bool NeedsPolling(void) const
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     return m_bNeedsPolling;
   }
 

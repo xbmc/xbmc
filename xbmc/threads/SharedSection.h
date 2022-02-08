@@ -9,9 +9,8 @@
 #pragma once
 
 #include "threads/Condition.h"
-#include "threads/SingleLock.h"
 
-#include <shared_mutex>
+#include <mutex>
 
 /**
  * A CSharedSection is a mutex that satisfies the Shared Lockable concept (see Lockables.h).
@@ -28,7 +27,7 @@ public:
 
   inline void lock()
   {
-    CSingleLock l(sec);
+    std::unique_lock<CCriticalSection> l(sec);
     while (sharedCount)
       actualCv.wait(l, [this]() { return sharedCount == 0; });
     sec.lock();
@@ -36,11 +35,15 @@ public:
   inline bool try_lock() { return (sec.try_lock() ? ((sharedCount == 0) ? true : (sec.unlock(), false)) : false); }
   inline void unlock() { sec.unlock(); }
 
-  inline void lock_shared() { CSingleLock l(sec); sharedCount++; }
+  inline void lock_shared()
+  {
+    std::unique_lock<CCriticalSection> l(sec);
+    sharedCount++;
+  }
   inline bool try_lock_shared() { return (sec.try_lock() ? sharedCount++, sec.unlock(), true : false); }
   inline void unlock_shared()
   {
-    CSingleLock l(sec);
+    std::unique_lock<CCriticalSection> l(sec);
     sharedCount--;
     if (!sharedCount)
     {

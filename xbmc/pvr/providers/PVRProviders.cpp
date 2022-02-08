@@ -16,10 +16,10 @@
 #include "pvr/addons/PVRClients.h"
 #include "pvr/providers/PVRProvider.h"
 #include "settings/Settings.h"
-#include "threads/SingleLock.h"
 #include "utils/log.h"
 
 #include <memory>
+#include <mutex>
 #include <string>
 #include <vector>
 
@@ -27,7 +27,7 @@ using namespace PVR;
 
 bool CPVRProvidersContainer::UpdateFromClient(const std::shared_ptr<CPVRProvider>& provider)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   const std::shared_ptr<CPVRProvider> providerToUpdate =
       GetByClient(provider->GetClientId(), provider->GetUniqueId());
   if (providerToUpdate)
@@ -46,7 +46,7 @@ bool CPVRProvidersContainer::UpdateFromClient(const std::shared_ptr<CPVRProvider
 std::shared_ptr<CPVRProvider> CPVRProvidersContainer::GetByClient(int iClientId,
                                                                   int iUniqueId) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   for (const auto& provider : m_providers)
   {
     if (provider->GetClientId() == iClientId && provider->GetUniqueId() == iUniqueId)
@@ -80,13 +80,13 @@ void CPVRProvidersContainer::InsertEntry(const std::shared_ptr<CPVRProvider>& ne
 
 std::vector<std::shared_ptr<CPVRProvider>> CPVRProvidersContainer::GetProvidersList() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_providers;
 }
 
 std::size_t CPVRProvidersContainer::GetNumProviders() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_providers.size();
 }
 
@@ -98,7 +98,7 @@ bool CPVRProviders::Update(const std::vector<std::shared_ptr<CPVRClient>>& clien
 void CPVRProviders::Unload()
 {
   // remove all tags
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   m_providers.clear();
 }
 
@@ -119,7 +119,7 @@ bool CPVRProviders::LoadFromDatabase(const std::vector<std::shared_ptr<CPVRClien
 bool CPVRProviders::UpdateFromClients(const std::vector<std::shared_ptr<CPVRClient>>& clients)
 {
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     if (m_bIsUpdating)
       return false;
     m_bIsUpdating = true;
@@ -158,7 +158,7 @@ bool CPVRProviders::UpdateDefaultEntries(const CPVRProvidersContainer& newProvid
 {
   bool bChanged = false;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   // go through the provider list and check for updated or new providers
   for (const auto& newProvider : newProviders.GetProvidersList())
@@ -207,7 +207,7 @@ bool CPVRProviders::UpdateClientEntries(const CPVRProvidersContainer& newProvide
                                         const std::vector<int>& failedClients,
                                         const std::vector<int>& disabledClients)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   // go through the provider list and check for updated or new providers
   for (const auto& newProvider : newProviders.GetProvidersList())
@@ -273,7 +273,7 @@ std::shared_ptr<CPVRProvider> CPVRProviders::CheckAndAddEntry(
 {
   bool bChanged = false;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   std::shared_ptr<CPVRProvider> provider =
       GetByClient(newProvider->GetClientId(), newProvider->GetUniqueId());
   if (provider)
@@ -303,7 +303,7 @@ std::shared_ptr<CPVRProvider> CPVRProviders::CheckAndPersistEntry(
 {
   bool bChanged = false;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   std::shared_ptr<CPVRProvider> provider =
       GetByClient(newProvider->GetClientId(), newProvider->GetUniqueId());
   if (provider)
@@ -351,7 +351,7 @@ bool CPVRProviders::PersistUserChanges(const std::vector<std::shared_ptr<CPVRPro
 
 std::shared_ptr<CPVRProvider> CPVRProviders::GetById(int iProviderId) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   for (const auto& provider : m_providers)
   {
     if (provider->GetDatabaseId() == iProviderId)
@@ -363,7 +363,7 @@ std::shared_ptr<CPVRProvider> CPVRProviders::GetById(int iProviderId) const
 
 void CPVRProviders::RemoveEntry(const std::shared_ptr<CPVRProvider>& provider)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   m_providers.erase(
       std::remove_if(m_providers.begin(), m_providers.end(),
@@ -378,7 +378,7 @@ int CPVRProviders::CleanupCachedImages()
 {
   std::vector<std::string> urlsToCheck;
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
 
     for (const auto& provider : m_providers)
     {

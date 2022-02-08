@@ -20,10 +20,10 @@
 #include "peripherals/Peripherals.h"
 #include "peripherals/addons/AddonButtonMap.h"
 #include "peripherals/bus/virtual/PeripheralBusAddon.h"
-#include "threads/SingleLock.h"
 #include "utils/log.h"
 
 #include <algorithm>
+#include <mutex>
 
 using namespace KODI;
 using namespace JOYSTICK;
@@ -176,7 +176,7 @@ void CPeripheralJoystick::PowerOff()
 
 void CPeripheralJoystick::RegisterJoystickDriverHandler(IDriverHandler* handler, bool bPromiscuous)
 {
-  CSingleLock lock(m_handlerMutex);
+  std::unique_lock<CCriticalSection> lock(m_handlerMutex);
 
   DriverHandler driverHandler = {handler, bPromiscuous};
   m_driverHandlers.insert(m_driverHandlers.begin(), driverHandler);
@@ -184,7 +184,7 @@ void CPeripheralJoystick::RegisterJoystickDriverHandler(IDriverHandler* handler,
 
 void CPeripheralJoystick::UnregisterJoystickDriverHandler(IDriverHandler* handler)
 {
-  CSingleLock lock(m_handlerMutex);
+  std::unique_lock<CCriticalSection> lock(m_handlerMutex);
 
   m_driverHandlers.erase(std::remove_if(m_driverHandlers.begin(), m_driverHandlers.end(),
                                         [handler](const DriverHandler& driverHandler) {
@@ -213,7 +213,7 @@ bool CPeripheralJoystick::OnButtonMotion(unsigned int buttonIndex, bool bPressed
 
   m_lastActive = CDateTime::GetCurrentDateTime();
 
-  CSingleLock lock(m_handlerMutex);
+  std::unique_lock<CCriticalSection> lock(m_handlerMutex);
 
   // Check GUI setting and send button release if controllers are disabled
   if (!m_manager.GetInputManager().IsControllerEnabled())
@@ -269,7 +269,7 @@ bool CPeripheralJoystick::OnHatMotion(unsigned int hatIndex, HAT_STATE state)
 
   m_lastActive = CDateTime::GetCurrentDateTime();
 
-  CSingleLock lock(m_handlerMutex);
+  std::unique_lock<CCriticalSection> lock(m_handlerMutex);
 
   // Check GUI setting and send hat unpressed if controllers are disabled
   if (!m_manager.GetInputManager().IsControllerEnabled())
@@ -326,7 +326,7 @@ bool CPeripheralJoystick::OnAxisMotion(unsigned int axisIndex, float position)
   if (position != static_cast<float>(center) && !g_application.IsAppFocused())
     return false;
 
-  CSingleLock lock(m_handlerMutex);
+  std::unique_lock<CCriticalSection> lock(m_handlerMutex);
 
   // Check GUI setting and send analog axis centered if controllers are disabled
   if (!m_manager.GetInputManager().IsControllerEnabled())
@@ -372,7 +372,7 @@ bool CPeripheralJoystick::OnAxisMotion(unsigned int axisIndex, float position)
 
 void CPeripheralJoystick::ProcessAxisMotions(void)
 {
-  CSingleLock lock(m_handlerMutex);
+  std::unique_lock<CCriticalSection> lock(m_handlerMutex);
 
   for (auto& it : m_driverHandlers)
     it.handler->ProcessAxisMotions();

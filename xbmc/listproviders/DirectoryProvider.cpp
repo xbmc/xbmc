@@ -25,7 +25,6 @@
 #include "pvr/guilib/PVRGUIActions.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "threads/SingleLock.h"
 #include "utils/JobManager.h"
 #include "utils/SortUtils.h"
 #include "utils/URIUtils.h"
@@ -37,6 +36,7 @@
 #include "video/windows/GUIWindowVideoBase.h"
 
 #include <memory>
+#include <mutex>
 #include <utility>
 
 using namespace XFILE;
@@ -219,7 +219,7 @@ bool CDirectoryProvider::Update(bool forceRefresh)
   fireJob |= UpdateLimit();
   fireJob &= !m_currentUrl.empty();
 
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
   if (m_updateState == INVALIDATED)
     fireJob = true;
   else if (m_updateState == DONE)
@@ -253,7 +253,7 @@ void CDirectoryProvider::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
     return;
 
   {
-    CSingleLock lock(m_section);
+    std::unique_lock<CCriticalSection> lock(m_section);
     // we don't need to refresh anything if there are no fitting
     // items in this list provider for the announcement flag
     if (((flag & ANNOUNCEMENT::VideoLibrary) &&
@@ -290,7 +290,7 @@ void CDirectoryProvider::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
 
 void CDirectoryProvider::Fetch(std::vector<CGUIListItemPtr> &items)
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
   items.clear();
   for (const auto& i : m_items)
   {
@@ -301,7 +301,7 @@ void CDirectoryProvider::Fetch(std::vector<CGUIListItemPtr> &items)
 
 void CDirectoryProvider::OnAddonEvent(const ADDON::AddonEvent& event)
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
   if (URIUtils::IsProtocol(m_currentUrl, "addons"))
   {
     if (typeid(event) == typeid(ADDON::AddonEvents::Enabled) ||
@@ -316,7 +316,7 @@ void CDirectoryProvider::OnAddonEvent(const ADDON::AddonEvent& event)
 
 void CDirectoryProvider::OnAddonRepositoryEvent(const ADDON::CRepositoryUpdater::RepositoryUpdated& event)
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
   if (URIUtils::IsProtocol(m_currentUrl, "addons"))
   {
     m_updateState = INVALIDATED;
@@ -325,7 +325,7 @@ void CDirectoryProvider::OnAddonRepositoryEvent(const ADDON::CRepositoryUpdater:
 
 void CDirectoryProvider::OnPVRManagerEvent(const PVR::PVREvent& event)
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
   if (URIUtils::IsProtocol(m_currentUrl, "pvr"))
   {
     if (event == PVR::PVREvent::ManagerStarted || event == PVR::PVREvent::ManagerStopped ||
@@ -340,14 +340,14 @@ void CDirectoryProvider::OnPVRManagerEvent(const PVR::PVREvent& event)
 
 void CDirectoryProvider::OnFavouritesEvent(const CFavouritesService::FavouritesUpdated& event)
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
   if (URIUtils::IsProtocol(m_currentUrl, "favourites"))
     m_updateState = INVALIDATED;
 }
 
 void CDirectoryProvider::Reset()
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
   if (m_jobID)
     CJobManager::GetInstance().CancelJob(m_jobID);
   m_jobID = 0;
@@ -373,14 +373,14 @@ void CDirectoryProvider::Reset()
 
 void CDirectoryProvider::FreeResources(bool immediately)
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
   for (const auto& item : m_items)
     item->FreeMemory(immediately);
 }
 
 void CDirectoryProvider::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
   if (success)
   {
     m_items = static_cast<CDirectoryJob*>(job)->GetItems();
@@ -396,7 +396,7 @@ std::string CDirectoryProvider::GetTarget(const CFileItem& item) const
 {
   std::string target = item.GetProperty("node.target").asString();
 
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
   if (target.empty())
     target = m_currentTarget;
   if (target.empty())
@@ -475,13 +475,13 @@ bool CDirectoryProvider::OnContextMenu(const CGUIListItemPtr& item)
 
 bool CDirectoryProvider::IsUpdating() const
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
   return m_jobID || m_updateState == DONE || m_updateState == INVALIDATED;
 }
 
 bool CDirectoryProvider::UpdateURL()
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
   std::string value(m_url.GetLabel(m_parentID, false));
   if (value == m_currentUrl)
     return false;
@@ -502,7 +502,7 @@ bool CDirectoryProvider::UpdateURL()
 
 bool CDirectoryProvider::UpdateLimit()
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
   unsigned int value = m_limit.GetIntValue(m_parentID);
   if (value == m_currentLimit)
     return false;
@@ -514,7 +514,7 @@ bool CDirectoryProvider::UpdateLimit()
 
 bool CDirectoryProvider::UpdateSort()
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
   SortBy sortMethod(SortUtils::SortMethodFromString(m_sortMethod.GetLabel(m_parentID, false)));
   SortOrder sortOrder(SortUtils::SortOrderFromString(m_sortOrder.GetLabel(m_parentID, false)));
   if (sortOrder == SortOrderNone)

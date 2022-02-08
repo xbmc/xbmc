@@ -15,6 +15,8 @@
 #include "addons/FontResource.h"
 #include "addons/Skin.h"
 #include "windowing/GraphicContext.h"
+
+#include <mutex>
 #if defined(HAS_GLES) || defined(HAS_GL)
 #include "GUIFontTTFGL.h"
 #endif
@@ -548,7 +550,7 @@ void GUIFontManager::SettingOptionsFontsFiller(const SettingConstPtr& setting,
 
 void GUIFontManager::Initialize()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   LoadUserFonts();
 }
 

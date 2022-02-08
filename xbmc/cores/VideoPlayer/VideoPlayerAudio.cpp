@@ -16,9 +16,10 @@
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "threads/SingleLock.h"
 #include "utils/MathUtils.h"
 #include "utils/log.h"
+
+#include <mutex>
 
 #ifdef TARGET_RASPBERRY_PI
 #include "platform/linux/RBP.h"
@@ -204,7 +205,8 @@ void CVideoPlayerAudio::UpdatePlayerInfo()
   info.pts         = m_audioSink.GetPlayingPts();
   info.passthrough = m_pAudioCodec && m_pAudioCodec->NeedPassthrough();
 
-  { CSingleLock lock(m_info_section);
+  {
+    std::unique_lock<CCriticalSection> lock(m_info_section);
     m_info = info;
   }
 }
@@ -652,7 +654,7 @@ bool CVideoPlayerAudio::SwitchCodecIfNeeded()
 
 std::string CVideoPlayerAudio::GetPlayerInfo()
 {
-  CSingleLock lock(m_info_section);
+  std::unique_lock<CCriticalSection> lock(m_info_section);
   return m_info.info;
 }
 
@@ -663,6 +665,6 @@ int CVideoPlayerAudio::GetAudioChannels()
 
 bool CVideoPlayerAudio::IsPassthrough() const
 {
-  CSingleLock lock(m_info_section);
+  std::unique_lock<CCriticalSection> lock(m_info_section);
   return m_info.passthrough;
 }

@@ -17,6 +17,8 @@
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
+#include <mutex>
+
 using namespace std::chrono_literals;
 
 void CVideoSyncD3D::OnLostDisplay()
@@ -41,7 +43,7 @@ void CVideoSyncD3D::RefreshChanged()
 bool CVideoSyncD3D::Setup(PUPDATECLOCK func)
 {
   CLog::Log(LOGDEBUG, "CVideoSyncD3D: Setting up Direct3d");
-  CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
   DX::Windowing()->Register(this);
   m_displayLost = false;
   m_displayReset = false;

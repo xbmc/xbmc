@@ -8,10 +8,11 @@
 
 #include "WSDiscoveryWin32.h"
 
-#include "threads/SingleLock.h"
 #include "utils/log.h"
 
 #include "platform/win32/CharsetConverter.h"
+
+#include <mutex>
 
 #include <windns.h>
 #pragma comment(lib, "dnsapi.lib")
@@ -55,7 +56,7 @@ HRESULT STDMETHODCALLTYPE CClientNotificationSink::Add(IWSDiscoveredService* ser
   if (!service)
     return E_INVALIDARG;
 
-  CSingleLock lock(m_criticalSection);
+  std::unique_lock<CCriticalSection> lock(m_criticalSection);
 
   WSD_NAME_LIST* list = nullptr;
   service->GetTypes(&list);
@@ -107,7 +108,7 @@ HRESULT STDMETHODCALLTYPE CClientNotificationSink::Remove(IWSDiscoveredService* 
   if (!service)
     return E_INVALIDARG;
 
-  CSingleLock lock(m_criticalSection);
+  std::unique_lock<CCriticalSection> lock(m_criticalSection);
 
   LPCWSTR address = nullptr;
   service->GetRemoteTransportAddress(&address);
@@ -136,7 +137,7 @@ HRESULT STDMETHODCALLTYPE CClientNotificationSink::Remove(IWSDiscoveredService* 
 
 HRESULT STDMETHODCALLTYPE CClientNotificationSink::SearchFailed(HRESULT hr, LPCWSTR tag)
 {
-  CSingleLock lock(m_criticalSection);
+  std::unique_lock<CCriticalSection> lock(m_criticalSection);
 
   // This must not happen. At least localhost (127.0.0.1) has to be found
   CLog::Log(LOGWARNING,
@@ -147,7 +148,7 @@ HRESULT STDMETHODCALLTYPE CClientNotificationSink::SearchFailed(HRESULT hr, LPCW
 
 HRESULT STDMETHODCALLTYPE CClientNotificationSink::SearchComplete(LPCWSTR tag)
 {
-  CSingleLock lock(m_criticalSection);
+  std::unique_lock<CCriticalSection> lock(m_criticalSection);
 
   std::string list;
 

@@ -17,7 +17,6 @@
 #include "network/httprequesthandler/IHTTPRequestHandler.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "threads/SingleLock.h"
 #include "utils/FileUtils.h"
 #include "utils/Mime.h"
 #include "utils/StringUtils.h"
@@ -27,6 +26,7 @@
 
 #include <algorithm>
 #include <memory>
+#include <mutex>
 #include <stdexcept>
 #include <utility>
 
@@ -125,7 +125,7 @@ MHD_RESULT CWebServer::AskForAuthentication(const HTTPRequest& request) const
 
 bool CWebServer::IsAuthenticated(const HTTPRequest& request) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   if (!m_authenticationRequired)
     return true;
@@ -1302,7 +1302,7 @@ bool CWebServer::WebServerSupportsSSL()
 
 void CWebServer::SetCredentials(const std::string& username, const std::string& password)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   m_authenticationUsername = username;
   m_authenticationPassword = password;

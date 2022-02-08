@@ -7,8 +7,10 @@
  */
 
 #include "Settings.h"
+
 #include "Application.h"
 #include "Autorun.h"
+#include "GUIPassword.h"
 #include "LangInfo.h"
 #include "Util.h"
 #include "addons/AddonSystemSettings.h"
@@ -17,8 +19,9 @@
 #include "filesystem/File.h"
 #include "guilib/GUIFontManager.h"
 #include "guilib/StereoscopicsManager.h"
-#include "GUIPassword.h"
 #include "input/KeyboardLayoutManager.h"
+
+#include <mutex>
 #if defined(TARGET_POSIX)
 #include "platform/posix/PosixTimezone.h"
 #endif // defined(TARGET_POSIX)
@@ -46,7 +49,6 @@
 #include "settings/SkinSettings.h"
 #include "settings/SubtitlesSettings.h"
 #include "settings/lib/SettingsManager.h"
-#include "threads/SingleLock.h"
 #include "utils/CharsetConverter.h"
 #include "utils/RssManager.h"
 #include "utils/StringUtils.h"
@@ -453,7 +455,7 @@ constexpr const char* CSettings::SETTING_OSD_AUTOCLOSEVIDEOOSDTIME;
 
 bool CSettings::Initialize()
 {
-  CSingleLock lock(m_critical);
+  std::unique_lock<CCriticalSection> lock(m_critical);
   if (m_initialized)
     return false;
 
@@ -487,7 +489,7 @@ void CSettings::RegisterSubSettings(ISubSettings* subSettings)
   if (subSettings == nullptr)
     return;
 
-  CSingleLock lock(m_critical);
+  std::unique_lock<CCriticalSection> lock(m_critical);
   m_subSettings.insert(subSettings);
 }
 
@@ -496,7 +498,7 @@ void CSettings::UnregisterSubSettings(ISubSettings* subSettings)
   if (subSettings == nullptr)
     return;
 
-  CSingleLock lock(m_critical);
+  std::unique_lock<CCriticalSection> lock(m_critical);
   m_subSettings.erase(subSettings);
 }
 
@@ -560,7 +562,7 @@ bool CSettings::Save(const std::string &file)
 
 bool CSettings::Save(TiXmlNode* root) const
 {
-  CSingleLock lock(m_critical);
+  std::unique_lock<CCriticalSection> lock(m_critical);
   // save any ISubSettings implementations
   for (const auto& subSetting : m_subSettings)
   {
@@ -587,7 +589,7 @@ bool CSettings::GetBool(const std::string& id) const
 
 void CSettings::Clear()
 {
-  CSingleLock lock(m_critical);
+  std::unique_lock<CCriticalSection> lock(m_critical);
   if (!m_initialized)
     return;
 
@@ -613,7 +615,7 @@ bool CSettings::Load(const TiXmlElement* root, bool& updated)
 bool CSettings::Load(const TiXmlNode* settings)
 {
   bool ok = true;
-  CSingleLock lock(m_critical);
+  std::unique_lock<CCriticalSection> lock(m_critical);
   for (const auto& subSetting : m_subSettings)
     ok &= subSetting->Load(settings);
 

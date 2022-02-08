@@ -17,6 +17,8 @@
 
 #include "platform/win32/CharsetConverter.h"
 
+#include <mutex>
+
 #include <WS2tcpip.h>
 
 using namespace std::chrono_literals;
@@ -36,7 +38,7 @@ CIRServerSuite::~CIRServerSuite()
 {
   m_event.Set();
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     Close();
   }
   StopThread();
@@ -411,7 +413,7 @@ int CIRServerSuite::ReadN(char *buffer, int n)
   {
     int nBytes = 0;
     {
-      CSingleLock lock(m_critSection);
+      std::unique_lock<CCriticalSection> lock(m_critSection);
       nBytes = recv(m_socket, ptr, n, 0);
     }
 
@@ -450,7 +452,7 @@ bool CIRServerSuite::WriteN(const char *buffer, int n)
   {
     int nBytes;
     {
-      CSingleLock lock(m_critSection);
+      std::unique_lock<CCriticalSection> lock(m_critSection);
       nBytes = send(m_socket, ptr, n, 0);
     }
 

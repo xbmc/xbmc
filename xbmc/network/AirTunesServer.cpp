@@ -40,6 +40,7 @@
 #include "utils/log.h"
 
 #include <map>
+#include <mutex>
 #include <string>
 #include <utility>
 
@@ -100,7 +101,7 @@ std::map<std::string, std::string> decodeDMAP(const char *buffer, unsigned int s
 
 void CAirTunesServer::ResetMetadata()
 {
-  CSingleLock lock(m_metadataLock);
+  std::unique_lock<CCriticalSection> lock(m_metadataLock);
 
   XFILE::CFile::Delete(TMP_COVERART_PATH_JPG);
   XFILE::CFile::Delete(TMP_COVERART_PATH_PNG);
@@ -114,7 +115,7 @@ void CAirTunesServer::ResetMetadata()
 
 void CAirTunesServer::RefreshMetadata()
 {
-  CSingleLock lock(m_metadataLock);
+  std::unique_lock<CCriticalSection> lock(m_metadataLock);
   MUSIC_INFO::CMusicInfoTag tag;
   CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
   if (infoMgr.GetCurrentSongTag())
@@ -137,7 +138,7 @@ void CAirTunesServer::RefreshCoverArt(const char *outputFilename/* = NULL*/)
     coverArtFile = std::string(outputFilename);
 
   CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
-  CSingleLock lock(m_metadataLock);
+  std::unique_lock<CCriticalSection> lock(m_metadataLock);
   //reset to empty before setting the new one
   //else it won't get refreshed because the name didn't change
   infoMgr.SetCurrentAlbumThumb("");
@@ -152,7 +153,7 @@ void CAirTunesServer::SetMetadataFromBuffer(const char *buffer, unsigned int siz
 {
 
   std::map<std::string, std::string> metadata = decodeDMAP(buffer, size);
-  CSingleLock lock(m_metadataLock);
+  std::unique_lock<CCriticalSection> lock(m_metadataLock);
 
   if(metadata["asal"].length())
     m_metadata[0] = metadata["asal"];//album
@@ -176,21 +177,21 @@ void CAirTunesServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
     {
       RefreshMetadata();
       RefreshCoverArt();
-      CSingleLock lock(m_dacpLock);
+      std::unique_lock<CCriticalSection> lock(m_dacpLock);
       if (m_pDACP)
         m_pDACP->Play();
     }
 
     if (message == "OnStop" && m_streamStarted)
     {
-      CSingleLock lock(m_dacpLock);
+      std::unique_lock<CCriticalSection> lock(m_dacpLock);
       if (m_pDACP)
         m_pDACP->Stop();
     }
 
     if (message == "OnPause" && m_streamStarted)
     {
-      CSingleLock lock(m_dacpLock);
+      std::unique_lock<CCriticalSection> lock(m_dacpLock);
       if (m_pDACP)
         m_pDACP->Pause();
     }
@@ -212,7 +213,7 @@ bool CAirTunesServer::OnAction(const CAction &action)
     case ACTION_VOLUME_DOWN:
     case ACTION_MUTE:
     {
-      CSingleLock lock(m_actionQueueLock);
+      std::unique_lock<CCriticalSection> lock(m_actionQueueLock);
       m_actionQueue.push_back(action);
       m_processActions.Set();
     }
@@ -231,14 +232,14 @@ void CAirTunesServer::Process()
     m_processActions.Wait(1000ms); // timeout for being able to stop
     std::list<CAction> currentActions;
     {
-      CSingleLock lock(m_actionQueueLock);// copy and clear the source queue
+      std::unique_lock<CCriticalSection> lock(m_actionQueueLock); // copy and clear the source queue
       currentActions.insert(currentActions.begin(), m_actionQueue.begin(), m_actionQueue.end());
       m_actionQueue.clear();
     }
 
     for (const auto& currentAction : currentActions)
     {
-      CSingleLock lock(m_dacpLock);
+      std::unique_lock<CCriticalSection> lock(m_dacpLock);
       if (m_pDACP)
       {
         switch(currentAction.GetID())
@@ -296,7 +297,7 @@ void CAirTunesServer::SetCoverArtFromBuffer(const char *buffer, unsigned int siz
   if(!size)
     return;
 
-  CSingleLock lock(m_metadataLock);
+  std::unique_lock<CCriticalSection> lock(m_metadataLock);
 
   if (IsJPEG(buffer, size))
     tmpFilename = TMP_COVERART_PATH_JPG;
@@ -314,7 +315,7 @@ void CAirTunesServer::SetCoverArtFromBuffer(const char *buffer, unsigned int siz
 
 void CAirTunesServer::FreeDACPRemote()
 {
-  CSingleLock lock(m_dacpLock);
+  std::unique_lock<CCriticalSection> lock(m_dacpLock);
   if (m_pDACP)
     delete m_pDACP;
   m_pDACP = NULL;
@@ -466,7 +467,7 @@ void CAirTunesServer::SetupRemoteControl()
         {
           // resolve the service and save it
           CZeroconfBrowser::GetInstance()->ResolveService(service);
-          CSingleLock lock(m_dacpLock);
+          std::unique_lock<CCriticalSection> lock(m_dacpLock);
           // recheck with lock hold
           if (m_pDACP == NULL)
           {

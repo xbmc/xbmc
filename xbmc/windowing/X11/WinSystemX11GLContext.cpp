@@ -21,12 +21,12 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "guilib/DispResource.h"
 #include "rendering/gl/ScreenshotSurfaceGL.h"
-#include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/WindowSystemFactory.h"
 
+#include <mutex>
 #include <vector>
 
 #include <X11/Xlib.h>
@@ -59,7 +59,7 @@ void CWinSystemX11GLContext::PresentRenderImpl(bool rendered)
   if (m_delayDispReset && m_dispResetTimer.IsTimePast())
   {
     m_delayDispReset = false;
-    CSingleLock lock(m_resourceSection);
+    std::unique_lock<CCriticalSection> lock(m_resourceSection);
     // tell any shared resources
     for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
       (*i)->OnResetDisplay();
@@ -127,7 +127,7 @@ bool CWinSystemX11GLContext::SetWindow(int width, int height, bool fullscreen, c
 
     if (!m_delayDispReset)
     {
-      CSingleLock lock(m_resourceSection);
+      std::unique_lock<CCriticalSection> lock(m_resourceSection);
       // tell any shared resources
       for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
         (*i)->OnResetDisplay();

@@ -10,7 +10,8 @@
 
 #include "AddonManager.h"
 #include "ServiceBroker.h"
-#include "threads/SingleLock.h"
+
+#include <mutex>
 
 namespace ADDON
 {
@@ -59,7 +60,7 @@ void CBinaryAddonCache::GetDisabledAddons(VECADDONS& addons, const TYPE& type)
 
 void CBinaryAddonCache::GetInstalledAddons(VECADDONS& addons, const TYPE& type)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   auto it = m_addons.find(type);
   if (it != m_addons.end())
     addons = it->second;
@@ -69,7 +70,7 @@ AddonPtr CBinaryAddonCache::GetAddonInstance(const std::string& strId, TYPE type
 {
   AddonPtr addon;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   auto it = m_addons.find(type);
   if (it != m_addons.end())
@@ -122,7 +123,7 @@ void CBinaryAddonCache::Update()
   }
 
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     m_addons = std::move(addonmap);
   }
 }

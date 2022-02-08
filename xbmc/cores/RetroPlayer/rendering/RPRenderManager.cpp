@@ -24,6 +24,8 @@
 #include "utils/TransformMatrix.h"
 #include "utils/log.h"
 
+#include <mutex>
+
 extern "C"
 {
 #include <libswscale/swscale.h>
@@ -87,7 +89,7 @@ bool CRPRenderManager::Configure(AVPixelFormat format,
   m_maxWidth = maxWidth;
   m_maxHeight = maxHeight;
 
-  CSingleLock lock(m_stateMutex);
+  std::unique_lock<CCriticalSection> lock(m_stateMutex);
 
   m_state = RENDER_STATE::CONFIGURING;
 
@@ -177,7 +179,7 @@ void CRPRenderManager::AddFrame(const uint8_t* data,
   }
 
   {
-    CSingleLock lock(m_bufferMutex);
+    std::unique_lock<CCriticalSection> lock(m_bufferMutex);
 
     // Set render buffers
     for (auto renderBuffer : m_renderBuffers)
@@ -230,7 +232,7 @@ void CRPRenderManager::FrameMove()
   bool bIsConfigured = false;
 
   {
-    CSingleLock lock(m_stateMutex);
+    std::unique_lock<CCriticalSection> lock(m_stateMutex);
 
     if (m_state == RENDER_STATE::CONFIGURING)
     {
@@ -255,7 +257,7 @@ void CRPRenderManager::CheckFlush()
   if (m_bFlush)
   {
     {
-      CSingleLock lock(m_bufferMutex);
+      std::unique_lock<CCriticalSection> lock(m_bufferMutex);
       for (auto renderBuffer : m_renderBuffers)
         renderBuffer->Release();
       m_renderBuffers.clear();
@@ -446,7 +448,7 @@ std::shared_ptr<CRPBaseRenderer> CRPRenderManager::GetRenderer(
   std::shared_ptr<CRPBaseRenderer> renderer;
 
   {
-    CSingleLock lock(m_stateMutex);
+    std::unique_lock<CCriticalSection> lock(m_stateMutex);
     if (m_state == RENDER_STATE::UNCONFIGURED)
       return renderer;
   }
@@ -521,7 +523,7 @@ bool CRPRenderManager::HasRenderBuffer(IRenderBufferPool* bufferPool)
 {
   bool bHasRenderBuffer = false;
 
-  CSingleLock lock(m_bufferMutex);
+  std::unique_lock<CCriticalSection> lock(m_bufferMutex);
 
   auto it = std::find_if(
       m_renderBuffers.begin(), m_renderBuffers.end(),
@@ -540,7 +542,7 @@ IRenderBuffer* CRPRenderManager::GetRenderBuffer(IRenderBufferPool* bufferPool)
 
   IRenderBuffer* renderBuffer = nullptr;
 
-  CSingleLock lock(m_bufferMutex);
+  std::unique_lock<CCriticalSection> lock(m_bufferMutex);
 
   auto getRenderBuffer = [bufferPool](IRenderBuffer* renderBuffer) {
     return renderBuffer->GetPool() == bufferPool;
@@ -569,7 +571,7 @@ void CRPRenderManager::CreateRenderBuffer(IRenderBufferPool* bufferPool)
   if (m_bFlush || m_state != RENDER_STATE::CONFIGURED)
     return;
 
-  CSingleLock lock(m_bufferMutex);
+  std::unique_lock<CCriticalSection> lock(m_bufferMutex);
 
   if (!HasRenderBuffer(bufferPool) && m_bHasCachedFrame)
   {

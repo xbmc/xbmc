@@ -14,9 +14,10 @@
 #include "profiles/ProfileManager.h"
 #include "profiles/dialogs/GUIDialogLockSettings.h"
 #include "settings/SettingsComponent.h"
-#include "threads/SingleLock.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
+
+#include <mutex>
 
 CPasswordManager &CPasswordManager::GetInstance()
 {
@@ -31,7 +32,7 @@ CPasswordManager::CPasswordManager()
 
 bool CPasswordManager::AuthenticateURL(CURL &url)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   if (!m_loaded)
     Load();
@@ -54,7 +55,7 @@ bool CPasswordManager::AuthenticateURL(CURL &url)
 
 bool CPasswordManager::PromptToAuthenticateURL(CURL &url)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   std::string passcode;
   std::string username = url.GetUserName();
@@ -95,7 +96,7 @@ void CPasswordManager::SaveAuthenticatedURL(const CURL &url, bool saveToProfile)
   if (url.GetUserName().empty())
     return;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   std::string path = GetLookupPath(url);
   std::string authenticatedPath = url.Get();

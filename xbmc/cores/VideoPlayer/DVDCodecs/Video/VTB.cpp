@@ -6,16 +6,18 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "cores/VideoPlayer/Process/ProcessInfo.h"
-#include "DVDVideoCodec.h"
+#include "VTB.h"
+
 #include "DVDCodecs/DVDCodecUtils.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
-#include "utils/log.h"
-#include "VTB.h"
+#include "DVDVideoCodec.h"
+#include "ServiceBroker.h"
+#include "cores/VideoPlayer/Process/ProcessInfo.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "threads/SingleLock.h"
-#include "ServiceBroker.h"
+#include "utils/log.h"
+
+#include <mutex>
 
 extern "C" {
 #include <libavcodec/videotoolbox.h>
@@ -81,7 +83,7 @@ CVideoBufferPoolVTB::~CVideoBufferPoolVTB()
 
 CVideoBuffer* CVideoBufferPoolVTB::Get()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   CVideoBufferVTB *buf = nullptr;
   if (!m_free.empty())
@@ -105,7 +107,7 @@ CVideoBuffer* CVideoBufferPoolVTB::Get()
 
 void CVideoBufferPoolVTB::Return(int id)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   m_all[id]->Unref();
   auto it = m_used.begin();

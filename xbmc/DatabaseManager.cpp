@@ -20,6 +20,8 @@
 #include "video/VideoDatabase.h"
 #include "view/ViewDatabase.h"
 
+#include <mutex>
+
 using namespace PVR;
 
 CDatabaseManager::CDatabaseManager() :
@@ -34,7 +36,7 @@ CDatabaseManager::~CDatabaseManager() = default;
 
 void CDatabaseManager::Initialize()
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
 
   m_dbStatus.clear();
 
@@ -62,7 +64,7 @@ void CDatabaseManager::Initialize()
 
 bool CDatabaseManager::CanOpen(const std::string &name)
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
   std::map<std::string, DB_STATUS>::const_iterator i = m_dbStatus.find(name);
   if (i != m_dbStatus.end())
     return i->second == DB_READY;
@@ -206,6 +208,6 @@ bool CDatabaseManager::UpdateVersion(CDatabase &db, const std::string &dbName)
 
 void CDatabaseManager::UpdateStatus(const std::string &name, DB_STATUS status)
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
   m_dbStatus[name] = status;
 }

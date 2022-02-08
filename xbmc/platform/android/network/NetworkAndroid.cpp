@@ -14,6 +14,8 @@
 
 #include "platform/android/activity/XBMCApp.h"
 
+#include <mutex>
+
 #include <androidjni/ConnectivityManager.h>
 #include <androidjni/InetAddress.h>
 #include <androidjni/LinkAddress.h>
@@ -259,13 +261,13 @@ bool CNetworkAndroid::GetHostName(std::string& hostname)
 
 std::vector<CNetworkInterface*>& CNetworkAndroid::GetInterfaceList()
 {
-  CSingleLock lock(m_refreshMutex);
+  std::unique_lock<CCriticalSection> lock(m_refreshMutex);
   return m_interfaces;
 }
 
 CNetworkInterface* CNetworkAndroid::GetFirstConnectedInterface()
 {
-  CSingleLock lock(m_refreshMutex);
+  std::unique_lock<CCriticalSection> lock(m_refreshMutex);
 
   for(CNetworkInterface* intf : m_interfaces)
   {
@@ -311,7 +313,7 @@ bool CNetworkAndroid::PingHost(unsigned long remote_ip, unsigned int timeout_ms)
 
 void CNetworkAndroid::RetrieveInterfaces()
 {
-  CSingleLock lock(m_refreshMutex);
+  std::unique_lock<CCriticalSection> lock(m_refreshMutex);
 
   // Cannot delete interfaces here, as there still might have references to it
   for (auto intf : m_oldInterfaces)

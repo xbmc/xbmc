@@ -22,6 +22,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "threads/SingleLock.h"
 #include "utils/CharsetConverter.h"
 #include "utils/HTMLUtil.h"
 #include "utils/JSONVariantParser.h"
@@ -30,6 +31,7 @@
 #include "utils/UrlOptions.h"
 
 #include <climits>
+#include <mutex>
 
 using namespace XFILE;
 using namespace MUSIC_INFO;
@@ -117,7 +119,7 @@ bool CShoutcastFile::Open(const CURL& url)
 
   if (result)
   {
-    CSingleLock lock(m_tagSection);
+    std::unique_lock<CCriticalSection> lock(m_tagSection);
 
     m_masterTag.reset(new CMusicInfoTag());
     m_masterTag->SetStationName(icyTitle);
@@ -171,7 +173,7 @@ void CShoutcastFile::Close()
   m_title.clear();
 
   {
-    CSingleLock lock(m_tagSection);
+    std::unique_lock<CCriticalSection> lock(m_tagSection);
     while (!m_tags.empty())
       m_tags.pop();
     m_masterTag.reset();
@@ -295,7 +297,7 @@ bool CShoutcastFile::ExtractTagInfo(const char* buf)
       if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bShoutcastArt)
         coverURL.clear();
 
-      CSingleLock lock(m_tagSection);
+      std::unique_lock<CCriticalSection> lock(m_tagSection);
 
       const std::shared_ptr<CMusicInfoTag> tag = std::make_shared<CMusicInfoTag>(*m_masterTag);
       tag->SetArtist(artistInfo);
@@ -325,7 +327,7 @@ int CShoutcastFile::IoControl(EIoControl control, void* payload)
 {
   if (control == IOCTRL_SET_CACHE && m_cacheReader == nullptr)
   {
-    CSingleLock lock(m_tagSection);
+    std::unique_lock<CCriticalSection> lock(m_tagSection);
     m_cacheReader = static_cast<CFileCache*>(payload);
     Create();
   }
@@ -339,7 +341,7 @@ void CShoutcastFile::Process()
   {
     if (m_tagChange.Wait(500ms))
     {
-      CSingleLock lock(m_tagSection);
+      std::unique_lock<CCriticalSection> lock(m_tagSection);
       while (!m_bStop && !m_tags.empty())
       {
         const TagInfo& front = m_tags.front();

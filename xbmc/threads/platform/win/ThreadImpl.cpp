@@ -11,6 +11,7 @@
 #include "platform/win32/WIN32Util.h"
 
 #include <array>
+#include <mutex>
 
 #include <process.h>
 #include <windows.h>
@@ -78,7 +79,7 @@ bool CThread::SetPriority(const ThreadPriority& priority)
 {
   bool bReturn = false;
 
-  CSingleLock lock(m_CriticalSection);
+  std::unique_lock<CCriticalSection> lock(m_CriticalSection);
   if (m_thread)
     bReturn = SetThreadPriority(m_lwpId, ThreadPriorityToNativePriority(priority)) == TRUE;
 

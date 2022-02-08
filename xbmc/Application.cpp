@@ -46,6 +46,7 @@
 #include "utils/Variant.h"
 #include "video/Bookmark.h"
 #include "video/VideoLibraryQueue.h"
+
 #ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
 #endif
@@ -85,6 +86,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/SkinSettings.h"
+#include "threads/SingleLock.h"
 #include "utils/CPUInfo.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/SystemInfo.h"
@@ -189,11 +191,13 @@
 #include <X11/Xlib.h>
 #endif
 
-#include "cores/FFmpeg.h"
-#include "utils/CharsetConverter.h"
-#include "pictures/GUIWindowSlideShow.h"
-#include "addons/AddonSystemSettings.h"
 #include "FileItem.h"
+#include "addons/AddonSystemSettings.h"
+#include "cores/FFmpeg.h"
+#include "pictures/GUIWindowSlideShow.h"
+#include "utils/CharsetConverter.h"
+
+#include <mutex>
 
 using namespace ADDON;
 using namespace XFILE;
@@ -246,14 +250,14 @@ CApplication::~CApplication(void)
 
 bool CApplication::OnEvent(XBMC_Event& newEvent)
 {
-  CSingleLock lock(m_portSection);
+  std::unique_lock<CCriticalSection> lock(m_portSection);
   m_portEvents.push_back(newEvent);
   return true;
 }
 
 void CApplication::HandlePortEvents()
 {
-  CSingleLock lock(m_portSection);
+  std::unique_lock<CCriticalSection> lock(m_portSection);
   while (!m_portEvents.empty())
   {
     auto newEvent = m_portEvents.front();
@@ -1112,7 +1116,7 @@ bool CApplication::LoadSkin(const std::string& skinID)
 
   }
 
-  CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
   // store current active window with its focused control
   int currentWindowID = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
@@ -2298,7 +2302,7 @@ void CApplication::FrameMove(bool processEvents, bool processGUI)
 
     if (processGUI && m_renderGUI)
     {
-      CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+      std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
       // check if there are notifications to display
       CGUIDialogKaiToast *toast = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogKaiToast>(WINDOW_DIALOG_KAI_TOAST);
       if (toast && toast->DoWork())
@@ -3070,7 +3074,7 @@ void CApplication::OnPlayBackStarted(const CFileItem &file)
 
 void CApplication::OnPlayerCloseFile(const CFileItem &file, const CBookmark &bookmarkParam)
 {
-  CSingleLock lock(m_stackHelper.m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_stackHelper.m_critSection);
 
   CFileItem fileItem(file);
   CBookmark bookmark = bookmarkParam;
@@ -4844,7 +4848,7 @@ void CApplication::CloseNetworkShares()
 
 void CApplication::RegisterActionListener(IActionListener *listener)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   std::vector<IActionListener *>::iterator it = std::find(m_actionListeners.begin(), m_actionListeners.end(), listener);
   if (it == m_actionListeners.end())
     m_actionListeners.push_back(listener);
@@ -4852,7 +4856,7 @@ void CApplication::RegisterActionListener(IActionListener *listener)
 
 void CApplication::UnregisterActionListener(IActionListener *listener)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   std::vector<IActionListener *>::iterator it = std::find(m_actionListeners.begin(), m_actionListeners.end(), listener);
   if (it != m_actionListeners.end())
     m_actionListeners.erase(it);
@@ -4860,7 +4864,7 @@ void CApplication::UnregisterActionListener(IActionListener *listener)
 
 bool CApplication::NotifyActionListeners(const CAction &action) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   for (std::vector<IActionListener *>::const_iterator it = m_actionListeners.begin(); it != m_actionListeners.end(); ++it)
   {
     if ((*it)->OnAction(action))

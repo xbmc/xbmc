@@ -27,6 +27,7 @@
 #include "windowing/GraphicContext.h"
 
 #include <cmath>
+#include <mutex>
 #include <stdlib.h>
 
 CSeekHandler::~CSeekHandler()
@@ -110,7 +111,7 @@ int CSeekHandler::GetSeekStepSize(SeekType type, int step)
 
 void CSeekHandler::Seek(bool forward, float amount, float duration /* = 0 */, bool analogSeek /* = false */, SeekType type /* = SEEK_TYPE_VIDEO */)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   // not yet seeking
   if (!m_requireSeek)
@@ -171,7 +172,7 @@ void CSeekHandler::SeekSeconds(int seconds)
   if (seconds == 0)
     return;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   SetSeekSize(seconds);
 
   // perform relative seek
@@ -206,7 +207,7 @@ void CSeekHandler::FrameMove()
 {
   if (m_timer.GetElapsedMilliseconds() >= m_seekDelay && m_requireSeek)
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
 
     // perform relative seek
     g_application.GetAppPlayer().SeekTimeRelative(static_cast<int64_t>(m_seekSize * 1000));
@@ -354,7 +355,7 @@ bool CSeekHandler::SeekTimeCode(const CAction &action)
     case ACTION_PLAYER_PLAY:
     case ACTION_PAUSE:
     {
-      CSingleLock lock(m_critSection);
+      std::unique_lock<CCriticalSection> lock(m_critSection);
 
       g_application.SeekTime(GetTimeCodeSeconds());
       Reset();

@@ -19,6 +19,7 @@
 #include "utils/log.h"
 
 #include <memory>
+#include <mutex>
 #include <string>
 
 using namespace PVR;
@@ -105,13 +106,13 @@ void CPVRProvider::Serialize(CVariant& value) const
 
 int CPVRProvider::GetDatabaseId() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_iDatabaseId;
 }
 
 bool CPVRProvider::SetDatabaseId(int iDatabaseId)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   if (m_iDatabaseId != iDatabaseId)
   {
@@ -124,25 +125,25 @@ bool CPVRProvider::SetDatabaseId(int iDatabaseId)
 
 int CPVRProvider::GetUniqueId() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_iUniqueId;
 }
 
 int CPVRProvider::GetClientId() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_iClientId;
 }
 
 std::string CPVRProvider::GetName() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_strName;
 }
 
 bool CPVRProvider::SetName(const std::string& strName)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   if (m_strName != strName)
   {
     m_strName = strName;
@@ -154,13 +155,13 @@ bool CPVRProvider::SetName(const std::string& strName)
 
 PVR_PROVIDER_TYPE CPVRProvider::GetType() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_type;
 }
 
 bool CPVRProvider::SetType(PVR_PROVIDER_TYPE type)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   if (m_type != type)
   {
     m_type = type;
@@ -172,19 +173,19 @@ bool CPVRProvider::SetType(PVR_PROVIDER_TYPE type)
 
 std::string CPVRProvider::GetClientIconPath() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_iconPath.GetClientImage();
 }
 
 std::string CPVRProvider::GetIconPath() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_iconPath.GetLocalImage();
 }
 
 bool CPVRProvider::SetIconPath(const std::string& strIconPath)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   if (GetClientIconPath() != strIconPath)
   {
     m_iconPath.SetClientImage(strIconPath);
@@ -211,14 +212,14 @@ const std::string DeTokenize(const std::vector<std::string>& tokens)
 
 std::vector<std::string> CPVRProvider::GetCountries() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   return Tokenize(m_strCountries);
 }
 
 bool CPVRProvider::SetCountries(const std::vector<std::string>& countries)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   const std::string strCountries = DeTokenize(countries);
   if (m_strCountries != strCountries)
   {
@@ -231,13 +232,13 @@ bool CPVRProvider::SetCountries(const std::vector<std::string>& countries)
 
 std::string CPVRProvider::GetCountriesDBString() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_strCountries;
 }
 
 bool CPVRProvider::SetCountriesFromDBString(const std::string& strCountries)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   if (m_strCountries != strCountries)
   {
     m_strCountries = strCountries;
@@ -249,13 +250,13 @@ bool CPVRProvider::SetCountriesFromDBString(const std::string& strCountries)
 
 std::vector<std::string> CPVRProvider::GetLanguages() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return Tokenize(m_strLanguages);
 }
 
 bool CPVRProvider::SetLanguages(const std::vector<std::string>& languages)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   const std::string strLanguages = DeTokenize(languages);
   if (m_strLanguages != strLanguages)
   {
@@ -268,13 +269,13 @@ bool CPVRProvider::SetLanguages(const std::vector<std::string>& languages)
 
 std::string CPVRProvider::GetLanguagesDBString() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_strLanguages;
 }
 
 bool CPVRProvider::SetLanguagesFromDBString(const std::string& strLanguages)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   if (m_strLanguages != strLanguages)
   {
     m_strLanguages = strLanguages;
@@ -289,7 +290,7 @@ bool CPVRProvider::Persist(bool updateRecord /* = false */)
   const std::shared_ptr<CPVRDatabase> database = CServiceBroker::GetPVRManager().GetTVDatabase();
   if (database)
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     return database->Persist(*this, updateRecord);
   }
 
@@ -301,7 +302,7 @@ bool CPVRProvider::DeleteFromDatabase()
   const std::shared_ptr<CPVRDatabase> database = CServiceBroker::GetPVRManager().GetTVDatabase();
   if (database)
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     return database->Delete(*this);
   }
 
@@ -312,7 +313,7 @@ bool CPVRProvider::UpdateEntry(const std::shared_ptr<CPVRProvider>& fromProvider
                                ProviderUpdateMode updateMode)
 {
   bool bChanged = false;
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   if (updateMode == ProviderUpdateMode::BY_DATABASE)
   {
@@ -375,18 +376,18 @@ bool CPVRProvider::UpdateEntry(const std::shared_ptr<CPVRProvider>& fromProvider
 
 bool CPVRProvider::HasThumbPath() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return (m_type == PVR_PROVIDER_TYPE_ADDON && !m_thumbPath.GetLocalImage().empty());
 }
 
 std::string CPVRProvider::GetThumbPath() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_thumbPath.GetLocalImage();
 }
 
 std::string CPVRProvider::GetClientThumbPath() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_thumbPath.GetClientImage();
 }

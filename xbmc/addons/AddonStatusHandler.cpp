@@ -16,11 +16,11 @@
 #include "guilib/GUIWindowManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogOKHelper.h"
-#include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
+#include <mutex>
 #include <utility>
 
 using namespace KODI::MESSAGING;
@@ -81,7 +81,7 @@ void CAddonStatusHandler::OnExit()
 
 void CAddonStatusHandler::Process()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   std::string heading = StringUtils::Format(
       "{}: {}", CAddonInfo::TranslateType(m_addon->Type(), true), m_addon->Name());

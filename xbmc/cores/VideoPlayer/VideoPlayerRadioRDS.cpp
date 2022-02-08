@@ -43,10 +43,11 @@
 #include "pvr/channels/PVRRadioRDSInfoTag.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "threads/SingleLock.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
+
+#include <mutex>
 
 using namespace XFILE;
 using namespace PVR;
@@ -553,7 +554,7 @@ void CDVDRadioRDSData::CloseStream(bool bWaitForBuffers)
 
 void CDVDRadioRDSData::ResetRDSCache()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   m_currentFileUpdate = false;
 
@@ -646,7 +647,7 @@ void CDVDRadioRDSData::Process()
 
     if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
     {
-      CSingleLock lock(m_critSection);
+      std::unique_lock<CCriticalSection> lock(m_critSection);
 
       DemuxPacket* pPacket = std::static_pointer_cast<CDVDMsgDemuxerPacket>(pMsg)->GetPacket();
 

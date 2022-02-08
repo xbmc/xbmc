@@ -14,6 +14,7 @@
 #include "threads/CriticalSection.h"
 
 #include <atomic>
+#include <mutex>
 
 #include "PlatformDefs.h"
 
@@ -23,7 +24,6 @@ extern "C" {
 
 typedef struct stDVDAudioFrame DVDAudioFrame;
 
-class CSingleLock;
 class CDVDClock;
 
 class CAudioSinkAE : IAEClockCallback

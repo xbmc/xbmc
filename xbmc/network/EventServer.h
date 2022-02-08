@@ -11,11 +11,11 @@
 #include "EventClient.h"
 #include "Socket.h"
 #include "threads/CriticalSection.h"
-#include "threads/SingleLock.h"
 #include "threads/Thread.h"
 
 #include <atomic>
 #include <map>
+#include <mutex>
 #include <queue>
 #include <vector>
 
@@ -44,7 +44,7 @@ namespace EVENTSERVER
 
     void RefreshSettings()
     {
-      CSingleLock lock(m_critSection);
+      std::unique_lock<CCriticalSection> lock(m_critSection);
       m_bRefreshSettings = true;
     }
 

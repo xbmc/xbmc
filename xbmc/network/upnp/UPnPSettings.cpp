@@ -10,11 +10,12 @@
 
 #include "ServiceBroker.h"
 #include "filesystem/File.h"
-#include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
+
+#include <mutex>
 
 #define XML_UPNP          "upnpserver"
 #define XML_SERVER_UUID   "UUID"
@@ -48,7 +49,7 @@ void CUPnPSettings::OnSettingsUnloaded()
 
 bool CUPnPSettings::Load(const std::string &file)
 {
-  CSingleLock lock(m_critical);
+  std::unique_lock<CCriticalSection> lock(m_critical);
 
   Clear();
 
@@ -81,7 +82,7 @@ bool CUPnPSettings::Load(const std::string &file)
 
 bool CUPnPSettings::Save(const std::string &file) const
 {
-  CSingleLock lock(m_critical);
+  std::unique_lock<CCriticalSection> lock(m_critical);
 
   CXBMCTinyXML doc;
   TiXmlElement xmlRootElement(XML_UPNP);
@@ -101,7 +102,7 @@ bool CUPnPSettings::Save(const std::string &file) const
 
 void CUPnPSettings::Clear()
 {
-  CSingleLock lock(m_critical);
+  std::unique_lock<CCriticalSection> lock(m_critical);
 
   m_serverUUID.clear();
   m_serverPort = 0;

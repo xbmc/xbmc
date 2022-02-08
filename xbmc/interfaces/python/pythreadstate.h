@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "threads/SingleLock.h"
 
 //WARNING: since this will unlock/lock the python global interpreter lock,
 //         it will not work recursively
@@ -50,12 +49,16 @@ class CPyThreadState
 };
 
 /**
- * A CSingleLock that will relinquish the GIL during the time
+ * A std::unique_lock<CCriticalSection> that will relinquish the GIL during the time
  *  it takes to obtain the CriticalSection
  */
-class GilSafeSingleLock : public CPyThreadState, public CSingleLock
+class GilSafeSingleLock : public CPyThreadState, public std::unique_lock<CCriticalSection>
 {
 public:
-  explicit GilSafeSingleLock(CCriticalSection& critSec) : CPyThreadState(true), CSingleLock(critSec) { CPyThreadState::Restore(); }
+  explicit GilSafeSingleLock(CCriticalSection& critSec)
+    : CPyThreadState(true), std::unique_lock<CCriticalSection>(critSec)
+  {
+    CPyThreadState::Restore();
+  }
 };
 

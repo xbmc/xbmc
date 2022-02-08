@@ -61,7 +61,6 @@
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "threads/IRunnable.h"
-#include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
 #include "utils/URIUtils.h"
@@ -73,6 +72,7 @@
 #include <iterator>
 #include <map>
 #include <memory>
+#include <mutex>
 #include <string>
 #include <thread>
 #include <utility>
@@ -2450,7 +2450,7 @@ namespace PVR
 
   void CPVRGUIActions::SetSelectedItemPath(bool bRadio, const std::string& path)
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     if (bRadio)
       m_selectedItemPathRadio = path;
     else
@@ -2478,7 +2478,7 @@ namespace PVR
       }
     }
 
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     return bRadio ? m_selectedItemPathRadio : m_selectedItemPathTV;
   }
 

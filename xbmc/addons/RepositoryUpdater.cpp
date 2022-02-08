@@ -23,12 +23,12 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
-#include "threads/SingleLock.h"
 #include "utils/JobManager.h"
 #include "utils/log.h"
 
 #include <algorithm>
 #include <iterator>
+#include <mutex>
 #include <vector>
 
 using namespace std::chrono_literals;
@@ -72,7 +72,7 @@ void CRepositoryUpdater::OnEvent(const ADDON::AddonEvent& event)
 
 void CRepositoryUpdater::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 {
-  CSingleLock lock(m_criticalSection);
+  std::unique_lock<CCriticalSection> lock(m_criticalSection);
   m_jobs.erase(std::find(m_jobs.begin(), m_jobs.end(), job));
   if (m_jobs.empty())
   {
@@ -119,7 +119,7 @@ bool CRepositoryUpdater::CheckForUpdates(bool showProgress)
   VECADDONS addons;
   if (m_addonMgr.GetAddons(addons, ADDON_REPOSITORY) && !addons.empty())
   {
-    CSingleLock lock(m_criticalSection);
+    std::unique_lock<CCriticalSection> lock(m_criticalSection);
     for (const auto& addon : addons)
       CheckForUpdates(std::static_pointer_cast<ADDON::CRepository>(addon), showProgress);
 
@@ -138,7 +138,7 @@ static void SetProgressIndicator(CRepositoryUpdateJob* job)
 
 void CRepositoryUpdater::CheckForUpdates(const ADDON::RepositoryPtr& repo, bool showProgress)
 {
-  CSingleLock lock(m_criticalSection);
+  std::unique_lock<CCriticalSection> lock(m_criticalSection);
   auto job = std::find_if(m_jobs.begin(), m_jobs.end(),
       [&](CRepositoryUpdateJob* job){ return job->GetAddon()->ID() == repo->ID(); });
 
@@ -227,7 +227,7 @@ CDateTime CRepositoryUpdater::ClosestNextCheck() const
 
 void CRepositoryUpdater::ScheduleUpdate()
 {
-  CSingleLock lock(m_criticalSection);
+  std::unique_lock<CCriticalSection> lock(m_criticalSection);
   m_timer.Stop(true);
 
   if (CAddonSystemSettings::GetInstance().GetAddonAutoUpdateMode() == AUTO_UPDATES_NEVER)

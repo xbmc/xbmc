@@ -23,6 +23,8 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
+#include <mutex>
+
 CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml")
 {
   m_updateRA = (Audio | Video | Totals);
@@ -108,7 +110,7 @@ void CGUIWindowHome::AddRecentlyAddedJobs(int flag)
   // this block checks to see if another one is running
   // and keeps track of the flag
   {
-    CSingleLock lockMe(*this);
+    std::unique_lock<CCriticalSection> lockMe(*this);
     if (!m_recentlyAddedRunning)
     {
       getAJob = true;
@@ -138,7 +140,7 @@ void CGUIWindowHome::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   int flag = 0;
 
   {
-    CSingleLock lockMe(*this);
+    std::unique_lock<CCriticalSection> lockMe(*this);
 
     // the job is finished.
     // did one come in the meantime?

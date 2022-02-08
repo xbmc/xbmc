@@ -31,6 +31,8 @@
 #include "utils/log.h"
 #include "windowing/WinSystem.h"
 
+#include <mutex>
+
 #ifdef TARGET_ANDROID
 #include <androidjni/Intent.h>
 #include <androidjni/RecognizerIntent.h>
@@ -696,7 +698,7 @@ void CGUIDialogKeyboardGeneric::ChangeWordList(int direct)
 
 void CGUIDialogKeyboardGeneric::ShowWordList(int direct)
 {
-  CSingleLock lock(m_CS);
+  std::unique_lock<CCriticalSection> lock(m_CS);
   std::wstring hzlist = L"";
   CServiceBroker::GetWinSystem()->GetGfxContext().SetScalingResolution(m_coordsRes, true);
   float width = m_listfont->GetCharWidth(L'<') + m_listfont->GetCharWidth(L'>');

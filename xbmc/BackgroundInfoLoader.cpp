@@ -10,9 +10,10 @@
 
 #include "FileItem.h"
 #include "URL.h"
-#include "threads/SingleLock.h"
 #include "threads/Thread.h"
 #include "utils/log.h"
+
+#include <mutex>
 
 CBackgroundInfoLoader::CBackgroundInfoLoader() : m_thread (NULL)
 {
@@ -98,7 +99,7 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
   if (items.IsEmpty())
     return;
 
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
 
   for (int nItem=0; nItem < items.Size(); nItem++)
     m_vecItems.push_back(items[nItem]);

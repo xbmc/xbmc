@@ -41,12 +41,13 @@
 #include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/MediaSettings.h"
-#include "threads/SingleLock.h"
 #include "utils/JobManager.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "windowing/WinSystem.h"
+
+#include <mutex>
 
 using namespace KODI;
 using namespace GAME;
@@ -93,7 +94,7 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
 
   m_renderManager.reset(new CRPRenderManager(*m_processInfo));
 
-  CSingleLock lock(m_mutex);
+  std::unique_lock<CCriticalSection> lock(m_mutex);
 
   if (IsPlaying())
     CloseFile();
@@ -209,7 +210,7 @@ bool CRetroPlayer::CloseFile(bool reopen /* = false */)
 
   m_playbackControl.reset();
 
-  CSingleLock lock(m_mutex);
+  std::unique_lock<CCriticalSection> lock(m_mutex);
 
   if (m_gameClient && m_gameServices.GameSettings().AutosaveEnabled())
   {

@@ -9,7 +9,8 @@
 #include "ProcessInfoOSX.h"
 
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
-#include "threads/SingleLock.h"
+
+#include <mutex>
 
 using namespace VIDEOPLAYER;
 
@@ -31,7 +32,7 @@ void CProcessInfoOSX::SetSwDeinterlacingMethods()
   std::list<EINTERLACEMETHOD> methods;
   {
     // get the current methods
-    CSingleLock lock(m_videoCodecSection);
+    std::unique_lock<CCriticalSection> lock(m_videoCodecSection);
     methods = m_deintMethods;
   }
   // add bob and blend deinterlacer for osx

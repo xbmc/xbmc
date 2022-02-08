@@ -7,12 +7,14 @@
  */
 
 #include "DetectDVDType.h"
+
+#include "cdioSupport.h"
+#include "filesystem/File.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
-#include "cdioSupport.h"
-#include "filesystem/File.h"
-#include "threads/SingleLock.h"
+
+#include <mutex>
 #ifdef TARGET_POSIX
 #include <sys/types.h>
 #include <sys/ioctl.h>
@@ -104,7 +106,7 @@ void CDetectDVDMedia::UpdateDvdrom()
   // that we are busy detecting the
   // newly inserted media.
   {
-    CSingleLock waitLock(m_muReadingMedia);
+    std::unique_lock<CCriticalSection> waitLock(m_muReadingMedia);
     switch (GetTrayState())
     {
       case DRIVE_NONE:
@@ -379,7 +381,7 @@ DWORD CDetectDVDMedia::GetTrayState()
 
 void CDetectDVDMedia::UpdateState()
 {
-  CSingleLock waitLock(m_muReadingMedia);
+  std::unique_lock<CCriticalSection> waitLock(m_muReadingMedia);
   m_pInstance->DetectMediaType();
 }
 
@@ -387,7 +389,7 @@ void CDetectDVDMedia::UpdateState()
 // Wait for drive, to finish media detection.
 void CDetectDVDMedia::WaitMediaReady()
 {
-  CSingleLock waitLock(m_muReadingMedia);
+  std::unique_lock<CCriticalSection> waitLock(m_muReadingMedia);
 }
 
 // Static function
@@ -410,7 +412,7 @@ bool CDetectDVDMedia::IsDiscInDrive()
 // Can be NULL
 CCdInfo* CDetectDVDMedia::GetCdInfo()
 {
-  CSingleLock waitLock(m_muReadingMedia);
+  std::unique_lock<CCriticalSection> waitLock(m_muReadingMedia);
   CCdInfo* pCdInfo = m_pCdInfo;
   return pCdInfo;
 }

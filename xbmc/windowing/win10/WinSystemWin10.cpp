@@ -6,26 +6,29 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "WinSystemWin10.h"
+
 #include "Application.h"
+#include "ServiceBroker.h"
+#include "WinEventsWin10.h"
 #include "cores/AudioEngine/AESinkFactory.h"
-#include "cores/AudioEngine/Sinks/AESinkXAudio.h"
 #include "cores/AudioEngine/Sinks/AESinkWASAPI.h"
-#include "windowing/GraphicContext.h"
-#include "platform/win10/AsyncHelpers.h"
-#include "platform/win32/CharsetConverter.h"
+#include "cores/AudioEngine/Sinks/AESinkXAudio.h"
 #include "rendering/dx/DirectXHelper.h"
 #include "rendering/dx/RenderContext.h"
 #include "rendering/dx/ScreenshotSurfaceWindows.h"
-#include "ServiceBroker.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "threads/SingleLock.h"
-#include "utils/log.h"
 #include "utils/SystemInfo.h"
+#include "utils/log.h"
+#include "windowing/GraphicContext.h"
 #include "windowing/windows/VideoSyncD3D.h"
-#include "WinEventsWin10.h"
-#include "WinSystemWin10.h"
+
+#include "platform/win10/AsyncHelpers.h"
+#include "platform/win32/CharsetConverter.h"
+
+#include <mutex>
 
 #pragma pack(push,8)
 
@@ -547,13 +550,13 @@ bool CWinSystemWin10::Show(bool raise)
 
 void CWinSystemWin10::Register(IDispResource *resource)
 {
-  CSingleLock lock(m_resourceSection);
+  std::unique_lock<CCriticalSection> lock(m_resourceSection);
   m_resources.push_back(resource);
 }
 
 void CWinSystemWin10::Unregister(IDispResource* resource)
 {
-  CSingleLock lock(m_resourceSection);
+  std::unique_lock<CCriticalSection> lock(m_resourceSection);
   std::vector<IDispResource*>::iterator i = find(m_resources.begin(), m_resources.end(), resource);
   if (i != m_resources.end())
     m_resources.erase(i);
@@ -564,7 +567,7 @@ void CWinSystemWin10::OnDisplayLost()
   CLog::Log(LOGDEBUG, "{} - notify display lost event", __FUNCTION__);
 
   {
-    CSingleLock lock(m_resourceSection);
+    std::unique_lock<CCriticalSection> lock(m_resourceSection);
     for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
       (*i)->OnLostDisplay();
   }
@@ -575,7 +578,7 @@ void CWinSystemWin10::OnDisplayReset()
   if (!m_delayDispReset)
   {
     CLog::Log(LOGDEBUG, "{} - notify display reset event", __FUNCTION__);
-    CSingleLock lock(m_resourceSection);
+    std::unique_lock<CCriticalSection> lock(m_resourceSection);
     for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
       (*i)->OnResetDisplay();
   }

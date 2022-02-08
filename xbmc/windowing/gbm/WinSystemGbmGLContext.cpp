@@ -25,6 +25,8 @@
 #include "utils/log.h"
 #include "windowing/WindowSystemFactory.h"
 
+#include <mutex>
+
 #include <EGL/eglext.h>
 
 using namespace KODI::WINDOWING::GBM;
@@ -130,7 +132,7 @@ void CWinSystemGbmGLContext::PresentRender(bool rendered, bool videoLayer)
       CLog::Log(LOGDEBUG, "CWinSystemGbmGLContext::{} - Sending display reset to all clients",
                 __FUNCTION__);
       m_dispReset = false;
-      CSingleLock lock(m_resourceSection);
+      std::unique_lock<CCriticalSection> lock(m_resourceSection);
 
       for (auto resource : m_resources)
         resource->OnResetDisplay();

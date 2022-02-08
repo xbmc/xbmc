@@ -11,9 +11,9 @@
 #include "IRenderBufferPool.h"
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
 #include "cores/RetroPlayer/rendering/RenderVideoSettings.h"
-#include "threads/SingleLock.h"
 
 #include <algorithm>
+#include <mutex>
 
 using namespace KODI;
 using namespace RETRO;
@@ -25,7 +25,7 @@ CRenderBufferManager::~CRenderBufferManager()
 
 void CRenderBufferManager::RegisterPools(IRendererFactory* factory, RenderBufferPoolVector pools)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   m_pools.emplace_back(RenderBufferPools{factory, std::move(pools)});
 }
@@ -34,7 +34,7 @@ RenderBufferPoolVector CRenderBufferManager::GetPools(IRendererFactory* factory)
 {
   RenderBufferPoolVector bufferPools;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   auto it = std::find_if(m_pools.begin(), m_pools.end(), [factory](const RenderBufferPools& pools) {
     return pools.factory == factory;
@@ -50,7 +50,7 @@ std::vector<IRenderBufferPool*> CRenderBufferManager::GetBufferPools()
 {
   std::vector<IRenderBufferPool*> bufferPools;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   for (const auto& pools : m_pools)
   {
@@ -63,7 +63,7 @@ std::vector<IRenderBufferPool*> CRenderBufferManager::GetBufferPools()
 
 void CRenderBufferManager::FlushPools()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   for (const auto& pools : m_pools)
   {
@@ -74,7 +74,7 @@ void CRenderBufferManager::FlushPools()
 
 std::string CRenderBufferManager::GetRenderSystemName(IRenderBufferPool* renderBufferPool) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   for (const auto& pools : m_pools)
   {

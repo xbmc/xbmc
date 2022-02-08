@@ -33,6 +33,7 @@
 #include <functional>
 #include <iterator>
 #include <memory>
+#include <mutex>
 
 using namespace KODI::GUILIB;
 using namespace KODI::GUILIB::GUIINFO;
@@ -10452,7 +10453,7 @@ INFO::InfoPtr CGUIInfoManager::Register(const std::string &expression, int conte
   if (condition.empty())
     return INFO::InfoPtr();
 
-  CSingleLock lock(m_critInfo);
+  std::unique_lock<CCriticalSection> lock(m_critInfo);
   std::pair<INFOBOOLTYPE::iterator, bool> res;
 
   if (condition.find_first_of("|+[]!") != condition.npos)
@@ -10767,7 +10768,7 @@ void CGUIInfoManager::SetCurrentAlbumThumb(const std::string &thumbFileName)
 
 void CGUIInfoManager::Clear()
 {
-  CSingleLock lock(m_critInfo);
+  std::unique_lock<CCriticalSection> lock(m_critInfo);
   m_skinVariableStrings.clear();
 
   /*
@@ -11034,7 +11035,7 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int contextWindow, i
 void CGUIInfoManager::ResetCache()
 {
   // mark our infobools as dirty
-  CSingleLock lock(m_critInfo);
+  std::unique_lock<CCriticalSection> lock(m_critInfo);
   ++m_refreshCounter;
 }
 
@@ -11071,7 +11072,7 @@ int CGUIInfoManager::RegisterSkinVariableString(const CSkinVariableString* info)
   if (!info)
     return 0;
 
-  CSingleLock lock(m_critInfo);
+  std::unique_lock<CCriticalSection> lock(m_critInfo);
   m_skinVariableStrings.emplace_back(*info);
   delete info;
   return CONDITIONAL_LABEL_START + m_skinVariableStrings.size() - 1;
@@ -11167,7 +11168,7 @@ void CGUIInfoManager::RegisterInfoProvider(IGUIInfoProvider *provider)
   if (!CServiceBroker::GetWinSystem())
     return;
 
-  CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
   m_infoProviders.RegisterProvider(provider, false);
 }
@@ -11177,7 +11178,7 @@ void CGUIInfoManager::UnregisterInfoProvider(IGUIInfoProvider *provider)
   if (!CServiceBroker::GetWinSystem())
     return;
 
-  CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
   m_infoProviders.UnregisterProvider(provider);
 }

@@ -10,8 +10,8 @@
 
 #include "input/InputManager.h"
 #include "peripherals/Peripherals.h"
-#include "threads/SingleLock.h"
 
+#include <mutex>
 #include <sstream>
 
 using namespace KODI;
@@ -57,7 +57,7 @@ bool CPeripheralKeyboard::InitialiseFeature(const PeripheralFeature feature)
 void CPeripheralKeyboard::RegisterKeyboardDriverHandler(
     KODI::KEYBOARD::IKeyboardDriverHandler* handler, bool bPromiscuous)
 {
-  CSingleLock lock(m_mutex);
+  std::unique_lock<CCriticalSection> lock(m_mutex);
 
   KeyboardHandle handle{handler, bPromiscuous};
   m_keyboardHandlers.insert(m_keyboardHandlers.begin(), handle);
@@ -66,7 +66,7 @@ void CPeripheralKeyboard::RegisterKeyboardDriverHandler(
 void CPeripheralKeyboard::UnregisterKeyboardDriverHandler(
     KODI::KEYBOARD::IKeyboardDriverHandler* handler)
 {
-  CSingleLock lock(m_mutex);
+  std::unique_lock<CCriticalSection> lock(m_mutex);
 
   auto it =
       std::find_if(m_keyboardHandlers.begin(), m_keyboardHandlers.end(),
@@ -80,7 +80,7 @@ bool CPeripheralKeyboard::OnKeyPress(const CKey& key)
 {
   m_lastActive = CDateTime::GetCurrentDateTime();
 
-  CSingleLock lock(m_mutex);
+  std::unique_lock<CCriticalSection> lock(m_mutex);
 
   bool bHandled = false;
 
@@ -107,7 +107,7 @@ bool CPeripheralKeyboard::OnKeyPress(const CKey& key)
 
 void CPeripheralKeyboard::OnKeyRelease(const CKey& key)
 {
-  CSingleLock lock(m_mutex);
+  std::unique_lock<CCriticalSection> lock(m_mutex);
 
   for (const KeyboardHandle& handle : m_keyboardHandlers)
     handle.handler->OnKeyRelease(key);

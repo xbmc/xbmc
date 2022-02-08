@@ -14,6 +14,7 @@
 #include "swighelper.h"
 
 #include <limits.h>
+#include <mutex>
 #include <vector>
 
 namespace XBMCAddon
@@ -283,7 +284,11 @@ namespace XBMCAddon
        * This is called from the InterceptorBase destructor to prevent further
        * use of the interceptor from the window.
        */
-      inline void interceptorClear() { CSingleLock lock(*this); window = NULL; }
+      inline void interceptorClear()
+      {
+        std::unique_lock<CCriticalSection> lock(*this);
+        window = NULL;
+      }
 #endif
 
       //

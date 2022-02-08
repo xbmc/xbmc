@@ -8,6 +8,8 @@
 
 #include "ActiveAE.h"
 
+#include <mutex>
+
 using namespace AE;
 using namespace ActiveAE;
 #include "ActiveAESettings.h"
@@ -34,7 +36,7 @@ using namespace std::chrono_literals;
 
 void CEngineStats::Reset(unsigned int sampleRate, bool pcm)
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
   m_sinkDelay.SetDelay(0.0);
   m_sinkSampleRate = sampleRate;
   m_bufferedSamples = 0;
@@ -44,7 +46,7 @@ void CEngineStats::Reset(unsigned int sampleRate, bool pcm)
 
 void CEngineStats::UpdateSinkDelay(const AEDelayStatus& status, int samples)
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
   m_sinkDelay = status;
   if (samples > m_bufferedSamples)
   {
@@ -56,7 +58,7 @@ void CEngineStats::UpdateSinkDelay(const AEDelayStatus& status, int samples)
 
 void CEngineStats::AddSamples(int samples, const std::list<CActiveAEStream*>& streams)
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
   m_bufferedSamples += samples;
 
   for (auto stream : streams)
@@ -67,7 +69,7 @@ void CEngineStats::AddSamples(int samples, const std::list<CActiveAEStream*>& st
 
 void CEngineStats::GetDelay(AEDelayStatus& status)
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
   status = m_sinkDelay;
   if (m_pcmOutput)
     status.delay += (double)m_bufferedSamples / m_sinkSampleRate;
@@ -100,7 +102,7 @@ void CEngineStats::RemoveStream(unsigned int streamid)
 
 void CEngineStats::UpdateStream(CActiveAEStream *stream)
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
   for (auto &str : m_streamStats)
   {
     if (str.m_streamId == stream->m_id)
@@ -118,7 +120,7 @@ void CEngineStats::UpdateStream(CActiveAEStream *stream)
         str.m_resampleRatio = 1.0;
       }
 
-      CSingleLock lock(stream->m_statsLock);
+      std::unique_lock<CCriticalSection> lock(stream->m_statsLock);
       std::deque<CSampleBuffer*>::iterator itBuf;
       for(itBuf=stream->m_processingSamples.begin(); itBuf!=stream->m_processingSamples.end(); ++itBuf)
       {
@@ -137,7 +139,7 @@ void CEngineStats::UpdateStream(CActiveAEStream *stream)
 // this is used to sync a/v so we need to add sink latency here
 void CEngineStats::GetDelay(AEDelayStatus& status, CActiveAEStream *stream)
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
   status = m_sinkDelay;
   status.delay += static_cast<double>(m_sinkLatency);
   if (m_pcmOutput)
@@ -149,7 +151,7 @@ void CEngineStats::GetDelay(AEDelayStatus& status, CActiveAEStream *stream)
   {
     if (str.m_streamId == stream->m_id)
     {
-      CSingleLock lock(stream->m_statsLock);
+      std::unique_lock<CCriticalSection> lock(stream->m_statsLock);
       float buffertime = static_cast<float>(str.m_bufferedTime) + stream->m_bufferedTime;
       status.delay += static_cast<double>(buffertime) / str.m_resampleRatio;
       return;
@@ -160,7 +162,7 @@ void CEngineStats::GetDelay(AEDelayStatus& status, CActiveAEStream *stream)
 // this is used to sync a/v so we need to add sink latency here
 void CEngineStats::GetSyncInfo(CAESyncInfo& info, CActiveAEStream *stream)
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
   AEDelayStatus status;
   status = m_sinkDelay;
   if (m_pcmOutput)
@@ -174,7 +176,7 @@ void CEngineStats::GetSyncInfo(CAESyncInfo& info, CActiveAEStream *stream)
   {
     if (str.m_streamId == stream->m_id)
     {
-      CSingleLock lock(stream->m_statsLock);
+      std::unique_lock<CCriticalSection> lock(stream->m_statsLock);
       float buffertime = static_cast<float>(str.m_bufferedTime) + stream->m_bufferedTime;
       status.delay += static_cast<double>(buffertime) / str.m_resampleRatio;
       info.delay = status.GetDelay();
@@ -189,14 +191,14 @@ void CEngineStats::GetSyncInfo(CAESyncInfo& info, CActiveAEStream *stream)
 
 float CEngineStats::GetCacheTime(CActiveAEStream *stream)
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
   float delay = 0;
 
   for (auto &str : m_streamStats)
   {
     if (str.m_streamId == stream->m_id)
     {
-      CSingleLock lock(stream->m_statsLock);
+      std::unique_lock<CCriticalSection> lock(stream->m_statsLock);
       float buffertime = static_cast<float>(str.m_bufferedTime) + stream->m_bufferedTime;
       delay += buffertime / static_cast<float>(str.m_resampleRatio);
       break;
@@ -218,7 +220,7 @@ float CEngineStats::GetMaxDelay() const
 
 float CEngineStats::GetWaterLevel()
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
   if (m_pcmOutput)
     return static_cast<float>(m_bufferedSamples) / m_sinkSampleRate;
   else
@@ -227,25 +229,25 @@ float CEngineStats::GetWaterLevel()
 
 void CEngineStats::SetSuspended(bool state)
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
   m_suspended = state;
 }
 
 bool CEngineStats::IsSuspended()
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
   return m_suspended;
 }
 
 void CEngineStats::SetCurrentSinkFormat(const AEAudioFormat& SinkFormat)
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
   m_sinkFormat = SinkFormat;
 }
 
 AEAudioFormat CEngineStats::GetCurrentSinkFormat()
 {
-  CSingleLock lock(m_lock);
+  std::unique_lock<CCriticalSection> lock(m_lock);
   return m_sinkFormat;
 }
 
@@ -1907,7 +1909,7 @@ bool CActiveAE::RunStages()
         (*it)->m_processingBuffers &&
         ((*it)->m_processingBuffers->HasInputLevel(50)))
     {
-      CSingleLock lock((*it)->m_streamLock);
+      std::unique_lock<CCriticalSection> lock((*it)->m_streamLock);
       (*it)->m_streamIsBuffering = false;
     }
 
@@ -1940,7 +1942,7 @@ bool CActiveAE::RunStages()
         (*it)->m_started = false;
 
         // set variables being polled via stream interface
-        CSingleLock lock((*it)->m_streamLock);
+        std::unique_lock<CCriticalSection> lock((*it)->m_streamLock);
         if ((*it)->m_streamSlave)
         {
           CActiveAEStream *slave = (CActiveAEStream*)((*it)->m_streamSlave);
@@ -2064,7 +2066,7 @@ bool CActiveAE::RunStages()
               else
               {
                 (*it)->m_volume = (*it)->m_fadingTarget;
-                CSingleLock lock((*it)->m_streamLock);
+                std::unique_lock<CCriticalSection> lock((*it)->m_streamLock);
                 (*it)->m_streamFading = false;
               }
             }
@@ -2098,7 +2100,7 @@ bool CActiveAE::RunStages()
                 if ((*it)->m_fadingSamples == 0)
                 {
                   // set variables being polled via stream interface
-                  CSingleLock lock((*it)->m_streamLock);
+                  std::unique_lock<CCriticalSection> lock((*it)->m_streamLock);
                   (*it)->m_streamFading = false;
                 }
               }
@@ -2165,7 +2167,7 @@ bool CActiveAE::RunStages()
                 if ((*it)->m_fadingSamples == 0)
                 {
                   // set variables being polled via stream interface
-                  CSingleLock lock((*it)->m_streamLock);
+                  std::unique_lock<CCriticalSection> lock((*it)->m_streamLock);
                   (*it)->m_streamFading = false;
                 }
               }
@@ -2220,7 +2222,7 @@ bool CActiveAE::RunStages()
       {
         // viz
         {
-          CSingleLock lock(m_vizLock);
+          std::unique_lock<CCriticalSection> lock(m_vizLock);
           if (!m_audioCallback.empty() && !m_streams.empty())
           {
             if (!m_vizInitialized || !m_vizBuffers)
@@ -3455,14 +3457,14 @@ void CActiveAE::SetStreamFade(CActiveAEStream *stream, float from, float target,
 
 void CActiveAE::RegisterAudioCallback(IAudioCallback* pCallback)
 {
-  CSingleLock lock(m_vizLock);
+  std::unique_lock<CCriticalSection> lock(m_vizLock);
   m_audioCallback.push_back(pCallback);
   m_vizInitialized = false;
 }
 
 void CActiveAE::UnregisterAudioCallback(IAudioCallback* pCallback)
 {
-  CSingleLock lock(m_vizLock);
+  std::unique_lock<CCriticalSection> lock(m_vizLock);
   auto it = std::find(m_audioCallback.begin(), m_audioCallback.end(), pCallback);
   if (it != m_audioCallback.end())
     m_audioCallback.erase(it);

@@ -20,6 +20,8 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
+#include <mutex>
+
 // These #defs are for WindowXML
 #define CONTROL_BTNVIEWASICONS  2
 #define CONTROL_BTNSORTBY       3
@@ -141,7 +143,7 @@ namespace XBMCAddon
     int WindowXML::lockingGetNextAvailableWindowId()
     {
       XBMC_TRACE;
-      CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+      std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
       return getNextAvailableWindowId();
     }
 

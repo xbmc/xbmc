@@ -14,6 +14,8 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
+#include <mutex>
+
 using namespace ADDON;
 using namespace KODI::ADDONS;
 
@@ -53,7 +55,7 @@ void CExtsMimeSupportList::Update(const std::string& id)
 {
   // Stop used instance if present, otherwise the new becomes created on already created addon base one.
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
 
     const auto itAddon =
         std::find_if(m_supportedList.begin(), m_supportedList.end(),
@@ -73,7 +75,7 @@ void CExtsMimeSupportList::Update(const std::string& id)
     {
       SupportValues values = ScanAddonProperties(addonInfo->MainType(), addonInfo);
       {
-        CSingleLock lock(m_critSection);
+        std::unique_lock<CCriticalSection> lock(m_critSection);
         m_supportedList.emplace_back(values);
       }
     }
@@ -163,7 +165,7 @@ std::vector<CExtsMimeSupportList::SupportValues> CExtsMimeSupportList::GetSuppor
 {
   std::vector<SupportValues> addonInfos;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   for (const auto& entry : m_supportedList)
   {
@@ -177,7 +179,7 @@ std::vector<CExtsMimeSupportList::SupportValues> CExtsMimeSupportList::GetSuppor
 
 bool CExtsMimeSupportList::IsExtensionSupported(const std::string& ext)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   for (const auto& entry : m_supportedList)
   {
@@ -196,7 +198,7 @@ std::vector<std::pair<ADDON::TYPE, std::shared_ptr<ADDON::CAddonInfo>>> CExtsMim
 {
   std::vector<std::pair<ADDON::TYPE, std::shared_ptr<CAddonInfo>>> addonInfos;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   for (const auto& entry : m_supportedList)
   {
@@ -214,7 +216,7 @@ std::vector<std::pair<ADDON::TYPE, std::shared_ptr<ADDON::CAddonInfo>>> CExtsMim
 
 bool CExtsMimeSupportList::IsMimetypeSupported(const std::string& mimetype)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   for (const auto& entry : m_supportedList)
   {
@@ -234,7 +236,7 @@ std::vector<std::pair<ADDON::TYPE, std::shared_ptr<CAddonInfo>>> CExtsMimeSuppor
 {
   std::vector<std::pair<ADDON::TYPE, std::shared_ptr<CAddonInfo>>> addonInfos;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   for (const auto& entry : m_supportedList)
   {

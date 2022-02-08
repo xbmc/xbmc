@@ -10,11 +10,12 @@
 
 #include "addons/kodi-dev-kit/include/kodi/addon-instance/peripheral/PeripheralUtils.h"
 #include "threads/CriticalSection.h"
-#include "threads/SingleLock.h"
 #include "utils/log.h"
 
 #import "platform/darwin/peripherals/InputKey.h"
 #import "platform/darwin/peripherals/PeripheralBusGCControllerManager.h"
+
+#include <mutex>
 
 #import <Foundation/Foundation.h>
 #import <GameController/GCController.h>
@@ -118,7 +119,7 @@ struct PlayerControllerState
 - (void)controllerConnection:(GCController*)controller
 {
   // Lock so add/remove events are serialised
-  CSingleLock lock(m_controllerMutex);
+  std::unique_lock<CCriticalSection> lock(m_controllerMutex);
 
   if ([controllerArray containsObject:controller])
   {
@@ -172,7 +173,7 @@ struct PlayerControllerState
 - (void)controllerWasDisconnected:(NSNotification*)notification
 {
   // Lock so add/remove events are serialised
-  CSingleLock lock(m_controllerMutex);
+  std::unique_lock<CCriticalSection> lock(m_controllerMutex);
   // a controller was disconnected
   GCController* controller = (GCController*)notification.object;
   if (!controllerArray)
@@ -208,7 +209,7 @@ struct PlayerControllerState
         kodi::addon::PeripheralEvent newEvent;
         newEvent.SetPeripheralIndex(static_cast<unsigned int>(gamepad.controller.playerIndex));
 
-        CSingleLock lock(m_GCMutex);
+        std::unique_lock<CCriticalSection> lock(m_GCMutex);
 
         // A button
         if (gamepad.buttonA == element)
@@ -269,7 +270,7 @@ struct PlayerControllerState
     newEvent.SetPeripheralIndex(playerIndex);
     axisEvent.SetPeripheralIndex(playerIndex);
 
-    CSingleLock lock(m_GCMutex);
+    std::unique_lock<CCriticalSection> lock(m_GCMutex);
 
     // left trigger
     if (gamepad.leftTrigger == element)

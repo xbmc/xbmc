@@ -8,17 +8,18 @@
 
 #include "ZeroconfBrowserMDNS.h"
 
-#include <netinet/in.h>
-#include <arpa/inet.h>
-
+#include "GUIUserMessages.h"
+#include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
-#include "GUIUserMessages.h"
 #include "network/DNSNameCache.h"
-#include "ServiceBroker.h"
-#include "threads/SingleLock.h"
 #include "utils/log.h"
+
+#include <mutex>
+
+#include <arpa/inet.h>
+#include <netinet/in.h>
 
 #if defined(TARGET_WINDOWS)
 #include "platform/win32/WIN32Util.h"
@@ -35,7 +36,7 @@ CZeroconfBrowserMDNS::CZeroconfBrowserMDNS()
 
 CZeroconfBrowserMDNS::~CZeroconfBrowserMDNS()
 {
-  CSingleLock lock(m_data_guard);
+  std::unique_lock<CCriticalSection> lock(m_data_guard);
   //make sure there are no browsers anymore
   for (const auto& it : m_service_browsers)
     doRemoveServiceType(it.first);
@@ -178,7 +179,7 @@ void DNSSD_API CZeroconfBrowserMDNS::ResolveCallback(DNSServiceRef              
 /// adds the service to list of found services
 void CZeroconfBrowserMDNS::addDiscoveredService(DNSServiceRef browser, CZeroconfBrowser::ZeroconfService const& fcr_service)
 {
-  CSingleLock lock(m_data_guard);
+  std::unique_lock<CCriticalSection> lock(m_data_guard);
   tDiscoveredServicesMap::iterator browserIt = m_discovered_services.find(browser);
   if(browserIt == m_discovered_services.end())
   {
@@ -201,7 +202,7 @@ void CZeroconfBrowserMDNS::addDiscoveredService(DNSServiceRef browser, CZeroconf
 
 void CZeroconfBrowserMDNS::removeDiscoveredService(DNSServiceRef browser, CZeroconfBrowser::ZeroconfService const& fcr_service)
 {
-  CSingleLock lock(m_data_guard);
+  std::unique_lock<CCriticalSection> lock(m_data_guard);
   tDiscoveredServicesMap::iterator browserIt = m_discovered_services.find(browser);
   //search this service
   std::vector<std::pair<ZeroconfService, unsigned int> >& services = browserIt->second;
@@ -252,7 +253,7 @@ bool CZeroconfBrowserMDNS::doAddServiceType(const std::string& fcr_service_type)
 #endif //!HAS_MDNS_EMBEDDED
 
   {
-    CSingleLock lock(m_data_guard);
+    std::unique_lock<CCriticalSection> lock(m_data_guard);
     browser = m_browser;
     err = DNSServiceBrowse(&browser, kDNSServiceFlagsShareConnection, kDNSServiceInterfaceIndexAny, fcr_service_type.c_str(), NULL, BrowserCallback, this);
   }
@@ -268,7 +269,7 @@ bool CZeroconfBrowserMDNS::doAddServiceType(const std::string& fcr_service_type)
 
   //store the browser
   {
-    CSingleLock lock(m_data_guard);
+    std::unique_lock<CCriticalSection> lock(m_data_guard);
     m_service_browsers.insert(std::make_pair(fcr_service_type, browser));
   }
 
@@ -280,7 +281,7 @@ bool CZeroconfBrowserMDNS::doRemoveServiceType(const std::string& fcr_service_ty
   //search for this browser and remove it from the map
   DNSServiceRef browser = 0;
   {
-    CSingleLock lock(m_data_guard);
+    std::unique_lock<CCriticalSection> lock(m_data_guard);
     tBrowserMap::iterator it = m_service_browsers.find(fcr_service_type);
     if(it == m_service_browsers.end())
     {
@@ -292,7 +293,7 @@ bool CZeroconfBrowserMDNS::doRemoveServiceType(const std::string& fcr_service_ty
 
   //remove the services of this browser
   {
-    CSingleLock lock(m_data_guard);
+    std::unique_lock<CCriticalSection> lock(m_data_guard);
     tDiscoveredServicesMap::iterator it = m_discovered_services.find(browser);
     if(it != m_discovered_services.end())
       m_discovered_services.erase(it);
@@ -307,7 +308,7 @@ bool CZeroconfBrowserMDNS::doRemoveServiceType(const std::string& fcr_service_ty
 std::vector<CZeroconfBrowser::ZeroconfService> CZeroconfBrowserMDNS::doGetFoundServices()
 {
   std::vector<CZeroconfBrowser::ZeroconfService> ret;
-  CSingleLock lock(m_data_guard);
+  std::unique_lock<CCriticalSection> lock(m_data_guard);
   for (const auto& it : m_discovered_services)
   {
     auto& services = it.second;
@@ -412,7 +413,7 @@ bool CZeroconfBrowserMDNS::doResolveService(CZeroconfBrowser::ZeroconfService& f
 
 void CZeroconfBrowserMDNS::ProcessResults()
 {
-  CSingleLock lock(m_data_guard);
+  std::unique_lock<CCriticalSection> lock(m_data_guard);
   DNSServiceErrorType err = DNSServiceProcessResult(m_browser);
   if (err != kDNSServiceErr_NoError)
     CLog::Log(LOGERROR, "ZeroconfWIN: DNSServiceProcessResult returned (error = {})", (int)err);

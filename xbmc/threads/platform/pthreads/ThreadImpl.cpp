@@ -7,6 +7,7 @@
  */
 
 #include <limits.h>
+#include <mutex>
 #if defined(TARGET_ANDROID)
 #include <unistd.h>
 #else
@@ -165,7 +166,7 @@ bool CThread::SetPriority(const ThreadPriority& priority)
 {
   bool bReturn = false;
 
-  CSingleLock lockIt(m_CriticalSection);
+  std::unique_lock<CCriticalSection> lockIt(m_CriticalSection);
 
   pid_t tid = static_cast<pid_t>(m_lwpId);
 

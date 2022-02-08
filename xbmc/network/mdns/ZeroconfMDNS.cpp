@@ -7,14 +7,16 @@
  */
 
 #include "ZeroconfMDNS.h"
-#include <arpa/inet.h>
 
-#include <string>
-#include <sstream>
-#include "threads/SingleLock.h"
-#include "utils/log.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/log.h"
+
+#include <mutex>
+#include <sstream>
+#include <string>
+
+#include <arpa/inet.h>
 #if defined(TARGET_WINDOWS)
 #include "platform/win32/WIN32Util.h"
 #endif //TARGET_WINDOWS
@@ -87,7 +89,7 @@ bool CZeroconfMDNS::doPublishService(const std::string& fcr_identifier,
   TXTRecordCreate(&txtRecord, 0, NULL);
 
 #if !defined(HAS_MDNS_EMBEDDED)
-  CSingleLock lock(m_data_guard);
+  std::unique_lock<CCriticalSection> lock(m_data_guard);
   if(m_service == NULL)
   {
     err = DNSServiceCreateConnection(&m_service);
@@ -122,7 +124,7 @@ bool CZeroconfMDNS::doPublishService(const std::string& fcr_identifier,
   }
 
   {
-    CSingleLock lock(m_data_guard);
+    std::unique_lock<CCriticalSection> lock(m_data_guard);
     netService = m_service;
     err = DNSServiceRegister(&netService, kDNSServiceFlagsShareConnection, 0, fcr_name.c_str(), fcr_type.c_str(), NULL, NULL, htons(f_port), TXTRecordGetLength(&txtRecord), TXTRecordGetBytesPtr(&txtRecord), registerCallback, NULL);
   }
@@ -137,7 +139,7 @@ bool CZeroconfMDNS::doPublishService(const std::string& fcr_identifier,
   }
   else
   {
-    CSingleLock lock(m_data_guard);
+    std::unique_lock<CCriticalSection> lock(m_data_guard);
     struct tServiceRef newService;
     newService.serviceRef = netService;
     newService.txtRecordRef = txtRecord;
@@ -151,7 +153,7 @@ bool CZeroconfMDNS::doPublishService(const std::string& fcr_identifier,
 bool CZeroconfMDNS::doForceReAnnounceService(const std::string& fcr_identifier)
 {
   bool ret = false;
-  CSingleLock lock(m_data_guard);
+  std::unique_lock<CCriticalSection> lock(m_data_guard);
   tServiceMap::iterator it = m_services.find(fcr_identifier);
   if(it != m_services.end())
   {
@@ -172,7 +174,7 @@ bool CZeroconfMDNS::doForceReAnnounceService(const std::string& fcr_identifier)
 
 bool CZeroconfMDNS::doRemoveService(const std::string& fcr_ident)
 {
-  CSingleLock lock(m_data_guard);
+  std::unique_lock<CCriticalSection> lock(m_data_guard);
   tServiceMap::iterator it = m_services.find(fcr_ident);
   if(it != m_services.end())
   {
@@ -189,7 +191,7 @@ bool CZeroconfMDNS::doRemoveService(const std::string& fcr_ident)
 void CZeroconfMDNS::doStop()
 {
   {
-    CSingleLock lock(m_data_guard);
+    std::unique_lock<CCriticalSection> lock(m_data_guard);
     CLog::Log(LOGDEBUG, "ZeroconfMDNS: Shutdown services");
     for (auto& it : m_services)
     {
@@ -200,7 +202,7 @@ void CZeroconfMDNS::doStop()
     m_services.clear();
   }
   {
-    CSingleLock lock(m_data_guard);
+    std::unique_lock<CCriticalSection> lock(m_data_guard);
 #if defined(TARGET_WINDOWS_STORE)
     CLog::Log(LOGERROR, "ZeroconfMDNS: WSAAsyncSelect not yet supported for TARGET_WINDOWS_STORE");
 #else
@@ -235,7 +237,7 @@ void DNSSD_API CZeroconfMDNS::registerCallback(DNSServiceRef sdref, const DNSSer
 
 void CZeroconfMDNS::ProcessResults()
 {
-  CSingleLock lock(m_data_guard);
+  std::unique_lock<CCriticalSection> lock(m_data_guard);
   DNSServiceErrorType err = DNSServiceProcessResult(m_service);
   if (err != kDNSServiceErr_NoError)
     CLog::Log(LOGERROR, "ZeroconfMDNS: DNSServiceProcessResult returned (error = {})", (int)err);

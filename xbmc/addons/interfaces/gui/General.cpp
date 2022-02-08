@@ -39,6 +39,8 @@
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
 
+#include <mutex>
+
 namespace ADDON
 {
 int Interface_GUIGeneral::m_iAddonGUILockRef = 0;
@@ -188,7 +190,7 @@ int Interface_GUIGeneral::get_current_window_dialog_id(KODI_HANDLE kodiBase)
     return -1;
   }
 
-  CSingleLock gl(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock<CCriticalSection> gl(CServiceBroker::GetWinSystem()->GetGfxContext());
   return CServiceBroker::GetGUI()->GetWindowManager().GetTopmostModalDialog();
 }
 
@@ -201,7 +203,7 @@ int Interface_GUIGeneral::get_current_window_id(KODI_HANDLE kodiBase)
     return -1;
   }
 
-  CSingleLock gl(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock<CCriticalSection> gl(CServiceBroker::GetWinSystem()->GetGfxContext());
   return CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
 }
 

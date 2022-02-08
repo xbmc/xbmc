@@ -8,6 +8,8 @@
 #include "Zeroconf.h"
 
 #include "ServiceBroker.h"
+
+#include <mutex>
 #if defined(HAS_MDNS)
 #include "mdns/ZeroconfMDNS.h"
 #endif
@@ -15,7 +17,6 @@
 #include "settings/SettingsComponent.h"
 #include "threads/Atomics.h"
 #include "threads/CriticalSection.h"
-#include "threads/SingleLock.h"
 #include "utils/JobManager.h"
 
 #if defined(TARGET_ANDROID)
@@ -64,7 +65,7 @@ bool CZeroconf::PublishService(const std::string& fcr_identifier,
                                unsigned int f_port,
                                std::vector<std::pair<std::string, std::string> > txt /* = std::vector<std::pair<std::string, std::string> >() */)
 {
-  CSingleLock lock(*mp_crit_sec);
+  std::unique_lock<CCriticalSection> lock(*mp_crit_sec);
   CZeroconf::PublishInfo info = {fcr_type, fcr_name, f_port, std::move(txt)};
   std::pair<tServiceMap::const_iterator, bool> ret = m_service_map.insert(std::make_pair(fcr_identifier, info));
   if(!ret.second) //identifier exists
@@ -78,7 +79,7 @@ bool CZeroconf::PublishService(const std::string& fcr_identifier,
 
 bool CZeroconf::RemoveService(const std::string& fcr_identifier)
 {
-  CSingleLock lock(*mp_crit_sec);
+  std::unique_lock<CCriticalSection> lock(*mp_crit_sec);
   tServiceMap::iterator it = m_service_map.find(fcr_identifier);
   if(it == m_service_map.end())
     return false;
@@ -105,7 +106,7 @@ bool CZeroconf::HasService(const std::string& fcr_identifier) const
 
 bool CZeroconf::Start()
 {
-  CSingleLock lock(*mp_crit_sec);
+  std::unique_lock<CCriticalSection> lock(*mp_crit_sec);
   if(!IsZCdaemonRunning())
   {
     const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
@@ -124,7 +125,7 @@ bool CZeroconf::Start()
 
 void CZeroconf::Stop()
 {
-  CSingleLock lock(*mp_crit_sec);
+  std::unique_lock<CCriticalSection> lock(*mp_crit_sec);
   if(!m_started)
     return;
   doStop();

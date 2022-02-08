@@ -7,15 +7,18 @@
  */
 
 #include "WinSystem.h"
+
 #include "ServiceBroker.h"
 #include "guilib/DispResource.h"
 #include "powermanagement/DPMSSupport.h"
-#include "windowing/GraphicContext.h"
 #include "settings/DisplaySettings.h"
-#include "settings/lib/Setting.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "settings/lib/Setting.h"
 #include "utils/StringUtils.h"
+#include "windowing/GraphicContext.h"
+
+#include <mutex>
 #if HAS_GLES
 #include "guilib/GUIFontTTFGL.h"
 #endif
@@ -241,13 +244,13 @@ KODI::WINDOWING::COSScreenSaverManager* CWinSystemBase::GetOSScreenSaver()
 
 void CWinSystemBase::RegisterRenderLoop(IRenderLoop *client)
 {
-  CSingleLock lock(m_renderLoopSection);
+  std::unique_lock<CCriticalSection> lock(m_renderLoopSection);
   m_renderLoopClients.push_back(client);
 }
 
 void CWinSystemBase::UnregisterRenderLoop(IRenderLoop *client)
 {
-  CSingleLock lock(m_renderLoopSection);
+  std::unique_lock<CCriticalSection> lock(m_renderLoopSection);
   auto i = find(m_renderLoopClients.begin(), m_renderLoopClients.end(), client);
   if (i != m_renderLoopClients.end())
     m_renderLoopClients.erase(i);
@@ -257,7 +260,8 @@ void CWinSystemBase::DriveRenderLoop()
 {
   MessagePump();
 
-  { CSingleLock lock(m_renderLoopSection);
+  {
+    std::unique_lock<CCriticalSection> lock(m_renderLoopSection);
     for (auto i = m_renderLoopClients.begin(); i != m_renderLoopClients.end(); ++i)
       (*i)->FrameMove();
   }

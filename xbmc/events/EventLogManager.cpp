@@ -9,13 +9,13 @@
 #include "EventLogManager.h"
 
 #include "EventLog.h"
-#include "threads/SingleLock.h"
 
+#include <mutex>
 #include <utility>
 
 CEventLog& CEventLogManager::GetEventLog(unsigned int profileId)
 {
-  CSingleLock lock(m_eventMutex);
+  std::unique_lock<CCriticalSection> lock(m_eventMutex);
 
   auto eventLog = m_eventLogs.find(profileId);
   if (eventLog == m_eventLogs.end())

@@ -9,11 +9,11 @@
 #pragma once
 
 #include "threads/CriticalSection.h"
-#include "threads/SingleLock.h"
 #include "utils/Geometry.h"
 
 #include <atomic>
 #include <cstdint>
+#include <mutex>
 #include <set>
 #include <tuple>
 
@@ -50,7 +50,7 @@ public:
    */
   CPointInt GetPosition() const
   {
-    CSingleLock lock(m_geometryCriticalSection);
+    std::unique_lock<CCriticalSection> lock(m_geometryCriticalSection);
     return m_position;
   }
   /**
@@ -59,17 +59,17 @@ public:
    */
   CSizeInt GetPhysicalSize() const
   {
-    CSingleLock lock(m_geometryCriticalSection);
+    std::unique_lock<CCriticalSection> lock(m_geometryCriticalSection);
     return m_physicalSize;
   }
   std::string const& GetMake() const
   {
-    CSingleLock lock(m_geometryCriticalSection);
+    std::unique_lock<CCriticalSection> lock(m_geometryCriticalSection);
     return m_make;
   }
   std::string const& GetModel() const
   {
-    CSingleLock lock(m_geometryCriticalSection);
+    std::unique_lock<CCriticalSection> lock(m_geometryCriticalSection);
     return m_model;
   }
   std::int32_t GetScale() const

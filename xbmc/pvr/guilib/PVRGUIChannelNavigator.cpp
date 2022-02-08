@@ -18,11 +18,12 @@
 #include "pvr/guilib/PVRGUIActions.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "threads/SingleLock.h"
 #include "threads/SystemClock.h"
 #include "utils/Job.h"
 #include "utils/JobManager.h"
 #include "utils/XTimeUtils.h"
+
+#include <mutex>
 
 using namespace std::chrono_literals;
 
@@ -134,7 +135,7 @@ namespace PVR
           CServiceBroker::GetPVRManager().PlaybackState()->GetActiveChannelGroup(bPlayingRadio);
       if (group)
       {
-        CSingleLock lock(m_critSection);
+        std::unique_lock<CCriticalSection> lock(m_critSection);
         return bNext ? group->GetNextChannelGroupMember(m_currentChannel)
                      : group->GetPreviousChannelGroupMember(m_currentChannel);
       }
@@ -147,7 +148,7 @@ namespace PVR
   {
     CServiceBroker::GetGUI()->GetInfoManager().SetCurrentItem(CFileItem(groupMember));
 
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     m_currentChannel = groupMember;
     ShowInfo(false);
 
@@ -178,7 +179,7 @@ namespace PVR
     CFileItemPtr item;
 
     {
-      CSingleLock lock(m_critSection);
+      std::unique_lock<CCriticalSection> lock(m_critSection);
 
       if (m_iChannelEntryJobId >= 0)
       {
@@ -195,7 +196,7 @@ namespace PVR
 
   bool CPVRGUIChannelNavigator::IsPreview() const
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     return m_currentChannel != m_playingChannel;
   }
 
@@ -219,7 +220,7 @@ namespace PVR
     {
       CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().SetShowInfo(true);
 
-      CSingleLock lock(m_critSection);
+      std::unique_lock<CCriticalSection> lock(m_critSection);
 
       if (m_iChannelInfoJobId >= 0)
       {
@@ -242,7 +243,7 @@ namespace PVR
     CFileItemPtr item;
 
     {
-      CSingleLock lock(m_critSection);
+      std::unique_lock<CCriticalSection> lock(m_critSection);
 
       if (m_iChannelInfoJobId >= 0)
       {
@@ -277,7 +278,7 @@ namespace PVR
 
     if (groupMember)
     {
-      CSingleLock lock(m_critSection);
+      std::unique_lock<CCriticalSection> lock(m_critSection);
 
       m_playingChannel = groupMember;
       if (m_currentChannel != m_playingChannel)
@@ -296,7 +297,7 @@ namespace PVR
 
   void CPVRGUIChannelNavigator::ClearPlayingChannel()
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     m_playingChannel.reset();
     HideInfo();
   }

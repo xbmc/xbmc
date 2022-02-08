@@ -16,12 +16,13 @@
 #include "filesystem/File.h"
 #include "guilib/TextureBundle.h"
 #include "guilib/TextureFormats.h"
-#include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
+
+#include <mutex>
 
 #ifdef _DEBUG_TEXTURES
 #include "utils/TimeUtils.h"
@@ -108,7 +109,7 @@ void CTextureArray::Set(std::shared_ptr<CTexture> texture, int width, int height
 
 void CTextureArray::Free()
 {
-  CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
   Reset();
 }
 
@@ -242,7 +243,7 @@ bool CGUITextureManager::CanLoad(const std::string &texturePath)
 
 bool CGUITextureManager::HasTexture(const std::string &textureName, std::string *path, int *bundle, int *size)
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
 
   // default values
   if (bundle) *bundle = -1;
@@ -330,7 +331,7 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
     return emptyTexture;
 
   //Lock here, we will do stuff that could break rendering
-  CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
 #ifdef _DEBUG_TEXTURES
   const auto start = std::chrono::steady_clock::now();
@@ -461,7 +462,7 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
 
 void CGUITextureManager::ReleaseTexture(const std::string& strTextureName, bool immediately /*= false */)
 {
-  CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
   ivecTextures i;
   i = m_vecTextures.begin();
@@ -491,7 +492,7 @@ void CGUITextureManager::ReleaseTexture(const std::string& strTextureName, bool 
 
 void CGUITextureManager::FreeUnusedTextures(unsigned int timeDelay)
 {
-  CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
   for (auto i = m_unusedTextures.begin(); i != m_unusedTextures.end();)
   {
     auto now = std::chrono::steady_clock::now();
@@ -524,13 +525,13 @@ void CGUITextureManager::FreeUnusedTextures(unsigned int timeDelay)
 
 void CGUITextureManager::ReleaseHwTexture(unsigned int texture)
 {
-  CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
   m_unusedHwTextures.push_back(texture);
 }
 
 void CGUITextureManager::Cleanup()
 {
-  CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
   ivecTextures i;
   i = m_vecTextures.begin();
@@ -562,7 +563,7 @@ void CGUITextureManager::Dump() const
 
 void CGUITextureManager::Flush()
 {
-  CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
   ivecTextures i;
   i = m_vecTextures.begin();
@@ -594,21 +595,21 @@ unsigned int CGUITextureManager::GetMemoryUsage() const
 
 void CGUITextureManager::SetTexturePath(const std::string &texturePath)
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
   m_texturePaths.clear();
   AddTexturePath(texturePath);
 }
 
 void CGUITextureManager::AddTexturePath(const std::string &texturePath)
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
   if (!texturePath.empty())
     m_texturePaths.push_back(texturePath);
 }
 
 void CGUITextureManager::RemoveTexturePath(const std::string &texturePath)
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
   for (std::vector<std::string>::iterator it = m_texturePaths.begin(); it != m_texturePaths.end(); ++it)
   {
     if (*it == texturePath)
@@ -625,7 +626,7 @@ std::string CGUITextureManager::GetTexturePath(const std::string &textureName, b
     return textureName;
   else
   { // texture doesn't include the full path, so check all fallbacks
-    CSingleLock lock(m_section);
+    std::unique_lock<CCriticalSection> lock(m_section);
     for (const std::string& it : m_texturePaths)
     {
       std::string path = URIUtils::AddFileToFolder(it, "media", textureName);

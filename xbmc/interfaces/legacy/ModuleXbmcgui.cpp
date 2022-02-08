@@ -14,6 +14,8 @@
 #include "guilib/GUIWindowManager.h"
 #include "windowing/GraphicContext.h"
 
+#include <mutex>
+
 #define NOTIFICATION_INFO     "info"
 #define NOTIFICATION_WARNING  "warning"
 #define NOTIFICATION_ERROR    "error"
@@ -25,14 +27,14 @@ namespace XBMCAddon
     long getCurrentWindowId()
     {
       DelayedCallGuard dg;
-      CSingleLock gl(CServiceBroker::GetWinSystem()->GetGfxContext());
+      std::unique_lock<CCriticalSection> gl(CServiceBroker::GetWinSystem()->GetGfxContext());
       return CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
     }
 
     long getCurrentWindowDialogId()
     {
       DelayedCallGuard dg;
-      CSingleLock gl(CServiceBroker::GetWinSystem()->GetGfxContext());
+      std::unique_lock<CCriticalSection> gl(CServiceBroker::GetWinSystem()->GetGfxContext());
       return CServiceBroker::GetGUI()->GetWindowManager().GetTopmostModalDialog();
     }
 

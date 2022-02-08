@@ -8,19 +8,27 @@
 
 #include "XBMCApp.h"
 
+#include "AndroidKey.h"
+#include "AppParamParser.h"
+#include "Application.h"
+#include "CompileInfo.h"
+#include "guilib/GUIWindowManager.h"
+#include "interfaces/AnnouncementManager.h"
+#include "messaging/ApplicationMessenger.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/DisplaySettings.h"
+#include "windowing/GraphicContext.h"
+
+#include <mutex>
 #include <sstream>
-#include <unistd.h>
 #include <stdlib.h>
-#include <dlfcn.h>
 #include <string.h>
 
-#include <jni.h>
-#include <android/configuration.h>
 #include <android/bitmap.h>
+#include <android/configuration.h>
 #include <android/log.h>
 #include <android/native_window.h>
 #include <android/native_window_jni.h>
-
 #include <androidjni/ActivityManager.h>
 #include <androidjni/ApplicationInfo.h>
 #include <androidjni/BitmapFactory.h>
@@ -52,17 +60,9 @@
 #include <androidjni/WakeLock.h>
 #include <androidjni/Window.h>
 #include <androidjni/WindowManager.h>
-
-#include "AndroidKey.h"
-#include "settings/AdvancedSettings.h"
-#include "interfaces/AnnouncementManager.h"
-#include "Application.h"
-#include "AppParamParser.h"
-#include "messaging/ApplicationMessenger.h"
-#include "CompileInfo.h"
-#include "settings/DisplaySettings.h"
-#include "windowing/GraphicContext.h"
-#include "guilib/GUIWindowManager.h"
+#include <dlfcn.h>
+#include <jni.h>
+#include <unistd.h>
 // Audio Engine includes for Factory and interfaces
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
@@ -244,7 +244,7 @@ void CXBMCApp::onResume()
 
   // Clear the applications cache. We could have installed/deinstalled apps
   {
-    CSingleLock lock(m_applicationsMutex);
+    std::unique_lock<CCriticalSection> lock(m_applicationsMutex);
     m_applications.clear();
   }
 
@@ -847,7 +847,7 @@ void CXBMCApp::ProcessSlow()
 
 std::vector<androidPackage> CXBMCApp::GetApplications()
 {
-  CSingleLock lock(m_applicationsMutex);
+  std::unique_lock<CCriticalSection> lock(m_applicationsMutex);
   if (m_applications.empty())
   {
     CJNIList<CJNIApplicationInfo> packageList = GetPackageManager().getInstalledApplications(CJNIPackageManager::GET_ACTIVITIES);
@@ -1237,7 +1237,7 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
 
 void CXBMCApp::onActivityResult(int requestCode, int resultCode, CJNIIntent resultData)
 {
-  CSingleLock lock(m_activityResultMutex);
+  std::unique_lock<CCriticalSection> lock(m_activityResultMutex);
   for (auto it = m_activityResultEvents.begin(); it != m_activityResultEvents.end(); ++it)
   {
     if ((*it)->GetRequestCode() == requestCode)
@@ -1271,7 +1271,7 @@ int CXBMCApp::WaitForActivityResult(const CJNIIntent &intent, int requestCode, C
   int ret = 0;
   CActivityResultEvent* event = new CActivityResultEvent(requestCode);
   {
-    CSingleLock lock(m_activityResultMutex);
+    std::unique_lock<CCriticalSection> lock(m_activityResultMutex);
     m_activityResultEvents.push_back(event);
   }
   startActivityForResult(intent, requestCode);
@@ -1282,7 +1282,7 @@ int CXBMCApp::WaitForActivityResult(const CJNIIntent &intent, int requestCode, C
   }
 
   // delete from m_activityResultEvents map before deleting the event
-  CSingleLock lock(m_activityResultMutex);
+  std::unique_lock<CCriticalSection> lock(m_activityResultMutex);
   for (auto it = m_activityResultEvents.begin(); it != m_activityResultEvents.end(); ++it)
   {
     if ((*it)->GetRequestCode() == requestCode)

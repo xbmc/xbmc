@@ -27,10 +27,10 @@
 #include "input/joysticks/JoystickTypes.h"
 #include "peripherals/EventLockHandle.h"
 #include "peripherals/Peripherals.h"
-#include "threads/SingleLock.h"
 #include "utils/log.h"
 
 #include <algorithm>
+#include <mutex>
 
 using namespace KODI;
 using namespace GAME;
@@ -335,7 +335,7 @@ bool CGameClientInput::ConnectController(const std::string& portAddress,
   CloseJoysticks(currentPort);
 
   {
-    CSingleLock lock(m_clientAccess);
+    std::unique_lock<CCriticalSection> lock(m_clientAccess);
 
     if (!m_gameClient.Initialized())
       return false;
@@ -384,7 +384,7 @@ bool CGameClientInput::DisconnectController(const std::string& portAddress)
   CloseJoysticks(currentPort);
 
   {
-    CSingleLock lock(m_clientAccess);
+    std::unique_lock<CCriticalSection> lock(m_clientAccess);
 
     if (!m_gameClient.Initialized())
       return false;
@@ -463,7 +463,7 @@ bool CGameClientInput::OpenKeyboard(const ControllerPtr& controller)
   bool bSuccess = false;
 
   {
-    CSingleLock lock(m_clientAccess);
+    std::unique_lock<CCriticalSection> lock(m_clientAccess);
 
     if (m_gameClient.Initialized())
     {
@@ -493,7 +493,7 @@ void CGameClientInput::CloseKeyboard()
   m_keyboard.reset();
 
   {
-    CSingleLock lock(m_clientAccess);
+    std::unique_lock<CCriticalSection> lock(m_clientAccess);
 
     if (m_gameClient.Initialized())
     {
@@ -528,7 +528,7 @@ bool CGameClientInput::OpenMouse(const ControllerPtr& controller)
   bool bSuccess = false;
 
   {
-    CSingleLock lock(m_clientAccess);
+    std::unique_lock<CCriticalSection> lock(m_clientAccess);
 
     if (m_gameClient.Initialized())
     {
@@ -557,7 +557,7 @@ void CGameClientInput::CloseMouse()
   m_mouse.reset();
 
   {
-    CSingleLock lock(m_clientAccess);
+    std::unique_lock<CCriticalSection> lock(m_clientAccess);
 
     if (m_gameClient.Initialized())
     {

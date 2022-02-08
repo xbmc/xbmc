@@ -30,6 +30,7 @@
 #include "utils/log.h"
 
 #include <limits.h>
+#include <mutex>
 
 #include <arpa/inet.h>
 #include <netinet/in.h>
@@ -564,7 +565,7 @@ bool CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
 
 bool CWakeOnAccess::FindOrTouchHostEntry(const std::string& hostName, bool upnpMode, WakeUpEntry& result)
 {
-  CSingleLock lock (m_entrylist_protect);
+  std::unique_lock<CCriticalSection> lock(m_entrylist_protect);
 
   bool need_wakeup = false;
 
@@ -604,7 +605,7 @@ bool CWakeOnAccess::FindOrTouchHostEntry(const std::string& hostName, bool upnpM
 
 void CWakeOnAccess::TouchHostEntry(const std::string& hostName, bool upnpMode)
 {
-  CSingleLock lock (m_entrylist_protect);
+  std::unique_lock<CCriticalSection> lock(m_entrylist_protect);
 
   UPnPServer* upnp = upnpMode ? LookupUPnPServer(m_UPnPServers, hostName) : nullptr;
 
@@ -745,7 +746,7 @@ void CWakeOnAccess::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 
   if (success)
   {
-    CSingleLock lock (m_entrylist_protect);
+    std::unique_lock<CCriticalSection> lock(m_entrylist_protect);
 
     SaveMACDiscoveryResult(host, mac);
   }
@@ -786,7 +787,7 @@ std::string CWakeOnAccess::GetSettingFile()
 
 void CWakeOnAccess::OnSettingsLoaded()
 {
-  CSingleLock lock (m_entrylist_protect);
+  std::unique_lock<CCriticalSection> lock(m_entrylist_protect);
 
   LoadFromXML();
 }

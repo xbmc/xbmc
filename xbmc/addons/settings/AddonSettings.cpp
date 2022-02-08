@@ -28,7 +28,6 @@
 #include "settings/lib/SettingDefinitions.h"
 #include "settings/lib/SettingSection.h"
 #include "settings/lib/SettingsManager.h"
-#include "threads/SingleLock.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -37,6 +36,7 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <mutex>
 #include <vector>
 
 static const std::string OldSettingValuesSeparator = "|";
@@ -202,7 +202,7 @@ void CAddonSettings::OnSettingAction(const std::shared_ptr<const CSetting>& sett
 
 bool CAddonSettings::Initialize(const CXBMCTinyXML& doc, bool allowEmpty /* = false */)
 {
-  CSingleLock lock(m_critical);
+  std::unique_lock<CCriticalSection> lock(m_critical);
   if (m_initialized)
     return false;
 
@@ -227,7 +227,7 @@ bool CAddonSettings::Initialize(const CXBMCTinyXML& doc, bool allowEmpty /* = fa
 
 bool CAddonSettings::Load(const CXBMCTinyXML& doc)
 {
-  CSingleLock lock(m_critical);
+  std::unique_lock<CCriticalSection> lock(m_critical);
   if (!m_initialized)
     return false;
 
@@ -332,7 +332,7 @@ bool CAddonSettings::Load(const CXBMCTinyXML& doc)
 
 bool CAddonSettings::Save(CXBMCTinyXML& doc) const
 {
-  CSingleLock lock(m_critical);
+  std::unique_lock<CCriticalSection> lock(m_critical);
   if (!m_initialized)
     return false;
 
@@ -553,7 +553,7 @@ std::shared_ptr<CSettingGroup> CAddonSettings::ParseOldSettingElement(
         {
           setting->SetLevel(SettingLevel::Basic);
         }
-        
+
         // use the setting's ID if there's no label
         if (settingLabel < 0)
         {
@@ -1357,7 +1357,7 @@ bool CAddonSettings::ParseOldLabel(const TiXmlElement* element,
   labelId = -1;
   if (element == nullptr)
     return false;
-  
+
   // label value as a string
   std::string labelString;
   element->QueryStringAttribute("label", &labelString);

@@ -11,11 +11,12 @@
 #include "ServiceBroker.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "threads/SingleLock.h"
 #include "utils/ColorUtils.h"
 #include "utils/RssManager.h"
 #include "utils/RssReader.h"
 #include "utils/StringUtils.h"
+
+#include <mutex>
 
 using namespace KODI::GUILIB;
 
@@ -58,7 +59,7 @@ CGUIRSSControl::CGUIRSSControl(const CGUIRSSControl &from)
 
 CGUIRSSControl::~CGUIRSSControl(void)
 {
-  CSingleLock lock(m_criticalSection);
+  std::unique_lock<CCriticalSection> lock(m_criticalSection);
   if (m_pReader)
     m_pReader->SetObserver(NULL);
   m_pReader = NULL;
@@ -93,7 +94,7 @@ void CGUIRSSControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyre
   bool dirty = false;
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_LOOKANDFEEL_ENABLERSSFEEDS) && CRssManager::GetInstance().IsActive())
   {
-    CSingleLock lock(m_criticalSection);
+    std::unique_lock<CCriticalSection> lock(m_criticalSection);
     // Create RSS background/worker thread if needed
     if (m_pReader == NULL)
     {
@@ -182,7 +183,7 @@ CRect CGUIRSSControl::CalcRenderRegion() const
 
 void CGUIRSSControl::OnFeedUpdate(const vecText &feed)
 {
-  CSingleLock lock(m_criticalSection);
+  std::unique_lock<CCriticalSection> lock(m_criticalSection);
   m_feed = feed;
   m_dirty = true;
 }

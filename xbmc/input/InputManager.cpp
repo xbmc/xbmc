@@ -43,6 +43,7 @@
 
 #include <algorithm>
 #include <math.h>
+#include <mutex>
 
 using EVENTSERVER::CEventServer;
 
@@ -290,7 +291,7 @@ void CInputManager::ProcessQueuedActions()
 {
   std::vector<CAction> queuedActions;
   {
-    CSingleLock lock(m_actionMutex);
+    std::unique_lock<CCriticalSection> lock(m_actionMutex);
     queuedActions.swap(m_queuedActions);
   }
 
@@ -300,7 +301,7 @@ void CInputManager::ProcessQueuedActions()
 
 void CInputManager::QueueAction(const CAction& action)
 {
-  CSingleLock lock(m_actionMutex);
+  std::unique_lock<CCriticalSection> lock(m_actionMutex);
 
   // Avoid dispatching multiple analog actions per frame with the same ID
   if (action.IsAnalog())

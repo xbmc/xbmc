@@ -10,9 +10,10 @@
 
 #include "Application.h"
 #include "guilib/LocalizeStrings.h"
-#include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+
+#include <mutex>
 
 #define CONTROL_HEADING 1
 #define CONTROL_LINES_START 2
@@ -51,7 +52,7 @@ bool CGUIDialogBoxBase::IsConfirmed() const
 void CGUIDialogBoxBase::SetHeading(const CVariant& heading)
 {
   std::string label = GetLocalized(heading);
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
   if (label != m_strHeading)
   {
     m_strHeading = label;
@@ -62,7 +63,7 @@ void CGUIDialogBoxBase::SetHeading(const CVariant& heading)
 void CGUIDialogBoxBase::SetLine(unsigned int iLine, const CVariant& line)
 {
   std::string label = GetLocalized(line);
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
   std::vector<std::string> lines = StringUtils::Split(m_text, '\n');
   if (iLine >= lines.size())
     lines.resize(iLine+1);
@@ -74,7 +75,7 @@ void CGUIDialogBoxBase::SetLine(unsigned int iLine, const CVariant& line)
 void CGUIDialogBoxBase::SetText(const CVariant& text)
 {
   std::string label = GetLocalized(text);
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
   StringUtils::Trim(label, "\n");
   if (label != m_text)
   {
@@ -89,7 +90,7 @@ void CGUIDialogBoxBase::SetChoice(int iButton, const CVariant &choice) // iButto
     return;
 
   std::string label = GetLocalized(choice);
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
   if (label != m_strChoices[iButton])
   {
     m_strChoices[iButton] = label;
@@ -105,7 +106,7 @@ void CGUIDialogBoxBase::Process(unsigned int currentTime, CDirtyRegionList &dirt
     std::vector<std::string> choices;
     choices.reserve(DIALOG_MAX_CHOICES);
     {
-      CSingleLock lock(m_section);
+      std::unique_lock<CCriticalSection> lock(m_section);
       heading = m_strHeading;
       text = m_text;
       for (const std::string& choice : m_strChoices)
@@ -141,7 +142,7 @@ void CGUIDialogBoxBase::OnInitWindow()
 
   // set initial labels
   {
-    CSingleLock lock(m_section);
+    std::unique_lock<CCriticalSection> lock(m_section);
     for (int i = 0 ; i < DIALOG_MAX_CHOICES ; ++i)
     {
       if (m_strChoices[i].empty())
@@ -155,7 +156,7 @@ void CGUIDialogBoxBase::OnDeinitWindow(int nextWindowID)
 {
   // make sure we set default labels for heading, lines and choices
   {
-    CSingleLock lock(m_section);
+    std::unique_lock<CCriticalSection> lock(m_section);
     m_strHeading.clear();
     m_text.clear();
     for (std::string& choice : m_strChoices)

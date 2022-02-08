@@ -8,10 +8,10 @@
 
 #include "ZeroconfDarwin.h"
 
-#include "threads/SingleLock.h"
 #include "utils/log.h"
 
 #include <inttypes.h>
+#include <mutex>
 #include <sstream>
 #include <string>
 
@@ -102,7 +102,7 @@ bool CZeroconfDarwin::doPublishService(const std::string& fcr_identifier,
               (int)error.domain, (int64_t)error.error);
   } else
   {
-    CSingleLock lock(m_data_guard);
+    std::unique_lock<CCriticalSection> lock(m_data_guard);
     m_services.insert(make_pair(fcr_identifier, netService));
   }
 
@@ -112,7 +112,7 @@ bool CZeroconfDarwin::doPublishService(const std::string& fcr_identifier,
 bool CZeroconfDarwin::doForceReAnnounceService(const std::string& fcr_identifier)
 {
   bool ret = false;
-  CSingleLock lock(m_data_guard);
+  std::unique_lock<CCriticalSection> lock(m_data_guard);
   tServiceMap::iterator it = m_services.find(fcr_identifier);
   if(it != m_services.end())
   {
@@ -137,7 +137,7 @@ bool CZeroconfDarwin::doForceReAnnounceService(const std::string& fcr_identifier
 
 bool CZeroconfDarwin::doRemoveService(const std::string& fcr_ident)
 {
-  CSingleLock lock(m_data_guard);
+  std::unique_lock<CCriticalSection> lock(m_data_guard);
   tServiceMap::iterator it = m_services.find(fcr_ident);
   if(it != m_services.end())
   {
@@ -150,7 +150,7 @@ bool CZeroconfDarwin::doRemoveService(const std::string& fcr_ident)
 
 void CZeroconfDarwin::doStop()
 {
-  CSingleLock lock(m_data_guard);
+  std::unique_lock<CCriticalSection> lock(m_data_guard);
   for (const auto& it : m_services)
     cancelRegistration(it.second);
   m_services.clear();
@@ -175,7 +175,7 @@ void CZeroconfDarwin::registerCallback(CFNetServiceRef theService, CFStreamError
     }
     p_this->cancelRegistration(theService);
     //remove it
-    CSingleLock lock(p_this->m_data_guard);
+    std::unique_lock<CCriticalSection> lock(p_this->m_data_guard);
     for (tServiceMap::iterator it = p_this->m_services.begin(); it != p_this->m_services.end();
          ++it)
     {

@@ -25,6 +25,8 @@
 #include "utils/log.h"
 #include "video/VideoInfoTag.h"
 
+#include <mutex>
+
 namespace
 {
 bool IsMediasourceOfFavItemUnlocked(const std::shared_ptr<CFileItem>& item)
@@ -191,7 +193,7 @@ bool CFavouritesService::Persist()
 bool CFavouritesService::Save(const CFileItemList& items)
 {
   {
-    CSingleLock lock(m_criticalSection);
+    std::unique_lock<CCriticalSection> lock(m_criticalSection);
     m_favourites.Clear();
     m_favourites.Copy(items);
     Persist();
@@ -217,7 +219,7 @@ bool CFavouritesService::AddOrRemove(const CFileItem& item, int contextWindow)
 {
   auto favUrl = GetFavouritesUrl(item, contextWindow);
   {
-    CSingleLock lock(m_criticalSection);
+    std::unique_lock<CCriticalSection> lock(m_criticalSection);
     CFileItemPtr match = m_favourites.Get(favUrl);
     if (match)
     { // remove the item
@@ -240,7 +242,7 @@ bool CFavouritesService::AddOrRemove(const CFileItem& item, int contextWindow)
 
 bool CFavouritesService::IsFavourited(const CFileItem& item, int contextWindow) const
 {
-  CSingleLock lock(m_criticalSection);
+  std::unique_lock<CCriticalSection> lock(m_criticalSection);
   return m_favourites.Contains(GetFavouritesUrl(item, contextWindow));
 }
 
@@ -296,7 +298,7 @@ std::string CFavouritesService::GetExecutePath(const CFileItem &item, const std:
 
 void CFavouritesService::GetAll(CFileItemList& items) const
 {
-  CSingleLock lock(m_criticalSection);
+  std::unique_lock<CCriticalSection> lock(m_criticalSection);
   items.Clear();
   if (g_passwordManager.IsMasterLockUnlocked(false)) // don't prompt
   {

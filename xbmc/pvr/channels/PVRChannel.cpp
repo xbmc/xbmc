@@ -19,12 +19,12 @@
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/providers/PVRProviders.h"
-#include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
 #include <memory>
+#include <mutex>
 #include <string>
 
 using namespace PVR;
@@ -132,7 +132,7 @@ std::shared_ptr<CPVREpg> CPVRChannel::GetEPG() const
 {
   const_cast<CPVRChannel*>(this)->CreateEPG();
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   if (!m_bIsHidden && m_bEPGEnabled)
     return m_epg;
 
@@ -141,7 +141,7 @@ std::shared_ptr<CPVREpg> CPVRChannel::GetEPG() const
 
 bool CPVRChannel::CreateEPG()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   if (!m_epg)
   {
     m_epg = CServiceBroker::GetPVRManager().EpgContainer().CreateChannelEpg(m_iEpgId,
@@ -175,7 +175,7 @@ void CPVRChannel::ResetEPG()
 {
   std::shared_ptr<CPVREpg> epgToUnsubscribe;
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     if (m_epg)
     {
       epgToUnsubscribe = m_epg;
@@ -189,7 +189,7 @@ void CPVRChannel::ResetEPG()
 
 bool CPVRChannel::UpdateFromClient(const std::shared_ptr<CPVRChannel>& channel)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   SetClientID(channel->ClientID());
   SetArchive(channel->HasArchive());
@@ -215,7 +215,7 @@ bool CPVRChannel::Persist()
 {
   {
     // not changed
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     if (!m_bChanged && m_iChannelId > 0)
       return true;
   }
@@ -227,7 +227,7 @@ bool CPVRChannel::Persist()
 
     bool bReturn = database->Persist(*this, true);
 
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     m_bChanged = !bReturn;
     return bReturn;
   }
@@ -237,7 +237,7 @@ bool CPVRChannel::Persist()
 
 bool CPVRChannel::SetChannelID(int iChannelId)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   if (m_iChannelId != iChannelId)
   {
     m_iChannelId = iChannelId;
@@ -255,7 +255,7 @@ bool CPVRChannel::SetChannelID(int iChannelId)
 
 bool CPVRChannel::SetHidden(bool bIsHidden)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   if (m_bIsHidden != bIsHidden)
   {
@@ -273,7 +273,7 @@ bool CPVRChannel::SetHidden(bool bIsHidden)
 
 bool CPVRChannel::SetLocked(bool bIsLocked)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   if (m_bIsLocked != bIsLocked)
   {
@@ -292,25 +292,25 @@ bool CPVRChannel::SetLocked(bool bIsLocked)
 
 std::shared_ptr<CPVRRadioRDSInfoTag> CPVRChannel::GetRadioRDSInfoTag() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_rdsTag;
 }
 
 void CPVRChannel::SetRadioRDSInfoTag(const std::shared_ptr<CPVRRadioRDSInfoTag>& tag)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   m_rdsTag = tag;
 }
 
 bool CPVRChannel::HasArchive() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_bHasArchive;
 }
 
 bool CPVRChannel::SetArchive(bool bHasArchive)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   if (m_bHasArchive != bHasArchive)
   {
@@ -330,7 +330,7 @@ bool CPVRChannel::SetIconPath(const std::string& strIconPath, bool bIsUserSetIco
     return false;
   }
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   if (ClientIconPath() == strIconPath)
     return false;
 
@@ -348,7 +348,7 @@ bool CPVRChannel::SetChannelName(const std::string& strChannelName, bool bIsUser
     strName = StringUtils::Format(g_localizeStrings.Get(19085),
                                   m_clientChannelNumber.FormattedChannelNumber());
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   if (m_strChannelName != strName)
   {
     m_strChannelName = strName;
@@ -376,7 +376,7 @@ bool CPVRChannel::SetChannelName(const std::string& strChannelName, bool bIsUser
 bool CPVRChannel::SetLastWatched(time_t iLastWatched)
 {
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     m_iLastWatched = iLastWatched;
   }
 
@@ -391,7 +391,7 @@ bool CPVRChannel::SetLastWatched(time_t iLastWatched)
 
 bool CPVRChannel::SetClientID(int iClientId)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   if (m_iClientId != iClientId)
   {
@@ -509,13 +509,13 @@ std::string CPVRChannel::GetEncryptionName(int iCaid)
 
 void CPVRChannel::UpdateEncryptionName()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   m_strClientEncryptionName = GetEncryptionName(m_iClientEncryptionSystem);
 }
 
 bool CPVRChannel::SetClientProviderUid(int iClientProviderUid)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   if (m_iClientProviderUid != iClientProviderUid)
   {
@@ -603,7 +603,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVRChannel::GetEPGPrevious() const
 
 bool CPVRChannel::SetEPGEnabled(bool bEPGEnabled)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   if (m_bEPGEnabled != bEPGEnabled)
   {
@@ -628,7 +628,7 @@ bool CPVRChannel::SetEPGEnabled(bool bEPGEnabled)
 
 bool CPVRChannel::SetEPGScraper(const std::string& strScraper)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   if (m_strEPGScraper != strScraper)
   {
@@ -648,7 +648,7 @@ bool CPVRChannel::SetEPGScraper(const std::string& strScraper)
 
 void CPVRChannel::ToSortable(SortItem& sortable, Field field) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   if (field == FieldChannelName)
     sortable[FieldChannelName] = m_strChannelName;
   else if (field == FieldLastPlayed)
@@ -660,73 +660,73 @@ void CPVRChannel::ToSortable(SortItem& sortable, Field field) const
 
 int CPVRChannel::ChannelID() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_iChannelId;
 }
 
 bool CPVRChannel::IsNew() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_iChannelId <= 0;
 }
 
 bool CPVRChannel::IsHidden() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_bIsHidden;
 }
 
 bool CPVRChannel::IsLocked() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_bIsLocked;
 }
 
 std::string CPVRChannel::ClientIconPath() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_iconPath.GetClientImage();
 }
 
 std::string CPVRChannel::IconPath() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_iconPath.GetLocalImage();
 }
 
 bool CPVRChannel::IsUserSetIcon() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_bIsUserSetIcon;
 }
 
 bool CPVRChannel::IsUserSetName() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_bIsUserSetName;
 }
 
 std::string CPVRChannel::ChannelName() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_strChannelName;
 }
 
 time_t CPVRChannel::LastWatched() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_iLastWatched;
 }
 
 bool CPVRChannel::IsChanged() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_bChanged;
 }
 
 void CPVRChannel::Persisted()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   m_bChanged = false;
 }
 
@@ -737,61 +737,61 @@ int CPVRChannel::UniqueID() const
 
 int CPVRChannel::ClientID() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_iClientId;
 }
 
 const CPVRChannelNumber& CPVRChannel::ClientChannelNumber() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_clientChannelNumber;
 }
 
 std::string CPVRChannel::ClientChannelName() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_strClientChannelName;
 }
 
 std::string CPVRChannel::MimeType() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_strMimeType;
 }
 
 bool CPVRChannel::IsEncrypted() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_iClientEncryptionSystem > 0;
 }
 
 int CPVRChannel::EncryptionSystem() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_iClientEncryptionSystem;
 }
 
 std::string CPVRChannel::EncryptionName() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_strClientEncryptionName;
 }
 
 int CPVRChannel::EpgID() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_iEpgId;
 }
 
 bool CPVRChannel::EPGEnabled() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_bEPGEnabled;
 }
 
 std::string CPVRChannel::EPGScraper() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_strEPGScraper;
 }
 
@@ -810,7 +810,7 @@ std::shared_ptr<CPVRProvider> CPVRChannel::GetDefaultProvider() const
 
 bool CPVRChannel::HasClientProvider() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_iClientProviderUid != PVR_PROVIDER_INVALID_UID;
 }
 

@@ -15,9 +15,9 @@
 #include "guilib/LocalizeStrings.h"
 #include "log.h"
 #include "messaging/ApplicationMessenger.h"
-#include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 
+#include <mutex>
 #include <utility>
 
 using namespace KODI::MESSAGING;
@@ -74,14 +74,14 @@ void CAlarmClock::Start(const std::string& strName, float n_secs, const std::str
   }
 
   event.watch.StartZero();
-  CSingleLock lock(m_events);
+  std::unique_lock<CCriticalSection> lock(m_events);
   m_event.insert(make_pair(lowerName,event));
   CLog::Log(LOGDEBUG, "started alarm with name: {}", lowerName);
 }
 
 void CAlarmClock::Stop(const std::string& strName, bool bSilent /* false */)
 {
-  CSingleLock lock(m_events);
+  std::unique_lock<CCriticalSection> lock(m_events);
 
   std::string lowerName(strName);
   StringUtils::ToLower(lowerName);          // lookup as lowercase only
@@ -143,7 +143,7 @@ void CAlarmClock::Process()
   {
     std::string strLast;
     {
-      CSingleLock lock(m_events);
+      std::unique_lock<CCriticalSection> lock(m_events);
       for (std::map<std::string,SAlarmClockEvent>::iterator iter=m_event.begin();iter != m_event.end(); ++iter)
         if (iter->second.watch.IsRunning() &&
             iter->second.watch.GetElapsedSeconds() >= static_cast<float>(iter->second.m_fSecs))
