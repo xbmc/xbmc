@@ -132,13 +132,20 @@ bool CGUIDialogPVRChannelManager::OnActionMove(const CAction& action)
         for (unsigned int iLine = 0; iLine < iLines; ++iLine)
         {
           unsigned int iNewSelect = bMoveUp ? m_iSelected - 1 : m_iSelected + 1;
-          if (m_channelItems->Get(iNewSelect)->GetProperty("Number").asString() != "0")
+
+          const CFileItemPtr newItem = m_channelItems->Get(iNewSelect);
+          const std::string number = newItem->GetProperty("Number").asString();
+          if (number != "0") // hidden
           {
-            strNumber = std::to_string(m_iSelected + 1);
-            m_channelItems->Get(iNewSelect)->SetProperty("Number", strNumber);
-            strNumber = std::to_string(iNewSelect + 1);
-            m_channelItems->Get(m_iSelected)->SetProperty("Number", strNumber);
+            // Swap channel numbers
+            const CFileItemPtr item = m_channelItems->Get(m_iSelected);
+            newItem->SetProperty("Number", item->GetProperty("Number"));
+            SetItemChanged(newItem);
+            item->SetProperty("Number", number);
+            SetItemChanged(item);
           }
+
+          // swap items
           m_channelItems->Swap(iNewSelect, m_iSelected);
           m_iSelected = iNewSelect;
         }
@@ -648,7 +655,7 @@ bool CGUIDialogPVRChannelManager::OnPopupMenu(int iItem)
   if (!pItem)
     return false;
 
-  if (m_bAllowReorder)
+  if (m_bAllowReorder && pItem->GetProperty("Number").asString() != "0")
     buttons.Add(CONTEXT_BUTTON_MOVE, 116); /* Move channel up or down */
 
   if (pItem->GetProperty("SupportsSettings").asBoolean())
