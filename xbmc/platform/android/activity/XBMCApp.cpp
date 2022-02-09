@@ -1087,7 +1087,9 @@ void CXBMCApp::onReceive(CJNIIntent intent)
     if (syscall)
     {
       CLog::Log(LOGINFO, "Got device wakeup intent");
-      static_cast<CAndroidPowerSyscall*>(syscall)->SetResumed();
+	  // Check if playback media has video and resume playback if it does.
+	  if(g_application.GetAppPlayer().HasVideo())
+		static_cast<CAndroidPowerSyscall*>(syscall)->SetResumed();	  
     }
 
     if (HasFocus())
@@ -1104,7 +1106,9 @@ void CXBMCApp::onReceive(CJNIIntent intent)
     if (syscall)
     {
       CLog::Log(LOGINFO, "Got device sleep intent");
-      static_cast<CAndroidPowerSyscall*>(syscall)->SetSuspended();
+	  // Check if playback media has video and suspend playback if it does.
+	  if(g_application.GetAppPlayer().HasVideo())
+		static_cast<CAndroidPowerSyscall*>(syscall)->SetSuspended();
     }
   }
   else if (action == "android.intent.action.MEDIA_BUTTON")
