@@ -136,7 +136,7 @@ bool CLibInputHandler::SetKeymap(const std::string& layout)
 void CLibInputHandler::Start()
 {
   Create();
-  SetPriority(GetMinPriority());
+  SetPriority(ThreadPriority::LOWEST);
 }
 
 void CLibInputHandler::Process()

@@ -114,7 +114,7 @@ void CPVRGUIInfo::Start()
 {
   ResetProperties();
   Create();
-  SetPriority(-1);
+  SetPriority(ThreadPriority::BELOW_NORMAL);
 }
 
 void CPVRGUIInfo::Stop()

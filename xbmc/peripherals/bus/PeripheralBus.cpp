@@ -240,7 +240,7 @@ void CPeripheralBus::Initialise(void)
   {
     m_triggerEvent.Reset();
     Create();
-    SetPriority(-1);
+    SetPriority(ThreadPriority::BELOW_NORMAL);
   }
 }
 

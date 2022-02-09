@@ -109,7 +109,7 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
 
   m_thread = new CThread(this, "BackgroundLoader");
   m_thread->Create();
-  m_thread->SetPriority(THREAD_PRIORITY_BELOW_NORMAL);
+  m_thread->SetPriority(ThreadPriority::BELOW_NORMAL);
 }
 
 void CBackgroundInfoLoader::StopAsync()
