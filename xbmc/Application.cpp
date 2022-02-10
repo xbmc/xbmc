@@ -2014,6 +2014,10 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     ActivateScreenSaver();
     break;
 
+  case TMSG_RESETSCREENSAVER:
+    m_bResetScreenSaver = true;
+    break;
+
   case TMSG_VOLUME_SHOW:
   {
     CAction action(pMsg->param1);
@@ -3530,6 +3534,12 @@ void CApplication::CheckScreenSaverAndDPMS()
   // whether the current state of the application should be regarded as active even when there is no
   // explicit user activity such as input
   bool haveIdleActivity = false;
+
+  if (m_bResetScreenSaver)
+  {
+    m_bResetScreenSaver = false;
+    haveIdleActivity = true;
+  }
 
   // When inhibit screensaver is enabled prevent screensaver from kicking in
   if (m_bInhibitScreenSaver)

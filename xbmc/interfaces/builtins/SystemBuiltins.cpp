@@ -103,9 +103,19 @@ static int RestartApp(const std::vector<std::string>& params)
 /*! \brief Activate screensaver.
  *  \param params (ignored)
  */
-static int Screensaver(const std::vector<std::string>& params)
+static int ActivateScreensaver(const std::vector<std::string>& params)
 {
   CApplicationMessenger::GetInstance().PostMsg(TMSG_ACTIVATESCREENSAVER);
+
+  return 0;
+}
+
+/*! \brief Reset screensaver.
+ *  \param params (ignored)
+ */
+static int ResetScreensaver(const std::vector<std::string>& params)
+{
+  CApplicationMessenger::GetInstance().PostMsg(TMSG_RESETSCREENSAVER);
 
   return 0;
 }
@@ -238,21 +248,21 @@ static int Suspend(const std::vector<std::string>& params)
 
 CBuiltins::CommandMap CSystemBuiltins::GetOperations() const
 {
-  return {
-           {"activatescreensaver", {"Activate Screensaver", 0, Screensaver}},
-           {"hibernate",           {"Hibernates the system", 0, Hibernate}},
-           {"inhibitidleshutdown", {"Inhibit idle shutdown", 0, InhibitIdle}},
-           {"inhibitscreensaver",  {"Inhibit Screensaver", 0, InhibitScreenSaver}},
-           {"minimize",            {"Minimize Kodi", 0, Minimize}},
-           {"powerdown",           {"Powerdown system", 0, Powerdown}},
-           {"quit",                {"Quit Kodi", 0, Quit}},
-           {"reboot",              {"Reboot the system", 0, Reboot}},
-           {"reset",               {"Reset the system (same as reboot)", 0, Reboot}},
-           {"restart",             {"Restart the system (same as reboot)", 0, Reboot}},
-           {"restartapp",          {"Restart Kodi", 0, RestartApp}},
-           {"shutdown",            {"Shutdown the system", 0, Shutdown}},
-           {"suspend",             {"Suspends the system", 0, Suspend}},
-           {"system.exec",         {"Execute shell commands", 1, Exec<0>}},
-           {"system.execwait",     {"Execute shell commands and freezes Kodi until shell is closed", 1, Exec<1>}}
-         };
+  return {{"activatescreensaver", {"Activate Screensaver", 0, ActivateScreensaver}},
+          {"resetscreensaver", {"Reset Screensaver", 0, ResetScreensaver}},
+          {"hibernate", {"Hibernates the system", 0, Hibernate}},
+          {"inhibitidleshutdown", {"Inhibit idle shutdown", 0, InhibitIdle}},
+          {"inhibitscreensaver", {"Inhibit Screensaver", 0, InhibitScreenSaver}},
+          {"minimize", {"Minimize Kodi", 0, Minimize}},
+          {"powerdown", {"Powerdown system", 0, Powerdown}},
+          {"quit", {"Quit Kodi", 0, Quit}},
+          {"reboot", {"Reboot the system", 0, Reboot}},
+          {"reset", {"Reset the system (same as reboot)", 0, Reboot}},
+          {"restart", {"Restart the system (same as reboot)", 0, Reboot}},
+          {"restartapp", {"Restart Kodi", 0, RestartApp}},
+          {"shutdown", {"Shutdown the system", 0, Shutdown}},
+          {"suspend", {"Suspends the system", 0, Suspend}},
+          {"system.exec", {"Execute shell commands", 1, Exec<0>}},
+          {"system.execwait",
+           {"Execute shell commands and freezes Kodi until shell is closed", 1, Exec<1>}}};
 }
