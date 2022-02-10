@@ -1197,7 +1197,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
       if (buffertime > MAX_BUFFER_TIME)
       {
         CLog::Log(LOGWARNING,
-                  "ActiveAE::{} - sink returned large buffer of {} ms, reducing to {} ms",
+                  "ActiveAE::{} - sink returned large period time of {} ms, reducing to {} ms",
                   __FUNCTION__, (int)(buffertime * 1000), (int)(MAX_BUFFER_TIME * 1000));
         m_sinkFormat.m_frames = MAX_BUFFER_TIME * m_sinkFormat.m_sampleRate;
       }
