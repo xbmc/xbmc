@@ -567,6 +567,9 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
     case SYSTEM_SCREENSAVER_ACTIVE:
       value = g_application.IsInScreenSaver();
       return true;
+    case SYSTEM_IS_SCREENSAVER_INHIBITED:
+      value = g_application.IsScreenSaverInhibited();
+      return true;
     case SYSTEM_DPMS_ACTIVE:
       value = g_application.IsDPMSActive();
       return true;
