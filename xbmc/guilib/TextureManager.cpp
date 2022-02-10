@@ -205,10 +205,10 @@ bool CTextureMap::IsEmpty() const
 
 void CTextureMap::Add(std::unique_ptr<CTexture> texture, int delay)
 {
-  m_texture.Add(std::move(texture), delay);
-
   if (texture)
     m_memUsage += sizeof(CTexture) + (texture->GetTextureWidth() * texture->GetTextureHeight() * 4);
+
+  m_texture.Add(std::move(texture), delay);
 }
 
 /************************************************************************/
@@ -628,7 +628,7 @@ std::string CGUITextureManager::GetTexturePath(const std::string &textureName, b
     CSingleLock lock(m_section);
     for (const std::string& it : m_texturePaths)
     {
-      std::string path = URIUtils::AddFileToFolder(it.c_str(), "media", textureName);
+      std::string path = URIUtils::AddFileToFolder(it, "media", textureName);
       if (directory)
       {
         if (XFILE::CDirectory::Exists(path))

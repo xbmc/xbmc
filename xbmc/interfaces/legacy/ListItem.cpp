@@ -230,7 +230,7 @@ namespace XBMCAddon
       }
       else if (lowerKey == "mimetype")
       { // special case for mime type - don't actually stored in a property,
-        item->SetMimeType(value.c_str());
+        item->SetMimeType(value);
       }
       else if (lowerKey == "totaltime")
       {

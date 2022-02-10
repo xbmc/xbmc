@@ -678,7 +678,7 @@ bool CPVREpgInfoTag::IsLive() const
 
 const std::vector<std::string> CPVREpgInfoTag::Tokenize(const std::string& str)
 {
-  return StringUtils::Split(str.c_str(), EPG_STRING_TOKEN_SEPARATOR);
+  return StringUtils::Split(str, EPG_STRING_TOKEN_SEPARATOR);
 }
 
 const std::string CPVREpgInfoTag::DeTokenize(const std::vector<std::string>& tokens)

@@ -299,7 +299,7 @@ void CScraperParser::ParseExpression(const std::string& input, std::string& dest
       int iLen = reg.GetFindLen();
       // nasty hack #1 - & means \0 in a replace string
       StringUtils::Replace(strCurOutput, "&","!!!AMPAMP!!!");
-      std::string result = reg.GetReplaceString(strCurOutput.c_str());
+      std::string result = reg.GetReplaceString(strCurOutput);
       if (!result.empty())
       {
         std::string strResult(result);

@@ -105,6 +105,6 @@ uint32_t Crc32::ComputeFromLowerCase(const std::string& strValue)
 {
   std::string strLower = strValue;
   StringUtils::ToLower(strLower);
-  return Compute(strLower.c_str());
+  return Compute(strLower);
 }
 

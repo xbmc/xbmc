@@ -831,7 +831,7 @@ std::string CSmartPlaylistRule::FormatParameter(const std::string &operatorStrin
   if (m_field == FieldTime || m_field == FieldAlbumDuration)
   { // translate time to seconds
     std::string seconds = std::to_string(StringUtils::TimeStringToSeconds(param));
-    return db.PrepareSQL(operatorString.c_str(), seconds.c_str());
+    return db.PrepareSQL(operatorString, seconds.c_str());
   }
   return CDatabaseQueryRule::FormatParameter(operatorString, param, db, strType);
 }

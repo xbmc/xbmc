@@ -44,7 +44,7 @@ public:
     if (m_ptempFilePath.empty())
       return false;
 
-    OpenForWrite(m_ptempFilePath.c_str(), true);
+    OpenForWrite(m_ptempFilePath, true);
     return true;
   }
   bool Delete()

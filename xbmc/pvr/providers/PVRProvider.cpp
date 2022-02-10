@@ -199,7 +199,7 @@ namespace
 
 const std::vector<std::string> Tokenize(const std::string& str)
 {
-  return StringUtils::Split(str.c_str(), PROVIDER_STRING_TOKEN_SEPARATOR);
+  return StringUtils::Split(str, PROVIDER_STRING_TOKEN_SEPARATOR);
 }
 
 const std::string DeTokenize(const std::vector<std::string>& tokens)

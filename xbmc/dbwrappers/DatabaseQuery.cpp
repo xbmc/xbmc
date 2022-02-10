@@ -246,7 +246,7 @@ std::string CDatabaseQueryRule::FormatParameter(const std::string &operatorStrin
     parameter = " IN (" + parameter + ")";
   }
   else
-    parameter = db.PrepareSQL(operatorString.c_str(), ValidateParameter(param).c_str());
+    parameter = db.PrepareSQL(operatorString, ValidateParameter(param).c_str());
 
   if (GetFieldType(m_field) == DATE_FIELD)
   {
@@ -256,7 +256,7 @@ std::string CDatabaseQueryRule::FormatParameter(const std::string &operatorStrin
       CDateTimeSpan span;
       span.SetFromPeriod(param);
       date-=span;
-      parameter = db.PrepareSQL(operatorString.c_str(), date.GetAsDBDate().c_str());
+      parameter = db.PrepareSQL(operatorString, date.GetAsDBDate().c_str());
     }
   }
   return parameter;
