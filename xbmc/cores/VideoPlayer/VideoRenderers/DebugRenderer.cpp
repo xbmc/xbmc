@@ -10,6 +10,7 @@
 
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlayLibass.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
+#include "settings/SubtitlesSettings.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
@@ -129,7 +130,6 @@ void CDebugRenderer::CRenderer::Render(int idx)
       if (!ovAss || !ovAss->GetLibassHandler())
         continue;
 
-      KODI::SUBTITLES::style subStyle;
       bool updateStyle = !m_debugOverlayStyle;
       if (updateStyle)
         CreateSubtitlesStyle();
@@ -146,6 +146,6 @@ void CDebugRenderer::CRenderer::Render(int idx)
 void CDebugRenderer::CRenderer::CreateSubtitlesStyle()
 {
   m_debugOverlayStyle = std::make_shared<KODI::SUBTITLES::style>();
-  m_debugOverlayStyle->fontName = "arial.ttf";
+  m_debugOverlayStyle->fontName = KODI::SUBTITLES::FONT_DEFAULT_FAMILYNAME;
   m_debugOverlayStyle->fontSize = 20.0;
 }
