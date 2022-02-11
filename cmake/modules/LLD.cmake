@@ -1,9 +1,4 @@
-option(ENABLE_LLD "Use LLVM linker" OFF)
-if(ENABLE_LLD AND NOT LLD_FOUND)
-  if(ENABLE_LDGOLD)
-    message(FATAL_ERROR "Only enable ENABLE_LDGOLD OR ENABLE_LLD")
-  endif()
-
+if(ENABLE_LLD)
   execute_process(COMMAND ${CMAKE_CXX_COMPILER} -fuse-ld=lld -Wl,--version ERROR_QUIET OUTPUT_VARIABLE LD_VERSION)
   if(LD_VERSION MATCHES "LLD")
     include(FindPackageHandleStandardArgs)
@@ -22,6 +17,6 @@ if(ENABLE_LLD AND NOT LLD_FOUND)
     mark_as_advanced(LLD_EXECUTABLE CMAKE_LINKER)
 
   else()
-    message(WARNING "LLVM lld linker is not available, falling back to default system linker")
+    message(FATAL_ERROR "LLVM lld linker not found")
   endif()
 endif()

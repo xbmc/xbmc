@@ -1,9 +1,4 @@
-option(ENABLE_MOLD "Use MOLD linker" OFF)
-if(ENABLE_MOLD AND NOT MOLD_FOUND)
-  if(ENABLE_LDGOLD OR ENABLE_LLD)
-    message(FATAL_ERROR "Only enable ENABLE_MOLD OR ENABLE_LDGOLD OR ENABLE_LLD")
-  endif()
-
+if(ENABLE_MOLD)
   if(CMAKE_COMPILER_IS_GNUCXX AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 12)
     # GCC < 12 doesn't support -fuse-ld=mold, so we have to use tools prefix path
     # if mold is installed in a non-standard dir, users can set -DMOLD_PREFIX=/path/to/mold_install_prefix
@@ -14,7 +9,7 @@ if(ENABLE_MOLD AND NOT MOLD_FOUND)
     if(MOLD_PREFIX_DIR)
       set(COMPILER_ARGS "-B${MOLD_PREFIX_DIR}")
     else()
-      message(WARN "Mold LD path not found, you might need to set -DMOLD_PREFIX=/path/to/mold_install_prefix")
+      message(WARNING "Mold LD path not found, you might need to set -DMOLD_PREFIX=/path/to/mold_install_prefix")
     endif()
   else()
     set(COMPILER_ARGS "-fuse-ld=mold")
@@ -38,6 +33,6 @@ if(ENABLE_MOLD AND NOT MOLD_FOUND)
     mark_as_advanced(MOLD_EXECUTABLE CMAKE_LINKER)
 
   else()
-    message(WARNING "mold linker is not available, falling back to default system linker")
+    message(FATAL_ERROR "Mold linker not found")
   endif()
 endif()
