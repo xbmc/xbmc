@@ -1,0 +1,4 @@
+# Linkers
+option(ENABLE_GOLD    "Enable gnu gold linker?" ON)
+option(ENABLE_LLD     "Enable llvm lld linker?" OFF)
+option(ENABLE_MOLD    "Enable mold linker?" OFF)
