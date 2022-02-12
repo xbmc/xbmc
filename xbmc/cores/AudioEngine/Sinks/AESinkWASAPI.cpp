@@ -918,7 +918,7 @@ initialize:
     CLog::Log(LOGDEBUG, "  Enc. Channels   : {}", wfxex_iec61937.dwEncodedChannelCount);
     CLog::Log(LOGDEBUG, "  Enc. Samples/Sec: {}", wfxex_iec61937.dwEncodedSamplesPerSec);
     CLog::Log(LOGDEBUG, "  Channel Mask    : {}", wfxex.dwChannelMask);
-    CLog::Log(LOGDEBUG, "  Periodicty      : {:I64}", audioSinkBufferDurationMsec);
+    CLog::Log(LOGDEBUG, "  Periodicty      : {}", audioSinkBufferDurationMsec);
     return false;
   }
 
