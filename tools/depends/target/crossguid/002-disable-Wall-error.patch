@@ -1,0 +1,18 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -40,6 +40,7 @@
+     target_compile_definitions(crossguid PRIVATE GUID_LIBUUID)
+ endif()
+ 
++if(NOT DISABLE_WALL)
+ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+     set(WARNINGS "-Werror" "-Wall")
+ elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+@@ -48,6 +48,7 @@
+     set(WARNINGS "/WX" "/W4")
+ endif()
+ target_compile_options(crossguid PRIVATE ${WARNINGS})
++endif()
+ 
+ set_target_properties(crossguid
+ 					  PROPERTIES

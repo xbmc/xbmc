@@ -7,7 +7,6 @@ endif
 # Keep in alphabetical order
 DEPENDS = \
   bzip2 \
-  crossguid \
   curl \
   dav1d \
   expat \
