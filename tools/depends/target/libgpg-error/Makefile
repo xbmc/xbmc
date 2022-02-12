@@ -1,30 +1,22 @@
-include ../../Makefile.include
-DEPS = ../../Makefile.include Makefile tvos_remove-fork.patch libgpg-error-1.36-gawk5-support.patch ../../download-files.include
-
-# lib name, version
-LIBNAME=libgpg-error
-VERSION=1.36
-SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.bz2
-SHA512=6e5f853f77dc04f0091d94b224cab8e669042450f271b78d0ea0219658d059c9cab1ab0eaa020a4227f451520b417fc340b85971a6f5e144fa69be57e15df346
-include ../../download-files.include
+include ../../Makefile.include LIBGPG-ERROR-VERSION ../../download-files.include
+DEPS = ../../Makefile.include Makefile LIBGPG-ERROR-VERSION ../../download-files.include \
+                              tvos_remove-fork.patch
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) \
-  --disable-doc \
-  --disable-tests \
-  --disable-languages \
-  --disable-nls --disable-shared
+                      --disable-doc \
+                      --disable-tests \
+                      --disable-languages \
+                      --disable-nls \
+                      --disable-shared
 
 LIBDYLIB=$(PLATFORM)/src/.libs/$(LIBNAME).a
 
 all: .installed-$(PLATFORM)
 
-
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); patch -p1 -i ../libgpg-error-1.36-gawk5-support.patch
 ifeq ($(TARGET_PLATFORM),appletvos)
 	cd $(PLATFORM); patch -p1 -i ../tvos_remove-fork.patch
 endif

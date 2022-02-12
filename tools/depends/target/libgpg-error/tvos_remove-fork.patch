@@ -27,7 +27,7 @@
    _gpgrt_post_syscall ();
    if (*pid == (pid_t)(-1))
      {
-@@ -813,7 +813,7 @@
+@@ -818,7 +818,7 @@
      return _gpg_err_code_from_syserror ();
  
    _gpgrt_pre_syscall ();
@@ -36,7 +36,7 @@
    _gpgrt_post_syscall ();
    if (pid == (pid_t)(-1))
      {
-@@ -830,7 +830,7 @@
+@@ -835,7 +835,7 @@
        if (setsid() == -1 || chdir ("/"))
          _exit (1);
  
