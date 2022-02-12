@@ -14,6 +14,7 @@
 #include "URL.h"
 #include "Util.h"
 #include "addons/gui/GUIWindowAddonBrowser.h"
+#include "dialogs/GUIDialogColorPicker.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogSelect.h"
@@ -299,6 +300,49 @@ static int SetImage(const std::vector<std::string>& params)
   return 0;
 }
 
+/*! \brief Set a skin color setting.
+ *  \param params The parameters.
+ *  \details params[0] = Name of skin setting.
+ *           params[1] = Dialog header text.
+ *           params[2] = Hex value of the preselected color (optional).
+ *           params[3] = XML file containing color definitions (optional).
+ */
+static int SetColor(const std::vector<std::string>& params)
+{
+  int string = CSkinSettings::GetInstance().TranslateString(params[0]);
+  std::string value = CSkinSettings::GetInstance().GetString(string);
+
+  CGUIDialogColorPicker* pDlgColorPicker =
+      CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogColorPicker>(
+          WINDOW_DIALOG_COLOR_PICKER);
+  pDlgColorPicker->Reset();
+  pDlgColorPicker->SetHeading(CVariant{g_localizeStrings.Get(atoi(params[1].c_str()))});
+
+  if (params.size() > 3)
+  {
+    pDlgColorPicker->LoadColors(params[3]);
+  }
+  else
+  {
+    pDlgColorPicker->LoadColors();
+  }
+
+  if (params.size() > 2)
+  {
+    pDlgColorPicker->SetSelectedColor(params[2]);
+  }
+
+  pDlgColorPicker->Open();
+
+  if (pDlgColorPicker->IsConfirmed())
+  {
+    value = pDlgColorPicker->GetSelectedColor();
+    CSkinSettings::GetInstance().SetString(string, value);
+  }
+
+  return 0;
+}
+
 /*! \brief Set a string skin setting.
  *  \param params The parameters.
  *  \details params[0] = Name of skin setting.
@@ -492,6 +536,25 @@ static int SkinDebug(const std::vector<std::string>& params)
 ///     @param[in] url                   Extra URL to allow selection from (optional).
 ///   }
 ///   \table_row2_l{
+///     <b>`Skin.SetColor(string\,header[\,colorfile\,selectedcolor])`</b>
+///     \anchor Builtin_SetColor,
+///     Pops up a color selection dialog and allows the user to select a color to be
+///     used to define the color of a label control or as a colordiffuse value for a texture
+///     elsewhere in the skin via the info tag `Skin.String(string)`.
+///     Skinners can optionally set the color that needs to be preselected in the
+///     dialog by specifying the hex value of this color.
+///     Also optionally\, skinners can include their own color definition file. If not specified\,
+///     the default colorfile included with Kodi will be used.
+///     @param[in] string                Name of skin setting.
+///     @param[in] string                Dialog header text.
+///     @param[in] string                Hex value of the color to preselect (optional),
+///                                      example: FF00FF00.
+///     @param[in] string                Filepath of the color definition file (optional).
+///     <p><hr>
+///     @skinning_v20 **[New builtin]** \link Builtin_SetColor `SetColor(string\,header[\,colorfile\,selectedcolor])`\endlink
+///     <p>
+///   }
+///   \table_row2_l{
 ///     <b>`Skin.SetNumeric(numeric[\,value])`</b>
 ///     ,
 ///     Pops up a keyboard dialog and allows the user to input a numerical.
@@ -551,6 +614,7 @@ CBuiltins::CommandMap CSkinBuiltins::GetOperations() const
            {"skin.setbool",       {"Sets a skin setting on", 1, SetBool}},
            {"skin.setfile",       {"Prompts and sets a file", 1, SetFile}},
            {"skin.setimage",      {"Prompts and sets a skin image", 1, SetImage}},
+           {"skin.setcolor",      {"Prompts and sets a skin color", 1, SetColor}},
            {"skin.setnumeric",    {"Prompts and sets numeric input", 1, SetNumeric}},
            {"skin.setpath",       {"Prompts and sets a skin path", 1, SetPath}},
            {"skin.setstring",     {"Prompts and sets skin string", 1, SetString}},
