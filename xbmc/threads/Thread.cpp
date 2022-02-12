@@ -8,8 +8,6 @@
  *  See LICENSES/README.md for more information.
  */
 
-#define __STDC_FORMAT_MACROS
-
 #include "Thread.h"
 
 #include "IRunnable.h"
