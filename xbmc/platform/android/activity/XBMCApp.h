@@ -22,9 +22,9 @@
 
 #include <atomic>
 #include <map>
-#include <math.h>
 #include <memory>
 #include <string>
+#include <thread>
 #include <vector>
 
 #include <android/native_activity.h>
@@ -33,7 +33,6 @@
 #include <androidjni/BroadcastReceiver.h>
 #include <androidjni/SurfaceHolder.h>
 #include <androidjni/View.h>
-#include <pthread.h>
 
 // forward declares
 class CJNIWakeLock;
@@ -247,7 +246,7 @@ private:
   std::atomic<bool> m_exiting{false};
   int m_exitCode{0};
   bool m_bResumePlayback = false;
-  pthread_t m_thread;
+  std::thread m_thread;
   static CCriticalSection m_applicationsMutex;
   static CCriticalSection m_activityResultMutex;
   static std::vector<androidPackage> m_applications;
