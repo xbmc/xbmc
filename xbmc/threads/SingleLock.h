@@ -15,21 +15,24 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "threads/CriticalSection.h"
-#include "threads/Lockables.h"
+
+#include <mutex>
 
 /**
  * This implements a "guard" pattern for a CCriticalSection that
  *  borrows most of it's functionality from boost's unique_lock.
  */
-class CSingleLock : public XbmcThreads::UniqueLock<CCriticalSection>
+class CSingleLock : public std::unique_lock<CCriticalSection>
 {
 public:
-  inline explicit CSingleLock(CCriticalSection& cs) : XbmcThreads::UniqueLock<CCriticalSection>(cs) {}
+  inline explicit CSingleLock(CCriticalSection& cs) : std::unique_lock<CCriticalSection>(cs) {}
 
   inline void Leave() { unlock(); }
   inline void Enter() { lock(); }
-protected:
-  inline CSingleLock(CCriticalSection& cs, bool dicrim) : XbmcThreads::UniqueLock<CCriticalSection>(cs,true) {}
+
+private:
+  CSingleLock(const CSingleLock&) = delete;
+  CSingleLock& operator=(const CSingleLock&) = delete;
 };
 
 

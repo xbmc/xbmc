@@ -48,12 +48,12 @@ namespace XbmcThreads
       return res == std::cv_status::no_timeout;
     }
 
-    inline void wait(CSingleLock& lock) { wait(lock.get_underlying()); }
+    inline void wait(CSingleLock& lock) { wait(*lock.mutex()); }
 
     template<typename Rep, typename Period>
     inline bool wait(CSingleLock& lock, std::chrono::duration<Rep, Period> duration)
     {
-      return wait(lock.get_underlying(), duration);
+      return wait(*lock.mutex(), duration);
     }
 
     inline void notifyAll()

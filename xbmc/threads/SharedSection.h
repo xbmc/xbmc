@@ -12,6 +12,8 @@
 #include "threads/Helpers.h"
 #include "threads/SingleLock.h"
 
+#include <shared_mutex>
+
 /**
  * A CSharedSection is a mutex that satisfies the Shared Lockable concept (see Lockables.h).
  */
@@ -35,23 +37,31 @@ public:
   inline void unlock_shared() { CSingleLock l(sec); sharedCount--; if (!sharedCount) { cond.notifyAll(); } }
 };
 
-class CSharedLock : public XbmcThreads::SharedLock<CSharedSection>
+class CSharedLock : public std::shared_lock<CSharedSection>
 {
 public:
-  inline explicit CSharedLock(CSharedSection& cs) : XbmcThreads::SharedLock<CSharedSection>(cs) {}
+  inline explicit CSharedLock(CSharedSection& cs) : std::shared_lock<CSharedSection>(cs) {}
 
   inline bool IsOwner() const { return owns_lock(); }
   inline void Enter() { lock(); }
   inline void Leave() { unlock(); }
+
+private:
+  CSharedLock(const CSharedLock&) = delete;
+  CSharedLock& operator=(const CSharedLock&) = delete;
 };
 
-class CExclusiveLock : public XbmcThreads::UniqueLock<CSharedSection>
+class CExclusiveLock : public std::unique_lock<CSharedSection>
 {
 public:
-  inline explicit CExclusiveLock(CSharedSection& cs) : XbmcThreads::UniqueLock<CSharedSection>(cs) {}
+  inline explicit CExclusiveLock(CSharedSection& cs) : std::unique_lock<CSharedSection>(cs) {}
 
   inline bool IsOwner() const { return owns_lock(); }
   inline void Leave() { unlock(); }
   inline void Enter() { lock(); }
+
+private:
+  CExclusiveLock(const CExclusiveLock&) = delete;
+  CExclusiveLock& operator=(const CExclusiveLock&) = delete;
 };
 
