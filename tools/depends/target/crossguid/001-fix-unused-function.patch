@@ -1,0 +1,11 @@
+--- a/src/guid.cpp
++++ b/src/guid.cpp
+@@ -396,7 +396,7 @@
+ namespace std
+ {
+ 	template <>
+-	void swap(xg::Guid &lhs, xg::Guid &rhs) noexcept
++	[[maybe_unused]] void swap(xg::Guid &lhs, xg::Guid &rhs) noexcept
+ 	{
+ 		lhs.swap(rhs);
+ 	}

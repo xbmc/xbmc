@@ -17,7 +17,7 @@
 //------------------------------------------------------------------------
 
 #ifdef HAVE_NEW_CROSSGUID
-#include <guid.hpp>
+#include <crossguid/guid.hpp>
 #else
 #include <guid.h>
 #endif
