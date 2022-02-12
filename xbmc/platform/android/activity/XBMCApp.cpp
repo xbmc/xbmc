@@ -212,11 +212,9 @@ void CXBMCApp::onStart()
     // Register sink
     AE::CAESinkFactory::ClearSinks();
     CAESinkAUDIOTRACK::Register();
-    pthread_attr_t attr;
-    pthread_attr_init(&attr);
-    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
-    pthread_create(&m_thread, &attr, thread_run<CXBMCApp, &CXBMCApp::run>, this);
-    pthread_attr_destroy(&attr);
+
+    // Create thread to run Kodi main event loop
+    m_thread = std::thread(&CXBMCApp::run, this);
 
     // Some intent filters MUST be registered in code rather than through the manifest
     CJNIIntentFilter intentFilter;
@@ -433,7 +431,7 @@ void CXBMCApp::Quit()
   CApplicationMessenger::GetInstance().PostMsg(msgId);
 
   // wait for the run thread to finish
-  pthread_join(m_thread, nullptr);
+  m_thread.join();
 
   CLog::Log(LOGINFO, "XBMCApp: Application stopped!");
 }
