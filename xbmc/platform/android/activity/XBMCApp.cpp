@@ -545,11 +545,6 @@ void CXBMCApp::run()
   android_printf(" => XBMC_Run finished with %d", status);
 }
 
-void CXBMCApp::XBMC_Pause(bool pause)
-{
-  android_printf("XBMC_Pause(%s)", pause ? "true" : "false");
-}
-
 bool CXBMCApp::XBMC_SetupDisplay()
 {
   android_printf("XBMC_SetupDisplay()");
