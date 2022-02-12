@@ -261,7 +261,6 @@ private:
 
   std::unique_ptr<CJNIActivityManager> m_activityManager;
 
-  void XBMC_Pause(bool pause);
   bool XBMC_DestroyDisplay();
   bool XBMC_SetupDisplay();
 
