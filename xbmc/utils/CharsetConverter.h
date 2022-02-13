@@ -138,9 +138,36 @@ public:
   static bool ToUtf8(const std::string& strSourceCharset, const std::string& stringSrc, std::string& utf8StringDst, bool failOnBadChar = false);
 
   static bool wToUTF8(const std::wstring& wStringSrc, std::string& utf8StringDst, bool failOnBadChar = false);
+
+  /*!
+   *  \brief Convert UTF-16BE (u16string) string to UTF-8 string.
+   *  No RTL visual-logical transformation is performed.
+   *  \param utf16StringSrc Is source UTF-16BE u16string string to convert
+   *  \param utf8StringDst Is output UTF-8 string, empty on any error
+   *  \return True on successful conversion, false on any error
+   */
   static bool utf16BEtoUTF8(const std::u16string& utf16StringSrc, std::string& utf8StringDst);
+
+  /*!
+   *  \brief Convert UTF-16BE (string) string to UTF-8 string.
+   *  No RTL visual-logical transformation is performed.
+   *  \param utf16StringSrc Is source UTF-16BE string to convert
+   *  \param utf8StringDst Is output UTF-8 string, empty on any error
+   *  \return True on successful conversion, false on any error
+   */
+  static bool utf16BEtoUTF8(const std::string& utf16StringSrc, std::string& utf8StringDst);
+
   static bool utf16LEtoUTF8(const std::u16string& utf16StringSrc, std::string& utf8StringDst);
   static bool ucs2ToUTF8(const std::u16string& ucs2StringSrc, std::string& utf8StringDst);
+
+  /*!
+   *  \brief Convert Macintosh (string) string to UTF-8 string.
+   *  No RTL visual-logical transformation is performed.
+   *  \param macStringSrc Is source Macintosh string to convert
+   *  \param utf8StringDst Is output UTF-8 string, empty on any error
+   *  \return True on successful conversion, false on any error
+   */
+  static bool MacintoshToUTF8(const std::string& macStringSrc, std::string& utf8StringDst);
 
   static bool utf8logicalToVisualBiDi(const std::string& utf8StringSrc, std::string& utf8StringDst, bool failOnBadString = false);
 

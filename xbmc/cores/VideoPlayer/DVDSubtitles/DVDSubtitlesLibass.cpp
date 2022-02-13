@@ -107,9 +107,10 @@ void CDVDSubtitlesLibass::Configure()
                                   UTILS::FONT::SUPPORTED_EXTENSIONS_MASK,
                                   XFILE::DIR_FLAG_NO_FILE_DIRS | XFILE::DIR_FLAG_NO_FILE_INFO);
   // Get temporary fonts
-  XFILE::CDirectory::GetDirectory(UTILS::FONT::FONTPATH::TEMP, items,
-                                  UTILS::FONT::SUPPORTED_EXTENSIONS_MASK,
-                                  XFILE::DIR_FLAG_NO_FILE_DIRS | XFILE::DIR_FLAG_NO_FILE_INFO);
+  XFILE::CDirectory::GetDirectory(
+      UTILS::FONT::FONTPATH::TEMP, items, UTILS::FONT::SUPPORTED_EXTENSIONS_MASK,
+      XFILE::DIR_FLAG_BYPASS_CACHE | XFILE::DIR_FLAG_NO_FILE_DIRS | XFILE::DIR_FLAG_NO_FILE_INFO);
+
   for (const auto& item : items)
   {
     if (item->m_bIsFolder)
