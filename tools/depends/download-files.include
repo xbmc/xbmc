@@ -18,6 +18,12 @@ ifeq ($(NATIVE_OS), osx)
   SED_FLAG = -i ''
 endif
 
+# non-depends builds might not set this, use defaults
+ifeq ($(HASH_TOOL),)
+  HASH_TOOL = sha512sum
+  HASH_TOOL_FLAGS = -c --status
+endif
+
 HASH_SUM = $($(shell echo $(HASH_TYPE) | tr  '[:lower:]' '[:upper:]'))
 
 .PHONY: $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
@@ -34,6 +40,18 @@ ifeq ($(HASH_FOUND),no)
 endif
 ifeq ($(HASH_FOUND),yes)
 #	we really need 2 spaces between sha hash and file name!
+#	if the hash sum doesn't match we retry up to 3 times
 	@cd $(TARBALLS_LOCATION); echo "$(HASH_SUM)  $(ARCHIVE)" > $(ARCHIVE).$(HASH_TYPE) && $(HASH_TOOL) $(HASH_TOOL_FLAGS) $(ARCHIVE).$(HASH_TYPE) \
-          || { echo "Error: failed to verify hash sum of $(ARCHIVE), expected type: $(HASH_TYPE) value $(HASH_SUM)"; exit 3; }
+          || {\
+            echo "Error: failed to verify hash sum of $(ARCHIVE), expected type: $(HASH_TYPE) value $(HASH_SUM), retrying.." ;\
+            tries=1 ;\
+            while [ $$tries -le 3 ]; do \
+              echo "download $(ARCHIVE) retry $$tries" ;\
+              rm $(TARBALLS_LOCATION)/$(ARCHIVE) ;\
+              sleep 3 ;\
+              $(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE) ;\
+              $(HASH_TOOL) $(HASH_TOOL_FLAGS) $(ARCHIVE).$(HASH_TYPE) && exit 0 || tries=$$((tries + 1)) ;\
+            done ;\
+            exit 1 ;\
+          }
 endif
