@@ -404,6 +404,7 @@
 #define SKIN_ASPECT_RATIO           607
 #define SKIN_FONT                   608
 
+#define SYSTEM_IS_SCREENSAVER_INHIBITED 641
 #define SYSTEM_ADDON_UPDATE_COUNT   642
 #define SYSTEM_PRIVACY_POLICY       643
 #define SYSTEM_TOTAL_MEMORY         644

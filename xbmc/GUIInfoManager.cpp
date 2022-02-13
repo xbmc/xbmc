@@ -1786,6 +1786,12 @@ const infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
 ///     @skinning_v20 **[New Infolabel]** \link System_SupportedHDRTypes `System.SupportedHDRTypes`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`System.IsScreensaverInhibited`</b>,
+///                  \anchor System_IsScreensaverInhibited
+///                  _boolean_,
+///     @return **True** when screensaver on idle is disabled.
+///     <p>
+///   }
 const infomap system_labels[] = {{"hasnetwork", SYSTEM_ETHERNET_LINK_ACTIVE},
                                  {"hasmediadvd", SYSTEM_MEDIA_DVD},
                                  {"hasmediaaudiocd", SYSTEM_MEDIA_AUDIO_CD},
@@ -1858,7 +1864,8 @@ const infomap system_labels[] = {{"hasnetwork", SYSTEM_ETHERNET_LINK_ACTIVE},
                                  {"haspvraddon", SYSTEM_HAS_PVR_ADDON},
                                  {"addonupdatecount", SYSTEM_ADDON_UPDATE_COUNT},
                                  {"supportscpuusage", SYSTEM_SUPPORTS_CPU_USAGE},
-                                 {"supportedhdrtypes", SYSTEM_SUPPORTED_HDR_TYPES}};
+                                 {"supportedhdrtypes", SYSTEM_SUPPORTED_HDR_TYPES},
+                                 {"isscreensaverinhibited", SYSTEM_IS_SCREENSAVER_INHIBITED}};
 
 /// \page modules__infolabels_boolean_conditions
 ///   \table_row3{   <b>`System.HasAddon(id)`</b>,
