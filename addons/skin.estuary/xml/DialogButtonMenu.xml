@@ -68,12 +68,12 @@
 					<item>
 						<label>$LOCALIZE[13017]</label>
 						<onclick>InhibitIdleShutdown(true)</onclick>
-						<visible>System.HasShutdown +!System.IsInhibit</visible>
+						<visible>System.HasShutdown +!System.IdleShutdownInhibited</visible>
 					</item>
 					<item>
 						<label>$LOCALIZE[13018]</label>
 						<onclick>InhibitIdleShutdown(false)</onclick>
-						<visible>System.HasShutdown + System.IsInhibit</visible>
+						<visible>System.HasShutdown + System.IdleShutdownInhibited</visible>
 					</item>
 				</content>
 			</control>
