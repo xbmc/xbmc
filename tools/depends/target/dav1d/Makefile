@@ -1,5 +1,5 @@
 -include ../../Makefile.include
-include DAV1D-VERSION ../../download-files.include
+include DAV1D-VERSION
 DEPS = Makefile DAV1D-VERSION ../../download-files.include
 
 ifeq ($(CROSS_COMPILING), yes)
@@ -18,6 +18,8 @@ else
   ifeq ($(PLATFORM),)
     PLATFORM = native
     TARBALLS_LOCATION = $(ROOT_DIR)
+    HASH_TOOL = sha512sum
+    HASH_TOOL_FLAGS = -c --status
     DAV1D_INSTALL_PREFIX = --prefix $(PREFIX)
     MESON = meson
     NINJA = ninja
@@ -53,9 +55,10 @@ export PKG_CONFIG_LIBDIR=$(PREFIX)/lib/pkgconfig
 
 LIBDYLIB=$(PLATFORM)/build/src/lib$(LIBNAME).a
 
+include ../../download-files.include
 all: .installed-$(PLATFORM)
 
-download: $(TARBALLS_LOCATION)/$(ARCHIVE)
+download: $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 
 
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE) $(DEPS)
