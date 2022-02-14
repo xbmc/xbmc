@@ -32,12 +32,12 @@ static bool SetRecursiveAttr()
 
 static bool recursiveAttrSet = SetRecursiveAttr();
 
-pthread_mutexattr_t* CRecursiveMutex::getRecursiveAttr()
+pthread_mutexattr_t& CRecursiveMutex::getRecursiveAttr()
 {
   if (!recursiveAttrSet) // this is only possible in the single threaded startup code
     recursiveAttrSet = SetRecursiveAttr();
 
-  return &recursiveAttr;
+  return recursiveAttr;
 }
 
 } // namespace XbmcThreads

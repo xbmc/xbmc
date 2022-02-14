@@ -27,13 +27,13 @@ class CRecursiveMutex
 private:
   pthread_mutex_t m_mutex;
 
-  static pthread_mutexattr_t* getRecursiveAttr();
+  static pthread_mutexattr_t& getRecursiveAttr();
 
 public:
   CRecursiveMutex(const CRecursiveMutex&) = delete;
   CRecursiveMutex& operator=(const CRecursiveMutex&) = delete;
 
-  inline CRecursiveMutex() { pthread_mutex_init(&m_mutex, getRecursiveAttr()); }
+  inline CRecursiveMutex() { pthread_mutex_init(&m_mutex, &getRecursiveAttr()); }
 
   inline ~CRecursiveMutex() { pthread_mutex_destroy(&m_mutex); }
 
