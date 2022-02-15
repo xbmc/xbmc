@@ -8,6 +8,7 @@
 
 #include "GUIEditControl.h"
 
+#include "GUIFont.h"
 #include "GUIKeyboardFactory.h"
 #include "GUIUserMessages.h"
 #include "GUIWindowManager.h"
@@ -552,9 +553,12 @@ bool CGUIEditControl::SetStyledText(const std::wstring &text)
   unsigned int startSelection = m_cursorPos + m_editOffset;
   unsigned int endSelection   = m_cursorPos + m_editOffset + m_editLength;
 
+  CGUIFont* font = m_label2.GetLabelInfo().font;
+  uint32_t style = (font ? font->GetStyle() : (FONT_STYLE_NORMAL & FONT_STYLE_MASK)) << 24;
+
   for (unsigned int i = 0; i < text.size(); i++)
   {
-    unsigned int ch = text[i];
+    uint32_t ch = text[i] | style;
     if (m_editLength > 0 && startSelection <= i && i < endSelection)
       ch |= (2 << 16); // highlight the letters we're playing with
     else if (!m_edit.empty() && (i < startHighlight || i >= endHighlight))
@@ -563,7 +567,7 @@ bool CGUIEditControl::SetStyledText(const std::wstring &text)
   }
 
   // show the cursor
-  unsigned int ch = L'|';
+  uint32_t ch = L'|' | style;
   if ((++m_cursorBlink % 64) > 32)
     ch |= (3 << 16);
   styled.insert(styled.begin() + m_cursorPos, ch);
