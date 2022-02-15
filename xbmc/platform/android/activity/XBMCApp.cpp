@@ -158,7 +158,6 @@ CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity, IInputHandler& inputHandler)
   }
   m_mainView.reset(new CJNIXBMCMainView(this));
   m_firstrun = true;
-  m_exiting = false;
   m_hdmiSource = CJNISystemProperties::get("ro.hdmi.device_type", "") == "4";
   android_printf("CXBMCApp: Created");
 }
@@ -213,11 +212,9 @@ void CXBMCApp::onStart()
     // Register sink
     AE::CAESinkFactory::ClearSinks();
     CAESinkAUDIOTRACK::Register();
-    pthread_attr_t attr;
-    pthread_attr_init(&attr);
-    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
-    pthread_create(&m_thread, &attr, thread_run<CXBMCApp, &CXBMCApp::run>, this);
-    pthread_attr_destroy(&attr);
+
+    // Create thread to run Kodi main event loop
+    m_thread = std::thread(&CXBMCApp::run, this);
 
     // Some intent filters MUST be registered in code rather than through the manifest
     CJNIIntentFilter intentFilter;
@@ -317,15 +314,6 @@ void CXBMCApp::onDestroy()
   unregisterReceiver(*this);
 
   m_mediaSession.release();
-
-  // If android is forcing us to stop, ask XBMC to exit then wait until it's
-  // been destroyed.
-  if (!m_exiting)
-  {
-    XBMC_Stop();
-    pthread_join(m_thread, NULL);
-    android_printf(" => XBMC finished");
-  }
 }
 
 void CXBMCApp::onSaveState(void **data, size_t *size)
@@ -396,6 +384,56 @@ void CXBMCApp::Initialize()
 
 void CXBMCApp::Deinitialize()
 {
+}
+
+bool CXBMCApp::Stop(int exitCode)
+{
+  if (m_exiting)
+    return true;
+
+  CLog::Log(LOGINFO, "XBMCApp: Finishing the activity");
+
+  m_exitCode = exitCode;
+
+  // Notify Android its finish routine.
+  // This will cause Android to run through its teardown events, it calls:
+  // onPause(), onLostFocus(), onDestroyWindow(), onStop(), onDestroy().
+  m_exiting = true;
+  ANativeActivity_finish(m_activity);
+  return false;
+}
+
+void CXBMCApp::Quit()
+{
+  CLog::Log(LOGINFO, "XBMCApp: Stopping the application...");
+
+  uint32_t msgId;
+  switch (m_exitCode)
+  {
+    case EXITCODE_QUIT:
+      msgId = TMSG_QUIT;
+      break;
+    case EXITCODE_POWERDOWN:
+      msgId = TMSG_POWERDOWN;
+      break;
+    case EXITCODE_REBOOT:
+      msgId = TMSG_RESTART;
+      break;
+    case EXITCODE_RESTARTAPP:
+      msgId = TMSG_RESTARTAPP;
+      break;
+    default:
+      CLog::Log(LOGWARNING, "CXBMCApp::Stop : Unexpected exit code. Defaulting to QUIT.");
+      msgId = TMSG_QUIT;
+      break;
+  }
+
+  CApplicationMessenger::GetInstance().PostMsg(msgId);
+
+  // wait for the run thread to finish
+  m_thread.join();
+
+  CLog::Log(LOGINFO, "XBMCApp: Application stopped!");
 }
 
 bool CXBMCApp::EnableWakeLock(bool on)
@@ -503,22 +541,6 @@ void CXBMCApp::run()
   CAppParamParser appParamParser;
   status = XBMC_Run(true, appParamParser);
   android_printf(" => XBMC_Run finished with %d", status);
-
-  // If we are have not been force by Android to exit, notify its finish routine.
-  // This will cause android to run through its teardown events, it calls:
-  // onPause(), onLostFocus(), onDestroyWindow(), onStop(), onDestroy().
-  ANativeActivity_finish(m_activity);
-  m_exiting=true;
-}
-
-void CXBMCApp::XBMC_Pause(bool pause)
-{
-  android_printf("XBMC_Pause(%s)", pause ? "true" : "false");
-}
-
-void CXBMCApp::XBMC_Stop()
-{
-  CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
 }
 
 bool CXBMCApp::XBMC_SetupDisplay()
