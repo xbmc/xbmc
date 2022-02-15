@@ -312,6 +312,11 @@ static int SetColor(const std::vector<std::string>& params)
   int string = CSkinSettings::GetInstance().TranslateString(params[0]);
   std::string value = CSkinSettings::GetInstance().GetString(string);
 
+  if (value.empty() && params.size() > 2)
+  {
+    value = params[2];
+  }
+
   CGUIDialogColorPicker* pDlgColorPicker =
       CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogColorPicker>(
           WINDOW_DIALOG_COLOR_PICKER);
@@ -327,10 +332,7 @@ static int SetColor(const std::vector<std::string>& params)
     pDlgColorPicker->LoadColors();
   }
 
-  if (params.size() > 2)
-  {
-    pDlgColorPicker->SetSelectedColor(params[2]);
-  }
+  pDlgColorPicker->SetSelectedColor(value);
 
   pDlgColorPicker->Open();
 
