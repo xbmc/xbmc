@@ -720,7 +720,7 @@ void CoffLoader::PrintWindowsHeader(WindowsHeader_t *WinHdr)
   printf("\n");
 }
 
-void CoffLoader::PrintSection(SectionHeader_t *ScnHdr, char* data)
+void CoffLoader::PrintSection(SectionHeader_t* ScnHdr, const char* data)
 {
   char SectionName[9];
 

@@ -36,7 +36,7 @@ public:
 
   CDVDOverlaySpu* ParseRLE(CDVDOverlaySpu* pSPU, uint8_t* pUnparsedData);
   static void FindSubtitleColor(int last_color, int stats[4], CDVDOverlaySpu* pSPU);
-  static bool CanDisplayWithAlphas(int a[4], int stats[4]);
+  static bool CanDisplayWithAlphas(const int a[4], const int stats[4]);
 
   void Reset();
   void FlushCurrentPacket(); // flushes current unparsed data

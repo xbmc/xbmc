@@ -328,7 +328,7 @@ CDVDOverlaySpu* CDVDDemuxSPU::ParsePacket(SPUData* pSPUData)
 /*****************************************************************************
  * AddNibble: read a nibble from a source packet and add it to our integer.
  *****************************************************************************/
-inline unsigned int AddNibble( unsigned int i_code, uint8_t* p_src, unsigned int* pi_index )
+inline unsigned int AddNibble(unsigned int i_code, const uint8_t* p_src, unsigned int* pi_index)
 {
   if ( *pi_index & 0x1 )
   {
@@ -650,7 +650,7 @@ void CDVDDemuxSPU::FindSubtitleColor(int last_color, int stats[4], CDVDOverlaySp
   }
 }
 
-bool CDVDDemuxSPU::CanDisplayWithAlphas(int a[4], int stats[4])
+bool CDVDDemuxSPU::CanDisplayWithAlphas(const int a[4], const int stats[4])
 {
   return(
     a[0] * stats[0] > 0 ||

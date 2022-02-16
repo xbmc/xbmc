@@ -54,7 +54,7 @@ namespace XFILE
     void PrintStats() const;
 #endif
   protected:
-    void InitCache(std::set<std::string>& dirs);
+    void InitCache(const std::set<std::string>& dirs);
     void ClearCache(std::set<std::string>& dirs);
     void CheckIfFull();
 

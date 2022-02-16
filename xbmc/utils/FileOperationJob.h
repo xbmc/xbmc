@@ -41,7 +41,9 @@ public:
   const char* GetType() const override { return m_displayProgress ? "filemanager" : ""; }
   bool operator==(const CJob *job) const override;
 
-  void SetFileOperation(FileAction action, CFileItemList &items, const std::string &strDestFile);
+  void SetFileOperation(FileAction action,
+                        const CFileItemList& items,
+                        const std::string& strDestFile);
 
   const std::string &GetAverageSpeed() const { return m_avgSpeed; }
   const std::string &GetCurrentOperation() const { return m_currentOperation; }
@@ -69,7 +71,11 @@ private:
   friend class CFileOperation;
 
   typedef std::vector<CFileOperation> FileOperationList;
-  bool DoProcess(FileAction action, CFileItemList & items, const std::string& strDestFile, FileOperationList &fileOperations, double &totalTime);
+  bool DoProcess(FileAction action,
+                 const CFileItemList& items,
+                 const std::string& strDestFile,
+                 FileOperationList& fileOperations,
+                 double& totalTime);
   bool DoProcessFolder(FileAction action, const std::string& strPath, const std::string& strDestFile, FileOperationList &fileOperations, double &totalTime);
   bool DoProcessFile(FileAction action, const std::string& strFileA, const std::string& strFileB, FileOperationList &fileOperations, double &totalTime);
 

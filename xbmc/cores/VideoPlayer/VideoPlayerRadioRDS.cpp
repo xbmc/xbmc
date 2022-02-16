@@ -512,7 +512,7 @@ CDVDRadioRDSData::~CDVDRadioRDSData()
   StopThread();
 }
 
-bool CDVDRadioRDSData::CheckStream(CDVDStreamInfo &hints)
+bool CDVDRadioRDSData::CheckStream(const CDVDStreamInfo& hints)
 {
   if (hints.type == STREAM_RADIO_RDS)
     return true;
@@ -853,7 +853,7 @@ void CDVDRadioRDSData::ProcessUECP(const unsigned char *data, unsigned int len)
   }
 }
 
-unsigned int CDVDRadioRDSData::DecodePI(uint8_t *msgElement)
+unsigned int CDVDRadioRDSData::DecodePI(const uint8_t* msgElement)
 {
   uint16_t PICode = (msgElement[3] << 8) | msgElement[4];
   if (m_PI_Current != PICode)
@@ -891,7 +891,7 @@ unsigned int CDVDRadioRDSData::DecodePS(uint8_t *msgElement)
   return 11;
 }
 
-unsigned int CDVDRadioRDSData::DecodeDI(uint8_t *msgElement)
+unsigned int CDVDRadioRDSData::DecodeDI(const uint8_t* msgElement)
 {
   bool value;
 
@@ -932,7 +932,7 @@ unsigned int CDVDRadioRDSData::DecodeDI(uint8_t *msgElement)
   return 4;
 }
 
-unsigned int CDVDRadioRDSData::DecodeTA_TP(uint8_t *msgElement)
+unsigned int CDVDRadioRDSData::DecodeTA_TP(const uint8_t* msgElement)
 {
   uint8_t dsn = msgElement[1];
   bool traffic_announcement = (msgElement[3] & 1) != 0;
@@ -965,7 +965,7 @@ unsigned int CDVDRadioRDSData::DecodeTA_TP(uint8_t *msgElement)
   return 4;
 }
 
-unsigned int CDVDRadioRDSData::DecodeMS(uint8_t *msgElement)
+unsigned int CDVDRadioRDSData::DecodeMS(const uint8_t* msgElement)
 {
   bool speechActive = msgElement[3] == 0;
   if (m_MS_SpeechActive != speechActive)
@@ -1021,7 +1021,7 @@ pty_skin_info pty_skin_info_table[32][2] =
   { { "alarm-alarm",    29971 }, { "alarm-alarm",     29971 } }
 };
 
-unsigned int CDVDRadioRDSData::DecodePTY(uint8_t *msgElement)
+unsigned int CDVDRadioRDSData::DecodePTY(const uint8_t* msgElement)
 {
   int pty = msgElement[3];
   if (pty >= 0 && pty < 32 && m_PTY != pty)
@@ -1544,7 +1544,7 @@ unsigned int CDVDRadioRDSData::DecodeTMC(uint8_t *msgElement, unsigned int len)
   return msgElementLength + 2;
 }
 
-unsigned int CDVDRadioRDSData::DecodeEPPTransmitterInfo(uint8_t *msgElement)
+unsigned int CDVDRadioRDSData::DecodeEPPTransmitterInfo(const uint8_t* msgElement)
 {
   if (!m_RDS_SlowLabelingCodesPresent && m_PI_CountryCode != 0)
   {
@@ -1598,7 +1598,7 @@ unsigned int CDVDRadioRDSData::DecodeEPPTransmitterInfo(uint8_t *msgElement)
 #define VARCODE_LANGUAGE_CODES          3
 #define VARCODE_OWN_BROADCASTER         6
 #define VARCODE_EWS_CHANNEL_IDENT       7
-unsigned int CDVDRadioRDSData::DecodeSlowLabelingCodes(uint8_t *msgElement)
+unsigned int CDVDRadioRDSData::DecodeSlowLabelingCodes(const uint8_t* msgElement)
 {
   uint16_t slowLabellingCode = (msgElement[2]<<8 | msgElement[3]) & 0xfff;
   int      VariantCode       = (msgElement[2]>>4) & 0x7;
@@ -1669,7 +1669,7 @@ unsigned int CDVDRadioRDSData::DecodeSlowLabelingCodes(uint8_t *msgElement)
 /*!
  * currently unused need to be checked on DAB, processed here to have length of it
  */
-unsigned int CDVDRadioRDSData::DecodeDABDynLabelCmd(uint8_t *msgElement, unsigned int len)
+unsigned int CDVDRadioRDSData::DecodeDABDynLabelCmd(const uint8_t* msgElement, unsigned int len)
 {
   unsigned int msgElementLength = msgElement[1];
   if (msgElementLength < 1 || msgElementLength + 2 > len)
@@ -1684,7 +1684,7 @@ unsigned int CDVDRadioRDSData::DecodeDABDynLabelCmd(uint8_t *msgElement, unsigne
 /*!
  * currently unused need to be checked on DAB, processed here to have length of it
  */
-unsigned int CDVDRadioRDSData::DecodeDABDynLabelMsg(uint8_t *msgElement, unsigned int len)
+unsigned int CDVDRadioRDSData::DecodeDABDynLabelMsg(const uint8_t* msgElement, unsigned int len)
 {
   unsigned int msgElementLength = msgElement[1];
   if (msgElementLength < 2 || msgElementLength + 2 > len)

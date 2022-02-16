@@ -107,7 +107,7 @@ protected:
   void Process() override;
   void StateMachine(int signal, Protocol *port, Message *msg);
   void PrintSinks(std::string& driver);
-  void GetDeviceFriendlyName(std::string &device);
+  void GetDeviceFriendlyName(const std::string& device);
   void OpenSink();
   void ReturnBuffers();
   void SetSilenceTimer();

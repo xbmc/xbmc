@@ -399,7 +399,7 @@ void CButtonTranslator::RegisterMapper(const std::string& device, IButtonMapper*
   m_buttonMappers[device] = mapper;
 }
 
-void CButtonTranslator::UnregisterMapper(IButtonMapper* mapper)
+void CButtonTranslator::UnregisterMapper(const IButtonMapper* mapper)
 {
   for (auto it = m_buttonMappers.begin(); it != m_buttonMappers.end(); ++it)
   {

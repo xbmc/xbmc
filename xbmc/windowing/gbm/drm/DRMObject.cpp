@@ -36,7 +36,7 @@ CDRMObject::CDRMObject(int fd) : m_fd(fd)
 std::string CDRMObject::GetTypeName() const
 {
   auto name = std::find_if(DrmModeObjectTypes.begin(), DrmModeObjectTypes.end(),
-                           [this](auto& p) { return p.first == m_type; });
+                           [this](const auto& p) { return p.first == m_type; });
   if (name != DrmModeObjectTypes.end())
     return name->second;
 
@@ -46,7 +46,7 @@ std::string CDRMObject::GetTypeName() const
 std::string CDRMObject::GetPropertyName(uint32_t propertyId) const
 {
   auto prop = std::find_if(m_propsInfo.begin(), m_propsInfo.end(),
-                           [&propertyId](auto& p) { return p->prop_id == propertyId; });
+                           [&propertyId](const auto& p) { return p->prop_id == propertyId; });
   if (prop != m_propsInfo.end())
     return prop->get()->name;
 
@@ -56,7 +56,7 @@ std::string CDRMObject::GetPropertyName(uint32_t propertyId) const
 uint32_t CDRMObject::GetPropertyId(const std::string& name) const
 {
   auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(),
-                               [&name](auto& prop) { return prop->name == name; });
+                               [&name](const auto& prop) { return prop->name == name; });
 
   if (property != m_propsInfo.end())
     return property->get()->prop_id;
@@ -85,7 +85,7 @@ std::tuple<bool, uint64_t> CDRMObject::GetPropertyValue(const std::string& name,
                                                         const std::string& valueName) const
 {
   auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(),
-                               [&name](auto& prop) { return prop->name == name; });
+                               [&name](const auto& prop) { return prop->name == name; });
 
   if (property == m_propsInfo.end())
     return std::make_tuple(false, 0);
@@ -109,7 +109,7 @@ std::tuple<bool, uint64_t> CDRMObject::GetPropertyValue(const std::string& name,
 bool CDRMObject::SetProperty(const std::string& name, uint64_t value)
 {
   auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(),
-                               [&name](auto& prop) { return prop->name == name; });
+                               [&name](const auto& prop) { return prop->name == name; });
 
   if (property != m_propsInfo.end())
   {
@@ -124,7 +124,7 @@ bool CDRMObject::SetProperty(const std::string& name, uint64_t value)
 bool CDRMObject::SupportsProperty(const std::string& name)
 {
   auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(),
-                               [&name](auto& prop) { return prop->name == name; });
+                               [&name](const auto& prop) { return prop->name == name; });
 
   if (property != m_propsInfo.end())
     return true;

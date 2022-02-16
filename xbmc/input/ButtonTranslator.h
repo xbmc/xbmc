@@ -61,7 +61,7 @@ public:
   CAction GetAction(int window, const CKey& key, bool fallback = true);
 
   void RegisterMapper(const std::string& device, IButtonMapper* mapper);
-  void UnregisterMapper(IButtonMapper* mapper);
+  void UnregisterMapper(const IButtonMapper* mapper);
 
   static uint32_t TranslateString(const std::string& strMap, const std::string& strButton);
 

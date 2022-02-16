@@ -1202,7 +1202,9 @@ JSONRPC_STATUS CAudioLibrary::GetAdditionalDetails(const CVariant &parameterObje
   return OK;
 }
 
-JSONRPC_STATUS CAudioLibrary::GetAdditionalArtistDetails(const CVariant &parameterObject, CFileItemList &items, CMusicDatabase &musicdatabase)
+JSONRPC_STATUS CAudioLibrary::GetAdditionalArtistDetails(const CVariant& parameterObject,
+                                                         const CFileItemList& items,
+                                                         CMusicDatabase& musicdatabase)
 {
   if (!musicdatabase.Open())
     return InternalError;
@@ -1252,7 +1254,9 @@ JSONRPC_STATUS CAudioLibrary::GetAdditionalArtistDetails(const CVariant &paramet
   return OK;
 }
 
-JSONRPC_STATUS CAudioLibrary::GetAdditionalAlbumDetails(const CVariant &parameterObject, CFileItemList &items, CMusicDatabase &musicdatabase)
+JSONRPC_STATUS CAudioLibrary::GetAdditionalAlbumDetails(const CVariant& parameterObject,
+                                                        const CFileItemList& items,
+                                                        CMusicDatabase& musicdatabase)
 {
   if (!musicdatabase.Open())
     return InternalError;
@@ -1284,7 +1288,9 @@ JSONRPC_STATUS CAudioLibrary::GetAdditionalAlbumDetails(const CVariant &paramete
   return OK;
 }
 
-JSONRPC_STATUS CAudioLibrary::GetAdditionalSongDetails(const CVariant &parameterObject, CFileItemList &items, CMusicDatabase &musicdatabase)
+JSONRPC_STATUS CAudioLibrary::GetAdditionalSongDetails(const CVariant& parameterObject,
+                                                       const CFileItemList& items,
+                                                       CMusicDatabase& musicdatabase)
 {
   if (!musicdatabase.Open())
     return InternalError;

@@ -1077,7 +1077,7 @@ bool CVideoPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
   return false;
 }
 
-bool CVideoPlayer::IsValidStream(CCurrentStream& stream)
+bool CVideoPlayer::IsValidStream(const CCurrentStream& stream)
 {
   if(stream.id<0)
     return true; // we consider non selected as valid
@@ -1125,7 +1125,7 @@ bool CVideoPlayer::IsValidStream(CCurrentStream& stream)
   return false;
 }
 
-bool CVideoPlayer::IsBetterStream(CCurrentStream& current, CDemuxStream* stream)
+bool CVideoPlayer::IsBetterStream(const CCurrentStream& current, CDemuxStream* stream)
 {
   // Do not reopen non-video streams if we're in video-only mode
   if (m_playerOptions.videoOnly && current.type != STREAM_VIDEO)
@@ -1587,7 +1587,9 @@ void CVideoPlayer::Process()
   }
 }
 
-bool CVideoPlayer::CheckIsCurrent(CCurrentStream& current, CDemuxStream* stream, DemuxPacket* pkg)
+bool CVideoPlayer::CheckIsCurrent(const CCurrentStream& current,
+                                  CDemuxStream* stream,
+                                  DemuxPacket* pkg)
 {
   if(current.id == pkg->iStreamId &&
      current.demuxerId == stream->demuxerId &&
@@ -2306,7 +2308,7 @@ bool CVideoPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket
   return true;
 }
 
-bool CVideoPlayer::CheckSceneSkip(CCurrentStream& current)
+bool CVideoPlayer::CheckSceneSkip(const CCurrentStream& current)
 {
   if (!m_Edl.HasEdits())
     return false;
@@ -3726,7 +3728,7 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
   return true;
 }
 
-bool CVideoPlayer::OpenSubtitleStream(CDVDStreamInfo& hint)
+bool CVideoPlayer::OpenSubtitleStream(const CDVDStreamInfo& hint)
 {
   IDVDStreamPlayer* player = GetStreamPlayer(m_CurrentSubtitle.player);
   if(player == nullptr)

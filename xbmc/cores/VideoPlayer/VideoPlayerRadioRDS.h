@@ -41,7 +41,7 @@ public:
   explicit CDVDRadioRDSData(CProcessInfo &processInfo);
   ~CDVDRadioRDSData() override;
 
-  bool CheckStream(CDVDStreamInfo &hints);
+  bool CheckStream(const CDVDStreamInfo& hints);
   bool OpenStream(CDVDStreamInfo hints) override;
   void CloseStream(bool bWaitForBuffers) override;
   void Flush();
@@ -68,22 +68,22 @@ private:
   void ResetRDSCache();
   void ProcessUECP(const unsigned char *Data, unsigned int Length);
 
-  inline unsigned int DecodePI(uint8_t *msgElement);
+  inline unsigned int DecodePI(const uint8_t* msgElement);
   inline unsigned int DecodePS(uint8_t *msgElement);
-  inline unsigned int DecodeDI(uint8_t *msgElement);
-  inline unsigned int DecodeTA_TP(uint8_t *msgElement);
-  inline unsigned int DecodeMS(uint8_t *msgElement);
-  inline unsigned int DecodePTY(uint8_t *msgElement);
+  inline unsigned int DecodeDI(const uint8_t* msgElement);
+  inline unsigned int DecodeTA_TP(const uint8_t* msgElement);
+  inline unsigned int DecodeMS(const uint8_t* msgElement);
+  inline unsigned int DecodePTY(const uint8_t* msgElement);
   inline unsigned int DecodePTYN(uint8_t *msgElement);
   inline unsigned int DecodeRT(uint8_t *msgElement, unsigned int len);
   inline unsigned int DecodeRTC(uint8_t *msgElement);
   inline unsigned int DecodeODA(uint8_t *msgElement, unsigned int len);
   inline unsigned int DecodeRTPlus(uint8_t *msgElement, unsigned int len);
   inline unsigned int DecodeTMC(uint8_t *msgElement, unsigned int len);
-  inline unsigned int DecodeEPPTransmitterInfo(uint8_t *msgElement);
-  inline unsigned int DecodeSlowLabelingCodes(uint8_t *msgElement);
-  inline unsigned int DecodeDABDynLabelCmd(uint8_t *msgElement, unsigned int len);
-  inline unsigned int DecodeDABDynLabelMsg(uint8_t *msgElement, unsigned int len);
+  inline unsigned int DecodeEPPTransmitterInfo(const uint8_t* msgElement);
+  inline unsigned int DecodeSlowLabelingCodes(const uint8_t* msgElement);
+  inline unsigned int DecodeDABDynLabelCmd(const uint8_t* msgElement, unsigned int len);
+  inline unsigned int DecodeDABDynLabelMsg(const uint8_t* msgElement, unsigned int len);
   inline unsigned int DecodeAF(uint8_t *msgElement, unsigned int len);
   inline unsigned int DecodeEonAF(uint8_t *msgElement, unsigned int len);
   inline unsigned int DecodeTDC(uint8_t *msgElement, unsigned int len);

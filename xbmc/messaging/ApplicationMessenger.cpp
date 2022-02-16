@@ -25,7 +25,7 @@ namespace MESSAGING
 class CDelayedMessage : public CThread
 {
   public:
-    CDelayedMessage(ThreadMessage& msg, unsigned int delay);
+    CDelayedMessage(const ThreadMessage& msg, unsigned int delay);
     void Process() override;
 
   private:
@@ -33,7 +33,8 @@ class CDelayedMessage : public CThread
     ThreadMessage  m_msg;
 };
 
-CDelayedMessage::CDelayedMessage(ThreadMessage& msg, unsigned int delay) : CThread("DelayedMessage")
+CDelayedMessage::CDelayedMessage(const ThreadMessage& msg, unsigned int delay)
+  : CThread("DelayedMessage")
 {
   m_msg = msg;
 

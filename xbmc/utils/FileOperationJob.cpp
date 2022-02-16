@@ -49,7 +49,9 @@ CFileOperationJob::CFileOperationJob(FileAction action, CFileItemList & items,
   SetFileOperation(action, items, strDestFile);
 }
 
-void CFileOperationJob::SetFileOperation(FileAction action, CFileItemList &items, const std::string &strDestFile)
+void CFileOperationJob::SetFileOperation(FileAction action,
+                                         const CFileItemList& items,
+                                         const std::string& strDestFile)
 {
   m_action = action;
   m_strDestFile = strDestFile;
@@ -138,7 +140,11 @@ bool CFileOperationJob::DoProcessFolder(FileAction action, const std::string& st
   return true;
 }
 
-bool CFileOperationJob::DoProcess(FileAction action, CFileItemList & items, const std::string& strDestFile, FileOperationList &fileOperations, double &totalTime)
+bool CFileOperationJob::DoProcess(FileAction action,
+                                  const CFileItemList& items,
+                                  const std::string& strDestFile,
+                                  FileOperationList& fileOperations,
+                                  double& totalTime)
 {
   for (int iItem = 0; iItem < items.Size(); ++iItem)
   {

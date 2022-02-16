@@ -199,7 +199,7 @@ void CDirectoryCache::Clear()
   m_cache.clear();
 }
 
-void CDirectoryCache::InitCache(std::set<std::string>& dirs)
+void CDirectoryCache::InitCache(const std::set<std::string>& dirs)
 {
   for (const std::string& strDir : dirs)
   {

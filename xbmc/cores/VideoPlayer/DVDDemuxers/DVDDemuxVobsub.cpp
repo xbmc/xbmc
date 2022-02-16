@@ -230,7 +230,7 @@ bool CDVDDemuxVobsub::ParseId(SState& state, std::string& line)
   return true;
 }
 
-bool CDVDDemuxVobsub::ParseExtra(SState& state, std::string& line)
+bool CDVDDemuxVobsub::ParseExtra(SState& state, const std::string& line)
 {
   state.extra += line;
   state.extra += '\n';

@@ -54,7 +54,7 @@ void CEngineStats::UpdateSinkDelay(const AEDelayStatus& status, int samples)
     m_bufferedSamples -= samples;
 }
 
-void CEngineStats::AddSamples(int samples, std::list<CActiveAEStream*> &streams)
+void CEngineStats::AddSamples(int samples, const std::list<CActiveAEStream*>& streams)
 {
   CSingleLock lock(m_lock);
   m_bufferedSamples += samples;
@@ -1646,7 +1646,9 @@ void CActiveAE::ChangeResamplers()
   }
 }
 
-void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &settings, int *mode)
+void CActiveAE::ApplySettingsToFormat(AEAudioFormat& format,
+                                      const AudioSettings& settings,
+                                      int* mode)
 {
   int oldMode = m_mode;
   if (mode)
@@ -2984,7 +2986,7 @@ void CActiveAE::FreeSoundSample(uint8_t **data)
   delete [] data;
 }
 
-bool CActiveAE::CompareFormat(AEAudioFormat &lhs, AEAudioFormat &rhs)
+bool CActiveAE::CompareFormat(const AEAudioFormat& lhs, const AEAudioFormat& rhs)
 {
   if (lhs.m_channelLayout != rhs.m_channelLayout ||
       lhs.m_dataFormat != rhs.m_dataFormat ||

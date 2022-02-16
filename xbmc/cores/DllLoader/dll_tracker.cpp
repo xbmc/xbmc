@@ -67,7 +67,7 @@ void tracker_dll_free(DllLoader* pDll)
   }
 }
 
-void tracker_dll_set_addr(DllLoader* pDll, uintptr_t min, uintptr_t max)
+void tracker_dll_set_addr(const DllLoader* pDll, uintptr_t min, uintptr_t max)
 {
   CSingleLock locktd(g_trackerLock);
   for (TrackedDllsIter it = g_trackedDlls.begin(); it != g_trackedDlls.end(); ++it)
@@ -114,7 +114,7 @@ DllTrackInfo* tracker_get_dlltrackinfo(uintptr_t caller)
   return NULL;
 }
 
-DllTrackInfo* tracker_get_dlltrackinfo_byobject(DllLoader* pDll)
+DllTrackInfo* tracker_get_dlltrackinfo_byobject(const DllLoader* pDll)
 {
   CSingleLock locktd(g_trackerLock);
   for (TrackedDllsIter it = g_trackedDlls.begin(); it != g_trackedDlls.end(); ++it)
@@ -127,7 +127,7 @@ DllTrackInfo* tracker_get_dlltrackinfo_byobject(DllLoader* pDll)
   return NULL;
 }
 
-void tracker_dll_data_track(DllLoader* pDll, uintptr_t addr)
+void tracker_dll_data_track(const DllLoader* pDll, uintptr_t addr)
 {
   CSingleLock locktd(g_trackerLock);
   for (TrackedDllsIter it = g_trackedDlls.begin(); it != g_trackedDlls.end(); ++it)

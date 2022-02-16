@@ -777,7 +777,7 @@ void CActiveAESink::EnumerateOutputDevices(AEDeviceList &devices, bool passthrou
   }
 }
 
-void CActiveAESink::GetDeviceFriendlyName(std::string &device)
+void CActiveAESink::GetDeviceFriendlyName(const std::string& device)
 {
   m_deviceFriendlyName = "Device not found";
   /* Match the device and find its friendly name */

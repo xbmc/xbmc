@@ -271,7 +271,7 @@ CURL_HANDLE* DllLibCurlGlobal::easy_duphandle(CURL_HANDLE* easy_handle)
 }
 
 void DllLibCurlGlobal::easy_duplicate(CURL_HANDLE* easy,
-                                      CURLM* multi,
+                                      const CURLM* multi,
                                       CURL_HANDLE** easy_out,
                                       CURLM** multi_out)
 {

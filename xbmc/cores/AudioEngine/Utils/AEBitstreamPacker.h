@@ -28,8 +28,8 @@ public:
   void Reset();
   uint8_t* GetBuffer();
   unsigned int GetSize() const;
-  static unsigned int GetOutputRate(CAEStreamInfo &info);
-  static CAEChannelInfo GetOutputChannelMap(CAEStreamInfo &info);
+  static unsigned int GetOutputRate(const CAEStreamInfo& info);
+  static CAEChannelInfo GetOutputChannelMap(const CAEStreamInfo& info);
 
 private:
   void PackTrueHD(CAEStreamInfo &info, uint8_t* data, int size);

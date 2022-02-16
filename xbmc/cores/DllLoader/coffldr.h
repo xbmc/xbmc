@@ -53,7 +53,7 @@ protected:
   static void PrintFileHeader(COFF_FileHeader_t *FileHeader);
   static void PrintWindowsHeader(WindowsHeader_t *WinHdr);
   static void PrintOptionHeader(OptionHeader_t *OptHdr);
-  static void PrintSection(SectionHeader_t *ScnHdr, char *data);
+  static void PrintSection(SectionHeader_t* ScnHdr, const char* data);
   void PrintStringTable(void);
   void PrintSymbolTable(void);
 

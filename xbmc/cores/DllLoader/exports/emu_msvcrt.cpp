@@ -1591,7 +1591,7 @@ extern "C"
 
   //Critical Section has been fixed in EMUkernel32.cpp
 
-  int dll_initterm(PFV * start, PFV * end)        //pncrt.dll
+  int dll_initterm(PFV* start, const PFV* end) //pncrt.dll
   {
     PFV * temp;
     for (temp = start; temp < end; temp ++)
