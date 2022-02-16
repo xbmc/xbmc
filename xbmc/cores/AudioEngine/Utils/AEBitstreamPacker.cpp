@@ -368,7 +368,7 @@ void CAEBitstreamPacker::PackEAC3(CAEStreamInfo &info, uint8_t* data, int size)
   }
 }
 
-unsigned int CAEBitstreamPacker::GetOutputRate(CAEStreamInfo &info)
+unsigned int CAEBitstreamPacker::GetOutputRate(const CAEStreamInfo& info)
 {
   unsigned int rate;
   switch (info.m_type)
@@ -404,7 +404,7 @@ unsigned int CAEBitstreamPacker::GetOutputRate(CAEStreamInfo &info)
   return rate;
 }
 
-CAEChannelInfo CAEBitstreamPacker::GetOutputChannelMap(CAEStreamInfo &info)
+CAEChannelInfo CAEBitstreamPacker::GetOutputChannelMap(const CAEStreamInfo& info)
 {
   int channels = 2;
   switch (info.m_type)

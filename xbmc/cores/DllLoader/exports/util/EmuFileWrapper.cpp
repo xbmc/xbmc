@@ -16,7 +16,7 @@ CEmuFileWrapper g_emuFileWrapper;
 namespace
 {
 
-constexpr bool isValidFilePtr(FILE* f)
+constexpr bool isValidFilePtr(const FILE* f)
 {
   return (f != nullptr);
 }

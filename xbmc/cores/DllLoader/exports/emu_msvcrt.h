@@ -122,7 +122,7 @@ extern "C"
   int dll_fileno(FILE* stream);
   void dll_rewind(FILE* stream);
   void dll_clearerr(FILE* stream);
-  int dll_initterm(PFV * start, PFV * end);
+  int dll_initterm(PFV* start, const PFV* end);
   uintptr_t dll_beginthread(void( *start_address )( void * ),unsigned stack_size,void *arglist);
   int dll_stati64(const char *path, struct _stati64 *buffer);
   int dll_stat64(const char *path, struct __stat64 *buffer);

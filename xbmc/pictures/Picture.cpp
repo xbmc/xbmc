@@ -390,7 +390,9 @@ bool CPicture::OrientateImage(uint32_t *&pixels, unsigned int &width, unsigned i
   return out;
 }
 
-bool CPicture::FlipHorizontal(uint32_t *&pixels, unsigned int &width, unsigned int &height)
+bool CPicture::FlipHorizontal(uint32_t*& pixels,
+                              const unsigned int& width,
+                              const unsigned int& height)
 {
   // this can be done in-place easily enough
   for (unsigned int y = 0; y < height; ++y)
@@ -402,7 +404,9 @@ bool CPicture::FlipHorizontal(uint32_t *&pixels, unsigned int &width, unsigned i
   return true;
 }
 
-bool CPicture::FlipVertical(uint32_t *&pixels, unsigned int &width, unsigned int &height)
+bool CPicture::FlipVertical(uint32_t*& pixels,
+                            const unsigned int& width,
+                            const unsigned int& height)
 {
   // this can be done in-place easily enough
   for (unsigned int y = 0; y < height / 2; ++y)
@@ -415,7 +419,9 @@ bool CPicture::FlipVertical(uint32_t *&pixels, unsigned int &width, unsigned int
   return true;
 }
 
-bool CPicture::Rotate180CCW(uint32_t *&pixels, unsigned int &width, unsigned int &height)
+bool CPicture::Rotate180CCW(uint32_t*& pixels,
+                            const unsigned int& width,
+                            const unsigned int& height)
 {
   // this can be done in-place easily enough
   for (unsigned int y = 0; y < height / 2; ++y)

@@ -365,7 +365,7 @@ protected:
   bool OpenStream(CCurrentStream& current, int64_t demuxerId, int iStream, int source, bool reset = true);
   bool OpenAudioStream(CDVDStreamInfo& hint, bool reset = true);
   bool OpenVideoStream(CDVDStreamInfo& hint, bool reset = true);
-  bool OpenSubtitleStream(CDVDStreamInfo& hint);
+  bool OpenSubtitleStream(const CDVDStreamInfo& hint);
   bool OpenTeletextStream(CDVDStreamInfo& hint);
   bool OpenRadioRDSStream(CDVDStreamInfo& hint);
 
@@ -375,7 +375,7 @@ protected:
   void AdaptForcedSubtitles();
   bool CloseStream(CCurrentStream& current, bool bWaitForBuffers);
 
-  bool CheckIsCurrent(CCurrentStream& current, CDemuxStream* stream, DemuxPacket* pkg);
+  bool CheckIsCurrent(const CCurrentStream& current, CDemuxStream* stream, DemuxPacket* pkg);
   void ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket);
@@ -413,7 +413,7 @@ protected:
   void SynchronizeDemuxer();
   void CheckAutoSceneSkip();
   bool CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket);
-  bool CheckSceneSkip(CCurrentStream& current);
+  bool CheckSceneSkip(const CCurrentStream& current);
   bool CheckPlayerInit(CCurrentStream& current);
   void UpdateCorrection(DemuxPacket* pkt, double correction);
   void UpdateTimestamps(CCurrentStream& current, DemuxPacket* pPacket);
@@ -421,8 +421,8 @@ protected:
   void SendPlayerMessage(std::shared_ptr<CDVDMsg> pMsg, unsigned int target);
 
   bool ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream);
-  bool IsValidStream(CCurrentStream& stream);
-  bool IsBetterStream(CCurrentStream& current, CDemuxStream* stream);
+  bool IsValidStream(const CCurrentStream& stream);
+  bool IsBetterStream(const CCurrentStream& current, CDemuxStream* stream);
   void CheckBetterStream(CCurrentStream& current, CDemuxStream* stream);
   void CheckStreamChanges(CCurrentStream& current, CDemuxStream* stream);
 

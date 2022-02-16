@@ -183,7 +183,7 @@ class CEngineStats
 public:
   void Reset(unsigned int sampleRate, bool pcm);
   void UpdateSinkDelay(const AEDelayStatus& status, int samples);
-  void AddSamples(int samples, std::list<CActiveAEStream*> &streams);
+  void AddSamples(int samples, const std::list<CActiveAEStream*>& streams);
   void GetDelay(AEDelayStatus& status);
   void AddStream(unsigned int streamid);
   void RemoveStream(unsigned int streamid);
@@ -307,7 +307,9 @@ protected:
   void LoadSettings();
   bool NeedReconfigureBuffers();
   bool NeedReconfigureSink();
-  void ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &settings, int *mode = NULL);
+  void ApplySettingsToFormat(AEAudioFormat& format,
+                             const AudioSettings& settings,
+                             int* mode = NULL);
   void Configure(AEAudioFormat *desiredFmt = NULL);
   AEAudioFormat GetInputFormat(AEAudioFormat *desiredFmt = NULL);
   CActiveAEStream* CreateStream(MsgStreamNew *streamMsg);
@@ -328,7 +330,7 @@ protected:
   void MixSounds(CSoundPacket &dstSample);
   void Deamplify(CSoundPacket &dstSample);
 
-  bool CompareFormat(AEAudioFormat &lhs, AEAudioFormat &rhs);
+  bool CompareFormat(const AEAudioFormat& lhs, const AEAudioFormat& rhs);
 
   CEvent m_inMsgEvent;
   CEvent m_outMsgEvent;

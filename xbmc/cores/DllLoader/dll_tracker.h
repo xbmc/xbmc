@@ -103,7 +103,7 @@ void tracker_dll_add(DllLoader* pDll);
 void tracker_dll_free(DllLoader* pDll);
 
 // sets the dll base address and size
-void tracker_dll_set_addr(DllLoader* pDll, uintptr_t min, uintptr_t max);
+void tracker_dll_set_addr(const DllLoader* pDll, uintptr_t min, uintptr_t max);
 
 // returns the name from the dll that contains this address or "" if not found
 const char* tracker_getdllname(uintptr_t caller);
@@ -111,11 +111,11 @@ const char* tracker_getdllname(uintptr_t caller);
 // returns a function pointer if there is one available for it, or NULL if not ofund
 void* tracker_dll_get_function(DllLoader* pDll, char* sFunctionName);
 
-DllTrackInfo* tracker_get_dlltrackinfo_byobject(DllLoader* pDll);
+DllTrackInfo* tracker_get_dlltrackinfo_byobject(const DllLoader* pDll);
 
 DllTrackInfo* tracker_get_dlltrackinfo(uintptr_t caller);
 
-void tracker_dll_data_track(DllLoader* pDll, uintptr_t addr);
+void tracker_dll_data_track(const DllLoader* pDll, uintptr_t addr);
 
 #ifdef TARGET_POSIX
 #define _ReturnAddress() __builtin_return_address(0)
