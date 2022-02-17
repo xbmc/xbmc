@@ -194,6 +194,7 @@ public:
   int iChannels;
   std::string strRecordLabel; // Record label from tag for album processing by CMusicInfoScanner::FileItemsToAlbums
   std::string strAlbumType; // (Musicbrainz release type) album type from tag for album processing by CMusicInfoScanner::FileItemsToAlbums
+  std::string songVideoURL; // url to song video
 
   ReplayGain replayGain;
 private:

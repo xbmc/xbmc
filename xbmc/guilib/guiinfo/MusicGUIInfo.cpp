@@ -403,6 +403,9 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
           return true;
         }
         break;
+      case LISTITEM_SONG_VIDEO_URL:
+        value = tag->GetSongVideoURL();
+        return true;
     }
   }
 
