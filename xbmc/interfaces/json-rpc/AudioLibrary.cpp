@@ -991,6 +991,8 @@ JSONRPC_STATUS CAudioLibrary::SetSongDetails(const std::string &method, ITranspo
     song.strOrigReleaseDate = parameterObject["originaldate"].asString();
   if (ParameterNotNull(parameterObject, "albumreleasedate"))
     song.strReleaseDate = parameterObject["albumreleasedate"].asString();
+  if (ParameterNotNull(parameterObject, "songvideourl"))
+    song.songVideoURL = parameterObject["songvideourl"].asString();
 
   // Update existing art. Any existing artwork that isn't specified in this request stays as is.
   // If the value is null then the existing art with that type is removed.
