@@ -25,6 +25,11 @@
 
 #pragma comment(lib, "Ntdll.lib")
 
+namespace
+{
+constexpr auto MAC_LENGTH = 6; // fixed MAC length used in CNetworkInterface
+}
+
 CNetworkInterfaceWin32::CNetworkInterfaceWin32(const IP_ADAPTER_ADDRESSES& adapter)
 {
   m_adapter = adapter;
@@ -46,24 +51,39 @@ bool CNetworkInterfaceWin32::IsConnected() const
 
 std::string CNetworkInterfaceWin32::GetMacAddress() const
 {
-  std::string result;
+  if (m_adapter.PhysicalAddressLength < MAC_LENGTH)
+  {
+    CLog::LogF(LOGERROR, "MAC address length is to small: current {} bytes, required {} bytes",
+               m_adapter.PhysicalAddressLength, MAC_LENGTH);
+    return "";
+  }
+
   const unsigned char* mAddr = m_adapter.PhysicalAddress;
-  result = StringUtils::Format("%02X:%02X:%02X:%02X:%02X:%02X", mAddr[0], mAddr[1], mAddr[2], mAddr[3], mAddr[4], mAddr[5]);
-  return result;
+
+  return StringUtils::Format("{:02X}:{:02X}:{:02X}:{:02X}:{:02X}:{:02X}", mAddr[0], mAddr[1],
+                             mAddr[2], mAddr[3], mAddr[4], mAddr[5]);
 }
 
 void CNetworkInterfaceWin32::GetMacAddressRaw(char rawMac[6]) const
 {
-  memcpy(rawMac, m_adapter.PhysicalAddress, 6);
+  size_t len =
+      (m_adapter.PhysicalAddressLength > MAC_LENGTH) ? MAC_LENGTH : m_adapter.PhysicalAddressLength;
+  memcpy(rawMac, m_adapter.PhysicalAddress, len);
 }
 
 std::string CNetworkInterfaceWin32::GetCurrentIPAddress(void) const
 {
-  return m_adapter.FirstUnicastAddress != nullptr ? CNetworkBase::GetIpStr(m_adapter.FirstUnicastAddress->Address.lpSockaddr) : "";
+  if (!m_adapter.FirstUnicastAddress)
+    return "";
+
+  return CNetworkBase::GetIpStr(m_adapter.FirstUnicastAddress->Address.lpSockaddr);
 }
 
 std::string CNetworkInterfaceWin32::GetCurrentNetmask(void) const
 {
+  if (!m_adapter.FirstUnicastAddress)
+    return "";
+
   if (m_adapter.FirstUnicastAddress->Address.lpSockaddr->sa_family == AF_INET)
     return CNetworkBase::GetMaskByPrefixLength(m_adapter.FirstUnicastAddress->OnLinkPrefixLength);
 
@@ -72,7 +92,10 @@ std::string CNetworkInterfaceWin32::GetCurrentNetmask(void) const
 
 std::string CNetworkInterfaceWin32::GetCurrentDefaultGateway(void) const
 {
-  return m_adapter.FirstGatewayAddress != nullptr ? CNetworkBase::GetIpStr(m_adapter.FirstGatewayAddress->Address.lpSockaddr) : "";
+  if (!m_adapter.FirstGatewayAddress)
+    return "";
+
+  return CNetworkBase::GetIpStr(m_adapter.FirstGatewayAddress->Address.lpSockaddr);
 }
 
 CNetworkWin32::CNetworkWin32()
@@ -118,9 +141,8 @@ void CNetworkWin32::queryInterfaceList()
   if (GetAdaptersAddresses(AF_INET, flags, nullptr, nullptr, &ulOutBufLen) != ERROR_BUFFER_OVERFLOW)
     return;
 
-  PIP_ADAPTER_ADDRESSES adapterAddresses = static_cast<PIP_ADAPTER_ADDRESSES>(malloc(ulOutBufLen));
-  if (adapterAddresses == nullptr)
-    return;
+  m_adapterAddresses.resize(ulOutBufLen);
+  auto adapterAddresses = reinterpret_cast<PIP_ADAPTER_ADDRESSES>(m_adapterAddresses.data());
 
   if (GetAdaptersAddresses(AF_INET, flags, nullptr, adapterAddresses, &ulOutBufLen) == NO_ERROR)
   {
@@ -145,9 +167,8 @@ std::vector<std::string> CNetworkWin32::GetNameServers(void)
   if (GetAdaptersAddresses(AF_UNSPEC, flags, nullptr, nullptr, &ulOutBufLen) != ERROR_BUFFER_OVERFLOW)
     return result;
 
-  PIP_ADAPTER_ADDRESSES adapterAddresses = static_cast<PIP_ADAPTER_ADDRESSES>(malloc(ulOutBufLen));
-  if (adapterAddresses == nullptr)
-    return result;
+  std::vector<uint8_t> buffer(ulOutBufLen);
+  auto adapterAddresses = reinterpret_cast<PIP_ADAPTER_ADDRESSES>(buffer.data());
 
   if (GetAdaptersAddresses(AF_UNSPEC, flags, nullptr, adapterAddresses, &ulOutBufLen) == NO_ERROR)
   {
@@ -163,7 +184,6 @@ std::vector<std::string> CNetworkWin32::GetNameServers(void)
       }
     }
   }
-  free(adapterAddresses);
 
   return result;
 }
@@ -254,20 +274,24 @@ bool CNetworkInterfaceWin32::GetHostMacAddress(const struct sockaddr& host, std:
   }
 
   DWORD dwRetVal = ResolveIpNetEntry2(&neighborIp, nullptr);
-  if (dwRetVal == NO_ERROR)
-  {
-    if (neighborIp.PhysicalAddressLength == 6)
-    {
-      mac = StringUtils::Format("%02X:%02X:%02X:%02X:%02X:%02X",
-        neighborIp.PhysicalAddress[0], neighborIp.PhysicalAddress[1], neighborIp.PhysicalAddress[2],
-        neighborIp.PhysicalAddress[3], neighborIp.PhysicalAddress[4], neighborIp.PhysicalAddress[5]);
-      return true;
-    }
-    else
-      CLog::Log(LOGERROR, "%s - ResolveIpNetEntry2 completed successfully, but mac address has length != 6 (%d)", __FUNCTION__, neighborIp.PhysicalAddressLength);
-  }
-  else
-    CLog::Log(LOGERROR, "%s - ResolveIpNetEntry2 failed with error (%d)", __FUNCTION__, dwRetVal);
 
-  return false;
+  if (dwRetVal != NO_ERROR)
+  {
+    CLog::LogF(LOGERROR, "ResolveIpNetEntry2 failed with error ({})", dwRetVal);
+    return false;
+  }
+  if (neighborIp.PhysicalAddressLength < MAC_LENGTH)
+  {
+    CLog::LogF(LOGERROR,
+               "ResolveIpNetEntry2 completed successfully, but mac address has length < {} ({})",
+               MAC_LENGTH, neighborIp.PhysicalAddressLength);
+    return false;
+  }
+
+  mac = StringUtils::Format("{:02X}:{:02X}:{:02X}:{:02X}:{:02X}:{:02X}",
+                            neighborIp.PhysicalAddress[0], neighborIp.PhysicalAddress[1],
+                            neighborIp.PhysicalAddress[2], neighborIp.PhysicalAddress[3],
+                            neighborIp.PhysicalAddress[4], neighborIp.PhysicalAddress[5]);
+
+  return true;
 }
