@@ -1966,6 +1966,7 @@ bool CMusicDatabase::GetArtist(int idArtist, CArtist &artist, bool fetchAll /* =
         discoAlbum.strAlbum = record->at(discographyOffset + 1).get_asString();
         discoAlbum.strYear = record->at(discographyOffset + 2).get_asString();
         discoAlbum.strReleaseGroupMBID = record->at(discographyOffset + 3).get_asString();
+        artist.discography.emplace_back(discoAlbum);
         m_pDS->next();
       }
     }
