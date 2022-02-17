@@ -83,10 +83,10 @@ void CPVREpg::Cleanup(const CDateTime& time)
   m_tags.Cleanup(time);
 }
 
-std::shared_ptr<CPVREpgInfoTag> CPVREpg::GetTagNow(bool bUpdateIfNeeded /* = true */) const
+std::shared_ptr<CPVREpgInfoTag> CPVREpg::GetTagNow() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  return m_tags.GetActiveTag(bUpdateIfNeeded);
+  return m_tags.GetActiveTag();
 }
 
 std::shared_ptr<CPVREpgInfoTag> CPVREpg::GetTagNext() const
@@ -103,12 +103,8 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpg::GetTagPrevious() const
 
 bool CPVREpg::CheckPlayingEvent()
 {
-  const std::shared_ptr<CPVREpgInfoTag> previousTag = GetTagNow(false);
-  const std::shared_ptr<CPVREpgInfoTag> newTag = GetTagNow(true);
-
-  bool bTagChanged = newTag && (!previousTag || *previousTag != *newTag);
-  bool bTagRemoved = !newTag && previousTag;
-  if (bTagChanged || bTagRemoved)
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  if (m_tags.UpdateActiveTag())
   {
     m_events.Publish(PVREvent::EpgActiveItem);
     return true;
