@@ -140,6 +140,7 @@ public:
    \param rating [in] a rating for the song
    \param userrating [in] a userrating (my rating) for the song
    \param votes [in] a vote counter for the song rating
+   \param songVideoURL [in] url to video of the song
    \param replayGain [in] album and track replaygain and peak values
    \return the id of the song
    */
@@ -171,6 +172,7 @@ public:
               int iBitRate,
               int iSampleRate,
               int iChannels,
+              const std::string& songVideoURL,
               const ReplayGain& replayGain);
   bool GetSong(int idSong, CSong& song);
 
@@ -210,6 +212,7 @@ public:
    \param iBitRate [in] the bitrate of the song file
    \param iSampleRate [in] the sample rate of the song file
    \param iChannels [in] the number of audio channels in the song file
+   \param songVideoURL [in] url link to a video of the song
    \return the id of the song
    */
   int UpdateSong(int idSong,
@@ -238,7 +241,8 @@ public:
                  int iBPM,
                  int iBitRate,
                  int iSampleRate,
-                 int iChannels);
+                 int iChannels,
+                 const std::string& songVideoURL);
 
   //// Misc Song
   bool GetSongByFileName(const std::string& strFileName, CSong& song, int64_t startOffset = 0);
@@ -405,6 +409,8 @@ public:
   int AddArtistDiscography(int idArtist, const CDiscoAlbum& discoAlbum);
   bool DeleteArtistDiscography(int idArtist);
   bool GetArtistDiscography(int idArtist, CFileItemList& items);
+  bool AddArtistVideoLinks(const CArtist& artist);
+  bool DeleteArtistVideoLinks(const int idArtist);
 
   std::string GetArtistById(int id);
   int GetArtistByName(const std::string& strArtist);
@@ -1017,6 +1023,7 @@ private:
     song_iBitRate,
     song_iSampleRate,
     song_iChannels,
+    song_songVideoURL,
     song_iAlbumDuration,
     song_iDiscTotal,
     song_dateAdded,
