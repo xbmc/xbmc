@@ -1220,7 +1220,8 @@
       { "name": "disctitle", "$ref": "Optional.String" },
       { "name": "releasedate", "$ref": "Optional.String" },
       { "name": "originaldate", "$ref": "Optional.String" },
-      { "name": "bpm", "$ref": "Optional.Integer" }
+      { "name": "bpm", "$ref": "Optional.Integer" },
+      { "name": "songvideourl", "$ref": "Optional.String" }
     ],
     "returns": "string"
   },

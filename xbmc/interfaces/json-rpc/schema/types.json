@@ -545,7 +545,8 @@
                 "votes", "userrating", "mood", "contributors",
                 "displaycomposer", "displayconductor", "displayorchestra", "displaylyricist",
                 "sortartist", "art", "sourceid", "disctitle", "releasedate", "originaldate",
-                "bpm", "samplerate", "bitrate", "channels", "datemodified", "datenew" ]
+                "bpm", "samplerate", "bitrate", "channels", "datemodified", "datenew",
+                "songvideourl" ]
     }
   },
   "Audio.Album.ReleaseType": {
@@ -692,7 +693,8 @@
       "bpm": { "type": "Integer" },
       "samplerate": { "type": "Integer" },
       "bitrate": { "type": "Integer"},
-      "channels": { "type": "Integer"}
+      "channels": { "type": "Integer"},
+      "songvideourl": { "type": "string" }
     }
   },
   "Audio.Property.Name": {
@@ -1572,7 +1574,8 @@
       "samplerate": { "type": "integer" },
       "channels": { "type": "integer"},
       "albumstatus": { "type": "string" },
-      "customproperties": { "$ref": "Item.CustomProperties" }
+      "customproperties": { "$ref": "Item.CustomProperties" },
+      "songvideourl": { "type": "string" }
     }
   },
   "List.Fields.All": {
@@ -1597,7 +1600,7 @@
                 "musicbrainzreleasegroupid", "mediapath", "dynpath", "isboxset", "totaldiscs",
                 "disctitle", "releasedate", "originaldate", "bpm", "bitrate", "samplerate",
                 "channels", "albumstatus", "datemodified", "datenew", "customproperties",
-                "albumduration"]
+                "albumduration", "songvideourl"]
     }
   },
   "List.Item.All": {
@@ -1631,7 +1634,7 @@
                 "specialsortseason", "specialsortepisode", "sortartist", "musicbrainzreleasegroupid",
                 "isboxset", "totaldiscs", "disctitle", "releasedate", "originaldate", "bpm",
                 "bitrate", "samplerate", "channels", "datemodified", "datenew", "customproperties",
-                "albumduration", "userrating"]
+                "albumduration", "userrating", "songvideourl" ]
     }
   },
   "List.Item.File": {
