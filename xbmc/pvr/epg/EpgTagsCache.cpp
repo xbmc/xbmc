@@ -37,19 +37,19 @@ void CPVREpgTagsCache::SetChannelData(const std::shared_ptr<CPVREpgChannelData>&
 
 std::shared_ptr<CPVREpgInfoTag> CPVREpgTagsCache::GetLastEndedTag()
 {
-  Refresh(true);
+  Refresh();
   return m_lastEndedTag;
 }
 
-std::shared_ptr<CPVREpgInfoTag> CPVREpgTagsCache::GetNowActiveTag(bool bUpdateIfNeeded)
+std::shared_ptr<CPVREpgInfoTag> CPVREpgTagsCache::GetNowActiveTag()
 {
-  Refresh(bUpdateIfNeeded);
+  Refresh();
   return m_nowActiveTag;
 }
 
 std::shared_ptr<CPVREpgInfoTag> CPVREpgTagsCache::GetNextStartingTag()
 {
-  Refresh(true);
+  Refresh();
   return m_nextStartingTag;
 }
 
@@ -64,18 +64,17 @@ void CPVREpgTagsCache::Reset()
   m_nextStartingTag.reset();
 }
 
-void CPVREpgTagsCache::Refresh(bool bUpdateIfNeeded)
+bool CPVREpgTagsCache::Refresh()
 {
-  if (!bUpdateIfNeeded)
-    return;
-
   const CDateTime activeTime =
       CServiceBroker::GetPVRManager().PlaybackState()->GetChannelPlaybackTime(
           m_channelData->ClientId(), m_channelData->UniqueClientChannelId());
 
   if (m_nowActiveStart.IsValid() && m_nowActiveEnd.IsValid() && m_nowActiveStart <= activeTime &&
       m_nowActiveEnd > activeTime)
-    return;
+    return false;
+
+  const std::shared_ptr<CPVREpgInfoTag> prevNowActiveTag = m_nowActiveTag;
 
   m_lastEndedTag.reset();
   m_nowActiveTag.reset();
@@ -124,6 +123,12 @@ void CPVREpgTagsCache::Refresh(bool bUpdateIfNeeded)
     else
       m_nowActiveEnd = activeTime + CDateTimeSpan(1000, 0, 0, 0); // fake end far in the future
   }
+
+  const bool tagChanged =
+      m_nowActiveTag && (!prevNowActiveTag || *prevNowActiveTag != *m_nowActiveTag);
+  const bool tagRemoved = !m_nowActiveTag && prevNowActiveTag;
+
+  return (tagChanged || tagRemoved);
 }
 
 void CPVREpgTagsCache::RefreshLastEndedTag(const CDateTime& activeTime)
