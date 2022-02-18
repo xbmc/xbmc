@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-01-02 15:56+0000\n"
-"Last-Translator: Fajar Maulana <jeremy.belpois.einstein@gmail.com>\n"
+"PO-Revision-Date: 2022-02-04 08:06+0000\n"
+"Last-Translator: Nao3Line Prez <n.yazawa6932@gmail.com>\n"
 "Language-Team: Indonesian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/id_id/>\n"
 "Language: id_id\n"
 "MIME-Version: 1.0\n"
@@ -521,7 +521,7 @@ msgstr "PVR"
 #. Label to show player info page
 msgctxt "#31138"
 msgid "Player"
-msgstr ""
+msgstr "Pemutar"
 
 #. Label to show video decoder name
 msgctxt "#31139"
@@ -659,62 +659,62 @@ msgstr "Pengaturan terkait karya seni."
 #. Label to show the video codec name
 msgctxt "#31600"
 msgid "Video codec"
-msgstr ""
+msgstr "Kodek video"
 
 #. Label to show the video resolution
 msgctxt "#31601"
 msgid "Video resolution"
-msgstr ""
+msgstr "Resolusi video"
 
 #. Label to show the video aspect
 msgctxt "#31602"
 msgid "Video aspect"
-msgstr ""
+msgstr "Aspek video"
 
 #. Label to show the video bitrate
 msgctxt "#31603"
 msgid "Video bitrate"
-msgstr ""
+msgstr "Kecepatan bit video"
 
 #. Label to show the audio codec name
 msgctxt "#31604"
 msgid "Audio codec"
-msgstr ""
+msgstr "Kodek audio"
 
 #. Label to show the number of audio channels
 msgctxt "#31605"
 msgid "Audio channels"
-msgstr ""
+msgstr "Saluran audio"
 
 #. Label to show the audio bitrate
 msgctxt "#31606"
 msgid "Audio bitrate"
-msgstr ""
+msgstr "Kecepatan bit audio"
 
 #. Label to show the screen resolution
 msgctxt "#31607"
 msgid "Screen resolution"
-msgstr ""
+msgstr "Resolusi layar"
 
 #. Label to show the system rendering speed
 msgctxt "#31608"
 msgid "System rendering speed"
-msgstr ""
+msgstr "Kecepatan rendering sistem"
 
 #. Label to show the system CPU usage
 msgctxt "#31609"
 msgid "System CPU usage"
-msgstr ""
+msgstr "Penggunaan CPU sistem"
 
 #. Label to show the media (metadata) info page
 msgctxt "#31610"
 msgid "Media"
-msgstr ""
+msgstr "Media"
 
 #. Label to show the system info page
 msgctxt "#31611"
 msgid "System"
-msgstr ""
+msgstr "Sistem"
 
 #~ msgctxt "#31137"
 #~ msgid "PVR info"
