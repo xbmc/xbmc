@@ -7,23 +7,23 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2021-08-21 08:21+0000\n"
-"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"PO-Revision-Date: 2022-02-10 16:27+0000\n"
+"Last-Translator: gogogogi <trebelnik2@gmail.com>\n"
 "Language-Team: Croatian <https://kodi.weblate.cloud/projects/kodi-core/audioencoder-kodi-builtin-wma/hr_hr/>\n"
 "Language: hr_hr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.7.2\n"
+"X-Generator: Weblate 4.10.1\n"
 
 msgctxt "Addon Summary"
 msgid "WMA Audio Encoder"
-msgstr ""
+msgstr "WMA enkôder zvuka"
 
 msgctxt "Addon Description"
 msgid "Windows Media Audio, Microsoft’s lossy audio format."
-msgstr ""
+msgstr "Windows Media Audio, Microsoftov zvučni format s gubitcima."
 
 #. Bitrate to use on for compression
 #: resources/settings.xml
@@ -35,7 +35,7 @@ msgstr "Brzina prijenosa"
 #: resources/settings.xml
 msgctxt "#30001"
 msgid "Select which bitrate to use for the WMA audio encoder for audio compression."
-msgstr ""
+msgstr "Odaberite brzinu prijenosa WMA zvučnog enkôdera za kompresiju zvuka."
 
 #. Value format for with bitrate edited field
 #: resources/settings.xml
