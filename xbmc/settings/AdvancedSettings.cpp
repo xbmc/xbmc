@@ -252,6 +252,10 @@ void CAdvancedSettings::Initialize()
   m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ \\[\\(-]([0-9]+)x([0-9]+(?:(?:[a-i]|\\.[1-9])(?![0-9]))?)([^\\\\/]*)$"));
   // Part I, Pt.VI, Part 1
   m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"[\\/._ -]p(?:ar)?t[_. -]()([ivx]+|[0-9]+)([._ -][^\\/]*)$"));
+  // This regexp is for matching special episodes by their title, e.g. foo.special.mp4
+  m_tvshowEnumRegExps.push_back(
+      TVShowRegexp(false, "[\\\\/]([^\\\\/]+)\\.special\\.[a-z0-9]+$", 0, true));
+
   // foo.103*, 103 foo
   // XXX: This regex is greedy and will match years in show names.  It should always be last.
   m_tvshowEnumRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ -]([0-9]+)([0-9][0-9](?:(?:[a-i]|\\.[1-9])(?![0-9]))?)([\\._ -][^\\\\/]*)$"));
@@ -1297,6 +1301,7 @@ void CAdvancedSettings::GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_
       if (pRegExp->FirstChild())
       {
         bool bByDate = false;
+        bool byTitle = false;
         int iDefaultSeason = 1;
         if (pRegExp->ToElement())
         {
@@ -1305,6 +1310,8 @@ void CAdvancedSettings::GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_
           {
             bByDate = true;
           }
+          std::string byTitleAttr = XMLUtils::GetAttribute(pRegExp->ToElement(), "bytitle");
+          byTitle = (byTitleAttr == "true");
           std::string defaultSeason = XMLUtils::GetAttribute(pRegExp->ToElement(), "defaultseason");
           if(!defaultSeason.empty())
           {
@@ -1313,9 +1320,14 @@ void CAdvancedSettings::GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_
         }
         std::string regExp = pRegExp->FirstChild()->Value();
         if (iAction == 2)
-          settings.insert(settings.begin() + i++, 1, TVShowRegexp(bByDate,regExp,iDefaultSeason));
+        {
+          settings.insert(settings.begin() + i++, 1,
+                          TVShowRegexp(bByDate, regExp, iDefaultSeason, byTitle));
+        }
         else
-          settings.push_back(TVShowRegexp(bByDate,regExp,iDefaultSeason));
+        {
+          settings.push_back(TVShowRegexp(bByDate, regExp, iDefaultSeason, byTitle));
+        }
       }
       pRegExp = pRegExp->NextSibling("regexp");
     }

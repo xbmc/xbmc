@@ -1150,6 +1150,7 @@ namespace VIDEO
       episode.isFolder = false;
 
       bool byDate = expression[i].byDate ? true : false;
+      bool byTitle = expression[i].byTitle;
       int defaultSeason = expression[i].defaultSeason;
 
       if (byDate)
@@ -1160,6 +1161,14 @@ namespace VIDEO
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Found date based match {} ({}) [{}]",
                   CURL::GetRedacted(episode.strPath), episode.cDate.GetAsLocalizedDate(),
                   expression[i].regexp);
+      }
+      else if (byTitle)
+      {
+        if (!GetEpisodeTitleFromRegExp(reg, episode))
+          continue;
+
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: Found title based match {} ({}) [{}]",
+                  CURL::GetRedacted(episode.strPath), episode.strTitle, expression[i].regexp);
       }
       else
       {
@@ -1309,6 +1318,18 @@ namespace VIDEO
       }
     }
     return episodeInfo.cDate.IsValid();
+  }
+
+  bool CVideoInfoScanner::GetEpisodeTitleFromRegExp(CRegExp& reg, EPISODE& episodeInfo)
+  {
+    std::string param1(reg.GetMatch(1));
+
+    if (!param1.empty())
+    {
+      episodeInfo.strTitle = param1;
+      return true;
+    }
+    return false;
   }
 
   long CVideoInfoScanner::AddVideo(CFileItem *pItem, const CONTENT_TYPE &content, bool videoFolder /* = false */, bool useLocal /* = true */, const CVideoInfoTag *showInfo /* = NULL */, bool libraryImport /* = false */)
@@ -1815,6 +1836,11 @@ namespace VIDEO
           bFound = true;
           break;
         }
+        if (!guide->strTitle.empty() && StringUtils::EqualsNoCase(guide->strTitle, file->strTitle))
+        {
+          bFound = true;
+          break;
+        }
       }
 
       if (!bFound)
@@ -1832,6 +1858,7 @@ namespace VIDEO
         }
         else if (!file->strTitle.empty())
         {
+          CLog::Log(LOGDEBUG, "VideoInfoScanner: analyzing parsed title '{}'", file->strTitle);
           double minscore = 0; // Default minimum score is 0 to find whatever is the best match.
 
           EPISODELIST *candidates;
@@ -1847,6 +1874,10 @@ namespace VIDEO
           for (guide = candidates->begin(); guide != candidates->end(); ++guide)
           {
             auto title = guide->cScraperUrl.GetTitle();
+            if (title.empty())
+            {
+              title = guide->strTitle;
+            }
             StringUtils::ToLower(title);
             guide->cScraperUrl.SetTitle(title);
             titles.push_back(title);
