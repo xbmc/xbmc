@@ -4,11 +4,11 @@
   <addon>game.controller.default</addon>
   <addon>game.controller.snes</addon>
   <addon>kodi.binary.global.audioengine</addon>
-  <addon>kodi.binary.global.main</addon>
-  <addon>kodi.binary.global.general</addon>
-  <addon>kodi.binary.global.network</addon>
-  <addon>kodi.binary.global.gui</addon>
   <addon>kodi.binary.global.filesystem</addon>
+  <addon>kodi.binary.global.general</addon>
+  <addon>kodi.binary.global.gui</addon>
+  <addon>kodi.binary.global.main</addon>
+  <addon>kodi.binary.global.network</addon>
   <addon>kodi.binary.global.tools</addon>
   <addon>kodi.binary.instance.audiodecoder</addon>
   <addon>kodi.binary.instance.audioencoder</addon>
@@ -33,10 +33,10 @@
   <addon>metadata.generic.albums</addon>
   <addon>metadata.generic.artists</addon>
   <addon>metadata.local</addon>
-  <addon>metadata.themoviedb.org</addon>
   <addon>metadata.themoviedb.org.python</addon>
-  <addon>metadata.tvshows.themoviedb.org</addon>
+  <addon>metadata.themoviedb.org</addon>
   <addon>metadata.tvshows.themoviedb.org.python</addon>
+  <addon>metadata.tvshows.themoviedb.org</addon>
   <addon>repository.xbmc.org</addon>
   <addon>resource.images.weathericons.default</addon>
   <addon>resource.language.en_gb</addon>
@@ -45,9 +45,8 @@
   <addon>screensaver.xbmc.builtin.dim</addon>
   <addon>script.module.pil</addon>
   <addon>script.module.pycryptodome</addon>
-  <addon optional="true">service.xbmc.versioncheck</addon>
-  <addon>skin.estuary</addon>
   <addon>skin.estouchy</addon>
+  <addon>skin.estuary</addon>
   <addon>webinterface.default</addon>
   <addon>xbmc.addon</addon>
   <addon>xbmc.core</addon>
@@ -56,6 +55,7 @@
   <addon>xbmc.metadata</addon>
   <addon>xbmc.python</addon>
   <addon>xbmc.webinterface</addon>
-  <addon optional="true">peripheral.joystick</addon>
   <addon optional="true">inputstream.adaptive</addon>
+  <addon optional="true">peripheral.joystick</addon>
+  <addon optional="true">service.xbmc.versioncheck</addon>
 </addons>
