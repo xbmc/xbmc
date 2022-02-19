@@ -498,34 +498,37 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
     {
       m_format.m_frameSize = m_format.m_channelLayout.Count() * (CAEUtil::DataFormatToBits(m_format.m_dataFormat) / 8);
       m_sink_frameSize = m_format.m_frameSize;
-      bool isHDiec = ((m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD) ||
-                      (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD_MA));
-      if (m_passthrough && isHDiec)
-      {
-        // Certain boxes have issues opening DTS-HD / TrueHD with this large amount of data
-        // adjust accordingly
-        m_min_buffer_size *= 2;
-        m_format.m_frames = static_cast<int>(m_min_buffer_size / m_format.m_frameSize) / 2;
-        m_audiotrackbuffer_sec =
-            static_cast<double>(m_min_buffer_size) / (m_sink_frameSize * m_sink_sampleRate);
-      }
-      else
-      {
-        // aim at 200 ms buffer and 50 ms periods but at least two periods of min_buffer
-        m_min_buffer_size *= 2;
-        m_audiotrackbuffer_sec =
-            static_cast<double>(m_min_buffer_size) / (m_sink_frameSize * m_sink_sampleRate);
+      // aim at 200 ms buffer and 50 ms periods but at least two periods of min_buffer
+      // make sure periods are actually not smaller than 32 ms (32, cause 32 * 2 = 64)
+      // but also not bigger than 64 ms
+      // which is large enough to not cause CPU hogging in case 32 ms periods are used
+      m_min_buffer_size *= 2;
+      m_audiotrackbuffer_sec =
+          static_cast<double>(m_min_buffer_size) / (m_sink_frameSize * m_sink_sampleRate);
 
-        int c = 2;
-        while (m_audiotrackbuffer_sec < 0.15)
-        {
-          m_min_buffer_size += min_buffer;
-          c++;
-          m_audiotrackbuffer_sec =
-              static_cast<double>(m_min_buffer_size) / (m_sink_frameSize * m_sink_sampleRate);
-        }
-        m_format.m_frames = static_cast<int>(m_min_buffer_size / m_format.m_frameSize) / c;
+      int c = 2;
+      while (m_audiotrackbuffer_sec < 0.15)
+      {
+        m_min_buffer_size += min_buffer;
+        c++;
+        m_audiotrackbuffer_sec =
+            static_cast<double>(m_min_buffer_size) / (m_sink_frameSize * m_sink_sampleRate);
       }
+      unsigned int period_size = m_min_buffer_size / c;
+      double period_time =
+          static_cast<double>(period_size) / (m_sink_frameSize * m_sink_sampleRate);
+
+      while (period_time > 0.064)
+      {
+        period_time /= 2;
+        period_size /= 2;
+      }
+      while (period_time < 0.032)
+      {
+        period_size *= 2;
+        period_time *= 2;
+      }
+      m_format.m_frames = static_cast<int>(period_size / m_format.m_frameSize);
     }
 
     if (m_passthrough && !m_info.m_wantsIECPassthrough)
