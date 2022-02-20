@@ -263,10 +263,8 @@ bool CRendererVDPAU::CreateTexture(int index)
 {
   if (!m_isYuv)
     return CreateVDPAUTexture(index);
-  else if (m_isYuv)
-    return CreateVDPAUTexture420(index);
   else
-    return false;
+    return CreateVDPAUTexture420(index);
 }
 
 void CRendererVDPAU::DeleteTexture(int index)
@@ -275,7 +273,7 @@ void CRendererVDPAU::DeleteTexture(int index)
 
   if (!m_isYuv)
     DeleteVDPAUTexture(index);
-  else if (m_isYuv)
+  else
     DeleteVDPAUTexture420(index);
 }
 
@@ -283,10 +281,8 @@ bool CRendererVDPAU::UploadTexture(int index)
 {
   if (!m_isYuv)
     return UploadVDPAUTexture(index);
-  else if (m_isYuv)
-    return UploadVDPAUTexture420(index);
   else
-    return false;
+    return UploadVDPAUTexture420(index);
 }
 
 bool CRendererVDPAU::CreateVDPAUTexture(int index)

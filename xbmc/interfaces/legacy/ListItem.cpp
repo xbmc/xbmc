@@ -612,7 +612,7 @@ namespace XBMCAddon
                                                            getMusicStringArray(alt, key, value));
             else if (key == "comment")
               InfoTagMusic::setCommentRaw(musictag, value);
-            else if (key != "mediatype")
+            else
               CLog::Log(LOGERROR, "NEWADDON Unknown Music Info Key \"{}\"", key);
           }
 

@@ -850,7 +850,7 @@ void CGUISpinControl::MoveUp(bool bTestReverse)
     {
       if (m_fValue - m_fInterval >= m_fStart)
         m_fValue -= m_fInterval;
-      else if (m_fValue - m_fInterval < m_fStart)
+      else
         m_fValue = m_fEnd;
       CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
       SendWindowMessage(msg);
@@ -901,7 +901,7 @@ void CGUISpinControl::MoveDown(bool bTestReverse)
     {
       if (m_fValue + m_fInterval <= m_fEnd)
         m_fValue += m_fInterval;
-      else if (m_fValue + m_fInterval > m_fEnd)
+      else
         m_fValue = m_fStart;
       CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID());
       SendWindowMessage(msg);

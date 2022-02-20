@@ -3258,7 +3258,7 @@ void COutput::Flush()
     {
       m_mixer.m_dataPort.SendOutMessage(CMixerDataProtocol::BUFFER, &procPic.outputSurface, sizeof(procPic.outputSurface));
     }
-    else if (procPic.isYuv)
+    else
     {
       m_config.videoSurfaces->ClearRender(procPic.videoSurface);
     }
