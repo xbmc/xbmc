@@ -149,9 +149,7 @@ std::string CNetworkInterfaceWin10::GetCurrentDefaultGateway(void) const
   return result;
 }
 
-CNetworkWin10::CNetworkWin10()
-  : CNetworkBase()
-  , m_adapterAddresses(nullptr)
+CNetworkWin10::CNetworkWin10() : CNetworkBase()
 {
   queryInterfaceList();
   NetworkInformation::NetworkStatusChanged([this](auto&&) {
@@ -174,8 +172,6 @@ void CNetworkWin10::CleanInterfaceList()
     delete nInt;
     it = m_interfaces.erase(it);
   }
-  free(m_adapterAddresses);
-  m_adapterAddresses = nullptr;
 }
 
 std::vector<CNetworkInterface*>& CNetworkWin10::GetInterfaceList(void)
@@ -246,13 +242,12 @@ void CNetworkWin10::queryInterfaceList()
   if (GetAdaptersAddresses(AF_INET, flags, nullptr, nullptr, &ulOutBufLen) != ERROR_BUFFER_OVERFLOW)
     return;
 
-  m_adapterAddresses = static_cast<PIP_ADAPTER_ADDRESSES>(malloc(ulOutBufLen));
-  if (m_adapterAddresses == nullptr)
-    return;
+  m_adapterAddresses.resize(ulOutBufLen);
+  auto adapterAddresses = reinterpret_cast<PIP_ADAPTER_ADDRESSES>(m_adapterAddresses.data());
 
-  if (GetAdaptersAddresses(AF_INET, flags, nullptr, m_adapterAddresses, &ulOutBufLen) == NO_ERROR)
+  if (GetAdaptersAddresses(AF_INET, flags, nullptr, adapterAddresses, &ulOutBufLen) == NO_ERROR)
   {
-    for (PIP_ADAPTER_ADDRESSES adapter = m_adapterAddresses; adapter; adapter = adapter->Next)
+    for (PIP_ADAPTER_ADDRESSES adapter = adapterAddresses; adapter; adapter = adapter->Next)
     {
       if (adapter->IfType == IF_TYPE_SOFTWARE_LOOPBACK)
         continue;
@@ -270,9 +265,8 @@ std::vector<std::string> CNetworkWin10::GetNameServers(void)
   if (GetNetworkParams(nullptr, &ulOutBufLen) != ERROR_BUFFER_OVERFLOW)
     return result;
 
-  PFIXED_INFO pInfo = static_cast<PFIXED_INFO>(malloc(ulOutBufLen));
-  if (pInfo == nullptr)
-    return result;
+  std::vector<uint8_t> buffer(ulOutBufLen);
+  PFIXED_INFO pInfo = reinterpret_cast<PFIXED_INFO>(buffer.data());
 
   if (GetNetworkParams(pInfo, &ulOutBufLen) == ERROR_SUCCESS)
   {
@@ -286,7 +280,6 @@ std::vector<std::string> CNetworkWin10::GetNameServers(void)
       addr = addr->Next;
     }
   }
-  free(pInfo);
 
   return result;
 }
