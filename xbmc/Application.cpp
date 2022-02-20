@@ -376,8 +376,6 @@ bool CApplication::Create(const CAppParamParser &params)
 
   PrintStartupLog();
 
-  std::string strExecutablePath = CUtil::GetHomePath();
-
   // initialize network protocols
   avformat_network_init();
   // set avutil callback

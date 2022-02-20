@@ -546,7 +546,6 @@ void GetNewValueForViewModeParameter(const CVariant &parameter, float stepSize, 
   }
   else if (parameter.isString())
   {
-    std::string parameterStr = parameter.asString();
     if (parameter == "decrease")
     {
       stepSize *= -1;
