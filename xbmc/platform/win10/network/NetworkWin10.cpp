@@ -55,6 +55,11 @@ typedef struct icmp_echo_reply {
 #endif //! IP_STATUS_BASE
 #include <Icmpapi.h>
 
+namespace
+{
+constexpr int MAC_LENGTH = 6; // fixed MAC length used in CNetworkInterface
+}
+
 using namespace winrt::Windows::Networking::Connectivity;
 
 CNetworkInterfaceWin10::CNetworkInterfaceWin10(const PIP_ADAPTER_ADDRESSES address)
@@ -76,16 +81,20 @@ bool CNetworkInterfaceWin10::IsConnected() const
 
 std::string CNetworkInterfaceWin10::GetMacAddress() const
 {
-  std::string result;
+  if (m_adapterAddr->PhysicalAddressLength < MAC_LENGTH)
+    return "";
+
   unsigned char* mAddr = m_adapterAddr->PhysicalAddress;
-  result = StringUtils::Format("{:02X}:{:02X}:{:02X}:{:02X}:{:02X}:{:02X}", mAddr[0], mAddr[1],
-                               mAddr[2], mAddr[3], mAddr[4], mAddr[5]);
-  return result;
+  return StringUtils::Format("{:02X}:{:02X}:{:02X}:{:02X}:{:02X}:{:02X}", mAddr[0], mAddr[1],
+                             mAddr[2], mAddr[3], mAddr[4], mAddr[5]);
 }
 
 void CNetworkInterfaceWin10::GetMacAddressRaw(char rawMac[6]) const
 {
-  memcpy(rawMac, m_adapterAddr->PhysicalAddress, 6);
+  size_t len = (m_adapterAddr->PhysicalAddressLength > MAC_LENGTH)
+                   ? MAC_LENGTH
+                   : m_adapterAddr->PhysicalAddressLength;
+  memcpy(rawMac, m_adapterAddr->PhysicalAddress, len);
 }
 
 bool CNetworkInterfaceWin10::GetHostMacAddress(unsigned long host, std::string& mac) const
