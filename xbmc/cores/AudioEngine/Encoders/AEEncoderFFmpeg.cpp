@@ -84,7 +84,7 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format, bool allow_planar_input
   AVCodec *codec = NULL;
 
   /* fallback to ac3 if we support it, we might not have DTS support */
-  if (!codec && ac3)
+  if (ac3)
   {
     m_CodecName = "AC3";
     m_CodecID = AV_CODEC_ID_AC3;

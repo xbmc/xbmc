@@ -179,7 +179,7 @@ int CAEStreamParser::AddData(uint8_t *data, unsigned int size, uint8_t **buffer/
       m_needBytes = 0;
       offset = (this->*m_syncFunc)(m_buffer, m_bufferSize);
 
-      if (m_hasSync || m_needBytes)
+      if (m_hasSync)
         break;
       else
       {

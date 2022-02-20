@@ -570,7 +570,7 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
       return;
     }
 
-    if (item && !item->IsParentFolder())
+    if (!item->IsParentFolder())
     {
       if (item->CanQueue() && !item->IsAddonsPath() && !item->IsScript())
       {

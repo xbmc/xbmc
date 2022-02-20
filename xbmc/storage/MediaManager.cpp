@@ -538,7 +538,7 @@ std::string CMediaManager::GetDiskUniqueId(const std::string& devicePath)
   if (pInfo == NULL)
     return "";
 
-  if (mediaPath.empty() && pInfo->IsAudio(1))
+  if (pInfo->IsAudio(1))
     mediaPath = "cdda://local/";
 
   if (mediaPath.empty() && (pInfo->IsISOUDF(1) || pInfo->IsISOHFS(1) || pInfo->IsIso9660(1) || pInfo->IsIso9660Interactive(1)))
