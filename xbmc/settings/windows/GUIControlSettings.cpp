@@ -1352,7 +1352,7 @@ bool CGUIControlEditSetting::InputValidation(const std::string& input, void* dat
     return true;
 
   CGUIControlEditSetting* editControl = reinterpret_cast<CGUIControlEditSetting*>(data);
-  if (editControl == NULL || editControl->GetSetting() == NULL)
+  if (editControl->GetSetting() == NULL)
     return true;
 
   editControl->SetValid(editControl->GetSetting()->CheckValidity(input));

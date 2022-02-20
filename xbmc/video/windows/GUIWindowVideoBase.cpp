@@ -484,9 +484,6 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
 
   if (pItem->m_bIsFolder)
   {
-    if (pItem->IsParentFolder())
-      return;
-
     // check if it's a folder with dvd or bluray files, then just add the relevant file
     std::string mediapath(pItem->GetOpticalMediaPath());
     if (!mediapath.empty())

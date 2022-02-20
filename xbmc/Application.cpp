@@ -3475,7 +3475,7 @@ bool CApplication::WakeUpScreenSaver(bool bPowerOffKeyPressed /* = false */)
     {
       return true;
     }
-    else if (!m_screensaverIdInUse.empty())
+    else
     { // we're in screensaver window
       if (m_pythonScreenSaver)
       {

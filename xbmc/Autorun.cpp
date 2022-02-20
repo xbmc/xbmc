@@ -102,7 +102,7 @@ bool CAutorun::PlayDisc(const std::string& path, bool bypassSettings, bool start
   if (pInfo == NULL)
     return false;
 
-  if (mediaPath.empty() && pInfo->IsAudio(1))
+  if (pInfo->IsAudio(1))
     mediaPath = "cdda://local/";
 
   if (mediaPath.empty() && (pInfo->IsISOUDF(1) || pInfo->IsISOHFS(1) || pInfo->IsIso9660(1) || pInfo->IsIso9660Interactive(1)))

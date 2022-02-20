@@ -1257,7 +1257,7 @@ bool CNetworkServices::ValidatePort(int port)
     return false;
 
 #ifdef TARGET_LINUX
-  if (!CUtil::CanBindPrivileged() && (port < 1024 || port > 65535))
+  if (!CUtil::CanBindPrivileged() && (port < 1024))
     return false;
 #endif
 

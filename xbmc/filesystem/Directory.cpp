@@ -182,10 +182,10 @@ bool CDirectory::GetDirectory(const CURL& url,
 
       pDirectory->SetFlags(hints.flags);
 
-      bool result = false, cancel = false;
+      bool result = false;
       CURL authUrl = realURL;
 
-      while (!result && !cancel)
+      while (!result)
       {
         const std::string pathToUrl(url.Get());
 
@@ -198,18 +198,16 @@ bool CDirectory::GetDirectory(const CURL& url,
 
         if (!result)
         {
-          if (!cancel)
+          // @TODO ProcessRequirements() can bring up the keyboard input dialog
+          // filesystem must not depend on GUI
+          if (g_application.IsCurrentThread() && pDirectory->ProcessRequirements())
           {
-            // @TODO ProcessRequirements() can bring up the keyboard input dialog
-            // filesystem must not depend on GUI
-            if (g_application.IsCurrentThread() && pDirectory->ProcessRequirements())
-            {
-              authUrl.SetDomain("");
-              authUrl.SetUserName("");
-              authUrl.SetPassword("");
-              continue;
-            }
+            authUrl.SetDomain("");
+            authUrl.SetUserName("");
+            authUrl.SetPassword("");
+            continue;
           }
+
           CLog::Log(LOGERROR, "{} - Error getting {}", __FUNCTION__, url.GetRedacted());
           return false;
         }

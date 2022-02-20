@@ -1201,7 +1201,7 @@ const TiXmlNode* CSmartPlaylist::readName(const TiXmlNode *root)
   if (rootElem == NULL)
     return NULL;
 
-  if (!root || !StringUtils::EqualsNoCase(root->Value(),"smartplaylist"))
+  if (!StringUtils::EqualsNoCase(root->Value(), "smartplaylist"))
   {
     CLog::Log(LOGERROR, "Error loading Smart playlist");
     return NULL;
