@@ -3153,7 +3153,6 @@ std::string CFileItemList::GetDiscFileCache(int windowID) const
 
   uint32_t crc = Crc32::ComputeFromLowerCase(strPath);
 
-  std::string cacheFile;
   if (IsCDDA() || IsOnDVD())
     return StringUtils::Format("special://temp/archive_cache/r-{:08x}.fi", crc);
 

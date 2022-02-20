@@ -7687,7 +7687,6 @@ bool CVideoDatabase::GetEpisodesNav(const std::string& strBaseDir, CFileItemList
   if (!videoUrl.FromString(strBaseDir))
     return false;
 
-  std::string strIn;
   if (idShow != -1)
   {
     videoUrl.AddOption("tvshowid", idShow);
