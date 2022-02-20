@@ -64,6 +64,6 @@ private:
     std::vector<CNetworkInterface*> m_interfaces;
     int m_sock;
     CCriticalSection m_critSection;
-    PIP_ADAPTER_ADDRESSES m_adapterAddresses;
+    std::vector<uint8_t> m_adapterAddresses;
 };
 
