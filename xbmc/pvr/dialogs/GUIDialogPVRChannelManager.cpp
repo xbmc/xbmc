@@ -138,8 +138,6 @@ bool CGUIDialogPVRChannelManager::OnActionMove(const CAction& action)
       }
       else
       {
-        std::string strNumber;
-
         bool bMoveUp = iActionId == ACTION_PAGE_UP || iActionId == ACTION_MOVE_UP || iActionId == ACTION_FIRST_PAGE;
         unsigned int iLines = bMoveUp ? abs(m_iSelected - iSelected) : 1;
         bool bOutOfBounds = bMoveUp ? m_iSelected <= 0  : m_iSelected >= m_channelItems->Size() - 1;

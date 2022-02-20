@@ -23,8 +23,6 @@ namespace ADDON
 CContextMenuAddon::CContextMenuAddon(const AddonInfoPtr& addonInfo)
     : CAddon(addonInfo, ADDON_CONTEXT_ITEM)
 {
-  std::vector<CContextMenuItem> items;
-
   const CAddonExtensions* menu = Type(ADDON_CONTEXT_ITEM)->GetElement("menu");
   if (menu)
   {

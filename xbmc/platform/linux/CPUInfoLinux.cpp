@@ -300,7 +300,7 @@ int CCPUInfoLinux::GetUsedPercentage()
   std::vector<CpuData> cpuData;
 
   std::ifstream infile("/proc/stat");
-  std::string line;
+
   for (std::string line; std::getline(infile, line);)
   {
     if (line.find("cpu") != std::string::npos)
