@@ -160,7 +160,7 @@ void CVAAPIContext::SetValidDRMVaDisplayFromRenderNode()
   // 128 is the start of the NUM in renderD<NUM>
   for (int i = 128; i < (128 + 16); i++)
   {
-    snprintf(name, buf_size, "/dev/dri/renderD%u", i);
+    snprintf(name, buf_size, "/dev/dri/renderD%d", i);
 
     fd = open(name, O_RDWR);
 
