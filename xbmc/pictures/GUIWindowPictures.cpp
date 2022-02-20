@@ -397,7 +397,6 @@ void CGUIWindowPictures::OnSlideShowRecursive(const std::string &strPicture)
 
 void CGUIWindowPictures::OnSlideShowRecursive()
 {
-  std::string strEmpty = "";
   OnSlideShowRecursive(m_vecItems->GetPath());
 }
 

@@ -167,12 +167,6 @@ bool CSettingsComponent::InitDirectoriesLinux(bool bPlatformDirectories)
   const char* envAppBinHome = "KODI_BIN_HOME";
   const char* envAppTemp = "KODI_TEMP";
 
-  std::string userName;
-  if (getenv("USER"))
-    userName = getenv("USER");
-  else
-    userName = "root";
-
   std::string userHome;
   if (getenv("KODI_DATA"))
     userHome = getenv("KODI_DATA");
@@ -267,12 +261,6 @@ bool CSettingsComponent::InitDirectoriesLinux(bool bPlatformDirectories)
 bool CSettingsComponent::InitDirectoriesOSX(bool bPlatformDirectories)
 {
 #if defined(TARGET_DARWIN)
-  std::string userName;
-  if (getenv("USER"))
-    userName = getenv("USER");
-  else
-    userName = "root";
-
   std::string userHome;
   if (getenv("HOME"))
     userHome = getenv("HOME");

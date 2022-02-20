@@ -69,15 +69,6 @@ void CTextureBundleXBT::CloseBundle()
 bool CTextureBundleXBT::OpenBundle()
 {
   // Find the correct texture file (skin or theme)
-
-  auto mediaDir = CServiceBroker::GetWinSystem()->GetGfxContext().GetMediaDir();
-  if (mediaDir.empty())
-  {
-    mediaDir = CSpecialProtocol::TranslatePath(
-      URIUtils::AddFileToFolder("special://home/addons",
-        CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN)));
-  }
-
   if (m_themeBundle)
   {
     // if we are the theme bundle, we only load if the user has chosen

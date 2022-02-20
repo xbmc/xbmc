@@ -53,12 +53,6 @@ bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item)
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_DISC_PLAYBACK) != BD_PLAYBACK_SIMPLE_MENU)
     return true;
 
-  std::string path;
-  if (item.IsVideoDb())
-    path = item.GetVideoInfoTag()->m_strFileNameAndPath;
-  else
-    path = item.GetPath();
-
   if (item.IsBDFile())
   {
     std::string root = URIUtils::GetParentPath(item.GetDynPath());

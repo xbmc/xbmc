@@ -985,14 +985,12 @@ bool CCurlFile::Service(const std::string& strURL, std::string& strHTML)
 bool CCurlFile::ReadData(std::string& strHTML)
 {
   int size_read = 0;
-  int data_size = 0;
   strHTML = "";
   char buffer[16384];
   while( (size_read = Read(buffer, sizeof(buffer)-1) ) > 0 )
   {
     buffer[size_read] = 0;
     strHTML.append(buffer, size_read);
-    data_size += size_read;
   }
   if (m_state->m_cancelled)
     return false;
