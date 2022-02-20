@@ -727,7 +727,7 @@ bool CGUIDialogPVRChannelManager::OnContextButton(int itemNumber, CONTEXT_BUTTON
     }
     else if (ret == PVR_ERROR_NOT_IMPLEMENTED)
       HELPERS::ShowOKDialogText(CVariant{19033}, CVariant{19038}); // "Information", "Not supported by the PVR backend."
-    else if (ret != PVR_ERROR_NO_ERROR)
+    else
       HELPERS::ShowOKDialogText(CVariant{2103}, CVariant{16029}); // "Add-on error", "Check the log for more information about this message."
   }
   else if (button == CONTEXT_BUTTON_DELETE)
