@@ -12,6 +12,7 @@
 #include "rendering/gl/RenderSystemGL.h"
 #include "windowing/WindowSystemFactory.h"
 
+#include <unistd.h>
 
 void CWinSystemOSXGL::Register()
 {
