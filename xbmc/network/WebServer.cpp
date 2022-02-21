@@ -823,7 +823,7 @@ MHD_RESULT CWebServer::CreateFileDownloadResponse(
   }
 
   uint64_t totalLength = 0;
-  std::unique_ptr<HttpFileDownloadContext> context(new HttpFileDownloadContext());
+  std::unique_ptr<HttpFileDownloadContext> context = std::make_unique<HttpFileDownloadContext>();
   context->file = file;
   context->contentType = mimeType;
   context->boundaryWritten = false;
