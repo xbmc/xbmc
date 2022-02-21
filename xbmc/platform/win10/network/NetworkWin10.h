@@ -10,7 +10,6 @@
 
 #include "network/Network.h"
 #include "threads/CriticalSection.h"
-#include "utils/stopwatch.h"
 
 #include <string>
 #include <vector>
@@ -56,6 +55,7 @@ public:
     bool PingHost(unsigned long host, unsigned int timeout_ms = 2000) override;
 
     friend class CNetworkInterfaceWin10;
+
 private:
     int GetSocket() { return m_sock; }
     void queryInterfaceList();
@@ -63,8 +63,7 @@ private:
 
     std::vector<CNetworkInterface*> m_interfaces;
     int m_sock;
-    CStopWatch m_netrefreshTimer;
     CCriticalSection m_critSection;
-    PIP_ADAPTER_ADDRESSES m_adapterAddresses;
+    std::vector<uint8_t> m_adapterAddresses;
 };
 
