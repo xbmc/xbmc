@@ -94,7 +94,8 @@ if(SPDLOG_FOUND)
   set(SPDLOG_DEFINITIONS -DSPDLOG_FMT_EXTERNAL
                          -DSPDLOG_DEBUG_ON
                          -DSPDLOG_NO_ATOMIC_LEVELS
-                         -DSPDLOG_ENABLE_PATTERN_PADDING)
+                         -DSPDLOG_ENABLE_PATTERN_PADDING
+                         -DSPDLOG_COMPILED_LIB)
   if(WIN32)
     list(APPEND SPDLOG_DEFINITIONS -DSPDLOG_WCHAR_FILENAMES
                                    -DSPDLOG_WCHAR_TO_UTF8_SUPPORT)
