@@ -65,12 +65,13 @@ find_package_handle_standard_args(Fstrcmp
 if(FSTRCMP_FOUND)
   set(FSTRCMP_INCLUDE_DIRS ${FSTRCMP_INCLUDE_DIR})
   set(FSTRCMP_LIBRARIES ${FSTRCMP_LIBRARY})
+
+  if(NOT TARGET fstrcmp)
+    add_library(fstrcmp UNKNOWN IMPORTED)
+    set_target_properties(fstrcmp PROPERTIES
+                                  IMPORTED_LOCATION "${FSTRCMP_LIBRARY}"
+                                  INTERFACE_INCLUDE_DIRECTORIES "${FSTRCMP_INCLUDE_DIR}")
+  endif()
 endif()
 
-if(NOT TARGET fstrcmp)
-  add_library(fstrcmp UNKNOWN IMPORTED)
-  set_target_properties(fstrcmp PROPERTIES
-                                IMPORTED_LOCATION "${FSTRCMP_LIBRARY}"
-                                INTERFACE_INCLUDE_DIRECTORIES "${FSTRCMP_INCLUDE_DIR}")
-endif()
 mark_as_advanced(FSTRCMP_INCLUDE_DIR FSTRCMP_LIBRARY)
