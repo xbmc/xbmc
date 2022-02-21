@@ -9,18 +9,6 @@
 # DAV1D_INCLUDE_DIRS - the dav1d include directories
 # DAV1D_LIBRARIES - the dav1d libraries
 
-if(PKG_CONFIG_FOUND)
-  pkg_check_modules(PC_DAV1D dav1d QUIET)
-endif()
-
-find_library(DAV1D_LIBRARY NAMES dav1d libdav1d
-                           PATHS ${PC_DAV1D_LIBDIR})
-
-find_path(DAV1D_INCLUDE_DIR NAMES dav1d/dav1d.h
-                            PATHS ${PC_DAV1D_INCLUDEDIR})
-
-set(DAV1D_VERSION ${PC_DAV1D_VERSION})
-
 if(ENABLE_INTERNAL_DAV1D)
   include(ExternalProject)
   include(cmake/scripts/common/ModuleHelpers.cmake)
@@ -65,6 +53,18 @@ if(ENABLE_INTERNAL_DAV1D)
                       BUILD_BYPRODUCTS ${DAV1D_LIBRARY})
 
   set_target_properties(dav1d PROPERTIES FOLDER "External Projects")
+else()
+  if(PKG_CONFIG_FOUND)
+    pkg_check_modules(PC_DAV1D dav1d QUIET)
+  endif()
+
+  find_library(DAV1D_LIBRARY NAMES dav1d libdav1d
+                             PATHS ${PC_DAV1D_LIBDIR})
+
+  find_path(DAV1D_INCLUDE_DIR NAMES dav1d/dav1d.h
+                              PATHS ${PC_DAV1D_INCLUDEDIR})
+
+  set(DAV1D_VERSION ${PC_DAV1D_VERSION})
 endif()
 
 include(FindPackageHandleStandardArgs)
