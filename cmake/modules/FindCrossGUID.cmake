@@ -37,14 +37,6 @@ if(ENABLE_INTERNAL_CROSSGUID)
                                     <SOURCE_DIR>
                       BUILD_BYPRODUCTS ${CROSSGUID_LIBRARY})
   set_target_properties(crossguid PROPERTIES FOLDER "External Projects")
-
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(CrossGUID
-                                    REQUIRED_VARS CROSSGUID_LIBRARY CROSSGUID_INCLUDE_DIR
-                                    VERSION_VAR CROSSGUID_VER)
-
-  set(CROSSGUID_LIBRARIES ${CROSSGUID_LIBRARY})
-  set(CROSSGUID_INCLUDE_DIRS ${CROSSGUID_INCLUDE_DIR})
 else()
   find_path(CROSSGUID_INCLUDE_DIR NAMES guid.hpp guid.h)
 
@@ -54,26 +46,32 @@ else()
   include(SelectLibraryConfigurations)
   select_library_configurations(CROSSGUID)
 
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(CrossGUID
-                                    REQUIRED_VARS CROSSGUID_LIBRARY CROSSGUID_INCLUDE_DIR)
+endif()
 
-  if(CROSSGUID_FOUND)
-    set(CROSSGUID_LIBRARIES ${CROSSGUID_LIBRARY})
-    set(CROSSGUID_INCLUDE_DIRS ${CROSSGUID_INCLUDE_DIR})
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(CrossGUID
+                                  REQUIRED_VARS CROSSGUID_LIBRARY CROSSGUID_INCLUDE_DIR
+                                  VERSION_VAR CROSSGUID_VER)
 
-    if(EXISTS "${CROSSGUID_INCLUDE_DIR}/guid.hpp")
-      set(CROSSGUID_DEFINITIONS -DHAVE_NEW_CROSSGUID)
-    endif()
+if(CROSSGUID_FOUND)
+  set(CROSSGUID_LIBRARIES ${CROSSGUID_LIBRARY})
+  set(CROSSGUID_INCLUDE_DIRS ${CROSSGUID_INCLUDE_DIR})
 
-    add_custom_target(crossguid)
-    set_target_properties(crossguid PROPERTIES FOLDER "External Projects")
+  if(EXISTS "${CROSSGUID_INCLUDE_DIR}/guid.hpp")
+    set(CROSSGUID_DEFINITIONS -DHAVE_NEW_CROSSGUID)
   endif()
-  mark_as_advanced(CROSSGUID_INCLUDE_DIR CROSSGUID_LIBRARY)
-endif()
 
-if(NOT WIN32 AND NOT APPLE)
-  find_package(UUID REQUIRED)
-  list(APPEND CROSSGUID_INCLUDE_DIRS ${UUID_INCLUDE_DIRS})
-  list(APPEND CROSSGUID_LIBRARIES ${UUID_LIBRARIES})
+  if(NOT TARGET crossguid)
+    add_library(crossguid UNKNOWN IMPORTED)
+    set_target_properties(crossguid PROPERTIES
+                                    IMPORTED_LOCATION "${CROSSGUID_LIBRARY}"
+                                    INTERFACE_INCLUDE_DIRECTORIES "${CROSSGUID_INCLUDE_DIR}")
+  endif()
+
+  if(NOT WIN32 AND NOT APPLE)
+    find_package(UUID REQUIRED)
+    list(APPEND CROSSGUID_INCLUDE_DIRS ${UUID_INCLUDE_DIRS})
+    list(APPEND CROSSGUID_LIBRARIES ${UUID_LIBRARIES})
+  endif()
 endif()
+mark_as_advanced(CROSSGUID_INCLUDE_DIR CROSSGUID_LIBRARY)
