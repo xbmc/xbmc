@@ -981,7 +981,6 @@ void CWebVTTHandler::InsertCssStyleStartTag(std::string& tagName,
                                             int flagTags[],
                                             std::map<std::string, std::string>& cssTagsOpened)
 {
-  std::string foundTag;
   // Get class selector (e.g. full tag is "<c.loud>", the class selection will be ".loud")
   std::string classSelectorName;
   auto dotPos = tagName.find('.');

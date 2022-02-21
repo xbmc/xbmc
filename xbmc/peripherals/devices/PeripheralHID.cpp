@@ -60,7 +60,7 @@ bool CPeripheralHID::InitialiseFeature(const PeripheralFeature feature)
         CLog::Log(LOGDEBUG, "{} - adding keymapping for: {}", __FUNCTION__, m_strKeymap);
         m_manager.GetInputManager().AddKeymap(m_strKeymap);
       }
-      else if (!bKeymapEnabled)
+      else
       {
         CLog::Log(LOGDEBUG, "{} - removing keymapping for: {}", __FUNCTION__, m_strKeymap);
         m_manager.GetInputManager().RemoveKeymap(m_strKeymap);
