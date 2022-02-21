@@ -441,11 +441,6 @@ MHD_RESULT CWebServer::FinalizeRequest(const std::shared_ptr<IHTTPRequestHandler
   else
     handler->AddResponseHeader(MHD_HTTP_HEADER_ACCEPT_RANGES, "none");
 
-  // add MHD_HTTP_HEADER_CONTENT_LENGTH
-  if (responseDetails.totalLength > 0)
-    handler->AddResponseHeader(MHD_HTTP_HEADER_CONTENT_LENGTH,
-                               std::to_string(responseDetails.totalLength));
-
   // add all headers set by the request handler
   for (const auto& it : responseDetails.headers)
     AddHeader(response, it.first, it.second);
@@ -1406,12 +1401,9 @@ MHD_RESULT CWebServer::AddHeader(struct MHD_Response* response,
   if (CServiceBroker::GetLogging().CanLogComponent(LOGWEBSERVER))
     m_logger->debug("[OUT] {}: {}", name, value);
 
-#if MHD_VERSION >= 0x00096800
   if (name == MHD_HTTP_HEADER_CONTENT_LENGTH)
-  {
-    MHD_set_response_options(response, MHD_RF_INSANITY_HEADER_CONTENT_LENGTH, MHD_RO_END);
-  }
-#endif
+    m_logger->warn("Attempt to override MHD automatic \"Content-Length\" header");
+
   return MHD_add_response_header(response, name.c_str(), value.c_str());
 }
 
