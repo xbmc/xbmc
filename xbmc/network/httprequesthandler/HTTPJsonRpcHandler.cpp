@@ -52,7 +52,7 @@ MHD_RESULT CHTTPJsonRpcHandler::HandleRequest()
 
     isRequest = true;
   }
-  else if (m_request.method == GET)
+  else if (m_request.method == GET || m_request.method == HEAD)
   {
     std::map<std::string, std::string>::const_iterator argument = arguments.find("request");
     if (argument != arguments.end() && !argument->second.empty())

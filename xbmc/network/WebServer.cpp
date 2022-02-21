@@ -209,7 +209,7 @@ MHD_RESULT CWebServer::HandlePartialRequest(struct MHD_Connection* connection,
     if (handler != nullptr)
     {
       // if we got a GET request we need to check if it should be cached
-      if (request.method == GET)
+      if (request.method == GET || request.method == HEAD)
       {
         if (handler->CanBeCached())
         {
@@ -827,111 +827,95 @@ MHD_RESULT CWebServer::CreateFileDownloadResponse(
     mimeType = CreateMimeTypeFromExtension(ext.c_str());
   }
 
-  if (request.method != HEAD)
+  uint64_t totalLength = 0;
+  std::unique_ptr<HttpFileDownloadContext> context(new HttpFileDownloadContext());
+  context->file = file;
+  context->contentType = mimeType;
+  context->boundaryWritten = false;
+  context->writePosition = 0;
+
+  if (handler->IsRequestRanged())
   {
-    uint64_t totalLength = 0;
-    std::unique_ptr<HttpFileDownloadContext> context(new HttpFileDownloadContext());
-    context->file = file;
-    context->contentType = mimeType;
-    context->boundaryWritten = false;
-    context->writePosition = 0;
-
-    if (handler->IsRequestRanged())
-    {
-      if (!request.ranges.IsEmpty())
-        context->ranges = request.ranges;
-      else
-        HTTPRequestHandlerUtils::GetRequestedRanges(request.connection, fileLength,
-                                                    context->ranges);
-    }
-
-    uint64_t firstPosition = 0;
-    uint64_t lastPosition = 0;
-    // if there are no ranges, add the whole range
-    if (context->ranges.IsEmpty())
-      context->ranges.Add(CHttpRange(0, fileLength - 1));
+    if (!request.ranges.IsEmpty())
+      context->ranges = request.ranges;
     else
-    {
-      handler->SetResponseStatus(MHD_HTTP_PARTIAL_CONTENT);
-
-      // we need to remember that we are ranged because the range length might change and won't be
-      // reliable anymore for length comparisons
-      ranged = true;
-
-      context->ranges.GetFirstPosition(firstPosition);
-      context->ranges.GetLastPosition(lastPosition);
-    }
-
-    // remember the total number of ranges
-    context->rangeCountTotal = context->ranges.Size();
-    // remember the total length
-    totalLength = context->ranges.GetLength();
-
-    // adjust the MIME type and range length in case of multiple ranges which requires multipart
-    // boundaries
-    if (context->rangeCountTotal > 1)
-    {
-      context->boundary = HttpRangeUtils::GenerateMultipartBoundary();
-      mimeType = HttpRangeUtils::GenerateMultipartBoundaryContentType(context->boundary);
-
-      // build part of the boundary with the optional Content-Type header
-      // "--<boundary>\r\nContent-Type: <content-type>\r\n
-      context->boundaryWithHeader = HttpRangeUtils::GenerateMultipartBoundaryWithHeader(
-          context->boundary, context->contentType);
-      context->boundaryEnd = HttpRangeUtils::GenerateMultipartBoundaryEnd(context->boundary);
-
-      // for every range, we need to add a boundary with header
-      for (HttpRanges::const_iterator range = context->ranges.Begin();
-           range != context->ranges.End(); ++range)
-      {
-        // we need to temporarily add the Content-Range header to the boundary to be able to
-        // determine the length
-        std::string completeBoundaryWithHeader =
-            HttpRangeUtils::GenerateMultipartBoundaryWithHeader(context->boundaryWithHeader,
-                                                                &*range);
-        totalLength += completeBoundaryWithHeader.size();
-
-        // add a newline before any new multipart boundary
-        if (range != context->ranges.Begin())
-          totalLength += strlen(HEADER_NEWLINE);
-      }
-      // and at the very end a special end-boundary "\r\n--<boundary>--"
-      totalLength += context->boundaryEnd.size();
-    }
-
-    // set the initial write position
-    context->ranges.GetFirstPosition(context->writePosition);
-
-    // create the response object
-    response =
-        MHD_create_response_from_callback(totalLength, 2048, &CWebServer::ContentReaderCallback,
-                                          context.get(), &CWebServer::ContentReaderFreeCallback);
-    if (response == nullptr)
-    {
-      m_logger->error("failed to create a HTTP response for {} to be filled from{}",
-                      request.pathUrl, filePath);
-      return MHD_NO;
-    }
-
-    context.release(); // ownership was passed to mhd
-
-    // add Content-Range header
-    if (ranged)
-      handler->AddResponseHeader(
-          MHD_HTTP_HEADER_CONTENT_RANGE,
-          HttpRangeUtils::GenerateContentRangeHeaderValue(firstPosition, lastPosition, fileLength));
+      HTTPRequestHandlerUtils::GetRequestedRanges(request.connection, fileLength, context->ranges);
   }
+
+  uint64_t firstPosition = 0;
+  uint64_t lastPosition = 0;
+  // if there are no ranges, add the whole range
+  if (context->ranges.IsEmpty())
+    context->ranges.Add(CHttpRange(0, fileLength - 1));
   else
   {
-    response = create_response(0, nullptr, MHD_NO, MHD_NO);
-    if (response == nullptr)
-    {
-      m_logger->error("failed to create a HTTP HEAD response for {}", request.pathUrl);
-      return MHD_NO;
-    }
+    handler->SetResponseStatus(MHD_HTTP_PARTIAL_CONTENT);
 
-    handler->AddResponseHeader(MHD_HTTP_HEADER_CONTENT_LENGTH, std::to_string(fileLength));
+    // we need to remember that we are ranged because the range length might change and won't be
+    // reliable anymore for length comparisons
+    ranged = true;
+
+    context->ranges.GetFirstPosition(firstPosition);
+    context->ranges.GetLastPosition(lastPosition);
   }
+
+  // remember the total number of ranges
+  context->rangeCountTotal = context->ranges.Size();
+  // remember the total length
+  totalLength = context->ranges.GetLength();
+
+  // adjust the MIME type and range length in case of multiple ranges which requires multipart
+  // boundaries
+  if (context->rangeCountTotal > 1)
+  {
+    context->boundary = HttpRangeUtils::GenerateMultipartBoundary();
+    mimeType = HttpRangeUtils::GenerateMultipartBoundaryContentType(context->boundary);
+
+    // build part of the boundary with the optional Content-Type header
+    // "--<boundary>\r\nContent-Type: <content-type>\r\n
+    context->boundaryWithHeader = HttpRangeUtils::GenerateMultipartBoundaryWithHeader(
+        context->boundary, context->contentType);
+    context->boundaryEnd = HttpRangeUtils::GenerateMultipartBoundaryEnd(context->boundary);
+
+    // for every range, we need to add a boundary with header
+    for (HttpRanges::const_iterator range = context->ranges.Begin(); range != context->ranges.End();
+         ++range)
+    {
+      // we need to temporarily add the Content-Range header to the boundary to be able to
+      // determine the length
+      std::string completeBoundaryWithHeader =
+          HttpRangeUtils::GenerateMultipartBoundaryWithHeader(context->boundaryWithHeader, &*range);
+      totalLength += completeBoundaryWithHeader.size();
+
+      // add a newline before any new multipart boundary
+      if (range != context->ranges.Begin())
+        totalLength += strlen(HEADER_NEWLINE);
+    }
+    // and at the very end a special end-boundary "\r\n--<boundary>--"
+    totalLength += context->boundaryEnd.size();
+  }
+
+  // set the initial write position
+  context->ranges.GetFirstPosition(context->writePosition);
+
+  // create the response object
+  response =
+      MHD_create_response_from_callback(totalLength, 2048, &CWebServer::ContentReaderCallback,
+                                        context.get(), &CWebServer::ContentReaderFreeCallback);
+  if (response == nullptr)
+  {
+    m_logger->error("failed to create a HTTP response for {} to be filled from{}", request.pathUrl,
+                    filePath);
+    return MHD_NO;
+  }
+
+  context.release(); // ownership was passed to mhd
+
+  // add Content-Range header
+  if (ranged)
+    handler->AddResponseHeader(
+        MHD_HTTP_HEADER_CONTENT_RANGE,
+        HttpRangeUtils::GenerateContentRangeHeaderValue(firstPosition, lastPosition, fileLength));
 
   // set the Content-Type header
   if (!mimeType.empty())
@@ -948,20 +932,17 @@ MHD_RESULT CWebServer::CreateErrorResponse(struct MHD_Connection* connection,
   size_t payloadSize = 0;
   const void* payload = nullptr;
 
-  if (method != HEAD)
+  switch (responseType)
   {
-    switch (responseType)
-    {
-      case MHD_HTTP_NOT_FOUND:
-        payloadSize = strlen(PAGE_FILE_NOT_FOUND);
-        payload = (const void*)PAGE_FILE_NOT_FOUND;
-        break;
+    case MHD_HTTP_NOT_FOUND:
+      payloadSize = strlen(PAGE_FILE_NOT_FOUND);
+      payload = (const void*)PAGE_FILE_NOT_FOUND;
+      break;
 
-      case MHD_HTTP_NOT_IMPLEMENTED:
-        payloadSize = strlen(NOT_SUPPORTED);
-        payload = (const void*)NOT_SUPPORTED;
-        break;
-    }
+    case MHD_HTTP_NOT_IMPLEMENTED:
+      payloadSize = strlen(NOT_SUPPORTED);
+      payload = (const void*)NOT_SUPPORTED;
+      break;
   }
 
   response = create_response(payloadSize, payload, MHD_NO, MHD_NO);
