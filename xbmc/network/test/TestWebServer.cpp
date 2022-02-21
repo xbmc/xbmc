@@ -152,6 +152,8 @@ protected:
 
     // Content-Type must be "text/html"
     EXPECT_STREQ("text/html", httpHeader.GetMimeType().c_str());
+    // Must be only one "Content-Length" header
+    ASSERT_EQ(1U, httpHeader.GetValues(MHD_HTTP_HEADER_CONTENT_LENGTH).size());
     // Content-Length must be "4"
     EXPECT_STREQ("4", httpHeader.GetValue(MHD_HTTP_HEADER_CONTENT_LENGTH).c_str());
     // Accept-Ranges must be "bytes"
@@ -173,6 +175,9 @@ protected:
     // get the HTTP header details
     const CHttpHeader& httpHeader = curl.GetHttpHeader();
 
+    // Only zero or one "Content-Length" headers
+    ASSERT_GE(1U, httpHeader.GetValues(MHD_HTTP_HEADER_CONTENT_LENGTH).size());
+
     // check the protocol line for the expected HTTP status
     std::string httpStatusString = StringUtils::Format(" {} ", httpStatus);
     std::string protocolLine = httpHeader.GetProtoLine();
@@ -182,7 +187,10 @@ protected:
     EXPECT_STREQ("text/plain", httpHeader.GetMimeType().c_str());
     // check Content-Length
     if (!empty)
+    {
+      ASSERT_EQ(1U, httpHeader.GetValues(MHD_HTTP_HEADER_CONTENT_LENGTH).size());
       EXPECT_STREQ("20", httpHeader.GetValue(MHD_HTTP_HEADER_CONTENT_LENGTH).c_str());
+    }
     // Accept-Ranges must be "bytes"
     EXPECT_STREQ("bytes", httpHeader.GetValue(MHD_HTTP_HEADER_ACCEPT_RANGES).c_str());
 
@@ -201,6 +209,9 @@ protected:
   {
     // get the HTTP header details
     const CHttpHeader& httpHeader = curl.GetHttpHeader();
+
+    // Only zero or one "Content-Length" headers
+    ASSERT_GE(1U, httpHeader.GetValues(MHD_HTTP_HEADER_CONTENT_LENGTH).size());
 
     // check the protocol line for the expected HTTP status
     std::string httpStatusString = StringUtils::Format(" {} ", MHD_HTTP_PARTIAL_CONTENT);
@@ -223,6 +234,7 @@ protected:
     // If there's no range Content-Length must be "20"
     if (ranges.IsEmpty())
     {
+      ASSERT_EQ(1U, httpHeader.GetValues(MHD_HTTP_HEADER_CONTENT_LENGTH).size());
       EXPECT_STREQ("20", httpHeader.GetValue(MHD_HTTP_HEADER_CONTENT_LENGTH).c_str());
       EXPECT_STREQ(TEST_FILES_DATA_RANGES, result.c_str());
       return;
@@ -248,6 +260,7 @@ protected:
       EXPECT_STREQ(expectedContent.c_str(), result.c_str());
 
       // and Content-Length
+      ASSERT_EQ(1U, httpHeader.GetValues(MHD_HTTP_HEADER_CONTENT_LENGTH).size());
       EXPECT_STREQ(std::to_string(static_cast<unsigned int>(expectedContent.size())).c_str(),
                    httpHeader.GetValue(MHD_HTTP_HEADER_CONTENT_LENGTH).c_str());
 
@@ -361,6 +374,8 @@ TEST_F(TestWebServer, CanGetJsonRpcApiDescriptionWithHttpGet)
   // get the HTTP header details
   const CHttpHeader& httpHeader = curl.GetHttpHeader();
 
+  // Content-Length header must be present
+  ASSERT_EQ(1U, httpHeader.GetValues(MHD_HTTP_HEADER_CONTENT_LENGTH).size());
   // Content-Type must be "application/json"
   EXPECT_STREQ("application/json", httpHeader.GetMimeType().c_str());
   // Accept-Ranges must be "none"
@@ -391,6 +406,8 @@ TEST_F(TestWebServer, CanReadDataOverJsonRpcWithHttpGet)
   // get the HTTP header details
   const CHttpHeader& httpHeader = curl.GetHttpHeader();
 
+  // Content-Length header must be present
+  ASSERT_EQ(1U, httpHeader.GetValues(MHD_HTTP_HEADER_CONTENT_LENGTH).size());
   // Content-Type must be "application/json"
   EXPECT_STREQ("application/json", httpHeader.GetMimeType().c_str());
   // Accept-Ranges must be "none"
@@ -428,6 +445,8 @@ TEST_F(TestWebServer, CannotModifyOverJsonRpcWithHttpGet)
   // get the HTTP header details
   const CHttpHeader& httpHeader = curl.GetHttpHeader();
 
+  // Content-Length header must be present
+  ASSERT_EQ(1U, httpHeader.GetValues(MHD_HTTP_HEADER_CONTENT_LENGTH).size());
   // Content-Type must be "application/json"
   EXPECT_STREQ("application/json", httpHeader.GetMimeType().c_str());
   // Accept-Ranges must be "none"
@@ -462,6 +481,8 @@ TEST_F(TestWebServer, CanReadDataOverJsonRpcWithHttpPost)
   // get the HTTP header details
   const CHttpHeader& httpHeader = curl.GetHttpHeader();
 
+  // Content-Length header must be present
+  ASSERT_EQ(1U, httpHeader.GetValues(MHD_HTTP_HEADER_CONTENT_LENGTH).size());
   // Content-Type must be "application/json"
   EXPECT_STREQ("application/json", httpHeader.GetMimeType().c_str());
   // Accept-Ranges must be "none"
@@ -499,6 +520,8 @@ TEST_F(TestWebServer, CanModifyOverJsonRpcWithHttpPost)
   // get the HTTP header details
   const CHttpHeader& httpHeader = curl.GetHttpHeader();
 
+  // Content-Length header must be present
+  ASSERT_EQ(1U, httpHeader.GetValues(MHD_HTTP_HEADER_CONTENT_LENGTH).size());
   // Content-Type must be "application/json"
   EXPECT_STREQ("application/json", httpHeader.GetMimeType().c_str());
   // Accept-Ranges must be "none"
