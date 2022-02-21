@@ -10,18 +10,6 @@
 # UDFREAD_LIBRARIES - the udfread libraries
 # UDFREAD_DEFINITIONS - the udfread definitions
 
-if(PKG_CONFIG_FOUND)
-  pkg_check_modules(PC_UDFREAD udfread>=1.0.0 QUIET)
-endif()
-
-find_path(UDFREAD_INCLUDE_DIR NAMES udfread/udfread.h
-                          PATHS ${PC_UDFREAD_INCLUDEDIR})
-
-find_library(UDFREAD_LIBRARY NAMES udfread libudfread
-                         PATHS ${PC_UDFREAD_LIBDIR})
-
-set(UDFREAD_VERSION ${PC_UDFREAD_VERSION})
-
 if(ENABLE_INTERNAL_UDFREAD)
   include(ExternalProject)
   include(cmake/scripts/common/ModuleHelpers.cmake)
@@ -33,7 +21,7 @@ if(ENABLE_INTERNAL_UDFREAD)
   if(UDFREAD_URL)
     get_filename_component(UDFREAD_URL "${UDFREAD_URL}" ABSOLUTE)
   else()
-    set(UDFREAD_URL http://mirrors.kodi.tv/build-deps/sources/${UDFREAD_ARCHIVE})
+    set(UDFREAD_URL http://mirrors.kodi.tv/build-deps/sources/${LIBUDFREAD_ARCHIVE})
   endif()
 
   if(VERBOSE)
@@ -46,8 +34,8 @@ if(ENABLE_INTERNAL_UDFREAD)
 
   externalproject_add(udfread
                       URL ${UDFREAD_URL}
-                      URL_HASH ${UDFREAD_HASH}
-                      DOWNLOAD_NAME ${UDFREAD_ARCHIVE}
+                      URL_HASH ${LIBUDFREAD_HASH}
+                      DOWNLOAD_NAME ${LIBUDFREAD_ARCHIVE}
                       DOWNLOAD_DIR ${TARBALL_DIR}
                       PREFIX ${CORE_BUILD_DIR}/libudfread
                       CONFIGURE_COMMAND autoreconf -vif &&
@@ -59,6 +47,18 @@ if(ENABLE_INTERNAL_UDFREAD)
                       BUILD_IN_SOURCE 1)
 
   set_target_properties(udfread PROPERTIES FOLDER "External Projects")
+else()
+  if(PKG_CONFIG_FOUND)
+    pkg_check_modules(PC_UDFREAD udfread>=1.0.0 QUIET)
+  endif()
+
+  find_path(UDFREAD_INCLUDE_DIR NAMES udfread/udfread.h
+                            PATHS ${PC_UDFREAD_INCLUDEDIR})
+
+  find_library(UDFREAD_LIBRARY NAMES udfread libudfread
+                           PATHS ${PC_UDFREAD_LIBDIR})
+
+  set(UDFREAD_VERSION ${PC_UDFREAD_VERSION})
 endif()
 
 include(FindPackageHandleStandardArgs)
