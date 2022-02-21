@@ -252,3 +252,5 @@ else()
   set(LIBDVD_LIBRARIES ${LIBDVD_LIBRARIES} CACHE STRING "libdvd libraries" FORCE)
   set(LIBDVD_FOUND 1 CACHE BOOL "libdvd found" FORCE)
 endif()
+
+set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP dvdnav)

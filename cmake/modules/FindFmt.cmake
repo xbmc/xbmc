@@ -89,6 +89,8 @@ if(FMT_FOUND)
                                IMPORTED_LOCATION "${FMT_LIBRARY}"
                                INTERFACE_INCLUDE_DIRECTORIES "${FMT_INCLUDE_DIR}")
   endif()
+
+  set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP fmt)
 endif()
 
 mark_as_advanced(FMT_INCLUDE_DIR FMT_LIBRARY)

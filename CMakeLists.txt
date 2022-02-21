@@ -81,6 +81,9 @@ if(CORE_SYSTEM_NAME STREQUAL linux)
   option(ENABLE_EVENTCLIENTS    "Enable event clients support?" OFF)
 endif()
 
+# set scope of INTERNAL_DEPS
+set_property(GLOBAL PROPERTY INTERNAL_DEPS_PROP)
+
 # Build static libraries per directory
 if(NOT CMAKE_GENERATOR MATCHES "Visual Studio" AND NOT CMAKE_GENERATOR STREQUAL Xcode)
   set(ENABLE_STATIC_LIBS TRUE)
@@ -307,7 +310,8 @@ elseif(CORE_SYSTEM_NAME STREQUAL android)
                  ${CORE_BUILD_DIR}/DllPaths_generated_android.h @ONLY)
 endif()
 
-set(GLOBAL_TARGET_DEPS ffmpeg dvdnav crossguid fmt spdlog fstrcmp flatbuffers ${PLATFORM_GLOBAL_TARGET_DEPS})
+get_property(INTERNAL_DEPS GLOBAL PROPERTY INTERNAL_DEPS_PROP)
+set(GLOBAL_TARGET_DEPS ${INTERNAL_DEPS} ${PLATFORM_GLOBAL_TARGET_DEPS})
 
 # main library (used for main binary and tests)
 if(CMAKE_GENERATOR STREQUAL Xcode)
