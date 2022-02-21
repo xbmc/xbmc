@@ -1221,11 +1221,11 @@ struct MHD_Daemon* CWebServer::StartMHD(unsigned int flags, int port)
             | MHD_USE_SSL,
         port, 0, 0, &CWebServer::AnswerToConnection, this,
 
-        MHD_OPTION_CONNECTION_LIMIT, 512, MHD_OPTION_CONNECTION_TIMEOUT, timeout,
-        MHD_OPTION_URI_LOG_CALLBACK, &CWebServer::UriRequestLogger, this,
-        MHD_OPTION_EXTERNAL_LOGGER, &logFromMHD, 0, MHD_OPTION_THREAD_STACK_SIZE,
-        m_thread_stacksize, MHD_OPTION_HTTPS_MEM_KEY, m_key.c_str(), MHD_OPTION_HTTPS_MEM_CERT,
-        m_cert.c_str(), MHD_OPTION_HTTPS_PRIORITIES, ciphers, MHD_OPTION_END);
+        MHD_OPTION_EXTERNAL_LOGGER, &logFromMHD, 0, MHD_OPTION_CONNECTION_LIMIT, 512,
+        MHD_OPTION_CONNECTION_TIMEOUT, timeout, MHD_OPTION_URI_LOG_CALLBACK,
+        &CWebServer::UriRequestLogger, this, MHD_OPTION_THREAD_STACK_SIZE, m_thread_stacksize,
+        MHD_OPTION_HTTPS_MEM_KEY, m_key.c_str(), MHD_OPTION_HTTPS_MEM_CERT, m_cert.c_str(),
+        MHD_OPTION_HTTPS_PRIORITIES, ciphers, MHD_OPTION_END);
 
   // No SSL
   return MHD_start_daemon(
@@ -1242,9 +1242,10 @@ struct MHD_Daemon* CWebServer::StartMHD(unsigned int flags, int port)
       ,
       port, 0, 0, &CWebServer::AnswerToConnection, this,
 
-      MHD_OPTION_CONNECTION_LIMIT, 512, MHD_OPTION_CONNECTION_TIMEOUT, timeout,
-      MHD_OPTION_URI_LOG_CALLBACK, &CWebServer::UriRequestLogger, this, MHD_OPTION_EXTERNAL_LOGGER,
-      &logFromMHD, 0, MHD_OPTION_THREAD_STACK_SIZE, m_thread_stacksize, MHD_OPTION_END);
+      MHD_OPTION_EXTERNAL_LOGGER, &logFromMHD, 0, MHD_OPTION_CONNECTION_LIMIT, 512,
+      MHD_OPTION_CONNECTION_TIMEOUT, timeout, MHD_OPTION_URI_LOG_CALLBACK,
+      &CWebServer::UriRequestLogger, this, MHD_OPTION_THREAD_STACK_SIZE, m_thread_stacksize,
+      MHD_OPTION_END);
 }
 
 bool CWebServer::Start(uint16_t port, const std::string& username, const std::string& password)
