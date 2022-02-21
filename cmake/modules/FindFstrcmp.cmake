@@ -72,6 +72,8 @@ if(FSTRCMP_FOUND)
                                   IMPORTED_LOCATION "${FSTRCMP_LIBRARY}"
                                   INTERFACE_INCLUDE_DIRECTORIES "${FSTRCMP_INCLUDE_DIR}")
   endif()
+
+  set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP fstrcmp)
 endif()
 
 mark_as_advanced(FSTRCMP_INCLUDE_DIR FSTRCMP_LIBRARY)

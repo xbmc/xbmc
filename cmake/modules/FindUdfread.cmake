@@ -47,6 +47,7 @@ if(ENABLE_INTERNAL_UDFREAD)
                       BUILD_IN_SOURCE 1)
 
   set_target_properties(udfread PROPERTIES FOLDER "External Projects")
+  set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP udfread)
 else()
   if(PKG_CONFIG_FOUND)
     pkg_check_modules(PC_UDFREAD udfread>=1.0.0 QUIET)

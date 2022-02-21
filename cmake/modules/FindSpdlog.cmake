@@ -107,6 +107,8 @@ if(SPDLOG_FOUND)
                                  INTERFACE_INCLUDE_DIRECTORIES "${SPDLOG_INCLUDE_DIR}"
                                  INTERFACE_COMPILE_DEFINITIONS "${SPDLOG_DEFINITIONS}")
   endif()
+
+  set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP spdlog)
 endif()
 
 mark_as_advanced(SPDLOG_INCLUDE_DIR SPDLOG_LIBRARY)

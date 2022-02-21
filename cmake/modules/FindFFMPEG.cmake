@@ -312,4 +312,6 @@ fi")
   set_target_properties(ffmpeg PROPERTIES FOLDER "External Projects")
 endif()
 
+set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP ffmpeg)
+
 mark_as_advanced(FFMPEG_INCLUDE_DIRS FFMPEG_LIBRARIES FFMPEG_LDFLAGS FFMPEG_DEFINITIONS FFMPEG_FOUND)
