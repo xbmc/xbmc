@@ -94,7 +94,7 @@ public:
     return true;
   }
 
-  std::shared_ptr<CThumbLoader> getThumbLoader(CGUIStaticItemPtr &item)
+  std::shared_ptr<CThumbLoader> getThumbLoader(const CGUIStaticItemPtr& item)
   {
     if (item->IsVideo())
     {

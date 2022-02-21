@@ -83,6 +83,6 @@ private:
   bool ParseLangIdx(SState& state, std::string& line);
   bool ParseDelay(SState& state, std::string& line);
   bool ParseId(SState& state, std::string& line);
-  bool ParseExtra(SState& state, std::string& line);
+  bool ParseExtra(SState& state, const std::string& line);
   bool ParseTimestamp(SState& state, std::string& line);
 };

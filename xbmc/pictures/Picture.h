@@ -64,11 +64,17 @@ private:
                          CPictureScalingAlgorithm::Algorithm scalingAlgorithm = CPictureScalingAlgorithm::NoAlgorithm);
   static bool OrientateImage(uint32_t *&pixels, unsigned int &width, unsigned int &height, int orientation);
 
-  static bool FlipHorizontal(uint32_t *&pixels, unsigned int &width, unsigned int &height);
-  static bool FlipVertical(uint32_t *&pixels, unsigned int &width, unsigned int &height);
+  static bool FlipHorizontal(uint32_t*& pixels,
+                             const unsigned int& width,
+                             const unsigned int& height);
+  static bool FlipVertical(uint32_t*& pixels,
+                           const unsigned int& width,
+                           const unsigned int& height);
   static bool Rotate90CCW(uint32_t *&pixels, unsigned int &width, unsigned int &height);
   static bool Rotate270CCW(uint32_t *&pixels, unsigned int &width, unsigned int &height);
-  static bool Rotate180CCW(uint32_t *&pixels, unsigned int &width, unsigned int &height);
+  static bool Rotate180CCW(uint32_t*& pixels,
+                           const unsigned int& width,
+                           const unsigned int& height);
   static bool Transpose(uint32_t *&pixels, unsigned int &width, unsigned int &height);
   static bool TransposeOffAxis(uint32_t *&pixels, unsigned int &width, unsigned int &height);
 };

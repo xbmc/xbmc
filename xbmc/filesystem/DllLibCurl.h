@@ -75,7 +75,10 @@ public:
                     CURL_HANDLE** easy_handle,
                     CURLM** multi_handle);
   void easy_release(CURL_HANDLE** easy_handle, CURLM** multi_handle);
-  void easy_duplicate(CURL_HANDLE* easy, CURLM* multi, CURL_HANDLE** easy_out, CURLM** multi_out);
+  void easy_duplicate(CURL_HANDLE* easy,
+                      const CURLM* multi,
+                      CURL_HANDLE** easy_out,
+                      CURLM** multi_out);
   CURL_HANDLE* easy_duphandle(CURL_HANDLE* easy_handle) override;
   void CheckIdle();
 
