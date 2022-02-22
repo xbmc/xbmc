@@ -68,6 +68,8 @@ if(FLATBUFFERS_FOUND)
                                FOLDER "External Projects"
                                INTERFACE_INCLUDE_DIRECTORIES ${FLATBUFFERS_INCLUDE_DIR})
   endif()
+
+  set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP flatbuffers)
 endif()
 
 mark_as_advanced(FLATBUFFERS_FLATC_EXECUTABLE FLATBUFFERS_INCLUDE_DIR)
