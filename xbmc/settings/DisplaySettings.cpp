@@ -702,9 +702,6 @@ void CDisplaySettings::SettingOptionsModesFiller(const std::shared_ptr<const CSe
                                                  std::string& current,
                                                  void* data)
 {
-  RESOLUTION res = CDisplaySettings::GetInstance().GetDisplayResolution();
-  RESOLUTION_INFO info = CDisplaySettings::GetInstance().GetResolutionInfo(res);
-
   for (auto index = (unsigned int)RES_CUSTOM; index < CDisplaySettings::GetInstance().ResolutionInfoSize(); ++index)
   {
     const auto mode = CDisplaySettings::GetInstance().GetResolutionInfo(index);

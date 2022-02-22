@@ -357,7 +357,7 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
     m_vecPlayerConfigs.emplace_back(std::move(retroPlayer));
   }
 
-  if (!pConfig || StringUtils::CompareNoCase(pConfig->Value(), "playercorefactory") != 0)
+  if (StringUtils::CompareNoCase(pConfig->Value(), "playercorefactory") != 0)
   {
     CLog::Log(LOGERROR, "Error loading configuration, no <playercorefactory> node");
     return false;

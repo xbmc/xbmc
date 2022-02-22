@@ -207,27 +207,27 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const std::string &method, ITransportL
         if ((additionalInfo) &&
             videodatabase.Open())
         {
-          if (additionalInfo)
+          switch (fileItem->GetVideoContentType())
           {
-            switch (fileItem->GetVideoContentType())
-            {
-              case VIDEODB_CONTENT_MOVIES:
-                videodatabase.GetMovieInfo("", *(fileItem->GetVideoInfoTag()), fileItem->GetVideoInfoTag()->m_iDbId);
-                break;
+            case VIDEODB_CONTENT_MOVIES:
+              videodatabase.GetMovieInfo("", *(fileItem->GetVideoInfoTag()),
+                                         fileItem->GetVideoInfoTag()->m_iDbId);
+              break;
 
-              case VIDEODB_CONTENT_MUSICVIDEOS:
-                videodatabase.GetMusicVideoInfo("", *(fileItem->GetVideoInfoTag()), fileItem->GetVideoInfoTag()->m_iDbId);
-                break;
+            case VIDEODB_CONTENT_MUSICVIDEOS:
+              videodatabase.GetMusicVideoInfo("", *(fileItem->GetVideoInfoTag()),
+                                              fileItem->GetVideoInfoTag()->m_iDbId);
+              break;
 
-              case VIDEODB_CONTENT_EPISODES:
-                videodatabase.GetEpisodeInfo("", *(fileItem->GetVideoInfoTag()), fileItem->GetVideoInfoTag()->m_iDbId);
-                break;
+            case VIDEODB_CONTENT_EPISODES:
+              videodatabase.GetEpisodeInfo("", *(fileItem->GetVideoInfoTag()),
+                                           fileItem->GetVideoInfoTag()->m_iDbId);
+              break;
 
-              case VIDEODB_CONTENT_TVSHOWS:
-              case VIDEODB_CONTENT_MOVIE_SETS:
-              default:
-                break;
-            }
+            case VIDEODB_CONTENT_TVSHOWS:
+            case VIDEODB_CONTENT_MOVIE_SETS:
+            default:
+              break;
           }
 
           videodatabase.Close();
@@ -546,7 +546,6 @@ void GetNewValueForViewModeParameter(const CVariant &parameter, float stepSize, 
   }
   else if (parameter.isString())
   {
-    std::string parameterStr = parameter.asString();
     if (parameter == "decrease")
     {
       stepSize *= -1;

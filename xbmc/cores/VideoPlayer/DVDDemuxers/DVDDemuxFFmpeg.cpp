@@ -1169,7 +1169,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
     return nullptr;
 
   // check streams, can we make this a bit more simple?
-  if (pPacket && pPacket->iStreamId >= 0)
+  if (pPacket->iStreamId >= 0)
   {
     CDemuxStream* stream = GetStream(pPacket->iStreamId);
     if (!stream ||

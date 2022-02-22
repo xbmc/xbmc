@@ -333,7 +333,8 @@ bool CDVDInputStreamBluray::Open()
   else
   {
     m_navmode = true;
-    if (m_navmode && !disc_info->first_play_supported) {
+    if (!disc_info->first_play_supported)
+    {
       CLog::Log(LOGERROR, "CDVDInputStreamBluray::Open - Can't play disc in HDMV navigation mode - First Play title not supported");
       m_navmode = false;
     }

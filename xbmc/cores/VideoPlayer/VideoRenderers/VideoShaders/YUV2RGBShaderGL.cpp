@@ -77,8 +77,6 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, EShaderFormat format, bo
     m_defines += "#define XBMC_YUY2\n";
   else if (m_format == SHADER_UYVY)
     m_defines += "#define XBMC_UYVY\n";
-  else if (m_format == SHADER_YV12)
-    m_defines += "#define XBMC_YV12\n";
   else
     CLog::Log(LOGERROR, "GL: BaseYUV2RGBGLSLShader - unsupported format {}", m_format);
 
@@ -188,12 +186,12 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
       glUniform3f(m_hCoefsDst, coefs[0], coefs[1], coefs[2]);
       glUniform1f(m_hToneP1, param);
     }
-    else if (m_toneMapping && m_toneMappingMethod == VS_TONEMAPMETHOD_ACES)
+    else if (m_toneMappingMethod == VS_TONEMAPMETHOD_ACES)
     {
       glUniform1f(m_hLuminance, GetLuminanceValue());
       glUniform1f(m_hToneP1, m_toneMappingParam);
     }
-    else if (m_toneMapping && m_toneMappingMethod == VS_TONEMAPMETHOD_HABLE)
+    else if (m_toneMappingMethod == VS_TONEMAPMETHOD_HABLE)
     {
       float lumin = GetLuminanceValue();
       float param = (10000.0f / lumin) * (2.0f / m_toneMappingParam);

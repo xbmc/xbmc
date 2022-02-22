@@ -163,11 +163,6 @@ MHD_RESULT CWebServer::AnswerToConnection(void* cls,
   }
 
   CWebServer* webServer = reinterpret_cast<CWebServer*>(cls);
-  if (webServer == nullptr)
-  {
-    GetLogger()->error("invalid request received");
-    return MHD_NO;
-  }
 
   ConnectionHandler* connectionHandler = reinterpret_cast<ConnectionHandler*>(*con_cls);
   HTTPMethod methodType = GetHTTPMethod(method);

@@ -252,11 +252,7 @@ double CAudioSinkAE::GetCacheTime()
   if (!m_pAudioStream)
     return 0.0;
 
-  double delay = 0.0;
-  if(m_pAudioStream)
-    delay = m_pAudioStream->GetCacheTime();
-
-  return delay;
+  return m_pAudioStream->GetCacheTime();
 }
 
 double CAudioSinkAE::GetCacheTotal()
