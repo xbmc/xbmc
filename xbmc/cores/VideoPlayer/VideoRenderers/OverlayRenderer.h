@@ -121,8 +121,12 @@ namespace OVERLAY {
     void SetVideoRect(CRect &source, CRect &dest, CRect &view);
     void SetStereoMode(const std::string &stereomode);
 
-  protected:
+    /*! \brief Get the subtitle vertical margin
+     *  \return The margin in pixel
+     */
+    static int GetSubtitleVerticalMargin();
 
+  protected:
     struct SElement
     {
       SElement()

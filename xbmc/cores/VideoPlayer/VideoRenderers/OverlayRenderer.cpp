@@ -343,11 +343,7 @@ void CRenderer::CreateSubtitlesStyle()
   else
     m_overlayStyle->assOverrideStyles = KODI::SUBTITLES::OverrideStyles::DISABLED;
 
-  int overrideMerginVertical =
-      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoSubtitleVerticalMargin;
-  if (overrideMerginVertical >= 0 && overrideMerginVertical < m_rv.Height())
-    m_overlayStyle->marginVertical = overrideMerginVertical;
-
+  m_overlayStyle->marginVertical = GetSubtitleVerticalMargin();
   m_overlayStyle->blur = settings->GetInt(CSettings::SETTING_SUBTITLES_BLUR);
 }
 
@@ -532,4 +528,21 @@ void CRenderer::Notify(const Observable& obs, const ObservableMessage msg)
     default:
       break;
   }
+}
+
+int CRenderer::GetSubtitleVerticalMargin()
+{
+  int subAlign = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+      CSettings::SETTING_SUBTITLES_ALIGN);
+  // If the user has set the alignment type to keep the subtitle text
+  // inside the black bars, we exclude custom vertical margin
+  // and we force our fixed margin to try avoid go off the black bars
+  if (subAlign == SUBTITLE_ALIGN_BOTTOM_OUTSIDE || subAlign == SUBTITLE_ALIGN_TOP_OUTSIDE)
+    return KODI::SUBTITLES::MARGIN_VERTICAL_BLACKBARS;
+  // Try get the vertical margin customized by user
+  int overrideMerginVertical =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoSubtitleVerticalMargin;
+  if (overrideMerginVertical >= 0)
+    return overrideMerginVertical;
+  return KODI::SUBTITLES::MARGIN_VERTICAL;
 }
