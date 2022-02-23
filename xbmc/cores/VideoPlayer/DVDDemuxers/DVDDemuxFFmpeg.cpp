@@ -1674,7 +1674,8 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         uint8_t* hdr10plus_side_data = nullptr;
 
         dv_side_data = av_stream_get_side_data(pStream, AV_PKT_DATA_DOVI_CONF, &size);
-        hdr10plus_side_data = av_stream_get_side_data(pStream, AV_PKT_DATA_DYNAMIC_HDR10_PLUS, &size);
+        hdr10plus_side_data =
+            av_stream_get_side_data(pStream, AV_PKT_DATA_DYNAMIC_HDR10_PLUS, &size);
         if (dv_side_data && size)
           st->hdr_type = StreamHdrType::HDR_TYPE_DOLBYVISION;
         else if (hdr10plus_side_data && size)
