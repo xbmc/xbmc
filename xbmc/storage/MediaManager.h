@@ -11,6 +11,7 @@
 #include "IStorageProvider.h"
 #include "MediaSource.h" // for VECSOURCES
 #include "threads/CriticalSection.h"
+#include "utils/DiscsUtils.h"
 #include "utils/Job.h"
 
 #include <map>
@@ -119,19 +120,7 @@ protected:
 private:
   IStorageProvider *m_platformStorage;
 
-  struct DiscInfo
-  {
-    std::string name;
-    std::string serial;
-    std::string type;
-
-    bool empty()
-    {
-      return (name.empty() && serial.empty());
-    }
-  };
-
-  DiscInfo GetDiscInfo(const std::string& mediaPath);
+  UTILS::DISCS::DiscInfo GetDiscInfo(const std::string& mediaPath);
   void RemoveDiscInfo(const std::string& devicePath);
-  std::map<std::string, DiscInfo> m_mapDiscInfo;
+  std::map<std::string, UTILS::DISCS::DiscInfo> m_mapDiscInfo;
 };
