@@ -1665,7 +1665,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         if (dv_side_data && size)
           st->hdr_type = StreamHdrType::HDR_TYPE_DOLBYVISION;
         else if (hdr10plus_side_data && size)
-          st->hdr_type = StreamHdrType::HDR_TYPE_DOLBYVISION;
+          st->hdr_type = StreamHdrType::HDR_TYPE_HDR10PLUS;
         else if (st->colorPrimaries == AVCOL_PRI_BT2020)
         {
           if (st->colorTransferCharacteristic == AVCOL_TRC_SMPTE2084) // hdr10

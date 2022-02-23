@@ -663,6 +663,8 @@ std::string CStreamDetails::HdrTypeToString(StreamHdrType hdrType)
   {
     case StreamHdrType::HDR_TYPE_DOLBYVISION:
       return "dolbyvision";
+    case StreamHdrType::HDR_TYPE_HDR10PLUS:
+      return "hdr10plus";
     case StreamHdrType::HDR_TYPE_HDR10:
       return "hdr10";
     case StreamHdrType::HDR_TYPE_HLG:
