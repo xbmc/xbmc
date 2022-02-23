@@ -115,9 +115,24 @@ CRepository::CRepository(const AddonInfoPtr& addonInfo)
         (dir.maxversion.empty() || version <= dir.maxversion))
       m_dirs.push_back(std::move(dir));
   }
+
+  // old (dharma compatible) way of defining the addon repository structure, is no longer supported
+  // we error out so the user knows how to migrate. The <dir> way is supported since gotham.
+  //! @todo remove if block completely in v21
   if (!Type(ADDON_REPOSITORY)->GetValue("info").empty())
   {
-    m_dirs.push_back(ParseDirConfiguration(*Type(ADDON_REPOSITORY)));
+    CLog::Log(LOGERROR,
+              "Repository add-on {} uses old schema definition for the repository extension point! "
+              "This is no longer supported, please update your addon to use <dir> definitions.",
+              ID());
+  }
+
+  if (m_dirs.empty())
+  {
+    CLog::Log(LOGERROR,
+              "Repository add-on {} does not have any directory and won't be able to update/serve "
+              "addons! Please fix the addon.xml definition",
+              ID());
   }
 
   for (auto const& dir : m_dirs)
