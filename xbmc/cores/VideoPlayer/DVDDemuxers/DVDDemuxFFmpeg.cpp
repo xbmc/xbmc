@@ -1657,10 +1657,14 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         st->colorRange = pStream->codecpar->color_range;
 
         int size = 0;
-        uint8_t* side_data = nullptr;
+        uint8_t* dv_side_data = nullptr;
+        uint8_t* hdr10plus_side_data = nullptr;
 
-        side_data = av_stream_get_side_data(pStream, AV_PKT_DATA_DOVI_CONF, &size);
-        if (side_data && size)
+        dv_side_data = av_stream_get_side_data(pStream, AV_PKT_DATA_DOVI_CONF, &size);
+        hdr10plus_side_data = av_stream_get_side_data(pStream, AV_PKT_DATA_DYNAMIC_HDR10_PLUS, &size);
+        if (dv_side_data && size)
+          st->hdr_type = StreamHdrType::HDR_TYPE_DOLBYVISION;
+        else if (hdr10plus_side_data && size)
           st->hdr_type = StreamHdrType::HDR_TYPE_DOLBYVISION;
         else if (st->colorPrimaries == AVCOL_PRI_BT2020)
         {
