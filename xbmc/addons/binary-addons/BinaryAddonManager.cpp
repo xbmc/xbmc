@@ -9,8 +9,9 @@
 #include "BinaryAddonManager.h"
 
 #include "BinaryAddonBase.h"
-#include "threads/SingleLock.h"
 #include "utils/log.h"
+
+#include <mutex>
 
 using namespace ADDON;
 
@@ -18,7 +19,7 @@ BinaryAddonBasePtr CBinaryAddonManager::GetAddonBase(const AddonInfoPtr& addonIn
                                                      IAddonInstanceHandler* handler,
                                                      AddonDllPtr& addon)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   BinaryAddonBasePtr addonBase;
 
@@ -64,7 +65,7 @@ void CBinaryAddonManager::ReleaseAddonBase(const BinaryAddonBasePtr& addonBase,
 
 BinaryAddonBasePtr CBinaryAddonManager::GetRunningAddonBase(const std::string& addonId) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   const auto& addonInstances = m_runningAddons.find(addonId);
   if (addonInstances != m_runningAddons.end())
@@ -75,7 +76,7 @@ BinaryAddonBasePtr CBinaryAddonManager::GetRunningAddonBase(const std::string& a
 
 AddonPtr CBinaryAddonManager::GetRunningAddon(const std::string& addonId) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   const BinaryAddonBasePtr base = GetRunningAddonBase(addonId);
   if (base)

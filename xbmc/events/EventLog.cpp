@@ -19,8 +19,8 @@
 #include "profiles/ProfileManager.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "threads/SingleLock.h"
 
+#include <mutex>
 #include <utility>
 
 std::string CEventLog::EventLevelToString(EventLevel level)
@@ -65,7 +65,7 @@ Events CEventLog::Get(EventLevel level, bool includeHigherLevels /* = false */) 
 {
   Events events;
 
-  CSingleLock lock(m_critical);
+  std::unique_lock<CCriticalSection> lock(m_critical);
   for (const auto& eventPtr : m_events)
   {
     if (eventPtr->GetLevel() == level ||
@@ -81,7 +81,7 @@ EventPtr CEventLog::Get(const std::string& eventPtrIdentifier) const
   if (eventPtrIdentifier.empty())
     return EventPtr();
 
-  CSingleLock lock(m_critical);
+  std::unique_lock<CCriticalSection> lock(m_critical);
   const auto& eventPtr = m_eventsMap.find(eventPtrIdentifier);
   if (eventPtr == m_eventsMap.end())
     return EventPtr();
@@ -96,7 +96,7 @@ void CEventLog::Add(const EventPtr& eventPtr)
      (eventPtr->GetLevel() == EventLevel::Information && !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_EVENTLOG_ENABLED_NOTIFICATIONS)))
     return;
 
-  CSingleLock lock(m_critical);
+  std::unique_lock<CCriticalSection> lock(m_critical);
   if (m_eventsMap.find(eventPtr->GetIdentifier()) != m_eventsMap.end())
     return;
 
@@ -158,7 +158,7 @@ void CEventLog::Remove(const std::string& eventPtrIdentifier)
   if (eventPtrIdentifier.empty())
     return;
 
-  CSingleLock lock(m_critical);
+  std::unique_lock<CCriticalSection> lock(m_critical);
   const auto& itEvent = m_eventsMap.find(eventPtrIdentifier);
   if (itEvent == m_eventsMap.end())
     return;
@@ -172,7 +172,7 @@ void CEventLog::Remove(const std::string& eventPtrIdentifier)
 
 void CEventLog::Clear()
 {
-  CSingleLock lock(m_critical);
+  std::unique_lock<CCriticalSection> lock(m_critical);
   m_events.clear();
   m_eventsMap.clear();
 }
@@ -194,7 +194,7 @@ bool CEventLog::Execute(const std::string& eventPtrIdentifier)
   if (eventPtrIdentifier.empty())
     return false;
 
-  CSingleLock lock(m_critical);
+  std::unique_lock<CCriticalSection> lock(m_critical);
   const auto& itEvent = m_eventsMap.find(eventPtrIdentifier);
   if (itEvent == m_eventsMap.end())
     return false;

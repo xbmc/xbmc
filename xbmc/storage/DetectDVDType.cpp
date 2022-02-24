@@ -7,12 +7,14 @@
  */
 
 #include "DetectDVDType.h"
+
+#include "cdioSupport.h"
+#include "filesystem/File.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
-#include "cdioSupport.h"
-#include "filesystem/File.h"
-#include "threads/SingleLock.h"
+
+#include <mutex>
 #ifdef TARGET_POSIX
 #include <sys/types.h>
 #include <sys/ioctl.h>
@@ -104,7 +106,7 @@ void CDetectDVDMedia::UpdateDvdrom()
   // that we are busy detecting the
   // newly inserted media.
   {
-    CSingleLock waitLock(m_muReadingMedia);
+    std::unique_lock<CCriticalSection> waitLock(m_muReadingMedia);
     switch (GetTrayState())
     {
       case DRIVE_NONE:
@@ -117,7 +119,7 @@ void CDetectDVDMedia::UpdateDvdrom()
           SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(502));
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REMOVED_MEDIA);
           CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage( msg );
-          waitLock.Leave();
+          waitLock.unlock();
           m_DriveState = DRIVE_OPEN;
           return;
         }
@@ -135,7 +137,7 @@ void CDetectDVDMedia::UpdateDvdrom()
             delete m_pCdInfo;
             m_pCdInfo = NULL;
           }
-          waitLock.Leave();
+          waitLock.unlock();
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
           CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage( msg );
           // Do we really need sleep here? This will fix: [ 1530771 ] "Open tray" problem
@@ -151,7 +153,7 @@ void CDetectDVDMedia::UpdateDvdrom()
           m_DriveState = DRIVE_CLOSED_NO_MEDIA;
           // Send Message to GUI that disc has changed
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
-          waitLock.Leave();
+          waitLock.unlock();
           CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage( msg );
           return ;
         }
@@ -168,7 +170,7 @@ void CDetectDVDMedia::UpdateDvdrom()
             // Detect ISO9660(mode1/mode2) or CDDA filesystem
             DetectMediaType();
             CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
-            waitLock.Leave();
+            waitLock.unlock();
             CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage( msg );
             // Tell the application object that a new Cd is inserted
             // So autorun can be started.
@@ -379,7 +381,7 @@ DWORD CDetectDVDMedia::GetTrayState()
 
 void CDetectDVDMedia::UpdateState()
 {
-  CSingleLock waitLock(m_muReadingMedia);
+  std::unique_lock<CCriticalSection> waitLock(m_muReadingMedia);
   m_pInstance->DetectMediaType();
 }
 
@@ -387,7 +389,7 @@ void CDetectDVDMedia::UpdateState()
 // Wait for drive, to finish media detection.
 void CDetectDVDMedia::WaitMediaReady()
 {
-  CSingleLock waitLock(m_muReadingMedia);
+  std::unique_lock<CCriticalSection> waitLock(m_muReadingMedia);
 }
 
 // Static function
@@ -410,7 +412,7 @@ bool CDetectDVDMedia::IsDiscInDrive()
 // Can be NULL
 CCdInfo* CDetectDVDMedia::GetCdInfo()
 {
-  CSingleLock waitLock(m_muReadingMedia);
+  std::unique_lock<CCriticalSection> waitLock(m_muReadingMedia);
   CCdInfo* pCdInfo = m_pCdInfo;
   return pCdInfo;
 }

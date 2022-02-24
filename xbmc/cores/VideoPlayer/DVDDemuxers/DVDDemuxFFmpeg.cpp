@@ -23,7 +23,6 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "threads/SingleLock.h"
 #include "threads/SystemClock.h"
 #include "utils/FontUtils.h"
 #include "utils/StringUtils.h"
@@ -31,6 +30,7 @@
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
+#include <mutex>
 #include <sstream>
 #include <utility>
 
@@ -1014,153 +1014,160 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
   // on some cases where the received packet is invalid we will need to return an empty packet (0 length) otherwise the main loop (in CVideoPlayer)
   // would consider this the end of stream and stop.
   bool bReturnEmpty = false;
-  { CSingleLock lock(m_critSection); // open lock scope
-  if (m_pFormatContext)
   {
-    // assume we are not eof
-    if (m_pFormatContext->pb)
-      m_pFormatContext->pb->eof_reached = 0;
+    std::unique_lock<CCriticalSection> lock(m_critSection); // open lock scope
+    if (m_pFormatContext)
+    {
+      // assume we are not eof
+      if (m_pFormatContext->pb)
+        m_pFormatContext->pb->eof_reached = 0;
 
-    // check for saved packet after a program change
-    if (m_pkt.result < 0)
-    {
-      // keep track if ffmpeg doesn't always set these
-      m_pkt.pkt.size = 0;
-      m_pkt.pkt.data = NULL;
-
-      // timeout reads after 100ms
-      m_timeout.Set(20s);
-      m_pkt.result = av_read_frame(m_pFormatContext, &m_pkt.pkt);
-      m_timeout.SetInfinite();
-    }
-
-    if (m_pkt.result == AVERROR(EINTR) || m_pkt.result == AVERROR(EAGAIN))
-    {
-      // timeout, probably no real error, return empty packet
-      bReturnEmpty = true;
-    }
-    else if (m_pkt.result == AVERROR_EOF)
-    {
-    }
-    else if (m_pkt.result < 0)
-    {
-      Flush();
-    }
-    // check size and stream index for being in a valid range
-    else if (m_pkt.pkt.size < 0 ||
-             m_pkt.pkt.stream_index < 0 ||
-             m_pkt.pkt.stream_index >= (int)m_pFormatContext->nb_streams)
-    {
-      // XXX, in some cases ffmpeg returns a negative packet size
-      if (m_pFormatContext->pb && !m_pFormatContext->pb->eof_reached)
+      // check for saved packet after a program change
+      if (m_pkt.result < 0)
       {
-        CLog::Log(LOGERROR, "CDVDDemuxFFmpeg::Read() no valid packet");
+        // keep track if ffmpeg doesn't always set these
+        m_pkt.pkt.size = 0;
+        m_pkt.pkt.data = NULL;
+
+        // timeout reads after 100ms
+        m_timeout.Set(20s);
+        m_pkt.result = av_read_frame(m_pFormatContext, &m_pkt.pkt);
+        m_timeout.SetInfinite();
+      }
+
+      if (m_pkt.result == AVERROR(EINTR) || m_pkt.result == AVERROR(EAGAIN))
+      {
+        // timeout, probably no real error, return empty packet
         bReturnEmpty = true;
+      }
+      else if (m_pkt.result == AVERROR_EOF)
+      {
+      }
+      else if (m_pkt.result < 0)
+      {
         Flush();
       }
-      else
-        CLog::Log(LOGERROR, "CDVDDemuxFFmpeg::Read() returned invalid packet and eof reached");
-
-      m_pkt.result = -1;
-      av_packet_unref(&m_pkt.pkt);
-    }
-    else
-    {
-      ParsePacket(&m_pkt.pkt);
-
-      if (IsProgramChange())
+      // check size and stream index for being in a valid range
+      else if (m_pkt.pkt.size < 0 || m_pkt.pkt.stream_index < 0 ||
+               m_pkt.pkt.stream_index >= (int)m_pFormatContext->nb_streams)
       {
-        CLog::Log(LOGINFO, "CDVDDemuxFFmpeg::Read() stream change");
-        av_dump_format(m_pFormatContext, 0, CURL::GetRedacted(m_pInput->GetFileName()).c_str(), 0);
-
-        // update streams
-        CreateStreams(m_program);
-
-        pPacket = CDVDDemuxUtils::AllocateDemuxPacket(0);
-        pPacket->iStreamId = DMX_SPECIALID_STREAMCHANGE;
-        pPacket->demuxerId = m_demuxerId;
-
-        return pPacket;
-      }
-
-      AVStream* stream = m_pFormatContext->streams[m_pkt.pkt.stream_index];
-
-      if (IsTransportStreamReady())
-      {
-        if (m_program != UINT_MAX)
+        // XXX, in some cases ffmpeg returns a negative packet size
+        if (m_pFormatContext->pb && !m_pFormatContext->pb->eof_reached)
         {
-          /* check so packet belongs to selected program */
-          for (unsigned int i = 0; i < m_pFormatContext->programs[m_program]->nb_stream_indexes; i++)
-          {
-            if (m_pkt.pkt.stream_index == (int)m_pFormatContext->programs[m_program]->stream_index[i])
-            {
-              pPacket = CDVDDemuxUtils::AllocateDemuxPacket(m_pkt.pkt.size);
-              break;
-            }
-          }
-
-          if (!pPacket)
-            bReturnEmpty = true;
+          CLog::Log(LOGERROR, "CDVDDemuxFFmpeg::Read() no valid packet");
+          bReturnEmpty = true;
+          Flush();
         }
         else
-          pPacket = CDVDDemuxUtils::AllocateDemuxPacket(m_pkt.pkt.size);
+          CLog::Log(LOGERROR, "CDVDDemuxFFmpeg::Read() returned invalid packet and eof reached");
+
+        m_pkt.result = -1;
+        av_packet_unref(&m_pkt.pkt);
       }
       else
-        bReturnEmpty = true;
-
-      if (pPacket)
       {
-        if (m_bAVI && stream->codecpar && stream->codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
+        ParsePacket(&m_pkt.pkt);
+
+        if (IsProgramChange())
         {
-          // AVI's always have borked pts, specially if m_pFormatContext->flags includes
-          // AVFMT_FLAG_GENPTS so always use dts
-          m_pkt.pkt.pts = AV_NOPTS_VALUE;
+          CLog::Log(LOGINFO, "CDVDDemuxFFmpeg::Read() stream change");
+          av_dump_format(m_pFormatContext, 0, CURL::GetRedacted(m_pInput->GetFileName()).c_str(),
+                         0);
+
+          // update streams
+          CreateStreams(m_program);
+
+          pPacket = CDVDDemuxUtils::AllocateDemuxPacket(0);
+          pPacket->iStreamId = DMX_SPECIALID_STREAMCHANGE;
+          pPacket->demuxerId = m_demuxerId;
+
+          return pPacket;
         }
 
-        // copy contents into our own packet
-        pPacket->iSize = m_pkt.pkt.size;
+        AVStream* stream = m_pFormatContext->streams[m_pkt.pkt.stream_index];
 
-        // maybe we can avoid a memcpy here by detecting where pkt.destruct is pointing too?
-        if (m_pkt.pkt.data)
-          memcpy(pPacket->pData, m_pkt.pkt.data, pPacket->iSize);
-
-        pPacket->pts = ConvertTimestamp(m_pkt.pkt.pts, stream->time_base.den, stream->time_base.num);
-        pPacket->dts = ConvertTimestamp(m_pkt.pkt.dts, stream->time_base.den, stream->time_base.num);
-        pPacket->duration =  DVD_SEC_TO_TIME((double)m_pkt.pkt.duration * stream->time_base.num / stream->time_base.den);
-
-        CDVDDemuxUtils::StoreSideData(pPacket, &m_pkt.pkt);
-
-        CDVDInputStream::IDisplayTime* inputStream = m_pInput->GetIDisplayTime();
-        if (inputStream)
+        if (IsTransportStreamReady())
         {
-          int dispTime = inputStream->GetTime();
-          if (m_displayTime != dispTime)
+          if (m_program != UINT_MAX)
           {
-            m_displayTime = dispTime;
-            if (pPacket->dts != DVD_NOPTS_VALUE)
+            /* check so packet belongs to selected program */
+            for (unsigned int i = 0; i < m_pFormatContext->programs[m_program]->nb_stream_indexes;
+                 i++)
             {
-              m_dtsAtDisplayTime = pPacket->dts;
+              if (m_pkt.pkt.stream_index ==
+                  (int)m_pFormatContext->programs[m_program]->stream_index[i])
+              {
+                pPacket = CDVDDemuxUtils::AllocateDemuxPacket(m_pkt.pkt.size);
+                break;
+              }
+            }
+
+            if (!pPacket)
+              bReturnEmpty = true;
+          }
+          else
+            pPacket = CDVDDemuxUtils::AllocateDemuxPacket(m_pkt.pkt.size);
+        }
+        else
+          bReturnEmpty = true;
+
+        if (pPacket)
+        {
+          if (m_bAVI && stream->codecpar && stream->codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
+          {
+            // AVI's always have borked pts, specially if m_pFormatContext->flags includes
+            // AVFMT_FLAG_GENPTS so always use dts
+            m_pkt.pkt.pts = AV_NOPTS_VALUE;
+          }
+
+          // copy contents into our own packet
+          pPacket->iSize = m_pkt.pkt.size;
+
+          // maybe we can avoid a memcpy here by detecting where pkt.destruct is pointing too?
+          if (m_pkt.pkt.data)
+            memcpy(pPacket->pData, m_pkt.pkt.data, pPacket->iSize);
+
+          pPacket->pts =
+              ConvertTimestamp(m_pkt.pkt.pts, stream->time_base.den, stream->time_base.num);
+          pPacket->dts =
+              ConvertTimestamp(m_pkt.pkt.dts, stream->time_base.den, stream->time_base.num);
+          pPacket->duration = DVD_SEC_TO_TIME((double)m_pkt.pkt.duration * stream->time_base.num /
+                                              stream->time_base.den);
+
+          CDVDDemuxUtils::StoreSideData(pPacket, &m_pkt.pkt);
+
+          CDVDInputStream::IDisplayTime* inputStream = m_pInput->GetIDisplayTime();
+          if (inputStream)
+          {
+            int dispTime = inputStream->GetTime();
+            if (m_displayTime != dispTime)
+            {
+              m_displayTime = dispTime;
+              if (pPacket->dts != DVD_NOPTS_VALUE)
+              {
+                m_dtsAtDisplayTime = pPacket->dts;
+              }
+            }
+            if (m_dtsAtDisplayTime != DVD_NOPTS_VALUE && pPacket->dts != DVD_NOPTS_VALUE)
+            {
+              pPacket->dispTime = m_displayTime;
+              pPacket->dispTime += DVD_TIME_TO_MSEC(pPacket->dts - m_dtsAtDisplayTime);
             }
           }
-          if (m_dtsAtDisplayTime != DVD_NOPTS_VALUE && pPacket->dts != DVD_NOPTS_VALUE)
-          {
-            pPacket->dispTime = m_displayTime;
-            pPacket->dispTime += DVD_TIME_TO_MSEC(pPacket->dts - m_dtsAtDisplayTime);
-          }
+
+          // used to guess streamlength
+          if (pPacket->dts != DVD_NOPTS_VALUE &&
+              (pPacket->dts > m_currentPts || m_currentPts == DVD_NOPTS_VALUE))
+            m_currentPts = pPacket->dts;
+
+          // store internal id until we know the continuous id presented to player
+          // the stream might not have been created yet
+          pPacket->iStreamId = m_pkt.pkt.stream_index;
         }
-
-        // used to guess streamlength
-        if (pPacket->dts != DVD_NOPTS_VALUE && (pPacket->dts > m_currentPts || m_currentPts == DVD_NOPTS_VALUE))
-          m_currentPts = pPacket->dts;
-
-        // store internal id until we know the continuous id presented to player
-        // the stream might not have been created yet
-        pPacket->iStreamId = m_pkt.pkt.stream_index;
+        m_pkt.result = -1;
+        av_packet_unref(&m_pkt.pkt);
       }
-      m_pkt.result = -1;
-      av_packet_unref(&m_pkt.pkt);
     }
-  }
   } // end of lock scope
   if (bReturnEmpty && !pPacket)
     pPacket = CDVDDemuxUtils::AllocateDemuxPacket(0);
@@ -1286,7 +1293,7 @@ bool CDVDDemuxFFmpeg::SeekTime(double time, bool backwards, double* startpts)
 
   int ret;
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     ret = av_seek_frame(m_pFormatContext, m_seekStream, seek_pts, backwards ? AVSEEK_FLAG_BACKWARD : 0);
 
     if (ret < 0)
@@ -1346,7 +1353,7 @@ bool CDVDDemuxFFmpeg::SeekTime(double time, bool backwards, double* startpts)
 
 bool CDVDDemuxFFmpeg::SeekByte(int64_t pos)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   int ret = av_seek_frame(m_pFormatContext, -1, pos, AVSEEK_FLAG_BYTE);
 
   if (ret >= 0)

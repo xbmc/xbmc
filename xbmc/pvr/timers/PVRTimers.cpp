@@ -21,12 +21,12 @@
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimerRuleMatcher.h"
 #include "settings/Settings.h"
-#include "threads/SingleLock.h"
 #include "utils/log.h"
 
 #include <algorithm>
 #include <map>
 #include <memory>
+#include <mutex>
 #include <string>
 #include <utility>
 #include <vector>
@@ -41,7 +41,7 @@ constexpr auto MAX_NOTIFICATION_DELAY = 10s;
 
 bool CPVRTimersContainer::UpdateFromClient(const std::shared_ptr<CPVRTimerInfoTag>& timer)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   std::shared_ptr<CPVRTimerInfoTag> tag = GetByClient(timer->m_iClientId, timer->m_iClientIndex);
   if (tag)
   {
@@ -58,7 +58,7 @@ bool CPVRTimersContainer::UpdateFromClient(const std::shared_ptr<CPVRTimerInfoTa
 
 std::shared_ptr<CPVRTimerInfoTag> CPVRTimersContainer::GetByClient(int iClientId, int iClientIndex) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   for (const auto& startDates : m_tags)
   {
     for (const auto& timer : startDates.second)
@@ -128,7 +128,7 @@ bool CPVRTimers::LoadFromDatabase(const std::vector<std::shared_ptr<CPVRClient>>
 void CPVRTimers::Unload()
 {
   // remove all tags
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   m_tags.clear();
 }
 
@@ -149,7 +149,7 @@ void CPVRTimers::Stop()
 bool CPVRTimers::UpdateFromClients(const std::vector<std::shared_ptr<CPVRClient>>& clients)
 {
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     if (m_bIsUpdating)
       return false;
     m_bIsUpdating = true;
@@ -175,7 +175,7 @@ void CPVRTimers::Process()
 
 bool CPVRTimers::IsRecording() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   for (MapTags::const_iterator it = m_tags.begin(); it != m_tags.end(); ++it)
     for (VecTimerInfoTag::const_iterator timerIt = it->second.begin(); timerIt != it->second.end(); ++timerIt)
@@ -187,7 +187,7 @@ bool CPVRTimers::IsRecording() const
 
 void CPVRTimers::RemoveEntry(const std::shared_ptr<CPVRTimerInfoTag>& tag)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   auto it = m_tags.find(tag->m_bStartAnyTime ? CDateTime() : tag->StartAsUTC());
   if (it != m_tags.end())
@@ -229,7 +229,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimersContainer& timers, const std::vec
   bool bAddedOrDeleted(false);
   std::vector< std::pair< int, std::string> > timerNotifications;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   /* go through the timer list and check for updated or new timers */
   for (MapTags::const_iterator it = timers.GetTags().begin(); it != timers.GetTags().end(); ++it)
@@ -371,7 +371,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimersContainer& timers, const std::vec
   if (bChanged)
   {
     UpdateChannels();
-    lock.Leave();
+    lock.unlock();
 
     NotifyTimersEvent(bAddedOrDeleted);
 
@@ -496,7 +496,7 @@ bool CPVRTimers::UpdateEntries(int iMaxNotificationDelay)
   bool bFetchedAllEpgs = false;
   std::map<std::shared_ptr<CPVREpg>, std::vector<std::shared_ptr<CPVRTimerRuleMatcher>>> epgMap;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   for (MapTags::iterator it = m_tags.begin(); it != m_tags.end();)
   {
@@ -678,7 +678,7 @@ bool CPVRTimers::UpdateEntries(int iMaxNotificationDelay)
 std::shared_ptr<CPVRTimerInfoTag> CPVRTimers::GetNextReminderToAnnnounce()
 {
   std::shared_ptr<CPVRTimerInfoTag> ret;
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   if (!m_remindersToAnnounce.empty())
   {
     ret = m_remindersToAnnounce.front();
@@ -696,7 +696,7 @@ bool CPVRTimers::KindMatchesTag(const TimerKind& eKind, const std::shared_ptr<CP
 
 std::shared_ptr<CPVRTimerInfoTag> CPVRTimers::GetNextActiveTimer(const TimerKind& eKind, bool bIgnoreReminders) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   for (const auto& tagsEntry : m_tags)
   {
@@ -735,7 +735,7 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimers::GetNextActiveRadioTimer() const
 std::vector<std::shared_ptr<CPVRTimerInfoTag>> CPVRTimers::GetActiveTimers() const
 {
   std::vector<std::shared_ptr<CPVRTimerInfoTag>> tags;
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   for (MapTags::const_iterator it = m_tags.begin(); it != m_tags.end(); ++it)
   {
@@ -758,7 +758,7 @@ std::vector<std::shared_ptr<CPVRTimerInfoTag>> CPVRTimers::GetActiveTimers() con
 int CPVRTimers::AmountActiveTimers(const TimerKind& eKind) const
 {
   int iReturn = 0;
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   for (const auto& tagsEntry : m_tags)
   {
@@ -794,7 +794,7 @@ int CPVRTimers::AmountActiveRadioTimers() const
 std::vector<std::shared_ptr<CPVRTimerInfoTag>> CPVRTimers::GetActiveRecordings(const TimerKind& eKind) const
 {
   std::vector<std::shared_ptr<CPVRTimerInfoTag>> tags;
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   for (const auto& tagsEntry : m_tags)
   {
@@ -832,7 +832,7 @@ std::vector<std::shared_ptr<CPVRTimerInfoTag>> CPVRTimers::GetActiveRadioRecordi
 int CPVRTimers::AmountActiveRecordings(const TimerKind& eKind) const
 {
   int iReturn = 0;
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   for (const auto& tagsEntry : m_tags)
   {
@@ -872,7 +872,7 @@ bool CPVRTimers::DeleteTimersOnChannel(const std::shared_ptr<CPVRChannel>& chann
   bool bReturn = false;
   bool bChanged = false;
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
 
     for (MapTags::reverse_iterator it = m_tags.rbegin(); it != m_tags.rend(); ++it)
     {
@@ -903,7 +903,7 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimers::UpdateEntry(const std::shared_ptr<
 {
   bool bChanged = false;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   std::shared_ptr<CPVRTimerInfoTag> tag = GetByClient(timer->m_iClientId, timer->m_iClientIndex);
   if (tag)
   {
@@ -998,7 +998,7 @@ bool CPVRTimers::UpdateTimer(const std::shared_ptr<CPVRTimerInfoTag>& tag)
 
 bool CPVRTimers::AddLocalTimer(const std::shared_ptr<CPVRTimerInfoTag>& tag, bool bNotify)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   const std::shared_ptr<CPVRTimerInfoTag> persistedTimer = PersistAndUpdateLocalTimer(tag, nullptr);
   bool bReturn = !!persistedTimer;
@@ -1038,7 +1038,7 @@ bool CPVRTimers::AddLocalTimer(const std::shared_ptr<CPVRTimerInfoTag>& tag, boo
 
   if (bNotify && bReturn)
   {
-    lock.Leave();
+    lock.unlock();
     NotifyTimersEvent();
   }
 
@@ -1047,7 +1047,7 @@ bool CPVRTimers::AddLocalTimer(const std::shared_ptr<CPVRTimerInfoTag>& tag, boo
 
 bool CPVRTimers::DeleteLocalTimer(const std::shared_ptr<CPVRTimerInfoTag>& tag, bool bNotify)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   RemoveEntry(tag);
 
@@ -1082,7 +1082,7 @@ bool CPVRTimers::DeleteLocalTimer(const std::shared_ptr<CPVRTimerInfoTag>& tag, 
 
   if (bNotify && bReturn)
   {
-    lock.Leave();
+    lock.unlock();
     NotifyTimersEvent();
   }
 
@@ -1119,7 +1119,7 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimers::PersistAndUpdateLocalTimer(
 
 bool CPVRTimers::IsRecordingOnChannel(const CPVRChannel& channel) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   for (MapTags::const_iterator it = m_tags.begin(); it != m_tags.end(); ++it)
   {
@@ -1137,7 +1137,7 @@ bool CPVRTimers::IsRecordingOnChannel(const CPVRChannel& channel) const
 
 std::shared_ptr<CPVRTimerInfoTag> CPVRTimers::GetActiveTimerForChannel(const std::shared_ptr<CPVRChannel>& channel) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   for (const auto& tagsEntry : m_tags)
   {
     for (const auto& timersEntry : tagsEntry.second)
@@ -1156,7 +1156,7 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimers::GetTimerForEpgTag(const std::share
 {
   if (epgTag)
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
 
     for (const auto& tagsEntry : m_tags)
     {
@@ -1196,7 +1196,7 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimers::GetTimerRule(const std::shared_ptr
     {
       int iClientId = timer->m_iClientId;
 
-      CSingleLock lock(m_critSection);
+      std::unique_lock<CCriticalSection> lock(m_critSection);
       for (const auto& tagsEntry : m_tags)
       {
         for (const auto& timersEntry : tagsEntry.second)
@@ -1220,7 +1220,7 @@ void CPVRTimers::Notify(const PVREvent& event)
     case PVREvent::Epg:
     case PVREvent::EpgItemUpdate:
     {
-      CSingleLock lock(m_critSection);
+      std::unique_lock<CCriticalSection> lock(m_critSection);
       m_bReminderRulesUpdatePending = true;
       break;
     }
@@ -1276,7 +1276,7 @@ CDateTime CPVRTimers::GetNextEventTime() const
 
 void CPVRTimers::UpdateChannels()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   for (MapTags::iterator it = m_tags.begin(); it != m_tags.end(); ++it)
   {
     for (VecTimerInfoTag::iterator timerIt = it->second.begin(); timerIt != it->second.end(); ++timerIt)
@@ -1288,7 +1288,7 @@ std::vector<std::shared_ptr<CPVRTimerInfoTag>> CPVRTimers::GetAll() const
 {
   std::vector<std::shared_ptr<CPVRTimerInfoTag>> timers;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   for (const auto& tagsEntry : m_tags)
   {
     for (const auto& timer : tagsEntry.second)
@@ -1303,7 +1303,7 @@ std::vector<std::shared_ptr<CPVRTimerInfoTag>> CPVRTimers::GetAll() const
 std::shared_ptr<CPVRTimerInfoTag> CPVRTimers::GetById(unsigned int iTimerId) const
 {
   std::shared_ptr<CPVRTimerInfoTag> item;
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   for (MapTags::const_iterator it = m_tags.begin(); !item && it != m_tags.end(); ++it)
   {
     for (VecTimerInfoTag::const_iterator timerIt = it->second.begin(); !item && timerIt != it->second.end(); ++timerIt)

@@ -12,6 +12,8 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#include <mutex>
+
 
 namespace ADDON
 {
@@ -70,7 +72,7 @@ void CServiceAddonManager::Start(const std::string& addonId)
 
 void CServiceAddonManager::Start(const AddonPtr& addon)
 {
-  CSingleLock lock(m_criticalSection);
+  std::unique_lock<CCriticalSection> lock(m_criticalSection);
   if (m_services.find(addon->ID()) != m_services.end())
   {
     CLog::Log(LOGDEBUG, "CServiceAddonManager: {} already started.", addon->ID());
@@ -94,7 +96,7 @@ void CServiceAddonManager::Stop()
 {
   m_addonMgr.Events().Unsubscribe(this);
   m_addonMgr.UnloadEvents().Unsubscribe(this);
-  CSingleLock lock(m_criticalSection);
+  std::unique_lock<CCriticalSection> lock(m_criticalSection);
   for (const auto& service : m_services)
   {
     Stop(service);
@@ -104,7 +106,7 @@ void CServiceAddonManager::Stop()
 
 void CServiceAddonManager::Stop(const std::string& addonId)
 {
-  CSingleLock lock(m_criticalSection);
+  std::unique_lock<CCriticalSection> lock(m_criticalSection);
   auto it = m_services.find(addonId);
   if (it != m_services.end())
   {

@@ -13,9 +13,10 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
-#include "threads/SingleLock.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
+
+#include <mutex>
 
 using namespace std::chrono_literals;
 
@@ -29,7 +30,7 @@ CGUIDialogProgress::~CGUIDialogProgress(void) = default;
 
 void CGUIDialogProgress::Reset()
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
   m_iCurrent = 0;
   m_iMax = 0;
   m_percentage = 0;
@@ -43,7 +44,7 @@ void CGUIDialogProgress::Reset()
 
 void CGUIDialogProgress::SetCanCancel(bool bCanCancel)
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
   m_bCanCancel = bCanCancel;
   SetInvalid();
 }
@@ -68,7 +69,7 @@ void CGUIDialogProgress::Open(const std::string &param /* = "" */)
   CLog::Log(LOGDEBUG, "DialogProgress::Open called {}", m_active ? "(already running)!" : "");
 
   {
-    CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+    std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
     ShowProgressBar(true);
   }
 
@@ -190,7 +191,7 @@ bool CGUIDialogProgress::Abort()
 
 void CGUIDialogProgress::ShowProgressBar(bool bOnOff)
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
   m_showProgress = bOnOff;
   SetInvalid();
 }
@@ -224,7 +225,7 @@ void CGUIDialogProgress::UpdateControls()
   bool bShowCancel;
   std::array<bool, DIALOG_MAX_CHOICES> choices;
   {
-    CSingleLock lock(m_section);
+    std::unique_lock<CCriticalSection> lock(m_section);
     bShowProgress = m_showProgress;
     bShowCancel = m_bCanCancel;
     choices = m_supportedChoices;

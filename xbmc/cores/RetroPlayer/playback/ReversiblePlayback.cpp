@@ -15,11 +15,11 @@
 #include "games/GameServices.h"
 #include "games/GameSettings.h"
 #include "games/addons/GameClient.h"
-#include "threads/SingleLock.h"
 #include "utils/MathUtils.h"
 #include "utils/URIUtils.h"
 
 #include <algorithm>
+#include <mutex>
 
 using namespace KODI;
 using namespace RETRO;
@@ -146,14 +146,14 @@ std::string CReversiblePlayback::CreateSavestate()
   uint8_t* memoryData = savestate->GetMemoryBuffer(memorySize);
 
   {
-    CSingleLock lock(m_mutex);
+    std::unique_lock<CCriticalSection> lock(m_mutex);
     if (m_memoryStream && m_memoryStream->CurrentFrame() != nullptr)
     {
       std::memcpy(memoryData, m_memoryStream->CurrentFrame(), memorySize);
     }
     else
     {
-      lock.Leave();
+      lock.unlock();
       if (!m_gameClient->Serialize(memoryData, memorySize))
         return "";
     }
@@ -182,7 +182,7 @@ bool CReversiblePlayback::LoadSavestate(const std::string& path)
       savestate->GetMemorySize() == memorySize)
   {
     {
-      CSingleLock lock(m_mutex);
+      std::unique_lock<CCriticalSection> lock(m_mutex);
       if (m_memoryStream)
       {
         m_memoryStream->SetFrameCounter(savestate->TimestampFrames());
@@ -217,7 +217,7 @@ void CReversiblePlayback::RewindEvent()
 
 void CReversiblePlayback::AddFrame()
 {
-  CSingleLock lock(m_mutex);
+  std::unique_lock<CCriticalSection> lock(m_mutex);
 
   if (m_memoryStream)
   {
@@ -233,7 +233,7 @@ void CReversiblePlayback::AddFrame()
 
 void CReversiblePlayback::RewindFrames(uint64_t frames)
 {
-  CSingleLock lock(m_mutex);
+  std::unique_lock<CCriticalSection> lock(m_mutex);
 
   if (m_memoryStream)
   {
@@ -247,7 +247,7 @@ void CReversiblePlayback::RewindFrames(uint64_t frames)
 
 void CReversiblePlayback::AdvanceFrames(uint64_t frames)
 {
-  CSingleLock lock(m_mutex);
+  std::unique_lock<CCriticalSection> lock(m_mutex);
 
   if (m_memoryStream)
   {
@@ -287,7 +287,7 @@ void CReversiblePlayback::Notify(const Observable& obs, const ObservableMessage 
 
 void CReversiblePlayback::UpdateMemoryStream()
 {
-  CSingleLock lock(m_mutex);
+  std::unique_lock<CCriticalSection> lock(m_mutex);
 
   bool bRewindEnabled = false;
 

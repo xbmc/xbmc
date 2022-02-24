@@ -19,12 +19,12 @@
 #include "input/Key.h"
 #include "input/actions/ActionTranslator.h"
 #include "interfaces/builtins/Builtins.h"
-#include "threads/SingleLock.h"
 #include "utils/SystemInfo.h"
 #include "utils/log.h"
 
 #include <cassert>
 #include <map>
+#include <mutex>
 #include <queue>
 
 using namespace EVENTSERVER;
@@ -63,7 +63,7 @@ CEventServer* CEventServer::GetInstance()
 
 void CEventServer::StartServer()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   if (m_bRunning)
     return;
 
@@ -94,14 +94,14 @@ void CEventServer::Cleanup()
   if (m_pSocket)
     m_pSocket->Close();
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   m_clients.clear();
 }
 
 int CEventServer::GetNumberOfClients()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_clients.size();
 }
 
@@ -219,7 +219,7 @@ void CEventServer::ProcessPacket(CAddress& addr, int pSize)
   if (!clientToken)
     clientToken = addr.ULong(); // use IP if packet doesn't have a token
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   // first check if we have a client for this address
   auto iter = m_clients.find(clientToken);
@@ -247,7 +247,7 @@ void CEventServer::ProcessPacket(CAddress& addr, int pSize)
 
 void CEventServer::RefreshClients()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   auto iter = m_clients.begin();
 
   while ( iter != m_clients.end() )
@@ -273,7 +273,7 @@ void CEventServer::RefreshClients()
 
 void CEventServer::ProcessEvents()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   auto iter = m_clients.begin();
 
   while (iter != m_clients.end())
@@ -285,7 +285,7 @@ void CEventServer::ProcessEvents()
 
 bool CEventServer::ExecuteNextAction()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   CEventAction actionEvent;
   auto iter = m_clients.begin();
@@ -295,7 +295,7 @@ bool CEventServer::ExecuteNextAction()
     if (iter->second->GetNextAction(actionEvent))
     {
       // Leave critical section before processing action
-      lock.Leave();
+      lock.unlock();
       switch(actionEvent.actionType)
       {
       case AT_EXEC_BUILTIN:
@@ -325,7 +325,7 @@ bool CEventServer::ExecuteNextAction()
 
 unsigned int CEventServer::GetButtonCode(std::string& strMapName, bool& isAxis, float& fAmount, bool &isJoystick)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   auto iter = m_clients.begin();
   unsigned int bcode = 0;
 
@@ -341,7 +341,7 @@ unsigned int CEventServer::GetButtonCode(std::string& strMapName, bool& isAxis, 
 
 bool CEventServer::GetMousePos(float &x, float &y)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   auto iter = m_clients.begin();
 
   while (iter != m_clients.end())

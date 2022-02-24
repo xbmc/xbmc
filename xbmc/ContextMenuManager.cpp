@@ -23,6 +23,7 @@
 #include "video/ContextMenus.h"
 
 #include <iterator>
+#include <mutex>
 
 using namespace ADDON;
 using namespace PVR;
@@ -51,7 +52,7 @@ void CContextMenuManager::Init()
   m_addonMgr.Events().Subscribe(this, &CContextMenuManager::OnEvent);
   CPVRContextMenuManager::GetInstance().Events().Subscribe(this, &CContextMenuManager::OnPVREvent);
 
-  CSingleLock lock(m_criticalSection);
+  std::unique_lock<CCriticalSection> lock(m_criticalSection);
   m_items = {
       std::make_shared<CONTEXTMENU::CResume>(),
       std::make_shared<CONTEXTMENU::CPlay>(),
@@ -105,7 +106,7 @@ void CContextMenuManager::ReloadAddonItems()
     }
   }
 
-  CSingleLock lock(m_criticalSection);
+  std::unique_lock<CCriticalSection> lock(m_criticalSection);
   m_addonItems = std::move(addonItems);
 
   CLog::Log(LOGDEBUG, "ContextMenuManager: addon menus reloaded.");
@@ -123,7 +124,7 @@ void CContextMenuManager::OnEvent(const ADDON::AddonEvent& event)
     AddonPtr addon;
     if (m_addonMgr.GetAddon(event.id, addon, ADDON_CONTEXT_ITEM, OnlyEnabled::CHOICE_YES))
     {
-      CSingleLock lock(m_criticalSection);
+      std::unique_lock<CCriticalSection> lock(m_criticalSection);
       auto items = std::static_pointer_cast<CContextMenuAddon>(addon)->GetItems();
       for (auto& item : items)
       {
@@ -149,13 +150,13 @@ void CContextMenuManager::OnPVREvent(const PVRContextMenuEvent& event)
   {
     case PVRContextMenuEventAction::ADD_ITEM:
     {
-      CSingleLock lock(m_criticalSection);
+      std::unique_lock<CCriticalSection> lock(m_criticalSection);
       m_items.emplace_back(event.item);
       break;
     }
     case PVRContextMenuEventAction::REMOVE_ITEM:
     {
-      CSingleLock lock(m_criticalSection);
+      std::unique_lock<CCriticalSection> lock(m_criticalSection);
       auto it = std::find(m_items.begin(), m_items.end(), event.item);
       if (it != m_items.end())
         m_items.erase(it);
@@ -175,7 +176,7 @@ bool CContextMenuManager::IsVisible(
 
   if (menuItem.IsGroup())
   {
-    CSingleLock lock(m_criticalSection);
+    std::unique_lock<CCriticalSection> lock(m_criticalSection);
     return std::any_of(m_addonItems.begin(), m_addonItems.end(),
         [&](const CContextMenuItem& other){ return menuItem.IsParentOf(other) && other.IsVisible(fileItem); });
   }
@@ -189,7 +190,7 @@ ContextMenuView CContextMenuManager::GetItems(const CFileItem& fileItem, const C
   //! @todo implement group support
   if (&root == &MAIN)
   {
-    CSingleLock lock(m_criticalSection);
+    std::unique_lock<CCriticalSection> lock(m_criticalSection);
     std::copy_if(m_items.begin(), m_items.end(), std::back_inserter(result),
         [&](const std::shared_ptr<IContextMenuItem>& menu){ return menu->IsVisible(fileItem); });
   }
@@ -200,7 +201,7 @@ ContextMenuView CContextMenuManager::GetAddonItems(const CFileItem& fileItem, co
 {
   ContextMenuView result;
   {
-    CSingleLock lock(m_criticalSection);
+    std::unique_lock<CCriticalSection> lock(m_criticalSection);
     for (const auto& menu : m_addonItems)
       if (IsVisible(menu, root, fileItem))
         result.emplace_back(new CContextMenuItem(menu));

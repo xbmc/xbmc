@@ -10,8 +10,8 @@
 
 #include "ServiceBroker.h"
 #include "cores/EdlEdit.h"
-#include "threads/SingleLock.h"
 
+#include <mutex>
 #include <utility>
 
 CDataCacheCore::CDataCacheCore() :
@@ -34,7 +34,7 @@ CDataCacheCore& CDataCacheCore::GetInstance()
 void CDataCacheCore::Reset()
 {
   {
-    CSingleLock lock(m_stateSection);
+    std::unique_lock<CCriticalSection> lock(m_stateSection);
 
     m_stateInfo.m_speed = 1.0;
     m_stateInfo.m_tempo = 1.0;
@@ -45,7 +45,7 @@ void CDataCacheCore::Reset()
   }
 
   {
-    CSingleLock lock(m_contentSection);
+    std::unique_lock<CCriticalSection> lock(m_contentSection);
 
     m_contentInfo.Reset();
   }
@@ -75,7 +75,7 @@ void CDataCacheCore::SignalSubtitleInfoChange()
 
 void CDataCacheCore::SetVideoDecoderName(std::string name, bool isHw)
 {
-  CSingleLock lock(m_videoPlayerSection);
+  std::unique_lock<CCriticalSection> lock(m_videoPlayerSection);
 
   m_playerVideoInfo.decoderName = std::move(name);
   m_playerVideoInfo.isHwDecoder = isHw;
@@ -83,14 +83,14 @@ void CDataCacheCore::SetVideoDecoderName(std::string name, bool isHw)
 
 std::string CDataCacheCore::GetVideoDecoderName()
 {
-  CSingleLock lock(m_videoPlayerSection);
+  std::unique_lock<CCriticalSection> lock(m_videoPlayerSection);
 
   return m_playerVideoInfo.decoderName;
 }
 
 bool CDataCacheCore::IsVideoHwDecoder()
 {
-  CSingleLock lock(m_videoPlayerSection);
+  std::unique_lock<CCriticalSection> lock(m_videoPlayerSection);
 
   return m_playerVideoInfo.isHwDecoder;
 }
@@ -98,49 +98,49 @@ bool CDataCacheCore::IsVideoHwDecoder()
 
 void CDataCacheCore::SetVideoDeintMethod(std::string method)
 {
-  CSingleLock lock(m_videoPlayerSection);
+  std::unique_lock<CCriticalSection> lock(m_videoPlayerSection);
 
   m_playerVideoInfo.deintMethod = std::move(method);
 }
 
 std::string CDataCacheCore::GetVideoDeintMethod()
 {
-  CSingleLock lock(m_videoPlayerSection);
+  std::unique_lock<CCriticalSection> lock(m_videoPlayerSection);
 
   return m_playerVideoInfo.deintMethod;
 }
 
 void CDataCacheCore::SetVideoPixelFormat(std::string pixFormat)
 {
-  CSingleLock lock(m_videoPlayerSection);
+  std::unique_lock<CCriticalSection> lock(m_videoPlayerSection);
 
   m_playerVideoInfo.pixFormat = std::move(pixFormat);
 }
 
 std::string CDataCacheCore::GetVideoPixelFormat()
 {
-  CSingleLock lock(m_videoPlayerSection);
+  std::unique_lock<CCriticalSection> lock(m_videoPlayerSection);
 
   return m_playerVideoInfo.pixFormat;
 }
 
 void CDataCacheCore::SetVideoStereoMode(std::string mode)
 {
-  CSingleLock lock(m_videoPlayerSection);
+  std::unique_lock<CCriticalSection> lock(m_videoPlayerSection);
 
   m_playerVideoInfo.stereoMode = std::move(mode);
 }
 
 std::string CDataCacheCore::GetVideoStereoMode()
 {
-  CSingleLock lock(m_videoPlayerSection);
+  std::unique_lock<CCriticalSection> lock(m_videoPlayerSection);
 
   return m_playerVideoInfo.stereoMode;
 }
 
 void CDataCacheCore::SetVideoDimensions(int width, int height)
 {
-  CSingleLock lock(m_videoPlayerSection);
+  std::unique_lock<CCriticalSection> lock(m_videoPlayerSection);
 
   m_playerVideoInfo.width = width;
   m_playerVideoInfo.height = height;
@@ -148,173 +148,173 @@ void CDataCacheCore::SetVideoDimensions(int width, int height)
 
 int CDataCacheCore::GetVideoWidth()
 {
-  CSingleLock lock(m_videoPlayerSection);
+  std::unique_lock<CCriticalSection> lock(m_videoPlayerSection);
 
   return m_playerVideoInfo.width;
 }
 
 int CDataCacheCore::GetVideoHeight()
 {
-  CSingleLock lock(m_videoPlayerSection);
+  std::unique_lock<CCriticalSection> lock(m_videoPlayerSection);
 
   return m_playerVideoInfo.height;
 }
 
 void CDataCacheCore::SetVideoFps(float fps)
 {
-  CSingleLock lock(m_videoPlayerSection);
+  std::unique_lock<CCriticalSection> lock(m_videoPlayerSection);
 
   m_playerVideoInfo.fps = fps;
 }
 
 float CDataCacheCore::GetVideoFps()
 {
-  CSingleLock lock(m_videoPlayerSection);
+  std::unique_lock<CCriticalSection> lock(m_videoPlayerSection);
 
   return m_playerVideoInfo.fps;
 }
 
 void CDataCacheCore::SetVideoDAR(float dar)
 {
-  CSingleLock lock(m_videoPlayerSection);
+  std::unique_lock<CCriticalSection> lock(m_videoPlayerSection);
 
   m_playerVideoInfo.dar = dar;
 }
 
 float CDataCacheCore::GetVideoDAR()
 {
-  CSingleLock lock(m_videoPlayerSection);
+  std::unique_lock<CCriticalSection> lock(m_videoPlayerSection);
 
   return m_playerVideoInfo.dar;
 }
 
 void CDataCacheCore::SetVideoInterlaced(bool isInterlaced)
 {
-  CSingleLock lock(m_videoPlayerSection);
+  std::unique_lock<CCriticalSection> lock(m_videoPlayerSection);
   m_playerVideoInfo.m_isInterlaced = isInterlaced;
 }
 
 bool CDataCacheCore::IsVideoInterlaced()
 {
-  CSingleLock lock(m_videoPlayerSection);
+  std::unique_lock<CCriticalSection> lock(m_videoPlayerSection);
   return m_playerVideoInfo.m_isInterlaced;
 }
 
 // player audio info
 void CDataCacheCore::SetAudioDecoderName(std::string name)
 {
-  CSingleLock lock(m_audioPlayerSection);
+  std::unique_lock<CCriticalSection> lock(m_audioPlayerSection);
 
   m_playerAudioInfo.decoderName = std::move(name);
 }
 
 std::string CDataCacheCore::GetAudioDecoderName()
 {
-  CSingleLock lock(m_audioPlayerSection);
+  std::unique_lock<CCriticalSection> lock(m_audioPlayerSection);
 
   return m_playerAudioInfo.decoderName;
 }
 
 void CDataCacheCore::SetAudioChannels(std::string channels)
 {
-  CSingleLock lock(m_audioPlayerSection);
+  std::unique_lock<CCriticalSection> lock(m_audioPlayerSection);
 
   m_playerAudioInfo.channels = std::move(channels);
 }
 
 std::string CDataCacheCore::GetAudioChannels()
 {
-  CSingleLock lock(m_audioPlayerSection);
+  std::unique_lock<CCriticalSection> lock(m_audioPlayerSection);
 
   return m_playerAudioInfo.channels;
 }
 
 void CDataCacheCore::SetAudioSampleRate(int sampleRate)
 {
-  CSingleLock lock(m_audioPlayerSection);
+  std::unique_lock<CCriticalSection> lock(m_audioPlayerSection);
 
   m_playerAudioInfo.sampleRate = sampleRate;
 }
 
 int CDataCacheCore::GetAudioSampleRate()
 {
-  CSingleLock lock(m_audioPlayerSection);
+  std::unique_lock<CCriticalSection> lock(m_audioPlayerSection);
 
   return m_playerAudioInfo.sampleRate;
 }
 
 void CDataCacheCore::SetAudioBitsPerSample(int bitsPerSample)
 {
-  CSingleLock lock(m_audioPlayerSection);
+  std::unique_lock<CCriticalSection> lock(m_audioPlayerSection);
 
   m_playerAudioInfo.bitsPerSample = bitsPerSample;
 }
 
 int CDataCacheCore::GetAudioBitsPerSample()
 {
-  CSingleLock lock(m_audioPlayerSection);
+  std::unique_lock<CCriticalSection> lock(m_audioPlayerSection);
 
   return m_playerAudioInfo.bitsPerSample;
 }
 
 void CDataCacheCore::SetEditList(const std::vector<EDL::Edit>& editList)
 {
-  CSingleLock lock(m_contentSection);
+  std::unique_lock<CCriticalSection> lock(m_contentSection);
   m_contentInfo.SetEditList(editList);
 }
 
 const std::vector<EDL::Edit>& CDataCacheCore::GetEditList() const
 {
-  CSingleLock lock(m_contentSection);
+  std::unique_lock<CCriticalSection> lock(m_contentSection);
   return m_contentInfo.GetEditList();
 }
 
 void CDataCacheCore::SetCuts(const std::vector<int64_t>& cuts)
 {
-  CSingleLock lock(m_contentSection);
+  std::unique_lock<CCriticalSection> lock(m_contentSection);
   m_contentInfo.SetCuts(cuts);
 }
 
 const std::vector<int64_t>& CDataCacheCore::GetCuts() const
 {
-  CSingleLock lock(m_contentSection);
+  std::unique_lock<CCriticalSection> lock(m_contentSection);
   return m_contentInfo.GetCuts();
 }
 
 void CDataCacheCore::SetSceneMarkers(const std::vector<int64_t>& sceneMarkers)
 {
-  CSingleLock lock(m_contentSection);
+  std::unique_lock<CCriticalSection> lock(m_contentSection);
   m_contentInfo.SetSceneMarkers(sceneMarkers);
 }
 
 const std::vector<int64_t>& CDataCacheCore::GetSceneMarkers() const
 {
-  CSingleLock lock(m_contentSection);
+  std::unique_lock<CCriticalSection> lock(m_contentSection);
   return m_contentInfo.GetSceneMarkers();
 }
 
 void CDataCacheCore::SetChapters(const std::vector<std::pair<std::string, int64_t>>& chapters)
 {
-  CSingleLock lock(m_contentSection);
+  std::unique_lock<CCriticalSection> lock(m_contentSection);
   m_contentInfo.SetChapters(chapters);
 }
 
 const std::vector<std::pair<std::string, int64_t>>& CDataCacheCore::GetChapters() const
 {
-  CSingleLock lock(m_contentSection);
+  std::unique_lock<CCriticalSection> lock(m_contentSection);
   return m_contentInfo.GetChapters();
 }
 
 void CDataCacheCore::SetRenderClockSync(bool enable)
 {
-  CSingleLock lock(m_renderSection);
+  std::unique_lock<CCriticalSection> lock(m_renderSection);
 
   m_renderInfo.m_isClockSync = enable;
 }
 
 bool CDataCacheCore::IsRenderClockSync()
 {
-  CSingleLock lock(m_renderSection);
+  std::unique_lock<CCriticalSection> lock(m_renderSection);
 
   return m_renderInfo.m_isClockSync;
 }
@@ -322,7 +322,7 @@ bool CDataCacheCore::IsRenderClockSync()
 // player states
 void CDataCacheCore::SetStateSeeking(bool active)
 {
-  CSingleLock lock(m_stateSection);
+  std::unique_lock<CCriticalSection> lock(m_stateSection);
 
   m_stateInfo.m_stateSeeking = active;
   m_playerStateChanged = true;
@@ -330,14 +330,14 @@ void CDataCacheCore::SetStateSeeking(bool active)
 
 bool CDataCacheCore::IsSeeking()
 {
-  CSingleLock lock(m_stateSection);
+  std::unique_lock<CCriticalSection> lock(m_stateSection);
 
   return m_stateInfo.m_stateSeeking;
 }
 
 void CDataCacheCore::SetSpeed(float tempo, float speed)
 {
-  CSingleLock lock(m_stateSection);
+  std::unique_lock<CCriticalSection> lock(m_stateSection);
 
   m_stateInfo.m_tempo = tempo;
   m_stateInfo.m_speed = speed;
@@ -345,35 +345,35 @@ void CDataCacheCore::SetSpeed(float tempo, float speed)
 
 float CDataCacheCore::GetSpeed()
 {
-  CSingleLock lock(m_stateSection);
+  std::unique_lock<CCriticalSection> lock(m_stateSection);
 
   return m_stateInfo.m_speed;
 }
 
 float CDataCacheCore::GetTempo()
 {
-  CSingleLock lock(m_stateSection);
+  std::unique_lock<CCriticalSection> lock(m_stateSection);
 
   return m_stateInfo.m_tempo;
 }
 
 void CDataCacheCore::SetFrameAdvance(bool fa)
 {
-  CSingleLock lock(m_stateSection);
+  std::unique_lock<CCriticalSection> lock(m_stateSection);
 
   m_stateInfo.m_frameAdvance = fa;
 }
 
 bool CDataCacheCore::IsFrameAdvance()
 {
-  CSingleLock lock(m_stateSection);
+  std::unique_lock<CCriticalSection> lock(m_stateSection);
 
   return m_stateInfo.m_frameAdvance;
 }
 
 bool CDataCacheCore::IsPlayerStateChanged()
 {
-  CSingleLock lock(m_stateSection);
+  std::unique_lock<CCriticalSection> lock(m_stateSection);
 
   bool ret(m_playerStateChanged);
   m_playerStateChanged = false;
@@ -383,7 +383,7 @@ bool CDataCacheCore::IsPlayerStateChanged()
 
 void CDataCacheCore::SetGuiRender(bool gui)
 {
-  CSingleLock lock(m_stateSection);
+  std::unique_lock<CCriticalSection> lock(m_stateSection);
 
   m_stateInfo.m_renderGuiLayer = gui;
   m_playerStateChanged = true;
@@ -391,14 +391,14 @@ void CDataCacheCore::SetGuiRender(bool gui)
 
 bool CDataCacheCore::GetGuiRender()
 {
-  CSingleLock lock(m_stateSection);
+  std::unique_lock<CCriticalSection> lock(m_stateSection);
 
   return m_stateInfo.m_renderGuiLayer;
 }
 
 void CDataCacheCore::SetVideoRender(bool video)
 {
-  CSingleLock lock(m_stateSection);
+  std::unique_lock<CCriticalSection> lock(m_stateSection);
 
   m_stateInfo.m_renderVideoLayer = video;
   m_playerStateChanged = true;
@@ -406,14 +406,14 @@ void CDataCacheCore::SetVideoRender(bool video)
 
 bool CDataCacheCore::GetVideoRender()
 {
-  CSingleLock lock(m_stateSection);
+  std::unique_lock<CCriticalSection> lock(m_stateSection);
 
   return m_stateInfo.m_renderVideoLayer;
 }
 
 void CDataCacheCore::SetPlayTimes(time_t start, int64_t current, int64_t min, int64_t max)
 {
-  CSingleLock lock(m_stateSection);
+  std::unique_lock<CCriticalSection> lock(m_stateSection);
   m_timeInfo.m_startTime = start;
   m_timeInfo.m_time = current;
   m_timeInfo.m_timeMin = min;
@@ -422,7 +422,7 @@ void CDataCacheCore::SetPlayTimes(time_t start, int64_t current, int64_t min, in
 
 void CDataCacheCore::GetPlayTimes(time_t &start, int64_t &current, int64_t &min, int64_t &max)
 {
-  CSingleLock lock(m_stateSection);
+  std::unique_lock<CCriticalSection> lock(m_stateSection);
   start = m_timeInfo.m_startTime;
   current = m_timeInfo.m_time;
   min = m_timeInfo.m_timeMin;
@@ -431,31 +431,31 @@ void CDataCacheCore::GetPlayTimes(time_t &start, int64_t &current, int64_t &min,
 
 time_t CDataCacheCore::GetStartTime()
 {
-  CSingleLock lock(m_stateSection);
+  std::unique_lock<CCriticalSection> lock(m_stateSection);
   return m_timeInfo.m_startTime;
 }
 
 int64_t CDataCacheCore::GetPlayTime()
 {
-  CSingleLock lock(m_stateSection);
+  std::unique_lock<CCriticalSection> lock(m_stateSection);
   return m_timeInfo.m_time;
 }
 
 int64_t CDataCacheCore::GetMinTime()
 {
-  CSingleLock lock(m_stateSection);
+  std::unique_lock<CCriticalSection> lock(m_stateSection);
   return m_timeInfo.m_timeMin;
 }
 
 int64_t CDataCacheCore::GetMaxTime()
 {
-  CSingleLock lock(m_stateSection);
+  std::unique_lock<CCriticalSection> lock(m_stateSection);
   return m_timeInfo.m_timeMax;
 }
 
 float CDataCacheCore::GetPlayPercentage()
 {
-  CSingleLock lock(m_stateSection);
+  std::unique_lock<CCriticalSection> lock(m_stateSection);
 
   // Note: To calculate accurate percentage, all time data must be consistent,
   //       which is the case for data cache core. Calculation can not be done

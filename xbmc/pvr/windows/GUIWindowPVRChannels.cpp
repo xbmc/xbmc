@@ -33,10 +33,10 @@
 #include "pvr/epg/Epg.h"
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/guilib/PVRGUIActions.h"
-#include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
+#include <mutex>
 #include <string>
 
 using namespace PVR;
@@ -72,13 +72,13 @@ bool CGUIWindowPVRChannelsBase::Update(const std::string& strDirectory, bool upd
 
   if (bReturn)
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     /* empty list for hidden channels */
     if (m_vecItems->GetObjectCount() == 0 && m_bShowHiddenChannels)
     {
       /* show the visible channels instead */
       m_bShowHiddenChannels = false;
-      lock.Leave();
+      lock.unlock();
       Update(GetDirectoryPath());
     }
   }

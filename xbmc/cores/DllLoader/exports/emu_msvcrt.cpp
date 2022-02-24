@@ -6,10 +6,11 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdarg.h>
 #include <math.h>
+#include <mutex>
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
 #ifndef TARGET_POSIX
 #include <io.h>
 #include <direct.h>
@@ -53,7 +54,6 @@
 #include "filesystem/SpecialProtocol.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "threads/SingleLock.h"
 #include "util/EmuFileWrapper.h"
 #include "utils/log.h"
 #ifndef TARGET_POSIX
@@ -1840,7 +1840,7 @@ extern "C"
           value[size - 1] = '\0';
 
         {
-          CSingleLock lock(dll_cs_environ);
+          std::unique_lock<CCriticalSection> lock(dll_cs_environ);
 
           char** free_position = NULL;
           for (int i = 0; i < EMU_MAX_ENVIRONMENT_ITEMS && free_position == NULL; i++)
@@ -1891,7 +1891,7 @@ extern "C"
     char* value = NULL;
 
     {
-      CSingleLock lock(dll_cs_environ);
+      std::unique_lock<CCriticalSection> lock(dll_cs_environ);
 
       update_emu_environ();//apply any changes
 

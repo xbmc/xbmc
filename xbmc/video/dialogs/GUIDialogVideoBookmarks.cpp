@@ -26,7 +26,6 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "threads/SingleLock.h"
 #include "utils/Crc32.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -36,6 +35,7 @@
 #include "video/VideoThumbLoader.h"
 #include "view/ViewState.h"
 
+#include <mutex>
 #include <string>
 #include <vector>
 
@@ -201,7 +201,7 @@ void CGUIDialogVideoBookmarks::Delete(int item)
 
 void CGUIDialogVideoBookmarks::UpdateItem(unsigned int chapterIdx)
 {
-  CSingleLock lock(m_refreshSection);
+  std::unique_lock<CCriticalSection> lock(m_refreshSection);
 
   int itemPos = 0;
   for (const auto& item : *m_vecItems)
@@ -239,7 +239,7 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
   videoDatabase.GetBookMarksForFile(m_filePath, m_bookmarks, CBookmark::EPISODE, true);
   videoDatabase.Close();
 
-  CSingleLock lock(m_refreshSection);
+  std::unique_lock<CCriticalSection> lock(m_refreshSection);
   m_vecItems->Clear();
 
   // cycle through each stored bookmark and add it to our list control

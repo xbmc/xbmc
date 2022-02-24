@@ -10,9 +10,9 @@
 
 #include "pvr/channels/PVRChannelGroup.h"
 #include "threads/CriticalSection.h"
-#include "threads/SingleLock.h"
 
 #include <memory>
+#include <mutex>
 #include <string>
 #include <vector>
 
@@ -56,7 +56,11 @@ namespace PVR
     /*!
      * @return Amount of groups in this container
      */
-    size_t Size() const { CSingleLock lock(m_critSection); return m_groups.size(); }
+    size_t Size() const
+    {
+      std::unique_lock<CCriticalSection> lock(m_critSection);
+      return m_groups.size();
+    }
 
     /*!
      * @brief Update a group or add it if it's not in here yet.

@@ -25,12 +25,12 @@
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "threads/SingleLock.h"
 #include "utils/URIUtils.h"
 #include "video/VideoLibraryQueue.h"
 #include "video/windows/GUIWindowVideoNav.h"
 
 #include <memory>
+#include <mutex>
 #include <string>
 
 using namespace PVR;
@@ -146,14 +146,14 @@ bool CGUIWindowPVRRecordingsBase::Update(const std::string& strDirectory, bool u
     //       to see the deleted recordings? Or is this just another hack to avoid misbehavior
     //       of CGUIMediaWindow if it has no content?
 
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
 
     /* empty list for deleted recordings */
     if (m_vecItems->GetObjectCount() == 0 && m_bShowDeletedRecordings)
     {
       /* show the normal recordings instead */
       m_bShowDeletedRecordings = false;
-      lock.Leave();
+      lock.unlock();
       Update(GetDirectoryPath());
       return bReturn;
     }

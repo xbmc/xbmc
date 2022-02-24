@@ -16,6 +16,8 @@
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
+#include <mutex>
+#include <shared_mutex>
 #include <sstream>
 #include <utility>
 
@@ -394,7 +396,7 @@ void CSettingList::MergeDetails(const CSetting& other)
 
 bool CSettingList::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {
-  CExclusiveLock lock(m_critical);
+  std::unique_lock<CSharedSection> lock(m_critical);
 
   if (m_definition == nullptr)
     return false;
@@ -453,7 +455,7 @@ bool CSettingList::Deserialize(const TiXmlNode *node, bool update /* = false */)
 
 SettingType CSettingList::GetElementType() const
 {
-  CSharedLock lock(m_critical);
+  std::shared_lock<CSharedSection> lock(m_critical);
 
   if (m_definition == nullptr)
     return SettingType::Unknown;
@@ -502,7 +504,7 @@ bool CSettingList::CheckValidity(const std::string &value) const
 
 void CSettingList::Reset()
 {
-  CExclusiveLock lock(m_critical);
+  std::unique_lock<CSharedSection> lock(m_critical);
   SettingList values;
   for (const auto& it : m_defaults)
     values.push_back(it->Clone(it->GetId()));
@@ -521,7 +523,7 @@ bool CSettingList::FromString(const std::vector<std::string> &value)
 
 bool CSettingList::SetValue(const SettingList &values)
 {
-  CExclusiveLock lock(m_critical);
+  std::unique_lock<CSharedSection> lock(m_critical);
 
   if ((int)values.size() < m_minimumItems ||
      (m_maximumItems > 0 && (int)values.size() > m_maximumItems))
@@ -564,7 +566,7 @@ bool CSettingList::SetValue(const SettingList &values)
 
 void CSettingList::SetDefault(const SettingList &values)
 {
-  CExclusiveLock lock(m_critical);
+  std::unique_lock<CSharedSection> lock(m_critical);
 
   m_defaults.clear();
   m_defaults.insert(m_defaults.begin(), values.begin(), values.end());
@@ -701,7 +703,7 @@ void CSettingBool::MergeDetails(const CSetting& other)
 
 bool CSettingBool::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {
-  CExclusiveLock lock(m_critical);
+  std::unique_lock<CSharedSection> lock(m_critical);
 
   if (!CSetting::Deserialize(node, update))
     return false;
@@ -747,7 +749,7 @@ bool CSettingBool::CheckValidity(const std::string &value) const
 
 bool CSettingBool::SetValue(bool value)
 {
-  CExclusiveLock lock(m_critical);
+  std::unique_lock<CSharedSection> lock(m_critical);
 
   if (value == m_value)
     return true;
@@ -774,7 +776,7 @@ bool CSettingBool::SetValue(bool value)
 
 void CSettingBool::SetDefault(bool value)
 {
-  CExclusiveLock lock(m_critical);
+  std::unique_lock<CSharedSection> lock(m_critical);
 
   m_default = value;
   if (!m_changed)
@@ -896,7 +898,7 @@ void CSettingInt::MergeDetails(const CSetting& other)
 
 bool CSettingInt::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {
-  CExclusiveLock lock(m_critical);
+  std::unique_lock<CSharedSection> lock(m_critical);
 
   if (!CSetting::Deserialize(node, update))
     return false;
@@ -1024,7 +1026,7 @@ bool CSettingInt::CheckValidity(int value) const
 
 bool CSettingInt::SetValue(int value)
 {
-  CExclusiveLock lock(m_critical);
+  std::unique_lock<CSharedSection> lock(m_critical);
 
   if (value == m_value)
     return true;
@@ -1054,7 +1056,7 @@ bool CSettingInt::SetValue(int value)
 
 void CSettingInt::SetDefault(int value)
 {
-  CExclusiveLock lock(m_critical);
+  std::unique_lock<CSharedSection> lock(m_critical);
 
   m_default = value;
   if (!m_changed)
@@ -1063,7 +1065,7 @@ void CSettingInt::SetDefault(int value)
 
 SettingOptionsType CSettingInt::GetOptionsType() const
 {
-  CSharedLock lock(m_critical);
+  std::shared_lock<CSharedSection> lock(m_critical);
   if (!m_translatableOptions.empty())
     return SettingOptionsType::StaticTranslatable;
   if (!m_options.empty())
@@ -1076,7 +1078,7 @@ SettingOptionsType CSettingInt::GetOptionsType() const
 
 IntegerSettingOptions CSettingInt::UpdateDynamicOptions()
 {
-  CExclusiveLock lock(m_critical);
+  std::unique_lock<CSharedSection> lock(m_critical);
   IntegerSettingOptions options;
   if (m_optionsFiller == nullptr &&
      (m_optionsFillerName.empty() || m_settingsManager == nullptr))
@@ -1125,7 +1127,7 @@ void CSettingInt::copy(const CSettingInt &setting)
 {
   CSetting::Copy(setting);
 
-  CExclusiveLock lock(m_critical);
+  std::unique_lock<CSharedSection> lock(m_critical);
 
   m_value = setting.m_value;
   m_default = setting.m_default;
@@ -1219,7 +1221,7 @@ void CSettingNumber::MergeDetails(const CSetting& other)
 
 bool CSettingNumber::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {
-  CExclusiveLock lock(m_critical);
+  std::unique_lock<CSharedSection> lock(m_critical);
 
   if (!CSetting::Deserialize(node, update))
     return false;
@@ -1268,7 +1270,7 @@ std::string CSettingNumber::ToString() const
 bool CSettingNumber::Equals(const std::string &value) const
 {
   double dValue;
-  CSharedLock lock(m_critical);
+  std::shared_lock<CSharedSection> lock(m_critical);
   return (fromString(value, dValue) && m_value == dValue);
 }
 
@@ -1283,7 +1285,7 @@ bool CSettingNumber::CheckValidity(const std::string &value) const
 
 bool CSettingNumber::CheckValidity(double value) const
 {
-  CSharedLock lock(m_critical);
+  std::shared_lock<CSharedSection> lock(m_critical);
   if (m_min != m_max &&
      (value < m_min || value > m_max))
     return false;
@@ -1293,7 +1295,7 @@ bool CSettingNumber::CheckValidity(double value) const
 
 bool CSettingNumber::SetValue(double value)
 {
-  CExclusiveLock lock(m_critical);
+  std::unique_lock<CSharedSection> lock(m_critical);
 
   if (value == m_value)
     return true;
@@ -1323,7 +1325,7 @@ bool CSettingNumber::SetValue(double value)
 
 void CSettingNumber::SetDefault(double value)
 {
-  CExclusiveLock lock(m_critical);
+  std::unique_lock<CSharedSection> lock(m_critical);
 
   m_default = value;
   if (!m_changed)
@@ -1333,7 +1335,7 @@ void CSettingNumber::SetDefault(double value)
 void CSettingNumber::copy(const CSettingNumber &setting)
 {
   CSetting::Copy(setting);
-  CExclusiveLock lock(m_critical);
+  std::unique_lock<CSharedSection> lock(m_critical);
 
   m_value = setting.m_value;
   m_default = setting.m_default;
@@ -1419,7 +1421,7 @@ void CSettingString::MergeDetails(const CSetting& other)
 
 bool CSettingString::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {
-  CExclusiveLock lock(m_critical);
+  std::unique_lock<CSharedSection> lock(m_critical);
 
   if (!CSetting::Deserialize(node, update))
     return false;
@@ -1493,7 +1495,7 @@ bool CSettingString::Deserialize(const TiXmlNode *node, bool update /* = false *
 
 bool CSettingString::CheckValidity(const std::string &value) const
 {
-  CSharedLock lock(m_critical);
+  std::shared_lock<CSharedSection> lock(m_critical);
   if (!m_allowEmpty && value.empty())
     return false;
 
@@ -1513,7 +1515,7 @@ bool CSettingString::CheckValidity(const std::string &value) const
 
 bool CSettingString::SetValue(const std::string &value)
 {
-  CExclusiveLock lock(m_critical);
+  std::unique_lock<CSharedSection> lock(m_critical);
 
   if (value == m_value)
     return true;
@@ -1543,7 +1545,7 @@ bool CSettingString::SetValue(const std::string &value)
 
 void CSettingString::SetDefault(const std::string &value)
 {
-  CSharedLock lock(m_critical);
+  std::shared_lock<CSharedSection> lock(m_critical);
 
   m_default = value;
   if (!m_changed)
@@ -1552,7 +1554,7 @@ void CSettingString::SetDefault(const std::string &value)
 
 SettingOptionsType CSettingString::GetOptionsType() const
 {
-  CSharedLock lock(m_critical);
+  std::shared_lock<CSharedSection> lock(m_critical);
   if (!m_translatableOptions.empty())
     return SettingOptionsType::StaticTranslatable;
   if (!m_options.empty())
@@ -1565,7 +1567,7 @@ SettingOptionsType CSettingString::GetOptionsType() const
 
 StringSettingOptions CSettingString::UpdateDynamicOptions()
 {
-  CExclusiveLock lock(m_critical);
+  std::unique_lock<CSharedSection> lock(m_critical);
   StringSettingOptions options;
   if (m_optionsFiller == nullptr &&
      (m_optionsFillerName.empty() || m_settingsManager == nullptr))
@@ -1615,7 +1617,7 @@ void CSettingString::copy(const CSettingString &setting)
 {
   CSetting::Copy(setting);
 
-  CExclusiveLock lock(m_critical);
+  std::unique_lock<CSharedSection> lock(m_critical);
   m_value = setting.m_value;
   m_default = setting.m_default;
   m_allowEmpty = setting.m_allowEmpty;
@@ -1669,7 +1671,7 @@ void CSettingAction::MergeDetails(const CSetting& other)
 
 bool CSettingAction::Deserialize(const TiXmlNode *node, bool update /* = false */)
 {
-  CSharedLock lock(m_critical);
+  std::shared_lock<CSharedSection> lock(m_critical);
 
   if (!CSetting::Deserialize(node, update))
     return false;
@@ -1683,6 +1685,6 @@ void CSettingAction::copy(const CSettingAction& setting)
 {
   CSetting::Copy(setting);
 
-  CExclusiveLock lock(m_critical);
+  std::unique_lock<CSharedSection> lock(m_critical);
   m_data = setting.m_data;
 }

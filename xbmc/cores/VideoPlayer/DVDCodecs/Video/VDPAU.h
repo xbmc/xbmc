@@ -40,6 +40,7 @@
 #include <deque>
 #include <list>
 #include <map>
+#include <mutex>
 #include <utility>
 #include <vector>
 
@@ -119,20 +120,88 @@ public:
   bool canSkipDeint;
   bool draining;
 
-  void IncDecoded() { CSingleLock l(m_sec); decodedPics++;}
-  void DecDecoded() { CSingleLock l(m_sec); decodedPics--;}
-  void IncProcessed() { CSingleLock l(m_sec); processedPics++;}
-  void DecProcessed() { CSingleLock l(m_sec); processedPics--;}
-  void IncRender() { CSingleLock l(m_sec); renderPics++;}
-  void DecRender() { CSingleLock l(m_sec); renderPics--;}
-  void Reset() { CSingleLock l(m_sec); decodedPics=0; processedPics=0;renderPics=0;latency=0;}
-  void Get(uint16_t &decoded, uint16_t &processed, uint16_t &render) {CSingleLock l(m_sec); decoded = decodedPics, processed=processedPics, render=renderPics;}
-  void SetParams(uint64_t time, int flags) { CSingleLock l(m_sec); latency = time; codecFlags = flags; }
-  void GetParams(uint64_t &lat, int &flags) { CSingleLock l(m_sec); lat = latency; flags = codecFlags; }
-  void SetCanSkipDeint(bool canSkip) { CSingleLock l(m_sec); canSkipDeint = canSkip; }
-  bool CanSkipDeint() { CSingleLock l(m_sec); if (canSkipDeint) return true; else return false;}
-  void SetDraining(bool drain) { CSingleLock l(m_sec); draining = drain; }
-  bool IsDraining() { CSingleLock l(m_sec); if (draining) return true; else return false;}
+  void IncDecoded()
+  {
+    std::unique_lock<CCriticalSection> l(m_sec);
+    decodedPics++;
+  }
+  void DecDecoded()
+  {
+    std::unique_lock<CCriticalSection> l(m_sec);
+    decodedPics--;
+  }
+  void IncProcessed()
+  {
+    std::unique_lock<CCriticalSection> l(m_sec);
+    processedPics++;
+  }
+  void DecProcessed()
+  {
+    std::unique_lock<CCriticalSection> l(m_sec);
+    processedPics--;
+  }
+  void IncRender()
+  {
+    std::unique_lock<CCriticalSection> l(m_sec);
+    renderPics++;
+  }
+  void DecRender()
+  {
+    std::unique_lock<CCriticalSection> l(m_sec);
+    renderPics--;
+  }
+  void Reset()
+  {
+    std::unique_lock<CCriticalSection> l(m_sec);
+    decodedPics = 0;
+    processedPics = 0;
+    renderPics = 0;
+    latency = 0;
+  }
+  void Get(uint16_t& decoded, uint16_t& processed, uint16_t& render)
+  {
+    std::unique_lock<CCriticalSection> l(m_sec);
+    decoded = decodedPics, processed = processedPics, render = renderPics;
+  }
+  void SetParams(uint64_t time, int flags)
+  {
+    std::unique_lock<CCriticalSection> l(m_sec);
+    latency = time;
+    codecFlags = flags;
+  }
+  void GetParams(uint64_t& lat, int& flags)
+  {
+    std::unique_lock<CCriticalSection> l(m_sec);
+    lat = latency;
+    flags = codecFlags;
+  }
+  void SetCanSkipDeint(bool canSkip)
+  {
+    std::unique_lock<CCriticalSection> l(m_sec);
+    canSkipDeint = canSkip;
+  }
+  bool CanSkipDeint()
+  {
+    std::unique_lock<CCriticalSection> l(m_sec);
+    if (canSkipDeint)
+      return true;
+    else
+      return false;
+  }
+  void SetDraining(bool drain)
+  {
+    std::unique_lock<CCriticalSection> l(m_sec);
+    draining = drain;
+  }
+  bool IsDraining()
+  {
+    std::unique_lock<CCriticalSection> l(m_sec);
+    if (draining)
+      return true;
+    else
+      return false;
+  }
+
 private:
   CCriticalSection m_sec;
 };

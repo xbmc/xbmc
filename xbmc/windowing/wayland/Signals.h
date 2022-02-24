@@ -9,11 +9,11 @@
 #pragma once
 
 #include "threads/CriticalSection.h"
-#include "threads/SingleLock.h"
 
 #include <iterator>
 #include <map>
 #include <memory>
+#include <mutex>
 
 namespace KODI
 {
@@ -92,7 +92,7 @@ class CSignalHandlerList
 
     void Unregister(RegistrationIdentifierType id) override
     {
-      CSingleLock lock(m_handlerCriticalSection);
+      std::unique_lock<CCriticalSection> lock(m_handlerCriticalSection);
       m_handlers.erase(id);
     }
   };
@@ -143,7 +143,7 @@ public:
 
   CSignalRegistration Register(ManagedT const& handler)
   {
-    CSingleLock lock(m_data->m_handlerCriticalSection);
+    std::unique_lock<CCriticalSection> lock(m_data->m_handlerCriticalSection);
     bool inserted{false};
     while(!inserted)
     {
@@ -160,7 +160,7 @@ public:
   template<typename... ArgsT>
   void Invoke(ArgsT&&... args)
   {
-    CSingleLock lock(m_data->m_handlerCriticalSection);
+    std::unique_lock<CCriticalSection> lock(m_data->m_handlerCriticalSection);
     for (auto const& handler : *this)
     {
       handler.operator() (std::forward<ArgsT>(args)...);

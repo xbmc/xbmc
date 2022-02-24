@@ -27,13 +27,14 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
 #include "platform/posix/filesystem/SMBWSDiscovery.h"
+
+#include <mutex>
 
 #include <libsmbclient.h>
 
@@ -60,7 +61,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   // We accept smb://[[[domain;]user[:password@]]server[/share[/path[/file]]]]
 
   /* samba isn't thread safe with old interface, always lock */
-  CSingleLock lock(smb);
+  std::unique_lock<CCriticalSection> lock(smb);
 
   smb.Init();
 
@@ -68,7 +69,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   std::string strRoot = url.Get();
   std::string strAuth;
 
-  lock.Leave(); // OpenDir is locked
+  lock.unlock(); // OpenDir is locked
 
   // if url provided does not having anything except smb protocol
   // Do a WS-Discovery search to find possible smb servers to mimic smbv1 behaviour
@@ -110,7 +111,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   std::vector<CachedDirEntry> vecEntries;
   struct smbc_dirent* dirEnt;
 
-  lock.Enter();
+  lock.lock();
   if (!smb.IsSmbValid())
     return false;
   while ((dirEnt = smbc_readdir(fd)))
@@ -121,7 +122,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     vecEntries.push_back(aDir);
   }
   smbc_closedir(fd);
-  lock.Leave();
+  lock.unlock();
 
   for (size_t i=0; i<vecEntries.size(); i++)
   {
@@ -158,7 +159,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
           // make sure we use the authenticated path which contains any default username
           const std::string strFullName = strAuth + smb.URLEncode(strFile);
 
-          lock.Enter();
+          lock.lock();
           if (!smb.IsSmbValid())
           {
             items.ClearItems();
@@ -193,7 +194,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
             CLog::Log(LOGERROR, "{} - Failed to stat file {}", __FUNCTION__,
                       CURL::GetRedacted(strFullName));
 
-          lock.Leave();
+          lock.unlock();
         }
       }
 
@@ -274,7 +275,8 @@ int CSMBDirectory::OpenDir(const CURL& url, std::string& strAuth)
 
   CLog::LogFC(LOGDEBUG, LOGSAMBA, "Using authentication url {}", CURL::GetRedacted(s));
 
-  { CSingleLock lock(smb);
+  {
+    std::unique_lock<CCriticalSection> lock(smb);
     if (!smb.IsSmbValid())
       return -1;
     fd = smbc_opendir(s.c_str());
@@ -315,7 +317,7 @@ int CSMBDirectory::OpenDir(const CURL& url, std::string& strAuth)
 
 bool CSMBDirectory::Create(const CURL& url2)
 {
-  CSingleLock lock(smb);
+  std::unique_lock<CCriticalSection> lock(smb);
   smb.Init();
 
   CURL url = CSMB::GetResolvedUrl(url2);
@@ -332,7 +334,7 @@ bool CSMBDirectory::Create(const CURL& url2)
 
 bool CSMBDirectory::Remove(const CURL& url2)
 {
-  CSingleLock lock(smb);
+  std::unique_lock<CCriticalSection> lock(smb);
   smb.Init();
 
   CURL url = CSMB::GetResolvedUrl(url2);
@@ -352,7 +354,7 @@ bool CSMBDirectory::Remove(const CURL& url2)
 
 bool CSMBDirectory::Exists(const CURL& url2)
 {
-  CSingleLock lock(smb);
+  std::unique_lock<CCriticalSection> lock(smb);
   smb.Init();
 
   CURL url = CSMB::GetResolvedUrl(url2);

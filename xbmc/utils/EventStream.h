@@ -11,10 +11,10 @@
 #include "EventStreamDetail.h"
 #include "JobManager.h"
 #include "threads/CriticalSection.h"
-#include "threads/SingleLock.h"
 
 #include <algorithm>
 #include <memory>
+#include <mutex>
 #include <vector>
 
 
@@ -27,7 +27,7 @@ public:
   void Subscribe(A* owner, void (A::*fn)(const Event&))
   {
     auto subscription = std::make_shared<detail::CSubscription<Event, A>>(owner, fn);
-    CSingleLock lock(m_criticalSection);
+    std::unique_lock<CCriticalSection> lock(m_criticalSection);
     m_subscriptions.emplace_back(std::move(subscription));
   }
 
@@ -36,7 +36,7 @@ public:
   {
     std::vector<std::shared_ptr<detail::ISubscription<Event>>> toCancel;
     {
-      CSingleLock lock(m_criticalSection);
+      std::unique_lock<CCriticalSection> lock(m_criticalSection);
       auto it = m_subscriptions.begin();
       while (it != m_subscriptions.end())
       {
@@ -70,13 +70,13 @@ public:
   template<typename A>
   void Publish(A event)
   {
-    CSingleLock lock(this->m_criticalSection);
+    std::unique_lock<CCriticalSection> lock(this->m_criticalSection);
     auto& subscriptions = this->m_subscriptions;
     auto task = [subscriptions, event](){
       for (auto& s: subscriptions)
         s->HandleEvent(event);
     };
-    lock.Leave();
+    lock.unlock();
     m_queue.Submit(std::move(task));
   }
 
@@ -91,7 +91,7 @@ public:
   template<typename A>
   void HandleEvent(A event)
   {
-    CSingleLock lock(this->m_criticalSection);
+    std::unique_lock<CCriticalSection> lock(this->m_criticalSection);
     for (const auto& subscription : this->m_subscriptions)
     {
       subscription->HandleEvent(event);

@@ -14,6 +14,8 @@
 #include "guilib/FFmpegImage.h"
 #include "utils/Mime.h"
 
+#include <mutex>
+
 CCriticalSection ImageFactory::m_createSec;
 
 using namespace KODI::ADDONS;
@@ -42,7 +44,7 @@ IImage* ImageFactory::CreateLoaderFromMimeType(const std::string& strMimeType)
     if (addonInfo.first != ADDON::ADDON_IMAGEDECODER)
       continue;
 
-    CSingleLock lock(m_createSec);
+    std::unique_lock<CCriticalSection> lock(m_createSec);
     std::unique_ptr<CImageDecoder> result =
         std::make_unique<CImageDecoder>(addonInfo.second, strMimeType);
     if (!result->IsCreated())

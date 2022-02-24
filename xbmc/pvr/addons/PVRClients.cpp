@@ -21,6 +21,7 @@
 
 #include <functional>
 #include <memory>
+#include <mutex>
 #include <string>
 #include <utility>
 #include <vector>
@@ -66,7 +67,7 @@ void CPVRClients::Start()
 
 void CPVRClients::Stop()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   for (const auto& client : m_clientMap)
   {
     client.second->Stop();
@@ -75,7 +76,7 @@ void CPVRClients::Stop()
 
 void CPVRClients::Continue()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   for (const auto& client : m_clientMap)
   {
     client.second->Continue();
@@ -111,7 +112,7 @@ void CPVRClients::UpdateAddons(const std::string& changedAddonId /*= ""*/)
   std::vector<AddonInfoPtr> addonsToDestroy;
 
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     for (const auto& addonWithStatus : addonsWithStatus)
     {
       AddonInfoPtr addon = addonWithStatus.first;
@@ -182,7 +183,7 @@ void CPVRClients::UpdateAddons(const std::string& changedAddonId /*= ""*/)
     if (!addonsToCreate.empty())
     {
       // update created clients map
-      CSingleLock lock(m_critSection);
+      std::unique_lock<CCriticalSection> lock(m_critSection);
       for (const auto& addon : addonsToCreate)
       {
         if (m_clientMap.find(addon.second) == m_clientMap.end())
@@ -207,7 +208,7 @@ bool CPVRClients::StopClient(const std::string& id, bool bRestart)
   if (CServiceBroker::GetPVRManager().PlaybackState()->IsPlaying())
     CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   int iId = GetClientId(id);
   std::shared_ptr<CPVRClient> mappedClient;
@@ -260,7 +261,7 @@ bool CPVRClients::GetClient(int iClientId, std::shared_ptr<CPVRClient>& addon) c
   if (iClientId <= PVR_INVALID_CLIENT_ID)
     return bReturn;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   const auto& itr = m_clientMap.find(iClientId);
   if (itr != m_clientMap.end())
   {
@@ -273,7 +274,7 @@ bool CPVRClients::GetClient(int iClientId, std::shared_ptr<CPVRClient>& addon) c
 
 int CPVRClients::GetClientId(const std::string& strId) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   for (const auto& entry : m_clientMap)
   {
     if (entry.second->ID() == strId)
@@ -289,7 +290,7 @@ int CPVRClients::CreatedClientAmount() const
 {
   int iReturn = 0;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   for (const auto& client : m_clientMap)
   {
     if (client.second->ReadyToUse())
@@ -301,7 +302,7 @@ int CPVRClients::CreatedClientAmount() const
 
 bool CPVRClients::HasCreatedClients() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   for (const auto& client : m_clientMap)
   {
     if (client.second->ReadyToUse())
@@ -325,7 +326,7 @@ bool CPVRClients::IsCreatedClient(int iClientId) const
 
 bool CPVRClients::IsCreatedClient(const std::string& id) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   for (const auto& client : m_clientMap)
   {
     if (client.second->ID() == id)
@@ -346,7 +347,7 @@ int CPVRClients::GetCreatedClients(CPVRClientMap& clients) const
 {
   int iReturn = 0;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   for (const auto& client : m_clientMap)
   {
     if (client.second->ReadyToUse())
@@ -365,7 +366,7 @@ std::vector<CVariant> CPVRClients::GetClientProviderInfos() const
   // Get enabled and disabled PVR client addon infos
   CServiceBroker::GetAddonMgr().GetAddonInfos(addonInfos, false, ADDON_PVRDLL);
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   std::vector<CVariant> clientProviderInfos;
   for (const auto& addonInfo : addonInfos)
@@ -392,7 +393,7 @@ std::vector<CVariant> CPVRClients::GetClientProviderInfos() const
 
 int CPVRClients::GetFirstCreatedClientID()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   for (const auto& client : m_clientMap)
   {
     if (client.second->ReadyToUse())
@@ -435,7 +436,7 @@ int CPVRClients::EnabledClientAmount() const
 
   CPVRClientMap clientMap;
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     clientMap = m_clientMap;
   }
 
@@ -461,7 +462,7 @@ std::vector<CVariant> CPVRClients::GetEnabledClientInfos() const
 
   CPVRClientMap clientMap;
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     clientMap = m_clientMap;
   }
 
@@ -496,7 +497,7 @@ std::vector<CVariant> CPVRClients::GetEnabledClientInfos() const
 
 bool CPVRClients::HasIgnoredClients() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   for (const auto& client : m_clientMap)
   {
     if (client.second->IgnoreClient())
@@ -888,7 +889,7 @@ PVR_ERROR CPVRClients::ForClients(const char* strFunctionName,
   failedClients.clear();
 
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     for (const auto& entry : m_clientMap)
     {
       if (entry.second->ReadyToUse() && !entry.second->IgnoreClient() &&

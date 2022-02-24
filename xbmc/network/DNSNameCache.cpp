@@ -8,9 +8,11 @@
 
 #include "DNSNameCache.h"
 
-#include "threads/SingleLock.h"
+#include "threads/CriticalSection.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
+
+#include <mutex>
 
 #if !defined(TARGET_WINDOWS) && defined(HAS_FILESYSTEM_SMB)
 #include "ServiceBroker.h"
@@ -113,7 +115,7 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
 bool CDNSNameCache::GetCached(const std::string& strHostName, std::string& strIpAddress)
 {
   {
-    CSingleLock lock(m_critical);
+    std::unique_lock<CCriticalSection> lock(m_critical);
 
     // loop through all DNSname entries and see if strHostName is cached
     for (const auto& DNSname : g_DNSCache.m_vecDNSNames)
@@ -150,7 +152,7 @@ void CDNSNameCache::Add(const std::string& strHostName, const std::string& strIp
   dnsName.m_strHostName = strHostName;
   dnsName.m_strIpAddress  = strIpAddress;
 
-  CSingleLock lock(m_critical);
+  std::unique_lock<CCriticalSection> lock(m_critical);
   g_DNSCache.m_vecDNSNames.push_back(dnsName);
 }
 

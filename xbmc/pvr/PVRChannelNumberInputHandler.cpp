@@ -11,11 +11,11 @@
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 
 #include <algorithm>
 #include <cstdlib>
+#include <mutex>
 #include <string>
 
 using namespace std::chrono_literals;
@@ -39,7 +39,7 @@ void CPVRChannelNumberInputHandler::OnTimeout()
 {
   if (m_inputBuffer.empty())
   {
-    CSingleLock lock(m_mutex);
+    std::unique_lock<CCriticalSection> lock(m_mutex);
     m_label.erase();
   }
   else
@@ -47,7 +47,7 @@ void CPVRChannelNumberInputHandler::OnTimeout()
     // call the overridden worker method
     OnInputDone();
 
-    CSingleLock lock(m_mutex);
+    std::unique_lock<CCriticalSection> lock(m_mutex);
 
     // erase input buffer immediately , but...
     m_inputBuffer.erase();
@@ -83,7 +83,7 @@ void CPVRChannelNumberInputHandler::AppendChannelNumberCharacter(char cCharacter
   if (cCharacter != CPVRChannelNumber::SEPARATOR && (cCharacter < '0' || cCharacter > '9'))
     return;
 
-  CSingleLock lock(m_mutex);
+  std::unique_lock<CCriticalSection> lock(m_mutex);
 
   if (cCharacter == CPVRChannelNumber::SEPARATOR)
   {
@@ -144,7 +144,7 @@ CPVRChannelNumber CPVRChannelNumberInputHandler::GetChannelNumber() const
   int iChannelNumber = 0;
   int iSubChannelNumber = 0;
 
-  CSingleLock lock(m_mutex);
+  std::unique_lock<CCriticalSection> lock(m_mutex);
 
   size_t pos = m_inputBuffer.find(CPVRChannelNumber::SEPARATOR);
   if (pos != std::string::npos)
@@ -173,7 +173,7 @@ bool CPVRChannelNumberInputHandler::HasChannelNumber() const
 
 std::string CPVRChannelNumberInputHandler::GetChannelNumberLabel() const
 {
-  CSingleLock lock(m_mutex);
+  std::unique_lock<CCriticalSection> lock(m_mutex);
   return m_label;
 }
 

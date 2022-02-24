@@ -15,8 +15,9 @@
 #include "DVDSubtitles/DVDSubtitleParser.h"
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
-#include "threads/SingleLock.h"
 #include "utils/log.h"
+
+#include <mutex>
 
 CVideoPlayerSubtitle::CVideoPlayerSubtitle(CDVDOverlayContainer* pOverlayContainer, CProcessInfo &processInfo)
 : IDVDStreamPlayer(processInfo)
@@ -38,7 +39,7 @@ void CVideoPlayerSubtitle::Flush()
 
 void CVideoPlayerSubtitle::SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priority)
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
 
   if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
   {
@@ -115,7 +116,7 @@ void CVideoPlayerSubtitle::SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priori
 
 bool CVideoPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, std::string &filename)
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
 
   CloseStream(true);
   m_streaminfo = hints;
@@ -160,7 +161,7 @@ bool CVideoPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, std::string &filena
 
 void CVideoPlayerSubtitle::CloseStream(bool bWaitForBuffers)
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
 
   m_pSubtitleFileParser.reset();
   m_pOverlayCodec.reset();
@@ -173,7 +174,7 @@ void CVideoPlayerSubtitle::CloseStream(bool bWaitForBuffers)
 
 void CVideoPlayerSubtitle::Process(double pts, double offset)
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
 
   if (m_pSubtitleFileParser)
   {

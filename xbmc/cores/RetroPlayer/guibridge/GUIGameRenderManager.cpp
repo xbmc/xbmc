@@ -15,7 +15,8 @@
 #include "GUIRenderTargetFactory.h"
 #include "IGameCallback.h"
 #include "IRenderCallback.h"
-#include "threads/SingleLock.h"
+
+#include <mutex>
 
 using namespace KODI;
 using namespace RETRO;
@@ -28,20 +29,20 @@ void CGUIGameRenderManager::RegisterPlayer(CGUIRenderTargetFactory* factory,
 {
   // Set factory
   {
-    CSingleLock lock(m_targetMutex);
+    std::unique_lock<CCriticalSection> lock(m_targetMutex);
     m_factory = factory;
     UpdateRenderTargets();
   }
 
   // Set callback
   {
-    CSingleLock lock(m_callbackMutex);
+    std::unique_lock<CCriticalSection> lock(m_callbackMutex);
     m_callback = callback;
   }
 
   // Set game callback
   {
-    CSingleLock lock(m_gameCallbackMutex);
+    std::unique_lock<CCriticalSection> lock(m_gameCallbackMutex);
     m_gameCallback = gameCallback;
   }
 }
@@ -50,19 +51,19 @@ void CGUIGameRenderManager::UnregisterPlayer()
 {
   // Reset game callback
   {
-    CSingleLock lock(m_gameCallbackMutex);
+    std::unique_lock<CCriticalSection> lock(m_gameCallbackMutex);
     m_gameCallback = nullptr;
   }
 
   // Reset callback
   {
-    CSingleLock lock(m_callbackMutex);
+    std::unique_lock<CCriticalSection> lock(m_callbackMutex);
     m_callback = nullptr;
   }
 
   // Reset factory
   {
-    CSingleLock lock(m_targetMutex);
+    std::unique_lock<CCriticalSection> lock(m_targetMutex);
     m_factory = nullptr;
     UpdateRenderTargets();
   }
@@ -70,7 +71,7 @@ void CGUIGameRenderManager::UnregisterPlayer()
 
 std::shared_ptr<CGUIRenderHandle> CGUIGameRenderManager::RegisterControl(CGUIGameControl& control)
 {
-  CSingleLock lock(m_targetMutex);
+  std::unique_lock<CCriticalSection> lock(m_targetMutex);
 
   // Create handle for game control
   std::shared_ptr<CGUIRenderHandle> renderHandle(new CGUIRenderControlHandle(*this, control));
@@ -87,7 +88,7 @@ std::shared_ptr<CGUIRenderHandle> CGUIGameRenderManager::RegisterControl(CGUIGam
 std::shared_ptr<CGUIRenderHandle> CGUIGameRenderManager::RegisterWindow(
     CGameWindowFullScreen& window)
 {
-  CSingleLock lock(m_targetMutex);
+  std::unique_lock<CCriticalSection> lock(m_targetMutex);
 
   // Create handle for game window
   std::shared_ptr<CGUIRenderHandle> renderHandle(new CGUIRenderFullScreenHandle(*this, window));
@@ -114,14 +115,14 @@ std::shared_ptr<CGUIGameSettingsHandle> CGUIGameRenderManager::RegisterGameSetti
 
 void CGUIGameRenderManager::UnregisterHandle(CGUIRenderHandle* handle)
 {
-  CSingleLock lock(m_targetMutex);
+  std::unique_lock<CCriticalSection> lock(m_targetMutex);
 
   m_renderTargets.erase(handle);
 }
 
 void CGUIGameRenderManager::Render(CGUIRenderHandle* handle)
 {
-  CSingleLock lock(m_targetMutex);
+  std::unique_lock<CCriticalSection> lock(m_targetMutex);
 
   auto it = m_renderTargets.find(handle);
   if (it != m_renderTargets.end())
@@ -134,7 +135,7 @@ void CGUIGameRenderManager::Render(CGUIRenderHandle* handle)
 
 void CGUIGameRenderManager::RenderEx(CGUIRenderHandle* handle)
 {
-  CSingleLock lock(m_targetMutex);
+  std::unique_lock<CCriticalSection> lock(m_targetMutex);
 
   auto it = m_renderTargets.find(handle);
   if (it != m_renderTargets.end())
@@ -147,7 +148,7 @@ void CGUIGameRenderManager::RenderEx(CGUIRenderHandle* handle)
 
 void CGUIGameRenderManager::ClearBackground(CGUIRenderHandle* handle)
 {
-  CSingleLock lock(m_targetMutex);
+  std::unique_lock<CCriticalSection> lock(m_targetMutex);
 
   auto it = m_renderTargets.find(handle);
   if (it != m_renderTargets.end())
@@ -160,7 +161,7 @@ void CGUIGameRenderManager::ClearBackground(CGUIRenderHandle* handle)
 
 bool CGUIGameRenderManager::IsDirty(CGUIRenderHandle* handle)
 {
-  CSingleLock lock(m_targetMutex);
+  std::unique_lock<CCriticalSection> lock(m_targetMutex);
 
   auto it = m_renderTargets.find(handle);
   if (it != m_renderTargets.end())
@@ -175,14 +176,14 @@ bool CGUIGameRenderManager::IsDirty(CGUIRenderHandle* handle)
 
 bool CGUIGameRenderManager::IsPlayingGame()
 {
-  CSingleLock lock(m_callbackMutex);
+  std::unique_lock<CCriticalSection> lock(m_callbackMutex);
 
   return m_callback != nullptr;
 }
 
 bool CGUIGameRenderManager::SupportsRenderFeature(RENDERFEATURE feature)
 {
-  CSingleLock lock(m_callbackMutex);
+  std::unique_lock<CCriticalSection> lock(m_callbackMutex);
 
   if (m_callback != nullptr)
     return m_callback->SupportsRenderFeature(feature);
@@ -192,7 +193,7 @@ bool CGUIGameRenderManager::SupportsRenderFeature(RENDERFEATURE feature)
 
 bool CGUIGameRenderManager::SupportsScalingMethod(SCALINGMETHOD method)
 {
-  CSingleLock lock(m_callbackMutex);
+  std::unique_lock<CCriticalSection> lock(m_callbackMutex);
 
   if (m_callback != nullptr)
     return m_callback->SupportsScalingMethod(method);
@@ -202,7 +203,7 @@ bool CGUIGameRenderManager::SupportsScalingMethod(SCALINGMETHOD method)
 
 std::string CGUIGameRenderManager::GameClientID()
 {
-  CSingleLock lock(m_callbackMutex);
+  std::unique_lock<CCriticalSection> lock(m_callbackMutex);
 
   if (m_gameCallback != nullptr)
     return m_gameCallback->GameClientID();

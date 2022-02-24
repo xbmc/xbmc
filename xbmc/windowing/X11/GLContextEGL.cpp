@@ -11,15 +11,19 @@
   #define GL_GLEXT_PROTOTYPES
 #endif
 
-#include <clocale>
-#include "system_gl.h"
 #include "GLContextEGL.h"
-#include "utils/log.h"
-#include <EGL/eglext.h>
+
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "threads/SingleLock.h"
+#include "utils/log.h"
+
+#include <clocale>
+#include <mutex>
+
+#include <EGL/eglext.h>
+
+#include "system_gl.h"
 
 #define EGL_NO_CONFIG (EGLConfig)0
 
@@ -491,7 +495,7 @@ void CGLContextEGL::SwapBuffers()
     msc2++;
   }
   {
-    CSingleLock lock(m_syncLock);
+    std::unique_lock<CCriticalSection> lock(m_syncLock);
     m_sync.ust1 = ust1;
     m_sync.ust2 = ust2;
     m_sync.msc1 = msc1;
@@ -509,7 +513,7 @@ uint64_t CGLContextEGL::GetVblankTiming(uint64_t &msc, uint64_t &interval)
   now = static_cast<uint64_t>(nowTs.tv_sec) * 1000000000ULL + nowTs.tv_nsec;
   now /= 1000;
 
-  CSingleLock lock(m_syncLock);
+  std::unique_lock<CCriticalSection> lock(m_syncLock);
   msc = m_sync.msc2;
 
   interval = (m_sync.cont >= 5) ? m_sync.interval : m_sync.ust2 - m_sync.ust1;

@@ -9,7 +9,8 @@
 #include "GUIRenderSettings.h"
 
 #include "GUIGameControl.h"
-#include "threads/SingleLock.h"
+
+#include <mutex>
 
 using namespace KODI;
 using namespace RETRO;
@@ -35,56 +36,56 @@ bool CGUIRenderSettings::HasRotation() const
 
 CRenderSettings CGUIRenderSettings::GetSettings() const
 {
-  CSingleLock lock(m_mutex);
+  std::unique_lock<CCriticalSection> lock(m_mutex);
 
   return m_renderSettings;
 }
 
 CRect CGUIRenderSettings::GetDimensions() const
 {
-  CSingleLock lock(m_mutex);
+  std::unique_lock<CCriticalSection> lock(m_mutex);
 
   return m_renderDimensions;
 }
 
 void CGUIRenderSettings::Reset()
 {
-  CSingleLock lock(m_mutex);
+  std::unique_lock<CCriticalSection> lock(m_mutex);
 
   return m_renderSettings.Reset();
 }
 
 void CGUIRenderSettings::SetSettings(CRenderSettings settings)
 {
-  CSingleLock lock(m_mutex);
+  std::unique_lock<CCriticalSection> lock(m_mutex);
 
   m_renderSettings = settings;
 }
 
 void CGUIRenderSettings::SetDimensions(const CRect& dimensions)
 {
-  CSingleLock lock(m_mutex);
+  std::unique_lock<CCriticalSection> lock(m_mutex);
 
   m_renderDimensions = dimensions;
 }
 
 void CGUIRenderSettings::SetVideoFilter(const std::string& videoFilter)
 {
-  CSingleLock lock(m_mutex);
+  std::unique_lock<CCriticalSection> lock(m_mutex);
 
   m_renderSettings.VideoSettings().SetVideoFilter(videoFilter);
 }
 
 void CGUIRenderSettings::SetStretchMode(STRETCHMODE stretchMode)
 {
-  CSingleLock lock(m_mutex);
+  std::unique_lock<CCriticalSection> lock(m_mutex);
 
   m_renderSettings.VideoSettings().SetRenderStretchMode(stretchMode);
 }
 
 void CGUIRenderSettings::SetRotationDegCCW(unsigned int rotationDegCCW)
 {
-  CSingleLock lock(m_mutex);
+  std::unique_lock<CCriticalSection> lock(m_mutex);
 
   m_renderSettings.VideoSettings().SetRenderRotation(rotationDegCCW);
 }

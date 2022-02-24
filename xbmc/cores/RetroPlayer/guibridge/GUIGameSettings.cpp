@@ -11,7 +11,8 @@
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
 #include "cores/RetroPlayer/rendering/RenderContext.h"
 #include "settings/GameSettings.h"
-#include "threads/SingleLock.h"
+
+#include <mutex>
 
 using namespace KODI;
 using namespace RETRO;
@@ -34,7 +35,7 @@ CGUIGameSettings::~CGUIGameSettings()
 
 CRenderSettings CGUIGameSettings::GetSettings() const
 {
-  CSingleLock lock(m_mutex);
+  std::unique_lock<CCriticalSection> lock(m_mutex);
 
   return m_renderSettings;
 }
@@ -55,7 +56,7 @@ void CGUIGameSettings::Notify(const Observable& obs, const ObservableMessage msg
 
 void CGUIGameSettings::UpdateSettings()
 {
-  CSingleLock lock(m_mutex);
+  std::unique_lock<CCriticalSection> lock(m_mutex);
 
   // Get settings from GUI
   std::string videoFilter = m_guiSettings.VideoFilter();

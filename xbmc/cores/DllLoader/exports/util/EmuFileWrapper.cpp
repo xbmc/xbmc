@@ -9,7 +9,8 @@
 #include "EmuFileWrapper.h"
 
 #include "filesystem/File.h"
-#include "threads/SingleLock.h"
+
+#include <mutex>
 
 CEmuFileWrapper g_emuFileWrapper;
 
@@ -40,7 +41,7 @@ CEmuFileWrapper::~CEmuFileWrapper()
 
 void CEmuFileWrapper::CleanUp()
 {
-  CSingleLock lock(m_criticalSection);
+  std::unique_lock<CCriticalSection> lock(m_criticalSection);
   for (EmuFileObject& file : m_files)
   {
     if (file.used)
@@ -63,7 +64,7 @@ EmuFileObject* CEmuFileWrapper::RegisterFileObject(XFILE::CFile* pFile)
 {
   EmuFileObject* object = nullptr;
 
-  CSingleLock lock(m_criticalSection);
+  std::unique_lock<CCriticalSection> lock(m_criticalSection);
 
   for (int i = 0; i < MAX_EMULATED_FILES; i++)
   {
@@ -91,7 +92,7 @@ void CEmuFileWrapper::UnRegisterFileObjectByDescriptor(int fd)
   if (!m_files[i].used)
     return;
 
-  CSingleLock lock(m_criticalSection);
+  std::unique_lock<CCriticalSection> lock(m_criticalSection);
 
   // we assume the emulated function already deleted the CFile object
   if (m_files[i].file_lock)

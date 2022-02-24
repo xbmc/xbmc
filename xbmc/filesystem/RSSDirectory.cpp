@@ -15,7 +15,6 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "threads/SingleLock.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/HTMLUtil.h"
 #include "utils/StringUtils.h"
@@ -26,6 +25,7 @@
 #include "video/VideoInfoTag.h"
 
 #include <climits>
+#include <mutex>
 #include <utility>
 
 using namespace XFILE;
@@ -547,7 +547,7 @@ bool CRSSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   URIUtils::RemoveSlashAtEnd(strPath);
   std::map<std::string,CDateTime>::iterator it;
   items.SetPath(strPath);
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
   if ((it=m_cache.find(strPath)) != m_cache.end())
   {
     if (it->second > CDateTime::GetCurrentDateTime() &&
@@ -555,7 +555,7 @@ bool CRSSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       return true;
     m_cache.erase(it);
   }
-  lock.Leave();
+  lock.unlock();
 
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(strPath))
@@ -610,7 +610,7 @@ bool CRSSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   time += CDateTimeSpan(0,0,mins,0);
   items.SetPath(strPath);
   items.Save();
-  CSingleLock lock2(m_section);
+  std::unique_lock<CCriticalSection> lock2(m_section);
   m_cache.insert(make_pair(strPath,time));
 
   return true;

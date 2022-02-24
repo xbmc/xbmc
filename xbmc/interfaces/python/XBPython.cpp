@@ -8,6 +8,7 @@
 
 // clang-format off
 // python.h should always be included first before any other includes
+#include <mutex>
 #include <Python.h>
 // clang-format on
 
@@ -60,7 +61,7 @@ XBPython::~XBPython()
 #define LOCK_AND_COPY(type, dest, src) \
   if (!m_bInitialized) \
     return; \
-  CSingleLock lock(src); \
+  std::unique_lock<CCriticalSection> lock(src); \
   src.hadSomethingRemoved = false; \
   type dest; \
   dest = src
@@ -264,14 +265,14 @@ void XBPython::OnQueueNextItem()
 void XBPython::RegisterPythonPlayerCallBack(IPlayerCallback* pCallback)
 {
   XBMC_TRACE;
-  CSingleLock lock(m_vecPlayerCallbackList);
+  std::unique_lock<CCriticalSection> lock(m_vecPlayerCallbackList);
   m_vecPlayerCallbackList.push_back(pCallback);
 }
 
 void XBPython::UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback)
 {
   XBMC_TRACE;
-  CSingleLock lock(m_vecPlayerCallbackList);
+  std::unique_lock<CCriticalSection> lock(m_vecPlayerCallbackList);
   PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
   while (it != m_vecPlayerCallbackList.end())
   {
@@ -288,14 +289,14 @@ void XBPython::UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback)
 void XBPython::RegisterPythonMonitorCallBack(XBMCAddon::xbmc::Monitor* pCallback)
 {
   XBMC_TRACE;
-  CSingleLock lock(m_vecMonitorCallbackList);
+  std::unique_lock<CCriticalSection> lock(m_vecMonitorCallbackList);
   m_vecMonitorCallbackList.push_back(pCallback);
 }
 
 void XBPython::UnregisterPythonMonitorCallBack(XBMCAddon::xbmc::Monitor* pCallback)
 {
   XBMC_TRACE;
-  CSingleLock lock(m_vecMonitorCallbackList);
+  std::unique_lock<CCriticalSection> lock(m_vecMonitorCallbackList);
   MonitorCallbackList::iterator it = m_vecMonitorCallbackList.begin();
   while (it != m_vecMonitorCallbackList.end())
   {
@@ -432,7 +433,7 @@ void XBPython::Uninitialize()
   m_vecPyList.clear();
   m_vecPyList.hadSomethingRemoved = true;
 
-  lock.Leave(); //unlock here because the python thread might lock when it exits
+  lock.unlock(); //unlock here because the python thread might lock when it exits
 
   // cleanup threads that are still running
   tmpvec.clear();
@@ -443,7 +444,7 @@ void XBPython::Process()
   if (m_bInitialized)
   {
     PyList tmpvec;
-    CSingleLock lock(m_vecPyList);
+    std::unique_lock<CCriticalSection> lock(m_vecPyList);
     for (PyList::iterator it = m_vecPyList.begin(); it != m_vecPyList.end();)
     {
       if (it->bDone)
@@ -455,7 +456,7 @@ void XBPython::Process()
       else
         ++it;
     }
-    lock.Leave();
+    lock.unlock();
 
     //delete scripts which are done
     tmpvec.clear();
@@ -469,7 +470,7 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker* invoker)
 
   XBMC_TRACE;
   CLog::Log(LOGDEBUG, "initializing python engine.");
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   m_iDllScriptCounter++;
   if (!m_bInitialized)
   {
@@ -560,7 +561,7 @@ void XBPython::OnScriptStarted(ILanguageInvoker* invoker)
   inf.id = invoker->GetId();
   inf.bDone = false;
   inf.pyThread = static_cast<CPythonInvoker*>(invoker);
-  CSingleLock lock(m_vecPyList);
+  std::unique_lock<CCriticalSection> lock(m_vecPyList);
   m_vecPyList.push_back(inf);
 }
 
@@ -585,7 +586,7 @@ void XBPython::NotifyScriptAborting(ILanguageInvoker* invoker)
 
 void XBPython::OnExecutionEnded(ILanguageInvoker* invoker)
 {
-  CSingleLock lock(m_vecPyList);
+  std::unique_lock<CCriticalSection> lock(m_vecPyList);
   PyList::iterator it = m_vecPyList.begin();
   while (it != m_vecPyList.end())
   {
@@ -604,7 +605,7 @@ void XBPython::OnExecutionEnded(ILanguageInvoker* invoker)
 void XBPython::OnScriptFinalized(ILanguageInvoker* invoker)
 {
   XBMC_TRACE;
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   // for linux - we never release the library. its loaded and stays in memory.
   if (m_iDllScriptCounter)
     m_iDllScriptCounter--;

@@ -19,6 +19,7 @@
 #include "utils/BitstreamStats.h"
 
 #include <list>
+#include <mutex>
 #include <utility>
 
 
@@ -55,7 +56,11 @@ public:
   std::string GetPlayerInfo() override;
   int GetAudioChannels() override;
 
-  double GetCurrentPts() override { CSingleLock lock(m_info_section); return m_info.pts; }
+  double GetCurrentPts() override
+  {
+    std::unique_lock<CCriticalSection> lock(m_info_section);
+    return m_info.pts;
+  }
 
   bool IsStalled() const override { return m_stalled;  }
   bool IsPassthrough() const override;

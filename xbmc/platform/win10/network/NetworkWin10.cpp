@@ -7,22 +7,24 @@
  */
 
 #include "NetworkWin10.h"
+
 #include "filesystem/SpecialProtocol.h"
+#include "settings/Settings.h"
+#include "utils/StringUtils.h"
+#include "utils/log.h"
+
 #include "platform/win10/AsyncHelpers.h"
 #include "platform/win32/WIN32Util.h"
-#include "settings/Settings.h"
-#include "threads/SingleLock.h"
-#include "utils/log.h"
-#include "utils/StringUtils.h"
 
 #include <errno.h>
-#include <iphlpapi.h>
-#include <ppltasks.h>
+#include <mutex>
 #include <string.h>
-#include <Ws2tcpip.h>
-#include <ws2ipdef.h>
 
 #include <Ipexport.h>
+#include <Ws2tcpip.h>
+#include <iphlpapi.h>
+#include <ppltasks.h>
+#include <ws2ipdef.h>
 #ifndef IP_STATUS_BASE
 
 // --- c&p from Ipexport.h ----------------
@@ -161,10 +163,12 @@ std::string CNetworkInterfaceWin10::GetCurrentDefaultGateway(void) const
 CNetworkWin10::CNetworkWin10() : CNetworkBase()
 {
   queryInterfaceList();
-  NetworkInformation::NetworkStatusChanged([this](auto&&) {
-    CSingleLock lock(m_critSection);
-    queryInterfaceList();
-  });
+  NetworkInformation::NetworkStatusChanged(
+      [this](auto&&)
+      {
+        std::unique_lock<CCriticalSection> lock(m_critSection);
+        queryInterfaceList();
+      });
 }
 
 CNetworkWin10::~CNetworkWin10(void)
@@ -185,13 +189,13 @@ void CNetworkWin10::CleanInterfaceList()
 
 std::vector<CNetworkInterface*>& CNetworkWin10::GetInterfaceList(void)
 {
-  CSingleLock lock (m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_interfaces;
 }
 
 CNetworkInterface* CNetworkWin10::GetFirstConnectedInterface()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   for (CNetworkInterface* intf : m_interfaces)
   {
     if (intf->IsEnabled() && intf->IsConnected() && !intf->GetCurrentDefaultGateway().empty())

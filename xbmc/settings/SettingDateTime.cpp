@@ -10,6 +10,8 @@
 
 #include "XBDateTime.h"
 
+#include <shared_mutex>
+
 CSettingDate::CSettingDate(const std::string &id, CSettingsManager *settingsManager /* = NULL */)
   : CSettingString(id, settingsManager)
 { }
@@ -29,7 +31,7 @@ SettingPtr CSettingDate::Clone(const std::string &id) const
 
 bool CSettingDate::CheckValidity(const std::string &value) const
 {
-  CSharedLock lock(m_critical);
+  std::shared_lock<CSharedSection> lock(m_critical);
 
   if (!CSettingString::CheckValidity(value))
     return false;
@@ -56,7 +58,7 @@ SettingPtr CSettingTime::Clone(const std::string &id) const
 
 bool CSettingTime::CheckValidity(const std::string &value) const
 {
-  CSharedLock lock(m_critical);
+  std::shared_lock<CSharedSection> lock(m_critical);
 
   if (!CSettingString::CheckValidity(value))
     return false;

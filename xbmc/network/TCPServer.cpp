@@ -7,21 +7,23 @@
  */
 
 #include "TCPServer.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <memory.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
 
+#include "Network.h"
+#include "interfaces/AnnouncementManager.h"
+#include "interfaces/json-rpc/JSONRPC.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "interfaces/json-rpc/JSONRPC.h"
-#include "interfaces/AnnouncementManager.h"
-#include "utils/log.h"
 #include "utils/Variant.h"
-#include "threads/SingleLock.h"
+#include "utils/log.h"
 #include "websocket/WebSocketManager.h"
-#include "Network.h"
+
+#include <mutex>
+#include <stdio.h>
+#include <stdlib.h>
+
+#include <arpa/inet.h>
+#include <memory.h>
+#include <netinet/in.h>
 
 using namespace std::chrono_literals;
 
@@ -242,7 +244,7 @@ void CTCPServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
   for (unsigned int i = 0; i < m_connections.size(); i++)
   {
     {
-      CSingleLock lock (m_connections[i]->m_critSection);
+      std::unique_lock<CCriticalSection> lock(m_connections[i]->m_critSection);
       if ((m_connections[i]->GetAnnouncementFlags() & flag) == 0)
         continue;
     }
@@ -543,7 +545,7 @@ void CTCPServer::CTCPClient::Send(const char *data, unsigned int size)
   unsigned int sent = 0;
   do
   {
-    CSingleLock lock (m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     sent += send(m_socket, data + sent, size - sent, 0);
   } while (sent < size);
 }
@@ -624,7 +626,7 @@ void CTCPServer::CTCPClient::Disconnect()
 {
   if (m_socket > 0)
   {
-    CSingleLock lock (m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     shutdown(m_socket, SHUT_RDWR);
     closesocket(m_socket);
     m_socket = INVALID_SOCKET;

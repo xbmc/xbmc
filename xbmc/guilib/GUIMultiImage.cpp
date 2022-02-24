@@ -22,6 +22,8 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
+#include <mutex>
+
 using namespace KODI::GUILIB;
 using namespace XFILE;
 
@@ -234,7 +236,7 @@ void CGUIMultiImage::LoadDirectory()
     return;
   }
   // slow(er) checks necessary - do them in the background
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
   m_directoryStatus = LOADING;
   m_jobID = CJobManager::GetInstance().AddJob(new CMultiImageJob(m_currentPath), this, CJob::PRIORITY_NORMAL);
 }
@@ -256,7 +258,7 @@ void CGUIMultiImage::OnDirectoryLoaded()
 
 void CGUIMultiImage::CancelLoading()
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
   if (m_directoryStatus == LOADING)
     CJobManager::GetInstance().CancelJob(m_jobID);
   m_directoryStatus = UNLOADED;
@@ -264,7 +266,7 @@ void CGUIMultiImage::CancelLoading()
 
 void CGUIMultiImage::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
-  CSingleLock lock(m_section);
+  std::unique_lock<CCriticalSection> lock(m_section);
   if (m_directoryStatus == LOADING && strncmp(job->GetType(), "multiimage", 10) == 0)
   {
     m_files = ((CMultiImageJob *)job)->m_files;

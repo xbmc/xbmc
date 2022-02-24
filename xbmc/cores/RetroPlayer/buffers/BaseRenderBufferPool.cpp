@@ -10,8 +10,9 @@
 
 #include "IRenderBuffer.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPBaseRenderer.h"
-#include "threads/SingleLock.h"
 #include "utils/log.h"
+
+#include <mutex>
 
 using namespace KODI;
 using namespace RETRO;
@@ -23,14 +24,14 @@ CBaseRenderBufferPool::~CBaseRenderBufferPool()
 
 void CBaseRenderBufferPool::RegisterRenderer(CRPBaseRenderer* renderer)
 {
-  CSingleLock lock(m_rendererMutex);
+  std::unique_lock<CCriticalSection> lock(m_rendererMutex);
 
   m_renderers.push_back(renderer);
 }
 
 void CBaseRenderBufferPool::UnregisterRenderer(CRPBaseRenderer* renderer)
 {
-  CSingleLock lock(m_rendererMutex);
+  std::unique_lock<CCriticalSection> lock(m_rendererMutex);
 
   m_renderers.erase(std::remove(m_renderers.begin(), m_renderers.end(), renderer),
                     m_renderers.end());
@@ -38,7 +39,7 @@ void CBaseRenderBufferPool::UnregisterRenderer(CRPBaseRenderer* renderer)
 
 bool CBaseRenderBufferPool::HasVisibleRenderer() const
 {
-  CSingleLock lock(m_rendererMutex);
+  std::unique_lock<CCriticalSection> lock(m_rendererMutex);
 
   for (auto renderer : m_renderers)
   {
@@ -70,7 +71,7 @@ IRenderBuffer* CBaseRenderBufferPool::GetBuffer(unsigned int width, unsigned int
 
   if (GetHeaderWithTimeout(header))
   {
-    CSingleLock lock(m_bufferMutex);
+    std::unique_lock<CCriticalSection> lock(m_bufferMutex);
 
     for (auto it = m_free.begin(); it != m_free.end(); ++it)
     {
@@ -114,7 +115,7 @@ IRenderBuffer* CBaseRenderBufferPool::GetBuffer(unsigned int width, unsigned int
 
 void CBaseRenderBufferPool::Return(IRenderBuffer* buffer)
 {
-  CSingleLock lock(m_bufferMutex);
+  std::unique_lock<CCriticalSection> lock(m_bufferMutex);
 
   buffer->SetLoaded(false);
   buffer->SetRendered(false);
@@ -125,7 +126,7 @@ void CBaseRenderBufferPool::Return(IRenderBuffer* buffer)
 
 void CBaseRenderBufferPool::Prime(unsigned int width, unsigned int height)
 {
-  CSingleLock lock(m_bufferMutex);
+  std::unique_lock<CCriticalSection> lock(m_bufferMutex);
 
   // Allocate two buffers for double buffering
   unsigned int bufferCount = 2;
@@ -148,7 +149,7 @@ void CBaseRenderBufferPool::Prime(unsigned int width, unsigned int height)
 
 void CBaseRenderBufferPool::Flush()
 {
-  CSingleLock lock(m_bufferMutex);
+  std::unique_lock<CCriticalSection> lock(m_bufferMutex);
 
   m_free.clear();
   m_bConfigured = false;

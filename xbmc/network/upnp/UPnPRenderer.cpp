@@ -34,6 +34,7 @@
 #include "xbmc/interfaces/AnnouncementManager.h"
 
 #include <inttypes.h>
+#include <mutex>
 
 #include <Platinum/Source/Platinum/Platinum.h>
 
@@ -585,12 +586,13 @@ CUPnPRenderer::OnSetNextAVTransportURI(PLT_ActionReference& action)
         if(item->IsVideo())
           playlist = PLAYLIST_VIDEO;
 
-        {   CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
-            CServiceBroker::GetPlaylistPlayer().ClearPlaylist(playlist);
-            CServiceBroker::GetPlaylistPlayer().Add(playlist, item);
+        {
+          std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+          CServiceBroker::GetPlaylistPlayer().ClearPlaylist(playlist);
+          CServiceBroker::GetPlaylistPlayer().Add(playlist, item);
 
-            CServiceBroker::GetPlaylistPlayer().SetCurrentSong(-1);
-            CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(playlist);
+          CServiceBroker::GetPlaylistPlayer().SetCurrentSong(-1);
+          CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(playlist);
         }
 
         CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);

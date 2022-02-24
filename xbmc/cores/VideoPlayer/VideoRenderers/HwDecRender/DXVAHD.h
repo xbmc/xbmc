@@ -13,6 +13,8 @@
 #include "guilib/D3DResource.h"
 #include "utils/Geometry.h"
 
+#include <mutex>
+
 #include <wrl/client.h>
 
 class CRenderBuffer;
@@ -46,7 +48,11 @@ public:
 
   // ID3DResource overrides
   void OnCreateDevice() override  {}
-  void OnDestroyDevice(bool) override { CSingleLock lock(m_section); UnInit(); }
+  void OnDestroyDevice(bool) override
+  {
+    std::unique_lock<CCriticalSection> lock(m_section);
+    UnInit();
+  }
 
   static DXGI_COLOR_SPACE_TYPE GetDXGIColorSpaceSource(CRenderBuffer* view, bool supportHDR, bool supportHLG);
   static DXGI_COLOR_SPACE_TYPE GetDXGIColorSpaceTarget(CRenderBuffer* view, bool supportHDR);

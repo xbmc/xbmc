@@ -22,6 +22,8 @@
 #include "windows/RendererShaders.h"
 #include "windows/RendererSoftware.h"
 
+#include <mutex>
+
 struct render_details
 {
   using map = std::map<RenderMethod, int>;
@@ -247,14 +249,14 @@ void CWinRenderer::SetBufferSize(int numBuffers)
 
 void CWinRenderer::PreInit()
 {
-  CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
   m_bConfigured = false;
   UnInit();
 }
 
 void CWinRenderer::UnInit()
 {
-  CSingleLock lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
   m_renderer.reset();
   m_bConfigured = false;

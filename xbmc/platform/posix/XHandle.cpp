@@ -8,10 +8,10 @@
 
 #include "XHandle.h"
 
-#include "threads/SingleLock.h"
 #include "utils/log.h"
 
 #include <cassert>
+#include <mutex>
 
 int CXHandle::m_objectTracker[10] = {};
 
@@ -124,7 +124,7 @@ bool CloseHandle(HANDLE hObject) {
 
   bool bDelete = false;
   {
-    CSingleLock lock((*hObject->m_internalLock));
+    std::unique_lock<CCriticalSection> lock((*hObject->m_internalLock));
     if (--hObject->m_nRefCount == 0)
       bDelete = true;
   }

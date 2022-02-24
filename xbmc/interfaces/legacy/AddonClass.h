@@ -30,7 +30,8 @@
 //#define XBMC_ADDON_DEBUG_MEMORY
 
 #include "AddonString.h"
-#include "threads/SingleLock.h"
+
+#include <mutex>
 #ifdef XBMC_ADDON_DEBUG_MEMORY
 #include "utils/log.h"
 #endif
@@ -80,7 +81,7 @@ namespace XBMCAddon
      */
     virtual void deallocating()
     {
-      CSingleLock lock(*this);
+      std::unique_lock<CCriticalSection> lock(*this);
       m_isDeallocating = true;
     }
 

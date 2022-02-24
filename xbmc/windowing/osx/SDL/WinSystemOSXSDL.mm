@@ -29,7 +29,6 @@
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
 #include "utils/log.h"
@@ -45,6 +44,7 @@
 #include "platform/darwin/osx/XBMCHelper.h"
 
 #include <cstdlib>
+#include <mutex>
 #include <signal.h>
 
 #import <Cocoa/Cocoa.h>
@@ -1709,13 +1709,13 @@ void CWinSystemOSX::StopTextInput()
 
 void CWinSystemOSX::Register(IDispResource *resource)
 {
-  CSingleLock lock(m_resourceSection);
+  std::unique_lock<CCriticalSection> lock(m_resourceSection);
   m_resources.push_back(resource);
 }
 
 void CWinSystemOSX::Unregister(IDispResource* resource)
 {
-  CSingleLock lock(m_resourceSection);
+  std::unique_lock<CCriticalSection> lock(m_resourceSection);
   std::vector<IDispResource*>::iterator i = find(m_resources.begin(), m_resources.end(), resource);
   if (i != m_resources.end())
     m_resources.erase(i);
@@ -1770,7 +1770,7 @@ void CWinSystemOSX::WindowChangedScreen()
 
 void CWinSystemOSX::AnnounceOnLostDevice()
 {
-  CSingleLock lock(m_resourceSection);
+  std::unique_lock<CCriticalSection> lock(m_resourceSection);
   // tell any shared resources
   CLog::Log(LOGDEBUG, "CWinSystemOSX::AnnounceOnLostDevice");
   for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
@@ -1807,7 +1807,7 @@ void CWinSystemOSX::AnnounceOnResetDevice()
 
   CServiceBroker::GetWinSystem()->GetGfxContext().SetFPS(currentFps);
 
-  CSingleLock lock(m_resourceSection);
+  std::unique_lock<CCriticalSection> lock(m_resourceSection);
   // tell any shared resources
   CLog::Log(LOGDEBUG, "CWinSystemOSX::AnnounceOnResetDevice");
   for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)

@@ -11,7 +11,6 @@
 #include "Connection.h"
 #include "Registry.h"
 #include "WinEventsWayland.h"
-#include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -20,6 +19,7 @@
 #include <cerrno>
 #include <chrono>
 #include <cstring>
+#include <mutex>
 #include <system_error>
 #include <utility>
 
@@ -71,8 +71,9 @@ CSeatSelection::CSeatSelection(CConnection& connection, wayland::seat_t const& s
       m_mimeTypeOffers.push_back(std::move(mime));
     };
   };
-  m_dataDevice.on_selection() = [this](const wayland::data_offer_t& offer) {
-    CSingleLock lock(m_currentSelectionMutex);
+  m_dataDevice.on_selection() = [this](const wayland::data_offer_t& offer)
+  {
+    std::unique_lock<CCriticalSection> lock(m_currentSelectionMutex);
     m_matchedMimeType.clear();
 
     if (offer != m_currentOffer)
@@ -109,7 +110,7 @@ CSeatSelection::CSeatSelection(CConnection& connection, wayland::seat_t const& s
 
 std::string CSeatSelection::GetSelectionText() const
 {
-  CSingleLock lock(m_currentSelectionMutex);
+  std::unique_lock<CCriticalSection> lock(m_currentSelectionMutex);
   if (!m_currentSelection || m_matchedMimeType.empty())
   {
     return "";
@@ -127,7 +128,7 @@ std::string CSeatSelection::GetSelectionText() const
   CFileHandle writeFd{fds[1]};
 
   m_currentSelection.receive(m_matchedMimeType, writeFd);
-  lock.Leave();
+  lock.unlock();
   // Make sure the other party gets the request as soon as possible
   CWinEventsWayland::Flush();
   // Fd now gets sent to the other party -> make sure our write end is closed

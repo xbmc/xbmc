@@ -20,6 +20,8 @@
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 
+#include <mutex>
+
 using namespace std::chrono_literals;
 
 static void EnumerateDevices(CADeviceList &list)
@@ -72,7 +74,7 @@ static void EnumerateDevices()
   CADeviceList devices;
   EnumerateDevices(devices);
   {
-    CSingleLock lock(s_devicesLock);
+    std::unique_lock<CCriticalSection> lock(s_devicesLock);
     s_devices = devices;
   }
 }
@@ -81,7 +83,7 @@ static CADeviceList GetDevices()
 {
   CADeviceList list;
   {
-    CSingleLock lock(s_devicesLock);
+    std::unique_lock<CCriticalSection> lock(s_devicesLock);
     list = s_devices;
   }
   return list;
@@ -422,7 +424,7 @@ unsigned int CAESinkDARWINOSX::AddPackets(uint8_t **data, unsigned int frames, u
 {
   if (m_buffer->GetWriteSize() < frames * m_frameSizePerPlane)
   { // no space to write - wait for a bit
-    CSingleLock lock(mutex);
+    std::unique_lock<CCriticalSection> lock(mutex);
     auto timeout = std::chrono::milliseconds(900 * frames / m_framesPerSecond);
     if (!m_started)
       timeout = 4500ms;
@@ -455,7 +457,7 @@ void CAESinkDARWINOSX::Drain()
   auto timeout = std::chrono::milliseconds(900 * bytes / (m_framesPerSecond * m_frameSizePerPlane));
   while (bytes && maxNumTimeouts > 0)
   {
-    CSingleLock lock(mutex);
+    std::unique_lock<CCriticalSection> lock(mutex);
     XbmcThreads::EndTime<> timer(timeout);
     condVar.wait(mutex, timeout);
 

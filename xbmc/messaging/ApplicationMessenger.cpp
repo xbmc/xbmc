@@ -15,6 +15,7 @@
 #include "windowing/GraphicContext.h"
 
 #include <memory>
+#include <mutex>
 #include <utility>
 
 namespace KODI
@@ -65,7 +66,7 @@ CApplicationMessenger::~CApplicationMessenger()
 
 void CApplicationMessenger::Cleanup()
 {
-  CSingleLock lock (m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   while (!m_vecMessages.empty())
   {
@@ -122,18 +123,18 @@ int CApplicationMessenger::SendMsg(ThreadMessage&& message, bool wait)
 
   ThreadMessage* msg = new ThreadMessage(std::move(message));
 
-  CSingleLock lock (m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   if (msg->dwMessage == TMSG_GUI_MESSAGE)
     m_vecWindowMessages.push(msg);
   else
     m_vecMessages.push(msg);
-  lock.Leave();  // this releases the lock on the vec of messages and
-                 //   allows the ProcessMessage to execute and therefore
-                 //   delete the message itself. Therefore any access
-                 //   of the message itself after this point constitutes
-                 //   a race condition (yarc - "yet another race condition")
-                 //
+  lock.unlock(); // this releases the lock on the vec of messages and
+      //   allows the ProcessMessage to execute and therefore
+      //   delete the message itself. Therefore any access
+      //   of the message itself after this point constitutes
+      //   a race condition (yarc - "yet another race condition")
+      //
   if (waitEvent) // ... it just so happens we have a spare reference to the
                  //  waitEvent ... just for such contingencies :)
   {
@@ -208,7 +209,7 @@ void CApplicationMessenger::PostMsg(uint32_t messageId, int param1, int param2, 
 void CApplicationMessenger::ProcessMessages()
 {
   // process threadmessages
-  CSingleLock lock (m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   while (!m_vecMessages.empty())
   {
     ThreadMessage* pMsg = m_vecMessages.front();
@@ -219,7 +220,7 @@ void CApplicationMessenger::ProcessMessages()
     //thread call processmessages or sendmessage
 
     std::shared_ptr<CEvent> waitEvent = pMsg->waitEvent;
-    lock.Leave(); // <- see the large comment in SendMessage ^
+    lock.unlock(); // <- see the large comment in SendMessage ^
 
     ProcessMessage(pMsg);
 
@@ -227,7 +228,7 @@ void CApplicationMessenger::ProcessMessages()
       waitEvent->Set();
     delete pMsg;
 
-    lock.Enter();
+    lock.lock();
   }
 }
 
@@ -241,7 +242,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
     return;
   }
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   int mask = pMsg->dwMessage & TMSG_MASK_MESSAGE;
 
   const auto it = m_mapTargets.find(mask);
@@ -256,7 +257,7 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 
 void CApplicationMessenger::ProcessWindowMessages()
 {
-  CSingleLock lock (m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   //message type is window, process window messages
   while (!m_vecWindowMessages.empty())
   {
@@ -267,14 +268,14 @@ void CApplicationMessenger::ProcessWindowMessages()
     // leave here in case we make more thread messages from this one
 
     std::shared_ptr<CEvent> waitEvent = pMsg->waitEvent;
-    lock.Leave(); // <- see the large comment in SendMessage ^
+    lock.unlock(); // <- see the large comment in SendMessage ^
 
     ProcessMessage(pMsg);
     if (waitEvent)
       waitEvent->Set();
     delete pMsg;
 
-    lock.Enter();
+    lock.lock();
   }
 }
 
@@ -288,7 +289,7 @@ void CApplicationMessenger::SendGUIMessage(const CGUIMessage &message, int windo
 
 void CApplicationMessenger::RegisterReceiver(IMessageTarget* target)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   m_mapTargets.insert(std::make_pair(target->GetMessageMask(), target));
 }
 

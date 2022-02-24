@@ -11,7 +11,8 @@
 #include "Application.h"
 #include "IGUIVolumeBarCallback.h"
 #include "input/Key.h"
-#include "threads/SingleLock.h"
+
+#include <mutex>
 
 #define VOLUME_BAR_DISPLAY_TIME 1000L
 
@@ -54,21 +55,21 @@ bool CGUIDialogVolumeBar::OnMessage(CGUIMessage& message)
 
 void CGUIDialogVolumeBar::RegisterCallback(IGUIVolumeBarCallback *callback)
 {
-  CSingleLock lock(m_callbackMutex);
+  std::unique_lock<CCriticalSection> lock(m_callbackMutex);
 
   m_callbacks.insert(callback);
 }
 
 void CGUIDialogVolumeBar::UnregisterCallback(IGUIVolumeBarCallback *callback)
 {
-  CSingleLock lock(m_callbackMutex);
+  std::unique_lock<CCriticalSection> lock(m_callbackMutex);
 
   m_callbacks.erase(callback);
 }
 
 bool CGUIDialogVolumeBar::IsVolumeBarEnabled() const
 {
-  CSingleLock lock(m_callbackMutex);
+  std::unique_lock<CCriticalSection> lock(m_callbackMutex);
 
   // Hide volume bar if any callbacks are shown
   for (const auto &callback : m_callbacks)

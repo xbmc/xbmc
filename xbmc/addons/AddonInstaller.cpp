@@ -42,6 +42,7 @@
 #include "utils/log.h"
 
 #include <functional>
+#include <mutex>
 
 using namespace XFILE;
 using namespace ADDON;
@@ -65,7 +66,7 @@ CAddonInstaller &CAddonInstaller::GetInstance()
 
 void CAddonInstaller::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   JobMap::iterator i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), [jobID](const std::pair<std::string, CDownloadJob>& p) {
     return p.second.jobID == jobID;
   });
@@ -73,7 +74,7 @@ void CAddonInstaller::OnJobComplete(unsigned int jobID, bool success, CJob* job)
     m_downloadJobs.erase(i);
   if (m_downloadJobs.empty())
     m_idle.Set();
-  lock.Leave();
+  lock.unlock();
   PrunePackageCache();
 
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
@@ -82,7 +83,7 @@ void CAddonInstaller::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 
 void CAddonInstaller::OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   JobMap::iterator i = find_if(m_downloadJobs.begin(), m_downloadJobs.end(), [jobID](const std::pair<std::string, CDownloadJob>& p) {
     return p.second.jobID == jobID;
   });
@@ -93,27 +94,27 @@ void CAddonInstaller::OnJobProgress(unsigned int jobID, unsigned int progress, u
     i->second.downloadFinshed = std::string(job->GetType()) == CAddonInstallJob::TYPE_INSTALL;
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM);
     msg.SetStringParam(i->first);
-    lock.Leave();
+    lock.unlock();
     CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
   }
 }
 
 bool CAddonInstaller::IsDownloading() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return !m_downloadJobs.empty();
 }
 
 void CAddonInstaller::GetInstallList(VECADDONS &addons) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   std::vector<std::string> addonIDs;
   for (JobMap::const_iterator i = m_downloadJobs.begin(); i != m_downloadJobs.end(); ++i)
   {
     if (i->second.jobID)
       addonIDs.push_back(i->first);
   }
-  lock.Leave();
+  lock.unlock();
 
   CAddonDatabase database;
   database.Open();
@@ -127,7 +128,7 @@ void CAddonInstaller::GetInstallList(VECADDONS &addons) const
 
 bool CAddonInstaller::GetProgress(const std::string& addonID, unsigned int& percent, bool& downloadFinshed) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   JobMap::const_iterator i = m_downloadJobs.find(addonID);
   if (i != m_downloadJobs.end())
   {
@@ -140,7 +141,7 @@ bool CAddonInstaller::GetProgress(const std::string& addonID, unsigned int& perc
 
 bool CAddonInstaller::Cancel(const std::string &addonID)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   JobMap::iterator i = m_downloadJobs.find(addonID);
   if (i != m_downloadJobs.end())
   {
@@ -278,7 +279,7 @@ bool CAddonInstaller::DoInstall(const AddonPtr& addon,
                                 AllowCheckForUpdates allowCheckForUpdates)
 {
   // check whether we already have the addon installing
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   if (m_downloadJobs.find(addon->ID()) != m_downloadJobs.end())
     return false;
 
@@ -296,7 +297,7 @@ bool CAddonInstaller::DoInstall(const AddonPtr& addon,
 
   m_downloadJobs.insert(make_pair(addon->ID(), CDownloadJob(0)));
   m_idle.Reset();
-  lock.Leave();
+  lock.unlock();
 
   installJob->SetDependsInstall(dependsInstall);
   installJob->SetAllowCheckForUpdates(allowCheckForUpdates);
@@ -308,7 +309,7 @@ bool CAddonInstaller::DoInstall(const AddonPtr& addon,
     result = installJob->DoWork();
   delete installJob;
 
-  lock.Enter();
+  lock.lock();
   JobMap::iterator i = m_downloadJobs.find(addon->ID());
   m_downloadJobs.erase(i);
   if (m_downloadJobs.empty())
@@ -435,7 +436,7 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
 
 bool CAddonInstaller::HasJob(const std::string& ID) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_downloadJobs.find(ID) != m_downloadJobs.end();
 }
 
@@ -503,11 +504,11 @@ void CAddonInstaller::InstallAddons(const VECADDONS& addons,
   }
   if (wait)
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     if (!m_downloadJobs.empty())
     {
       m_idle.Reset();
-      lock.Leave();
+      lock.unlock();
       m_idle.Wait();
     }
   }

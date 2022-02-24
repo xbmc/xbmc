@@ -12,11 +12,11 @@
 #include "Util.h"
 #include "cores/VideoPlayer/DVDFileInfo.h"
 #include "filesystem/StackDirectory.h"
-#include "threads/SingleLock.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
 
+#include <mutex>
 #include <utility>
 
 using namespace XFILE;
@@ -34,7 +34,7 @@ void CApplicationStackHelper::Clear()
 
 void CApplicationStackHelper::OnPlayBackStarted(const CFileItem& item)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   // time to clean up stack map
   if (!HasRegisteredStack(item))

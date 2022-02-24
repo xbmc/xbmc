@@ -10,6 +10,7 @@
 
 #include <cassert>
 #include <cmath>
+#include <mutex>
 #include <set>
 #include <stdexcept>
 #include <utility>
@@ -26,8 +27,9 @@ COutput::COutput(std::uint32_t globalName,
   m_output.on_geometry() = [this](std::int32_t x, std::int32_t y, std::int32_t physWidth,
                                   std::int32_t physHeight, wayland::output_subpixel,
                                   std::string const& make, std::string const& model,
-                                  const wayland::output_transform&) {
-    CSingleLock lock(m_geometryCriticalSection);
+                                  const wayland::output_transform&)
+  {
+    std::unique_lock<CCriticalSection> lock(m_geometryCriticalSection);
     m_position = {x, y};
     // Some monitors report invalid (negative) values that would cause an exception
     // with CSizeInt
@@ -44,7 +46,7 @@ COutput::COutput(std::uint32_t globalName,
     // element and boolean information whether the element was actually added
     // which we do not need
     auto modeIterator = m_modes.emplace(CSizeInt{width, height}, refresh).first;
-    CSingleLock lock(m_iteratorCriticalSection);
+    std::unique_lock<CCriticalSection> lock(m_iteratorCriticalSection);
     // Remember current and preferred mode
     // Current mode is the last one that was sent with current flag set
     if (flags & wayland::output_mode::current)
@@ -79,7 +81,7 @@ COutput::~COutput() noexcept
 
 const COutput::Mode& COutput::GetCurrentMode() const
 {
-  CSingleLock lock(m_iteratorCriticalSection);
+  std::unique_lock<CCriticalSection> lock(m_iteratorCriticalSection);
   if (m_currentMode == m_modes.end())
   {
     throw std::runtime_error("Current mode not set");
@@ -89,7 +91,7 @@ const COutput::Mode& COutput::GetCurrentMode() const
 
 const COutput::Mode& COutput::GetPreferredMode() const
 {
-  CSingleLock lock(m_iteratorCriticalSection);
+  std::unique_lock<CCriticalSection> lock(m_iteratorCriticalSection);
   if (m_preferredMode == m_modes.end())
   {
     throw std::runtime_error("Preferred mode not set");
@@ -99,7 +101,7 @@ const COutput::Mode& COutput::GetPreferredMode() const
 
 float COutput::GetPixelRatioForMode(const Mode& mode) const
 {
-  CSingleLock lock(m_geometryCriticalSection);
+  std::unique_lock<CCriticalSection> lock(m_geometryCriticalSection);
   if (m_physicalSize.IsZero() || mode.size.IsZero())
   {
     return 1.0f;
@@ -116,7 +118,7 @@ float COutput::GetPixelRatioForMode(const Mode& mode) const
 
 float COutput::GetDpiForMode(const Mode& mode) const
 {
-  CSingleLock lock(m_geometryCriticalSection);
+  std::unique_lock<CCriticalSection> lock(m_geometryCriticalSection);
   if (m_physicalSize.IsZero())
   {
     // We really have no idea, so use a "sane" default

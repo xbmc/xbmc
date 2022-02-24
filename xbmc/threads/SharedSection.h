@@ -9,8 +9,8 @@
 #pragma once
 
 #include "threads/Condition.h"
-#include "threads/SingleLock.h"
 
+#include <mutex>
 #include <shared_mutex>
 
 /**
@@ -28,7 +28,7 @@ public:
 
   inline void lock()
   {
-    CSingleLock l(sec);
+    std::unique_lock<CCriticalSection> l(sec);
     while (sharedCount)
       actualCv.wait(l, [this]() { return sharedCount == 0; });
     sec.lock();
@@ -36,11 +36,15 @@ public:
   inline bool try_lock() { return (sec.try_lock() ? ((sharedCount == 0) ? true : (sec.unlock(), false)) : false); }
   inline void unlock() { sec.unlock(); }
 
-  inline void lock_shared() { CSingleLock l(sec); sharedCount++; }
+  inline void lock_shared()
+  {
+    std::unique_lock<CCriticalSection> l(sec);
+    sharedCount++;
+  }
   inline bool try_lock_shared() { return (sec.try_lock() ? sharedCount++, sec.unlock(), true : false); }
   inline void unlock_shared()
   {
-    CSingleLock l(sec);
+    std::unique_lock<CCriticalSection> l(sec);
     sharedCount--;
     if (!sharedCount)
     {
@@ -48,32 +52,3 @@ public:
     }
   }
 };
-
-class CSharedLock : public std::shared_lock<CSharedSection>
-{
-public:
-  inline explicit CSharedLock(CSharedSection& cs) : std::shared_lock<CSharedSection>(cs) {}
-
-  inline bool IsOwner() const { return owns_lock(); }
-  inline void Enter() { lock(); }
-  inline void Leave() { unlock(); }
-
-private:
-  CSharedLock(const CSharedLock&) = delete;
-  CSharedLock& operator=(const CSharedLock&) = delete;
-};
-
-class CExclusiveLock : public std::unique_lock<CSharedSection>
-{
-public:
-  inline explicit CExclusiveLock(CSharedSection& cs) : std::unique_lock<CSharedSection>(cs) {}
-
-  inline bool IsOwner() const { return owns_lock(); }
-  inline void Leave() { unlock(); }
-  inline void Enter() { lock(); }
-
-private:
-  CExclusiveLock(const CExclusiveLock&) = delete;
-  CExclusiveLock& operator=(const CExclusiveLock&) = delete;
-};
-

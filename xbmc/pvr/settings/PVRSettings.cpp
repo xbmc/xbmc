@@ -20,6 +20,7 @@
 #include "utils/log.h"
 
 #include <memory>
+#include <mutex>
 #include <set>
 #include <string>
 #include <utility>
@@ -64,13 +65,13 @@ CPVRSettings::~CPVRSettings()
 
 void CPVRSettings::RegisterCallback(ISettingCallback* callback)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   m_callbacks.insert(callback);
 }
 
 void CPVRSettings::UnregisterCallback(ISettingCallback* callback)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   m_callbacks.erase(callback);
 }
 
@@ -85,7 +86,7 @@ void CPVRSettings::Init(const std::set<std::string>& settingNames)
       continue;
     }
 
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     m_settings.insert(std::make_pair(settingName, setting->Clone(settingName)));
   }
 }
@@ -95,7 +96,7 @@ void CPVRSettings::OnSettingsLoaded()
   std::set<std::string> settingNames;
 
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     for (const auto& settingName : m_settings)
       settingNames.insert(settingName.first);
 
@@ -110,10 +111,10 @@ void CPVRSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setti
   if (setting == nullptr)
     return;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   m_settings[setting->GetId()] = setting->Clone(setting->GetId());
   const auto callbacks(m_callbacks);
-  lock.Leave();
+  lock.unlock();
 
   for (const auto& callback : callbacks)
     callback->OnSettingChanged(setting);
@@ -121,7 +122,7 @@ void CPVRSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setti
 
 bool CPVRSettings::GetBoolValue(const std::string& settingName) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   auto settingIt = m_settings.find(settingName);
   if (settingIt != m_settings.end() && (*settingIt).second->GetType() == SettingType::Boolean)
   {
@@ -136,7 +137,7 @@ bool CPVRSettings::GetBoolValue(const std::string& settingName) const
 
 int CPVRSettings::GetIntValue(const std::string& settingName) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   auto settingIt = m_settings.find(settingName);
   if (settingIt != m_settings.end() && (*settingIt).second->GetType() == SettingType::Integer)
   {
@@ -151,7 +152,7 @@ int CPVRSettings::GetIntValue(const std::string& settingName) const
 
 std::string CPVRSettings::GetStringValue(const std::string& settingName) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   auto settingIt = m_settings.find(settingName);
   if (settingIt != m_settings.end() && (*settingIt).second->GetType() == SettingType::String)
   {

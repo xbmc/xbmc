@@ -14,7 +14,6 @@
 #include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Sinks/windows/AESinkFactoryWin.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
-#include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
@@ -23,6 +22,7 @@
 
 #include <algorithm>
 #include <list>
+#include <mutex>
 
 #include <Audioclient.h>
 #include <Mmreg.h>
@@ -587,7 +587,7 @@ void CAESinkDirectSound::CheckPlayStatus()
 
 bool CAESinkDirectSound::UpdateCacheStatus()
 {
-  CSingleLock lock (m_runLock);
+  std::unique_lock<CCriticalSection> lock(m_runLock);
 
   DWORD playCursor = 0, writeCursor = 0;
   HRESULT res = m_pBuffer->GetCurrentPosition(&playCursor, &writeCursor); // Get the current playback and safe write positions
@@ -648,7 +648,7 @@ bool CAESinkDirectSound::UpdateCacheStatus()
 
 unsigned int CAESinkDirectSound::GetSpace()
 {
-  CSingleLock lock (m_runLock);
+  std::unique_lock<CCriticalSection> lock(m_runLock);
   if (!UpdateCacheStatus())
     m_isDirtyDS = true;
   unsigned int space = m_dwBufferLen - m_CacheLen;

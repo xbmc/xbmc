@@ -11,7 +11,6 @@
 #include "AppInboundProtocol.h"
 #include "ServiceBroker.h"
 #include "threads/CriticalSection.h"
-#include "threads/SingleLock.h"
 #include "threads/Thread.h"
 #include "utils/log.h"
 
@@ -19,6 +18,7 @@
 
 #include <exception>
 #include <memory>
+#include <mutex>
 #include <system_error>
 
 #include <sys/poll.h>
@@ -67,7 +67,7 @@ public:
   {
     Stop();
     // Wait for roundtrip invocation to finish
-    CSingleLock lock(m_roundtripQueueMutex);
+    std::unique_lock<CCriticalSection> lock(m_roundtripQueueMutex);
   }
 
   void Stop()
@@ -86,7 +86,7 @@ public:
 
     // Serialize invocations of this function - it's used very rarely and usually
     // not in parallel anyway, and doing it avoids lots of complications
-    CSingleLock lock(m_roundtripQueueMutex);
+    std::unique_lock<CCriticalSection> lock(m_roundtripQueueMutex);
 
     m_roundtripQueueEvent.Reset();
     // We can just set the value here since there is no other writer in parallel
@@ -248,7 +248,7 @@ bool CWinEventsWayland::MessagePump()
     XBMC_Event event;
     {
       // Scoped lock for reentrancy
-      CSingleLock lock(m_queueMutex);
+      std::unique_lock<CCriticalSection> lock(m_queueMutex);
 
       if (m_queue.empty())
       {
@@ -270,6 +270,6 @@ bool CWinEventsWayland::MessagePump()
 
 void CWinEventsWayland::MessagePush(XBMC_Event* ev)
 {
-  CSingleLock lock(m_queueMutex);
+  std::unique_lock<CCriticalSection> lock(m_queueMutex);
   m_queue.emplace(*ev);
 }

@@ -12,10 +12,11 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "rendering/dx/DeviceResources.h"
-#include "threads/SingleLock.h"
 #include "utils/Screenshot.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
+
+#include <mutex>
 
 #include <wrl/client.h>
 
@@ -41,7 +42,7 @@ bool CScreenshotSurfaceWindows::Capture()
   if (!gui)
     return false;
 
-  CSingleLock lock(winsystem->GetGfxContext());
+  std::unique_lock<CCriticalSection> lock(winsystem->GetGfxContext());
   gui->GetWindowManager().Render();
 
   auto deviceResources = DX::DeviceResources::Get();

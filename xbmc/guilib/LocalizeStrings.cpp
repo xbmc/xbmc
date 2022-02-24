@@ -18,6 +18,8 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
+#include <mutex>
+#include <shared_mutex>
 
 /*! \brief Tries to load ids and strings from a strings.po file to the `strings` map.
  * It should only be called from the LoadStr2Mem function to have a fallback.
@@ -140,14 +142,14 @@ CLocalizeStrings::~CLocalizeStrings(void) = default;
 void CLocalizeStrings::ClearSkinStrings()
 {
   // clear the skin strings
-  CExclusiveLock lock(m_stringsMutex);
+  std::unique_lock<CSharedSection> lock(m_stringsMutex);
   Clear(31000, 31999);
 }
 
 bool CLocalizeStrings::LoadSkinStrings(const std::string& path, const std::string& language)
 {
   //! @todo shouldn't hold lock while loading file
-  CExclusiveLock lock(m_stringsMutex);
+  std::unique_lock<CSharedSection> lock(m_stringsMutex);
   ClearSkinStrings();
   // load the skin strings in.
   return LoadWithFallback(path, language, m_strings);
@@ -183,7 +185,7 @@ bool CLocalizeStrings::Load(const std::string& strPathName, const std::string& s
   strings[20210].strTranslated = "yard/s";
   strings[20211].strTranslated = "Furlong/Fortnight";
 
-  CExclusiveLock lock(m_stringsMutex);
+  std::unique_lock<CSharedSection> lock(m_stringsMutex);
   Clear();
   m_strings = std::move(strings);
   return true;
@@ -191,7 +193,7 @@ bool CLocalizeStrings::Load(const std::string& strPathName, const std::string& s
 
 const std::string& CLocalizeStrings::Get(uint32_t dwCode) const
 {
-  CSharedLock lock(m_stringsMutex);
+  std::shared_lock<CSharedSection> lock(m_stringsMutex);
   ciStrings i = m_strings.find(dwCode);
   if (i == m_strings.end())
   {
@@ -202,13 +204,13 @@ const std::string& CLocalizeStrings::Get(uint32_t dwCode) const
 
 void CLocalizeStrings::Clear()
 {
-  CExclusiveLock lock(m_stringsMutex);
+  std::unique_lock<CSharedSection> lock(m_stringsMutex);
   m_strings.clear();
 }
 
 void CLocalizeStrings::Clear(uint32_t start, uint32_t end)
 {
-  CExclusiveLock lock(m_stringsMutex);
+  std::unique_lock<CSharedSection> lock(m_stringsMutex);
   iStrings it = m_strings.begin();
   while (it != m_strings.end())
   {
@@ -225,7 +227,7 @@ bool CLocalizeStrings::LoadAddonStrings(const std::string& path, const std::stri
   if (!LoadWithFallback(path, language, strings))
     return false;
 
-  CExclusiveLock lock(m_addonStringsMutex);
+  std::unique_lock<CSharedSection> lock(m_addonStringsMutex);
   auto it = m_addonStrings.find(addonId);
   if (it != m_addonStrings.end())
     m_addonStrings.erase(it);
@@ -235,7 +237,7 @@ bool CLocalizeStrings::LoadAddonStrings(const std::string& path, const std::stri
 
 std::string CLocalizeStrings::GetAddonString(const std::string& addonId, uint32_t code)
 {
-  CSharedLock lock(m_addonStringsMutex);
+  std::shared_lock<CSharedSection> lock(m_addonStringsMutex);
   auto i = m_addonStrings.find(addonId);
   if (i == m_addonStrings.end())
     return StringUtils::Empty;

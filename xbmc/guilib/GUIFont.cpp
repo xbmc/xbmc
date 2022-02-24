@@ -9,11 +9,12 @@
 #include "GUIFont.h"
 
 #include "GUIFontTTF.h"
-#include "threads/SingleLock.h"
 #include "utils/CharsetConverter.h"
 #include "utils/MathUtils.h"
 #include "utils/TimeUtils.h"
 #include "windowing/GraphicContext.h"
+
+#include <mutex>
 
 #define ROUND(x) (float)(MathUtils::round_int(x))
 
@@ -271,7 +272,7 @@ float CGUIFont::GetTextWidth(const vecText& text)
 
   CGraphicContext& context = winSystem->GetGfxContext();
 
-  CSingleLock lock(context);
+  std::unique_lock<CCriticalSection> lock(context);
   return m_font->GetTextWidthInternal(text) * context.GetGUIScaleX();
 }
 
@@ -283,7 +284,7 @@ float CGUIFont::GetCharWidth(character_t ch)
 
   CGraphicContext& context = winSystem->GetGfxContext();
 
-  CSingleLock lock(context);
+  std::unique_lock<CCriticalSection> lock(context);
   return m_font->GetCharWidthInternal(ch) * context.GetGUIScaleX();
 }
 

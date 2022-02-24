@@ -23,12 +23,12 @@
 #include "pvr/epg/Epg.h"
 #include "pvr/epg/EpgChannelData.h"
 #include "pvr/epg/EpgInfoTag.h"
-#include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>
 #include <memory>
+#include <mutex>
 #include <string>
 #include <utility>
 #include <vector>
@@ -75,10 +75,10 @@ std::weak_ptr<CPVRChannelGroupSettings> CPVRChannelGroup::m_settingsSingleton;
 
 std::shared_ptr<CPVRChannelGroupSettings> CPVRChannelGroup::GetSettings() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   if (!m_settings)
   {
-    CSingleLock singletonLock(m_settingsSingletonCritSection);
+    std::unique_lock<CCriticalSection> singletonLock(m_settingsSingletonCritSection);
     const std::shared_ptr<CPVRChannelGroupSettings> settings = m_settingsSingleton.lock();
     if (settings)
     {
@@ -122,7 +122,7 @@ bool CPVRChannelGroup::LoadFromDatabase(
 
 void CPVRChannelGroup::Unload()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   m_sortedMembers.clear();
   m_members.clear();
   m_failedClients.clear();
@@ -142,13 +142,13 @@ bool CPVRChannelGroup::UpdateFromClients(const std::vector<std::shared_ptr<CPVRC
 
 const CPVRChannelsPath& CPVRChannelGroup::GetPath() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_path;
 }
 
 void CPVRChannelGroup::SetPath(const CPVRChannelsPath& path)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   if (m_path != path)
   {
     m_path = path;
@@ -164,7 +164,7 @@ void CPVRChannelGroup::SetPath(const CPVRChannelsPath& path)
 bool CPVRChannelGroup::SetChannelNumber(const std::shared_ptr<CPVRChannel>& channel, const CPVRChannelNumber& channelNumber)
 {
   bool bReturn(false);
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   for (auto& member : m_sortedMembers)
   {
@@ -219,20 +219,20 @@ void CPVRChannelGroup::Sort()
 
 bool CPVRChannelGroup::SortAndRenumber()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   Sort();
   return Renumber();
 }
 
 void CPVRChannelGroup::SortByClientChannelNumber()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   std::sort(m_sortedMembers.begin(), m_sortedMembers.end(), sortByClientChannelNumber());
 }
 
 void CPVRChannelGroup::SortByChannelNumber()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   std::sort(m_sortedMembers.begin(), m_sortedMembers.end(), sortByChannelNumber());
 }
 
@@ -241,7 +241,7 @@ bool CPVRChannelGroup::UpdateClientPriorities()
   const std::shared_ptr<CPVRClients> clients = CServiceBroker::GetPVRManager().Clients();
   bool bChanged = false;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   const bool bUseBackendChannelOrder = GetSettings()->UseBackendChannelOrder();
   for (auto& member : m_sortedMembers)
@@ -272,7 +272,7 @@ bool CPVRChannelGroup::UpdateClientPriorities()
 std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroup::GetByUniqueID(
     const std::pair<int, int>& id) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   const auto it = m_members.find(id);
   return it != m_members.end() ? it->second : std::shared_ptr<CPVRChannelGroupMember>();
 }
@@ -286,7 +286,7 @@ std::shared_ptr<CPVRChannel> CPVRChannelGroup::GetByUniqueID(int iUniqueChannelI
 
 std::shared_ptr<CPVRChannel> CPVRChannelGroup::GetByChannelID(int iChannelID) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   for (const auto& memberPair : m_members)
   {
@@ -300,7 +300,7 @@ std::shared_ptr<CPVRChannel> CPVRChannelGroup::GetByChannelID(int iChannelID) co
 std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroup::GetLastPlayedChannelGroupMember(
     int iCurrentChannel /* = -1 */) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   std::shared_ptr<CPVRChannelGroupMember> groupMember;
   for (const auto& memberPair : m_members)
@@ -320,12 +320,12 @@ std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroup::GetLastPlayedChannelGr
 
 GroupMemberPair CPVRChannelGroup::GetLastAndPreviousToLastPlayedChannelGroupMember() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   if (m_sortedMembers.empty())
     return {};
 
   auto members = m_sortedMembers;
-  lock.Leave();
+  lock.unlock();
 
   std::sort(members.begin(), members.end(), [](const auto& a, const auto& b) {
     return a->Channel()->LastWatched() > b->Channel()->LastWatched();
@@ -345,14 +345,14 @@ GroupMemberPair CPVRChannelGroup::GetLastAndPreviousToLastPlayedChannelGroupMemb
 
 CPVRChannelNumber CPVRChannelGroup::GetChannelNumber(const std::shared_ptr<CPVRChannel>& channel) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   const std::shared_ptr<CPVRChannelGroupMember> member = GetByUniqueID(channel->StorageId());
   return member ? member->ChannelNumber() : CPVRChannelNumber();
 }
 
 CPVRChannelNumber CPVRChannelGroup::GetClientChannelNumber(const std::shared_ptr<CPVRChannel>& channel) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   const std::shared_ptr<CPVRChannelGroupMember> member = GetByUniqueID(channel->StorageId());
   return member ? member->ClientChannelNumber() : CPVRChannelNumber();
 }
@@ -360,7 +360,7 @@ CPVRChannelNumber CPVRChannelGroup::GetClientChannelNumber(const std::shared_ptr
 std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroup::GetByChannelNumber(
     const CPVRChannelNumber& channelNumber) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   const bool bUseBackendChannelNumbers = GetSettings()->UseBackendChannelNumbers();
   for (const auto& member : m_sortedMembers)
   {
@@ -380,7 +380,7 @@ std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroup::GetNextChannelGroupMem
 
   if (groupMember)
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     for (auto it = m_sortedMembers.cbegin(); !nextMember && it != m_sortedMembers.cend(); ++it)
     {
       if (*it == groupMember)
@@ -408,7 +408,7 @@ std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroup::GetPreviousChannelGrou
 
   if (groupMember)
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     for (auto it = m_sortedMembers.crbegin(); !previousMember && it != m_sortedMembers.crend();
          ++it)
     {
@@ -432,7 +432,7 @@ std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroup::GetPreviousChannelGrou
 std::vector<std::shared_ptr<CPVRChannelGroupMember>> CPVRChannelGroup::GetMembers(
     Include eFilter /* = Include::ALL */) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   if (eFilter == Include::ALL)
     return m_sortedMembers;
 
@@ -461,7 +461,7 @@ std::vector<std::shared_ptr<CPVRChannelGroupMember>> CPVRChannelGroup::GetMember
 
 void CPVRChannelGroup::GetChannelNumbers(std::vector<std::string>& channelNumbers) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   const bool bUseBackendChannelNumbers = GetSettings()->UseBackendChannelNumbers();
   for (const auto& member : m_sortedMembers)
   {
@@ -485,7 +485,7 @@ int CPVRChannelGroup::LoadFromDatabase(const std::vector<std::shared_ptr<CPVRCli
   {
     const std::shared_ptr<CPVRClients> clients = CServiceBroker::GetPVRManager().Clients();
 
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     for (const auto& member : results)
     {
       // Consistency check.
@@ -553,7 +553,7 @@ bool CPVRChannelGroup::UpdateFromClient(const std::shared_ptr<CPVRChannelGroupMe
 {
   bool bChanged = false;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   const std::shared_ptr<CPVRChannel> channel = groupMember->Channel();
   const std::shared_ptr<CPVRChannelGroupMember> existingMember =
@@ -629,7 +629,7 @@ bool CPVRChannelGroup::HasValidDataForAllClients() const
 
 bool CPVRChannelGroup::UpdateChannelNumbersFromAllChannelsGroup()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   bool bChanged = false;
 
@@ -652,7 +652,7 @@ std::vector<std::shared_ptr<CPVRChannelGroupMember>> CPVRChannelGroup::RemoveDel
 {
   std::vector<std::shared_ptr<CPVRChannelGroupMember>> membersToRemove;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   /* check for deleted channels */
   for (auto it = m_sortedMembers.begin(); it != m_sortedMembers.end();)
@@ -689,7 +689,7 @@ bool CPVRChannelGroup::UpdateGroupEntries(
   bool bChanged = false;
   bool bRemoved = false;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   bRemoved = !RemoveDeletedGroupMembers(groupMembers).empty();
   bChanged = AddAndUpdateGroupMembers(groupMembers) || bRemoved;
@@ -716,7 +716,7 @@ bool CPVRChannelGroup::RemoveFromGroup(const std::shared_ptr<CPVRChannel>& chann
 {
   bool bReturn = false;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   for (auto it = m_sortedMembers.begin(); it != m_sortedMembers.end(); ++it)
   {
@@ -741,7 +741,7 @@ bool CPVRChannelGroup::AppendToGroup(const std::shared_ptr<CPVRChannel>& channel
 {
   bool bReturn = false;
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   if (!CPVRChannelGroup::IsGroupMember(channel))
   {
@@ -774,7 +774,7 @@ bool CPVRChannelGroup::AppendToGroup(const std::shared_ptr<CPVRChannel>& channel
 
 bool CPVRChannelGroup::IsGroupMember(const std::shared_ptr<CPVRChannel>& channel) const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_members.find(channel->StorageId()) != m_members.end();
 }
 
@@ -783,7 +783,7 @@ bool CPVRChannelGroup::Persist()
   bool bReturn(true);
   const std::shared_ptr<CPVRDatabase> database(CServiceBroker::GetPVRManager().GetTVDatabase());
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   // do not persist if the group is not fully loaded and was saved before.
   if (!m_bLoaded && m_iGroupId != INVALID_GROUP_ID)
@@ -818,7 +818,7 @@ void CPVRChannelGroup::Delete()
     return;
   }
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   if (m_iGroupId > 0)
   {
@@ -832,7 +832,7 @@ bool CPVRChannelGroup::Renumber(RenumberMode mode /* = NORMAL */)
   bool bReturn(false);
   unsigned int iChannelNumber(0);
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   const bool bUseBackendChannelNumbers = GetSettings()->UseBackendChannelNumbers();
   const bool bStartGroupChannelNumbersFromOne = GetSettings()->StartGroupChannelNumbersFromOne();
 
@@ -885,7 +885,7 @@ bool CPVRChannelGroup::Renumber(RenumberMode mode /* = NORMAL */)
 
 bool CPVRChannelGroup::HasNewChannels() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   for (const auto& memberPair : m_members)
   {
@@ -898,19 +898,19 @@ bool CPVRChannelGroup::HasNewChannels() const
 
 bool CPVRChannelGroup::HasChanges() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_bChanged;
 }
 
 bool CPVRChannelGroup::IsNew() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_iGroupId <= 0;
 }
 
 void CPVRChannelGroup::UseBackendChannelOrderChanged()
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   UpdateClientPriorities();
   OnSettingChanged();
 }
@@ -934,7 +934,7 @@ void CPVRChannelGroup::OnSettingChanged()
     return;
   }
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   CLog::LogFC(LOGDEBUG, LOGPVR,
               "Renumbering channel group '{}' to use the backend channel order and/or numbers",
@@ -956,7 +956,7 @@ CDateTime CPVRChannelGroup::GetEPGDate(EpgDateType epgDateType) const
   CDateTime date;
   std::shared_ptr<CPVREpg> epg;
   std::shared_ptr<CPVRChannel> channel;
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   for (const auto& memberPair : m_members)
   {
@@ -1001,7 +1001,7 @@ int CPVRChannelGroup::GroupID() const
 
 void CPVRChannelGroup::SetGroupID(int iGroupId)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   if (iGroupId >= 0 && m_iGroupId != iGroupId)
   {
     m_iGroupId = iGroupId;
@@ -1014,7 +1014,7 @@ void CPVRChannelGroup::SetGroupID(int iGroupId)
 
 void CPVRChannelGroup::SetGroupType(int iGroupType)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   if (m_iGroupType != iGroupType)
   {
     m_iGroupType = iGroupType;
@@ -1030,13 +1030,13 @@ int CPVRChannelGroup::GroupType() const
 
 std::string CPVRChannelGroup::GroupName() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_path.GetGroupName();
 }
 
 void CPVRChannelGroup::SetGroupName(const std::string& strGroupName)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   if (m_path.GetGroupName() != strGroupName)
   {
     m_path = CPVRChannelsPath(m_path.IsRadio(), strGroupName);
@@ -1050,13 +1050,13 @@ void CPVRChannelGroup::SetGroupName(const std::string& strGroupName)
 
 bool CPVRChannelGroup::IsRadio() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_path.IsRadio();
 }
 
 time_t CPVRChannelGroup::LastWatched() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_iLastWatched;
 }
 
@@ -1064,7 +1064,7 @@ void CPVRChannelGroup::SetLastWatched(time_t iLastWatched)
 {
   const std::shared_ptr<CPVRDatabase> database(CServiceBroker::GetPVRManager().GetTVDatabase());
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   if (m_iLastWatched != iLastWatched)
   {
@@ -1076,7 +1076,7 @@ void CPVRChannelGroup::SetLastWatched(time_t iLastWatched)
 
 uint64_t CPVRChannelGroup::LastOpened() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_iLastOpened;
 }
 
@@ -1084,7 +1084,7 @@ void CPVRChannelGroup::SetLastOpened(uint64_t iLastOpened)
 {
   const std::shared_ptr<CPVRDatabase> database(CServiceBroker::GetPVRManager().GetTVDatabase());
 
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   if (m_iLastOpened != iLastOpened)
   {
@@ -1104,7 +1104,7 @@ bool CPVRChannelGroup::UpdateChannel(const std::pair<int, int>& storageId,
                                      bool bParentalLocked,
                                      bool bUserSetIcon)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   /* get the real channel from the group */
   const std::shared_ptr<CPVRChannel> channel = GetByUniqueID(storageId)->Channel();
@@ -1140,13 +1140,13 @@ bool CPVRChannelGroup::UpdateChannel(const std::pair<int, int>& storageId,
 
 size_t CPVRChannelGroup::Size() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_members.size();
 }
 
 bool CPVRChannelGroup::HasChannels() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return !m_members.empty();
 }
 
@@ -1158,7 +1158,7 @@ bool CPVRChannelGroup::CreateChannelEpgs(bool bForce /* = false */)
 
 bool CPVRChannelGroup::SetHidden(bool bHidden)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   if (m_bHidden != bHidden)
   {
@@ -1172,19 +1172,19 @@ bool CPVRChannelGroup::SetHidden(bool bHidden)
 
 bool CPVRChannelGroup::IsHidden() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_bHidden;
 }
 
 int CPVRChannelGroup::GetPosition() const
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_iPosition;
 }
 
 void CPVRChannelGroup::SetPosition(int iPosition)
 {
-  CSingleLock lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
   if (m_iPosition != iPosition)
   {
@@ -1198,7 +1198,7 @@ int CPVRChannelGroup::CleanupCachedImages()
 {
   std::vector<std::string> urlsToCheck;
   {
-    CSingleLock lock(m_critSection);
+    std::unique_lock<CCriticalSection> lock(m_critSection);
     for (const auto& groupMember : m_members)
     {
       urlsToCheck.emplace_back(groupMember.second->Channel()->ClientIconPath());

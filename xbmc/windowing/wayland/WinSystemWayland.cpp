@@ -35,7 +35,6 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
-#include "threads/SingleLock.h"
 #include "utils/ActorProtocol.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
@@ -47,6 +46,7 @@
 
 #include <algorithm>
 #include <limits>
+#include <mutex>
 #include <numeric>
 
 #if defined(HAS_DBUS)
@@ -247,9 +247,9 @@ bool CWinSystemWayland::CreateNewWindow(const std::string& name,
     {
       CLog::Log(LOGDEBUG, "Entering output \"{}\" with scale {} and {:.3f} dpi",
                 UserFriendlyOutputName(output), output->GetScale(), output->GetCurrentDpi());
-      CSingleLock lock(m_surfaceOutputsMutex);
+      std::unique_lock<CCriticalSection> lock(m_surfaceOutputsMutex);
       m_surfaceOutputs.emplace(output);
-      lock.Leave();
+      lock.unlock();
       UpdateBufferScale();
       UpdateTouchDpi();
     }
@@ -263,9 +263,9 @@ bool CWinSystemWayland::CreateNewWindow(const std::string& name,
     {
       CLog::Log(LOGDEBUG, "Leaving output \"{}\" with scale {}", UserFriendlyOutputName(output),
                 output->GetScale());
-      CSingleLock lock(m_surfaceOutputsMutex);
+      std::unique_lock<CCriticalSection> lock(m_surfaceOutputsMutex);
       m_surfaceOutputs.erase(output);
-      lock.Leave();
+      lock.unlock();
       UpdateBufferScale();
       UpdateTouchDpi();
     }
@@ -401,7 +401,7 @@ bool CWinSystemWayland::CanDoWindowed()
 
 std::vector<std::string> CWinSystemWayland::GetConnectedOutputs()
 {
-  CSingleLock lock(m_outputsMutex);
+  std::unique_lock<CCriticalSection> lock(m_outputsMutex);
   std::vector<std::string> outputs;
   std::transform(m_outputs.cbegin(), m_outputs.cend(), std::back_inserter(outputs),
                  [this](decltype(m_outputs)::value_type const& pair)
@@ -425,7 +425,7 @@ void CWinSystemWayland::UpdateResolutions()
   // Only show resolutions for the currently selected output
   std::string userOutput = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
 
-  CSingleLock lock(m_outputsMutex);
+  std::unique_lock<CCriticalSection> lock(m_outputsMutex);
 
   if (m_outputs.empty())
   {
@@ -481,7 +481,7 @@ void CWinSystemWayland::UpdateResolutions()
 
 std::shared_ptr<COutput> CWinSystemWayland::FindOutputByUserFriendlyName(const std::string& name)
 {
-  CSingleLock lock(m_outputsMutex);
+  std::unique_lock<CCriticalSection> lock(m_outputsMutex);
   auto outputIt = std::find_if(m_outputs.begin(), m_outputs.end(),
                                [this, &name](decltype(m_outputs)::value_type const& entry)
                                {
@@ -493,7 +493,7 @@ std::shared_ptr<COutput> CWinSystemWayland::FindOutputByUserFriendlyName(const s
 
 std::shared_ptr<COutput> CWinSystemWayland::FindOutputByWaylandOutput(wayland::output_t const& output)
 {
-  CSingleLock lock(m_outputsMutex);
+  std::unique_lock<CCriticalSection> lock(m_outputsMutex);
   auto outputIt = std::find_if(m_outputs.begin(), m_outputs.end(),
                                [&output](decltype(m_outputs)::value_type const& entry)
                                {
@@ -697,7 +697,7 @@ void CWinSystemWayland::ProcessMessages()
       {
         CLog::LogF(LOGDEBUG, "Output hotplug, re-reading resolutions");
         UpdateResolutions();
-        CSingleLock lock(m_outputsMutex);
+        std::unique_lock<CCriticalSection> lock(m_outputsMutex);
         auto const& desktopRes = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP);
         auto output = FindOutputByUserFriendlyName(desktopRes.strOutput);
         auto const& wlOutput = output->GetWaylandOutput();
@@ -842,7 +842,7 @@ void CWinSystemWayland::SetResolutionInternal(CSizeInt size, std::int32_t scale,
   // Get actual frame rate from monitor, take highest frame rate if multiple
   float refreshRate{m_fRefreshRate};
   {
-    CSingleLock lock(m_surfaceOutputsMutex);
+    std::unique_lock<CCriticalSection> lock(m_surfaceOutputsMutex);
     auto maxRefreshIt = std::max_element(m_surfaceOutputs.cbegin(), m_surfaceOutputs.cend(), OutputCurrentRefreshRateComparer());
     if (maxRefreshIt != m_surfaceOutputs.cend())
     {
@@ -1076,7 +1076,7 @@ bool CWinSystemWayland::Minimize()
 
 bool CWinSystemWayland::HasCursor()
 {
-  CSingleLock lock(m_seatsMutex);
+  std::unique_lock<CCriticalSection> lock(m_seatsMutex);
   return std::any_of(m_seats.cbegin(), m_seats.cend(),
                      [](decltype(m_seats)::value_type const& entry)
                      {
@@ -1120,19 +1120,19 @@ void CWinSystemWayland::LoadDefaultCursor()
 
 void CWinSystemWayland::Register(IDispResource* resource)
 {
-  CSingleLock lock(m_dispResourcesMutex);
+  std::unique_lock<CCriticalSection> lock(m_dispResourcesMutex);
   m_dispResources.emplace(resource);
 }
 
 void CWinSystemWayland::Unregister(IDispResource* resource)
 {
-  CSingleLock lock(m_dispResourcesMutex);
+  std::unique_lock<CCriticalSection> lock(m_dispResourcesMutex);
   m_dispResources.erase(resource);
 }
 
 void CWinSystemWayland::OnSeatAdded(std::uint32_t name, wayland::proxy_t&& proxy)
 {
-  CSingleLock lock(m_seatsMutex);
+  std::unique_lock<CCriticalSection> lock(m_seatsMutex);
 
   wayland::seat_t seat(proxy);
   auto newSeatEmplace = m_seats.emplace(std::piecewise_construct,
@@ -1146,7 +1146,7 @@ void CWinSystemWayland::OnSeatAdded(std::uint32_t name, wayland::proxy_t&& proxy
 
 void CWinSystemWayland::OnSeatRemoved(std::uint32_t name)
 {
-  CSingleLock lock(m_seatsMutex);
+  std::unique_lock<CCriticalSection> lock(m_seatsMutex);
 
   auto seatI = m_seats.find(name);
   if (seatI != m_seats.end())
@@ -1173,7 +1173,7 @@ void CWinSystemWayland::OnOutputDone(std::uint32_t name)
     // output parameters change later
 
     {
-      CSingleLock lock(m_outputsMutex);
+      std::unique_lock<CCriticalSection> lock(m_outputsMutex);
       // Move from m_outputsInPreparation to m_outputs
       m_outputs.emplace(std::move(*it));
       m_outputsInPreparation.erase(it);
@@ -1189,7 +1189,7 @@ void CWinSystemWayland::OnOutputRemoved(std::uint32_t name)
 {
   m_outputsInPreparation.erase(name);
 
-  CSingleLock lock(m_outputsMutex);
+  std::unique_lock<CCriticalSection> lock(m_outputsMutex);
   if (m_outputs.erase(name) != 0)
   {
     // Theoretically, the compositor should automatically put us on another
@@ -1201,7 +1201,7 @@ void CWinSystemWayland::OnOutputRemoved(std::uint32_t name)
 void CWinSystemWayland::SendFocusChange(bool focus)
 {
   g_application.m_AppFocused = focus;
-  CSingleLock lock(m_dispResourcesMutex);
+  std::unique_lock<CCriticalSection> lock(m_dispResourcesMutex);
   for (auto dispResource : m_dispResources)
   {
     dispResource->OnAppFocusChange(focus);
@@ -1329,7 +1329,7 @@ void CWinSystemWayland::PrepareFramePresentation()
     // to the actual object
     decltype(m_surfaceSubmissions)::iterator iter;
     {
-      CSingleLock lock(m_surfaceSubmissionsMutex);
+      std::unique_lock<CCriticalSection> lock(m_surfaceSubmissionsMutex);
       iter = m_surfaceSubmissions.emplace(m_surfaceSubmissions.end(), tStart, feedback);
     }
 
@@ -1357,7 +1357,7 @@ void CWinSystemWayland::PrepareFramePresentation()
       iter->latency = latency / 1e9f; // nanoseconds to seconds
       float adjust{};
       {
-        CSingleLock lock(m_surfaceSubmissionsMutex);
+        std::unique_lock<CCriticalSection> lock(m_surfaceSubmissionsMutex);
         if (m_surfaceSubmissions.size() > LATENCY_MOVING_AVERAGE_SIZE)
         {
           adjust = - m_surfaceSubmissions.front().latency / LATENCY_MOVING_AVERAGE_SIZE;
@@ -1372,7 +1372,7 @@ void CWinSystemWayland::PrepareFramePresentation()
     feedback.on_discarded() = [this,iter]()
     {
       CLog::Log(LOGDEBUG, "Presentation: Frame was discarded by compositor");
-      CSingleLock lock(m_surfaceSubmissionsMutex);
+      std::unique_lock<CCriticalSection> lock(m_surfaceSubmissionsMutex);
       m_surfaceSubmissions.erase(iter);
     };
   }
@@ -1501,7 +1501,7 @@ std::unique_ptr<IOSScreenSaver> CWinSystemWayland::GetOSScreenSaverImpl()
 
 std::string CWinSystemWayland::GetClipboardText()
 {
-  CSingleLock lock(m_seatsMutex);
+  std::unique_lock<CCriticalSection> lock(m_seatsMutex);
   // Get text of first seat with non-empty selection
   // Actually, the value of the seat that received the Ctrl+V keypress should be used,
   // but this would need a workaround or proper multi-seat support in Kodi - it's

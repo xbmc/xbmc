@@ -8,6 +8,7 @@
 
 // clang-format off
 // python.h should always be included first before any other includes
+#include <mutex>
 #include <Python.h>
 // clang-format on
 
@@ -70,7 +71,7 @@ static const std::string getListOfAddonClassesAsString(
     XBMCAddon::AddonClass::Ref<XBMCAddon::Python::PythonLanguageHook>& languageHook)
 {
   std::string message;
-  CSingleLock l(*(languageHook.get()));
+  std::unique_lock<CCriticalSection> l(*(languageHook.get()));
   std::set<XBMCAddon::AddonClass*>& acs = languageHook->GetRegisteredAddonClasses();
   bool firstTime = true;
   for (const auto& iter : acs)
@@ -282,7 +283,7 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
     PySys_SetPath(pypath.c_str());
 
     { // set the m_threadState to this new interp
-      CSingleLock lockMe(m_critical);
+      std::unique_lock<CCriticalSection> lockMe(m_critical);
       m_threadState = l_threadState;
     }
   }
@@ -388,7 +389,7 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
     onError(exceptionType, exceptionValue, exceptionTraceback);
   }
 
-  CSingleLock lock(m_critical);
+  std::unique_lock<CCriticalSection> lock(m_critical);
   // no need to do anything else because the script has already stopped
   if (failed)
   {
@@ -415,11 +416,11 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::w
         old = s;
       }
 
-      lock.Leave();
+      lock.unlock();
       CPyThreadState pyState;
       KODI::TIME::Sleep(100ms);
       pyState.Restore();
-      lock.Enter();
+      lock.lock();
     }
   }
 
@@ -466,7 +467,7 @@ FILE* CPythonInvoker::PyFile_AsFileWithMode(PyObject* py_file, const char* mode)
 
 bool CPythonInvoker::stop(bool abort)
 {
-  CSingleLock lock(m_critical);
+  std::unique_lock<CCriticalSection> lock(m_critical);
   m_stop = true;
 
   if (!IsRunning() && !m_threadState)
@@ -477,7 +478,7 @@ bool CPythonInvoker::stop(bool abort)
     if (IsRunning())
     {
       setState(InvokerStateStopping);
-      lock.Leave();
+      lock.unlock();
 
       PyEval_RestoreThread((PyThreadState*)m_threadState);
 
@@ -493,7 +494,7 @@ bool CPythonInvoker::stop(bool abort)
     }
     else
       //Release the lock while waiting for threads to finish
-      lock.Leave();
+      lock.unlock();
 
     XbmcThreads::EndTime<> timeout(PYTHON_SCRIPT_TIMEOUT);
     while (!m_stoppedEvent.Wait(15ms))
@@ -516,7 +517,7 @@ bool CPythonInvoker::stop(bool abort)
       }
     }
 
-    lock.Enter();
+    lock.lock();
 
     setState(InvokerStateExecutionDone);
 
@@ -551,7 +552,7 @@ bool CPythonInvoker::stop(bool abort)
 
       PyEval_ReleaseThread(m_threadState);
     }
-    lock.Leave();
+    lock.unlock();
 
     setState(InvokerStateFailed);
   }
@@ -562,7 +563,7 @@ bool CPythonInvoker::stop(bool abort)
 // Always called from Invoker thread
 void CPythonInvoker::onExecutionDone()
 {
-  CSingleLock lock(m_critical);
+  std::unique_lock<CCriticalSection> lock(m_critical);
   if (m_threadState != NULL)
   {
     CLog::Log(LOGDEBUG, "{}({}, {})", __FUNCTION__, GetId(), m_sourceFile);
@@ -625,7 +626,7 @@ void CPythonInvoker::onExecutionFailed()
   CLog::Log(LOGERROR, "CPythonInvoker({}, {}): abnormally terminating python thread", GetId(),
             m_sourceFile);
 
-  CSingleLock lock(m_critical);
+  std::unique_lock<CCriticalSection> lock(m_critical);
   m_threadState = NULL;
 
   ILanguageInvoker::onExecutionFailed();
@@ -682,7 +683,7 @@ void CPythonInvoker::onError(const std::string& exceptionType /* = "" */,
                              const std::string& exceptionTraceback /* = "" */)
 {
   CPyThreadState releaseGil;
-  CSingleLock gc(CServiceBroker::GetWinSystem()->GetGfxContext());
+  std::unique_lock<CCriticalSection> gc(CServiceBroker::GetWinSystem()->GetGfxContext());
 
   CGUIDialogKaiToast* pDlgToast =
       CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogKaiToast>(

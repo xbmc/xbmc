@@ -26,7 +26,6 @@
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "threads/SingleLock.h"
 #include "utils/SystemInfo.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
@@ -36,6 +35,7 @@
 #include "platform/win32/input/IRServerSuite.h"
 
 #include <algorithm>
+#include <mutex>
 
 #include <tpcshrd.h>
 
@@ -1051,13 +1051,13 @@ bool CWinSystemWin32::Show(bool raise)
 
 void CWinSystemWin32::Register(IDispResource *resource)
 {
-  CSingleLock lock(m_resourceSection);
+  std::unique_lock<CCriticalSection> lock(m_resourceSection);
   m_resources.push_back(resource);
 }
 
 void CWinSystemWin32::Unregister(IDispResource* resource)
 {
-  CSingleLock lock(m_resourceSection);
+  std::unique_lock<CCriticalSection> lock(m_resourceSection);
   std::vector<IDispResource*>::iterator i = find(m_resources.begin(), m_resources.end(), resource);
   if (i != m_resources.end())
     m_resources.erase(i);
@@ -1068,7 +1068,7 @@ void CWinSystemWin32::OnDisplayLost()
   CLog::LogF(LOGDEBUG, "notify display lost event");
 
   {
-    CSingleLock lock(m_resourceSection);
+    std::unique_lock<CCriticalSection> lock(m_resourceSection);
     for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
       (*i)->OnLostDisplay();
   }
@@ -1079,7 +1079,7 @@ void CWinSystemWin32::OnDisplayReset()
   if (!m_delayDispReset)
   {
     CLog::LogF(LOGDEBUG, "notify display reset event");
-    CSingleLock lock(m_resourceSection);
+    std::unique_lock<CCriticalSection> lock(m_resourceSection);
     for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
       (*i)->OnResetDisplay();
   }
