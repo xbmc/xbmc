@@ -1114,7 +1114,8 @@ void DX::DeviceResources::CheckDXVA2SharedDecoderSurfaces()
   m_DXVA2SharedDecoderSurfaces =
       ad.VendorId == PCIV_Intel ||
       (ad.VendorId == PCIV_NVIDIA && driver.valid && driver.majorVersion >= 465) ||
-      (ad.VendorId == PCIV_AMD && driver.valid && driver.majorVersion >= 30);
+      (ad.VendorId == PCIV_AMD && driver.valid && driver.majorVersion >= 30 &&
+       m_d3dFeatureLevel >= D3D_FEATURE_LEVEL_12_1);
 
   CLog::LogF(LOGINFO, "DXVA2 shared decoder surfaces is{}supported",
              m_DXVA2SharedDecoderSurfaces ? " " : " NOT ");
