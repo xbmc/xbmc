@@ -33,7 +33,6 @@
 #include "AutorunMediaJob.h"
 #include "GUIUserMessages.h"
 #include "addons/VFSEntry.h"
-#include "cores/VideoPlayer/DVDInputStreams/DVDInputStreamNavigator.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogPlayEject.h"
 #include "filesystem/File.h"
@@ -53,10 +52,6 @@
 #endif
 #include <string>
 #include <vector>
-
-#ifdef HAVE_LIBBLURAY
-#include "filesystem/BlurayDirectory.h"
-#endif
 
 using namespace XFILE;
 
@@ -505,7 +500,7 @@ std::string CMediaManager::GetDiskLabel(const std::string& devicePath)
   if (CServiceBroker::GetMediaManager().GetDriveStatus(drivePath) != DRIVE_CLOSED_MEDIA_PRESENT)
     return "";
 
-  DiscInfo info;
+  UTILS::DISCS::DiscInfo info;
   info = GetDiscInfo(mediaPath);
   if (!info.name.empty())
   {
@@ -556,7 +551,7 @@ std::string CMediaManager::GetDiskUniqueId(const std::string& devicePath)
   }
 #endif
 
-  DiscInfo info = GetDiscInfo(mediaPath);
+  UTILS::DISCS::DiscInfo info = GetDiscInfo(mediaPath);
   if (info.empty())
   {
     CLog::Log(LOGDEBUG, "GetDiskUniqueId: Retrieving ID for path {} failed, ID is empty.",
@@ -737,9 +732,9 @@ void CMediaManager::OnStorageUnsafelyRemoved(const MEDIA_DETECT::STORAGE::Storag
                                         device.label);
 }
 
-CMediaManager::DiscInfo CMediaManager::GetDiscInfo(const std::string& mediaPath)
+UTILS::DISCS::DiscInfo CMediaManager::GetDiscInfo(const std::string& mediaPath)
 {
-  DiscInfo info;
+  UTILS::DISCS::DiscInfo info;
 
   if (mediaPath.empty())
     return info;
@@ -753,32 +748,18 @@ CMediaManager::DiscInfo CMediaManager::GetDiscInfo(const std::string& mediaPath)
     pathVideoTS = TranslateDevicePath("");
   }
 
+  // check for DVD discs
   if (XFILE::CFile::Exists(pathVideoTS))
   {
-    CFileItem item(pathVideoTS, false);
-    CDVDInputStreamNavigator dvdNavigator(nullptr, item);
-    if (dvdNavigator.Open())
-    {
-      info.type = "DVD";
-      info.name = dvdNavigator.GetDVDTitleString();
-      info.serial = dvdNavigator.GetDVDSerialString();
+    info = UTILS::DISCS::ProbeDVDDiscInfo(pathVideoTS);
+    if (!info.empty())
       return info;
-    }
   }
-#ifdef HAVE_LIBBLURAY
   // check for Blu-ray discs
   if (XFILE::CFile::Exists(URIUtils::AddFileToFolder(mediaPath, "BDMV", "index.bdmv")))
   {
-    info.type = "Blu-ray";
-    CBlurayDirectory bdDir;
-
-    if (!bdDir.InitializeBluray(mediaPath))
-      return info;
-
-    info.name = bdDir.GetBlurayTitle();
-    info.serial = bdDir.GetBlurayID();
+    info = UTILS::DISCS::ProbeBlurayDiscInfo(mediaPath);
   }
-#endif
 
   return info;
 }

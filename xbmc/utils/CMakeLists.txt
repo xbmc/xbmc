@@ -18,6 +18,7 @@ set(SOURCES ActorProtocol.cpp
             CSSUtils.cpp
             DatabaseUtils.cpp
             Digest.cpp
+            DiscsUtils.cpp
             EndianSwap.cpp
             EmbeddedArt.cpp
             FileExtensionProvider.cpp
@@ -93,6 +94,7 @@ set(HEADERS ActorProtocol.h
             CSSUtils.h
             DatabaseUtils.h
             Digest.h
+            DiscsUtils.h
             EndianSwap.h
             EventStream.h
             EventStreamDetail.h
