@@ -279,7 +279,8 @@ ASS_Image* CDVDSubtitlesLibass::RenderImage(
 
   ass_set_frame_size(m_renderer, static_cast<int>(opts.frameWidth),
                      static_cast<int>(opts.frameHeight));
-
+  ass_set_storage_size(m_renderer, static_cast<int>(opts.sourceWidth),
+                       static_cast<int>(opts.sourceHeight));
   if (m_drawWithinBlackBars)
   {
     int marginTop = static_cast<int>((opts.frameHeight - opts.videoHeight) / 2);
