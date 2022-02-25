@@ -598,16 +598,16 @@ void CWebVTTHandler::GetCueSettings(std::string& cueSettings)
   }
 
   std::string cuePosAlign = GetCueSettingValue("positionAlign", cueSettings, "auto");
-  if (cuePos == "left")
+  if (cuePosAlign == "line-left")
     settings.positionAlign = WebvttAlign::LEFT;
-  else if (cuePos == "right")
+  else if (cuePosAlign == "line-right")
     settings.positionAlign = WebvttAlign::RIGHT;
-  else if (cuePos == "center" || cuePos == "middle") // "middle" undocumented
+  else if (cuePosAlign == "center" || cuePosAlign == "middle") // "middle" undocumented
     settings.positionAlign = WebvttAlign::CENTER;
-  else if (cuePos == "start")
-    settings.positionAlign = WebvttAlign::START; // Undocumented
-  else if (cuePos == "end")
-    settings.positionAlign = WebvttAlign::END; // Undocumented
+  else if (cuePosAlign == "start") // Undocumented
+    settings.positionAlign = WebvttAlign::START;
+  else if (cuePosAlign == "end") // Undocumented
+    settings.positionAlign = WebvttAlign::END;
   else
     settings.positionAlign = WebvttAlign::AUTO;
 
