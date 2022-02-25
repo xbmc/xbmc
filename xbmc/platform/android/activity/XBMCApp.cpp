@@ -389,8 +389,9 @@ void CXBMCApp::Deinitialize()
 bool CXBMCApp::Stop(int exitCode)
 {
   if (m_exiting)
-    return true;
+    return true; // stage two: android activity has finished
 
+  // enter stage one: tell android to finish the activity
   CLog::Log(LOGINFO, "XBMCApp: Finishing the activity");
 
   m_exitCode = exitCode;
@@ -398,9 +399,9 @@ bool CXBMCApp::Stop(int exitCode)
   // Notify Android its finish routine.
   // This will cause Android to run through its teardown events, it calls:
   // onPause(), onLostFocus(), onDestroyWindow(), onStop(), onDestroy().
-  m_exiting = true;
   ANativeActivity_finish(m_activity);
-  return false;
+
+  return false; // stage one: let android finish the activity
 }
 
 void CXBMCApp::Quit()
@@ -428,6 +429,7 @@ void CXBMCApp::Quit()
       break;
   }
 
+  m_exiting = true; // enter stage two: android activity has finished. go on with stopping Kodi
   CApplicationMessenger::GetInstance().PostMsg(msgId);
 
   // wait for the run thread to finish
