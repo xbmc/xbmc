@@ -274,8 +274,8 @@ ASS_Image* CDVDSubtitlesLibass::RenderImage(
     m_drawWithinBlackBars = subStyle->drawWithinBlackBars;
   }
 
-  double sar = static_cast<double>(opts.sourceWidth / opts.sourceHeight);
-  double dar = static_cast<double>(opts.videoWidth / opts.videoHeight);
+  double sar = static_cast<double>(opts.sourceWidth) / static_cast<double>(opts.sourceHeight);
+  double dar = static_cast<double>(opts.videoWidth) / static_cast<double>(opts.videoHeight);
 
   ass_set_frame_size(m_renderer, static_cast<int>(opts.frameWidth),
                      static_cast<int>(opts.frameHeight));
@@ -292,7 +292,7 @@ ASS_Image* CDVDSubtitlesLibass::RenderImage(
   // Vertical text position in percent (if 0 do nothing)
   ass_set_line_position(m_renderer, opts.position);
 
-  ass_set_pixel_aspect(m_renderer, sar / dar);
+  ass_set_pixel_aspect(m_renderer, dar / sar);
 
   // For posterity ass_render_frame have an inconsistent rendering for overlapped subtitles cases,
   // if the playback occurs in sequence (without seeks) the overlapped subtitles lines will be rendered in right order
