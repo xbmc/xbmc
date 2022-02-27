@@ -27,6 +27,7 @@
 #include "windowing/GraphicContext.h"
 #include "windowing/X11/WinSystemX11.h"
 
+#include <array>
 #include <mutex>
 
 #include <dlfcn.h>
