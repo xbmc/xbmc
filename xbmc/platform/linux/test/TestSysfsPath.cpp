@@ -70,7 +70,7 @@ TEST_F(TestSysfsPath, SysfsPathTestString)
 
 TEST_F(TestSysfsPath, SysfsPathTestLongString)
 {
-  std::string filepath = GetTestFilePath();
+  std::string filepath = GetTestFilePath().append("-long");
   std::ofstream m_output{filepath};
 
   std::string temp{"test with spaces"};
