@@ -24,6 +24,7 @@
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
+#include <array>
 #include <mutex>
 
 #include <drm_fourcc.h>
