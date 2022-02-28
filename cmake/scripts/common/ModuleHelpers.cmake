@@ -66,4 +66,56 @@ macro(SETUP_BUILD_VARS)
   if(VERBOSE)
     message(STATUS "${MODULE}_URL: ${${MODULE}_URL}")
   endif()
+
+  # unset all build_dep_target variables to insure clean state
+  unset(CMAKE_ARGS)
+  unset(PATCH_COMMAND)
+  unset(CONFIGURE_COMMAND)
+  unset(BUILD_COMMAND)
+  unset(INSTALL_COMMAND)
+  unset(BUILD_IN_SOURCE)
+  unset(BUILD_BYPRODUCTS)
+endmacro()
+
+# Macro to create externalproject_add target
+macro(BUILD_DEP_TARGET)
+  if(CMAKE_ARGS)
+    set(CMAKE_ARGS CMAKE_ARGS ${CMAKE_ARGS})
+  endif()
+
+  if(PATCH_COMMAND)
+    set(PATCH_COMMAND PATCH_COMMAND ${PATCH_COMMAND})
+  endif()
+
+  if(CONFIGURE_COMMAND)
+    set(CONFIGURE_COMMAND CONFIGURE_COMMAND ${CONFIGURE_COMMAND})
+  endif()
+
+  if(BUILD_COMMAND)
+    set(BUILD_COMMAND BUILD_COMMAND ${BUILD_COMMAND})
+  endif()
+
+  if(INSTALL_COMMAND)
+    set(INSTALL_COMMAND INSTALL_COMMAND ${INSTALL_COMMAND})
+  endif()
+
+  if(BUILD_IN_SOURCE)
+    set(BUILD_IN_SOURCE BUILD_IN_SOURCE ${BUILD_IN_SOURCE})
+  endif()
+
+  externalproject_add(${MODULE_LC}
+                      URL ${${MODULE}_URL}
+                      URL_HASH ${${MODULE}_HASH}
+                      DOWNLOAD_DIR ${TARBALL_DIR}
+                      DOWNLOAD_NAME ${${MODULE}_ARCHIVE}
+                      PREFIX ${CORE_BUILD_DIR}/${MODULE_LC}
+                      ${CMAKE_ARGS}
+                      ${PATCH_COMMAND}
+                      ${CONFIGURE_COMMAND}
+                      ${BUILD_COMMAND}
+                      ${INSTALL_COMMAND}
+                      BUILD_BYPRODUCTS ${BYPRODUCT}
+                      ${BUILD_IN_SOURCE})
+
+  set_target_properties(${MODULE_LC} PROPERTIES FOLDER "External Projects")
 endmacro()
