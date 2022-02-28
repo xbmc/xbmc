@@ -103,14 +103,19 @@ void CDVDSubtitlesLibass::Configure()
   // Load additional fonts into Libass memory
   CFileItemList items;
   // Get fonts from system directory
-  XFILE::CDirectory::GetDirectory(UTILS::FONT::FONTPATH::SYSTEM, items,
-                                  UTILS::FONT::SUPPORTED_EXTENSIONS_MASK,
-                                  XFILE::DIR_FLAG_NO_FILE_DIRS | XFILE::DIR_FLAG_NO_FILE_INFO);
+  if (XFILE::CDirectory::Exists(UTILS::FONT::FONTPATH::SYSTEM))
+  {
+    XFILE::CDirectory::GetDirectory(UTILS::FONT::FONTPATH::SYSTEM, items,
+                                    UTILS::FONT::SUPPORTED_EXTENSIONS_MASK,
+                                    XFILE::DIR_FLAG_NO_FILE_DIRS | XFILE::DIR_FLAG_NO_FILE_INFO);
+  }
   // Get temporary fonts
-  XFILE::CDirectory::GetDirectory(
-      UTILS::FONT::FONTPATH::TEMP, items, UTILS::FONT::SUPPORTED_EXTENSIONS_MASK,
-      XFILE::DIR_FLAG_BYPASS_CACHE | XFILE::DIR_FLAG_NO_FILE_DIRS | XFILE::DIR_FLAG_NO_FILE_INFO);
-
+  if (XFILE::CDirectory::Exists(UTILS::FONT::FONTPATH::SYSTEM, false))
+  {
+    XFILE::CDirectory::GetDirectory(
+        UTILS::FONT::FONTPATH::TEMP, items, UTILS::FONT::SUPPORTED_EXTENSIONS_MASK,
+        XFILE::DIR_FLAG_BYPASS_CACHE | XFILE::DIR_FLAG_NO_FILE_DIRS | XFILE::DIR_FLAG_NO_FILE_INFO);
+  }
   for (const auto& item : items)
   {
     if (item->m_bIsFolder)
