@@ -1,6 +1,6 @@
 -include ../../Makefile.include
-include LIBFMT-VERSION
-DEPS = Makefile LIBFMT-VERSION ../../download-files.include
+include FMT-VERSION
+DEPS = Makefile FMT-VERSION ../../download-files.include
 
 CMAKE_OPTIONS=-DCMAKE_CXX_STANDARD=17 -DCMAKE_CXX_EXTENSIONS:BOOL=OFF -DFMT_DOC=OFF -DFMT_INSTALL=ON -DFMT_TEST=OFF
 
