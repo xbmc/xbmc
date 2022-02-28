@@ -1078,6 +1078,19 @@ static bool HasATIMP2Bug(AVCodecContext* avctx)
       && avctx->color_trc == AVCOL_TRC_GAMMA28;
 }
 
+static bool HasAMDH264SDiBug(AVCodecContext* avctx)
+{
+  DXGI_ADAPTER_DESC AIdentifier = {};
+  DX::DeviceResources::Get()->GetAdapterDesc(&AIdentifier);
+
+  if (AIdentifier.VendorId != PCIV_ATI)
+    return false;
+
+  // AMD card has issues with SD H264 interlaced content
+  return (avctx->height <= 576 && avctx->codec_id == AV_CODEC_ID_H264 &&
+          avctx->field_order != AV_FIELD_PROGRESSIVE);
+}
+
 static bool CheckCompatibility(AVCodecContext* avctx)
 {
   if (avctx->codec_id == AV_CODEC_ID_MPEG2VIDEO && HasATIMP2Bug(avctx))
@@ -1091,6 +1104,15 @@ static bool CheckCompatibility(AVCodecContext* avctx)
   if (HasVP3WidthBug(avctx))
   {
     CLog::LogFunction(LOGWARNING,"DXVA", "width %i is not supported with nVidia VP3 hardware. DXVA will not be used.", avctx->coded_width);
+    return false;
+  }
+
+  // AMD H264 SD interlaced incompatibility
+  if (HasAMDH264SDiBug(avctx))
+  {
+    CLog::Log(
+        LOGWARNING,
+        "DXVA: H264 SD interlaced has issues on AMD graphics hardware. DXVA will not be used.");
     return false;
   }
 
