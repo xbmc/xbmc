@@ -24,23 +24,17 @@ if(ENABLE_INTERNAL_RapidJSON)
   set(RapidJSON_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
   set(RapidJSON_VERSION ${${MODULE}_VER})
 
-  externalproject_add(${MODULE_LC}
-                      URL ${${MODULE}_URL}
-                      URL_HASH ${${MODULE}_HASH}
-                      DOWNLOAD_DIR ${TARBALL_DIR}
-                      DOWNLOAD_NAME ${${MODULE}_ARCHIVE}
-                      PREFIX ${CORE_BUILD_DIR}/${MODULE_LC}
-                      CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
-                                 -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
-                                 -DRAPIDJSON_BUILD_DOC=OFF
-                                 -DRAPIDJSON_BUILD_EXAMPLES=OFF
-                                 -DRAPIDJSON_BUILD_TESTS=OFF
-                                 -DRAPIDJSON_BUILD_THIRDPARTY_GTEST=OFF
-                                 "${EXTRA_ARGS}"
-                      PATCH_COMMAND patch -p1 < ${CORE_SOURCE_DIR}/tools/depends/target/rapidjson/0001-remove_custom_cxx_flags.patch
-                      BUILD_BYPRODUCTS ${RapidJSON_LIBRARY})
-  set_target_properties(${MODULE_LC} PROPERTIES FOLDER "External Projects")
+  set(CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
+                 -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
+                 -DRAPIDJSON_BUILD_DOC=OFF
+                 -DRAPIDJSON_BUILD_EXAMPLES=OFF
+                 -DRAPIDJSON_BUILD_TESTS=OFF
+                 -DRAPIDJSON_BUILD_THIRDPARTY_GTEST=OFF
+                 "${EXTRA_ARGS}")
+  set(PATCH_COMMAND patch -p1 < ${CORE_SOURCE_DIR}/tools/depends/target/rapidjson/0001-remove_custom_cxx_flags.patch)
+  set(BUILD_BYPRODUCTS ${RapidJSON_LIBRARY})
 
+  BUILD_DEP_TARGET()
 else()
   if(PKG_CONFIG_FOUND)
     pkg_check_modules(PC_RapidJSON RapidJSON>=1.0.2 QUIET)
