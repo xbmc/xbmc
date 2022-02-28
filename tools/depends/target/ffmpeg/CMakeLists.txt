@@ -2,21 +2,40 @@ project(ffmpeg)
 
 cmake_minimum_required(VERSION 2.8)
 
-list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
-
 if(ENABLE_CCACHE AND CCACHE_PROGRAM)
-  set(ffmpeg_conf "--cc=${CCACHE_PROGRAM} ${CMAKE_C_COMPILER}" "--cxx=${CCACHE_PROGRAM} ${CMAKE_CXX_COMPILER}")
+  set(ffmpeg_conf "--cc=${CCACHE_PROGRAM} ${CMAKE_C_COMPILER}"
+                  "--cxx=${CCACHE_PROGRAM} ${CMAKE_CXX_COMPILER}"
+                )
 else()
-  set(ffmpeg_conf --cc=${CMAKE_C_COMPILER} --cxx=${CMAKE_CXX_COMPILER})
+  set(ffmpeg_conf --cc=${CMAKE_C_COMPILER}
+                  --cxx=${CMAKE_CXX_COMPILER}
+                )
 endif()
 
 if(CROSSCOMPILING)
   set(pkgconf "PKG_CONFIG_LIBDIR=${DEPENDS_PATH}/lib/pkgconfig")
-  list(APPEND ffmpeg_conf --pkg-config=${PKG_CONFIG_EXECUTABLE} --pkg-config-flags=--static)
-  list(APPEND ffmpeg_conf --enable-cross-compile --cpu=${CPU} --arch=${CPU} --target-os=${OS})
-  list(APPEND ffmpeg_conf --ar=${CMAKE_AR} --strip=${CMAKE_STRIP})
+  list(APPEND ffmpeg_conf --pkg-config=${PKG_CONFIG_EXECUTABLE}
+                          --pkg-config-flags=--static
+                          --enable-cross-compile
+                          --enable-pic
+                          --ar=${CMAKE_AR}
+                          --strip=${CMAKE_STRIP}
+              )
+
   message(STATUS "CROSS: ${ffmpeg_conf}")
 endif()
+
+set(CONFIGARCH --arch=${CPU})
+
+list(APPEND ffmpeg_conf --disable-doc
+                        --disable-devices
+                        --disable-programs
+                        --disable-sdl2
+                        --enable-gpl
+                        --enable-postproc
+                        --enable-runtime-cpudetect
+                        --enable-pthreads
+            )
 
 if(CMAKE_C_FLAGS)
   list(APPEND ffmpeg_conf --extra-cflags=${CMAKE_C_FLAGS})
@@ -39,7 +58,9 @@ if(CMAKE_BUILD_TYPE STREQUAL Release)
 endif()
 
 if(CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd)
-  list(APPEND ffmpeg_conf --enable-pic)
+  list(APPEND ffmpeg_conf --enable-pic
+                          --target-os=linux
+              )
   if(ENABLE_VAAPI)
     list(APPEND ffmpeg_conf --enable-vaapi)
   else()
@@ -51,34 +72,47 @@ if(CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd)
     list(APPEND ffmpeg_conf --disable-vdpau)
   endif()
 elseif(CORE_SYSTEM_NAME STREQUAL android)
+  list(APPEND ffmpeg_conf --target-os=android
+                          --extra-libs=-liconv
+                          --disable-linux-perf
+              )
   if(CPU MATCHES arm64)
-    list(APPEND ffmpeg_conf --cpu=cortex-a53 --arch=aarch64)
+    set(CONFIGARCH --arch=aarch64)
+    list(APPEND ffmpeg_conf --cpu=cortex-a53)
   elseif(CPU MATCHES arm)
     list(APPEND ffmpeg_conf --cpu=cortex-a9)
   elseif(CPU MATCHES x86_64)
-    list(APPEND ffmpeg_conf --cpu=x86_64 --enable-pic)
+    list(APPEND ffmpeg_conf --cpu=x86_64)
   else()
     list(APPEND ffmpeg_conf --cpu=i686 --disable-mmx)
   endif()
-  list(APPEND ffmpeg_conf --target-os=linux --extra-libs=-liconv --disable-linux-perf)
 elseif(CORE_SYSTEM_NAME STREQUAL darwin_embedded)
-  list(APPEND ffmpeg_conf --disable-crystalhd --enable-videotoolbox 
-                          --target-os=darwin)
-elseif(CORE_SYSTEM_NAME STREQUAL osx)
-  list(APPEND ffmpeg_conf --disable-crystalhd --enable-videotoolbox
+  list(APPEND ffmpeg_conf --disable-crystalhd
+                          --enable-videotoolbox
                           --target-os=darwin
-                          --disable-securetransport)
+                          --disable-securetransport
+              )
+elseif(CORE_SYSTEM_NAME STREQUAL osx)
+  list(APPEND ffmpeg_conf --disable-crystalhd
+                          --enable-videotoolbox
+                          --target-os=darwin
+              )
 endif()
 
 if(CPU MATCHES arm)
-  list(APPEND ffmpeg_conf --enable-pic --disable-armv5te --disable-armv6t2)
+  list(APPEND ffmpeg_conf --disable-armv5te --disable-armv6t2)
 elseif(CPU MATCHES mips)
   list(APPEND ffmpeg_conf --disable-mips32r2 --disable-mipsdsp --disable-mipsdspr2)
 endif()
 
-find_package(GnuTls)
+find_package(GnuTLS)
 if(GNUTLS_FOUND)
   list(APPEND ffmpeg_conf --enable-gnutls)
+endif()
+
+if(CPU MATCHES x86 OR CPU MATCHES x86_64)
+  find_package(NASM REQUIRED)
+  list(APPEND ffmpeg_conf --x86asmexe=${NASM_EXECUTABLE})
 endif()
 
 if(ENABLE_DAV1D)
@@ -91,6 +125,8 @@ endif()
 if(EXTRA_FLAGS)
   list(APPEND ffmpeg_conf ${EXTRA_FLAGS})
 endif()
+
+list(APPEND ffmpeg_conf ${CONFIGARCH})
 
 message(STATUS "FFMPEG_CONF: ${ffmpeg_conf}")
 
@@ -110,13 +146,6 @@ externalproject_add(ffmpeg
                     CONFIGURE_COMMAND ${pkgconf} ${pkgconf_path} <SOURCE_DIR>/configure
                       --prefix=${CMAKE_INSTALL_PREFIX}
                       --extra-version="kodi-${FFMPEG_VER}"
-                      --disable-devices
-                      --disable-doc
-                      --disable-programs
-                      --enable-gpl
-                      --enable-runtime-cpudetect
-                      --enable-postproc
-                      --enable-pthreads
                       ${ffmpeg_conf}
                     BUILD_COMMAND ${MAKE_COMMAND})
 
