@@ -14,23 +14,16 @@ if(ENABLE_INTERNAL_CROSSGUID)
   set(CROSSGUID_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
   set(CROSSGUID_VER ${${MODULE}_VER})
 
-  externalproject_add(${MODULE_LC}
-                      URL ${${MODULE}_URL}
-                      URL_HASH ${${MODULE}_HASH}
-                      DOWNLOAD_DIR ${TARBALL_DIR}
-                      DOWNLOAD_NAME ${${MODULE}_ARCHIVE}
-                      PREFIX ${CORE_BUILD_DIR}/${MODULE_LC}
-                      CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
-                                 -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
-                                 "${EXTRA_ARGS}"
-                      PATCH_COMMAND ${CMAKE_COMMAND} -E copy
-                                    ${CMAKE_SOURCE_DIR}/tools/depends/target/crossguid/CMakeLists.txt
-                                    <SOURCE_DIR> &&
-                                    ${CMAKE_COMMAND} -E copy
-                                    ${CMAKE_SOURCE_DIR}/tools/depends/target/crossguid/FindUUID.cmake
-                                    <SOURCE_DIR>
-                      BUILD_BYPRODUCTS ${CROSSGUID_LIBRARY})
-  set_target_properties(crossguid PROPERTIES FOLDER "External Projects")
+  set(CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
+                 -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
+                 -DCMAKE_MODULE_PATH=${CMAKE_MODULE_PATH}
+                 "${EXTRA_ARGS}")
+  set(PATCH_COMMAND ${CMAKE_COMMAND} -E copy
+                    ${CMAKE_SOURCE_DIR}/tools/depends/target/crossguid/CMakeLists.txt
+                    <SOURCE_DIR>)
+  set(BUILD_BYPRODUCTS ${CROSSGUID_LIBRARY})
+
+  BUILD_DEP_TARGET()
 else()
   find_path(CROSSGUID_INCLUDE_DIR NAMES guid.hpp guid.h)
 
