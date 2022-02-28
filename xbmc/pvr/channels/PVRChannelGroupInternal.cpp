@@ -191,7 +191,7 @@ bool CPVRChannelGroupInternal::AppendToGroup(const std::shared_ptr<CPVRChannel>&
   if (!groupMember)
     return false;
 
-  channel->SetHidden(false);
+  channel->SetHidden(false, true);
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
@@ -210,7 +210,7 @@ bool CPVRChannelGroupInternal::RemoveFromGroup(const std::shared_ptr<CPVRChannel
   if (!IsGroupMember(channel))
     return false;
 
-  channel->SetHidden(true);
+  channel->SetHidden(true, true);
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
 

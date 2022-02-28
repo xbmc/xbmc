@@ -202,11 +202,13 @@ bool CPVRChannel::UpdateFromClient(const std::shared_ptr<CPVRChannel>& channel)
 
   UpdateEncryptionName();
 
-  // only update the channel name and icon if the user hasn't changed them manually
+  // only update the channel name, icon, and hidden flag if the user hasn't changed them manually
   if (m_strChannelName.empty() || !IsUserSetName())
     SetChannelName(channel->ClientChannelName());
   if (IconPath().empty() || !IsUserSetIcon())
     SetIconPath(channel->ClientIconPath());
+  if (!IsUserSetHidden())
+    SetHidden(channel->IsHidden());
 
   return m_bChanged;
 }
@@ -253,13 +255,14 @@ bool CPVRChannel::SetChannelID(int iChannelId)
   return false;
 }
 
-bool CPVRChannel::SetHidden(bool bIsHidden)
+bool CPVRChannel::SetHidden(bool bIsHidden, bool bIsUserSetHidden /*= false*/)
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
   if (m_bIsHidden != bIsHidden)
   {
     m_bIsHidden = bIsHidden;
+    m_bIsUserSetHidden = bIsUserSetHidden;
 
     if (m_epg)
       m_epg->GetChannelData()->SetHidden(m_bIsHidden);
@@ -704,6 +707,12 @@ bool CPVRChannel::IsUserSetName() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_bIsUserSetName;
+}
+
+bool CPVRChannel::IsUserSetHidden() const
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  return m_bIsUserSetHidden;
 }
 
 std::string CPVRChannel::ChannelName() const

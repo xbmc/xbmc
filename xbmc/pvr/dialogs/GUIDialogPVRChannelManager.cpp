@@ -69,6 +69,7 @@ constexpr const char* LABEL_CHANNEL_DISABLED = "0";
 // Note: strings must not be changed; they are part of the public skinning API for this dialog.
 constexpr const char* PROPERTY_CHANNEL_NUMBER = "Number";
 constexpr const char* PROPERTY_CHANNEL_ENABLED = "ActiveChannel";
+constexpr const char* PROPERTY_CHANNEL_USER_SET_HIDDEN = "UserSetHidden";
 constexpr const char* PROPERTY_CHANNEL_LOCKED = "ParentalLocked";
 constexpr const char* PROPERTY_CHANNEL_ICON = "Icon";
 constexpr const char* PROPERTY_CHANNEL_CUSTOM_ICON = "UserSetIcon";
@@ -317,6 +318,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonRadioActive(CGUIMessage& message)
       if (pItem->GetProperty(PROPERTY_CHANNEL_ENABLED).asBoolean() != selected)
       {
         pItem->SetProperty(PROPERTY_CHANNEL_ENABLED, selected);
+        pItem->SetProperty(PROPERTY_CHANNEL_USER_SET_HIDDEN, true);
         SetItemChanged(pItem);
         Renumber();
       }
@@ -817,6 +819,7 @@ void CGUIDialogPVRChannelManager::Update()
     const std::shared_ptr<CPVRChannel> channel(channelFile->GetPVRChannelInfoTag());
 
     channelFile->SetProperty(PROPERTY_CHANNEL_ENABLED, !channel->IsHidden());
+    channelFile->SetProperty(PROPERTY_CHANNEL_USER_SET_HIDDEN, channel->IsUserSetHidden());
     channelFile->SetProperty(PROPERTY_CHANNEL_NAME, channel->ChannelName());
     channelFile->SetProperty(PROPERTY_CHANNEL_EPG_ENABLED, channel->EPGEnabled());
     channelFile->SetProperty(PROPERTY_CHANNEL_ICON, channel->ClientIconPath());
@@ -938,7 +941,8 @@ bool CGUIDialogPVRChannelManager::PersistChannel(const CFileItemPtr& pItem,
       !pItem->GetProperty(PROPERTY_CHANNEL_ENABLED).asBoolean(), // hidden
       pItem->GetProperty(PROPERTY_CHANNEL_EPG_ENABLED).asBoolean(),
       pItem->GetProperty(PROPERTY_CHANNEL_LOCKED).asBoolean(),
-      pItem->GetProperty(PROPERTY_CHANNEL_CUSTOM_ICON).asBoolean());
+      pItem->GetProperty(PROPERTY_CHANNEL_CUSTOM_ICON).asBoolean(),
+      pItem->GetProperty(PROPERTY_CHANNEL_USER_SET_HIDDEN).asBoolean());
 }
 
 void CGUIDialogPVRChannelManager::PromptAndSaveList()
@@ -1028,6 +1032,8 @@ bool IsItemChanged(const std::shared_ptr<CFileItem>& item)
   const std::shared_ptr<CPVRChannel> channel = member->Channel();
 
   return item->GetProperty(PROPERTY_CHANNEL_ENABLED).asBoolean() == channel->IsHidden() ||
+         item->GetProperty(PROPERTY_CHANNEL_USER_SET_HIDDEN).asBoolean() !=
+             channel->IsUserSetHidden() ||
          item->GetProperty(PROPERTY_CHANNEL_NAME).asString() != channel->ChannelName() ||
          item->GetProperty(PROPERTY_CHANNEL_EPG_ENABLED).asBoolean() != channel->EPGEnabled() ||
          item->GetProperty(PROPERTY_CHANNEL_ICON).asString() != channel->ClientIconPath() ||

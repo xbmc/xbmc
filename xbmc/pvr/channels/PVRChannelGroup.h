@@ -390,6 +390,7 @@ namespace PVR
      * @param bEPGEnabled Set/Remove EPG enabled flag for the channel group member identified by storage id.
      * @param bParentalLocked Set/Remove parental locked flag for the channel group member identified by storage id.
      * @param bUserSetIcon Set/Remove user set icon flag for the channel group member identified by storage id.
+     * @param bUserSetHidden Set/Remove user set hidden flag for the channel group member identified by storage id.
      * @return True on success, false otherwise.
      */
     bool UpdateChannel(const std::pair<int, int>& storageId,
@@ -400,7 +401,8 @@ namespace PVR
                        bool bHidden,
                        bool bEPGEnabled,
                        bool bParentalLocked,
-                       bool bUserSetIcon);
+                       bool bUserSetIcon,
+                       bool bUserSetHidden);
 
     /*!
      * @brief Get a channel given the channel number on the client.
