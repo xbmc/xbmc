@@ -28,22 +28,17 @@ if(ENABLE_INTERNAL_FMT)
   set(FMT_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
   set(FMT_VERSION ${${MODULE}_VER})
 
-  externalproject_add(fmt
-                      URL ${${MODULE}_URL}
-                      URL_HASH ${${MODULE}_HASH}
-                      DOWNLOAD_DIR ${TARBALL_DIR}
-                      DOWNLOAD_NAME ${${MODULE}_ARCHIVE}
-                      PREFIX ${CORE_BUILD_DIR}/fmt
-                      CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
-                                 -DCMAKE_CXX_EXTENSIONS=${CMAKE_CXX_EXTENSIONS}
-                                 -DCMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}
-                                 -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
-                                 -DCMAKE_INSTALL_LIBDIR=lib
-                                 -DFMT_DOC=OFF
-                                 -DFMT_TEST=OFF
-                                 "${EXTRA_ARGS}"
-                      BUILD_BYPRODUCTS ${FMT_LIBRARY})
-  set_target_properties(fmt PROPERTIES FOLDER "External Projects")
+  set(CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
+                 -DCMAKE_CXX_EXTENSIONS=${CMAKE_CXX_EXTENSIONS}
+                 -DCMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}
+                 -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
+                 -DCMAKE_INSTALL_LIBDIR=lib
+                 -DFMT_DOC=OFF
+                 -DFMT_TEST=OFF
+                 "${EXTRA_ARGS}")
+  set(BUILD_BYPRODUCTS ${FMT_LIBRARY})
+
+  BUILD_DEP_TARGET()
 else()
   find_package(FMT 6.1.2 CONFIG REQUIRED QUIET)
 
