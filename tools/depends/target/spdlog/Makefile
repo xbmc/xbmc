@@ -1,6 +1,6 @@
 -include ../../Makefile.include
-include LIBSPDLOG-VERSION
-DEPS = Makefile LIBSPDLOG-VERSION ../../download-files.include
+include SPDLOG-VERSION
+DEPS = Makefile SPDLOG-VERSION ../../download-files.include
 
 CMAKE_OPTIONS= \
 	-DSPDLOG_BUILD_EXAMPLE=OFF \
@@ -38,7 +38,6 @@ include ../../download-files.include
 all: .installed-$(PLATFORM)
 
 download: $(TARBALLS_LOCATION)/$(ARCHIVE)
-
 
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE) $(DEPS)
 ifeq ($(PREFIX),)

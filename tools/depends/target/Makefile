@@ -40,7 +40,6 @@ DEPENDS = \
   libplist \
   libpng \
   libshairplay \
-  libspdlog \
   libudfread \
   libusb \
   libxml2 \
@@ -56,6 +55,7 @@ DEPENDS = \
   pythonmodule-pycryptodome \
   pythonmodule-setuptools \
   rapidjson \
+  spdlog \
   sqlite3 \
   taglib \
   tinyxml \
@@ -157,7 +157,7 @@ libinput: mtdev libevdev meson-cross-file
 libmicrohttpd: gnutls libgcrypt libgpg-error
 libplist: $(ZLIB)
 libpng: $(ZLIB)
-libspdlog: fmt
+spdlog: fmt
 libva: libdrm $(LIBVA_DEPS)
 libxslt: libgcrypt libxml2
 libzip: bzip2 gnutls $(ZLIB)

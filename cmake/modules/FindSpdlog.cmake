@@ -17,7 +17,7 @@ if(ENABLE_INTERNAL_SPDLOG)
   include(ExternalProject)
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  set(MODULE_LC libspdlog)
+  set(MODULE_LC spdlog)
 
   SETUP_BUILD_VARS()
 
