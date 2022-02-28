@@ -16,7 +16,7 @@ if(ENABLE_INTERNAL_FMT)
   include(ExternalProject)
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  set(MODULE_LC libfmt)
+  set(MODULE_LC fmt)
 
   SETUP_BUILD_VARS()
 

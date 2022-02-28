@@ -13,6 +13,7 @@ DEPENDS = \
   expat \
   ffmpeg \
   flatbuffers \
+  fmt \
   fontconfig \
   freetype2 \
   freetype2-noharfbuzz \
@@ -29,7 +30,6 @@ DEPENDS = \
   libdvdnav \
   libdvdread \
   libffi \
-  libfmt \
   libfstrcmp \
   libgcrypt \
   libgpg-error \
@@ -157,7 +157,7 @@ libinput: mtdev libevdev meson-cross-file
 libmicrohttpd: gnutls libgcrypt libgpg-error
 libplist: $(ZLIB)
 libpng: $(ZLIB)
-libspdlog: libfmt
+libspdlog: fmt
 libva: libdrm $(LIBVA_DEPS)
 libxslt: libgcrypt libxml2
 libzip: bzip2 gnutls $(ZLIB)
