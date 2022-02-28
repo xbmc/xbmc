@@ -1102,7 +1102,8 @@ bool CPVRChannelGroup::UpdateChannel(const std::pair<int, int>& storageId,
                                      bool bHidden,
                                      bool bEPGEnabled,
                                      bool bParentalLocked,
-                                     bool bUserSetIcon)
+                                     bool bUserSetIcon,
+                                     bool bUserSetHidden)
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
@@ -1112,7 +1113,7 @@ bool CPVRChannelGroup::UpdateChannel(const std::pair<int, int>& storageId,
     return false;
 
   channel->SetChannelName(strChannelName, true);
-  channel->SetHidden(bHidden);
+  channel->SetHidden(bHidden, bUserSetHidden);
   channel->SetLocked(bParentalLocked);
   channel->SetIconPath(strIconPath, bUserSetIcon);
 

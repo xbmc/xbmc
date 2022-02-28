@@ -141,27 +141,26 @@ void CPVRDatabase::CreateTables()
   CLog::LogF(LOGINFO, "Creating PVR database tables");
 
   CLog::LogFC(LOGDEBUG, LOGPVR, "Creating table 'channels'");
-  m_pDS->exec(
-      "CREATE TABLE channels ("
-        "idChannel            integer primary key, "
-        "iUniqueId            integer, "
-        "bIsRadio             bool, "
-        "bIsHidden            bool, "
-        "bIsUserSetIcon       bool, "
-        "bIsUserSetName       bool, "
-        "bIsLocked            bool, "
-        "sIconPath            varchar(255), "
-        "sChannelName         varchar(64), "
-        "bIsVirtual           bool, "
-        "bEPGEnabled          bool, "
-        "sEPGScraper          varchar(32), "
-        "iLastWatched         integer, "
-        "iClientId            integer, " //! @todo use mapping table
-        "idEpg                integer, "
-        "bHasArchive          bool, "
-        "iClientProviderUid   integer "
-      ")"
-  );
+  m_pDS->exec("CREATE TABLE channels ("
+              "idChannel            integer primary key, "
+              "iUniqueId            integer, "
+              "bIsRadio             bool, "
+              "bIsHidden            bool, "
+              "bIsUserSetIcon       bool, "
+              "bIsUserSetName       bool, "
+              "bIsLocked            bool, "
+              "sIconPath            varchar(255), "
+              "sChannelName         varchar(64), "
+              "bIsVirtual           bool, "
+              "bEPGEnabled          bool, "
+              "sEPGScraper          varchar(32), "
+              "iLastWatched         integer, "
+              "iClientId            integer, " //! @todo use mapping table
+              "idEpg                integer, "
+              "bHasArchive          bool, "
+              "iClientProviderUid   integer, "
+              "bIsUserSetHidden     bool"
+              ")");
 
   CLog::LogFC(LOGDEBUG, LOGPVR, "Creating table 'channelgroups'");
   m_pDS->exec(sqlCreateChannelGroupsTable);
@@ -296,6 +295,12 @@ void CPVRDatabase::UpdateTables(int iVersion)
     m_pDS->exec("CREATE UNIQUE INDEX idx_iUniqueId_iClientId on providers(iUniqueId, iClientId);");
     m_pDS->exec("ALTER TABLE channels ADD iClientProviderUid integer");
     m_pDS->exec("UPDATE channels SET iClientProviderUid = -1");
+  }
+
+  if (iVersion < 40)
+  {
+    m_pDS->exec("ALTER TABLE channels ADD bIsUserSetHidden bool");
+    m_pDS->exec("UPDATE channels SET bIsUserSetHidden = bIsHidden");
   }
 }
 
@@ -511,6 +516,7 @@ int CPVRDatabase::Get(bool bRadio,
         channel->m_iEpgId = m_pDS->fv("idEpg").get_asInt();
         channel->m_bHasArchive = m_pDS->fv("bHasArchive").get_asBool();
         channel->m_iClientProviderUid = m_pDS->fv("iClientProviderUid").get_asInt();
+        channel->m_bIsUserSetHidden = m_pDS->fv("bIsUserSetHidden").get_asBool();
 
         channel->UpdateEncryptionName();
 
@@ -929,14 +935,14 @@ bool CPVRDatabase::Persist(CPVRChannel& channel, bool bCommit)
         "INSERT INTO channels ("
         "iUniqueId, bIsRadio, bIsHidden, bIsUserSetIcon, bIsUserSetName, bIsLocked, "
         "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, sEPGScraper, iLastWatched, iClientId, "
-        "idEpg, bHasArchive, iClientProviderUid) "
-        "VALUES (%i, %i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i)",
+        "idEpg, bHasArchive, iClientProviderUid, bIsUserSetHidden) "
+        "VALUES (%i, %i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i, %i)",
         channel.UniqueID(), (channel.IsRadio() ? 1 : 0), (channel.IsHidden() ? 1 : 0),
         (channel.IsUserSetIcon() ? 1 : 0), (channel.IsUserSetName() ? 1 : 0),
         (channel.IsLocked() ? 1 : 0), channel.IconPath().c_str(), channel.ChannelName().c_str(), 0,
         (channel.EPGEnabled() ? 1 : 0), channel.EPGScraper().c_str(),
         static_cast<unsigned int>(channel.LastWatched()), channel.ClientID(), channel.EpgID(),
-        channel.HasArchive(), channel.ClientProviderUid());
+        channel.HasArchive(), channel.ClientProviderUid(), channel.IsUserSetHidden() ? 1 : 0);
   }
   else
   {
@@ -945,15 +951,15 @@ bool CPVRDatabase::Persist(CPVRChannel& channel, bool bCommit)
         "REPLACE INTO channels ("
         "iUniqueId, bIsRadio, bIsHidden, bIsUserSetIcon, bIsUserSetName, bIsLocked, "
         "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, sEPGScraper, iLastWatched, iClientId, "
-        "idChannel, idEpg, bHasArchive, iClientProviderUid) "
-        "VALUES (%i, %i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %s, %i, %i, %i)",
+        "idChannel, idEpg, bHasArchive, iClientProviderUid, bIsUserSetHidden) "
+        "VALUES (%i, %i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %s, %i, %i, %i, %i)",
         channel.UniqueID(), (channel.IsRadio() ? 1 : 0), (channel.IsHidden() ? 1 : 0),
         (channel.IsUserSetIcon() ? 1 : 0), (channel.IsUserSetName() ? 1 : 0),
         (channel.IsLocked() ? 1 : 0), channel.ClientIconPath().c_str(),
         channel.ChannelName().c_str(), 0, (channel.EPGEnabled() ? 1 : 0),
         channel.EPGScraper().c_str(), static_cast<unsigned int>(channel.LastWatched()),
         channel.ClientID(), strValue.c_str(), channel.EpgID(), channel.HasArchive(),
-        channel.ClientProviderUid());
+        channel.ClientProviderUid(), channel.IsUserSetHidden() ? 1 : 0);
   }
 
   if (QueueInsertQuery(strQuery))
