@@ -1,3 +1,5 @@
+include(cmake/scripts/linux/Linkers.txt)
+
 # Main cpp
 set(CORE_MAIN_SOURCE ${CMAKE_SOURCE_DIR}/xbmc/platform/posix/main.cpp)
 
@@ -43,6 +45,20 @@ else()
   endif()
 endif()
 
+# disable the default gold linker when an alternative was enabled by the user
+if(ENABLE_LLD OR ENABLE_MOLD)
+  set(ENABLE_GOLD OFF CACHE BOOL "" FORCE)
+elseif(ENABLE_GOLD)
+  include(LDGOLD)
+endif()
+if(ENABLE_LLD)
+  set(ENABLE_MOLD OFF CACHE BOOL "" FORCE)
+  include(LLD)
+elseif(ENABLE_MOLD)
+  set(ENABLE_LLD OFF CACHE BOOL "" FORCE)
+  include(MOLD)
+endif()
+
 
 if(CMAKE_BUILD_TYPE STREQUAL Release OR CMAKE_BUILD_TYPE STREQUAL MinSizeRel)
 
@@ -70,12 +86,6 @@ if(CMAKE_BUILD_TYPE STREQUAL Release OR CMAKE_BUILD_TYPE STREQUAL MinSizeRel)
         elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
           # CLANG
           set(ENABLE_GOLD OFF CACHE BOOL "gold linker forced to off" FORCE)
-          set(ENABLE_LLD ON CACHE BOOL "lld linker forced to on" FORCE)
-
-          include(LLD)
-          if(NOT LLD_FOUND)
-	    message(FATAL_ERROR "Clang LTO support requires lld, set ENABLE_LLD=ON")
-          endif()
 
           find_package(LLVM REQUIRED)
 
@@ -88,7 +98,11 @@ if(CMAKE_BUILD_TYPE STREQUAL Release OR CMAKE_BUILD_TYPE STREQUAL MinSizeRel)
 
           set(CMAKE_CXX_COMPILE_OPTIONS_IPO -flto=thin)
           set(CMAKE_C_COMPILE_OPTIONS_IPO -flto=thin)
-          set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--thinlto-jobs=${NJOBS},--thinlto-cache-dir=${CLANG_LTO_CACHE}")
+          if(LLD_FOUND)
+            set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--thinlto-jobs=${NJOBS},--thinlto-cache-dir=${CLANG_LTO_CACHE}")
+          elseif(MOLD_FOUND)
+            set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--plugin-opt=jobs=${NJOBS},--plugin-opt=cache-dir=${CLANG_LTO_CACHE}")
+          endif()
           set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
           set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
         endif()
@@ -104,13 +118,6 @@ if(KODI_DEPENDSBUILD)
   # Binaries should be directly runnable from host, so include rpath to depends
   set(CMAKE_INSTALL_RPATH "${DEPENDS_PATH}/lib")
   set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
-endif()
-
-if(NOT ENABLE_LLD AND NOT LDGOLD_FOUND)
-  include(LDGOLD)
-endif()
-if(NOT ENABLE_GOLD AND ENABLE_LLD AND NOT LDD_FOUND)
-  include(LLD)
 endif()
 
 include(CheckIncludeFiles)

@@ -170,6 +170,11 @@ cmake ../kodi -DCMAKE_INSTALL_PREFIX=/usr/local -DCORE_PLATFORM_NAME="x11 waylan
 **NOTE:** You can use `gles` instead of `gl` if you want to build with `GLES`.
 
 
+**NOTE:** You can use several alternative linkers if available on your system: gnu gold (default), llvm lld or mold
+
+To use an alternative linker, enable it with `-DENABLE_GOLD=ON` or `-DENABLE_LLD=ON` or `-DENABLE_MOLD=ON`
+
+
 ### 4.2. Build
 ```
 cmake --build . -- VERBOSE=1 -j$(getconf _NPROCESSORS_ONLN)
