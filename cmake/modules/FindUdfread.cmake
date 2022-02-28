@@ -22,21 +22,16 @@ if(ENABLE_INTERNAL_UDFREAD)
   set(UDFREAD_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
   set(UDFREAD_VERSION ${${MODULE}_VER})
 
-  externalproject_add(udfread
-                      URL ${${MODULE}_URL}
-                      URL_HASH ${${MODULE}_HASH}
-                      DOWNLOAD_NAME ${${MODULE}_ARCHIVE}
-                      DOWNLOAD_DIR ${TARBALL_DIR}
-                      PREFIX ${CORE_BUILD_DIR}/${MODULE_LC}
-                      CONFIGURE_COMMAND autoreconf -vif &&
-                                        ./configure
-                                        --enable-static
-                                        --disable-shared
-                                        --prefix=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
-                      BUILD_BYPRODUCTS ${UDFREAD_LIBRARY}
-                      BUILD_IN_SOURCE 1)
+  set(CONFIGURE_COMMAND autoreconf -vif &&
+                        ./configure
+                        --enable-static
+                        --disable-shared
+                        --prefix=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR})
+  set(BUILD_IN_SOURCE 1)
+  set(BUILD_BYPRODUCTS ${UDFREAD_LIBRARY})
 
-  set_target_properties(udfread PROPERTIES FOLDER "External Projects")
+  BUILD_DEP_TARGET()
+
   set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP udfread)
 else()
   if(PKG_CONFIG_FOUND)
