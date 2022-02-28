@@ -158,15 +158,16 @@ ASS_Image* CDVDSubtitlesLibass::RenderImage(int frameWidth, int frameHeight, int
     return NULL;
   }
 
-  double sar = (double)sourceWidth / sourceHeight;
-  double dar = (double)videoWidth / videoHeight;
+  double sar = static_cast<double>(sourceWidth) / static_cast<double>(sourceHeight);
+  double dar = static_cast<double>(videoWidth) / static_cast<double>(videoHeight);
   ass_set_frame_size(m_renderer, frameWidth, frameHeight);
+  ass_set_storage_size(m_renderer, sourceWidth, sourceHeight);
   int topmargin = (frameHeight - videoHeight) / 2;
   int leftmargin = (frameWidth - videoWidth) / 2;
   ass_set_margins(m_renderer, topmargin, topmargin, leftmargin, leftmargin);
   ass_set_use_margins(m_renderer, useMargin);
   ass_set_line_position(m_renderer, position);
-  ass_set_aspect_ratio(m_renderer, dar, sar);
+  ass_set_pixel_aspect(m_renderer, dar / sar);
   return ass_render_frame(m_renderer, m_track, DVD_TIME_TO_MSEC(pts), changes);
 }
 
