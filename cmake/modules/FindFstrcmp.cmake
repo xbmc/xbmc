@@ -15,7 +15,7 @@ if(ENABLE_INTERNAL_FSTRCMP)
   include(ExternalProject)
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  set(MODULE_LC libfstrcmp)
+  set(MODULE_LC fstrcmp)
 
   SETUP_BUILD_VARS()
 

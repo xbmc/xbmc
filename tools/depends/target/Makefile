@@ -18,6 +18,7 @@ DEPENDS = \
   freetype2 \
   freetype2-noharfbuzz \
   fribidi \
+  fstrcmp \
   gettext \
   gmp \
   gnutls \
@@ -30,7 +31,6 @@ DEPENDS = \
   libdvdnav \
   libdvdread \
   libffi \
-  libfstrcmp \
   libgcrypt \
   libgpg-error \
   libjpeg-turbo \
