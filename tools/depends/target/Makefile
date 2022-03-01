@@ -40,7 +40,6 @@ DEPENDS = \
   libplist \
   libpng \
   libshairplay \
-  libudfread \
   libusb \
   libxml2 \
   libxslt \
@@ -59,6 +58,7 @@ DEPENDS = \
   sqlite3 \
   taglib \
   tinyxml \
+  udfread \
   xz
 
 ifeq ($(ENABLE_GPLV3),yes)
@@ -144,7 +144,7 @@ gettext: $(ICONV)
 gnutls: nettle $(ZLIB)
 harfbuzz: meson-cross-file freetype2-noharfbuzz $(ICONV)
 libass: fontconfig fribidi harfbuzz libpng freetype2 expat $(ICONV)
-libbluray: fontconfig freetype2 $(ICONV) libudfread libxml2
+libbluray: fontconfig freetype2 $(ICONV) udfread libxml2
 libcdio-gplv3: $(ICONV)
 libcdio: $(ICONV)
 libcec: p8-platform
