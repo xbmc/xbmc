@@ -12,7 +12,6 @@
 
 if(ENABLE_INTERNAL_FSTRCMP)
   find_program(LIBTOOL libtool REQUIRED)
-  include(ExternalProject)
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
   set(MODULE_LC fstrcmp)

@@ -1,5 +1,4 @@
 if(ENABLE_INTERNAL_CROSSGUID)
-  include(ExternalProject)
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
   set(MODULE_LC crossguid)

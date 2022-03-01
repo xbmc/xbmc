@@ -86,7 +86,20 @@ macro(SETUP_BUILD_VARS)
 endmacro()
 
 # Macro to create externalproject_add target
+# 
+# Common usage
+#
+# CMAKE_ARGS: cmake(required)
+# PATCH_COMMAND: ALL(optional)
+# CONFIGURE_COMMAND: autoconf(required), meson(required)
+# BUILD_COMMAND: autoconf(required), meson(required), cmake(optional)
+# INSTALL_COMMAND: autoconf(required), meson(required), cmake(optional)
+# BUILD_IN_SOURCE: ALL(optional)
+# BUILD_BYPRODUCTS: ALL(optional)
+#
 macro(BUILD_DEP_TARGET)
+  include(ExternalProject)
+
   if(CMAKE_ARGS)
     set(CMAKE_ARGS CMAKE_ARGS ${CMAKE_ARGS})
   endif()

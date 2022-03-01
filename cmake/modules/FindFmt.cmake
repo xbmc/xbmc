@@ -13,7 +13,6 @@
 #   fmt   - The Fmt library
 
 if(ENABLE_INTERNAL_FMT)
-  include(ExternalProject)
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
   set(MODULE_LC fmt)
