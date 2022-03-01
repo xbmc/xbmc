@@ -96,7 +96,7 @@ void CSubtitlesSettings::SettingOptionsSubtitleFontsFiller(const SettingConstPtr
     }
   }
   // Add additionals fonts from the user fonts folder
-  for (std::string familyName : g_fontManager.GetUserFontsFamilyNames())
+  for (const std::string& familyName : g_fontManager.GetUserFontsFamilyNames())
   {
     list.emplace_back(familyName, familyName);
   }
