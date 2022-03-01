@@ -5,16 +5,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Vietnamese (Viet Nam) (http://www.transifex.com/projects/p/kodi-main/language/vi_VN/)\n"
-"Language: vi_VN\n"
+"PO-Revision-Date: 2022-02-26 16:13+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Vietnamese <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/vi_vn/>\n"
+"Language: vi_vn\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.11\n"
 
 msgctxt "Addon Summary"
 msgid "Skin for touchscreen devices"
@@ -80,7 +81,7 @@ msgstr ""
 #. Label to show player info page
 msgctxt "#31018"
 msgid "Player"
-msgstr ""
+msgstr "Trình phát"
 
 #. Label to show video decoder name
 msgctxt "#31019"
@@ -115,7 +116,7 @@ msgstr "Đã cập nhật:"
 
 msgctxt "#31040"
 msgid "Select + X"
-msgstr ""
+msgstr "Chọn + X"
 
 msgctxt "#31041"
 msgid "Select + B"
@@ -123,7 +124,7 @@ msgstr ""
 
 msgctxt "#31042"
 msgid "Select + Start"
-msgstr ""
+msgstr "Chọn + Start"
 
 msgctxt "#31043"
 msgid "PAUSED"
@@ -347,17 +348,17 @@ msgstr ""
 #. Label to show the video codec name
 msgctxt "#31600"
 msgid "Video codec"
-msgstr ""
+msgstr "Bộ giải mã video"
 
 #. Label to show the video resolution
 msgctxt "#31601"
 msgid "Video resolution"
-msgstr ""
+msgstr "Độ phân giải video"
 
 #. Label to show the video aspect
 msgctxt "#31602"
 msgid "Video aspect"
-msgstr ""
+msgstr "Tỉ lệ khung hình"
 
 #. Label to show the video bitrate
 msgctxt "#31603"
@@ -367,12 +368,12 @@ msgstr ""
 #. Label to show the audio codec name
 msgctxt "#31604"
 msgid "Audio codec"
-msgstr ""
+msgstr "Bộ giải mã âm thanh"
 
 #. Label to show the number of audio channels
 msgctxt "#31605"
 msgid "Audio channels"
-msgstr ""
+msgstr "Kênh âm thanh"
 
 #. Label to show the audio bitrate
 msgctxt "#31606"
@@ -382,7 +383,7 @@ msgstr ""
 #. Label to show the screen resolution
 msgctxt "#31607"
 msgid "Screen resolution"
-msgstr ""
+msgstr "Độ phân giải màn hình"
 
 #. Label to show the system rendering speed
 msgctxt "#31608"
@@ -392,17 +393,17 @@ msgstr ""
 #. Label to show the system CPU usage
 msgctxt "#31609"
 msgid "System CPU usage"
-msgstr ""
+msgstr "Hệ thống CPU đã dùng"
 
 #. Label to show the media (metadata) info page
 msgctxt "#31610"
 msgid "Media"
-msgstr ""
+msgstr "Đa phương tiện"
 
 #. Label to show the system info page
 msgctxt "#31611"
 msgid "System"
-msgstr ""
+msgstr "Hệ thống"
 
 # empty strings from id 31566 to 31899
 msgctxt "#31900"

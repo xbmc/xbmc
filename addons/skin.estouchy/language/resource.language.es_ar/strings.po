@@ -5,16 +5,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Spanish (Argentina) (http://www.transifex.com/projects/p/kodi-main/language/es_AR/)\n"
-"Language: es_AR\n"
+"PO-Revision-Date: 2022-03-01 13:10+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Spanish (Argentina) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/es_ar/>\n"
+"Language: es_ar\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.11\n"
 
 msgctxt "Addon Summary"
 msgid "Skin for touchscreen devices"
@@ -67,7 +68,7 @@ msgstr "Episodios"
 
 msgctxt "#31015"
 msgid "Player info"
-msgstr ""
+msgstr "Info reproductor"
 
 msgctxt "#31016"
 msgid "Albums"
@@ -76,7 +77,7 @@ msgstr "Álbumes"
 #. Label to show PVR info page
 msgctxt "#31017"
 msgid "PVR"
-msgstr ""
+msgstr "PVR"
 
 #. Label to show player info page
 msgctxt "#31018"
@@ -276,7 +277,7 @@ msgstr "Seleccione su perfil de usuario de Kodi[CR]para ingresar y continuar"
 # Skin Setting Options
 msgctxt "#31548"
 msgid "Home menu"
-msgstr ""
+msgstr "Menú inicio"
 
 msgctxt "#31549"
 msgid "Home Add-ons"
@@ -350,17 +351,17 @@ msgstr ""
 #. Label to show the video codec name
 msgctxt "#31600"
 msgid "Video codec"
-msgstr ""
+msgstr "Códec de video"
 
 #. Label to show the video resolution
 msgctxt "#31601"
 msgid "Video resolution"
-msgstr ""
+msgstr "Resolución de video"
 
 #. Label to show the video aspect
 msgctxt "#31602"
 msgid "Video aspect"
-msgstr ""
+msgstr "Aspecto de video"
 
 #. Label to show the video bitrate
 msgctxt "#31603"
@@ -370,12 +371,12 @@ msgstr ""
 #. Label to show the audio codec name
 msgctxt "#31604"
 msgid "Audio codec"
-msgstr ""
+msgstr "Códec de audio"
 
 #. Label to show the number of audio channels
 msgctxt "#31605"
 msgid "Audio channels"
-msgstr ""
+msgstr "Canales de audio"
 
 #. Label to show the audio bitrate
 msgctxt "#31606"
@@ -385,7 +386,7 @@ msgstr ""
 #. Label to show the screen resolution
 msgctxt "#31607"
 msgid "Screen resolution"
-msgstr ""
+msgstr "Resolución de pantalla"
 
 #. Label to show the system rendering speed
 msgctxt "#31608"
@@ -395,17 +396,17 @@ msgstr ""
 #. Label to show the system CPU usage
 msgctxt "#31609"
 msgid "System CPU usage"
-msgstr ""
+msgstr "Uso de CPU de sistema"
 
 #. Label to show the media (metadata) info page
 msgctxt "#31610"
 msgid "Media"
-msgstr ""
+msgstr "Medios"
 
 #. Label to show the system info page
 msgctxt "#31611"
 msgid "System"
-msgstr ""
+msgstr "Sistema"
 
 # empty strings from id 31566 to 31899
 msgctxt "#31900"
