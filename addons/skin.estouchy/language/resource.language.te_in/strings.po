@@ -5,16 +5,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Telugu (India) (http://www.transifex.com/projects/p/kodi-main/language/te_IN/)\n"
-"Language: te_IN\n"
+"PO-Revision-Date: 2022-03-01 13:10+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Telugu (India) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/te_in/>\n"
+"Language: te_in\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.11\n"
 
 msgctxt "Addon Summary"
 msgid "Skin for touchscreen devices"
@@ -240,7 +241,7 @@ msgstr ""
 # empty string with id 31357
 msgctxt "#31358"
 msgid "Teletext"
-msgstr ""
+msgstr "Teletext"
 
 # empty strings from id 31359 to 31389
 # Skin Fontsets

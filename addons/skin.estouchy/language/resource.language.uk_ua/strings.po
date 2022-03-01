@@ -5,16 +5,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Ukrainian (Ukraine) (http://www.transifex.com/projects/p/kodi-main/language/uk_UA/)\n"
-"Language: uk_UA\n"
+"PO-Revision-Date: 2022-02-26 16:13+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Ukrainian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/uk_ua/>\n"
+"Language: uk_ua\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
+"X-Generator: Weblate 4.11\n"
 
 msgctxt "Addon Summary"
 msgid "Skin for touchscreen devices"
@@ -345,17 +346,17 @@ msgstr "Відображати видаленні"
 #. Label to show the video codec name
 msgctxt "#31600"
 msgid "Video codec"
-msgstr ""
+msgstr "Кодування відео"
 
 #. Label to show the video resolution
 msgctxt "#31601"
 msgid "Video resolution"
-msgstr ""
+msgstr "Роздільна здатність відео"
 
 #. Label to show the video aspect
 msgctxt "#31602"
 msgid "Video aspect"
-msgstr ""
+msgstr "Співвідношення сторін відео"
 
 #. Label to show the video bitrate
 msgctxt "#31603"
@@ -365,12 +366,12 @@ msgstr ""
 #. Label to show the audio codec name
 msgctxt "#31604"
 msgid "Audio codec"
-msgstr ""
+msgstr "Кодування аудіо"
 
 #. Label to show the number of audio channels
 msgctxt "#31605"
 msgid "Audio channels"
-msgstr ""
+msgstr "Каналів аудіо"
 
 #. Label to show the audio bitrate
 msgctxt "#31606"
@@ -380,7 +381,7 @@ msgstr ""
 #. Label to show the screen resolution
 msgctxt "#31607"
 msgid "Screen resolution"
-msgstr ""
+msgstr "Роздільна здатність"
 
 #. Label to show the system rendering speed
 msgctxt "#31608"
@@ -390,17 +391,17 @@ msgstr ""
 #. Label to show the system CPU usage
 msgctxt "#31609"
 msgid "System CPU usage"
-msgstr ""
+msgstr "Завантаження CPU"
 
 #. Label to show the media (metadata) info page
 msgctxt "#31610"
 msgid "Media"
-msgstr ""
+msgstr "Медіафайли"
 
 #. Label to show the system info page
 msgctxt "#31611"
 msgid "System"
-msgstr ""
+msgstr "Система"
 
 # empty strings from id 31566 to 31899
 msgctxt "#31900"

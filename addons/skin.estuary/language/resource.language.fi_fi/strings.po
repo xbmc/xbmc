@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-02-11 11:23+0000\n"
+"PO-Revision-Date: 2022-02-26 16:13+0000\n"
 "Last-Translator: Oskari Lavinto <olavinto@protonmail.com>\n"
 "Language-Team: Finnish <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/fi_fi/>\n"
 "Language: fi_fi\n"
@@ -15,23 +15,23 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.11\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
-msgstr "Estuary on phil65:n luoma Kodin oletusulkoasu"
+msgstr "Estuary-ulkoasun ovat kehittäneet phil65 ja Piers. (Kodin oletusulkoasu)"
 
 msgctxt "Addon Description"
 msgid "Estuary is the default skin for Kodi 17.0 and above. It attempts to be easy for first time Kodi users to understand and use."
-msgstr "Estuary on oletusulkoasu Kodin versiosta 17.0 lähtien. Se pyrkii olemaan helppo ymmärtää ja käyttää Kodin ensikäyttäjille."
+msgstr "Estuary on Kodin oletusulkoasu versiosta 17.0 lähtien. Sen on tarkoitus olla uusille Kodi-käyttäjille selkeä ja helppokäyttöinen."
 
 msgctxt "Addon Disclaimer"
 msgid "Estuary is the default skin for Kodi, removing it may cause issues"
-msgstr "Estuary on Kodin oletusulkoasu, sen poisto voi aiheuttaa ongelmia"
+msgstr "Estuary on Kodin oletusulkoasu ja sen poisto voi aiheuttaa ongelmia"
 
 msgctxt "#31000"
 msgid "Now playing"
-msgstr "Nyt toistetaan"
+msgstr "Toistetaan parhaillaan"
 
 msgctxt "#31001"
 msgid "Search..."
@@ -39,11 +39,11 @@ msgstr "Etsi..."
 
 msgctxt "#31002"
 msgid "Show media fanart as background"
-msgstr "Käytä fanitaidetta taustakuvana"
+msgstr "Näytä median fanitaide taustana"
 
 msgctxt "#31003"
 msgid "Cinema mode"
-msgstr "Elokuvatila"
+msgstr "Teatteritila"
 
 msgctxt "#31004"
 msgid "Change mode"
@@ -71,11 +71,11 @@ msgstr "Lataa kuvakkeet"
 
 msgctxt "#31010"
 msgid "In progress movies"
-msgstr "Osittain katsotut elokuvat"
+msgstr "Keskeneräiset elokuvat"
 
 msgctxt "#31011"
 msgid "Most played albums"
-msgstr "Eniten toistetut albumit"
+msgstr "Kuunnelluimmat albumit"
 
 msgctxt "#31012"
 msgid "Random albums"
@@ -87,12 +87,12 @@ msgstr "Satunnaiset esittäjät"
 
 msgctxt "#31014"
 msgid "Unplayed albums"
-msgstr "Toistamattomat albumit"
+msgstr "Kuuntelemattomat albumit"
 
 #. home screen recordings widget: recent tv / radio recordings
 msgctxt "#31015"
 msgid "Recent recordings"
-msgstr "Viimeksi tallennetut ohjelmat"
+msgstr "Viimeksi tallennetut"
 
 #. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31016"
@@ -150,12 +150,12 @@ msgstr "Näytä fanitaide"
 
 msgctxt "#31029"
 msgid "Last logged in"
-msgstr "Viimeksi kirjauduttu"
+msgstr "Viimeisin kirjautuminen"
 
 #. Label to show the system memory usage
 msgctxt "#31030"
 msgid "System memory usage"
-msgstr "Järjestelmän muistinkäyttö"
+msgstr "Järjestelmän muistin varaus"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -171,7 +171,7 @@ msgstr "Oma arvosana"
 
 msgctxt "#31034"
 msgid "Extended info"
-msgstr "Lisätiedot"
+msgstr "Laajennetut tiedot"
 
 msgctxt "#31035"
 msgid "Pages"
@@ -183,15 +183,15 @@ msgstr "kohdetta"
 
 msgctxt "#31037"
 msgid "Selected track"
-msgstr "Valittu raita"
+msgstr "Valittu kappale"
 
 msgctxt "#31038"
 msgid "Rewind"
-msgstr "Kelaus taaksepäin"
+msgstr "Siirry taaksepäin"
 
 msgctxt "#31039"
 msgid "Fast forward"
-msgstr "Kelaus eteenpäin"
+msgstr "Siirry eteenpäin"
 
 msgctxt "#31041"
 msgid "Camera manufacturer"
@@ -211,7 +211,7 @@ msgstr "Lisää ryhmä"
 
 msgctxt "#31045"
 msgid "Rename group"
-msgstr "Muuta ryhmän nimeä"
+msgstr "Nimeä ryhmä uudelleen"
 
 msgctxt "#31046"
 msgid "Delete group"
@@ -231,7 +231,7 @@ msgstr "Arial-pohjainen"
 
 msgctxt "#31054"
 msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
-msgstr "Paina [B]Vasen[/B] palataksesi takaisinpäin tai [B]Oikea[/B] edetäksesi eteenpäin"
+msgstr "Paina [B]Vasen[/B] siirtyäksesi taaksepäin tai [B]Oikea[/B] siirtyäksesi eteenpäin"
 
 msgctxt "#31055"
 msgid "Press [B]Right[/B] to frame advance"
@@ -259,11 +259,11 @@ msgstr "Valinta + Aloita"
 
 msgctxt "#31061"
 msgid "Main menu items"
-msgstr "Päävalikko"
+msgstr "Päävalikon kohteet"
 
 msgctxt "#31062"
 msgid "Choose weather fanart pack"
-msgstr "Valitse säätietojen taustakuvapaketti"
+msgstr "Valitse säätietojen taustapaketti"
 
 msgctxt "#31063"
 msgid "Sections"
@@ -271,11 +271,11 @@ msgstr "Osiot"
 
 msgctxt "#31065"
 msgid "Video playlist"
-msgstr "Videotoistolista"
+msgstr "Videoiden toistolista"
 
 msgctxt "#31066"
 msgid "Music playlist"
-msgstr "Musiikkitoistolista"
+msgstr "Musiikin toistolista"
 
 msgctxt "#31067"
 msgid "Event log"
@@ -307,7 +307,7 @@ msgstr "Kokonaiskesto"
 
 msgctxt "#31075"
 msgid "Movie sets"
-msgstr "Elokuvaryhmät"
+msgstr "Elokuvakokoelmat"
 
 msgctxt "#31079"
 msgid "Cast not available"
@@ -335,7 +335,7 @@ msgstr "Kanavaryhmät"
 
 msgctxt "#31092"
 msgid "Video menu"
-msgstr "Elokuvavalikko"
+msgstr "Videon valikko"
 
 msgctxt "#31093"
 msgid "Show weather info in top bar"
@@ -355,7 +355,7 @@ msgstr "Kanavan asetukset"
 
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
-msgstr "Valitse Kodi-käyttäjäprofiilisi[CR]ja kirjaudu sisään"
+msgstr "Valitse Kodi-käyttäjäprofiilisi[CR]kirjautuaksesi ja jatkaaksesi"
 
 #. viewtype name
 msgctxt "#31099"
@@ -370,7 +370,7 @@ msgstr "Vaihto"
 #. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
-msgstr "Infoseinä"
+msgstr "Tietoseinä"
 
 #. viewtype name
 msgctxt "#31102"
@@ -379,11 +379,11 @@ msgstr "Seinä"
 
 msgctxt "#31103"
 msgid "Enter text here..."
-msgstr "Kirjoita tähän..."
+msgstr "Syötä tekstiä tähän..."
 
 msgctxt "#31104"
 msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
-msgstr "Mediakirjastosi on tällä hetkellä tyhjä. Avaa tiedostonäkymä ja lisää käyttämäsi medialähde. Valitse medialähteellesi sopiva tietojen tarjoaja tietojen noutamista varten. Kun tiedot ovat latautuneet, voit selata mediakirjastoasi."
+msgstr "Kirjastosi on tällä hetkellä tyhjä. Täyttääksesi sen omalla mediallasi, avaa \"Tiedostot\" -osio, lisää medialähde ja määritä se. Kun lähde on lisätty ja tutkittu, voit selata kirjastoasi."
 
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
@@ -391,7 +391,7 @@ msgstr "Lisää sisältöä videokirjastoosi valitsemalla käyttämäsi videolä
 
 msgctxt "#31106"
 msgid "Teletext"
-msgstr "Teksti-tv"
+msgstr "Teksti-TV"
 
 #. viewtype name
 msgctxt "#31107"
@@ -404,15 +404,15 @@ msgstr "Avaa tiedostonäkymä"
 
 msgctxt "#31111"
 msgid "View your personal pictures or download one of the many image add-ons from the official repository."
-msgstr "Katsele omia kuvatiedostojasi tai asenna kuvalisäosia virallisesta ohjelmavarastosta."
+msgstr "Katsele omia kuviasi tai asenna jokin monista kuvalisäosista virallisesta jakeluvarastosta."
 
 msgctxt "#31112"
 msgid "Toggle audio stream"
-msgstr "Ääniraita"
+msgstr "Vaihda ääniraitaa"
 
 msgctxt "#31113"
 msgid "Search local library"
-msgstr "Etsi mediakirjastosta"
+msgstr "Etsi paikallisesta kirjastosta"
 
 msgctxt "#31114"
 msgid "Search YouTube"
@@ -420,11 +420,11 @@ msgstr "Etsi YouTubesta"
 
 msgctxt "#31115"
 msgid "Toggle subtitle"
-msgstr "Kytke tekstitys"
+msgstr "Vaihda tekstitystä"
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
-msgstr "Poista tämä kohde päävalikosta"
+msgstr "Poista tämä päävalikon kohde"
 
 msgctxt "#31117"
 msgid "Edit nodes"
@@ -683,7 +683,7 @@ msgstr "Äänen bittinopeus"
 #. Label to show the screen resolution
 msgctxt "#31607"
 msgid "Screen resolution"
-msgstr "Näyttötarkkuus"
+msgstr "Näytön tarkkuus"
 
 #. Label to show the system rendering speed
 msgctxt "#31608"

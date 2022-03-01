@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-02-11 11:23+0000\n"
+"PO-Revision-Date: 2022-02-26 16:13+0000\n"
 "Last-Translator: Oskari Lavinto <olavinto@protonmail.com>\n"
 "Language-Team: Finnish <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/fi_fi/>\n"
 "Language: fi_fi\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.11\n"
 
 msgctxt "Addon Summary"
 msgid "Skin for touchscreen devices"
@@ -96,7 +96,7 @@ msgstr "Pikselimuoto"
 #. Label to show the system memory usage
 msgctxt "#31021"
 msgid "System memory usage"
-msgstr "Järjestelmän muistinkäyttö"
+msgstr "Järjestelmän muistin varaus"
 
 msgctxt "#31024"
 msgid "Page"
@@ -304,7 +304,7 @@ msgstr "Määritä tv-asetukset · Vaihda kokoruudun infoa · Muokkaa ohjelmaopp
 
 msgctxt "#31556"
 msgid "Live TV"
-msgstr "Tv"
+msgstr "Televisio"
 
 msgctxt "#31557"
 msgid "Hide video background"
@@ -381,7 +381,7 @@ msgstr "Äänen bittinopeus"
 #. Label to show the screen resolution
 msgctxt "#31607"
 msgid "Screen resolution"
-msgstr "Näyttötarkkuus"
+msgstr "Näytön tarkkuus"
 
 #. Label to show the system rendering speed
 msgctxt "#31608"

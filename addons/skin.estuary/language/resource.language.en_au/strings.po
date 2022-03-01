@@ -5,17 +5,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2021-07-22 14:56+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2022-03-01 13:10+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: English (Australia) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/en_au/>\n"
 "Language: en_au\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.7.2\n"
+"X-Generator: Weblate 4.11\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -31,7 +31,7 @@ msgstr ""
 
 msgctxt "#31000"
 msgid "Now playing"
-msgstr ""
+msgstr "Now playing"
 
 msgctxt "#31001"
 msgid "Search..."
@@ -55,7 +55,7 @@ msgstr "Watch as 2D"
 
 msgctxt "#31006"
 msgid "Random movies"
-msgstr ""
+msgstr "Random movies"
 
 msgctxt "#31007"
 msgid "Unwatched movies"
@@ -79,7 +79,7 @@ msgstr ""
 
 msgctxt "#31012"
 msgid "Random albums"
-msgstr ""
+msgstr "Random albums"
 
 msgctxt "#31013"
 msgid "Random artists"
@@ -122,11 +122,11 @@ msgstr ""
 
 msgctxt "#31022"
 msgid "Sort by"
-msgstr ""
+msgstr "Sort by"
 
 msgctxt "#31023"
 msgid "Viewtype"
-msgstr ""
+msgstr "Viewtype"
 
 msgctxt "#31024"
 msgid "Choose rating to display for media items"
@@ -146,7 +146,7 @@ msgstr ""
 
 msgctxt "#31028"
 msgid "Show fanart"
-msgstr ""
+msgstr "Show fanart"
 
 msgctxt "#31029"
 msgid "Last logged in"
@@ -179,7 +179,7 @@ msgstr ""
 
 msgctxt "#31036"
 msgid "items"
-msgstr ""
+msgstr "items"
 
 msgctxt "#31037"
 msgid "Selected track"
@@ -364,7 +364,7 @@ msgstr ""
 
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
-msgstr ""
+msgstr "Select your Kodi user profile[CR]to login and continue"
 
 #. viewtype name
 msgctxt "#31099"
@@ -379,12 +379,12 @@ msgstr "Shift"
 #. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
-msgstr ""
+msgstr "InfoWall"
 
 #. viewtype name
 msgctxt "#31102"
 msgid "Wall"
-msgstr ""
+msgstr "Wall"
 
 msgctxt "#31103"
 msgid "Enter text here..."
@@ -400,7 +400,7 @@ msgstr ""
 
 msgctxt "#31106"
 msgid "Teletext"
-msgstr ""
+msgstr "Teletext"
 
 #. viewtype name
 msgctxt "#31107"
@@ -458,7 +458,7 @@ msgstr ""
 
 msgctxt "#31122"
 msgid "Unwatched TV Shows"
-msgstr ""
+msgstr "Unwatched TV Shows"
 
 msgctxt "#31123"
 msgid "Same director"
@@ -475,7 +475,7 @@ msgstr ""
 
 msgctxt "#31127"
 msgid "Show icons"
-msgstr ""
+msgstr "Show icons"
 
 msgctxt "#31128"
 msgid "Contributors"
@@ -526,12 +526,12 @@ msgstr ""
 #. Label to show video decoder name
 msgctxt "#31139"
 msgid "Video decoder"
-msgstr ""
+msgstr "Video decoder"
 
 #. Label to show the video pixel format
 msgctxt "#31140"
 msgid "Pixel format"
-msgstr ""
+msgstr "Pixel format"
 
 msgctxt "#31141"
 msgid "Changes for version"
@@ -563,7 +563,7 @@ msgstr ""
 
 msgctxt "#31148"
 msgid "Categories"
-msgstr ""
+msgstr "Categories"
 
 msgctxt "#31149"
 msgid "Select genre fanart pack"
@@ -611,7 +611,7 @@ msgstr ""
 
 msgctxt "#31160"
 msgid "Show media flags"
-msgstr ""
+msgstr "Show media flags"
 
 msgctxt "#31161"
 msgid "Numeric pad"
@@ -709,9 +709,9 @@ msgstr ""
 #. Label to show the media (metadata) info page
 msgctxt "#31610"
 msgid "Media"
-msgstr ""
+msgstr "Media"
 
 #. Label to show the system info page
 msgctxt "#31611"
 msgid "System"
-msgstr ""
+msgstr "System"

@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-02-04 08:06+0000\n"
+"PO-Revision-Date: 2022-02-26 16:13+0000\n"
 "Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Hebrew (Israel) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/he_il/>\n"
 "Language: he_il\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && n % 10 == 0) ? 2 : 3));\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.11\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -505,12 +505,12 @@ msgstr "לחץ כאן לראות את השינויים האחרונים..."
 #. Label to show PVR info page
 msgctxt "#31137"
 msgid "PVR"
-msgstr ""
+msgstr "PVR"
 
 #. Label to show player info page
 msgctxt "#31138"
 msgid "Player"
-msgstr ""
+msgstr "נגן"
 
 #. Label to show video decoder name
 msgctxt "#31139"
@@ -544,7 +544,7 @@ msgstr "חפש הרחבות"
 
 msgctxt "#31146"
 msgid "In cinemas"
-msgstr ""
+msgstr "בקולנוע"
 
 msgctxt "#31147"
 msgid "In cinemas soon"
@@ -648,17 +648,17 @@ msgstr ""
 #. Label to show the video codec name
 msgctxt "#31600"
 msgid "Video codec"
-msgstr ""
+msgstr "מקודד וידאו"
 
 #. Label to show the video resolution
 msgctxt "#31601"
 msgid "Video resolution"
-msgstr ""
+msgstr "אבחנת וידאו"
 
 #. Label to show the video aspect
 msgctxt "#31602"
 msgid "Video aspect"
-msgstr ""
+msgstr "יחס וידאו"
 
 #. Label to show the video bitrate
 msgctxt "#31603"
@@ -668,12 +668,12 @@ msgstr ""
 #. Label to show the audio codec name
 msgctxt "#31604"
 msgid "Audio codec"
-msgstr ""
+msgstr "מקודד שמע"
 
 #. Label to show the number of audio channels
 msgctxt "#31605"
 msgid "Audio channels"
-msgstr ""
+msgstr "ערוצי אודיו"
 
 #. Label to show the audio bitrate
 msgctxt "#31606"
@@ -683,7 +683,7 @@ msgstr ""
 #. Label to show the screen resolution
 msgctxt "#31607"
 msgid "Screen resolution"
-msgstr ""
+msgstr "אבחנת מסך"
 
 #. Label to show the system rendering speed
 msgctxt "#31608"
@@ -693,17 +693,17 @@ msgstr ""
 #. Label to show the system CPU usage
 msgctxt "#31609"
 msgid "System CPU usage"
-msgstr ""
+msgstr "שימוש המערכת במעבד"
 
 #. Label to show the media (metadata) info page
 msgctxt "#31610"
 msgid "Media"
-msgstr ""
+msgstr "מידה"
 
 #. Label to show the system info page
 msgctxt "#31611"
 msgid "System"
-msgstr ""
+msgstr "מערכת"
 
 #~ msgctxt "#31137"
 #~ msgid "PVR info"
