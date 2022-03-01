@@ -5,17 +5,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2021-07-22 14:58+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"PO-Revision-Date: 2022-03-01 13:10+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Tamil (India) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/ta_in/>\n"
 "Language: ta_in\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.7.2\n"
+"X-Generator: Weblate 4.11\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -47,11 +47,11 @@ msgstr ""
 
 msgctxt "#31004"
 msgid "Change mode"
-msgstr ""
+msgstr "முறை மாற்றம்"
 
 msgctxt "#31005"
 msgid "Watch as 2D"
-msgstr ""
+msgstr "2Dஇல் பார்க்கவும்"
 
 msgctxt "#31006"
 msgid "Random movies"
@@ -187,7 +187,7 @@ msgstr ""
 
 msgctxt "#31038"
 msgid "Rewind"
-msgstr ""
+msgstr "பின்சுற்று"
 
 msgctxt "#31039"
 msgid "Fast forward"
@@ -385,7 +385,7 @@ msgstr ""
 #. viewtype name
 msgctxt "#31102"
 msgid "Wall"
-msgstr ""
+msgstr "சின்னங்கள்"
 
 msgctxt "#31103"
 msgid "Enter text here..."
@@ -401,7 +401,7 @@ msgstr ""
 
 msgctxt "#31106"
 msgid "Teletext"
-msgstr ""
+msgstr "Teletext"
 
 #. viewtype name
 msgctxt "#31107"
@@ -564,7 +564,7 @@ msgstr ""
 
 msgctxt "#31148"
 msgid "Categories"
-msgstr ""
+msgstr "வகைகள்"
 
 msgctxt "#31149"
 msgid "Select genre fanart pack"
@@ -715,4 +715,4 @@ msgstr ""
 #. Label to show the system info page
 msgctxt "#31611"
 msgid "System"
-msgstr ""
+msgstr "கணிணி"

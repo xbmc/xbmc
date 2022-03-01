@@ -7,15 +7,15 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-01-12 05:43+0000\n"
-"Last-Translator: rimasx <riks_12@hot.ee>\n"
+"PO-Revision-Date: 2022-02-26 16:13+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Estonian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/et_ee/>\n"
 "Language: et_ee\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.11\n"
 
 msgctxt "Addon Summary"
 msgid "Skin for touchscreen devices"
@@ -67,7 +67,7 @@ msgstr "Osasid"
 
 msgctxt "#31015"
 msgid "Player info"
-msgstr ""
+msgstr "Pleieri info"
 
 msgctxt "#31016"
 msgid "Albums"
@@ -76,12 +76,12 @@ msgstr "Albumid"
 #. Label to show PVR info page
 msgctxt "#31017"
 msgid "PVR"
-msgstr ""
+msgstr "PVR"
 
 #. Label to show player info page
 msgctxt "#31018"
 msgid "Player"
-msgstr ""
+msgstr "Pleier"
 
 #. Label to show video decoder name
 msgctxt "#31019"
@@ -297,7 +297,7 @@ msgstr "Kasuta kohandatud taustapilti"
 
 msgctxt "#31554"
 msgid "Background:"
-msgstr ""
+msgstr "Taust:"
 
 msgctxt "#31555"
 msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
@@ -357,7 +357,7 @@ msgstr "Videolahutus"
 #. Label to show the video aspect
 msgctxt "#31602"
 msgid "Video aspect"
-msgstr ""
+msgstr "Ekraanisuhe"
 
 #. Label to show the video bitrate
 msgctxt "#31603"

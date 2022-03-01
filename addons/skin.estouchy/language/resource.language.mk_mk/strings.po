@@ -5,9 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2021-07-05 22:17+0000\n"
+"PO-Revision-Date: 2022-03-01 13:10+0000\n"
 "Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Macedonian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/mk_mk/>\n"
 "Language: mk_mk\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : 1;\n"
-"X-Generator: Weblate 4.7.1\n"
+"X-Generator: Weblate 4.11\n"
 
 msgctxt "Addon Summary"
 msgid "Skin for touchscreen devices"
@@ -230,7 +230,7 @@ msgstr "Подразбирачка маска"
 
 msgctxt "#31391"
 msgid "Arial based"
-msgstr "Arial based"
+msgstr "Базирано на Arial"
 
 msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
@@ -406,7 +406,7 @@ msgstr ""
 #. Label to show the system info page
 msgctxt "#31611"
 msgid "System"
-msgstr ""
+msgstr "Систем"
 
 # empty strings from id 31566 to 31899
 msgctxt "#31900"

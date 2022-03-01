@@ -5,9 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2021-07-05 22:17+0000\n"
+"PO-Revision-Date: 2022-02-26 16:13+0000\n"
 "Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Albanian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/sq_al/>\n"
 "Language: sq_al\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.7.1\n"
+"X-Generator: Weblate 4.11\n"
 
 msgctxt "Addon Summary"
 msgid "Skin for touchscreen devices"
@@ -224,7 +224,7 @@ msgstr "Shkarko Titra"
 # empty string with id 31357
 msgctxt "#31358"
 msgid "Teletext"
-msgstr ""
+msgstr "Teletext"
 
 msgctxt "#31390"
 msgid "Skin default"
@@ -378,7 +378,7 @@ msgstr ""
 #. Label to show the number of audio channels
 msgctxt "#31605"
 msgid "Audio channels"
-msgstr ""
+msgstr "Audio-kanalet"
 
 #. Label to show the audio bitrate
 msgctxt "#31606"
@@ -403,12 +403,12 @@ msgstr ""
 #. Label to show the media (metadata) info page
 msgctxt "#31610"
 msgid "Media"
-msgstr ""
+msgstr "Media"
 
 #. Label to show the system info page
 msgctxt "#31611"
 msgid "System"
-msgstr ""
+msgstr "Sistemi"
 
 # empty strings from id 31566 to 31899
 msgctxt "#31900"
