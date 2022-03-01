@@ -598,7 +598,7 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
     case SYSTEM_ISSTANDALONE:
       value = g_application.IsStandAlone();
       return true;
-    case SYSTEM_ISINHIBIT:
+    case SYSTEM_IDLE_SHUTDOWN_INHIBITED:
       value = g_application.IsIdleShutdownInhibited();
       return true;
     case SYSTEM_HAS_SHUTDOWN:
