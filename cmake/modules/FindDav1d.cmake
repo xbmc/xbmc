@@ -17,8 +17,6 @@ if(ENABLE_INTERNAL_DAV1D)
 
   SETUP_BUILD_VARS()
 
-  set(DAV1D_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/libdav1d.a)
-  set(DAV1D_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
   set(DAV1D_VERSION ${${MODULE}_VER})
 
   set(CONFIGURE_COMMAND meson
@@ -33,7 +31,6 @@ if(ENABLE_INTERNAL_DAV1D)
                         ../dav1d)
   set(BUILD_COMMAND ninja)
   set(INSTALL_COMMAND ninja install)
-  set(BUILD_BYPRODUCTS ${DAV1D_LIBRARY})
 
   BUILD_DEP_TARGET()
 else()
