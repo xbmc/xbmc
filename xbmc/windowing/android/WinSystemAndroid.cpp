@@ -62,8 +62,10 @@ CWinSystemAndroid::CWinSystemAndroid()
 
 CWinSystemAndroid::~CWinSystemAndroid()
 {
-  m_nativeWindow = nullptr;
-  delete m_dispResetTimer, m_dispResetTimer = nullptr;
+  if (m_nativeWindow)
+    ANativeWindow_release(m_nativeWindow);
+
+  delete m_dispResetTimer;
 }
 
 bool CWinSystemAndroid::InitWindowSystem()
@@ -137,12 +139,16 @@ bool CWinSystemAndroid::CreateNewWindow(const std::string& name,
   m_stereo_mode = stereo_mode;
   m_bFullScreen = fullScreen;
 
+  if (m_nativeWindow)
+    ANativeWindow_release(m_nativeWindow);
+
   m_nativeWindow = CXBMCApp::GetNativeWindow(2000);
   if (!m_nativeWindow)
   {
     CLog::Log(LOGERROR, "CWinSystemAndroid::CreateNewWindow: failed");
     return false;
   }
+  ANativeWindow_acquire(m_nativeWindow);
   m_android->SetNativeResolution(res);
 
   return true;
@@ -151,7 +157,11 @@ bool CWinSystemAndroid::CreateNewWindow(const std::string& name,
 bool CWinSystemAndroid::DestroyWindow()
 {
   CLog::Log(LOGINFO, "CWinSystemAndroid::{}", __FUNCTION__);
-  m_nativeWindow = nullptr;
+  if (m_nativeWindow)
+  {
+    ANativeWindow_release(m_nativeWindow);
+    m_nativeWindow = nullptr;
+  }
   m_bWindowCreated = false;
   return true;
 }

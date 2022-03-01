@@ -165,6 +165,9 @@ CXBMCApp::~CXBMCApp()
 {
   m_xbmcappinstance = NULL;
   delete m_wakeLock;
+
+  if (m_window)
+    ANativeWindow_release(m_window);
 }
 
 void CXBMCApp::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
@@ -344,7 +347,11 @@ void CXBMCApp::onCreateWindow(ANativeWindow* window)
 void CXBMCApp::onResizeWindow()
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
-  m_window = NULL;
+  if (m_window)
+  {
+    ANativeWindow_release(m_window);
+    m_window = nullptr;
+  }
   // no need to do anything because we are fixed in fullscreen landscape mode
 }
 
@@ -1574,6 +1581,10 @@ void CXBMCApp::surfaceChanged(CJNISurfaceHolder holder, int format, int width, i
 void CXBMCApp::surfaceCreated(CJNISurfaceHolder holder)
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
+
+  if (m_window)
+    ANativeWindow_release(m_window);
+
   m_window = ANativeWindow_fromSurface(xbmc_jnienv(), holder.getSurface().get_raw());
   if (m_window == NULL)
   {
@@ -1593,8 +1604,11 @@ void CXBMCApp::surfaceDestroyed(CJNISurfaceHolder holder)
   // If we have exited XBMC, it no longer exists.
   g_application.SetRenderGUI(false);
   if (!m_exiting)
-  {
     XBMC_DestroyDisplay();
-    m_window = NULL;
+
+  if (m_window)
+  {
+    ANativeWindow_release(m_window);
+    m_window = nullptr;
   }
 }
