@@ -13,7 +13,7 @@
 #include "games/controllers/Controller.h"
 #include "games/controllers/types/ControllerHub.h"
 #include "games/controllers/types/ControllerNode.h"
-#include "games/controllers/types/PortNode.h"
+#include "games/ports/types/PortNode.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"

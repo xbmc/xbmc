@@ -9,9 +9,9 @@
 #include "ControllerNode.h"
 
 #include "ControllerHub.h"
-#include "PortNode.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/input/PhysicalTopology.h"
+#include "games/ports/types/PortNode.h"
 
 #include <algorithm>
 #include <utility>

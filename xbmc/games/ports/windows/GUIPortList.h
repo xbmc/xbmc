@@ -8,15 +8,15 @@
 
 #pragma once
 
-#include "ControllerSelect.h"
 #include "IPortList.h"
 #include "addons/AddonEvents.h"
 #include "games/GameTypes.h"
 #include "games/controllers/ControllerTypes.h"
+#include "games/controllers/dialogs/ControllerSelect.h"
 #include "games/controllers/types/ControllerTree.h"
 
 #include <map>
-#include <set>
+#include <memory>
 #include <string>
 
 class CFileItemList;
@@ -27,9 +27,6 @@ namespace KODI
 {
 namespace GAME
 {
-class CGameClientTopology;
-class CGUIPortWindow;
-
 class CGUIPortList : public IPortList
 {
 public:

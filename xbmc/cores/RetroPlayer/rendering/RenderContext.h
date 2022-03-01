@@ -91,8 +91,8 @@ public:
   RESOLUTION_INFO& GetResolutionInfo(RESOLUTION resolution);
 
   // Media settings
-  CGameSettings& GetGameSettings();
-  CGameSettings& GetDefaultGameSettings();
+  ::CGameSettings& GetGameSettings();
+  ::CGameSettings& GetDefaultGameSettings();
 
 private:
   // Construction parameters

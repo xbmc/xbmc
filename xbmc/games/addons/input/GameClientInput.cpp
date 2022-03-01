@@ -23,7 +23,7 @@
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerLayout.h"
 #include "games/controllers/input/PhysicalTopology.h"
-#include "games/controllers/input/PortManager.h"
+#include "games/ports/input/PortManager.h"
 #include "input/joysticks/JoystickTypes.h"
 #include "peripherals/EventLockHandle.h"
 #include "peripherals/Peripherals.h"

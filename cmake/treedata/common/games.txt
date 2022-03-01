@@ -10,5 +10,8 @@ xbmc/games/controllers/types       games/controllers/types
 xbmc/games/controllers/windows     games/controllers/windows
 xbmc/games/dialogs                 games/dialogs
 xbmc/games/dialogs/osd             games/dialogs/osd
+xbmc/games/ports/input             games/ports/input
+xbmc/games/ports/types             games/ports/types
+xbmc/games/ports/windows           games/ports/windows
 xbmc/games/tags                    games/tags
 xbmc/games/windows                 games/windows
