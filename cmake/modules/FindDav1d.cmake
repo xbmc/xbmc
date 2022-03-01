@@ -18,7 +18,10 @@ if(ENABLE_INTERNAL_DAV1D)
 
   set(DAV1D_VERSION ${${MODULE}_VER})
 
-  set(CONFIGURE_COMMAND meson
+  find_program(NINJA_EXECUTABLE ninja REQUIRED)
+  find_program(MESON_EXECUTABLE meson REQUIRED)
+
+  set(CONFIGURE_COMMAND ${MESON_EXECUTABLE}
                         --buildtype=release
                         --default-library=static
                         --prefix=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
@@ -28,8 +31,8 @@ if(ENABLE_INTERNAL_DAV1D)
                         -Denable_examples=false
                         -Denable_tests=false
                         ../dav1d)
-  set(BUILD_COMMAND ninja)
-  set(INSTALL_COMMAND ninja install)
+  set(BUILD_COMMAND ${NINJA_EXECUTABLE})
+  set(INSTALL_COMMAND ${NINJA_EXECUTABLE} install)
 
   BUILD_DEP_TARGET()
 else()
