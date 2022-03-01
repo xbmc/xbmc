@@ -29,7 +29,7 @@ else
   endif
 endif
 
-LIBDYLIB=$(PLATFORM)/build/libspdlog.a
+LIBDYLIB=$(PLATFORM)/build/$(BYPRODUCT)
 
 include ../../download-files.include
 

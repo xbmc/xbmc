@@ -23,7 +23,7 @@ else
   endif
 endif
 
-LIBDYLIB=$(PLATFORM)/build/libfmt.a
+LIBDYLIB=$(PLATFORM)/build/$(BYPRODUCT)
 
 include ../../download-files.include
 

@@ -4,7 +4,7 @@ DEPS = ../../Makefile.include Makefile FSTRCMP-VERSION ../../download-files.incl
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX)
 
-LIBDYLIB=$(PLATFORM)/lib/.libs/lib$(LIBNAME).a
+LIBDYLIB=$(PLATFORM)/lib/.libs/$(BYPRODUCT)
 
 all: .installed-$(PLATFORM)
 
