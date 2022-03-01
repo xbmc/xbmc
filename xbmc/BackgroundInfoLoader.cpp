@@ -40,7 +40,7 @@ void CBackgroundInfoLoader::Run()
       // Stage 1: All "fast" stuff we have already cached
       for (std::vector<CFileItemPtr>::const_iterator iter = m_vecItems.begin(); iter != m_vecItems.end(); ++iter)
       {
-        CFileItemPtr pItem = *iter;
+        const CFileItemPtr& pItem = *iter;
 
         // Ask the callback if we should abort
         if ((m_pProgressCallback && m_pProgressCallback->Abort()) || m_bStop)
@@ -62,7 +62,7 @@ void CBackgroundInfoLoader::Run()
       // Stage 2: All "slow" stuff that we need to lookup
       for (std::vector<CFileItemPtr>::const_iterator iter = m_vecItems.begin(); iter != m_vecItems.end(); ++iter)
       {
-        CFileItemPtr pItem = *iter;
+        const CFileItemPtr& pItem = *iter;
 
         // Ask the callback if we should abort
         if ((m_pProgressCallback && m_pProgressCallback->Abort()) || m_bStop)

@@ -1443,7 +1443,7 @@ bool CAddonSettings::ParseOldCondition(const std::shared_ptr<const CSetting>& se
       continue;
     }
 
-    SettingConstPtr referencedSetting = settings.at(absoluteSettingIndex);
+    const SettingConstPtr& referencedSetting = settings.at(absoluteSettingIndex);
     if (referencedSetting == nullptr)
     {
       m_logger->warn(
