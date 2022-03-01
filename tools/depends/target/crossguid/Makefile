@@ -30,7 +30,7 @@ ifeq ($(OS),darwin_embedded)
 	GUID_PLATFORM_DEFINE=GUID_CFUUID
 endif
 
-LIBDYLIB=$(PLATFORM)/lib$(LIBNAME).a
+LIBDYLIB=$(PLATFORM)/$(BYPRODUCT)
 
 include ../../download-files.include
 
