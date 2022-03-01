@@ -19,16 +19,11 @@ if(ENABLE_INTERNAL_FSTRCMP)
 
   SETUP_BUILD_VARS()
 
-  set(FSTRCMP_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/libfstrcmp.a)
-  set(FSTRCMP_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
-  set(FSTRCMP_VER ${${MODULE}_VER})
-
   set(PATCH_COMMAND autoreconf -vif)
   set(CONFIGURE_COMMAND ./configure --prefix ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR})
   set(BUILD_COMMAND make lib/libfstrcmp.la)
   set(BUILD_IN_SOURCE 1)
   set(INSTALL_COMMAND make install-libdir install-include)
-  set(BUILD_BYPRODUCTS ${FSTRCMP_LIBRARY})
 
   BUILD_DEP_TARGET()
 else()
