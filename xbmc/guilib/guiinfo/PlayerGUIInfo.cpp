@@ -661,7 +661,7 @@ std::vector<std::pair<float, float>> CPlayerGUIInfo::GetEditList(const CDataCach
 {
   std::vector<std::pair<float, float>> ranges;
 
-  const std::vector<EDL::Edit> edits = data.GetEditList();
+  const std::vector<EDL::Edit>& edits = data.GetEditList();
   for (const auto& edit : edits)
   {
     float editStart = edit.start * 100.0f / duration;
@@ -694,7 +694,7 @@ std::vector<std::pair<float, float>> CPlayerGUIInfo::GetSceneMarkers(const CData
 {
   std::vector<std::pair<float, float>> ranges;
 
-  const std::vector<int64_t> scenes = data.GetSceneMarkers();
+  const std::vector<int64_t>& scenes = data.GetSceneMarkers();
   float lastMarker = 0.0f;
   for (const auto& scene : scenes)
   {
@@ -712,7 +712,7 @@ std::vector<std::pair<float, float>> CPlayerGUIInfo::GetChapters(const CDataCach
 {
   std::vector<std::pair<float, float>> ranges;
 
-  const std::vector<std::pair<std::string, int64_t>> chapters = data.GetChapters();
+  const std::vector<std::pair<std::string, int64_t>>& chapters = data.GetChapters();
   float lastMarker = 0.0f;
   for (const auto& chapter : chapters)
   {
