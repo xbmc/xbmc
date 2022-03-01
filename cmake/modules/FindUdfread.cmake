@@ -18,8 +18,6 @@ if(ENABLE_INTERNAL_UDFREAD)
 
   SETUP_BUILD_VARS()
 
-  set(UDFREAD_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/libudfread.a)
-  set(UDFREAD_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
   set(UDFREAD_VERSION ${${MODULE}_VER})
 
   set(CONFIGURE_COMMAND autoreconf -vif &&
@@ -28,7 +26,6 @@ if(ENABLE_INTERNAL_UDFREAD)
                         --disable-shared
                         --prefix=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR})
   set(BUILD_IN_SOURCE 1)
-  set(BUILD_BYPRODUCTS ${UDFREAD_LIBRARY})
 
   BUILD_DEP_TARGET()
 
