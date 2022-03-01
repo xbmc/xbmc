@@ -9,7 +9,6 @@
 # RapidJSON_INCLUDE_DIRS - the RapidJSON parser include directory
 #
 if(ENABLE_INTERNAL_RapidJSON)
-  include(ExternalProject)
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
   set(MODULE_LC rapidjson)

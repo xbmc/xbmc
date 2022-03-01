@@ -10,7 +10,6 @@
 # DAV1D_LIBRARIES - the dav1d libraries
 
 if(ENABLE_INTERNAL_DAV1D)
-  include(ExternalProject)
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
   set(MODULE_LC dav1d)

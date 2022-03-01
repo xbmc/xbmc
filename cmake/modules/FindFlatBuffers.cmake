@@ -10,7 +10,6 @@
 # FLATBUFFERS_MESSAGES_INCLUDE_DIR - the directory for generated headers
 
 if(ENABLE_INTERNAL_FLATBUFFERS)
-  include(ExternalProject)
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
   set(MODULE_LC flatbuffers)

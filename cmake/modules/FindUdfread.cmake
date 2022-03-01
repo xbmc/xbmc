@@ -11,7 +11,6 @@
 # UDFREAD_DEFINITIONS - the udfread definitions
 
 if(ENABLE_INTERNAL_UDFREAD)
-  include(ExternalProject)
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
   set(MODULE_LC udfread)
