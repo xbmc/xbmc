@@ -20,8 +20,7 @@ if(ENABLE_INTERNAL_RapidJSON)
     set(EXTRA_ARGS "-DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}")
   endif()
 
-  set(RapidJSON_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/librapidjson.a)
-  set(RapidJSON_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
+  set(RapidJSON_INCLUDE_DIR ${${MODULE}_INCLUDE_DIR})
   set(RapidJSON_VERSION ${${MODULE}_VER})
 
   set(CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
@@ -32,7 +31,7 @@ if(ENABLE_INTERNAL_RapidJSON)
                  -DRAPIDJSON_BUILD_THIRDPARTY_GTEST=OFF
                  "${EXTRA_ARGS}")
   set(PATCH_COMMAND patch -p1 < ${CORE_SOURCE_DIR}/tools/depends/target/rapidjson/0001-remove_custom_cxx_flags.patch)
-  set(BUILD_BYPRODUCTS ${RapidJSON_LIBRARY})
+  set(BUILD_BYPRODUCTS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include/rapidjson/rapidjson.h)
 
   BUILD_DEP_TARGET()
 else()
