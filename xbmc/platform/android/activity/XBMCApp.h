@@ -241,7 +241,6 @@ private:
   static IInputDeviceCallbacks* m_inputDeviceCallbacks;
   static IInputDeviceEventHandler* m_inputDeviceEventHandler;
   static bool m_hasReqVisible;
-  bool m_videosurfaceInUse;
   bool m_firstrun;
   std::atomic<bool> m_exiting{false};
   int m_exitCode{0};

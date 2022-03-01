@@ -144,8 +144,7 @@ uint32_t CXBMCApp::m_playback_state = PLAYBACK_STATE_STOPPED;
 CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity, IInputHandler& inputHandler)
   : CJNIMainActivity(nativeActivity),
     CJNIBroadcastReceiver(CJNIContext::getPackageName() + ".XBMCBroadcastReceiver"),
-    m_inputHandler(inputHandler),
-    m_videosurfaceInUse(false)
+    m_inputHandler(inputHandler)
 {
   m_xbmcappinstance = this;
   m_activity = nativeActivity;
