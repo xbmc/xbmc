@@ -8,6 +8,12 @@
 
 #pragma once
 
+#include "utils/Map.h"
+
+#include <string_view>
+
+#include <fmt/format.h>
+
 // VideoSettings.h: interface for the CVideoSettings class.
 //
 //////////////////////////////////////////////////////////////////////
@@ -32,6 +38,41 @@ enum EINTERLACEMETHOD
   VS_INTERLACEMETHOD_VAAPI_MACI = 24,
   VS_INTERLACEMETHOD_DXVA_AUTO = 32,
   VS_INTERLACEMETHOD_MAX // do not use and keep as last enum value.
+};
+
+template<>
+struct fmt::formatter<EINTERLACEMETHOD> : fmt::formatter<std::string_view>
+{
+  template<typename FormatContext>
+  constexpr auto format(const EINTERLACEMETHOD& interlaceMethod, FormatContext& ctx)
+  {
+    const auto it = interlaceMethodMap.find(interlaceMethod);
+    if (it == interlaceMethodMap.cend())
+      throw std::range_error("no interlace method string found");
+
+    return fmt::formatter<string_view>::format(it->second, ctx);
+  }
+
+private:
+  static constexpr auto interlaceMethodMap = make_map<EINTERLACEMETHOD, std::string_view>({
+      {VS_INTERLACEMETHOD_NONE, "none"},
+      {VS_INTERLACEMETHOD_AUTO, "auto"},
+      {VS_INTERLACEMETHOD_RENDER_BLEND, "render blend"},
+      {VS_INTERLACEMETHOD_RENDER_WEAVE, "render weave"},
+      {VS_INTERLACEMETHOD_RENDER_BOB, "render bob"},
+      {VS_INTERLACEMETHOD_DEINTERLACE, "deinterlace"},
+      {VS_INTERLACEMETHOD_VDPAU_BOB, "vdpau bob"},
+      {VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE, "vdpau inverse telecine"},
+      {VS_INTERLACEMETHOD_VDPAU_TEMPORAL, "vdpau temporal"},
+      {VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF, "vdpau temporal half"},
+      {VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL, "vdpau temporal spatial"},
+      {VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF, "vdpau temporal spatial half"},
+      {VS_INTERLACEMETHOD_DEINTERLACE_HALF, "deinterlace half"},
+      {VS_INTERLACEMETHOD_VAAPI_BOB, "vaapi bob"},
+      {VS_INTERLACEMETHOD_VAAPI_MADI, "vaapi madi"},
+      {VS_INTERLACEMETHOD_VAAPI_MACI, "vaapi maci"},
+      {VS_INTERLACEMETHOD_DXVA_AUTO, "dxva auto"},
+  });
 };
 
 enum ESCALINGMETHOD
