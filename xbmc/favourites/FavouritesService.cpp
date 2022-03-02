@@ -9,11 +9,13 @@
 #include "FavouritesService.h"
 
 #include "FileItem.h"
+#include "GUIPassword.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
 #include "filesystem/File.h"
 #include "music/tags/MusicInfoTag.h"
+#include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/ContentUtils.h"
@@ -23,6 +25,75 @@
 #include "utils/log.h"
 #include "video/VideoInfoTag.h"
 
+namespace
+{
+bool IsMediasourceOfFavItemUnlocked(const std::shared_ptr<CFileItem>& item)
+{
+  if (!item)
+  {
+    CLog::Log(LOGERROR, "{}: No item passed (nullptr).", __func__);
+    return true;
+  }
+
+  std::string execString = CURL::Decode(item->GetPath());
+  std::string execute;
+  std::vector<std::string> params;
+
+  CUtil::SplitExecFunction(execString, execute, params);
+
+  FavAction favAction;
+  if (StringUtils::EqualsNoCase(execute, "Favourites://PlayMedia"))
+    favAction = FavAction::PLAYMEDIA;
+  else if (StringUtils::EqualsNoCase(execute, "Favourites://ShowPicture"))
+    favAction = FavAction::SHOWPICTURE;
+  else
+    return true;
+
+  const auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  if (!settingsComponent)
+  {
+    CLog::Log(LOGERROR, "{}: returned nullptr.", __func__);
+    return true;
+  }
+
+  const auto profileManager = settingsComponent->GetProfileManager();
+  if (!profileManager)
+  {
+    CLog::Log(LOGERROR, "{}: returned nullptr.", __func__);
+    return true;
+  }
+
+  bool isFolder{false};
+  CFileItem itemToCheck(params[0], isFolder);
+
+  if (favAction == FavAction::PLAYMEDIA)
+  {
+    if (itemToCheck.IsVideo())
+    {
+      if (!profileManager->GetCurrentProfile().videoLocked())
+        return g_passwordManager.IsMediaFileUnlocked("video", itemToCheck.GetPath());
+
+      return false;
+    }
+    else if (itemToCheck.IsAudio())
+    {
+      if (!profileManager->GetCurrentProfile().musicLocked())
+        return g_passwordManager.IsMediaFileUnlocked("music", itemToCheck.GetPath());
+
+      return false;
+    }
+  }
+  else if (favAction == FavAction::SHOWPICTURE && itemToCheck.IsPicture())
+  {
+    if (!profileManager->GetCurrentProfile().picturesLocked())
+      return g_passwordManager.IsMediaFileUnlocked("pictures", itemToCheck.GetPath());
+
+    return false;
+  }
+
+  return true;
+}
+} // anonymous namespace
 
 static bool LoadFromFile(const std::string& strPath, CFileItemList& items)
 {
@@ -223,5 +294,21 @@ void CFavouritesService::GetAll(CFileItemList& items) const
 {
   CSingleLock lock(m_criticalSection);
   items.Clear();
-  items.Copy(m_favourites);
+  if (g_passwordManager.IsMasterLockUnlocked(false)) // don't prompt
+  {
+    items.Copy(m_favourites, true); // copy items
+  }
+  else
+  {
+    for (const auto& fav : m_favourites)
+    {
+      if (IsMediasourceOfFavItemUnlocked(fav))
+        items.Add(fav);
+    }
+  }
+}
+
+void CFavouritesService::RefreshFavourites()
+{
+  m_events.Publish(FavouritesUpdated{});
 }
