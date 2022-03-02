@@ -599,7 +599,7 @@ std::set<std::string> CGUIDialogSettingsBase::CreateSettings()
     for (SettingList::const_iterator settingIt = settings.begin(); settingIt != settings.end();
          ++settingIt)
     {
-      std::shared_ptr<CSetting> pSetting = *settingIt;
+      const std::shared_ptr<CSetting>& pSetting = *settingIt;
       settingMap.insert(pSetting->GetId());
       AddSetting(pSetting, group->GetWidth(), iControlID);
     }

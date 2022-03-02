@@ -14,6 +14,7 @@
 #include <condition_variable>
 #include <functional>
 #include <mutex>
+#include <utility>
 
 namespace XbmcThreads
 {
@@ -36,7 +37,7 @@ namespace XbmcThreads
     {
       int count = lock.count;
       lock.count = 0;
-      cond.wait(lock.get_underlying(), predicate);
+      cond.wait(lock.get_underlying(), std::move(predicate));
       lock.count = count;
     }
 
@@ -72,7 +73,7 @@ namespace XbmcThreads
 
     inline void wait(std::unique_lock<CCriticalSection>& lock, std::function<bool()> predicate)
     {
-      cond.wait(*lock.mutex(), predicate);
+      cond.wait(*lock.mutex(), std::move(predicate));
     }
 
     inline void wait(std::unique_lock<CCriticalSection>& lock) { wait(*lock.mutex()); }

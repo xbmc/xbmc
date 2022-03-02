@@ -88,7 +88,7 @@ bool CVideoLibraryMarkWatchedJob::Work(CVideoDatabase &db)
 
   for (std::vector<CFileItemPtr>::const_iterator iter = markItems.begin(); iter != markItems.end(); ++iter)
   {
-    CFileItemPtr item = *iter;
+    const CFileItemPtr& item = *iter;
 
     std::string path(item->GetPath());
     if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->GetPath().empty())
