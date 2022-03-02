@@ -736,7 +736,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
     CLog::Log(LOGWARNING,
               "CLinuxRendererGL::UpdateVideoFilter - chosen scaling method {}, is not supported by "
               "renderer",
-              (int)m_scalingMethod);
+              m_scalingMethod);
     m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
   }
 
