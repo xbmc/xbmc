@@ -99,6 +99,48 @@ enum ESCALINGMETHOD
   VS_SCALINGMETHOD_MAX // do not use and keep as last enum value.
 };
 
+template<>
+struct fmt::formatter<ESCALINGMETHOD> : fmt::formatter<std::string_view>
+{
+public:
+  template<typename FormatContext>
+  constexpr auto format(const ESCALINGMETHOD& scalingMethod, FormatContext& ctx)
+  {
+    const auto it = scalingMethodMap.find(scalingMethod);
+    if (it == scalingMethodMap.cend())
+      throw std::range_error("no scaling method string found");
+
+    return fmt::formatter<string_view>::format(it->second, ctx);
+  }
+
+private:
+  static constexpr auto scalingMethodMap = make_map<ESCALINGMETHOD, std::string_view>({
+      {VS_SCALINGMETHOD_NEAREST, "nearest neighbour"},
+      {VS_SCALINGMETHOD_LINEAR, "linear"},
+      {VS_SCALINGMETHOD_CUBIC_B_SPLINE, "cubic b spline"},
+      {VS_SCALINGMETHOD_CUBIC_MITCHELL, "cubic mitchell"},
+      {VS_SCALINGMETHOD_CUBIC_CATMULL, "cubic catmull"},
+      {VS_SCALINGMETHOD_CUBIC_0_075, "cubic 0/075"},
+      {VS_SCALINGMETHOD_CUBIC_0_1, "cubic 0/1"},
+      {VS_SCALINGMETHOD_LANCZOS2, "lanczos2"},
+      {VS_SCALINGMETHOD_LANCZOS3_FAST, "lanczos3 fast"},
+      {VS_SCALINGMETHOD_LANCZOS3, "lanczos3"},
+      {VS_SCALINGMETHOD_SINC8, "sinc8"},
+      {VS_SCALINGMETHOD_BICUBIC_SOFTWARE, "bicubic software"},
+      {VS_SCALINGMETHOD_LANCZOS_SOFTWARE, "lanczos software"},
+      {VS_SCALINGMETHOD_SINC_SOFTWARE, "sinc software"},
+      {VS_SCALINGMETHOD_VDPAU_HARDWARE, "vdpau"},
+      {VS_SCALINGMETHOD_DXVA_HARDWARE, "dxva"},
+      {VS_SCALINGMETHOD_AUTO, "auto"},
+      {VS_SCALINGMETHOD_SPLINE36_FAST, "spline32 fast"},
+      {VS_SCALINGMETHOD_SPLINE36, "spline32"},
+  });
+
+  static_assert(VS_SCALINGMETHOD_MAX == scalingMethodMap.size(),
+                "scalingMethodMap doesn't match the size of ESCALINGMETHOD, did you forget to "
+                "add/remove a mapping?");
+};
+
 enum ETONEMAPMETHOD
 {
   VS_TONEMAPMETHOD_OFF = 0,
