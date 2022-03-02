@@ -64,6 +64,7 @@
         </screenshot>
     </screenshots>
     <releases>
+        <release date="2022-03-03" version="19.4-Matrix"/>
         <release date="2021-10-24" version="19.3-Matrix"/>
         <release date="2021-10-08" version="19.2-Matrix"/>
         <release date="2021-05-09" version="19.1-Matrix"/>
