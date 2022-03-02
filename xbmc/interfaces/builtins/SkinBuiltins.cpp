@@ -549,7 +549,7 @@ static int SkinDebug(const std::vector<std::string>& params)
 ///     the default colorfile included with Kodi will be used.
 ///     @param[in] string                Name of skin setting.
 ///     @param[in] string                Dialog header text.
-///     @param[in] string                Hex value of the color to preselect (optional),
+///     @param[in] string                Hex value of the color to preselect (optional)\,
 ///                                      example: FF00FF00.
 ///     @param[in] string                Filepath of the color definition file (optional).
 ///     <p><hr>
