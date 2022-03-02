@@ -8,15 +8,16 @@
 
 #include "DiscsUtils.h"
 
-#include "FileItem.h"
-//! @todo it's wrong to include videoplayer scoped files, refactor
-// dvd inputstream so they can be used by other components. Or just use libdvdnav directly.
-#include "cores/VideoPlayer/DVDInputStreams/DVDInputStreamNavigator.h"
+extern "C"
+{
+#include "dvdnav/dvdnav.h"
+}
 #ifdef HAVE_LIBBLURAY
 //! @todo it's wrong to include vfs scoped files in a utils class, refactor
 // to use libbluray directly.
 #include "filesystem/BlurayDirectory.h"
 #endif
+
 
 bool UTILS::DISCS::GetDiscInfo(UTILS::DISCS::DiscInfo& info, const std::string& mediaPath)
 {
@@ -36,14 +37,23 @@ bool UTILS::DISCS::GetDiscInfo(UTILS::DISCS::DiscInfo& info, const std::string& 
 UTILS::DISCS::DiscInfo UTILS::DISCS::ProbeDVDDiscInfo(const std::string& mediaPath)
 {
   DiscInfo info;
-  CFileItem item{mediaPath, false};
-  CDVDInputStreamNavigator dvdNavigator{nullptr, item};
-  if (dvdNavigator.Open())
+
+  struct dvdnav_s* dvdnav;
+  if (dvdnav_open(&dvdnav, mediaPath.c_str()) == DVDNAV_STATUS_OK)
   {
     info.type = DiscType::DVD;
-    info.name = dvdNavigator.GetDVDTitleString();
-    info.serial = dvdNavigator.GetDVDSerialString();
+
+    // get DVD title
+    const char* dvdTitle = nullptr;
+    if (dvdnav_get_title_string(dvdnav, &dvdTitle) == DVDNAV_STATUS_OK)
+      info.name = std::string{dvdTitle};
+
+    // get DVD serial number
+    const char* dvdSerialNumber = nullptr;
+    if (dvdnav_get_serial_string(dvdnav, &dvdSerialNumber) == DVDNAV_STATUS_OK)
+      info.serial = std::string{dvdSerialNumber};
   }
+
   return info;
 }
 
