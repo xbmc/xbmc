@@ -150,6 +150,33 @@ enum ETONEMAPMETHOD
   VS_TONEMAPMETHOD_MAX
 };
 
+template<>
+struct fmt::formatter<ETONEMAPMETHOD> : fmt::formatter<std::string_view>
+{
+public:
+  template<typename FormatContext>
+  constexpr auto format(const ETONEMAPMETHOD& tonemapMethod, FormatContext& ctx)
+  {
+    const auto it = tonemapMethodMap.find(tonemapMethod);
+    if (it == tonemapMethodMap.cend())
+      throw std::range_error("no tonemap method string found");
+
+    return fmt::formatter<string_view>::format(it->second, ctx);
+  }
+
+private:
+  static constexpr auto tonemapMethodMap = make_map<ETONEMAPMETHOD, std::string_view>({
+      {VS_TONEMAPMETHOD_OFF, "off"},
+      {VS_TONEMAPMETHOD_REINHARD, "reinhard"},
+      {VS_TONEMAPMETHOD_ACES, "aces"},
+      {VS_TONEMAPMETHOD_HABLE, "hable"},
+  });
+
+  static_assert(VS_TONEMAPMETHOD_MAX == tonemapMethodMap.size(),
+                "tonemapMethodMap doesn't match the size of ETONEMAPMETHOD, did you forget to "
+                "add/remove a mapping?");
+};
+
 enum ViewMode
 {
   ViewModeNormal = 0,
