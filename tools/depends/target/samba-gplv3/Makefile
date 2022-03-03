@@ -10,13 +10,19 @@ DEPS= ../../Makefile.include Makefile SAMBA-GPLV3-VERSION ../../download-files.i
 # vfs_snapper requires dbus, so disable.
 CONFIGURE=./configure --prefix=$(PREFIX) \
           --cross-compile --cross-answers=cross-answers.txt \
-          --without-cluster-support --without-ldap \
-          --without-pam --enable-fhs \
-          --without-winbind --disable-cups --without-ads \
-          --disable-avahi --without-gettext \
-          --without-dnsupdate \
-          --without-ad-dc --without-acl-support \
-          --without-utmp --disable-iprint \
+          --without-cluster-support \
+          --without-ldap \
+          --without-pam \
+          --enable-fhs \
+          --without-winbind \
+          --without-ads \
+          --disable-avahi \
+          --disable-cups \
+          --without-gettext \
+          --without-ad-dc \
+          --without-acl-support \
+          --without-utmp \
+          --disable-iprint \
           --nopyc --nopyo \
           --builtin-libraries=!smbclient,!smbd_base,!smbstatus,ALL \
           --with-shared-modules=!vfs_snapper \

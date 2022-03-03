@@ -1,6 +1,6 @@
 --- a/lib/util/charset/iconv.c
 +++ b/lib/util/charset/iconv.c
-@@ -33,6 +33,10 @@
+@@ -31,6 +31,10 @@
  #include <unicode/utrans.h>
  #endif
  
@@ -11,7 +11,7 @@
  #ifdef strcasecmp
  #undef strcasecmp
  #endif
-@@ -756,6 +756,19 @@
+@@ -755,6 +755,19 @@
  	return 0;
  }
  
