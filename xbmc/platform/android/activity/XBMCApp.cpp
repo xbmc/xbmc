@@ -110,7 +110,6 @@ using namespace std::chrono_literals;
 
 std::unique_ptr<CXBMCApp> CXBMCApp::m_appinstance;
 
-std::unique_ptr<CJNIXBMCMainView> CXBMCApp::m_mainView;
 CVideoSyncAndroid* CXBMCApp::m_syncImpl = NULL;
 CEvent CXBMCApp::m_vsyncEvent;
 
@@ -1437,10 +1436,7 @@ std::string CXBMCApp::GetFilenameFromIntent(const CJNIIntent &intent)
 
 ANativeWindow* CXBMCApp::GetNativeWindow(int timeout)
 {
-  if (m_window)
-    return m_window;
-
-  if (m_mainView)
+  if (!m_window)
     m_mainView->waitForSurface(timeout);
 
   return m_window;
