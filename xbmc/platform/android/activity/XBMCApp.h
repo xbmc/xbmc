@@ -195,13 +195,13 @@ public:
   void UnregisterInputDeviceEventHandler();
   bool onInputDeviceEvent(const AInputEvent* event);
 
-  static void InitFrameCallback(CVideoSyncAndroid *syncImpl);
-  static void DeinitFrameCallback();
+  void InitFrameCallback(CVideoSyncAndroid* syncImpl);
+  void DeinitFrameCallback();
 
   // Application slow ping
   void ProcessSlow();
 
-  static bool WaitVSync(unsigned int milliSeconds);
+  bool WaitVSync(unsigned int milliSeconds);
   int64_t GetNextFrameTime() const;
   float GetFrameLatencyMs() const;
 
@@ -259,8 +259,8 @@ private:
 
   ANativeWindow* m_window{nullptr};
 
-  static CVideoSyncAndroid* m_syncImpl;
-  static CEvent m_vsyncEvent;
+  CVideoSyncAndroid* m_syncImpl{nullptr};
+  CEvent m_vsyncEvent;
   CEvent m_displayChangeEvent;
 
   std::unique_ptr<CJNIActivityManager> m_activityManager;

@@ -110,9 +110,6 @@ using namespace std::chrono_literals;
 
 std::unique_ptr<CXBMCApp> CXBMCApp::m_appinstance;
 
-CVideoSyncAndroid* CXBMCApp::m_syncImpl = NULL;
-CEvent CXBMCApp::m_vsyncEvent;
-
 uint32_t CXBMCApp::m_playback_state = PLAYBACK_STATE_STOPPED;
 
 CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity, IInputHandler& inputHandler)
@@ -1299,7 +1296,7 @@ void CXBMCApp::InitFrameCallback(CVideoSyncAndroid* syncImpl)
 
 void CXBMCApp::DeinitFrameCallback()
 {
-  m_syncImpl = NULL;
+  m_syncImpl = nullptr;
 }
 
 void CXBMCApp::doFrame(int64_t frameTimeNanos)
