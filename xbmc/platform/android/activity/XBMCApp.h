@@ -216,7 +216,7 @@ protected:
   static int GetMaxSystemVolume(JNIEnv *env);
   bool AcquireAudioFocus();
   bool ReleaseAudioFocus();
-  static void RequestVisibleBehind(bool requested);
+  void RequestVisibleBehind(bool requested);
 
 private:
   static std::unique_ptr<CXBMCApp> m_appinstance;
@@ -246,7 +246,7 @@ private:
   bool m_hdmiSource{false};
   IInputDeviceCallbacks* m_inputDeviceCallbacks{nullptr};
   IInputDeviceEventHandler* m_inputDeviceEventHandler{nullptr};
-  static bool m_hasReqVisible;
+  bool m_hasReqVisible{false};
   bool m_firstrun;
   std::atomic<bool> m_exiting{false};
   int m_exitCode{0};
