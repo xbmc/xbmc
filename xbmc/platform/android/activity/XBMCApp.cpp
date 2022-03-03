@@ -114,10 +114,8 @@ std::unique_ptr<CJNIXBMCMainView> CXBMCApp::m_mainView;
 IInputDeviceCallbacks* CXBMCApp::m_inputDeviceCallbacks = nullptr;
 IInputDeviceEventHandler* CXBMCApp::m_inputDeviceEventHandler = nullptr;
 bool CXBMCApp::m_hasReqVisible = false;
-CCriticalSection CXBMCApp::m_activityResultMutex;
 CVideoSyncAndroid* CXBMCApp::m_syncImpl = NULL;
 CEvent CXBMCApp::m_vsyncEvent;
-std::vector<CActivityResultEvent*> CXBMCApp::m_activityResultEvents;
 
 uint32_t CXBMCApp::m_playback_state = PLAYBACK_STATE_STOPPED;
 
@@ -1250,7 +1248,7 @@ int CXBMCApp::WaitForActivityResult(const CJNIIntent &intent, int requestCode, C
   CActivityResultEvent* event = new CActivityResultEvent(requestCode);
   {
     std::unique_lock<CCriticalSection> lock(m_activityResultMutex);
-    m_activityResultEvents.push_back(event);
+    m_activityResultEvents.emplace_back(event);
   }
   startActivityForResult(intent, requestCode);
   if (event->Wait())
