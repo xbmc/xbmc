@@ -833,11 +833,6 @@ std::vector<androidPackage> CXBMCApp::GetApplications() const
   return m_applications;
 }
 
-bool CXBMCApp::HasLaunchIntent(const std::string &package)
-{
-  return GetPackageManager().getLaunchIntentForPackage(package) != NULL;
-}
-
 // Note intent, dataType, dataURI all default to ""
 bool CXBMCApp::StartActivity(const std::string &package, const std::string &intent, const std::string &dataType, const std::string &dataURI)
 {
