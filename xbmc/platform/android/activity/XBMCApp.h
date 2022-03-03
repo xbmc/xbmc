@@ -174,7 +174,7 @@ public:
   int GetDPI() const;
 
   CRect MapRenderToDroid(const CRect& srcRect);
-  static int WaitForActivityResult(const CJNIIntent &intent, int requestCode, CJNIIntent& result);
+  int WaitForActivityResult(const CJNIIntent& intent, int requestCode, CJNIIntent& result);
 
   // Playback callbacks
   void OnPlayBackStarted();
@@ -253,9 +253,9 @@ private:
   bool m_bResumePlayback = false;
   std::thread m_thread;
   mutable CCriticalSection m_applicationsMutex;
-  static CCriticalSection m_activityResultMutex;
   mutable std::vector<androidPackage> m_applications;
-  static std::vector<CActivityResultEvent*> m_activityResultEvents;
+  CCriticalSection m_activityResultMutex;
+  std::vector<CActivityResultEvent*> m_activityResultEvents;
 
   ANativeWindow* m_window{nullptr};
 
