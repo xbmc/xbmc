@@ -1,6 +1,6 @@
 --- a/lib/util/become_daemon.c
 +++ b/lib/util/become_daemon.c
-@@ -68,7 +68,7 @@
+@@ -53,7 +53,7 @@
  {
  	pid_t newpid;
  	if (do_fork) {
@@ -11,9 +11,9 @@
  		}
 --- a/lib/util/fault.c
 +++ b/lib/util/fault.c
-@@ -137,7 +137,7 @@
- 			snprintf(pidstr, sizeof(pidstr), "%d", (int) getpid());
- 			all_string_sub(cmdstring, "%d", pidstr, sizeof(cmdstring));
+@@ -150,7 +150,7 @@
+ 			}
+ 
  			DEBUG(0, ("smb_panic(): calling panic action [%s]\n", cmdstring));
 -			result = system(cmdstring);
 +			result = -1;
@@ -62,7 +62,7 @@
  		_exit(0);
 --- a/lib/util/util_runcmd.c
 +++ b/lib/util/util_runcmd.c
-@@ -258,7 +258,6 @@
+@@ -261,7 +261,6 @@
  	}
  	va_end(ap);
  
@@ -83,7 +83,7 @@
  		close(fds[0]);
 --- a/source3/lib/server_prefork.c
 +++ b/source3/lib/server_prefork.c
-@@ -106,7 +106,7 @@
+@@ -109,7 +109,7 @@
  		pfp->pool[i].allowed_clients = 1;
  		pfp->pool[i].started = now;
  
@@ -92,7 +92,7 @@
  		switch (pid) {
  		case -1:
  			DEBUG(1, ("Failed to prefork child n. %d !\n", i));
-@@ -194,7 +194,7 @@
+@@ -199,7 +199,7 @@
  		pfp->pool[i].allowed_clients = 1;
  		pfp->pool[i].started = now;
  
@@ -148,7 +148,7 @@
  	return 1;
 --- a/source3/lib/util.c
 +++ b/source3/lib/util.c
-@@ -840,7 +840,7 @@
+@@ -695,7 +695,7 @@
  	cmd = lp_panic_action(talloc_tos(), lp_sub);
  	if (cmd && *cmd) {
  		DEBUG(0, ("smb_panic(): calling panic action [%s]\n", cmd));
@@ -206,7 +206,7 @@
  	return wait_for_process_timed(pid, func, ptr, timeout);
 --- a/source4/libcli/resolve/dns_ex.c
 +++ b/source4/libcli/resolve/dns_ex.c
-@@ -612,7 +612,7 @@
+@@ -620,7 +620,7 @@
  	}
  	tevent_fd_set_auto_close(state->fde);
  
