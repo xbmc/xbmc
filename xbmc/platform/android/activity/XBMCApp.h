@@ -155,7 +155,7 @@ public:
   bool HasFocus() const { return m_hasFocus; }
 
   static bool StartActivity(const std::string &package, const std::string &intent = std::string(), const std::string &dataType = std::string(), const std::string &dataURI = std::string());
-  static std::vector <androidPackage> GetApplications();
+  std::vector<androidPackage> GetApplications() const;
 
   /*!
    * \brief If external storage is available, it returns the path for the external storage (for the specified type)
@@ -253,9 +253,9 @@ private:
   int m_exitCode{0};
   bool m_bResumePlayback = false;
   std::thread m_thread;
-  static CCriticalSection m_applicationsMutex;
+  mutable CCriticalSection m_applicationsMutex;
   static CCriticalSection m_activityResultMutex;
-  static std::vector<androidPackage> m_applications;
+  mutable std::vector<androidPackage> m_applications;
   static std::vector<CActivityResultEvent*> m_activityResultEvents;
 
   ANativeWindow* m_window{nullptr};
