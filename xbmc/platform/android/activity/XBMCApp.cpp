@@ -667,7 +667,7 @@ CRect CXBMCApp::MapRenderToDroid(const CRect& srcRect)
   float scaleX = 1.0;
   float scaleY = 1.0;
 
-  CJNIRect r = CXBMCApp::Get().getDisplayRect();
+  CJNIRect r = getDisplayRect();
   if (r.width() && r.height())
   {
     RESOLUTION_INFO renderRes = CDisplaySettings::GetInstance().GetResolutionInfo(CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution());

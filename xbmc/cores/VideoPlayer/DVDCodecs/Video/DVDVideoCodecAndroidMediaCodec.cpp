@@ -238,7 +238,7 @@ void CMediaCodecVideoBuffer::RenderUpdate(const CRect &DestRect, int64_t display
   CRect surfRect = m_videoview->getSurfaceRect();
   if (DestRect != surfRect)
   {
-    CRect adjRect = CXBMCApp::MapRenderToDroid(DestRect);
+    CRect adjRect = CXBMCApp::Get().MapRenderToDroid(DestRect);
     if (adjRect != surfRect)
     {
       m_videoview->setSurfaceRect(adjRect);
