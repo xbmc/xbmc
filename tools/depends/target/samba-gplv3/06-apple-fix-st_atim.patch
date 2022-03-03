@@ -1,48 +1,30 @@
 --- a/source3/libsmb/libsmb_stat.c
 +++ b/source3/libsmb/libsmb_stat.c
-@@ -102,18 +102,18 @@ void setup_stat(struct stat *st,
- 	}
-
- 	st->st_dev = dev;
--	st->st_atim = access_time_ts;
--	st->st_ctim = change_time_ts;
--	st->st_mtim = write_time_ts;
-+	st->st_atimespec = access_time_ts;
-+	st->st_ctimespec = change_time_ts;
-+	st->st_mtimespec = write_time_ts;
- }
-
- void setup_stat_from_stat_ex(const struct stat_ex *stex,
- 			     const char *fname,
- 			     struct stat *st)
- {
--	st->st_atim = stex->st_ex_atime;
--	st->st_ctim = stex->st_ex_ctime;
--	st->st_mtim = stex->st_ex_mtime;
-+	st->st_atimespec = stex->st_ex_atime;
-+	st->st_ctimespec = stex->st_ex_ctime;
-+	st->st_mtimespec = stex->st_ex_mtime;
-
- 	st->st_mode = stex->st_ex_mode;
- 	st->st_size = stex->st_ex_size;
+@@ -29,6 +29,12 @@
+ #include "../libcli/smb/smbXcli_base.h"
+ #include "lib/util/time.h"
+ 
++#if defined(__APPLE__)
++#define st_atim st_atimespec
++#define st_ctim st_ctimespec
++#define st_mtim st_mtimespec
++#endif
++
+ /*
+  * Generate an inode number from file name for those things that need it
+  */
 --- a/source4/torture/libsmbclient/libsmbclient.c
 +++ b/source4/torture/libsmbclient/libsmbclient.c
-@@ -1231,8 +1231,8 @@ static bool torture_libsmbclient_utimes(struct torture_context *tctx)
- 	ret = smbc_fstat(fhandle, &st);
- 	torture_assert_int_not_equal(tctx, ret, -1, "smbc_fstat failed");
-
--	tbuf[0] = convert_timespec_to_timeval(st.st_atim);
--	tbuf[1] = convert_timespec_to_timeval(st.st_mtim);
-+	tbuf[0] = convert_timespec_to_timeval(st.st_atimespec);
-+	tbuf[1] = convert_timespec_to_timeval(st.st_mtimespec);
-
- 	tbuf[1] = timeval_add(&tbuf[1], 0, 100000); /* 100 msec */
-
-@@ -1244,7 +1244,7 @@ static bool torture_libsmbclient_utimes(struct torture_context *tctx)
-
- 	torture_assert_int_equal(
- 		tctx,
--		st.st_mtim.tv_nsec / 1000,
-+		st.st_mtimespec.tv_nsec / 1000,
- 		tbuf[1].tv_usec,
- 		"smbc_utimes did not update msec");
+@@ -30,6 +30,12 @@
+ #include "dynconfig.h"
+ #include "lib/util/time.h"
+ 
++#if defined(__APPLE__)
++#define st_atim st_atimespec
++#define st_ctim st_ctimespec
++#define st_mtim st_mtimespec
++#endif
++
+ /* test string to compare with when debug_callback is called */
+ #define TEST_STRING "smbc_setLogCallback test"
+ 

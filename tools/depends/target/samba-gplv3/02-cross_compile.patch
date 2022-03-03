@@ -1,6 +1,6 @@
 --- a/buildtools/wafsamba/samba_autoconf.py
 +++ b/buildtools/wafsamba/samba_autoconf.py
-@@ -318,7 +318,7 @@
+@@ -320,7 +320,7 @@
  
  
  @conf
@@ -9,7 +9,7 @@
      '''check the size of a type'''
      for v in TO_LIST(vars):
          v_define = define
-@@ -331,6 +331,7 @@
+@@ -333,6 +333,7 @@
                        define=v_define,
                        quote=False,
                        headers=headers,
@@ -17,7 +17,7 @@
                        local_include=False,
                        msg="Checking if size of %s == %d" % (v, size)):
                  conf.DEFINE(v_define, size)
-@@ -841,7 +841,6 @@
+@@ -843,7 +844,6 @@
      for key in conf.env.define_key:
          conf.undefine(key, from_env=False)
      conf.env.define_key = []
@@ -68,7 +68,7 @@
      return False
 --- a/buildtools/wafsamba/wscript
 +++ b/buildtools/wafsamba/wscript
-@@ -314,7 +314,7 @@
+@@ -317,7 +317,7 @@
      conf.CHECK_CODE('printf("hello world")',
                      define='HAVE_SIMPLE_C_PROG',
                      mandatory=True,
@@ -79,7 +79,7 @@
  
 --- a/lib/replace/wscript
 +++ b/lib/replace/wscript
-@@ -37,6 +37,7 @@
+@@ -41,6 +41,7 @@
      conf.CHECK_HEADERS('linux/types.h crypt.h locale.h acl/libacl.h compat.h')
      conf.CHECK_HEADERS('acl/libacl.h attr/xattr.h compat.h ctype.h dustat.h')
      conf.CHECK_HEADERS('fcntl.h fnmatch.h glob.h history.h krb5.h langinfo.h')
@@ -87,7 +87,7 @@
      conf.CHECK_HEADERS('locale.h ndir.h pwd.h')
      conf.CHECK_HEADERS('shadow.h sys/acl.h')
      conf.CHECK_HEADERS('sys/attributes.h attr/attributes.h sys/capability.h sys/dir.h sys/epoll.h')
-@@ -692,7 +692,7 @@
+@@ -692,7 +693,7 @@
      conf.CHECK_CODE('''#define LIBREPLACE_CONFIGURE_TEST_STRPTIME
                         #include "tests/strptime.c"''',
                         define='HAVE_WORKING_STRPTIME',
@@ -96,7 +96,7 @@
                         addmain=False,
                         msg='Checking for working strptime')
  
-@@ -707,7 +707,7 @@
+@@ -707,7 +708,7 @@
  
      conf.CHECK_CODE('#include "tests/snprintf.c"',
                      define="HAVE_C99_VSNPRINTF",
@@ -105,7 +105,7 @@
                      addmain=False,
                      msg="Checking for C99 vsnprintf")
  
-@@ -804,7 +804,7 @@
+@@ -802,7 +803,7 @@
                      exit(0);
                      ''',
                      define='HAVE_SECURE_MKSTEMP',
@@ -114,7 +114,7 @@
                      mandatory=True) # lets see if we get a mandatory failure for this one
  
      # look for a method of finding the list of network interfaces
-@@ -816,6 +816,7 @@
+@@ -814,6 +815,7 @@
                             #define %s 1
                             #define NO_CONFIG_H 1
                             #define AUTOCONF_TEST 1
@@ -122,7 +122,7 @@
                             #include "replace.c"
                             #include "inet_ntop.c"
                             #include "snprintf.c"
-@@ -826,7 +826,7 @@
+@@ -824,7 +826,7 @@
                             method,
                             lib='nsl socket' + bsd_for_strlcpy,
                             addmain=False,
@@ -142,9 +142,9 @@
 +            conf.DEFINE('HAVE_ETHTOOL', 1)
 --- a/source3/lib/util.c
 +++ b/source3/lib/util.c
-@@ -82,6 +82,10 @@
- #endif /* WITH_NISPLUS_HOME */
- #endif /* HAVE_NETGROUP && WITH_AUTOMOUNT */
+@@ -51,6 +51,10 @@
+ /* Max allowable allococation - 256mb - 0x10000000 */
+ #define MAX_ALLOC_SIZE (1024*1024*256)
  
 +#ifndef YPERR_KEY
 +#define YPERR_KEY 5
@@ -155,7 +155,7 @@
  enum protocol_types get_Protocol(void)
 --- a/source3/wscript
 +++ b/source3/wscript
-@@ -159,7 +159,7 @@
+@@ -156,7 +156,7 @@
  
      # Check for inotify support (Skip if we are SunOS)
      #NOTE: illumos provides sys/inotify.h but is not an exact match for linux
@@ -164,7 +164,7 @@
      if host_os.rfind('sunos') == -1:
          conf.CHECK_HEADERS('sys/inotify.h')
          if conf.env.HAVE_SYS_INOTIFY_H:
-@@ -481,8 +481,8 @@
+@@ -455,8 +455,8 @@
  
      # FIXME: these should be tests for features, but the old build system just
      # checks for OSes.
@@ -175,7 +175,7 @@
  
      # Python doesn't have case switches... :/
      # FIXME: original was *linux* | gnu* | k*bsd*-gnu | kopensolaris*-gnu | *qnx*)
-@@ -1057,7 +1057,7 @@
+@@ -1027,7 +1027,7 @@
                                  ''',
                                  'USE_SETREUID',
                                  addmain=False,
@@ -184,7 +184,7 @@
                                  msg="Checking whether setreuid is available")
      if not seteuid:
          seteuid = conf.CHECK_CODE('''
-@@ -1123,7 +1123,7 @@
+@@ -1088,7 +1088,7 @@
  ''',
                  'HAVE_FCNTL_LOCK',
                  addmain=False,
@@ -257,7 +257,7 @@
  	/*@*/;
 --- a/wscript
 +++ b/wscript
-@@ -182,7 +182,7 @@
+@@ -175,7 +175,7 @@
      conf.SAMBA_CHECK_PYTHON()
      conf.SAMBA_CHECK_PYTHON_HEADERS()
  
@@ -266,7 +266,7 @@
          # Mac OSX needs to have this and it's also needed that the python is compiled with this
          # otherwise you face errors about common symbols
          if not conf.CHECK_SHLIB_W_PYTHON("Checking if -fno-common is needed"):
-@@ -190,7 +190,7 @@
+@@ -183,7 +183,7 @@
          if not conf.CHECK_SHLIB_W_PYTHON("Checking if -undefined dynamic_lookup is not need"):
              conf.env.append_value('cshlib_LINKFLAGS', ['-undefined', 'dynamic_lookup'])
  
@@ -277,7 +277,7 @@
      conf.RECURSE('dynconfig')
 --- a/wscript_configure_embedded_heimdal
 +++ b/wscript_configure_embedded_heimdal
-@@ -1 +1,10 @@
+@@ -8 +8,10 @@
  conf.RECURSE('source4/heimdal_build')
 +
 +def check_system_heimdal_binary(name):
