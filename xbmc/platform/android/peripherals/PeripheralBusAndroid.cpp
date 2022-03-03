@@ -42,10 +42,10 @@ CPeripheralBusAndroid::CPeripheralBusAndroid(CPeripherals& manager) :
   m_bNeedsPolling = false;
 
   // register for input device callbacks
-  CXBMCApp::RegisterInputDeviceCallbacks(this);
+  CXBMCApp::Get().RegisterInputDeviceCallbacks(this);
 
   // register for input device events
-  CXBMCApp::RegisterInputDeviceEventHandler(this);
+  CXBMCApp::Get().RegisterInputDeviceEventHandler(this);
 
   // get all currently connected input devices
   m_scanResults = GetInputDevices();
@@ -54,10 +54,10 @@ CPeripheralBusAndroid::CPeripheralBusAndroid(CPeripherals& manager) :
 CPeripheralBusAndroid::~CPeripheralBusAndroid()
 {
   // unregister from input device events
-  CXBMCApp::UnregisterInputDeviceEventHandler();
+  CXBMCApp::Get().UnregisterInputDeviceEventHandler();
 
   // unregister from input device callbacks
-  CXBMCApp::UnregisterInputDeviceCallbacks();
+  CXBMCApp::Get().UnregisterInputDeviceCallbacks();
 }
 
 bool CPeripheralBusAndroid::InitializeProperties(CPeripheral& peripheral)

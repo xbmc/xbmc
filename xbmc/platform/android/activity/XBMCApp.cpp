@@ -111,8 +111,6 @@ using namespace std::chrono_literals;
 std::unique_ptr<CXBMCApp> CXBMCApp::m_appinstance;
 
 std::unique_ptr<CJNIXBMCMainView> CXBMCApp::m_mainView;
-IInputDeviceCallbacks* CXBMCApp::m_inputDeviceCallbacks = nullptr;
-IInputDeviceEventHandler* CXBMCApp::m_inputDeviceEventHandler = nullptr;
 bool CXBMCApp::m_hasReqVisible = false;
 CVideoSyncAndroid* CXBMCApp::m_syncImpl = NULL;
 CEvent CXBMCApp::m_vsyncEvent;
@@ -1451,10 +1449,8 @@ ANativeWindow* CXBMCApp::GetNativeWindow(int timeout)
 
 void CXBMCApp::RegisterInputDeviceCallbacks(IInputDeviceCallbacks* handler)
 {
-  if (handler == nullptr)
-    return;
-
-  m_inputDeviceCallbacks = handler;
+  if (handler != nullptr)
+    m_inputDeviceCallbacks = handler;
 }
 
 void CXBMCApp::UnregisterInputDeviceCallbacks()
@@ -1464,7 +1460,7 @@ void CXBMCApp::UnregisterInputDeviceCallbacks()
 
 void CXBMCApp::onInputDeviceAdded(int deviceId)
 {
-  CXBMCApp::android_printf("Input device added: %d", deviceId);
+  android_printf("Input device added: %d", deviceId);
 
   if (m_inputDeviceCallbacks != nullptr)
     m_inputDeviceCallbacks->OnInputDeviceAdded(deviceId);
@@ -1472,7 +1468,7 @@ void CXBMCApp::onInputDeviceAdded(int deviceId)
 
 void CXBMCApp::onInputDeviceChanged(int deviceId)
 {
-  CXBMCApp::android_printf("Input device changed: %d", deviceId);
+  android_printf("Input device changed: %d", deviceId);
 
   if (m_inputDeviceCallbacks != nullptr)
     m_inputDeviceCallbacks->OnInputDeviceChanged(deviceId);
@@ -1480,7 +1476,7 @@ void CXBMCApp::onInputDeviceChanged(int deviceId)
 
 void CXBMCApp::onInputDeviceRemoved(int deviceId)
 {
-  CXBMCApp::android_printf("Input device removed: %d", deviceId);
+  android_printf("Input device removed: %d", deviceId);
 
   if (m_inputDeviceCallbacks != nullptr)
     m_inputDeviceCallbacks->OnInputDeviceRemoved(deviceId);
@@ -1488,10 +1484,8 @@ void CXBMCApp::onInputDeviceRemoved(int deviceId)
 
 void CXBMCApp::RegisterInputDeviceEventHandler(IInputDeviceEventHandler* handler)
 {
-  if (handler == nullptr)
-    return;
-
-  m_inputDeviceEventHandler = handler;
+  if (handler != nullptr)
+    m_inputDeviceEventHandler = handler;
 }
 
 void CXBMCApp::UnregisterInputDeviceEventHandler()

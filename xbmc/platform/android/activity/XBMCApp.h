@@ -186,14 +186,14 @@ public:
   void UpdateSessionState();
 
   // input device methods
-  static void RegisterInputDeviceCallbacks(IInputDeviceCallbacks* handler);
-  static void UnregisterInputDeviceCallbacks();
+  void RegisterInputDeviceCallbacks(IInputDeviceCallbacks* handler);
+  void UnregisterInputDeviceCallbacks();
   static const CJNIViewInputDevice GetInputDevice(int deviceId);
   static std::vector<int> GetInputDeviceIds();
 
-  static void RegisterInputDeviceEventHandler(IInputDeviceEventHandler* handler);
-  static void UnregisterInputDeviceEventHandler();
-  static bool onInputDeviceEvent(const AInputEvent* event);
+  void RegisterInputDeviceEventHandler(IInputDeviceEventHandler* handler);
+  void UnregisterInputDeviceEventHandler();
+  bool onInputDeviceEvent(const AInputEvent* event);
 
   static void InitFrameCallback(CVideoSyncAndroid *syncImpl);
   static void DeinitFrameCallback();
@@ -244,8 +244,8 @@ private:
   bool m_hasFocus{false};
   bool m_headsetPlugged{false};
   bool m_hdmiSource{false};
-  static IInputDeviceCallbacks* m_inputDeviceCallbacks;
-  static IInputDeviceEventHandler* m_inputDeviceEventHandler;
+  IInputDeviceCallbacks* m_inputDeviceCallbacks{nullptr};
+  IInputDeviceEventHandler* m_inputDeviceEventHandler{nullptr};
   static bool m_hasReqVisible;
   bool m_firstrun;
   std::atomic<bool> m_exiting{false};
