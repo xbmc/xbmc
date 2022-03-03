@@ -113,18 +113,13 @@ std::unique_ptr<CXBMCApp> CXBMCApp::m_appinstance;
 
 std::unique_ptr<CJNIXBMCMainView> CXBMCApp::m_mainView;
 ANativeActivity *CXBMCApp::m_activity = NULL;
-bool CXBMCApp::m_hdmiSource = false;
 IInputDeviceCallbacks* CXBMCApp::m_inputDeviceCallbacks = nullptr;
 IInputDeviceEventHandler* CXBMCApp::m_inputDeviceEventHandler = nullptr;
 bool CXBMCApp::m_hasReqVisible = false;
 CCriticalSection CXBMCApp::m_activityResultMutex;
 CVideoSyncAndroid* CXBMCApp::m_syncImpl = NULL;
 CEvent CXBMCApp::m_vsyncEvent;
-CEvent CXBMCApp::m_displayChangeEvent;
 std::vector<CActivityResultEvent*> CXBMCApp::m_activityResultEvents;
-
-int64_t CXBMCApp::m_frameTimeNanos = 0;
-float CXBMCApp::m_refreshRate = 0.0f;
 
 uint32_t CXBMCApp::m_playback_state = PLAYBACK_STATE_STOPPED;
 
@@ -561,7 +556,7 @@ void CXBMCApp::SetRefreshRateCallback(CVariant* rateVariant)
       }
     }
   }
-  m_displayChangeEvent.Set();
+  CXBMCApp::Get().m_displayChangeEvent.Set();
 }
 
 void CXBMCApp::SetDisplayModeCallback(CVariant* variant)
@@ -582,7 +577,7 @@ void CXBMCApp::SetDisplayModeCallback(CVariant* variant)
       return;
     }
   }
-  m_displayChangeEvent.Set();
+  CXBMCApp::Get().m_displayChangeEvent.Set();
 }
 
 void CXBMCApp::SetRefreshRate(float rate)
@@ -1314,7 +1309,7 @@ void CXBMCApp::doFrame(int64_t frameTimeNanos)
   m_vsyncEvent.Set();
 }
 
-int64_t CXBMCApp::GetNextFrameTime()
+int64_t CXBMCApp::GetNextFrameTime() const
 {
   if (m_refreshRate > 0.0001f)
     return m_frameTimeNanos + static_cast<int64_t>(1500000000ll / m_refreshRate);
@@ -1322,7 +1317,7 @@ int64_t CXBMCApp::GetNextFrameTime()
     return m_frameTimeNanos;
 }
 
-float CXBMCApp::GetFrameLatencyMs()
+float CXBMCApp::GetFrameLatencyMs() const
 {
   return (CurrentHostCounter() - m_frameTimeNanos) * 0.000001;
 }

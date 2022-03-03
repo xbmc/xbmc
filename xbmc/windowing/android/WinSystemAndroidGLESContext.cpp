@@ -142,7 +142,7 @@ void CWinSystemAndroidGLESContext::PresentRenderImpl(bool rendered)
 
 float CWinSystemAndroidGLESContext::GetFrameLatencyAdjustment()
 {
-  return CXBMCApp::GetFrameLatencyMs();
+  return CXBMCApp::Get().GetFrameLatencyMs();
 }
 
 EGLDisplay CWinSystemAndroidGLESContext::GetEGLDisplay() const

@@ -169,8 +169,8 @@ public:
   static float GetSystemVolume();
   static void SetSystemVolume(float percent);
 
-  static void SetRefreshRate(float rate);
-  static void SetDisplayMode(int mode, float rate);
+  void SetRefreshRate(float rate);
+  void SetDisplayMode(int mode, float rate);
   static int GetDPI();
 
   static CRect MapRenderToDroid(const CRect& srcRect);
@@ -202,8 +202,8 @@ public:
   void ProcessSlow();
 
   static bool WaitVSync(unsigned int milliSeconds);
-  static int64_t GetNextFrameTime();
-  static float GetFrameLatencyMs();
+  int64_t GetNextFrameTime() const;
+  float GetFrameLatencyMs() const;
 
   bool getVideosurfaceInUse();
   void setVideosurfaceInUse(bool videosurfaceInUse);
@@ -243,8 +243,7 @@ private:
   int m_batteryLevel{0};
   bool m_hasFocus{false};
   bool m_headsetPlugged{false};
-  static bool m_hdmiReportedState;
-  static bool m_hdmiSource;
+  bool m_hdmiSource{false};
   static IInputDeviceCallbacks* m_inputDeviceCallbacks;
   static IInputDeviceEventHandler* m_inputDeviceEventHandler;
   static bool m_hasReqVisible;
@@ -262,7 +261,7 @@ private:
 
   static CVideoSyncAndroid* m_syncImpl;
   static CEvent m_vsyncEvent;
-  static CEvent m_displayChangeEvent;
+  CEvent m_displayChangeEvent;
 
   std::unique_ptr<CJNIActivityManager> m_activityManager;
 
@@ -270,8 +269,8 @@ private:
   bool XBMC_SetupDisplay();
 
   static uint32_t m_playback_state;
-  static int64_t m_frameTimeNanos;
-  static float m_refreshRate;
+  int64_t m_frameTimeNanos{0};
+  float m_refreshRate{0.0f};
 
 public:
   // CJNISurfaceHolderCallback interface
