@@ -112,7 +112,6 @@ std::unique_ptr<CXBMCApp> CXBMCApp::m_appinstance;
 
 std::unique_ptr<CJNIXBMCMainView> CXBMCApp::m_mainView;
 ANativeActivity *CXBMCApp::m_activity = NULL;
-bool CXBMCApp::m_hdmiPlugged = true;
 bool CXBMCApp::m_hdmiSource = false;
 IInputDeviceCallbacks* CXBMCApp::m_inputDeviceCallbacks = nullptr;
 IInputDeviceEventHandler* CXBMCApp::m_inputDeviceEventHandler = nullptr;
@@ -502,11 +501,6 @@ void CXBMCApp::RequestVisibleBehind(bool requested)
 
   m_hasReqVisible = requestVisibleBehind(requested);
   CLog::Log(LOGDEBUG, "Visible Behind request: {}", m_hasReqVisible ? "true" : "false");
-}
-
-bool CXBMCApp::IsHDMIPlugged()
-{
-  return m_hdmiPlugged;
 }
 
 void CXBMCApp::run()
@@ -1076,13 +1070,13 @@ void CXBMCApp::onReceive(CJNIIntent intent)
   }
   else if (action == "android.media.action.HDMI_AUDIO_PLUG")
   {
-    m_hdmiPlugged = (intent.getIntExtra("android.media.extra.AUDIO_PLUG_STATE", 0) != 0);
-    CLog::Log(LOGDEBUG, "-- HDMI state: {}", m_hdmiPlugged ? "on" : "off");
+    const bool hdmiPlugged = (intent.getIntExtra("android.media.extra.AUDIO_PLUG_STATE", 0) != 0);
+    CLog::Log(LOGDEBUG, "-- HDMI is plugged in: {}", hdmiPlugged);
     if (m_hdmiSource && g_application.IsInitialized())
     {
       CWinSystemBase* winSystem = CServiceBroker::GetWinSystem();
       if (winSystem && dynamic_cast<CWinSystemAndroid*>(winSystem))
-        dynamic_cast<CWinSystemAndroid*>(winSystem)->SetHdmiState(m_hdmiPlugged);
+        dynamic_cast<CWinSystemAndroid*>(winSystem)->SetHdmiState(hdmiPlugged);
     }
   }
   else if (action == "android.intent.action.SCREEN_ON")
