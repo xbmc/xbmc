@@ -111,7 +111,6 @@ using namespace std::chrono_literals;
 std::unique_ptr<CXBMCApp> CXBMCApp::m_appinstance;
 
 std::unique_ptr<CJNIXBMCMainView> CXBMCApp::m_mainView;
-ANativeActivity *CXBMCApp::m_activity = NULL;
 IInputDeviceCallbacks* CXBMCApp::m_inputDeviceCallbacks = nullptr;
 IInputDeviceEventHandler* CXBMCApp::m_inputDeviceEventHandler = nullptr;
 bool CXBMCApp::m_hasReqVisible = false;
@@ -128,7 +127,7 @@ CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity, IInputHandler& inputHandler)
     m_inputHandler(inputHandler)
 {
   m_activity = nativeActivity;
-  if (m_activity == NULL)
+  if (m_activity == nullptr)
   {
     android_printf("CXBMCApp: invalid ANativeActivity instance");
     exit(1);
@@ -648,9 +647,9 @@ int CXBMCApp::android_printf(const char *format, ...)
   return result;
 }
 
-int CXBMCApp::GetDPI()
+int CXBMCApp::GetDPI() const
 {
-  if (m_activity == NULL || m_activity->assetManager == NULL)
+  if (m_activity->assetManager == nullptr)
     return 0;
 
   // grab DPI from the current configuration - this is approximate
