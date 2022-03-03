@@ -29,7 +29,7 @@ bool CVideoSyncAndroid::Setup(PUPDATECLOCK func)
   UpdateClock = func;
   m_abortEvent.Reset();
 
-  CXBMCApp::InitFrameCallback(this);
+  CXBMCApp::Get().InitFrameCallback(this);
   CServiceBroker::GetWinSystem()->Register(this);
 
   return true;
@@ -44,7 +44,7 @@ void CVideoSyncAndroid::Run(CEvent& stopEvent)
 void CVideoSyncAndroid::Cleanup()
 {
   CLog::Log(LOGDEBUG, "CVideoSyncAndroid::{} cleaning up", __FUNCTION__);
-  CXBMCApp::DeinitFrameCallback();
+  CXBMCApp::Get().DeinitFrameCallback();
   CServiceBroker::GetWinSystem()->Unregister(this);
 }
 
