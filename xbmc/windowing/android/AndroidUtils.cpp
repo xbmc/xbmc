@@ -219,7 +219,8 @@ CAndroidUtils::CAndroidUtils()
 
 bool CAndroidUtils::GetNativeResolution(RESOLUTION_INFO* res) const
 {
-  EGLNativeWindowType nativeWindow = (EGLNativeWindowType)CXBMCApp::GetNativeWindow(30000);
+  EGLNativeWindowType nativeWindow =
+      static_cast<EGLNativeWindowType>(CXBMCApp::Get().GetNativeWindow(30000));
   if (!nativeWindow)
     return false;
 
@@ -271,7 +272,8 @@ bool CAndroidUtils::SetNativeResolution(const RESOLUTION_INFO& res)
   }
   else
     CXBMCApp::SetRefreshRate(res.fRefreshRate);
-  CXBMCApp::SetBuffersGeometry(res.iWidth, res.iHeight, 0);
+
+  CXBMCApp::Get().SetBuffersGeometry(res.iWidth, res.iHeight, 0);
 
   return true;
 }
