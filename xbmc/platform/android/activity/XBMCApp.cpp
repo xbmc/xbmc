@@ -112,7 +112,6 @@ std::unique_ptr<CXBMCApp> CXBMCApp::m_appinstance;
 
 std::unique_ptr<CJNIXBMCMainView> CXBMCApp::m_mainView;
 ANativeActivity *CXBMCApp::m_activity = NULL;
-bool CXBMCApp::m_hasFocus = false;
 bool CXBMCApp::m_headsetPlugged = false;
 bool CXBMCApp::m_hdmiPlugged = true;
 bool CXBMCApp::m_hdmiSource = false;

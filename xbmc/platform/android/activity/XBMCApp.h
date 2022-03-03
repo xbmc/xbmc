@@ -152,7 +152,7 @@ public:
 
   int GetBatteryLevel() const;
   bool EnableWakeLock(bool on);
-  static bool HasFocus() { return m_hasFocus; }
+  bool HasFocus() const { return m_hasFocus; }
   static bool IsHeadsetPlugged();
   static bool IsHDMIPlugged();
 
@@ -243,7 +243,7 @@ private:
   IInputHandler& m_inputHandler;
   std::unique_ptr<CJNIWakeLock> m_wakeLock;
   int m_batteryLevel{0};
-  static bool m_hasFocus;
+  bool m_hasFocus{false};
   static bool m_headsetPlugged;
   static bool m_hdmiPlugged;
   static bool m_hdmiReportedState;
