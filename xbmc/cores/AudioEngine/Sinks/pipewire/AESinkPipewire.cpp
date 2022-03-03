@@ -15,6 +15,7 @@
 #include "cores/AudioEngine/Sinks/pipewire/PipewireNode.h"
 #include "cores/AudioEngine/Sinks/pipewire/PipewireStream.h"
 #include "cores/AudioEngine/Sinks/pipewire/PipewireThreadLoop.h"
+#include "utils/Map.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -44,13 +45,13 @@ constexpr std::array<uint32_t, 14> defaultSampleRates = {
   384000};
 // clang-format on
 
-const std::map<spa_audio_format, AEDataFormat> formatMap = {
-    {SPA_AUDIO_FORMAT_U8, AEDataFormat::AE_FMT_U8},
-    {SPA_AUDIO_FORMAT_S16, AEDataFormat::AE_FMT_S16NE},
-    {SPA_AUDIO_FORMAT_S24_32, AEDataFormat::AE_FMT_S24NE4},
-    {SPA_AUDIO_FORMAT_S32, AEDataFormat::AE_FMT_S32NE},
-    {SPA_AUDIO_FORMAT_S24, AEDataFormat::AE_FMT_S24NE3},
-    {SPA_AUDIO_FORMAT_F32, AEDataFormat::AE_FMT_FLOAT}};
+constexpr auto formatMap = make_map<spa_audio_format, AEDataFormat>(
+    {{SPA_AUDIO_FORMAT_U8, AEDataFormat::AE_FMT_U8},
+     {SPA_AUDIO_FORMAT_S16, AEDataFormat::AE_FMT_S16NE},
+     {SPA_AUDIO_FORMAT_S24_32, AEDataFormat::AE_FMT_S24NE4},
+     {SPA_AUDIO_FORMAT_S32, AEDataFormat::AE_FMT_S32NE},
+     {SPA_AUDIO_FORMAT_S24, AEDataFormat::AE_FMT_S24NE3},
+     {SPA_AUDIO_FORMAT_F32, AEDataFormat::AE_FMT_FLOAT}});
 
 uint8_t PWFormatToSampleSize(spa_audio_format format)
 {
@@ -97,10 +98,10 @@ std::string PWFormatToString(spa_audio_format format)
 
 spa_audio_format AEFormatToPWFormat(AEDataFormat& format)
 {
-  auto formats = std::find_if(formatMap.begin(), formatMap.end(),
-                              [&format](auto p) { return p.second == format; });
-  if (formats != formatMap.end())
-    return formats->first;
+  const auto it = std::find_if(formatMap.cbegin(), formatMap.cend(),
+                               [&format](auto p) { return p.second == format; });
+  if (it != formatMap.cend())
+    return it->first;
 
   // default if format not found in map
   return SPA_AUDIO_FORMAT_F32;
@@ -112,7 +113,7 @@ AEDataFormat PWFormatToAEFormat(spa_audio_format& format)
 }
 
 // clang-format off
-const std::map<spa_audio_channel, AEChannel> channelMap = {
+constexpr auto channelMap = make_map<spa_audio_channel, AEChannel>({
     {SPA_AUDIO_CHANNEL_FL, AEChannel::AE_CH_FL},
     {SPA_AUDIO_CHANNEL_FR, AEChannel::AE_CH_FR},
     {SPA_AUDIO_CHANNEL_FC, AEChannel::AE_CH_FC},
@@ -133,7 +134,7 @@ const std::map<spa_audio_channel, AEChannel> channelMap = {
     {SPA_AUDIO_CHANNEL_TRR, AEChannel::AE_CH_TBR},
     {SPA_AUDIO_CHANNEL_BC, AEChannel::AE_CH_BC},
     {SPA_AUDIO_CHANNEL_BLC, AEChannel::AE_CH_BLOC},
-    {SPA_AUDIO_CHANNEL_BRC, AEChannel::AE_CH_BROC}};
+    {SPA_AUDIO_CHANNEL_BRC, AEChannel::AE_CH_BROC}});
 // clang-format on
 
 std::vector<spa_audio_channel> AEChannelMapToPWChannelMap(CAEChannelInfo& channelInfo)
@@ -141,12 +142,12 @@ std::vector<spa_audio_channel> AEChannelMapToPWChannelMap(CAEChannelInfo& channe
   std::vector<spa_audio_channel> channels;
   for (uint32_t count = 0; count < channelInfo.Count(); count++)
   {
-    auto channel =
-        std::find_if(channelMap.begin(), channelMap.end(),
+    const auto it =
+        std::find_if(channelMap.cbegin(), channelMap.cend(),
                      [&channelInfo, &count](auto p) { return p.second == channelInfo[count]; });
 
-    if (channel != channelMap.end())
-      channels.emplace_back(channel->first);
+    if (it != channelMap.cend())
+      channels.emplace_back(it->first);
   }
 
   return channels;
@@ -226,8 +227,8 @@ void CAESinkPipewire::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
   device.m_displayNameExtra = "Default Output Device (PIPEWIRE)";
   device.m_wantsIECPassthrough = true;
 
-  for (const auto& format : formatMap)
-    device.m_dataFormats.emplace_back(format.second);
+  std::for_each(formatMap.cbegin(), formatMap.cend(),
+                [&device](const auto& pair) { device.m_dataFormats.emplace_back(pair.second); });
 
   for (const auto& rate : defaultSampleRates)
     device.m_sampleRates.emplace_back(rate);
@@ -245,8 +246,8 @@ void CAESinkPipewire::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
     device.m_displayNameExtra = global.second->description + " (PIPEWIRE)";
     device.m_wantsIECPassthrough = true;
 
-    for (const auto& format : formatMap)
-      device.m_dataFormats.emplace_back(format.second);
+    std::for_each(formatMap.cbegin(), formatMap.cend(),
+                  [&device](const auto& pair) { device.m_dataFormats.emplace_back(pair.second); });
 
     for (const auto& rate : defaultSampleRates)
       device.m_sampleRates.emplace_back(rate);
@@ -271,8 +272,8 @@ void CAESinkPipewire::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
 
     for (const auto& channel : channels)
     {
-      auto ch = channelMap.find(channel);
-      if (ch != channelMap.end())
+      const auto ch = channelMap.find(channel);
+      if (ch != channelMap.cend())
         device.m_channels += ch->second;
     }
 
