@@ -267,11 +267,11 @@ bool CAndroidUtils::SetNativeResolution(const RESOLUTION_INFO& res)
 
   if (s_hasModeApi)
   {
-    CXBMCApp::SetDisplayMode(atoi(res.strId.c_str()), res.fRefreshRate);
+    CXBMCApp::Get().SetDisplayMode(std::atoi(res.strId.c_str()), res.fRefreshRate);
     s_res_cur_displayMode = res;
   }
   else
-    CXBMCApp::SetRefreshRate(res.fRefreshRate);
+    CXBMCApp::Get().SetRefreshRate(res.fRefreshRate);
 
   CXBMCApp::Get().SetBuffersGeometry(res.iWidth, res.iHeight, 0);
 

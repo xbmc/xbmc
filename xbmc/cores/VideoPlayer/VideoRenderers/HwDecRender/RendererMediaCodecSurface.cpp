@@ -101,7 +101,7 @@ void CRendererMediaCodecSurface::ReleaseVideoBuffer(int idx, bool render)
     if (mcvb)
     {
       if (render && m_bConfigured)
-        mcvb->RenderUpdate(m_surfDestRect, CXBMCApp::GetNextFrameTime());
+        mcvb->RenderUpdate(m_surfDestRect, CXBMCApp::Get().GetNextFrameTime());
       else
         mcvb->ReleaseOutputBuffer(render, 0);
     }
