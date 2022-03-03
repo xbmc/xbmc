@@ -116,9 +116,7 @@ bool CXBMCApp::m_hdmiSource = false;
 IInputDeviceCallbacks* CXBMCApp::m_inputDeviceCallbacks = nullptr;
 IInputDeviceEventHandler* CXBMCApp::m_inputDeviceEventHandler = nullptr;
 bool CXBMCApp::m_hasReqVisible = false;
-CCriticalSection CXBMCApp::m_applicationsMutex;
 CCriticalSection CXBMCApp::m_activityResultMutex;
-std::vector<androidPackage> CXBMCApp::m_applications;
 CVideoSyncAndroid* CXBMCApp::m_syncImpl = NULL;
 CEvent CXBMCApp::m_vsyncEvent;
 CEvent CXBMCApp::m_displayChangeEvent;
@@ -826,7 +824,7 @@ void CXBMCApp::ProcessSlow()
     UpdateSessionState();
 }
 
-std::vector<androidPackage> CXBMCApp::GetApplications()
+std::vector<androidPackage> CXBMCApp::GetApplications() const
 {
   std::unique_lock<CCriticalSection> lock(m_applicationsMutex);
   if (m_applications.empty())
@@ -845,7 +843,7 @@ std::vector<androidPackage> CXBMCApp::GetApplications()
       newPackage.packageName = packageList.get(i).packageName;
       newPackage.packageLabel = GetPackageManager().getApplicationLabel(packageList.get(i)).toString();
       newPackage.icon = packageList.get(i).icon;
-      m_applications.push_back(newPackage);
+      m_applications.emplace_back(newPackage);
     }
   }
 
