@@ -110,8 +110,6 @@ using namespace std::chrono_literals;
 
 std::unique_ptr<CXBMCApp> CXBMCApp::m_appinstance;
 
-uint32_t CXBMCApp::m_playback_state = PLAYBACK_STATE_STOPPED;
-
 CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity, IInputHandler& inputHandler)
   : CJNIMainActivity(nativeActivity),
     CJNIBroadcastReceiver(CJNIContext::getPackageName() + ".XBMCBroadcastReceiver"),

@@ -268,7 +268,7 @@ private:
   bool XBMC_DestroyDisplay();
   bool XBMC_SetupDisplay();
 
-  static uint32_t m_playback_state;
+  uint32_t m_playback_state{0};
   int64_t m_frameTimeNanos{0};
   float m_refreshRate{0.0f};
 
