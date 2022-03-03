@@ -153,7 +153,6 @@ public:
   int GetBatteryLevel() const;
   bool EnableWakeLock(bool on);
   bool HasFocus() const { return m_hasFocus; }
-  static bool IsHDMIPlugged();
 
   static bool StartActivity(const std::string &package, const std::string &intent = std::string(), const std::string &dataType = std::string(), const std::string &dataURI = std::string());
   static std::vector <androidPackage> GetApplications();
@@ -244,7 +243,6 @@ private:
   int m_batteryLevel{0};
   bool m_hasFocus{false};
   bool m_headsetPlugged{false};
-  static bool m_hdmiPlugged;
   static bool m_hdmiReportedState;
   static bool m_hdmiSource;
   static IInputDeviceCallbacks* m_inputDeviceCallbacks;
