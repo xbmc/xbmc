@@ -173,7 +173,7 @@ public:
   void SetDisplayMode(int mode, float rate);
   int GetDPI() const;
 
-  static CRect MapRenderToDroid(const CRect& srcRect);
+  CRect MapRenderToDroid(const CRect& srcRect);
   static int WaitForActivityResult(const CJNIIntent &intent, int requestCode, CJNIIntent& result);
 
   // Playback callbacks
