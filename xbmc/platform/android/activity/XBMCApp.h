@@ -227,7 +227,6 @@ private:
   CJNIXBMCDisplayManagerDisplayListener m_displayListener;
   std::unique_ptr<CJNIXBMCMainView> m_mainView;
   std::unique_ptr<jni::CJNIXBMCMediaSession> m_mediaSession;
-  static bool HasLaunchIntent(const std::string &package);
   std::string GetFilenameFromIntent(const CJNIIntent &intent);
 
   void run();
