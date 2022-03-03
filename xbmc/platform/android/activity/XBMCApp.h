@@ -151,7 +151,7 @@ public:
   static int android_printf(const char *format, ...);
 
   int GetBatteryLevel() const;
-  static bool EnableWakeLock(bool on);
+  bool EnableWakeLock(bool on);
   static bool HasFocus() { return m_hasFocus; }
   static bool IsHeadsetPlugged();
   static bool IsHDMIPlugged();
@@ -241,7 +241,7 @@ private:
 
   static ANativeActivity *m_activity;
   IInputHandler& m_inputHandler;
-  static CJNIWakeLock *m_wakeLock;
+  std::unique_ptr<CJNIWakeLock> m_wakeLock;
   int m_batteryLevel{0};
   static bool m_hasFocus;
   static bool m_headsetPlugged;

@@ -112,7 +112,6 @@ std::unique_ptr<CXBMCApp> CXBMCApp::m_appinstance;
 
 std::unique_ptr<CJNIXBMCMainView> CXBMCApp::m_mainView;
 ANativeActivity *CXBMCApp::m_activity = NULL;
-CJNIWakeLock *CXBMCApp::m_wakeLock = NULL;
 bool CXBMCApp::m_hasFocus = false;
 bool CXBMCApp::m_headsetPlugged = false;
 bool CXBMCApp::m_hdmiPlugged = true;
@@ -153,8 +152,6 @@ CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity, IInputHandler& inputHandler)
 
 CXBMCApp::~CXBMCApp()
 {
-  delete m_wakeLock;
-
   if (m_window)
     ANativeWindow_release(m_window);
 }
@@ -445,11 +442,12 @@ bool CXBMCApp::EnableWakeLock(bool on)
     StringUtils::ToLower(appName);
     std::string className = CCompileInfo::GetPackage();
     // SCREEN_BRIGHT_WAKE_LOCK is marked as deprecated but there is no real alternatives for now
-    m_wakeLock = new CJNIWakeLock(CJNIPowerManager(getSystemService("power")).newWakeLock(CJNIPowerManager::SCREEN_BRIGHT_WAKE_LOCK | CJNIPowerManager::ON_AFTER_RELEASE, className.c_str()));
-    if (m_wakeLock)
-      m_wakeLock->setReferenceCounted(false);
-    else
-      return false;
+    m_wakeLock =
+        std::make_unique<CJNIWakeLock>(CJNIPowerManager(getSystemService("power"))
+                                           .newWakeLock(CJNIPowerManager::SCREEN_BRIGHT_WAKE_LOCK |
+                                                            CJNIPowerManager::ON_AFTER_RELEASE,
+                                                        className.c_str()));
+    m_wakeLock->setReferenceCounted(false);
   }
 
   if (on)
