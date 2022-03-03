@@ -171,7 +171,7 @@ public:
 
   void SetRefreshRate(float rate);
   void SetDisplayMode(int mode, float rate);
-  static int GetDPI();
+  int GetDPI() const;
 
   static CRect MapRenderToDroid(const CRect& srcRect);
   static int WaitForActivityResult(const CJNIIntent &intent, int requestCode, CJNIIntent& result);
@@ -237,7 +237,7 @@ private:
   static void SetDisplayModeCallback(CVariant *mode);
   static void RegisterDisplayListener(CVariant*);
 
-  static ANativeActivity *m_activity;
+  ANativeActivity* m_activity{nullptr};
   IInputHandler& m_inputHandler;
   std::unique_ptr<CJNIWakeLock> m_wakeLock;
   int m_batteryLevel{0};
