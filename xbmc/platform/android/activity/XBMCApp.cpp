@@ -108,14 +108,8 @@ using namespace ANNOUNCEMENT;
 using namespace jni;
 using namespace std::chrono_literals;
 
-template<class T, void(T::*fn)()>
-void* thread_run(void* obj)
-{
-  (static_cast<T*>(obj)->*fn)();
-  return NULL;
-}
+std::unique_ptr<CXBMCApp> CXBMCApp::m_appinstance;
 
-CXBMCApp* CXBMCApp::m_xbmcappinstance = NULL;
 std::unique_ptr<CJNIXBMCMainView> CXBMCApp::m_mainView;
 ANativeActivity *CXBMCApp::m_activity = NULL;
 CJNIWakeLock *CXBMCApp::m_wakeLock = NULL;
@@ -146,7 +140,6 @@ CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity, IInputHandler& inputHandler)
     CJNIBroadcastReceiver(CJNIContext::getPackageName() + ".XBMCBroadcastReceiver"),
     m_inputHandler(inputHandler)
 {
-  m_xbmcappinstance = this;
   m_activity = nativeActivity;
   if (m_activity == NULL)
   {
@@ -162,7 +155,6 @@ CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity, IInputHandler& inputHandler)
 
 CXBMCApp::~CXBMCApp()
 {
-  m_xbmcappinstance = NULL;
   delete m_wakeLock;
 
   if (m_window)
@@ -378,13 +370,13 @@ void CXBMCApp::RegisterDisplayListener(CVariant* variant)
   if (displayManager)
   {
     android_printf("CXBMCApp: installing DisplayManager::DisplayListener");
-    displayManager.registerDisplayListener(CXBMCApp::get()->getDisplayListener());
+    displayManager.registerDisplayListener(CXBMCApp::Get().getDisplayListener());
   }
 }
 
 void CXBMCApp::Initialize()
 {
-  CServiceBroker::GetAnnouncementManager()->AddAnnouncer(CXBMCApp::get());
+  CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
   runNativeOnUiThread(RegisterDisplayListener, nullptr);
   m_activityManager.reset(new CJNIActivityManager(getSystemService(CJNIContext::ACTIVITY_SERVICE)));
   m_inputHandler.setDPI(GetDPI());
@@ -478,9 +470,6 @@ bool CXBMCApp::EnableWakeLock(bool on)
 
 bool CXBMCApp::AcquireAudioFocus()
 {
-  if (!m_xbmcappinstance)
-    return false;
-
   CJNIAudioManager audioManager(getSystemService("audio"));
 
   // Request audio focus for playback
@@ -500,9 +489,6 @@ bool CXBMCApp::AcquireAudioFocus()
 
 bool CXBMCApp::ReleaseAudioFocus()
 {
-  if (!m_xbmcappinstance)
-    return false;
-
   CJNIAudioManager audioManager(getSystemService("audio"));
 
   // Release audio focus after playback
@@ -706,7 +692,7 @@ CRect CXBMCApp::MapRenderToDroid(const CRect& srcRect)
   float scaleX = 1.0;
   float scaleY = 1.0;
 
-  CJNIRect r = m_xbmcappinstance->getDisplayRect();
+  CJNIRect r = CXBMCApp::Get().getDisplayRect();
   if (r.width() && r.height())
   {
     RESOLUTION_INFO renderRes = CDisplaySettings::GetInstance().GetResolutionInfo(CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution());
@@ -809,7 +795,7 @@ void CXBMCApp::OnPlayBackStarted()
   CJNIIntent intent(ACTION_XBMC_RESUME, CJNIURI::EMPTY, *this, get_class(CJNIContext::get_raw()));
   m_mediaSession->updateIntent(intent);
 
-  m_xbmcappinstance->AcquireAudioFocus();
+  AcquireAudioFocus();
   CAndroidKey::SetHandleMediaKeys(false);
 
   RequestVisibleBehind(true);
@@ -823,7 +809,7 @@ void CXBMCApp::OnPlayBackPaused()
   UpdateSessionState();
 
   RequestVisibleBehind(false);
-  m_xbmcappinstance->ReleaseAudioFocus();
+  ReleaseAudioFocus();
 }
 
 void CXBMCApp::OnPlayBackStopped()
@@ -836,7 +822,7 @@ void CXBMCApp::OnPlayBackStopped()
 
   RequestVisibleBehind(false);
   CAndroidKey::SetHandleMediaKeys(true);
-  m_xbmcappinstance->ReleaseAudioFocus();
+  ReleaseAudioFocus();
 }
 
 const CJNIViewInputDevice CXBMCApp::GetInputDevice(int deviceId)

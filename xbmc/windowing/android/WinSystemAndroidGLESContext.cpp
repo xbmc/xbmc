@@ -136,7 +136,8 @@ void CWinSystemAndroidGLESContext::PresentRenderImpl(bool rendered)
   // we can't actually do anything about it
   if (rendered && !m_pGLContext.TrySwapBuffers())
     CEGLUtils::Log(LOGERROR, "eglSwapBuffers failed");
-  CXBMCApp::get()->WaitVSync(1000);
+
+  CXBMCApp::Get().WaitVSync(1000);
 }
 
 float CWinSystemAndroidGLESContext::GetFrameLatencyAdjustment()

@@ -85,9 +85,16 @@ class CXBMCApp
     , public CJNISurfaceHolderCallback
 {
 public:
-  explicit CXBMCApp(ANativeActivity* nativeActivity, IInputHandler& inputhandler);
+  static CXBMCApp& Create(ANativeActivity* nativeActivity, IInputHandler& inputhandler)
+  {
+    m_appinstance.reset(new CXBMCApp(nativeActivity, inputhandler));
+    return *m_appinstance;
+  }
+  static CXBMCApp& Get() { return *m_appinstance; }
+  static void Destroy() { m_appinstance.reset(); }
+
+  CXBMCApp() = delete;
   ~CXBMCApp() override;
-  static CXBMCApp* get() { return m_xbmcappinstance; }
 
   // IAnnouncer IF
   void Announce(ANNOUNCEMENT::AnnouncementFlag flag,
@@ -214,7 +221,10 @@ protected:
   static void RequestVisibleBehind(bool requested);
 
 private:
-  static CXBMCApp* m_xbmcappinstance;
+  static std::unique_ptr<CXBMCApp> m_appinstance;
+
+  CXBMCApp(ANativeActivity* nativeActivity, IInputHandler& inputhandler);
+
   CJNIXBMCAudioManagerOnAudioFocusChangeListener m_audioFocusListener;
   CJNIXBMCDisplayManagerDisplayListener m_displayListener;
   static std::unique_ptr<CJNIXBMCMainView> m_mainView;

@@ -2516,7 +2516,7 @@ bool CApplication::Stop(int exitCode)
 #if defined(TARGET_ANDROID)
   // Note: On Android, the app must be stopped asynchronously, once Android has
   // signalled that the app shall be destroyed. See android_main() implementation.
-  if (!CXBMCApp::get()->Stop(exitCode))
+  if (!CXBMCApp::Get().Stop(exitCode))
     return false;
 #endif
 
@@ -4247,7 +4247,7 @@ void CApplication::ProcessSlow()
 
 #ifdef TARGET_ANDROID
   // Pass the slow loop to droid
-  CXBMCApp::get()->ProcessSlow();
+  CXBMCApp::Get().ProcessSlow();
 #endif
 
   // check for any idle curl connections

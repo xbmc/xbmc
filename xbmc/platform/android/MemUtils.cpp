@@ -38,7 +38,7 @@ void GetMemoryStatus(MemoryStatus* buffer)
   long availMem = 0;
   long totalMem = 0;
 
-  if (CXBMCApp::get()->GetMemoryInfo(availMem, totalMem))
+  if (CXBMCApp::Get().GetMemoryInfo(availMem, totalMem))
   {
     *buffer = {};
     buffer->totalPhys = static_cast<unsigned long>(totalMem);
