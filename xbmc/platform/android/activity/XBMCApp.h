@@ -225,7 +225,7 @@ private:
 
   CJNIXBMCAudioManagerOnAudioFocusChangeListener m_audioFocusListener;
   CJNIXBMCDisplayManagerDisplayListener m_displayListener;
-  static std::unique_ptr<CJNIXBMCMainView> m_mainView;
+  std::unique_ptr<CJNIXBMCMainView> m_mainView;
   std::unique_ptr<jni::CJNIXBMCMediaSession> m_mediaSession;
   static bool HasLaunchIntent(const std::string &package);
   std::string GetFilenameFromIntent(const CJNIIntent &intent);
