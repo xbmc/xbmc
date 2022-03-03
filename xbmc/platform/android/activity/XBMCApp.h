@@ -150,7 +150,7 @@ public:
   int SetBuffersGeometry(int width, int height, int format);
   static int android_printf(const char *format, ...);
 
-  static int GetBatteryLevel();
+  int GetBatteryLevel() const;
   static bool EnableWakeLock(bool on);
   static bool HasFocus() { return m_hasFocus; }
   static bool IsHeadsetPlugged();
@@ -242,7 +242,7 @@ private:
   static ANativeActivity *m_activity;
   IInputHandler& m_inputHandler;
   static CJNIWakeLock *m_wakeLock;
-  static int m_batteryLevel;
+  int m_batteryLevel{0};
   static bool m_hasFocus;
   static bool m_headsetPlugged;
   static bool m_hdmiPlugged;
