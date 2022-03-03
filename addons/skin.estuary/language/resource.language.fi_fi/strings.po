@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-02-26 16:13+0000\n"
+"PO-Revision-Date: 2022-03-03 21:03+0000\n"
 "Last-Translator: Oskari Lavinto <olavinto@protonmail.com>\n"
 "Language-Team: Finnish <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/fi_fi/>\n"
 "Language: fi_fi\n"
@@ -51,7 +51,7 @@ msgstr "Vaihda tilaa"
 
 msgctxt "#31005"
 msgid "Watch as 2D"
-msgstr "Katso 2D:nä"
+msgstr "Katsele 2D-tilassa"
 
 msgctxt "#31006"
 msgid "Random movies"
@@ -63,7 +63,7 @@ msgstr "Katsomattomat elokuvat"
 
 msgctxt "#31008"
 msgid "Enable category widgets"
-msgstr "Näytä kategoria-widgetit"
+msgstr "Näytä kategorioiden widgetit"
 
 msgctxt "#31009"
 msgid "Download icons"
@@ -92,7 +92,7 @@ msgstr "Kuuntelemattomat albumit"
 #. home screen recordings widget: recent tv / radio recordings
 msgctxt "#31015"
 msgid "Recent recordings"
-msgstr "Viimeksi tallennetut"
+msgstr "Viimeisimmät tallenteet"
 
 #. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31016"
@@ -101,7 +101,7 @@ msgstr "Viimeksi katsotut kanavat"
 
 msgctxt "#31017"
 msgid "Rated"
-msgstr "Ikäraja"
+msgstr "Ikäluokiteltu"
 
 #. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
@@ -130,11 +130,11 @@ msgstr "Näkymä"
 
 msgctxt "#31024"
 msgid "Choose rating to display for media items"
-msgstr "Valitse näytettävän arvosanan tyyppi"
+msgstr "Valitse mediakohteille näytettävä arvio"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
-msgstr "Suosikkeja ei löytynyt. Avaa sisältövalikko haluamasi mediatiedoston kohdalla ja valitse \"Lisää suosikkeihin\"."
+msgstr "Suosikkeja ei löytynyt. Voit lisätä minkä tahansa medianäkymien kohteen tälle listalle käyttämällä sisältövalikkoa."
 
 msgctxt "#31026"
 msgid "Timeshift"
@@ -167,7 +167,7 @@ msgstr "Suunta"
 
 msgctxt "#31033"
 msgid "Your rating"
-msgstr "Oma arvosana"
+msgstr "Oma arvio"
 
 msgctxt "#31034"
 msgid "Extended info"
@@ -243,11 +243,11 @@ msgstr "Avaa toistolista"
 
 msgctxt "#31057"
 msgid "Show login screen on startup"
-msgstr "Näytä kirjautumisruutu käynnistyksen yhteydessä"
+msgstr "Näytä kirjautumisruutu käynnistettäessä"
 
 msgctxt "#31058"
 msgid "Automatic Login on startup"
-msgstr "Automaattinen kirjautuminen"
+msgstr "Automaattinen kirjautuminen käynnistettäessä"
 
 msgctxt "#31059"
 msgid "Select + X"
@@ -363,6 +363,7 @@ msgid "IconWall"
 msgstr "Kuvakeseinä"
 
 #. viewtype name
+#, fuzzy
 msgctxt "#31100"
 msgid "Shift"
 msgstr "Vaihto"
@@ -426,6 +427,7 @@ msgctxt "#31116"
 msgid "Remove this main menu item"
 msgstr "Poista tämä päävalikon kohde"
 
+#, fuzzy
 msgctxt "#31117"
 msgid "Edit nodes"
 msgstr "Muokkaa kansioita"
@@ -436,35 +438,35 @@ msgstr "Avaa lisäosaselain"
 
 msgctxt "#31119"
 msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
-msgstr "Yhtään lisäosaa ei ole asennettuna. Lisäosaselaimen kautta voit tutkia Kodin virallista lisäosatarjontaa ja lisätä ohjelmaan uusia toimintoja."
+msgstr "Lisäosia ei ole vielä asennettu. Lisäosaselaimella voit tutkia Kodin virallista lisäosavalikoimaa ja parantaa käyttökokemustasi."
 
 msgctxt "#31120"
 msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
-msgstr "Säätietojen tarjoajaa ei ole asennettu. Nähdäksesi säätiedot, asenna haluamasi sääpalvelu ja valitse sijaintisi."
+msgstr "Säätietojen toimittajaa ei ole asennettu. Nähdäksesi säätiedot, asenna haluamasi sääpalvelu ja määritä sijaintisi."
 
 msgctxt "#31121"
 msgid "Set weather provider"
-msgstr "Aseta sään tarjoaja"
+msgstr "Määritä säätietojen toimittaja"
 
 msgctxt "#31122"
 msgid "Unwatched TV Shows"
-msgstr "Katsomattomat tv-sarjat"
+msgstr "Katsomattomat sarjat"
 
 msgctxt "#31123"
 msgid "Same director"
-msgstr "Ohjaajahaku"
+msgstr "Sama ohjaaja"
 
 msgctxt "#31125"
 msgid "Press up for actor info"
-msgstr "Näyttelijätiedot (Paina YLÖS)"
+msgstr "Paina ylös nähdäksesi näyttelijät"
 
 msgctxt "#31126"
 msgid "Press OK to read plot"
-msgstr "Juoni (Paina OK)"
+msgstr "Lue juoni painamalla OK"
 
 msgctxt "#31127"
 msgid "Show icons"
-msgstr "Näytä kanavalogot"
+msgstr "Näytä kuvakkeet"
 
 msgctxt "#31128"
 msgid "Contributors"
@@ -472,15 +474,15 @@ msgstr "Tekijät"
 
 msgctxt "#31129"
 msgid "General settings applying to all areas of the skin."
-msgstr "Tämä kategoria sisältää ulkoasun yleisasetukset."
+msgstr "Yleisastukset, jotka vaikuttavat ulkoasun eri osa-alueisiin."
 
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
-msgstr "Tämä kategoria sisältää päävalikkoon liittyvät asetukset."
+msgstr "Päävalikon asetukset: mukauta kotinäyttö haluamaksesi."
 
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
-msgstr "Valitse ulkoasun taustakuvapaketti"
+msgstr "Valitse ulkoasun fanitaidepaketti"
 
 msgctxt "#31132"
 msgid "Select Program"
@@ -500,7 +502,7 @@ msgstr "Binääri"
 
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
-msgstr "Valitse nähdäksesi viimeisimmät muutokset..."
+msgstr "Paina nähdäksesi viimeisimmät muutokset..."
 
 #. Label to show PVR info page
 msgctxt "#31137"
@@ -548,7 +550,7 @@ msgstr "Teattereissa"
 
 msgctxt "#31147"
 msgid "In cinemas soon"
-msgstr "Tulossa pian teattereihin"
+msgstr "Tulossa teattereihin"
 
 msgctxt "#31148"
 msgid "Categories"
@@ -556,7 +558,7 @@ msgstr "Kategoriat"
 
 msgctxt "#31149"
 msgid "Select genre fanart pack"
-msgstr "Valitse lajityyppien taustakuvapaketti"
+msgstr "Valitse lajityyppien fanitaidepaketti"
 
 msgctxt "#31150"
 msgid "Origin"
@@ -572,19 +574,19 @@ msgstr "Satunnaiset musiikkivideot"
 
 msgctxt "#31153"
 msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
-msgstr "Yhtään tämän tyyppistä lisäosaa ei ole asennettu. Avaa lisäosaselain, jos haluat asentaa kehittäjäyhteisömme luomia lisäosia."
+msgstr "Tämän tyyppisiä lisäosia ei ole asennettu. Avaa lisäosaselain asentaaksesi yhteisömme kehittämiä lisäosia."
 
 msgctxt "#31154"
 msgid "Press OK to switch between locations"
-msgstr "Paina OK vaihtaaksesi sijaintia"
+msgstr "Vaihda sijaintia painamalla OK"
 
 msgctxt "#31155"
 msgid "No bookmarks created yet."
-msgstr "Kirjanmerkkejä ei ole luotu."
+msgstr "Kirjanmerkkejä ei ole vielä luotu."
 
 msgctxt "#31156"
 msgid "Choose background pattern"
-msgstr "Valitse taustakuva"
+msgstr "Valitse taustan kuvio"
 
 msgctxt "#31157"
 msgid "Edit categories"
@@ -596,11 +598,11 @@ msgstr "Kosketusnäyttötila"
 
 msgctxt "#31159"
 msgid "Artwork"
-msgstr "Kuvat"
+msgstr "Mediakuvitukset"
 
 msgctxt "#31160"
 msgid "Show media flags"
-msgstr "Näytä mediakuvakkeet"
+msgstr "Näytä mediatietojen kuvakkeet"
 
 msgctxt "#31161"
 msgid "Numeric pad"
@@ -612,12 +614,12 @@ msgstr "Pelaa omistamiasi pelejä tai lataa pelilisäosia virallisesta ohjelmava
 
 msgctxt "#31163"
 msgid "Show Fanart background"
-msgstr "Näytä fanitaide"
+msgstr "Näytä fanitaide taustalla"
 
 #. Choose profile identifier
 msgctxt "#31164"
 msgid "Choose kind of profile identification"
-msgstr "Valitse näytetäänkö profiilin nimi vai kuva"
+msgstr "Valitse profiilin esitystapa"
 
 #. Label for the kind of profile identification
 msgctxt "#31165"
@@ -632,17 +634,17 @@ msgstr "Profiilin kuva"
 #. Label of a setting
 msgctxt "#31167"
 msgid "Animate background"
-msgstr "Animoitu taustakuva"
+msgstr "Animoitu tausta"
 
 #. Label of a setting
 msgctxt "#31168"
 msgid "Show posters instead of thumbs for musicvideos"
-msgstr "Näytä musiikkivideoille julisteet pienkuvien sijaan"
+msgstr "Näytä musiikkivideoille pienoiskuvien sijaan julisteet"
 
 #. Description label for skin settings area
 msgctxt "#31169"
 msgid "Artwork related settings."
-msgstr "Mediakuvitukseen liittyvät asetukset."
+msgstr "Mediakuvituksiin liittyvät asetukset."
 
 # empty strings from id 31170 to 31599
 #. Label to show the video codec name
