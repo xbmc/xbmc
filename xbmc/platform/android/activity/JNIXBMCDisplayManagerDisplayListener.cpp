@@ -46,7 +46,7 @@ void CJNIXBMCDisplayManagerDisplayListener::_onDisplayAdded(JNIEnv *env, jobject
   static_cast<void>(env);
   static_cast<void>(context);
 
-  CXBMCApp::get()->onDisplayAdded(displayId);
+  CXBMCApp::Get().onDisplayAdded(displayId);
 }
 
 void CJNIXBMCDisplayManagerDisplayListener::_onDisplayChanged(JNIEnv *env, jobject context, jint displayId)
@@ -54,7 +54,7 @@ void CJNIXBMCDisplayManagerDisplayListener::_onDisplayChanged(JNIEnv *env, jobje
   static_cast<void>(env);
   static_cast<void>(context);
 
-  CXBMCApp::get()->onDisplayChanged(displayId);
+  CXBMCApp::Get().onDisplayChanged(displayId);
 }
 
 void CJNIXBMCDisplayManagerDisplayListener::_onDisplayRemoved(JNIEnv *env, jobject context, jint displayId)
@@ -62,5 +62,5 @@ void CJNIXBMCDisplayManagerDisplayListener::_onDisplayRemoved(JNIEnv *env, jobje
   static_cast<void>(env);
   static_cast<void>(context);
 
-  CXBMCApp::get()->onDisplayRemoved(displayId);
+  CXBMCApp::Get().onDisplayRemoved(displayId);
 }
