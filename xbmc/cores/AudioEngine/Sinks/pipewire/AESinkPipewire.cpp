@@ -220,22 +220,24 @@ void CAESinkPipewire::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
   auto loop = pipewire->GetThreadLoop();
   loop->Lock();
 
-  CAEDeviceInfo device;
-  device.m_deviceType = AE_DEVTYPE_PCM;
-  device.m_deviceName = "Default";
-  device.m_displayName = "Default";
-  device.m_displayNameExtra = "Default Output Device (PIPEWIRE)";
-  device.m_wantsIECPassthrough = true;
+  CAEDeviceInfo defaultDevice;
+  defaultDevice.m_deviceType = AE_DEVTYPE_PCM;
+  defaultDevice.m_deviceName = "Default";
+  defaultDevice.m_displayName = "Default";
+  defaultDevice.m_displayNameExtra = "Default Output Device (PIPEWIRE)";
+  defaultDevice.m_wantsIECPassthrough = true;
 
   std::for_each(formatMap.cbegin(), formatMap.cend(),
-                [&device](const auto& pair) { device.m_dataFormats.emplace_back(pair.second); });
+                [&defaultDevice](const auto& pair)
+                { defaultDevice.m_dataFormats.emplace_back(pair.second); });
 
   std::for_each(defaultSampleRates.cbegin(), defaultSampleRates.cend(),
-                [&device](const auto& rate) { device.m_sampleRates.emplace_back(rate); });
+                [&defaultDevice](const auto& rate)
+                { defaultDevice.m_sampleRates.emplace_back(rate); });
 
-  device.m_channels = CAEChannelInfo(AE_CH_LAYOUT_2_0);
+  defaultDevice.m_channels = CAEChannelInfo(AE_CH_LAYOUT_2_0);
 
-  list.emplace_back(device);
+  list.emplace_back(defaultDevice);
 
   for (const auto& global : pipewire->GetGlobals())
   {
