@@ -266,6 +266,7 @@
 		<value condition="Control.HasFocus(87) + [Player.Paused + Window.IsVisible(videoosd)]">$LOCALIZE[31055]</value>
 		<value condition="Control.HasFocus(608)+ PVR.IsRecordingPlayingChannel">$LOCALIZE[19059]</value>
 		<value condition="Control.HasFocus(608)">$LOCALIZE[264]</value>
+		<value condition="Control.HasFocus(804)">$LOCALIZE[33061]</value>
 		<value condition="Control.HasFocus(70040)">$LOCALIZE[19019]</value>
 		<value condition="Control.HasFocus(70041)">$LOCALIZE[19069]</value>
 		<value condition="Control.HasFocus(70042)">$LOCALIZE[31065]</value>
