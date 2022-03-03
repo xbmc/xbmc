@@ -32,12 +32,6 @@ enum class ThreadPriority
   HIGHEST,
 };
 
-struct ThreadPriorityStruct
-{
-  ThreadPriority priority;
-  int nativePriority;
-};
-
 class IRunnable;
 class IThreadImpl;
 class CThread
