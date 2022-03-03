@@ -111,7 +111,6 @@ using namespace std::chrono_literals;
 std::unique_ptr<CXBMCApp> CXBMCApp::m_appinstance;
 
 std::unique_ptr<CJNIXBMCMainView> CXBMCApp::m_mainView;
-bool CXBMCApp::m_hasReqVisible = false;
 CVideoSyncAndroid* CXBMCApp::m_syncImpl = NULL;
 CEvent CXBMCApp::m_vsyncEvent;
 
