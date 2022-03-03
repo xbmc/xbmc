@@ -114,7 +114,6 @@ std::unique_ptr<CXBMCApp> CXBMCApp::m_appinstance;
 std::unique_ptr<CJNIXBMCMainView> CXBMCApp::m_mainView;
 ANativeActivity *CXBMCApp::m_activity = NULL;
 CJNIWakeLock *CXBMCApp::m_wakeLock = NULL;
-int CXBMCApp::m_batteryLevel = 0;
 bool CXBMCApp::m_hasFocus = false;
 bool CXBMCApp::m_headsetPlugged = false;
 bool CXBMCApp::m_hdmiPlugged = true;
@@ -903,7 +902,7 @@ bool CXBMCApp::StartActivity(const std::string &package, const std::string &inte
   return true;
 }
 
-int CXBMCApp::GetBatteryLevel()
+int CXBMCApp::GetBatteryLevel() const
 {
   return m_batteryLevel;
 }
