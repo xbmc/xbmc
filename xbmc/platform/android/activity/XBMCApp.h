@@ -146,8 +146,8 @@ public:
   bool Stop(int exitCode);
   void Quit();
 
-  static ANativeWindow* GetNativeWindow(int timeout);
-  static int SetBuffersGeometry(int width, int height, int format);
+  ANativeWindow* GetNativeWindow(int timeout);
+  int SetBuffersGeometry(int width, int height, int format);
   static int android_printf(const char *format, ...);
 
   static int GetBatteryLevel();
@@ -261,7 +261,7 @@ private:
   static std::vector<androidPackage> m_applications;
   static std::vector<CActivityResultEvent*> m_activityResultEvents;
 
-  static ANativeWindow* m_window;
+  ANativeWindow* m_window{nullptr};
 
   static CVideoSyncAndroid* m_syncImpl;
   static CEvent m_vsyncEvent;

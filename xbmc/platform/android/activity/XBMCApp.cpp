@@ -113,7 +113,6 @@ std::unique_ptr<CXBMCApp> CXBMCApp::m_appinstance;
 std::unique_ptr<CJNIXBMCMainView> CXBMCApp::m_mainView;
 ANativeActivity *CXBMCApp::m_activity = NULL;
 CJNIWakeLock *CXBMCApp::m_wakeLock = NULL;
-ANativeWindow* CXBMCApp::m_window = NULL;
 int CXBMCApp::m_batteryLevel = 0;
 bool CXBMCApp::m_hasFocus = false;
 bool CXBMCApp::m_headsetPlugged = false;
@@ -527,7 +526,7 @@ void CXBMCApp::run()
   SetupEnv();
 
   // Wait for main window
-  ANativeWindow* nativeWindow = CXBMCApp::GetNativeWindow(30000);
+  ANativeWindow* nativeWindow = GetNativeWindow(30000);
   if (!nativeWindow)
     return;
 
@@ -1571,7 +1570,7 @@ void CXBMCApp::surfaceCreated(CJNISurfaceHolder holder)
     ANativeWindow_release(m_window);
 
   m_window = ANativeWindow_fromSurface(xbmc_jnienv(), holder.getSurface().get_raw());
-  if (m_window == NULL)
+  if (m_window == nullptr)
   {
     android_printf(" => invalid ANativeWindow object");
     return;

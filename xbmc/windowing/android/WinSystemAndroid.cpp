@@ -142,7 +142,7 @@ bool CWinSystemAndroid::CreateNewWindow(const std::string& name,
   if (m_nativeWindow)
     ANativeWindow_release(m_nativeWindow);
 
-  m_nativeWindow = CXBMCApp::GetNativeWindow(2000);
+  m_nativeWindow = CXBMCApp::Get().GetNativeWindow(2000);
   if (!m_nativeWindow)
   {
     CLog::Log(LOGERROR, "CWinSystemAndroid::CreateNewWindow: failed");
