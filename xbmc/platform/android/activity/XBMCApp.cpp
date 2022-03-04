@@ -109,6 +109,49 @@ using namespace ANNOUNCEMENT;
 using namespace jni;
 using namespace std::chrono_literals;
 
+std::shared_ptr<CNativeWindow> CNativeWindow::CreateFromSurface(CJNISurfaceHolder holder)
+{
+  ANativeWindow* window = ANativeWindow_fromSurface(xbmc_jnienv(), holder.getSurface().get_raw());
+  if (window)
+    return std::shared_ptr<CNativeWindow>(new CNativeWindow(window));
+
+  return {};
+}
+
+CNativeWindow::CNativeWindow(ANativeWindow* window) : m_window(window)
+{
+}
+
+CNativeWindow::~CNativeWindow()
+{
+  if (m_window)
+    ANativeWindow_release(m_window);
+}
+
+bool CNativeWindow::SetBuffersGeometry(int width, int height, int format)
+{
+  if (m_window)
+    return (ANativeWindow_setBuffersGeometry(m_window, width, height, format) == 0);
+
+  return false;
+}
+
+int32_t CNativeWindow::GetWidth() const
+{
+  if (m_window)
+    return ANativeWindow_getWidth(m_window);
+
+  return -1;
+}
+
+int32_t CNativeWindow::GetHeight() const
+{
+  if (m_window)
+    return ANativeWindow_getHeight(m_window);
+
+  return -1;
+}
+
 std::unique_ptr<CXBMCApp> CXBMCApp::m_appinstance;
 
 CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity, IInputHandler& inputHandler)
@@ -131,8 +174,6 @@ CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity, IInputHandler& inputHandler)
 
 CXBMCApp::~CXBMCApp()
 {
-  if (m_window)
-    ANativeWindow_release(m_window);
 }
 
 void CXBMCApp::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
@@ -309,11 +350,7 @@ void CXBMCApp::onCreateWindow(ANativeWindow* window)
 void CXBMCApp::onResizeWindow()
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
-  if (m_window)
-  {
-    ANativeWindow_release(m_window);
-    m_window = nullptr;
-  }
+  m_window.reset();
   // no need to do anything because we are fixed in fullscreen landscape mode
 }
 
@@ -489,8 +526,7 @@ void CXBMCApp::run()
   SetupEnv();
 
   // Wait for main window
-  ANativeWindow* nativeWindow = GetNativeWindow(30000);
-  if (!nativeWindow)
+  if (!GetNativeWindow(30000))
     return;
 
   m_firstrun=false;
@@ -517,9 +553,12 @@ bool CXBMCApp::XBMC_DestroyDisplay()
   return result;
 }
 
-int CXBMCApp::SetBuffersGeometry(int width, int height, int format)
+bool CXBMCApp::SetBuffersGeometry(int width, int height, int format)
 {
-  return ANativeWindow_setBuffersGeometry(m_window, width, height, format);
+  if (m_window)
+    return m_window->SetBuffersGeometry(width, height, format);
+
+  return false;
 }
 
 #include "threads/Event.h"
@@ -1413,7 +1452,7 @@ std::string CXBMCApp::GetFilenameFromIntent(const CJNIIntent &intent)
   return ret;
 }
 
-ANativeWindow* CXBMCApp::GetNativeWindow(int timeout)
+std::shared_ptr<CNativeWindow> CXBMCApp::GetNativeWindow(int timeout) const
 {
   if (!m_window)
     m_mainView->waitForSurface(timeout);
@@ -1508,10 +1547,7 @@ void CXBMCApp::surfaceCreated(CJNISurfaceHolder holder)
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
 
-  if (m_window)
-    ANativeWindow_release(m_window);
-
-  m_window = ANativeWindow_fromSurface(xbmc_jnienv(), holder.getSurface().get_raw());
+  m_window = CNativeWindow::CreateFromSurface(holder);
   if (m_window == nullptr)
   {
     android_printf(" => invalid ANativeWindow object");
@@ -1532,9 +1568,5 @@ void CXBMCApp::surfaceDestroyed(CJNISurfaceHolder holder)
   if (!m_exiting)
     XBMC_DestroyDisplay();
 
-  if (m_window)
-  {
-    ANativeWindow_release(m_window);
-    m_window = nullptr;
-  }
+  m_window.reset();
 }
