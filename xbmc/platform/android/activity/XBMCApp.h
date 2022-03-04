@@ -122,7 +122,8 @@ public:
   jni::jhobject getDisplayListener() { return m_displayListener.get_raw(); }
 
   bool isValid() { return m_activity != NULL; }
-  const ANativeActivity *getActivity() const { return m_activity; }
+
+  int32_t GetSDKVersion() const { return m_activity->sdkVersion; }
 
   void onStart() override;
   void onResume() override;
