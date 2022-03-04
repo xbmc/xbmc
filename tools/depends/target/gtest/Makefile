@@ -1,7 +1,7 @@
 include ../../Makefile.include GTEST-VERSION ../../download-files.include
 DEPS = ../../Makefile.include Makefile GTEST-VERSION ../../download-files.include
 
-LIBDYLIB=$(PLATFORM)/build/lib/libgtest.a
+LIBDYLIB=$(PLATFORM)/build/lib/$(BYPRODUCT)
 
 all: .installed-$(PLATFORM)
 

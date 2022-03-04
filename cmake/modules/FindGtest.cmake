@@ -14,28 +14,22 @@
 #   Gtest::Gtest   - The gtest library
 
 if(ENABLE_INTERNAL_GTEST)
-  include(ExternalProject)
-
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
   set(MODULE_LC gtest)
 
   SETUP_BUILD_VARS()
 
-  set(GTEST_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/libgtest.a)
-  set(GTEST_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
   set(GTEST_VERSION ${${MODULE}_VER})
 
-  externalproject_add(gtest
-                      URL ${${MODULE}_URL}
-                      URL_HASH ${${MODULE}_HASH}
-                      DOWNLOAD_DIR ${TARBALL_DIR}
-                      DOWNLOAD_NAME ${${MODULE}_ARCHIVE}
-                      PREFIX ${CORE_BUILD_DIR}/${MODULE_LC}
-                      INSTALL_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
-                      CMAKE_ARGS -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE} -DBUILD_GMOCK=OFF -DINSTALL_GTEST=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR> -DCMAKE_INSTALL_LIBDIR=lib
-                      BUILD_BYPRODUCTS ${GTEST_LIBRARY})
-  set_target_properties(gtest PROPERTIES FOLDER "External Projects")
+  set(CMAKE_ARGS -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
+                 -DBUILD_GMOCK=OFF
+                 -DINSTALL_GTEST=ON
+                 -DBUILD_SHARED_LIBS=OFF
+                 -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
+                 -DCMAKE_INSTALL_LIBDIR=lib)
+
+  BUILD_DEP_TARGET()
 else()
   if(PKG_CONFIG_FOUND)
     pkg_check_modules(PC_GTEST gtest>=1.10.0 QUIET)
