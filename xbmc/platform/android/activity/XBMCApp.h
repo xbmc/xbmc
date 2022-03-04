@@ -270,10 +270,10 @@ private:
   IInputDeviceCallbacks* m_inputDeviceCallbacks{nullptr};
   IInputDeviceEventHandler* m_inputDeviceEventHandler{nullptr};
   bool m_hasReqVisible{false};
-  bool m_firstrun;
+  bool m_firstrun{true};
   std::atomic<bool> m_exiting{false};
   int m_exitCode{0};
-  bool m_bResumePlayback = false;
+  bool m_bResumePlayback{false};
   std::thread m_thread;
   mutable CCriticalSection m_applicationsMutex;
   mutable std::vector<androidPackage> m_applications;

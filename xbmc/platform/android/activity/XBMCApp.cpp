@@ -166,7 +166,6 @@ CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity, IInputHandler& inputHandler)
     return;
   }
   m_mainView.reset(new CJNIXBMCMainView(this));
-  m_firstrun = true;
   m_hdmiSource = CJNISystemProperties::get("ro.hdmi.device_type", "") == "4";
   android_printf("CXBMCApp: Created");
 }
@@ -531,7 +530,7 @@ void CXBMCApp::run()
   if (!GetNativeWindow(30000))
     return;
 
-  m_firstrun=false;
+  m_firstrun = false;
   android_printf(" => running XBMC_Run...");
 
   CAppParamParser appParamParser;
@@ -1564,10 +1563,10 @@ void CXBMCApp::surfaceCreated(CJNISurfaceHolder holder)
     android_printf(" => invalid ANativeWindow object");
     return;
   }
-  if(!m_firstrun)
-  {
+
+  if (!m_firstrun)
     XBMC_SetupDisplay();
-  }
+
   g_application.SetRenderGUI(true);
 }
 
