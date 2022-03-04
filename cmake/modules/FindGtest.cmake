@@ -18,7 +18,7 @@ if(ENABLE_INTERNAL_GTEST)
 
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  set(MODULE_LC googletest)
+  set(MODULE_LC gtest)
 
   SETUP_BUILD_VARS()
 
