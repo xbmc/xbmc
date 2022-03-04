@@ -31,10 +31,13 @@ namespace GL
 class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
 {
 public:
-  BaseYUV2RGBGLSLShader(bool rect, EShaderFormat format, bool stretch,
-                        AVColorPrimaries dst, AVColorPrimaries src,
+  BaseYUV2RGBGLSLShader(bool rect,
+                        EShaderFormat format,
+                        bool stretch,
+                        AVColorPrimaries dst,
+                        AVColorPrimaries src,
                         bool toneMap,
-                        int toneMapMethod,
+                        ETONEMAPMETHOD toneMapMethod,
                         std::shared_ptr<GLSLOutput> output);
   ~BaseYUV2RGBGLSLShader() override;
 
@@ -48,7 +51,7 @@ public:
   void SetNonLinStretch(float stretch) { m_stretch = stretch; }
   void SetDisplayMetadata(bool hasDisplayMetadata, AVMasteringDisplayMetadata displayMetadata,
                           bool hasLightMetadata, AVContentLightMetadata lightMetadata);
-  void SetToneMapParam(int method, float param);
+  void SetToneMapParam(ETONEMAPMETHOD method, float param);
   float GetLuminanceValue() const;
 
   void SetConvertFullColorRange(bool convertFullRange) { m_convertFullRange = convertFullRange; }
@@ -78,7 +81,7 @@ protected:
   bool m_hasLightMetadata = false;
   AVContentLightMetadata m_lightMetadata;
   bool m_toneMapping = false;
-  int m_toneMappingMethod = VS_TONEMAPMETHOD_REINHARD;
+  ETONEMAPMETHOD m_toneMappingMethod = VS_TONEMAPMETHOD_REINHARD;
   float m_toneMappingParam = 1.0;
 
   bool m_colorConversion{false};
@@ -126,9 +129,10 @@ public:
   YUV2RGBProgressiveShader(bool rect,
                            EShaderFormat format,
                            bool stretch,
-                           AVColorPrimaries dstPrimaries, AVColorPrimaries srcPrimaries,
+                           AVColorPrimaries dstPrimaries,
+                           AVColorPrimaries srcPrimaries,
                            bool toneMap,
-                           int toneMapMethod,
+                           ETONEMAPMETHOD toneMapMethod,
                            std::shared_ptr<GLSLOutput> output);
 };
 
@@ -138,9 +142,10 @@ public:
   YUV2RGBFilterShader4(bool rect,
                        EShaderFormat format,
                        bool stretch,
-                       AVColorPrimaries dstPrimaries, AVColorPrimaries srcPrimaries,
+                       AVColorPrimaries dstPrimaries,
+                       AVColorPrimaries srcPrimaries,
                        bool toneMap,
-                       int toneMapMethod,
+                       ETONEMAPMETHOD toneMapMethod,
                        ESCALINGMETHOD method,
                        std::shared_ptr<GLSLOutput> output);
   ~YUV2RGBFilterShader4() override;

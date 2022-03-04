@@ -2718,7 +2718,7 @@ void CLinuxRendererGL::DeleteCLUT()
 void CLinuxRendererGL::CheckVideoParameters(int index)
 {
   CPictureBuffer &buf = m_buffers[index];
-  int method = m_videoSettings.m_ToneMapMethod;
+  ETONEMAPMETHOD method = m_videoSettings.m_ToneMapMethod;
 
   AVColorPrimaries srcPrim = GetSrcPrimaries(buf.m_srcPrimaries, buf.image.width, buf.image.height);
   if (srcPrim != m_srcPrimaries)

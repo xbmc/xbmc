@@ -4452,7 +4452,8 @@ bool CVideoDatabase::GetVideoSettings(int idFile, CVideoSettings &settings)
       settings.m_StereoMode = m_pDS->fv("StereoMode").get_asInt();
       settings.m_StereoInvert = m_pDS->fv("StereoInvert").get_asBool();
       settings.m_VideoStream = m_pDS->fv("VideoStream").get_asInt();
-      settings.m_ToneMapMethod = m_pDS->fv("TonemapMethod").get_asInt();
+      settings.m_ToneMapMethod =
+          static_cast<ETONEMAPMETHOD>(m_pDS->fv("TonemapMethod").get_asInt());
       settings.m_ToneMapParam = m_pDS->fv("TonemapParam").get_asFloat();
       settings.m_Orientation = m_pDS->fv("Orientation").get_asInt();
       settings.m_CenterMixLevel = m_pDS->fv("CenterMixLevel").get_asInt();

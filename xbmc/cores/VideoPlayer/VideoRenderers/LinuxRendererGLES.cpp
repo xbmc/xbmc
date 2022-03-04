@@ -850,7 +850,7 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
   }
 
   bool toneMap = false;
-  int toneMapMethod = m_videoSettings.m_ToneMapMethod;
+  ETONEMAPMETHOD toneMapMethod = m_videoSettings.m_ToneMapMethod;
 
   if (!m_passthroughHDR && toneMapMethod != VS_TONEMAPMETHOD_OFF)
   {
@@ -985,7 +985,7 @@ void CLinuxRendererGLES::RenderToFBO(int index, int field)
   }
 
   bool toneMap = false;
-  int toneMapMethod = m_videoSettings.m_ToneMapMethod;
+  ETONEMAPMETHOD toneMapMethod = m_videoSettings.m_ToneMapMethod;
 
   if (toneMapMethod != VS_TONEMAPMETHOD_OFF)
   {

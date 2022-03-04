@@ -285,8 +285,12 @@ void COutputShader::GetDefines(DefinesMap& map) const
   }
 }
 
-bool COutputShader::Create(
-    bool useLUT, bool useDithering, int ditherDepth, bool toneMapping, int toneMethod, bool HLGtoPQ)
+bool COutputShader::Create(bool useLUT,
+                           bool useDithering,
+                           int ditherDepth,
+                           bool toneMapping,
+                           ETONEMAPMETHOD toneMethod,
+                           bool HLGtoPQ)
 {
   m_useLut = useLUT;
   m_ditherDepth = ditherDepth;
@@ -355,7 +359,7 @@ void COutputShader::SetDisplayMetadata(bool hasDisplayMetadata, AVMasteringDispl
   m_lightMetadata = lightMetadata;
 }
 
-void COutputShader::SetToneMapParam(int method, float param)
+void COutputShader::SetToneMapParam(ETONEMAPMETHOD method, float param)
 {
   m_toneMappingMethod = method;
   m_toneMappingParam = param;

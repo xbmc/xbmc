@@ -115,8 +115,13 @@ bool CMediaSettings::Load(const TiXmlNode *settings)
       m_defaultVideoSettings.m_StereoMode = 0;
     if (!XMLUtils::GetInt(pElement, "centermixlevel", m_defaultVideoSettings.m_CenterMixLevel))
       m_defaultVideoSettings.m_CenterMixLevel = 0;
-    if (!XMLUtils::GetInt(pElement, "tonemapmethod", m_defaultVideoSettings.m_ToneMapMethod))
-      m_defaultVideoSettings.m_ToneMapMethod = VS_TONEMAPMETHOD_REINHARD;
+
+    int toneMapMethod;
+    if (!XMLUtils::GetInt(pElement, "tonemapmethod", toneMapMethod, VS_TONEMAPMETHOD_OFF,
+                          VS_TONEMAPMETHOD_MAX))
+      toneMapMethod = VS_TONEMAPMETHOD_REINHARD;
+    m_defaultVideoSettings.m_ToneMapMethod = static_cast<ETONEMAPMETHOD>(toneMapMethod);
+
     if (!XMLUtils::GetFloat(pElement, "tonemapparam", m_defaultVideoSettings.m_ToneMapParam, 0.1f, 5.0f))
       m_defaultVideoSettings.m_ToneMapParam = 1.0f;
   }

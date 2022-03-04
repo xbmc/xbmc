@@ -210,8 +210,13 @@ void CRendererBase::AddVideoPicture(const VideoPicture& picture, int index)
   }
 }
 
-void CRendererBase::Render(int index, int index2, CD3DTexture& target, const CRect& sourceRect, 
-                           const CRect& destRect, const CRect& viewRect, unsigned flags)
+void CRendererBase::Render(int index,
+                           int index2,
+                           CD3DTexture& target,
+                           const CRect& sourceRect,
+                           const CRect& destRect,
+                           const CRect& viewRect,
+                           unsigned flags)
 {
   m_iBufferIndex = index;
   ManageTextures();
@@ -429,7 +434,7 @@ void CRendererBase::UpdateVideoFilters()
 void CRendererBase::CheckVideoParameters()
 {
   CRenderBuffer* buf = m_renderBuffers[m_iBufferIndex];
-  int method = m_videoSettings.m_ToneMapMethod;
+  ETONEMAPMETHOD method = m_videoSettings.m_ToneMapMethod;
 
   bool isHDRPQ = (buf->color_transfer == AVCOL_TRC_SMPTE2084 && buf->primaries == AVCOL_PRI_BT2020);
 

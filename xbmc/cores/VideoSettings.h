@@ -112,7 +112,7 @@ public:
   int m_StereoMode;
   bool m_StereoInvert;
   int m_VideoStream;
-  int m_ToneMapMethod;
+  ETONEMAPMETHOD m_ToneMapMethod;
   float m_ToneMapParam;
   int m_Orientation;
   int m_CenterMixLevel; // relative to metadata or default
