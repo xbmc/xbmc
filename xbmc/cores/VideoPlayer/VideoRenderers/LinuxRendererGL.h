@@ -216,7 +216,7 @@ protected:
   bool m_fullRange;
   AVColorPrimaries m_srcPrimaries;
   bool m_toneMap = false;
-  int m_toneMapMethod = 0;
+  ETONEMAPMETHOD m_toneMapMethod = VS_TONEMAPMETHOD_OFF;
   float m_clearColour = 0.0f;
   bool m_pboSupported = true;
   bool m_pboUsed = false;

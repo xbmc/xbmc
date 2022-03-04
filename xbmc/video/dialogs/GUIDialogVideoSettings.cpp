@@ -174,7 +174,8 @@ void CGUIDialogVideoSettings::OnSettingChanged(const std::shared_ptr<const CSett
   else if (settingId == SETTING_VIDEO_TONEMAP_METHOD)
   {
     CVideoSettings vs = g_application.GetAppPlayer().GetVideoSettings();
-    vs.m_ToneMapMethod = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
+    vs.m_ToneMapMethod = static_cast<ETONEMAPMETHOD>(
+        std::static_pointer_cast<const CSettingInt>(setting)->GetValue());
     g_application.GetAppPlayer().SetVideoSettings(vs);
   }
   else if (settingId == SETTING_VIDEO_TONEMAP_PARAM)
