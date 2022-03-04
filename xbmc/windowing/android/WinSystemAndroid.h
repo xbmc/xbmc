@@ -16,8 +16,11 @@
 #include "utils/HDRCapabilities.h"
 #include "windowing/WinSystem.h"
 
+#include <memory>
+
 class CDecoderFilterManager;
 class IDispResource;
+class CNativeWindow;
 
 class CWinSystemAndroid : public CWinSystemBase, public ITimerCallback
 {
@@ -63,7 +66,7 @@ protected:
   CAndroidUtils *m_android;
 
   EGLDisplay m_nativeDisplay;
-  EGLNativeWindowType m_nativeWindow;
+  std::shared_ptr<CNativeWindow> m_nativeWindow;
 
   int m_displayWidth;
   int m_displayHeight;

@@ -219,17 +219,14 @@ CAndroidUtils::CAndroidUtils()
 
 bool CAndroidUtils::GetNativeResolution(RESOLUTION_INFO* res) const
 {
-  EGLNativeWindowType nativeWindow =
-      static_cast<EGLNativeWindowType>(CXBMCApp::Get().GetNativeWindow(30000));
+  const std::shared_ptr<CNativeWindow> nativeWindow = CXBMCApp::Get().GetNativeWindow(30000);
   if (!nativeWindow)
     return false;
 
   if (!m_width || !m_height)
   {
-    ANativeWindow_acquire(nativeWindow);
-    m_width = ANativeWindow_getWidth(nativeWindow);
-    m_height= ANativeWindow_getHeight(nativeWindow);
-    ANativeWindow_release(nativeWindow);
+    m_width = nativeWindow->GetWidth();
+    m_height = nativeWindow->GetHeight();
     CLog::Log(LOGINFO, "CAndroidUtils: window resolution: {}x{}", m_width, m_height);
   }
 

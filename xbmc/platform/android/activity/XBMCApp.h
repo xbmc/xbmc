@@ -59,6 +59,28 @@ struct androidPackage
   int icon;
 };
 
+class CNativeWindow
+{
+  friend class CWinSystemAndroidGLESContext; // meh
+
+public:
+  static std::shared_ptr<CNativeWindow> CreateFromSurface(CJNISurfaceHolder holder);
+  ~CNativeWindow();
+
+  bool SetBuffersGeometry(int width, int height, int format);
+  int32_t GetWidth() const;
+  int32_t GetHeight() const;
+
+private:
+  explicit CNativeWindow(ANativeWindow* window);
+
+  CNativeWindow() = delete;
+  CNativeWindow(const CNativeWindow&) = delete;
+  CNativeWindow& operator=(const CNativeWindow&) = delete;
+
+  ANativeWindow* m_window{nullptr};
+};
+
 class CActivityResultEvent : public CEvent
 {
 public:
@@ -147,8 +169,9 @@ public:
   bool Stop(int exitCode);
   void Quit();
 
-  ANativeWindow* GetNativeWindow(int timeout);
-  int SetBuffersGeometry(int width, int height, int format);
+  std::shared_ptr<CNativeWindow> GetNativeWindow(int timeout) const;
+
+  bool SetBuffersGeometry(int width, int height, int format);
   static int android_printf(const char *format, ...);
 
   int GetBatteryLevel() const;
@@ -257,7 +280,7 @@ private:
   CCriticalSection m_activityResultMutex;
   std::vector<CActivityResultEvent*> m_activityResultEvents;
 
-  ANativeWindow* m_window{nullptr};
+  std::shared_ptr<CNativeWindow> m_window;
 
   CVideoSyncAndroid* m_syncImpl{nullptr};
   CEvent m_vsyncEvent;

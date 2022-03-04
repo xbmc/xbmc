@@ -46,7 +46,6 @@ using namespace std::chrono_literals;
 CWinSystemAndroid::CWinSystemAndroid()
 {
   m_nativeDisplay = EGL_NO_DISPLAY;
-  m_nativeWindow = nullptr;
 
   m_displayWidth = 0;
   m_displayHeight = 0;
@@ -62,9 +61,6 @@ CWinSystemAndroid::CWinSystemAndroid()
 
 CWinSystemAndroid::~CWinSystemAndroid()
 {
-  if (m_nativeWindow)
-    ANativeWindow_release(m_nativeWindow);
-
   delete m_dispResetTimer;
 }
 
@@ -139,16 +135,13 @@ bool CWinSystemAndroid::CreateNewWindow(const std::string& name,
   m_stereo_mode = stereo_mode;
   m_bFullScreen = fullScreen;
 
-  if (m_nativeWindow)
-    ANativeWindow_release(m_nativeWindow);
-
   m_nativeWindow = CXBMCApp::Get().GetNativeWindow(2000);
   if (!m_nativeWindow)
   {
     CLog::Log(LOGERROR, "CWinSystemAndroid::CreateNewWindow: failed");
     return false;
   }
-  ANativeWindow_acquire(m_nativeWindow);
+
   m_android->SetNativeResolution(res);
 
   return true;
@@ -157,11 +150,7 @@ bool CWinSystemAndroid::CreateNewWindow(const std::string& name,
 bool CWinSystemAndroid::DestroyWindow()
 {
   CLog::Log(LOGINFO, "CWinSystemAndroid::{}", __FUNCTION__);
-  if (m_nativeWindow)
-  {
-    ANativeWindow_release(m_nativeWindow);
-    m_nativeWindow = nullptr;
-  }
+  m_nativeWindow.reset();
   m_bWindowCreated = false;
   return true;
 }
