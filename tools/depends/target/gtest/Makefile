@@ -1,10 +1,9 @@
-include ../../Makefile.include GOOGLETEST-VERSION ../../download-files.include
-DEPS = ../../Makefile.include Makefile GOOGLETEST-VERSION ../../download-files.include
+include ../../Makefile.include GTEST-VERSION ../../download-files.include
+DEPS = ../../Makefile.include Makefile GTEST-VERSION ../../download-files.include
 
 LIBDYLIB=$(PLATFORM)/build/lib/libgtest.a
 
 all: .installed-$(PLATFORM)
-
 
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)

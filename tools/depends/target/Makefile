@@ -22,7 +22,7 @@ DEPENDS = \
   gettext \
   gmp \
   gnutls \
-  googletest \
+  gtest \
   harfbuzz \
   libass \
   libbluray \
@@ -68,7 +68,7 @@ else
 endif
 
 ifeq ($(OS),darwin_embedded)
-  EXCLUDED_DEPENDS = libcec libusb googletest
+  EXCLUDED_DEPENDS = libcec libusb gtest
   ifeq ($(TARGET_PLATFORM),appletvos)
     DEPENDS += boblight
     EXCLUDED_DEPENDS += libshairplay libplist
@@ -84,7 +84,7 @@ ifeq ($(OS),osx)
 endif
 
 ifeq ($(OS),android)
-  EXCLUDED_DEPENDS = libcec libusb googletest
+  EXCLUDED_DEPENDS = libcec libusb gtest
   DEPENDS += dummy-libxbmc libuuid libandroidjni libzip
   PYMODULE_DEPS = dummy-libxbmc
   LIBUUID = libuuid
