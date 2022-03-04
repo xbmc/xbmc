@@ -68,7 +68,8 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(EShaderFormat format,
 
   VertexShader()->LoadSource("gles_yuv2rgb.vert", m_defines);
 
-  CLog::Log(LOGDEBUG, "GLES: BaseYUV2RGBGLSLShader: defines:\n{}", m_defines);
+  CLog::Log(LOGDEBUG, "GLES: using shader format: {}", m_format);
+  CLog::Log(LOGDEBUG, "GLES: using tonemap method: {}", m_toneMappingMethod);
 
   m_convMatrix.SetSourceColorPrimaries(srcPrimaries).SetDestinationColorPrimaries(dstPrimaries);
 }
