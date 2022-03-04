@@ -9,8 +9,8 @@ dists=${DISTS:-"groovy focal bionic"}
 #debuildopts="--no-lintian -d"
 gpgkey=${GPG_KEY:-"jenkins (jenkins build bot) <jenkins@kodi.tv>"}
 ppa=${PPA:-"nightly"}
-debianrepo="${DEBIAN:-"https://github.com/wsnipex/xbmc-packaging"}"
-
+debianrepo=${DEBIAN:-"https://github.com/xbmc/xbmc-packaging"}
+debianbranch=${DEBIANBRANCH:-"Matrix"}
 version="${releaseversion}+git$(date '+%Y%m%d.%H%M')-${tag}"
 debversion="${epoch}:${version}"
 origtarball="kodi_${version}.orig.tar.gz"
@@ -30,7 +30,7 @@ date '+%Y%m%d' > BUILDDATE
 echo $gitrev > VERSION
 
 # download packaging files
-wget -O - ${debianrepo}/archive/master.tar.gz | tar xzv --strip-components=1 --exclude=".git*" -f -
+wget -O - ${debianrepo}/archive/${debianbranch}.tar.gz | tar xzv --strip-components=1 --exclude=".git*" -f -
 [ -d debian ] || { echo "ERROR: directory debian does not exist"; exit 3; }
 
 # add tarballs for internal ffmpeg, libdvd
