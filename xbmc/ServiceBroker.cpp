@@ -332,3 +332,18 @@ void CServiceBroker::UnregisterCPUInfo()
 {
   g_serviceBroker.m_cpuInfo.reset();
 }
+
+void CServiceBroker::RegisterTextureCache(const std::shared_ptr<CTextureCache>& cache)
+{
+  g_serviceBroker.m_textureCache = cache;
+}
+
+void CServiceBroker::UnregisterTextureCache()
+{
+  g_serviceBroker.m_textureCache.reset();
+}
+
+std::shared_ptr<CTextureCache> CServiceBroker::GetTextureCache()
+{
+  return g_serviceBroker.m_textureCache;
+}

@@ -190,10 +190,11 @@ void AnnounceBridge(ANNOUNCEMENT::AnnouncementFlag flag,
 
     // Thumb cache process
     bool needsRecaching;
-    std::string cachedIcon(CTextureCache::GetInstance().CheckCachedImage(thumb, needsRecaching));
+    std::string cachedIcon(
+        CServiceBroker::GetTextureCache()->CheckCachedImage(thumb, needsRecaching));
     if (cachedIcon.empty())
     {
-      cachedIcon = CTextureCache::GetInstance().CacheImage(thumb);
+      cachedIcon = CServiceBroker::GetTextureCache()->CacheImage(thumb);
     }
     std::string iconRealPath = CSpecialProtocol::TranslatePath(cachedIcon);
     item[@"thumb"] = @(iconRealPath.c_str());

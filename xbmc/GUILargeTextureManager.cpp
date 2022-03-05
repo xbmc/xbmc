@@ -43,7 +43,7 @@ bool CImageLoader::DoWork()
     return false;
 
   if (m_use_cache)
-    loadPath = CTextureCache::GetInstance().CheckCachedImage(texturePath, needsChecking);
+    loadPath = CServiceBroker::GetTextureCache()->CheckCachedImage(texturePath, needsChecking);
   else
     loadPath = texturePath;
 
@@ -64,7 +64,7 @@ bool CImageLoader::DoWork()
     if (m_texture)
     {
       if (needsChecking)
-        CTextureCache::GetInstance().BackgroundCacheImage(texturePath);
+        CServiceBroker::GetTextureCache()->BackgroundCacheImage(texturePath);
 
       return true;
     }
@@ -77,7 +77,7 @@ bool CImageLoader::DoWork()
     return false; // We're done
 
   // not in our texture cache or it failed to load from it, so try and load directly and then cache the result
-  CTextureCache::GetInstance().CacheImage(texturePath, &m_texture);
+  CServiceBroker::GetTextureCache()->CacheImage(texturePath, &m_texture);
   return (m_texture != NULL);
 }
 

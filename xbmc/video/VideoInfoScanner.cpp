@@ -1551,7 +1551,7 @@ namespace VIDEO
       {
         // cache the image to determine sizing
         CTextureDetails details;
-        if (CTextureCache::GetInstance().CacheImage(artFile->GetPath(), details))
+        if (CServiceBroker::GetTextureCache()->CacheImage(artFile->GetPath(), details))
         {
           candidate = GetArtTypeFromSize(details.width, details.height);
           if (itemArt.find(candidate) != itemArt.end())
@@ -1669,7 +1669,7 @@ namespace VIDEO
     for (const auto& artType : artTypes)
     {
       if (art.find(artType) != art.end())
-        CTextureCache::GetInstance().BackgroundCacheImage(art[artType]);
+        CServiceBroker::GetTextureCache()->BackgroundCacheImage(art[artType]);
     }
 
     pItem->SetArt(art);
@@ -2182,7 +2182,7 @@ namespace VIDEO
         if (i->thumb.empty() && !i->thumbUrl.GetFirstUrlByType().m_url.empty())
           i->thumb = CScraperUrl::GetThumbUrl(i->thumbUrl.GetFirstUrlByType());
         if (!i->thumb.empty())
-          CTextureCache::GetInstance().BackgroundCacheImage(i->thumb);
+          CServiceBroker::GetTextureCache()->BackgroundCacheImage(i->thumb);
       }
     }
   }

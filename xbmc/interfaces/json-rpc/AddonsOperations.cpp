@@ -301,7 +301,7 @@ void CAddonsOperations::FillDetails(const AddonPtr& addon,
       // We need to check the existence of fanart and thumbnails as the addon simply
       // holds where the art will be, not whether it exists.
       bool needsRecaching;
-      std::string image = CTextureCache::GetInstance().CheckCachedImage(url, needsRecaching);
+      std::string image = CServiceBroker::GetTextureCache()->CheckCachedImage(url, needsRecaching);
       if (!image.empty() || CFile::Exists(url))
         object[field] = CTextureUtils::GetWrappedImageURL(url);
       else

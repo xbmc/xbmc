@@ -727,6 +727,8 @@ bool CApplication::Initialize()
       return false;
     }
 
+    CServiceBroker::RegisterTextureCache(std::make_shared<CTextureCache>());
+
     std::string defaultSkin = std::static_pointer_cast<const CSettingString>(setting)->GetDefault();
     if (!LoadSkin(settings->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN)))
     {
@@ -1183,9 +1185,9 @@ bool CApplication::LoadSkin(const std::string& skinID)
   CServiceBroker::GetGUI()->GetWindowManager().SetCallback(*this);
   //@todo should be done by GUIComponents
   CServiceBroker::GetGUI()->GetWindowManager().Initialize();
-  CTextureCache::GetInstance().Initialize();
   CServiceBroker::GetGUI()->GetAudioManager().Enable(true);
   CServiceBroker::GetGUI()->GetAudioManager().Load();
+  CServiceBroker::GetTextureCache()->Initialize();
 
   if (g_SkinInfo->HasSkinFile("DialogFullScreenInfo.xml"))
     CServiceBroker::GetGUI()->GetWindowManager().Add(new CGUIDialogFullScreenInfo);
@@ -1245,7 +1247,7 @@ void CApplication::UnloadSkin()
     gui->GetAudioManager().Enable(false);
 
     gui->GetWindowManager().DeInitialize();
-    CTextureCache::GetInstance().Deinitialize();
+    CServiceBroker::GetTextureCache()->Deinitialize();
 
     // remove the skin-dependent window
     gui->GetWindowManager().Delete(WINDOW_DIALOG_FULLSCREEN_INFO);
@@ -2403,6 +2405,8 @@ bool CApplication::Cleanup()
 
     CLog::Log(LOGINFO, "unload skin");
     UnloadSkin();
+
+    CServiceBroker::UnregisterTextureCache();
 
     // stop all remaining scripts; must be done after skin has been unloaded,
     // not before some windows still need it when deinitializing during skin

@@ -9,6 +9,7 @@
 #include "ThumbLoader.h"
 
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "TextureCache.h"
 #include "filesystem/File.h"
 
@@ -98,7 +99,7 @@ bool CProgramThumbLoader::FillThumb(CFileItem &item)
 
   if (!thumb.empty())
   {
-    CTextureCache::GetInstance().BackgroundCacheImage(thumb);
+    CServiceBroker::GetTextureCache()->BackgroundCacheImage(thumb);
     item.SetArt("thumb", thumb);
   }
   return true;

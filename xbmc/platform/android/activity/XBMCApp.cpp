@@ -738,7 +738,7 @@ void CXBMCApp::UpdateSessionMetadata()
     thumb = infoMgr.GetImage(MUSICPLAYER_COVER, -1);
   }
   bool needrecaching = false;
-  std::string cachefile = CTextureCache::GetInstance().CheckCachedImage(thumb, needrecaching);
+  std::string cachefile = CServiceBroker::GetTextureCache()->CheckCachedImage(thumb, needrecaching);
   if (!cachefile.empty())
   {
     std::string actualfile = CSpecialProtocol::TranslatePath(cachefile);

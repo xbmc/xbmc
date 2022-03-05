@@ -64,6 +64,7 @@ class CMediaManager;
 class CCPUInfo;
 class CLog;
 class CPlatform;
+class CTextureCache;
 
 namespace WSDiscovery
 {
@@ -167,6 +168,10 @@ public:
   static void RegisterCPUInfo(std::shared_ptr<CCPUInfo> cpuInfo);
   static void UnregisterCPUInfo();
 
+  static void RegisterTextureCache(const std::shared_ptr<CTextureCache>& cache);
+  static void UnregisterTextureCache();
+  static std::shared_ptr<CTextureCache> GetTextureCache();
+
 private:
   std::unique_ptr<CLog> m_logging;
   std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> m_pAnnouncementManager;
@@ -177,6 +182,7 @@ private:
   CSettingsComponent* m_pSettingsComponent;
   CDecoderFilterManager* m_decoderFilterManager;
   std::shared_ptr<CCPUInfo> m_cpuInfo;
+  std::shared_ptr<CTextureCache> m_textureCache;
 };
 
 XBMC_GLOBAL_REF(CServiceBroker, g_serviceBroker);
