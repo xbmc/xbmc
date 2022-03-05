@@ -6,6 +6,8 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "ThreadImpl.h"
+
 #include <limits.h>
 #include <mutex>
 #if defined(TARGET_ANDROID)
@@ -51,37 +53,6 @@ int ThreadPriorityToNativePriority(const ThreadPriority& priority)
 }
 
 } // namespace
-
-namespace XbmcThreads
-{
-// ==========================================================
-static pthread_mutexattr_t recursiveAttr;
-
-static bool SetRecursiveAttr()
-{
-  static bool alreadyCalled = false; // initialized to 0 in the data segment prior to startup init code running
-  if (!alreadyCalled)
-  {
-    pthread_mutexattr_init(&recursiveAttr);
-    pthread_mutexattr_settype(&recursiveAttr, PTHREAD_MUTEX_RECURSIVE);
-#if !defined(TARGET_ANDROID)
-    pthread_mutexattr_setprotocol(&recursiveAttr, PTHREAD_PRIO_INHERIT);
-#endif
-    alreadyCalled = true;
-  }
-  return true; // note, we never call destroy.
-}
-
-static bool recursiveAttrSet = SetRecursiveAttr();
-
-pthread_mutexattr_t* CRecursiveMutex::getRecursiveAttr()
-{
-  if (!recursiveAttrSet) // this is only possible in the single threaded startup code
-    recursiveAttrSet = SetRecursiveAttr();
-  return &recursiveAttr;
-}
-// ==========================================================
-}
 
 static pid_t GetCurrentThreadPid_()
 {
@@ -135,15 +106,23 @@ static int GetUserMaxPriority(int maxPriority)
 }
 #endif
 
-void CThread::SetThreadInfo()
+std::unique_ptr<IThreadImpl> IThreadImpl::CreateThreadImpl(std::thread::native_handle_type handle)
 {
-  m_lwpId = GetCurrentThreadPid_();
+  return std::make_unique<CThreadImplPosix>(handle);
+}
 
+CThreadImplPosix::CThreadImplPosix(std::thread::native_handle_type handle)
+  : IThreadImpl(handle), m_threadID(GetCurrentThreadPid_())
+{
+}
+
+void CThreadImplPosix::SetThreadInfo(const std::string& name)
+{
 #if defined(TARGET_DARWIN)
-  pthread_setname_np(m_ThreadName.c_str());
+  pthread_setname_np(name.c_str());
 #elif defined(TARGET_LINUX) && defined(__GLIBC__)
   // mthread must be set by here.
-  pthread_setname_np(m_thread->native_handle(), m_ThreadName.c_str());
+  pthread_setname_np(m_handle, name.c_str());
 #endif
 
 #ifdef RLIMIT_NICE
@@ -156,21 +135,19 @@ void CThread::SetThreadInfo()
   {
     // start thread with nice level of application
     int appNice = getpriority(PRIO_PROCESS, getpid());
-    if (setpriority(PRIO_PROCESS, m_lwpId, appNice) != 0)
+    if (setpriority(PRIO_PROCESS, m_threadID, appNice) != 0)
       CLog::Log(LOGERROR, "{}: error {}", __FUNCTION__, strerror(errno));
   }
 #endif
 }
 
-bool CThread::SetPriority(const ThreadPriority& priority)
+bool CThreadImplPosix::SetPriority(const ThreadPriority& priority)
 {
   bool bReturn = false;
 
-  std::unique_lock<CCriticalSection> lockIt(m_CriticalSection);
+  std::unique_lock<CCriticalSection> lockIt(m_criticalSection);
 
-  pid_t tid = static_cast<pid_t>(m_lwpId);
-
-  if (!tid)
+  if (!m_handle)
     bReturn = false;
 #ifdef RLIMIT_NICE
   else
@@ -189,7 +166,7 @@ bool CThread::SetPriority(const ThreadPriority& priority)
     const int appNice = getpriority(PRIO_PROCESS, getpid());
     const int newNice = appNice - prio;
 
-    if (setpriority(PRIO_PROCESS, m_lwpId, newNice) == 0)
+    if (setpriority(PRIO_PROCESS, m_threadID, newNice) == 0)
       bReturn = true;
     else
       CLog::Log(LOGERROR, "{}: error {}", __FUNCTION__, strerror(errno));

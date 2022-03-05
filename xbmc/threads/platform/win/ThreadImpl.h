@@ -8,7 +8,20 @@
 
 #pragma once
 
-#include <windows.h>
+#include "threads/IThreadImpl.h"
+#include "threads/SingleLock.h"
 
-typedef HANDLE ThreadLwpId;
+class CThreadImplWin : public IThreadImpl
+{
+public:
+  CThreadImplWin(std::thread::native_handle_type handle);
 
+  ~CThreadImplWin() override = default;
+
+  void SetThreadInfo(const std::string& name) override;
+
+  bool SetPriority(const ThreadPriority& priority) override;
+
+private:
+  CCriticalSection m_criticalSection;
+};
