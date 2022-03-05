@@ -14,6 +14,7 @@
 #include "GUIInfoManager.h"
 #include "GUIPassword.h"
 #include "GUITexture.h"
+#include "ServiceBroker.h"
 #include "WindowIDs.h"
 #include "addons/Skin.h"
 #include "addons/gui/GUIWindowAddonBrowser.h"
@@ -151,7 +152,6 @@
 using namespace KODI;
 using namespace PVR;
 using namespace PERIPHERALS;
-using namespace MESSAGING;
 
 CGUIWindowManager::CGUIWindowManager()
 {
@@ -170,7 +170,7 @@ void CGUIWindowManager::Initialize()
 
   LoadNotOnDemandWindows();
 
-  CApplicationMessenger::GetInstance().RegisterReceiver(this);
+  CServiceBroker::GetAppMessenger()->RegisterReceiver(this);
 }
 
 void CGUIWindowManager::CreateWindows()
@@ -763,7 +763,8 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const std::vector<std::str
   {
     // make sure graphics lock is not held
     CSingleExit leaveIt(CServiceBroker::GetWinSystem()->GetGfxContext());
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTIVATE_WINDOW, iWindowID, swappingWindows ? 1 : 0, nullptr, "", params);
+    CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTIVATE_WINDOW, iWindowID,
+                                               swappingWindows ? 1 : 0, nullptr, "", params);
   }
   else
   {

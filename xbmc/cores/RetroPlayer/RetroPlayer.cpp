@@ -174,7 +174,7 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
   if (bSuccess)
   {
     // Switch to fullscreen
-    MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_SWITCHTOFULLSCREEN);
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_SWITCHTOFULLSCREEN);
 
     // Initialize gameplay
     CreatePlayback(m_gameServices.GameSettings().AutosaveEnabled());

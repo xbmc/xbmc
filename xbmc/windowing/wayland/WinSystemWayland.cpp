@@ -1534,7 +1534,7 @@ void CWinSystemWayland::OnWindowShowContextMenu(const wayland::seat_t& seat, std
 
 void CWinSystemWayland::OnWindowClose()
 {
-  KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_QUIT);
 }
 
 void CWinSystemWayland::OnWindowMinimize()
@@ -1556,7 +1556,7 @@ void CWinSystemWayland::OnWindowMaximize()
 
 void CWinSystemWayland::OnClose()
 {
-  KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_QUIT);
 }
 
 bool CWinSystemWayland::MessagePump()

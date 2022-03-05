@@ -14,7 +14,6 @@
 #include "utils/Variant.h"
 
 using namespace JSONRPC;
-using namespace KODI::MESSAGING;
 
 JSONRPC_STATUS CXBMCOperations::GetInfoLabels(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
@@ -31,7 +30,8 @@ JSONRPC_STATUS CXBMCOperations::GetInfoLabels(const std::string &method, ITransp
   if (!info.empty())
   {
     std::vector<std::string> infoLabels;
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_INFOLABEL, -1, -1, static_cast<void*>(&infoLabels), "", info);
+    CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_INFOLABEL, -1, -1,
+                                               static_cast<void*>(&infoLabels), "", info);
 
     for (unsigned int i = 0; i < info.size(); i++)
     {
@@ -74,7 +74,8 @@ JSONRPC_STATUS CXBMCOperations::GetInfoBooleans(const std::string &method, ITran
   if (!info.empty())
   {
     std::vector<bool> infoLabels;
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_INFOBOOL, -1, -1, static_cast<void*>(&infoLabels), "", info);
+    CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_INFOBOOL, -1, -1,
+                                               static_cast<void*>(&infoLabels), "", info);
     for (unsigned int i = 0; i < info.size(); i++)
     {
       if (i >= infoLabels.size())

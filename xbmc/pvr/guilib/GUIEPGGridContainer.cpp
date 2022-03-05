@@ -9,6 +9,7 @@
 #include "GUIEPGGridContainer.h"
 
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "guilib/DirtyRegion.h"
 #include "guilib/GUIAction.h"
 #include "guilib/GUIMessage.h"
@@ -2408,7 +2409,7 @@ void CGUIEPGGridContainer::HandleProgrammeGrid(bool bRender, unsigned int curren
       // announce changed viewport
       const CGUIMessage msg(
           GUI_MSG_REFRESH_LIST, GetParentID(), GetID(), static_cast<int>(PVREvent::Epg));
-      KODI::MESSAGING::CApplicationMessenger::GetInstance().SendGUIMessage(msg);
+      CServiceBroker::GetAppMessenger()->SendGUIMessage(msg);
     }
   }
 

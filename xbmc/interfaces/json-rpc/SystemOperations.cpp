@@ -15,7 +15,6 @@
 #include "utils/Variant.h"
 
 using namespace JSONRPC;
-using namespace KODI::MESSAGING;
 
 JSONRPC_STATUS CSystemOperations::GetProperties(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
@@ -45,7 +44,7 @@ JSONRPC_STATUS CSystemOperations::Shutdown(const std::string &method, ITransport
 {
   if (CServiceBroker::GetPowerManager().CanPowerdown())
   {
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_POWERDOWN);
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_POWERDOWN);
     return ACK;
   }
   else
@@ -56,7 +55,7 @@ JSONRPC_STATUS CSystemOperations::Suspend(const std::string &method, ITransportL
 {
   if (CServiceBroker::GetPowerManager().CanSuspend())
   {
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_SUSPEND);
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_SUSPEND);
     return ACK;
   }
   else
@@ -67,7 +66,7 @@ JSONRPC_STATUS CSystemOperations::Hibernate(const std::string &method, ITranspor
 {
   if (CServiceBroker::GetPowerManager().CanHibernate())
   {
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_HIBERNATE);
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_HIBERNATE);
     return ACK;
   }
   else
@@ -78,7 +77,7 @@ JSONRPC_STATUS CSystemOperations::Reboot(const std::string &method, ITransportLa
 {
   if (CServiceBroker::GetPowerManager().CanReboot())
   {
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_RESTART);
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_RESTART);
     return ACK;
   }
   else

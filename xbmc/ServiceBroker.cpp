@@ -362,3 +362,19 @@ std::shared_ptr<CJobManager> CServiceBroker::GetJobManager()
 {
   return g_serviceBroker.m_jobManager;
 }
+
+void CServiceBroker::RegisterAppMessenger(
+    const std::shared_ptr<KODI::MESSAGING::CApplicationMessenger>& appMessenger)
+{
+  g_serviceBroker.m_appMessenger = appMessenger;
+}
+
+void CServiceBroker::UnregisterAppMessenger()
+{
+  g_serviceBroker.m_appMessenger.reset();
+}
+
+std::shared_ptr<KODI::MESSAGING::CApplicationMessenger> CServiceBroker::GetAppMessenger()
+{
+  return g_serviceBroker.m_appMessenger;
+}

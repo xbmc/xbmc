@@ -9,6 +9,7 @@
 #include "VideoLibrary.h"
 
 #include "PVROperations.h"
+#include "ServiceBroker.h"
 #include "TextureDatabase.h"
 #include "Util.h"
 #include "messaging/ApplicationMessenger.h"
@@ -20,7 +21,6 @@
 #include "video/VideoLibraryQueue.h"
 
 using namespace JSONRPC;
-using namespace KODI::MESSAGING;
 
 JSONRPC_STATUS CVideoLibrary::GetMovies(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
@@ -958,7 +958,7 @@ JSONRPC_STATUS CVideoLibrary::Scan(const std::string &method, ITransportLayer *t
       StringUtils::Format("updatelibrary(video, {}, {})", StringUtils::Paramify(directory),
                           parameterObject["showdialogs"].asBoolean() ? "true" : "false");
 
-  CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
+  CServiceBroker::GetAppMessenger()->SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
   return ACK;
 }
 
@@ -983,7 +983,7 @@ JSONRPC_STATUS CVideoLibrary::Export(const std::string &method, ITransportLayer 
     cmd += ")";
   }
 
-  CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
+  CServiceBroker::GetAppMessenger()->SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
   return ACK;
 }
 
@@ -1000,7 +1000,7 @@ JSONRPC_STATUS CVideoLibrary::Clean(const std::string &method, ITransportLayer *
                               parameterObject["showdialogs"].asBoolean() ? "true" : "false",
                               StringUtils::Paramify(directory));
 
-  CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
+  CServiceBroker::GetAppMessenger()->SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
   return ACK;
 }
 

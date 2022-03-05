@@ -8,6 +8,7 @@
 
 #include "DialogHelper.h"
 
+#include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 
 #include <cassert>
@@ -35,7 +36,8 @@ DialogResponse ShowYesNoCustomDialog(CVariant heading, CVariant text, CVariant n
   options.customLabel = std::move(customLabel);
   options.autoclose = autoCloseTimeout;
 
-  switch (CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_DIALOG_YESNO, -1, -1, static_cast<void*>(&options)))
+  switch (CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_DIALOG_YESNO, -1, -1,
+                                                     static_cast<void*>(&options)))
   {
   case -1:
     return DialogResponse::CHOICE_CANCELLED;
@@ -67,7 +69,8 @@ DialogResponse ShowYesNoDialogLines(CVariant heading, CVariant line0, CVariant l
   options.customLabel = "";
   options.autoclose = autoCloseTimeout;
 
-  switch (CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_DIALOG_YESNO, -1, -1, static_cast<void*>(&options)))
+  switch (CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_DIALOG_YESNO, -1, -1,
+                                                     static_cast<void*>(&options)))
   {
   case -1:
     return DialogResponse::CHOICE_CANCELLED;

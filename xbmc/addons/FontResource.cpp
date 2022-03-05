@@ -18,8 +18,6 @@
 #include "settings/SettingsComponent.h"
 
 using namespace XFILE;
-using namespace KODI::MESSAGING;
-
 
 namespace ADDON
 {
@@ -31,7 +29,8 @@ void CFontResource::OnPostInstall(bool update, bool modal)
       CServiceBroker::GetAddonMgr().GetDepsRecursive(skin, OnlyEnabledRootAddon::CHOICE_YES);
   for (const auto& it : deps)
     if (it.id == ID())
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "ReloadSkin");
+      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr,
+                                                 "ReloadSkin");
 }
 
 bool CFontResource::GetFont(const std::string& file, std::string& path) const

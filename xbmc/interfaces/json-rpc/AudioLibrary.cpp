@@ -31,7 +31,6 @@
 using namespace MUSIC_INFO;
 using namespace JSONRPC;
 using namespace XFILE;
-using namespace KODI::MESSAGING;
 
 JSONRPC_STATUS CAudioLibrary::GetProperties(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
@@ -1032,7 +1031,7 @@ JSONRPC_STATUS CAudioLibrary::Scan(const std::string &method, ITransportLayer *t
       StringUtils::Format("updatelibrary(music, {}, {})", StringUtils::Paramify(directory),
                           parameterObject["showdialogs"].asBoolean() ? "true" : "false");
 
-  CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
+  CServiceBroker::GetAppMessenger()->SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
   return ACK;
 }
 
@@ -1053,7 +1052,7 @@ JSONRPC_STATUS CAudioLibrary::Export(const std::string &method, ITransportLayer 
       cmd += ", overwrite";
     cmd += ")";
   }
-  CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
+  CServiceBroker::GetAppMessenger()->SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
   return ACK;
 }
 
@@ -1061,7 +1060,7 @@ JSONRPC_STATUS CAudioLibrary::Clean(const std::string &method, ITransportLayer *
 {
   std::string cmd = StringUtils::Format(
       "cleanlibrary(music, {})", parameterObject["showdialogs"].asBoolean() ? "true" : "false");
-  CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
+  CServiceBroker::GetAppMessenger()->SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
   return ACK;
 }
 

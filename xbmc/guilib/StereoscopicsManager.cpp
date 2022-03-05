@@ -38,8 +38,6 @@
 
 #include <stdlib.h>
 
-using namespace KODI::MESSAGING;
-
 struct StereoModeMap
 {
   const char*          name;
@@ -571,7 +569,7 @@ void CStereoscopicsManager::OnStreamChange()
   {
   case STEREOSCOPIC_PLAYBACK_MODE_ASK: // Ask
     {
-      CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE);
+      CServiceBroker::GetAppMessenger()->SendMsg(TMSG_MEDIA_PAUSE);
 
       CGUIDialogSelect* pDlgSelect = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
       pDlgSelect->Reset();
@@ -608,7 +606,7 @@ void CStereoscopicsManager::OnStreamChange()
         SetStereoModeByUser(mode);
       }
 
-      CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_UNPAUSE);
+      CServiceBroker::GetAppMessenger()->SendMsg(TMSG_MEDIA_UNPAUSE);
     }
     break;
   case STEREOSCOPIC_PLAYBACK_MODE_PREFERRED: // Stereoscopic

@@ -29,9 +29,6 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
-using namespace ADDON;
-using namespace KODI::MESSAGING;
-
 namespace ADDON
 {
 
@@ -1456,13 +1453,13 @@ void CGUIAddonWindowDialog::Show(bool show /* = true */, bool modal /* = true*/)
   if (modal)
   {
     unsigned int count = CServiceBroker::GetWinSystem()->GetGfxContext().exit();
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ADDON_DIALOG, 0, show ? 1 : 0,
-                                                 static_cast<void*>(this));
+    CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ADDON_DIALOG, 0, show ? 1 : 0,
+                                               static_cast<void*>(this));
     CServiceBroker::GetWinSystem()->GetGfxContext().restore(count);
   }
   else
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ADDON_DIALOG, 0, show ? 1 : 0,
-                                                 static_cast<void*>(this));
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ADDON_DIALOG, 0, show ? 1 : 0,
+                                               static_cast<void*>(this));
 }
 
 void CGUIAddonWindowDialog::Show_Internal(bool show /* = true */)

@@ -117,7 +117,7 @@ NSTimeInterval REPEATED_KEYPRESS_PAUSE_S = 0.05;
   switch (receivedEvent.subtype)
   {
     case UIEventSubtypeRemoteControlTogglePlayPause:
-      KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(
+      CServiceBroker::GetAppMessenger()->PostMsg(
           TMSG_GUI_ACTION, WINDOW_INVALID, -1,
           static_cast<void*>(new CAction(ACTION_PLAYER_PLAYPAUSE)));
       break;
@@ -146,7 +146,7 @@ NSTimeInterval REPEATED_KEYPRESS_PAUSE_S = 0.05;
     case UIEventSubtypeRemoteControlEndSeekingBackward:
       // restore to normal playback speed.
       if (g_application.GetAppPlayer().IsPlaying() && !g_application.GetAppPlayer().IsPaused())
-        KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(
+        CServiceBroker::GetAppMessenger()->PostMsg(
             TMSG_GUI_ACTION, WINDOW_INVALID, -1,
             static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
       break;

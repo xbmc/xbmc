@@ -23,8 +23,6 @@
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 
-using namespace KODI::MESSAGING;
-
 /*! \brief Load a profile.
  *  \param params The parameters.
  *  \details params[0] = The profile name.
@@ -41,7 +39,7 @@ static int LoadProfile(const std::vector<std::string>& params)
       && (profileManager->GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE
         || g_passwordManager.IsProfileLockUnlocked(index,bCanceled,prompt)))
   {
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_LOADPROFILE, index);
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_LOADPROFILE, index);
   }
 
   return 0;

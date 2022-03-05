@@ -9,6 +9,7 @@
 #include "InputOperations.h"
 
 #include "Application.h"
+#include "ServiceBroker.h"
 #include "guilib/GUIAudioManager.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindow.h"
@@ -20,7 +21,6 @@
 #include "utils/Variant.h"
 
 using namespace JSONRPC;
-using namespace KODI::MESSAGING;
 
 //! @todo the breakage of the screensaver should be refactored
 //! to one central super duper place for getting rid of
@@ -44,9 +44,11 @@ JSONRPC_STATUS CInputOperations::SendAction(int actionID, bool wakeScreensaver /
       gui->GetAudioManager().PlayActionSound(actionID);
 
     if (waitResult)
-      CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(actionID)));
+      CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+                                                 static_cast<void*>(new CAction(actionID)));
     else
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(actionID)));
+      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+                                                 static_cast<void*>(new CAction(actionID)));
   }
   return ACK;
 }
@@ -54,7 +56,7 @@ JSONRPC_STATUS CInputOperations::SendAction(int actionID, bool wakeScreensaver /
 JSONRPC_STATUS CInputOperations::activateWindow(int windowID)
 {
   if(!handleScreenSaver())
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTIVATE_WINDOW, windowID, 0);
+    CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTIVATE_WINDOW, windowID, 0);
 
   return ACK;
 }
@@ -71,7 +73,7 @@ JSONRPC_STATUS CInputOperations::SendText(const std::string &method, ITransportL
   CGUIMessage msg(GUI_MSG_SET_TEXT, 0, window->GetFocusedControlID());
   msg.SetLabel(parameterObject["text"].asString());
   msg.SetParam1(parameterObject["done"].asBoolean() ? 1 : 0);
-  CApplicationMessenger::GetInstance().SendGUIMessage(msg, window->GetID());
+  CServiceBroker::GetAppMessenger()->SendGUIMessage(msg, window->GetID());
 
   return ACK;
 }
@@ -110,7 +112,7 @@ JSONRPC_STATUS CInputOperations::ButtonEvent(const std::string& method,
   newEvent->keybutton.button = keycode;
   newEvent->keybutton.holdtime = holdtime;
 
-  CApplicationMessenger::GetInstance().PostMsg(TMSG_EVENT, -1, -1, static_cast<void*>(newEvent));
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_EVENT, -1, -1, static_cast<void*>(newEvent));
 
   return ACK;
 }

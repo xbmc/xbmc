@@ -47,14 +47,8 @@ void CDelayedMessage::Process()
   CThread::Sleep(std::chrono::milliseconds(m_delay));
 
   if (!m_bStop)
-    CApplicationMessenger::GetInstance().PostMsg(m_msg.dwMessage, m_msg.param1, m_msg.param1, m_msg.lpVoid, m_msg.strParam, m_msg.params);
-}
-
-
-CApplicationMessenger& CApplicationMessenger::GetInstance()
-{
-  static CApplicationMessenger appMessenger;
-  return appMessenger;
+    CServiceBroker::GetAppMessenger()->PostMsg(m_msg.dwMessage, m_msg.param1, m_msg.param1,
+                                               m_msg.lpVoid, m_msg.strParam, m_msg.params);
 }
 
 CApplicationMessenger::CApplicationMessenger() = default;

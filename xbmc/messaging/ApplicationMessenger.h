@@ -226,11 +226,8 @@ struct ThreadMessageCallback
 class CApplicationMessenger
 {
 public:
-  /*!
-   \brief The only way through which the global instance of the CApplicationMessenger should be accessed.
-   \return the global instance.
-   */
-  static CApplicationMessenger& GetInstance();
+  CApplicationMessenger();
+  ~CApplicationMessenger();
 
   void Cleanup();
   // if a message has to be send to the gui, use MSG_TYPE_WINDOW instead
@@ -410,11 +407,8 @@ public:
   void Stop() { m_bStop = true; }
 
 private:
-  // private construction, and no assignments; use the provided singleton methods
-  CApplicationMessenger();
   CApplicationMessenger(const CApplicationMessenger&) = delete;
   CApplicationMessenger const& operator=(CApplicationMessenger const&) = delete;
-  ~CApplicationMessenger();
 
   int SendMsg(ThreadMessage&& msg, bool wait);
   void ProcessMessage(ThreadMessage *pMsg);

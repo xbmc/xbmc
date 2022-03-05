@@ -177,7 +177,7 @@ void CGUIControllerList::OnEvent(const ADDON::AddonEvent& event)
         typeid(event) == typeid(ADDON::AddonEvents::ReInstalled))
       msg.SetStringParam(event.id);
 
-    CApplicationMessenger::GetInstance().SendGUIMessage(msg, m_guiWindow->GetID());
+    CServiceBroker::GetAppMessenger()->SendGUIMessage(msg, m_guiWindow->GetID());
   }
 }
 

@@ -70,7 +70,6 @@ using namespace KODI;
 using namespace JOYSTICK;
 using namespace PERIPHERALS;
 using namespace XFILE;
-using namespace KODI::MESSAGING;
 
 CPeripherals::CPeripherals(CInputManager& inputManager,
                            GAME::CControllerManager& controllerProfiles)
@@ -132,7 +131,7 @@ void CPeripherals::Initialise()
 
   m_eventScanner->Start();
 
-  MESSAGING::CApplicationMessenger::GetInstance().RegisterReceiver(this);
+  CServiceBroker::GetAppMessenger()->RegisterReceiver(this);
   CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
 }
 

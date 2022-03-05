@@ -510,7 +510,7 @@ void CNetworkServices::OnSettingChanged(const std::shared_ptr<const CSetting>& s
         DialogResponse::CHOICE_YES)
     {
       m_settings->Save();
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_RESTARTAPP);
+      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_RESTARTAPP);
     }
   }
 }

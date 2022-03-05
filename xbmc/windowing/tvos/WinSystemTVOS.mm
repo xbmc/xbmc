@@ -8,6 +8,7 @@
 
 #include "WinSystemTVOS.h"
 
+#include "ServiceBroker.h"
 #import "cores/AudioEngine/Sinks/AESinkDARWINTVOS.h"
 #include "cores/RetroPlayer/process/ios/RPProcessInfoIOS.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererOpenGLES.h"
@@ -404,7 +405,7 @@ void CWinSystemTVOS::NotifyAppActiveChange(bool bActivated)
 {
   if (bActivated && m_bWasFullScreenBeforeMinimize &&
       !CServiceBroker::GetWinSystem()->GetGfxContext().IsFullScreenRoot())
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_TOGGLEFULLSCREEN);
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_TOGGLEFULLSCREEN);
 }
 
 bool CWinSystemTVOS::Minimize()
@@ -412,7 +413,7 @@ bool CWinSystemTVOS::Minimize()
   m_bWasFullScreenBeforeMinimize =
       CServiceBroker::GetWinSystem()->GetGfxContext().IsFullScreenRoot();
   if (m_bWasFullScreenBeforeMinimize)
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_TOGGLEFULLSCREEN);
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_TOGGLEFULLSCREEN);
 
   return true;
 }

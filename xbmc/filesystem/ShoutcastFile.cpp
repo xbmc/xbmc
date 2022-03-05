@@ -35,7 +35,6 @@
 
 using namespace XFILE;
 using namespace MUSIC_INFO;
-using namespace KODI::MESSAGING;
 using namespace std::chrono_literals;
 
 CShoutcastFile::CShoutcastFile() :
@@ -354,8 +353,8 @@ void CShoutcastFile::Process()
         {
           CFileItem* item = new CFileItem(*front.second); // will be deleted by msg receiver
           m_tags.pop();
-          CApplicationMessenger::GetInstance().PostMsg(TMSG_UPDATE_CURRENT_ITEM, 1, -1,
-                                                       static_cast<void*>(item));
+          CServiceBroker::GetAppMessenger()->PostMsg(TMSG_UPDATE_CURRENT_ITEM, 1, -1,
+                                                     static_cast<void*>(item));
         }
       }
     }

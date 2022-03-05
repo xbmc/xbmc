@@ -43,7 +43,6 @@
 
 #include <plist/plist.h>
 
-using namespace KODI::MESSAGING;
 using KODI::UTILITY::CDigest;
 using namespace std::chrono_literals;
 
@@ -817,14 +816,14 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
       {
         if (g_application.GetAppPlayer().IsPlaying() && !g_application.GetAppPlayer().IsPaused())
         {
-          CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE);
+          CServiceBroker::GetAppMessenger()->SendMsg(TMSG_MEDIA_PAUSE);
         }
       }
       else
       {
         if (g_application.GetAppPlayer().IsPausedPlayback())
         {
-          CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE);
+          CServiceBroker::GetAppMessenger()->SendMsg(TMSG_MEDIA_PAUSE);
         }
       }
   }
@@ -852,7 +851,8 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
         {
           backupVolume();
           g_application.SetVolume(volume);
-          CApplicationMessenger::GetInstance().PostMsg(TMSG_VOLUME_SHOW, oldVolume < volume ? ACTION_VOLUME_UP : ACTION_VOLUME_DOWN);
+          CServiceBroker::GetAppMessenger()->PostMsg(
+              TMSG_VOLUME_SHOW, oldVolume < volume ? ACTION_VOLUME_UP : ACTION_VOLUME_DOWN);
         }
       }
   }
@@ -971,12 +971,12 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
 
       CFileItemList *l = new CFileItemList; //don't delete,
       l->Add(std::make_shared<CFileItem>(fileToPlay));
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l));
+      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l));
 
       // allow starting the player paused in ios8 mode (needed by camera roll app)
       if (!startPlayback)
       {
-        CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE);
+        CServiceBroker::GetAppMessenger()->SendMsg(TMSG_MEDIA_PAUSE);
         g_application.GetAppPlayer().SeekPercentage(position * 100.0f);
       }
     }
@@ -1031,12 +1031,13 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
     {
       if (IsPlaying()) //only stop player if we started him
       {
-        CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
+        CServiceBroker::GetAppMessenger()->SendMsg(TMSG_MEDIA_STOP);
         CAirPlayServer::m_isPlaying--;
       }
       else //if we are not playing and get the stop request - we just wanna stop picture streaming
       {
-        CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_SLIDESHOW, -1, static_cast<void*>(new CAction(ACTION_STOP)));
+        CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_SLIDESHOW, -1,
+                                                   static_cast<void*>(new CAction(ACTION_STOP)));
       }
     }
     ClearPhotoAssetCache();
@@ -1107,7 +1108,8 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
               CLog::Log(LOGWARNING, "AIRPLAY: Asset {} not found in our cache.", photoCacheId);
           }
           else
-            CApplicationMessenger::GetInstance().PostMsg(TMSG_PICTURE_SHOW, -1, -1, nullptr, tmpFileName);
+            CServiceBroker::GetAppMessenger()->PostMsg(TMSG_PICTURE_SHOW, -1, -1, nullptr,
+                                                       tmpFileName);
         }
         else
         {

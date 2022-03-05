@@ -51,8 +51,6 @@
 #import <AVFoundation/AVAudioSession.h>
 #include <sys/resource.h>
 
-using namespace KODI::MESSAGING;
-
 #ifndef M_PI
 #define M_PI 3.1415926535897932384626433832795028842
 #endif
@@ -879,36 +877,52 @@ public:
     switch (receivedEvent.subtype)
     {
       case UIEventSubtypeRemoteControlTogglePlayPause:
-        CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAYPAUSE)));
+        CServiceBroker::GetAppMessenger()->SendMsg(
+            TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+            static_cast<void*>(new CAction(ACTION_PLAYER_PLAYPAUSE)));
         break;
       case UIEventSubtypeRemoteControlPlay:
-	    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
+        CServiceBroker::GetAppMessenger()->SendMsg(
+            TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+            static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
         break;
       case UIEventSubtypeRemoteControlPause:
         // ACTION_PAUSE sometimes cause unpause, use MediaPauseIfPlaying to make sure pause only
-        CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
+        CServiceBroker::GetAppMessenger()->SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
         break;
       case UIEventSubtypeRemoteControlNextTrack:
-	    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_NEXT_ITEM)));
+        CServiceBroker::GetAppMessenger()->SendMsg(
+            TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_NEXT_ITEM)));
         break;
       case UIEventSubtypeRemoteControlPreviousTrack:
-	    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PREV_ITEM)));
+        CServiceBroker::GetAppMessenger()->SendMsg(
+            TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PREV_ITEM)));
         break;
       case UIEventSubtypeRemoteControlBeginSeekingForward:
         // use 4X speed forward.
-		CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_FORWARD)));
-		CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_FORWARD)));
+        CServiceBroker::GetAppMessenger()->SendMsg(
+            TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+            static_cast<void*>(new CAction(ACTION_PLAYER_FORWARD)));
+        CServiceBroker::GetAppMessenger()->SendMsg(
+            TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+            static_cast<void*>(new CAction(ACTION_PLAYER_FORWARD)));
         break;
       case UIEventSubtypeRemoteControlBeginSeekingBackward:
         // use 4X speed rewind.
-		CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_REWIND)));
-		CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_REWIND)));
+        CServiceBroker::GetAppMessenger()->SendMsg(
+            TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+            static_cast<void*>(new CAction(ACTION_PLAYER_REWIND)));
+        CServiceBroker::GetAppMessenger()->SendMsg(
+            TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+            static_cast<void*>(new CAction(ACTION_PLAYER_REWIND)));
         break;
       case UIEventSubtypeRemoteControlEndSeekingForward:
       case UIEventSubtypeRemoteControlEndSeekingBackward:
         // restore to normal playback speed.
         if (g_application.GetAppPlayer().IsPlaying() && !g_application.GetAppPlayer().IsPaused())
-		  CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
+          CServiceBroker::GetAppMessenger()->SendMsg(
+              TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+              static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
         break;
       default:
         LOG(@"unhandled subtype: %zd", receivedEvent.subtype);
@@ -924,7 +938,7 @@ public:
   if (g_application.GetAppPlayer().IsPlaying() && !g_application.GetAppPlayer().IsPaused())
   {
     m_isPlayingBeforeInactive = YES;
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
+    CServiceBroker::GetAppMessenger()->SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
   }
   CWinSystemIOS* winSystem = dynamic_cast<CWinSystemIOS*>(CServiceBroker::GetWinSystem());
   winSystem->OnAppFocusChange(false);
@@ -939,7 +953,7 @@ public:
   // when we come back, restore playing if we were.
   if (m_isPlayingBeforeInactive)
   {
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_UNPAUSE);
+    CServiceBroker::GetAppMessenger()->SendMsg(TMSG_MEDIA_UNPAUSE);
     m_isPlayingBeforeInactive = NO;
   }
 }
@@ -951,7 +965,7 @@ public:
   if (g_application.GetAppPlayer().IsPlayingVideo() && !g_application.GetAppPlayer().IsPaused())
   {
     m_isPlayingBeforeInactive = YES;
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
+    CServiceBroker::GetAppMessenger()->SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
   }
   // check whether we need disable network auto suspend.
   [self rescheduleNetworkAutoSuspend];

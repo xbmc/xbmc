@@ -18,7 +18,6 @@
 #include "utils/Variant.h"
 
 using namespace JSONRPC;
-using namespace KODI::MESSAGING;
 using KODI::UTILITY::CDigest;
 
 JSONRPC_STATUS CProfilesOperations::GetProfiles(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
@@ -129,7 +128,7 @@ JSONRPC_STATUS CProfilesOperations::LoadProfile(const std::string &method, ITran
 
   if (bLoadProfile)
   {
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_LOADPROFILE, index);
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_LOADPROFILE, index);
     return ACK;
   }
   return InvalidParams;

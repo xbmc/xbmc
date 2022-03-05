@@ -46,7 +46,6 @@
 #include <vector>
 
 using namespace PVR;
-using namespace KODI::MESSAGING;
 using namespace std::chrono_literals;
 
 namespace
@@ -410,7 +409,7 @@ void CPVRManager::Stop(bool bRestart /* = false */)
   if (!bRestart && m_playbackState->IsPlaying())
   {
     CLog::LogFC(LOGDEBUG, LOGPVR, "Stopping PVR playback");
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
+    CServiceBroker::GetAppMessenger()->SendMsg(TMSG_MEDIA_STOP);
   }
 
   CLog::Log(LOGINFO, "PVR Manager: Stopping");

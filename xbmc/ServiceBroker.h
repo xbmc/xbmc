@@ -41,6 +41,14 @@ namespace PLAYLIST
   class CPlayListPlayer;
 }
 
+namespace KODI
+{
+namespace MESSAGING
+{
+class CApplicationMessenger;
+}
+} // namespace KODI
+
 class CContextMenuManager;
 class XBPython;
 class CDataCacheCore;
@@ -177,6 +185,11 @@ public:
   static void UnregisterJobManager();
   static std::shared_ptr<CJobManager> GetJobManager();
 
+  static void RegisterAppMessenger(
+      const std::shared_ptr<KODI::MESSAGING::CApplicationMessenger>& appMessenger);
+  static void UnregisterAppMessenger();
+  static std::shared_ptr<KODI::MESSAGING::CApplicationMessenger> GetAppMessenger();
+
 private:
   std::unique_ptr<CLog> m_logging;
   std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> m_pAnnouncementManager;
@@ -189,6 +202,7 @@ private:
   std::shared_ptr<CCPUInfo> m_cpuInfo;
   std::shared_ptr<CTextureCache> m_textureCache;
   std::shared_ptr<CJobManager> m_jobManager;
+  std::shared_ptr<KODI::MESSAGING::CApplicationMessenger> m_appMessenger;
 };
 
 XBMC_GLOBAL_REF(CServiceBroker, g_serviceBroker);

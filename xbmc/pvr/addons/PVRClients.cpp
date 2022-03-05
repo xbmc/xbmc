@@ -28,7 +28,6 @@
 
 using namespace ADDON;
 using namespace PVR;
-using namespace KODI::MESSAGING;
 
 namespace
 {
@@ -209,7 +208,7 @@ bool CPVRClients::StopClient(const std::string& id, bool bRestart)
 {
   // stop playback if needed
   if (CServiceBroker::GetPVRManager().PlaybackState()->IsPlaying())
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
+    CServiceBroker::GetAppMessenger()->SendMsg(TMSG_MEDIA_STOP);
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
