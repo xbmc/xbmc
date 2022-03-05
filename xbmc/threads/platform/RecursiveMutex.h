@@ -10,7 +10,6 @@
 
 #include <mutex>
 
-#if (defined TARGET_POSIX)
 #include <pthread.h>
 namespace XbmcThreads
 {
@@ -47,9 +46,3 @@ public:
 };
 
 } // namespace XbmcThreads
-#elif (defined TARGET_WINDOWS)
-namespace XbmcThreads
-{
-typedef std::recursive_mutex CRecursiveMutex;
-}
-#endif
