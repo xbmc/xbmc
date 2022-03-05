@@ -532,7 +532,7 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
             {
               m_mapTitleChapters[m_iTitle][i + 2] = times[i] / 90000;
             }
-            m_dll.dvdnav_free(times);
+            free(times);
           }
         }
         CLog::Log(LOGDEBUG, "{} - Cell change: Title {}, Chapter {}", __FUNCTION__, m_iTitle,
