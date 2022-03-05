@@ -378,3 +378,19 @@ std::shared_ptr<KODI::MESSAGING::CApplicationMessenger> CServiceBroker::GetAppMe
 {
   return g_serviceBroker.m_appMessenger;
 }
+
+void CServiceBroker::RegisterKeyboardLayoutManager(
+    const std::shared_ptr<CKeyboardLayoutManager>& keyboardLayoutManager)
+{
+  g_serviceBroker.m_keyboardLayoutManager = keyboardLayoutManager;
+}
+
+void CServiceBroker::UnregisterKeyboardLayoutManager()
+{
+  g_serviceBroker.m_keyboardLayoutManager.reset();
+}
+
+std::shared_ptr<CKeyboardLayoutManager> CServiceBroker::GetKeyboardLayoutManager()
+{
+  return g_serviceBroker.m_keyboardLayoutManager;
+}
