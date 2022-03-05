@@ -393,7 +393,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimersContainer& timers, const std::vec
         }
       }
 
-      CJobManager::GetInstance().AddJob(job, nullptr);
+      CServiceBroker::GetJobManager()->AddJob(job, nullptr);
     }
   }
 

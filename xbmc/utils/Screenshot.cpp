@@ -79,7 +79,7 @@ void CScreenShot::TakeScreenshot(const std::string& filename, bool sync)
     //write .png file asynchronous with CThumbnailWriter, prevents stalling of the render thread
     //buffer is deleted from CThumbnailWriter
     CThumbnailWriter* thumbnailwriter = new CThumbnailWriter(surface->GetBuffer(), surface->GetWidth(), surface->GetHeight(), surface->GetStride(), filename);
-    CJobManager::GetInstance().AddJob(thumbnailwriter, NULL);
+    CServiceBroker::GetJobManager()->AddJob(thumbnailwriter, nullptr);
   }
 }
 

@@ -775,7 +775,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
                 if(wParam == DBT_DEVICEARRIVAL)
                 {
                   CLog::LogF(LOGDEBUG, "Drive {} Media has arrived.", strdrive);
-                  CJobManager::GetInstance().AddJob(new CDetectDisc(strdrive, true), NULL);
+                  CServiceBroker::GetJobManager()->AddJob(new CDetectDisc(strdrive, true), nullptr);
                 }
                 else
                 {

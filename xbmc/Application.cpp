@@ -622,8 +622,10 @@ bool CApplication::Initialize()
   // initialize (and update as needed) our databases
   CDatabaseManager &databaseManager = m_ServiceManager->GetDatabaseManager();
 
+  CServiceBroker::RegisterJobManager(std::make_shared<CJobManager>());
+
   CEvent event(true);
-  CJobManager::GetInstance().Submit([&databaseManager, &event]() {
+  CServiceBroker::GetJobManager()->Submit([&databaseManager, &event]() {
     databaseManager.Initialize();
     event.Set();
   });
@@ -646,7 +648,7 @@ bool CApplication::Initialize()
   //! @todo Move GUIFontManager into service broker and drop the global reference
   event.Reset();
   GUIFontManager& guiFontManager = g_fontManager;
-  CJobManager::GetInstance().Submit([&guiFontManager, &event]() {
+  CServiceBroker::GetJobManager()->Submit([&guiFontManager, &event]() {
     guiFontManager.Initialize();
     event.Set();
   });
@@ -686,7 +688,7 @@ bool CApplication::Initialize()
     {
       if (CAddonSystemSettings::GetInstance().GetAddonAutoUpdateMode() == AUTO_UPDATES_ON)
       {
-        CJobManager::GetInstance().Submit(
+        CServiceBroker::GetJobManager()->Submit(
             [&event, &incompatibleAddons]() {
               if (CServiceBroker::GetRepositoryUpdater().CheckForUpdates())
                 CServiceBroker::GetRepositoryUpdater().Await();
@@ -2487,6 +2489,7 @@ bool CApplication::Cleanup()
     m_pSettingsComponent->Deinit();
     m_pSettingsComponent.reset();
 
+    CServiceBroker::UnregisterJobManager();
     CServiceBroker::UnregisterCPUInfo();
 
     return true;
@@ -2571,7 +2574,7 @@ bool CApplication::Stop(int exitCode)
     CLog::Log(LOGINFO, "Stopping all");
 
     // cancel any jobs from the jobmanager
-    CJobManager::GetInstance().CancelJobs();
+    CServiceBroker::GetJobManager()->CancelJobs();
 
     // stop scanning before we kill the network and so on
     if (CMusicLibraryQueue::GetInstance().IsRunning())
@@ -3064,7 +3067,7 @@ void CApplication::OnPlayBackStarted(const CFileItem &file)
    */
   if (file.IsVideo() || file.IsGame())
   {
-    CJobManager::GetInstance().PauseJobs();
+    CServiceBroker::GetJobManager()->PauseJobs();
   }
 
   CServiceBroker::GetPVRManager().OnPlaybackStarted(m_itemCurrentFile);
@@ -4195,11 +4198,11 @@ void CApplication::ProcessSlow()
       currentWindow == WINDOW_FULLSCREEN_GAME ||
       currentWindow == WINDOW_SLIDESHOW)
   {
-    CJobManager::GetInstance().PauseJobs();
+    CServiceBroker::GetJobManager()->PauseJobs();
   }
   else
   {
-    CJobManager::GetInstance().UnPauseJobs();
+    CServiceBroker::GetJobManager()->UnPauseJobs();
   }
 
   // Check if we need to activate the screensaver / DPMS.

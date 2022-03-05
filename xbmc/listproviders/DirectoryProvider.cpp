@@ -231,8 +231,9 @@ bool CDirectoryProvider::Update(bool forceRefresh)
   {
     CLog::Log(LOGDEBUG, "CDirectoryProvider[{}]: refreshing..", m_currentUrl);
     if (m_jobID)
-      CJobManager::GetInstance().CancelJob(m_jobID);
-    m_jobID = CJobManager::GetInstance().AddJob(new CDirectoryJob(m_currentUrl, m_currentSort, m_currentLimit, m_parentID), this);
+      CServiceBroker::GetJobManager()->CancelJob(m_jobID);
+    m_jobID = CServiceBroker::GetJobManager()->AddJob(
+        new CDirectoryJob(m_currentUrl, m_currentSort, m_currentLimit, m_parentID), this);
   }
 
   if (!changed)
@@ -349,7 +350,7 @@ void CDirectoryProvider::Reset()
 {
   std::unique_lock<CCriticalSection> lock(m_section);
   if (m_jobID)
-    CJobManager::GetInstance().CancelJob(m_jobID);
+    CServiceBroker::GetJobManager()->CancelJob(m_jobID);
   m_jobID = 0;
   m_items.clear();
   m_currentTarget.clear();
