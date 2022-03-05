@@ -33,8 +33,6 @@
 #import <QuartzCore/QuartzCore.h>
 #include <sys/resource.h>
 
-using namespace KODI::MESSAGING;
-
 //--------------------------------------------------------------
 @interface IOSEAGLView (PrivateMethods)
 - (void) setContext:(EAGLContext *)newContext;
@@ -315,7 +313,7 @@ using namespace KODI::MESSAGING;
     xbmcAlive = FALSE;
     if (!g_application.m_bStop)
     {
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
+      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_QUIT);
     }
 
     CAnnounceReceiver::GetInstance()->DeInitialize();

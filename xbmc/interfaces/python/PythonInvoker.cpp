@@ -60,7 +60,6 @@ extern "C" FILE* fopen_utf8(const char* _Filename, const char* _Mode);
 #define PYTHON_SCRIPT_TIMEOUT 5000ms // ms
 
 using namespace XFILE;
-using namespace KODI::MESSAGING;
 using namespace std::chrono_literals;
 
 #define PythonModulesSize sizeof(PythonModules) / sizeof(PythonModule)
@@ -513,7 +512,7 @@ bool CPythonInvoker::stop(bool abort)
       // on TMSG_GUI_PYTHON_DIALOG messages, so pump the message loop.
       if (g_application.IsCurrentThread())
       {
-        CApplicationMessenger::GetInstance().ProcessMessages();
+        CServiceBroker::GetAppMessenger()->ProcessMessages();
       }
     }
 

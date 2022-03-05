@@ -156,7 +156,7 @@ void CGUIPortList::ResetPorts()
     // Refresh the GUI
     using namespace MESSAGING;
     CGUIMessage msg(GUI_MSG_REFRESH_LIST, m_guiWindow.GetID(), CONTROL_PORT_LIST);
-    CApplicationMessenger::GetInstance().SendGUIMessage(msg, m_guiWindow.GetID());
+    CServiceBroker::GetAppMessenger()->SendGUIMessage(msg, m_guiWindow.GetID());
   }
 }
 
@@ -170,7 +170,7 @@ void CGUIPortList::OnEvent(const ADDON::AddonEvent& event)
     using namespace MESSAGING;
     CGUIMessage msg(GUI_MSG_REFRESH_LIST, m_guiWindow.GetID(), CONTROL_PORT_LIST);
     msg.SetStringParam(event.id);
-    CApplicationMessenger::GetInstance().SendGUIMessage(msg, m_guiWindow.GetID());
+    CServiceBroker::GetAppMessenger()->SendGUIMessage(msg, m_guiWindow.GetID());
   }
 }
 
@@ -297,7 +297,7 @@ void CGUIPortList::OnControllerSelected(const CPortNode& port, const ControllerP
     // Send a GUI message to reload the port list
     using namespace MESSAGING;
     CGUIMessage msg(GUI_MSG_REFRESH_LIST, m_guiWindow.GetID(), CONTROL_PORT_LIST);
-    CApplicationMessenger::GetInstance().SendGUIMessage(msg, m_guiWindow.GetID());
+    CServiceBroker::GetAppMessenger()->SendGUIMessage(msg, m_guiWindow.GetID());
   }
 }
 

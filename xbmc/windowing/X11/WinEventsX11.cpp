@@ -27,7 +27,6 @@
 #include <X11/extensions/Xrandr.h>
 #include <X11/keysymdef.h>
 
-using namespace KODI::MESSAGING;
 using namespace KODI::WINDOWING::X11;
 
 static uint32_t SymMappingsX11[][2] =
@@ -394,7 +393,8 @@ bool CWinEventsX11::MessagePump()
       case ClientMessage:
       {
         if ((unsigned int)xevent.xclient.data.l[0] == m_wmDeleteMessage)
-          if (!g_application.m_bStop) CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
+          if (!g_application.m_bStop)
+            CServiceBroker::GetAppMessenger()->PostMsg(TMSG_QUIT);
         break;
       }
 

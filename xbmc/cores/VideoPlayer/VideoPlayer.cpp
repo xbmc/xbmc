@@ -69,7 +69,6 @@
 #include <iterator>
 #include <utility>
 
-using namespace KODI::MESSAGING;
 using namespace std::chrono_literals;
 
 //------------------------------------------------------------------------------
@@ -2032,7 +2031,7 @@ void CVideoPlayer::HandlePlaySpeed()
       {
         if (m_playerOptions.fullscreen)
         {
-          CApplicationMessenger::GetInstance().PostMsg(TMSG_SWITCHTOFULLSCREEN);
+          CServiceBroker::GetAppMessenger()->PostMsg(TMSG_SWITCHTOFULLSCREEN);
         }
 
         IPlayerCallback *cb = &m_callback;
@@ -4351,7 +4350,9 @@ bool CVideoPlayer::OnAction(const CAction &action)
               return true;
             else
             {
-              CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_TRIGGER_OSD)));
+              CServiceBroker::GetAppMessenger()->PostMsg(
+                  TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+                  static_cast<void*>(new CAction(ACTION_TRIGGER_OSD)));
               return false;
             }
           }

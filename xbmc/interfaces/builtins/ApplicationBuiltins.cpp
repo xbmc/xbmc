@@ -26,8 +26,6 @@
 
 #include <stdlib.h>
 
-using namespace KODI::MESSAGING;
-
 /*! \brief Extract an archive.
  *  \param params The parameters
  *  \details params[0] = The archive URL.
@@ -101,7 +99,8 @@ static int SetVolume(const std::vector<std::string>& params)
   {
     if(params.size() > 1 && StringUtils::EqualsNoCase(params[1], "showVolumeBar"))
     {
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_VOLUME_SHOW, oldVolume < volume ? ACTION_VOLUME_UP : ACTION_VOLUME_DOWN);
+      CServiceBroker::GetAppMessenger()->PostMsg(
+          TMSG_VOLUME_SHOW, oldVolume < volume ? ACTION_VOLUME_UP : ACTION_VOLUME_DOWN);
     }
   }
 

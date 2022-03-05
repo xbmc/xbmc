@@ -7,19 +7,21 @@
  */
 
 #include "TestBasicEnvironment.h"
-#include "TestUtils.h"
+
+#include "AppParamParser.h"
+#include "Application.h"
 #include "ServiceBroker.h"
+#include "TestUtils.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
+#include "messaging/ApplicationMessenger.h"
+#include "platform/Filesystem.h"
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "Application.h"
-#include "AppParamParser.h"
 #include "windowing/WinSystem.h"
-#include "platform/Filesystem.h"
 
 #ifdef TARGET_DARWIN
 #include "Util.h"
@@ -43,6 +45,8 @@ void TestBasicEnvironment::SetUp()
 
   m_pSettingsComponent.reset(new CSettingsComponent());
   m_pSettingsComponent->Init(params);
+
+  CServiceBroker::RegisterAppMessenger(std::make_shared<KODI::MESSAGING::CApplicationMessenger>());
 
   XFILE::CFile *f;
 
@@ -110,6 +114,8 @@ void TestBasicEnvironment::TearDown()
 
   m_pSettingsComponent->Deinit();
   m_pSettingsComponent.reset();
+
+  CServiceBroker::UnregisterAppMessenger();
 }
 
 void TestBasicEnvironment::SetUpError()

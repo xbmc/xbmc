@@ -197,7 +197,7 @@ void CAddonSettings::OnSettingAction(const std::shared_ptr<const CSetting>& sett
   if (closeDialog)
     CGUIDialogAddonSettings::SaveAndClose();
 
-  KODI::MESSAGING::CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, actionData);
+  CServiceBroker::GetAppMessenger()->SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, actionData);
 }
 
 bool CAddonSettings::Initialize(const CXBMCTinyXML& doc, bool allowEmpty /* = false */)

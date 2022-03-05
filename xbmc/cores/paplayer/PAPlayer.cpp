@@ -29,7 +29,6 @@
 
 #include <mutex>
 
-using namespace KODI::MESSAGING;
 using namespace std::chrono_literals;
 
 #define TIME_TO_CACHE_NEXT_FILE 5000 /* 5 seconds before end of song, start caching the next song */
@@ -710,7 +709,7 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &freeBufferTime)
     m_signalStarted = true;
     if (m_fullScreen)
     {
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_SWITCHTOFULLSCREEN);
+      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_SWITCHTOFULLSCREEN);
       m_fullScreen = false;
     }
     m_callback.OnAVStarted(si->m_fileItem);

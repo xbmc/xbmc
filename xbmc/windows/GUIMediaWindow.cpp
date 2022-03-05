@@ -1784,7 +1784,7 @@ bool CGUIMediaWindow::OnPopupMenu(int itemIdx)
   {
     bool saveVal = m_backgroundLoad;
     m_backgroundLoad = false;
-    CApplicationMessenger::GetInstance().SendMsg(
+    CServiceBroker::GetAppMessenger()->SendMsg(
         TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr,
         item->GetProperty(StringUtils::Format("contextmenuaction({})", idx - pluginMenuRange.first))
             .asString());

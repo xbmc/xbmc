@@ -27,7 +27,6 @@
 #include "utils/Variant.h"
 #include "windows/GUIWindowFileManager.h"
 
-using namespace KODI;
 using namespace XFILE;
 
 #define CONTROL_PROFILES 2
@@ -70,7 +69,7 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
   int choice = CGUIDialogContextMenu::ShowAndGetChoice(choices);
   if (choice == 1)
   {
-    MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_LOADPROFILE, iItem);
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_LOADPROFILE, iItem);
     return;
   }
 

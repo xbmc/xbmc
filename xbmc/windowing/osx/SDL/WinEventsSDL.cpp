@@ -23,8 +23,6 @@
 
 #include "platform/darwin/osx/CocoaInterface.h"
 
-using namespace KODI::MESSAGING;
-
 bool CWinEventsOSX::MessagePump()
 {
   SDL_Event event;
@@ -36,7 +34,7 @@ bool CWinEventsOSX::MessagePump()
     {
       case SDL_QUIT:
         if (!g_application.m_bStop)
-          CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
+          CServiceBroker::GetAppMessenger()->PostMsg(TMSG_QUIT);
         break;
 
       case SDL_ACTIVEEVENT:
@@ -214,7 +212,7 @@ bool CWinEventsOSX::ProcessOSXShortcuts(SDL_Event& event)
     {
     case SDLK_q:  // CMD-q to quit
       if (!g_application.m_bStop)
-        CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
+        CServiceBroker::GetAppMessenger()->PostMsg(TMSG_QUIT);
       return true;
 
     case SDLK_f: // CMD-Ctrl-f to toggle fullscreen
@@ -232,7 +230,7 @@ bool CWinEventsOSX::ProcessOSXShortcuts(SDL_Event& event)
       return true;
 
     case SDLK_m: // CMD-m to minimize
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_MINIMIZE);
+      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MINIMIZE);
       return true;
 
     default:

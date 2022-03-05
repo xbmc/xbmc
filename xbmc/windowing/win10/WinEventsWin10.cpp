@@ -47,7 +47,6 @@ using namespace winrt::Windows::UI::Input;
 using namespace winrt::Windows::UI::ViewManagement;
 
 using namespace PERIPHERALS;
-using namespace KODI::MESSAGING;
 
 static winrt::Point GetScreenPoint(winrt::Point point)
 {
@@ -549,7 +548,8 @@ void CWinEventsWin10::OnBackRequested(const winrt::IInspectable&, const BackRequ
   // handle this only on windows mobile
   if (CSysInfo::GetWindowsDeviceFamily() == CSysInfo::WindowsDeviceFamily::Mobile)
   {
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_NAV_BACK)));
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+                                               static_cast<void*>(new CAction(ACTION_NAV_BACK)));
   }
   args.Handled(true);
 }
@@ -592,7 +592,8 @@ void CWinEventsWin10::OnSystemMediaButtonPressed(const SystemMediaTransportContr
   }
   if (action != ACTION_NONE)
   {
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(action)));
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+                                               static_cast<void*>(new CAction(action)));
   }
 }
 

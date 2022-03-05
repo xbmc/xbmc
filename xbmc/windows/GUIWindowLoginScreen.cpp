@@ -92,7 +92,7 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
           if (bOkay)
           {
             if (iItem >= 0)
-              CApplicationMessenger::GetInstance().PostMsg(TMSG_LOADPROFILE, iItem);
+              CServiceBroker::GetAppMessenger()->PostMsg(TMSG_LOADPROFILE, iItem);
           }
           else
           {
@@ -242,7 +242,7 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
     if (g_passwordManager.CheckLock(profileManager->GetMasterProfile().getLockMode(), profileManager->GetMasterProfile().getLockCode(), 20075))
       g_passwordManager.iMasterLockRetriesLeft = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_MASTERLOCK_MAXRETRIES);
     else // be inconvenient
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_SHUTDOWN);
+      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_SHUTDOWN);
 
     return true;
   }

@@ -39,8 +39,6 @@
 #include <string>
 #include <vector>
 
-using namespace KODI::MESSAGING;
-
 #define BOOKMARK_THUMB_WIDTH CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_imageRes
 
 #define CONTROL_ADD_BOOKMARK           2
@@ -572,7 +570,7 @@ void CGUIDialogVideoBookmarks::OnJobComplete(unsigned int jobID,
     {
       unsigned int chapterIdx = (*iter).second;
       CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, 1, chapterIdx);
-      CApplicationMessenger::GetInstance().SendGUIMessage(m);
+      CServiceBroker::GetAppMessenger()->SendGUIMessage(m);
       m_mapJobsChapter.erase(iter);
     }
   }

@@ -8,6 +8,7 @@
 
 #include "AndroidBuiltins.h"
 
+#include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 
 /*! \brief Launch an android system activity.
@@ -19,8 +20,8 @@
  */
 static int LaunchAndroidActivity(const std::vector<std::string>& params)
 {
-  KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(
-    TMSG_START_ANDROID_ACTIVITY, -1, -1, nullptr, "", params);
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_START_ANDROID_ACTIVITY, -1, -1, nullptr, "",
+                                             params);
 
   return 0;
 }

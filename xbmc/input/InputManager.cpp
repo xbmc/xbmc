@@ -48,7 +48,6 @@
 using EVENTSERVER::CEventServer;
 
 using namespace KODI;
-using namespace MESSAGING;
 
 const std::string CInputManager::SETTING_INPUT_ENABLE_CONTROLLER = "input.enablejoystick";
 
@@ -421,18 +420,18 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
         auto action =
             new CAction(actionId, 0, newEvent.touch.x, newEvent.touch.y, newEvent.touch.x2,
                         newEvent.touch.y2, newEvent.touch.x3, newEvent.touch.y3);
-        CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-                                                     static_cast<void*>(action));
+        CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+                                                   static_cast<void*>(action));
       }
       else
       {
         if (actionId == ACTION_BUILT_IN_FUNCTION && !actionString.empty())
-          CApplicationMessenger::GetInstance().PostMsg(
+          CServiceBroker::GetAppMessenger()->PostMsg(
               TMSG_GUI_ACTION, WINDOW_INVALID, -1,
               static_cast<void*>(new CAction(actionId, actionString)));
         else
-          CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-                                                       static_cast<void*>(new CAction(actionId)));
+          CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+                                                     static_cast<void*>(new CAction(actionId)));
       }
 
       break;
@@ -531,14 +530,14 @@ bool CInputManager::HandleKey(const CKey& key)
       CLog::LogF(LOGDEBUG, "action {} [{}], toggling state of playing device", action.GetName(),
                  action.GetID());
       bool result;
-      CApplicationMessenger::GetInstance().SendMsg(TMSG_CECTOGGLESTATE, 0, 0,
-                                                   static_cast<void*>(&result));
+      CServiceBroker::GetAppMessenger()->SendMsg(TMSG_CECTOGGLESTATE, 0, 0,
+                                                 static_cast<void*>(&result));
       if (!result)
         return true;
     }
     else
     {
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_CECSTANDBY);
+      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_CECSTANDBY);
       return true;
     }
   }

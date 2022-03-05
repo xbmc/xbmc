@@ -104,7 +104,6 @@
 #define PLAYBACK_STATE_AUDIO    0x0200
 #define PLAYBACK_STATE_CANNOT_PAUSE 0x0400
 
-using namespace KODI::MESSAGING;
 using namespace ANNOUNCEMENT;
 using namespace jni;
 using namespace std::chrono_literals;
@@ -253,7 +252,7 @@ void CXBMCApp::onResume()
     if (g_application.GetAppPlayer().HasVideo())
     {
       if (g_application.GetAppPlayer().IsPaused())
-        CApplicationMessenger::GetInstance().SendMsg(
+        CServiceBroker::GetAppMessenger()->SendMsg(
             TMSG_GUI_ACTION, WINDOW_INVALID, -1,
             static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
     }
@@ -275,7 +274,8 @@ void CXBMCApp::onPause()
     {
       if (!g_application.GetAppPlayer().IsPaused() && !m_hasReqVisible)
       {
-        CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
+        CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+                                                   static_cast<void*>(new CAction(ACTION_PAUSE)));
         m_bResumePlayback = true;
       }
     }
@@ -301,9 +301,11 @@ void CXBMCApp::onStop()
   if ((m_playback_state & PLAYBACK_STATE_PLAYING) && !m_hasReqVisible)
   {
     if (m_playback_state & PLAYBACK_STATE_CANNOT_PAUSE)
-      CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
+      CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+                                                 static_cast<void*>(new CAction(ACTION_STOP)));
     else if (m_playback_state & PLAYBACK_STATE_VIDEO)
-      CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
+      CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+                                                 static_cast<void*>(new CAction(ACTION_PAUSE)));
   }
 }
 
@@ -430,7 +432,7 @@ void CXBMCApp::Quit()
   }
 
   m_exiting = true; // enter stage two: android activity has finished. go on with stopping Kodi
-  CApplicationMessenger::GetInstance().PostMsg(msgId);
+  CServiceBroker::GetAppMessenger()->PostMsg(msgId);
 
   // wait for the run thread to finish
   m_thread.join();
@@ -549,7 +551,8 @@ bool CXBMCApp::XBMC_SetupDisplay()
 {
   android_printf("XBMC_SetupDisplay()");
   bool result;
-  CApplicationMessenger::GetInstance().SendMsg(TMSG_DISPLAY_SETUP, -1, -1, static_cast<void*>(&result));
+  CServiceBroker::GetAppMessenger()->SendMsg(TMSG_DISPLAY_SETUP, -1, -1,
+                                             static_cast<void*>(&result));
   return result;
 }
 
@@ -557,7 +560,8 @@ bool CXBMCApp::XBMC_DestroyDisplay()
 {
   android_printf("XBMC_DestroyDisplay()");
   bool result;
-  CApplicationMessenger::GetInstance().SendMsg(TMSG_DISPLAY_DESTROY, -1, -1, static_cast<void*>(&result));
+  CServiceBroker::GetAppMessenger()->SendMsg(TMSG_DISPLAY_DESTROY, -1, -1,
+                                             static_cast<void*>(&result));
   return result;
 }
 
@@ -1068,13 +1072,13 @@ void CXBMCApp::onReceive(CJNIIntent intent)
       {
         if (g_application.GetAppPlayer().CanPause())
         {
-          CApplicationMessenger::GetInstance().PostMsg(
-              TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
+          CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+                                                     static_cast<void*>(new CAction(ACTION_PAUSE)));
         }
         else
         {
-          CApplicationMessenger::GetInstance().PostMsg(
-              TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
+          CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+                                                     static_cast<void*>(new CAction(ACTION_STOP)));
         }
       }
     }
@@ -1203,7 +1207,8 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
         std::vector<std::string> params;
         params.push_back(targeturl.Get());
         params.emplace_back("return");
-        CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTIVATE_WINDOW, WINDOW_VIDEO_NAV, 0, nullptr, "", params);
+        CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTIVATE_WINDOW, WINDOW_VIDEO_NAV, 0,
+                                                   nullptr, "", params);
       }
       else if (targeturl.IsProtocol("musicdb")
                || (targeturl.IsProtocol("special") && targetFile.find("playlists/music") != std::string::npos))
@@ -1211,7 +1216,8 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
         std::vector<std::string> params;
         params.push_back(targeturl.Get());
         params.emplace_back("return");
-        CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTIVATE_WINDOW, WINDOW_MUSIC_NAV, 0, nullptr, "", params);
+        CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTIVATE_WINDOW, WINDOW_MUSIC_NAV, 0,
+                                                   nullptr, "", params);
       }
     }
     else
@@ -1222,7 +1228,7 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
         *(item->GetVideoInfoTag()) = XFILE::CVideoDatabaseFile::GetVideoTag(CURL(item->GetPath()));
         item->SetPath(item->GetVideoInfoTag()->m_strFileNameAndPath);
       }
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
+      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
     }
   }
   else if (action == ACTION_XBMC_RESUME)
@@ -1232,7 +1238,8 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
       if (m_playback_state & PLAYBACK_STATE_VIDEO)
         RequestVisibleBehind(true);
       if (!(m_playback_state & PLAYBACK_STATE_PLAYING))
-        CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
+        CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+                                                   static_cast<void*>(new CAction(ACTION_PAUSE)));
     }
   }
 }
@@ -1262,9 +1269,11 @@ void CXBMCApp::onVisibleBehindCanceled()
   if ((m_playback_state & PLAYBACK_STATE_PLAYING))
   {
     if (m_playback_state & PLAYBACK_STATE_CANNOT_PAUSE)
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
+      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+                                                 static_cast<void*>(new CAction(ACTION_STOP)));
     else if (m_playback_state & PLAYBACK_STATE_VIDEO)
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
+      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+                                                 static_cast<void*>(new CAction(ACTION_PAUSE)));
   }
 }
 
@@ -1313,9 +1322,11 @@ void CXBMCApp::onAudioFocusChange(int focusChange)
     if ((m_playback_state & PLAYBACK_STATE_PLAYING))
     {
       if (m_playback_state & PLAYBACK_STATE_CANNOT_PAUSE)
-        CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_STOP)));
+        CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+                                                   static_cast<void*>(new CAction(ACTION_STOP)));
       else
-        CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PAUSE)));
+        CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+                                                   static_cast<void*>(new CAction(ACTION_PAUSE)));
     }
   }
 }

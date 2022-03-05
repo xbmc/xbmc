@@ -25,8 +25,6 @@
 #include "utils/StringUtils.h"
 #include "utils/XTimeUtils.h"
 
-using namespace KODI::MESSAGING;
-
 /* slightly modified in_ether taken from the etherboot project (http://sourceforge.net/projects/etherboot) */
 bool in_ether (const char *bufp, unsigned char *addr)
 {
@@ -87,12 +85,12 @@ bool in_ether (const char *bufp, unsigned char *addr)
 CNetworkBase::CNetworkBase() :
   m_services(new CNetworkServices())
 {
-  CApplicationMessenger::GetInstance().PostMsg(TMSG_NETWORKMESSAGE, SERVICES_UP, 0);
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_NETWORKMESSAGE, SERVICES_UP, 0);
 }
 
 CNetworkBase::~CNetworkBase()
 {
-  CApplicationMessenger::GetInstance().PostMsg(TMSG_NETWORKMESSAGE, SERVICES_DOWN, 0);
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_NETWORKMESSAGE, SERVICES_DOWN, 0);
 }
 
 int CNetworkBase::ParseHex(char *str, unsigned char *addr)

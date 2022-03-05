@@ -46,7 +46,6 @@
 #include <vector>
 
 using namespace KODI;
-using namespace KODI::MESSAGING;
 
 namespace XBMCAddon
 {
@@ -67,13 +66,13 @@ namespace XBMCAddon
     void shutdown()
     {
       XBMC_TRACE;
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_SHUTDOWN);
+      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_SHUTDOWN);
     }
 
     void restart()
     {
       XBMC_TRACE;
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_RESTART);
+      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_RESTART);
     }
 
     void executescript(const char* script)
@@ -82,7 +81,7 @@ namespace XBMCAddon
       if (! script)
         return;
 
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_SCRIPT, -1, -1, nullptr, script);
+      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_EXECUTE_SCRIPT, -1, -1, nullptr, script);
     }
 
     void executebuiltin(const char* function, bool wait /* = false*/)
@@ -110,9 +109,11 @@ namespace XBMCAddon
       }
 
       if (wait)
-        CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, function);
+        CServiceBroker::GetAppMessenger()->SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr,
+                                                   function);
       else
-        CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, function);
+        CServiceBroker::GetAppMessenger()->PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr,
+                                                   function);
     }
 
     String executeJSONRPC(const char* jsonrpccommand)

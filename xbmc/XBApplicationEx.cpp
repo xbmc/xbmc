@@ -11,6 +11,7 @@
 #include "AppParamParser.h"
 #include "FileItem.h"
 #include "PlayListPlayer.h"
+#include "ServiceBroker.h"
 #include "commons/Exception.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/XTimeUtils.h"
@@ -48,7 +49,7 @@ int CXBApplicationEx::Run(const CAppParamParser &params)
   {
     CServiceBroker::GetPlaylistPlayer().Add(0, params.GetPlaylist());
     CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(0);
-    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_PLAYLISTPLAYER_PLAY, -1);
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_PLAYLISTPLAYER_PLAY, -1);
   }
 
   // Run xbmc
