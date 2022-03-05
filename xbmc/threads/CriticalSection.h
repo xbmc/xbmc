@@ -11,7 +11,7 @@
 #include "threads/Lockables.h"
 
 #if defined(TARGET_POSIX)
-#include "threads/platform/RecursiveMutex.h"
+#include "platform/posix/threads/RecursiveMutex.h"
 
 class CCriticalSection : public XbmcThreads::CountingLockable<XbmcThreads::CRecursiveMutex>
 {
