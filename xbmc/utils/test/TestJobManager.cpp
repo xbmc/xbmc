@@ -6,6 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "ServiceBroker.h"
 #include "test/MtTestUtils.h"
 #include "utils/Job.h"
 #include "utils/JobManager.h"
@@ -64,13 +65,14 @@ public:
 class TestJobManager : public testing::Test
 {
 protected:
-  TestJobManager() = default;
+  TestJobManager() { CServiceBroker::RegisterJobManager(std::make_shared<CJobManager>()); }
 
   ~TestJobManager() override
   {
     /* Always cancel jobs test completion */
-    CJobManager::GetInstance().CancelJobs();
-    CJobManager::GetInstance().Restart();
+    CServiceBroker::GetJobManager()->CancelJobs();
+    CServiceBroker::GetJobManager()->Restart();
+    CServiceBroker::UnregisterJobManager();
   }
 };
 
@@ -78,7 +80,7 @@ TEST_F(TestJobManager, AddJob)
 {
   Flags* flags = new Flags();
   ReallyDumbJob* job = new ReallyDumbJob(flags);
-  CJobManager::GetInstance().AddJob(job, NULL);
+  CServiceBroker::GetJobManager()->AddJob(job, nullptr);
   ASSERT_TRUE(poll([flags]() -> bool { return flags->finished; }));
   delete flags;
 }
@@ -88,13 +90,13 @@ TEST_F(TestJobManager, CancelJob)
   unsigned int id;
   Flags* flags = new Flags();
   DummyJob* job = new DummyJob(flags);
-  id = CJobManager::GetInstance().AddJob(job, NULL);
+  id = CServiceBroker::GetJobManager()->AddJob(job, nullptr);
 
   // wait for the worker thread to be entered
   ASSERT_TRUE(poll([flags]() -> bool { return flags->started; }));
 
   // cancel the job
-  CJobManager::GetInstance().CancelJob(id);
+  CServiceBroker::GetJobManager()->CancelJob(id);
 
   // let the worker thread continue
   flags->lingerAtWork = false;
@@ -181,7 +183,7 @@ BroadcastingJob *
 WaitForJobToStartProcessing(CJob::PRIORITY priority, JobControlPackage &package)
 {
   BroadcastingJob* job = new BroadcastingJob(package);
-  CJobManager::GetInstance().AddJob(job, NULL, priority);
+  CServiceBroker::GetJobManager()->AddJob(job, nullptr, priority);
 
   // We're now ready to wait, wait and then unblock once ready
   while (!package.ready)
@@ -196,11 +198,11 @@ TEST_F(TestJobManager, PauseLowPriorityJob)
   JobControlPackage package;
   BroadcastingJob *job (WaitForJobToStartProcessing(CJob::PRIORITY_LOW_PAUSABLE, package));
 
-  EXPECT_TRUE(CJobManager::GetInstance().IsProcessing(CJob::PRIORITY_LOW_PAUSABLE));
-  CJobManager::GetInstance().PauseJobs();
-  EXPECT_FALSE(CJobManager::GetInstance().IsProcessing(CJob::PRIORITY_LOW_PAUSABLE));
-  CJobManager::GetInstance().UnPauseJobs();
-  EXPECT_TRUE(CJobManager::GetInstance().IsProcessing(CJob::PRIORITY_LOW_PAUSABLE));
+  EXPECT_TRUE(CServiceBroker::GetJobManager()->IsProcessing(CJob::PRIORITY_LOW_PAUSABLE));
+  CServiceBroker::GetJobManager()->PauseJobs();
+  EXPECT_FALSE(CServiceBroker::GetJobManager()->IsProcessing(CJob::PRIORITY_LOW_PAUSABLE));
+  CServiceBroker::GetJobManager()->UnPauseJobs();
+  EXPECT_TRUE(CServiceBroker::GetJobManager()->IsProcessing(CJob::PRIORITY_LOW_PAUSABLE));
 
   job->FinishAndStopBlocking();
 }
@@ -210,7 +212,7 @@ TEST_F(TestJobManager, IsProcessing)
   JobControlPackage package;
   BroadcastingJob *job (WaitForJobToStartProcessing(CJob::PRIORITY_LOW_PAUSABLE, package));
 
-  EXPECT_EQ(0, CJobManager::GetInstance().IsProcessing(""));
+  EXPECT_EQ(0, CServiceBroker::GetJobManager()->IsProcessing(""));
 
   job->FinishAndStopBlocking();
 }

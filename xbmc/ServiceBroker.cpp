@@ -347,3 +347,18 @@ std::shared_ptr<CTextureCache> CServiceBroker::GetTextureCache()
 {
   return g_serviceBroker.m_textureCache;
 }
+
+void CServiceBroker::RegisterJobManager(const std::shared_ptr<CJobManager>& jobManager)
+{
+  g_serviceBroker.m_jobManager = jobManager;
+}
+
+void CServiceBroker::UnregisterJobManager()
+{
+  g_serviceBroker.m_jobManager.reset();
+}
+
+std::shared_ptr<CJobManager> CServiceBroker::GetJobManager()
+{
+  return g_serviceBroker.m_jobManager;
+}

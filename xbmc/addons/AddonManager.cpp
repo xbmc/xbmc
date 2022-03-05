@@ -793,7 +793,7 @@ void CAddonMgr::OnPostUnInstall(const std::string& id)
 void CAddonMgr::UpdateLastUsed(const std::string& id)
 {
   auto time = CDateTime::GetCurrentDateTime();
-  CJobManager::GetInstance().Submit([this, id, time](){
+  CServiceBroker::GetJobManager()->Submit([this, id, time]() {
     {
       std::unique_lock<CCriticalSection> lock(m_critSection);
       m_database.SetLastUsed(id, time);

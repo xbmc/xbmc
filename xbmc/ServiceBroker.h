@@ -65,6 +65,7 @@ class CCPUInfo;
 class CLog;
 class CPlatform;
 class CTextureCache;
+class CJobManager;
 
 namespace WSDiscovery
 {
@@ -172,6 +173,10 @@ public:
   static void UnregisterTextureCache();
   static std::shared_ptr<CTextureCache> GetTextureCache();
 
+  static void RegisterJobManager(const std::shared_ptr<CJobManager>& jobManager);
+  static void UnregisterJobManager();
+  static std::shared_ptr<CJobManager> GetJobManager();
+
 private:
   std::unique_ptr<CLog> m_logging;
   std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> m_pAnnouncementManager;
@@ -183,6 +188,7 @@ private:
   CDecoderFilterManager* m_decoderFilterManager;
   std::shared_ptr<CCPUInfo> m_cpuInfo;
   std::shared_ptr<CTextureCache> m_textureCache;
+  std::shared_ptr<CJobManager> m_jobManager;
 };
 
 XBMC_GLOBAL_REF(CServiceBroker, g_serviceBroker);

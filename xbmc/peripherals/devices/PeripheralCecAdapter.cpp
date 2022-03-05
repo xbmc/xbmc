@@ -1737,8 +1737,8 @@ bool CPeripheralCecAdapter::ReopenConnection(bool bAsync /* = false */)
 {
   if (bAsync)
   {
-    CJobManager::GetInstance().AddJob(new CPeripheralCecAdapterReopenJob(this), nullptr,
-                                      CJob::PRIORITY_NORMAL);
+    CServiceBroker::GetJobManager()->AddJob(new CPeripheralCecAdapterReopenJob(this), nullptr,
+                                            CJob::PRIORITY_NORMAL);
     return true;
   }
 

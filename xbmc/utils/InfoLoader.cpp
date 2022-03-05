@@ -9,6 +9,7 @@
 #include "InfoLoader.h"
 
 #include "JobManager.h"
+#include "ServiceBroker.h"
 #include "TimeUtils.h"
 #include "guilib/LocalizeStrings.h"
 
@@ -33,7 +34,7 @@ std::string CInfoLoader::GetInfo(int info)
   if (m_refreshTime < CTimeUtils::GetFrameTime() && !m_busy)
   { // queue up the job
     m_busy = true;
-    CJobManager::GetInstance().AddJob(GetJob(), this);
+    CServiceBroker::GetJobManager()->AddJob(GetJob(), this);
   }
   if (m_busy && CTimeUtils::GetFrameTime() - m_refreshTime > 1000)
   {

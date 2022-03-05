@@ -1067,7 +1067,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
   if (item >= 0 && pItem->m_bIsFolder && !pItem->IsParentFolder())
     choices.Add(CONTROL_BTNCALCSIZE, 13393);
   choices.Add(CONTROL_BTNSWITCHMEDIA, 523);
-  if (CJobManager::GetInstance().IsProcessing("filemanager"))
+  if (CServiceBroker::GetJobManager()->IsProcessing("filemanager"))
     choices.Add(CONTROL_BTNCANCELJOB, 167);
 
   if (!pItem->m_bIsFolder)
