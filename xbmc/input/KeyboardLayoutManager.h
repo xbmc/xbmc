@@ -23,9 +23,8 @@ typedef std::map<std::string, CKeyboardLayout> KeyboardLayouts;
 class CKeyboardLayoutManager
 {
 public:
+  CKeyboardLayoutManager() = default;
   virtual ~CKeyboardLayoutManager();
-
-  static CKeyboardLayoutManager& GetInstance();
 
   bool Load(const std::string& path = "");
   void Unload();
@@ -39,7 +38,6 @@ public:
                                                   void* data);
 
 private:
-  CKeyboardLayoutManager() = default;
   CKeyboardLayoutManager(const CKeyboardLayoutManager&) = delete;
   CKeyboardLayoutManager const& operator=(CKeyboardLayoutManager const&) = delete;
 

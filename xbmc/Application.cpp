@@ -349,6 +349,9 @@ bool CApplication::Create(const CAppParamParser &params)
   const auto appMessenger = std::make_shared<CApplicationMessenger>();
   CServiceBroker::RegisterAppMessenger(appMessenger);
 
+  const auto keyboardLayoutManager = std::make_shared<CKeyboardLayoutManager>();
+  CServiceBroker::RegisterKeyboardLayoutManager(keyboardLayoutManager);
+
   m_ServiceManager.reset(new CServiceManager());
 
   if (!m_ServiceManager->InitStageOne())
@@ -431,7 +434,7 @@ bool CApplication::Create(const CAppParamParser &params)
   m_replayGainSettings.bAvoidClipping = settings->GetBool(CSettings::SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING);
 
   // load the keyboard layouts
-  if (!CKeyboardLayoutManager::GetInstance().Load())
+  if (!keyboardLayoutManager->Load())
   {
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to load keyboard layouts");
     return false;
@@ -2485,6 +2488,8 @@ bool CApplication::Cleanup()
       m_ServiceManager->DeinitStageOne();
       m_ServiceManager.reset();
     }
+
+    CServiceBroker::UnregisterKeyboardLayoutManager();
 
     CServiceBroker::UnregisterAppMessenger();
 
