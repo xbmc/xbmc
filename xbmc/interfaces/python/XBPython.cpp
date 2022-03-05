@@ -41,14 +41,10 @@
 // Only required for Py3 < 3.7
 PyThreadState* savestate;
 
+bool XBPython::m_bInitialized = false;
+
 XBPython::XBPython()
 {
-  m_bInitialized = false;
-  m_mainThreadState = NULL;
-  m_iDllScriptCounter = 0;
-  m_vecPlayerCallbackList.clear();
-  m_vecMonitorCallbackList.clear();
-
   CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
 }
 
