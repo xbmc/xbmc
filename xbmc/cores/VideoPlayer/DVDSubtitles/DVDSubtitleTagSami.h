@@ -8,8 +8,11 @@
 
 #pragma once
 
+#include "utils/ColorUtils.h"
+
 #include <stdio.h>
 #include <string>
+#include <utility>
 #include <vector>
 
 #define FLAG_BOLD 0
@@ -58,7 +61,11 @@ public:
   std::vector<SLangclass> m_Langclass;
 
 private:
+  void LoadColors();
+
   CRegExp* m_tags;
   CRegExp* m_tagOptions;
   bool m_flag[6];
+  bool m_CSSColorsLoaded{false};
+  std::vector<std::pair<std::string, UTILS::COLOR::ColorInfo>> m_CSSColors;
 };

@@ -9,10 +9,16 @@
 #include "DVDSubtitleTagSami.h"
 
 #include "DVDSubtitleStream.h"
+#include "filesystem/SpecialProtocol.h"
+#include "guilib/GUIColorManager.h"
 #include "utils/CharsetConverter.h"
 #include "utils/HTMLUtil.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
+
+#include <algorithm>
+
+using namespace UTILS;
 
 CDVDSubtitleTagSami::~CDVDSubtitleTagSami()
 {
@@ -113,30 +119,48 @@ void CDVDSubtitleTagSami::ConvertLine(std::string& strUTF8, const char* langClas
         if (tagOptionName == "color")
         {
           m_flag[FLAG_COLOR] = true;
-          if (tagOptionValue[0] == '#' && tagOptionValue.size() >= 7)
+
+          if (!m_CSSColorsLoaded) // Load colors in lazy way
+            LoadColors();
+
+          // Check if the color value is an HTML color name
+          auto colorInfo =
+              std::find_if(m_CSSColors.begin(), m_CSSColors.end(),
+                           [&](const std::pair<std::string, COLOR::ColorInfo>& item) {
+                             return StringUtils::CompareNoCase(item.first, tagOptionValue) == 0;
+                           });
+          if (colorInfo != m_CSSColors.end())
           {
-            tagOptionValue.erase(0, 1);
-            tagOptionValue.erase(6, tagOptionValue.size());
-            colorHex = tagOptionValue;
+            colorHex =
+                StringUtils::Format("{:6x}", COLOR::ConvertToBGR(colorInfo->second.colorARGB));
           }
-          else if (tagOptionValue.size() == 6)
+          else // The color value must be an hex code
           {
-            bool bHex = true;
-            for (int i = 0; i < 6; i++)
+            if (tagOptionValue[0] == '#' && tagOptionValue.size() >= 7)
             {
-              char temp = tagOptionValue[i];
-              if (!(('0' <= temp && temp <= '9') || ('a' <= temp && temp <= 'f') ||
-                    ('A' <= temp && temp <= 'F')))
-              {
-                bHex = false;
-                break;
-              }
-            }
-            if (bHex)
+              tagOptionValue.erase(0, 1);
+              tagOptionValue.erase(6, tagOptionValue.size());
               colorHex = tagOptionValue;
+            }
+            else if (tagOptionValue.size() == 6)
+            {
+              bool bHex = true;
+              for (int i = 0; i < 6; i++)
+              {
+                char temp = tagOptionValue[i];
+                if (!(('0' <= temp && temp <= '9') || ('a' <= temp && temp <= 'f') ||
+                      ('A' <= temp && temp <= 'F')))
+                {
+                  bHex = false;
+                  break;
+                }
+              }
+              if (bHex)
+                colorHex = tagOptionValue;
+            }
+            colorHex =
+                colorHex.substr(4, 2) + tagOptionValue.substr(2, 2) + tagOptionValue.substr(0, 2);
           }
-          colorHex =
-              colorHex.substr(4, 2) + tagOptionValue.substr(2, 2) + tagOptionValue.substr(0, 2);
           std::string tempColorTag = "{\\c&H" + colorHex + "&}";
           strUTF8.insert(pos, tempColorTag);
           pos += static_cast<int>(tempColorTag.length());
@@ -280,4 +304,13 @@ void CDVDSubtitleTagSami::LoadHead(CDVDSubtitleStream* samiStream)
         inSTYLE = true;
     }
   }
+}
+
+void CDVDSubtitleTagSami::LoadColors()
+{
+  CGUIColorManager colorManager;
+  colorManager.LoadColorsListFromXML(
+      CSpecialProtocol::TranslatePathConvertCase("special://xbmc/system/colors.xml"), m_CSSColors,
+      false);
+  m_CSSColorsLoaded = true;
 }
