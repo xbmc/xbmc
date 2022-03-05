@@ -113,7 +113,7 @@ bool CThumbExtractor::DoWork()
     result = CDVDFileInfo::ExtractThumb(m_item, details, m_fillStreamDetails ? &m_item.GetVideoInfoTag()->m_streamDetails : nullptr, m_pos);
     if (result)
     {
-      CTextureCache::GetInstance().AddCachedTexture(m_target, details);
+      CServiceBroker::GetTextureCache()->AddCachedTexture(m_target, details);
       m_item.SetProperty("HasAutoThumb", true);
       m_item.SetProperty("AutoThumbImage", m_target);
       m_item.SetArt("thumb", m_target);
@@ -417,7 +417,7 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
       if (!art.empty()) // cache it
       {
         SetCachedImage(*pItem, type, art);
-        CTextureCache::GetInstance().BackgroundCacheImage(art);
+        CServiceBroker::GetTextureCache()->BackgroundCacheImage(art);
         artwork.insert(std::make_pair(type, art));
       }
       else
@@ -444,7 +444,8 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
   {
     // An auto-generated thumb may have been cached on a different device - check we have it here
     std::string url = pItem->GetArt("thumb");
-    if (StringUtils::StartsWith(url, "image://video@") && !CTextureCache::GetInstance().HasCachedImage(url))
+    if (StringUtils::StartsWith(url, "image://video@") &&
+        !CServiceBroker::GetTextureCache()->HasCachedImage(url))
       pItem->SetArt("thumb", "");
 
     const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
@@ -452,9 +453,9 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
     {
       // create unique thumb for auto generated thumbs
       std::string thumbURL = GetEmbeddedThumbURL(*pItem);
-      if (CTextureCache::GetInstance().HasCachedImage(thumbURL))
+      if (CServiceBroker::GetTextureCache()->HasCachedImage(thumbURL))
       {
-        CTextureCache::GetInstance().BackgroundCacheImage(thumbURL);
+        CServiceBroker::GetTextureCache()->BackgroundCacheImage(thumbURL);
         pItem->SetProperty("HasAutoThumb", true);
         pItem->SetProperty("AutoThumbImage", thumbURL);
         pItem->SetArt("thumb", thumbURL);

@@ -214,7 +214,8 @@ void CGUIDialogVideoBookmarks::UpdateItem(unsigned int chapterIdx)
   if (itemPos < m_vecItems->Size())
   {
     std::string time = StringUtils::Format("chapter://{}/{}", m_filePath, chapterIdx);
-    std::string cachefile = CTextureCache::GetInstance().GetCachedPath(CTextureCache::GetInstance().GetCacheFile(time) + ".jpg");
+    std::string cachefile = CServiceBroker::GetTextureCache()->GetCachedPath(
+        CServiceBroker::GetTextureCache()->GetCacheFile(time) + ".jpg");
     if (XFILE::CFile::Exists(cachefile))
     {
       (*m_vecItems)[itemPos]->SetArt("thumb", cachefile);
@@ -280,7 +281,8 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
     item->SetLabel2(time);
 
     std::string chapterPath = StringUtils::Format("chapter://{}/{}", m_filePath, i);
-    std::string cachefile = CTextureCache::GetInstance().GetCachedPath(CTextureCache::GetInstance().GetCacheFile(chapterPath)+".jpg");
+    std::string cachefile = CServiceBroker::GetTextureCache()->GetCachedPath(
+        CServiceBroker::GetTextureCache()->GetCacheFile(chapterPath) + ".jpg");
     if (XFILE::CFile::Exists(cachefile))
       item->SetArt("thumb", cachefile);
     else if (i > m_jobsStarted && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTCHAPTERTHUMBS))

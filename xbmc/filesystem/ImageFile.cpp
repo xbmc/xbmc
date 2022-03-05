@@ -8,6 +8,7 @@
 
 #include "ImageFile.h"
 
+#include "ServiceBroker.h"
 #include "TextureCache.h"
 #include "URL.h"
 
@@ -24,10 +25,11 @@ bool CImageFile::Open(const CURL& url)
 {
   std::string file = url.Get();
   bool needsRecaching = false;
-  std::string cachedFile = CTextureCache::GetInstance().CheckCachedImage(file, needsRecaching);
+  std::string cachedFile =
+      CServiceBroker::GetTextureCache()->CheckCachedImage(file, needsRecaching);
   if (cachedFile.empty())
   { // not in the cache, so cache it
-    cachedFile = CTextureCache::GetInstance().CacheImage(file);
+    cachedFile = CServiceBroker::GetTextureCache()->CacheImage(file);
   }
   if (!cachedFile.empty())
   { // in the cache, return what we have
@@ -40,7 +42,8 @@ bool CImageFile::Open(const CURL& url)
 bool CImageFile::Exists(const CURL& url)
 {
   bool needsRecaching = false;
-  std::string cachedFile = CTextureCache::GetInstance().CheckCachedImage(url.Get(), needsRecaching);
+  std::string cachedFile =
+      CServiceBroker::GetTextureCache()->CheckCachedImage(url.Get(), needsRecaching);
   if (!cachedFile.empty())
     return CFile::Exists(cachedFile, false);
 
@@ -54,7 +57,8 @@ bool CImageFile::Exists(const CURL& url)
 int CImageFile::Stat(const CURL& url, struct __stat64* buffer)
 {
   bool needsRecaching = false;
-  std::string cachedFile = CTextureCache::GetInstance().CheckCachedImage(url.Get(), needsRecaching);
+  std::string cachedFile =
+      CServiceBroker::GetTextureCache()->CheckCachedImage(url.Get(), needsRecaching);
   if (!cachedFile.empty())
     return CFile::Stat(cachedFile, buffer);
 

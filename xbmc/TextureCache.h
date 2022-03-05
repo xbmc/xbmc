@@ -36,11 +36,8 @@ class CTexture;
 class CTextureCache : public CJobQueue
 {
 public:
-  /*!
-   \brief The only way through which the global instance of the CTextureCache should be accessed.
-   \return the global instance.
-   */
-  static CTextureCache &GetInstance();
+  CTextureCache();
+  ~CTextureCache() override;
 
   /*! \brief Initialize the texture cache
    */
@@ -152,10 +149,8 @@ public:
   bool Export(const std::string &image, const std::string &destination); //! @todo BACKWARD COMPATIBILITY FOR MUSIC THUMBS
 private:
   // private construction, and no assignments; use the provided singleton methods
-  CTextureCache();
   CTextureCache(const CTextureCache&) = delete;
   CTextureCache const& operator=(CTextureCache const&) = delete;
-  ~CTextureCache() override;
 
   /*! \brief Check if the given image is a cached image
    \param image url of the image

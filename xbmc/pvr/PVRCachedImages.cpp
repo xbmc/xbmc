@@ -8,6 +8,7 @@
 
 #include "PVRCachedImages.h"
 
+#include "ServiceBroker.h"
 #include "TextureCache.h"
 #include "TextureDatabase.h"
 #include "URL.h"
@@ -82,7 +83,7 @@ int CPVRCachedImages::Cleanup(const std::vector<PVRImagePattern>& urlPatterns,
     if (!bFound)
     {
       CLog::LogFC(LOGDEBUG, LOGPVR, "Removing stale cached image: '{}'", textureURL);
-      CTextureCache::GetInstance().ClearCachedImage(items[i]["textureid"].asInteger());
+      CServiceBroker::GetTextureCache()->ClearCachedImage(items[i]["textureid"].asInteger());
 
       if (clearTextureForPath)
         db.ClearTextureForPath(textureURL, "thumb");

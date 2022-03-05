@@ -11910,8 +11910,8 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
                     savedArtfile = URIUtils::AddFileToFolder(strPath, "folder");
                   else
                     savedArtfile = URIUtils::AddFileToFolder(strPath, art.first);
-                  CTextureCache::GetInstance().Export(art.second, savedArtfile,
-                                                      settings.m_overwrite);
+                  CServiceBroker::GetTextureCache()->Export(art.second, savedArtfile,
+                                                            settings.m_overwrite);
                 }
               }
             }
@@ -12051,8 +12051,8 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
                       savedArtfile = URIUtils::AddFileToFolder(strPath, "folder");
                     else
                       savedArtfile = URIUtils::AddFileToFolder(strPath, art.first);
-                    CTextureCache::GetInstance().Export(art.second, savedArtfile,
-                                                        settings.m_overwrite);
+                    CServiceBroker::GetTextureCache()->Export(art.second, savedArtfile,
+                                                              settings.m_overwrite);
                   }
                 }
               }
