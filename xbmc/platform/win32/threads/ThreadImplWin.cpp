@@ -30,6 +30,10 @@ constexpr auto nativeThreadPriorityMap = make_map<ThreadPriority, int>({
     {ThreadPriority::HIGHEST, THREAD_PRIORITY_HIGHEST},
 });
 
+static_assert(static_cast<size_t>(ThreadPriority::PRIORITY_COUNT) == nativeThreadPriorityMap.size(),
+              "nativeThreadPriorityMap doesn't match the size of ThreadPriority, did you forget to "
+              "add/remove a mapping?");
+
 constexpr int ThreadPriorityToNativePriority(const ThreadPriority& priority)
 {
   const auto it = nativeThreadPriorityMap.find(priority);
