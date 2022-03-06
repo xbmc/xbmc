@@ -290,6 +290,8 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   @Override
   public void onDestroy()
   {
+    TvUtil.cancelAllScheduledJobs(this);
+
     // unregister the InputDeviceListener implementation
     InputManager manager = (InputManager) getSystemService(INPUT_SERVICE);
     manager.unregisterInputDeviceListener(mInputDeviceListener);
