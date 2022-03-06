@@ -8,7 +8,20 @@
 
 #pragma once
 
-#include "platform/RecursiveMutex.h"
 #include "threads/Lockables.h"
 
-class CCriticalSection : public XbmcThreads::CountingLockable<XbmcThreads::CRecursiveMutex> {};
+#if defined(TARGET_POSIX)
+#include "platform/posix/threads/RecursiveMutex.h"
+
+class CCriticalSection : public XbmcThreads::CountingLockable<XbmcThreads::CRecursiveMutex>
+{
+};
+
+#elif defined(TARGET_WINDOWS)
+#include <mutex>
+
+class CCriticalSection : public XbmcThreads::CountingLockable<std::recursive_mutex>
+{
+};
+
+#endif

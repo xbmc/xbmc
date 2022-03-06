@@ -6,7 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "ThreadImpl.h"
+#include "ThreadImplWin.h"
 
 #include "utils/log.h"
 

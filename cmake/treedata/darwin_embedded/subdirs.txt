@@ -11,4 +11,5 @@ xbmc/platform/darwin/network          platform/darwin/network
 xbmc/platform/darwin/utils            platform/darwin/utils
 xbmc/platform/posix                   posix
 xbmc/platform/posix/filesystem        platform/posix/filesystem
+xbmc/platform/posix/threads           platform/posix/threads
 xbmc/platform/posix/utils             platform/posix/utils

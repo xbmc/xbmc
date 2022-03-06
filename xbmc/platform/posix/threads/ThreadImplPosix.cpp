@@ -6,7 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "ThreadImpl.h"
+#include "ThreadImplPosix.h"
 
 #include <limits.h>
 #include <mutex>
