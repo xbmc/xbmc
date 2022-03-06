@@ -230,8 +230,8 @@ void CAESinkPipewire::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
   std::for_each(formatMap.cbegin(), formatMap.cend(),
                 [&device](const auto& pair) { device.m_dataFormats.emplace_back(pair.second); });
 
-  for (const auto& rate : defaultSampleRates)
-    device.m_sampleRates.emplace_back(rate);
+  std::for_each(defaultSampleRates.cbegin(), defaultSampleRates.cend(),
+                [&device](const auto& rate) { device.m_sampleRates.emplace_back(rate); });
 
   device.m_channels = CAEChannelInfo(AE_CH_LAYOUT_2_0);
 
@@ -249,8 +249,8 @@ void CAESinkPipewire::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
     std::for_each(formatMap.cbegin(), formatMap.cend(),
                   [&device](const auto& pair) { device.m_dataFormats.emplace_back(pair.second); });
 
-    for (const auto& rate : defaultSampleRates)
-      device.m_sampleRates.emplace_back(rate);
+    std::for_each(defaultSampleRates.cbegin(), defaultSampleRates.cend(),
+                  [&device](const auto& rate) { device.m_sampleRates.emplace_back(rate); });
 
     auto proxy = global.second->proxy.get();
     auto node = static_cast<PIPEWIRE::CPipewireNode*>(proxy);
