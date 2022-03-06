@@ -41,8 +41,10 @@ constexpr int ThreadPriorityToNativePriority(const ThreadPriority& priority)
   {
     return it->second;
   }
-
-  throw std::runtime_error("priority not implemented");
+  else
+  {
+    throw std::range_error("Priority not found");
+  }
 }
 
 } // namespace
