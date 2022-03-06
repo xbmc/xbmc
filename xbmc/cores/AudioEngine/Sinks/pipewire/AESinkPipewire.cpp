@@ -53,7 +53,7 @@ constexpr auto formatMap = make_map<spa_audio_format, AEDataFormat>(
      {SPA_AUDIO_FORMAT_S24, AEDataFormat::AE_FMT_S24NE3},
      {SPA_AUDIO_FORMAT_F32, AEDataFormat::AE_FMT_FLOAT}});
 
-uint8_t PWFormatToSampleSize(spa_audio_format format)
+constexpr uint8_t PWFormatToSampleSize(spa_audio_format format)
 {
   switch (format)
   {
@@ -73,7 +73,7 @@ uint8_t PWFormatToSampleSize(spa_audio_format format)
   }
 }
 
-std::string PWFormatToString(spa_audio_format format)
+constexpr std::string_view PWFormatToString(spa_audio_format format)
 {
   switch (format)
   {
@@ -107,7 +107,7 @@ spa_audio_format AEFormatToPWFormat(AEDataFormat& format)
   return SPA_AUDIO_FORMAT_F32;
 }
 
-AEDataFormat PWFormatToAEFormat(spa_audio_format& format)
+constexpr AEDataFormat PWFormatToAEFormat(spa_audio_format& format)
 {
   return formatMap.at(format);
 }
