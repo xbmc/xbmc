@@ -181,6 +181,18 @@ public class TvUtil
   }
 
   /**
+   * Cancel all jobs scheduled by this app via a {@link JobScheduler}.
+   *
+   * @param context for accessing the {@link JobScheduler}.
+   */
+  public static void cancelAllScheduledJobs(Context context)
+  {
+    JobScheduler scheduler =
+            (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+    scheduler.cancelAll();
+  }
+
+  /**
    * Schedules syncing channels via a {@link JobScheduler}.
    *
    * @param context for accessing the {@link JobScheduler}.
