@@ -10,38 +10,31 @@
 # DAV1D_LIBRARIES - the dav1d libraries
 
 if(ENABLE_INTERNAL_DAV1D)
-  include(ExternalProject)
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
   set(MODULE_LC dav1d)
 
   SETUP_BUILD_VARS()
 
-  set(DAV1D_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/libdav1d.a)
-  set(DAV1D_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
-  set(DAV1D_VERSION ${DAV1D_VER})
+  set(DAV1D_VERSION ${${MODULE}_VER})
 
-  externalproject_add(${MODULE_LC}
-                      URL ${${MODULE}_URL}
-                      URL_HASH ${${MODULE}_HASH}
-                      DOWNLOAD_NAME ${${MODULE}_ARCHIVE}
-                      DOWNLOAD_DIR ${TARBALL_DIR}
-                      PREFIX ${CORE_BUILD_DIR}/${MODULE_LC}
-                      CONFIGURE_COMMAND meson
-                                        --buildtype=release
-                                        --default-library=static
-                                        --prefix=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
-                                        --libdir=lib
-                                        -Denable_asm=true
-                                        -Denable_tools=false
-                                        -Denable_examples=false
-                                        -Denable_tests=false
-                                        ../dav1d
-                      BUILD_COMMAND ninja
-                      INSTALL_COMMAND ninja install
-                      BUILD_BYPRODUCTS ${DAV1D_LIBRARY})
+  find_program(NINJA_EXECUTABLE ninja REQUIRED)
+  find_program(MESON_EXECUTABLE meson REQUIRED)
 
-  set_target_properties(${MODULE_LC} PROPERTIES FOLDER "External Projects")
+  set(CONFIGURE_COMMAND ${MESON_EXECUTABLE}
+                        --buildtype=release
+                        --default-library=static
+                        --prefix=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
+                        --libdir=lib
+                        -Denable_asm=true
+                        -Denable_tools=false
+                        -Denable_examples=false
+                        -Denable_tests=false
+                        ../dav1d)
+  set(BUILD_COMMAND ${NINJA_EXECUTABLE})
+  set(INSTALL_COMMAND ${NINJA_EXECUTABLE} install)
+
+  BUILD_DEP_TARGET()
 else()
   if(PKG_CONFIG_FOUND)
     pkg_check_modules(PC_DAV1D dav1d QUIET)

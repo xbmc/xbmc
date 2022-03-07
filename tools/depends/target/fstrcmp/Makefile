@@ -1,14 +1,12 @@
-include ../../Makefile.include LIBFSTRCMP-VERSION
-DEPS = ../../Makefile.include Makefile LIBFSTRCMP-VERSION ../../download-files.include
-include ../../download-files.include
+include ../../Makefile.include FSTRCMP-VERSION ../../download-files.include
+DEPS = ../../Makefile.include Makefile FSTRCMP-VERSION ../../download-files.include
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX)
 
-LIBDYLIB=$(PLATFORM)/lib/.libs/lib$(LIBNAME).a
+LIBDYLIB=$(PLATFORM)/lib/.libs/$(BYPRODUCT)
 
 all: .installed-$(PLATFORM)
-
 
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)

@@ -12,31 +12,19 @@
 
 if(ENABLE_INTERNAL_FSTRCMP)
   find_program(LIBTOOL libtool REQUIRED)
-  include(ExternalProject)
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  set(MODULE_LC libfstrcmp)
+  set(MODULE_LC fstrcmp)
 
   SETUP_BUILD_VARS()
 
-  set(FSTRCMP_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/libfstrcmp.a)
-  set(FSTRCMP_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
-  set(FSTRCMP_VER ${${MODULE}_VER})
+  set(PATCH_COMMAND autoreconf -vif)
+  set(CONFIGURE_COMMAND ./configure --prefix ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR})
+  set(BUILD_COMMAND make lib/libfstrcmp.la)
+  set(BUILD_IN_SOURCE 1)
+  set(INSTALL_COMMAND make install-libdir install-include)
 
-  externalproject_add(fstrcmp
-                      URL ${${MODULE}_URL}
-                      URL_HASH ${${MODULE}_HASH}
-                      DOWNLOAD_DIR ${TARBALL_DIR}
-                      DOWNLOAD_NAME ${${MODULE}_ARCHIVE}
-                      PREFIX ${CORE_BUILD_DIR}/fstrcmp
-                      PATCH_COMMAND autoreconf -vif
-                      CONFIGURE_COMMAND ./configure --prefix ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
-                      BUILD_BYPRODUCTS ${FSTRCMP_LIBRARY}
-                      BUILD_COMMAND make lib/libfstrcmp.la
-                      BUILD_IN_SOURCE 1
-                      INSTALL_COMMAND make install-libdir install-include)
-
-  set_target_properties(fstrcmp PROPERTIES FOLDER "External Projects")
+  BUILD_DEP_TARGET()
 else()
   if(PKG_CONFIG_FOUND)
     pkg_check_modules(PC_FSTRCMP fstrcmp QUIET)

@@ -14,10 +14,9 @@
 #   Spdlog::Spdlog   - The Spdlog library
 
 if(ENABLE_INTERNAL_SPDLOG)
-  include(ExternalProject)
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  set(MODULE_LC libspdlog)
+  set(MODULE_LC spdlog)
 
   SETUP_BUILD_VARS()
 
@@ -25,32 +24,23 @@ if(ENABLE_INTERNAL_SPDLOG)
     set(EXTRA_ARGS "-DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}")
   endif()
 
-  set(SPDLOG_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/libspdlog.a)
-  set(SPDLOG_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
   set(SPDLOG_VERSION ${${MODULE}_VER})
 
-  externalproject_add(spdlog
-                      URL ${${MODULE}_URL}
-                      URL_HASH ${${MODULE}_HASH}
-                      DOWNLOAD_DIR ${TARBALL_DIR}
-                      DOWNLOAD_NAME ${${MODULE}_ARCHIVE}
-                      PREFIX ${CORE_BUILD_DIR}/${MODULE_LC}
-                      CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
-                                 -DCMAKE_CXX_EXTENSIONS=${CMAKE_CXX_EXTENSIONS}
-                                 -DCMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}
-                                 -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
-                                 -DCMAKE_INSTALL_LIBDIR=lib
-                                 -DSPDLOG_BUILD_EXAMPLE=OFF
-                                 -DSPDLOG_BUILD_TESTS=OFF
-                                 -DSPDLOG_BUILD_BENCH=OFF
-                                 -DSPDLOG_FMT_EXTERNAL=ON
-                                 -DCMAKE_PREFIX_PATH=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
-                                 "${EXTRA_ARGS}"
-                      BUILD_BYPRODUCTS ${SPDLOG_LIBRARY})
-  set_target_properties(spdlog PROPERTIES FOLDER "External Projects")
+  set(CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
+                 -DCMAKE_CXX_EXTENSIONS=${CMAKE_CXX_EXTENSIONS}
+                 -DCMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}
+                 -DCMAKE_INSTALL_LIBDIR=lib
+                 -DSPDLOG_BUILD_EXAMPLE=OFF
+                 -DSPDLOG_BUILD_TESTS=OFF
+                 -DSPDLOG_BUILD_BENCH=OFF
+                 -DSPDLOG_FMT_EXTERNAL=ON
+                 -DCMAKE_PREFIX_PATH=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
+                 "${EXTRA_ARGS}")
+
+  BUILD_DEP_TARGET()
 
   if(ENABLE_INTERNAL_FMT)
-    add_dependencies(spdlog fmt)
+    add_dependencies(${MODULE_LC} fmt)
   else()
     # spdlog 1.9.2 fails to build with fmt < 8.0.0
     find_package(fmt 8.0.0 CONFIG REQUIRED QUIET)

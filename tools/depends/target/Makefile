@@ -13,14 +13,16 @@ DEPENDS = \
   expat \
   ffmpeg \
   flatbuffers \
+  fmt \
   fontconfig \
   freetype2 \
   freetype2-noharfbuzz \
   fribidi \
+  fstrcmp \
   gettext \
   gmp \
   gnutls \
-  googletest \
+  gtest \
   harfbuzz \
   libass \
   libbluray \
@@ -29,8 +31,6 @@ DEPENDS = \
   libdvdnav \
   libdvdread \
   libffi \
-  libfmt \
-  libfstrcmp \
   libgcrypt \
   libgpg-error \
   libjpeg-turbo \
@@ -40,8 +40,6 @@ DEPENDS = \
   libplist \
   libpng \
   libshairplay \
-  libspdlog \
-  libudfread \
   libusb \
   libxml2 \
   libxslt \
@@ -56,9 +54,11 @@ DEPENDS = \
   pythonmodule-pycryptodome \
   pythonmodule-setuptools \
   rapidjson \
+  spdlog \
   sqlite3 \
   taglib \
   tinyxml \
+  udfread \
   xz
 
 ifeq ($(ENABLE_GPLV3),yes)
@@ -68,7 +68,7 @@ else
 endif
 
 ifeq ($(OS),darwin_embedded)
-  EXCLUDED_DEPENDS = libcec libusb googletest
+  EXCLUDED_DEPENDS = libcec libusb gtest
   ifeq ($(TARGET_PLATFORM),appletvos)
     DEPENDS += boblight
     EXCLUDED_DEPENDS += libshairplay libplist
@@ -84,7 +84,7 @@ ifeq ($(OS),osx)
 endif
 
 ifeq ($(OS),android)
-  EXCLUDED_DEPENDS = libcec libusb googletest
+  EXCLUDED_DEPENDS = libcec libusb gtest
   DEPENDS += dummy-libxbmc libuuid libandroidjni libzip
   PYMODULE_DEPS = dummy-libxbmc
   LIBUUID = libuuid
@@ -144,7 +144,7 @@ gettext: $(ICONV)
 gnutls: nettle $(ZLIB)
 harfbuzz: meson-cross-file freetype2-noharfbuzz $(ICONV)
 libass: fontconfig fribidi harfbuzz libpng freetype2 expat $(ICONV)
-libbluray: fontconfig freetype2 $(ICONV) libudfread libxml2
+libbluray: fontconfig freetype2 $(ICONV) udfread libxml2
 libcdio-gplv3: $(ICONV)
 libcdio: $(ICONV)
 libcec: p8-platform
@@ -157,7 +157,7 @@ libinput: mtdev libevdev meson-cross-file
 libmicrohttpd: gnutls libgcrypt libgpg-error
 libplist: $(ZLIB)
 libpng: $(ZLIB)
-libspdlog: libfmt
+spdlog: fmt
 libva: libdrm $(LIBVA_DEPS)
 libxslt: libgcrypt libxml2
 libzip: bzip2 gnutls $(ZLIB)

@@ -1,6 +1,6 @@
 -include ../../Makefile.include
-include LIBUDFREAD-VERSION
-DEPS = Makefile LIBUDFREAD-VERSION ../../download-files.include ../../download-files.include
+include UDFREAD-VERSION
+DEPS = Makefile UDFREAD-VERSION ../../download-files.include ../../download-files.include
 
 ifeq ($(CROSS_COMPILING), yes)
   DEPS += ../../Makefile.include
@@ -17,11 +17,10 @@ include ../../download-files.include
 # configuration settings
 CONFIGURE = ./configure --prefix=$(PREFIX) --disable-shared --enable-static
 
-LIBDYLIB=$(PLATFORM)/.libs/$(LIBNAME).a
+LIBDYLIB=$(PLATFORM)/.libs/$(BYPRODUCT)
 
 all: .installed-$(PLATFORM)
 download: $(TARBALLS_LOCATION)/$(ARCHIVE)
-
 
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)

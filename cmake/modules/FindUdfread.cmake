@@ -11,32 +11,23 @@
 # UDFREAD_DEFINITIONS - the udfread definitions
 
 if(ENABLE_INTERNAL_UDFREAD)
-  include(ExternalProject)
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  set(MODULE_LC libudfread)
+  set(MODULE_LC udfread)
 
   SETUP_BUILD_VARS()
 
-  set(UDFREAD_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/libudfread.a)
-  set(UDFREAD_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
   set(UDFREAD_VERSION ${${MODULE}_VER})
 
-  externalproject_add(udfread
-                      URL ${${MODULE}_URL}
-                      URL_HASH ${${MODULE}_HASH}
-                      DOWNLOAD_NAME ${${MODULE}_ARCHIVE}
-                      DOWNLOAD_DIR ${TARBALL_DIR}
-                      PREFIX ${CORE_BUILD_DIR}/${MODULE_LC}
-                      CONFIGURE_COMMAND autoreconf -vif &&
-                                        ./configure
-                                        --enable-static
-                                        --disable-shared
-                                        --prefix=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
-                      BUILD_BYPRODUCTS ${UDFREAD_LIBRARY}
-                      BUILD_IN_SOURCE 1)
+  set(CONFIGURE_COMMAND autoreconf -vif &&
+                        ./configure
+                        --enable-static
+                        --disable-shared
+                        --prefix=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR})
+  set(BUILD_IN_SOURCE 1)
 
-  set_target_properties(udfread PROPERTIES FOLDER "External Projects")
+  BUILD_DEP_TARGET()
+
   set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP udfread)
 else()
   if(PKG_CONFIG_FOUND)
