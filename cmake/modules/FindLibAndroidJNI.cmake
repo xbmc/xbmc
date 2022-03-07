@@ -18,6 +18,10 @@ set(MODULE_LC libandroidjni)
 
 SETUP_BUILD_VARS()
 
+set(LIBANDROIDJNI_BUILD_TYPE Release)
+
+# We still need to supply SOMETHING to CMAKE_ARGS to initiate a cmake BUILD_DEP_TARGET
+# Setting cmake_build_type twice wont cause issues
 set(CMAKE_ARGS -DCMAKE_BUILD_TYPE=Release)
 
 BUILD_DEP_TARGET()

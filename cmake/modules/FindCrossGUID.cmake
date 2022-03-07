@@ -40,10 +40,10 @@ if(ENABLE_INTERNAL_CROSSGUID)
             COMMAND ${PATCH_EXECUTABLE} -p1 -i ${CMAKE_SOURCE_DIR}/tools/depends/target/crossguid/002-disable-Wall-error.patch)
 
   # Force release build type. crossguid forces a debug postfix -dgb. may want to patch this
-  # if we enable adaptive build type for the library.
+  set(CROSSGUID_BUILD_TYPE Release)
+
   set(CMAKE_ARGS -DCROSSGUID_TESTS=OFF
-                 -DDISABLE_WALL=ON
-                 -DCMAKE_BUILD_TYPE=Release)
+                 -DDISABLE_WALL=ON)
 
   BUILD_DEP_TARGET()
 

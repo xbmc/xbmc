@@ -22,6 +22,9 @@ if(ENABLE_INTERNAL_GTEST)
 
   set(GTEST_VERSION ${${MODULE}_VER})
 
+  # Override build type detection and always build as release
+  set(GTEST_BUILD_TYPE Release)
+
   set(CMAKE_ARGS -DBUILD_GMOCK=OFF
                  -DINSTALL_GTEST=ON
                  -DBUILD_SHARED_LIBS=OFF
