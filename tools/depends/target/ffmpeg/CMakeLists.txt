@@ -83,19 +83,21 @@ elseif(CORE_SYSTEM_NAME STREQUAL android)
     list(APPEND ffmpeg_conf --cpu=cortex-a9)
   elseif(CPU MATCHES x86_64)
     list(APPEND ffmpeg_conf --cpu=x86_64)
+    list(APPEND ffmpeg_conf --extra-cflags=-mno-stackrealign)
   else()
     list(APPEND ffmpeg_conf --cpu=i686 --disable-mmx)
+    list(APPEND ffmpeg_conf --extra-cflags=-mno-stackrealign)
   endif()
 elseif(CORE_SYSTEM_NAME STREQUAL darwin_embedded)
   list(APPEND ffmpeg_conf --disable-crystalhd
                           --enable-videotoolbox
                           --target-os=darwin
-                          --disable-securetransport
               )
 elseif(CORE_SYSTEM_NAME STREQUAL osx)
   list(APPEND ffmpeg_conf --disable-crystalhd
                           --enable-videotoolbox
                           --target-os=darwin
+                          --disable-securetransport
               )
 endif()
 
@@ -123,6 +125,7 @@ else()
 endif()
 
 if(EXTRA_FLAGS)
+  string(REPLACE " " ";" EXTRA_FLAGS ${EXTRA_FLAGS})
   list(APPEND ffmpeg_conf ${EXTRA_FLAGS})
 endif()
 
