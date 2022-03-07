@@ -59,7 +59,6 @@ macro(buildFFMPEG)
     set(CROSS_ARGS -DDEPENDS_PATH=${DEPENDS_PATH}
                    -DPKG_CONFIG_EXECUTABLE=${PKG_CONFIG_EXECUTABLE}
                    -DCROSSCOMPILING=${CMAKE_CROSSCOMPILING}
-                   -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
                    -DOS=${OS}
                    -DCMAKE_AR=${CMAKE_AR})
   endif()
