@@ -813,7 +813,7 @@ bool CAddonDatabase::GetRepositoryContent(const std::string& id, VECADDONS& addo
       auto addon = CAddonBuilder::Generate(builder.get(), ADDON_UNKNOWN);
       if (addon)
       {
-        result.emplace_back(addon);
+        result.emplace_back(std::move(addon));
       }
       else
         CLog::Log(LOGWARNING, "CAddonDatabase: failed to build {}", addonId);
