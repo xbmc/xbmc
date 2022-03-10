@@ -42,7 +42,7 @@ core_find_versions()
 include(cmake/scripts/${CORE_SYSTEM_NAME}/PathSetup.cmake)
 include(cmake/scripts/common/CompilerSettings.cmake)
 include(ExternalProject)
-
+include(CMakeDependentOption)
 
 # general
 option(VERBOSE            "Enable verbose output?" OFF)
@@ -55,6 +55,7 @@ option(ENABLE_AIRTUNES    "Enable AirTunes support?" ON)
 option(ENABLE_OPTICAL     "Enable optical support?" ON)
 option(ENABLE_PYTHON      "Enable python support?" ON)
 option(ENABLE_TESTING     "Enable testing support?" ON)
+cmake_dependent_option(ENABLE_INTERNAL_DVDLIBS "Enable internal dvdnav/dvdread/dvdcss libs?" ON "NOT KODI_DEPENDSBUILD" OFF)
 # use ffmpeg from depends or system
 option(ENABLE_INTERNAL_FFMPEG "Enable internal ffmpeg?" OFF)
 if(UNIX)

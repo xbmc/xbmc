@@ -107,6 +107,12 @@ macro(BUILD_DEP_TARGET)
     endif()
   endif()
 
+  if(${MODULE}_PREFIX)
+    set(PREFIX PREFIX ${${MODULE}_PREFIX})
+  else()
+    set(PREFIX PREFIX ${CORE_BUILD_DIR}/${MODULE_LC})
+  endif()
+
   if(PATCH_COMMAND)
     set(PATCH_COMMAND PATCH_COMMAND ${PATCH_COMMAND})
   endif()
@@ -140,7 +146,7 @@ macro(BUILD_DEP_TARGET)
                       URL_HASH ${${MODULE}_HASH}
                       DOWNLOAD_DIR ${TARBALL_DIR}
                       DOWNLOAD_NAME ${${MODULE}_ARCHIVE}
-                      PREFIX ${CORE_BUILD_DIR}/${MODULE_LC}
+                      ${PREFIX}
                       ${CMAKE_ARGS}
                       ${PATCH_COMMAND}
                       ${CONFIGURE_COMMAND}

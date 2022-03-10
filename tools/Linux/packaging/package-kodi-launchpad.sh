@@ -41,9 +41,9 @@ wget -O - ${debianrepo}/archive/master.tar.gz | tar xzv --strip-components=1 --e
 
 # add tarballs for internal ffmpeg, libdvd
 tools/depends/target/ffmpeg/autobuild.sh -d || { echo "Error downloading ffmpeg"; exit 2; }
-make -C tools/depends/target/libdvdnav download || { echo "Error downloading libdvdnav"; exit 2; }
-make -C tools/depends/target/libdvdread download || { echo "Error downloading libdvdread"; exit 2; }
-make -C tools/depends/target/libdvdcss download || { echo "Error downloading libdvdcss"; exit 2; }
+make -C tools/depends/target/dvdnav download || { echo "Error downloading dvdnav"; exit 2; }
+make -C tools/depends/target/dvdread download || { echo "Error downloading dvdread"; exit 2; }
+make -C tools/depends/target/dvdcss download || { echo "Error downloading dvdcss"; exit 2; }
 make -C tools/depends/target/dav1d download || { echo "Error downloading dav1d"; exit 2; }
 
 # create orig tarball if needed

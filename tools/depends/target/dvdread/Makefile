@@ -1,26 +1,25 @@
 -include ../../Makefile.include
-include LIBDVDNAV-VERSION
-DEPS = LIBDVDNAV-VERSION Makefile ../../download-files.include
+include DVDREAD-VERSION
+DEPS = DVDREAD-VERSION Makefile ../../download-files.include
 
 # configuration settings
-config = --prefix=$(PREFIX) --disable-shared --enable-static --with-pic
+config = --prefix=$(PREFIX) --disable-shared --enable-static --with-pic --with-libdvdcss
 EXTRA_CFLAGS = -D_XBMC -DHAVE_DVDCSS_DVDCSS_H
 
 ifeq ($(CROSS_COMPILING), yes)
   DEPS += ../../Makefile.include
 else
   ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-  PREFIX := $(ROOT_DIR)/dvdnav-install
+  PREFIX := $(ROOT_DIR)/dvdread-install
   AUTORECONF := autoreconf
 
   ifeq ($(PLATFORM),)
     PLATFORM = native
     TARBALLS_LOCATION = $(ROOT_DIR)
-    PKGCONFIGPATH = PKG_CONFIG_PATH="$(ROOT_DIR)/../libdvdread/dvdread-install/lib/pkgconfig:$(ROOT_DIR)/../libdvdcss/dvdcss-install/lib/pkgconfig"
-    EXTRA_CFLAGS += -I$(ROOT_DIR)/../libdvdread/dvdread-install/include -I$(ROOT_DIR)/../libdvdcss/dvdcss-install/include
+    PKGCONFIGPATH = PKG_CONFIG_PATH="$(ROOT_DIR)/../libdvdcss/dvdcss-install/lib/pkgconfig"
+    EXTRA_CFLAGS += -I$(ROOT_DIR)/../libdvdcss/dvdcss-install/include
   endif
 endif
-
 
 ifeq ($(OS),osx)
   EXTRA_CFLAGS +=  -D__DARWIN__

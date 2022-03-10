@@ -10,6 +10,9 @@ DEPENDS = \
   crossguid \
   curl \
   dav1d \
+  dvdcss \
+  dvdnav \
+  dvdread \
   expat \
   ffmpeg \
   flatbuffers \
@@ -27,9 +30,6 @@ DEPENDS = \
   libass \
   libbluray \
   libcec \
-  libdvdcss \
-  libdvdnav \
-  libdvdread \
   libffi \
   libgcrypt \
   libgpg-error \
@@ -135,6 +135,8 @@ all: .installed-$(PLATFORM)
 crossguid: $(LIBUUID)
 curl: openssl nghttp2
 dav1d: meson-cross-file
+dvdnav: dvdread
+dvdread: dvdcss
 dbus: expat
 ffmpeg: $(ICONV) $(ZLIB) bzip2 gnutls dav1d $(LIBVA)
 fontconfig: freetype2 expat $(ICONV) $(LIBUUID)
@@ -149,8 +151,6 @@ libcdio-gplv3: $(ICONV)
 libcdio: $(ICONV)
 libcec: p8-platform
 libdrm: meson-cross-file
-libdvdnav: libdvdread
-libdvdread: libdvdcss
 libevdev: libudev
 libgcrypt: libgpg-error
 libinput: mtdev libevdev meson-cross-file
