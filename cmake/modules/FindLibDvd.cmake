@@ -200,9 +200,13 @@ else()
   endif()
 endif()
 
-set(_handlevars LIBDVD_INCLUDE_DIRS DVDREAD_LIBRARY DVDNAV_LIBRARY)
-if(ENABLE_DVDCSS)
-  list(APPEND _handlevars DVDCSS_LIBRARY)
+# Windows uses a single bundled lib DVDNAV_LIBRARY
+set(_handlevars LIBDVD_INCLUDE_DIRS DVDNAV_LIBRARY)
+if(NOT CORE_SYSTEM_NAME MATCHES windows)
+  list(APPEND _handlevars DVDREAD_LIBRARY)
+  if(ENABLE_DVDCSS)
+    list(APPEND _handlevars DVDCSS_LIBRARY)
+  endif()
 endif()
 
 include(FindPackageHandleStandardArgs)
