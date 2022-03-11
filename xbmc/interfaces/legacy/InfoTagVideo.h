@@ -225,7 +225,7 @@ namespace XBMCAddon
     /// @{
     /// @brief **Video stream details class used in combination with InfoTagVideo.**
     ///
-    /// \python_class{ xbmc.VideoStreamDetail([width, height, aspect, duration, codec, stereoMode, language]) }
+    /// \python_class{ xbmc.VideoStreamDetail([width, height, aspect, duration, codec, stereoMode, language, hdrType]) }
     ///
     /// Represents a single selectable video stream for a video item wrapped by InfoTagVideo.
     ///
@@ -247,7 +247,7 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_xbmc_videostreamdetail VideoStreamDetail
-      /// @brief \python_func{ xbmc.VideoStreamDetail([width, height, aspect, duration, codec, stereoMode, language]) }
+      /// @brief \python_func{ xbmc.VideoStreamDetail([width, height, aspect, duration, codec, stereoMode, language, hdrType]) }
       /// Creates a single video stream details class for a video item wrapped by InfoTagVideo.
       ///
       /// @param width              [opt] integer - Width of the video stream in pixel.
@@ -257,6 +257,9 @@ namespace XBMCAddon
       /// @param codec              [opt] string - Codec of the video stream.
       /// @param stereoMode         [opt] string - Stereo mode of the video stream.
       /// @param language           [opt] string - Language of the video stream.
+      /// @param hdrType            [opt] string - HDR type of the video stream.
+      ///                           The following types are supported:
+      ///                           dolbyvision, hdr10, hlg
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -277,7 +280,8 @@ namespace XBMCAddon
                                  int duration = 0,
                                  const String& codec = emptyString,
                                  const String& stereoMode = emptyString,
-                                 const String& language = emptyString);
+                                 const String& language = emptyString,
+                                 const String& hdrType = emptyString);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -402,6 +406,23 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_xbmc_videostreamdetail
+      /// @brief \python_func{ getHDRType() }
+      /// Get the HDR type of the stream.
+      ///
+      /// @return [string] HDR type of the stream
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v20 New function added.
+      ///
+      getHDRType();
+#else
+      String getHDRType() const { return m_hdrType; }
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmc_videostreamdetail
       /// @brief \python_func{ setWidth(width) }
       /// Set the width of the video stream in pixel.
       ///
@@ -518,6 +539,24 @@ namespace XBMCAddon
       void setLanguage(const String& language) { m_language = language; }
 #endif
 
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmc_videostreamdetail
+      /// @brief \python_func{ setHDRType(hdrtype) }
+      /// Set the HDR type of the stream.
+      ///
+      /// @param hdrType           string - HDR type of the stream.
+      ///                          The following types are supported:
+      ///                          dolbyvision, hdr10, hlg
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v20 New function added.
+      ///
+      setHDRType(...);
+#else
+      void setHDRType(const String& hdrType) { m_hdrType = hdrType; }
+#endif
+
 #ifndef SWIG
       CStreamDetailVideo* ToStreamDetailVideo() const;
 #endif
@@ -530,6 +569,7 @@ namespace XBMCAddon
       String m_codec;
       String m_stereoMode;
       String m_language;
+      String m_hdrType;
     };
 
     ///
