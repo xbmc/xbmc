@@ -995,12 +995,26 @@ int CDVDInputStreamNavigator::GetSubTitleStreamCount()
 
 int CDVDInputStreamNavigator::GetActiveAudioStream()
 {
-  int activeStream = -1;
-
-  if (m_dvdnav)
+  if (!m_dvdnav)
   {
-    int audioN = m_dll.dvdnav_get_active_audio_stream(m_dvdnav);
-    activeStream = ConvertAudioStreamId_ExternalToXBMC(audioN);
+    return -1;
+  }
+
+  const int8_t logicalAudioStreamId = m_dll.dvdnav_get_active_audio_stream(m_dvdnav);
+  if (logicalAudioStreamId < 0)
+  {
+    return -1;
+  }
+
+  int activeStream = -1;
+  int audioStreamCount = GetAudioStreamCount();
+  for (int audioN = 0; audioN < audioStreamCount; audioN++)
+  {
+    if (m_dll.dvdnav_get_audio_logical_stream(m_dvdnav, audioN) == logicalAudioStreamId)
+    {
+      activeStream = ConvertAudioStreamId_ExternalToXBMC(audioN);
+      break;
+    }
   }
 
   return activeStream;
