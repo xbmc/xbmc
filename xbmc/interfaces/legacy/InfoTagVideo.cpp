@@ -51,14 +51,16 @@ namespace XBMCAddon
                                          int duration /* = 0 */,
                                          const String& codec /* = emptyString */,
                                          const String& stereoMode /* = emptyString */,
-                                         const String& language /* = emptyString */)
+                                         const String& language /* = emptyString */,
+                                         const String& hdrType /* = emptyString */)
       : m_width(width),
         m_height(height),
         m_aspect(aspect),
         m_duration(duration),
         m_codec(codec),
         m_stereoMode(stereoMode),
-        m_language(language)
+        m_language(language),
+        m_hdrType(hdrType)
     {
     }
 
@@ -72,6 +74,7 @@ namespace XBMCAddon
       streamDetail->m_strCodec = m_codec;
       streamDetail->m_strStereoMode = m_stereoMode;
       streamDetail->m_strLanguage = m_language;
+      streamDetail->m_strHdrType = m_hdrType;
 
       return streamDetail;
     }
