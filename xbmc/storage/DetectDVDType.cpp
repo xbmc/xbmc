@@ -45,6 +45,7 @@ time_t CDetectDVDMedia::m_LastPoll = 0;
 CDetectDVDMedia* CDetectDVDMedia::m_pInstance = NULL;
 std::string CDetectDVDMedia::m_diskLabel = "";
 std::string CDetectDVDMedia::m_diskPath = "";
+UTILS::DISCS::DiscInfo CDetectDVDMedia::m_discInfo;
 
 CDetectDVDMedia::CDetectDVDMedia() : CThread("DetectDVDMedia"),
   m_cdio(CLibcdio::GetInstance())
@@ -116,9 +117,13 @@ void CDetectDVDMedia::UpdateDvdrom()
       case DRIVE_OPEN:
         {
           // Send Message to GUI that disc been ejected
-          SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(502));
+          SetNewDVDShareUrl(CServiceBroker::GetMediaManager().TranslateDevicePath(m_diskPath),
+                            false, g_localizeStrings.Get(502));
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REMOVED_MEDIA);
           CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage( msg );
+          // Clear all stored info
+          Clear();
+          // Update drive state
           waitLock.unlock();
           m_DriveState = DRIVE_OPEN;
           return;
@@ -128,7 +133,8 @@ void CDetectDVDMedia::UpdateDvdrom()
       case DRIVE_NOT_READY:
         {
           // Drive is not ready (closing, opening)
-          SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(503));
+          SetNewDVDShareUrl(CServiceBroker::GetMediaManager().TranslateDevicePath(m_diskPath),
+                            false, g_localizeStrings.Get(503));
           m_DriveState = DRIVE_NOT_READY;
           // DVD-ROM in undefined state
           // Better delete old CD Information
@@ -149,7 +155,8 @@ void CDetectDVDMedia::UpdateDvdrom()
       case DRIVE_CLOSED_NO_MEDIA:
         {
           // Nothing in there...
-          SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(504));
+          SetNewDVDShareUrl(CServiceBroker::GetMediaManager().TranslateDevicePath(m_diskPath),
+                            false, g_localizeStrings.Get(504));
           m_DriveState = DRIVE_CLOSED_NO_MEDIA;
           // Send Message to GUI that disc has changed
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
@@ -196,6 +203,16 @@ void CDetectDVDMedia::DetectMediaType()
   bool bCDDA(false);
   CLog::Log(LOGINFO, "Detecting DVD-ROM media filesystem...");
 
+  // Probe and store DiscInfo result
+  // even if no valid tracks are detected we might still be able to play the disc via libdvdnav or libbluray
+  // as long as they can correctly detect the disc
+  UTILS::DISCS::DiscInfo discInfo;
+  if (UTILS::DISCS::GetDiscInfo(discInfo,
+                                CServiceBroker::GetMediaManager().TranslateDevicePath(m_diskPath)))
+  {
+    m_discInfo = discInfo;
+  }
+
   std::string strNewUrl;
   CCdIoSupport cdio;
 
@@ -225,14 +242,14 @@ void CDetectDVDMedia::DetectMediaType()
   else
   {
     if (m_pCdInfo->IsUDF(1))
-      strNewUrl = "D:\\";
+      strNewUrl = CServiceBroker::GetMediaManager().TranslateDevicePath(m_diskPath);
     else if (m_pCdInfo->IsAudio(1))
     {
       strNewUrl = "cdda://local/";
       bCDDA = true;
     }
     else
-      strNewUrl = "D:\\";
+      strNewUrl = CServiceBroker::GetMediaManager().TranslateDevicePath(m_diskPath);
   }
 
   if (m_pCdInfo->IsISOUDF(1))
@@ -243,7 +260,7 @@ void CDetectDVDMedia::DetectMediaType()
     }
     else
     {
-      strNewUrl = "D:\\";
+      strNewUrl = CServiceBroker::GetMediaManager().TranslateDevicePath(m_diskPath);
     }
   }
 
@@ -419,10 +436,26 @@ CCdInfo* CDetectDVDMedia::GetCdInfo()
 
 const std::string &CDetectDVDMedia::GetDVDLabel()
 {
+  if (!m_discInfo.empty())
+  {
+    return m_discInfo.name;
+  }
+
   return m_diskLabel;
 }
 
 const std::string &CDetectDVDMedia::GetDVDPath()
 {
   return m_diskPath;
+}
+
+
+void CDetectDVDMedia::Clear()
+{
+  if (!m_discInfo.empty())
+  {
+    m_discInfo.clear();
+  }
+  m_diskLabel.clear();
+  m_diskPath.clear();
 }
