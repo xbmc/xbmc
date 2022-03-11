@@ -39,6 +39,15 @@ struct DiscInfo
     \return true if the info is empty, false otherwise
   */
   bool empty() { return (type == DiscType::UNKNOWN && name.empty() && serial.empty()); }
+
+  /*! \brief Clears all the DiscInfo members
+  */
+  void clear()
+  {
+    type = DiscType::UNKNOWN;
+    name.clear();
+    serial.clear();
+  }
 };
 
 /*! \brief Try to obtain the disc info (type, name, serial) of a given media path
