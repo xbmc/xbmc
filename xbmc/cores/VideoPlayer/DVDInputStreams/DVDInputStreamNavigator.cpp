@@ -887,25 +887,24 @@ int CDVDInputStreamNavigator::GetActiveSubtitleStream()
 {
   int activeStream = 0;
 
-  if (m_dvdnav)
+  if (!m_dvdnav)
   {
-    vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
-    if (vm && vm->state.pgc)
+    return activeStream;
+  }
+
+  const int8_t logicalSubStreamId = m_dll.dvdnav_get_active_spu_stream(m_dvdnav);
+  if (logicalSubStreamId < 0)
+  {
+    return activeStream;
+  }
+
+  int subStreamCount = GetSubTitleStreamCount();
+  for (int subpN = 0; subpN < subStreamCount; subpN++)
+  {
+    if (m_dll.dvdnav_get_spu_logical_stream(m_dvdnav, subpN) == logicalSubStreamId)
     {
-      // get the current selected audiostream, for non VTS_DOMAIN it is always stream 0
-      int subpN = 0;
-      if (vm->state.domain == VTS_DOMAIN)
-      {
-        subpN = vm->state.SPST_REG & ~0x40;
-
-        /* make sure stream is valid, if not don't allow it */
-        if (subpN < 0 || subpN >= 32)
-          subpN = -1;
-        else if ( !(vm->state.pgc->subp_control[subpN] & (1<<31)) )
-          subpN = -1;
-      }
-
       activeStream = ConvertSubtitleStreamId_ExternalToXBMC(subpN);
+      break;
     }
   }
 
