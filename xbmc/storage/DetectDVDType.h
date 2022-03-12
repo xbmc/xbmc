@@ -18,8 +18,9 @@
 #ifdef HAS_DVD_DRIVE
 
 #include "threads/CriticalSection.h"
-
 #include "threads/Thread.h"
+#include "utils/DiscsUtils.h"
+
 #include <memory>
 #include <string>
 
@@ -56,6 +57,8 @@ protected:
   void DetectMediaType();
   void SetNewDVDShareUrl( const std::string& strNewUrl, bool bCDDA, const std::string& strDiscLabel );
 
+  void Clear();
+
 private:
   static CCriticalSection m_muReadingMedia;
 
@@ -74,6 +77,9 @@ private:
   static std::string m_diskPath;
 
   std::shared_ptr<CLibcdio> m_cdio;
+
+  /*! \brief Stores the DiscInfo of the current disk */
+  static UTILS::DISCS::DiscInfo m_discInfo;
 };
 }
 #endif
