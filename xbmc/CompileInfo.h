@@ -33,4 +33,5 @@ public:
   static std::vector<std::string> GetAvailableWindowSystems();
   static std::vector<ADDON::RepoInfo> LoadOfficialRepoInfos();
   static std::string GetPythonVersion();
+  static const std::vector<std::string> GetWebserverExtraWhitelist();
 };

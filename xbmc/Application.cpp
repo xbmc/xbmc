@@ -4842,6 +4842,11 @@ void CApplication::PrintStartupLog()
 #endif
   CSpecialProtocol::LogPaths();
 
+#ifdef HAS_WEB_SERVER
+  CLog::Log(LOGINFO, "Webserver extra whitelist paths: {}",
+            StringUtils::Join(CCompileInfo::GetWebserverExtraWhitelist(), ", "));
+#endif
+
   std::string executable = CUtil::ResolveExecutablePath();
   CLog::Log(LOGINFO, "The executable running is: {}", executable);
   std::string hostname("[unknown]");
