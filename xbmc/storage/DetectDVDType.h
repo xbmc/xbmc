@@ -42,7 +42,20 @@ public:
   static void WaitMediaReady();
   static bool IsDiscInDrive();
   static int DriveReady();
+
+  /*! \brief Gets the CDInfo of the current inserted optical disc
+    \note This is a blocking operation, the caller will be blocked if
+    some other resource is trying to obtain the CDInfo at the same time
+    \return a pointer to the CCdInfo of nullptr if it doesn't exist
+  */
   static CCdInfo* GetCdInfo();
+
+  /*! \brief Gets the CDInfo of the current inserted optical disc in a lazy way
+    \note This will return nullptr if some other thread is accessing the same resource.
+    \return a pointer to the CCdInfo of nullptr if it doesn't exist (or if some other thread is accessing the drive)
+  */
+  static CCdInfo* LazyGetCdInfo();
+
   static CEvent m_evAutorun;
 
   static const std::string &GetDVDLabel();

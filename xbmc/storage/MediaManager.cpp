@@ -430,7 +430,7 @@ DWORD CMediaManager::GetDriveStatus(const std::string& devicePath)
 }
 
 #ifdef HAS_DVD_DRIVE
-CCdInfo* CMediaManager::GetCdInfo(const std::string& devicePath)
+CCdInfo* CMediaManager::GetCdInfo(const std::string& devicePath, WaitMode waitMode)
 {
 #ifdef TARGET_WINDOWS
   if(!m_bhasoptical)
@@ -456,7 +456,14 @@ CCdInfo* CMediaManager::GetCdInfo(const std::string& devicePath)
 
   return pCdInfo;
 #else
-  return MEDIA_DETECT::CDetectDVDMedia::GetCdInfo();
+  if (waitMode == WaitMode::WAIT)
+  {
+    return MEDIA_DETECT::CDetectDVDMedia::GetCdInfo();
+  }
+  else
+  {
+    return MEDIA_DETECT::CDetectDVDMedia::LazyGetCdInfo();
+  }
 #endif
 }
 

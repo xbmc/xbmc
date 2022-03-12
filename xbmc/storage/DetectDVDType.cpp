@@ -434,6 +434,17 @@ CCdInfo* CDetectDVDMedia::GetCdInfo()
   return pCdInfo;
 }
 
+CCdInfo* CDetectDVDMedia::LazyGetCdInfo()
+{
+  std::unique_lock<CCriticalSection> waitLock(m_muReadingMedia, std::try_to_lock);
+  if (waitLock.owns_lock())
+  {
+    CCdInfo* pCdInfo = m_pCdInfo;
+    return pCdInfo;
+  }
+  return nullptr;
+}
+
 const std::string &CDetectDVDMedia::GetDVDLabel()
 {
   if (!m_discInfo.empty())

@@ -30,6 +30,14 @@
 #define DRIVE_CLOSED_MEDIA_PRESENT  4 // Will be send once when the drive just have closed
 #define DRIVE_NONE  5 // system doesn't have an optical drive
 
+
+/*! \brief Wait modes for acessing MediaManager info */
+enum class WaitMode
+{
+  WAIT, /*!< When this mode is specified the caller is blocked if some other component is trying to access the same info, and the info is returned */
+  LAZY /*!< When this mode is specified the caller is not blocked when some other component is trying to access the same info and the info might not be returned  */
+};
+
 class CFileItem;
 
 class CNetworkLocation
@@ -68,7 +76,16 @@ public:
   std::string TranslateDevicePath(const std::string& devicePath, bool bReturnAsDevice=false);
   DWORD GetDriveStatus(const std::string& devicePath="");
 #ifdef HAS_DVD_DRIVE
-  MEDIA_DETECT::CCdInfo* GetCdInfo(const std::string& devicePath="");
+  /*! \brief Gets the CDInfo of the current inserted optical disc
+    \param devicePath The disc mediapath (e.g. /dev/cdrom, D\://, etc), default empty
+    \param waitMode Getting the cd info is a blocking operation. waitMode specifies if the
+    caller must wait for the result (WaitMode::WAIT) or get the info in a lazy/best effort way (WaitMode::LAZY).
+    If WaitMode::WAIT is specified nullptr will be returned if the drive is currently being accessed
+    by some other resource.
+    \return a pointer to the CCdInfo of nullptr if it doesn't exist
+*/
+  MEDIA_DETECT::CCdInfo* GetCdInfo(const std::string& devicePath = "",
+                                   WaitMode waitMode = WaitMode::WAIT);
   bool RemoveCdInfo(const std::string& devicePath="");
   std::string GetDiskLabel(const std::string& devicePath="");
   std::string GetDiskUniqueId(const std::string& devicePath="");

@@ -535,7 +535,8 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
     #ifdef HAS_DVD_DRIVE
       if (CServiceBroker::GetMediaManager().IsDiscInDrive())
       {
-        MEDIA_DETECT::CCdInfo* pCdInfo = CServiceBroker::GetMediaManager().GetCdInfo();
+        MEDIA_DETECT::CCdInfo* pCdInfo =
+            CServiceBroker::GetMediaManager().GetCdInfo("", WaitMode::LAZY);
         value = pCdInfo && (pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1));
       }
       else
