@@ -218,6 +218,7 @@ namespace XBMCAddon
       int m_order;
       String m_thumbnail;
     };
+    /// @}
 
     ///
     /// \defgroup python_xbmc_videostreamdetail VideoStreamDetail
@@ -246,7 +247,7 @@ namespace XBMCAddon
     public:
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
-      /// \ingroup python_xbmc_videostreamdetail VideoStreamDetail
+      /// \ingroup python_xbmc_videostreamdetail
       /// @brief \python_func{ xbmc.VideoStreamDetail([width, height, aspect, duration, codec, stereoMode, language, hdrType]) }
       /// Creates a single video stream details class for a video item wrapped by InfoTagVideo.
       ///
@@ -571,6 +572,7 @@ namespace XBMCAddon
       String m_language;
       String m_hdrType;
     };
+    /// @}
 
     ///
     /// \defgroup python_xbmc_audiostreamdetail AudioStreamDetail
@@ -736,6 +738,7 @@ namespace XBMCAddon
       String m_codec;
       String m_language;
     };
+    /// @}
 
     ///
     /// \defgroup python_xbmc_subtitlestreamdetail SubtitleStreamDetail
@@ -827,6 +830,7 @@ namespace XBMCAddon
     private:
       String m_language;
     };
+    /// @}
 
     ///
     /// \defgroup python_InfoTagVideo InfoTagVideo
@@ -2681,6 +2685,7 @@ namespace XBMCAddon
         bool isgz = false,
         int season = -1);
 #endif
+      /// @}
 
 #ifndef SWIG
       static void setDbIdRaw(CVideoInfoTag* infoTag, int dbId);
