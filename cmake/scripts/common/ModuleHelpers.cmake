@@ -22,7 +22,11 @@ function(get_archive_name module_name)
   file(STRINGS ${${UPPER_MODULE_NAME}_FILE} ${UPPER_MODULE_NAME}_VER REGEX "^[ \t]*VERSION=")
   file(STRINGS ${${UPPER_MODULE_NAME}_FILE} ${UPPER_MODULE_NAME}_ARCHIVE REGEX "^[ \t]*ARCHIVE=")
   file(STRINGS ${${UPPER_MODULE_NAME}_FILE} ${UPPER_MODULE_NAME}_BASE_URL REGEX "^[ \t]*BASE_URL=")
-  file(STRINGS ${${UPPER_MODULE_NAME}_FILE} ${UPPER_MODULE_NAME}_BYPRODUCT REGEX "^[ \t]*BYPRODUCT=")
+  if(WIN32 OR WINDOWS_STORE)
+    file(STRINGS ${${UPPER_MODULE_NAME}_FILE} ${UPPER_MODULE_NAME}_BYPRODUCT REGEX "^[ \t]*BYPRODUCT_WIN=")
+  else()
+    file(STRINGS ${${UPPER_MODULE_NAME}_FILE} ${UPPER_MODULE_NAME}_BYPRODUCT REGEX "^[ \t]*BYPRODUCT=")
+  endif()
 
   # Tarball Hash
   file(STRINGS ${${UPPER_MODULE_NAME}_FILE} ${UPPER_MODULE_NAME}_HASH_SHA256 REGEX "^[ \t]*SHA256=")
@@ -32,7 +36,11 @@ function(get_archive_name module_name)
   string(REGEX REPLACE ".*VERSION=([^ \t]*).*" "\\1" ${UPPER_MODULE_NAME}_VER "${${UPPER_MODULE_NAME}_VER}")
   string(REGEX REPLACE ".*ARCHIVE=([^ \t]*).*" "\\1" ${UPPER_MODULE_NAME}_ARCHIVE "${${UPPER_MODULE_NAME}_ARCHIVE}")
   string(REGEX REPLACE ".*BASE_URL=([^ \t]*).*" "\\1" ${UPPER_MODULE_NAME}_BASE_URL "${${UPPER_MODULE_NAME}_BASE_URL}")
-  string(REGEX REPLACE ".*BYPRODUCT=([^ \t]*).*" "\\1" ${UPPER_MODULE_NAME}_BYPRODUCT "${${UPPER_MODULE_NAME}_BYPRODUCT}")
+  if(WIN32 OR WINDOWS_STORE)
+    string(REGEX REPLACE ".*BYPRODUCT_WIN=([^ \t]*).*" "\\1" ${UPPER_MODULE_NAME}_BYPRODUCT "${${UPPER_MODULE_NAME}_BYPRODUCT}")
+  else()
+    string(REGEX REPLACE ".*BYPRODUCT=([^ \t]*).*" "\\1" ${UPPER_MODULE_NAME}_BYPRODUCT "${${UPPER_MODULE_NAME}_BYPRODUCT}")
+  endif()
 
   string(REGEX REPLACE "\\$\\(LIBNAME\\)" "${${UPPER_MODULE_NAME}_LNAME}" ${UPPER_MODULE_NAME}_ARCHIVE "${${UPPER_MODULE_NAME}_ARCHIVE}")
   string(REGEX REPLACE "\\$\\(VERSION\\)" "${${UPPER_MODULE_NAME}_VER}" ${UPPER_MODULE_NAME}_ARCHIVE "${${UPPER_MODULE_NAME}_ARCHIVE}")
@@ -40,6 +48,14 @@ function(get_archive_name module_name)
   set(${UPPER_MODULE_NAME}_ARCHIVE ${${UPPER_MODULE_NAME}_ARCHIVE} PARENT_SCOPE)
 
   if(${UPPER_MODULE_NAME}_BYPRODUCT)
+    # strip the extension, if debug, add DEBUG_POSTFIX and then add the .lib extension back
+    if(WIN32 OR WINDOWS_STORE)
+      string(REGEX REPLACE "\\.[^.]*$" "" ${UPPER_MODULE_NAME}_BYPRODUCT ${${UPPER_MODULE_NAME}_BYPRODUCT})
+      if($<CONFIG:Debug>)
+        set(${UPPER_MODULE_NAME}_BYPRODUCT "${${UPPER_MODULE_NAME}_BYPRODUCT}${DEBUG_POSTFIX}")
+      endif()
+      set(${UPPER_MODULE_NAME}_BYPRODUCT "${${UPPER_MODULE_NAME}_BYPRODUCT}.lib")
+    endif()
     set(${UPPER_MODULE_NAME}_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/${${UPPER_MODULE_NAME}_BYPRODUCT} PARENT_SCOPE)
   endif()
   set(${UPPER_MODULE_NAME}_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include PARENT_SCOPE)
@@ -151,3 +167,28 @@ macro(BUILD_DEP_TARGET)
 
   set_target_properties(${MODULE_LC} PROPERTIES FOLDER "External Projects")
 endmacro()
+
+# Macro to test format of line endings of a patch
+# Windows Specific
+macro(PATCH_LF_CHECK patch)
+  if(WIN32 OR WINDOWS_STORE)
+    # On Windows "patch.exe" can only handle CR-LF line-endings.
+    # Our patches have LF-only line endings - except when they
+    # have been checked out as part of a dependency hosted on Git
+    # and core.autocrlf=true.
+    file(READ ${ARGV0} patch_content_hex HEX)
+    # Force handle LF-only line endings
+    if(NOT patch_content_hex MATCHES "0d0a")
+      if (NOT "--binary" IN_LIST PATCH_EXECUTABLE)
+        list(APPEND PATCH_EXECUTABLE --binary)
+      endif()
+    else()
+      if ("--binary" IN_LIST PATCH_EXECUTABLE)
+        list(REMOVE_ITEM PATCH_EXECUTABLE --binary)
+      endif()
+    endif()
+  endif()
+  unset(patch_content_hex)
+endmacro()
+
+

@@ -24,6 +24,16 @@ if(ENABLE_INTERNAL_SPDLOG)
     set(EXTRA_ARGS "-DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}")
   endif()
 
+  if(WIN32 OR WINDOWS_STORE)
+    # find the path to the patch executable
+    find_program(PATCH_EXECUTABLE NAMES patch patch.exe REQUIRED)
+
+    set(patch ${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/001-windows-pdb-symbol-gen.patch)
+    PATCH_LF_CHECK(${patch})
+
+    set(PATCH_COMMAND ${PATCH_EXECUTABLE} -p1 -i ${patch})
+  endif()
+
   set(SPDLOG_VERSION ${${MODULE}_VER})
 
   set(CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
