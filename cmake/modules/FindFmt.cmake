@@ -25,12 +25,23 @@ if(ENABLE_INTERNAL_FMT)
 
   set(FMT_VERSION ${${MODULE}_VER})
 
+  if(WIN32 OR WINDOWS_STORE)
+    # find the path to the patch executable
+    find_program(PATCH_EXECUTABLE NAMES patch patch.exe REQUIRED)
+
+    set(patch ${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/001-windows-pdb-symbol-gen.patch)
+    PATCH_LF_CHECK(${patch})
+
+    set(PATCH_COMMAND ${PATCH_EXECUTABLE} -p1 -i ${patch})
+  endif()
+
   set(CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
                  -DCMAKE_CXX_EXTENSIONS=${CMAKE_CXX_EXTENSIONS}
                  -DCMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}
                  -DCMAKE_INSTALL_LIBDIR=lib
                  -DFMT_DOC=OFF
                  -DFMT_TEST=OFF
+                 -DFMT_INSTALL=ON
                  "${EXTRA_ARGS}")
 
   BUILD_DEP_TARGET()
