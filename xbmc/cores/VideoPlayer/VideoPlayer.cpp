@@ -4078,16 +4078,9 @@ int CVideoPlayer::OnDiscNavResult(void* pData, int iMessage)
       break;
     case DVDNAV_AUDIO_STREAM_CHANGE:
       {
-        // This should be the correct way i think, however we don't have any streams right now
-        // since the demuxer hasn't started so it doesn't change. not sure how to do this.
         dvdnav_audio_stream_change_event_t* event = static_cast<dvdnav_audio_stream_change_event_t*>(pData);
-
         // Tell system what audiostream should be opened by default
-        if (event->logical >= 0)
-          m_dvd.iSelectedAudioStream = event->physical;
-        else
-          m_dvd.iSelectedAudioStream = -1;
-
+        m_dvd.iSelectedAudioStream = event->physical;
         m_CurrentAudio.stream = NULL;
       }
       break;
