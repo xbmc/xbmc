@@ -111,3 +111,8 @@ std::string CCompileInfo::GetPythonVersion()
 {
   return "@PYTHON_VERSION@";
 }
+
+const std::vector<std::string> CCompileInfo::GetWebserverExtraWhitelist()
+{
+  return StringUtils::Split("@KODI_WEBSERVER_EXTRA_WHITELIST@", ',');
+}

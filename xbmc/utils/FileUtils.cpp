@@ -7,24 +7,26 @@
  */
 
 #include "FileUtils.h"
-#include "ServiceBroker.h"
-#include "guilib/GUIKeyboardFactory.h"
-#include "utils/log.h"
-#include "guilib/LocalizeStrings.h"
-#include "JobManager.h"
+
+#include "CompileInfo.h"
 #include "FileOperationJob.h"
+#include "JobManager.h"
+#include "ServiceBroker.h"
+#include "StringUtils.h"
 #include "URIUtils.h"
+#include "URL.h"
+#include "Util.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/StackDirectory.h"
+#include "guilib/GUIKeyboardFactory.h"
+#include "guilib/LocalizeStrings.h"
 #include "settings/MediaSourceSettings.h"
-#include "Util.h"
-#include "StringUtils.h"
-#include "URL.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
 
 #if defined(TARGET_WINDOWS)
 #include "platform/win32/WIN32Util.h"
@@ -261,11 +263,14 @@ bool CFileUtils::CheckFileAccessAllowed(const std::string &filePath)
     "/.ssh/",
   };
   // ALLOW kodi paths
-  const std::vector<std::string> whitelist = {
-    CSpecialProtocol::TranslatePath("special://home"),
-    CSpecialProtocol::TranslatePath("special://xbmc"),
-    CSpecialProtocol::TranslatePath("special://musicartistsinfo")
+  std::vector<std::string> whitelist = {
+      CSpecialProtocol::TranslatePath("special://home"),
+      CSpecialProtocol::TranslatePath("special://xbmc"),
+      CSpecialProtocol::TranslatePath("special://musicartistsinfo"),
   };
+
+  auto kodiExtraWhitelist = CCompileInfo::GetWebserverExtraWhitelist();
+  whitelist.insert(whitelist.end(), kodiExtraWhitelist.begin(), kodiExtraWhitelist.end());
 
   // image urls come in the form of image://... sometimes with a / appended at the end
   // and can be embedded in a music or video file image://music@...

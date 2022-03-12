@@ -245,6 +245,7 @@ add_custom_command(OUTPUT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp
                                             -DAPP_SHARED_LIBRARY_SUFFIX="${APP_SHARED_LIBRARY_SUFFIX}"
                                             -DPYTHON_VERSION=${PYTHON_VERSION}
                                             -Dprefix=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
+                                            -DKODI_WEBSERVER_EXTRA_WHITELIST="${KODI_WEBSERVER_EXTRA_WHITELIST}"
                                             -P ${CMAKE_SOURCE_DIR}/cmake/scripts/common/GenerateVersionedFiles.cmake
                    DEPENDS ${CMAKE_SOURCE_DIR}/version.txt
                            export-files
