@@ -1659,6 +1659,25 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         int size = 0;
         uint8_t* side_data = nullptr;
 
+        side_data =
+            av_stream_get_side_data(pStream, AV_PKT_DATA_MASTERING_DISPLAY_METADATA, &size);
+        if (st->colorPrimaries == AVCOL_PRI_BT2020)
+        {
+          if (st->colorTransferCharacteristic == AVCOL_TRC_SMPTE2084) // hdr10
+            st->hdr_type = StreamHdrType::HDR_TYPE_HDR10;
+          else if (st->colorTransferCharacteristic == AVCOL_TRC_ARIB_STD_B67) // hlg
+            st->hdr_type = StreamHdrType::HDR_TYPE_HLG;
+        }
+        else if (side_data && size)
+        {
+          st->masteringMetaData = std::make_shared<AVMasteringDisplayMetadata>(
+              *reinterpret_cast<AVMasteringDisplayMetadata*>(side_data));
+          // file could be SMPTE2086 which FFmpeg currently returns as unknown so use the presence
+          // of static metadata to detect it
+          if (st->masteringMetaData->has_primaries && st->masteringMetaData->has_luminance)
+            st->hdr_type = StreamHdrType::HDR_TYPE_HDR10;
+        }
+
         if (pStream->codecpar->codec_id == AV_CODEC_ID_HEVC)
         {
           // TODO: Error handling
@@ -1677,26 +1696,8 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
             st->hdr_type = StreamHdrType::HDR_TYPE_HDR10PLUS;
         }
 
-        side_data =
-            av_stream_get_side_data(pStream, AV_PKT_DATA_MASTERING_DISPLAY_METADATA, &size);
         if (av_stream_get_side_data(pStream, AV_PKT_DATA_DOVI_CONF, &size) && size)
           st->hdr_type = StreamHdrType::HDR_TYPE_DOLBYVISION;
-        else if (st->colorPrimaries == AVCOL_PRI_BT2020)
-        {
-          if (st->colorTransferCharacteristic == AVCOL_TRC_SMPTE2084) // hdr10
-            st->hdr_type = StreamHdrType::HDR_TYPE_HDR10;
-          else if (st->colorTransferCharacteristic == AVCOL_TRC_ARIB_STD_B67) // hlg
-            st->hdr_type = StreamHdrType::HDR_TYPE_HLG;
-        }
-        else if (side_data && size)
-        {
-          st->masteringMetaData = std::make_shared<AVMasteringDisplayMetadata>(
-              *reinterpret_cast<AVMasteringDisplayMetadata*>(side_data));
-          // file could be SMPTE2086 which FFmpeg currently returns as unknown so use the presence
-          // of static metadata to detect it
-          if (st->masteringMetaData->has_primaries && st->masteringMetaData->has_luminance)
-            st->hdr_type = StreamHdrType::HDR_TYPE_HDR10;
-        }
 
         side_data = av_stream_get_side_data(pStream, AV_PKT_DATA_CONTENT_LIGHT_LEVEL, &size);
         if (side_data && size)
