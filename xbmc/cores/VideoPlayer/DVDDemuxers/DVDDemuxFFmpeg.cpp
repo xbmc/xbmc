@@ -1662,10 +1662,14 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         if (pStream->codecpar->codec_id == AV_CODEC_ID_HEVC)
         {
           // TODO: Error handling
-          AVPacket* pkt = &m_pkt.pkt; // <- TODO: How to get the first packet of the stream?
+          AVPacket pkt;
+          av_init_packet(&pkt); // <- TODO: Any non deprecated way to do this?
+          pkt.data = nullptr;
+          pkt.size = 0;
+          av_read_frame(m_pFormatContext, &pkt);
           AVFrame* frame = av_frame_alloc();
           AVCodecContext* coctx = pStream->codec; // <- TODO: Any non deprecated way to get this?
-          avcodec_send_packet(coctx, pkt);
+          avcodec_send_packet(coctx, &pkt);
           avcodec_receive_frame(coctx, frame);
           AVFrameSideData* frame_side_data =
               av_frame_get_side_data(frame, AV_FRAME_DATA_DYNAMIC_HDR_PLUS);
