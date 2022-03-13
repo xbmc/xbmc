@@ -45,7 +45,7 @@ bool CFileAndroidApp::Open(const CURL& url)
   m_packageName =  URIUtils::GetFileName(url.Get());
   m_packageName = m_packageName.substr(0, m_packageName.size() - 4);
 
-  std::vector<androidPackage> applications = CXBMCApp::GetApplications();
+  const std::vector<androidPackage> applications = CXBMCApp::Get().GetApplications();
   for (const auto& i : applications)
   {
     if (i.packageName == m_packageName)
@@ -64,7 +64,7 @@ bool CFileAndroidApp::Exists(const CURL& url)
   std::string appname =  URIUtils::GetFileName(url.Get());
   appname = appname.substr(0, appname.size() - 4);
 
-  std::vector<androidPackage> applications = CXBMCApp::GetApplications();
+  const std::vector<androidPackage> applications = CXBMCApp::Get().GetApplications();
   for (const auto& i : applications)
   {
     if (i.packageName == appname)

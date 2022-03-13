@@ -102,23 +102,25 @@ extern void android_main(struct android_app* state)
 
     CEventLoop eventLoop(state);
     IInputHandler inputHandler;
-    CXBMCApp xbmcApp(state->activity, inputHandler);
-    if (xbmcApp.isValid())
+    CXBMCApp& theApp = CXBMCApp::Create(state->activity, inputHandler);
+    if (theApp.isValid())
     {
       start_logger("Kodi");
-      eventLoop.run(xbmcApp, inputHandler);
-      xbmcApp.Quit();
+      eventLoop.run(theApp, inputHandler);
+      theApp.Quit();
     }
     else
       CXBMCApp::android_printf("android_main: setup failed");
 
     CXBMCApp::android_printf("android_main: Exiting");
-    // We need to call exit() so that all loaded libraries are properly unloaded
-    // otherwise on the next start of the Activity android will simple re-use
-    // those loaded libs in the state they were in when we quit XBMC last time
-    // which will lead to crashes because of global/static classes that haven't
-    // been properly uninitialized
+
+    CXBMCApp::Destroy();
   }
+  // We need to call exit() so that all loaded libraries are properly unloaded
+  // otherwise on the next start of the Activity android will simply re-use
+  // those loaded libs in the state they were in when we quit Kodi last time
+  // which will lead to crashes because of global/static classes that haven't
+  // been properly uninitialized
   exit(0);
 }
 

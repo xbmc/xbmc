@@ -219,16 +219,14 @@ CAndroidUtils::CAndroidUtils()
 
 bool CAndroidUtils::GetNativeResolution(RESOLUTION_INFO* res) const
 {
-  EGLNativeWindowType nativeWindow = (EGLNativeWindowType)CXBMCApp::GetNativeWindow(30000);
+  const std::shared_ptr<CNativeWindow> nativeWindow = CXBMCApp::Get().GetNativeWindow(30000);
   if (!nativeWindow)
     return false;
 
   if (!m_width || !m_height)
   {
-    ANativeWindow_acquire(nativeWindow);
-    m_width = ANativeWindow_getWidth(nativeWindow);
-    m_height= ANativeWindow_getHeight(nativeWindow);
-    ANativeWindow_release(nativeWindow);
+    m_width = nativeWindow->GetWidth();
+    m_height = nativeWindow->GetHeight();
     CLog::Log(LOGINFO, "CAndroidUtils: window resolution: {}x{}", m_width, m_height);
   }
 
@@ -266,12 +264,13 @@ bool CAndroidUtils::SetNativeResolution(const RESOLUTION_INFO& res)
 
   if (s_hasModeApi)
   {
-    CXBMCApp::SetDisplayMode(atoi(res.strId.c_str()), res.fRefreshRate);
+    CXBMCApp::Get().SetDisplayMode(std::atoi(res.strId.c_str()), res.fRefreshRate);
     s_res_cur_displayMode = res;
   }
   else
-    CXBMCApp::SetRefreshRate(res.fRefreshRate);
-  CXBMCApp::SetBuffersGeometry(res.iWidth, res.iHeight, 0);
+    CXBMCApp::Get().SetRefreshRate(res.fRefreshRate);
+
+  CXBMCApp::Get().SetBuffersGeometry(res.iWidth, res.iHeight, 0);
 
   return true;
 }

@@ -33,7 +33,7 @@ extern "C" int XBMC_Run(bool renderGUI, const CAppParamParser &params)
   }
 
 #if defined(TARGET_ANDROID)
-  CXBMCApp::get()->Initialize();
+  CXBMCApp::Get().Initialize();
 #endif
 
   if (renderGUI && !g_application.CreateGUI())
@@ -75,7 +75,7 @@ extern "C" int XBMC_Run(bool renderGUI, const CAppParamParser &params)
 #endif
 
 #if defined(TARGET_ANDROID)
-  CXBMCApp::get()->Deinitialize();
+  CXBMCApp::Get().Deinitialize();
 #endif
 
   return status;

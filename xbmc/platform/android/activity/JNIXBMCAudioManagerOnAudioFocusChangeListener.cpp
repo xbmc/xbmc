@@ -63,6 +63,5 @@ void CJNIXBMCAudioManagerOnAudioFocusChangeListener::_onAudioFocusChange(JNIEnv 
 
 void CJNIXBMCAudioManagerOnAudioFocusChangeListener::onAudioFocusChange(int focusChange)
 {
-  if(CXBMCApp::get())
-    CXBMCApp::get()->onAudioFocusChange(focusChange);
+  CXBMCApp::Get().onAudioFocusChange(focusChange);
 }

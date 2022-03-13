@@ -168,9 +168,9 @@ void CJNIXBMCMediaSession::OnSeekRequested(int64_t pos)
 
 bool CJNIXBMCMediaSession::OnMediaButtonEvent(const CJNIIntent& intent)
 {
-  if (CXBMCApp::HasFocus())
+  if (CXBMCApp::Get().HasFocus())
   {
-    CXBMCApp::get()->onReceive(intent);
+    CXBMCApp::Get().onReceive(intent);
     return true;
   }
   return false;

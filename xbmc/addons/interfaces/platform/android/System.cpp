@@ -44,7 +44,7 @@ void* Interface_Android::get_jni_env()
 
 int Interface_Android::get_sdk_version()
 {
-  return CXBMCApp::get()->getActivity()->sdkVersion;
+  return CXBMCApp::Get().GetSDKVersion();
 }
 
 const char *Interface_Android::get_class_name()
