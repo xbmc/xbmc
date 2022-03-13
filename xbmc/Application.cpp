@@ -325,6 +325,8 @@ extern "C" void __stdcall cleanup_emu_environ();
 
 bool CApplication::Create(const CAppParamParser &params)
 {
+  m_bStop = false;
+
   // Grab a handle to our thread to be used later in identifying the render thread.
   m_threadID = CThread::GetCurrentThreadId();
 
@@ -2501,6 +2503,8 @@ bool CApplication::Cleanup()
 
     CServiceBroker::UnregisterJobManager();
     CServiceBroker::UnregisterCPUInfo();
+
+    m_bInitializing = true;
 
     return true;
   }
