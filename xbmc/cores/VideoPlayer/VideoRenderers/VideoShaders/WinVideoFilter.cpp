@@ -163,15 +163,11 @@ bool CWinShader::Execute(const std::vector<CD3DTexture*> &targets, unsigned int 
 
 void COutputShader::ApplyEffectParameters(CD3DEffect &effect, unsigned sourceWidth, unsigned sourceHeight)
 {
-  if (m_useLut)
+  if (m_useLut && HasLUT())
   {
-    float lut_params[2] = { 0.0f, 0.0f };
-    if (HasLUT())
-    {
-      lut_params[0] = (m_lutSize - 1) / static_cast<float>(m_lutSize);
-      lut_params[1] = 0.5f / static_cast<float>(m_lutSize);
-    };
-    effect.SetResources("m_LUT", &m_pLUTView, 1);
+    float lut_params[2] = {(m_lutSize - 1) / static_cast<float>(m_lutSize),
+                           0.5f / static_cast<float>(m_lutSize)};
+    effect.SetResources("m_LUT", m_pLUTView.GetAddressOf(), 1);
     effect.SetFloatArray("m_LUTParams", lut_params, 2);
   }
   if (m_useDithering)
