@@ -64,6 +64,15 @@ CGUIStaticItem::CGUIStaticItem(const CFileItem &item)
   m_visState = false;
 }
 
+CGUIStaticItem::CGUIStaticItem(const CGUIStaticItem& other)
+  : CFileItem(other),
+    m_info(other.m_info),
+    m_visCondition(other.m_visCondition),
+    m_visState(other.m_visState),
+    m_clickActions(other.m_clickActions)
+{
+}
+
 void CGUIStaticItem::UpdateProperties(int contextWindow)
 {
   for (const auto& i : m_info)

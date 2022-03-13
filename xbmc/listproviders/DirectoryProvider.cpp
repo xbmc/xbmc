@@ -181,9 +181,31 @@ CDirectoryProvider::CDirectoryProvider(const TiXmlElement *element, int parentID
   }
 }
 
+CDirectoryProvider::CDirectoryProvider(const CDirectoryProvider& other)
+  : IListProvider(other.m_parentID),
+    m_updateState(INVALIDATED),
+    m_isAnnounced(false),
+    m_jobID(0),
+    m_url(other.m_url),
+    m_target(other.m_target),
+    m_sortMethod(other.m_sortMethod),
+    m_sortOrder(other.m_sortOrder),
+    m_limit(other.m_limit),
+    m_currentUrl(other.m_currentUrl),
+    m_currentTarget(other.m_currentTarget),
+    m_currentSort(other.m_currentSort),
+    m_currentLimit(other.m_currentLimit)
+{
+}
+
 CDirectoryProvider::~CDirectoryProvider()
 {
   Reset();
+}
+
+std::unique_ptr<IListProvider> CDirectoryProvider::Clone()
+{
+  return std::make_unique<CDirectoryProvider>(*this);
 }
 
 bool CDirectoryProvider::Update(bool forceRefresh)

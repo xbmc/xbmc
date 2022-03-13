@@ -26,7 +26,7 @@ class CGUIControlGroup : public CGUIControlLookup
 public:
   CGUIControlGroup();
   CGUIControlGroup(int parentID, int controlID, float posX, float posY, float width, float height);
-  CGUIControlGroup(const CGUIControlGroup &from);
+  explicit CGUIControlGroup(const CGUIControlGroup& from);
   ~CGUIControlGroup(void) override;
   CGUIControlGroup *Clone() const override { return new CGUIControlGroup(*this); };
 

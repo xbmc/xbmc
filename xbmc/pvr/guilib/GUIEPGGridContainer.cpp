@@ -367,7 +367,7 @@ void CGUIEPGGridContainer::ProcessItem(float posX, float posY, const CFileItemPt
   {
     if (!item->GetFocusedLayout())
     {
-      item->SetFocusedLayout(CGUIListItemLayoutPtr(new CGUIListItemLayout(*focusedlayout)));
+      item->SetFocusedLayout(std::make_unique<CGUIListItemLayout>(*focusedlayout, this));
     }
 
     if (resize != -1.0f)
@@ -399,7 +399,7 @@ void CGUIEPGGridContainer::ProcessItem(float posX, float posY, const CFileItemPt
   {
     if (!item->GetLayout())
     {
-      item->SetLayout(CGUIListItemLayoutPtr(new CGUIListItemLayout(*normallayout)));
+      item->SetLayout(std::make_unique<CGUIListItemLayout>(*normallayout, this));
     }
 
     if (resize != -1.0f)

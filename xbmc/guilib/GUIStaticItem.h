@@ -51,6 +51,7 @@ public:
    */
   CGUIStaticItem(const TiXmlElement *element, int contextWindow);
   explicit CGUIStaticItem(const CFileItem &item); // for python
+  explicit CGUIStaticItem(const CGUIStaticItem& other);
   ~CGUIStaticItem() override = default;
   CGUIListItem *Clone() const override { return new CGUIStaticItem(*this); };
 
