@@ -37,7 +37,7 @@ git clone -b Matrix https://github.com/xbmc/xbmc kodi
 ```
 
 Several different strategies are used to draw your attention to certain pieces of information. In order of how critical the information is, these items are marked as a note, tip, or warning. For example:
- 
+
 **NOTE:** Linux is user friendly... It's just very particular about who its friends are.  
 **TIP:** Algorithm is what developers call code they do not want to explain.  
 **WARNING:** Developers don't change light bulbs. It's a hardware problem.
@@ -46,7 +46,7 @@ Several different strategies are used to draw your attention to certain pieces o
 
 ## 2. Prerequisites
 To build Kodi:
-* **[CMake](https://cmake.org/download/)** (version 3.15 or greater is required)
+* **[CMake](https://cmake.org/download/)** (version 3.15 or greater is required to build with Visual Studio 2019, version 3.21 or greater to build with Visual Studio 2022)
 * **[Git for Windows](https://gitforwindows.org/)**
 * **[Java Runtime Environment (JRE)](http://www.oracle.com/technetwork/java/javase/downloads/index.html)**
 * **[Nullsoft scriptable install system (NSIS)](http://nsis.sourceforge.net/Download)** (Only needed if you want to generate an installer file)
