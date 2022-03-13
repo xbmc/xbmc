@@ -113,6 +113,7 @@ public:
 
   static CLog& GetLogging();
   static void CreateLogging();
+  static void DestroyLogging();
 
   static std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> GetAnnouncementManager();
   static void RegisterAnnouncementManager(std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> announcementManager);

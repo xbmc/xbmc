@@ -21,6 +21,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/log.h"
 #include "windowing/WinSystem.h"
 
 #ifdef TARGET_DARWIN
@@ -112,10 +113,13 @@ void TestBasicEnvironment::TearDown()
 
   g_application.m_ServiceManager->DeinitTesting();
 
+  CServiceBroker::UnregisterAppMessenger();
+
+  CServiceBroker::GetLogging().UnregisterFromSettings();
   m_pSettingsComponent->Deinit();
   m_pSettingsComponent.reset();
-
-  CServiceBroker::UnregisterAppMessenger();
+  CServiceBroker::GetLogging().Uninitialize();
+  CServiceBroker::DestroyLogging();
 }
 
 void TestBasicEnvironment::SetUpError()

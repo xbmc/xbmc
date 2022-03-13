@@ -2503,11 +2503,13 @@ bool CApplication::Cleanup()
     m_pAnnouncementManager.reset();
 
     CServiceBroker::UnregisterJobManager();
+    CServiceBroker::UnregisterCPUInfo();
 
+    CServiceBroker::GetLogging().UnregisterFromSettings();
     m_pSettingsComponent->Deinit();
     m_pSettingsComponent.reset();
-
-    CServiceBroker::UnregisterCPUInfo();
+    CServiceBroker::GetLogging().Uninitialize();
+    CServiceBroker::DestroyLogging();
 
     return true;
   }
