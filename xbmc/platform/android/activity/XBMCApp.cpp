@@ -322,6 +322,9 @@ void CXBMCApp::onDestroy()
 
   unregisterReceiver(*this);
 
+  UnregisterDisplayListener();
+  CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
+
   m_mediaSession.release();
 }
 
@@ -380,6 +383,16 @@ void CXBMCApp::RegisterDisplayListener(CVariant* variant)
   {
     android_printf("CXBMCApp: installing DisplayManager::DisplayListener");
     displayManager.registerDisplayListener(CXBMCApp::Get().getDisplayListener());
+  }
+}
+
+void CXBMCApp::UnregisterDisplayListener()
+{
+  CJNIDisplayManager displayManager(getSystemService("display"));
+  if (displayManager)
+  {
+    android_printf("CXBMCApp: removing DisplayManager::DisplayListener");
+    displayManager.unregisterDisplayListener(getDisplayListener());
   }
 }
 
