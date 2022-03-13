@@ -29,7 +29,6 @@
 
 #include <mutex>
 
-using namespace KODI::MESSAGING;
 using namespace std::chrono_literals;
 
 #define TIME_TO_CACHE_NEXT_FILE 5000 /* 5 seconds before end of song, start caching the next song */
@@ -224,11 +223,8 @@ bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     std::unique_lock<CCriticalSection> lock(m_streamsLock);
     m_jobCounter++;
   }
-  CJobManager::GetInstance().Submit(
-    [=]() { QueueNextFileEx(file, false); },
-    this,
-    CJob::PRIORITY_NORMAL
-  );
+  CServiceBroker::GetJobManager()->Submit([=]() { QueueNextFileEx(file, false); }, this,
+                                          CJob::PRIORITY_NORMAL);
 
   std::unique_lock<CCriticalSection> lock(m_streamsLock);
   if (m_streams.size() == 2)
@@ -288,9 +284,8 @@ bool PAPlayer::QueueNextFile(const CFileItem &file)
     std::unique_lock<CCriticalSection> lock(m_streamsLock);
     m_jobCounter++;
   }
-  CJobManager::GetInstance().Submit([this, file]() {
-    QueueNextFileEx(file, true);
-  }, this, CJob::PRIORITY_NORMAL);
+  CServiceBroker::GetJobManager()->Submit([this, file]() { QueueNextFileEx(file, true); }, this,
+                                          CJob::PRIORITY_NORMAL);
 
   return true;
 }
@@ -714,7 +709,7 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &freeBufferTime)
     m_signalStarted = true;
     if (m_fullScreen)
     {
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_SWITCHTOFULLSCREEN);
+      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_SWITCHTOFULLSCREEN);
       m_fullScreen = false;
     }
     m_callback.OnAVStarted(si->m_fileItem);
@@ -1141,9 +1136,8 @@ void PAPlayer::CloseFileCB(StreamInfo &si)
   bookmark.timeInSeconds -= si.m_stream->GetDelay();
   bookmark.player = m_name;
   bookmark.playerState = GetPlayerState();
-  CJobManager::GetInstance().Submit([=]() {
-    cb->OnPlayerCloseFile(fileItem, bookmark);
-  }, CJob::PRIORITY_NORMAL);
+  CServiceBroker::GetJobManager()->Submit([=]() { cb->OnPlayerCloseFile(fileItem, bookmark); },
+                                          CJob::PRIORITY_NORMAL);
 }
 
 void PAPlayer::AdvancePlaylistOnError(CFileItem &fileItem)

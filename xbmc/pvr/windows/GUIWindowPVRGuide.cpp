@@ -903,7 +903,7 @@ void CPVRRefreshTimelineItemsThread::Process()
     if (m_pGuideWindow->RefreshTimelineItems() && !m_bStop)
     {
       CGUIMessage m(GUI_MSG_REFRESH_LIST, m_pGuideWindow->GetID(), 0, static_cast<int>(PVREvent::Epg));
-      KODI::MESSAGING::CApplicationMessenger::GetInstance().SendGUIMessage(m);
+      CServiceBroker::GetAppMessenger()->SendGUIMessage(m);
     }
 
     if (m_bStop)

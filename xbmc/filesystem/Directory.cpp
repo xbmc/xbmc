@@ -71,19 +71,15 @@ public:
   CGetDirectory(std::shared_ptr<IDirectory>& imp, const CURL& dir, const CURL& listDir)
     : m_result(new CResult(dir, listDir))
   {
-    m_id = CJobManager::GetInstance().AddJob(new CGetJob(imp, m_result)
-                                           , NULL
-                                           , CJob::PRIORITY_HIGH);
+    m_id = CServiceBroker::GetJobManager()->AddJob(new CGetJob(imp, m_result), nullptr,
+                                                   CJob::PRIORITY_HIGH);
     if (m_id == 0)
     {
       CGetJob job(imp, m_result);
       job.DoWork();
     }
   }
- ~CGetDirectory()
-  {
-    CJobManager::GetInstance().CancelJob(m_id);
-  }
+  ~CGetDirectory() { CServiceBroker::GetJobManager()->CancelJob(m_id); }
 
   CEvent& GetEvent()
   {

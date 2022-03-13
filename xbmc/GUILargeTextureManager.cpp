@@ -43,7 +43,7 @@ bool CImageLoader::DoWork()
     return false;
 
   if (m_use_cache)
-    loadPath = CTextureCache::GetInstance().CheckCachedImage(texturePath, needsChecking);
+    loadPath = CServiceBroker::GetTextureCache()->CheckCachedImage(texturePath, needsChecking);
   else
     loadPath = texturePath;
 
@@ -64,7 +64,7 @@ bool CImageLoader::DoWork()
     if (m_texture)
     {
       if (needsChecking)
-        CTextureCache::GetInstance().BackgroundCacheImage(texturePath);
+        CServiceBroker::GetTextureCache()->BackgroundCacheImage(texturePath);
 
       return true;
     }
@@ -77,7 +77,7 @@ bool CImageLoader::DoWork()
     return false; // We're done
 
   // not in our texture cache or it failed to load from it, so try and load directly and then cache the result
-  CTextureCache::GetInstance().CacheImage(texturePath, &m_texture);
+  CServiceBroker::GetTextureCache()->CacheImage(texturePath, &m_texture);
   return (m_texture != NULL);
 }
 
@@ -197,7 +197,7 @@ void CGUILargeTextureManager::ReleaseImage(const std::string &path, bool immedia
     if (image->GetPath() == path && image->DecrRef(true))
     {
       // cancel this job
-      CJobManager::GetInstance().CancelJob(id);
+      CServiceBroker::GetJobManager()->CancelJob(id);
       m_queued.erase(it);
       return;
     }
@@ -223,7 +223,8 @@ void CGUILargeTextureManager::QueueImage(const std::string &path, bool useCache)
 
   // queue the item
   CLargeTexture *image = new CLargeTexture(path);
-  unsigned int jobID = CJobManager::GetInstance().AddJob(new CImageLoader(path, useCache), this, CJob::PRIORITY_NORMAL);
+  unsigned int jobID = CServiceBroker::GetJobManager()->AddJob(new CImageLoader(path, useCache),
+                                                               this, CJob::PRIORITY_NORMAL);
   m_queued.emplace_back(jobID, image);
 }
 

@@ -46,7 +46,6 @@
 #include <vector>
 
 using namespace PVR;
-using namespace KODI::MESSAGING;
 using namespace std::chrono_literals;
 
 namespace
@@ -367,7 +366,7 @@ void CPVRManager::Init()
 {
   // initial check for enabled addons
   // if at least one pvr addon is enabled, PVRManager start up
-  CJobManager::GetInstance().Submit([this] {
+  CServiceBroker::GetJobManager()->Submit([this] {
     Clients()->Start();
     return true;
   });
@@ -410,7 +409,7 @@ void CPVRManager::Stop(bool bRestart /* = false */)
   if (!bRestart && m_playbackState->IsPlaying())
   {
     CLog::LogFC(LOGDEBUG, LOGPVR, "Stopping PVR playback");
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
+    CServiceBroker::GetAppMessenger()->SendMsg(TMSG_MEDIA_STOP);
   }
 
   CLog::Log(LOGINFO, "PVR Manager: Stopping");
@@ -792,9 +791,8 @@ void CPVRManager::TriggerPlayChannelOnStartup()
 {
   if (IsStarted())
   {
-    CJobManager::GetInstance().Submit([this] {
-      return GUIActions()->PlayChannelOnStartup();
-    });
+    CServiceBroker::GetJobManager()->Submit(
+        [this] { return GUIActions()->PlayChannelOnStartup(); });
   }
 }
 
@@ -1009,7 +1007,7 @@ void CPVRManager::ConnectionStateChange(CPVRClient* client,
                                         PVR_CONNECTION_STATE state,
                                         const std::string& message)
 {
-  CJobManager::GetInstance().Submit([this, client, connectString, state, message] {
+  CServiceBroker::GetJobManager()->Submit([this, client, connectString, state, message] {
     Clients()->ConnectionStateChange(client, connectString, state, message);
     return true;
   });

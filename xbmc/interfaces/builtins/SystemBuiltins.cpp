@@ -8,10 +8,9 @@
 
 #include "SystemBuiltins.h"
 
+#include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/StringUtils.h"
-
-using namespace KODI::MESSAGING;
 
 /*! \brief Execute a system executable.
  *  \param params The parameters.
@@ -22,8 +21,8 @@ using namespace KODI::MESSAGING;
   template<int Wait=0>
 static int Exec(const std::vector<std::string>& params)
 {
-  CApplicationMessenger::GetInstance().PostMsg(TMSG_MINIMIZE);
-  CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_OS, Wait, -1, nullptr, params[0]);
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MINIMIZE);
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_EXECUTE_OS, Wait, -1, nullptr, params[0]);
 
   return 0;
 }
@@ -33,7 +32,7 @@ static int Exec(const std::vector<std::string>& params)
  */
 static int Hibernate(const std::vector<std::string>& params)
 {
-  CApplicationMessenger::GetInstance().PostMsg(TMSG_HIBERNATE);
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_HIBERNATE);
 
   return 0;
 }
@@ -45,7 +44,7 @@ static int Hibernate(const std::vector<std::string>& params)
 static int InhibitIdle(const std::vector<std::string>& params)
 {
   bool inhibit = (params.size() == 1 && StringUtils::EqualsNoCase(params[0], "true"));
-  CApplicationMessenger::GetInstance().PostMsg(TMSG_INHIBITIDLESHUTDOWN, inhibit);
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_INHIBITIDLESHUTDOWN, inhibit);
 
   return 0;
 }
@@ -55,7 +54,7 @@ static int InhibitIdle(const std::vector<std::string>& params)
  */
 static int Minimize(const std::vector<std::string>& params)
 {
-  CApplicationMessenger::GetInstance().PostMsg(TMSG_MINIMIZE);
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MINIMIZE);
 
   return 0;
 }
@@ -65,7 +64,7 @@ static int Minimize(const std::vector<std::string>& params)
  */
 static int Powerdown(const std::vector<std::string>& params)
 {
-  CApplicationMessenger::GetInstance().PostMsg(TMSG_POWERDOWN);
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_POWERDOWN);
 
   return 0;
 }
@@ -75,7 +74,7 @@ static int Powerdown(const std::vector<std::string>& params)
  */
 static int Quit(const std::vector<std::string>& params)
 {
-  CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_QUIT);
 
   return 0;
 }
@@ -85,7 +84,7 @@ static int Quit(const std::vector<std::string>& params)
  */
 static int Reboot(const std::vector<std::string>& params)
 {
-  CApplicationMessenger::GetInstance().PostMsg(TMSG_RESTART);
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_RESTART);
 
   return 0;
 }
@@ -95,7 +94,7 @@ static int Reboot(const std::vector<std::string>& params)
  */
 static int RestartApp(const std::vector<std::string>& params)
 {
-  CApplicationMessenger::GetInstance().PostMsg(TMSG_RESTARTAPP);
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_RESTARTAPP);
 
   return 0;
 }
@@ -105,7 +104,7 @@ static int RestartApp(const std::vector<std::string>& params)
  */
 static int ActivateScreensaver(const std::vector<std::string>& params)
 {
-  CApplicationMessenger::GetInstance().PostMsg(TMSG_ACTIVATESCREENSAVER);
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_ACTIVATESCREENSAVER);
 
   return 0;
 }
@@ -115,7 +114,7 @@ static int ActivateScreensaver(const std::vector<std::string>& params)
  */
 static int ResetScreensaver(const std::vector<std::string>& params)
 {
-  CApplicationMessenger::GetInstance().PostMsg(TMSG_RESETSCREENSAVER);
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_RESETSCREENSAVER);
 
   return 0;
 }
@@ -127,7 +126,7 @@ static int ResetScreensaver(const std::vector<std::string>& params)
 static int InhibitScreenSaver(const std::vector<std::string>& params)
 {
   bool inhibit = (params.size() == 1 && StringUtils::EqualsNoCase(params[0], "true"));
-  CApplicationMessenger::GetInstance().PostMsg(TMSG_INHIBITSCREENSAVER, inhibit);
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_INHIBITSCREENSAVER, inhibit);
 
   return 0;
 }
@@ -137,7 +136,7 @@ static int InhibitScreenSaver(const std::vector<std::string>& params)
  */
 static int Shutdown(const std::vector<std::string>& params)
 {
-  CApplicationMessenger::GetInstance().PostMsg(TMSG_SHUTDOWN);
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_SHUTDOWN);
 
   return 0;
 }
@@ -147,7 +146,7 @@ static int Shutdown(const std::vector<std::string>& params)
  */
 static int Suspend(const std::vector<std::string>& params)
 {
-  CApplicationMessenger::GetInstance().PostMsg(TMSG_SUSPEND);
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_SUSPEND);
 
   return 0;
 }

@@ -32,7 +32,6 @@
 #include <vector>
 
 using namespace PVR;
-using namespace KODI::MESSAGING;
 
 using namespace std::chrono_literals;
 
@@ -244,7 +243,7 @@ void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
 void CGUIDialogPVRChannelsOSD::Notify(const PVREvent& event)
 {
   const CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, static_cast<int>(event));
-  CApplicationMessenger::GetInstance().SendGUIMessage(m);
+  CServiceBroker::GetAppMessenger()->SendGUIMessage(m);
 }
 
 void CGUIDialogPVRChannelsOSD::SaveSelectedItemPath(int iGroupID)

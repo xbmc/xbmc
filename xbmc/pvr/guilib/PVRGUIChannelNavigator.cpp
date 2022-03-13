@@ -161,10 +161,11 @@ namespace PVR
       {
         // delayed switch
         if (m_iChannelEntryJobId >= 0)
-          CJobManager::GetInstance().CancelJob(m_iChannelEntryJobId);
+          CServiceBroker::GetJobManager()->CancelJob(m_iChannelEntryJobId);
 
         CPVRChannelEntryTimeoutJob* job = new CPVRChannelEntryTimeoutJob(*this, timeout);
-        m_iChannelEntryJobId = CJobManager::GetInstance().AddJob(job, dynamic_cast<IJobCallback*>(job));
+        m_iChannelEntryJobId =
+            CServiceBroker::GetJobManager()->AddJob(job, dynamic_cast<IJobCallback*>(job));
       }
       else
       {
@@ -183,7 +184,7 @@ namespace PVR
 
       if (m_iChannelEntryJobId >= 0)
       {
-        CJobManager::GetInstance().CancelJob(m_iChannelEntryJobId);
+        CServiceBroker::GetJobManager()->CancelJob(m_iChannelEntryJobId);
         m_iChannelEntryJobId = -1;
       }
 
@@ -224,14 +225,15 @@ namespace PVR
 
       if (m_iChannelInfoJobId >= 0)
       {
-        CJobManager::GetInstance().CancelJob(m_iChannelInfoJobId);
+        CServiceBroker::GetJobManager()->CancelJob(m_iChannelInfoJobId);
         m_iChannelInfoJobId = -1;
       }
 
       if (!bForce && timeout > 0s)
       {
         CPVRChannelInfoTimeoutJob* job = new CPVRChannelInfoTimeoutJob(*this, timeout);
-        m_iChannelInfoJobId = CJobManager::GetInstance().AddJob(job, dynamic_cast<IJobCallback*>(job));
+        m_iChannelInfoJobId =
+            CServiceBroker::GetJobManager()->AddJob(job, dynamic_cast<IJobCallback*>(job));
       }
     }
   }
@@ -247,7 +249,7 @@ namespace PVR
 
       if (m_iChannelInfoJobId >= 0)
       {
-        CJobManager::GetInstance().CancelJob(m_iChannelInfoJobId);
+        CServiceBroker::GetJobManager()->CancelJob(m_iChannelInfoJobId);
         m_iChannelInfoJobId = -1;
       }
 

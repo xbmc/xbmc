@@ -71,7 +71,7 @@ bool CZeroconf::PublishService(const std::string& fcr_identifier,
   if(!ret.second) //identifier exists
     return false;
   if(m_started)
-    CJobManager::GetInstance().AddJob(new CPublish(fcr_identifier, info), NULL);
+    CServiceBroker::GetJobManager()->AddJob(new CPublish(fcr_identifier, info), nullptr);
 
   //not yet started, so its just queued
   return true;
@@ -119,7 +119,7 @@ bool CZeroconf::Start()
     return true;
   m_started = true;
 
-  CJobManager::GetInstance().AddJob(new CPublish(m_service_map), NULL);
+  CServiceBroker::GetJobManager()->AddJob(new CPublish(m_service_map), nullptr);
   return true;
 }
 

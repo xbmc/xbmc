@@ -1998,7 +1998,7 @@ bool CMusicInfoScanner::AddArtistArtwork(CArtist& artist, const std::string& art
     // (other art types will be cached when first displayed)
     if (iArtLevel != CSettings::MUSICLIBRARY_ARTWORK_LEVEL_ALL || it.first == "thumb" ||
         it.first == "fanart")
-      CTextureCache::GetInstance().BackgroundCacheImage(it.second);
+      CServiceBroker::GetTextureCache()->BackgroundCacheImage(it.second);
     auto ret = artist.art.insert(it);
     if (ret.second)
       m_musicDatabase.SetArtForItem(artist.idArtist, MediaTypeArtist, it.first, it.second);
@@ -2119,7 +2119,7 @@ bool CMusicInfoScanner::AddAlbumArtwork(CAlbum& album)
     // (other art types will be cached when first displayed)
     if (iArtLevel != CSettings::MUSICLIBRARY_ARTWORK_LEVEL_ALL || it.first == "thumb" ||
         it.first == "fanart")
-      CTextureCache::GetInstance().BackgroundCacheImage(it.second);
+      CServiceBroker::GetTextureCache()->BackgroundCacheImage(it.second);
 
     auto ret = album.art.insert(it);
     if (ret.second)

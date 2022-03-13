@@ -41,6 +41,14 @@ namespace PLAYLIST
   class CPlayListPlayer;
 }
 
+namespace KODI
+{
+namespace MESSAGING
+{
+class CApplicationMessenger;
+}
+} // namespace KODI
+
 class CContextMenuManager;
 class XBPython;
 class CDataCacheCore;
@@ -64,6 +72,9 @@ class CMediaManager;
 class CCPUInfo;
 class CLog;
 class CPlatform;
+class CTextureCache;
+class CJobManager;
+class CKeyboardLayoutManager;
 
 namespace WSDiscovery
 {
@@ -167,6 +178,24 @@ public:
   static void RegisterCPUInfo(std::shared_ptr<CCPUInfo> cpuInfo);
   static void UnregisterCPUInfo();
 
+  static void RegisterTextureCache(const std::shared_ptr<CTextureCache>& cache);
+  static void UnregisterTextureCache();
+  static std::shared_ptr<CTextureCache> GetTextureCache();
+
+  static void RegisterJobManager(const std::shared_ptr<CJobManager>& jobManager);
+  static void UnregisterJobManager();
+  static std::shared_ptr<CJobManager> GetJobManager();
+
+  static void RegisterAppMessenger(
+      const std::shared_ptr<KODI::MESSAGING::CApplicationMessenger>& appMessenger);
+  static void UnregisterAppMessenger();
+  static std::shared_ptr<KODI::MESSAGING::CApplicationMessenger> GetAppMessenger();
+
+  static void RegisterKeyboardLayoutManager(
+      const std::shared_ptr<CKeyboardLayoutManager>& keyboardLayoutManager);
+  static void UnregisterKeyboardLayoutManager();
+  static std::shared_ptr<CKeyboardLayoutManager> GetKeyboardLayoutManager();
+
 private:
   std::unique_ptr<CLog> m_logging;
   std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> m_pAnnouncementManager;
@@ -177,6 +206,10 @@ private:
   CSettingsComponent* m_pSettingsComponent;
   CDecoderFilterManager* m_decoderFilterManager;
   std::shared_ptr<CCPUInfo> m_cpuInfo;
+  std::shared_ptr<CTextureCache> m_textureCache;
+  std::shared_ptr<CJobManager> m_jobManager;
+  std::shared_ptr<KODI::MESSAGING::CApplicationMessenger> m_appMessenger;
+  std::shared_ptr<CKeyboardLayoutManager> m_keyboardLayoutManager;
 };
 
 XBMC_GLOBAL_REF(CServiceBroker, g_serviceBroker);

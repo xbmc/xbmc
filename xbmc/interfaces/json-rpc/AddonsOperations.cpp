@@ -22,7 +22,6 @@
 using namespace JSONRPC;
 using namespace ADDON;
 using namespace XFILE;
-using namespace KODI::MESSAGING;
 
 JSONRPC_STATUS CAddonsOperations::GetAddons(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
@@ -214,9 +213,9 @@ JSONRPC_STATUS CAddonsOperations::ExecuteAddon(const std::string &method, ITrans
     cmd = StringUtils::Format("RunAddon({}, {})", id, argv);
 
   if (params["wait"].asBoolean())
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
+    CServiceBroker::GetAppMessenger()->SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
   else
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
 
   return ACK;
 }
@@ -301,7 +300,7 @@ void CAddonsOperations::FillDetails(const AddonPtr& addon,
       // We need to check the existence of fanart and thumbnails as the addon simply
       // holds where the art will be, not whether it exists.
       bool needsRecaching;
-      std::string image = CTextureCache::GetInstance().CheckCachedImage(url, needsRecaching);
+      std::string image = CServiceBroker::GetTextureCache()->CheckCachedImage(url, needsRecaching);
       if (!image.empty() || CFile::Exists(url))
         object[field] = CTextureUtils::GetWrappedImageURL(url);
       else

@@ -1286,7 +1286,7 @@ namespace PVR
       }
     }
 
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(item));
     CheckAndSwitchToFullscreen(bFullscreen);
   }
 
@@ -1932,7 +1932,7 @@ namespace PVR
     {
       CLog::Log(LOGINFO, "PVR is stopping playback for {} database reset",
                 bResetEPGOnly ? "EPG" : "PVR and EPG");
-      CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
+      CServiceBroker::GetAppMessenger()->SendMsg(TMSG_MEDIA_STOP);
     }
 
     const std::shared_ptr<CPVRDatabase> pvrDatabase(CServiceBroker::GetPVRManager().GetTVDatabase());
@@ -2276,7 +2276,7 @@ namespace PVR
                     name,
                     GetAnnouncerText(timer, idEpg, idNoEpg),
                     icon);
-      CJobManager::GetInstance().AddJob(job, nullptr);
+      CServiceBroker::GetJobManager()->AddJob(job, nullptr);
     }
   } // unnamed namespace
 
@@ -2514,7 +2514,7 @@ namespace PVR
           // no epg; jump to end of buffer
           seekTime = CServiceBroker::GetDataCacheCore().GetMaxTime();
         }
-        CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_SEEK_TIME, seekTime);
+        CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_SEEK_TIME, seekTime);
       }
     }
   }
@@ -2555,7 +2555,7 @@ namespace PVR
           // no epg; jump to begin of buffer
           seekTime = CServiceBroker::GetDataCacheCore().GetMinTime();
         }
-        CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_SEEK_TIME, seekTime);
+        CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_SEEK_TIME, seekTime);
       }
     }
   }
@@ -2792,11 +2792,11 @@ namespace PVR
 
           if (groupMember)
           {
-            CApplicationMessenger::GetInstance().PostMsg(
-              TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-              static_cast<void*>(new CAction(ACTION_CHANNEL_SWITCH,
-                                             static_cast<float>(channelNumber.GetChannelNumber()),
-                                             static_cast<float>(channelNumber.GetSubChannelNumber()))));
+            CServiceBroker::GetAppMessenger()->PostMsg(
+                TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+                static_cast<void*>(new CAction(
+                    ACTION_CHANNEL_SWITCH, static_cast<float>(channelNumber.GetChannelNumber()),
+                    static_cast<float>(channelNumber.GetSubChannelNumber()))));
           }
         }
       }
@@ -2817,7 +2817,7 @@ namespace PVR
         if (groupMember)
         {
           const CPVRChannelNumber channelNumber = groupMember->ChannelNumber();
-          CApplicationMessenger::GetInstance().SendMsg(
+          CServiceBroker::GetAppMessenger()->SendMsg(
               TMSG_GUI_ACTION, WINDOW_INVALID, -1,
               static_cast<void*>(new CAction(
                   ACTION_CHANNEL_SWITCH, static_cast<float>(channelNumber.GetChannelNumber()),

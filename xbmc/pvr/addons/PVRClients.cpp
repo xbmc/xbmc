@@ -28,7 +28,6 @@
 
 using namespace ADDON;
 using namespace PVR;
-using namespace KODI::MESSAGING;
 
 namespace
 {
@@ -163,7 +162,10 @@ void CPVRClients::UpdateAddons(const std::string& changedAddonId /*= ""*/)
         {
           CServiceBroker::GetAddonMgr().DisableAddon(addon.first->ID(),
                                                      AddonDisabledReason::PERMANENT_FAILURE);
-          CJobManager::GetInstance().AddJob(new CPVREventLogJob(true, true, addon.first->Name(), g_localizeStrings.Get(24070), addon.first->Icon()), nullptr);
+          CServiceBroker::GetJobManager()->AddJob(
+              new CPVREventLogJob(true, true, addon.first->Name(), g_localizeStrings.Get(24070),
+                                  addon.first->Icon()),
+              nullptr);
         }
       }
     }
@@ -206,7 +208,7 @@ bool CPVRClients::StopClient(const std::string& id, bool bRestart)
 {
   // stop playback if needed
   if (CServiceBroker::GetPVRManager().PlaybackState()->IsPlaying())
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
+    CServiceBroker::GetAppMessenger()->SendMsg(TMSG_MEDIA_STOP);
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
@@ -243,7 +245,7 @@ void CPVRClients::OnAddonEvent(const AddonEvent& event)
     const std::string id = event.id;
     if (CServiceBroker::GetAddonMgr().HasType(id, ADDON_PVRDLL))
     {
-      CJobManager::GetInstance().Submit([this, id] {
+      CServiceBroker::GetJobManager()->Submit([this, id] {
         UpdateAddons(id);
         return true;
       });
@@ -814,7 +816,8 @@ void CPVRClients::ConnectionStateChange(CPVRClient* client,
     strMsg = g_localizeStrings.Get(iMsg);
 
   // Notify user.
-  CJobManager::GetInstance().AddJob(new CPVREventLogJob(bNotify, bError, client->Name(), strMsg, client->Icon()), nullptr);
+  CServiceBroker::GetJobManager()->AddJob(
+      new CPVREventLogJob(bNotify, bError, client->Name(), strMsg, client->Icon()), nullptr);
 }
 
 namespace

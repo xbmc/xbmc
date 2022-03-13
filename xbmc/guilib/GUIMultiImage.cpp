@@ -225,7 +225,7 @@ void CGUIMultiImage::LoadDirectory()
    3. Bundled folder
    */
   CFileItem item(m_currentPath, false);
-  if (item.IsPicture() || CTextureCache::GetInstance().HasCachedImage(m_currentPath))
+  if (item.IsPicture() || CServiceBroker::GetTextureCache()->HasCachedImage(m_currentPath))
     m_files.push_back(m_currentPath);
   else // bundled folder?
     m_files =
@@ -238,7 +238,8 @@ void CGUIMultiImage::LoadDirectory()
   // slow(er) checks necessary - do them in the background
   std::unique_lock<CCriticalSection> lock(m_section);
   m_directoryStatus = LOADING;
-  m_jobID = CJobManager::GetInstance().AddJob(new CMultiImageJob(m_currentPath), this, CJob::PRIORITY_NORMAL);
+  m_jobID = CServiceBroker::GetJobManager()->AddJob(new CMultiImageJob(m_currentPath), this,
+                                                    CJob::PRIORITY_NORMAL);
 }
 
 void CGUIMultiImage::OnDirectoryLoaded()
@@ -260,7 +261,7 @@ void CGUIMultiImage::CancelLoading()
 {
   std::unique_lock<CCriticalSection> lock(m_section);
   if (m_directoryStatus == LOADING)
-    CJobManager::GetInstance().CancelJob(m_jobID);
+    CServiceBroker::GetJobManager()->CancelJob(m_jobID);
   m_directoryStatus = UNLOADED;
 }
 

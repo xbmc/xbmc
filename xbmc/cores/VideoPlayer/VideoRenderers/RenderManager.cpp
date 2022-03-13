@@ -33,7 +33,6 @@
 #include "../VideoPlayer/DVDClock.h"
 #include "../VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 
-using namespace KODI::MESSAGING;
 using namespace std::chrono_literals;
 
 void CRenderManager::CClockSync::Reset()
@@ -360,7 +359,7 @@ void CRenderManager::PreInit()
   if (!g_application.IsCurrentThread())
   {
     m_initEvent.Reset();
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_RENDERER_PREINIT);
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_RENDERER_PREINIT);
     if (!m_initEvent.Wait(2000ms))
     {
       CLog::Log(LOGERROR, "{} - timed out waiting for renderer to preinit", __FUNCTION__);
@@ -389,7 +388,7 @@ void CRenderManager::UnInit()
   if (!g_application.IsCurrentThread())
   {
     m_initEvent.Reset();
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_RENDERER_UNINIT);
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_RENDERER_UNINIT);
     if (!m_initEvent.Wait(2000ms))
     {
       CLog::Log(LOGERROR, "{} - timed out waiting for renderer to uninit", __FUNCTION__);
@@ -453,7 +452,7 @@ bool CRenderManager::Flush(bool wait, bool saveBuffers)
   else
   {
     m_flushEvent.Reset();
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_RENDERER_FLUSH);
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_RENDERER_FLUSH);
     if (wait)
     {
       if (!m_flushEvent.Wait(1000ms))

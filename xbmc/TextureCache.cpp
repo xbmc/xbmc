@@ -31,12 +31,6 @@
 using namespace XFILE;
 using namespace std::chrono_literals;
 
-CTextureCache &CTextureCache::GetInstance()
-{
-  static CTextureCache s_cache;
-  return s_cache;
-}
-
 CTextureCache::CTextureCache() : CJobQueue(false, 1, CJob::PRIORITY_LOW_PAUSABLE)
 {
 }
@@ -53,6 +47,7 @@ void CTextureCache::Initialize()
 void CTextureCache::Deinitialize()
 {
   CancelJobs();
+
   std::unique_lock<CCriticalSection> lock(m_databaseSection);
   m_database.Close();
 }

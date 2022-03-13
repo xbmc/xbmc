@@ -562,7 +562,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
         MEDIA_DETECT::CCdInfo* pCdInfo = CServiceBroker::GetMediaManager().GetCdInfo();
         if (pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1))
         {
-          if (CJobManager::GetInstance().IsProcessing("cdrip"))
+          if (CServiceBroker::GetJobManager()->IsProcessing("cdrip"))
             buttons.Add(CONTEXT_BUTTON_CANCEL_RIP_CD, 14100);
           else
             buttons.Add(CONTEXT_BUTTON_RIP_CD, 600);
@@ -767,7 +767,8 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       database.Open();
       CVideoInfoTag details;
       database.GetMusicVideoInfo("", details, database.GetMatchingMusicVideo(item->GetMusicInfoTag()->GetArtistString(), item->GetMusicInfoTag()->GetAlbum(), item->GetMusicInfoTag()->GetTitle()));
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(details)));
+      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 0, 0,
+                                                 static_cast<void*>(new CFileItem(details)));
       return true;
     }
 

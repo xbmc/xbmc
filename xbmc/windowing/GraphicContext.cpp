@@ -28,10 +28,8 @@
 #include <cassert>
 #include <mutex>
 
-using namespace KODI::MESSAGING;
-
-CGraphicContext::CGraphicContext(void) = default;
-CGraphicContext::~CGraphicContext(void) = default;
+CGraphicContext::CGraphicContext() = default;
+CGraphicContext::~CGraphicContext() = default;
 
 void CGraphicContext::SetOrigin(float x, float y)
 {
@@ -390,7 +388,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
   }
   else
   {
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_SETVIDEORESOLUTION, res, forceUpdate ? 1 : 0);
+    CServiceBroker::GetAppMessenger()->SendMsg(TMSG_SETVIDEORESOLUTION, res, forceUpdate ? 1 : 0);
   }
 }
 

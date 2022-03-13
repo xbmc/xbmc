@@ -63,7 +63,7 @@ bool CTextureCacheJob::DoWork()
 
   // check whether we need cache the job anyway
   bool needsRecaching = false;
-  std::string path(CTextureCache::GetInstance().CheckCachedImage(m_url, needsRecaching));
+  std::string path(CServiceBroker::GetTextureCache()->CheckCachedImage(m_url, needsRecaching));
   if (!path.empty() && !needsRecaching)
     return false;
   return CacheTexture();

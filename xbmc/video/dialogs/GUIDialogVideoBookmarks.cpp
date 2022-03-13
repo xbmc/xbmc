@@ -39,8 +39,6 @@
 #include <string>
 #include <vector>
 
-using namespace KODI::MESSAGING;
-
 #define BOOKMARK_THUMB_WIDTH CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_imageRes
 
 #define CONTROL_ADD_BOOKMARK           2
@@ -214,7 +212,8 @@ void CGUIDialogVideoBookmarks::UpdateItem(unsigned int chapterIdx)
   if (itemPos < m_vecItems->Size())
   {
     std::string time = StringUtils::Format("chapter://{}/{}", m_filePath, chapterIdx);
-    std::string cachefile = CTextureCache::GetInstance().GetCachedPath(CTextureCache::GetInstance().GetCacheFile(time) + ".jpg");
+    std::string cachefile = CServiceBroker::GetTextureCache()->GetCachedPath(
+        CServiceBroker::GetTextureCache()->GetCacheFile(time) + ".jpg");
     if (XFILE::CFile::Exists(cachefile))
     {
       (*m_vecItems)[itemPos]->SetArt("thumb", cachefile);
@@ -280,7 +279,8 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
     item->SetLabel2(time);
 
     std::string chapterPath = StringUtils::Format("chapter://{}/{}", m_filePath, i);
-    std::string cachefile = CTextureCache::GetInstance().GetCachedPath(CTextureCache::GetInstance().GetCacheFile(chapterPath)+".jpg");
+    std::string cachefile = CServiceBroker::GetTextureCache()->GetCachedPath(
+        CServiceBroker::GetTextureCache()->GetCacheFile(chapterPath) + ".jpg");
     if (XFILE::CFile::Exists(cachefile))
       item->SetArt("thumb", cachefile);
     else if (i > m_jobsStarted && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTCHAPTERTHUMBS))
@@ -570,7 +570,7 @@ void CGUIDialogVideoBookmarks::OnJobComplete(unsigned int jobID,
     {
       unsigned int chapterIdx = (*iter).second;
       CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, 1, chapterIdx);
-      CApplicationMessenger::GetInstance().SendGUIMessage(m);
+      CServiceBroker::GetAppMessenger()->SendGUIMessage(m);
       m_mapJobsChapter.erase(iter);
     }
   }

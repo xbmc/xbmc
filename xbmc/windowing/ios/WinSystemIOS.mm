@@ -8,6 +8,7 @@
 
 #include "WinSystemIOS.h"
 
+#include "ServiceBroker.h"
 #include "VideoSyncIos.h"
 #include "WinEventsIOS.h"
 #include "cores/AudioEngine/Sinks/AESinkDARWINIOS.h"
@@ -438,14 +439,14 @@ bool CWinSystemIOS::HasCursor()
 void CWinSystemIOS::NotifyAppActiveChange(bool bActivated)
 {
   if (bActivated && m_bWasFullScreenBeforeMinimize && !CServiceBroker::GetWinSystem()->GetGfxContext().IsFullScreenRoot())
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_TOGGLEFULLSCREEN);
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_TOGGLEFULLSCREEN);
 }
 
 bool CWinSystemIOS::Minimize()
 {
   m_bWasFullScreenBeforeMinimize = CServiceBroker::GetWinSystem()->GetGfxContext().IsFullScreenRoot();
   if (m_bWasFullScreenBeforeMinimize)
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_TOGGLEFULLSCREEN);
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_TOGGLEFULLSCREEN);
 
   return true;
 }

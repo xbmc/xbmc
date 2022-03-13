@@ -332,3 +332,65 @@ void CServiceBroker::UnregisterCPUInfo()
 {
   g_serviceBroker.m_cpuInfo.reset();
 }
+
+void CServiceBroker::RegisterTextureCache(const std::shared_ptr<CTextureCache>& cache)
+{
+  g_serviceBroker.m_textureCache = cache;
+}
+
+void CServiceBroker::UnregisterTextureCache()
+{
+  g_serviceBroker.m_textureCache.reset();
+}
+
+std::shared_ptr<CTextureCache> CServiceBroker::GetTextureCache()
+{
+  return g_serviceBroker.m_textureCache;
+}
+
+void CServiceBroker::RegisterJobManager(const std::shared_ptr<CJobManager>& jobManager)
+{
+  g_serviceBroker.m_jobManager = jobManager;
+}
+
+void CServiceBroker::UnregisterJobManager()
+{
+  g_serviceBroker.m_jobManager.reset();
+}
+
+std::shared_ptr<CJobManager> CServiceBroker::GetJobManager()
+{
+  return g_serviceBroker.m_jobManager;
+}
+
+void CServiceBroker::RegisterAppMessenger(
+    const std::shared_ptr<KODI::MESSAGING::CApplicationMessenger>& appMessenger)
+{
+  g_serviceBroker.m_appMessenger = appMessenger;
+}
+
+void CServiceBroker::UnregisterAppMessenger()
+{
+  g_serviceBroker.m_appMessenger.reset();
+}
+
+std::shared_ptr<KODI::MESSAGING::CApplicationMessenger> CServiceBroker::GetAppMessenger()
+{
+  return g_serviceBroker.m_appMessenger;
+}
+
+void CServiceBroker::RegisterKeyboardLayoutManager(
+    const std::shared_ptr<CKeyboardLayoutManager>& keyboardLayoutManager)
+{
+  g_serviceBroker.m_keyboardLayoutManager = keyboardLayoutManager;
+}
+
+void CServiceBroker::UnregisterKeyboardLayoutManager()
+{
+  g_serviceBroker.m_keyboardLayoutManager.reset();
+}
+
+std::shared_ptr<CKeyboardLayoutManager> CServiceBroker::GetKeyboardLayoutManager()
+{
+  return g_serviceBroker.m_keyboardLayoutManager;
+}

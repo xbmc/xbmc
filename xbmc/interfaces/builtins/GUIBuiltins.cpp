@@ -32,8 +32,6 @@
 #include "utils/log.h"
 #include "windows/GUIMediaWindow.h"
 
-using namespace KODI::MESSAGING;
-
 /*! \brief Execute a GUI action.
  *  \param params The parameters.
  *  \details params[0] = Action to execute.
@@ -46,7 +44,8 @@ static int Action(const std::vector<std::string>& params)
   if (CActionTranslator::TranslateString(params[0], actionID))
   {
     int windowID = params.size() == 2 ? CWindowTranslator::TranslateWindow(params[1]) : WINDOW_INVALID;
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, windowID, -1, static_cast<void*>(new CAction(actionID)));
+    CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, windowID, -1,
+                                               static_cast<void*>(new CAction(actionID)));
   }
 
   return 0;
@@ -334,7 +333,7 @@ static int Screenshot(const std::vector<std::string>& params)
  */
 static int SetLanguage(const std::vector<std::string>& params)
 {
-  CApplicationMessenger::GetInstance().PostMsg(TMSG_SETLANGUAGE, -1, -1, nullptr, params[0]);
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_SETLANGUAGE, -1, -1, nullptr, params[0]);
 
   return 0;
 }
@@ -362,7 +361,8 @@ static int SetStereoMode(const std::vector<std::string>& params)
 {
   CAction action = CStereoscopicsManager::ConvertActionCommandToAction("SetStereoMode", params[0]);
   if (action.GetID() != ACTION_NONE)
-    CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(action)));
+    CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+                                               static_cast<void*>(new CAction(action)));
   else
   {
     CLog::Log(LOGERROR, "Builtin 'SetStereoMode' called with unknown parameter: {}", params[0]);

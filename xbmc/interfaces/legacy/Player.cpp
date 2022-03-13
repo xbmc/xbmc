@@ -23,8 +23,6 @@
 #include "settings/MediaSettings.h"
 #include "utils/log.h"
 
-using namespace KODI::MESSAGING;
-
 namespace XBMCAddon
 {
   namespace xbmc
@@ -83,13 +81,15 @@ namespace XBMCAddon
         {
           // set m_strPath to the passed url
           listitem->item->SetPath(item.c_str());
-          CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(*listitem->item)));
+          CServiceBroker::GetAppMessenger()->PostMsg(
+              TMSG_MEDIA_PLAY, 0, 0, static_cast<void*>(new CFileItem(*listitem->item)));
         }
         else
         {
           CFileItemList *l = new CFileItemList; //don't delete,
           l->Add(std::make_shared<CFileItem>(item, false));
-          CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l));
+          CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, -1, -1,
+                                                     static_cast<void*>(l));
         }
       }
       else
@@ -106,7 +106,8 @@ namespace XBMCAddon
       // play current file in playlist
       if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() != iPlayList)
         CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(iPlayList);
-      CApplicationMessenger::GetInstance().SendMsg(TMSG_PLAYLISTPLAYER_PLAY, CServiceBroker::GetPlaylistPlayer().GetCurrentSong());
+      CServiceBroker::GetAppMessenger()->SendMsg(
+          TMSG_PLAYLISTPLAYER_PLAY, CServiceBroker::GetPlaylistPlayer().GetCurrentSong());
     }
 
     void Player::playPlaylist(const PlayList* playlist, bool windowed, int startpos)
@@ -123,7 +124,7 @@ namespace XBMCAddon
         CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(iPlayList);
         if (startpos > -1)
           CServiceBroker::GetPlaylistPlayer().SetCurrentSong(startpos);
-        CApplicationMessenger::GetInstance().SendMsg(TMSG_PLAYLISTPLAYER_PLAY, startpos);
+        CServiceBroker::GetAppMessenger()->SendMsg(TMSG_PLAYLISTPLAYER_PLAY, startpos);
       }
       else
         playCurrent(windowed);
@@ -132,13 +133,13 @@ namespace XBMCAddon
     void Player::stop()
     {
       XBMC_TRACE;
-      CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_STOP);
+      CServiceBroker::GetAppMessenger()->SendMsg(TMSG_MEDIA_STOP);
     }
 
     void Player::pause()
     {
       XBMC_TRACE;
-      CApplicationMessenger::GetInstance().SendMsg(TMSG_MEDIA_PAUSE);
+      CServiceBroker::GetAppMessenger()->SendMsg(TMSG_MEDIA_PAUSE);
     }
 
     void Player::playnext()
@@ -146,7 +147,7 @@ namespace XBMCAddon
       XBMC_TRACE;
       DelayedCallGuard dc(languageHook);
 
-      CApplicationMessenger::GetInstance().SendMsg(TMSG_PLAYLISTPLAYER_NEXT);
+      CServiceBroker::GetAppMessenger()->SendMsg(TMSG_PLAYLISTPLAYER_NEXT);
     }
 
     void Player::playprevious()
@@ -154,7 +155,7 @@ namespace XBMCAddon
       XBMC_TRACE;
       DelayedCallGuard dc(languageHook);
 
-      CApplicationMessenger::GetInstance().SendMsg(TMSG_PLAYLISTPLAYER_PREV);
+      CServiceBroker::GetAppMessenger()->SendMsg(TMSG_PLAYLISTPLAYER_PREV);
     }
 
     void Player::playselected(int selected)
@@ -168,7 +169,7 @@ namespace XBMCAddon
       }
       CServiceBroker::GetPlaylistPlayer().SetCurrentSong(selected);
 
-      CApplicationMessenger::GetInstance().SendMsg(TMSG_PLAYLISTPLAYER_PLAY, selected);
+      CServiceBroker::GetAppMessenger()->SendMsg(TMSG_PLAYLISTPLAYER_PLAY, selected);
       //CServiceBroker::GetPlaylistPlayer().Play(selected);
       //CLog::Log(LOGINFO, "Current Song After Play: {}", CServiceBroker::GetPlaylistPlayer().GetCurrentSong());
     }

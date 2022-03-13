@@ -267,7 +267,7 @@ void CApplication::HandlePortEvents()
     {
       case XBMC_QUIT:
         if (!m_bStop)
-          CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
+          CServiceBroker::GetAppMessenger()->PostMsg(TMSG_QUIT);
         break;
       case XBMC_VIDEORESIZE:
         if (CServiceBroker::GetGUI()->GetWindowManager().Initialized())
@@ -304,7 +304,7 @@ void CApplication::HandlePortEvents()
         CServiceBroker::GetWinSystem()->GetGfxContext().ApplyModeChange(newEvent.mode.res);
         break;
       case XBMC_USEREVENT:
-        CApplicationMessenger::GetInstance().PostMsg(static_cast<uint32_t>(newEvent.user.code));
+        CServiceBroker::GetAppMessenger()->PostMsg(static_cast<uint32_t>(newEvent.user.code));
         break;
       case XBMC_SETFOCUS:
         // Reset the screensaver
@@ -346,6 +346,12 @@ bool CApplication::Create(const CAppParamParser &params)
   m_pAnnouncementManager->Start();
   CServiceBroker::RegisterAnnouncementManager(m_pAnnouncementManager);
 
+  const auto appMessenger = std::make_shared<CApplicationMessenger>();
+  CServiceBroker::RegisterAppMessenger(appMessenger);
+
+  const auto keyboardLayoutManager = std::make_shared<CKeyboardLayoutManager>();
+  CServiceBroker::RegisterKeyboardLayoutManager(keyboardLayoutManager);
+
   m_ServiceManager.reset(new CServiceManager());
 
   if (!m_ServiceManager->InitStageOne())
@@ -355,9 +361,9 @@ bool CApplication::Create(const CAppParamParser &params)
 
   // here we register all global classes for the CApplicationMessenger,
   // after that we can send messages to the corresponding modules
-  CApplicationMessenger::GetInstance().RegisterReceiver(this);
-  CApplicationMessenger::GetInstance().RegisterReceiver(&CServiceBroker::GetPlaylistPlayer());
-  CApplicationMessenger::GetInstance().SetGUIThread(m_threadID);
+  appMessenger->RegisterReceiver(this);
+  appMessenger->RegisterReceiver(&CServiceBroker::GetPlaylistPlayer());
+  appMessenger->SetGUIThread(m_threadID);
 
   // copy required files
   CUtil::CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
@@ -428,7 +434,7 @@ bool CApplication::Create(const CAppParamParser &params)
   m_replayGainSettings.bAvoidClipping = settings->GetBool(CSettings::SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING);
 
   // load the keyboard layouts
-  if (!CKeyboardLayoutManager::GetInstance().Load())
+  if (!keyboardLayoutManager->Load())
   {
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to load keyboard layouts");
     return false;
@@ -622,8 +628,10 @@ bool CApplication::Initialize()
   // initialize (and update as needed) our databases
   CDatabaseManager &databaseManager = m_ServiceManager->GetDatabaseManager();
 
+  CServiceBroker::RegisterJobManager(std::make_shared<CJobManager>());
+
   CEvent event(true);
-  CJobManager::GetInstance().Submit([&databaseManager, &event]() {
+  CServiceBroker::GetJobManager()->Submit([&databaseManager, &event]() {
     databaseManager.Initialize();
     event.Set();
   });
@@ -646,7 +654,7 @@ bool CApplication::Initialize()
   //! @todo Move GUIFontManager into service broker and drop the global reference
   event.Reset();
   GUIFontManager& guiFontManager = g_fontManager;
-  CJobManager::GetInstance().Submit([&guiFontManager, &event]() {
+  CServiceBroker::GetJobManager()->Submit([&guiFontManager, &event]() {
     guiFontManager.Initialize();
     event.Set();
   });
@@ -686,7 +694,7 @@ bool CApplication::Initialize()
     {
       if (CAddonSystemSettings::GetInstance().GetAddonAutoUpdateMode() == AUTO_UPDATES_ON)
       {
-        CJobManager::GetInstance().Submit(
+        CServiceBroker::GetJobManager()->Submit(
             [&event, &incompatibleAddons]() {
               if (CServiceBroker::GetRepositoryUpdater().CheckForUpdates())
                 CServiceBroker::GetRepositoryUpdater().Await();
@@ -726,6 +734,8 @@ bool CApplication::Initialize()
       CLog::Log(LOGFATAL, "Failed to load setting for: {}", CSettings::SETTING_LOOKANDFEEL_SKIN);
       return false;
     }
+
+    CServiceBroker::RegisterTextureCache(std::make_shared<CTextureCache>());
 
     std::string defaultSkin = std::static_pointer_cast<const CSettingString>(setting)->GetDefault();
     if (!LoadSkin(settings->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN)))
@@ -887,7 +897,7 @@ void CApplication::OnSettingChanged(const std::shared_ptr<const CSetting>& setti
       std::string builtin("ReloadSkin");
       if (settingId == CSettings::SETTING_LOOKANDFEEL_SKIN && m_confirmSkinChange)
         builtin += "(confirm)";
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, builtin);
+      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, builtin);
     }
   }
   else if (settingId == CSettings::SETTING_LOOKANDFEEL_SKINZOOM)
@@ -906,7 +916,7 @@ void CApplication::OnSettingChanged(const std::shared_ptr<const CSetting>& setti
   }
   else if (settingId == CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH)
   {
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_RESTART);
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_RESTART);
   }
   else if (StringUtils::EqualsNoCase(settingId, CSettings::SETTING_MUSICPLAYER_REPLAYGAINTYPE))
     m_replayGainSettings.iType = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
@@ -1183,9 +1193,9 @@ bool CApplication::LoadSkin(const std::string& skinID)
   CServiceBroker::GetGUI()->GetWindowManager().SetCallback(*this);
   //@todo should be done by GUIComponents
   CServiceBroker::GetGUI()->GetWindowManager().Initialize();
-  CTextureCache::GetInstance().Initialize();
   CServiceBroker::GetGUI()->GetAudioManager().Enable(true);
   CServiceBroker::GetGUI()->GetAudioManager().Load();
+  CServiceBroker::GetTextureCache()->Initialize();
 
   if (g_SkinInfo->HasSkinFile("DialogFullScreenInfo.xml"))
     CServiceBroker::GetGUI()->GetWindowManager().Add(new CGUIDialogFullScreenInfo);
@@ -1245,7 +1255,7 @@ void CApplication::UnloadSkin()
     gui->GetAudioManager().Enable(false);
 
     gui->GetWindowManager().DeInitialize();
-    CTextureCache::GetInstance().Deinitialize();
+    CServiceBroker::GetTextureCache()->Deinitialize();
 
     // remove the skin-dependent window
     gui->GetWindowManager().Delete(WINDOW_DIALOG_FULLSCREEN_INFO);
@@ -2249,23 +2259,23 @@ void CApplication::HandleShutdownMessage()
   switch (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE))
   {
   case POWERSTATE_SHUTDOWN:
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_POWERDOWN);
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_POWERDOWN);
     break;
 
   case POWERSTATE_SUSPEND:
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_SUSPEND);
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_SUSPEND);
     break;
 
   case POWERSTATE_HIBERNATE:
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_HIBERNATE);
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_HIBERNATE);
     break;
 
   case POWERSTATE_QUIT:
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_QUIT);
     break;
 
   case POWERSTATE_MINIMIZE:
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_MINIMIZE);
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MINIMIZE);
     break;
 
   default:
@@ -2404,6 +2414,8 @@ bool CApplication::Cleanup()
     CLog::Log(LOGINFO, "unload skin");
     UnloadSkin();
 
+    CServiceBroker::UnregisterTextureCache();
+
     // stop all remaining scripts; must be done after skin has been unloaded,
     // not before some windows still need it when deinitializing during skin
     // unloading
@@ -2477,12 +2489,17 @@ bool CApplication::Cleanup()
       m_ServiceManager.reset();
     }
 
+    CServiceBroker::UnregisterKeyboardLayoutManager();
+
+    CServiceBroker::UnregisterAppMessenger();
+
     m_pAnnouncementManager->Deinitialize();
     m_pAnnouncementManager.reset();
 
     m_pSettingsComponent->Deinit();
     m_pSettingsComponent.reset();
 
+    CServiceBroker::UnregisterJobManager();
     CServiceBroker::UnregisterCPUInfo();
 
     return true;
@@ -2561,13 +2578,13 @@ bool CApplication::Stop(int exitCode)
     m_bStop = true;
     // Add this here to keep the same ordering behaviour for now
     // Needs cleaning up
-    CApplicationMessenger::GetInstance().Stop();
+    CServiceBroker::GetAppMessenger()->Stop();
     m_AppFocused = false;
     m_ExitCode = exitCode;
     CLog::Log(LOGINFO, "Stopping all");
 
     // cancel any jobs from the jobmanager
-    CJobManager::GetInstance().CancelJobs();
+    CServiceBroker::GetJobManager()->CancelJobs();
 
     // stop scanning before we kill the network and so on
     if (CMusicLibraryQueue::GetInstance().IsRunning())
@@ -2576,7 +2593,7 @@ bool CApplication::Stop(int exitCode)
     if (CVideoLibraryQueue::GetInstance().IsRunning())
       CVideoLibraryQueue::GetInstance().CancelAllJobs();
 
-    CApplicationMessenger::GetInstance().Cleanup();
+    CServiceBroker::GetAppMessenger()->Cleanup();
 
     m_ServiceManager->GetNetwork().NetworkMessage(CNetworkBase::SERVICES_DOWN, 0);
 
@@ -3018,7 +3035,7 @@ void CApplication::PlaybackCleanup()
   }
 
   if (IsEnableTestMode())
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_QUIT);
 }
 
 void CApplication::OnPlayBackEnded()
@@ -3060,7 +3077,7 @@ void CApplication::OnPlayBackStarted(const CFileItem &file)
    */
   if (file.IsVideo() || file.IsGame())
   {
-    CJobManager::GetInstance().PauseJobs();
+    CServiceBroker::GetJobManager()->PauseJobs();
   }
 
   CServiceBroker::GetPVRManager().OnPlaybackStarted(m_itemCurrentFile);
@@ -3495,7 +3512,8 @@ bool CApplication::WakeUpScreenSaver(bool bPowerOffKeyPressed /* = false */)
       if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SCREENSAVER)
         CServiceBroker::GetGUI()->GetWindowManager().PreviousWindow();  // show the previous window
       else if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SLIDESHOW)
-        CApplicationMessenger::GetInstance().SendMsg(TMSG_GUI_ACTION, WINDOW_SLIDESHOW, -1, static_cast<void*>(new CAction(ACTION_STOP)));
+        CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_SLIDESHOW, -1,
+                                                   static_cast<void*>(new CAction(ACTION_STOP)));
     }
     return true;
   }
@@ -3726,7 +3744,7 @@ void CApplication::CheckShutdown()
     m_shutdownTimer.Stop();
 
     // Sleep the box
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_SHUTDOWN);
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_SHUTDOWN);
   }
 }
 
@@ -4141,7 +4159,7 @@ void CApplication::Process()
 
   // process messages which have to be send to the gui
   // (this can only be done after CServiceBroker::GetGUI()->GetWindowManager().Render())
-  CApplicationMessenger::GetInstance().ProcessWindowMessages();
+  CServiceBroker::GetAppMessenger()->ProcessWindowMessages();
 
   // handle any active scripts
 
@@ -4154,7 +4172,7 @@ void CApplication::Process()
   }
 
   // process messages, even if a movie is playing
-  CApplicationMessenger::GetInstance().ProcessMessages();
+  CServiceBroker::GetAppMessenger()->ProcessMessages();
   if (m_bStop) return; //we're done, everything has been unloaded
 
   // update sound
@@ -4191,11 +4209,11 @@ void CApplication::ProcessSlow()
       currentWindow == WINDOW_FULLSCREEN_GAME ||
       currentWindow == WINDOW_SLIDESHOW)
   {
-    CJobManager::GetInstance().PauseJobs();
+    CServiceBroker::GetJobManager()->PauseJobs();
   }
   else
   {
-    CJobManager::GetInstance().UnPauseJobs();
+    CServiceBroker::GetJobManager()->UnPauseJobs();
   }
 
   // Check if we need to activate the screensaver / DPMS.
@@ -4216,7 +4234,7 @@ void CApplication::ProcessSlow()
   if (CPlatformPosix::TestQuitFlag())
   {
     CLog::Log(LOGINFO, "Quitting due to POSIX signal");
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_QUIT);
   }
 #endif
 
@@ -4562,7 +4580,7 @@ void CApplication::SeekTime( double dTime )
         item->m_lStartOffset = static_cast<uint64_t>(dTime * 1000.0) - startOfNewFile;
         // don't just call "PlayFile" here, as we are quite likely called from the
         // player thread, so we won't be able to delete ourselves.
-        CApplicationMessenger::GetInstance().PostMsg(TMSG_MEDIA_PLAY, 1, 0, static_cast<void*>(item));
+        CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 1, 0, static_cast<void*>(item));
       }
       return;
     }

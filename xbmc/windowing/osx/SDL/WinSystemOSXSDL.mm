@@ -57,7 +57,6 @@
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
 using namespace KODI;
-using namespace MESSAGING;
 using namespace WINDOWING;
 using namespace std::chrono_literals;
 
@@ -1660,7 +1659,7 @@ void CWinSystemOSX::HandlePossibleRefreshrateChange()
     oldRefreshRate = m_refreshRate;
     // send a message so that videoresolution (and refreshrate)
     // is changed
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_VIDEORESIZE, m_SDLSurface->w, m_SDLSurface->h);
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_VIDEORESIZE, m_SDLSurface->w, m_SDLSurface->h);
   }
 }
 

@@ -60,7 +60,7 @@ bool CPictureThumbLoader::LoadItemCached(CFileItem* pItem)
 
   if (pItem->HasArt("thumb") && m_regenerateThumbs)
   {
-    CTextureCache::GetInstance().ClearCachedImage(pItem->GetArt("thumb"));
+    CServiceBroker::GetTextureCache()->ClearCachedImage(pItem->GetArt("thumb"));
     if (m_textureDatabase->Open())
     {
       m_textureDatabase->ClearTextureForPath(pItem->GetPath(), "thumb");
@@ -80,7 +80,7 @@ bool CPictureThumbLoader::LoadItemCached(CFileItem* pItem)
     if (!loader.FillThumb(*pItem))
     {
       std::string thumbURL = CVideoThumbLoader::GetEmbeddedThumbURL(*pItem);
-      if (CTextureCache::GetInstance().HasCachedImage(thumbURL))
+      if (CServiceBroker::GetTextureCache()->HasCachedImage(thumbURL))
       {
         thumb = thumbURL;
       }
@@ -99,7 +99,7 @@ bool CPictureThumbLoader::LoadItemCached(CFileItem* pItem)
   }
   if (!thumb.empty())
   {
-    CTextureCache::GetInstance().BackgroundCacheImage(thumb);
+    CServiceBroker::GetTextureCache()->BackgroundCacheImage(thumb);
     pItem->SetArt("thumb", thumb);
   }
   pItem->FillInDefaultIcon();
@@ -137,7 +137,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
     if (CFile::Exists(strTBN))
     {
       db.SetTextureForPath(pItem->GetPath(), "thumb", strTBN);
-      CTextureCache::GetInstance().BackgroundCacheImage(strTBN);
+      CServiceBroker::GetTextureCache()->BackgroundCacheImage(strTBN);
       pItem->SetArt("thumb", strTBN);
       return;
     }
@@ -164,7 +164,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
     if (CFile::Exists(thumb))
     {
       db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
-      CTextureCache::GetInstance().BackgroundCacheImage(thumb);
+      CServiceBroker::GetTextureCache()->BackgroundCacheImage(thumb);
       pItem->SetArt("thumb", thumb);
       return;
     }
@@ -218,7 +218,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
         items.Sort(SortByLabel, SortOrderAscending);
         std::string thumb = CTextureUtils::GetWrappedThumbURL(items[0]->GetPath());
         db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
-        CTextureCache::GetInstance().BackgroundCacheImage(thumb);
+        CServiceBroker::GetTextureCache()->BackgroundCacheImage(thumb);
         pItem->SetArt("thumb", thumb);
       }
       else
@@ -237,7 +237,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
           details.file = relativeCacheFile;
           details.width = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_imageRes;
           details.height = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_imageRes;
-          CTextureCache::GetInstance().AddCachedTexture(thumb, details);
+          CServiceBroker::GetTextureCache()->AddCachedTexture(thumb, details);
           db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
           pItem->SetArt("thumb", CTextureCache::GetCachedPath(relativeCacheFile));
         }

@@ -174,7 +174,7 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
   if (bSuccess)
   {
     // Switch to fullscreen
-    MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_SWITCHTOFULLSCREEN);
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_SWITCHTOFULLSCREEN);
 
     // Initialize gameplay
     CreatePlayback(m_gameServices.GameSettings().AutosaveEnabled());
@@ -499,14 +499,14 @@ void CRetroPlayer::SetPlaybackSpeed(double speed)
       if (speed == 1.0)
       {
         IPlayerCallback* callback = &m_callback;
-        CJobManager::GetInstance().Submit([callback]() { callback->OnPlayBackResumed(); },
-                                          CJob::PRIORITY_NORMAL);
+        CServiceBroker::GetJobManager()->Submit([callback]() { callback->OnPlayBackResumed(); },
+                                                CJob::PRIORITY_NORMAL);
       }
       else if (speed == 0.0)
       {
         IPlayerCallback* callback = &m_callback;
-        CJobManager::GetInstance().Submit([callback]() { callback->OnPlayBackPaused(); },
-                                          CJob::PRIORITY_NORMAL);
+        CServiceBroker::GetJobManager()->Submit([callback]() { callback->OnPlayBackPaused(); },
+                                                CJob::PRIORITY_NORMAL);
       }
     }
   }

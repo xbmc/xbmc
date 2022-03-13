@@ -20,7 +20,6 @@
 #include <mutex>
 #include <utility>
 
-using namespace KODI::MESSAGING;
 using namespace std::chrono_literals;
 
 CAlarmClock::CAlarmClock() : CThread("AlarmClock")
@@ -125,7 +124,8 @@ void CAlarmClock::Stop(const std::string& strName, bool bSilent /* false */)
   }
   else
   {
-    CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, iter->second.m_strCommand);
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr,
+                                               iter->second.m_strCommand);
     if (iter->second.m_loop)
     {
       iter->second.watch.Reset();

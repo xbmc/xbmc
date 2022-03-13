@@ -130,7 +130,7 @@ void CGUIWindowHome::AddRecentlyAddedJobs(int flag)
   }
 
   if (flag && getAJob)
-    CJobManager::GetInstance().AddJob(new CRecentlyAddedJob(flag), this);
+    CServiceBroker::GetJobManager()->AddJob(new CRecentlyAddedJob(flag), this);
 
   m_updateRA = 0;
 }

@@ -281,13 +281,14 @@ bool CGUIDialogSongInfo::SetSong(CFileItem* item)
   m_event.Reset();
   m_cancelled = false;  // SetSong happens before win_init
   // In a separate job fetch song info and fill list of art types.
-  int jobid = CJobManager::GetInstance().AddJob(new CGetSongInfoJob(), nullptr, CJob::PRIORITY_LOW);
+  int jobid =
+      CServiceBroker::GetJobManager()->AddJob(new CGetSongInfoJob(), nullptr, CJob::PRIORITY_LOW);
 
   // Wait to get all data before show, allowing user to cancel if fetch is slow
   if (!CGUIDialogBusy::WaitOnEvent(m_event, TIME_TO_BUSY_DIALOG))
   {
     // Cancel job still waiting in queue (unlikely)
-    CJobManager::GetInstance().CancelJob(jobid);
+    CServiceBroker::GetJobManager()->CancelJob(jobid);
     // Flag to stop job already in progress
     m_cancelled = true;
     return false;
@@ -388,10 +389,10 @@ void CGUIDialogSongInfo::OnGetArt()
     std::string thumb(item->GetArt("thumb"));
     if (thumb.empty())
       continue;
-    CTextureCache::GetInstance().ClearCachedImage(thumb);
+    CServiceBroker::GetTextureCache()->ClearCachedImage(thumb);
     // Remove any thumbnail of local image too (created when browsing files)
     std::string thumbthumb(CTextureUtils::GetWrappedThumbURL(thumb));
-    CTextureCache::GetInstance().ClearCachedImage(thumbthumb);
+    CServiceBroker::GetTextureCache()->ClearCachedImage(thumbthumb);
   }
 
   if (bHasArt && !bFallback)

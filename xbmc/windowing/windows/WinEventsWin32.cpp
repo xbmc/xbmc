@@ -43,8 +43,6 @@
 
 #include <array>
 
-using namespace KODI::MESSAGING;
-
 HWND g_hWnd = nullptr;
 
 #ifndef LODWORD
@@ -363,7 +361,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           return(DefWindowProc(hWnd, uMsg, wParam, lParam));
         case VK_RETURN: //alt-return
           if ((lParam & REPEATED_KEYMASK) == 0)
-            CApplicationMessenger::GetInstance().PostMsg(TMSG_TOGGLEFULLSCREEN);
+            CServiceBroker::GetAppMessenger()->PostMsg(TMSG_TOGGLEFULLSCREEN);
           return 0;
         default:;
       }
@@ -775,7 +773,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
                 if(wParam == DBT_DEVICEARRIVAL)
                 {
                   CLog::LogF(LOGDEBUG, "Drive {} Media has arrived.", strdrive);
-                  CJobManager::GetInstance().AddJob(new CDetectDisc(strdrive, true), NULL);
+                  CServiceBroker::GetJobManager()->AddJob(new CDetectDisc(strdrive, true), nullptr);
                 }
                 else
                 {

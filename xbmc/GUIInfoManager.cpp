@@ -57,7 +57,7 @@ CGUIInfoManager::~CGUIInfoManager(void)
 
 void CGUIInfoManager::Initialize()
 {
-  KODI::MESSAGING::CApplicationMessenger::GetInstance().RegisterReceiver(this);
+  CServiceBroker::GetAppMessenger()->RegisterReceiver(this);
 }
 
 /// \brief Translates a string as given by the skin into an int that we use for more

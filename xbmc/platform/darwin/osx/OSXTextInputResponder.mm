@@ -9,12 +9,11 @@
 #import "OSXTextInputResponder.h"
 
 #include "GUIUserMessages.h"
+#include "ServiceBroker.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/log.h"
-
-using namespace KODI::MESSAGING;
 
 void SendKeyboardText(const char *text)
 {
@@ -26,7 +25,8 @@ void SendKeyboardText(const char *text)
 
   CAction *action = new CAction(ACTION_INPUT_TEXT);
   action->SetText(text);
-  CApplicationMessenger::GetInstance().PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(action));
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+                                             static_cast<void*>(action));
 }
 
 void SendEditingText(const char *text, unsigned int location, unsigned int length)

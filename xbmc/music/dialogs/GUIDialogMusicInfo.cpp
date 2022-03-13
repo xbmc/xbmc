@@ -340,7 +340,7 @@ bool CGUIDialogMusicInfo::OnMessage(CGUIMessage& message)
         // Asynchronously update song userrating in library
         CSetUserratingJob *job = new CSetUserratingJob(m_item->GetMusicInfoTag()->GetAlbumId(),
                                                        m_item->GetMusicInfoTag()->GetUserrating());
-        CJobManager::GetInstance().AddJob(job, NULL);
+        CServiceBroker::GetJobManager()->AddJob(job, nullptr);
       }
       if (m_hasRefreshed || m_hasUpdatedUserrating)
       {
@@ -444,13 +444,14 @@ bool CGUIDialogMusicInfo::SetItem(CFileItem* item)
   m_cancelled = false;  // Happens before win_init
 
   // In a separate job fetch info and fill list of art types.
-  int jobid = CJobManager::GetInstance().AddJob(new CGetInfoJob(), nullptr, CJob::PRIORITY_LOW);
+  int jobid =
+      CServiceBroker::GetJobManager()->AddJob(new CGetInfoJob(), nullptr, CJob::PRIORITY_LOW);
 
   // Wait to get all data before show, allowing user to cancel if fetch is slow
   if (!CGUIDialogBusy::WaitOnEvent(m_event, TIME_TO_BUSY_DIALOG))
   {
     // Cancel job still waiting in queue (unlikely)
-    CJobManager::GetInstance().CancelJob(jobid);
+    CServiceBroker::GetJobManager()->CancelJob(jobid);
     // Flag to stop job already in progress
     m_cancelled = true;
     return false;
@@ -606,7 +607,8 @@ void CGUIDialogMusicInfo::RefreshInfo()
 
   SetScrapedInfo(false);
   // Start separate job to scrape info and fill list of art types.
-  CJobManager::GetInstance().AddJob(new CRefreshInfoJob(dlgProgress), nullptr, CJob::PRIORITY_HIGH);
+  CServiceBroker::GetJobManager()->AddJob(new CRefreshInfoJob(dlgProgress), nullptr,
+                                          CJob::PRIORITY_HIGH);
 
   // Wait for refresh to complete or be canceled, but render every 10ms so that the
   // pointer movements works on dialog even when job is reporting progress infrequently
@@ -860,10 +862,10 @@ void CGUIDialogMusicInfo::OnGetArt()
     // Skip images from remote sources (current thumb could be remote)
     if (url.IsProtocol("http") || url.IsProtocol("https"))
       continue;
-    CTextureCache::GetInstance().ClearCachedImage(thumb);
+    CServiceBroker::GetTextureCache()->ClearCachedImage(thumb);
     // Remove any thumbnail of local image too (created when browsing files)
     std::string thumbthumb(CTextureUtils::GetWrappedThumbURL(thumb));
-    CTextureCache::GetInstance().ClearCachedImage(thumbthumb);
+    CServiceBroker::GetTextureCache()->ClearCachedImage(thumbthumb);
   }
 
   // Show list of possible art for user selection

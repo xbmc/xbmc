@@ -1067,7 +1067,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
   if (item >= 0 && pItem->m_bIsFolder && !pItem->IsParentFolder())
     choices.Add(CONTROL_BTNCALCSIZE, 13393);
   choices.Add(CONTROL_BTNSWITCHMEDIA, 523);
-  if (CJobManager::GetInstance().IsProcessing("filemanager"))
+  if (CServiceBroker::GetJobManager()->IsProcessing("filemanager"))
     choices.Add(CONTROL_BTNCANCELJOB, 167);
 
   if (!pItem->m_bIsFolder)
@@ -1209,7 +1209,7 @@ void CGUIWindowFileManager::OnJobComplete(unsigned int jobID, bool success, CJob
   if (IsActive())
   {
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_UPDATE);
-    CApplicationMessenger::GetInstance().SendGUIMessage(msg, GetID(), false);
+    CServiceBroker::GetAppMessenger()->SendGUIMessage(msg, GetID(), false);
   }
 
   CJobQueue::OnJobComplete(jobID, success, job);

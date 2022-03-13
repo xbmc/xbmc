@@ -912,7 +912,8 @@ void DX::DeviceResources::HandleDeviceLost(bool removed)
   OnDeviceRestored();
 
   if (removed)
-    KODI::MESSAGING::CApplicationMessenger::GetInstance().PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, "ReloadSkin");
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr,
+                                               "ReloadSkin");
 }
 
 bool DX::DeviceResources::Begin()

@@ -572,7 +572,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonRefreshChannelLogos()
     if (!thumb.empty())
     {
       // clear current cached image
-      CTextureCache::GetInstance().ClearCachedImage(thumb);
+      CServiceBroker::GetTextureCache()->ClearCachedImage(thumb);
       item->SetArt("thumb", "");
     }
   }

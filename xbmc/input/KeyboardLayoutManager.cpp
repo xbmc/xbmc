@@ -9,6 +9,7 @@
 #include "KeyboardLayoutManager.h"
 
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "filesystem/Directory.h"
 #include "settings/lib/Setting.h"
@@ -23,12 +24,6 @@
 CKeyboardLayoutManager::~CKeyboardLayoutManager()
 {
   Unload();
-}
-
-CKeyboardLayoutManager& CKeyboardLayoutManager::GetInstance()
-{
-  static CKeyboardLayoutManager s_instance;
-  return s_instance;
 }
 
 bool CKeyboardLayoutManager::Load(const std::string& path /* = "" */)
@@ -143,7 +138,7 @@ void CKeyboardLayoutManager::SettingOptionsKeyboardLayoutsFiller(
     std::string& current,
     void* data)
 {
-  for (const auto& it : CKeyboardLayoutManager::GetInstance().m_layouts)
+  for (const auto& it : CServiceBroker::GetKeyboardLayoutManager()->m_layouts)
   {
     std::string name = it.second.GetName();
     list.emplace_back(name, name);

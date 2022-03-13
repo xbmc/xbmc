@@ -58,7 +58,7 @@ void CPVRThumbLoader::ClearCachedImage(CFileItem& item)
   const std::string thumb = item.GetArt("thumb");
   if (!thumb.empty())
   {
-    CTextureCache::GetInstance().ClearCachedImage(thumb);
+    CServiceBroker::GetTextureCache()->ClearCachedImage(thumb);
     if (m_textureDatabase->Open())
     {
       m_textureDatabase->ClearTextureForPath(item.GetPath(), "thumb");
@@ -127,7 +127,7 @@ std::string CPVRThumbLoader::CreateChannelGroupThumb(const CFileItem& channelGro
       details.file = relativeCacheFile;
       details.width = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_imageRes;
       details.height = details.width;
-      CTextureCache::GetInstance().AddCachedTexture(thumb, details);
+      CServiceBroker::GetTextureCache()->AddCachedTexture(thumb, details);
       return thumb;
     }
   }

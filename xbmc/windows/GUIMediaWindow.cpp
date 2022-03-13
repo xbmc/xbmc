@@ -1784,7 +1784,7 @@ bool CGUIMediaWindow::OnPopupMenu(int itemIdx)
   {
     bool saveVal = m_backgroundLoad;
     m_backgroundLoad = false;
-    CApplicationMessenger::GetInstance().SendMsg(
+    CServiceBroker::GetAppMessenger()->SendMsg(
         TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr,
         item->GetProperty(StringUtils::Format("contextmenuaction({})", idx - pluginMenuRange.first))
             .asString());
@@ -2264,10 +2264,12 @@ bool CGUIMediaWindow::WaitGetDirectoryItems(CGetDirectoryItems &items)
   {
     m_updateJobActive = true;
     m_updateEvent.Reset();
-    CJobManager::GetInstance().Submit([&]() {
-      items.Run();
-      m_updateEvent.Set();
-    }, nullptr, CJob::PRIORITY_NORMAL);
+    CServiceBroker::GetJobManager()->Submit(
+        [&]() {
+          items.Run();
+          m_updateEvent.Set();
+        },
+        nullptr, CJob::PRIORITY_NORMAL);
 
     while (!m_updateEvent.Wait(1ms))
     {

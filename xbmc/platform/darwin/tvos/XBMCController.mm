@@ -42,8 +42,6 @@
 #import <AVKit/AVDisplayManager.h>
 #import <AVKit/UIWindow.h>
 
-using namespace KODI::MESSAGING;
-
 XBMCController* g_xbmcController;
 
 #pragma mark - XBMCController implementation
@@ -319,7 +317,7 @@ XBMCController* g_xbmcController;
     m_animating = NO;
     if (!g_application.m_bStop)
     {
-      CApplicationMessenger::GetInstance().PostMsg(TMSG_QUIT);
+      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_QUIT);
     }
 
     CAnnounceReceiver::GetInstance()->DeInitialize();
