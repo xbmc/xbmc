@@ -258,7 +258,9 @@ private:
   void SetupEnv();
   static void SetRefreshRateCallback(CVariant *rate);
   static void SetDisplayModeCallback(CVariant *mode);
+
   static void RegisterDisplayListener(CVariant*);
+  void UnregisterDisplayListener();
 
   ANativeActivity* m_activity{nullptr};
   IInputHandler& m_inputHandler;
