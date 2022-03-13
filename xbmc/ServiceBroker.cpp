@@ -42,6 +42,11 @@ void CServiceBroker::CreateLogging()
   g_serviceBroker.m_logging = std::make_unique<CLog>();
 }
 
+void CServiceBroker::DestroyLogging()
+{
+  g_serviceBroker.m_logging.reset();
+}
+
 // announcement
 std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> CServiceBroker::GetAnnouncementManager()
 {

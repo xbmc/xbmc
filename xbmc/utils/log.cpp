@@ -57,6 +57,11 @@ CLog::CLog()
   SetLogLevel(m_logLevel);
 }
 
+CLog::~CLog()
+{
+  spdlog::drop("general");
+}
+
 void CLog::OnSettingsLoaded()
 {
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
@@ -127,17 +132,20 @@ void CLog::Initialize(const std::string& path)
   m_sinks->add_sink(m_fileSink);
 }
 
-void CLog::Uninitialize()
+void CLog::UnregisterFromSettings()
 {
-  if (m_fileSink == nullptr)
-    return;
-
   // unregister setting callbacks
   auto settingsManager =
       CServiceBroker::GetSettingsComponent()->GetSettings()->GetSettingsManager();
   settingsManager->UnregisterSettingOptionsFiller("loggingcomponents");
   settingsManager->UnregisterSettingsHandler(this);
   settingsManager->UnregisterCallback(this);
+}
+
+void CLog::Uninitialize()
+{
+  if (m_fileSink == nullptr)
+    return;
 
   // flush all loggers
   spdlog::apply_all([](const std::shared_ptr<spdlog::logger>& logger) { logger->flush(); });
