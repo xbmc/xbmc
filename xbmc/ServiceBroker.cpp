@@ -23,7 +23,6 @@ CServiceBroker::CServiceBroker() :
     m_pGUI(nullptr),
     m_pWinSystem(nullptr),
     m_pActiveAE(nullptr),
-    m_pSettingsComponent(nullptr),
     m_decoderFilterManager(nullptr)
 {
 }
@@ -133,17 +132,17 @@ PLAYLIST::CPlayListPlayer &CServiceBroker::GetPlaylistPlayer()
   return g_application.m_ServiceManager->GetPlaylistPlayer();
 }
 
-void CServiceBroker::RegisterSettingsComponent(CSettingsComponent *settings)
+void CServiceBroker::RegisterSettingsComponent(const std::shared_ptr<CSettingsComponent>& settings)
 {
   g_serviceBroker.m_pSettingsComponent = settings;
 }
 
 void CServiceBroker::UnregisterSettingsComponent()
 {
-  g_serviceBroker.m_pSettingsComponent = nullptr;
+  g_serviceBroker.m_pSettingsComponent.reset();
 }
 
-CSettingsComponent* CServiceBroker::GetSettingsComponent()
+std::shared_ptr<CSettingsComponent> CServiceBroker::GetSettingsComponent()
 {
   return g_serviceBroker.m_pSettingsComponent;
 }

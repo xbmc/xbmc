@@ -39,7 +39,7 @@ CGLContextEGL::CGLContextEGL(Display *dpy, EGLint renderingApi) : CGLContext(dpy
 
   m_eglGetPlatformDisplayEXT = (PFNEGLGETPLATFORMDISPLAYEXTPROC)eglGetProcAddress("eglGetPlatformDisplayEXT");
 
-  CSettingsComponent *settings = CServiceBroker::GetSettingsComponent();
+  const auto settings = CServiceBroker::GetSettingsComponent();
   if (settings)
   {
     m_omlSync = settings->GetAdvancedSettings()->m_omlSync;

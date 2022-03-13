@@ -7,6 +7,10 @@
  */
 
 #include "Application.h"
+#include "ServiceBroker.h"
+#include "platform/MessagePrinter.h"
+#include "settings/SettingsComponent.h"
+#include "utils/log.h"
 
 #ifdef TARGET_WINDOWS_DESKTOP
 #include "platform/win32/IMMNotificationClient.h"
@@ -18,13 +22,15 @@
 #include "platform/android/activity/XBMCApp.h"
 #endif
 
-#include "platform/MessagePrinter.h"
-#include "utils/log.h"
-#include "commons/Exception.h"
-
 extern "C" int XBMC_Run(bool renderGUI, const CAppParamParser &params)
 {
   int status = -1;
+
+  // Create logging and settings
+  CServiceBroker::CreateLogging();
+  const auto settingsComponent = std::make_shared<CSettingsComponent>();
+  settingsComponent->Initialize(params);
+  CServiceBroker::RegisterSettingsComponent(settingsComponent);
 
   if (!g_application.Create(params))
   {
@@ -77,6 +83,13 @@ extern "C" int XBMC_Run(bool renderGUI, const CAppParamParser &params)
 #if defined(TARGET_ANDROID)
   CXBMCApp::Get().Deinitialize();
 #endif
+
+  // Destroy settings and logging
+  CServiceBroker::GetLogging().UnregisterFromSettings();
+  CServiceBroker::GetSettingsComponent()->Deinitialize();
+  CServiceBroker::UnregisterSettingsComponent();
+  CServiceBroker::GetLogging().Uninitialize();
+  CServiceBroker::DestroyLogging();
 
   return status;
 }

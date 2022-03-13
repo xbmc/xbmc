@@ -34,7 +34,7 @@ namespace
 CLibInputSettings::CLibInputSettings(CLibInputHandler *handler) :
   m_libInputHandler(handler)
 {
-  auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  const auto settingsComponent = CServiceBroker::GetSettingsComponent();
   if (!settingsComponent)
     return;
 
@@ -134,7 +134,7 @@ CLibInputSettings::CLibInputSettings(CLibInputHandler *handler) :
 
 CLibInputSettings::~CLibInputSettings()
 {
-  CSettingsComponent *settingsComponent = CServiceBroker::GetSettingsComponent();
+  const auto settingsComponent = CServiceBroker::GetSettingsComponent();
   if (!settingsComponent)
     return;
 
