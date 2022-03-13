@@ -37,7 +37,7 @@ public:
 AdvancedSettingsResetBase::AdvancedSettingsResetBase()
 {
   // Force all advanced settings to be reset to defaults
-  CSettingsComponent* settings = CServiceBroker::GetSettingsComponent();
+  const auto settings = CServiceBroker::GetSettingsComponent();
   CSettingsManager* settingsMgr = settings->GetSettings()->GetSettingsManager();
   settings->GetAdvancedSettings()->Uninitialize(*settingsMgr);
   settings->GetAdvancedSettings()->Initialize(CAppParamParser(), *settingsMgr);
