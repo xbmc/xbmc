@@ -332,7 +332,7 @@ case $host in
       esac
 
     platform_cxxflags="$platform_cflags -frtti"
-    platform_includes="-I$prefix/$deps_dir/include/android-$use_ndk_api"
+    platform_includes="-isystem $prefix/$deps_dir/include/android-$use_ndk_api"
     platform_os="android"
     meson_system="android"
     #android builds are always cross

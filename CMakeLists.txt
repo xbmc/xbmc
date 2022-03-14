@@ -271,7 +271,7 @@ endif()
 # Generate messages
 core_add_subdirs_from_filelist(${CMAKE_SOURCE_DIR}/cmake/messages/flatbuffers/*.txt)
 
-include_directories(${INCLUDES} ${SYSTEM_INCLUDES})
+include_directories(${INCLUDES} SYSTEM ${SYSTEM_INCLUDES})
 add_compile_options(${ARCH_DEFINES} "${SYSTEM_DEFINES}" ${DEP_DEFINES} ${PATH_DEFINES})
 
 set(core_DEPENDS "" CACHE STRING "" FORCE)
