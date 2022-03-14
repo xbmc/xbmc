@@ -32,14 +32,12 @@ find_package_handle_standard_args(Zip
 if(ZIP_FOUND)
   set(ZIP_LIBRARIES ${ZIP_LIBRARY})
   set(ZIP_INCLUDE_DIRS ${ZIP_INCLUDE_DIR})
-  set(ZIP_DEFINITIONS "${PC_ZIP_CFLAGS}")
 
   if(NOT TARGET ZIP::ZIP)
     add_library(ZIP::ZIP UNKNOWN IMPORTED)
     set_target_properties(ZIP::ZIP PROPERTIES
                                    IMPORTED_LOCATION "${ZIP_LIBRARY}"
-                                   INTERFACE_INCLUDE_DIRECTORIES "${ZIP_INCLUDE_DIR}"
-                                   INTERFACE_COMPILE_DEFINITIONS "${PC_ZIP_CFLAGS}")
+                                   INTERFACE_INCLUDE_DIRECTORIES "${ZIP_INCLUDE_DIR}")
   endif()
 endif()
 

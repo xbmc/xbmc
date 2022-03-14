@@ -109,14 +109,16 @@ if(CORE_SYSTEM_NAME STREQUAL "freebsd")
   target_compile_definitions(upnp PUBLIC -DNPT_CONFIG_HAVE_GETADDRINFO)
 endif()
 
-target_include_directories(upnp PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
-                                       Platinum/Source/Core
-                                       Platinum/Source/Platinum
-                                       Platinum/Source/Devices/MediaConnect
-                                       Platinum/Source/Devices/MediaRenderer
-                                       Platinum/Source/Devices/MediaServer
-                                       Neptune/Source/Core
-                                       Neptune/Source/System/Posix)
+set(INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}
+                        Platinum/Source/Core
+                        Platinum/Source/Platinum
+                        Platinum/Source/Devices/MediaConnect
+                        Platinum/Source/Devices/MediaRenderer
+                        Platinum/Source/Devices/MediaServer
+                        Neptune/Source/Core
+                        Neptune/Source/System/Posix)
+target_include_directories(upnp SYSTEM INTERFACE ${INCLUDE_DIRECTORIES})
+target_include_directories(upnp PRIVATE ${INCLUDE_DIRECTORIES})
 if(CORE_SYSTEM_NAME STREQUAL windows OR CORE_SYSTEM_NAME STREQUAL windowsstore)
   target_include_directories(upnp PRIVATE Neptune/Source/System/Win32)
 endif()
