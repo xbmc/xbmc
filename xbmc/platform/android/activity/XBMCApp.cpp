@@ -234,7 +234,11 @@ void CXBMCApp::onStart()
     intentFilter.addAction("android.intent.action.SCREEN_OFF");
     intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
     registerReceiver(*this, intentFilter);
-    m_mediaSession.reset(new CJNIXBMCMediaSession());
+    m_mediaSession = std::make_unique<CJNIXBMCMediaSession>();
+    m_activityManager =
+        std::make_unique<CJNIActivityManager>(getSystemService(CJNIContext::ACTIVITY_SERVICE));
+    m_inputHandler.setDPI(GetDPI());
+    RegisterDisplayListener();
   }
 }
 
@@ -376,13 +380,13 @@ void CXBMCApp::onLostFocus()
   m_hasFocus = false;
 }
 
-void CXBMCApp::RegisterDisplayListener(CVariant* variant)
+void CXBMCApp::RegisterDisplayListener()
 {
   CJNIDisplayManager displayManager(getSystemService("display"));
   if (displayManager)
   {
     android_printf("CXBMCApp: installing DisplayManager::DisplayListener");
-    displayManager.registerDisplayListener(CXBMCApp::Get().getDisplayListener());
+    displayManager.registerDisplayListener(m_displayListener.get_raw());
   }
 }
 
@@ -392,16 +396,13 @@ void CXBMCApp::UnregisterDisplayListener()
   if (displayManager)
   {
     android_printf("CXBMCApp: removing DisplayManager::DisplayListener");
-    displayManager.unregisterDisplayListener(getDisplayListener());
+    displayManager.unregisterDisplayListener(m_displayListener.get_raw());
   }
 }
 
 void CXBMCApp::Initialize()
 {
   CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
-  runNativeOnUiThread(RegisterDisplayListener, nullptr);
-  m_activityManager.reset(new CJNIActivityManager(getSystemService(CJNIContext::ACTIVITY_SERVICE)));
-  m_inputHandler.setDPI(GetDPI());
 }
 
 void CXBMCApp::Deinitialize()
