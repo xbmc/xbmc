@@ -1569,9 +1569,11 @@ bool CApplication::OnAction(const CAction &action)
     if (m_appPlayer.IsPlayingVideo())
     {
       CVideoSettings vs = m_appPlayer.GetVideoSettings();
-      vs.m_ToneMapMethod++;
+      vs.m_ToneMapMethod = static_cast<ETONEMAPMETHOD>(static_cast<int>(vs.m_ToneMapMethod) + 1);
       if (vs.m_ToneMapMethod >= VS_TONEMAPMETHOD_MAX)
-        vs.m_ToneMapMethod = VS_TONEMAPMETHOD_OFF + 1;
+        vs.m_ToneMapMethod =
+            static_cast<ETONEMAPMETHOD>(static_cast<int>(VS_TONEMAPMETHOD_OFF) + 1);
+
       m_appPlayer.SetVideoSettings(vs);
 
       int code = 0;
@@ -1586,6 +1588,8 @@ bool CApplication::OnAction(const CAction &action)
         case VS_TONEMAPMETHOD_HABLE:
           code = 36558;
           break;
+        default:
+          throw std::logic_error("Tonemapping method not found. Did you forget to add a mapping?");
       }
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(34224),
                                             g_localizeStrings.Get(code), 1000, false, 500);

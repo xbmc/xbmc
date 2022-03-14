@@ -27,10 +27,13 @@ using namespace Shaders::GL;
 // BaseYUV2RGBGLSLShader - base class for GLSL YUV2RGB shaders
 //////////////////////////////////////////////////////////////////////
 
-BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, EShaderFormat format, bool stretch,
-                                             AVColorPrimaries dstPrimaries, AVColorPrimaries srcPrimaries,
+BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect,
+                                             EShaderFormat format,
+                                             bool stretch,
+                                             AVColorPrimaries dstPrimaries,
+                                             AVColorPrimaries srcPrimaries,
                                              bool toneMap,
-                                             int toneMapMethod,
+                                             ETONEMAPMETHOD toneMapMethod,
                                              std::shared_ptr<GLSLOutput> output)
 {
   m_width = 1;
@@ -244,7 +247,7 @@ void BaseYUV2RGBGLSLShader::SetDisplayMetadata(bool hasDisplayMetadata, AVMaster
 }
 
 
-void BaseYUV2RGBGLSLShader::SetToneMapParam(int method, float param)
+void BaseYUV2RGBGLSLShader::SetToneMapParam(ETONEMAPMETHOD method, float param)
 {
   m_toneMappingMethod = method;
   m_toneMappingParam = param;
@@ -293,10 +296,16 @@ YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect,
                                                    AVColorPrimaries dstPrimaries,
                                                    AVColorPrimaries srcPrimaries,
                                                    bool toneMap,
-                                                   int toneMapMethod,
+                                                   ETONEMAPMETHOD toneMapMethod,
                                                    std::shared_ptr<GLSLOutput> output)
-  : BaseYUV2RGBGLSLShader(
-        rect, format, stretch, dstPrimaries, srcPrimaries, toneMap, toneMapMethod, std::move(output))
+  : BaseYUV2RGBGLSLShader(rect,
+                          format,
+                          stretch,
+                          dstPrimaries,
+                          srcPrimaries,
+                          toneMap,
+                          toneMapMethod,
+                          std::move(output))
 {
   PixelShader()->LoadSource("gl_yuv2rgb_basic.glsl", m_defines);
   PixelShader()->AppendSource("gl_output.glsl");
@@ -314,11 +323,17 @@ YUV2RGBFilterShader4::YUV2RGBFilterShader4(bool rect,
                                            AVColorPrimaries dstPrimaries,
                                            AVColorPrimaries srcPrimaries,
                                            bool toneMap,
-                                           int toneMapMethod,
+                                           ETONEMAPMETHOD toneMapMethod,
                                            ESCALINGMETHOD method,
                                            std::shared_ptr<GLSLOutput> output)
-  : BaseYUV2RGBGLSLShader(
-        rect, format, stretch, dstPrimaries, srcPrimaries, toneMap, toneMapMethod, std::move(output))
+  : BaseYUV2RGBGLSLShader(rect,
+                          format,
+                          stretch,
+                          dstPrimaries,
+                          srcPrimaries,
+                          toneMap,
+                          toneMapMethod,
+                          std::move(output))
 {
   m_scaling = method;
   PixelShader()->LoadSource("gl_yuv2rgb_filter4.glsl", m_defines);

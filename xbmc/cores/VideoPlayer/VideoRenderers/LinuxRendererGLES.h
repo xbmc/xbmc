@@ -202,7 +202,7 @@ protected:
   bool m_fullRange;
   AVColorPrimaries m_srcPrimaries;
   bool m_toneMap = false;
-  int m_toneMapMethod = 0;
+  ETONEMAPMETHOD m_toneMapMethod = VS_TONEMAPMETHOD_OFF;
   bool m_passthroughHDR = false;
   unsigned char* m_planeBuffer = nullptr;
   size_t m_planeBufferSize = 0;
