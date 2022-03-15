@@ -15,9 +15,9 @@
 #endif
 #include "platform/posix/PosixMountProvider.h"
 
-IStorageProvider* IStorageProvider::CreateInstance()
+std::unique_ptr<IStorageProvider> IStorageProvider::CreateInstance()
 {
-  return new CLinuxStorageProvider();
+  return std::make_unique<CLinuxStorageProvider>();
 }
 
 CLinuxStorageProvider::CLinuxStorageProvider()

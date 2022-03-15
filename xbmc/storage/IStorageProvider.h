@@ -8,10 +8,11 @@
 
 #pragma once
 
+#include "MediaSource.h"
+
+#include <memory>
 #include <string>
 #include <vector>
-
-#include "MediaSource.h"
 #ifdef HAS_DVD_DRIVE
 #include "cdioSupport.h"
 #endif
@@ -90,5 +91,5 @@ public:
   *
   * This method used to create platform specified storage provider
   */
-  static IStorageProvider* CreateInstance();
+  static std::unique_ptr<IStorageProvider> CreateInstance();
 };

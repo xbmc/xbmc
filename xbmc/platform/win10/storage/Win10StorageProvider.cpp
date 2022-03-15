@@ -29,11 +29,10 @@ namespace winrt
 }
 using namespace winrt::Windows::Devices::Enumeration;
 using namespace winrt::Windows::Foundation::Collections;
-using namespace winrt::Windows::Storage;
 
-::IStorageProvider* ::IStorageProvider::CreateInstance()
+std::unique_ptr<IStorageProvider> IStorageProvider::CreateInstance()
 {
-  return new CStorageProvider();
+  return std::make_unique<CStorageProvider>();
 }
 
 CStorageProvider::~CStorageProvider()
@@ -149,7 +148,7 @@ std::vector<std::string> CStorageProvider::GetDiskUsage()
   ULARGE_INTEGER ULTotalFree = { { 0 } };
   std::string strRet;
 
-  auto localfolder = ApplicationData::Current().LocalFolder().Path();
+  auto localfolder = winrt::Windows::Storage::ApplicationData::Current().LocalFolder().Path();
   GetDiskFreeSpaceExW(localfolder.c_str(), nullptr, &ULTotal, &ULTotalFree);
   strRet = StringUtils::Format("{}: {} MB {}", g_localizeStrings.Get(21440),
                                (ULTotalFree.QuadPart / (1024 * 1024)), g_localizeStrings.Get(160));

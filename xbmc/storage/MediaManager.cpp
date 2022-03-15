@@ -74,7 +74,7 @@ void CMediaManager::Initialize()
 {
   if (!m_platformStorage)
   {
-    m_platformStorage.reset(IStorageProvider::CreateInstance());
+    m_platformStorage = IStorageProvider::CreateInstance();
   }
 #ifdef HAS_DVD_DRIVE
   m_strFirstAvailDrive = m_platformStorage->GetFirstOpticalDeviceFileName();

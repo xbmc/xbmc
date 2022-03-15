@@ -21,9 +21,9 @@
 std::vector<std::pair<std::string, std::string>> COSXStorageProvider::m_mountsToNotify;
 std::vector<std::pair<std::string, std::string>> COSXStorageProvider::m_unmountsToNotify;
 
-IStorageProvider* IStorageProvider::CreateInstance()
+std::unique_ptr<IStorageProvider> IStorageProvider::CreateInstance()
 {
-  return new COSXStorageProvider();
+  return std::make_unique<COSXStorageProvider>();
 }
 
 COSXStorageProvider::COSXStorageProvider()

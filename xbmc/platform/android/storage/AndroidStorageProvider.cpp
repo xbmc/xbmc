@@ -75,9 +75,9 @@ constexpr std::array<const char*, 4> deviceWL = {
 
 } // namespace
 
-IStorageProvider* IStorageProvider::CreateInstance()
+std::unique_ptr<IStorageProvider> IStorageProvider::CreateInstance()
 {
-  return new CAndroidStorageProvider();
+  return std::make_unique<CAndroidStorageProvider>();
 }
 
 CAndroidStorageProvider::CAndroidStorageProvider()
