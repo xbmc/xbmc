@@ -15,6 +15,7 @@
 #include "utils/Job.h"
 
 #include <map>
+#include <memory>
 #include <vector>
 
 #include "PlatformDefs.h"
@@ -118,7 +119,7 @@ protected:
   std::string m_strFirstAvailDrive;
 
 private:
-  IStorageProvider *m_platformStorage;
+  std::unique_ptr<IStorageProvider> m_platformStorage;
 
   UTILS::DISCS::DiscInfo GetDiscInfo(const std::string& mediaPath);
   void RemoveDiscInfo(const std::string& devicePath);
