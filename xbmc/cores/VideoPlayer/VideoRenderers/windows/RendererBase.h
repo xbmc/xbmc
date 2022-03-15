@@ -159,7 +159,7 @@ protected:
   bool m_toneMapping = false;
   bool m_useDithering = false;
   bool m_cmsOn = false;
-  bool m_clutLoaded = false;
+  bool m_lutIsLoading = false;
   bool m_useHLGtoPQ = false;
   ETONEMAPMETHOD m_toneMapMethod = VS_TONEMAPMETHOD_OFF;
 
