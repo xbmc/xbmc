@@ -1665,6 +1665,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
 
         int size = 0;
         uint8_t* side_data = nullptr;
+        st->hdr_type = StreamHdrType::HDR_TYPE_NONE;
 
         side_data = av_stream_get_side_data(pStream, AV_PKT_DATA_DOVI_CONF, &size);
         if (side_data && size)
@@ -1678,7 +1679,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         }
 
         side_data = av_stream_get_side_data(pStream, AV_PKT_DATA_MASTERING_DISPLAY_METADATA, &size);
-        if (side_data && size)
+        if (side_data && size && (st->hdr_type == StreamHdrType::HDR_TYPE_NONE))
         {
           st->masteringMetaData = std::make_shared<AVMasteringDisplayMetadata>(
               *reinterpret_cast<AVMasteringDisplayMetadata*>(side_data));
