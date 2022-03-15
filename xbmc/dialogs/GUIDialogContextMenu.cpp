@@ -212,16 +212,11 @@ bool CGUIDialogContextMenu::SourcesMenu(const std::string &strType, const CFileI
 void CGUIDialogContextMenu::GetContextButtons(const std::string &type, const CFileItemPtr& item, CContextButtons &buttons)
 {
   // Add buttons to the ContextMenu that should be visible for both sources and autosourced items
-  if (item && item->IsRemovable())
+  // Optical removable drives automatically have the static Eject button added (see CEjectDisk).
+  // Here we only add the eject button to HDD drives
+  if (item && item->IsRemovable() && !item->IsDVD() && !item->IsCDDA())
   {
-    if (item->IsDVD() || item->IsCDDA())
-    {
-      buttons.Add(CONTEXT_BUTTON_EJECT_DISC, 13391); // Eject / Load
-    }
-    else // Must be HDD
-    {
-      buttons.Add(CONTEXT_BUTTON_EJECT_DRIVE, 13420); // Remove safely
-    }
+    buttons.Add(CONTEXT_BUTTON_EJECT_DRIVE, 13420); // Remove safely
   }
 
   // Next, Add buttons to the ContextMenu that should ONLY be visible for sources and not autosourced items
@@ -287,12 +282,6 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
   {
     case CONTEXT_BUTTON_EJECT_DRIVE:
       return CServiceBroker::GetMediaManager().Eject(item->GetPath());
-#ifdef HAS_DVD_DRIVE
-    case CONTEXT_BUTTON_EJECT_DISC:
-      CServiceBroker::GetMediaManager().ToggleTray(
-          CServiceBroker::GetMediaManager().TranslateDevicePath(item->GetPath())[0]);
-#endif
-      return true;
     default:
       break;
   }

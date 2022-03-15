@@ -6975,7 +6975,6 @@ msgid "There are no settings available[CR]for this visualisation"
 msgstr ""
 
 #: xbmc/ContextMenus.h
-#: xbmc/dialogs/GUIDialogContextMenu.cpp
 #: xbmc/dialogs/GUIDialogPlayEject.cpp
 msgctxt "#13391"
 msgid "Eject / Load"
