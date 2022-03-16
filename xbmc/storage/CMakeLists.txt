@@ -9,7 +9,8 @@ if(ENABLE_OPTICAL)
   list(APPEND SOURCES cdioSupport.cpp
                       DetectDVDType.cpp)
   list(APPEND HEADERS cdioSupport.h
-                      DetectDVDType.h)
+                      DetectDVDType.h
+                      discs/IDiscDriveHandler.h)
 endif()
 
 core_add_library(storage)
