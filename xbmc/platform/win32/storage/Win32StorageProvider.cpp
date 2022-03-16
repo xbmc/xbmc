@@ -41,7 +41,8 @@ void CWin32StorageProvider::Initialize()
 #ifdef HAS_DVD_DRIVE
   // Can be removed once the StorageHandler supports optical media
   for (const auto& it : vShare)
-    if (CServiceBroker::GetMediaManager().GetDriveStatus(it.strPath) == DRIVE_CLOSED_MEDIA_PRESENT)
+    if (CServiceBroker::GetMediaManager().GetDriveStatus(it.strPath) ==
+        DriveState::CLOSED_MEDIA_PRESENT)
       CServiceBroker::GetJobManager()->AddJob(new CDetectDisc(it.strPath, false), nullptr);
       // remove end
 #endif
