@@ -13,9 +13,9 @@
 
 #import <Foundation/Foundation.h>
 
-IStorageProvider* IStorageProvider::CreateInstance()
+std::unique_ptr<IStorageProvider> IStorageProvider::CreateInstance()
 {
-  return new CIOSStorageProvider();
+  return std::make_unique<CIOSStorageProvider>();
 }
 
 void CIOSStorageProvider::GetLocalDrives(VECSOURCES& localDrives)

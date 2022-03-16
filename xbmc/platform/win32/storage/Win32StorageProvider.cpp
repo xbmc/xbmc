@@ -23,9 +23,9 @@
 
 bool CWin32StorageProvider::xbevent = false;
 
-IStorageProvider* IStorageProvider::CreateInstance()
+std::unique_ptr<IStorageProvider> IStorageProvider::CreateInstance()
 {
-  return new CWin32StorageProvider();
+  return std::make_unique<CWin32StorageProvider>();
 }
 
 void CWin32StorageProvider::Initialize()

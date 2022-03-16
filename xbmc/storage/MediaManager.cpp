@@ -60,7 +60,6 @@ const char MEDIA_SOURCES_XML[] = { "special://profile/mediasources.xml" };
 CMediaManager::CMediaManager()
 {
   m_bhasoptical = false;
-  m_platformStorage = nullptr;
 }
 
 void CMediaManager::Stop()
@@ -68,8 +67,7 @@ void CMediaManager::Stop()
   if (m_platformStorage)
     m_platformStorage->Stop();
 
-  delete m_platformStorage;
-  m_platformStorage = nullptr;
+  m_platformStorage.reset();
 }
 
 void CMediaManager::Initialize()

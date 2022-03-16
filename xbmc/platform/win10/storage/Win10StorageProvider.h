@@ -15,7 +15,7 @@
 #include <string>
 #include <vector>
 
-class CStorageProvider : public ::IStorageProvider
+class CStorageProvider : public IStorageProvider
 {
 public:
   virtual ~CStorageProvider();
