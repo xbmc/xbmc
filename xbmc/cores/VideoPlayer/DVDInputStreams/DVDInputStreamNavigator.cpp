@@ -410,26 +410,6 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
     case DVDNAV_SPU_STREAM_CHANGE:
       // Player applications should inform their SPU decoder to switch channels
       {
-        dvdnav_spu_stream_change_event_t* event = reinterpret_cast<dvdnav_spu_stream_change_event_t*>(buf);
-
-        //libdvdnav never sets logical, why.. don't know..
-        event->logical = GetActiveSubtitleStream();
-
-        /* correct stream ids for disabled subs if needed */
-        if(!IsSubtitleStreamEnabled())
-        {
-          event->physical_letterbox |= 0x80;
-          event->physical_pan_scan |= 0x80;
-          event->physical_wide |= 0x80;
-        }
-
-        if(event->logical<0 && GetSubTitleStreamCount()>0)
-        {
-          /* this will not take effect in this event */
-          CLog::Log(LOGINFO, "{} - none or invalid subtitle stream selected, defaulting to first",
-                    __FUNCTION__);
-          SetActiveSubtitleStream(0);
-        }
         m_bCheckButtons = true;
         iNavresult = m_pVideoPlayer->OnDiscNavResult(buf, DVDNAV_SPU_STREAM_CHANGE);
       }
@@ -438,26 +418,6 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
     case DVDNAV_AUDIO_STREAM_CHANGE:
       // Player applications should inform their audio decoder to switch channels
       {
-
-        //dvdnav_get_audio_logical_stream actually does the opposite to the docs..
-        //taking a audiostream as given on dvd, it gives the physical stream that
-        //refers to in the mpeg file
-
-        dvdnav_audio_stream_change_event_t* event = reinterpret_cast<dvdnav_audio_stream_change_event_t*>(buf);
-
-        //wrong... stupid docs..
-        //event->logical = dvdnav_get_audio_logical_stream(m_dvdnav, event->physical);
-        //logical should actually be set to the (vm->state).AST_REG
-
-        event->logical = GetActiveAudioStream();
-        if(event->logical<0)
-        {
-          /* this will not take effect in this event */
-          CLog::Log(LOGINFO, "{} - none or invalid audio stream selected, defaulting to first",
-                    __FUNCTION__);
-          SetActiveAudioStream(0);
-        }
-
         iNavresult = m_pVideoPlayer->OnDiscNavResult(buf, DVDNAV_AUDIO_STREAM_CHANGE);
       }
 
