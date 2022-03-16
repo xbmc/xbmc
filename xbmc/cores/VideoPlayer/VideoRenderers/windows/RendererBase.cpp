@@ -354,7 +354,7 @@ bool CRendererBase::CreateIntermediateTarget(unsigned width, unsigned height, bo
 void CRendererBase::OnCMSConfigChanged(AVColorPrimaries srcPrimaries)
 {
   m_lutSize = 0;
-  m_clutLoaded = false;
+  m_lutIsLoading = true;
 
   auto loadLutTask = Concurrency::create_task([this, srcPrimaries] {
     // load 3DLUT data
@@ -383,7 +383,7 @@ void CRendererBase::OnCMSConfigChanged(AVColorPrimaries srcPrimaries)
     m_lutSize = lutSize;
     if (m_outputShader)
       m_outputShader->SetLUT(m_lutSize, m_pLUTView.Get());
-    m_clutLoaded = true;
+    m_lutIsLoading = false;
   });
 }
 
@@ -449,10 +449,12 @@ void CRendererBase::CheckVideoParameters()
     OnOutputReset();
   }
 
-  const AVColorPrimaries color_primaries = static_cast<AVColorPrimaries>(buf->primaries);
-  if (m_cmsOn && !m_colorManager->CheckConfiguration(m_cmsToken, color_primaries))
+  if (m_cmsOn && !m_lutIsLoading)
   {
-    OnCMSConfigChanged(color_primaries);
+    const AVColorPrimaries color_primaries = static_cast<AVColorPrimaries>(buf->primaries);
+
+    if (m_cmsOn && !m_colorManager->CheckConfiguration(m_cmsToken, color_primaries))
+      OnCMSConfigChanged(color_primaries);
   }
 }
 
