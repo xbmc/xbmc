@@ -42,7 +42,7 @@ void CWin32StorageProvider::Initialize()
   // Can be removed once the StorageHandler supports optical media
   for (const auto& it : vShare)
     if (CServiceBroker::GetMediaManager().GetDriveStatus(it.strPath) == DRIVE_CLOSED_MEDIA_PRESENT)
-      CServiceBroker::GetJobManager()->AddJob(new CDetectDisc(it.strPath, false), nullptr);
+      m_OpticalDrivesNeedProbing.emplace_back(it.strPath);
       // remove end
 #endif
 }
@@ -169,6 +169,16 @@ std::vector<std::string > CWin32StorageProvider::GetDiskUsage()
 
 bool CWin32StorageProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
 {
+#ifdef HAS_DVD_DRIVE
+  if (!m_OpticalDrivesNeedProbing.empty())
+  {
+    for (const std::string& drivePath : m_OpticalDrivesNeedProbing)
+    {
+      CServiceBroker::GetJobManager()->AddJob(new CDetectDisc(drivePath, false), nullptr);
+    }
+    m_OpticalDrivesNeedProbing.clear();
+  }
+#endif
   bool b = xbevent;
   xbevent = false;
   return b;

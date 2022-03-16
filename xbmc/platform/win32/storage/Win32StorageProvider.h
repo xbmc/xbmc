@@ -47,6 +47,9 @@ public:
 private:
   static void GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType=ALL_DRIVES, bool bonlywithmedia=false);
   static DEVINST GetDrivesDevInstByDiskNumber(long DiskNumber);
+#ifdef HAS_DVD_DRIVE
+  std::vector<std::string> m_OpticalDrivesNeedProbing;
+#endif
 };
 
 class CDetectDisc : public CJob
