@@ -1667,30 +1667,16 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         st->colorSpace = pStream->codecpar->color_space;
         st->colorTransferCharacteristic = pStream->codecpar->color_trc;
         st->colorRange = pStream->codecpar->color_range;
+        st->hdr_type = DetermineHdrType(pStream);
 
         int size = 0;
         uint8_t* side_data = nullptr;
-
-        side_data = av_stream_get_side_data(pStream, AV_PKT_DATA_DOVI_CONF, &size);
-        if (side_data && size)
-          st->hdr_type = StreamHdrType::HDR_TYPE_DOLBYVISION;
-        else if (st->colorPrimaries == AVCOL_PRI_BT2020)
-        {
-          if (st->colorTransferCharacteristic == AVCOL_TRC_SMPTE2084) // hdr10
-            st->hdr_type = StreamHdrType::HDR_TYPE_HDR10;
-          else if (st->colorTransferCharacteristic == AVCOL_TRC_ARIB_STD_B67) // hlg
-            st->hdr_type = StreamHdrType::HDR_TYPE_HLG;
-        }
 
         side_data = av_stream_get_side_data(pStream, AV_PKT_DATA_MASTERING_DISPLAY_METADATA, &size);
         if (side_data && size)
         {
           st->masteringMetaData = std::make_shared<AVMasteringDisplayMetadata>(
               *reinterpret_cast<AVMasteringDisplayMetadata*>(side_data));
-          // file could be SMPTE2086 which FFmpeg currently returns as unknown so use the presence
-          // of static metadata to detect it
-          if (st->masteringMetaData->has_primaries && st->masteringMetaData->has_luminance)
-            st->hdr_type = StreamHdrType::HDR_TYPE_HDR10;
         }
 
         side_data = av_stream_get_side_data(pStream, AV_PKT_DATA_CONTENT_LIGHT_LEVEL, &size);
@@ -2501,4 +2487,22 @@ void CDVDDemuxFFmpeg::GetL16Parameters(int &channels, int &samplerate)
       }
     }
   }
+}
+
+StreamHdrType CDVDDemuxFFmpeg::DetermineHdrType(AVStream* pStream)
+{
+  StreamHdrType hdrType = StreamHdrType::HDR_TYPE_NONE;
+
+  if (av_stream_get_side_data(pStream, AV_PKT_DATA_DOVI_CONF, nullptr)) // DoVi
+    hdrType = StreamHdrType::HDR_TYPE_DOLBYVISION;
+  else if (pStream->codecpar->color_trc == AVCOL_TRC_SMPTE2084) // HDR10
+    hdrType = StreamHdrType::HDR_TYPE_HDR10;
+  else if (pStream->codecpar->color_trc == AVCOL_TRC_ARIB_STD_B67) // HLG
+    hdrType = StreamHdrType::HDR_TYPE_HLG;
+  // file could be SMPTE2086 which FFmpeg currently returns as unknown
+  // so use the presence of static metadata to detect it
+  else if (av_stream_get_side_data(pStream, AV_PKT_DATA_MASTERING_DISPLAY_METADATA, nullptr))
+    hdrType = StreamHdrType::HDR_TYPE_HDR10;
+
+  return hdrType;
 }
