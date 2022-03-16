@@ -321,7 +321,7 @@ DWORD CDetectDVDMedia::GetTrayState()
   if (cdio)
   {
     static discmode_t discmode = CDIO_DISC_MODE_NO_INFO;
-    int status = m_cdio->mmc_get_tray_status(cdio);
+    int status = static_cast<int>(m_cdio->mmc_get_tray_status(cdio));
     static int laststatus = -1;
     // We only poll for new discmode when status has changed or there have been read errors (The last usually happens when new media is inserted)
     if (status == 0 && (laststatus != status || discmode == CDIO_DISC_MODE_ERROR))
