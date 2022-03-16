@@ -21,17 +21,6 @@
 
 #include "PlatformDefs.h"
 
-#define TRAY_OPEN     16
-#define TRAY_CLOSED_NO_MEDIA  64
-#define TRAY_CLOSED_MEDIA_PRESENT 96
-
-#define DRIVE_OPEN      0 // Open...
-#define DRIVE_NOT_READY     1 // Opening.. Closing...
-#define DRIVE_READY      2
-#define DRIVE_CLOSED_NO_MEDIA   3 // CLOSED...but no media in drive
-#define DRIVE_CLOSED_MEDIA_PRESENT  4 // Will be send once when the drive just have closed
-#define DRIVE_NONE  5 // system doesn't have an optical drive
-
 class CFileItem;
 
 class CNetworkLocation
