@@ -669,7 +669,7 @@ CVideoSettings CProcessInfo::GetVideoSettings()
   return m_videoSettings;
 }
 
-CVideoSettingsLocked& CProcessInfo::UpdateVideoSettings()
+CVideoSettingsLocked& CProcessInfo::GetVideoSettingsLocked()
 {
   std::unique_lock<CCriticalSection> lock(m_settingsSection);
   return *m_videoSettingsLocked;

@@ -110,7 +110,7 @@ public:
   // settings
   CVideoSettings GetVideoSettings();
   void SetVideoSettings(CVideoSettings &settings);
-  CVideoSettingsLocked& UpdateVideoSettings();
+  CVideoSettingsLocked& GetVideoSettingsLocked();
 
 protected:
   CProcessInfo();
