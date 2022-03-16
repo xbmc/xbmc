@@ -142,7 +142,7 @@ int CLibcdio::mmc_get_tray_status(const CdIo_t *p_cdio)
   return( ::mmc_get_tray_status(p_cdio) );
 }
 
-int CLibcdio::cdio_eject_media(CdIo_t **p_cdio)
+driver_return_code_t CLibcdio::cdio_eject_media(CdIo_t** p_cdio)
 {
   std::unique_lock<CCriticalSection> lock(*this);
 
