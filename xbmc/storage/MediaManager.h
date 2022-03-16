@@ -10,6 +10,7 @@
 
 #include "IStorageProvider.h"
 #include "MediaSource.h" // for VECSOURCES
+#include "storage/discs/IDiscDriveHandler.h"
 #include "threads/CriticalSection.h"
 #include "utils/DiscsUtils.h"
 #include "utils/Job.h"
@@ -73,6 +74,13 @@ public:
   bool RemoveCdInfo(const std::string& devicePath="");
   std::string GetDiskLabel(const std::string& devicePath="");
   std::string GetDiskUniqueId(const std::string& devicePath="");
+
+  /*! \brief Gets the platform disc drive handler
+  * @todo this likely doesn't belong here but in some discsupport component owned by media manager
+  * let's keep it here for now
+  * \return The platform disc drive handler
+  */
+  std::shared_ptr<IDiscDriveHandler> GetDiscDriveHandler();
 #endif
   std::string GetDiscPath();
   void SetHasOpticalDrive(bool bstatus);
@@ -120,6 +128,9 @@ protected:
 
 private:
   std::unique_ptr<IStorageProvider> m_platformStorage;
+#ifdef HAS_DVD_DRIVE
+  std::shared_ptr<IDiscDriveHandler> m_platformDiscDriveHander;
+#endif
 
   UTILS::DISCS::DiscInfo GetDiscInfo(const std::string& mediaPath);
   void RemoveDiscInfo(const std::string& devicePath);
