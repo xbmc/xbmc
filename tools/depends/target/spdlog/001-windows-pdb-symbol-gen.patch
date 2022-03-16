@@ -1,0 +1,52 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -236,6 +236,26 @@
+     endif()
+ endforeach()
+ 
++if(WIN32 OR WINDOWS_STORE)
++  set_target_properties(spdlog
++    PROPERTIES
++      COMPILE_PDB_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}
++      PDB_NAME spdlog
++      PDB_NAME_DEBUG spdlogd
++      COMPILE_PDB_NAME spdlog
++      COMPILE_PDB_NAME_DEBUG spdlogd
++  )
++  target_compile_options(spdlog PRIVATE /sdl-
++                                        /EHsc
++                                        /WX-
++  )
++  target_link_options(spdlog
++    PRIVATE
++      /INCREMENTAL:NO
++      /debug:full
++  )
++endif()
++
+ if(SPDLOG_NO_EXCEPTIONS AND NOT MSVC)
+     target_compile_options(spdlog PRIVATE -fno-exceptions)
+ endif()
+@@ -293,6 +313,22 @@
+     endif()
+ 
+     # ---------------------------------------------------------------------------------------
++    # Windows PDB debug files
++    # ---------------------------------------------------------------------------------------
++    if(WIN32 OR WINDOWS_STORE)
++      install(FILES
++          ${PROJECT_BINARY_DIR}/Debug/spdlogd.pdb
++          DESTINATION lib
++          CONFIGURATIONS Debug
++      )
++      install(FILES
++          ${PROJECT_BINARY_DIR}/RelWithDebInfo/spdlog.pdb
++          DESTINATION lib
++          CONFIGURATIONS RelWithDebInfo
++      )
++    endif()
++
++    # ---------------------------------------------------------------------------------------
+     # Install pkg-config file
+     # ---------------------------------------------------------------------------------------
+     get_target_property(PKG_CONFIG_DEFINES spdlog INTERFACE_COMPILE_DEFINITIONS)
