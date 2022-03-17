@@ -54,10 +54,10 @@ protected:
 
   CGUIListGroup m_group;
 
-  float m_width;
-  float m_height;
-  bool m_focused;
-  bool m_invalidated;
+  float m_width{0};
+  float m_height{0};
+  bool m_focused{false};
+  bool m_invalidated{true};
 
   INFO::InfoPtr m_condition;
   KODI::GUILIB::GUIINFO::CGUIInfoBool m_isPlaying;
