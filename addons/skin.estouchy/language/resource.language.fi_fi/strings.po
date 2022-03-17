@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-02-26 16:13+0000\n"
+"PO-Revision-Date: 2022-03-17 11:53+0000\n"
 "Last-Translator: Oskari Lavinto <olavinto@protonmail.com>\n"
 "Language-Team: Finnish <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/fi_fi/>\n"
 "Language: fi_fi\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.11\n"
+"X-Generator: Weblate 4.11.2\n"
 
 msgctxt "Addon Summary"
 msgid "Skin for touchscreen devices"
@@ -76,7 +76,7 @@ msgstr "Albumit"
 #. Label to show PVR info page
 msgctxt "#31017"
 msgid "PVR"
-msgstr "PVR"
+msgstr "Tallennin"
 
 #. Label to show player info page
 msgctxt "#31018"
@@ -86,7 +86,7 @@ msgstr "Soitin"
 #. Label to show video decoder name
 msgctxt "#31019"
 msgid "Video decoder"
-msgstr "Videon purkutapa"
+msgstr "Videodekooderi"
 
 #. Label to show the video pixel format
 msgctxt "#31020"
@@ -220,7 +220,7 @@ msgstr "Lataa tekstitykset"
 
 msgctxt "#31358"
 msgid "Teletext"
-msgstr "Teksti-tv"
+msgstr "Teksti-TV"
 
 msgctxt "#31390"
 msgid "Skin default"
@@ -328,7 +328,7 @@ msgstr "Lisää ryhmä"
 
 msgctxt "#31562"
 msgid "Rename Group"
-msgstr "Muuta ryhmän nimeä"
+msgstr "Nimeä ryhmä uudelleen"
 
 msgctxt "#31563"
 msgid "Delete Group"
