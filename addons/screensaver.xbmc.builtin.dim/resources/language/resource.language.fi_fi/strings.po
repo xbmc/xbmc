@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-01-15 10:16+0000\n"
+"PO-Revision-Date: 2022-03-06 18:07+0000\n"
 "Last-Translator: Oskari Lavinto <olavinto@protonmail.com>\n"
 "Language-Team: Finnish <https://kodi.weblate.cloud/projects/kodi-core/screensaver-xbmc-builtin-dim/fi_fi/>\n"
 "Language: fi_fi\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.11.2\n"
 
 msgctxt "Addon Summary"
 msgid "Screensaver that dims your screen"
@@ -23,7 +23,7 @@ msgstr "Näytönsäästäjä, joka himmentää näytön"
 
 msgctxt "Addon Description"
 msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
-msgstr "Dim on yksinkertainen näytönsäästäjä joka himmentää ruudun valitulle tasolle välillä 20-100%."
+msgstr "Dim on yksinkertainen näytönsäästäjä, joka himmentää näytön väliltä 20-100 % valitulle tasolle."
 
 #. Setting name for edit screen dim in percentage (0% = black, 100% = no dim)
 msgctxt "#30000"
@@ -33,7 +33,7 @@ msgstr "Kirkkauden taso"
 #. Setting help text
 msgctxt "#30001"
 msgid "Level in percent of how strongly the screen remains illuminated."
-msgstr "Näytön valaistuksen voimakkuus prosentteina."
+msgstr "Näytön kirkkkauden voimakkuus prosentteina."
 
 #. Setting category name
 msgctxt "#30002"
