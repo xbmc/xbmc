@@ -433,7 +433,7 @@ bool CPVRDatabase::Get(CPVRProviders& results,
   std::string strQuery = "SELECT * from providers ";
   const std::string clientIds = GetClientIdsSQL(clients);
   if (!clientIds.empty())
-    strQuery += "WHERE " + clientIds;
+    strQuery += "WHERE " + clientIds + " OR iType = 1"; // always load addon providers
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
   strQuery = PrepareSQL(strQuery);
