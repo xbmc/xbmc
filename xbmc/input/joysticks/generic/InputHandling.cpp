@@ -12,6 +12,7 @@
 #include "input/joysticks/JoystickUtils.h"
 #include "input/joysticks/dialogs/GUIDialogNewJoystick.h"
 #include "input/joysticks/interfaces/IButtonMap.h"
+#include "input/joysticks/interfaces/IInputHandler.h"
 #include "utils/log.h"
 
 #include <array>
@@ -84,10 +85,14 @@ bool CInputHandling::OnAxisMotion(unsigned int axisIndex,
   return bHandled;
 }
 
-void CInputHandling::ProcessAxisMotions(void)
+void CInputHandling::OnInputFrame(void)
 {
+  // Handle driver input
   for (auto& it : m_features)
     it.second->ProcessMotions();
+
+  // Handle higher-level controller input
+  m_handler->OnInputFrame();
 }
 
 bool CInputHandling::OnDigitalMotion(const CDriverPrimitive& source, bool bPressed)

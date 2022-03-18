@@ -62,6 +62,7 @@ public:
   bool OnThrottleMotion(const FeatureName& feature,
                         float position,
                         unsigned int motionTimeMs) override;
+  void OnInputFrame() override {}
 
 protected:
   // Keep track of cheat code presses

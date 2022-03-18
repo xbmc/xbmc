@@ -140,10 +140,10 @@ bool CAddonInputHandling::OnAxisMotion(unsigned int axisIndex,
   return false;
 }
 
-void CAddonInputHandling::ProcessAxisMotions(void)
+void CAddonInputHandling::OnInputFrame(void)
 {
   if (m_driverHandler)
-    m_driverHandler->ProcessAxisMotions();
+    m_driverHandler->OnInputFrame();
 }
 
 bool CAddonInputHandling::OnKeyPress(const CKey& key)

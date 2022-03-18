@@ -78,10 +78,10 @@ bool CAddonButtonMapping::OnAxisMotion(unsigned int axisIndex,
   return false;
 }
 
-void CAddonButtonMapping::ProcessAxisMotions(void)
+void CAddonButtonMapping::OnInputFrame(void)
 {
   if (m_buttonMapping)
-    m_buttonMapping->ProcessAxisMotions();
+    m_buttonMapping->OnInputFrame();
 }
 
 bool CAddonButtonMapping::OnKeyPress(const CKey& key)

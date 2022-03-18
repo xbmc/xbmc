@@ -381,12 +381,12 @@ bool CPeripheralJoystick::OnAxisMotion(unsigned int axisIndex, float position)
   return bHandled;
 }
 
-void CPeripheralJoystick::ProcessAxisMotions(void)
+void CPeripheralJoystick::OnInputFrame(void)
 {
   std::unique_lock<CCriticalSection> lock(m_handlerMutex);
 
   for (auto& it : m_driverHandlers)
-    it.handler->ProcessAxisMotions();
+    it.handler->OnInputFrame();
 }
 
 bool CPeripheralJoystick::SetMotorState(unsigned int motorIndex, float magnitude)

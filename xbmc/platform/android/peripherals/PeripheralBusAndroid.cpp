@@ -168,7 +168,7 @@ void CPeripheralBusAndroid::ProcessEvents()
       if (!device || device->Type() != PERIPHERAL_JOYSTICK)
         continue;
 
-      static_cast<CPeripheralJoystick*>(device.get())->ProcessAxisMotions();
+      static_cast<CPeripheralJoystick*>(device.get())->OnInputFrame();
     }
   }
 }

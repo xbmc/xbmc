@@ -152,6 +152,11 @@ public:
                                 float position,
                                 unsigned int motionTimeMs) = 0;
 
+  /*!
+   * \brief Called at the end of the frame that provided input
+   */
+  virtual void OnInputFrame() = 0;
+
   // Input receiver interface
   void SetInputReceiver(IInputReceiver* receiver) { m_receiver = receiver; }
   void ResetInputReceiver(void) { m_receiver = nullptr; }

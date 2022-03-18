@@ -50,7 +50,7 @@ public:
                     float position,
                     int center,
                     unsigned int range) override;
-  void ProcessAxisMotions() override;
+  void OnInputFrame() override;
 
 private:
   bool OnDigitalMotion(const CDriverPrimitive& source, bool bPressed);
