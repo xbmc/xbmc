@@ -106,9 +106,10 @@ namespace PVR
      * Set to true to hide this channel. Set to false to unhide it.
      * The EPG of hidden channels won't be updated.
      * @param bIsHidden The new setting.
+     * @param bIsUserSetIcon true if user changed the hidden flag via GUI, false otherwise.
      * @return True if the something changed, false otherwise.
      */
-    bool SetHidden(bool bIsHidden);
+    bool SetHidden(bool bIsHidden, bool bIsUserSetHidden = false);
 
     /*!
      * @return True if this channel is locked. False if not.
@@ -168,6 +169,11 @@ namespace PVR
      * @return whether the user has changed the channel name through the GUI
      */
     bool IsUserSetName() const;
+
+    /*!
+     * @return True if user changed the hidden flag via GUI, False if not
+     */
+    bool IsUserSetHidden() const;
 
     /*!
      * @brief Set the path to the icon for this channel.
@@ -494,6 +500,7 @@ namespace PVR
     bool m_bIsHidden = false; /*!< true if this channel is hidden, false if not */
     bool m_bIsUserSetName = false; /*!< true if user set the channel name via GUI, false if not */
     bool m_bIsUserSetIcon = false; /*!< true if user set the icon via GUI, false if not */
+    bool m_bIsUserSetHidden = false; /*!< true if user set the hidden flag via GUI, false if not */
     bool m_bIsLocked = false; /*!< true if channel is locked, false if not */
     CPVRCachedImage m_iconPath; /*!< the path to the icon for this channel */
     std::string m_strChannelName; /*!< the name for this channel used by XBMC */
