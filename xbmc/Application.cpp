@@ -341,6 +341,9 @@ bool CApplication::Create(const CAppParamParser &params)
   m_pSettingsComponent.reset(new CSettingsComponent());
   m_pSettingsComponent->Init(params);
 
+  // Register JobManager service
+  CServiceBroker::RegisterJobManager(std::make_shared<CJobManager>());
+
   // Announcement service
   m_pAnnouncementManager = std::make_shared<ANNOUNCEMENT::CAnnouncementManager>();
   m_pAnnouncementManager->Start();
@@ -627,8 +630,6 @@ bool CApplication::Initialize()
 
   // initialize (and update as needed) our databases
   CDatabaseManager &databaseManager = m_ServiceManager->GetDatabaseManager();
-
-  CServiceBroker::RegisterJobManager(std::make_shared<CJobManager>());
 
   CEvent event(true);
   CServiceBroker::GetJobManager()->Submit([&databaseManager, &event]() {
@@ -2500,10 +2501,11 @@ bool CApplication::Cleanup()
     m_pAnnouncementManager->Deinitialize();
     m_pAnnouncementManager.reset();
 
+    CServiceBroker::UnregisterJobManager();
+
     m_pSettingsComponent->Deinit();
     m_pSettingsComponent.reset();
 
-    CServiceBroker::UnregisterJobManager();
     CServiceBroker::UnregisterCPUInfo();
 
     return true;
