@@ -61,7 +61,7 @@ public:
   bool OnButtonMotion(unsigned int buttonIndex, bool bPressed);
   bool OnHatMotion(unsigned int hatIndex, KODI::JOYSTICK::HAT_STATE state);
   bool OnAxisMotion(unsigned int axisIndex, float position);
-  void ProcessAxisMotions(void);
+  void OnInputFrame(void);
 
   // implementation of IDriverReceiver
   bool SetMotorState(unsigned int motorIndex, float magnitude) override;
