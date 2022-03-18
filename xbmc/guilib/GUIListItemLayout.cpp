@@ -20,10 +20,6 @@ using namespace KODI::GUILIB;
 CGUIListItemLayout::CGUIListItemLayout()
 : m_group(0, 0, 0, 0, 0, 0)
 {
-  m_width = 0;
-  m_height = 0;
-  m_focused = false;
-  m_invalidated = true;
   m_group.SetPushUpdates(true);
 }
 
@@ -37,7 +33,6 @@ CGUIListItemLayout::CGUIListItemLayout(const CGUIListItemLayout& from, CGUIContr
     m_width(from.m_width),
     m_height(from.m_height),
     m_focused(from.m_focused),
-    m_invalidated(from.m_invalidated),
     m_condition(from.m_condition),
     m_isPlaying(from.m_isPlaying),
     m_infoUpdateMillis(from.m_infoUpdateMillis)
