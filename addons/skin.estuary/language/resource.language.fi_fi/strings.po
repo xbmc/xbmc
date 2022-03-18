@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-03-03 21:03+0000\n"
+"PO-Revision-Date: 2022-03-17 11:53+0000\n"
 "Last-Translator: Oskari Lavinto <olavinto@protonmail.com>\n"
 "Language-Team: Finnish <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/fi_fi/>\n"
 "Language: fi_fi\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.11\n"
+"X-Generator: Weblate 4.11.2\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -92,7 +92,7 @@ msgstr "Kuuntelemattomat albumit"
 #. home screen recordings widget: recent tv / radio recordings
 msgctxt "#31015"
 msgid "Recent recordings"
-msgstr "Viimeisimmät tallenteet"
+msgstr "Viimeksi tallennetut"
 
 #. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31016"
@@ -101,7 +101,7 @@ msgstr "Viimeksi katsotut kanavat"
 
 msgctxt "#31017"
 msgid "Rated"
-msgstr "Ikäluokiteltu"
+msgstr "Sisältöluokitus"
 
 #. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
@@ -122,7 +122,7 @@ msgstr "Muut asetukset"
 
 msgctxt "#31022"
 msgid "Sort by"
-msgstr "Lajittelu"
+msgstr "Järjestys"
 
 msgctxt "#31023"
 msgid "Viewtype"
@@ -150,7 +150,7 @@ msgstr "Näytä fanitaide"
 
 msgctxt "#31029"
 msgid "Last logged in"
-msgstr "Viimeisin kirjautuminen"
+msgstr "Kirjautunut viimeksi"
 
 #. Label to show the system memory usage
 msgctxt "#31030"
@@ -171,7 +171,7 @@ msgstr "Oma arvio"
 
 msgctxt "#31034"
 msgid "Extended info"
-msgstr "Laajennetut tiedot"
+msgstr "Laajat tiedot"
 
 msgctxt "#31035"
 msgid "Pages"
@@ -187,11 +187,11 @@ msgstr "Valittu kappale"
 
 msgctxt "#31038"
 msgid "Rewind"
-msgstr "Siirry taaksepäin"
+msgstr "Taaksepäin"
 
 msgctxt "#31039"
 msgid "Fast forward"
-msgstr "Siirry eteenpäin"
+msgstr "Eteenpäin"
 
 msgctxt "#31041"
 msgid "Camera manufacturer"
@@ -199,7 +199,7 @@ msgstr "Kameran valmistaja"
 
 msgctxt "#31042"
 msgid "Playlist options"
-msgstr "Toistolistan asetukset"
+msgstr "Toistolistan valinnat"
 
 msgctxt "#31043"
 msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
@@ -219,11 +219,11 @@ msgstr "Poista ryhmä"
 
 msgctxt "#31048"
 msgid "Available"
-msgstr "Saatavilla"
+msgstr "Käytettävissä"
 
 msgctxt "#31052"
 msgid "filtered"
-msgstr "suodatetut"
+msgstr "suodatettu"
 
 msgctxt "#31053"
 msgid "Arial based"
@@ -231,11 +231,11 @@ msgstr "Arial-pohjainen"
 
 msgctxt "#31054"
 msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
-msgstr "Paina [B]Vasen[/B] siirtyäksesi taaksepäin tai [B]Oikea[/B] siirtyäksesi eteenpäin"
+msgstr "Paina [B]vasemmalle[/B] palataksesi askeleen takaisin tai [B]oikealle[/B] siirtyäksesi eteenpäin"
 
 msgctxt "#31055"
 msgid "Press [B]Right[/B] to frame advance"
-msgstr "Paina [B]Oikea[/B] edetäksesi kuva kerrallaan"
+msgstr "Paina [B]oikealle[/B] edetäksesi kuva kerrallaan"
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -247,7 +247,7 @@ msgstr "Näytä kirjautumisruutu käynnistettäessä"
 
 msgctxt "#31058"
 msgid "Automatic Login on startup"
-msgstr "Automaattinen kirjautuminen käynnistettäessä"
+msgstr "Kirjaudu automaattisesti käynnistettäessä"
 
 msgctxt "#31059"
 msgid "Select + X"
@@ -295,7 +295,7 @@ msgstr "Tekijä:"
 
 msgctxt "#31072"
 msgid "Power Options"
-msgstr "Virta-asetukset"
+msgstr "Virtavalinnat"
 
 msgctxt "#31073"
 msgid "Total length"
@@ -311,7 +311,7 @@ msgstr "Elokuvakokoelmat"
 
 msgctxt "#31079"
 msgid "Cast not available"
-msgstr "Ei esiintyjätietoja"
+msgstr "Näyttelijöitä ei ole saatavilla"
 
 msgctxt "#31080"
 msgid "Ends at"
@@ -331,7 +331,7 @@ msgstr "Visualisoinnin asetukset"
 
 msgctxt "#31089"
 msgid "Available groups"
-msgstr "Kanavaryhmät"
+msgstr "Käytettävissä olevat ryhmät"
 
 msgctxt "#31092"
 msgid "Video menu"
@@ -347,11 +347,11 @@ msgstr "Käytä liukuanimaatioita"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
-msgstr "Paikallinen tekstitys havaittu"
+msgstr "Paikallinen tekstitys on käytettävissä"
 
 msgctxt "#31097"
 msgid "Channel options"
-msgstr "Kanavan asetukset"
+msgstr "Kanavavalinnat"
 
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
@@ -388,7 +388,7 @@ msgstr "Kirjastosi on tällä hetkellä tyhjä. Täyttääksesi sen omalla media
 
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
-msgstr "Lisää sisältöä videokirjastoosi valitsemalla käyttämäsi videolähde ja asettamalla sen sisältötyyppi."
+msgstr "Lisää videokirjastoosi sisältöä lisäämällä videolähteitä ja määrittämällä niille sopivat sisältötyypit."
 
 msgctxt "#31106"
 msgid "Teletext"
@@ -458,11 +458,11 @@ msgstr "Sama ohjaaja"
 
 msgctxt "#31125"
 msgid "Press up for actor info"
-msgstr "Paina ylös nähdäksesi näyttelijät"
+msgstr "Näytä näyttelijän tiedot painamalla Ylös"
 
 msgctxt "#31126"
 msgid "Press OK to read plot"
-msgstr "Lue juoni painamalla OK"
+msgstr "Lue juoni painamalla Valinta"
 
 msgctxt "#31127"
 msgid "Show icons"
@@ -470,11 +470,11 @@ msgstr "Näytä kuvakkeet"
 
 msgctxt "#31128"
 msgid "Contributors"
-msgstr "Tekijät"
+msgstr "Osallistujat"
 
 msgctxt "#31129"
 msgid "General settings applying to all areas of the skin."
-msgstr "Yleisastukset, jotka vaikuttavat ulkoasun eri osa-alueisiin."
+msgstr "Yleiset asetukset, jotka vaikuttavat ulkoasun eri osa-alueisiin."
 
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
@@ -507,7 +507,7 @@ msgstr "Paina nähdäksesi viimeisimmät muutokset..."
 #. Label to show PVR info page
 msgctxt "#31137"
 msgid "PVR"
-msgstr "PVR"
+msgstr "Tallennin"
 
 #. Label to show player info page
 msgctxt "#31138"
@@ -517,7 +517,7 @@ msgstr "Soitin"
 #. Label to show video decoder name
 msgctxt "#31139"
 msgid "Video decoder"
-msgstr "Videon purkutapa"
+msgstr "Videodekooderi"
 
 #. Label to show the video pixel format
 msgctxt "#31140"
@@ -534,7 +534,7 @@ msgstr "Toistonopeus"
 
 msgctxt "#31143"
 msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
-msgstr "PVR-ominaisuus ei ole käytössä. Jos haluat ottaa sen käyttöön, valitse PVR-asiakasohjelma lisäosaselaimen kautta ja muokkaa sen asetukset kohdalleen. Lisätietoja löytyy osoitteesta http://kodi.wiki/view/PVR"
+msgstr "PVR-ominaisuuksia ei ole vielä määritetty. Käyttääksesi niitä, valitse PVR-lisäosa lisäosaselaimesta ja määritä sen asetukset. Lisätietoja löydät osoitteesta http://kodi.wiki/view/PVR."
 
 msgctxt "#31144"
 msgid "Enter add-on browser"
@@ -610,11 +610,11 @@ msgstr "Numeronäppäimistö"
 
 msgctxt "#31162"
 msgid "Play your personal games or download one of the many game add-ons from the official repository."
-msgstr "Pelaa omistamiasi pelejä tai lataa pelilisäosia virallisesta ohjelmavarastosta."
+msgstr "Pelaa omia pelejäsi tai lataa pelilisäosia virallisesta jakeluvarastosta."
 
 msgctxt "#31163"
 msgid "Show Fanart background"
-msgstr "Näytä fanitaide taustalla"
+msgstr "Näytä fanitaide taustana"
 
 #. Choose profile identifier
 msgctxt "#31164"
