@@ -9,7 +9,6 @@
 #include "CompileInfo.h"
 #include "EventLoop.h"
 #include "XBMCApp.h"
-#include "utils/StringUtils.h"
 
 #include "platform/android/activity/JNIMainActivity.h"
 #include "platform/android/activity/JNIXBMCAudioManagerOnAudioFocusChangeListener.h"
@@ -25,54 +24,16 @@
 #include "platform/android/activity/JNIXBMCURIUtils.h"
 #include "platform/android/activity/JNIXBMCVideoView.h"
 
-#include <errno.h>
-#include <stdlib.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <thread>
 
 #include <android_native_app_glue.h>
 #include <androidjni/SurfaceTexture.h>
+#include <unistd.h>
 
-
-// redirect stdout / stderr to logcat
-// https://codelab.wordpress.com/2014/11/03/how-to-use-standard-output-streams-for-logging-in-android-apps/
-static int pfd[2];
-static pthread_t thr;
-static const char *tag = "myapp";
-
-static void *thread_logger(void*)
+namespace
 {
-  ssize_t rdsz;
-  char buf[128];
-  while((rdsz = read(pfd[0], buf, sizeof buf - 1)) > 0)
-  {
-    if(buf[rdsz - 1] == '\n')
-      --rdsz;
-    buf[rdsz] = 0;  /* add null-terminator */
-    __android_log_write(ANDROID_LOG_DEBUG, tag, buf);
-  }
-  return 0;
-}
-
-int start_logger(const char *app_name)
-{
-  tag = app_name;
-
-  /* make stdout line-buffered and stderr unbuffered */
-  setvbuf(stdout, 0, _IOLBF, 0);
-  setvbuf(stderr, 0, _IONBF, 0);
-
-  /* create the pipe and redirect stdout and stderr */
-  pipe(pfd);
-  dup2(pfd[1], 1);
-  dup2(pfd[1], 2);
-
-  /* spawn the logging thread */
-  if(pthread_create(&thr, 0, thread_logger, 0) == -1)
-    return -1;
-  pthread_detach(thr);
-  return 0;
-}
-
-
 // copied from new android_native_app_glue.c
 static void process_input(struct android_app* app, struct android_poll_source* source) {
     AInputEvent* event = NULL;
@@ -91,6 +52,49 @@ static void process_input(struct android_app* app, struct android_poll_source* s
     }
 }
 
+class LogRedirector
+{
+  // redirect stdout / stderr to logcat
+  // based on https://codelab.wordpress.com/2014/11/03/how-to-use-standard-output-streams-for-logging-in-android-apps/
+
+public:
+  LogRedirector()
+  {
+    // make stdout line-buffered and stderr unbuffered
+    setvbuf(stdout, 0, _IOLBF, 0);
+    setvbuf(stderr, 0, _IONBF, 0);
+
+    // spawn the logging thread
+    std::thread thread(&LogRedirector::Run);
+    thread.detach();
+  }
+
+private:
+  static void Run()
+  {
+    // create a pipe and redirect stdout and stderr
+    int pfds[2];
+    pipe(pfds);
+    dup2(pfds[1], STDOUT_FILENO);
+    dup2(pfds[1], STDERR_FILENO);
+
+    ssize_t rdsz;
+    char buf[128];
+    while ((rdsz = read(pfds[0], buf, sizeof(buf) - 1)) > 0)
+    {
+      if (buf[rdsz - 1] == '\n')
+        --rdsz;
+
+      buf[rdsz] = 0; // add null-terminator
+      __android_log_write(ANDROID_LOG_DEBUG, "Kodi", buf);
+    }
+  }
+};
+
+LogRedirector g_LogRedirector;
+
+} // namespace
+
 extern void android_main(struct android_app* state)
 {
   {
@@ -105,7 +109,6 @@ extern void android_main(struct android_app* state)
     CXBMCApp& theApp = CXBMCApp::Create(state->activity, inputHandler);
     if (theApp.isValid())
     {
-      start_logger("Kodi");
       eventLoop.run(theApp, inputHandler);
       theApp.Quit();
     }
