@@ -1655,7 +1655,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         st->bitDepth = 8;
         const AVPixFmtDescriptor* desc =
             av_pix_fmt_desc_get(static_cast<AVPixelFormat>(pStream->codecpar->format));
-        if (desc != nullptr && desc->comp != nullptr)
+        if (desc != nullptr)
           st->bitDepth = desc->comp[0].depth;
 
         st->colorPrimaries = pStream->codecpar->color_primaries;
