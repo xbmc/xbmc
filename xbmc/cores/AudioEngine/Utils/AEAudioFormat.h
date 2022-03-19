@@ -65,7 +65,5 @@ struct AEAudioFormat
             m_frameSize     ==  fmt.m_frameSize     &&
             m_streamInfo    ==  fmt.m_streamInfo;
   }
-
-  AEAudioFormat& operator=(const AEAudioFormat& fmt) = default;
 };
 
