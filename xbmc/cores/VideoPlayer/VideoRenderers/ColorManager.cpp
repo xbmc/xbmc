@@ -544,28 +544,27 @@ cmsHPROFILE CColorManager::CreateSourceProfile(CMS_PRIMARIES primaries, cmsToneC
     { 0.2830, 0.2980, 1.0 }     // Japanese D93 - is there a definitive source? NHK? ARIB TR-B9?
   };
   cmsCIExyYTRIPLE primaryCoords[] = {
-    { 0.640, 0.330, 1.0,        // auto setting, these should not be used (BT.709 just in case)
-      0.300, 0.600, 1.0,
-      0.150, 0.060, 1.0 },
-    { 0.640, 0.330, 1.0,        // BT.709 (HDTV, sRGB)
-      0.300, 0.600, 1.0,
-      0.150, 0.060, 1.0 },
-    { 0.630, 0.340, 1.0,        // SMPTE 170M (SDTV)
-      0.310, 0.595, 1.0,
-      0.155, 0.070, 1.0 },
-    { 0.670, 0.330, 1.0,        // BT.470 M (obsolete NTSC 1953)
-      0.210, 0.710, 1.0,
-      0.140, 0.080, 1.0 },
-    { 0.640, 0.330, 1.0,        // BT.470 B/G (obsolete PAL/SECAM 1975)
-      0.290, 0.600, 1.0,
-      0.150, 0.060, 1.0 },
-    { 0.630, 0.340, 1.0,        // SMPTE 240M (obsolete HDTV 1988)
-      0.310, 0.595, 1.0,
-      0.155, 0.070, 1.0 },
-    { 0.708, 0.292, 1.0,        // BT.2020 UHDTV
-      0.170, 0.797, 1.0,
-      0.131, 0.046, 1.0 }
-  };
+      {{0.640, 0.330, 1.0}, // auto setting, these should not be used (BT.709 just in case)
+       {0.300, 0.600, 1.0},
+       {0.150, 0.060, 1.0}},
+      {{0.640, 0.330, 1.0}, // BT.709 (HDTV, sRGB)
+       {0.300, 0.600, 1.0},
+       {0.150, 0.060, 1.0}},
+      {{0.630, 0.340, 1.0}, // SMPTE 170M (SDTV)
+       {0.310, 0.595, 1.0},
+       {0.155, 0.070, 1.0}},
+      {{0.670, 0.330, 1.0}, // BT.470 M (obsolete NTSC 1953)
+       {0.210, 0.710, 1.0},
+       {0.140, 0.080, 1.0}},
+      {{0.640, 0.330, 1.0}, // BT.470 B/G (obsolete PAL/SECAM 1975)
+       {0.290, 0.600, 1.0},
+       {0.150, 0.060, 1.0}},
+      {{0.630, 0.340, 1.0}, // SMPTE 240M (obsolete HDTV 1988)
+       {0.310, 0.595, 1.0},
+       {0.155, 0.070, 1.0}},
+      {{0.708, 0.292, 1.0}, // BT.2020 UHDTV
+       {0.170, 0.797, 1.0},
+       {0.131, 0.046, 1.0}}};
 
   Gamma3[0] = Gamma3[1] = Gamma3[2] = gamma;
   hProfile = cmsCreateRGBProfile(&whiteCoords[whitepoint],
