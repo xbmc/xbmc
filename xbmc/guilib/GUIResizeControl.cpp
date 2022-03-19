@@ -236,7 +236,9 @@ void CGUIResizeControl::SetPosition(float posX, float posY)
 
 bool CGUIResizeControl::SetAlpha(unsigned char alpha)
 {
-  return m_imgFocus->SetAlpha(alpha) | m_imgNoFocus->SetAlpha(alpha);
+  bool changed = m_imgFocus->SetAlpha(alpha);
+  changed |= m_imgNoFocus->SetAlpha(alpha);
+  return changed;
 }
 
 bool CGUIResizeControl::UpdateColors(const CGUIListItem* item)
