@@ -27,6 +27,7 @@
 #include <array>
 #include <signal.h>
 
+#if defined(RLIMIT_NICE)
 namespace
 {
 
@@ -53,6 +54,7 @@ int ThreadPriorityToNativePriority(const ThreadPriority& priority)
 }
 
 } // namespace
+#endif
 
 static pid_t GetCurrentThreadPid_()
 {
