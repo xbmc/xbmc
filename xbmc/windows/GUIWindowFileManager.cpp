@@ -417,7 +417,6 @@ void CGUIWindowFileManager::UpdateItemCounts()
     unsigned int selectedCount = 0;
     unsigned int totalCount = 0;
     int64_t selectedSize = 0;
-    int64_t totalSize = 0;
     for (int j = 0; j < m_vecItems[i]->Size(); j++)
     {
       CFileItemPtr item = m_vecItems[i]->Get(j);
@@ -428,7 +427,6 @@ void CGUIWindowFileManager::UpdateItemCounts()
         selectedSize += item->m_dwSize;
       }
       totalCount++;
-      totalSize += item->m_dwSize;
     }
     std::string items;
     if (selectedCount > 0)
