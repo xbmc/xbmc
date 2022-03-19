@@ -498,7 +498,7 @@ NPT_File::GetInfo(const char* path, NPT_FileInfo* info)
   if (!info)
     return NPT_FAILURE;
 
-  NPT_SetMemory(info, 0, sizeof(*info));
+  *info = NPT_FileInfo();
 
   result = CFile::Stat(path, &stat_buffer);
   if (result != 0)
