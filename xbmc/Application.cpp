@@ -2498,6 +2498,7 @@ bool CApplication::Cleanup()
 
     CServiceBroker::UnregisterAppMessenger();
 
+    CServiceBroker::UnregisterAnnouncementManager();
     m_pAnnouncementManager->Deinitialize();
     m_pAnnouncementManager.reset();
 
