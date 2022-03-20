@@ -123,6 +123,14 @@ protected:
 
   int ProcessBlock(uint8_t* buffer, int* read);
 
+  /*! \brief Get the color and alpha of a given button
+   * \param button - the button id
+   * \param[in,out] alpha - the alpha of the button
+   * \param[in,out] color - the color of the button
+   * \return true if the operation (obtaining data) succeeded, false otherwise
+   */
+  bool GetButtonColorAndAlpha(int button, int alpha[2][4], int color[2][4]);
+
   static void SetAudioStreamName(AudioStreamInfo &info, const audio_attr_t &audio_attributes);
   static void SetSubtitleStreamName(SubtitleStreamInfo &info, const subp_attr_t &subp_attributes);
 
