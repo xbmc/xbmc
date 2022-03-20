@@ -71,28 +71,28 @@ static int GetUserMaxPriority(int maxPriority)
 
   // get user max prio
   struct rlimit limit;
-  if (getrlimit(RLIMIT_NICE, &limit) == 0)
+  if (getrlimit(RLIMIT_NICE, &limit) != 0)
   {
-    const int appNice = getpriority(PRIO_PROCESS, getpid());
-    const int rlimVal = limit.rlim_cur;
-
-    // according to the docs, limit.rlim_cur shouldn't be zero, yet, here we are.
-    // if a user has no entry in limits.conf rlim_cur is zero. In this case the best
-    //   nice value we can hope to achieve is '0' as a regular user
-    const int userBestNiceValue = (rlimVal == 0) ? 0 : (20 - rlimVal);
-
-    //          running the app with nice -n 10 ->
-    // e.g.         +10                 10    -     0   // default non-root user.
-    // e.g.         +30                 10    -     -20 // if root with rlimits set.
-    //          running the app default ->
-    // e.g.          0                  0    -     0   // default non-root user.
-    // e.g.         +20                 0    -     -20 // if root with rlimits set.
-    const int bestUserSetPriority = appNice - userBestNiceValue; // nice is inverted from prio.
-    return std::min(maxPriority, bestUserSetPriority); //
-  }
-  else
     // If we fail getting the limit for nice we just assume we can't raise the priority
     return 0;
+  }
+
+  const int appNice = getpriority(PRIO_PROCESS, getpid());
+  const int rlimVal = limit.rlim_cur;
+
+  // according to the docs, limit.rlim_cur shouldn't be zero, yet, here we are.
+  // if a user has no entry in limits.conf rlim_cur is zero. In this case the best
+  //   nice value we can hope to achieve is '0' as a regular user
+  const int userBestNiceValue = (rlimVal == 0) ? 0 : (20 - rlimVal);
+
+  //          running the app with nice -n 10 ->
+  // e.g.         +10                 10    -     0   // default non-root user.
+  // e.g.         +30                 10    -     -20 // if root with rlimits set.
+  //          running the app default ->
+  // e.g.          0                  0    -     0   // default non-root user.
+  // e.g.         +20                 0    -     -20 // if root with rlimits set.
+  const int bestUserSetPriority = appNice - userBestNiceValue; // nice is inverted from prio.
+  return std::min(maxPriority, bestUserSetPriority);
 }
 
 std::unique_ptr<IThreadImpl> IThreadImpl::CreateThreadImpl(std::thread::native_handle_type handle)
