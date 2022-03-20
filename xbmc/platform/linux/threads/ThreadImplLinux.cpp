@@ -121,7 +121,7 @@ void CThreadImplLinux::SetThreadInfo(const std::string& name)
     // start thread with nice level of application
     const int appNice = getpriority(PRIO_PROCESS, getpid());
     if (setpriority(PRIO_PROCESS, m_threadID, appNice) != 0)
-      CLog::Log(LOGERROR, "{}: error {}", __FUNCTION__, strerror(errno));
+      CLog::Log(LOGERROR, "[threads] failed to set priority: {}", strerror(errno));
   }
 }
 
