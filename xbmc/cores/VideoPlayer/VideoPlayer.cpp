@@ -5084,8 +5084,14 @@ void CVideoPlayer::UpdateContentState()
                                                             nav->GetActiveAngle());
     m_content.m_audioIndex = m_SelectionStreams.TypeIndexOf(STREAM_AUDIO, STREAM_SOURCE_NAV, -1,
                                                             nav->GetActiveAudioStream());
-    m_content.m_subtitleIndex = m_SelectionStreams.TypeIndexOf(STREAM_SUBTITLE, STREAM_SOURCE_NAV,
-                                                               -1, nav->GetActiveSubtitleStream());
+
+    // only update the subtitle index in libdvdnav if the subtitle is provided by the dvd itself,
+    // i.e. for external subtitles the index is always greater than the subtitlecount in dvdnav
+    if (m_content.m_subtitleIndex < nav->GetSubTitleStreamCount())
+    {
+      m_content.m_subtitleIndex = m_SelectionStreams.TypeIndexOf(
+          STREAM_SUBTITLE, STREAM_SOURCE_NAV, -1, nav->GetActiveSubtitleStream());
+    }
   }
 }
 
