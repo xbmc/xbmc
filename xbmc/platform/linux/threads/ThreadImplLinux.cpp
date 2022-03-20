@@ -8,20 +8,19 @@
 
 #include "ThreadImplLinux.h"
 
+#include "utils/log.h"
+
+#include <array>
 #include <limits.h>
 #include <mutex>
+
+#include <sys/resource.h>
+
 #if defined(TARGET_ANDROID)
 #include <unistd.h>
 #else
 #include <sys/syscall.h>
 #endif
-#include "utils/log.h"
-
-#include <array>
-#include <signal.h>
-#include <string.h>
-
-#include <sys/resource.h>
 
 namespace
 {
