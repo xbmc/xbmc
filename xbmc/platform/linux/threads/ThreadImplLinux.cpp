@@ -13,7 +13,6 @@
 #include <algorithm>
 #include <array>
 #include <limits.h>
-#include <mutex>
 
 #include <sys/resource.h>
 #include <unistd.h>
@@ -127,8 +126,6 @@ void CThreadImplLinux::SetThreadInfo(const std::string& name)
 
 bool CThreadImplLinux::SetPriority(const ThreadPriority& priority)
 {
-  std::unique_lock<CCriticalSection> lockIt(m_criticalSection);
-
   // keep priority in bounds
   int prio = ThreadPriorityToNativePriority(priority);
 

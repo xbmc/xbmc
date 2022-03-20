@@ -9,7 +9,6 @@
 #pragma once
 
 #include "threads/IThreadImpl.h"
-#include "threads/SingleLock.h"
 
 class CThreadImplLinux : public IThreadImpl
 {
@@ -23,7 +22,5 @@ public:
   bool SetPriority(const ThreadPriority& priority) override;
 
 private:
-  CCriticalSection m_criticalSection;
-
   pid_t m_threadID;
 };
