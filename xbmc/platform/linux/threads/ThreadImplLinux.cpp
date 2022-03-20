@@ -45,12 +45,18 @@ int ThreadPriorityToNativePriority(const ThreadPriority& priority)
 
 } // namespace
 
+static int s_maxPriority;
+static bool s_maxPriorityIsSet{false};
+
 // We need to return what the best number than can be passed
 // to SetPriority is. It will basically be relative to the
 // the main thread's nice level, inverted (since "higher" priority
 // nice levels are actually lower numbers).
 static int GetUserMaxPriority(int maxPriority)
 {
+  if (s_maxPriorityIsSet)
+    return s_maxPriority;
+
   // if we're root, then we can do anything. So we'll allow
   // max priority.
   if (geteuid() == 0)
@@ -79,7 +85,14 @@ static int GetUserMaxPriority(int maxPriority)
   // e.g.          0                  0    -     0   // default non-root user.
   // e.g.         +20                 0    -     -20 // if root with rlimits set.
   const int bestUserSetPriority = appNice - userBestNiceValue; // nice is inverted from prio.
-  return std::min(maxPriority, bestUserSetPriority);
+
+  // static because we only need to check this once.
+  // we shouldn't expect a user to change RLIMIT_NICE while running
+  // and it won't work anyway for threads that already set their priority.
+  s_maxPriority = std::min(maxPriority, bestUserSetPriority);
+  s_maxPriorityIsSet = true;
+
+  return s_maxPriority;
 }
 
 std::unique_ptr<IThreadImpl> IThreadImpl::CreateThreadImpl(std::thread::native_handle_type handle)
