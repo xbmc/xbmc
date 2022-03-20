@@ -15,12 +15,7 @@
 #include <mutex>
 
 #include <sys/resource.h>
-
-#if defined(TARGET_ANDROID)
 #include <unistd.h>
-#else
-#include <sys/syscall.h>
-#endif
 
 namespace
 {
@@ -48,15 +43,6 @@ int ThreadPriorityToNativePriority(const ThreadPriority& priority)
 }
 
 } // namespace
-
-static pid_t GetCurrentThreadPid_()
-{
-#if defined(TARGET_ANDROID)
-  return gettid();
-#else
-  return syscall(SYS_gettid);
-#endif
-}
 
 // We need to return what the best number than can be passed
 // to SetPriority is. It will basically be relative to the
@@ -101,7 +87,7 @@ std::unique_ptr<IThreadImpl> IThreadImpl::CreateThreadImpl(std::thread::native_h
 }
 
 CThreadImplLinux::CThreadImplLinux(std::thread::native_handle_type handle)
-  : IThreadImpl(handle), m_threadID(GetCurrentThreadPid_())
+  : IThreadImpl(handle), m_threadID(gettid())
 {
 }
 
