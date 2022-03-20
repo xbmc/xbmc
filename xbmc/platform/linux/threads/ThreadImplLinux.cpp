@@ -108,7 +108,6 @@ CThreadImplLinux::CThreadImplLinux(std::thread::native_handle_type handle)
 void CThreadImplLinux::SetThreadInfo(const std::string& name)
 {
 #if defined(__GLIBC__)
-  // mthread must be set by here.
   pthread_setname_np(m_handle, name.c_str());
 #endif
 
