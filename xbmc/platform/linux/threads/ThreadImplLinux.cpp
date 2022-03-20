@@ -127,33 +127,27 @@ void CThreadImplLinux::SetThreadInfo(const std::string& name)
 
 bool CThreadImplLinux::SetPriority(const ThreadPriority& priority)
 {
-  bool bReturn = false;
-
   std::unique_lock<CCriticalSection> lockIt(m_criticalSection);
 
-  if (!m_handle)
-    bReturn = false;
-  else
+  // get user max prio given max prio (will take the min)
+  int userMaxPrio = GetUserMaxPriority(ThreadPriorityToNativePriority(ThreadPriority::HIGHEST));
+
+  // keep priority in bounds
+  int prio = ThreadPriorityToNativePriority(priority);
+  if (prio >= ThreadPriorityToNativePriority(ThreadPriority::HIGHEST))
+    prio = userMaxPrio; // this is already the min of GetMaxPriority and what the user can set.
+  if (prio < ThreadPriorityToNativePriority(ThreadPriority::LOWEST))
+    prio = ThreadPriorityToNativePriority(ThreadPriority::LOWEST);
+
+  // nice level of application
+  const int appNice = getpriority(PRIO_PROCESS, getpid());
+  const int newNice = appNice - prio;
+
+  if (setpriority(PRIO_PROCESS, m_threadID, newNice) != 0)
   {
-    // get user max prio given max prio (will take the min)
-    int userMaxPrio = GetUserMaxPriority(ThreadPriorityToNativePriority(ThreadPriority::HIGHEST));
-
-    // keep priority in bounds
-    int prio = ThreadPriorityToNativePriority(priority);
-    if (prio >= ThreadPriorityToNativePriority(ThreadPriority::HIGHEST))
-      prio = userMaxPrio; // this is already the min of GetMaxPriority and what the user can set.
-    if (prio < ThreadPriorityToNativePriority(ThreadPriority::LOWEST))
-      prio = ThreadPriorityToNativePriority(ThreadPriority::LOWEST);
-
-    // nice level of application
-    const int appNice = getpriority(PRIO_PROCESS, getpid());
-    const int newNice = appNice - prio;
-
-    if (setpriority(PRIO_PROCESS, m_threadID, newNice) == 0)
-      bReturn = true;
-    else
-      CLog::Log(LOGERROR, "{}: error {}", __FUNCTION__, strerror(errno));
+    CLog::Log(LOGERROR, "[threads] failed to set priority: {}", strerror(errno));
+    return false;
   }
 
-  return bReturn;
+  return true;
 }
