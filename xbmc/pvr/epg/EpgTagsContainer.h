@@ -110,11 +110,16 @@ public:
   std::shared_ptr<CPVREpgInfoTag> GetTagBetween(const CDateTime& start, const CDateTime& end) const;
 
   /*!
+   * @brief Update the currently active event.
+   * @return True if the active event was updated, false otherwise.
+   */
+  bool UpdateActiveTag();
+
+  /*!
    * @brief Get the event that is occurring now
-   * @param bUpdateIfNeeded Whether the tag should be obtained if no one was cached before.
    * @return The tag or nullptr if no tag was found.
    */
-  std::shared_ptr<CPVREpgInfoTag> GetActiveTag(bool bUpdateIfNeeded) const;
+  std::shared_ptr<CPVREpgInfoTag> GetActiveTag() const;
 
   /*!
    * @brief Get the event that will occur next

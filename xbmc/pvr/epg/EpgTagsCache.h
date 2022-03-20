@@ -35,12 +35,13 @@ public:
 
   void Reset();
 
+  bool Refresh();
+
   std::shared_ptr<CPVREpgInfoTag> GetLastEndedTag();
-  std::shared_ptr<CPVREpgInfoTag> GetNowActiveTag(bool bUpdateIfNeeded);
+  std::shared_ptr<CPVREpgInfoTag> GetNowActiveTag();
   std::shared_ptr<CPVREpgInfoTag> GetNextStartingTag();
 
 private:
-  void Refresh(bool bUpdateIfNeeded);
   void RefreshLastEndedTag(const CDateTime& activeTime);
   void RefreshNextStartingTag(const CDateTime& activeTime);
 

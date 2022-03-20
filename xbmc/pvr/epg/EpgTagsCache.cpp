@@ -37,19 +37,19 @@ void CPVREpgTagsCache::SetChannelData(const std::shared_ptr<CPVREpgChannelData>&
 
 std::shared_ptr<CPVREpgInfoTag> CPVREpgTagsCache::GetLastEndedTag()
 {
-  Refresh(true);
+  Refresh();
   return m_lastEndedTag;
 }
 
-std::shared_ptr<CPVREpgInfoTag> CPVREpgTagsCache::GetNowActiveTag(bool bUpdateIfNeeded)
+std::shared_ptr<CPVREpgInfoTag> CPVREpgTagsCache::GetNowActiveTag()
 {
-  Refresh(bUpdateIfNeeded);
+  Refresh();
   return m_nowActiveTag;
 }
 
 std::shared_ptr<CPVREpgInfoTag> CPVREpgTagsCache::GetNextStartingTag()
 {
-  Refresh(true);
+  Refresh();
   return m_nextStartingTag;
 }
 
@@ -64,7 +64,7 @@ void CPVREpgTagsCache::Reset()
   m_nextStartingTag.reset();
 }
 
-void CPVREpgTagsCache::Refresh(bool bUpdateIfNeeded)
+bool CPVREpgTagsCache::Refresh()
 {
   const CDateTime activeTime =
       CServiceBroker::GetPVRManager().PlaybackState()->GetChannelPlaybackTime(
@@ -72,58 +72,63 @@ void CPVREpgTagsCache::Refresh(bool bUpdateIfNeeded)
 
   if (m_nowActiveStart.IsValid() && m_nowActiveEnd.IsValid() && m_nowActiveStart <= activeTime &&
       m_nowActiveEnd > activeTime)
-    return;
+    return false;
 
-  if (bUpdateIfNeeded)
+  const std::shared_ptr<CPVREpgInfoTag> prevNowActiveTag = m_nowActiveTag;
+
+  m_lastEndedTag.reset();
+  m_nowActiveTag.reset();
+  m_nextStartingTag.reset();
+
+  for (const auto& tag : m_changedTags)
   {
-    m_lastEndedTag.reset();
-    m_nowActiveTag.reset();
-    m_nextStartingTag.reset();
-
-    for (const auto& tag : m_changedTags)
+    if (tag.second->StartAsUTC() <= activeTime && tag.second->EndAsUTC() > activeTime)
     {
-      if (tag.second->StartAsUTC() <= activeTime && tag.second->EndAsUTC() > activeTime)
-      {
-        m_nowActiveTag = tag.second;
-        m_nowActiveStart = m_nowActiveTag->StartAsUTC();
-        m_nowActiveEnd = m_nowActiveTag->EndAsUTC();
-        break;
-      }
-    }
-
-    if (!m_nowActiveTag && m_database)
-    {
-      const std::vector<std::shared_ptr<CPVREpgInfoTag>> tags =
-          m_database->GetEpgTagsByMinEndMaxStartTime(m_iEpgID, activeTime + ONE_SECOND, activeTime);
-      if (!tags.empty())
-      {
-        if (tags.size() > 1)
-          CLog::LogF(LOGWARNING, "Got multiple results. Picking up the first.");
-
-        m_nowActiveTag = tags.front();
-        m_nowActiveTag->SetChannelData(m_channelData);
-        m_nowActiveStart = m_nowActiveTag->StartAsUTC();
-        m_nowActiveEnd = m_nowActiveTag->EndAsUTC();
-      }
-    }
-
-    RefreshLastEndedTag(activeTime);
-    RefreshNextStartingTag(activeTime);
-
-    if (!m_nowActiveTag)
-    {
-      // we're in a gap. remember start and end time of that gap to avoid unneeded db load.
-      if (m_lastEndedTag)
-        m_nowActiveStart = m_lastEndedTag->EndAsUTC();
-      else
-        m_nowActiveStart = activeTime - CDateTimeSpan(1000, 0, 0, 0); // fake start far in the past
-
-      if (m_nextStartingTag)
-        m_nowActiveEnd = m_nextStartingTag->StartAsUTC();
-      else
-        m_nowActiveEnd = activeTime + CDateTimeSpan(1000, 0, 0, 0); // fake end far in the future
+      m_nowActiveTag = tag.second;
+      m_nowActiveStart = m_nowActiveTag->StartAsUTC();
+      m_nowActiveEnd = m_nowActiveTag->EndAsUTC();
+      break;
     }
   }
+
+  if (!m_nowActiveTag && m_database)
+  {
+    const std::vector<std::shared_ptr<CPVREpgInfoTag>> tags =
+        m_database->GetEpgTagsByMinEndMaxStartTime(m_iEpgID, activeTime + ONE_SECOND, activeTime);
+    if (!tags.empty())
+    {
+      if (tags.size() > 1)
+        CLog::LogF(LOGWARNING, "Got multiple results. Picking up the first.");
+
+      m_nowActiveTag = tags.front();
+      m_nowActiveTag->SetChannelData(m_channelData);
+      m_nowActiveStart = m_nowActiveTag->StartAsUTC();
+      m_nowActiveEnd = m_nowActiveTag->EndAsUTC();
+    }
+  }
+
+  RefreshLastEndedTag(activeTime);
+  RefreshNextStartingTag(activeTime);
+
+  if (!m_nowActiveTag)
+  {
+    // we're in a gap. remember start and end time of that gap to avoid unneeded db load.
+    if (m_lastEndedTag)
+      m_nowActiveStart = m_lastEndedTag->EndAsUTC();
+    else
+      m_nowActiveStart = activeTime - CDateTimeSpan(1000, 0, 0, 0); // fake start far in the past
+
+    if (m_nextStartingTag)
+      m_nowActiveEnd = m_nextStartingTag->StartAsUTC();
+    else
+      m_nowActiveEnd = activeTime + CDateTimeSpan(1000, 0, 0, 0); // fake end far in the future
+  }
+
+  const bool tagChanged =
+      m_nowActiveTag && (!prevNowActiveTag || *prevNowActiveTag != *m_nowActiveTag);
+  const bool tagRemoved = !m_nowActiveTag && prevNowActiveTag;
+
+  return (tagChanged || tagRemoved);
 }
 
 void CPVREpgTagsCache::RefreshLastEndedTag(const CDateTime& activeTime)

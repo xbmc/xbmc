@@ -126,7 +126,7 @@ namespace PVR
      * @brief Get the event that is occurring now
      * @return The current event or NULL if it wasn't found.
      */
-    std::shared_ptr<CPVREpgInfoTag> GetTagNow(bool bUpdateIfNeeded = true) const;
+    std::shared_ptr<CPVREpgInfoTag> GetTagNow() const;
 
     /*!
      * @brief Get the event that will occur next

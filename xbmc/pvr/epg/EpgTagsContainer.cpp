@@ -209,6 +209,8 @@ bool CPVREpgTagsContainer::UpdateEntries(const CPVREpgTagsContainer& tags)
 void CPVREpgTagsContainer::FixOverlappingEvents(
     std::vector<std::shared_ptr<CPVREpgInfoTag>>& tags) const
 {
+  bool bResetCache = false;
+
   std::shared_ptr<CPVREpgInfoTag> previousTag;
   for (auto it = tags.begin(); it != tags.end();)
   {
@@ -221,14 +223,19 @@ void CPVREpgTagsContainer::FixOverlappingEvents(
     else
     {
       it = tags.erase(it);
-      m_tagsCache->Reset();
+      bResetCache = true;
     }
   }
+
+  if (bResetCache)
+    m_tagsCache->Reset();
 }
 
 void CPVREpgTagsContainer::FixOverlappingEvents(
     std::map<CDateTime, std::shared_ptr<CPVREpgInfoTag>>& tags) const
 {
+  bool bResetCache = false;
+
   std::shared_ptr<CPVREpgInfoTag> previousTag;
   for (auto it = tags.begin(); it != tags.end();)
   {
@@ -241,9 +248,12 @@ void CPVREpgTagsContainer::FixOverlappingEvents(
     else
     {
       it = tags.erase(it);
-      m_tagsCache->Reset();
+      bResetCache = true;
     }
   }
+
+  if (bResetCache)
+    m_tagsCache->Reset();
 }
 
 std::shared_ptr<CPVREpgInfoTag> CPVREpgTagsContainer::CreateEntry(
@@ -301,23 +311,26 @@ bool CPVREpgTagsContainer::DeleteEntry(const std::shared_ptr<CPVREpgInfoTag>& ta
 
 void CPVREpgTagsContainer::Cleanup(const CDateTime& time)
 {
+  bool bResetCache = false;
   for (auto it = m_changedTags.begin(); it != m_changedTags.end();)
   {
     if (it->second->EndAsUTC() < time)
     {
-      m_tagsCache->Reset();
-
       const auto it1 = m_deletedTags.find(it->first);
       if (it1 != m_deletedTags.end())
         m_deletedTags.erase(it1);
 
       it = m_changedTags.erase(it);
+      bResetCache = true;
     }
     else
     {
       ++it;
     }
   }
+
+  if (bResetCache)
+    m_tagsCache->Reset();
 
   if (m_database)
     m_database->DeleteEpgTags(m_iEpgID, time);
@@ -326,6 +339,7 @@ void CPVREpgTagsContainer::Cleanup(const CDateTime& time)
 void CPVREpgTagsContainer::Clear()
 {
   m_changedTags.clear();
+  m_tagsCache->Reset();
 }
 
 bool CPVREpgTagsContainer::IsEmpty() const
@@ -415,9 +429,14 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgTagsContainer::GetTagBetween(const CDateT
   return {};
 }
 
-std::shared_ptr<CPVREpgInfoTag> CPVREpgTagsContainer::GetActiveTag(bool bUpdateIfNeeded) const
+bool CPVREpgTagsContainer::UpdateActiveTag()
 {
-  return m_tagsCache->GetNowActiveTag(bUpdateIfNeeded);
+  return m_tagsCache->Refresh();
+}
+
+std::shared_ptr<CPVREpgInfoTag> CPVREpgTagsContainer::GetActiveTag() const
+{
+  return m_tagsCache->GetNowActiveTag();
 }
 
 std::shared_ptr<CPVREpgInfoTag> CPVREpgTagsContainer::GetLastEndedTag() const
@@ -656,7 +675,7 @@ void CPVREpgTagsContainer::QueuePersistQuery()
       tag.second->QueuePersistQuery(m_database);
     }
 
-    m_changedTags.clear();
+    Clear();
 
     m_database->Unlock();
   }
