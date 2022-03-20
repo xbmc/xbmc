@@ -111,14 +111,15 @@ void CThreadImplLinux::SetThreadInfo(const std::string& name)
 #endif
 
   // get user max prio
-  int userMaxPrio = GetUserMaxPriority(ThreadPriorityToNativePriority(ThreadPriority::HIGHEST));
+  const int maxPrio = ThreadPriorityToNativePriority(ThreadPriority::HIGHEST);
+  const int userMaxPrio = GetUserMaxPriority(maxPrio);
 
   // if the user does not have an entry in limits.conf the following
   // call will fail
   if (userMaxPrio > 0)
   {
     // start thread with nice level of application
-    int appNice = getpriority(PRIO_PROCESS, getpid());
+    const int appNice = getpriority(PRIO_PROCESS, getpid());
     if (setpriority(PRIO_PROCESS, m_threadID, appNice) != 0)
       CLog::Log(LOGERROR, "{}: error {}", __FUNCTION__, strerror(errno));
   }
@@ -127,8 +128,7 @@ void CThreadImplLinux::SetThreadInfo(const std::string& name)
 bool CThreadImplLinux::SetPriority(const ThreadPriority& priority)
 {
   // keep priority in bounds
-  int prio = ThreadPriorityToNativePriority(priority);
-
+  const int prio = ThreadPriorityToNativePriority(priority);
   const int maxPrio = ThreadPriorityToNativePriority(ThreadPriority::HIGHEST);
   const int minPrio = ThreadPriorityToNativePriority(ThreadPriority::LOWEST);
 
@@ -136,11 +136,11 @@ bool CThreadImplLinux::SetPriority(const ThreadPriority& priority)
   const int userMaxPrio = GetUserMaxPriority(maxPrio);
 
   // clamp to min and max priorities
-  prio = std::clamp(prio, minPrio, userMaxPrio);
+  const int adjustedPrio = std::clamp(prio, minPrio, userMaxPrio);
 
   // nice level of application
   const int appNice = getpriority(PRIO_PROCESS, getpid());
-  const int newNice = appNice - prio;
+  const int newNice = appNice - adjustedPrio;
 
   if (setpriority(PRIO_PROCESS, m_threadID, newNice) != 0)
   {
