@@ -21,7 +21,6 @@ namespace XBMCAddon
   protected:
     int numValuesSet;
     explicit inline TupleBase(int pnumValuesSet) : numValuesSet(pnumValuesSet) {}
-    inline TupleBase(const TupleBase& o) = default;
     inline void nvs(int newSize) { if(numValuesSet < newSize) numValuesSet = newSize; }
   public:
     inline int GetNumValuesSet() const { return numValuesSet; }
