@@ -10,6 +10,7 @@
 
 #include "utils/log.h"
 
+#include <algorithm>
 #include <array>
 #include <limits.h>
 #include <mutex>
@@ -115,15 +116,17 @@ bool CThreadImplLinux::SetPriority(const ThreadPriority& priority)
 {
   std::unique_lock<CCriticalSection> lockIt(m_criticalSection);
 
-  // get user max prio given max prio (will take the min)
-  int userMaxPrio = GetUserMaxPriority(ThreadPriorityToNativePriority(ThreadPriority::HIGHEST));
-
   // keep priority in bounds
   int prio = ThreadPriorityToNativePriority(priority);
-  if (prio >= ThreadPriorityToNativePriority(ThreadPriority::HIGHEST))
-    prio = userMaxPrio; // this is already the min of GetMaxPriority and what the user can set.
-  if (prio < ThreadPriorityToNativePriority(ThreadPriority::LOWEST))
-    prio = ThreadPriorityToNativePriority(ThreadPriority::LOWEST);
+
+  const int maxPrio = ThreadPriorityToNativePriority(ThreadPriority::HIGHEST);
+  const int minPrio = ThreadPriorityToNativePriority(ThreadPriority::LOWEST);
+
+  // get user max prio given max prio (will take the min)
+  const int userMaxPrio = GetUserMaxPriority(maxPrio);
+
+  // clamp to min and max priorities
+  prio = std::clamp(prio, minPrio, userMaxPrio);
 
   // nice level of application
   const int appNice = getpriority(PRIO_PROCESS, getpid());
