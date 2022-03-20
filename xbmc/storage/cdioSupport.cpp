@@ -19,6 +19,14 @@
 #include <cdio/mmc.h>
 #include <cdio/util.h>
 
+namespace
+{
+/* Helper constexpr to hide the 0 return code for tray closed. */
+constexpr int CDIO_TRAY_STATUS_CLOSED = 0;
+/* Helper constexpr to hide the 1 return code for tray open */
+constexpr int CDIO_TRAY_STATUS_OPEN = 1;
+} // namespace
+
 using namespace MEDIA_DETECT;
 
 std::shared_ptr<CLibcdio> CLibcdio::m_pInstance;
@@ -135,14 +143,24 @@ discmode_t CLibcdio::cdio_get_discmode(CdIo_t *p_cdio)
   return( ::cdio_get_discmode(p_cdio) );
 }
 
-int CLibcdio::mmc_get_tray_status(const CdIo_t *p_cdio)
+CdioTrayStatus CLibcdio::mmc_get_tray_status(const CdIo_t* p_cdio)
 {
   std::unique_lock<CCriticalSection> lock(*this);
 
-  return( ::mmc_get_tray_status(p_cdio) );
+  int status = ::mmc_get_tray_status(p_cdio);
+  switch (status)
+  {
+    case CDIO_TRAY_STATUS_CLOSED:
+      return CdioTrayStatus::CLOSED;
+    case CDIO_TRAY_STATUS_OPEN:
+      return CdioTrayStatus::OPEN;
+    default:
+      break;
+  }
+  return CdioTrayStatus::DRIVER_ERROR;
 }
 
-int CLibcdio::cdio_eject_media(CdIo_t **p_cdio)
+driver_return_code_t CLibcdio::cdio_eject_media(CdIo_t** p_cdio)
 {
   std::unique_lock<CCriticalSection> lock(*this);
 

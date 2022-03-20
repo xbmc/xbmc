@@ -77,6 +77,7 @@ void CMediaManager::Initialize()
     m_platformStorage = IStorageProvider::CreateInstance();
   }
 #ifdef HAS_DVD_DRIVE
+  m_platformDiscDriveHander = IDiscDriveHandler::CreateInstance();
   m_strFirstAvailDrive = m_platformStorage->GetFirstOpticalDeviceFileName();
 #endif
   m_platformStorage->Initialize();
@@ -388,38 +389,20 @@ bool CMediaManager::HasOpticalDrive()
   return false;
 }
 
-DWORD CMediaManager::GetDriveStatus(const std::string& devicePath)
+DriveState CMediaManager::GetDriveStatus(const std::string& devicePath)
 {
 #ifdef HAS_DVD_DRIVE
 #ifdef TARGET_WINDOWS
-  if(!m_bhasoptical)
-    return DRIVE_NOT_READY;
+  if (!m_bhasoptical || !m_platformDiscDriveHander)
+    return DriveState::NOT_READY;
 
-  std::string strDevice = TranslateDevicePath(devicePath, true);
-  DWORD dwRet = DRIVE_NOT_READY;
-  int status = CWIN32Util::GetDriveStatus(strDevice);
-
-  switch(status)
-  {
-  case -1: // error
-    dwRet = DRIVE_NOT_READY;
-    break;
-  case 0: // no media
-    dwRet = DRIVE_CLOSED_NO_MEDIA;
-    break;
-  case 1: // tray open
-    dwRet = DRIVE_OPEN;
-    break;
-  case 2: // media accessible
-    dwRet = DRIVE_CLOSED_MEDIA_PRESENT;
-    break;
-  }
-  return dwRet;
+  std::string translatedDevicePath = TranslateDevicePath(devicePath, true);
+  return m_platformDiscDriveHander->GetDriveState(translatedDevicePath);
 #else
-  return MEDIA_DETECT::CDetectDVDMedia::DriveReady();
+  return MEDIA_DETECT::CDetectDVDMedia::GetDriveState();
 #endif
 #else
-  return DRIVE_NOT_READY;
+  return DriveState::NOT_READY;
 #endif
 }
 
@@ -491,7 +474,8 @@ std::string CMediaManager::GetDiskLabel(const std::string& devicePath)
 
   // try to minimize the chance of a "device not ready" dialog
   std::string drivePath = CServiceBroker::GetMediaManager().TranslateDevicePath(devicePath, true);
-  if (CServiceBroker::GetMediaManager().GetDriveStatus(drivePath) != DRIVE_CLOSED_MEDIA_PRESENT)
+  if (CServiceBroker::GetMediaManager().GetDriveStatus(drivePath) !=
+      DriveState::CLOSED_MEDIA_PRESENT)
     return "";
 
   UTILS::DISCS::DiscInfo info;
@@ -579,6 +563,11 @@ std::string CMediaManager::GetDiscPath()
   return MEDIA_DETECT::CDetectDVDMedia::GetDVDPath();
 #endif
 }
+
+std::shared_ptr<IDiscDriveHandler> CMediaManager::GetDiscDriveHandler()
+{
+  return m_platformDiscDriveHander;
+}
 #endif
 
 void CMediaManager::SetHasOpticalDrive(bool bstatus)
@@ -596,67 +585,30 @@ bool CMediaManager::Eject(const std::string& mountpath)
 void CMediaManager::EjectTray( const bool bEject, const char cDriveLetter )
 {
 #ifdef HAS_DVD_DRIVE
-#ifdef TARGET_WINDOWS
-  CWIN32Util::EjectTray(cDriveLetter);
-#else
-  std::shared_ptr<CLibcdio> c_cdio = CLibcdio::GetInstance();
-  char* dvdDevice = c_cdio->GetDeviceFileName();
-  int nRetries=3;
-  while (nRetries-- > 0)
+  if (m_platformDiscDriveHander)
   {
-    CdIo_t* cdio = c_cdio->cdio_open(dvdDevice, DRIVER_UNKNOWN);
-    if (cdio)
-    {
-      c_cdio->cdio_eject_media(&cdio);
-      c_cdio->cdio_destroy(cdio);
-    }
-    else
-      break;
+    m_platformDiscDriveHander->EjectDriveTray(TranslateDevicePath(""));
   }
-#endif
 #endif
 }
 
 void CMediaManager::CloseTray(const char cDriveLetter)
 {
 #ifdef HAS_DVD_DRIVE
-#if defined(TARGET_POSIX)
-  std::shared_ptr<CLibcdio> libCdio = CLibcdio::GetInstance();
-  if (!libCdio)
+  if (m_platformDiscDriveHander)
   {
-    CLog::LogF(LOGERROR, "Failed to obtain cdio handler");
-    return;
+    m_platformDiscDriveHander->ToggleDriveTray(TranslateDevicePath(""));
   }
-
-  char* dvdDevice = libCdio->GetDeviceFileName();
-  if (!dvdDevice)
-  {
-    CLog::LogF(LOGERROR, "Failed to obtain default disc device");
-  }
-
-  driver_return_code_t ret = libCdio->cdio_close_tray(dvdDevice, nullptr);
-  if (ret != DRIVER_OP_SUCCESS)
-  {
-    CLog::LogF(LOGERROR, "Closing tray failed for device {}: {}", dvdDevice,
-               libCdio->cdio_driver_errmsg(ret));
-  }
-#elif defined(TARGET_WINDOWS)
-  CWIN32Util::CloseTray(cDriveLetter);
-#endif
 #endif
 }
 
 void CMediaManager::ToggleTray(const char cDriveLetter)
 {
 #ifdef HAS_DVD_DRIVE
-#if defined(TARGET_WINDOWS)
-  CWIN32Util::ToggleTray(cDriveLetter);
-#else
-  if (GetDriveStatus() == TRAY_OPEN || GetDriveStatus() == DRIVE_OPEN)
-    CloseTray();
-  else
-    EjectTray();
-#endif
+  if (m_platformDiscDriveHander)
+  {
+    m_platformDiscDriveHander->ToggleDriveTray(TranslateDevicePath(""));
+  }
 #endif
 }
 

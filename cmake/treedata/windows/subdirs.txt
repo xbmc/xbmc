@@ -12,6 +12,7 @@ xbmc/platform/win32/network            platform/win32/network
 xbmc/platform/win32/peripherals        platform/win32/peripherals
 xbmc/platform/win32/powermanagement    platform/win32/powermanagement
 xbmc/platform/win32/storage            platform/win32/storage
+xbmc/platform/win32/storage/discs      platform/win32/storage/discs
 xbmc/platform/win32/threads            platform/win32/threads
 xbmc/platform/win32/utils              platform/win32/utils
 xbmc/rendering/dx                      rendering/dx

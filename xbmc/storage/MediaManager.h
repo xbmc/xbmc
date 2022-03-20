@@ -10,6 +10,7 @@
 
 #include "IStorageProvider.h"
 #include "MediaSource.h" // for VECSOURCES
+#include "storage/discs/IDiscDriveHandler.h"
 #include "threads/CriticalSection.h"
 #include "utils/DiscsUtils.h"
 #include "utils/Job.h"
@@ -19,17 +20,6 @@
 #include <vector>
 
 #include "PlatformDefs.h"
-
-#define TRAY_OPEN     16
-#define TRAY_CLOSED_NO_MEDIA  64
-#define TRAY_CLOSED_MEDIA_PRESENT 96
-
-#define DRIVE_OPEN      0 // Open...
-#define DRIVE_NOT_READY     1 // Opening.. Closing...
-#define DRIVE_READY      2
-#define DRIVE_CLOSED_NO_MEDIA   3 // CLOSED...but no media in drive
-#define DRIVE_CLOSED_MEDIA_PRESENT  4 // Will be send once when the drive just have closed
-#define DRIVE_NONE  5 // system doesn't have an optical drive
 
 class CFileItem;
 
@@ -67,12 +57,19 @@ public:
   bool IsAudio(const std::string& devicePath="");
   bool HasOpticalDrive();
   std::string TranslateDevicePath(const std::string& devicePath, bool bReturnAsDevice=false);
-  DWORD GetDriveStatus(const std::string& devicePath="");
+  DriveState GetDriveStatus(const std::string& devicePath = "");
 #ifdef HAS_DVD_DRIVE
   MEDIA_DETECT::CCdInfo* GetCdInfo(const std::string& devicePath="");
   bool RemoveCdInfo(const std::string& devicePath="");
   std::string GetDiskLabel(const std::string& devicePath="");
   std::string GetDiskUniqueId(const std::string& devicePath="");
+
+  /*! \brief Gets the platform disc drive handler
+  * @todo this likely doesn't belong here but in some discsupport component owned by media manager
+  * let's keep it here for now
+  * \return The platform disc drive handler
+  */
+  std::shared_ptr<IDiscDriveHandler> GetDiscDriveHandler();
 #endif
   std::string GetDiscPath();
   void SetHasOpticalDrive(bool bstatus);
@@ -120,6 +117,9 @@ protected:
 
 private:
   std::unique_ptr<IStorageProvider> m_platformStorage;
+#ifdef HAS_DVD_DRIVE
+  std::shared_ptr<IDiscDriveHandler> m_platformDiscDriveHander;
+#endif
 
   UTILS::DISCS::DiscInfo GetDiscInfo(const std::string& mediaPath);
   void RemoveDiscInfo(const std::string& devicePath);

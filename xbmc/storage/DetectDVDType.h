@@ -17,6 +17,7 @@
 
 #ifdef HAS_DVD_DRIVE
 
+#include "storage/discs/IDiscDriveHandler.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 #include "utils/DiscsUtils.h"
@@ -41,7 +42,8 @@ public:
 
   static void WaitMediaReady();
   static bool IsDiscInDrive();
-  static int DriveReady();
+  static bool DriveReady();
+  static DriveState GetDriveState();
   static CCdInfo* GetCdInfo();
   static CEvent m_evAutorun;
 
@@ -51,7 +53,7 @@ public:
   static void UpdateState();
 protected:
   void UpdateDvdrom();
-  DWORD GetTrayState();
+  DriveState PollDriveState();
 
 
   void DetectMediaType();
@@ -62,7 +64,7 @@ protected:
 private:
   static CCriticalSection m_muReadingMedia;
 
-  static int m_DriveState;
+  static DriveState m_DriveState;
   static time_t m_LastPoll;
   static CDetectDVDMedia* m_pInstance;
 
@@ -70,8 +72,9 @@ private:
 
   bool m_bStartup = true; // Do not autorun on startup
   bool m_bAutorun = false;
-  DWORD m_dwTrayState;
-  DWORD m_dwLastTrayState = 0;
+  TrayState m_TrayState{TrayState::UNDEFINED};
+  TrayState m_LastTrayState{TrayState::UNDEFINED};
+  DriveState m_LastDriveState{DriveState::NONE};
 
   static std::string m_diskLabel;
   static std::string m_diskPath;

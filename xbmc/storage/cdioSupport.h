@@ -97,6 +97,17 @@ typedef struct TRACKINFO
 }
 trackinfo;
 
+/*! \brief Helper enum class for the MMC tray state
+*/
+enum class CdioTrayStatus
+{
+  /* The MMC tray state is reported closed */
+  CLOSED,
+  /* The MMC tray state is reported open */
+  OPEN,
+  /* Driver error */
+  DRIVER_ERROR
+};
 
 class CCdInfo
 {
@@ -251,8 +262,8 @@ public:
   CdIo_t* cdio_open_win32(const char *psz_source);
   void cdio_destroy(CdIo_t *p_cdio);
   discmode_t cdio_get_discmode(CdIo_t *p_cdio);
-  int mmc_get_tray_status(const CdIo_t *p_cdio);
-  int cdio_eject_media(CdIo_t **p_cdio);
+  CdioTrayStatus mmc_get_tray_status(const CdIo_t* p_cdio);
+  driver_return_code_t cdio_eject_media(CdIo_t** p_cdio);
   track_t cdio_get_last_track_num(const CdIo_t *p_cdio);
   lsn_t cdio_get_track_lsn(const CdIo_t *p_cdio, track_t i_track);
   lsn_t cdio_get_track_last_lsn(const CdIo_t *p_cdio, track_t i_track);

@@ -31,6 +31,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
+#include "storage/discs/IDiscDriveHandler.h"
 #include "utils/AlarmClock.h"
 #include "utils/CPUInfo.h"
 #include "utils/HDRCapabilities.h"
@@ -546,10 +547,10 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       return true;
 #ifdef HAS_DVD_DRIVE
     case SYSTEM_DVDREADY:
-      value = CServiceBroker::GetMediaManager().GetDriveStatus() != DRIVE_NOT_READY;
+      value = CServiceBroker::GetMediaManager().GetDriveStatus() != DriveState::NOT_READY;
       return true;
     case SYSTEM_TRAYOPEN:
-      value = CServiceBroker::GetMediaManager().GetDriveStatus() == DRIVE_OPEN;
+      value = CServiceBroker::GetMediaManager().GetDriveStatus() == DriveState::OPEN;
       return true;
 #endif
     case SYSTEM_CAN_POWERDOWN:
