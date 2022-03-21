@@ -63,9 +63,10 @@ else()
   find_library(FMT_LIBRARY_DEBUG NAMES fmtd
                                  PATHS ${PC_FMT_LIBDIR})
 
-  include(SelectLibraryConfigurations)
-  select_library_configurations(FMT)
 endif()
+
+include(SelectLibraryConfigurations)
+select_library_configurations(FMT)
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Fmt
