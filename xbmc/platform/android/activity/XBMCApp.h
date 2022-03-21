@@ -141,7 +141,6 @@ public:
   void onDisplayAdded(int displayId) override;
   void onDisplayChanged(int displayId) override;
   void onDisplayRemoved(int displayId) override;
-  jni::jhobject getDisplayListener() { return m_displayListener.get_raw(); }
 
   bool isValid() { return m_activity != NULL; }
 
@@ -258,7 +257,9 @@ private:
   void SetupEnv();
   static void SetRefreshRateCallback(CVariant *rate);
   static void SetDisplayModeCallback(CVariant *mode);
-  static void RegisterDisplayListener(CVariant*);
+
+  void RegisterDisplayListener();
+  void UnregisterDisplayListener();
 
   ANativeActivity* m_activity{nullptr};
   IInputHandler& m_inputHandler;
