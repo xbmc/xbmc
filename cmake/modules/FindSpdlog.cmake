@@ -70,10 +70,10 @@ else()
                                       PATHS ${PC_SPDLOG_LIBDIR})
   find_library(SPDLOG_LIBRARY_DEBUG NAMES spdlogd
                                     PATHS ${PC_SPDLOG_LIBDIR})
-
-  include(SelectLibraryConfigurations)
-  select_library_configurations(SPDLOG)
 endif()
+
+include(SelectLibraryConfigurations)
+select_library_configurations(SPDLOG)
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Spdlog
