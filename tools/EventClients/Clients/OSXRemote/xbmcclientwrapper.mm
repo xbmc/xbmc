@@ -78,8 +78,10 @@ typedef std::map<eATVClientEvent, CPacketBUTTON*> tEventMap;
 typedef std::map<XBMCClientEventSequence, CPacketBUTTON*> tSequenceMap;
 typedef std::map<std::pair<int, eATVClientEvent>, CPacketBUTTON*> tMultiRemoteMap;
 
-class  XBMCClientWrapperImpl{
-	tEventMap m_event_map;
+struct XBMCClientWrapperImpl
+{
+private:
+  tEventMap m_event_map;
   tSequenceMap m_sequence_map;
   tMultiRemoteMap m_multiremote_map;
   eRemoteMode m_mode;
