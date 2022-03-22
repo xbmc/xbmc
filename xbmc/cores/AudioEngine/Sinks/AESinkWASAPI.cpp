@@ -396,6 +396,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
   CAEDeviceInfo        deviceInfo;
   CAEChannelInfo       deviceChannels;
   bool                 add192 = false;
+  bool add48 = false;
 
   WAVEFORMATEXTENSIBLE wfxex = {0};
   HRESULT              hr;
@@ -547,6 +548,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
         deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_2048);
         deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_1024);
         deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_DTS_512);
+        add48 = true;
       }
 
       /* Test format Dolby AC3 */
@@ -562,6 +564,7 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
         }
 
         deviceInfo.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
+        add48 = true;
       }
 
       /* Test format for PCM format iteration */
@@ -618,6 +621,12 @@ void CAESinkWASAPI::EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool fo
         {
           deviceInfo.m_sampleRates.push_back(WASAPISampleRates[j]);
           CLog::LogF(LOGINFO, "sample rate 192khz on device \"%s\" seems to be not supported.",
+                     details.strDescription);
+        }
+        else if (wfxex.Format.nSamplesPerSec == 48000 && add48)
+        {
+          deviceInfo.m_sampleRates.push_back(WASAPISampleRates[j]);
+          CLog::LogF(LOGINFO, "sample rate 48khz on device \"{}\" seems to be not supported.",
                      details.strDescription);
         }
       }
