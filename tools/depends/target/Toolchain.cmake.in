@@ -62,6 +62,7 @@ set(CMAKE_SYSTEM_VERSION 1)
 set(CMAKE_C_COMPILER @CC@)
 set(CMAKE_CXX_COMPILER @CXX@)
 set(CMAKE_AR @AR@ CACHE FILEPATH "Archiver")
+SET(CMAKE_AS @AS@ CACHE FILEPATH "Assembler")
 set(CMAKE_LINKER @LD@ CACHE FILEPATH "Linker")
 set(CMAKE_NM @NM@ CACHE FILEPATH "Nm")
 set(CMAKE_STRIP @STRIP@ CACHE PATH "strip binary" FORCE)
@@ -118,6 +119,93 @@ set(ENV{PKG_CONFIG_LIBDIR} @prefix@/@deps_dir@/lib/pkgconfig:@prefix@/@deps_dir@
 if(NOT CORE_SYSTEM_NAME STREQUAL linux)
   set(ADDONS_PREFER_STATIC_LIBS ON)
 endif()
+
+# common usage in autoconf to refer to host arch tool use
+set(CC_FOR_BUILD "@CC_FOR_BUILD@")
+set(CXX_FOR_BUILD "@CXX_FOR_BUILD@")
+set(LD_FOR_BUILD "@LD_FOR_BUILD@")
+set(CC_BINARY_FOR_BUILD "@CC_FOR_BUILD@")
+set(CXX_BINARY_FOR_BUILD "@CXX_FOR_BUILD@")
+set(AR_FOR_BUILD "@AR_FOR_BUILD@")
+set(RANLIB_FOR_BUILD "@RANLIB_FOR_BUILD@")
+set(AS_FOR_BUILD "@AS_FOR_BUILD@")
+set(NM_FOR_BUILD "@NM_FOR_BUILD@")
+set(STRIP_FOR_BUILD "@STRIP_FOR_BUILD@")
+set(READELF_FOR_BUILD "@READELF_FOR_BUILD@")
+set(OBJDUMP_FOR_BUILD "@OBJDUMP_FOR_BUILD@")
+
+# flags for host arch building
+set(CFLAGS_FOR_BUILD "@host_includes@ -I@prefix@/@tool_dir@/include")
+set(LDFLAGS_FOR_BUILD "@host_includes@ -L@prefix@/@tool_dir@/lib")
+
+# other build tools
+find_program(NASM nasm HINTS "${NATIVEPREFIX}/bin" REQUIRED)
+
+# common autoconf build tools
+find_program(AUTOCONF autoconf HINTS "${NATIVEPREFIX}/bin" REQUIRED)
+find_program(ACLOCAL aclocal HINTS "${NATIVEPREFIX}/bin" REQUIRED)
+find_program(AUTOHEADER autoheader HINTS "${NATIVEPREFIX}/bin" REQUIRED)
+find_program(AUTOMAKE automake HINTS "${NATIVEPREFIX}/bin" REQUIRED)
+find_program(AUTOM4TE autom4te HINTS "${NATIVEPREFIX}/bin" REQUIRED)
+find_program(AUTOPOINT autopoint HINTS "${NATIVEPREFIX}/bin" REQUIRED)
+find_program(AUTORECONF autoreconf HINTS "${NATIVEPREFIX}/bin" REQUIRED)
+find_program(LIBTOOL libtool HINTS "${NATIVEPREFIX}/bin" REQUIRED)
+find_program(LIBTOOLIZE libtoolize HINTS "${NATIVEPREFIX}/bin" REQUIRED)
+
+set(ENV{ACLOCAL_PATH} "${DEPENDS_PATH}/share/aclocal:${NATIVEPREFIX}/share/aclocal")
+set(ENVPATH "${NATIVEPREFIX}/bin:$ENV{PATH}")
+
+# Dependency build tool config files
+find_file(MESON-CROSS "cross-file.meson" PATHS "${DEPENDS_PATH}/share" NO_CMAKE_FIND_ROOT_PATH REQUIRED)
+# autoconf config.site
+find_file(CONFIG_SITE "config.site" PATHS "${DEPENDS_PATH}/share" NO_CMAKE_FIND_ROOT_PATH REQUIRED)
+
+# Env variables for non cmake target environments
+set(PROJECT_TARGETENV "AS=${CMAKE_AS}"
+                      "AR=${CMAKE_AR}"
+                      "CC=${CMAKE_C_COMPILER}"
+                      "CXX=${CMAKE_CXX_COMPILER}"
+                      "NM=${CMAKE_NM}"
+                      "LD=${CMAKE_LINKER}"
+                      "STRIP=${CMAKE_STRIP}"
+                      "RANLIB=${CMAKE_RANLIB}"
+                      "OBJDUMP=${CMAKE_OBJDUMP}"
+                      "CFLAGS=${CMAKE_C_FLAGS}"
+                      "CPPFLAGS=${CMAKE_CPP_FLAGS}"
+                      "LDFLAGS=${CMAKE_EXE_LINKER_FLAGS}"
+                      "PKG_CONFIG_LIBDIR=$ENV{PKG_CONFIG_LIBDIR}"
+                      "AUTOM4TE=${AUTOM4TE}"
+                      "AUTOMAKE=${AUTOMAKE}"
+                      "AUTOCONF=${AUTOCONF}"
+                      "AUTORECONF=${AUTORECONF}"
+                      "ACLOCAL=${ACLOCAL}"
+                      "ACLOCAL_PATH=$ENV{ACLOCAL_PATH}"
+                      "AUTOPOINT=${AUTOPOINT}"
+                      "AUTOHEADER=${AUTOHEADER}"
+                      "LIBTOOL=${LIBTOOL}"
+                      "LIBTOOLIZE=${LIBTOOLIZE}"
+                      "CONFIG_SITE=${CONFIG_SITE}"
+                      )
+
+# Env variables for non cmake host environments
+set(PROJECT_BUILDENV CC_FOR_BUILD=${CC_FOR_BUILD}
+                     CXX_FOR_BUILD=${CXX_FOR_BUILD}
+                     LD_FOR_BUILD=${LD_FOR_BUILD}
+                     CC_BINARY_FOR_BUILD=${CC_FOR_BUILD}
+                     CXX_BINARY_FOR_BUILD=${CXX_FOR_BUILD}
+                     AR_FOR_BUILD=${AR_FOR_BUILD}
+                     RANLIB_FOR_BUILD=${RANLIB_FOR_BUILD}
+                     AS_FOR_BUILD=${AS_FOR_BUILD}
+                     NM_FOR_BUILD=${NM_FOR_BUILD}
+                     STRIP_FOR_BUILD=${STRIP_FOR_BUILD}
+                     READELF_FOR_BUILD=${READELF_FOR_BUILD}
+                     OBJDUMP_FOR_BUILD=${OBJDUMP_FOR_BUILD}
+                     CFLAGS_FOR_BUILD=${CFLAGS_FOR_BUILD}
+                     LDFLAGS_FOR_BUILD=${LDFLAGS_FOR_BUILD}
+                     )
+
+# variable to easily set host/target env for non cmake internal dep builds
+set(DEP_BUILDENV ${CMAKE_COMMAND} -E env ${PROJECT_TARGETENV} ${PROJECT_BUILDENV})
 
 set(KODI_DEPENDSBUILD 1)
 
