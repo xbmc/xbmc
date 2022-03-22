@@ -18,8 +18,10 @@ if(ENABLE_INTERNAL_FSTRCMP)
 
   SETUP_BUILD_VARS()
 
-  set(PATCH_COMMAND autoreconf -vif)
-  set(CONFIGURE_COMMAND ./configure --prefix ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR})
+  find_program(AUTORECONF autoreconf REQUIRED)
+
+  set(CONFIGURE_COMMAND ${AUTORECONF} -vif
+                COMMAND ./configure --prefix ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR})
   set(BUILD_COMMAND make lib/libfstrcmp.la)
   set(BUILD_IN_SOURCE 1)
   set(INSTALL_COMMAND make install-libdir install-include)
