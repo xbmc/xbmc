@@ -1,0 +1,591 @@
+# Kodi Media Center language file
+# Addon Name: Keyboard
+# Addon id: game.controller.keyboard
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Addons\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"POT-Creation-Date: 2014-05-30 17:00+8\n"
+"PO-Revision-Date: 2022-04-14 22:45+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Spanish (Spain) <https://kodi.weblate.cloud/projects/kodi-add-ons-game/game-controller-keyboard/es_es/>\n"
+"Language: es_es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.11.2\n"
+
+msgctxt "Addon Summary"
+msgid "IBM Model M keyboard"
+msgstr ""
+
+msgctxt "Addon Description"
+msgid "The IBM Model M keyboard, introduced in 1984, is regarded as a timeless and durable piece of hardware."
+msgstr ""
+
+msgctxt "Addon Disclaimer"
+msgid "Image credit: Wikipedia (wikipedia.org)"
+msgstr "Créditos de la imagen: Wikipedia (wikipedia.org)"
+
+msgctxt "#30000"
+msgid "Keyboard"
+msgstr "Teclado"
+
+# empty string with id 30001
+msgctxt "#30002"
+msgid "1"
+msgstr "1"
+
+msgctxt "#30003"
+msgid "2"
+msgstr "2"
+
+msgctxt "#30004"
+msgid "3"
+msgstr "3"
+
+msgctxt "#30005"
+msgid "4"
+msgstr "4"
+
+msgctxt "#30006"
+msgid "5"
+msgstr "5"
+
+msgctxt "#30007"
+msgid "6"
+msgstr "6"
+
+msgctxt "#30008"
+msgid "7"
+msgstr "7"
+
+msgctxt "#30009"
+msgid "8"
+msgstr "8"
+
+msgctxt "#30010"
+msgid "9"
+msgstr "9"
+
+msgctxt "#30011"
+msgid "0"
+msgstr "0"
+
+msgctxt "#30012"
+msgid "A"
+msgstr "A"
+
+msgctxt "#30013"
+msgid "B"
+msgstr "B"
+
+msgctxt "#30014"
+msgid "C"
+msgstr "C"
+
+msgctxt "#30015"
+msgid "D"
+msgstr "D"
+
+msgctxt "#30016"
+msgid "E"
+msgstr "E"
+
+msgctxt "#30017"
+msgid "F"
+msgstr "F"
+
+msgctxt "#30018"
+msgid "G"
+msgstr "G"
+
+msgctxt "#30019"
+msgid "H"
+msgstr "H"
+
+msgctxt "#30020"
+msgid "I"
+msgstr "I"
+
+msgctxt "#30021"
+msgid "J"
+msgstr "J"
+
+msgctxt "#30022"
+msgid "K"
+msgstr "K"
+
+msgctxt "#30023"
+msgid "L"
+msgstr "L"
+
+msgctxt "#30024"
+msgid "M"
+msgstr "M"
+
+msgctxt "#30025"
+msgid "N"
+msgstr "N"
+
+msgctxt "#30026"
+msgid "O"
+msgstr "O"
+
+msgctxt "#30027"
+msgid "P"
+msgstr "P"
+
+msgctxt "#30028"
+msgid "Q"
+msgstr "Q"
+
+msgctxt "#30029"
+msgid "R"
+msgstr "R"
+
+msgctxt "#30030"
+msgid "S"
+msgstr "S"
+
+msgctxt "#30031"
+msgid "T"
+msgstr "T"
+
+msgctxt "#30032"
+msgid "U"
+msgstr "U"
+
+msgctxt "#30033"
+msgid "V"
+msgstr "V"
+
+msgctxt "#30034"
+msgid "W"
+msgstr "W"
+
+msgctxt "#30035"
+msgid "X"
+msgstr "X"
+
+msgctxt "#30036"
+msgid "Y"
+msgstr "Y"
+
+msgctxt "#30037"
+msgid "Z"
+msgstr "Z"
+
+msgctxt "#30038"
+msgid "F1"
+msgstr "F1"
+
+msgctxt "#30039"
+msgid "F2"
+msgstr "F2"
+
+msgctxt "#30040"
+msgid "F3"
+msgstr "F3"
+
+msgctxt "#30041"
+msgid "F4"
+msgstr "F4"
+
+msgctxt "#30042"
+msgid "F5"
+msgstr "F5"
+
+msgctxt "#30043"
+msgid "F6"
+msgstr "F6"
+
+msgctxt "#30044"
+msgid "F7"
+msgstr "F7"
+
+msgctxt "#30045"
+msgid "F8"
+msgstr "F8"
+
+msgctxt "#30046"
+msgid "F9"
+msgstr "F9"
+
+msgctxt "#30047"
+msgid "F10"
+msgstr "F10"
+
+msgctxt "#30048"
+msgid "F11"
+msgstr "F11"
+
+msgctxt "#30049"
+msgid "F12"
+msgstr "F12"
+
+msgctxt "#30050"
+msgid "Escape"
+msgstr "Escapar"
+
+msgctxt "#30051"
+msgid "Tab"
+msgstr "Tab"
+
+msgctxt "#30052"
+msgid "Backspace"
+msgstr "Borrar"
+
+msgctxt "#30053"
+msgid "Enter"
+msgstr "Intro"
+
+msgctxt "#30054"
+msgid "Space"
+msgstr "Espacio"
+
+msgctxt "#30055"
+msgid "Left Alt"
+msgstr ""
+
+msgctxt "#30056"
+msgid "Right Alt"
+msgstr ""
+
+msgctxt "#30057"
+msgid "Left Ctrl"
+msgstr "Ctrl Izdo"
+
+msgctxt "#30058"
+msgid "Right Ctrl"
+msgstr "Ctrl Dcho"
+
+msgctxt "#30059"
+msgid "Left Shift"
+msgstr "Mays Izdo"
+
+msgctxt "#30060"
+msgid "Right Shift"
+msgstr "Mays Dcho"
+
+msgctxt "#30061"
+msgid "Caps Lock"
+msgstr "Bloqueo Mayúsculas"
+
+msgctxt "#30062"
+msgid "Scroll Lock"
+msgstr ""
+
+msgctxt "#30063"
+msgid "Num Lock"
+msgstr ""
+
+msgctxt "#30064"
+msgid "-"
+msgstr "-"
+
+msgctxt "#30065"
+msgid "="
+msgstr "="
+
+msgctxt "#30066"
+msgid "\\"
+msgstr "\\"
+
+msgctxt "#30067"
+msgid "["
+msgstr "["
+
+msgctxt "#30068"
+msgid "]"
+msgstr "]"
+
+msgctxt "#30069"
+msgid ";"
+msgstr ";"
+
+msgctxt "#30070"
+msgid "'"
+msgstr "'"
+
+msgctxt "#30071"
+msgid "."
+msgstr "."
+
+msgctxt "#30072"
+msgid ","
+msgstr ","
+
+msgctxt "#30073"
+msgid "/"
+msgstr "/"
+
+msgctxt "#30074"
+msgid "Print Screen"
+msgstr ""
+
+msgctxt "#30075"
+msgid "Pause"
+msgstr ""
+
+msgctxt "#30076"
+msgid "Insert"
+msgstr ""
+
+msgctxt "#30077"
+msgid "Home"
+msgstr "Inicio"
+
+msgctxt "#30078"
+msgid "Page Up"
+msgstr ""
+
+msgctxt "#30079"
+msgid "Page Down"
+msgstr ""
+
+msgctxt "#30080"
+msgid "Delete"
+msgstr ""
+
+msgctxt "#30081"
+msgid "End"
+msgstr ""
+
+msgctxt "#30082"
+msgid "Left"
+msgstr "Izquierda"
+
+msgctxt "#30083"
+msgid "Up"
+msgstr "Arriba"
+
+msgctxt "#30084"
+msgid "Down"
+msgstr "Abajo"
+
+msgctxt "#30085"
+msgid "Right"
+msgstr "Derecha"
+
+msgctxt "#30086"
+msgid "Num Pad 1"
+msgstr ""
+
+msgctxt "#30087"
+msgid "Num Pad 2"
+msgstr ""
+
+msgctxt "#30088"
+msgid "Num Pad 3"
+msgstr ""
+
+msgctxt "#30089"
+msgid "Num Pad 4"
+msgstr ""
+
+msgctxt "#30090"
+msgid "Num Pad 5"
+msgstr ""
+
+msgctxt "#30091"
+msgid "Num Pad 6"
+msgstr ""
+
+msgctxt "#30092"
+msgid "Num Pad 7"
+msgstr ""
+
+msgctxt "#30093"
+msgid "Num Pad 8"
+msgstr ""
+
+msgctxt "#30094"
+msgid "Num Pad 9"
+msgstr ""
+
+msgctxt "#30095"
+msgid "Num Pad 0"
+msgstr ""
+
+msgctxt "#30096"
+msgid "Num Pad /"
+msgstr ""
+
+msgctxt "#30097"
+msgid "Num Pad *"
+msgstr ""
+
+msgctxt "#30098"
+msgid "Num Pad -"
+msgstr ""
+
+msgctxt "#30099"
+msgid "Num Pad +"
+msgstr ""
+
+msgctxt "#30100"
+msgid "Num Pad Enter"
+msgstr ""
+
+msgctxt "#30101"
+msgid "Num Pad ."
+msgstr ""
+
+msgctxt "#30102"
+msgid "`"
+msgstr "`"
+
+msgctxt "#30103"
+msgid "F13"
+msgstr ""
+
+msgctxt "#30104"
+msgid "F14"
+msgstr ""
+
+msgctxt "#30105"
+msgid "F15"
+msgstr ""
+
+msgctxt "#30106"
+msgid "Left Meta"
+msgstr ""
+
+msgctxt "#30107"
+msgid "Right Meta"
+msgstr ""
+
+msgctxt "#30108"
+msgid "Left Super"
+msgstr "Super Izdo"
+
+msgctxt "#30109"
+msgid "Right Super"
+msgstr "Super Dcho"
+
+msgctxt "#30110"
+msgid "!"
+msgstr ""
+
+msgctxt "#30111"
+msgid "\""
+msgstr ""
+
+msgctxt "#30112"
+msgid "#"
+msgstr ""
+
+msgctxt "#30113"
+msgid "@"
+msgstr ""
+
+msgctxt "#30114"
+msgid "("
+msgstr ""
+
+msgctxt "#30115"
+msgid ")"
+msgstr ""
+
+msgctxt "#30116"
+msgid "*"
+msgstr ""
+
+msgctxt "#30117"
+msgid "+"
+msgstr ""
+
+msgctxt "#30118"
+msgid ":"
+msgstr ""
+
+msgctxt "#30119"
+msgid "<"
+msgstr ""
+
+msgctxt "#30120"
+msgid ">"
+msgstr ""
+
+msgctxt "#30121"
+msgid "?"
+msgstr ""
+
+msgctxt "#30122"
+msgid "@"
+msgstr ""
+
+msgctxt "#30123"
+msgid "^"
+msgstr ""
+
+msgctxt "#30124"
+msgid "_"
+msgstr ""
+
+msgctxt "#30125"
+msgid "$"
+msgstr ""
+
+msgctxt "#30126"
+msgid "{"
+msgstr ""
+
+msgctxt "#30127"
+msgid "}"
+msgstr ""
+
+msgctxt "#30128"
+msgid "|"
+msgstr ""
+
+msgctxt "#30129"
+msgid "~"
+msgstr ""
+
+msgctxt "#30130"
+msgid "Mode"
+msgstr ""
+
+msgctxt "#30131"
+msgid "Compose"
+msgstr ""
+
+msgctxt "#30132"
+msgid "Help"
+msgstr ""
+
+msgctxt "#30133"
+msgid "SysReq"
+msgstr ""
+
+msgctxt "#30134"
+msgid "Break"
+msgstr "Interrumpir"
+
+msgctxt "#30135"
+msgid "Menu"
+msgstr ""
+
+msgctxt "#30136"
+msgid "Power"
+msgstr ""
+
+msgctxt "#30137"
+msgid "€"
+msgstr ""
+
+msgctxt "#30138"
+msgid "Undo"
+msgstr ""
+
+msgctxt "#30139"
+msgid "Num Pad Equals"
+msgstr ""
+
+msgctxt "#30140"
+msgid "Clear"
+msgstr ""

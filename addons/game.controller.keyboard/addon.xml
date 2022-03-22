@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="game.controller.keyboard"
+        name="IBM Model M Keyboard"
+        version="1.1.17"
+        provider-name="Team Kodi">
+    <extension point="kodi.game.controller" library="resources/layout.xml"/>
+    <extension point="xbmc.addon.metadata">
+        <platform>all</platform>
+        <assets>
+            <icon>resources/icon.png</icon>
+        </assets>
+        <summary lang="da_DK">IBM Model M tastatur</summary>
+        <summary lang="de_DE">IBM Model M Tastatur</summary>
+        <summary lang="en_GB">IBM Model M keyboard</summary>
+        <summary lang="ru_RU">Клавиатура IBM Model M</summary>
+        <summary lang="zh_CN">IBM M 型键盘</summary>
+        <description lang="da_DK">IBM Model M-tastaturet, der blev introduceret i 1984, betragtes som et tidløst og holdbart stykke hardware.</description>
+        <description lang="de_DE">Die 1984 vorgestellte IBM Model M Tastatur ist als zeitlose und langlebige Hardware geschätzt.</description>
+        <description lang="en_GB">The IBM Model M keyboard, introduced in 1984, is regarded as a timeless and durable piece of hardware.</description>
+        <description lang="ru_RU">Клавиатура IBM Model M, выпущена в 1984 году, и считаестся долговечным изделием, неподвластным временем.</description>
+        <description lang="zh_CN">IBM M 型键盘于1984年推出，被认为是一款经久耐用的硬件。</description>
+        <disclaimer lang="da_DK">Kildeangivelse: Wikipedia (wikipedia.org)</disclaimer>
+        <disclaimer lang="de_DE">Bildrechte: Wikipedia (wikipedia.org)</disclaimer>
+        <disclaimer lang="en_GB">Image credit: Wikipedia (wikipedia.org)</disclaimer>
+        <disclaimer lang="es_ES">Créditos de la imagen: Wikipedia (wikipedia.org)</disclaimer>
+        <disclaimer lang="nl_NL">Bron afbeelding: Wikipedia (wikipedia.org)</disclaimer>
+        <disclaimer lang="ru_RU">Источник изображения: Wikipedia (wikipedia.org)</disclaimer>
+        <disclaimer lang="zh_CN">图片来源：维基百科（Wikipedia.org）</disclaimer>
+    </extension>
+</addon>
