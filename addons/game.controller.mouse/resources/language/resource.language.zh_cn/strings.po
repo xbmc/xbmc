@@ -1,0 +1,70 @@
+# Kodi Media Center language file
+# Addon Name: Computer Mouse
+# Addon id: game.controller.mouse
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: game.controller.mouse\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"POT-Creation-Date: 2014-05-30 17:00+8\n"
+"PO-Revision-Date: 2021-09-27 02:31+0000\n"
+"Last-Translator: taxigps <taxigps@sina.com>\n"
+"Language-Team: Chinese (China) <https://kodi.weblate.cloud/projects/kodi-add-ons-game/game-controller-mouse/zh_cn/>\n"
+"Language: zh_cn\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.8\n"
+
+msgctxt "Addon Summary"
+msgid "Computer Mouse"
+msgstr "电脑鼠标"
+
+msgctxt "Addon Description"
+msgid "A standard mouse with two buttons and a middle wheel."
+msgstr "带有两个按钮和中间滚轮的标准鼠标。"
+
+msgctxt "#30000"
+msgid "Computer mouse"
+msgstr "电脑鼠标"
+
+msgctxt "#30001"
+msgid "Left button"
+msgstr "左按钮"
+
+msgctxt "#30002"
+msgid "Right button"
+msgstr "右按钮"
+
+msgctxt "#30003"
+msgid "Midle button"
+msgstr "中按钮"
+
+msgctxt "#30004"
+msgid "Wheel up"
+msgstr "上滚"
+
+msgctxt "#30005"
+msgid "Wheel down"
+msgstr "下滚"
+
+msgctxt "#30006"
+msgid "Pointer"
+msgstr "指针"
+
+msgctxt "#30007"
+msgid "Wheel left"
+msgstr "左滚"
+
+msgctxt "#30008"
+msgid "Wheel right"
+msgstr "右滚"
+
+msgctxt "#30009"
+msgid "Button 4"
+msgstr "按钮4"
+
+msgctxt "#30010"
+msgid "Button 5"
+msgstr "按钮5"

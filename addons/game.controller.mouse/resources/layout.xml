@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<layout label="30000" image="layout.png">
+  <category name="mouse" label="35103">
+    <button name="left" type="digital" label="30001"/>
+    <button name="right" type="digital" label="30002"/>
+    <button name="middle" type="digital" label="30003"/>
+    <button name="button4" type="digital" label="30009"/>
+    <button name="button5" type="digital" label="30010"/>
+    <button name="wheelup" type="digital" label="30004"/>
+    <button name="wheeldown" type="digital" label="30005"/>
+    <button name="horizwheelleft" type="digital" label="30007"/>
+    <button name="horizwheelright" type="digital" label="30008"/>
+  </category>
+  <category name="pointer" label="35104">
+    <relpointer name="pointer" label="30006"/>
+  </category>
+</layout>

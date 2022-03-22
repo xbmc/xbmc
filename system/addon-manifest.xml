@@ -3,6 +3,7 @@
   <addon>audioencoder.kodi.builtin.wma</addon>
   <addon>game.controller.default</addon>
   <addon>game.controller.keyboard</addon>
+  <addon>game.controller.mouse</addon>
   <addon>game.controller.snes</addon>
   <addon>kodi.binary.global.audioengine</addon>
   <addon>kodi.binary.global.filesystem</addon>

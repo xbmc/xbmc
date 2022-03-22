@@ -1,0 +1,70 @@
+# Kodi Media Center language file
+# Addon Name: Computer Mouse
+# Addon id: game.controller.mouse
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: game.controller.mouse\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"POT-Creation-Date: 2014-05-30 17:00+8\n"
+"PO-Revision-Date: 2021-08-18 16:16+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Danish <https://kodi.weblate.cloud/projects/kodi-add-ons-game/game-controller-mouse/da_dk/>\n"
+"Language: da_dk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.7.2\n"
+
+msgctxt "Addon Summary"
+msgid "Computer Mouse"
+msgstr "Computermus"
+
+msgctxt "Addon Description"
+msgid "A standard mouse with two buttons and a middle wheel."
+msgstr "En standardmus med to knapper og et hjul i midten."
+
+msgctxt "#30000"
+msgid "Computer mouse"
+msgstr "Computermus"
+
+msgctxt "#30001"
+msgid "Left button"
+msgstr "Venstre knap"
+
+msgctxt "#30002"
+msgid "Right button"
+msgstr "Højre knap"
+
+msgctxt "#30003"
+msgid "Midle button"
+msgstr "Midterste knap"
+
+msgctxt "#30004"
+msgid "Wheel up"
+msgstr "Hjul op"
+
+msgctxt "#30005"
+msgid "Wheel down"
+msgstr "Hjul ned"
+
+msgctxt "#30006"
+msgid "Pointer"
+msgstr "Pegeredskab"
+
+msgctxt "#30007"
+msgid "Wheel left"
+msgstr "Hjul venstre"
+
+msgctxt "#30008"
+msgid "Wheel right"
+msgstr "Hjul højre"
+
+msgctxt "#30009"
+msgid "Button 4"
+msgstr "Knap 4"
+
+msgctxt "#30010"
+msgid "Button 5"
+msgstr "Knap 5"
