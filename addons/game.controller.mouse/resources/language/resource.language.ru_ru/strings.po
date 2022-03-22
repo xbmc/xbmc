@@ -1,0 +1,70 @@
+# Kodi Media Center language file
+# Addon Name: Computer Mouse
+# Addon id: game.controller.mouse
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: game.controller.mouse\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"POT-Creation-Date: 2014-05-30 17:00+8\n"
+"PO-Revision-Date: 2021-08-11 08:14+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Russian <https://kodi.weblate.cloud/projects/kodi-add-ons-game/game-controller-mouse/ru_ru/>\n"
+"Language: ru_ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.7.2\n"
+
+msgctxt "Addon Summary"
+msgid "Computer Mouse"
+msgstr "Компьютерная мышь"
+
+msgctxt "Addon Description"
+msgid "A standard mouse with two buttons and a middle wheel."
+msgstr "Стандартная компьютерная мышь с двумя кнопками и с колесом посередине."
+
+msgctxt "#30000"
+msgid "Computer mouse"
+msgstr "Компьютерная мышь"
+
+msgctxt "#30001"
+msgid "Left button"
+msgstr "Левая кнопка"
+
+msgctxt "#30002"
+msgid "Right button"
+msgstr "Правая кнопка"
+
+msgctxt "#30003"
+msgid "Midle button"
+msgstr "Средняя кнопка"
+
+msgctxt "#30004"
+msgid "Wheel up"
+msgstr "Колесо вверх"
+
+msgctxt "#30005"
+msgid "Wheel down"
+msgstr "Колесо вниз"
+
+msgctxt "#30006"
+msgid "Pointer"
+msgstr "Указатель"
+
+msgctxt "#30007"
+msgid "Wheel left"
+msgstr "Колесо влево"
+
+msgctxt "#30008"
+msgid "Wheel right"
+msgstr "Колесо вправо"
+
+msgctxt "#30009"
+msgid "Button 4"
+msgstr "Кнопка 4"
+
+msgctxt "#30010"
+msgid "Button 5"
+msgstr "Кнопка 5"
