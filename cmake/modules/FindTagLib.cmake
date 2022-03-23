@@ -13,17 +13,54 @@
 #
 #   TagLib::TagLib   - The TagLib library
 
-if(PKG_CONFIG_FOUND)
-  pkg_check_modules(PC_TAGLIB taglib>=1.9.0 QUIET)
-endif()
+if(ENABLE_INTERNAL_TAGLIB)
+  include(cmake/scripts/common/ModuleHelpers.cmake)
 
-find_path(TAGLIB_INCLUDE_DIR taglib/tag.h
-                             PATHS ${PC_TAGLIB_INCLUDEDIR})
-find_library(TAGLIB_LIBRARY_RELEASE NAMES tag
+  set(MODULE_LC taglib)
+
+  # Debug postfix only used for windows
+  if(WIN32 OR WINDOWS_STORE)
+    set(TAGLIB_DEBUG_POSTFIX "d")
+  else()
+    set(TAGLIB_DEBUG_POSTFIX "")
+  endif()
+
+  SETUP_BUILD_VARS()
+
+  set(TAGLIB_VERSION ${${MODULE}_VER})
+
+  if(WIN32 OR WINDOWS_STORE)
+    # find the path to the patch executable
+    find_package(Patch MODULE REQUIRED)
+
+    set(patch ${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/001-cmake-pdb-debug.patch)
+    PATCH_LF_CHECK(${patch})
+
+    set(PATCH_COMMAND ${PATCH_EXECUTABLE} -p1 -i ${patch})
+  endif()
+
+  set(CMAKE_ARGS -DBUILD_SHARED_LIBS=OFF
+                 -DBUILD_BINDINGS=OFF)
+
+  BUILD_DEP_TARGET()
+
+  # Add target to libkodi to build
+  set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP taglib)
+else()
+
+  if(PKG_CONFIG_FOUND)
+    pkg_check_modules(PC_TAGLIB taglib>=1.9.0 QUIET)
+  endif()
+
+  find_path(TAGLIB_INCLUDE_DIR taglib/tag.h
+                               PATHS ${PC_TAGLIB_INCLUDEDIR})
+  find_library(TAGLIB_LIBRARY_RELEASE NAMES tag
+                                      PATHS ${PC_TAGLIB_LIBDIR})
+  find_library(TAGLIB_LIBRARY_DEBUG NAMES tagd
                                     PATHS ${PC_TAGLIB_LIBDIR})
-find_library(TAGLIB_LIBRARY_DEBUG NAMES tagd
-                                  PATHS ${PC_TAGLIB_LIBDIR})
-set(TAGLIB_VERSION ${PC_TAGLIB_VERSION})
+  set(TAGLIB_VERSION ${PC_TAGLIB_VERSION})
+
+endif()
 
 include(SelectLibraryConfigurations)
 select_library_configurations(TAGLIB)
