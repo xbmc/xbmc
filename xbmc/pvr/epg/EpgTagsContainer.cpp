@@ -493,7 +493,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgTagsContainer::GetTimeline(
         }
 
         // Append missing tags
-        MergeTags(tags.back()->EndAsUTC(), maxEventStart, tags);
+        MergeTags(tags.empty() ? minEventEnd : tags.back()->EndAsUTC(), maxEventStart, tags);
       }
     }
 
