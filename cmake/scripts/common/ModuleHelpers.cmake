@@ -141,7 +141,22 @@ macro(BUILD_DEP_TARGET)
   endif()
 
   if(CONFIGURE_COMMAND)
-    set(CONFIGURE_COMMAND CONFIGURE_COMMAND ${CONFIGURE_COMMAND})
+    if(NOT CMAKE_ARGS AND DEP_BUILDENV)
+      # DEP_BUILDENV only used for non cmake externalproject_add builds
+      # iterate through CONFIGURE_COMMAND looking for multiple COMMAND, we need to
+      # add DEP_BUILDENV for each distinct COMMAND
+      set(tmp_config_command ${DEP_BUILDENV})
+      foreach(item ${CONFIGURE_COMMAND})
+        list(APPEND tmp_config_command ${item})
+        if(item STREQUAL "COMMAND")
+          list(APPEND tmp_config_command ${DEP_BUILDENV})
+        endif()
+      endforeach()
+      set(CONFIGURE_COMMAND CONFIGURE_COMMAND ${tmp_config_command})
+      unset(tmp_config_command)
+    else()
+      set(CONFIGURE_COMMAND CONFIGURE_COMMAND ${CONFIGURE_COMMAND})
+    endif()
   endif()
 
   if(BUILD_COMMAND)
