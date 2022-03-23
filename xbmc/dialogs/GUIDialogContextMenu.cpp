@@ -81,6 +81,12 @@ bool CGUIDialogContextMenu::OnMessage(CGUIMessage &message)
     Close();
     return true;
   }
+  else if (message.GetMessage() == GUI_MSG_PLAYBACK_AVSTARTED)
+  {
+    // playback was just started from elsewhere - close the dialog
+    Close();
+    return true;
+  }
   return CGUIDialog::OnMessage(message);
 }
 
