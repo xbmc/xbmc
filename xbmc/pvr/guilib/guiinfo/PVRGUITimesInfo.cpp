@@ -65,9 +65,12 @@ void CPVRGUITimesInfo::UpdatePlayingTag()
 
     CSingleLock lock(m_critSection);
 
-    const std::shared_ptr<CPVRChannel> playingChannel = m_playingEpgTag ? groups->GetChannelForEpgTag(m_playingEpgTag) : nullptr;
-    if (!m_playingEpgTag || !m_playingEpgTag->IsActive() ||
-        !playingChannel || !currentChannel || *playingChannel != *currentChannel)
+    const std::shared_ptr<CPVRChannel> playingChannel =
+        m_playingEpgTag ? groups->GetChannelForEpgTag(m_playingEpgTag) : nullptr;
+
+    if (!m_playingEpgTag || !currentTag || !playingChannel || !currentChannel ||
+        m_playingEpgTag->StartAsUTC() != currentTag->StartAsUTC() ||
+        m_playingEpgTag->EndAsUTC() != currentTag->EndAsUTC() || *playingChannel != *currentChannel)
     {
       if (currentTag)
       {
