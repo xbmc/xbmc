@@ -35,3 +35,12 @@ endif()
 
 # Additional SYSTEM_DEFINES
 list(APPEND SYSTEM_DEFINES -DHAS_POSIX_NETWORK -DHAS_FREEBSD_NETWORK)
+
+# Build internal libs
+if(NOT USE_INTERNAL_LIBS)
+  if(KODI_DEPENDSBUILD)
+    set(USE_INTERNAL_LIBS ON)
+  else()
+    set(USE_INTERNAL_LIBS OFF)
+  endif()
+endif()

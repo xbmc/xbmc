@@ -54,7 +54,6 @@ DEPENDS = \
   pythonmodule-setuptools \
   spdlog \
   sqlite3 \
-  taglib \
   tinyxml \
   udfread \
   xz

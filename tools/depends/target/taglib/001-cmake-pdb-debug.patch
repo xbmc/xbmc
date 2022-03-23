@@ -1,0 +1,29 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -58,6 +58,11 @@
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+ endif()
+ 
++set(CMAKE_DEBUG_POSTFIX "d")
++if(MSVC)
++  add_definitions(-D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE)
++endif()
++
+ if(MSVC AND ENABLE_STATIC_RUNTIME)
+   foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+     string(REGEX REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
+--- a/taglib/CMakeLists.txt
++++ b/taglib/CMakeLists.txt
+@@ -341,6 +341,12 @@
+   target_link_libraries(tag ${ZLIB_LIBRARIES})
+ endif()
+ 
++if(MSVC)
++  set_target_properties(tag PROPERTIES COMPILE_PDB_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR} COMPILE_PDB_NAME tag COMPILE_PDB_NAME_DEBUG tagd)
++  install(FILES ${PROJECT_BINARY_DIR}/RelWithDebInfo/tag.pdb DESTINATION lib CONFIGURATIONS RelWithDebInfo)
++  install(FILES ${PROJECT_BINARY_DIR}/Debug/tagd.pdb DESTINATION lib CONFIGURATIONS Debug)
++endif(MSVC)
++
+ set_target_properties(tag PROPERTIES
+   VERSION ${TAGLIB_SOVERSION_MAJOR}.${TAGLIB_SOVERSION_MINOR}.${TAGLIB_SOVERSION_PATCH}
+   SOVERSION ${TAGLIB_SOVERSION_MAJOR}

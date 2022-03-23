@@ -190,3 +190,12 @@ if(ARCH_IS_BIGENDIAN)
 else()
   message(STATUS "Host architecture is little-endian")
 endif()
+
+# Build internal libs
+if(NOT USE_INTERNAL_LIBS)
+  if(KODI_DEPENDSBUILD)
+    set(USE_INTERNAL_LIBS ON)
+  else()
+    set(USE_INTERNAL_LIBS OFF)
+  endif()
+endif()
