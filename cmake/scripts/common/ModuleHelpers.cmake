@@ -48,16 +48,29 @@ function(get_archive_name module_name)
   set(${UPPER_MODULE_NAME}_ARCHIVE ${${UPPER_MODULE_NAME}_ARCHIVE} PARENT_SCOPE)
 
   if(${UPPER_MODULE_NAME}_BYPRODUCT)
-    # strip the extension, if debug, add DEBUG_POSTFIX and then add the .lib extension back
-    if(WIN32 OR WINDOWS_STORE)
-      string(REGEX REPLACE "\\.[^.]*$" "" ${UPPER_MODULE_NAME}_BYPRODUCT ${${UPPER_MODULE_NAME}_BYPRODUCT})
-      if($<CONFIG:Debug>)
-        set(${UPPER_MODULE_NAME}_BYPRODUCT "${${UPPER_MODULE_NAME}_BYPRODUCT}${DEBUG_POSTFIX}")
+    # strip the extension, if debug, add DEBUG_POSTFIX and then add the extension back
+    if(${UPPER_MODULE_NAME}_DEBUG_POSTFIX)
+      set(_POSTFIX ${${UPPER_MODULE_NAME}_DEBUG_POSTFIX})
+    else()
+      set(_POSTFIX ${DEBUG_POSTFIX})
+    endif()
+
+    # Only add debug postfix if platform or module supply a DEBUG_POSTFIX
+    if(NOT _POSTFIX STREQUAL "")
+      string(REGEX REPLACE "\\.[^.]*$" "" ${UPPER_MODULE_NAME}_BYPRODUCT_DEBUG ${${UPPER_MODULE_NAME}_BYPRODUCT})
+      if(WIN32 OR WINDOWS_STORE)
+        set(${UPPER_MODULE_NAME}_BYPRODUCT_DEBUG "${${UPPER_MODULE_NAME}_BYPRODUCT_DEBUG}${_POSTFIX}.lib")
+      else()
+        set(${UPPER_MODULE_NAME}_BYPRODUCT_DEBUG "${${UPPER_MODULE_NAME}_BYPRODUCT_DEBUG}${_POSTFIX}.a")
       endif()
-      set(${UPPER_MODULE_NAME}_BYPRODUCT "${${UPPER_MODULE_NAME}_BYPRODUCT}.lib")
+
+      # Set Debug and Release library names
+      set(${UPPER_MODULE_NAME}_LIBRARY_DEBUG ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/${${UPPER_MODULE_NAME}_BYPRODUCT_DEBUG} PARENT_SCOPE)
+      set(${UPPER_MODULE_NAME}_LIBRARY_RELEASE ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/${${UPPER_MODULE_NAME}_BYPRODUCT} PARENT_SCOPE)
     endif()
     set(${UPPER_MODULE_NAME}_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/${${UPPER_MODULE_NAME}_BYPRODUCT} PARENT_SCOPE)
   endif()
+
   set(${UPPER_MODULE_NAME}_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include PARENT_SCOPE)
   set(${UPPER_MODULE_NAME}_VER ${${UPPER_MODULE_NAME}_VER} PARENT_SCOPE)
 

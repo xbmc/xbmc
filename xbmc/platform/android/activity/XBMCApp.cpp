@@ -60,6 +60,7 @@
 #include <androidjni/WakeLock.h>
 #include <androidjni/Window.h>
 #include <androidjni/WindowManager.h>
+#include <crossguid/guid.hpp>
 #include <dlfcn.h>
 #include <jni.h>
 #include <unistd.h>
@@ -168,6 +169,10 @@ CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity, IInputHandler& inputHandler)
   m_mainView.reset(new CJNIXBMCMainView(this));
   m_hdmiSource = CJNISystemProperties::get("ro.hdmi.device_type", "") == "4";
   android_printf("CXBMCApp: Created");
+
+  // crossguid requires init on android only once on process start
+  JNIEnv* env = xbmc_jnienv();
+  xg::initJni(env);
 }
 
 CXBMCApp::~CXBMCApp()
