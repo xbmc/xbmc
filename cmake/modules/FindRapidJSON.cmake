@@ -15,23 +15,28 @@ if(ENABLE_INTERNAL_RapidJSON)
 
   SETUP_BUILD_VARS()
 
-  if(APPLE)
-    set(EXTRA_ARGS "-DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}")
-  endif()
-
   set(RapidJSON_INCLUDE_DIR ${${MODULE}_INCLUDE_DIR})
   set(RapidJSON_VERSION ${${MODULE}_VER})
+
+  # Use custom findpatch to handle windows patch binary if not available
+  include(cmake/modules/FindPatch.cmake)
+
+  set(PATCH_COMMAND ${PATCH_EXECUTABLE} -p1 -i ${CORE_SOURCE_DIR}/tools/depends/target/rapidjson/001-remove_custom_cxx_flags.patch
+            COMMAND ${PATCH_EXECUTABLE} -p1 -i ${CORE_SOURCE_DIR}/tools/depends/target/rapidjson/002-cmake-removedocs-examples.patch
+            COMMAND ${PATCH_EXECUTABLE} -p1 -i ${CORE_SOURCE_DIR}/tools/depends/target/rapidjson/003-win-arm64.patch)
 
   set(CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
                  -DRAPIDJSON_BUILD_DOC=OFF
                  -DRAPIDJSON_BUILD_EXAMPLES=OFF
                  -DRAPIDJSON_BUILD_TESTS=OFF
-                 -DRAPIDJSON_BUILD_THIRDPARTY_GTEST=OFF
-                 "${EXTRA_ARGS}")
-  set(PATCH_COMMAND patch -p1 < ${CORE_SOURCE_DIR}/tools/depends/target/rapidjson/0001-remove_custom_cxx_flags.patch)
+                 -DRAPIDJSON_BUILD_THIRDPARTY_GTEST=OFF)
+
   set(BUILD_BYPRODUCTS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include/rapidjson/rapidjson.h)
 
   BUILD_DEP_TARGET()
+
+  # Add dependency to libkodi to build
+  set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP rapidjson)
 else()
   if(PKG_CONFIG_FOUND)
     pkg_check_modules(PC_RapidJSON RapidJSON>=1.0.2 QUIET)

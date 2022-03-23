@@ -1,0 +1,28 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -134,14 +134,17 @@
+       COMPONENT pkgconfig)
+ ENDIF()
+ 
++if(RAPIDJSON_BUILD_DOC)
+ install(FILES readme.md
+         DESTINATION "${DOC_INSTALL_DIR}"
+         COMPONENT doc)
++endif()
+ 
+ install(DIRECTORY include/rapidjson
+     DESTINATION "${INCLUDE_INSTALL_DIR}"
+     COMPONENT dev)
+ 
++if(RAPIDJSON_BUILD_EXAMPLES)
+ install(DIRECTORY example/
+     DESTINATION "${DOC_INSTALL_DIR}/examples"
+     COMPONENT examples
+@@ -150,6 +153,7 @@
+     PATTERN "CMakeFiles" EXCLUDE
+     PATTERN "Makefile" EXCLUDE
+     PATTERN "cmake_install.cmake" EXCLUDE)
++endif()
+ 
+ # Provide config and version files to be used by other applications
+ # ===============================
