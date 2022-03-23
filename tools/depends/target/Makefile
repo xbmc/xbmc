@@ -52,7 +52,6 @@ DEPENDS = \
   pythonmodule-pil \
   pythonmodule-pycryptodome \
   pythonmodule-setuptools \
-  rapidjson \
   spdlog \
   sqlite3 \
   taglib \
