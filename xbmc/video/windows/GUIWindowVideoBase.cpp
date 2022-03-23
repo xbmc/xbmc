@@ -646,6 +646,10 @@ bool CGUIWindowVideoBase::OnSelect(int iItem)
 bool CGUIWindowVideoBase::OnFileAction(int iItem, int action, const std::string& player)
 {
   CFileItemPtr item = m_vecItems->Get(iItem);
+  if (!item)
+  {
+    return false;
+  }
 
   // Reset the current start offset. The actual resume
   // option is set in the switch, based on the action passed.
