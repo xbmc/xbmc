@@ -20,7 +20,7 @@ if(ENABLE_INTERNAL_CROSSGUID)
 
   # Temp: We force CMAKE_BUILD_TYPE to release, and makefile builds respect this
   # Multi config generators (eg VS, Xcode) dont, so handle debug postfix build/link for them only
-  if(NOT CMAKE_GENERATOR STREQUAL "Unix Makefiles")
+  if(NOT (CMAKE_GENERATOR STREQUAL "Unix Makefiles" OR CMAKE_GENERATOR STREQUAL "Ninja"))
     set(CROSSGUID_DEBUG_POSTFIX "-dgb")
   endif()
 
@@ -50,18 +50,23 @@ if(ENABLE_INTERNAL_CROSSGUID)
 
 else()
   if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_CROSSGUID crossguid REQUIRED QUIET)
+    pkg_check_modules(PC_CROSSGUID crossguid QUIET)
     set(CROSSGUID_VERSION ${PC_CROSSGUID_VERSION})
   endif()
 
-  find_path(CROSSGUID_INCLUDE_DIR NAMES crossguid/guid.hpp guid.h
-                                  PATHS ${PC_CROSSGUID_INCLUDEDIR})
+  if(CROSSGUID_FOUND)
+    find_path(CROSSGUID_INCLUDE_DIR NAMES crossguid/guid.hpp guid.h
+    PATHS ${PC_CROSSGUID_INCLUDEDIR})
 
-  find_library(CROSSGUID_LIBRARY_RELEASE NAMES crossguid
-                                         PATHS ${PC_CROSSGUID_LIBDIR})
-  find_library(CROSSGUID_LIBRARY_DEBUG NAMES crossguidd crossguid-dgb
-                                       PATHS ${PC_CROSSGUID_LIBDIR})
-
+    find_library(CROSSGUID_LIBRARY_RELEASE NAMES crossguid
+            PATHS ${PC_CROSSGUID_LIBDIR})
+    find_library(CROSSGUID_LIBRARY_DEBUG NAMES crossguidd crossguid-dgb
+          PATHS ${PC_CROSSGUID_LIBDIR})
+  else()
+    find_path(CROSSGUID_INCLUDE_DIR NAMES crossguid/guid.hpp guid.h)
+    find_library(CROSSGUID_LIBRARY_RELEASE NAMES crossguid)
+    find_library(CROSSGUID_LIBRARY_DEBUG NAMES crossguidd)
+  endif()
 endif()
 
 # Select relevant lib build type (ie CROSSGUID_LIBRARY_RELEASE or CROSSGUID_LIBRARY_DEBUG)
