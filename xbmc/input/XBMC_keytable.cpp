@@ -185,7 +185,6 @@ static const XBMCKEYTABLE XBMCKeyTable[] = {
     {XBMCK_FASTFORWARD, 0, 0, XBMCVK_MEDIA_FASTFORWARD, "fastforward"},
     {XBMCK_RECORD, 0, 0, XBMCVK_MEDIA_RECORD, "record"}
 
-
     // Function keys
     ,
     {XBMCK_F1, 0, 0, XBMCVK_F1, "f1"},

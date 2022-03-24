@@ -133,7 +133,6 @@ float CKey::GetLeftThumbY() const
   return m_leftThumbY;
 }
 
-
 float CKey::GetRightThumbX() const
 {
   return m_rightThumbX;
