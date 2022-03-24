@@ -10,7 +10,6 @@
 
 #include "utils/Job.h"
 
-#include <atomic>
 #include <map>
 #include <string>
 #include <utility>
@@ -123,8 +122,6 @@ private:
   tServiceMap m_service_map;
   bool m_started = false;
 
-  //protects singleton creation/destruction
-  static std::atomic_flag sm_singleton_guard;
   static CZeroconf* smp_instance;
 
   class CPublish : public CJob

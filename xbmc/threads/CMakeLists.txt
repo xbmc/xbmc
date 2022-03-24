@@ -1,10 +1,8 @@
-set(SOURCES Atomics.cpp
-            Event.cpp
+set(SOURCES Event.cpp
             Thread.cpp
             Timer.cpp)
 
-set(HEADERS Atomics.h
-            Condition.h
+set(HEADERS Condition.h
             CriticalSection.h
             Event.h
             Lockables.h

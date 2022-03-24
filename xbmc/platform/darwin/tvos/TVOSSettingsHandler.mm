@@ -12,18 +12,25 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
-#include "threads/Atomics.h"
 
 #import "platform/darwin/tvos/XBMCController.h"
 #import "platform/darwin/tvos/input/LibInputHandler.h"
 #import "platform/darwin/tvos/input/LibInputSettings.h"
 
-static std::atomic_flag sg_singleton_lock_variable = ATOMIC_FLAG_INIT;
+#include <mutex>
+
+namespace
+{
+
+std::mutex singletonMutex;
+
+}
+
 CTVOSInputSettings* CTVOSInputSettings::m_instance = nullptr;
 
 CTVOSInputSettings& CTVOSInputSettings::GetInstance()
 {
-  CAtomicSpinLock lock(sg_singleton_lock_variable);
+  std::lock_guard<std::mutex> lock(singletonMutex);
   if (!m_instance)
     m_instance = new CTVOSInputSettings();
 
