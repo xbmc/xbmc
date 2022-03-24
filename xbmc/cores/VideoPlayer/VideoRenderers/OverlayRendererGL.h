@@ -24,8 +24,12 @@ namespace OVERLAY {
   class COverlayTextureGL : public COverlay
   {
   public:
-     explicit COverlayTextureGL(CDVDOverlayImage* o);
-     explicit COverlayTextureGL(CDVDOverlaySpu* o);
+    /*! \brief Create the overlay for rendering
+     *  \param o The overlay image
+     *  \param rSource The video source rect size
+     */
+    explicit COverlayTextureGL(CDVDOverlayImage* o, CRect& rSource);
+    explicit COverlayTextureGL(CDVDOverlaySpu* o);
     ~COverlayTextureGL() override;
 
     void Render(SRenderState& state) override;
