@@ -587,7 +587,6 @@ void CGameClient::LogException(const char* strFunctionName) const
   CLog::Log(LOGERROR, "Please contact the developer of this add-on: {}", Author());
 }
 
-
 void CGameClient::cb_close_game(KODI_HANDLE kodiInstance)
 {
   using namespace MESSAGING;
