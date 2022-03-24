@@ -20,7 +20,7 @@ if(ENABLE_INTERNAL_CROSSGUID)
 
   # Temp: We force CMAKE_BUILD_TYPE to release, and makefile builds respect this
   # Multi config generators (eg VS, Xcode) dont, so handle debug postfix build/link for them only
-  if(NOT CMAKE_GENERATOR STREQUAL "Unix Makefiles" OR NOT CMAKE_GENERATOR STREQUAL "Ninja")
+  if(NOT (CMAKE_GENERATOR STREQUAL "Unix Makefiles" OR CMAKE_GENERATOR STREQUAL "Ninja"))
     set(CROSSGUID_DEBUG_POSTFIX "-dgb")
   endif()
 
