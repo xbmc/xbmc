@@ -26,13 +26,19 @@ class CGameClient;
 
 namespace RETRO
 {
+class CCheevos;
 class CSavestateDatabase;
 class IMemoryStream;
+class CRPRenderManager;
 
 class CReversiblePlayback : public IPlayback, public IGameLoopCallback, public Observer
 {
 public:
-  CReversiblePlayback(GAME::CGameClient* gameClient, double fps, size_t serializeSize);
+  CReversiblePlayback(GAME::CGameClient* gameClient,
+                      CRPRenderManager& renderManager,
+                      CCheevos* cheevos,
+                      double fps,
+                      size_t serializeSize);
 
   ~CReversiblePlayback() override;
 
@@ -48,7 +54,7 @@ public:
   double GetSpeed() const override;
   void SetSpeed(double speedFactor) override;
   void PauseAsync() override;
-  std::string CreateSavestate() override;
+  std::string CreateSavestate(bool autosave) override;
   bool LoadSavestate(const std::string& path) override;
 
   // implementation of IGameLoopCallback
@@ -67,6 +73,8 @@ private:
 
   // Construction parameter
   GAME::CGameClient* const m_gameClient;
+  CRPRenderManager& m_renderManager;
+  CCheevos* const m_cheevos;
 
   // Gameplay functionality
   CGameLoop m_gameLoop;
@@ -75,6 +83,7 @@ private:
 
   // Savestate functionality
   std::unique_ptr<CSavestateDatabase> m_savestateDatabase;
+  std::string m_autosavePath{};
 
   // Playback stats
   uint64_t m_totalFrameCount;

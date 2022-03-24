@@ -16,7 +16,8 @@ using namespace RETRO;
 
 namespace
 {
-const uint8_t SCHEMA_VERSION = 1;
+const uint8_t SCHEMA_VERSION = 2;
+const uint8_t SCHEMA_MIN_VERSION = 1;
 
 /*!
  * \brief The initial size of the FlatBuffer's memory buffer
@@ -135,19 +136,35 @@ void CSavestateFlatBuffer::SetLabel(const std::string& label)
   m_labelOffset.reset(new StringOffset{m_builder->CreateString(label)});
 }
 
-CDateTime CSavestateFlatBuffer::Created() const
+std::string CSavestateFlatBuffer::Caption() const
 {
-  CDateTime created;
+  std::string caption;
 
-  if (m_savestate != nullptr && m_savestate->created())
-    created.SetFromRFC1123DateTime(m_savestate->created()->c_str());
+  if (m_savestate != nullptr && m_savestate->caption())
+    caption = m_savestate->caption()->str();
 
-  return created;
+  return caption;
 }
 
-void CSavestateFlatBuffer::SetCreated(const CDateTime& created)
+void CSavestateFlatBuffer::SetCaption(const std::string& caption)
 {
-  m_createdOffset.reset(new StringOffset{m_builder->CreateString(created.GetAsRFC1123DateTime())});
+  m_captionOffset = std::make_unique<StringOffset>(m_builder->CreateString(caption));
+}
+
+CDateTime CSavestateFlatBuffer::Created() const
+{
+  CDateTime createdUTC;
+
+  if (m_savestate != nullptr && m_savestate->created())
+    createdUTC.SetFromW3CDateTime(m_savestate->created()->c_str(), false);
+
+  return createdUTC;
+}
+
+void CSavestateFlatBuffer::SetCreated(const CDateTime& createdUTC)
+{
+  m_createdOffset =
+      std::make_unique<StringOffset>(m_builder->CreateString(createdUTC.GetAsW3CDateTime(true)));
 }
 
 std::string CSavestateFlatBuffer::GameFileName() const
@@ -261,6 +278,12 @@ void CSavestateFlatBuffer::Finalize()
     m_labelOffset.reset();
   }
 
+  if (m_captionOffset)
+  {
+    savestateBuilder.add_caption(*m_captionOffset);
+    m_captionOffset.reset();
+  }
+
   if (m_createdOffset)
   {
     savestateBuilder.add_created(*m_createdOffset);
@@ -310,10 +333,11 @@ bool CSavestateFlatBuffer::Deserialize(std::vector<uint8_t> data)
   {
     const Savestate* savestate = GetSavestate(data.data());
 
-    if (savestate->version() != SCHEMA_VERSION)
+    if (savestate->version() < SCHEMA_MIN_VERSION)
     {
-      CLog::Log(LOGERROR, "RetroPlayer[SAVE): Schema version {} not supported, must be version {}",
-                savestate->version(), SCHEMA_VERSION);
+      CLog::Log(LOGERROR,
+                "RetroPlayer[SAVE): Schema version {} not supported, must be at least version {}",
+                savestate->version(), SCHEMA_MIN_VERSION);
     }
     else
     {

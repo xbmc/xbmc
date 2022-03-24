@@ -31,6 +31,7 @@ class IStreamManager;
 namespace GAME
 {
 
+class CGameClientCheevos;
 class CGameClientInGameSaves;
 class CGameClientInput;
 class CGameClientProperties;
@@ -118,11 +119,13 @@ public:
   ~CGameClient() override;
 
   // Game subsystems (const)
+  const CGameClientCheevos& Cheevos() const { return *m_subsystems.Cheevos; }
   const CGameClientInput& Input() const { return *m_subsystems.Input; }
   const CGameClientProperties& AddonProperties() const { return *m_subsystems.AddonProperties; }
   const CGameClientStreams& Streams() const { return *m_subsystems.Streams; }
 
   // Game subsystems (mutable)
+  CGameClientCheevos& Cheevos() { return *m_subsystems.Cheevos; }
   CGameClientInput& Input() { return *m_subsystems.Input; }
   CGameClientProperties& AddonProperties() { return *m_subsystems.AddonProperties; }
   CGameClientStreams& Streams() { return *m_subsystems.Streams; }

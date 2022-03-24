@@ -16,6 +16,7 @@
 #include "addons/AddonManager.h"
 #include "cores/DataCacheCore.h"
 #include "cores/IPlayerCallback.h"
+#include "cores/RetroPlayer/cheevos/Cheevos.h"
 #include "cores/RetroPlayer/guibridge/GUIGameRenderManager.h"
 #include "cores/RetroPlayer/guiplayback/GUIPlaybackControl.h"
 #include "cores/RetroPlayer/playback/IPlayback.h"
@@ -70,9 +71,13 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
 {
   CFileItem fileCopy(file);
 
-  // When playing a game, set the game client that we'll use to open the game
-  // Currently this may prompt the user, the goal is to figure this out silently
-  if (!GAME::CGameUtils::FillInGameClient(fileCopy, true))
+  std::string savestatePath;
+
+  // When playing a game, set the game client that we'll use to open the game.
+  // This will prompt the user to select a savestate if there are any.
+  // If there are no savestates, or the user wants to create a new savestate
+  // it will prompt the user to select a game client
+  if (!GAME::CGameUtils::FillInGameClient(fileCopy, savestatePath))
   {
     CLog::Log(LOGINFO,
               "RetroPlayer[PLAYER]: No compatible game client selected, aborting playback");
@@ -149,8 +154,8 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
   {
     CSavestateDatabase savestateDb;
 
-    std::unique_ptr<ISavestate> save = savestateDb.CreateSavestate();
-    if (savestateDb.GetSavestate(fileCopy.GetPath(), *save))
+    std::unique_ptr<ISavestate> save = CSavestateDatabase::AllocateSavestate();
+    if (savestateDb.GetSavestate(savestatePath, *save))
     {
       // Check if game client is the same
       if (save->GameClientID() != m_gameClient->ID())
@@ -176,8 +181,14 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
     // Switch to fullscreen
     CServiceBroker::GetAppMessenger()->PostMsg(TMSG_SWITCHTOFULLSCREEN);
 
+    m_cheevos = std::make_shared<CCheevos>(m_gameClient.get(),
+                                           m_gameServices.GameSettings().GetRAUsername(),
+                                           m_gameServices.GameSettings().GetRAToken());
+
+    m_cheevos->EnableRichPresence();
+
     // Initialize gameplay
-    CreatePlayback(m_gameServices.GameSettings().AutosaveEnabled());
+    CreatePlayback(m_gameServices.GameSettings().AutosaveEnabled(), savestatePath);
     RegisterWindowCallbacks();
     m_playbackControl.reset(new CGUIPlaybackControl(*this));
     m_callback.OnPlayBackStarted(fileCopy);
@@ -214,7 +225,7 @@ bool CRetroPlayer::CloseFile(bool reopen /* = false */)
 
   if (m_gameClient && m_gameServices.GameSettings().AutosaveEnabled())
   {
-    std::string savePath = m_playback->CreateSavestate();
+    std::string savePath = m_playback->CreateSavestate(true);
     if (!savePath.empty())
       CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Saved state to {}", CURL::GetRedacted(savePath));
     else
@@ -228,6 +239,8 @@ bool CRetroPlayer::CloseFile(bool reopen /* = false */)
 
   m_input.reset();
   m_streamManager.reset();
+
+  m_cheevos.reset();
 
   if (m_gameClient)
     m_gameClient->Unload();
@@ -404,6 +417,7 @@ bool CRetroPlayer::OnAction(const CAction& action)
         m_playback->SetSpeed(0.0);
 
         CLog::Log(LOGDEBUG, "RetroPlayer[PLAYER]: Sending reset command via ACTION_PLAYER_RESET");
+        m_cheevos->ResetRuntime();
         m_gameClient->Input().HardwareReset();
 
         // If rewinding or paused, begin playback
@@ -437,7 +451,7 @@ std::string CRetroPlayer::GetPlayerState()
 
   if (m_autoSave)
   {
-    savestatePath = m_playback->CreateSavestate();
+    savestatePath = m_playback->CreateSavestate(true);
     if (savestatePath.empty())
     {
       CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Continuing without saving");
@@ -490,6 +504,32 @@ std::string CRetroPlayer::GameClientID() const
   return "";
 }
 
+std::string CRetroPlayer::GetPlayingGame() const
+{
+  if (m_gameClient)
+    return m_gameClient->GetGamePath();
+
+  return "";
+}
+
+std::string CRetroPlayer::CreateSavestate(bool autosave)
+{
+  return m_playback->CreateSavestate(autosave);
+}
+
+bool CRetroPlayer::LoadSavestate(const std::string& path)
+{
+  if (m_playback)
+    return m_playback->LoadSavestate(path);
+
+  return false;
+}
+
+void CRetroPlayer::CloseOSDCallback()
+{
+  CloseOSD();
+}
+
 void CRetroPlayer::SetPlaybackSpeed(double speed)
 {
   if (m_playback)
@@ -525,9 +565,9 @@ bool CRetroPlayer::IsAutoSaveEnabled() const
   return m_playback->GetSpeed() > 0.0;
 }
 
-std::string CRetroPlayer::CreateSavestate()
+std::string CRetroPlayer::CreateAutosave()
 {
-  return m_playback->CreateSavestate();
+  return m_playback->CreateSavestate(true);
 }
 
 void CRetroPlayer::SetSpeedInternal(double speed)
@@ -548,13 +588,14 @@ void CRetroPlayer::OnSpeedChange(double newSpeed)
   m_processInfo->SetSpeed(static_cast<float>(newSpeed));
 }
 
-void CRetroPlayer::CreatePlayback(bool bRestoreState)
+void CRetroPlayer::CreatePlayback(bool bRestoreState, const std::string& savestatePath)
 {
   if (m_gameClient->RequiresGameLoop())
   {
     m_playback->Deinitialize();
-    m_playback.reset(new CReversiblePlayback(m_gameClient.get(), m_gameClient->GetFrameRate(),
-                                             m_gameClient->GetSerializeSize()));
+    m_playback = std::make_unique<CReversiblePlayback>(
+        m_gameClient.get(), *m_renderManager, m_cheevos.get(), m_gameClient->GetFrameRate(),
+        m_gameClient->GetSerializeSize());
   }
   else
     ResetPlayback();
@@ -566,7 +607,7 @@ void CRetroPlayer::CreatePlayback(bool bRestoreState)
     {
       CLog::Log(LOGDEBUG, "RetroPlayer[SAVE]: Loading savestate");
 
-      if (!SetPlayerState(m_gameClient->GetGamePath()))
+      if (!SetPlayerState(savestatePath))
         CLog::Log(LOGERROR, "RetroPlayer[SAVE]: Failed to load savestate");
     }
   }
