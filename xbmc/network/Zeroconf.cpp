@@ -15,7 +15,6 @@
 #endif
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "threads/Atomics.h"
 #include "threads/CriticalSection.h"
 #include "utils/JobManager.h"
 
@@ -30,6 +29,13 @@
 
 #include <cassert>
 #include <utility>
+
+namespace
+{
+
+std::mutex singletonMutex;
+
+}
 
 #ifndef HAS_ZEROCONF
 //dummy implementation used if no zeroconf is present
@@ -47,7 +53,6 @@ class CZeroconfDummy : public CZeroconf
 };
 #endif
 
-std::atomic_flag CZeroconf::sm_singleton_guard = ATOMIC_FLAG_INIT;
 CZeroconf* CZeroconf::smp_instance = 0;
 
 CZeroconf::CZeroconf():mp_crit_sec(new CCriticalSection)
@@ -134,7 +139,7 @@ void CZeroconf::Stop()
 
 CZeroconf*  CZeroconf::GetInstance()
 {
-  CAtomicSpinLock lock(sm_singleton_guard);
+  std::lock_guard<std::mutex> lock(singletonMutex);
   if(!smp_instance)
   {
 #ifndef HAS_ZEROCONF
@@ -157,7 +162,7 @@ CZeroconf*  CZeroconf::GetInstance()
 
 void CZeroconf::ReleaseInstance()
 {
-  CAtomicSpinLock lock(sm_singleton_guard);
+  std::lock_guard<std::mutex> lock(singletonMutex);
   delete smp_instance;
   smp_instance = 0;
 }

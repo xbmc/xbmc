@@ -11,13 +11,10 @@
 #include "PosixTimezone.h"
 
 #include <errno.h>
+#include <mutex>
 #include <time.h>
 
 #include <sys/times.h>
-
-#if defined(TARGET_DARWIN)
-#include "threads/Atomics.h"
-#endif
 
 #if defined(TARGET_ANDROID) && !defined(__LP64__)
 #include <time64.h>
@@ -92,7 +89,7 @@ int SystemTimeToFileTime(const SystemTime* systemTime, FileTime* fileTime)
 {
   static const int dayoffset[12] = {0, 31, 59, 90, 120, 151, 182, 212, 243, 273, 304, 334};
 #if defined(TARGET_DARWIN)
-  static std::atomic_flag timegm_lock = ATOMIC_FLAG_INIT;
+  static std::mutex timegm_lock;
 #endif
 
   struct tm sysTime = {};
@@ -111,7 +108,7 @@ int SystemTimeToFileTime(const SystemTime* systemTime, FileTime* fileTime)
     sysTime.tm_yday++;
 
 #if defined(TARGET_DARWIN)
-  CAtomicSpinLock lock(timegm_lock);
+  std::lock_guard<std::mutex> lock(timegm_lock);
 #endif
 
 #if defined(TARGET_ANDROID) && !defined(__LP64__)

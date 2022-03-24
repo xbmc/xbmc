@@ -19,12 +19,12 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
-#include "threads/Atomics.h"
 #include "utils/SystemInfo.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 
 #include <fstream>
+#include <mutex>
 #include <signal.h>
 #include <sstream>
 
@@ -32,7 +32,13 @@
 
 #include "PlatformDefs.h"
 
-static std::atomic_flag sg_singleton_lock_variable = ATOMIC_FLAG_INIT;
+namespace
+{
+
+std::mutex singletonMutex;
+
+}
+
 XBMCHelper* XBMCHelper::smp_instance = 0;
 
 #define XBMC_HELPER_PROGRAM "XBMCHelper"
@@ -44,7 +50,7 @@ static int GetBSDProcessList(kinfo_proc **procList, size_t *procCount);
 XBMCHelper&
 XBMCHelper::GetInstance()
 {
-  CAtomicSpinLock lock(sg_singleton_lock_variable);
+  std::lock_guard<std::mutex> lock(singletonMutex);
   if( ! smp_instance )
   {
     smp_instance = new XBMCHelper();
