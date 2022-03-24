@@ -14,23 +14,6 @@
 
 namespace XbmcThreads
 {
-/**
-   * This function returns the system clock's number of milliseconds but with
-   *  an arbitrary reference point. It handles the wrapping of any underlying
-   *  system clock by setting a starting point at the first call. It should
-   *  only be used for measuring time durations.
-   *
-   * Of course, on windows it just calls timeGetTime, so you're on your own.
-   */
-
-unsigned int SystemClockMillis();
-
-/**
-   * DO NOT compare the results from SystemClockMillis() to an expected end time
-   *  that was calculated by adding a number of milliseconds to some start time.
-   *  The reason is because the SystemClockMillis could wrap. Instead use this
-   *  class which uses differences (which are safe across a wrap).
-   */
 
 template<typename>
 struct is_chrono_duration : std::false_type
