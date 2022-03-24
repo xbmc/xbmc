@@ -46,7 +46,6 @@ float CGenericTouchInputHandler::AdjustPointerSize(float size)
     return m_dpi / 8.0f;
 }
 
-
 bool CGenericTouchInputHandler::HandleTouchInput(TouchInput event,
                                                  float x,
                                                  float y,

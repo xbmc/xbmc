@@ -6,7 +6,6 @@
  *  See LICENSES/README.md for more information.
  */
 
-
 #include "InertialScrollingHandler.h"
 
 #include "Application.h"
