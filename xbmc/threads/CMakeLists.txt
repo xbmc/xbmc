@@ -1,8 +1,7 @@
 set(SOURCES Atomics.cpp
             Event.cpp
             Thread.cpp
-            Timer.cpp
-            SystemClock.cpp)
+            Timer.cpp)
 
 set(HEADERS Atomics.h
             Condition.h
