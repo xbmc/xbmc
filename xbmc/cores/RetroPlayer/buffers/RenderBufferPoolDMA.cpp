@@ -28,7 +28,6 @@ bool CRenderBufferPoolDMA::IsCompatible(const CRenderVideoSettings& renderSettin
   return true;
 }
 
-
 IRenderBuffer* CRenderBufferPoolDMA::CreateRenderBuffer(void* header /* = nullptr */)
 {
   return new CRenderBufferDMA(m_context, m_fourcc);
