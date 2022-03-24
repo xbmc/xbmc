@@ -89,7 +89,6 @@ bool CGameClientJoystick::OnButtonMotion(const std::string& feature,
   event.feature_name = feature.c_str();
   event.analog_button.magnitude = magnitude;
 
-
   return m_gameClient.Input().InputEvent(event);
 }
 
