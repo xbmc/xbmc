@@ -16,7 +16,6 @@ using namespace PERIPHERALS;
 
 std::atomic<long> CPeripheralImon::m_lCountOfImonsConflictWithDInput(0L);
 
-
 CPeripheralImon::CPeripheralImon(CPeripherals& manager,
                                  const PeripheralScanResult& scanResult,
                                  CPeripheralBus* bus)

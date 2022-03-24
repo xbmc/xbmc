@@ -160,7 +160,6 @@ void CAddonInputHandling::OnKeyRelease(const CKey& key)
     m_keyboardHandler->OnKeyRelease(key);
 }
 
-
 bool CAddonInputHandling::OnPosition(int x, int y)
 {
   if (m_mouseHandler)
