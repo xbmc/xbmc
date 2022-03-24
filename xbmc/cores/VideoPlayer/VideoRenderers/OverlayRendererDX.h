@@ -37,7 +37,11 @@ namespace OVERLAY {
     : public COverlay
   {
   public:
-    explicit COverlayImageDX(CDVDOverlayImage* o);
+    /*! \brief Create the overlay for rendering
+     *  \param o The overlay image
+     *  \param rSource The video source rect size
+     */
+    explicit COverlayImageDX(CDVDOverlayImage* o, CRect& rSource);
     explicit COverlayImageDX(CDVDOverlaySpu*   o);
     virtual ~COverlayImageDX();
 

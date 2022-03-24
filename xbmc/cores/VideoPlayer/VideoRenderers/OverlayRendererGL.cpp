@@ -157,7 +157,7 @@ static void LoadTexture(GLenum target
   *v = (GLfloat)height / height2;
 }
 
-COverlayTextureGL::COverlayTextureGL(CDVDOverlayImage* o)
+COverlayTextureGL::COverlayTextureGL(CDVDOverlayImage* o, CRect& rSource)
 {
   m_texture = 0;
 
@@ -185,17 +185,35 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlayImage* o)
 
   glBindTexture(GL_TEXTURE_2D, 0);
 
-  if (o->source_width && o->source_height)
+  if (o->source_width > 0 && o->source_height > 0)
   {
-    float center_x = (0.5f * o->width  + o->x) / o->source_width;
-    float center_y = (0.5f * o->height + o->y) / o->source_height;
-
-    m_align = ALIGN_VIDEO;
     m_pos = POSITION_RELATIVE;
-    m_x = center_x;
-    m_y = center_y;
-    m_width = static_cast<float>(o->width) / o->source_width;
-    m_height = static_cast<float>(o->height) / o->source_height;
+    m_x = (0.5f * o->width + o->x) / o->source_width;
+    m_y = (0.5f * o->height + o->y) / o->source_height;
+
+    int videoSourceH{static_cast<int>(rSource.Height())};
+    int videoSourceW{static_cast<int>(rSource.Width())};
+
+    if ((o->source_height == videoSourceH || videoSourceH % o->source_height == 0) &&
+        (o->source_width == videoSourceW || videoSourceW % o->source_width == 0))
+    {
+      // We check also for multiple of source_height/source_width
+      // because for example 1080P subtitles can be used on 4K videos
+      m_align = ALIGN_VIDEO;
+      m_width = static_cast<float>(o->width) / o->source_width;
+      m_height = static_cast<float>(o->height) / o->source_height;
+    }
+    else
+    {
+      // We should have a re-encoded/cropped (removed black bars) video source.
+      // Then we cannot align to video otherwise the subtitles will be deformed
+      // better align to screen by keeping the aspect-ratio.
+      m_align = ALIGN_SCREEN_AR;
+      m_width = static_cast<float>(o->width);
+      m_height = static_cast<float>(o->height);
+      m_source_width = static_cast<float>(o->source_width);
+      m_source_height = static_cast<float>(o->source_height);
+    }
   }
   else
   {
