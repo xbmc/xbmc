@@ -42,7 +42,7 @@ bool CGameClientCheevos::RCGenerateHashFromFile(std::string& hash,
   if (_hash)
   {
     hash = _hash;
-    free(_hash);
+    delete[] _hash;
   }
 
   return error == GAME_ERROR_NO_ERROR;
@@ -66,7 +66,7 @@ bool CGameClientCheevos::RCGetGameIDUrl(std::string& url, const std::string& has
   if (_url)
   {
     url = _url;
-    free(_url);
+    delete[] _url;
   }
 
   return error == GAME_ERROR_NO_ERROR;
@@ -94,7 +94,7 @@ bool CGameClientCheevos::RCGetPatchFileUrl(std::string& url,
   if (_url)
   {
     url = _url;
-    free(_url);
+    delete[] _url;
   }
 
   return error == GAME_ERROR_NO_ERROR;
@@ -126,12 +126,12 @@ bool CGameClientCheevos::RCPostRichPresenceUrl(std::string& url,
   if (_url)
   {
     url = _url;
-    free(_url);
+    delete[] _url;
   }
   if (_postData)
   {
     postData = _postData;
-    free(_postData);
+    delete[] _postData;
   }
 
   return error == GAME_ERROR_NO_ERROR;
@@ -167,7 +167,7 @@ void CGameClientCheevos::RCGetRichPresenceEvaluation(std::string& evaluation,
     if (_evaluation)
     {
       evaluation = _evaluation;
-      free(_evaluation);
+      delete[] _evaluation;
     }
   }
   catch (...)
