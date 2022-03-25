@@ -1213,6 +1213,7 @@ extern "C"
     GAME_ERROR(__cdecl* RCGetRichPresenceEvaluation)
     (const AddonInstance_Game*, char**, unsigned int);
     GAME_ERROR(__cdecl* RCResetRuntime)(const AddonInstance_Game*);
+    void(__cdecl* FreeString)(const AddonInstance_Game*, char*);
   } KodiToAddonFuncTable_Game;
 
   /*!
