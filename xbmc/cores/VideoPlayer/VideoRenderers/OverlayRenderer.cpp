@@ -34,6 +34,8 @@
 #include "OverlayRendererDX.h"
 #endif
 
+#include <algorithm>
+
 using namespace OVERLAY;
 
 COverlay::COverlay()
@@ -172,29 +174,47 @@ void CRenderer::Render(COverlay* o)
   {
     float scale_x = 1.0;
     float scale_y = 1.0;
+    float scale_w = 1.0;
+    float scale_h = 1.0;
 
     if (align == COverlay::ALIGN_SCREEN || align == COverlay::ALIGN_SUBTITLE)
     {
       scale_x = m_rv.Width();
       scale_y = m_rv.Height();
+      scale_w = scale_x;
+      scale_h = scale_y;
+    }
+    else if (align == COverlay::ALIGN_SCREEN_AR)
+    {
+      // Align to screen by keeping aspect ratio to fit into the screen area
+      float source_width = o->m_source_width > 0 ? o->m_source_width : m_rs.Width();
+      float source_height = o->m_source_height > 0 ? o->m_source_height : m_rs.Height();
+      float ratio = std::min<float>(m_rv.Width() / source_width, m_rv.Height() / source_height);
+      scale_x = m_rv.Width();
+      scale_y = m_rv.Height();
+      scale_w = ratio;
+      scale_h = ratio;
     }
     else if (align == COverlay::ALIGN_VIDEO)
     {
       scale_x = m_rs.Width();
       scale_y = m_rs.Height();
+      scale_w = scale_x;
+      scale_h = scale_y;
     }
 
     state.x *= scale_x;
     state.y *= scale_y;
-    state.width *= scale_x;
-    state.height *= scale_y;
+    state.width *= scale_w;
+    state.height *= scale_h;
 
     pos = COverlay::POSITION_ABSOLUTE;
   }
 
   if (pos == COverlay::POSITION_ABSOLUTE)
   {
-    if (align == COverlay::ALIGN_SCREEN || align == COverlay::ALIGN_SUBTITLE)
+    if (align == COverlay::ALIGN_SCREEN || align == COverlay::ALIGN_SCREEN_AR ||
+        align == COverlay::ALIGN_SUBTITLE)
     {
       if (align == COverlay::ALIGN_SUBTITLE)
       {
@@ -483,12 +503,12 @@ COverlay* CRenderer::Convert(CDVDOverlay* o, double pts)
 
 #if defined(HAS_GL) || defined(HAS_GLES)
   if (o->IsOverlayType(DVDOVERLAY_TYPE_IMAGE))
-    r = new COverlayTextureGL(static_cast<CDVDOverlayImage*>(o));
+    r = new COverlayTextureGL(static_cast<CDVDOverlayImage*>(o), m_rs);
   else if (o->IsOverlayType(DVDOVERLAY_TYPE_SPU))
     r = new COverlayTextureGL(static_cast<CDVDOverlaySpu*>(o));
 #elif defined(HAS_DX)
   if (o->IsOverlayType(DVDOVERLAY_TYPE_IMAGE))
-    r = new COverlayImageDX(static_cast<CDVDOverlayImage*>(o));
+    r = new COverlayImageDX(static_cast<CDVDOverlayImage*>(o), m_rs);
   else if (o->IsOverlayType(DVDOVERLAY_TYPE_SPU))
     r = new COverlayImageDX(static_cast<CDVDOverlaySpu*>(o));
 #endif
