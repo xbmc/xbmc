@@ -1694,7 +1694,12 @@ void StringUtils::WordToDigits(std::string &word)
 std::string StringUtils::CreateUUID()
 {
 #ifdef HAVE_NEW_CROSSGUID
+#ifdef TARGET_ANDROID
+  JNIEnv* env = xbmc_jnienv();
+  return xg::newGuid(env).str();
+#else
   return xg::newGuid().str();
+#endif /* TARGET_ANDROID */
 #else
   static GuidGenerator guidGenerator;
   auto guid = guidGenerator.newGuid();
