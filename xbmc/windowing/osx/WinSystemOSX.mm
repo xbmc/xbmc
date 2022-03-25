@@ -1027,7 +1027,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
       {
         if (w == windowedFullScreenwindow)
           continue;
-        [w setFrameOrigin:NSZeroPoint];
+        [w setFrameOrigin:w.screen.frame.origin];
         break;
       }
     });
