@@ -25,7 +25,7 @@ public:
    * @brief Initialize all subcomponents with system default values (loaded from code, system settings files, ...).
    * @param params The command line params passed to the app.
    */
-  void Init(const CAppParamParser &params);
+  void Initialize(const CAppParamParser& params);
 
   /*!
    * @brief Initialize all subcomponents with user values (loaded from user settings files, according to active profile).
@@ -36,7 +36,7 @@ public:
   /*!
    * @brief Deinitialize all subcomponents.
    */
-  void Deinit();
+  void Deinitialize();
 
   /*!
    * @brief Get access to the settings subcomponent.

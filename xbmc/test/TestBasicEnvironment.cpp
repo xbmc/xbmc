@@ -21,6 +21,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/log.h"
 #include "windowing/WinSystem.h"
 
 #ifdef TARGET_DARWIN
@@ -43,8 +44,9 @@ void TestBasicEnvironment::SetUp()
 
   CServiceBroker::CreateLogging();
 
-  m_pSettingsComponent.reset(new CSettingsComponent());
-  m_pSettingsComponent->Init(params);
+  const auto settingsComponent = std::make_shared<CSettingsComponent>();
+  settingsComponent->Initialize(params);
+  CServiceBroker::RegisterSettingsComponent(settingsComponent);
 
   CServiceBroker::RegisterAppMessenger(std::make_shared<KODI::MESSAGING::CApplicationMessenger>());
 
@@ -99,8 +101,8 @@ void TestBasicEnvironment::SetUp()
   }
 
   const CProfile profile("special://temp");
-  m_pSettingsComponent->GetProfileManager()->AddProfile(profile);
-  m_pSettingsComponent->GetProfileManager()->CreateProfileFolders();
+  CServiceBroker::GetSettingsComponent()->GetProfileManager()->AddProfile(profile);
+  CServiceBroker::GetSettingsComponent()->GetProfileManager()->CreateProfileFolders();
 
   if (!g_application.m_ServiceManager->InitForTesting())
     exit(1);
@@ -112,10 +114,13 @@ void TestBasicEnvironment::TearDown()
 
   g_application.m_ServiceManager->DeinitTesting();
 
-  m_pSettingsComponent->Deinit();
-  m_pSettingsComponent.reset();
-
   CServiceBroker::UnregisterAppMessenger();
+
+  CServiceBroker::GetLogging().UnregisterFromSettings();
+  CServiceBroker::GetSettingsComponent()->Deinitialize();
+  CServiceBroker::UnregisterSettingsComponent();
+  CServiceBroker::GetLogging().Uninitialize();
+  CServiceBroker::DestroyLogging();
 }
 
 void TestBasicEnvironment::SetUpError()

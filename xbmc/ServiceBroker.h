@@ -113,6 +113,7 @@ public:
 
   static CLog& GetLogging();
   static void CreateLogging();
+  static void DestroyLogging();
 
   static std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> GetAnnouncementManager();
   static void RegisterAnnouncementManager(std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> announcementManager);
@@ -154,9 +155,9 @@ public:
   static void RegisterGUI(CGUIComponent *gui);
   static void UnregisterGUI();
 
-  static void RegisterSettingsComponent(CSettingsComponent *settings);
+  static void RegisterSettingsComponent(const std::shared_ptr<CSettingsComponent>& settings);
   static void UnregisterSettingsComponent();
-  static CSettingsComponent* GetSettingsComponent();
+  static std::shared_ptr<CSettingsComponent> GetSettingsComponent();
 
   static void RegisterWinSystem(CWinSystemBase *winsystem);
   static void UnregisterWinSystem();
@@ -203,7 +204,7 @@ private:
   CWinSystemBase* m_pWinSystem;
   IAE* m_pActiveAE;
   std::shared_ptr<CAppInboundProtocol> m_pAppPort;
-  CSettingsComponent* m_pSettingsComponent;
+  std::shared_ptr<CSettingsComponent> m_pSettingsComponent;
   CDecoderFilterManager* m_decoderFilterManager;
   std::shared_ptr<CCPUInfo> m_cpuInfo;
   std::shared_ptr<CTextureCache> m_textureCache;

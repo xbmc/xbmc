@@ -39,10 +39,9 @@ CSettingsComponent::CSettingsComponent()
 
 CSettingsComponent::~CSettingsComponent()
 {
-  Deinit();
 }
 
-void CSettingsComponent::Init(const CAppParamParser &params)
+void CSettingsComponent::Initialize(const CAppParamParser& params)
 {
   if (m_state == State::DEINITED)
   {
@@ -59,8 +58,6 @@ void CSettingsComponent::Init(const CAppParamParser &params)
     URIUtils::RegisterAdvancedSettings(*m_advancedSettings);
 
     m_profileManager->Initialize(m_settings);
-
-    CServiceBroker::RegisterSettingsComponent(this);
 
     m_state = State::INITED;
   }
@@ -100,12 +97,10 @@ bool CSettingsComponent::Load()
   }
 }
 
-void CSettingsComponent::Deinit()
+void CSettingsComponent::Deinitialize()
 {
   if (m_state >= State::INITED)
   {
-    CServiceBroker::UnregisterSettingsComponent();
-
     if (m_state == State::LOADED)
     {
       m_settings->Unload();

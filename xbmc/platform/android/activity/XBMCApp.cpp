@@ -463,7 +463,8 @@ void CXBMCApp::Quit()
   // wait for the run thread to finish
   m_thread.join();
 
-  CLog::Log(LOGINFO, "XBMCApp: Application stopped!");
+  // Note: CLog no longer available here.
+  android_printf("%s: Application stopped!", __PRETTY_FUNCTION__);
 }
 
 bool CXBMCApp::EnableWakeLock(bool on)

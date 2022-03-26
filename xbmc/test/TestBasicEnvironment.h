@@ -8,13 +8,9 @@
 
 #pragma once
 
-#include <memory>
 #include <string>
 
 #include <gtest/gtest.h>
-
-class CSettings;
-class CSettingsComponent;
 
 class TestBasicEnvironment : public testing::Environment
 {
@@ -26,5 +22,4 @@ public:
 private:
   void SetUpError();
   std::string m_tempPath;
-  std::unique_ptr<CSettingsComponent> m_pSettingsComponent;
 };

@@ -51,7 +51,7 @@ class CLog : public ISettingsHandler, public ISettingCallback
 {
 public:
   CLog();
-  ~CLog() = default;
+  ~CLog();
 
   // implementation of ISettingsHandler
   void OnSettingsLoaded() override;
@@ -60,6 +60,7 @@ public:
   void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
 
   void Initialize(const std::string& path);
+  void UnregisterFromSettings();
   void Uninitialize();
 
   void SetLogLevel(int level);

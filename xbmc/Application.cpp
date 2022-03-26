@@ -325,6 +325,8 @@ extern "C" void __stdcall cleanup_emu_environ();
 
 bool CApplication::Create(const CAppParamParser &params)
 {
+  m_bStop = false;
+
   // Grab a handle to our thread to be used later in identifying the render thread.
   m_threadID = CThread::GetCurrentThreadId();
 
@@ -334,12 +336,7 @@ bool CApplication::Create(const CAppParamParser &params)
   m_windowing = params.GetWindowing();
   m_logTarget = params.GetLogTarget();
 
-  CServiceBroker::CreateLogging();
-
   CServiceBroker::RegisterCPUInfo(CCPUInfo::GetCPUInfo());
-
-  m_pSettingsComponent.reset(new CSettingsComponent());
-  m_pSettingsComponent->Init(params);
 
   // Register JobManager service
   CServiceBroker::RegisterJobManager(std::make_shared<CJobManager>());
@@ -395,12 +392,13 @@ bool CApplication::Create(const CAppParamParser &params)
   av_log_set_callback(ff_avutil_log);
 
   CLog::Log(LOGINFO, "loading settings");
-  if (!m_pSettingsComponent->Load())
+  const auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  if (!settingsComponent->Load())
     return false;
 
   CLog::Log(LOGINFO, "creating subdirectories");
-  const std::shared_ptr<CProfileManager> profileManager = m_pSettingsComponent->GetProfileManager();
-  const std::shared_ptr<CSettings> settings = m_pSettingsComponent->GetSettings();
+  const std::shared_ptr<CProfileManager> profileManager = settingsComponent->GetProfileManager();
+  const std::shared_ptr<CSettings> settings = settingsComponent->GetSettings();
   CLog::Log(LOGINFO, "userdata folder: {}",
             CURL::GetRedacted(profileManager->GetProfileUserDataFolder()));
   CLog::Log(LOGINFO, "recording folder: {}",
@@ -417,7 +415,8 @@ bool CApplication::Create(const CAppParamParser &params)
   m_pAppPort = std::make_shared<CAppInboundProtocol>(*this);
   CServiceBroker::RegisterAppPort(m_pAppPort);
 
-  if (!m_ServiceManager->InitStageTwo(params, m_pSettingsComponent->GetProfileManager()->GetProfileUserDataFolder()))
+  if (!m_ServiceManager->InitStageTwo(
+          params, settingsComponent->GetProfileManager()->GetProfileUserDataFolder()))
   {
     return false;
   }
@@ -445,7 +444,7 @@ bool CApplication::Create(const CAppParamParser &params)
 
   // set user defined CA trust bundle
   std::string caCert =
-      CSpecialProtocol::TranslatePath(m_pSettingsComponent->GetAdvancedSettings()->m_caTrustFile);
+      CSpecialProtocol::TranslatePath(settingsComponent->GetAdvancedSettings()->m_caTrustFile);
   if (!caCert.empty())
   {
     if (XFILE::CFile::Exists(caCert))
@@ -529,7 +528,7 @@ bool CApplication::CreateGUI()
   }
 
   // update the window resolution
-  const std::shared_ptr<CSettings> settings = m_pSettingsComponent->GetSettings();
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   CServiceBroker::GetWinSystem()->SetWindowResolution(settings->GetInt(CSettings::SETTING_WINDOW_WIDTH), settings->GetInt(CSettings::SETTING_WINDOW_HEIGHT));
 
   if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_startFullScreen && CDisplaySettings::GetInstance().GetCurrentResolution() == RES_WINDOW)
@@ -2503,11 +2502,9 @@ bool CApplication::Cleanup()
     m_pAnnouncementManager.reset();
 
     CServiceBroker::UnregisterJobManager();
-
-    m_pSettingsComponent->Deinit();
-    m_pSettingsComponent.reset();
-
     CServiceBroker::UnregisterCPUInfo();
+
+    m_bInitializing = true;
 
     return true;
   }
