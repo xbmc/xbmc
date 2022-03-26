@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include <atomic>
 #include <string>
 #include <set>
 #include <vector>
@@ -153,8 +152,6 @@ private:
   tServices m_services;
   bool m_started = false;
 
-  //protects singleton creation/destruction
-  static std::atomic_flag sm_singleton_guard;
   static CZeroconfBrowser* smp_instance;
 };
 #include <iostream>

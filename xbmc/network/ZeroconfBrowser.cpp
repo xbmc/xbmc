@@ -25,7 +25,13 @@
 #endif
 
 #include "threads/CriticalSection.h"
-#include "threads/Atomics.h"
+
+namespace
+{
+
+std::mutex singletonMutex;
+
+}
 
 #if !defined(HAS_ZEROCONF)
 //dummy implementation used if no zeroconf is present
@@ -39,7 +45,6 @@ class CZeroconfBrowserDummy : public CZeroconfBrowser
 };
 #endif
 
-std::atomic_flag CZeroconfBrowser::sm_singleton_guard = ATOMIC_FLAG_INIT;
 CZeroconfBrowser* CZeroconfBrowser::smp_instance = 0;
 
 CZeroconfBrowser::CZeroconfBrowser():mp_crit_sec(new CCriticalSection)
@@ -131,27 +136,24 @@ bool CZeroconfBrowser::ResolveService(ZeroconfService& fr_service, double f_time
 
 CZeroconfBrowser*  CZeroconfBrowser::GetInstance()
 {
+  std::lock_guard<std::mutex> lock(singletonMutex);
+
   if(!smp_instance)
   {
-    //use double checked locking
-    CAtomicSpinLock lock(sm_singleton_guard);
-    if(!smp_instance)
-    {
 #if !defined(HAS_ZEROCONF)
-      smp_instance = new CZeroconfBrowserDummy;
+    smp_instance = new CZeroconfBrowserDummy;
 #else
 #if defined(TARGET_DARWIN)
-      smp_instance = new CZeroconfBrowserDarwin;
+    smp_instance = new CZeroconfBrowserDarwin;
 #elif defined(HAS_AVAHI)
-      smp_instance  = new CZeroconfBrowserAvahi;
+    smp_instance = new CZeroconfBrowserAvahi;
 #elif defined(TARGET_ANDROID)
-      // WIP
-      smp_instance  = new CZeroconfBrowserAndroid;
+    // WIP
+    smp_instance = new CZeroconfBrowserAndroid;
 #elif defined(HAS_MDNS)
-      smp_instance  = new CZeroconfBrowserMDNS;
+    smp_instance = new CZeroconfBrowserMDNS;
 #endif
 #endif
-    }
   }
   assert(smp_instance);
   return smp_instance;
@@ -159,7 +161,8 @@ CZeroconfBrowser*  CZeroconfBrowser::GetInstance()
 
 void CZeroconfBrowser::ReleaseInstance()
 {
-  CAtomicSpinLock lock(sm_singleton_guard);
+  std::lock_guard<std::mutex> lock(singletonMutex);
+
   delete smp_instance;
   smp_instance = 0;
 }
