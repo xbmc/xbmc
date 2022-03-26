@@ -15,6 +15,7 @@ xbmc/platform/android/powermanagement       platform/android/powermanagement
 xbmc/platform/android/storage               platform/android/storage
 xbmc/platform/android/utils                 platform/android/utils
 xbmc/platform/linux/peripherals             platform/linux/peripherals
+xbmc/platform/linux/threads                 platform/linux/threads
 xbmc/platform/posix                         platform/posix
 xbmc/platform/posix/filesystem              platform/posix/filesystem
 xbmc/platform/posix/threads                 platform/posix/threads
