@@ -18429,7 +18429,7 @@ msgstr ""
 #. Settings -> Games -> Achievements -> Logged in
 #: system/settings/settings.xml
 msgctxt "#35269"
-msgid "Toggle this setting to log in or out of RetroAchievemts."
+msgid "Toggle this setting to log in or out of RetroAchievements."
 msgstr ""
 
 #. Description for notification event regarding unsuccessful RetroAchievements login

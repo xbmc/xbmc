@@ -11,6 +11,8 @@
 #include "../AddonBase.h"
 #include "../c-api/addon-instance/game.h"
 
+#include <algorithm>
+
 #ifdef __cplusplus
 
 namespace kodi
@@ -1111,6 +1113,8 @@ private:
     instance->game->toAddon->RCGetRichPresenceEvaluation = ADDON_RCGetRichPresenceEvaluation;
     instance->game->toAddon->RCResetRuntime = ADDON_RCResetRuntime;
 
+    instance->game->toAddon->FreeString = ADDON_FreeString;
+
     m_instanceData = instance->game;
     m_instanceData->toAddon->addonInstance = this;
   }
@@ -1315,7 +1319,9 @@ private:
                          ->RCGenerateHashFromFile(cppHash, consoleID, filePath);
     if (!cppHash.empty() && hash)
     {
-      *hash = strdup(cppHash.c_str());
+      *hash = new char[cppHash.size() + 1];
+      std::copy(cppHash.begin(), cppHash.end(), *hash);
+      (*hash)[cppHash.size()] = '\0';
     }
     return ret;
   }
@@ -1329,7 +1335,9 @@ private:
         static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->RCGetGameIDUrl(cppUrl, hash);
     if (!cppUrl.empty() && url)
     {
-      *url = strdup(cppUrl.c_str());
+      *url = new char[cppUrl.size() + 1];
+      std::copy(cppUrl.begin(), cppUrl.end(), *url);
+      (*url)[cppUrl.size()] = '\0';
     }
     return ret;
   }
@@ -1346,7 +1354,9 @@ private:
                          ->RCGetPatchFileUrl(cppUrl, username, token, gameID);
     if (!cppUrl.empty() && url)
     {
-      *url = strdup(cppUrl.c_str());
+      *url = new char[cppUrl.size() + 1];
+      std::copy(cppUrl.begin(), cppUrl.end(), *url);
+      (*url)[cppUrl.size()] = '\0';
     }
     return ret;
   }
@@ -1365,9 +1375,17 @@ private:
         static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
             ->RCPostRichPresenceUrl(cppUrl, cppPostData, username, token, gameID, richPresence);
     if (!cppUrl.empty())
-      *url = strdup(cppUrl.c_str());
+    {
+      *url = new char[cppUrl.size() + 1];
+      std::copy(cppUrl.begin(), cppUrl.end(), *url);
+      (*url)[cppUrl.size()] = '\0';
+    }
     if (!cppPostData.empty())
-      *postData = strdup(cppPostData.c_str());
+    {
+      *postData = new char[cppPostData.size() + 1];
+      std::copy(cppPostData.begin(), cppPostData.end(), *postData);
+      (*postData)[cppPostData.size()] = '\0';
+    }
 
     return ret;
   }
@@ -1387,13 +1405,23 @@ private:
     GAME_ERROR ret = static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
                          ->RCGetRichPresenceEvaluation(cppEvaluation, consoleID);
     if (!cppEvaluation.empty())
-      *evaluation = strdup(cppEvaluation.c_str());
+    {
+      *evaluation = new char[cppEvaluation.size() + 1];
+      std::copy(cppEvaluation.begin(), cppEvaluation.end(), *evaluation);
+      (*evaluation)[cppEvaluation.size()] = '\0';
+    }
+
     return ret;
   }
 
   inline static GAME_ERROR ADDON_RCResetRuntime(const AddonInstance_Game* instance)
   {
     return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)->RCResetRuntime();
+  }
+
+  inline static void ADDON_FreeString(const AddonInstance_Game* instance, char* str)
+  {
+    delete[] str;
   }
 
   AddonInstance_Game* m_instanceData;
