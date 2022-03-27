@@ -3,7 +3,7 @@ DEPS= ../../Makefile.include Makefile 001-android-getauxvalrevert.patch
 
 # lib name, version
 LIBNAME=openssl
-VERSION=1.1.1m
+VERSION=1.1.1n
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
