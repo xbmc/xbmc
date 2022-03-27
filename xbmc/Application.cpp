@@ -2405,6 +2405,53 @@ void CApplication::ResetCurrentItem()
     m_pGUI->GetInfoManager().ResetCurrentItem();
 }
 
+int CApplication::Run(const CAppParamParser& params)
+{
+  CLog::Log(LOGINFO, "Running the application...");
+
+  std::chrono::time_point<std::chrono::steady_clock> lastFrameTime;
+  std::chrono::milliseconds frameTime;
+  const unsigned int noRenderFrameTime = 15; // Simulates ~66fps
+
+  if (params.GetPlaylist().Size() > 0)
+  {
+    CServiceBroker::GetPlaylistPlayer().Add(0, params.GetPlaylist());
+    CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(0);
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_PLAYLISTPLAYER_PLAY, -1);
+  }
+
+  // Run the app
+  while (!m_bStop)
+  {
+    // Animate and render a frame
+
+    lastFrameTime = std::chrono::steady_clock::now();
+    Process();
+
+    if (!m_bStop)
+    {
+      FrameMove(true, m_renderGUI);
+    }
+
+    if (m_renderGUI && !m_bStop)
+    {
+      Render();
+    }
+    else if (!m_renderGUI)
+    {
+      auto now = std::chrono::steady_clock::now();
+      frameTime = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastFrameTime);
+      if (frameTime.count() < noRenderFrameTime)
+        KODI::TIME::Sleep(std::chrono::milliseconds(noRenderFrameTime - frameTime.count()));
+    }
+  }
+
+  Cleanup();
+
+  CLog::Log(LOGINFO, "Exiting the application...");
+  return m_ExitCode;
+}
+
 bool CApplication::Cleanup()
 {
   try

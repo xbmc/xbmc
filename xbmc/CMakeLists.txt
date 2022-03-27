@@ -35,7 +35,6 @@ set(SOURCES Application.cpp
             ThumbLoader.cpp
             URL.cpp
             Util.cpp
-            XBApplicationEx.cpp
             XBDateTime.cpp)
 
 set(HEADERS AppParamParser.h
@@ -83,7 +82,6 @@ set(HEADERS AppParamParser.h
             ThumbLoader.h
             URL.h
             Util.h
-            XBApplicationEx.h
             XBDateTime.h
             system_egl.h
             system_gl.h)
