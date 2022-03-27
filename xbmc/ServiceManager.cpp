@@ -101,7 +101,8 @@ bool CServiceManager::InitStageOne()
 
 #ifdef HAS_PYTHON
   m_XBPython.reset(new XBPython());
-  CScriptInvocationManager::GetInstance().RegisterLanguageInvocationHandler(m_XBPython.get(), ".py");
+  CScriptInvocationManager::GetInstance().RegisterLanguageInvocationHandler(m_XBPython.get(),
+                                                                            ".py");
 #endif
 
   m_playlistPlayer.reset(new PLAYLIST::CPlayListPlayer());
@@ -112,12 +113,15 @@ bool CServiceManager::InitStageOne()
   return true;
 }
 
-bool CServiceManager::InitStageTwo(const CAppParamParser &params, const std::string& profilesUserDataFolder)
+bool CServiceManager::InitStageTwo(const CAppParamParser& params,
+                                   const std::string& profilesUserDataFolder)
 {
   // Initialize the addon database (must be before the addon manager is init'd)
   m_databaseManager.reset(new CDatabaseManager);
 
-  m_binaryAddonManager.reset(new ADDON::CBinaryAddonManager()); /* Need to constructed before, GetRunningInstance() of binary CAddonDll need to call them */
+  m_binaryAddonManager.reset(
+      new ADDON::
+          CBinaryAddonManager()); /* Need to constructed before, GetRunningInstance() of binary CAddonDll need to call them */
   m_addonMgr.reset(new ADDON::CAddonMgr());
   if (!m_addonMgr->Init())
   {
@@ -136,7 +140,7 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params, const std::str
 
   m_dataCacheCore.reset(new CDataCacheCore());
 
-  m_binaryAddonCache.reset( new ADDON::CBinaryAddonCache());
+  m_binaryAddonCache.reset(new ADDON::CBinaryAddonCache());
   m_binaryAddonCache->Init();
 
   m_favouritesService.reset(new CFavouritesService(profilesUserDataFolder));
@@ -149,8 +153,7 @@ bool CServiceManager::InitStageTwo(const CAppParamParser &params, const std::str
   m_inputManager.reset(new CInputManager(params));
   m_inputManager->InitializeInputs();
 
-  m_peripherals.reset(new PERIPHERALS::CPeripherals(*m_inputManager,
-                                                    *m_gameControllerManager));
+  m_peripherals.reset(new PERIPHERALS::CPeripherals(*m_inputManager, *m_gameControllerManager));
 
   m_gameRenderManager.reset(new RETRO::CGUIGameRenderManager);
 
@@ -189,10 +192,8 @@ bool CServiceManager::InitStageThree(const std::shared_ptr<CProfileManager>& pro
   // Peripherals depends on strings being loaded before stage 3
   m_peripherals->Initialise();
 
-  m_gameServices.reset(new GAME::CGameServices(*m_gameControllerManager,
-    *m_gameRenderManager,
-    *m_peripherals,
-    *profileManager));
+  m_gameServices.reset(new GAME::CGameServices(*m_gameControllerManager, *m_gameRenderManager,
+                                               *m_peripherals, *profileManager));
 
   m_contextMenuManager->Init();
 
@@ -275,7 +276,7 @@ WSDiscovery::IWSDiscovery& CServiceManager::GetWSDiscovery()
 }
 #endif
 
-ADDON::CAddonMgr &CServiceManager::GetAddonMgr()
+ADDON::CAddonMgr& CServiceManager::GetAddonMgr()
 {
   return *m_addonMgr;
 }
@@ -285,27 +286,27 @@ ADDONS::CExtsMimeSupportList& CServiceManager::GetExtsMimeSupportList()
   return *m_extsMimeSupportList;
 }
 
-ADDON::CBinaryAddonCache &CServiceManager::GetBinaryAddonCache()
+ADDON::CBinaryAddonCache& CServiceManager::GetBinaryAddonCache()
 {
   return *m_binaryAddonCache;
 }
 
-ADDON::CBinaryAddonManager &CServiceManager::GetBinaryAddonManager()
+ADDON::CBinaryAddonManager& CServiceManager::GetBinaryAddonManager()
 {
   return *m_binaryAddonManager;
 }
 
-ADDON::CVFSAddonCache &CServiceManager::GetVFSAddonCache()
+ADDON::CVFSAddonCache& CServiceManager::GetVFSAddonCache()
 {
   return *m_vfsAddonCache;
 }
 
-ADDON::CServiceAddonManager &CServiceManager::GetServiceAddons()
+ADDON::CServiceAddonManager& CServiceManager::GetServiceAddons()
 {
   return *m_serviceAddons;
 }
 
-ADDON::CRepositoryUpdater &CServiceManager::GetRepositoryUpdater()
+ADDON::CRepositoryUpdater& CServiceManager::GetRepositoryUpdater()
 {
   return *m_repositoryUpdater;
 }
@@ -384,23 +385,23 @@ CFileExtensionProvider& CServiceManager::GetFileExtensionProvider()
   return *m_fileExtensionProvider;
 }
 
-CPowerManager &CServiceManager::GetPowerManager()
+CPowerManager& CServiceManager::GetPowerManager()
 {
   return *m_powerManager;
 }
 
 // deleters for unique_ptr
-void CServiceManager::delete_dataCacheCore::operator()(CDataCacheCore *p) const
+void CServiceManager::delete_dataCacheCore::operator()(CDataCacheCore* p) const
 {
   delete p;
 }
 
-void CServiceManager::delete_contextMenuManager::operator()(CContextMenuManager *p) const
+void CServiceManager::delete_contextMenuManager::operator()(CContextMenuManager* p) const
 {
   delete p;
 }
 
-void CServiceManager::delete_favouritesService::operator()(CFavouritesService *p) const
+void CServiceManager::delete_favouritesService::operator()(CFavouritesService* p) const
 {
   delete p;
 }
@@ -415,12 +416,12 @@ CWeatherManager& CServiceManager::GetWeatherManager()
   return *m_weatherManager;
 }
 
-CPlayerCoreFactory &CServiceManager::GetPlayerCoreFactory()
+CPlayerCoreFactory& CServiceManager::GetPlayerCoreFactory()
 {
   return *m_playerCoreFactory;
 }
 
-CDatabaseManager &CServiceManager::GetDatabaseManager()
+CDatabaseManager& CServiceManager::GetDatabaseManager()
 {
   return *m_databaseManager;
 }

@@ -12,18 +12,19 @@
 
 #include <memory>
 
-namespace ADDON {
+namespace ADDON
+{
 class CAddonMgr;
 class CBinaryAddonManager;
 class CBinaryAddonCache;
 class CVFSAddonCache;
 class CServiceAddonManager;
 class CRepositoryUpdater;
-}
+} // namespace ADDON
 
 namespace ANNOUNCEMENT
 {
-  class CAnnouncementManager;
+class CAnnouncementManager;
 }
 
 namespace MEDIA_DETECT
@@ -33,12 +34,12 @@ class CDetectDVDMedia;
 
 namespace PVR
 {
-  class CPVRManager;
+class CPVRManager;
 }
 
 namespace PLAYLIST
 {
-  class CPlayListPlayer;
+class CPlayListPlayer;
 }
 
 namespace KODI
@@ -90,19 +91,19 @@ class CExtsMimeSupportList;
 
 namespace GAME
 {
-  class CControllerManager;
-  class CGameServices;
-}
+class CControllerManager;
+class CGameServices;
+} // namespace GAME
 
 namespace RETRO
 {
-  class CGUIGameRenderManager;
+class CGUIGameRenderManager;
 }
-}
+} // namespace KODI
 
 namespace PERIPHERALS
 {
-  class CPeripherals;
+class CPeripherals;
 }
 
 class CServiceBroker
@@ -116,18 +117,19 @@ public:
   static void DestroyLogging();
 
   static std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> GetAnnouncementManager();
-  static void RegisterAnnouncementManager(std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> announcementManager);
+  static void RegisterAnnouncementManager(
+      std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> announcementManager);
   static void UnregisterAnnouncementManager();
 
-  static ADDON::CAddonMgr &GetAddonMgr();
-  static ADDON::CBinaryAddonManager &GetBinaryAddonManager();
-  static ADDON::CBinaryAddonCache &GetBinaryAddonCache();
+  static ADDON::CAddonMgr& GetAddonMgr();
+  static ADDON::CBinaryAddonManager& GetBinaryAddonManager();
+  static ADDON::CBinaryAddonCache& GetBinaryAddonCache();
   static KODI::ADDONS::CExtsMimeSupportList& GetExtsMimeSupportList();
-  static ADDON::CVFSAddonCache &GetVFSAddonCache();
-  static XBPython &GetXBPython();
+  static ADDON::CVFSAddonCache& GetVFSAddonCache();
+  static XBPython& GetXBPython();
   static WSDiscovery::IWSDiscovery& GetWSDiscovery();
   static MEDIA_DETECT::CDetectDVDMedia& GetDetectDVDMedia();
-  static PVR::CPVRManager &GetPVRManager();
+  static PVR::CPVRManager& GetPVRManager();
   static CContextMenuManager& GetContextMenuManager();
   static CDataCacheCore& GetDataCacheCore();
   static CPlatform& GetPlatform();
@@ -140,32 +142,32 @@ public:
   static ADDON::CServiceAddonManager& GetServiceAddons();
   static ADDON::CRepositoryUpdater& GetRepositoryUpdater();
   static CInputManager& GetInputManager();
-  static CFileExtensionProvider &GetFileExtensionProvider();
+  static CFileExtensionProvider& GetFileExtensionProvider();
   static bool IsBinaryAddonCacheUp();
   static bool IsServiceManagerUp();
   static CNetworkBase& GetNetwork();
   static CPowerManager& GetPowerManager();
   static CWeatherManager& GetWeatherManager();
-  static CPlayerCoreFactory &GetPlayerCoreFactory();
-  static CDatabaseManager &GetDatabaseManager();
+  static CPlayerCoreFactory& GetPlayerCoreFactory();
+  static CDatabaseManager& GetDatabaseManager();
   static CEventLog* GetEventLog();
   static CMediaManager& GetMediaManager();
 
   static CGUIComponent* GetGUI();
-  static void RegisterGUI(CGUIComponent *gui);
+  static void RegisterGUI(CGUIComponent* gui);
   static void UnregisterGUI();
 
   static void RegisterSettingsComponent(const std::shared_ptr<CSettingsComponent>& settings);
   static void UnregisterSettingsComponent();
   static std::shared_ptr<CSettingsComponent> GetSettingsComponent();
 
-  static void RegisterWinSystem(CWinSystemBase *winsystem);
+  static void RegisterWinSystem(CWinSystemBase* winsystem);
   static void UnregisterWinSystem();
   static CWinSystemBase* GetWinSystem();
   static CRenderSystemBase* GetRenderSystem();
 
   static IAE* GetActiveAE();
-  static void RegisterAE(IAE *ae);
+  static void RegisterAE(IAE* ae);
   static void UnregisterAE();
 
   static std::shared_ptr<CAppInboundProtocol> GetAppPort();
