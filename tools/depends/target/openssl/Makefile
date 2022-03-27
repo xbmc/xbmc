@@ -3,10 +3,10 @@ DEPS = ../../Makefile.include Makefile 001-android-getauxvalrevert.patch 16-kodi
 
 # lib name, version
 LIBNAME=openssl
-VERSION=1.1.1m
+VERSION=1.1.1n
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
-SHA512=ba0ef99b321546c13385966e4a607734df38b96f6ed45c4c67063a5f8d1482986855279797a6920d9f86c2ec31ce3e104dcc62c37328caacdd78aec59aa66156
+SHA512=1937796736613dcf4105a54e42ecb61f95a1cea74677156f9459aea0f2c95159359e766089632bf364ee6b0d28d661eb9957bce8fecc9d2436378d8d79e8d0a4
 include ../../download-files.include
 
 # configuration settings
