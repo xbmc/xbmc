@@ -73,6 +73,11 @@ void CRos2::UnregisterImageTopic(const std::string& topic)
   m_node->UnregisterImageTopic(topic);
 }
 
+IStationHUD* CRos2::GetStationHUD() const
+{
+  return m_node->GetStationHUD();
+}
+
 void CRos2::FrameMove()
 {
   //! @todo Remove GUI dependency

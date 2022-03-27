@@ -4073,6 +4073,61 @@ const infomap retroplayer[] =
 };
 
 /// \page modules__infolabels_boolean_conditions
+/// \subsection modules__infolabels_boolean_conditions_SmartHome SmartHome
+/// \table_start
+///   \table_h3{ Labels, Type, Description }
+///   \table_row3{   <b>`SmartHome.HasStation`</b>,
+///                  \anchor SmartHome_HasStation
+///                  _boolean_,
+///     @return **True** if a LEGO train power station has been seen recently.
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.StationSupply`</b>,
+///                  \anchor SmartHome_StationSupply
+///                  _string_,
+///     @return The supply voltage being provided to a LEGO train power station.
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.StationMotor`</b>,
+///                  \anchor SmartHome_StationMotor
+///                  _string_,
+///     @return The voltage being applied to the 9V motors of a LEGO train.
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.StationCurrent`</b>,
+///                  \anchor SmartHome_StationCurrent
+///                  _string_,
+///     @return The current being provided to a LEGO train's 9V motors.
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.StationCPU`</b>,
+///                  \anchor SmartHome_StationCPU
+///                  _string_,
+///     @return The CPU utilization of the computer powering a LEGO train power station.
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.StationMessage`</b>,
+///                  \anchor SmartHome_StationMessage
+///                  _string_,
+///     @return The last string message logged by the LEGO train power station's
+///             microcontroller.
+///     <p>
+///   }
+/// \table_end
+///
+/// -----------------------------------------------------------------------------
+const infomap smarthome[] = {
+    // clang-format off
+    {"hasstation", SMARTHOME_HAS_STATION},
+    {"stationsupply", SMARTHOME_STATION_SUPPLY},
+    {"stationmotor", SMARTHOME_STATION_MOTOR},
+    {"stationcurrent", SMARTHOME_STATION_CURRENT},
+    {"stationcpu", SMARTHOME_STATION_CPU},
+    {"stationmessage", SMARTHOME_STATION_MESSAGE},
+    // clang-format on
+};
+
+/// \page modules__infolabels_boolean_conditions
 /// \subsection modules__infolabels_boolean_conditions_Container Container
 /// \table_start
 ///   \table_h3{ Labels, Type, Description }
@@ -10552,6 +10607,14 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
       {
         if (prop.name == rd.str)
           return rd.val;
+      }
+    }
+    else if (cat.name == "smarthome")
+    {
+      for (const infomap& i : smarthome)
+      {
+        if (prop.name == i.str)
+          return i.val;
       }
     }
   }

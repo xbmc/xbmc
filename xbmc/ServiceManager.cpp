@@ -25,6 +25,7 @@
 #include "favourites/FavouritesService.h"
 #include "games/GameServices.h"
 #include "games/controllers/ControllerManager.h"
+#include "guilib/GUIComponent.h"
 #include "input/InputManager.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "interfaces/python/XBPython.h"
@@ -219,7 +220,9 @@ bool CServiceManager::InitStageThree(const std::shared_ptr<CProfileManager>& pro
   if (!m_Platform->InitStageThree())
     return false;
 
-  m_smartHomeServices->Initialize(*m_gameServices);
+  CGUIInfoManager* infoManager =
+      CServiceBroker::GetGUI() != nullptr ? &CServiceBroker::GetGUI()->GetInfoManager() : nullptr;
+  m_smartHomeServices->Initialize(*m_gameServices, infoManager);
 
   init_level = 3;
   return true;

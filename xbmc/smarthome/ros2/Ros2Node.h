@@ -26,9 +26,11 @@ namespace KODI
 namespace SMART_HOME
 {
 class CRos2InputPublisher;
+class CRos2StationSubscriber;
 class CRos2VideoSubscription;
 class CSmartHomeGuiBridge;
 class CSmartHomeInputManager;
+class IStationHUD;
 
 class CRos2Node : public IRunnable
 {
@@ -40,8 +42,10 @@ public:
   void Initialize();
   void Deinitialize();
 
+  // GUI interface
   void RegisterImageTopic(CSmartHomeGuiBridge& guiBridge, const std::string& topic);
   void UnregisterImageTopic(const std::string& topic);
+  IStationHUD* GetStationHUD() const;
 
   //! @todo Remove GUI dependency
   void FrameMove();
@@ -57,6 +61,7 @@ private:
   std::shared_ptr<rclcpp::Node> m_node;
   std::map<std::string, std::unique_ptr<CRos2VideoSubscription>> m_videoSubs; // Topic -> subscriber
   std::unique_ptr<CRos2InputPublisher> m_peripheralPublisher;
+  std::unique_ptr<CRos2StationSubscriber> m_stationSubscriber;
 
   // Threading parameters
   std::unique_ptr<CThread> m_thread;

@@ -12,6 +12,7 @@
 #include "application/AppParams.h"
 #include "smarthome/guibridge/SmartHomeGuiBridge.h"
 #include "smarthome/guibridge/SmartHomeGuiManager.h"
+#include "smarthome/guiinfo/SmartHomeGuiInfo.h"
 #include "smarthome/input/SmartHomeInputManager.h"
 #include "smarthome/ros2/Ros2.h"
 #include "utils/log.h"
@@ -32,19 +33,34 @@ CSmartHomeServices::CSmartHomeServices(PERIPHERALS::CPeripherals& peripheralMana
 
 CSmartHomeServices::~CSmartHomeServices() = default;
 
-void CSmartHomeServices::Initialize(GAME::CGameServices& gameServices)
+void CSmartHomeServices::Initialize(GAME::CGameServices& gameServices,
+                                    CGUIInfoManager* guiInfoManager)
 {
   CLog::Log(LOGDEBUG, "SMARTHOME: Initializing services");
 
   m_inputManager->Initialize(gameServices);
 
   if (m_ros2)
+  {
     m_ros2->Initialize();
+
+    if (guiInfoManager != nullptr && m_ros2->GetStationHUD() != nullptr)
+    {
+      m_guiInfo = std::make_unique<CSmartHomeGuiInfo>(*guiInfoManager, *m_ros2->GetStationHUD());
+      m_guiInfo->Initialize();
+    }
+  }
 }
 
 void CSmartHomeServices::Deinitialize()
 {
   CLog::Log(LOGDEBUG, "SMARTHOME: Deinitializing services");
+
+  if (m_guiInfo)
+  {
+    m_guiInfo->Deinitialize();
+    m_guiInfo.reset();
+  }
 
   if (m_ros2)
     m_ros2->Deinitialize();
