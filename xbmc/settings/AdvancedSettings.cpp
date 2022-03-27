@@ -195,7 +195,7 @@ void CAdvancedSettings::Initialize()
 
   m_handleMounting = CServiceBroker::GetAppParams()->IsStandAlone();
 
-  m_fullScreenOnMovieStart = true;
+  m_fullScreenOnMovieStart = false;
   m_cachePath = "special://temp/";
 
   m_videoCleanDateTimeRegExp = "(.*[^ _\\,\\.\\(\\)\\[\\]\\-])[ _\\.\\(\\)\\[\\]\\-]+(19[0-9][0-9]|20[0-9][0-9])([ _\\,\\.\\(\\)\\[\\]\\-]|[^0-9]$)?";
