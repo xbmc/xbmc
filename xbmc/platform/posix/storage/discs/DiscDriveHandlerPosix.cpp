@@ -37,7 +37,6 @@ DriveState CDiscDriveHandlerPosix::GetDriveState(const std::string& devicePath)
   CdIo_t* cdio = libCdio->cdio_open(devicePath.c_str(), DRIVER_UNKNOWN);
   if (!cdio)
   {
-    CLog::LogF(LOGERROR, "Failed to open device {} libcdio handler", devicePath);
     return driveStatus;
   }
 
@@ -80,7 +79,6 @@ TrayState CDiscDriveHandlerPosix::GetTrayState(const std::string& devicePath)
   CdIo_t* cdio = libCdio->cdio_open(devicePath.c_str(), DRIVER_UNKNOWN);
   if (!cdio)
   {
-    CLog::LogF(LOGERROR, "Failed to open device {} libcdio handler", devicePath);
     return trayStatus;
   }
 
