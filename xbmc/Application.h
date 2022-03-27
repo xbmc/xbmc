@@ -8,37 +8,36 @@
 
 #pragma once
 
-#include "XBApplicationEx.h"
-
-#include "guilib/IMsgTargetCallback.h"
-#include "windowing/Resolution.h"
-#include "utils/GlobalsHandling.h"
-#include "messaging/IMessageTarget.h"
-#include "ServiceManager.h"
+#include "ApplicationPlayer.h"
 #include "ApplicationStackHelper.h"
-
-#include <atomic>
-#include <deque>
-#include <map>
-#include <memory>
-#include <string>
-#include <vector>
-
+#include "ServiceManager.h"
 #include "cores/IPlayerCallback.h"
-#include "settings/lib/ISettingsHandler.h"
-#include "settings/lib/ISettingCallback.h"
-#include "settings/ISubSettings.h"
+#include "guilib/IMsgTargetCallback.h"
+#include "guilib/IWindowManagerCallback.h"
+#include "messaging/IMessageTarget.h"
 #ifdef TARGET_WINDOWS
 #include "powermanagement/WinIdleTimer.h"
 #endif
-#include "ApplicationPlayer.h"
+#include "settings/ISubSettings.h"
+#include "settings/lib/ISettingCallback.h"
+#include "settings/lib/ISettingsHandler.h"
+#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
+#include "storage/DetectDVDType.h"
+#endif
 #include "threads/SystemClock.h"
 #include "threads/Thread.h"
+#include "utils/GlobalsHandling.h"
 #include "utils/Stopwatch.h"
 #include "windowing/OSScreenSaver.h"
+#include "windowing/Resolution.h"
 #include "windowing/XBMC_events.h"
 
+#include <atomic>
 #include <chrono>
+#include <deque>
+#include <memory>
+#include <string>
+#include <vector>
 
 class CAction;
 class CFileItem;
@@ -111,8 +110,21 @@ enum StartupAction
   STARTUP_ACTION_PLAY_RADIO
 };
 
-class CApplication : public CXBApplicationEx, public IPlayerCallback, public IMsgTargetCallback,
-                     public ISettingCallback, public ISettingsHandler, public ISubSettings,
+// Do not change the numbers; external scripts depend on them
+enum
+{
+  EXITCODE_QUIT = 0,
+  EXITCODE_POWERDOWN = 64,
+  EXITCODE_RESTARTAPP = 65,
+  EXITCODE_REBOOT = 66,
+};
+
+class CApplication : public IWindowManagerCallback,
+                     public IPlayerCallback,
+                     public IMsgTargetCallback,
+                     public ISettingCallback,
+                     public ISettingsHandler,
+                     public ISubSettings,
                      public KODI::MESSAGING::IMessageTarget
 {
 friend class CAppInboundProtocol;
@@ -125,11 +137,14 @@ public:
 
   CApplication(void);
   ~CApplication(void) override;
-  bool Initialize() override;
+
+  bool Create(const CAppParamParser& params);
+  bool Initialize();
+  int Run(const CAppParamParser& params);
+  bool Cleanup();
+
   void FrameMove(bool processEvents, bool processGUI = true) override;
   void Render() override;
-  bool Create(const CAppParamParser &params);
-  bool Cleanup() override;
 
   bool IsInitialized() const { return !m_bInitializing; }
   bool IsStopping() const { return m_bStop; }
@@ -422,8 +437,14 @@ protected:
   std::vector<ADDON::AddonInfoPtr>
       m_incompatibleAddons; /*!< Result of addon migration (incompatible addon infos) */
 
+public:
+  bool m_bStop{false};
+  bool m_AppFocused{true};
+  bool m_renderGUI{false};
+
 private:
   void PrintStartupLog();
+  void Preflight();
   void ResetCurrentItem();
 
   mutable CCriticalSection m_critSection; /*!< critical section for all changes to this class, except for changes to triggers */
@@ -436,6 +457,7 @@ private:
   CEvent m_playerEvent;
   CApplicationStackHelper m_stackHelper;
   std::string m_windowing;
+  int m_ExitCode{EXITCODE_QUIT};
 };
 
 XBMC_GLOBAL_REF(CApplication,g_application);
