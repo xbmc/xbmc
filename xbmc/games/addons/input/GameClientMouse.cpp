@@ -58,7 +58,6 @@ bool CGameClientMouse::OnMotion(const std::string& relpointer, int dx, int dy)
   event.rel_pointer.x = dx;
   event.rel_pointer.y = dy;
 
-
   return m_gameClient.Input().InputEvent(event);
 }
 
@@ -79,7 +78,6 @@ bool CGameClientMouse::OnButtonPress(const std::string& button)
   event.feature_name = button.c_str();
   event.digital_button.pressed = true;
 
-
   return m_gameClient.Input().InputEvent(event);
 }
 
@@ -93,7 +91,6 @@ void CGameClientMouse::OnButtonRelease(const std::string& button)
   event.port_address = ""; // Not used
   event.feature_name = button.c_str();
   event.digital_button.pressed = false;
-
 
   m_gameClient.Input().InputEvent(event);
 }

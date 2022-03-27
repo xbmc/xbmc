@@ -18,12 +18,8 @@
 
 using namespace KODI;
 
-
-CServiceBroker::CServiceBroker() :
-    m_pGUI(nullptr),
-    m_pWinSystem(nullptr),
-    m_pActiveAE(nullptr),
-    m_decoderFilterManager(nullptr)
+CServiceBroker::CServiceBroker()
+  : m_pGUI(nullptr), m_pWinSystem(nullptr), m_pActiveAE(nullptr), m_decoderFilterManager(nullptr)
 {
 }
 
@@ -51,7 +47,8 @@ std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> CServiceBroker::GetAnnouncem
 {
   return g_serviceBroker.m_pAnnouncementManager;
 }
-void CServiceBroker::RegisterAnnouncementManager(std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> port)
+void CServiceBroker::RegisterAnnouncementManager(
+    std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> port)
 {
   g_serviceBroker.m_pAnnouncementManager = std::move(port);
 }
@@ -61,17 +58,17 @@ void CServiceBroker::UnregisterAnnouncementManager()
   g_serviceBroker.m_pAnnouncementManager.reset();
 }
 
-ADDON::CAddonMgr &CServiceBroker::GetAddonMgr()
+ADDON::CAddonMgr& CServiceBroker::GetAddonMgr()
 {
   return g_application.m_ServiceManager->GetAddonMgr();
 }
 
-ADDON::CBinaryAddonManager &CServiceBroker::GetBinaryAddonManager()
+ADDON::CBinaryAddonManager& CServiceBroker::GetBinaryAddonManager()
 {
   return g_application.m_ServiceManager->GetBinaryAddonManager();
 }
 
-ADDON::CBinaryAddonCache &CServiceBroker::GetBinaryAddonCache()
+ADDON::CBinaryAddonCache& CServiceBroker::GetBinaryAddonCache()
 {
   return g_application.m_ServiceManager->GetBinaryAddonCache();
 }
@@ -81,7 +78,7 @@ ADDONS::CExtsMimeSupportList& CServiceBroker::GetExtsMimeSupportList()
   return g_application.m_ServiceManager->GetExtsMimeSupportList();
 }
 
-ADDON::CVFSAddonCache &CServiceBroker::GetVFSAddonCache()
+ADDON::CVFSAddonCache& CServiceBroker::GetVFSAddonCache()
 {
   return g_application.m_ServiceManager->GetVFSAddonCache();
 }
@@ -107,7 +104,7 @@ MEDIA_DETECT::CDetectDVDMedia& CServiceBroker::GetDetectDVDMedia()
 }
 #endif
 
-PVR::CPVRManager &CServiceBroker::GetPVRManager()
+PVR::CPVRManager& CServiceBroker::GetPVRManager()
 {
   return g_application.m_ServiceManager->GetPVRManager();
 }
@@ -117,7 +114,7 @@ CContextMenuManager& CServiceBroker::GetContextMenuManager()
   return g_application.m_ServiceManager->GetContextMenuManager();
 }
 
-CDataCacheCore &CServiceBroker::GetDataCacheCore()
+CDataCacheCore& CServiceBroker::GetDataCacheCore()
 {
   return g_application.m_ServiceManager->GetDataCacheCore();
 }
@@ -127,7 +124,7 @@ CPlatform& CServiceBroker::GetPlatform()
   return g_application.m_ServiceManager->GetPlatform();
 }
 
-PLAYLIST::CPlayListPlayer &CServiceBroker::GetPlaylistPlayer()
+PLAYLIST::CPlayListPlayer& CServiceBroker::GetPlaylistPlayer()
 {
   return g_application.m_ServiceManager->GetPlaylistPlayer();
 }
@@ -199,14 +196,12 @@ CNetworkBase& CServiceBroker::GetNetwork()
 
 bool CServiceBroker::IsBinaryAddonCacheUp()
 {
-  return g_application.m_ServiceManager &&
-         g_application.m_ServiceManager->init_level > 1;
+  return g_application.m_ServiceManager && g_application.m_ServiceManager->init_level > 1;
 }
 
 bool CServiceBroker::IsServiceManagerUp()
 {
-  return g_application.m_ServiceManager &&
-         g_application.m_ServiceManager->init_level == 3;
+  return g_application.m_ServiceManager && g_application.m_ServiceManager->init_level == 3;
 }
 
 CWinSystemBase* CServiceBroker::GetWinSystem()
@@ -214,7 +209,7 @@ CWinSystemBase* CServiceBroker::GetWinSystem()
   return g_serviceBroker.m_pWinSystem;
 }
 
-void CServiceBroker::RegisterWinSystem(CWinSystemBase *winsystem)
+void CServiceBroker::RegisterWinSystem(CWinSystemBase* winsystem)
 {
   g_serviceBroker.m_pWinSystem = winsystem;
 }
@@ -274,7 +269,7 @@ CGUIComponent* CServiceBroker::GetGUI()
   return g_serviceBroker.m_pGUI;
 }
 
-void CServiceBroker::RegisterGUI(CGUIComponent *gui)
+void CServiceBroker::RegisterGUI(CGUIComponent* gui)
 {
   g_serviceBroker.m_pGUI = gui;
 }
@@ -289,7 +284,7 @@ IAE* CServiceBroker::GetActiveAE()
 {
   return g_serviceBroker.m_pActiveAE;
 }
-void CServiceBroker::RegisterAE(IAE *ae)
+void CServiceBroker::RegisterAE(IAE* ae)
 {
   g_serviceBroker.m_pActiveAE = ae;
 }

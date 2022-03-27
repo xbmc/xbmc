@@ -76,7 +76,6 @@ bool CRetroPlayerAudio::OpenStream(const StreamProperties& properties)
   if (m_pAudioStream != nullptr)
     CloseStream();
 
-
   IAE* audioEngine = CServiceBroker::GetActiveAE();
   if (audioEngine == nullptr)
     return false;

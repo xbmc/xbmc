@@ -185,7 +185,6 @@ static const std::vector<FallbackWindowMapping> FallbackWindows = {
 };
 } // anonymous namespace
 
-
 bool CWindowTranslator::WindowNameCompare::operator()(const WindowMapItem& lhs,
                                                       const WindowMapItem& rhs) const
 {

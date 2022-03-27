@@ -275,7 +275,6 @@ void CRPRenderManager::CheckFlush()
 
     m_processInfo.GetBufferManager().FlushPools();
 
-
     m_bFlush = false;
   }
 }
