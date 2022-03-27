@@ -654,14 +654,20 @@ std::vector<std::shared_ptr<CPVRChannelGroupMember>> CPVRChannelGroup::RemoveDel
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
-  /* check for deleted channels */
+  // put group members into map to speedup the following lookups
+  std::map<std::pair<int, int>, std::shared_ptr<CPVRChannelGroupMember>> membersMap;
+  std::transform(groupMembers.begin(), groupMembers.end(),
+                 std::inserter(membersMap, membersMap.end()),
+                 [](const std::shared_ptr<CPVRChannelGroupMember>& member) {
+                   return std::make_pair(member->Channel()->StorageId(), member);
+                 });
+
+  // check for deleted channels
   for (auto it = m_sortedMembers.begin(); it != m_sortedMembers.end();)
   {
     const std::shared_ptr<CPVRChannel> channel = (*it)->Channel();
-    if (std::find_if(groupMembers.cbegin(), groupMembers.cend(),
-                     [&channel](const std::shared_ptr<CPVRChannelGroupMember>& member) {
-                       return member->Channel()->StorageId() == channel->StorageId();
-                     }) == groupMembers.cend())
+    auto mapIt = membersMap.find(channel->StorageId());
+    if (mapIt == membersMap.end())
     {
       if (HasValidDataForClient(channel->ClientID()))
       {
@@ -673,6 +679,10 @@ std::vector<std::shared_ptr<CPVRChannelGroupMember>> CPVRChannelGroup::RemoveDel
         it = m_sortedMembers.erase(it);
         continue;
       }
+    }
+    else
+    {
+      membersMap.erase(mapIt);
     }
     ++it;
   }
