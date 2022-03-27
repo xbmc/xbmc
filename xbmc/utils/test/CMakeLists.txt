@@ -44,6 +44,7 @@ set(SOURCES TestAlarmClock.cpp
             TestUrlOptions.cpp
             TestVariant.cpp
             TestXBMCTinyXML.cpp
+            TestXBMCTinyXML2.cpp
             TestXMLUtils.cpp)
 
 set(HEADERS TestGlobalsHandlingPattern1.h)
