@@ -1,0 +1,32 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -39,6 +39,7 @@
+     DEFINE_SYMBOL "TINYXML2_EXPORT"
+     VERSION "${tinyxml2_VERSION}"
+     SOVERSION "${tinyxml2_VERSION_MAJOR}"
++    DEBUG_POSTFIX d
+ )
+ 
+ if (tinyxml2_BUILD_TESTING)
+@@ -96,6 +97,21 @@
+     COMPONENT tinyxml2_development
+ )
+ 
++# Windows PDB debug files
++if(WIN32 OR WINDOWS_STORE)
++  install(FILES
++      ${PROJECT_BINARY_DIR}/Debug/tinyxml2d.pdb
++      DESTINATION lib
++      CONFIGURATIONS Debug
++  )
++  install(FILES
++      ${PROJECT_BINARY_DIR}/RelWithDebInfo/tinyxml2.pdb
++      DESTINATION lib
++      CONFIGURATIONS RelWithDebInfo
++  )
++endif()
++
++
+ # Auto-generated version compatibility file
+ write_basic_package_version_file(
+     tinyxml2-config-version.cmake
