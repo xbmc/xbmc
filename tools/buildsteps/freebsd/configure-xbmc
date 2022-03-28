@@ -4,4 +4,4 @@ XBMC_PLATFORM_DIR=freebsd
 
 mkdir -p $WORKSPACE/build
 cd $WORKSPACE/build
-cmake -DCMAKE_BUILD_TYPE=$Configuration -DAPP_RENDER_SYSTEM=gl ..
+cmake -DCMAKE_BUILD_TYPE=$Configuration -DENABLE_INTERNAL_TINYXML2=ON -DAPP_RENDER_SYSTEM=gl ..
