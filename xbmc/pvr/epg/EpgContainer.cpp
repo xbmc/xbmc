@@ -942,8 +942,6 @@ int CPVREpgContainer::CleanupCachedImages()
 {
   int iCleanedImages = 0;
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
-
   const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
   if (!database)
   {
@@ -951,7 +949,12 @@ int CPVREpgContainer::CleanupCachedImages()
     return iCleanedImages;
   }
 
-  for (const auto& epg : m_epgIdToEpgMap)
+  // Processing can take some time. Do not block.
+  m_critSection.lock();
+  const std::map<int, std::shared_ptr<CPVREpg>> epgIdToEpgMap = m_epgIdToEpgMap;
+  m_critSection.unlock();
+
+  for (const auto& epg : epgIdToEpgMap)
   {
     iCleanedImages += epg.second->CleanupCachedImages(database);
   }
