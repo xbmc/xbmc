@@ -538,7 +538,7 @@ std::string CMediaManager::GetDiskUniqueId(const std::string& devicePath)
   }
 
   std::string strID = StringUtils::Format("removable://{}_{}", info.name, info.serial);
-  CLog::Log(LOGDEBUG, "GetDiskUniqueId: Got ID {} for {} with path {}", strID, info.type,
+  CLog::Log(LOGDEBUG, "GetDiskUniqueId: Got ID {} for disc with path {}", strID,
             CURL::GetRedacted(mediaPath));
 
   return strID;
