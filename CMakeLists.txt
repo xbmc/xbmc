@@ -79,6 +79,9 @@ dependent_option(ENABLE_INTERNAL_NFS "Enable internal libnfs?")
 dependent_option(ENABLE_INTERNAL_PCRE "Enable internal pcre?")
 dependent_option(ENABLE_INTERNAL_SPDLOG "Enable internal spdlog?")
 dependent_option(ENABLE_INTERNAL_TAGLIB "Enable internal taglib?")
+if(KODI_DEPENDSBUILD OR WIN32 OR WINDOWS_STORE)
+  dependent_option(ENABLE_INTERNAL_TINYXML2 "Enable internal TinyXML2?")
+endif()
 
 # Internal Depends - supported on UNIX platforms
 if(UNIX)
