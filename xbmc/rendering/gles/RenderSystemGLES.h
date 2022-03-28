@@ -14,6 +14,8 @@
 
 #include <map>
 
+#include <fmt/format.h>
+
 #include "system_gl.h"
 
 enum class ShaderMethodGLES
@@ -30,6 +32,65 @@ enum class ShaderMethodGLES
   SM_TEXTURE_RGBA_BOB,
   SM_TEXTURE_RGBA_BOB_OES,
   SM_TEXTURE_NOALPHA
+};
+
+template<>
+struct fmt::formatter<ShaderMethodGLES> : fmt::formatter<std::string_view>
+{
+
+public:
+  static constexpr auto toString(ShaderMethodGLES method)
+  {
+    switch (method)
+    {
+      case ShaderMethodGLES::SM_DEFAULT:
+        return "default";
+        break;
+      case ShaderMethodGLES::SM_TEXTURE:
+        return "texture";
+        break;
+      case ShaderMethodGLES::SM_MULTI:
+        return "multi";
+        break;
+      case ShaderMethodGLES::SM_FONTS:
+        return "fonts";
+        break;
+      case ShaderMethodGLES::SM_TEXTURE_NOBLEND:
+        return "texture no blending";
+        break;
+      case ShaderMethodGLES::SM_MULTI_BLENDCOLOR:
+        return "multi blend colour";
+        break;
+      case ShaderMethodGLES::SM_TEXTURE_RGBA:
+        return "texure rgba";
+        break;
+      case ShaderMethodGLES::SM_TEXTURE_RGBA_OES:
+        return "texure rgba OES";
+        break;
+      case ShaderMethodGLES::SM_TEXTURE_RGBA_BLENDCOLOR:
+        return "texture rgba blend colour";
+        break;
+      case ShaderMethodGLES::SM_TEXTURE_RGBA_BOB:
+        return "texure rgba bob";
+        break;
+      case ShaderMethodGLES::SM_TEXTURE_RGBA_BOB_OES:
+        return "texure rgba bob OES";
+        break;
+      case ShaderMethodGLES::SM_TEXTURE_NOALPHA:
+        return "texture no alpha";
+        break;
+      default:
+        return "unknown";
+        break;
+    }
+  }
+
+  template<typename FormatContext>
+  constexpr auto format(const ShaderMethodGLES& shaderMethod, FormatContext& ctx)
+  {
+    auto shaderName = toString(shaderMethod);
+    return fmt::formatter<std::string_view>::format(shaderName, ctx);
+  }
 };
 
 class CRenderSystemGLES : public CRenderSystemBase
@@ -103,4 +164,3 @@ protected:
 
   GLint      m_viewPort[4];
 };
-
