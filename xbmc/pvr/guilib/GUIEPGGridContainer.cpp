@@ -1855,7 +1855,7 @@ void CGUIEPGGridContainer::SetTimelineItems(const std::unique_ptr<CFileItemList>
 
 std::unique_ptr<CFileItemList> CGUIEPGGridContainer::GetCurrentTimeLineItems() const
 {
-  return m_gridModel->GetCurrentTimeLineItems();
+  return m_gridModel->GetCurrentTimeLineItems(m_channelOffset, m_channelsPerPage);
 }
 
 void CGUIEPGGridContainer::GoToChannel(int channelIndex)
