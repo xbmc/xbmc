@@ -750,6 +750,9 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &freeBufferTime)
   if (!si->m_started && !space)
     return true;
 
+  if (!m_playbackSpeed)
+    return true;
+
   /* see if it is time yet to FF/RW or a direct seek */
   if (!si->m_playNextTriggered && ((m_playbackSpeed != 1 && si->m_framesSent >= si->m_seekNextAtFrame) || si->m_seekFrame > -1))
   {
