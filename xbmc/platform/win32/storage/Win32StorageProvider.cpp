@@ -190,31 +190,13 @@ void CWin32StorageProvider::GetDrivesByType(VECSOURCES &localDrives, Drive_Types
     GetLogicalDriveStringsW( dwStrLength, pcBuffer.get() );
 
     int iPos= 0;
-    WCHAR cVolumeName[100];
     do{
-      int nResult = 0;
-      cVolumeName[0]= L'\0';
-
       std::wstring strWdrive = pcBuffer.get() + iPos;
+      std::wstring letter;
+      if (strWdrive.size() >= 2)
+        letter = strWdrive.substr(0, 2);
 
-      UINT uDriveType= GetDriveTypeW( strWdrive.c_str()  );
-      // don't use GetVolumeInformation on fdd's as the floppy controller may be enabled in Bios but
-      // no floppy HW is attached which causes huge delays.
-      if(strWdrive.size() >= 2 && strWdrive.substr(0,2) != L"A:" && strWdrive.substr(0,2) != L"B:")
-        nResult= GetVolumeInformationW( strWdrive.c_str() , cVolumeName, 100, 0, 0, 0, NULL, 25);
-      if(nResult == 0 && bonlywithmedia)
-      {
-        iPos += (wcslen( pcBuffer.get() + iPos) + 1 );
-        continue;
-      }
-
-      // usb hard drives are reported as DRIVE_FIXED and won't be returned by queries with REMOVABLE_DRIVES set
-      // so test for usb hard drives
-      /*if(uDriveType == DRIVE_FIXED)
-      {
-        if(IsUsbDevice(strWdrive))
-          uDriveType = DRIVE_REMOVABLE;
-      }*/
+      UINT uDriveType = GetDriveTypeW(strWdrive.c_str());
 
       share.strPath= share.strName= "";
 
@@ -225,9 +207,42 @@ void CWin32StorageProvider::GetDrivesByType(VECSOURCES &localDrives, Drive_Types
          ( eDriveType == REMOVABLE_DRIVES && ( uDriveType == DRIVE_REMOVABLE )) ||
          ( eDriveType == DVD_DRIVES && ( uDriveType == DRIVE_CDROM ))))
       {
+        std::wstring remoteName;
+        // for remote drives (mapped network shares) use "remote name" instead of "volume name"
+        // GetVolumeInformation fails on inaccessible network drive letters and cause delays
+        if (uDriveType == DRIVE_REMOTE)
+        {
+          wchar_t cRemoteName[MAX_PATH] = {};
+          DWORD len = sizeof(cRemoteName) / sizeof(wchar_t);
+          if (NO_ERROR != WNetGetConnectionW(letter.c_str(), cRemoteName, &len))
+          {
+            iPos += (wcslen(pcBuffer.get() + iPos) + 1);
+            continue;
+          }
+          remoteName = cRemoteName;
+        }
+        wchar_t cVolumeName[100] = {};
+        int nResult = 0;
+        // don't use GetVolumeInformation on fdd's as the floppy controller may be enabled in Bios but
+        // no floppy HW is attached which causes huge delays.
+        if (uDriveType != DRIVE_REMOTE && !letter.empty() && letter != L"A:" && letter != L"B:")
+        {
+          DWORD len = sizeof(cVolumeName) / sizeof(wchar_t);
+          nResult = GetVolumeInformationW(strWdrive.c_str(), cVolumeName, len, 0, 0, 0, nullptr, 0);
+        }
+        if (nResult == 0 && bonlywithmedia)
+        {
+          iPos += (wcslen(pcBuffer.get() + iPos) + 1);
+          continue;
+        }
+
         share.strPath = FromW(strWdrive);
-        if( cVolumeName[0] != L'\0' )
+
+        if (uDriveType == DRIVE_REMOTE)
+          share.strName = FromW(remoteName);
+        else if (cVolumeName[0] != L'\0')
           share.strName = FromW(cVolumeName);
+
         if( uDriveType == DRIVE_CDROM && nResult)
         {
           // Has to be the same as auto mounted devices
