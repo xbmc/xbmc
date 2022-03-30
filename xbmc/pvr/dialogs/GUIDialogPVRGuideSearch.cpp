@@ -334,22 +334,23 @@ void CGUIDialogPVRGuideSearch::Update()
   SET_CONTROL_SELECTED(GetID(), CONTROL_BTN_IGNORE_FUTURE,
                        m_searchFilter->ShouldIgnoreFutureBroadcasts());
 
-  /* Set time fields */
+  // Set start/end datetime fields
   m_startDateTime = m_searchFilter->GetStartDateTime();
-  if (!m_startDateTime.IsValid())
+  m_endDateTime = m_searchFilter->GetEndDateTime();
+  if (!m_startDateTime.IsValid() || !m_endDateTime.IsValid())
   {
-    m_startDateTime = CServiceBroker::GetPVRManager().EpgContainer().GetFirstEPGDate();
+    const auto dates = CServiceBroker::GetPVRManager().EpgContainer().GetFirstAndLastEPGDate();
     if (!m_startDateTime.IsValid())
-      m_startDateTime = CDateTime::GetUTCDateTime();
+      m_startDateTime = dates.first;
+    if (!m_endDateTime.IsValid())
+      m_endDateTime = dates.second;
   }
 
-  m_endDateTime = m_searchFilter->GetEndDateTime();
+  if (!m_startDateTime.IsValid())
+    m_startDateTime = CDateTime::GetUTCDateTime();
+
   if (!m_endDateTime.IsValid())
-  {
-    m_endDateTime = CServiceBroker::GetPVRManager().EpgContainer().GetLastEPGDate();
-    if (!m_endDateTime.IsValid())
-      m_endDateTime = m_startDateTime + CDateTimeSpan(10, 0, 0, 0); // default to start + 10 days
-  }
+    m_endDateTime = m_startDateTime + CDateTimeSpan(10, 0, 0, 0); // default to start + 10 days
 
   CDateTime startLocal;
   startLocal.SetFromUTCDateTime(m_startDateTime);
