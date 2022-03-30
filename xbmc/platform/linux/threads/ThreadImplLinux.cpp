@@ -17,6 +17,12 @@
 #include <sys/resource.h>
 #include <unistd.h>
 
+#if !defined(TARGET_ANDROID) && (defined(__GLIBC__) || defined(__UCLIBC__))
+#if defined(__UCLIBC__) || !__GLIBC_PREREQ(2, 30)
+#include <sys/syscall.h>
+#endif
+#endif
+
 namespace
 {
 
@@ -41,6 +47,15 @@ int ThreadPriorityToNativePriority(const ThreadPriority& priority)
 
   throw std::runtime_error("priority not implemented");
 }
+
+#if !defined(TARGET_ANDROID) && (defined(__GLIBC__) || defined(__UCLIBC__))
+#if defined(__UCLIBC__) || !__GLIBC_PREREQ(2, 30)
+static pid_t gettid()
+{
+  return syscall(__NR_gettid);
+}
+#endif
+#endif
 
 } // namespace
 
