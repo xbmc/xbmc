@@ -237,6 +237,12 @@ namespace PVR
     CDateTime GetLastDate() const;
 
     /*!
+     * @brief Get the start and end time of the last not yet commited entry in this table.
+     * @return The times; first: start time, second: end time.
+     */
+    std::pair<CDateTime, CDateTime> GetFirstAndLastUncommitedEPGDate() const;
+
+    /*!
      * @brief Notify observers when the currently active tag changed.
      * @return True if the playing tag has changed, false otherwise.
      */

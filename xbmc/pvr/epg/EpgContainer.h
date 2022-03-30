@@ -123,6 +123,12 @@ namespace PVR
     const CDateTime GetLastEPGDate();
 
     /*!
+     * @brief Get the start and end time across all EPGs.
+     * @return The times; first: start time, second: end time.
+     */
+    std::pair<CDateTime, CDateTime> GetFirstAndLastEPGDate() const;
+
+    /*!
      * @brief Get all EPGs.
      * @return The EPGs.
      */

@@ -389,6 +389,12 @@ CDateTime CPVREpg::GetLastDate() const
   return m_tags.GetLastEndTime();
 }
 
+std::pair<CDateTime, CDateTime> CPVREpg::GetFirstAndLastUncommitedEPGDate() const
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  return m_tags.GetFirstAndLastUncommitedEPGDate();
+}
+
 bool CPVREpg::UpdateFromScraper(time_t start, time_t end, bool bForceUpdate)
 {
   if (m_strScraperName.empty())

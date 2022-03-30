@@ -459,6 +459,30 @@ CDateTime CPVREpgDatabase::GetLastEndTime(int iEpgID)
   return {};
 }
 
+std::pair<CDateTime, CDateTime> CPVREpgDatabase::GetFirstAndLastEPGDate()
+{
+  CDateTime first;
+  CDateTime last;
+
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+
+  // 1st query: get min start time
+  std::string strQuery = PrepareSQL("SELECT MIN(iStartTime) FROM epgtags;");
+
+  std::string strValue = GetSingleValue(strQuery);
+  if (!strValue.empty())
+    first = CDateTime(static_cast<time_t>(std::atoi(strValue.c_str())));
+
+  // 2nd query: get max end time
+  strQuery = PrepareSQL("SELECT MAX(iEndTime) FROM epgtags;");
+
+  strValue = GetSingleValue(strQuery);
+  if (!strValue.empty())
+    last = CDateTime(static_cast<time_t>(std::atoi(strValue.c_str())));
+
+  return {first, last};
+}
+
 CDateTime CPVREpgDatabase::GetMinStartTime(int iEpgID, const CDateTime& minStart)
 {
   time_t t;
