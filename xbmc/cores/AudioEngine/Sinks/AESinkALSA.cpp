@@ -1046,10 +1046,12 @@ bool CAESinkALSA::OpenPCMDevice(const std::string &name, const std::string &para
       case 4:
         if (TryDeviceWithParams("surround40" + openName, params, pcmp, lconf))
           return true;
+        [[fallthrough]];
       case 5:
       case 6:
         if (TryDeviceWithParams("surround51" + openName, params, pcmp, lconf))
           return true;
+        [[fallthrough]];
       case 7:
       case 8:
         if (TryDeviceWithParams("surround71" + openName, params, pcmp, lconf))
