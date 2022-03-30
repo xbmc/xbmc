@@ -35,12 +35,6 @@ namespace PVR
   class CPVRClient;
   class CPVREpgInfoTag;
 
-  enum EpgDateType
-  {
-    EPG_FIRST_DATE = 0,
-    EPG_LAST_DATE = 1
-  };
-
   enum RenumberMode
   {
     NORMAL = 0,
@@ -368,18 +362,6 @@ namespace PVR
     virtual bool CreateChannelEpgs(bool bForce = false);
 
     /*!
-     * @brief Get the start time of the first entry.
-     * @return The start time.
-     */
-    CDateTime GetFirstEPGDate() const;
-
-    /*!
-     * @brief Get the end time of the last entry.
-     * @return The end time.
-     */
-    CDateTime GetLastEPGDate() const;
-
-    /*!
      * @brief Update a channel group member with given data.
      * @param storageId The storage id of the channel.
      * @param strChannelName The channel name to set.
@@ -549,8 +531,6 @@ namespace PVR
         const std::vector<std::shared_ptr<CPVRChannelGroupMember>>& groupMembers);
 
     void OnSettingChanged();
-
-    CDateTime GetEPGDate(EpgDateType epgDateType) const;
 
     std::shared_ptr<CPVRChannelGroup> m_allChannelsGroup;
     CPVRChannelsPath m_path;

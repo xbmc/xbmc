@@ -225,18 +225,6 @@ namespace PVR
     bool QueueDeleteQueries(const std::shared_ptr<CPVREpgDatabase>& database);
 
     /*!
-     * @brief Get the start time of the first entry in this table.
-     * @return The first date in UTC.
-     */
-    CDateTime GetFirstDate() const;
-
-    /*!
-     * @brief Get the end time of the last entry in this table.
-     * @return The last date in UTC.
-     */
-    CDateTime GetLastDate() const;
-
-    /*!
      * @brief Get the start and end time of the last not yet commited entry in this table.
      * @return The times; first: start time, second: end time.
      */

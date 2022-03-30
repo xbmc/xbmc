@@ -611,40 +611,6 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgTagsContainer::GetAllTags() 
   return {};
 }
 
-CDateTime CPVREpgTagsContainer::GetFirstStartTime() const
-{
-  CDateTime result;
-
-  if (!m_changedTags.empty())
-    result = (*m_changedTags.cbegin()).second->StartAsUTC();
-
-  if (m_database)
-  {
-    const CDateTime dbResult = m_database->GetFirstStartTime(m_iEpgID);
-    if (!result.IsValid() || (dbResult.IsValid() && dbResult < result))
-      result = dbResult;
-  }
-
-  return result;
-}
-
-CDateTime CPVREpgTagsContainer::GetLastEndTime() const
-{
-  CDateTime result;
-
-  if (!m_changedTags.empty())
-    result = (*m_changedTags.crbegin()).second->EndAsUTC();
-
-  if (m_database)
-  {
-    const CDateTime dbResult = m_database->GetLastEndTime(m_iEpgID);
-    if (!result.IsValid() || (dbResult.IsValid() && dbResult > result))
-      result = dbResult;
-  }
-
-  return result;
-}
-
 std::pair<CDateTime, CDateTime> CPVREpgTagsContainer::GetFirstAndLastUncommitedEPGDate() const
 {
   if (m_changedTags.empty())
