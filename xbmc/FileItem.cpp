@@ -193,6 +193,9 @@ CFileItem::CFileItem(const std::shared_ptr<PVR::CPVREpgInfoTag>& tag,
       SetArt("icon", "DefaultTVShows.png");
   }
 
+  // Speedup FillInDefaultIcon()
+  SetProperty("icon_never_overlay", true);
+
   FillMusicInfoTag(groupMember, tag);
   FillInMimeType(false);
 }
@@ -211,6 +214,9 @@ CFileItem::CFileItem(const std::shared_ptr<PVR::CPVREpgSearchFilter>& filter)
     m_dateTime.SetFromUTCDateTime(lastExec);
 
   SetArt("icon", "DefaultPVRSearch.png");
+
+  // Speedup FillInDefaultIcon()
+  SetProperty("icon_never_overlay", true);
 
   FillInMimeType(false);
 }
@@ -239,6 +245,9 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRChannelGroupMember>& channelGroup
   SetProperty("channelid", channel->ChannelID());
   SetProperty("path", channelGroupMember->Path());
   SetArt("thumb", channel->IconPath());
+
+  // Speedup FillInDefaultIcon()
+  SetProperty("icon_never_overlay", true);
 
   FillMusicInfoTag(channelGroupMember, epgNow);
   FillInMimeType(false);
@@ -275,6 +284,9 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRRecording>& record)
   if (!record->FanartPath().empty())
     SetArt("fanart", record->FanartPath());
 
+  // Speedup FillInDefaultIcon()
+  SetProperty("icon_never_overlay", true);
+
   FillInMimeType(false);
 }
 
@@ -294,6 +306,9 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRTimerInfoTag>& timer)
     SetArt("icon", "DefaultMusicSongs.png");
   else
     SetArt("icon", "DefaultTVShows.png");
+
+  // Speedup FillInDefaultIcon()
+  SetProperty("icon_never_overlay", true);
 
   FillInMimeType(false);
 }

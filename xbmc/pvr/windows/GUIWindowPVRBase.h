@@ -66,6 +66,8 @@ namespace PVR
     void SetInvalid() override;
     bool CanBeActivated() const override;
 
+    bool UseFileDirectories() override { return false; }
+
     /*!
      * @brief CEventStream callback for PVR events.
      * @param event The event.
