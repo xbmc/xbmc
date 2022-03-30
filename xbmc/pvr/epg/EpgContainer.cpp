@@ -810,42 +810,6 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
   return !bInterrupted;
 }
 
-const CDateTime CPVREpgContainer::GetFirstEPGDate()
-{
-  CDateTime returnValue;
-
-  m_critSection.lock();
-  const auto epgs = m_epgIdToEpgMap;
-  m_critSection.unlock();
-
-  for (const auto& epgEntry : epgs)
-  {
-    CDateTime entry = epgEntry.second->GetFirstDate();
-    if (entry.IsValid() && (!returnValue.IsValid() || entry < returnValue))
-      returnValue = entry;
-  }
-
-  return returnValue;
-}
-
-const CDateTime CPVREpgContainer::GetLastEPGDate()
-{
-  CDateTime returnValue;
-
-  m_critSection.lock();
-  const auto epgs = m_epgIdToEpgMap;
-  m_critSection.unlock();
-
-  for (const auto& epgEntry : epgs)
-  {
-    CDateTime entry = epgEntry.second->GetLastDate();
-    if (entry.IsValid() && (!returnValue.IsValid() || entry > returnValue))
-      returnValue = entry;
-  }
-
-  return returnValue;
-}
-
 std::pair<CDateTime, CDateTime> CPVREpgContainer::GetFirstAndLastEPGDate() const
 {
   // Get values from db

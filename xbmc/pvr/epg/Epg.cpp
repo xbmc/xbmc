@@ -377,18 +377,6 @@ bool CPVREpg::QueueDeleteQueries(const std::shared_ptr<CPVREpgDatabase>& databas
   return true;
 }
 
-CDateTime CPVREpg::GetFirstDate() const
-{
-  std::unique_lock<CCriticalSection> lock(m_critSection);
-  return m_tags.GetFirstStartTime();
-}
-
-CDateTime CPVREpg::GetLastDate() const
-{
-  std::unique_lock<CCriticalSection> lock(m_critSection);
-  return m_tags.GetLastEndTime();
-}
-
 std::pair<CDateTime, CDateTime> CPVREpg::GetFirstAndLastUncommitedEPGDate() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);

@@ -961,49 +961,6 @@ void CPVRChannelGroup::OnSettingChanged()
   m_events.Publish(bRenumbered ? PVREvent::ChannelGroupInvalidated : PVREvent::ChannelGroup);
 }
 
-CDateTime CPVRChannelGroup::GetEPGDate(EpgDateType epgDateType) const
-{
-  CDateTime date;
-  std::shared_ptr<CPVREpg> epg;
-  std::shared_ptr<CPVRChannel> channel;
-  std::unique_lock<CCriticalSection> lock(m_critSection);
-
-  for (const auto& memberPair : m_members)
-  {
-    channel = memberPair.second->Channel();
-    if (!channel->IsHidden() && (epg = channel->GetEPG()))
-    {
-      CDateTime epgDate;
-      switch (epgDateType)
-      {
-        case EPG_FIRST_DATE:
-          epgDate = epg->GetFirstDate();
-          if (epgDate.IsValid() && (!date.IsValid() || epgDate < date))
-            date = epgDate;
-          break;
-
-        case EPG_LAST_DATE:
-          epgDate = epg->GetLastDate();
-          if (epgDate.IsValid() && (!date.IsValid() || epgDate > date))
-            date = epgDate;
-          break;
-      }
-    }
-  }
-
-  return date;
-}
-
-CDateTime CPVRChannelGroup::GetFirstEPGDate() const
-{
-  return GetEPGDate(EPG_FIRST_DATE);
-}
-
-CDateTime CPVRChannelGroup::GetLastEPGDate() const
-{
-  return GetEPGDate(EPG_LAST_DATE);
-}
-
 int CPVRChannelGroup::GroupID() const
 {
   return m_iGroupId;

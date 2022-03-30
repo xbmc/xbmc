@@ -111,18 +111,6 @@ namespace PVR
     std::shared_ptr<CPVREpg> CreateChannelEpg(int iEpgId, const std::string& strScraperName, const std::shared_ptr<CPVREpgChannelData>& channelData);
 
     /*!
-     * @brief Get the start time of the first entry.
-     * @return The start time.
-     */
-    const CDateTime GetFirstEPGDate();
-
-    /*!
-     * @brief Get the end time of the last entry.
-     * @return The end time.
-     */
-    const CDateTime GetLastEPGDate();
-
-    /*!
      * @brief Get the start and end time across all EPGs.
      * @return The times; first: start time, second: end time.
      */
