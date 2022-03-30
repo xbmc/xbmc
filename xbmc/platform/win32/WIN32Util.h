@@ -72,8 +72,6 @@ public:
 #endif // TARGET_WINDOWS_DESKTOP
   static void CropSource(CRect& src, CRect& dst, CRect target, UINT rotation = 0);
 
-  static bool IsUsbDevice(const std::wstring &strWdrive);
-
   static std::string WUSysMsg(DWORD dwError);
   static bool SetThreadLocalLocale(bool enable = true);
 
