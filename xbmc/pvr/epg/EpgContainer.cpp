@@ -846,6 +846,36 @@ const CDateTime CPVREpgContainer::GetLastEPGDate()
   return returnValue;
 }
 
+std::pair<CDateTime, CDateTime> CPVREpgContainer::GetFirstAndLastEPGDate() const
+{
+  // Get values from db
+  std::pair<CDateTime, CDateTime> dbDates;
+  const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
+  if (database)
+    dbDates = database->GetFirstAndLastEPGDate();
+
+  // Merge not yet commited changes
+  m_critSection.lock();
+  const auto epgs = m_epgIdToEpgMap;
+  m_critSection.unlock();
+
+  CDateTime first(dbDates.first);
+  CDateTime last(dbDates.second);
+
+  for (const auto& epgEntry : epgs)
+  {
+    const auto dates = epgEntry.second->GetFirstAndLastUncommitedEPGDate();
+
+    if (dates.first.IsValid() && (!first.IsValid() || dates.first < first))
+      first = dates.first;
+
+    if (dates.second.IsValid() && (!last.IsValid() || dates.second > last))
+      last = dates.second;
+  }
+
+  return {first, last};
+}
+
 bool CPVREpgContainer::CheckPlayingEvents()
 {
   bool bReturn = false;

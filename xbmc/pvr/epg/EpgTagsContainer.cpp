@@ -645,6 +645,15 @@ CDateTime CPVREpgTagsContainer::GetLastEndTime() const
   return result;
 }
 
+std::pair<CDateTime, CDateTime> CPVREpgTagsContainer::GetFirstAndLastUncommitedEPGDate() const
+{
+  if (m_changedTags.empty())
+    return {};
+
+  return {(*m_changedTags.cbegin()).second->StartAsUTC(),
+          (*m_changedTags.crbegin()).second->EndAsUTC()};
+}
+
 bool CPVREpgTagsContainer::NeedsSave() const
 {
   return !m_changedTags.empty() || !m_deletedTags.empty();

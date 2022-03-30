@@ -132,6 +132,12 @@ namespace PVR
     CDateTime GetLastEndTime(int iEpgID);
 
     /*!
+     * @brief Get the start and end time across all EPGs.
+     * @return The times; first: start time, second: end time.
+     */
+    std::pair<CDateTime, CDateTime> GetFirstAndLastEPGDate();
+
+    /*!
      * @brief Get the start time of the first tag with a start time greater than the given min time.
      * @param iEpgID The ID of the EPG.
      * @param minStart The min start time.
