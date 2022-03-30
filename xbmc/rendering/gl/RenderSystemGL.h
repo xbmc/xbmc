@@ -15,6 +15,8 @@
 #include <map>
 #include <memory>
 
+#include <fmt/format.h>
+
 #include "system_gl.h"
 
 enum class ShaderMethodGL
@@ -26,6 +28,50 @@ enum class ShaderMethodGL
   SM_FONTS,
   SM_TEXTURE_NOBLEND,
   SM_MULTI_BLENDCOLOR
+};
+
+template<>
+struct fmt::formatter<ShaderMethodGL> : fmt::formatter<std::string_view>
+{
+
+public:
+  static constexpr auto toString(ShaderMethodGL method)
+  {
+    switch (method)
+    {
+      case ShaderMethodGL::SM_DEFAULT:
+        return "default";
+        break;
+      case ShaderMethodGL::SM_TEXTURE:
+        return "texture";
+        break;
+      case ShaderMethodGL::SM_TEXTURE_LIM:
+        return "texture limited";
+        break;
+      case ShaderMethodGL::SM_MULTI:
+        return "multi";
+        break;
+      case ShaderMethodGL::SM_FONTS:
+        return "fonts";
+        break;
+      case ShaderMethodGL::SM_TEXTURE_NOBLEND:
+        return "texture no blending";
+        break;
+      case ShaderMethodGL::SM_MULTI_BLENDCOLOR:
+        return "multi blend colour";
+        break;
+      default:
+        return "unknown";
+        break;
+    }
+  }
+
+  template<typename FormatContext>
+  constexpr auto format(const ShaderMethodGL& shaderMethod, FormatContext& ctx)
+  {
+    auto shaderName = toString(shaderMethod);
+    return fmt::formatter<std::string_view>::format(shaderName, ctx);
+  }
 };
 
 class CRenderSystemGL : public CRenderSystemBase
