@@ -17,6 +17,11 @@
 #include <sys/resource.h>
 #include <unistd.h>
 
+#if !defined(gettid)
+#include <sys/syscall.h>
+#define gettid() syscall(SYS_gettid)
+#endif
+
 namespace
 {
 
