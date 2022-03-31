@@ -38,7 +38,25 @@ LONG WINAPI CreateMiniDump(EXCEPTION_POINTERS* pEp)
 //-----------------------------------------------------------------------------
 INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT)
 {
-  using KODI::PLATFORM::WINDOWS::ToW;
+  // parse command line parameters
+  int argc = 0;
+  LPWSTR* argvW = CommandLineToArgvW(GetCommandLineW(), &argc);
+
+  char** argv = new char*[argc];
+
+  for (int i = 0; i < argc; ++i)
+  {
+    int size = WideCharToMultiByte(CP_UTF8, 0, argvW[i], -1, nullptr, 0, nullptr, nullptr);
+    if (size > 0)
+    {
+      argv[i] = new char[size];
+      WideCharToMultiByte(CP_UTF8, 0, argvW[i], -1, argv[i], size, nullptr, nullptr);
+    }
+  }
+
+  CAppParamParser appParamParser;
+  appParamParser.Parse(argv, argc);
+
   // this fixes crash if OPENSSL_CONF is set to existed openssl.cfg
   // need to set it as soon as possible
   CEnvironment::unsetenv("OPENSSL_CONF");
@@ -55,10 +73,12 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT)
   if (win32_exception::ShouldHook())
   {
     win32_exception::set_version(std::string(ver));
+    win32_exception::set_platformDirectories(appParamParser.HasPlatformDirectories());
     SetUnhandledExceptionFilter(CreateMiniDump);
   }
 
   // check if Kodi is already running
+  using KODI::PLATFORM::WINDOWS::ToW;
   std::string appName = CCompileInfo::GetAppName();
   HANDLE appRunningMutex = CreateMutex(nullptr, FALSE, ToW(appName + " Media Center").c_str());
   if (GetLastError() == ERROR_ALREADY_EXISTS)
@@ -78,22 +98,6 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT)
   //Initialize COM
   CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 
-
-  int argc;
-  LPWSTR* argvW = CommandLineToArgvW(GetCommandLineW(), &argc);
-
-  char** argv = new char*[argc];
-
-  for (int i = 0; i < argc; ++i)
-  {
-    int size = WideCharToMultiByte(CP_UTF8, 0, argvW[i], -1, nullptr, 0, nullptr, nullptr);
-    if (size > 0)
-    {
-      argv[i] = new char[size];
-      int result = WideCharToMultiByte(CP_UTF8, 0, argvW[i], -1, argv[i], size, nullptr, nullptr);
-    }
-  }
-
   // Initialise Winsock
   WSADATA wd;
   WSAStartup(MAKEWORD(2, 2), &wd);
@@ -106,13 +110,8 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT)
   SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOOPENFILEERRORBOX);
 #endif
 
-  int status;
-  {
-    CAppParamParser appParamParser;
-    appParamParser.Parse(argv, argc);
-    // Create and run the app
-    status = XBMC_Run(true, appParamParser);
-  }
+  // Create and run the app
+  int status = XBMC_Run(true, appParamParser);
 
   for (int i = 0; i < argc; ++i)
     delete[] argv[i];

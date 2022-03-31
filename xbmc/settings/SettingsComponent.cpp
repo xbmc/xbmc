@@ -350,7 +350,7 @@ bool CSettingsComponent::InitDirectoriesWin32(bool bPlatformDirectories)
   CSpecialProtocol::SetXBMCPath(xbmcPath);
   CSpecialProtocol::SetXBMCBinAddonPath(xbmcPath + "/addons");
 
-  std::string strWin32UserFolder = CWIN32Util::GetProfilePath();
+  std::string strWin32UserFolder = CWIN32Util::GetProfilePath(bPlatformDirectories);
   CSpecialProtocol::SetLogPath(strWin32UserFolder);
   CSpecialProtocol::SetHomePath(strWin32UserFolder);
   CSpecialProtocol::SetMasterProfilePath(URIUtils::AddFileToFolder(strWin32UserFolder, "userdata"));
