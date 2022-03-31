@@ -79,6 +79,7 @@
 			<control type="spincontrolex" id="9">
 				<description>Default SpinControlex</description>
 				<include>DefaultSettingButton</include>
+				<textwidth>700</textwidth>
 			</control>
 			<control type="image" id="11">
 				<description>separator image</description>
