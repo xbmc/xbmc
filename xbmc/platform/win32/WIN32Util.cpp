@@ -365,6 +365,11 @@ std::string CWIN32Util::GetSystemPath()
 
 std::string CWIN32Util::GetProfilePath()
 {
+  return GetProfilePath(g_application.PlatformDirectoriesEnabled());
+}
+
+std::string CWIN32Util::GetProfilePath(bool bPlatformDirectories)
+{
   std::string strProfilePath;
 #ifdef TARGET_WINDOWS_STORE
   auto localFolder = ApplicationData::Current().LocalFolder();
@@ -372,10 +377,11 @@ std::string CWIN32Util::GetProfilePath()
 #else
   std::string strHomePath = CUtil::GetHomePath();
 
-  if(g_application.PlatformDirectoriesEnabled())
-    strProfilePath = URIUtils::AddFileToFolder(GetSpecialFolder(CSIDL_APPDATA|CSIDL_FLAG_CREATE), CCompileInfo::GetAppName());
+  if (bPlatformDirectories)
+    strProfilePath = URIUtils::AddFileToFolder(GetSpecialFolder(CSIDL_APPDATA | CSIDL_FLAG_CREATE),
+                                               CCompileInfo::GetAppName());
   else
-    strProfilePath = URIUtils::AddFileToFolder(strHomePath , "portable_data");
+    strProfilePath = URIUtils::AddFileToFolder(strHomePath, "portable_data");
 
   if (strProfilePath.length() == 0)
     strProfilePath = strHomePath;

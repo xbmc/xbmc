@@ -45,7 +45,8 @@ public:
 
   static std::string GetSystemPath();
   static std::string GetProfilePath();
-  static std::string UncToSmb(const std::string &strPath);
+  static std::string GetProfilePath(bool bPlatformDirectories);
+  static std::string UncToSmb(const std::string& strPath);
   static std::string SmbToUnc(const std::string &strPath);
   static bool AddExtraLongPathPrefix(std::wstring& path);
   static bool RemoveExtraLongPathPrefix(std::wstring& path);
