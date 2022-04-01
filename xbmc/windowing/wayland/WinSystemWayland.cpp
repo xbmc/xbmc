@@ -613,7 +613,7 @@ bool CWinSystemWayland::ResizeWindow(int, int, int, int)
   // CGraphicContext is "smart" and calls ResizeWindow or SetFullScreen depending
   // on some state like whether we were already fullscreen. But actually the processing
   // here is always identical, so we are using a common function to handle both.
-  auto& res = CDisplaySettings::GetInstance().GetResolutionInfo(RES_WINDOW);
+  const auto& res = CDisplaySettings::GetInstance().GetResolutionInfo(RES_WINDOW);
   // The newWidth/newHeight parameters are taken from RES_WINDOW anyway, so we can just
   // ignore them
   return SetResolutionExternal(false, res);
@@ -922,7 +922,7 @@ void CWinSystemWayland::SetResolutionInternal(CSizeInt size, std::int32_t scale,
 
 void CWinSystemWayland::FinishModeChange(RESOLUTION res)
 {
-  auto& resInfo = CDisplaySettings::GetInstance().GetResolutionInfo(res);
+  const auto& resInfo = CDisplaySettings::GetInstance().GetResolutionInfo(res);
 
   ApplyNextState();
 

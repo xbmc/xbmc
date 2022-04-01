@@ -162,7 +162,7 @@ bool CTextureBundleXBT::LoadTexture(const std::string& filename,
   if (file.GetFrames().empty())
     return false;
 
-  CXBTFFrame& frame = file.GetFrames().at(0);
+  const CXBTFFrame& frame = file.GetFrames().at(0);
   if (!ConvertFrameToTexture(filename, frame, texture))
   {
     return false;

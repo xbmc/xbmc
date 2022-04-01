@@ -101,7 +101,7 @@ protected:
                                         std::chrono::milliseconds(-1) /* indicates wait forever*/)
   {
     XbmcThreads::CEventGroup group{&event, &m_StopEvent};
-    CEvent* result =
+    const CEvent* result =
         duration < std::chrono::milliseconds::zero() ? group.wait() : group.wait(duration);
     return  result == &event ? WAIT_SIGNALED :
       (result == NULL ? WAIT_TIMEDOUT : WAIT_INTERRUPTED);

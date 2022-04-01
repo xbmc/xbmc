@@ -55,8 +55,8 @@ bool CGenericTouchPinchDetector::OnTouchMove(unsigned int index, const Pointer& 
   // update the internal pointers
   m_pointers[index] = pointer;
 
-  Pointer& primaryPointer = m_pointers[0];
-  Pointer& secondaryPointer = m_pointers[1];
+  const Pointer& primaryPointer = m_pointers[0];
+  const Pointer& secondaryPointer = m_pointers[1];
 
   if (!primaryPointer.valid() || !secondaryPointer.valid() ||
       (!primaryPointer.moving && !secondaryPointer.moving))

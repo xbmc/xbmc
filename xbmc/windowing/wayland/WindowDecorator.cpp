@@ -508,7 +508,7 @@ void CWindowDecorator::OnPointerButton(CSeat* seat, std::uint32_t serial, std::u
   {
     return;
   }
-  auto& seatState = seatStateI->second;
+  const auto& seatState = seatStateI->second;
   if (seatState.currentSurface != SURFACE_COUNT && state == wayland::pointer_button_state::pressed)
   {
     HandleSeatClick(seatState, seatState.currentSurface, serial, button, seatState.pointerPosition);

@@ -71,7 +71,7 @@ static const std::string getListOfAddonClassesAsString(
 {
   std::string message;
   std::unique_lock<CCriticalSection> l(*(languageHook.get()));
-  std::set<XBMCAddon::AddonClass*>& acs = languageHook->GetRegisteredAddonClasses();
+  const std::set<XBMCAddon::AddonClass*>& acs = languageHook->GetRegisteredAddonClasses();
   bool firstTime = true;
   for (const auto& iter : acs)
   {
