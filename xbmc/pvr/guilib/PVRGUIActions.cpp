@@ -2740,7 +2740,7 @@ namespace PVR
 
   void CPVRChannelSwitchingInputHandler::GetChannelNumbers(std::vector<std::string>& channelNumbers)
   {
-    CPVRManager& pvrMgr = CServiceBroker::GetPVRManager();
+    const CPVRManager& pvrMgr = CServiceBroker::GetPVRManager();
     const std::shared_ptr<CPVRChannel> playingChannel = pvrMgr.PlaybackState()->GetPlayingChannel();
     if (playingChannel)
     {

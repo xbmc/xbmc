@@ -161,7 +161,7 @@ bool CLinuxRendererGL::ValidateRenderer()
     return false;
 
   int index = m_iYV12RenderBuffer;
-  CPictureBuffer& buf = m_buffers[index];
+  const CPictureBuffer& buf = m_buffers[index];
 
   if (!buf.fields[FIELD_FULL][0].id)
     return false;
@@ -2717,7 +2717,7 @@ void CLinuxRendererGL::DeleteCLUT()
 
 void CLinuxRendererGL::CheckVideoParameters(int index)
 {
-  CPictureBuffer &buf = m_buffers[index];
+  const CPictureBuffer& buf = m_buffers[index];
   ETONEMAPMETHOD method = m_videoSettings.m_ToneMapMethod;
 
   AVColorPrimaries srcPrim = GetSrcPrimaries(buf.m_srcPrimaries, buf.image.width, buf.image.height);

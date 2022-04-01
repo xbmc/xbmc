@@ -602,7 +602,8 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
 
 bool CVideoGUIInfo::GetPlaylistInfo(std::string& value, const CGUIInfo& info) const
 {
-  PLAYLIST::CPlayList& playlist = CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST_VIDEO);
+  const PLAYLIST::CPlayList& playlist =
+      CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST_VIDEO);
   if (playlist.size() < 1)
     return false;
 

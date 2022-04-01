@@ -232,7 +232,7 @@ bool CRendererVAAPIGL::UploadTexture(int index)
 
   m_vaapiTextures[index]->Map(pic);
 
-  YuvImage &im = buf.image;
+  const YuvImage& im = buf.image;
   CYuvPlane (&planes)[3] = buf.fields[0];
 
   auto size = m_vaapiTextures[index]->GetTextureSize();

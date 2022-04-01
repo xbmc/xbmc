@@ -180,7 +180,7 @@ int CPlayListPlayer::GetNextSong()
 bool CPlayListPlayer::PlayNext(int offset, bool bAutoPlay)
 {
   int iSong = GetNextSong(offset);
-  CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
+  const CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
 
   if ((iSong < 0) || (iSong >= playlist.size()) || (playlist.GetPlayable() <= 0))
   {
@@ -202,7 +202,7 @@ bool CPlayListPlayer::PlayPrevious()
   if (m_iCurrentPlayList == PLAYLIST_NONE)
     return false;
 
-  CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
+  const CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
   int iSong = m_iCurrentSong;
 
   if (!RepeatedOne(m_iCurrentPlayList))
@@ -231,7 +231,7 @@ bool CPlayListPlayer::Play()
   if (m_iCurrentPlayList == PLAYLIST_NONE)
     return false;
 
-  CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
+  const CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
   if (playlist.size() <= 0)
     return false;
 

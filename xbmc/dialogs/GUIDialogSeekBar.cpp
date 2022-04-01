@@ -73,7 +73,7 @@ void CGUIDialogSeekBar::FrameMove()
 
 int CGUIDialogSeekBar::GetProgress() const
 {
-  CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
+  const CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
 
   int progress = 0;
 
@@ -113,7 +113,7 @@ int CGUIDialogSeekBar::GetEpgEventProgress() const
 
 int CGUIDialogSeekBar::GetTimeshiftProgress() const
 {
-  CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
+  const CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
 
   int progress = 0;
   infoMgr.GetInt(progress, PVR_TIMESHIFT_SEEKBAR);

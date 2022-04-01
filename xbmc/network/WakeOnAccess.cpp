@@ -215,7 +215,7 @@ bool CMACDiscoveryJob::DoWork()
     return false;
   }
 
-  std::vector<CNetworkInterface*>& ifaces = CServiceBroker::GetNetwork().GetInterfaceList();
+  const std::vector<CNetworkInterface*>& ifaces = CServiceBroker::GetNetwork().GetInterfaceList();
   for (const auto& it : ifaces)
   {
     if (it->GetHostMacAddress(ipAddress, m_macAddress))

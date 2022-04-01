@@ -756,7 +756,7 @@ bool CGUIWindowPVRGuideBase::GotoEnd()
 
 bool CGUIWindowPVRGuideBase::GotoCurrentProgramme()
 {
-  CPVRManager& mgr = CServiceBroker::GetPVRManager();
+  const CPVRManager& mgr = CServiceBroker::GetPVRManager();
   std::shared_ptr<CPVRChannel> channel = mgr.PlaybackState()->GetPlayingChannel();
 
   if (!channel)
@@ -823,7 +823,7 @@ bool CGUIWindowPVRGuideBase::GotoLastChannel()
 
 bool CGUIWindowPVRGuideBase::GotoPlayingChannel()
 {
-  CPVRManager& mgr = CServiceBroker::GetPVRManager();
+  const CPVRManager& mgr = CServiceBroker::GetPVRManager();
   std::shared_ptr<CPVRChannel> channel = mgr.PlaybackState()->GetPlayingChannel();
 
   if (!channel)

@@ -2042,7 +2042,7 @@ bool CFileItem::LoadTracksFromCueDocument(CFileItemList& scannedItems)
   if (!m_cueDocument)
     return false;
 
-  CMusicInfoTag& tag = *GetMusicInfoTag();
+  const CMusicInfoTag& tag = *GetMusicInfoTag();
 
   VECSONGS tracks;
   m_cueDocument->GetSongs(tracks);
