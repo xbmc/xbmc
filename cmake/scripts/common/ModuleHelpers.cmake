@@ -130,7 +130,8 @@ macro(BUILD_DEP_TARGET)
   include(ExternalProject)
 
   if(CMAKE_ARGS)
-    set(CMAKE_ARGS CMAKE_ARGS ${CMAKE_ARGS})
+    set(CMAKE_ARGS CMAKE_ARGS ${CMAKE_ARGS}
+                             -DCMAKE_INSTALL_LIBDIR=lib)
     if(CMAKE_TOOLCHAIN_FILE)
       list(APPEND CMAKE_ARGS "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}")
     endif()
