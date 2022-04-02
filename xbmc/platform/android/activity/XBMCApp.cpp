@@ -243,7 +243,7 @@ void CXBMCApp::onStart()
     m_activityManager =
         std::make_unique<CJNIActivityManager>(getSystemService(CJNIContext::ACTIVITY_SERVICE));
     m_inputHandler.setDPI(GetDPI());
-    RegisterDisplayListener();
+    runNativeOnUiThread(RegisterDisplayListenerCallback, nullptr);
   }
 }
 
@@ -385,13 +385,13 @@ void CXBMCApp::onLostFocus()
   m_hasFocus = false;
 }
 
-void CXBMCApp::RegisterDisplayListener()
+void CXBMCApp::RegisterDisplayListenerCallback(CVariant*)
 {
   CJNIDisplayManager displayManager(getSystemService("display"));
   if (displayManager)
   {
     android_printf("CXBMCApp: installing DisplayManager::DisplayListener");
-    displayManager.registerDisplayListener(m_displayListener.get_raw());
+    displayManager.registerDisplayListener(CXBMCApp::Get().getDisplayListener());
   }
 }
 
