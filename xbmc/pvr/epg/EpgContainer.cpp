@@ -147,8 +147,6 @@ void CPVREpgContainer::Start()
     std::unique_lock<CCriticalSection> lock(m_critSection);
     m_bIsInitialising = true;
 
-    CheckPlayingEvents();
-
     Create();
     SetPriority(ThreadPriority::BELOW_NORMAL);
 
