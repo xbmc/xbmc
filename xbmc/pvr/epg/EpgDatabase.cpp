@@ -435,16 +435,13 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::CreateEpgTag(
   return {};
 }
 
-CDateTime CPVREpgDatabase::GetFirstStartTime(int iEpgID)
+bool CPVREpgDatabase::HasTags(int iEpgID)
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
   const std::string strQuery =
-      PrepareSQL("SELECT MIN(iStartTime) FROM epgtags WHERE idEpg = %u;", iEpgID);
+      PrepareSQL("SELECT iStartTime FROM epgtags WHERE idEpg = %u LIMIT 1;", iEpgID);
   std::string strValue = GetSingleValue(strQuery);
-  if (!strValue.empty())
-    return CDateTime(static_cast<time_t>(std::atoi(strValue.c_str())));
-
-  return {};
+  return !strValue.empty();
 }
 
 CDateTime CPVREpgDatabase::GetLastEndTime(int iEpgID)

@@ -348,7 +348,7 @@ bool CPVREpgTagsContainer::IsEmpty() const
     return false;
 
   if (m_database)
-    return !m_database->GetFirstStartTime(m_iEpgID).IsValid();
+    return !m_database->HasTags(m_iEpgID);
 
   return true;
 }
@@ -583,7 +583,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgTagsContainer::GetAllTags() 
   if (m_database)
   {
     std::vector<std::shared_ptr<CPVREpgInfoTag>> tags;
-    if (!m_changedTags.empty() && !m_database->GetFirstStartTime(m_iEpgID).IsValid())
+    if (!m_changedTags.empty() && !m_database->HasTags(m_iEpgID))
     {
       // nothing in the db yet. take what we have in memory.
       for (const auto& tag : m_changedTags)
