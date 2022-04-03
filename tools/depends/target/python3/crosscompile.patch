@@ -1,6 +1,6 @@
 --- a/configure.ac
 +++ b/configure.ac
-@@ -1221,15 +1221,6 @@
+@@ -1589,15 +1589,6 @@
          ARFLAGS="rcs"
  fi
  
@@ -18,9 +18,9 @@
  case $MACHDEP in
 --- a/Makefile.pre.in
 +++ b/Makefile.pre.in
-@@ -1695,10 +1695,11 @@
+@@ -2227,10 +2227,11 @@
  # This goes into $(exec_prefix)
- sharedinstall: sharedmods
+ sharedinstall: all
  	$(RUNSHARED) $(PYTHON_FOR_BUILD) $(srcdir)/setup.py install \
 + 	    --skip-build \
  	   	--prefix=$(prefix) \
@@ -35,16 +35,7 @@
  
 --- a/setup.py
 +++ b/setup.py
-@@ -41,7 +41,7 @@
- 
- 
- # Compile extensions used to test Python?
--TEST_EXTENSIONS = True
-+TEST_EXTENSIONS = False
- 
- # This global variable is used to hold the list of modules to be disabled.
- DISABLED_MODULE_LIST = []
-@@ -58,7 +58,7 @@
+@@ -77,7 +77,7 @@
      return sys.platform
  
  
@@ -53,7 +44,7 @@
  HOST_PLATFORM = get_platform()
  MS_WINDOWS = (HOST_PLATFORM == 'win32')
  CYGWIN = (HOST_PLATFORM == 'cygwin')
-@@ -445,6 +445,7 @@
+@@ -488,6 +488,7 @@
          self.compiler.set_executables(**args)
  
      def build_extensions(self):
@@ -61,3 +52,13 @@
          self.set_srcdir()
          self.set_compiler_executables()
          self.configure_compiler()
+@@ -1343,7 +1343,7 @@
+         # These are extensions are required to bootstrap the interpreter or
+         # build process.
+         self.detect_simple_extensions()
+-        self.detect_test_extensions()
++        #self.detect_test_extensions()
+         self.detect_readline_curses()
+         self.detect_crypt()
+         self.detect_openssl_hashlib()
+
