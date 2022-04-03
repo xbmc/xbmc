@@ -16,6 +16,7 @@
 #include "pvr/PVRPlaybackState.h"
 #include "pvr/addons/PVRClient.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
+#include "pvr/guilib/PVRGUIProgressHandler.h"
 #include "utils/JobManager.h"
 #include "utils/log.h"
 
@@ -151,8 +152,15 @@ void CPVRClients::UpdateAddons(const std::string& changedAddonId /*= ""*/)
   {
     CServiceBroker::GetPVRManager().Stop();
 
+    auto progressHandler = std::make_unique<CPVRGUIProgressHandler>(
+        g_localizeStrings.Get(19239)); // Creating PVR clients
+
+    unsigned int i = 0;
     for (const auto& addon : addonsToCreate)
     {
+      progressHandler->UpdateProgress(addon.first->Name(), i++,
+                                      addonsToCreate.size() + addonsToReCreate.size());
+
       ADDON_STATUS status = addon.first->Create(addon.second);
 
       if (status != ADDON_STATUS_OK)
@@ -172,9 +180,14 @@ void CPVRClients::UpdateAddons(const std::string& changedAddonId /*= ""*/)
 
     for (const auto& addon : addonsToReCreate)
     {
+      progressHandler->UpdateProgress(addon->Name(), i++,
+                                      addonsToCreate.size() + addonsToReCreate.size());
+
       // recreate client
       StopClient(addon->ID(), true);
     }
+
+    progressHandler.reset();
 
     for (const auto& addon : addonsToDestroy)
     {
