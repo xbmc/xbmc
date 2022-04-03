@@ -422,12 +422,7 @@ bool CApplication::Create(const CAppParamParser &params)
   }
 
   m_pActiveAE.reset(new ActiveAE::CActiveAE());
-  m_pActiveAE->Start();
   CServiceBroker::RegisterAE(m_pActiveAE.get());
-
-  // restore AE's previous volume state
-  SetHardwareVolume(m_volumeLevel);
-  CServiceBroker::GetActiveAE()->SetMute(m_muted);
 
   // initialize m_replayGainSettings
   m_replayGainSettings.iType = settings->GetInt(CSettings::SETTING_MUSICPLAYER_REPLAYGAINTYPE);
@@ -609,6 +604,11 @@ bool CApplication::InitWindow(RESOLUTION res)
 
 bool CApplication::Initialize()
 {
+  m_pActiveAE->Start();
+  // restore AE's previous volume state
+  SetHardwareVolume(m_volumeLevel);
+  CServiceBroker::GetActiveAE()->SetMute(m_muted);
+
 #if defined(HAS_DVD_DRIVE) && !defined(TARGET_WINDOWS) // somehow this throws an "unresolved external symbol" on win32
   // turn off cdio logging
   cdio_loglevel_default = CDIO_LOG_ERROR;
