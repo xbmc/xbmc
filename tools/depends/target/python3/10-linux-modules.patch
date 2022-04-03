@@ -1,0 +1,11 @@
+--- a/Modules/Setup
++++ b/Modules/Setup
+@@ -182,7 +182,7 @@
+ # Modules with some UNIX dependencies
+ 
+ _posixsubprocess _posixsubprocess.c
+-_posixshmem -I$(srcdir)/Modules/_multiprocessing _multiprocessing/posixshmem.c # -lrt # _posixshmem
++_posixshmem -I$(srcdir)/Modules/_multiprocessing _multiprocessing/posixshmem.c -lrt # _posixshmem
+ fcntl fcntlmodule.c
+ #grp grpmodule.c
+ #ossaudiodev ossaudiodev.c

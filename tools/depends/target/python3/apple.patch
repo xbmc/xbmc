@@ -1,6 +1,6 @@
 --- a/configure.ac
 +++ b/configure.ac
-@@ -400,6 +400,9 @@
+@@ -545,6 +545,9 @@
  	*-*-cygwin*)
  		ac_sys_system=Cygwin
  		;;
@@ -10,7 +10,7 @@
  	*-*-vxworks*)
  	    ac_sys_system=VxWorks
  	    ;;
-@@ -449,6 +449,8 @@
+@@ -600,6 +600,8 @@
  	*-*-cygwin*)
  		_host_cpu=
  		;;
@@ -19,16 +19,16 @@
  	*-*-vxworks*)
  		_host_cpu=$host_cpu
  		;;
-@@ -521,6 +521,8 @@
+@@ -675,6 +675,8 @@
      define_xopen_source=no;;
    Darwin/@<:@[12]@:>@@<:@0-9@:>@.*)
      define_xopen_source=no;;
 +  Darwin/*)
 +    define_xopen_source=no;;
-   # On AIX 4 and 5.1, mbstate_t is defined only when _XOPEN_SOURCE == 500 but
-   # used in wcsnrtombs() and mbsnrtowcs() even if _XOPEN_SOURCE is not defined
-   # or has another value. By not (re)defining it, the defaults come in place.
-@@ -2492,7 +2492,7 @@
+   # On QNX 6.3.2, defining _XOPEN_SOURCE prevents netdb.h from
+   # defining NI_NUMERICHOST.
+   QNX/6.3.2)
+@@ -2909,7 +2909,7 @@
        	  return 1;
        }
      }

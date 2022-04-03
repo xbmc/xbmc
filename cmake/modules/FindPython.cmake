@@ -37,7 +37,7 @@ if(KODI_DEPENDSBUILD
 
   if(KODI_DEPENDSBUILD)
     # Force set to tools/depends python version
-    set(PYTHON_VER 3.9)
+    set(PYTHON_VER 3.11)
   endif()
 endif()
 

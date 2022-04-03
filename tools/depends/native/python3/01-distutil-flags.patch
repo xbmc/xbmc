@@ -1,6 +1,6 @@
 --- a/Lib/distutils/sysconfig.py
 +++ b/Lib/distutils/sysconfig.py
-@@ -190,6 +190,9 @@
+@@ -214,6 +214,9 @@
          (cc, cxx, cflags, ccshared, ldshared, shlib_suffix, ar, ar_flags) = \
              get_config_vars('CC', 'CXX', 'CFLAGS',
                              'CCSHARED', 'LDSHARED', 'SHLIB_SUFFIX', 'AR', 'ARFLAGS')
