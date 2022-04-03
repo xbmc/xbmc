@@ -10,6 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "addons/Addon.h"
+#include "addons/Skin.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/SettingAddon.h"
 #include "settings/SettingControl.h"
@@ -18,6 +19,7 @@
 #include "settings/SettingUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "settings/SkinSettings.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDefinitions.h"
 #include "settings/lib/SettingSection.h"
@@ -804,4 +806,99 @@ void CSettingsOperations::SerializeSettingListValues(const std::vector<CVariant>
   obj = CVariant(CVariant::VariantTypeArray);
   for (const auto& itValue : values)
     obj.push_back(itValue);
+}
+
+JSONRPC_STATUS CSettingsOperations::GetSkinSettings(const std::string& method,
+                                                    ITransportLayer* transport,
+                                                    IClient* client,
+                                                    const CVariant& parameterObject,
+                                                    CVariant& result)
+{
+  const std::set<ADDON::CSkinSettingPtr> settings = CSkinSettings::GetInstance().GetSettings();
+  CVariant varSettings(CVariant::VariantTypeArray);
+
+  for (auto setting : settings)
+  {
+    CVariant varSetting(CVariant::VariantTypeObject);
+    varSetting["id"] = setting->name;
+
+    if (setting->GetType() == "bool")
+    {
+      varSetting["value"] = std::static_pointer_cast<ADDON::CSkinSettingBool>(setting)->value;
+      varSetting["type"] = "boolean";
+    }
+    else if (setting->GetType() == "string")
+    {
+      varSetting["value"] = std::static_pointer_cast<ADDON::CSkinSettingString>(setting)->value;
+      varSetting["type"] = setting->GetType();
+    }
+    else
+      continue;
+
+    varSettings.push_back(varSetting);
+  }
+
+  result["skin"] = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+      CSettings::SETTING_LOOKANDFEEL_SKIN);
+  result["settings"] = varSettings;
+  return OK;
+}
+
+JSONRPC_STATUS CSettingsOperations::GetSkinSettingValue(const std::string& method,
+                                                        ITransportLayer* transport,
+                                                        IClient* client,
+                                                        const CVariant& parameterObject,
+                                                        CVariant& result)
+{
+  const std::string settingId = parameterObject["setting"].asString();
+  ADDON::CSkinSettingPtr setting = CSkinSettings::GetInstance().GetSetting(settingId);
+
+  if (setting == nullptr)
+    return InvalidParams;
+
+  CVariant value;
+  if (setting->GetType() == "string")
+    value = std::static_pointer_cast<ADDON::CSkinSettingString>(setting)->value;
+  else if (setting->GetType() == "bool")
+    value = std::static_pointer_cast<ADDON::CSkinSettingBool>(setting)->value;
+  else
+    return InvalidParams;
+
+  result["value"] = value;
+  return OK;
+}
+
+JSONRPC_STATUS CSettingsOperations::SetSkinSettingValue(const std::string& method,
+                                                        ITransportLayer* transport,
+                                                        IClient* client,
+                                                        const CVariant& parameterObject,
+                                                        CVariant& result)
+{
+  const std::string settingId = parameterObject["setting"].asString();
+  ADDON::CSkinSettingPtr setting = CSkinSettings::GetInstance().GetSetting(settingId);
+
+  if (setting == nullptr)
+    return InvalidParams;
+
+  CVariant value = parameterObject["value"];
+  if (setting->GetType() == "string")
+  {
+    if (!value.isString())
+      return InvalidParams;
+
+    result = std::static_pointer_cast<ADDON::CSkinSettingString>(setting)->value = value.asString();
+  }
+  else if (setting->GetType() == "bool")
+  {
+    if (!value.isBoolean())
+      return InvalidParams;
+
+    result = std::static_pointer_cast<ADDON::CSkinSettingBool>(setting)->value = value.asBoolean();
+  }
+  else
+  {
+    return InvalidParams;
+  }
+
+  return OK;
 }

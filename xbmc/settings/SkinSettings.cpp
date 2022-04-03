@@ -72,6 +72,22 @@ void CSkinSettings::Reset(const std::string &setting)
   g_SkinInfo->Reset(setting);
 }
 
+std::set<ADDON::CSkinSettingPtr> CSkinSettings::GetSettings() const
+{
+  return g_SkinInfo->GetSkinSettings();
+}
+
+ADDON::CSkinSettingPtr CSkinSettings::GetSetting(const std::string& settingId)
+{
+  return g_SkinInfo->GetSkinSetting(settingId);
+}
+
+std::shared_ptr<const ADDON::CSkinSetting> CSkinSettings::GetSetting(
+    const std::string& settingId) const
+{
+  return g_SkinInfo->GetSkinSetting(settingId);
+}
+
 void CSkinSettings::Reset()
 {
   g_SkinInfo->Reset();
