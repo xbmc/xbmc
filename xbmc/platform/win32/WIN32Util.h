@@ -44,7 +44,7 @@ public:
   static size_t GetSystemMemorySize();
 
   static std::string GetSystemPath();
-  static std::string GetProfilePath();
+  static std::string GetProfilePath(const bool platformDirectories);
   static std::string UncToSmb(const std::string &strPath);
   static std::string SmbToUnc(const std::string &strPath);
   static bool AddExtraLongPathPrefix(std::wstring& path);

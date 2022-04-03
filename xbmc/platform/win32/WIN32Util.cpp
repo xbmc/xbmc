@@ -8,7 +8,6 @@
 
 #include "WIN32Util.h"
 
-#include "Application.h"
 #include "CompileInfo.h"
 #include "ServiceBroker.h"
 #include "Util.h"
@@ -363,7 +362,7 @@ std::string CWIN32Util::GetSystemPath()
 #endif
 }
 
-std::string CWIN32Util::GetProfilePath()
+std::string CWIN32Util::GetProfilePath(const bool platformDirectories)
 {
   std::string strProfilePath;
 #ifdef TARGET_WINDOWS_STORE
@@ -372,7 +371,7 @@ std::string CWIN32Util::GetProfilePath()
 #else
   std::string strHomePath = CUtil::GetHomePath();
 
-  if(g_application.PlatformDirectoriesEnabled())
+  if (platformDirectories)
     strProfilePath = URIUtils::AddFileToFolder(GetSpecialFolder(CSIDL_APPDATA|CSIDL_FLAG_CREATE), CCompileInfo::GetAppName());
   else
     strProfilePath = URIUtils::AddFileToFolder(strHomePath , "portable_data");

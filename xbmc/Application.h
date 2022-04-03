@@ -268,7 +268,6 @@ public:
 
   int GlobalIdleTime();
 
-  bool PlatformDirectoriesEnabled() { return m_bPlatformDirectories; }
   bool IsStandAlone() { return m_bStandalone; }
   bool IsEnableTestMode() { return m_bTestMode; }
 
