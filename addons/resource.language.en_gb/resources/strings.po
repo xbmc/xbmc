@@ -10726,7 +10726,11 @@ msgctxt "#19238"
 msgid "Loading recordings from clients"
 msgstr ""
 
-#empty string with id 19239
+#. label for PVR client creation progress control
+#: xbmc/pvr/addons/PVRClients.cpp
+msgctxt "#19239"
+msgid "Creating PVR clients"
+msgstr ""
 
 #. label for pvr settings client priorities control and client priorities dialog heading.
 #: system/settings/settings.xml
