@@ -37,7 +37,7 @@
 // because cmake uses this area in this form to perform its addon dependency
 // check.
 // clang-format off
-#define ADDON_GLOBAL_VERSION_MAIN                     "2.0.0"
+#define ADDON_GLOBAL_VERSION_MAIN                     "2.0.1"
 #define ADDON_GLOBAL_VERSION_MAIN_MIN                 "2.0.0"
 #define ADDON_GLOBAL_VERSION_MAIN_XML_ID              "kodi.binary.global.main"
 #define ADDON_GLOBAL_VERSION_MAIN_DEPENDS             "AddonBase.h" \
@@ -130,7 +130,7 @@
 #define ADDON_INSTANCE_VERSION_PERIPHERAL_DEPENDS     "addon-instance/Peripheral.h" \
                                                       "addon-instance/PeripheralUtils.h"
 
-#define ADDON_INSTANCE_VERSION_PVR                    "8.0.1"
+#define ADDON_INSTANCE_VERSION_PVR                    "8.1.0"
 #define ADDON_INSTANCE_VERSION_PVR_MIN                "8.0.0"
 #define ADDON_INSTANCE_VERSION_PVR_XML_ID             "kodi.binary.instance.pvr"
 #define ADDON_INSTANCE_VERSION_PVR_DEPENDS            "c-api/addon-instance/pvr.h" \
