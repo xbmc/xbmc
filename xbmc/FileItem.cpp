@@ -226,7 +226,6 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRChannelGroupMember>& channelGroup
   Initialize();
 
   const std::shared_ptr<CPVRChannel> channel = channelGroupMember->Channel();
-  const std::shared_ptr<CPVREpgInfoTag> epgNow = channel->GetEPGNow();
 
   m_pvrChannelGroupMemberInfoTag = channelGroupMember;
 
@@ -249,7 +248,11 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRChannelGroupMember>& channelGroup
   // Speedup FillInDefaultIcon()
   SetProperty("icon_never_overlay", true);
 
-  FillMusicInfoTag(channelGroupMember, epgNow);
+  if (channel->IsRadio())
+  {
+    const std::shared_ptr<CPVREpgInfoTag> epgNow = channel->GetEPGNow();
+    FillMusicInfoTag(channelGroupMember, epgNow);
+  }
   FillInMimeType(false);
 }
 
