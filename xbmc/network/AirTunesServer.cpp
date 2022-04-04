@@ -39,6 +39,7 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
+#include <cstring>
 #include <map>
 #include <mutex>
 #include <string>
@@ -366,7 +367,7 @@ void* CAirTunesServer::AudioOutputFunctions::audio_init(void *cls, int bits, int
   pipe->SetOpenThreshold(300);
 
   Demux_BXA_FmtHeader header;
-  strncpy(header.fourcc, "BXA ", 4);
+  std::memcpy(header.fourcc, "BXA ", 4);
   header.type = BXA_PACKET_TYPE_FMT_DEMUX;
   header.bitsPerSample = bits;
   header.channels = channels;
