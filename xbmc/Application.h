@@ -277,8 +277,6 @@ public:
 
   bool ToggleDPMS(bool manual);
 
-  bool SwitchToFullScreen(bool force = false);
-
   bool GetRenderGUI() const override { return m_renderGUI; }
 
   bool SetLanguage(const std::string &strLanguage);
@@ -443,7 +441,6 @@ public:
 
 private:
   void PrintStartupLog();
-  void Preflight();
   void ResetCurrentItem();
 
   mutable CCriticalSection m_critSection; /*!< critical section for all changes to this class, except for changes to triggers */
