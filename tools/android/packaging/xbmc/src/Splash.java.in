@@ -1,5 +1,6 @@
 package @APP_PACKAGE@;
 
+import static android.content.pm.PackageManager.FEATURE_LEANBACK;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 import android.Manifest;
@@ -21,6 +22,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -63,12 +65,14 @@ public class Splash extends Activity
   private static final int CheckingPermissionsDone = 10;
   private static final int CheckingPermissionsInfo = 11;
   private static final int CheckExternalStorage = 12;
+  private static final int RecordAudioPermission = 13;
   private static final int DownloadingObb = 90;
   private static final int DownloadObbDone = 91;
   private static final int StartingXBMC = 99;
 
   private static final String TAG = "@APP_NAME@";
 
+  private static final int RECORDAUDIO_RESULT_CODE = 8946;
   private static final int PERMISSION_RESULT_CODE = 8947;
 
   private String mCpuinfo = "";
@@ -125,17 +129,38 @@ public class Splash extends Activity
             @Override
             public void onClick(DialogInterface dialog, int which)
             {
-              mStateMachine.sendEmptyMessage(CheckingPermissions);
+              mStateMachine.sendEmptyMessage(RecordAudioPermission);
             }
           });
           dialog.show();
           break;
-        case CheckingPermissions:
+        case RecordAudioPermission:
           mSplash.mTextView.setText("Asking for permissions...");
           mSplash.mProgress.setVisibility(View.INVISIBLE);
 
-          requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO},
+          requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO},
+                    RECORDAUDIO_RESULT_CODE);
+          break;
+        case CheckingPermissions:
+          if ((Build.VERSION.SDK_INT >= 30) && !isAndroidTV())
+          {
+            try
+            {
+              Intent intent = new Intent();
+              intent.setAction(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+              intent.setData(Uri.parse(String.format("package:%s", getPackageName())));
+              startActivityForResult(intent, PERMISSION_RESULT_CODE);
+            }
+            catch (Exception e)
+            {
+              Log.d(TAG, "Exception asking for permissions: " + e.getMessage());
+            }
+          }
+          else
+          {
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     PERMISSION_RESULT_CODE);
+          }
           break;
         case CheckingPermissionsDone:
           if (mPermissionOK)
@@ -734,7 +759,14 @@ public class Splash extends Activity
   private boolean CheckPermissions()
   {
     boolean retVal = false;
-    if (android.os.Build.VERSION.SDK_INT > 22)
+    if ((Build.VERSION.SDK_INT >= 30) && !isAndroidTV())
+    {
+      if (Environment.isExternalStorageManager())
+      {
+        retVal = true;
+      }
+    }
+    else if (Build.VERSION.SDK_INT > 22)
     {
       int permissionCheck;
       permissionCheck = checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -742,7 +774,7 @@ public class Splash extends Activity
         retVal = true;
     }
     else
-      retVal=  true;
+      retVal = true;
 
     return retVal;
   }
@@ -760,9 +792,28 @@ public class Splash extends Activity
         {
           mPermissionOK = true;
         }
+        mStateMachine.sendEmptyMessage(CheckingPermissionsDone);
+        break;
+      }
+      case RECORDAUDIO_RESULT_CODE:
+      {
+        mStateMachine.sendEmptyMessage(CheckingPermissions);
       }
     }
-    mStateMachine.sendEmptyMessage(CheckingPermissionsDone);
+  }
+
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data)
+  {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (requestCode == PERMISSION_RESULT_CODE)
+    {
+      if (Environment.isExternalStorageManager())
+      {
+        mPermissionOK = true;
+      }
+      mStateMachine.sendEmptyMessage(CheckingPermissionsDone);
+    }
   }
 
   void updateExternalStorageState()
@@ -960,6 +1011,20 @@ public class Splash extends Activity
         new FillCache(this).execute();
       else
         mStateMachine.sendEmptyMessage(CachingDone);
+    }
+  }
+
+  private boolean isAndroidTV()
+  {
+    if (getPackageManager().hasSystemFeature(FEATURE_LEANBACK))
+    {
+      Log.d(TAG, "Running on an Android TV Device");
+      return true;
+    }
+    else
+    {
+      Log.d(TAG, "Running on a non Android TV Device");
+      return false;
     }
   }
 
