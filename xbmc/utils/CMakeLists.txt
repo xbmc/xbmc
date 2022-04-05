@@ -42,6 +42,7 @@ set(SOURCES ActorProtocol.cpp
             Locale.cpp
             log.cpp
             Mime.cpp
+            MovingSpeed.cpp
             Observer.cpp
             POUtils.cpp
             RecentlyAddedJob.cpp
@@ -135,6 +136,7 @@ set(HEADERS ActorProtocol.h
             MathUtils.h
             MemUtils.h
             Mime.h
+            MovingSpeed.h
             Observer.h
             params_check_macros.h
             POUtils.h
