@@ -133,6 +133,11 @@ void DX::DeviceResources::GetAdapterDesc(DXGI_ADAPTER_DESC* desc) const
 {
   if (m_adapter)
     m_adapter->GetDesc(desc);
+
+  // GetDesc() returns VendorId == 0 in Xbox however, we need to know that
+  // GPU is AMD to apply workarounds in DXVA.cpp CheckCompatibility() same as desktop
+  if (CSysInfo::GetWindowsDeviceFamily() == CSysInfo::Xbox)
+    desc->VendorId = PCIV_ATI;
 }
 
 void DX::DeviceResources::GetDisplayMode(DXGI_MODE_DESC* mode) const
