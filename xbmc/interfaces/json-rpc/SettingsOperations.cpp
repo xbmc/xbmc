@@ -817,7 +817,7 @@ JSONRPC_STATUS CSettingsOperations::GetSkinSettings(const std::string& method,
   const std::set<ADDON::CSkinSettingPtr> settings = CSkinSettings::GetInstance().GetSettings();
   CVariant varSettings(CVariant::VariantTypeArray);
 
-  for (auto setting : settings)
+  for (const auto& setting : settings)
   {
     CVariant varSetting(CVariant::VariantTypeObject);
     varSetting["id"] = setting->name;

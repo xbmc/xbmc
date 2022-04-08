@@ -36,7 +36,7 @@ private:
   /*!
    * \brief Called every frame with the item being focused
    */
-  void OnFocus(CFileItemPtr item);
+  void OnFocus(const CFileItemPtr& item);
 
   /*!
    * \brief Called every frame if no item is focused
@@ -46,7 +46,7 @@ private:
   /*!
    * \brief Called when a popup menu is opened for an item
    */
-  void OnPopupMenu(CFileItemPtr item);
+  void OnPopupMenu(const CFileItemPtr& item);
 
   /*!
    * \brief Called every frame with the caption to set
