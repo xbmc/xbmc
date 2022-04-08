@@ -46,7 +46,7 @@ void CDialogInGameSaves::PreInit()
   item->SetProperty(SAVESTATE_CAPTION,
                     g_localizeStrings.Get(15315)); // "Save progress to new save file"
 
-  m_items.AddFront(std::move(item), 0);
+  m_items.AddFront(item, 0);
 }
 
 void CDialogInGameSaves::InitSavedGames()
