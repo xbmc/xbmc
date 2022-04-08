@@ -122,6 +122,14 @@ public:
   virtual bool GetSubtitleVisible() { return false; }
   virtual void SetSubtitleVisible(bool bVisible) {}
 
+  /*!
+   * \brief Set the subtitle vertical position,
+   * it depends on current screen resolution
+   * \param value The subtitle position in pixels
+   * \param save If true, the value will be saved to resolution info
+   */
+  virtual void SetSubtitleVerticalPosition(int value, bool save) {}
+
   /** \brief Adds the subtitle(s) provided by the given file to the available player streams
   *          and actives the first of the added stream(s). E.g., vob subs can contain multiple streams.
   *   \param[in] strSubPath The full path of the subtitle file.

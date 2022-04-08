@@ -24,6 +24,8 @@ CVideoSettings::CVideoSettings()
   m_AudioStream = -1;
   m_SubtitleStream = -1;
   m_SubtitleDelay = 0.0f;
+  m_subtitleVerticalPosition = 0;
+  m_subtitleVerticalPositionSave = false;
   m_SubtitleOn = true;
   m_Brightness = 50.0f;
   m_Contrast = 50.0f;
@@ -55,6 +57,10 @@ bool CVideoSettings::operator!=(const CVideoSettings &right) const
   if (m_AudioStream != right.m_AudioStream) return true;
   if (m_SubtitleStream != right.m_SubtitleStream) return true;
   if (m_SubtitleDelay != right.m_SubtitleDelay) return true;
+  if (m_subtitleVerticalPosition != right.m_subtitleVerticalPosition)
+    return true;
+  if (m_subtitleVerticalPositionSave != right.m_subtitleVerticalPositionSave)
+    return true;
   if (m_SubtitleOn != right.m_SubtitleOn) return true;
   if (m_Brightness != right.m_Brightness) return true;
   if (m_Contrast != right.m_Contrast) return true;
@@ -117,6 +123,13 @@ void CVideoSettingsLocked::SetSubtitleDelay(float delay)
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
   m_videoSettings.m_SubtitleDelay = delay;
+}
+
+void CVideoSettingsLocked::SetSubtitleVerticalPosition(int value, bool save)
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  m_videoSettings.m_subtitleVerticalPosition = value;
+  m_videoSettings.m_subtitleVerticalPositionSave = save;
 }
 
 void CVideoSettingsLocked::SetViewMode(int mode, float zoom, float par, float shift, bool stretch)

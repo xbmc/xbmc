@@ -30,6 +30,15 @@
 #include "utils/Variant.h"
 #include "video/dialogs/GUIDialogAudioSettings.h"
 
+using namespace UTILS;
+
+CPlayerController::CPlayerController()
+{
+  MOVING_SPEED::EventCfg eventCfg{100.0f, 300.0f, 200};
+  m_movingSpeed.AddEventConfig(ACTION_SUBTITLE_VSHIFT_UP, eventCfg);
+  m_movingSpeed.AddEventConfig(ACTION_SUBTITLE_VSHIFT_DOWN, eventCfg);
+}
+
 CPlayerController::~CPlayerController() = default;
 
 CPlayerController& CPlayerController::GetInstance()
@@ -330,75 +339,53 @@ bool CPlayerController::OnAction(const CAction &action)
 
       case ACTION_SUBTITLE_VSHIFT_UP:
       {
-        RESOLUTION_INFO res_info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
-        int subalign = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_SUBTITLES_ALIGN);
-        if ((subalign == SUBTITLE_ALIGN_BOTTOM_OUTSIDE) || (subalign == SUBTITLE_ALIGN_TOP_INSIDE))
-        {
-          res_info.iSubtitles ++;
-          if (res_info.iSubtitles >= res_info.iHeight)
-            res_info.iSubtitles = res_info.iHeight - 1;
+        RESOLUTION_INFO resInfo = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
+        CVideoSettings vs = g_application.GetAppPlayer().GetVideoSettings();
 
-          ShowSlider(action.GetID(), 274, (float) res_info.iHeight - res_info.iSubtitles, 0.0f, 1.0f, (float) res_info.iHeight);
-        }
-        else
-        {
-          res_info.iSubtitles --;
-          if (res_info.iSubtitles < 0)
-            res_info.iSubtitles = 0;
+        vs.m_subtitleVerticalPosition -=
+            static_cast<int>(m_movingSpeed.GetUpdatedDistance(ACTION_SUBTITLE_VSHIFT_UP));
+        if (vs.m_subtitleVerticalPosition < resInfo.Overscan.top)
+          vs.m_subtitleVerticalPosition = resInfo.Overscan.top;
+        g_application.GetAppPlayer().SetSubtitleVerticalPosition(vs.m_subtitleVerticalPosition,
+                                                                 action.GetText() == "save");
 
-          if (subalign == SUBTITLE_ALIGN_MANUAL)
-            ShowSlider(action.GetID(), 274, (float) res_info.iSubtitles, 0.0f, 1.0f, (float) res_info.iHeight);
-          else
-            ShowSlider(action.GetID(), 274, (float) res_info.iSubtitles - res_info.iHeight, (float) -res_info.iHeight, -1.0f, 0.0f);
-        }
-        CServiceBroker::GetWinSystem()->GetGfxContext().SetResInfo(CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution(), res_info);
+        ShowSlider(action.GetID(), 277, static_cast<float>(vs.m_subtitleVerticalPosition),
+                   static_cast<float>(resInfo.Overscan.top), 1.0f,
+                   static_cast<float>(resInfo.Overscan.bottom));
         return true;
       }
 
       case ACTION_SUBTITLE_VSHIFT_DOWN:
       {
-        RESOLUTION_INFO res_info =  CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
-        int subalign = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_SUBTITLES_ALIGN);
-        if ((subalign == SUBTITLE_ALIGN_BOTTOM_OUTSIDE) || (subalign == SUBTITLE_ALIGN_TOP_INSIDE))
-        {
-          res_info.iSubtitles--;
-          if (res_info.iSubtitles < 0)
-            res_info.iSubtitles = 0;
+        RESOLUTION_INFO resInfo = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
+        CVideoSettings vs = g_application.GetAppPlayer().GetVideoSettings();
 
-          ShowSlider(action.GetID(), 274, (float) res_info.iHeight - res_info.iSubtitles, 0.0f, 1.0f, (float) res_info.iHeight);
-        }
-        else
-        {
-          res_info.iSubtitles++;
-          if (res_info.iSubtitles >= res_info.iHeight)
-            res_info.iSubtitles = res_info.iHeight - 1;
+        vs.m_subtitleVerticalPosition +=
+            static_cast<int>(m_movingSpeed.GetUpdatedDistance(ACTION_SUBTITLE_VSHIFT_DOWN));
+        if (vs.m_subtitleVerticalPosition > resInfo.Overscan.bottom)
+          vs.m_subtitleVerticalPosition = resInfo.Overscan.bottom;
+        g_application.GetAppPlayer().SetSubtitleVerticalPosition(vs.m_subtitleVerticalPosition,
+                                                                 action.GetText() == "save");
 
-          if (subalign == SUBTITLE_ALIGN_MANUAL)
-            ShowSlider(action.GetID(), 274, (float) res_info.iSubtitles, 0.0f, 1.0f, (float) res_info.iHeight);
-          else
-            ShowSlider(action.GetID(), 274, (float) res_info.iSubtitles - res_info.iHeight, (float) -res_info.iHeight, -1.0f, 0.0f);
-        }
-        CServiceBroker::GetWinSystem()->GetGfxContext().SetResInfo(CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution(), res_info);
+        ShowSlider(action.GetID(), 277, static_cast<float>(vs.m_subtitleVerticalPosition),
+                   static_cast<float>(resInfo.Overscan.top), 1.0f,
+                   static_cast<float>(resInfo.Overscan.bottom));
         return true;
       }
 
       case ACTION_SUBTITLE_ALIGN:
       {
-        RESOLUTION_INFO res_info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
         int subalign = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_SUBTITLES_ALIGN);
 
         subalign++;
         if (subalign > SUBTITLE_ALIGN_TOP_OUTSIDE)
           subalign = SUBTITLE_ALIGN_MANUAL;
 
-        res_info.iSubtitles = res_info.iHeight - 1;
-
         CServiceBroker::GetSettingsComponent()->GetSettings()->SetInt(CSettings::SETTING_SUBTITLES_ALIGN, subalign);
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
                                               g_localizeStrings.Get(21460),
                                               g_localizeStrings.Get(21461 + subalign),
                                               TOAST_DISPLAY_TIME, false);
-        CServiceBroker::GetWinSystem()->GetGfxContext().SetResInfo(CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution(), res_info);
         return true;
       }
 
@@ -524,10 +511,15 @@ void CPlayerController::OnSliderChange(void *data, CGUISliderControl *slider)
 
   if (m_sliderAction == ACTION_ZOOM_OUT || m_sliderAction == ACTION_ZOOM_IN ||
       m_sliderAction == ACTION_INCREASE_PAR || m_sliderAction == ACTION_DECREASE_PAR ||
-      m_sliderAction == ACTION_VSHIFT_UP || m_sliderAction == ACTION_VSHIFT_DOWN ||
-      m_sliderAction == ACTION_SUBTITLE_VSHIFT_UP || m_sliderAction == ACTION_SUBTITLE_VSHIFT_DOWN)
+      m_sliderAction == ACTION_VSHIFT_UP || m_sliderAction == ACTION_VSHIFT_DOWN)
   {
     std::string strValue = StringUtils::Format("{:1.2f}", slider->GetFloatValue());
+    slider->SetTextValue(strValue);
+  }
+  else if (m_sliderAction == ACTION_SUBTITLE_VSHIFT_UP ||
+           m_sliderAction == ACTION_SUBTITLE_VSHIFT_DOWN)
+  {
+    std::string strValue = StringUtils::Format("{:.0f}px", slider->GetFloatValue());
     slider->SetTextValue(strValue);
   }
   else if (m_sliderAction == ACTION_VOLAMP_UP ||
