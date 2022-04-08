@@ -43,7 +43,7 @@ RESOLUTION_INFO COffScreenModeSetting::GetCurrentMode()
   res.iScreenHeight = DISPLAY_HEIGHT;
   res.iHeight = DISPLAY_HEIGHT;
   res.fRefreshRate = DISPLAY_REFRESH;
-  res.iSubtitles = static_cast<int>(0.965 * res.iHeight);
+  res.iSubtitles = res.iHeight;
   res.fPixelRatio = 1.0f;
   res.bFullScreen = true;
   res.strId = "0";

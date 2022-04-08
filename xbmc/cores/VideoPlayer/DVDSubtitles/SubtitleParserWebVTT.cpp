@@ -70,7 +70,7 @@ bool CSubtitleParserWebVTT::Open(CDVDStreamInfo& hints)
   }
 
   CDVDOverlay* overlay = CreateOverlay();
-  overlay->SetForcedMargins(true);
+  overlay->SetForcedMargins(m_webvttHandler.IsForcedMargins());
   m_collection.Add(overlay);
 
   return true;

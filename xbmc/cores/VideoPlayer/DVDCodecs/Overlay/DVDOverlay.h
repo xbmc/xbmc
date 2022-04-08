@@ -128,7 +128,7 @@ public:
   /*
    * \brief Return true if the margins are handled by the subtitle codec/parser.
    */
-  bool IsForcedMargins() { return m_setForcedMargins; }
+  bool IsForcedMargins() const { return m_setForcedMargins; }
 
   double iPTSStartTime;
   double iPTSStopTime;

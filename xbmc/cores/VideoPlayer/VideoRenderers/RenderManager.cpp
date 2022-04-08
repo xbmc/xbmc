@@ -230,6 +230,7 @@ bool CRenderManager::Configure()
     m_clockSync.Reset();
     m_dvdClock.SetVsyncAdjust(0);
     m_overlays.SetStereoMode(m_stereomode);
+    m_overlays.ResetSubtitlePosition();
 
     m_renderState = STATE_CONFIGURED;
 
@@ -946,6 +947,11 @@ void CRenderManager::ToggleDebugVideo()
   m_renderDebug = isEnabled;
   m_debugTimer.SetExpired();
   m_renderDebugVideo = true;
+}
+
+void CRenderManager::SetSubtitleVerticalPosition(int value, bool save)
+{
+  m_overlays.SetSubtitleVerticalPosition(value, save);
 }
 
 bool CRenderManager::AddVideoPicture(const VideoPicture& picture, volatile std::atomic_bool& bStop, EINTERLACEMETHOD deintMethod, bool wait)

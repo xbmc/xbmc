@@ -974,7 +974,7 @@ void CWinSystemWin32::UpdateResolutions()
     res.fPixelRatio = 1.0f;
     res.iScreenWidth = res.iWidth;
     res.iScreenHeight = res.iHeight;
-    res.iSubtitles = (int)(0.965 * res.iHeight);
+    res.iSubtitles = res.iHeight;
     res.strMode = StringUtils::Format("{}: {}x{} @ {:.2f}Hz", monitorName, res.iWidth, res.iHeight,
                                       res.fRefreshRate);
     GetGfxContext().ResetOverscan(res);

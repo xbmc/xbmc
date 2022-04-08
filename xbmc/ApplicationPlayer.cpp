@@ -688,6 +688,15 @@ void CApplicationPlayer::SetSubtitleVisible(bool bVisible)
   }
 }
 
+void CApplicationPlayer::SetSubtitleVerticalPosition(int value, bool save)
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+  {
+    player->SetSubtitleVerticalPosition(value, save);
+  }
+}
+
 void CApplicationPlayer::SetTime(int64_t time)
 {
   std::shared_ptr<IPlayer> player = GetInternal();

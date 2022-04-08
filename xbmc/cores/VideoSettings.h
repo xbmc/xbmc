@@ -100,6 +100,8 @@ public:
   float m_VolumeAmplification;
   int m_SubtitleStream;
   float m_SubtitleDelay;
+  int m_subtitleVerticalPosition{0};
+  bool m_subtitleVerticalPositionSave{false};
   bool m_SubtitleOn;
   float m_Brightness;
   float m_Contrast;
@@ -134,6 +136,15 @@ public:
   void SetVideoStream(int stream);
   void SetAudioDelay(float delay);
   void SetSubtitleDelay(float delay);
+
+  /*!
+   * \brief Set the subtitle vertical position,
+   * it depends on current screen resolution
+   * \param value The subtitle position in pixels
+   * \param save If true, the value will be saved to resolution info
+   */
+  void SetSubtitleVerticalPosition(int value, bool save);
+
   void SetViewMode(int mode, float zoom, float par, float shift, bool stretch);
   void SetVolumeAmplification(float amp);
 

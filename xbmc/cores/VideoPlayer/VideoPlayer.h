@@ -273,6 +273,15 @@ public:
   void SetSubtitle(int iStream) override;
   bool GetSubtitleVisible() override;
   void SetSubtitleVisible(bool bVisible) override;
+
+  /*!
+   * \brief Set the subtitle vertical position,
+   * it depends on current screen resolution
+   * \param value The subtitle position in pixels
+   * \param save If true, the value will be saved to resolution info
+   */
+  void SetSubtitleVerticalPosition(const int value, bool save) override;
+
   void AddSubtitle(const std::string& strSubPath) override;
 
   int GetAudioStreamCount() override;

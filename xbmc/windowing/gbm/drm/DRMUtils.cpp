@@ -673,7 +673,7 @@ RESOLUTION_INFO CDRMUtils::GetResolutionInfo(drmModeModeInfoPtr mode)
     res.fRefreshRate = static_cast<float>(mode->vrefresh) * (1000.0f/1001.0f);
   else
     res.fRefreshRate = mode->vrefresh;
-  res.iSubtitles = static_cast<int>(0.965 * res.iHeight);
+  res.iSubtitles = res.iHeight;
   res.fPixelRatio = 1.0f;
   res.bFullScreen = true;
 

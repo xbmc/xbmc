@@ -546,10 +546,10 @@ void CDisplaySettings::ApplyCalibrations()
           m_resolutions[res].Overscan.bottom = m_resolutions[res].iHeight * 3/2;
 
         m_resolutions[res].iSubtitles = itCal->iSubtitles;
-        if (m_resolutions[res].iSubtitles < m_resolutions[res].iHeight / 2)
-          m_resolutions[res].iSubtitles = m_resolutions[res].iHeight / 2;
-        if (m_resolutions[res].iSubtitles > m_resolutions[res].iHeight* 5/4)
-          m_resolutions[res].iSubtitles = m_resolutions[res].iHeight* 5/4;
+        if (m_resolutions[res].iSubtitles < 0)
+          m_resolutions[res].iSubtitles = 0;
+        if (m_resolutions[res].iSubtitles > m_resolutions[res].iHeight)
+          m_resolutions[res].iSubtitles = m_resolutions[res].iHeight;
 
         m_resolutions[res].fPixelRatio = itCal->fPixelRatio;
         if (m_resolutions[res].fPixelRatio < 0.5f)

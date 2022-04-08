@@ -55,7 +55,7 @@ void CWinSystemBase::UpdateDesktopResolution(RESOLUTION_INFO& newRes, const std:
   newRes.Overscan.right = width;
   newRes.Overscan.bottom = height;
   newRes.bFullScreen = true;
-  newRes.iSubtitles = (int)(0.965 * height);
+  newRes.iSubtitles = height;
   newRes.dwFlags = dwFlags;
   newRes.fRefreshRate = refreshRate;
   newRes.fPixelRatio = 1.0f;
@@ -87,7 +87,7 @@ void CWinSystemBase::UpdateResolutions()
   window.iScreenWidth  = window.iWidth;
   window.iScreenHeight = window.iHeight;
   if (window.iSubtitles == 0)
-    window.iSubtitles = (int)(0.965 * window.iHeight);
+    window.iSubtitles = window.iHeight;
   window.fPixelRatio = 1.0f;
   window.strMode = "Windowed";
 }
@@ -99,7 +99,7 @@ void CWinSystemBase::SetWindowResolution(int width, int height)
   window.iHeight = height;
   window.iScreenWidth = width;
   window.iScreenHeight = height;
-  window.iSubtitles = (int)(0.965 * window.iHeight);
+  window.iSubtitles = window.iHeight;
   CServiceBroker::GetWinSystem()->GetGfxContext().ResetOverscan(window);
 }
 

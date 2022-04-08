@@ -77,6 +77,11 @@ void CSubtitlesSettings::OnSettingChanged(const std::shared_ptr<const CSetting>&
 
   SetChanged();
   NotifyObservers(ObservableMessageSettingsChanged);
+  if (setting->GetId() == CSettings::SETTING_SUBTITLES_ALIGN)
+  {
+    SetChanged();
+    NotifyObservers(ObservableMessagePositionChanged);
+  }
 }
 
 void CSubtitlesSettings::SettingOptionsSubtitleFontsFiller(const SettingConstPtr& setting,

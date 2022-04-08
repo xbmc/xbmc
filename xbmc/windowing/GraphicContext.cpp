@@ -570,7 +570,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 {
   RESOLUTION_INFO& info = CDisplaySettings::GetInstance().GetResolutionInfo(res);
 
-  info.iSubtitles = static_cast<int>(0.965 * info.iHeight);
+  info.iSubtitles = info.iHeight;
   info.fPixelRatio = 1.0f;
   info.iScreenWidth = info.iWidth;
   info.iScreenHeight = info.iHeight;

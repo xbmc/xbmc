@@ -42,4 +42,5 @@ protected:
 private:
   std::map<int, std::pair<float, float>> m_controlsSize;
   int m_subtitlesHalfSpace{0};
+  int m_subtitleVerticalMargin{0};
 };
