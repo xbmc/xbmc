@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-03-21 11:09+0000\n"
+"PO-Revision-Date: 2022-04-05 14:44+0000\n"
 "Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Slovak <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/sk_sk/>\n"
 "Language: sk_sk\n"
@@ -76,7 +76,7 @@ msgstr "Albumy"
 #. Label to show PVR info page
 msgctxt "#31017"
 msgid "PVR"
-msgstr ""
+msgstr "PVR"
 
 #. Label to show player info page
 msgctxt "#31018"
