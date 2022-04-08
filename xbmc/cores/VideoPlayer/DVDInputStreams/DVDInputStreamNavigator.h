@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2022 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -13,6 +13,7 @@
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDInputStream.h"
 #include "DVDInputStreamFile.h"
+#include "DVDStateSerializer.h"
 #include "DllDvdNav.h"
 #include "utils/Geometry.h"
 
@@ -129,6 +130,12 @@ protected:
   int GetAngleCount();
   void GetVideoResolution(uint32_t * width, uint32_t * height);
 
+  /*! \brief Provided a pod DVDState struct, fill it with the current dvdnav state
+  * \param[in,out] dvdstate the DVD state struct to be filled
+  * \return true if it was possible to fill the state struct based on the current dvdnav state, false otherwise
+  */
+  bool FillDVDState(DVDState& dvdstate);
+
   DllDvdNav m_dll;
   bool m_bCheckButtons;
   bool m_bEOF;
@@ -161,5 +168,8 @@ protected:
   int m_lastevent;
 
   std::map<int, std::map<int, int64_t>> m_mapTitleChapters;
+
+  /*! DVD state serializer handler */
+  CDVDStateSerializer m_dvdStateSerializer;
 };
 

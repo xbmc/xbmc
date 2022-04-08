@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2022 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -10,7 +10,6 @@
 #include "filesystem/IFileTypes.h"
 #include "utils/LangCodeExpander.h"
 #include "../DVDDemuxSPU.h"
-#include "DVDStateSerializer.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "LangInfo.h"
@@ -1129,12 +1128,12 @@ int CDVDInputStreamNavigator::GetActiveAngle()
 
   int number_of_angles;
   int current_angle;
-  dvdnav_status_t status = m_dll.dvdnav_get_angle_info(m_dvdnav, &current_angle, &number_of_angles);
-
-  if (status == DVDNAV_STATUS_OK)
-    return current_angle;
-  else
+  if (m_dll.dvdnav_get_angle_info(m_dvdnav, &current_angle, &number_of_angles) == DVDNAV_STATUS_ERR)
+  {
+    CLog::LogF(LOGERROR, "Failed to get current angle: {}", m_dll.dvdnav_err_to_string(m_dvdnav));
     return -1;
+  }
+  return current_angle;
 }
 
 bool CDVDInputStreamNavigator::SetAngle(int angle)
@@ -1301,60 +1300,82 @@ bool CDVDInputStreamNavigator::IsSubtitleStreamEnabled()
   return m_dll.dvdnav_get_active_spu_stream(m_dvdnav) >= 0;
 }
 
-bool CDVDInputStreamNavigator::GetState(std::string &xmlstate)
+bool CDVDInputStreamNavigator::FillDVDState(DVDState& dvdState)
 {
-  if( !m_dvdnav )
-    return false;
-
-  dvd_state_t save_state;
-  if( DVDNAV_STATUS_ERR == m_dll.dvdnav_get_state(m_dvdnav, &save_state) )
+  if (!m_dvdnav)
   {
-    CLog::Log(LOGWARNING, "CDVDInputStreamNavigator::GetNavigatorState - Failed to get state ({})",
-              m_dll.dvdnav_err_to_string(m_dvdnav));
     return false;
   }
 
-  if( !CDVDStateSerializer::DVDToXMLState(xmlstate, &save_state) )
+  if (m_dll.dvdnav_current_title_program(m_dvdnav, &dvdState.title, &dvdState.pgcn,
+                                         &dvdState.pgn) == DVDNAV_STATUS_ERR)
   {
-    CLog::Log(LOGWARNING, "CDVDInputStreamNavigator::SetNavigatorState - Failed to serialize state");
+    CLog::LogF(LOGERROR, "Failed to get current title info ({})",
+               m_dll.dvdnav_err_to_string(m_dvdnav));
+    return false;
+  }
+
+  int current_angle = GetActiveAngle();
+  if (current_angle == -1)
+  {
+    CLog::LogF(LOGERROR, "Could not detect current angle, ignoring saved state");
+    return false;
+  }
+  dvdState.current_angle = current_angle;
+  dvdState.audio_num = GetActiveAudioStream();
+  dvdState.subp_num = GetActiveSubtitleStream();
+  dvdState.sub_enabled = IsSubtitleStreamEnabled();
+
+  return true;
+}
+
+bool CDVDInputStreamNavigator::GetState(std::string& xmlstate)
+{
+  if( !m_dvdnav )
+  {
+    return false;
+  }
+
+  // do not save state if we are not playing a title stream (e.g. if we are in menus)
+  if (!m_dll.dvdnav_is_domain_vts(m_dvdnav))
+  {
+    return false;
+  }
+
+  DVDState dvdState;
+  if (!FillDVDState(dvdState))
+  {
+    CLog::LogF(LOGWARNING, "Failed to obtain current dvdnav state");
+    return false;
+  }
+
+  if (!m_dvdStateSerializer.DVDStateToXML(xmlstate, dvdState))
+  {
+    CLog::Log(LOGWARNING,
+              "CDVDInputStreamNavigator::SetNavigatorState - Failed to serialize state");
     return false;
   }
 
   return true;
 }
 
-bool CDVDInputStreamNavigator::SetState(const std::string &xmlstate)
+bool CDVDInputStreamNavigator::SetState(const std::string& xmlstate)
 {
-  if( !m_dvdnav )
+  if (!m_dvdnav)
     return false;
 
-  dvd_state_t save_state = {};
-
-  if( !CDVDStateSerializer::XMLToDVDState(&save_state, xmlstate)  )
+  DVDState dvdState;
+  if (!m_dvdStateSerializer.XMLToDVDState(dvdState, xmlstate))
   {
-    CLog::Log(LOGWARNING, "CDVDInputStreamNavigator::SetNavigatorState - Failed to deserialize state");
+    CLog::LogF(LOGWARNING, "Failed to deserialize state");
     return false;
   }
 
-  if( DVDNAV_STATUS_ERR == m_dll.dvdnav_set_state(m_dvdnav, &save_state) )
-  {
-    CLog::Log(LOGWARNING,
-              "CDVDInputStreamNavigator::SetNavigatorState - Failed to set state ({}), retrying "
-              "after read",
-              m_dll.dvdnav_err_to_string(m_dvdnav));
-
-    /* vm won't be started until after first read, this should really be handled internally */
-    uint8_t buffer[DVD_VIDEO_BLOCKSIZE];
-    Read(buffer,DVD_VIDEO_BLOCKSIZE);
-
-    if( DVDNAV_STATUS_ERR == m_dll.dvdnav_set_state(m_dvdnav, &save_state) )
-    {
-      CLog::Log(LOGWARNING,
-                "CDVDInputStreamNavigator::SetNavigatorState - Failed to set state ({})",
-                m_dll.dvdnav_err_to_string(m_dvdnav));
-      return false;
-    }
-  }
+  m_dll.dvdnav_program_play(m_dvdnav, dvdState.title, dvdState.pgcn, dvdState.pgn);
+  m_dll.dvdnav_angle_change(m_dvdnav, dvdState.current_angle);
+  SetActiveSubtitleStream(dvdState.subp_num);
+  SetActiveAudioStream(dvdState.audio_num);
+  EnableSubtitleStream(dvdState.sub_enabled);
   return true;
 }
 

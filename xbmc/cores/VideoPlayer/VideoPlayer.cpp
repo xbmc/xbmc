@@ -1223,13 +1223,15 @@ void CVideoPlayer::Prepare()
   if (std::shared_ptr<CDVDInputStream::IMenus> ptr = std::dynamic_pointer_cast<CDVDInputStream::IMenus>(m_pInputStream))
   {
     CLog::Log(LOGINFO, "VideoPlayer: playing a file with menu's");
-    if(std::dynamic_pointer_cast<CDVDInputStreamNavigator>(m_pInputStream))
-      m_playerOptions.starttime = 0;
 
     if (!m_playerOptions.state.empty())
+    {
       discStateRestored = ptr->SetState(m_playerOptions.state);
+    }
     else if(std::shared_ptr<CDVDInputStreamNavigator> nav = std::dynamic_pointer_cast<CDVDInputStreamNavigator>(m_pInputStream))
+    {
       nav->EnableSubtitleStream(m_processInfo->GetVideoSettings().m_SubtitleOn);
+    }
   }
 
   if (!OpenDemuxStream())
