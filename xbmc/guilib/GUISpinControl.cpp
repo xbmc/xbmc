@@ -501,29 +501,6 @@ void CGUISpinControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyr
 
 void CGUISpinControl::Render()
 {
-  if ( HasFocus() )
-  {
-    if (m_iSelect == SPIN_BUTTON_UP)
-      m_imgspinUpFocus->Render();
-    else
-      m_imgspinUp->Render();
-
-    if (m_iSelect == SPIN_BUTTON_DOWN)
-      m_imgspinDownFocus->Render();
-    else
-      m_imgspinDown->Render();
-  }
-  else if ( !HasFocus() && !IsDisabled() )
-  {
-    m_imgspinUp->Render();
-    m_imgspinDown->Render();
-  }
-  else
-  {
-    m_imgspinUpDisabled->Render();
-    m_imgspinDownDisabled->Render();
-  }
-
   if (m_label.GetLabelInfo().font)
   {
     const float space = 5;
@@ -540,6 +517,30 @@ void CGUISpinControl::Render()
     // set our hit rectangle for MouseOver events
     m_hitRect = m_label.GetRenderRect();
   }
+
+  if (HasFocus())
+  {
+    if (m_iSelect == SPIN_BUTTON_UP)
+      m_imgspinUpFocus->Render();
+    else
+      m_imgspinUp->Render();
+
+    if (m_iSelect == SPIN_BUTTON_DOWN)
+      m_imgspinDownFocus->Render();
+    else
+      m_imgspinDown->Render();
+  }
+  else if (!HasFocus() && !IsDisabled())
+  {
+    m_imgspinUp->Render();
+    m_imgspinDown->Render();
+  }
+  else
+  {
+    m_imgspinUpDisabled->Render();
+    m_imgspinDownDisabled->Render();
+  }
+
   CGUIControl::Render();
 }
 
