@@ -67,7 +67,6 @@ void CGUISpinControlEx::Process(unsigned int currentTime, CDirtyRegionList &dirt
 
 void CGUISpinControlEx::Render()
 {
-  m_buttonControl.Render();
   CGUISpinControl::Render();
 }
 
@@ -136,9 +135,27 @@ void CGUISpinControlEx::SetSpinPosition(float spinPosX)
 
 void CGUISpinControlEx::RenderText(float posX, float posY, float width, float height)
 {
-  const float spaceWidth = 10;
-  // check our limits from the button control
-  float x = std::max(m_buttonControl.m_label.GetRenderRect().x2 + spaceWidth, posX);
+  const float freeSpaceWidth{m_buttonControl.GetWidth() - GetSpinWidth() * 2};
+
+  // Limit right label text width to max 50% of free space
+  // (will be slightly shifted due to offsetX padding)
+  const float rightTextMaxWidth{freeSpaceWidth * 0.5f};
+
+  float rightTextWidth{width};
+  if (rightTextWidth > rightTextMaxWidth)
+  {
+    rightTextWidth = rightTextMaxWidth - m_label.GetLabelInfo().offsetX;
+  }
+
   m_label.SetScrolling(HasFocus());
-  CGUISpinControl::RenderText(x, m_buttonControl.GetYPosition(), width + posX - x, m_buttonControl.GetHeight());
+  // Replace posX by using our button position
+  posX = m_buttonControl.GetXPosition() + freeSpaceWidth - rightTextWidth -
+         m_label.GetLabelInfo().offsetX;
+
+  // Limit the max width for the left label to avoid text overlapping
+  m_buttonControl.SetMaxWidth(posX + m_label.GetLabelInfo().offsetX);
+  m_buttonControl.Render();
+
+  CGUISpinControl::RenderText(posX, m_buttonControl.GetYPosition(), rightTextWidth,
+                              m_buttonControl.GetHeight());
 }
