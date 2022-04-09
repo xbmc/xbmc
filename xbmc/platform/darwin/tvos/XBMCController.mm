@@ -380,7 +380,13 @@ int KODI_Run(bool renderGUI)
 {
   int status = -1;
 
+  // Create logging and settings
+  CServiceBroker::CreateLogging();
   CAppParamParser appParamParser; //! @todo : proper params
+  const auto settingsComponent = std::make_shared<CSettingsComponent>();
+  settingsComponent->Initialize(appParamParser);
+  CServiceBroker::RegisterSettingsComponent(settingsComponent);
+
   if (!g_application.Create(appParamParser))
   {
     CLog::Log(LOGERROR, "ERROR: Unable to create application. Exiting");
@@ -429,6 +435,13 @@ int KODI_Run(bool renderGUI)
     CLog::Log(LOGERROR, "ERROR: Exception caught on main loop. Exiting");
     status = -1;
   }
+
+  // Destroy settings and logging
+  CServiceBroker::GetLogging().UnregisterFromSettings();
+  CServiceBroker::GetSettingsComponent()->Deinitialize();
+  CServiceBroker::UnregisterSettingsComponent();
+  CServiceBroker::GetLogging().Uninitialize();
+  CServiceBroker::DestroyLogging();
 
   return status;
 }
