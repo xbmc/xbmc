@@ -39,7 +39,6 @@ void CPVREpgSearchFilter::Reset()
   m_bIsCaseSensitive = false;
   m_iMinimumDuration = EPG_SEARCH_UNSET;
   m_iMaximumDuration = EPG_SEARCH_UNSET;
-  m_bIncludeUnknownGenres = false;
   m_bRemoveDuplicates = false;
 
   /* pvr specific filters */
@@ -157,9 +156,9 @@ void CPVREpgSearchFilter::SetEndDateTime(const CDateTime& endDateTime)
 
 void CPVREpgSearchFilter::SetIncludeUnknownGenres(bool bIncludeUnknownGenres)
 {
-  if (m_bIncludeUnknownGenres != bIncludeUnknownGenres)
+  if (m_searchData.m_bIncludeUnknownGenres != bIncludeUnknownGenres)
   {
-    m_bIncludeUnknownGenres = bIncludeUnknownGenres;
+    m_searchData.m_bIncludeUnknownGenres = bIncludeUnknownGenres;
     m_bChanged = true;
   }
 }
@@ -244,17 +243,27 @@ void CPVREpgSearchFilter::SetLastExecutedDateTime(const CDateTime& lastExecutedD
 
 bool CPVREpgSearchFilter::MatchGenre(const std::shared_ptr<CPVREpgInfoTag>& tag) const
 {
-  bool bReturn(true);
+  if (m_bEpgSearchDataFiltered)
+    return true;
 
   if (m_searchData.m_iGenreType != EPG_SEARCH_UNSET)
   {
-    bool bIsUnknownGenre(tag->GenreType() > EPG_EVENT_CONTENTMASK_USERDEFINED ||
-                         tag->GenreType() < EPG_EVENT_CONTENTMASK_MOVIEDRAMA);
-    bReturn = ((m_bIncludeUnknownGenres && bIsUnknownGenre) || m_bEpgSearchDataFiltered ||
-               tag->GenreType() == m_searchData.m_iGenreType);
+    if (m_searchData.m_bIncludeUnknownGenres)
+    {
+      // match the exact genre and everything with unknown genre
+      return (tag->GenreType() == m_searchData.m_iGenreType ||
+              tag->GenreType() < EPG_EVENT_CONTENTMASK_MOVIEDRAMA ||
+              tag->GenreType() > EPG_EVENT_CONTENTMASK_USERDEFINED);
+    }
+    else
+    {
+      // match only the exact genre
+      return (tag->GenreType() == m_searchData.m_iGenreType);
+    }
   }
 
-  return bReturn;
+  // match any genre
+  return true;
 }
 
 bool CPVREpgSearchFilter::MatchDuration(const std::shared_ptr<CPVREpgInfoTag>& tag) const
