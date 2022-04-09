@@ -21,6 +21,7 @@ struct PVREpgSearchData
 {
   std::string m_strSearchTerm; /*!< The term to search for */
   bool m_bSearchInDescription = false; /*!< Search for strSearchTerm in the description too */
+  bool m_bIncludeUnknownGenres = false; /*!< Whether to include unknown genres */
   int m_iGenreType = EPG_SEARCH_UNSET; /*!< The genre type for an entry */
   bool m_bIgnoreFinishedBroadcasts; /*!< True to ignore finished broadcasts, false if not */
   bool m_bIgnoreFutureBroadcasts; /*!< True to ignore future broadcasts, false if not */
@@ -31,6 +32,7 @@ struct PVREpgSearchData
   {
     m_strSearchTerm.clear();
     m_bSearchInDescription = false;
+    m_bIncludeUnknownGenres = false;
     m_iGenreType = EPG_SEARCH_UNSET;
     m_bIgnoreFinishedBroadcasts = true;
     m_bIgnoreFutureBroadcasts = false;
