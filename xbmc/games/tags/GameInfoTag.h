@@ -88,6 +88,10 @@ public:
   const std::string& GetGameClient() const { return m_strGameClient; }
   void SetGameClient(const std::string& strGameClient) { m_strGameClient = strGameClient; }
 
+  // Caption
+  const std::string& GetCaption() const { return m_strCaption; }
+  void SetCaption(const std::string& strCaption) { m_strCaption = strCaption; }
+
   void Archive(CArchive& ar) override;
   void Serialize(CVariant& value) const override;
   void ToSortable(SortItem& sortable, Field field) const override;
@@ -107,6 +111,7 @@ private:
   std::string m_strFormat;
   std::string m_strCartridgeType;
   std::string m_strGameClient;
+  std::string m_strCaption;
 };
 } // namespace GAME
 } // namespace KODI

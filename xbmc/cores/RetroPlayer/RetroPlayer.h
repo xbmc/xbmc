@@ -14,6 +14,7 @@
 #include "cores/RetroPlayer/playback/IPlaybackControl.h"
 #include "games/GameTypes.h"
 #include "guilib/DispResource.h"
+#include "interfaces/IAnnouncer.h"
 #include "threads/CriticalSection.h"
 
 #include <memory>
@@ -38,7 +39,8 @@ class CRetroPlayer : public IPlayer,
                      public IRenderLoop,
                      public IGameCallback,
                      public IPlaybackCallback,
-                     public IAutoSaveCallback
+                     public IAutoSaveCallback,
+                     public ANNOUNCEMENT::IAnnouncer
 {
 public:
   explicit CRetroPlayer(IPlayerCallback& callback);
@@ -83,6 +85,12 @@ public:
   // Implementation of IAutoSaveCallback
   bool IsAutoSaveEnabled() const override;
   std::string CreateAutosave() override;
+
+  // Implementation of IAnnouncer
+  void Announce(ANNOUNCEMENT::AnnouncementFlag flag,
+                const std::string& sender,
+                const std::string& message,
+                const CVariant& data) override;
 
 private:
   void SetSpeedInternal(double speed);
@@ -136,6 +144,9 @@ private:
 
   // Synchronization parameters
   CCriticalSection m_mutex;
+
+  // File metadata
+  std::shared_ptr<CFileItem> m_fileItem;
 };
 } // namespace RETRO
 } // namespace KODI

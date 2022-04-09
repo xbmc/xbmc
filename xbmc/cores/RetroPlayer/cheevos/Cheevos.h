@@ -13,6 +13,8 @@
 #include <map>
 #include <string>
 
+class CFileItem;
+
 namespace KODI
 {
 namespace GAME
@@ -26,6 +28,7 @@ class CCheevos
 {
 public:
   CCheevos(GAME::CGameClient* gameClient,
+           CFileItem& fileItem,
            const std::string& userName,
            const std::string& loginToken);
   void ResetRuntime();
@@ -36,7 +39,9 @@ private:
   bool LoadData();
   RConsoleID ConsoleID();
 
+  // Construction parameters
   GAME::CGameClient* const m_gameClient;
+  CFileItem& m_fileItem;
   std::string m_userName;
   std::string m_loginToken;
   std::string m_romHash;

@@ -12,6 +12,7 @@
 #include "AddonString.h"
 #include "Alternative.h"
 #include "Exception.h"
+#include "InfoTagGame.h"
 #include "InfoTagMusic.h"
 #include "InfoTagRadioRDS.h"
 #include "InfoTagVideo.h"
@@ -426,6 +427,19 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_Player
+      /// @brief \python_func{ isPlayingGame() }
+      /// Check for playing game.
+      ///
+      /// @return                    True if kodi is playing a game
+      ///
+      isPlayingGame();
+#else
+      bool isPlayingGame();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_Player
       /// @brief \python_func{ isExternalPlayer() }
       /// Check for external player.
       ///
@@ -623,6 +637,22 @@ namespace XBMCAddon
       void updateInfoTag(const XBMCAddon::xbmcgui::ListItem* item);
 #endif
 
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_Player
+      /// @brief \python_func{ getGameInfoTag() }
+      /// To get game info tag.
+      ///
+      /// Returns the GameInfoTag of the current playing game.
+      ///
+      /// @return                    Game info tag
+      /// @throws Exception          If player is not playing a file or current
+      ///                            file is not a game file.
+      ///
+      getGameInfoTag();
+#else
+      InfoTagGame* getGameInfoTag();
+#endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///

@@ -311,6 +311,7 @@ void CAdvancedSettings::Initialize()
   m_musicItemSeparator = " / ";
   m_musicArtistSeparators = { ";", " feat. ", " ft. " };
   m_videoItemSeparator = " / ";
+  m_gameItemSeparator = " / ";
   m_iMusicLibraryDateAdded = 1; // prefer mtime over ctime and current time
   m_bMusicLibraryUseISODates = false;
 
