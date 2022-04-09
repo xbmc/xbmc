@@ -353,6 +353,12 @@
 
     setlocale(LC_NUMERIC, "C");
 
+    // Create logging and settings
+    CServiceBroker::CreateLogging();
+    const auto settingsComponent = std::make_shared<CSettingsComponent>();
+    settingsComponent->Initialize(appParamParser);
+    CServiceBroker::RegisterSettingsComponent(settingsComponent);
+
     if (!g_application.Create(appParamParser))
     {
       readyToRun = false;
@@ -391,6 +397,13 @@
         ELOG(@"%sException caught on main loop. Exiting", __PRETTY_FUNCTION__);
       }
     }
+
+    // Destroy settings and logging
+    CServiceBroker::GetLogging().UnregisterFromSettings();
+    CServiceBroker::GetSettingsComponent()->Deinitialize();
+    CServiceBroker::UnregisterSettingsComponent();
+    CServiceBroker::GetLogging().Uninitialize();
+    CServiceBroker::DestroyLogging();
 
     // signal we are dead
     [myLock unlockWithCondition:TRUE];
