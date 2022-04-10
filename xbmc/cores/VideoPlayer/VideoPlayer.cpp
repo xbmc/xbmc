@@ -4775,7 +4775,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
         if (!pMenu->CanSeek())
           state.time_offset = 0;
       }
-      state.hasMenu = true;
+      state.hasMenu = pMenu->HasMenu();
     }
 
     state.canpause = m_pInputStream->CanPause();
