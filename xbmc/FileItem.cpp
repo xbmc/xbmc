@@ -193,6 +193,9 @@ CFileItem::CFileItem(const std::shared_ptr<PVR::CPVREpgInfoTag>& tag,
       SetArt("icon", "DefaultTVShows.png");
   }
 
+  // Speedup FillInDefaultIcon()
+  SetProperty("icon_never_overlay", true);
+
   FillMusicInfoTag(groupMember, tag);
   FillInMimeType(false);
 }
@@ -212,6 +215,9 @@ CFileItem::CFileItem(const std::shared_ptr<PVR::CPVREpgSearchFilter>& filter)
 
   SetArt("icon", "DefaultPVRSearch.png");
 
+  // Speedup FillInDefaultIcon()
+  SetProperty("icon_never_overlay", true);
+
   FillInMimeType(false);
 }
 
@@ -220,7 +226,6 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRChannelGroupMember>& channelGroup
   Initialize();
 
   const std::shared_ptr<CPVRChannel> channel = channelGroupMember->Channel();
-  const std::shared_ptr<CPVREpgInfoTag> epgNow = channel->GetEPGNow();
 
   m_pvrChannelGroupMemberInfoTag = channelGroupMember;
 
@@ -240,7 +245,14 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRChannelGroupMember>& channelGroup
   SetProperty("path", channelGroupMember->Path());
   SetArt("thumb", channel->IconPath());
 
-  FillMusicInfoTag(channelGroupMember, epgNow);
+  // Speedup FillInDefaultIcon()
+  SetProperty("icon_never_overlay", true);
+
+  if (channel->IsRadio())
+  {
+    const std::shared_ptr<CPVREpgInfoTag> epgNow = channel->GetEPGNow();
+    FillMusicInfoTag(channelGroupMember, epgNow);
+  }
   FillInMimeType(false);
 }
 
@@ -275,6 +287,9 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRRecording>& record)
   if (!record->FanartPath().empty())
     SetArt("fanart", record->FanartPath());
 
+  // Speedup FillInDefaultIcon()
+  SetProperty("icon_never_overlay", true);
+
   FillInMimeType(false);
 }
 
@@ -294,6 +309,9 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRTimerInfoTag>& timer)
     SetArt("icon", "DefaultMusicSongs.png");
   else
     SetArt("icon", "DefaultTVShows.png");
+
+  // Speedup FillInDefaultIcon()
+  SetProperty("icon_never_overlay", true);
 
   FillInMimeType(false);
 }

@@ -147,8 +147,6 @@ void CPVREpgContainer::Start()
     std::unique_lock<CCriticalSection> lock(m_critSection);
     m_bIsInitialising = true;
 
-    CheckPlayingEvents();
-
     Create();
     SetPriority(ThreadPriority::BELOW_NORMAL);
 
@@ -810,40 +808,34 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
   return !bInterrupted;
 }
 
-const CDateTime CPVREpgContainer::GetFirstEPGDate()
+std::pair<CDateTime, CDateTime> CPVREpgContainer::GetFirstAndLastEPGDate() const
 {
-  CDateTime returnValue;
+  // Get values from db
+  std::pair<CDateTime, CDateTime> dbDates;
+  const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
+  if (database)
+    dbDates = database->GetFirstAndLastEPGDate();
 
+  // Merge not yet commited changes
   m_critSection.lock();
   const auto epgs = m_epgIdToEpgMap;
   m_critSection.unlock();
 
-  for (const auto& epgEntry : epgs)
-  {
-    CDateTime entry = epgEntry.second->GetFirstDate();
-    if (entry.IsValid() && (!returnValue.IsValid() || entry < returnValue))
-      returnValue = entry;
-  }
-
-  return returnValue;
-}
-
-const CDateTime CPVREpgContainer::GetLastEPGDate()
-{
-  CDateTime returnValue;
-
-  m_critSection.lock();
-  const auto epgs = m_epgIdToEpgMap;
-  m_critSection.unlock();
+  CDateTime first(dbDates.first);
+  CDateTime last(dbDates.second);
 
   for (const auto& epgEntry : epgs)
   {
-    CDateTime entry = epgEntry.second->GetLastDate();
-    if (entry.IsValid() && (!returnValue.IsValid() || entry > returnValue))
-      returnValue = entry;
+    const auto dates = epgEntry.second->GetFirstAndLastUncommitedEPGDate();
+
+    if (dates.first.IsValid() && (!first.IsValid() || dates.first < first))
+      first = dates.first;
+
+    if (dates.second.IsValid() && (!last.IsValid() || dates.second > last))
+      last = dates.second;
   }
 
-  return returnValue;
+  return {first, last};
 }
 
 bool CPVREpgContainer::CheckPlayingEvents()
@@ -942,8 +934,6 @@ int CPVREpgContainer::CleanupCachedImages()
 {
   int iCleanedImages = 0;
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
-
   const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
   if (!database)
   {
@@ -951,7 +941,12 @@ int CPVREpgContainer::CleanupCachedImages()
     return iCleanedImages;
   }
 
-  for (const auto& epg : m_epgIdToEpgMap)
+  // Processing can take some time. Do not block.
+  m_critSection.lock();
+  const std::map<int, std::shared_ptr<CPVREpg>> epgIdToEpgMap = m_epgIdToEpgMap;
+  m_critSection.unlock();
+
+  for (const auto& epg : epgIdToEpgMap)
   {
     iCleanedImages += epg.second->CleanupCachedImages(database);
   }

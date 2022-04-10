@@ -118,11 +118,11 @@ namespace PVR
     std::vector<std::string> GetAllIconPaths(int iEpgID);
 
     /*!
-     * @brief Get the start time of the first tag in this EPG.
+     * @brief Check whether this EPG has any tags.
      * @param iEpgID The ID of the EPG.
-     * @return The time.
+     * @return True in case there are tags, false otherwise.
      */
-    CDateTime GetFirstStartTime(int iEpgID);
+    bool HasTags(int iEpgID);
 
     /*!
      * @brief Get the end time of the last tag in this EPG.
@@ -130,6 +130,12 @@ namespace PVR
      * @return The time.
      */
     CDateTime GetLastEndTime(int iEpgID);
+
+    /*!
+     * @brief Get the start and end time across all EPGs.
+     * @return The times; first: start time, second: end time.
+     */
+    std::pair<CDateTime, CDateTime> GetFirstAndLastEPGDate();
 
     /*!
      * @brief Get the start time of the first tag with a start time greater than the given min time.

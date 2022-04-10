@@ -348,7 +348,7 @@ bool CPVREpgTagsContainer::IsEmpty() const
     return false;
 
   if (m_database)
-    return !m_database->GetFirstStartTime(m_iEpgID).IsValid();
+    return !m_database->HasTags(m_iEpgID);
 
   return true;
 }
@@ -583,7 +583,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgTagsContainer::GetAllTags() 
   if (m_database)
   {
     std::vector<std::shared_ptr<CPVREpgInfoTag>> tags;
-    if (!m_changedTags.empty() && !m_database->GetFirstStartTime(m_iEpgID).IsValid())
+    if (!m_changedTags.empty() && !m_database->HasTags(m_iEpgID))
     {
       // nothing in the db yet. take what we have in memory.
       for (const auto& tag : m_changedTags)
@@ -611,38 +611,13 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgTagsContainer::GetAllTags() 
   return {};
 }
 
-CDateTime CPVREpgTagsContainer::GetFirstStartTime() const
+std::pair<CDateTime, CDateTime> CPVREpgTagsContainer::GetFirstAndLastUncommitedEPGDate() const
 {
-  CDateTime result;
+  if (m_changedTags.empty())
+    return {};
 
-  if (!m_changedTags.empty())
-    result = (*m_changedTags.cbegin()).second->StartAsUTC();
-
-  if (m_database)
-  {
-    const CDateTime dbResult = m_database->GetFirstStartTime(m_iEpgID);
-    if (!result.IsValid() || (dbResult.IsValid() && dbResult < result))
-      result = dbResult;
-  }
-
-  return result;
-}
-
-CDateTime CPVREpgTagsContainer::GetLastEndTime() const
-{
-  CDateTime result;
-
-  if (!m_changedTags.empty())
-    result = (*m_changedTags.crbegin()).second->EndAsUTC();
-
-  if (m_database)
-  {
-    const CDateTime dbResult = m_database->GetLastEndTime(m_iEpgID);
-    if (!result.IsValid() || (dbResult.IsValid() && dbResult > result))
-      result = dbResult;
-  }
-
-  return result;
+  return {(*m_changedTags.cbegin()).second->StartAsUTC(),
+          (*m_changedTags.crbegin()).second->EndAsUTC()};
 }
 
 bool CPVREpgTagsContainer::NeedsSave() const

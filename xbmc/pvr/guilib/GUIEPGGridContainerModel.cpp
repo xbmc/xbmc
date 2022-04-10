@@ -690,15 +690,19 @@ bool CGUIEPGGridContainerModel::IsEventMemberOfBlock(const std::shared_ptr<CPVRE
   return false;
 }
 
-std::unique_ptr<CFileItemList> CGUIEPGGridContainerModel::GetCurrentTimeLineItems() const
+std::unique_ptr<CFileItemList> CGUIEPGGridContainerModel::GetCurrentTimeLineItems(
+    int firstChannel, int numChannels) const
 {
   // Note: No need to keep this in a member. Gets generally not called multiple times for the
   //       same timeline, but content must be synced with m_epgItems, which changes quite often.
 
   std::unique_ptr<CFileItemList> items(new CFileItemList);
 
+  if (numChannels > ChannelItemsSize())
+    numChannels = ChannelItemsSize();
+
   int i = 0;
-  for (int channel = 0; channel < ChannelItemsSize(); ++channel)
+  for (int channel = firstChannel; channel < (firstChannel + numChannels); ++channel)
   {
     // m_epgItems is not sorted, fileitemlist must be sorted, so we have to 'find' the channel
     const auto itEpg = m_epgItems.find(channel);

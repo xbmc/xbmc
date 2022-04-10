@@ -693,17 +693,18 @@ bool CGUIWindowPVRGuideBase::RefreshTimelineItems()
       if (!group)
         return false;
 
-      CDateTime startDate(group->GetFirstEPGDate());
-      CDateTime endDate(group->GetLastEPGDate());
-      const CDateTime currentDate(CDateTime::GetCurrentDateTime().GetAsUTCDateTime());
+      CPVREpgContainer& epgContainer = CServiceBroker::GetPVRManager().EpgContainer();
+
+      const std::pair<CDateTime, CDateTime> dates = epgContainer.GetFirstAndLastEPGDate();
+      CDateTime startDate = dates.first;
+      CDateTime endDate = dates.second;
+      const CDateTime currentDate = CDateTime::GetUTCDateTime();
 
       if (!startDate.IsValid())
         startDate = currentDate;
 
       if (!endDate.IsValid() || endDate < startDate)
         endDate = startDate;
-
-      CPVREpgContainer& epgContainer = CServiceBroker::GetPVRManager().EpgContainer();
 
       // limit start to past days to display
       const int iPastDays = epgContainer.GetPastDaysToDisplay();

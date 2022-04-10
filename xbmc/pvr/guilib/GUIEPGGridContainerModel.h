@@ -109,7 +109,7 @@ namespace PVR
     int GetLastEventBlock(const std::shared_ptr<CPVREpgInfoTag>& event) const;
     bool IsEventMemberOfBlock(const std::shared_ptr<CPVREpgInfoTag>& event, int iBlock) const;
 
-    std::unique_ptr<CFileItemList> GetCurrentTimeLineItems() const;
+    std::unique_ptr<CFileItemList> GetCurrentTimeLineItems(int firstChannel, int numChannels) const;
 
   private:
     GridItem* GetGridItemPtr(int iChannel, int iBlock) const;

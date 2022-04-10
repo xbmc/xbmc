@@ -153,16 +153,10 @@ public:
   std::vector<std::shared_ptr<CPVREpgInfoTag>> GetAllTags() const;
 
   /*!
-   * @brief Get the start time of the first tag in this EPG.
-   * @return The time.
+   * @brief Get the start and end time of the last not yet commited entry in this EPG.
+   * @return The times; first: start time, second: end time.
    */
-  CDateTime GetFirstStartTime() const;
-
-  /*!
-   * @brief Get the end time of the last tag in this EPG.
-   * @return The time.
-   */
-  CDateTime GetLastEndTime() const;
+  std::pair<CDateTime, CDateTime> GetFirstAndLastUncommitedEPGDate() const;
 
   /*!
    * @brief Check whether this container has unsaved data.
