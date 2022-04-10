@@ -27,6 +27,11 @@ public:
    */
   bool IsPartWay() const;
 
+  /*! \brief returns true if this bookmark has a stored serialized player state
+   \return true if playerState is not empty.
+   */
+  bool HasSavedPlayerState() const;
+
   double timeInSeconds;
   double totalTimeInSeconds;
   long partNumber;

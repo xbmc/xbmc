@@ -32,3 +32,8 @@ bool CBookmark::IsPartWay() const
 {
   return totalTimeInSeconds > 0.0 && timeInSeconds > 0.0;
 }
+
+bool CBookmark::HasSavedPlayerState() const
+{
+  return !playerState.empty();
+}
