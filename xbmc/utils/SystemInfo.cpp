@@ -53,6 +53,8 @@ using namespace winrt::Windows::System::Profile;
 #include "utils/XMLUtils.h"
 #if defined(TARGET_ANDROID)
 #include <androidjni/Build.h>
+#include <androidjni/Context.h>
+#include <androidjni/PackageManager.h>
 #endif
 
 /* Platform identification */
@@ -600,7 +602,10 @@ std::string CSysInfo::GetOsName(bool emptyIfUnknown /* = false*/)
 #elif defined(TARGET_DARWIN_OSX)
     osName = "macOS";
 #elif defined (TARGET_ANDROID)
-    osName = "Android";
+    if (CJNIContext::GetPackageManager().hasSystemFeature("android.software.leanback"))
+      osName = "Android TV";
+    else
+      osName = "Android";
 #elif defined(TARGET_LINUX)
     osName = getValueFromOs_release("NAME");
     if (osName.empty())
