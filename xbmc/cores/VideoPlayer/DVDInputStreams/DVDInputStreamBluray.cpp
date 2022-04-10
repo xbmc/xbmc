@@ -140,6 +140,7 @@ bool CDVDInputStreamBluray::Open()
 
   bool openStream = false;
   bool openDisc = false;
+  bool resumable = true;
 
   // The item was selected via the simple menu
   if (URIUtils::IsProtocol(strPath, "bluray"))
@@ -161,6 +162,7 @@ bool CDVDInputStreamBluray::Open()
       const std::string& root2 = url2.GetHostName();
       CURL url(root2);
       CFileItem item(url, false);
+      resumable = false;
 
       // Check whether disc is AACS protected
       if (!openDisc)
@@ -325,7 +327,8 @@ bool CDVDInputStreamBluray::Open()
     m_navmode = false;
     m_titleInfo = GetTitleFile(filename);
   }
-  else if (mode == BD_PLAYBACK_MAIN_TITLE)
+  else if (mode == BD_PLAYBACK_MAIN_TITLE ||
+           (resumable && m_item.m_lStartOffset == STARTOFFSET_RESUME))
   {
     m_navmode = false;
     m_titleInfo = GetTitleLongest();
