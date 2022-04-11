@@ -1,15 +1,11 @@
 package @APP_PACKAGE@;
 
-import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.media.MediaMetadata;
 import android.media.session.MediaSession;
 import android.media.session.PlaybackState;
 import android.util.Log;
-
-import java.util.concurrent.Callable;
-import java.util.concurrent.FutureTask;
 
 /**
  * Created by Christian BROWET on 1/10/17.

@@ -1,7 +1,5 @@
 package @APP_PACKAGE@.model;
 
-import @APP_PACKAGE@.model.Media;
-
 /**
  * Created by cbro on 22/12/2017
  */

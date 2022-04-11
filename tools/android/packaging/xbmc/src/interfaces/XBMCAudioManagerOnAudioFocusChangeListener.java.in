@@ -1,7 +1,6 @@
 package @APP_PACKAGE@.interfaces;
 
 import android.media.AudioManager.OnAudioFocusChangeListener;
-import android.util.Log;
 
 public class XBMCAudioManagerOnAudioFocusChangeListener implements OnAudioFocusChangeListener
 {

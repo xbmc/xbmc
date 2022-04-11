@@ -1,6 +1,5 @@
 package @APP_PACKAGE@;
 
-import android.content.Context;
 import android.os.Build.VERSION_CODES;
 import android.os.Build;
 import android.app.NativeActivity;
@@ -12,12 +11,9 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Choreographer;
-import android.view.Gravity;
 import android.view.View;
 import android.graphics.Color;
-import android.graphics.PixelFormat;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;

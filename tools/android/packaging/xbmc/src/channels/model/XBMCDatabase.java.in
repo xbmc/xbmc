@@ -14,8 +14,6 @@
 package @APP_PACKAGE@.channels.model;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.net.Uri;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.Nullable;
 
