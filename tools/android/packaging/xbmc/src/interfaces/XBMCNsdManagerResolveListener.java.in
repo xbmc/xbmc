@@ -2,7 +2,6 @@ package @APP_PACKAGE@.interfaces;
 
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
-import android.util.Log;
 
 public class XBMCNsdManagerResolveListener implements NsdManager.ResolveListener
 {
