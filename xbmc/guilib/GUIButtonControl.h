@@ -80,6 +80,11 @@ protected:
   virtual void RenderText();
   virtual CGUILabel::COLOR GetTextColor() const;
 
+  /*!
+   * \brief Set the maximum width for the left label
+   */
+  void SetMaxWidth(float labelMaxWidth) { m_labelMaxWidth = labelMaxWidth; }
+
   std::unique_ptr<CGUITexture> m_imgFocus;
   std::unique_ptr<CGUITexture> m_imgNoFocus;
   unsigned int  m_focusCounter;
@@ -87,6 +92,7 @@ protected:
 
   float m_minWidth;
   float m_maxWidth;
+  float m_labelMaxWidth{0};
 
   KODI::GUILIB::GUIINFO::CGUIInfoLabel  m_info;
   KODI::GUILIB::GUIINFO::CGUIInfoLabel  m_info2;
