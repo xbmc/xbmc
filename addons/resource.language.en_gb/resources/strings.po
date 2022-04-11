@@ -6915,6 +6915,7 @@ msgstr ""
 
 #: addons/skin.estuary/xml/Custom_1101_SettingsList.xml
 #: xbmc/games/dialogs/osd/DialogGameVolume.cpp
+#: system/settings/settings.xml
 msgctxt "#13376"
 msgid "Volume"
 msgstr ""
@@ -23094,4 +23095,10 @@ msgstr ""
 #: xbmc/Application.cpp
 msgctxt "#39180"
 msgid "Building font cache in progress - please wait"
+msgstr ""
+
+#. Helper text for gui sound volume setting
+#: system/settings/settings.xml
+msgctxt "#39181"
+msgid "Relative volume for gui sounds"
 msgstr ""
