@@ -37,6 +37,7 @@ public:
   std::tuple<bool, uint64_t> GetPropertyEnumValue(const std::string& name,
                                                   const std::string& valueName) const;
   bool GetPropertyValue(const std::string& name, uint64_t& val) const;
+  bool GetPropertyRange(const std::string& name, uint64_t& min, uint64_t& max) const;
 
   bool SetProperty(const std::string& name, uint64_t value);
   bool SupportsProperty(const std::string& name);
