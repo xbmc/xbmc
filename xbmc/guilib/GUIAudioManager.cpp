@@ -32,9 +32,8 @@ CGUIAudioManager::CGUIAudioManager()
 
   m_bEnabled = false;
 
-  m_settings->RegisterCallback(this, {
-    CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN,
-  });
+  m_settings->RegisterCallback(this, {CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN,
+                                      CSettings::SETTING_AUDIOOUTPUT_GUISOUNDVOLUME});
 }
 
 CGUIAudioManager::~CGUIAudioManager()
@@ -69,6 +68,11 @@ bool CGUIAudioManager::OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
       std::static_pointer_cast<CSettingString>(setting)->Reset();
     else if (std::static_pointer_cast<CSettingString>(setting)->GetValue() == "OFF")
       std::static_pointer_cast<CSettingString>(setting)->SetValue("");
+  }
+  if (setting->GetId() == CSettings::SETTING_AUDIOOUTPUT_GUISOUNDVOLUME)
+  {
+    int vol = m_settings->GetInt(CSettings::SETTING_AUDIOOUTPUT_GUISOUNDVOLUME);
+    SetVolume(0.01f * vol);
   }
   return true;
 }
@@ -115,7 +119,11 @@ void CGUIAudioManager::PlayActionSound(const CAction& action)
     return;
 
   if (it->second)
+  {
+    int vol = m_settings->GetInt(CSettings::SETTING_AUDIOOUTPUT_GUISOUNDVOLUME);
+    it->second->SetVolume(0.01f * vol);
     it->second->Play();
+  }
 }
 
 // \brief Play a sound associated with a window and its event
@@ -146,6 +154,8 @@ void CGUIAudioManager::PlayWindowSound(int id, WINDOW_SOUND event)
   if (!sound)
     return;
 
+  int vol = m_settings->GetInt(CSettings::SETTING_AUDIOOUTPUT_GUISOUNDVOLUME);
+  sound->SetVolume(0.01f * vol);
   sound->Play();
 }
 
@@ -178,6 +188,8 @@ void CGUIAudioManager::PlayPythonSound(const std::string& strFileName, bool useC
   if (!sound)
     return;
 
+  int vol = m_settings->GetInt(CSettings::SETTING_AUDIOOUTPUT_GUISOUNDVOLUME);
+  sound->SetVolume(0.01f * vol);
   sound->Play();
   m_pythonSounds.emplace(strFileName, std::move(sound));
 }

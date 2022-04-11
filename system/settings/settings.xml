@@ -2966,6 +2966,11 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
+        <setting id="audiooutput.guisoundvolume" type="integer" label="13376" help="39181">
+          <level>1</level>
+          <default>100</default>
+          <control type="slider" format="percentage" range="0,100" />
+        </setting>
         <setting id="lookandfeel.soundskin" type="addon" label="24006" help="36110">
           <level>0</level>
           <default>resource.uisounds.kodi</default>
