@@ -128,11 +128,17 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
       {
         AddSortMethod(SortBySortTitle, sortAttributes, 556, LABEL_MASKS("%T", "%M", "%T", "%M"));  // Title, #Episodes | Title, #Episodes
 
-        AddSortMethod(SortByNumberOfEpisodes, 20360, LABEL_MASKS("%L", "%M", "%L", "%M"));  // Label, #Episodes | Label, #Episodes
-        AddSortMethod(SortByLastPlayed, 568, LABEL_MASKS("%T", "%p", "%T", "%p"));  // Title, #Last played | Title, #Last played
-        AddSortMethod(SortByDateAdded, 570, LABEL_MASKS("%T", "%a", "%T", "%a"));  // Title, DateAdded | Title, DateAdded
-        AddSortMethod(SortByYear, 562, LABEL_MASKS("%L","%Y","%L","%Y")); // Label, Year | Label, Year
-        AddSortMethod(SortByUserRating, 38018, LABEL_MASKS("%T", "%r", "%T", "%r"));  // Title, Userrating | Title, Userrating
+        AddSortMethod(SortByNumberOfEpisodes, sortAttributes, 20360,
+                      LABEL_MASKS("%L", "%M", "%L", "%M")); // Label, #Episodes | Label, #Episodes
+        AddSortMethod(
+            SortByLastPlayed, sortAttributes, 568,
+            LABEL_MASKS("%T", "%p", "%T", "%p")); // Title, #Last played | Title, #Last played
+        AddSortMethod(SortByDateAdded, sortAttributes, 570,
+                      LABEL_MASKS("%T", "%a", "%T", "%a")); // Title, DateAdded | Title, DateAdded
+        AddSortMethod(SortByYear, sortAttributes, 562,
+                      LABEL_MASKS("%L", "%Y", "%L", "%Y")); // Label, Year | Label, Year
+        AddSortMethod(SortByUserRating, sortAttributes, 38018,
+                      LABEL_MASKS("%T", "%r", "%T", "%r")); // Title, Userrating | Title, Userrating
         SetSortMethod(SortByLabel);
 
         const CViewState *viewState = CViewStateSettings::GetInstance().Get("videonavtvshows");
@@ -508,14 +514,23 @@ void CGUIViewStateVideoMusicVideos::SaveViewState()
 
 CGUIViewStateVideoTVShows::CGUIViewStateVideoTVShows(const CFileItemList& items) : CGUIViewStateWindowVideo(items)
 {
-  AddSortMethod(SortBySortTitle, 556, LABEL_MASKS("%T", "%M", "%T", "%M"),  // Title, #Episodes | Title, #Episodes
-    CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING) ? SortAttributeIgnoreArticle : SortAttributeNone);
+  SortAttribute sortAttributes = SortAttributeNone;
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  if (settings->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING))
+    sortAttributes = SortAttributeIgnoreArticle;
 
-  AddSortMethod(SortByNumberOfEpisodes, 20360, LABEL_MASKS("%L", "%M", "%L", "%M"));  // Label, #Episodes | Label, #Episodes
-  AddSortMethod(SortByLastPlayed, 568, LABEL_MASKS("%T", "%p", "%T", "%p"));  // Title, #Last played | Title, #Last played
-  AddSortMethod(SortByDateAdded, 570, LABEL_MASKS("%T", "%a", "%T", "%a"));  // Title, DateAdded | Title, DateAdded
-  AddSortMethod(SortByYear, 562, LABEL_MASKS("%T", "%Y", "%T", "%Y"));  // Title, Year | Title, Year
-  AddSortMethod(SortByUserRating, 38018, LABEL_MASKS("%T", "%r", "%T", "%r"));  // Title, Userrating | Title, Userrating
+  AddSortMethod(SortBySortTitle, sortAttributes, 556,
+                LABEL_MASKS("%T", "%M", "%T", "%M")); // Title, #Episodes | Title, #Episodes
+  AddSortMethod(SortByNumberOfEpisodes, sortAttributes, 20360,
+                LABEL_MASKS("%L", "%M", "%L", "%M")); // Label, #Episodes | Label, #Episodes
+  AddSortMethod(SortByLastPlayed, sortAttributes, 568,
+                LABEL_MASKS("%T", "%p", "%T", "%p")); // Title, #Last played | Title, #Last played
+  AddSortMethod(SortByDateAdded, sortAttributes, 570,
+                LABEL_MASKS("%T", "%a", "%T", "%a")); // Title, DateAdded | Title, DateAdded
+  AddSortMethod(SortByYear, sortAttributes, 562,
+                LABEL_MASKS("%T", "%Y", "%T", "%Y")); // Title, Year | Title, Year
+  AddSortMethod(SortByUserRating, sortAttributes, 38018,
+                LABEL_MASKS("%T", "%r", "%T", "%r")); // Title, Userrating | Title, Userrating
 
   const CViewState *viewState = CViewStateSettings::GetInstance().Get("videonavtvshows");
   if (items.IsSmartPlayList() || items.IsLibraryFolder())
