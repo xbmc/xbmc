@@ -111,7 +111,8 @@ private:
   void InterruptPoll()
   {
     char c = 0;
-    write(m_pipeWrite, &c, 1);
+    if (write(m_pipeWrite, &c, 1) != 1)
+      throw std::runtime_error("Failed to write to wayland message pipe");
   }
 
   void Process() override
@@ -181,7 +182,8 @@ private:
           // Read away the char so we don't get another notification
           // Indepentent from m_roundtripQueue so there are no races
           char c;
-          read(m_pipeRead, &c, 1);
+          if (read(m_pipeRead, &c, 1) != 1)
+            throw std::runtime_error("Error reading from wayland message pipe");
         }
       }
 
