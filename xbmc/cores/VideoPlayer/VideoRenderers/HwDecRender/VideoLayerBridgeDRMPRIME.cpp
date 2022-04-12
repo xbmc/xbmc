@@ -165,11 +165,12 @@ void CVideoLayerBridgeDRMPRIME::Configure(CVideoBufferDRMPRIME* buffer)
 
   bool result;
   uint64_t value;
-  std::tie(result, value) = plane->GetPropertyValue("COLOR_ENCODING", GetColorEncoding(picture));
+  std::tie(result, value) =
+      plane->GetPropertyEnumValue("COLOR_ENCODING", GetColorEncoding(picture));
   if (result)
     m_DRM->AddProperty(plane, "COLOR_ENCODING", value);
 
-  std::tie(result, value) = plane->GetPropertyValue("COLOR_RANGE", GetColorRange(picture));
+  std::tie(result, value) = plane->GetPropertyEnumValue("COLOR_RANGE", GetColorRange(picture));
   if (result)
     m_DRM->AddProperty(plane, "COLOR_RANGE", value);
 

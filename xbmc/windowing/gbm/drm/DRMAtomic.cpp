@@ -48,7 +48,7 @@ bool CDRMAtomic::SetScalingFilter(CDRMObject* object, const char* name, const ch
 {
   bool result;
   uint64_t value;
-  std::tie(result, value) = m_gui_plane->GetPropertyValue(name, type);
+  std::tie(result, value) = m_gui_plane->GetPropertyEnumValue(name, type);
   if (!result)
     return false;
 

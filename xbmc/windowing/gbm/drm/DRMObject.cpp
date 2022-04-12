@@ -81,8 +81,8 @@ bool CDRMObject::GetProperties(uint32_t id, uint32_t type)
 }
 
 //! @todo: improve with c++17
-std::tuple<bool, uint64_t> CDRMObject::GetPropertyValue(const std::string& name,
-                                                        const std::string& valueName) const
+std::tuple<bool, uint64_t> CDRMObject::GetPropertyEnumValue(const std::string& name,
+                                                            const std::string& valueName) const
 {
   auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(),
                                [&name](const auto& prop) { return prop->name == name; });
