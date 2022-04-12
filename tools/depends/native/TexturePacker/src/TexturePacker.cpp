@@ -384,6 +384,10 @@ int main(int argc, char* argv[])
     {
       dupecheck = true;
     }
+    else if (!strcmp(args[i], "-verbose"))
+    {
+      DecoderManager::verbose = true;
+    }
     else if (!platform_stricmp(args[i], "-output") || !platform_stricmp(args[i], "-o"))
     {
       OutputFilename = args[++i];
