@@ -94,6 +94,14 @@ namespace OVERLAY {
     float m_height;
     float m_source_width{0}; // Video source width resolution used to calculate aspect ratio
     float m_source_height{0}; // Video source height resolution used to calculate aspect ratio
+
+  protected:
+    /*!
+     * \brief Given the resolution ratio determines if it is a 4/3 resolution
+     * \param resRatio The resolution ratio (the results of width / height)
+     * \return True if the ratio refer to a 4/3 resolution, otherwise false
+     */
+    bool IsSquareResolution(float resRatio) { return resRatio > 1.22f && resRatio < 1.34f; }
   };
 
   class CRenderer : public Observer
