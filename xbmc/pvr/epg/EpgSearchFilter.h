@@ -92,7 +92,7 @@ namespace PVR
     const CDateTime& GetEndDateTime() const { return m_searchData.m_endDateTime; }
     void SetEndDateTime(const CDateTime& endDateTime);
 
-    bool ShouldIncludeUnknownGenres() const { return m_bIncludeUnknownGenres; }
+    bool ShouldIncludeUnknownGenres() const { return m_searchData.m_bIncludeUnknownGenres; }
     void SetIncludeUnknownGenres(bool bIncludeUnknownGenres);
 
     bool ShouldRemoveDuplicates() const { return m_bRemoveDuplicates; }
@@ -146,7 +146,6 @@ namespace PVR
     bool m_bIsCaseSensitive; /*!< Do a case sensitive search */
     int m_iMinimumDuration; /*!< The minimum duration for an entry */
     int m_iMaximumDuration; /*!< The maximum duration for an entry */
-    bool m_bIncludeUnknownGenres; /*!< Include unknown genres or not */
     bool m_bRemoveDuplicates; /*!< True to remove duplicate events, false if not */
 
     // PVR specific filters
