@@ -18,6 +18,7 @@ void PVREpgSearchData::Reset()
 {
   m_strSearchTerm.clear();
   m_bSearchInDescription = false;
+  m_bIncludeUnknownGenres = false;
   m_iGenreType = EPG_SEARCH_UNSET;
 
   m_startDateTime.SetFromUTCDateTime(

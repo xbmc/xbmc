@@ -22,6 +22,7 @@ struct PVREpgSearchData
 {
   std::string m_strSearchTerm; /*!< The term to search for */
   bool m_bSearchInDescription = false; /*!< Search for strSearchTerm in the description too */
+  bool m_bIncludeUnknownGenres = false; /*!< Whether to include unknown genres */
   int m_iGenreType = EPG_SEARCH_UNSET; /*!< The genre type for an entry */
   CDateTime m_startDateTime; /*!< The minimum start time for an entry */
   CDateTime m_endDateTime; /*!< The maximum end time for an entry */
