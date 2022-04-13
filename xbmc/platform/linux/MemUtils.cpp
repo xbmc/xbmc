@@ -19,7 +19,15 @@ namespace MEMORY
 void* AlignedMalloc(size_t s, size_t alignTo)
 {
   void* p = nullptr;
-  posix_memalign(&p, alignTo, s);
+  int res = posix_memalign(&p, alignTo, s);
+  if (res == EINVAL)
+  {
+    throw std::runtime_error("Failed to align memory, alignment is not a multiple of 2");
+  }
+  else if (res == ENOMEM)
+  {
+    throw std::runtime_error("Failed to align memory, insufficient memory available");
+  }
   return p;
 }
 
