@@ -30,6 +30,8 @@ class DecoderManager
     static bool IsSupportedGraphicsFile(char *strFileName);
     static bool LoadFile(const std::string &filename, DecodedFrames &frames);
     static void FreeDecodedFrames(DecodedFrames &frames);
+    static bool verbose;
+
   private:
     static std::vector<IDecoder *> m_decoders;
 };

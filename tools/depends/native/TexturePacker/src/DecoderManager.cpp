@@ -20,6 +20,7 @@
 #include <cstdio>
 #include "DecoderManager.h"
 
+bool DecoderManager::verbose;
 std::vector<IDecoder *> DecoderManager::m_decoders;
 
 // ADD new decoders here
@@ -72,7 +73,9 @@ bool DecoderManager::LoadFile(const std::string &filename, DecodedFrames &frames
   {
     if (m_decoders[i]->CanDecode(filename))
     {
-      fprintf(stdout, "This is a %s - lets load it via %s...\n", m_decoders[i]->GetImageFormatName(), m_decoders[i]->GetDecoderName());
+      if (verbose)
+        fprintf(stdout, "This is a %s - lets load it via %s...\n",
+                m_decoders[i]->GetImageFormatName(), m_decoders[i]->GetDecoderName());
       return m_decoders[i]->LoadFile(filename, frames);
     }
   }
