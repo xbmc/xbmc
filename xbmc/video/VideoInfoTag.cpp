@@ -1097,7 +1097,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
         else
           SetUniqueID(uniqueid->FirstChild()->ValueStr());
         bool isDefault;
-        if (m_strDefaultUniqueID.empty() &&
+        if (m_strDefaultUniqueID == "unknown" &&
             (uniqueid->QueryBoolAttribute("default", &isDefault) == TIXML_SUCCESS) && isDefault)
         {
           m_strDefaultUniqueID = value;
