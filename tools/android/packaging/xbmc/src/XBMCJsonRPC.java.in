@@ -1,8 +1,6 @@
 package @APP_PACKAGE@;
 
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -26,7 +24,6 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.util.Log;
 
-import @APP_PACKAGE@.content.XBMCYTDLContentProvider;
 import @APP_PACKAGE@.model.Album;
 import @APP_PACKAGE@.model.Movie;
 import @APP_PACKAGE@.model.MusicVideo;

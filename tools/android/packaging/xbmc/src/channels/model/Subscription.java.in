@@ -13,8 +13,6 @@
  */
 package @APP_PACKAGE@.channels.model;
 
-import android.net.Uri;
-
 /**
  * Contains the data about a channel that will be displayed on the launcher.
  */

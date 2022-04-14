@@ -1,56 +1,51 @@
 package @APP_PACKAGE@;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.System;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Iterator;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Properties;
-import java.util.Enumeration;
-import java.util.ArrayList;
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 import android.Manifest;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Build;
-import android.os.Bundle;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.util.Log;
+import android.content.IntentFilter;
+import android.content.res.Resources;
+import android.content.res.Resources.NotFoundException;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.content.res.Resources;
-import android.content.res.Resources.NotFoundException;
 
-import android.os.Handler;
-import android.os.Message;
-import android.content.BroadcastReceiver;
-import android.content.IntentFilter;
-import android.os.Environment;
-
-import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.lang.System;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class Splash extends Activity
 {

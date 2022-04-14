@@ -15,7 +15,6 @@ package @APP_PACKAGE@.model;
  */
 
 import android.database.Cursor;
-import android.net.Uri;
 
 import @APP_PACKAGE@.content.XBMCFileContentProvider;
 
