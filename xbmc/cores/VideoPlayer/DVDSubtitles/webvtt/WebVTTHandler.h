@@ -141,6 +141,11 @@ public:
   */
   void DecodeLine(std::string line, std::vector<subtitleData>* subList);
 
+  /*
+   * \brief Return true if the margins are handled by the parser.
+   */
+  bool IsForcedMargins() const { return m_overridePositions; }
+
 protected:
   void CalculateTextPosition(std::string& subtitleText);
   void ConvertSubtitle(std::string& text);

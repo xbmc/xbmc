@@ -286,12 +286,15 @@ ASS_Image* CDVDSubtitlesLibass::RenderImage(
                      static_cast<int>(opts.frameHeight));
   ass_set_storage_size(m_renderer, static_cast<int>(opts.sourceWidth),
                        static_cast<int>(opts.sourceHeight));
+  int marginTop{0};
+  int marginLeft{0};
   if (m_drawWithinBlackBars)
   {
-    int marginTop = static_cast<int>((opts.frameHeight - opts.videoHeight) / 2);
-    int marginLeft = static_cast<int>((opts.frameWidth - opts.videoWidth) / 2);
-    ass_set_margins(m_renderer, marginTop, marginTop, marginLeft, marginLeft);
+    marginTop = static_cast<int>((opts.frameHeight - opts.videoHeight) / 2);
+    marginLeft = static_cast<int>((opts.frameWidth - opts.videoWidth) / 2);
   }
+  ass_set_margins(m_renderer, marginTop, marginTop, marginLeft, marginLeft);
+
   ass_set_use_margins(m_renderer, m_drawWithinBlackBars);
 
   // Vertical text position in percent (if 0 do nothing)
@@ -450,9 +453,7 @@ void CDVDSubtitlesLibass::ApplyStyle(const std::shared_ptr<struct KODI::SUBTITLE
     // Set the margins (in pixel)
     style->MarginL = static_cast<int>(marginLR * scale);
     style->MarginR = static_cast<int>(marginLR * scale);
-    // Vertical margin (direction depends on alignment)
-    // to be set only when the video calibration position setting is not used
-    if (opts.usePosition)
+    if (opts.disableVerticalMargin)
       style->MarginV = 0;
     else
       style->MarginV = static_cast<int>(subStyle->marginVertical * scale);
@@ -525,7 +526,7 @@ void CDVDSubtitlesLibass::ConfigureAssOverride(
     }
     else if (subStyle->assOverrideStyles == OverrideStyles::POSITIONS)
     {
-      stylesFlags = ASS_OVERRIDE_BIT_ALIGNMENT;
+      stylesFlags = ASS_OVERRIDE_BIT_ALIGNMENT | ASS_OVERRIDE_BIT_MARGINS;
     }
     if (subStyle->assOverrideFont)
     {

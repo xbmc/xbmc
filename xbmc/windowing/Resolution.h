@@ -40,6 +40,15 @@ public:
     right = os.right; bottom = os.bottom;
   }
   OVERSCAN& operator=(const OVERSCAN&) = default;
+
+  bool operator==(const OVERSCAN& other)
+  {
+    return left == other.left && right == other.right && top == other.top && bottom == other.bottom;
+  }
+  bool operator!=(const OVERSCAN& other)
+  {
+    return left != other.left || right != other.right || top != other.top || bottom != other.bottom;
+  }
 };
 
 struct EdgeInsets

@@ -416,7 +416,7 @@ void CWinSystemX11::UpdateResolutions()
       res.strMode = StringUtils::Format("{}: {} @ {:.2f}Hz", out->name, mode.name, mode.hz);
       res.strOutput    = out->name;
       res.strId        = mode.id;
-      res.iSubtitles   = (int)(0.965*mode.h);
+      res.iSubtitles = mode.h;
       res.fRefreshRate = mode.hz;
       res.bFullScreen  = true;
 
@@ -455,7 +455,7 @@ bool CWinSystemX11::HasCalibration(const RESOLUTION_INFO &resInfo)
     return true;
   if (resInfo.fPixelRatio != fPixRatio)
     return true;
-  if (resInfo.iSubtitles != (int)(0.965*resInfo.iHeight))
+  if (resInfo.iSubtitles != resInfo.iHeight)
     return true;
 
   return false;

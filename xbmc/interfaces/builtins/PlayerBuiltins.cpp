@@ -30,6 +30,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "video/PlayerController.h"
 #include "video/windows/GUIWindowVideoBase.h"
 #include "view/GUIViewState.h"
 
@@ -545,6 +546,24 @@ static int Seek(const std::vector<std::string>& params)
   return 0;
 }
 
+static int SubtitleShiftUp(const std::vector<std::string>& params)
+{
+  CAction action{ACTION_SUBTITLE_VSHIFT_UP};
+  if (!params.empty() && params[0] == "save")
+    action.SetText("save");
+  CPlayerController::GetInstance().OnAction(action);
+  return 0;
+}
+
+static int SubtitleShiftDown(const std::vector<std::string>& params)
+{
+  CAction action{ACTION_SUBTITLE_VSHIFT_DOWN};
+  if (!params.empty() && params[0] == "save")
+    action.SetText("save");
+  CPlayerController::GetInstance().OnAction(action);
+  return 0;
+}
+
 // Note: For new Texts with comma add a "\" before!!! Is used for table text.
 //
 /// \page page_List_of_built_in_functions
@@ -596,6 +615,8 @@ static int Seek(const std::vector<std::string>& params)
 ///     | Partymode(path to .xsp) | Partymode for *.xsp-file               | Partymode for *.xsp-file    |             |
 ///     | ShowVideoMenu           | Shows the DVD/BR menu if available     | none                        |             |
 ///     | FrameAdvance(n) ***     | Advance video by _n_ frames            | none                        | Kodi v18    |
+///     | SubtitleShiftUp(save)   | Shift up the subtitle position, add "save" to save the change permanently    | none | Kodi v20 |
+///     | SubtitleShiftDown(save) | Shift down the subtitle position, add "save" to save the change permanently  | none | Kodi v20 |
 ///     <br>
 ///     '*' = For these controls\, the PlayerControl built-in function can make use of the 'notify'-parameter. For example: PlayerControl(random\, notify)
 ///     <br>
@@ -653,6 +674,7 @@ static int Seek(const std::vector<std::string>& params)
 /// \table_end
 ///
 
+// clang-format off
 CBuiltins::CommandMap CPlayerBuiltins::GetOperations() const
 {
   return {
@@ -663,6 +685,9 @@ CBuiltins::CommandMap CPlayerBuiltins::GetOperations() const
            {"playercontrol",       {"Control the music or video player", 1, PlayerControl}},
            {"playmedia",           {"Play the specified media file (or playlist)", 1, PlayMedia}},
            {"playwith",            {"Play the selected item with the specified core", 1, PlayWith}},
-           {"seek",                {"Performs a seek in seconds on the current playing media file", 1, Seek}}
+           {"seek",                {"Performs a seek in seconds on the current playing media file", 1, Seek}},
+           {"subtitleshiftup",     {"Shift up the subtitle position", 0, SubtitleShiftUp}},
+           {"subtitleshiftdown",   {"Shift down the subtitle position", 0, SubtitleShiftDown}},
          };
 }
+// clang-format on

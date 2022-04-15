@@ -34,11 +34,11 @@ enum SubtitleAlign
   SUBTITLE_ALIGN_TOP_OUTSIDE
 };
 
-enum subtitleHorizontalAlign
+enum class SubtitleHorizontalAlign
 {
-  SUBTITLE_HORIZONTAL_ALIGN_LEFT = 0,
-  SUBTITLE_HORIZONTAL_ALIGN_CENTER,
-  SUBTITLE_HORIZONTAL_ALIGN_RIGHT
+  LEFT = 0,
+  CENTER,
+  RIGHT
 };
 
 enum subtitleBackgroundType
@@ -110,7 +110,7 @@ namespace OVERLAY {
     CRenderer();
     virtual ~CRenderer();
 
-    // implementation of Observer
+    // Implementation of Observer
     void Notify(const Observable& obs, const ObservableMessage msg) override;
 
     void AddOverlay(CDVDOverlay* o, double pts, int index);
@@ -121,8 +121,26 @@ namespace OVERLAY {
     void SetVideoRect(CRect &source, CRect &dest, CRect &view);
     void SetStereoMode(const std::string &stereomode);
 
-  protected:
+    /*!
+     * \brief Set the subtitle vertical position,
+     * it depends on current screen resolution
+     * \param value The subtitle position in pixels
+     * \param save If true, the value will be saved to resolution info
+     */
+    void SetSubtitleVerticalPosition(const int value, bool save);
 
+    /*!
+     * \brief Reset the subtitle position to default value
+     */
+    void ResetSubtitlePosition();
+
+    /*!
+     * \brief Get the subtitle vertical margin
+     * \return The margin in pixel
+     */
+    static int GetSubtitleVerticalMargin();
+
+  protected:
     struct SElement
     {
       SElement()
@@ -154,14 +172,23 @@ namespace OVERLAY {
     void ReleaseCache();
     void ReleaseUnused();
 
+    /*!
+     * \brief Load and store settings locally
+     */
+    void LoadSettings();
+
     CCriticalSection m_section;
     std::vector<SElement> m_buffers[NUM_BUFFERS];
     std::map<unsigned int, COverlay*> m_textureCache;
     static unsigned int m_textureid;
     CRect m_rv, m_rs, m_rd;
     std::string m_stereomode;
+    int m_subtitlePosition{0}; // Current subtitle position
+    int m_subtitlePosResInfo{-1}; // Current subtitle position from resolution info
+    int m_subtitleVerticalMargin{0};
+    SubtitleHorizontalAlign m_subtitleHorizontalAlign{SubtitleHorizontalAlign::CENTER};
 
     std::shared_ptr<struct KODI::SUBTITLES::style> m_overlayStyle;
-    bool m_forceUpdateOverlayStyle{false};
+    bool m_isSettingsChanged{false};
   };
 }

@@ -138,6 +138,15 @@ public:
   void SetSubtitle(int iStream);
   void SetSubTitleDelay(float fValue = 0.0f);
   void SetSubtitleVisible(bool bVisible);
+
+  /*!
+   * \brief Set the subtitle vertical position,
+   * it depends on current screen resolution
+   * \param value The subtitle position in pixels
+   * \param save If true, the value will be saved to resolution info
+   */
+  void SetSubtitleVerticalPosition(const int value, bool save);
+
   void SetTime(int64_t time);
   void SetTotalTime(int64_t time);
   void SetVideoStream(int iStream);

@@ -19,7 +19,10 @@ namespace SUBTITLES
 
 constexpr double VIEWPORT_HEIGHT = 1080.0;
 constexpr double VIEWPORT_WIDTH = 1920.0;
-constexpr int MARGIN_VERTICAL = 30;
+constexpr int MARGIN_VERTICAL = 75;
+// Vertical margin used when is selected the alignment
+// to keep the text inside the black bars
+constexpr int MARGIN_VERTICAL_BLACKBARS = 30;
 
 enum class HorizontalAlignment
 {
@@ -107,7 +110,7 @@ struct renderOpts
   float videoHeight;
   float sourceWidth;
   float sourceHeight;
-  bool usePosition = false;
+  bool disableVerticalMargin = false;
   // position: vertical line position of subtitles in percent. 0 = no change (bottom), 100 = on top.
   double position = 0;
   HorizontalAlignment horizontalAlignment = HorizontalAlignment::DISABLED;
