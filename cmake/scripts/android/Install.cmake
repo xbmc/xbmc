@@ -1,17 +1,5 @@
 # Android packaging
 
-find_program(AAPT_EXECUTABLE aapt PATHS ${SDK_BUILDTOOLS_PATH})
-if(NOT AAPT_EXECUTABLE)
-  message(FATAL_ERROR "Could NOT find aapt executable")
-endif()
-find_program(D8_EXECUTABLE d8 PATHS ${SDK_BUILDTOOLS_PATH})
-if(NOT D8_EXECUTABLE)
-  find_program(DX_EXECUTABLE dx PATHS ${SDK_BUILDTOOLS_PATH})
-  if(NOT DX_EXECUTABLE)
-    message(FATAL_ERROR "Could NOT find dx or d8 executable")
-  endif()
-endif()
-
 if(CMAKE_BUILD_TYPE STREQUAL Debug)
   set(ANDROID_DEBUGGABLE true)
 else()
@@ -174,9 +162,6 @@ foreach(target apk obb apk-unsigned apk-obb apk-obb-unsigned apk-noobb apk-clean
               NDKROOT=${NDKROOT}
               SDKROOT=${SDKROOT}
               STRIP=${CMAKE_STRIP}
-              AAPT=${AAPT_EXECUTABLE}
-              DX=${DX_EXECUTABLE}
-              D8=${D8_EXECUTABLE}
               ${target}
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tools/android/packaging
   )
