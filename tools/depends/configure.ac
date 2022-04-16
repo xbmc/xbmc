@@ -571,14 +571,16 @@ if test "$platform_os" == "android"; then
   build_tools_path=$use_sdk_path/tools:$use_sdk_path/platform-tools:$use_sdk_path/build-tools/`ls $use_sdk_path/build-tools | sort $SORT_PARAMS | tail -n 1`
 fi
 
-# darwin needs unzip/zip in Codesign.command
+# darwin needs unzip in Codesign.command
 if test "$platform_os" = "android" || test "$platform_os" = "osx" || test "$platform_os" = "darwin_embedded"; then
   AC_CHECK_PROG(HAVE_UNZIP,unzip,"yes","no",)
   if test "x$HAVE_UNZIP" = "xno"; then
     AC_MSG_ERROR("Missing program: unzip")
   fi
 fi
-if test "$platform_os" = "osx" || test "$platform_os" = "darwin_embedded"; then
+# darwin needs zip in Codesign.command
+# android needs zip in tools/android/packaging/Makefile sharedobb target
+if test "$platform_os" = "android" || test "$platform_os" = "osx" || test "$platform_os" = "darwin_embedded"; then
   AC_CHECK_PROG(HAVE_ZIP,zip,"yes","no",)
   if test "x$HAVE_ZIP" = "xno"; then
     AC_MSG_ERROR("Missing program: zip")
