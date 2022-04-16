@@ -543,7 +543,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
                                 scrolling, std::chrono::steady_clock::now(), dirtyCache);
       CVertexBuffer newVertexBuffer = CreateVertexBuffer(*tempVertices);
       vertexBuffer = newVertexBuffer;
-      m_vertexTrans.emplace_back(0, 0, 0, &vertexBuffer, context.GetClipRegion());
+      m_vertexTrans.emplace_back(.0f, .0f, .0f, &vertexBuffer, context.GetClipRegion());
     }
     else
     {
