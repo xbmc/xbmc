@@ -10,6 +10,8 @@
 
 #if defined(HAS_SDL)
 #include "windowing/osx/SDL/WinSystemOSXSDL.h"
+#else
+#include "windowing/osx/WinSystemOSX.h"
 #endif
 #include "rendering/gl/RenderSystemGL.h"
 

@@ -9,7 +9,10 @@
 #include "PlatformDarwinOSX.h"
 
 #include "Util.h"
-#include "windowing/osx/WinSystemOSXGL.h"
+
+#if defined(HAS_GL)
+#include "windowing/osx/OpenGL/WinSystemOSXGL.h"
+#endif
 
 #include "platform/darwin/osx/XBMCHelper.h"
 #include "platform/darwin/osx/powermanagement/CocoaPowerSyscall.h"
@@ -27,7 +30,9 @@ bool CPlatformDarwinOSX::InitStageOne()
   if (!CPlatformDarwin::InitStageOne())
     return false;
 
+#if defined(HAS_GL)
   CWinSystemOSXGL::Register();
+#endif
 
   CCocoaPowerSyscall::Register();
 
