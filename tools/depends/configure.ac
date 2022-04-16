@@ -569,24 +569,6 @@ if test "$platform_os" == "android"; then
   SORT_PARAMS=""
   sort -V /dev/null > /dev/null 2>&1 && SORT_PARAMS="-V"
   build_tools_path=$use_sdk_path/tools:$use_sdk_path/platform-tools:$use_sdk_path/build-tools/`ls $use_sdk_path/build-tools | sort $SORT_PARAMS | tail -n 1`
-
-  AC_PATH_PROG(AAPT,aapt,"no",$build_tools_path)
-  if test "x$AAPT" = "xno" ; then
-    AC_MSG_ERROR("Missing program: aapt")
-  fi
-
-  AC_PATH_PROG(D8,d8,"no",$build_tools_path)
-  if test "x$D8" = "xno" ; then
-    AC_PATH_PROG(DX,dx,"no",$build_tools_path)
-    if test "x$DX" = "xno" ; then
-      AC_MSG_ERROR("Missing program: dx or d8")
-    fi
-  fi
-
-  AC_PATH_PROG(ZIPALIGN,zipalign,"no",$build_tools_path)
-  if test "x$ZIPALIGN" = "xno" ; then
-    AC_MSG_ERROR("Missing program: zipalign")
-  fi
 fi
 
 # darwin needs unzip/zip in Codesign.command
