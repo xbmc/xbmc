@@ -159,6 +159,7 @@ libplist: $(ZLIB)
 libpng: $(ZLIB)
 spdlog: fmt
 libva: libdrm $(LIBVA_DEPS)
+libxml2: $(ZLIB)
 libxslt: libgcrypt libxml2
 libzip: bzip2 gnutls $(ZLIB)
 mariadb: openssl $(ICONV) $(ZLIB)
