@@ -42,4 +42,4 @@ set(ENABLE_X11 OFF CACHE BOOL "" FORCE)
 set(ENABLE_OPTICAL OFF CACHE BOOL "" FORCE)
 set(ENABLE_MDNS OFF CACHE BOOL "" FORCE)
 
-list(APPEND DEPLIBS android log jnigraphics mediandk androidjni)
+list(APPEND DEPLIBS android log jnigraphics mediandk)
