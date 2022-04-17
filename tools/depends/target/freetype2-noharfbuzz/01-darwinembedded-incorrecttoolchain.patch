@@ -1,0 +1,12 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -149,8 +149,7 @@
+     # iOS only uses static libraries
+     set(BUILD_SHARED_LIBS OFF)
+ 
+-    set(CMAKE_TOOLCHAIN_FILE
+-      ${CMAKE_SOURCE_DIR}/builds/cmake/iOS.cmake)
++    include(${CMAKE_SOURCE_DIR}/builds/cmake/iOS.cmake)
+   endif ()
+ else ()
+   if (DEFINED IOS_PLATFORM)
