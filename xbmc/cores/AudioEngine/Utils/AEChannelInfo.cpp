@@ -158,7 +158,7 @@ CAEChannelInfo& CAEChannelInfo::operator=(const enum AEStdChLayout rhs)
 {
   assert(rhs > AE_CH_LAYOUT_INVALID && rhs < AE_CH_LAYOUT_MAX);
 
-  static const enum AEChannel layouts[AE_CH_LAYOUT_MAX][9] = {
+  static constexpr enum AEChannel layouts[AE_CH_LAYOUT_MAX][9] = {
       {AE_CH_FC, AE_CH_NULL},
       {AE_CH_FL, AE_CH_FR, AE_CH_NULL},
       {AE_CH_FL, AE_CH_FR, AE_CH_LFE, AE_CH_NULL},
