@@ -51,6 +51,7 @@
 
 namespace
 {
+constexpr int VERTEX_PER_GLYPH = 4; // number of vertex for each glyph
 constexpr int CHARS_PER_TEXTURE_LINE = 20; // number characters to cache per texture line
 constexpr unsigned int SPACING_BETWEEN_CHARACTERS_IN_TEXTURE = 1;
 constexpr int CHAR_CHUNK = 64; // 64 chars allocated at a time (1024 bytes)
@@ -165,7 +166,7 @@ CGUIFontTTF::CGUIFontTTF(const std::string& fontIdent)
     m_dynamicCache(*this),
     m_renderSystem(CServiceBroker::GetRenderSystem())
 {
-  m_vertex.reserve(4 * 1024);
+  m_vertex.reserve(VERTEX_PER_GLYPH * 1024);
 }
 
 CGUIFontTTF::~CGUIFontTTF(void)
@@ -469,7 +470,11 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
         break;
       cursorX += ch->m_advance;
     }
+
+    // Reserve vector space: 4 vertex for each glyph
+    tempVertices->reserve(VERTEX_PER_GLYPH * glyphs.size());
     cursorX = 0;
+
     for (const auto& glyph : glyphs)
     {
       // If starting text on a new line, determine justification effects
@@ -975,12 +980,10 @@ void CGUIFontTTF::RenderCharacter(CGraphicContext& context,
     context.ClipRect(vertex, texture);
 
   // transform our positions - note, no scaling due to GUI calibration/resolution occurs
-  float x[4], y[4], z[4];
-
-  x[0] = context.ScaleFinalXCoord(vertex.x1, vertex.y1);
-  x[1] = context.ScaleFinalXCoord(vertex.x2, vertex.y1);
-  x[2] = context.ScaleFinalXCoord(vertex.x2, vertex.y2);
-  x[3] = context.ScaleFinalXCoord(vertex.x1, vertex.y2);
+  float x[VERTEX_PER_GLYPH] = {context.ScaleFinalXCoord(vertex.x1, vertex.y1),
+                               context.ScaleFinalXCoord(vertex.x2, vertex.y1),
+                               context.ScaleFinalXCoord(vertex.x2, vertex.y2),
+                               context.ScaleFinalXCoord(vertex.x1, vertex.y2)};
 
   if (roundX)
   {
@@ -1007,32 +1010,34 @@ void CGUIFontTTF::RenderCharacter(CGraphicContext& context,
     x[3] = rx3;
   }
 
-  y[0] = static_cast<float>(
-      MathUtils::round_int(static_cast<double>(context.ScaleFinalYCoord(vertex.x1, vertex.y1))));
-  y[1] = static_cast<float>(
-      MathUtils::round_int(static_cast<double>(context.ScaleFinalYCoord(vertex.x2, vertex.y1))));
-  y[2] = static_cast<float>(
-      MathUtils::round_int(static_cast<double>(context.ScaleFinalYCoord(vertex.x2, vertex.y2))));
-  y[3] = static_cast<float>(
-      MathUtils::round_int(static_cast<double>(context.ScaleFinalYCoord(vertex.x1, vertex.y2))));
+  const float y[VERTEX_PER_GLYPH] = {
+      static_cast<float>(MathUtils::round_int(
+          static_cast<double>(context.ScaleFinalYCoord(vertex.x1, vertex.y1)))),
+      static_cast<float>(MathUtils::round_int(
+          static_cast<double>(context.ScaleFinalYCoord(vertex.x2, vertex.y1)))),
+      static_cast<float>(MathUtils::round_int(
+          static_cast<double>(context.ScaleFinalYCoord(vertex.x2, vertex.y2)))),
+      static_cast<float>(MathUtils::round_int(
+          static_cast<double>(context.ScaleFinalYCoord(vertex.x1, vertex.y2))))};
 
-  z[0] = static_cast<float>(
-      MathUtils::round_int(static_cast<double>(context.ScaleFinalZCoord(vertex.x1, vertex.y1))));
-  z[1] = static_cast<float>(
-      MathUtils::round_int(static_cast<double>(context.ScaleFinalZCoord(vertex.x2, vertex.y1))));
-  z[2] = static_cast<float>(
-      MathUtils::round_int(static_cast<double>(context.ScaleFinalZCoord(vertex.x2, vertex.y2))));
-  z[3] = static_cast<float>(
-      MathUtils::round_int(static_cast<double>(context.ScaleFinalZCoord(vertex.x1, vertex.y2))));
+  const float z[VERTEX_PER_GLYPH] = {
+      static_cast<float>(MathUtils::round_int(
+          static_cast<double>(context.ScaleFinalZCoord(vertex.x1, vertex.y1)))),
+      static_cast<float>(MathUtils::round_int(
+          static_cast<double>(context.ScaleFinalZCoord(vertex.x2, vertex.y1)))),
+      static_cast<float>(MathUtils::round_int(
+          static_cast<double>(context.ScaleFinalZCoord(vertex.x2, vertex.y2)))),
+      static_cast<float>(MathUtils::round_int(
+          static_cast<double>(context.ScaleFinalZCoord(vertex.x1, vertex.y2))))};
 
   // tex coords converted to 0..1 range
-  float tl = texture.x1 * m_textureScaleX;
-  float tr = texture.x2 * m_textureScaleX;
-  float tt = texture.y1 * m_textureScaleY;
-  float tb = texture.y2 * m_textureScaleY;
+  const float tl = texture.x1 * m_textureScaleX;
+  const float tr = texture.x2 * m_textureScaleX;
+  const float tt = texture.y1 * m_textureScaleY;
+  const float tb = texture.y2 * m_textureScaleY;
 
-  vertices.resize(vertices.size() + 4);
-  SVertex* v = &vertices[vertices.size() - 4];
+  vertices.resize(vertices.size() + VERTEX_PER_GLYPH);
+  SVertex* v = &vertices[vertices.size() - VERTEX_PER_GLYPH];
   m_color = color;
 
 #if !defined(HAS_DX)
@@ -1042,7 +1047,7 @@ void CGUIFontTTF::RenderCharacter(CGraphicContext& context,
   uint8_t a = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::A, color);
 #endif
 
-  for (int i = 0; i < 4; i++)
+  for (int i = 0; i < VERTEX_PER_GLYPH; i++)
   {
 #ifdef HAS_DX
     CD3DHelper::XMStoreColor(&v[i].col, color);
@@ -1055,7 +1060,7 @@ void CGUIFontTTF::RenderCharacter(CGraphicContext& context,
   }
 
 #if defined(HAS_DX)
-  for (int i = 0; i < 4; i++)
+  for (int i = 0; i < VERTEX_PER_GLYPH; i++)
   {
     v[i].x = x[i];
     v[i].y = y[i];
