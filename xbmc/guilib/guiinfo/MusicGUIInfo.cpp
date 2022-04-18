@@ -529,7 +529,8 @@ bool CMusicGUIInfo::GetPartyModeLabel(std::string& value, const CGUIInfo &info) 
 
 bool CMusicGUIInfo::GetPlaylistInfo(std::string& value, const CGUIInfo &info) const
 {
-  PLAYLIST::CPlayList& playlist = CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST_MUSIC);
+  const PLAYLIST::CPlayList& playlist =
+      CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST_MUSIC);
   if (playlist.size() < 1)
     return false;
 

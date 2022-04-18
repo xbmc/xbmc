@@ -79,7 +79,7 @@ bool CStreamDetailVideo::IsWorseThan(const CStreamDetail &that) const
     return true;
 
   // Best video stream is that with the most pixels
-  auto &sdv = static_cast<const CStreamDetailVideo &>(that);
+  const auto& sdv = static_cast<const CStreamDetailVideo&>(that);
   return (sdv.m_iWidth * sdv.m_iHeight) > (m_iWidth * m_iHeight);
 }
 
@@ -123,7 +123,7 @@ bool CStreamDetailAudio::IsWorseThan(const CStreamDetail &that) const
   if (that.m_eType != CStreamDetail::AUDIO)
     return true;
 
-  auto &sda = static_cast<const CStreamDetailAudio &>(that);
+  const auto& sda = static_cast<const CStreamDetailAudio&>(that);
   // First choice is the thing with the most channels
   if (sda.m_iChannels > m_iChannels)
     return true;

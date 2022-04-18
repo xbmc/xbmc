@@ -77,7 +77,7 @@ private:
 
 void CEpgTagStateChange::Deliver()
 {
-  CPVREpgContainer& epgContainer = CServiceBroker::GetPVRManager().EpgContainer();
+  const CPVREpgContainer& epgContainer = CServiceBroker::GetPVRManager().EpgContainer();
 
   const std::shared_ptr<CPVREpg> epg = epgContainer.GetByChannelUid(m_epgtag->ClientID(), m_epgtag->UniqueChannelID());
   if (!epg)

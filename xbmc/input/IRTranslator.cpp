@@ -104,7 +104,7 @@ void CIRTranslator::MapRemote(TiXmlNode* pRemote, const std::string& szDevice)
   if (it == m_irRemotesMap.end())
     m_irRemotesMap[szDevice].reset(new IRButtonMap);
 
-  std::shared_ptr<IRButtonMap>& buttons = m_irRemotesMap[szDevice];
+  const std::shared_ptr<IRButtonMap>& buttons = m_irRemotesMap[szDevice];
 
   TiXmlElement* pButton = pRemote->FirstChildElement();
   while (pButton != nullptr)

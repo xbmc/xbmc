@@ -90,7 +90,7 @@ bool CheckWindowCondition(CGUIWindow *window, int condition)
 
 CGUIWindow* GetWindowWithCondition(int contextWindow, int condition)
 {
-  CGUIWindowManager& windowMgr = CServiceBroker::GetGUI()->GetWindowManager();
+  const CGUIWindowManager& windowMgr = CServiceBroker::GetGUI()->GetWindowManager();
 
   CGUIWindow *window = windowMgr.GetWindow(contextWindow);
   if (CheckWindowCondition(window, condition))

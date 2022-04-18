@@ -252,7 +252,7 @@ void CPVRGUIInfo::UpdateDescrambleData()
 
 void CPVRGUIInfo::UpdateMisc()
 {
-  CPVRManager& mgr = CServiceBroker::GetPVRManager();
+  const CPVRManager& mgr = CServiceBroker::GetPVRManager();
   bool bStarted = mgr.IsStarted();
   const std::shared_ptr<CPVRPlaybackState> state = mgr.PlaybackState();
 
