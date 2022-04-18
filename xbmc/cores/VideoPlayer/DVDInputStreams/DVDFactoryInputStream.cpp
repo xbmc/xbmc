@@ -110,20 +110,21 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
           || StringUtils::StartsWithNoCase(file, "bluray:"))
     return std::shared_ptr<CDVDInputStreamBluray>(new CDVDInputStreamBluray(pPlayer, fileitem));
 #endif
-  else if(StringUtils::StartsWithNoCase(file, "rtp://") ||
-          StringUtils::StartsWithNoCase(file, "rtsp://") ||
-          StringUtils::StartsWithNoCase(file, "rtsps://") ||
-          StringUtils::StartsWithNoCase(file, "sdp://") ||
-          StringUtils::StartsWithNoCase(file, "udp://") ||
-          StringUtils::StartsWithNoCase(file, "tcp://") ||
-          StringUtils::StartsWithNoCase(file, "mms://") ||
-          StringUtils::StartsWithNoCase(file, "mmst://") ||
-          StringUtils::StartsWithNoCase(file, "mmsh://") ||
-          StringUtils::StartsWithNoCase(file, "rtmp://") ||
-          StringUtils::StartsWithNoCase(file, "rtmpt://") ||
-          StringUtils::StartsWithNoCase(file, "rtmpe://") ||
-          StringUtils::StartsWithNoCase(file, "rtmpte://") ||
-          StringUtils::StartsWithNoCase(file, "rtmps://"))
+  else if (StringUtils::StartsWithNoCase(file, "rtp://") ||
+           StringUtils::StartsWithNoCase(file, "rtsp://") ||
+           StringUtils::StartsWithNoCase(file, "rtsps://") ||
+           StringUtils::StartsWithNoCase(file, "satip://") ||
+           StringUtils::StartsWithNoCase(file, "sdp://") ||
+           StringUtils::StartsWithNoCase(file, "udp://") ||
+           StringUtils::StartsWithNoCase(file, "tcp://") ||
+           StringUtils::StartsWithNoCase(file, "mms://") ||
+           StringUtils::StartsWithNoCase(file, "mmst://") ||
+           StringUtils::StartsWithNoCase(file, "mmsh://") ||
+           StringUtils::StartsWithNoCase(file, "rtmp://") ||
+           StringUtils::StartsWithNoCase(file, "rtmpt://") ||
+           StringUtils::StartsWithNoCase(file, "rtmpe://") ||
+           StringUtils::StartsWithNoCase(file, "rtmpte://") ||
+           StringUtils::StartsWithNoCase(file, "rtmps://"))
   {
     return std::shared_ptr<CDVDInputStreamFFmpeg>(new CDVDInputStreamFFmpeg(fileitem));
   }
