@@ -569,34 +569,18 @@ if test "$platform_os" == "android"; then
   SORT_PARAMS=""
   sort -V /dev/null > /dev/null 2>&1 && SORT_PARAMS="-V"
   build_tools_path=$use_sdk_path/tools:$use_sdk_path/platform-tools:$use_sdk_path/build-tools/`ls $use_sdk_path/build-tools | sort $SORT_PARAMS | tail -n 1`
-
-  AC_PATH_PROG(AAPT,aapt,"no",$build_tools_path)
-  if test "x$AAPT" = "xno" ; then
-    AC_MSG_ERROR("Missing program: aapt")
-  fi
-
-  AC_PATH_PROG(D8,d8,"no",$build_tools_path)
-  if test "x$D8" = "xno" ; then
-    AC_PATH_PROG(DX,dx,"no",$build_tools_path)
-    if test "x$DX" = "xno" ; then
-      AC_MSG_ERROR("Missing program: dx or d8")
-    fi
-  fi
-
-  AC_PATH_PROG(ZIPALIGN,zipalign,"no",$build_tools_path)
-  if test "x$ZIPALIGN" = "xno" ; then
-    AC_MSG_ERROR("Missing program: zipalign")
-  fi
 fi
 
-# darwin needs unzip/zip in Codesign.command
+# darwin needs unzip in Codesign.command
 if test "$platform_os" = "android" || test "$platform_os" = "osx" || test "$platform_os" = "darwin_embedded"; then
   AC_CHECK_PROG(HAVE_UNZIP,unzip,"yes","no",)
   if test "x$HAVE_UNZIP" = "xno"; then
     AC_MSG_ERROR("Missing program: unzip")
   fi
 fi
-if test "$platform_os" = "osx" || test "$platform_os" = "darwin_embedded"; then
+# darwin needs zip in Codesign.command
+# android needs zip in tools/android/packaging/Makefile sharedobb target
+if test "$platform_os" = "android" || test "$platform_os" = "osx" || test "$platform_os" = "darwin_embedded"; then
   AC_CHECK_PROG(HAVE_ZIP,zip,"yes","no",)
   if test "x$HAVE_ZIP" = "xno"; then
     AC_MSG_ERROR("Missing program: zip")
