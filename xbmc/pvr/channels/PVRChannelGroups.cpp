@@ -431,9 +431,9 @@ std::vector<std::shared_ptr<CPVRChannelGroup>> CPVRChannelGroups::GetMembers(boo
 
 std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetPreviousGroup(const CPVRChannelGroup& group) const
 {
-  bool bReturnNext(false);
-
   {
+    bool bReturnNext = false;
+
     std::unique_lock<CCriticalSection> lock(m_critSection);
     for (std::vector<std::shared_ptr<CPVRChannelGroup>>::const_reverse_iterator it = m_groups.rbegin(); it != m_groups.rend(); ++it)
     {
@@ -460,9 +460,9 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetPreviousGroup(const CPVR
 
 std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetNextGroup(const CPVRChannelGroup& group) const
 {
-  bool bReturnNext(false);
-
   {
+    bool bReturnNext = false;
+
     std::unique_lock<CCriticalSection> lock(m_critSection);
     for (std::vector<std::shared_ptr<CPVRChannelGroup>>::const_iterator it = m_groups.begin(); it != m_groups.end(); ++it)
     {
