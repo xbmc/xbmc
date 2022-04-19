@@ -1928,7 +1928,7 @@ void CPVRClient::cb_recording_notification(void* kodiInstance,
     std::string strLine2;
     if (strName)
       strLine2 = strName;
-    else if (strFileName)
+    else
       strLine2 = strFileName;
 
     // display a notification for 5 seconds
