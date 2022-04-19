@@ -52,10 +52,8 @@ using namespace PVR;
 using namespace std::chrono_literals;
 
 CGUIWindowPVRGuideBase::CGUIWindowPVRGuideBase(bool bRadio, int id, const std::string& xmlFile)
-  : CGUIWindowPVRBase(bRadio, id, xmlFile), m_bChannelSelectionRestored(false)
+  : CGUIWindowPVRBase(bRadio, id, xmlFile)
 {
-  m_bRefreshTimelineItems = false;
-  m_bSyncRefreshTimelineItems = false;
 }
 
 CGUIWindowPVRGuideBase::~CGUIWindowPVRGuideBase()
