@@ -233,7 +233,7 @@ bool CPVRChannelGroups::UpdateFromClients(const std::vector<std::shared_ptr<CPVR
         bReturn = false;
       }
 
-      if (group->Size() - iMemberCount > 0)
+      if ((group->Size() - iMemberCount) > 0)
       {
         CLog::LogFC(LOGDEBUG, LOGPVR, "{} channel group members added from clients to group '{}'",
                     static_cast<int>(group->Size() - iMemberCount), group->GroupName());
