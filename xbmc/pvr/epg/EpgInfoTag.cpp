@@ -552,10 +552,9 @@ bool CPVREpgInfoTag::Update(const CPVREpgInfoTag& tag, bool bUpdateBroadcastId /
     m_iUniqueBroadcastID = tag.m_iUniqueBroadcastID;
     m_iconPath = tag.m_iconPath;
     m_channelData = tag.m_channelData;
-  }
 
-  if (bChanged)
     UpdatePath();
+  }
 
   return bChanged;
 }
