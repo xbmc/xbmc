@@ -580,7 +580,7 @@ namespace PVR
      */
     void StartPlayback(CFileItem* item,
                        bool bFullscreen,
-                       CPVRStreamProperties* epgProps = nullptr) const;
+                       const CPVRStreamProperties* epgProps = nullptr) const;
 
     bool AllLocalBackendsIdle(std::shared_ptr<CPVRTimerInfoTag>& causingEvent) const;
     bool EventOccursOnLocalBackend(const std::shared_ptr<CFileItem>& item) const;

@@ -34,12 +34,12 @@ namespace PVR
     void OnInitWindow() override;
 
   private:
-    bool OnClickButtonOK(CGUIMessage& message);
-    bool OnClickButtonRecord(CGUIMessage& message);
-    bool OnClickButtonPlay(CGUIMessage& message);
-    bool OnClickButtonFind(CGUIMessage& message);
-    bool OnClickButtonAddTimer(CGUIMessage& message);
-    bool OnClickButtonSetReminder(CGUIMessage& message);
+    bool OnClickButtonOK(const CGUIMessage& message);
+    bool OnClickButtonRecord(const CGUIMessage& message);
+    bool OnClickButtonPlay(const CGUIMessage& message);
+    bool OnClickButtonFind(const CGUIMessage& message);
+    bool OnClickButtonAddTimer(const CGUIMessage& message);
+    bool OnClickButtonSetReminder(const CGUIMessage& message);
 
     std::shared_ptr<CPVREpgInfoTag> m_progItem;
   };

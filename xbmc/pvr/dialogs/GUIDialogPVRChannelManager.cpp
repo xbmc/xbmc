@@ -241,7 +241,7 @@ void CGUIDialogPVRChannelManager::Open(const std::shared_ptr<CFileItem>& initial
   CGUIDialog::Open();
 }
 
-bool CGUIDialogPVRChannelManager::OnClickListChannels(CGUIMessage& message)
+bool CGUIDialogPVRChannelManager::OnClickListChannels(const CGUIMessage& message)
 {
   if (!m_bMovingMode)
   {
@@ -275,26 +275,26 @@ bool CGUIDialogPVRChannelManager::OnClickListChannels(CGUIMessage& message)
   return false;
 }
 
-bool CGUIDialogPVRChannelManager::OnClickButtonOK(CGUIMessage& message)
+bool CGUIDialogPVRChannelManager::OnClickButtonOK()
 {
   SaveList();
   Close();
   return true;
 }
 
-bool CGUIDialogPVRChannelManager::OnClickButtonApply(CGUIMessage& message)
+bool CGUIDialogPVRChannelManager::OnClickButtonApply()
 {
   SaveList();
   return true;
 }
 
-bool CGUIDialogPVRChannelManager::OnClickButtonCancel(CGUIMessage& message)
+bool CGUIDialogPVRChannelManager::OnClickButtonCancel()
 {
   Close();
   return true;
 }
 
-bool CGUIDialogPVRChannelManager::OnClickButtonRadioTV(CGUIMessage& message)
+bool CGUIDialogPVRChannelManager::OnClickButtonRadioTV()
 {
   PromptAndSaveList();
 
@@ -307,7 +307,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonRadioTV(CGUIMessage& message)
   return true;
 }
 
-bool CGUIDialogPVRChannelManager::OnClickButtonRadioActive(CGUIMessage& message)
+bool CGUIDialogPVRChannelManager::OnClickButtonRadioActive()
 {
   CGUIMessage msg(GUI_MSG_IS_SELECTED, GetID(), RADIOBUTTON_ACTIVE);
   if (OnMessage(msg))
@@ -330,7 +330,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonRadioActive(CGUIMessage& message)
   return false;
 }
 
-bool CGUIDialogPVRChannelManager::OnClickButtonRadioParentalLocked(CGUIMessage& message)
+bool CGUIDialogPVRChannelManager::OnClickButtonRadioParentalLocked()
 {
   CGUIMessage msg(GUI_MSG_IS_SELECTED, GetID(), RADIOBUTTON_PARENTAL_LOCK);
   if (!OnMessage(msg))
@@ -360,7 +360,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonRadioParentalLocked(CGUIMessage& 
   return false;
 }
 
-bool CGUIDialogPVRChannelManager::OnClickButtonEditName(CGUIMessage& message)
+bool CGUIDialogPVRChannelManager::OnClickButtonEditName()
 {
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), EDIT_NAME);
   if (OnMessage(msg))
@@ -380,7 +380,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonEditName(CGUIMessage& message)
   return false;
 }
 
-bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo(CGUIMessage& message)
+bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo()
 {
   CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
   if (!pItem)
@@ -446,7 +446,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo(CGUIMessage& message)
   return true;
 }
 
-bool CGUIDialogPVRChannelManager::OnClickButtonUseEPG(CGUIMessage& message)
+bool CGUIDialogPVRChannelManager::OnClickButtonUseEPG()
 {
   CGUIMessage msg(GUI_MSG_IS_SELECTED, GetID(), RADIOBUTTON_USEEPG);
   if (OnMessage(msg))
@@ -467,7 +467,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonUseEPG(CGUIMessage& message)
   return false;
 }
 
-bool CGUIDialogPVRChannelManager::OnClickEPGSourceSpin(CGUIMessage& message)
+bool CGUIDialogPVRChannelManager::OnClickEPGSourceSpin()
 {
   //! @todo Add EPG scraper support
   return true;
@@ -487,7 +487,7 @@ bool CGUIDialogPVRChannelManager::OnClickEPGSourceSpin(CGUIMessage& message)
   // }
 }
 
-bool CGUIDialogPVRChannelManager::OnClickButtonGroupManager(CGUIMessage& message)
+bool CGUIDialogPVRChannelManager::OnClickButtonGroupManager()
 {
   PromptAndSaveList();
 
@@ -589,7 +589,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonRefreshChannelLogos()
   return true;
 }
 
-bool CGUIDialogPVRChannelManager::OnMessageClick(CGUIMessage& message)
+bool CGUIDialogPVRChannelManager::OnMessageClick(const CGUIMessage& message)
 {
   int iControl = message.GetSenderId();
   switch(iControl)
@@ -597,27 +597,27 @@ bool CGUIDialogPVRChannelManager::OnMessageClick(CGUIMessage& message)
   case CONTROL_LIST_CHANNELS:
     return OnClickListChannels(message);
   case BUTTON_OK:
-    return OnClickButtonOK(message);
+    return OnClickButtonOK();
   case BUTTON_APPLY:
-    return OnClickButtonApply(message);
+    return OnClickButtonApply();
   case BUTTON_CANCEL:
-    return OnClickButtonCancel(message);
+    return OnClickButtonCancel();
   case BUTTON_RADIO_TV:
-    return OnClickButtonRadioTV(message);
+    return OnClickButtonRadioTV();
   case RADIOBUTTON_ACTIVE:
-    return OnClickButtonRadioActive(message);
+    return OnClickButtonRadioActive();
   case RADIOBUTTON_PARENTAL_LOCK:
-    return OnClickButtonRadioParentalLocked(message);
+    return OnClickButtonRadioParentalLocked();
   case EDIT_NAME:
-    return OnClickButtonEditName(message);
+    return OnClickButtonEditName();
   case BUTTON_CHANNEL_LOGO:
-    return OnClickButtonChannelLogo(message);
+    return OnClickButtonChannelLogo();
   case RADIOBUTTON_USEEPG:
-    return OnClickButtonUseEPG(message);
+    return OnClickButtonUseEPG();
   case SPIN_EPGSOURCE_SELECTION:
-    return OnClickEPGSourceSpin(message);
+    return OnClickEPGSourceSpin();
   case BUTTON_GROUP_MANAGER:
-    return OnClickButtonGroupManager(message);
+    return OnClickButtonGroupManager();
   case BUTTON_NEW_CHANNEL:
     return OnClickButtonNewChannel();
   case BUTTON_REFRESH_LOGOS:

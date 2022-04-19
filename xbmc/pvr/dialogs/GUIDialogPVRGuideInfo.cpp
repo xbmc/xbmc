@@ -39,7 +39,7 @@ CGUIDialogPVRGuideInfo::CGUIDialogPVRGuideInfo()
 
 CGUIDialogPVRGuideInfo::~CGUIDialogPVRGuideInfo() = default;
 
-bool CGUIDialogPVRGuideInfo::OnClickButtonOK(CGUIMessage& message)
+bool CGUIDialogPVRGuideInfo::OnClickButtonOK(const CGUIMessage& message)
 {
   bool bReturn = false;
 
@@ -52,7 +52,7 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonOK(CGUIMessage& message)
   return bReturn;
 }
 
-bool CGUIDialogPVRGuideInfo::OnClickButtonRecord(CGUIMessage& message)
+bool CGUIDialogPVRGuideInfo::OnClickButtonRecord(const CGUIMessage& message)
 {
   bool bReturn = false;
 
@@ -80,7 +80,7 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonRecord(CGUIMessage& message)
   return bReturn;
 }
 
-bool CGUIDialogPVRGuideInfo::OnClickButtonAddTimer(CGUIMessage& message)
+bool CGUIDialogPVRGuideInfo::OnClickButtonAddTimer(const CGUIMessage& message)
 {
   bool bReturn = false;
 
@@ -99,7 +99,7 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonAddTimer(CGUIMessage& message)
   return bReturn;
 }
 
-bool CGUIDialogPVRGuideInfo::OnClickButtonSetReminder(CGUIMessage& message)
+bool CGUIDialogPVRGuideInfo::OnClickButtonSetReminder(const CGUIMessage& message)
 {
   bool bReturn = false;
 
@@ -118,7 +118,7 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonSetReminder(CGUIMessage& message)
   return bReturn;
 }
 
-bool CGUIDialogPVRGuideInfo::OnClickButtonPlay(CGUIMessage& message)
+bool CGUIDialogPVRGuideInfo::OnClickButtonPlay(const CGUIMessage& message)
 {
   bool bReturn = false;
 
@@ -142,7 +142,7 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonPlay(CGUIMessage& message)
   return bReturn;
 }
 
-bool CGUIDialogPVRGuideInfo::OnClickButtonFind(CGUIMessage& message)
+bool CGUIDialogPVRGuideInfo::OnClickButtonFind(const CGUIMessage& message)
 {
   bool bReturn = false;
 

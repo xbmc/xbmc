@@ -42,16 +42,16 @@ namespace PVR
     void ClearSelectedGroupsThumbnail();
     void Update();
     bool PersistChanges();
-    bool ActionButtonOk(CGUIMessage& message);
-    bool ActionButtonNewGroup(CGUIMessage& message);
-    bool ActionButtonDeleteGroup(CGUIMessage& message);
-    bool ActionButtonRenameGroup(CGUIMessage& message);
-    bool ActionButtonUngroupedChannels(CGUIMessage& message);
-    bool ActionButtonGroupMembers(CGUIMessage& message);
-    bool ActionButtonChannelGroups(CGUIMessage& message);
-    bool ActionButtonHideGroup(CGUIMessage& message);
-    bool ActionButtonToggleRadioTV(CGUIMessage& message);
-    bool ActionButtonRecreateThumbnail(CGUIMessage& message);
+    bool ActionButtonOk(const CGUIMessage& message);
+    bool ActionButtonNewGroup(const CGUIMessage& message);
+    bool ActionButtonDeleteGroup(const CGUIMessage& message);
+    bool ActionButtonRenameGroup(const CGUIMessage& message);
+    bool ActionButtonUngroupedChannels(const CGUIMessage& message);
+    bool ActionButtonGroupMembers(const CGUIMessage& message);
+    bool ActionButtonChannelGroups(const CGUIMessage& message);
+    bool ActionButtonHideGroup(const CGUIMessage& message);
+    bool ActionButtonToggleRadioTV(const CGUIMessage& message);
+    bool ActionButtonRecreateThumbnail(const CGUIMessage& message);
     bool OnMessageClick(CGUIMessage& message);
     bool OnActionMove(const CAction& action);
 

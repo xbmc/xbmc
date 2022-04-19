@@ -1239,7 +1239,7 @@ namespace PVR
 
   void CPVRGUIActions::StartPlayback(CFileItem* item,
                                      bool bFullscreen,
-                                     CPVRStreamProperties* epgProps) const
+                                     const CPVRStreamProperties* epgProps) const
   {
     // Obtain dynamic playback url and properties from the respective pvr client
     const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(*item);
