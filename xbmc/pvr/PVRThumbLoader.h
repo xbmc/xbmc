@@ -26,7 +26,7 @@ public:
   bool LoadItemLookup(CFileItem* item) override;
 
   void ClearCachedImage(CFileItem& item);
-  void ClearCachedImages(CFileItemList& items);
+  void ClearCachedImages(const CFileItemList& items);
 
 protected:
   void OnLoaderFinish() override;

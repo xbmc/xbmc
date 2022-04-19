@@ -736,7 +736,7 @@ std::vector<std::shared_ptr<CPVRChannelGroupMember>> CPVRDatabase::Get(
   return results;
 }
 
-bool CPVRDatabase::PersistChannels(CPVRChannelGroup& group)
+bool CPVRDatabase::PersistChannels(const CPVRChannelGroup& group)
 {
   /* invalid group id */
   if (group.GroupID() < 0)
