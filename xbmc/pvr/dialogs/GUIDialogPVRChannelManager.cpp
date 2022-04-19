@@ -41,6 +41,7 @@
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
+#include <algorithm>
 #include <memory>
 #include <string>
 #include <utility>
@@ -1014,13 +1015,9 @@ void CGUIDialogPVRChannelManager::SaveList()
 
 bool CGUIDialogPVRChannelManager::HasChangedItems() const
 {
-  for (const auto& item : *m_channelItems)
-  {
-    if (item && item->GetProperty(PROPERTY_ITEM_CHANGED).asBoolean())
-      return true;
-  }
-
-  return false;
+  return std::any_of(m_channelItems->cbegin(), m_channelItems->cend(), [](const auto& item) {
+    return item && item->GetProperty(PROPERTY_ITEM_CHANGED).asBoolean();
+  });
 }
 
 namespace

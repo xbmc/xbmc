@@ -16,6 +16,8 @@
 #include "pvr/epg/EpgInfoTag.h"
 #include "utils/log.h"
 
+#include <algorithm>
+
 using namespace PVR;
 
 namespace
@@ -80,15 +82,16 @@ bool CPVREpgTagsCache::Refresh()
   m_nowActiveTag.reset();
   m_nextStartingTag.reset();
 
-  for (const auto& tag : m_changedTags)
+  const auto it =
+      std::find_if(m_changedTags.cbegin(), m_changedTags.cend(), [&activeTime](const auto& tag) {
+        return tag.second->StartAsUTC() <= activeTime && tag.second->EndAsUTC() > activeTime;
+      });
+
+  if (it != m_changedTags.cend())
   {
-    if (tag.second->StartAsUTC() <= activeTime && tag.second->EndAsUTC() > activeTime)
-    {
-      m_nowActiveTag = tag.second;
-      m_nowActiveStart = m_nowActiveTag->StartAsUTC();
-      m_nowActiveEnd = m_nowActiveTag->EndAsUTC();
-      break;
-    }
+    m_nowActiveTag = (*it).second;
+    m_nowActiveStart = m_nowActiveTag->StartAsUTC();
+    m_nowActiveEnd = m_nowActiveTag->EndAsUTC();
   }
 
   if (!m_nowActiveTag && m_database)

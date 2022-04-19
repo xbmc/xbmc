@@ -22,6 +22,8 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
+#include <algorithm>
+#include <iterator>
 #include <memory>
 #include <string>
 #include <utility>
@@ -200,8 +202,9 @@ void CGUIDialogPVRRecordingSettings::LifetimesFiller(const SettingConstPtr& sett
     {
       std::vector<std::pair<std::string,int>> values;
       client->GetClientCapabilities().GetRecordingsLifetimeValues(values);
-      for (const auto& value : values)
-        list.emplace_back(IntegerSettingOption(value.first, value.second));
+      std::transform(
+          values.cbegin(), values.cend(), std::back_inserter(list),
+          [](const auto& value) { return IntegerSettingOption(value.first, value.second); });
     }
 
     current = pThis->m_iLifetime;
