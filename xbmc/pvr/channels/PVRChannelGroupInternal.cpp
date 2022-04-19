@@ -20,6 +20,8 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
+#include <algorithm>
+#include <iterator>
 #include <mutex>
 #include <string>
 #include <utility>
@@ -114,12 +116,10 @@ bool CPVRChannelGroupInternal::UpdateFromClients(
 
   // create group members for the channels
   std::vector<std::shared_ptr<CPVRChannelGroupMember>> groupMembers;
-  groupMembers.reserve(channels.size());
-  for (const auto& channel : channels)
-  {
-    groupMembers.emplace_back(
-        std::make_shared<CPVRChannelGroupMember>(GroupID(), GroupName(), channel));
-  }
+  std::transform(channels.cbegin(), channels.cend(), std::back_inserter(groupMembers),
+                 [this](const auto& channel) {
+                   return std::make_shared<CPVRChannelGroupMember>(GroupID(), GroupName(), channel);
+                 });
 
   return UpdateGroupEntries(groupMembers);
 }

@@ -16,6 +16,8 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
+#include <algorithm>
+
 using namespace PVR;
 
 int CPVRCachedImages::Cleanup(const std::vector<PVRImagePattern>& urlPatterns,
@@ -70,17 +72,8 @@ int CPVRCachedImages::Cleanup(const std::vector<PVRImagePattern>& urlPatterns,
     // Unwrap the image:// URL returned from texture db.
     const std::string textureURL = UnwrapImageURL(items[i]["url"].asString());
 
-    bool bFound = false;
-    for (const auto& url : urlsToCheck)
-    {
-      if (url == textureURL)
-      {
-        bFound = true;
-        break; // next item
-      }
-    }
-
-    if (!bFound)
+    if (std::none_of(urlsToCheck.cbegin(), urlsToCheck.cend(),
+                     [&textureURL](const std::string& url) { return url == textureURL; }))
     {
       CLog::LogFC(LOGDEBUG, LOGPVR, "Removing stale cached image: '{}'", textureURL);
       CServiceBroker::GetTextureCache()->ClearCachedImage(items[i]["textureid"].asInteger());

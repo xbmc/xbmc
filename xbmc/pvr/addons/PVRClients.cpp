@@ -20,6 +20,7 @@
 #include "utils/JobManager.h"
 #include "utils/log.h"
 
+#include <algorithm>
 #include <functional>
 #include <memory>
 #include <mutex>
@@ -290,41 +291,23 @@ bool CPVRClients::GetClient(int iClientId, std::shared_ptr<CPVRClient>& addon) c
 int CPVRClients::GetClientId(const std::string& strId) const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  for (const auto& entry : m_clientMap)
-  {
-    if (entry.second->ID() == strId)
-    {
-      return entry.first;
-    }
-  }
-
-  return -1;
+  const auto it = std::find_if(m_clientMap.cbegin(), m_clientMap.cend(),
+                               [&strId](const auto& entry) { return entry.second->ID() == strId; });
+  return it != m_clientMap.cend() ? (*it).first : -1;
 }
 
 int CPVRClients::CreatedClientAmount() const
 {
-  int iReturn = 0;
-
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  for (const auto& client : m_clientMap)
-  {
-    if (client.second->ReadyToUse())
-      ++iReturn;
-  }
-
-  return iReturn;
+  return std::count_if(m_clientMap.cbegin(), m_clientMap.cend(),
+                       [](const auto& client) { return client.second->ReadyToUse(); });
 }
 
 bool CPVRClients::HasCreatedClients() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  for (const auto& client : m_clientMap)
-  {
-    if (client.second->ReadyToUse())
-      return true;
-  }
-
-  return false;
+  return std::any_of(m_clientMap.cbegin(), m_clientMap.cend(),
+                     [](const auto& client) { return client.second->ReadyToUse(); });
 }
 
 bool CPVRClients::IsKnownClient(const std::string& id) const
@@ -342,12 +325,9 @@ bool CPVRClients::IsCreatedClient(int iClientId) const
 bool CPVRClients::IsCreatedClient(const std::string& id) const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  for (const auto& client : m_clientMap)
-  {
-    if (client.second->ID() == id)
-      return client.second->ReadyToUse();
-  }
-  return false;
+  const auto it = std::find_if(m_clientMap.cbegin(), m_clientMap.cend(),
+                               [&id](const auto& client) { return client.second->ID() == id; });
+  return it != m_clientMap.cend() ? (*it).second->ReadyToUse() : false;
 }
 
 bool CPVRClients::GetCreatedClient(int iClientId, std::shared_ptr<CPVRClient>& addon) const
@@ -409,13 +389,9 @@ std::vector<CVariant> CPVRClients::GetClientProviderInfos() const
 int CPVRClients::GetFirstCreatedClientID()
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  for (const auto& client : m_clientMap)
-  {
-    if (client.second->ReadyToUse())
-      return client.second->GetID();
-  }
-
-  return -1;
+  const auto it = std::find_if(m_clientMap.cbegin(), m_clientMap.cend(),
+                               [](const auto& client) { return client.second->ReadyToUse(); });
+  return it != m_clientMap.cend() ? (*it).second->GetID() : -1;
 }
 
 PVR_ERROR CPVRClients::GetCallableClients(CPVRClientMap& clientsReady,
@@ -447,21 +423,16 @@ PVR_ERROR CPVRClients::GetCallableClients(CPVRClientMap& clientsReady,
 
 int CPVRClients::EnabledClientAmount() const
 {
-  int iReturn = 0;
-
   CPVRClientMap clientMap;
   {
     std::unique_lock<CCriticalSection> lock(m_critSection);
     clientMap = m_clientMap;
   }
 
-  for (const auto& client : clientMap)
-  {
-    if (!CServiceBroker::GetAddonMgr().IsAddonDisabled(client.second->ID()))
-      ++iReturn;
-  }
-
-  return iReturn;
+  ADDON::CAddonMgr& addonMgr = CServiceBroker::GetAddonMgr();
+  return std::count_if(clientMap.cbegin(), clientMap.cend(), [&addonMgr](const auto& client) {
+    return !addonMgr.IsAddonDisabled(client.second->ID());
+  });
 }
 
 bool CPVRClients::IsEnabledClient(int clientId) const
@@ -513,13 +484,8 @@ std::vector<CVariant> CPVRClients::GetEnabledClientInfos() const
 bool CPVRClients::HasIgnoredClients() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  for (const auto& client : m_clientMap)
-  {
-    if (client.second->IgnoreClient())
-      return true;
-  }
-
-  return false;
+  return std::any_of(m_clientMap.cbegin(), m_clientMap.cend(),
+                     [](const auto& client) { return client.second->IgnoreClient(); });
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -909,10 +875,8 @@ PVR_ERROR CPVRClients::ForClients(const char* strFunctionName,
     for (const auto& entry : m_clientMap)
     {
       if (entry.second->ReadyToUse() && !entry.second->IgnoreClient() &&
-          std::find_if(clients.cbegin(), clients.cend(),
-                       [&entry](const std::shared_ptr<CPVRClient>& client) {
-                         return entry.first == client->GetID();
-                       }) != clients.cend())
+          std::any_of(clients.cbegin(), clients.cend(),
+                      [&entry](const auto& client) { return client->GetID() == entry.first; }))
       {
         // Allow ready to use clients that shall be called
         continue;
@@ -924,9 +888,8 @@ PVR_ERROR CPVRClients::ForClients(const char* strFunctionName,
 
   for (const auto& client : clients)
   {
-    if (std::find_if(failedClients.cbegin(), failedClients.cend(), [&client](int failedClientId) {
-          return client->GetID() == failedClientId;
-        }) == failedClients.cend())
+    if (std::none_of(failedClients.cbegin(), failedClients.cend(),
+                     [&client](int failedClientId) { return failedClientId == client->GetID(); }))
     {
       PVR_ERROR currentError = function(client);
 

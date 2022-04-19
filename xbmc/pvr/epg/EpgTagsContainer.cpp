@@ -14,6 +14,9 @@
 #include "pvr/epg/EpgTagsCache.h"
 #include "utils/log.h"
 
+#include <algorithm>
+#include <iterator>
+
 using namespace PVR;
 
 namespace
@@ -164,18 +167,14 @@ bool CPVREpgTagsContainer::UpdateEntries(const CPVREpgTagsContainer& tags)
       tag->SetChannelData(m_channelData);
       tag->SetEpgID(m_iEpgID);
 
-      std::shared_ptr<CPVREpgInfoTag> existingTag;
-      for (const auto& t : existingTags)
-      {
-        if (t->StartAsUTC() == tag->StartAsUTC())
-        {
-          existingTag = t;
-          break;
-        }
-      }
+      const auto it =
+          std::find_if(existingTags.cbegin(), existingTags.cend(),
+                       [&tag](const auto& t) { return t->StartAsUTC() == tag->StartAsUTC(); });
 
-      if (existingTag)
+      if (it != existingTags.cend())
       {
+        const std::shared_ptr<CPVREpgInfoTag> existingTag = *it;
+
         existingTag->SetChannelData(m_channelData);
         existingTag->SetEpgID(m_iEpgID);
 
@@ -370,11 +369,13 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgTagsContainer::GetTag(unsigned int iUniqu
   if (iUniqueBroadcastID == EPG_TAG_INVALID_UID)
     return {};
 
-  for (const auto& tag : m_changedTags)
-  {
-    if (tag.second->UniqueBroadcastID() == iUniqueBroadcastID)
-      return tag.second;
-  }
+  const auto it = std::find_if(m_changedTags.cbegin(), m_changedTags.cend(),
+                               [iUniqueBroadcastID](const auto& tag) {
+                                 return tag.second->UniqueBroadcastID() == iUniqueBroadcastID;
+                               });
+
+  if (it != m_changedTags.cend())
+    return (*it).second;
 
   if (m_database)
     return CreateEntry(m_database->GetEpgTagByUniqueBroadcastID(m_iEpgID, iUniqueBroadcastID));
@@ -387,11 +388,13 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgTagsContainer::GetTagByDatabaseID(int iDa
   if (iDatabaseID <= 0)
     return {};
 
-  for (const auto& tag : m_changedTags)
-  {
-    if (tag.second->DatabaseID() == iDatabaseID)
-      return tag.second;
-  }
+  const auto it =
+      std::find_if(m_changedTags.cbegin(), m_changedTags.cend(), [iDatabaseID](const auto& tag) {
+        return tag.second->DatabaseID() == iDatabaseID;
+      });
+
+  if (it != m_changedTags.cend())
+    return (*it).second;
 
   if (m_database)
     return CreateEntry(m_database->GetEpgTagByDatabaseID(m_iEpgID, iDatabaseID));
@@ -586,8 +589,8 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgTagsContainer::GetAllTags() 
     if (!m_changedTags.empty() && !m_database->HasTags(m_iEpgID))
     {
       // nothing in the db yet. take what we have in memory.
-      for (const auto& tag : m_changedTags)
-        tags.emplace_back(tag.second);
+      std::transform(m_changedTags.cbegin(), m_changedTags.cend(), std::back_inserter(tags),
+                     [](const auto& tag) { return tag.second; });
 
       FixOverlappingEvents(tags);
     }

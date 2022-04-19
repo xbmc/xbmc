@@ -19,6 +19,8 @@
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
 
+#include <algorithm>
+#include <iterator>
 #include <memory>
 #include <mutex>
 #include <utility>
@@ -133,10 +135,8 @@ std::vector<std::shared_ptr<CPVRRecording>> CPVRRecordings::GetAll() const
   std::vector<std::shared_ptr<CPVRRecording>> recordings;
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  for (const auto& recordingEntry : m_recordings)
-  {
-    recordings.emplace_back(recordingEntry.second);
-  }
+  std::transform(m_recordings.cbegin(), m_recordings.cend(), std::back_inserter(recordings),
+                 [](const auto& recordingEntry) { return recordingEntry.second; });
 
   return recordings;
 }
@@ -144,13 +144,11 @@ std::vector<std::shared_ptr<CPVRRecording>> CPVRRecordings::GetAll() const
 std::shared_ptr<CPVRRecording> CPVRRecordings::GetById(unsigned int iId) const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  for (const auto& recording : m_recordings)
-  {
-    if (iId == recording.second->m_iRecordingId)
-      return recording.second;
-  }
-
-  return {};
+  const auto it =
+      std::find_if(m_recordings.cbegin(), m_recordings.cend(), [iId](const auto& recording) {
+        return recording.second->m_iRecordingId == iId;
+      });
+  return it != m_recordings.cend() ? (*it).second : std::shared_ptr<CPVRRecording>();
 }
 
 std::shared_ptr<CPVRRecording> CPVRRecordings::GetByPath(const std::string& path) const

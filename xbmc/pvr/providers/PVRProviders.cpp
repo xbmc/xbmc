@@ -18,8 +18,10 @@
 #include "settings/Settings.h"
 #include "utils/log.h"
 
+#include <algorithm>
 #include <memory>
 #include <mutex>
+#include <numeric>
 #include <string>
 #include <vector>
 
@@ -47,15 +49,11 @@ std::shared_ptr<CPVRProvider> CPVRProvidersContainer::GetByClient(int iClientId,
                                                                   int iUniqueId) const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  for (const auto& provider : m_providers)
-  {
-    if (provider->GetClientId() == iClientId && provider->GetUniqueId() == iUniqueId)
-    {
-      return provider;
-    }
-  }
-
-  return {};
+  const auto it = std::find_if(
+      m_providers.cbegin(), m_providers.cend(), [iClientId, iUniqueId](const auto& provider) {
+        return provider->GetClientId() == iClientId && provider->GetUniqueId() == iUniqueId;
+      });
+  return it != m_providers.cend() ? (*it) : std::shared_ptr<CPVRProvider>();
 }
 
 void CPVRProvidersContainer::InsertEntry(const std::shared_ptr<CPVRProvider>& newProvider,
@@ -161,10 +159,14 @@ bool CPVRProviders::UpdateDefaultEntries(const CPVRProvidersContainer& newProvid
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
   // go through the provider list and check for updated or new providers
-  for (const auto& newProvider : newProviders.GetProvidersList())
-  {
-    bChanged |= (CheckAndPersistEntry(newProvider, ProviderUpdateMode::BY_CLIENT) != nullptr);
-  }
+  const auto newProviderList = newProviders.GetProvidersList();
+  bChanged = std::accumulate(
+      newProviderList.cbegin(), newProviderList.cend(), false,
+      [this](bool changed, const auto& newProvider) {
+        return (CheckAndPersistEntry(newProvider, ProviderUpdateMode::BY_CLIENT) != nullptr)
+                   ? true
+                   : changed;
+      });
 
   // check for deleted providers
   for (std::vector<std::shared_ptr<CPVRProvider>>::iterator it = m_providers.begin();
@@ -221,30 +223,16 @@ bool CPVRProviders::UpdateClientEntries(const CPVRProvidersContainer& newProvide
     const std::shared_ptr<CPVRProvider> provider = *it;
     if (!newProviders.GetByClient(provider->GetClientId(), provider->GetUniqueId()))
     {
-      // provider was not found
-      bool bIgnoreProvider = false;
-      for (const auto& failedClient : failedClients)
-      {
-        if (failedClient == provider->GetClientId())
-        {
-          bIgnoreProvider = true;
-          break;
-        }
-      }
-
-      for (const auto& disabledClient : disabledClients)
-      {
-        if (disabledClient == provider->GetClientId())
-        {
-          bIgnoreProvider = true;
-          break;
-        }
-      }
-
-      // ignore add-on providers as they are a special case
-      if (provider->IsClientProvider())
-        bIgnoreProvider = true;
-
+      const bool bIgnoreProvider =
+          (provider->IsClientProvider() || // ignore add-on providers as they are a special case
+           std::any_of(failedClients.cbegin(), failedClients.cend(),
+                       [&provider](const auto& failedClient) {
+                         return failedClient == provider->GetClientId();
+                       }) ||
+           std::any_of(disabledClients.cbegin(), disabledClients.cend(),
+                       [&provider](const auto& disabledClient) {
+                         return disabledClient == provider->GetClientId();
+                       }));
       if (bIgnoreProvider)
       {
         ++it;
@@ -352,13 +340,11 @@ bool CPVRProviders::PersistUserChanges(const std::vector<std::shared_ptr<CPVRPro
 std::shared_ptr<CPVRProvider> CPVRProviders::GetById(int iProviderId) const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  for (const auto& provider : m_providers)
-  {
-    if (provider->GetDatabaseId() == iProviderId)
-      return provider;
-  }
-
-  return {};
+  const auto it =
+      std::find_if(m_providers.cbegin(), m_providers.cend(), [iProviderId](const auto& provider) {
+        return provider->GetDatabaseId() == iProviderId;
+      });
+  return it != m_providers.cend() ? (*it) : std::shared_ptr<CPVRProvider>();
 }
 
 void CPVRProviders::RemoveEntry(const std::shared_ptr<CPVRProvider>& provider)
