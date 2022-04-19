@@ -52,17 +52,22 @@ typedef std::vector<character_t> vecText;
  \brief
  */
 
+#ifdef HAS_DX
 struct SVertex
 {
   float x, y, z;
-#ifdef HAS_DX
   XMFLOAT4 col;
+  float u, v;
+  float u2, v2;
+};
 #else
+struct SVertex
+{
+  float x, y, z;
   unsigned char r, g, b, a;
-#endif
   float u, v;
 };
-
+#endif
 
 #include "GUIFontCache.h"
 
