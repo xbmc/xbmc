@@ -23,6 +23,9 @@ endif
 ifeq ($(CROSS_COMPILING), yes)
   CMAKE_ARGS+= -DPKG_CONFIG_EXECUTABLE=$(NATIVEPREFIX)/bin/pkg-config \
                -DCROSSCOMPILING=$(CROSS_COMPILING)
+               -DCMAKE_AR=$(AR) \
+               -DCMAKE_RANLIB=$(RANLIB) \
+               -DCMAKE_STRIP=$(STRIP)
 endif
 
 ifeq ($(OS), android)
