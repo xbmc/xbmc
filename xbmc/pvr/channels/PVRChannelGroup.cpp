@@ -477,7 +477,7 @@ int CPVRChannelGroup::LoadFromDatabase(const std::vector<std::shared_ptr<CPVRCli
   std::vector<std::shared_ptr<CPVRChannelGroupMember>> membersToDelete;
   if (!results.empty())
   {
-    const std::shared_ptr<CPVRClients> clients = CServiceBroker::GetPVRManager().Clients();
+    const std::shared_ptr<CPVRClients> allClients = CServiceBroker::GetPVRManager().Clients();
 
     std::unique_lock<CCriticalSection> lock(m_critSection);
     for (const auto& member : results)
@@ -486,7 +486,7 @@ int CPVRChannelGroup::LoadFromDatabase(const std::vector<std::shared_ptr<CPVRCli
       if (member->ClientID() > 0 && member->ChannelUID() > 0 && member->IsRadio() == IsRadio())
       {
         // Ignore data from unknown/disabled clients
-        if (clients->IsEnabledClient(member->ClientID()))
+        if (allClients->IsEnabledClient(member->ClientID()))
         {
           m_sortedMembers.emplace_back(member);
           m_members.emplace(std::make_pair(member->ClientID(), member->ChannelUID()), member);
