@@ -520,7 +520,7 @@ namespace
 class CSearchTermConverter
 {
 public:
-  CSearchTermConverter(const std::string& strSearchTerm) { Parse(strSearchTerm); }
+  explicit CSearchTermConverter(const std::string& strSearchTerm) { Parse(strSearchTerm); }
 
   std::string ToSQL(const std::string& strFieldName) const
   {

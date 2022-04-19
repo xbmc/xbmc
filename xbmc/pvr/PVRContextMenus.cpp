@@ -78,7 +78,7 @@ namespace PVR
     class PVRClientMenuHook : public IContextMenuItem
     {
     public:
-      PVRClientMenuHook(const CPVRClientMenuHook& hook) : m_hook(hook) {};
+      explicit PVRClientMenuHook(const CPVRClientMenuHook& hook) : m_hook(hook) {}
 
       std::string GetLabel(const CFileItem& item) const override;
       bool IsVisible(const CFileItem& item) const override;
