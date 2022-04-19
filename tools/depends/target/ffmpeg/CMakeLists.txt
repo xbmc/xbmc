@@ -19,6 +19,7 @@ if(CROSSCOMPILING)
                           --enable-cross-compile
                           --enable-pic
                           --ar=${CMAKE_AR}
+                          --ranlib=${CMAKE_RANLIB}
                           --strip=${CMAKE_STRIP}
               )
 
