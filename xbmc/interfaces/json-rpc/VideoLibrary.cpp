@@ -1101,9 +1101,15 @@ int CVideoLibrary::RequiresAdditionalDetails(const MediaType& mediaType, const C
   if (mediaType != MediaTypeMovie && mediaType != MediaTypeTvShow && mediaType != MediaTypeEpisode && mediaType != MediaTypeMusicVideo)
     return VideoDbDetailsNone;
 
+  return GetDetailsFromJsonParameters(parameterObject);
+}
+
+int CVideoLibrary::GetDetailsFromJsonParameters(const CVariant& parameterObject)
+{
   const CVariant& properties = parameterObject["properties"];
   int details = VideoDbDetailsNone;
-  for (CVariant::const_iterator_array itr = properties.begin_array(); itr != properties.end_array(); itr++)
+  for (CVariant::const_iterator_array itr = properties.begin_array(); itr != properties.end_array();
+       itr++)
   {
     std::string propertyValue = itr->asString();
     if (propertyValue == "cast")
