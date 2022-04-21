@@ -222,6 +222,8 @@ void CServiceManager::DeinitStageThree()
   m_contextMenuManager->Deinit();
   m_gameServices.reset();
   m_peripherals->Clear();
+
+  m_Platform->DeinitStageThree();
 }
 
 void CServiceManager::DeinitStageTwo()
@@ -250,11 +252,12 @@ void CServiceManager::DeinitStageTwo()
   m_repositoryUpdater.reset();
   m_binaryAddonManager.reset();
   m_addonMgr.reset();
-  m_Platform.reset();
   m_databaseManager.reset();
 
   m_mediaManager->Stop();
   m_mediaManager.reset();
+
+  m_Platform->DeinitStageTwo();
 }
 
 void CServiceManager::DeinitStageOne()
@@ -267,6 +270,9 @@ void CServiceManager::DeinitStageOne()
   CScriptInvocationManager::GetInstance().UnregisterLanguageInvocationHandler(m_XBPython.get());
   m_XBPython.reset();
 #endif
+
+  m_Platform->DeinitStageOne();
+  m_Platform.reset();
 }
 
 #if defined(HAS_FILESYSTEM_SMB)
