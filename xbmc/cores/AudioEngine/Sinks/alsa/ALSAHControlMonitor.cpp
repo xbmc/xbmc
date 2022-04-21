@@ -85,13 +85,18 @@ void CALSAHControlMonitor::Start()
     }
   }
 
-  g_fdEventMonitor.AddFDs(monitoredFDs, m_fdMonitorIds);
+  const auto eventMonitor = CServiceBroker::GetPlatform().GetService<CFDEventMonitor>();
+  if (eventMonitor)
+    eventMonitor->AddFDs(monitoredFDs, m_fdMonitorIds);
 }
 
 
 void CALSAHControlMonitor::Stop()
 {
-  g_fdEventMonitor.RemoveFDs(m_fdMonitorIds);
+  const auto eventMonitor = CServiceBroker::GetPlatform().GetService<CFDEventMonitor>();
+  if (eventMonitor)
+    eventMonitor->RemoveFDs(m_fdMonitorIds);
+
   m_fdMonitorIds.clear();
 }
 

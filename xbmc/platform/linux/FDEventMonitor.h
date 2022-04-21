@@ -8,9 +8,9 @@
 
 #pragma once
 
+#include "platform/Platform.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
-#include "utils/GlobalsHandling.h"
 
 #include <map>
 #include <vector>
@@ -20,7 +20,7 @@
 /**
  * Monitor a file descriptor with callback on poll() events.
  */
-class CFDEventMonitor : private CThread
+class CFDEventMonitor : public IPlatformService, private CThread
 {
 public:
 
@@ -72,6 +72,3 @@ private:
   CCriticalSection m_mutex;
   CCriticalSection m_pollMutex;
 };
-
-XBMC_GLOBAL_REF(CFDEventMonitor, g_fdEventMonitor);
-#define g_fdEventMonitor XBMC_GLOBAL_USE(CFDEventMonitor)
