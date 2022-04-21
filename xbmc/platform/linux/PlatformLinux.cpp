@@ -10,6 +10,7 @@
 
 #include "utils/StringUtils.h"
 
+#include "platform/linux/FDEventMonitor.h"
 #include "platform/linux/powermanagement/LinuxPowerSyscall.h"
 
 // clang-format off
@@ -119,5 +120,12 @@ bool CPlatformLinux::InitStageOne()
 
   m_lirc.reset(OPTIONALS::LircRegister());
 
+  RegisterService(std::make_shared<CFDEventMonitor>());
+
   return true;
+}
+
+void CPlatformLinux::DeinitStageOne()
+{
+  DeregisterService(typeid(CFDEventMonitor));
 }

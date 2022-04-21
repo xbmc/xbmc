@@ -21,6 +21,8 @@ public:
   ~CPlatformLinux() override = default;
 
   bool InitStageOne() override;
+  void DeinitStageOne() override;
+
   bool IsConfigureAddonsAtStartupEnabled() override { return true; }
 
 private:
