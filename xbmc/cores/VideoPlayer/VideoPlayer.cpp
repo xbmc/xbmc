@@ -2506,6 +2506,7 @@ void CVideoPlayer::OnExit()
   });
 
   // destroy objects
+  m_renderManager.Flush(false, false);
   m_pDemuxer.reset();
   m_pSubtitleDemuxer.reset();
   m_subtitleDemuxerMap.clear();
