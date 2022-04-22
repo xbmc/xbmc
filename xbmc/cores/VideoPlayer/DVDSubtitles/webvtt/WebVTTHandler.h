@@ -144,7 +144,7 @@ public:
   /*
    * \brief Return true if the margins are handled by the parser.
    */
-  bool IsForcedMargins() const { return m_overridePositions; }
+  bool IsForcedMargins() const { return !m_overridePositions; }
 
 protected:
   void CalculateTextPosition(std::string& subtitleText);
