@@ -66,5 +66,5 @@ int main(int argc, char* argv[])
 #endif
   appParamParser.Parse(argv, argc);
 
-  return XBMC_Run(true, appParamParser);
+  return XBMC_Run(true, appParamParser.GetAppParams());
 }

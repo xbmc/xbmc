@@ -120,7 +120,7 @@ static NSMenu* setupWindowMenu()
   CAppParamParser appParamParser;
   appParamParser.Parse((const char**)gArgv, (int)gArgc);
 
-  XBMC_Run(true, appParamParser);
+  XBMC_Run(true, appParamParser.GetAppParams());
 
   std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
   if (appPort)

@@ -8,6 +8,7 @@
 
 #include "Settings.h"
 
+#include "AppParams.h"
 #include "Application.h"
 #include "Autorun.h"
 #include "GUIPassword.h"
@@ -759,7 +760,7 @@ void CSettings::InitializeDefaults()
   }
 #endif
 
-  if (g_application.IsStandAlone())
+  if (CServiceBroker::GetAppParams()->IsStandAlone())
   {
     auto setting =
         GetSettingsManager()->GetSetting(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE);

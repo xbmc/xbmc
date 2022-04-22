@@ -50,6 +50,7 @@ class CApplicationMessenger;
 }
 } // namespace KODI
 
+class CAppParams;
 class CContextMenuManager;
 class XBPython;
 class CDataCacheCore;
@@ -111,6 +112,10 @@ class CServiceBroker
 public:
   CServiceBroker();
   ~CServiceBroker();
+
+  static std::shared_ptr<CAppParams> GetAppParams();
+  static void RegisterAppParams(const std::shared_ptr<CAppParams>& appParams);
+  static void UnregisterAppParams();
 
   static CLog& GetLogging();
   static void CreateLogging();
@@ -200,6 +205,7 @@ public:
   static std::shared_ptr<CKeyboardLayoutManager> GetKeyboardLayoutManager();
 
 private:
+  std::shared_ptr<CAppParams> m_appParams;
   std::unique_ptr<CLog> m_logging;
   std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> m_pAnnouncementManager;
   CGUIComponent* m_pGUI;

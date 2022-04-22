@@ -51,7 +51,7 @@ using namespace KODI;
 
 const std::string CInputManager::SETTING_INPUT_ENABLE_CONTROLLER = "input.enablejoystick";
 
-CInputManager::CInputManager(const CAppParamParser& params)
+CInputManager::CInputManager()
   : m_keymapEnvironment(new CKeymapEnvironment),
     m_buttonTranslator(new CButtonTranslator),
     m_customControllerTranslator(new CCustomControllerTranslator),

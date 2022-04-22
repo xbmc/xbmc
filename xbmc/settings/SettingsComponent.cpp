@@ -9,7 +9,7 @@
 #include "SettingsComponent.h"
 
 #include "AdvancedSettings.h"
-#include "AppParamParser.h"
+#include "AppParams.h"
 #include "CompileInfo.h"
 #include "ServiceBroker.h"
 #include "Settings.h"
@@ -41,20 +41,22 @@ CSettingsComponent::~CSettingsComponent()
 {
 }
 
-void CSettingsComponent::Initialize(const CAppParamParser& params)
+void CSettingsComponent::Initialize()
 {
   if (m_state == State::DEINITED)
   {
+    const auto params = CServiceBroker::GetAppParams();
+
     // only the InitDirectories* for the current platform should return true
-    bool inited = InitDirectoriesLinux(params.HasPlatformDirectories());
+    bool inited = InitDirectoriesLinux(params->HasPlatformDirectories());
     if (!inited)
-      inited = InitDirectoriesOSX(params.HasPlatformDirectories());
+      inited = InitDirectoriesOSX(params->HasPlatformDirectories());
     if (!inited)
-      inited = InitDirectoriesWin32(params.HasPlatformDirectories());
+      inited = InitDirectoriesWin32(params->HasPlatformDirectories());
 
     m_settings->Initialize();
 
-    m_advancedSettings->Initialize(params, *m_settings->GetSettingsManager());
+    m_advancedSettings->Initialize(*m_settings->GetSettingsManager());
     URIUtils::RegisterAdvancedSettings(*m_advancedSettings);
 
     m_profileManager->Initialize(m_settings);

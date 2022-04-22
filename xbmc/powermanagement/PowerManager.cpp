@@ -8,6 +8,7 @@
 
 #include "PowerManager.h"
 
+#include "AppParams.h"
 #include "Application.h"
 #include "PowerTypes.h"
 #include "ServiceBroker.h"
@@ -67,7 +68,7 @@ void CPowerManager::SetDefaults()
     case POWERSTATE_QUIT:
     case POWERSTATE_MINIMIZE:
       // assume we can shutdown if --standalone is passed
-      if (g_application.IsStandAlone())
+      if (CServiceBroker::GetAppParams()->IsStandAlone())
         defaultShutdown = POWERSTATE_SHUTDOWN;
     break;
     case POWERSTATE_HIBERNATE:
@@ -286,7 +287,7 @@ void CPowerManager::SettingOptionsShutdownStatesFiller(const SettingConstPtr& se
     list.emplace_back(g_localizeStrings.Get(13010), POWERSTATE_HIBERNATE);
   if (CServiceBroker::GetPowerManager().CanSuspend())
     list.emplace_back(g_localizeStrings.Get(13011), POWERSTATE_SUSPEND);
-  if (!g_application.IsStandAlone())
+  if (!CServiceBroker::GetAppParams()->IsStandAlone())
   {
     list.emplace_back(g_localizeStrings.Get(13009), POWERSTATE_QUIT);
 #if !defined(TARGET_DARWIN_EMBEDDED)

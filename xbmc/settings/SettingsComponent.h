@@ -10,7 +10,6 @@
 
 #include <memory>
 
-class CAppParamParser;
 class CAdvancedSettings;
 class CProfileManager;
 class CSettings;
@@ -23,9 +22,8 @@ public:
 
   /*!
    * @brief Initialize all subcomponents with system default values (loaded from code, system settings files, ...).
-   * @param params The command line params passed to the app.
    */
-  void Initialize(const CAppParamParser& params);
+  void Initialize();
 
   /*!
    * @brief Initialize all subcomponents with user values (loaded from user settings files, according to active profile).

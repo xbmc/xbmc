@@ -9,7 +9,7 @@
 #include "XBMCApp.h"
 
 #include "AndroidKey.h"
-#include "AppParamParser.h"
+#include "AppParams.h"
 #include "Application.h"
 #include "CompileInfo.h"
 #include "guilib/GUIWindowManager.h"
@@ -553,8 +553,7 @@ void CXBMCApp::run()
   m_firstrun = false;
   android_printf(" => running XBMC_Run...");
 
-  CAppParamParser appParamParser;
-  status = XBMC_Run(true, appParamParser);
+  status = XBMC_Run(true, std::make_shared<CAppParams>());
   android_printf(" => XBMC_Run finished with %d", status);
 }
 

@@ -9,6 +9,7 @@
 #include "Win10App.h"
 
 #include "AppParamParser.h"
+#include "AppParams.h"
 #include "Application.h"
 #include "pch.h"
 #include "platform/Environment.h"
@@ -83,13 +84,15 @@ void App::Run()
 
     CAppParamParser appParamParser;
     appParamParser.Parse(m_argv.data(), m_argv.size());
-    appParamParser.SetStartFullScreen(fullscreen);
+
+    const auto params = appParamParser.GetAppParams();
+    params->SetStartFullScreen(fullscreen);
 
     if (CSysInfo::GetWindowsDeviceFamily() == CSysInfo::Xbox)
-      appParamParser.SetStandAlone(true);
+      params->SetStandAlone(true);
 
     // Create and run the app
-    XBMC_Run(true, appParamParser);
+    XBMC_Run(true, params);
   }
 
   WSACleanup();

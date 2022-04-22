@@ -9,7 +9,7 @@
 #include "Application.h"
 
 #include "AppInboundProtocol.h"
-#include "AppParamParser.h"
+#include "AppParams.h"
 #include "Autorun.h"
 #include "GUIInfoManager.h"
 #include "HDRStatus.h"
@@ -323,18 +323,12 @@ extern "C" void __stdcall init_emu_environ();
 extern "C" void __stdcall update_emu_environ();
 extern "C" void __stdcall cleanup_emu_environ();
 
-bool CApplication::Create(const CAppParamParser &params)
+bool CApplication::Create()
 {
   m_bStop = false;
 
   // Grab a handle to our thread to be used later in identifying the render thread.
   m_threadID = CThread::GetCurrentThreadId();
-
-  m_bPlatformDirectories = params.HasPlatformDirectories();
-  m_bTestMode = params.IsTestMode();
-  m_bStandalone = params.IsStandAlone();
-  m_windowing = params.GetWindowing();
-  m_logTarget = params.GetLogTarget();
 
   CServiceBroker::RegisterCPUInfo(CCPUInfo::GetCPUInfo());
 
@@ -375,7 +369,7 @@ bool CApplication::Create(const CAppParamParser &params)
 #ifdef TARGET_POSIX //! @todo Win32 has no special://home/ mapping by default, so we
   //!       must create these here. Ideally this should be using special://home/ and
   //!      be platform agnostic (i.e. unify the InitDirectories*() functions)
-  if (!m_bPlatformDirectories)
+  if (!CServiceBroker::GetAppParams()->HasPlatformDirectories())
 #endif
   {
     CDirectory::Create("special://xbmc/addons");
@@ -416,7 +410,7 @@ bool CApplication::Create(const CAppParamParser &params)
   CServiceBroker::RegisterAppPort(m_pAppPort);
 
   if (!m_ServiceManager->InitStageTwo(
-          params, settingsComponent->GetProfileManager()->GetProfileUserDataFolder()))
+          settingsComponent->GetProfileManager()->GetProfileUserDataFolder()))
   {
     return false;
   }
@@ -468,8 +462,10 @@ bool CApplication::CreateGUI()
 
   auto windowSystems = KODI::WINDOWING::CWindowSystemFactory::GetWindowSystems();
 
-  if (!m_windowing.empty())
-    windowSystems = {m_windowing};
+  const std::string& windowing = CServiceBroker::GetAppParams()->GetWindowing();
+
+  if (!windowing.empty())
+    windowSystems = {windowing};
 
   for (auto& windowSystem : windowSystems)
   {
@@ -480,7 +476,7 @@ bool CApplication::CreateGUI()
     if (!m_pWinSystem)
       continue;
 
-    if (!m_windowing.empty() && m_windowing != windowSystem)
+    if (!windowing.empty() && windowing != windowSystem)
       continue;
 
     CServiceBroker::RegisterWinSystem(m_pWinSystem.get());
@@ -2405,7 +2401,7 @@ void CApplication::ResetCurrentItem()
     m_pGUI->GetInfoManager().ResetCurrentItem();
 }
 
-int CApplication::Run(const CAppParamParser& params)
+int CApplication::Run()
 {
   CLog::Log(LOGINFO, "Running the application...");
 
@@ -2413,9 +2409,10 @@ int CApplication::Run(const CAppParamParser& params)
   std::chrono::milliseconds frameTime;
   const unsigned int noRenderFrameTime = 15; // Simulates ~66fps
 
-  if (params.GetPlaylist().Size() > 0)
+  CFileItemList& playlist = CServiceBroker::GetAppParams()->GetPlaylist();
+  if (playlist.Size() > 0)
   {
-    CServiceBroker::GetPlaylistPlayer().Add(0, params.GetPlaylist());
+    CServiceBroker::GetPlaylistPlayer().Add(0, playlist);
     CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(0);
     CServiceBroker::GetAppMessenger()->PostMsg(TMSG_PLAYLISTPLAYER_PLAY, -1);
   }
@@ -3085,7 +3082,7 @@ void CApplication::PlaybackCleanup()
     m_appPlayer.ResetPlayer();
   }
 
-  if (IsEnableTestMode())
+  if (CServiceBroker::GetAppParams()->IsTestMode())
     CServiceBroker::GetAppMessenger()->PostMsg(TMSG_QUIT);
 }
 

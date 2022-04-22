@@ -24,7 +24,6 @@
 #define CACHE_BUFFER_MODE_NONE 3
 #define CACHE_BUFFER_MODE_NETWORK 4
 
-class CAppParamParser;
 class CProfileManager;
 class CSettingsManager;
 class CVariant;
@@ -115,7 +114,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
 
-    void Initialize(const CAppParamParser &params, CSettingsManager& settingsMgr);
+    void Initialize(CSettingsManager& settingsMgr);
     void Uninitialize(CSettingsManager& settingsMgr);
     bool Initialized() const { return m_initialized; }
     void AddSettingsFile(const std::string &filename);

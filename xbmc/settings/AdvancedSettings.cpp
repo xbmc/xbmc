@@ -8,8 +8,7 @@
 
 #include "AdvancedSettings.h"
 
-#include "AppParamParser.h"
-#include "Application.h"
+#include "AppParams.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "filesystem/File.h"
@@ -86,11 +85,28 @@ void CAdvancedSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& 
     SetDebugMode(std::static_pointer_cast<const CSettingBool>(setting)->GetValue());
 }
 
-void CAdvancedSettings::Initialize(const CAppParamParser &params, CSettingsManager& settingsMgr)
+void CAdvancedSettings::Initialize(CSettingsManager& settingsMgr)
 {
   Initialize();
 
-  params.SetAdvancedSettings(*this);
+  const auto params = CServiceBroker::GetAppParams();
+
+  if (params->GetLogLevel() == LOG_LEVEL_DEBUG)
+  {
+    m_logLevel = LOG_LEVEL_DEBUG;
+    m_logLevelHint = LOG_LEVEL_DEBUG;
+    CServiceBroker::GetLogging().SetLogLevel(LOG_LEVEL_DEBUG);
+  }
+
+  const std::string& settingsFile = params->GetSettingsFile();
+  if (!settingsFile.empty())
+    AddSettingsFile(settingsFile);
+
+  if (params->IsStartFullScreen())
+    m_startFullScreen = true;
+
+  if (params->IsStandAlone())
+    m_handleMounting = true;
 
   settingsMgr.RegisterSettingsHandler(this, true);
   std::set<std::string> settingSet;
@@ -177,7 +193,7 @@ void CAdvancedSettings::Initialize()
   m_cddbAddress = "gnudb.gnudb.org";
   m_addSourceOnTop = false;
 
-  m_handleMounting = g_application.IsStandAlone();
+  m_handleMounting = CServiceBroker::GetAppParams()->IsStandAlone();
 
   m_fullScreenOnMovieStart = true;
   m_cachePath = "special://temp/";

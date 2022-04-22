@@ -7,6 +7,8 @@
  */
 
 #include "SettingConditions.h"
+
+#include "AppParams.h"
 #include "Application.h"
 #include "LockType.h"
 #include "Util.h"
@@ -420,7 +422,7 @@ void CSettingConditions::Initialize()
 #ifdef TARGET_ANDROID
   m_simpleConditions.insert("isstandalone");
 #else
-  if (g_application.IsStandAlone())
+  if (CServiceBroker::GetAppParams()->IsStandAlone())
     m_simpleConditions.insert("isstandalone");
 #endif
 

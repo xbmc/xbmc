@@ -138,9 +138,9 @@ public:
   CApplication(void);
   ~CApplication(void) override;
 
-  bool Create(const CAppParamParser& params);
+  bool Create();
   bool Initialize();
-  int Run(const CAppParamParser& params);
+  int Run();
   bool Cleanup();
 
   void FrameMove(bool processEvents, bool processGUI = true) override;
@@ -268,11 +268,6 @@ public:
 
   int GlobalIdleTime();
 
-  bool IsStandAlone() { return m_bStandalone; }
-  bool IsEnableTestMode() { return m_bTestMode; }
-
-  const std::string& GetLogTarget() const { return m_logTarget; }
-
   bool IsAppFocused() const { return m_AppFocused; }
 
   bool ToggleDPMS(bool manual);
@@ -394,16 +389,12 @@ protected:
   std::string m_prevMedia;
   std::thread::id m_threadID;       // application thread ID.  Used in applicationMessenger to know where we are firing a thread with delay from.
   bool m_bInitializing = true;
-  bool m_bPlatformDirectories = true;
 
   int m_nextPlaylistItem = -1;
 
   std::chrono::time_point<std::chrono::steady_clock> m_lastRenderTime;
   bool m_skipGuiRender = false;
 
-  std::string m_logTarget;
-  bool m_bStandalone = false;
-  bool m_bTestMode = false;
   bool m_bSystemScreenSaverEnable = false;
 
   std::unique_ptr<MUSIC_INFO::CMusicInfoScanner> m_musicInfoScanner;
@@ -452,7 +443,6 @@ private:
   CApplicationPlayer m_appPlayer;
   CEvent m_playerEvent;
   CApplicationStackHelper m_stackHelper;
-  std::string m_windowing;
   int m_ExitCode{EXITCODE_QUIT};
 };
 

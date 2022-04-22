@@ -7,6 +7,7 @@
  */
 
 #include "AppParamParser.h"
+#include "AppParams.h"
 #include "CompileInfo.h"
 #include "ServiceBroker.h"
 #include "platform/Environment.h"
@@ -57,6 +58,8 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT)
   CAppParamParser appParamParser;
   appParamParser.Parse(argv, argc);
 
+  const auto params = appParamParser.GetAppParams();
+
   // this fixes crash if OPENSSL_CONF is set to existed openssl.cfg
   // need to set it as soon as possible
   CEnvironment::unsetenv("OPENSSL_CONF");
@@ -73,7 +76,7 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT)
   if (win32_exception::ShouldHook())
   {
     win32_exception::set_version(std::string(ver));
-    win32_exception::set_platformDirectories(appParamParser.HasPlatformDirectories());
+    win32_exception::set_platformDirectories(params->HasPlatformDirectories());
     SetUnhandledExceptionFilter(CreateMiniDump);
   }
 
@@ -111,7 +114,7 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT)
 #endif
 
   // Create and run the app
-  int status = XBMC_Run(true, appParamParser);
+  int status = XBMC_Run(true, params);
 
   for (int i = 0; i < argc; ++i)
     delete[] argv[i];

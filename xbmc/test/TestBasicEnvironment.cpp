@@ -8,7 +8,8 @@
 
 #include "TestBasicEnvironment.h"
 
-#include "AppParamParser.h"
+#include "AppEnvironment.h"
+#include "AppParams.h"
 #include "Application.h"
 #include "ServiceBroker.h"
 #include "TestUtils.h"
@@ -18,10 +19,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "platform/Filesystem.h"
 #include "profiles/ProfileManager.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/log.h"
 #include "windowing/WinSystem.h"
 
 #ifdef TARGET_DARWIN
@@ -39,14 +37,10 @@ TestBasicEnvironment::TestBasicEnvironment() = default;
 
 void TestBasicEnvironment::SetUp()
 {
-  CAppParamParser params;
-  params.SetPlatformDirectories(false);
+  const auto params = std::make_shared<CAppParams>();
+  params->SetPlatformDirectories(false);
 
-  CServiceBroker::CreateLogging();
-
-  const auto settingsComponent = std::make_shared<CSettingsComponent>();
-  settingsComponent->Initialize(params);
-  CServiceBroker::RegisterSettingsComponent(settingsComponent);
+  CAppEnvironment::SetUp(params);
 
   CServiceBroker::RegisterAppMessenger(std::make_shared<KODI::MESSAGING::CApplicationMessenger>());
 
@@ -116,11 +110,7 @@ void TestBasicEnvironment::TearDown()
 
   CServiceBroker::UnregisterAppMessenger();
 
-  CServiceBroker::GetLogging().UnregisterFromSettings();
-  CServiceBroker::GetSettingsComponent()->Deinitialize();
-  CServiceBroker::UnregisterSettingsComponent();
-  CServiceBroker::GetLogging().Uninitialize();
-  CServiceBroker::DestroyLogging();
+  CAppEnvironment::TearDown();
 }
 
 void TestBasicEnvironment::SetUpError()
