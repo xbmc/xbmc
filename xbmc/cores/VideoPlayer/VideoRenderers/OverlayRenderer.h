@@ -116,6 +116,12 @@ namespace OVERLAY {
     void AddOverlay(CDVDOverlay* o, double pts, int index);
     virtual void Render(int idx);
     void Flush();
+
+    /*!
+     * \brief Reset to default values
+     */
+    void Reset();
+
     void Release(int idx);
     bool HasOverlay(int idx);
     void SetVideoRect(CRect &source, CRect &dest, CRect &view);
