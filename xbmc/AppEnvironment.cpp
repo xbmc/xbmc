@@ -26,7 +26,7 @@ void CAppEnvironment::TearDown()
   CServiceBroker::GetLogging().UnregisterFromSettings();
   CServiceBroker::GetSettingsComponent()->Deinitialize();
   CServiceBroker::UnregisterSettingsComponent();
-  CServiceBroker::GetLogging().Uninitialize();
+  CServiceBroker::GetLogging().Deinitialize();
   CServiceBroker::DestroyLogging();
   CServiceBroker::UnregisterAppParams();
 }

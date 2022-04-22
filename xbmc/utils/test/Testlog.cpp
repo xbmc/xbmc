@@ -23,7 +23,7 @@ class Testlog : public testing::Test
 {
 protected:
   Testlog() = default;
-  ~Testlog() override { CServiceBroker::GetLogging().Uninitialize(); }
+  ~Testlog() override { CServiceBroker::GetLogging().Deinitialize(); }
 };
 
 TEST_F(Testlog, Log)
@@ -47,7 +47,7 @@ TEST_F(Testlog, Log)
   CLog::Log(LOGERROR, "error log message");
   CLog::Log(LOGFATAL, "fatal log message");
   CLog::Log(LOGNONE, "none type log message");
-  CServiceBroker::GetLogging().Uninitialize();
+  CServiceBroker::GetLogging().Deinitialize();
 
   EXPECT_TRUE(file.Open(logfile));
   while ((bytesread = file.Read(buf, sizeof(buf) - 1)) > 0)
@@ -91,6 +91,6 @@ TEST_F(Testlog, SetLogLevel)
   CServiceBroker::GetLogging().SetLogLevel(LOG_LEVEL_MAX);
   EXPECT_EQ(LOG_LEVEL_MAX, CServiceBroker::GetLogging().GetLogLevel());
 
-  CServiceBroker::GetLogging().Uninitialize();
+  CServiceBroker::GetLogging().Deinitialize();
   EXPECT_TRUE(XFILE::CFile::Delete(logfile));
 }

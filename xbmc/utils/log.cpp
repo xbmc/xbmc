@@ -142,7 +142,7 @@ void CLog::UnregisterFromSettings()
   settingsManager->UnregisterCallback(this);
 }
 
-void CLog::Uninitialize()
+void CLog::Deinitialize()
 {
   if (m_fileSink == nullptr)
     return;
