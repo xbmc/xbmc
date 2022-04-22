@@ -24,7 +24,6 @@
 #include <string>
 #include <vector>
 
-class CAppParamParser;
 class CButtonTranslator;
 class CCustomControllerTranslator;
 class CJoystickMapper;
@@ -64,7 +63,7 @@ class IMouseDriverHandler;
 class CInputManager : public ISettingCallback, public IActionListener, public Observable
 {
 public:
-  explicit CInputManager(const CAppParamParser& params);
+  CInputManager();
   CInputManager(const CInputManager&) = delete;
   CInputManager const& operator=(CInputManager const&) = delete;
   ~CInputManager() override;

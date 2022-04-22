@@ -6,11 +6,9 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "AppEnvironment.h"
 #include "Application.h"
-#include "ServiceBroker.h"
 #include "platform/MessagePrinter.h"
-#include "settings/SettingsComponent.h"
-#include "utils/log.h"
 
 #ifdef TARGET_WINDOWS_DESKTOP
 #include "platform/win32/IMMNotificationClient.h"
@@ -22,17 +20,13 @@
 #include "platform/android/activity/XBMCApp.h"
 #endif
 
-extern "C" int XBMC_Run(bool renderGUI, const CAppParamParser &params)
+extern "C" int XBMC_Run(bool renderGUI, const std::shared_ptr<CAppParams>& params)
 {
   int status = -1;
 
-  // Create logging and settings
-  CServiceBroker::CreateLogging();
-  const auto settingsComponent = std::make_shared<CSettingsComponent>();
-  settingsComponent->Initialize(params);
-  CServiceBroker::RegisterSettingsComponent(settingsComponent);
+  CAppEnvironment::SetUp(params);
 
-  if (!g_application.Create(params))
+  if (!g_application.Create())
   {
     CMessagePrinter::DisplayError("ERROR: Unable to create application. Exiting");
     return status;
@@ -67,7 +61,7 @@ extern "C" int XBMC_Run(bool renderGUI, const CAppParamParser &params)
   }
 #endif
 
-  status = g_application.Run(params);
+  status = g_application.Run();
 
 #ifdef TARGET_WINDOWS_DESKTOP
   // the end
@@ -84,12 +78,7 @@ extern "C" int XBMC_Run(bool renderGUI, const CAppParamParser &params)
   CXBMCApp::Get().Deinitialize();
 #endif
 
-  // Destroy settings and logging
-  CServiceBroker::GetLogging().UnregisterFromSettings();
-  CServiceBroker::GetSettingsComponent()->Deinitialize();
-  CServiceBroker::UnregisterSettingsComponent();
-  CServiceBroker::GetLogging().Uninitialize();
-  CServiceBroker::DestroyLogging();
+  CAppEnvironment::TearDown();
 
   return status;
 }

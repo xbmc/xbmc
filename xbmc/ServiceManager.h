@@ -12,8 +12,6 @@
 
 #include <memory>
 
-class CAppParamParser;
-
 namespace ADDON
 {
 class CAddonMgr;
@@ -96,7 +94,7 @@ public:
 
   bool InitForTesting();
   bool InitStageOne();
-  bool InitStageTwo(const CAppParamParser& params, const std::string& profilesUserDataFolder);
+  bool InitStageTwo(const std::string& profilesUserDataFolder);
   bool InitStageThree(const std::shared_ptr<CProfileManager>& profileManager);
   void DeinitTesting();
   void DeinitStageThree();

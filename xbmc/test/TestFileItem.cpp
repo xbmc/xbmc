@@ -6,7 +6,6 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "AppParamParser.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "URL.h"
@@ -40,7 +39,7 @@ AdvancedSettingsResetBase::AdvancedSettingsResetBase()
   const auto settings = CServiceBroker::GetSettingsComponent();
   CSettingsManager* settingsMgr = settings->GetSettings()->GetSettingsManager();
   settings->GetAdvancedSettings()->Uninitialize(*settingsMgr);
-  settings->GetAdvancedSettings()->Initialize(CAppParamParser(), *settingsMgr);
+  settings->GetAdvancedSettings()->Initialize(*settingsMgr);
 }
 
 class TestFileItemSpecifiedArtJpg : public AdvancedSettingsResetBase,

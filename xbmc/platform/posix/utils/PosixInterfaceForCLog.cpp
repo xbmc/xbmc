@@ -8,7 +8,8 @@
 
 #include "PosixInterfaceForCLog.h"
 
-#include "Application.h"
+#include "AppParams.h"
+#include "ServiceBroker.h"
 
 #include <spdlog/sinks/dist_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
@@ -23,6 +24,6 @@ std::unique_ptr<IPlatformLog> IPlatformLog::CreatePlatformLog()
 void CPosixInterfaceForCLog::AddSinks(
     std::shared_ptr<spdlog::sinks::dist_sink<std::mutex>> distributionSink) const
 {
-  if (g_application.GetLogTarget() == "console")
+  if (CServiceBroker::GetAppParams()->GetLogTarget() == "console")
     distributionSink->add_sink(std::make_shared<spdlog::sinks::stdout_color_sink_st>());
 }

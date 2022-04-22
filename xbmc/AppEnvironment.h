@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2022 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -12,4 +12,9 @@
 
 class CAppParams;
 
-extern "C" int XBMC_Run(bool renderGUI, const std::shared_ptr<CAppParams>& params);
+class CAppEnvironment
+{
+public:
+  static void SetUp(const std::shared_ptr<CAppParams>& appParams);
+  static void TearDown();
+};
