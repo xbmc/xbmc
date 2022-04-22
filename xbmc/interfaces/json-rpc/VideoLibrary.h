@@ -73,6 +73,12 @@ namespace JSONRPC
     static bool FillFileItemList(const CVariant &parameterObject, CFileItemList &list);
     static void UpdateResumePoint(const CVariant &parameterObject, CVideoInfoTag &details, CVideoDatabase &videodatabase);
 
+    /*! \brief Provided the JSON-RPC parameter object compute the VideoDbDetails mask
+    * \param parameterObject the JSON parameter mask
+    * \return the mask value for the requested properties
+    */
+    static int GetDetailsFromJsonParameters(const CVariant& parameterObject);
+
   private:
     static int RequiresAdditionalDetails(const MediaType& mediaType, const CVariant &parameterObject);
     static JSONRPC_STATUS HandleItems(const char *idProperty, const char *resultName, CFileItemList &items, const CVariant &parameterObject, CVariant &result, bool limit = true);

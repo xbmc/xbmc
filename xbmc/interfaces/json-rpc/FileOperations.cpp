@@ -84,6 +84,8 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const std::string &method, ITranspo
   {
     regexps = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoExcludeFromListingRegExps;
     extensions = CServiceBroker::GetFileExtensionProvider().GetVideoExtensions();
+    items.SetProperty("set_videodb_details",
+                      CVideoLibrary::GetDetailsFromJsonParameters(parameterObject));
   }
   else if (media == "music")
   {
