@@ -95,6 +95,14 @@ void CRenderer::Flush()
     Release(buffer);
 
   ReleaseCache();
+  Reset();
+}
+
+void CRenderer::Reset()
+{
+  m_subtitlePosition = 0;
+  m_subtitlePosResInfo = -1;
+  m_subtitleVerticalMargin = 0;
 }
 
 void CRenderer::Release(int idx)
