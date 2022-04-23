@@ -8,13 +8,15 @@
 
 #pragma once
 
+#include "platform/Platform.h"
+
 #include <map>
 #include <string>
 #include <vector>
 
 #include <alsa/asoundlib.h>
 
-class CALSAHControlMonitor
+class CALSAHControlMonitor : public IPlatformService
 {
 public:
   CALSAHControlMonitor();
