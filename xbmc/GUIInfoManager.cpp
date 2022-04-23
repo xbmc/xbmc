@@ -10409,7 +10409,7 @@ std::string CGUIInfoManager::GetLabel(int info, int contextWindow, std::string *
 {
   if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
   {
-    return GetSkinVariableString(info, false);
+    return GetSkinVariableString(info, contextWindow, false);
   }
   else if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
   {
@@ -10717,7 +10717,7 @@ std::string CGUIInfoManager::GetImage(int info, int contextWindow, std::string *
 {
   if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
   {
-    return GetSkinVariableString(info, true);
+    return GetSkinVariableString(info, contextWindow, true);
   }
   else if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
   {
@@ -10872,7 +10872,7 @@ std::string CGUIInfoManager::GetMultiInfoItemLabel(const CFileItem *item, int co
 
   if (info.m_info >= CONDITIONAL_LABEL_START && info.m_info <= CONDITIONAL_LABEL_END)
   {
-    return GetSkinVariableString(info.m_info, false, item);
+    return GetSkinVariableString(info.m_info, contextWindow, false, item);
   }
   else if (info.m_info >= MULTI_INFO_START && info.m_info <= MULTI_INFO_END)
   {
@@ -10996,7 +10996,7 @@ std::string CGUIInfoManager::GetMultiInfoItemImage(const CFileItem *item, int co
 {
   if (info.m_info >= CONDITIONAL_LABEL_START && info.m_info <= CONDITIONAL_LABEL_END)
   {
-    return GetSkinVariableString(info.m_info, true, item);
+    return GetSkinVariableString(info.m_info, contextWindow, true, item);
   }
   else if (info.m_info >= MULTI_INFO_START && info.m_info <= MULTI_INFO_END)
   {
@@ -11093,12 +11093,13 @@ int CGUIInfoManager::TranslateSkinVariableString(const std::string& name, int co
 }
 
 std::string CGUIInfoManager::GetSkinVariableString(int info,
+                                                   int contextWindow,
                                                    bool preferImage /*= false*/,
-                                                   const CGUIListItem *item /*= nullptr*/) const
+                                                   const CGUIListItem* item /*= nullptr*/) const
 {
   info -= CONDITIONAL_LABEL_START;
   if (info >= 0 && info < static_cast<int>(m_skinVariableStrings.size()))
-    return m_skinVariableStrings[info].GetValue(preferImage, item);
+    return m_skinVariableStrings[info].GetValue(contextWindow, preferImage, item);
 
   return "";
 }
