@@ -8,12 +8,14 @@
 
 #pragma once
 
+#include "platform/Platform.h"
+
 #include <string>
 #include <vector>
 
 #include <alsa/asoundlib.h>
 
-class CALSADeviceMonitor
+class CALSADeviceMonitor : public IPlatformService
 {
 public:
   CALSADeviceMonitor();
