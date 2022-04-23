@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 #include <string>
+#include <vector>
 
 typedef int DisplayMode;
 #define DM_WINDOWED     -1
@@ -92,6 +93,18 @@ public:
   static RESOLUTION ChooseBestResolution(float fps, int width, int height, bool is3D);
   static bool HasWhitelist();
   static void PrintWhitelist();
+
+  /*!
+   * \brief Get the whitelist resolutions
+   * \return The whitelist resolutions
+   */
+  static std::vector<RESOLUTION_INFO> GetWhitelist();
+
+  /*!
+   * \brief Get the allowed resolutions
+   * \return The allowed resolutions
+   */
+  static std::vector<RESOLUTION_INFO> GetAllowedResolutions();
 
 protected:
   static void FindResolutionFromWhitelist(float fps, int width, int height, bool is3D, RESOLUTION &resolution);

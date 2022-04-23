@@ -16,6 +16,13 @@ extern "C"
 {
 #endif /* __cplusplus */
 
+  struct KODI_GUI_RESOLUTION_INFO
+  {
+    int width;
+    int height;
+    float refresh_rate;
+  };
+
   typedef struct AddonToKodiFuncTable_kodi_gui_general
   {
     void (*lock)();
@@ -26,6 +33,12 @@ extern "C"
     int (*get_current_window_dialog_id)(KODI_HANDLE kodiBase);
     int (*get_current_window_id)(KODI_HANDLE kodiBase);
     ADDON_HARDWARE_CONTEXT (*get_hw_context)(KODI_HANDLE kodiBase);
+    void (*get_whitelist_resolutions)(KODI_HANDLE kodiBase,
+                                      KODI_GUI_RESOLUTION_INFO** list,
+                                      size_t* size);
+    void (*get_allowed_resolutions)(KODI_HANDLE kodiBase,
+                                    KODI_GUI_RESOLUTION_INFO** list,
+                                    size_t* size);
   } AddonToKodiFuncTable_kodi_gui_general;
 
 #ifdef __cplusplus

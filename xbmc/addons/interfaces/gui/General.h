@@ -51,6 +51,12 @@ extern "C"
     static int get_current_window_dialog_id(KODI_HANDLE kodiBase);
     static int get_current_window_id(KODI_HANDLE kodiBase);
     static ADDON_HARDWARE_CONTEXT get_hw_context(KODI_HANDLE kodiBase);
+    static void get_whitelist_resolutions(KODI_HANDLE kodiBase,
+                                          KODI_GUI_RESOLUTION_INFO** list,
+                                          size_t* size);
+    static void get_allowed_resolutions(KODI_HANDLE kodiBase,
+                                        KODI_GUI_RESOLUTION_INFO** list,
+                                        size_t* size);
     //@}
 
   private:

@@ -424,3 +424,36 @@ void CResolutionUtils::PrintWhitelist()
     CLog::Log(LOGDEBUG, "[WHITELIST] whitelisted modes:{}", modeStr);
   }
 }
+
+std::vector<RESOLUTION_INFO> CResolutionUtils::GetWhitelist()
+{
+  std::vector<RESOLUTION_INFO> resList;
+
+  auto indexList = CServiceBroker::GetSettingsComponent()->GetSettings()->GetList(
+      CSettings::SETTING_VIDEOSCREEN_WHITELIST);
+  if (!indexList.empty())
+  {
+    for (const auto& mode : indexList)
+    {
+      RESOLUTION i = CDisplaySettings::GetInstance().GetResFromString(mode.asString());
+      resList.emplace_back(CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(i));
+    }
+  }
+
+  return resList;
+}
+
+std::vector<RESOLUTION_INFO> CResolutionUtils::GetAllowedResolutions()
+{
+  std::vector<RESOLUTION_INFO> resList;
+  std::vector<RESOLUTION> resolutions;
+
+  CServiceBroker::GetWinSystem()->GetGfxContext().GetAllowedResolutions(resolutions);
+
+  for (const auto& res : resolutions)
+  {
+    resList.emplace_back(CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(res));
+  }
+
+  return resList;
+}

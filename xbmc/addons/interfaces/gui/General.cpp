@@ -38,6 +38,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
+#include "windowing/Resolution.h"
 
 #include <mutex>
 
@@ -85,6 +86,8 @@ void Interface_GUIGeneral::Init(AddonGlobalInterface* addonInterface)
       get_current_window_dialog_id;
   addonInterface->toKodi->kodi_gui->general->get_current_window_id = get_current_window_id;
   addonInterface->toKodi->kodi_gui->general->get_hw_context = get_hw_context;
+  addonInterface->toKodi->kodi_gui->general->get_whitelist_resolutions = get_whitelist_resolutions;
+  addonInterface->toKodi->kodi_gui->general->get_allowed_resolutions = get_allowed_resolutions;
 }
 
 void Interface_GUIGeneral::DeInit(AddonGlobalInterface* addonInterface)
@@ -210,6 +213,60 @@ int Interface_GUIGeneral::get_current_window_id(KODI_HANDLE kodiBase)
 ADDON_HARDWARE_CONTEXT Interface_GUIGeneral::get_hw_context(KODI_HANDLE kodiBase)
 {
   return CServiceBroker::GetWinSystem()->GetHWContext();
+}
+
+void Interface_GUIGeneral::get_whitelist_resolutions(KODI_HANDLE kodiBase,
+                                                     KODI_GUI_RESOLUTION_INFO** list,
+                                                     size_t* size)
+{
+  const std::vector<RESOLUTION_INFO> resList{CResolutionUtils::GetWhitelist()};
+  const size_t listSize{resList.size()};
+
+  if (listSize == 0)
+    return;
+
+  *list = (KODI_GUI_RESOLUTION_INFO*)malloc(listSize * sizeof(KODI_GUI_RESOLUTION_INFO));
+
+  if (*list == nullptr)
+    return;
+
+  *size = listSize;
+
+  for (size_t i{0}; i < listSize; i++)
+  {
+    const RESOLUTION_INFO& res{resList[i]};
+    KODI_GUI_RESOLUTION_INFO& guiRes{(*list)[i]};
+    guiRes.width = res.iWidth;
+    guiRes.height = res.iHeight;
+    guiRes.refresh_rate = res.fRefreshRate;
+  }
+}
+
+void Interface_GUIGeneral::get_allowed_resolutions(KODI_HANDLE kodiBase,
+                                                   KODI_GUI_RESOLUTION_INFO** list,
+                                                   size_t* size)
+{
+  const std::vector<RESOLUTION_INFO> resList{CResolutionUtils::GetAllowedResolutions()};
+  const size_t listSize{resList.size()};
+
+  if (listSize == 0)
+    return;
+
+  *list = (KODI_GUI_RESOLUTION_INFO*)malloc(listSize * sizeof(KODI_GUI_RESOLUTION_INFO));
+
+  if (*list == nullptr)
+    return;
+
+  *size = listSize;
+
+  for (size_t i{0}; i < listSize; i++)
+  {
+    const RESOLUTION_INFO& res{resList[i]};
+    KODI_GUI_RESOLUTION_INFO& guiRes{(*list)[i]};
+    guiRes.width = res.iWidth;
+    guiRes.height = res.iHeight;
+    guiRes.refresh_rate = res.fRefreshRate;
+  }
 }
 
 //@}

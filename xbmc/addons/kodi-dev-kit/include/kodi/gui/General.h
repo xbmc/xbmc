@@ -17,6 +17,45 @@ namespace kodi
 {
 namespace gui
 {
+//==============================================================================
+/// @ingroup cpp_kodi_gui_general
+/// @brief **Resolution info class**\n
+/// Used to provide the necessary data for the resolution info.
+///
+class ResolutionInfo : private KODI_GUI_RESOLUTION_INFO
+{
+public:
+  ResolutionInfo(int width, int height, float refreshRate)
+  {
+    this->width = width;
+    this->height = height;
+    this->refresh_rate = refreshRate;
+  }
+
+  ResolutionInfo(const KODI_GUI_RESOLUTION_INFO& data)
+  {
+    width = data.width;
+    height = data.height;
+    refresh_rate = data.refresh_rate;
+  }
+
+  ResolutionInfo()
+  {
+    width = -1;
+    height = -1;
+    refresh_rate = 0.0f;
+  }
+
+  void SetWidth(int width) { this->width = width; }
+  int GetWidth() const { return width; }
+
+  void SetHeight(int height) { this->height = height; }
+  int GetHeight() const { return height; }
+
+  void SetRefreshRate(float refreshRate) { this->refresh_rate = refreshRate; }
+  float GetRefreshRate() const { return refresh_rate; }
+};
+//------------------------------------------------------------------------------
 
 //==============================================================================
 /// @addtogroup cpp_kodi_gui_general
@@ -167,6 +206,90 @@ inline kodi::HardwareContext GetHWContext()
   using namespace ::kodi::addon;
   return CPrivateBase::m_interface->toKodi->kodi_gui->general->get_hw_context(
       CPrivateBase::m_interface->toKodi->kodiBase);
+}
+//------------------------------------------------------------------------------
+
+//==============================================================================
+/// @ingroup cpp_kodi_gui_general
+/// @brief Get the whitelist resolutions.
+///
+/// @return The whitelist resolutions
+///
+///
+///-------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/gui/General.h>
+/// ..
+/// std::vector<KODI_GUI_RESOLUTION_INFO> resList = kodi::gui::GetWhitelistResolutions();
+/// ..
+/// ~~~~~~~~~~~~~
+///
+inline std::vector<ResolutionInfo> GetWhitelistResolutions()
+{
+  using namespace ::kodi::addon;
+  std::vector<ResolutionInfo> resInfoList;
+  KODI_GUI_RESOLUTION_INFO* list{nullptr};
+  size_t size{0};
+
+  CPrivateBase::m_interface->toKodi->kodi_gui->general->get_whitelist_resolutions(
+      CPrivateBase::m_interface->toKodi->kodiBase, &list, &size);
+
+  if (list)
+  {
+    for (unsigned int i{0}; i < size; i++)
+    {
+      ResolutionInfo resInfo{list[i]};
+      resInfoList.emplace_back(resInfo);
+    }
+
+    free(list);
+  }
+
+  return resInfoList;
+}
+//------------------------------------------------------------------------------
+
+//==============================================================================
+/// @ingroup cpp_kodi_gui_general
+/// @brief Get the allowed resolutions.
+///
+/// @return The allowed resolutions
+///
+///
+///-------------------------------------------------------------------------
+///
+/// **Example:**
+/// ~~~~~~~~~~~~~{.cpp}
+/// #include <kodi/gui/General.h>
+/// ..
+/// std::vector<KODI_GUI_RESOLUTION_INFO> resList = kodi::gui::GetAllowedResolutions();
+/// ..
+/// ~~~~~~~~~~~~~
+///
+inline std::vector<ResolutionInfo> GetAllowedResolutions()
+{
+  using namespace ::kodi::addon;
+  std::vector<ResolutionInfo> resInfoList;
+  KODI_GUI_RESOLUTION_INFO* list{nullptr};
+  size_t size{0};
+
+  CPrivateBase::m_interface->toKodi->kodi_gui->general->get_allowed_resolutions(
+      CPrivateBase::m_interface->toKodi->kodiBase, &list, &size);
+
+  if (list)
+  {
+    for (unsigned int i{0}; i < size; i++)
+    {
+      ResolutionInfo resInfo{list[i]};
+      resInfoList.emplace_back(resInfo);
+    }
+
+    free(list);
+  }
+
+  return resInfoList;
 }
 //------------------------------------------------------------------------------
 
