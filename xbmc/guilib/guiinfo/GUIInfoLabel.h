@@ -26,13 +26,20 @@ namespace GUILIB
 namespace GUIINFO
 {
 
+/*! Default context for the infolabel */
+constexpr int DEFAULT_CONTEXT = 0;
+
 class CGUIInfoLabel
 {
 public:
   CGUIInfoLabel() = default;
-  CGUIInfoLabel(const std::string &label, const std::string &fallback = "", int context = 0);
+  CGUIInfoLabel(const std::string& label,
+                const std::string& fallback = "",
+                int context = DEFAULT_CONTEXT);
 
-  void SetLabel(const std::string &label, const std::string &fallback, int context = 0);
+  void SetLabel(const std::string& label,
+                const std::string& fallback,
+                int context = DEFAULT_CONTEXT);
 
   /*!
    \brief Gets a label (or image) for a given window context from the info manager.

@@ -184,7 +184,10 @@ private:
   std::string GetMultiInfoItemLabel(const CFileItem *item, int contextWindow, const KODI::GUILIB::GUIINFO::CGUIInfo &info, std::string *fallback = nullptr) const;
   std::string GetMultiInfoItemImage(const CFileItem *item, int contextWindow, const KODI::GUILIB::GUIINFO::CGUIInfo &info, std::string *fallback = nullptr) const;
 
-  std::string GetSkinVariableString(int info, bool preferImage = false, const CGUIListItem *item = nullptr) const;
+  std::string GetSkinVariableString(int info,
+                                    int contextWindow,
+                                    bool preferImage = false,
+                                    const CGUIListItem* item = nullptr) const;
 
   int AddMultiInfo(const KODI::GUILIB::GUIINFO::CGUIInfo &info);
 

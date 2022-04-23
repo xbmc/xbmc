@@ -31,7 +31,10 @@ class CSkinVariableString
 public:
   const std::string& GetName() const;
   int GetContext() const;
-  std::string GetValue(bool preferImage = false, const CGUIListItem *item = nullptr) const;
+  std::string GetValue(int contextWindow,
+                       bool preferImage = false,
+                       const CGUIListItem* item = nullptr) const;
+
 private:
   CSkinVariableString();
 

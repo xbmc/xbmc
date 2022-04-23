@@ -59,7 +59,9 @@ const std::string& CSkinVariableString::GetName() const
   return m_name;
 }
 
-std::string CSkinVariableString::GetValue(bool preferImage /* = false */, const CGUIListItem *item /* = nullptr */) const
+std::string CSkinVariableString::GetValue(int contextWindow,
+                                          bool preferImage /* = false */,
+                                          const CGUIListItem* item /* = nullptr */) const
 {
   for (const auto& it : m_conditionLabelPairs)
   {
@@ -68,7 +70,13 @@ std::string CSkinVariableString::GetValue(bool preferImage /* = false */, const 
       if (item)
         return it.m_label.GetItemLabel(item, preferImage);
       else
-        return it.m_label.GetLabel(m_context, preferImage);
+      {
+        // use propagated context in case this skin variable has the default context (i.e. if not tied to a specific window)
+        // nested skin variables are supported
+        return it.m_label.GetLabel(
+            m_context == KODI::GUILIB::GUIINFO::DEFAULT_CONTEXT ? contextWindow : m_context,
+            preferImage);
+      }
     }
   }
   return "";
