@@ -14,6 +14,7 @@
 #include "utils/log.h"
 #include "windowing/WinSystem.h"
 
+#include <stdexcept>
 #include <utility>
 
 using namespace KODI;
@@ -25,6 +26,24 @@ CServiceBroker::CServiceBroker()
 
 CServiceBroker::~CServiceBroker()
 {
+}
+
+std::shared_ptr<CAppParams> CServiceBroker::GetAppParams()
+{
+  if (!g_serviceBroker.m_appParams)
+    throw std::logic_error("AppParams not yet available / not available anymore.");
+
+  return g_serviceBroker.m_appParams;
+}
+
+void CServiceBroker::RegisterAppParams(const std::shared_ptr<CAppParams>& appParams)
+{
+  g_serviceBroker.m_appParams = appParams;
+}
+
+void CServiceBroker::UnregisterAppParams()
+{
+  g_serviceBroker.m_appParams.reset();
 }
 
 CLog& CServiceBroker::GetLogging()

@@ -8,6 +8,7 @@
 
 #include "AppParamParserLinux.h"
 
+#include "AppParams.h"
 #include "CompileInfo.h"
 #include "utils/StringUtils.h"
 
@@ -59,7 +60,7 @@ void CAppParamParserLinux::ParseArg(const std::string& arg)
   {
     if (std::find(availableWindowSystems.begin(), availableWindowSystems.end(), arg.substr(12)) !=
         availableWindowSystems.end())
-      m_windowing = arg.substr(12);
+      GetAppParams()->SetWindowing(arg.substr(12));
     else
     {
       std::cout << StringUtils::Format(windowingText, arg.substr(12),
@@ -72,7 +73,7 @@ void CAppParamParserLinux::ParseArg(const std::string& arg)
     if (std::find(availableLogTargets.begin(), availableLogTargets.end(), arg.substr(10)) !=
         availableLogTargets.end())
     {
-      m_logTarget = arg.substr(10);
+      GetAppParams()->SetLogTarget(arg.substr(10));
     }
     else
     {

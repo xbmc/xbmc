@@ -127,7 +127,7 @@ class TestRegExpLog : public testing::Test
 {
 protected:
   TestRegExpLog() = default;
-  ~TestRegExpLog() override { CServiceBroker::GetLogging().Uninitialize(); }
+  ~TestRegExpLog() override { CServiceBroker::GetLogging().Deinitialize(); }
 };
 
 TEST_F(TestRegExpLog, DumpOvector)
@@ -148,7 +148,7 @@ TEST_F(TestRegExpLog, DumpOvector)
   EXPECT_TRUE(regex.RegComp("^(?<first>Test)\\s*(?<second>.*)\\."));
   EXPECT_EQ(0, regex.RegFind("Test string."));
   regex.DumpOvector(LOGDEBUG);
-  CServiceBroker::GetLogging().Uninitialize();
+  CServiceBroker::GetLogging().Deinitialize();
 
   EXPECT_TRUE(file.Open(logfile));
   while ((bytesread = file.Read(buf, sizeof(buf) - 1)) > 0)

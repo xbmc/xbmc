@@ -61,7 +61,7 @@ public:
 
   void Initialize(const std::string& path);
   void UnregisterFromSettings();
-  void Uninitialize();
+  void Deinitialize();
 
   void SetLogLevel(int level);
   int GetLogLevel() { return m_logLevel; }

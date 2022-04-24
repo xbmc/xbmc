@@ -8,7 +8,8 @@
 
 #import "platform/darwin/tvos/XBMCController.h"
 
-#include "AppParamParser.h"
+#include "AppEnvironment.h"
+#include "AppParams.h"
 #include "Application.h"
 #include "CompileInfo.h"
 #include "FileItem.h"
@@ -380,14 +381,9 @@ int KODI_Run(bool renderGUI)
 {
   int status = -1;
 
-  // Create logging and settings
-  CServiceBroker::CreateLogging();
-  CAppParamParser appParamParser; //! @todo : proper params
-  const auto settingsComponent = std::make_shared<CSettingsComponent>();
-  settingsComponent->Initialize(appParamParser);
-  CServiceBroker::RegisterSettingsComponent(settingsComponent);
+  CAppEnvironment::SetUp(std::make_shared<CAppParams>()); //! @todo : proper params
 
-  if (!g_application.Create(appParamParser))
+  if (!g_application.Create())
   {
     CLog::Log(LOGERROR, "ERROR: Unable to create application. Exiting");
     return status;
@@ -428,7 +424,7 @@ int KODI_Run(bool renderGUI)
 
   try
   {
-    status = g_application.Run(appParamParser);
+    status = g_application.Run();
   }
   catch (...)
   {
@@ -436,12 +432,7 @@ int KODI_Run(bool renderGUI)
     status = -1;
   }
 
-  // Destroy settings and logging
-  CServiceBroker::GetLogging().UnregisterFromSettings();
-  CServiceBroker::GetSettingsComponent()->Deinitialize();
-  CServiceBroker::UnregisterSettingsComponent();
-  CServiceBroker::GetLogging().Uninitialize();
-  CServiceBroker::DestroyLogging();
+  CAppEnvironment::TearDown();
 
   return status;
 }

@@ -8,6 +8,7 @@
 
 #include "guilib/guiinfo/SystemGUIInfo.h"
 
+#include "AppParams.h"
 #include "Application.h"
 #include "GUIPassword.h"
 #include "LangInfo.h"
@@ -597,7 +598,7 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       value = CServiceBroker::GetWinSystem()->IsFullScreen();
       return true;
     case SYSTEM_ISSTANDALONE:
-      value = g_application.IsStandAlone();
+      value = CServiceBroker::GetAppParams()->IsStandAlone();
       return true;
     case SYSTEM_IDLE_SHUTDOWN_INHIBITED:
       value = g_application.IsIdleShutdownInhibited();
