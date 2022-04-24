@@ -451,8 +451,6 @@ constexpr const char* CSettings::SETTING_GENERAL_ADDONBROKENFILTER;
 constexpr const char* CSettings::SETTING_SOURCE_VIDEOS;
 constexpr const char* CSettings::SETTING_SOURCE_MUSIC;
 constexpr const char* CSettings::SETTING_SOURCE_PICTURES;
-constexpr const char* CSettings::SETTING_OSD_AUTOCLOSEVIDEOOSD;
-constexpr const char* CSettings::SETTING_OSD_AUTOCLOSEVIDEOOSDTIME;
 //! @todo: remove in c++17
 
 bool CSettings::Initialize()
