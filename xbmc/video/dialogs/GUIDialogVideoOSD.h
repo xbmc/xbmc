@@ -18,7 +18,6 @@ public:
   ~CGUIDialogVideoOSD(void) override;
 
   void FrameMove() override;
-  void OnInitWindow() override;
   bool OnMessage(CGUIMessage& message) override;
   bool OnAction(const CAction &action) override;
 protected:

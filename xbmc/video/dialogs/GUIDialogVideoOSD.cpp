@@ -60,19 +60,6 @@ bool CGUIDialogVideoOSD::OnAction(const CAction &action)
   return CGUIDialog::OnAction(action);
 }
 
-void CGUIDialogVideoOSD::OnInitWindow()
-{
-  std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-  if (settings)
-  {
-    if (settings->GetBool(CSettings::SETTING_OSD_AUTOCLOSEVIDEOOSD))
-    {
-      SetAutoClose(settings->GetInt(CSettings::SETTING_OSD_AUTOCLOSEVIDEOOSDTIME) * 1000);
-    }
-  }
-  CGUIDialog::OnInitWindow();
-}
-
 EVENT_RESULT CGUIDialogVideoOSD::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
   if (event.m_id == ACTION_MOUSE_WHEEL_UP)
