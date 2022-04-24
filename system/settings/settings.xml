@@ -2966,7 +2966,7 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
-        <setting id="audiooutput.guisoundvolume" type="integer" label="13376" help="39181">
+        <setting id="audiooutput.guisoundvolume" type="integer" label="13376" help="39176">
           <level>1</level>
           <default>100</default>
           <control type="slider" format="percentage" range="0,100" />
