@@ -1073,7 +1073,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       viewType = VIEW_TYPE_BIG_INFO;
     const char *label = itemElement->Attribute("label");
     if (label)
-      viewLabel = GUIINFO::CGUIInfoLabel::GetLabel(FilterLabel(label));
+      viewLabel = GUIINFO::CGUIInfoLabel::GetLabel(FilterLabel(label), INFO::DEFAULT_CONTEXT);
   }
 
   TiXmlElement *cam = pControlNode->FirstChildElement("camera");

@@ -233,7 +233,8 @@ void CGUIIncludes::LoadIncludes(const TiXmlElement *node)
 
       if (condition)
       { // load include file if condition evals to true
-        if (CServiceBroker::GetGUI()->GetInfoManager().Register(condition)->Get())
+        if (CServiceBroker::GetGUI()->GetInfoManager().Register(condition)->Get(
+                INFO::DEFAULT_CONTEXT))
           Load_Internal(file);
       }
       else
@@ -414,7 +415,7 @@ void CGUIIncludes::ResolveIncludes(TiXmlElement *node, std::map<INFO::InfoPtr, b
     if (condition)
     {
       INFO::InfoPtr conditionID = CServiceBroker::GetGUI()->GetInfoManager().Register(ResolveExpressions(condition));
-      bool value = conditionID->Get();
+      bool value = conditionID->Get(INFO::DEFAULT_CONTEXT);
 
       if (xmlIncludeConditions)
         xmlIncludeConditions->insert(std::make_pair(conditionID, value));

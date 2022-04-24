@@ -479,7 +479,7 @@ CPoint CGUIWindow::GetPosition() const
   for (unsigned int i = 0; i < m_origins.size(); i++)
   {
     // no condition implies true
-    if (!m_origins[i].condition || m_origins[i].condition->Get())
+    if (!m_origins[i].condition || m_origins[i].condition->Get(INFO::DEFAULT_CONTEXT))
     { // found origin
       return CPoint(m_origins[i].x, m_origins[i].y);
     }

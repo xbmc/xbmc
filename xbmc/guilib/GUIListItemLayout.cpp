@@ -68,7 +68,7 @@ void CGUIListItemLayout::Process(CGUIListItem *item, int parentID, unsigned int 
     // could use a dynamic cast here if RTTI was enabled.  As it's not,
     // let's use a static cast with a virtual base function
     CFileItem *fileItem = item->IsFileItem() ? static_cast<CFileItem*>(item) : new CFileItem(*item);
-    m_isPlaying.Update(item);
+    m_isPlaying.Update(INFO::DEFAULT_CONTEXT, item);
     m_group.SetInvalid();
     m_group.UpdateInfo(fileItem);
     // delete our temporary fileitem
@@ -79,7 +79,7 @@ void CGUIListItemLayout::Process(CGUIListItem *item, int parentID, unsigned int 
   }
   else if (m_infoUpdateTimeout.IsTimePast())
   {
-    m_isPlaying.Update(item);
+    m_isPlaying.Update(INFO::DEFAULT_CONTEXT, item);
     m_group.UpdateInfo(item);
 
     m_infoUpdateTimeout.Set(m_infoUpdateMillis);
@@ -143,7 +143,7 @@ bool CGUIListItemLayout::MoveRight()
 
 bool CGUIListItemLayout::CheckCondition()
 {
-  return !m_condition || m_condition->Get();
+  return !m_condition || m_condition->Get(INFO::DEFAULT_CONTEXT);
 }
 
 void CGUIListItemLayout::LoadControl(TiXmlElement *child, CGUIControlGroup *group)

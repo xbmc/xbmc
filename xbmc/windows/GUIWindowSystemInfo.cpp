@@ -77,7 +77,8 @@ bool CGUIWindowSystemInfo::OnMessage(CGUIMessage& message)
         SET_CONTROL_HIDDEN(CONTROL_TB_POLICY);
       else if (m_section == CONTROL_BT_POLICY)
       {
-        SET_CONTROL_LABEL(CONTROL_TB_POLICY, CServiceBroker::GetGUI()->GetInfoManager().GetLabel(SYSTEM_PRIVACY_POLICY));
+        SET_CONTROL_LABEL(CONTROL_TB_POLICY, CServiceBroker::GetGUI()->GetInfoManager().GetLabel(
+                                                 SYSTEM_PRIVACY_POLICY, INFO::DEFAULT_CONTEXT));
         SET_CONTROL_VISIBLE(CONTROL_TB_POLICY);
       }
       return true;
@@ -117,7 +118,8 @@ void CGUIWindowSystemInfo::FrameMove()
   else if (m_section == CONTROL_BT_NETWORK)
   {
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20158));
-    SET_CONTROL_LABEL(i++, CServiceBroker::GetGUI()->GetInfoManager().GetLabel(NETWORK_LINK_STATE));
+    SET_CONTROL_LABEL(i++, CServiceBroker::GetGUI()->GetInfoManager().GetLabel(
+                               NETWORK_LINK_STATE, INFO::DEFAULT_CONTEXT));
     SetControlLabel(i++, "{}: {}", 149, NETWORK_MAC_ADDRESS);
     SetControlLabel(i++, "{}: {}", 150, NETWORK_IP_ADDRESS);
     SetControlLabel(i++, "{}: {}", 13159, NETWORK_SUBNET_MASK);
@@ -130,7 +132,8 @@ void CGUIWindowSystemInfo::FrameMove()
   else if (m_section == CONTROL_BT_VIDEO)
   {
     SET_CONTROL_LABEL(40,g_localizeStrings.Get(20159));
-    SET_CONTROL_LABEL(i++,CServiceBroker::GetGUI()->GetInfoManager().GetLabel(SYSTEM_VIDEO_ENCODER_INFO));
+    SET_CONTROL_LABEL(i++, CServiceBroker::GetGUI()->GetInfoManager().GetLabel(
+                               SYSTEM_VIDEO_ENCODER_INFO, INFO::DEFAULT_CONTEXT));
     SetControlLabel(i++, "{} {}", 13287, SYSTEM_SCREEN_RESOLUTION);
 
     auto renderingSystem = CServiceBroker::GetRenderSystem();
@@ -162,8 +165,8 @@ void CGUIWindowSystemInfo::FrameMove()
 
     SetControlLabel(i++, "{} {}", 22010, SYSTEM_GPU_TEMPERATURE);
 
-    const std::string hdrTypes =
-        CServiceBroker::GetGUI()->GetInfoManager().GetLabel(SYSTEM_SUPPORTED_HDR_TYPES);
+    const std::string hdrTypes = CServiceBroker::GetGUI()->GetInfoManager().GetLabel(
+        SYSTEM_SUPPORTED_HDR_TYPES, INFO::DEFAULT_CONTEXT);
     SET_CONTROL_LABEL(
         i++, StringUtils::Format("{}: {}", g_localizeStrings.Get(39174),
                                  hdrTypes.empty() ? g_localizeStrings.Get(231) : hdrTypes));
@@ -250,8 +253,8 @@ void CGUIWindowSystemInfo::ResetLabels()
 
 void CGUIWindowSystemInfo::SetControlLabel(int id, const char *format, int label, int info)
 {
-  std::string tmpStr =
-      StringUtils::Format(format, g_localizeStrings.Get(label),
-                          CServiceBroker::GetGUI()->GetInfoManager().GetLabel(info));
+  std::string tmpStr = StringUtils::Format(
+      format, g_localizeStrings.Get(label),
+      CServiceBroker::GetGUI()->GetInfoManager().GetLabel(info, INFO::DEFAULT_CONTEXT));
   SET_CONTROL_LABEL(id, tmpStr);
 }

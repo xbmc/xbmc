@@ -98,7 +98,7 @@ bool CGUIStaticItem::UpdateVisibility(int contextWindow)
 {
   if (!m_visCondition)
     return false;
-  bool state = m_visCondition->Get();
+  bool state = m_visCondition->Get(contextWindow);
   if (state != m_visState)
   {
     m_visState = state;

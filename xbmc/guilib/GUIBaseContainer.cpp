@@ -1187,7 +1187,7 @@ void CGUIBaseContainer::ResetAutoScrolling()
 
 void CGUIBaseContainer::UpdateAutoScrolling(unsigned int currentTime)
 {
-  if (m_autoScrollCondition && m_autoScrollCondition->Get())
+  if (m_autoScrollCondition && m_autoScrollCondition->Get(INFO::DEFAULT_CONTEXT))
   {
     if (m_lastRenderTime)
       m_autoScrollDelayTime += currentTime - m_lastRenderTime;

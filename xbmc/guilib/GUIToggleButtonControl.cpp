@@ -26,7 +26,7 @@ void CGUIToggleButtonControl::Process(unsigned int currentTime, CDirtyRegionList
 {
   // ask our infoManager whether we are selected or not...
   if (m_toggleSelect)
-    m_bSelected = m_toggleSelect->Get();
+    m_bSelected = m_toggleSelect->Get(INFO::DEFAULT_CONTEXT);
 
   if (m_bSelected)
   {

@@ -528,7 +528,7 @@ void CGUIControl::SetVisible(bool bVisible, bool setVisState)
      //!       otherwise we just set m_forceHidden
     GUIVISIBLE visible;
     if (m_visibleCondition)
-      visible = m_visibleCondition->Get() ? VISIBLE : HIDDEN;
+      visible = m_visibleCondition->Get(INFO::DEFAULT_CONTEXT) ? VISIBLE : HIDDEN;
     else
       visible = VISIBLE;
     if (visible != m_visible)
@@ -593,7 +593,7 @@ void CGUIControl::UpdateVisibility(const CGUIListItem *item)
   if (m_visibleCondition)
   {
     bool bWasVisible = m_visibleFromSkinCondition;
-    m_visibleFromSkinCondition = m_visibleCondition->Get(item);
+    m_visibleFromSkinCondition = m_visibleCondition->Get(INFO::DEFAULT_CONTEXT, item);
     if (!bWasVisible && m_visibleFromSkinCondition)
     { // automatic change of visibility - queue the in effect
       //    CLog::Log(LOGDEBUG, "Visibility changed to visible for control id {}", m_controlID);
@@ -616,12 +616,12 @@ void CGUIControl::UpdateVisibility(const CGUIListItem *item)
   // this may need to be reviewed at a later date
   bool enabled = m_enabled;
   if (m_enableCondition)
-    m_enabled = m_enableCondition->Get(item);
+    m_enabled = m_enableCondition->Get(INFO::DEFAULT_CONTEXT, item);
 
   if (m_enabled != enabled)
     MarkDirtyRegion();
 
-  m_allowHiddenFocus.Update(item);
+  m_allowHiddenFocus.Update(INFO::DEFAULT_CONTEXT, item);
   if (UpdateColors(item))
     MarkDirtyRegion();
   // and finally, update our control information (if not pushed)
@@ -638,7 +638,7 @@ void CGUIControl::SetInitialVisibility()
 {
   if (m_visibleCondition)
   {
-    m_visibleFromSkinCondition = m_visibleCondition->Get();
+    m_visibleFromSkinCondition = m_visibleCondition->Get(INFO::DEFAULT_CONTEXT);
     m_visible = m_visibleFromSkinCondition ? VISIBLE : HIDDEN;
     //  CLog::Log(LOGDEBUG, "Set initial visibility for control {}: {}", m_controlID, m_visible == VISIBLE ? "visible" : "hidden");
   }
@@ -654,8 +654,8 @@ void CGUIControl::SetInitialVisibility()
   // and check for conditional enabling - note this overrides SetEnabled() from the code currently
   // this may need to be reviewed at a later date
   if (m_enableCondition)
-    m_enabled = m_enableCondition->Get();
-  m_allowHiddenFocus.Update();
+    m_enabled = m_enableCondition->Get(INFO::DEFAULT_CONTEXT);
+  m_allowHiddenFocus.Update(INFO::DEFAULT_CONTEXT);
   UpdateColors(nullptr);
 
   MarkDirtyRegion();

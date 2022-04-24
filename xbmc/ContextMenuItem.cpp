@@ -20,7 +20,6 @@
 #include "ServiceBroker.h"
 #include "utils/StringUtils.h"
 
-
 bool CContextMenuItem::IsVisible(const CFileItem& item) const
 {
   if (!m_infoBoolRegistered)
@@ -28,7 +27,7 @@ bool CContextMenuItem::IsVisible(const CFileItem& item) const
     m_infoBool = CServiceBroker::GetGUI()->GetInfoManager().Register(m_visibilityCondition, 0);
     m_infoBoolRegistered = true;
   }
-  return IsGroup() || (m_infoBool && m_infoBool->Get(&item));
+  return IsGroup() || (m_infoBool && m_infoBool->Get(INFO::DEFAULT_CONTEXT, &item));
 }
 
 bool CContextMenuItem::IsParentOf(const CContextMenuItem& other) const

@@ -57,7 +57,7 @@ int CGUIAction::GetNavigation() const
   {
     if (StringUtils::IsInteger(i.action))
     {
-      if (i.condition.empty() || infoMgr.EvaluateBool(i.condition))
+      if (i.condition.empty() || infoMgr.EvaluateBool(i.condition, INFO::DEFAULT_CONTEXT))
         return atoi(i.action.c_str());
     }
   }
@@ -87,7 +87,7 @@ bool CGUIAction::HasActionsMeetingCondition() const
   CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
   for (const auto &i : m_actions)
   {
-    if (i.condition.empty() || infoMgr.EvaluateBool(i.condition))
+    if (i.condition.empty() || infoMgr.EvaluateBool(i.condition, INFO::DEFAULT_CONTEXT))
       return true;
   }
   return false;

@@ -9799,7 +9799,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
           {
             int data1 = TranslateSingleString(prop.param(0), listItemDependent);
             // pipe our original string through the localize parsing then make it lowercase (picks up $LBRACKET etc.)
-            std::string label = CGUIInfoLabel::GetLabel(prop.param(1));
+            std::string label = CGUIInfoLabel::GetLabel(prop.param(1), INFO::DEFAULT_CONTEXT);
             StringUtils::ToLower(label);
             // 'true', 'false', 'yes', 'no' are valid strings, do not resolve them to SYSTEM_ALWAYS_TRUE or SYSTEM_ALWAYS_FALSE
             if (label != "true" && label != "false" && label != "yes" && label != "no")
@@ -9939,7 +9939,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
           int infoLabel = TranslateSingleString(param, listItemDependent);
           if (infoLabel > 0)
             return AddMultiInfo(CGUIInfo(SYSTEM_ADDON_TITLE, infoLabel, 0));
-          std::string label = CGUIInfoLabel::GetLabel(param);
+          std::string label = CGUIInfoLabel::GetLabel(param, INFO::DEFAULT_CONTEXT);
           StringUtils::ToLower(label);
           return AddMultiInfo(CGUIInfo(SYSTEM_ADDON_TITLE, label, 1));
         }
@@ -9948,7 +9948,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
           int infoLabel = TranslateSingleString(param, listItemDependent);
           if (infoLabel > 0)
             return AddMultiInfo(CGUIInfo(SYSTEM_ADDON_ICON, infoLabel, 0));
-          std::string label = CGUIInfoLabel::GetLabel(param);
+          std::string label = CGUIInfoLabel::GetLabel(param, INFO::DEFAULT_CONTEXT);
           StringUtils::ToLower(label);
           return AddMultiInfo(CGUIInfo(SYSTEM_ADDON_ICON, label, 1));
         }
@@ -9957,7 +9957,7 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
           int infoLabel = TranslateSingleString(param, listItemDependent);
           if (infoLabel > 0)
             return AddMultiInfo(CGUIInfo(SYSTEM_ADDON_VERSION, infoLabel, 0));
-          std::string label = CGUIInfoLabel::GetLabel(param);
+          std::string label = CGUIInfoLabel::GetLabel(param, INFO::DEFAULT_CONTEXT);
           StringUtils::ToLower(label);
           return AddMultiInfo(CGUIInfo(SYSTEM_ADDON_VERSION, label, 1));
         }
@@ -10565,7 +10565,7 @@ bool CGUIInfoManager::EvaluateBool(const std::string &expression, int contextWin
 {
   INFO::InfoPtr info = Register(expression, contextWindow);
   if (info)
-    return info->Get(item.get());
+    return info->Get(contextWindow, item.get());
   return false;
 }
 
@@ -10592,7 +10592,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   {
     // default: use integer value different from 0 as true
     int val;
-    bReturn = GetInt(val, condition) && val != 0;
+    bReturn = GetInt(val, condition, DEFAULT_CONTEXT) && val != 0;
   }
 
   return (condition1 < 0) ? !bReturn : bReturn;
@@ -11210,7 +11210,7 @@ bool CGUIInfoManager::ConditionsChangedValues(const std::map<INFO::InfoPtr, bool
 {
   for (std::map<INFO::InfoPtr, bool>::const_iterator it = map.begin() ; it != map.end() ; ++it)
   {
-    if (it->first->Get() != it->second)
+    if (it->first->Get(INFO::DEFAULT_CONTEXT) != it->second)
       return true;
   }
   return false;
@@ -11231,7 +11231,7 @@ void CGUIInfoManager::OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg)
     {
       auto infoLabels = static_cast<std::vector<std::string>*>(pMsg->lpVoid);
       for (auto& param : pMsg->params)
-        infoLabels->emplace_back(GetLabel(TranslateString(param)));
+        infoLabels->emplace_back(GetLabel(TranslateString(param), DEFAULT_CONTEXT));
     }
   }
   break;
@@ -11242,7 +11242,7 @@ void CGUIInfoManager::OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg)
     {
       auto infoLabels = static_cast<std::vector<bool>*>(pMsg->lpVoid);
       for (auto& param : pMsg->params)
-        infoLabels->push_back(EvaluateBool(param));
+        infoLabels->push_back(EvaluateBool(param, DEFAULT_CONTEXT));
     }
   }
   break;

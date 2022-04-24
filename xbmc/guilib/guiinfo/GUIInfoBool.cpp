@@ -30,12 +30,12 @@ void CGUIInfoBool::Parse(const std::string &expression, int context)
   else
   {
     m_info = CServiceBroker::GetGUI()->GetInfoManager().Register(expression, context);
-    Update();
+    Update(context);
   }
 }
 
-void CGUIInfoBool::Update(const CGUIListItem *item /*= NULL*/)
+void CGUIInfoBool::Update(int contextWindow, const CGUIListItem* item /*= nullptr*/)
 {
   if (m_info)
-    m_value = m_info->Get(item);
+    m_value = m_info->Get(contextWindow, item);
 }
