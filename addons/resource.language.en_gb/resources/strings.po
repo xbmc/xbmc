@@ -23059,16 +23059,14 @@ msgctxt "#39174"
 msgid "Display supported HDR types"
 msgstr ""
 
-#empty string 39175-39179
-
 #. Progress text on splash screen, to build the font cache
 #: xbmc/Application.cpp
-msgctxt "#39180"
+msgctxt "#39175"
 msgid "Building font cache in progress - please wait"
 msgstr ""
 
 #. Helper text for gui sound volume setting
 #: system/settings/settings.xml
-msgctxt "#39181"
+msgctxt "#39176"
 msgid "Relative volume for gui sounds"
 msgstr ""
