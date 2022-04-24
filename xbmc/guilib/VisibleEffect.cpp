@@ -569,14 +569,14 @@ CAnimation CAnimation::CreateFader(float start, float end, unsigned int delay, u
 
 bool CAnimation::CheckCondition()
 {
-  return !m_condition || m_condition->Get();
+  return !m_condition || m_condition->Get(INFO::DEFAULT_CONTEXT);
 }
 
 void CAnimation::UpdateCondition(const CGUIListItem *item)
 {
   if (!m_condition)
     return;
-  bool condition = m_condition->Get(item);
+  bool condition = m_condition->Get(INFO::DEFAULT_CONTEXT, item);
   if (condition && !m_lastCondition)
     QueueAnimation(ANIM_PROCESS_NORMAL);
   else if (!condition && m_lastCondition)
@@ -591,7 +591,7 @@ void CAnimation::UpdateCondition(const CGUIListItem *item)
 
 void CAnimation::SetInitialCondition()
 {
-  m_lastCondition = m_condition ? m_condition->Get() : false;
+  m_lastCondition = m_condition ? m_condition->Get(INFO::DEFAULT_CONTEXT) : false;
   if (m_lastCondition)
     ApplyAnimation();
   else

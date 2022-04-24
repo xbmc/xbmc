@@ -65,17 +65,16 @@ std::string CSkinVariableString::GetValue(int contextWindow,
 {
   for (const auto& it : m_conditionLabelPairs)
   {
-    if (!it.m_condition || it.m_condition->Get(item))
+    // use propagated context in case this skin variable has the default context (i.e. if not tied to a specific window)
+    // nested skin variables are supported
+    int context = m_context == INFO::DEFAULT_CONTEXT ? contextWindow : m_context;
+    if (!it.m_condition || it.m_condition->Get(context, item))
     {
       if (item)
         return it.m_label.GetItemLabel(item, preferImage);
       else
       {
-        // use propagated context in case this skin variable has the default context (i.e. if not tied to a specific window)
-        // nested skin variables are supported
-        return it.m_label.GetLabel(
-            m_context == KODI::GUILIB::GUIINFO::DEFAULT_CONTEXT ? contextWindow : m_context,
-            preferImage);
+        return it.m_label.GetLabel(context, preferImage);
       }
     }
   }

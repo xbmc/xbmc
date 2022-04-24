@@ -29,15 +29,16 @@ public:
 
   /*! \brief Get the value of this info bool
    This is called to update (if dirty) and fetch the value of the info bool
+   \param contextWindow the context (window id) where this condition is being evaluated
    \param item the item used to evaluate the bool
    */
-  inline bool Get(const CGUIListItem *item = NULL)
+  inline bool Get(int contextWindow, const CGUIListItem* item = nullptr)
   {
     if (item && m_listItemDependent)
-      Update(item);
+      Update(contextWindow, item);
     else if (m_refreshCounter != m_parentRefreshCounter || m_refreshCounter == 0)
     {
-      Update(NULL);
+      Update(contextWindow, nullptr);
       m_refreshCounter = m_parentRefreshCounter;
     }
     return m_value;
@@ -62,7 +63,7 @@ public:
   /*! \brief Update the value of this info bool
    This is called if and only if the info bool is dirty, allowing it to update it's current value
    */
-  virtual void Update(const CGUIListItem* item) {}
+  virtual void Update(int contextWindow, const CGUIListItem* item) {}
 
   const std::string &GetExpression() const { return m_expression; }
   bool ListItemDependent() const { return m_listItemDependent; }

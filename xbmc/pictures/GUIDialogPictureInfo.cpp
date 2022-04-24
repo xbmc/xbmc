@@ -91,7 +91,8 @@ void CGUIDialogPictureInfo::UpdatePictureInfo()
     if (info == SLIDESHOW_EXIF_DATE || info == SLIDESHOW_EXIF_LONG_DATE || info == SLIDESHOW_EXIF_LONG_DATE_TIME )
       continue;
 
-    std::string picInfo = CServiceBroker::GetGUI()->GetInfoManager().GetLabel(info);
+    std::string picInfo =
+        CServiceBroker::GetGUI()->GetInfoManager().GetLabel(info, INFO::DEFAULT_CONTEXT);
     if (!picInfo.empty())
     {
       CFileItemPtr item(new CFileItem(g_localizeStrings.Get(SLIDESHOW_STRING_BASE + info)));

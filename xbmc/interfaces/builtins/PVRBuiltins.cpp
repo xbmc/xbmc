@@ -66,10 +66,12 @@ static int SeekPercentage(const std::vector<std::string>& params)
       CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
 
       int iTimeshiftProgressDuration = 0;
-      infoMgr.GetInt(iTimeshiftProgressDuration, PVR_TIMESHIFT_PROGRESS_DURATION);
+      infoMgr.GetInt(iTimeshiftProgressDuration, PVR_TIMESHIFT_PROGRESS_DURATION,
+                     INFO::DEFAULT_CONTEXT);
 
       int iTimeshiftBufferStart = 0;
-      infoMgr.GetInt(iTimeshiftBufferStart, PVR_TIMESHIFT_PROGRESS_BUFFER_START);
+      infoMgr.GetInt(iTimeshiftBufferStart, PVR_TIMESHIFT_PROGRESS_BUFFER_START,
+                     INFO::DEFAULT_CONTEXT);
 
       float fPlayerPercentage = static_cast<float>(iTimeshiftProgressDuration) /
                                 static_cast<float>(g_application.GetTotalTime()) *
