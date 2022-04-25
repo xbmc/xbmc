@@ -654,7 +654,7 @@ bool CApplication::Initialize()
     guiFontManager.Initialize();
     event.Set();
   });
-  localizedStr = g_localizeStrings.Get(39180);
+  localizedStr = g_localizeStrings.Get(39175);
   iDots = 1;
   while (!event.Wait(1000ms))
   {

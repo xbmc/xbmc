@@ -2966,7 +2966,7 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
-        <setting id="audiooutput.guisoundvolume" type="integer" label="13376" help="39181">
+        <setting id="audiooutput.guisoundvolume" type="integer" label="13376" help="39176">
           <level>1</level>
           <default>100</default>
           <control type="slider" format="percentage" range="0,100" />
@@ -3705,31 +3705,6 @@
           <control type="button" format="action">
             <hidevalue>true</hidevalue>
           </control>
-        </setting>
-      </group>
-    </category>
-    <category id="osd" label="478" help="39175">
-      <group id="1" label="157">
-        <setting id="osd.autoclosevideoosd" type="boolean" label="39176" help="39177">
-          <level>0</level>
-          <default>true</default>
-          <control type="toggle" />
-          <dependencies>
-            <dependency type="enable" on="property" operator="!is" name="isplaying" />
-          </dependencies>
-        </setting>
-        <setting id="osd.autoclosevideoosdtime" type="integer" parent="osd.autoclosevideoosd" label="39178" help="39179">
-          <level>2</level>
-          <default>5</default>
-          <constraints>
-            <minimum>2</minimum>
-            <step>1</step>
-            <maximum>60</maximum>
-          </constraints>
-          <dependencies>
-            <dependency type="visible" setting="osd.autoclosevideoosd">true</dependency>
-          </dependencies>
-          <control type="slider" format="integer" />
         </setting>
       </group>
     </category>
