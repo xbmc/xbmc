@@ -1,0 +1,7 @@
+LIBNAME=fontconfig
+VERSION=2.14.0
+ARCHIVE=$(LIBNAME)-$(VERSION).tar.xz
+SHA512=a5257249d031b3cd1a7b1521cd58f48d235a970020da4136a727db5407ec98e74a3776bc467d7e39f30ec664f56ff9fe39068317744a5e737a65109f7a005bfc
+BYPRODUCT=libfontconfig.a
+
+BASE_URL=https://www.freedesktop.org/software/fontconfig/release
