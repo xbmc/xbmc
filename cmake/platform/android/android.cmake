@@ -1,4 +1,4 @@
-set(PLATFORM_REQUIRED_DEPS LibAndroidJNI OpenGLES EGL Zip)
+set(PLATFORM_REQUIRED_DEPS LibAndroidJNI OpenGLES EGL LibZip)
 set(APP_RENDER_SYSTEM gles)
 
 # Store SDK compile version
