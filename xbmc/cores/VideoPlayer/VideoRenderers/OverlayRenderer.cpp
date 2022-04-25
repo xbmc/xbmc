@@ -38,6 +38,7 @@
 #include <algorithm>
 
 using namespace OVERLAY;
+using namespace KODI;
 
 COverlay::COverlay()
 {
@@ -56,12 +57,12 @@ unsigned int CRenderer::m_textureid = 1;
 
 CRenderer::CRenderer()
 {
-  KODI::SUBTITLES::CSubtitlesSettings::GetInstance().RegisterObserver(this);
+  SUBTITLES::CSubtitlesSettings::GetInstance().RegisterObserver(this);
 }
 
 CRenderer::~CRenderer()
 {
-  KODI::SUBTITLES::CSubtitlesSettings::GetInstance().UnregisterObserver(this);
+  SUBTITLES::CSubtitlesSettings::GetInstance().UnregisterObserver(this);
   Flush();
 }
 
@@ -313,7 +314,7 @@ void CRenderer::ResetSubtitlePosition()
 
 void CRenderer::CreateSubtitlesStyle()
 {
-  m_overlayStyle = std::make_shared<KODI::SUBTITLES::style>();
+  m_overlayStyle = std::make_shared<SUBTITLES::style>();
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 
   m_overlayStyle->fontName = settings->GetString(CSettings::SETTING_SUBTITLES_FONTNAME);
@@ -321,11 +322,11 @@ void CRenderer::CreateSubtitlesStyle()
 
   uint32_t fontStyleMask = settings->GetInt(CSettings::SETTING_SUBTITLES_STYLE) & FONT_STYLE_MASK;
   if ((fontStyleMask & FONT_STYLE_BOLD) && (fontStyleMask & FONT_STYLE_ITALICS))
-    m_overlayStyle->fontStyle = KODI::SUBTITLES::FontStyle::BOLD_ITALIC;
+    m_overlayStyle->fontStyle = SUBTITLES::FontStyle::BOLD_ITALIC;
   else if (fontStyleMask & FONT_STYLE_BOLD)
-    m_overlayStyle->fontStyle = KODI::SUBTITLES::FontStyle::BOLD;
+    m_overlayStyle->fontStyle = SUBTITLES::FontStyle::BOLD;
   else if (fontStyleMask & FONT_STYLE_ITALICS)
-    m_overlayStyle->fontStyle = KODI::SUBTITLES::FontStyle::ITALIC;
+    m_overlayStyle->fontStyle = SUBTITLES::FontStyle::ITALIC;
 
   m_overlayStyle->fontColor =
       UTILS::COLOR::ConvertHexToColor(settings->GetString(CSettings::SETTING_SUBTITLES_COLOR));
@@ -336,13 +337,13 @@ void CRenderer::CreateSubtitlesStyle()
 
   int backgroundType = settings->GetInt(CSettings::SETTING_SUBTITLES_BACKGROUNDTYPE);
   if (backgroundType == SUBTITLE_BACKGROUNDTYPE_NONE)
-    m_overlayStyle->borderStyle = KODI::SUBTITLES::BorderStyle::OUTLINE_NO_SHADOW;
+    m_overlayStyle->borderStyle = SUBTITLES::BorderStyle::OUTLINE_NO_SHADOW;
   else if (backgroundType == SUBTITLE_BACKGROUNDTYPE_SHADOW)
-    m_overlayStyle->borderStyle = KODI::SUBTITLES::BorderStyle::OUTLINE;
+    m_overlayStyle->borderStyle = SUBTITLES::BorderStyle::OUTLINE;
   else if (backgroundType == SUBTITLE_BACKGROUNDTYPE_BOX)
-    m_overlayStyle->borderStyle = KODI::SUBTITLES::BorderStyle::BOX;
+    m_overlayStyle->borderStyle = SUBTITLES::BorderStyle::BOX;
   else if (backgroundType == SUBTITLE_BACKGROUNDTYPE_SQUAREBOX)
-    m_overlayStyle->borderStyle = KODI::SUBTITLES::BorderStyle::SQUARE_BOX;
+    m_overlayStyle->borderStyle = SUBTITLES::BorderStyle::SQUARE_BOX;
 
   m_overlayStyle->backgroundColor =
       UTILS::COLOR::ConvertHexToColor(settings->GetString(CSettings::SETTING_SUBTITLES_BGCOLOR));
@@ -355,9 +356,9 @@ void CRenderer::CreateSubtitlesStyle()
 
   int subAlign = settings->GetInt(CSettings::SETTING_SUBTITLES_ALIGN);
   if (subAlign == SUBTITLE_ALIGN_TOP_INSIDE || subAlign == SUBTITLE_ALIGN_TOP_OUTSIDE)
-    m_overlayStyle->alignment = KODI::SUBTITLES::FontAlignment::TOP_CENTER;
+    m_overlayStyle->alignment = SUBTITLES::FontAlignment::TOP_CENTER;
   else
-    m_overlayStyle->alignment = KODI::SUBTITLES::FontAlignment::SUB_CENTER;
+    m_overlayStyle->alignment = SUBTITLES::FontAlignment::SUB_CENTER;
 
   if (subAlign == SUBTITLE_ALIGN_BOTTOM_OUTSIDE || subAlign == SUBTITLE_ALIGN_TOP_OUTSIDE)
     m_overlayStyle->drawWithinBlackBars = true;
@@ -365,25 +366,23 @@ void CRenderer::CreateSubtitlesStyle()
   m_overlayStyle->assOverrideFont = settings->GetBool(CSettings::SETTING_SUBTITLES_OVERRIDEFONTS);
 
   int overrideStyles = settings->GetInt(CSettings::SETTING_SUBTITLES_OVERRIDESTYLES);
-  if (overrideStyles == (int)KODI::SUBTITLES::OverrideStyles::POSITIONS ||
-      overrideStyles == (int)KODI::SUBTITLES::OverrideStyles::STYLES ||
-      overrideStyles == (int)KODI::SUBTITLES::OverrideStyles::STYLES_POSITIONS)
-    m_overlayStyle->assOverrideStyles =
-        static_cast<KODI::SUBTITLES::OverrideStyles>(overrideStyles);
+  if (overrideStyles == (int)SUBTITLES::OverrideStyles::POSITIONS ||
+      overrideStyles == (int)SUBTITLES::OverrideStyles::STYLES ||
+      overrideStyles == (int)SUBTITLES::OverrideStyles::STYLES_POSITIONS)
+    m_overlayStyle->assOverrideStyles = static_cast<SUBTITLES::OverrideStyles>(overrideStyles);
   else
-    m_overlayStyle->assOverrideStyles = KODI::SUBTITLES::OverrideStyles::DISABLED;
+    m_overlayStyle->assOverrideStyles = SUBTITLES::OverrideStyles::DISABLED;
 
   m_overlayStyle->marginVertical = GetSubtitleVerticalMargin();
   m_overlayStyle->blur = settings->GetInt(CSettings::SETTING_SUBTITLES_BLUR);
 }
 
-COverlay* CRenderer::ConvertLibass(
-    CDVDOverlayLibass* o,
-    double pts,
-    bool updateStyle,
-    const std::shared_ptr<struct KODI::SUBTITLES::style>& overlayStyle)
+COverlay* CRenderer::ConvertLibass(CDVDOverlayLibass* o,
+                                   double pts,
+                                   bool updateStyle,
+                                   const std::shared_ptr<struct SUBTITLES::style>& overlayStyle)
 {
-  KODI::SUBTITLES::renderOpts rOpts;
+  SUBTITLES::renderOpts rOpts;
 
   // libass render in a target area which named as frame. the frame size may bigger than video size,
   // and including margins between video to frame edge. libass allow to render subtitles into the margins.
@@ -437,8 +436,8 @@ COverlay* CRenderer::ConvertLibass(
     // to fix this problem is needed add a kind of calculation to compensate
     // the scale difference, its not clear what formula could be used,
     // the following calculation works quite well but not perfectly
-    double scaledMargin{static_cast<double>(m_subtitleVerticalMargin) /
-                        KODI::SUBTITLES::VIEWPORT_HEIGHT * (subPosPx - resInfo.Overscan.top)};
+    double scaledMargin{static_cast<double>(m_subtitleVerticalMargin) / SUBTITLES::VIEWPORT_HEIGHT *
+                        (subPosPx - resInfo.Overscan.top)};
     subPosPx -= static_cast<double>(m_subtitleVerticalMargin) - scaledMargin;
 
     // We need to scale the position to resolution based on overscan values
@@ -454,11 +453,11 @@ COverlay* CRenderer::ConvertLibass(
   if (o->IsTextAlignEnabled())
   {
     if (m_subtitleHorizontalAlign == SubtitleHorizontalAlign::LEFT)
-      rOpts.horizontalAlignment = KODI::SUBTITLES::HorizontalAlignment::LEFT;
+      rOpts.horizontalAlignment = SUBTITLES::HorizontalAlignment::LEFT;
     else if (m_subtitleHorizontalAlign == SubtitleHorizontalAlign::RIGHT)
-      rOpts.horizontalAlignment = KODI::SUBTITLES::HorizontalAlignment::RIGHT;
+      rOpts.horizontalAlignment = SUBTITLES::HorizontalAlignment::RIGHT;
     else
-      rOpts.horizontalAlignment = KODI::SUBTITLES::HorizontalAlignment::CENTER;
+      rOpts.horizontalAlignment = SUBTITLES::HorizontalAlignment::CENTER;
   }
 
   // changes: Detect changes from previously rendered images, if > 0 they are changed
@@ -591,7 +590,7 @@ int CRenderer::GetSubtitleVerticalMargin()
   // inside the black bars, we exclude custom vertical margin
   // and we force our fixed margin to try avoid go off the black bars
   if (subAlign == SUBTITLE_ALIGN_BOTTOM_OUTSIDE || subAlign == SUBTITLE_ALIGN_TOP_OUTSIDE)
-    return KODI::SUBTITLES::MARGIN_VERTICAL_BLACKBARS;
+    return SUBTITLES::MARGIN_VERTICAL_BLACKBARS;
 
   // Try get the vertical margin customized by user
   int overrideMerginVertical =
@@ -600,5 +599,5 @@ int CRenderer::GetSubtitleVerticalMargin()
   if (overrideMerginVertical >= 0)
     return overrideMerginVertical;
 
-  return KODI::SUBTITLES::MARGIN_VERTICAL;
+  return SUBTITLES::MARGIN_VERTICAL;
 }
