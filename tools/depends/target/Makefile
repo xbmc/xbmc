@@ -137,7 +137,7 @@ curl: openssl nghttp2
 dav1d: meson-cross-file
 dbus: expat
 ffmpeg: $(ICONV) $(ZLIB) bzip2 gnutls dav1d $(LIBVA)
-fontconfig: freetype2 expat $(ICONV) $(LIBUUID)
+fontconfig: freetype2 expat $(ICONV) $(LIBUUID) meson-cross-file
 freetype2: harfbuzz $(ZLIB)
 fribidi: meson-cross-file
 gettext: $(ICONV)
