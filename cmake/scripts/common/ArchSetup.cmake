@@ -59,9 +59,13 @@ endif()
 # this variable is set if we can execute build artefacts on the host system (for example unit tests).
 if(CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL CMAKE_SYSTEM_PROCESSOR AND
    CMAKE_HOST_SYSTEM_NAME STREQUAL CMAKE_SYSTEM_NAME)
-  set(CORE_HOST_IS_TARGET TRUE)
+  if(NOT HOST_CAN_EXECUTE_TARGET)
+    set(HOST_CAN_EXECUTE_TARGET TRUE)
+  endif()
 else()
-  set(CORE_HOST_IS_TARGET FALSE)
+  if(NOT HOST_CAN_EXECUTE_TARGET)
+    set(HOST_CAN_EXECUTE_TARGET FALSE)
+  endif()
 endif()
 
 # system specific arch setup

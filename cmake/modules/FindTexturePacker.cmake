@@ -57,9 +57,9 @@ if(NOT TARGET TexturePacker::TexturePacker::Executable)
       set(INTERNAL_TEXTUREPACKER_INSTALLABLE TRUE)
     endif()
 
-    # Use it during build if build architecture is same as host
-    # (not cross-compiling) and TEXTUREPACKER_EXECUTABLE is not found
-    if(CORE_HOST_IS_TARGET AND NOT TEXTUREPACKER_EXECUTABLE)
+    # Use it during build if build architecture can be executed on host
+    # and TEXTUREPACKER_EXECUTABLE is not found
+    if(HOST_CAN_EXECUTE_TARGET AND NOT TEXTUREPACKER_EXECUTABLE)
       set(INTERNAL_TEXTUREPACKER_EXECUTABLE TRUE)
     endif()
 
