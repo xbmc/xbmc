@@ -458,6 +458,38 @@ static int SkinDebug(const std::vector<std::string>& params)
   return 0;
 }
 
+/*! \brief Starts a given skin timer
+ *  \param params The parameters.
+ *  \details params[0] = Name of the timer.
+ *  \return -1 in case of error, 0 in case of success
+ */
+static int SkinTimerStart(const std::vector<std::string>& params)
+{
+  if (params.empty())
+  {
+    return -1;
+  }
+
+  g_SkinInfo->TimerStart(params[0]);
+  return 0;
+}
+
+/*! \brief Stops a given skin timer
+ *  \param params The parameters.
+ *  \details params[0] = Name of the timer.
+ *  \return -1 in case of error, 0 in case of success
+ */
+static int SkinTimerStop(const std::vector<std::string>& params)
+{
+  if (params.empty())
+  {
+    return -1;
+  }
+
+  g_SkinInfo->TimerStop(params[0]);
+  return 0;
+}
+
 // Note: For new Texts with comma add a "\" before!!! Is used for table text.
 //
 /// \page page_List_of_built_in_functions
@@ -603,27 +635,45 @@ static int SkinDebug(const std::vector<std::string>& params)
 ///     containing `Skin.HasSetting(setting)`.
 ///     @param[in] setting               Skin setting to toggle
 ///  }
+///   \table_row2_l{
+///     <b>`Skin.TimerStart(timer)`</b>
+///     \anchor Builtin_SkinStartTimer,
+///     Starts the timer with name `timer`
+///     @param[in] timer               The name of the timer
+///     <p><hr>
+///     @skinning_v20 **[New builtin]** \link Builtin_SkinStartTimer `Skin.TimerStart(timer)`\endlink
+///     <p>
+///  }
+///   \table_row2_l{
+///     <b>`Skin.TimerStop(timer)`</b>
+///     \anchor Builtin_SkinStopTimer,
+///     Stops the timer with name `timer`
+///     @param[in] timer               The name of the timer
+///     <p><hr>
+///     @skinning_v20 **[New builtin]** \link Builtin_SkinStopTimer `Skin.TimerStop(timer)`\endlink
+///     <p>
+///  }
 /// \table_end
 ///
 
 CBuiltins::CommandMap CSkinBuiltins::GetOperations() const
 {
-  return {
-           {"reloadskin",         {"Reload Kodi's skin", 0, ReloadSkin}},
-           {"unloadskin",         {"Unload Kodi's skin", 0, UnloadSkin}},
-           {"skin.reset",         {"Resets a skin setting to default", 1, SkinReset}},
-           {"skin.resetsettings", {"Resets all skin settings", 0, SkinResetAll}},
-           {"skin.setaddon",      {"Prompts and set an addon", 2, SetAddon}},
-           {"skin.selectbool",    {"Prompts and set a skin setting", 2, SelectBool}},
-           {"skin.setbool",       {"Sets a skin setting on", 1, SetBool}},
-           {"skin.setfile",       {"Prompts and sets a file", 1, SetFile}},
-           {"skin.setimage",      {"Prompts and sets a skin image", 1, SetImage}},
-           {"skin.setcolor",      {"Prompts and sets a skin color", 1, SetColor}},
-           {"skin.setnumeric",    {"Prompts and sets numeric input", 1, SetNumeric}},
-           {"skin.setpath",       {"Prompts and sets a skin path", 1, SetPath}},
-           {"skin.setstring",     {"Prompts and sets skin string", 1, SetString}},
-           {"skin.theme",         {"Control skin theme", 1, SetTheme}},
-           {"skin.toggledebug",   {"Toggle skin debug", 0, SkinDebug}},
-           {"skin.togglesetting", {"Toggles a skin setting on or off", 1, ToggleSetting}}
-  };
+  return {{"reloadskin", {"Reload Kodi's skin", 0, ReloadSkin}},
+          {"unloadskin", {"Unload Kodi's skin", 0, UnloadSkin}},
+          {"skin.reset", {"Resets a skin setting to default", 1, SkinReset}},
+          {"skin.resetsettings", {"Resets all skin settings", 0, SkinResetAll}},
+          {"skin.setaddon", {"Prompts and set an addon", 2, SetAddon}},
+          {"skin.selectbool", {"Prompts and set a skin setting", 2, SelectBool}},
+          {"skin.setbool", {"Sets a skin setting on", 1, SetBool}},
+          {"skin.setfile", {"Prompts and sets a file", 1, SetFile}},
+          {"skin.setimage", {"Prompts and sets a skin image", 1, SetImage}},
+          {"skin.setcolor", {"Prompts and sets a skin color", 1, SetColor}},
+          {"skin.setnumeric", {"Prompts and sets numeric input", 1, SetNumeric}},
+          {"skin.setpath", {"Prompts and sets a skin path", 1, SetPath}},
+          {"skin.setstring", {"Prompts and sets skin string", 1, SetString}},
+          {"skin.theme", {"Control skin theme", 1, SetTheme}},
+          {"skin.toggledebug", {"Toggle skin debug", 0, SkinDebug}},
+          {"skin.togglesetting", {"Toggles a skin setting on or off", 1, ToggleSetting}},
+          {"skin.timerstart", {"Starts a given skin timer", 1, SkinTimerStart}},
+          {"skin.timerstop", {"Stops a given skin timer", 1, SkinTimerStop}}};
 }

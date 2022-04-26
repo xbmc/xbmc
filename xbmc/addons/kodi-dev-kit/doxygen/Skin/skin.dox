@@ -21,6 +21,7 @@ or two by adding a button, or altering the textures or layout.
 
 - \subpage skin_controls - Controls are the substance of your skin.
 - \subpage window_ids - List of available window names, definitions, IDs and the matching XML-file
+- \subpage Skin_Timers - Programatic time-based objects for Skins
 
 */
 

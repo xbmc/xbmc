@@ -77,6 +77,13 @@ public:
    */
   INFO::InfoPtr Register(const std::string &expression, int context = 0);
 
+  /*! \brief Unregister a boolean condition/expression
+   * This routine allows controls or other clients of the info manager to unregister a previously registered
+   * boolean condition/expression
+   \param expression the boolean condition or expression
+   */
+  void UnRegister(INFO::InfoPtr expression);
+
   /// \brief iterates through boolean conditions and compares their stored values to current values. Returns true if any condition changed value.
   bool ConditionsChangedValues(const std::map<INFO::InfoPtr, bool>& map);
 

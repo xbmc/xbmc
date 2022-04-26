@@ -9,6 +9,7 @@
 #pragma once
 
 #include "addons/Addon.h"
+#include "addons/gui/skin/SkinTimerManager.h"
 #include "guilib/GUIIncludes.h" // needed for the GUIInclude member
 #include "windowing/GraphicContext.h" // needed for the RESOLUTION members
 
@@ -166,6 +167,21 @@ public:
   const std::string& GetCurrentAspect() const { return m_currentAspect; }
 
   void LoadIncludes();
+
+  /*! \brief Load the defined skin timers
+   \details Skin timers are defined in Timers.xml \sa Skin_Timers
+   */
+  void LoadTimers();
+
+  /*! \brief Starts evaluating timers
+   */
+  void StartTimerEvaluation();
+
+  /*! \brief Called when unloading a skin, allows to cleanup specific
+   * skin resources.
+   */
+  void Unload();
+
   void ToggleDebug();
   const INFO::CSkinVariableString* CreateSkinVariable(const std::string& name, int context);
 
@@ -216,6 +232,31 @@ public:
 
   void OnPreInstall() override;
   void OnPostInstall(bool update, bool modal) override;
+
+  // skin timer methods
+
+  /*! \brief Checks if the timer with name `timer` is running
+   \param timer the name of the skin timer
+   \return true if the given timer exists and is running, false otherwise
+   */
+  bool TimerIsRunning(const std::string& timer) const;
+
+  /*! \brief Get the elapsed seconds since the timer with name `timer` was started
+   \param timer the name of the skin timer
+   \return the elapsed time in seconds the given timer is running (0 if not running or if it does not exist)
+   */
+  float GetTimerElapsedSeconds(const std::string& timer) const;
+
+  /*! \brief Starts/Enables a given skin timer
+   \param timer the name of the skin timer
+   */
+  void TimerStart(const std::string& timer) const;
+
+  /*! \brief Stops/Disables a given skin timer
+   \param timer the name of the skin timer
+   */
+  void TimerStop(const std::string& timer) const;
+
 protected:
   bool LoadStartupWindows(const AddonInfoPtr& addonInfo);
 
@@ -235,6 +276,9 @@ protected:
 
   std::vector<CStartupWindow> m_startupWindows;
   bool m_debugging;
+
+  /*! Manager/Owner of skin timers */
+  CSkinTimerManager m_skinTimerManager;
 
 private:
   std::map<int, CSkinSettingStringPtr> m_strings;
