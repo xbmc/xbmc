@@ -851,7 +851,7 @@ const std::locale& CLangInfo::GetOriginalLocale() const
   return m_originalLocale;
 }
 
-const std::string CLangInfo::GetISOLocale() const
+std::string CLangInfo::GetISOLocale() const
 {
   return m_currentRegion->m_strLangLocaleCodeTwoChar + "_" + m_currentRegion->m_strRegionLocaleName;
 }

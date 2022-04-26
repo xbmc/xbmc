@@ -1063,6 +1063,117 @@ static wchar_t GetCollationWeight(const wchar_t& r)
   return static_cast<wchar_t>(plane[r & 0xFF]);
 }
 
+#if defined(TARGET_ANDROID)
+namespace
+{
+/*!
+ * \brief Opens an ICU UCollator for AlphaNumericCompare and AlphaNumericCollation.
+ *
+ * \return the pointer to the collator or nullptr if error occured
+ */
+std::unique_ptr<UCollator, decltype(&ucol_close)> OpenUCollator()
+{
+  UErrorCode ustatus = U_ZERO_ERROR;
+  auto ucoll = std::unique_ptr<UCollator, decltype(&ucol_close)>(
+      ucol_open(g_langInfo.GetISOLocale().c_str(), &ustatus), &ucol_close);
+  if (U_FAILURE(ustatus))
+  {
+    CLog::Log(LOGERROR, "StringUtils: ucol_open failed. Error code: {}.", ustatus);
+    return std::unique_ptr<UCollator, decltype(&ucol_close)>(nullptr, &ucol_close);
+  }
+
+  ucol_setAttribute(ucoll.get(), UCOL_NUMERIC_COLLATION, UCOL_ON, &ustatus);
+  if (U_FAILURE(ustatus))
+  {
+    CLog::Log(LOGERROR, "StringUtils: failed to set UCOL_NUMERIC_COLLATION. Error code: {}.",
+              ustatus);
+    return std::unique_ptr<UCollator, decltype(&ucol_close)>(nullptr, &ucol_close);
+  }
+  return ucoll;
+}
+
+/*!
+ * \brief Use ICU UCollator to perform AlphaNumericCompare.
+ *
+ * \param left the first string to be compared
+ * \param right the second string to be compared
+ * \param result output of compare result: -1 for left < right, 0 for left = right, 1 for left > right
+ * \return whether the collation succeeded
+ */
+bool IcuCompare(const wchar_t* left, const wchar_t* right, int& result)
+{
+  auto ucoll = OpenUCollator();
+  if (ucoll == nullptr)
+    return false;
+
+  UErrorCode ustatus = U_ZERO_ERROR;
+  int32_t ulsize{0};
+  int32_t ursize{0};
+
+  u_strFromWCS(nullptr, 0, &ulsize, left, -1, &ustatus);
+  if (ustatus != U_BUFFER_OVERFLOW_ERROR && ustatus != U_STRING_NOT_TERMINATED_WARNING)
+  {
+    CLog::Log(LOGERROR, "StringUtils: u_strFromWCS preflight failed. Error code: {}.", ustatus);
+    return false;
+  }
+  ustatus = U_ZERO_ERROR;
+  u_strFromWCS(nullptr, 0, &ursize, right, -1, &ustatus);
+  if (ustatus != U_BUFFER_OVERFLOW_ERROR && ustatus != U_STRING_NOT_TERMINATED_WARNING)
+  {
+    CLog::Log(LOGERROR, "StringUtils: u_strFromWCS preflight failed. Error code: {}.", ustatus);
+    return false;
+  }
+  ustatus = U_ZERO_ERROR;
+
+  std::vector<UChar> uleft(ulsize);
+  std::vector<UChar> uright(ursize);
+
+  u_strFromWCS(uleft.data(), uleft.size(), &ulsize, left, -1, &ustatus);
+  if (U_FAILURE(ustatus))
+  {
+    CLog::Log(LOGERROR, "StringUtils: u_strFromWCS failed. Error code: {}.", ustatus);
+    return false;
+  }
+  u_strFromWCS(uright.data(), uright.size(), &ursize, right, -1, &ustatus);
+  if (U_FAILURE(ustatus))
+  {
+    CLog::Log(LOGERROR, "StringUtils: u_strFromWCS failed. Error code: {}.", ustatus);
+    return false;
+  }
+
+  result = ucol_strcoll(ucoll.get(), &uleft.front(), ulsize, &uright.front(), ursize);
+  return true;
+}
+
+/*!
+ * \brief Use ICU UCollator to perform AlphaNumericCompare.
+ *
+ * \param left the first string to be compared
+ * \param leftLen the length of the first string
+ * \param right the second string to be compared
+ * \param rightLen the length of the second string
+ * \param result output of compare result: -1 for left < right, 0 for left = right, 1 for left > right
+ * \return whether the collation succeeded
+ */
+bool IcuCompare(const char* left, int leftLen, const char* right, int rightLen, int& result)
+{
+  auto ucoll = OpenUCollator();
+  if (ucoll == nullptr)
+    return false;
+
+  UErrorCode ustatus = U_ZERO_ERROR;
+  result = ucol_strcollUTF8(ucoll.get(), left, leftLen, right, rightLen, &ustatus);
+  if (U_FAILURE(ustatus))
+  {
+    CLog::Log(LOGERROR, "StringUtils: ucol_strcollUTF8 failed. Error code: {}.", ustatus);
+    return false;
+  }
+
+  return true;
+}
+} // namespace
+#endif // defined(TARGET_ANDROID)
+
 // Compares separately the numeric and alphabetic parts of a wide string.
 // returns negative if left < right, positive if left > right
 // and 0 if they are identical.
@@ -1079,45 +1190,9 @@ int64_t StringUtils::AlphaNumericCompare(const wchar_t* left, const wchar_t* rig
 #ifdef TARGET_ANDROID
   if (g_langInfo.UseLocaleCollation())
   {
-    UErrorCode ustatus = U_ZERO_ERROR;
-    try
-    {
-      auto ucoll = std::unique_ptr<UCollator, decltype(&ucol_close)>(
-          ucol_open(g_langInfo.GetISOLocale().c_str(), &ustatus), &ucol_close);
-      if (U_FAILURE(ustatus))
-        throw std::runtime_error("StringUtils: ucol_open failed.");
-      ucol_setAttribute(ucoll.get(), UCOL_NUMERIC_COLLATION, UCOL_ON, &ustatus);
-      if (U_FAILURE(ustatus))
-        throw std::runtime_error("StringUtils: failed to set UCOL_NUMERIC_COLLATION.");
-
-      std::vector<UChar> uleft(2 * wcslen(left) + 1);
-      std::vector<UChar> uright(2 * wcslen(right) + 1);
-
-      int32_t ulsize{0};
-      int32_t ursize{0};
-
-      u_strFromWCS(&uleft.front(), uleft.size(), &ulsize, left, -1, &ustatus);
-      if (U_FAILURE(ustatus))
-        throw std::runtime_error("StringUtils: failed to convert left string to UTF16.");
-      u_strFromWCS(&uright.front(), uright.size(), &ursize, right, -1, &ustatus);
-      if (U_FAILURE(ustatus))
-        throw std::runtime_error("StringUtils: failed to convert right string to UTF16.");
-
-      switch (ucol_strcoll(ucoll.get(), &uleft.front(), -1, &uright.front(), -1))
-      {
-        case UCOL_LESS:
-          return -1;
-        case UCOL_GREATER:
-          return 1;
-        case UCOL_EQUAL:
-          return 0;
-      }
-    }
-    catch (std::runtime_error& e)
-    {
-      CLog::Log(LOGERROR, e.what());
-      CLog::Log(LOGERROR, "Error code: {}", ustatus);
-    }
+    int collationResult = 0;
+    if (IcuCompare(left, right, collationResult))
+      return collationResult;
   }
 #endif
   while (*l != 0 && *r != 0)
@@ -1289,45 +1364,11 @@ int StringUtils::AlphaNumericCollation(int nKey1, const void* pKey1, int nKey2, 
 #ifdef TARGET_ANDROID
   if (g_langInfo.UseLocaleCollation())
   {
-    UErrorCode ustatus = U_ZERO_ERROR;
-    try
-    {
-      auto ucoll = std::unique_ptr<UCollator, decltype(&ucol_close)>(
-          ucol_open(g_langInfo.GetISOLocale().c_str(), &ustatus), &ucol_close);
-      if (U_FAILURE(ustatus))
-        throw std::runtime_error("StringUtils: ucol_open failed.");
-      ucol_setAttribute(ucoll.get(), UCOL_NUMERIC_COLLATION, UCOL_ON, &ustatus);
-      if (U_FAILURE(ustatus))
-        throw std::runtime_error("StringUtils: failed to set UCOL_NUMERIC_COLLATION.");
-
-      std::vector<UChar> uleft(nKey1 + 1);
-      std::vector<UChar> uright(nKey2 + 1);
-
-      int32_t ulsize{0};
-      int32_t ursize{0};
-
-      u_strFromUTF8(&uleft.front(), uleft.size(), &ulsize, (const char*)pKey1, nKey1, &ustatus);
-      if (U_FAILURE(ustatus))
-        throw std::runtime_error("StringUtils: failed to convert left string to UTF16.");
-      u_strFromUTF8(&uright.front(), uright.size(), &ursize, (const char*)pKey2, nKey2, &ustatus);
-      if (U_FAILURE(ustatus))
-        throw std::runtime_error("StringUtils: failed to convert right string to UTF16.");
-
-      switch (ucol_strcoll(ucoll.get(), &uleft.front(), -1, &uright.front(), -1))
-      {
-        case UCOL_LESS:
-          return -1;
-        case UCOL_GREATER:
-          return 1;
-        case UCOL_EQUAL:
-          return 0;
-      }
-    }
-    catch (std::runtime_error& e)
-    {
-      CLog::Log(LOGERROR, e.what());
-      CLog::Log(LOGERROR, "Error code: {}", ustatus);
-    }
+    auto str1 = reinterpret_cast<const char*>(pKey1);
+    auto str2 = reinterpret_cast<const char*>(pKey2);
+    int collationResult = 0;
+    if (IcuCompare(str1, nKey1, str2, nKey2, collationResult))
+      return collationResult;
   }
 #endif
 
