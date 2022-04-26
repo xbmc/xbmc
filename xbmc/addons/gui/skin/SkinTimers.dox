@@ -1,0 +1,145 @@
+/*!
+
+\page Skin_Timers Skin Timers
+\brief **Programatic time-based objects for Skins**
+
+\tableofcontents
+
+--------------------------------------------------------------------------------
+\section Skin_Timers_sect1 Description
+
+Skin timers are skin objects that are dependent on time and can be fully controlled from skins either using
+\link page_List_of_built_in_functions **Builtin functions**\endlink or
+\link modules__infolabels_boolean_conditions **Infolabels and Boolean conditions**\endlink. One can see them
+as stopwatches that can be activated and deactivated automatically depending on the value of info expressions or simply activated/deactivated
+manually from builtins.
+The framework was created to allow skins to control the visibility of windows (and controls) depending on
+the elapsed time of timers the skin defines. Skin timers allow multiple use cases in skins, previously only available via the execution
+of python scripts:
+- Closing a specific window after x seconds have elapsed
+- Controlling the visibility of a group (or triggering an animation) depending on the elapsed time of a given timer
+- Defining a buffer time window that is kept activated for a short period of time (e.g. keep controls visible for x seconds after a player seek)
+- Executing timed actions (on timer stop or timer start)
+- etc
+
+Skin timers are defined in the `Timers.xml` file within the xml directory of the skin. The file has the following "schema":
+
+~~~~~~~~~~~~~{.xml}
+<timers>
+    <timer>...</timer>
+    <timer>...</timer>
+</timers>
+~~~~~~~~~~~~~
+
+see \link Skin_Timers_sect2 the examples section\endlink and \link Skin_Timers_sect3 the list of available tags\endlink for concrete details.
+
+\skinning_v20 Added skin timers
+
+--------------------------------------------------------------------------------
+\section Skin_Timers_sect2 Examples
+
+The following example illustrates the simplest possible skin timer. This timer is completely manual (it has to be manually started and stopped):
+
+~~~~~~~~~~~~~{.xml}
+<timer>
+    <name>mymanualtimer</name>
+    <description>100% manual timer</description>
+</timer>
+~~~~~~~~~~~~~
+
+This timer can be controlled from your skin by executing the \link Builtin_SkinStartTimer `Skin.TimerStart(mymanualtimer)` builtin\endlink or
+\link Builtin_SkinStopTimer `Skin.TimerStop(mymanualtimer)` builtin\endlink. You can define the visibility of skin elements based on the internal
+properties of the timer, such as the fact that the timer is active/running using \link Skin_TimerIsRunning `Skin.TimerIsRunning(mymanualtimer)` builtin\endlink
+or depending on the elapsed time (e.g. 5 seconds) using \link Skin_TimerElapsedSecs Integer.IsGreaterOrEqual(Skin.TimerElapsedSecs(mymanualtimer),5)\endlink.
+
+The following timer is a variation of the previous timer but with the added ability of being automatically stopped by the skinning engine after a maximum of elapsed
+5 seconds without having to issue the `Skin.TimerStop(mymanualtimer)` builtin:
+
+~~~~~~~~~~~~~{.xml}
+<timer>
+    <name>mymanualautocloseabletimer</name>
+    <description>100% manual autocloseable timer</description>
+    <stop>Integer.IsGreaterOrEqual(Skin.TimerElapsedSecs(mymanualautocloseabletimer),5)</stop>
+</timer>
+~~~~~~~~~~~~~
+
+This type of timer is particularly useful if you want to automatically close a specific window (or triggering a close animation) after x time has elapsed,
+while guaranteeing the timer is also stopped. See the example below:
+
+~~~~~~~~~~~~~{.xml}
+<?xml version="1.0" encoding="utf-8"?>
+<window type="dialog" id="1109">
+	<onload>Skin.TimerStart(mymanualautocloseabletimer)</onload>
+    ...
+	<controls>
+		<control type="group">
+			<animation effect="slide" start="0,0" end="0,-80" time="300" condition="Integer.IsGreaterOrEqual(Skin.TimerElapsedSecs(mymanualautocloseabletimer),5)">Conditional</animation>
+			...
+        </control>
+    </controls>
+</window>
+~~~~~~~~~~~~~
+
+The following timer presents a notification (for 1 sec) whenever the timer is activated or deactivated:
+
+~~~~~~~~~~~~~{.xml}
+<timer>
+    <name>manualtimerwithactions</name>
+    <description>100% manual timer with actions</description>
+    <onstart>Notification(skintimer, My timer was started, 1000)</onstart>
+    <onstop>Notification(skintimer, My timer was stopped, 1000)</onstop>
+</timer>
+~~~~~~~~~~~~~
+
+The following timer is an example of a completely automatic timer. The timer is automatically activated or deactivated based on the value
+of boolean info expressions. In this particular example, the timer is automatically started whenever the Player is playing a file (if not already running). It is stopped if
+there is no file being played (and of course if previously running). Since the timer can be activated/deactivated multiple times, `reset="true"` ensures the timer is
+always reset to 0 on each start operation. Whenever the timer is started or stopped, notifications are issued.
+
+~~~~~~~~~~~~~{.xml}
+<timer>
+    <name>myautomatictimer</name>
+    <description>Player state checker</description>
+    <start reset="true">Player.Playing</start>
+    <stop>!Player.Playing</stop>
+    <onstart>Notification(skintimer, Player has started playing a file, 1000)</onstart>
+    <onstop>Notification(skintimer, Player is no longer playing a file, 1000)</onstop>
+</timer>
+~~~~~~~~~~~~~
+
+In certain situations you might want to reset your timer without having to stop and start. For instance, if you want to stop the timer after 5 seconds
+but have the timer resetting to 0 seconds if the user provides some input to Kodi. For such cases the `<reset/>` condition can be used:
+
+~~~~~~~~~~~~~{.xml}
+<timer>
+    <name>windowtimer</name>
+    <description>Reset on idle</description>
+    <start reset="true">Window.IsActive(mywindow)</start>
+    <reset>Window.IsActive(mywindow) + !System.IdleTime(1) + Integer.IsGreaterOrEqual(Skin.TimerElapsedSecs(windowtimer), 1)</reset>
+    <stop>!Window.IsActive(mywindow) + Integer.IsGreaterOrEqual(Skin.TimerElapsedSecs(windowtimer), 5)</stop>
+    <onstop>Dialog.Close(mywindow)</onstop>
+</timer>
+~~~~~~~~~~~~~
+
+--------------------------------------------------------------------------------
+\section Skin_Timers_sect3 Available tags
+
+Skin timers have the following available tags:
+
+| Tag           | Description                                                   |
+|--------------:|:--------------------------------------------------------------|
+| name          | The unique name of the timer. The name is used as the id of the timer, hence needs to be unique. <b>(required)</b>
+| description   | The description of the timer, a helper string. <b>(optional)</b>
+| start         | An info bool expression that the skinning engine should use to automatically start the timer <b>(optional)</b>
+| reset         | An info bool expression that the skinning engine should use to automatically reset the timer <b>(optional)</b>
+| stop          | An info bool expression that the skinning engine should use to automatically stop the timer <b>(optional)</b>
+| onstart       | A builtin function that the skinning engine should execute when the timer is started <b>(optional)</b>
+| onstop        | A builtin function that the skinning engine should execute when the timer is stopped <b>(optional)</b>
+
+--------------------------------------------------------------------------------
+\section Skin_Timers_sect4 See also
+#### Development:
+
+- [Skinning](http://kodi.wiki/view/Skinning)
+
+*/
