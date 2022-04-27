@@ -375,11 +375,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::string m_stereoscopicregex_sbs;
     std::string m_stereoscopicregex_tab;
 
-    /*! \brief Change the default vertical margin of the subtitle,
-        in order to be applied to applied to all types of subtitle position.
-    */
-    int m_videoSubtitleVerticalMargin;
-
     bool m_openGlDebugging;
 
     std::string m_userAgent;

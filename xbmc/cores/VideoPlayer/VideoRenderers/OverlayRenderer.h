@@ -14,6 +14,7 @@
 #include "threads/CriticalSection.h"
 #include "utils/Observer.h"
 
+#include <atomic>
 #include <map>
 #include <memory>
 #include <vector>
@@ -115,6 +116,12 @@ namespace OVERLAY {
 
     void AddOverlay(CDVDOverlay* o, double pts, int index);
     virtual void Render(int idx);
+
+    /*!
+     * \brief Release resources
+     */
+    void UnInit();
+
     void Flush();
 
     /*!
@@ -136,17 +143,22 @@ namespace OVERLAY {
     void SetSubtitleVerticalPosition(const int value, bool save);
 
     /*!
+     * \brief Get the subtitle vertical margin in percentage
+     * \return The percentage value
+     */
+    static float GetSubtitleVerticalMarginPerc();
+
+  protected:
+    /*!
      * \brief Reset the subtitle position to default value
      */
     void ResetSubtitlePosition();
 
     /*!
-     * \brief Get the subtitle vertical margin
-     * \return The margin in pixel
+     * \brief Called when the screen resolution is changed
      */
-    static int GetSubtitleVerticalMargin();
+    void OnViewChange();
 
-  protected:
     struct SElement
     {
       SElement()
@@ -192,9 +204,10 @@ namespace OVERLAY {
     int m_subtitlePosition{0}; // Current subtitle position
     int m_subtitlePosResInfo{-1}; // Current subtitle position from resolution info
     int m_subtitleVerticalMargin{0};
+    bool m_saveSubtitlePosition{false}; // To save subtitle position permanently
     SubtitleHorizontalAlign m_subtitleHorizontalAlign{SubtitleHorizontalAlign::CENTER};
 
     std::shared_ptr<struct KODI::SUBTITLES::style> m_overlayStyle;
-    bool m_isSettingsChanged{false};
+    std::atomic<bool> m_isSettingsChanged{false};
   };
 }

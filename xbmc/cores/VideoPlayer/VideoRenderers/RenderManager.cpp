@@ -229,8 +229,8 @@ bool CRenderManager::Configure()
     m_renderDebug = false;
     m_clockSync.Reset();
     m_dvdClock.SetVsyncAdjust(0);
+    m_overlays.Reset();
     m_overlays.SetStereoMode(m_stereomode);
-    m_overlays.ResetSubtitlePosition();
 
     m_renderState = STATE_CONFIGURED;
 
@@ -398,7 +398,7 @@ void CRenderManager::UnInit()
 
   std::unique_lock<CCriticalSection> lock(m_statelock);
 
-  m_overlays.Flush();
+  m_overlays.UnInit();
   m_debugRenderer.Dispose();
 
   DeleteRenderer();

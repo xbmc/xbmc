@@ -155,6 +155,7 @@ public:
   static constexpr auto SETTING_SUBTITLES_SHADOWSIZE = "subtitles.shadowsize";
   static constexpr auto SETTING_SUBTITLES_BGCOLOR = "subtitles.bgcolorpick";
   static constexpr auto SETTING_SUBTITLES_BGOPACITY = "subtitles.bgopacity";
+  static constexpr auto SETTING_SUBTITLES_MARGINVERTICAL = "subtitles.marginvertical";
   static constexpr auto SETTING_SUBTITLES_CHARSET = "subtitles.charset";
   static constexpr auto SETTING_SUBTITLES_OVERRIDEFONTS = "subtitles.overridefonts";
   static constexpr auto SETTING_SUBTITLES_OVERRIDESTYLES = "subtitles.overridestyles";

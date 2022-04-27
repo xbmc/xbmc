@@ -20,7 +20,7 @@
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlayText.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "guilib/GUIFont.h"
-#include "settings/AdvancedSettings.h"
+#include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/SubtitlesSettings.h"
@@ -37,8 +37,8 @@
 
 #include <algorithm>
 
-using namespace OVERLAY;
 using namespace KODI;
+using namespace OVERLAY;
 
 COverlay::COverlay()
 {
@@ -88,6 +88,18 @@ void CRenderer::Release(std::vector<SElement>& list)
   }
 }
 
+void CRenderer::UnInit()
+{
+  if (m_saveSubtitlePosition)
+  {
+    m_saveSubtitlePosition = false;
+    CDisplaySettings::GetInstance().UpdateCalibrations();
+    SUBTITLES::CSubtitlesSettings::GetSettings()->Save();
+  }
+
+  Flush();
+}
+
 void CRenderer::Flush()
 {
   std::unique_lock<CCriticalSection> lock(m_section);
@@ -103,7 +115,6 @@ void CRenderer::Reset()
 {
   m_subtitlePosition = 0;
   m_subtitlePosResInfo = -1;
-  m_subtitleVerticalMargin = 0;
 }
 
 void CRenderer::Release(int idx)
@@ -278,9 +289,18 @@ bool CRenderer::HasOverlay(int idx)
 
 void CRenderer::SetVideoRect(CRect &source, CRect &dest, CRect &view)
 {
+  if (m_rv != view) // Screen resolution is changed
+  {
+    OnViewChange();
+  }
   m_rs = source;
   m_rd = dest;
   m_rv = view;
+}
+
+void CRenderer::OnViewChange()
+{
+  m_isSettingsChanged = true;
 }
 
 void CRenderer::SetStereoMode(const std::string &stereomode)
@@ -299,13 +319,17 @@ void CRenderer::SetSubtitleVerticalPosition(const int value, bool save)
     CServiceBroker::GetWinSystem()->GetGfxContext().SetResInfo(
         CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution(), resInfo);
     m_subtitlePosResInfo = m_subtitlePosition;
+    // We save the value only when playback is stopped
+    // to avoid saving to disk too many times
+    m_saveSubtitlePosition = true;
   }
 }
 
 void CRenderer::ResetSubtitlePosition()
 {
-  m_subtitleVerticalMargin = GetSubtitleVerticalMargin();
+  m_saveSubtitlePosition = false;
   RESOLUTION_INFO resInfo = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
+  m_subtitleVerticalMargin = resInfo.iHeight / 100 * GetSubtitleVerticalMarginPerc();
   m_subtitlePosResInfo = resInfo.iSubtitles;
   // Update player value (and callback to CRenderer::SetSubtitleVerticalPosition)
   g_application.GetAppPlayer().SetSubtitleVerticalPosition(
@@ -315,7 +339,7 @@ void CRenderer::ResetSubtitlePosition()
 void CRenderer::CreateSubtitlesStyle()
 {
   m_overlayStyle = std::make_shared<SUBTITLES::style>();
-  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  const std::shared_ptr<CSettings> settings{SUBTITLES::CSubtitlesSettings::GetSettings()};
 
   m_overlayStyle->fontName = settings->GetString(CSettings::SETTING_SUBTITLES_FONTNAME);
   m_overlayStyle->fontSize = (double)settings->GetInt(CSettings::SETTING_SUBTITLES_FONTSIZE);
@@ -373,7 +397,11 @@ void CRenderer::CreateSubtitlesStyle()
   else
     m_overlayStyle->assOverrideStyles = SUBTITLES::OverrideStyles::DISABLED;
 
-  m_overlayStyle->marginVertical = GetSubtitleVerticalMargin();
+  // Changing vertical margin while in playback causes side effects when you
+  // rewind the video, displaying the previous text position (test Libass 15.2)
+  // for now vertical margin setting will be disabled during playback
+  m_overlayStyle->marginVertical = m_subtitleVerticalMargin;
+
   m_overlayStyle->blur = settings->GetInt(CSettings::SETTING_SUBTITLES_BLUR);
 }
 
@@ -559,7 +587,6 @@ void CRenderer::Notify(const Observable& obs, const ObservableMessage msg)
   {
     case ObservableMessageSettingsChanged:
     {
-      std::unique_lock<CCriticalSection> lock(m_section);
       m_isSettingsChanged = true;
       break;
     }
@@ -576,28 +603,24 @@ void CRenderer::Notify(const Observable& obs, const ObservableMessage msg)
 
 void CRenderer::LoadSettings()
 {
-  m_subtitleHorizontalAlign = static_cast<SubtitleHorizontalAlign>(
-      CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+  m_subtitleHorizontalAlign =
+      static_cast<SubtitleHorizontalAlign>(SUBTITLES::CSubtitlesSettings::GetSettings()->GetInt(
           CSettings::SETTING_SUBTITLES_CAPTIONSALIGN));
+  ResetSubtitlePosition();
 }
 
-int CRenderer::GetSubtitleVerticalMargin()
+float CRenderer::GetSubtitleVerticalMarginPerc()
 {
-  int subAlign = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
-      CSettings::SETTING_SUBTITLES_ALIGN);
+  // We return the vertical margin as percentage
+  // to fit the current screen resolution
+  const std::shared_ptr<CSettings> settings{SUBTITLES::CSubtitlesSettings::GetSettings()};
+  int subAlign{settings->GetInt(CSettings::SETTING_SUBTITLES_ALIGN)};
 
   // If the user has set the alignment type to keep the subtitle text
-  // inside the black bars, we exclude custom vertical margin
-  // and we force our fixed margin to try avoid go off the black bars
+  // inside the black bars, we override user vertical margin
+  // to try avoid go off the black bars
   if (subAlign == SUBTITLE_ALIGN_BOTTOM_OUTSIDE || subAlign == SUBTITLE_ALIGN_TOP_OUTSIDE)
     return SUBTITLES::MARGIN_VERTICAL_BLACKBARS;
 
-  // Try get the vertical margin customized by user
-  int overrideMerginVertical =
-      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoSubtitleVerticalMargin;
-
-  if (overrideMerginVertical >= 0)
-    return overrideMerginVertical;
-
-  return SUBTITLES::MARGIN_VERTICAL;
+  return static_cast<float>(settings->GetNumber(CSettings::SETTING_SUBTITLES_MARGINVERTICAL));
 }

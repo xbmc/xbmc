@@ -668,6 +668,19 @@
           </dependencies>
           <control type="slider" format="percentage" range="0,100" />
         </setting>
+        <setting id="subtitles.marginvertical" type="number" label="39182" help="39183">
+          <level>3</level>
+          <default>7.75</default>
+          <constraints>
+            <minimum>0</minimum>
+            <step>0.25</step>
+            <maximum>50</maximum>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" on="property" operator="!is" name="isplaying" />
+          </dependencies>
+          <control type="slider" format="percentage"/>
+        </setting>
         <setting id="subtitles.overridefonts" type="boolean" label="21368" help="36190">
           <level>3</level>
           <default>false</default>
