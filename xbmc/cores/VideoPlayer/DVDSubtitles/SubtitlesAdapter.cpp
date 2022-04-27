@@ -38,7 +38,7 @@ int CSubtitlesAdapter::AddSubtitle(std::string& text, double startTime, double s
 int CSubtitlesAdapter::AddSubtitle(std::string& text,
                                    double startTime,
                                    double stopTime,
-                                   KODI::SUBTITLES::subtitleOpts* opts)
+                                   KODI::SUBTITLES::STYLE::subtitleOpts* opts)
 {
   PostProcess(text);
   int ret = m_libass->AddEvent(text.c_str(), startTime, stopTime, opts);

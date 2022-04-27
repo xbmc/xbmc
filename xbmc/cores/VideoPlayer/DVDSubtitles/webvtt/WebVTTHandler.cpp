@@ -12,8 +12,7 @@
 #include "cores/VideoPlayer/DVDSubtitles/SubtitlesStyle.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "filesystem/SpecialProtocol.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
+#include "settings/SubtitlesSettings.h"
 #include "utils/CSSUtils.h"
 #include "utils/CharsetConverter.h"
 #include "utils/HTMLUtil.h"
@@ -31,7 +30,7 @@
 // - Cue "line" setting as number value
 // - Vertical text (used for some specific asian languages only)
 
-using namespace KODI::SUBTITLES;
+using namespace KODI::SUBTITLES::STYLE;
 
 namespace
 {
@@ -211,12 +210,11 @@ bool CWebVTTHandler::Initialize()
     m_cueCssStyleMapRegex.insert({item.first, reg});
   }
 
-  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-  int overrideStyles = settings->GetInt(CSettings::SETTING_SUBTITLES_OVERRIDESTYLES);
-  m_overridePositions = (overrideStyles == (int)KODI::SUBTITLES::OverrideStyles::STYLES_POSITIONS ||
-                         overrideStyles == (int)KODI::SUBTITLES::OverrideStyles::POSITIONS);
-  m_overrideStyle = (overrideStyles == (int)KODI::SUBTITLES::OverrideStyles::STYLES_POSITIONS ||
-                     overrideStyles == (int)KODI::SUBTITLES::OverrideStyles::STYLES);
+  auto overrideStyles{KODI::SUBTITLES::CSubtitlesSettings::GetInstance().GetOverrideStyles()};
+  m_overridePositions = (overrideStyles == KODI::SUBTITLES::OverrideStyles::STYLES_POSITIONS ||
+                         overrideStyles == KODI::SUBTITLES::OverrideStyles::POSITIONS);
+  m_overrideStyle = (overrideStyles == KODI::SUBTITLES::OverrideStyles::STYLES_POSITIONS ||
+                     overrideStyles == KODI::SUBTITLES::OverrideStyles::STYLES);
 
   return true;
 }

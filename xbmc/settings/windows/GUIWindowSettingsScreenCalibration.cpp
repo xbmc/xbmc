@@ -10,7 +10,6 @@
 
 #include "Application.h"
 #include "ServiceBroker.h"
-#include "cores/VideoPlayer/VideoRenderers/OverlayRenderer.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMoverControl.h"
@@ -21,6 +20,7 @@
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "settings/SubtitlesSettings.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -28,6 +28,8 @@
 
 #include <string>
 #include <utility>
+
+using namespace KODI;
 
 namespace
 {
@@ -315,7 +317,7 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
       CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(m_Res[m_iCurRes]);
 
   m_subtitleVerticalMargin =
-      info.iHeight / 100 * OVERLAY::CRenderer::GetSubtitleVerticalMarginPerc();
+      info.iHeight / 100 * SUBTITLES::CSubtitlesSettings::GetInstance().GetVerticalMarginPerc();
 
   if (pControl)
   {

@@ -19,6 +19,8 @@
 #include <memory>
 #include <string>
 
+using namespace KODI;
+
 COverlayCodecWebVTT::COverlayCodecWebVTT() : CDVDOverlayCodec("WebVTT Subtitle Decoder")
 {
   m_pOverlay = nullptr;
@@ -113,7 +115,7 @@ OverlayMessage COverlayCodecWebVTT::Decode(DemuxPacket* pPacket)
 
   for (auto& subData : subtitleList)
   {
-    KODI::SUBTITLES::subtitleOpts opts;
+    SUBTITLES::STYLE::subtitleOpts opts;
     opts.useMargins = subData.useMargins;
     opts.marginLeft = subData.marginLeft;
     opts.marginRight = subData.marginRight;

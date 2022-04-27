@@ -25,11 +25,13 @@
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "settings/SubtitlesSettings.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "video/dialogs/GUIDialogAudioSettings.h"
 
+using namespace KODI;
 using namespace UTILS;
 
 CPlayerController::CPlayerController()
@@ -375,17 +377,22 @@ bool CPlayerController::OnAction(const CAction &action)
 
       case ACTION_SUBTITLE_ALIGN:
       {
-        int subalign = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_SUBTITLES_ALIGN);
+        SUBTITLES::CSubtitlesSettings& settings{SUBTITLES::CSubtitlesSettings::GetInstance()};
+        SUBTITLES::Align align{settings.GetAlignment()};
 
-        subalign++;
-        if (subalign > SUBTITLE_ALIGN_TOP_OUTSIDE)
-          subalign = SUBTITLE_ALIGN_MANUAL;
+        align = static_cast<SUBTITLES::Align>(static_cast<int>(align) + 1);
 
-        CServiceBroker::GetSettingsComponent()->GetSettings()->SetInt(CSettings::SETTING_SUBTITLES_ALIGN, subalign);
-        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
-                                              g_localizeStrings.Get(21460),
-                                              g_localizeStrings.Get(21461 + subalign),
-                                              TOAST_DISPLAY_TIME, false);
+        if (align != SUBTITLES::Align::MANUAL && align != SUBTITLES::Align::BOTTOM_INSIDE &&
+            align != SUBTITLES::Align::BOTTOM_OUTSIDE && align != SUBTITLES::Align::TOP_INSIDE &&
+            align != SUBTITLES::Align::TOP_OUTSIDE)
+        {
+          align = SUBTITLES::Align::MANUAL;
+        }
+
+        settings.SetAlignment(align);
+        CGUIDialogKaiToast::QueueNotification(
+            CGUIDialogKaiToast::Info, g_localizeStrings.Get(21460),
+            g_localizeStrings.Get(21461 + static_cast<int>(align)), TOAST_DISPLAY_TIME, false);
         return true;
       }
 
