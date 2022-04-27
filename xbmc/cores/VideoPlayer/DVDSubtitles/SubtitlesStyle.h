@@ -22,7 +22,7 @@ constexpr double VIEWPORT_WIDTH = 1920.0;
 constexpr int MARGIN_VERTICAL = 75;
 // Vertical margin used when is selected the alignment
 // to keep the text inside the black bars
-constexpr int MARGIN_VERTICAL_BLACKBARS = 30;
+constexpr float MARGIN_VERTICAL_BLACKBARS = 2.75f; // in %
 
 enum class HorizontalAlignment
 {

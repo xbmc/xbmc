@@ -38,6 +38,8 @@ public:
                                                 std::string& current,
                                                 void* data);
 
+  static std::shared_ptr<CSettings> GetSettings();
+
 protected:
   CSubtitlesSettings();
   ~CSubtitlesSettings() override;
