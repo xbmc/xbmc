@@ -117,8 +117,16 @@ void CUDevProvider::GetDisks(VECSOURCES& disks, bool removable)
     if (!device)
       continue;
 
+    // filter out devices without devnode
+    const char* devnode = udev_device_get_devnode(device);
+    if (!devnode)
+    {
+      udev_device_unref(device);
+      continue;
+    }
+
     // filter out devices that are not mounted
-    const char *mountpoint = get_mountpoint(udev_device_get_devnode(device));
+    const char* mountpoint = get_mountpoint(devnode);
     if (!mountpoint)
     {
       udev_device_unref(device);
@@ -225,16 +233,17 @@ bool CUDevProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
 
   if (FD_ISSET(udev_monitor_get_fd(m_udevMon), &readfds))
   {
-		struct udev_device *dev = udev_monitor_receive_device(m_udevMon);
+    struct udev_device* dev = udev_monitor_receive_device(m_udevMon);
     if (!dev)
       return false;
 
-    const char *action  = udev_device_get_action(dev);
-    if (action)
+    const char* action = udev_device_get_action(dev);
+    const char* devnode = udev_device_get_devnode(dev);
+    if (action && devnode)
     {
       MEDIA_DETECT::STORAGE::StorageDevice storageDevice;
       const char *udev_label = udev_device_get_property_value(dev, "ID_FS_LABEL");
-      const char *mountpoint = get_mountpoint(udev_device_get_devnode(dev));
+      const char* mountpoint = get_mountpoint(devnode);
       if (udev_label)
         storageDevice.label = udev_label;
       else if (mountpoint)
