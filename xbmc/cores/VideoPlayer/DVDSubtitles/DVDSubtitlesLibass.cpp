@@ -26,7 +26,7 @@
 #include <cstring>
 #include <mutex>
 
-using namespace KODI::SUBTITLES;
+using namespace KODI::SUBTITLES::STYLE;
 using namespace UTILS;
 
 namespace
@@ -253,12 +253,11 @@ bool CDVDSubtitlesLibass::CreateTrack(char* buf, size_t size)
   return true;
 }
 
-ASS_Image* CDVDSubtitlesLibass::RenderImage(
-    double pts,
-    renderOpts opts,
-    bool updateStyle,
-    const std::shared_ptr<struct KODI::SUBTITLES::style>& subStyle,
-    int* changes)
+ASS_Image* CDVDSubtitlesLibass::RenderImage(double pts,
+                                            renderOpts opts,
+                                            bool updateStyle,
+                                            const std::shared_ptr<struct style>& subStyle,
+                                            int* changes)
 {
   std::unique_lock<CCriticalSection> lock(m_section);
   if (!m_renderer || !m_track)
@@ -309,8 +308,7 @@ ASS_Image* CDVDSubtitlesLibass::RenderImage(
   return ass_render_frame(m_renderer, m_track, DVD_TIME_TO_MSEC(pts), changes);
 }
 
-void CDVDSubtitlesLibass::ApplyStyle(const std::shared_ptr<struct KODI::SUBTITLES::style>& subStyle,
-                                     renderOpts opts)
+void CDVDSubtitlesLibass::ApplyStyle(const std::shared_ptr<struct style>& subStyle, renderOpts opts)
 {
   CLog::Log(LOGDEBUG, "{} - Start setting up the LibAss style", __FUNCTION__);
 
@@ -361,7 +359,7 @@ void CDVDSubtitlesLibass::ApplyStyle(const std::shared_ptr<struct KODI::SUBTITLE
 
     // It is mandatory set the FontName, the text is case sensitive
     free(style->FontName);
-    if (subStyle->fontName == FONT_DEFAULT_FAMILYNAME)
+    if (subStyle->fontName == KODI::SUBTITLES::FONT_DEFAULT_FAMILYNAME)
       style->FontName = strdup(m_defaultFontFamilyName.c_str());
     else
       style->FontName = strdup(subStyle->fontName.c_str());
@@ -396,13 +394,13 @@ void CDVDSubtitlesLibass::ApplyStyle(const std::shared_ptr<struct KODI::SUBTITLE
 
     // Configure the effects
     double lineSpacing = 0.0;
-    if (subStyle->borderStyle == BorderStyle::OUTLINE ||
-        subStyle->borderStyle == BorderStyle::OUTLINE_NO_SHADOW)
+    if (subStyle->borderStyle == BorderType::OUTLINE ||
+        subStyle->borderStyle == BorderType::OUTLINE_NO_SHADOW)
     {
       style->BorderStyle = ASS_BORDER_STYLE_OUTLINE;
       style->Outline = (10.00 / 100 * subStyle->fontBorderSize) * scale;
       style->OutlineColour = ConvColor(subStyle->fontBorderColor, subStyle->fontOpacity);
-      if (subStyle->borderStyle == BorderStyle::OUTLINE_NO_SHADOW)
+      if (subStyle->borderStyle == BorderType::OUTLINE_NO_SHADOW)
       {
         style->BackColour = ConvColor(COLOR::NONE, 0); // Set the shadow color
         style->Shadow = 0; // Set the shadow size
@@ -414,7 +412,7 @@ void CDVDSubtitlesLibass::ApplyStyle(const std::shared_ptr<struct KODI::SUBTITLE
         style->Shadow = (10.00 / 100 * subStyle->shadowSize) * scale; // Set the shadow size
       }
     }
-    else if (subStyle->borderStyle == BorderStyle::BOX)
+    else if (subStyle->borderStyle == BorderType::BOX)
     {
       // This BorderStyle not support outline color/size
       style->BorderStyle = ASS_BORDER_STYLE_BOX;
@@ -428,7 +426,7 @@ void CDVDSubtitlesLibass::ApplyStyle(const std::shared_ptr<struct KODI::SUBTITLE
       // By default a box overlaps the other, then we increase a bit the line spacing
       lineSpacing = 6.0;
     }
-    else if (subStyle->borderStyle == BorderStyle::SQUARE_BOX)
+    else if (subStyle->borderStyle == BorderType::SQUARE_BOX)
     {
       // This BorderStyle not support shadow color/size
       style->BorderStyle = ASS_BORDER_STYLE_SQUARE_BOX;
@@ -443,7 +441,7 @@ void CDVDSubtitlesLibass::ApplyStyle(const std::shared_ptr<struct KODI::SUBTITLE
     style->Blur = (10.00 / 100 * subStyle->blur);
 
     double marginLR = 20;
-    if (opts.horizontalAlignment != HorizontalAlignment::DISABLED)
+    if (opts.horizontalAlignment != HorizontalAlign::DISABLED)
     {
       // If the subtitle text is aligned on the left or right
       // of the screen, we set an extra left/right margin
@@ -459,37 +457,36 @@ void CDVDSubtitlesLibass::ApplyStyle(const std::shared_ptr<struct KODI::SUBTITLE
       style->MarginV = static_cast<int>(subStyle->marginVertical * scale);
 
     // Set the vertical alignment
-    if (subStyle->alignment == FontAlignment::TOP_LEFT ||
-        subStyle->alignment == FontAlignment::TOP_CENTER ||
-        subStyle->alignment == FontAlignment::TOP_RIGHT)
+    if (subStyle->alignment == FontAlign::TOP_LEFT ||
+        subStyle->alignment == FontAlign::TOP_CENTER || subStyle->alignment == FontAlign::TOP_RIGHT)
       style->Alignment = VALIGN_TOP;
-    else if (subStyle->alignment == FontAlignment::MIDDLE_LEFT ||
-             subStyle->alignment == FontAlignment::MIDDLE_CENTER ||
-             subStyle->alignment == FontAlignment::MIDDLE_RIGHT)
+    else if (subStyle->alignment == FontAlign::MIDDLE_LEFT ||
+             subStyle->alignment == FontAlign::MIDDLE_CENTER ||
+             subStyle->alignment == FontAlign::MIDDLE_RIGHT)
       style->Alignment = VALIGN_CENTER;
-    else if (subStyle->alignment == FontAlignment::SUB_LEFT ||
-             subStyle->alignment == FontAlignment::SUB_CENTER ||
-             subStyle->alignment == FontAlignment::SUB_RIGHT)
+    else if (subStyle->alignment == FontAlign::SUB_LEFT ||
+             subStyle->alignment == FontAlign::SUB_CENTER ||
+             subStyle->alignment == FontAlign::SUB_RIGHT)
       style->Alignment = VALIGN_SUB;
 
     // Set the horizontal alignment, giving priority to horizontalFontAlign property when set
-    if (opts.horizontalAlignment == HorizontalAlignment::LEFT)
+    if (opts.horizontalAlignment == HorizontalAlign::LEFT)
       style->Alignment |= HALIGN_LEFT;
-    else if (opts.horizontalAlignment == HorizontalAlignment::CENTER)
+    else if (opts.horizontalAlignment == HorizontalAlign::CENTER)
       style->Alignment |= HALIGN_CENTER;
-    else if (opts.horizontalAlignment == HorizontalAlignment::RIGHT)
+    else if (opts.horizontalAlignment == HorizontalAlign::RIGHT)
       style->Alignment |= HALIGN_RIGHT;
-    else if (subStyle->alignment == FontAlignment::TOP_LEFT ||
-             subStyle->alignment == FontAlignment::MIDDLE_LEFT ||
-             subStyle->alignment == FontAlignment::SUB_LEFT)
+    else if (subStyle->alignment == FontAlign::TOP_LEFT ||
+             subStyle->alignment == FontAlign::MIDDLE_LEFT ||
+             subStyle->alignment == FontAlign::SUB_LEFT)
       style->Alignment |= HALIGN_LEFT;
-    else if (subStyle->alignment == FontAlignment::TOP_CENTER ||
-             subStyle->alignment == FontAlignment::MIDDLE_CENTER ||
-             subStyle->alignment == FontAlignment::SUB_CENTER)
+    else if (subStyle->alignment == FontAlign::TOP_CENTER ||
+             subStyle->alignment == FontAlign::MIDDLE_CENTER ||
+             subStyle->alignment == FontAlign::SUB_CENTER)
       style->Alignment |= HALIGN_CENTER;
-    else if (subStyle->alignment == FontAlignment::TOP_RIGHT ||
-             subStyle->alignment == FontAlignment::MIDDLE_RIGHT ||
-             subStyle->alignment == FontAlignment::SUB_RIGHT)
+    else if (subStyle->alignment == FontAlign::TOP_RIGHT ||
+             subStyle->alignment == FontAlign::MIDDLE_RIGHT ||
+             subStyle->alignment == FontAlign::SUB_RIGHT)
       style->Alignment |= HALIGN_RIGHT;
   }
 
@@ -500,8 +497,8 @@ void CDVDSubtitlesLibass::ApplyStyle(const std::shared_ptr<struct KODI::SUBTITLE
   }
 }
 
-void CDVDSubtitlesLibass::ConfigureAssOverride(
-    const std::shared_ptr<struct KODI::SUBTITLES::style>& subStyle, ASS_Style* style)
+void CDVDSubtitlesLibass::ConfigureAssOverride(const std::shared_ptr<struct style>& subStyle,
+                                               ASS_Style* style)
 {
   if (!subStyle)
   {

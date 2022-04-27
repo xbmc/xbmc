@@ -11,6 +11,7 @@
 
 #include "BaseRenderer.h"
 #include "cores/VideoPlayer/DVDSubtitles/SubtitlesStyle.h"
+#include "settings/SubtitlesSettings.h"
 #include "threads/CriticalSection.h"
 #include "utils/Observer.h"
 
@@ -25,30 +26,6 @@ class CDVDOverlayImage;
 class CDVDOverlaySpu;
 class CDVDOverlaySSA;
 class CDVDOverlayText;
-
-enum SubtitleAlign
-{
-  SUBTITLE_ALIGN_MANUAL = 0,
-  SUBTITLE_ALIGN_BOTTOM_INSIDE,
-  SUBTITLE_ALIGN_BOTTOM_OUTSIDE,
-  SUBTITLE_ALIGN_TOP_INSIDE,
-  SUBTITLE_ALIGN_TOP_OUTSIDE
-};
-
-enum class SubtitleHorizontalAlign
-{
-  LEFT = 0,
-  CENTER,
-  RIGHT
-};
-
-enum subtitleBackgroundType
-{
-  SUBTITLE_BACKGROUNDTYPE_NONE = 0,
-  SUBTITLE_BACKGROUNDTYPE_SHADOW,
-  SUBTITLE_BACKGROUNDTYPE_BOX,
-  SUBTITLE_BACKGROUNDTYPE_SQUAREBOX
-};
 
 namespace OVERLAY {
 
@@ -142,12 +119,6 @@ namespace OVERLAY {
      */
     void SetSubtitleVerticalPosition(const int value, bool save);
 
-    /*!
-     * \brief Get the subtitle vertical margin in percentage
-     * \return The percentage value
-     */
-    static float GetSubtitleVerticalMarginPerc();
-
   protected:
     /*!
      * \brief Reset the subtitle position to default value
@@ -179,10 +150,11 @@ namespace OVERLAY {
     * \param subStyle The style to be used, MUST BE SET ONLY at the first call or when user change settings
     * \return True if success, false if error
     */
-    COverlay* ConvertLibass(CDVDOverlayLibass* o,
-                            double pts,
-                            bool updateStyle,
-                            const std::shared_ptr<struct KODI::SUBTITLES::style>& overlayStyle);
+    COverlay* ConvertLibass(
+        CDVDOverlayLibass* o,
+        double pts,
+        bool updateStyle,
+        const std::shared_ptr<struct KODI::SUBTITLES::STYLE::style>& overlayStyle);
 
     void CreateSubtitlesStyle();
 
@@ -205,9 +177,10 @@ namespace OVERLAY {
     int m_subtitlePosResInfo{-1}; // Current subtitle position from resolution info
     int m_subtitleVerticalMargin{0};
     bool m_saveSubtitlePosition{false}; // To save subtitle position permanently
-    SubtitleHorizontalAlign m_subtitleHorizontalAlign{SubtitleHorizontalAlign::CENTER};
+    KODI::SUBTITLES::HorizontalAlign m_subtitleHorizontalAlign{
+        KODI::SUBTITLES::HorizontalAlign::CENTER};
 
-    std::shared_ptr<struct KODI::SUBTITLES::style> m_overlayStyle;
+    std::shared_ptr<struct KODI::SUBTITLES::STYLE::style> m_overlayStyle;
     std::atomic<bool> m_isSettingsChanged{false};
   };
 }

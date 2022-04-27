@@ -15,11 +15,12 @@
 #include "Util.h"
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
+#include "settings/SubtitlesSettings.h"
 #include "utils/StringUtils.h"
 
 #include <memory>
+
+using namespace KODI;
 
 CDVDOverlayCodecSSA::CDVDOverlayCodecSSA()
   : CDVDOverlayCodec("SSA Subtitle Decoder"), m_libass(std::make_shared<CDVDSubtitlesLibass>())
@@ -132,11 +133,8 @@ CDVDOverlay* CDVDOverlayCodecSSA::GetOverlay()
   m_pOverlay = new CDVDOverlaySSA(m_libass);
   m_pOverlay->iPTSStartTime = 0;
   m_pOverlay->iPTSStopTime = DVD_NOPTS_VALUE;
-  //! @todo To move GetSettings into SubtitleSettings
-  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-  int overrideStyles = settings->GetInt(CSettings::SETTING_SUBTITLES_OVERRIDESTYLES);
-  m_pOverlay->SetForcedMargins(
-      overrideStyles != static_cast<int>(KODI::SUBTITLES::OverrideStyles::STYLES_POSITIONS) &&
-      overrideStyles != static_cast<int>(KODI::SUBTITLES::OverrideStyles::POSITIONS));
+  auto overrideStyles{SUBTITLES::CSubtitlesSettings::GetInstance().GetOverrideStyles()};
+  m_pOverlay->SetForcedMargins(overrideStyles != SUBTITLES::OverrideStyles::STYLES_POSITIONS &&
+                               overrideStyles != SUBTITLES::OverrideStyles::POSITIONS);
   return m_pOverlay->Acquire();
 }

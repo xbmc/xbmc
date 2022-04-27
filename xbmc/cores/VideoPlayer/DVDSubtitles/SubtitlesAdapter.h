@@ -50,7 +50,7 @@ public:
   int AddSubtitle(std::string& text,
                   double startTime,
                   double stopTime,
-                  KODI::SUBTITLES::subtitleOpts* opts);
+                  KODI::SUBTITLES::STYLE::subtitleOpts* opts);
 
   /*!
   * \brief Append text to the specified subtitle ID

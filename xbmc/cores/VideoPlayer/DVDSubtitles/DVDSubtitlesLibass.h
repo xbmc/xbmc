@@ -40,9 +40,9 @@ public:
   void Configure();
 
   ASS_Image* RenderImage(double pts,
-                         KODI::SUBTITLES::renderOpts opts,
+                         KODI::SUBTITLES::STYLE::renderOpts opts,
                          bool updateStyle,
-                         const std::shared_ptr<struct KODI::SUBTITLES::style>& subStyle,
+                         const std::shared_ptr<struct KODI::SUBTITLES::STYLE::style>& subStyle,
                          int* changes = NULL);
 
   ASS_Event* GetEvents();
@@ -117,7 +117,7 @@ protected:
   int AddEvent(const char* text,
                double startTime,
                double stopTime,
-               KODI::SUBTITLES::subtitleOpts* opts);
+               KODI::SUBTITLES::STYLE::subtitleOpts* opts);
 
   /*!
   * \brief Append text to the specified event
@@ -144,10 +144,10 @@ protected:
 
 
 private:
-  void ConfigureAssOverride(const std::shared_ptr<struct KODI::SUBTITLES::style>& subStyle,
+  void ConfigureAssOverride(const std::shared_ptr<struct KODI::SUBTITLES::STYLE::style>& subStyle,
                             ASS_Style* style);
-  void ApplyStyle(const std::shared_ptr<struct KODI::SUBTITLES::style>& subStyle,
-                  KODI::SUBTITLES::renderOpts opts);
+  void ApplyStyle(const std::shared_ptr<struct KODI::SUBTITLES::STYLE::style>& subStyle,
+                  KODI::SUBTITLES::STYLE::renderOpts opts);
 
   ASS_Library* m_library = nullptr;
   ASS_Track* m_track = nullptr;
