@@ -9,7 +9,6 @@
 #include "Settings.h"
 
 #include "AppParams.h"
-#include "Application.h"
 #include "Autorun.h"
 #include "GUIPassword.h"
 #include "LangInfo.h"
@@ -906,7 +905,6 @@ void CSettings::InitializeISettingsHandlers()
   GetSettingsManager()->RegisterSettingsHandler(&CWakeOnAccess::GetInstance());
   GetSettingsManager()->RegisterSettingsHandler(&CRssManager::GetInstance());
   GetSettingsManager()->RegisterSettingsHandler(&g_langInfo);
-  GetSettingsManager()->RegisterSettingsHandler(&g_application);
 #if defined(TARGET_LINUX) && !defined(TARGET_ANDROID) && !defined(__UCLIBC__)
   GetSettingsManager()->RegisterSettingsHandler(&g_timezone);
 #endif
@@ -920,7 +918,6 @@ void CSettings::UninitializeISettingsHandlers()
 #if defined(TARGET_LINUX)
   GetSettingsManager()->UnregisterSettingsHandler(&g_timezone);
 #endif // defined(TARGET_LINUX)
-  GetSettingsManager()->UnregisterSettingsHandler(&g_application);
   GetSettingsManager()->UnregisterSettingsHandler(&g_langInfo);
   GetSettingsManager()->UnregisterSettingsHandler(&CRssManager::GetInstance());
   GetSettingsManager()->UnregisterSettingsHandler(&CWakeOnAccess::GetInstance());
@@ -933,7 +930,6 @@ void CSettings::UninitializeISettingsHandlers()
 void CSettings::InitializeISubSettings()
 {
   // register ISubSettings implementations
-  RegisterSubSettings(&g_application);
   RegisterSubSettings(&CDisplaySettings::GetInstance());
   RegisterSubSettings(&CMediaSettings::GetInstance());
   RegisterSubSettings(&CSkinSettings::GetInstance());
@@ -944,7 +940,6 @@ void CSettings::InitializeISubSettings()
 void CSettings::UninitializeISubSettings()
 {
   // unregister ISubSettings implementations
-  UnregisterSubSettings(&g_application);
   UnregisterSubSettings(&CDisplaySettings::GetInstance());
   UnregisterSubSettings(&CMediaSettings::GetInstance());
   UnregisterSubSettings(&CSkinSettings::GetInstance());
@@ -980,41 +975,6 @@ void CSettings::InitializeISettingCallbacks()
   settingSet.insert(CSettings::SETTING_VIDEOSCREEN_WHITELIST);
   settingSet.insert(CSettings::SETTING_VIDEOSCREEN_10BITSURFACES);
   GetSettingsManager()->RegisterCallback(&CDisplaySettings::GetInstance(), settingSet);
-
-  settingSet.clear();
-  settingSet.insert(CSettings::SETTING_VIDEOPLAYER_SEEKDELAY);
-  settingSet.insert(CSettings::SETTING_VIDEOPLAYER_SEEKSTEPS);
-  settingSet.insert(CSettings::SETTING_MUSICPLAYER_SEEKDELAY);
-  settingSet.insert(CSettings::SETTING_MUSICPLAYER_SEEKSTEPS);
-  GetSettingsManager()->RegisterCallback(&g_application.GetAppPlayer().GetSeekHandler(), settingSet);
-
-  settingSet.clear();
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH);
-  settingSet.insert(CSettings::SETTING_LOOKANDFEEL_SKIN);
-  settingSet.insert(CSettings::SETTING_LOOKANDFEEL_SKINSETTINGS);
-  settingSet.insert(CSettings::SETTING_LOOKANDFEEL_FONT);
-  settingSet.insert(CSettings::SETTING_LOOKANDFEEL_SKINTHEME);
-  settingSet.insert(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS);
-  settingSet.insert(CSettings::SETTING_LOOKANDFEEL_SKINZOOM);
-  settingSet.insert(CSettings::SETTING_MUSICPLAYER_REPLAYGAINPREAMP);
-  settingSet.insert(CSettings::SETTING_MUSICPLAYER_REPLAYGAINNOGAINPREAMP);
-  settingSet.insert(CSettings::SETTING_MUSICPLAYER_REPLAYGAINTYPE);
-  settingSet.insert(CSettings::SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING);
-  settingSet.insert(CSettings::SETTING_SCRAPERS_MUSICVIDEOSDEFAULT);
-  settingSet.insert(CSettings::SETTING_SCREENSAVER_MODE);
-  settingSet.insert(CSettings::SETTING_SCREENSAVER_PREVIEW);
-  settingSet.insert(CSettings::SETTING_SCREENSAVER_SETTINGS);
-  settingSet.insert(CSettings::SETTING_AUDIOCDS_SETTINGS);
-  settingSet.insert(CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION);
-  settingSet.insert(CSettings::SETTING_VIDEOSCREEN_TESTPATTERN);
-  settingSet.insert(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC);
-  settingSet.insert(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE);
-  settingSet.insert(CSettings::SETTING_AUDIOOUTPUT_VOLUMESTEPS);
-  settingSet.insert(CSettings::SETTING_SOURCE_VIDEOS);
-  settingSet.insert(CSettings::SETTING_SOURCE_MUSIC);
-  settingSet.insert(CSettings::SETTING_SOURCE_PICTURES);
-  settingSet.insert(CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN);
-  GetSettingsManager()->RegisterCallback(&g_application, settingSet);
 
   settingSet.clear();
   settingSet.insert(CSettings::SETTING_SUBTITLES_CHARSET);
@@ -1087,8 +1047,6 @@ void CSettings::UninitializeISettingCallbacks()
 {
   GetSettingsManager()->UnregisterCallback(&CMediaSettings::GetInstance());
   GetSettingsManager()->UnregisterCallback(&CDisplaySettings::GetInstance());
-  GetSettingsManager()->UnregisterCallback(&g_application.GetAppPlayer().GetSeekHandler());
-  GetSettingsManager()->UnregisterCallback(&g_application);
   GetSettingsManager()->UnregisterCallback(&g_charsetConverter);
   GetSettingsManager()->UnregisterCallback(&g_langInfo);
   GetSettingsManager()->UnregisterCallback(&g_passwordManager);

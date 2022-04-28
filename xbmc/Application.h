@@ -434,6 +434,9 @@ private:
   void PrintStartupLog();
   void ResetCurrentItem();
 
+  void RegisterSettings();
+  void UnregisterSettings();
+
   mutable CCriticalSection m_critSection; /*!< critical section for all changes to this class, except for changes to triggers */
 
   CCriticalSection m_frameMoveGuard;              /*!< critical section for synchronizing GUI actions from inside and outside (python) */
