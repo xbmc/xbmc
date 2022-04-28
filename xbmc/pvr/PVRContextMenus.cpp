@@ -78,7 +78,7 @@ namespace PVR
     class PVRClientMenuHook : public IContextMenuItem
     {
     public:
-      PVRClientMenuHook(const CPVRClientMenuHook& hook) : m_hook(hook) {};
+      explicit PVRClientMenuHook(const CPVRClientMenuHook& hook) : m_hook(hook) {}
 
       std::string GetLabel(const CFileItem& item) const override;
       bool IsVisible(const CFileItem& item) const override;
@@ -704,31 +704,31 @@ namespace PVR
   }
 
   CPVRContextMenuManager::CPVRContextMenuManager()
+    : m_items({
+          std::make_shared<CONTEXTMENUITEM::PlayEpgTag>(19190), /* Play programme */
+          std::make_shared<CONTEXTMENUITEM::PlayRecording>(19687), /* Play recording */
+          std::make_shared<CONTEXTMENUITEM::ShowInformation>(),
+          std::make_shared<CONTEXTMENUITEM::ShowChannelGuide>(19686), /* Channel guide */
+          std::make_shared<CONTEXTMENUITEM::FindSimilar>(19003), /* Find similar */
+          std::make_shared<CONTEXTMENUITEM::ToggleTimerState>(),
+          std::make_shared<CONTEXTMENUITEM::AddTimerRule>(19061), /* Add timer */
+          std::make_shared<CONTEXTMENUITEM::EditTimerRule>(),
+          std::make_shared<CONTEXTMENUITEM::DeleteTimerRule>(19295), /* Delete timer rule */
+          std::make_shared<CONTEXTMENUITEM::EditTimer>(),
+          std::make_shared<CONTEXTMENUITEM::DeleteTimer>(),
+          std::make_shared<CONTEXTMENUITEM::StartRecording>(264), /* Record */
+          std::make_shared<CONTEXTMENUITEM::StopRecording>(19059), /* Stop recording */
+          std::make_shared<CONTEXTMENUITEM::EditRecording>(21450), /* Edit */
+          std::make_shared<CONTEXTMENUITEM::DeleteRecording>(),
+          std::make_shared<CONTEXTMENUITEM::UndeleteRecording>(19290), /* Undelete */
+          std::make_shared<CONTEXTMENUITEM::DeleteWatchedRecordings>(19327), /* Delete watched */
+          std::make_shared<CONTEXTMENUITEM::AddReminder>(826), /* Set reminder */
+          std::make_shared<CONTEXTMENUITEM::ExecuteSearch>(137), /* Search */
+          std::make_shared<CONTEXTMENUITEM::EditSearch>(21450), /* Edit */
+          std::make_shared<CONTEXTMENUITEM::RenameSearch>(118), /* Rename */
+          std::make_shared<CONTEXTMENUITEM::DeleteSearch>(117), /* Delete */
+      })
   {
-    m_items = {
-        std::make_shared<CONTEXTMENUITEM::PlayEpgTag>(19190), /* Play programme */
-        std::make_shared<CONTEXTMENUITEM::PlayRecording>(19687), /* Play recording */
-        std::make_shared<CONTEXTMENUITEM::ShowInformation>(),
-        std::make_shared<CONTEXTMENUITEM::ShowChannelGuide>(19686), /* Channel guide */
-        std::make_shared<CONTEXTMENUITEM::FindSimilar>(19003), /* Find similar */
-        std::make_shared<CONTEXTMENUITEM::ToggleTimerState>(),
-        std::make_shared<CONTEXTMENUITEM::AddTimerRule>(19061), /* Add timer */
-        std::make_shared<CONTEXTMENUITEM::EditTimerRule>(),
-        std::make_shared<CONTEXTMENUITEM::DeleteTimerRule>(19295), /* Delete timer rule */
-        std::make_shared<CONTEXTMENUITEM::EditTimer>(),
-        std::make_shared<CONTEXTMENUITEM::DeleteTimer>(),
-        std::make_shared<CONTEXTMENUITEM::StartRecording>(264), /* Record */
-        std::make_shared<CONTEXTMENUITEM::StopRecording>(19059), /* Stop recording */
-        std::make_shared<CONTEXTMENUITEM::EditRecording>(21450), /* Edit */
-        std::make_shared<CONTEXTMENUITEM::DeleteRecording>(),
-        std::make_shared<CONTEXTMENUITEM::UndeleteRecording>(19290), /* Undelete */
-        std::make_shared<CONTEXTMENUITEM::DeleteWatchedRecordings>(19327), /* Delete watched */
-        std::make_shared<CONTEXTMENUITEM::AddReminder>(826), /* Set reminder */
-        std::make_shared<CONTEXTMENUITEM::ExecuteSearch>(137), /* Search */
-        std::make_shared<CONTEXTMENUITEM::EditSearch>(21450), /* Edit */
-        std::make_shared<CONTEXTMENUITEM::RenameSearch>(118), /* Rename */
-        std::make_shared<CONTEXTMENUITEM::DeleteSearch>(117), /* Delete */
-    };
   }
 
   void CPVRContextMenuManager::AddMenuHook(const CPVRClientMenuHook& hook)

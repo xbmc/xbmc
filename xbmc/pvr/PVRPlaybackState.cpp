@@ -29,6 +29,7 @@
 #include "threads/Timer.h"
 #include "utils/log.h"
 
+#include <algorithm>
 #include <mutex>
 
 using namespace PVR;
@@ -461,11 +462,11 @@ std::shared_ptr<CPVRChannelGroup> GetFirstNonDeletedAndNonHiddenChannelGroup(boo
   {
     const std::vector<std::shared_ptr<CPVRChannelGroup>> members =
         groups->GetMembers(true); // exclude hidden
-    for (const auto& group : members)
-    {
-      if (!group->IsDeleted())
-        return group;
-    }
+
+    const auto it = std::find_if(members.cbegin(), members.cend(),
+                                 [](const auto& group) { return !group->IsDeleted(); });
+    if (it != members.cend())
+      return (*it);
   }
 
   CLog::LogFC(LOGERROR, LOGPVR, "Failed to obtain any non-deleted and non-hidden group");

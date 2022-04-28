@@ -42,6 +42,8 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#include <algorithm>
+#include <iterator>
 #include <map>
 #include <memory>
 #include <mutex>
@@ -1926,7 +1928,7 @@ void CPVRClient::cb_recording_notification(void* kodiInstance,
     std::string strLine2;
     if (strName)
       strLine2 = strName;
-    else if (strFileName)
+    else
       strLine2 = strFileName;
 
     // display a notification for 5 seconds
@@ -2196,8 +2198,8 @@ void CPVRClientCapabilities::InitRecordingsLifetimeValues()
 void CPVRClientCapabilities::GetRecordingsLifetimeValues(
     std::vector<std::pair<std::string, int>>& list) const
 {
-  for (const auto& lifetime : m_recordingsLifetimeValues)
-    list.push_back(lifetime);
+  std::copy(m_recordingsLifetimeValues.cbegin(), m_recordingsLifetimeValues.cend(),
+            std::back_inserter(list));
 }
 
 } // namespace PVR

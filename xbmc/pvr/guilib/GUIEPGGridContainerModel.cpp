@@ -18,7 +18,9 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
+#include <algorithm>
 #include <cmath>
+#include <iterator>
 #include <memory>
 #include <vector>
 
@@ -80,11 +82,7 @@ void CGUIEPGGridContainerModel::Initialize(const std::unique_ptr<CFileItemList>&
 
   ////////////////////////////////////////////////////////////////////////
   // Create channel items
-  m_channelItems.reserve(items->Size());
-  for (const auto& channelItem : *items)
-  {
-    m_channelItems.emplace_back(channelItem);
-  }
+  std::copy(items->cbegin(), items->cend(), std::back_inserter(m_channelItems));
 
   /* check for invalid start and end time */
   if (gridStart >= gridEnd)
@@ -199,14 +197,12 @@ std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::GetEpgTags(EpgTagsMap::ite
   }
   else
   {
-    for (const auto& item : epgTags.tags)
-    {
-      if (IsEventMemberOfBlock(item->GetEPGInfoTag(), iBlock))
-      {
-        result = item;
-        break;
-      }
-    }
+    const auto it =
+        std::find_if(epgTags.tags.cbegin(), epgTags.tags.cend(), [this, iBlock](const auto& item) {
+          return IsEventMemberOfBlock(item->GetEPGInfoTag(), iBlock);
+        });
+    if (it != epgTags.tags.cend())
+      result = (*it);
   }
 
   return result;
@@ -225,11 +221,6 @@ std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::GetEpgTagsBefore(EpgTags& 
   const auto tags =
       GetEPGTimeline(iChannel, GetStartTimeForBlock(iBlock), GetStartTimeForBlock(lastBlock));
 
-  const int firstResultBlock = GetFirstEventBlock(tags.front());
-  const int lastResultBlock = GetLastEventBlock(tags.back());
-  if (firstResultBlock > lastResultBlock)
-    return result;
-
   if (epgTags.lastBlock == -1)
     epgTags.lastBlock = lastBlock;
 
@@ -239,6 +230,11 @@ std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::GetEpgTagsBefore(EpgTags& 
   }
   else
   {
+    const int firstResultBlock = GetFirstEventBlock(tags.front());
+    const int lastResultBlock = GetLastEventBlock(tags.back());
+    if (firstResultBlock > lastResultBlock)
+      return result;
+
     // insert before the existing tags
     epgTags.firstBlock = firstResultBlock;
 
@@ -288,11 +284,6 @@ std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::GetEpgTagsAfter(EpgTags& e
   const auto tags =
       GetEPGTimeline(iChannel, GetStartTimeForBlock(firstBlock), GetStartTimeForBlock(iBlock));
 
-  const int firstResultBlock = GetFirstEventBlock(tags.front());
-  const int lastResultBlock = GetLastEventBlock(tags.back());
-  if (firstResultBlock > lastResultBlock)
-    return result;
-
   if (epgTags.firstBlock == -1)
     epgTags.firstBlock = firstBlock;
 
@@ -302,6 +293,11 @@ std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::GetEpgTagsAfter(EpgTags& e
   }
   else
   {
+    const int firstResultBlock = GetFirstEventBlock(tags.front());
+    const int lastResultBlock = GetLastEventBlock(tags.back());
+    if (firstResultBlock > lastResultBlock)
+      return result;
+
     // append to the existing tags
     epgTags.lastBlock = lastResultBlock;
 

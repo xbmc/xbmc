@@ -88,12 +88,12 @@ namespace PVR
     int GetCurrentListItemIndex(const std::shared_ptr<CFileItem>& item);
 
     std::unique_ptr<CPVRRefreshTimelineItemsThread> m_refreshTimelineItemsThread;
-    std::atomic_bool m_bRefreshTimelineItems;
-    std::atomic_bool m_bSyncRefreshTimelineItems;
+    std::atomic_bool m_bRefreshTimelineItems{false};
+    std::atomic_bool m_bSyncRefreshTimelineItems{false};
 
     std::shared_ptr<CPVRChannelGroup> m_cachedChannelGroup;
 
-    bool m_bChannelSelectionRestored;
+    bool m_bChannelSelectionRestored{false};
   };
 
   class CGUIWindowPVRTVGuide : public CGUIWindowPVRGuideBase

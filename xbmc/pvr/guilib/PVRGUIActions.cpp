@@ -73,6 +73,7 @@
 #include <map>
 #include <memory>
 #include <mutex>
+#include <numeric>
 #include <string>
 #include <thread>
 #include <utility>
@@ -176,14 +177,15 @@ namespace PVR
         items.Add(item);
       }
 
-      bool bReturn = true;
-      for (const auto& itemToDelete : items)
-      {
-        if (itemToDelete->IsPVRRecording() &&
-            (!m_bWatchedOnly || itemToDelete->GetPVRRecordingInfoTag()->GetPlayCount() > 0))
-          bReturn &= itemToDelete->GetPVRRecordingInfoTag()->Delete();
-      }
-      return bReturn;
+      return std::accumulate(
+          items.cbegin(), items.cend(), true, [this](bool success, const auto& itemToDelete) {
+            return (itemToDelete->IsPVRRecording() &&
+                    (!m_bWatchedOnly ||
+                     itemToDelete->GetPVRRecordingInfoTag()->GetPlayCount() > 0) &&
+                    !itemToDelete->GetPVRRecordingInfoTag()->Delete())
+                       ? false
+                       : success;
+          });
     }
     bool m_bWatchedOnly = false;
   };
@@ -602,14 +604,12 @@ namespace PVR
       if (m_pDlgSelect->IsConfirmed())
       {
         int iSelection = m_pDlgSelect->GetSelectedItem();
-        for (const auto& action : m_actions)
-        {
-          if (action.second == iSelection)
-          {
-            eAction = action.first;
-            break;
-          }
-        }
+        const auto it =
+            std::find_if(m_actions.cbegin(), m_actions.cend(),
+                         [iSelection](const auto& action) { return action.second == iSelection; });
+
+        if (it != m_actions.cend())
+          eAction = (*it).first;
       }
 
       return eAction;
@@ -1239,7 +1239,7 @@ namespace PVR
 
   void CPVRGUIActions::StartPlayback(CFileItem* item,
                                      bool bFullscreen,
-                                     CPVRStreamProperties* epgProps) const
+                                     const CPVRStreamProperties* epgProps) const
   {
     // Obtain dynamic playback url and properties from the respective pvr client
     const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(*item);
@@ -1624,14 +1624,12 @@ namespace PVR
 
     if (clientId != PVR_INVALID_CLIENT_ID)
     {
-      for (const auto& client : possibleScanClients)
-      {
-        if (client->GetID() == clientId)
-        {
-          scanClient = client;
-          break;
-        }
-      }
+      const auto it =
+          std::find_if(possibleScanClients.cbegin(), possibleScanClients.cend(),
+                       [clientId](const auto& client) { return client->GetID() == clientId; });
+
+      if (it != possibleScanClients.cend())
+        scanClient = (*it);
 
       if (!scanClient)
       {
@@ -1706,10 +1704,9 @@ namespace PVR
     std::vector<std::pair<std::shared_ptr<CPVRClient>, CPVRClientMenuHook>> settingsHooks;
     for (const auto& client : clients)
     {
-      for (const auto& hook : client.second->GetMenuHooks()->GetSettingsHooks())
-      {
-        settingsHooks.emplace_back(std::make_pair(client.second, hook));
-      }
+      const auto hooks = client.second->GetMenuHooks()->GetSettingsHooks();
+      std::transform(hooks.cbegin(), hooks.cend(), std::back_inserter(settingsHooks),
+                     [&client](const auto& hook) { return std::make_pair(client.second, hook); });
     }
 
     if (settingsHooks.empty())

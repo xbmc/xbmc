@@ -16,6 +16,8 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#include <algorithm>
+#include <iterator>
 #include <memory>
 #include <string>
 #include <utility>
@@ -117,11 +119,12 @@ const std::shared_ptr<CPVRTimerType> CPVRTimerType::GetFirstAvailableType(const 
 std::shared_ptr<CPVRTimerType> CPVRTimerType::CreateFromIds(unsigned int iTypeId, int iClientId)
 {
   const std::vector<std::shared_ptr<CPVRTimerType>> types = GetAllTypes();
-  for (const auto& type : types)
-  {
-    if ((type->GetClientId() == iClientId) && (type->GetTypeId() == iTypeId))
-      return type;
-  }
+  const auto it =
+      std::find_if(types.cbegin(), types.cend(), [iClientId, iTypeId](const auto& type) {
+        return type->GetClientId() == iClientId && type->GetTypeId() == iTypeId;
+      });
+  if (it != types.cend())
+    return (*it);
 
   if (iClientId != -1)
   {
@@ -140,13 +143,14 @@ std::shared_ptr<CPVRTimerType> CPVRTimerType::CreateFromAttributes(uint64_t iMus
                                                                    int iClientId)
 {
   const std::vector<std::shared_ptr<CPVRTimerType>> types = GetAllTypes();
-  for (const auto& type : types)
-  {
-    if ((type->GetClientId() == iClientId) &&
-        ((type->GetAttributes() & iMustHaveAttr) == iMustHaveAttr) &&
-        ((type->GetAttributes() & iMustNotHaveAttr) == 0))
-      return type;
-  }
+  const auto it = std::find_if(types.cbegin(), types.cend(),
+                               [iClientId, iMustHaveAttr, iMustNotHaveAttr](const auto& type) {
+                                 return type->GetClientId() == iClientId &&
+                                        (type->GetAttributes() & iMustHaveAttr) == iMustHaveAttr &&
+                                        (type->GetAttributes() & iMustNotHaveAttr) == 0;
+                               });
+  if (it != types.cend())
+    return (*it);
 
   if (iClientId != -1)
   {
@@ -282,8 +286,7 @@ void CPVRTimerType::InitPriorityValues(const PVR_TIMER_TYPE& type)
 
 void CPVRTimerType::GetPriorityValues(std::vector<std::pair<std::string, int>>& list) const
 {
-  for (const auto& prio : m_priorityValues)
-    list.push_back(prio);
+  std::copy(m_priorityValues.cbegin(), m_priorityValues.cend(), std::back_inserter(list));
 }
 
 void CPVRTimerType::InitLifetimeValues(const PVR_TIMER_TYPE& type)
@@ -323,8 +326,7 @@ void CPVRTimerType::InitLifetimeValues(const PVR_TIMER_TYPE& type)
 
 void CPVRTimerType::GetLifetimeValues(std::vector<std::pair<std::string, int>>& list) const
 {
-  for (const auto& lifetime : m_lifetimeValues)
-    list.push_back(lifetime);
+  std::copy(m_lifetimeValues.cbegin(), m_lifetimeValues.cend(), std::back_inserter(list));
 }
 
 void CPVRTimerType::InitMaxRecordingsValues(const PVR_TIMER_TYPE& type)
@@ -348,8 +350,7 @@ void CPVRTimerType::InitMaxRecordingsValues(const PVR_TIMER_TYPE& type)
 
 void CPVRTimerType::GetMaxRecordingsValues(std::vector<std::pair<std::string, int>>& list) const
 {
-  for (const auto& maxRecordings : m_maxRecordingsValues)
-    list.push_back(maxRecordings);
+  std::copy(m_maxRecordingsValues.cbegin(), m_maxRecordingsValues.cend(), std::back_inserter(list));
 }
 
 void CPVRTimerType::InitPreventDuplicateEpisodesValues(const PVR_TIMER_TYPE& type)
@@ -385,8 +386,8 @@ void CPVRTimerType::InitPreventDuplicateEpisodesValues(const PVR_TIMER_TYPE& typ
 
 void CPVRTimerType::GetPreventDuplicateEpisodesValues(std::vector<std::pair<std::string, int>>& list) const
 {
-  for (const auto& preventDupEpisodes : m_preventDupEpisodesValues)
-    list.push_back(preventDupEpisodes);
+  std::copy(m_preventDupEpisodesValues.cbegin(), m_preventDupEpisodesValues.cend(),
+            std::back_inserter(list));
 }
 
 void CPVRTimerType::InitRecordingGroupValues(const PVR_TIMER_TYPE& type)
@@ -412,6 +413,6 @@ void CPVRTimerType::InitRecordingGroupValues(const PVR_TIMER_TYPE& type)
 
 void CPVRTimerType::GetRecordingGroupValues(std::vector< std::pair<std::string, int>>& list) const
 {
-  for (const auto& recordingGroup : m_recordingGroupValues)
-    list.push_back(recordingGroup);
+  std::copy(m_recordingGroupValues.cbegin(), m_recordingGroupValues.cend(),
+            std::back_inserter(list));
 }

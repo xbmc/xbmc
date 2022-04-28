@@ -67,13 +67,11 @@ void CGUIDialogPVRClientPriorities::InitializeSettings()
     return;
   }
 
-  std::shared_ptr<CSetting> setting = nullptr;
-
   CServiceBroker::GetPVRManager().Clients()->GetCreatedClients(m_clients);
   for (const auto& client : m_clients)
   {
-    setting = AddEdit(group, std::to_string(client.second->GetID()), 13205 /* Unknown */,
-                      SettingLevel::Basic, client.second->GetPriority());
+    AddEdit(group, std::to_string(client.second->GetID()), 13205 /* Unknown */, SettingLevel::Basic,
+            client.second->GetPriority());
   }
 }
 

@@ -32,6 +32,8 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
+#include <algorithm>
+#include <iterator>
 #include <memory>
 #include <string>
 #include <utility>
@@ -146,55 +148,60 @@ void CGUIDialogPVRTimerSettings::SetTimer(const std::shared_ptr<CPVRTimerInfoTag
 
   if (m_timerInfoTag->m_iClientChannelUid == PVR_CHANNEL_INVALID_UID)
   {
-    bool bChannelSet(false);
     if (m_timerType->SupportsAnyChannel())
     {
       // Select first matching "Any channel" entry.
-      for (const auto& channel : m_channelEntries)
+      const auto it = std::find_if(m_channelEntries.cbegin(), m_channelEntries.cend(),
+                                   [this](const auto& channel) {
+                                     return channel.second.channelUid == PVR_CHANNEL_INVALID_UID &&
+                                            channel.second.clientId == m_timerInfoTag->m_iClientId;
+                                   });
+
+      if (it != m_channelEntries.cend())
       {
-        if (channel.second.channelUid == PVR_CHANNEL_INVALID_UID &&
-            channel.second.clientId == m_timerInfoTag->m_iClientId)
-        {
-          m_channel = channel.second;
-          bChannelSet = true;
-        }
+        m_channel = (*it).second;
+      }
+      else
+      {
+        CLog::LogF(LOGERROR, "Unable to map PVR_CHANNEL_INVALID_UID to channel entry!");
       }
     }
     else if (m_bIsNewTimer)
     {
       // Select first matching regular (not "Any channel") entry.
-      for (const auto& channel : m_channelEntries)
+      const auto it = std::find_if(m_channelEntries.cbegin(), m_channelEntries.cend(),
+                                   [this](const auto& channel) {
+                                     return channel.second.channelUid != PVR_CHANNEL_INVALID_UID &&
+                                            channel.second.clientId == m_timerInfoTag->m_iClientId;
+                                   });
+
+      if (it != m_channelEntries.cend())
       {
-        if (channel.second.channelUid != PVR_CHANNEL_INVALID_UID &&
-            channel.second.clientId == m_timerInfoTag->m_iClientId)
-        {
-          m_channel = channel.second;
-          bChannelSet = true;
-          break;
-        }
+        m_channel = (*it).second;
+      }
+      else
+      {
+        CLog::LogF(LOGERROR, "Unable to map PVR_CHANNEL_INVALID_UID to channel entry!");
       }
     }
-
-    if (!bChannelSet)
-      CLog::LogF(LOGERROR, "Unable to map PVR_CHANNEL_INVALID_UID to channel entry!");
   }
   else
   {
     // Find matching channel entry
-    bool bChannelSet(false);
-    for (const auto& channel : m_channelEntries)
-    {
-      if ((channel.second.channelUid == m_timerInfoTag->m_iClientChannelUid) &&
-          (channel.second.clientId == m_timerInfoTag->m_iClientId))
-      {
-        m_channel = channel.second;
-        bChannelSet = true;
-        break;
-      }
-    }
+    const auto it = std::find_if(
+        m_channelEntries.cbegin(), m_channelEntries.cend(), [this](const auto& channel) {
+          return channel.second.channelUid == m_timerInfoTag->m_iClientChannelUid &&
+                 channel.second.clientId == m_timerInfoTag->m_iClientId;
+        });
 
-    if (!bChannelSet)
+    if (it != m_channelEntries.cend())
+    {
+      m_channel = (*it).second;
+    }
+    else
+    {
       CLog::LogF(LOGERROR, "Unable to map channel uid to channel entry!");
+    }
   }
 }
 
@@ -964,8 +971,9 @@ void CGUIDialogPVRTimerSettings::DupEpisodesFiller(const SettingConstPtr& settin
 
     std::vector<std::pair<std::string,int>> values;
     pThis->m_timerType->GetPreventDuplicateEpisodesValues(values);
-    for (const auto& value : values)
-      list.emplace_back(IntegerSettingOption(value.first, value.second));
+    std::transform(values.cbegin(), values.cend(), std::back_inserter(list), [](const auto& value) {
+      return IntegerSettingOption(value.first, value.second);
+    });
 
     current = pThis->m_iPreventDupEpisodes;
   }
@@ -1008,8 +1016,9 @@ void CGUIDialogPVRTimerSettings::PrioritiesFiller(const SettingConstPtr& setting
 
     std::vector<std::pair<std::string,int>> values;
     pThis->m_timerType->GetPriorityValues(values);
-    for (const auto& value : values)
-      list.emplace_back(IntegerSettingOption(value.first, value.second));
+    std::transform(values.cbegin(), values.cend(), std::back_inserter(list), [](const auto& value) {
+      return IntegerSettingOption(value.first, value.second);
+    });
 
     current = pThis->m_iPriority;
 
@@ -1044,8 +1053,9 @@ void CGUIDialogPVRTimerSettings::LifetimesFiller(const SettingConstPtr& setting,
 
     std::vector<std::pair<std::string,int>> values;
     pThis->m_timerType->GetLifetimeValues(values);
-    for (const auto& value : values)
-      list.emplace_back(IntegerSettingOption(value.first, value.second));
+    std::transform(values.cbegin(), values.cend(), std::back_inserter(list), [](const auto& value) {
+      return IntegerSettingOption(value.first, value.second);
+    });
 
     current = pThis->m_iLifetime;
 
@@ -1082,8 +1092,9 @@ void CGUIDialogPVRTimerSettings::MaxRecordingsFiller(const SettingConstPtr& sett
 
     std::vector<std::pair<std::string,int>> values;
     pThis->m_timerType->GetMaxRecordingsValues(values);
-    for (const auto& value : values)
-      list.emplace_back(IntegerSettingOption(value.first, value.second));
+    std::transform(values.cbegin(), values.cend(), std::back_inserter(list), [](const auto& value) {
+      return IntegerSettingOption(value.first, value.second);
+    });
 
     current = pThis->m_iMaxRecordings;
 
@@ -1118,8 +1129,9 @@ void CGUIDialogPVRTimerSettings::RecordingGroupFiller(const SettingConstPtr& set
 
     std::vector<std::pair<std::string,int>> values;
     pThis->m_timerType->GetRecordingGroupValues(values);
-    for (const auto& value : values)
-      list.emplace_back(IntegerSettingOption(value.first, value.second));
+    std::transform(values.cbegin(), values.cend(), std::back_inserter(list), [](const auto& value) {
+      return IntegerSettingOption(value.first, value.second);
+    });
 
     current = pThis->m_iRecordingGroup;
   }

@@ -769,10 +769,7 @@ void CGUIEPGGridContainer::UpdateItems()
         return;
       }
     }
-  }
 
-  if (prevSelectedEpgTag)
-  {
     if (newChannelIndex >= m_gridModel->ChannelItemsSize() ||
         newBlockIndex >= m_gridModel->GridItemsSize() ||
         m_gridModel->GetGridItem(newChannelIndex, newBlockIndex)->GetEPGInfoTag() !=

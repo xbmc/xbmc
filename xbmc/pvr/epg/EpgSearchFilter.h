@@ -28,7 +28,7 @@ namespace PVR
      * @brief ctor.
      * @param bRadio the type of channels to search - if true, 'radio'. 'tv', otherwise.
      */
-    CPVREpgSearchFilter(bool bRadio);
+    explicit CPVREpgSearchFilter(bool bRadio);
 
     /*!
      * @brief Clear this filter.

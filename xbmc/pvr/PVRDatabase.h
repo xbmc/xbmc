@@ -305,7 +305,7 @@ namespace PVR
 
     bool PersistGroupMembers(const CPVRChannelGroup& group);
 
-    bool PersistChannels(CPVRChannelGroup& group);
+    bool PersistChannels(const CPVRChannelGroup& group);
 
     bool RemoveChannelsFromGroup(const CPVRChannelGroup& group);
 

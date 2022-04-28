@@ -28,9 +28,9 @@ namespace PVR
     void SetRecording(const CFileItem* item);
 
   private:
-    bool OnClickButtonFind(CGUIMessage& message);
-    bool OnClickButtonOK(CGUIMessage& message);
-    bool OnClickButtonPlay(CGUIMessage& message);
+    bool OnClickButtonFind(const CGUIMessage& message);
+    bool OnClickButtonOK(const CGUIMessage& message);
+    bool OnClickButtonPlay(const CGUIMessage& message);
 
     CFileItemPtr m_recordItem;
   };
