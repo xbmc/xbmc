@@ -86,6 +86,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/SkinSettings.h"
+#include "settings/lib/SettingsManager.h"
 #include "threads/SingleLock.h"
 #include "utils/CPUInfo.h"
 #include "utils/FileExtensionProvider.h"
@@ -323,12 +324,80 @@ extern "C" void __stdcall init_emu_environ();
 extern "C" void __stdcall update_emu_environ();
 extern "C" void __stdcall cleanup_emu_environ();
 
+namespace
+{
+bool IsPlaying(const std::string& condition,
+               const std::string& value,
+               const SettingConstPtr& setting,
+               void* data)
+{
+  return data ? static_cast<CApplication*>(data)->GetAppPlayer().IsPlaying() : false;
+}
+} // namespace
+
+void CApplication::RegisterSettings()
+{
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  CSettingsManager* settingsMgr = settings->GetSettingsManager();
+
+  settingsMgr->RegisterSettingsHandler(this);
+
+  settingsMgr->RegisterCallback(this, {CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH,
+                                       CSettings::SETTING_LOOKANDFEEL_SKIN,
+                                       CSettings::SETTING_LOOKANDFEEL_SKINSETTINGS,
+                                       CSettings::SETTING_LOOKANDFEEL_FONT,
+                                       CSettings::SETTING_LOOKANDFEEL_SKINTHEME,
+                                       CSettings::SETTING_LOOKANDFEEL_SKINCOLORS,
+                                       CSettings::SETTING_LOOKANDFEEL_SKINZOOM,
+                                       CSettings::SETTING_MUSICPLAYER_REPLAYGAINPREAMP,
+                                       CSettings::SETTING_MUSICPLAYER_REPLAYGAINNOGAINPREAMP,
+                                       CSettings::SETTING_MUSICPLAYER_REPLAYGAINTYPE,
+                                       CSettings::SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING,
+                                       CSettings::SETTING_SCRAPERS_MUSICVIDEOSDEFAULT,
+                                       CSettings::SETTING_SCREENSAVER_MODE,
+                                       CSettings::SETTING_SCREENSAVER_PREVIEW,
+                                       CSettings::SETTING_SCREENSAVER_SETTINGS,
+                                       CSettings::SETTING_AUDIOCDS_SETTINGS,
+                                       CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION,
+                                       CSettings::SETTING_VIDEOSCREEN_TESTPATTERN,
+                                       CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC,
+                                       CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE,
+                                       CSettings::SETTING_AUDIOOUTPUT_VOLUMESTEPS,
+                                       CSettings::SETTING_SOURCE_VIDEOS,
+                                       CSettings::SETTING_SOURCE_MUSIC,
+                                       CSettings::SETTING_SOURCE_PICTURES,
+                                       CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN});
+
+  settingsMgr->RegisterCallback(
+      &GetAppPlayer().GetSeekHandler(),
+      {CSettings::SETTING_VIDEOPLAYER_SEEKDELAY, CSettings::SETTING_VIDEOPLAYER_SEEKSTEPS,
+       CSettings::SETTING_MUSICPLAYER_SEEKDELAY, CSettings::SETTING_MUSICPLAYER_SEEKSTEPS});
+
+  settingsMgr->AddDynamicCondition("isplaying", IsPlaying, this);
+
+  settings->RegisterSubSettings(this);
+}
+
+void CApplication::UnregisterSettings()
+{
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  CSettingsManager* settingsMgr = settings->GetSettingsManager();
+
+  settings->UnregisterSubSettings(this);
+  settingsMgr->RemoveDynamicCondition("isplaying");
+  settingsMgr->UnregisterCallback(&GetAppPlayer().GetSeekHandler());
+  settingsMgr->UnregisterCallback(this);
+  settingsMgr->UnregisterSettingsHandler(this);
+}
+
 bool CApplication::Create()
 {
   m_bStop = false;
 
   // Grab a handle to our thread to be used later in identifying the render thread.
   m_threadID = CThread::GetCurrentThreadId();
+
+  RegisterSettings();
 
   CServiceBroker::RegisterCPUInfo(CCPUInfo::GetCPUInfo());
 
@@ -2547,6 +2616,8 @@ bool CApplication::Cleanup()
 
     CServiceBroker::UnregisterJobManager();
     CServiceBroker::UnregisterCPUInfo();
+
+    UnregisterSettings();
 
     m_bInitializing = true;
 
