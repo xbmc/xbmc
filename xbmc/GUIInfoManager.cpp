@@ -7060,6 +7060,15 @@ const infomap fanart_labels[] =  {{ "color1",           FANART_COLOR1 },
 ///     @skinning_v18 **[New Infolabel]** \link Skin_Font `Skin.Font`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`Skin.Numeric(settingid)`</b>,
+///                  \anchor Skin_Numeric
+///                  _integer_,
+///     @return return the setting value as an integer/numeric value.
+///     @sa \link Skin_SetNumeric `Skin.SetNumeric(settingid)`\endlink
+///     <p><hr>
+///     @skinning_v20 **[New Infolabel]** \link Skin_Numeric `Skin.Numeric(settingid)`\endlink
+///     <p>
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -10078,7 +10087,12 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
           else
             return AddMultiInfo(CGUIInfo(SKIN_STRING, CSkinSettings::GetInstance().TranslateString(prop.param(0))));
         }
-        if (prop.name == "hassetting")
+        else if (prop.name == "numeric")
+        {
+          return AddMultiInfo(
+              CGUIInfo(SKIN_INTEGER, CSkinSettings::GetInstance().TranslateString(prop.param(0))));
+        }
+        else if (prop.name == "hassetting")
           return AddMultiInfo(CGUIInfo(SKIN_BOOL, CSkinSettings::GetInstance().TranslateBool(prop.param(0))));
         else if (prop.name == "hastheme")
           return AddMultiInfo(CGUIInfo(SKIN_HAS_THEME, prop.param(0)));

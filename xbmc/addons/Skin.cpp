@@ -26,11 +26,13 @@
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDefinitions.h"
 #include "threads/Timer.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "utils/XMLUtils.h"
 #include "utils/Variant.h"
+#include "utils/XMLUtils.h"
+#include "utils/log.h"
+
+#include <charconv>
 
 #define XML_SETTINGS      "settings"
 #define XML_SETTING       "setting"
@@ -586,6 +588,18 @@ int CSkinInfo::TranslateString(const std::string &setting)
   m_strings.insert(std::pair<int, CSkinSettingStringPtr>(number, skinString));
 
   return number;
+}
+
+int CSkinInfo::GetInt(int setting) const
+{
+  const std::string settingValue = GetString(setting);
+  if (settingValue.empty())
+  {
+    return -1;
+  }
+  int settingValueInt{-1};
+  std::from_chars(settingValue.data(), settingValue.data() + settingValue.size(), settingValueInt);
+  return settingValueInt;
 }
 
 const std::string& CSkinInfo::GetString(int setting) const

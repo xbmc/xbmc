@@ -558,7 +558,7 @@ static int SkinDebug(const std::vector<std::string>& params)
 ///   }
 ///   \table_row2_l{
 ///     <b>`Skin.SetNumeric(numeric[\,value])`</b>
-///     ,
+///     \anchor Skin_SetNumeric,
 ///     Pops up a keyboard dialog and allows the user to input a numerical.
 ///     @param[in] numeric               Name of skin setting.
 ///     @param[in] value                 Value of skin setting (optional).
