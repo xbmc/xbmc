@@ -49,10 +49,6 @@ set(CMAKE_XCODE_ATTRIBUTE_INLINES_ARE_PRIVATE_EXTERN OFF)
 set(CMAKE_XCODE_ATTRIBUTE_GCC_SYMBOLS_PRIVATE_EXTERN OFF)
 set(CMAKE_XCODE_ATTRIBUTE_COPY_PHASE_STRIP OFF)
 
-if(NOT TARBALL_DIR)
-  set(TARBALL_DIR "/Users/Shared/xbmc-depends/xbmc-tarballs")
-endif()
-
 include(cmake/scripts/darwin/Macros.cmake)
 enable_arc()
 

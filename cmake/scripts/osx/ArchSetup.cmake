@@ -29,10 +29,6 @@ if(CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "arm64" AND
   set(HOST_CAN_EXECUTE_TARGET TRUE)
 endif()
 
-if(NOT TARBALL_DIR)
-  set(TARBALL_DIR "/Users/Shared/xbmc-depends/xbmc-tarballs")
-endif()
-
 set(CMAKE_OSX_ARCHITECTURES ${CPU})
 
 if(CMAKE_GENERATOR STREQUAL Xcode)
