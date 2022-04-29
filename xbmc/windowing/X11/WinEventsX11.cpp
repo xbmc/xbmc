@@ -22,6 +22,8 @@
 #include "windowing/WinEvents.h"
 #include "windowing/X11/WinSystemX11.h"
 
+#include <stdexcept>
+
 #include <X11/XF86keysym.h>
 #include <X11/Xlib.h>
 #include <X11/extensions/Xrandr.h>
@@ -429,6 +431,8 @@ bool CWinEventsX11::MessagePump()
         {
           m_keybuf_len = len;
           m_keybuf = (char*)realloc(m_keybuf, m_keybuf_len);
+          if (m_keybuf == nullptr)
+            throw std::runtime_error("Failed to realloc memory, insufficient memory available");
           len = Xutf8LookupString(m_xic, &xevent.xkey,
                                   m_keybuf, m_keybuf_len,
                                   &xkeysym, &status);

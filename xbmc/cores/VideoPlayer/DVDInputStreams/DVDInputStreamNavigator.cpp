@@ -651,7 +651,7 @@ bool CDVDInputStreamNavigator::SetActiveSubtitleStream(int iId)
   /* make sure stream is valid, if not don't allow it */
   if (iId < 0 || iId >= 32)
     return false;
-  else if (!(vm->state.pgc->subp_control[iId] & (1 << 31)))
+  else if (!(vm->state.pgc->subp_control[iId] & (1U << 31)))
     return false;
 
   if (vm->state.domain != VTS_DOMAIN && iId != 0)
@@ -943,7 +943,7 @@ int CDVDInputStreamNavigator::GetSubTitleStreamCount()
     int streamN = 0;
     for (int i = 0; i < 32; i++)
     {
-      if (vm->state.pgc->subp_control[i] & (1<<31))
+      if (vm->state.pgc->subp_control[i] & (1U << 31))
         streamN++;
     }
     return streamN;

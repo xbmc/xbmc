@@ -181,12 +181,7 @@ public:
 
 struct field_prop {
   std::string name,display_name;
-  fType type;
   std::string field_table; //?
-  bool read_only;
-  unsigned int field_len;
-  unsigned int field_flags;
-  int idx;
 };
 
 struct field {
