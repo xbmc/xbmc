@@ -39,7 +39,7 @@ include(cmake/scripts/common/ArchSetup.cmake)
 include(cmake/scripts/common/Macros.cmake)
 include(cmake/scripts/common/ProjectMacros.cmake)
 core_find_versions()
-include(cmake/scripts/${CORE_SYSTEM_NAME}/PathSetup.cmake)
+include(cmake/scripts/common/PathSetup.cmake)
 include(cmake/scripts/common/CompilerSettings.cmake)
 include(ExternalProject)
 
