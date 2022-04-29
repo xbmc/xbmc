@@ -7,7 +7,7 @@
 #   ARCHIVE will be set to parent scope
 #   MODULENAME_VER will be set to parent scope (eg FFMPEG_VER, DAV1D_VER)
 #   MODULENAME_BASE_URL will be set to parent scope if exists in VERSION file (eg FFMPEG_BASE_URL)
-function(get_archive_name module_name)
+function(get_versionfile_data module_name)
   string(TOUPPER ${module_name} UPPER_MODULE_NAME)
 
   # Dependency path
@@ -90,7 +90,7 @@ endfunction()
 
 # Macro to factor out the repetitive URL setup
 macro(SETUP_BUILD_VARS)
-  get_archive_name(${MODULE_LC})
+  get_versionfile_data(${MODULE_LC})
   string(TOUPPER ${MODULE_LC} MODULE)
 
   # allow user to override the download URL with a local tarball
