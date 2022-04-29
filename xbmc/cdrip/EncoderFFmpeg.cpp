@@ -406,6 +406,6 @@ std::string CEncoderFFmpeg::FFmpegErrorToString(int err)
 {
   std::string text;
   text.reserve(AV_ERROR_MAX_STRING_SIZE);
-  av_strerror(err, &text[0], AV_ERROR_MAX_STRING_SIZE);
+  av_strerror(err, text.data(), AV_ERROR_MAX_STRING_SIZE);
   return text;
 }
