@@ -1,6 +1,8 @@
 set(DEPENDS_PATH "@prefix@/@deps_dir@")
 set(NATIVEPREFIX "@prefix@/@tool_dir@")
 
+set(TARBALL_DIR "@use_tarballs@")
+
 set(OS "@platform_os@")
 set(CMAKE_SYSTEM_PROCESSOR @host_cpu@)
 set(CPU "@use_cpu@")
