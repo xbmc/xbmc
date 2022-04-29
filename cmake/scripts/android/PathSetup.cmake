@@ -1,5 +1,5 @@
 if(NOT prefix)
-  set(prefix ${CMAKE_BINARY_DIR}/install)
+  set(prefix ${DEPENDS_PATH})
 endif()
 set(CMAKE_INSTALL_PREFIX ${prefix})
 if(NOT exec_prefix)
