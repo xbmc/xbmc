@@ -25,8 +25,7 @@ if(ENABLE_INTERNAL_RapidJSON)
             COMMAND ${PATCH_EXECUTABLE} -p1 -i ${CORE_SOURCE_DIR}/tools/depends/target/rapidjson/002-cmake-removedocs-examples.patch
             COMMAND ${PATCH_EXECUTABLE} -p1 -i ${CORE_SOURCE_DIR}/tools/depends/target/rapidjson/003-win-arm64.patch)
 
-  set(CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
-                 -DRAPIDJSON_BUILD_DOC=OFF
+  set(CMAKE_ARGS -DRAPIDJSON_BUILD_DOC=OFF
                  -DRAPIDJSON_BUILD_EXAMPLES=OFF
                  -DRAPIDJSON_BUILD_TESTS=OFF
                  -DRAPIDJSON_BUILD_THIRDPARTY_GTEST=OFF)

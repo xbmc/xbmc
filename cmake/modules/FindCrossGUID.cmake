@@ -41,8 +41,7 @@ if(ENABLE_INTERNAL_CROSSGUID)
 
   # Force release build type. crossguid forces a debug postfix -dgb. may want to patch this
   # if we enable adaptive build type for the library.
-  set(CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
-                 -DCROSSGUID_TESTS=OFF
+  set(CMAKE_ARGS -DCROSSGUID_TESTS=OFF
                  -DDISABLE_WALL=ON
                  -DCMAKE_BUILD_TYPE=Release)
 
