@@ -21,7 +21,7 @@ if(ENABLE_INTERNAL_FSTRCMP)
   find_program(AUTORECONF autoreconf REQUIRED)
 
   set(CONFIGURE_COMMAND ${AUTORECONF} -vif
-                COMMAND ./configure --prefix ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR})
+                COMMAND ./configure --prefix ${DEPENDS_PATH})
   set(BUILD_COMMAND make lib/libfstrcmp.la)
   set(BUILD_IN_SOURCE 1)
   set(INSTALL_COMMAND make install-libdir install-include)

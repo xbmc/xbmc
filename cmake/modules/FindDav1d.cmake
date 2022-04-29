@@ -24,7 +24,7 @@ if(ENABLE_INTERNAL_DAV1D)
   set(CONFIGURE_COMMAND ${MESON_EXECUTABLE}
                         --buildtype=release
                         --default-library=static
-                        --prefix=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
+                        --prefix=${DEPENDS_PATH}
                         --libdir=lib
                         -Denable_asm=true
                         -Denable_tools=false
