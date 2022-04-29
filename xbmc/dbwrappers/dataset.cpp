@@ -546,13 +546,6 @@ const char *Dataset::fieldName(int n) {
     return NULL;
 }
 
-int Dataset::fieldSize(int n) {
-  if ( n < field_count() && n >= 0)
-    return (*fields_object)[n].props.field_len;
-  else
-    return 0;
-}
-
 int Dataset::fieldIndex(const char *fn) {
 for (unsigned int i=0; i < fields_object->size(); i++)
       if ((*fields_object)[i].props.name == fn)
