@@ -46,8 +46,8 @@ public:
     std::string limit;
   };
 
-
-  typedef struct DatasetFieldInfo {
+  struct DatasetFieldInfo
+  {
     DatasetFieldInfo(bool fetch, bool output, int recno)
       : fetch(fetch),
       output(output),
@@ -58,7 +58,7 @@ public:
     bool output;
     int recno;
     std::string strField;
-  } DatasetFieldInfo;
+  };
 
   class DatasetLayout
   {
