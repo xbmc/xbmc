@@ -29,6 +29,7 @@
 #include "platform/android/activity/AndroidFeatures.h"
 
 #include <cassert>
+#include <stdexcept>
 
 #include <androidjni/ByteBuffer.h>
 #include <androidjni/MediaCodec.h>
@@ -671,6 +672,8 @@ int CDVDAudioCodecAndroidMediaCodec::GetData(uint8_t** dst)
       {
         m_bufferSize = size;
         m_buffer = (uint8_t*)realloc(m_buffer, m_bufferSize);
+        if (m_buffer == nullptr)
+          throw std::runtime_error("Failed to realloc memory, insufficient memory available");
       }
 
       memcpy(m_buffer, src_ptr, size);
