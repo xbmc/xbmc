@@ -199,6 +199,12 @@ public:
   bool GetBool(int setting) const;
   void SetBool(int setting, bool set);
 
+  /*! \brief Get the skin setting value as an integer value
+   * \param setting - the setting id
+   * \return the setting value as an integer, -1 if no conversion is possible
+   */
+  int GetInt(int setting) const;
+
   std::set<CSkinSettingPtr> GetSkinSettings() const;
   CSkinSettingPtr GetSkinSetting(const std::string& settingId);
   std::shared_ptr<const CSkinSetting> GetSkinSetting(const std::string& settingId) const;
