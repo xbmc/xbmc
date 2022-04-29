@@ -357,9 +357,6 @@ public:
   virtual const char *fieldName(int n);
 /* func. retrieves a field index with 'fn' field name,return -1 when field name not found */
   virtual int  fieldIndex(const char *fn);
-/* func. retrieves a field size */
-  virtual int  fieldSize(int n);
-
 
 /* Set field value */
   virtual bool set_field_value(const char *f_name, const field_value &value);
