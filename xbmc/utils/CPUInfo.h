@@ -69,7 +69,7 @@ public:
   const unsigned int CPUID_80000001_EDX_MMX2 = (1 << 22);
   const unsigned int CPUID_80000001_EDX_MMX = (1 << 23);
   const unsigned int CPUID_80000001_EDX_3DNOWEXT = (1 << 30);
-  const unsigned int CPUID_80000001_EDX_3DNOW = (1 << 31);
+  const unsigned int CPUID_80000001_EDX_3DNOW = (1U << 31);
 
   // In milliseconds
   const std::chrono::milliseconds MINIMUM_TIME_BETWEEN_READS{500};
