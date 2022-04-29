@@ -29,6 +29,7 @@ void CDVDStreamInfo::Clear()
   codec = AV_CODEC_ID_NONE;
   type = STREAM_NONE;
   uniqueId = -1;
+  source = STREAM_SOURCE_NONE;
   codecOptions = 0;
   codec_tag  = 0;
   flags = 0;
@@ -185,6 +186,7 @@ void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
   type = right.type;
   uniqueId = right.uniqueId;
   demuxerId = right.demuxerId;
+  source = right.source;
   codec_tag = right.codec_tag;
   flags = right.flags;
   filename = right.filename;
@@ -252,6 +254,7 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
   type = right.type;
   uniqueId = right.uniqueId;
   demuxerId = right.demuxerId;
+  source = right.source;
   codec_tag = right.codec_fourcc;
   profile = right.profile;
   level = right.level;

@@ -252,6 +252,13 @@ std::unique_ptr<CDVDOverlayCodec> CDVDFactoryCodec::CreateOverlayCodec(CDVDStrea
   switch (hint.codec)
   {
     case AV_CODEC_ID_TEXT:
+    {
+      if (hint.source == STREAM_SOURCE_VIDEOMUX)
+        pCodec = std::make_unique<CDVDOverlayCodecCCText>();
+      else
+        pCodec = std::make_unique<CDVDOverlayCodecText>();
+      break;
+    }
     case AV_CODEC_ID_SUBRIP:
       pCodec = std::make_unique<CDVDOverlayCodecText>();
       break;
@@ -263,10 +270,6 @@ std::unique_ptr<CDVDOverlayCodec> CDVDFactoryCodec::CreateOverlayCodec(CDVDStrea
 
     case AV_CODEC_ID_MOV_TEXT:
       pCodec = std::make_unique<CDVDOverlayCodecTX3G>();
-      break;
-
-    case AV_CODEC_ID_EIA_608:
-      pCodec = std::make_unique<CDVDOverlayCodecCCText>();
       break;
 
     case AV_CODEC_ID_WEBVTT:
