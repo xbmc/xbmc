@@ -7,17 +7,20 @@ CMAKE_OPTIONS=-DPNG_SHARED=OFF \
               -DPNG_TESTS=OFF \
               -DPNG_DEBUG=OFF
 
-ifneq ($(findstring apple-darwin, $(HOST)), apple-darwin)
+ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
+  # hardware optimizations require NEON instructions that
+  # fail on m1 hardware and ios/tvos, so just disable for any arm64 target cpu on
+  # an apple-darwin target
+  ifeq ($(CPU), arm64)
+    CMAKE_OPTIONS+= -DPNG_HARDWARE_OPTIMIZATIONS=OFF
+  else
+    CMAKE_OPTIONS+= -DPNG_HARDWARE_OPTIMIZATIONS=ON
+  endif
+else
   CMAKE_OPTIONS+= -DPNG_HARDWARE_OPTIMIZATIONS=ON \
                   -DPNG_BUILD_ZLIB=ON \
                   -DZLIB_LIBRARY=$(PREFIX)/lib/libz.a \
                   -DZLIB_INCLUDE_DIR=$(PREFIX)/include
-else
-  ifeq ($(OS), osx)
-    CMAKE_OPTIONS+= -DPNG_HARDWARE_OPTIMIZATIONS=ON
-  else
-    CMAKE_OPTIONS+= -DPNG_HARDWARE_OPTIMIZATIONS=OFF
-  endif
 endif
 
 LIBDYLIB=$(PLATFORM)/build/$(BYPRODUCT)
