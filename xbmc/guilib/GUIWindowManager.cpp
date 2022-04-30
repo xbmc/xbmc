@@ -1151,7 +1151,10 @@ bool CGUIWindowManager::HandleAction(CAction const& action) const
         // dialog didn't want the action - we'd normally return false
         // but for some dialogs we want to drop the actions through
         if (fallThrough)
+        {
+          lock.lock();
           break;
+        }
         return false;
       }
       CLog::Log(LOGWARNING,
