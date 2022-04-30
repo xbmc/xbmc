@@ -164,6 +164,7 @@ foreach(target apk obb apk-obb apk-clean)
               STRIP=${CMAKE_STRIP}
               ${target}
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tools/android/packaging
+      VERBATIM
   )
   if(NOT target STREQUAL apk-clean)
     add_dependencies(${target} bundle)
