@@ -507,10 +507,10 @@ static int SkinDebug(const std::vector<std::string>& params)
 ///     @param[in] type[1\,...]           Add-on types to allow selecting.
 ///   }
 ///   \table_row2_l{
-///     <b>`Skin.SetBool(setting[\,value)`</b>
-///     ,
+///     <b>`Skin.SetBool(setting[\,value])`</b>
+///     \anchor Skin_SetBool,
 ///     Sets the skin `setting` to true\, for use with the conditional visibility
-///     tags containing `Skin.HasSetting(setting)`. The settings are saved
+///     tags containing \link Skin_HasSetting `Skin.HasSetting(setting)`\endlink. The settings are saved
 ///     per-skin in settings.xml just like all the other Kodi settings.
 ///     @param[in] setting               Name of skin setting.
 ///     @param[in] value                 Value to set ("false"\, or "true") (optional).
@@ -575,17 +575,19 @@ static int SkinDebug(const std::vector<std::string>& params)
 ///   }
 ///   \table_row2_l{
 ///     <b>`Skin.SetString(string[\,value])`</b>
-///     ,
+///     \anchor Skin_SetString,
 ///     Pops up a keyboard dialog and allows the user to input a string which can
 ///     be used in a label control elsewhere in the skin via the info tag
-///     `Skin.String(string)`. If the value parameter is specified\, then the
+///     \link Skin_StringValue `Skin.String(string)`\endlink. The value of the setting
+///     can also be compared to another value using the info bool \link Skin_StringCompare `Skin.String(string\, value)`\endlink.
+///     If the value parameter is specified\, then the
 ///     keyboard dialog does not pop up\, and the string is set directly.
 ///     @param[in] string                Name of skin setting.
 ///     @param[in] value                 Value of skin setting (optional).
 ///   }
 ///   \table_row2_l{
 ///     <b>`Skin.Theme(cycle)`</b>
-///     ,
+///     \anchor Skin_CycleTheme,
 ///     Cycles the skin theme. Skin.theme(-1) will go backwards.
 ///     @param[in] cycle                 0 or 1 to increase theme\, -1 to decrease.
 ///   }
