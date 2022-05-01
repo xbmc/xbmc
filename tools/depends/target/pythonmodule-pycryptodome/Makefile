@@ -10,7 +10,7 @@ ifeq ($(OS),android)
 endif
 
 ifeq (darwin, $(findstring darwin, $(HOST)))
-  ifeq ($(OS),darwin_embedded)
+  ifeq ($(CPU),arm64)
     # Work around an issue with xcode 11 stripping -arch arm64 flags.
     # Not required for xcode 12+, but doesnt hurt either.
     CFLAGS+= -target arm64-apple-darwin
