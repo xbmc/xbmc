@@ -11,6 +11,7 @@
 #include "ApplicationPlayer.h"
 #include "ApplicationStackHelper.h"
 #include "ServiceManager.h"
+#include "application/ApplicationPlayerCallback.h"
 #include "application/ApplicationPowerHandling.h"
 #include "application/ApplicationSkinHandling.h"
 #include "application/ApplicationVolumeHandling.h"
@@ -115,12 +116,12 @@ enum
 };
 
 class CApplication : public IWindowManagerCallback,
-                     public IPlayerCallback,
                      public IMsgTargetCallback,
                      public ISettingCallback,
                      public ISettingsHandler,
                      public ISubSettings,
                      public KODI::MESSAGING::IMessageTarget,
+                     public CApplicationPlayerCallback,
                      public CApplicationPowerHandling,
                      public CApplicationSkinHandling,
                      public CApplicationVolumeHandling
@@ -161,21 +162,6 @@ public:
   CApplicationPlayer& GetAppPlayer();
   std::string GetCurrentPlayer();
   CApplicationStackHelper& GetAppStackHelper();
-  void OnPlayBackEnded() override;
-  void OnPlayBackStarted(const CFileItem &file) override;
-  void OnPlayerCloseFile(const CFileItem &file, const CBookmark &bookmark) override;
-  void OnPlayBackPaused() override;
-  void OnPlayBackResumed() override;
-  void OnPlayBackStopped() override;
-  void OnPlayBackError() override;
-  void OnQueueNextItem() override;
-  void OnPlayBackSeek(int64_t iTime, int64_t seekOffset) override;
-  void OnPlayBackSeekChapter(int iChapter) override;
-  void OnPlayBackSpeedChanged(int iSpeed) override;
-  void OnAVChange() override;
-  void OnAVStarted(const CFileItem &file) override;
-  void RequestVideoSettings(const CFileItem &fileItem) override;
-  void StoreVideoSettings(const CFileItem &fileItem, CVideoSettings vs) override;
 
   int  GetMessageMask() override;
   void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg) override;
@@ -311,8 +297,6 @@ protected:
   CStopWatch m_slowTimer;
   XbmcThreads::EndTime<> m_guiRefreshTimer;
 
-  CFileItemPtr m_itemCurrentFile;
-
   std::string m_prevMedia;
   std::thread::id m_threadID;       // application thread ID.  Used in applicationMessenger to know where we are firing a thread with delay from.
   bool m_bInitializing = true;
@@ -353,7 +337,6 @@ private:
   unsigned int m_ProcessedExternalCalls = 0;      /*!< counts calls which are processed during one "door open" cycle in FrameMove */
   unsigned int m_ProcessedExternalDecay = 0;      /*!< counts to close door after a few frames of no python activity */
   CApplicationPlayer m_appPlayer;
-  CEvent m_playerEvent;
   CApplicationStackHelper m_stackHelper;
   int m_ExitCode{EXITCODE_QUIT};
 };
