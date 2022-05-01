@@ -86,10 +86,10 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
   case GUI_MSG_CHECK_LOCK:
     if (!g_passwordManager.IsProfileLockUnlocked())
     {
-      g_application.m_iScreenSaveLock = -1;
+      g_application.SetScreenSaverLockFailed();
       return false;
     }
-    g_application.m_iScreenSaveLock = 1;
+    g_application.SetScreenSaverUnlocked();
     return true;
   }
 
