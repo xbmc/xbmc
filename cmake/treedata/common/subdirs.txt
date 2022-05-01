@@ -8,6 +8,7 @@ xbmc/addons/interfaces/gui                      addons_interfaces_gui
 xbmc/addons/interfaces/gui/controls             addons_interfaces_gui_controls
 xbmc/addons/interfaces/gui/dialogs              addons_interfaces_gui_dialogs
 xbmc/addons/settings                            addons_settings
+xbmc/application                                application
 xbmc/commons                                    commons
 xbmc/dbwrappers                                 dbwrappers
 xbmc/dialogs                                    dialogs
