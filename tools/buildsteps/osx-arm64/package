@@ -8,4 +8,4 @@ cd $WORKSPACE/build/tools/darwin/packaging/osx/
 #rename for upload
 #e.x. kodi-20130314-8c2fb31-Frodo-x86_64.dmg
 UPLOAD_FILENAME="kodi-$(getBuildRevDateStr)-arm64.dmg"
-mv *.dmg $WORKSPACE/tools/darwin/packaging/osx-arm64/$UPLOAD_FILENAME
+mv *.dmg $WORKSPACE/tools/darwin/packaging/osx/$UPLOAD_FILENAME
