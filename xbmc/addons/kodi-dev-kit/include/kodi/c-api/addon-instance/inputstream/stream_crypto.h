@@ -100,6 +100,15 @@ extern "C"
 
     /// @brief Key id
     uint8_t kid[16];
+
+    /// @brief Encryption mode
+    uint16_t mode;
+
+    /// @brief Crypt blocks - number of blocks to encrypt in sample encryption pattern
+    uint8_t cryptBlocks;
+
+    /// @brief Skip blocks - number of blocks to skip in sample encryption pattern
+    uint8_t skipBlocks;
   };
   ///@}
   //----------------------------------------------------------------------------

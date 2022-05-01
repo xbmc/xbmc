@@ -402,14 +402,28 @@ bool CDVDAudioCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
       CJNIMediaCodecCryptoInfo *cryptoInfo(0);
       if (!!m_crypto->get_raw() && packet.cryptoInfo)
       {
+        if (CJNIBase::GetSDKVersion() < 25 &&
+            packet.cryptoInfo->mode == CJNIMediaCodec::CRYPTO_MODE_AES_CBC)
+        {
+          CLog::LogF(LOGERROR, "Device API does not support CBCS decryption");
+          return false;
+        }
         cryptoInfo = new CJNIMediaCodecCryptoInfo();
         cryptoInfo->set(
-          packet.cryptoInfo->numSubSamples,
-          std::vector<int>(packet.cryptoInfo->clearBytes, packet.cryptoInfo->clearBytes + packet.cryptoInfo->numSubSamples),
-          std::vector<int>(packet.cryptoInfo->cipherBytes, packet.cryptoInfo->cipherBytes + packet.cryptoInfo->numSubSamples),
-          std::vector<char>(packet.cryptoInfo->kid, packet.cryptoInfo->kid + 16),
-          std::vector<char>(packet.cryptoInfo->iv, packet.cryptoInfo->iv + 16),
-          CJNIMediaCodec::CRYPTO_MODE_AES_CTR);
+            packet.cryptoInfo->numSubSamples,
+            std::vector<int>(packet.cryptoInfo->clearBytes,
+                             packet.cryptoInfo->clearBytes + packet.cryptoInfo->numSubSamples),
+            std::vector<int>(packet.cryptoInfo->cipherBytes,
+                             packet.cryptoInfo->cipherBytes + packet.cryptoInfo->numSubSamples),
+            std::vector<char>(std::begin(packet.cryptoInfo->kid), std::end(packet.cryptoInfo->kid)),
+            std::vector<char>(std::begin(packet.cryptoInfo->iv), std::end(packet.cryptoInfo->iv)),
+            packet.cryptoInfo->mode == CJNIMediaCodec::CRYPTO_MODE_AES_CBC
+                ? CJNIMediaCodec::CRYPTO_MODE_AES_CBC
+                : CJNIMediaCodec::CRYPTO_MODE_AES_CTR);
+
+        CJNIMediaCodecCryptoInfoPattern cryptoInfoPattern(packet.cryptoInfo->cryptBlocks,
+                                                          packet.cryptoInfo->skipBlocks);
+        cryptoInfo->setPattern(cryptoInfoPattern);
       }
 
       int flags = 0;
