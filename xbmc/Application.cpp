@@ -133,7 +133,6 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogSimpleMenu.h"
 #include "dialogs/GUIDialogSubMenu.h"
-#include "dialogs/GUIDialogVolumeBar.h"
 #include "video/dialogs/GUIDialogVideoBookmarks.h"
 
 // PVR related include Files
@@ -226,7 +225,8 @@ using namespace std::chrono_literals;
 #define MAX_FFWD_SPEED 5
 
 CApplication::CApplication(void)
-  : CApplicationPowerHandling(m_appPlayer)
+  : CApplicationPowerHandling(m_appPlayer),
+    CApplicationVolumeHandling(m_appPlayer)
 #ifdef HAS_DVD_DRIVE
     ,
     m_Autorun(new CAutorun())
@@ -4046,113 +4046,6 @@ CFileItem& CApplication::CurrentUnstackedItem()
     return m_stackHelper.GetCurrentStackPartFileItem();
   else
     return *m_itemCurrentFile;
-}
-
-void CApplication::ShowVolumeBar(const CAction *action)
-{
-  CGUIDialogVolumeBar *volumeBar = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogVolumeBar>(WINDOW_DIALOG_VOLUME_BAR);
-  if (volumeBar != nullptr && volumeBar->IsVolumeBarEnabled())
-  {
-    volumeBar->Open();
-    if (action)
-      volumeBar->OnAction(*action);
-  }
-}
-
-bool CApplication::IsMuted() const
-{
-  if (CServiceBroker::GetPeripherals().IsMuted())
-    return true;
-  IAE* ae = CServiceBroker::GetActiveAE();
-  if (ae)
-    return ae->IsMuted();
-  return true;
-}
-
-void CApplication::ToggleMute(void)
-{
-  if (m_muted)
-    UnMute();
-  else
-    Mute();
-}
-
-void CApplication::SetMute(bool mute)
-{
-  if (m_muted != mute)
-  {
-    ToggleMute();
-    m_muted = mute;
-  }
-}
-
-void CApplication::Mute()
-{
-  if (CServiceBroker::GetPeripherals().Mute())
-    return;
-
-  IAE* ae = CServiceBroker::GetActiveAE();
-  if (ae)
-    ae->SetMute(true);
-  m_muted = true;
-  VolumeChanged();
-}
-
-void CApplication::UnMute()
-{
-  if (CServiceBroker::GetPeripherals().UnMute())
-    return;
-
-  IAE* ae = CServiceBroker::GetActiveAE();
-  if (ae)
-    ae->SetMute(false);
-  m_muted = false;
-  VolumeChanged();
-}
-
-void CApplication::SetVolume(float iValue, bool isPercentage/*=true*/)
-{
-  float hardwareVolume = iValue;
-
-  if(isPercentage)
-    hardwareVolume /= 100.0f;
-
-  SetHardwareVolume(hardwareVolume);
-  VolumeChanged();
-}
-
-void CApplication::SetHardwareVolume(float hardwareVolume)
-{
-  hardwareVolume = std::max(VOLUME_MINIMUM, std::min(VOLUME_MAXIMUM, hardwareVolume));
-  m_volumeLevel = hardwareVolume;
-
-  IAE* ae = CServiceBroker::GetActiveAE();
-  if (ae)
-    ae->SetVolume(hardwareVolume);
-}
-
-float CApplication::GetVolumePercent() const
-{
-  // converts the hardware volume to a percentage
-  return m_volumeLevel * 100.0f;
-}
-
-float CApplication::GetVolumeRatio() const
-{
-  return m_volumeLevel;
-}
-
-void CApplication::VolumeChanged()
-{
-  CVariant data(CVariant::VariantTypeObject);
-  data["volume"] = static_cast<int>(std::lroundf(GetVolumePercent()));
-  data["muted"] = m_muted;
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Application, "OnVolumeChanged",
-                                                     data);
-
-  // if player has volume control, set it.
-  m_appPlayer.SetVolume(m_volumeLevel);
-  m_appPlayer.SetMute(m_muted);
 }
 
 int CApplication::GetSubtitleDelay()

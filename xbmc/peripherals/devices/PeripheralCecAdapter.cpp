@@ -1591,7 +1591,7 @@ std::string CPeripheralCecAdapterUpdateThread::UpdateAudioSystemStatus(void)
     // set amp present
     m_adapter->SetAudioSystemConnected(true);
     g_application.SetMute(false);
-    g_application.SetVolume(VOLUME_MAXIMUM, false);
+    g_application.SetVolume(CApplicationVolumeHandling::VOLUME_MAXIMUM, false);
   }
   else
   {
