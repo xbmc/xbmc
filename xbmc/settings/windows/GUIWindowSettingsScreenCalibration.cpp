@@ -10,7 +10,6 @@
 
 #include "Application.h"
 #include "ServiceBroker.h"
-#include "cores/VideoPlayer/VideoRenderers/OverlayRenderer.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMoverControl.h"
@@ -21,6 +20,7 @@
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "settings/SubtitlesSettings.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -28,6 +28,8 @@
 
 #include <string>
 #include <utility>
+
+using namespace KODI;
 
 namespace
 {
@@ -212,7 +214,6 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
 
       // Setup the first control
       m_iControl = CONTROL_TOP_LEFT;
-      m_subtitleVerticalMargin = OVERLAY::CRenderer::GetSubtitleVerticalMargin();
       ResetControls();
       return true;
     }
@@ -314,6 +315,10 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
   CGUIMoverControl* pControl = dynamic_cast<CGUIMoverControl*>(GetControl(CONTROL_TOP_LEFT));
   RESOLUTION_INFO info =
       CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(m_Res[m_iCurRes]);
+
+  m_subtitleVerticalMargin =
+      info.iHeight / 100 * SUBTITLES::CSubtitlesSettings::GetInstance().GetVerticalMarginPerc();
+
   if (pControl)
   {
     pControl->SetLimits(-info.iWidth / 4, -info.iHeight / 4, info.iWidth / 4, info.iHeight / 4);
@@ -350,6 +355,10 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
                         info.Overscan.bottom + m_subtitlesHalfSpace);
     pControl->SetHeight(scaledHeight);
     pControl->SetWidth(size.second / DEFAULT_GUI_WIDTH * info.iWidth);
+    // If the vertical margin has been changed from the previous calibration,
+    // the text bar could appear offscreen, then force move to visible area
+    if (info.iSubtitles - m_subtitleVerticalMargin > info.iHeight)
+      info.iSubtitles = info.Overscan.bottom;
     // We want the text to be at the base of the bar,
     // then we shift the position to include the vertical margin
     pControl->SetPosition((info.iWidth - pControl->GetWidth()) * 0.5f,
@@ -469,7 +478,7 @@ bool CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
               pControl->GetYLocation() - m_subtitlesHalfSpace + m_subtitleVerticalMargin;
           labelDescription = StringUtils::Format("[B]{}[/B][CR]{}", g_localizeStrings.Get(277),
                                                  g_localizeStrings.Get(278));
-          labelValue = StringUtils::Format(g_localizeStrings.Get(20327),
+          labelValue = StringUtils::Format(g_localizeStrings.Get(39184), info.iSubtitles,
                                            info.iSubtitles - m_subtitleVerticalMargin);
         }
         break;

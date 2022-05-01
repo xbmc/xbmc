@@ -16,15 +16,14 @@ namespace KODI
 {
 namespace SUBTITLES
 {
+namespace STYLE
+{
 
 constexpr double VIEWPORT_HEIGHT = 1080.0;
 constexpr double VIEWPORT_WIDTH = 1920.0;
 constexpr int MARGIN_VERTICAL = 75;
-// Vertical margin used when is selected the alignment
-// to keep the text inside the black bars
-constexpr int MARGIN_VERTICAL_BLACKBARS = 30;
 
-enum class HorizontalAlignment
+enum class HorizontalAlign
 {
   DISABLED = 0,
   LEFT,
@@ -32,7 +31,7 @@ enum class HorizontalAlignment
   RIGHT
 };
 
-enum class FontAlignment
+enum class FontAlign
 {
   TOP_LEFT = 0,
   TOP_CENTER,
@@ -53,7 +52,7 @@ enum class FontStyle
   BOLD_ITALIC
 };
 
-enum class BorderStyle
+enum class BorderType
 {
   OUTLINE_NO_SHADOW,
   OUTLINE,
@@ -78,13 +77,13 @@ struct style
   int fontBorderSize = 15; // In %
   UTILS::COLOR::Color fontBorderColor = UTILS::COLOR::BLACK;
   int fontOpacity = 100; // In %
-  BorderStyle borderStyle = BorderStyle::OUTLINE;
+  BorderType borderStyle = BorderType::OUTLINE;
   UTILS::COLOR::Color backgroundColor = UTILS::COLOR::BLACK;
   int backgroundOpacity = 0; // In %
   int shadowSize = 0; // In %
   UTILS::COLOR::Color shadowColor = UTILS::COLOR::BLACK;
   int shadowOpacity = 100; // In %
-  FontAlignment alignment = FontAlignment::TOP_LEFT;
+  FontAlign alignment = FontAlign::TOP_LEFT;
   // Override styles to native ASS/SSA format type only
   OverrideStyles assOverrideStyles = OverrideStyles::DISABLED;
   // Override fonts to native ASS/SSA format type only
@@ -113,8 +112,9 @@ struct renderOpts
   bool disableVerticalMargin = false;
   // position: vertical line position of subtitles in percent. 0 = no change (bottom), 100 = on top.
   double position = 0;
-  HorizontalAlignment horizontalAlignment = HorizontalAlignment::DISABLED;
+  HorizontalAlign horizontalAlignment = HorizontalAlign::DISABLED;
 };
 
+} // namespace STYLE
 } // namespace SUBTITLES
 } // namespace KODI

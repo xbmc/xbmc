@@ -21,7 +21,6 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
-
 using namespace KODI;
 using namespace SUBTITLES;
 
@@ -29,34 +28,23 @@ CSubtitlesSettings::CSubtitlesSettings()
 {
   m_settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 
-  m_settings->RegisterCallback(this, {CSettings::SETTING_LOCALE_SUBTITLELANGUAGE,
-                                      CSettings::SETTING_SUBTITLES_PARSECAPTIONS,
-                                      CSettings::SETTING_SUBTITLES_ALIGN,
-                                      CSettings::SETTING_SUBTITLES_STEREOSCOPICDEPTH,
-                                      CSettings::SETTING_SUBTITLES_FONTNAME,
-                                      CSettings::SETTING_SUBTITLES_FONTSIZE,
-                                      CSettings::SETTING_SUBTITLES_STYLE,
-                                      CSettings::SETTING_SUBTITLES_COLOR,
-                                      CSettings::SETTING_SUBTITLES_BORDERSIZE,
-                                      CSettings::SETTING_SUBTITLES_BORDERCOLOR,
-                                      CSettings::SETTING_SUBTITLES_OPACITY,
-                                      CSettings::SETTING_SUBTITLES_BGCOLOR,
-                                      CSettings::SETTING_SUBTITLES_BGOPACITY,
-                                      CSettings::SETTING_SUBTITLES_BLUR,
-                                      CSettings::SETTING_SUBTITLES_BACKGROUNDTYPE,
-                                      CSettings::SETTING_SUBTITLES_SHADOWCOLOR,
-                                      CSettings::SETTING_SUBTITLES_SHADOWOPACITY,
-                                      CSettings::SETTING_SUBTITLES_SHADOWSIZE,
-                                      CSettings::SETTING_SUBTITLES_CHARSET,
-                                      CSettings::SETTING_SUBTITLES_OVERRIDEFONTS,
-                                      CSettings::SETTING_SUBTITLES_OVERRIDESTYLES,
-                                      CSettings::SETTING_SUBTITLES_LANGUAGES,
-                                      CSettings::SETTING_SUBTITLES_STORAGEMODE,
-                                      CSettings::SETTING_SUBTITLES_CUSTOMPATH,
-                                      CSettings::SETTING_SUBTITLES_PAUSEONSEARCH,
-                                      CSettings::SETTING_SUBTITLES_DOWNLOADFIRST,
-                                      CSettings::SETTING_SUBTITLES_TV,
-                                      CSettings::SETTING_SUBTITLES_MOVIE});
+  m_settings->RegisterCallback(
+      this,
+      {CSettings::SETTING_LOCALE_SUBTITLELANGUAGE,  CSettings::SETTING_SUBTITLES_PARSECAPTIONS,
+       CSettings::SETTING_SUBTITLES_ALIGN,          CSettings::SETTING_SUBTITLES_STEREOSCOPICDEPTH,
+       CSettings::SETTING_SUBTITLES_FONTNAME,       CSettings::SETTING_SUBTITLES_FONTSIZE,
+       CSettings::SETTING_SUBTITLES_STYLE,          CSettings::SETTING_SUBTITLES_COLOR,
+       CSettings::SETTING_SUBTITLES_BORDERSIZE,     CSettings::SETTING_SUBTITLES_BORDERCOLOR,
+       CSettings::SETTING_SUBTITLES_OPACITY,        CSettings::SETTING_SUBTITLES_BGCOLOR,
+       CSettings::SETTING_SUBTITLES_BGOPACITY,      CSettings::SETTING_SUBTITLES_BLUR,
+       CSettings::SETTING_SUBTITLES_BACKGROUNDTYPE, CSettings::SETTING_SUBTITLES_SHADOWCOLOR,
+       CSettings::SETTING_SUBTITLES_SHADOWOPACITY,  CSettings::SETTING_SUBTITLES_SHADOWSIZE,
+       CSettings::SETTING_SUBTITLES_MARGINVERTICAL, CSettings::SETTING_SUBTITLES_CHARSET,
+       CSettings::SETTING_SUBTITLES_OVERRIDEFONTS,  CSettings::SETTING_SUBTITLES_OVERRIDESTYLES,
+       CSettings::SETTING_SUBTITLES_LANGUAGES,      CSettings::SETTING_SUBTITLES_STORAGEMODE,
+       CSettings::SETTING_SUBTITLES_CUSTOMPATH,     CSettings::SETTING_SUBTITLES_PAUSEONSEARCH,
+       CSettings::SETTING_SUBTITLES_DOWNLOADFIRST,  CSettings::SETTING_SUBTITLES_TV,
+       CSettings::SETTING_SUBTITLES_MOVIE});
 }
 
 CSubtitlesSettings::~CSubtitlesSettings()
@@ -82,6 +70,122 @@ void CSubtitlesSettings::OnSettingChanged(const std::shared_ptr<const CSetting>&
     SetChanged();
     NotifyObservers(ObservableMessagePositionChanged);
   }
+}
+
+Align CSubtitlesSettings::GetAlignment()
+{
+  return static_cast<Align>(m_settings->GetInt(CSettings::SETTING_SUBTITLES_ALIGN));
+}
+
+void CSubtitlesSettings::SetAlignment(Align align)
+{
+  m_settings->SetInt(CSettings::SETTING_SUBTITLES_ALIGN, static_cast<int>(align));
+}
+
+HorizontalAlign CSubtitlesSettings::GetHorizontalAlignment()
+{
+  return static_cast<HorizontalAlign>(
+      m_settings->GetInt(CSettings::SETTING_SUBTITLES_CAPTIONSALIGN));
+}
+
+std::string CSubtitlesSettings::GetFontName()
+{
+  return m_settings->GetString(CSettings::SETTING_SUBTITLES_FONTNAME);
+}
+
+FontStyle CSubtitlesSettings::GetFontStyle()
+{
+  return static_cast<FontStyle>(m_settings->GetInt(CSettings::SETTING_SUBTITLES_STYLE));
+}
+
+int CSubtitlesSettings::GetFontSize()
+{
+  return m_settings->GetInt(CSettings::SETTING_SUBTITLES_FONTSIZE);
+}
+
+UTILS::COLOR::Color CSubtitlesSettings::GetFontColor()
+{
+  return UTILS::COLOR::ConvertHexToColor(m_settings->GetString(CSettings::SETTING_SUBTITLES_COLOR));
+}
+
+int CSubtitlesSettings::GetFontOpacity()
+{
+  return m_settings->GetInt(CSettings::SETTING_SUBTITLES_OPACITY);
+}
+
+int CSubtitlesSettings::GetBorderSize()
+{
+  return m_settings->GetInt(CSettings::SETTING_SUBTITLES_BORDERSIZE);
+}
+
+UTILS::COLOR::Color CSubtitlesSettings::GetBorderColor()
+{
+  return UTILS::COLOR::ConvertHexToColor(
+      m_settings->GetString(CSettings::SETTING_SUBTITLES_BORDERCOLOR));
+}
+
+int CSubtitlesSettings::GetShadowSize()
+{
+  return m_settings->GetInt(CSettings::SETTING_SUBTITLES_SHADOWSIZE);
+}
+
+UTILS::COLOR::Color CSubtitlesSettings::GetShadowColor()
+{
+  return UTILS::COLOR::ConvertHexToColor(
+      m_settings->GetString(CSettings::SETTING_SUBTITLES_SHADOWCOLOR));
+}
+
+int CSubtitlesSettings::GetShadowOpacity()
+{
+  return m_settings->GetInt(CSettings::SETTING_SUBTITLES_SHADOWOPACITY);
+}
+
+int CSubtitlesSettings::GetBlurSize()
+{
+  return m_settings->GetInt(CSettings::SETTING_SUBTITLES_BLUR);
+}
+
+BackgroundType CSubtitlesSettings::GetBackgroundType()
+{
+  return static_cast<BackgroundType>(
+      m_settings->GetInt(CSettings::SETTING_SUBTITLES_BACKGROUNDTYPE));
+}
+
+UTILS::COLOR::Color CSubtitlesSettings::GetBackgroundColor()
+{
+  return UTILS::COLOR::ConvertHexToColor(
+      m_settings->GetString(CSettings::SETTING_SUBTITLES_BGCOLOR));
+}
+
+int CSubtitlesSettings::GetBackgroundOpacity()
+{
+  return m_settings->GetInt(CSettings::SETTING_SUBTITLES_BGOPACITY);
+}
+
+bool CSubtitlesSettings::IsOverrideFonts()
+{
+  return m_settings->GetBool(CSettings::SETTING_SUBTITLES_OVERRIDEFONTS);
+}
+
+OverrideStyles CSubtitlesSettings::GetOverrideStyles()
+{
+  return static_cast<OverrideStyles>(
+      m_settings->GetInt(CSettings::SETTING_SUBTITLES_OVERRIDESTYLES));
+}
+
+float CSubtitlesSettings::GetVerticalMarginPerc()
+{
+  // We return the vertical margin as percentage
+  // to fit the current screen resolution
+  const Align subAlign{GetAlignment()};
+
+  // If the user has set the alignment type to keep the subtitle text
+  // inside the black bars, we override user vertical margin
+  // to try avoid go off the black bars
+  if (subAlign == Align::BOTTOM_OUTSIDE || subAlign == Align::TOP_OUTSIDE)
+    return MARGIN_VERTICAL_BLACKBARS;
+
+  return static_cast<float>(m_settings->GetNumber(CSettings::SETTING_SUBTITLES_MARGINVERTICAL));
 }
 
 void CSubtitlesSettings::SettingOptionsSubtitleFontsFiller(const SettingConstPtr& setting,

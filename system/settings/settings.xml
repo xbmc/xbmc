@@ -480,12 +480,12 @@
         </setting>
         <setting id="subtitles.captionsalign" parent="subtitles.parsecaptions" type="integer" label="39161">
           <level>2</level>
-          <default>0</default> <!-- SUBTITLE_HORIZONTAL_ALIGN_LEFT -->
+          <default>0</default> <!-- HorizontalAlign::LEFT -->
           <constraints>
             <options>
-              <option label="39162">0</option> <!-- SUBTITLE_HORIZONTAL_ALIGN_LEFT -->
-              <option label="39163">1</option> <!-- SUBTITLE_HORIZONTAL_ALIGN_CENTER -->
-              <option label="39164">2</option> <!-- SUBTITLE_HORIZONTAL_ALIGN_RIGHT -->
+              <option label="39162">0</option> <!-- HorizontalAlign::LEFT -->
+              <option label="39163">1</option> <!-- HorizontalAlign::CENTER -->
+              <option label="39164">2</option> <!-- HorizontalAlign::RIGHT -->
             </options>
           </constraints>
           <dependencies>
@@ -495,14 +495,14 @@
         </setting>
         <setting id="subtitles.align" type="integer" label="21460" help="36192">
           <level>2</level>
-          <default>1</default> <!-- SUBTITLE_ALIGN_BOTTOM_INSIDE -->
+          <default>1</default> <!-- Align::BOTTOM_INSIDE -->
           <constraints>
             <options>
-              <option label="21461">0</option> <!-- SUBTITLE_ALIGN_MANUAL -->
-              <option label="21462">1</option> <!-- SUBTITLE_ALIGN_BOTTOM_INSIDE -->
-              <option label="21463">2</option> <!-- SUBTITLE_ALIGN_BOTTOM_OUTSIDE -->
-              <option label="21464">3</option> <!-- SUBTITLE_ALIGN_TOP_INSIDE -->
-              <option label="21465">4</option> <!-- SUBTITLE_ALIGN_TOP_OUTSIDE -->
+              <option label="21461">0</option> <!-- Align::MANUAL -->
+              <option label="21462">1</option> <!-- Align::BOTTOM_INSIDE -->
+              <option label="21463">2</option> <!-- Align::BOTTOM_OUTSIDE -->
+              <option label="21464">3</option> <!-- Align::TOP_INSIDE -->
+              <option label="21465">4</option> <!-- Align::TOP_OUTSIDE -->
             </options>
           </constraints>
           <control type="list" format="string" />
@@ -548,13 +548,13 @@
         </setting>
         <setting id="subtitles.style" type="integer" parent="subtitles.fontname" label="736" help="36187">
           <level>3</level>
-          <default>0</default> <!-- FONT_STYLE_NORMAL -->
+          <default>0</default> <!-- FontStyle::NORMAL -->
           <constraints>
             <options>
-              <option label="738">0</option> <!-- FONT_STYLE_NORMAL -->
-              <option label="739">1</option> <!-- FONT_STYLE_BOLD -->
-              <option label="740">2</option> <!-- FONT_STYLE_ITALICS -->
-              <option label="741">3</option> <!-- FONT_STYLE_BOLD | FONT_STYLE_ITALICS -->
+              <option label="738">0</option> <!-- FontStyle::NORMAL -->
+              <option label="739">1</option> <!-- FontStyle::BOLD -->
+              <option label="740">2</option> <!-- FontStyle::ITALIC -->
+              <option label="741">3</option> <!-- FontStyle::BOLD_ITALIC -->
             </options>
           </constraints>
           <control type="list" format="string" />
@@ -592,13 +592,13 @@
         </setting>
         <setting id="subtitles.backgroundtype" type="integer" parent="subtitles.fontname" label="39165" help="39169">
           <level>3</level>
-          <default>0</default>
+          <default>0</default> <!-- BackgroundType::NONE -->
           <constraints>
             <options>
-              <option label="231">0</option> <!-- SUBTITLE_BACKGROUNDTYPE_NONE -->
-              <option label="39166">1</option> <!-- SUBTITLE_BACKGROUNDTYPE_SHADOW -->
-              <option label="39167">2</option> <!-- SUBTITLE_BACKGROUNDTYPE_BOX -->
-              <option label="39168">3</option> <!-- SUBTITLE_BACKGROUNDTYPE_SQUAREBOX -->
+              <option label="231">0</option> <!-- BackgroundType::NONE -->
+              <option label="39166">1</option> <!-- BackgroundType::SHADOW -->
+              <option label="39167">2</option> <!-- BackgroundType::BOX -->
+              <option label="39168">3</option> <!-- BackgroundType::SQUAREBOX -->
             </options>
           </constraints>
           <control type="list" format="integer" />
@@ -667,6 +667,19 @@
             </dependency>
           </dependencies>
           <control type="slider" format="percentage" range="0,100" />
+        </setting>
+        <setting id="subtitles.marginvertical" type="number" label="39182" help="39183">
+          <level>3</level>
+          <default>7.75</default>
+          <constraints>
+            <minimum>0</minimum>
+            <step>0.25</step>
+            <maximum>50</maximum>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" on="property" operator="!is" name="isplaying" />
+          </dependencies>
+          <control type="slider" format="percentage"/>
         </setting>
         <setting id="subtitles.overridefonts" type="boolean" label="21368" help="36190">
           <level>3</level>
