@@ -237,7 +237,11 @@ void CGUIDialogAudioSettings::InitializeSettings()
   // audio settings
   // audio volume setting
   m_volume = g_application.GetVolumeRatio();
-  std::shared_ptr<CSettingNumber> settingAudioVolume = AddSlider(groupAudio, SETTING_AUDIO_VOLUME, 13376, SettingLevel::Basic, m_volume, 14054, VOLUME_MINIMUM, VOLUME_MAXIMUM / 100.0f, VOLUME_MAXIMUM);
+  std::shared_ptr<CSettingNumber> settingAudioVolume =
+      AddSlider(groupAudio, SETTING_AUDIO_VOLUME, 13376, SettingLevel::Basic, m_volume, 14054,
+                CApplicationVolumeHandling::VOLUME_MINIMUM,
+                CApplicationVolumeHandling::VOLUME_MAXIMUM / 100.0f,
+                CApplicationVolumeHandling::VOLUME_MAXIMUM);
   settingAudioVolume->SetDependencies(depsAudioOutputPassthroughDisabled);
   std::static_pointer_cast<CSettingControlSlider>(settingAudioVolume->GetControl())->SetFormatter(SettingFormatterPercentAsDecibel);
 
