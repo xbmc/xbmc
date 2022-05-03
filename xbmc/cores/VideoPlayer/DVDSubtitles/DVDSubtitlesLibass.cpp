@@ -283,8 +283,17 @@ ASS_Image* CDVDSubtitlesLibass::RenderImage(double pts,
 
   ass_set_frame_size(m_renderer, static_cast<int>(opts.frameWidth),
                      static_cast<int>(opts.frameHeight));
-  ass_set_storage_size(m_renderer, static_cast<int>(opts.sourceWidth),
-                       static_cast<int>(opts.sourceHeight));
+
+  if (m_subtitleType == NATIVE)
+  {
+    ass_set_storage_size(m_renderer, static_cast<int>(opts.sourceWidth),
+                         static_cast<int>(opts.sourceHeight));
+  }
+  else
+  {
+    ass_set_storage_size(m_renderer, 0, 0);
+  }
+
   int marginTop{0};
   int marginLeft{0};
   if (m_drawWithinBlackBars)
