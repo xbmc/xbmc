@@ -251,6 +251,31 @@
 					<onclick>Skin.ToggleSetting(HomeMenuNoWeatherButton)</onclick>
 				</control>
 			</control>
+			<control type="grouplist" id="622">
+				<top>133</top>
+				<left>0</left>
+				<right>0</right>
+				<bottom>140</bottom>
+				<onleft>9000</onleft>
+				<onright>60</onright>
+				<onup>610</onup>
+				<pagecontrol>60</pagecontrol>
+				<ondown>610</ondown>
+				<visible>Container(9000).HasFocus(4)</visible>
+				<control type="radiobutton" id="623">
+					<label>$LOCALIZE[31172]</label>
+					<include>DefaultSettingButton</include>
+					<selected>Skin.HasSetting(OSDAutoClose)</selected>
+					<onclick>Skin.ToggleSetting(OSDAutoClose)</onclick>
+				</control>
+				<control type="button" id="624">
+					<label>- $LOCALIZE[31173]</label>
+					<label2>$VAR[SkinSettingOSDAutoCloseTime]</label2>
+					<include>DefaultSettingButton</include>
+					<onclick>Skin.SetNumeric(OSDAutoCloseTime)</onclick>
+					<enable>Skin.HasSetting(OSDAutoClose)</enable>
+				</control>
+			</control>
 			<control type="image">
 				<description>Dialog Header image</description>
 				<left>0</left>
@@ -322,6 +347,10 @@
 					</item>
 					<item id="3">
 						<label>$LOCALIZE[31159]</label>
+						<onclick>noop</onclick>
+					</item>
+					<item id="4">
+						<label>$LOCALIZE[31170]</label>
 						<onclick>noop</onclick>
 					</item>
 				</content>

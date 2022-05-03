@@ -814,7 +814,31 @@ msgctxt "#31169"
 msgid "Artwork related settings."
 msgstr ""
 
-#empty strings from id 31170 to 31599
+#: /xml/SkinSettings.xml
+#. Label for OSD settings category
+msgctxt "#31170"
+msgid "On screen display"
+msgstr ""
+
+#: /xml/SkinSettings.xml
+#. Helper text for the label of OSD settings category
+msgctxt "#31171"
+msgid "On screen display (OSD) related settings"
+msgstr ""
+
+#: /xml/SkinSettings.xml
+#. Setting Automatically close video OSD
+msgctxt "#31172"
+msgid "Automatically close video OSD"
+msgstr ""
+
+#: /xml/SkinSettings.xml
+#. Setting auto close time for video osd
+msgctxt "#31173"
+msgid "Video OSD autoclose time (seconds)"
+msgstr ""
+
+#empty strings from id 31174 to 31599
 
 #: /xml/DialogPlayerProcessInfo.xml
 #. Label to show the video codec name
