@@ -173,7 +173,7 @@ bool CPVREpgTagsContainer::UpdateEntries(const CPVREpgTagsContainer& tags)
 
       if (it != existingTags.cend())
       {
-        const std::shared_ptr<CPVREpgInfoTag> existingTag = *it;
+        const std::shared_ptr<CPVREpgInfoTag>& existingTag = *it;
 
         existingTag->SetChannelData(m_channelData);
         existingTag->SetEpgID(m_iEpgID);

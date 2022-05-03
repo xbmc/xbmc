@@ -411,7 +411,9 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetLastOpenedGroup() const
   std::unique_lock<CCriticalSection> lock(m_critSection);
   return std::accumulate(
       m_groups.cbegin(), m_groups.cend(), std::shared_ptr<CPVRChannelGroup>{},
-      [](std::shared_ptr<CPVRChannelGroup> last, const std::shared_ptr<CPVRChannelGroup>& group) {
+      [](const std::shared_ptr<CPVRChannelGroup>& last,
+         const std::shared_ptr<CPVRChannelGroup>& group)
+      {
         return group->LastOpened() > 0 && (!last || group->LastOpened() > last->LastOpened())
                    ? group
                    : last;
