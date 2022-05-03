@@ -1,6 +1,6 @@
 --- a/src/libbluray/bdj/bdj.c
 +++ b/src/libbluray/bdj/bdj.c
-@@ -252,7 +252,7 @@
+@@ -256,7 +256,7 @@
          return NULL;
      }
  
@@ -9,7 +9,7 @@
      {
          case -1:
              BD_DEBUG(DBG_BDJ | DBG_CRIT, "vfork failed\n");
-@@ -284,7 +284,7 @@
+@@ -288,7 +288,7 @@
  
              waitpid(java_home_pid, &exitcode, 0);
      }
