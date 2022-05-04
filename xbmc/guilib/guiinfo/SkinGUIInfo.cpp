@@ -79,6 +79,14 @@ bool CSkinGUIInfo::GetLabel(std::string& value, const CFileItem *item, int conte
 
 bool CSkinGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
 {
+  switch (info.m_info)
+  {
+    case SKIN_INTEGER:
+    {
+      value = CSkinSettings::GetInstance().GetInt(info.GetData1());
+      return true;
+    }
+  }
   return false;
 }
 

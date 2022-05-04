@@ -62,6 +62,11 @@ bool CSkinSettings::GetBool(int setting) const
   return g_SkinInfo->GetBool(setting);
 }
 
+int CSkinSettings::GetInt(int setting) const
+{
+  return g_SkinInfo->GetInt(setting);
+}
+
 void CSkinSettings::SetBool(int setting, bool set)
 {
   g_SkinInfo->SetBool(setting, set);

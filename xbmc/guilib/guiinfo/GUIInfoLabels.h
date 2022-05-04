@@ -403,6 +403,7 @@
 #define SKIN_HAS_THEME              606
 #define SKIN_ASPECT_RATIO           607
 #define SKIN_FONT                   608
+#define SKIN_INTEGER 609
 
 #define SYSTEM_IS_SCREENSAVER_INHIBITED 641
 #define SYSTEM_ADDON_UPDATE_COUNT   642
