@@ -12,6 +12,7 @@
 #include "ApplicationStackHelper.h"
 #include "ServiceManager.h"
 #include "application/ApplicationPowerHandling.h"
+#include "application/ApplicationVolumeHandling.h"
 #include "cores/IPlayerCallback.h"
 #include "guilib/IMsgTargetCallback.h"
 #include "guilib/IWindowManagerCallback.h"
@@ -86,10 +87,6 @@ namespace MUSIC_INFO
   class CMusicInfoScanner;
 }
 
-#define VOLUME_MINIMUM 0.0f        // -60dB
-#define VOLUME_MAXIMUM 1.0f        // 0dB
-#define VOLUME_DYNAMIC_RANGE 90.0f // 60dB
-
 // replay gain settings struct for quick access by the player multiple
 // times per second (saves doing settings lookup)
 struct ReplayGainSettings
@@ -123,7 +120,8 @@ class CApplication : public IWindowManagerCallback,
                      public ISettingsHandler,
                      public ISubSettings,
                      public KODI::MESSAGING::IMessageTarget,
-                     public CApplicationPowerHandling
+                     public CApplicationPowerHandling,
+                     public CApplicationVolumeHandling
 {
 friend class CAppInboundProtocol;
 
@@ -198,14 +196,6 @@ public:
   void ShowAppMigrationMessage();
   void Process() override;
   void ProcessSlow();
-  float GetVolumePercent() const;
-  float GetVolumeRatio() const;
-  void SetVolume(float iValue, bool isPercentage = true);
-  bool IsMuted() const;
-  bool IsMutedInternal() const { return m_muted; }
-  void ToggleMute(void);
-  void SetMute(bool mute);
-  void ShowVolumeBar(const CAction *action = NULL);
   int GetSubtitleDelay();
   int GetAudioDelay();
   /*!
@@ -338,16 +328,6 @@ protected:
   bool m_skipGuiRender = false;
 
   std::unique_ptr<MUSIC_INFO::CMusicInfoScanner> m_musicInfoScanner;
-
-  bool m_muted = false;
-  float m_volumeLevel = VOLUME_MAXIMUM;
-
-  void Mute();
-  void UnMute();
-
-  void SetHardwareVolume(float hardwareVolume);
-
-  void VolumeChanged();
 
   bool PlayStack(CFileItem& item, bool bRestart);
 

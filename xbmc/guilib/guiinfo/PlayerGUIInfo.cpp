@@ -424,7 +424,8 @@ bool CPlayerGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       value = m_playerShowTime;
       return true;
     case PLAYER_MUTED:
-      value = (g_application.IsMuted() || g_application.GetVolumeRatio() <= VOLUME_MINIMUM);
+      value = (g_application.IsMuted() ||
+               g_application.GetVolumeRatio() <= CApplicationVolumeHandling::VOLUME_MINIMUM);
       return true;
     case PLAYER_HAS_MEDIA:
       value = g_application.GetAppPlayer().IsPlaying();

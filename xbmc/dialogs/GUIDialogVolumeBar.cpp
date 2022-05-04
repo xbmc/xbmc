@@ -28,7 +28,8 @@ bool CGUIDialogVolumeBar::OnAction(const CAction &action)
 {
   if (action.GetID() == ACTION_VOLUME_UP || action.GetID() == ACTION_VOLUME_DOWN || action.GetID() == ACTION_VOLUME_SET || action.GetID() == ACTION_MUTE)
   {
-    if (g_application.IsMuted() || g_application.GetVolumeRatio() <= VOLUME_MINIMUM)
+    if (g_application.IsMuted() ||
+        g_application.GetVolumeRatio() <= CApplicationVolumeHandling::VOLUME_MINIMUM)
     { // cancel the timer, dialog needs to stay visible
       CancelAutoClose();
     }
