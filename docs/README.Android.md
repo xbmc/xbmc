@@ -15,7 +15,8 @@ It should work if you're using macOS. If that is the case, read **[macOS specifi
   3.4. **[Create a key to sign debug APKs](#34-create-a-key-to-sign-debug-apks)**  
   3.5. **[macOS specific prerequisites](#35-macos-specific-prerequisites)**
 4. **[Get the source code](#4-get-the-source-code)**
-5. **[Build tools and dependencies](#5-build-tools-and-dependencies)**
+5. **[Build tools and dependencies](#5-build-tools-and-dependencies)**  
+  5.1. **[Advanced Configure Options](#51-advanced-configure-options)**  
 6. **[Build binary add-ons](#6-build-binary-add-ons)**
 7. **[Build Kodi](#7-build-kodi)**
 8. **[Package](#8-package)**
@@ -169,6 +170,89 @@ make -j$(getconf _NPROCESSORS_ONLN)
 **TIP:** By adding `-j<number>` to the make command, you can choose how many concurrent jobs will be used and expedite the build process. It is recommended to use `-j$(getconf _NPROCESSORS_ONLN)` to compile on all available processor cores. The build machine can also be configured to do this automatically by adding `export MAKEFLAGS="-j$(getconf _NPROCESSORS_ONLN)"` to your shell config (e.g. `~/.bashrc`).
 
 **WARNING:** Look for the `Dependencies built successfully.` success message. If in doubt run a single threaded `make` command until the message appears. If the single make fails, clean the specific library by issuing `make -C target/<name_of_failed_lib> distclean` and run `make`again.
+
+### 5.1. Advanced Configure Options
+
+
+**All platforms:**
+
+```
+--with-toolchain=<path>
+```
+  specify path to toolchain. Auto set for android. Defaults to xcode root for darwin, /usr for linux
+
+```
+--enable-debug=<yes:no>
+```
+  enable debugging information (default is yes)
+
+```
+--disable-ccache
+```
+  disable ccache
+
+```
+--with-tarballs=<path>
+```
+  path where tarballs will be saved [prefix/xbmc-tarballs]
+
+```
+--with-cpu=<cpu>
+```
+  optional. specify target cpu. guessed if not specified
+
+```
+--with-linker=<linker>
+```
+  specify linker to use. (default is ld)
+
+```
+--with-platform=<platform>
+```
+  target platform
+
+```
+--enable-gplv3=<yes:no>
+```
+  enable gplv3 components. (default is yes)
+
+```
+--with-target-cflags=<cflags>
+```
+  C compiler flags (target)
+
+```
+--with-target-cxxflags=<cxxflags>
+```
+  C++ compiler flags (target)
+
+```
+--with-target-ldflags=<ldflags>
+```
+  linker flags. Use e.g. for -l<lib> (target)
+
+```
+--with-ffmpeg-options
+```
+  FFmpeg configure options, e.g. --enable-vaapi (target)
+
+
+**Android Specific:**
+
+```
+--with-ndk-api=<ndk number>
+```
+  specify ndk level (optional for android), default is 21.]
+
+```
+--with-ndk-path=<path>
+```
+  specify path to ndk (required for android only)
+
+```
+--with-sdk-path=<path>
+```
+  specify path to sdk (required for android only)
 
 
 **[back to top](#table-of-contents)** | **[back to section top](#5-build-tools-and-dependencies)**
