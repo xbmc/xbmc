@@ -12,10 +12,13 @@
 #include "guilib/GUIKeyboard.h"
 #include "input/KeyboardLayout.h"
 
+#include <memory>
 #include <string>
 #include <vector>
 
 class CGUIFont;
+
+class CSpeechRecognitionListener;
 
 enum KEYBOARD {CAPS, LOWER, SYMBOLS};
 
@@ -87,4 +90,6 @@ class CGUIDialogKeyboardGeneric : public CGUIDialog, public CGUIKeyboard
     CCriticalSection  m_CS;
 
     char_callback_t m_pCharCallback;
+
+    std::shared_ptr<CSpeechRecognitionListener> m_speechRecognitionListener;
 };

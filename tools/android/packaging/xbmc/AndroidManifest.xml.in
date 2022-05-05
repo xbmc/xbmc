@@ -17,9 +17,13 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <uses-feature
         android:name="android.hardware.bluetooth"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.microphone"
         android:required="false" />
     <uses-feature
         android:name="android.hardware.screen.landscape"
@@ -166,5 +170,12 @@
            android:permission="android.permission.BIND_JOB_SERVICE" />
 
     </application>
+
+    <queries>
+      <intent>
+        <action
+          android:name="android.speech.RecognitionService" />
+      </intent>
+    </queries>
 
 </manifest><!-- END_INCLUDE(manifest) -->

@@ -43,6 +43,11 @@ class IInputDeviceEventHandler;
 class CVideoSyncAndroid;
 class CJNIActivityManager;
 
+namespace speech
+{
+class ISpeechRecognition;
+}
+
 typedef struct _JNIEnv JNIEnv;
 
 struct androidIcon
@@ -99,12 +104,11 @@ protected:
   int m_resultcode;
 };
 
-class CXBMCApp
-    : public IActivityHandler
-    , public CJNIMainActivity
-    , public CJNIBroadcastReceiver
-    , public ANNOUNCEMENT::IAnnouncer
-    , public CJNISurfaceHolderCallback
+class CXBMCApp : public IActivityHandler,
+                 public CJNIMainActivity,
+                 public CJNIBroadcastReceiver,
+                 public ANNOUNCEMENT::IAnnouncer,
+                 public CJNISurfaceHolderCallback
 {
 public:
   static CXBMCApp& Create(ANativeActivity* nativeActivity, IInputHandler& inputhandler)
@@ -233,6 +237,12 @@ public:
   void setVideosurfaceInUse(bool videosurfaceInUse);
 
   bool GetMemoryInfo(long& availMem, long& totalMem);
+
+  std::shared_ptr<speech::ISpeechRecognition> GetSpeechRecognition() const
+  {
+    return m_speechRecognition;
+  }
+
 protected:
   // limit who can access Volume
   friend class CAESinkAUDIOTRACK;
@@ -249,6 +259,7 @@ private:
 
   CJNIXBMCAudioManagerOnAudioFocusChangeListener m_audioFocusListener;
   CJNIXBMCDisplayManagerDisplayListener m_displayListener;
+  std::shared_ptr<speech::ISpeechRecognition> m_speechRecognition;
   std::unique_ptr<CJNIXBMCMainView> m_mainView;
   std::unique_ptr<jni::CJNIXBMCMediaSession> m_mediaSession;
   std::string GetFilenameFromIntent(const CJNIIntent &intent);
@@ -256,10 +267,10 @@ private:
   void run();
   void stop();
   void SetupEnv();
-  static void SetRefreshRateCallback(CVariant *rate);
-  static void SetDisplayModeCallback(CVariant *mode);
+  static void SetRefreshRateCallback(void* rateVariant);
+  static void SetDisplayModeCallback(void* modeVariant);
 
-  static void RegisterDisplayListenerCallback(CVariant*);
+  static void RegisterDisplayListenerCallback(void*);
   void UnregisterDisplayListener();
 
   ANativeActivity* m_activity{nullptr};

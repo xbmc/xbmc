@@ -30,7 +30,7 @@ public:
   static void _onVisibleBehindCanceled(JNIEnv *env, jobject context);
 
   static void _callNative(JNIEnv *env, jobject context, jlong funcAddr, jlong variantAddr);
-  static void runNativeOnUiThread(void (*callback)(CVariant *), CVariant *variant);
+  static void runNativeOnUiThread(void (*callback)(void*), void* variant);
   static void registerMediaButtonEventReceiver();
   static void unregisterMediaButtonEventReceiver();
 

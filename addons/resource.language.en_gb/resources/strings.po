@@ -23071,6 +23071,36 @@ msgctxt "#39176"
 msgid "Relative volume for gui sounds"
 msgstr ""
 
+#. Dialog caption related to the speech to text process
+#: xbmc/dialogs/GUIDialogKeyboardGeneric.cpp
+msgctxt "#39177"
+msgid "Speech to text"
+msgstr ""
+
+#. Dialog text to notify that the speech service is not available
+#: xbmc/dialogs/GUIDialogKeyboardGeneric.cpp
+msgctxt "#39178"
+msgid "Speech recognition service not available"
+msgstr ""
+
+#. Dialog text to notify that microphone is listening
+#: xbmc/dialogs/GUIDialogKeyboardGeneric.cpp
+msgctxt "#39179"
+msgid "Listening..."
+msgstr ""
+
+#. Dialog text to notify that there has been no matching recognition result
+#: xbmc/dialogs/GUIDialogKeyboardGeneric.cpp
+msgctxt "#39180"
+msgid "No recognition result matched"
+msgstr ""
+
+#. Dialog text to notify that there has been a speech recognition error
+#: xbmc/dialogs/GUIDialogKeyboardGeneric.cpp
+msgctxt "#39181"
+msgid "Speech recognition error"
+msgstr ""
+
 #. Subtitle vertical margin setting
 #: system/settings/settings.xml
 msgctxt "#39182"
@@ -23087,4 +23117,10 @@ msgstr ""
 #: xbmc/settings/windows/GUIWindowSettingsScreenCalibration.cpp
 msgctxt "#39184"
 msgid "Current value: {0:d} (with vertical margin: {1:d})"
+msgstr ""
+
+#. Dialog text to notify that there are insufficient permissions for speech recognition
+#: xbmc/dialogs/GUIDialogKeyboardGeneric.cpp
+msgctxt "#39185"
+msgid "Insufficient permissions for speech recognition"
 msgstr ""
