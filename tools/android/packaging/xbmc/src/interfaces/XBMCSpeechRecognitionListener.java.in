@@ -1,0 +1,59 @@
+package @APP_PACKAGE@.interfaces;
+
+import android.os.Bundle;
+import android.speech.RecognitionListener;
+
+public class XBMCSpeechRecognitionListener implements RecognitionListener
+{
+  native void _onReadyForSpeech(Bundle bundle);
+  native void _onError(int i);
+  native void _onResults(Bundle bundle);
+
+  @Override
+  public void onBeginningOfSpeech()
+  {
+  }
+
+  @Override
+  public void onBufferReceived(byte[] bytes)
+  {
+  }
+
+  @Override
+  public void onEndOfSpeech()
+  {
+  }
+
+  @Override
+  public void onError(int i)
+  {
+    _onError(i);
+  }
+
+  @Override
+  public void onEvent(int i, Bundle bundle)
+  {
+  }
+
+  @Override
+  public void onPartialResults(Bundle bundle)
+  {
+  }
+
+  @Override
+  public void onReadyForSpeech(Bundle bundle)
+  {
+    _onReadyForSpeech(bundle);
+  }
+
+  @Override
+  public void onResults(Bundle bundle)
+  {
+    _onResults(bundle);
+  }
+
+  @Override
+  public void onRmsChanged(float v)
+  {
+  }
+}

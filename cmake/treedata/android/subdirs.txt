@@ -12,6 +12,7 @@ xbmc/platform/android/media/drm             platform/android/media/drm
 xbmc/platform/android/network               platform/android/network
 xbmc/platform/android/peripherals           platform/android/peripherals
 xbmc/platform/android/powermanagement       platform/android/powermanagement
+xbmc/platform/android/speech                platform/android/speech
 xbmc/platform/android/storage               platform/android/storage
 xbmc/platform/android/utils                 platform/android/utils
 xbmc/platform/linux/peripherals             platform/linux/peripherals

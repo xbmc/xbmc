@@ -58,7 +58,7 @@ void CJNIMainActivity::_onVisibleBehindCanceled(JNIEnv* env, jobject context)
     m_appInstance->onVisibleBehindCanceled();
 }
 
-void CJNIMainActivity::runNativeOnUiThread(void (*callback)(CVariant *), CVariant* variant)
+void CJNIMainActivity::runNativeOnUiThread(void (*callback)(void*), void* variant)
 {
   call_method<void>(m_context,
                     "runNativeOnUiThread", "(JJ)V", (jlong)callback, (jlong)variant);
