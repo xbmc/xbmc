@@ -7,7 +7,8 @@ This guide has been tested using Xcode 11.3.1 running on MacOS 10.15.2 (Catalina
 1. **[Document conventions](#1-document-conventions)**
 2. **[Prerequisites](#2-prerequisites)**
 3. **[Get the source code](#3-get-the-source-code)**
-4. **[Configure and build tools and dependencies](#4-configure-and-build-tools-and-dependencies)**
+4. **[Configure and build tools and dependencies](#4-configure-and-build-tools-and-dependencies)**  
+  4.1. **[Advanced Configure Options](#41-Advanced-Configure-Options)**  
 5. **[Generate Kodi Build files](#5-Generate-Kodi-Build-files)**  
   5.1. **[Generate XCode Project Files](#51-Generate-Xcode-Project-Files)**  
   5.2. **[Build with Xcode](#62-build)**  
@@ -108,6 +109,78 @@ make -j$(getconf _NPROCESSORS_ONLN)
 ```
 ./configure --host=aarch64-apple-darwin --with-platform=tvos --with-sdk=11.0
 ```
+
+### 4.1. Advanced Configure Options
+
+
+**All platforms:**
+
+```
+--with-toolchain=<path>
+```
+  specify path to toolchain. Auto set for android. Defaults to xcode root for darwin, /usr for linux
+
+```
+--enable-debug=<yes:no>
+```
+  enable debugging information (default is yes)
+
+```
+--disable-ccache
+```
+  disable ccache
+
+```
+--with-tarballs=<path>
+```
+  path where tarballs will be saved [prefix/xbmc-tarballs]
+
+```
+--with-cpu=<cpu>
+```
+  optional. specify target cpu. guessed if not specified
+
+```
+--with-linker=<linker>
+```
+  specify linker to use. (default is ld)
+
+```
+--with-platform=<platform>
+```
+  target platform
+
+```
+--enable-gplv3=<yes:no>
+```
+  enable gplv3 components. (default is yes)
+
+```
+--with-target-cflags=<cflags>
+```
+  C compiler flags (target)
+
+```
+--with-target-cxxflags=<cxxflags>
+```
+  C++ compiler flags (target)
+
+```
+--with-target-ldflags=<ldflags>
+```
+  linker flags. Use e.g. for -l<lib> (target)
+
+```
+--with-ffmpeg-options
+```
+  FFmpeg configure options, e.g. --enable-vaapi (target)
+
+**Apple Specific:**
+
+```
+--with-sdk=<sdknumber>
+```
+  specify sdk platform version.
 
 **[back to top](#table-of-contents)**
 

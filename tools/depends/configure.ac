@@ -36,6 +36,11 @@ AC_ARG_ENABLE([ccache],
   [use_ccache=no],
   [use_ccache=yes])
 
+AC_ARG_WITH([linker],
+  [AS_HELP_STRING([--with-linker],
+  [specify linker to use.])],
+  [use_linker=$withval])
+
 AC_ARG_WITH([toolchain],
   [AS_HELP_STRING([--with-toolchain],
   [specify path to toolchain. Auto set for android. Defaults to xcode root for darwin, /usr for linux])],
@@ -138,6 +143,10 @@ fi
 AC_PATH_PROG(TAR,tar,"no")
 if test "x$TAR" = "xno" ; then
   AC_MSG_ERROR("Missing program: tar")
+fi
+
+if test "x$use_linker" = "x" ; then
+  use_linker=ld
 fi
 
 if test "$use_debug" = "yes"; then
@@ -267,7 +276,7 @@ else
 fi
 
 AC_PATH_TOOL([RANLIB], [${platform_tool_prefix}ranlib],, $PATH_FOR_HOST)
-AC_PATH_TOOL([LD], [${platform_tool_prefix}ld],, $PATH_FOR_HOST)
+AC_PATH_TOOL([LD], [${use_linker}],, $PATH_FOR_HOST)
 AC_PATH_TOOL([AR], [${platform_tool_prefix}ar],, $PATH_FOR_HOST)
 AC_PATH_TOOL([READELF], [${platform_tool_prefix}readelf],, $PATH_FOR_HOST)
 AC_PATH_TOOL([STRIP], [${platform_tool_prefix}strip],, $PATH_FOR_HOST)
@@ -276,6 +285,10 @@ AC_PATH_TOOL([NM], [${platform_tool_prefix}nm],, $PATH_FOR_HOST)
 AC_PATH_TOOL([OBJDUMP], [${platform_tool_prefix}objdump],, $PATH_FOR_HOST)
 AC_PATH_TOOL([CC],[$platform_cc],,$PATH_FOR_HOST)
 AC_PATH_TOOL([CXX],[$platform_cxx],,$PATH_FOR_HOST)
+
+if test "x$LD" = "x"; then
+  AC_MSG_ERROR(No linker found with name ${use_linker}. You may want to provide using --with-linker=<linker>)
+fi
 
 case $build in
   *darwin*)
