@@ -8,6 +8,7 @@
 
 #pragma once
 
+// clang-format off
 #define PLAYER_HAS_MEDIA              1
 #define PLAYER_HAS_AUDIO              2
 #define PLAYER_HAS_VIDEO              3
@@ -394,6 +395,7 @@
 #define INTEGER_LESS_OR_EQUAL       454
 #define INTEGER_EVEN                455
 #define INTEGER_ODD                 456
+#define INTEGER_VALUEOF             457
 
 #define SKIN_BOOL                   600
 #define SKIN_STRING                 601
@@ -971,3 +973,4 @@
 #define INFOFLAG_LISTITEM_ABSOLUTE    (static_cast<uint32_t>(1 << 27))  // Absolute ListItem lookups
 #define INFOFLAG_LISTITEM_NOWRAP      (static_cast<uint32_t>(1 << 28))  // Do not wrap ListItem lookups
 #define INFOFLAG_LISTITEM_CONTAINER   (static_cast<uint32_t>(1 << 29))  // Lookup the item in given container
+// clang-format on

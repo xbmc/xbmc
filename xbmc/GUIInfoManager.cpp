@@ -29,6 +29,8 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <array>
+#include <charconv>
 #include <cmath>
 #include <functional>
 #include <iterator>
@@ -215,20 +217,33 @@ const infomap string_bools[] =   {{ "isempty",          STRING_IS_EMPTY },
                                   { "endswith",         STRING_ENDS_WITH },
                                   { "contains",         STRING_CONTAINS }};
 
-
 /// \page modules__infolabels_boolean_conditions
 /// \subsection modules__infolabels_boolean_conditions_Integer Integer
 /// \table_start
 ///   \table_h3{ Labels, Type, Description }
+///   \table_row3{   <b>`Integer.ValueOf(number)`</b>,
+///                  \anchor Integer_ValueOf
+///                  _integer_,
+///     @return An integer info label that represents the provided number
+///     @param number - the number to compute
+///     @note **Example:** `Integer.ValueOf(4)` will be evaluated to 4.
+///     @note Will return -1 if not able to convert the provided value to an integer. **Example**: `Integer.ValueOf(some string)` will evaluate to -1
+///     as the provided argument is not an integer.
+///     <p><hr>
+///     @skinning_v20 **[New InfoLabel]** \link Integer_ValueOf `Integer.ValueOf(number)`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`Integer.IsEqual(info\,number)`</b>,
 ///                  \anchor Integer_IsEqual
 ///                  _boolean_,
 ///     @return **True** if the value of the infolabel is equal to the supplied number.
 ///     @param info - infolabel
-///     @param number - number to compare
+///     @param number - number or integer infolabel to compare
 ///     @note **Example:** `Integer.IsEqual(ListItem.Year\,2000)`
 ///     <p><hr>
 ///     @skinning_v17 **[New Boolean Condition]** \link Integer_IsEqual `Integer.IsEqual(info\,number)`\endlink
+///     @skinning_v20 \link Integer_IsEqual `Integer.IsEqual(info\,number)`\endlink now supports comparisons against other integer infos
+///     and not just fixed number values.
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`Integer.IsGreater(info\,number)`</b>,
@@ -236,10 +251,12 @@ const infomap string_bools[] =   {{ "isempty",          STRING_IS_EMPTY },
 ///                  _boolean_,
 ///     @return **True** if the value of the infolabel is greater than to the supplied number.
 ///     @param info - infolabel
-///     @param number - number to compare
+///     @param number - number or integer infolabel to compare
 ///     @note **Example:** `Integer.IsGreater(ListItem.Year\,2000)`
 ///     <p><hr>
 ///     @skinning_v17 **[New Boolean Condition]** \link Integer_IsGreater `Integer.IsGreater(info\,number)`\endlink
+///     @skinning_v20 \link Integer_IsGreater `Integer.IsGreater(info\,number)`\endlink now supports comparisons against other integer infos
+///     and not just fixed number values.
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`Integer.IsGreaterOrEqual(info\,number)`</b>,
@@ -247,10 +264,13 @@ const infomap string_bools[] =   {{ "isempty",          STRING_IS_EMPTY },
 ///                  _boolean_,
 ///     @return **True** if the value of the infolabel is greater or equal to the supplied number.
 ///     @param info - infolabel
-///     @param number - number to compare
+///     @param number - number or integer infolabel to compare
 ///     @note **Example:** `Integer.IsGreaterOrEqual(ListItem.Year\,2000)`
+///     @note **Example2:** `Integer.IsGreaterOrEqual(Container(x).ListItem(1).Year\,Container(x).ListItem(2).Year)`
 ///     <p><hr>
 ///     @skinning_v17 **[New Boolean Condition]** \link Integer_IsGreaterOrEqual `Integer.IsGreaterOrEqual(info\,number)`\endlink
+///     @skinning_v20 \link Integer_IsGreaterOrEqual `Integer.IsGreaterOrEqual(info\,number)`\endlink now supports comparisons against other integer infos
+///     and not just fixed number values.
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`Integer.IsLess(info\,number)`</b>,
@@ -258,10 +278,12 @@ const infomap string_bools[] =   {{ "isempty",          STRING_IS_EMPTY },
 ///                  _boolean_,
 ///     @return **True** if the value of the infolabel is less than the supplied number.
 ///     @param info - infolabel
-///     @param number - number to compare
+///     @param number - number or integer infolabel to compare
 ///     @note **Example:** `Integer.IsLess(ListItem.Year\,2000)`
 ///     <p><hr>
 ///     @skinning_v17 **[New Boolean Condition]** \link Integer_IsLess `Integer.IsLess(info\,number)`\endlink
+///     @skinning_v20 \link Integer_IsLess `Integer.IsLess(info\,number)`\endlink now supports comparisons against other integer infos
+///     and not just fixed number values.
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`Integer.IsLessOrEqual(info\,number)`</b>,
@@ -269,10 +291,12 @@ const infomap string_bools[] =   {{ "isempty",          STRING_IS_EMPTY },
 ///                  _boolean_,
 ///     @return **True** if the value of the infolabel is less or equal to the supplied number.
 ///     @param info - infolabel
-///     @param number - number to compare
+///     @param number - number or integer infolabel to compare
 ///     @note **Example:** `Integer.IsLessOrEqual(ListItem.Year\,2000)`
 ///     <p><hr>
 ///     @skinning_v17 **[New Boolean Condition]** \link Integer_IsLessOrEqual `Integer.IsLessOrEqual(info\,number)`\endlink
+///     @skinning_v20 \link Integer_IsLessOrEqual `Integer.IsLessOrEqual(info\,number)`\endlink now supports comparisons against other integer infos
+///     and not just fixed number values.
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`Integer.IsEven(info)`</b>,
@@ -298,7 +322,6 @@ const infomap string_bools[] =   {{ "isempty",          STRING_IS_EMPTY },
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
-
 
 const infomap integer_bools[] =  {{ "isequal",          INTEGER_IS_EQUAL },
                                   { "isgreater",        INTEGER_GREATER_THAN },
@@ -9792,13 +9815,34 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
     }
     if (cat.name == "integer")
     {
+      if (prop.name == "valueof")
+      {
+        int value = -1;
+        std::from_chars(prop.param(0).data(), prop.param(0).data() + prop.param(0).size(), value);
+        return AddMultiInfo(CGUIInfo(INTEGER_VALUEOF, value));
+      }
+
       for (const infomap& integer_bool : integer_bools)
       {
         if (prop.name == integer_bool.str)
         {
-          int data1 = TranslateSingleString(prop.param(0), listItemDependent);
-          int data2 = atoi(prop.param(1).c_str());
-          return AddMultiInfo(CGUIInfo(integer_bool.val, data1, data2));
+          std::array<int, 2> data = {-1, -1};
+          for (size_t i = 0; i < data.size(); i++)
+          {
+            std::from_chars_result result = std::from_chars(
+                prop.param(i).data(), prop.param(i).data() + prop.param(i).size(), data.at(i));
+            if (result.ec == std::errc::invalid_argument)
+            {
+              // could not translate provided value to int, translate the info string
+              data.at(i) = TranslateSingleString(prop.param(i), listItemDependent);
+            }
+            else
+            {
+              // conversion succeeded, integer value provided - translate it to an Integer.ValueOf() info.
+              data.at(i) = AddMultiInfo(CGUIInfo(INTEGER_VALUEOF, data.at(i)));
+            }
+          }
+          return AddMultiInfo(CGUIInfo(integer_bool.val, data.at(0), data.at(1)));
         }
       }
     }
@@ -10653,38 +10697,44 @@ bool CGUIInfoManager::GetMultiInfoBool(const CGUIInfo &info, int contextWindow, 
       case INTEGER_EVEN:
       case INTEGER_ODD:
         {
-          int integer = 0;
-          if (!GetInt(integer, info.GetData1(), contextWindow, item))
-          {
-            std::string value;
-            if (item && item->IsFileItem() && IsListItemInfo(info.GetData1()))
-              value = GetItemImage(item, contextWindow, info.GetData1());
-            else
-              value = GetImage(info.GetData1(), contextWindow);
+          auto getIntValue = [this, &item, &contextWindow](int infoNum) {
+            int intValue = 0;
+            if (!GetInt(intValue, infoNum, contextWindow, item))
+            {
+              std::string value;
+              if (item && item->IsFileItem() && IsListItemInfo(infoNum))
+                value = GetItemImage(item, contextWindow, infoNum);
+              else
+                value = GetImage(infoNum, contextWindow);
 
-            // Handle the case when a value contains time separator (:). This makes Integer.IsGreater
-            // useful for Player.Time* members without adding a separate set of members returning time in seconds
-            if (value.find_first_of( ':' ) != value.npos)
-              integer = StringUtils::TimeStringToSeconds(value);
-            else
-              integer = atoi(value.c_str());
-          }
+              // Handle the case when a value contains time separator (:). This makes Integer.IsGreater
+              // useful for Player.Time* members without adding a separate set of members returning time in seconds
+              if (value.find_first_of(':') != value.npos)
+                intValue = StringUtils::TimeStringToSeconds(value);
+              else
+                std::from_chars(value.data(), value.data() + value.size(), intValue);
+            }
+            return intValue;
+          };
+
+          int leftIntValue = getIntValue(info.GetData1());
+          int rightIntValue = getIntValue(info.GetData2());
 
           // compare
           if (condition == INTEGER_IS_EQUAL)
-            bReturn = integer == info.GetData2();
+            bReturn = leftIntValue == rightIntValue;
           else if (condition == INTEGER_GREATER_THAN)
-            bReturn = integer > info.GetData2();
+            bReturn = leftIntValue > rightIntValue;
           else if (condition == INTEGER_GREATER_OR_EQUAL)
-            bReturn = integer >= info.GetData2();
+            bReturn = leftIntValue >= rightIntValue;
           else if (condition == INTEGER_LESS_THAN)
-            bReturn = integer < info.GetData2();
+            bReturn = leftIntValue < rightIntValue;
           else if (condition == INTEGER_LESS_OR_EQUAL)
-            bReturn = integer <= info.GetData2();
+            bReturn = leftIntValue <= rightIntValue;
           else if (condition == INTEGER_EVEN)
-            bReturn = integer % 2 == 0;
+            bReturn = leftIntValue % 2 == 0;
           else if (condition == INTEGER_ODD)
-            bReturn = integer % 2 != 0;
+            bReturn = leftIntValue % 2 != 0;
         }
         break;
     }
@@ -10694,7 +10744,12 @@ bool CGUIInfoManager::GetMultiInfoBool(const CGUIInfo &info, int contextWindow, 
 
 bool CGUIInfoManager::GetMultiInfoInt(int &value, const CGUIInfo &info, int contextWindow, const CGUIListItem *item) const
 {
-  if (info.m_info >= LISTITEM_START && info.m_info <= LISTITEM_END)
+  if (info.m_info == INTEGER_VALUEOF)
+  {
+    value = info.GetData1();
+    return true;
+  }
+  else if (info.m_info >= LISTITEM_START && info.m_info <= LISTITEM_END)
   {
     CGUIListItemPtr itemPtr;
     if (!item)
