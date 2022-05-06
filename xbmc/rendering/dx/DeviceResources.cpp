@@ -605,7 +605,15 @@ void DX::DeviceResources::ResizeBuffers()
   {
     HDR_STATUS hdrStatus = CWIN32Util::GetWindowsHDRStatus();
     const bool isHdrEnabled = (hdrStatus == HDR_STATUS::HDR_ON);
-    const bool is10bitSafe = (hdrStatus != HDR_STATUS::HDR_UNSUPPORTED);
+    bool is10bitSafe = (hdrStatus != HDR_STATUS::HDR_UNSUPPORTED);
+
+    DXGI_ADAPTER_DESC ad = {};
+    GetAdapterDesc(&ad);
+
+    // Some AMD graphics has issues with 10 bit in SDR.
+    // Enabled by default only in Intel and NVIDIA with latest drivers/hardware
+    if (m_d3dFeatureLevel < D3D_FEATURE_LEVEL_12_1 || ad.VendorId == PCIV_ATI)
+      is10bitSafe = false;
 
     DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
     swapChainDesc.Width = lround(m_outputSize.Width);
