@@ -46,7 +46,7 @@ static float currentRefreshRate()
   if (window)
   {
     float preferredRate = window.getAttributes().getpreferredRefreshRate();
-    if (preferredRate > 20.0f && preferredRate < 70.0f)
+    if (preferredRate > 20.0f)
     {
       CLog::Log(LOGINFO, "CAndroidUtils: Preferred refresh rate: {:f}", preferredRate);
       return preferredRate;
@@ -57,7 +57,7 @@ static float currentRefreshRate()
       if (display)
       {
         float reportedRate = display.getRefreshRate();
-        if (reportedRate > 20.0f && reportedRate < 70.0f)
+        if (reportedRate > 20.0f)
         {
           CLog::Log(LOGINFO, "CAndroidUtils: Current display refresh rate: {:f}", reportedRate);
           return reportedRate;
@@ -317,7 +317,7 @@ bool CAndroidUtils::ProbeResolutions(std::vector<RESOLUTION_INFO>& resolutions)
       {
         for (unsigned int i = 0; i < refreshRates.size(); i++)
         {
-          if (refreshRates[i] < 20.0f || refreshRates[i] > 70.0f)
+          if (refreshRates[i] < 20.0f)
             continue;
           cur_res.fRefreshRate = refreshRates[i];
           cur_res.strMode = StringUtils::Format(
