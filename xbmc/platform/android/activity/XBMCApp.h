@@ -86,24 +86,6 @@ private:
   ANativeWindow* m_window{nullptr};
 };
 
-class CActivityResultEvent : public CEvent
-{
-public:
-  explicit CActivityResultEvent(int requestcode)
-    : m_requestcode(requestcode), m_resultcode(0)
-  {}
-  int GetRequestCode() const { return m_requestcode; }
-  int GetResultCode() const { return m_resultcode; }
-  void SetResultCode(int resultcode) { m_resultcode = resultcode; }
-  CJNIIntent GetResultData() const { return m_resultdata; }
-  void SetResultData(const CJNIIntent &resultdata) { m_resultdata = resultdata; }
-
-protected:
-  int m_requestcode;
-  CJNIIntent m_resultdata;
-  int m_resultcode;
-};
-
 class CXBMCApp : public IActivityHandler,
                  public CJNIMainActivity,
                  public CJNIBroadcastReceiver,
@@ -202,7 +184,6 @@ public:
   int GetDPI() const;
 
   CRect MapRenderToDroid(const CRect& srcRect);
-  int WaitForActivityResult(const CJNIIntent& intent, int requestCode, CJNIIntent& result);
 
   // Playback callbacks
   void OnPlayBackStarted();
@@ -290,8 +271,6 @@ private:
   std::thread m_thread;
   mutable CCriticalSection m_applicationsMutex;
   mutable std::vector<androidPackage> m_applications;
-  CCriticalSection m_activityResultMutex;
-  std::vector<CActivityResultEvent*> m_activityResultEvents;
 
   std::shared_ptr<CNativeWindow> m_window;
 
