@@ -47,6 +47,7 @@ public:
   StreamType type;
   int uniqueId;
   int demuxerId = -1;
+  int source{STREAM_SOURCE_NONE};
   int flags;
   std::string filename;
   bool dvd;
