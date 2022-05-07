@@ -8,7 +8,6 @@
 
 #include "RepositoryUpdater.h"
 
-#include "Application.h"
 #include "ServiceBroker.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"

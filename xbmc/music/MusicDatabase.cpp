@@ -9,7 +9,6 @@
 #include "MusicDatabase.h"
 
 #include "Album.h"
-#include "Application.h"
 #include "Artist.h"
 #include "FileItem.h"
 #include "GUIInfoManager.h"

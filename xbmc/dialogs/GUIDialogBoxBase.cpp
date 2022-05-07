@@ -8,7 +8,7 @@
 
 #include "GUIDialogBoxBase.h"
 
-#include "Application.h"
+#include "guilib/GUIMessage.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"

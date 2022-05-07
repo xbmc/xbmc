@@ -8,7 +8,6 @@
 
 #include "GUIDialogProgress.h"
 
-#include "Application.h"
 #include "guilib/GUIProgressControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"

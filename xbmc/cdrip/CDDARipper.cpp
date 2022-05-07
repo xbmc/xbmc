@@ -8,7 +8,6 @@
 
 #include "CDDARipper.h"
 
-#include "Application.h"
 #include "CDDARipJob.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"

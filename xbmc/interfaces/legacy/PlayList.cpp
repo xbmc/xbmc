@@ -8,7 +8,6 @@
 
 #include "PlayList.h"
 
-#include "Application.h"
 #include "PlayListPlayer.h"
 #include "playlists/PlayListFactory.h"
 #include "utils/URIUtils.h"

@@ -7,7 +7,6 @@
  */
 #include "UPnPServer.h"
 
-#include "Application.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "TextureDatabase.h"

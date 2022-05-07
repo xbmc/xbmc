@@ -8,7 +8,6 @@
 
 #include "MediaSettings.h"
 
-#include "Application.h"
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "cores/RetroPlayer/RetroPlayerUtils.h"

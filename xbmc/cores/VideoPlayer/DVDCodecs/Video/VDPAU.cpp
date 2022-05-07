@@ -8,7 +8,6 @@
 
 #include "VDPAU.h"
 
-#include "Application.h"
 #include "DVDCodecs/DVDCodecUtils.h"
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"

@@ -8,7 +8,6 @@
 
 #include "GUIDialogVideoInfo.h"
 
-#include "Application.h"
 #include "ContextMenuManager.h"
 #include "FileItem.h"
 #include "GUIPassword.h"
