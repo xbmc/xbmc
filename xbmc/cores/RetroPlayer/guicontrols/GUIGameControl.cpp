@@ -8,7 +8,6 @@
 
 #include "GUIGameControl.h"
 
-#include "Application.h"
 #include "GUIRenderSettings.h"
 #include "ServiceBroker.h"
 #include "cores/RetroPlayer/RetroPlayerUtils.h"
