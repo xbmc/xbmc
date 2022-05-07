@@ -298,9 +298,9 @@ namespace XBMCAddon
       //doesn't seem to be a single InfoTag?
       //try full blown GuiInfoLabel then
       if (ret == 0)
-        return GUILIB::GUIINFO::CGUIInfoLabel::GetLabel(cLine);
+        return GUILIB::GUIINFO::CGUIInfoLabel::GetLabel(cLine, INFO::DEFAULT_CONTEXT);
       else
-        return infoMgr.GetLabel(ret);
+        return infoMgr.GetLabel(ret, INFO::DEFAULT_CONTEXT);
     }
 
     String getInfoImage(const char * infotag)

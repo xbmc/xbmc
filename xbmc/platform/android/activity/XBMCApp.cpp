@@ -107,6 +107,7 @@
 
 using namespace ANNOUNCEMENT;
 using namespace jni;
+using namespace KODI::GUILIB;
 using namespace std::chrono_literals;
 
 std::shared_ptr<CNativeWindow> CNativeWindow::CreateFromSurface(CJNISurfaceHolder holder)
@@ -729,29 +730,34 @@ void CXBMCApp::UpdateSessionMetadata()
   CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
   CJNIMediaMetadataBuilder builder;
   builder
-      .putString(CJNIMediaMetadata::METADATA_KEY_DISPLAY_TITLE, infoMgr.GetLabel(PLAYER_TITLE))
-      .putString(CJNIMediaMetadata::METADATA_KEY_TITLE, infoMgr.GetLabel(PLAYER_TITLE))
-      .putLong(CJNIMediaMetadata::METADATA_KEY_DURATION, g_application.GetAppPlayer().GetTotalTime())
-//      .putString(CJNIMediaMetadata::METADATA_KEY_ART_URI, thumb)
-//      .putString(CJNIMediaMetadata::METADATA_KEY_DISPLAY_ICON_URI, thumb)
-//      .putString(CJNIMediaMetadata::METADATA_KEY_ALBUM_ART_URI, thumb)
+      .putString(CJNIMediaMetadata::METADATA_KEY_DISPLAY_TITLE,
+                 infoMgr.GetLabel(PLAYER_TITLE, INFO::DEFAULT_CONTEXT))
+      .putString(CJNIMediaMetadata::METADATA_KEY_TITLE,
+                 infoMgr.GetLabel(PLAYER_TITLE, INFO::DEFAULT_CONTEXT))
+      .putLong(CJNIMediaMetadata::METADATA_KEY_DURATION,
+               g_application.GetAppPlayer().GetTotalTime())
+      //      .putString(CJNIMediaMetadata::METADATA_KEY_ART_URI, thumb)
+      //      .putString(CJNIMediaMetadata::METADATA_KEY_DISPLAY_ICON_URI, thumb)
+      //      .putString(CJNIMediaMetadata::METADATA_KEY_ALBUM_ART_URI, thumb)
       ;
 
   std::string thumb;
   if (m_playback_state & PLAYBACK_STATE_VIDEO)
   {
     builder
-        .putString(CJNIMediaMetadata::METADATA_KEY_DISPLAY_SUBTITLE, infoMgr.GetLabel(VIDEOPLAYER_TAGLINE))
-        .putString(CJNIMediaMetadata::METADATA_KEY_ARTIST, infoMgr.GetLabel(VIDEOPLAYER_DIRECTOR))
-        ;
+        .putString(CJNIMediaMetadata::METADATA_KEY_DISPLAY_SUBTITLE,
+                   infoMgr.GetLabel(VIDEOPLAYER_TAGLINE, INFO::DEFAULT_CONTEXT))
+        .putString(CJNIMediaMetadata::METADATA_KEY_ARTIST,
+                   infoMgr.GetLabel(VIDEOPLAYER_DIRECTOR, INFO::DEFAULT_CONTEXT));
     thumb = infoMgr.GetImage(VIDEOPLAYER_COVER, -1);
   }
   else if (m_playback_state & PLAYBACK_STATE_AUDIO)
   {
     builder
-        .putString(CJNIMediaMetadata::METADATA_KEY_DISPLAY_SUBTITLE, infoMgr.GetLabel(MUSICPLAYER_ARTIST))
-        .putString(CJNIMediaMetadata::METADATA_KEY_ARTIST, infoMgr.GetLabel(MUSICPLAYER_ARTIST))
-        ;
+        .putString(CJNIMediaMetadata::METADATA_KEY_DISPLAY_SUBTITLE,
+                   infoMgr.GetLabel(MUSICPLAYER_ARTIST, INFO::DEFAULT_CONTEXT))
+        .putString(CJNIMediaMetadata::METADATA_KEY_ARTIST,
+                   infoMgr.GetLabel(MUSICPLAYER_ARTIST, INFO::DEFAULT_CONTEXT));
     thumb = infoMgr.GetImage(MUSICPLAYER_COVER, -1);
   }
   bool needrecaching = false;

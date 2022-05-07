@@ -48,7 +48,7 @@ bool InfoBool(const std::string& condition,
               const SettingConstPtr& setting,
               void* data)
 {
-  return CServiceBroker::GetGUI()->GetInfoManager().EvaluateBool(value);
+  return CServiceBroker::GetGUI()->GetInfoManager().EvaluateBool(value, INFO::DEFAULT_CONTEXT);
 }
 
 template<class TSetting>

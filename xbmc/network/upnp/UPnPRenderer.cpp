@@ -340,7 +340,8 @@ CUPnPRenderer::UpdateState()
     } else if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SLIDESHOW) {
         avt->SetStateVariable("TransportState", "PLAYING");
 
-        const std::string filePath = CServiceBroker::GetGUI()->GetInfoManager().GetLabel(SLIDESHOW_FILE_PATH);
+        const std::string filePath = CServiceBroker::GetGUI()->GetInfoManager().GetLabel(
+            SLIDESHOW_FILE_PATH, INFO::DEFAULT_CONTEXT);
         avt->SetStateVariable("AVTransportURI" , filePath.c_str());
         avt->SetStateVariable("CurrentTrackURI", filePath.c_str());
         avt->SetStateVariable("TransportPlaySpeed", "1");

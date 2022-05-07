@@ -13,6 +13,8 @@
 \brief
 */
 
+#include "interfaces/info/Info.h"
+
 #include <functional>
 #include <string>
 #include <vector>
@@ -30,9 +32,13 @@ class CGUIInfoLabel
 {
 public:
   CGUIInfoLabel() = default;
-  CGUIInfoLabel(const std::string &label, const std::string &fallback = "", int context = 0);
+  CGUIInfoLabel(const std::string& label,
+                const std::string& fallback = "",
+                int context = INFO::DEFAULT_CONTEXT);
 
-  void SetLabel(const std::string &label, const std::string &fallback, int context = 0);
+  void SetLabel(const std::string& label,
+                const std::string& fallback,
+                int context = INFO::DEFAULT_CONTEXT);
 
   /*!
    \brief Gets a label (or image) for a given window context from the info manager.
@@ -65,7 +71,9 @@ public:
 
   const std::string& GetFallback() const { return m_fallback; }
 
-  static std::string GetLabel(const std::string &label, int contextWindow = 0, bool preferImage = false);
+  static std::string GetLabel(const std::string& label,
+                              int contextWindow,
+                              bool preferImage = false);
   static std::string GetItemLabel(const std::string &label, const CGUIListItem *item, bool preferImage = false);
 
   /*!

@@ -24,9 +24,12 @@ void InfoSingle::Initialize()
   m_condition = CServiceBroker::GetGUI()->GetInfoManager().TranslateSingleString(m_expression, m_listItemDependent);
 }
 
-void InfoSingle::Update(const CGUIListItem *item)
+void InfoSingle::Update(int contextWindow, const CGUIListItem* item)
 {
-  m_value = CServiceBroker::GetGUI()->GetInfoManager().GetBool(m_condition, m_context, item);
+  // use propagated context in case this info has the default context (i.e. if not tied to a specific window)
+  // its value might depend on the context in which the evaluation was called
+  int context = m_context == DEFAULT_CONTEXT ? contextWindow : m_context;
+  m_value = CServiceBroker::GetGUI()->GetInfoManager().GetBool(m_condition, context, item);
 }
 
 void InfoExpression::Initialize()
@@ -38,9 +41,12 @@ void InfoExpression::Initialize()
   }
 }
 
-void InfoExpression::Update(const CGUIListItem *item)
+void InfoExpression::Update(int contextWindow, const CGUIListItem* item)
 {
-  m_value = m_expression_tree->Evaluate(item);
+  // use propagated context in case this info expression has the default context (i.e. if not tied to a specific window)
+  // its value might depend on the context in which the evaluation was called
+  int context = m_context == DEFAULT_CONTEXT ? contextWindow : m_context;
+  m_value = m_expression_tree->Evaluate(context, item);
 }
 
 /* Expressions are rewritten at parse time into a form which favours the
@@ -61,9 +67,9 @@ void InfoExpression::Update(const CGUIListItem *item)
  *    operations. So [A|B]|[C|D+[[E|F]|G] becomes A|B|C|[D+[E|F|G]].
  */
 
-bool InfoExpression::InfoLeaf::Evaluate(const CGUIListItem *item)
+bool InfoExpression::InfoLeaf::Evaluate(int contextWindow, const CGUIListItem* item)
 {
-  return m_invert ^ m_info->Get(item);
+  return m_invert ^ m_info->Get(contextWindow, item);
 }
 
 InfoExpression::InfoAssociativeGroup::InfoAssociativeGroup(
@@ -86,7 +92,7 @@ void InfoExpression::InfoAssociativeGroup::Merge(const std::shared_ptr<InfoAssoc
   m_children.splice(m_children.end(), other->m_children);
 }
 
-bool InfoExpression::InfoAssociativeGroup::Evaluate(const CGUIListItem *item)
+bool InfoExpression::InfoAssociativeGroup::Evaluate(int contextWindow, const CGUIListItem* item)
 {
   /* Handle either AND or OR by using the relation
    * A AND B == !(!A OR !B)
@@ -95,10 +101,10 @@ bool InfoExpression::InfoAssociativeGroup::Evaluate(const CGUIListItem *item)
   std::list<InfoSubexpressionPtr>::iterator last = m_children.end();
   std::list<InfoSubexpressionPtr>::iterator it = m_children.begin();
   bool use_and = (m_type == NODE_AND);
-  bool result = use_and ^ (*it)->Evaluate(item);
+  bool result = use_and ^ (*it)->Evaluate(contextWindow, item);
   while (!result && ++it != last)
   {
-    result = use_and ^ (*it)->Evaluate(item);
+    result = use_and ^ (*it)->Evaluate(contextWindow, item);
     if (result)
     {
       /* Move this child to the head of the list so we evaluate faster next time */
