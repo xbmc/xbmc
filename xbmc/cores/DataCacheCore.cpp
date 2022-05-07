@@ -320,6 +320,24 @@ bool CDataCacheCore::IsRenderClockSync()
 }
 
 // player states
+void CDataCacheCore::SeekFinished()
+{
+  std::unique_lock<CCriticalSection> lock(m_stateSection);
+  m_stateInfo.m_lastSeekTime = std::chrono::system_clock::now();
+}
+
+bool CDataCacheCore::HasPerformedSeek(int64_t lastSecondInterval) const
+{
+  std::unique_lock<CCriticalSection> lock(m_stateSection);
+  if (m_stateInfo.m_lastSeekTime == std::chrono::time_point<std::chrono::system_clock>{})
+  {
+    return false;
+  }
+  return (std::chrono::system_clock::now() - m_stateInfo.m_lastSeekTime) <
+         std::chrono::duration_cast<std::chrono::seconds>(
+             std::chrono::duration<int64_t>(lastSecondInterval));
+}
+
 void CDataCacheCore::SetStateSeeking(bool active)
 {
   std::unique_lock<CCriticalSection> lock(m_stateSection);

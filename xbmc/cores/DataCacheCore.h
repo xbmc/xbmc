@@ -12,9 +12,9 @@
 #include "threads/CriticalSection.h"
 
 #include <atomic>
+#include <chrono>
 #include <string>
 #include <vector>
-
 
 class CDataCacheCore
 {
@@ -119,8 +119,21 @@ public:
   bool IsRenderClockSync();
 
   // player states
+  /*!
+   * @brief Notifies the cache core that a seek operation has finished
+  */
+  void SeekFinished();
+
   void SetStateSeeking(bool active);
   bool IsSeeking();
+
+  /*!
+   * @brief Checks if a seek has been performed in the last provided seconds interval
+   * @param lastSecondInterval - the last elapsed second interval to check for a seek operation
+   * @return true if a seek was performed in the lastSecondInterval, false otherwise
+  */
+  bool HasPerformedSeek(int64_t lastSecondInterval) const;
+
   void SetSpeed(float tempo, float speed);
   float GetSpeed();
   float GetTempo();
@@ -288,7 +301,7 @@ protected:
     bool m_isClockSync;
   } m_renderInfo;
 
-  CCriticalSection m_stateSection;
+  mutable CCriticalSection m_stateSection;
   bool m_playerStateChanged = false;
   struct SStateInfo
   {
@@ -298,6 +311,9 @@ protected:
     float m_tempo;
     float m_speed;
     bool m_frameAdvance;
+    /*! Time point of the last seek operation */
+    std::chrono::time_point<std::chrono::system_clock> m_lastSeekTime{
+        std::chrono::time_point<std::chrono::system_clock>{}};
   } m_stateInfo;
 
   struct STimeInfo

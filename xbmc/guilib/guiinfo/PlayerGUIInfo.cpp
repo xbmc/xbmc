@@ -28,6 +28,7 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
+#include <charconv>
 #include <cmath>
 
 using namespace KODI::GUILIB::GUIINFO;
@@ -508,6 +509,21 @@ bool CPlayerGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
     case PLAYER_SEEKING:
       value = g_application.GetAppPlayer().GetSeekHandler().InProgress();
       return true;
+    case PLAYER_HASPERFORMEDSEEK:
+    {
+      int requestedLastSecondInterval{0};
+      std::from_chars_result result =
+          std::from_chars(info.GetData3().data(), info.GetData3().data() + info.GetData3().size(),
+                          requestedLastSecondInterval);
+      if (result.ec == std::errc::invalid_argument)
+      {
+        value = false;
+        return false;
+      }
+
+      value = CServiceBroker::GetDataCacheCore().HasPerformedSeek(requestedLastSecondInterval);
+      return true;
+    }
     case PLAYER_PASSTHROUGH:
       value = g_application.GetAppPlayer().IsPassthrough();
       return true;

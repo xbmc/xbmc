@@ -82,6 +82,11 @@ public:
   virtual std::vector<AVPixelFormat> GetRenderFormats();
 
   // player states
+  /*!
+   * @brief Notifies that a seek operation has finished
+  */
+  void SeekFinished();
+
   void SetStateSeeking(bool active);
   bool IsSeeking();
   void SetStateRealtime(bool state);

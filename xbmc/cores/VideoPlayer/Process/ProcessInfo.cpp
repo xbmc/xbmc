@@ -467,6 +467,13 @@ std::vector<AVPixelFormat> CProcessInfo::GetRenderFormats()
 //******************************************************************************
 // player states
 //******************************************************************************
+void CProcessInfo::SeekFinished()
+{
+  std::unique_lock<CCriticalSection> lock(m_stateSection);
+  if (m_dataCache)
+    m_dataCache->SeekFinished();
+}
+
 void CProcessInfo::SetStateSeeking(bool active)
 {
   std::unique_lock<CCriticalSection> lock(m_renderSection);
