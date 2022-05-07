@@ -1286,18 +1286,6 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
 
 void CXBMCApp::onActivityResult(int requestCode, int resultCode, CJNIIntent resultData)
 {
-  std::unique_lock<CCriticalSection> lock(m_activityResultMutex);
-  for (auto it = m_activityResultEvents.begin(); it != m_activityResultEvents.end(); ++it)
-  {
-    if ((*it)->GetRequestCode() == requestCode)
-    {
-      (*it)->SetResultCode(resultCode);
-      (*it)->SetResultData(resultData);
-      (*it)->Set();
-      m_activityResultEvents.erase(it);
-      break;
-    }
-  }
 }
 
 void CXBMCApp::onVisibleBehindCanceled()
@@ -1315,36 +1303,6 @@ void CXBMCApp::onVisibleBehindCanceled()
       CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
                                                  static_cast<void*>(new CAction(ACTION_PAUSE)));
   }
-}
-
-int CXBMCApp::WaitForActivityResult(const CJNIIntent &intent, int requestCode, CJNIIntent &result)
-{
-  int ret = 0;
-  CActivityResultEvent* event = new CActivityResultEvent(requestCode);
-  {
-    std::unique_lock<CCriticalSection> lock(m_activityResultMutex);
-    m_activityResultEvents.emplace_back(event);
-  }
-  startActivityForResult(intent, requestCode);
-  if (event->Wait())
-  {
-    result = event->GetResultData();
-    ret = event->GetResultCode();
-  }
-
-  // delete from m_activityResultEvents map before deleting the event
-  std::unique_lock<CCriticalSection> lock(m_activityResultMutex);
-  for (auto it = m_activityResultEvents.begin(); it != m_activityResultEvents.end(); ++it)
-  {
-    if ((*it)->GetRequestCode() == requestCode)
-    {
-      m_activityResultEvents.erase(it);
-      break;
-    }
-  }
-
-  delete event;
-  return ret;
 }
 
 void CXBMCApp::onVolumeChanged(int volume)
