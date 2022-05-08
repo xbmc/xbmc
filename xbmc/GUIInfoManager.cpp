@@ -889,7 +889,8 @@ const infomap player_labels[] = {{"hasmedia", PLAYER_HAS_MEDIA},
 ///     <p>
 ///   }
 
-const infomap player_param[] = {{"art", PLAYER_ITEM_ART}, {"hasperformedseek", PLAYER_HASSEEKED}};
+const infomap player_param[] = {{"art", PLAYER_ITEM_ART},
+                                {"hasperformedseek", PLAYER_HASPERFORMEDSEEK}};
 
 /// \page modules__infolabels_boolean_conditions
 ///   \table_row3{   <b>`Player.SeekTime`</b>,
