@@ -84,8 +84,9 @@ public:
   // player states
   /*!
    * @brief Notifies that a seek operation has finished
+   * @param offset - the seek offset
   */
-  void SeekFinished();
+  void SeekFinished(int64_t offset);
 
   void SetStateSeeking(bool active);
   bool IsSeeking();

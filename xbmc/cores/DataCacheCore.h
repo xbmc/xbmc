@@ -121,8 +121,9 @@ public:
   // player states
   /*!
    * @brief Notifies the cache core that a seek operation has finished
+   * @param offset - the seek offset
   */
-  void SeekFinished();
+  void SeekFinished(int64_t offset);
 
   void SetStateSeeking(bool active);
   bool IsSeeking();
@@ -133,6 +134,12 @@ public:
    * @return true if a seek was performed in the lastSecondInterval, false otherwise
   */
   bool HasPerformedSeek(int64_t lastSecondInterval) const;
+
+  /*!
+   * @brief Gets the last seek offset
+   * @return the last seek offset
+  */
+  int64_t GetSeekOffSet() const;
 
   void SetSpeed(float tempo, float speed);
   float GetSpeed();
@@ -314,6 +321,8 @@ protected:
     /*! Time point of the last seek operation */
     std::chrono::time_point<std::chrono::system_clock> m_lastSeekTime{
         std::chrono::time_point<std::chrono::system_clock>{}};
+    /*! Last seek offset */
+    int64_t m_lastSeekOffset{0};
   } m_stateInfo;
 
   struct STimeInfo

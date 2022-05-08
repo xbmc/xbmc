@@ -176,10 +176,12 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     ///////////////////////////////////////////////////////////////////////////////////////////////
     case PLAYER_SEEKOFFSET:
     {
-      std::string seekOffset = StringUtils::SecondsToTimeString(std::abs(m_seekOffset / 1000), static_cast<TIME_FORMAT>(info.GetData1()));
-      if (m_seekOffset < 0)
+      int lastSeekOffset = CServiceBroker::GetDataCacheCore().GetSeekOffSet();
+      std::string seekOffset = StringUtils::SecondsToTimeString(
+          std::abs(lastSeekOffset / 1000), static_cast<TIME_FORMAT>(info.GetData1()));
+      if (lastSeekOffset < 0)
         value = "-" + seekOffset;
-      else if (m_seekOffset > 0)
+      else if (lastSeekOffset > 0)
         value = "+" + seekOffset;
       return true;
     }

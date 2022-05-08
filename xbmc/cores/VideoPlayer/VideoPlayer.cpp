@@ -2623,7 +2623,7 @@ void CVideoPlayer::HandleMessages()
       if (!msg.GetTrickPlay())
       {
         CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek(100000);
-        m_processInfo->SeekFinished();
+        m_processInfo->SeekFinished(0);
         SetCaching(CACHESTATE_FLUSH);
       }
 
@@ -2682,7 +2682,7 @@ void CVideoPlayer::HandleMessages()
       if(!msg.GetTrickPlay())
       {
         CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek();
-        m_processInfo->SeekFinished();
+        m_processInfo->SeekFinished(0);
       }
 
       // dvd's will issue a HOP_CHANNEL that we need to skip
@@ -2696,7 +2696,7 @@ void CVideoPlayer::HandleMessages()
              m_messenger.GetPacketCount(CDVDMsg::PLAYER_SEEK_CHAPTER) == 0)
     {
       CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek(100000);
-      m_processInfo->SeekFinished();
+      m_processInfo->SeekFinished(0);
       SetCaching(CACHESTATE_FLUSH);
 
       CDVDMsgPlayerSeekChapter& msg(*std::static_pointer_cast<CDVDMsgPlayerSeekChapter>(pMsg));
@@ -2722,7 +2722,7 @@ void CVideoPlayer::HandleMessages()
           m_callback.OnPlayBackSeekChapter(msg.GetChapter());
         }
       }
-      m_processInfo->SeekFinished();
+      m_processInfo->SeekFinished(offset);
       CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek(2500, offset);
     }
     else if (pMsg->IsType(CDVDMsg::DEMUXER_RESET))
@@ -2867,7 +2867,7 @@ void CVideoPlayer::HandleMessages()
         }
       }
 
-      m_processInfo->SeekFinished();
+      m_processInfo->SeekFinished(0);
       CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek();
     }
     else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH))
@@ -2896,7 +2896,7 @@ void CVideoPlayer::HandleMessages()
       if (speed != DVD_PLAYSPEED_PAUSE && m_playSpeed != DVD_PLAYSPEED_PAUSE && speed != m_playSpeed)
       {
         m_callback.OnPlayBackSpeedChanged(speed / DVD_PLAYSPEED_NORMAL);
-        m_processInfo->SeekFinished();
+        m_processInfo->SeekFinished(0);
         // notify GUI, skins may want to show the seekbar
         CServiceBroker::GetGUI()->
           GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek();
@@ -3370,6 +3370,7 @@ void CVideoPlayer::SeekTime(int64_t iTime)
   m_messenger.Put(std::make_shared<CDVDMsgPlayerSeek>(mode));
   SynchronizeDemuxer();
   m_callback.OnPlayBackSeek(iTime, seekOffset);
+  m_processInfo->SeekFinished(seekOffset);
 }
 
 bool CVideoPlayer::SeekTimeRelative(int64_t iTime)
@@ -3398,6 +3399,7 @@ bool CVideoPlayer::SeekTimeRelative(int64_t iTime)
   m_processInfo->SetStateSeeking(true);
 
   m_callback.OnPlayBackSeek(abstime, iTime);
+  m_processInfo->SeekFinished(iTime);
   return true;
 }
 
@@ -4250,7 +4252,7 @@ bool CVideoPlayer::OnAction(const CAction &action)
         CLog::Log(LOGDEBUG, " - pushed prev");
         pMenus->OnPrevious();
         CServiceBroker::GetGUI()->GetInfoManager().SetDisplayAfterSeek();
-        m_processInfo->SeekFinished();
+        m_processInfo->SeekFinished(0);
         return true;
       }
       break;
@@ -4260,7 +4262,7 @@ bool CVideoPlayer::OnAction(const CAction &action)
         CLog::Log(LOGDEBUG, " - pushed next");
         pMenus->OnNext();
         CServiceBroker::GetGUI()->GetInfoManager().SetDisplayAfterSeek();
-        m_processInfo->SeekFinished();
+        m_processInfo->SeekFinished(0);
         return true;
       }
       break;
@@ -4296,7 +4298,7 @@ bool CVideoPlayer::OnAction(const CAction &action)
           pMenus->OnNext();
 
         CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek();
-        m_processInfo->SeekFinished();
+        m_processInfo->SeekFinished(0);
         return true;
       case ACTION_PREV_ITEM:
         THREAD_ACTION(action);
@@ -4307,7 +4309,7 @@ bool CVideoPlayer::OnAction(const CAction &action)
           pMenus->OnPrevious();
 
         CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek();
-        m_processInfo->SeekFinished();
+        m_processInfo->SeekFinished(0);
         return true;
       case ACTION_PREVIOUS_MENU:
       case ACTION_NAV_BACK:
@@ -4421,7 +4423,7 @@ bool CVideoPlayer::OnAction(const CAction &action)
       {
         m_messenger.Put(std::make_shared<CDVDMsgPlayerSeekChapter>(GetChapter() + 1));
         CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek();
-        m_processInfo->SeekFinished();
+        m_processInfo->SeekFinished(0);
         return true;
       }
       else if (SeekScene(true))
@@ -4433,7 +4435,7 @@ bool CVideoPlayer::OnAction(const CAction &action)
       {
         m_messenger.Put(std::make_shared<CDVDMsgPlayerSeekChapter>(GetChapter() - 1));
         CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek();
-        m_processInfo->SeekFinished();
+        m_processInfo->SeekFinished(0);
         return true;
       }
       else if (SeekScene(false))
