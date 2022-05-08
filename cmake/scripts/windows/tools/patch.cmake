@@ -1,4 +1,12 @@
-find_program(PATCH_FOUND NAMES patch patch.exe)
+# prioritize Git patch.exe
+find_package(Git)
+if(Git_FOUND)
+  get_filename_component(GIT_DIR ${GIT_EXECUTABLE} DIRECTORY)
+  get_filename_component(GIT_DIR ${GIT_DIR} DIRECTORY)
+endif()
+
+find_program(PATCH_FOUND NAMES patch.exe HINTS ${GIT_DIR} PATH_SUFFIXES usr/bin)
+
 if(PATCH_FOUND)
   message(STATUS "patch utility found at ${PATCH_FOUND}")
 else()
