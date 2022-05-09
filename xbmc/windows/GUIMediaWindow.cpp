@@ -2228,7 +2228,8 @@ bool CGUIMediaWindow::GetDirectoryItems(CURL &url, CFileItemList &items, bool us
     }
     else if (!getItems.m_result)
     {
-      if (g_application.IsCurrentThread() && m_rootDir.GetDirImpl() && !m_rootDir.GetDirImpl()->ProcessRequirements())
+      if (CServiceBroker::GetAppMessenger()->IsProcessThread() && m_rootDir.GetDirImpl() &&
+          !m_rootDir.GetDirImpl()->ProcessRequirements())
       {
         ret = false;
       }

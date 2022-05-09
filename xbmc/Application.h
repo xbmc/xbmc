@@ -151,7 +151,6 @@ public:
   bool CreateGUI();
   bool InitWindow(RESOLUTION res = RES_INVALID);
 
-  bool IsCurrentThread() const;
   bool Stop(int exitCode);
   void ReloadSkin(bool confirm = false);
   const std::string& CurrentFile();
@@ -298,7 +297,6 @@ protected:
   XbmcThreads::EndTime<> m_guiRefreshTimer;
 
   std::string m_prevMedia;
-  std::thread::id m_threadID;       // application thread ID.  Used in applicationMessenger to know where we are firing a thread with delay from.
   bool m_bInitializing = true;
 
   int m_nextPlaylistItem = -1;

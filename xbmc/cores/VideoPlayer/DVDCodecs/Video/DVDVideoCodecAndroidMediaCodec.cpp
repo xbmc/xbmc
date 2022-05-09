@@ -14,7 +14,6 @@
 
 #include "DVDVideoCodecAndroidMediaCodec.h"
 
-#include "Application.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/Buffers/VideoBuffer.h"
@@ -1640,7 +1639,7 @@ void CDVDVideoCodecAndroidMediaCodec::InitSurfaceTexture(void)
   // to create/fetch/create from g_RenderManager. But g_RenderManager
   // does not know we are using MediaCodec until Configure and we
   // we need m_surfaceTexture valid before then. Chicken, meet Egg.
-  if (g_application.IsCurrentThread())
+  if (CServiceBroker::GetAppMessenger()->IsProcessThread())
   {
     // localize GLuint so we do not spew gles includes in our header
     GLuint texture_id;

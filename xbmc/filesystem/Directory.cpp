@@ -8,7 +8,6 @@
 
 #include "Directory.h"
 
-#include "Application.h"
 #include "DirectoryCache.h"
 #include "DirectoryFactory.h"
 #include "FileDirectoryFactory.h"
@@ -19,6 +18,7 @@
 #include "commons/Exception.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "guilib/GUIWindowManager.h"
+#include "messaging/ApplicationMessenger.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Job.h"
@@ -196,7 +196,8 @@ bool CDirectory::GetDirectory(const CURL& url,
         {
           // @TODO ProcessRequirements() can bring up the keyboard input dialog
           // filesystem must not depend on GUI
-          if (g_application.IsCurrentThread() && pDirectory->ProcessRequirements())
+          if (CServiceBroker::GetAppMessenger()->IsProcessThread() &&
+              pDirectory->ProcessRequirements())
           {
             authUrl.SetDomain("");
             authUrl.SetUserName("");

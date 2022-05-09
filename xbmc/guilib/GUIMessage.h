@@ -256,7 +256,7 @@ constexpr const int GUI_MSG_CODINGTABLE_LOOKUP_COMPLETED = 65000;
   { \
     CGUIMessage _msg(GUI_MSG_LABEL_SET, GetID(), controlID); \
     _msg.SetLabel(label); \
-    if (g_application.IsCurrentThread()) \
+    if (CServiceBroker::GetAppMessenger()->IsProcessThread()) \
       OnMessage(_msg); \
     else \
       CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(_msg, GetID()); \

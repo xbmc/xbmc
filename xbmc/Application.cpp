@@ -393,9 +393,6 @@ bool CApplication::Create()
 {
   m_bStop = false;
 
-  // Grab a handle to our thread to be used later in identifying the render thread.
-  m_threadID = CThread::GetCurrentThreadId();
-
   RegisterSettings();
 
   CServiceBroker::RegisterCPUInfo(CCPUInfo::GetCPUInfo());
@@ -425,7 +422,8 @@ bool CApplication::Create()
   // after that we can send messages to the corresponding modules
   appMessenger->RegisterReceiver(this);
   appMessenger->RegisterReceiver(&CServiceBroker::GetPlaylistPlayer());
-  appMessenger->SetGUIThread(m_threadID);
+  appMessenger->SetGUIThread(CThread::GetCurrentThreadId());
+  appMessenger->SetProcessThread(CThread::GetCurrentThreadId());
 
   // copy required files
   CUtil::CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
@@ -3643,11 +3641,6 @@ bool CApplication::ProcessAndStartPlaylist(const std::string& strPlayList, CPlay
     return true;
   }
   return false;
-}
-
-bool CApplication::IsCurrentThread() const
-{
-  return m_threadID == CThread::GetCurrentThreadId();
 }
 
 bool CApplication::SetLanguage(const std::string &strLanguage)
