@@ -134,7 +134,11 @@ bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned 
     m_orientation = orientation;
     m_stereomode = picture.stereoMode;
     m_NumberBuffers  = buffers;
-    m_renderState = STATE_CONFIGURING;
+    if (m_renderState == STATE_UNCONFIGURED)
+      m_renderState = STATE_CONFIGURING;
+    else
+      m_renderState = STATE_RECONFIGURING;
+
     m_stateEvent.Reset();
     m_clockSync.Reset();
     m_dvdClock.SetVsyncAdjust(0);
@@ -214,7 +218,13 @@ bool CRenderManager::Configure()
       m_free.push_back(i);
 
     m_bRenderGUI = true;
-    m_bTriggerUpdateResolution = true;
+
+    if (m_renderState == STATE_CONFIGURING ||
+        (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+             CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) == ADJUST_REFRESHRATE_ALWAYS))
+    {
+      m_bTriggerUpdateResolution = true;
+    }
     m_presentstep = PRESENT_IDLE;
     m_presentpts = DVD_NOPTS_VALUE;
     m_lateframes = -1;
@@ -285,7 +295,7 @@ void CRenderManager::FrameMove()
 
     if (m_renderState == STATE_UNCONFIGURED)
       return;
-    else if (m_renderState == STATE_CONFIGURING)
+    else if (m_renderState == STATE_CONFIGURING || m_renderState == STATE_RECONFIGURING)
     {
       lock.Leave();
       if (!Configure())
