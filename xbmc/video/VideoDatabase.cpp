@@ -8,7 +8,6 @@
 
 #include "VideoDatabase.h"
 
-#include "Application.h"
 #include "FileItem.h"
 #include "GUIInfoManager.h"
 #include "GUIPassword.h"

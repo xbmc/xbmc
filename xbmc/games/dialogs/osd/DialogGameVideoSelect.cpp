@@ -8,7 +8,6 @@
 
 #include "DialogGameVideoSelect.h"
 
-#include "Application.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "cores/RetroPlayer/guibridge/GUIGameRenderManager.h"

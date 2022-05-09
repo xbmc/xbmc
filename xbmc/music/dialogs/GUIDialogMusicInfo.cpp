@@ -8,7 +8,6 @@
 
 #include "GUIDialogMusicInfo.h"
 
-#include "Application.h"
 #include "FileItem.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"

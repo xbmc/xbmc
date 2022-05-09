@@ -8,7 +8,6 @@
 
 #include "XkbcommonKeymap.h"
 
-#include "Application.h"
 #include "Util.h"
 #include "utils/log.h"
 

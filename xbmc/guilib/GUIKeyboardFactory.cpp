@@ -6,7 +6,6 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "Application.h"
 #include "ServiceBroker.h"
 #include "GUIComponent.h"
 #include "messaging/ApplicationMessenger.h"
