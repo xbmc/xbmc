@@ -12,6 +12,7 @@
 #include "ApplicationStackHelper.h"
 #include "ServiceManager.h"
 #include "application/ApplicationPowerHandling.h"
+#include "application/ApplicationSkinHandling.h"
 #include "application/ApplicationVolumeHandling.h"
 #include "cores/IPlayerCallback.h"
 #include "guilib/IMsgTargetCallback.h"
@@ -121,6 +122,7 @@ class CApplication : public IWindowManagerCallback,
                      public ISubSettings,
                      public KODI::MESSAGING::IMessageTarget,
                      public CApplicationPowerHandling,
+                     public CApplicationSkinHandling,
                      public CApplicationVolumeHandling
 {
 friend class CAppInboundProtocol;
@@ -150,8 +152,6 @@ public:
 
   bool IsCurrentThread() const;
   bool Stop(int exitCode);
-  void UnloadSkin();
-  bool LoadCustomWindows();
   void ReloadSkin(bool confirm = false);
   const std::string& CurrentFile();
   CFileItem& CurrentFileItem();
@@ -274,8 +274,6 @@ protected:
                        const char* oldSettingId,
                        const TiXmlNode* oldSettingNode) override;
 
-  bool LoadSkin(const std::string& skinID);
-
   void PlaybackCleanup();
 
   // inbound protocol
@@ -296,10 +294,7 @@ protected:
   std::deque<XBMC_Event> m_portEvents;
   CCriticalSection m_portSection;
 
-  bool m_confirmSkinChange = true;
   bool m_ignoreSkinSettingChanges = false;
-
-  bool m_saveSkinOnUnloading = true;
 
 #if defined(TARGET_DARWIN_IOS)
   friend class CWinEventsIOS;
