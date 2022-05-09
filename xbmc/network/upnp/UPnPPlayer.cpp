@@ -493,6 +493,7 @@ void CUPnPPlayer::SeekTime(int64_t ms)
                                 , "REL_TIME", PLT_Didl::FormatTimeStamp((NPT_UInt32)(ms / 1000))
                                 , m_delegate), failed);
 
+  CDataCacheCore::GetInstance().SeekFinished(0);
   CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek();
   return;
 failed:

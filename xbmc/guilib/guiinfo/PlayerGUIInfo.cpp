@@ -28,6 +28,7 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
+#include <charconv>
 #include <cmath>
 
 using namespace KODI::GUILIB::GUIINFO;
@@ -175,10 +176,12 @@ bool CPlayerGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     ///////////////////////////////////////////////////////////////////////////////////////////////
     case PLAYER_SEEKOFFSET:
     {
-      std::string seekOffset = StringUtils::SecondsToTimeString(std::abs(m_seekOffset / 1000), static_cast<TIME_FORMAT>(info.GetData1()));
-      if (m_seekOffset < 0)
+      int lastSeekOffset = CServiceBroker::GetDataCacheCore().GetSeekOffSet();
+      std::string seekOffset = StringUtils::SecondsToTimeString(
+          std::abs(lastSeekOffset / 1000), static_cast<TIME_FORMAT>(info.GetData1()));
+      if (lastSeekOffset < 0)
         value = "-" + seekOffset;
-      else if (m_seekOffset > 0)
+      else if (lastSeekOffset > 0)
         value = "+" + seekOffset;
       return true;
     }
@@ -508,6 +511,21 @@ bool CPlayerGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
     case PLAYER_SEEKING:
       value = g_application.GetAppPlayer().GetSeekHandler().InProgress();
       return true;
+    case PLAYER_HASPERFORMEDSEEK:
+    {
+      int requestedLastSecondInterval{0};
+      std::from_chars_result result =
+          std::from_chars(info.GetData3().data(), info.GetData3().data() + info.GetData3().size(),
+                          requestedLastSecondInterval);
+      if (result.ec == std::errc::invalid_argument)
+      {
+        value = false;
+        return false;
+      }
+
+      value = CServiceBroker::GetDataCacheCore().HasPerformedSeek(requestedLastSecondInterval);
+      return true;
+    }
     case PLAYER_PASSTHROUGH:
       value = g_application.GetAppPlayer().IsPassthrough();
       return true;
