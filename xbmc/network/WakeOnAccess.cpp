@@ -15,6 +15,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "messaging/ApplicationMessenger.h"
 #include "network/Network.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
@@ -239,7 +240,7 @@ public:
 class NestDetect
 {
 public:
-  NestDetect() : m_gui_thread (g_application.IsCurrentThread())
+  NestDetect() : m_gui_thread(CServiceBroker::GetAppMessenger()->IsProcessThread())
   {
     if (m_gui_thread)
       ++m_nest;
@@ -271,7 +272,7 @@ class ProgressDialogHelper
 public:
   explicit ProgressDialogHelper (const std::string& heading) : m_dialog(0)
   {
-    if (g_application.IsCurrentThread())
+    if (CServiceBroker::GetAppMessenger()->IsProcessThread())
     {
       CGUIComponent *gui = CServiceBroker::GetGUI();
       if (gui)
@@ -527,7 +528,8 @@ bool CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
   {
     CLog::Log(LOGERROR,"WakeOnAccess failed to send. (Is it blocked by firewall?)");
 
-    if (g_application.IsCurrentThread() || !g_application.GetAppPlayer().IsPlaying())
+    if (CServiceBroker::GetAppMessenger()->IsProcessThread() ||
+        !g_application.GetAppPlayer().IsPlaying())
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, heading, LOCALIZED(13029));
     return false;
   }

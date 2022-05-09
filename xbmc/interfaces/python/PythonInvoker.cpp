@@ -12,7 +12,6 @@
 #include <Python.h>
 // clang-format on
 
-#include "Application.h"
 #include "PythonInvoker.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
@@ -28,6 +27,7 @@
 #include "interfaces/python/swig.h"
 #include "messaging/ApplicationMessenger.h"
 #include "threads/SingleLock.h"
+#include "threads/SystemClock.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -510,7 +510,7 @@ bool CPythonInvoker::stop(bool abort)
       // We can't empty-spin in the main thread and expect scripts to be able to
       // dismantle themselves. Python dialogs aren't normal XBMC dialogs, they rely
       // on TMSG_GUI_PYTHON_DIALOG messages, so pump the message loop.
-      if (g_application.IsCurrentThread())
+      if (CServiceBroker::GetAppMessenger()->IsProcessThread())
       {
         CServiceBroker::GetAppMessenger()->ProcessMessages();
       }

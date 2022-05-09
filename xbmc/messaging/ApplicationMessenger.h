@@ -401,10 +401,20 @@ public:
    */
   void SetGUIThread(const std::thread::id thread) { m_guiThreadId = thread; }
 
+  /*!
+   * \brief Set the processing thread id to avoid messenger being dependent on
+   * CApplication to determine if marshaling is required
+   * \param thread The processing thread ID
+   */
+  void SetProcessThread(const std::thread::id thread) { m_processThreadId = thread; }
+
   /*
    * \brief Signals the shutdown of the application and message processing
    */
   void Stop() { m_bStop = true; }
+
+  //! \brief Returns true if this is the process / app loop thread.
+  bool IsProcessThread() const;
 
 private:
   CApplicationMessenger(const CApplicationMessenger&) = delete;
@@ -418,6 +428,7 @@ private:
   std::map<int, IMessageTarget*> m_mapTargets; /*!< a map of registered receivers indexed on the message mask*/
   CCriticalSection m_critSection;
   std::thread::id m_guiThreadId;
+  std::thread::id m_processThreadId;
   bool m_bStop{ false };
 };
 }

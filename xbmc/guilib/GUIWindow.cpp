@@ -8,7 +8,6 @@
 
 #include "GUIWindow.h"
 
-#include "Application.h"
 #include "GUIAudioManager.h"
 #include "GUIComponent.h"
 #include "GUIControlFactory.h"
@@ -399,7 +398,7 @@ void CGUIWindow::Close_Internal(bool forceClose /*= false*/, int nextWindowID /*
 
 void CGUIWindow::Close(bool forceClose /*= false*/, int nextWindowID /*= 0*/, bool enableSound /*= true*/, bool bWait /* = true */)
 {
-  if (!g_application.IsCurrentThread())
+  if (!CServiceBroker::GetAppMessenger()->IsProcessThread())
   {
     // make sure graphics lock is not held
     CSingleExit leaveIt(CServiceBroker::GetWinSystem()->GetGfxContext());
@@ -820,7 +819,7 @@ bool CGUIWindow::Initialize()
     return false;
   if (!NeedLoad())
     return true;
-  if (g_application.IsCurrentThread())
+  if (CServiceBroker::GetAppMessenger()->IsProcessThread())
     AllocResources(false);
   else
   {

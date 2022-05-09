@@ -287,5 +287,9 @@ void CApplicationMessenger::RegisterReceiver(IMessageTarget* target)
   m_mapTargets.insert(std::make_pair(target->GetMessageMask(), target));
 }
 
+bool CApplicationMessenger::IsProcessThread() const
+{
+  return m_processThreadId == CThread::GetCurrentThreadId();
+}
 }
 }
