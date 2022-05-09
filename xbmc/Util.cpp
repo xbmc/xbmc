@@ -1157,16 +1157,15 @@ int CUtil::GetMatchingSource(const std::string& strPath1, VECSOURCES& VECSOURCES
   if (StringUtils::StartsWith(strPath, "special://skin/"))
     return 1;
 
+  // do not return early if URL protocol is "plugin"
+  // since video- and/or audio-plugins can be configured as mediasource
+
   // stack://
   if (checkURL.IsProtocol("stack"))
     strPath.erase(0, 8); // remove the stack protocol
 
   if (checkURL.IsProtocol("shout"))
     strPath = checkURL.GetHostName();
-
-  // a plugin path should not be configured in any mediasource
-  if (checkURL.IsProtocol("plugin"))
-    return -1;
 
   if (checkURL.IsProtocol("multipath"))
     strPath = CMultiPathDirectory::GetFirstPath(strPath);
