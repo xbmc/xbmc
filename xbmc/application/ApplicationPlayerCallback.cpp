@@ -61,11 +61,17 @@ void CApplicationPlayerCallback::OnPlayBackStarted(const CFileItem& file)
   CLog::LogF(LOGDEBUG, "CApplication::OnPlayBackStarted");
 
   // check if VideoPlayer should set file item stream details from its current streams
+  const bool isBlu_dvd_image_or_stream = (URIUtils::IsBluray(file.GetPath()) || file.IsDVDFile() ||
+                                          file.IsDiscImage() || file.IsInternetStream());
+
+  const bool hasNoStreamDetails =
+      (!file.HasVideoInfoTag() || !file.GetVideoInfoTag()->HasStreamDetails());
+
   if (file.GetProperty("get_stream_details_from_player").asBoolean() ||
-      ((!file.HasVideoInfoTag() || !file.GetVideoInfoTag()->HasStreamDetails()) &&
-       (URIUtils::IsBluray(file.GetPath()) || file.IsDVDFile() || file.IsDiscImage() ||
-        file.IsInternetStream())))
+      (hasNoStreamDetails && isBlu_dvd_image_or_stream))
+  {
     m_appPlayer.SetUpdateStreamDetails();
+  }
 
   if (m_stackHelper.IsPlayingISOStack() || m_stackHelper.IsPlayingRegularStack())
     m_itemCurrentFile.reset(new CFileItem(*m_stackHelper.GetRegisteredStack(file)));
