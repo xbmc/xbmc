@@ -86,6 +86,7 @@
 #include "settings/SettingsComponent.h"
 #include "settings/SkinSettings.h"
 #include "settings/lib/SettingsManager.h"
+#include "speech/ISpeechRecognition.h"
 #include "threads/SingleLock.h"
 #include "utils/CPUInfo.h"
 #include "utils/FileExtensionProvider.h"
@@ -851,6 +852,8 @@ bool CApplication::Initialize()
   }
 
   CJSONRPC::Initialize();
+
+  CServiceBroker::RegisterSpeechRecognition(speech::ISpeechRecognition::CreateInstance());
 
   if (!m_ServiceManager->InitStageThree(profileManager))
   {
@@ -2147,6 +2150,8 @@ bool CApplication::Cleanup()
 
     if (m_ServiceManager)
       m_ServiceManager->DeinitStageThree();
+
+    CServiceBroker::UnregisterSpeechRecognition();
 
     CLog::Log(LOGINFO, "unload skin");
     UnloadSkin();

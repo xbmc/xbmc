@@ -107,6 +107,11 @@ namespace PERIPHERALS
 class CPeripherals;
 }
 
+namespace speech
+{
+class ISpeechRecognition;
+}
+
 class CServiceBroker
 {
 public:
@@ -204,6 +209,11 @@ public:
   static void UnregisterKeyboardLayoutManager();
   static std::shared_ptr<CKeyboardLayoutManager> GetKeyboardLayoutManager();
 
+  static void RegisterSpeechRecognition(
+      const std::shared_ptr<speech::ISpeechRecognition>& speechRecognition);
+  static void UnregisterSpeechRecognition();
+  static std::shared_ptr<speech::ISpeechRecognition> GetSpeechRecognition();
+
 private:
   std::shared_ptr<CAppParams> m_appParams;
   std::unique_ptr<CLog> m_logging;
@@ -219,6 +229,7 @@ private:
   std::shared_ptr<CJobManager> m_jobManager;
   std::shared_ptr<KODI::MESSAGING::CApplicationMessenger> m_appMessenger;
   std::shared_ptr<CKeyboardLayoutManager> m_keyboardLayoutManager;
+  std::shared_ptr<speech::ISpeechRecognition> m_speechRecognition;
 };
 
 XBMC_GLOBAL_REF(CServiceBroker, g_serviceBroker);
