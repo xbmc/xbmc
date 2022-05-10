@@ -412,3 +412,19 @@ std::shared_ptr<CKeyboardLayoutManager> CServiceBroker::GetKeyboardLayoutManager
 {
   return g_serviceBroker.m_keyboardLayoutManager;
 }
+
+void CServiceBroker::RegisterSpeechRecognition(
+    const std::shared_ptr<speech::ISpeechRecognition>& speechRecognition)
+{
+  g_serviceBroker.m_speechRecognition = speechRecognition;
+}
+
+void CServiceBroker::UnregisterSpeechRecognition()
+{
+  g_serviceBroker.m_speechRecognition.reset();
+}
+
+std::shared_ptr<speech::ISpeechRecognition> CServiceBroker::GetSpeechRecognition()
+{
+  return g_serviceBroker.m_speechRecognition;
+}

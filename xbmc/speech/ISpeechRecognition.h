@@ -17,6 +17,8 @@ class ISpeechRecognitionListener;
 class ISpeechRecognition
 {
 public:
+  static std::shared_ptr<speech::ISpeechRecognition> CreateInstance();
+
   virtual ~ISpeechRecognition() = default;
 
   virtual void StartSpeechRecognition(

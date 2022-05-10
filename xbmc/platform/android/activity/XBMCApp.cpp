@@ -94,7 +94,6 @@
 #include "platform/android/activity/IInputDeviceEventHandler.h"
 #include "platform/android/network/NetworkAndroid.h"
 #include "platform/android/powermanagement/AndroidPowerSyscall.h"
-#include "platform/android/speech/SpeechRecognitionAndroid.h"
 
 #define GIGABYTES       1073741824
 
@@ -159,7 +158,6 @@ std::unique_ptr<CXBMCApp> CXBMCApp::m_appinstance;
 CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity, IInputHandler& inputHandler)
   : CJNIMainActivity(nativeActivity),
     CJNIBroadcastReceiver(CJNIContext::getPackageName() + ".XBMCBroadcastReceiver"),
-    m_speechRecognition(new CSpeechRecognitionAndroid(*this)),
     m_inputHandler(inputHandler)
 {
   m_activity = nativeActivity;

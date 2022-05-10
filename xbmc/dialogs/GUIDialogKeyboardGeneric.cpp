@@ -37,10 +37,6 @@
 
 #include <mutex>
 
-#ifdef TARGET_ANDROID
-#include "platform/android/activity/XBMCApp.h"
-#endif
-
 using namespace KODI::MESSAGING;
 
 #define BUTTON_ID_OFFSET      100
@@ -648,14 +644,18 @@ void CGUIDialogKeyboardGeneric::OnIPAddress()
 
 void CGUIDialogKeyboardGeneric::OnVoiceRecognition()
 {
-#ifdef TARGET_ANDROID
-  if (!m_speechRecognitionListener)
-    m_speechRecognitionListener = std::make_shared<CSpeechRecognitionListener>(GetID());
+  const auto speechRecognition = CServiceBroker::GetSpeechRecognition();
+  if (speechRecognition)
+  {
+    if (!m_speechRecognitionListener)
+      m_speechRecognitionListener = std::make_shared<CSpeechRecognitionListener>(GetID());
 
-  CXBMCApp::Get().GetSpeechRecognition()->StartSpeechRecognition(m_speechRecognitionListener);
-#else
-  CLog::LogF(LOGWARNING, "No voice recognition implementation avaliable for this platform.");
-#endif
+    speechRecognition->StartSpeechRecognition(m_speechRecognitionListener);
+  }
+  else
+  {
+    CLog::LogF(LOGWARNING, "No voice recognition implementation available.");
+  }
 }
 
 void CGUIDialogKeyboardGeneric::SetControlLabel(int id, const std::string &label)

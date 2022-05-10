@@ -13,6 +13,7 @@
 #include "utils/log.h"
 
 #include "platform/android/activity/JNIMainActivity.h"
+#include "platform/android/activity/XBMCApp.h"
 #include "platform/android/speech/SpeechRecognitionListenerAndroid.h"
 
 #include <mutex>
@@ -24,6 +25,11 @@
 #include <androidjni/RecognizerIntent.h>
 #include <androidjni/SpeechRecognizer.h>
 #include <jni.h>
+
+std::shared_ptr<speech::ISpeechRecognition> speech::ISpeechRecognition::CreateInstance()
+{
+  return std::make_shared<CSpeechRecognitionAndroid>(CXBMCApp::Get());
+}
 
 CSpeechRecognitionAndroid::CSpeechRecognitionAndroid(const CJNIContext& context)
   : m_context(context)

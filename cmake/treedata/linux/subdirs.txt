@@ -1,5 +1,6 @@
 xbmc/input/touch                    input/touch
 xbmc/input/touch/generic            input/touch/generic
+xbmc/platform/common/speech         platform/common/speech
 xbmc/platform/linux                 platform/linux
 xbmc/platform/linux/input           platform/linux/input
 xbmc/platform/linux/network         platform/linux/network
