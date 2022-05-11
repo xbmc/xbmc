@@ -20,6 +20,7 @@
 #include "platform/android/activity/JNIXBMCNsdManagerDiscoveryListener.h"
 #include "platform/android/activity/JNIXBMCNsdManagerRegistrationListener.h"
 #include "platform/android/activity/JNIXBMCNsdManagerResolveListener.h"
+#include "platform/android/activity/JNIXBMCSpeechRecognitionListener.h"
 #include "platform/android/activity/JNIXBMCSurfaceTextureOnFrameAvailableListener.h"
 #include "platform/android/activity/JNIXBMCURIUtils.h"
 #include "platform/android/activity/JNIXBMCVideoView.h"
@@ -154,6 +155,7 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
   jni::CJNIXBMCJsonHandler::RegisterNatives(env);
   jni::CJNIXBMCFile::RegisterNatives(env);
   jni::CJNIXBMCURIUtils::RegisterNatives(env);
+  jni::CJNIXBMCSpeechRecognitionListener::RegisterNatives(env);
 
   jclass cMain = env->FindClass(mainClass.c_str());
   if(cMain)

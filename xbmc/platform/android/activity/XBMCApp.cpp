@@ -94,6 +94,7 @@
 #include "platform/android/activity/IInputDeviceEventHandler.h"
 #include "platform/android/network/NetworkAndroid.h"
 #include "platform/android/powermanagement/AndroidPowerSyscall.h"
+#include "platform/android/speech/SpeechRecognitionAndroid.h"
 
 #define GIGABYTES       1073741824
 
@@ -158,6 +159,7 @@ std::unique_ptr<CXBMCApp> CXBMCApp::m_appinstance;
 CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity, IInputHandler& inputHandler)
   : CJNIMainActivity(nativeActivity),
     CJNIBroadcastReceiver(CJNIContext::getPackageName() + ".XBMCBroadcastReceiver"),
+    m_speechRecognition(new CSpeechRecognitionAndroid(*this)),
     m_inputHandler(inputHandler)
 {
   m_activity = nativeActivity;
@@ -386,7 +388,7 @@ void CXBMCApp::onLostFocus()
   m_hasFocus = false;
 }
 
-void CXBMCApp::RegisterDisplayListenerCallback(CVariant*)
+void CXBMCApp::RegisterDisplayListenerCallback(void*)
 {
   CJNIDisplayManager displayManager(getSystemService("display"));
   if (displayManager)
@@ -587,10 +589,11 @@ bool CXBMCApp::SetBuffersGeometry(int width, int height, int format)
 #include "threads/Event.h"
 #include <time.h>
 
-void CXBMCApp::SetRefreshRateCallback(CVariant* rateVariant)
+void CXBMCApp::SetRefreshRateCallback(void* rateVariant)
 {
-  float rate = rateVariant->asFloat();
-  delete rateVariant;
+  CVariant* rateV = static_cast<CVariant*>(rateVariant);
+  float rate = rateV->asFloat();
+  delete rateV;
 
   CJNIWindow window = getWindow();
   if (window)
@@ -609,11 +612,12 @@ void CXBMCApp::SetRefreshRateCallback(CVariant* rateVariant)
   CXBMCApp::Get().m_displayChangeEvent.Set();
 }
 
-void CXBMCApp::SetDisplayModeCallback(CVariant* variant)
+void CXBMCApp::SetDisplayModeCallback(void* modeVariant)
 {
-  int mode = (*variant)["mode"].asInteger();
-  float rate = (*variant)["rate"].asFloat();
-  delete variant;
+  CVariant* modeV = static_cast<CVariant*>(modeVariant);
+  int mode = (*modeV)["mode"].asInteger();
+  float rate = (*modeV)["rate"].asFloat();
+  delete modeV;
 
   CJNIWindow window = getWindow();
   if (window)
@@ -1282,18 +1286,6 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
 
 void CXBMCApp::onActivityResult(int requestCode, int resultCode, CJNIIntent resultData)
 {
-  std::unique_lock<CCriticalSection> lock(m_activityResultMutex);
-  for (auto it = m_activityResultEvents.begin(); it != m_activityResultEvents.end(); ++it)
-  {
-    if ((*it)->GetRequestCode() == requestCode)
-    {
-      (*it)->SetResultCode(resultCode);
-      (*it)->SetResultData(resultData);
-      (*it)->Set();
-      m_activityResultEvents.erase(it);
-      break;
-    }
-  }
 }
 
 void CXBMCApp::onVisibleBehindCanceled()
@@ -1311,36 +1303,6 @@ void CXBMCApp::onVisibleBehindCanceled()
       CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
                                                  static_cast<void*>(new CAction(ACTION_PAUSE)));
   }
-}
-
-int CXBMCApp::WaitForActivityResult(const CJNIIntent &intent, int requestCode, CJNIIntent &result)
-{
-  int ret = 0;
-  CActivityResultEvent* event = new CActivityResultEvent(requestCode);
-  {
-    std::unique_lock<CCriticalSection> lock(m_activityResultMutex);
-    m_activityResultEvents.emplace_back(event);
-  }
-  startActivityForResult(intent, requestCode);
-  if (event->Wait())
-  {
-    result = event->GetResultData();
-    ret = event->GetResultCode();
-  }
-
-  // delete from m_activityResultEvents map before deleting the event
-  std::unique_lock<CCriticalSection> lock(m_activityResultMutex);
-  for (auto it = m_activityResultEvents.begin(); it != m_activityResultEvents.end(); ++it)
-  {
-    if ((*it)->GetRequestCode() == requestCode)
-    {
-      m_activityResultEvents.erase(it);
-      break;
-    }
-  }
-
-  delete event;
-  return ret;
 }
 
 void CXBMCApp::onVolumeChanged(int volume)

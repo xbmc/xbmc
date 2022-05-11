@@ -43,6 +43,11 @@ class IInputDeviceEventHandler;
 class CVideoSyncAndroid;
 class CJNIActivityManager;
 
+namespace speech
+{
+class ISpeechRecognition;
+}
+
 typedef struct _JNIEnv JNIEnv;
 
 struct androidIcon
@@ -81,30 +86,11 @@ private:
   ANativeWindow* m_window{nullptr};
 };
 
-class CActivityResultEvent : public CEvent
-{
-public:
-  explicit CActivityResultEvent(int requestcode)
-    : m_requestcode(requestcode), m_resultcode(0)
-  {}
-  int GetRequestCode() const { return m_requestcode; }
-  int GetResultCode() const { return m_resultcode; }
-  void SetResultCode(int resultcode) { m_resultcode = resultcode; }
-  CJNIIntent GetResultData() const { return m_resultdata; }
-  void SetResultData(const CJNIIntent &resultdata) { m_resultdata = resultdata; }
-
-protected:
-  int m_requestcode;
-  CJNIIntent m_resultdata;
-  int m_resultcode;
-};
-
-class CXBMCApp
-    : public IActivityHandler
-    , public CJNIMainActivity
-    , public CJNIBroadcastReceiver
-    , public ANNOUNCEMENT::IAnnouncer
-    , public CJNISurfaceHolderCallback
+class CXBMCApp : public IActivityHandler,
+                 public CJNIMainActivity,
+                 public CJNIBroadcastReceiver,
+                 public ANNOUNCEMENT::IAnnouncer,
+                 public CJNISurfaceHolderCallback
 {
 public:
   static CXBMCApp& Create(ANativeActivity* nativeActivity, IInputHandler& inputhandler)
@@ -198,7 +184,6 @@ public:
   int GetDPI() const;
 
   CRect MapRenderToDroid(const CRect& srcRect);
-  int WaitForActivityResult(const CJNIIntent& intent, int requestCode, CJNIIntent& result);
 
   // Playback callbacks
   void OnPlayBackStarted();
@@ -233,6 +218,12 @@ public:
   void setVideosurfaceInUse(bool videosurfaceInUse);
 
   bool GetMemoryInfo(long& availMem, long& totalMem);
+
+  std::shared_ptr<speech::ISpeechRecognition> GetSpeechRecognition() const
+  {
+    return m_speechRecognition;
+  }
+
 protected:
   // limit who can access Volume
   friend class CAESinkAUDIOTRACK;
@@ -249,6 +240,7 @@ private:
 
   CJNIXBMCAudioManagerOnAudioFocusChangeListener m_audioFocusListener;
   CJNIXBMCDisplayManagerDisplayListener m_displayListener;
+  std::shared_ptr<speech::ISpeechRecognition> m_speechRecognition;
   std::unique_ptr<CJNIXBMCMainView> m_mainView;
   std::unique_ptr<jni::CJNIXBMCMediaSession> m_mediaSession;
   std::string GetFilenameFromIntent(const CJNIIntent &intent);
@@ -256,10 +248,10 @@ private:
   void run();
   void stop();
   void SetupEnv();
-  static void SetRefreshRateCallback(CVariant *rate);
-  static void SetDisplayModeCallback(CVariant *mode);
+  static void SetRefreshRateCallback(void* rateVariant);
+  static void SetDisplayModeCallback(void* modeVariant);
 
-  static void RegisterDisplayListenerCallback(CVariant*);
+  static void RegisterDisplayListenerCallback(void*);
   void UnregisterDisplayListener();
 
   ANativeActivity* m_activity{nullptr};
@@ -279,8 +271,6 @@ private:
   std::thread m_thread;
   mutable CCriticalSection m_applicationsMutex;
   mutable std::vector<androidPackage> m_applications;
-  CCriticalSection m_activityResultMutex;
-  std::vector<CActivityResultEvent*> m_activityResultEvents;
 
   std::shared_ptr<CNativeWindow> m_window;
 
