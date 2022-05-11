@@ -1362,6 +1362,7 @@ msgctxt "#286"
 msgid "Preferred subtitle language"
 msgstr ""
 
+#. Title of category and group menu subtitles
 #: system/settings/settings.xml
 msgctxt "#287"
 msgid "Subtitles"
@@ -7967,9 +7968,10 @@ msgctxt "#14088"
 msgid "Play DVDs automatically"
 msgstr ""
 
+#. Subtitle font selection setting
 #: system/settings/settings.xml
 msgctxt "#14089"
-msgid "Font to use for text subtitles"
+msgid "Font"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -14450,7 +14452,7 @@ msgstr ""
 #. Subtitle position on screen setting list
 #: system/settings/settings.xml
 msgctxt "#21460"
-msgid "Subtitle position on screen"
+msgid "Position on screen"
 msgstr ""
 
 #. Item list value of setting with label #21460 "Subtitle position on screen"
@@ -19255,10 +19257,10 @@ msgctxt "#36184"
 msgid "This category contains the settings for how subtitles are handled."
 msgstr ""
 
-#. Description of setting with label #14089 "Font to use for text subtitles"
+#. Description of setting with label #14089 "Font"
 #: system/settings/settings.xml
 msgctxt "#36185"
-msgid "Set the font type to be used for text based (usually downloaded) subtitles."
+msgid "Set the font type to be used for subtitles."
 msgstr ""
 
 #. Description of setting with label #289 "Size"
@@ -21703,16 +21705,16 @@ msgctxt "#37031"
 msgid "Specifies how Blu-rays should be opened / played back. Note: Some disc menus are not fully supported and may cause problems."
 msgstr ""
 
-#. Title of category #37032 Accessibility
+#. Title of accessibility menu group
 #: system/settings/settings.xml
 msgctxt "#37032"
 msgid "Accessibility"
 msgstr ""
 
-#. Description of category #37032 Accessibility
+#. Description of category #287 Subtitles
 #: system/settings/settings.xml
 msgctxt "#37033"
-msgid "Video playback related accessibility settings, e.g. \"Prefer subtitles for the hearing impaired\"."
+msgid "This category contains the settings for subtitles"
 msgstr ""
 
 #. Setting #37034 Accessibility
@@ -22177,7 +22179,7 @@ msgstr ""
 #. Description of category #14213 "Language"
 #: system/settings/settings.xml
 msgctxt "#38106"
-msgid "This category contains the settings for audio & subtitle language"
+msgid "This category contains the settings for audio / subtitles language and accessibility"
 msgstr ""
 
 #. Description of category #14210 "Videos"
@@ -23123,4 +23125,16 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogKeyboardGeneric.cpp
 msgctxt "#39185"
 msgid "Insufficient permissions for speech recognition"
+msgstr ""
+
+#. Title of group menu subtitles
+#: system/settings/settings.xml
+msgctxt "#39186"
+msgid "Styles for text based subtitles"
+msgstr ""
+
+#. Title of group menu subtitles
+#: system/settings/settings.xml
+msgctxt "#39187"
+msgid "Closed caption subtitles"
 msgstr ""
