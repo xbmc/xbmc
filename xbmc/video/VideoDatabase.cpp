@@ -5836,15 +5836,39 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
   if (iVersion < 119)
     m_pDS->exec("ALTER TABLE path ADD allAudio bool");
+
   if (iVersion < 120)
-  {
     m_pDS->exec("ALTER TABLE streamdetails ADD strHdrType text");
+
+  if (iVersion < 121)
+  {
+    // https://github.com/xbmc/xbmc/issues/21253 - Kodi picks up wrong "year" for PVR recording.
+
+    m_pDS->query("SELECT idFile, strFilename FROM files WHERE strFilename LIKE '% (1969)%.pvr' OR "
+                 "strFilename LIKE '% (1601)%.pvr'");
+    while (!m_pDS->eof())
+    {
+      std::string fixedFileName = m_pDS->fv(1).get_asString();
+      size_t pos = fixedFileName.find(" (1969)");
+      if (pos == std::string::npos)
+        pos = fixedFileName.find(" (1601)");
+
+      if (pos != std::string::npos)
+      {
+        fixedFileName.erase(pos, 7);
+
+        m_pDS2->exec(PrepareSQL("UPDATE files SET strFilename='%s' WHERE idFile=%i",
+                                fixedFileName.c_str(), m_pDS->fv(0).get_asInt()));
+      }
+      m_pDS->next();
+    }
+    m_pDS->close();
   }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 120;
+  return 121;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
