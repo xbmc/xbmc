@@ -683,25 +683,13 @@ bool CPVRManager::UpdateComponents(std::vector<std::shared_ptr<CPVRClient>>& kno
                                    ManagerState stateToCheck,
                                    const std::unique_ptr<CPVRGUIProgressHandler>& progressHandler)
 {
-  // find clients which disappeared since last check and remove them from known clients
-  for (auto it = knownClients.begin(); it != knownClients.end();)
-  {
-    if ((*it)->IgnoreClient())
-    {
-      it = knownClients.erase(it);
-      CLog::LogFC(LOGDEBUG, LOGPVR,
-                  "PVR client '{}' disconnected. Erasing from list of known clients.", (*it)->ID());
-    }
-    else
-      ++it;
-  }
-
   // find clients which appeared since last check and update them
   CPVRClientMap clientMap;
   m_addons->GetCreatedClients(clientMap);
   if (clientMap.empty())
   {
     CLog::LogFC(LOGDEBUG, LOGPVR, "All created PVR clients gone!");
+    knownClients.clear(); // start over
     return false;
   }
 
