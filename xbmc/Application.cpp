@@ -3749,8 +3749,16 @@ void CApplication::PrintStartupLog()
             StringUtils::Join(CCompileInfo::GetWebserverExtraWhitelist(), ", "));
 #endif
 
-  std::string executable = CUtil::ResolveExecutablePath();
-  CLog::Log(LOGINFO, "The executable running is: {}", executable);
+  // Check, whether libkodi.so was reused (happens on Android, where the system does not unload
+  // the lib on activity end, but keeps it loaded (as long as there is enough memory) and reuses
+  // it on next activity start.
+  static bool firstRun = true;
+
+  CLog::Log(LOGINFO, "The executable running is: {}{}", CUtil::ResolveExecutablePath(),
+            firstRun ? "" : " [reused]");
+
+  firstRun = false;
+
   std::string hostname("[unknown]");
   m_ServiceManager->GetNetwork().GetHostName(hostname);
   CLog::Log(LOGINFO, "Local hostname: {}", hostname);
