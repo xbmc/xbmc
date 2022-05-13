@@ -594,7 +594,7 @@ void CPVRRecording::SetYear(int year)
 
 int CPVRRecording::GetYear() const
 {
-  return m_premiered.GetYear();
+  return m_premiered.IsValid() ? m_premiered.GetYear() : 0;
 }
 
 bool CPVRRecording::HasYear() const
