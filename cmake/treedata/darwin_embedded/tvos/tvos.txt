@@ -1,3 +1,4 @@
+xbmc/platform/common/speech           platform/common/speech
 xbmc/platform/darwin/tvos             platform/tvos
 xbmc/platform/darwin/tvos/filesystem  platform/darwin/tvos/filesystem
 xbmc/platform/darwin/tvos/input       platform/darwin/tvos/input

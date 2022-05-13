@@ -44,6 +44,11 @@ list(APPEND DEPLIBS "-framework CoreFoundation" "-framework CoreVideo"
                     "-framework VideoToolbox" "-lresolv" "-ObjC"
                     "-framework AVKit" "-framework GameController")
 
+# Speech not available on tvOS
+if(NOT CORE_PLATFORM_NAME_LC STREQUAL tvos)
+  list(APPEND DEPLIBS "-framework Speech")
+endif()
+
 set(ENABLE_OPTICAL OFF CACHE BOOL "" FORCE)
 set(CMAKE_XCODE_ATTRIBUTE_INLINES_ARE_PRIVATE_EXTERN OFF)
 set(CMAKE_XCODE_ATTRIBUTE_GCC_SYMBOLS_PRIVATE_EXTERN OFF)
