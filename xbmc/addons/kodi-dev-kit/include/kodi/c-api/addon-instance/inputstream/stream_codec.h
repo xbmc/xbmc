@@ -120,6 +120,27 @@ extern "C"
     /// [chroma subsampling](https://en.wikipedia.org/wiki/Chroma_subsampling): 4:2:0, 4:2:2, 4:4:4,
     /// see [VP9 Bitstream & Decoding Process Specification](https://storage.googleapis.com/downloads.webmproject.org/docs/vp9/vp9-bitstream-specification-v0.6-20160331-draft.pdf)
     VP9CodecProfile3,
+
+    /// @brief **AV1** Main profile\n
+    /// \n
+    /// [Color depth](https://en.wikipedia.org/wiki/Color_depth): 8–10 bit,
+    /// [chroma subsampling](https://en.wikipedia.org/wiki/Chroma_subsampling): 4:2:0
+    /// see [AV1 specification](https://aomedia.org/av1/specification/)
+    AV1CodecProfileMain,
+
+    /// @brief **AV1** High profile\n
+    /// \n
+    /// [Color depth](https://en.wikipedia.org/wiki/Color_depth): 8–10 bit,
+    /// [chroma subsampling](https://en.wikipedia.org/wiki/Chroma_subsampling): 4:2:0, 4:4:4
+    /// see [AV1 specification](https://aomedia.org/av1/specification/)
+    AV1CodecProfileHigh,
+
+    /// @brief **AV1** Professional profile\n
+    /// \n
+    /// [Color depth](https://en.wikipedia.org/wiki/Color_depth): 8–12 bit,
+    /// [chroma subsampling](https://en.wikipedia.org/wiki/Chroma_subsampling): 4:2:0, 4:2:2, 4:4:4
+    /// see [AV1 specification](https://aomedia.org/av1/specification/)
+    AV1CodecProfileProfessional,
   };
   ///@}
   //------------------------------------------------------------------------------

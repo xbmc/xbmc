@@ -702,6 +702,12 @@ int CInputStreamAddon::ConvertVideoCodecProfile(STREAMCODEC_PROFILE profile)
     return FF_PROFILE_VP9_2;
   case VP9CodecProfile3:
     return FF_PROFILE_VP9_3;
+  case AV1CodecProfileMain:
+    return FF_PROFILE_AV1_MAIN;
+  case AV1CodecProfileHigh:
+    return FF_PROFILE_AV1_HIGH;
+  case AV1CodecProfileProfessional:
+    return FF_PROFILE_AV1_PROFESSIONAL;
   default:
     return FF_PROFILE_UNKNOWN;
   }

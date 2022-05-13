@@ -87,7 +87,14 @@ extern "C"
     /// VP9 is the successor to VP8 and competes mainly with MPEG's
     /// [High Efficiency Video Coding](https://en.wikipedia.org/wiki/High_Efficiency_Video_Coding)
     /// (HEVC/H.265).
-    VIDEOCODEC_VP9
+    VIDEOCODEC_VP9,
+
+    /// @brief [AV1](https://en.wikipedia.org/wiki/AV1) video coding format\n
+    /// \n
+    /// AV1 is the successor to VP9 and competes mainly with MPEG's
+    /// [High Efficiency Video Coding](https://en.wikipedia.org/wiki/High_Efficiency_Video_Coding)
+    /// (HEVC/H.265).
+    VIDEOCODEC_AV1,
   };
   //----------------------------------------------------------------------------
 
