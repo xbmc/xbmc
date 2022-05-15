@@ -223,6 +223,8 @@
 #define MUSICPLAYER_CONTENT         246
 #define MUSICPLAYER_ISMULTIDISC     247
 
+// Videoplayer infolabels
+#define VIDEOPLAYER_HDR_TYPE          249
 // Keep videoplayer infolabels that work with offset and position together
 #define VIDEOPLAYER_TITLE             250
 #define VIDEOPLAYER_GENRE             251
@@ -254,11 +256,11 @@
 #define VIDEOPLAYER_USER_RATING       277
 #define VIDEOPLAYER_DBID              278
 #define VIDEOPLAYER_TVSHOWDBID        279
-#define VIDEOPLAYER_HDR_TYPE          280
+#define VIDEOPLAYER_ART               280
 
 // Range of videoplayer infolabels that work with offset and position
 #define VIDEOPLAYER_OFFSET_POSITION_FIRST VIDEOPLAYER_TITLE
-#define VIDEOPLAYER_OFFSET_POSITION_LAST VIDEOPLAYER_TVSHOWDBID
+#define VIDEOPLAYER_OFFSET_POSITION_LAST VIDEOPLAYER_ART
 
 #define VIDEOPLAYER_AUDIO_BITRATE     281
 #define VIDEOPLAYER_VIDEO_BITRATE     282
