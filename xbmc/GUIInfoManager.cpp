@@ -132,6 +132,52 @@ typedef struct
 ///
 /// -----------------------------------------------------------------------------
 
+/// \page modules__infolabels_boolean_conditions
+/// \subsection modules__infolabels_boolean_conditions_Addon Addon
+/// \table_start
+///   \table_h3{ Labels, Type, Description }
+///   \table_row3{   <b>`Addon.SettingStr(addon_id\,setting_id)`</b>,
+///                  \anchor Addon_SettingString
+///                  _string_,
+///     @return The string value of the setting `setting_id` belonging to the addon with the id `addon_id`.
+///     @param addon_id - the id of the addon
+///     @param setting_id - the addon setting
+///     <p><hr>
+///     @skinning_v20 **[New Infolabel]** \link Addon_SettingString `Addon.SettingStr(addon_id\,setting_id)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Addon.SettingBool(addon_id\,setting_id)`</b>,
+///                  \anchor Addon_SettingBool
+///                  _boolean_,
+///     @return **True** if the setting `setting_id` belonging to the addon with the id `addon_id` is **True**\, **False** otherwise.
+///     @note The provided setting with `setting_id` must be a boolean setting type. Otherwise it will return the boolean info
+///     default value (which is **False**).
+///     @param addon_id - the id of the addon
+///     @param setting_id - the addon setting
+///     <p><hr>
+///     @skinning_v20 **[New Boolean Condition]** \link Addon_SettingBool `Addon.SettingBool(addon_id\,setting_id)`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Addon.SettingInt(addon_id\,setting_id)`</b>,
+///                  \anchor Addon_SettingInt
+///                  _integer_,
+///     @return The integer value of the setting `setting_id` belong to the addon with the id `addon_id`.
+///     @note The provided setting with `setting_id` must be an integer setting type. Otherwise it will return the integer info
+///     default value (which is 0).
+///     @param addon_id - the id of the addon
+///     @param setting_id - the addon setting
+///     <p><hr>
+///     @skinning_v20 **[New Integer Info]** \link Addon_SettingInt `Addon.SettingInt(addon_id\,setting_id)`\endlink
+///     <p>
+///   }
+/// \table_end
+///
+/// -----------------------------------------------------------------------------
+const infomap addons[] = {
+    {"settingstr", ADDON_SETTING_STRING},
+    {"settingbool", ADDON_SETTING_BOOL},
+    {"settingint", ADDON_SETTING_INT},
+};
 
 /// \page modules__infolabels_boolean_conditions
 /// \subsection modules__infolabels_boolean_conditions_String String
@@ -9883,6 +9929,14 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
           if (prop.name == i.str)
             return AddMultiInfo(CGUIInfo(i.val, prop.param()));
         }
+      }
+    }
+    else if (cat.name == "addon")
+    {
+      for (const infomap& i : addons)
+      {
+        if (prop.name == i.str && prop.num_params() == 2)
+          return AddMultiInfo(CGUIInfo(i.val, prop.param(0), prop.param(1)));
       }
     }
     else if (cat.name == "weather")

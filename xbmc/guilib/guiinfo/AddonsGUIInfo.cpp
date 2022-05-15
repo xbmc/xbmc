@@ -141,6 +141,20 @@ bool CAddonsGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
   switch (info.m_info)
   {
     ///////////////////////////////////////////////////////////////////////////////////////////////
+    // ADDON_*
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    case ADDON_SETTING_STRING:
+    {
+      ADDON::AddonPtr addon;
+      if (!CServiceBroker::GetAddonMgr().GetAddon(info.GetData3(), addon, ADDON::ADDON_UNKNOWN,
+                                                  ADDON::OnlyEnabled::CHOICE_YES))
+      {
+        return false;
+      }
+      value = addon->GetSetting(info.GetData5());
+      return true;
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     // SYSTEM_*
     ///////////////////////////////////////////////////////////////////////////////////////////////
     case SYSTEM_ADDON_TITLE:
@@ -184,6 +198,22 @@ bool CAddonsGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
 
 bool CAddonsGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWindow, const CGUIInfo &info) const
 {
+  switch (info.m_info)
+  {
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // ADDON_*
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    case ADDON_SETTING_INT:
+    {
+      ADDON::AddonPtr addon;
+      if (!CServiceBroker::GetAddonMgr().GetAddon(info.GetData3(), addon, ADDON::ADDON_UNKNOWN,
+                                                  ADDON::OnlyEnabled::CHOICE_YES))
+      {
+        return false;
+      }
+      return addon->GetSettingInt(info.GetData5(), value);
+    }
+  }
   return false;
 }
 
@@ -191,6 +221,19 @@ bool CAddonsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
 {
   switch (info.m_info)
   {
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // ADDON_*
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    case ADDON_SETTING_BOOL:
+    {
+      ADDON::AddonPtr addon;
+      if (!CServiceBroker::GetAddonMgr().GetAddon(info.GetData3(), addon, ADDON::ADDON_UNKNOWN,
+                                                  ADDON::OnlyEnabled::CHOICE_YES))
+      {
+        return false;
+      }
+      return addon->GetSettingBool(info.GetData5(), value);
+    }
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // SYSTEM_*
     ///////////////////////////////////////////////////////////////////////////////////////////////
