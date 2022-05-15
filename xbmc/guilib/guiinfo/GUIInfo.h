@@ -44,6 +44,11 @@ public:
       SetInfoFlag(flag);
   }
 
+  CGUIInfo(int info, uint32_t data1, int data2, const std::string& data3)
+    : m_info(info), m_data1(data1), m_data2(data2), m_data3(data3), m_data4(0)
+  {
+  }
+
   CGUIInfo(int info, uint32_t data1, const std::string& data3)
   : m_info(info),
     m_data1(data1),
