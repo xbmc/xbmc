@@ -718,6 +718,103 @@ AC_SUBST(app_rendersystem)
 AC_SUBST(app_winsystem)
 AC_SUBST(ffmpeg_options)
 
+[
+if test "x$CCACHE" = "x"
+then
+  MESON_CC="'$CC'"
+  MESON_CXX="'$CXX'"
+else
+  MESON_CC="['$CCACHE', '$CC']"
+  MESON_CXX="['$CCACHE', '$CXX']"
+fi
+
+# Parse and handle CFLAGS
+read -r CFLAGS_ARRAY << EOF
+$platform_cflags $platform_includes -isystem $prefix/$deps_dir/include
+EOF
+
+count=1
+for flag in $CFLAGS_ARRAY; do
+  if test "$flag" != "-g"
+  then
+    if test "$flag" != "-gdwarf-2"
+    then
+      MESON_CFLAGS="${MESON_CFLAGS:+${MESON_CFLAGS}, }'$flag'"
+      count=$((count + 1))
+    fi
+  fi
+done
+if test "$count" -gt "2"
+then
+  MESON_CFLAGS="[$MESON_CFLAGS]"
+fi
+
+# Parse and handle CXXFLAGS
+read -r CXXFLAGS_ARRAY << EOF
+$platform_cxxflags $platform_includes -isystem $prefix/$deps_dir/include
+EOF
+
+count=1
+for flag in $CXXFLAGS_ARRAY; do
+  if test "$flag" != "-g"
+  then
+    if test "$flag" != "-gdwarf-2"
+    then
+      MESON_CXXFLAGS="${MESON_CXXFLAGS:+${MESON_CXXFLAGS}, }'$flag'"
+      count=$((count + 1))
+    fi
+  fi
+done
+if test "$count" -gt "2"
+then
+  MESON_CXXFLAGS="[$MESON_CXXFLAGS]"
+fi
+
+# Parse and handle LDFLAGS
+read -r LDFLAGS_ARRAY << EOF
+-L$prefix/$deps_dir/lib $platform_ldflags
+EOF
+
+count=1
+for flag in $LDFLAGS_ARRAY; do
+  MESON_LDFLAGS="${MESON_LDFLAGS:+${MESON_LDFLAGS}, }'$flag'"
+  count=$((count + 1))
+done
+if test "$count" -gt "2"
+then
+  MESON_LDFLAGS="[$MESON_LDFLAGS]"
+fi
+
+cat > $prefix/$deps_dir/share/cross-file.meson << EOF
+[binaries]
+c = $MESON_CC
+cpp = $MESON_CXX
+ar = '$AR'
+strip = '$STRIP'
+pkgconfig = '$prefix/$tool_dir/bin/pkg-config'
+
+[host_machine]
+system = '$meson_system'
+cpu_family = '$meson_cpu'
+cpu = '$use_cpu'
+endian = 'little'
+
+[properties]
+pkg_config_libdir = '$prefix/$deps_dir/lib/pkgconfig'
+
+[built-in options]
+c_args = $MESON_CFLAGS
+c_link_args = $MESON_LDFLAGS
+cpp_args = $MESON_CXXFLAGS
+cpp_link_args = $MESON_LDFLAGS
+default_library = 'static'
+prefix = '$prefix/$deps_dir'
+libdir = 'lib'
+bindir = 'bin'
+includedir = 'include'
+EOF
+]
+
 AC_OUTPUT
 
 if test "$platform_os" = "darwin_embedded"; then
