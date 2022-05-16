@@ -7,15 +7,15 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-02-26 16:13+0000\n"
-"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"PO-Revision-Date: 2022-05-15 15:14+0000\n"
+"Last-Translator: A. <artem+weblate@molotov.work>\n"
 "Language-Team: Ukrainian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/uk_ua/>\n"
 "Language: uk_ua\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
-"X-Generator: Weblate 4.11\n"
+"X-Generator: Weblate 4.12.2\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -35,7 +35,7 @@ msgstr "Відтворюється"
 
 msgctxt "#31001"
 msgid "Search..."
-msgstr "Пошук"
+msgstr "Пошук..."
 
 msgctxt "#31002"
 msgid "Show media fanart as background"
@@ -122,7 +122,7 @@ msgstr "Інші параметри"
 
 msgctxt "#31022"
 msgid "Sort by"
-msgstr "Сорт. за:"
+msgstr "Сорт. за"
 
 msgctxt "#31023"
 msgid "Viewtype"
@@ -142,7 +142,7 @@ msgstr "Зрушення в часі"
 
 msgctxt "#31027"
 msgid "Next aired"
-msgstr ""
+msgstr "Наступний ефір"
 
 msgctxt "#31028"
 msgid "Show fanart"
@@ -175,7 +175,7 @@ msgstr "Додаткові відомості"
 
 msgctxt "#31035"
 msgid "Pages"
-msgstr "Стор."
+msgstr "Сторінки"
 
 msgctxt "#31036"
 msgid "items"
@@ -183,7 +183,7 @@ msgstr "об'єктів"
 
 msgctxt "#31037"
 msgid "Selected track"
-msgstr ""
+msgstr "Обраний трек"
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -231,11 +231,11 @@ msgstr "Стиль Arial"
 
 msgctxt "#31054"
 msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
-msgstr ""
+msgstr "Натисніть [B]Наліво[/B] для кроку назад або [B]Направо[/B] для кроку вперед"
 
 msgctxt "#31055"
 msgid "Press [B]Right[/B] to frame advance"
-msgstr ""
+msgstr "Натисніть [B]Направо[/B] для переходу на кадр вперед"
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -243,7 +243,7 @@ msgstr "Перейти до списку відтворення"
 
 msgctxt "#31057"
 msgid "Show login screen on startup"
-msgstr "Показувати екран входу при запуску."
+msgstr "Показувати екран входу при запуску"
 
 msgctxt "#31058"
 msgid "Automatic Login on startup"
@@ -251,11 +251,11 @@ msgstr "Автоматичний вхід при запуску"
 
 msgctxt "#31059"
 msgid "Select + X"
-msgstr ""
+msgstr "Select + X"
 
 msgctxt "#31060"
 msgid "Select + Start"
-msgstr ""
+msgstr "Select + Start"
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -299,7 +299,7 @@ msgstr "Налаштування живлення"
 
 msgctxt "#31073"
 msgid "Total length"
-msgstr ""
+msgstr "Загальна довжина"
 
 msgctxt "#31074"
 msgid "Total duration"
@@ -379,7 +379,7 @@ msgstr "Стіна"
 
 msgctxt "#31103"
 msgid "Enter text here..."
-msgstr "Уведіть текст"
+msgstr "Введіть текст..."
 
 msgctxt "#31104"
 msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
@@ -420,7 +420,7 @@ msgstr "Пошук на YouTube"
 
 msgctxt "#31115"
 msgid "Toggle subtitle"
-msgstr ""
+msgstr "Перемкнути субтитри"
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
@@ -472,7 +472,7 @@ msgstr "Учасники"
 
 msgctxt "#31129"
 msgid "General settings applying to all areas of the skin."
-msgstr "Загальні налаштування для всіх розділів обкладинки"
+msgstr "Загальні налаштування для всіх розділів обкладинки."
 
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
@@ -488,7 +488,7 @@ msgstr "Вибрати програму"
 
 msgctxt "#31133"
 msgid "Select Resolution"
-msgstr ""
+msgstr "Вибрати розширення"
 
 msgctxt "#31134"
 msgid "Remaining"
@@ -496,11 +496,11 @@ msgstr "Залишилося"
 
 msgctxt "#31135"
 msgid "Binary"
-msgstr ""
+msgstr "Бінарний"
 
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
-msgstr "Натисніть тут, щоб переглянути зміни"
+msgstr "Натисніть тут, щоб переглянути зміни..."
 
 #. Label to show PVR info page
 msgctxt "#31137"
@@ -544,11 +544,11 @@ msgstr "Пошук надбудов"
 
 msgctxt "#31146"
 msgid "In cinemas"
-msgstr ""
+msgstr "В кінотеатрах"
 
 msgctxt "#31147"
 msgid "In cinemas soon"
-msgstr ""
+msgstr "Скоро в кінотеатрах"
 
 msgctxt "#31148"
 msgid "Categories"
@@ -560,7 +560,7 @@ msgstr "Вибрати набір фанартів жанрів"
 
 msgctxt "#31150"
 msgid "Origin"
-msgstr ""
+msgstr "Джерело"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
@@ -610,14 +610,15 @@ msgctxt "#31162"
 msgid "Play your personal games or download one of the many game add-ons from the official repository."
 msgstr "Грайте в свої персональні ігри, або завантажте одні з багатьох ігрових додатків з офіційного сховища."
 
+#, fuzzy
 msgctxt "#31163"
 msgid "Show Fanart background"
-msgstr ""
+msgstr "Показувати фанарт у фоні"
 
 #. Choose profile identifier
 msgctxt "#31164"
 msgid "Choose kind of profile identification"
-msgstr ""
+msgstr "Обрати вид ідентифікації облік. запису"
 
 #. Label for the kind of profile identification
 msgctxt "#31165"
@@ -627,22 +628,22 @@ msgstr "Назва профілю"
 #. Label for the kind of profile identification
 msgctxt "#31166"
 msgid "Profile avatar"
-msgstr ""
+msgstr "Аватар облік. запису"
 
 #. Label of a setting
 msgctxt "#31167"
 msgid "Animate background"
-msgstr ""
+msgstr "Анімація фону"
 
 #. Label of a setting
 msgctxt "#31168"
 msgid "Show posters instead of thumbs for musicvideos"
-msgstr ""
+msgstr "Показувати постери замість мініатюр для музичних відеокліпів"
 
 #. Description label for skin settings area
 msgctxt "#31169"
 msgid "Artwork related settings."
-msgstr ""
+msgstr "Налаштування ілюстрацій."
 
 # empty strings from id 31170 to 31599
 #. Label to show the video codec name
@@ -663,7 +664,7 @@ msgstr "Співвідношення сторін відео"
 #. Label to show the video bitrate
 msgctxt "#31603"
 msgid "Video bitrate"
-msgstr ""
+msgstr "Бітрейт відео"
 
 #. Label to show the audio codec name
 msgctxt "#31604"
@@ -678,7 +679,7 @@ msgstr "Каналів аудіо"
 #. Label to show the audio bitrate
 msgctxt "#31606"
 msgid "Audio bitrate"
-msgstr ""
+msgstr "Бітрейт аудіо"
 
 #. Label to show the screen resolution
 msgctxt "#31607"
@@ -688,7 +689,7 @@ msgstr "Роздільна здатність"
 #. Label to show the system rendering speed
 msgctxt "#31608"
 msgid "System rendering speed"
-msgstr ""
+msgstr "Швидкість візуалізації системи"
 
 #. Label to show the system CPU usage
 msgctxt "#31609"
