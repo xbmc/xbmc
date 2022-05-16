@@ -1080,13 +1080,16 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
     {
       if (uniqueid->FirstChild())
       {
-      if (uniqueid->QueryStringAttribute("type", &value) == TIXML_SUCCESS)
-        SetUniqueID(uniqueid->FirstChild()->ValueStr(), value);
-      else
-        SetUniqueID(uniqueid->FirstChild()->ValueStr());
-      bool isDefault;
-      if ((uniqueid->QueryBoolAttribute("default", &isDefault) == TIXML_SUCCESS) && isDefault)
-        m_strDefaultUniqueID = value;
+        if (uniqueid->QueryStringAttribute("type", &value) == TIXML_SUCCESS)
+          SetUniqueID(uniqueid->FirstChild()->ValueStr(), value);
+        else
+          SetUniqueID(uniqueid->FirstChild()->ValueStr());
+        bool isDefault;
+        if (m_strDefaultUniqueID == "unknown" &&
+            (uniqueid->QueryBoolAttribute("default", &isDefault) == TIXML_SUCCESS) && isDefault)
+        {
+          m_strDefaultUniqueID = value;
+        }
       }
     }
   }
@@ -1323,18 +1326,23 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
     m_streamDetails.DetermineBestStreams();
   }  /* if fileinfo */
 
-  const TiXmlElement *epguide = movie->FirstChildElement("episodeguide");
-  if (epguide)
+  if (m_strEpisodeGuide.empty())
   {
-    // DEPRECIATE ME - support for old XML-encoded <episodeguide> blocks.
-    if (epguide->FirstChild() &&
-        StringUtils::CompareNoCase("<episodeguide", epguide->FirstChild()->Value(), 13) == 0)
-      m_strEpisodeGuide = epguide->FirstChild()->Value();
-    else
+    const TiXmlElement* epguide = movie->FirstChildElement("episodeguide");
+    if (epguide)
     {
-      std::stringstream stream;
-      stream << *epguide;
-      m_strEpisodeGuide = stream.str();
+      // DEPRECIATE ME - support for old XML-encoded <episodeguide> blocks.
+      if (epguide->FirstChild() &&
+          StringUtils::CompareNoCase("<episodeguide", epguide->FirstChild()->Value(), 13) == 0)
+      {
+        m_strEpisodeGuide = epguide->FirstChild()->Value();
+      }
+      else
+      {
+        std::stringstream stream;
+        stream << *epguide;
+        m_strEpisodeGuide = stream.str();
+      }
     }
   }
 
