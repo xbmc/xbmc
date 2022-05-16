@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2021-12-15 09:24+0000\n"
+"PO-Revision-Date: 2022-05-15 15:14+0000\n"
 "Last-Translator: Kai Sommerfeld <kai.sommerfeld@gmx.com>\n"
 "Language-Team: German <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/de_de/>\n"
 "Language: de_de\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.9.1\n"
+"X-Generator: Weblate 4.12.2\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -75,7 +75,7 @@ msgstr "Begonnene Filme"
 
 msgctxt "#31011"
 msgid "Most played albums"
-msgstr "Meist gehörte Alben"
+msgstr "Meistgehörte Alben"
 
 msgctxt "#31012"
 msgid "Random albums"
@@ -515,7 +515,7 @@ msgstr "Player"
 #. Label to show video decoder name
 msgctxt "#31139"
 msgid "Video decoder"
-msgstr "Video-Decoder"
+msgstr "Videodecoder"
 
 #. Label to show the video pixel format
 msgctxt "#31140"
@@ -648,37 +648,37 @@ msgstr "Einstellungen für Artwork"
 #. Label to show the video codec name
 msgctxt "#31600"
 msgid "Video codec"
-msgstr "Video-Codec"
+msgstr "Videocodec"
 
 #. Label to show the video resolution
 msgctxt "#31601"
 msgid "Video resolution"
-msgstr "Video-Auflösung"
+msgstr "Videoauflösung"
 
 #. Label to show the video aspect
 msgctxt "#31602"
 msgid "Video aspect"
-msgstr "Video-Seitenverhältnis"
+msgstr "Videoseitenverhältnis"
 
 #. Label to show the video bitrate
 msgctxt "#31603"
 msgid "Video bitrate"
-msgstr "Video-Bitrate"
+msgstr "Videobitrate"
 
 #. Label to show the audio codec name
 msgctxt "#31604"
 msgid "Audio codec"
-msgstr "Audio-Codec"
+msgstr "Audiocodec"
 
 #. Label to show the number of audio channels
 msgctxt "#31605"
 msgid "Audio channels"
-msgstr "Audio-Kanäle"
+msgstr "Audiokanäle"
 
 #. Label to show the audio bitrate
 msgctxt "#31606"
 msgid "Audio bitrate"
-msgstr "Audio-Bitrate"
+msgstr "Audiobitrate"
 
 #. Label to show the screen resolution
 msgctxt "#31607"
@@ -688,7 +688,7 @@ msgstr "Bildschirmauflösung"
 #. Label to show the system rendering speed
 msgctxt "#31608"
 msgid "System rendering speed"
-msgstr "Render-Geschwindigkeit"
+msgstr "Rendergeschwindigkeit"
 
 #. Label to show the system CPU usage
 msgctxt "#31609"
