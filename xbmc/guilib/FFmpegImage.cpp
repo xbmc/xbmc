@@ -582,7 +582,7 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
   tdm.avOutctx->flags = AV_CODEC_FLAG_QSCALE;
   tdm.avOutctx->mb_lmin = tdm.avOutctx->qmin * FF_QP2LAMBDA;
   tdm.avOutctx->mb_lmax = tdm.avOutctx->qmax * FF_QP2LAMBDA;
-  tdm.avOutctx->global_quality = tdm.avOutctx->qmin * FF_QP2LAMBDA;
+  tdm.avOutctx->global_quality = jpg_output ? 4 * FF_QP2LAMBDA : tdm.avOutctx->qmin * FF_QP2LAMBDA;
 
   unsigned int internalBufOutSize = 0;
 
