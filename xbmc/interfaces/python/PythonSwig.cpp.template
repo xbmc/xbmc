@@ -918,9 +918,17 @@ namespace PythonBindings
    PyModule_AddStringConstant(module, "__platform__", "ALL");
 
    // need to handle constants
+   // #define constants
 <% module.depthFirst().findAll( { it.name() == 'constant'} ).each {
      String pyCall =
         (it.@type == 'int' || it.@type == 'long' || it.@type == 'unsigned int' || it.@type == 'unsigned long' || it.@type == 'bool') ?
+        'PyModule_AddIntConstant' : 'PyModule_AddStringConstant' %>
+   ${pyCall}(module,"${it.@sym_name}",${it.@value}); <%
+  } %>
+  // constexpr constants
+<% module.depthFirst().findAll( { it.name() == 'variable' && it.@storage && it.@storage == "constexpr" && !it.@error } ).each {
+     String pyCall =
+        ( it.@type == 'q(const).int' || it.@type == 'q(const).long' || it.@type == 'q(const).unsigned int' || it.@type == 'q(const).unsigned long' || it.@type == 'q(const).bool' ) ?
         'PyModule_AddIntConstant' : 'PyModule_AddStringConstant' %>
    ${pyCall}(module,"${it.@sym_name}",${it.@value}); <%
   } %>
