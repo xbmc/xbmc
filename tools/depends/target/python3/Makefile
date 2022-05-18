@@ -29,7 +29,6 @@ CONFIGURE=./configure --prefix=$(PREFIX) \
                       --enable-ipv6 \
                       $(EXTRA_CONFIGURE)
 
-
 LIBDYLIB=$(PLATFORM)/libpython$(PYTHON_VERSION).a
 
 all: .installed-$(PLATFORM)
