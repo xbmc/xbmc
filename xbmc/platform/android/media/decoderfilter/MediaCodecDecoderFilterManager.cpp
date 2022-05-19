@@ -39,10 +39,11 @@ CMediaCodecDecoderFilterManager::CMediaCodecDecoderFilterManager()
     NULL
   };
 
-  int num_codecs = CJNIMediaCodecList::getCodecCount();
-  for (int i = 0; i < num_codecs; i++)
+  const std::vector<CJNIMediaCodecInfo> codecInfos =
+      CJNIMediaCodecList(CJNIMediaCodecList::REGULAR_CODECS).getCodecInfos();
+
+  for (const CJNIMediaCodecInfo& codec_info : codecInfos)
   {
-    CJNIMediaCodecInfo codec_info = CJNIMediaCodecList::getCodecInfoAt(i);
     if (codec_info.isEncoder())
       continue;
 
