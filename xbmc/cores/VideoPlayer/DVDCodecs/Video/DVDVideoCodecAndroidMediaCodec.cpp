@@ -366,7 +366,7 @@ std::atomic<bool> CDVDVideoCodecAndroidMediaCodec::m_InstanceGuard(false);
 
 bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
-  int num_codecs;
+  std::vector<CJNIMediaCodecInfo> codecInfos;
   int profile(0);
   CJNIUUID uuid(0, 0);
 
@@ -661,11 +661,10 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
 
   m_codec = nullptr;
   m_colorFormat = -1;
-  num_codecs = CJNIMediaCodecList::getCodecCount();
+  codecInfos = CJNIMediaCodecList(CJNIMediaCodecList::REGULAR_CODECS).getCodecInfos();
 
-  for (int i = 0; i < num_codecs; i++)
+  for (const CJNIMediaCodecInfo& codec_info : codecInfos)
   {
-    CJNIMediaCodecInfo codec_info = CJNIMediaCodecList::getCodecInfoAt(i);
     if (codec_info.isEncoder())
       continue;
 
