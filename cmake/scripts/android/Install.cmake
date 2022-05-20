@@ -163,6 +163,7 @@ foreach(target apk obb apk-obb apk-clean)
               NDKROOT=${NDKROOT}
               SDKROOT=${SDKROOT}
               STRIP=${CMAKE_STRIP}
+              STORE=$ENV{ANDROIDSTORE}
               ${target}
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tools/android/packaging
       VERBATIM

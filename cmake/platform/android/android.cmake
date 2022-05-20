@@ -5,3 +5,9 @@ set(APP_RENDER_SYSTEM gles)
 set(TARGET_SDK 29)
 # Minimum supported SDK version
 set(TARGET_MINSDK 21)
+
+if(DEFINED ENV{ANDROIDSTORE} AND ("$ENV{ANDROIDSTORE}" STREQUAL "GOOGLE"))
+  set(PLAYSTORE_STATE "true")
+else()
+  set(PLAYSTORE_STATE "false")
+endif()

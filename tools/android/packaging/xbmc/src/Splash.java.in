@@ -68,6 +68,7 @@ public class Splash extends Activity
   private static final int StartingXBMC = 99;
 
   private static final String TAG = "@APP_NAME@";
+  private static final boolean PLAYSTORE = @PLAYSTORE_STATE@;
 
   private static final int PERMISSION_RESULT_CODE = 8947;
 

@@ -8,13 +8,17 @@ else
   TARGET=apk
 fi
 
+if [ "x$ANDROIDSTORE" == "xGOOGLE" ]; then
+  STORESUFFIX="-google"
+fi
+
 cd $WORKSPACE/build;make -j$BUILDTHREADS $TARGET
 
 cd $WORKSPACE
 
 #rename for upload
 #e.x. xbmc-20130314-8c2fb31-Frodo-x86_64.apk
-UPLOAD_FILENAME="kodi-$(getBuildRevDateStr)-x86_64"
+UPLOAD_FILENAME="kodi-$(getBuildRevDateStr)${STORESUFFIX}-x86_64"
 mv kodiapp-x86_64-*.apk $UPLOAD_FILENAME.apk
 if [ -f *.obb ]
 then

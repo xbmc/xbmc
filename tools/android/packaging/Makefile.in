@@ -31,6 +31,10 @@ ifeq ($(KODI_ANDROID_KEY_PASSWORD),)
 export KODI_ANDROID_KEY_PASSWORD:=android
 endif
 
+ifeq ($(STORE),GOOGLE)
+STORENAME=-$(STORE)
+endif
+
 #this fixes a android ndk fuckup where the paths to
 #prebuilt stuff follow different name schemes for
 #arm and x86
@@ -137,7 +141,7 @@ java: res
 package: libs python java
 	@echo "Gradle build and sign..."
 	ANDROID_HOME=$(SDKROOT) ./gradlew assemble$(BUILD_TYPE)
-	@cp xbmc/build/outputs/apk/$(BUILD_TYPE_LC)/xbmc-$(BUILD_TYPE_LC).apk $(CMAKE_SOURCE_DIR)/@APP_NAME_LC@app-$(CPU)-$(BUILD_TYPE_LC).apk
+	@cp xbmc/build/outputs/apk/$(BUILD_TYPE_LC)/xbmc-$(BUILD_TYPE_LC).apk $(CMAKE_SOURCE_DIR)/@APP_NAME_LC@app-$(CPU)-$(BUILD_TYPE_LC)$(STORENAME).apk
 
 $(PREFIX)/lib/xbmc/lib@APP_NAME_LC@.so: $(SRCLIBS)
 	$(MAKE) -C ../../depends/target/xbmc
