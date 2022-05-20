@@ -122,26 +122,6 @@ std::string CPlayerGUIInfo::GetSeekTime(TIME_FORMAT format) const
   return StringUtils::SecondsToTimeString(iSeekTimeCode, format);
 }
 
-void CPlayerGUIInfo::SetDisplayAfterSeek(unsigned int timeOut, int seekOffset)
-{
-  if (timeOut > 0)
-  {
-    m_AfterSeekTimeout = CTimeUtils::GetFrameTime() +  timeOut;
-    if (seekOffset)
-      m_seekOffset = seekOffset;
-  }
-  else
-    m_AfterSeekTimeout = 0;
-}
-
-bool CPlayerGUIInfo::GetDisplayAfterSeek() const
-{
-  if (CTimeUtils::GetFrameTime() < m_AfterSeekTimeout)
-    return true;
-  m_seekOffset = 0;
-  return false;
-}
-
 void CPlayerGUIInfo::SetShowInfo(bool showinfo)
 {
   m_playerShowInfo = showinfo;
@@ -419,9 +399,6 @@ bool CPlayerGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
     ///////////////////////////////////////////////////////////////////////////////////////////////
     case PLAYER_SHOWINFO:
       value = m_playerShowInfo;
-      return true;
-    case PLAYER_DISPLAY_AFTER_SEEK:
-      value = GetDisplayAfterSeek();
       return true;
     case PLAYER_SHOWTIME:
       value = m_playerShowTime;

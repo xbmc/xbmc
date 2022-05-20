@@ -231,7 +231,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       GUIINFO::CPlayerGUIInfo& guiInfo = CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider();
       guiInfo.SetShowInfo(false);
       m_bShowCurrentTime = false;
-      guiInfo.SetDisplayAfterSeek(0); // Make sure display after seek is off.
 
       // switch resolution
       CServiceBroker::GetWinSystem()->GetGfxContext().SetFullScreenVideo(true);
@@ -289,11 +288,6 @@ EVENT_RESULT CGUIWindowFullScreen::OnMouseEvent(const CPoint &point, const CMous
 
 void CGUIWindowFullScreen::FrameMove()
 {
-  float playspeed = g_application.GetAppPlayer().GetPlaySpeed();
-  if (playspeed != 1.0f && !g_application.GetAppPlayer().HasGame() &&
-      !g_application.GetAppPlayer().IsPausedPlayback())
-    CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek();
-
   if (!g_application.GetAppPlayer().HasPlayer())
     return;
 
@@ -416,9 +410,6 @@ void CGUIWindowFullScreen::RenderEx()
 void CGUIWindowFullScreen::SeekChapter(int iChapter)
 {
   g_application.GetAppPlayer().SeekChapter(iChapter);
-
-  // Make sure gui items are visible.
-  CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek();
 }
 
 void CGUIWindowFullScreen::ToggleOSD()

@@ -10,7 +10,6 @@
 
 #include "ApplicationPlayer.h"
 #include "ApplicationStackHelper.h"
-#include "GUIInfoManager.h"
 #include "GUIUserMessages.h"
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
@@ -248,11 +247,6 @@ void CApplicationPlayerCallback::OnPlayBackSeek(int64_t iTime, int64_t seekOffse
                                                      m_itemCurrentFile, param);
 
   CDataCacheCore::GetInstance().SeekFinished(static_cast<int>(seekOffset));
-  CServiceBroker::GetGUI()
-      ->GetInfoManager()
-      .GetInfoProviders()
-      .GetPlayerInfoProvider()
-      .SetDisplayAfterSeek(2500, static_cast<int>(seekOffset));
 }
 
 void CApplicationPlayerCallback::OnPlayBackSeekChapter(int iChapter)
