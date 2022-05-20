@@ -19,6 +19,7 @@
 #include <androidjni/Bitmap.h>
 #include <androidjni/BitmapDrawable.h>
 #include <androidjni/Build.h>
+#include <androidjni/Canvas.h>
 #include <androidjni/Context.h>
 #include <androidjni/DisplayMetrics.h>
 #include <androidjni/Drawable.h>
@@ -74,6 +75,23 @@ bool CFileAndroidApp::Exists(const CURL& url)
   return false;
 }
 
+namespace
+{
+
+CJNIBitmap GetBitmapFromDrawable(CJNIDrawable& drawable)
+{
+  CJNIBitmap bmp = CJNIBitmap::createBitmap(drawable.getIntrinsicWidth(),
+                                            drawable.getIntrinsicHeight(), CJNIBitmap::ARGB_8888);
+  CJNICanvas canvas(bmp);
+
+  drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+  drawable.draw(canvas);
+
+  return bmp;
+}
+
+} // namespace
+
 unsigned int CFileAndroidApp::ReadIcon(unsigned char** lpBuf, unsigned int* width, unsigned int* height)
 {
   JNIEnv* env = xbmc_jnienv();
@@ -82,6 +100,9 @@ unsigned int CFileAndroidApp::ReadIcon(unsigned char** lpBuf, unsigned int* widt
 
   CJNIBitmap bmp;
   jclass cBmpDrw = env->FindClass("android/graphics/drawable/BitmapDrawable");
+  jclass cAidDrw = CJNIBase::GetSDKVersion() >= 26
+                       ? env->FindClass("android/graphics/drawable/AdaptiveIconDrawable")
+                       : nullptr;
 
   if (CJNIBuild::SDK_INT >= 15 && m_icon)
   {
@@ -103,6 +124,10 @@ unsigned int CFileAndroidApp::ReadIcon(unsigned char** lpBuf, unsigned int* widt
             if (resbmp)
               bmp = resbmp.getBitmap();
           }
+          else if (cAidDrw && env->IsInstanceOf(drw.get_raw(), cAidDrw))
+          {
+            bmp = GetBitmapFromDrawable(drw);
+          }
         }
       }
     }
@@ -121,6 +146,10 @@ unsigned int CFileAndroidApp::ReadIcon(unsigned char** lpBuf, unsigned int* widt
         CJNIBitmapDrawable resbmp = drw;
         if (resbmp)
           bmp = resbmp.getBitmap();
+      }
+      else if (cAidDrw && env->IsInstanceOf(drw.get_raw(), cAidDrw))
+      {
+        bmp = GetBitmapFromDrawable(drw);
       }
     }
   }
