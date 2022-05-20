@@ -39,8 +39,6 @@ public:
   bool GetInt(int& value, const CGUIListItem *item, int contextWindow, const CGUIInfo &info) const override;
   bool GetBool(bool& value, const CGUIListItem *item, int contextWindow, const CGUIInfo &info) const override;
 
-  bool GetDisplayAfterSeek() const;
-  void SetDisplayAfterSeek(unsigned int timeOut = 2500, int seekOffset = 0);
   void SetShowTime(bool showtime) { m_playerShowTime = showtime; }
   void SetShowInfo(bool showinfo);
   bool GetShowInfo() const { return m_playerShowInfo; }
@@ -49,8 +47,6 @@ public:
 private:
   std::unique_ptr<CFileItem> m_currentItem;
 
-  unsigned int m_AfterSeekTimeout = 0;
-  mutable int m_seekOffset = 0;
   std::atomic_bool m_playerShowTime;
   std::atomic_bool m_playerShowInfo;
 

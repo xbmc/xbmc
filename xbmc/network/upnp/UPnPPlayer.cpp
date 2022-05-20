@@ -494,7 +494,6 @@ void CUPnPPlayer::SeekTime(int64_t ms)
                                 , m_delegate), failed);
 
   CDataCacheCore::GetInstance().SeekFinished(0);
-  CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek();
   return;
 failed:
   m_logger->error("SeekTime - unable to seek playback");
