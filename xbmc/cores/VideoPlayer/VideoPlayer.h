@@ -13,6 +13,7 @@
 #include "Edl.h"
 #include "FileItem.h"
 #include "IVideoPlayer.h"
+#include "VideoPlayerAudioID3.h"
 #include "VideoPlayerRadioRDS.h"
 #include "VideoPlayerSubtitle.h"
 #include "VideoPlayerTeletext.h"
@@ -252,6 +253,7 @@ public:
   bool HasVideo() const override;
   bool HasAudio() const override;
   bool HasRDS() const override;
+  bool HasID3() const override;
   bool IsPassthrough() const override;
   bool CanSeek() override;
   void Seek(bool bPlus, bool bLargeStep, bool bChapterOverride) override;
@@ -381,6 +383,7 @@ protected:
   bool OpenSubtitleStream(const CDVDStreamInfo& hint);
   bool OpenTeletextStream(CDVDStreamInfo& hint);
   bool OpenRadioRDSStream(CDVDStreamInfo& hint);
+  bool OpenAudioID3Stream(CDVDStreamInfo& hint);
 
   /** \brief Switches forced subtitles to forced subtitles matching the language of the current audio track.
   *          If these are not available, subtitles are disabled.
@@ -395,6 +398,7 @@ protected:
   void ProcessSubData(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessTeletextData(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessRadioRDSData(CDemuxStream* pStream, DemuxPacket* pPacket);
+  void ProcessAudioID3Data(CDemuxStream* pStream, DemuxPacket* pPacket);
 
   int  AddSubtitleFile(const std::string& filename, const std::string& subfilename = "");
   void SetSubtitleVisibleInternal(bool bVisible);
@@ -473,6 +477,7 @@ protected:
   CCurrentStream m_CurrentSubtitle;
   CCurrentStream m_CurrentTeletext;
   CCurrentStream m_CurrentRadioRDS;
+  CCurrentStream m_CurrentAudioID3;
 
   CSelectionStreams m_SelectionStreams;
   std::vector<ProgramInfo> m_programs;
@@ -509,6 +514,7 @@ protected:
   CVideoPlayerSubtitle *m_VideoPlayerSubtitle;
   CDVDTeletextData *m_VideoPlayerTeletext;
   CDVDRadioRDSData *m_VideoPlayerRadioRDS;
+  std::unique_ptr<CVideoPlayerAudioID3> m_VideoPlayerAudioID3;
 
   CDVDClock m_clock;
   CDVDOverlayContainer m_overlayContainer;
