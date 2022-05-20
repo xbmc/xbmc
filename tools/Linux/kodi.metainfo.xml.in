@@ -12,6 +12,8 @@
     <url type="faq">https://kodi.wiki/view/FAQs</url>
     <url type="help">https://forum.kodi.tv/</url>
     <url type="translate">https://kodi.weblate.cloud/</url>
+    <url type="contribute">https://github.com/xbmc/xbmc/blob/master/docs/CONTRIBUTING.md</url>
+    <url type="vcs-browser">https://github.com/xbmc/xbmc/</url>
     <description>
         <p>Kodi allows users to play and view videos, music, podcasts,
         and other digital media files from local storage, network storage
