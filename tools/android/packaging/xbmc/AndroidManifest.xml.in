@@ -9,6 +9,7 @@
         android:minSdkVersion="@TARGET_MINSDK@"
         android:targetSdkVersion="@TARGET_SDK@" />
 
+    @PERMISSION.MANAGE_EXTERNAL_STORAGE@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
