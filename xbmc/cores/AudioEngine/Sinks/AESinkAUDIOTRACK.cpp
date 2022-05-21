@@ -506,8 +506,14 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
       m_audiotrackbuffer_sec =
           static_cast<double>(m_min_buffer_size) / (m_sink_frameSize * m_sink_sampleRate);
 
+      // TrueHD needs a smaller buffer (in duration) to reduce latency
+      // this fixes dropouts since the data arrives in smaller quantities but more constantly
+      const double target_duration =
+          (m_passthrough && m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
+              ? 0.08
+              : 0.15;
       int c = 2;
-      while (m_audiotrackbuffer_sec < 0.15)
+      while (m_audiotrackbuffer_sec < target_duration)
       {
         m_min_buffer_size += min_buffer;
         c++;
@@ -529,6 +535,11 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
         period_time *= 2;
       }
       m_format.m_frames = static_cast<int>(period_size / m_format.m_frameSize);
+
+      CLog::Log(LOGDEBUG,
+                "Audiotrack buffer params are: period time = {:.3f} ms, period size = "
+                "{} bytes, num periods = {}",
+                period_time * 1000, period_size, m_min_buffer_size / period_size);
     }
 
     if (m_passthrough && !m_info.m_wantsIECPassthrough)
