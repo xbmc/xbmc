@@ -16,6 +16,45 @@ if(ENABLE_MOLD)
   endif()
 
   execute_process(COMMAND ${CMAKE_CXX_COMPILER} ${COMPILER_ARGS} -Wl,--version ERROR_QUIET OUTPUT_VARIABLE LD_VERSION)
+
+  set(DEFAULT_ENABLE_DEBUGFISSION FALSE)
+  if(CMAKE_BUILD_TYPE STREQUAL Debug OR
+     CMAKE_BUILD_TYPE STREQUAL RelWithDebInfo)
+    set(DEFAULT_ENABLE_DEBUGFISSION TRUE)
+  endif()
+
+  include(CMakeDependentOption)
+  cmake_dependent_option(ENABLE_DEBUGFISSION "Enable Debug Fission support" ON
+                         "DEFAULT_ENABLE_DEBUGFISSION" OFF)
+
+  if(ENABLE_DEBUGFISSION)
+    include(TestCXXAcceptsFlag)
+    check_cxx_accepts_flag(-gsplit-dwarf CXX_ACCEPTS_GSPLIT_DWARF)
+
+    # extract mold version
+    set(LD_VERSION_LIST ${LD_VERSION})
+    separate_arguments(LD_VERSION_LIST)
+    list(GET LD_VERSION_LIST 1 MOLD_VERSION)
+
+    set(DEBUGFISSION_AVAILABLE FALSE)
+    if(CXX_ACCEPTS_GSPLIT_DWARF)
+      set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -gsplit-dwarf")
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -gsplit-dwarf")
+      if(${MOLD_VERSION} VERSION_GREATER_EQUAL "1.2.0")
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--gdb-index")
+        set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--gdb-index")
+        set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--gdb-index")
+        set(DEBUGFISSION_AVAILABLE TRUE)
+      endif()
+    endif()
+
+    if(DEBUGFISSION_AVAILABLE)
+      message(STATUS "Debug Fission enabled")
+    else()
+      message(WARNING "Debug Fission is not available")
+    endif()
+  endif()
+
   if(LD_VERSION MATCHES "mold")
     include(FindPackageHandleStandardArgs)
     find_program(MOLD_EXECUTABLE mold)
@@ -25,7 +64,7 @@ if(ENABLE_MOLD)
       set(CMAKE_LINKER ${MOLD_EXECUTABLE})
       set(CMAKE_CXX_LINK_FLAGS ${COMPILER_ARGS})
       set(CMAKE_C_LINK_FLAGS ${COMPILER_ARGS})
-      set(CMAKE_EXE_LINKER_FLAGS "${LD_FLAGS} ${COMPILER_ARGS}")
+      set(CMAKE_EXE_LINKER_FLAGS "${LD_FLAGS} ${COMPILER_ARGS} ${CMAKE_EXE_LINKER_FLAGS}")
       set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
       set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
       message(STATUS "Linker: mold")
