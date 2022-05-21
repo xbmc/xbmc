@@ -1082,6 +1082,12 @@
           <default></default>
           <constraints>
             <allowempty>true</allowempty>
+            <sources>
+                <source>files</source>
+                <source>pictures</source>
+                <source>videos</source>
+            </sources>
+            <writable>false</writable>
           </constraints>
           <control type="button" format="path">
             <heading>657</heading>
