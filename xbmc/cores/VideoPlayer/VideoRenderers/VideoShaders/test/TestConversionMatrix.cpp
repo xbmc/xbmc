@@ -8,6 +8,7 @@
 
 
 #include "cores/VideoPlayer/VideoRenderers/VideoShaders/ConversionMatrix.h"
+#include "xbmc/utils/MathUtils.h"
 
 #include <iostream>
 
@@ -59,6 +60,20 @@ void DebugPrint(Matrix4 matrix)
   }
 
   std::cout << "===== Matrix End =====" << std::endl;
+}
+
+template<uint8_t Order>
+bool CompareMatrices(CMatrix<Order>& matrixA, CMatrix<Order>& matrixB, float threshold)
+{
+  bool result = true;
+  for (unsigned int i = 0; i < Order; i++)
+  {
+    for (unsigned int j = 0; j < Order; j++)
+    {
+      result &= MathUtils::FloatEquals(matrixA[i][j], matrixB[i][j], threshold);
+    }
+  }
+  return result;
 }
 
 std::array<std::array<float, 4>, 4> bt709_8bit =
@@ -128,21 +143,21 @@ TEST(TestConvertMatrix, YUV2RGB)
   yuvMat = convMat.GetYuvMat();
   DebugPrint(yuvMat);
 
-  EXPECT_EQ(bt709Mat_8bit, yuvMat);
+  EXPECT_TRUE(CompareMatrices(bt709Mat_8bit, yuvMat, 0.0001f));
 
   convMat.SetSourceBitDepth(10)
          .SetSourceTextureBitDepth(8);
   yuvMat = convMat.GetYuvMat();
   DebugPrint(yuvMat);
 
-  EXPECT_EQ(bt709Mat_10bit, yuvMat);
+  EXPECT_TRUE(CompareMatrices(bt709Mat_10bit, yuvMat, 0.0001f));
 
   convMat.SetSourceBitDepth(10)
          .SetSourceTextureBitDepth(10);
   yuvMat = convMat.GetYuvMat();
   DebugPrint(yuvMat);
 
-  EXPECT_EQ(bt709Mat_10bit_texture, yuvMat);
+  EXPECT_TRUE(CompareMatrices(bt709Mat_10bit_texture, yuvMat, 0.0001f));
 }
 
 TEST(TestConvertMatrix, ColorSpaceConversion)
@@ -155,14 +170,14 @@ TEST(TestConvertMatrix, ColorSpaceConversion)
   primMat = convMat.GetPrimMat();
   DebugPrint(primMat);
 
-  EXPECT_EQ(bt601_to_bt709_Mat, primMat);
+  EXPECT_TRUE(CompareMatrices(bt601_to_bt709_Mat, primMat, 0.0001f));
 
   convMat.SetSourceColorPrimaries(AVCOL_PRI_BT2020)
          .SetDestinationColorPrimaries(AVCOL_PRI_BT709);
   primMat = convMat.GetPrimMat();
   DebugPrint(primMat);
 
-  EXPECT_EQ(bt2020_to_bt709_Mat, primMat);
+  EXPECT_TRUE(CompareMatrices(bt2020_to_bt709_Mat, primMat, 0.0001f));
 }
 
 // clang-format on
