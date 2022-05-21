@@ -26,6 +26,18 @@
         very customisable and runs on a wide variety of devices. It is
         supported by a dedicated team of volunteers and a huge community.</p>
     </description>
+    <keywords>
+        <keyword>Kodi</keyword>
+        <keyword>xbmc</keyword>
+        <keyword>audio</keyword>
+        <keyword>video</keyword>
+        <keyword>media</keyword>
+        <keyword>media center</keyword>
+        <keyword>music</keyword>
+        <keyword>tv</keyword>
+        <keyword>television</keyword>
+        <keyword>remote control</keyword>
+    </keyboards>
     <launchable type="desktop-id">@APP_NAME_LC@.desktop</launchable>
     <screenshots>
         <screenshot type="default">
