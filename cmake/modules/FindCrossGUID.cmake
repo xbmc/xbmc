@@ -29,8 +29,8 @@ if(ENABLE_INTERNAL_CROSSGUID)
     list(APPEND CROSSGUID_DEFINITIONS -DGUID_ANDROID)
   endif()
 
-  # Use custom findpatch to handle windows patch binary if not available
-  include(cmake/modules/FindPatch.cmake)
+  # find the path to the patch executable
+  find_package(Patch MODULE REQUIRED)
 
   set(PATCH_COMMAND ${PATCH_EXECUTABLE} -p1 -i ${CMAKE_SOURCE_DIR}/tools/depends/target/crossguid/001-fix-unused-function.patch
             COMMAND ${PATCH_EXECUTABLE} -p1 -i ${CMAKE_SOURCE_DIR}/tools/depends/target/crossguid/002-disable-Wall-error.patch)

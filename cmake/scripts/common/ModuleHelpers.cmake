@@ -224,7 +224,7 @@ endmacro()
 # Macro to test format of line endings of a patch
 # Windows Specific
 macro(PATCH_LF_CHECK patch)
-  if(WIN32 OR WINDOWS_STORE)
+  if(CMAKE_HOST_WIN32)
     # On Windows "patch.exe" can only handle CR-LF line-endings.
     # Our patches have LF-only line endings - except when they
     # have been checked out as part of a dependency hosted on Git
