@@ -23,7 +23,7 @@ if(ENABLE_INTERNAL_UDFREAD)
                         ./configure
                         --enable-static
                         --disable-shared
-                        --prefix=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR})
+                        --prefix=${DEPENDS_PATH})
   set(BUILD_IN_SOURCE 1)
 
   BUILD_DEP_TARGET()

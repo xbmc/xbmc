@@ -7,7 +7,7 @@
 #   ARCHIVE will be set to parent scope
 #   MODULENAME_VER will be set to parent scope (eg FFMPEG_VER, DAV1D_VER)
 #   MODULENAME_BASE_URL will be set to parent scope if exists in VERSION file (eg FFMPEG_BASE_URL)
-function(get_archive_name module_name)
+function(get_versionfile_data module_name)
   string(TOUPPER ${module_name} UPPER_MODULE_NAME)
 
   # Dependency path
@@ -30,7 +30,7 @@ function(get_archive_name module_name)
 
   # Tarball Hash
   file(STRINGS ${${UPPER_MODULE_NAME}_FILE} ${UPPER_MODULE_NAME}_HASH_SHA256 REGEX "^[ \t]*SHA256=")
-  file(STRINGS ${${UPPER_MODULE_NAME}_FILE} ${UPPER_MODULE_NAME}_HASH_SHA256 REGEX "^[ \t]*SHA512=")
+  file(STRINGS ${${UPPER_MODULE_NAME}_FILE} ${UPPER_MODULE_NAME}_HASH_SHA512 REGEX "^[ \t]*SHA512=")
 
   string(REGEX REPLACE ".*LIBNAME=([^ \t]*).*" "\\1" ${UPPER_MODULE_NAME}_LNAME "${${UPPER_MODULE_NAME}_LNAME}")
   string(REGEX REPLACE ".*VERSION=([^ \t]*).*" "\\1" ${UPPER_MODULE_NAME}_VER "${${UPPER_MODULE_NAME}_VER}")
@@ -65,13 +65,13 @@ function(get_archive_name module_name)
       endif()
 
       # Set Debug and Release library names
-      set(${UPPER_MODULE_NAME}_LIBRARY_DEBUG ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/${${UPPER_MODULE_NAME}_BYPRODUCT_DEBUG} PARENT_SCOPE)
-      set(${UPPER_MODULE_NAME}_LIBRARY_RELEASE ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/${${UPPER_MODULE_NAME}_BYPRODUCT} PARENT_SCOPE)
+      set(${UPPER_MODULE_NAME}_LIBRARY_DEBUG ${DEPENDS_PATH}/lib/${${UPPER_MODULE_NAME}_BYPRODUCT_DEBUG} PARENT_SCOPE)
+      set(${UPPER_MODULE_NAME}_LIBRARY_RELEASE ${DEPENDS_PATH}/lib/${${UPPER_MODULE_NAME}_BYPRODUCT} PARENT_SCOPE)
     endif()
-    set(${UPPER_MODULE_NAME}_LIBRARY ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/${${UPPER_MODULE_NAME}_BYPRODUCT} PARENT_SCOPE)
+    set(${UPPER_MODULE_NAME}_LIBRARY ${DEPENDS_PATH}/lib/${${UPPER_MODULE_NAME}_BYPRODUCT} PARENT_SCOPE)
   endif()
 
-  set(${UPPER_MODULE_NAME}_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include PARENT_SCOPE)
+  set(${UPPER_MODULE_NAME}_INCLUDE_DIR ${DEPENDS_PATH}/include PARENT_SCOPE)
   set(${UPPER_MODULE_NAME}_VER ${${UPPER_MODULE_NAME}_VER} PARENT_SCOPE)
 
   if (${UPPER_MODULE_NAME}_BASE_URL)
@@ -90,7 +90,7 @@ endfunction()
 
 # Macro to factor out the repetitive URL setup
 macro(SETUP_BUILD_VARS)
-  get_archive_name(${MODULE_LC})
+  get_versionfile_data(${MODULE_LC})
   string(TOUPPER ${MODULE_LC} MODULE)
 
   # allow user to override the download URL with a local tarball
@@ -131,6 +131,7 @@ macro(BUILD_DEP_TARGET)
 
   if(CMAKE_ARGS)
     set(CMAKE_ARGS CMAKE_ARGS ${CMAKE_ARGS}
+                             -DCMAKE_INSTALL_PREFIX=${DEPENDS_PATH}
                              -DCMAKE_INSTALL_LIBDIR=lib)
     if(CMAKE_TOOLCHAIN_FILE)
       list(APPEND CMAKE_ARGS "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}")
@@ -186,6 +187,7 @@ macro(BUILD_DEP_TARGET)
                       DOWNLOAD_DIR ${TARBALL_DIR}
                       DOWNLOAD_NAME ${${MODULE}_ARCHIVE}
                       PREFIX ${CORE_BUILD_DIR}/${MODULE_LC}
+                      INSTALL_DIR ${DEPENDS_PATH}
                       ${CMAKE_ARGS}
                       ${PATCH_COMMAND}
                       ${CONFIGURE_COMMAND}
