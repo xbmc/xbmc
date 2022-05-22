@@ -79,7 +79,7 @@ std::string CCompileInfo::GetBuildDate()
 
 const char*  CCompileInfo::GetVersionCode()
 {
-  return "@APP_VERSION_CODE@";
+  return "@APP_VERSION_CODE@@INFO_STORE_DISPLAYNAME@";
 }
 
 std::vector<ADDON::RepoInfo> CCompileInfo::LoadOfficialRepoInfos()
