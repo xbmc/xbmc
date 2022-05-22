@@ -13,7 +13,6 @@
 #include "messaging/ApplicationMessenger.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIComponent.h"
-#include "guilib/GUIProgressControl.h"
 #include "guilib/GUILabelControl.h"
 #include "video/dialogs/GUIDialogSubtitleSettings.h"
 #include "guilib/GUIWindowManager.h"
@@ -186,32 +185,6 @@ void CGUIWindowFullScreen::OnWindowLoaded()
   CGUIWindow::OnWindowLoaded();
   // override the clear colour - we must never clear fullscreen
   m_clearBackground = 0;
-
-  CGUIProgressControl* pProgress = dynamic_cast<CGUIProgressControl*>(GetControl(CONTROL_PROGRESS));
-  if (pProgress)
-  {
-    if( pProgress->GetInfo() == 0 || !pProgress->HasVisibleCondition())
-    {
-      pProgress->SetInfo(PLAYER_PROGRESS);
-      pProgress->SetVisibleCondition("player.displayafterseek");
-      pProgress->SetVisible(true);
-    }
-  }
-
-  CGUILabelControl* pLabel = dynamic_cast<CGUILabelControl*>(GetControl(LABEL_BUFFERING));
-  if(pLabel && !pLabel->HasVisibleCondition())
-  {
-    pLabel->SetVisibleCondition("player.caching");
-    pLabel->SetVisible(true);
-  }
-
-  pLabel = dynamic_cast<CGUILabelControl*>(GetControl(LABEL_CURRENT_TIME));
-  if(pLabel && !pLabel->HasVisibleCondition())
-  {
-    pLabel->SetVisibleCondition("player.displayafterseek");
-    pLabel->SetVisible(true);
-    pLabel->SetLabel("$INFO(VIDEOPLAYER.TIME) / $INFO(VIDEOPLAYER.DURATION)");
-  }
 }
 
 bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
@@ -231,7 +204,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       GUIINFO::CPlayerGUIInfo& guiInfo = CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider();
       guiInfo.SetShowInfo(false);
       m_bShowCurrentTime = false;
-      guiInfo.SetDisplayAfterSeek(0); // Make sure display after seek is off.
 
       // switch resolution
       CServiceBroker::GetWinSystem()->GetGfxContext().SetFullScreenVideo(true);
@@ -289,11 +261,6 @@ EVENT_RESULT CGUIWindowFullScreen::OnMouseEvent(const CPoint &point, const CMous
 
 void CGUIWindowFullScreen::FrameMove()
 {
-  float playspeed = g_application.GetAppPlayer().GetPlaySpeed();
-  if (playspeed != 1.0f && !g_application.GetAppPlayer().HasGame() &&
-      !g_application.GetAppPlayer().IsPausedPlayback())
-    CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek();
-
   if (!g_application.GetAppPlayer().HasPlayer())
     return;
 
@@ -416,9 +383,6 @@ void CGUIWindowFullScreen::RenderEx()
 void CGUIWindowFullScreen::SeekChapter(int iChapter)
 {
   g_application.GetAppPlayer().SeekChapter(iChapter);
-
-  // Make sure gui items are visible.
-  CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().SetDisplayAfterSeek();
 }
 
 void CGUIWindowFullScreen::ToggleOSD()

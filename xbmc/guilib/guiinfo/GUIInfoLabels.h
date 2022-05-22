@@ -27,7 +27,7 @@
 #define PLAYER_FORWARDING_16x        16
 #define PLAYER_FORWARDING_32x        17
 #define PLAYER_CACHING               20
-#define PLAYER_DISPLAY_AFTER_SEEK    21
+// unused id 21
 #define PLAYER_PROGRESS              22
 #define PLAYER_SEEKBAR               23
 #define PLAYER_SEEKTIME              24
