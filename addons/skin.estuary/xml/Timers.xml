@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<timers>
+    <timer>
+        <name>autoclosevideoosd</name>
+        <description>Timer to auto close the video OSD (if enabled in the skin settings)</description>
+        <start reset="true">Window.IsActive(videoosd) + Skin.HasSetting(OSDAutoClose)</start>
+        <reset>Window.IsActive(videoosd) + !System.IdleTime(1) + Integer.IsGreaterOrEqual(Skin.TimerElapsedSecs(autoclosevideoosd), 1)</reset>
+        <stop>!Window.IsActive(videoosd) | String.IsEmpty(Skin.String(OSDAutoCloseTime)) + Integer.IsGreaterOrEqual(Skin.TimerElapsedSecs(autoclosevideoosd), 4) | !String.IsEmpty(Skin.String(OSDAutoCloseTime)) + Integer.IsGreaterOrEqual(Skin.TimerElapsedSecs(autoclosevideoosd),Skin.Numeric(OSDAutoCloseTime))</stop>
+        <onstop>Dialog.Close(videoosd)</onstop>
+    </timer>
+</timers>
