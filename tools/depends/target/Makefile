@@ -32,7 +32,6 @@ DEPENDS = \
   libgcrypt \
   libgpg-error \
   libjpeg-turbo \
-  liblzo2 \
   libmicrohttpd \
   libnfs \
   libplist \

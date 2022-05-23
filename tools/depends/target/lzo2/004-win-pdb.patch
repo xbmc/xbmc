@@ -1,0 +1,14 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -287,6 +287,11 @@
+         LIBRARY DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}"
+         RUNTIME DESTINATION "${CMAKE_INSTALL_FULL_BINDIR}"
+     )
++    if(MSVC)
++      set_target_properties(lzo_shared_lib PROPERTIES COMPILE_PDB_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR} COMPILE_PDB_NAME lzo2 COMPILE_PDB_NAME_DEBUG lzo2d)
++      install(FILES ${PROJECT_BINARY_DIR}/RelWithDebInfo/lzo2.pdb DESTINATION lib CONFIGURATIONS RelWithDebInfo)
++      install(FILES ${PROJECT_BINARY_DIR}/Debug/lzo2d.pdb DESTINATION lib CONFIGURATIONS Debug)
++    endif()
+ endif()
+ 
+ if(ENABLE_TESTS)
