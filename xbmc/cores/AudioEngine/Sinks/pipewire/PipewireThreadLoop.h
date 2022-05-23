@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <chrono>
 #include <memory>
 
 #include <pipewire/thread-loop.h>
@@ -33,7 +34,7 @@ public:
   void Lock();
   void Unlock();
 
-  void Wait();
+  int Wait(std::chrono::nanoseconds timeout);
   void Signal(bool accept);
 
 private:
