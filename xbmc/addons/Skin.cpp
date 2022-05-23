@@ -282,6 +282,19 @@ void CSkinInfo::LoadIncludes()
   m_includes.Load(includesPath);
 }
 
+void CSkinInfo::LoadTimers()
+{
+  const std::string timersPath =
+      CSpecialProtocol::TranslatePathConvertCase(GetSkinPath("Timers.xml"));
+  CLog::LogF(LOGINFO, "Trying to load skin timers from {}", timersPath);
+  m_skinTimerManager.LoadTimers(timersPath);
+}
+
+void CSkinInfo::StartTimerEvaluation()
+{
+  m_skinTimerManager.Start();
+}
+
 void CSkinInfo::ResolveIncludes(TiXmlElement *node, std::map<INFO::InfoPtr, bool>* xmlIncludeConditions /* = NULL */)
 {
   if(xmlIncludeConditions)
@@ -399,6 +412,31 @@ void CSkinInfo::OnPostInstall(bool update, bool modal)
     else
       CServiceBroker::GetSettingsComponent()->GetSettings()->SetString(CSettings::SETTING_LOOKANDFEEL_SKIN, ID());
   }
+}
+
+void CSkinInfo::Unload()
+{
+  m_skinTimerManager.Stop();
+}
+
+bool CSkinInfo::TimerIsRunning(const std::string& timer) const
+{
+  return m_skinTimerManager.TimerIsRunning(timer);
+}
+
+float CSkinInfo::GetTimerElapsedSeconds(const std::string& timer) const
+{
+  return m_skinTimerManager.GetTimerElapsedSeconds(timer);
+}
+
+void CSkinInfo::TimerStart(const std::string& timer) const
+{
+  m_skinTimerManager.TimerStart(timer);
+}
+
+void CSkinInfo::TimerStop(const std::string& timer) const
+{
+  m_skinTimerManager.TimerStop(timer);
 }
 
 void CSkinInfo::SettingOptionsSkinColorsFiller(const SettingConstPtr& setting,

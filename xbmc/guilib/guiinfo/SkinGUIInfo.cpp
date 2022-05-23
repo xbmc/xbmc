@@ -72,6 +72,11 @@ bool CSkinGUIInfo::GetLabel(std::string& value, const CFileItem *item, int conte
       value = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_FONT);
       return true;
     }
+    case SKIN_TIMER_ELAPSEDSECS:
+    {
+      value = std::to_string(g_SkinInfo->GetTimerElapsedSeconds(info.GetData3()));
+      return true;
+    }
   }
 
   return false;
@@ -84,6 +89,11 @@ bool CSkinGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWind
     case SKIN_INTEGER:
     {
       value = CSkinSettings::GetInstance().GetInt(info.GetData1());
+      return true;
+    }
+    case SKIN_TIMER_ELAPSEDSECS:
+    {
+      value = g_SkinInfo->GetTimerElapsedSeconds(info.GetData3());
       return true;
     }
   }
@@ -117,6 +127,11 @@ bool CSkinGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextWi
       std::string theme = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_SKINTHEME);
       URIUtils::RemoveExtension(theme);
       value = StringUtils::EqualsNoCase(theme, info.GetData3());
+      return true;
+    }
+    case SKIN_TIMER_IS_RUNNING:
+    {
+      value = g_SkinInfo->TimerIsRunning(info.GetData3());
       return true;
     }
   }
