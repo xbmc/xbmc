@@ -40,7 +40,8 @@ ifeq ($(HASH_FOUND),no)
 endif
 ifeq ($(HASH_FOUND),yes)
 #	we really need 2 spaces between sha hash and file name!
-#	if the hash sum doesn't match we retry up to 3 times
+#	if the hash sum doesn't match we retry up to 3 times, add verbose curl output for diagnostics on retries
+# if we fail 3 times, cleanup anything downloaded (eg bad tar)
 	@cd $(TARBALLS_LOCATION); echo "$(HASH_SUM)  $(ARCHIVE)" > $(ARCHIVE).$(HASH_TYPE) && $(HASH_TOOL) $(HASH_TOOL_FLAGS) $(ARCHIVE).$(HASH_TYPE) \
           || {\
             echo "Error: failed to verify hash sum of $(ARCHIVE), expected type: $(HASH_TYPE) value $(HASH_SUM), retrying.." ;\
@@ -49,9 +50,10 @@ ifeq ($(HASH_FOUND),yes)
               echo "download $(ARCHIVE) retry $$tries" ;\
               rm $(TARBALLS_LOCATION)/$(ARCHIVE) ;\
               sleep 3 ;\
-              $(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE) ;\
+              $(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) -v $(BASE_URL)/$(ARCHIVE) ;\
               $(HASH_TOOL) $(HASH_TOOL_FLAGS) $(ARCHIVE).$(HASH_TYPE) && exit 0 || tries=$$((tries + 1)) ;\
             done ;\
+            rm $(TARBALLS_LOCATION)/$(ARCHIVE) ;\
             exit 1 ;\
           }
 endif
