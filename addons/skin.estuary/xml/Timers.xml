@@ -8,4 +8,9 @@
         <stop>!Window.IsActive(videoosd) | String.IsEmpty(Skin.String(OSDAutoCloseTime)) + Integer.IsGreaterOrEqual(Skin.TimerElapsedSecs(autoclosevideoosd), 4) | !String.IsEmpty(Skin.String(OSDAutoCloseTime)) + Integer.IsGreaterOrEqual(Skin.TimerElapsedSecs(autoclosevideoosd),Skin.Numeric(OSDAutoCloseTime))</stop>
         <onstop>Dialog.Close(videoosd)</onstop>
     </timer>
+    <timer>
+        <name>1110_topbaroverlay</name>
+        <description>A timer that is activated when the topbaroverlay is loaded and stops automatically after 5 seconds (or playback is resumed)</description>
+        <stop>!Player.Paused | Integer.IsGreaterOrEqual(Skin.TimerElapsedSecs(1110_topbaroverlay),5)</stop>
+    </timer>
 </timers>
