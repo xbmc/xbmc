@@ -675,8 +675,6 @@ bool CVideoPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options
 
   m_item = file;
   m_playerOptions = options;
-  // Try to resolve the correct mime type
-  m_item.SetMimeTypeForInternetFile();
 
   m_processInfo->SetPlayTimes(0,0,0,0);
   m_bAbortRequest = false;
@@ -1336,6 +1334,11 @@ void CVideoPlayer::Prepare()
 
 void CVideoPlayer::Process()
 {
+  // Try to resolve the correct mime type. This can take some time, for example if a requested
+  // item is located at a slow/not reachable remote source. So, do mime type detection in vp worker
+  // thread, not directly when initalizing the player to keep GUI responsible.
+  m_item.SetMimeTypeForInternetFile();
+
   CServiceBroker::GetWinSystem()->RegisterRenderLoop(this);
 
   Prepare();
