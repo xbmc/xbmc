@@ -2125,6 +2125,32 @@ bool CApplication::Stop(int exitCode)
   return success;
 }
 
+namespace
+{
+class CCreateAndLoadPlayList : public IRunnable
+{
+public:
+  CCreateAndLoadPlayList(CFileItem& item, std::unique_ptr<CPlayList>& playlist)
+    : m_item(item), m_playlist(playlist)
+  {
+  }
+
+  void Run() override
+  {
+    const std::unique_ptr<CPlayList> playlist(CPlayListFactory::Create(m_item));
+    if (playlist)
+    {
+      if (playlist->Load(m_item.GetPath()))
+        *m_playlist = *playlist;
+    }
+  }
+
+private:
+  CFileItem& m_item;
+  std::unique_ptr<CPlayList>& m_playlist;
+};
+} // namespace
+
 bool CApplication::PlayMedia(CFileItem& item, const std::string &player, int iPlaylist)
 {
   // if the item is a plugin we need to resolve the plugin paths
@@ -2151,21 +2177,26 @@ bool CApplication::PlayMedia(CFileItem& item, const std::string &player, int iPl
   }
   else if (item.IsPlayList() || item.IsInternetStream())
   {
+    // Not owner. Dialog auto-deletes itself.
     CGUIDialogCache* dlgCache =
         new CGUIDialogCache(5s, g_localizeStrings.Get(10214), item.GetLabel());
 
     //is or could be a playlist
-    std::unique_ptr<CPlayList> pPlayList (CPlayListFactory::Create(item));
-    bool gotPlayList = (pPlayList.get() && pPlayList->Load(item.GetPath()));
+    std::unique_ptr<CPlayList> playlist;
+    CCreateAndLoadPlayList getPlaylist(item, playlist);
+    bool cancelled = !CGUIDialogBusy::Wait(&getPlaylist, 100, true);
 
     if (dlgCache)
     {
-       dlgCache->Close();
-       if (dlgCache->IsCanceled())
-          return true;
+      dlgCache->Close();
+      if (dlgCache->IsCanceled())
+        cancelled = true;
     }
 
-    if (gotPlayList)
+    if (cancelled)
+      return true;
+
+    if (playlist)
     {
 
       if (iPlaylist != PLAYLIST_NONE)
@@ -2173,7 +2204,7 @@ bool CApplication::PlayMedia(CFileItem& item, const std::string &player, int iPl
         int track=0;
         if (item.HasProperty("playlist_starting_track"))
           track = (int)item.GetProperty("playlist_starting_track").asInteger();
-        return ProcessAndStartPlaylist(item.GetPath(), *pPlayList, iPlaylist, track);
+        return ProcessAndStartPlaylist(item.GetPath(), *playlist, iPlaylist, track);
       }
       else
       {
@@ -2181,8 +2212,8 @@ bool CApplication::PlayMedia(CFileItem& item, const std::string &player, int iPl
                   "CApplication::PlayMedia called to play a playlist {} but no idea which playlist "
                   "to use, playing first item",
                   item.GetPath());
-        if(pPlayList->size())
-          return PlayFile(*(*pPlayList)[0], "", false);
+        if (playlist->size())
+          return PlayFile(*(*playlist)[0], "", false);
       }
     }
   }
