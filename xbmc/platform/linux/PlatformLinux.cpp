@@ -8,11 +8,17 @@
 
 #include "PlatformLinux.h"
 
+#if defined(HAS_ALSA)
 #include "cores/AudioEngine/Sinks/alsa/ALSADeviceMonitor.h"
 #include "cores/AudioEngine/Sinks/alsa/ALSAHControlMonitor.h"
+#endif
+
 #include "utils/StringUtils.h"
 
+#if defined(HAS_ALSA)
 #include "platform/linux/FDEventMonitor.h"
+#endif
+
 #include "platform/linux/powermanagement/LinuxPowerSyscall.h"
 
 // clang-format off
@@ -122,6 +128,7 @@ bool CPlatformLinux::InitStageOne()
 
   m_lirc.reset(OPTIONALS::LircRegister());
 
+#if defined(HAS_ALSA)
   RegisterService(std::make_shared<CFDEventMonitor>());
 #if defined(HAVE_LIBUDEV)
   RegisterService(std::make_shared<CALSADeviceMonitor>());
@@ -129,11 +136,13 @@ bool CPlatformLinux::InitStageOne()
 #if !defined(HAVE_X11)
   RegisterService(std::make_shared<CALSAHControlMonitor>());
 #endif
+#endif // HAS_ALSA
   return true;
 }
 
 void CPlatformLinux::DeinitStageOne()
 {
+#if defined(HAS_ALSA)
 #if !defined(HAVE_X11)
   DeregisterService(typeid(CALSAHControlMonitor));
 #endif
@@ -141,4 +150,5 @@ void CPlatformLinux::DeinitStageOne()
   DeregisterService(typeid(CALSADeviceMonitor));
 #endif
   DeregisterService(typeid(CFDEventMonitor));
+#endif // HAS_ALSA
 }
