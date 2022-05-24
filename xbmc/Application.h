@@ -89,16 +89,6 @@ namespace MUSIC_INFO
   class CMusicInfoScanner;
 }
 
-// replay gain settings struct for quick access by the player multiple
-// times per second (saves doing settings lookup)
-struct ReplayGainSettings
-{
-  int iPreAmp;
-  int iNoGainPreAmp;
-  int iType;
-  bool bAvoidClipping;
-};
-
 enum StartupAction
 {
   STARTUP_ACTION_NONE = 0,
@@ -222,8 +212,6 @@ public:
   bool SetLanguage(const std::string &strLanguage);
   bool LoadLanguage(bool reload);
 
-  ReplayGainSettings& GetReplayGainSettings() { return m_replayGainSettings; }
-
   void SetLoggingIn(bool switchingProfiles);
 
   /*!
@@ -312,7 +300,6 @@ protected:
 
   CInertialScrollingHandler *m_pInertialScrollingHandler;
 
-  ReplayGainSettings m_replayGainSettings;
   std::vector<IActionListener *> m_actionListeners;
   std::vector<ADDON::AddonInfoPtr>
       m_incompatibleAddons; /*!< Result of addon migration (incompatible addon infos) */
