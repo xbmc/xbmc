@@ -884,7 +884,7 @@ public class Splash extends Activity
 
     if (mState != InError)
     {
-      if (pkg_arch.equalsIgnoreCase("arm"))
+      if (pkg_arch.equalsIgnoreCase("armeabi-v7a"))
       {
         // arm arch: check if the cpu supports neon
         boolean ret = ParseCpuFeature();
