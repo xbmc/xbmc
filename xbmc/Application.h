@@ -147,7 +147,7 @@ public:
   const std::string& CurrentFile();
   CFileItem& CurrentFileItem();
   std::shared_ptr<CFileItem> CurrentFileItemPtr();
-  CFileItem& CurrentUnstackedItem();
+  const CFileItem& CurrentUnstackedItem();
   bool OnMessage(CGUIMessage& message) override;
   CApplicationPlayer& GetAppPlayer();
   std::string GetCurrentPlayer();

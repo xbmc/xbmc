@@ -48,12 +48,6 @@ public:
   bool IsPlayingRegularStack() const { return m_currentStack->Size() > 0 && !m_currentStackIsDiscImageStack; }
 
   /*!
-  \brief Returns a FileItem part of a (non-ISO) stack playback
-  \param partNumber the requested part number in the stack
-  */
-  CFileItem& GetStackPartFileItem(int partNumber) const { return  *(*m_currentStack)[partNumber]; }
-
-  /*!
   \brief returns true if there is a next part available
   */
   bool HasNextStackPartFileItem() const { return m_currentStackPosition < m_currentStack->Size() - 1; }
@@ -61,18 +55,27 @@ public:
   /*!
   \brief sets the next stack part as the current and returns a reference to it
   */
-  CFileItem& SetNextStackPartCurrentFileItem() { return  GetStackPartFileItem(++m_currentStackPosition); }
+  const CFileItem& SetNextStackPartCurrentFileItem()
+  {
+    return GetStackPartFileItem(++m_currentStackPosition);
+  }
 
   /*!
   \brief sets a given stack part as the current and returns a reference to it
   \param partNumber the number of the part that needs to become the current one
   */
-  CFileItem& SetStackPartCurrentFileItem(int partNumber) { return  GetStackPartFileItem(m_currentStackPosition = partNumber); }
+  const CFileItem& SetStackPartCurrentFileItem(int partNumber)
+  {
+    return GetStackPartFileItem(m_currentStackPosition = partNumber);
+  }
 
   /*!
   \brief Returns the FileItem currently playing back as part of a (non-ISO) stack playback
   */
-  CFileItem& GetCurrentStackPartFileItem() const { return GetStackPartFileItem(m_currentStackPosition); }
+  const CFileItem& GetCurrentStackPartFileItem() const
+  {
+    return GetStackPartFileItem(m_currentStackPosition);
+  }
 
   /*!
   \brief Returns the end time of a FileItem part of a (non-ISO) stack playback
@@ -112,13 +115,13 @@ public:
   /*!
   \brief Returns a smart pointer to the stack CFileItem.
   */
-  CFileItemPtr GetRegisteredStack(const CFileItem& item);
+  std::shared_ptr<const CFileItem> GetRegisteredStack(const CFileItem& item) const;
 
   /*!
   \brief Returns true if there is a registered stack for the given CFileItem part.
   \param item the reference to the item that is part of a stack
   */
-  bool HasRegisteredStack(const CFileItem& item);
+  bool HasRegisteredStack(const CFileItem& item) const;
 
   /*!
   \brief Stores a smart pointer to the stack CFileItem in the item-stack map.
@@ -144,7 +147,7 @@ public:
   \brief Returns the start time of the part in the parameter
   \param item the reference to the item that is part of a stack
   */
-  uint64_t GetRegisteredStackPartStartTimeMs(const CFileItem& item);
+  uint64_t GetRegisteredStackPartStartTimeMs(const CFileItem& item) const;
 
   /*!
   \brief Stores the part start time in the item-stack map.
@@ -157,7 +160,7 @@ public:
   \brief Returns the total time of the stack associated to the part in the parameter
   \param item the reference to the item that is part of a stack
   */
-  uint64_t GetRegisteredStackTotalTimeMs(const CFileItem& item);
+  uint64_t GetRegisteredStackTotalTimeMs(const CFileItem& item) const;
 
   /*!
   \brief Stores the stack's total time associated to the part in the item-stack map.
@@ -169,6 +172,15 @@ public:
   CCriticalSection m_critSection;
 
 protected:
+  /*!
+  \brief Returns a FileItem part of a (non-ISO) stack playback
+  \param partNumber the requested part number in the stack
+  */
+  CFileItem& GetStackPartFileItem(int partNumber) { return *(*m_currentStack)[partNumber]; }
+  const CFileItem& GetStackPartFileItem(int partNumber) const
+  {
+    return *(*m_currentStack)[partNumber];
+  }
 
   class StackPartInformation
   {
@@ -190,6 +202,7 @@ protected:
   typedef std::map<std::string, StackPartInformationPtr> Stackmap;
   Stackmap m_stackmap;
   StackPartInformationPtr GetStackPartInformation(const std::string& key);
+  StackPartInformationPtr GetStackPartInformation(const std::string& key) const;
 
   std::unique_ptr<CFileItemList> m_currentStack;
   int m_currentStackPosition = 0;

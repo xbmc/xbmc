@@ -3408,7 +3408,7 @@ CFileItem& CApplication::CurrentFileItem()
   return *m_itemCurrentFile;
 }
 
-CFileItem& CApplication::CurrentUnstackedItem()
+const CFileItem& CApplication::CurrentUnstackedItem()
 {
   if (m_stackHelper.IsPlayingISOStack() || m_stackHelper.IsPlayingRegularStack())
     return m_stackHelper.GetCurrentStackPartFileItem();
