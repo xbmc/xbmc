@@ -8,7 +8,7 @@
 
 #include "ScriptRunner.h"
 
-#include "Application.h"
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogProgress.h"
@@ -16,6 +16,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "interfaces/generic/RunningScriptObserver.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
+#include "messaging/ApplicationMessenger.h"
 #include "threads/SystemClock.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
@@ -127,7 +128,7 @@ bool CScriptRunner::WaitOnScriptResult(int scriptId,
   // Add-on scripts can be called from the main and other threads. If called
   // form the main thread, we need to bring up the BusyDialog in order to
   // keep the render loop alive
-  if (g_application.IsCurrentThread())
+  if (CServiceBroker::GetAppMessenger()->IsProcessThread())
   {
     if (!m_scriptDone.Wait(20ms))
     {

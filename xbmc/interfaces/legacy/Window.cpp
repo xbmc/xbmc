@@ -133,7 +133,7 @@ namespace XBMCAddon
       //! @todo rework locking
       // Python GIL and CServiceBroker::GetWinSystem()->GetGfxContext() are deadlock happy
       // dispose is called from GUIWindowManager and in this case DelayGuard must not be used.
-      if (!g_application.IsCurrentThread())
+      if (!CServiceBroker::GetAppMessenger()->IsProcessThread())
       {
         SingleLockWithDelayGuard gslock(CServiceBroker::GetWinSystem()->GetGfxContext(), languageHook);
       }
