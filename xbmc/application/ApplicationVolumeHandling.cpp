@@ -16,6 +16,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "interfaces/AnnouncementManager.h"
 #include "peripherals/Peripherals.h"
+#include "settings/Settings.h"
 #include "utils/Variant.h"
 
 CApplicationVolumeHandling::CApplicationVolumeHandling(CApplicationPlayer& appPlayer)
@@ -128,4 +129,15 @@ void CApplicationVolumeHandling::SetVolume(float iValue, bool isPercentage)
 
   SetHardwareVolume(hardwareVolume);
   VolumeChanged();
+}
+
+void CApplicationVolumeHandling::CacheReplayGainSettings(const CSettings& settings)
+{
+  // initialize m_replayGainSettings
+  m_replayGainSettings.iType = settings.GetInt(CSettings::SETTING_MUSICPLAYER_REPLAYGAINTYPE);
+  m_replayGainSettings.iPreAmp = settings.GetInt(CSettings::SETTING_MUSICPLAYER_REPLAYGAINPREAMP);
+  m_replayGainSettings.iNoGainPreAmp =
+      settings.GetInt(CSettings::SETTING_MUSICPLAYER_REPLAYGAINNOGAINPREAMP);
+  m_replayGainSettings.bAvoidClipping =
+      settings.GetBool(CSettings::SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING);
 }

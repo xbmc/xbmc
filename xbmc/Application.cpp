@@ -485,10 +485,7 @@ bool CApplication::Create()
   CServiceBroker::RegisterAE(m_pActiveAE.get());
 
   // initialize m_replayGainSettings
-  m_replayGainSettings.iType = settings->GetInt(CSettings::SETTING_MUSICPLAYER_REPLAYGAINTYPE);
-  m_replayGainSettings.iPreAmp = settings->GetInt(CSettings::SETTING_MUSICPLAYER_REPLAYGAINPREAMP);
-  m_replayGainSettings.iNoGainPreAmp = settings->GetInt(CSettings::SETTING_MUSICPLAYER_REPLAYGAINNOGAINPREAMP);
-  m_replayGainSettings.bAvoidClipping = settings->GetBool(CSettings::SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING);
+  CacheReplayGainSettings(*settings);
 
   // load the keyboard layouts
   if (!keyboardLayoutManager->Load())
