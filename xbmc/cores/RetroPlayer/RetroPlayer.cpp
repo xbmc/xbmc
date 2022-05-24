@@ -331,7 +331,7 @@ void CRetroPlayer::SeekPercentage(float fPercent /* = 0 */)
     SeekTime(static_cast<int64_t>(totalTime * fPercent / 100.0f));
 }
 
-float CRetroPlayer::GetCachePercentage()
+float CRetroPlayer::GetCachePercentage() const
 {
   const float cacheMs = static_cast<float>(m_playback->GetCacheTimeMs());
   const float totalMs = static_cast<float>(m_playback->GetTotalTimeMs());

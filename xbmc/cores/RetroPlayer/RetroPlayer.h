@@ -56,7 +56,7 @@ public:
   bool CanSeek() override;
   void Seek(bool bPlus = true, bool bLargeStep = false, bool bChapterOverride = false) override;
   void SeekPercentage(float fPercent = 0) override;
-  float GetCachePercentage() override;
+  float GetCachePercentage() const override;
   void SetMute(bool bOnOff) override;
   void SeekTime(int64_t iTime = 0) override;
   bool SeekTimeRelative(int64_t iTime) override;

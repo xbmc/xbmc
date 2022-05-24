@@ -257,7 +257,7 @@ public:
   void Seek(bool bPlus, bool bLargeStep, bool bChapterOverride) override;
   bool SeekScene(bool bPlus = true) override;
   void SeekPercentage(float iPercent) override;
-  float GetCachePercentage() override;
+  float GetCachePercentage() const override;
 
   void SetDynamicRangeCompression(long drc) override;
   bool CanPause() override;
