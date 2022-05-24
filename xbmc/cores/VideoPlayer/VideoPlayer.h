@@ -352,7 +352,7 @@ public:
   int OnDiscNavResult(void* pData, int iMessage) override;
   void GetVideoResolution(unsigned int &width, unsigned int &height) override;
 
-  CVideoSettings GetVideoSettings() override;
+  CVideoSettings GetVideoSettings() const override;
   void SetVideoSettings(CVideoSettings& settings) override;
 
   void SetUpdateStreamDetails();

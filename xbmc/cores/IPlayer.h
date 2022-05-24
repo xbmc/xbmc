@@ -253,7 +253,7 @@ public:
   }
 
   // video and audio settings
-  virtual CVideoSettings GetVideoSettings() { return CVideoSettings(); }
+  virtual CVideoSettings GetVideoSettings() const { return CVideoSettings(); }
   virtual void SetVideoSettings(CVideoSettings& settings) {}
 
   /*!
