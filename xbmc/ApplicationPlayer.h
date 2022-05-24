@@ -37,9 +37,9 @@ public:
   // player management
   void ClosePlayer();
   void ResetPlayer();
-  std::string GetCurrentPlayer();
-  float GetPlaySpeed();
-  float GetPlayTempo();
+  std::string GetCurrentPlayer() const;
+  float GetPlaySpeed() const;
+  float GetPlayTempo() const;
   bool HasPlayer() const;
   bool OpenFile(const CFileItem& item, const CPlayerOptions& options,
                 const CPlayerCoreFactory &factory,
@@ -160,7 +160,7 @@ public:
   void SetSpeed(float speed);
   bool SupportsTempo();
 
-  CVideoSettings GetVideoSettings();
+  CVideoSettings GetVideoSettings() const;
   void SetVideoSettings(CVideoSettings& settings);
 
   CSeekHandler& GetSeekHandler();
@@ -173,7 +173,8 @@ public:
   bool HasGameAgent();
 
 private:
-  std::shared_ptr<IPlayer> GetInternal() const;
+  std::shared_ptr<const IPlayer> GetInternal() const;
+  std::shared_ptr<IPlayer> GetInternal();
   void CreatePlayer(const CPlayerCoreFactory &factory, const std::string &player, IPlayerCallback& callback);
   void CloseFile(bool reopen = false);
 
