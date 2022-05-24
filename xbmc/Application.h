@@ -151,7 +151,7 @@ public:
   bool OnMessage(CGUIMessage& message) override;
   CApplicationPlayer& GetAppPlayer();
   std::string GetCurrentPlayer();
-  CApplicationStackHelper& GetAppStackHelper();
+  const CApplicationStackHelper& GetAppStackHelper() const;
 
   int  GetMessageMask() override;
   void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg) override;

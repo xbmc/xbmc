@@ -3570,7 +3570,7 @@ CApplicationPlayer& CApplication::GetAppPlayer()
   return m_appPlayer;
 }
 
-CApplicationStackHelper& CApplication::GetAppStackHelper()
+const CApplicationStackHelper& CApplication::GetAppStackHelper() const
 {
   return m_stackHelper;
 }

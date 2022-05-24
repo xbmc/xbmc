@@ -154,14 +154,7 @@ void CSaveFileState::DoWork(CFileItem& item,
           }
         }
 
-        // Could be part of an ISO stack. In this case the bookmark is saved onto the part.
-        // In order to properly update the list, we need to refresh the stack's resume point
-        CApplicationStackHelper& stackHelper = g_application.GetAppStackHelper();
-        if (stackHelper.HasRegisteredStack(item) && stackHelper.GetRegisteredStackTotalTimeMs(item) == 0)
-          videodatabase.GetResumePoint(*(stackHelper.GetRegisteredStack(item)->GetVideoInfoTag()));
-
         videodatabase.CommitTransaction();
-        videodatabase.Close();
 
         if (updateListing)
         {
@@ -169,9 +162,19 @@ void CSaveFileState::DoWork(CFileItem& item,
           CFileItemPtr msgItem(new CFileItem(item));
           if (item.HasProperty("original_listitem_url"))
             msgItem->SetPath(item.GetProperty("original_listitem_url").asString());
+
+          // Could be part of an ISO stack. In this case the bookmark is saved onto the part.
+          // In order to properly update the list, we need to refresh the stack's resume point
+          const CApplicationStackHelper& stackHelper = g_application.GetAppStackHelper();
+          if (stackHelper.HasRegisteredStack(item) &&
+              stackHelper.GetRegisteredStackTotalTimeMs(item) == 0)
+            videodatabase.GetResumePoint(*(msgItem->GetVideoInfoTag()));
+
           CGUIMessage message(GUI_MSG_NOTIFY_ALL, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow(), 0, GUI_MSG_UPDATE_ITEM, 0, msgItem);
           CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);
         }
+
+        videodatabase.Close();
       }
     }
 
