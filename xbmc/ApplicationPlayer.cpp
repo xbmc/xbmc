@@ -23,7 +23,13 @@
 
 using namespace std::chrono_literals;
 
-std::shared_ptr<IPlayer> CApplicationPlayer::GetInternal() const
+std::shared_ptr<const IPlayer> CApplicationPlayer::GetInternal() const
+{
+  std::unique_lock<CCriticalSection> lock(m_playerLock);
+  return m_pPlayer;
+}
+
+std::shared_ptr<IPlayer> CApplicationPlayer::GetInternal()
 {
   std::unique_lock<CCriticalSection> lock(m_playerLock);
   return m_pPlayer;
@@ -66,9 +72,9 @@ void CApplicationPlayer::CreatePlayer(const CPlayerCoreFactory &factory, const s
   }
 }
 
-std::string CApplicationPlayer::GetCurrentPlayer()
+std::string CApplicationPlayer::GetCurrentPlayer() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
   {
     return player->m_name;
@@ -162,8 +168,8 @@ void CApplicationPlayer::OpenNext(const CPlayerCoreFactory &factory)
 
 bool CApplicationPlayer::HasPlayer() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
-  return player != NULL;
+  std::shared_ptr<const IPlayer> player = GetInternal();
+  return player != nullptr;
 }
 
 int CApplicationPlayer::GetChapter()
@@ -203,19 +209,19 @@ int64_t CApplicationPlayer::GetChapterPos(int chapterIdx)
 
 bool CApplicationPlayer::HasAudio() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  std::shared_ptr<const IPlayer> player = GetInternal();
   return (player && player->HasAudio());
 }
 
 bool CApplicationPlayer::HasVideo() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  std::shared_ptr<const IPlayer> player = GetInternal();
   return (player && player->HasVideo());
 }
 
 bool CApplicationPlayer::HasGame() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  std::shared_ptr<const IPlayer> player = GetInternal();
   return (player && player->HasGame());
 }
 
@@ -232,7 +238,7 @@ int CApplicationPlayer::GetPreferredPlaylist() const
 
 bool CApplicationPlayer::HasRDS() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  std::shared_ptr<const IPlayer> player = GetInternal();
   return (player && player->HasRDS());
 }
 
@@ -243,7 +249,7 @@ bool CApplicationPlayer::IsPaused()
 
 bool CApplicationPlayer::IsPlaying() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  std::shared_ptr<const IPlayer> player = GetInternal();
   return (player && player->IsPlaying());
 }
 
@@ -311,7 +317,7 @@ void CApplicationPlayer::SeekPercentage(float fPercent)
 
 bool CApplicationPlayer::IsPassthrough() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  std::shared_ptr<const IPlayer> player = GetInternal();
   return (player && player->IsPassthrough());
 }
 
@@ -350,7 +356,7 @@ void CApplicationPlayer::SeekTimeRelative(int64_t iTime)
 
 int64_t CApplicationPlayer::GetTime() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
     return CDataCacheCore::GetInstance().GetPlayTime();
   else
@@ -359,7 +365,7 @@ int64_t CApplicationPlayer::GetTime() const
 
 int64_t CApplicationPlayer::GetMinTime() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
     return CDataCacheCore::GetInstance().GetMinTime();
   else
@@ -368,7 +374,7 @@ int64_t CApplicationPlayer::GetMinTime() const
 
 int64_t CApplicationPlayer::GetMaxTime() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
     return CDataCacheCore::GetInstance().GetMaxTime();
   else
@@ -377,7 +383,7 @@ int64_t CApplicationPlayer::GetMaxTime() const
 
 time_t CApplicationPlayer::GetStartTime() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
     return CDataCacheCore::GetInstance().GetStartTime();
   else
@@ -386,7 +392,7 @@ time_t CApplicationPlayer::GetStartTime() const
 
 int64_t CApplicationPlayer::GetTotalTime() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
   {
     int64_t total = CDataCacheCore::GetInstance().GetMaxTime() - CDataCacheCore::GetInstance().GetMinTime();
@@ -398,19 +404,19 @@ int64_t CApplicationPlayer::GetTotalTime() const
 
 bool CApplicationPlayer::IsCaching() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  std::shared_ptr<const IPlayer> player = GetInternal();
   return (player && player->IsCaching());
 }
 
 bool CApplicationPlayer::IsInMenu() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  std::shared_ptr<const IPlayer> player = GetInternal();
   return (player && player->IsInMenu());
 }
 
 MenuType CApplicationPlayer::GetSupportedMenuType() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  std::shared_ptr<const IPlayer> player = GetInternal();
   if (!player)
   {
     return MenuType::NONE;
@@ -420,7 +426,7 @@ MenuType CApplicationPlayer::GetSupportedMenuType() const
 
 int CApplicationPlayer::GetCacheLevel() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
     return player->GetCacheLevel();
   else
@@ -491,7 +497,7 @@ std::shared_ptr<TextCacheStruct_t> CApplicationPlayer::GetTeletextCache()
 
 float CApplicationPlayer::GetPercentage() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
   {
     float fPercent = CDataCacheCore::GetInstance().GetPlayPercentage();
@@ -503,7 +509,7 @@ float CApplicationPlayer::GetPercentage() const
 
 float CApplicationPlayer::GetCachePercentage() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
     return player->GetCachePercentage();
   else
@@ -787,9 +793,9 @@ void CApplicationPlayer::SetPlaySpeed(float speed)
   SetSpeed(speed);
 }
 
-float CApplicationPlayer::GetPlaySpeed()
+float CApplicationPlayer::GetPlaySpeed() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
   {
     return CDataCacheCore::GetInstance().GetSpeed();
@@ -798,9 +804,9 @@ float CApplicationPlayer::GetPlaySpeed()
     return 0;
 }
 
-float CApplicationPlayer::GetPlayTempo()
+float CApplicationPlayer::GetPlayTempo() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
   {
     return CDataCacheCore::GetInstance().GetTempo();
@@ -983,9 +989,9 @@ bool CApplicationPlayer::IsRemotePlaying()
   return false;
 }
 
-CVideoSettings CApplicationPlayer::GetVideoSettings()
+CVideoSettings CApplicationPlayer::GetVideoSettings() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
   {
     return player->GetVideoSettings();
