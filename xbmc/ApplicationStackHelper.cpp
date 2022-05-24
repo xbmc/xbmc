@@ -290,9 +290,6 @@ CApplicationStackHelper::StackPartInformationPtr CApplicationStackHelper::GetSta
 {
   const auto it = m_stackmap.find(key);
   if (it == m_stackmap.end())
-  {
-    StackPartInformationPtr value(new StackPartInformation());
-    return value;
-  }
-  return m_stackmap.find(key)->second;
+    return std::make_shared<StackPartInformation>();
+  return it->second;
 }
