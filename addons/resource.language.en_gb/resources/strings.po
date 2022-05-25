@@ -18646,13 +18646,13 @@ msgctxt "#36034"
 msgid "Connection established"
 msgstr ""
 
-#. adjust refreshrate
+#. Item list value of setting with label #170 "Adjust display refresh rate"
 #: system/settings/settings.xml
 msgctxt "#36035"
 msgid "Always"
 msgstr ""
 
-#. adjust refreshrate
+#. Item list value of setting with label #170 "Adjust display refresh rate"
 #: system/settings/settings.xml
 msgctxt "#36036"
 msgid "On start / stop"
@@ -18732,12 +18732,20 @@ msgctxt "#36049"
 msgid "Remote button press release time (ms)"
 msgstr ""
 
+#. Item list value of setting with label #170 "Adjust display refresh rate"
 #: system/settings.xml
 msgctxt "#36050"
 msgid "On start"
 msgstr ""
 
-#empty strings from id 36051 to 36097
+#. Item list value of setting with label #170 "Adjust display refresh rate"
+#. VFR is abbreviation for: Variable Frame Rate
+#: system/settings.xml
+msgctxt "#36051"
+msgid "On start / stop with VFR support"
+msgstr ""
+
+#empty strings from id 36052 to 36097
 
 #. Label of setting "System / Display / Use 10 bit for SDR"
 #: system/settings/settings.xml

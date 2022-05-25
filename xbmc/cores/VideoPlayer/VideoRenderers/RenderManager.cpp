@@ -225,9 +225,12 @@ bool CRenderManager::Configure()
 
     m_bRenderGUI = true;
 
+    int adjustRefreshRate{CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+        CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE)};
+
     if (m_renderState == STATE_CONFIGURING ||
-        (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
-             CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) == ADJUST_REFRESHRATE_ALWAYS))
+        adjustRefreshRate == ADJUST_REFRESHRATE_ON_STARTSTOP_VFR ||
+        adjustRefreshRate == ADJUST_REFRESHRATE_ALWAYS)
     {
       m_bTriggerUpdateResolution = true;
     }
