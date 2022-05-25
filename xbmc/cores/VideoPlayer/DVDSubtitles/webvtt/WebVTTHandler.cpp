@@ -269,10 +269,10 @@ void CWebVTTHandler::DecodeLine(std::string line, std::vector<subtitleData>* sub
           int locHrs = 0;
           int locMins;
           double locSecs;
-          if (!regLocal.GetMatch(1).empty())
-            locHrs = std::stoi(regLocal.GetMatch(1).c_str());
-          locMins = std::stoi(regLocal.GetMatch(2).c_str());
-          locSecs = std::atof(regLocal.GetMatch(3).c_str());
+          if (!regLocal.GetMatch(2).empty())
+            locHrs = std::stoi(regLocal.GetMatch(2).c_str());
+          locMins = std::stoi(regLocal.GetMatch(3).c_str());
+          locSecs = std::atof(regLocal.GetMatch(4).c_str());
           m_hlsTimestampLocalUs =
               (static_cast<double>(locHrs * 3600 + locMins * 60) + locSecs) * DVD_TIME_BASE;
           // Converts a 90 kHz clock timestamp to a timestamp in microseconds
