@@ -966,8 +966,11 @@ double CDVDDemuxFFmpeg::ConvertTimestamp(int64_t pts, int den, int num)
   double starttime = 0.0f;
 
   std::shared_ptr<CDVDInputStream::IMenus> menu = std::dynamic_pointer_cast<CDVDInputStream::IMenus>(m_pInput);
-  if (!menu && m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE)
-    starttime = (double)m_pFormatContext->start_time / AV_TIME_BASE;
+  if ((!menu || !menu->HasMenu()) &&
+      m_pFormatContext->start_time != static_cast<int64_t>(AV_NOPTS_VALUE))
+  {
+    starttime = static_cast<double>(m_pFormatContext->start_time / AV_TIME_BASE);
+  }
 
   if (m_checkTransportStream)
     starttime = m_startTime;
