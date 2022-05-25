@@ -18,6 +18,9 @@ if(ENABLE_INTERNAL_SPDLOG)
 
   set(MODULE_LC spdlog)
 
+  # spdlog debug uses postfix d for all platforms
+  set(SPDLOG_DEBUG_POSTFIX d)
+
   SETUP_BUILD_VARS()
 
   if(APPLE)
