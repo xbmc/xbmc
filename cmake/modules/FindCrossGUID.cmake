@@ -18,11 +18,7 @@ if(ENABLE_INTERNAL_CROSSGUID)
 
   set(MODULE_LC crossguid)
 
-  # Temp: We force CMAKE_BUILD_TYPE to release, and makefile builds respect this
-  # Multi config generators (eg VS, Xcode) dont, so handle debug postfix build/link for them only
-  if(NOT (CMAKE_GENERATOR STREQUAL "Unix Makefiles" OR CMAKE_GENERATOR STREQUAL "Ninja"))
-    set(CROSSGUID_DEBUG_POSTFIX "-dgb")
-  endif()
+  set(CROSSGUID_DEBUG_POSTFIX "-dgb")
 
   SETUP_BUILD_VARS()
 
@@ -38,9 +34,6 @@ if(ENABLE_INTERNAL_CROSSGUID)
 
   set(PATCH_COMMAND ${PATCH_EXECUTABLE} -p1 -i ${CMAKE_SOURCE_DIR}/tools/depends/target/crossguid/001-fix-unused-function.patch
             COMMAND ${PATCH_EXECUTABLE} -p1 -i ${CMAKE_SOURCE_DIR}/tools/depends/target/crossguid/002-disable-Wall-error.patch)
-
-  # Force release build type. crossguid forces a debug postfix -dgb. may want to patch this
-  set(CROSSGUID_BUILD_TYPE Release)
 
   set(CMAKE_ARGS -DCROSSGUID_TESTS=OFF
                  -DDISABLE_WALL=ON)

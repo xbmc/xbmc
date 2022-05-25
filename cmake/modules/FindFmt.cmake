@@ -17,6 +17,9 @@ if(ENABLE_INTERNAL_FMT)
 
   set(MODULE_LC fmt)
 
+  # fmt debug uses postfix d for all platforms
+  set(FMT_DEBUG_POSTFIX d)
+
   SETUP_BUILD_VARS()
 
   if(APPLE)
