@@ -18,8 +18,8 @@ if(ENABLE_INTERNAL_RapidJSON)
   set(RapidJSON_INCLUDE_DIR ${${MODULE}_INCLUDE_DIR})
   set(RapidJSON_VERSION ${${MODULE}_VER})
 
-  # Use custom findpatch to handle windows patch binary if not available
-  include(cmake/modules/FindPatch.cmake)
+  # find the path to the patch executable
+  find_package(Patch MODULE REQUIRED)
 
   set(PATCH_COMMAND ${PATCH_EXECUTABLE} -p1 -i ${CORE_SOURCE_DIR}/tools/depends/target/rapidjson/001-remove_custom_cxx_flags.patch
             COMMAND ${PATCH_EXECUTABLE} -p1 -i ${CORE_SOURCE_DIR}/tools/depends/target/rapidjson/002-cmake-removedocs-examples.patch
