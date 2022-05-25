@@ -57,6 +57,7 @@ sub make_dmg {
     `xcrun SetFile -a V "/Volumes/$pkgname/background"`;
     `xcrun SetFile -a C "/Volumes/$pkgname/"`;
     `cp VolumeDSStoreApp "/Volumes/$pkgname/.DS_Store"`;
+    `diskutil unmountDisk $dev_handle`;
     `hdiutil detach $dev_handle`;
     `hdiutil convert "$volname.dmg" -format UDZO -imagekey zlib-level=9 -o "$volname.udzo.dmg"`;
     `rm -f "$volname.dmg"`;
