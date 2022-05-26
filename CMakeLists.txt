@@ -42,7 +42,7 @@ core_find_versions()
 include(cmake/scripts/common/PathSetup.cmake)
 include(cmake/scripts/common/CompilerSettings.cmake)
 include(ExternalProject)
-
+include(CMakeDependentOption)
 
 # general
 option(VERBOSE            "Enable verbose output?" OFF)
@@ -56,11 +56,14 @@ option(ENABLE_OPTICAL     "Enable optical support?" ON)
 option(ENABLE_PYTHON      "Enable python support?" ON)
 option(ENABLE_TESTING     "Enable testing support?" ON)
 
+# Internal Depends - supported on all platforms
 option(ENABLE_INTERNAL_CROSSGUID "Enable internal crossguid?" ON)
 # use ffmpeg from depends or system
 option(ENABLE_INTERNAL_FFMPEG "Enable internal ffmpeg?" OFF)
 option(ENABLE_INTERNAL_RapidJSON "Enable internal rapidjson?" ON)
+cmake_dependent_option(ENABLE_INTERNAL_TAGLIB "Enable internal taglib?" OFF "DEFINED USE_INTERNAL_LIBS;NOT USE_INTERNAL_LIBS" ON)
 
+# Internal Depends - supported on UNIX platforms
 if(UNIX)
   option(FFMPEG_PATH        "Path to external ffmpeg?" "")
   option(ENABLE_INTERNAL_FMT "Enable internal fmt?" OFF)
@@ -72,7 +75,6 @@ if(UNIX)
   option(ENABLE_INTERNAL_SPDLOG "Enable internal spdlog?" OFF)
 endif()
 # prefer kissfft from xbmc/contrib but let use system one on unices
-include(CMakeDependentOption)
 cmake_dependent_option(ENABLE_INTERNAL_KISSFFT "Enable internal kissfft?" ON "UNIX" ON)
 # System options
 if(NOT WIN32)
