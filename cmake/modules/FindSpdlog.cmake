@@ -93,15 +93,26 @@ if(SPDLOG_FOUND)
                                    -DSPDLOG_WCHAR_TO_UTF8_SUPPORT)
   endif()
 
-  if(NOT TARGET spdlog)
-    add_library(spdlog UNKNOWN IMPORTED)
-    set_target_properties(spdlog PROPERTIES
-                                 IMPORTED_LOCATION "${SPDLOG_LIBRARY}"
-                                 INTERFACE_INCLUDE_DIRECTORIES "${SPDLOG_INCLUDE_DIR}"
-                                 INTERFACE_COMPILE_DEFINITIONS "${SPDLOG_DEFINITIONS}")
+  if(NOT TARGET Spdlog::Spdlog)
+    add_library(Spdlog::Spdlog UNKNOWN IMPORTED)
+    if(SPDLOG_LIBRARY_RELEASE)
+      set_target_properties(Spdlog::Spdlog PROPERTIES
+                                           IMPORTED_CONFIGURATIONS RELEASE
+                                           IMPORTED_LOCATION "${SPDLOG_LIBRARY_RELEASE}")
+    endif()
+    if(SPDLOG_LIBRARY_DEBUG)
+      set_target_properties(Spdlog::Spdlog PROPERTIES
+                                           IMPORTED_CONFIGURATIONS DEBUG
+                                           IMPORTED_LOCATION "${SPDLOG_LIBRARY_DEBUG}")
+    endif()
+    set_target_properties(Spdlog::Spdlog PROPERTIES
+                                         INTERFACE_INCLUDE_DIRECTORIES "${SPDLOG_INCLUDE_DIR}"
+                                         INTERFACE_COMPILE_DEFINITIONS "${SPDLOG_DEFINITIONS}")
   endif()
-
-  set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP spdlog)
+  if(TARGET spdlog)
+    add_dependencies(Spdlog::Spdlog spdlog)
+  endif()
+  set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP Spdlog::Spdlog)
 endif()
 
 mark_as_advanced(SPDLOG_INCLUDE_DIR SPDLOG_LIBRARY)
