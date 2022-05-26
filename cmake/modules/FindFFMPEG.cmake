@@ -93,6 +93,8 @@ macro(buildFFMPEG)
                     ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/CMakeLists.txt
                     <SOURCE_DIR>)
 
+  set(FFMPEG_LIB_TYPE STATIC)
+
   BUILD_DEP_TARGET()
 
   if(ENABLE_INTERNAL_DAV1D)
