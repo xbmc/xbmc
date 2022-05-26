@@ -10,15 +10,12 @@
 #
 # and the following imported targets::
 #
-#   fmt   - The Fmt library
+#   fmt::fmt   - The Fmt library
 
 if(ENABLE_INTERNAL_FMT)
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
   set(MODULE_LC fmt)
-
-  # fmt debug uses postfix d for all platforms
-  set(FMT_DEBUG_POSTFIX d)
 
   SETUP_BUILD_VARS()
 
@@ -44,6 +41,9 @@ if(ENABLE_INTERNAL_FMT)
                  -DFMT_TEST=OFF
                  -DFMT_INSTALL=ON
                  "${EXTRA_ARGS}")
+
+  # fmt debug uses postfix d for all platforms
+  set(FMT_DEBUG_POSTFIX d)
 
   BUILD_DEP_TARGET()
 else()
@@ -78,14 +78,25 @@ if(FMT_FOUND)
   set(FMT_LIBRARIES ${FMT_LIBRARY})
   set(FMT_INCLUDE_DIRS ${FMT_INCLUDE_DIR})
 
-  if(NOT TARGET fmt)
-    add_library(fmt UNKNOWN IMPORTED)
-    set_target_properties(fmt PROPERTIES
-                               IMPORTED_LOCATION "${FMT_LIBRARY}"
-                               INTERFACE_INCLUDE_DIRECTORIES "${FMT_INCLUDE_DIR}")
+  if(NOT TARGET fmt::fmt)
+    add_library(fmt::fmt UNKNOWN IMPORTED)
+    if(FMT_LIBRARY_RELEASE)
+      set_target_properties(fmt::fmt PROPERTIES
+                                     IMPORTED_CONFIGURATIONS RELEASE
+                                     IMPORTED_LOCATION "${FMT_LIBRARY_RELEASE}")
+    endif()
+    if(FMT_LIBRARY_DEBUG)
+      set_target_properties(fmt::fmt PROPERTIES
+                                     IMPORTED_CONFIGURATIONS DEBUG
+                                     IMPORTED_LOCATION "${FMT_LIBRARY_DEBUG}")
+    endif()
+    set_target_properties(fmt::fmt PROPERTIES
+                                   INTERFACE_INCLUDE_DIRECTORIES "${FMT_INCLUDE_DIR}")
   endif()
-
-  set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP fmt)
+  if(TARGET fmt)
+    add_dependencies(fmt::fmt fmt)
+  endif()
+  set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP fmt::fmt)
 endif()
 
 mark_as_advanced(FMT_INCLUDE_DIR FMT_LIBRARY)
