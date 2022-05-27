@@ -8,7 +8,9 @@
 
 #pragma once
 
+#include "BlurayStateSerializer.h"
 #include "DVDInputStream.h"
+
 #include <list>
 #include <memory>
 
@@ -89,8 +91,8 @@ public:
   bool OnMouseMove(const CPoint &point) override  { return MouseMove(point); }
   bool OnMouseClick(const CPoint &point) override { return MouseClick(point); }
   void SkipStill() override;
-  bool GetState(std::string &xmlstate) override { return false; }
-  bool SetState(const std::string &xmlstate) override { return false; }
+  bool GetState(std::string& xmlstate) override;
+  bool SetState(const std::string& xmlstate) override;
   bool CanSeek() override;
 
 
@@ -174,4 +176,7 @@ protected:
     void FreeTitleInfo();
     std::unique_ptr<CDVDInputStreamFile> m_pstream = nullptr;
     std::string m_rootPath;
+
+    /*! Bluray state serializer handler */
+    CBlurayStateSerializer m_blurayStateSerializer;
 };

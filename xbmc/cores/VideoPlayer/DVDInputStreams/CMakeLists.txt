@@ -1,4 +1,5 @@
-set(SOURCES DVDFactoryInputStream.cpp
+set(SOURCES BlurayStateSerializer.cpp
+            DVDFactoryInputStream.cpp
             DVDInputStream.cpp
             DVDInputStreamFFmpeg.cpp
             DVDInputStreamFile.cpp
@@ -12,7 +13,8 @@ set(SOURCES DVDFactoryInputStream.cpp
             InputStreamPVRChannel.cpp
             InputStreamPVRRecording.cpp)
 
-set(HEADERS DVDFactoryInputStream.h
+set(HEADERS BlurayStateSerializer.h
+            DVDFactoryInputStream.h
             DVDInputStream.h
             DVDInputStreamFFmpeg.h
             DVDInputStreamFile.h
