@@ -74,7 +74,8 @@ enum class OverrideStyles
 class CSubtitlesSettings : public ISettingCallback, public Observable
 {
 public:
-  static CSubtitlesSettings& GetInstance();
+  explicit CSubtitlesSettings(const std::shared_ptr<CSettings>& settings);
+  ~CSubtitlesSettings() override;
 
   // Inherited from ISettingCallback
   void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
@@ -204,13 +205,10 @@ public:
                                                 std::string& current,
                                                 void* data);
 
-protected:
-  CSubtitlesSettings();
-  ~CSubtitlesSettings() override;
-
 private:
-  // Construction parameters
-  std::shared_ptr<CSettings> m_settings;
+  CSubtitlesSettings() = delete;
+
+  const std::shared_ptr<CSettings> m_settings;
 };
 
 } // namespace SUBTITLES

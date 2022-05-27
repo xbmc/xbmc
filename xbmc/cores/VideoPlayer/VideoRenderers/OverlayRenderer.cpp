@@ -54,12 +54,12 @@ unsigned int CRenderer::m_textureid = 1;
 
 CRenderer::CRenderer()
 {
-  SUBTITLES::CSubtitlesSettings::GetInstance().RegisterObserver(this);
+  CServiceBroker::GetSettingsComponent()->GetSubtitlesSettings()->RegisterObserver(this);
 }
 
 CRenderer::~CRenderer()
 {
-  SUBTITLES::CSubtitlesSettings::GetInstance().UnregisterObserver(this);
+  CServiceBroker::GetSettingsComponent()->GetSubtitlesSettings()->UnregisterObserver(this);
   Flush();
 }
 
@@ -327,7 +327,8 @@ void CRenderer::ResetSubtitlePosition()
   m_saveSubtitlePosition = false;
   RESOLUTION_INFO resInfo = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
   m_subtitleVerticalMargin =
-      resInfo.iHeight / 100 * SUBTITLES::CSubtitlesSettings::GetInstance().GetVerticalMarginPerc();
+      resInfo.iHeight / 100 *
+      CServiceBroker::GetSettingsComponent()->GetSubtitlesSettings()->GetVerticalMarginPerc();
   m_subtitlePosResInfo = resInfo.iSubtitles;
   // Update player value (and callback to CRenderer::SetSubtitleVerticalPosition)
   g_application.GetAppPlayer().SetSubtitleVerticalPosition(
@@ -337,12 +338,12 @@ void CRenderer::ResetSubtitlePosition()
 void CRenderer::CreateSubtitlesStyle()
 {
   m_overlayStyle = std::make_shared<SUBTITLES::STYLE::style>();
-  SUBTITLES::CSubtitlesSettings& settings{SUBTITLES::CSubtitlesSettings::GetInstance()};
+  const auto settings{CServiceBroker::GetSettingsComponent()->GetSubtitlesSettings()};
 
-  m_overlayStyle->fontName = settings.GetFontName();
-  m_overlayStyle->fontSize = static_cast<double>(settings.GetFontSize());
+  m_overlayStyle->fontName = settings->GetFontName();
+  m_overlayStyle->fontSize = static_cast<double>(settings->GetFontSize());
 
-  SUBTITLES::FontStyle fontStyle = settings.GetFontStyle();
+  SUBTITLES::FontStyle fontStyle = settings->GetFontStyle();
   if (fontStyle == SUBTITLES::FontStyle::BOLD_ITALIC)
     m_overlayStyle->fontStyle = SUBTITLES::STYLE::FontStyle::BOLD_ITALIC;
   else if (fontStyle == SUBTITLES::FontStyle::BOLD)
@@ -350,12 +351,12 @@ void CRenderer::CreateSubtitlesStyle()
   else if (fontStyle == SUBTITLES::FontStyle::ITALIC)
     m_overlayStyle->fontStyle = SUBTITLES::STYLE::FontStyle::ITALIC;
 
-  m_overlayStyle->fontColor = settings.GetFontColor();
-  m_overlayStyle->fontBorderSize = settings.GetBorderSize();
-  m_overlayStyle->fontBorderColor = settings.GetBorderColor();
-  m_overlayStyle->fontOpacity = settings.GetFontOpacity();
+  m_overlayStyle->fontColor = settings->GetFontColor();
+  m_overlayStyle->fontBorderSize = settings->GetBorderSize();
+  m_overlayStyle->fontBorderColor = settings->GetBorderColor();
+  m_overlayStyle->fontOpacity = settings->GetFontOpacity();
 
-  SUBTITLES::BackgroundType backgroundType = settings.GetBackgroundType();
+  SUBTITLES::BackgroundType backgroundType = settings->GetBackgroundType();
   if (backgroundType == SUBTITLES::BackgroundType::NONE)
     m_overlayStyle->borderStyle = SUBTITLES::STYLE::BorderType::OUTLINE_NO_SHADOW;
   else if (backgroundType == SUBTITLES::BackgroundType::SHADOW)
@@ -365,14 +366,14 @@ void CRenderer::CreateSubtitlesStyle()
   else if (backgroundType == SUBTITLES::BackgroundType::SQUAREBOX)
     m_overlayStyle->borderStyle = SUBTITLES::STYLE::BorderType::SQUARE_BOX;
 
-  m_overlayStyle->backgroundColor = settings.GetBackgroundColor();
-  m_overlayStyle->backgroundOpacity = settings.GetBackgroundOpacity();
+  m_overlayStyle->backgroundColor = settings->GetBackgroundColor();
+  m_overlayStyle->backgroundOpacity = settings->GetBackgroundOpacity();
 
-  m_overlayStyle->shadowColor = settings.GetShadowColor();
-  m_overlayStyle->shadowOpacity = settings.GetShadowOpacity();
-  m_overlayStyle->shadowSize = settings.GetShadowSize();
+  m_overlayStyle->shadowColor = settings->GetShadowColor();
+  m_overlayStyle->shadowOpacity = settings->GetShadowOpacity();
+  m_overlayStyle->shadowSize = settings->GetShadowSize();
 
-  SUBTITLES::Align subAlign = settings.GetAlignment();
+  SUBTITLES::Align subAlign = settings->GetAlignment();
   if (subAlign == SUBTITLES::Align::TOP_INSIDE || subAlign == SUBTITLES::Align::TOP_OUTSIDE)
     m_overlayStyle->alignment = SUBTITLES::STYLE::FontAlign::TOP_CENTER;
   else
@@ -381,9 +382,9 @@ void CRenderer::CreateSubtitlesStyle()
   if (subAlign == SUBTITLES::Align::BOTTOM_OUTSIDE || subAlign == SUBTITLES::Align::TOP_OUTSIDE)
     m_overlayStyle->drawWithinBlackBars = true;
 
-  m_overlayStyle->assOverrideFont = settings.IsOverrideFonts();
+  m_overlayStyle->assOverrideFont = settings->IsOverrideFonts();
 
-  SUBTITLES::OverrideStyles overrideStyles = settings.GetOverrideStyles();
+  SUBTITLES::OverrideStyles overrideStyles = settings->GetOverrideStyles();
   if (overrideStyles == SUBTITLES::OverrideStyles::POSITIONS)
     m_overlayStyle->assOverrideStyles = SUBTITLES::STYLE::OverrideStyles::POSITIONS;
   else if (overrideStyles == SUBTITLES::OverrideStyles::STYLES)
@@ -398,7 +399,7 @@ void CRenderer::CreateSubtitlesStyle()
   // for now vertical margin setting will be disabled during playback
   m_overlayStyle->marginVertical = m_subtitleVerticalMargin;
 
-  m_overlayStyle->blur = settings.GetBlurSize();
+  m_overlayStyle->blur = settings->GetBlurSize();
 }
 
 COverlay* CRenderer::ConvertLibass(
@@ -600,6 +601,7 @@ void CRenderer::Notify(const Observable& obs, const ObservableMessage msg)
 
 void CRenderer::LoadSettings()
 {
-  m_subtitleHorizontalAlign = SUBTITLES::CSubtitlesSettings::GetInstance().GetHorizontalAlignment();
+  m_subtitleHorizontalAlign =
+      CServiceBroker::GetSettingsComponent()->GetSubtitlesSettings()->GetHorizontalAlignment();
   ResetSubtitlePosition();
 }

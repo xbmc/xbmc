@@ -12,6 +12,7 @@
 #include "cores/VideoPlayer/DVDSubtitles/SubtitlesStyle.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "filesystem/SpecialProtocol.h"
+#include "settings/SettingsComponent.h"
 #include "settings/SubtitlesSettings.h"
 #include "utils/CSSUtils.h"
 #include "utils/CharsetConverter.h"
@@ -210,7 +211,8 @@ bool CWebVTTHandler::Initialize()
     m_cueCssStyleMapRegex.insert({item.first, reg});
   }
 
-  auto overrideStyles{KODI::SUBTITLES::CSubtitlesSettings::GetInstance().GetOverrideStyles()};
+  auto overrideStyles{
+      CServiceBroker::GetSettingsComponent()->GetSubtitlesSettings()->GetOverrideStyles()};
   m_overridePositions = (overrideStyles == KODI::SUBTITLES::OverrideStyles::STYLES_POSITIONS ||
                          overrideStyles == KODI::SUBTITLES::OverrideStyles::POSITIONS);
   m_overrideStyle = (overrideStyles == KODI::SUBTITLES::OverrideStyles::STYLES_POSITIONS ||

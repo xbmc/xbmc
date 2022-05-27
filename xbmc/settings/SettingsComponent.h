@@ -14,6 +14,14 @@ class CAdvancedSettings;
 class CProfileManager;
 class CSettings;
 
+namespace KODI
+{
+namespace SUBTITLES
+{
+class CSubtitlesSettings;
+} // namespace SUBTITLES
+} // namespace KODI
+
 class CSettingsComponent
 {
 public:
@@ -49,6 +57,12 @@ public:
   std::shared_ptr<CAdvancedSettings> GetAdvancedSettings();
 
   /*!
+   * @brief Get access to the subtitles settings subcomponent.
+   * @return the subtiltles settings subcomponent.
+   */
+  std::shared_ptr<KODI::SUBTITLES::CSubtitlesSettings> GetSubtitlesSettings();
+
+  /*!
    * @brief Get access to the profiles manager subcomponent.
    * @return the profiles manager subcomponent.
    */
@@ -70,5 +84,6 @@ private:
 
   std::shared_ptr<CSettings> m_settings;
   std::shared_ptr<CAdvancedSettings> m_advancedSettings;
+  std::shared_ptr<KODI::SUBTITLES::CSubtitlesSettings> m_subtitlesSettings;
   std::shared_ptr<CProfileManager> m_profileManager;
 };

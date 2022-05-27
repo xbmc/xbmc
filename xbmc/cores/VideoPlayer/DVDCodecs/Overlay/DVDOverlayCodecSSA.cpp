@@ -15,6 +15,7 @@
 #include "Util.h"
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
+#include "settings/SettingsComponent.h"
 #include "settings/SubtitlesSettings.h"
 #include "utils/StringUtils.h"
 
@@ -133,7 +134,8 @@ CDVDOverlay* CDVDOverlayCodecSSA::GetOverlay()
   m_pOverlay = new CDVDOverlaySSA(m_libass);
   m_pOverlay->iPTSStartTime = 0;
   m_pOverlay->iPTSStopTime = DVD_NOPTS_VALUE;
-  auto overrideStyles{SUBTITLES::CSubtitlesSettings::GetInstance().GetOverrideStyles()};
+  auto overrideStyles{
+      CServiceBroker::GetSettingsComponent()->GetSubtitlesSettings()->GetOverrideStyles()};
   m_pOverlay->SetForcedMargins(overrideStyles != SUBTITLES::OverrideStyles::STYLES_POSITIONS &&
                                overrideStyles != SUBTITLES::OverrideStyles::POSITIONS);
   return m_pOverlay->Acquire();
