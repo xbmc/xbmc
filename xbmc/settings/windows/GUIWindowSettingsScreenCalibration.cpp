@@ -317,7 +317,8 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
       CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(m_Res[m_iCurRes]);
 
   m_subtitleVerticalMargin =
-      info.iHeight / 100 * SUBTITLES::CSubtitlesSettings::GetInstance().GetVerticalMarginPerc();
+      info.iHeight / 100 *
+      CServiceBroker::GetSettingsComponent()->GetSubtitlesSettings()->GetVerticalMarginPerc();
 
   if (pControl)
   {

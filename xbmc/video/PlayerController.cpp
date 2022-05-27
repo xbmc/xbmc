@@ -377,8 +377,8 @@ bool CPlayerController::OnAction(const CAction &action)
 
       case ACTION_SUBTITLE_ALIGN:
       {
-        SUBTITLES::CSubtitlesSettings& settings{SUBTITLES::CSubtitlesSettings::GetInstance()};
-        SUBTITLES::Align align{settings.GetAlignment()};
+        const auto settings{CServiceBroker::GetSettingsComponent()->GetSubtitlesSettings()};
+        SUBTITLES::Align align{settings->GetAlignment()};
 
         align = static_cast<SUBTITLES::Align>(static_cast<int>(align) + 1);
 
@@ -389,7 +389,7 @@ bool CPlayerController::OnAction(const CAction &action)
           align = SUBTITLES::Align::MANUAL;
         }
 
-        settings.SetAlignment(align);
+        settings->SetAlignment(align);
         CGUIDialogKaiToast::QueueNotification(
             CGUIDialogKaiToast::Info, g_localizeStrings.Get(21460),
             g_localizeStrings.Get(21461 + static_cast<int>(align)), TOAST_DISPLAY_TIME, false);
