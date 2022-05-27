@@ -132,15 +132,12 @@ void CWinSystemAndroidGLESContext::PresentRenderImpl(bool rendered)
   if (IsHdmiModeTriggered())
     SetHdmiState(true);
 
-  if (rendered)
-  {
-    // Ignore EGL_BAD_SURFACE: It seems to happen during/after mode changes, but
-    // we can't actually do anything about it
-    if (m_pGLContext.TrySwapBuffers())
-      CXBMCApp::Get().WaitVSync(1000);
-    else
-      CEGLUtils::Log(LOGERROR, "eglSwapBuffers failed");
-  }
+  // Ignore EGL_BAD_SURFACE: It seems to happen during/after mode changes, but
+  // we can't actually do anything about it
+  if (rendered && !m_pGLContext.TrySwapBuffers())
+    CEGLUtils::Log(LOGERROR, "eglSwapBuffers failed");
+
+  CXBMCApp::Get().WaitVSync(1000);
 }
 
 float CWinSystemAndroidGLESContext::GetFrameLatencyAdjustment()
