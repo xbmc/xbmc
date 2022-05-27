@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 if(WIN32)
-  # Version 3.15 is required to use "PREPEND" for dependencies
-  cmake_minimum_required(VERSION 3.15)
+  # Version 3.20 is required for multi-config generator expressions to work
+  cmake_minimum_required(VERSION 3.20)
 endif()
 project(kodi LANGUAGES CXX C ASM)
 
