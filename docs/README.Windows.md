@@ -46,7 +46,7 @@ Several different strategies are used to draw your attention to certain pieces o
 
 ## 2. Prerequisites
 To build Kodi:
-* **[CMake](https://cmake.org/download/)** (version 3.15 or greater is required to build with Visual Studio 2019, version 3.21 or greater to build with Visual Studio 2022)
+* **[CMake](https://cmake.org/download/)** (version 3.20 or greater is required to build Kodi, version 3.21 or greater to build with Visual Studio 2022)
 * **[Git for Windows](https://gitforwindows.org/)**
 * **[Java Runtime Environment (JRE)](http://www.oracle.com/technetwork/java/javase/downloads/index.html)**
 * **[Nullsoft scriptable install system (NSIS)](http://nsis.sourceforge.net/Download)** (Only needed if you want to generate an installer file)
