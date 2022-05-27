@@ -2300,6 +2300,23 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagVideo
+      /// @brief \python_func{ setVersion(version) }
+      /// Set the edition of the video item.
+      ///
+      /// @param title              string - Version.
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v20 New function added.
+      ///
+      setVersion(...);
+#else
+      void setVersion(const String& version);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagVideo
       /// @brief \python_func{ setProductionCode(const String& productionCode) }
       /// Set the production code of the video item.
       ///
@@ -2734,6 +2751,7 @@ namespace XBMCAddon
       static void setSetRaw(CVideoInfoTag* infoTag, const String& set);
       static void setSetOverviewRaw(CVideoInfoTag* infoTag, const String& setOverview);
       static void setTagsRaw(CVideoInfoTag* infoTag, std::vector<String> tags);
+      static void setVersionRaw(CVideoInfoTag* infoTag, const String& version);
       static void setProductionCodeRaw(CVideoInfoTag* infoTag, const String& productionCode);
       static void setFirstAiredRaw(CVideoInfoTag* infoTag, const String& firstAired);
       static void setLastPlayedRaw(CVideoInfoTag* infoTag, const String& lastPlayed);

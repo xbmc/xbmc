@@ -584,6 +584,12 @@ namespace XBMCAddon
       setTagsRaw(infoTag, std::move(tags));
     }
 
+    void InfoTagVideo::setVersion(const String& version)
+    {
+      XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
+      setVersionRaw(infoTag, version);
+    }
+
     void InfoTagVideo::setProductionCode(const String& productionCode)
     {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
@@ -934,6 +940,11 @@ namespace XBMCAddon
     void InfoTagVideo::setTagsRaw(CVideoInfoTag* infoTag, std::vector<String> tags)
     {
       infoTag->SetTags(std::move(tags));
+    }
+
+    void InfoTagVideo::setVersionRaw(CVideoInfoTag* infoTag, const String& version)
+    {
+      infoTag->SetVersion(version);
     }
 
     void InfoTagVideo::setProductionCodeRaw(CVideoInfoTag* infoTag, const String& productionCode)
