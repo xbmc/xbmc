@@ -9,13 +9,11 @@
 #include "SubtitlesSettings.h"
 
 #include "FileItem.h"
-#include "ServiceBroker.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "guilib/GUIFontManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "utils/FontUtils.h"
 #include "utils/StringUtils.h"
@@ -24,10 +22,9 @@
 using namespace KODI;
 using namespace SUBTITLES;
 
-CSubtitlesSettings::CSubtitlesSettings()
+CSubtitlesSettings::CSubtitlesSettings(const std::shared_ptr<CSettings>& settings)
+  : m_settings(settings)
 {
-  m_settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-
   m_settings->RegisterCallback(
       this,
       {CSettings::SETTING_LOCALE_SUBTITLELANGUAGE,  CSettings::SETTING_SUBTITLES_PARSECAPTIONS,
@@ -50,12 +47,6 @@ CSubtitlesSettings::CSubtitlesSettings()
 CSubtitlesSettings::~CSubtitlesSettings()
 {
   m_settings->UnregisterCallback(this);
-}
-
-CSubtitlesSettings& CSubtitlesSettings::GetInstance()
-{
-  static CSubtitlesSettings sSubtitlesSettings;
-  return sSubtitlesSettings;
 }
 
 void CSubtitlesSettings::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
