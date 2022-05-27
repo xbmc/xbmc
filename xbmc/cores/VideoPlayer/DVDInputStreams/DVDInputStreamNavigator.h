@@ -15,6 +15,7 @@
 #include "DVDInputStreamFile.h"
 #include "DVDStateSerializer.h"
 #include "DllDvdNav.h"
+#include "cores/MenuType.h"
 #include "utils/Geometry.h"
 
 #include <string>
@@ -76,7 +77,12 @@ public:
   int GetTotalButtons() override;
   bool GetCurrentButtonInfo(CDVDOverlaySpu* pOverlayPicture, CDVDDemuxSPU* pSPU, int iButtonType /* 0 = selection, 1 = action (clicked)*/);
 
-  bool HasMenu() override { return true; }
+  /*!
+   * \brief Get the supported menu type
+   * \return The supported menu type
+  */
+  MenuType GetSupportedMenuType() override { return MenuType::NATIVE; }
+
   bool IsInMenu() override { return m_bInMenu; }
   double GetTimeStampCorrection() override { return (double)(m_iVobUnitCorrection * 1000) / 90; }
 

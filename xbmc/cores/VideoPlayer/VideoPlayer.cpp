@@ -4471,10 +4471,10 @@ bool CVideoPlayer::IsInMenu() const
   return m_State.isInMenu;
 }
 
-bool CVideoPlayer::HasMenu() const
+MenuType CVideoPlayer::GetSupportedMenuType() const
 {
   std::unique_lock<CCriticalSection> lock(m_StateSection);
-  return m_State.hasMenu;
+  return m_State.menuType;
 }
 
 std::string CVideoPlayer::GetPlayerState()
@@ -4706,7 +4706,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
   state.canseek = false;
   state.cantempo = false;
   state.isInMenu = false;
-  state.hasMenu = false;
+  state.menuType = MenuType::NONE;
 
   if (m_pInputStream)
   {
@@ -4784,7 +4784,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
         if (!pMenu->CanSeek())
           state.time_offset = 0;
       }
-      state.hasMenu = pMenu->HasMenu();
+      state.menuType = pMenu->GetSupportedMenuType();
     }
 
     state.canpause = m_pInputStream->CanPause();

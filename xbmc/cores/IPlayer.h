@@ -10,6 +10,7 @@
 
 #include "IPlayerCallback.h"
 #include "Interface/StreamInfo.h"
+#include "MenuType.h"
 #include "VideoSettings.h"
 
 #include <memory>
@@ -196,7 +197,12 @@ public:
   virtual int GetCacheLevel() const { return -1; }
 
   virtual bool IsInMenu() const { return false; }
-  virtual bool HasMenu() const { return false; }
+
+  /*!
+   * \brief Get the supported menu type
+   * \return The supported menu type
+  */
+  virtual MenuType GetSupportedMenuType() const { return MenuType::NONE; }
 
   virtual void DoAudioWork() {}
   virtual bool OnAction(const CAction& action) { return false; }

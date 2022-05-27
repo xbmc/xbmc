@@ -10,6 +10,7 @@
 
 #include "FileItem.h"
 #include "URL.h"
+#include "cores/MenuType.h"
 #include "filesystem/IFileTypes.h"
 #include "utils/BitstreamStats.h"
 #include "utils/Geometry.h"
@@ -108,7 +109,13 @@ public:
     virtual void OnPrevious() = 0;
     virtual bool OnMouseMove(const CPoint &point) = 0;
     virtual bool OnMouseClick(const CPoint &point) = 0;
-    virtual bool HasMenu() = 0;
+
+    /*!
+    * \brief Get the supported menu type
+    * \return The supported menu type
+    */
+    virtual MenuType GetSupportedMenuType() = 0;
+
     virtual bool IsInMenu() = 0;
     virtual void SkipStill() = 0;
     virtual double GetTimeStampCorrection() { return 0.0; }

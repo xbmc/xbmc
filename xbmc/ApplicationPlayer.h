@@ -10,6 +10,7 @@
 
 #include "SeekHandler.h"
 #include "cores/IPlayer.h"
+#include "cores/MenuType.h"
 #include "threads/CriticalSection.h"
 #include "threads/SystemClock.h"
 #include "windowing/Resolution.h"
@@ -105,7 +106,13 @@ public:
   void SetProgram(int progId);
   int GetProgramsCount();
   bool HasAudio() const;
-  bool HasMenu() const;
+
+  /*!
+   * \brief Get the supported menu type
+   * \return The supported menu type
+  */
+  MenuType GetSupportedMenuType() const;
+
   bool HasVideo() const;
   bool HasGame() const;
   bool HasRDS() const;
