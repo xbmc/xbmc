@@ -26,6 +26,7 @@ Node MovieChildren[] = {
                         { NODE_TYPE_SETS,         "sets",       20434 },
                         { NODE_TYPE_COUNTRY,      "countries",  20451 },
                         { NODE_TYPE_TAGS,         "tags",       20459 },
+			// TODO(ccope): Pick a new name for this feature/db
                         { NODE_TYPE_TYPES,        "types",      39300 },
                        };
 
