@@ -776,7 +776,7 @@ bool CVideoGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextW
               CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_FULLSCREEN_GAME;
       return true;
     case VIDEOPLAYER_HASMENU:
-      value = g_application.GetAppPlayer().HasMenu();
+      value = g_application.GetAppPlayer().GetSupportedMenuType() != MenuType::NONE;
       return true;
     case VIDEOPLAYER_HASTELETEXT:
       if (g_application.GetAppPlayer().GetTeletextCache())

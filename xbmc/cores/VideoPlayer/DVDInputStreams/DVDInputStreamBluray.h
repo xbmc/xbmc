@@ -86,7 +86,13 @@ public:
   }
   void OnNext() override {}
   void OnPrevious() override {}
-  bool HasMenu() override;
+
+  /*!
+   * \brief Get the supported menu type
+   * \return The supported menu type
+  */
+  MenuType GetSupportedMenuType() override;
+
   bool IsInMenu() override;
   bool OnMouseMove(const CPoint &point) override  { return MouseMove(point); }
   bool OnMouseClick(const CPoint &point) override { return MouseClick(point); }

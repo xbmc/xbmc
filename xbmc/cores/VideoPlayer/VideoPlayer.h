@@ -18,6 +18,7 @@
 #include "VideoPlayerTeletext.h"
 #include "VideoPlayerVideo.h"
 #include "cores/IPlayer.h"
+#include "cores/MenuType.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "guilib/DispResource.h"
@@ -45,7 +46,7 @@ struct SPlayerState
     dts = DVD_NOPTS_VALUE;
     player_state  = "";
     isInMenu = false;
-    hasMenu = false;
+    menuType = MenuType::NONE;
     chapter = 0;
     chapters.clear();
     canpause = false;
@@ -72,7 +73,7 @@ struct SPlayerState
 
   std::string player_state; // full player state
   bool isInMenu;
-  bool hasMenu;
+  MenuType menuType;
   bool streamsReady;
 
   int chapter;              // current chapter
@@ -263,7 +264,12 @@ public:
   void SetAVDelay(float fValue = 0.0f) override;
   float GetAVDelay() override;
   bool IsInMenu() const override;
-  bool HasMenu() const override;
+
+  /*!
+   * \brief Get the supported menu type
+   * \return The supported menu type
+  */
+  MenuType GetSupportedMenuType() const override;
 
   void SetSubTitleDelay(float fValue = 0.0f) override;
   float GetSubTitleDelay() override;
