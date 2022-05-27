@@ -1340,9 +1340,6 @@ void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTa
   UpdateVideoTagField(parameterObject, "tag", tags, updatedDetails);
   details.SetTags(tags);
 
-  if (ParameterNotNull(parameterObject, "version"))
-    details.SetVersion(parameterObject["version"].asString());
-
   if (ParameterNotNull(parameterObject, "thumbnail"))
   {
     std::string value = parameterObject["thumbnail"].asString();
