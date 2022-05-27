@@ -201,7 +201,6 @@ void CVideoDatabase::CreateTables()
 
   CLog::Log(LOGINFO, "create type table");
   m_pDS->exec("CREATE TABLE type (type_id INTEGER PRIMARY KEY, name TEXT)");
-  InitializeTypeTable();
 
   CLog::Log(LOGINFO, "create type_link table");
   m_pDS->exec("CREATE TABLE type_link (file_id INTEGER PRIMARY KEY, media_id INTEGER, "
@@ -11515,40 +11514,4 @@ void CVideoDatabase::EraseAllForPath(const std::string& path)
   {
     CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
   }
-}
-
-void CVideoDatabase::InitializeTypeTable()
-{
-  const char* types[] = { "Standard",
-                          "Extended",
-                          "Unrated",
-                          "Uncut",
-                          "Remastered",
-                          "Limited",
-                          "Special",
-                          "Director Cut",
-                          "3D",
-                          "4K",
-                          "IMAX",
-                          "BluRay",
-                          "WEB-DL",
-                          "DVD",
-                          "VHS",
-                          "VCD",
-                          "The Final Cut",
-                          "Super Duper Cut",
-                          "Theatrical",
-                          "Collector",
-                          "Ultimate Collector",
-                          "Criterion Collection",
-                          "10th Anniversary",
-                          "20th Anniversary",
-                          "25th Anniversary",
-                          "30th Anniversary",
-                          "40th Anniversary",
-                          "50th Anniversary",
-  };
-
-  for (const char* type : types)
-    m_pDS->exec(PrepareSQL("INSERT INTO type VALUES(NULL, '%s')", type));
 }
