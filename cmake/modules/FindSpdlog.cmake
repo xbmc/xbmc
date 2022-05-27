@@ -18,9 +18,6 @@ if(ENABLE_INTERNAL_SPDLOG)
 
   set(MODULE_LC spdlog)
 
-  # spdlog debug uses postfix d for all platforms
-  set(SPDLOG_DEBUG_POSTFIX d)
-
   SETUP_BUILD_VARS()
 
   if(APPLE)
@@ -47,6 +44,9 @@ if(ENABLE_INTERNAL_SPDLOG)
                  -DSPDLOG_FMT_EXTERNAL=ON
                  -DCMAKE_PREFIX_PATH=${DEPENDS_PATH}
                  "${EXTRA_ARGS}")
+
+  # spdlog debug uses postfix d for all platforms
+  set(SPDLOG_DEBUG_POSTFIX d)
 
   BUILD_DEP_TARGET()
 

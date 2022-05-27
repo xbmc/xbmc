@@ -18,13 +18,6 @@ if(ENABLE_INTERNAL_TAGLIB)
 
   set(MODULE_LC taglib)
 
-  # Debug postfix only used for windows
-  if(WIN32 OR WINDOWS_STORE)
-    set(TAGLIB_DEBUG_POSTFIX "d")
-  else()
-    set(TAGLIB_DEBUG_POSTFIX "")
-  endif()
-
   SETUP_BUILD_VARS()
 
   set(TAGLIB_VERSION ${${MODULE}_VER})
@@ -41,6 +34,11 @@ if(ENABLE_INTERNAL_TAGLIB)
 
   set(CMAKE_ARGS -DBUILD_SHARED_LIBS=OFF
                  -DBUILD_BINDINGS=OFF)
+
+  # Debug postfix only used for windows
+  if(WIN32 OR WINDOWS_STORE)
+    set(TAGLIB_DEBUG_POSTFIX "d")
+  endif()
 
   BUILD_DEP_TARGET()
 
