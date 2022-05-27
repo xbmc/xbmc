@@ -98,28 +98,34 @@ LogRedirector g_LogRedirector;
 
 extern void android_main(struct android_app* state)
 {
-  // revector inputPollSource.process so we can shut up
-  // its useless verbose logging on new events (see ouya)
-  // and fix the error in handling multiple input events.
-  // see https://code.google.com/p/android/issues/detail?id=41755
-  state->inputPollSource.process = process_input;
-
-  CEventLoop eventLoop(state);
-  IInputHandler inputHandler;
-  CXBMCApp& theApp = CXBMCApp::Create(state->activity, inputHandler);
-  if (theApp.isValid())
   {
-    eventLoop.run(theApp, inputHandler);
-    theApp.Quit();
-  }
-  else
-  {
-    CXBMCApp::android_printf("android_main: setup failed");
-  }
+    // revector inputPollSource.process so we can shut up
+    // its useless verbose logging on new events (see ouya)
+    // and fix the error in handling multiple input events.
+    // see https://code.google.com/p/android/issues/detail?id=41755
+    state->inputPollSource.process = process_input;
 
-  CXBMCApp::Destroy();
+    CEventLoop eventLoop(state);
+    IInputHandler inputHandler;
+    CXBMCApp& theApp = CXBMCApp::Create(state->activity, inputHandler);
+    if (theApp.isValid())
+    {
+      eventLoop.run(theApp, inputHandler);
+      theApp.Quit();
+    }
+    else
+      CXBMCApp::android_printf("android_main: setup failed");
 
-  CXBMCApp::android_printf("android_main: Exiting");
+    CXBMCApp::android_printf("android_main: Exiting");
+
+    CXBMCApp::Destroy();
+  }
+  // We need to call exit() so that all loaded libraries are properly unloaded
+  // otherwise on the next start of the Activity android will simply re-use
+  // those loaded libs in the state they were in when we quit Kodi last time
+  // which will lead to crashes because of global/static classes that haven't
+  // been properly uninitialized
+  exit(0);
 }
 
 extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
