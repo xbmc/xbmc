@@ -1181,9 +1181,13 @@ bool CDVDInputStreamBluray::CanSeek()
   return !IsInMenu() || !m_isInMainMenu;
 }
 
-bool CDVDInputStreamBluray::HasMenu()
+MenuType CDVDInputStreamBluray::GetSupportedMenuType()
 {
-  return m_navmode;
+  if (m_navmode)
+  {
+    return MenuType::NATIVE;
+  }
+  return MenuType::NONE;
 }
 
 void CDVDInputStreamBluray::SetupPlayerSettings()
