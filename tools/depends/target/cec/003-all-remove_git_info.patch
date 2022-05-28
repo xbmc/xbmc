@@ -15,4 +15,4 @@
 +  endif()
  
    # add compilation date to compile info
-   find_program(HAVE_DATE_BIN date /bin /usr/bin /usr/local/bin)
+   STRING(TIMESTAMP BUILD_DATE "%Y-%m-%d %H:%M:%S" UTC)
