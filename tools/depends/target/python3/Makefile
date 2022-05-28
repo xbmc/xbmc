@@ -1,7 +1,10 @@
 include ../../Makefile.include PYTHON3-VERSION ../../download-files.include
-DEPS = ../../Makefile.include ../../download-files.include Makefile PYTHON3-VERSION ../../download-files.include \
-       apple.patch crosscompile.patch android.patch \
-       modules.setup darwin_embedded.patch
+DEPS = ../../Makefile.include Makefile PYTHON3-VERSION ../../download-files.include \
+                                 apple.patch \
+                                 crosscompile.patch \
+                                 android.patch \
+                                 darwin_embedded.patch \
+                                 modules.setup
 
 ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
   HOSTPLATFORM=_PYTHON_HOST_PLATFORM="darwin"
@@ -29,10 +32,10 @@ CONFIGURE=./configure --prefix=$(PREFIX) \
                       --enable-ipv6 \
                       $(EXTRA_CONFIGURE)
 
+
 LIBDYLIB=$(PLATFORM)/libpython$(PYTHON_VERSION).a
 
 all: .installed-$(PLATFORM)
-
 
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)

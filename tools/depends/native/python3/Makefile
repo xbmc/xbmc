@@ -1,6 +1,7 @@
 include ../../Makefile.include PYTHON3-VERSION ../../download-files.include
 PLATFORM=$(NATIVEPLATFORM)
-DEPS = ../../Makefile.include ../../download-files.include Makefile PYTHON3-VERSION 01-distutil-flags.patch ../../download-files.include
+DEPS = ../../Makefile.include Makefile PYTHON3-VERSION ../../download-files.include \
+                                01-distutil-flags.patch
 
 CWD=$(shell pwd)
 HOSTPYTHONDIR=$(CWD)/$(PLATFORM)/hostpython

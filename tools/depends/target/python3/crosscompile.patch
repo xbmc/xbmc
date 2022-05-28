@@ -44,6 +44,15 @@
  
  # This global variable is used to hold the list of modules to be disabled.
  DISABLED_MODULE_LIST = []
+@@ -58,7 +58,7 @@
+     return sys.platform
+ 
+ 
+-CROSS_COMPILING = ("_PYTHON_HOST_PLATFORM" in os.environ)
++CROSS_COMPILING = ("_PYTHON_HOST_PLATFORM" in os.environ) or ('CROSS_COMPILE_TARGET' in os.environ)
+ HOST_PLATFORM = get_platform()
+ MS_WINDOWS = (HOST_PLATFORM == 'win32')
+ CYGWIN = (HOST_PLATFORM == 'cygwin')
 @@ -445,6 +445,7 @@
          self.compiler.set_executables(**args)
  
