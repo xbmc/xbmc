@@ -25,4 +25,8 @@ if(DBUS_FOUND)
                       DBusUtil.h)
 endif()
 
+if(ADDONS_CONFIGURE_AT_STARTUP)
+  add_compile_definitions(ADDONS_CONFIGURE_AT_STARTUP)
+endif()
+
 core_add_library(linuxsupport)

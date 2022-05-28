@@ -152,3 +152,12 @@ void CPlatformLinux::DeinitStageOne()
   DeregisterService(typeid(CFDEventMonitor));
 #endif // HAS_ALSA
 }
+
+bool CPlatformLinux::IsConfigureAddonsAtStartupEnabled()
+{
+#if defined(ADDONS_CONFIGURE_AT_STARTUP)
+  return true;
+#else
+  return false;
+#endif
+}
