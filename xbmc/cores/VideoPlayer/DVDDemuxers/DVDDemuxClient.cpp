@@ -323,7 +323,7 @@ DemuxPacket* CDVDDemuxClient::Read()
   }
   else if (m_packet->iStreamId == DMX_SPECIALID_STREAMCHANGE)
   {
-    RequestStreams();
+    RequestStreams(true);
   }
   else if (m_packet->iStreamId >= 0 && m_streams.count(m_packet->iStreamId) > 0)
   {
@@ -387,11 +387,11 @@ std::vector<CDemuxStream*> CDVDDemuxClient::GetStreams() const
   return streams;
 }
 
-void CDVDDemuxClient::RequestStreams()
+void CDVDDemuxClient::RequestStreams(bool forceInit /*=false*/)
 {
   std::map<int, std::shared_ptr<CDemuxStream>> newStreamMap;
   for (auto stream : m_IDemux->GetStreams())
-    SetStreamProps(stream, newStreamMap, false);
+    SetStreamProps(stream, newStreamMap, forceInit);
   m_streams = newStreamMap;
 }
 

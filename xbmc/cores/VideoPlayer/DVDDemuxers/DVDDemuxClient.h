@@ -45,7 +45,7 @@ public:
   void SetVideoResolution(int width, int height) override;
 
 protected:
-  void RequestStreams();
+  void RequestStreams(bool forceInit = false);
   void SetStreamProps(CDemuxStream *stream, std::map<int, std::shared_ptr<CDemuxStream>> &map, bool forceInit);
   bool ParsePacket(DemuxPacket* pPacket);
   void DisposeStreams();
