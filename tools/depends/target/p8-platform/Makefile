@@ -1,15 +1,10 @@
-include ../../Makefile.include
-DEPS = ../../Makefile.include Makefile 0001-fix-c++17-support.patch ../../download-files.include
+include ../../Makefile.include P8-PLATFORM-VERSION ../../download-files.include
+DEPS = ../../Makefile.include Makefile P8-PLATFORM-VERSION ../../download-files.include \
+                              001-all-fix-c++17-support.patch \
+                              002-all-fixcmakeinstall.patch \
+                              003-all-cmake_tweakversion.patch
 
-# lib name, version
-LIBNAME=p8-platform
-VERSION=2.1.0.1
-SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
-SHA512=10f8e3ca8ea7a48923a4cc57d47015b56b4bdbf78997ba77abd9fc2f929198fda16dfb869ba69eec393ab4b635be916c3ed9a07d6989bf8265aa055794e84bf7
-include ../../download-files.include
-
-LIBDYLIB=$(PLATFORM)/build/lib$(LIBNAME).a
+LIBDYLIB=$(PLATFORM)/build/$(BYPRODUCT)
 
 all: .installed-$(PLATFORM)
 
@@ -17,8 +12,10 @@ all: .installed-$(PLATFORM)
 $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)/build
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); patch -p1 -i ../0001-fix-c++17-support.patch
-	cd $(PLATFORM)/build; $(CMAKE) -DBUILD_SHARED_LIBS=0 -DCMAKE_INSTALL_LIBDIR=$(PREFIX)/lib ..
+	cd $(PLATFORM); patch -p1 -i ../001-all-fix-c++17-support.patch
+	cd $(PLATFORM); patch -p1 -i ../002-all-fixcmakeinstall.patch
+	cd $(PLATFORM); patch -p1 -i ../003-all-cmake_tweakversion.patch
+	cd $(PLATFORM)/build; $(CMAKE) -DBUILD_SHARED_LIBS=0 ..
 
 $(LIBDYLIB): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM)/build
