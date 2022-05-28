@@ -1,0 +1,58 @@
+--- a/src/libcec/CMakeLists.txt
++++ b/src/libcec/CMakeLists.txt
+@@ -213,15 +213,26 @@
+ 
+ if (MSVC)
+   # generate pdb in release mode too
++  # Tell linker to include symbol data
++  target_compile_options(cec PRIVATE $<$<CONFIG:RELEASE>:/Zi>)
++
++  # Tell linker to include symbol data
++  set_target_properties(cec PROPERTIES 
++      LINK_FLAGS_RELEASE "/INCREMENTAL:NO /DEBUG /OPT:REF /OPT:ICF"
++  )
+   set_target_properties(cec
+       PROPERTIES
+       COMPILE_PDB_NAME_DEBUG cec${CMAKE_DEBUG_POSTFIX}
+       COMPILE_PDB_NAME_RELEASE cec
+       COMPILE_PDB_NAME_MINSIZEREL cec
+       COMPILE_PDB_NAME_RELWITHDEBINFO cec)
++
++  # install generated pdb
++  install(FILES $<TARGET_PDB_FILE:cec> DESTINATION lib)
+ endif(MSVC)
+ 
+ if(WIN32)
++if(ENABLE_STATIC)
+   # libCEC static target used by .net wrappers
+   add_library(cec-static STATIC ${CEC_SOURCES})
+   install(TARGETS cec-static
+@@ -243,6 +243,12 @@
+ 
+   if (MSVC)
+     # generate pdb in release mode too
++    target_compile_options(cec-static PRIVATE $<$<CONFIG:RELEASE>:/Zi>)
++
++    # Tell linker to include symbol data
++    set_target_properties(cec-static PROPERTIES 
++        LINK_FLAGS_RELEASE "/INCREMENTAL:NO /DEBUG /OPT:REF /OPT:ICF"
++    )
+     set_target_properties(cec-static
+         PROPERTIES
+         COMPILE_PDB_NAME_DEBUG cec-static${CMAKE_DEBUG_POSTFIX}
+@@ -256,12 +256,10 @@
+         COMPILE_PDB_NAME_MINSIZEREL cec-static
+         COMPILE_PDB_NAME_RELWITHDEBINFO cec-static)
+ 
+-    # install generated pdb
+-    install(FILES $<TARGET_FILE_DIR:cec>/cec.pdb
+-            DESTINATION "${CMAKE_INSTALL_LIBDIR}")
+-    install(FILES $<TARGET_FILE_DIR:cec-static>/cec-static.pdb
+-            DESTINATION "${CMAKE_INSTALL_LIBDIR}")
++    install(FILES $<TARGET_PDB_FILE:cec-static>
++            DESTINATION lib)
+   endif(MSVC)
++endif()
+ endif(WIN32)
+ 
+ include(cmake/DisplayPlatformSupport.cmake)
