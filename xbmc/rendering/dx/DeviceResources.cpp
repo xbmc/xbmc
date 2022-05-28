@@ -607,6 +607,8 @@ void DX::DeviceResources::ResizeBuffers()
     const bool isHdrEnabled = (hdrStatus == HDR_STATUS::HDR_ON);
     bool is10bitSafe = (hdrStatus != HDR_STATUS::HDR_UNSUPPORTED);
 
+// Xbox needs 10 bit swapchain to output true 4K resolution
+#ifdef TARGET_WINDOWS_DESKTOP
     DXGI_ADAPTER_DESC ad = {};
     GetAdapterDesc(&ad);
 
@@ -614,6 +616,7 @@ void DX::DeviceResources::ResizeBuffers()
     // Enabled by default only in Intel and NVIDIA with latest drivers/hardware
     if (m_d3dFeatureLevel < D3D_FEATURE_LEVEL_12_1 || ad.VendorId == PCIV_ATI)
       is10bitSafe = false;
+#endif
 
     DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
     swapChainDesc.Width = lround(m_outputSize.Width);
