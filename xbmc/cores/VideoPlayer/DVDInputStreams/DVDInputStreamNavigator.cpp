@@ -131,12 +131,13 @@ bool CDVDInputStreamNavigator::Open()
   else
   {
     // find out what region dvd reports itself to be from, and use that as mask if available
-    vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
-    if (vm && vm->vmgi && vm->vmgi->vmgi_mat)
-      mask = ((vm->vmgi->vmgi_mat->vmg_category >> 16) & 0xff) ^ 0xff;
+    if (m_dll.dvdnav_get_disk_region_mask(m_dvdnav, &mask) == DVDNAV_STATUS_ERR)
+    {
+      CLog::LogF(LOGERROR, "Error getting DVD region code: {}",
+                 m_dll.dvdnav_err_to_string(m_dvdnav));
+      mask = 0xff;
+    }
   }
-  if(!mask)
-    mask = 0xff;
 
   CLog::Log(LOGDEBUG, "{} - Setting region mask {:02x}", __FUNCTION__, mask);
   m_dll.dvdnav_set_region_mask(m_dvdnav, mask);
@@ -616,23 +617,14 @@ bool CDVDInputStreamNavigator::SetActiveAudioStream(int iId)
   if (!m_dvdnav)
     return false;
 
-  vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
-  if (!vm)
-    return false;
-  if (!vm->state.pgc)
-    return false;
+  dvdnav_status_t ret = m_dll.dvdnav_set_active_stream(m_dvdnav, iId, DVD_AUDIO_STREAM);
+  if (ret == DVDNAV_STATUS_ERR)
+  {
+    CLog::LogF(LOGERROR, "dvdnav_set_active_stream (audio) failed: {}",
+               m_dll.dvdnav_err_to_string(m_dvdnav));
+  }
 
-  /* make sure stream is valid, if not don't allow it */
-  if (iId < 0 || iId >= 8)
-    return false;
-  else if (!(vm->state.pgc->audio_control[iId] & (1 << 15)))
-    return false;
-
-  if (vm->state.domain != VTS_DOMAIN && iId != 0)
-    return false;
-
-  vm->state.AST_REG = iId;
-  return true;
+  return ret == DVDNAV_STATUS_OK;
 }
 
 bool CDVDInputStreamNavigator::SetActiveSubtitleStream(int iId)
@@ -642,25 +634,14 @@ bool CDVDInputStreamNavigator::SetActiveSubtitleStream(int iId)
   if (!m_dvdnav)
     return false;
 
-  vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
-  if (!vm)
-    return false;
-  if (!vm->state.pgc)
-    return false;
+  dvdnav_status_t ret = m_dll.dvdnav_set_active_stream(m_dvdnav, iId, DVD_SUBTITLE_STREAM);
+  if (ret == DVDNAV_STATUS_ERR)
+  {
+    CLog::LogF(LOGERROR, "dvdnav_set_active_stream (subtitles) failed: {}",
+               m_dll.dvdnav_err_to_string(m_dvdnav));
+  }
 
-  /* make sure stream is valid, if not don't allow it */
-  if (iId < 0 || iId >= 32)
-    return false;
-  else if (!(vm->state.pgc->subp_control[iId] & (1U << 31)))
-    return false;
-
-  if (vm->state.domain != VTS_DOMAIN && iId != 0)
-    return false;
-
-  /* set subtitle stream without modifying visibility */
-  vm->state.SPST_REG = iId | (vm->state.SPST_REG & 0x40);
-
-  return true;
+  return ret == DVDNAV_STATUS_OK;
 }
 
 void CDVDInputStreamNavigator::ActivateButton()
@@ -936,28 +917,11 @@ void CDVDInputStreamNavigator::SetSubtitleStreamName(SubtitleStreamInfo &info, c
 
 int CDVDInputStreamNavigator::GetSubTitleStreamCount()
 {
-  if (!m_dvdnav) return 0;
-
-  vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
-
-  if (!vm) return 0;
-  if (!vm->state.pgc) return 0;
-
-  if (vm->state.domain == VTS_DOMAIN)
+  if (!m_dvdnav)
   {
-    int streamN = 0;
-    for (int i = 0; i < 32; i++)
-    {
-      if (vm->state.pgc->subp_control[i] & (1U << 31))
-        streamN++;
-    }
-    return streamN;
+    return 0;
   }
-  else
-  {
-    /* just for good measure say that non vts domain always has one */
-    return 1;
-  }
+  return m_dll.dvdnav_get_number_of_streams(m_dvdnav, DVD_SUBTITLE_STREAM);
 }
 
 int CDVDInputStreamNavigator::GetActiveAudioStream()
@@ -1092,30 +1056,12 @@ AudioStreamInfo CDVDInputStreamNavigator::GetAudioStreamInfo(const int iId)
 
 int CDVDInputStreamNavigator::GetAudioStreamCount()
 {
-  if (!m_dvdnav) return 0;
-
-  vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
-
-  if (!vm) return 0;
-  if (!vm->state.pgc) return 0;
-
-  if (vm->state.domain == VTS_DOMAIN)
+  if (!m_dvdnav)
   {
-    int streamN = 0;
-    for (int i = 0; i < 8; i++)
-    {
-      if (vm->state.pgc->audio_control[i] & (1<<15))
-        streamN++;
-    }
-    return streamN;
+    return 0;
   }
-  else
-  {
-    /* just for good measure say that non vts domain always has one */
-    return 1;
-  }
+  return m_dll.dvdnav_get_number_of_streams(m_dvdnav, DVD_AUDIO_STREAM);
 }
-
 
 int CDVDInputStreamNavigator::GetAngleCount()
 {
@@ -1307,14 +1253,7 @@ void CDVDInputStreamNavigator::EnableSubtitleStream(bool bEnable)
   if (!m_dvdnav)
     return;
 
-  vm_t* vm = m_dll.dvdnav_get_vm(m_dvdnav);
-  if (!vm)
-    return;
-
-  if(bEnable)
-    vm->state.SPST_REG |= 0x40;
-  else
-    vm->state.SPST_REG &= ~0x40;
+  m_dll.dvdnav_toggle_spu_stream(m_dvdnav, static_cast<uint8_t>(bEnable));
 }
 
 bool CDVDInputStreamNavigator::IsSubtitleStreamEnabled()
