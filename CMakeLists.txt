@@ -73,6 +73,10 @@ if(UNIX)
   option(ENABLE_INTERNAL_GTEST "Enable internal gtest?" OFF)
   option(ENABLE_INTERNAL_UDFREAD "Enable internal udfread?" OFF)
   option(ENABLE_INTERNAL_SPDLOG "Enable internal spdlog?" OFF)
+
+  if(ENABLE_INTERNAL_SPDLOG)
+    set(ENABLE_INTERNAL_FMT ON CACHE BOOL "" FORCE)
+  endif()
 endif()
 # prefer kissfft from xbmc/contrib but let use system one on unices
 cmake_dependent_option(ENABLE_INTERNAL_KISSFFT "Enable internal kissfft?" ON "UNIX" ON)
