@@ -56,6 +56,8 @@ public:
   CTextureInfo& operator=(const CTextureInfo& right) = default;
   bool       useLarge;
   CRect      border;          // scaled  - unneeded if we get rid of scale on load
+  bool m_infill{
+      true}; // if false, the main body of a texture is not drawn. useful for borders with no inner filling
   int        orientation;     // orientation of the texture (0 - 7 == EXIForientation - 1)
   std::string diffuse;         // diffuse overlay texture
   KODI::GUILIB::GUIINFO::CGUIInfoColor diffuseColor; // diffuse color
