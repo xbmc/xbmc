@@ -72,6 +72,19 @@ important, as `xml` tags are case-sensitive.
 | fadetime      | This specifies a crossfade time that will be used whenever the underlying <b>`<texture>`</b> filename changes. The previous image will be held until the new image is ready, and then they will be crossfaded. This is particularly useful for a large thumbnail image showing the focused item in a list, or for fanart or other large backdrops.
 | background    | For images inside a container, you can specify background="true" to load the textures in a background worker thread. [See here for additional information about background loading](http://kodi.wiki/view/Background_Image_Loader).
 
+For the tags "texture" and "bordertexture", the following attributes are available.
+
+| Attribute     | Description                                                   |
+|--------------:|:--------------------------------------------------------------|
+| border        | Used to specify a region of the texture to be considered a border that should not be scaled when the texture is scaled to fit a control's dimensions. The portion in the border region will remain unscaled. Particularly useful to achieve rounded corners that do not change size when a control is resized. Note that zoom animations and GUI rescaling will still affect the border region - it is just the scaling of the texture to the control size which is unaffected. Using border="5" will give a 5 pixel border all around the texture. You can specify each of the border amounts on each edge individually using border="left,top,right,bottom".
+| infill        | Available if the "border" attribute is used. Hint for the GUI drawing routine if the center portion or just the outer frame should be drawn. Useful if the texture center is fully transparent. Accepts boolean values "true" (default) and "false".
+| flipx         | Specifies that the texture should be flipped in the horizontal direction, useful for reflections.
+| flipy         | Specifies that the texture should be flipped in the vertical direction, useful for reflections. 
+| background    | Used on the <b>`<imagepath>`</b> tag. When set to "true", this forces the image to be loaded via the large texture manager (except for textures located in Textures.xbt).
+| diffuse       | Specifies a diffuse texture which is "modulated" or multiplied with the texture in order to give specific effects, such as making the image gain transparency, or tint it in various ways. As it's applied per-pixel many effects are possible, the most popular being by a transparent reflection which slowly gets more and more opaque. This is achieved using a WHITE image where the transparency increases as you move down the texture.
+| colordiffuse  | This specifies the color to be used for the texture basis. It's is specified in hexadecimal notation using the AARRGGBB format. If you define <b>`<texture colordiffuse="FFFFAAFF">texture.png</texture>`</b> (magenta), the image will be given a magenta tint when rendered. You can also specify this as a name from the colour theme, or you can also use $VAR and $INFO for dynamic values.
+
+@skinning_v20 <b>infill</b> New texture attribute added.
 
 --------------------------------------------------------------------------------
 \section Image_Control_sect4 See also
