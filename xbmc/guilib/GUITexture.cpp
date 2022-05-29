@@ -224,7 +224,9 @@ void CGUITexture::Render()
   // middle segment (u1,0,u2,v3)
   if (m_info.border.y1)
     Render(m_vertex.x1 + m_info.border.x1, m_vertex.y1, m_vertex.x2 - m_info.border.x2, m_vertex.y1 + m_info.border.y1, u1, 0, u2, v1, u3, v3);
-  Render(m_vertex.x1 + m_info.border.x1, m_vertex.y1 + m_info.border.y1, m_vertex.x2 - m_info.border.x2, m_vertex.y2 - m_info.border.y2, u1, v1, u2, v2, u3, v3);
+  if (m_info.m_infill)
+    Render(m_vertex.x1 + m_info.border.x1, m_vertex.y1 + m_info.border.y1,
+           m_vertex.x2 - m_info.border.x2, m_vertex.y2 - m_info.border.y2, u1, v1, u2, v2, u3, v3);
   if (m_info.border.y2)
     Render(m_vertex.x1 + m_info.border.x1, m_vertex.y2 - m_info.border.y2, m_vertex.x2 - m_info.border.x2, m_vertex.y2, u1, v2, u2, v3, u3, v3);
   // right segment
