@@ -402,7 +402,8 @@ bool CGUIControl::CanFocus() const
 
 bool CGUIControl::IsVisible() const
 {
-  if (m_forceHidden) return false;
+  if (m_forceHidden || m_transform.alpha <= 0.01f)
+    return false;
   return m_visible == VISIBLE;
 }
 
