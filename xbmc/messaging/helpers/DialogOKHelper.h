@@ -35,11 +35,10 @@ struct DialogOKMessage
 };
 
 /*!
-  \brief This is a helper method to send a threadmessage to open a Ok dialog box
+  \brief This is a helper method to send a threadmessage to update a Ok dialog text
 
   \param[in]  heading           The text to display as the dialog box header
   \param[in]  text              The text to display in the dialog body
-  \return if it's confirmed
   \sa ShowOKDialogLines
   \sa CGUIDialogOK::ShowAndGetInput
   \sa DialogOKMessage
@@ -47,12 +46,14 @@ struct DialogOKMessage
 void UpdateOKDialogText(CVariant heading, CVariant text);
 
 /*!
-\brief This is a helper method to send a threadmessage to update a Ok dialog text
-\param[in]  heading           The text to display as the dialog box header
-\param[in]  text              The text to display in the dialog body
-\sa UpdateOKDialogLines
-\sa CGUIDialogOK::ShowAndGetInput
-\sa DialogOKMessage
+  \brief This is a helper method to send a threadmessage to open a Ok dialog box
+
+  \param[in]  heading           The text to display as the dialog box header
+  \param[in]  text              The text to display in the dialog body
+  \return if it's confirmed
+  \sa UpdateOKDialogLines
+  \sa CGUIDialogOK::ShowAndGetInput
+  \sa DialogOKMessage
 */
 bool ShowOKDialogText(CVariant heading, CVariant text);
 
