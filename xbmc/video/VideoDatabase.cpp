@@ -9244,9 +9244,11 @@ void CVideoDatabase::GetMusicVideoDirectorsByName(const std::string& strSearch, 
   }
 }
 
-void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const std::set<int>& paths, bool showProgress)
+void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle,
+                                   const std::set<int>& paths,
+                                   bool showProgress)
 {
-  CGUIDialogProgress *progress=NULL;
+  CGUIDialogProgress* progress = NULL;
   try
   {
     if (nullptr == m_pDB)
@@ -9268,13 +9270,14 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
     }
     else if (showProgress)
     {
-      progress = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
+      progress = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(
+          WINDOW_DIALOG_PROGRESS);
       if (progress)
       {
-        progress->SetHeading(CVariant{ 700 });
-        progress->SetLine(0, CVariant{ "" });
-        progress->SetLine(1, CVariant{ 313 });
-        progress->SetLine(2, CVariant{ 330 });
+        progress->SetHeading(CVariant{700});
+        progress->SetLine(0, CVariant{""});
+        progress->SetLine(1, CVariant{313});
+        progress->SetLine(2, CVariant{330});
         progress->SetPercentage(0);
         progress->Open();
         progress->ShowProgressBar(true);
@@ -9284,11 +9287,12 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
     BeginTransaction();
 
     // find all the files
-    std::string sql = "SELECT files.idFile, files.strFileName, path.strPath FROM files INNER JOIN path ON path.idPath=files.idPath";
+    std::string sql = "SELECT files.idFile, files.strFileName, path.strPath FROM files "
+                      "INNER JOIN path ON path.idPath=files.idPath";
     if (!paths.empty())
     {
       std::string strPaths;
-      for (const auto &i : paths)
+      for (const auto& i : paths)
         strPaths += StringUtils::Format(",{}", i);
       sql += PrepareSQL(" AND path.idPath IN (%s)", strPaths.substr(1).c_str());
     }
@@ -9329,7 +9333,8 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
           SScanSettings settings;
           bool foundDirectly = false;
           ScraperPtr scraper = GetScraperForPath(fullPath, settings, foundDirectly);
-          if (scraper && CPluginDirectory::CheckExists(TranslateContent(scraper->Content()), fullPath))
+          if (scraper &&
+              CPluginDirectory::CheckExists(TranslateContent(scraper->Content()), fullPath))
             del = false;
         }
         else
@@ -9346,8 +9351,8 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
             {
               lastDir = pathDir;
               CFileItemList items; // Dummy list
-              gotDir = CDirectory::GetDirectory(pathDir, items, "", DIR_FLAG_NO_FILE_DIRS |
-                                                DIR_FLAG_NO_FILE_INFO);
+              gotDir = CDirectory::GetDirectory(pathDir, items, "",
+                                                DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_NO_FILE_INFO);
             }
 
             // Keep existing files
@@ -9386,7 +9391,8 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
       std::string filesToDelete;
 
       // Add any files that don't have a valid idPath entry to the filesToDelete list.
-      m_pDS->query("SELECT files.idFile FROM files WHERE NOT EXISTS (SELECT 1 FROM path WHERE path.idPath = files.idPath)");
+      m_pDS->query("SELECT files.idFile FROM files WHERE NOT EXISTS (SELECT 1 FROM path "
+                   "WHERE path.idPath = files.idPath)");
       while (!m_pDS->eof())
       {
         std::string file = m_pDS->fv("files.idFile").get_asString() + ",";
@@ -9407,9 +9413,12 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
       {
         StringUtils::TrimRight(filesToTestForDelete, ",");
 
-        movieIDs = CleanMediaType(MediaTypeMovie, filesToTestForDelete, pathsDeleteDecisions, filesToDelete, !showProgress);
-        episodeIDs = CleanMediaType(MediaTypeEpisode, filesToTestForDelete, pathsDeleteDecisions, filesToDelete, !showProgress);
-        musicVideoIDs = CleanMediaType(MediaTypeMusicVideo, filesToTestForDelete, pathsDeleteDecisions, filesToDelete, !showProgress);
+        movieIDs = CleanMediaType(MediaTypeMovie, filesToTestForDelete, pathsDeleteDecisions,
+                                  filesToDelete, !showProgress);
+        episodeIDs = CleanMediaType(MediaTypeEpisode, filesToTestForDelete, pathsDeleteDecisions,
+                                    filesToDelete, !showProgress);
+        musicVideoIDs = CleanMediaType(MediaTypeMusicVideo, filesToTestForDelete,
+                                       pathsDeleteDecisions, filesToDelete, !showProgress);
       }
 
       if (progress != NULL)
@@ -9427,7 +9436,9 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
         // database, leading to potentially missed items on re-scan (if deleted files are
         // later re-added to a source)
         CLog::LogFC(LOGDEBUG, LOGDATABASE, "Cleaning path hashes");
-        m_pDS->query("SELECT DISTINCT strPath FROM path JOIN files ON files.idPath=path.idPath WHERE files.idFile IN " + filesToDelete);
+        m_pDS->query("SELECT DISTINCT strPath FROM path JOIN files ON files.idPath=path.idPath "
+                     "WHERE files.idFile IN " +
+                     filesToDelete);
         int pathHashCount = m_pDS->num_rows();
         while (!m_pDS->eof())
         {
@@ -9444,7 +9455,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
       if (!movieIDs.empty())
       {
         std::string moviesToDelete;
-        for (const auto &i : movieIDs)
+        for (const auto& i : movieIDs)
           moviesToDelete += StringUtils::Format("{},", i);
         moviesToDelete = "(" + StringUtils::TrimRight(moviesToDelete, ",") + ")";
 
@@ -9456,7 +9467,7 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
       if (!episodeIDs.empty())
       {
         std::string episodesToDelete;
-        for (const auto &i : episodeIDs)
+        for (const auto& i : episodeIDs)
           episodesToDelete += StringUtils::Format("{},", i);
         episodesToDelete = "(" + StringUtils::TrimRight(episodesToDelete, ",") + ")";
 
@@ -9465,13 +9476,13 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
         m_pDS->exec(sql);
       }
 
-      CLog::Log(LOGDEBUG, LOGDATABASE, "{}: Cleaning paths that don't exist and have content set...",
-                __FUNCTION__);
+      CLog::Log(LOGDEBUG, LOGDATABASE,
+                "{}: Cleaning paths that don't exist and have content set...", __FUNCTION__);
       sql = "SELECT path.idPath, path.strPath, path.idParentPath FROM path "
-              "WHERE NOT ((strContent IS NULL OR strContent = '') "
-                     "AND (strSettings IS NULL OR strSettings = '') "
-                     "AND (strHash IS NULL OR strHash = '') "
-                     "AND (exclude IS NULL OR exclude != 1))";
+            "WHERE NOT ((strContent IS NULL OR strContent = '') "
+            "AND (strSettings IS NULL OR strSettings = '') "
+            "AND (strHash IS NULL OR strHash = '') "
+            "AND (exclude IS NULL OR exclude != 1))";
       m_pDS2->query(sql);
       std::string strIds;
       while (!m_pDS2->eof())
@@ -9495,7 +9506,8 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
 
         if (((pathsDeleteDecision != pathsDeleteDecisions.end() && pathsDeleteDecision->second) ||
              (pathsDeleteDecision == pathsDeleteDecisions.end() && !exists)) &&
-            ((pathsDeleteDecisionByParent != pathsDeleteDecisions.end() && pathsDeleteDecisionByParent->second) ||
+            ((pathsDeleteDecisionByParent != pathsDeleteDecisions.end() &&
+              pathsDeleteDecisionByParent->second) ||
              (pathsDeleteDecisionByParent == pathsDeleteDecisions.end())))
           strIds += m_pDS2->fv(0).get_asString() + ",";
 
@@ -9505,16 +9517,20 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
 
       if (!strIds.empty())
       {
-        sql = PrepareSQL("DELETE FROM path WHERE idPath IN (%s)", StringUtils::TrimRight(strIds, ",").c_str());
+        sql = PrepareSQL("DELETE FROM path WHERE idPath IN (%s)",
+                         StringUtils::TrimRight(strIds, ",").c_str());
         m_pDS->exec(sql);
-        sql = "DELETE FROM tvshowlinkpath WHERE NOT EXISTS (SELECT 1 FROM path WHERE path.idPath = tvshowlinkpath.idPath)";
+        sql = "DELETE FROM tvshowlinkpath "
+              "WHERE NOT EXISTS (SELECT 1 FROM path WHERE path.idPath = tvshowlinkpath.idPath)";
         m_pDS->exec(sql);
       }
 
       CLog::Log(LOGDEBUG, LOGDATABASE, "{}: Cleaning tvshow table", __FUNCTION__);
 
       std::string tvshowsToDelete;
-      sql = "SELECT idShow FROM tvshow WHERE NOT EXISTS (SELECT 1 FROM tvshowlinkpath WHERE tvshowlinkpath.idShow = tvshow.idShow)";
+      sql = "SELECT idShow FROM tvshow "
+            "WHERE NOT EXISTS (SELECT 1 FROM tvshowlinkpath WHERE tvshowlinkpath.idShow = "
+            "tvshow.idShow)";
       m_pDS->query(sql);
       while (!m_pDS->eof())
       {
@@ -9525,14 +9541,15 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
       m_pDS->close();
       if (!tvshowsToDelete.empty())
       {
-        sql = "DELETE FROM tvshow WHERE idShow IN (" + StringUtils::TrimRight(tvshowsToDelete, ",") + ")";
+        sql = "DELETE FROM tvshow WHERE idShow IN (" +
+              StringUtils::TrimRight(tvshowsToDelete, ",") + ")";
         m_pDS->exec(sql);
       }
 
       if (!musicVideoIDs.empty())
       {
         std::string musicVideosToDelete;
-        for (const auto &i : musicVideoIDs)
+        for (const auto& i : musicVideoIDs)
           musicVideosToDelete += StringUtils::Format("{},", i);
         musicVideosToDelete = "(" + StringUtils::TrimRight(musicVideosToDelete, ",") + ")";
 
@@ -9560,29 +9577,35 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
       m_pDS->exec(sql);
 
       CLog::Log(LOGDEBUG, LOGDATABASE, "{}: Cleaning genre table", __FUNCTION__);
-      sql = "DELETE FROM genre "
-              "WHERE NOT EXISTS (SELECT 1 FROM genre_link WHERE genre_link.genre_id = genre.genre_id)";
+      sql =
+          "DELETE FROM genre "
+          "WHERE NOT EXISTS (SELECT 1 FROM genre_link WHERE genre_link.genre_id = genre.genre_id)";
       m_pDS->exec(sql);
 
       CLog::Log(LOGDEBUG, LOGDATABASE, "{}: Cleaning country table", __FUNCTION__);
-      sql = "DELETE FROM country WHERE NOT EXISTS (SELECT 1 FROM country_link WHERE country_link.country_id = country.country_id)";
+      sql = "DELETE FROM country WHERE NOT EXISTS (SELECT 1 FROM country_link WHERE "
+            "country_link.country_id = country.country_id)";
       m_pDS->exec(sql);
 
       CLog::Log(LOGDEBUG, LOGDATABASE, "{}: Cleaning actor table of actors, directors and writers",
                 __FUNCTION__);
-      sql = "DELETE FROM actor "
-              "WHERE NOT EXISTS (SELECT 1 FROM actor_link WHERE actor_link.actor_id = actor.actor_id) "
-                "AND NOT EXISTS (SELECT 1 FROM director_link WHERE director_link.actor_id = actor.actor_id) "
-                "AND NOT EXISTS (SELECT 1 FROM writer_link WHERE writer_link.actor_id = actor.actor_id)";
+      sql =
+          "DELETE FROM actor "
+          "WHERE NOT EXISTS (SELECT 1 FROM actor_link WHERE actor_link.actor_id = actor.actor_id) "
+          "AND NOT EXISTS (SELECT 1 FROM director_link WHERE director_link.actor_id = "
+          "actor.actor_id) "
+          "AND NOT EXISTS (SELECT 1 FROM writer_link WHERE writer_link.actor_id = actor.actor_id)";
       m_pDS->exec(sql);
 
       CLog::Log(LOGDEBUG, LOGDATABASE, "{}: Cleaning studio table", __FUNCTION__);
       sql = "DELETE FROM studio "
-              "WHERE NOT EXISTS (SELECT 1 FROM studio_link WHERE studio_link.studio_id = studio.studio_id)";
+            "WHERE NOT EXISTS (SELECT 1 FROM studio_link WHERE studio_link.studio_id = "
+            "studio.studio_id)";
       m_pDS->exec(sql);
 
       CLog::Log(LOGDEBUG, LOGDATABASE, "{}: Cleaning set table", __FUNCTION__);
-      sql = "DELETE FROM sets WHERE NOT EXISTS (SELECT 1 FROM movie WHERE movie.idSet = sets.idSet)";
+      sql = "DELETE FROM sets "
+            "WHERE NOT EXISTS (SELECT 1 FROM movie WHERE movie.idSet = sets.idSet)";
       m_pDS->exec(sql);
 
       CommitTransaction();
@@ -9600,16 +9623,16 @@ void CVideoDatabase::CleanDatabase(CGUIDialogProgressBarHandle* handle, const st
       CLog::Log(LOGINFO, "{}: Cleaning videodatabase done. Operation took {} ms", __FUNCTION__,
                 duration.count());
 
-      for (const auto &i : movieIDs)
+      for (const auto& i : movieIDs)
         AnnounceRemove(MediaTypeMovie, i, true);
 
-      for (const auto &i : episodeIDs)
+      for (const auto& i : episodeIDs)
         AnnounceRemove(MediaTypeEpisode, i, true);
 
-      for (const auto &i : tvshowIDs)
+      for (const auto& i : tvshowIDs)
         AnnounceRemove(MediaTypeTvShow, i, true);
 
-      for (const auto &i : musicVideoIDs)
+      for (const auto& i : musicVideoIDs)
         AnnounceRemove(MediaTypeMusicVideo, i, true);
     }
   }
