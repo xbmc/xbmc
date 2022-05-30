@@ -16,6 +16,7 @@
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/builtins/Builtins.h"
 #include "messaging/helpers/DialogHelper.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "music/MusicLibraryQueue.h"
 #include "settings/Settings.h"
 #include "settings/dialogs/GUIDialogLibExportSettings.h"
@@ -307,7 +308,9 @@ void CMediaSettings::OnSettingAction(const std::shared_ptr<const CSetting>& sett
   {
     if (HELPERS::ShowYesNoDialogText(CVariant{313}, CVariant{333}) == DialogResponse::CHOICE_YES)
     {
-      if (!CMusicLibraryQueue::GetInstance().IsRunning())
+      if (CMusicLibraryQueue::GetInstance().IsRunning())
+        HELPERS::ShowOKDialogText(CVariant{700}, CVariant{703});
+      else
         CMusicLibraryQueue::GetInstance().CleanLibrary(true);
     }
   }
@@ -338,8 +341,8 @@ void CMediaSettings::OnSettingAction(const std::shared_ptr<const CSetting>& sett
   {
     if (HELPERS::ShowYesNoDialogText(CVariant{313}, CVariant{333}) == DialogResponse::CHOICE_YES)
     {
-      if (!CVideoLibraryQueue::GetInstance().IsRunning())
-        CVideoLibraryQueue::GetInstance().CleanLibraryModal();
+      if (!CVideoLibraryQueue::GetInstance().CleanLibraryModal())
+        HELPERS::ShowOKDialogText(CVariant{700}, CVariant{703});
     }
   }
   else if (settingId == CSettings::SETTING_VIDEOLIBRARY_EXPORT)

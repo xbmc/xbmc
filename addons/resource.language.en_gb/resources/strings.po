@@ -1494,7 +1494,7 @@ msgstr ""
 
 #. generic "cleaning database" label used in different places
 #: xbmc/music/MusicDatabase.cpp
-#: xbmc/pvr/PVRManager.cpp
+#: xbmc/pvr/guilib/PVRGUIActions.cpp
 #: xbmc/settings/MediaSettings.cpp
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#313"
@@ -1592,6 +1592,7 @@ msgid "Error compressing database"
 msgstr ""
 
 #: xbmc/music/MusicDatabase.cpp
+#: xbmc/settings/MediaSettings.cpp
 msgctxt "#333"
 msgid "Do you want to clean the library?"
 msgstr ""
@@ -3221,8 +3222,11 @@ msgstr ""
 
 #empty strings from id 688 to 699
 
+#: xbmc/interfaces/builtins/LibraryBuiltins.cpp
+#: xbmc/music/MusicLibraryQueue.cpp
 #: xbmc/music/infoscanner/MusicInfoScanner.cpp
-#: xbmc/music/MusicDatabase.cpp
+#: xbmc/settings/MediaSettings.cpp
+#: xbmc/video/VideoDatabase.cpp
 msgctxt "#700"
 msgid "Cleaning up library"
 msgstr ""
@@ -3236,7 +3240,13 @@ msgctxt "#702"
 msgid "This path has been scanned before"
 msgstr ""
 
-#empty strings from id 703 to 704
+#: xbmc/interfaces/builtins/LibraryBuiltins.cpp
+#: xbmc/settings/MediaSettings.cpp
+msgctxt "#703"
+msgid "Can't clean up library while running background tasks"
+msgstr ""
+
+#empty string with id 704
 
 msgctxt "#705"
 msgid "Network"
