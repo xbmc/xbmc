@@ -46,11 +46,15 @@ public:
   pw_buffer* DequeueBuffer();
   void QueueBuffer(pw_buffer* buffer);
 
+  bool TriggerProcess() const;
+
   void Flush(bool drain);
 
   uint32_t GetNodeId();
 
   void UpdateProperties(spa_dict* dict);
+
+  pw_time GetTime() const;
 
 private:
   static void StateChanged(void* userdata,

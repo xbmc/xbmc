@@ -165,6 +165,28 @@ CAEChannelInfo PWChannelMapToAEChannelMap(std::vector<spa_audio_channel>& channe
   return channels;
 }
 
+std::chrono::duration<double, std::ratio<1>> PWTimeToAEDelay(const pw_time& time,
+                                                             const uint32_t& samplerate)
+{
+  const auto now = std::chrono::steady_clock::now();
+
+  const int64_t diff = now.time_since_epoch().count() - time.now;
+  const int64_t elapsed = (time.rate.denom * diff) / (time.rate.num * SPA_NSEC_PER_SEC);
+
+  const double fraction = static_cast<double>(time.rate.num) / time.rate.denom;
+
+  const auto delay = std::chrono::duration<double, std::ratio<1>>(
+      (time.buffered * fraction) + ((time.delay - elapsed) * fraction) +
+      (static_cast<double>(time.queued) / samplerate));
+
+  return delay;
+}
+
+constexpr std::chrono::duration<double, std::ratio<1>> DEFAULT_BUFFER_DURATION = 0.200s;
+constexpr int DEFAULT_PERIODS = 4;
+constexpr std::chrono::duration<double, std::ratio<1>> DEFAULT_PERIOD_DURATION =
+    DEFAULT_BUFFER_DURATION / 4;
+
 } // namespace
 
 namespace AE
@@ -327,8 +349,8 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
 
   stream->AddListener();
 
-  m_latency = 20ms;
-  uint32_t frames = std::nearbyint(m_latency.count() * format.m_sampleRate);
+  m_latency = DEFAULT_BUFFER_DURATION;
+  uint32_t frames = std::nearbyint(DEFAULT_PERIOD_DURATION.count() * format.m_sampleRate);
   std::string fraction = StringUtils::Format("{}/{}", frames, format.m_sampleRate);
 
   std::array<spa_dict_item, 5> items = {
@@ -373,8 +395,18 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
 
   params.emplace_back(spa_format_audio_raw_build(&builder, SPA_PARAM_EnumFormat, &info));
 
-  pw_stream_flags flags = static_cast<pw_stream_flags>(
-      PW_STREAM_FLAG_AUTOCONNECT | PW_STREAM_FLAG_INACTIVE | PW_STREAM_FLAG_MAP_BUFFERS);
+  // clang-format off
+  params.emplace_back(static_cast<const spa_pod*>(spa_pod_builder_add_object(
+      &builder, SPA_TYPE_OBJECT_ParamBuffers, SPA_PARAM_Buffers,
+          SPA_PARAM_BUFFERS_buffers, SPA_POD_CHOICE_RANGE_Int(6, 6, 6),
+          SPA_PARAM_BUFFERS_blocks, SPA_POD_Int(1),
+          SPA_PARAM_BUFFERS_size, SPA_POD_Int(frames * pwChannels.size() * PWFormatToSampleSize(pwFormat)),
+          SPA_PARAM_BUFFERS_stride, SPA_POD_Int(pwChannels.size() * PWFormatToSampleSize(pwFormat)))));
+  // clang-format on
+
+  pw_stream_flags flags =
+      static_cast<pw_stream_flags>(PW_STREAM_FLAG_AUTOCONNECT | PW_STREAM_FLAG_INACTIVE |
+                                   PW_STREAM_FLAG_MAP_BUFFERS | PW_STREAM_FLAG_DRIVER);
 
   if (!stream->Connect(id, PW_DIRECTION_OUTPUT, params, flags))
   {
@@ -434,6 +466,8 @@ double CAESinkPipewire::GetCacheTotal()
 
 unsigned int CAESinkPipewire::AddPackets(uint8_t** data, unsigned int frames, unsigned int offset)
 {
+  const auto start = std::chrono::steady_clock::now();
+
   auto loop = pipewire->GetThreadLoop();
   auto& stream = pipewire->GetStream();
 
@@ -457,6 +491,8 @@ unsigned int CAESinkPipewire::AddPackets(uint8_t** data, unsigned int frames, un
     }
   }
 
+  pwBuffer->size = frames;
+
   spa_buffer* spaBuffer = pwBuffer->buffer;
   spa_data* spaData = &spaBuffer->datas[0];
 
@@ -475,6 +511,27 @@ unsigned int CAESinkPipewire::AddPackets(uint8_t** data, unsigned int frames, un
 
   stream->QueueBuffer(pwBuffer);
 
+  do
+  {
+    pw_time time = stream->GetTime();
+
+    const std::chrono::duration<double, std::ratio<1>> delay =
+        PWTimeToAEDelay(time, m_format.m_sampleRate);
+
+    const auto now = std::chrono::steady_clock::now();
+
+    const auto period = std::chrono::duration<double, std::ratio<1>>(static_cast<double>(frames) /
+                                                                     m_format.m_sampleRate);
+
+    if ((delay <= (m_latency - period)) || ((now - start) >= period))
+      break;
+
+    loop->Wait(5ms);
+
+  } while (true);
+
+  stream->TriggerProcess();
+
   loop->Unlock();
 
   return length / m_format.m_frameSize;
@@ -482,7 +539,24 @@ unsigned int CAESinkPipewire::AddPackets(uint8_t** data, unsigned int frames, un
 
 void CAESinkPipewire::GetDelay(AEDelayStatus& status)
 {
-  status.SetDelay(m_latency.count());
+  auto loop = pipewire->GetThreadLoop();
+  auto& stream = pipewire->GetStream();
+
+  loop->Lock();
+
+  pw_stream_state state = stream->GetState();
+
+  pw_time time = stream->GetTime();
+
+  loop->Unlock();
+
+  if (state != PW_STREAM_STATE_STREAMING)
+    return;
+
+  const std::chrono::duration<double, std::ratio<1>> delay =
+      PWTimeToAEDelay(time, m_format.m_sampleRate);
+
+  status.SetDelay(delay.count());
 }
 
 void CAESinkPipewire::Drain()

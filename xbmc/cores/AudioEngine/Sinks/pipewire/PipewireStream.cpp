@@ -80,6 +80,18 @@ void CPipewireStream::QueueBuffer(pw_buffer* buffer)
   pw_stream_queue_buffer(m_stream.get(), buffer);
 }
 
+bool CPipewireStream::TriggerProcess() const
+{
+  int ret = pw_stream_trigger_process(m_stream.get());
+  if (ret < 0)
+  {
+    CLog::Log(LOGERROR, "CPipewireStream: failed to trigger process: {}", spa_strerror(errno));
+    return false;
+  }
+
+  return true;
+}
+
 void CPipewireStream::Flush(bool drain)
 {
   pw_stream_flush(m_stream.get(), drain);
@@ -95,6 +107,13 @@ void CPipewireStream::UpdateProperties(spa_dict* dict)
   pw_stream_update_properties(m_stream.get(), dict);
 }
 
+pw_time CPipewireStream::GetTime() const
+{
+  pw_time time;
+  pw_stream_get_time_n(m_stream.get(), &time, sizeof(time));
+
+  return time;
+}
 
 void CPipewireStream::StateChanged(void* userdata,
                                    enum pw_stream_state old,
