@@ -88,6 +88,10 @@ void CVideoLibraryQueue::CleanLibrary(const std::set<int>& paths /* = std::set<i
     AddJob(cleaningJob);
   else
   {
+    // we can't perform a modal library cleaning if other jobs are running
+    if (IsRunning())
+      return;
+
     m_modal = true;
     m_cleaning = true;
     cleaningJob->DoWork();
