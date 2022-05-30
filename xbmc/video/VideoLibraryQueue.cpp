@@ -122,7 +122,7 @@ void CVideoLibraryQueue::RefreshItem(CFileItemPtr item, bool ignoreNfo /* = fals
 
 bool CVideoLibraryQueue::RefreshItemModal(CFileItemPtr item, bool forceRefresh /* = true */, bool refreshAll /* = false */)
 {
-  // we can't perform a modal library cleaning if other jobs are running
+  // we can't perform a modal item refresh if other jobs are running
   if (IsRunning())
     return false;
 
