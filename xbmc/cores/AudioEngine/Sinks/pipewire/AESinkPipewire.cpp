@@ -327,8 +327,8 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
 
   stream->AddListener();
 
-  m_latency = 20; // ms
-  uint32_t frames = std::nearbyint((m_latency * format.m_sampleRate) / 1000.0);
+  m_latency = 20ms;
+  uint32_t frames = std::nearbyint(m_latency.count() * format.m_sampleRate);
   std::string fraction = StringUtils::Format("{}/{}", frames, format.m_sampleRate);
 
   std::array<spa_dict_item, 5> items = {
@@ -429,7 +429,7 @@ void CAESinkPipewire::Deinitialize()
 
 double CAESinkPipewire::GetCacheTotal()
 {
-  return m_latency / 1000.0;
+  return m_latency.count();
 }
 
 unsigned int CAESinkPipewire::AddPackets(uint8_t** data, unsigned int frames, unsigned int offset)
@@ -482,7 +482,7 @@ unsigned int CAESinkPipewire::AddPackets(uint8_t** data, unsigned int frames, un
 
 void CAESinkPipewire::GetDelay(AEDelayStatus& status)
 {
-  status.SetDelay(m_latency / 1000.0);
+  status.SetDelay(m_latency.count());
 }
 
 void CAESinkPipewire::Drain()
