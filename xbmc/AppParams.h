@@ -12,6 +12,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 class CFileItemList;
 
@@ -50,6 +51,25 @@ public:
 
   CFileItemList& GetPlaylist() const { return *m_playlist; }
 
+  /*!
+   * \brief Get the raw command-line arguments
+   *
+   * Note: Raw arguments are currently not used by Kodi, but they will be
+   * useful if/when ROS 2 support is ever merged.
+   *
+   * \return The arguments. Note that the leading argument is the executable
+   * path name.
+   */
+  const std::vector<std::string>& GetRawArgs() const { return m_rawArgs; }
+
+  /*!
+   * \brief Set the raw command-line arguments
+   *
+   * \args The arguments. Note that the leading argument is the executable path
+   * name.
+   */
+  void SetRawArgs(std::vector<std::string> args);
+
 private:
   int m_logLevel{LOG_LEVEL_NORMAL};
 
@@ -63,4 +83,7 @@ private:
   std::string m_logTarget;
 
   std::unique_ptr<CFileItemList> m_playlist;
+
+  // The raw command-line arguments
+  std::vector<std::string> m_rawArgs;
 };

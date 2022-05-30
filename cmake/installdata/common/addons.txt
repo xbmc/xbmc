@@ -1,6 +1,8 @@
 addons/audioencoder.kodi.builtin.aac/*
 addons/audioencoder.kodi.builtin.wma/*
 addons/game.controller.default/*
+addons/game.controller.keyboard/*
+addons/game.controller.mouse/*
 addons/game.controller.snes/*
 addons/kodi.audiodecoder/*
 addons/kodi.game/*

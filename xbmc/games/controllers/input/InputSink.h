@@ -43,6 +43,7 @@ public:
   bool OnThrottleMotion(const std::string& feature,
                         float position,
                         unsigned int motionTimeMs) override;
+  void OnInputFrame() override {}
 
 private:
   // Construction parameters

@@ -62,16 +62,16 @@ public:
                             unsigned int range) = 0;
 
   /*!
-   * \brief Handle buffered axis positions for features that require multiple axes
+   * \brief Handle buffered input motion for features that require multiple axes
    *
-   * ProcessAxisMotions() is called at the end of the frame when all axis motions
+   * OnInputFrame() is called at the end of the frame when all axis motions
    * have been reported. This has several uses, including:
    *
    *  - Combining multiple axes into a single analog stick or accelerometer event
    *  - Imitating an analog feature with a digital button so that events can be
    *    dispatched every frame.
    */
-  virtual void ProcessAxisMotions(void) = 0;
+  virtual void OnInputFrame(void) = 0;
 };
 } // namespace JOYSTICK
 } // namespace KODI

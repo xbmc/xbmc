@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="game.controller.mouse"
+        name="Computer Mouse"
+        version="1.0.16"
+        provider-name="Team Kodi">
+    <extension point="kodi.game.controller" library="resources/layout.xml"/>
+    <extension point="xbmc.addon.metadata">
+        <platform>all</platform>
+        <assets>
+            <icon>resources/icon.png</icon>
+        </assets>
+        <summary lang="da_DK">Computermus</summary>
+        <summary lang="en_GB">Computer Mouse</summary>
+        <summary lang="ru_RU">Компьютерная мышь</summary>
+        <summary lang="zh_CN">电脑鼠标</summary>
+        <description lang="da_DK">En standardmus med to knapper og et hjul i midten.</description>
+        <description lang="en_GB">A standard mouse with two buttons and a middle wheel.</description>
+        <description lang="ru_RU">Стандартная компьютерная мышь с двумя кнопками и с колесом посередине.</description>
+        <description lang="zh_CN">带有两个按钮和中间滚轮的标准鼠标。</description>
+    </extension>
+</addon>

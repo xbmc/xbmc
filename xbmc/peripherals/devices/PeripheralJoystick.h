@@ -56,11 +56,12 @@ public:
   KODI::JOYSTICK::IDriverReceiver* GetDriverReceiver() override { return this; }
   IKeymap* GetKeymap(const std::string& controllerId) override;
   CDateTime LastActive() override { return m_lastActive; }
+  KODI::GAME::ControllerPtr ControllerProfile() const override;
 
   bool OnButtonMotion(unsigned int buttonIndex, bool bPressed);
   bool OnHatMotion(unsigned int hatIndex, KODI::JOYSTICK::HAT_STATE state);
   bool OnAxisMotion(unsigned int axisIndex, float position);
-  void ProcessAxisMotions(void);
+  void OnInputFrame(void);
 
   // implementation of IDriverReceiver
   bool SetMotorState(unsigned int motorIndex, float magnitude) override;

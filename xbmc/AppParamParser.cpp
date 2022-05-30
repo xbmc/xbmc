@@ -52,15 +52,25 @@ CAppParamParser::CAppParamParser() : m_params(std::make_shared<CAppParams>())
 
 void CAppParamParser::Parse(const char* const* argv, int nArgs)
 {
+  std::vector<std::string> args;
+  args.reserve(nArgs);
+
+  for (int i = 0; i < nArgs; i++)
+  {
+    args.emplace_back(argv[i]);
+    if (i > 0)
+      ParseArg(argv[i]);
+  }
+
   if (nArgs > 1)
   {
-    for (int i = 1; i < nArgs; i++)
-      ParseArg(argv[i]);
-
     // testmode is only valid if at least one item to play was given
     if (m_params->GetPlaylist().IsEmpty())
       m_params->SetTestMode(false);
   }
+
+  // Record raw paramerters
+  m_params->SetRawArgs(std::move(args));
 }
 
 void CAppParamParser::DisplayVersion()

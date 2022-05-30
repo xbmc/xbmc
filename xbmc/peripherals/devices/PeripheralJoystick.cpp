@@ -9,6 +9,9 @@
 #include "PeripheralJoystick.h"
 
 #include "Application.h"
+#include "ServiceBroker.h"
+#include "games/GameServices.h"
+#include "games/controllers/Controller.h"
 #include "games/controllers/ControllerIDs.h"
 #include "input/InputManager.h"
 #include "input/joysticks/DeadzoneFilter.h"
@@ -198,6 +201,14 @@ IKeymap* CPeripheralJoystick::GetKeymap(const std::string& controllerId)
   return m_appInput->GetKeymap(controllerId);
 }
 
+GAME::ControllerPtr CPeripheralJoystick::ControllerProfile() const
+{
+  //! @todo Allow the user to change which controller profile represents their
+  // controller. For now, just use the default.
+  GAME::CGameServices& gameServices = CServiceBroker::GetGameServices();
+  return gameServices.GetDefaultController();
+}
+
 bool CPeripheralJoystick::OnButtonMotion(unsigned int buttonIndex, bool bPressed)
 {
   // Silence debug log if controllers are not enabled
@@ -370,12 +381,12 @@ bool CPeripheralJoystick::OnAxisMotion(unsigned int axisIndex, float position)
   return bHandled;
 }
 
-void CPeripheralJoystick::ProcessAxisMotions(void)
+void CPeripheralJoystick::OnInputFrame(void)
 {
   std::unique_lock<CCriticalSection> lock(m_handlerMutex);
 
   for (auto& it : m_driverHandlers)
-    it.handler->ProcessAxisMotions();
+    it.handler->OnInputFrame();
 }
 
 bool CPeripheralJoystick::SetMotorState(unsigned int motorIndex, float magnitude)
