@@ -103,7 +103,11 @@ public:
     virtual void OnDown() = 0;
     virtual void OnLeft() = 0;
     virtual void OnRight() = 0;
-    virtual void OnMenu() = 0;
+
+    /*! \brief Open the Menu
+    * \return true if the menu is successfully opened, false otherwise
+    */
+    virtual bool OnMenu() = 0;
     virtual void OnBack() = 0;
     virtual void OnNext() = 0;
     virtual void OnPrevious() = 0;

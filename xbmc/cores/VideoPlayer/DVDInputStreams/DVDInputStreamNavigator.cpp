@@ -792,9 +792,14 @@ bool CDVDInputStreamNavigator::OnMouseClick(const CPoint &point)
   return false;
 }
 
-void CDVDInputStreamNavigator::OnMenu()
+bool CDVDInputStreamNavigator::OnMenu()
 {
-  if (m_dvdnav) m_dll.dvdnav_menu_call(m_dvdnav, DVD_MENU_Escape);
+  if (!m_dvdnav)
+  {
+    return false;
+  }
+
+  return m_dll.dvdnav_menu_call(m_dvdnav, DVD_MENU_Escape) == DVDNAV_STATUS_OK;
 }
 
 void CDVDInputStreamNavigator::OnBack()
