@@ -78,7 +78,11 @@ public:
   void OnDown() override  { UserInput(BD_VK_DOWN); }
   void OnLeft() override { UserInput(BD_VK_LEFT); }
   void OnRight() override { UserInput(BD_VK_RIGHT); }
-  void OnMenu() override;
+
+  /*! \brief Open the Menu
+  * \return true if the menu is successfully opened, false otherwise
+  */
+  bool OnMenu() override;
   void OnBack() override
   {
     if(IsInMenu())

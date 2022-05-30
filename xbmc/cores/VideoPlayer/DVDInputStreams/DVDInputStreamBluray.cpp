@@ -1123,28 +1123,36 @@ bool CDVDInputStreamBluray::MouseClick(const CPoint &point)
   return false;
 }
 
-void CDVDInputStreamBluray::OnMenu()
+bool CDVDInputStreamBluray::OnMenu()
 {
   if(m_bd == nullptr || !m_navmode)
   {
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::OnMenu - navigation mode not enabled");
-    return;
+    return false;
   }
 
   // we can not use this event to track a possible popup menu state since bd-j blu-rays can
   // toggle the popup menu on their own without firing this event, and if they do this, our
   // internal tracking state would be wrong. So just process and return.
   if(bd_user_input(m_bd, -1, BD_VK_POPUP) >= 0)
-    return;
+  {
+    return true;
+  }
 
   CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::OnMenu - popup failed, trying root");
 
   if (bd_user_input(m_bd, -1, BD_VK_ROOT_MENU) >= 0)
-    return;
+  {
+    return true;
+  }
 
   CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::OnMenu - root failed, trying explicit");
-  if(bd_menu_call(m_bd, -1) <= 0)
+  if (bd_menu_call(m_bd, -1) <= 0)
+  {
     CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::OnMenu - root failed");
+    return false;
+  }
+  return true;
 }
 
 bool CDVDInputStreamBluray::IsInMenu()
