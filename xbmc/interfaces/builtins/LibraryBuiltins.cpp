@@ -18,6 +18,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/helpers/DialogHelper.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "music/MusicLibraryQueue.h"
 #include "music/infoscanner/MusicInfoScanner.h"
 #include "settings/LibExportSettings.h"
@@ -47,7 +48,9 @@ static int CleanLibrary(const std::vector<std::string>& params)
   {
     if (!CVideoLibraryQueue::GetInstance().IsScanningLibrary())
     {
-      if (!(userInitiated && CVideoLibraryQueue::GetInstance().IsRunning()))
+      if (userInitiated && CVideoLibraryQueue::GetInstance().IsRunning())
+        HELPERS::ShowOKDialogText(CVariant{700}, CVariant{703});
+      else
       {
         const std::string content = (params.empty() || params[0] == "video") ? "" : params[0];
         const std::string directory = params.size() > 2 ? params[2] : "";
