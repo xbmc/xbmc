@@ -222,7 +222,8 @@ using namespace std::chrono_literals;
 #define MAX_FFWD_SPEED 5
 
 CApplication::CApplication(void)
-  : CApplicationPlayerCallback(m_appPlayer, m_stackHelper),
+  : CApplicationActionListeners(m_critSection),
+    CApplicationPlayerCallback(m_appPlayer, m_stackHelper),
     CApplicationPowerHandling(m_appPlayer),
     CApplicationSkinHandling(m_appPlayer),
     CApplicationVolumeHandling(m_appPlayer)
@@ -3774,32 +3775,4 @@ void CApplication::CloseNetworkShares()
 
   for (const auto& vfsAddon : CServiceBroker::GetVFSAddonCache().GetAddonInstances())
     vfsAddon->DisconnectAll();
-}
-
-void CApplication::RegisterActionListener(IActionListener *listener)
-{
-  std::unique_lock<CCriticalSection> lock(m_critSection);
-  std::vector<IActionListener *>::iterator it = std::find(m_actionListeners.begin(), m_actionListeners.end(), listener);
-  if (it == m_actionListeners.end())
-    m_actionListeners.push_back(listener);
-}
-
-void CApplication::UnregisterActionListener(IActionListener *listener)
-{
-  std::unique_lock<CCriticalSection> lock(m_critSection);
-  std::vector<IActionListener *>::iterator it = std::find(m_actionListeners.begin(), m_actionListeners.end(), listener);
-  if (it != m_actionListeners.end())
-    m_actionListeners.erase(it);
-}
-
-bool CApplication::NotifyActionListeners(const CAction &action) const
-{
-  std::unique_lock<CCriticalSection> lock(m_critSection);
-  for (std::vector<IActionListener *>::const_iterator it = m_actionListeners.begin(); it != m_actionListeners.end(); ++it)
-  {
-    if ((*it)->OnAction(action))
-      return true;
-  }
-
-  return false;
 }
