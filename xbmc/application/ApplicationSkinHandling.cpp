@@ -29,6 +29,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/StereoscopicsManager.h"
+#include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -420,4 +421,86 @@ void CApplicationSkinHandling::ReloadSkin(bool confirm,
     }
   }
   m_confirmSkinChange = true;
+}
+
+bool CApplicationSkinHandling::OnSettingChanged(const CSetting& setting)
+{
+  const std::string& settingId = setting.GetId();
+
+  if (settingId == CSettings::SETTING_LOOKANDFEEL_SKIN ||
+      settingId == CSettings::SETTING_LOOKANDFEEL_FONT ||
+      settingId == CSettings::SETTING_LOOKANDFEEL_SKINTHEME ||
+      settingId == CSettings::SETTING_LOOKANDFEEL_SKINCOLORS)
+  {
+    // check if we should ignore this change event due to changing skins in which case we have to
+    // change several settings and each one of them could lead to a complete skin reload which would
+    // result in multiple skin reloads. Therefore we manually specify to ignore specific settings
+    // which are going to be changed.
+    if (m_ignoreSkinSettingChanges)
+      return true;
+
+    // if the skin changes and the current color/theme/font is not the default one, reset
+    // the it to the default value
+    if (settingId == CSettings::SETTING_LOOKANDFEEL_SKIN)
+    {
+      const std::shared_ptr<CSettings> settings =
+          CServiceBroker::GetSettingsComponent()->GetSettings();
+      SettingPtr skinRelatedSetting =
+          settings->GetSetting(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS);
+      if (!skinRelatedSetting->IsDefault())
+      {
+        m_ignoreSkinSettingChanges = true;
+        skinRelatedSetting->Reset();
+      }
+
+      skinRelatedSetting = settings->GetSetting(CSettings::SETTING_LOOKANDFEEL_SKINTHEME);
+      if (!skinRelatedSetting->IsDefault())
+      {
+        m_ignoreSkinSettingChanges = true;
+        skinRelatedSetting->Reset();
+      }
+
+      skinRelatedSetting = settings->GetSetting(CSettings::SETTING_LOOKANDFEEL_FONT);
+      if (!skinRelatedSetting->IsDefault())
+      {
+        m_ignoreSkinSettingChanges = true;
+        skinRelatedSetting->Reset();
+      }
+    }
+    else if (settingId == CSettings::SETTING_LOOKANDFEEL_SKINTHEME)
+    {
+      std::shared_ptr<CSettingString> skinColorsSetting = std::static_pointer_cast<CSettingString>(
+          CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(
+              CSettings::SETTING_LOOKANDFEEL_SKINCOLORS));
+      m_ignoreSkinSettingChanges = true;
+
+      // we also need to adjust the skin color setting
+      std::string colorTheme = static_cast<const CSettingString&>(setting).GetValue();
+      URIUtils::RemoveExtension(colorTheme);
+      if (setting.IsDefault() || StringUtils::EqualsNoCase(colorTheme, "Textures"))
+        skinColorsSetting->Reset();
+      else
+        skinColorsSetting->SetValue(colorTheme);
+    }
+
+    m_ignoreSkinSettingChanges = false;
+
+    if (g_SkinInfo)
+    {
+      // now we can finally reload skins
+      std::string builtin("ReloadSkin");
+      if (settingId == CSettings::SETTING_LOOKANDFEEL_SKIN && m_confirmSkinChange)
+        builtin += "(confirm)";
+      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, builtin);
+    }
+  }
+  else if (settingId == CSettings::SETTING_LOOKANDFEEL_SKINZOOM)
+  {
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
+    CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
+  }
+  else
+    return false;
+
+  return true;
 }

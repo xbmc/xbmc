@@ -14,18 +14,13 @@
 #include "application/ApplicationActionListeners.h"
 #include "application/ApplicationPlayerCallback.h"
 #include "application/ApplicationPowerHandling.h"
+#include "application/ApplicationSettingsHandling.h"
 #include "application/ApplicationSkinHandling.h"
 #include "application/ApplicationVolumeHandling.h"
 #include "cores/IPlayerCallback.h"
 #include "guilib/IMsgTargetCallback.h"
 #include "guilib/IWindowManagerCallback.h"
 #include "messaging/IMessageTarget.h"
-#include "settings/ISubSettings.h"
-#include "settings/lib/ISettingCallback.h"
-#include "settings/lib/ISettingsHandler.h"
-#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
-#include "storage/DetectDVDType.h"
-#endif
 #include "threads/SystemClock.h"
 #include "threads/Thread.h"
 #include "utils/GlobalsHandling.h"
@@ -107,13 +102,11 @@ enum
 
 class CApplication : public IWindowManagerCallback,
                      public IMsgTargetCallback,
-                     public ISettingCallback,
-                     public ISettingsHandler,
-                     public ISubSettings,
                      public KODI::MESSAGING::IMessageTarget,
                      public CApplicationActionListeners,
                      public CApplicationPlayerCallback,
                      public CApplicationPowerHandling,
+                     public CApplicationSettingsHandling,
                      public CApplicationSkinHandling,
                      public CApplicationVolumeHandling
 {
@@ -229,14 +222,6 @@ public:
 
 protected:
   bool OnSettingsSaving() const override;
-  bool Load(const TiXmlNode *settings) override;
-  bool Save(TiXmlNode *settings) const override;
-  void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
-  void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
-  bool OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
-                       const char* oldSettingId,
-                       const TiXmlNode* oldSettingNode) override;
-
   void PlaybackCleanup();
 
   // inbound protocol
@@ -249,8 +234,6 @@ protected:
   std::shared_ptr<CAppInboundProtocol> m_pAppPort;
   std::deque<XBMC_Event> m_portEvents;
   CCriticalSection m_portSection;
-
-  bool m_ignoreSkinSettingChanges = false;
 
 #if defined(TARGET_DARWIN_IOS)
   friend class CWinEventsIOS;
@@ -293,9 +276,6 @@ public:
 private:
   void PrintStartupLog();
   void ResetCurrentItem();
-
-  void RegisterSettings();
-  void UnregisterSettings();
 
   mutable CCriticalSection m_critSection; /*!< critical section for all changes to this class, except for changes to triggers */
 

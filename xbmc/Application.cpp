@@ -225,6 +225,7 @@ CApplication::CApplication(void)
   : CApplicationActionListeners(m_critSection),
     CApplicationPlayerCallback(m_appPlayer, m_stackHelper),
     CApplicationPowerHandling(m_appPlayer),
+    CApplicationSettingsHandling(m_appPlayer, *this, *this, *this),
     CApplicationSkinHandling(m_appPlayer),
     CApplicationVolumeHandling(m_appPlayer)
 #ifdef HAS_DVD_DRIVE
@@ -245,8 +246,6 @@ CApplication::CApplication(void)
 CApplication::~CApplication(void)
 {
   delete m_pInertialScrollingHandler;
-
-  m_actionListeners.clear();
 }
 
 bool CApplication::OnEvent(XBMC_Event& newEvent)
@@ -323,72 +322,6 @@ void CApplication::HandlePortEvents()
 extern "C" void __stdcall init_emu_environ();
 extern "C" void __stdcall update_emu_environ();
 extern "C" void __stdcall cleanup_emu_environ();
-
-namespace
-{
-bool IsPlaying(const std::string& condition,
-               const std::string& value,
-               const SettingConstPtr& setting,
-               void* data)
-{
-  return data ? static_cast<CApplication*>(data)->GetAppPlayer().IsPlaying() : false;
-}
-} // namespace
-
-void CApplication::RegisterSettings()
-{
-  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-  CSettingsManager* settingsMgr = settings->GetSettingsManager();
-
-  settingsMgr->RegisterSettingsHandler(this);
-
-  settingsMgr->RegisterCallback(this, {CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH,
-                                       CSettings::SETTING_LOOKANDFEEL_SKIN,
-                                       CSettings::SETTING_LOOKANDFEEL_SKINSETTINGS,
-                                       CSettings::SETTING_LOOKANDFEEL_FONT,
-                                       CSettings::SETTING_LOOKANDFEEL_SKINTHEME,
-                                       CSettings::SETTING_LOOKANDFEEL_SKINCOLORS,
-                                       CSettings::SETTING_LOOKANDFEEL_SKINZOOM,
-                                       CSettings::SETTING_MUSICPLAYER_REPLAYGAINPREAMP,
-                                       CSettings::SETTING_MUSICPLAYER_REPLAYGAINNOGAINPREAMP,
-                                       CSettings::SETTING_MUSICPLAYER_REPLAYGAINTYPE,
-                                       CSettings::SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING,
-                                       CSettings::SETTING_SCRAPERS_MUSICVIDEOSDEFAULT,
-                                       CSettings::SETTING_SCREENSAVER_MODE,
-                                       CSettings::SETTING_SCREENSAVER_PREVIEW,
-                                       CSettings::SETTING_SCREENSAVER_SETTINGS,
-                                       CSettings::SETTING_AUDIOCDS_SETTINGS,
-                                       CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION,
-                                       CSettings::SETTING_VIDEOSCREEN_TESTPATTERN,
-                                       CSettings::SETTING_VIDEOPLAYER_USEMEDIACODEC,
-                                       CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE,
-                                       CSettings::SETTING_AUDIOOUTPUT_VOLUMESTEPS,
-                                       CSettings::SETTING_SOURCE_VIDEOS,
-                                       CSettings::SETTING_SOURCE_MUSIC,
-                                       CSettings::SETTING_SOURCE_PICTURES,
-                                       CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN});
-
-  settingsMgr->RegisterCallback(
-      &GetAppPlayer().GetSeekHandler(),
-      {CSettings::SETTING_VIDEOPLAYER_SEEKDELAY, CSettings::SETTING_VIDEOPLAYER_SEEKSTEPS,
-       CSettings::SETTING_MUSICPLAYER_SEEKDELAY, CSettings::SETTING_MUSICPLAYER_SEEKSTEPS});
-
-  settingsMgr->AddDynamicCondition("isplaying", IsPlaying, this);
-
-  settings->RegisterSubSettings(this);
-}
-
-void CApplication::UnregisterSettings()
-{
-  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-  CSettingsManager* settingsMgr = settings->GetSettingsManager();
-
-  settings->UnregisterSubSettings(this);
-  settingsMgr->RemoveDynamicCondition("isplaying");
-  settingsMgr->UnregisterCallback(&GetAppPlayer().GetSeekHandler());
-  settingsMgr->UnregisterCallback(this);
-  settingsMgr->UnregisterSettingsHandler(this);
-}
 
 bool CApplication::Create()
 {
@@ -893,174 +826,6 @@ bool CApplication::Initialize()
   return true;
 }
 
-void CApplication::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
-{
-  if (setting == NULL)
-    return;
-
-  const std::string &settingId = setting->GetId();
-
-  if (settingId == CSettings::SETTING_LOOKANDFEEL_SKIN ||
-      settingId == CSettings::SETTING_LOOKANDFEEL_FONT ||
-      settingId == CSettings::SETTING_LOOKANDFEEL_SKINTHEME ||
-      settingId == CSettings::SETTING_LOOKANDFEEL_SKINCOLORS)
-  {
-    // check if we should ignore this change event due to changing skins in which case we have to
-    // change several settings and each one of them could lead to a complete skin reload which would
-    // result in multiple skin reloads. Therefore we manually specify to ignore specific settings
-    // which are going to be changed.
-    if (m_ignoreSkinSettingChanges)
-      return;
-
-    // if the skin changes and the current color/theme/font is not the default one, reset
-    // the it to the default value
-    if (settingId == CSettings::SETTING_LOOKANDFEEL_SKIN)
-    {
-      const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-      SettingPtr skinRelatedSetting = settings->GetSetting(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS);
-      if (!skinRelatedSetting->IsDefault())
-      {
-        m_ignoreSkinSettingChanges = true;
-        skinRelatedSetting->Reset();
-      }
-
-      skinRelatedSetting = settings->GetSetting(CSettings::SETTING_LOOKANDFEEL_SKINTHEME);
-      if (!skinRelatedSetting->IsDefault())
-      {
-        m_ignoreSkinSettingChanges = true;
-        skinRelatedSetting->Reset();
-      }
-
-      skinRelatedSetting = settings->GetSetting(CSettings::SETTING_LOOKANDFEEL_FONT);
-      if (!skinRelatedSetting->IsDefault())
-      {
-        m_ignoreSkinSettingChanges = true;
-        skinRelatedSetting->Reset();
-      }
-    }
-    else if (settingId == CSettings::SETTING_LOOKANDFEEL_SKINTHEME)
-    {
-      std::shared_ptr<CSettingString> skinColorsSetting = std::static_pointer_cast<CSettingString>(CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS));
-      m_ignoreSkinSettingChanges = true;
-
-      // we also need to adjust the skin color setting
-      std::string colorTheme = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
-      URIUtils::RemoveExtension(colorTheme);
-      if (setting->IsDefault() || StringUtils::EqualsNoCase(colorTheme, "Textures"))
-        skinColorsSetting->Reset();
-      else
-        skinColorsSetting->SetValue(colorTheme);
-    }
-
-    m_ignoreSkinSettingChanges = false;
-
-    if (g_SkinInfo)
-    {
-      // now we can finally reload skins
-      std::string builtin("ReloadSkin");
-      if (settingId == CSettings::SETTING_LOOKANDFEEL_SKIN && m_confirmSkinChange)
-        builtin += "(confirm)";
-      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, builtin);
-    }
-  }
-  else if (settingId == CSettings::SETTING_LOOKANDFEEL_SKINZOOM)
-  {
-    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
-    CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
-  }
-  else if (settingId == CSettings::SETTING_SCREENSAVER_MODE)
-  {
-    CheckOSScreenSaverInhibitionSetting();
-  }
-  else if (settingId == CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN)
-  {
-    if (CServiceBroker::GetWinSystem()->GetGfxContext().IsFullScreenRoot())
-      CServiceBroker::GetWinSystem()->GetGfxContext().SetVideoResolution(CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution(), true);
-  }
-  else if (settingId == CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGH)
-  {
-    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_RESTART);
-  }
-  else if (StringUtils::EqualsNoCase(settingId, CSettings::SETTING_MUSICPLAYER_REPLAYGAINTYPE))
-    m_replayGainSettings.iType = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
-  else if (StringUtils::EqualsNoCase(settingId, CSettings::SETTING_MUSICPLAYER_REPLAYGAINPREAMP))
-    m_replayGainSettings.iPreAmp = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
-  else if (StringUtils::EqualsNoCase(settingId, CSettings::SETTING_MUSICPLAYER_REPLAYGAINNOGAINPREAMP))
-    m_replayGainSettings.iNoGainPreAmp = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
-  else if (StringUtils::EqualsNoCase(settingId, CSettings::SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING))
-    m_replayGainSettings.bAvoidClipping = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
-}
-
-void CApplication::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
-{
-  if (setting == NULL)
-    return;
-
-  const std::string &settingId = setting->GetId();
-  if (settingId == CSettings::SETTING_LOOKANDFEEL_SKINSETTINGS)
-    CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_SKIN_SETTINGS);
-  else if (settingId == CSettings::SETTING_SCREENSAVER_PREVIEW)
-    ActivateScreenSaver(true);
-  else if (settingId == CSettings::SETTING_SCREENSAVER_SETTINGS)
-  {
-    AddonPtr addon;
-    if (CServiceBroker::GetAddonMgr().GetAddon(
-            CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
-                CSettings::SETTING_SCREENSAVER_MODE),
-            addon, ADDON_SCREENSAVER, OnlyEnabled::CHOICE_YES))
-      CGUIDialogAddonSettings::ShowForAddon(addon);
-  }
-  else if (settingId == CSettings::SETTING_AUDIOCDS_SETTINGS)
-  {
-    AddonPtr addon;
-    if (CServiceBroker::GetAddonMgr().GetAddon(
-            CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
-                CSettings::SETTING_AUDIOCDS_ENCODER),
-            addon, ADDON_AUDIOENCODER, OnlyEnabled::CHOICE_YES))
-      CGUIDialogAddonSettings::ShowForAddon(addon);
-  }
-  else if (settingId == CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION)
-    CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_SCREEN_CALIBRATION);
-  else if (settingId == CSettings::SETTING_SOURCE_VIDEOS)
-  {
-    std::vector<std::string> params{"library://video/files.xml", "return"};
-    CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_VIDEO_NAV, params);
-  }
-  else if (settingId == CSettings::SETTING_SOURCE_MUSIC)
-  {
-    std::vector<std::string> params{"library://music/files.xml", "return"};
-    CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_MUSIC_NAV, params);
-  }
-  else if (settingId == CSettings::SETTING_SOURCE_PICTURES)
-    CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_PICTURES);
-}
-
-bool CApplication::OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
-                                   const char* oldSettingId,
-                                   const TiXmlNode* oldSettingNode)
-{
-  if (setting == NULL)
-    return false;
-
-#if defined(TARGET_DARWIN_OSX)
-  if (setting->GetId() == CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE)
-  {
-    std::shared_ptr<CSettingString> audioDevice = std::static_pointer_cast<CSettingString>(setting);
-    // Gotham and older didn't enumerate audio devices per stream on osx
-    // add stream0 per default which should be ok for all old settings.
-    if (!StringUtils::EqualsNoCase(audioDevice->GetValue(), "DARWINOSX:default") &&
-        StringUtils::FindWords(audioDevice->GetValue().c_str(), ":stream") == std::string::npos)
-    {
-      std::string newSetting = audioDevice->GetValue();
-      newSetting += ":stream0";
-      return audioDevice->SetValue(newSetting);
-    }
-  }
-#endif
-
-  return false;
-}
-
 bool CApplication::OnSettingsSaving() const
 {
   // don't save settings when we're busy stopping the application
@@ -1075,38 +840,6 @@ void CApplication::ReloadSkin(bool confirm/*=false*/)
     return; // Don't allow reload before skin is loaded by system
 
   CApplicationSkinHandling::ReloadSkin(confirm, this, this);
-}
-
-bool CApplication::Load(const TiXmlNode *settings)
-{
-  if (settings == NULL)
-    return false;
-
-  const TiXmlElement *audioElement = settings->FirstChildElement("audio");
-  if (audioElement != NULL)
-  {
-    XMLUtils::GetBoolean(audioElement, "mute", m_muted);
-    if (!XMLUtils::GetFloat(audioElement, "fvolumelevel", m_volumeLevel, VOLUME_MINIMUM, VOLUME_MAXIMUM))
-      m_volumeLevel = VOLUME_MAXIMUM;
-  }
-
-  return true;
-}
-
-bool CApplication::Save(TiXmlNode *settings) const
-{
-  if (settings == NULL)
-    return false;
-
-  TiXmlElement volumeNode("audio");
-  TiXmlNode *audioNode = settings->InsertEndChild(volumeNode);
-  if (audioNode == NULL)
-    return false;
-
-  XMLUtils::SetBoolean(audioNode, "mute", m_muted);
-  XMLUtils::SetFloat(audioNode, "fvolumelevel", m_volumeLevel);
-
-  return true;
 }
 
 void CApplication::Render()
