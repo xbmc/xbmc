@@ -108,7 +108,9 @@ macro(BUILD_DEP_TARGET)
   if(CMAKE_ARGS)
     set(CMAKE_ARGS CMAKE_ARGS ${CMAKE_ARGS}
                              -DCMAKE_INSTALL_PREFIX=${DEPENDS_PATH}
-                             -DCMAKE_INSTALL_LIBDIR=lib)
+                             -DCMAKE_INSTALL_LIBDIR=lib
+                             "-DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}")
+
     if(CMAKE_TOOLCHAIN_FILE)
       list(APPEND CMAKE_ARGS "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}")
     endif()
