@@ -331,7 +331,7 @@ int CAudioDecoder::ReadSamples(int numsamples)
 float CAudioDecoder::GetReplayGain(float &peakVal)
 {
 #define REPLAY_GAIN_DEFAULT_LEVEL 89.0f
-  const ReplayGainSettings &replayGainSettings = g_application.GetReplayGainSettings();
+  const auto& replayGainSettings = g_application.GetReplayGainSettings();
   if (replayGainSettings.iType == ReplayGain::NONE)
     return 1.0f;
 
