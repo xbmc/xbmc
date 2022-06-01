@@ -60,8 +60,8 @@ echo Creating $PACKAGE package version $VERSION revision $REVISION
 dmgPath="$DIRNAME/$ARCHIVE.dmg"
 rm -rf "$dmgPath"
 
-if [ -e "/Volumes/@APP_NAME_LC@" ]; then
-  umount /Volumes/@APP_NAME_LC@
+if [ -e "/Volumes/@APP_NAME@" ]; then
+  umount /Volumes/@APP_NAME@
 fi
 
 #generate volume iconset
@@ -71,14 +71,14 @@ then
   iconutil -c icns --output "VolumeIcon.icns" "../media/osx/volumeIcon.iconset"
 fi
 
-$DIRNAME/dmgmaker.pl $APP $ARCHIVE
+"$DIRNAME/dmgmaker.sh" "$APP" "@APP_NAME@" "$dmgPath"
 
 echo "done"
 
 # codesign and notarize dmg
 if [ "$EXPANDED_CODE_SIGN_IDENTITY_NAME" ]; then
   codesign --verbose=4 --sign "$EXPANDED_CODE_SIGN_IDENTITY_NAME" "$dmgPath"
-  if ! ./notarize.sh "$dmgPath" "$APP/Contents/Info.plist" && [[ $isReleaseBuild == 1 ]]; then
+  if ! ./notarize.sh "$dmgPath" "$APP/Contents/Info.plist" && [ "$isReleaseBuild" = 1 ]; then
     exit 1
   fi
 fi
