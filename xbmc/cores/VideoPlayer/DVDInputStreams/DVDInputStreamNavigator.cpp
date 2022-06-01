@@ -1159,8 +1159,7 @@ bool CDVDInputStreamNavigator::SetAngle(int angle)
 
 bool CDVDInputStreamNavigator::GetCurrentButtonInfo(CDVDOverlaySpu* pOverlayPicture, CDVDDemuxSPU* pSPU, int iButtonType)
 {
-  int alpha[2][4];
-  int color[2][4];
+  int colorAndAlpha[4][4];
   dvdnav_highlight_area_t hl;
 
   if (!m_dvdnav)
@@ -1174,21 +1173,6 @@ bool CDVDInputStreamNavigator::GetCurrentButtonInfo(CDVDOverlaySpu* pOverlayPict
     return false;
   }
 
-  if (GetButtonColorAndAlpha(button, alpha, color))
-  {
-    pOverlayPicture->highlight_alpha[0] = alpha[iButtonType][0];
-    pOverlayPicture->highlight_alpha[1] = alpha[iButtonType][1];
-    pOverlayPicture->highlight_alpha[2] = alpha[iButtonType][2];
-    pOverlayPicture->highlight_alpha[3] = alpha[iButtonType][3];
-
-    if (pSPU->m_bHasClut)
-    {
-      for (int i = 0; i < 4; i++)
-        for (int j = 0; j < 3; j++)
-          pOverlayPicture->highlight_color[i][j] = pSPU->m_clut[color[iButtonType][i]][j];
-    }
-  }
-
   if (DVDNAV_STATUS_OK == m_dll.dvdnav_get_highlight_area(
                               m_dll.dvdnav_get_current_nav_pci(m_dvdnav), button, iButtonType, &hl))
   {
@@ -1199,37 +1183,28 @@ bool CDVDInputStreamNavigator::GetCurrentButtonInfo(CDVDOverlaySpu* pOverlayPict
     pOverlayPicture->crop_i_y_end = hl.ey;
   }
 
-  return true;
-}
-
-bool CDVDInputStreamNavigator::GetButtonColorAndAlpha(int button, int alpha[2][4], int color[2][4])
-{
-  if (!m_dvdnav)
+  if (pSPU->m_bHasClut)
   {
-    return false;
+    // get color stored in the highlight area palete using the previously stored clut
+    for (unsigned i = 0; i < 4; i++)
+    {
+      uint8_t* yuvColor = pSPU->m_clut[(hl.palette >> (16 + i * 4)) & 0x0f];
+      uint8_t alpha = (((hl.palette >> (i * 4)) & 0x0f));
+
+      colorAndAlpha[i][0] = yuvColor[0];
+      colorAndAlpha[i][1] = yuvColor[1];
+      colorAndAlpha[i][2] = yuvColor[2];
+      colorAndAlpha[i][3] = alpha;
+    }
+
+    for (int i = 0; i < 4; i++)
+    {
+      pOverlayPicture->highlight_alpha[i] = colorAndAlpha[i][3];
+      for (int j = 0; j < 3; j++)
+        pOverlayPicture->highlight_color[i][j] = colorAndAlpha[i][j];
+    }
   }
 
-  pci_t* pci = m_dll.dvdnav_get_current_nav_pci(m_dvdnav);
-  if (!pci)
-  {
-    CLog::LogF(LOGERROR, "Error obtaining the Presentation Control Information");
-    return false;
-  }
-
-  int current_button_color = pci->hli.btnit[button - 1].btn_coln;
-
-  for (int i = 0; i < 2; i++)
-  {
-    alpha[i][0] = pci->hli.btn_colit.btn_coli[current_button_color - 1][i] >> 0 & 0xf;
-    alpha[i][1] = pci->hli.btn_colit.btn_coli[current_button_color - 1][i] >> 4 & 0xf;
-    alpha[i][2] = pci->hli.btn_colit.btn_coli[current_button_color - 1][i] >> 8 & 0xf;
-    alpha[i][3] = pci->hli.btn_colit.btn_coli[current_button_color - 1][i] >> 12 & 0xf;
-
-    color[i][0] = pci->hli.btn_colit.btn_coli[current_button_color - 1][i] >> 16 & 0xf;
-    color[i][1] = pci->hli.btn_colit.btn_coli[current_button_color - 1][i] >> 20 & 0xf;
-    color[i][2] = pci->hli.btn_colit.btn_coli[current_button_color - 1][i] >> 24 & 0xf;
-    color[i][3] = pci->hli.btn_colit.btn_coli[current_button_color - 1][i] >> 28 & 0xf;
-  }
   return true;
 }
 
