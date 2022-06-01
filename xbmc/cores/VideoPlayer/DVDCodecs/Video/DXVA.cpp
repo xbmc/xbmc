@@ -1204,9 +1204,17 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, enum AVPixel
     /* the HEVC DXVA2 spec asks for 128 pixel aligned surfaces to ensure
        all coding features have enough room to work with */
     m_surface_alignment = 128;
-    // a driver may use multi-thread decoding internally (PC only)
+    // a driver may use multi-thread decoding internally
+    // on Xbox only add refs for <= Full HD due memory constraints (max 16 refs for 4K)
     if (CSysInfo::GetWindowsDeviceFamily() != CSysInfo::Xbox)
+    {
       m_refs += CServiceBroker::GetCPUInfo()->GetCPUCount();
+    }
+    else
+    {
+      if (avctx->width <= 1920)
+        m_refs += CServiceBroker::GetCPUInfo()->GetCPUCount() / 2;
+    }
     // by specification hevc decoder can hold up to 8 unique refs
     // ffmpeg may report only 1 refs frame when is unknown or not present in headers
     m_refs += (avctx->refs > 1) ? avctx->refs : 8;
