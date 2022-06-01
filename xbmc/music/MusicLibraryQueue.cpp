@@ -213,31 +213,6 @@ void CMusicLibraryQueue::CleanLibrary(bool showDialog /* = false */)
     progress->Wait(20);
 }
 
-void CMusicLibraryQueue::CleanLibraryModal()
-{
-  // We can't perform a modal library cleaning if other jobs are running
-  if (IsRunning())
-    return;
-
-  CGUIDialogProgress* progress = nullptr;
-  progress = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
-  if (progress)
-  {
-    progress->SetHeading(CVariant{ 700 });
-    progress->SetPercentage(0);
-    progress->Open();
-    progress->ShowProgressBar(true);
-  }
-
-  m_modal = true;
-  m_cleaning = true;
-  CMusicLibraryCleaningJob cleaningJob(progress);
-  cleaningJob.DoWork();
-  m_cleaning = false;
-  m_modal = false;
-  Refresh();
-}
-
 void CMusicLibraryQueue::AddJob(CMusicLibraryJob *job)
 {
   if (job == NULL)

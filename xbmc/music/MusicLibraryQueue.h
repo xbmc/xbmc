@@ -90,13 +90,6 @@ public:
   void CleanLibrary(bool showDialog = false);
 
   /*!
-   \brief Executes a library cleaning with a modal dialog.
-   However UI rendering of dialog is on same thread as the cleaning process, so mouse movement
-   is stilted and opportunities to cancel the process limited
-   */
-  void CleanLibraryModal();
-
-  /*!
    \brief Adds the given job to the queue.
    \param[in] job Music library job to be queued.
    */
