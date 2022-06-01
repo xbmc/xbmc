@@ -75,6 +75,11 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   std::string strBuffer;
   if (http.ReadData(strBuffer) && strBuffer.length() > 0)
   {
+    /* if Content-Length is found and its not text/html, URL is pointing to file so don't treat URL as HTTPDirectory */
+    if (!http.GetHttpHeader().GetValue("Content-Length").empty() &&
+        http.GetHttpHeader().GetValue("Content-type") != "text/html")
+      return false;
+
     std::string fileCharset(http.GetProperty(XFILE::FILE_PROPERTY_CONTENT_CHARSET));
     if (!fileCharset.empty() && fileCharset != "UTF-8")
     {
