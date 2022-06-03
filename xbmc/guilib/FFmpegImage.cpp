@@ -6,9 +6,13 @@
  *  See LICENSES/README.md for more information.
  */
 #include "FFmpegImage.h"
-#include "utils/log.h"
+
 #include "cores/FFmpeg.h"
 #include "guilib/Texture.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "utils/log.h"
 
 #include <algorithm>
 
@@ -582,7 +586,10 @@ bool CFFmpegImage::CreateThumbnailFromSurface(unsigned char* bufferin, unsigned 
   tdm.avOutctx->flags = AV_CODEC_FLAG_QSCALE;
   tdm.avOutctx->mb_lmin = tdm.avOutctx->qmin * FF_QP2LAMBDA;
   tdm.avOutctx->mb_lmax = tdm.avOutctx->qmax * FF_QP2LAMBDA;
-  tdm.avOutctx->global_quality = tdm.avOutctx->qmin * FF_QP2LAMBDA;
+  unsigned int quality =
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_imageQualityJpeg;
+  tdm.avOutctx->global_quality =
+      jpg_output ? quality * FF_QP2LAMBDA : tdm.avOutctx->qmin * FF_QP2LAMBDA;
 
   unsigned int internalBufOutSize = 0;
 
