@@ -248,6 +248,37 @@ void CXBMCApp::onStart()
   }
 }
 
+namespace
+{
+bool isHeadsetPlugged()
+{
+  CJNIAudioManager audioManager(CXBMCApp::getSystemService("audio"));
+
+  if (CJNIBuild::SDK_INT >= 26)
+  {
+    const CJNIAudioDeviceInfos devices =
+        audioManager.getDevices(CJNIAudioManager::GET_DEVICES_OUTPUTS);
+
+    for (const CJNIAudioDeviceInfo& device : devices)
+    {
+      const int type = device.getType();
+      if (type == CJNIAudioDeviceInfo::TYPE_WIRED_HEADSET ||
+          type == CJNIAudioDeviceInfo::TYPE_WIRED_HEADPHONES ||
+          type == CJNIAudioDeviceInfo::TYPE_BLUETOOTH_A2DP ||
+          type == CJNIAudioDeviceInfo::TYPE_BLUETOOTH_SCO)
+      {
+        return true;
+      }
+    }
+    return false;
+  }
+  else
+  {
+    return audioManager.isWiredHeadsetOn() || audioManager.isBluetoothA2dpOn();
+  }
+}
+} // namespace
+
 void CXBMCApp::onResume()
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
@@ -255,8 +286,7 @@ void CXBMCApp::onResume()
   if (g_application.IsInitialized() && CServiceBroker::GetWinSystem()->GetOSScreenSaver()->IsInhibited())
     EnableWakeLock(true);
 
-  CJNIAudioManager audioManager(getSystemService("audio"));
-  m_headsetPlugged = audioManager.isWiredHeadsetOn() || audioManager.isBluetoothA2dpOn();
+  m_headsetPlugged = isHeadsetPlugged();
 
   // Clear the applications cache. We could have installed/deinstalled apps
   {
