@@ -76,6 +76,7 @@ constexpr const char* CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN;
 constexpr const char* CSettings::SETTING_LOOKANDFEEL_ENABLERSSFEEDS;
 constexpr const char* CSettings::SETTING_LOOKANDFEEL_RSSEDIT;
 constexpr const char* CSettings::SETTING_LOOKANDFEEL_STEREOSTRENGTH;
+constexpr const char* CSettings::SETTING_LOOKANDFEEL_SHOWSPLASH;
 constexpr const char* CSettings::SETTING_LOCALE_LANGUAGE;
 constexpr const char* CSettings::SETTING_LOCALE_COUNTRY;
 constexpr const char* CSettings::SETTING_LOCALE_CHARSET;

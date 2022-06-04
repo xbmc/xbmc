@@ -7313,7 +7313,16 @@ msgctxt "#13457"
 msgid "Prefer VAAPI render method"
 msgstr ""
 
-#empty strings from id 13458 to 13459
+#: system/settings/settings.xml
+msgctxt "#13458"
+msgid "Show splash image"
+msgstr ""
+
+#. Description of setting with label #13458 "Show splash image"
+#: system/settings/settings.xml
+msgctxt "#13459"
+msgid "Show or hide the splash image on startup"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#13460"

@@ -24,6 +24,7 @@
 #endif
 #include "peripherals/Peripherals.h"
 #include "profiles/ProfileManager.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/SettingAddon.h"
 #include "settings/SettingsComponent.h"
 #include "utils/FontUtils.h"
@@ -257,6 +258,14 @@ bool ProfileLockMode(const std::string& condition,
   return CSettingConditions::GetCurrentProfile().getLockMode() == lock;
 }
 
+bool IsSplashEnabled(const std::string& condition,
+                     const std::string& value,
+                     const SettingConstPtr& setting,
+                     void* data)
+{
+  return CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_splashImage;
+}
+
 bool GreaterThan(const std::string& condition,
                  const std::string& value,
                  const SettingConstPtr& setting,
@@ -455,6 +464,7 @@ void CSettingConditions::Initialize()
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("gte",                           GreaterThanOrEqual));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("lt",                            LessThan));
   m_complexConditions.insert(std::pair<std::string, SettingConditionCheck>("lte",                           LessThanOrEqual));
+  m_complexConditions.emplace("isSplashEnabled", IsSplashEnabled);
 }
 
 void CSettingConditions::Deinitialize()
