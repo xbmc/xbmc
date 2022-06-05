@@ -48,7 +48,7 @@
 						<width>320</width>
 						<height>380</height>
 						<texture>dialogs/dialog-bg-nobo.png</texture>
-						<bordertexture border="21">overlays/shadow.png</bordertexture>
+						<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 						<bordersize>20</bordersize>
 					</control>
 					<control type="image">
@@ -100,7 +100,7 @@
 							<width>320</width>
 							<height>380</height>
 							<texture>dialogs/dialog-bg-nobo.png</texture>
-							<bordertexture border="21">overlays/shadow.png</bordertexture>
+							<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="image">

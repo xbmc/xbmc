@@ -172,7 +172,7 @@
 					<fadetime>300</fadetime>
 					<aspectratio aligny="bottom">keep</aspectratio>
 					<texture fallback="DefaultAddon.png">$INFO[ListItem.Icon]</texture>
-					<bordertexture border="21">overlays/shadow.png</bordertexture>
+					<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 					<bordersize>20</bordersize>
 				</control>
 			</control>
