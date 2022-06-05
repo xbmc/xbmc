@@ -1377,7 +1377,7 @@
 		<definition>
 			<control type="image">
 				<texture flipx="$PARAM[flipx]" colordiffuse="EDFFFFFF">lists/panel.png</texture>
-				<bordertexture border="21">overlays/shadow.png</bordertexture>
+				<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 				<bordersize>20</bordersize>
 				<width>$PARAM[width]</width>
 				<left>$PARAM[left]</left>
@@ -1517,7 +1517,7 @@
 				<width>410</width>
 				<height>270</height>
 				<texture>dialogs/dialog-bg-nobo.png</texture>
-				<bordertexture border="21">overlays/shadow.png</bordertexture>
+				<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 				<bordersize>20</bordersize>
 			</control>
 			<control type="image">
@@ -1552,7 +1552,7 @@
 					<width>410</width>
 					<height>270</height>
 					<texture>dialogs/dialog-bg-nobo.png</texture>
-					<bordertexture border="21">overlays/shadow.png</bordertexture>
+					<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 					<bordersize>20</bordersize>
 				</control>
 				<control type="image">

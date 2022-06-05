@@ -68,7 +68,7 @@
 							<width>370</width>
 							<height>480</height>
 							<texture>dialogs/dialog-bg-nobo.png</texture>
-							<bordertexture border="21">overlays/shadow.png</bordertexture>
+							<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 							<visible>String.IsEmpty(ListItem.Art(poster)) + [Container.Content(movies) | Container.Content(tvshows)]</visible>
 						</control>
@@ -80,7 +80,7 @@
 							<height>480</height>
 							<aspectratio aligny="center">keep</aspectratio>
 							<texture fallback="DefaultVideo.png">$VAR[ShiftThumbVar]</texture>
-							<bordertexture border="21">overlays/shadow.png</bordertexture>
+							<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="textbox">
@@ -155,7 +155,7 @@
 							<width>370</width>
 							<height>480</height>
 							<texture>dialogs/dialog-bg-nobo.png</texture>
-							<bordertexture border="21">overlays/shadow.png</bordertexture>
+							<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 							<visible>String.IsEmpty(ListItem.Art(poster)) + [Container.Content(movies) | Container.Content(tvshows)]</visible>
 						</control>
@@ -167,7 +167,7 @@
 							<height>480</height>
 							<aspectratio aligny="center">keep</aspectratio>
 							<texture fallback="DefaultVideo.png">$VAR[ShiftThumbVar]</texture>
-							<bordertexture border="21">overlays/shadow.png</bordertexture>
+							<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="textbox">

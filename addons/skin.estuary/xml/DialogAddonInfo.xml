@@ -43,7 +43,7 @@
 						<height>260</height>
 						<texture background="true">DefaultNoPreview.png</texture>
 						<aspectratio>scale</aspectratio>
-						<bordertexture border="21">overlays/shadow.png</bordertexture>
+						<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 						<bordersize>20</bordersize>
 					</control>
 					<control type="image">
@@ -52,7 +52,7 @@
 						<height>260</height>
 						<texture background="true">DefaultNoPreview.png</texture>
 						<aspectratio>scale</aspectratio>
-						<bordertexture border="21">overlays/shadow.png</bordertexture>
+						<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 						<bordersize>20</bordersize>
 					</control>
 					<control type="image">
@@ -61,7 +61,7 @@
 						<height>260</height>
 						<texture background="true">DefaultNoPreview.png</texture>
 						<aspectratio>scale</aspectratio>
-						<bordertexture border="21">overlays/shadow.png</bordertexture>
+						<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 						<bordersize>20</bordersize>
 					</control>
 				</control>
@@ -80,7 +80,7 @@
 							<height>260</height>
 							<texture background="true">DefaultNoPreview.png</texture>
 							<aspectratio>scale</aspectratio>
-							<bordertexture border="21">overlays/shadow.png</bordertexture>
+							<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="image">
@@ -89,7 +89,7 @@
 							<height>260</height>
 							<texture background="true">$INFO[ListItem.Icon]</texture>
 							<aspectratio>scale</aspectratio>
-							<bordertexture border="21">overlays/shadow.png</bordertexture>
+							<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 					</itemlayout>
@@ -100,7 +100,7 @@
 							<height>260</height>
 							<texture background="true">DefaultNoPreview.png</texture>
 							<aspectratio>scale</aspectratio>
-							<bordertexture border="21">overlays/shadow.png</bordertexture>
+							<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="image">
@@ -109,7 +109,7 @@
 							<height>260</height>
 							<texture background="true">$INFO[ListItem.Icon]</texture>
 							<aspectratio>scale</aspectratio>
-							<bordertexture border="21">overlays/shadow.png</bordertexture>
+							<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="image">
@@ -306,7 +306,7 @@
 					<height>540</height>
 					<aspectratio>scale</aspectratio>
 					<texture>dialogs/dialog-bg-nobo.png</texture>
-					<bordertexture border="21">overlays/shadow.png</bordertexture>
+					<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 					<bordersize>20</bordersize>
 				</control>
 				<control type="image">

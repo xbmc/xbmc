@@ -31,7 +31,7 @@
 							<height>195</height>
 							<texture fallback="dialogs/dialog-bg-nobo.png" background="true">$VAR[BannerArtVar]</texture>
 							<aspectratio aligny="center">scale</aspectratio>
-							<bordertexture border="21">overlays/shadow.png</bordertexture>
+							<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="label">
@@ -68,7 +68,7 @@
 							<height>195</height>
 							<texture fallback="dialogs/dialog-bg-nobo.png" background="true">$VAR[BannerArtVar]</texture>
 							<aspectratio aligny="center">scale</aspectratio>
-							<bordertexture border="21">overlays/shadow.png</bordertexture>
+							<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="label">

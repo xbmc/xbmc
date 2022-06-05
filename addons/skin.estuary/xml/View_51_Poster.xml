@@ -131,7 +131,7 @@
 				<width>516</width>
 				<height>756</height>
 				<texture>colors/black.png</texture>
-				<bordertexture border="21">overlays/shadow.png</bordertexture>
+				<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 				<bordersize>20</bordersize>
 			</control>
 			<control type="image">
