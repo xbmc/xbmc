@@ -1,11 +1,22 @@
 /*
- *  Copyright (C) 2000, 2001 Björn Englund <d4bjorn@dtek.chalmers.se>,
- *                           Håkan Hjort <d95hjort@dtek.chalmers.se>
+ * Copyright (C) 2000, 2001 Björn Englund <d4bjorn@dtek.chalmers.se>,
+ *                          Håkan Hjort <d95hjort@dtek.chalmers.se>
  *
- *  This file is part of libdvdread.
+ * This file is part of libdvdread.
  *
- *  SPDX-License-Identifier: GPL-2.0-or-later
- *  See LICENSES/README.md for more information.
+ * libdvdread is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * libdvdread is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with libdvdread; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
 #pragma once
@@ -15,12 +26,14 @@
 
 
 #undef ATTRIBUTE_PACKED
-#undef PRAGMA_PACK_BEGIN
-#undef PRAGMA_PACK_END
 
 #if defined(__GNUC__)
 #if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 95)
-#define ATTRIBUTE_PACKED __attribute__ ((packed))
+#if (__GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 4)) && !defined(__clang__)
+#define ATTRIBUTE_PACKED __attribute__((packed, gcc_struct))
+#else
+#define ATTRIBUTE_PACKED __attribute__((packed))
+#endif
 #define PRAGMA_PACK 0
 #endif
 #endif
@@ -118,29 +131,29 @@ typedef struct {
  * MultiChannel Extension
  */
 typedef struct {
-  unsigned int zero1      : 7;
-  unsigned int ach0_gme   : 1;
+  unsigned char zero1 : 7;
+  unsigned char ach0_gme : 1;
 
-  unsigned int zero2      : 7;
-  unsigned int ach1_gme   : 1;
+  unsigned char zero2 : 7;
+  unsigned char ach1_gme : 1;
 
-  unsigned int zero3      : 4;
-  unsigned int ach2_gv1e  : 1;
-  unsigned int ach2_gv2e  : 1;
-  unsigned int ach2_gm1e  : 1;
-  unsigned int ach2_gm2e  : 1;
+  unsigned char zero3 : 4;
+  unsigned char ach2_gv1e : 1;
+  unsigned char ach2_gv2e : 1;
+  unsigned char ach2_gm1e : 1;
+  unsigned char ach2_gm2e : 1;
 
-  unsigned int zero4      : 4;
-  unsigned int ach3_gv1e  : 1;
-  unsigned int ach3_gv2e  : 1;
-  unsigned int ach3_gmAe  : 1;
-  unsigned int ach3_se2e  : 1;
+  unsigned char zero4 : 4;
+  unsigned char ach3_gv1e : 1;
+  unsigned char ach3_gv2e : 1;
+  unsigned char ach3_gmAe : 1;
+  unsigned char ach3_se2e : 1;
 
-  unsigned int zero5      : 4;
-  unsigned int ach4_gv1e  : 1;
-  unsigned int ach4_gv2e  : 1;
-  unsigned int ach4_gmBe  : 1;
-  unsigned int ach4_seBe  : 1;
+  unsigned char zero5 : 4;
+  unsigned char ach4_gv1e : 1;
+  unsigned char ach4_gv2e : 1;
+  unsigned char ach4_gmBe : 1;
+  unsigned char ach4_seBe : 1;
   uint8_t zero6[19];
 } ATTRIBUTE_PACKED multichannel_ext_t;
 
@@ -177,7 +190,7 @@ typedef struct {
   uint16_t nr_of_pre;
   uint16_t nr_of_post;
   uint16_t nr_of_cell;
-  uint16_t zero_1;
+  uint16_t last_byte;
   vm_cmd_t *pre_cmds;
   vm_cmd_t *post_cmds;
   vm_cmd_t *cell_cmds;
@@ -193,16 +206,16 @@ typedef uint8_t pgc_program_map_t;
  * Cell Playback Information.
  */
 typedef struct {
-  unsigned int block_mode       : 2;
-  unsigned int block_type       : 2;
-  unsigned int seamless_play    : 1;
-  unsigned int interleaved      : 1;
-  unsigned int stc_discontinuity: 1;
-  unsigned int seamless_angle   : 1;
-
-  unsigned int playback_mode    : 1;  /**< When set, enter StillMode after each VOBU */
-  unsigned int restricted       : 1;  /**< ?? drop out of fastforward? */
-  unsigned int unknown2         : 6;
+  unsigned char block_mode : 2;
+  unsigned char block_type : 2;
+  unsigned char seamless_play : 1;
+  unsigned char interleaved : 1;
+  unsigned char stc_discontinuity : 1;
+  unsigned char seamless_angle : 1;
+  unsigned char zero_1 : 1;
+  unsigned char playback_mode : 1; /**< When set, enter StillMode after each VOBU */
+  unsigned char restricted : 1; /**< ?? drop out of fastforward? */
+  unsigned char cell_type : 5; /** for karaoke, reserved otherwise */
   uint8_t still_time;
   uint8_t cell_cmd_nr;
   dvd_time_t playback_time;
@@ -233,35 +246,35 @@ typedef struct {
  * User Operations.
  */
 typedef struct {
-  unsigned int zero                           : 7; /* 25-31 */
-  unsigned int video_pres_mode_change         : 1; /* 24 */
+  unsigned char zero : 7; /* 25-31 */
+  unsigned char video_pres_mode_change : 1; /* 24 */
 
-  unsigned int karaoke_audio_pres_mode_change : 1; /* 23 */
-  unsigned int angle_change                   : 1;
-  unsigned int subpic_stream_change           : 1;
-  unsigned int audio_stream_change            : 1;
-  unsigned int pause_on                       : 1;
-  unsigned int still_off                      : 1;
-  unsigned int button_select_or_activate      : 1;
-  unsigned int resume                         : 1; /* 16 */
+  unsigned char karaoke_audio_pres_mode_change : 1; /* 23 */
+  unsigned char angle_change : 1;
+  unsigned char subpic_stream_change : 1;
+  unsigned char audio_stream_change : 1;
+  unsigned char pause_on : 1;
+  unsigned char still_off : 1;
+  unsigned char button_select_or_activate : 1;
+  unsigned char resume : 1; /* 16 */
 
-  unsigned int chapter_menu_call              : 1; /* 15 */
-  unsigned int angle_menu_call                : 1;
-  unsigned int audio_menu_call                : 1;
-  unsigned int subpic_menu_call               : 1;
-  unsigned int root_menu_call                 : 1;
-  unsigned int title_menu_call                : 1;
-  unsigned int backward_scan                  : 1;
-  unsigned int forward_scan                   : 1; /* 8 */
+  unsigned char chapter_menu_call : 1; /* 15 */
+  unsigned char angle_menu_call : 1;
+  unsigned char audio_menu_call : 1;
+  unsigned char subpic_menu_call : 1;
+  unsigned char root_menu_call : 1;
+  unsigned char title_menu_call : 1;
+  unsigned char backward_scan : 1;
+  unsigned char forward_scan : 1; /* 8 */
 
-  unsigned int next_pg_search                 : 1; /* 7 */
-  unsigned int prev_or_top_pg_search          : 1;
-  unsigned int time_or_chapter_search         : 1;
-  unsigned int go_up                          : 1;
-  unsigned int stop                           : 1;
-  unsigned int title_play                     : 1;
-  unsigned int chapter_search_or_play         : 1;
-  unsigned int title_or_time_play             : 1; /* 0 */
+  unsigned char next_pg_search : 1; /* 7 */
+  unsigned char prev_or_top_pg_search : 1;
+  unsigned char time_or_chapter_search : 1;
+  unsigned char go_up : 1;
+  unsigned char stop : 1;
+  unsigned char title_play : 1;
+  unsigned char chapter_search_or_play : 1;
+  unsigned char title_or_time_play : 1; /* 0 */
 } ATTRIBUTE_PACKED user_ops_t;
 
 /**
@@ -278,8 +291,8 @@ typedef struct {
   uint16_t next_pgc_nr;
   uint16_t prev_pgc_nr;
   uint16_t goup_pgc_nr;
-  uint8_t  still_time;
   uint8_t  pg_playback_mode;
+  uint8_t still_time;
   uint32_t palette[16]; /* New type struct {zero_1, Y, Cr, Cb} ? */
   uint16_t command_tbl_offset;
   uint16_t program_map_offset;
@@ -298,9 +311,9 @@ typedef struct {
  */
 typedef struct {
   uint8_t  entry_id;
-  unsigned int block_mode : 2;
-  unsigned int block_type : 2;
-  unsigned int unknown1   : 4;
+  unsigned char block_mode : 2;
+  unsigned char block_type : 2;
+  unsigned char zero_1 : 4;
   uint16_t ptl_id_mask;
   uint32_t pgc_start_byte;
   pgc_t *pgc;
@@ -426,14 +439,14 @@ typedef struct {
 } ATTRIBUTE_PACKED vmgi_mat_t;
 
 typedef struct {
-  unsigned int zero_1                    : 1;
-  unsigned int multi_or_random_pgc_title : 1; /* 0: one sequential pgc title */
-  unsigned int jlc_exists_in_cell_cmd    : 1;
-  unsigned int jlc_exists_in_prepost_cmd : 1;
-  unsigned int jlc_exists_in_button_cmd  : 1;
-  unsigned int jlc_exists_in_tt_dom      : 1;
-  unsigned int chapter_search_or_play    : 1; /* UOP 1 */
-  unsigned int title_or_time_play        : 1; /* UOP 0 */
+  unsigned char zero_1 : 1;
+  unsigned char multi_or_random_pgc_title : 1; /* 0: one sequential pgc title */
+  unsigned char jlc_exists_in_cell_cmd : 1;
+  unsigned char jlc_exists_in_prepost_cmd : 1;
+  unsigned char jlc_exists_in_button_cmd : 1;
+  unsigned char jlc_exists_in_tt_dom : 1;
+  unsigned char chapter_search_or_play : 1; /* UOP 1 */
+  unsigned char title_or_time_play : 1; /* UOP 0 */
 } ATTRIBUTE_PACKED playback_type_t;
 
 /**
@@ -562,7 +575,9 @@ typedef struct {
  */
 typedef struct {
   uint16_t lang_code;
-  uint16_t unknown;      /* 0x0001, title 1? disc 1? side 1? */
+  uint8_t zero_1;
+  uint8_t
+      char_set; /* 0x00 reserved Unicode, 0x01 ISO 646, 0x10 JIS Roman & JIS Kanji, 0x11 ISO 8859-1, 0x12 Shift JIS Kanji */
   uint32_t txtdt_start_byte;  /* prt, rel start of vmg_txtdt_mgi  */
   txtdt_t  *txtdt;
 } ATTRIBUTE_PACKED txtdt_lu_t;
@@ -572,8 +587,9 @@ typedef struct {
  * Text Data Manager Information. (Incomplete)
  */
 typedef struct {
-  char disc_name[14];            /* how many bytes?? */
-  uint16_t nr_of_language_units; /* 32bit??          */
+  char disc_name[12];
+  uint16_t unknown1;
+  uint16_t nr_of_language_units;
   uint32_t last_byte;
   txtdt_lu_t *lu;
 } ATTRIBUTE_PACKED txtdt_mgi_t;
@@ -714,8 +730,6 @@ typedef struct {
  * is read in from the VTS_XX_0.[IFO,BUP] files.
  */
 typedef struct {
-  dvd_file_t *file;
-
   /* VMGI */
   vmgi_mat_t     *vmgi_mat;
   tt_srpt_t      *tt_srpt;
