@@ -102,6 +102,9 @@ bool CGUIFontTTFGL::FirstBegin()
 
   if (m_textureStatus == TEXTURE_UPDATED)
   {
+    // Copies one more line in case we have to sample from there
+    m_updateY2 = std::min(m_updateY2 + 1, m_texture->GetHeight());
+
     glBindTexture(GL_TEXTURE_2D, m_nTexture);
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, m_updateY1, m_texture->GetWidth(), m_updateY2 - m_updateY1,
                     pixformat, GL_UNSIGNED_BYTE,
