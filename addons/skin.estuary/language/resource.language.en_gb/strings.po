@@ -911,3 +911,15 @@ msgstr ""
 msgctxt "#31611"
 msgid "System"
 msgstr ""
+
+#: /xml/SkinSettings.xml
+#. Label to show TV menu action
+msgctxt "#31612"
+msgid "Choose action on TV menu selection"
+msgstr ""
+
+#: /xml/SkinSettings.xml
+#. Label to show Radio menu action
+msgctxt "#31613"
+msgid "Choose action on radio menu selection"
+msgstr ""

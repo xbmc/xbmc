@@ -207,11 +207,31 @@
 					<selected>!Skin.HasSetting(HomeMenuNoTVButton)</selected>
 					<onclick>Skin.ToggleSetting(HomeMenuNoTVButton)</onclick>
 				</control>
+				<control type="button" id="625">
+					<label>- $LOCALIZE[31612]</label>
+					<label2>$VAR[PVRTVMenuActionVar]</label2>
+					<include>DefaultSettingButton</include>
+					<onclick condition="String.IsEmpty(Skin.String(pvr_tv_action))">Skin.SetString(pvr_tv_action,1)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(pvr_tv_action),2)">Skin.SetString(pvr_tv_action,0)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(pvr_tv_action),1)">Skin.SetString(pvr_tv_action,2)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(pvr_tv_action),0)">Skin.SetString(pvr_tv_action,1)</onclick>
+					<enable>!Skin.HasSetting(HomeMenuNoTVButton)</enable>
+				</control>
 				<control type="radiobutton" id="619">
 					<label>$LOCALIZE[19021]</label>
 					<include>DefaultSettingButton</include>
 					<selected>!Skin.HasSetting(HomeMenuNoRadioButton)</selected>
 					<onclick>Skin.ToggleSetting(HomeMenuNoRadioButton)</onclick>
+				</control>
+				<control type="button" id="626">
+					<label>- $LOCALIZE[31613]</label>
+					<label2>$VAR[PVRRadioMenuActionVar]</label2>
+					<include>DefaultSettingButton</include>
+					<onclick condition="String.IsEmpty(Skin.String(pvr_radio_action))">Skin.SetString(pvr_radio_action,1)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(pvr_radio_action),2)">Skin.SetString(pvr_radio_action,0)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(pvr_radio_action),1)">Skin.SetString(pvr_radio_action,2)</onclick>
+					<onclick condition="String.IsEqual(Skin.String(pvr_radio_action),0)">Skin.SetString(pvr_radio_action,1)</onclick>
+					<enable>!Skin.HasSetting(HomeMenuNoRadioButton)</enable>
 				</control>
 				<control type="radiobutton" id="614">
 					<label>$LOCALIZE[24001]</label>

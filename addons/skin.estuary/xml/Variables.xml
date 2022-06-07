@@ -606,4 +606,16 @@
 		<value condition="VideoPlayer.SubtitlesEnabled">[B]$INFO[VideoPlayer.SubtitlesLanguage][/B]</value>
 		<value>[B]$LOCALIZE[1223][/B]</value>
 	</variable>
+	<variable name="PVRTVMenuActionVar">
+		<value condition="String.IsEmpty(Skin.String(pvr_tv_action))">$LOCALIZE[19069]</value>
+		<value condition="String.IsEqual(Skin.String(pvr_tv_action),0)">$LOCALIZE[19069]</value>
+		<value condition="String.IsEqual(Skin.String(pvr_tv_action),1)">$LOCALIZE[19019]</value>
+		<value condition="String.IsEqual(Skin.String(pvr_tv_action),2)">$LOCALIZE[19017]</value>
+	</variable>
+	<variable name="PVRRadioMenuActionVar">
+		<value condition="String.IsEmpty(Skin.String(pvr_radio_action))">$LOCALIZE[19069]</value>
+		<value condition="String.IsEqual(Skin.String(pvr_radio_action),0)">$LOCALIZE[19069]</value>
+		<value condition="String.IsEqual(Skin.String(pvr_radio_action),1)">$LOCALIZE[19019]</value>
+		<value condition="String.IsEqual(Skin.String(pvr_radio_action),2)">$LOCALIZE[19017]</value>
+	</variable>
 </includes>
