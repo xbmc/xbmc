@@ -27,10 +27,16 @@
 #include "platform/Environment.h"
 #endif
 
-#define HOLDMODE_NONE 0
-#define HOLDMODE_HELD 1 /* set internally when we wish to flush demuxer */
-#define HOLDMODE_SKIP 2 /* set by inputstream user, when they wish to skip the held mode */
-#define HOLDMODE_DATA 3 /* set after hold mode has been exited, and action that inited it has been executed */
+namespace
+{
+constexpr int HOLDMODE_NONE = 0;
+/* set internally when we wish to flush demuxer */
+constexpr int HOLDMODE_HELD = 1;
+/* set by inputstream user, when they wish to skip the held mode */
+constexpr int HOLDMODE_SKIP = 2;
+/* set after hold mode has been exited, and action that inited it has been executed */
+constexpr int HOLDMODE_DATA = 3;
+} // namespace
 
 static int dvd_inputstreamnavigator_cb_seek(void * p_stream, uint64_t i_pos);
 static int dvd_inputstreamnavigator_cb_read(void * p_stream, void * buffer, int i_read);
