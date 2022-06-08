@@ -151,7 +151,7 @@ CAndroidUtils::CAndroidUtils()
   std::string displaySize;
   m_width = m_height = 0;
 
-  if (CJNIBase::GetSDKVersion() >= 24)
+  if (CJNIBase::GetSDKVersion() >= 23)
   {
     fetchDisplayModes();
     for (const auto& res : s_res_displayModes)
@@ -339,7 +339,7 @@ bool CAndroidUtils::ProbeResolutions(std::vector<RESOLUTION_INFO>& resolutions)
 
 bool CAndroidUtils::UpdateDisplayModes()
 {
-  if (CJNIBase::GetSDKVersion() >= 24)
+  if (CJNIBase::GetSDKVersion() >= 23)
     fetchDisplayModes();
   return true;
 }
