@@ -20,6 +20,8 @@
 #include <pipewire/keys.h>
 #include <spa/param/audio/raw.h>
 
+using namespace std::chrono_literals;
+
 namespace
 {
 
@@ -253,7 +255,14 @@ void CAESinkPipewire::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
 
     node->EnumerateFormats();
 
-    loop->Wait();
+    int ret = loop->Wait(5s);
+    if (ret == -ETIMEDOUT)
+    {
+      CLog::Log(LOGDEBUG,
+                "CAESinkPipewire::{} - timed out out waiting for formats to be enumerated",
+                __FUNCTION__);
+      continue;
+    }
 
     auto& channels = node->GetChannels();
     if (channels.size() < 1)
@@ -363,7 +372,14 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
 
     CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - waiting", __FUNCTION__);
 
-    loop->Wait();
+    int ret = loop->Wait(5s);
+    if (ret == -ETIMEDOUT)
+    {
+      CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - timed out waiting for stream to be paused",
+                __FUNCTION__);
+      loop->Unlock();
+      return false;
+    }
   } while (state != PW_STREAM_STATE_PAUSED);
 
   CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - initialized", __FUNCTION__);
@@ -414,7 +430,12 @@ unsigned int CAESinkPipewire::AddPackets(uint8_t** data, unsigned int frames, un
     if (pwBuffer)
       break;
 
-    loop->Wait();
+    int ret = loop->Wait(1s);
+    if (ret == -ETIMEDOUT)
+    {
+      loop->Unlock();
+      return 0;
+    }
   }
 
   spa_buffer* spaBuffer = pwBuffer->buffer;
@@ -454,7 +475,11 @@ void CAESinkPipewire::Drain()
 
   stream->Flush(true);
 
-  loop->Wait();
+  int ret = loop->Wait(1s);
+  if (ret == -ETIMEDOUT)
+  {
+    CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - wait timed out, already drained?", __FUNCTION__);
+  }
 
   loop->Unlock();
 }

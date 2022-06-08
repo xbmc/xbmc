@@ -16,6 +16,8 @@
 
 #include <pipewire/pipewire.h>
 
+using namespace std::chrono_literals;
+
 namespace AE
 {
 namespace SINK
@@ -67,9 +69,16 @@ bool CPipewire::Start()
 
   m_core->Sync();
 
-  m_loop->Wait();
+  int ret = m_loop->Wait(5s);
 
   m_loop->Unlock();
+
+  if (ret == -ETIMEDOUT)
+  {
+    CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - timed out out waiting for synchronization",
+              __FUNCTION__);
+    return false;
+  }
 
   return true;
 }
