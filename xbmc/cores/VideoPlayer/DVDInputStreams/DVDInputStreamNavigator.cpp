@@ -36,6 +36,30 @@ constexpr int HOLDMODE_HELD = 1;
 constexpr int HOLDMODE_SKIP = 2;
 /* set after hold mode has been exited, and action that inited it has been executed */
 constexpr int HOLDMODE_DATA = 3;
+
+// DVD Subpicture types
+constexpr int DVD_SUBPICTURE_TYPE_NOTSPECIFIED = 0;
+constexpr int DVD_SUBPICTURE_TYPE_LANGUAGE = 1;
+
+// DVD Subpicture language extensions
+constexpr int DVD_SUBPICTURE_LANG_EXT_NOTSPECIFIED = 0;
+constexpr int DVD_SUBPICTURE_LANG_EXT_NORMALCAPTIONS = 1;
+constexpr int DVD_SUBPICTURE_LANG_EXT_BIGCAPTIONS = 2;
+constexpr int DVD_SUBPICTURE_LANG_EXT_CHILDRENSCAPTIONS = 3;
+constexpr int DVD_SUBPICTURE_LANG_EXT_NORMALCC = 5;
+constexpr int DVD_SUBPICTURE_LANG_EXT_BIGCC = 6;
+constexpr int DVD_SUBPICTURE_LANG_EXT_CHILDRENSCC = 7;
+constexpr int DVD_SUBPICTURE_LANG_EXT_FORCED = 9;
+constexpr int DVD_SUBPICTURE_LANG_EXT_NORMALDIRECTORSCOMMENTS = 13;
+constexpr int DVD_SUBPICTURE_LANG_EXT_BIGDIRECTORSCOMMENTS = 14;
+constexpr int DVD_SUBPICTURE_LANG_EXT_CHILDRENDIRECTORSCOMMENTS = 15;
+
+// DVD Audio language extensions
+constexpr int DVD_AUDIO_LANG_EXT_NOTSPECIFIED = 0;
+constexpr int DVD_AUDIO_LANG_EXT_NORMALCAPTIONS = 1;
+constexpr int DVD_AUDIO_LANG_EXT_VISUALLYIMPAIRED = 2;
+constexpr int DVD_AUDIO_LANG_EXT_DIRECTORSCOMMENTS1 = 3;
+constexpr int DVD_AUDIO_LANG_EXT_DIRECTORSCOMMENTS2 = 4;
 } // namespace
 
 static int dvd_inputstreamnavigator_cb_seek(void * p_stream, uint64_t i_pos);
@@ -891,32 +915,32 @@ SubtitleStreamInfo CDVDInputStreamNavigator::GetSubtitleStreamInfo(const int iId
 
 void CDVDInputStreamNavigator::SetSubtitleStreamName(SubtitleStreamInfo &info, const subp_attr_t &subp_attributes)
 {
-  if (subp_attributes.type == DVD_SUBPICTURE_TYPE_Language ||
-    subp_attributes.type == DVD_SUBPICTURE_TYPE_NotSpecified)
+  if (subp_attributes.type == DVD_SUBPICTURE_TYPE_LANGUAGE ||
+      subp_attributes.type == DVD_SUBPICTURE_TYPE_NOTSPECIFIED)
   {
     switch (subp_attributes.code_extension)
     {
-    case DVD_SUBPICTURE_LANG_EXT_NotSpecified:
-    case DVD_SUBPICTURE_LANG_EXT_ChildrensCaptions:
-      break;
+      case DVD_SUBPICTURE_LANG_EXT_NOTSPECIFIED:
+      case DVD_SUBPICTURE_LANG_EXT_CHILDRENSCAPTIONS:
+        break;
 
-    case DVD_SUBPICTURE_LANG_EXT_NormalCaptions:
-    case DVD_SUBPICTURE_LANG_EXT_NormalCC:
-    case DVD_SUBPICTURE_LANG_EXT_BigCaptions:
-    case DVD_SUBPICTURE_LANG_EXT_BigCC:
-    case DVD_SUBPICTURE_LANG_EXT_ChildrensCC:
-      info.flags = StreamFlags::FLAG_HEARING_IMPAIRED;
-      break;
-    case DVD_SUBPICTURE_LANG_EXT_Forced:
-      info.flags = StreamFlags::FLAG_FORCED;
-      break;
-    case DVD_SUBPICTURE_LANG_EXT_NormalDirectorsComments:
-    case DVD_SUBPICTURE_LANG_EXT_BigDirectorsComments:
-    case DVD_SUBPICTURE_LANG_EXT_ChildrensDirectorsComments:
-      info.name = g_localizeStrings.Get(37001);
-      break;
-    default:
-      break;
+      case DVD_SUBPICTURE_LANG_EXT_NORMALCAPTIONS:
+      case DVD_SUBPICTURE_LANG_EXT_NORMALCC:
+      case DVD_SUBPICTURE_LANG_EXT_BIGCAPTIONS:
+      case DVD_SUBPICTURE_LANG_EXT_BIGCC:
+      case DVD_SUBPICTURE_LANG_EXT_CHILDRENSCC:
+        info.flags = StreamFlags::FLAG_HEARING_IMPAIRED;
+        break;
+      case DVD_SUBPICTURE_LANG_EXT_FORCED:
+        info.flags = StreamFlags::FLAG_FORCED;
+        break;
+      case DVD_SUBPICTURE_LANG_EXT_NORMALDIRECTORSCOMMENTS:
+      case DVD_SUBPICTURE_LANG_EXT_BIGDIRECTORSCOMMENTS:
+      case DVD_SUBPICTURE_LANG_EXT_CHILDRENDIRECTORSCOMMENTS:
+        info.name = g_localizeStrings.Get(37001);
+        break;
+      default:
+        break;
     }
   }
 }
@@ -961,20 +985,20 @@ void CDVDInputStreamNavigator::SetAudioStreamName(AudioStreamInfo &info, const a
 {
   switch( audio_attributes.code_extension )
   {
-  case DVD_AUDIO_LANG_EXT_VisuallyImpaired:
-    info.name = g_localizeStrings.Get(37000);
-    info.flags = StreamFlags::FLAG_VISUAL_IMPAIRED;
-    break;
-  case DVD_AUDIO_LANG_EXT_DirectorsComments1:
-    info.name = g_localizeStrings.Get(37001);
-    break;
-  case DVD_AUDIO_LANG_EXT_DirectorsComments2:
-    info.name = g_localizeStrings.Get(37002);
-    break;
-  case DVD_AUDIO_LANG_EXT_NotSpecified:
-  case DVD_AUDIO_LANG_EXT_NormalCaptions:
-  default:
-    break;
+    case DVD_AUDIO_LANG_EXT_VISUALLYIMPAIRED:
+      info.name = g_localizeStrings.Get(37000);
+      info.flags = StreamFlags::FLAG_VISUAL_IMPAIRED;
+      break;
+    case DVD_AUDIO_LANG_EXT_DIRECTORSCOMMENTS1:
+      info.name = g_localizeStrings.Get(37001);
+      break;
+    case DVD_AUDIO_LANG_EXT_DIRECTORSCOMMENTS2:
+      info.name = g_localizeStrings.Get(37002);
+      break;
+    case DVD_AUDIO_LANG_EXT_NOTSPECIFIED:
+    case DVD_AUDIO_LANG_EXT_NORMALCAPTIONS:
+    default:
+      break;
   }
 
   switch(audio_attributes.audio_format)
