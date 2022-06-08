@@ -12,19 +12,11 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/SettingsManager.h"
-#include "system_egl.h"
-#include "utils/HDRCapabilities.h"
-#include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
 #include "platform/android/activity/XBMCApp.h"
 
-#include <cmath>
-#include <stdlib.h>
-
-#include <androidjni/Build.h>
-#include <androidjni/Display.h>
 #include <androidjni/MediaCodecInfo.h>
 #include <androidjni/MediaCodecList.h>
 #include <androidjni/System.h>
