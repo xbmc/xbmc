@@ -20,7 +20,7 @@
 					<width>566</width>
 					<height>841</height>
 					<texture>colors/black.png</texture>
-					<bordertexture border="21">overlays/shadow.png</bordertexture>
+					<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 					<bordersize>20</bordersize>
 				</control>
 				<control type="image">
@@ -50,7 +50,7 @@
 						<height>801</height>
 						<aspectratio>keep</aspectratio>
 						<texture>$INFO[ListItem.Thumb]</texture>
-						<bordertexture border="21">overlays/shadow.png</bordertexture>
+						<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 						<bordersize>20</bordersize>
 					</control>
 				</control>
@@ -72,7 +72,7 @@
 					<height>801</height>
 					<aspectratio>keep</aspectratio>
 					<texture>$INFO[ListItem.Thumb]</texture>
-					<bordertexture border="21">overlays/shadow.png</bordertexture>
+					<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 					<bordersize>20</bordersize>
 				</control>
 			</control>
@@ -309,7 +309,7 @@
 								<height>317</height>
 								<texture>DefaultActorSolid.png</texture>
 								<aspectratio aligny="center">scale</aspectratio>
-								<bordertexture border="21">overlays/shadow.png</bordertexture>
+								<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 								<bordersize>20</bordersize>
 							</control>
 							<control type="image">
@@ -361,7 +361,7 @@
 								<height>317</height>
 								<texture>DefaultActorSolid.png</texture>
 								<aspectratio aligny="center">scale</aspectratio>
-								<bordertexture border="21">overlays/shadow.png</bordertexture>
+								<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 								<bordersize>20</bordersize>
 							</control>
 							<control type="image">
@@ -422,7 +422,7 @@
 								<height>317</height>
 								<texture>DefaultMovies.png</texture>
 								<aspectratio aligny="center">scale</aspectratio>
-								<bordertexture border="21">overlays/shadow.png</bordertexture>
+								<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 								<bordersize>20</bordersize>
 							</control>
 							<control type="image">
@@ -464,7 +464,7 @@
 								<height>317</height>
 								<texture>DefaultMovies.png</texture>
 								<aspectratio aligny="center">scale</aspectratio>
-								<bordertexture border="21">overlays/shadow.png</bordertexture>
+								<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 								<bordersize>20</bordersize>
 							</control>
 							<control type="image">
