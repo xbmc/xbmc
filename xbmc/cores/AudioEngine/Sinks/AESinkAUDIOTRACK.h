@@ -79,6 +79,7 @@ private:
   static std::set<unsigned int>       m_sink_sampleRates;
   static bool m_sinkSupportsFloat;
   static bool m_sinkSupportsMultiChannelFloat;
+  static bool m_passthrough_use_eac3;
 
   AEAudioFormat      m_format;
   int16_t           *m_alignedS16;

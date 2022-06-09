@@ -237,6 +237,7 @@ bool CAESinkAUDIOTRACK::m_hasIEC = false;
 std::set<unsigned int> CAESinkAUDIOTRACK::m_sink_sampleRates;
 bool CAESinkAUDIOTRACK::m_sinkSupportsFloat = false;
 bool CAESinkAUDIOTRACK::m_sinkSupportsMultiChannelFloat = false;
+bool CAESinkAUDIOTRACK::m_passthrough_use_eac3 = false;
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 CAESinkAUDIOTRACK::CAESinkAUDIOTRACK()
@@ -325,6 +326,13 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
 
   int stream = CJNIAudioManager::STREAM_MUSIC;
   m_encoding = CJNIAudioFormat::ENCODING_PCM_16BIT;
+
+  // If the device supports EAC3 passthrough, but not basic AC3 patthrough, send it as EAC3 (which is AC3 compatible) instead
+  if (!m_info.m_wantsIECPassthrough)
+  {
+    if ((m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_AC3) && m_passthrough_use_eac3)
+      m_format.m_streamInfo.m_type = CAEStreamInfo::STREAM_TYPE_EAC3;
+  }
 
   uint32_t distance = UINT32_MAX; // max upper distance, update at least ones to use one of our samplerates
   for (auto& s : m_sink_sampleRates)
@@ -1031,6 +1039,8 @@ void CAESinkAUDIOTRACK::UpdateAvailablePassthroughCapabilities(bool isRaw)
   m_info.m_streamTypes.clear();
   if (isRaw)
   {
+    bool canDoAC3 = false;
+
     if (CJNIAudioFormat::ENCODING_AC3 != -1)
     {
       if (VerifySinkConfiguration(48000, CJNIAudioFormat::CHANNEL_OUT_STEREO,
@@ -1038,6 +1048,8 @@ void CAESinkAUDIOTRACK::UpdateAvailablePassthroughCapabilities(bool isRaw)
       {
         m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_AC3);
         CLog::Log(LOGDEBUG, "Firmware implements AC3 RAW");
+
+        canDoAC3 = true;
       }
     }
 
@@ -1049,6 +1061,9 @@ void CAESinkAUDIOTRACK::UpdateAvailablePassthroughCapabilities(bool isRaw)
       {
         m_info.m_streamTypes.push_back(CAEStreamInfo::STREAM_TYPE_EAC3);
         CLog::Log(LOGDEBUG, "Firmware implements EAC3 RAW");
+
+        if (!canDoAC3)
+          m_passthrough_use_eac3 = true;
       }
     }
 
