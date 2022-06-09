@@ -16,7 +16,6 @@
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
 
-#include <mutex>
 #include <utility>
 
 using namespace XFILE;
@@ -41,7 +40,7 @@ void CApplicationStackHelper::OnPlayBackStarted(const CFileItem& item)
     m_stackmap.clear();
   else
   {
-    CFileItemPtr stack = GetRegisteredStack(item);
+    auto stack = GetRegisteredStack(item);
     Stackmap::iterator itr = m_stackmap.begin();
     while (itr != m_stackmap.end())
     {
@@ -228,14 +227,16 @@ void CApplicationStackHelper::ClearAllRegisteredStackInformation()
   m_stackmap.clear();
 }
 
-CFileItemPtr CApplicationStackHelper::GetRegisteredStack(const CFileItem& item)
+std::shared_ptr<const CFileItem> CApplicationStackHelper::GetRegisteredStack(
+    const CFileItem& item) const
 {
   return GetStackPartInformation(item.GetPath())->m_pStack;
 }
 
-bool CApplicationStackHelper::HasRegisteredStack(const CFileItem & item)
+bool CApplicationStackHelper::HasRegisteredStack(const CFileItem& item) const
 {
-  return (m_stackmap.count(item.GetPath()) > 0 && m_stackmap[item.GetPath()]->m_pStack != nullptr);
+  const auto it = m_stackmap.find(item.GetPath());
+  return it != m_stackmap.end() && it->second != nullptr;
 }
 
 void CApplicationStackHelper::SetRegisteredStack(const CFileItem& item, CFileItemPtr stackItem)
@@ -253,7 +254,7 @@ void CApplicationStackHelper::SetRegisteredStackPartNumber(const CFileItem& item
   GetStackPartInformation(item.GetPath())->m_lStackPartNumber = partNumber;
 }
 
-uint64_t CApplicationStackHelper::GetRegisteredStackPartStartTimeMs(const CFileItem& item)
+uint64_t CApplicationStackHelper::GetRegisteredStackPartStartTimeMs(const CFileItem& item) const
 {
   return GetStackPartInformation(item.GetPath())->m_lStackPartStartTimeMs;
 }
@@ -263,7 +264,7 @@ void CApplicationStackHelper::SetRegisteredStackPartStartTimeMs(const CFileItem&
   GetStackPartInformation(item.GetPath())->m_lStackPartStartTimeMs = startTime;
 }
 
-uint64_t CApplicationStackHelper::GetRegisteredStackTotalTimeMs(const CFileItem& item)
+uint64_t CApplicationStackHelper::GetRegisteredStackTotalTimeMs(const CFileItem& item) const
 {
   return GetStackPartInformation(item.GetPath())->m_lStackTotalTimeMs;
 }
@@ -282,4 +283,13 @@ CApplicationStackHelper::StackPartInformationPtr CApplicationStackHelper::GetSta
     m_stackmap[key] = value;
   }
   return m_stackmap[key];
+}
+
+CApplicationStackHelper::StackPartInformationPtr CApplicationStackHelper::GetStackPartInformation(
+    const std::string& key) const
+{
+  const auto it = m_stackmap.find(key);
+  if (it == m_stackmap.end())
+    return std::make_shared<StackPartInformation>();
+  return it->second;
 }
