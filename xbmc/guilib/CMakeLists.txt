@@ -202,6 +202,7 @@ if(CORE_SYSTEM_NAME STREQUAL windows OR CORE_SYSTEM_NAME STREQUAL windowsstore)
                     guishader_fonts.hlsl
                     guishader_interlaced_right.hlsl
                     guishader_interlaced_left.hlsl
+                    guishader_msdf.hlsl
                     guishader_multi_texture_blend.hlsl
                     guishader_texture.hlsl
                     guishader_texture_noblend.hlsl)

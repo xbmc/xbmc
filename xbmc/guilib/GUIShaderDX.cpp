@@ -23,6 +23,7 @@
 #include "guishader_multi_texture_blend.h"
 #include "guishader_texture.h"
 #include "guishader_texture_noblend.h"
+#include "guishader_msdf.h"
 
 #include <d3dcompiler.h>
 
@@ -41,6 +42,7 @@ static const D3D_SHADER_DATA cbPSShaderCode[SHADER_METHOD_RENDER_COUNT] =
   { guishader_interlaced_right,    sizeof(guishader_interlaced_right)     }, // SHADER_METHOD_RENDER_STEREO_INTERLACED_RIGHT
   { guishader_checkerboard_left,   sizeof(guishader_checkerboard_left)    }, // SHADER_METHOD_RENDER_STEREO_CHECKERBOARD_LEFT
   { guishader_checkerboard_right,  sizeof(guishader_checkerboard_right)   }, // SHADER_METHOD_RENDER_STEREO_CHECKERBOARD_RIGHT
+  { guishader_msdf,                sizeof(guishader_msdf)                 }, // SHADER_METHOD_RENDER_MSDF
 };
 
 CGUIShaderDX::CGUIShaderDX() :

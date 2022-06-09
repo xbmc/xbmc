@@ -27,7 +27,8 @@ enum class ShaderMethodGL
   SM_MULTI,
   SM_FONTS,
   SM_TEXTURE_NOBLEND,
-  SM_MULTI_BLENDCOLOR
+  SM_MULTI_BLENDCOLOR,
+  SM_MSDF
 };
 
 template<>
@@ -58,6 +59,9 @@ public:
         return "texture no blending";
         break;
       case ShaderMethodGL::SM_MULTI_BLENDCOLOR:
+        return "multi blend colour";
+        break;
+      case ShaderMethodGL::SM_MSDF:
         return "multi blend colour";
         break;
       default:

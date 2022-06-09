@@ -744,6 +744,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   bool bPulse = true;
   unsigned int timePerImage = 0;
   unsigned int fadeTime = 0;
+  std::string textureEffect;
   unsigned int timeToPauseAtEnd = 0;
   bool randomized = false;
   bool loop = true;
@@ -1003,6 +1004,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
   XMLUtils::GetUInt(pControlNode,"timeperimage", timePerImage);
   XMLUtils::GetUInt(pControlNode,"fadetime", fadeTime);
+  GetString(pControlNode, "effect", textureEffect);
   XMLUtils::GetUInt(pControlNode,"pauseatend", timeToPauseAtEnd);
   XMLUtils::GetBoolean(pControlNode, "randomize", randomized);
   XMLUtils::GetBoolean(pControlNode, "loop", loop);
@@ -1340,7 +1342,13 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   case CGUIControl::GUICONTROL_IMAGE:
     {
       // use a bordered texture if we have <bordersize> or <bordertexture> specified.
-      if (borderTexture.filename.empty() && borderStr.empty())
+      if (StringUtils::CompareNoCase(textureEffect, "msdf") == 0)
+      {
+        unsigned int effect = 1;
+        control = new CGUIImage(
+          parentID, id, posX, posY, width, height, texture, effect);
+      }
+      else if (borderTexture.filename.empty() && borderStr.empty())
         control = new CGUIImage(
           parentID, id, posX, posY, width, height, texture);
       else

@@ -40,13 +40,12 @@ void CGUITexture::Register(const CreateGUITextureFunc& createFunction,
 }
 
 CGUITexture* CGUITexture::CreateTexture(
-    float posX, float posY, float width, float height, const CTextureInfo& texture)
+    float posX, float posY, float width, float height, const CTextureInfo& texture, unsigned int textureEffect)
 {
   if (!m_createGUITextureFunc)
     throw std::runtime_error(
         "No GUITexture Create function available. Did you forget to register?");
-
-  return m_createGUITextureFunc(posX, posY, width, height, texture);
+  return m_createGUITextureFunc(posX, posY, width, height, texture, textureEffect);
 }
 
 void CGUITexture::DrawQuad(const CRect& coords,
@@ -62,7 +61,7 @@ void CGUITexture::DrawQuad(const CRect& coords,
 }
 
 CGUITexture::CGUITexture(
-    float posX, float posY, float width, float height, const CTextureInfo& texture)
+    float posX, float posY, float width, float height, const CTextureInfo& texture, unsigned int textureEffect)
   : m_height(height), m_info(texture)
 {
   m_posX = posX;
@@ -93,6 +92,8 @@ CGUITexture::CGUITexture(
   m_isAllocated = NO;
   m_invalid = true;
   m_use_cache = true;
+
+  m_textureEffect = textureEffect;
 }
 
 CGUITexture::CGUITexture(const CGUITexture& right)

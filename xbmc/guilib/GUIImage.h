@@ -52,7 +52,7 @@ public:
     CFadingTexture& operator=(const CFadingTexture&) = delete;
   };
 
-  CGUIImage(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& texture);
+  CGUIImage(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& texture, unsigned int effect = 0);
   CGUIImage(const CGUIImage &left);
   ~CGUIImage(void) override;
   CGUIImage* Clone() const override { return new CGUIImage(*this); }
@@ -109,5 +109,6 @@ protected:
   unsigned int m_crossFadeTime;
   unsigned int m_currentFadeTime;
   unsigned int m_lastRenderTime;
+  unsigned int m_textureEffect;
 };
 

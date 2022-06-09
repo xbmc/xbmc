@@ -24,14 +24,14 @@ void CGUITextureGL::Register()
 }
 
 CGUITexture* CGUITextureGL::CreateTexture(
-    float posX, float posY, float width, float height, const CTextureInfo& texture)
+    float posX, float posY, float width, float height, const CTextureInfo& texture, unsigned int textureEffect)
 {
-  return new CGUITextureGL(posX, posY, width, height, texture);
+  return new CGUITextureGL(posX, posY, width, height, texture, textureEffect);
 }
 
 CGUITextureGL::CGUITextureGL(
-    float posX, float posY, float width, float height, const CTextureInfo& texture)
-  : CGUITexture(posX, posY, width, height, texture)
+    float posX, float posY, float width, float height, const CTextureInfo& texture, unsigned int textureEffect)
+  : CGUITexture(posX, posY, width, height, texture, textureEffect)
 {
   m_renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
 }
@@ -58,7 +58,9 @@ void CGUITextureGL::Begin(UTILS::COLOR::Color color)
 
   bool hasAlpha = m_texture.m_textures[m_currentFrame]->HasAlpha() || m_col[3] < 255;
 
-  if (m_diffuse.size())
+  if (m_textureEffect == 1)
+      m_renderSystem->EnableShader(ShaderMethodGL::SM_MSDF);
+  else if (m_diffuse.size())
   {
     if (m_col[0] == 255 && m_col[1] == 255 && m_col[2] == 255 && m_col[3] == 255 )
     {

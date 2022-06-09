@@ -677,6 +677,15 @@ void CRenderSystemGL::InitialiseShaders()
     m_pShader[ShaderMethodGL::SM_MULTI_BLENDCOLOR].reset();
     CLog::Log(LOGERROR, "GUI Shader gl_shader_frag_multi_blendcolor.glsl - compile and link failed");
   }
+
+  m_pShader[ShaderMethodGL::SM_MSDF] =
+      std::make_unique<CGLShader>("gl_shader_frag_msdf.glsl", defines);
+  if (!m_pShader[ShaderMethodGL::SM_MSDF]->CompileAndLink())
+  {
+    m_pShader[ShaderMethodGL::SM_MSDF]->Free();
+    m_pShader[ShaderMethodGL::SM_MSDF].reset();
+    CLog::Log(LOGERROR, "GUI Shader gl_shader_frag_msdf.glsl - compile and link failed");
+  }
 }
 
 void CRenderSystemGL::ReleaseShaders()
@@ -708,6 +717,10 @@ void CRenderSystemGL::ReleaseShaders()
   if (m_pShader[ShaderMethodGL::SM_MULTI_BLENDCOLOR])
     m_pShader[ShaderMethodGL::SM_MULTI_BLENDCOLOR]->Free();
   m_pShader[ShaderMethodGL::SM_MULTI_BLENDCOLOR].reset();
+
+  if (m_pShader[ShaderMethodGL::SM_MSDF])
+    m_pShader[ShaderMethodGL::SM_MSDF]->Free();
+  m_pShader[ShaderMethodGL::SM_MSDF].reset();
 }
 
 void CRenderSystemGL::EnableShader(ShaderMethodGL method)

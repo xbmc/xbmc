@@ -66,7 +66,7 @@ public:
 class CGUITexture;
 
 using CreateGUITextureFunc = std::function<CGUITexture*(
-    float posX, float posY, float width, float height, const CTextureInfo& texture)>;
+    float posX, float posY, float width, float height, const CTextureInfo& texture, unsigned int textureEffect)>;
 using DrawQuadFunc = std::function<void(
     const CRect& coords, UTILS::COLOR::Color color, CTexture* texture, const CRect* texCoords)>;
 
@@ -79,7 +79,7 @@ public:
                        const DrawQuadFunc& drawQuadFunction);
 
   static CGUITexture* CreateTexture(
-      float posX, float posY, float width, float height, const CTextureInfo& texture);
+      float posX, float posY, float width, float height, const CTextureInfo& texture, unsigned int textureEffect = 0);
   virtual CGUITexture* Clone() const = 0;
 
   static void DrawQuad(const CRect& coords,
@@ -128,7 +128,7 @@ public:
   bool ReadyToRender() const;
 
 protected:
-  CGUITexture(float posX, float posY, float width, float height, const CTextureInfo& texture);
+  CGUITexture(float posX, float posY, float width, float height, const CTextureInfo& texture, unsigned int textureEffect);
   CGUITexture(const CGUITexture& left);
 
   bool CalculateSize();
@@ -194,6 +194,8 @@ protected:
 
   CTextureArray m_diffuse;
   CTextureArray m_texture;
+
+  unsigned int m_textureEffect{0};
 
 private:
   static CreateGUITextureFunc m_createGUITextureFunc;

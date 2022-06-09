@@ -21,9 +21,10 @@ CGUIImage::CGUIImage(int parentID,
                      float posY,
                      float width,
                      float height,
-                     const CTextureInfo& texture)
+                     const CTextureInfo& texture,
+                     unsigned int textureEffect)
   : CGUIControl(parentID, controlID, posX, posY, width, height),
-    m_texture(CGUITexture::CreateTexture(posX, posY, width, height, texture))
+    m_texture(CGUITexture::CreateTexture(posX, posY, width, height, texture, textureEffect))
 {
   m_crossFadeTime = 0;
   m_currentFadeTime = 0;

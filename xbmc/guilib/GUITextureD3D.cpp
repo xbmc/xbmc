@@ -23,14 +23,14 @@ void CGUITextureD3D::Register()
 }
 
 CGUITexture* CGUITextureD3D::CreateTexture(
-    float posX, float posY, float width, float height, const CTextureInfo& texture)
+    float posX, float posY, float width, float height, const CTextureInfo& texture, unsigned int textureEffect)
 {
-  return new CGUITextureD3D(posX, posY, width, height, texture);
+  return new CGUITextureD3D(posX, posY, width, height, texture, textureEffect);
 }
 
 CGUITextureD3D::CGUITextureD3D(
-    float posX, float posY, float width, float height, const CTextureInfo& texture)
-  : CGUITexture(posX, posY, width, height, texture)
+    float posX, float posY, float width, float height, const CTextureInfo& texture, unsigned int textureEffect)
+  : CGUITexture(posX, posY, width, height, texture, textureEffect)
 {
 }
 
@@ -121,7 +121,10 @@ void CGUITextureD3D::Draw(float *x, float *y, float *z, const CRect &texture, co
   CDXTexture* tex = static_cast<CDXTexture*>(m_texture.m_textures[m_currentFrame].get());
   CGUIShaderDX* pGUIShader = DX::Windowing()->GetGUIShader();
 
-  pGUIShader->Begin(m_diffuse.size() ? SHADER_METHOD_RENDER_MULTI_TEXTURE_BLEND : SHADER_METHOD_RENDER_TEXTURE_BLEND);
+  if (m_textureEffect == 1)
+    pGUIShader->Begin(SHADER_METHOD_RENDER_MSDF);
+  else
+    pGUIShader->Begin(m_diffuse.size() ? SHADER_METHOD_RENDER_MULTI_TEXTURE_BLEND : SHADER_METHOD_RENDER_TEXTURE_BLEND);
 
   if (m_diffuse.size())
   {
@@ -152,5 +155,8 @@ void CGUITextureD3D::DrawQuad(const CRect& rect,
     views = ((CDXTexture *)texture)->GetShaderResource();
   }
 
-  CD3DTexture::DrawQuad(rect, color, numViews, &views, texCoords, texture ? SHADER_METHOD_RENDER_TEXTURE_BLEND : SHADER_METHOD_RENDER_DEFAULT);
+  if (m_textureEffect == 1)
+    CD3DTexture::DrawQuad(SHADER_METHOD_RENDER_MSDF);
+  else
+    CD3DTexture::DrawQuad(rect, color, numViews, &views, texCoords, texture ? SHADER_METHOD_RENDER_TEXTURE_BLEND : SHADER_METHOD_RENDER_DEFAULT);
 }

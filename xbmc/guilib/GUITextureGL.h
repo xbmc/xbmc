@@ -22,14 +22,14 @@ class CGUITextureGL : public CGUITexture
 public:
   static void Register();
   static CGUITexture* CreateTexture(
-      float posX, float posY, float width, float height, const CTextureInfo& texture);
+      float posX, float posY, float width, float height, const CTextureInfo& texture, unsigned int textureEffect);
 
   static void DrawQuad(const CRect& coords,
                        UTILS::COLOR::Color color,
                        CTexture* texture = nullptr,
                        const CRect* texCoords = nullptr);
 
-  CGUITextureGL(float posX, float posY, float width, float height, const CTextureInfo& texture);
+  CGUITextureGL(float posX, float posY, float width, float height, const CTextureInfo& texture, unsigned int textureEffect);
   ~CGUITextureGL() override = default;
 
   CGUITextureGL* Clone() const override;
