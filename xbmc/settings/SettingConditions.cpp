@@ -30,6 +30,8 @@
 #include "utils/StringUtils.h"
 #include "windowing/WinSystem.h"
 
+namespace
+{
 bool AddonHasSettings(const std::string& condition,
                       const std::string& value,
                       const SettingConstPtr& setting,
@@ -336,6 +338,7 @@ bool LessThanOrEqual(const std::string& condition,
 
   return lhs <= rhs;
 }
+}; // anonymous namespace
 
 const CProfileManager *CSettingConditions::m_profileManager = nullptr;
 std::set<std::string> CSettingConditions::m_simpleConditions;
