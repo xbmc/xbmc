@@ -22,6 +22,12 @@ choose the size and look of the mover control.
       <texturefocus>mytexture.png</texturefocus>
       <texturenofocus>mytexture.png</texturenofocus>
       <pulseonselect>true</pulseonselect>
+      <movingspeed acceleration="180" maxvelocity="300" resettimeout="200" delta="1">
+            <eventconfig type="up">
+            <eventconfig type="down">
+            <eventconfig type="left" acceleration="100" maxvelocity="100" resettimeout="160" delta="1">
+            <eventconfig type="right" acceleration="100" maxvelocity="100" resettimeout="160" delta="1">
+      </movingspeed>
 </control>
 ~~~~~~~~~~~~~
 
@@ -37,10 +43,46 @@ important, as xml tags are case-sensitive.
 |----------------:|:--------------------------------------------------------------|
 | texturefocus    | Specifies the image file which should be displayed when the mover has focus. [See here for additional information about textures](http://kodi.wiki/view/Texture_Attributes).
 | texturenofocus  | Specifies the image file which should be displayed when the mover does not have focus.
+| movingspeed     | Specifies the allowed directional movements and respective configurations. The <c>`<movingspeed>`</c> tag section can contain as many <c>`<eventconfig>`</c> tags as required.
 
 
 --------------------------------------------------------------------------------
-\section Mover_Control_sect3 See also
+\section Mover_Control_sect3 Note on use of movingspeed tag
+
+The <c>`movingspeed`</c> tag must be specified to allow the control to be moved via
+an input device such as keyboard. Each direction can be specified and configured
+to simulate the motion effect with the <c>`eventconfig`</c> tag.
+
+The following attributes allow the motion effect of the control to be configured:
+
+| Attribute       | Description                                                   |
+|----------------:|:--------------------------------------------------------------|
+| type            | Specifies the direction of movement. Accepted values are: <c>`up`</c>, <c>`down`</c>, <c>`left`</c>, <c>`right`</c>. All directions are optional and do not have to be included.
+| acceleration    | Specifies the acceleration in pixels per second (integer value).
+| maxvelocity     | Specifies the maximum movement speed. This depends on the acceleration value, e.g. a suitable value could be (acceleration value)*3. Set to 0 to disable. (integer value).
+| resettimeout    | Specifies the idle timeout before resetting the acceleration speed (in milliseconds, integer value).
+| delta           | Specifies the minimal pixel increment step (integer value).
+
+The attributes <c>`acceleration`</c>, <c>`maxvelocity`</c>, <c>`resettimeout`</c>,
+<c>`delta`</c> can be specified individually for each <c>`eventconfig`</c> tag,
+or globally in the <c>`movingspeed`</c> tag, or a mixture, as the following example:
+
+~~~~~~~~~~~~~
+<movingspeed acceleration="180" maxvelocity="300" resettimeout="200" delta="1">
+    <eventconfig type="up">
+    <eventconfig type="down">
+    <eventconfig type="left" acceleration="100" maxvelocity="100" resettimeout="160">
+    <eventconfig type="right" acceleration="100" maxvelocity="100" resettimeout="160">
+</movingspeed>
+~~~~~~~~~~~~~
+
+--------------------------------------------------------------------------------
+\section Mover_Control_sect4 Revision History
+
+@skinning_v20 <b>[movingspeed]</b> New tag added.
+
+--------------------------------------------------------------------------------
+\section Mover_Control_sect5 See also
 
 #### Development:
 

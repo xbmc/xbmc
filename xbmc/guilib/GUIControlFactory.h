@@ -15,6 +15,7 @@
 
 #include "GUIControl.h"
 #include "utils/ColorUtils.h"
+#include "utils/MovingSpeed.h"
 
 #include <string>
 #include <vector>
@@ -101,6 +102,9 @@ public:
   static bool GetScroller(const TiXmlNode *pControlNode, const std::string &scrollerTag, CScroller& scroller);
 private:
   static std::string GetType(const TiXmlElement *pControlNode);
+  static bool GetMovingSpeedConfig(const TiXmlNode* pRootNode,
+                                   const char* strTag,
+                                   UTILS::MOVING_SPEED::MapEventConfig& movingSpeedCfg);
   static bool GetConditionalVisibility(const TiXmlNode* control, std::string &condition, std::string &allowHiddenFocus);
   bool GetString(const TiXmlNode* pRootNode, const char* strTag, std::string& strString);
   static bool GetFloatRange(const TiXmlNode* pRootNode, const char* strTag, float& iMinValue, float& iMaxValue, float& iIntervalValue);

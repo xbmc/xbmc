@@ -47,6 +47,12 @@
 			<height>128</height>
 			<texturefocus>calibrate_top.png</texturefocus>
 			<texturenofocus colordiffuse="grey3">calibrate_top.png</texturenofocus>
+			<movingspeed acceleration="180" maxvelocity="300" resettimeout="200" delta="1">
+				<eventconfig type="up" />
+				<eventconfig type="down" />
+				<eventconfig type="left" />
+				<eventconfig type="right" />
+			</movingspeed>
 		</control>
 		<control type="mover" id="9">
 			<description>right bottom mover</description>
@@ -56,6 +62,12 @@
 			<height>128</height>
 			<texturefocus>calibrate_bottom.png</texturefocus>
 			<texturenofocus colordiffuse="grey3">calibrate_bottom.png</texturenofocus>
+			<movingspeed acceleration="180" maxvelocity="300" resettimeout="200" delta="1">
+				<eventconfig type="up" />
+				<eventconfig type="down" />
+				<eventconfig type="left" />
+				<eventconfig type="right" />
+			</movingspeed>
 		</control>
 		<control type="resize" id="11">
 			<description>pixel aspect ratio box</description>
@@ -65,6 +77,10 @@
 			<height>500</height>
 			<texturefocus>calibrate_aspect.png</texturefocus>
 			<texturenofocus colordiffuse="grey3">calibrate_aspect.png</texturenofocus>
+			<movingspeed acceleration="140" maxvelocity="300" resettimeout="180" delta="1">
+				<eventconfig type="left" />
+				<eventconfig type="right" />
+			</movingspeed>
 		</control>
 		<control type="mover" id="10">
 			<description>subtitle position mover</description>
@@ -75,6 +91,10 @@
 			<!-- NOTE: The image must have 40px of trasparent on top and bottom the bar -->
 			<texturefocus>calibrate_subtitles.png</texturefocus>
 			<texturenofocus colordiffuse="grey3">calibrate_subtitles.png</texturenofocus>
+			<movingspeed acceleration="180" maxvelocity="300" resettimeout="200" delta="1">
+				<eventconfig type="up" />
+				<eventconfig type="down" />
+			</movingspeed>
 		</control>
 		<control type="mover" id="12">
 			<description>reset calibration</description>

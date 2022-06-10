@@ -53,6 +53,24 @@
 
 #define FORMAT_BLOCK_SIZE 512 // # of bytes for initial allocation for printf
 
+namespace
+{
+/*!
+ * \brief Converts a string to a number of a specified type, by using istringstream.
+ * \param str The string to convert
+ * \param fallback [OPT] The number to return when the conversion fails
+ * \return The converted number, otherwise fallback if conversion fails
+ */
+template<typename T>
+T NumberFromSS(std::string_view str, T fallback) noexcept
+{
+  std::istringstream iss{str.data()};
+  T result{fallback};
+  iss >> result;
+  return result;
+}
+} // unnamed namespace
+
 static constexpr const char* ADDON_GUID_RE = "^(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(\\}){0,1}$";
 
 /* empty string for use in returns by ref */
@@ -1819,12 +1837,19 @@ void StringUtils::Tokenize(const std::string& input, std::vector<std::string>& t
   }
 }
 
-uint64_t StringUtils::ToUint64(const std::string& str, uint64_t fallback) noexcept
+uint32_t StringUtils::ToUint32(std::string_view str, uint32_t fallback /* = 0 */) noexcept
 {
-  std::istringstream iss(str);
-  uint64_t result(fallback);
-  iss >> result;
-  return result;
+  return NumberFromSS(str, fallback);
+}
+
+uint64_t StringUtils::ToUint64(std::string_view str, uint64_t fallback /* = 0 */) noexcept
+{
+  return NumberFromSS(str, fallback);
+}
+
+float StringUtils::ToFloat(std::string_view str, float fallback /* = 0.0f */) noexcept
+{
+  return NumberFromSS(str, fallback);
 }
 
 std::string StringUtils::FormatFileSize(uint64_t bytes)

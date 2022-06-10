@@ -55,6 +55,7 @@
 #include "utils/RssManager.h"
 #include "utils/StringUtils.h"
 #include "utils/XMLUtils.h"
+#include "utils/log.h"
 
 using namespace KODI;
 using namespace KODI::GUILIB;
@@ -664,6 +665,51 @@ std::string CGUIControlFactory::GetType(const TiXmlElement *pControlNode)
   return type;
 }
 
+bool CGUIControlFactory::GetMovingSpeedConfig(const TiXmlNode* pRootNode,
+                                              const char* strTag,
+                                              UTILS::MOVING_SPEED::MapEventConfig& movingSpeedCfg)
+{
+  const TiXmlElement* msNode = pRootNode->FirstChildElement(strTag);
+  if (!msNode)
+    return false;
+
+  float globalAccel{StringUtils::ToFloat(XMLUtils::GetAttribute(msNode, "acceleration"))};
+  float globalMaxVel{StringUtils::ToFloat(XMLUtils::GetAttribute(msNode, "maxvelocity"))};
+  uint32_t globalResetTimeout{
+      StringUtils::ToUint32(XMLUtils::GetAttribute(msNode, "resettimeout"))};
+  float globalDelta{StringUtils::ToFloat(XMLUtils::GetAttribute(msNode, "delta"))};
+
+  const TiXmlElement* configElement{msNode->FirstChildElement("eventconfig")};
+  while (configElement)
+  {
+    const char* eventType = configElement->Attribute("type");
+    if (!eventType)
+    {
+      CLog::LogF(LOGERROR, "Failed to parse XML \"eventconfig\" tag missing \"type\" attribute");
+      continue;
+    }
+
+    const char* accelerationStr{configElement->Attribute("acceleration")};
+    float acceleration = accelerationStr ? StringUtils::ToFloat(accelerationStr) : globalAccel;
+
+    const char* maxVelocityStr{configElement->Attribute("maxvelocity")};
+    float maxVelocity = maxVelocityStr ? StringUtils::ToFloat(maxVelocityStr) : globalMaxVel;
+
+    const char* resetTimeoutStr{configElement->Attribute("resettimeout")};
+    uint32_t resetTimeout =
+        resetTimeoutStr ? StringUtils::ToUint32(resetTimeoutStr) : globalResetTimeout;
+
+    const char* deltaStr{configElement->Attribute("delta")};
+    float delta = deltaStr ? StringUtils::ToFloat(deltaStr) : globalDelta;
+
+    UTILS::MOVING_SPEED::EventCfg eventCfg{acceleration, maxVelocity, resetTimeout, delta};
+    movingSpeedCfg.emplace(UTILS::MOVING_SPEED::ParseEventType(eventType), eventCfg);
+
+    configElement = configElement->NextSiblingElement("eventconfig");
+  }
+  return true;
+}
+
 CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlElement* pControlNode, bool insideContainer)
 {
   // get the control type
@@ -787,6 +833,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   bool resetOnLabelChange = true;
   bool bPassword = false;
   std::string visibleCondition;
+
+  UTILS::MOVING_SPEED::MapEventConfig movingSpeedCfg;
 
   /////////////////////////////////////////////////////////////////////////////
   // Read control properties from XML
@@ -1096,6 +1144,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   GetString(pControlNode, "scrollsuffix", labelInfo.scrollSuffix);
 
   XMLUtils::GetString(pControlNode, "action", action);
+
+  GetMovingSpeedConfig(pControlNode, "movingspeed", movingSpeedCfg);
 
   /////////////////////////////////////////////////////////////////////////////
   // Instantiate a new control using the properties gathered above
@@ -1464,16 +1514,14 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     break;
   case CGUIControl::GUICONTROL_MOVER:
     {
-      control = new CGUIMoverControl(
-        parentID, id, posX, posY, width, height,
-        textureFocus, textureNoFocus);
+      control = new CGUIMoverControl(parentID, id, posX, posY, width, height, textureFocus,
+                                     textureNoFocus, movingSpeedCfg);
     }
     break;
   case CGUIControl::GUICONTROL_RESIZE:
     {
-      control = new CGUIResizeControl(
-        parentID, id, posX, posY, width, height,
-        textureFocus, textureNoFocus);
+      control = new CGUIResizeControl(parentID, id, posX, posY, width, height, textureFocus,
+                                      textureNoFocus, movingSpeedCfg);
     }
     break;
   case CGUIControl::GUICONTROL_SPINEX:
