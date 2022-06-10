@@ -56,7 +56,6 @@ CPVRChannelGroup::CPVRChannelGroup(const PVR_CHANNEL_GROUP& group,
 CPVRChannelGroup::~CPVRChannelGroup()
 {
   GetSettings()->UnregisterCallback(this);
-  Unload();
 }
 
 bool CPVRChannelGroup::operator==(const CPVRChannelGroup& right) const
