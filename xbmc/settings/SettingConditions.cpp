@@ -251,7 +251,7 @@ bool ProfileLockMode(const std::string& condition,
                      const SettingConstPtr& setting,
                      void* data)
 {
-  char *tmp = NULL;
+  char* tmp = nullptr;
   LockType lock = (LockType)strtol(value.c_str(), &tmp, 0);
   if (tmp != NULL && *tmp != '\0')
     return false;
@@ -271,7 +271,7 @@ bool GreaterThan(const std::string& condition,
   if (settingInt == NULL)
     return false;
 
-  char *tmp = NULL;
+  char* tmp = nullptr;
 
   int lhs = settingInt->GetValue();
   int rhs = StringUtils::IsInteger(value) ? (int)strtol(value.c_str(), &tmp, 0) : 0;
@@ -291,7 +291,7 @@ bool GreaterThanOrEqual(const std::string& condition,
   if (settingInt == NULL)
     return false;
 
-  char *tmp = NULL;
+  char* tmp = nullptr;
 
   int lhs = settingInt->GetValue();
   int rhs = StringUtils::IsInteger(value) ? (int)strtol(value.c_str(), &tmp, 0) : 0;
@@ -311,7 +311,7 @@ bool LessThan(const std::string& condition,
   if (settingInt == NULL)
     return false;
 
-  char *tmp = NULL;
+  char* tmp = nullptr;
 
   int lhs = settingInt->GetValue();
   int rhs = StringUtils::IsInteger(value) ? (int)strtol(value.c_str(), &tmp, 0) : 0;
@@ -331,7 +331,7 @@ bool LessThanOrEqual(const std::string& condition,
   if (settingInt == NULL)
     return false;
 
-  char *tmp = NULL;
+  char* tmp = nullptr;
 
   int lhs = settingInt->GetValue();
   int rhs = StringUtils::IsInteger(value) ? (int)strtol(value.c_str(), &tmp, 0) : 0;
@@ -340,7 +340,7 @@ bool LessThanOrEqual(const std::string& condition,
 }
 }; // anonymous namespace
 
-const CProfileManager *CSettingConditions::m_profileManager = nullptr;
+const CProfileManager* CSettingConditions::m_profileManager = nullptr;
 std::set<std::string> CSettingConditions::m_simpleConditions;
 std::map<std::string, SettingConditionCheck> CSettingConditions::m_complexConditions;
 
