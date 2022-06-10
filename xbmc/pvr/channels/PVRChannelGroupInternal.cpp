@@ -44,7 +44,7 @@ CPVRChannelGroupInternal::CPVRChannelGroupInternal(const CPVRChannelsPath& path)
 
 CPVRChannelGroupInternal::~CPVRChannelGroupInternal()
 {
-  Unload();
+  CServiceBroker::GetPVRManager().Events().Unsubscribe(this);
 }
 
 bool CPVRChannelGroupInternal::LoadFromDatabase(
