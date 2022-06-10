@@ -12,6 +12,7 @@
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
+#include "addons/gui/GUIDialogAddonSettings.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
@@ -544,4 +545,39 @@ void CApplicationPowerHandling::InhibitIdleShutdown(bool inhibit)
 bool CApplicationPowerHandling::IsIdleShutdownInhibited() const
 {
   return m_bInhibitIdleShutdown;
+}
+
+bool CApplicationPowerHandling::OnSettingChanged(const CSetting& setting)
+{
+  const std::string& settingId = setting.GetId();
+
+  if (settingId == CSettings::SETTING_SCREENSAVER_MODE)
+  {
+    CheckOSScreenSaverInhibitionSetting();
+  }
+  else
+    return false;
+
+  return true;
+}
+
+bool CApplicationPowerHandling::OnSettingAction(const CSetting& setting)
+{
+  const std::string& settingId = setting.GetId();
+
+  if (settingId == CSettings::SETTING_SCREENSAVER_PREVIEW)
+    ActivateScreenSaver(true);
+  else if (settingId == CSettings::SETTING_SCREENSAVER_SETTINGS)
+  {
+    ADDON::AddonPtr addon;
+    if (CServiceBroker::GetAddonMgr().GetAddon(
+            CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+                CSettings::SETTING_SCREENSAVER_MODE),
+            addon, ADDON::ADDON_SCREENSAVER, ADDON::OnlyEnabled::CHOICE_YES))
+      CGUIDialogAddonSettings::ShowForAddon(addon);
+  }
+  else
+    return false;
+
+  return true;
 }

@@ -23,6 +23,7 @@ using AddonPtr = std::shared_ptr<IAddon>;
 } // namespace ADDON
 
 class CApplicationPlayer;
+class CSetting;
 
 /*!
  * \brief Class handling application support for screensavers, dpms and shutdown timers.
@@ -55,6 +56,9 @@ public:
 
   // Wakes up from the screensaver and / or DPMS. Returns true if woken up.
   bool WakeUpScreenSaverAndDPMS(bool bPowerOffKeyPressed = false);
+
+  bool OnSettingChanged(const CSetting& setting);
+  bool OnSettingAction(const CSetting& setting);
 
 protected:
   void ActivateScreenSaver(bool forceType = false);

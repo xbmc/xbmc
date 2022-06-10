@@ -11,6 +11,7 @@
 #include <string>
 
 class CApplicationPlayer;
+class CSetting;
 class IMsgTargetCallback;
 class IWindowManagerCallback;
 
@@ -24,6 +25,8 @@ public:
 
   void UnloadSkin();
 
+  bool OnSettingChanged(const CSetting& setting);
+
 protected:
   bool LoadSkin(const std::string& skinID, IMsgTargetCallback* msgCb, IWindowManagerCallback* wCb);
   bool LoadCustomWindows();
@@ -32,4 +35,5 @@ protected:
   CApplicationPlayer& m_appPlayer;
   bool m_saveSkinOnUnloading = true;
   bool m_confirmSkinChange = true;
+  bool m_ignoreSkinSettingChanges = false;
 };

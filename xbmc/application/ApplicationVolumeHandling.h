@@ -10,7 +10,9 @@
 
 class CAction;
 class CApplicationPlayer;
+class CSetting;
 class CSettings;
+class TiXmlNode;
 
 /*!
  * \brief Class handling application support for audio volume management.
@@ -43,6 +45,10 @@ public:
   static constexpr float VOLUME_MINIMUM = 0.0f; // -60dB
   static constexpr float VOLUME_MAXIMUM = 1.0f; // 0dB
   static constexpr float VOLUME_DYNAMIC_RANGE = 90.0f; // 60dB
+
+  bool Load(const TiXmlNode* settings);
+  bool Save(TiXmlNode* settings) const;
+  bool OnSettingChanged(const CSetting& setting);
 
 protected:
   bool IsMutedInternal() const { return m_muted; }
