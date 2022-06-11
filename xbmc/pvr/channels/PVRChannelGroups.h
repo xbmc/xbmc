@@ -229,11 +229,12 @@ namespace PVR
     void SortGroups();
 
     /*!
-     * @brief Check, whether data for all active pvr clients are currently valid. For instance, data
+     * @brief Check, whether data for given pvr clients are currently valid. For instance, data
      * can be invalid because the client's backend was offline when data was last queried.
+     * @param clients The clients to check. Check all active clients if vector is empty.
      * @return True, if data is currently valid, false otherwise.
      */
-    bool HasValidDataForAllClients() const;
+    bool HasValidDataForClients(const std::vector<std::shared_ptr<CPVRClient>>& clients) const;
 
     bool m_bRadio; /*!< true if this is a container for radio channels, false if it is for tv channels */
     std::vector<std::shared_ptr<CPVRChannelGroup>> m_groups; /*!< the groups in this container */
