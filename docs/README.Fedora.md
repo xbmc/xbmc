@@ -70,8 +70,6 @@ sudo dnf install alsa-lib-devel autoconf automake avahi-compat-libdns_sd-devel a
 
 **WARNING:** Make sure you copy paste the entire line or you might receive an error or miss a few dependencies.
 
-**NOTE:** Fedora 28 and older don't provide `java-11-openjdk-headless`. Install `java-9-openjdk-headless` instead.
-
 Building for Wayland requires some extra packages:
 ```
 sudo dnf install mesa-libGLES-devel wayland-devel waylandpp-devel wayland-protocols-devel
