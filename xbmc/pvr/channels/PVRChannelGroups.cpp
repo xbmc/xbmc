@@ -12,6 +12,7 @@
 #include "pvr/PVRCachedImages.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClient.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
@@ -185,9 +186,16 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetByName(const std::string
   return (it != m_groups.cend()) ? (*it) : std::shared_ptr<CPVRChannelGroup>();
 }
 
-bool CPVRChannelGroups::HasValidDataForAllClients() const
+bool CPVRChannelGroups::HasValidDataForClients(
+    const std::vector<std::shared_ptr<CPVRClient>>& clients) const
 {
-  return m_failedClientsForChannelGroups.empty();
+  return m_failedClientsForChannelGroups.empty() ||
+         std::none_of(clients.cbegin(), clients.cend(),
+                      [this](const std::shared_ptr<CPVRClient>& client) {
+                        return std::find(m_failedClientsForChannelGroups.cbegin(),
+                                         m_failedClientsForChannelGroups.cend(),
+                                         client->GetID()) != m_failedClientsForChannelGroups.cend();
+                      });
 }
 
 bool CPVRChannelGroups::UpdateFromClients(const std::vector<std::shared_ptr<CPVRClient>>& clients,
@@ -233,16 +241,27 @@ bool CPVRChannelGroups::UpdateFromClients(const std::vector<std::shared_ptr<CPVR
         bReturn = false;
       }
 
-      if ((group->Size() - iMemberCount) > 0)
+      const int iChangedMembersCount = static_cast<int>(group->Size()) - iMemberCount;
+      if (iChangedMembersCount > 0)
       {
-        CLog::LogFC(LOGDEBUG, LOGPVR, "{} channel group members added from clients to group '{}'",
-                    static_cast<int>(group->Size() - iMemberCount), group->GroupName());
+        CLog::LogFC(LOGDEBUG, LOGPVR, "{} channel group members added to group '{}'",
+                    iChangedMembersCount, group->GroupName());
+      }
+      else if (iChangedMembersCount < 0)
+      {
+        CLog::LogFC(LOGDEBUG, LOGPVR, "{} channel group members removed from group '{}'",
+                    -iChangedMembersCount, group->GroupName());
+      }
+      else
+      {
+        // could still be changed if same amount of members was removed as was added, but too
+        // complicated to calculate just for debug logging
       }
     }
 
     // remove empty groups if sync with backend is enabled and we have valid data from all clients
-    if (bSyncWithBackends && !group->IsInternalGroup() && HasValidDataForAllClients() &&
-        group->HasValidDataForAllClients() && group->Size() == 0)
+    if (bSyncWithBackends && group->Size() == 0 && !group->IsInternalGroup() &&
+        HasValidDataForClients(clients) && group->HasValidDataForClients(clients))
     {
       emptyGroups.emplace_back(group);
     }

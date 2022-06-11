@@ -610,9 +610,13 @@ bool CPVRChannelGroup::HasValidDataForClient(int iClientId) const
          m_failedClients.end();
 }
 
-bool CPVRChannelGroup::HasValidDataForAllClients() const
+bool CPVRChannelGroup::HasValidDataForClients(
+    const std::vector<std::shared_ptr<CPVRClient>>& clients) const
 {
-  return m_failedClients.empty();
+  return m_failedClients.empty() || std::none_of(clients.cbegin(), clients.cend(),
+                                                 [this](const std::shared_ptr<CPVRClient>& client) {
+                                                   return !HasValidDataForClient(client->GetID());
+                                                 });
 }
 
 bool CPVRChannelGroup::UpdateChannelNumbersFromAllChannelsGroup()
