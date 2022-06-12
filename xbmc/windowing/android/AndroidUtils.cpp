@@ -12,19 +12,11 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/SettingsManager.h"
-#include "system_egl.h"
-#include "utils/HDRCapabilities.h"
-#include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
 #include "platform/android/activity/XBMCApp.h"
 
-#include <cmath>
-#include <stdlib.h>
-
-#include <androidjni/Build.h>
-#include <androidjni/Display.h>
 #include <androidjni/MediaCodecInfo.h>
 #include <androidjni/MediaCodecList.h>
 #include <androidjni/System.h>
@@ -52,7 +44,8 @@ static float currentRefreshRate()
       return preferredRate;
     }
     CJNIView view(window.getDecorView());
-    if (view) {
+    if (view)
+    {
       CJNIDisplay display(view.getDisplay());
       if (display)
       {
@@ -81,7 +74,7 @@ static void fetchDisplayModes()
     CJNIDisplayMode m = display.getMode();
     if (m)
     {
-      if (m.getPhysicalWidth() > m.getPhysicalHeight())   // Assume unusable if portrait is returned
+      if (m.getPhysicalWidth() > m.getPhysicalHeight()) // Assume unusable if portrait is returned
       {
         s_hasModeApi = true;
 
@@ -91,17 +84,17 @@ static void fetchDisplayModes()
         s_res_cur_displayMode.iWidth = s_res_cur_displayMode.iScreenWidth = m.getPhysicalWidth();
         s_res_cur_displayMode.iHeight = s_res_cur_displayMode.iScreenHeight = m.getPhysicalHeight();
         s_res_cur_displayMode.fRefreshRate = m.getRefreshRate();
-        s_res_cur_displayMode.dwFlags= D3DPRESENTFLAG_PROGRESSIVE;
-        s_res_cur_displayMode.bFullScreen   = true;
+        s_res_cur_displayMode.dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
+        s_res_cur_displayMode.bFullScreen = true;
         s_res_cur_displayMode.iSubtitles = s_res_cur_displayMode.iHeight;
-        s_res_cur_displayMode.fPixelRatio   = 1.0f;
+        s_res_cur_displayMode.fPixelRatio = 1.0f;
         s_res_cur_displayMode.strMode = StringUtils::Format(
             "{}x{} @ {:.6f}{} - Full Screen", s_res_cur_displayMode.iScreenWidth,
             s_res_cur_displayMode.iScreenHeight, s_res_cur_displayMode.fRefreshRate,
             s_res_cur_displayMode.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
 
         std::vector<CJNIDisplayMode> modes = display.getSupportedModes();
-        for (auto m : modes)
+        for (CJNIDisplayMode& m : modes)
         {
           CLog::Log(LOGDEBUG, "CAndroidUtils: available mode: {}: {}x{}@{:f}", m.getModeId(),
                     m.getPhysicalWidth(), m.getPhysicalHeight(), m.getRefreshRate());
@@ -111,10 +104,10 @@ static void fetchDisplayModes()
           res.iWidth = res.iScreenWidth = m.getPhysicalWidth();
           res.iHeight = res.iScreenHeight = m.getPhysicalHeight();
           res.fRefreshRate = m.getRefreshRate();
-          res.dwFlags= D3DPRESENTFLAG_PROGRESSIVE;
-          res.bFullScreen   = true;
+          res.dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
+          res.bFullScreen = true;
           res.iSubtitles = res.iHeight;
-          res.fPixelRatio   = 1.0f;
+          res.fPixelRatio = 1.0f;
           res.strMode = StringUtils::Format("{}x{} @ {:.6f}{} - Full Screen", res.iScreenWidth,
                                             res.iScreenHeight, res.fRefreshRate,
                                             res.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
@@ -151,10 +144,10 @@ CAndroidUtils::CAndroidUtils()
   std::string displaySize;
   m_width = m_height = 0;
 
-  if (CJNIBase::GetSDKVersion() >= 24)
+  if (CJNIBase::GetSDKVersion() >= 23)
   {
     fetchDisplayModes();
-    for (const auto& res : s_res_displayModes)
+    for (const RESOLUTION_INFO& res : s_res_displayModes)
     {
       if (res.iWidth > m_width || res.iHeight > m_height)
       {
@@ -181,7 +174,8 @@ CAndroidUtils::CAndroidUtils()
   }
 
   CLog::Log(LOGDEBUG, "CAndroidUtils: maximum/current resolution: {}x{}", m_width, m_height);
-  int limit = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CAndroidUtils::SETTING_LIMITGUI);
+  int limit = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+      CAndroidUtils::SETTING_LIMITGUI);
   switch (limit)
   {
     case 0: // auto
@@ -189,7 +183,7 @@ CAndroidUtils::CAndroidUtils()
       m_height = 0;
       break;
 
-    case 9999:  // unlimited
+    case 9999: // unlimited
       break;
 
     case 720:
@@ -210,9 +204,8 @@ CAndroidUtils::CAndroidUtils()
   }
   CLog::Log(LOGDEBUG, "CAndroidUtils: selected resolution: {}x{}", m_width, m_height);
 
-  CServiceBroker::GetSettingsComponent()->GetSettings()->GetSettingsManager()->RegisterCallback(this, {
-    CAndroidUtils::SETTING_LIMITGUI
-  });
+  CServiceBroker::GetSettingsComponent()->GetSettings()->GetSettingsManager()->RegisterCallback(
+      this, {CAndroidUtils::SETTING_LIMITGUI});
 
   LogDisplaySupportedHdrTypes();
 }
@@ -240,12 +233,12 @@ bool CAndroidUtils::GetNativeResolution(RESOLUTION_INFO* res) const
   {
     res->strId = "-1";
     res->fRefreshRate = currentRefreshRate();
-    res->dwFlags= D3DPRESENTFLAG_PROGRESSIVE;
-    res->bFullScreen   = true;
+    res->dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
+    res->bFullScreen = true;
     res->iWidth = m_width;
     res->iHeight = m_height;
-    res->fPixelRatio   = 1.0f;
-    res->iScreenWidth  = res->iWidth;
+    res->fPixelRatio = 1.0f;
+    res->iScreenWidth = res->iWidth;
     res->iScreenHeight = res->iHeight;
   }
   res->iSubtitles = res->iHeight;
@@ -284,7 +277,7 @@ bool CAndroidUtils::ProbeResolutions(std::vector<RESOLUTION_INFO>& resolutions)
 
   if (s_hasModeApi)
   {
-    for(RESOLUTION_INFO res : s_res_displayModes)
+    for (RESOLUTION_INFO res : s_res_displayModes)
     {
       if (m_width && m_height)
       {
@@ -339,7 +332,7 @@ bool CAndroidUtils::ProbeResolutions(std::vector<RESOLUTION_INFO>& resolutions)
 
 bool CAndroidUtils::UpdateDisplayModes()
 {
-  if (CJNIBase::GetSDKVersion() >= 24)
+  if (CJNIBase::GetSDKVersion() >= 23)
     fetchDisplayModes();
   return true;
 }
@@ -365,7 +358,7 @@ bool CAndroidUtils::IsHDRDisplay()
 
 void CAndroidUtils::OnSettingChanged(const std::shared_ptr<const CSetting>& setting)
 {
-  const std::string &settingId = setting->GetId();
+  const std::string& settingId = setting->GetId();
   /* Calibration (overscan / subtitles) are based on GUI size -> reset required */
   if (settingId == CAndroidUtils::SETTING_LIMITGUI)
     CDisplaySettings::GetInstance().ClearCalibrations();
