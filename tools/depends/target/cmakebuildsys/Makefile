@@ -17,6 +17,8 @@ ifeq ($(OS),darwin_embedded)
   CMAKE_BUILD_ARGUMENTS = -G Xcode -T buildsystem=1
 else ifeq ($(GEN),Xcode)
   CMAKE_BUILD_ARGUMENTS = -G Xcode -T buildsystem=1
+else ifeq ($(GEN),Ninja)
+  CMAKE_BUILD_ARGUMENTS = -G "Ninja" -DCMAKE_BUILD_TYPE=$(Configuration)
 else
   CMAKE_BUILD_ARGUMENTS = -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=$(Configuration)
 endif

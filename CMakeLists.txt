@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 if(WIN32)
-  # Version 3.15 is required to use "PREPEND" for dependencies
-  cmake_minimum_required(VERSION 3.15)
+  # Version 3.20 is required for multi-config generator expressions to work
+  cmake_minimum_required(VERSION 3.20)
 endif()
 project(kodi LANGUAGES CXX C ASM)
 
@@ -73,6 +73,10 @@ if(UNIX)
   option(ENABLE_INTERNAL_GTEST "Enable internal gtest?" OFF)
   option(ENABLE_INTERNAL_UDFREAD "Enable internal udfread?" OFF)
   option(ENABLE_INTERNAL_SPDLOG "Enable internal spdlog?" OFF)
+
+  if(ENABLE_INTERNAL_SPDLOG)
+    set(ENABLE_INTERNAL_FMT ON CACHE BOOL "" FORCE)
+  endif()
 endif()
 # prefer kissfft from xbmc/contrib but let use system one on unices
 cmake_dependent_option(ENABLE_INTERNAL_KISSFFT "Enable internal kissfft?" ON "UNIX" ON)
@@ -258,7 +262,7 @@ list(APPEND install_data ${ADDON_INSTALL_DATA})
 add_library(compileinfo OBJECT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp)
 set_target_properties(compileinfo PROPERTIES FOLDER "Build Utilities")
 target_compile_options(compileinfo PRIVATE "${SYSTEM_DEFINES} ${ARCH_DEFINES}")
-add_dependencies(compileinfo fmt)
+add_dependencies(compileinfo fmt::fmt)
 
 if(NOT MSVC)
   target_compile_options(compileinfo PUBLIC ${CORE_COMPILE_OPTIONS})

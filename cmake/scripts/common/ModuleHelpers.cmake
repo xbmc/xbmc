@@ -47,29 +47,6 @@ function(get_versionfile_data module_name)
 
   set(${UPPER_MODULE_NAME}_ARCHIVE ${${UPPER_MODULE_NAME}_ARCHIVE} PARENT_SCOPE)
 
-  if(${UPPER_MODULE_NAME}_BYPRODUCT)
-    # strip the extension, if debug, add DEBUG_POSTFIX and then add the extension back
-    if(DEFINED ${UPPER_MODULE_NAME}_DEBUG_POSTFIX)
-      set(_POSTFIX ${${UPPER_MODULE_NAME}_DEBUG_POSTFIX})
-    else()
-      set(_POSTFIX ${DEBUG_POSTFIX})
-    endif()
-
-    # Only add debug postfix if platform or module supply a DEBUG_POSTFIX
-    if(DEFINED _POSTFIX AND NOT _POSTFIX STREQUAL "")
-      string(REGEX REPLACE "\\.[^.]*$" "" ${UPPER_MODULE_NAME}_BYPRODUCT_DEBUG ${${UPPER_MODULE_NAME}_BYPRODUCT})
-      if(WIN32 OR WINDOWS_STORE)
-        set(${UPPER_MODULE_NAME}_BYPRODUCT_DEBUG "${${UPPER_MODULE_NAME}_BYPRODUCT_DEBUG}${_POSTFIX}.lib")
-      else()
-        set(${UPPER_MODULE_NAME}_BYPRODUCT_DEBUG "${${UPPER_MODULE_NAME}_BYPRODUCT_DEBUG}${_POSTFIX}.a")
-      endif()
-      # Set Debug library names
-      set(${UPPER_MODULE_NAME}_LIBRARY_DEBUG ${DEPENDS_PATH}/lib/${${UPPER_MODULE_NAME}_BYPRODUCT_DEBUG} PARENT_SCOPE)
-    endif()
-    set(${UPPER_MODULE_NAME}_LIBRARY_RELEASE ${DEPENDS_PATH}/lib/${${UPPER_MODULE_NAME}_BYPRODUCT} PARENT_SCOPE)
-    set(${UPPER_MODULE_NAME}_LIBRARY ${DEPENDS_PATH}/lib/${${UPPER_MODULE_NAME}_BYPRODUCT} PARENT_SCOPE)
-  endif()
-
   set(${UPPER_MODULE_NAME}_INCLUDE_DIR ${DEPENDS_PATH}/include PARENT_SCOPE)
   set(${UPPER_MODULE_NAME}_VER ${${UPPER_MODULE_NAME}_VER} PARENT_SCOPE)
 
@@ -131,7 +108,9 @@ macro(BUILD_DEP_TARGET)
   if(CMAKE_ARGS)
     set(CMAKE_ARGS CMAKE_ARGS ${CMAKE_ARGS}
                              -DCMAKE_INSTALL_PREFIX=${DEPENDS_PATH}
-                             -DCMAKE_INSTALL_LIBDIR=lib)
+                             -DCMAKE_INSTALL_LIBDIR=lib
+                             "-DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}")
+
     if(CMAKE_TOOLCHAIN_FILE)
       list(APPEND CMAKE_ARGS "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}")
     endif()
@@ -148,13 +127,19 @@ macro(BUILD_DEP_TARGET)
         unset(${MODULE}_LIBRARY_RELEASE)
       endif()
     else()
-      # single config generator (ie Make, Ninja)
-      if(CMAKE_BUILD_TYPE)
-        list(APPEND CMAKE_ARGS "-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}")
+      if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.20")
+        list(APPEND CMAKE_ARGS "-DCMAKE_BUILD_TYPE=$<IF:$<CONFIG:Debug,RelWithDebInfo>,Debug,Release>")
       else()
-        # Multi-config generators (eg VS, Xcode, Ninja Multi-Config) will not have CMAKE_BUILD_TYPE
-        # Use config genex to generate the types
-        list(APPEND CMAKE_ARGS "-DCMAKE_BUILD_TYPE=$<CONFIG>")
+        # single config generator (ie Make, Ninja)
+        if(CMAKE_BUILD_TYPE)
+          list(APPEND CMAKE_ARGS "-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}")
+        else()
+          # Multi-config generators (eg VS, Xcode, Ninja Multi-Config) will not have CMAKE_BUILD_TYPE
+          # Use config genex to generate the types
+          # Potential issue if Build type isnt supported by lib project
+          # eg lib supports Debug/Release, however users selects RelWithDebInfo in project
+          list(APPEND CMAKE_ARGS "-DCMAKE_BUILD_TYPE=$<CONFIG>")
+        endif()
       endif()
     endif()
   endif()
@@ -194,11 +179,38 @@ macro(BUILD_DEP_TARGET)
     set(BUILD_IN_SOURCE BUILD_IN_SOURCE ${BUILD_IN_SOURCE})
   endif()
 
+  # Set Library names.
+  if(DEFINED ${MODULE}_DEBUG_POSTFIX)
+    set(_POSTFIX ${${MODULE}_DEBUG_POSTFIX})
+    string(REGEX REPLACE "\\.[^.]*$" "" _LIBNAME ${${MODULE}_BYPRODUCT})
+    string(REGEX REPLACE "^.*\\." "" _LIBEXT ${${MODULE}_BYPRODUCT})
+    set(${MODULE}_LIBRARY_DEBUG ${DEPENDS_PATH}/lib/${_LIBNAME}${${MODULE}_DEBUG_POSTFIX}.${_LIBEXT})
+  endif()
+  # set <MODULE>_LIBRARY_RELEASE for use of select_library_configurations
+  # any modules that dont use select_library_configurations, we set <MODULE>_LIBRARY
+  # No harm in having either set for both potential paths
+  set(${MODULE}_LIBRARY_RELEASE ${DEPENDS_PATH}/lib/${${MODULE}_BYPRODUCT})
+  set(${MODULE}_LIBRARY ${${MODULE}_LIBRARY_RELEASE})
+
   if(BUILD_BYPRODUCTS)
     set(BUILD_BYPRODUCTS BUILD_BYPRODUCTS ${BUILD_BYPRODUCTS})
   else()
-    if(${MODULE}_BYPRODUCT)
-      set(BUILD_BYPRODUCTS BUILD_BYPRODUCTS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/${${MODULE}_BYPRODUCT})
+    if(DEFINED ${MODULE}_LIBRARY_DEBUG)
+      if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.20")
+        set(BUILD_BYPRODUCTS BUILD_BYPRODUCTS "$<IF:$<CONFIG:Debug,RelWithDebInfo>,${${MODULE}_LIBRARY_DEBUG},${${MODULE}_LIBRARY_RELEASE}>")
+      else()
+        if(DEFINED CMAKE_BUILD_TYPE)
+          if(NOT CMAKE_BUILD_TYPE STREQUAL "Release" AND DEFINED ${MODULE}_LIBRARY_DEBUG)
+            set(BUILD_BYPRODUCTS BUILD_BYPRODUCTS "${${MODULE}_LIBRARY_DEBUG}")
+          else()
+            set(BUILD_BYPRODUCTS BUILD_BYPRODUCTS "${${MODULE}_LIBRARY}")
+          endif()
+        else()
+          message(FATAL_ERROR "MultiConfig Generator usage requires CMake >= 3.20.0 - Generator Expressions in BYPRODUCT option")
+        endif()
+      endif()
+    else()
+      set(BUILD_BYPRODUCTS BUILD_BYPRODUCTS "${${MODULE}_LIBRARY}")
     endif()
   endif()
 

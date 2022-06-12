@@ -18,13 +18,6 @@ if(ENABLE_INTERNAL_TAGLIB)
 
   set(MODULE_LC taglib)
 
-  # Debug postfix only used for windows
-  if(WIN32 OR WINDOWS_STORE)
-    set(TAGLIB_DEBUG_POSTFIX "d")
-  else()
-    set(TAGLIB_DEBUG_POSTFIX "")
-  endif()
-
   SETUP_BUILD_VARS()
 
   set(TAGLIB_VERSION ${${MODULE}_VER})
@@ -42,10 +35,13 @@ if(ENABLE_INTERNAL_TAGLIB)
   set(CMAKE_ARGS -DBUILD_SHARED_LIBS=OFF
                  -DBUILD_BINDINGS=OFF)
 
+  # Debug postfix only used for windows
+  if(WIN32 OR WINDOWS_STORE)
+    set(TAGLIB_DEBUG_POSTFIX "d")
+  endif()
+
   BUILD_DEP_TARGET()
 
-  # Add target to libkodi to build
-  set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP taglib)
 else()
 
   if(PKG_CONFIG_FOUND)
@@ -71,12 +67,12 @@ find_package_handle_standard_args(TagLib
                                   VERSION_VAR TAGLIB_VERSION)
 
 if(TAGLIB_FOUND)
+  set(TAGLIB_INCLUDE_DIRS ${TAGLIB_INCLUDE_DIR})
   set(TAGLIB_LIBRARIES ${TAGLIB_LIBRARY})
 
   # Workaround broken .pc file
   list(APPEND TAGLIB_LIBRARIES ${PC_TAGLIB_ZLIB_LIBRARIES})
 
-  set(TAGLIB_INCLUDE_DIRS ${TAGLIB_INCLUDE_DIR})
   if(NOT TARGET TagLib::TagLib)
     add_library(TagLib::TagLib UNKNOWN IMPORTED)
     if(TAGLIB_LIBRARY_RELEASE)
@@ -91,7 +87,11 @@ if(TAGLIB_FOUND)
     endif()
     set_target_properties(TagLib::TagLib PROPERTIES
                                          INTERFACE_INCLUDE_DIRECTORIES "${TAGLIB_INCLUDE_DIR}")
+    if(TARGET taglib)
+      add_dependencies(TagLib::TagLib taglib)
+    endif()
   endif()
+  set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP TagLib::TagLib)
 endif()
 
 mark_as_advanced(TAGLIB_INCLUDE_DIR TAGLIB_LIBRARY)

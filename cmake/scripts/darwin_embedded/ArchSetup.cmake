@@ -33,8 +33,6 @@ endif()
 
 list(APPEND CMAKE_SYSTEM_PREFIX_PATH ${NATIVEPREFIX})
 
-set(DEBUG_POSTFIX d CACHE STRING "Debug library postfix.")
-
 list(APPEND DEPLIBS "-framework CoreFoundation" "-framework CoreVideo"
                     "-framework CoreAudio" "-framework AudioToolbox"
                     "-framework QuartzCore" "-framework MediaPlayer"

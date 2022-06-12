@@ -60,8 +60,6 @@ endif()
 
 # -------- Compiler options ---------
 
-set(DEBUG_POSTFIX d CACHE STRING "Debug library postfix.")
-
 add_options(CXX ALL_BUILDS "/wd\"4996\"")
 add_options(CXX ALL_BUILDS "/wd\"4146\"")
 add_options(CXX ALL_BUILDS "/wd\"4251\"")
