@@ -140,6 +140,8 @@ protected:
   void GetL16Parameters(int& channels, int& samplerate);
   double SelectAspect(AVStream* st, bool& forced);
 
+  StreamHdrType DetermineHdrType(AVStream* pStream);
+
   CCriticalSection m_critSection;
   std::map<int, CDemuxStream*> m_streams;
   std::map<int, std::unique_ptr<CDemuxParserFFmpeg>> m_parsers;
