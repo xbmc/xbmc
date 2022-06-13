@@ -1,0 +1,13 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -661,9 +661,7 @@
+ SET(CMAKE_INCLUDE_CURRENT_DIR 1)
+ # needed to make sure to not link debug libs
+ # against release libs and vice versa
+-IF(WIN32)
+-  SET(CMAKE_DEBUG_POSTFIX "d")
+-ENDIF(WIN32)
++SET(CMAKE_DEBUG_POSTFIX "d")
+ 
+ SET(targets)
+ 
