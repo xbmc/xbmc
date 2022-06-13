@@ -23,22 +23,17 @@ if(ENABLE_INTERNAL_TAGLIB)
   set(TAGLIB_VERSION ${${MODULE}_VER})
 
   if(WIN32 OR WINDOWS_STORE)
-    # find the path to the patch executable
-    find_package(Patch MODULE REQUIRED)
-
-    set(patch ${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/001-cmake-pdb-debug.patch)
-    PATCH_LF_CHECK(${patch})
-
-    set(PATCH_COMMAND ${PATCH_EXECUTABLE} -p1 -i ${patch})
+    set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/001-cmake-pdb-debug.patch")
+    generate_patchcommand("${patches}")
   endif()
-
-  set(CMAKE_ARGS -DBUILD_SHARED_LIBS=OFF
-                 -DBUILD_BINDINGS=OFF)
 
   # Debug postfix only used for windows
   if(WIN32 OR WINDOWS_STORE)
     set(TAGLIB_DEBUG_POSTFIX "d")
   endif()
+
+  set(CMAKE_ARGS -DBUILD_SHARED_LIBS=OFF
+                 -DBUILD_BINDINGS=OFF)
 
   BUILD_DEP_TARGET()
 
