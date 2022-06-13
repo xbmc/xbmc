@@ -1,0 +1,43 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -934,7 +934,7 @@
+ # Installation
+ SET(CMAKE_INSTALL_ALWAYS 1)
+ 
+-INSTALL(TARGETS ${targets}
++INSTALL(TARGETS ${targets} EXPORT pcre
+         RUNTIME DESTINATION bin
+         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+@@ -941,6 +941,27 @@
+ 
+ INSTALL(FILES ${PCRE_HEADERS} ${PCREPOSIX_HEADERS} DESTINATION include)
+ 
++include(CMakePackageConfigHelpers)
++write_basic_package_version_file(
++  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
++  VERSION ${PACKAGE_VERSION}
++  COMPATIBILITY AnyNewerVersion
++)
++
++install(EXPORT pcre
++  NAMESPACE
++    ${PROJECT_NAME}::
++  DESTINATION
++    lib/cmake/${PROJECT_NAME}
++)
++
++install(FILES
++  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/${PROJECT_NAME}-config.cmake
++  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
++  DESTINATION
++    lib/cmake/${PROJECT_NAME}
++)
++
+ FILE(GLOB html ${PROJECT_SOURCE_DIR}/doc/html/*.html)
+ FILE(GLOB man1 ${PROJECT_SOURCE_DIR}/doc/*.1)
+ FILE(GLOB man3 ${PROJECT_SOURCE_DIR}/doc/*.3)
+--- /dev/null
++++ b/cmake/PCRE-config.cmake
+@@ -0,0 +1 @@
++include(${CMAKE_CURRENT_LIST_DIR}/pcre.cmake)
