@@ -64,6 +64,34 @@ function(get_versionfile_data module_name)
   endif()
 endfunction()
 
+# Function to loop through list of patch files (full path)
+# Sets to a PATCH_COMMAND variable and set to parent scope (caller)
+# Used to test windows line endings and set appropriate patch commands
+function(generate_patchcommand _patchlist)
+  # find the path to the patch executable
+  find_package(Patch MODULE REQUIRED)
+
+  # Loop through patches and add to PATCH_COMMAND
+  # for windows, check CRLF/LF state
+
+  set(_count 0)
+  foreach(patch ${_patchlist})
+    if(WIN32 OR WINDOWS_STORE)
+      PATCH_LF_CHECK(${patch})
+    endif()
+    if(${_count} EQUAL "0")
+      set(_patch_command ${PATCH_EXECUTABLE} -p1 -i ${patch})
+    else()
+      list(APPEND _patch_command COMMAND ${PATCH_EXECUTABLE} -p1 -i ${patch})
+    endif()
+
+    math(EXPR _count "${_count}+1")
+  endforeach()
+  set(PATCH_COMMAND ${_patch_command} PARENT_SCOPE)
+  unset(_count)
+  unset(_patch_command)
+endfunction()
+
 # Macro to factor out the repetitive URL setup
 macro(SETUP_BUILD_VARS)
   get_versionfile_data(${MODULE_LC})
@@ -254,5 +282,3 @@ macro(PATCH_LF_CHECK patch)
   endif()
   unset(patch_content_hex)
 endmacro()
-
-
