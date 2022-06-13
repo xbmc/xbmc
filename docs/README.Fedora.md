@@ -1,7 +1,7 @@
 ![Kodi Logo](resources/banner_slim.png)
 
 # Fedora build guide
-This guide has been tested with Fedora 28 1.1 x86_64. Please read it in full before you proceed to familiarize yourself with the build procedure.
+This guide has been tested with Fedora 36 1.1 x86_64. Please read it in full before you proceed to familiarize yourself with the build procedure.
 
 Several other distributions have **[specific build guides](README.md)** and a general **[Linux build guide](README.Linux.md)** is also available.
 
@@ -65,12 +65,10 @@ If you get a `package not found` type of message with the below command, remove 
 
 Install build dependencies:
 ```
-sudo dnf install alsa-lib-devel autoconf automake avahi-compat-libdns_sd-devel avahi-devel bluez-libs-devel bzip2-devel cmake curl dbus-devel flatbuffers flatbuffers-devel fmt-devel fontconfig-devel freetype-devel fribidi-devel fstrcmp-devel gawk gcc gcc-c++ gettext gettext-devel giflib-devel gperf gtest java-11-openjdk-headless jre lcms2-devel libao-devel libass-devel libbluray-devel libcap-devel libcdio-devel libcec-devel libcurl-devel libidn2-devel libjpeg-turbo-devel libmicrohttpd-devel libmpc-devel libnfs-devel libplist-devel libpng12-devel libsmbclient-devel libtool libtool-ltdl-devel libudev-devel libunistring libunistring-devel libusb-devel libuuid-devel libva-devel libvdpau-devel libxml2-devel libXmu-devel libXrandr-devel libxslt-devel libXt-devel lirc-devel lzo-devel make mariadb-devel mesa-libEGL-devel mesa-libGL-devel mesa-libGLU-devel mesa-libGLw-devel mesa-libOSMesa-devel nasm openssl-devel openssl-libs patch pcre-devel pulseaudio-libs-devel python3-devel python3-pillow rapidjson-devel shairplay-devel sqlite-devel swig taglib-devel tinyxml-devel trousers-devel uuid-devel zlib-devel
+sudo dnf install alsa-lib-devel autoconf automake avahi-compat-libdns_sd-devel avahi-devel bluez-libs-devel bzip2-devel cmake curl dbus-devel flatbuffers flatbuffers-devel fmt-devel fontconfig-devel freetype-devel fribidi-devel fstrcmp-devel gawk gcc gcc-c++ gettext gettext-devel giflib-devel gperf gtest-devel java-11-openjdk-headless jre lcms2-devel libao-devel libass-devel libbluray-devel libcap-devel libcdio-devel libcec-devel libcurl-devel libidn2-devel libjpeg-turbo-devel libmicrohttpd-devel libmpc-devel libnfs-devel libplist-devel libpng12-devel libsmbclient-devel libtool libtool-ltdl-devel libudev-devel libunistring libunistring-devel libusb-devel libuuid-devel libva-devel libvdpau-devel libxkbcommon-devel libxml2-devel libXmu-devel libXrandr-devel libxslt-devel libXt-devel lirc-devel lzo-devel make mariadb-devel mesa-libEGL-devel mesa-libGL-devel mesa-libGLU-devel mesa-libGLw-devel mesa-libOSMesa-devel nasm openssl-devel openssl-libs patch pcre-devel pulseaudio-libs-devel python3-devel python3-pillow rapidjson-devel shairplay-devel spdlog-devel sqlite-devel swig taglib-devel tinyxml-devel trousers-devel uuid-devel zlib-devel
 ```
 
 **WARNING:** Make sure you copy paste the entire line or you might receive an error or miss a few dependencies.
-
-**NOTE:** Fedora 28 and older don't provide `java-11-openjdk-headless`. Install `java-9-openjdk-headless` instead.
 
 Building for Wayland requires some extra packages:
 ```
