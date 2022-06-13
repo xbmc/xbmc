@@ -105,6 +105,25 @@ void CGLTexture::LoadToGPU()
   }
 #else
 
+#ifndef GL_TEXTURE_BORDER_COLOR_OES
+#define GL_TEXTURE_BORDER_COLOR_OES 0x1004
+#endif
+#ifndef GL_CLAMP_TO_BORDER_OES
+#define GL_CLAMP_TO_BORDER_OES 0x812D
+#endif
+#ifndef GL_TEXTURE_BORDER_COLOR_EXT
+#define GL_TEXTURE_BORDER_COLOR_EXT 0x1004
+#endif
+#ifndef GL_CLAMP_TO_BORDER_EXT
+#define GL_CLAMP_TO_BORDER_EXT 0x812D
+#endif
+#ifndef GL_TEXTURE_BORDER_COLOR_NV
+#define GL_TEXTURE_BORDER_COLOR_NV 0x1004
+#endif
+#ifndef GL_CLAMP_TO_BORDER_NV
+#define GL_CLAMP_TO_BORDER_NV 0x812D
+#endif
+
   if (HasAlpha())
   {
     if (CServiceBroker::GetRenderSystem()->IsExtSupported("GL_OES_texture_border_clamp"))
@@ -143,7 +162,6 @@ void CGLTexture::LoadToGPU()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   }
 #endif
-
 
   unsigned int maxSize = CServiceBroker::GetRenderSystem()->GetMaxTextureSize();
   if (m_textureHeight > maxSize)
