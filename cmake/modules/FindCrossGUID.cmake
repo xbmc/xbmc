@@ -22,21 +22,19 @@ if(ENABLE_INTERNAL_CROSSGUID)
 
   set(CROSSGUID_VERSION ${${MODULE}_VER})
   set(CROSSGUID_DEFINITIONS -DHAVE_NEW_CROSSGUID)
+  set(CROSSGUID_DEBUG_POSTFIX "-dgb")
 
   if(ANDROID)
     list(APPEND CROSSGUID_DEFINITIONS -DGUID_ANDROID)
   endif()
 
-  # find the path to the patch executable
-  find_package(Patch MODULE REQUIRED)
+  set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/crossguid/001-fix-unused-function.patch"
+              "${CMAKE_SOURCE_DIR}/tools/depends/target/crossguid/002-disable-Wall-error.patch")
 
-  set(PATCH_COMMAND ${PATCH_EXECUTABLE} -p1 -i ${CMAKE_SOURCE_DIR}/tools/depends/target/crossguid/001-fix-unused-function.patch
-            COMMAND ${PATCH_EXECUTABLE} -p1 -i ${CMAKE_SOURCE_DIR}/tools/depends/target/crossguid/002-disable-Wall-error.patch)
+  generate_patchcommand("${patches}")
 
   set(CMAKE_ARGS -DCROSSGUID_TESTS=OFF
                  -DDISABLE_WALL=ON)
-
-  set(CROSSGUID_DEBUG_POSTFIX "-dgb")
 
   BUILD_DEP_TARGET()
 
