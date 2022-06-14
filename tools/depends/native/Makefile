@@ -10,7 +10,6 @@ NATIVE= \
   autoconf-archive \
   automake \
   cmake \
-  flatbuffers \
   gas-preprocessor \
   gettext \
   giflib \
@@ -62,7 +61,6 @@ autoconf-archive: autoconf
 autoconf: m4
 automake: autoconf
 dpkg: automake gettext libtool pkg-config tar
-flatbuffers: cmake
 heimdal: libtool
 JsonSchemaBuilder: automake
 libjpeg-turbo: cmake nasm

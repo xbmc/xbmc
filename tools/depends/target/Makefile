@@ -11,7 +11,6 @@ DEPENDS = \
   dav1d \
   expat \
   ffmpeg \
-  flatbuffers \
   fmt \
   fontconfig \
   freetype2 \

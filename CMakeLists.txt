@@ -62,6 +62,7 @@ option(ENABLE_INTERNAL_CROSSGUID "Enable internal crossguid?" ON)
 # use ffmpeg from depends or system
 option(ENABLE_INTERNAL_FFMPEG "Enable internal ffmpeg?" OFF)
 option(ENABLE_INTERNAL_RapidJSON "Enable internal rapidjson?" ON)
+cmake_dependent_option(ENABLE_INTERNAL_FLATBUFFERS "Enable internal flatbuffers?" OFF "DEFINED USE_INTERNAL_LIBS;NOT USE_INTERNAL_LIBS" ON)
 cmake_dependent_option(ENABLE_INTERNAL_TAGLIB "Enable internal taglib?" OFF "DEFINED USE_INTERNAL_LIBS;NOT USE_INTERNAL_LIBS" ON)
 
 # Internal Depends - supported on UNIX platforms
@@ -69,7 +70,6 @@ if(UNIX)
   option(FFMPEG_PATH        "Path to external ffmpeg?" "")
   option(ENABLE_INTERNAL_FMT "Enable internal fmt?" OFF)
   option(ENABLE_INTERNAL_FSTRCMP "Enable internal fstrcmp?" OFF)
-  option(ENABLE_INTERNAL_FLATBUFFERS "Enable internal flatbuffers?" OFF)
   option(ENABLE_INTERNAL_DAV1D "Enable internal dav1d?" OFF)
   option(ENABLE_INTERNAL_GTEST "Enable internal gtest?" OFF)
   option(ENABLE_INTERNAL_UDFREAD "Enable internal udfread?" OFF)
@@ -138,7 +138,8 @@ foreach(depspec ${PLATFORM_REQUIRED_DEPS})
 endforeach()
 
 # Required tools. Keep in alphabetical order please
-set(required_buildtools JsonSchemaBuilder
+set(required_buildtools FlatC
+                        JsonSchemaBuilder
                         TexturePacker
 )
 
