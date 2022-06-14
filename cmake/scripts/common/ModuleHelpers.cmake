@@ -109,6 +109,8 @@ macro(SETUP_BUILD_VARS)
   endif()
 
   # unset all build_dep_target variables to insure clean state
+  unset(BUILD_NAME)
+  unset(INSTALL_DIR)
   unset(CMAKE_ARGS)
   unset(PATCH_COMMAND)
   unset(CONFIGURE_COMMAND)
@@ -135,12 +137,19 @@ macro(BUILD_DEP_TARGET)
 
   if(CMAKE_ARGS)
     set(CMAKE_ARGS CMAKE_ARGS ${CMAKE_ARGS}
-                             -DCMAKE_INSTALL_PREFIX=${DEPENDS_PATH}
                              -DCMAKE_INSTALL_LIBDIR=lib
                              "-DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}")
 
-    if(CMAKE_TOOLCHAIN_FILE)
-      list(APPEND CMAKE_ARGS "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}")
+    if(${MODULE}_INSTALL_PREFIX)
+      list(APPEND CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${${MODULE}_INSTALL_PREFIX})
+    else()
+      list(APPEND CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${DEPENDS_PATH})
+    endif()
+
+    if(DEFINED ${MODULE}_TOOLCHAIN_FILE)
+      list(APPEND CMAKE_ARGS -DCMAKE_TOOLCHAIN_FILE=${${MODULE}_TOOLCHAIN_FILE})
+    elseif(CMAKE_TOOLCHAIN_FILE)
+      list(APPEND CMAKE_ARGS -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE})
     endif()
 
     # Set build type for dep build.
@@ -242,13 +251,21 @@ macro(BUILD_DEP_TARGET)
     endif()
   endif()
 
-  externalproject_add(${MODULE_LC}
+  if(NOT BUILD_NAME)
+    set(BUILD_NAME ${MODULE_LC})
+  endif()
+
+  if(NOT INSTALL_DIR)
+    set(INSTALL_DIR ${DEPENDS_PATH})
+  endif()
+
+  externalproject_add(${BUILD_NAME}
                       URL ${${MODULE}_URL}
                       URL_HASH ${${MODULE}_HASH}
                       DOWNLOAD_DIR ${TARBALL_DIR}
                       DOWNLOAD_NAME ${${MODULE}_ARCHIVE}
-                      PREFIX ${CORE_BUILD_DIR}/${MODULE_LC}
-                      INSTALL_DIR ${DEPENDS_PATH}
+                      PREFIX ${CORE_BUILD_DIR}/${BUILD_NAME}
+                      INSTALL_DIR ${INSTALL_DIR}
                       ${${MODULE}_LIST_SEPARATOR}
                       ${CMAKE_ARGS}
                       ${PATCH_COMMAND}
@@ -258,7 +275,7 @@ macro(BUILD_DEP_TARGET)
                       ${BUILD_BYPRODUCTS}
                       ${BUILD_IN_SOURCE})
 
-  set_target_properties(${MODULE_LC} PROPERTIES FOLDER "External Projects")
+  set_target_properties(${BUILD_NAME} PROPERTIES FOLDER "External Projects")
 endmacro()
 
 # Macro to test format of line endings of a patch
