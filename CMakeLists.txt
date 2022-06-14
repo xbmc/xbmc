@@ -11,6 +11,7 @@ if(POLICY CMP0069)
 endif()
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules/buildtools)
 if(DEPENDS_DIR)
   list(APPEND CMAKE_PREFIX_PATH ${DEPENDS_DIR})
 endif()
