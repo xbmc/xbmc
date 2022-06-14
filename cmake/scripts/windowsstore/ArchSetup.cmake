@@ -7,6 +7,12 @@ if(CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION VERSION_LESS VS_MINIMUM_SDK_VERSION)
     "INFO: Windows SDKs can be installed from the Visual Studio installer.")
 endif()
 
+# -------- Host Settings ---------
+
+set(_gentoolset ${CMAKE_GENERATOR_TOOLSET})
+string(REPLACE "host=" "" HOSTTOOLSET ${_gentoolset})
+unset(_gentoolset)
+
 # -------- Architecture settings ---------
 
 check_symbol_exists(_X86_ "Windows.h" _X86_)
