@@ -137,6 +137,22 @@ foreach(depspec ${PLATFORM_REQUIRED_DEPS})
   set(ENABLE_${depup} "ON" CACHE BOOL "Force enabling required ${depup} support" FORCE)
 endforeach()
 
+# Required tools. Keep in alphabetical order please
+set(required_buildtools JsonSchemaBuilder
+                        TexturePacker
+)
+
+# Optional build tools
+set(optional_buildtools CCache
+                        ClangFormat
+                        ClangTidy
+                        Cppcheck
+                        IncludeWhatYouUse)
+
+# Find build tools - Optional and required
+core_optional_dep(${optional_buildtools})
+core_require_dep(${required_buildtools})
+
 # Required dependencies. Keep in alphabetical order please
 set(required_deps ASS
                   Cdio
@@ -169,14 +185,9 @@ set(optional_deps Alsa
                   Bluetooth
                   Bluray
                   CAP
-                  CCache
                   CEC
-                  ClangFormat
-                  ClangTidy
-                  Cppcheck
                   Dav1d
                   DBus
-                  IncludeWhatYouUse
                   Iso9660pp
                   LCMS2
                   LircClient
@@ -197,10 +208,6 @@ set(optional_deps Alsa
 # Check optional deps first, since their availability can influence required ones, e.g. ffmpeg
 core_optional_dep(${optional_deps})
 core_require_dep(${required_deps})
-
-# Required tools
-find_package(TexturePacker REQUIRED)
-find_package(JsonSchemaBuilder REQUIRED)
 
 if(ENABLE_MARIADBCLIENT AND NOT ENABLE_MARIADBCLIENT STREQUAL AUTO AND ENABLE_MYSQLCLIENT AND NOT ENABLE_MYSQLCLIENT STREQUAL AUTO)
   MESSAGE(FATAL_ERROR "You can not use MySql and MariaDB at the same time. Disable one by adding -DENABLE_MYSQLCLIENT=OFF or -DENABLE_MARIADBCLIENT=OFF.")
