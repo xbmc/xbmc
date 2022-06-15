@@ -10,15 +10,12 @@
 
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
-#include "guilib/GUIProgressControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "threads/IRunnable.h"
 #include "threads/Thread.h"
 #include "utils/log.h"
 
 using namespace std::chrono_literals;
-
-#define PROGRESS_CONTROL 10
 
 class CBusyWaiter : public CThread
 {
@@ -113,7 +110,6 @@ CGUIDialogBusy::CGUIDialogBusy(void)
 {
   m_loadType = LOAD_ON_GUI_INIT;
   m_bCanceled = false;
-  m_progress = -1;
 }
 
 CGUIDialogBusy::~CGUIDialogBusy(void) = default;
@@ -122,7 +118,6 @@ void CGUIDialogBusy::Open_Internal(bool bProcessRenderLoop, const std::string& p
 {
   m_bCanceled = false;
   m_bLastVisible = true;
-  m_progress = -1;
 
   CGUIDialog::Open_Internal(false, param);
 }
@@ -134,15 +129,6 @@ void CGUIDialogBusy::DoProcess(unsigned int currentTime, CDirtyRegionList &dirty
   if(!visible && m_bLastVisible)
     dirtyregions.push_back(CDirtyRegion(m_renderRegion));
   m_bLastVisible = visible;
-
-  // update the progress control if available
-  CGUIControl *control = GetControl(PROGRESS_CONTROL);
-  if (control && control->GetControlType() == CGUIControl::GUICONTROL_PROGRESS)
-  {
-    CGUIProgressControl *progress = static_cast<CGUIProgressControl*>(control);
-    progress->SetPercentage(m_progress);
-    progress->SetVisible(m_progress > -1);
-  }
 
   CGUIDialog::DoProcess(currentTime, dirtyregions);
 }
@@ -158,9 +144,4 @@ bool CGUIDialogBusy::OnBack(int actionID)
 {
   m_bCanceled = true;
   return true;
-}
-
-void CGUIDialogBusy::SetProgress(float percent)
-{
-  m_progress = percent;
 }

@@ -44,9 +44,6 @@
 					<height>30</height>
 					<texture colordiffuse="button_focus">$INFO[Control.GetLabel(10),dialogs/volume/progress/p,.png]</texture>
 				</control>
-				<control type="progress" id="10">
-					<include>HiddenObject</include>
-				</control>
 			</control>
 		</control>
 	</controls>
