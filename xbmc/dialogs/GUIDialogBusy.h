@@ -24,8 +24,6 @@ public:
   /*! \brief set the current progress of the busy operation
    \param progress a percentage of progress
    */
-  void SetProgress(float progress);
-
   bool IsCanceled() { return m_bCanceled; }
 
   /*! \brief Wait for a runnable to execute off-thread.
@@ -50,5 +48,4 @@ protected:
   void Open_Internal(bool bProcessRenderLoop, const std::string& param = "") override;
   bool m_bCanceled;
   bool m_bLastVisible = false;
-  float m_progress; ///< current progress
 };
