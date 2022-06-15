@@ -268,6 +268,8 @@ macro(BUILD_DEP_TARGET)
                       INSTALL_DIR ${INSTALL_DIR}
                       ${${MODULE}_LIST_SEPARATOR}
                       ${CMAKE_ARGS}
+                      ${${MODULE}_GENERATOR}
+                      ${${MODULE}_GENERATOR_PLATFORM}
                       ${PATCH_COMMAND}
                       ${CONFIGURE_COMMAND}
                       ${BUILD_COMMAND}
