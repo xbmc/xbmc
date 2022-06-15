@@ -1,0 +1,79 @@
+set(NATIVEPREFIX "@prefix@/@tool_dir@")
+
+set(TARBALL_DIR "@use_tarballs@")
+
+set(OS "@build_os@")
+set(CMAKE_SYSTEM_PROCESSOR @host_cpu@)
+set(CPU "@use_buildcpu@")
+
+if(OS STREQUAL linux)
+  set(CMAKE_SYSTEM_NAME Linux)
+elseif(OS STREQUAL osx)
+  set(CMAKE_SYSTEM_NAME Darwin)
+endif()
+
+if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
+  if(CPU STREQUAL "arm")
+    set(CPU arm64)
+  endif()
+  if(CPU STREQUAL arm64)
+    set(CMAKE_OSX_DEPLOYMENT_TARGET 11.0)
+  else()
+    set(CMAKE_OSX_DEPLOYMENT_TARGET 10.13)
+  endif()
+
+  set(CMAKE_OSX_SYSROOT "@host_sysroot@")
+endif()
+set(CMAKE_SYSTEM_VERSION 1)
+
+# specify the cross compiler
+set(CMAKE_C_COMPILER @CC_FOR_BUILD@)
+set(CMAKE_CXX_COMPILER @CXX_FOR_BUILD@)
+set(CMAKE_AR @AR_FOR_BUILD@ CACHE FILEPATH "Archiver")
+SET(CMAKE_AS @AS_FOR_BUILD@ CACHE FILEPATH "Assembler")
+set(CMAKE_LINKER @LD_FOR_BUILD@ CACHE FILEPATH "Linker")
+set(CMAKE_NM @NM_FOR_BUILD@ CACHE FILEPATH "Nm")
+set(CMAKE_STRIP @STRIP_FOR_BUILD@ CACHE PATH "strip binary" FORCE)
+set(CMAKE_OBJDUMP @OBJDUMP_FOR_BUILD@ CACHE FILEPATH "Objdump")
+set(CMAKE_RANLIB @RANLIB_FOR_BUILD@ CACHE FILEPATH "Ranlib")
+
+if(NOT "@use_ccache@" STREQUAL "")
+  set(CMAKE_CXX_COMPILER_LAUNCHER @CCACHE@)
+  set(CMAKE_C_COMPILER_LAUNCHER @CCACHE@)
+endif()
+
+set(CMAKE_C_FLAGS "@host_includes@ -I@prefix@/@tool_dir@/include")
+set(CMAKE_CXX_FLAGS "@host_cxxflags@ @host_includes@ -I@prefix@/@tool_dir@/include")
+set(CMAKE_EXE_LINKER_FLAGS "@host_includes@ -L@prefix@/@tool_dir@/lib")
+
+# where is the target environment
+set(CMAKE_FIND_ROOT_PATH @prefix@/@tool_dir@)
+set(CMAKE_LIBRARY_PATH @prefix@/@tool_dir@/lib)
+if(NOT "@use_toolchain@" STREQUAL "")
+  list(APPEND CMAKE_FIND_ROOT_PATH @use_toolchain@ @use_toolchain@/@use_host@ @use_toolchain@/@use_host@/sysroot @use_toolchain@/@use_host@/sysroot/usr @use_toolchain@/@use_host@/libc @use_toolchain@/lib/@use_host@/sysroot @use_toolchain@/usr @use_toolchain@/sysroot/usr)
+  set(CMAKE_LIBRARY_PATH "${CMAKE_LIBRARY_PATH}:@use_toolchain@/usr/lib/@use_host@:@use_toolchain@/lib/@use_host@")
+endif()
+if(NOT "@host_sysroot@" STREQUAL "")
+  list(APPEND CMAKE_FIND_ROOT_PATH @host_sysroot@ @host_sysroot@/usr)
+endif()
+
+# search for programs in the build host directories
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+# for libraries and headers in the target directories
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+set(CMAKE_FIND_FRAMEWORK LAST)
+
+# common autoconf build tools
+find_program(AUTOCONF autoconf HINTS "${NATIVEPREFIX}/bin" REQUIRED)
+find_program(ACLOCAL aclocal HINTS "${NATIVEPREFIX}/bin" REQUIRED)
+find_program(AUTOHEADER autoheader HINTS "${NATIVEPREFIX}/bin" REQUIRED)
+find_program(AUTOMAKE automake HINTS "${NATIVEPREFIX}/bin" REQUIRED)
+find_program(AUTOM4TE autom4te HINTS "${NATIVEPREFIX}/bin" REQUIRED)
+find_program(AUTOPOINT autopoint HINTS "${NATIVEPREFIX}/bin" REQUIRED)
+find_program(AUTORECONF autoreconf HINTS "${NATIVEPREFIX}/bin" REQUIRED)
+find_program(LIBTOOL libtool HINTS "${NATIVEPREFIX}/bin" REQUIRED)
+find_program(LIBTOOLIZE libtoolize HINTS "${NATIVEPREFIX}/bin" REQUIRED)
+
+set(ENV{ACLOCAL_PATH} "${NATIVEPREFIX}/share/aclocal")
+set(ENV{PATH} "${NATIVEPREFIX}/bin:$ENV{PATH}")
