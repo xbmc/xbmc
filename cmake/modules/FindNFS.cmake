@@ -43,7 +43,7 @@ if(NOT LIBNFS_FOUND)
   else()
     # Try pkgconfig based search. Linux may not have a version with cmake config installed
     if(PKG_CONFIG_FOUND)
-      pkg_check_modules(PC_NFS libnfs QUIET)
+      pkg_check_modules(PC_NFS libnfs>=3.0.0 QUIET)
     endif()
 
     find_path(NFS_INCLUDE_DIR nfsc/libnfs.h

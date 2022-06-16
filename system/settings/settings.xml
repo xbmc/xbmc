@@ -2377,6 +2377,21 @@
         </setting>
       </group>
     </category>
+    <category id="nfs" label="1201" help="36356">
+      <requirement>HAS_FILESYSTEM_NFS</requirement>
+      <group id="1" label="16000">
+        <setting id="nfs.version" type="integer" label="37051" help="37052">
+          <level>2</level>
+          <default>3</default>
+          <constraints>
+            <minimum>3</minimum>
+            <step>1</step>
+            <maximum>4</maximum>
+          </constraints>
+          <control type="spinner" format="integer" />
+        </setting>
+      </group>
+    </category>
     <category id="weather" label="8" help="36316">
       <group id="1" label="16000">
         <setting id="weather.currentlocation" type="integer" label="0" help="36317">
