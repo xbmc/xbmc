@@ -35,7 +35,15 @@ class DllDvdNavInterface
 public:
   virtual ~DllDvdNavInterface() = default;
   virtual dvdnav_status_t dvdnav_open(dvdnav_t **dest, const char *path)=0;
+  virtual dvdnav_status_t dvdnav_open2(dvdnav_t** dest,
+                                       void*,
+                                       const dvdnav_logger_cb*,
+                                       const char* path) = 0;
   virtual dvdnav_status_t dvdnav_open_stream(dvdnav_t **dest, void *stream, dvdnav_stream_cb *stream_cb) = 0;
+  virtual dvdnav_status_t dvdnav_open_stream2(dvdnav_t** dest,
+                                              void* stream,
+                                              const dvdnav_logger_cb*,
+                                              dvdnav_stream_cb* stream_cb) = 0;
   virtual dvdnav_status_t dvdnav_close(dvdnav_t *self)=0;
   virtual dvdnav_status_t dvdnav_reset(dvdnav_t *self)=0;
   virtual const char* dvdnav_err_to_string(dvdnav_t *self)=0;
@@ -116,7 +124,13 @@ class DllDvdNav : public DllDynamic, DllDvdNavInterface
   DECLARE_DLL_WRAPPER(DllDvdNav, DLL_PATH_LIBDVDNAV)
 
   DEFINE_METHOD2(dvdnav_status_t, dvdnav_open, (dvdnav_t **p1, const char *p2))
+  DEFINE_METHOD4(dvdnav_status_t,
+                 dvdnav_open2,
+                 (dvdnav_t * *p1, void* p2, const dvdnav_logger_cb* p3, const char* p4))
   DEFINE_METHOD3(dvdnav_status_t, dvdnav_open_stream, (dvdnav_t **p1, void *p2, dvdnav_stream_cb *p3))
+  DEFINE_METHOD4(dvdnav_status_t,
+                 dvdnav_open_stream2,
+                 (dvdnav_t * *p1, void* p2, const dvdnav_logger_cb* p3, dvdnav_stream_cb* p4))
   DEFINE_METHOD1(dvdnav_status_t, dvdnav_close, (dvdnav_t *p1))
   DEFINE_METHOD1(dvdnav_status_t, dvdnav_reset, (dvdnav_t *p1))
   DEFINE_METHOD1(const char*, dvdnav_err_to_string, (dvdnav_t *p1))
@@ -188,7 +202,9 @@ class DllDvdNav : public DllDynamic, DllDvdNavInterface
                  (dvdnav_t * p1, int32_t* p2, int32_t* p3, int32_t* p4))
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(dvdnav_open)
+    RESOLVE_METHOD(dvdnav_open2)
     RESOLVE_METHOD(dvdnav_open_stream)
+    RESOLVE_METHOD(dvdnav_open_stream2)
     RESOLVE_METHOD(dvdnav_close)
     RESOLVE_METHOD(dvdnav_reset)
     RESOLVE_METHOD(dvdnav_err_to_string)
