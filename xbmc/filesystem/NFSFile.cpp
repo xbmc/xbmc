@@ -418,7 +418,7 @@ void CNfsConnection::keepAlive(const std::string& _exportPath, struct nfsfh* _pF
   nfs_lseek(pContext, _pFileHandle, offset, SEEK_SET, &offset);
 }
 
-int CNfsConnection::stat(const CURL &url, NFSSTAT *statbuff)
+int CNfsConnection::stat(const CURL& url, nfs_stat_64* statbuff)
 {
   std::unique_lock<CCriticalSection> lock(*this);
   int nfsRet = 0;
@@ -441,7 +441,7 @@ int CNfsConnection::stat(const CURL &url, NFSSTAT *statbuff)
 
       if(nfsRet == 0)
       {
-        nfsRet = nfs_stat(pTmpContext, relativePath.c_str(), statbuff);
+        nfsRet = nfs_stat64(pTmpContext, relativePath.c_str(), statbuff);
       }
       else
       {
@@ -573,7 +573,6 @@ bool CNFSFile::Open(const CURL& url)
   return true;
 }
 
-
 bool CNFSFile::Exists(const CURL& url)
 {
   return Stat(url,NULL) == 0;
@@ -594,10 +593,9 @@ int CNFSFile::Stat(const CURL& url, struct __stat64* buffer)
   if(!gNfsConnection.Connect(url,filename))
     return -1;
 
+  nfs_stat_64 tmpBuffer = {};
 
-  NFSSTAT tmpBuffer = {};
-
-  ret = nfs_stat(gNfsConnection.GetNfsContext(), filename.c_str(), &tmpBuffer);
+  ret = nfs_stat64(gNfsConnection.GetNfsContext(), filename.c_str(), &tmpBuffer);
 
   //if buffer == NULL we where called from Exists - in that case don't spam the log with errors
   if (ret != 0 && buffer != NULL)
@@ -614,17 +612,17 @@ int CNFSFile::Stat(const CURL& url, struct __stat64* buffer)
       memcpy(buffer, &tmpBuffer, sizeof(struct __stat64));
 #else
       memset(buffer, 0, sizeof(struct __stat64));
-      buffer->st_dev = tmpBuffer.st_dev;
-      buffer->st_ino = tmpBuffer.st_ino;
-      buffer->st_mode = tmpBuffer.st_mode;
-      buffer->st_nlink = tmpBuffer.st_nlink;
-      buffer->st_uid = tmpBuffer.st_uid;
-      buffer->st_gid = tmpBuffer.st_gid;
-      buffer->st_rdev = tmpBuffer.st_rdev;
-      buffer->st_size = tmpBuffer.st_size;
-      buffer->st_atime = tmpBuffer.st_atime;
-      buffer->st_mtime = tmpBuffer.st_mtime;
-      buffer->st_ctime = tmpBuffer.st_ctime;
+      buffer->st_dev = tmpBuffer.nfs_dev;
+      buffer->st_ino = tmpBuffer.nfs_ino;
+      buffer->st_mode = tmpBuffer.nfs_mode;
+      buffer->st_nlink = tmpBuffer.nfs_nlink;
+      buffer->st_uid = tmpBuffer.nfs_uid;
+      buffer->st_gid = tmpBuffer.nfs_gid;
+      buffer->st_rdev = tmpBuffer.nfs_rdev;
+      buffer->st_size = tmpBuffer.nfs_size;
+      buffer->st_atime = tmpBuffer.nfs_atime;
+      buffer->st_mtime = tmpBuffer.nfs_mtime;
+      buffer->st_ctime = tmpBuffer.nfs_ctime;
 #endif
     }
   }
