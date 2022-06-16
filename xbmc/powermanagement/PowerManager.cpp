@@ -13,7 +13,7 @@
 #include "PowerTypes.h"
 #include "ServiceBroker.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
-#include "dialogs/GUIDialogBusy.h"
+#include "dialogs/GUIDialogBusyNoCancel.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -107,7 +107,9 @@ bool CPowerManager::Powerdown()
 {
   if (CanPowerdown() && m_instance->Powerdown())
   {
-    CGUIDialogBusy* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogBusy>(WINDOW_DIALOG_BUSY);
+    CGUIDialogBusyNoCancel* dialog =
+        CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogBusyNoCancel>(
+            WINDOW_DIALOG_BUSY_NOCANCEL);
     if (dialog)
       dialog->Open();
 
@@ -135,7 +137,9 @@ bool CPowerManager::Reboot()
   {
     CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::System, "OnRestart");
 
-    CGUIDialogBusy* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogBusy>(WINDOW_DIALOG_BUSY);
+    CGUIDialogBusyNoCancel* dialog =
+        CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogBusyNoCancel>(
+            WINDOW_DIALOG_BUSY_NOCANCEL);
     if (dialog)
       dialog->Open();
   }
@@ -180,7 +184,9 @@ void CPowerManager::OnSleep()
 {
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::System, "OnSleep");
 
-  CGUIDialogBusy* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogBusy>(WINDOW_DIALOG_BUSY);
+  CGUIDialogBusyNoCancel* dialog =
+      CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogBusyNoCancel>(
+          WINDOW_DIALOG_BUSY_NOCANCEL);
   if (dialog)
     dialog->Open();
 
@@ -205,7 +211,9 @@ void CPowerManager::OnWake()
   // reset out timers
   g_application.ResetShutdownTimers();
 
-  CGUIDialogBusy* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogBusy>(WINDOW_DIALOG_BUSY);
+  CGUIDialogBusyNoCancel* dialog =
+      CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogBusyNoCancel>(
+          WINDOW_DIALOG_BUSY_NOCANCEL);
   if (dialog)
     dialog->Close(true); // force close. no closing animation, sound etc at this early stage
 
