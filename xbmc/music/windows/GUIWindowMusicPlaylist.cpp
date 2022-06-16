@@ -251,8 +251,6 @@ bool CGUIWindowMusicPlayList::OnAction(const CAction& action)
 
 bool CGUIWindowMusicPlayList::OnBack(int actionID)
 {
-  CancelUpdateItems();
-
   if (actionID == ACTION_NAV_BACK)
     return CGUIWindow::OnBack(actionID); // base class goes up a folder, but none to go up
   return CGUIWindowMusicBase::OnBack(actionID);
