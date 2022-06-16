@@ -191,9 +191,7 @@ CUPnPPlayer::~CUPnPPlayer()
   delete m_delegate;
 }
 
-static NPT_Result WaitOnEvent(CEvent& event,
-                              XbmcThreads::EndTime<>& timeout,
-                              CGUIDialogBusy*& dialog)
+static NPT_Result WaitOnEvent(CEvent& event, XbmcThreads::EndTime<>& timeout)
 {
   if (event.Wait(0ms))
     return NPT_SUCCESS;
@@ -206,7 +204,6 @@ static NPT_Result WaitOnEvent(CEvent& event,
 
 int CUPnPPlayer::PlayFile(const CFileItem& file,
                           const CPlayerOptions& options,
-                          CGUIDialogBusy*& dialog,
                           XbmcThreads::EndTime<>& timeout)
 {
   CFileItem item(file);
@@ -254,7 +251,7 @@ int CUPnPPlayer::PlayFile(const CFileItem& file,
   NPT_CHECK_LABEL_SEVERE(m_control->GetTransportInfo(m_delegate->m_device
                                                      , m_delegate->m_instance
                                                      , m_delegate), failed_gettransportinfo);
-  NPT_CHECK_LABEL_SEVERE(WaitOnEvent(m_delegate->m_traevnt, timeout, dialog), failed_gettransportinfo);
+  NPT_CHECK_LABEL_SEVERE(WaitOnEvent(m_delegate->m_traevnt, timeout), failed_gettransportinfo);
 
   if (m_delegate->m_trainfo.cur_transport_state != "NO_MEDIA_PRESENT" &&
       m_delegate->m_trainfo.cur_transport_state != "STOPPED")
@@ -263,7 +260,7 @@ int CUPnPPlayer::PlayFile(const CFileItem& file,
     NPT_CHECK_LABEL_SEVERE(m_control->Stop(m_delegate->m_device
                                            , m_delegate->m_instance
                                            , m_delegate), failed_stop);
-    NPT_CHECK_LABEL_SEVERE(WaitOnEvent(m_delegate->m_resevent, timeout, dialog), failed_stop);
+    NPT_CHECK_LABEL_SEVERE(WaitOnEvent(m_delegate->m_resevent, timeout), failed_stop);
     NPT_CHECK_LABEL_SEVERE(m_delegate->m_resstatus, failed_stop);
   }
 
@@ -274,7 +271,7 @@ int CUPnPPlayer::PlayFile(const CFileItem& file,
                                                     , obj->m_Resources[res_index].m_Uri
                                                     , (const char*)tmp
                                                     , m_delegate), failed_setavtransporturi);
-  NPT_CHECK_LABEL_SEVERE(WaitOnEvent(m_delegate->m_resevent, timeout, dialog), failed_setavtransporturi);
+  NPT_CHECK_LABEL_SEVERE(WaitOnEvent(m_delegate->m_resevent, timeout), failed_setavtransporturi);
   NPT_CHECK_LABEL_SEVERE(m_delegate->m_resstatus, failed_setavtransporturi);
 
   timeout.Set(timeout.GetInitialTimeoutValue());
@@ -282,7 +279,7 @@ int CUPnPPlayer::PlayFile(const CFileItem& file,
                                        , m_delegate->m_instance
                                        , "1"
                                        , m_delegate), failed_play);
-  NPT_CHECK_LABEL_SEVERE(WaitOnEvent(m_delegate->m_resevent, timeout, dialog), failed_play);
+  NPT_CHECK_LABEL_SEVERE(WaitOnEvent(m_delegate->m_resevent, timeout), failed_play);
   NPT_CHECK_LABEL_SEVERE(m_delegate->m_resstatus, failed_play);
 
 
@@ -308,7 +305,7 @@ int CUPnPPlayer::PlayFile(const CFileItem& file,
       }
     }
 
-    NPT_CHECK_LABEL_SEVERE(WaitOnEvent(m_delegate->m_traevnt, timeout, dialog), failed_waitplaying);
+    NPT_CHECK_LABEL_SEVERE(WaitOnEvent(m_delegate->m_traevnt, timeout), failed_waitplaying);
 
   } while(!timeout.IsTimePast());
 
@@ -354,7 +351,6 @@ failed:
 
 bool CUPnPPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
 {
-  CGUIDialogBusy* dialog = NULL;
   XbmcThreads::EndTime<> timeout(10s);
 
   /* if no path we want to attach to a already playing player */
@@ -364,7 +360,7 @@ bool CUPnPPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
                                                      , m_delegate->m_instance
                                                      , m_delegate), failed);
 
-    NPT_CHECK_LABEL_SEVERE(WaitOnEvent(m_delegate->m_traevnt, timeout, dialog), failed);
+    NPT_CHECK_LABEL_SEVERE(WaitOnEvent(m_delegate->m_traevnt, timeout), failed);
 
     /* make sure the attached player is actually playing */
     {
@@ -375,7 +371,7 @@ bool CUPnPPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
     }
   }
   else
-    NPT_CHECK_LABEL_SEVERE(PlayFile(file, options, dialog, timeout), failed);
+    NPT_CHECK_LABEL_SEVERE(PlayFile(file, options, timeout), failed);
 
   m_stopremote = true;
   m_started = true;
@@ -388,16 +384,11 @@ bool CUPnPPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
                                                , m_delegate->m_instance
                                                , m_delegate), failed);
 
-  if(dialog)
-    dialog->Close();
-
   m_updateTimer.Set(0ms);
 
   return true;
 failed:
   m_logger->error("OpenFile({}) failed to open file", file.GetPath());
-  if(dialog)
-    dialog->Close();
   return false;
 }
 
