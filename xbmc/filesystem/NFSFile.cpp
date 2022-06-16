@@ -37,9 +37,6 @@
 // do the nfs keep alive for the open files
 #define KEEP_ALIVE_TIMEOUT 360
 
-// 6 mins (360s) cached context timeout
-#define CONTEXT_TIMEOUT 360000
-
 #if defined(TARGET_WINDOWS)
 #define S_IRGRP 0
 #define S_IROTH 0
@@ -48,6 +45,15 @@
 #endif
 
 using namespace XFILE;
+
+using namespace std::chrono_literals;
+
+namespace
+{
+
+constexpr auto CONTEXT_TIMEOUT = 6min;
+
+} // namespace
 
 CNfsConnection::CNfsConnection()
   : m_pNfsContext(NULL), m_exportPath(""), m_hostName(""), m_resolvedHostName("")
@@ -139,7 +145,7 @@ struct nfs_context *CNfsConnection::getContextFromMap(const std::string &exportn
     auto now = std::chrono::steady_clock::now();
     auto duration =
         std::chrono::duration_cast<std::chrono::milliseconds>(now - it->second.lastAccessedTime);
-    if (duration.count() < CONTEXT_TIMEOUT || forceCacheHit)
+    if (duration < CONTEXT_TIMEOUT || forceCacheHit)
     {
       //its not timedout yet or caller wants the cached entry regardless of timeout
       //refresh access time of that
@@ -274,7 +280,7 @@ bool CNfsConnection::Connect(const CURL& url, std::string &relativePath)
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - m_lastAccessedTime);
 
   if ((ret && (exportPath != m_exportPath || url.GetHostName() != m_hostName)) ||
-      duration.count() > CONTEXT_TIMEOUT)
+      duration > CONTEXT_TIMEOUT)
   {
     CNfsConnection::ContextStatus contextRet = getContextForExport(url.GetHostName() + exportPath);
 
