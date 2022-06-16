@@ -33,6 +33,7 @@ extern "C" {
 #include "dvd_types.h"
 #include "dvdnav_events.h"
 #include "nav_types.h"
+#include "version.h"
 
 #include <stdarg.h>
 
