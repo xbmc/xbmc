@@ -65,6 +65,7 @@ constexpr int DVD_AUDIO_LANG_EXT_DIRECTORSCOMMENTS2 = 4;
 static int dvd_inputstreamnavigator_cb_seek(void * p_stream, uint64_t i_pos);
 static int dvd_inputstreamnavigator_cb_read(void * p_stream, void * buffer, int i_read);
 static int dvd_inputstreamnavigator_cb_readv(void * p_stream, void * p_iovec, int i_blocks);
+static void dvd_logger(void* priv, dvdnav_logger_level_t level, const char* fmt, va_list va);
 
 CDVDInputStreamNavigator::CDVDInputStreamNavigator(IVideoPlayer* player, const CFileItem& fileitem)
   : CDVDInputStream(DVDSTREAM_TYPE_DVD, fileitem), m_pstream(nullptr)
@@ -134,20 +135,34 @@ bool CDVDInputStreamNavigator::Open()
   free(strDVDFile);
 #endif
 
+#if DVDNAV_VERSION >= 60100
+  dvdnav_logger_cb loggerCallback;
+  loggerCallback.pf_log = dvd_logger;
+#endif
+
   // open up the DVD device
   if (m_item.IsDiscImage())
   {
     // if dvd image file (ISO or alike) open using libdvdnav stream callback functions
     m_pstream.reset(new CDVDInputStreamFile(m_item, XFILE::READ_TRUNCATED | XFILE::READ_BITRATE | XFILE::READ_CHUNKED));
+#if DVDNAV_VERSION >= 60100
+    if (!m_pstream->Open() || m_dll.dvdnav_open_stream2(&m_dvdnav, m_pstream.get(), &loggerCallback,
+                                                        &m_dvdnav_stream_cb) != DVDNAV_STATUS_OK)
+#else
     if (!m_pstream->Open() || m_dll.dvdnav_open_stream(&m_dvdnav, m_pstream.get(), &m_dvdnav_stream_cb) != DVDNAV_STATUS_OK)
+#endif
     {
       CLog::Log(LOGERROR, "Error opening image file or Error on dvdnav_open_stream");
       Close();
       return false;
     }
   }
-  else
-  if (m_dll.dvdnav_open(&m_dvdnav, path.c_str()) != DVDNAV_STATUS_OK)
+#if DVDNAV_VERSION >= 60100
+  else if (m_dll.dvdnav_open2(&m_dvdnav, nullptr, &loggerCallback, path.c_str()) !=
+           DVDNAV_STATUS_OK)
+#else
+  else if (m_dll.dvdnav_open(&m_dvdnav, path.c_str()) != DVDNAV_STATUS_OK)
+#endif
   {
     CLog::Log(LOGERROR, "Error on dvdnav_open");
     Close();
@@ -1480,6 +1495,30 @@ int dvd_inputstreamnavigator_cb_read(void * p_stream, void * buffer, int i_read)
   }
 
   return i_ret;
+}
+
+void dvd_logger(void* priv, dvdnav_logger_level_t level, const char* fmt, va_list va)
+{
+  const std::string message = StringUtils::FormatV(fmt, va);
+  auto logLevel = LOGDEBUG;
+  switch (level)
+  {
+    case DVDNAV_LOGGER_LEVEL_INFO:
+      logLevel = LOGINFO;
+      break;
+    case DVDNAV_LOGGER_LEVEL_ERROR:
+      logLevel = LOGERROR;
+      break;
+    case DVDNAV_LOGGER_LEVEL_WARN:
+      logLevel = LOGWARNING;
+      break;
+    case DVDNAV_LOGGER_LEVEL_DEBUG:
+      logLevel = LOGDEBUG;
+      break;
+    default:
+      break;
+  };
+  CLog::Log(logLevel, "Libdvd: {}", message);
 }
 
 int dvd_inputstreamnavigator_cb_readv(void * p_stream, void * p_iovec, int i_blocks)
