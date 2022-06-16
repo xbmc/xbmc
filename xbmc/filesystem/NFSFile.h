@@ -26,7 +26,7 @@ public:
   struct keepAliveStruct
   {
     std::string exportPath;
-    uint64_t refreshCounter;
+    std::chrono::time_point<std::chrono::steady_clock> refreshTime;
   };
   typedef std::map<struct nfsfh  *, struct keepAliveStruct> tFileKeepAliveMap;
 
