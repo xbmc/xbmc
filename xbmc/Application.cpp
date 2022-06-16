@@ -2658,11 +2658,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
       // we don't want a busy dialog when switching channels
       if (!m_itemCurrentFile->IsLiveTV())
-      {
-        CGUIDialogBusy* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogBusy>(WINDOW_DIALOG_BUSY);
-        if (dialog && !dialog->IsDialogRunning())
-          dialog->WaitOnEvent(m_playerEvent);
-      }
+        CGUIDialogBusy::WaitOnEvent(m_playerEvent);
 
       return true;
     }

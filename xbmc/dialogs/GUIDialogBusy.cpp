@@ -76,30 +76,30 @@ bool CGUIDialogBusy::WaitOnEvent(CEvent &event, unsigned int displaytime /* = 10
   bool cancelled = false;
   if (!event.Wait(std::chrono::milliseconds(displaytime)))
   {
-    // throw up the progress
-    CGUIDialogBusy* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogBusy>(WINDOW_DIALOG_BUSY);
+    CGUIDialogBusy* dialog = static_cast<CGUIDialogBusy*>(
+        CServiceBroker::GetGUI()->GetWindowManager().GetWindow(WINDOW_DIALOG_BUSY));
     if (dialog)
     {
-      if (dialog->IsDialogRunning())
+      if (++dialog->m_waiters == 1)
       {
-        CLog::Log(LOGFATAL, "Logic error due to two concurrent busydialogs, this is a known issue. "
-                            "The application will exit.");
-        throw std::logic_error("busy dialog already running");
+        dialog->Open();
       }
-
-      dialog->Open();
 
       while (!event.Wait(1ms))
       {
         dialog->ProcessRenderLoop(false);
-        if (allowCancel && dialog->IsCanceled())
+        if (allowCancel && dialog->m_cancelled)
         {
           cancelled = true;
           break;
         }
       }
 
-      dialog->Close(true);
+      if (--dialog->m_waiters == 0)
+      {
+        dialog->Close(true); // Force close.
+        dialog->ProcessRenderLoop(false); // Force repaint.
+      }
     }
   }
   return !cancelled;
@@ -109,19 +109,17 @@ CGUIDialogBusy::CGUIDialogBusy(void)
   : CGUIDialog(WINDOW_DIALOG_BUSY, "DialogBusy.xml", DialogModalityType::MODAL)
 {
   m_loadType = LOAD_ON_GUI_INIT;
-  m_bCanceled = false;
 }
 
 CGUIDialogBusy::~CGUIDialogBusy(void) = default;
 
 void CGUIDialogBusy::Open_Internal(bool bProcessRenderLoop, const std::string& param /* = "" */)
 {
-  m_bCanceled = false;
   m_bLastVisible = true;
+  m_cancelled = false;
 
   CGUIDialog::Open_Internal(false, param);
 }
-
 
 void CGUIDialogBusy::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
@@ -142,6 +140,6 @@ void CGUIDialogBusy::Render()
 
 bool CGUIDialogBusy::OnBack(int actionID)
 {
-  m_bCanceled = true;
+  m_cancelled = true;
   return true;
 }
