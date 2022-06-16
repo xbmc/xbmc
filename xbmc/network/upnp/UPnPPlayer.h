@@ -17,7 +17,6 @@
 #include <string>
 
 class PLT_MediaController;
-class CGUIDialogBusy;
 
 namespace UPNP
 {
@@ -59,7 +58,6 @@ public:
 
   int PlayFile(const CFileItem& file,
                const CPlayerOptions& options,
-               CGUIDialogBusy*& dialog,
                XbmcThreads::EndTime<>& timeout);
 
 private:
