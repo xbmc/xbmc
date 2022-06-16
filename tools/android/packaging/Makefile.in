@@ -91,7 +91,7 @@ sharedobb: shared
 python: | xbmc/assets
 	mkdir -p xbmc/assets/python@PYTHON_VERSION@/lib/
 	cp -rfp $(PREFIX)/lib/python@PYTHON_VERSION@ xbmc/assets/python@PYTHON_VERSION@/lib/
-	cd xbmc/assets/python@PYTHON_VERSION@/lib/python@PYTHON_VERSION@/; rm -rf test config lib-dynload
+	cd xbmc/assets/python@PYTHON_VERSION@/lib/python@PYTHON_VERSION@/; rm -rf test config lib-dynload ; find . -name "*.so" -exec rm -f {} \;
 
 res:
 	mkdir -p xbmc/res xbmc/res/raw xbmc/res/values images
@@ -120,7 +120,7 @@ libs: $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so
 	find $(DEPENDS_PATH)/share/kodi/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \; || true
 	find $(DEPENDS_PATH)/lib/kodi/addons -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \; || true
 	find $(PREFIX)/lib/@APP_NAME_LC@/system -name "*.so" -exec cp -fp {} xbmc/obj/local/$(CPU)/ \;
-	DIR=${CURDIR}; cd $(PREFIX)/lib/python@PYTHON_VERSION@/site-packages; for i in `find Cryptodome -name \*.so` ; do FN=`echo $$i | cut -c1- | tr "/" "_" | sed -e 's/\.cpython-[0-9]\{2\}-x86_64-linux-gnu\./\./g'` ;mv $$i $$DIR/xbmc/obj/local/$(CPU)/$$FN ; done
+	DIR=${CURDIR}; cd $(PREFIX)/lib/python@PYTHON_VERSION@/site-packages; for i in `find Cryptodome -name \*.so` ; do FN=`echo $$i | cut -c1- | tr "/" "_" | sed -e 's/\.cpython-[0-9]\{2\}-x86_64-linux-gnu\./\./g'` ;cp $$i $$DIR/xbmc/obj/local/$(CPU)/$$FN ; done
 	cd xbmc/obj/local/$(CPU)/; find . -name "*.so" -not -name "lib*.so" | sed "s/\.\///" | xargs -I@ mv @ lib@
 	cp -fp xbmc/obj/local/$(CPU)/*.so xbmc/lib/$(CPU)/
 	$(STRIP) --strip-unneeded xbmc/lib/$(CPU)/*.so
