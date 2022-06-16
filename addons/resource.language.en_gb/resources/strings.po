@@ -4196,7 +4196,10 @@ msgctxt "#1200"
 msgid "SMB client"
 msgstr ""
 
-#empty string with id 1201
+#: xbmc/filesystem/NFSFile.cpp
+msgctxt "#1201"
+msgid "NFS Client"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#1202"
@@ -20279,7 +20282,11 @@ msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens not displaying this application are blacked out."
 msgstr ""
 
-#empty string with id 36356
+#. Description of settings category with label #1201 "NFS Client"
+#: xbmc/filesystem/NFSFile.cpp
+msgctxt "#36356"
+msgid "This category contains the settings for how the NFS client is handled."
+msgstr ""
 
 #. Description of setting with label #214 "Video calibration..."
 #: system/settings/settings.xml
@@ -21878,7 +21885,19 @@ msgctxt "#37050"
 msgid "Verbose logging for the [B]WS-Discovery[/B] component"
 msgstr ""
 
-#empty strings from id 37051 to 38010
+#. Setting #37051 NFS Protocol Version"
+#: xbmc/filesystem/NFSFile.cpp
+msgctxt "#37051"
+msgid "NFS Protocol Version"
+msgstr ""
+
+#. Description of setting #37051 NFS Protocol Version"
+#: xbmc/filesystem/NFSFile.cpp
+msgctxt "#37052"
+msgid "NFS protocol version to use when establishing NFS connections"
+msgstr ""
+
+#empty strings from id 37053 to 38010
 
 #. Setting #38011 "Show All Items entry"
 #: system/settings/settings.xml

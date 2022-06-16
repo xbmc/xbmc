@@ -381,6 +381,9 @@ void CSettingConditions::Initialize()
 #ifdef HAS_FILESYSTEM_SMB
   m_simpleConditions.emplace("has_filesystem_smb");
 #endif
+#ifdef HAS_FILESYSTEM_NFS
+  m_simpleConditions.insert("has_filesystem_nfs");
+#endif
 #ifdef HAS_ZEROCONF
   m_simpleConditions.emplace("has_zeroconf");
 #endif
