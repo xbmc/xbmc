@@ -98,6 +98,10 @@ macro(buildFFMPEG)
                     ${CMAKE_SOURCE_DIR}/tools/depends/target/ffmpeg/CMakeLists.txt
                     <SOURCE_DIR>)
 
+  if(CMAKE_GENERATOR STREQUAL Xcode)
+    set(FFMPEG_GENERATOR CMAKE_GENERATOR "Unix Makefiles")
+  endif()
+
   set(FFMPEG_LIB_TYPE STATIC)
 
   BUILD_DEP_TARGET()
