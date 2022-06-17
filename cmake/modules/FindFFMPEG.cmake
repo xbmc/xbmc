@@ -73,8 +73,13 @@ macro(buildFFMPEG)
   set(LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
   list(APPEND LINKER_FLAGS ${SYSTEM_LDFLAGS})
 
+  # Some list shenanigans not being passed through without stringify/listify
+  # externalproject_add allows declaring list separator to generate a list for the target
+  string(REPLACE ";" "|" FFMPEG_MODULE_PATH "${CMAKE_MODULE_PATH}")
+  set(FFMPEG_LIST_SEPARATOR LIST_SEPARATOR |)
+
   set(CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
-                 -DCMAKE_MODULE_PATH=${CMAKE_MODULE_PATH}
+                 -DCMAKE_MODULE_PATH=${FFMPEG_MODULE_PATH}
                  -DFFMPEG_VER=${FFMPEG_VER}
                  -DCORE_SYSTEM_NAME=${CORE_SYSTEM_NAME}
                  -DCORE_PLATFORM_NAME=${CORE_PLATFORM_NAME_LC}

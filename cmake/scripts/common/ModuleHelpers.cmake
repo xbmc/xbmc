@@ -249,6 +249,7 @@ macro(BUILD_DEP_TARGET)
                       DOWNLOAD_NAME ${${MODULE}_ARCHIVE}
                       PREFIX ${CORE_BUILD_DIR}/${MODULE_LC}
                       INSTALL_DIR ${DEPENDS_PATH}
+                      ${${MODULE}_LIST_SEPARATOR}
                       ${CMAKE_ARGS}
                       ${PATCH_COMMAND}
                       ${CONFIGURE_COMMAND}

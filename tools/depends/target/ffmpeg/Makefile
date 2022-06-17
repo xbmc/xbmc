@@ -8,7 +8,7 @@ ifeq ($(DEBUG_BUILD),yes)
 endif
 
 CMAKE_ARGS=-DCMAKE_BUILD_TYPE=$(BUILD_TYPE) \
-           -DCMAKE_MODULE_PATH=$(CMAKE_SOURCE_DIR)/cmake/modules \
+           -DCMAKE_MODULE_PATH="$(CMAKE_SOURCE_DIR)/cmake/modules;$(CMAKE_SOURCE_DIR)/cmake/modules/buildtools" \
            -DPKG_CONFIG_PATH=$(PREFIX)/lib/pkgconfig \
            -DCMAKE_INSTALL_PREFIX=$(PREFIX) \
            -DFFMPEG_VER=$(VERSION) \
