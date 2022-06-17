@@ -217,6 +217,7 @@ cmake_install.cmake
 /project/BuildDependencies/build
 /project/BuildDependencies/scripts/tmp
 /project/BuildDependencies/src
+/project/BuildDependencies/tools
 /project/BuildDependencies/bin/swig
 /project/BuildDependencies/bin/doxygen
 /project/BuildDependencies/bin/json-rpc
