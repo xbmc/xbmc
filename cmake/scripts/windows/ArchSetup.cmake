@@ -7,6 +7,12 @@ if(CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION VERSION_LESS VS_MINIMUM_SDK_VERSION)
     "INFO: Windows SDKs can be installed from the Visual Studio installer.")
 endif()
 
+# -------- Host Settings ---------
+
+set(_gentoolset ${CMAKE_GENERATOR_TOOLSET})
+string(REPLACE "host=" "" HOSTTOOLSET ${_gentoolset})
+unset(_gentoolset)
+
 # -------- Architecture settings ---------
 
 if(CMAKE_SIZEOF_VOID_P EQUAL 4)
@@ -29,6 +35,7 @@ set(CORE_MAIN_SOURCE ${CMAKE_SOURCE_DIR}/xbmc/platform/win32/WinMain.cpp)
 set(PRECOMPILEDHEADER_DIR ${PROJECT_BINARY_DIR}/${CORE_BUILD_CONFIG}/objs)
 set(CMAKE_SYSTEM_NAME Windows)
 set(DEPS_FOLDER_RELATIVE project/BuildDependencies)
+set(NATIVEPREFIX ${CMAKE_SOURCE_DIR}/${DEPS_FOLDER_RELATIVE}/tools)
 set(DEPENDENCIES_DIR ${CMAKE_SOURCE_DIR}/${DEPS_FOLDER_RELATIVE}/${ARCH})
 set(MINGW_LIBS_DIR ${CMAKE_SOURCE_DIR}/${DEPS_FOLDER_RELATIVE}/mingwlibs/${ARCH})
 

@@ -7,6 +7,12 @@ if(CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION VERSION_LESS VS_MINIMUM_SDK_VERSION)
     "INFO: Windows SDKs can be installed from the Visual Studio installer.")
 endif()
 
+# -------- Host Settings ---------
+
+set(_gentoolset ${CMAKE_GENERATOR_TOOLSET})
+string(REPLACE "host=" "" HOSTTOOLSET ${_gentoolset})
+unset(_gentoolset)
+
 # -------- Architecture settings ---------
 
 check_symbol_exists(_X86_ "Windows.h" _X86_)
@@ -45,6 +51,7 @@ set(PACKAGE_GUID "281d668b-5739-4abd-b3c2-ed1cda572ed2")
 set(APP_MANIFEST_NAME package.appxmanifest)
 set(DEPS_FOLDER_RELATIVE project/BuildDependencies)
 
+set(NATIVEPREFIX ${CMAKE_SOURCE_DIR}/${DEPS_FOLDER_RELATIVE}/tools)
 set(DEPENDENCIES_DIR ${CMAKE_SOURCE_DIR}/${DEPS_FOLDER_RELATIVE}/win10-${ARCH})
 set(MINGW_LIBS_DIR ${CMAKE_SOURCE_DIR}/${DEPS_FOLDER_RELATIVE}/mingwlibs/win10-${ARCH})
 

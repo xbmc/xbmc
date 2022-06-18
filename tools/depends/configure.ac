@@ -2,8 +2,10 @@ AC_PREREQ(2.59)
 AC_INIT([xbmc-depends], [2.00], [https://github.com/xbmc/xbmc])
 :${CFLAGS=""}
 AC_CONFIG_AUX_DIR([build-aux])
-AC_CONFIG_FILES([target/config.site native/config.site.native Makefile.include target/Toolchain.cmake
-                 target/config-binaddons.site target/Toolchain_binaddons.cmake])
+AC_CONFIG_FILES([native/config.site.native Makefile.include
+                 target/config.site target/config-binaddons.site
+                 target/Toolchain.cmake target/Toolchain_binaddons.cmake
+                 native/Toolchain-Native.cmake])
 AC_CANONICAL_HOST
 AC_CANONICAL_BUILD
 
@@ -195,6 +197,7 @@ case $build in
     # acquire build platform (native) sdk sysroot.
     build_platform=macosx
     native_sdk_path=[`$use_xcrun --show-sdk-path`]
+    host_sysroot="$native_sdk_path"
     host_includes="${host_includes} -isysroot $native_sdk_path"
 
     CC_FOR_BUILD=[`$use_xcrun --find clang`]
@@ -202,6 +205,8 @@ case $build in
 
     # Android NDK currently only x86_64 prebuilts - Arctic Fox 2020.3.1
     android_toolchain_name="darwin-x86_64"
+
+    host_cxxflags="-std=c++17 -stdlib=libc++"
 
     if test "x$prefix" = "xNONE"; then
       prefix=/Users/Shared/xbmc-depends
@@ -714,6 +719,8 @@ AC_SUBST(need_libiconv)
 AC_SUBST(use_gplv3)
 AC_SUBST(use_ccache)
 AC_SUBST(host_includes)
+AC_SUBST(host_sysroot)
+AC_SUBST(host_cxxflags)
 AC_SUBST(app_rendersystem)
 AC_SUBST(app_winsystem)
 AC_SUBST(ffmpeg_options)
@@ -829,6 +836,7 @@ cp -vf target/config-binaddons.site $prefix/$tool_dir/share
 cp -vf target/Toolchain.cmake $prefix/$deps_dir/share
 cp -vf target/Toolchain_binaddons.cmake $prefix/$deps_dir/share
 cp -vf native/config.site.native $prefix/$tool_dir/share/config.site
+cp -vf native/Toolchain-Native.cmake $prefix/$tool_dir/share
 
 
 echo -e "\n\n#------- configuration -------#"

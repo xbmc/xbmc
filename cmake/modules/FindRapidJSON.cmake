@@ -18,12 +18,11 @@ if(ENABLE_INTERNAL_RapidJSON)
   set(RapidJSON_INCLUDE_DIR ${${MODULE}_INCLUDE_DIR})
   set(RapidJSON_VERSION ${${MODULE}_VER})
 
-  # find the path to the patch executable
-  find_package(Patch MODULE REQUIRED)
+  set(patches "${CORE_SOURCE_DIR}/tools/depends/target/rapidjson/001-remove_custom_cxx_flags.patch"
+              "${CORE_SOURCE_DIR}/tools/depends/target/rapidjson/002-cmake-removedocs-examples.patch"
+              "${CORE_SOURCE_DIR}/tools/depends/target/rapidjson/003-win-arm64.patch")
 
-  set(PATCH_COMMAND ${PATCH_EXECUTABLE} -p1 -i ${CORE_SOURCE_DIR}/tools/depends/target/rapidjson/001-remove_custom_cxx_flags.patch
-            COMMAND ${PATCH_EXECUTABLE} -p1 -i ${CORE_SOURCE_DIR}/tools/depends/target/rapidjson/002-cmake-removedocs-examples.patch
-            COMMAND ${PATCH_EXECUTABLE} -p1 -i ${CORE_SOURCE_DIR}/tools/depends/target/rapidjson/003-win-arm64.patch)
+  generate_patchcommand("${patches}")
 
   set(CMAKE_ARGS -DRAPIDJSON_BUILD_DOC=OFF
                  -DRAPIDJSON_BUILD_EXAMPLES=OFF

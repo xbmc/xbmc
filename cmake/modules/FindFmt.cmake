@@ -34,15 +34,12 @@ if(NOT TARGET fmt::fmt)
       endif()
 
       set(FMT_VERSION ${${MODULE}_VER})
+      # fmt debug uses postfix d for all platforms
+      set(FMT_DEBUG_POSTFIX d)
 
       if(WIN32 OR WINDOWS_STORE)
-        # find the path to the patch executable
-        find_package(Patch MODULE REQUIRED)
-
-        set(patch ${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/001-windows-pdb-symbol-gen.patch)
-        PATCH_LF_CHECK(${patch})
-
-        set(PATCH_COMMAND ${PATCH_EXECUTABLE} -p1 -i ${patch})
+        set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/001-windows-pdb-symbol-gen.patch")
+        generate_patchcommand("${patches}")
       endif()
 
       set(CMAKE_ARGS -DCMAKE_CXX_EXTENSIONS=${CMAKE_CXX_EXTENSIONS}
@@ -51,9 +48,6 @@ if(NOT TARGET fmt::fmt)
                      -DFMT_TEST=OFF
                      -DFMT_INSTALL=ON
                      "${EXTRA_ARGS}")
-
-      # fmt debug uses postfix d for all platforms
-      set(FMT_DEBUG_POSTFIX d)
 
       BUILD_DEP_TARGET()
     else()

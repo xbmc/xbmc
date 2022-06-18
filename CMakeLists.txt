@@ -11,6 +11,7 @@ if(POLICY CMP0069)
 endif()
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules/buildtools)
 if(DEPENDS_DIR)
   list(APPEND CMAKE_PREFIX_PATH ${DEPENDS_DIR})
 endif()
@@ -61,6 +62,7 @@ option(ENABLE_INTERNAL_CROSSGUID "Enable internal crossguid?" ON)
 # use ffmpeg from depends or system
 option(ENABLE_INTERNAL_FFMPEG "Enable internal ffmpeg?" OFF)
 option(ENABLE_INTERNAL_RapidJSON "Enable internal rapidjson?" ON)
+cmake_dependent_option(ENABLE_INTERNAL_FLATBUFFERS "Enable internal flatbuffers?" OFF "DEFINED USE_INTERNAL_LIBS;NOT USE_INTERNAL_LIBS" ON)
 cmake_dependent_option(ENABLE_INTERNAL_TAGLIB "Enable internal taglib?" OFF "DEFINED USE_INTERNAL_LIBS;NOT USE_INTERNAL_LIBS" ON)
 
 # Internal Depends - supported on UNIX platforms
@@ -68,7 +70,6 @@ if(UNIX)
   option(FFMPEG_PATH        "Path to external ffmpeg?" "")
   option(ENABLE_INTERNAL_FMT "Enable internal fmt?" OFF)
   option(ENABLE_INTERNAL_FSTRCMP "Enable internal fstrcmp?" OFF)
-  option(ENABLE_INTERNAL_FLATBUFFERS "Enable internal flatbuffers?" OFF)
   option(ENABLE_INTERNAL_DAV1D "Enable internal dav1d?" OFF)
   option(ENABLE_INTERNAL_GTEST "Enable internal gtest?" OFF)
   option(ENABLE_INTERNAL_UDFREAD "Enable internal udfread?" OFF)
@@ -136,6 +137,23 @@ foreach(depspec ${PLATFORM_REQUIRED_DEPS})
   set(ENABLE_${depup} "ON" CACHE BOOL "Force enabling required ${depup} support" FORCE)
 endforeach()
 
+# Required tools. Keep in alphabetical order please
+set(required_buildtools FlatC
+                        JsonSchemaBuilder
+                        TexturePacker
+)
+
+# Optional build tools
+set(optional_buildtools CCache
+                        ClangFormat
+                        ClangTidy
+                        Cppcheck
+                        IncludeWhatYouUse)
+
+# Find build tools - Optional and required
+core_optional_dep(${optional_buildtools})
+core_require_dep(${required_buildtools})
+
 # Required dependencies. Keep in alphabetical order please
 set(required_deps ASS
                   Cdio
@@ -168,14 +186,9 @@ set(optional_deps Alsa
                   Bluetooth
                   Bluray
                   CAP
-                  CCache
                   CEC
-                  ClangFormat
-                  ClangTidy
-                  Cppcheck
                   Dav1d
                   DBus
-                  IncludeWhatYouUse
                   Iso9660pp
                   LCMS2
                   LircClient
@@ -196,10 +209,6 @@ set(optional_deps Alsa
 # Check optional deps first, since their availability can influence required ones, e.g. ffmpeg
 core_optional_dep(${optional_deps})
 core_require_dep(${required_deps})
-
-# Required tools
-find_package(TexturePacker REQUIRED)
-find_package(JsonSchemaBuilder REQUIRED)
 
 if(ENABLE_MARIADBCLIENT AND NOT ENABLE_MARIADBCLIENT STREQUAL AUTO AND ENABLE_MYSQLCLIENT AND NOT ENABLE_MYSQLCLIENT STREQUAL AUTO)
   MESSAGE(FATAL_ERROR "You can not use MySql and MariaDB at the same time. Disable one by adding -DENABLE_MYSQLCLIENT=OFF or -DENABLE_MARIADBCLIENT=OFF.")

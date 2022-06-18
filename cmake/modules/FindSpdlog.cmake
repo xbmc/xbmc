@@ -34,16 +34,13 @@ if(ENABLE_INTERNAL_SPDLOG)
     endif()
 
     if(WIN32 OR WINDOWS_STORE)
-      # find the path to the patch executable
-      find_package(Patch MODULE REQUIRED)
-
-      set(patch ${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/001-windows-pdb-symbol-gen.patch)
-      PATCH_LF_CHECK(${patch})
-
-      set(PATCH_COMMAND ${PATCH_EXECUTABLE} -p1 -i ${patch})
+      set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/001-windows-pdb-symbol-gen.patch")
+      generate_patchcommand("${patches}")
     endif()
 
     set(SPDLOG_VERSION ${${MODULE}_VER})
+    # spdlog debug uses postfix d for all platforms
+    set(SPDLOG_DEBUG_POSTFIX d)
 
     set(CMAKE_ARGS -DCMAKE_CXX_EXTENSIONS=${CMAKE_CXX_EXTENSIONS}
                    -DCMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}
@@ -52,9 +49,6 @@ if(ENABLE_INTERNAL_SPDLOG)
                    -DSPDLOG_BUILD_BENCH=OFF
                    -DSPDLOG_FMT_EXTERNAL=ON
                    "${EXTRA_ARGS}")
-
-    # spdlog debug uses postfix d for all platforms
-    set(SPDLOG_DEBUG_POSTFIX d)
 
     BUILD_DEP_TARGET()
 

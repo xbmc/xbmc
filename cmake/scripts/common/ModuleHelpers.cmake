@@ -64,6 +64,34 @@ function(get_versionfile_data module_name)
   endif()
 endfunction()
 
+# Function to loop through list of patch files (full path)
+# Sets to a PATCH_COMMAND variable and set to parent scope (caller)
+# Used to test windows line endings and set appropriate patch commands
+function(generate_patchcommand _patchlist)
+  # find the path to the patch executable
+  find_package(Patch MODULE REQUIRED)
+
+  # Loop through patches and add to PATCH_COMMAND
+  # for windows, check CRLF/LF state
+
+  set(_count 0)
+  foreach(patch ${_patchlist})
+    if(WIN32 OR WINDOWS_STORE)
+      PATCH_LF_CHECK(${patch})
+    endif()
+    if(${_count} EQUAL "0")
+      set(_patch_command ${PATCH_EXECUTABLE} -p1 -i ${patch})
+    else()
+      list(APPEND _patch_command COMMAND ${PATCH_EXECUTABLE} -p1 -i ${patch})
+    endif()
+
+    math(EXPR _count "${_count}+1")
+  endforeach()
+  set(PATCH_COMMAND ${_patch_command} PARENT_SCOPE)
+  unset(_count)
+  unset(_patch_command)
+endfunction()
+
 # Macro to factor out the repetitive URL setup
 macro(SETUP_BUILD_VARS)
   get_versionfile_data(${MODULE_LC})
@@ -81,6 +109,8 @@ macro(SETUP_BUILD_VARS)
   endif()
 
   # unset all build_dep_target variables to insure clean state
+  unset(BUILD_NAME)
+  unset(INSTALL_DIR)
   unset(CMAKE_ARGS)
   unset(PATCH_COMMAND)
   unset(CONFIGURE_COMMAND)
@@ -107,12 +137,19 @@ macro(BUILD_DEP_TARGET)
 
   if(CMAKE_ARGS)
     set(CMAKE_ARGS CMAKE_ARGS ${CMAKE_ARGS}
-                             -DCMAKE_INSTALL_PREFIX=${DEPENDS_PATH}
                              -DCMAKE_INSTALL_LIBDIR=lib
                              "-DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}")
 
-    if(CMAKE_TOOLCHAIN_FILE)
-      list(APPEND CMAKE_ARGS "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}")
+    if(${MODULE}_INSTALL_PREFIX)
+      list(APPEND CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${${MODULE}_INSTALL_PREFIX})
+    else()
+      list(APPEND CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${DEPENDS_PATH})
+    endif()
+
+    if(DEFINED ${MODULE}_TOOLCHAIN_FILE)
+      list(APPEND CMAKE_ARGS -DCMAKE_TOOLCHAIN_FILE=${${MODULE}_TOOLCHAIN_FILE})
+    elseif(CMAKE_TOOLCHAIN_FILE)
+      list(APPEND CMAKE_ARGS -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE})
     endif()
 
     # Set build type for dep build.
@@ -214,14 +251,25 @@ macro(BUILD_DEP_TARGET)
     endif()
   endif()
 
-  externalproject_add(${MODULE_LC}
+  if(NOT BUILD_NAME)
+    set(BUILD_NAME ${MODULE_LC})
+  endif()
+
+  if(NOT INSTALL_DIR)
+    set(INSTALL_DIR ${DEPENDS_PATH})
+  endif()
+
+  externalproject_add(${BUILD_NAME}
                       URL ${${MODULE}_URL}
                       URL_HASH ${${MODULE}_HASH}
                       DOWNLOAD_DIR ${TARBALL_DIR}
                       DOWNLOAD_NAME ${${MODULE}_ARCHIVE}
-                      PREFIX ${CORE_BUILD_DIR}/${MODULE_LC}
-                      INSTALL_DIR ${DEPENDS_PATH}
+                      PREFIX ${CORE_BUILD_DIR}/${BUILD_NAME}
+                      INSTALL_DIR ${INSTALL_DIR}
+                      ${${MODULE}_LIST_SEPARATOR}
                       ${CMAKE_ARGS}
+                      ${${MODULE}_GENERATOR}
+                      ${${MODULE}_GENERATOR_PLATFORM}
                       ${PATCH_COMMAND}
                       ${CONFIGURE_COMMAND}
                       ${BUILD_COMMAND}
@@ -229,7 +277,7 @@ macro(BUILD_DEP_TARGET)
                       ${BUILD_BYPRODUCTS}
                       ${BUILD_IN_SOURCE})
 
-  set_target_properties(${MODULE_LC} PROPERTIES FOLDER "External Projects")
+  set_target_properties(${BUILD_NAME} PROPERTIES FOLDER "External Projects")
 endmacro()
 
 # Macro to test format of line endings of a patch
@@ -254,5 +302,3 @@ macro(PATCH_LF_CHECK patch)
   endif()
   unset(patch_content_hex)
 endmacro()
-
-
