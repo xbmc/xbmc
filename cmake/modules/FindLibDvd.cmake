@@ -75,25 +75,30 @@ else()
     list(APPEND dvdlibs libdvdcss)
   endif()
   set(DEPENDS_TARGETS_DIR ${CMAKE_SOURCE_DIR}/tools/depends/target)
+
   foreach(dvdlib ${dvdlibs})
 
-    get_versionfile_data(${dvdlib})
-    string(TOUPPER ${dvdlib} DVDLIB)
+    string(TOUPPER ${dvdlib} MODULE)
+
+    # Variables required being set for clean get_versionfile_data use
+    set(MODULE_LC ${dvdlib})
+    set(PROJECTSOURCE ${CMAKE_SOURCE_DIR})
+    get_versionfile_data()
 
     # allow user to override the download URL with a local tarball
     # needed for offline build envs
     # allow upper and lowercase var name
     if(${dvdlib}_URL)
-      set(${DVDLIB}_URL ${${dvdlib}_URL})
+      set(${MODULE}_URL ${${dvdlib}_URL})
     endif()
-    if(${DVDLIB}_URL)
-      get_filename_component(${DVDLIB}_URL "${${DVDLIB}_URL}" ABSOLUTE)
+    if(${MODULE}_URL)
+      get_filename_component(${MODULE}_URL "${${MODULE}_URL}" ABSOLUTE)
     else()
       # github tarball format is tagname.tar.gz where tagname is VERSION in lib VERSION file
-      set(${DVDLIB}_URL ${${DVDLIB}_BASE_URL}/archive/${${DVDLIB}_VER}.tar.gz)
+      set(${MODULE}_URL ${${MODULE}_BASE_URL}/archive/${${MODULE}_VER}.tar.gz)
     endif()
     if(VERBOSE)
-      message(STATUS "${DVDLIB}_URL: ${${DVDLIB}_URL}")
+      message(STATUS "${MODULE}_URL: ${${MODULE}_URL}")
     endif()
   endforeach()
 
