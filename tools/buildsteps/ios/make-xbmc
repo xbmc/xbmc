@@ -2,4 +2,6 @@ WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
 XBMC_PLATFORM_DIR=ios
 . $WORKSPACE/tools/buildsteps/defaultenv
 
-cd $WORKSPACE/build;xcodebuild -configuration $Configuration build -jobs $BUILDTHREADS
+cd $WORKSPACE/build;xcodebuild -configuration $Configuration build -jobs $BUILDTHREADS \
+  SDKROOT=iphoneos$SDK_VERSION XBMC_DEPENDS_ROOT=$XBMC_DEPENDS_ROOT \
+  CODE_SIGNING_ALLOWED="NO"

@@ -171,6 +171,17 @@ endmacro()
 macro(BUILD_DEP_TARGET)
   include(ExternalProject)
 
+  # Remove cmake warning when Xcode generator used with "New" build system
+  if(CMAKE_GENERATOR STREQUAL Xcode)
+    # Policy CMP0114 is not set to NEW.  In order to support the Xcode "new build
+    # system", this project must be updated to set policy CMP0114 to NEW.
+    if(CMAKE_XCODE_BUILD_SYSTEM STREQUAL 12)
+      cmake_policy(SET CMP0114 NEW)
+    else()
+      cmake_policy(SET CMP0114 OLD)
+    endif()
+  endif()
+
   if(CMAKE_ARGS)
     set(CMAKE_ARGS CMAKE_ARGS ${CMAKE_ARGS}
                              -DCMAKE_INSTALL_LIBDIR=lib
