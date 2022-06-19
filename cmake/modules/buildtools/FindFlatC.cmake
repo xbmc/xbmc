@@ -43,16 +43,14 @@ if(NOT FLATBUFFERS_FLATC_EXECUTABLE)
                  -DFLATBUFFERS_BUILD_GRPCTEST=OFF
                  -DFLATBUFFERS_BUILD_SHAREDLIB=OFF)
 
-  if(CMAKE_GENERATOR STREQUAL Xcode)
-    set(FLATBUFFERS_GENERATOR CMAKE_GENERATOR "Unix Makefiles")
-  endif()
-
   # Set host build info for buildtool
   if(EXISTS "${NATIVEPREFIX}/share/Toolchain-Native.cmake")
     set(FLATBUFFERS_TOOLCHAIN_FILE "${NATIVEPREFIX}/share/Toolchain-Native.cmake")
-  elseif(WIN32 OR WINDOWS_STORE)
+  endif()
+
+  if(WIN32 OR WINDOWS_STORE)
+    # Make sure we generate for host arch, not target
     set(FLATBUFFERS_GENERATOR_PLATFORM CMAKE_GENERATOR_PLATFORM ${HOSTTOOLSET})
-    set(FLATBUFFERS_GENERATOR CMAKE_GENERATOR "${CMAKE_GENERATOR}")
   endif()
 
   set(FLATBUFFERS_FLATC_EXECUTABLE ${INSTALL_DIR}/flatc CACHE INTERNAL "FlatBuffer compiler")
