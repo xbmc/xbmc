@@ -50,11 +50,11 @@ if(NOT TARGET TexturePacker::TexturePacker::Executable)
         # and unset TEXTUREPACKER_EXECUTABLE variable
         message(WARNING "Could not find '${APP_NAME_LC}-TexturePacker' or 'TexturePacker' executable in ${_tppath} supplied by -DWITH_TEXTUREPACKER. Make sure the executable file name matches these names!")
       endif()
-    endif()
-
-    # Ship TexturePacker only on Linux and FreeBSD
-    if(CMAKE_SYSTEM_NAME STREQUAL "FreeBSD" OR CMAKE_SYSTEM_NAME STREQUAL "Linux")
-      set(INTERNAL_TEXTUREPACKER_INSTALLABLE TRUE)
+    else()
+      # Ship TexturePacker only on Linux and FreeBSD
+      if(CMAKE_SYSTEM_NAME STREQUAL "FreeBSD" OR CMAKE_SYSTEM_NAME STREQUAL "Linux")
+        set(INTERNAL_TEXTUREPACKER_INSTALLABLE TRUE CACHE BOOL "" FORCE)
+      endif()
     endif()
 
     # Use it during build if build architecture can be executed on host
