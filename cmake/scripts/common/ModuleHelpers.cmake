@@ -216,6 +216,21 @@ macro(BUILD_DEP_TARGET)
         endif()
       endif()
     endif()
+
+    # Xcode - Default sub projects to makefile builds. More consistent
+    # Windows - Default to same generator version used in parent
+    if(CMAKE_GENERATOR STREQUAL Xcode)
+      if(NOT ${MODULE}_GENERATOR)
+        set(${MODULE}_GENERATOR CMAKE_GENERATOR "Unix Makefiles")
+      endif()
+    elseif(MSVC)
+      if(NOT ${MODULE}_GENERATOR)
+        set(${MODULE}_GENERATOR CMAKE_GENERATOR "${CMAKE_GENERATOR}")
+      endif()
+      if(NOT ${MODULE}_GENERATOR_PLATFORM)
+        set(${MODULE}_GENERATOR_PLATFORM CMAKE_GENERATOR_PLATFORM ${CMAKE_GENERATOR_PLATFORM})
+      endif()
+    endif()
   endif()
 
   if(PATCH_COMMAND)
