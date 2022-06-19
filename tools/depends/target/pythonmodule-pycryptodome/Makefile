@@ -19,15 +19,8 @@ ifeq (darwin, $(findstring darwin, $(HOST)))
   LDSHARED:=$(CC) -bundle -undefined dynamic_lookup $(LDFLAGS)
 endif
 
-ifeq ($(TARGET_PLATFORM),appletvos)
-  # We cant export CFLAGS directly for tvos
-  # CFLAGS are added to linker command, having -bundle (LDSHARED) and -fembed_bitcode (CFLAGS)
-  # causes a failure: ld: -bundle and -bitcode_bundle (Xcode setting ENABLE_BITCODE=YES) cannot be used together
-  export CC:=$(CC) $(CFLAGS)
-else
-  export CC CFLAGS
-endif
 
+export CC CFLAGS
 export LDSHARED LDFLAGS
 export PYTHONPATH=$(PYTHON_SITE_PKG)
 
