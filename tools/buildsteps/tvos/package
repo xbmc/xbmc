@@ -2,7 +2,8 @@ WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
 XBMC_PLATFORM_DIR=tvos
 . $WORKSPACE/tools/buildsteps/defaultenv
 
-cd $WORKSPACE/build;xcodebuild -target deb
+cd $WORKSPACE/build;xcodebuild -target deb \
+  CODE_SIGNING_ALLOWED="NO"
 cd $WORKSPACE/build/tools/darwin/packaging/darwin_embedded/
 
 #rename for upload
