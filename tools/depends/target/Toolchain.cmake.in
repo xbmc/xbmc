@@ -41,13 +41,11 @@ if(CORE_SYSTEM_NAME STREQUAL darwin_embedded)
     # completely disable code signing
     # see: https://gitlab.kitware.com/cmake/cmake/issues/19112
     set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "")
+    set(CMAKE_XCODE_ATTRIBUTE_ENABLE_BITCODE "NO")
     if(CORE_PLATFORM_NAME STREQUAL tvos)
-      set(CMAKE_XCODE_ATTRIBUTE_ENABLE_BITCODE "YES")
       set(CMAKE_XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "3")
       set(CMAKE_XCODE_ATTRIBUTE_TVOS_DEPLOYMENT_TARGET 11.0)
     else()
-      # set this to YES once we have a deployment target of at least iOS 6.0
-      set(CMAKE_XCODE_ATTRIBUTE_ENABLE_BITCODE "NO")
       set(CMAKE_XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2")
       set(CMAKE_XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET 11.0)
     endif()
