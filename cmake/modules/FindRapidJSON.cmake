@@ -15,7 +15,6 @@ if(ENABLE_INTERNAL_RapidJSON)
 
   SETUP_BUILD_VARS()
 
-  set(RapidJSON_INCLUDE_DIR ${${MODULE}_INCLUDE_DIR})
   set(RapidJSON_VERSION ${${MODULE}_VER})
 
   set(patches "${CORE_SOURCE_DIR}/tools/depends/target/rapidjson/001-remove_custom_cxx_flags.patch"
@@ -32,6 +31,8 @@ if(ENABLE_INTERNAL_RapidJSON)
   set(BUILD_BYPRODUCTS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include/rapidjson/rapidjson.h)
 
   BUILD_DEP_TARGET()
+
+  set(RapidJSON_INCLUDE_DIR ${${MODULE}_INCLUDE_DIR})
 
   # Add dependency to libkodi to build
   set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP rapidjson)

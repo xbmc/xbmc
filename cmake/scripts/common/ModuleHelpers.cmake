@@ -1,66 +1,65 @@
 # This script provides helper functions for FindModules
 
 # Parse and set variables from VERSION dependency file
-# Arguments:
-#   module_name name of the library (currently must match tools/depends/target/${module_name})
 # On return:
-#   ARCHIVE will be set to parent scope
+#   MODULENAME_ARCHIVE will be set to parent scope
 #   MODULENAME_VER will be set to parent scope (eg FFMPEG_VER, DAV1D_VER)
 #   MODULENAME_BASE_URL will be set to parent scope if exists in VERSION file (eg FFMPEG_BASE_URL)
-function(get_versionfile_data module_name)
-  string(TOUPPER ${module_name} UPPER_MODULE_NAME)
+#   MODULENAME_HASH will be set if either SHA256 or SHA512 exists in VERSION file
+#   MODULENAME_BYPRODUCT will be set to parent scope
+function(get_versionfile_data)
 
   # Dependency path
-  set(MODULE_PATH "${CMAKE_SOURCE_DIR}/tools/depends/target/${module_name}")
-  if(NOT EXISTS "${MODULE_PATH}/${UPPER_MODULE_NAME}-VERSION")
-    MESSAGE(FATAL_ERROR "${UPPER_MODULE_NAME}-VERSION does not exist at ${MODULE_PATH}.")
+  set(MODULE_PATH "${PROJECTSOURCE}/tools/depends/${LIB_TYPE}/${MODULE_LC}")
+
+  if(NOT EXISTS "${MODULE_PATH}/${MODULE}-VERSION")
+    MESSAGE(FATAL_ERROR "${MODULE}-VERSION does not exist at ${MODULE_PATH}.")
   else()
-    set(${UPPER_MODULE_NAME}_FILE "${MODULE_PATH}/${UPPER_MODULE_NAME}-VERSION")
+    set(${MODULE}_FILE "${MODULE_PATH}/${MODULE}-VERSION")
   endif()
 
-  file(STRINGS ${${UPPER_MODULE_NAME}_FILE} ${UPPER_MODULE_NAME}_LNAME REGEX "^[ \t]*LIBNAME=")
-  file(STRINGS ${${UPPER_MODULE_NAME}_FILE} ${UPPER_MODULE_NAME}_VER REGEX "^[ \t]*VERSION=")
-  file(STRINGS ${${UPPER_MODULE_NAME}_FILE} ${UPPER_MODULE_NAME}_ARCHIVE REGEX "^[ \t]*ARCHIVE=")
-  file(STRINGS ${${UPPER_MODULE_NAME}_FILE} ${UPPER_MODULE_NAME}_BASE_URL REGEX "^[ \t]*BASE_URL=")
+  file(STRINGS ${${MODULE}_FILE} ${MODULE}_LNAME REGEX "^[ \t]*LIBNAME=")
+  file(STRINGS ${${MODULE}_FILE} ${MODULE}_VER REGEX "^[ \t]*VERSION=")
+  file(STRINGS ${${MODULE}_FILE} ${MODULE}_ARCHIVE REGEX "^[ \t]*ARCHIVE=")
+  file(STRINGS ${${MODULE}_FILE} ${MODULE}_BASE_URL REGEX "^[ \t]*BASE_URL=")
   if(WIN32 OR WINDOWS_STORE)
-    file(STRINGS ${${UPPER_MODULE_NAME}_FILE} ${UPPER_MODULE_NAME}_BYPRODUCT REGEX "^[ \t]*BYPRODUCT_WIN=")
+    file(STRINGS ${${MODULE}_FILE} ${MODULE}_BYPRODUCT REGEX "^[ \t]*BYPRODUCT_WIN=")
   else()
-    file(STRINGS ${${UPPER_MODULE_NAME}_FILE} ${UPPER_MODULE_NAME}_BYPRODUCT REGEX "^[ \t]*BYPRODUCT=")
+    file(STRINGS ${${MODULE}_FILE} ${MODULE}_BYPRODUCT REGEX "^[ \t]*BYPRODUCT=")
   endif()
 
   # Tarball Hash
-  file(STRINGS ${${UPPER_MODULE_NAME}_FILE} ${UPPER_MODULE_NAME}_HASH_SHA256 REGEX "^[ \t]*SHA256=")
-  file(STRINGS ${${UPPER_MODULE_NAME}_FILE} ${UPPER_MODULE_NAME}_HASH_SHA512 REGEX "^[ \t]*SHA512=")
+  file(STRINGS ${${MODULE}_FILE} ${MODULE}_HASH_SHA256 REGEX "^[ \t]*SHA256=")
+  file(STRINGS ${${MODULE}_FILE} ${MODULE}_HASH_SHA512 REGEX "^[ \t]*SHA512=")
 
-  string(REGEX REPLACE ".*LIBNAME=([^ \t]*).*" "\\1" ${UPPER_MODULE_NAME}_LNAME "${${UPPER_MODULE_NAME}_LNAME}")
-  string(REGEX REPLACE ".*VERSION=([^ \t]*).*" "\\1" ${UPPER_MODULE_NAME}_VER "${${UPPER_MODULE_NAME}_VER}")
-  string(REGEX REPLACE ".*ARCHIVE=([^ \t]*).*" "\\1" ${UPPER_MODULE_NAME}_ARCHIVE "${${UPPER_MODULE_NAME}_ARCHIVE}")
-  string(REGEX REPLACE ".*BASE_URL=([^ \t]*).*" "\\1" ${UPPER_MODULE_NAME}_BASE_URL "${${UPPER_MODULE_NAME}_BASE_URL}")
+  string(REGEX REPLACE ".*LIBNAME=([^ \t]*).*" "\\1" ${MODULE}_LNAME "${${MODULE}_LNAME}")
+  string(REGEX REPLACE ".*VERSION=([^ \t]*).*" "\\1" ${MODULE}_VER "${${MODULE}_VER}")
+  string(REGEX REPLACE ".*ARCHIVE=([^ \t]*).*" "\\1" ${MODULE}_ARCHIVE "${${MODULE}_ARCHIVE}")
+  string(REGEX REPLACE ".*BASE_URL=([^ \t]*).*" "\\1" ${MODULE}_BASE_URL "${${MODULE}_BASE_URL}")
   if(WIN32 OR WINDOWS_STORE)
-    string(REGEX REPLACE ".*BYPRODUCT_WIN=([^ \t]*).*" "\\1" ${UPPER_MODULE_NAME}_BYPRODUCT "${${UPPER_MODULE_NAME}_BYPRODUCT}")
+    string(REGEX REPLACE ".*BYPRODUCT_WIN=([^ \t]*).*" "\\1" ${MODULE}_BYPRODUCT "${${MODULE}_BYPRODUCT}")
   else()
-    string(REGEX REPLACE ".*BYPRODUCT=([^ \t]*).*" "\\1" ${UPPER_MODULE_NAME}_BYPRODUCT "${${UPPER_MODULE_NAME}_BYPRODUCT}")
+    string(REGEX REPLACE ".*BYPRODUCT=([^ \t]*).*" "\\1" ${MODULE}_BYPRODUCT "${${MODULE}_BYPRODUCT}")
   endif()
 
-  string(REGEX REPLACE "\\$\\(LIBNAME\\)" "${${UPPER_MODULE_NAME}_LNAME}" ${UPPER_MODULE_NAME}_ARCHIVE "${${UPPER_MODULE_NAME}_ARCHIVE}")
-  string(REGEX REPLACE "\\$\\(VERSION\\)" "${${UPPER_MODULE_NAME}_VER}" ${UPPER_MODULE_NAME}_ARCHIVE "${${UPPER_MODULE_NAME}_ARCHIVE}")
+  string(REGEX REPLACE "\\$\\(LIBNAME\\)" "${${MODULE}_LNAME}" ${MODULE}_ARCHIVE "${${MODULE}_ARCHIVE}")
+  string(REGEX REPLACE "\\$\\(VERSION\\)" "${${MODULE}_VER}" ${MODULE}_ARCHIVE "${${MODULE}_ARCHIVE}")
 
-  set(${UPPER_MODULE_NAME}_ARCHIVE ${${UPPER_MODULE_NAME}_ARCHIVE} PARENT_SCOPE)
+  set(${MODULE}_ARCHIVE ${${MODULE}_ARCHIVE} PARENT_SCOPE)
 
-  set(${UPPER_MODULE_NAME}_INCLUDE_DIR ${DEPENDS_PATH}/include PARENT_SCOPE)
-  set(${UPPER_MODULE_NAME}_VER ${${UPPER_MODULE_NAME}_VER} PARENT_SCOPE)
+  set(${MODULE}_VER ${${MODULE}_VER} PARENT_SCOPE)
 
-  if (${UPPER_MODULE_NAME}_BASE_URL)
-    set(${UPPER_MODULE_NAME}_BASE_URL ${${UPPER_MODULE_NAME}_BASE_URL} PARENT_SCOPE)
+  if (${MODULE}_BASE_URL)
+    set(${MODULE}_BASE_URL ${${MODULE}_BASE_URL} PARENT_SCOPE)
   else()
-    set(${UPPER_MODULE_NAME}_BASE_URL "http://mirrors.kodi.tv/build-deps/sources" PARENT_SCOPE)
+    set(${MODULE}_BASE_URL "http://mirrors.kodi.tv/build-deps/sources" PARENT_SCOPE)
   endif()
-  set(${UPPER_MODULE_NAME}_BYPRODUCT ${${UPPER_MODULE_NAME}_BYPRODUCT} PARENT_SCOPE)
+  set(${MODULE}_BYPRODUCT ${${MODULE}_BYPRODUCT} PARENT_SCOPE)
 
-  if (${UPPER_MODULE_NAME}_HASH_SHA256)
-    set(${UPPER_MODULE_NAME}_HASH ${${UPPER_MODULE_NAME}_HASH_SHA256} PARENT_SCOPE)
-  elseif(${UPPER_MODULE_NAME}_HASH_SHA512)
-    set(${UPPER_MODULE_NAME}_HASH ${${UPPER_MODULE_NAME}_HASH_SHA512} PARENT_SCOPE)
+  if (${MODULE}_HASH_SHA256)
+    set(${MODULE}_HASH ${${MODULE}_HASH_SHA256} PARENT_SCOPE)
+  elseif(${MODULE}_HASH_SHA512)
+    set(${MODULE}_HASH ${${MODULE}_HASH_SHA512} PARENT_SCOPE)
   endif()
 endfunction()
 
@@ -94,8 +93,28 @@ endfunction()
 
 # Macro to factor out the repetitive URL setup
 macro(SETUP_BUILD_VARS)
-  get_versionfile_data(${MODULE_LC})
   string(TOUPPER ${MODULE_LC} MODULE)
+
+  # Fall through to target build module dir if not explicitly set
+  if(NOT DEFINED LIB_TYPE)
+    set(LIB_TYPE "target")
+  endif()
+
+  # Location for build type, native or target
+  if(LIB_TYPE STREQUAL "target")
+    set(DEP_LOCATION "${DEPENDS_PATH}")
+  else()
+    set(DEP_LOCATION "${NATIVEPREFIX}")
+  endif()
+
+  # PROJECTSOURCE used in native toolchain to provide core project sourcedir
+  # to externalproject_add targets that have a different CMAKE_SOURCE_DIR (eg jsonschema/texturepacker in-tree)
+  if(NOT PROJECTSOURCE)
+    set(PROJECTSOURCE ${CMAKE_SOURCE_DIR})
+  endif()
+
+  # populate variables of data from VERSION file for MODULE
+  get_versionfile_data()
 
   # allow user to override the download URL with a local tarball
   # needed for offline build envs
@@ -105,6 +124,10 @@ macro(SETUP_BUILD_VARS)
     set(${MODULE}_URL ${${MODULE}_BASE_URL}/${${MODULE}_ARCHIVE})
   endif()
   if(VERBOSE)
+    message(STATUS "MODULE: ${MODULE}")
+    message(STATUS "LIB_TYPE: ${LIB_TYPE}")
+    message(STATUS "DEP_LOCATION: ${DEP_LOCATION}")
+    message(STATUS "PROJECTSOURCE: ${PROJECTSOURCE}")
     message(STATUS "${MODULE}_URL: ${${MODULE}_URL}")
   endif()
 
@@ -138,12 +161,13 @@ macro(BUILD_DEP_TARGET)
   if(CMAKE_ARGS)
     set(CMAKE_ARGS CMAKE_ARGS ${CMAKE_ARGS}
                              -DCMAKE_INSTALL_LIBDIR=lib
+                             -DPROJECTSOURCE=${PROJECTSOURCE}
                              "-DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}")
 
     if(${MODULE}_INSTALL_PREFIX)
       list(APPEND CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${${MODULE}_INSTALL_PREFIX})
     else()
-      list(APPEND CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${DEPENDS_PATH})
+      list(APPEND CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${DEP_LOCATION})
     endif()
 
     if(DEFINED ${MODULE}_TOOLCHAIN_FILE)
@@ -221,13 +245,17 @@ macro(BUILD_DEP_TARGET)
     set(_POSTFIX ${${MODULE}_DEBUG_POSTFIX})
     string(REGEX REPLACE "\\.[^.]*$" "" _LIBNAME ${${MODULE}_BYPRODUCT})
     string(REGEX REPLACE "^.*\\." "" _LIBEXT ${${MODULE}_BYPRODUCT})
-    set(${MODULE}_LIBRARY_DEBUG ${DEPENDS_PATH}/lib/${_LIBNAME}${${MODULE}_DEBUG_POSTFIX}.${_LIBEXT})
+    set(${MODULE}_LIBRARY_DEBUG ${DEP_LOCATION}/lib/${_LIBNAME}${${MODULE}_DEBUG_POSTFIX}.${_LIBEXT})
   endif()
   # set <MODULE>_LIBRARY_RELEASE for use of select_library_configurations
   # any modules that dont use select_library_configurations, we set <MODULE>_LIBRARY
   # No harm in having either set for both potential paths
-  set(${MODULE}_LIBRARY_RELEASE ${DEPENDS_PATH}/lib/${${MODULE}_BYPRODUCT})
+  set(${MODULE}_LIBRARY_RELEASE ${DEP_LOCATION}/lib/${${MODULE}_BYPRODUCT})
   set(${MODULE}_LIBRARY ${${MODULE}_LIBRARY_RELEASE})
+
+  if(NOT ${MODULE}_INCLUDE_DIR)
+    set(${MODULE}_INCLUDE_DIR ${DEP_LOCATION}/include)
+  endif()
 
   if(BUILD_BYPRODUCTS)
     set(BUILD_BYPRODUCTS BUILD_BYPRODUCTS ${BUILD_BYPRODUCTS})
@@ -256,14 +284,21 @@ macro(BUILD_DEP_TARGET)
   endif()
 
   if(NOT INSTALL_DIR)
-    set(INSTALL_DIR ${DEPENDS_PATH})
+    set(INSTALL_DIR ${DEP_LOCATION})
+  endif()
+
+  # Allow a target to supply in-tree source location. eg TexturePacker, JsonSchemaBuilder
+  if(${MODULE}_SOURCE_DIR)
+    set(BUILD_DOWNLOAD_STEPS SOURCE_DIR "${${MODULE}_SOURCE_DIR}")
+  else()
+    set(BUILD_DOWNLOAD_STEPS URL ${${MODULE}_URL}
+                             URL_HASH ${${MODULE}_HASH}
+                             DOWNLOAD_DIR ${TARBALL_DIR}
+                             DOWNLOAD_NAME ${${MODULE}_ARCHIVE})
   endif()
 
   externalproject_add(${BUILD_NAME}
-                      URL ${${MODULE}_URL}
-                      URL_HASH ${${MODULE}_HASH}
-                      DOWNLOAD_DIR ${TARBALL_DIR}
-                      DOWNLOAD_NAME ${${MODULE}_ARCHIVE}
+                      ${BUILD_DOWNLOAD_STEPS}
                       PREFIX ${CORE_BUILD_DIR}/${BUILD_NAME}
                       INSTALL_DIR ${INSTALL_DIR}
                       ${${MODULE}_LIST_SEPARATOR}
