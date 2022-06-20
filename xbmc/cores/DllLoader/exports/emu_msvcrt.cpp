@@ -2047,6 +2047,19 @@ extern "C"
 #endif
   }
 
+  struct mntent* dll_getmntent_r(FILE* fp, struct mntent* result, char* buffer, int bufsize)
+  {
+    if (!fp || !result || !buffer)
+      return nullptr;
+
+#if defined(TARGET_LINUX) && !defined(TARGET_ANDROID)
+    struct mntent* mountPoint = getmntent_r(fp, result, buffer, bufsize);
+    if (mountPoint)
+      return mountPoint;
+#endif
+    return nullptr;
+  }
+
   // this needs to be wrapped, since dll's have their own file
   // descriptor list, but we always use app's list with our wrappers
   int __cdecl dll_open_osfhandle(intptr_t _OSFileHandle, int _Flags)

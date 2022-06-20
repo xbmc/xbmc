@@ -95,6 +95,7 @@ FILE* dll_popen(const char *command, const char *mode);
 void* dll_dlopen(const char *filename, int flag);
 int dll_setvbuf(FILE *stream, char *buf, int type, size_t size);
 struct mntent *dll_getmntent(FILE *fp);
+struct mntent* dll_getmntent_r(FILE* fp, struct mntent* result, char* buffer, int bufsize);
 
 void *__wrap_dlopen(const char *filename, int flag)
 {
@@ -441,6 +442,14 @@ struct mntent *__wrap_getmntent(FILE *fp)
 {
 #ifdef TARGET_POSIX
   return dll_getmntent(fp);
+#endif
+  return NULL;
+}
+
+struct mntent* __wrap_getmntent_r(FILE* fp, struct mntent* result, char* buffer, int bufsize)
+{
+#ifdef TARGET_POSIX
+  return dll_getmntent_r(fp, result, buffer, bufsize);
 #endif
   return NULL;
 }
