@@ -326,6 +326,14 @@ macro(BUILD_DEP_TARGET)
     set(BUILD_IN_SOURCE BUILD_IN_SOURCE ${BUILD_IN_SOURCE})
   endif()
 
+  # Change extension of BYPRODUCT
+  # eg, Macos uses dylib for shared libs, but all other unix platforms use .so
+  if(${MODULE}_BYPRODUCT_EXTENSION)
+    string(REGEX REPLACE "\\.[^.]*$" "" _LIBNAME ${${MODULE}_BYPRODUCT})
+    set(${MODULE}_BYPRODUCT "${_LIBNAME}.${${MODULE}_BYPRODUCT_EXTENSION}")
+    unset(_LIBNAME)
+  endif()
+
   # Set Library names.
   if(DEFINED ${MODULE}_DEBUG_POSTFIX)
     set(_POSTFIX ${${MODULE}_DEBUG_POSTFIX})
