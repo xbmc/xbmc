@@ -2029,7 +2029,7 @@ extern "C"
     if (!fp)
       return nullptr;
 
-#if defined(TARGET_LINUX)
+#if defined(TARGET_LINUX) && !defined(TARGET_ANDROID)
     struct mntent* mountPoint = getmntent(fp);
     if (mountPoint)
       return mountPoint;
