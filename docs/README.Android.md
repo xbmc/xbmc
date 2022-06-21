@@ -59,7 +59,7 @@ Several different strategies are used to draw your attention to certain pieces o
 ## 2. Install the required packages
 Install build dependencies needed to cross-compile Kodi for Android:
 ```
-sudo apt install autoconf build-essential curl default-jdk gawk git gperf lib32stdc++6 lib32z1 lib32z1-dev libcurl4-openssl-dev unzip zlib1g-dev
+sudo apt install autoconf build-essential curl default-jdk gawk git gperf lib32stdc++6 lib32z1 lib32z1-dev libcurl4-openssl-dev unzip zip zlib1g-dev
 ```
 **NOTE:** If you're running a 32bit Debian/Ubuntu distribution,  remove `lib32stdc++6 lib32z1 lib32z1-dev` from the command.
 **NOTE:** Gradle 7.0.2+ requires Jave Runtime 11+. Check java version by running `java --version`.  If version is < 11, set JAVA_HOME to java 11+ home directory._
