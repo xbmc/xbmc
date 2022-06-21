@@ -131,6 +131,10 @@ macro(SETUP_BUILD_VARS)
     message(STATUS "${MODULE}_URL: ${${MODULE}_URL}")
   endif()
 
+  CLEAR_BUILD_VARS()
+endmacro()
+
+macro(CLEAR_BUILD_VARS)
   # unset all build_dep_target variables to insure clean state
   unset(BUILD_NAME)
   unset(INSTALL_DIR)
