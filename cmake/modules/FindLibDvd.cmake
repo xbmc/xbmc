@@ -80,6 +80,9 @@ else()
   set(PROJECTSOURCE ${CMAKE_SOURCE_DIR})
   set(DEP_LOCATION "${DEPENDS_PATH}")
 
+  # clear any potentially set variables
+  CLEAR_BUILD_VARS()
+
   foreach(dvdlib ${dvdlibs})
 
     string(TOUPPER ${dvdlib} MODULE)
