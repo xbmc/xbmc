@@ -3,3 +3,5 @@ BASE_URL=https://github.com/xbmc/libdvdnav
 VERSION=6.1.1-Next-Nexus-Alpha2
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
 SHA512=01c415a561ea8bd9d568ad2668fbf8bc54304557e413776e1b841145cad3f7b9991a6772af7bac408b2cb87c6236c378e79c1c023a58b280a6c92fee151f0fb1
+BYPRODUCT=libdvdnav.a
+BYPRODUCT_WIN=libdvdnav.lib
