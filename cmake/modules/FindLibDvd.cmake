@@ -74,7 +74,14 @@ else()
   if(ENABLE_DVDCSS)
     list(APPEND dvdlibs libdvdcss)
   endif()
-  set(DEPENDS_TARGETS_DIR ${CMAKE_SOURCE_DIR}/tools/depends/target)
+
+  # Set variables normally set in SETUP_BUILD_VARS macro
+  set(LIB_TYPE "target")
+  set(PROJECTSOURCE ${CMAKE_SOURCE_DIR})
+  set(DEP_LOCATION "${DEPENDS_PATH}")
+
+  # clear any potentially set variables
+  CLEAR_BUILD_VARS()
 
   foreach(dvdlib ${dvdlibs})
 
@@ -82,7 +89,7 @@ else()
 
     # Variables required being set for clean get_versionfile_data use
     set(MODULE_LC ${dvdlib})
-    set(PROJECTSOURCE ${CMAKE_SOURCE_DIR})
+
     get_versionfile_data()
 
     # allow user to override the download URL with a local tarball
