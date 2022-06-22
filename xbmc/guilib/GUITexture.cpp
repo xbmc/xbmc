@@ -184,7 +184,7 @@ void CGUITexture::Render()
   if (m_alpha != 0xFF)
 	  color = MIX_ALPHA(m_alpha, color);
 
-  color = CServiceBroker::GetWinSystem()->GetGfxContext().MergeAlpha(color);
+  color = CServiceBroker::GetWinSystem()->GetGfxContext().MergeColor(color);
 
   // setup our renderer
   Begin(color);

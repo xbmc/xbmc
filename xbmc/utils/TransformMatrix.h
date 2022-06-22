@@ -34,7 +34,7 @@ public:
     m[0][0] = 1.0f; m[0][1] = m[0][2] = m[0][3] = 0.0f;
     m[1][0] = m[1][2] = m[1][3] = 0.0f; m[1][1] = 1.0f;
     m[2][0] = m[2][1] = m[2][3] = 0.0f; m[2][2] = 1.0f;
-    alpha = 1.0f;
+    alpha = red = green = blue = 1.0f;
     identity = true;
   };
   static TransformMatrix CreateTranslation(float transX, float transY, float transZ = 0)
@@ -48,7 +48,7 @@ public:
     m[0][1] = m[0][2] = 0.0f; m[0][0] = 1.0f; m[0][3] = transX;
     m[1][0] = m[1][2] = 0.0f; m[1][1] = 1.0f; m[1][3] = transY;
     m[2][0] = m[2][1] = 0.0f; m[2][2] = 1.0f; m[2][3] = transZ;
-    alpha = 1.0f;
+    alpha = red = green = blue = 1.0f;
     identity = (transX == 0 && transY == 0 && transZ == 0);
   }
   static TransformMatrix CreateScaler(float scaleX, float scaleY, float scaleZ = 1.0f)
@@ -67,7 +67,7 @@ public:
     m[0][0] = scaleX;  m[0][1] = 0.0f;    m[0][2] = 0.0f;    m[0][3] = centerX*(1-scaleX);
     m[1][0] = 0.0f;    m[1][1] = scaleY;  m[1][2] = 0.0f;    m[1][3] = centerY*(1-scaleY);
     m[2][0] = 0.0f;    m[2][1] = 0.0f;    m[2][2] = scaleZ;  m[2][3] = centerZ*(1-scaleZ);
-    alpha = 1.0f;
+    alpha = red = green = blue = 1.0f;
     identity = (scaleX == 1 && scaleY == 1);
   };
   void SetXRotation(float angle, float y, float z, float ar = 1.0f)
@@ -77,7 +77,7 @@ public:
     m[0][0] = ar;    m[0][1] = 0.0f;  m[0][2] = 0.0f;   m[0][3] = 0.0f;
     m[1][0] = 0.0f;  m[1][1] = c/ar;  m[1][2] = -s/ar;  m[1][3] = (-y*c+s*z)/ar + y;
     m[2][0] = 0.0f;  m[2][1] = s;     m[2][2] = c;      m[2][3] = (-y*s-c*z) + z;
-    alpha = 1.0f;
+    alpha = red = green = blue = 1.0f;
     identity = (angle == 0);
   }
   void SetYRotation(float angle, float x, float z, float ar = 1.0f)
@@ -87,7 +87,7 @@ public:
     m[0][0] = c;     m[0][1] = 0.0f;  m[0][2] = -s/ar;  m[0][3] = -x*c + s*z/ar + x;
     m[1][0] = 0.0f;  m[1][1] = 1.0f;  m[1][2] = 0.0f;   m[1][3] = 0.0f;
     m[2][0] = ar*s;  m[2][1] = 0.0f;  m[2][2] = c;      m[2][3] = -ar*x*s - c*z + z;
-    alpha = 1.0f;
+    alpha = red = green = blue = 1.0f;
     identity = (angle == 0);
   }
   static TransformMatrix CreateZRotation(float angle, float x, float y, float ar = 1.0f)
@@ -104,7 +104,7 @@ public:
     m[0][0] = c;     m[0][1] = -s/ar;  m[0][2] = 0.0f;  m[0][3] = -x*c + s*y/ar + x;
     m[1][0] = s*ar;  m[1][1] = c;      m[1][2] = 0.0f;  m[1][3] = -ar*x*s - c*y + y;
     m[2][0] = 0.0f;  m[2][1] = 0.0f;   m[2][2] = 1.0f;  m[2][3] = 0.0f;
-    alpha = 1.0f;
+    alpha = red = green = blue = 1.0f;
     identity = (angle == 0);
   }
   static TransformMatrix CreateFader(float a)
@@ -113,13 +113,32 @@ public:
     fader.SetFader(a);
     return fader;
   }
+  static TransformMatrix CreateFader(float a, float r, float g, float b)
+  {
+    TransformMatrix fader;
+    fader.SetFader(a, r, g, b);
+    return fader;
+  }
   void SetFader(float a)
   {
     m[0][0] = 1.0f; m[0][1] = 0.0f; m[0][2] = 0.0f; m[0][3] = 0.0f;
     m[1][0] = 0.0f; m[1][1] = 1.0f; m[1][2] = 0.0f; m[1][3] = 0.0f;
     m[2][0] = 0.0f; m[2][1] = 0.0f; m[2][2] = 1.0f; m[2][3] = 0.0f;
     alpha = a;
+    red = green = blue = 1.0f;
     identity = (a == 1.0f);
+  }
+
+  void SetFader(float a, float r, float g, float b)
+  {
+    m[0][0] = 1.0f; m[0][1] = 0.0f; m[0][2] = 0.0f; m[0][3] = 0.0f;
+    m[1][0] = 0.0f; m[1][1] = 1.0f; m[1][2] = 0.0f; m[1][3] = 0.0f;
+    m[2][0] = 0.0f; m[2][1] = 0.0f; m[2][2] = 1.0f; m[2][3] = 0.0f;
+    alpha = a;
+    red = r;
+    green = g;
+    blue = b;
+    identity = ((a == 1.0f) && (r == 1.0f) && (g == 1.0f) && (b == 1.0f));
   }
 
   // multiplication operators
@@ -148,6 +167,9 @@ public:
     m[2][3] = m[2][0] * right.m[0][3] + m[2][1] * right.m[1][3] + m[2][2] * right.m[2][3] + m[2][3];
     m[2][0] = t00; m[2][1] = t01; m[2][2] = t02;
     alpha *= right.alpha;
+    red *= right.red;
+    green *= right.green;
+    blue *= right.blue;
     identity = false;
     return *this;
   }
@@ -172,6 +194,9 @@ public:
     result.m[2][2] = m[2][0] * right.m[0][2] + m[2][1] * right.m[1][2] + m[2][2] * right.m[2][2];
     result.m[2][3] = m[2][0] * right.m[0][3] + m[2][1] * right.m[1][3] + m[2][2] * right.m[2][3] + m[2][3];
     result.alpha = alpha * right.alpha;
+    result.red = red * right.red;
+    result.green = green * right.green;
+    result.blue = blue * right.blue;
     result.identity = false;
     return result;
   }
@@ -229,15 +254,40 @@ public:
     return static_cast<UTILS::COLOR::Color>(color * alpha);
   }
 
+  inline UTILS::COLOR::Color TransformColor(UTILS::COLOR::Color color) const XBMC_FORCE_INLINE
+  {
+    UTILS::COLOR::Color a = static_cast<UTILS::COLOR::Color>(((color >> 24) & 0xff) * alpha);
+    UTILS::COLOR::Color r = static_cast<UTILS::COLOR::Color>(((color >> 16) & 0xff) * red);
+    UTILS::COLOR::Color g = static_cast<UTILS::COLOR::Color>(((color >> 8) & 0xff) * green);
+    UTILS::COLOR::Color b = static_cast<UTILS::COLOR::Color>(((color)&0xff) * blue);
+    if (a > 255)
+      a = 255;
+    if (r > 255)
+      r = 255;
+    if (g > 255)
+      g = 255;
+    if (b > 255)
+      b = 255;
+
+    return ((a << 24) & 0xff000000) | ((r << 16) & 0xff0000) | ((g << 8) & 0xff00) | (b & 0xff);
+  }
+
   float m[3][4];
   float alpha;
+  float red;
+  float green;
+  float blue;
   bool identity;
 };
 
 inline bool operator==(const TransformMatrix &a, const TransformMatrix &b)
 {
-  return a.alpha == b.alpha && ((a.identity && b.identity) ||
-      (!a.identity && !b.identity && std::equal(&a.m[0][0], &a.m[0][0] + sizeof (a.m) / sizeof (a.m[0][0]), &b.m[0][0])));
+  bool comparison =
+      a.alpha == b.alpha && a.red == b.red && a.green == b.green && a.blue == b.blue &&
+      ((a.identity && b.identity) ||
+       (!a.identity && !b.identity &&
+        std::equal(&a.m[0][0], &a.m[0][0] + sizeof(a.m) / sizeof(a.m[0][0]), &b.m[0][0])));
+  return comparison;
 }
 
 inline bool operator!=(const TransformMatrix &a, const TransformMatrix &b)

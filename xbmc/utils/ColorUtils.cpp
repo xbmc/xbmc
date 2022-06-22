@@ -131,3 +131,13 @@ bool UTILS::COLOR::comparePairColorInfo(const std::pair<std::string, ColorInfo>&
   else
     return (a.second.hue < b.second.hue);
 }
+
+ColorFloats UTILS::COLOR::ConvertToFloats(const Color argb)
+{
+  ColorFloats c;
+  c.alpha = static_cast<float>((argb >> 24) & 0xFF) * (1.0f / 255.0f);
+  c.red = static_cast<float>((argb >> 16) & 0xFF) * (1.0f / 255.0f);
+  c.green = static_cast<float>((argb >> 8) & 0xFF) * (1.0f / 255.0f);
+  c.blue = static_cast<float>(argb & 0xFF) * (1.0f / 255.0f);
+  return c;
+}

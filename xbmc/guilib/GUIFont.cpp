@@ -107,12 +107,12 @@ void CGUIFont::DrawText(float x,
   std::vector<UTILS::COLOR::Color> renderColors;
   renderColors.reserve(colors.size());
   for (const auto& color : colors)
-    renderColors.emplace_back(context.MergeAlpha(color ? color : m_textColor));
+    renderColors.emplace_back(context.MergeColor(color ? color : m_textColor));
   if (!shadowColor)
     shadowColor = m_shadowColor;
   if (shadowColor)
   {
-    shadowColor = context.MergeAlpha(shadowColor);
+    shadowColor = context.MergeColor(shadowColor);
     std::vector<UTILS::COLOR::Color> shadowColors;
     shadowColors.reserve(renderColors.size());
     for (const auto& renderColor : renderColors)
@@ -222,12 +222,12 @@ void CGUIFont::DrawScrollingText(float x,
   std::vector<UTILS::COLOR::Color> renderColors;
   renderColors.reserve(colors.size());
   for (const auto& color : colors)
-    renderColors.emplace_back(context.MergeAlpha(color ? color : m_textColor));
+    renderColors.emplace_back(context.MergeColor(color ? color : m_textColor));
 
   bool scroll = !scrollInfo.m_waitTime && scrollInfo.m_pixelSpeed;
   if (shadowColor)
   {
-    shadowColor = context.MergeAlpha(shadowColor);
+    shadowColor = context.MergeColor(shadowColor);
     std::vector<UTILS::COLOR::Color> shadowColors;
     shadowColors.reserve(renderColors.size());
     for (const auto& renderColor : renderColors)

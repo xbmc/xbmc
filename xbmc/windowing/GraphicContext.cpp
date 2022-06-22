@@ -904,6 +904,11 @@ UTILS::COLOR::Color CGraphicContext::MergeAlpha(UTILS::COLOR::Color color) const
   return ((alpha << 24) & 0xff000000) | (color & 0xffffff);
 }
 
+UTILS::COLOR::Color CGraphicContext::MergeColor(UTILS::COLOR::Color color) const
+{
+  return m_finalTransform.matrix.TransformColor(color);
+}
+
 int CGraphicContext::GetWidth() const
 {
   return m_iScreenWidth;
