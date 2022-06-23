@@ -130,12 +130,13 @@ macro(SETUP_BUILD_VARS)
     message(STATUS "PROJECTSOURCE: ${PROJECTSOURCE}")
     message(STATUS "${MODULE}_URL: ${${MODULE}_URL}")
   endif()
-
-  CLEAR_BUILD_VARS()
 endmacro()
 
 macro(CLEAR_BUILD_VARS)
-  # unset all build_dep_target variables to insure clean state
+  # unset all generic variables to insure clean state between macro calls
+  # Potentially an issue with scope when a macro is used inside a dep that uses a macro
+  unset(PROJECTSOURCE)
+  unset(LIB_TYPE)
   unset(BUILD_NAME)
   unset(INSTALL_DIR)
   unset(CMAKE_ARGS)
@@ -145,6 +146,14 @@ macro(CLEAR_BUILD_VARS)
   unset(INSTALL_COMMAND)
   unset(BUILD_IN_SOURCE)
   unset(BUILD_BYPRODUCTS)
+
+  # unset all module specific variables to insure clean state between macro calls
+  # potentially an issue when a native and a target of the same module exists
+  unset(${MODULE}_LIST_SEPARATOR)
+  unset(${MODULE}_GENERATOR)
+  unset(${MODULE}_GENERATOR_PLATFORM)
+  unset(${MODULE}_INSTALL_PREFIX)
+  unset(${MODULE}_TOOLCHAIN_FILE)
 endmacro()
 
 # Macro to create externalproject_add target
@@ -317,6 +326,8 @@ macro(BUILD_DEP_TARGET)
                       ${BUILD_IN_SOURCE})
 
   set_target_properties(${BUILD_NAME} PROPERTIES FOLDER "External Projects")
+
+  CLEAR_BUILD_VARS()
 endmacro()
 
 # Macro to test format of line endings of a patch
