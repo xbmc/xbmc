@@ -578,7 +578,7 @@
           <default>0</default> <!-- BackgroundType::NONE -->
           <constraints>
             <options>
-              <option label="231">0</option> <!-- BackgroundType::NONE -->
+              <option label="39188">0</option> <!-- BackgroundType::NONE -->
               <option label="39166">1</option> <!-- BackgroundType::SHADOW -->
               <option label="39167">2</option> <!-- BackgroundType::BOX -->
               <option label="39168">3</option> <!-- BackgroundType::SQUAREBOX -->

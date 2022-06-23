@@ -23138,3 +23138,9 @@ msgstr ""
 msgctxt "#39187"
 msgid "Closed caption subtitles"
 msgstr ""
+
+#. Item list value of setting with label #39166 "Background type"
+#: system/settings/settings.xml
+msgctxt "#39188"
+msgid "No background"
+msgstr ""
