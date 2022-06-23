@@ -349,11 +349,8 @@ void CAddonRepos::GetLatestAddonVersions(std::vector<std::shared_ptr<IAddon>>& a
 
   // first we insert all official addon versions into the resulting vector
 
-  std::transform(m_latestOfficialVersions.begin(), m_latestOfficialVersions.end(),
-                 back_inserter(addonList),
-                 [](const std::pair<std::string, std::shared_ptr<IAddon>>& officialVersion) {
-                   return officialVersion.second;
-                 });
+  for (const auto& officialVersion : m_latestOfficialVersions)
+    addonList.emplace_back(officialVersion.second);
 
   // then we insert private addon versions if they don't exist in the official map
   // or installation from ANY_REPOSITORY is allowed and the private version is higher
@@ -380,11 +377,8 @@ void CAddonRepos::GetLatestAddonVersionsFromAllRepos(
 
   // first we insert all official addon versions into the resulting vector
 
-  std::transform(m_latestOfficialVersions.begin(), m_latestOfficialVersions.end(),
-                 back_inserter(addonList),
-                 [](const std::pair<std::string, std::shared_ptr<IAddon>>& officialVersion) {
-                   return officialVersion.second;
-                 });
+  for (const auto& officialVersion : m_latestOfficialVersions)
+    addonList.emplace_back(officialVersion.second);
 
   // then we insert latest version per addon and repository if they don't exist in the official map
   // or installation from ANY_REPOSITORY is allowed and the private version is higher
