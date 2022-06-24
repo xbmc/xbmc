@@ -64,10 +64,10 @@ Several different strategies are used to draw your attention to certain pieces o
 * Device with **tvOS 11.0 or newer** to install Kodi after build.
 
 Building for tvOS should work with the following combinations of Xcode and macOS versions:
-  * Xcode 9.x against tvOS SDK 11.x on 10.13.x (High Sierra)(recommended)
-  * Xcode 9.x against tvOS SDK 11.x on 10.14.x (Mojave)(recommended)
-  * Xcode 10.x against tvOS SDK 12.x on 10.14.x (Mojave)(recommended)
+  * Xcode 12.4 against tvOS SDK 14.3 on 10.15.7 (Catalina)(recommended)(CI)
+  * Xcode 13.x against tvOS SDK 15.4 on 12.x (Monterey)(recommended)
 
+Team Kodi CI infrastructure is limited, and therefore we only have the single combination tested. Newer xcode/macos combinations generally should work, however the team does not actively test/use pre-release versions, so use with caution. Earlier versions may work, however we dont actively support them, so use with caution.
 **WARNING:** Start Xcode after installation finishes. You need to accept the licenses and install missing components.
 
 **[back to top](#table-of-contents)**
