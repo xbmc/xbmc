@@ -235,6 +235,8 @@ namespace VIDEO
     bool EnumerateSeriesFolder(CFileItem* item, EPISODELIST& episodeList);
     bool ProcessItemByVideoInfoTag(const CFileItem *item, EPISODELIST &episodeList);
 
+    bool ProcessMovieVersion(int dbId);
+
     bool m_bStop;
     bool m_scanAll;
     std::string m_strStartDir;

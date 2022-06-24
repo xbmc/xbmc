@@ -43,6 +43,7 @@ void CVideoInfoTag::Reset()
   m_set.id = -1;
   m_set.overview.clear();
   m_tags.clear();
+  m_strVersion.clear();
   m_strFile.clear();
   m_strPath.clear();
   m_strMPAARating.clear();
@@ -222,6 +223,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
     movie->InsertEndChild(set);
   }
   XMLUtils::SetStringArray(movie, "tag", m_tags);
+  XMLUtils::SetString(movie, "version", m_strVersion);
   XMLUtils::SetStringArray(movie, "credits", m_writingCredits);
   XMLUtils::SetStringArray(movie, "director", m_director);
   if (HasPremiered())
@@ -505,6 +507,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_set.id;
     ar << m_set.overview;
     ar << m_tags;
+    ar << m_strVersion;
     ar << m_duration;
     ar << m_strFile;
     ar << m_strPath;
@@ -607,6 +610,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_set.id;
     ar >> m_set.overview;
     ar >> m_tags;
+    ar >> m_strVersion;
     ar >> m_duration;
     ar >> m_strFile;
     ar >> m_strPath;
@@ -726,6 +730,7 @@ void CVideoInfoTag::Serialize(CVariant& value) const
   value["setid"] = m_set.id;
   value["setoverview"] = m_set.overview;
   value["tag"] = m_tags;
+  value["version"] = m_strVersion;
   value["runtime"] = GetDuration();
   value["file"] = m_strFile;
   value["path"] = m_strPath;
@@ -855,6 +860,7 @@ void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
   case FieldId:                       sortable[FieldId] = m_iDbId; break;
   case FieldTrackNumber:              sortable[FieldTrackNumber] = m_iTrack; break;
   case FieldTag:                      sortable[FieldTag] = m_tags; break;
+  case FieldVersion:                  sortable[FieldVersion] = m_strVersion; break;
 
   case FieldVideoResolution:          sortable[FieldVideoResolution] = m_streamDetails.GetVideoHeight(); break;
   case FieldVideoAspectRatio:         sortable[FieldVideoAspectRatio] = m_streamDetails.GetVideoAspect(); break;
@@ -1064,7 +1070,6 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   if (XMLUtils::GetString(movie, "tagline", value))
     SetTagLine(value);
 
-
   if (XMLUtils::GetString(movie, "runtime", value) && !value.empty())
     m_duration = GetDurationFromMinuteString(StringUtils::Trim(value));
 
@@ -1252,6 +1257,9 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   std::vector<std::string> tags(m_tags);
   if (XMLUtils::GetStringArray(movie, "tag", tags, prioritise, itemSeparator))
     SetTags(tags);
+
+  if (XMLUtils::GetString(movie, "version", value))
+    SetVersion(value);
 
   std::vector<std::string> studio(m_studio);
   if (XMLUtils::GetStringArray(movie, "studio", studio, prioritise, itemSeparator))
@@ -1623,6 +1631,11 @@ void CVideoInfoTag::SetSetOverview(std::string setOverview)
 void CVideoInfoTag::SetTags(std::vector<std::string> tags)
 {
   m_tags = Trim(std::move(tags));
+}
+
+void CVideoInfoTag::SetVersion(std::string version)
+{
+  m_strVersion = Trim(std::move(version));
 }
 
 void CVideoInfoTag::SetFile(std::string file)

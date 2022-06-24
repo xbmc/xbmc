@@ -181,6 +181,7 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
       }
       break;
     case NODE_TYPE_TAGS:
+    case NODE_TYPE_TYPES:
       {
         AddSortMethod(SortByLabel, sortAttributes, 551, LABEL_MASKS("%T","", "%T",""));  // Title, empty | Title, empty
         SetSortMethod(SortByLabel);

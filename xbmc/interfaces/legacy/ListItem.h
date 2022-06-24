@@ -710,6 +710,7 @@ namespace XBMCAddon
       /// | set           | string (Batman Collection) - name of the collection
       /// | setoverview   | string (All Batman movies) - overview of the collection
       /// | tag           | string (cult) or list of strings (["cult", "documentary", "best movies"]) - movie tag
+      /// | version       | string (Movie version, "EXTENDED" for example)
       /// | imdbnumber    | string (tt0110293) - IMDb code
       /// | code          | string (101) - Production code
       /// | aired         | string (2008-12-07)
@@ -780,6 +781,7 @@ namespace XBMCAddon
       /// Added labels **dbid** (music), **setoverview**, **tag**, **sortepisode**, **sortseason**, **episodeguide**, **showlink**.
       /// Extended labels **genre**, **country**, **director**, **studio**, **writer**, **tag**, **credits** to also use a list of strings.
       /// @python_v20 Partially deprecated. Use explicit setters in **InfoTagVideo**, **InfoTagMusic**, **InfoTagPicture** or **InfoTagGame** instead.
+      /// Added version infolabel for movies
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}

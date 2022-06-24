@@ -264,6 +264,8 @@ protected:
 
   void HandlePortEvents();
 
+  void SelectMovieVersion(CFileItem& movieItem);
+
   CInertialScrollingHandler *m_pInertialScrollingHandler;
 
   std::vector<ADDON::AddonInfoPtr>

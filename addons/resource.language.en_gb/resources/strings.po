@@ -23138,3 +23138,95 @@ msgstr ""
 msgctxt "#39187"
 msgid "Closed caption subtitles"
 msgstr ""
+
+#. Video version types (Director's Cut, for example)
+#: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMoviesOverview.cpp
+#: xbmc/filesystem/MusicDatabaseDirectory/DirectoryNodeOverview.cpp
+#: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeTvShowOverview.cpp
+msgctxt "#39300"
+msgid "Types"
+msgstr ""
+
+#. Movie version management menu
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
+msgctxt "#39301"
+msgid "Manage movie version"
+msgstr ""
+
+#. Manage movie version dialog title
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
+msgctxt "#39302"
+msgid "Convert to an additional version of movie"
+msgstr ""
+
+#. Movie version selection dialog title
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
+msgctxt "#39303"
+msgid "Select movie version"
+msgstr ""
+
+#. Movie version selection dialog button
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
+msgctxt "#39304"
+msgid "Add movie to a new version"
+msgstr ""
+
+#. Warning dialog title
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
+msgctxt "#39305"
+msgid "Not supported"
+msgstr ""
+
+#. Warning dialog text
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
+msgctxt "#39306"
+msgid "More than one version of the selected movie exists. It cannot be converted to an additional version of another movie. Please remove it from the library, then rescan and convert each version separately."
+msgstr ""
+
+#. Default movie version change dialog title
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
+msgctxt "#39307"
+msgid "Change default version"
+msgstr ""
+
+#. Warning dialog text
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
+msgctxt "#39308"
+msgid "The \"{0:s}\" version of this movie already exists, do you want to add a duplicate?"
+msgstr ""
+
+#. Play default video version setting
+#: system/settings/settings.xml
+msgctxt "#39309"
+msgid "Play default video version"
+msgstr ""
+
+#. Help for play default video version setting
+#: system/settings/settings.xml
+msgctxt "#39310"
+msgid "Select player action for multiple version video.[CR][Enabled] Play default video version without asking.[CR][Disabled] Always show a dialogue to select desired video version."
+msgstr ""
+
+#. Duplicate movie found dialog title
+#: xbmc\video\VideoInfoScanner.cpp
+msgctxt "#39311"
+msgid "Duplicate movie found"
+msgstr ""
+
+#. Duplicate movie found dialog text
+#: xbmc\video\VideoInfoScanner.cpp
+msgctxt "#39312"
+msgid "A duplicate movie \"{0:s}\" ({1:s}) has just been added to the library. Would you like to convert it to an additional version of the original movie?"
+msgstr ""
+
+#. Add duplicate video settting
+#: system/settings/settings.xml
+msgctxt "#39313"
+msgid "Add duplicate video to library"
+msgstr ""
+
+#. Help for Add duplicate video settting
+#: system/settings/settings.xml
+msgctxt "#39314"
+msgid "Select scanner action for duplicate video.[CR][Enabled] Add duplicate video to library without asking.[CR][Disabled] Ask for converting duplicate video to an andditonal version of the original video."
+msgstr ""

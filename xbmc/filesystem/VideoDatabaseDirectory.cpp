@@ -194,6 +194,8 @@ bool CVideoDatabaseDirectory::GetLabel(const std::string& strDirectory, std::str
       strLabel = g_localizeStrings.Get(20434); break;
     case NODE_TYPE_TAGS: // Tags
       strLabel = g_localizeStrings.Get(20459); break;
+    case NODE_TYPE_TYPES: // Types
+      strLabel = g_localizeStrings.Get(39300); break;
     case NODE_TYPE_MOVIES_OVERVIEW: // Movies
       strLabel = g_localizeStrings.Get(342); break;
     case NODE_TYPE_TVSHOWS_OVERVIEW: // TV Shows
@@ -261,6 +263,8 @@ std::string CVideoDatabaseDirectory::GetIcon(const std::string &strDirectory)
     return "DefaultSets.png";
   case NODE_TYPE_TAGS: // Tags
     return "DefaultTags.png";
+  case NODE_TYPE_TYPES: // Types
+    return "DefaultTypes.png";
   case NODE_TYPE_YEAR: // Year
     return "DefaultYear.png";
   case NODE_TYPE_DIRECTOR: // Director

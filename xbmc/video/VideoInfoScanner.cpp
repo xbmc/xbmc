@@ -20,6 +20,8 @@
 #include "cores/VideoPlayer/DVDFileInfo.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogProgress.h"
+#include "dialogs/GUIDialogSelect.h"
+#include "dialogs/GUIDialogYesNo.h"
 #include "events/EventLog.h"
 #include "events/MediaLibraryEvent.h"
 #include "filesystem/Directory.h"
@@ -28,6 +30,7 @@
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/PluginDirectory.h"
 #include "guilib/GUIComponent.h"
+#include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
@@ -707,8 +710,11 @@ namespace VIDEO
                     result == CInfoScanner::OVERRIDE_NFO) ? loader.get() : nullptr,
                    pDlgProgress))
     {
-      if (AddVideo(pItem, info2->Content(), bDirNames, useLocal) < 0)
+      int dbId = AddVideo(pItem, info2->Content(), bDirNames, useLocal);
+      if (dbId < 0)
         return INFO_ERROR;
+      if (info2->Content() == CONTENT_MOVIES && ProcessMovieVersion(dbId))
+        return INFO_HAVE_ALREADY;
       return INFO_ADDED;
     }
     //! @todo This is not strictly correct as we could fail to download information here or error, or be cancelled
@@ -2232,4 +2238,111 @@ namespace VIDEO
     return 0;    // didn't find anything
   }
 
+  bool CVideoInfoScanner::ProcessMovieVersion(int dbId)
+  {
+    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+            CSettings::SETTING_VIDEOLIBRARY_ADDDUPLICATEVIDEO))
+      return false;
+
+    CVideoDatabase videodb;
+    if (!videodb.Open())
+      return false;
+
+    CFileItemList list;
+    std::string title = videodb.GetMovieTitle(dbId);
+    videodb.GetMoviesByTitle(title, list);
+    if (list.Size() < 2)
+      return false;
+
+    std::string path;
+    videodb.GetFilePathById(dbId, path, VIDEODB_CONTENT_MOVIES);
+
+    if (!CGUIDialogYesNo::ShowAndGetInput(
+            CVariant{39311}, StringUtils::Format(g_localizeStrings.Get(39312), title, path)))
+    {
+      return false;
+    }
+
+    CGUIDialogSelect* dialog =
+        CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
+            WINDOW_DIALOG_SELECT);
+    if (!dialog)
+      return false;
+
+    for (int i = 0; i < list.Size(); i++)
+    {
+      if (dbId == atoi(list[i]->GetLabel2().c_str()))
+      {
+        list.Remove(i);
+        break;
+      }
+    }
+
+    dialog->Reset();
+    dialog->SetItems(list);
+    dialog->SetHeading(CVariant{39302});
+    dialog->Open();
+    int selected = dialog->GetSelectedItem();
+
+    if (selected < 0)
+      return false;
+
+    int targetDbId = atoi(list[selected]->GetLabel2().c_str());
+
+    CFileItemList targetList;
+    videodb.GetMovieVersion(targetDbId, targetList);
+
+    while (true)
+    {
+      list.ClearItems();
+
+      std::string selectedType;
+
+      // choose the version type
+      videodb.GetTypesNav("videodb://movies/types", list);
+      dialog->Reset();
+      dialog->SetItems(list);
+      dialog->SetHeading(CVariant{39303});
+      dialog->EnableButton(true, 39304); // new version via button
+      dialog->SetSelected(1); // skip the first one as it's default
+      dialog->Open();
+
+      if (dialog->IsButtonPressed())
+      {
+        // create a new version type
+        std::string newType;
+        if (!CGUIKeyboardFactory::ShowAndGetInput(newType, CVariant{g_localizeStrings.Get(39304)},
+                                                  false))
+          return false;
+        selectedType = StringUtils::Trim(newType);
+        selected = videodb.AddType(selectedType);
+      }
+      else if (dialog->IsConfirmed())
+      {
+        CFileItemPtr selectedItem = dialog->GetSelectedFileItem();
+        if (selectedItem)
+        {
+          selectedType = selectedItem->GetLabel();
+          selected = atoi(selectedItem->GetLabel2().c_str());
+        }
+      }
+      else
+        return false;
+
+      if (selected < 0)
+        return false;
+
+      // confirm with user for duplication
+      if (!std::any_of(targetList.begin(), targetList.end(),
+                       [&selectedType](const CFileItemPtr& item)
+                       { return StringUtils::EqualsNoCase(selectedType, item->GetLabel()); }) ||
+          CGUIDialogYesNo::ShowAndGetInput(
+              CVariant{14117}, StringUtils::Format(g_localizeStrings.Get(39308), selectedType)))
+        break;
+    }
+
+    videodb.SetMovieVersion(dbId, targetDbId, selected);
+
+    return true;
+  }
 }
