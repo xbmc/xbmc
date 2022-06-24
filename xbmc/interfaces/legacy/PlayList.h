@@ -91,7 +91,7 @@ namespace XBMCAddon
       /// video = 'F:\\movies\\Ironman.mov'
       /// listitem = xbmcgui.ListItem('Ironman', thumbnailImage='F:\\movies\\Ironman.tbn')
       /// listitem.setInfo('video', {'Title': 'Ironman', 'Genre': 'Science Fiction'})
-      /// playlist.add(url=video, listitem=listitem, index=7)n
+      /// playlist.add(url=video, listitem=listitem, index=7)
       /// ..
       /// ~~~~~~~~~~~~~
       ///
