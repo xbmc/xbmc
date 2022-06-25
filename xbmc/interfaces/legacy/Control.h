@@ -738,7 +738,7 @@ namespace XBMCAddon
     ///                                 label's label. (e.g. '0xFFFF3300')
     /// @param alignment            [opt] integer - alignment of label
     /// - \ref kodi_gui_font_alignment "Flags for alignment" used as bits to have several together:
-    /// | Defination name   |   Bitflag  | Description                         |
+    /// | Definition name   |   Bitflag  | Description                         |
     /// |-------------------|:----------:|:------------------------------------|
     /// | XBFONT_LEFT       | 0x00000000 | Align X left
     /// | XBFONT_RIGHT      | 0x00000001 | Align X right
@@ -879,7 +879,7 @@ namespace XBMCAddon
     ///                                 label's label. (e.g. '0xFFFF3300')
     /// @param alignment            [opt] integer - alignment of label
     /// - \ref kodi_gui_font_alignment "Flags for alignment" used as bits to have several together:
-    /// | Defination name   |   Bitflag  | Description                         |
+    /// | Definition name   |   Bitflag  | Description                         |
     /// |-------------------|:----------:|:------------------------------------|
     /// | XBFONT_LEFT       | 0x00000000 | Align X left
     /// | XBFONT_RIGHT      | 0x00000001 | Align X right
@@ -1118,7 +1118,7 @@ namespace XBMCAddon
     /// @param space                    [opt] integer - space between items.
     /// @param alignmentY               [opt] integer - Y-axis alignment of items label
     /// - \ref kodi_gui_font_alignment "Flags for alignment" used as bits to have several together:
-    /// | Defination name   |   Bitflag  | Description                         |
+    /// | Definition name   |   Bitflag  | Description                         |
     /// |-------------------|:----------:|:------------------------------------|
     /// | XBFONT_LEFT       | 0x00000000 | Align X left
     /// | XBFONT_RIGHT      | 0x00000001 | Align X right
@@ -1652,7 +1652,7 @@ namespace XBMCAddon
     /// @param textColor            [opt] hexstring - color of fadelabel's labels. (e.g. '0xFFFFFFFF')
     /// @param alignment            [opt] integer - alignment of label
     /// - \ref kodi_gui_font_alignment "Flags for alignment" used as bits to have several together:
-    /// | Defination name   |   Bitflag  | Description                         |
+    /// | Definition name   |   Bitflag  | Description                         |
     /// |-------------------|:----------:|:------------------------------------|
     /// | XBFONT_LEFT       | 0x00000000 | Align X left
     /// | XBFONT_RIGHT      | 0x00000001 | Align X right
@@ -2256,7 +2256,7 @@ namespace XBMCAddon
     /// @param textOffsetY          [opt] integer - y offset of label.
     /// @param alignment            [opt] integer - alignment of label
     /// - \ref kodi_gui_font_alignment "Flags for alignment" used as bits to have several together:
-    /// | Defination name   |   Bitflag  | Description                         |
+    /// | Definition name   |   Bitflag  | Description                         |
     /// |-------------------|:----------:|:------------------------------------|
     /// | XBFONT_LEFT       | 0x00000000 | Align X left
     /// | XBFONT_RIGHT      | 0x00000001 | Align X right
@@ -2537,7 +2537,7 @@ namespace XBMCAddon
     /// @param textOffsetY          [opt] integer - vertical text offset
     /// @param alignment            [opt] integer - alignment of label
     /// - \ref kodi_gui_font_alignment "Flags for alignment" used as bits to have several together:
-    /// | Defination name   |   Bitflag  | Description                         |
+    /// | Definition name   |   Bitflag  | Description                         |
     /// |-------------------|:----------:|:------------------------------------|
     /// | XBFONT_LEFT       | 0x00000000 | Align X left
     /// | XBFONT_RIGHT      | 0x00000001 | Align X right
