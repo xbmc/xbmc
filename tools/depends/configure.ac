@@ -502,14 +502,7 @@ case $host in
 esac
 
 case $use_platform in
-  tvos)
-    platform_cflags="${platform_cflags} -fembed-bitcode"
-    platform_cxxflags="${platform_cxxflags} -fembed-bitcode"
-    if test "$platform_os" != "darwin_embedded"; then
-      AC_MSG_ERROR([$use_platform is only supported on the darwin_embedded platform])
-    fi
-    ;;
-  ios|macos)
+  ios|tvos|macos)
     ;;
   auto)
     ;;

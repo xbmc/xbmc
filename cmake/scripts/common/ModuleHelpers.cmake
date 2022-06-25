@@ -130,12 +130,13 @@ macro(SETUP_BUILD_VARS)
     message(STATUS "PROJECTSOURCE: ${PROJECTSOURCE}")
     message(STATUS "${MODULE}_URL: ${${MODULE}_URL}")
   endif()
-
-  CLEAR_BUILD_VARS()
 endmacro()
 
 macro(CLEAR_BUILD_VARS)
-  # unset all build_dep_target variables to insure clean state
+  # unset all generic variables to insure clean state between macro calls
+  # Potentially an issue with scope when a macro is used inside a dep that uses a macro
+  unset(PROJECTSOURCE)
+  unset(LIB_TYPE)
   unset(BUILD_NAME)
   unset(INSTALL_DIR)
   unset(CMAKE_ARGS)
@@ -145,6 +146,14 @@ macro(CLEAR_BUILD_VARS)
   unset(INSTALL_COMMAND)
   unset(BUILD_IN_SOURCE)
   unset(BUILD_BYPRODUCTS)
+
+  # unset all module specific variables to insure clean state between macro calls
+  # potentially an issue when a native and a target of the same module exists
+  unset(${MODULE}_LIST_SEPARATOR)
+  unset(${MODULE}_GENERATOR)
+  unset(${MODULE}_GENERATOR_PLATFORM)
+  unset(${MODULE}_INSTALL_PREFIX)
+  unset(${MODULE}_TOOLCHAIN_FILE)
 endmacro()
 
 # Macro to create externalproject_add target
@@ -161,6 +170,17 @@ endmacro()
 #
 macro(BUILD_DEP_TARGET)
   include(ExternalProject)
+
+  # Remove cmake warning when Xcode generator used with "New" build system
+  if(CMAKE_GENERATOR STREQUAL Xcode)
+    # Policy CMP0114 is not set to NEW.  In order to support the Xcode "new build
+    # system", this project must be updated to set policy CMP0114 to NEW.
+    if(CMAKE_XCODE_BUILD_SYSTEM STREQUAL 12)
+      cmake_policy(SET CMP0114 NEW)
+    else()
+      cmake_policy(SET CMP0114 OLD)
+    endif()
+  endif()
 
   if(CMAKE_ARGS)
     set(CMAKE_ARGS CMAKE_ARGS ${CMAKE_ARGS}
@@ -205,6 +225,21 @@ macro(BUILD_DEP_TARGET)
           # eg lib supports Debug/Release, however users selects RelWithDebInfo in project
           list(APPEND CMAKE_ARGS "-DCMAKE_BUILD_TYPE=$<CONFIG>")
         endif()
+      endif()
+    endif()
+
+    # Xcode - Default sub projects to makefile builds. More consistent
+    # Windows - Default to same generator version used in parent
+    if(CMAKE_GENERATOR STREQUAL Xcode)
+      if(NOT ${MODULE}_GENERATOR)
+        set(${MODULE}_GENERATOR CMAKE_GENERATOR "Unix Makefiles")
+      endif()
+    elseif(MSVC)
+      if(NOT ${MODULE}_GENERATOR)
+        set(${MODULE}_GENERATOR CMAKE_GENERATOR "${CMAKE_GENERATOR}")
+      endif()
+      if(NOT ${MODULE}_GENERATOR_PLATFORM)
+        set(${MODULE}_GENERATOR_PLATFORM CMAKE_GENERATOR_PLATFORM ${CMAKE_GENERATOR_PLATFORM})
       endif()
     endif()
   endif()
@@ -317,6 +352,8 @@ macro(BUILD_DEP_TARGET)
                       ${BUILD_IN_SOURCE})
 
   set_target_properties(${BUILD_NAME} PROPERTIES FOLDER "External Projects")
+
+  CLEAR_BUILD_VARS()
 endmacro()
 
 # Macro to test format of line endings of a patch
