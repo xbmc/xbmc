@@ -34,6 +34,11 @@ if(KODI_DEPENDSBUILD
    OR CMAKE_SYSTEM_NAME STREQUAL WindowsStore)
   set(Python3_USE_STATIC_LIBS TRUE)
   set(Python3_ROOT_DIR ${libdir})
+
+  if(KODI_DEPENDSBUILD)
+    # Force set to tools/depends python version
+    set(PYTHON_VER 3.9)
+  endif()
 endif()
 
 # Provide root dir to search for Python if provided
@@ -55,7 +60,11 @@ endif()
 
 find_package(Python3 ${VERSION} ${EXACT_VER} COMPONENTS Development)
 if(CORE_SYSTEM_NAME STREQUAL linux)
-  find_package(Python3 ${VERSION} ${EXACT_VER} COMPONENTS Interpreter)
+  if(HOST_CAN_EXECUTE_TARGET)
+    find_package(Python3 ${VERSION} ${EXACT_VER} COMPONENTS Interpreter)
+  else()
+    find_package(Python3 COMPONENTS Interpreter)
+  endif()
 endif()
 
 if(KODI_DEPENDSBUILD)
