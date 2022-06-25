@@ -14,22 +14,57 @@
 #
 #   NFS::NFS   - The libnfs library
 
-if(PKG_CONFIG_FOUND)
-  pkg_check_modules(PC_NFS libnfs QUIET)
+include(cmake/scripts/common/ModuleHelpers.cmake)
+
+set(MODULE_LC libnfs)
+
+SETUP_BUILD_VARS()
+
+# Search for cmake config. Suitable for all platforms including windows
+find_package(LIBNFS CONFIG QUIET)
+
+if(NOT LIBNFS_FOUND)
+  if(ENABLE_INTERNAL_NFS)
+    set(CMAKE_ARGS -DBUILD_SHARED_LIBS=OFF
+                   -DENABLE_TESTS=OFF
+                   -DENABLE_DOCUMENTATION=OFF
+                   -DENABLE_UTILS=OFF
+                   -DENABLE_EXAMPLES=OFF)
+
+    # Patch merged upstream. drop when a release > 5.0.1 occurs
+    set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/001-fix-cmake-build.patch")
+
+    generate_patchcommand("${patches}")
+
+    BUILD_DEP_TARGET()
+
+    set(NFS_LIBRARY ${${MODULE}_LIBRARY})
+    set(NFS_INCLUDE_DIR ${${MODULE}_INCLUDE_DIR})
+  else()
+    # Try pkgconfig based search. Linux may not have a version with cmake config installed
+    if(PKG_CONFIG_FOUND)
+      pkg_check_modules(PC_NFS libnfs QUIET)
+    endif()
+
+    find_path(NFS_INCLUDE_DIR nfsc/libnfs.h
+                              PATHS ${PC_NFS_INCLUDEDIR})
+
+    set(LIBNFS_VERSION ${PC_NFS_VERSION})
+
+    find_library(NFS_LIBRARY NAMES nfs libnfs
+                             PATHS ${PC_NFS_LIBDIR})
+  endif()
+else()
+  # Find lib and path as we cant easily rely on cmake-config
+  find_library(NFS_LIBRARY NAMES nfs libnfs
+                           PATHS ${DEPENDS_PATH}/lib)
+  find_path(NFS_INCLUDE_DIR nfsc/libnfs.h PATHS ${DEPENDS_PATH}/include)
 endif()
-
-find_path(NFS_INCLUDE_DIR nfsc/libnfs.h
-                          PATHS ${PC_NFS_INCLUDEDIR})
-
-set(NFS_VERSION ${PC_NFS_VERSION})
-
-find_library(NFS_LIBRARY NAMES nfs libnfs
-                         PATHS ${PC_NFS_LIBDIR})
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(NFS
                                   REQUIRED_VARS NFS_LIBRARY NFS_INCLUDE_DIR
-                                  VERSION_VAR NFS_VERSION)
+                                  VERSION_VAR LIBNFS_VERSION)
 
 if(NFS_FOUND)
   set(NFS_LIBRARIES ${NFS_LIBRARY})
@@ -38,12 +73,8 @@ if(NFS_FOUND)
 
   set(CMAKE_REQUIRED_INCLUDES "${NFS_INCLUDE_DIR}")
   set(CMAKE_REQUIRED_LIBRARIES ${NFS_LIBRARY})
-  if(CMAKE_SYSTEM_NAME MATCHES "Windows")
-    set(NFS_CXX_INCLUDE "#include <Winsock2.h>")
-    set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} "ws2_32.lib")
-  endif()
 
-# Check for nfs_set_timeout
+  # Check for nfs_set_timeout
   check_cxx_source_compiles("
      ${NFS_CXX_INCLUDE}
      #include <nfsc/libnfs.h>
@@ -57,7 +88,7 @@ if(NFS_FOUND)
     list(APPEND NFS_DEFINITIONS -DHAS_NFS_SET_TIMEOUT)
   endif()
 
-# Check for mount_getexports_timeout
+  # Check for mount_getexports_timeout
   check_cxx_source_compiles("
      ${NFS_CXX_INCLUDE}
      #include <nfsc/libnfs.h>
@@ -76,14 +107,16 @@ if(NFS_FOUND)
 
   if(NOT TARGET NFS::NFS)
     add_library(NFS::NFS UNKNOWN IMPORTED)
-    if(NFS_LIBRARY)
-      set_target_properties(NFS::NFS PROPERTIES
-                                     IMPORTED_LOCATION "${NFS_LIBRARY_RELEASE}")
-    endif()
+
     set_target_properties(NFS::NFS PROPERTIES
+                                   IMPORTED_LOCATION "${NFS_LIBRARY_RELEASE}"
                                    INTERFACE_INCLUDE_DIRECTORIES "${NFS_INCLUDE_DIR}"
-                                   INTERFACE_COMPILE_DEFINITIONS HAS_FILESYSTEM_NFS=1)
+                                   INTERFACE_COMPILE_DEFINITIONS "${NFS_DEFINITIONS}")
+    if(TARGET libnfs)
+      add_dependencies(NFS::NFS libnfs)
+    endif()
   endif()
+  set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP NFS::NFS)
 endif()
 
 mark_as_advanced(NFS_INCLUDE_DIR NFS_LIBRARY)
