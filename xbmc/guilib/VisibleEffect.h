@@ -17,11 +17,12 @@ class TiXmlElement;
 class Tweener;
 class CGUIListItem;
 
-#include "utils/TransformMatrix.h"  // needed for the TransformMatrix member
-#include "utils/Geometry.h"         // for CPoint, CRect
-#include <memory>
 #include "interfaces/info/InfoBool.h"
+#include "utils/ColorUtils.h"
+#include "utils/Geometry.h" // for CPoint, CRect
+#include "utils/TransformMatrix.h" // needed for the TransformMatrix member
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -40,7 +41,17 @@ enum ANIMATION_TYPE
 class CAnimEffect
 {
 public:
-  enum EFFECT_TYPE { EFFECT_TYPE_NONE = 0, EFFECT_TYPE_FADE, EFFECT_TYPE_SLIDE, EFFECT_TYPE_ROTATE_X, EFFECT_TYPE_ROTATE_Y, EFFECT_TYPE_ROTATE_Z, EFFECT_TYPE_ZOOM };
+  enum EFFECT_TYPE
+  {
+    EFFECT_TYPE_NONE = 0,
+    EFFECT_TYPE_FADE,
+    EFFECT_TYPE_FADE_DIFFUSE,
+    EFFECT_TYPE_SLIDE,
+    EFFECT_TYPE_ROTATE_X,
+    EFFECT_TYPE_ROTATE_Y,
+    EFFECT_TYPE_ROTATE_Z,
+    EFFECT_TYPE_ZOOM
+  };
 
   CAnimEffect(const TiXmlElement *node, EFFECT_TYPE effect);
   CAnimEffect(unsigned int delay, unsigned int length, EFFECT_TYPE effect);
@@ -75,14 +86,20 @@ private:
 class CFadeEffect : public CAnimEffect
 {
 public:
-  CFadeEffect(const TiXmlElement *node, bool reverseDefaults);
+  CFadeEffect(const TiXmlElement* node, bool reverseDefaults, EFFECT_TYPE effect);
   CFadeEffect(float start, float end, unsigned int delay, unsigned int length);
+  CFadeEffect(UTILS::COLOR::Color start,
+              UTILS::COLOR::Color end,
+              unsigned int delay,
+              unsigned int length);
   ~CFadeEffect() override = default;
 private:
   void ApplyEffect(float offset, const CPoint &center) override;
 
   float m_startAlpha;
   float m_endAlpha;
+  UTILS::COLOR::ColorFloats m_startColor;
+  UTILS::COLOR::ColorFloats m_endColor;
 };
 
 class CSlideEffect : public CAnimEffect

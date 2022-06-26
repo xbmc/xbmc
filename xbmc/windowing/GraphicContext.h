@@ -123,6 +123,7 @@ public:
   float GetGUIScaleX() const;
   float GetGUIScaleY() const;
   UTILS::COLOR::Color MergeAlpha(UTILS::COLOR::Color color) const;
+  UTILS::COLOR::Color MergeColor(UTILS::COLOR::Color color) const;
   void SetOrigin(float x, float y);
   void RestoreOrigin();
   void SetCameraPosition(const CPoint &camera);

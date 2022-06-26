@@ -40,6 +40,14 @@ struct ColorInfo
   double lightness;
 };
 
+struct ColorFloats
+{
+  float red;
+  float green;
+  float blue;
+  float alpha;
+};
+
 /*! \brief Change the opacity of a given ARGB color
     \param color The original color
     \param opacity The opacity value as a float
@@ -100,5 +108,10 @@ ColorInfo MakeColorInfo(const std::string& hexColor);
 bool comparePairColorInfo(const std::pair<std::string, ColorInfo>& a,
                           const std::pair<std::string, ColorInfo>& b);
 
+/*! \brief Convert given ARGB color to ColorFloats
+    \param color The original color
+    \return the original color converted to ColorFloats
+*/
+ColorFloats ConvertToFloats(const Color argb);
 } // namespace COLOR
 } // namespace UTILS
