@@ -60,12 +60,6 @@ protected:
   virtual void SaveViewToDb(const std::string &path, int windowID, CViewState *viewState = NULL);
   void LoadViewState(const std::string &path, int windowID);
 
-  /*! \brief Add the addons source for the given content type, if the user has suitable addons
-   \param content the type of addon content desired
-   \param label the name of the addons source
-   \param thumb the skin image to use as the icon
-   */
-  void AddAddonsSource(const std::string &content, const std::string &label, const std::string& thumb);
   void AddLiveTVSources();
 
   /*! \brief Add the sort order defined in a smartplaylist

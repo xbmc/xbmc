@@ -21,7 +21,6 @@
 #include "addons/gui/GUIViewStateAddonBrowser.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "events/windows/GUIViewStateEventLog.h"
-#include "filesystem/AddonsDirectory.h"
 #include "games/windows/GUIViewStateWindowGames.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -32,7 +31,6 @@
 #include "profiles/ProfileManager.h"
 #include "programs/GUIViewStatePrograms.h"
 #include "pvr/windows/GUIViewStatePVR.h"
-#include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/SettingUtils.h"
 #include "settings/Settings.h"
@@ -444,25 +442,6 @@ std::string CGUIViewState::GetExtensions()
 VECSOURCES& CGUIViewState::GetSources()
 {
   return m_sources;
-}
-
-void CGUIViewState::AddAddonsSource(const std::string &content, const std::string &label, const std::string &thumb)
-{
-  if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVirtualShares)
-    return;
-
-  CFileItemList items;
-  if (XFILE::CAddonsDirectory::GetScriptsAndPlugins(content, items))
-  { // add the plugin source
-    CMediaSource source;
-    source.strPath = "addons://sources/" + content + "/";
-    source.strName = label;
-    if (!thumb.empty() && CServiceBroker::GetGUI()->GetTextureManager().HasTexture(thumb))
-      source.m_strThumbnailImage = thumb;
-    source.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
-    source.m_ignore = true;
-    m_sources.push_back(source);
-  }
 }
 
 void CGUIViewState::AddLiveTVSources()

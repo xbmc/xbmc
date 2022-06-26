@@ -116,6 +116,26 @@ protected:
   std::string m_strFirstAvailDrive;
 
 private:
+  /*! \brief Loads the addon sources for the different supported browsable addon types
+   */
+  void LoadAddonSources() const;
+
+  /*! \brief Get the addons root source for the given content type
+   \param type the type of addon content desired
+   \return the given CMediaSource for the addon root directory
+   */
+  CMediaSource GetRootAddonTypeSource(const std::string& type) const;
+
+  /*! \brief Generate the addons source for the given content type
+   \param type the type of addon content desired
+   \param label the name of the addons source
+   \param thumb image to use as the icon
+   \return the given CMediaSource for the addon root directory
+   */
+  CMediaSource ComputeRootAddonTypeSource(const std::string& type,
+                                          const std::string& label,
+                                          const std::string& thumb) const;
+
   std::unique_ptr<IStorageProvider> m_platformStorage;
 #ifdef HAS_DVD_DRIVE
   std::shared_ptr<IDiscDriveHandler> m_platformDiscDriveHander;
