@@ -68,7 +68,11 @@ bool CGUIFontTTFGL::FirstBegin()
     internalFormat = GL_R8;
   else
     internalFormat = GL_LUMINANCE;
+  renderSystem->EnableShader(ShaderMethodGL::SM_FONTS);
 #else
+  CRenderSystemGLES* renderSystem =
+      dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
+  renderSystem->EnableGUIShader(ShaderMethodGLES::SM_FONTS);
   GLenum pixformat = GL_ALPHA; // deprecated
   GLenum internalFormat = GL_ALPHA;
 #endif
@@ -131,7 +135,6 @@ void CGUIFontTTFGL::LastEnd()
 
 #ifdef HAS_GL
   CRenderSystemGL* renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
-  renderSystem->EnableShader(ShaderMethodGL::SM_FONTS);
 
   GLint posLoc = renderSystem->ShaderGetPos();
   GLint colLoc = renderSystem->ShaderGetCol();
@@ -187,7 +190,6 @@ void CGUIFontTTFGL::LastEnd()
   // GLES 2.0 version.
   CRenderSystemGLES* renderSystem =
       dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
-  renderSystem->EnableGUIShader(ShaderMethodGLES::SM_FONTS);
 
   GLint posLoc = renderSystem->GUIShaderGetPos();
   GLint colLoc = renderSystem->GUIShaderGetCol();
