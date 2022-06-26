@@ -611,6 +611,9 @@ bool CApplication::Initialize()
   if (!LoadLanguage(false))
     return false;
 
+  // load media manager sources (e.g. root addon type sources depend on language strings to be available)
+  CServiceBroker::GetMediaManager().LoadSources();
+
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
   profileManager->GetEventLog().Add(EventPtr(new CNotificationEvent(
