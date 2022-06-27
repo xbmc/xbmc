@@ -130,7 +130,7 @@ constexpr const int GUI_MSG_SHOW_PICTURE            = GUI_MSG_USER + 36;
 constexpr const int GUI_MSG_EVENT_ADDED             = GUI_MSG_USER + 39;
 constexpr const int GUI_MSG_EVENT_REMOVED           = GUI_MSG_USER + 40;
 
-// Send to RDS Radiotext handlers to inform about changed data
+// Send to RDS RadioText handlers to inform about changed data
 constexpr const int GUI_MSG_UPDATE_RADIOTEXT        = GUI_MSG_USER + 41;
 
 constexpr const int GUI_MSG_PLAYBACK_ERROR          = GUI_MSG_USER + 42;

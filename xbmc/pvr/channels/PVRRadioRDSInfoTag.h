@@ -42,7 +42,7 @@ public:
   std::string GetRadioText(unsigned int line) const;
   void SetProgramServiceText(const std::string& strPSText);
 
-  /**! RDS Radiotext related information */
+  /**! RDS RadioText related information */
   void SetTitle(const std::string& strTitle);
   void SetBand(const std::string& strBand);
   void SetArtist(const std::string& strArtist);
@@ -118,11 +118,11 @@ public:
   void SetRadioStyle(const std::string& style);
   const std::string GetRadioStyle() const;
 
-  void SetPlayingRadiotext(bool yesNo);
-  bool IsPlayingRadiotext() const;
+  void SetPlayingRadioText(bool yesNo);
+  bool IsPlayingRadioText() const;
 
-  void SetPlayingRadiotextPlus(bool yesNo);
-  bool IsPlayingRadiotextPlus() const;
+  void SetPlayingRadioTextPlus(bool yesNo);
+  bool IsPlayingRadioTextPlus() const;
 
 private:
   CPVRRadioRDSInfoTag(const CPVRRadioRDSInfoTag& tag) = delete;
@@ -202,7 +202,7 @@ private:
   std::string m_strEMailStudio;
   std::string m_strSMSStudio;
 
-  bool m_bHaveRadiotext;
-  bool m_bHaveRadiotextPlus;
+  bool m_bHaveRadioText;
+  bool m_bHaveRadioTextPlus;
 };
 }

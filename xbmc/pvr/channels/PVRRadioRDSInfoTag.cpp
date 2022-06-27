@@ -138,8 +138,8 @@ bool CPVRRadioRDSInfoTag::operator==(const CPVRRadioRDSInfoTag& right) const
       m_strProgramServiceText == right.m_strProgramServiceText &&
       m_strProgramServiceLine0 == right.m_strProgramServiceLine0 &&
       m_strProgramServiceLine1 == right.m_strProgramServiceLine1 &&
-      m_bHaveRadiotext == right.m_bHaveRadiotext &&
-      m_bHaveRadiotextPlus == right.m_bHaveRadiotextPlus);
+      m_bHaveRadioText == right.m_bHaveRadioText &&
+      m_bHaveRadioTextPlus == right.m_bHaveRadioTextPlus);
 }
 
 bool CPVRRadioRDSInfoTag::operator !=(const CPVRRadioRDSInfoTag& right) const
@@ -186,8 +186,8 @@ void CPVRRadioRDSInfoTag::Clear()
   m_strProgramServiceLine0.erase();
   m_strProgramServiceLine1.erase();
 
-  m_bHaveRadiotext = false;
-  m_bHaveRadiotextPlus = false;
+  m_bHaveRadioText = false;
+  m_bHaveRadioTextPlus = false;
 }
 
 void CPVRRadioRDSInfoTag::ResetSongInformation()
@@ -655,28 +655,28 @@ void CPVRRadioRDSInfoTag::SetProgramServiceText(const std::string& strPSText)
   }
 }
 
-void CPVRRadioRDSInfoTag::SetPlayingRadiotext(bool yesNo)
+void CPVRRadioRDSInfoTag::SetPlayingRadioText(bool yesNo)
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  m_bHaveRadiotext = yesNo;
+  m_bHaveRadioText = yesNo;
 }
 
-bool CPVRRadioRDSInfoTag::IsPlayingRadiotext() const
+bool CPVRRadioRDSInfoTag::IsPlayingRadioText() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  return m_bHaveRadiotext;
+  return m_bHaveRadioText;
 }
 
-void CPVRRadioRDSInfoTag::SetPlayingRadiotextPlus(bool yesNo)
+void CPVRRadioRDSInfoTag::SetPlayingRadioTextPlus(bool yesNo)
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  m_bHaveRadiotextPlus = yesNo;
+  m_bHaveRadioTextPlus = yesNo;
 }
 
-bool CPVRRadioRDSInfoTag::IsPlayingRadiotextPlus() const
+bool CPVRRadioRDSInfoTag::IsPlayingRadioTextPlus() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  return m_bHaveRadiotextPlus;
+  return m_bHaveRadioTextPlus;
 }
 
 std::string CPVRRadioRDSInfoTag::Trim(const std::string& value)

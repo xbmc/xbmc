@@ -1623,10 +1623,10 @@ bool CPVRGUIInfo::GetRadioRDSBool(const CFileItem* item, const CGUIInfo& info, b
     switch (info.m_info)
     {
       case RDS_HAS_RADIOTEXT:
-        bValue = tag->IsPlayingRadiotext();
+        bValue = tag->IsPlayingRadioText();
         return true;
       case RDS_HAS_RADIOTEXT_PLUS:
-        bValue = tag->IsPlayingRadiotextPlus();
+        bValue = tag->IsPlayingRadioTextPlus();
         return true;
       case RDS_HAS_HOTLINE_DATA:
         bValue = (!tag->GetEMailHotline().empty() || !tag->GetPhoneHotline().empty());

@@ -8386,7 +8386,7 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
 ///   \table_row3{   <b>`RDS.HasRadioText`</b>,
 ///                  \anchor RDS_HasRadioText
 ///                  _boolean_,
-///     @return **True** if RDS contains also Radiotext.
+///     @return **True** if RDS contains also RadioText.
 ///     <p><hr>
 ///     @skinning_v16 **[New Boolean Condition]** \link RDS_HasRadioText `RDS.HasRadioText`\endlink
 ///     <p>
@@ -8394,7 +8394,7 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
 ///   \table_row3{   <b>`RDS.HasRadioTextPlus`</b>,
 ///                  \anchor RDS_HasRadioTextPlus
 ///                  _boolean_,
-///     @return **True** if RDS with Radiotext contains also the plus information.
+///     @return **True** if RDS with RadioText contains also the plus information.
 ///     <p><hr>
 ///     @skinning_v16 **[New Boolean Condition]** \link RDS_HasRadioTextPlus `RDS.HasRadioTextPlus`\endlink
 ///     <p>
@@ -8403,7 +8403,7 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
 ///                  \anchor RDS_HasHotline
 ///                  _boolean_,
 ///     @return **True** if a hotline phone number is present.
-///     @note Only available on RadiotextPlus
+///     @note Only available on RadioText Plus
 ///     <p><hr>
 ///     @skinning_v16 **[New Boolean Condition]** \link RDS_HasHotline `RDS.HasHotline`\endlink
 ///     <p>
@@ -8412,7 +8412,7 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
 ///                  \anchor RDS_HasStudio
 ///                  _boolean_,
 ///     @return **True** if a studio name is present.
-///     @note Only available on RadiotextPlus
+///     @note Only available on RadioText Plus
 ///     <p><hr>
 ///     @skinning_v16 **[New Boolean Condition]** \link RDS_HasStudio `RDS.HasStudio`\endlink
 ///     <p>
@@ -8447,7 +8447,7 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
 ///                  \anchor RDS_Title
 ///                  _string_,
 ///     @return The title of item; e.g. track title of an album.
-///     @note Only available on RadiotextPlus
+///     @note Only available on RadioText Plus
 ///     <p><hr>
 ///     @skinning_v16 **[New Infolabel]** \link RDS_Title `RDS.Title`\endlink
 ///     <p>
@@ -8456,7 +8456,7 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
 ///                  \anchor RDS_Artist
 ///                  _string_,
 ///     @return A person or band/collective generally considered responsible for the work.
-///     @note Only available on RadiotextPlus
+///     @note Only available on RadioText Plus
 ///     <p><hr>
 ///     @skinning_v16 **[New Infolabel]** \link RDS_Artist `RDS.Artist`\endlink
 ///     <p>
@@ -8465,7 +8465,7 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
 ///                  \anchor RDS_Band
 ///                  _string_,
 ///     @return The band/orchestra/musician.
-///     @note Only available on RadiotextPlus
+///     @note Only available on RadioText Plus
 ///     <p><hr>
 ///     @skinning_v16 **[New Infolabel]** \link RDS_Band `RDS.Band`\endlink
 ///     <p>
@@ -8474,7 +8474,7 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
 ///                  \anchor RDS_Composer
 ///                  _string_,
 ///     @return The name of the original composer/author.
-///     @note Only available on RadiotextPlus
+///     @note Only available on RadioText Plus
 ///     <p><hr>
 ///     @skinning_v16 **[New Infolabel]** \link RDS_Composer `RDS.Composer`\endlink
 ///     <p>
@@ -8484,7 +8484,7 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
 ///                  _string_,
 ///     @return The artist(s) who performed the work. In classical music this would be
 ///     the conductor.
-///     @note Only available on RadiotextPlus
+///     @note Only available on RadioText Plus
 ///     <p><hr>
 ///     @skinning_v16 **[New Infolabel]** \link RDS_Conductor `RDS.Conductor`\endlink
 ///     <p>
@@ -8493,7 +8493,7 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
 ///                  \anchor RDS_Album
 ///                  _string_,
 ///     @return The album of the song.
-///     @note Only available on RadiotextPlus
+///     @note Only available on RadioText Plus
 ///     <p><hr>
 ///     @skinning_v16 **[New Infolabel]** \link RDS_Album `RDS.Album`\endlink
 ///     <p>
@@ -8503,7 +8503,7 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
 ///                  _string_,
 ///     @return The track number of the item on the album on which it was originally
 ///     released.
-///     @note Only be available on RadiotextPlus
+///     @note Only be available on RadioText Plus
 ///     <p><hr>
 ///     @skinning_v16 **[New Infolabel]** \link RDS_TrackNumber `RDS.TrackNumber`\endlink
 ///     <p>
@@ -8557,7 +8557,7 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
 ///                  \anchor RDS_Comment
 ///                  _string_,
 ///     @return The radio station comment string if available.
-///     @note Only available on RadiotextPlus)
+///     @note Only available on RadioText Plus
 ///     <p><hr>
 ///     @skinning_v16 **[New Infolabel]** \link RDS_Comment `RDS.Comment`\endlink
 ///     <p>
@@ -8566,7 +8566,7 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
 ///                  \anchor RDS_InfoNews
 ///                  _string_,
 ///     @return The message / headline (if available).
-///     @note Only available on RadiotextPlus
+///     @note Only available on RadioText Plus
 ///     <p><hr>
 ///     @skinning_v16 **[New Infolabel]** \link RDS_InfoNews `RDS.InfoNews`\endlink
 ///     <p>
@@ -8575,7 +8575,7 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
 ///                  \anchor RDS_InfoNewsLocal
 ///                  _string_,
 ///     @return The local information news sended from radio channel (if available).
-///     @note Only available on RadiotextPlus
+///     @note Only available on RadioText Plus
 ///     <p><hr>
 ///     @skinning_v16 **[New Infolabel]** \link RDS_InfoNewsLocal `RDS.InfoNewsLocal`\endlink
 ///     <p>
@@ -8585,7 +8585,7 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
 ///                  _string_,
 ///     @return The stock information; either as one part or as several distinct parts:
 ///     "name 99latest value 99change 99high 99low 99volume" (if available).
-///     @note Only available on RadiotextPlus
+///     @note Only available on RadioText Plus
 ///     <p><hr>
 ///     @skinning_v16 **[New Infolabel]** \link RDS_InfoStock `RDS.InfoStock`\endlink
 ///     <p>
@@ -8594,7 +8594,7 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
 ///                  \anchor RDS_InfoStockSize
 ///                  _string_,
 ///     @return The number of rows present in stock information.
-///     @note Only available on RadiotextPlus
+///     @note Only available on RadioText Plus
 ///     <p><hr>
 ///     @skinning_v16 **[New Infolabel]** \link RDS_InfoStockSize `RDS.InfoStockSize`\endlink
 ///     <p>
@@ -8604,7 +8604,7 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
 ///                  _string_,
 ///     @return The result of a match; either as one part or as several distinct parts:
 ///     "match 99result"\, e.g. "Bayern München : Borussia 995:5"  (if available).
-///     @note Only available on RadiotextPlus
+///     @note Only available on RadioText Plus
 ///     <p><hr>
 ///     @skinning_v16 **[New Infolabel]** \link RDS_InfoSport `RDS.InfoSport`\endlink
 ///     <p>
@@ -8613,7 +8613,7 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
 ///                  \anchor RDS_InfoSportSize
 ///                  _string_,
 ///     @return The number of rows present in sport information.
-///     @note Only available on RadiotextPlus
+///     @note Only available on RadioText Plus
 ///     <p><hr>
 ///     @skinning_v16 **[New Infolabel]** \link RDS_InfoSportSize `RDS.InfoSportSize`\endlink
 ///     <p>
@@ -8622,7 +8622,7 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
 ///                  \anchor RDS_InfoLottery
 ///                  _string_,
 ///     @return The raffle / lottery: "key word 99values" (if available).
-///     @note Only available on RadiotextPlus
+///     @note Only available on RadioText Plus
 ///     <p><hr>
 ///     @skinning_v16 **[New Infolabel]** \link RDS_InfoLottery `RDS.InfoLottery`\endlink
 ///     <p>
@@ -8631,7 +8631,7 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
 ///                  \anchor RDS_InfoLotterySize
 ///                  _string_,
 ///     @return The number of rows present in lottery information.
-///     @note Only available on RadiotextPlus
+///     @note Only available on RadioText Plus
 ///     <p><hr>
 ///     @skinning_v16 **[New Infolabel]** \link RDS_InfoLotterySize `RDS.InfoLotterySize`\endlink
 ///     <p>
@@ -8640,7 +8640,7 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
 ///                  \anchor RDS_InfoWeather
 ///                  _string_,
 ///     @return The weather information (if available).
-///     @note Only available on RadiotextPlus
+///     @note Only available on RadioText Plus
 ///     <p><hr>
 ///     @skinning_v16 **[New Infolabel]** \link RDS_InfoWeather `RDS.InfoWeather`\endlink
 ///     <p>
@@ -8649,7 +8649,7 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
 ///                  \anchor RDS_InfoWeatherSize
 ///                  _string_,
 ///     @return The number of rows present in weather information.
-///     @note Only available on RadiotextPlus
+///     @note Only available on RadioText Plus
 ///     <p><hr>
 ///     @skinning_v16 **[New Infolabel]** \link RDS_InfoWeatherSize `RDS.InfoWeatherSize`\endlink
 ///     <p>
@@ -8658,7 +8658,7 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
 ///                  \anchor RDS_InfoCinema
 ///                  _string_,
 ///     @return The information about movies in cinema (if available).
-///     @note Only available on RadiotextPlus
+///     @note Only available on RadioText Plus
 ///     <p><hr>
 ///     @skinning_v16 **[New Infolabel]** \link RDS_InfoCinema `RDS.InfoCinema`\endlink
 ///     <p>
@@ -8667,7 +8667,7 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
 ///                  \anchor RDS_InfoCinemaSize
 ///                  _string_,
 ///     @return The number of rows present in cinema information.
-///     @note Only available on RadiotextPlus
+///     @note Only available on RadioText Plus
 ///     <p><hr>
 ///     @skinning_v16 **[New Infolabel]** \link RDS_InfoCinemaSize `RDS.InfoCinemaSize`\endlink
 ///     <p>
@@ -8677,7 +8677,7 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
 ///                  _string_,
 ///     @return The horoscope; either as one part or as two distinct parts:
 ///     "key word 99text"\, e.g. "sign of the zodiac 99blablabla" (if available).
-///     @note Only available on RadiotextPlus
+///     @note Only available on RadioText Plus
 ///     <p><hr>
 ///     @skinning_v16 **[New Infolabel]** \link RDS_InfoHoroscope `RDS.InfoHoroscope`\endlink
 ///     <p>
@@ -8686,7 +8686,7 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
 ///                  \anchor RDS_InfoHoroscopeSize
 ///                  _string_,
 ///     @return The Number of rows present in horoscope information.
-///     @note Only available on RadiotextPlus
+///     @note Only available on RadioText Plus
 ///     <p><hr>
 ///     @skinning_v16 **[New Infolabel]** \link RDS_InfoHoroscopeSize `RDS.InfoHoroscopeSize`\endlink
 ///     <p>
@@ -8695,7 +8695,7 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
 ///                  \anchor RDS_InfoOther
 ///                  _string_,
 ///     @return Other information\, not especially specified: "key word 99info" (if available).
-///     @note Only available on RadiotextPlus
+///     @note Only available on RadioText Plus
 ///     <p><hr>
 ///     @skinning_v16 **[New Infolabel]** \link RDS_InfoOther `RDS.InfoOther`\endlink
 ///     <p>
@@ -8704,7 +8704,7 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
 ///                  \anchor RDS_InfoOtherSize
 ///                  _string_,
 ///     @return The number of rows present with other information.
-///     @note Only available on RadiotextPlus
+///     @note Only available on RadioText Plus
 ///     <p><hr>
 ///     @skinning_v16 **[New Infolabel]** \link RDS_InfoOtherSize `RDS.InfoOtherSize`\endlink
 ///     <p>
@@ -8748,7 +8748,7 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
 ///                  \anchor RDS_ProgEditStaff
 ///                  _string_,
 ///     @return The name of the editorial staff; e.g. name of editorial journalist.
-///     @note Only available on RadiotextPlus
+///     @note Only available on RadioText Plus
 ///     <p><hr>
 ///     @skinning_v16 **[New Infolabel]** \link RDS_ProgEditStaff `RDS.ProgEditStaff`\endlink
 ///     <p>
@@ -8757,7 +8757,7 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
 ///                  \anchor RDS_ProgHomepage
 ///                  _string_,
 ///     @return The Link to radio station homepage
-///     @note Only available on RadiotextPlus
+///     @note Only available on RadioText Plus
 ///     <p><hr>
 ///     @skinning_v16 **[New Infolabel]** \link RDS_ProgHomepage `RDS.ProgHomepage`\endlink
 ///     <p>
@@ -8774,7 +8774,7 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
 ///                  \anchor RDS_PhoneHotline
 ///                  _string_,
 ///     @return The telephone number of the radio station's hotline.
-///     @note Only available on RadiotextPlus
+///     @note Only available on RadioText Plus
 ///     <p><hr>
 ///     @skinning_v16 **[New Infolabel]** \link RDS_PhoneHotline `RDS.PhoneHotline`\endlink
 ///     <p>
@@ -8783,7 +8783,7 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
 ///                  \anchor RDS_PhoneStudio
 ///                  _string_,
 ///     @return The telephone number of the radio station's studio.
-///     @note Only available on RadiotextPlus
+///     @note Only available on RadioText Plus
 ///     <p><hr>
 ///     @skinning_v16 **[New Infolabel]** \link RDS_PhoneStudio `RDS.PhoneStudio`\endlink
 ///     <p>
@@ -8793,7 +8793,7 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
 ///                  _string_,
 ///     @return The sms number of the radio stations studio (to send directly a sms to
 ///     the studio) (if available).
-///     @note Only available on RadiotextPlus
+///     @note Only available on RadioText Plus
 ///     <p><hr>
 ///     @skinning_v16 **[New Infolabel]** \link RDS_SmsStudio `RDS.SmsStudio`\endlink
 ///     <p>
@@ -8802,7 +8802,7 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
 ///                  \anchor RDS_EmailHotline
 ///                  _string_,
 ///     @return The email address of the radio stations hotline (if available).
-///     @note Only available on RadiotextPlus
+///     @note Only available on RadioText Plus
 ///     <p><hr>
 ///     @skinning_v16 **[New Infolabel]** \link RDS_EmailHotline `RDS.EmailHotline`\endlink
 ///     <p>
@@ -8811,7 +8811,7 @@ const infomap pvr_times[] =      {{ "epgeventduration",       PVR_EPG_EVENT_DURA
 ///                  \anchor RDS_EmailStudio
 ///                  _string_,
 ///     @return The email address of the radio station's studio (if available).
-///     @note Only available on RadiotextPlus
+///     @note Only available on RadioText Plus
 ///     <p><hr>
 ///     @skinning_v16 **[New Infolabel]** \link RDS_EmailStudio `RDS.EmailStudio`\endlink
 ///     <p>

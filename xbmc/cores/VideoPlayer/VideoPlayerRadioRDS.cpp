@@ -1025,7 +1025,7 @@ inline void rtrim_str(std::string &text)
 
 unsigned int CDVDRadioRDSData::DecodeRT(uint8_t *msgElement, unsigned int len)
 {
-  m_currentInfoTag->SetPlayingRadiotext(true);
+  m_currentInfoTag->SetPlayingRadioText(true);
 
   int bufConf = (msgElement[UECP_ME_DATA] >> 5) & 0x03;
   unsigned int msgLength = msgElement[UECP_ME_MEL];
@@ -1146,7 +1146,7 @@ unsigned int CDVDRadioRDSData::DecodeRTPlus(uint8_t *msgElement, unsigned int le
   if (m_RTPlus_iToggle == 0)    // RTplus tags V2.1, only if RT
     return 10;
 
-  m_currentInfoTag->SetPlayingRadiotextPlus(true);
+  m_currentInfoTag->SetPlayingRadioTextPlus(true);
 
   if (msgElement[1] > len-2 || msgElement[1] != 8)  // byte 6 = MEL, only 8 byte for 2 tags
   {
