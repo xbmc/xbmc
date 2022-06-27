@@ -1133,14 +1133,10 @@ bool CPVRGUIInfo::GetRadioRDSLabel(const CFileItem* item, const CGUIInfo& info, 
       case RDS_AUDIO_LANG:
         strValue = tag->GetLanguage();
         return true;
+      case RDS_GET_RADIOTEXT_LINE:
+        strValue = tag->GetRadioText(info.GetData1());
+        return true;
     }
-  }
-
-  switch (info.m_info)
-  {
-    case RDS_GET_RADIOTEXT_LINE:
-      strValue = g_application.GetAppPlayer().GetRadioText(info.GetData1());
-      return true;
   }
   return false;
 }
@@ -1627,10 +1623,10 @@ bool CPVRGUIInfo::GetRadioRDSBool(const CFileItem* item, const CGUIInfo& info, b
     switch (info.m_info)
     {
       case RDS_HAS_RADIOTEXT:
-        bValue = tag->IsPlayingRadiotext();
+        bValue = tag->IsPlayingRadioText();
         return true;
       case RDS_HAS_RADIOTEXT_PLUS:
-        bValue = tag->IsPlayingRadiotextPlus();
+        bValue = tag->IsPlayingRadioTextPlus();
         return true;
       case RDS_HAS_HOTLINE_DATA:
         bValue = (!tag->GetEMailHotline().empty() || !tag->GetPhoneHotline().empty());

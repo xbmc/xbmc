@@ -117,40 +117,29 @@ bool CPVRRadioRDSInfoTag::operator==(const CPVRRadioRDSInfoTag& right) const
     return true;
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  return (m_strLanguage == right.m_strLanguage &&
-          m_strCountry == right.m_strCountry &&
-          m_strTitle == right.m_strTitle &&
-          m_strBand == right.m_strBand &&
-          m_strArtist == right.m_strArtist &&
-          m_strComposer == right.m_strComposer &&
-          m_strConductor == right.m_strConductor &&
-          m_strAlbum == right.m_strAlbum &&
-          m_iAlbumTracknumber == right.m_iAlbumTracknumber &&
-          m_strInfoNews == right.m_strInfoNews &&
-          m_strInfoNewsLocal == right.m_strInfoNewsLocal &&
-          m_strInfoSport == right.m_strInfoSport &&
-          m_strInfoStock == right.m_strInfoStock &&
-          m_strInfoWeather == right.m_strInfoWeather &&
-          m_strInfoLottery == right.m_strInfoLottery &&
-          m_strInfoOther == right.m_strInfoOther &&
-          m_strProgStyle == right.m_strProgStyle &&
-          m_strProgHost == right.m_strProgHost &&
-          m_strProgStation == right.m_strProgStation &&
-          m_strProgWebsite == right.m_strProgWebsite &&
-          m_strProgNow == right.m_strProgNow &&
-          m_strProgNext == right.m_strProgNext &&
-          m_strPhoneHotline == right.m_strPhoneHotline &&
-          m_strEMailHotline == right.m_strEMailHotline &&
-          m_strPhoneStudio == right.m_strPhoneStudio &&
-          m_strEMailStudio == right.m_strEMailStudio &&
-          m_strSMSStudio == right.m_strSMSStudio &&
-          m_strRadioStyle == right.m_strRadioStyle &&
-          m_strInfoHoroscope == right.m_strInfoHoroscope &&
-          m_strInfoCinema == right.m_strInfoCinema &&
-          m_strComment == right.m_strComment &&
-          m_strEditorialStaff == right.m_strEditorialStaff &&
-          m_bHaveRadiotext == right.m_bHaveRadiotext &&
-          m_bHaveRadiotextPlus == right.m_bHaveRadiotextPlus);
+  return (
+      m_strLanguage == right.m_strLanguage && m_strCountry == right.m_strCountry &&
+      m_strTitle == right.m_strTitle && m_strBand == right.m_strBand &&
+      m_strArtist == right.m_strArtist && m_strComposer == right.m_strComposer &&
+      m_strConductor == right.m_strConductor && m_strAlbum == right.m_strAlbum &&
+      m_iAlbumTracknumber == right.m_iAlbumTracknumber && m_strInfoNews == right.m_strInfoNews &&
+      m_strInfoNewsLocal == right.m_strInfoNewsLocal && m_strInfoSport == right.m_strInfoSport &&
+      m_strInfoStock == right.m_strInfoStock && m_strInfoWeather == right.m_strInfoWeather &&
+      m_strInfoLottery == right.m_strInfoLottery && m_strInfoOther == right.m_strInfoOther &&
+      m_strProgStyle == right.m_strProgStyle && m_strProgHost == right.m_strProgHost &&
+      m_strProgStation == right.m_strProgStation && m_strProgWebsite == right.m_strProgWebsite &&
+      m_strProgNow == right.m_strProgNow && m_strProgNext == right.m_strProgNext &&
+      m_strPhoneHotline == right.m_strPhoneHotline &&
+      m_strEMailHotline == right.m_strEMailHotline && m_strPhoneStudio == right.m_strPhoneStudio &&
+      m_strEMailStudio == right.m_strEMailStudio && m_strSMSStudio == right.m_strSMSStudio &&
+      m_strRadioStyle == right.m_strRadioStyle && m_strInfoHoroscope == right.m_strInfoHoroscope &&
+      m_strInfoCinema == right.m_strInfoCinema && m_strComment == right.m_strComment &&
+      m_strEditorialStaff == right.m_strEditorialStaff && m_strRadioText == right.m_strRadioText &&
+      m_strProgramServiceText == right.m_strProgramServiceText &&
+      m_strProgramServiceLine0 == right.m_strProgramServiceLine0 &&
+      m_strProgramServiceLine1 == right.m_strProgramServiceLine1 &&
+      m_bHaveRadioText == right.m_bHaveRadioText &&
+      m_bHaveRadioTextPlus == right.m_bHaveRadioTextPlus);
 }
 
 bool CPVRRadioRDSInfoTag::operator !=(const CPVRRadioRDSInfoTag& right) const
@@ -192,9 +181,13 @@ void CPVRRadioRDSInfoTag::Clear()
   m_strSMSStudio.erase();
   m_strRadioStyle = "unknown";
   m_strEditorialStaff.Clear();
+  m_strRadioText.Clear();
+  m_strProgramServiceText.Clear();
+  m_strProgramServiceLine0.erase();
+  m_strProgramServiceLine1.erase();
 
-  m_bHaveRadiotext = false;
-  m_bHaveRadiotextPlus = false;
+  m_bHaveRadioText = false;
+  m_bHaveRadioTextPlus = false;
 }
 
 void CPVRRadioRDSInfoTag::ResetSongInformation()
@@ -616,28 +609,74 @@ const std::string CPVRRadioRDSInfoTag::GetRadioStyle() const
   return m_strRadioStyle;
 }
 
-void CPVRRadioRDSInfoTag::SetPlayingRadiotext(bool yesNo)
+void CPVRRadioRDSInfoTag::SetRadioText(const std::string& strRadioText)
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  m_bHaveRadiotext = yesNo;
+  m_strRadioText.Add(strRadioText);
 }
 
-bool CPVRRadioRDSInfoTag::IsPlayingRadiotext() const
+std::string CPVRRadioRDSInfoTag::GetRadioText(unsigned int line) const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  return m_bHaveRadiotext;
+
+  if (m_strRadioText.Size() > 0)
+  {
+    return m_strRadioText.GetLine(line);
+  }
+  else if (line == 0)
+  {
+    return m_strProgramServiceLine0;
+  }
+  else if (line == 1)
+  {
+    return m_strProgramServiceLine1;
+  }
+  return {};
 }
 
-void CPVRRadioRDSInfoTag::SetPlayingRadiotextPlus(bool yesNo)
+void CPVRRadioRDSInfoTag::SetProgramServiceText(const std::string& strPSText)
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  m_bHaveRadiotextPlus = yesNo;
+  m_strProgramServiceText.Add(strPSText);
+
+  m_strProgramServiceLine0.erase();
+  for (size_t i = m_strProgramServiceText.MaxSize() / 2 + 1; i < m_strProgramServiceText.MaxSize();
+       ++i)
+  {
+    m_strProgramServiceLine0 += m_strProgramServiceText.GetLine(i);
+    m_strProgramServiceLine0 += ' ';
+  }
+
+  m_strProgramServiceLine1.erase();
+  for (size_t i = 0; i < m_strProgramServiceText.MaxSize() / 2; ++i)
+  {
+    m_strProgramServiceLine1 += m_strProgramServiceText.GetLine(i);
+    m_strProgramServiceLine1 += ' ';
+  }
 }
 
-bool CPVRRadioRDSInfoTag::IsPlayingRadiotextPlus() const
+void CPVRRadioRDSInfoTag::SetPlayingRadioText(bool yesNo)
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  return m_bHaveRadiotextPlus;
+  m_bHaveRadioText = yesNo;
+}
+
+bool CPVRRadioRDSInfoTag::IsPlayingRadioText() const
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  return m_bHaveRadioText;
+}
+
+void CPVRRadioRDSInfoTag::SetPlayingRadioTextPlus(bool yesNo)
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  m_bHaveRadioTextPlus = yesNo;
+}
+
+bool CPVRRadioRDSInfoTag::IsPlayingRadioTextPlus() const
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  return m_bHaveRadioTextPlus;
 }
 
 std::string CPVRRadioRDSInfoTag::Trim(const std::string& value)
@@ -653,8 +692,8 @@ bool CPVRRadioRDSInfoTag::Info::operator==(const CPVRRadioRDSInfoTag::Info& righ
   if (this == &right)
     return true;
 
-  return (m_infoText == right.m_infoText &&
-          m_data == right.m_data);
+  return (m_infoText == right.m_infoText && m_data == right.m_data &&
+          m_maxSize == right.m_maxSize && m_prependData == right.m_prependData);
 }
 
 void CPVRRadioRDSInfoTag::Info::Clear()
@@ -671,10 +710,18 @@ void CPVRRadioRDSInfoTag::Info::Add(const std::string& text)
   if (std::find(m_data.begin(), m_data.end(), tmp) != m_data.end())
     return;
 
-  if (m_data.size() >= 10)
-    m_data.pop_front();
+  if (m_data.size() >= m_maxSize)
+  {
+    if (m_prependData)
+      m_data.pop_back();
+    else
+      m_data.pop_front();
+  }
 
-  m_data.emplace_back(std::move(tmp));
+  if (m_prependData)
+    m_data.emplace_front(std::move(tmp));
+  else
+    m_data.emplace_back(std::move(tmp));
 
   m_infoText.clear();
   for (const std::string& data : m_data)

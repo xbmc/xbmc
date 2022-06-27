@@ -306,8 +306,6 @@ public:
   std::shared_ptr<TextCacheStruct_t> GetTeletextCache() override;
   void LoadPage(int p, int sp, unsigned char* buffer) override;
 
-  std::string GetRadioText(unsigned int line) override;
-
   int  GetChapterCount() override;
   int  GetChapter() override;
   void GetChapterName(std::string& strChapterName, int chapterIdx=-1) override;

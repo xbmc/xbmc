@@ -3341,14 +3341,6 @@ void CVideoPlayer::LoadPage(int p, int sp, unsigned char* buffer)
   return m_VideoPlayerTeletext->LoadPage(p, sp, buffer);
 }
 
-std::string CVideoPlayer::GetRadioText(unsigned int line)
-{
-  if (m_CurrentRadioRDS.id < 0)
-      return "";
-
-  return m_VideoPlayerRadioRDS->GetRadioText(line);
-}
-
 void CVideoPlayer::SeekTime(int64_t iTime)
 {
   int64_t seekOffset = iTime - GetTime();

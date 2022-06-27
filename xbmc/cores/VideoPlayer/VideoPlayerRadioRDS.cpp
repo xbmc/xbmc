@@ -572,14 +572,6 @@ void CDVDRadioRDSData::ResetRDSCache()
 
   m_EPP_TM_INFO_ExtendedCountryCode = 0;
 
-  m_PS_Present = false;
-  m_PS_Index = 0;
-  for (auto& text : m_PS_Text)
-  {
-    memset(text, 0x20, 8);
-    text[8] = 0;
-  }
-
   m_DI_IsStereo = true;
   m_DI_ArtificialHead = false;
   m_DI_Compressed = false;
@@ -595,16 +587,9 @@ void CDVDRadioRDSData::ResetRDSCache()
   m_PTYN[8] = 0;
   m_PTYN_Present = false;
 
-  m_RT_Present = false;
-  m_RT_MaxSize = 4;
   m_RT_NewItem = false;
-  m_RT_Index = 0;
-  for (int i = 0; i < 5; ++i)
-    memset(m_RT_Text[i], 0, RT_MEL);
-  m_RT.clear();
 
   m_RTPlus_TToggle = false;
-  m_RTPlus_Present = false;
   m_RTPlus_Show = false;
   m_RTPlus_iToggle = 0;
   m_RTPlus_ItemToggle = 1;
@@ -679,48 +664,6 @@ void CDVDRadioRDSData::Flush()
 void CDVDRadioRDSData::OnExit()
 {
   CLog::Log(LOGINFO, "Radio UECP (RDS) Processor - thread end");
-}
-
-std::string CDVDRadioRDSData::GetRadioText(unsigned int line)
-{
-  std::string str = "";
-
-  if (m_RT_Present)
-  {
-    if (line > MAX_RADIOTEXT_LISTSIZE)
-      return "";
-
-    if ((int)line+1 > m_RT_MaxSize)
-    {
-      m_RT_MaxSize = line+1;
-      return "";
-    }
-    if (m_RT.size() <= line)
-      return "";
-
-    return m_RT[line];
-  }
-  else if (m_PS_Present)
-  {
-    std::string temp = "";
-    int ind = (m_PS_Index == 0) ? 11 : m_PS_Index - 1;
-    for (int i = ind+1; i < PS_TEXT_ENTRIES; ++i)
-    {
-      temp += m_PS_Text[i];
-      temp += ' ';
-    }
-    for (int i = 0; i <= ind; ++i)
-    {
-      temp += m_PS_Text[i];
-      temp += ' ';
-    }
-
-    if (line == 0)
-      str.insert(0, temp, 6*9, 6*9);
-    else if (line == 1)
-      str.insert(0, temp.c_str(), 6*9);
-  }
-  return str;
 }
 
 void CDVDRadioRDSData::SetRadioStyle(const std::string& genre)
@@ -878,17 +821,17 @@ unsigned int CDVDRadioRDSData::DecodePS(uint8_t *msgElement)
 {
   uint8_t *text = msgElement+3;
 
+  char decodedText[9] = {};
   for (int i = 0; i < 8; ++i)
   {
     if (text[i] <= 0xfe)
-      m_PS_Text[m_PS_Index][i] = (text[i] >= 0x80) ? sRDSAddChar[text[i]-0x80] : text[i]; //!< additional rds-character, see RBDS-Standard, Annex E
+      decodedText[i] = (text[i] >= 0x80)
+                           ? sRDSAddChar[text[i] - 0x80]
+                           : text[i]; //!< additional rds-character, see RBDS-Standard, Annex E
   }
 
-  ++m_PS_Index;
-  if (m_PS_Index >= PS_TEXT_ENTRIES)
-    m_PS_Index = 0;
+  m_currentInfoTag->SetProgramServiceText(decodedText);
 
-  m_PS_Present = true;
   return 11;
 }
 
@@ -1082,11 +1025,7 @@ inline void rtrim_str(std::string &text)
 
 unsigned int CDVDRadioRDSData::DecodeRT(uint8_t *msgElement, unsigned int len)
 {
-  if (!m_RT_Present)
-  {
-    m_currentInfoTag->SetPlayingRadiotext(true);
-    m_RT_Present = true;
-  }
+  m_currentInfoTag->SetPlayingRadioText(true);
 
   int bufConf = (msgElement[UECP_ME_DATA] >> 5) & 0x03;
   unsigned int msgLength = msgElement[UECP_ME_MEL];
@@ -1100,10 +1039,7 @@ unsigned int CDVDRadioRDSData::DecodeRT(uint8_t *msgElement, unsigned int len)
   }
   else if (msgLength == 0 || (msgLength == 1 && bufConf == 0))
   {
-    m_RT.clear();
-    m_RT_Index = 0;
-    for (int i = 0; i < 5; ++i)
-      memset(m_RT_Text[i], 0, RT_MEL);
+    return msgLength + 4;
   }
   else
   {
@@ -1119,32 +1055,12 @@ unsigned int CDVDRadioRDSData::DecodeRT(uint8_t *msgElement, unsigned int len)
       if (msgElement[UECP_ME_DATA+i] <= 0xfe) // additional rds-character, see RBDS-Standard, Annex E
         temptext[ii++] = (msgElement[UECP_ME_DATA+i] >= 0x80) ? sRDSAddChar[msgElement[UECP_ME_DATA+i]-0x80] : msgElement[UECP_ME_DATA+i];
     }
+
     memcpy(m_RTPlus_WorkText, temptext, RT_MEL);
     rds_entitychar(temptext);
 
-    // check repeats
-    bool repeat = false;
-    for (int ind = 0; ind < m_RT_MaxSize; ++ind)
-    {
-      if (memcmp(m_RT_Text[ind], temptext, RT_MEL) == 0)
-        repeat = true;
-    }
-    if (!repeat)
-    {
-      memcpy(m_RT_Text[m_RT_Index], temptext, RT_MEL);
+    m_currentInfoTag->SetRadioText(temptext);
 
-      std::string rdsline = m_RT_Text[m_RT_Index];
-      rtrim_str(rdsline);
-      g_charsetConverter.unknownToUTF8(rdsline);
-      m_RT.push_front(StringUtils::Trim(rdsline));
-
-      if ((int)m_RT.size() > m_RT_MaxSize)
-        m_RT.pop_back();
-
-      ++m_RT_Index;
-      if (m_RT_Index >= m_RT_MaxSize)
-        m_RT_Index = 0;
-    }
     m_RTPlus_iToggle = 0x03;     // Bit 0/1 = Title/Artist
   }
   return msgLength+4;
@@ -1230,11 +1146,7 @@ unsigned int CDVDRadioRDSData::DecodeRTPlus(uint8_t *msgElement, unsigned int le
   if (m_RTPlus_iToggle == 0)    // RTplus tags V2.1, only if RT
     return 10;
 
-  if (!m_RTPlus_Present)
-  {
-    m_currentInfoTag->SetPlayingRadiotextPlus(true);
-    m_RTPlus_Present = true;
-  }
+  m_currentInfoTag->SetPlayingRadioTextPlus(true);
 
   if (msgElement[1] > len-2 || msgElement[1] != 8)  // byte 6 = MEL, only 8 byte for 2 tags
   {
