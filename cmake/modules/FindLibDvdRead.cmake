@@ -30,6 +30,9 @@ if(NOT TARGET LibDvdRead::LibDvdRead)
   # We require this due to the odd nature of github URL's compared to our other tarball
   # mirror system. If User sets LIBDVDREAD_URL or libdvdread_URL, allow get_filename_component in SETUP_BUILD_VARS
   if(LIBDVDREAD_URL OR ${MODULE_LC}_URL)
+    if(${MODULE_LC}_URL)
+      set(LIBDVDREAD_URL ${${MODULE_LC}_URL})
+    endif()
     set(LIBDVDREAD_URL_PROVIDED TRUE)
   endif()
 
