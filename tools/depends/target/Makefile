@@ -25,9 +25,6 @@ DEPENDS = \
   libass \
   libbluray \
   libcec \
-  libdvdcss \
-  libdvdnav \
-  libdvdread \
   libffi \
   libgcrypt \
   libgpg-error \
@@ -147,8 +144,6 @@ libcdio-gplv3: $(ICONV)
 libcdio: $(ICONV)
 libcec: p8-platform
 libdrm: meson-cross-file
-libdvdnav: libdvdread
-libdvdread: libdvdcss
 libevdev: libudev
 libgcrypt: libgpg-error
 libinput: mtdev libevdev meson-cross-file
