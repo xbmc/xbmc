@@ -11,7 +11,6 @@ DEPENDS = \
   dav1d \
   expat \
   ffmpeg \
-  fmt \
   fontconfig \
   freetype2 \
   freetype2-noharfbuzz \
@@ -46,7 +45,6 @@ DEPENDS = \
   pythonmodule-pil \
   pythonmodule-pycryptodome \
   pythonmodule-setuptools \
-  spdlog \
   sqlite3 \
   tinyxml \
   udfread \
@@ -148,7 +146,6 @@ libinput: mtdev libevdev meson-cross-file
 libmicrohttpd: gnutls libgcrypt libgpg-error
 libplist: $(ZLIB)
 libpng: $(ZLIB)
-spdlog: fmt
 libva: libdrm $(LIBVA_DEPS)
 libxml2: $(ZLIB)
 libxslt: libgcrypt libxml2
