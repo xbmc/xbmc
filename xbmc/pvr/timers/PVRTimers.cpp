@@ -501,32 +501,42 @@ bool CPVRTimers::UpdateEntries(int iMaxNotificationDelay)
       {
         if (timer->IsEpgBased())
         {
-          // update data from current epg tag
-          const std::shared_ptr<CPVREpgInfoTag> epgTag = timer->GetEpgInfoTag();
-          if (epgTag)
+          // update epg tag
+          const std::shared_ptr<CPVREpg> epg =
+              CServiceBroker::GetPVRManager().EpgContainer().GetByChannelUid(
+                  timer->Channel()->ClientID(), timer->Channel()->UniqueID());
+          if (epg)
           {
-            bool bStartChanged = !timer->m_bStartAnyTime && epgTag->StartAsUTC() != timer->StartAsUTC();
-            bool bEndChanged = !timer->m_bEndAnyTime && epgTag->EndAsUTC() != timer->EndAsUTC();
-            if (bStartChanged || bEndChanged)
+            const std::shared_ptr<CPVREpgInfoTag> epgTag =
+                epg->GetTagByBroadcastId(timer->UniqueBroadcastID());
+            if (epgTag)
             {
-              if (bStartChanged)
-                timer->SetStartFromUTC(epgTag->StartAsUTC());
-              if (bEndChanged)
-                timer->SetEndFromUTC(epgTag->EndAsUTC());
+              timer->SetEpgInfoTag(epgTag);
 
-              timer->UpdateSummary();
-              bChanged = true;
+              bool bStartChanged =
+                  !timer->m_bStartAnyTime && epgTag->StartAsUTC() != timer->StartAsUTC();
+              bool bEndChanged = !timer->m_bEndAnyTime && epgTag->EndAsUTC() != timer->EndAsUTC();
+              if (bStartChanged || bEndChanged)
+              {
+                if (bStartChanged)
+                  timer->SetStartFromUTC(epgTag->StartAsUTC());
+                if (bEndChanged)
+                  timer->SetEndFromUTC(epgTag->EndAsUTC());
 
-              if (bStartChanged)
-              {
-                // start time changed. timer must be reinserted in timer map
-                bDeleteTimer = true;
-                timersToReinsert.emplace_back(timer); // remember and reinsert/save later
-              }
-              else
-              {
-                // save changes to database
-                timer->Persist();
+                timer->UpdateSummary();
+                bChanged = true;
+
+                if (bStartChanged)
+                {
+                  // start time changed. timer must be reinserted in timer map
+                  bDeleteTimer = true;
+                  timersToReinsert.emplace_back(timer); // remember and reinsert/save later
+                }
+                else
+                {
+                  // save changes to database
+                  timer->Persist();
+                }
               }
             }
           }
