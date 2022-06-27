@@ -28,6 +28,9 @@ if(NOT TARGET LibDvdNav::LibDvdNav)
   # We require this due to the odd nature of github URL's compared to our other tarball
   # mirror system. If User sets LIBDVDNAV_URL or libdvdnav_URL, allow get_filename_component in SETUP_BUILD_VARS
   if(LIBDVDNAV_URL OR ${MODULE_LC}_URL)
+    if(${MODULE_LC}_URL)
+      set(LIBDVDNAV_URL ${${MODULE_LC}_URL})
+    endif()
     set(LIBDVDNAV_URL_PROVIDED TRUE)
   endif()
 
