@@ -14,21 +14,22 @@
 #   Spdlog::Spdlog   - The Spdlog library
 
 if(ENABLE_INTERNAL_SPDLOG)
-
-  # Check for dependencies
-  find_package(Fmt MODULE QUIET)
-
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  set(MODULE_LC spdlog)
+  # Check for dependencies - Must be done before SETUP_BUILD_VARS
+  get_libversion_data("fmt" "target")
+  find_package(Fmt ${LIB_FMT_VER} MODULE REQUIRED)
 
+  # Check if we want to force a build due to a dependency rebuild
+  get_property(LIB_FORCE_REBUILD TARGET fmt::fmt PROPERTY LIB_BUILD)
+
+  set(MODULE_LC spdlog)
   SETUP_BUILD_VARS()
 
   # Check for existing SPDLOG. If version >= SPDLOG-VERSION file version, dont build
   find_package(SPDLOG CONFIG QUIET)
 
-  if(SPDLOG_VERSION VERSION_LESS ${${MODULE}_VER})
-
+  if(SPDLOG_VERSION VERSION_LESS ${${MODULE}_VER} OR LIB_FORCE_REBUILD)
     if(APPLE)
       set(EXTRA_ARGS "-DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}")
     endif()
