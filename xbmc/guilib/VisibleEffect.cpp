@@ -204,12 +204,17 @@ CFadeEffect::CFadeEffect(UTILS::COLOR::Color start,
 
 void CFadeEffect::ApplyEffect(float offset, const CPoint &center)
 {
-  UTILS::COLOR::ColorFloats startColor = m_startColor;
-  UTILS::COLOR::ColorFloats endColor = m_endColor;
-  m_matrix.SetFader(((endColor.alpha - startColor.alpha) * offset + startColor.alpha),
-                    ((endColor.red - startColor.red) * offset + startColor.red),
-                    ((endColor.green - startColor.green) * offset + startColor.green),
-                    ((endColor.blue - startColor.blue) * offset + startColor.blue));
+  if (m_effect == EFFECT_TYPE_FADE)
+  {
+    m_matrix.SetFader(((m_endAlpha - m_startAlpha) * offset + m_startAlpha) * 0.01f);
+  }
+  else if (m_effect == EFFECT_TYPE_FADE_DIFFUSE)
+  {
+    m_matrix.SetFader(((m_endColor.alpha - m_startColor.alpha) * offset + m_startColor.alpha),
+                      ((m_endColor.red - m_startColor.red) * offset + m_startColor.red),
+                      ((m_endColor.green - m_startColor.green) * offset + m_startColor.green),
+                      ((m_endColor.blue - m_startColor.blue) * offset + m_startColor.blue));
+  }
 }
 
 CSlideEffect::CSlideEffect(const TiXmlElement *node) : CAnimEffect(node, EFFECT_TYPE_SLIDE)
