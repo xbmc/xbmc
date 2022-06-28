@@ -37,6 +37,7 @@
 #include "dialogs/GUIDialogPlayEject.h"
 #include "filesystem/File.h"
 #include "messaging/helpers/DialogOKHelper.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -118,6 +119,7 @@ bool CMediaManager::LoadSources()
       pLocation = pLocation->NextSiblingElement("location");
     }
   }
+  LoadAddonSources();
   return true;
 }
 
@@ -159,8 +161,6 @@ void CMediaManager::GetRemovableDrives(VECSOURCES &removableDrives)
 
 void CMediaManager::GetNetworkLocations(VECSOURCES &locations, bool autolocations)
 {
-  // Load our xml file
-  LoadSources();
   for (unsigned int i = 0; i < m_locations.size(); i++)
   {
     CMediaSource share;
@@ -267,6 +267,64 @@ bool CMediaManager::SetLocationPath(const std::string& oldPath, const std::strin
   }
 
   return false;
+}
+
+void CMediaManager::LoadAddonSources() const
+{
+  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVirtualShares)
+  {
+    CMediaSourceSettings::GetInstance().AddShare("video", GetRootAddonTypeSource("video"));
+    CMediaSourceSettings::GetInstance().AddShare("programs", GetRootAddonTypeSource("programs"));
+    CMediaSourceSettings::GetInstance().AddShare("pictures", GetRootAddonTypeSource("pictures"));
+    CMediaSourceSettings::GetInstance().AddShare("music", GetRootAddonTypeSource("music"));
+    CMediaSourceSettings::GetInstance().AddShare("games", GetRootAddonTypeSource("games"));
+  }
+}
+
+CMediaSource CMediaManager::GetRootAddonTypeSource(const std::string& type) const
+{
+  if (type == "programs" || type == "myprograms")
+  {
+    return ComputeRootAddonTypeSource("executable", g_localizeStrings.Get(1043),
+                                      "DefaultAddonProgram.png");
+  }
+  else if (type == "video" || type == "videos")
+  {
+    return ComputeRootAddonTypeSource("video", g_localizeStrings.Get(1037),
+                                      "DefaultAddonVideo.png");
+  }
+  else if (type == "music")
+  {
+    return ComputeRootAddonTypeSource("music", g_localizeStrings.Get(1038),
+                                      "DefaultAddonMusic.png");
+  }
+  else if (type == "pictures")
+  {
+    return ComputeRootAddonTypeSource("image", g_localizeStrings.Get(1039),
+                                      "DefaultAddonPicture.png");
+  }
+  else if (type == "games")
+  {
+    return ComputeRootAddonTypeSource("game", g_localizeStrings.Get(35049), "DefaultAddonGame.png");
+  }
+  else
+  {
+    CLog::LogF(LOGERROR, "Invalid type {} provided", type);
+    return {};
+  }
+}
+
+CMediaSource CMediaManager::ComputeRootAddonTypeSource(const std::string& type,
+                                                       const std::string& label,
+                                                       const std::string& thumb) const
+{
+  CMediaSource source;
+  source.strPath = "addons://sources/" + type + "/";
+  source.strName = label;
+  source.m_strThumbnailImage = thumb;
+  source.m_iDriveType = CMediaSource::SOURCE_TYPE_VPATH;
+  source.m_ignore = true;
+  return source;
 }
 
 void CMediaManager::AddAutoSource(const CMediaSource &share, bool bAutorun)

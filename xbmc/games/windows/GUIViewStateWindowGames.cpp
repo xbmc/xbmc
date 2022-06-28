@@ -83,12 +83,6 @@ VECSOURCES& CGUIViewStateWindowGames::GetSources()
     return empty;
   }
 
-  // Game add-ons
-  AddAddonsSource("game", g_localizeStrings.Get(35049), "DefaultAddonGame.png");
-
-  // Global sources
-  AddOrReplace(*pGameSources, CGUIViewState::GetSources());
-
   return *pGameSources;
 }
 
