@@ -190,7 +190,18 @@ void CGUITexture::Render()
   Begin(color);
 
   // compute the texture coordinates
-  float u1, u2, u3, v1, v2, v3, du1, du2, du3, dv1, dv2, dv3;
+  float u1 = m_info.border.x1;
+  float u2 = m_frameWidth - m_info.border.x2;
+  float u3 = m_frameWidth;
+  float v1 = m_info.border.y1;
+  float v2 = m_frameHeight - m_info.border.y2;
+  float v3 = m_frameHeight;
+  float du1 = u1;
+  float du2 = u2;
+  float du3 = u3;
+  float dv1 = v1;
+  float dv2 = v2;
+  float dv3 = v3;
 
   if (m_info.m_diffuseSlice)
   {
@@ -208,15 +219,6 @@ void CGUITexture::Render()
     dv1 = m_info.border.y1;
     dv2 = m_diffuse.m_texHeight - m_info.border.y2;
     dv3 = m_diffuse.m_texHeight;
-  }
-  else
-  {
-    u1 = du1 = m_info.border.x1;
-    u2 = du2 = m_frameWidth - m_info.border.x2;
-    u3 = du3 = m_frameWidth;
-    v1 = dv1 = m_info.border.y1;
-    v2 = dv2 = m_frameHeight - m_info.border.y2;
-    v3 = dv3 = m_frameHeight;
   }
 
   if (!m_texture.m_texCoordsArePixels)
@@ -245,8 +247,10 @@ void CGUITexture::Render()
     if (m_info.border.y1)
       Render(m_vertex.x1, m_vertex.y1, m_vertex.x1 + m_info.border.x1,
              m_vertex.y1 + m_info.border.y1, 0, 0, u1, v1, u3, v3, 0, 0, du1, dv1, du3, dv3);
+
     Render(m_vertex.x1, m_vertex.y1 + m_info.border.y1, m_vertex.x1 + m_info.border.x1,
            m_vertex.y2 - m_info.border.y2, 0, v1, u1, v2, u3, v3, 0, dv1, du1, dv2, du3, dv3);
+
     if (m_info.border.y2)
       Render(m_vertex.x1, m_vertex.y2 - m_info.border.y2, m_vertex.x1 + m_info.border.x1,
              m_vertex.y2, 0, v2, u1, v3, u3, v3, 0, dv2, du1, dv3, du3, dv3);
@@ -255,10 +259,12 @@ void CGUITexture::Render()
   if (m_info.border.y1)
     Render(m_vertex.x1 + m_info.border.x1, m_vertex.y1, m_vertex.x2 - m_info.border.x2,
            m_vertex.y1 + m_info.border.y1, u1, 0, u2, v1, u3, v3, du1, 0, du2, dv1, du3, dv3);
+
   if (m_info.m_infill)
     Render(m_vertex.x1 + m_info.border.x1, m_vertex.y1 + m_info.border.y1,
            m_vertex.x2 - m_info.border.x2, m_vertex.y2 - m_info.border.y2, u1, v1, u2, v2, u3, v3,
            du1, dv1, du2, dv2, du3, dv3);
+
   if (m_info.border.y2)
     Render(m_vertex.x1 + m_info.border.x1, m_vertex.y2 - m_info.border.y2,
            m_vertex.x2 - m_info.border.x2, m_vertex.y2, u1, v2, u2, v3, u3, v3, du1, dv2, du2, dv3,
@@ -269,8 +275,10 @@ void CGUITexture::Render()
     if (m_info.border.y1)
       Render(m_vertex.x2 - m_info.border.x2, m_vertex.y1, m_vertex.x2,
              m_vertex.y1 + m_info.border.y1, u2, 0, u3, v1, u3, v3, du2, 0, du3, dv1, du3, dv3);
+
     Render(m_vertex.x2 - m_info.border.x2, m_vertex.y1 + m_info.border.y1, m_vertex.x2,
            m_vertex.y2 - m_info.border.y2, u2, v1, u3, v2, u3, v3, du2, dv1, du3, dv2, du3, dv3);
+
     if (m_info.border.y2)
       Render(m_vertex.x2 - m_info.border.x2, m_vertex.y2 - m_info.border.y2, m_vertex.x2,
              m_vertex.y2, u2, v2, u3, v3, u3, v3, du2, dv2, du3, dv3, du3, dv3);
