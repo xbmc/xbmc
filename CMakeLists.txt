@@ -63,6 +63,7 @@ option(ENABLE_INTERNAL_CROSSGUID "Enable internal crossguid?" ON)
 option(ENABLE_INTERNAL_FFMPEG "Enable internal ffmpeg?" OFF)
 option(ENABLE_INTERNAL_RapidJSON "Enable internal rapidjson?" ON)
 cmake_dependent_option(ENABLE_INTERNAL_FLATBUFFERS "Enable internal flatbuffers?" OFF "DEFINED USE_INTERNAL_LIBS;NOT USE_INTERNAL_LIBS" ON)
+cmake_dependent_option(ENABLE_INTERNAL_NFS "Enable internal libnfs?" OFF "DEFINED USE_INTERNAL_LIBS;NOT USE_INTERNAL_LIBS" ON)
 cmake_dependent_option(ENABLE_INTERNAL_TAGLIB "Enable internal taglib?" OFF "DEFINED USE_INTERNAL_LIBS;NOT USE_INTERNAL_LIBS" ON)
 
 # Internal Depends - supported on UNIX platforms
