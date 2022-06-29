@@ -1050,7 +1050,7 @@ CFileItemPtr BuildObject(PLT_MediaObject* entry,
       pItem->SetProperty("numepisodes", episodes);
       pItem->SetProperty("watchedepisodes", played);
       pItem->SetProperty("unwatchedepisodes", episodes - played);
-      pItem->SetProperty("watchedepisodepercent", played * 100 / episodes);
+      pItem->SetProperty("watchedepisodepercent", episodes > 0 ? played * 100 / episodes : 0);
       watched = (episodes && played >= episodes);
       pItem->GetVideoInfoTag()->SetPlayCount(watched ? 1 : 0);
     }
