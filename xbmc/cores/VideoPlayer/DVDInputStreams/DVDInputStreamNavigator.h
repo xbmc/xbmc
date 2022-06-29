@@ -125,6 +125,14 @@ public:
   bool PosTime(int iTimeInMsec) override; //seek within current pg(c)
 
   std::string GetDVDTitleString();
+
+  /*!
+   * \brief Get the DVD volume ID string. Alternative to the dvd title (since some DVD authors
+    even forget to set it).
+   * \return The DVD volume id
+  */
+  std::string GetDVDVolIdString();
+
   std::string GetDVDSerialString();
 
   void CheckButtons();
