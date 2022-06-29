@@ -4132,6 +4132,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
     item->SetProperty("numepisodes", details.m_iEpisode); // will be changed later to reflect watchmode setting
     item->SetProperty("watchedepisodes", details.GetPlayCount());
     item->SetProperty("unwatchedepisodes", details.m_iEpisode - details.GetPlayCount());
+    item->SetProperty("watchedepisodepercent", (details.GetPlayCount() * 100 / details.m_iEpisode));
   }
   details.SetPlayCount((details.m_iEpisode <= details.GetPlayCount()) ? 1 : 0);
 

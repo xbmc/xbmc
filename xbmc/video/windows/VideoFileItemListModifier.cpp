@@ -81,6 +81,7 @@ void CVideoFileItemListModifier::AddQueuingFolder(CFileItemList& items)
     pItem->SetProperty("numepisodes", watched + unwatched); // will be changed later to reflect watchmode setting
     pItem->SetProperty("watchedepisodes", watched);
     pItem->SetProperty("unwatchedepisodes", unwatched);
+    pItem->SetProperty("watchedepisodepercent", watched * 100 / (watched + unwatched));
 
     // @note: The items list may contain additional items that do not belong to the show.
     // This is the case of the up directory (..) or movies linked to the tvshow.
