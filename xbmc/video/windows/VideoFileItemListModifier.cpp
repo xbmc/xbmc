@@ -77,11 +77,14 @@ void CVideoFileItemListModifier::AddQueuingFolder(CFileItemList& items)
       watched += static_cast<int>(item->GetProperty("watchedepisodes").asInteger());
       unwatched += static_cast<int>(item->GetProperty("unwatchedepisodes").asInteger());
     }
-    pItem->SetProperty("totalepisodes", watched + unwatched);
-    pItem->SetProperty("numepisodes", watched + unwatched); // will be changed later to reflect watchmode setting
+    const int totalEpisodes = watched + unwatched;
+    pItem->SetProperty("totalepisodes", totalEpisodes);
+    pItem->SetProperty("numepisodes",
+                       totalEpisodes); // will be changed later to reflect watchmode setting
     pItem->SetProperty("watchedepisodes", watched);
     pItem->SetProperty("unwatchedepisodes", unwatched);
-    pItem->SetProperty("watchedepisodepercent", watched * 100 / (watched + unwatched));
+    pItem->SetProperty("watchedepisodepercent",
+                       totalEpisodes > 0 ? watched * 100 / totalEpisodes : 0);
 
     // @note: The items list may contain additional items that do not belong to the show.
     // This is the case of the up directory (..) or movies linked to the tvshow.
