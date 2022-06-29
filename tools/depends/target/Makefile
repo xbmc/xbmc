@@ -42,7 +42,6 @@ DEPENDS = \
   nghttp2 \
   openssl \
   p8-platform \
-  pcre \
   python3 \
   pythonmodule-pil \
   pythonmodule-pycryptodome \
