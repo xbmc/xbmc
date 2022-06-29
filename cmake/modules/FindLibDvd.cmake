@@ -10,7 +10,7 @@ set(_dvdlibs ${LIBDVDREAD_LIBRARY} ${LIBDVDCSS_LIBRARY})
 if(NOT CORE_SYSTEM_NAME MATCHES windows)
   # link a shared dvdnav library that includes the whole archives of dvdread and dvdcss as well
   # the quotes around _dvdlibs are on purpose, since we want to pass a list to the function that will be unpacked automatically
-  core_link_library(LibDvdNav::LibDvdNav system/players/VideoPlayer/libdvdnav libdvdnav archives "${_dvdlibs}")
+  core_link_library(${LIBDVDNAV_LIBRARY} system/players/VideoPlayer/libdvdnav libdvdnav archives "${_dvdlibs}")
 else()
   set(LIBDVD_TARGET_DIR .)
   if(CORE_SYSTEM_NAME STREQUAL windowsstore)
