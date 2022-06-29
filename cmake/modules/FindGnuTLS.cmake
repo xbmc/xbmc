@@ -25,6 +25,10 @@ find_package_handle_standard_args(GnuTLS DEFAULT_MSG GNUTLS_INCLUDE_DIRS GNUTLS_
 
 if(GNUTLS_FOUND)
   list(APPEND GNUTLS_DEFINITIONS -DHAVE_GNUTLS=1)
+else()
+  if(GNUTLS_FIND_REQUIRED)
+    message(FATAL_ERROR "GNUTLS Not Found.")
+  endif()
 endif()
 
 mark_as_advanced(GNUTLS_INCLUDE_DIRS GNUTLS_LIBRARIES GNUTLS_DEFINITIONS)
