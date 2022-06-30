@@ -263,6 +263,9 @@ void CWebVTTHandler::DecodeLine(std::string line, std::vector<subtitleData>* sub
       if (regLocal.RegComp("LOCAL:((?:(\\d{1,}):)?(\\d{2}):(\\d{2}\\.\\d{3}))") &&
           regMpegTs.RegComp("MPEGTS:(\\d+)"))
       {
+        double tsLocalUs{0.0};
+        double tsMpegUs{0.0};
+
         if ((regLocal.RegFind(line) >= 0 && regLocal.GetSubCount() == 4) &&
             regMpegTs.RegFind(line) >= 0)
         {
@@ -273,20 +276,19 @@ void CWebVTTHandler::DecodeLine(std::string line, std::vector<subtitleData>* sub
             locHrs = std::stoi(regLocal.GetMatch(2).c_str());
           locMins = std::stoi(regLocal.GetMatch(3).c_str());
           locSecs = std::atof(regLocal.GetMatch(4).c_str());
-          m_hlsTimestampLocalUs =
-              (static_cast<double>(locHrs * 3600 + locMins * 60) + locSecs) * DVD_TIME_BASE;
+          tsLocalUs = (static_cast<double>(locHrs * 3600 + locMins * 60) + locSecs) * DVD_TIME_BASE;
           // Converts a 90 kHz clock timestamp to a timestamp in microseconds
-          m_hlsTimestampMpegTsUs =
-              std::stod(regMpegTs.GetMatch(1)) * MICROS_PER_SECOND / MPEG_TIMESCALE;
+          tsMpegUs = std::stod(regMpegTs.GetMatch(1)) * MICROS_PER_SECOND / MPEG_TIMESCALE;
         }
         else
         {
-          m_hlsTimestampLocalUs = 0;
-          m_hlsTimestampMpegTsUs = 0;
           CLog::Log(LOGERROR,
                     "{} - Failed to get X-TIMESTAMP-MAP values, subtitles could be out of sync",
                     __FUNCTION__);
         }
+
+        // offset = periodStart + tsMpegUs - tsLocalUs
+        m_offset += tsMpegUs - tsLocalUs;
       }
       else
       {
@@ -556,11 +558,9 @@ void CWebVTTHandler::GetCueData(std::string& cueText)
     eSeconds = std::atof(m_cueTimeRegex.GetMatch(6).c_str());
 
     m_subtitleData.startTime =
-        (static_cast<double>(sHours * 3600 + sMinutes * 60) + sSeconds) * DVD_TIME_BASE +
-        m_hlsTimestampMpegTsUs - m_hlsTimestampLocalUs;
+        (static_cast<double>(sHours * 3600 + sMinutes * 60) + sSeconds) * DVD_TIME_BASE + m_offset;
     m_subtitleData.stopTime =
-        (static_cast<double>(eHours * 3600 + eMinutes * 60) + eSeconds) * DVD_TIME_BASE +
-        m_hlsTimestampMpegTsUs - m_hlsTimestampLocalUs;
+        (static_cast<double>(eHours * 3600 + eMinutes * 60) + eSeconds) * DVD_TIME_BASE + m_offset;
     cueSettings =
         cueText.substr(m_cueTimeRegex.GetFindLen(), cueText.length() - m_cueTimeRegex.GetFindLen());
     StringUtils::Trim(cueSettings);
