@@ -89,6 +89,18 @@ protected:
    */
   static void GetAbsoluteTimes(double& starttime, double& stoptime, DemuxPacket* pkt);
 
+  struct SubtitlePacketExtraData
+  {
+    double m_chapterStartTime;
+  };
+
+  /*!
+   * \brief Get subtitle extra data from packet side data with AV_PKT_DATA_NEW_EXTRADATA type.
+   * \param pPacket The demux packet
+   * \param extraData [OUT] The subtitle extra data
+   * \return True if extra data has been found, otherwise false
+   */
+  static bool GetSubtitlePacketExtraData(DemuxPacket* pPacket, SubtitlePacketExtraData& extraData);
 
 private:
   std::string m_codecName;
