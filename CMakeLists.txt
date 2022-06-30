@@ -47,42 +47,25 @@ include(CMakeDependentOption)
 
 # general
 option(VERBOSE            "Enable verbose output?" OFF)
+
+# Build Tool options
 option(ENABLE_CLANGTIDY   "Enable clang-tidy support?" OFF)
 option(ENABLE_CPPCHECK    "Enable cppcheck support?" OFF)
-option(ENABLE_DVDCSS      "Enable libdvdcss support?" ON)
 option(ENABLE_INCLUDEWHATYOUUSE "Enable include-what-you-use support?" OFF)
-option(ENABLE_UPNP        "Enable UPnP support?" ON)
+
+# Feature Options
 option(ENABLE_AIRTUNES    "Enable AirTunes support?" ON)
+option(ENABLE_DVDCSS      "Enable libdvdcss support?" ON)
 option(ENABLE_OPTICAL     "Enable optical support?" ON)
 option(ENABLE_PYTHON      "Enable python support?" ON)
+option(ENABLE_UPNP        "Enable UPnP support?" ON)
+
+# Testing - Host must be able to execute Target
 option(ENABLE_TESTING     "Enable testing support?" ON)
 
-# Internal Depends - supported on all platforms
-option(ENABLE_INTERNAL_CROSSGUID "Enable internal crossguid?" ON)
-# use ffmpeg from depends or system
-option(ENABLE_INTERNAL_FFMPEG "Enable internal ffmpeg?" OFF)
-option(ENABLE_INTERNAL_RapidJSON "Enable internal rapidjson?" ON)
-cmake_dependent_option(ENABLE_INTERNAL_FLATBUFFERS "Enable internal flatbuffers?" OFF "DEFINED USE_INTERNAL_LIBS;NOT USE_INTERNAL_LIBS" ON)
-cmake_dependent_option(ENABLE_INTERNAL_NFS "Enable internal libnfs?" OFF "DEFINED USE_INTERNAL_LIBS;NOT USE_INTERNAL_LIBS" ON)
-cmake_dependent_option(ENABLE_INTERNAL_PCRE "Enable internal pcre?" OFF "DEFINED USE_INTERNAL_LIBS;NOT USE_INTERNAL_LIBS" ON)
-cmake_dependent_option(ENABLE_INTERNAL_TAGLIB "Enable internal taglib?" OFF "DEFINED USE_INTERNAL_LIBS;NOT USE_INTERNAL_LIBS" ON)
+# All Dependency build options are in the following include
+include(CmakeBuildDepOptions.cmake)
 
-# Internal Depends - supported on UNIX platforms
-if(UNIX)
-  option(FFMPEG_PATH        "Path to external ffmpeg?" "")
-  option(ENABLE_INTERNAL_FMT "Enable internal fmt?" OFF)
-  option(ENABLE_INTERNAL_FSTRCMP "Enable internal fstrcmp?" OFF)
-  option(ENABLE_INTERNAL_DAV1D "Enable internal dav1d?" OFF)
-  option(ENABLE_INTERNAL_GTEST "Enable internal gtest?" OFF)
-  option(ENABLE_INTERNAL_UDFREAD "Enable internal udfread?" OFF)
-  option(ENABLE_INTERNAL_SPDLOG "Enable internal spdlog?" OFF)
-
-  if(ENABLE_INTERNAL_SPDLOG)
-    set(ENABLE_INTERNAL_FMT ON CACHE BOOL "" FORCE)
-  endif()
-endif()
-# prefer kissfft from xbmc/contrib but let use system one on unices
-cmake_dependent_option(ENABLE_INTERNAL_KISSFFT "Enable internal kissfft?" ON "UNIX" ON)
 # System options
 if(NOT WIN32)
   option(WITH_ARCH              "build with given arch" OFF)
