@@ -31,6 +31,7 @@
     <summary lang="id_ID">Encoder Audio WMA</summary>
     <summary lang="is_IS">WMA-hljóðkóðari</summary>
     <summary lang="ko_KR">WMA 오디오 인코더</summary>
+    <summary lang="nl_NL">WMA Audio Encoder</summary>
     <summary lang="oc_FR">Encodador àudio WMA</summary>
     <summary lang="pl_PL">Koder dźwięku WMA</summary>
     <summary lang="pt_BR">Encode de áudio WMA</summary>
@@ -57,6 +58,7 @@
     <description lang="id_ID">Windows Media Audio, format audio lossy Microsoft.</description>
     <description lang="is_IS">Windows Media Audio, hljóðsnið frá Microsoft með gagnatapi.</description>
     <description lang="ko_KR">Microsoft의 손실 오디오 형식인 Windows Media 오디오.</description>
+    <description lang="nl_NL">Windows Media Audio, het verliesgevende audioformaat van Microsoft.</description>
     <description lang="oc_FR">Windows Media Audio, format àudio amb pèrda de Microsoft.</description>
     <description lang="pl_PL">Windows Media Audio, stratny format audio firmy Microsoft.</description>
     <description lang="pt_BR">Windows Media Audio, o formato de áudio com perdas da Microsoft.</description>
