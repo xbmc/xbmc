@@ -7,15 +7,15 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-01-08 16:52+0000\n"
-"Last-Translator: Edson Armando <edsonarmando78@outlook.com>\n"
+"PO-Revision-Date: 2022-07-01 08:26+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Spanish (Mexico) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/es_mx/>\n"
 "Language: es_mx\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.13\n"
 
 msgctxt "Addon Summary"
 msgid "Skin for touchscreen devices"
@@ -239,7 +239,7 @@ msgid "Configure & manage media sharing services · Configure & manage the weath
 msgstr "Configurar y administrar servicios para compartir medios · Configurar y administrar el servicio del clima"
 
 msgctxt "#31406"
-msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving · Configure logging"
 msgstr "Configurar la pantalla · Configurar el audio · Configurar el acceso a Internet · Configurar el ahorro de energía · Configurar el registro"
 
 msgctxt "#31407"
@@ -422,6 +422,10 @@ msgstr "Cuando estés reproduciendo audio o video, el título del elemento apare
 msgctxt "#31904"
 msgid "Now Playing Title..."
 msgstr "Reproduciendo ahora..."
+
+#~ msgctxt "#31406"
+#~ msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+#~ msgstr "Configurar la pantalla · Configurar el audio · Configurar el acceso a Internet · Configurar el ahorro de energía · Configurar el registro"
 
 #~ msgctxt "#31017"
 #~ msgid "PVR info"

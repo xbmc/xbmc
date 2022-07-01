@@ -7,23 +7,23 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-02-26 16:13+0000\n"
-"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"PO-Revision-Date: 2022-06-29 16:37+0000\n"
+"Last-Translator: SecularSteve <fairfull.playing@gmail.com>\n"
 "Language-Team: Dutch <https://kodi.weblate.cloud/projects/kodi-core/audioencoder-kodi-builtin-aac/nl_nl/>\n"
 "Language: nl_nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.11\n"
+"X-Generator: Weblate 4.13\n"
 
 msgctxt "Addon Summary"
 msgid "AAC Audio Encoder"
-msgstr ""
+msgstr "AAC Audio Encoder"
 
 msgctxt "Addon Description"
 msgid "AAC is a set of codecs designed to provide better compression than MP3s, and are improved versions of MPEG audio."
-msgstr ""
+msgstr "AAC is een set codecs die zijn ontworpen om een betere compressie te bieden dan MP3's, en zijn verbeterde versies van MPEG-audio."
 
 #. Bitrate to use on for compression
 #: resources/settings.xml
@@ -35,7 +35,7 @@ msgstr "Bitsnelheid"
 #: resources/settings.xml
 msgctxt "#30001"
 msgid "Select which bitrate to use for the AAC audio encoder for audio compression."
-msgstr ""
+msgstr "Selecteer welke bitsnelheid moet worden gebruikt voor de AAC audio encoder voor audiocompressie."
 
 #. Value format for with bitrate edited field
 #: resources/settings.xml

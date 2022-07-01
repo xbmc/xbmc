@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-02-26 16:13+0000\n"
+"PO-Revision-Date: 2022-07-01 08:10+0000\n"
 "Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Arabic (Saudi Arabia) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/ar_sa/>\n"
 "Language: ar_sa\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
-"X-Generator: Weblate 4.11\n"
+"X-Generator: Weblate 4.13\n"
 
 msgctxt "Addon Summary"
 msgid "Skin for touchscreen devices"
@@ -77,7 +77,7 @@ msgstr "الألبومات"
 #. Label to show PVR info page
 msgctxt "#31017"
 msgid "PVR"
-msgstr ""
+msgstr "PVR"
 
 #. Label to show player info page
 msgctxt "#31018"
@@ -243,7 +243,7 @@ msgid "Configure & manage media sharing services · Configure & manage the weath
 msgstr "تكوين وإدارة خدمات مشاركة الوسائط · تكوين وإدارة خدمة الطقس"
 
 msgctxt "#31406"
-msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving · Configure logging"
 msgstr "تكوين الشاشة · تكوين الصوت · تكوين الوصول إلى الإنترنت · تكوين توفير الطاقة · تكوين الأخطاء والأحداث"
 
 msgctxt "#31407"
@@ -362,12 +362,12 @@ msgstr "دقة الفيديو"
 #. Label to show the video aspect
 msgctxt "#31602"
 msgid "Video aspect"
-msgstr "حجم الفيديو"
+msgstr "أبعاد الفيديو"
 
 #. Label to show the video bitrate
 msgctxt "#31603"
 msgid "Video bitrate"
-msgstr ""
+msgstr "معدل البت للفيديو"
 
 #. Label to show the audio codec name
 msgctxt "#31604"
@@ -377,12 +377,12 @@ msgstr "ترميز الصوت"
 #. Label to show the number of audio channels
 msgctxt "#31605"
 msgid "Audio channels"
-msgstr "القنوات السمعية"
+msgstr "قنوات الصوت"
 
 #. Label to show the audio bitrate
 msgctxt "#31606"
 msgid "Audio bitrate"
-msgstr ""
+msgstr "معدل البت للصوت"
 
 #. Label to show the screen resolution
 msgctxt "#31607"
@@ -392,7 +392,7 @@ msgstr "دقة الشاشة"
 #. Label to show the system rendering speed
 msgctxt "#31608"
 msgid "System rendering speed"
-msgstr ""
+msgstr "سرعة عرض النظام"
 
 #. Label to show the system CPU usage
 msgctxt "#31609"
@@ -429,6 +429,10 @@ msgstr "عند تشغيل ملف فيديو أو صوت ، سيظهر عنوان
 msgctxt "#31904"
 msgid "Now Playing Title..."
 msgstr "يتم الآن تشغيل \"العنوان\"..."
+
+#~ msgctxt "#31406"
+#~ msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+#~ msgstr "تكوين الشاشة · تكوين الصوت · تكوين الوصول إلى الإنترنت · تكوين توفير الطاقة · تكوين الأخطاء والأحداث"
 
 #~ msgctxt "#31017"
 #~ msgid "PVR info"

@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-04-05 14:44+0000\n"
+"PO-Revision-Date: 2022-07-01 08:26+0000\n"
 "Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Serbian (latin) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/sr_Latn/>\n"
 "Language: sr_rs@latin\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.13\n"
 
 msgctxt "Addon Summary"
 msgid "Skin for touchscreen devices"
@@ -239,7 +239,7 @@ msgid "Configure & manage media sharing services · Configure & manage the weath
 msgstr "Podesite & upravljajte servisima deljenja medija · Podesite & upravljajte servisom vremenske prognoze"
 
 msgctxt "#31406"
-msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving · Configure logging"
 msgstr "Podesite prikaz · Podesite audio · Podesite pristup internetu · Podesite uštedu energije · Podesite evidentiranje"
 
 msgctxt "#31407"
@@ -422,6 +422,10 @@ msgstr "Kada puštate audio ili video, naziv stavke će se pojaviti na vrhu ekra
 msgctxt "#31904"
 msgid "Now Playing Title..."
 msgstr "Naziv Sada Pušteno..."
+
+#~ msgctxt "#31406"
+#~ msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+#~ msgstr "Podesite prikaz · Podesite audio · Podesite pristup internetu · Podesite uštedu energije · Podesite evidentiranje"
 
 #~ msgctxt "#31017"
 #~ msgid "PVR info"
