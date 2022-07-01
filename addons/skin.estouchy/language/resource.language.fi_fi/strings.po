@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-03-19 06:45+0000\n"
+"PO-Revision-Date: 2022-07-01 08:07+0000\n"
 "Last-Translator: Oskari Lavinto <olavinto@protonmail.com>\n"
 "Language-Team: Finnish <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/fi_fi/>\n"
 "Language: fi_fi\n"
@@ -15,15 +15,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.13\n"
 
 msgctxt "Addon Summary"
 msgid "Skin for touchscreen devices"
-msgstr "Ulkoasu kosketusnäyttölaitteille"
+msgstr "Ulkoasu kosketusnäytöllisille laitteille"
 
 msgctxt "Addon Description"
 msgid "Skin designed to be used on touchscreen devices like tablets and smartphones"
-msgstr "Ulkoasu on suunniteltu käytettäväksi kosketusnäyttölaitteissa, esimerkiksi tableteissa ja älypuhelimissa"
+msgstr "Ulkoasu, joka on suunniteltu käytettäväksi kosketusnäytöllisillä laitteilla, kuten tableteilla ja älypuhelimilla"
 
 msgctxt "#31002"
 msgid "Audio Settings"
@@ -128,15 +128,15 @@ msgstr "Valinta + Aloita"
 
 msgctxt "#31043"
 msgid "PAUSED"
-msgstr "TAUKO"
+msgstr "TAUOTETTU"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
-msgstr "KELAUS ETEENPÄIN"
+msgstr "ETEENPÄIN"
 
 msgctxt "#31045"
 msgid "REWIND"
-msgstr "KELAUS TAAKSEPÄIN"
+msgstr "TAAKSEPÄIN"
 
 msgctxt "#31046"
 msgid "Play speed"
@@ -148,11 +148,11 @@ msgstr "Päättyy"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "Suunta: Nouseva"
+msgstr "Järjestys: nouseva"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "Suunta: Laskeva"
+msgstr "Järjestys: laskeva"
 
 msgctxt "#31055"
 msgid "Open playlist"
@@ -168,7 +168,7 @@ msgstr "Sulje toistolista"
 
 msgctxt "#31058"
 msgid "System music files"
-msgstr "Musiikkitiedostot"
+msgstr "Järjestelmän musiikkitiedostot"
 
 msgctxt "#31059"
 msgid "Current playlist"
@@ -188,7 +188,7 @@ msgstr "Näkymä"
 
 msgctxt "#31300"
 msgid "Current Temp"
-msgstr "Tämänhetkinen säätila"
+msgstr "Nykyinen lämpötila"
 
 msgctxt "#31301"
 msgid "Last Updated"
@@ -196,15 +196,15 @@ msgstr "Viimeksi päivitetty"
 
 msgctxt "#31303"
 msgid "Data provider"
-msgstr "Tietojen tarjoaja"
+msgstr "Tietolähde"
 
 msgctxt "#31309"
 msgid "System Memory Used:"
-msgstr "Järjestelmän muistinkäyttö:"
+msgstr "Järjestelmämuistin varaus:"
 
 msgctxt "#31320"
 msgid "Last Logged In"
-msgstr "Viimeksi kirjauduttu"
+msgstr "Viimeksi kirjautunut"
 
 msgctxt "#31322"
 msgid "Aired"
@@ -212,7 +212,7 @@ msgstr "Esitetty"
 
 msgctxt "#31355"
 msgid "Video Menu"
-msgstr "Elokuvavalikko"
+msgstr "Videovalikko"
 
 msgctxt "#31356"
 msgid "Download Subtitles"
@@ -232,43 +232,43 @@ msgstr "Arial-pohjainen"
 
 msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
-msgstr "Muokkaa ulkoasua · Valitse kieli- ja alueasetukset · Muokkaa tiedostolistauksen asetuksia · Valitse näytönsäästäjä"
+msgstr "Vaihda ulkoasua · Määritä kieli- ja alue · Muokkaa tiedostolistauksia · Määritä näytönsäästäjä"
 
 msgctxt "#31405"
 msgid "Configure & manage media sharing services · Configure & manage the weather service"
-msgstr "Määritä mediajakoasetukset · Muokkaa sääpalvelun asetuksia"
+msgstr "Määritä ja hallitse median jakopalveluita · Määritä ja hallitse sääpalvelun asetuksia"
 
 msgctxt "#31406"
-msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
-msgstr "Näyttöasetukset · Ääniasetukset · Internetasetukset · Virransäästöasetukset · Lokitiedostojen asetukset"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving · Configure logging"
+msgstr "Määritä näyttö · Määritä ääni · Määritä Internet-yhteys · Määritä virransäästö · Määritä loki"
 
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
-msgstr "Hallitse asennettuja lisäosia · Etsi ja asenna lisäosia kodi.tv:stä · Muokkaa lisäosien asetuksia"
+msgstr "Hallitse asennettuja lisäosia · Selaa ja asenna lisäosia kodi.tv-sivustolta · Muokkaa lisäosien asetuksia"
 
 msgctxt "#31408"
 msgid "Configure actions that can be used during playback · Configure how media content is played"
-msgstr "Määritä toiston aikana käytettävissä olevat asetukset · Määritä mediatoiston asetukset"
+msgstr "Määritä toiston aikana käytettävissä olevat toiminnot · Määritä median toisto"
 
 msgctxt "#31409"
 msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
-msgstr "Määritä kirjaston lähteet · Määritä medialistojen esitystavat · Määritä mediakirjaston ohjaustavat"
+msgstr "Määritä kirjaston lähteet · Näytä medialistausten esitystavat · Määritä kirjaston listausten selaustavat"
 
 msgctxt "#31410"
 msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
-msgstr "Muokkaa ulkoasua · Määritä aluekohtaiset asetukset · Valitse näytönsäästäjä · Määritä lukitusasetukset"
+msgstr "Määritä ulkoasu · Määritä alue · Määritä näytönsäästäjä · Määritä käytön esto"
 
 msgctxt "#31411"
 msgid "Configure your profiles · Set locking options · Enable login screen"
-msgstr "Määritä käyttäjäprofiilit · Muokkaa lukitusasetuksia · Aseta kirjautumisruutu"
+msgstr "Määritä profiilit · Määritä lukitusasetukset · Käytä kirjautumisruutua"
 
 msgctxt "#31412"
 msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
-msgstr "Järjestelmätiedot · Laitteistotiedot · Tallennustila · Verkkoasetukset"
+msgstr "Näytä järjestelmätiedot · Laitteistotiedot · Tarkasta vapaa tallennustila · Katsele verkon määrityksiä"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
-msgstr "Valitse Kodi-käyttäjäprofiili[CR]kirjautuaksesi sisään"
+msgstr "Valitse Kodi-käyttäjäprofiilisi[CR]ja kirjaudu sisään"
 
 msgctxt "#31548"
 msgid "Home menu"
@@ -280,11 +280,11 @@ msgstr "Päävalikon lisäosat"
 
 msgctxt "#31550"
 msgid "Backgrounds"
-msgstr "Taustakuvat"
+msgstr "Taustat"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"
-msgstr "Lisäosan pikakuvake"
+msgstr "Lisäosan pikavalinta"
 
 msgctxt "#31552"
 msgid "SYNC"
@@ -292,15 +292,15 @@ msgstr "SYNKRONOI"
 
 msgctxt "#31553"
 msgid "Use Custom Background"
-msgstr "Käytä omaa taustakuvaa"
+msgstr "Käytä omaa taustaa"
 
 msgctxt "#31554"
 msgid "Background:"
-msgstr "Taustakuva:"
+msgstr "Tausta:"
 
 msgctxt "#31555"
 msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
-msgstr "Määritä tv-asetukset · Vaihda kokoruudun infoa · Muokkaa ohjelmaoppaan asetuksia"
+msgstr "Määritä television asetukset · Muuta kokoruudun tietoja · Hallitse ohjelmaoppaan tietoasetuksia"
 
 msgctxt "#31556"
 msgid "Live TV"
@@ -312,7 +312,7 @@ msgstr "Piilota taustavideo"
 
 msgctxt "#31558"
 msgid "Hide visualization background"
-msgstr "Piilota taustan visualisointi"
+msgstr "Piilota taustavisualisointi"
 
 msgctxt "#31559"
 msgid "Channel settings"
@@ -320,7 +320,7 @@ msgstr "Kanava-asetukset"
 
 msgctxt "#31560"
 msgid "Available groups"
-msgstr "Saatavilla olevat ryhmät"
+msgstr "Käytettävissä olevat ryhmät"
 
 msgctxt "#31561"
 msgid "Add Group"
@@ -409,19 +409,23 @@ msgstr "Ensimmäinen käynnistys"
 
 msgctxt "#31901"
 msgid "There are two things to know about navigating Estouchy"
-msgstr "Estouchyn ohjaamisessa on kaksi tärkeää asiaa"
+msgstr "Estouchyn käytöstä tulee tietää kaksi asiaa"
 
 msgctxt "#31902"
 msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
-msgstr "Kodi-logo toimii 'KOTI'-nappina. Sitä painamalla pääsee aina takaisin päävalikkoon."
+msgstr "Kodi-logo toimii kotipainikkeena ja painamalla sitä pääset takaisin päävalikkoon."
 
 msgctxt "#31903"
 msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."
-msgstr "Toistettavan videon tai musiikkitiedoston nimi näkyy ruudun yläreunassa. Sitä painamalla pääsee kokoruututilaan."
+msgstr "Toistettavan videon tai äänen nimike näkyy ruudun yläreunassa. Sitä painamalla avautuu kokoruudun visualisointi tai videoikkuna."
 
 msgctxt "#31904"
 msgid "Now Playing Title..."
-msgstr "Nyt toistetaan..."
+msgstr "Parhaillaan toistetaan nimikettä..."
+
+#~ msgctxt "#31406"
+#~ msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+#~ msgstr "Määritä näyttö · Määritä ääni · Määritä Internet-yhteys · Määritä virransäästö · Määritä lokikirjaus"
 
 #~ msgctxt "#31017"
 #~ msgid "PVR info"

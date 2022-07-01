@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-05-15 15:14+0000\n"
+"PO-Revision-Date: 2022-05-24 03:02+0000\n"
 "Last-Translator: Kai Sommerfeld <kai.sommerfeld@gmx.com>\n"
 "Language-Team: German <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/de_de/>\n"
 "Language: de_de\n"
@@ -643,6 +643,26 @@ msgstr "Für Musikvideos Poster anstelle von Vorschaulbildern zeigen"
 msgctxt "#31169"
 msgid "Artwork related settings."
 msgstr "Einstellungen für Artwork"
+
+#. Label for OSD settings category
+msgctxt "#31170"
+msgid "On screen display"
+msgstr "Bildschirmmenü (OSD)"
+
+#. Helper text for the label of OSD settings category
+msgctxt "#31171"
+msgid "On screen display (OSD) related settings"
+msgstr "Einstellungen für das Bildschirmmenü (OSD)"
+
+#. Setting Automatically close video OSD
+msgctxt "#31172"
+msgid "Automatically close video OSD"
+msgstr "Video-OSD automatisch schliessen"
+
+#. Setting auto close time for video osd
+msgctxt "#31173"
+msgid "Video OSD autoclose time (seconds)"
+msgstr "Video-OSD automatisch schliessen nach (Sekunden)"
 
 # empty strings from id 31170 to 31599
 #. Label to show the video codec name

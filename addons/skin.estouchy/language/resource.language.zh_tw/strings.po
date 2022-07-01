@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-02-26 16:13+0000\n"
+"PO-Revision-Date: 2022-07-01 08:26+0000\n"
 "Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Chinese (Taiwan) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/zh_tw/>\n"
 "Language: zh_tw\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.11\n"
+"X-Generator: Weblate 4.13\n"
 
 msgctxt "Addon Summary"
 msgid "Skin for touchscreen devices"
@@ -239,7 +239,7 @@ msgid "Configure & manage media sharing services · Configure & manage the weath
 msgstr "設定並管理媒體共享服務 · 設定並管理天氣服務"
 
 msgctxt "#31406"
-msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving · Configure logging"
 msgstr "設定顯示器 · 設定音效 · 設定網路存取 · 設定電力節約 · 設定記錄檔"
 
 msgctxt "#31407"
@@ -422,6 +422,10 @@ msgstr "當正在播放音樂或影片時，該檔案的標題會顯示在螢幕
 msgctxt "#31904"
 msgid "Now Playing Title..."
 msgstr "播放中的片名..."
+
+#~ msgctxt "#31406"
+#~ msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+#~ msgstr "設定顯示器 · 設定音效 · 設定網路存取 · 設定電力節約 · 設定記錄檔"
 
 #~ msgctxt "#31017"
 #~ msgid "PVR info"

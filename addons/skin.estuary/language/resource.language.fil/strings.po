@@ -1,734 +1,737 @@
 # Kodi Media Center language file
 # Addon Name: Estuary
 # Addon id: skin.estuary
-# Addon Provider: Team Kodi
+# Addon Provider: phil65, Ichabod Fletchman
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-06-15 21:52+0000\n"
-"Last-Translator: taxigps <taxigps@sina.com>\n"
-"Language-Team: Chinese (China) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/zh_cn/>\n"
-"Language: zh_cn\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: fil\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.12.2\n"
+"Plural-Forms: nplurals=2; plural=n != 1 && n != 2 && n != 3 && (n % 10 == 4 || n % 10 == 6 || n % 10 == 9);\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
-msgstr "phil65 开发的 Estuary 皮肤（Kodi 的默认皮肤）。"
+msgstr ""
 
 msgctxt "Addon Description"
 msgid "Estuary is the default skin for Kodi 17.0 and above. It attempts to be easy for first time Kodi users to understand and use."
-msgstr "Estuary 是 Kodi 17.0 的默认皮肤。它力求使首次使用 Kodi 的用户易于上手。"
+msgstr ""
 
 msgctxt "Addon Disclaimer"
 msgid "Estuary is the default skin for Kodi, removing it may cause issues"
-msgstr "Estuary 是 Kodi 的默认皮肤，删除它可能导致故障。"
+msgstr ""
 
 msgctxt "#31000"
 msgid "Now playing"
-msgstr "正在播放"
+msgstr ""
 
 msgctxt "#31001"
 msgid "Search..."
-msgstr "查找..."
+msgstr ""
 
 msgctxt "#31002"
 msgid "Show media fanart as background"
-msgstr "显示媒体同人画为背景"
+msgstr ""
 
 msgctxt "#31003"
 msgid "Cinema mode"
-msgstr "影院模式"
+msgstr ""
 
 msgctxt "#31004"
 msgid "Change mode"
-msgstr "改变模式"
+msgstr ""
 
 msgctxt "#31005"
 msgid "Watch as 2D"
-msgstr "按2D模式观看"
+msgstr ""
 
 msgctxt "#31006"
 msgid "Random movies"
-msgstr "随机电影"
+msgstr ""
 
 msgctxt "#31007"
 msgid "Unwatched movies"
-msgstr "未观看电影"
+msgstr ""
 
 msgctxt "#31008"
 msgid "Enable category widgets"
-msgstr "启用功能区小部件"
+msgstr ""
 
 msgctxt "#31009"
 msgid "Download icons"
-msgstr "下载图标"
+msgstr ""
 
 msgctxt "#31010"
 msgid "In progress movies"
-msgstr "在观看电影"
+msgstr ""
 
 msgctxt "#31011"
 msgid "Most played albums"
-msgstr "常播电影"
+msgstr ""
 
 msgctxt "#31012"
 msgid "Random albums"
-msgstr "随机专辑"
+msgstr ""
 
 msgctxt "#31013"
 msgid "Random artists"
-msgstr "随机歌手"
+msgstr ""
 
 msgctxt "#31014"
 msgid "Unplayed albums"
-msgstr "未播专辑"
+msgstr ""
 
 #. home screen recordings widget: recent tv / radio recordings
 msgctxt "#31015"
 msgid "Recent recordings"
-msgstr "最近录像"
+msgstr ""
 
 #. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31016"
 msgid "Recently played channels"
-msgstr "最近播放的频道"
+msgstr ""
 
 msgctxt "#31017"
 msgid "Rated"
-msgstr "已评分"
+msgstr ""
 
 #. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
 msgid "Recently played channels"
-msgstr "最近播放的频道"
+msgstr ""
 
 msgctxt "#31019"
 msgid "Forecast"
-msgstr "天气预报"
+msgstr ""
 
 msgctxt "#31020"
 msgid "Actions"
-msgstr "操作"
+msgstr ""
 
 msgctxt "#31021"
 msgid "Misc options"
-msgstr "其他选项"
+msgstr ""
 
 msgctxt "#31022"
 msgid "Sort by"
-msgstr "排序"
+msgstr ""
 
 msgctxt "#31023"
 msgid "Viewtype"
-msgstr "视图类型"
+msgstr ""
 
 msgctxt "#31024"
 msgid "Choose rating to display for media items"
-msgstr "选择媒体项目要显示的评级"
+msgstr ""
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
-msgstr "未找到收藏。你可以从媒体浏览使用上下文菜单添加收藏项目。"
+msgstr ""
 
 msgctxt "#31026"
 msgid "Timeshift"
-msgstr "时光平移"
+msgstr ""
 
 msgctxt "#31027"
 msgid "Next aired"
-msgstr "下次播出"
+msgstr ""
 
 msgctxt "#31028"
 msgid "Show fanart"
-msgstr "显示同人画"
+msgstr ""
 
 msgctxt "#31029"
 msgid "Last logged in"
-msgstr "最近登录"
+msgstr ""
 
 #. Label to show the system memory usage
 msgctxt "#31030"
 msgid "System memory usage"
-msgstr "系统内存使用"
+msgstr ""
 
 msgctxt "#31031"
 msgid "Version info"
-msgstr "版本信息"
+msgstr ""
 
 msgctxt "#31032"
 msgid "Order"
-msgstr "顺序"
+msgstr ""
 
 msgctxt "#31033"
 msgid "Your rating"
-msgstr "你的评分"
+msgstr ""
 
 msgctxt "#31034"
 msgid "Extended info"
-msgstr "扩展信息"
+msgstr ""
 
 msgctxt "#31035"
 msgid "Pages"
-msgstr "页"
+msgstr ""
 
 msgctxt "#31036"
 msgid "items"
-msgstr "项"
+msgstr ""
 
 msgctxt "#31037"
 msgid "Selected track"
-msgstr "已选条目"
+msgstr ""
 
 msgctxt "#31038"
 msgid "Rewind"
-msgstr "回退"
+msgstr ""
 
 msgctxt "#31039"
 msgid "Fast forward"
-msgstr "快进"
+msgstr ""
 
+# empty string with id 31040
 msgctxt "#31041"
 msgid "Camera manufacturer"
-msgstr "相机制造商"
+msgstr ""
 
 msgctxt "#31042"
 msgid "Playlist options"
-msgstr "播放列表选项"
+msgstr ""
 
 msgctxt "#31043"
 msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
-msgstr "设定类型并添加规则来创建智能播放列表。这些播放列表通过你选用的规则动态从数据库所有媒体项目中选取。"
+msgstr ""
 
 msgctxt "#31044"
 msgid "Add group"
-msgstr "增加组"
+msgstr ""
 
 msgctxt "#31045"
 msgid "Rename group"
-msgstr "更名组"
+msgstr ""
 
 msgctxt "#31046"
 msgid "Delete group"
-msgstr "删除组"
+msgstr ""
 
+# empty string with id 31047
 msgctxt "#31048"
 msgid "Available"
-msgstr "可用"
+msgstr ""
 
+# empty strings from id 31049 to 31051
 msgctxt "#31052"
 msgid "filtered"
-msgstr "已筛选"
+msgstr ""
 
 msgctxt "#31053"
 msgid "Arial based"
-msgstr "基于 Arial 字体"
+msgstr ""
 
 msgctxt "#31054"
 msgid "Press [B]Left[/B] to step back, or [B]Right[/B] to step forward"
-msgstr "按 [B]左[/B] 后退，或按 [B]右[/B] 快进"
+msgstr ""
 
 msgctxt "#31055"
 msgid "Press [B]Right[/B] to frame advance"
-msgstr "按 [B]右[/B] 以帧快进"
+msgstr ""
 
 msgctxt "#31056"
 msgid "Go to playlist"
-msgstr "进入播放列表"
+msgstr ""
 
 msgctxt "#31057"
 msgid "Show login screen on startup"
-msgstr "启动时显示登录界面"
+msgstr ""
 
 msgctxt "#31058"
 msgid "Automatic Login on startup"
-msgstr "启动时自动登录"
+msgstr ""
 
 msgctxt "#31059"
 msgid "Select + X"
-msgstr "Select + X"
+msgstr ""
 
 msgctxt "#31060"
 msgid "Select + Start"
-msgstr "Select + Start"
+msgstr ""
 
 msgctxt "#31061"
 msgid "Main menu items"
-msgstr "主菜单项"
+msgstr ""
 
 msgctxt "#31062"
 msgid "Choose weather fanart pack"
-msgstr "选择天气同人画包"
+msgstr ""
 
 msgctxt "#31063"
 msgid "Sections"
-msgstr "区"
+msgstr ""
 
+# empty string with id 31064
 msgctxt "#31065"
 msgid "Video playlist"
-msgstr "视频播放列表"
+msgstr ""
 
 msgctxt "#31066"
 msgid "Music playlist"
-msgstr "音乐播放列表"
+msgstr ""
 
 msgctxt "#31067"
 msgid "Event log"
-msgstr "事件日志"
+msgstr ""
 
 msgctxt "#31068"
 msgid "Choose presets"
-msgstr "选择预置"
+msgstr ""
 
 msgctxt "#31069"
 msgid "Last Updated"
-msgstr "最近修改"
+msgstr ""
 
+# empty string with id 31070
 msgctxt "#31071"
 msgid "by"
-msgstr "于"
+msgstr ""
 
 msgctxt "#31072"
 msgid "Power Options"
-msgstr "电源选项"
+msgstr ""
 
 msgctxt "#31073"
 msgid "Total length"
-msgstr "总长度"
+msgstr ""
 
 msgctxt "#31074"
 msgid "Total duration"
-msgstr "总时长"
+msgstr ""
 
 msgctxt "#31075"
 msgid "Movie sets"
-msgstr "电影集"
+msgstr ""
 
+# empty strings from id 31076 to 31078
 msgctxt "#31079"
 msgid "Cast not available"
-msgstr "演员不可用"
+msgstr ""
 
 msgctxt "#31080"
 msgid "Ends at"
-msgstr "结束于"
+msgstr ""
 
+# empty string with id 31081
 msgctxt "#31082"
 msgid "Lyrics add-on"
-msgstr "歌词插件"
+msgstr ""
 
 msgctxt "#31083"
 msgid "Lyrics add-on settings"
-msgstr "歌词插件设置"
+msgstr ""
 
 msgctxt "#31084"
 msgid "Visualisation settings"
-msgstr "可视化效果设置"
+msgstr ""
 
+# empty strings from id 31085 to 31088
 msgctxt "#31089"
 msgid "Available groups"
-msgstr "可用组"
+msgstr ""
 
+# empty strings from id 31090 to 31091
 msgctxt "#31092"
 msgid "Video menu"
-msgstr "视频菜单"
+msgstr ""
 
 msgctxt "#31093"
 msgid "Show weather info in top bar"
-msgstr "在顶部栏显示天气信息"
+msgstr ""
 
+# empty string with id 31094
 msgctxt "#31095"
 msgid "Use slide animations"
-msgstr "使用幻灯动画"
+msgstr ""
 
 msgctxt "#31096"
 msgid "Local subtitle available"
-msgstr "本地字幕可用"
+msgstr ""
 
 msgctxt "#31097"
 msgid "Channel options"
-msgstr "频道选项"
+msgstr ""
 
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
-msgstr "选择 Kodi 用户配置文件[CR]登录并继续"
+msgstr ""
 
 #. viewtype name
 msgctxt "#31099"
 msgid "IconWall"
-msgstr "图标墙"
+msgstr ""
 
 #. viewtype name
 msgctxt "#31100"
 msgid "Shift"
-msgstr "平移"
+msgstr ""
 
 #. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
-msgstr "信息墙"
+msgstr ""
 
 #. viewtype name
 msgctxt "#31102"
 msgid "Wall"
-msgstr "墙"
+msgstr ""
 
 msgctxt "#31103"
 msgid "Enter text here..."
-msgstr "此处输入文本..."
+msgstr ""
 
 msgctxt "#31104"
 msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
-msgstr "你的资料库为空。要从你的媒体生成资料库，请进入“文件”区，添加媒体源并设置，当源被添加并索引后，你就能在资料库中浏览了。"
+msgstr ""
 
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
-msgstr "添加视频源并设置相应的内容类型以生成你的资料库。"
+msgstr ""
 
 msgctxt "#31106"
 msgid "Teletext"
-msgstr "图文字幕"
+msgstr ""
 
 #. viewtype name
 msgctxt "#31107"
 msgid "WideList"
-msgstr "宽列表"
+msgstr ""
 
+# empty strings from id 31108 to 31109
 msgctxt "#31110"
 msgid "Enter files section"
-msgstr "进入文件区"
+msgstr ""
 
 msgctxt "#31111"
 msgid "View your personal pictures or download one of the many image add-ons from the official repository."
-msgstr "浏览你的个人图片或通过官方插件库图片插件下载。"
+msgstr ""
 
 msgctxt "#31112"
 msgid "Toggle audio stream"
-msgstr "切换音频流"
+msgstr ""
 
 msgctxt "#31113"
 msgid "Search local library"
-msgstr "搜索本地资料库"
+msgstr ""
 
 msgctxt "#31114"
 msgid "Search YouTube"
-msgstr "搜索 YouTube"
+msgstr ""
 
 msgctxt "#31115"
 msgid "Toggle subtitle"
-msgstr "切换字幕"
+msgstr ""
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
-msgstr "删除此主菜单项"
+msgstr ""
 
 msgctxt "#31117"
 msgid "Edit nodes"
-msgstr "编辑节点"
+msgstr ""
 
 msgctxt "#31118"
 msgid "Enter add-on browser"
-msgstr "进入插件浏览"
+msgstr ""
 
 msgctxt "#31119"
 msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
-msgstr "尚未安排插件。请到插件浏览器使用我们的插件库来提升 Kodi 使用体验。"
+msgstr ""
 
 msgctxt "#31120"
 msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
-msgstr "尚未设置天气提供者。需设置天气提供者及你的位置后才能获取天气信息。"
+msgstr ""
 
 msgctxt "#31121"
 msgid "Set weather provider"
-msgstr "设置天气提供者"
+msgstr ""
 
 msgctxt "#31122"
 msgid "Unwatched TV Shows"
-msgstr "未观看剧集"
+msgstr ""
 
 msgctxt "#31123"
 msgid "Same director"
-msgstr "同一导演"
+msgstr ""
 
+# empty string with id 31124
 msgctxt "#31125"
 msgid "Press up for actor info"
-msgstr "按“上”为演员信息"
+msgstr ""
 
 msgctxt "#31126"
 msgid "Press OK to read plot"
-msgstr "按“确认”阅读剧情"
+msgstr ""
 
 msgctxt "#31127"
 msgid "Show icons"
-msgstr "显示图标"
+msgstr ""
 
 msgctxt "#31128"
 msgid "Contributors"
-msgstr "贡献者"
+msgstr ""
 
 msgctxt "#31129"
 msgid "General settings applying to all areas of the skin."
-msgstr "常规设置用于皮肤的所有区域。"
+msgstr ""
 
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
-msgstr "主菜单相关设置：按喜好设置主界面。"
+msgstr ""
 
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
-msgstr "选择皮肤同人画包"
+msgstr ""
 
 msgctxt "#31132"
 msgid "Select Program"
-msgstr "选择程序"
+msgstr ""
 
 msgctxt "#31133"
 msgid "Select Resolution"
-msgstr "选择分辨率"
+msgstr ""
 
 msgctxt "#31134"
 msgid "Remaining"
-msgstr "剩余"
+msgstr ""
 
 msgctxt "#31135"
 msgid "Binary"
-msgstr "二进制"
+msgstr ""
 
 msgctxt "#31136"
 msgid "Click here to see latest changes..."
-msgstr "点击查看最新变化..."
+msgstr ""
 
 #. Label to show PVR info page
 msgctxt "#31137"
 msgid "PVR"
-msgstr "PVR"
+msgstr ""
 
 #. Label to show player info page
 msgctxt "#31138"
 msgid "Player"
-msgstr "播放器"
+msgstr ""
 
 #. Label to show video decoder name
 msgctxt "#31139"
 msgid "Video decoder"
-msgstr "视频解码器"
+msgstr ""
 
 #. Label to show the video pixel format
 msgctxt "#31140"
 msgid "Pixel format"
-msgstr "像素格式"
+msgstr ""
 
 msgctxt "#31141"
 msgid "Changes for version"
-msgstr "更改于版本"
+msgstr ""
 
 msgctxt "#31142"
 msgid "Play speed"
-msgstr "播放速度"
+msgstr ""
 
 msgctxt "#31143"
 msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
-msgstr "尚未设置 PVR。使用 PVR，需选择一个 PVR 客户端插件并进行设置。详情请访问 http://kodi.wiki/view/PVR。"
+msgstr ""
 
 msgctxt "#31144"
 msgid "Enter add-on browser"
-msgstr "进入插件浏览"
+msgstr ""
 
 msgctxt "#31145"
 msgid "Search add-ons"
-msgstr "搜索插件"
+msgstr ""
 
 msgctxt "#31146"
 msgid "In cinemas"
-msgstr "在电影院里"
+msgstr ""
 
 msgctxt "#31147"
 msgid "In cinemas soon"
-msgstr "即将上映"
+msgstr ""
 
 msgctxt "#31148"
 msgid "Categories"
-msgstr "类别"
+msgstr ""
 
 msgctxt "#31149"
 msgid "Select genre fanart pack"
-msgstr "选择类型同人画包"
+msgstr ""
 
 msgctxt "#31150"
 msgid "Origin"
-msgstr "原始"
+msgstr ""
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
-msgstr "未观看音乐电视"
+msgstr ""
 
 msgctxt "#31152"
 msgid "Random music videos"
-msgstr "随机音乐电视"
+msgstr ""
 
 msgctxt "#31153"
 msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
-msgstr "尚未安装此类插件。请到插件浏览器下载我们社区创建的插件。"
+msgstr ""
 
 msgctxt "#31154"
 msgid "Press OK to switch between locations"
-msgstr "按确认键切换位置"
+msgstr ""
 
 msgctxt "#31155"
 msgid "No bookmarks created yet."
-msgstr "尚未创建书签。"
+msgstr ""
 
 msgctxt "#31156"
 msgid "Choose background pattern"
-msgstr "选择背景图案"
+msgstr ""
 
 msgctxt "#31157"
 msgid "Edit categories"
-msgstr "编辑类别"
+msgstr ""
 
 msgctxt "#31158"
 msgid "Touch mode"
-msgstr "触摸模式"
+msgstr ""
 
 msgctxt "#31159"
 msgid "Artwork"
-msgstr "艺术图片"
+msgstr ""
 
 msgctxt "#31160"
 msgid "Show media flags"
-msgstr "显示媒体标识"
+msgstr ""
 
 msgctxt "#31161"
 msgid "Numeric pad"
-msgstr "数字键盘"
+msgstr ""
 
 msgctxt "#31162"
 msgid "Play your personal games or download one of the many game add-ons from the official repository."
-msgstr "玩你自己珍藏的游戏或者从官方仓库中下载游戏插件。"
+msgstr ""
 
 msgctxt "#31163"
 msgid "Show Fanart background"
-msgstr "显示同人画背景"
+msgstr ""
 
 #. Choose profile identifier
 msgctxt "#31164"
 msgid "Choose kind of profile identification"
-msgstr "选择个人配置标识种类"
+msgstr ""
 
 #. Label for the kind of profile identification
 msgctxt "#31165"
 msgid "Profile name"
-msgstr "用户配置名称"
+msgstr ""
 
 #. Label for the kind of profile identification
 msgctxt "#31166"
 msgid "Profile avatar"
-msgstr "用户配置头像"
+msgstr ""
 
 #. Label of a setting
 msgctxt "#31167"
 msgid "Animate background"
-msgstr "动态背景"
+msgstr ""
 
 #. Label of a setting
 msgctxt "#31168"
 msgid "Show posters instead of thumbs for musicvideos"
-msgstr "对于音乐电视，显示海报而不是缩略图"
+msgstr ""
 
 #. Description label for skin settings area
 msgctxt "#31169"
 msgid "Artwork related settings."
-msgstr "艺术图片相关的设置。"
+msgstr ""
 
 #. Label for OSD settings category
 msgctxt "#31170"
 msgid "On screen display"
-msgstr "屏幕菜单式调节"
+msgstr ""
 
 #. Helper text for the label of OSD settings category
 msgctxt "#31171"
 msgid "On screen display (OSD) related settings"
-msgstr "屏幕菜单式调节（OSD）相关设置"
+msgstr ""
 
 #. Setting Automatically close video OSD
 msgctxt "#31172"
 msgid "Automatically close video OSD"
-msgstr "自动关闭视频 OSD"
+msgstr ""
 
 #. Setting auto close time for video osd
 msgctxt "#31173"
 msgid "Video OSD autoclose time (seconds)"
-msgstr "视频 OSD 自动关闭时间（秒）"
+msgstr ""
 
 # empty strings from id 31170 to 31599
 #. Label to show the video codec name
 msgctxt "#31600"
 msgid "Video codec"
-msgstr "视频编码"
+msgstr ""
 
 #. Label to show the video resolution
 msgctxt "#31601"
 msgid "Video resolution"
-msgstr "视频分辨率"
+msgstr ""
 
 #. Label to show the video aspect
 msgctxt "#31602"
 msgid "Video aspect"
-msgstr "视频宽高比"
+msgstr ""
 
 #. Label to show the video bitrate
 msgctxt "#31603"
 msgid "Video bitrate"
-msgstr "视频比特率"
+msgstr ""
 
 #. Label to show the audio codec name
 msgctxt "#31604"
 msgid "Audio codec"
-msgstr "音频编码"
+msgstr ""
 
 #. Label to show the number of audio channels
 msgctxt "#31605"
 msgid "Audio channels"
-msgstr "音频声道"
+msgstr ""
 
 #. Label to show the audio bitrate
 msgctxt "#31606"
 msgid "Audio bitrate"
-msgstr "音频比特率"
+msgstr ""
 
 #. Label to show the screen resolution
 msgctxt "#31607"
 msgid "Screen resolution"
-msgstr "屏幕分辨率"
+msgstr ""
 
 #. Label to show the system rendering speed
 msgctxt "#31608"
 msgid "System rendering speed"
-msgstr "系统渲染速度"
+msgstr ""
 
 #. Label to show the system CPU usage
 msgctxt "#31609"
 msgid "System CPU usage"
-msgstr "系统 CPU 使用"
+msgstr ""
 
 #. Label to show the media (metadata) info page
 msgctxt "#31610"
 msgid "Media"
-msgstr "媒体"
+msgstr ""
 
 #. Label to show the system info page
 msgctxt "#31611"
 msgid "System"
-msgstr "系统"
-
-#~ msgctxt "#31137"
-#~ msgid "PVR info"
-#~ msgstr "PVR 信息"
-
-#~ msgctxt "#31138"
-#~ msgid "Player process info"
-#~ msgstr "播放器处理信息"
+msgstr ""

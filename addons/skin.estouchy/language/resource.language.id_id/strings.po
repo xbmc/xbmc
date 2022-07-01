@@ -7,15 +7,15 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-02-04 08:06+0000\n"
-"Last-Translator: Nao3Line Prez <n.yazawa6932@gmail.com>\n"
+"PO-Revision-Date: 2022-07-01 08:26+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Indonesian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/id_id/>\n"
 "Language: id_id\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.13\n"
 
 msgctxt "Addon Summary"
 msgid "Skin for touchscreen devices"
@@ -242,7 +242,7 @@ msgid "Configure & manage media sharing services · Configure & manage the weath
 msgstr "Konfigurasi & kelola layanan berbagi media · Konfigurasi & kelola layanan cuaca"
 
 msgctxt "#31406"
-msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving · Configure logging"
 msgstr "Konfigurasikan tampilan · Konfigurasikan audio · Konfigurasikan akses internet · Konfigurasikan penghematan daya · Konfigurasikan pencatatan"
 
 msgctxt "#31407"
@@ -428,6 +428,10 @@ msgstr "Saat Anda memutar audio atau video, judul item akan muncul di bagian ata
 msgctxt "#31904"
 msgid "Now Playing Title..."
 msgstr "Sekarang Memutar Judul..."
+
+#~ msgctxt "#31406"
+#~ msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+#~ msgstr "Konfigurasikan tampilan · Konfigurasikan audio · Konfigurasikan akses internet · Konfigurasikan penghematan daya · Konfigurasikan pencatatan"
 
 #~ msgctxt "#31017"
 #~ msgid "PVR info"

@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-02-26 16:13+0000\n"
+"PO-Revision-Date: 2022-07-01 08:26+0000\n"
 "Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Bulgarian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/bg_bg/>\n"
 "Language: bg_bg\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.11\n"
+"X-Generator: Weblate 4.13\n"
 
 msgctxt "Addon Summary"
 msgid "Skin for touchscreen devices"
@@ -239,7 +239,7 @@ msgid "Configure & manage media sharing services · Configure & manage the weath
 msgstr "Настройки на услугите за споделяне · Настройки на услугата за метеорологична прогноза"
 
 msgctxt "#31406"
-msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving · Configure logging"
 msgstr "Настройка на екрана · Настройка на звука · Настройка на достъпа до Интернет · Настройка на пестенето на енергия · Настройка на журналите"
 
 msgctxt "#31407"
@@ -422,6 +422,10 @@ msgstr "При възпроизвеждане на видео или аудио 
 msgctxt "#31904"
 msgid "Now Playing Title..."
 msgstr "Възпроизвеждане…"
+
+#~ msgctxt "#31406"
+#~ msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+#~ msgstr "Настройка на екрана · Настройка на звука · Настройка на достъпа до Интернет · Настройка на пестенето на енергия · Настройка на журналите"
 
 #~ msgctxt "#31017"
 #~ msgid "PVR info"

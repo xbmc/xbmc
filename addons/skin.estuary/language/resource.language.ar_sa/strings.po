@@ -7,15 +7,15 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-02-26 16:13+0000\n"
-"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"PO-Revision-Date: 2022-06-28 16:24+0000\n"
+"Last-Translator: psp2111-ADSLGATE <psp100000@hotmail.com>\n"
 "Language-Team: Arabic (Saudi Arabia) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/ar_sa/>\n"
 "Language: ar_sa\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
-"X-Generator: Weblate 4.11\n"
+"X-Generator: Weblate 4.13\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -517,7 +517,7 @@ msgstr "انقر هنا لمشاهدة أحدث التغييرات..."
 #. Label to show PVR info page
 msgctxt "#31137"
 msgid "PVR"
-msgstr ""
+msgstr "PVR"
 
 #. Label to show player info page
 msgctxt "#31138"
@@ -656,6 +656,26 @@ msgctxt "#31169"
 msgid "Artwork related settings."
 msgstr "الإعدادات المتعلقة بال Artwork."
 
+#. Label for OSD settings category
+msgctxt "#31170"
+msgid "On screen display"
+msgstr "المعروضة على الشاشة"
+
+#. Helper text for the label of OSD settings category
+msgctxt "#31171"
+msgid "On screen display (OSD) related settings"
+msgstr "إعدادات متعلقة بالعرض على الشاشة (OSD)"
+
+#. Setting Automatically close video OSD
+msgctxt "#31172"
+msgid "Automatically close video OSD"
+msgstr "إغلاق واجهة الفيديو تلقائيا"
+
+#. Setting auto close time for video osd
+msgctxt "#31173"
+msgid "Video OSD autoclose time (seconds)"
+msgstr "وقت إغلاق واجهة الفيديو (ثواني)"
+
 # empty strings from id 31170 to 31599
 #. Label to show the video codec name
 msgctxt "#31600"
@@ -670,12 +690,12 @@ msgstr "دقة الفيديو"
 #. Label to show the video aspect
 msgctxt "#31602"
 msgid "Video aspect"
-msgstr "حجم الفيديو"
+msgstr "أبعاد الفيديو"
 
 #. Label to show the video bitrate
 msgctxt "#31603"
 msgid "Video bitrate"
-msgstr ""
+msgstr "معدل البت للفيديو"
 
 #. Label to show the audio codec name
 msgctxt "#31604"
@@ -685,12 +705,12 @@ msgstr "ترميز الصوت"
 #. Label to show the number of audio channels
 msgctxt "#31605"
 msgid "Audio channels"
-msgstr "القنوات السمعية"
+msgstr "قنوات الصوت"
 
 #. Label to show the audio bitrate
 msgctxt "#31606"
 msgid "Audio bitrate"
-msgstr ""
+msgstr "معدل البت للصوت"
 
 #. Label to show the screen resolution
 msgctxt "#31607"
@@ -700,7 +720,7 @@ msgstr "دقة الشاشة"
 #. Label to show the system rendering speed
 msgctxt "#31608"
 msgid "System rendering speed"
-msgstr ""
+msgstr "سرعة عرض النظام"
 
 #. Label to show the system CPU usage
 msgctxt "#31609"
