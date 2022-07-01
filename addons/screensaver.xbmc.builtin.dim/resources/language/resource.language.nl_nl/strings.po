@@ -7,15 +7,15 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2021-09-18 17:35+0000\n"
-"Last-Translator: Klojum <klojum@kodi.tv>\n"
+"PO-Revision-Date: 2022-06-29 16:37+0000\n"
+"Last-Translator: SecularSteve <fairfull.playing@gmail.com>\n"
 "Language-Team: Dutch <https://kodi.weblate.cloud/projects/kodi-core/screensaver-xbmc-builtin-dim/nl_nl/>\n"
 "Language: nl_nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.8\n"
+"X-Generator: Weblate 4.13\n"
 
 msgctxt "Addon Summary"
 msgid "Screensaver that dims your screen"
@@ -28,12 +28,12 @@ msgstr "De Dim-schermbeveiliging is een eenvoudige schermbeveiliging die je sche
 #. Setting name for edit screen dim in percentage (0% = black, 100% = no dim)
 msgctxt "#30000"
 msgid "Brightness level"
-msgstr ""
+msgstr "Helderheidsniveau"
 
 #. Setting help text
 msgctxt "#30001"
 msgid "Level in percent of how strongly the screen remains illuminated."
-msgstr ""
+msgstr "Niveau in procent van hoe sterk het scherm verlicht blijft."
 
 #. Setting category name
 msgctxt "#30002"

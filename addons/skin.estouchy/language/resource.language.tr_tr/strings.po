@@ -7,15 +7,15 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-01-22 12:30+0000\n"
-"Last-Translator: queeup <queeup@zoho.com>\n"
+"PO-Revision-Date: 2022-07-01 08:26+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Turkish <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/tr_tr/>\n"
 "Language: tr_tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.13\n"
 
 msgctxt "Addon Summary"
 msgid "Skin for touchscreen devices"
@@ -239,7 +239,7 @@ msgid "Configure & manage media sharing services · Configure & manage the weath
 msgstr "Medya paylaşımı hizmetlerini yapılandır ve yönet · Hava durumu hizmetini yapılandır ve yönet"
 
 msgctxt "#31406"
-msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving · Configure logging"
 msgstr "Görüntüyü yapılandırın · Sesi yapılandırın · İnternet erişimini yapılandırın · Güç tasarrufunu yapılandırın · Günlüğü yapılandırın"
 
 msgctxt "#31407"
@@ -422,6 +422,10 @@ msgstr "Ses veya video oynatılırken, oynatılan öğenin başlığı ekranın 
 msgctxt "#31904"
 msgid "Now Playing Title..."
 msgstr "Şimdi Oynatılan Öğenin Başlığı..."
+
+#~ msgctxt "#31406"
+#~ msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+#~ msgstr "Görüntüyü yapılandırın · Sesi yapılandırın · İnternet erişimini yapılandırın · Güç tasarrufunu yapılandırın · Günlüğü yapılandırın"
 
 #~ msgctxt "#31017"
 #~ msgid "PVR info"

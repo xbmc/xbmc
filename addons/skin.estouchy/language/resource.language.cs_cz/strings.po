@@ -7,15 +7,15 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-03-20 00:07+0000\n"
-"Last-Translator: Kryštof Černý <cleverline1mc@gmail.com>\n"
+"PO-Revision-Date: 2022-07-01 08:26+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Czech <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/cs_cz/>\n"
 "Language: cs_cz\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.13\n"
 
 msgctxt "Addon Summary"
 msgid "Skin for touchscreen devices"
@@ -239,7 +239,7 @@ msgid "Configure & manage media sharing services · Configure & manage the weath
 msgstr "Konfigurujte a spravujte služby sdílení médií · Konfigurujte a spravujte služby počasí"
 
 msgctxt "#31406"
-msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving · Configure logging"
 msgstr "Nastavit obrazovku · Nastavit zvuk · Nastavit přístup k Internetu · Nastavit úsporu energie · Nastavit protokolování"
 
 msgctxt "#31407"
@@ -422,6 +422,10 @@ msgstr "Když přehráváte hudbu nebo video, objeví se na horním okraji obraz
 msgctxt "#31904"
 msgid "Now Playing Title..."
 msgstr "Nyní je přehráváno…"
+
+#~ msgctxt "#31406"
+#~ msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+#~ msgstr "Nastavit obrazovku · Nastavit zvuk · Nastavit přístup k Internetu · Nastavit úsporu energie · Nastavit protokolování"
 
 #~ msgctxt "#31017"
 #~ msgid "PVR info"

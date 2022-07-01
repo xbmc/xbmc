@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2021-12-19 21:58+0000\n"
+"PO-Revision-Date: 2022-07-01 08:07+0000\n"
 "Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Danish <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/da_dk/>\n"
 "Language: da_dk\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.10\n"
+"X-Generator: Weblate 4.13\n"
 
 msgctxt "Addon Summary"
 msgid "Skin for touchscreen devices"
@@ -240,7 +240,7 @@ msgid "Configure & manage media sharing services · Configure & manage the weath
 msgstr "Konfigurer og administrer mediedelingstjenester · Konfigurer og administrer vejretjenesten"
 
 msgctxt "#31406"
-msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving · Configure logging"
 msgstr "Konfigurer skærm · Konfigurer lyd · Konfigurer internetadgang · Konfigurer strømbesparelse · Konfigurer logføring"
 
 msgctxt "#31407"
@@ -424,6 +424,10 @@ msgstr "Når du afspiller lyd eller video, vises titlen øverst på skærmen. Hv
 msgctxt "#31904"
 msgid "Now Playing Title..."
 msgstr "Titel der afspilles nu..."
+
+#~ msgctxt "#31406"
+#~ msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+#~ msgstr "Konfigurer skærm · Konfigurer lyd · Konfigurer internetadgang · Konfigurer strømbesparelse · Konfigurer logføring"
 
 #~ msgctxt "#31017"
 #~ msgid "PVR info"

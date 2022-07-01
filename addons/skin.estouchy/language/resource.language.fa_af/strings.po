@@ -261,7 +261,7 @@ msgid "Configure & manage media sharing services · Configure & manage the weath
 msgstr ""
 
 msgctxt "#31406"
-msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving · Configure logging"
 msgstr ""
 
 msgctxt "#31407"

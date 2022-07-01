@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-02-26 16:13+0000\n"
+"PO-Revision-Date: 2022-07-01 08:26+0000\n"
 "Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Hebrew (Israel) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/he_il/>\n"
 "Language: he_il\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && n % 10 == 0) ? 2 : 3));\n"
-"X-Generator: Weblate 4.11\n"
+"X-Generator: Weblate 4.13\n"
 
 msgctxt "Addon Summary"
 msgid "Skin for touchscreen devices"
@@ -239,7 +239,7 @@ msgid "Configure & manage media sharing services · Configure & manage the weath
 msgstr "הגדר ונהל את שרות שיתוף המדיה · הגדר ונהל את שרות מזג האוויר"
 
 msgctxt "#31406"
-msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving · Configure logging"
 msgstr "הגדר תצוגה · הגדר שמע · הגדרת גישה לאינטרנט · הגדר חסכון בחשמל · הגדר יומן"
 
 msgctxt "#31407"
@@ -422,6 +422,10 @@ msgstr "בזמן ניגון שמע או וידאו, כותרת הפריט מופ
 msgctxt "#31904"
 msgid "Now Playing Title..."
 msgstr "מנגן כעת..."
+
+#~ msgctxt "#31406"
+#~ msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+#~ msgstr "הגדר תצוגה · הגדר שמע · הגדרת גישה לאינטרנט · הגדר חסכון בחשמל · הגדר יומן"
 
 #~ msgctxt "#31017"
 #~ msgid "PVR info"

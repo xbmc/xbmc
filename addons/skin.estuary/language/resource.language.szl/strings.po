@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-03-01 13:10+0000\n"
+"PO-Revision-Date: 2022-07-01 08:26+0000\n"
 "Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Silesian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/szl/>\n"
 "Language: szl\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.11\n"
+"X-Generator: Weblate 4.13\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -644,21 +644,41 @@ msgctxt "#31169"
 msgid "Artwork related settings."
 msgstr ""
 
+#. Label for OSD settings category
+msgctxt "#31170"
+msgid "On screen display"
+msgstr ""
+
+#. Helper text for the label of OSD settings category
+msgctxt "#31171"
+msgid "On screen display (OSD) related settings"
+msgstr ""
+
+#. Setting Automatically close video OSD
+msgctxt "#31172"
+msgid "Automatically close video OSD"
+msgstr ""
+
+#. Setting auto close time for video osd
+msgctxt "#31173"
+msgid "Video OSD autoclose time (seconds)"
+msgstr ""
+
 # empty strings from id 31170 to 31599
 #. Label to show the video codec name
 msgctxt "#31600"
 msgid "Video codec"
-msgstr ""
+msgstr "Kodek wideo"
 
 #. Label to show the video resolution
 msgctxt "#31601"
 msgid "Video resolution"
-msgstr ""
+msgstr "Ôzdzielczość wideo"
 
 #. Label to show the video aspect
 msgctxt "#31602"
 msgid "Video aspect"
-msgstr ""
+msgstr "Proporcyje ôbrazu"
 
 #. Label to show the video bitrate
 msgctxt "#31603"
@@ -668,12 +688,12 @@ msgstr ""
 #. Label to show the audio codec name
 msgctxt "#31604"
 msgid "Audio codec"
-msgstr ""
+msgstr "Kodek audio"
 
 #. Label to show the number of audio channels
 msgctxt "#31605"
 msgid "Audio channels"
-msgstr ""
+msgstr "Kanały audio"
 
 #. Label to show the audio bitrate
 msgctxt "#31606"
@@ -683,7 +703,7 @@ msgstr ""
 #. Label to show the screen resolution
 msgctxt "#31607"
 msgid "Screen resolution"
-msgstr ""
+msgstr "Ôzdzielczość ekranu"
 
 #. Label to show the system rendering speed
 msgctxt "#31608"
@@ -698,7 +718,7 @@ msgstr ""
 #. Label to show the media (metadata) info page
 msgctxt "#31610"
 msgid "Media"
-msgstr ""
+msgstr "Mydia"
 
 #. Label to show the system info page
 msgctxt "#31611"

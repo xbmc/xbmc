@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-03-27 01:18+0000\n"
+"PO-Revision-Date: 2022-07-01 08:26+0000\n"
 "Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Japanese <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/ja_jp/>\n"
 "Language: ja_jp\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.13\n"
 
 msgctxt "Addon Summary"
 msgid "Skin for touchscreen devices"
@@ -239,7 +239,7 @@ msgid "Configure & manage media sharing services · Configure & manage the weath
 msgstr "設定 & メディア共有サービス · 設定 & 天気予報サービス"
 
 msgctxt "#31406"
-msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+msgid "Configure display · Configure audio · Configure internet access · Configure power saving · Configure logging"
 msgstr "設定の表示 · オーディオの設定 · インターネット アクセスの設定 · 省電力の設定· ログの設定"
 
 msgctxt "#31407"
@@ -422,6 +422,10 @@ msgstr "オーディオかビデオの再生中、トップ画面にアイテム
 msgctxt "#31904"
 msgid "Now Playing Title..."
 msgstr "現在再生中のタイトル..."
+
+#~ msgctxt "#31406"
+#~ msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
+#~ msgstr "設定の表示 · オーディオの設定 · インターネット アクセスの設定 · 省電力の設定· ログの設定"
 
 #~ msgctxt "#31017"
 #~ msgid "PVR info"
