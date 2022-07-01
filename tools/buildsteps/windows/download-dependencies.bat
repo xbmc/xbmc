@@ -19,9 +19,12 @@ REM If KODI_MIRROR is not set externally to this script, set it to the default m
 IF "%KODI_MIRROR%" == "" SET KODI_MIRROR=http://mirrors.kodi.tv
 echo Downloading from mirror %KODI_MIRROR%
 
+REM read the VERSION_MAJOR value from version.txt
+FOR /f "tokens=1,2" %%i IN (%WORKSPACE%\version.txt) DO IF "%%i" == "VERSION_MAJOR" SET VERSION_MAJOR=%%j
+
 REM Locate the BuildDependencies directory, based on the path of this script
 SET BUILD_DEPS_PATH=%WORKSPACE%\project\BuildDependencies
-SET APP_PATH=%WORKSPACE%\project\BuildDependencies\%TARGETPLATFORM%
+SET APP_PATH=%WORKSPACE%\project\BuildDependencies\build-%VERSION_MAJOR%\%TARGETPLATFORM%
 SET TMP_PATH=%BUILD_DEPS_PATH%\scripts\tmp
 
 REM Change to the BuildDependencies directory, if we're not there already

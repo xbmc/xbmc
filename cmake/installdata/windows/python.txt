@@ -1,1 +1,1 @@
-project/BuildDependencies/${ARCH}/bin/Python KEEP_DIR_STRUCTURE system
+project/BuildDependencies/build-${APP_VERSION_MAJOR}/${ARCH}/bin/Python KEEP_DIR_STRUCTURE system

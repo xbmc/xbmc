@@ -26,9 +26,13 @@ PUSHD %~dp0\..\..\..
 SET WORKSPACE=%CD%
 POPD
 
+REM read the VERSION_MAJOR value from version.txt
+FOR /f "tokens=1,2" %%i IN (%WORKSPACE%\version.txt) DO IF "%%i" == "VERSION_MAJOR" SET VERSION_MAJOR=%%j
+
 set msysver=20210725
 set msys2=msys64
 set instdir=%WORKSPACE%\project\BuildDependencies
+set builddir=%WORKSPACE%\project\BuildDependencies\build-%VERSION_MAJOR%
 set msyspackages=diffutils gcc make patch perl tar yasm
 set gaspreprocurl=https://github.com/FFmpeg/gas-preprocessor/archive/master.tar.gz
 set usemirror=yes
@@ -207,6 +211,9 @@ if not exist %instdir%\locals\x64\share (
     mkdir %instdir%\locals\x64\share
     )
 
+if exist %instdir%\%msys2%\etc\fstab. (
+    >nul findstr /c:"build-%VERSION_MAJOR%" %instdir%\%msys2%\etc\fstab. || del %instdir%\%msys2%\etc\fstab.
+)
 if not exist %instdir%\%msys2%\etc\fstab. GOTO writeFstab
 for /f "tokens=2 delims=/" %%a in ('findstr /i xbmc %instdir%\%msys2%\etc\fstab.') do set searchRes=%%a
 if "%searchRes%"=="xbmc" GOTO installbase
@@ -235,6 +242,11 @@ if "%cygdrive%"=="no" echo.none / cygdrive binary,posix=0,noacl,user 0 ^0>>%inst
     echo.%instdir%\win10-win32\      /depends/win10-win32
     echo.%instdir%\win10-x64\        /depends/win10-x64
     echo.%instdir%\..\..\            /xbmc
+    echo.%builddir%\win32\           /depends2/win32
+    echo.%builddir%\x64\             /depends2/x64
+    echo.%builddir%\win10-arm\       /depends2/win10-arm
+    echo.%builddir%\win10-win32\     /depends2/win10-win32
+    echo.%builddir%\win10-x64\       /depends2/win10-x64
 )>>%instdir%\%msys2%\etc\fstab.
 
 :installbase

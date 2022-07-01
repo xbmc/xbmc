@@ -72,7 +72,7 @@ checkfiles() {
 }
 
 buildProcess() {
-export PREFIX=/xbmc/project/BuildDependencies/mingwlibs/$TRIPLET
+export PREFIX=/xbmc/project/BuildDependencies/build-$VERSION_MAJOR/mingwlibs/$TRIPLET
 if [ "$(pathChanged $PREFIX /xbmc/tools/buildsteps/windows /xbmc/tools/depends/target/ffmpeg/FFMPEG-VERSION)" == "0" ]; then
   return
 fi

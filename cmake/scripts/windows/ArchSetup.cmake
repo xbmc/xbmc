@@ -33,11 +33,17 @@ set(CORE_MAIN_SOURCE ${CMAKE_SOURCE_DIR}/xbmc/platform/win32/WinMain.cpp)
 
 # Precompiled headers fail with per target output directory. (needs CMake 3.1)
 set(PRECOMPILEDHEADER_DIR ${PROJECT_BINARY_DIR}/${CORE_BUILD_CONFIG}/objs)
+
 set(CMAKE_SYSTEM_NAME Windows)
 set(DEPS_FOLDER_RELATIVE project/BuildDependencies)
+
+# parse version.txt and versions.h to get the version and API info
+include(${CMAKE_SOURCE_DIR}/cmake/scripts/common/Macros.cmake)
+core_find_versions()
+
 set(NATIVEPREFIX ${CMAKE_SOURCE_DIR}/${DEPS_FOLDER_RELATIVE}/tools)
-set(DEPENDS_PATH ${CMAKE_SOURCE_DIR}/${DEPS_FOLDER_RELATIVE}/${ARCH})
-set(MINGW_LIBS_DIR ${CMAKE_SOURCE_DIR}/${DEPS_FOLDER_RELATIVE}/mingwlibs/${ARCH})
+set(DEPENDS_PATH ${CMAKE_SOURCE_DIR}/${DEPS_FOLDER_RELATIVE}/build-${APP_VERSION_MAJOR}/${ARCH})
+set(MINGW_LIBS_DIR ${CMAKE_SOURCE_DIR}/${DEPS_FOLDER_RELATIVE}/build-${APP_VERSION_MAJOR}/mingwlibs/${ARCH})
 
 # mingw libs
 list(APPEND CMAKE_PREFIX_PATH ${MINGW_LIBS_DIR})

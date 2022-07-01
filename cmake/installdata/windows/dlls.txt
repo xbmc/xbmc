@@ -1,2 +1,2 @@
-project/BuildDependencies/${ARCH}/bin/*.dll .
-project/BuildDependencies/${ARCH}/bin/libbluray*.jar .
+project/BuildDependencies/build-${APP_VERSION_MAJOR}/${ARCH}/bin/*.dll .
+project/BuildDependencies/build-${APP_VERSION_MAJOR}/${ARCH}/bin/libbluray*.jar .

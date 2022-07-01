@@ -51,9 +51,13 @@ set(PACKAGE_GUID "281d668b-5739-4abd-b3c2-ed1cda572ed2")
 set(APP_MANIFEST_NAME package.appxmanifest)
 set(DEPS_FOLDER_RELATIVE project/BuildDependencies)
 
+# parse version.txt and versions.h to get the version and API info
+include(${CMAKE_SOURCE_DIR}/cmake/scripts/common/Macros.cmake)
+core_find_versions()
+
 set(NATIVEPREFIX ${CMAKE_SOURCE_DIR}/${DEPS_FOLDER_RELATIVE}/tools)
-set(DEPENDS_PATH ${CMAKE_SOURCE_DIR}/${DEPS_FOLDER_RELATIVE}/win10-${ARCH})
-set(MINGW_LIBS_DIR ${CMAKE_SOURCE_DIR}/${DEPS_FOLDER_RELATIVE}/mingwlibs/win10-${ARCH})
+set(DEPENDS_PATH ${CMAKE_SOURCE_DIR}/${DEPS_FOLDER_RELATIVE}/build-${APP_VERSION_MAJOR}/win10-${ARCH})
+set(MINGW_LIBS_DIR ${CMAKE_SOURCE_DIR}/${DEPS_FOLDER_RELATIVE}/build-${APP_VERSION_MAJOR}/mingwlibs/win10-${ARCH})
 
 # mingw libs
 list(APPEND CMAKE_PREFIX_PATH ${MINGW_LIBS_DIR})

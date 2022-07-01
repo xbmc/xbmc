@@ -42,7 +42,10 @@ IF "%vcstore%"=="store" (
   SET toolsdir="win10-%toolsdir%"
 )
 
-SET vswhere="%builddeps%\%toolsdir%\tools\vswhere\vswhere.exe"
+REM read the VERSION_MAJOR value from version.txt
+FOR /f "tokens=1,2" %%i IN (%builddeps%\..\..\version.txt) DO IF "%%i" == "VERSION_MAJOR" SET VERSION_MAJOR=%%j
+
+SET vswhere="%builddeps%\build-%VERSION_MAJOR%\%toolsdir%\tools\vswhere\vswhere.exe"
 
 FOR /f "usebackq tokens=1* delims=" %%i in (`%vswhere% -latest -property installationPath`) do (
   IF EXIST "%%i\VC\Auxiliary\Build\vcvarsall.bat" (
