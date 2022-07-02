@@ -1547,12 +1547,28 @@
   </section>
   <section id="pvr" label="14204" help="36201">
     <category id="pvrmanager" label="128" help="36202">
-      <group id="1" label="14301">
-        <setting id="pvrmanager.preselectplayingchannel" type="boolean" label="19269" help="36214">
+      <group id="1" label="19279">
+        <setting id="pvrclient.menuhook" type="action" label="19280" help="36252">
           <level>1</level>
-          <default>false</default>
-          <control type="toggle" />
+          <control type="button" format="action" />
         </setting>
+        <setting id="pvrmanager.clientpriorities" type="action" label="19240" help="36210">
+          <level>2</level>
+          <dependencies>
+            <dependency type="visible" on="property" name="pvrsettingvisible" setting="pvrmanager.clientpriorities" operator="is">true</dependency>
+          </dependencies>
+          <control type="button" format="action" />
+        </setting>
+      </group>
+      <group id="2" label="14303">
+        <setting id="pvrmanager.resetdb" type="action" label="19185" help="36209">
+          <level>1</level>
+          <control type="button" format="action" />
+        </setting>
+      </group>
+    </category>
+    <category id="pvrmenu" label="14301" help="36211">
+      <group id="1" label="128">
         <setting id="pvrmanager.syncchannelgroups" type="boolean" label="19221" help="36204">
           <level>1</level>
           <default>true</default>
@@ -1593,13 +1609,6 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
-        <setting id="pvrmanager.clientpriorities" type="action" label="19240" help="36210">
-          <level>2</level>
-          <dependencies>
-            <dependency type="visible" on="property" name="pvrsettingvisible" setting="pvrmanager.clientpriorities" operator="is">true</dependency>
-          </dependencies>
-          <control type="button" format="action" />
-        </setting>
         <setting id="pvrmanager.channelmanager" type="action" label="19199" help="36207">
           <level>1</level>
           <control type="button" format="action" />
@@ -1611,31 +1620,6 @@
         <setting id="pvrmanager.channelscan" type="action" label="19117" help="36208">
           <level>1</level>
           <control type="button" format="action" />
-        </setting>
-        <setting id="pvrmanager.resetdb" type="action" label="19185" help="36209">
-          <level>1</level>
-          <control type="button" format="action" />
-        </setting>
-      </group>
-    </category>
-    <category id="pvrmenu" label="19181" help="36211">
-      <group id="1" label="14301">
-        <setting id="pvrmenu.displaychannelinfo" type="integer" label="19178" help="36212">
-          <level>2</level>
-          <default>5</default>
-          <constraints>
-            <minimum label="351">0</minimum>
-            <step>1</step>
-            <maximum>15</maximum>
-          </constraints>
-          <control type="spinner" format="string">
-            <formatlabel>14045</formatlabel>
-          </control>
-        </setting>
-        <setting id="pvrmenu.closechannelosdonswitch" type="boolean" label="19303" help="36235">
-          <level>2</level>
-          <default>true</default>
-          <control type="toggle" />
         </setting>
       </group>
       <group id="2" label="14302">
@@ -1651,7 +1635,7 @@
           </control>
         </setting>
         <setting id="pvrmenu.searchicons" type="action" label="19167" help="36217">
-          <level>1</level>
+          <level>2</level>
           <dependencies>
             <dependency type="enable">
               <and>
@@ -1748,7 +1732,24 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
-        <setting id="pvrplayback.signalquality" type="boolean" label="19037" help="36229">
+        <setting id="pvrmanager.preselectplayingchannel" type="boolean" label="19269" help="36214">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="pvrmenu.displaychannelinfo" type="integer" label="19178" help="36212">
+          <level>2</level>
+          <default>5</default>
+          <constraints>
+            <minimum label="351">0</minimum>
+            <step>1</step>
+            <maximum>15</maximum>
+          </constraints>
+          <control type="spinner" format="string">
+            <formatlabel>14045</formatlabel>
+          </control>
+        </setting>
+        <setting id="pvrmenu.closechannelosdonswitch" type="boolean" label="19303" help="36235">
           <level>2</level>
           <default>true</default>
           <control type="toggle" />
@@ -1781,6 +1782,11 @@
           <control type="spinner" format="string">
             <formatlabel>14045</formatlabel>
           </control>
+        </setting>
+        <setting id="pvrplayback.signalquality" type="boolean" label="19037" help="36229">
+          <level>2</level>
+          <default>true</default>
+          <control type="toggle" />
         </setting>
         <setting id="pvrplayback.fps" type="integer" label="19108" help="36261">
           <level>0</level>
@@ -2012,12 +2018,6 @@
       </group>
     </category>
     <category id="pvrclient" label="19279" help="36251">
-      <group id="1" label="128">
-        <setting id="pvrclient.menuhook" type="action" label="19280" help="36252">
-          <level>1</level>
-          <control type="button" format="action" />
-        </setting>
-      </group>
     </category>
     <category id="pvrtimers" label="" help="">
       <group id="1">

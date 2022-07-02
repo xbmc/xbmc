@@ -11025,10 +11025,10 @@ msgctxt "#19278"
 msgid "Recording error"
 msgstr ""
 
-#. pvr settings 'client specific' category label.
+#. pvr settings 'PVR clients' group label.
 #: system/settings/settings.xml
 msgctxt "#19279"
-msgid "Client specific"
+msgid "PVR clients"
 msgstr ""
 
 #. pvr client specific settings 'client specific settings' action control label.
@@ -19464,7 +19464,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36211"
-msgid "This category contains the settings for PVR menus and on-screen display (OSD), as well as channel information windows."
+msgid "This category contains the settings for PVR channels and channel groups."
 msgstr ""
 
 #: system/settings/settings.xml
