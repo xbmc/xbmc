@@ -38,3 +38,28 @@ void CDVDOverlayCodec::GetAbsoluteTimes(double& starttime, double& stoptime, Dem
   else
     stoptime = 0;
 }
+
+bool CDVDOverlayCodec::GetSubtitlePacketExtraData(DemuxPacket* pPacket,
+                                                  SubtitlePacketExtraData& extraData)
+{
+  if (!pPacket->pSideData)
+    return false;
+
+  AVPacketSideData* sideData{reinterpret_cast<AVPacketSideData*>(pPacket->pSideData)};
+
+  for (int i{0}; i < pPacket->iSideDataElems; i++)
+  {
+    AVPacketSideData* sd = &sideData[i];
+
+    if (sd->type != AV_PKT_DATA_NEW_EXTRADATA)
+      continue;
+
+    if (sd->data && sd->size > 0)
+    {
+      extraData = *reinterpret_cast<SubtitlePacketExtraData*>(sd->data);
+      return true;
+    }
+  }
+
+  return false;
+}

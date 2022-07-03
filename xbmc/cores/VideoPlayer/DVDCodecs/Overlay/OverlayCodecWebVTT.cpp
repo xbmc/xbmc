@@ -78,6 +78,12 @@ OverlayMessage COverlayCodecWebVTT::Decode(DemuxPacket* pPacket)
   const char* data = reinterpret_cast<const char*>(pPacket->pData);
   std::vector<subtitleData> subtitleList;
 
+  SubtitlePacketExtraData sideData;
+  if (GetSubtitlePacketExtraData(pPacket, sideData))
+  {
+    m_webvttHandler.SetPeriodStart(sideData.m_chapterStartTime);
+  }
+
   if (m_isISOFormat)
   {
     double prevSubStopTime = 0.0;
