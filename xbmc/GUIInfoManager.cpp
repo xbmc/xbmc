@@ -5054,7 +5054,7 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///   \table_row3{   <b>`ListItem.Property(WatchedEpisodePercent)`</b>,
 ///                  \anchor ListItem_Property_WatchedEpisodePercent
 ///                  _string_,
-///     @return The percentage of watched episodes in the tvshow (watched/total*100).
+///     @return The percentage of watched episodes in the tvshow (watched/total*100) or season.
 ///     <p><hr>
 ///     @skinning_v20 **[New Infolabel]** \link ListItem_Property_WatchedEpisodePercent `ListItem.Property(WatchedEpisodePercent)`\endlink
 ///     <p>
