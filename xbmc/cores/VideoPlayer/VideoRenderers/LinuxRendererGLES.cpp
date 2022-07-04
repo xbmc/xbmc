@@ -1739,16 +1739,7 @@ bool CLinuxRendererGLES::Supports(ESCALINGMETHOD method)
 
     if (m_renderMethod & RENDER_GLSL)
     {
-      // spline36 and lanczos3 are only allowed through advancedsettings.xml
-      if(method != VS_SCALINGMETHOD_SPLINE36 &&
-         method != VS_SCALINGMETHOD_LANCZOS3)
-      {
-        return true;
-      }
-      else
-      {
-        return CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoEnableHighQualityHwScalers;
-      }
+      return true;
     }
   }
 
