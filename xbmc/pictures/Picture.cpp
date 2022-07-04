@@ -157,7 +157,12 @@ bool CPicture::ResizeTexture(const std::string &image, uint8_t *pixels, uint32_t
   // create a buffer large enough for the resulting image
   GetScale(width, height, dest_width, dest_height);
 
-  uint8_t *buffer = new uint8_t[dest_width * dest_height * sizeof(uint32_t)];
+  // Let's align so that stride is always divisible by 16, and then add some 32 bytes more on top
+  // See: https://github.com/FFmpeg/FFmpeg/blob/75638fe9402f70645bdde4d95672fa640a327300/libswscale/tests/swscale.c#L157
+  uint32_t dest_width_aligned = ((dest_width + 15) & ~0x0f);
+  uint32_t stride = dest_width_aligned * sizeof(uint32_t);
+
+  uint32_t* buffer = new uint32_t[dest_width_aligned * dest_height + 4];
   if (buffer == NULL)
   {
     result = NULL;
@@ -165,7 +170,8 @@ bool CPicture::ResizeTexture(const std::string &image, uint8_t *pixels, uint32_t
     return false;
   }
 
-  if (!ScaleImage(pixels, width, height, pitch, buffer, dest_width, dest_height, dest_width * sizeof(uint32_t), scalingAlgorithm))
+  if (!ScaleImage(pixels, width, height, pitch, (uint8_t*)buffer, dest_width, dest_height, stride,
+                  scalingAlgorithm))
   {
     delete[] buffer;
     result = NULL;
@@ -173,7 +179,8 @@ bool CPicture::ResizeTexture(const std::string &image, uint8_t *pixels, uint32_t
     return false;
   }
 
-  bool success = GetThumbnailFromSurface(buffer, dest_width, dest_height, dest_width * sizeof(uint32_t), image, result, result_size);
+  bool success = GetThumbnailFromSurface((unsigned char*)buffer, dest_width, dest_height, stride,
+                                         image, result, result_size);
   delete[] buffer;
 
   if (!success)
@@ -234,16 +241,22 @@ bool CPicture::CacheTexture(uint8_t *pixels, uint32_t width, uint32_t height, ui
 
     // create a buffer large enough for the resulting image
     GetScale(width, height, dest_width, dest_height);
-    uint32_t *buffer = new uint32_t[dest_width * dest_height];
+
+    // Let's align so that stride is always divisible by 16, and then add some 32 bytes more on top
+    // See: https://github.com/FFmpeg/FFmpeg/blob/75638fe9402f70645bdde4d95672fa640a327300/libswscale/tests/swscale.c#L157
+    uint32_t dest_width_aligned = ((dest_width + 15) & ~0x0f);
+    uint32_t stride = dest_width_aligned * sizeof(uint32_t);
+
+    uint32_t* buffer = new uint32_t[dest_width_aligned * dest_height + 4];
     if (buffer)
     {
-      if (ScaleImage(pixels, width, height, pitch,
-                     (uint8_t *)buffer, dest_width, dest_height, dest_width * 4,
-                     scalingAlgorithm))
+      if (ScaleImage(pixels, width, height, pitch, (uint8_t*)buffer, dest_width, dest_height,
+                     stride, scalingAlgorithm))
       {
         if (!orientation || OrientateImage(buffer, dest_width, dest_height, orientation))
         {
-          success = CreateThumbnailFromSurface((unsigned char*)buffer, dest_width, dest_height, dest_width * 4, dest);
+          success = CreateThumbnailFromSurface((unsigned char*)buffer, dest_width, dest_height,
+                                               stride, dest);
         }
       }
       delete[] buffer;
