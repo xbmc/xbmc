@@ -120,7 +120,7 @@ bool CNFSDirectory::ResolveSymlink( const std::string &dirName, struct nfsdirent
 
   if(ret == 0)
   {
-    NFSSTAT tmpBuffer = {};
+    nfs_stat_64 tmpBuffer = {};
     fullpath = dirName;
     URIUtils::AddSlashAtEnd(fullpath);
     fullpath.append(resolvedLink);
@@ -139,7 +139,7 @@ bool CNFSDirectory::ResolveSymlink( const std::string &dirName, struct nfsdirent
     }
     else
     {
-      ret = nfs_stat(gNfsConnection.GetNfsContext(), fullpath.c_str(), &tmpBuffer);
+      ret = nfs_stat64(gNfsConnection.GetNfsContext(), fullpath.c_str(), &tmpBuffer);
       resolvedUrl.SetFileName(gNfsConnection.GetConnectedExport() + fullpath);
     }
 
@@ -151,21 +151,42 @@ bool CNFSDirectory::ResolveSymlink( const std::string &dirName, struct nfsdirent
     }
     else
     {
-      dirent->inode = tmpBuffer.st_ino;
-      dirent->mode = tmpBuffer.st_mode;
-      dirent->size = tmpBuffer.st_size;
-      dirent->atime.tv_sec = static_cast<long>(tmpBuffer.st_atime);
-      dirent->mtime.tv_sec = static_cast<long>(tmpBuffer.st_mtime);
-      dirent->ctime.tv_sec = static_cast<long>(tmpBuffer.st_ctime);
+      dirent->inode = tmpBuffer.nfs_ino;
+      dirent->mode = tmpBuffer.nfs_mode;
+      dirent->size = tmpBuffer.nfs_size;
+      dirent->atime.tv_sec = tmpBuffer.nfs_atime;
+      dirent->mtime.tv_sec = tmpBuffer.nfs_mtime;
+      dirent->ctime.tv_sec = tmpBuffer.nfs_ctime;
 
       //map stat mode to nf3type
-      if(S_ISBLK(tmpBuffer.st_mode)){ dirent->type = NF3BLK; }
-      else if(S_ISCHR(tmpBuffer.st_mode)){ dirent->type = NF3CHR; }
-      else if(S_ISDIR(tmpBuffer.st_mode)){ dirent->type = NF3DIR; }
-      else if(S_ISFIFO(tmpBuffer.st_mode)){ dirent->type = NF3FIFO; }
-      else if(S_ISREG(tmpBuffer.st_mode)){ dirent->type = NF3REG; }
-      else if(S_ISLNK(tmpBuffer.st_mode)){ dirent->type = NF3LNK; }
-      else if(S_ISSOCK(tmpBuffer.st_mode)){ dirent->type = NF3SOCK; }
+      if (S_ISBLK(tmpBuffer.nfs_mode))
+      {
+        dirent->type = NF3BLK;
+      }
+      else if (S_ISCHR(tmpBuffer.nfs_mode))
+      {
+        dirent->type = NF3CHR;
+      }
+      else if (S_ISDIR(tmpBuffer.nfs_mode))
+      {
+        dirent->type = NF3DIR;
+      }
+      else if (S_ISFIFO(tmpBuffer.nfs_mode))
+      {
+        dirent->type = NF3FIFO;
+      }
+      else if (S_ISREG(tmpBuffer.nfs_mode))
+      {
+        dirent->type = NF3REG;
+      }
+      else if (S_ISLNK(tmpBuffer.nfs_mode))
+      {
+        dirent->type = NF3LNK;
+      }
+      else if (S_ISSOCK(tmpBuffer.nfs_mode))
+      {
+        dirent->type = NF3SOCK;
+      }
     }
   }
   else
@@ -350,12 +371,12 @@ bool CNFSDirectory::Exists(const CURL& url2)
   if(!gNfsConnection.Connect(url,folderName))
     return false;
 
-  NFSSTAT info;
-  ret = nfs_stat(gNfsConnection.GetNfsContext(), folderName.c_str(), &info);
+  nfs_stat_64 info;
+  ret = nfs_stat64(gNfsConnection.GetNfsContext(), folderName.c_str(), &info);
 
   if (ret != 0)
   {
     return false;
   }
-  return S_ISDIR(info.st_mode) ? true : false;
+  return S_ISDIR(info.nfs_mode) ? true : false;
 }

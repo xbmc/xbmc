@@ -18,12 +18,7 @@
 #include <list>
 #include <map>
 
-#if defined(TARGET_WINDOWS)
-struct __stat64;
-#define NFSSTAT struct __stat64
-#else
-#define NFSSTAT struct stat
-#endif
+struct nfs_stat_64;
 
 class CNfsConnection : public CCriticalSection
 {
@@ -57,7 +52,7 @@ public:
 
   //special stat which uses its own context
   //needed for getting intervolume symlinks to work
-  int stat(const CURL &url, NFSSTAT *statbuff);
+  int stat(const CURL& url, nfs_stat_64* statbuff);
 
   void AddActiveConnection();
   void AddIdleConnection();
