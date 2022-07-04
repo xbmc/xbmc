@@ -133,6 +133,10 @@ public:
   const CStructHdl& operator=(const CStructHdl& right)
   {
     assert(&right.m_cStructure);
+
+    if (this == &right)
+      return *this;
+
     if (m_cStructure && !m_owner)
     {
       memcpy(m_cStructure, right.m_cStructure, sizeof(C_STRUCT));
@@ -150,6 +154,10 @@ public:
   const CStructHdl& operator=(const C_STRUCT& right)
   {
     assert(&right);
+
+    if (m_cStructure == &right)
+      return *this;
+
     if (m_cStructure && !m_owner)
     {
       memcpy(m_cStructure, &right, sizeof(C_STRUCT));
