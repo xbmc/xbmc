@@ -162,7 +162,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     int   m_videoVDPAUScaling;
     float m_videoNonLinStretchRatio;
-    bool  m_videoEnableHighQualityHwScalers;
     float m_videoAutoScaleMaxFps;
     std::vector<RefreshOverride> m_videoAdjustRefreshOverrides;
     std::vector<RefreshVideoLatency> m_videoRefreshLatency;
