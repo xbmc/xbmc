@@ -42,6 +42,11 @@ UTILS::DISCS::DiscInfo UTILS::DISCS::ProbeDVDDiscInfo(const std::string& mediaPa
   {
     info.type = DiscType::DVD;
     info.name = dvdNavigator.GetDVDTitleString();
+    // fallback to DVD volume id
+    if (info.name.empty())
+    {
+      info.name = dvdNavigator.GetDVDVolIdString();
+    }
     info.serial = dvdNavigator.GetDVDSerialString();
   }
   return info;

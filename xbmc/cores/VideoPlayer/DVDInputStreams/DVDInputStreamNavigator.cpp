@@ -1412,6 +1412,21 @@ std::string CDVDInputStreamNavigator::GetDVDSerialString()
     return "";
 }
 
+std::string CDVDInputStreamNavigator::GetDVDVolIdString()
+{
+  if (!m_dvdnav)
+    return "";
+
+  const char* volIdTmp = m_dll.dvdnav_get_volid_string(m_dvdnav);
+  if (volIdTmp)
+  {
+    std::string volId{volIdTmp};
+    free(const_cast<char*>(volIdTmp));
+    return volId;
+  }
+  return "";
+}
+
 int64_t CDVDInputStreamNavigator::GetChapterPos(int ch)
 {
   if (ch == -1 || ch > GetChapterCount())
