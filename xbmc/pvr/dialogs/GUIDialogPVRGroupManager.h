@@ -52,7 +52,7 @@ namespace PVR
     bool ActionButtonHideGroup(const CGUIMessage& message);
     bool ActionButtonToggleRadioTV(const CGUIMessage& message);
     bool ActionButtonRecreateThumbnail(const CGUIMessage& message);
-    bool OnMessageClick(CGUIMessage& message);
+    bool OnMessageClick(const CGUIMessage& message);
     bool OnActionMove(const CAction& action);
 
     std::shared_ptr<CPVRChannelGroup> m_selectedGroup;
