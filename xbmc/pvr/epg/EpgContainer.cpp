@@ -327,14 +327,14 @@ void CPVREpgContainer::Process()
 {
   time_t iNow = 0;
   time_t iLastSave = 0;
-  time_t iLastEpgCleanup = 0;
-  bool bUpdateEpg = true;
-  bool bHasPendingUpdates = false;
 
   SetPriority(ThreadPriority::LOWEST);
 
   while (!m_bStop)
   {
+    time_t iLastEpgCleanup = 0;
+    bool bUpdateEpg = true;
+
     CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNow);
     {
       std::unique_lock<CCriticalSection> lock(m_critSection);
@@ -406,6 +406,8 @@ void CPVREpgContainer::Process()
 
     if (!m_bStop && !m_bSuspended)
     {
+      bool bHasPendingUpdates = false;
+
       {
         std::unique_lock<CCriticalSection> lock(m_critSection);
         bHasPendingUpdates = (m_pendingUpdates > 0);
