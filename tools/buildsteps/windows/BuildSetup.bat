@@ -3,28 +3,9 @@ REM setup all paths
 PUSHD %~dp0\..\..\..
 SET base_dir=%CD%
 POPD
-SET builddeps_dir=%base_dir%\project\BuildDependencies
-SET bin_dir=%builddeps_dir%\bin
-SET msys_dir=%builddeps_dir%\msys64
-IF NOT EXIST %msys_dir% (SET msys_dir=%builddeps_dir%\msys32)
-SET sed_exe=%msys_dir%\usr\bin\sed.exe
 
 REM read the version values from version.txt
-SET version_props=^
-APP_NAME ^
-COMPANY_NAME ^
-PACKAGE_DESCRIPTION ^
-PACKAGE_IDENTITY ^
-PACKAGE_PUBLISHER ^
-VERSION_MAJOR ^
-VERSION_MINOR ^
-VERSION_TAG ^
-VERSION_CODE ^
-WEBSITE
-
-FOR %%p IN (%version_props%) DO (
-  FOR /f "delims=" %%v IN ('%sed_exe% -n "/%%p/ s/%%p *//p" %base_dir%\version.txt') DO SET %%p=%%v
-)
+FOR /f "tokens=1,*" %%i IN (%base_dir%\version.txt) DO SET %%i=%%j
 
 SET APP_VERSION=%VERSION_MAJOR%.%VERSION_MINOR%
 IF NOT [%VERSION_TAG%] == [] (
@@ -161,15 +142,15 @@ set WORKSPACE=%base_dir%\kodi-build.%TARGET_PLATFORM%
   xcopy %WORKSPACE%\media BUILD_WIN32\application\media /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
 
   REM create AppxManifest.xml
-  "%sed_exe%" ^
-    -e 's/@APP_NAME@/%APP_NAME%/g' ^
-    -e 's/@COMPANY_NAME@/%COMPANY_NAME%/g' ^
-    -e 's/@TARGET_ARCHITECTURE@/%TARGET_ARCHITECTURE%/g' ^
-    -e 's/@VERSION_CODE@/%VERSION_CODE%/g' ^
-    -e 's/@PACKAGE_IDENTITY@/%PACKAGE_IDENTITY%/g' ^
-    -e 's/@PACKAGE_PUBLISHER@/%PACKAGE_PUBLISHER%/g' ^
-    -e 's/@PACKAGE_DESCRIPTION@/%PACKAGE_DESCRIPTION%/g' ^
-    "AppxManifest.xml.in" > "BUILD_WIN32\application\AppxManifest.xml"
+  @PowerShell "(GC .\AppxManifest.xml.in)|%%{$_" ^
+    " -Replace '@APP_NAME@', '%APP_NAME%'" ^
+    " -Replace '@COMPANY_NAME@', '%COMPANY_NAME%'" ^
+    " -Replace '@TARGET_ARCHITECTURE@', '%TARGET_ARCHITECTURE%'" ^
+    " -Replace '@VERSION_CODE@', '%VERSION_CODE%'" ^
+    " -Replace '@PACKAGE_IDENTITY@', '%PACKAGE_IDENTITY%'" ^
+    " -Replace '@PACKAGE_PUBLISHER@', '%PACKAGE_PUBLISHER%'" ^
+    " -Replace '@PACKAGE_DESCRIPTION@', '%PACKAGE_DESCRIPTION%'" ^
+    "}|SC .\BUILD_WIN32\application\AppxManifest.xml"
 
   SET build_path=%CD%
   IF %buildbinaryaddons%==true (
