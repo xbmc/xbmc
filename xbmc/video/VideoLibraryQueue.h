@@ -61,15 +61,19 @@ public:
    \param[in] paths Set with database IDs of paths to be cleaned
    \param[in] asynchronous Run the clean job asynchronously. Defaults to true
    \param[in] progressBar Progress bar to update in GUI. Defaults to NULL (no progress bar to update)
+   \return True if the video library cleaning job has started, false otherwise
    */
-  void CleanLibrary(const std::set<int>& paths = std::set<int>(), bool asynchronous = true, CGUIDialogProgressBarHandle* progressBar = NULL);
+  bool CleanLibrary(const std::set<int>& paths = std::set<int>(),
+                    bool asynchronous = true,
+                    CGUIDialogProgressBarHandle* progressBar = NULL);
 
   /*!
   \brief Executes a library cleaning with a modal dialog.
 
   \param[in] paths Set with database IDs of paths to be cleaned
+  \return True if the video library cleaning job has started, false otherwise
   */
-  void CleanLibraryModal(const std::set<int>& paths = std::set<int>());
+  bool CleanLibraryModal(const std::set<int>& paths = std::set<int>());
 
   /*!
    \brief Enqueues a job to refresh the details of the given item.
