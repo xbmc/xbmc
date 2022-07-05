@@ -316,7 +316,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonRecreateThumbnail(const CGUIMessage&
   return bReturn;
 }
 
-bool CGUIDialogPVRGroupManager::OnMessageClick(CGUIMessage& message)
+bool CGUIDialogPVRGroupManager::OnMessageClick(const CGUIMessage& message)
 {
   return ActionButtonOk(message) ||
       ActionButtonNewGroup(message) ||
