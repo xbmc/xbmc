@@ -298,6 +298,12 @@ namespace VIDEO
       { // need to fetch the folder
         CDirectory::GetDirectory(strDirectory, items, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
                                  DIR_FLAG_DEFAULTS);
+        // do not consider inner folders with .nomedia
+        items.erase(std::remove_if(items.begin(), items.end(),
+                                   [this](const CFileItemPtr& item) {
+                                     return item->m_bIsFolder && HasNoMedia(item->GetPath());
+                                   }),
+                    items.end());
         items.Stack();
 
         // check whether to re-use previously computed fast hash
