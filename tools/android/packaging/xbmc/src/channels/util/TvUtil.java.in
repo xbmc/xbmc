@@ -52,7 +52,6 @@ public class TvUtil
   private static final int CHANNEL_JOB_ID = 500;
   private static final int CHANNEL_TRIGGERED_JOB_ID_OFFSET = 1000;
   private static final int CHANNEL_TIMED_JOB_ID_OFFSET = 2000;
-  private static final int CHANNEL_IMMEDIATE_JOB_ID_OFFSET = 3000;
 
   private static final String[] CHANNELS_PROJECTION = {
           TvContractCompat.Channels._ID,
@@ -275,43 +274,13 @@ public class TvUtil
     scheduler.schedule(job);
   }
 
-  /**
-   * Schedulers syncing programs for a channel on a time base. The scheduler will listen to a {@link Uri} for a
-   * particular channel.
-   *
-   * @param context   for accessing the {@link JobScheduler}.
-   * @param channelId for the channel to listen for changes.
-   */
-  public static void scheduleSyncingProgramsForChannel(Context context, long channelId)
-  {
-    JobScheduler scheduler =
-            (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-    if (scheduler.getPendingJob(getImmediateJobIdForChannelId(channelId)) != null)
-      return;
-
-    ComponentName componentName = new ComponentName(context, SyncProgramsJobService.class);
-
-    JobInfo.Builder builder =
-            new JobInfo.Builder(getImmediateJobIdForChannelId(channelId), componentName);
-    builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
-
-    PersistableBundle bundle = new PersistableBundle();
-    bundle.putLong(TvContractCompat.EXTRA_CHANNEL_ID, channelId);
-    builder.setExtras(bundle);
-
-    scheduler.schedule(builder.build());
-  }
-
   public static int getTriggeredJobIdForChannelId(long channelId)
   {
     return (int) (CHANNEL_TRIGGERED_JOB_ID_OFFSET + channelId);
   }
+
   public static int getTimedJobIdForChannelId(long channelId)
   {
     return (int) (CHANNEL_TIMED_JOB_ID_OFFSET + channelId);
-  }
-  public static int getImmediateJobIdForChannelId(long channelId)
-  {
-    return (int) (CHANNEL_IMMEDIATE_JOB_ID_OFFSET + channelId);
   }
 }
