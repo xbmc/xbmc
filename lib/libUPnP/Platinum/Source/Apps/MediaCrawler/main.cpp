@@ -71,7 +71,8 @@ int main(void)
     ctrlPoint->Discover(NPT_HttpUrl("255.255.255.255", 1900, "*"), "upnp:rootdevice", 1);
 
     char buf[256];
-    while (gets(buf)) {
+    while (true) {
+        fgets(buf, 256, stdin);
         if (*buf == 'q')
             break;
     }

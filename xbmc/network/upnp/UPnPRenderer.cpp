@@ -205,7 +205,7 @@ CUPnPRenderer::ProcessHttpGetRequest(NPT_HttpRequest&              request,
             }
 
             // prevent hackers from accessing files outside of our root
-            if ((filepath.Find("/..") >= 0) || (filepath.Find("\\..") >=0)) {
+            if ((filepath.Find("../") >= 0) || (filepath.Find("..\\") >= 0) {
                 return NPT_FAILURE;
             }
 

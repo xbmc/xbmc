@@ -65,7 +65,8 @@ main(int /* argc */, char** /* argv */)
     upnp.Start();
 
     char buf[256];
-    while (gets(buf)) {
+    while (true) {
+        fgets(buf, 256, stdin);
         if (*buf == 'q')
             break;
     }
