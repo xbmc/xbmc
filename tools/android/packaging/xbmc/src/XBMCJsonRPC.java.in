@@ -1,8 +1,9 @@
 package @APP_PACKAGE@;
 
 import java.io.InputStream;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.HashSet;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -62,7 +63,7 @@ public class XBMCJsonRPC
   private static String TAG = "@APP_NAME@json";
 
   private String m_xbmc_web_url = "http://localhost:8080";
-  private java.util.HashSet<Integer> mRecomendationIds = new java.util.HashSet<Integer>();
+  private HashSet<Integer> mRecomendationIds = new HashSet<Integer>();
 
   private int MAX_RECOMMENDATIONS = 3;
 
@@ -1181,7 +1182,11 @@ public class XBMCJsonRPC
   {
     List<Media> medias = new ArrayList<Media>();
 
+    // count the number of categories with data
+    int categories = 0;
+
     JsonObject rep = request_object(RECOMMENDATION_MOVIES_JSON);
+    JsonArray movies = new JsonArray();
     if (rep != null && rep.has("result"))
     {
       try
@@ -1189,34 +1194,18 @@ public class XBMCJsonRPC
         JsonObject results = rep.getAsJsonObject("result");
         if (results.has("movies"))
         {
-          JsonArray movies = results.get("movies").getAsJsonArray();
-
-          int count = 0;
-          for (int i = 0; i < movies.size() && count < MAX_RECOMMENDATIONS; ++i)
+          movies = results.get("movies").getAsJsonArray();
+          if (movies.size() > 0)
           {
-            try
-            {
-              JsonObject details = movies.get(i).getAsJsonObject();
-              Movie med = createMovieFromJson(details);
-              if (med != null)
-              {
-                medias.add(med);
-                ++count;
-              }
-            }
-            catch (Exception e)
-            {
-              continue;
-            }
+            ++categories;
           }
         }
-      } catch (Exception e)
-      {
-        e.printStackTrace();
+      } catch (Exception e) {
       }
     }
 
     rep = request_object(RECOMMENDATIONS_SHOWS_JSON);
+    JsonArray tvshows = new JsonArray();
     if (rep != null && rep.has("result"))
     {
       try
@@ -1224,34 +1213,18 @@ public class XBMCJsonRPC
         JsonObject results = rep.getAsJsonObject("result");
         if (results.has("tvshows"))
         {
-          JsonArray tvshows = results.get("tvshows").getAsJsonArray();
-
-          int count = 0;
-          for (int i = 0; i < tvshows.size() && count < MAX_RECOMMENDATIONS; ++i)
+          tvshows = results.get("tvshows").getAsJsonArray();
+          if (tvshows.size() > 0)
           {
-            try
-            {
-              JsonObject tvshow = tvshows.get(i).getAsJsonObject();
-              TVShow med = createTVShowFromJson(tvshow);
-              if (med != null)
-              {
-                medias.add(med);
-                ++count;
-              }
-            }
-            catch (Exception e)
-            {
-              continue;
-            }
+            ++categories;
           }
         }
-      } catch (Exception e)
-      {
-        e.printStackTrace();
+      } catch (Exception e) {
       }
     }
 
     rep = request_object(RECOMMENDATIONS_ALBUMS_JSON);
+    JsonArray albums = new JsonArray();
     if (rep != null && rep.has("result"))
     {
       try
@@ -1259,30 +1232,93 @@ public class XBMCJsonRPC
         JsonObject results = rep.getAsJsonObject("result");
         if (results.has("albums"))
         {
-          JsonArray albums = results.get("albums").getAsJsonArray();
-
-          int count = 0;
-          for (int i = 0; i < albums.size() && count < MAX_RECOMMENDATIONS; ++i)
+          albums = results.get("albums").getAsJsonArray();
+          if (albums.size() > 0)
           {
-            try
-            {
-              JsonObject album = albums.get(i).getAsJsonObject();
-              Album med = createAlbumFromJson(album);
-              if (med != null)
-              {
-                medias.add(med);
-                ++count;
-              }
-            }
-            catch (Exception e)
-            {
-              continue;
-            }
+            ++categories;
           }
         }
-      } catch (Exception e)
+      } catch (Exception e) {
+      }
+    }
+
+    // distribution by the number of categories with data
+    if (categories == 1)
+    {
+      MAX_RECOMMENDATIONS = 10; // 1x10 items
+    }
+    else if (categories == 2)
+    {
+      MAX_RECOMMENDATIONS = 5; // 2x5 items
+    }
+    else
+    {
+      MAX_RECOMMENDATIONS = 3; // 3x3 items
+    }
+
+    if (movies.size() > 0)
+    {
+      int count = 0;
+      for (int i = 0; i < movies.size() && count < MAX_RECOMMENDATIONS; ++i)
       {
-        e.printStackTrace();
+        try
+        {
+          JsonObject details = movies.get(i).getAsJsonObject();
+          Movie med = createMovieFromJson(details);
+          if (med != null)
+          {
+            medias.add(med);
+            ++count;
+          }
+        }
+        catch (Exception e)
+        {
+          continue;
+        }
+      }
+    }
+
+    if (tvshows.size() > 0)
+    {
+      int count = 0;
+      for (int i = 0; i < tvshows.size() && count < MAX_RECOMMENDATIONS; ++i)
+      {
+        try
+        {
+          JsonObject tvshow = tvshows.get(i).getAsJsonObject();
+          TVShow med = createTVShowFromJson(tvshow);
+          if (med != null)
+          {
+            medias.add(med);
+            ++count;
+          }
+        }
+        catch (Exception e)
+        {
+          continue;
+        }
+      }
+    }
+
+    if (albums.size() > 0)
+    {
+      int count = 0;
+      for (int i = 0; i < albums.size() && count < MAX_RECOMMENDATIONS; ++i)
+      {
+        try
+        {
+          JsonObject album = albums.get(i).getAsJsonObject();
+          Album med = createAlbumFromJson(album);
+          if (med != null)
+          {
+            medias.add(med);
+            ++count;
+          }
+        }
+        catch (Exception e)
+        {
+          continue;
+        }
       }
     }
 
