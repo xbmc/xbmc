@@ -11,6 +11,12 @@
 			<height>128</height>
 			<texturefocus colordiffuse="button_focus">calibrate/cal_tl.png</texturefocus>
 			<texturenofocus>calibrate/cal_tl.png</texturenofocus>
+			<movingspeed acceleration="180" maxvelocity="300" resettimeout="200" delta="1">
+				<eventconfig type="up" />
+				<eventconfig type="down" />
+				<eventconfig type="left" />
+				<eventconfig type="right" />
+			</movingspeed>
 		</control>
 		<control type="mover" id="9">
 			<description>right bottom mover</description>
@@ -20,6 +26,12 @@
 			<height>128</height>
 			<texturefocus colordiffuse="button_focus">calibrate/cal_br.png</texturefocus>
 			<texturenofocus>calibrate/cal_br.png</texturenofocus>
+			<movingspeed acceleration="180" maxvelocity="300" resettimeout="200" delta="1">
+				<eventconfig type="up" />
+				<eventconfig type="down" />
+				<eventconfig type="left" />
+				<eventconfig type="right" />
+			</movingspeed>
 		</control>
 		<control type="resize" id="11">
 			<description>pixel aspect ratio</description>
@@ -29,6 +41,10 @@
 			<height>500</height>
 			<texturefocus colordiffuse="button_focus">calibrate/cal_ratio.png</texturefocus>
 			<texturenofocus>calibrate/cal_ratio.png</texturenofocus>
+			<movingspeed acceleration="140" maxvelocity="300" resettimeout="180" delta="1">
+				<eventconfig type="left" />
+				<eventconfig type="right" />
+			</movingspeed>
 		</control>
 		<control type="mover" id="10">
 			<description>subtitle position mover</description>
@@ -39,6 +55,10 @@
 			<!-- NOTE: The image must have 40px of trasparent on top and bottom the bar -->
 			<texturefocus colordiffuse="button_focus">calibrate/cal_sub.png</texturefocus>
 			<texturenofocus>calibrate/cal_sub.png</texturenofocus>
+			<movingspeed acceleration="180" maxvelocity="300" resettimeout="200" delta="1">
+				<eventconfig type="up" />
+				<eventconfig type="down" />
+			</movingspeed>
 		</control>
 		<control type="mover" id="12">
 			<description>reset calibration</description>
