@@ -335,6 +335,7 @@
         </setting>
       </group>
       <group id="2" label="14234">
+        <requirement>HAVE_LIBBLURAY</requirement>
         <setting id="bluray.playerregion" type="integer" label="14121" help="38017">
           <level>1</level>
           <default>1</default> <!-- region A -->
