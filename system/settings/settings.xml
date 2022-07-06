@@ -376,6 +376,7 @@
           <control type="toggle" />
         </setting>
         <setting id="audiocds.recordingpath" type="path" label="20000" help="36285">
+          <requirement>HAS_CDDA_RIPPER</requirement>
           <level>3</level>
           <default></default>
           <constraints>
@@ -386,6 +387,7 @@
           </control>
         </setting>
         <setting id="audiocds.trackpathformat" type="string" label="13307" help="36286">
+          <requirement>HAS_CDDA_RIPPER</requirement>
           <level>3</level>
           <default>%A/%A - %B/[%N. ][%A - ]%T</default>
           <control type="edit" format="string">
@@ -393,6 +395,7 @@
           </control>
         </setting>
         <setting id="audiocds.encoder" type="addon" label="621" help="36287">
+          <requirement>HAS_CDDA_RIPPER</requirement>
           <level>3</level>
           <default>audioencoder.kodi.builtin.aac</default>
           <constraints>
@@ -403,6 +406,7 @@
           </control>
         </setting>
         <setting id="audiocds.settings" parent="audiocds.encoder" type="action" label="21417" help="37025">
+          <requirement>HAS_CDDA_RIPPER</requirement>
           <level>3</level>
           <dependencies>
             <dependency type="enable">
@@ -412,6 +416,7 @@
           <control type="button" format="action" />
         </setting>
         <setting id="audiocds.ejectonrip" type="boolean" label="14099" help="36291">
+          <requirement>HAS_CDDA_RIPPER</requirement>
           <level>3</level>
           <default>true</default>
           <control type="toggle" />
