@@ -145,6 +145,11 @@ void COverlayCodecWebVTT::Flush()
 {
   if (m_allowFlush)
   {
+    if (m_pOverlay)
+    {
+      m_pOverlay->Release();
+      m_pOverlay = nullptr;
+    }
     m_previousSubIds.clear();
     FlushSubtitles();
   }
@@ -155,7 +160,7 @@ CDVDOverlay* COverlayCodecWebVTT::GetOverlay()
   if (m_pOverlay)
     return nullptr;
   m_pOverlay = CreateOverlay();
-  m_pOverlay->SetOverlayContainerFlushable(false);
+  m_pOverlay->SetOverlayContainerFlushable(m_allowFlush);
   m_pOverlay->SetForcedMargins(m_webvttHandler.IsForcedMargins());
   return m_pOverlay->Acquire();
 }
