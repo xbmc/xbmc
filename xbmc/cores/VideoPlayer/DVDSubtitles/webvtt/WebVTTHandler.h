@@ -194,5 +194,5 @@ private:
   std::vector<webvttCssStyle> m_cueCssStyles;
   bool m_CSSColorsLoaded{false};
   std::vector<std::pair<std::string, UTILS::COLOR::ColorInfo>> m_CSSColors;
-  double m_offset;
+  double m_offset{0.0};
 };
