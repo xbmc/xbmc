@@ -183,8 +183,6 @@ private:
   bool m_overrideStyle{false};
   bool m_overridePositions{false};
   WebvttSection m_currentSection{WebvttSection::UNDEFINED};
-  double m_hlsTimestampMpegTsUs{0};
-  double m_hlsTimestampLocalUs{0};
   CRegExp m_cueTimeRegex;
   std::map<std::string, CRegExp> m_cuePropsMapRegex;
   CGUIColorManager m_colorManager;
