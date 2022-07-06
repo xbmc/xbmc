@@ -60,9 +60,9 @@ protected:
   std::unique_ptr<CGUITexture> m_imgFocus;
   std::unique_ptr<CGUITexture> m_imgNoFocus;
   unsigned int m_frameCounter;
+  UTILS::MOVING_SPEED::CMovingSpeed m_movingSpeed;
   float m_fAnalogSpeed;
   float m_x1, m_x2, m_y1, m_y2;
-  UTILS::MOVING_SPEED::CMovingSpeed m_movingSpeed;
 
 private:
   CGUIResizeControl(const CGUIResizeControl& control);
