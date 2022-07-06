@@ -118,7 +118,7 @@ bool CVideoPlayerSubtitle::OpenStream(CDVDStreamInfo &hints, std::string &filena
 {
   std::unique_lock<CCriticalSection> lock(m_section);
 
-  CloseStream(true);
+  CloseStream(false);
   m_streaminfo = hints;
 
   // okey check if this is a filesubtitle
