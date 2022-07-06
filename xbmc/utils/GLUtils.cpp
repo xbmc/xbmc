@@ -149,27 +149,27 @@ void _VerifyGLState(const char* szfile, const char* szfunction, int lineno)
 void LogGraphicsInfo()
 {
 #if defined(HAS_GL) || defined(HAS_GLES)
-  const GLubyte *s;
+  const char* s;
 
-  s = glGetString(GL_VENDOR);
+  s = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
   if (s)
     CLog::Log(LOGINFO, "GL_VENDOR = {}", s);
   else
     CLog::Log(LOGINFO, "GL_VENDOR = NULL");
 
-  s = glGetString(GL_RENDERER);
+  s = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
   if (s)
     CLog::Log(LOGINFO, "GL_RENDERER = {}", s);
   else
     CLog::Log(LOGINFO, "GL_RENDERER = NULL");
 
-  s = glGetString(GL_VERSION);
+  s = reinterpret_cast<const char*>(glGetString(GL_VERSION));
   if (s)
     CLog::Log(LOGINFO, "GL_VERSION = {}", s);
   else
     CLog::Log(LOGINFO, "GL_VERSION = NULL");
 
-  s = glGetString(GL_SHADING_LANGUAGE_VERSION);
+  s = reinterpret_cast<const char*>(glGetString(GL_SHADING_LANGUAGE_VERSION));
   if (s)
     CLog::Log(LOGINFO, "GL_SHADING_LANGUAGE_VERSION = {}", s);
   else
