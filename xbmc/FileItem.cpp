@@ -2268,6 +2268,13 @@ void CFileItemList::Remove(CFileItem* pItem)
   }
 }
 
+VECFILEITEMS::iterator CFileItemList::erase(VECFILEITEMS::iterator first,
+                                            VECFILEITEMS::iterator last)
+{
+  std::unique_lock<CCriticalSection> lock(m_lock);
+  return m_items.erase(first, last);
+}
+
 void CFileItemList::Remove(int iItem)
 {
   std::unique_lock<CCriticalSection> lock(m_lock);
