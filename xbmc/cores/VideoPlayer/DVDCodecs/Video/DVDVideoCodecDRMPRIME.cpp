@@ -564,12 +564,6 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecDRMPRIME::GetPicture(VideoPicture* pVideo
   if (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN)
     Drain();
 
-  if (pVideoPicture->videoBuffer)
-  {
-    pVideoPicture->videoBuffer->Release();
-    pVideoPicture->videoBuffer = nullptr;
-  }
-
   int ret = avcodec_receive_frame(m_pCodecContext, m_pFrame);
   if (ret == AVERROR(EAGAIN))
     return VC_BUFFER;
@@ -593,6 +587,12 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecDRMPRIME::GetPicture(VideoPicture* pVideo
   }
 
   SetPictureParams(pVideoPicture);
+
+  if (pVideoPicture->videoBuffer)
+  {
+    pVideoPicture->videoBuffer->Release();
+    pVideoPicture->videoBuffer = nullptr;
+  }
 
   if (IsSupportedHwFormat(static_cast<AVPixelFormat>(m_pFrame->format)))
   {
