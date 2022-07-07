@@ -2348,7 +2348,7 @@ bool CFileItemList::Copy(const CFileItemList& items, bool copyItems /* = true */
   return true;
 }
 
-CFileItemPtr CFileItemList::Get(int iItem)
+CFileItemPtr CFileItemList::Get(int iItem) const
 {
   std::unique_lock<CCriticalSection> lock(m_lock);
 
@@ -2358,46 +2358,14 @@ CFileItemPtr CFileItemList::Get(int iItem)
   return CFileItemPtr();
 }
 
-const CFileItemPtr CFileItemList::Get(int iItem) const
-{
-  std::unique_lock<CCriticalSection> lock(m_lock);
-
-  if (iItem > -1 && iItem < (int)m_items.size())
-    return m_items[iItem];
-
-  return CFileItemPtr();
-}
-
-CFileItemPtr CFileItemList::Get(const std::string& strPath)
+CFileItemPtr CFileItemList::Get(const std::string& strPath) const
 {
   std::unique_lock<CCriticalSection> lock(m_lock);
 
   if (m_fastLookup)
   {
-    IMAPFILEITEMS it = m_map.find(m_ignoreURLOptions ? CURL(strPath).GetWithoutOptions() : strPath);
-    if (it != m_map.end())
-      return it->second;
-
-    return CFileItemPtr();
-  }
-  // slow method...
-  for (unsigned int i = 0; i < m_items.size(); i++)
-  {
-    CFileItemPtr pItem = m_items[i];
-    if (pItem->IsPath(m_ignoreURLOptions ? CURL(strPath).GetWithoutOptions() : strPath))
-      return pItem;
-  }
-
-  return CFileItemPtr();
-}
-
-const CFileItemPtr CFileItemList::Get(const std::string& strPath) const
-{
-  std::unique_lock<CCriticalSection> lock(m_lock);
-
-  if (m_fastLookup)
-  {
-    std::map<std::string, CFileItemPtr>::const_iterator it = m_map.find(m_ignoreURLOptions ? CURL(strPath).GetWithoutOptions() : strPath);
+    MAPFILEITEMS::const_iterator it =
+        m_map.find(m_ignoreURLOptions ? CURL(strPath).GetWithoutOptions() : strPath);
     if (it != m_map.end())
       return it->second;
 
