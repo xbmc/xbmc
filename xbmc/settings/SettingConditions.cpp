@@ -427,6 +427,18 @@ void CSettingConditions::Initialize()
     m_simpleConditions.emplace("webserver_has_ssl");
 #endif
 
+#ifdef HAVE_LIBBLURAY
+  m_simpleConditions.emplace("have_libbluray");
+#endif
+
+#ifdef HAS_CDDA_RIPPER
+  m_simpleConditions.emplace("has_cdda_ripper");
+#endif
+
+#ifdef HAS_DVD_DRIVE
+  m_simpleConditions.emplace("has_dvd_drive");
+#endif
+
   // add complex conditions
   m_complexConditions.emplace("addonhassettings", AddonHasSettings);
   m_complexConditions.emplace("checkmasterlock", CheckMasterLock);

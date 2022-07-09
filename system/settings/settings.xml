@@ -314,6 +314,7 @@
     <category id="discs" label="14087" help="36193">
       <group id="1" label="446">
         <setting id="dvds.autorun" type="boolean" label="14088" help="36194">
+          <requirement>HAS_DVD_DRIVE</requirement>
           <level>0</level>
           <default>false</default>
           <control type="toggle" />
@@ -335,6 +336,7 @@
         </setting>
       </group>
       <group id="2" label="14234">
+        <requirement>HAVE_LIBBLURAY</requirement>
         <setting id="bluray.playerregion" type="integer" label="14121" help="38017">
           <level>1</level>
           <default>1</default> <!-- region A -->
@@ -362,6 +364,7 @@
       </group>
       <group id="3" label="620">
         <setting id="audiocds.autoaction" type="integer" label="14097" help="36283">
+          <requirement>HAS_DVD_DRIVE</requirement>
           <level>1</level>
           <default>0</default> <!-- AUTOCD_NONE -->
           <constraints>
@@ -370,11 +373,13 @@
           <control type="list" format="string" />
         </setting>
         <setting id="audiocds.usecddb" type="boolean" label="227" help="36284">
+          <requirement>HAS_DVD_DRIVE</requirement>
           <level>1</level>
           <default>true</default>
           <control type="toggle" />
         </setting>
         <setting id="audiocds.recordingpath" type="path" label="20000" help="36285">
+          <requirement>HAS_CDDA_RIPPER</requirement>
           <level>3</level>
           <default></default>
           <constraints>
@@ -385,6 +390,7 @@
           </control>
         </setting>
         <setting id="audiocds.trackpathformat" type="string" label="13307" help="36286">
+          <requirement>HAS_CDDA_RIPPER</requirement>
           <level>3</level>
           <default>%A/%A - %B/[%N. ][%A - ]%T</default>
           <control type="edit" format="string">
@@ -392,6 +398,7 @@
           </control>
         </setting>
         <setting id="audiocds.encoder" type="addon" label="621" help="36287">
+          <requirement>HAS_CDDA_RIPPER</requirement>
           <level>3</level>
           <default>audioencoder.kodi.builtin.aac</default>
           <constraints>
@@ -402,6 +409,7 @@
           </control>
         </setting>
         <setting id="audiocds.settings" parent="audiocds.encoder" type="action" label="21417" help="37025">
+          <requirement>HAS_CDDA_RIPPER</requirement>
           <level>3</level>
           <dependencies>
             <dependency type="enable">
@@ -411,6 +419,7 @@
           <control type="button" format="action" />
         </setting>
         <setting id="audiocds.ejectonrip" type="boolean" label="14099" help="36291">
+          <requirement>HAS_CDDA_RIPPER</requirement>
           <level>3</level>
           <default>true</default>
           <control type="toggle" />
