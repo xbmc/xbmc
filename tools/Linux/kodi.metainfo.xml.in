@@ -37,7 +37,7 @@
         <keyword>tv</keyword>
         <keyword>television</keyword>
         <keyword>remote control</keyword>
-    </keyboards>
+    </keywords>
     <launchable type="desktop-id">@APP_NAME_LC@.desktop</launchable>
     <screenshots>
         <screenshot type="default">
