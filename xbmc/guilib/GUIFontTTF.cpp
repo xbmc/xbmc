@@ -731,12 +731,16 @@ std::vector<CGUIFontTTF::Glyph> CGUIFontTTF::GetHarfBuzzShapedGlyphs(const vecTe
 
 CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr, FT_UInt glyphIndex)
 {
-  wchar_t letter = (wchar_t)(chr & 0xffff);
-  character_t style = (chr & 0x7000000) >> 24;
+  const wchar_t letter = static_cast<wchar_t>(chr & 0xffff);
 
   // ignore linebreaks
   if (letter == L'\r')
     return nullptr;
+
+  const character_t style = (chr & 0x7000000) >> 24;
+
+  if (!glyphIndex)
+    glyphIndex = FT_Get_Char_Index(m_face, letter);
 
   // quick access to ascii chars
   if (letter < 255 && glyphIndex < 255)
@@ -825,9 +829,6 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr, FT_UInt glyph
 
 bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch, FT_UInt glyphIndex)
 {
-  if (!glyphIndex)
-    glyphIndex = FT_Get_Char_Index(m_face, letter);
-
   FT_Glyph glyph = nullptr;
   if (FT_Load_Glyph(m_face, glyphIndex, FT_LOAD_TARGET_LIGHT))
   {
