@@ -827,6 +827,8 @@ void CDateTime::GetAsTm(tm& time) const
   time.tm_hour = st.hour;
   time.tm_min = st.minute;
   time.tm_sec = st.second;
+  // Setting to -1 to indicate we don't know the timezone and let the system infer
+  time.tm_isdst = -1;
 
   mktime(&time);
 }
