@@ -12,6 +12,7 @@
 #include "addons/addoninfo/AddonType.h"
 #include "addons/binary-addons/AddonDll.h"
 #include "addons/kodi-dev-kit/include/kodi/addon-instance/VideoCodec.h"
+#include "cores/FFmpeg.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxUtils.h"
 #include "cores/VideoPlayer/Interface/DemuxCrypto.h"
@@ -392,7 +393,7 @@ KODI_HANDLE CInputStreamAddon::cb_get_stream_transfer(KODI_HANDLE handle,
     return nullptr;
 
   std::string codecName(stream->m_codecName);
-  AVCodec* codec = nullptr;
+  FFMPEG_FMT_CONST AVCodec* codec = nullptr;
 
   if (stream->m_streamType != INPUTSTREAM_TYPE_TELETEXT &&
       stream->m_streamType != INPUTSTREAM_TYPE_RDS && stream->m_streamType != INPUTSTREAM_TYPE_ID3)

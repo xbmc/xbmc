@@ -10,6 +10,7 @@
 
 #include "DVDOverlayImage.h"
 #include "DVDStreamInfo.h"
+#include "cores/FFmpeg.h"
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "utils/EndianSwap.h"
@@ -39,7 +40,7 @@ bool CDVDOverlayCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &optio
   if (hints.codec == AV_CODEC_ID_EIA_608)
     return false;
 
-  AVCodec* pCodec = avcodec_find_decoder(hints.codec);
+  FFMPEG_FMT_CONST AVCodec* pCodec = avcodec_find_decoder(hints.codec);
   if (!pCodec)
   {
     CLog::Log(LOGDEBUG, "{} - Unable to find codec {}", __FUNCTION__, hints.codec);
