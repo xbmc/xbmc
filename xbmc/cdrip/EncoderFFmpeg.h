@@ -39,7 +39,6 @@ private:
   void SetTag(const std::string& tag, const std::string& value);
   bool WriteFrame();
   AVSampleFormat GetInputFormat(int inBitsPerSample);
-  std::string FFmpegErrorToString(int err);
 
   AVFormatContext* m_formatCtx{nullptr};
   AVCodecContext* m_codecCtx{nullptr};

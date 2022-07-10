@@ -12,6 +12,7 @@
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "DVDStreamInfo.h"
 #include "ServiceBroker.h"
+#include "cores/FFmpeg.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "cores/VideoSettings.h"
@@ -27,12 +28,13 @@
 #include <mutex>
 
 extern "C" {
-#include <libavutil/opt.h>
-#include <libavutil/mastering_display_metadata.h>
 #include <libavfilter/avfilter.h>
 #include <libavfilter/buffersink.h>
 #include <libavfilter/buffersrc.h>
+#include <libavutil/mastering_display_metadata.h>
+#include <libavutil/opt.h>
 #include <libavutil/pixdesc.h>
+#include <libavutil/video_enc_params.h>
 }
 
 #ifndef TARGET_POSIX
@@ -327,7 +329,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_hints = hints;
   m_options = options;
 
-  AVCodec* pCodec = nullptr;
+  FFMPEG_FMT_CONST AVCodec* pCodec = nullptr;
 
   m_iOrientation = hints.orientation;
 
@@ -1048,6 +1050,33 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
   pVideoPicture->qscale_type = 0;
 
   AVFrameSideData* sd;
+
+  // https://github.com/FFmpeg/FFmpeg/blob/991d417692/doc/APIchanges#L18-L20
+  // basilgello: AV_VIDEO_ENC_PARAMS_MPEG2 is introduced in 4.4!
+#if LIBAVCODEC_BUILD >= AV_VERSION_INT(58, 134, 100) && \
+    LIBAVUTIL_BUILD >= AV_VERSION_INT(56, 45, 100)
+  sd = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_VIDEO_ENC_PARAMS);
+  if (sd)
+  {
+    unsigned int mb_h = (m_pFrame->height + 15) / 16;
+    unsigned int mb_w = (m_pFrame->width + 15) / 16;
+    unsigned int nb_mb = mb_h * mb_w;
+    unsigned int block_idx;
+
+    auto par = reinterpret_cast<AVVideoEncParams*>(sd->data);
+    if (par->type == AV_VIDEO_ENC_PARAMS_MPEG2 && (par->nb_blocks == 0 || par->nb_blocks == nb_mb))
+    {
+      pVideoPicture->qstride = mb_w;
+      pVideoPicture->qscale_type = par->type;
+      pVideoPicture->qp_table = static_cast<int8_t*>(av_malloc(nb_mb));
+      for (block_idx = 0; block_idx < nb_mb; block_idx++)
+      {
+        AVVideoBlockParams* b = av_video_enc_params_block(par, block_idx);
+        pVideoPicture->qp_table[block_idx] = par->qp + b->delta_qp;
+      }
+    }
+  }
+#else
   sd = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_QP_TABLE_PROPERTIES);
   if (sd)
   {
@@ -1068,6 +1097,7 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
       pVideoPicture->qscale_type = qp->type;
     }
   }
+#endif
 
   pVideoPicture->pict_type = m_pFrame->pict_type;
 

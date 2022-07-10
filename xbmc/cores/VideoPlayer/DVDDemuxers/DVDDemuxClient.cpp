@@ -10,6 +10,7 @@
 
 #include "DVDDemuxUtils.h"
 #include "DVDInputStreams/DVDInputStream.h"
+#include "cores/FFmpeg.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "utils/log.h"
 
@@ -130,7 +131,7 @@ bool CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
 
   if (stream->m_context == nullptr)
   {
-    AVCodec *codec = avcodec_find_decoder(st->codec);
+    FFMPEG_FMT_CONST AVCodec* codec = avcodec_find_decoder(st->codec);
     if (codec == nullptr)
     {
       CLog::Log(LOGERROR, "{} - can't find decoder", __FUNCTION__);

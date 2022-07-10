@@ -21,6 +21,19 @@
 
 static thread_local CFFmpegLog* CFFmpegLogTls;
 
+namespace FFMPEG_HELP_TOOLS
+{
+
+std::string FFMpegErrorToString(int err)
+{
+  std::string text;
+  text.resize(AV_ERROR_MAX_STRING_SIZE);
+  av_strerror(err, text.data(), AV_ERROR_MAX_STRING_SIZE);
+  return text;
+}
+
+} // namespace FFMPEG_HELP_TOOLS
+
 void CFFmpegLog::SetLogLevel(int level)
 {
   CFFmpegLog::ClearLogLevel();
@@ -116,4 +129,3 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
   }
   buffer.erase(0, start);
 }
-

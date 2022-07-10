@@ -118,6 +118,11 @@ void CDVDVideoPPFFmpeg::Process(VideoPicture* pPicture)
                  m_pMode, m_pContext,
                  pSource->pict_type | pSource->qscale_type ? PP_PICT_TYPE_QP2 : 0);
 
+  // https://github.com/FFmpeg/FFmpeg/blob/991d417692/doc/APIchanges#L18-L20
+#if LIBAVCODEC_BUILD >= AV_VERSION_INT(58, 84, 100) && \
+    LIBAVUTIL_BUILD >= AV_VERSION_INT(56, 45, 100)
+  av_free(pSource->qp_table);
+#endif
 
   pPicture->SetParams(*pSource);
   if (pPicture->videoBuffer)

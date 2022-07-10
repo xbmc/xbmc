@@ -16,17 +16,17 @@ using namespace ActiveAE;
 #include "ActiveAESound.h"
 #include "ActiveAEStream.h"
 #include "ServiceBroker.h"
-#include "cores/AudioEngine/Interfaces/IAudioCallback.h"
-#include "cores/AudioEngine/Utils/AEUtil.h"
-#include "cores/AudioEngine/Utils/AEStreamData.h"
-#include "cores/AudioEngine/Utils/AEStreamInfo.h"
 #include "cores/AudioEngine/AEResampleFactory.h"
 #include "cores/AudioEngine/Encoders/AEEncoderFFmpeg.h"
-
+#include "cores/AudioEngine/Interfaces/IAudioCallback.h"
+#include "cores/AudioEngine/Utils/AEStreamData.h"
+#include "cores/AudioEngine/Utils/AEStreamInfo.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
+#include "cores/FFmpeg.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "windowing/WinSystem.h"
 #include "utils/log.h"
+#include "windowing/WinSystem.h"
 
 using namespace std::chrono_literals;
 
@@ -3016,8 +3016,8 @@ IAE::SoundPtr CActiveAE::MakeSound(const std::string& file)
   AVFormatContext *fmt_ctx = nullptr;
   AVCodecContext *dec_ctx = nullptr;
   AVIOContext *io_ctx;
-  AVInputFormat *io_fmt = nullptr;
-  AVCodec *dec = nullptr;
+  FFMPEG_FMT_CONST AVInputFormat* io_fmt = nullptr;
+  FFMPEG_FMT_CONST AVCodec* dec = nullptr;
   SampleConfig config;
 
   // No custom deleter until sound is registered

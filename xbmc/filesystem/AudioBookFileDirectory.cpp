@@ -11,6 +11,7 @@
 #include "TextureDatabase.h"
 #include "URL.h"
 #include "Util.h"
+#include "cores/FFmpeg.h"
 #include "filesystem/File.h"
 #include "guilib/LocalizeStrings.h"
 #include "music/tags/MusicInfoTag.h"
@@ -149,7 +150,7 @@ bool CAudioBookFileDirectory::ContainsFiles(const CURL& url)
 
   m_ioctx->max_packet_size = 32768;
 
-  AVInputFormat* iformat=nullptr;
+  FFMPEG_FMT_CONST AVInputFormat* iformat = nullptr;
   av_probe_input_buffer(m_ioctx, &iformat, url.Get().c_str(), nullptr, 0, 0);
 
   bool contains = false;

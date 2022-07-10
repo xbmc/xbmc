@@ -10,6 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "utils/CPUInfo.h"
+#include "utils/StringUtils.h"
 
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -20,6 +21,31 @@ extern "C" {
 #include <libavfilter/avfilter.h>
 #include <libpostproc/postprocess.h>
 }
+
+// https://github.com/FFmpeg/FFmpeg/blob/56450a0ee4/doc/APIchanges#L18-L26
+#if LIBAVFORMAT_BUILD >= AV_VERSION_INT(59, 0, 100)
+#define FFMPEG_FMT_CONST const
+#else
+#define FFMPEG_FMT_CONST
+#endif
+
+namespace FFMPEG_HELP_TOOLS
+{
+
+struct FFMpegException : public std::exception
+{
+  std::string s;
+  template<typename... Args>
+  FFMpegException(const std::string& fmt, Args&&... args)
+    : s(StringUtils::Format(fmt, std::forward<Args>(args)...))
+  {
+  }
+  const char* what() const noexcept override { return s.c_str(); }
+};
+
+std::string FFMpegErrorToString(int err);
+
+} // namespace FFMPEG_HELP_TOOLS
 
 inline int PPCPUFlags()
 {
