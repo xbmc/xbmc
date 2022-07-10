@@ -59,7 +59,7 @@ endif()
 # this variable is set if we can execute build artefacts on the host system (for example unit tests).
 if(CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL CMAKE_SYSTEM_PROCESSOR AND
    CMAKE_HOST_SYSTEM_NAME STREQUAL CMAKE_SYSTEM_NAME)
-  if(NOT HOST_CAN_EXECUTE_TARGET)
+  if(NOT DEFINED HOST_CAN_EXECUTE_TARGET)
     set(HOST_CAN_EXECUTE_TARGET TRUE)
   endif()
 else()
