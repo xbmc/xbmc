@@ -1048,7 +1048,10 @@ bool CWinSystemX11::HasWindowManager()
 
   if(status == Success && items_read)
   {
-    CLog::Log(LOGDEBUG, "Window Manager Name: {}", data);
+    const char* s;
+
+    s = reinterpret_cast<const char*>(data);
+    CLog::Log(LOGDEBUG, "Window Manager Name: {}", s);
   }
   else
     CLog::Log(LOGDEBUG,"Window Manager Name: ");
