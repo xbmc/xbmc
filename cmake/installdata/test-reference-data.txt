@@ -25,5 +25,12 @@ xbmc/network/test/data/test-ranges.txt
 xbmc/network/test/data/test.html
 xbmc/network/test/data/test.png
 xbmc/playlists/test/test.xspf
+xbmc/video/test/testdata/moviestack_ab/Movie-(2001)/Movie-(2001)A.mp4
+xbmc/video/test/testdata/moviestack_ab/Movie-(2001)/Movie-(2001)B.mp4
+xbmc/video/test/testdata/moviestack_part/Movie_(2001)/Movie_(2001)_part1.mkv
+xbmc/video/test/testdata/moviestack_part/Movie_(2001)/Movie_(2001)_part2.mkv
+xbmc/video/test/testdata/moviestack_part/Movie_(2001)/Movie_(2001)_part3.mkv
+xbmc/video/test/testdata/moviestack_dvdiso/Movie_(2001)/Movie_(2001)_dvd1.iso
+xbmc/video/test/testdata/moviestack_dvdiso/Movie_(2001)/Movie_(2001)_dvd2.iso
 xbmc/utils/test/CXBMCTinyXML-test.xml
 xbmc/utils/test/data/language/Spanish/strings.po
