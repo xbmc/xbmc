@@ -93,6 +93,13 @@ public:
   static bool HasWhitelist();
   static void PrintWhitelist();
 
+  /*!
+   * \brief Get the max allowed resolution, if fullscreen
+   * \param width [OUT] Max width resolution
+   * \param height [OUT] Max height resolution
+   */
+  static void GetMaxAllowedResolution(unsigned int& width, unsigned int& height);
+
 protected:
   static void FindResolutionFromWhitelist(float fps, int width, int height, bool is3D, RESOLUTION &resolution);
   static bool FindResolutionFromOverride(float fps, int width, bool is3D, RESOLUTION &resolution, float& weight, bool fallback);

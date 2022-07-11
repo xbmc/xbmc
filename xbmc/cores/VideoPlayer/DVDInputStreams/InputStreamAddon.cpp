@@ -18,6 +18,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "windowing/Resolution.h"
 
 CInputStreamProvider::CInputStreamProvider(const ADDON::AddonInfoPtr& addonInfo,
                                            KODI_HANDLE parentInstance)
@@ -176,11 +177,7 @@ bool CInputStreamAddon::Open()
   props.m_libFolder = libFolder.c_str();
   props.m_profileFolder = profileFolder.c_str();
 
-  unsigned int videoWidth = 1280;
-  unsigned int videoHeight = 720;
-  if (m_player)
-    m_player->GetVideoResolution(videoWidth, videoHeight);
-  SetVideoResolution(videoWidth, videoHeight);
+  DetectScreenResolution();
 
   bool ret = m_ifc.inputstream->toAddon->open(m_ifc.inputstream, &props);
   if (ret)
@@ -283,6 +280,10 @@ int CInputStreamAddon::GetTime()
 // ITime
 CDVDInputStream::ITimes* CInputStreamAddon::GetITimes()
 {
+  // Check if screen resolution is changed during playback
+  // e.g. window resized and callback to add-on
+  DetectScreenResolution();
+
   if ((m_caps.m_mask & INPUTSTREAM_SUPPORTS_ITIME) == 0)
     return nullptr;
 
@@ -610,10 +611,14 @@ void CInputStreamAddon::FlushDemux()
     m_ifc.inputstream->toAddon->demux_flush(m_ifc.inputstream);
 }
 
-void CInputStreamAddon::SetVideoResolution(int width, int height)
+void CInputStreamAddon::SetVideoResolution(unsigned int width,
+                                           unsigned int height,
+                                           unsigned int maxWidth,
+                                           unsigned int maxHeight)
 {
   if (m_ifc.inputstream->toAddon->set_video_resolution)
-    m_ifc.inputstream->toAddon->set_video_resolution(m_ifc.inputstream, width, height);
+    m_ifc.inputstream->toAddon->set_video_resolution(m_ifc.inputstream, width, height, maxWidth,
+                                                     maxHeight);
 }
 
 bool CInputStreamAddon::IsRealtime()
@@ -710,6 +715,37 @@ int CInputStreamAddon::ConvertVideoCodecProfile(STREAMCODEC_PROFILE profile)
     return FF_PROFILE_AV1_PROFESSIONAL;
   default:
     return FF_PROFILE_UNKNOWN;
+  }
+}
+
+void CInputStreamAddon::DetectScreenResolution()
+{
+  unsigned int videoWidth{1280};
+  unsigned int videoHeight{720};
+  if (m_player)
+  {
+    m_player->GetVideoResolution(videoWidth, videoHeight);
+  }
+  if (m_currentVideoWidth != videoWidth || m_currentVideoHeight != videoHeight)
+  {
+    unsigned int maxWidth{videoWidth};
+    unsigned int maxHeight{videoHeight};
+    // For Adaptive stream technology is needed to know the screen resolution
+    // one parameter used to fit stream resolution to screen resolution.
+    // Currently we provide current GUI resolution, but if Adjust refresh rate
+    // is enabled the GUI resolution is no longer relevant, Adjust refresh rate
+    // will change screen resolution based on whitelist (if any) and only after
+    // that have the video stream in the demuxer, therefore will fail because
+    // the addon has as reference the GUI resolution.
+    // So we have to provide the max resolution info before the playback take place
+    // in order to allow addon to provide in the demuxer the best stream resolution
+    // that can fit the supported screen resolution (changed when playback start).
+    CResolutionUtils::GetMaxAllowedResolution(maxWidth, maxHeight);
+
+    SetVideoResolution(videoWidth, videoHeight, maxWidth, maxHeight);
+
+    m_currentVideoWidth = videoWidth;
+    m_currentVideoHeight = videoHeight;
   }
 }
 

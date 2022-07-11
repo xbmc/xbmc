@@ -355,7 +355,7 @@ public:
    * sets desired width / height for video stream
    * adaptive demuxers like DASH can use this to choose best fitting video stream
    */
-  virtual void SetVideoResolution(int width, int height) {}
+  virtual void SetVideoResolution(unsigned int width, unsigned int height) {}
 
   /*
   * return the id of the demuxer

@@ -37,6 +37,8 @@
 #include "dialogs/YesNo.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 
 #include <mutex>
@@ -85,6 +87,8 @@ void Interface_GUIGeneral::Init(AddonGlobalInterface* addonInterface)
       get_current_window_dialog_id;
   addonInterface->toKodi->kodi_gui->general->get_current_window_id = get_current_window_id;
   addonInterface->toKodi->kodi_gui->general->get_hw_context = get_hw_context;
+  addonInterface->toKodi->kodi_gui->general->get_adjust_refresh_rate_status =
+      get_adjust_refresh_rate_status;
 }
 
 void Interface_GUIGeneral::DeInit(AddonGlobalInterface* addonInterface)
@@ -210,6 +214,37 @@ int Interface_GUIGeneral::get_current_window_id(KODI_HANDLE kodiBase)
 ADDON_HARDWARE_CONTEXT Interface_GUIGeneral::get_hw_context(KODI_HANDLE kodiBase)
 {
   return CServiceBroker::GetWinSystem()->GetHWContext();
+}
+
+AdjustRefreshRateStatus Interface_GUIGeneral::get_adjust_refresh_rate_status(KODI_HANDLE kodiBase)
+{
+  CAddonDll* addon = static_cast<CAddonDll*>(kodiBase);
+  if (!addon)
+  {
+    CLog::Log(LOGERROR, "kodi::gui::{} - invalid data", __func__);
+    return ADJUST_REFRESHRATE_STATUS_OFF;
+  }
+
+  switch (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+      CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE))
+  {
+    case AdjustRefreshRate::ADJUST_REFRESHRATE_OFF:
+      return ADJUST_REFRESHRATE_STATUS_OFF;
+      break;
+    case AdjustRefreshRate::ADJUST_REFRESHRATE_ON_START:
+      return ADJUST_REFRESHRATE_STATUS_ON_START;
+      break;
+    case AdjustRefreshRate::ADJUST_REFRESHRATE_ON_STARTSTOP:
+      return ADJUST_REFRESHRATE_STATUS_ON_STARTSTOP;
+      break;
+    case AdjustRefreshRate::ADJUST_REFRESHRATE_ALWAYS:
+      return ADJUST_REFRESHRATE_STATUS_ALWAYS;
+      break;
+    default:
+      CLog::Log(LOGERROR, "kodi::gui::{} - Unhandled Adjust refresh rate setting", __func__);
+      return ADJUST_REFRESHRATE_STATUS_OFF;
+      break;
+  }
 }
 
 //@}
