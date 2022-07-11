@@ -56,10 +56,14 @@ function(get_versionfile_data)
   endif()
   set(${MODULE}_BYPRODUCT ${${MODULE}_BYPRODUCT} PARENT_SCOPE)
 
-  if (${MODULE}_HASH_SHA256)
-    set(${MODULE}_HASH ${${MODULE}_HASH_SHA256} PARENT_SCOPE)
-  elseif(${MODULE}_HASH_SHA512)
-    set(${MODULE}_HASH ${${MODULE}_HASH_SHA512} PARENT_SCOPE)
+  # allow user to override the download URL hash with a local tarball hash
+  # needed for offline build envs
+  if (NOT DEFINED ${MODULE}_HASH)
+    if (${MODULE}_HASH_SHA256)
+      set(${MODULE}_HASH ${${MODULE}_HASH_SHA256} PARENT_SCOPE)
+    elseif(${MODULE}_HASH_SHA512)
+      set(${MODULE}_HASH ${${MODULE}_HASH_SHA512} PARENT_SCOPE)
+    endif()
   endif()
 endfunction()
 
