@@ -1509,10 +1509,11 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
 #if defined(TARGET_ANDROID)
     if (pMsg->params.size())
     {
-      CXBMCApp::StartActivity(pMsg->params[0],
-        pMsg->params.size() > 1 ? pMsg->params[1] : "",
-        pMsg->params.size() > 2 ? pMsg->params[2] : "",
-        pMsg->params.size() > 3 ? pMsg->params[3] : "");
+      CXBMCApp::StartActivity(pMsg->params[0], pMsg->params.size() > 1 ? pMsg->params[1] : "",
+                              pMsg->params.size() > 2 ? pMsg->params[2] : "",
+                              pMsg->params.size() > 3 ? pMsg->params[3] : "",
+                              pMsg->params.size() > 4 ? pMsg->params[4] : "",
+                              pMsg->params.size() > 5 ? pMsg->params[5] : "");
     }
 #endif
   }
