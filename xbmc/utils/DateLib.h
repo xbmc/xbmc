@@ -19,6 +19,19 @@
 #endif
 
 #define HAS_REMOTE_API 0
+#include <cstring>
+
 #include <date/date.h>
 #include <date/iso_week.h>
 #include <date/tz.h>
+
+namespace KODI
+{
+namespace TIME
+{
+
+const std::string ExtractTzName(const char* tzname);
+const date::time_zone* GetTimeZone();
+
+} // namespace TIME
+} // namespace KODI

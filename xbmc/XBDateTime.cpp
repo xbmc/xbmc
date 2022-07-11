@@ -206,7 +206,7 @@ CDateTime::CDateTime(int year, int month, int day, int hour, int minute, int sec
 
 CDateTime CDateTime::GetCurrentDateTime()
 {
-  auto zone = date::make_zoned(date::current_zone(), std::chrono::system_clock::now());
+  auto zone = date::make_zoned(KODI::TIME::GetTimeZone(), std::chrono::system_clock::now());
 
   return CDateTime(
       date::floor<std::chrono::seconds>(zone.get_local_time().time_since_epoch()).count());
@@ -619,7 +619,7 @@ void CDateTime::GetAsTm(tm& time) const
   auto seconds_to_newyear = date::floor<std::chrono::seconds>(m_time - newyear);
   time.tm_yday = seconds_to_newyear.count() / 86400;
 
-  time.tm_isdst = date::current_zone()->get_info(m_time).save.count() != 0;
+  time.tm_isdst = KODI::TIME::GetTimeZone()->get_info(m_time).save.count() != 0;
 }
 
 KODI::TIME::time_point CDateTime::GetAsTimePoint() const
@@ -1258,7 +1258,7 @@ std::string CDateTime::GetAsLocalizedTime(TIME_FORMAT format, bool withSeconds /
 
 CDateTime CDateTime::GetAsLocalDateTime() const
 {
-  auto zone = date::make_zoned(date::current_zone(), m_time);
+  auto zone = date::make_zoned(KODI::TIME::GetTimeZone(), m_time);
 
   return CDateTime(
       date::floor<std::chrono::seconds>(zone.get_local_time().time_since_epoch()).count());
@@ -1283,7 +1283,7 @@ std::string CDateTime::GetAsW3CDateTime(bool asUtc /* = false */) const
   if (asUtc)
     return date::format("%FT%TZ", time);
 
-  auto zt = date::make_zoned(date::current_zone(), time);
+  auto zt = date::make_zoned(KODI::TIME::GetTimeZone(), time);
 
   return date::format("%FT%T%Ez", zt);
 }

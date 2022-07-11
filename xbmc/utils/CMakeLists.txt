@@ -17,6 +17,7 @@ set(SOURCES ActorProtocol.cpp
             Crc32.cpp
             CSSUtils.cpp
             DatabaseUtils.cpp
+            DateLib.cpp
             Digest.cpp
             DiscsUtils.cpp
             EndianSwap.cpp

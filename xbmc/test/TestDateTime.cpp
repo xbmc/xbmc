@@ -304,7 +304,7 @@ TEST_F(TestDateTime, GetAsStringsWithBias)
   std::cout << dateTime.GetAsW3CDateTime(true) << std::endl;
 
   auto tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
-  auto zone = date::make_zoned(date::current_zone(), tps);
+  auto zone = date::make_zoned(KODI::TIME::GetTimeZone(), tps);
 
   EXPECT_EQ(dateTime.GetAsRFC1123DateTime(), "Tue, 14 May 1991 12:34:56 GMT");
   EXPECT_EQ(dateTime.GetAsW3CDateTime(false), date::format("%FT%T%Ez", zone));
@@ -611,12 +611,12 @@ TEST_F(TestDateTime, GetAsLocalDateTime)
   CDateTime dateTime2;
   dateTime2 = dateTime1.GetAsLocalDateTime();
 
-  auto zoned_time = date::make_zoned(date::current_zone(), dateTime1.GetAsTimePoint());
+  auto zoned_time = date::make_zoned(KODI::TIME::GetTimeZone(), dateTime1.GetAsTimePoint());
   auto time = zoned_time.get_local_time().time_since_epoch();
 
   CDateTime cmpTime(std::chrono::duration_cast<std::chrono::seconds>(time).count());
 
-  EXPECT_TRUE(dateTime1 == cmpTime);
+  EXPECT_TRUE(dateTime2 == cmpTime);
 }
 
 TEST_F(TestDateTime, Reset)
@@ -794,4 +794,18 @@ TEST_F(TestDateTime, Tzdata)
   zone = date::make_zoned("Etc/GMT-14", tps);
   EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-15T02:34:56+14:00")
       << "tzdata information not valid for 'Etc/GMT-14'";
+}
+
+TEST_F(TestDateTime, ExtractTzName)
+{
+  CDateTime dateTime;
+  dateTime.SetDateTime(1991, 05, 14, 12, 34, 56);
+
+  auto tps = date::floor<std::chrono::seconds>(dateTime.GetAsTimePoint());
+  auto zone = date::make_zoned(KODI::TIME::ExtractTzName("/usr/share/zoneinfo/Etc/GMT-14"), tps);
+  EXPECT_EQ(date::format("%FT%T%Ez", zone), "1991-05-15T02:34:56+14:00")
+      << "extractTzName failed for '/usr/share/zoneinfo/Etc/GMT-14'";
+
+  EXPECT_EQ(KODI::TIME::ExtractTzName("/usr/share/z0neinfo/Etc/GMT+12"), "")
+      << "extractTzName failed for '/usr/share/z0neinfo/Etc/GMT+12'";
 }
