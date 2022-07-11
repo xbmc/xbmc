@@ -179,10 +179,6 @@ bool CRendererDRMPRIME::NeedBuffer(int index)
   if (m_iLastRenderBuffer == index)
     return true;
 
-  CVideoBufferDRMPRIME* buffer = dynamic_cast<CVideoBufferDRMPRIME*>(m_buffers[index].videoBuffer);
-  if (buffer && buffer->m_fb_id)
-    return true;
-
   return false;
 }
 
