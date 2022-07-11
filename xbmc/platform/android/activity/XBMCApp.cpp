@@ -63,6 +63,7 @@
 #include <crossguid/guid.hpp>
 #include <dlfcn.h>
 #include <jni.h>
+#include <rapidjson/document.h>
 #include <unistd.h>
 // Audio Engine includes for Factory and interfaces
 #include "GUIInfoManager.h"
@@ -970,9 +971,21 @@ std::vector<androidPackage> CXBMCApp::GetApplications() const
   return m_applications;
 }
 
-// Note intent, dataType, dataURI all default to ""
-bool CXBMCApp::StartActivity(const std::string &package, const std::string &intent, const std::string &dataType, const std::string &dataURI)
+// Note intent, dataType, dataURI, flags, extras all default to ""
+bool CXBMCApp::StartActivity(const std::string& package,
+                             const std::string& intent,
+                             const std::string& dataType,
+                             const std::string& dataURI,
+                             const std::string& flags,
+                             const std::string& extras)
 {
+  CLog::LogF(LOGDEBUG, "package: {}", package);
+  CLog::LogF(LOGDEBUG, "intent: {}", intent);
+  CLog::LogF(LOGDEBUG, "dataType: {}", dataType);
+  CLog::LogF(LOGDEBUG, "dataURI: {}", dataURI);
+  CLog::LogF(LOGDEBUG, "flags: {}", flags);
+  CLog::LogF(LOGDEBUG, "extras: {}", extras);
+
   CJNIIntent newIntent = intent.empty() ?
     GetPackageManager().getLaunchIntentForPackage(package) :
     CJNIIntent(intent);
@@ -992,11 +1005,48 @@ bool CXBMCApp::StartActivity(const std::string &package, const std::string &inte
     newIntent.setDataAndType(jniURI, dataType);
   }
 
+  if (!flags.empty())
+  {
+    try
+    {
+      newIntent.setFlags(std::stoi(flags));
+    }
+    catch (const std::exception& e)
+    {
+      CLog::LogF(LOGDEBUG, "Invalid flags given, ignore them");
+    }
+  }
+
+  if (!extras.empty())
+  {
+    rapidjson::Document doc;
+    doc.Parse(extras.c_str());
+    if (!doc.IsArray())
+    {
+      CLog::LogF(LOGDEBUG, "Invalid intent extras format: Needs to be an array");
+      return false;
+    }
+
+    for (auto& e : doc.GetArray())
+    {
+      if (!e.IsObject() || !e.HasMember("type") || !e.HasMember("key") || !e.HasMember("value"))
+      {
+        CLog::LogF(LOGDEBUG, "Invalid intent extras value format");
+        continue;
+      }
+
+      if (e["type"] == "string")
+        newIntent.putExtra(e["key"].GetString(), e["value"].GetString());
+      else
+        CLog::LogF(LOGDEBUG, "Intent extras data type ({}) not implemented", e["type"].GetString());
+    }
+  }
+
   newIntent.setPackage(package);
   startActivity(newIntent);
   if (xbmc_jnienv()->ExceptionCheck())
   {
-    CLog::Log(LOGERROR, "CXBMCApp::StartActivity - ExceptionOccurred launching {}", package);
+    CLog::LogF(LOGERROR, "ExceptionOccurred launching {}", package);
     xbmc_jnienv()->ExceptionClear();
     return false;
   }

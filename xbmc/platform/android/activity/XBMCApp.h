@@ -159,7 +159,12 @@ public:
   bool EnableWakeLock(bool on);
   bool HasFocus() const { return m_hasFocus; }
 
-  static bool StartActivity(const std::string &package, const std::string &intent = std::string(), const std::string &dataType = std::string(), const std::string &dataURI = std::string());
+  static bool StartActivity(const std::string& package,
+                            const std::string& intent = std::string(),
+                            const std::string& dataType = std::string(),
+                            const std::string& dataURI = std::string(),
+                            const std::string& flags = std::string(),
+                            const std::string& extras = std::string());
   std::vector<androidPackage> GetApplications() const;
 
   /*!
