@@ -51,6 +51,7 @@ extern "C"
     static int get_current_window_dialog_id(KODI_HANDLE kodiBase);
     static int get_current_window_id(KODI_HANDLE kodiBase);
     static ADDON_HARDWARE_CONTEXT get_hw_context(KODI_HANDLE kodiBase);
+    static AdjustRefreshRateStatus get_adjust_refresh_rate_status(KODI_HANDLE kodiBase);
     //@}
 
   private:

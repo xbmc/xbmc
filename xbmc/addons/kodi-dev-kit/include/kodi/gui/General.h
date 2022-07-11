@@ -170,6 +170,20 @@ inline kodi::HardwareContext GetHWContext()
 }
 //------------------------------------------------------------------------------
 
+//==============================================================================
+/// @ingroup cpp_kodi_gui_general
+/// @brief Get Adjust refresh rate setting status.
+///
+/// @return The Adjust refresh rate setting status
+///
+inline AdjustRefreshRateStatus ATTR_DLL_LOCAL GetAdjustRefreshRateStatus()
+{
+  using namespace ::kodi::addon;
+  return CPrivateBase::m_interface->toKodi->kodi_gui->general->get_adjust_refresh_rate_status(
+      CPrivateBase::m_interface->toKodi->kodiBase);
+}
+//------------------------------------------------------------------------------
+
 } /* namespace gui */
 } /* namespace kodi */
 

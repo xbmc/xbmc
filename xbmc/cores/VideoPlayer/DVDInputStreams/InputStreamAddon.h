@@ -89,7 +89,10 @@ public:
   bool SeekTime(double time, bool backward = false, double* startpts = nullptr) override;
   void AbortDemux() override;
   void FlushDemux() override;
-  void SetVideoResolution(int width, int height) override;
+  void SetVideoResolution(unsigned int width,
+                          unsigned int height,
+                          unsigned int maxWidth,
+                          unsigned int maxHeight) override;
   bool IsRealtime() override;
 
   // IChapter
@@ -106,6 +109,11 @@ protected:
   IVideoPlayer* m_player;
 
 private:
+  void DetectScreenResolution();
+
+  unsigned int m_currentVideoWidth{0};
+  unsigned int m_currentVideoHeight{0};
+
   std::vector<std::string> m_fileItemProps;
   INPUTSTREAM_CAPABILITIES m_caps;
 

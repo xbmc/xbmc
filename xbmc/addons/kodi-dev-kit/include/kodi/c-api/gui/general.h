@@ -16,6 +16,20 @@ extern "C"
 {
 #endif /* __cplusplus */
 
+  //==============================================================================
+  /// @ingroup cpp_kodi_gui_general
+  /// @brief **Adjust refresh rate enum**\n
+  /// Used to get the Adjust refresh rate status info.
+  ///
+  enum AdjustRefreshRateStatus
+  {
+    ADJUST_REFRESHRATE_STATUS_OFF = 0,
+    ADJUST_REFRESHRATE_STATUS_ALWAYS,
+    ADJUST_REFRESHRATE_STATUS_ON_STARTSTOP,
+    ADJUST_REFRESHRATE_STATUS_ON_START,
+  };
+  //------------------------------------------------------------------------------
+
   typedef struct AddonToKodiFuncTable_kodi_gui_general
   {
     void (*lock)();
@@ -26,6 +40,7 @@ extern "C"
     int (*get_current_window_dialog_id)(KODI_HANDLE kodiBase);
     int (*get_current_window_id)(KODI_HANDLE kodiBase);
     ADDON_HARDWARE_CONTEXT (*get_hw_context)(KODI_HANDLE kodiBase);
+    AdjustRefreshRateStatus (*get_adjust_refresh_rate_status)(KODI_HANDLE kodiBase);
   } AddonToKodiFuncTable_kodi_gui_general;
 
 #ifdef __cplusplus
