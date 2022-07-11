@@ -231,7 +231,7 @@ function(copy_file_to_buildtree file)
   endif()
 
   # Exclude autotools build artefacts and other blacklisted files in source tree.
-  if(file MATCHES "(Makefile|\.in|\.xbt|\.so|\.dylib|\.gitignore)$")
+  if(file MATCHES "(Makefile|\\.in|\\.xbt|\\.so|\\.dylib|\\.gitignore)$")
     if(VERBOSE)
       message(STATUS "copy_file_to_buildtree - ignoring file: ${file}")
     endif()
