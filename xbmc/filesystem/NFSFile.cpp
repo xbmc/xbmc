@@ -606,12 +606,9 @@ int CNFSFile::Stat(const CURL& url, struct __stat64* buffer)
   }
   else
   {
-    if(buffer)
+    if (buffer)
     {
-#if defined(TARGET_WINDOWS) //! @todo get rid of this define after gotham v13
-      memcpy(buffer, &tmpBuffer, sizeof(struct __stat64));
-#else
-      memset(buffer, 0, sizeof(struct __stat64));
+      *buffer = {};
       buffer->st_dev = tmpBuffer.nfs_dev;
       buffer->st_ino = tmpBuffer.nfs_ino;
       buffer->st_mode = tmpBuffer.nfs_mode;
@@ -623,7 +620,6 @@ int CNFSFile::Stat(const CURL& url, struct __stat64* buffer)
       buffer->st_atime = tmpBuffer.nfs_atime;
       buffer->st_mtime = tmpBuffer.nfs_mtime;
       buffer->st_ctime = tmpBuffer.nfs_ctime;
-#endif
     }
   }
   return ret;
