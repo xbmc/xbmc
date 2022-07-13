@@ -1511,7 +1511,7 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
               url.GetRedacted());
     if (buffer)
     {
-      memset(buffer, 0, sizeof(struct __stat64));
+      *buffer = {};
       buffer->st_size = GetLength();
       buffer->st_mode = _S_IFREG;
     }
