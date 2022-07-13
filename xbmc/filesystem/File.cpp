@@ -498,7 +498,7 @@ int CFile::Stat(struct __stat64 *buffer)
 
   if (!m_pFile)
   {
-    memset(buffer, 0, sizeof(struct __stat64));
+    *buffer = {};
     errno = ENOENT;
     return -1;
   }
