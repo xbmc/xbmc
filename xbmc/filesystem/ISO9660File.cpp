@@ -51,7 +51,10 @@ int CISO9660File::Stat(const CURL& url, struct __stat64* buffer)
   if (!m_stat->p_stat)
     return -1;
 
-  buffer = {};
+  if (!buffer)
+    return -1;
+
+  *buffer = {};
   buffer->st_size = m_stat->p_stat->size;
 
   switch (m_stat->p_stat->type)

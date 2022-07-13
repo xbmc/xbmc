@@ -70,10 +70,10 @@ void CUDFFile::Close()
 
 int CUDFFile::Stat(const CURL& url, struct __stat64* buffer)
 {
-  if (!m_udf || !m_file)
+  if (!m_udf || !m_file || !buffer)
     return -1;
 
-  buffer = {};
+  *buffer = {};
   buffer->st_size = GetLength();
 
   return 0;
