@@ -1259,14 +1259,17 @@ bool CApplication::OnAction(const CAction &action)
 
       if (action.GetID() == ACTION_PLAYER_REWIND && (playSpeed == 1)) // Enables Rewinding
         playSpeed *= -2;
-      else if (action.GetID() == ACTION_PLAYER_REWIND && playSpeed > 1) //goes down a notch if you're FFing
+      else if (action.GetID() == ACTION_PLAYER_REWIND &&
+               playSpeed > 1) //goes down a notch if you're FFing
         playSpeed /= 2;
-      else if (action.GetID() == ACTION_PLAYER_FORWARD && playSpeed < 1) //goes up a notch if you're RWing
+      else if (action.GetID() == ACTION_PLAYER_FORWARD &&
+               playSpeed < 1) //goes up a notch if you're RWing
         playSpeed /= 2;
       else
         playSpeed *= 2;
 
-      if (action.GetID() == ACTION_PLAYER_FORWARD && playSpeed == -1) //sets iSpeed back to 1 if -1 (didn't plan for a -1)
+      if (action.GetID() == ACTION_PLAYER_FORWARD &&
+          playSpeed == -1) //sets iSpeed back to 1 if -1 (didn't plan for a -1)
         playSpeed = 1;
       if (playSpeed > 32 || playSpeed < -32)
         playSpeed = 1;
@@ -1274,7 +1277,8 @@ bool CApplication::OnAction(const CAction &action)
       m_appPlayer.SetPlaySpeed(playSpeed);
       return true;
     }
-    else if ((action.GetAmount() || m_appPlayer.GetPlaySpeed() != 1) && (action.GetID() == ACTION_ANALOG_REWIND || action.GetID() == ACTION_ANALOG_FORWARD))
+    else if ((action.GetAmount() || m_appPlayer.GetPlaySpeed() != 1) &&
+             (action.GetID() == ACTION_ANALOG_REWIND || action.GetID() == ACTION_ANALOG_FORWARD))
     {
       // calculate the speed based on the amount the button is held down
       int iPower = (int)(action.GetAmount() * MAX_FFWD_SPEED + 0.5f);
@@ -1286,7 +1290,7 @@ bool CApplication::OnAction(const CAction &action)
         iSpeed = -iSpeed;
       m_appPlayer.SetPlaySpeed(static_cast<float>(iSpeed));
       if (iSpeed == 1)
-        CLog::Log(LOGDEBUG,"Resetting playspeed");
+        CLog::Log(LOGDEBUG, "Resetting playspeed");
       return true;
     }
   }
