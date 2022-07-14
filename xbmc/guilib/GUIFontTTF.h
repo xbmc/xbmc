@@ -151,7 +151,7 @@ protected:
   std::vector<Glyph> GetHarfBuzzShapedGlyphs(const vecText& text);
 
   float GetTextWidthInternal(const vecText& text);
-  float GetTextWidthInternal(const vecText& text, std::vector<Glyph>& glyph);
+  float GetTextWidthInternal(const vecText& text, const std::vector<Glyph>& glyph);
   float GetCharWidthInternal(character_t ch);
   float GetTextHeight(float lineSpacing, int numLines) const;
   float GetTextBaseLine() const { return static_cast<float>(m_cellBaseLine); }

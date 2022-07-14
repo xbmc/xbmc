@@ -363,7 +363,6 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
   }
 
   Begin();
-  std::vector<Glyph> glyphs = GetHarfBuzzShapedGlyphs(text);
   uint32_t rawAlignment = alignment;
   bool dirtyCache(false);
   bool hardwareClipping = m_renderSystem->ScissorsCanEffectClipping();
@@ -389,6 +388,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
                              std::chrono::steady_clock::now(), dirtyCache));
   if (dirtyCache)
   {
+    const std::vector<Glyph> glyphs = GetHarfBuzzShapedGlyphs(text);
     // save the origin, which is scaled separately
     m_originX = x;
     m_originY = y;
@@ -575,12 +575,12 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
 
 float CGUIFontTTF::GetTextWidthInternal(const vecText& text)
 {
-  std::vector<Glyph> glyphs = GetHarfBuzzShapedGlyphs(text);
+  const std::vector<Glyph> glyphs = GetHarfBuzzShapedGlyphs(text);
   return GetTextWidthInternal(text, glyphs);
 }
 
 // this routine assumes a single line (i.e. it was called from GUITextLayout)
-float CGUIFontTTF::GetTextWidthInternal(const vecText& text, std::vector<Glyph>& glyphs)
+float CGUIFontTTF::GetTextWidthInternal(const vecText& text, const std::vector<Glyph>& glyphs)
 {
   float width = 0;
   for (auto it = glyphs.begin(); it != glyphs.end(); it++)
