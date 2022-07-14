@@ -112,7 +112,10 @@ int CXbtFile::Stat(struct __stat64 *buffer)
 
 int CXbtFile::Stat(const CURL& url, struct __stat64* buffer)
 {
-  memset(buffer, 0, sizeof(struct __stat64));
+  if (!buffer)
+    return -1;
+
+  *buffer = {};
 
   // check if the file exists
   CXBTFReaderPtr reader;
