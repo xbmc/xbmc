@@ -11176,7 +11176,13 @@ std::string CGUIInfoManager::GetMultiInfoItemLabel(const CFileItem *item, int co
         return strThumb;
       }
       case LISTITEM_ART:
+      {
+        if (info.GetData3() == "thumb")
+        {
+          return item->GetThumbHideIfUnwatched(item);
+        }
         return item->GetArt(info.GetData3());
+      }
       case LISTITEM_OVERLAY:
         return item->GetOverlayImage();
       case LISTITEM_THUMB:
