@@ -26,7 +26,25 @@ namespace XBMCAddon
 #endif
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-    //
+static const String LOCALE_LANGUAGE_ISO_639_1 = "language_iso_639_1";
+static const String LOCALE_LANGUAGE_ISO_639_2 = "language_iso_639_2";
+static const String LOCALE_COUNTRY_ISO_3166_1_ALPHA_2 = "country_iso_3166_1_alpha_2";
+static const String LOCALE_COUNTRY_ISO_3166_1_ALPHA_3 = "country_iso_3166_1_alpha_3";
+static const String LOCALE_SCRIPT_ISO_15924 = "script_iso_15924";
+static const String LOCALE_VARIANT = "variant";
+static const String LOCALE_PROGRAMATIC_NAME = "programatic_name";
+static const String LOCALE_SHORT_PROGRAMATIC_NAME = "short_programatic_name";
+static const String LOCALE_WINDOWS_LCID = "windows_lcid";
+static const String LOCALE_TRANSLATED_LANGUAGE_NAME = "translated_language_name";
+static const String LOCALE_ENGLISH_LANGUAGE_NAME = "english_language_name";
+static const String LOCALE_TRANSLATED_COUNTRY = "translated_country";
+static const String LOCALE_ENGLISH_COUNTRY = "english_country";
+static const String LOCALE_TRANSLATED_VARIANT = "translated_variant";
+static const String LOCALE_ENGLISH_VARIANT = "english_variant";
+static const String LOCALE_TRANSLATED_NAME = "translated_name";
+static const String LOCALE_ENGLISH_NAME = "english_name";
+
+    ///
     /// \defgroup python_xbmc Library - xbmc
     /// @{
     /// @brief **General functions on Kodi.**
@@ -306,12 +324,14 @@ namespace XBMCAddon
     ///                             string
     /// | Value             | Description
     /// |------------------:|:-------------------------------------------------|
-    /// | xbmc.ISO_639_1    | Two letter code as defined in ISO 639-1
-    /// | xbmc.ISO_639_2    | Three letter code as defined in ISO 639-2/T or ISO 639-2/B
+    /// | xbmc.ISO_639_1    | Two letter language code as defined in ISO 639-1
+    /// | xbmc.ISO_639_2    | Three letter language code as defined in ISO 639-2/T
+    /// |                   | or ISO 639-2/B
     /// | xbmc.ENGLISH_NAME | Full language name in English (default)
-    /// @param region               [opt] append the region delimited by "-"
-    ///                             of the language (setting) to the
-    ///                             returned language string
+    /// @param region               [opt] append the ISO 3166-1 (alpha-1 or alpha-2)
+    ///                             region/country code for the language (setting)
+    ///                             to the returned language string using a "-"
+    ///                             separator
     /// @return                     The active language as a string
     ///
     ///
@@ -328,6 +348,51 @@ namespace XBMCAddon
     getLanguage(...);
 #else
     String getLanguage(int format = CLangCodeExpander::ENGLISH_NAME, bool region = false);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+  ///
+  /// \ingroup python_xbmc
+  /// @brief \python_func{ xbmc.getICULanguage(properties) }
+  /// Get details about Kodi's current ICU Locale
+  ///
+  /// @param type                  str - use SERVER_* constants
+  /// - Used format of the returned language string
+  /// | Value                                  | Description                                                |
+  /// |---------------------------------------:|------------------------------------------------------------|
+  /// | xbmc.LOCALE_LANGUAGE_ISO_639_1         | Two-letter language code
+  /// | xbmc.LOCALE_LANGUAGE_ISO_639_2         | Three-letter language code
+  /// | xbmc.LOCALE_COUNTRY_ISO_3166_1_ALPHA_2 | Two-letter country/region code
+  /// | xbmc.LOCALE_COUNTRY_ISO_3166_1_ALPHA_3 | Three-letter country/region code
+  /// | xbmc.LOCALE_SCRIPT_ISO_15924           | Four-letter code code identifying script used
+  /// | xbmc.LOCALE_VARIANT                    | Vendor specific
+  /// | xbmc.LOCALE_SHORT_PROGRAMATIC_NAME     | Unique ID for locale
+  /// | xbmc.LOCALE_WINDOWS_LCID               | Windows LCID for locale
+  /// | xbmc.LOCALE_TRANSLATED_LANGUAGE_NAME   | Language name translated in the current Locale
+  /// | xbmc.LOCALE_ENGLISH_LANGUAGE_NAME      | Language name in English
+  /// | xbmc.LOCALE_TRANSLATED_COUNTRY         | Country name translated for the current locale
+  /// | xbmc.LOCALE_ENGLISH_COUNTRY            | Country name in English
+  /// | xbmc.LOCALE_ENGLISH_VARIANT            | Variant in English
+  /// | xbmc.LOCALE_TRANSLATED_NAME            | Name of locale in current language
+  /// | xbmc.LOCALE_ENGLISH_NAME               | Name of locale in English
+  ///
+  /// @result list(tuple(str, str)...)
+  ///
+  /// @python_v20 New function added.
+  /// ------------------------------------------------------------------------
+  ///
+  /// **Example:**
+  /// ~~~~~~~~~~~~~{.py}
+  /// ..
+  /// propertyNames: List[str] = (xbmc.LANGUAGE_ISO_639_1, xbmc.COUNTRY_ISO_3166_1_ALPHA_2,
+  ///                                 xbmc.ENGLISH_LANGUAGE_NAME)
+  /// info: List[Tuple[str, str]] = xbmc.getICULanguage(propertyNames)
+  /// ..
+  /// ~~~~~~~~~~~~~
+  ///
+  getICULanguage(...);
+#else
+  std::vector<Tuple<String, String>> getICULanguage(std::vector<String>& propertyNames);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS

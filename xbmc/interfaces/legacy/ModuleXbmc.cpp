@@ -41,6 +41,8 @@
 #include "utils/MemUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
+#include "utils/Unicode.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
@@ -97,9 +99,8 @@ namespace XBMCAddon
       std::string execute;
       std::vector<std::string> params;
       CUtil::SplitExecFunction(function, execute, params);
-      StringUtils::ToLower(execute);
-      if (StringUtils::EqualsNoCase(execute, "activatewindow") ||
-          StringUtils::EqualsNoCase(execute, "closedialog"))
+      if (UnicodeUtils::EqualsNoCase(execute, "activatewindow") ||
+          UnicodeUtils::EqualsNoCase(execute, "closedialog"))
       {
         int win = CWindowTranslator::TranslateWindow(params[0]);
         if (win == WINDOW_DIALOG_BUSY)
@@ -175,6 +176,122 @@ namespace XBMCAddon
       return CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
     }
 
+std::vector<Tuple<String, String>> getICULanguage(std::vector<String>& propertyNames)
+{
+  // I would have much preferred to return a Dictionary, but I'm not 
+  // yet skilled enough to extend swig Dictionary for output
+  
+  XBMC_TRACE;
+  std::vector<Tuple<String, String>> result = std::vector<Tuple<String, String>>();
+  icu::Locale currentLocale = Unicode::GetDefaultICULocale();
+  for (auto propertyName : propertyNames)
+  {
+    String value;
+    if (propertyName == xbmc::LOCALE_LANGUAGE_ISO_639_1)
+    {
+      value = std::string(currentLocale.getLanguage());
+    }
+    else if (propertyName == xbmc::LOCALE_LANGUAGE_ISO_639_2)
+    {
+      value = std::string(currentLocale.getISO3Language());
+    }
+    else if (propertyName == xbmc::LOCALE_LANGUAGE_ISO_639_2)
+    {
+      value = std::string(currentLocale.getScript());
+    }
+    else if (propertyName == xbmc::LOCALE_COUNTRY_ISO_3166_1_ALPHA_2)
+    {
+      value = std::string(currentLocale.getCountry());
+    }
+    else if (propertyName == xbmc::LOCALE_COUNTRY_ISO_3166_1_ALPHA_3)
+    {
+      value = std::string(currentLocale.getISO3Country());
+    }
+    else if (propertyName == xbmc::LOCALE_SCRIPT_ISO_15924)
+    {
+      value = std::string(currentLocale.getScript());
+    }
+    else if (propertyName == xbmc::LOCALE_PROGRAMATIC_NAME)
+    {
+      value = std::string(currentLocale.getName());
+    }
+    else if (propertyName == xbmc::LOCALE_SHORT_PROGRAMATIC_NAME)
+    {
+      value = std::string(currentLocale.getBaseName());
+    }
+    else if (propertyName == xbmc::LOCALE_VARIANT)
+    {
+      value = std::string(currentLocale.getVariant());
+    }
+    else if (propertyName == xbmc::LOCALE_WINDOWS_LCID)
+    {
+      value = std::to_string(currentLocale.getLCID());
+    }
+    else if (propertyName == xbmc::LOCALE_TRANSLATED_LANGUAGE_NAME)
+    {
+      icu::UnicodeString lang = icu::UnicodeString();
+      currentLocale.getDisplayLanguage(lang);
+      value = String();
+      lang.toUTF8String(value);
+    }
+    else if (propertyName == xbmc::LOCALE_ENGLISH_LANGUAGE_NAME)
+    {
+      icu::UnicodeString lang = icu::UnicodeString();
+      currentLocale.getDisplayLanguage(icu::Locale::getEnglish(), lang);
+      value = String();
+      lang.toUTF8String(value);
+    }
+    else if (propertyName == xbmc::LOCALE_TRANSLATED_COUNTRY)
+    {
+      icu::UnicodeString country = icu::UnicodeString();
+      currentLocale.getDisplayCountry(country);
+      value = String();
+      country.toUTF8String(value);
+    }
+    else if (propertyName == xbmc::LOCALE_ENGLISH_COUNTRY)
+    {
+      icu::UnicodeString country = icu::UnicodeString();
+      currentLocale.getDisplayCountry(icu::Locale::getEnglish(), country);
+      value = String();
+      country.toUTF8String(value);
+    }
+    else if (propertyName == xbmc::LOCALE_TRANSLATED_VARIANT)
+    {
+      icu::UnicodeString variant = icu::UnicodeString();
+      currentLocale.getDisplayVariant(variant);
+      value = String();
+      variant.toUTF8String(value);
+    }
+    else if (propertyName == xbmc::LOCALE_ENGLISH_VARIANT)
+    {
+      icu::UnicodeString variant = icu::UnicodeString();
+      currentLocale.getDisplayVariant(icu::Locale::getEnglish(),variant);
+      value = String();
+      variant.toUTF8String(value);
+    }
+    else if (propertyName == xbmc::LOCALE_TRANSLATED_NAME)
+    {
+      icu::UnicodeString name = icu::UnicodeString();
+      currentLocale.getDisplayName(name);
+      value = String();
+      name.toUTF8String(value);
+
+    }
+    else if (propertyName == xbmc::LOCALE_ENGLISH_NAME)
+    {
+      icu::UnicodeString name = icu::UnicodeString();
+      currentLocale.getDisplayCountry(icu::Locale::getEnglish(), name);
+      value = String();
+      name.toUTF8String(value);
+    }
+
+    Tuple<String, String> entry = Tuple<String, String>(propertyName, value);
+    result.push_back(entry);
+  }
+  return result;
+}
+
+   
     String getLanguage(int format /* = CLangCodeExpander::ENGLISH_NAME */, bool region /*= false*/)
     {
       XBMC_TRACE;
@@ -191,34 +308,30 @@ namespace XBMCAddon
           }
           return lang;
         }
-      case CLangCodeExpander::ISO_639_1:
+      case CLangCodeExpander::ISO_639_1: // Two-letter language code
         {
-          std::string langCode;
-          g_LangCodeExpander.ConvertToISO6391(lang, langCode);
+          std::string iso_639_1_code;
+          g_LangCodeExpander.ConvertToISO6391(lang, iso_639_1_code);
           if (region)
-          {
-            std::string region = g_langInfo.GetRegionLocale();
-            std::string region2Code;
-            g_LangCodeExpander.ConvertToISO6391(region, region2Code);
-            region2Code = "-" + region2Code;
-            return (langCode += region2Code);
-          }
-          return langCode;
+             {
+               std::string region = g_langInfo.GetRegionLocale(); // iso_3166 alpha-2 2 letter country code
+               region = "-" + region;
+               return (iso_639_1_code += region);
+             }
+          return iso_639_1_code;
         }
-      case CLangCodeExpander::ISO_639_2:
+      case CLangCodeExpander::ISO_639_2: // Three letter language code
         {
-          std::string langCode;
-          g_LangCodeExpander.ConvertToISO6392B(lang, langCode);
+          std::string iso_639_2_code;
+          g_LangCodeExpander.ConvertToISO6392B(lang, iso_639_2_code);
           if (region)
           {
-            std::string region = g_langInfo.GetRegionLocale();
-            std::string region3Code;
-            g_LangCodeExpander.ConvertToISO6392B(region, region3Code);
-            region3Code = "-" + region3Code;
-            return (langCode += region3Code);
+            std::string region = g_langInfo.GetRegionLocale(); // iso_3166 alpha-2 2 letter country code
+            region = "-" + region;
+            return (iso_639_2_code += region);
           }
 
-          return langCode;
+          return iso_639_2_code;
         }
       default:
         return "";
@@ -397,45 +510,45 @@ namespace XBMCAddon
       XBMC_TRACE;
       std::string result;
 
-      if (StringUtils::CompareNoCase(id, "datelong") == 0)
+      if (UnicodeUtils::CompareNoCase(id, "datelong") == 0)
       {
         result = g_langInfo.GetDateFormat(true);
-        StringUtils::Replace(result, "DDDD", "%A");
-        StringUtils::Replace(result, "MMMM", "%B");
-        StringUtils::Replace(result, "D", "%d");
-        StringUtils::Replace(result, "YYYY", "%Y");
+        UnicodeUtils::Replace(result, "DDDD", "%A");
+        UnicodeUtils::Replace(result, "MMMM", "%B");
+        UnicodeUtils::Replace(result, "D", "%d");
+        UnicodeUtils::Replace(result, "YYYY", "%Y");
         }
-        else if (StringUtils::CompareNoCase(id, "dateshort") == 0)
+        else if (UnicodeUtils::CompareNoCase(id, "dateshort") == 0)
         {
           result = g_langInfo.GetDateFormat(false);
-          StringUtils::Replace(result, "MM", "%m");
-          StringUtils::Replace(result, "DD", "%d");
+          UnicodeUtils::Replace(result, "MM", "%m");
+          UnicodeUtils::Replace(result, "DD", "%d");
 #ifdef TARGET_WINDOWS
-          StringUtils::Replace(result, "M", "%#m");
-          StringUtils::Replace(result, "D", "%#d");
+          UnicodeUtils::Replace(result, "M", "%#m");
+          UnicodeUtils::Replace(result, "D", "%#d");
 #else
-          StringUtils::Replace(result, "M", "%-m");
-          StringUtils::Replace(result, "D", "%-d");
+          UnicodeUtils::Replace(result, "M", "%-m");
+          UnicodeUtils::Replace(result, "D", "%-d");
 #endif
-          StringUtils::Replace(result, "YYYY", "%Y");
+          UnicodeUtils::Replace(result, "YYYY", "%Y");
         }
-        else if (StringUtils::CompareNoCase(id, "tempunit") == 0)
+        else if (UnicodeUtils::CompareNoCase(id, "tempunit") == 0)
           result = g_langInfo.GetTemperatureUnitString();
-        else if (StringUtils::CompareNoCase(id, "speedunit") == 0)
+        else if (UnicodeUtils::CompareNoCase(id, "speedunit") == 0)
           result = g_langInfo.GetSpeedUnitString();
-        else if (StringUtils::CompareNoCase(id, "time") == 0)
+        else if (UnicodeUtils::CompareNoCase(id, "time") == 0)
         {
           result = g_langInfo.GetTimeFormat();
-          if (StringUtils::StartsWith(result, "HH"))
-            StringUtils::Replace(result, "HH", "%H");
+          if (UnicodeUtils::StartsWith(result, "HH"))
+            UnicodeUtils::Replace(result, "HH", "%H");
           else
-            StringUtils::Replace(result, "H", "%H");
-          StringUtils::Replace(result, "h", "%I");
-          StringUtils::Replace(result, "mm", "%M");
-          StringUtils::Replace(result, "ss", "%S");
-          StringUtils::Replace(result, "xx", "%p");
+            UnicodeUtils::Replace(result, "H", "%H");
+          UnicodeUtils::Replace(result, "h", "%I");
+          UnicodeUtils::Replace(result, "mm", "%M");
+          UnicodeUtils::Replace(result, "ss", "%S");
+          UnicodeUtils::Replace(result, "xx", "%p");
         }
-        else if (StringUtils::CompareNoCase(id, "meridiem") == 0)
+        else if (UnicodeUtils::CompareNoCase(id, "meridiem") == 0)
           result = StringUtils::Format("{}/{}", g_langInfo.GetMeridiemSymbol(MeridiemSymbolAM),
                                        g_langInfo.GetMeridiemSymbol(MeridiemSymbolPM));
 
@@ -447,11 +560,11 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
       String result;
-      if (StringUtils::CompareNoCase(mediaType, "video") == 0)
+      if (UnicodeUtils::CompareNoCase(mediaType, "video") == 0)
         result = CServiceBroker::GetFileExtensionProvider().GetVideoExtensions();
-      else if (StringUtils::CompareNoCase(mediaType, "music") == 0)
+      else if (UnicodeUtils::CompareNoCase(mediaType, "music") == 0)
         result = CServiceBroker::GetFileExtensionProvider().GetMusicExtensions();
-      else if (StringUtils::CompareNoCase(mediaType, "picture") == 0)
+      else if (UnicodeUtils::CompareNoCase(mediaType, "picture") == 0)
         result = CServiceBroker::GetFileExtensionProvider().GetPictureExtensions();
 
       //! @todo implement
