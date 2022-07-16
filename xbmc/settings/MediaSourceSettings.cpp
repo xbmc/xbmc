@@ -17,6 +17,7 @@
 #include "profiles/ProfileManager.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
@@ -91,7 +92,7 @@ bool CMediaSourceSettings::Load(const std::string &file)
   }
 
   TiXmlElement *pRootElement = xmlDoc.RootElement();
-  if (pRootElement == NULL || !StringUtils::EqualsNoCase(pRootElement->ValueStr(), XML_SOURCES))
+  if (pRootElement == NULL || !UnicodeUtils::EqualsNoCase(pRootElement->ValueStr(), XML_SOURCES))
     CLog::Log(LOGERROR, "CMediaSourceSettings: sources.xml file does not contain <sources>");
 
   // parse sources
@@ -262,7 +263,10 @@ bool CMediaSourceSettings::AddShare(const std::string &type, const CMediaSource 
     CLog::Log(LOGERROR, "CMediaSourceSettings: unable to add empty path");
     return false;
   }
-  StringUtils::ToUpper(strPath1);
+
+  // TODO: Unicode Shouldn't FoldCase be used instead of ToUpper? Does Windows require upper case?
+
+  UnicodeUtils::ToUpper(strPath1, icu::Locale::getEnglish()); // Avoids Turkic-I and other issues
 
   CMediaSource shareToAdd = share;
   if (strPath1.at(0) == '$')
@@ -360,7 +364,7 @@ bool CMediaSourceSettings::GetSource(const std::string &category, const TiXmlNod
 
   std::vector<std::string> verifiedPaths;
   // disallowed for files, or there's only a single path in the vector
-  if (StringUtils::EqualsNoCase(category, "files") || vecPaths.size() == 1)
+  if (UnicodeUtils::EqualsNoCase(category, "files") || vecPaths.size() == 1)
     verifiedPaths.push_back(vecPaths[0]);
   // multiple paths?
   else
@@ -372,7 +376,7 @@ bool CMediaSourceSettings::GetSource(const std::string &category, const TiXmlNod
       bool bIsInvalid = false;
 
       // for my programs
-      if (StringUtils::EqualsNoCase(category, "programs") || StringUtils::EqualsNoCase(category, "myprograms"))
+      if (UnicodeUtils::EqualsNoCase(category, "programs") || UnicodeUtils::EqualsNoCase(category, "myprograms"))
       {
         // only allow HD and plugins
         if (url.IsLocal() || url.IsProtocol("plugin"))

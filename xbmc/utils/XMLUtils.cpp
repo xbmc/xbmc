@@ -8,7 +8,8 @@
 
 #include "XMLUtils.h"
 #include "URL.h"
-#include "StringUtils.h"
+#include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 bool XMLUtils::GetHex(const TiXmlNode* pRootNode, const char* strTag, uint32_t& hexValue)
 {
@@ -96,7 +97,7 @@ bool XMLUtils::GetBoolean(const TiXmlNode* pRootNode, const char* strTag, bool& 
   const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
   if (!pNode || !pNode->FirstChild()) return false;
   std::string strEnabled = pNode->FirstChild()->ValueStr();
-  StringUtils::ToLower(strEnabled);
+  UnicodeUtils::FoldCase(strEnabled);
   if (strEnabled == "off" || strEnabled == "no" || strEnabled == "disabled" || strEnabled == "false" || strEnabled == "0" )
     bBoolValue = false;
   else
@@ -118,7 +119,7 @@ bool XMLUtils::GetString(const TiXmlNode* pRootNode, const char* strTag, std::st
   if (pNode != NULL)
   {
     strStringValue = pNode->ValueStr();
-    if (encoded && StringUtils::CompareNoCase(encoded, "yes") == 0)
+    if (encoded && UnicodeUtils::CompareNoCase(encoded, "yes") == 0)
       strStringValue = CURL::Decode(strStringValue);
     return true;
   }
@@ -157,7 +158,7 @@ bool XMLUtils::GetAdditiveString(const TiXmlNode* pRootNode, const char* strTag,
       bResult = true;
       strTemp = node->FirstChild()->Value();
       const char* clear=node->Attribute("clear");
-      if (strStringValue.empty() || (clear && StringUtils::CompareNoCase(clear, "true") == 0))
+      if (strStringValue.empty() || (clear && UnicodeUtils::CompareNoCase(clear, "true") == 0))
         strStringValue = strTemp;
       else
         strStringValue += strSeparator+strTemp;
@@ -187,7 +188,7 @@ bool XMLUtils::GetStringArray(const TiXmlNode* pRootNode, const char* strTag, st
       strTemp = node->FirstChild()->ValueStr();
 
       const char* clearAttr = node->Attribute("clear");
-      if (clearAttr && StringUtils::CompareNoCase(clearAttr, "true") == 0)
+      if (clearAttr && UnicodeUtils::CompareNoCase(clearAttr, "true") == 0)
         arrayValue.clear();
 
       if (strTemp.empty())
@@ -197,7 +198,7 @@ bool XMLUtils::GetStringArray(const TiXmlNode* pRootNode, const char* strTag, st
         arrayValue.push_back(strTemp);
       else
       {
-        std::vector<std::string> tempArray = StringUtils::Split(strTemp, separator);
+        std::vector<std::string> tempArray = UnicodeUtils::Split(strTemp, separator);
         arrayValue.insert(arrayValue.end(), tempArray.begin(), tempArray.end());
       }
     }
@@ -217,7 +218,7 @@ bool XMLUtils::GetPath(const TiXmlNode* pRootNode, const char* strTag, std::stri
   if (pNode != NULL)
   {
     strStringValue = pNode->Value();
-    if (encoded && StringUtils::CompareNoCase(encoded, "yes") == 0)
+    if (encoded && UnicodeUtils::CompareNoCase(encoded, "yes") == 0)
       strStringValue = CURL::Decode(strStringValue);
     return true;
   }
@@ -262,7 +263,7 @@ std::string XMLUtils::GetAttribute(const TiXmlElement *element, const char *tag)
 
 void XMLUtils::SetAdditiveString(TiXmlNode* pRootNode, const char *strTag, const std::string& strSeparator, const std::string& strValue)
 {
-  std::vector<std::string> list = StringUtils::Split(strValue, strSeparator);
+  std::vector<std::string> list = UnicodeUtils::Split(strValue, strSeparator);
   for (std::vector<std::string>::const_iterator i = list.begin(); i != list.end(); ++i)
     SetString(pRootNode, strTag, *i);
 }

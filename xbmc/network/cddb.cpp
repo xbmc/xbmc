@@ -17,6 +17,7 @@
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
@@ -392,7 +393,7 @@ void Xcddb::addTitle(const char *buffer)
   value[sizeof(value) - 1] = '\0';
 
   // track artist" / "track title
-  std::vector<std::string> values = StringUtils::Split(value, " / ");
+  std::vector<std::string> values = UnicodeUtils::Split(value, " / ");
   if (values.size() > 1)
   {
     g_charsetConverter.unknownToUTF8(values[0]);
@@ -492,12 +493,12 @@ void Xcddb::parseData(const char *buffer)
       if (s != NULL)
       {
         std::string strKeyword(line, s - line);
-        StringUtils::TrimRight(strKeyword);
+        UnicodeUtils::TrimRight(strKeyword);
 
         std::string strValue(s+1);
-        StringUtils::Replace(strValue, "\\n", "\n");
-        StringUtils::Replace(strValue, "\\t", "\t");
-        StringUtils::Replace(strValue, "\\\\", "\\");
+        UnicodeUtils::Replace(strValue, "\\n", "\n");
+        UnicodeUtils::Replace(strValue, "\\t", "\t");
+        UnicodeUtils::Replace(strValue, "\\\\", "\\");
 
         std::map<std::string, std::string>::const_iterator it = keywords.find(strKeyword);
         if (it != keywords.end())
@@ -539,7 +540,7 @@ void Xcddb::parseData(const char *buffer)
       m_strYear = TrimToUTF8(strValue);
     else if (strKeyword== "DGENRE")
       m_strGenre = TrimToUTF8(strValue);
-    else if (StringUtils::StartsWith(strKeyword, "TTITLE"))
+    else if (UnicodeUtils::StartsWith(strKeyword, "TTITLE"))
       addTitle((strKeyword + "=" + strValue).c_str());
     else if (strKeyword == "EXTD")
     {
@@ -562,7 +563,7 @@ void Xcddb::parseData(const char *buffer)
         if (iPos != std::string::npos)
         {
           std::string strGenre = strExtd.substr(iPos + 5, 4);
-          StringUtils::TrimLeft(strGenre);
+          UnicodeUtils::TrimLeft(strGenre);
           if (StringUtils::IsNaturalNumber(strGenre))
           {
             int iGenre = strtol(strGenre.c_str(), NULL, 10);
@@ -571,7 +572,7 @@ void Xcddb::parseData(const char *buffer)
         }
       }
     }
-    else if (StringUtils::StartsWith(strKeyword, "EXTT"))
+    else if (UnicodeUtils::StartsWith(strKeyword, "EXTT"))
       addExtended((strKeyword + "=" + strValue).c_str());
   }
 
@@ -868,7 +869,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
   // Send the Hello message
   std::string version = CSysInfo::GetVersion();
   std::string lcAppName = CCompileInfo::GetAppName();
-  StringUtils::ToLower(lcAppName);
+  UnicodeUtils::FoldCase(lcAppName);
   if (version.find(' ') != std::string::npos)
     version = version.substr(0, version.find(' '));
   std::string strGreeting = "cddb hello " + lcAppName + " kodi.tv " + CCompileInfo::GetAppName() + " " + version;
@@ -1076,7 +1077,7 @@ std::string Xcddb::GetCacheFile(uint32_t disc_id) const
 std::string Xcddb::TrimToUTF8(const std::string &untrimmedText)
 {
   std::string text(untrimmedText);
-  StringUtils::Trim(text);
+  UnicodeUtils::Trim(text);
   // You never know if you really get UTF-8 strings from cddb
   g_charsetConverter.unknownToUTF8(text);
   return text;

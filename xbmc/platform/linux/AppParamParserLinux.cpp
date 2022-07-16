@@ -11,6 +11,7 @@
 #include "AppParams.h"
 #include "CompileInfo.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 #include <algorithm>
 #include <array>

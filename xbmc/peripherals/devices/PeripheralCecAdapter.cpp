@@ -547,7 +547,7 @@ bool CPeripheralCecAdapter::IsMuted(void)
 
 void CPeripheralCecAdapter::SetMenuLanguage(const char* strLanguage)
 {
-  if (StringUtils::EqualsNoCase(m_strMenuLanguage, strLanguage))
+  if (UnicodeUtils::EqualsNoCase(m_strMenuLanguage, strLanguage))
     return;
 
   std::string strGuiLanguage;
@@ -1149,7 +1149,7 @@ void CPeripheralCecAdapter::ResetButton(void)
 
 void CPeripheralCecAdapter::OnSettingChanged(const std::string& strChangedSetting)
 {
-  if (StringUtils::EqualsNoCase(strChangedSetting, "enabled"))
+  if (UnicodeUtils::EqualsNoCase(strChangedSetting, "enabled"))
   {
     bool bEnabled(GetSettingBool("enabled"));
     if (!bEnabled && IsRunning())
@@ -1386,7 +1386,7 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
 
   // read the devices to wake when starting
   std::string strWakeDevices = GetSettingString("wake_devices_advanced");
-  StringUtils::Trim(strWakeDevices);
+  UnicodeUtils::Trim(strWakeDevices);
   m_configuration.wakeDevices.Clear();
   if (!strWakeDevices.empty())
     ReadLogicalAddresses(strWakeDevices, m_configuration.wakeDevices);
@@ -1395,7 +1395,7 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
 
   // read the devices to power off when stopping
   std::string strStandbyDevices = GetSettingString("standby_devices_advanced");
-  StringUtils::Trim(strStandbyDevices);
+  UnicodeUtils::Trim(strStandbyDevices);
   m_configuration.powerOffDevices.Clear();
   if (!strStandbyDevices.empty())
     ReadLogicalAddresses(strStandbyDevices, m_configuration.powerOffDevices);
@@ -1434,7 +1434,7 @@ void CPeripheralCecAdapter::ReadLogicalAddresses(const std::string& strString,
   for (size_t iPtr = 0; iPtr < strString.size(); iPtr++)
   {
     std::string strDevice = strString.substr(iPtr, 1);
-    StringUtils::Trim(strDevice);
+    UnicodeUtils::Trim(strDevice);
     if (!strDevice.empty())
     {
       int iDevice(0);
@@ -1478,7 +1478,7 @@ bool CPeripheralCecAdapter::WriteLogicalAddresses(const cec_logical_addresses& a
     for (unsigned int iPtr = CECDEVICE_TV; iPtr <= CECDEVICE_BROADCAST; iPtr++)
       if (addresses[iPtr])
         strPowerOffDevices += StringUtils::Format(" {:X}", iPtr);
-    StringUtils::Trim(strPowerOffDevices);
+    UnicodeUtils::Trim(strPowerOffDevices);
     bChanged = SetSetting(strAdvancedSettingName, strPowerOffDevices);
   }
 

@@ -25,6 +25,7 @@
 #include "addons/AddonProvider.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecs.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 #include <mutex>

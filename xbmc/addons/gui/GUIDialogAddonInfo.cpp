@@ -378,7 +378,7 @@ void CGUIDialogAddonInfo::OnSelectVersion()
             // usually this happens when the package filename gets malformed on the fs
             // e.g. downloading "http://localhost/a+b.zip" ends up in "a b.zip"
             const AddonVersion version(versionString);
-            if (StringUtils::EqualsNoCase(sha256, hash) && !version.empty())
+            if (UnicodeUtils::EqualsNoCase(sha256, hash) && !version.empty())
               versions.emplace_back(version, LOCAL_CACHE);
           }
         }
@@ -758,7 +758,7 @@ void CGUIDialogAddonInfo::ShowSupportList()
   for (const auto& entry : list)
   {
     // Ignore included extension about track support
-    if (StringUtils::EndsWith(entry.m_name, KODI_ADDON_AUDIODECODER_TRACK_EXT))
+    if (UnicodeUtils::EndsWith(entry.m_name, KODI_ADDON_AUDIODECODER_TRACK_EXT))
       continue;
 
     std::string label;

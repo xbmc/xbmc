@@ -149,8 +149,8 @@ bool CMusicInfoLoader::LoadItemCached(CFileItem* pItem)
 {
   if ((pItem->m_bIsFolder && !pItem->IsAudio()) ||
       pItem->IsPlayList() || pItem->IsSmartPlayList() ||
-      StringUtils::StartsWithNoCase(pItem->GetPath(), "newplaylist://") ||
-      StringUtils::StartsWithNoCase(pItem->GetPath(), "newsmartplaylist://") ||
+      UnicodeUtils::StartsWithNoCase(pItem->GetPath(), "newplaylist://") ||
+      UnicodeUtils::StartsWithNoCase(pItem->GetPath(), "newsmartplaylist://") ||
       pItem->IsNFO() || (pItem->IsInternetStream() && !pItem->IsMusicDb()))
     return false;
 
@@ -167,8 +167,8 @@ bool CMusicInfoLoader::LoadItemLookup(CFileItem* pItem)
 
   if ((pItem->m_bIsFolder && !pItem->IsAudio()) || //
       pItem->IsPlayList() || pItem->IsSmartPlayList() || //
-      StringUtils::StartsWithNoCase(pItem->GetPath(), "newplaylist://") || //
-      StringUtils::StartsWithNoCase(pItem->GetPath(), "newsmartplaylist://") || //
+      UnicodeUtils::StartsWithNoCase(pItem->GetPath(), "newplaylist://") || //
+      UnicodeUtils::StartsWithNoCase(pItem->GetPath(), "newsmartplaylist://") || //
       pItem->IsNFO() || (pItem->IsInternetStream() && !pItem->IsMusicDb()))
     return false;
 

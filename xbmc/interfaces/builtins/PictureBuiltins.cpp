@@ -13,6 +13,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 /*! \brief Show a picture.
  *  \param params The parameters.
@@ -56,15 +57,15 @@ static int Slideshow(const std::vector<std::string>& params)
   {
     for (unsigned int i = 1 ; i < params.size() ; i++)
     {
-      if (StringUtils::EqualsNoCase(params[i], "recursive"))
+      if (UnicodeUtils::EqualsNoCase(params[i], "recursive"))
         flags |= 1;
-      else if (StringUtils::EqualsNoCase(params[i], "random")) // set fullscreen or windowed
+      else if (UnicodeUtils::EqualsNoCase(params[i], "random")) // set fullscreen or windowed
         flags |= 2;
-      else if (StringUtils::EqualsNoCase(params[i], "notrandom"))
+      else if (UnicodeUtils::EqualsNoCase(params[i], "notrandom"))
         flags |= 4;
-      else if (StringUtils::EqualsNoCase(params[i], "pause"))
+      else if (UnicodeUtils::EqualsNoCase(params[i], "pause"))
         flags |= 8;
-      else if (StringUtils::StartsWithNoCase(params[i], "beginslide="))
+      else if (UnicodeUtils::StartsWithNoCase(params[i], "beginslide="))
         beginSlidePath = params[i].substr(11);
     }
   }

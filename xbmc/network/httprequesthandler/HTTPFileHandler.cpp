@@ -10,6 +10,7 @@
 
 #include "utils/Mime.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 
 CHTTPFileHandler::CHTTPFileHandler()
@@ -58,7 +59,7 @@ void CHTTPFileHandler::SetFile(const std::string& file, int responseStatus)
   {
     // determine the content type
     std::string ext = URIUtils::GetExtension(m_url);
-    StringUtils::ToLower(ext);
+    UnicodeUtils::FoldCase(ext);
     m_response.contentType = CMime::GetMimeType(ext);
 
     // determine the last modified date

@@ -9,6 +9,7 @@
 #include "BlurayStateSerializer.h"
 
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
@@ -50,7 +51,7 @@ bool CBlurayStateSerializer::XMLToBlurayState(BlurayState& state, const std::str
     return false;
 
   TiXmlHandle hRoot(xmlDoc.RootElement());
-  if (!hRoot.Element() || !StringUtils::EqualsNoCase(hRoot.Element()->Value(), "libbluraystate"))
+  if (!hRoot.Element() || !UnicodeUtils::EqualsNoCase(hRoot.Element()->Value(), "libbluraystate"))
   {
     CLog::LogF(LOGERROR, "Failed to deserialize bluray state - failed to detect root element.");
     return false;
@@ -58,7 +59,7 @@ bool CBlurayStateSerializer::XMLToBlurayState(BlurayState& state, const std::str
 
   auto version = hRoot.Element()->Attribute("version");
   if (!version ||
-      !StringUtils::EqualsNoCase(version, std::to_string(BLURAYSTATESERIALIZER_VERSION)))
+      !UnicodeUtils::EqualsNoCase(version, std::to_string(BLURAYSTATESERIALIZER_VERSION)))
   {
     CLog::LogF(LOGERROR, "Failed to deserialize bluray state - incompatible serializer version.");
     return false;

@@ -11,6 +11,7 @@
 #include "guilib/GUIMessage.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 
 #include <mutex>
@@ -64,7 +65,7 @@ void CGUIDialogBoxBase::SetLine(unsigned int iLine, const CVariant& line)
 {
   std::string label = GetLocalized(line);
   std::unique_lock<CCriticalSection> lock(m_section);
-  std::vector<std::string> lines = StringUtils::Split(m_text, '\n');
+  std::vector<std::string> lines = UnicodeUtils::Split(m_text, '\n');
   if (iLine >= lines.size())
     lines.resize(iLine+1);
   lines[iLine] = label;
@@ -76,7 +77,7 @@ void CGUIDialogBoxBase::SetText(const CVariant& text)
 {
   std::string label = GetLocalized(text);
   std::unique_lock<CCriticalSection> lock(m_section);
-  StringUtils::Trim(label, "\n");
+  UnicodeUtils::Trim(label, "\n");
   if (label != m_text)
   {
     m_text = label;
@@ -119,7 +120,7 @@ void CGUIDialogBoxBase::Process(unsigned int currentTime, CDirtyRegionList &dirt
     }
     else
     {
-      std::vector<std::string> lines = StringUtils::Split(text, "\n", DIALOG_MAX_LINES);
+      std::vector<std::string> lines = UnicodeUtils::Split(text, "\n", DIALOG_MAX_LINES);
       lines.resize(DIALOG_MAX_LINES);
       for (size_t i = 0 ; i < lines.size(); ++i)
         SET_CONTROL_LABEL(CONTROL_LINES_START + i, lines[i]);

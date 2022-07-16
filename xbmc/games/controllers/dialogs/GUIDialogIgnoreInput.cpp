@@ -13,6 +13,7 @@
 #include "input/joysticks/interfaces/IButtonMap.h"
 #include "input/joysticks/interfaces/IButtonMapCallback.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>

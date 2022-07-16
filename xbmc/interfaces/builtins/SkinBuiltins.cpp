@@ -27,6 +27,7 @@
 #include "settings/SkinSettings.h"
 #include "storage/MediaManager.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 
 using namespace ADDON;
@@ -39,7 +40,7 @@ static int ReloadSkin(const std::vector<std::string>& params)
 {
   //  Reload the skin
   g_application.ReloadSkin(!params.empty() &&
-                           StringUtils::EqualsNoCase(params[0], "confirm"));
+                           UnicodeUtils::EqualsNoCase(params[0], "confirm"));
 
   return 0;
 }
@@ -108,7 +109,7 @@ static int SelectBool(const std::vector<std::string>& params)
   {
     if (params[i].find('|') != std::string::npos)
     {
-      std::vector<std::string> values = StringUtils::Split(params[i], '|');
+      std::vector<std::string> values = UnicodeUtils::Split(params[i], '|');
       std::string label = g_localizeStrings.Get(atoi(values[0].c_str()));
       settings.emplace_back(label, values[1].c_str());
       pDlgSelect->Add(label);
@@ -146,7 +147,7 @@ static int SetBool(const std::vector<std::string>& params)
   if (params.size() > 1)
   {
     int string = CSkinSettings::GetInstance().TranslateBool(params[0]);
-    CSkinSettings::GetInstance().SetBool(string, StringUtils::EqualsNoCase(params[1], "true"));
+    CSkinSettings::GetInstance().SetBool(string, UnicodeUtils::EqualsNoCase(params[1], "true"));
     CServiceBroker::GetSettingsComponent()->GetSettings()->Save();
     return 0;
   }
@@ -224,7 +225,7 @@ static int SetFile(const std::vector<std::string>& params)
   // if browsing for addons, required param[1] is addontype string, with optional param[2]
   // as contenttype string see IAddon.h & ADDON::TranslateXX
   std::string strMask = (params.size() > 1) ? params[1] : "";
-  StringUtils::ToLower(strMask);
+  UnicodeUtils::FoldCase(strMask);
   ADDON::TYPE type;
   if ((type = CAddonInfo::TranslateType(strMask)) != ADDON_UNKNOWN)
   {
@@ -234,7 +235,7 @@ static int SetFile(const std::vector<std::string>& params)
     url.SetFileName(strMask+"/");
     localShares.clear();
     std::string content = (params.size() > 2) ? params[2] : "";
-    StringUtils::ToLower(content);
+    UnicodeUtils::FoldCase(content);
     url.SetPassword(content);
     std::string strMask;
     if (type == ADDON_SCRIPT)
@@ -242,7 +243,7 @@ static int SetFile(const std::vector<std::string>& params)
     std::string replace;
     if (CGUIDialogFileBrowser::ShowAndGetFile(url.Get(), strMask, CAddonInfo::TranslateType(type, true), replace, true, true, true))
     {
-      if (StringUtils::StartsWithNoCase(replace, "addons://"))
+      if (UnicodeUtils::StartsWithNoCase(replace, "addons://"))
         CSkinSettings::GetInstance().SetString(string, URIUtils::GetFileName(replace));
       else
         CSkinSettings::GetInstance().SetString(string, replace);
@@ -386,13 +387,13 @@ static int SetTheme(const std::vector<std::string>& params)
   // find current theme
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   const std::string strTheme = settings->GetString(CSettings::SETTING_LOOKANDFEEL_SKINTHEME);
-  if (!StringUtils::EqualsNoCase(strTheme, "SKINDEFAULT"))
+  if (!UnicodeUtils::EqualsNoCase(strTheme, "SKINDEFAULT"))
   {
     for (size_t i=0;i<vecTheme.size();++i)
     {
       std::string strTmpTheme(strTheme);
       URIUtils::RemoveExtension(strTmpTheme);
-      if (StringUtils::EqualsNoCase(vecTheme[i], strTmpTheme))
+      if (UnicodeUtils::EqualsNoCase(vecTheme[i], strTmpTheme))
       {
         iTheme=i;
         break;
@@ -417,7 +418,7 @@ static int SetTheme(const std::vector<std::string>& params)
   settings->SetString(CSettings::SETTING_LOOKANDFEEL_SKINTHEME, strSkinTheme);
   // also set the default color theme
   std::string colorTheme(URIUtils::ReplaceExtension(strSkinTheme, ".xml"));
-  if (StringUtils::EqualsNoCase(colorTheme, "Textures.xml"))
+  if (UnicodeUtils::EqualsNoCase(colorTheme, "Textures.xml"))
     colorTheme = "defaults.xml";
   settings->SetString(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS, colorTheme);
   g_application.ReloadSkin();

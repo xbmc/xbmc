@@ -33,6 +33,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
@@ -66,7 +67,7 @@ std::string NormalizeExtension(const std::string& strExtension)
 
   if (!ext.empty() && ext != EXTENSION_WILDCARD)
   {
-    StringUtils::ToLower(ext);
+    UnicodeUtils::FoldCase(ext);
 
     if (ext[0] != '.')
       ext.insert(0, ".");
@@ -88,7 +89,7 @@ CGameClient::CGameClient(const ADDON::AddonInfoPtr& addonInfo)
 {
   using namespace ADDON;
 
-  std::vector<std::string> extensions = StringUtils::Split(
+  std::vector<std::string> extensions = UnicodeUtils::Split(
       Type(ADDON_GAMEDLL)->GetValue(GAME_PROPERTY_EXTENSIONS).asString(), EXTENSION_SEPARATOR);
   std::transform(extensions.begin(), extensions.end(),
                  std::inserter(m_extensions, m_extensions.begin()), NormalizeExtension);
@@ -421,7 +422,7 @@ std::string CGameClient::GetMissingResource()
   for (auto it = dependencies.begin(); it != dependencies.end(); ++it)
   {
     const std::string& strDependencyId = it->id;
-    if (StringUtils::StartsWith(strDependencyId, "resource.games"))
+    if (UnicodeUtils::StartsWith(strDependencyId, "resource.games"))
     {
       AddonPtr addon;
       const bool bInstalled = CServiceBroker::GetAddonMgr().GetAddon(

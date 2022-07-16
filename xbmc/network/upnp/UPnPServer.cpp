@@ -33,6 +33,7 @@
 #include "utils/FileUtils.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -587,7 +588,7 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference&          action,
 
         // attempt to determine the parent of this item
         std::string parent;
-        if (URIUtils::IsVideoDb((const char*)id) || URIUtils::IsMusicDb((const char*)id) || StringUtils::StartsWithNoCase((const char*)id, "library://video/")) {
+        if (URIUtils::IsVideoDb((const char*)id) || URIUtils::IsMusicDb((const char*)id) || UnicodeUtils::StartsWithNoCase((const char*)id, "library://video/")) {
             if (!URIUtils::GetParentPath((const char*)id, parent)) {
                 parent = "0";
             }
@@ -600,11 +601,11 @@ CUPnPServer::OnBrowseMetadata(PLT_ActionReference&          action,
             // however this is quicker to implement and subsequently purge when a
             // better solution presents itself
             std::string child_id((const char*)id);
-            if      (StringUtils::StartsWithNoCase(child_id, "special://musicplaylists/"))          parent = "musicdb://";
-            else if (StringUtils::StartsWithNoCase(child_id, "special://videoplaylists/"))          parent = "library://video/";
-            else if (StringUtils::StartsWithNoCase(child_id, "sources://video/"))                   parent = "library://video/";
-            else if (StringUtils::StartsWithNoCase(child_id, "special://profile/playlists/music/")) parent = "special://musicplaylists/";
-            else if (StringUtils::StartsWithNoCase(child_id, "special://profile/playlists/video/")) parent = "special://videoplaylists/";
+            if      (UnicodeUtils::StartsWithNoCase(child_id, "special://musicplaylists/"))          parent = "musicdb://";
+            else if (UnicodeUtils::StartsWithNoCase(child_id, "special://videoplaylists/"))          parent = "library://video/";
+            else if (UnicodeUtils::StartsWithNoCase(child_id, "sources://video/"))                   parent = "library://video/";
+            else if (UnicodeUtils::StartsWithNoCase(child_id, "special://profile/playlists/music/")) parent = "special://musicplaylists/";
+            else if (UnicodeUtils::StartsWithNoCase(child_id, "special://profile/playlists/video/")) parent = "special://videoplaylists/";
             else parent = "sources://video/"; // this can only match video sources
         }
 
@@ -772,13 +773,13 @@ CUPnPServer::BuildResponse(PLT_ActionReference&          action,
     NPT_Reference<CThumbLoader> thumb_loader;
 
     if (URIUtils::IsVideoDb(items.GetPath()) ||
-        StringUtils::StartsWithNoCase(items.GetPath(), "library://video/") ||
-        StringUtils::StartsWithNoCase(items.GetPath(), "special://profile/playlists/video/")) {
+        UnicodeUtils::StartsWithNoCase(items.GetPath(), "library://video/") ||
+        UnicodeUtils::StartsWithNoCase(items.GetPath(), "special://profile/playlists/video/")) {
 
         thumb_loader = NPT_Reference<CThumbLoader>(new CVideoThumbLoader());
     }
     else if (URIUtils::IsMusicDb(items.GetPath()) ||
-        StringUtils::StartsWithNoCase(items.GetPath(), "special://profile/playlists/music/")) {
+        UnicodeUtils::StartsWithNoCase(items.GetPath(), "special://profile/playlists/music/")) {
 
         thumb_loader = NPT_Reference<CThumbLoader>(new CMusicThumbLoader());
     }
@@ -787,10 +788,10 @@ CUPnPServer::BuildResponse(PLT_ActionReference&          action,
     }
 
     // this isn't pretty but needed to properly hide the addons node from clients
-    if (StringUtils::StartsWith(items.GetPath(), "library")) {
+    if (UnicodeUtils::StartsWith(items.GetPath(), "library")) {
         for (int i=0; i<items.Size(); i++) {
-            if (StringUtils::StartsWith(items[i]->GetPath(), "addons") ||
-                StringUtils::EndsWith(items[i]->GetPath(), "/addons.xml/"))
+            if (UnicodeUtils::StartsWith(items[i]->GetPath(), "addons") ||
+                UnicodeUtils::EndsWith(items[i]->GetPath(), "/addons.xml/"))
                 items.Remove(i);
         }
     }

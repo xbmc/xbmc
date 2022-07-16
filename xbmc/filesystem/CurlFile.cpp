@@ -37,6 +37,7 @@
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 using namespace XFILE;
 using namespace XCURL;
@@ -725,7 +726,7 @@ void CCurlFile::SetCorrectHeaders(CReadState* state)
   }
 
   /* hack for google video */
-  if (StringUtils::EqualsNoCase(h.GetMimeType(),"text/html")
+  if (UnicodeUtils::EqualsNoCase(h.GetMimeType(),"text/html")
   &&  !h.GetValue("Content-Disposition").empty() )
   {
     std::string strValue = h.GetValue("Content-Disposition");
@@ -807,7 +808,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     }
 
     /* make sure we keep slashes */
-    if(StringUtils::EndsWith(url2.GetFileName(), "/"))
+    if(UnicodeUtils::EndsWith(url2.GetFileName(), "/"))
       filename += "/";
 
     url2.SetFileName(filename);
@@ -816,7 +817,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     if (url2.HasProtocolOption("auth"))
     {
       m_ftpauth = url2.GetProtocolOption("auth");
-      StringUtils::ToLower(m_ftpauth);
+      UnicodeUtils::FoldCase(m_ftpauth);
       if(m_ftpauth.empty())
         m_ftpauth = "any";
     }
@@ -869,13 +870,13 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
       for (const auto& it : options)
       {
         std::string name = it.first;
-        StringUtils::ToLower(name);
+        UnicodeUtils::FoldCase(name);
         const std::string& value = it.second;
 
         if (name == "auth")
         {
           m_httpauth = value;
-          StringUtils::ToLower(m_httpauth);
+          UnicodeUtils::FoldCase(m_httpauth);
           if(m_httpauth.empty())
             m_httpauth = "any";
         }
@@ -1122,7 +1123,7 @@ bool CCurlFile::Open(const CURL& url)
   // since we can't know the stream size up front if we're gzipped/deflated
   // flag the stream with an unknown file size rather than the compressed
   // file size.
-  if (!m_state->m_httpheader.GetValue("Content-Encoding").empty() && !StringUtils::EqualsNoCase(m_state->m_httpheader.GetValue("Content-Encoding"), "identity"))
+  if (!m_state->m_httpheader.GetValue("Content-Encoding").empty() && !UnicodeUtils::EqualsNoCase(m_state->m_httpheader.GetValue("Content-Encoding"), "identity"))
     m_state->m_fileSize = 0;
 
   // check if this stream is a shoutcast stream. sometimes checking the protocol line is not enough so examine other headers as well.
@@ -1149,7 +1150,7 @@ bool CCurlFile::Open(const CURL& url)
     }
   }
 
-  if(StringUtils::EqualsNoCase(m_state->m_httpheader.GetValue("Transfer-Encoding"), "chunked"))
+  if(UnicodeUtils::EqualsNoCase(m_state->m_httpheader.GetValue("Transfer-Encoding"), "chunked"))
     m_state->m_fileSize = 0;
 
   if(m_state->m_fileSize <= 0)
@@ -1160,7 +1161,7 @@ bool CCurlFile::Open(const CURL& url)
     || url2.IsProtocol("https"))
     {
       // if server says explicitly it can't seek, respect that
-      if(StringUtils::EqualsNoCase(m_state->m_httpheader.GetValue("Accept-Ranges"),"none"))
+      if(UnicodeUtils::EqualsNoCase(m_state->m_httpheader.GetValue("Accept-Ranges"),"none"))
         m_seekable = false;
     }
   }
@@ -1328,7 +1329,7 @@ bool CCurlFile::Exists(const CURL& url)
   {
     g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FILETIME, 1);
     // nocwd is less standard, will return empty list for non-existed remote dir on some ftp server, avoid it.
-    if (StringUtils::EndsWith(url2.GetFileName(), "/"))
+    if (UnicodeUtils::EndsWith(url2.GetFileName(), "/"))
       g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FTP_FILEMETHOD, CURLFTPMETHOD_SINGLECWD);
     else
       g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FTP_FILEMETHOD, CURLFTPMETHOD_NOCWD);
@@ -1535,7 +1536,7 @@ int CCurlFile::Stat(const CURL& url, struct __stat64* buffer)
   if(url2.IsProtocol("ftp"))
   {
     // nocwd is less standard, will return empty list for non-existed remote dir on some ftp server, avoid it.
-    if (StringUtils::EndsWith(url2.GetFileName(), "/"))
+    if (UnicodeUtils::EndsWith(url2.GetFileName(), "/"))
       g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FTP_FILEMETHOD, CURLFTPMETHOD_SINGLECWD);
     else
       g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FTP_FILEMETHOD, CURLFTPMETHOD_NOCWD);

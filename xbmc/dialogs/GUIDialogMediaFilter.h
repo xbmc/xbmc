@@ -13,6 +13,7 @@
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
 #include "settings/lib/SettingType.h"
 #include "utils/DatabaseUtils.h"
+#include "utils/UnicodeUtils.h"
 
 #include <map>
 #include <string>

@@ -13,6 +13,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 #include "utils/XBMCTinyXML.h"
 
@@ -184,7 +185,7 @@ bool CDatabaseQueryRule::Save(CVariant &obj) const
 CDatabaseQueryRule::SEARCH_OPERATOR CDatabaseQueryRule::TranslateOperator(const char *oper)
 {
   for (const operatorField& o : operators)
-    if (StringUtils::EqualsNoCase(oper, o.string)) return o.op;
+    if (UnicodeUtils::EqualsNoCase(oper, o.string)) return o.op;
   return OPERATOR_CONTAINS;
 }
 
@@ -215,7 +216,7 @@ std::string CDatabaseQueryRule::GetParameter() const
 
 void CDatabaseQueryRule::SetParameter(const std::string &value)
 {
-  m_parameter = StringUtils::Split(value, DATABASEQUERY_RULE_VALUE_SEPARATOR);
+  m_parameter = UnicodeUtils::Split(value, DATABASEQUERY_RULE_VALUE_SEPARATOR);
 }
 
 void CDatabaseQueryRule::SetParameter(const std::vector<std::string> &values)
@@ -236,12 +237,12 @@ std::string CDatabaseQueryRule::FormatParameter(const std::string &operatorStrin
   std::string parameter;
   if (GetFieldType(m_field) == TEXTIN_FIELD)
   {
-    std::vector<std::string> split = StringUtils::Split(param, ',');
+    std::vector<std::string> split = UnicodeUtils::Split(param, ',');
     for (std::string& itIn : split)
     {
       if (!parameter.empty())
         parameter += ",";
-      parameter += db.PrepareSQL("'%s'", StringUtils::Trim(itIn).c_str());
+      parameter += db.PrepareSQL("'%s'", UnicodeUtils::Trim(itIn).c_str());
     }
     parameter = " IN (" + parameter + ")";
   }

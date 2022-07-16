@@ -12,6 +12,8 @@
 
 #include <map>
 #include <string>
+#include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 class CWeatherJob : public CJob
 {
@@ -38,11 +40,17 @@ private:
 
   struct ci_less
   {
+    // TODO: Unicode: Consider using UnicodUtils::Collate. It takes locale into account.
+    // Could add API to modify behavior.
+    // Does this need to support multibyte characters?
+
     // case-independent (ci) compare_less binary function
     struct nocase_compare
     {
       bool operator() (const unsigned char& c1, const unsigned char& c2) const {
-        return tolower(c1) < tolower(c2);
+        const char * p1 = (const char*) &c1;
+        const char * p2 = (const char*) &c2;
+        return UnicodeUtils::CompareNoCase(p1, p2) < 0;
       }
     };
     bool operator()(const std::string & s1, const std::string & s2) const {

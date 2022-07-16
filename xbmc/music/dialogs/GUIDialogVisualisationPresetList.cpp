@@ -17,6 +17,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "input/Key.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 
 CGUIDialogVisualisationPresetList::CGUIDialogVisualisationPresetList()

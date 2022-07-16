@@ -13,6 +13,7 @@
 #include "input/joysticks/JoystickTranslator.h"
 #include "input/joysticks/interfaces/IButtonMap.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 #include <algorithm>
 

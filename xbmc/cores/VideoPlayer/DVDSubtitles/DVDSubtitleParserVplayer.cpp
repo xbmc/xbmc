@@ -11,6 +11,7 @@
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 #include <cstdlib>
 
@@ -70,7 +71,7 @@ bool CDVDSubtitleParserVplayer::Open(CDVDStreamInfo& hints)
         ChangeSubtitleStopTime(prevSubId, currPTSStartTime);
 
       // A single line can contain multiple lines split by |
-      StringUtils::Replace(currText, "|", "\n");
+      UnicodeUtils::Replace(currText, "|", "\n");
 
       prevSubId = AddSubtitle(currText, currPTSStartTime, currPTSStartTime + defaultDuration);
 

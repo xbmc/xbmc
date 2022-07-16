@@ -10,6 +10,7 @@
 
 #include "TextureDatabase.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 using namespace PVR;
@@ -37,7 +38,7 @@ bool CPVRCachedImage::operator!=(const CPVRCachedImage& right) const
 
 void CPVRCachedImage::SetClientImage(const std::string& image)
 {
-  if (StringUtils::StartsWith(image, "image://"))
+  if (UnicodeUtils::StartsWith(image, "image://"))
   {
     CLog::LogF(LOGERROR, "Not allowed to call this method with an image URL");
     return;

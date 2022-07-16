@@ -144,8 +144,8 @@ bool CHTTPJsonRpcHandler::CHTTPTransportLayer::PrepareDownload(const char *path,
   protocol = "http";
   std::string url;
   std::string strPath = path;
-  if (StringUtils::StartsWith(strPath, "image://") ||
-    (StringUtils::StartsWith(strPath, "special://") && StringUtils::EndsWith(strPath, ".tbn")))
+  if (UnicodeUtils::StartsWith(strPath, "image://") ||
+    (UnicodeUtils::StartsWith(strPath, "special://") && UnicodeUtils::EndsWith(strPath, ".tbn")))
     url = "image/";
   else
     url = "vfs/";

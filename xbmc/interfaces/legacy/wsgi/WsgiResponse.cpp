@@ -9,6 +9,7 @@
 #include "WsgiResponse.h"
 
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 #include <inttypes.h>
@@ -38,7 +39,7 @@ namespace XBMCAddon
       // parse the status
       if (!status.empty())
       {
-        std::vector<String> statusParts = StringUtils::Split(status, ' ', 2);
+        std::vector<String> statusParts = UnicodeUtils::Split(status, ' ', 2);
         if (statusParts.size() == 2 && StringUtils::IsNaturalNumber(statusParts.front()))
         {
           int64_t parsedStatus = strtol(statusParts.front().c_str(), NULL, 0);

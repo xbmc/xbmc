@@ -14,6 +14,7 @@
 #include "profiles/ProfileManager.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
@@ -53,7 +54,7 @@ bool CIRTranslator::LoadIRMap(const std::string& irMapPath)
   size_t lastindex = remoteMapTag.find_last_of('.');
   if (lastindex != std::string::npos)
     remoteMapTag = remoteMapTag.substr(0, lastindex);
-  StringUtils::ToLower(remoteMapTag);
+  UnicodeUtils::FoldCase(remoteMapTag);
 
   // Load our xml file, and fill up our mapping tables
   CXBMCTinyXML xmlDoc;
@@ -145,7 +146,7 @@ unsigned int CIRTranslator::TranslateButton(const std::string& szDevice,
     return 0;
 
   // Convert the button to code
-  if (StringUtils::CompareNoCase((*it2).second, "obc", 3) == 0)
+  if (UnicodeUtils::StartsWithNoCase((*it2).second, "obc"))
     return TranslateUniversalRemoteString((*it2).second);
 
   return TranslateString((*it2).second);
@@ -158,7 +159,7 @@ uint32_t CIRTranslator::TranslateString(std::string strButton)
 
   uint32_t buttonCode = 0;
 
-  StringUtils::ToLower(strButton);
+  UnicodeUtils::FoldCase(strButton);
 
   if (strButton == "left")
     buttonCode = XINPUT_IR_REMOTE_LEFT;
@@ -298,7 +299,7 @@ uint32_t CIRTranslator::TranslateString(std::string strButton)
 
 uint32_t CIRTranslator::TranslateUniversalRemoteString(const std::string& szButton)
 {
-  if (szButton.empty() || szButton.length() < 4 || StringUtils::CompareNoCase(szButton, "obc", 3))
+  if (szButton.empty() || szButton.length() < 4 || ! UnicodeUtils::StartsWithNoCase(szButton, "obc"))
     return 0;
 
   const char* szCode = szButton.c_str() + 3;

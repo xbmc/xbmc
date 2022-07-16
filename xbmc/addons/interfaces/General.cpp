@@ -25,6 +25,7 @@
 #include "utils/LangCodeExpander.h"
 #include "utils/MemUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 #include <string.h>
@@ -222,42 +223,42 @@ char* Interface_General::get_region(void* kodiBase, const char* id)
   }
 
   std::string result;
-  if (StringUtils::CompareNoCase(id, "datelong") == 0)
+  if (UnicodeUtils::CompareNoCase(id, "datelong") == 0)
   {
     result = g_langInfo.GetDateFormat(true);
-    StringUtils::Replace(result, "DDDD", "%A");
-    StringUtils::Replace(result, "MMMM", "%B");
-    StringUtils::Replace(result, "D", "%d");
-    StringUtils::Replace(result, "YYYY", "%Y");
+    UnicodeUtils::Replace(result, "DDDD", "%A");
+    UnicodeUtils::Replace(result, "MMMM", "%B");
+    UnicodeUtils::Replace(result, "D", "%d");
+    UnicodeUtils::Replace(result, "YYYY", "%Y");
   }
-  else if (StringUtils::CompareNoCase(id, "dateshort") == 0)
+  else if (UnicodeUtils::CompareNoCase(id, "dateshort") == 0)
   {
     result = g_langInfo.GetDateFormat(false);
-    StringUtils::Replace(result, "MM", "%m");
-    StringUtils::Replace(result, "DD", "%d");
+    UnicodeUtils::Replace(result, "MM", "%m");
+    UnicodeUtils::Replace(result, "DD", "%d");
 #ifdef TARGET_WINDOWS
-    StringUtils::Replace(result, "M", "%#m");
-    StringUtils::Replace(result, "D", "%#d");
+    UnicodeUtils::Replace(result, "M", "%#m");
+    UnicodeUtils::Replace(result, "D", "%#d");
 #else
-    StringUtils::Replace(result, "M", "%-m");
-    StringUtils::Replace(result, "D", "%-d");
+    UnicodeUtils::Replace(result, "M", "%-m");
+    UnicodeUtils::Replace(result, "D", "%-d");
 #endif
-    StringUtils::Replace(result, "YYYY", "%Y");
+    UnicodeUtils::Replace(result, "YYYY", "%Y");
   }
-  else if (StringUtils::CompareNoCase(id, "tempunit") == 0)
+  else if (UnicodeUtils::CompareNoCase(id, "tempunit") == 0)
     result = g_langInfo.GetTemperatureUnitString();
-  else if (StringUtils::CompareNoCase(id, "speedunit") == 0)
+  else if (UnicodeUtils::CompareNoCase(id, "speedunit") == 0)
     result = g_langInfo.GetSpeedUnitString();
-  else if (StringUtils::CompareNoCase(id, "time") == 0)
+  else if (UnicodeUtils::CompareNoCase(id, "time") == 0)
   {
     result = g_langInfo.GetTimeFormat();
-    StringUtils::Replace(result, "H", "%H");
-    StringUtils::Replace(result, "h", "%I");
-    StringUtils::Replace(result, "mm", "%M");
-    StringUtils::Replace(result, "ss", "%S");
-    StringUtils::Replace(result, "xx", "%p");
+    UnicodeUtils::Replace(result, "H", "%H");
+    UnicodeUtils::Replace(result, "h", "%I");
+    UnicodeUtils::Replace(result, "mm", "%M");
+    UnicodeUtils::Replace(result, "ss", "%S");
+    UnicodeUtils::Replace(result, "xx", "%p");
   }
-  else if (StringUtils::CompareNoCase(id, "meridiem") == 0)
+  else if (UnicodeUtils::CompareNoCase(id, "meridiem") == 0)
     result = StringUtils::Format("{}/{}", g_langInfo.GetMeridiemSymbol(MeridiemSymbolAM),
                                  g_langInfo.GetMeridiemSymbol(MeridiemSymbolPM));
   else
@@ -350,20 +351,20 @@ void Interface_General::kodi_version(void* kodiBase, char** compile_name, int* m
   *minor = CCompileInfo::GetMinor();
   *revision = strdup(CCompileInfo::GetSCMID());
   std::string tagStr = CCompileInfo::GetSuffix();
-  if (StringUtils::StartsWithNoCase(tagStr, "alpha"))
+  if (UnicodeUtils::StartsWithNoCase(tagStr, "alpha"))
   {
     *tag = strdup("alpha");
-    *tagversion = strdup(StringUtils::Mid(tagStr, 5).c_str());
+    *tagversion = strdup(UnicodeUtils::Mid(tagStr, 5).c_str());
   }
-  else if (StringUtils::StartsWithNoCase(tagStr, "beta"))
+  else if (UnicodeUtils::StartsWithNoCase(tagStr, "beta"))
   {
     *tag = strdup("beta");
-    *tagversion = strdup(StringUtils::Mid(tagStr, 4).c_str());
+    *tagversion = strdup(UnicodeUtils::Mid(tagStr, 4).c_str());
   }
-  else if (StringUtils::StartsWithNoCase(tagStr, "rc"))
+  else if (UnicodeUtils::StartsWithNoCase(tagStr, "rc"))
   {
     *tag = strdup("releasecandidate");
-    *tagversion = strdup(StringUtils::Mid(tagStr, 2).c_str());
+    *tagversion = strdup(UnicodeUtils::Mid(tagStr, 2).c_str());
   }
   else if (tagStr.empty())
     *tag = strdup("stable");

@@ -23,6 +23,7 @@
 #include "settings/SettingsComponent.h"
 #include "settings/lib/SettingsManager.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/XMLUtils.h"
 
 #include <mutex>
@@ -188,16 +189,16 @@ int CPlayerCoreFactory::GetPlayerIndex(const std::string& strCoreName) const
   {
     // Dereference "*default*player" aliases
     std::string strRealCoreName;
-    if (StringUtils::EqualsNoCase(strCoreName, "audiodefaultplayer"))
+    if (UnicodeUtils::EqualsNoCase(strCoreName, "audiodefaultplayer"))
       strRealCoreName = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_audioDefaultPlayer;
-    else if (StringUtils::EqualsNoCase(strCoreName, "videodefaultplayer"))
+    else if (UnicodeUtils::EqualsNoCase(strCoreName, "videodefaultplayer"))
       strRealCoreName = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoDefaultPlayer;
     else
       strRealCoreName = strCoreName;
 
     for(size_t i = 0; i < m_vecPlayerConfigs.size(); i++)
     {
-      if (StringUtils::EqualsNoCase(m_vecPlayerConfigs[i]->GetName(), strRealCoreName))
+      if (UnicodeUtils::EqualsNoCase(m_vecPlayerConfigs[i]->GetName(), strRealCoreName))
         return i;
     }
     CLog::Log(LOGWARNING, "CPlayerCoreFactory::GetPlayer({}): no such player: {}", strCoreName,
@@ -357,7 +358,7 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
     m_vecPlayerConfigs.emplace_back(std::move(retroPlayer));
   }
 
-  if (StringUtils::CompareNoCase(pConfig->Value(), "playercorefactory") != 0)
+  if (UnicodeUtils::CompareNoCase(pConfig->Value(), "playercorefactory") != 0)
   {
     CLog::Log(LOGERROR, "Error loading configuration, no <playercorefactory> node");
     return false;
@@ -372,7 +373,7 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
       std::string name = XMLUtils::GetAttribute(pPlayer, "name");
       std::string type = XMLUtils::GetAttribute(pPlayer, "type");
       if (type.empty()) type = name;
-      StringUtils::ToLower(type);
+      UnicodeUtils::FoldCase(type);
 
       std::string internaltype;
       if (type == "videoplayer")
@@ -408,11 +409,11 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
     const char* szAction = pRule->Attribute("action");
     if (szAction)
     {
-      if (StringUtils::CompareNoCase(szAction, "append") == 0)
+      if (UnicodeUtils::CompareNoCase(szAction, "append") == 0)
       {
         m_vecCoreSelectionRules.emplace_back(std::make_unique<CPlayerSelectionRule>(pRule));
       }
-      else if (StringUtils::CompareNoCase(szAction, "prepend") == 0)
+      else if (UnicodeUtils::CompareNoCase(szAction, "prepend") == 0)
       {
         m_vecCoreSelectionRules.emplace_front(std::make_unique<CPlayerSelectionRule>(pRule));
       }

@@ -23,6 +23,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/EmbeddedArt.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoThumbLoader.h"
@@ -143,7 +144,7 @@ std::string CTextureCacheJob::DecodeImageURL(const std::string &url, unsigned in
   additional_info.clear();
   width = height = 0;
   scalingAlgorithm = CPictureScalingAlgorithm::NoAlgorithm;
-  if (StringUtils::StartsWith(url, "image://"))
+  if (UnicodeUtils::StartsWith(url, "image://"))
   {
     // format is image://[type@]<url_encoded_path>?options
     CURL thumbURL(url);
@@ -152,9 +153,9 @@ std::string CTextureCacheJob::DecodeImageURL(const std::string &url, unsigned in
       return "";
     if (thumbURL.GetUserName() == "music")
       additional_info = "music";
-    if (StringUtils::StartsWith(thumbURL.GetUserName(), "video_") ||
-        StringUtils::StartsWith(thumbURL.GetUserName(), "pvr") ||
-        StringUtils::StartsWith(thumbURL.GetUserName(), "epg"))
+    if (UnicodeUtils::StartsWith(thumbURL.GetUserName(), "video_") ||
+        UnicodeUtils::StartsWith(thumbURL.GetUserName(), "pvr") ||
+        UnicodeUtils::StartsWith(thumbURL.GetUserName(), "epg"))
       additional_info = thumbURL.GetUserName();
 
     image = thumbURL.GetHostName();
@@ -177,7 +178,7 @@ std::string CTextureCacheJob::DecodeImageURL(const std::string &url, unsigned in
   }
 
   // Handle special case about audiodecoder addon music files, e.g. SACD
-  if (StringUtils::EndsWith(URIUtils::GetExtension(image), KODI_ADDON_AUDIODECODER_TRACK_EXT))
+  if (UnicodeUtils::EndsWith(URIUtils::GetExtension(image), KODI_ADDON_AUDIODECODER_TRACK_EXT))
   {
     std::string addonImageURL = URIUtils::GetDirectory(image);
     URIUtils::RemoveSlashAtEnd(addonImageURL);
@@ -202,7 +203,7 @@ std::unique_ptr<CTexture> CTextureCacheJob::LoadImage(const std::string& image,
                                             height);
   }
 
-  if (StringUtils::StartsWith(additional_info, "video_"))
+  if (UnicodeUtils::StartsWith(additional_info, "video_"))
   {
     EmbeddedArt art;
     if (CVideoThumbLoader::GetEmbeddedThumb(image, additional_info.substr(6), art))
@@ -214,7 +215,7 @@ std::unique_ptr<CTexture> CTextureCacheJob::LoadImage(const std::string& image,
   CFileItem file(image, false);
   file.FillInMimeType();
   if (!(file.IsPicture() && !(file.IsZIP() || file.IsRAR() || file.IsCBR() || file.IsCBZ() ))
-      && !StringUtils::StartsWithNoCase(file.GetMimeType(), "image/") && !StringUtils::EqualsNoCase(file.GetMimeType(), "application/octet-stream")) // ignore non-pictures
+      && !UnicodeUtils::StartsWithNoCase(file.GetMimeType(), "image/") && !UnicodeUtils::EqualsNoCase(file.GetMimeType(), "application/octet-stream")) // ignore non-pictures
     return NULL;
 
   std::unique_ptr<CTexture> texture =
@@ -234,7 +235,7 @@ std::unique_ptr<CTexture> CTextureCacheJob::LoadImage(const std::string& image,
 bool CTextureCacheJob::UpdateableURL(const std::string &url) const
 {
   // we don't constantly check online images
-  return !(StringUtils::StartsWith(url, "http://") || StringUtils::StartsWith(url, "https://"));
+  return !(UnicodeUtils::StartsWith(url, "http://") || UnicodeUtils::StartsWith(url, "https://"));
 }
 
 std::string CTextureCacheJob::GetImageHash(const std::string &url)

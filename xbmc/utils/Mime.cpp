@@ -14,6 +14,7 @@
 #include "filesystem/CurlFile.h"
 #include "music/tags/MusicInfoTag.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "video/VideoInfoTag.h"
 
 #include <algorithm>
@@ -523,7 +524,7 @@ std::string CMime::GetMimeType(const std::string &extension)
   size_t posNotPoint = ext.find_first_not_of('.');
   if (posNotPoint != std::string::npos && posNotPoint > 0)
     ext = extension.substr(posNotPoint);
-  transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+  UnicodeUtils::FoldCase(ext);
 
   std::map<std::string, std::string>::const_iterator it = m_mimetypes.find(ext);
   if (it != m_mimetypes.end())
@@ -560,7 +561,7 @@ std::string CMime::GetMimeType(const CURL &url, bool lookup)
     // try to get mime-type again but with an NSPlayer User-Agent
     // in order for server to provide correct mime-type.  Allows us
     // to properly detect an MMS stream
-    if (StringUtils::StartsWithNoCase(strmime, "video/x-ms-"))
+    if (UnicodeUtils::StartsWithNoCase(strmime, "video/x-ms-"))
       XFILE::CCurlFile::GetMimeType(url, strmime, "NSPlayer/11.00.6001.7000");
 
     // make sure there are no options set in mime-type
@@ -568,7 +569,7 @@ std::string CMime::GetMimeType(const CURL &url, bool lookup)
     size_t i = strmime.find(';');
     if(i != std::string::npos)
       strmime.erase(i, strmime.length() - i);
-    StringUtils::Trim(strmime);
+    UnicodeUtils::Trim(strmime);
     strMimeType = strmime;
   }
   else
@@ -622,9 +623,9 @@ CMime::EFileType CMime::GetFileTypeFromMime(const std::string& mimeType)
       return FileTypeJpeg;
   }
 
-  if (StringUtils::EndsWith(subtype, "+zip"))
+  if (UnicodeUtils::EndsWith(subtype, "+zip"))
     return FileTypeZip;
-  if (StringUtils::EndsWith(subtype, "+xml"))
+  if (UnicodeUtils::EndsWith(subtype, "+xml"))
     return FileTypeXml;
 
   return FileTypeUnknown;
@@ -683,8 +684,8 @@ bool CMime::parseMimeType(const std::string& mimeType, std::string& type, std::s
   if (semicolonPos != std::string::npos)
     subtype.erase(semicolonPos);
 
-  StringUtils::Trim(type, whitespaceChars);
-  StringUtils::Trim(subtype, whitespaceChars);
+  UnicodeUtils::Trim(type, whitespaceChars);
+  UnicodeUtils::Trim(subtype, whitespaceChars);
 
   if (type.empty() || subtype.empty())
   {
@@ -693,8 +694,8 @@ bool CMime::parseMimeType(const std::string& mimeType, std::string& type, std::s
     return false;
   }
 
-  StringUtils::ToLower(type);
-  StringUtils::ToLower(subtype);
+  UnicodeUtils::FoldCase(type);
+  UnicodeUtils::FoldCase(subtype);
 
   return true;
 }

@@ -71,7 +71,7 @@ namespace XFILE
     {
       std::string entryPath = entry.first;
       std::string entryFileName = entryPath;
-      StringUtils::Replace(entryFileName, '\\', '/');
+      UnicodeUtils::Replace(entryFileName, '\\', '/');
 
       // skip the requested entry
       if (entryFileName == filePath)

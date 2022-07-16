@@ -20,6 +20,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
@@ -147,7 +148,7 @@ bool CUPnPDirectory::GetResource(const CURL& path, CFileItem &item)
 
     const std::string& uuid = path.GetHostName();
     std::string object = path.GetFileName();
-    StringUtils::TrimRight(object, "/");
+    UnicodeUtils::TrimRight(object, "/");
     object = CURL::Decode(object);
 
     PLT_DeviceDataReference device;
@@ -243,7 +244,7 @@ CUPnPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
         bool video = true;
         bool audio = true;
         bool image = true;
-        StringUtils::TrimLeft(m_strFileMask, "/");
+        UnicodeUtils::TrimLeft(m_strFileMask, "/");
         if (!m_strFileMask.empty()) {
             video = m_strFileMask.find(".wmv") != std::string::npos;
             audio = m_strFileMask.find(".wma") != std::string::npos;

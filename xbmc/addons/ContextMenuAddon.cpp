@@ -13,6 +13,7 @@
 #include "ContextMenuManager.h"
 #include "ServiceBroker.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 
 #include <sstream>

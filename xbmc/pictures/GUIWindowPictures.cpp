@@ -33,6 +33,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/XTimeUtils.h"
@@ -186,7 +187,7 @@ void CGUIWindowPictures::OnPrepareFileItems(CFileItemList& items)
   CGUIMediaWindow::OnPrepareFileItems(items);
 
   for (int i=0;i<items.Size();++i )
-    if (StringUtils::EqualsNoCase(items[i]->GetLabel(), "folder.jpg"))
+    if (UnicodeUtils::EqualsNoCase(items[i]->GetLabel(), "folder.jpg"))
       items.Remove(i);
 
   if (items.GetFolderCount() == items.Size() || !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_PICTURES_USETAGS))
@@ -591,8 +592,8 @@ void CGUIWindowPictures::OnItemInfo(int itemNumber)
 
 std::string CGUIWindowPictures::GetStartFolder(const std::string &dir)
 {
-  if (StringUtils::EqualsNoCase(dir, "plugins") ||
-      StringUtils::EqualsNoCase(dir, "addons"))
+  if (UnicodeUtils::EqualsNoCase(dir, "plugins") ||
+      UnicodeUtils::EqualsNoCase(dir, "addons"))
     return "addons://sources/image/";
 
   SetupShares();

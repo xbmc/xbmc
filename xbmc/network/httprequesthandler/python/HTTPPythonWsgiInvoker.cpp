@@ -8,6 +8,7 @@
 
 #include "HTTPPythonWsgiInvoker.h"
 
+#include <unicode/locid.h>
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "addons/Webinterface.h"
@@ -15,6 +16,7 @@
 #include "interfaces/legacy/wsgi/WsgiInputStream.h"
 #include "interfaces/legacy/wsgi/WsgiResponse.h"
 #include "interfaces/python/swig.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 
 #include <utility>
@@ -384,7 +386,7 @@ std::map<std::string, std::string> CHTTPPythonWsgiInvoker::createCgiEnvironment(
   for (headerIt = httpRequest->headerValues.begin(); headerIt != httpRequest->headerValues.end(); ++headerIt)
   {
     std::string headerName = headerIt->first;
-    StringUtils::ToUpper(headerName);
+    UnicodeUtils::ToUpper(headerName, icu::Locale::getEnglish()); // Avoids Turkic-I and other issues.
     environment.insert(std::make_pair("HTTP_" + headerName, headerIt->second));
   }
 

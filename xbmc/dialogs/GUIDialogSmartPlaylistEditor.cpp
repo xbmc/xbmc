@@ -25,6 +25,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 
@@ -240,7 +241,7 @@ void CGUIDialogSmartPlaylistEditor::OnOK()
   {
     // check if we need to actually change the save location for this playlist
     // this occurs if the user switches from music video <> songs <> mixed
-    if (StringUtils::StartsWith(m_path, systemPlaylistsPath))
+    if (UnicodeUtils::StartsWith(m_path, systemPlaylistsPath))
     {
       std::string filename = URIUtils::GetFileName(m_path);
       std::string strFolder = m_path.substr(systemPlaylistsPath.size(), m_path.size() - filename.size() - systemPlaylistsPath.size() - 1);
@@ -634,7 +635,7 @@ bool CGUIDialogSmartPlaylistEditor::EditPlaylist(const std::string &path, const 
   bool loaded(playlist.Load(path));
   if (!loaded)
   { // failed to load
-    if (!StringUtils::StartsWithNoCase(editor->m_mode, "party"))
+    if (!UnicodeUtils::StartsWithNoCase(editor->m_mode, "party"))
       return false; // only edit normal playlists that exist
     // party mode playlists can be edited even if they don't exist
     playlist.SetType(editor->m_mode == "partymusic" ? "songs" : "musicvideos");

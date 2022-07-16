@@ -355,7 +355,7 @@ void CGUIDialogSubtitles::Search(const std::string &search/*=""*/)
 
   std::string preferredLanguage = settings->GetString(CSettings::SETTING_LOCALE_SUBTITLELANGUAGE);
 
-  if(StringUtils::EqualsNoCase(preferredLanguage, "original"))
+  if(UnicodeUtils::EqualsNoCase(preferredLanguage, "original"))
   {
     AudioStreamInfo info;
     std::string strLanguage;
@@ -367,7 +367,7 @@ void CGUIDialogSubtitles::Search(const std::string &search/*=""*/)
 
     preferredLanguage = strLanguage;
   }
-  else if (StringUtils::EqualsNoCase(preferredLanguage, "default"))
+  else if (UnicodeUtils::EqualsNoCase(preferredLanguage, "default"))
     preferredLanguage = g_langInfo.GetEnglishLanguageName();
 
   url.SetOption("preferredlanguage", preferredLanguage);
@@ -527,7 +527,7 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
   std::vector<std::string> vecFiles;
 
   std::string strCurrentFilePath;
-  if (StringUtils::StartsWith(strCurrentFilePath, "http://"))
+  if (UnicodeUtils::StartsWith(strCurrentFilePath, "http://"))
   {
     strCurrentFile = "TempSubtitle";
     vecFiles.push_back(strCurrentFile);
@@ -632,7 +632,7 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
       }
 
       // for ".sub" subtitles we check if ".idx" counterpart exists and copy that as well
-      if (StringUtils::EqualsNoCase(strSubExt, ".sub"))
+      if (UnicodeUtils::EqualsNoCase(strSubExt, ".sub"))
       {
         strUrl = URIUtils::ReplaceExtension(strUrl, ".idx");
         if(CFile::Exists(strUrl))

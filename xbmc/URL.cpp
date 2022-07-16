@@ -10,6 +10,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "Util.h"
 #include "filesystem/File.h"
 #include "FileItem.h"
@@ -139,7 +140,7 @@ void CURL::Parse(const std::string& strURL1)
   if (IsProtocol("udf") || IsProtocol("iso9660"))
   {
     std::string lower(strURL);
-    StringUtils::ToLower(lower);
+    UnicodeUtils::FoldCase(lower);
     size_t isoPos = lower.find(".iso\\", iPos);
     if (isoPos == std::string::npos)
       isoPos = lower.find(".udf\\", iPos);
@@ -296,7 +297,7 @@ void CURL::Parse(const std::string& strURL1)
     }
   }
 
-  StringUtils::Replace(m_strFileName, '\\', '/');
+  UnicodeUtils::Replace(m_strFileName, '\\', '/');
 
   /* update extension + sharename */
   SetFileName(m_strFileName);
@@ -329,14 +330,14 @@ void CURL::SetFileName(const std::string& strFileName)
   else
     m_strShareName = m_strFileName.substr(0, slash);
 
-  StringUtils::Trim(m_strFileType);
-  StringUtils::ToLower(m_strFileType);
+  UnicodeUtils::Trim(m_strFileType);
+  UnicodeUtils::FoldCase(m_strFileType);
 }
 
 void CURL::SetProtocol(const std::string& strProtocol)
 {
   m_strProtocol = strProtocol;
-  StringUtils::ToLower(m_strProtocol);
+  UnicodeUtils::FoldCase(m_strProtocol);
 }
 
 void CURL::SetOptions(const std::string& strOptions)
@@ -640,7 +641,7 @@ bool CURL::IsFullPath(const std::string &url)
   if (url.size() && url[0] == '/') return true;     //   /foo/bar.ext
   if (url.find("://") != std::string::npos) return true;                 //   foo://bar.ext
   if (url.size() > 1 && url[1] == ':') return true; //   c:\\foo\\bar\\bar.ext
-  if (StringUtils::StartsWith(url, "\\\\")) return true;    //   \\UNC\path\to\file
+  if (UnicodeUtils::StartsWith(url, "\\\\")) return true;    //   \\UNC\path\to\file
   return false;
 }
 

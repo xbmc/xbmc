@@ -16,6 +16,7 @@
 #include "utils/JSONVariantParser.h"
 #include "utils/JSONVariantWriter.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/XBMCTinyXML.h"
@@ -110,7 +111,7 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
    * - std::string origin;
    */
 
-  if (!StringUtils::EqualsNoCase(element->Value(), "addon"))
+  if (!UnicodeUtils::EqualsNoCase(element->Value(), "addon"))
   {
     CLog::Log(LOGERROR, "CAddonInfoBuilder::{}: file from '{}' doesn't contain <addon>", __FUNCTION__, addonPath);
     return false;
@@ -291,7 +292,7 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
       element = child->FirstChildElement("platform");
       if (element && element->GetText() != nullptr)
       {
-        auto platforms = StringUtils::Split(element->GetText(),
+        auto platforms = UnicodeUtils::Split(element->GetText(),
                                             {" ", "\t", "\n", "\r"});
         platforms.erase(std::remove_if(platforms.begin(), platforms.end(),
                         [](const std::string& platform) { return platform.empty(); }),

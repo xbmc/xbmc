@@ -13,6 +13,7 @@
 #include "interfaces/generic/ILanguageInvoker.h"
 #include "interfaces/generic/LanguageInvokerThread.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
@@ -114,8 +115,8 @@ void CScriptInvocationManager::RegisterLanguageInvocationHandler(ILanguageInvoca
     return;
 
   std::string ext = extension;
-  StringUtils::ToLower(ext);
-  if (!StringUtils::StartsWithNoCase(ext, "."))
+  UnicodeUtils::FoldCase(ext);
+  if (!UnicodeUtils::StartsWithNoCase(ext, "."))
     ext = "." + ext;
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
@@ -170,7 +171,7 @@ void CScriptInvocationManager::UnregisterLanguageInvocationHandler(ILanguageInvo
 bool CScriptInvocationManager::HasLanguageInvoker(const std::string &script) const
 {
   std::string extension = URIUtils::GetExtension(script);
-  StringUtils::ToLower(extension);
+  UnicodeUtils::FoldCase(extension);
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
   std::map<std::string, ILanguageInvocationHandler*>::const_iterator it = m_invocationHandlers.find(extension);
@@ -209,7 +210,7 @@ LanguageInvokerPtr CScriptInvocationManager::GetLanguageInvoker(const std::strin
   }
 
   std::string extension = URIUtils::GetExtension(script);
-  StringUtils::ToLower(extension);
+  UnicodeUtils::FoldCase(extension);
 
   std::map<std::string, ILanguageInvocationHandler*>::const_iterator it = m_invocationHandlers.find(extension);
   if (it != m_invocationHandlers.end() && it->second != NULL)

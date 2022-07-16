@@ -8,11 +8,12 @@
 
 #pragma once
 
-#include "utils/StringUtils.h"
 
 #include <stdlib.h>
 #include <string>
 #include <vector>
+#include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 namespace ADDON
 {
@@ -24,7 +25,7 @@ struct SExtValue
 {
   explicit SExtValue(const std::string& strValue) : str(strValue) { }
   const std::string& asString() const { return str; }
-  bool asBoolean() const { return StringUtils::EqualsNoCase(str, "true"); }
+  bool asBoolean() const { return UnicodeUtils::EqualsNoCase(str, "true"); }
   int asInteger() const { return atoi(str.c_str()); }
   float asFloat() const { return static_cast<float>(atof(str.c_str())); }
   bool empty() const { return str.empty(); }

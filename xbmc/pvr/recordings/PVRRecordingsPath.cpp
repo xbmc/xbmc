@@ -11,6 +11,7 @@
 #include "URL.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 
 #include <string>
@@ -30,7 +31,7 @@ CPVRRecordingsPath::CPVRRecordingsPath(const std::string& strPath)
   const std::vector<std::string> segments = URIUtils::SplitPath(strVarPath);
 
   m_bValid = ((segments.size() >= 4) && // at least pvr://recordings/[tv|radio]/[active|deleted]
-               StringUtils::StartsWith(strVarPath, "pvr://") &&
+               UnicodeUtils::StartsWith(strVarPath, "pvr://") &&
                (segments.at(1) == "recordings") &&
                ((segments.at(2) == "tv") || (segments.at(2) == "radio")) &&
                ((segments.at(3) == "active") || (segments.at(3) == "deleted")));

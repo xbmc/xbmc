@@ -8,6 +8,7 @@
 
 #include "LinuxPowerSyscall.h"
 #include "FallbackPowerSyscall.h"
+#include "utils/UnicodeUtils.h"
 #if defined(HAS_DBUS)
 #include "ConsoleUPowerSyscall.h"
 #include "LogindUPowerSyscall.h"

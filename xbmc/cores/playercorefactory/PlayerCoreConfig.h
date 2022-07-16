@@ -38,8 +38,8 @@ public:
       m_config.reset(static_cast<TiXmlElement*>(pConfig->Clone()));
       const char *sAudio = pConfig->Attribute("audio");
       const char *sVideo = pConfig->Attribute("video");
-      m_bPlaysAudio = sAudio && StringUtils::CompareNoCase(sAudio, "true") == 0;
-      m_bPlaysVideo = sVideo && StringUtils::CompareNoCase(sVideo, "true") == 0;
+      m_bPlaysAudio = sAudio && UnicodeUtils::CompareNoCase(sAudio, "true") == 0;
+      m_bPlaysVideo = sVideo && UnicodeUtils::CompareNoCase(sVideo, "true") == 0;
     }
 
     CLog::Log(LOGDEBUG, "CPlayerCoreConfig::<ctor>: created player {}", m_name);

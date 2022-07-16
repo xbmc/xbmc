@@ -9,6 +9,7 @@
 #include "HTTPRequestHandlerUtils.h"
 
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 #include <map>
 
@@ -21,7 +22,7 @@ std::string HTTPRequestHandlerUtils::GetRequestHeaderValue(struct MHD_Connection
   if (value == nullptr)
     return "";
 
-  if (StringUtils::EqualsNoCase(key, MHD_HTTP_HEADER_CONTENT_TYPE))
+  if (UnicodeUtils::EqualsNoCase(key, MHD_HTTP_HEADER_CONTENT_TYPE))
   {
     // Work around a bug in firefox (see https://bugzilla.mozilla.org/show_bug.cgi?id=416178)
     // by cutting of anything that follows a ";" in a "Content-Type" header field

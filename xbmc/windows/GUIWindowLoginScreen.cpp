@@ -29,6 +29,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 #include "view/ViewState.h"
 
@@ -126,7 +127,7 @@ bool CGUIWindowLoginScreen::OnAction(const CAction &action)
   if (action.GetID() == ACTION_BUILT_IN_FUNCTION)
   {
     std::string actionName = action.GetName();
-    StringUtils::ToLower(actionName);
+    UnicodeUtils::FoldCase(actionName);
     if ((actionName.find("shutdown") != std::string::npos) &&
         CServiceBroker::GetPVRManager().GUIActions()->CanSystemPowerdown())
       CBuiltins::GetInstance().Execute(action.GetName());

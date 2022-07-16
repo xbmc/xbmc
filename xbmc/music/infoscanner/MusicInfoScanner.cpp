@@ -47,6 +47,7 @@
 #include "utils/Digest.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -354,7 +355,7 @@ void CMusicInfoScanner::FetchAlbumInfo(const std::string& strDirectory,
           dir.GetDirectory(pathToUrl, items);
       }
     }
-    else if (StringUtils::EndsWith(strDirectory, ".xsp"))
+    else if (UnicodeUtils::EndsWith(strDirectory, ".xsp"))
     {
       CSmartPlaylistDirectory dir;
       dir.GetDirectory(pathToUrl, items);
@@ -416,7 +417,7 @@ void CMusicInfoScanner::FetchArtistInfo(const std::string& strDirectory,
           dir.GetDirectory(pathToUrl, items);
       }
     }
-    else if (StringUtils::EndsWith(strDirectory, ".xsp"))
+    else if (UnicodeUtils::EndsWith(strDirectory, ".xsp"))
     {
       CSmartPlaylistDirectory dir;
       dir.GetDirectory(pathToUrl, items);
@@ -500,7 +501,7 @@ bool CMusicInfoScanner::DoScan(const std::string& strDirectory)
 
   // check whether we need to rescan or not
   std::string dbHash;
-  if ((m_flags & SCAN_RESCAN) || !m_musicDatabase.GetPathHash(strDirectory, dbHash) || !StringUtils::EqualsNoCase(dbHash, hash))
+  if ((m_flags & SCAN_RESCAN) || !m_musicDatabase.GetPathHash(strDirectory, dbHash) || !UnicodeUtils::EqualsNoCase(dbHash, hash))
   { // path has changed - rescan
     if (dbHash.empty())
       CLog::Log(LOGDEBUG, "{} Scanning dir '{}' as not in the database", __FUNCTION__,
@@ -740,10 +741,10 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
         !songsByAlbumName.first.empty() && (isCompilation || !tracksOverlap); // 1+2b+2a
     if (artists.size() == 1)
     {
-      std::string artist = artists.begin()->first; StringUtils::ToLower(artist);
-      if (!StringUtils::EqualsNoCase(artist, "various") &&
-        !StringUtils::EqualsNoCase(artist, "various artists") &&
-        !StringUtils::EqualsNoCase(artist, various)) // 3a
+      std::string artist = artists.begin()->first;
+      if (!UnicodeUtils::EqualsNoCase(artist, "various") &&
+        !UnicodeUtils::EqualsNoCase(artist, "various artists") &&
+        !UnicodeUtils::EqualsNoCase(artist, various)) // 3a
         compilation = false;
       else
         // Grab name for use in "various artist" artist
@@ -837,10 +838,10 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
       album.strAlbum = songsByAlbumName.first;
 
       //Split the albumartist sort string to try and get sort names for individual artists
-      std::vector<std::string> sortnames = StringUtils::Split(albumartistsort, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
+      std::vector<std::string> sortnames = UnicodeUtils::Split(albumartistsort, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
       if (sortnames.size() != common.size())
           // Split artist sort names further using multiple possible delimiters, over single separator applied in Tag loader
-        sortnames = StringUtils::SplitMulti(sortnames, { ";", ":", "|", "#" });
+        sortnames = UnicodeUtils::SplitMulti(sortnames, { ";", ":", "|", "#" });
 
       for (size_t i = 0; i < common.size(); i++)
       {
@@ -854,11 +855,11 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
           album.artistCredits.emplace_back(various, VARIOUSARTISTS_MBID);
         else
         {
-          album.artistCredits.emplace_back(StringUtils::Trim(common[i]));
+          album.artistCredits.emplace_back(UnicodeUtils::Trim(common[i]));
           // Set artist sort name providing we have as many as we have artists,
           // otherwise something is wrong with them so ignore rather than guess.
           if (sortnames.size() == common.size())
-            album.artistCredits.back().SetSortName(StringUtils::Trim(sortnames[i]));
+            album.artistCredits.back().SetSortName(UnicodeUtils::Trim(sortnames[i]));
         }
       }
       album.bCompilation = compilation;
@@ -1098,7 +1099,7 @@ void CMusicInfoScanner::FindArtForAlbums(VECALBUMS &albums, const std::string &p
      without having read some tags (and tags are not read from streams) we can safely check for
      that case and set the IsHTTPDirectory property to enable scanning for art.
     */
-    if (StringUtils::StartsWithNoCase(path, "http") && StringUtils::EndsWith(path, "/"))
+    if (UnicodeUtils::StartsWithNoCase(path, "http") && UnicodeUtils::EndsWith(path, "/"))
       album.SetProperty("IsHTTPDirectory", true);
     albumArt = album.GetUserMusicThumb(true);
     if (!albumArt.empty())
@@ -2034,7 +2035,7 @@ bool CMusicInfoScanner::AddAlbumArtwork(CAlbum& album)
   {
     // When "prefer online album art" enabled and we have a thumb as embedded art
     // then replace it if we find a scraped cover
-    if (thumb != album.art.end() && StringUtils::StartsWith(thumb->second, "image://"))
+    if (thumb != album.art.end() && UnicodeUtils::StartsWith(thumb->second, "image://"))
       replaceThumb = true;
   }
 
@@ -2189,11 +2190,13 @@ bool CMusicInfoScanner::AddLocalArtwork(std::map<std::string, std::string>& art,
       continue;
     std::string strCandidate = URIUtils::GetFileName(artFile->GetPath());
     // Strip media name
-    if (!mediaName.empty() && StringUtils::StartsWith(strCandidate, mediaName))
+    if (!mediaName.empty() && UnicodeUtils::StartsWith(strCandidate, mediaName))
       strCandidate.erase(0, mediaName.length());
-    StringUtils::ToLower(strCandidate);
+    UnicodeUtils::FoldCase(strCandidate);
     // Skip files already used as "thumb"
     // Typically folder.jpg but can be from multiple confgurable file names
+	
+	// TODO: Unicode- Verify that this works
     if (std::find(thumbs.begin(), thumbs.end(), strCandidate) != thumbs.end())
       continue;
     // Grab and strip file extension
@@ -2277,7 +2280,7 @@ bool CMusicInfoScanner::AddRemoteArtwork(std::map<std::string, std::string>& art
     { // Check whitelist for art type family e.g. "discart" for aspect="discart2"
       std::string strName = url.m_aspect;
       if (iArtLevel != CSettings::MUSICLIBRARY_ARTWORK_LEVEL_BASIC)
-        StringUtils::TrimRight(strName, "0123456789");
+        UnicodeUtils::TrimRight(strName, "0123456789");
       if (std::find(whitelistarttypes.begin(), whitelistarttypes.end(), strName) ==
           whitelistarttypes.end())
         continue;

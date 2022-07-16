@@ -13,6 +13,7 @@
 #include "utils/AliasShortcutUtils.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XTimeUtils.h"
 
@@ -70,7 +71,7 @@ bool CPosixDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       pItem->m_bIsFolder = false;
     }
 
-    if (StringUtils::StartsWith(entry->d_name, "."))
+    if (UnicodeUtils::StartsWith(entry->d_name, "."))
       pItem->SetProperty("file:hidden", true);
 
     pItem->SetPath(itemPath);

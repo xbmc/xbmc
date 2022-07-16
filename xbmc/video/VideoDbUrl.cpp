@@ -11,6 +11,7 @@
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "playlists/SmartPlayList.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 
 using namespace XFILE;
@@ -192,7 +193,7 @@ bool CVideoDbUrl::validateOption(const std::string &key, const CVariant &value)
 
   // if the value is empty it will remove the option which is ok
   // otherwise we only care about the "filter" option here
-  if (value.empty() || !StringUtils::EqualsNoCase(key, "filter"))
+  if (value.empty() || !UnicodeUtils::EqualsNoCase(key, "filter"))
     return true;
 
   if (!value.isString())

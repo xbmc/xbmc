@@ -9,6 +9,7 @@
 #include "DVDStateSerializer.h"
 
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
@@ -53,14 +54,14 @@ bool CDVDStateSerializer::XMLToDVDState(DVDState& state, const std::string& xmls
     return false;
 
   TiXmlHandle hRoot(xmlDoc.RootElement());
-  if (!hRoot.Element() || !StringUtils::EqualsNoCase(hRoot.Element()->Value(), "navstate"))
+  if (!hRoot.Element() || !UnicodeUtils::EqualsNoCase(hRoot.Element()->Value(), "navstate"))
   {
     CLog::LogF(LOGERROR, "Failed to deserialize dvd state - failed to detect root element.");
     return false;
   }
 
   auto version = hRoot.Element()->Attribute("version");
-  if (!version || !StringUtils::EqualsNoCase(version, std::to_string(DVDSTATESERIALIZER_VERSION)))
+  if (!version || !UnicodeUtils::EqualsNoCase(version, std::to_string(DVDSTATESERIALIZER_VERSION)))
   {
     CLog::LogF(LOGERROR, "Failed to deserialize dvd state - incompatible serializer version.");
     return false;
@@ -105,7 +106,7 @@ bool CDVDStateSerializer::XMLToDVDState(DVDState& state, const std::string& xmls
     }
     else if (property == "sub_enabled")
     {
-      state.sub_enabled = StringUtils::EqualsNoCase(childElement->GetText(), "true");
+      state.sub_enabled = UnicodeUtils::EqualsNoCase(childElement->GetText(), "true");
     }
     else
     {

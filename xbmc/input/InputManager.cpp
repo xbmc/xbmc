@@ -39,6 +39,7 @@
 #include "settings/lib/Setting.h"
 #include "utils/Geometry.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -521,11 +522,11 @@ bool CInputManager::HandleKey(const CKey& key)
   g_application.ResetSystemIdleTimer();
   bool processKey = AlwaysProcess(action);
 
-  if (StringUtils::StartsWithNoCase(action.GetName(), "CECToggleState") ||
-      StringUtils::StartsWithNoCase(action.GetName(), "CECStandby"))
+  if (UnicodeUtils::StartsWithNoCase(action.GetName(), "CECToggleState") ||
+      UnicodeUtils::StartsWithNoCase(action.GetName(), "CECStandby"))
   {
     // do not wake up the screensaver right after switching off the playing device
-    if (StringUtils::StartsWithNoCase(action.GetName(), "CECToggleState"))
+    if (UnicodeUtils::StartsWithNoCase(action.GetName(), "CECToggleState"))
     {
       CLog::LogF(LOGDEBUG, "action {} [{}], toggling state of playing device", action.GetName(),
                  action.GetID());
@@ -676,7 +677,7 @@ bool CInputManager::AlwaysProcess(const CAction& action)
     std::string builtInFunction;
     std::vector<std::string> params;
     CUtil::SplitExecFunction(action.GetName(), builtInFunction, params);
-    StringUtils::ToLower(builtInFunction);
+    UnicodeUtils::FoldCase(builtInFunction);
 
     // should this button be handled normally or just cancel the screensaver?
     if (builtInFunction == "powerdown" || builtInFunction == "reboot" ||

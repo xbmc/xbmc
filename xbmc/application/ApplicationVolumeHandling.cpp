@@ -183,14 +183,14 @@ bool CApplicationVolumeHandling::OnSettingChanged(const CSetting& setting)
 {
   const std::string& settingId = setting.GetId();
 
-  if (StringUtils::EqualsNoCase(settingId, CSettings::SETTING_MUSICPLAYER_REPLAYGAINTYPE))
+  if (UnicodeUtils::EqualsNoCase(settingId, CSettings::SETTING_MUSICPLAYER_REPLAYGAINTYPE))
     m_replayGainSettings.iType = static_cast<const CSettingInt&>(setting).GetValue();
-  else if (StringUtils::EqualsNoCase(settingId, CSettings::SETTING_MUSICPLAYER_REPLAYGAINPREAMP))
+  else if (UnicodeUtils::EqualsNoCase(settingId, CSettings::SETTING_MUSICPLAYER_REPLAYGAINPREAMP))
     m_replayGainSettings.iPreAmp = static_cast<const CSettingInt&>(setting).GetValue();
-  else if (StringUtils::EqualsNoCase(settingId,
+  else if (UnicodeUtils::EqualsNoCase(settingId,
                                      CSettings::SETTING_MUSICPLAYER_REPLAYGAINNOGAINPREAMP))
     m_replayGainSettings.iNoGainPreAmp = static_cast<const CSettingInt&>(setting).GetValue();
-  else if (StringUtils::EqualsNoCase(settingId,
+  else if (UnicodeUtils::EqualsNoCase(settingId,
                                      CSettings::SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING))
     m_replayGainSettings.bAvoidClipping = static_cast<const CSettingBool&>(setting).GetValue();
   else

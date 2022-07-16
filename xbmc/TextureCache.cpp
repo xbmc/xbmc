@@ -20,6 +20,7 @@
 #include "utils/Crc32.h"
 #include "utils/Job.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
@@ -97,9 +98,9 @@ std::string CTextureCache::GetCachedImage(const std::string &image, CTextureDeta
 bool CTextureCache::CanCacheImageURL(const CURL &url)
 {
   return url.GetUserName().empty() || url.GetUserName() == "music" ||
-         StringUtils::StartsWith(url.GetUserName(), "video_") ||
-         StringUtils::StartsWith(url.GetUserName(), "pvr") ||
-         StringUtils::StartsWith(url.GetUserName(), "epg");
+         UnicodeUtils::StartsWith(url.GetUserName(), "video_") ||
+         UnicodeUtils::StartsWith(url.GetUserName(), "pvr") ||
+         UnicodeUtils::StartsWith(url.GetUserName(), "epg");
 }
 
 std::string CTextureCache::CheckCachedImage(const std::string &url, bool &needsRecaching)

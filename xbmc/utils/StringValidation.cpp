@@ -9,6 +9,7 @@
 #include "StringValidation.h"
 
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 bool StringValidation::IsInteger(const std::string &input, void *data)
 {
@@ -23,19 +24,19 @@ bool StringValidation::IsPositiveInteger(const std::string &input, void *data)
 bool StringValidation::IsTime(const std::string &input, void *data)
 {
   std::string strTime = input;
-  StringUtils::Trim(strTime);
+  UnicodeUtils::Trim(strTime);
 
-  if (StringUtils::EndsWithNoCase(strTime, " min"))
+  if (UnicodeUtils::EndsWithNoCase(strTime, " min"))
   {
-    strTime = StringUtils::Left(strTime, strTime.size() - 4);
-    StringUtils::TrimRight(strTime);
+    strTime = UnicodeUtils::Left(strTime, 4, false);
+    UnicodeUtils::TrimRight(strTime);
 
     return IsPositiveInteger(strTime, NULL);
   }
   else
   {
     // support [[HH:]MM:]SS
-    std::vector<std::string> bits = StringUtils::Split(input, ":");
+    std::vector<std::string> bits = UnicodeUtils::Split(input, ":");
     if (bits.size() > 3)
       return false;
 

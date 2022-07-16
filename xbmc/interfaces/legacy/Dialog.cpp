@@ -28,6 +28,7 @@
 #include "settings/MediaSourceSettings.h"
 #include "storage/MediaManager.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
@@ -225,7 +226,7 @@ namespace XBMCAddon
       if (!shares)
       {
         CServiceBroker::GetMediaManager().GetLocalDrives(localShares);
-        if (StringUtils::CompareNoCase(s_shares, "local") != 0)
+        if (UnicodeUtils::CompareNoCase(s_shares, "local") != 0)
           CServiceBroker::GetMediaManager().GetNetworkLocations(localShares);
       }
       else // always append local drives
@@ -260,7 +261,7 @@ namespace XBMCAddon
       if (!shares)
       {
         CServiceBroker::GetMediaManager().GetLocalDrives(localShares);
-        if (StringUtils::CompareNoCase(s_shares, "local") != 0)
+        if (UnicodeUtils::CompareNoCase(s_shares, "local") != 0)
           CServiceBroker::GetMediaManager().GetNetworkLocations(localShares);
       }
       else // always append local drives

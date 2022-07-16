@@ -28,6 +28,7 @@
 #include "utils/RssManager.h"
 #include "utils/Screenshot.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "windows/GUIMediaWindow.h"
@@ -166,12 +167,12 @@ static int AlarmClock(const std::vector<std::string>& params)
     if (params[2].find(':') == std::string::npos)
       seconds = static_cast<float>(atoi(params[2].c_str())*60);
     else
-      seconds = (float)StringUtils::TimeStringToSeconds(params[2]);
+      seconds = (float)UnicodeUtils::TimeStringToSeconds(params[2]);
   }
   else
   { // check if shutdown is specified in particular, and get the time for it
     std::string strHeading;
-    if (StringUtils::EqualsNoCase(params[0], "shutdowntimer"))
+    if (UnicodeUtils::EqualsNoCase(params[0], "shutdowntimer"))
       strHeading = g_localizeStrings.Get(20145);
     else
       strHeading = g_localizeStrings.Get(13209);
@@ -186,9 +187,9 @@ static int AlarmClock(const std::vector<std::string>& params)
   for (unsigned int i = 3; i < params.size() ; i++)
   {
     // check "true" for backward comp
-    if (StringUtils::EqualsNoCase(params[i], "true") || StringUtils::EqualsNoCase(params[i], "silent"))
+    if (UnicodeUtils::EqualsNoCase(params[i], "true") || UnicodeUtils::EqualsNoCase(params[i], "silent"))
       silent = true;
-    else if (StringUtils::EqualsNoCase(params[i], "loop"))
+    else if (UnicodeUtils::EqualsNoCase(params[i], "loop"))
       loop = true;
   }
 
@@ -209,8 +210,8 @@ static int AlarmClock(const std::vector<std::string>& params)
 static int CancelAlarm(const std::vector<std::string>& params)
 {
   bool silent = (params.size() > 1 &&
-      (StringUtils::EqualsNoCase(params[1], "true") ||
-       StringUtils::EqualsNoCase(params[1], "silent")));
+      (UnicodeUtils::EqualsNoCase(params[1], "true") ||
+       UnicodeUtils::EqualsNoCase(params[1], "silent")));
   g_alarmClock.Stop(params[0],silent);
 
   return 0;
@@ -238,9 +239,9 @@ static int ClearProperty(const std::vector<std::string>& params)
 static int CloseDialog(const std::vector<std::string>& params)
 {
   bool bForce = false;
-  if (params.size() > 1 && StringUtils::EqualsNoCase(params[1], "true"))
+  if (params.size() > 1 && UnicodeUtils::EqualsNoCase(params[1], "true"))
     bForce = true;
-  if (StringUtils::EqualsNoCase(params[0], "all"))
+  if (UnicodeUtils::EqualsNoCase(params[0], "all"))
   {
     CServiceBroker::GetGUI()->GetWindowManager().CloseDialogs(bForce);
   }
@@ -299,7 +300,7 @@ static int Screenshot(const std::vector<std::string>& params)
     std::string strSaveToPath = params[0];
     bool sync = false;
     if (params.size() >= 2)
-      sync = StringUtils::EqualsNoCase(params[1], "sync");
+      sync = UnicodeUtils::EqualsNoCase(params[1], "sync");
 
     if (!strSaveToPath.empty())
     {

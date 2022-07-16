@@ -15,6 +15,7 @@
 #include "guilib/GUIColorManager.h"
 #include "guilib/GUIComponent.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 using namespace KODI::GUILIB::GUIINFO;
 
@@ -52,7 +53,7 @@ void CGUIInfoColor::Parse(const std::string &label, int context)
 
   // Check for the standard $INFO[] block layout, and strip it if present
   std::string label2 = label;
-  if (StringUtils::StartsWithNoCase(label, "$var["))
+  if (UnicodeUtils::StartsWithNoCase(label, "$var["))
   {
     label2 = label.substr(5, label.length() - 6);
     m_info = infoMgr.TranslateSkinVariableString(label2, context);
@@ -61,7 +62,7 @@ void CGUIInfoColor::Parse(const std::string &label, int context)
     return;
   }
 
-  if (StringUtils::StartsWithNoCase(label, "$info["))
+  if (UnicodeUtils::StartsWithNoCase(label, "$info["))
     label2 = label.substr(6, label.length()-7);
 
   m_info = infoMgr.TranslateString(label2);

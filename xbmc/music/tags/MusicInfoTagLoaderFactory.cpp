@@ -18,6 +18,7 @@
 #include "addons/AudioDecoder.h"
 #include "addons/ExtsMimeSupportList.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 
 using namespace KODI::ADDONS;
@@ -37,8 +38,8 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CFileItem& i
     return new CMusicInfoTagLoaderDatabase();
 
   std::string strExtension = URIUtils::GetExtension(item.GetPath());
-  StringUtils::ToLower(strExtension);
-  StringUtils::TrimLeft(strExtension, ".");
+  UnicodeUtils::FoldCase(strExtension);
+  UnicodeUtils::TrimLeft(strExtension, ".");
 
   if (strExtension.empty())
     return NULL;

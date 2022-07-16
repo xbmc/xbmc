@@ -74,6 +74,7 @@
 #include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
@@ -353,11 +354,11 @@ std::string CUtil::GetTitleFromPath(const CURL& url, bool bIsFolder /* = false *
     strFilename = g_localizeStrings.Get(744);
 
   // Music Playlists
-  else if (StringUtils::StartsWith(path, "special://musicplaylists"))
+  else if (UnicodeUtils::StartsWith(path, "special://musicplaylists"))
     strFilename = g_localizeStrings.Get(136);
 
   // Video Playlists
-  else if (StringUtils::StartsWith(path, "special://videoplaylists"))
+  else if (UnicodeUtils::StartsWith(path, "special://videoplaylists"))
     strFilename = g_localizeStrings.Get(136);
 
   else if (URIUtils::HasParentInHostname(url) && strFilename.empty())
@@ -443,7 +444,7 @@ void CUtil::CleanString(const std::string& strFileName,
     }
   }
 
-  StringUtils::Trim(strTitleAndYear);
+  UnicodeUtils::Trim(strTitleAndYear);
   strTitle = strTitleAndYear;
 
   // append year
@@ -475,8 +476,8 @@ void CUtil::GetQualifiedFilename(const std::string &strBasePath, std::string &st
   strFilename = URIUtils::AddFileToFolder(strBasePath, strFilename);
 
   // get rid of any /./ or \.\ that happen to be there
-  StringUtils::Replace(strFilename, "\\.\\", "\\");
-  StringUtils::Replace(strFilename, "/./", "/");
+  UnicodeUtils::Replace(strFilename, "\\.\\", "\\");
+  UnicodeUtils::Replace(strFilename, "/./", "/");
 
   // now find any "\\..\\" and remove them via GetParentPath
   size_t pos;
@@ -558,7 +559,7 @@ void CUtil::GetFileAndProtocol(const std::string& strURL, std::string& strDir)
 int CUtil::GetDVDIfoTitle(const std::string& strFile)
 {
   std::string strFilename = URIUtils::GetFileName(strFile);
-  if (StringUtils::EqualsNoCase(strFilename, "video_ts.ifo")) return 0;
+  if (UnicodeUtils::EqualsNoCase(strFilename, "video_ts.ifo")) return 0;
   //VTS_[TITLE]_0.IFO
   return atoi(strFilename.substr(4, 2).c_str());
 }
@@ -903,21 +904,21 @@ std::string CUtil::MakeLegalFileName(const std::string &strFile, int LegalType)
 {
   std::string result = strFile;
 
-  StringUtils::Replace(result, '/', '_');
-  StringUtils::Replace(result, '\\', '_');
-  StringUtils::Replace(result, '?', '_');
+  UnicodeUtils::Replace(result, '/', '_');
+  UnicodeUtils::Replace(result, '\\', '_');
+  UnicodeUtils::Replace(result, '?', '_');
 
   if (LegalType == LEGAL_WIN32_COMPAT)
   {
     // just filter out some illegal characters on windows
-    StringUtils::Replace(result, ':', '_');
-    StringUtils::Replace(result, '*', '_');
-    StringUtils::Replace(result, '?', '_');
-    StringUtils::Replace(result, '\"', '_');
-    StringUtils::Replace(result, '<', '_');
-    StringUtils::Replace(result, '>', '_');
-    StringUtils::Replace(result, '|', '_');
-    StringUtils::TrimRight(result, ". ");
+    UnicodeUtils::Replace(result, ':', '_');
+    UnicodeUtils::Replace(result, '*', '_');
+    UnicodeUtils::Replace(result, '?', '_');
+    UnicodeUtils::Replace(result, '\"', '_');
+    UnicodeUtils::Replace(result, '<', '_');
+    UnicodeUtils::Replace(result, '>', '_');
+    UnicodeUtils::Replace(result, '|', '_');
+    UnicodeUtils::TrimRight(result, ". ");
   }
   return result;
 }
@@ -956,19 +957,19 @@ std::string CUtil::ValidatePath(const std::string &path, bool bFixDoubleSlashes 
   // recurse and crash XBMC
   if (URIUtils::IsURL(path) &&
       (path.find('%') != std::string::npos ||
-      StringUtils::StartsWithNoCase(path, "apk:") ||
-      StringUtils::StartsWithNoCase(path, "zip:") ||
-      StringUtils::StartsWithNoCase(path, "rar:") ||
-      StringUtils::StartsWithNoCase(path, "stack:") ||
-      StringUtils::StartsWithNoCase(path, "bluray:") ||
-      StringUtils::StartsWithNoCase(path, "multipath:") ))
+      UnicodeUtils::StartsWithNoCase(path, "apk:") ||
+      UnicodeUtils::StartsWithNoCase(path, "zip:") ||
+      UnicodeUtils::StartsWithNoCase(path, "rar:") ||
+      UnicodeUtils::StartsWithNoCase(path, "stack:") ||
+      UnicodeUtils::StartsWithNoCase(path, "bluray:") ||
+      UnicodeUtils::StartsWithNoCase(path, "multipath:") ))
     return result;
 
   // check the path for incorrect slashes
 #ifdef TARGET_WINDOWS
   if (URIUtils::IsDOSPath(path))
   {
-    StringUtils::Replace(result, '/', '\\');
+    UnicodeUtils::Replace(result, '/', '\\');
     /* The double slash correction should only be used when *absolutely*
        necessary! This applies to certain DLLs or use from Python DLLs/scripts
        that incorrectly generate double (back) slashes.
@@ -986,7 +987,7 @@ std::string CUtil::ValidatePath(const std::string &path, bool bFixDoubleSlashes 
   else if (path.find("://") != std::string::npos || path.find(":\\\\") != std::string::npos)
 #endif
   {
-    StringUtils::Replace(result, '\\', '/');
+    UnicodeUtils::Replace(result, '\\', '/');
     /* The double slash correction should only be used when *absolutely*
        necessary! This applies to certain DLLs or use from Python DLLs/scripts
        that incorrectly generate double (back) slashes.
@@ -1019,7 +1020,7 @@ void CUtil::SplitExecFunction(const std::string &execString, std::string &functi
     function = execString;
 
   // remove any whitespace, and the standard prefix (if it exists)
-  StringUtils::Trim(function);
+  UnicodeUtils::Trim(function);
 
   SplitParams(paramString, parameters);
 }
@@ -1131,7 +1132,7 @@ int CUtil::GetMatchingSource(const std::string& strPath1, VECSOURCES& VECSOURCES
   // Check for special protocols
   CURL checkURL(strPath);
 
-  if (StringUtils::StartsWith(strPath, "special://skin/"))
+  if (UnicodeUtils::StartsWith(strPath, "special://skin/"))
     return 1;
 
   // do not return early if URL protocol is "plugin"
@@ -1169,7 +1170,7 @@ int CUtil::GetMatchingSource(const std::string& strPath1, VECSOURCES& VECSOURCES
       if (iPos != std::string::npos && iPos > 1)
         strName = strName.substr(0, iPos - 1);
     }
-    if (StringUtils::EqualsNoCase(strPath, strName))
+    if (UnicodeUtils::EqualsNoCase(strPath, strName))
     {
       bIsSourceName = true;
       return i;
@@ -1226,7 +1227,7 @@ int CUtil::GetMatchingSource(const std::string& strPath1, VECSOURCES& VECSOURCES
         strShare += "/";
       size_t iLenShare = strShare.size();
 
-      if ((iLenPath >= iLenShare) && StringUtils::StartsWithNoCase(strDest, strShare) && (iLenShare > iLength))
+      if ((iLenPath >= iLenShare) && UnicodeUtils::StartsWithNoCase(strDest, strShare) && (iLenShare > iLength))
       {
         // if exact match, return it immediately
         if (iLenPath == iLenShare)
@@ -1250,7 +1251,7 @@ int CUtil::GetMatchingSource(const std::string& strPath1, VECSOURCES& VECSOURCES
 
     // rar:// and zip://
     // if archive wasn't mounted, look for a matching share for the archive instead
-    if( StringUtils::StartsWithNoCase(strPath, "rar://") || StringUtils::StartsWithNoCase(strPath, "zip://") )
+    if( UnicodeUtils::StartsWithNoCase(strPath, "rar://") || UnicodeUtils::StartsWithNoCase(strPath, "zip://") )
     {
       // get the hostname portion of the url since it contains the archive file
       strPath = checkURL.GetHostName();
@@ -1269,28 +1270,28 @@ std::string CUtil::TranslateSpecialSource(const std::string &strSpecial)
 {
   if (!strSpecial.empty() && strSpecial[0] == '$')
   {
-    if (StringUtils::StartsWithNoCase(strSpecial, "$home"))
+    if (UnicodeUtils::StartsWithNoCase(strSpecial, "$home"))
       return URIUtils::AddFileToFolder("special://home/", strSpecial.substr(5));
-    else if (StringUtils::StartsWithNoCase(strSpecial, "$subtitles"))
+    else if (UnicodeUtils::StartsWithNoCase(strSpecial, "$subtitles"))
       return URIUtils::AddFileToFolder("special://subtitles/", strSpecial.substr(10));
-    else if (StringUtils::StartsWithNoCase(strSpecial, "$userdata"))
+    else if (UnicodeUtils::StartsWithNoCase(strSpecial, "$userdata"))
       return URIUtils::AddFileToFolder("special://userdata/", strSpecial.substr(9));
-    else if (StringUtils::StartsWithNoCase(strSpecial, "$database"))
+    else if (UnicodeUtils::StartsWithNoCase(strSpecial, "$database"))
       return URIUtils::AddFileToFolder("special://database/", strSpecial.substr(9));
-    else if (StringUtils::StartsWithNoCase(strSpecial, "$thumbnails"))
+    else if (UnicodeUtils::StartsWithNoCase(strSpecial, "$thumbnails"))
       return URIUtils::AddFileToFolder("special://thumbnails/", strSpecial.substr(11));
-    else if (StringUtils::StartsWithNoCase(strSpecial, "$recordings"))
+    else if (UnicodeUtils::StartsWithNoCase(strSpecial, "$recordings"))
       return URIUtils::AddFileToFolder("special://recordings/", strSpecial.substr(11));
-    else if (StringUtils::StartsWithNoCase(strSpecial, "$screenshots"))
+    else if (UnicodeUtils::StartsWithNoCase(strSpecial, "$screenshots"))
       return URIUtils::AddFileToFolder("special://screenshots/", strSpecial.substr(12));
-    else if (StringUtils::StartsWithNoCase(strSpecial, "$musicplaylists"))
+    else if (UnicodeUtils::StartsWithNoCase(strSpecial, "$musicplaylists"))
       return URIUtils::AddFileToFolder("special://musicplaylists/", strSpecial.substr(15));
-    else if (StringUtils::StartsWithNoCase(strSpecial, "$videoplaylists"))
+    else if (UnicodeUtils::StartsWithNoCase(strSpecial, "$videoplaylists"))
       return URIUtils::AddFileToFolder("special://videoplaylists/", strSpecial.substr(15));
-    else if (StringUtils::StartsWithNoCase(strSpecial, "$cdrips"))
+    else if (UnicodeUtils::StartsWithNoCase(strSpecial, "$cdrips"))
       return URIUtils::AddFileToFolder("special://cdrips/", strSpecial.substr(7));
     // this one will be removed post 2.0
-    else if (StringUtils::StartsWithNoCase(strSpecial, "$playlists"))
+    else if (UnicodeUtils::StartsWithNoCase(strSpecial, "$playlists"))
       return URIUtils::AddFileToFolder(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH), strSpecial.substr(10));
   }
   return strSpecial;
@@ -1338,7 +1339,7 @@ void CUtil::DeleteDirectoryCache(const std::string &prefix)
     if (item->m_bIsFolder)
       continue;
     std::string fileName = URIUtils::GetFileName(item->GetPath());
-    if (StringUtils::StartsWith(fileName, prefix))
+    if (UnicodeUtils::StartsWith(fileName, prefix))
       XFILE::CFile::Delete(item->GetPath());
   }
 }
@@ -1383,21 +1384,23 @@ void CUtil::ForceForwardSlashes(std::string& strPath)
 
 double CUtil::AlbumRelevance(const std::string& strAlbumTemp1, const std::string& strAlbum1, const std::string& strArtistTemp1, const std::string& strArtist1)
 {
+	// TODO: Unicode Need fuzzy search that is locale sensitive
+
   // case-insensitive fuzzy string comparison on the album and artist for relevance
   // weighting is identical, both album and artist are 50% of the total relevance
   // a missing artist means the maximum relevance can only be 0.50
   std::string strAlbumTemp = strAlbumTemp1;
-  StringUtils::ToLower(strAlbumTemp);
+  UnicodeUtils::FoldCase(strAlbumTemp);
   std::string strAlbum = strAlbum1;
-  StringUtils::ToLower(strAlbum);
+  UnicodeUtils::FoldCase(strAlbum);
   double fAlbumPercentage = fstrcmp(strAlbumTemp.c_str(), strAlbum.c_str());
   double fArtistPercentage = 0.0;
   if (!strArtist1.empty())
   {
     std::string strArtistTemp = strArtistTemp1;
-    StringUtils::ToLower(strArtistTemp);
+    UnicodeUtils::FoldCase(strArtistTemp);
     std::string strArtist = strArtist1;
-    StringUtils::ToLower(strArtist);
+    UnicodeUtils::FoldCase(strArtist);
     fArtistPercentage = fstrcmp(strArtistTemp.c_str(), strArtist.c_str());
   }
   double fRelevance = fAlbumPercentage * 0.5 + fArtistPercentage * 0.5;
@@ -1452,7 +1455,7 @@ bool CUtil::MakeShortenPath(std::string StrInput, std::string& StrOutput, size_t
   // replace any additional /../../ with just /../ if necessary
   std::string replaceDots = StringUtils::Format("..{}..", cDelim);
   while (StrInput.size() > (unsigned int)iTextMaxLength)
-    if (!StringUtils::Replace(StrInput, replaceDots, ".."))
+    if (!UnicodeUtils::Replace(StrInput, replaceDots, ".."))
       break;
   // finally, truncate our string to force inside our max text length,
   // replacing the last 2 characters with ".."
@@ -1493,7 +1496,7 @@ bool CUtil::SupportsWriteFileOperations(const std::string& strPath)
     for (const auto& addon : CServiceBroker::GetVFSAddonCache().GetAddonInstances())
     {
       const auto& info = addon->GetProtocolInfo();
-      auto prots = StringUtils::Split(info.type, "|");
+      auto prots = UnicodeUtils::Split(info.type, "|");
       if (info.supportWrite &&
           std::find(prots.begin(), prots.end(), url.GetProtocol()) != prots.end())
         return true;
@@ -1529,8 +1532,8 @@ void CUtil::GetSkinThemes(std::vector<std::string>& vecTheme)
     {
       std::string strExtension = URIUtils::GetExtension(pItem->GetPath());
       std::string strLabel = pItem->GetLabel();
-      if ((strExtension == ".xbt" && !StringUtils::EqualsNoCase(strLabel, TexturesXbt)))
-        vecTheme.push_back(StringUtils::Left(strLabel, strLabel.size() - strExtension.size()));
+      if ((strExtension == ".xbt" && !UnicodeUtils::EqualsNoCase(strLabel, TexturesXbt)))
+        vecTheme.push_back(UnicodeUtils::Left(strLabel, strExtension.size(), false));
     }
     else
     {
@@ -1540,8 +1543,8 @@ void CUtil::GetSkinThemes(std::vector<std::string>& vecTheme)
         continue;
 
       std::string strLabel = URIUtils::GetFileName(itemUrl.GetHostName());
-      if (!StringUtils::EqualsNoCase(strLabel, TexturesXbt))
-        vecTheme.push_back(StringUtils::Left(strLabel, strLabel.size() - URIUtils::GetExtension(strLabel).size()));
+      if (!UnicodeUtils::EqualsNoCase(strLabel, TexturesXbt))
+        vecTheme.push_back(UnicodeUtils::Left(strLabel, URIUtils::GetExtension(strLabel).size(), false));
     }
   }
   std::sort(vecTheme.begin(), vecTheme.end(), sortstringbyname());
@@ -1559,7 +1562,7 @@ void CUtil::InitRandomSeed()
 #if defined(TARGET_POSIX) && !defined(TARGET_DARWIN_TVOS)
 bool CUtil::RunCommandLine(const std::string& cmdLine, bool waitExit)
 {
-  std::vector<std::string> args = StringUtils::Split(cmdLine, ",");
+  std::vector<std::string> args = UnicodeUtils::Split(cmdLine, ",");
 
   // Strip quotes and whitespace around the arguments, or exec will fail.
   // This allows the python invocation to be written more naturally with any amount of whitespace around the args.
@@ -1776,7 +1779,7 @@ std::string CUtil::ResolveExecutablePath()
 
   std::string appName = CCompileInfo::GetAppName();
   std::string libName = "lib" + appName + ".so";
-  StringUtils::ToLower(libName);
+  UnicodeUtils::FoldCase(libName);
   strExecutablePath += "/" + libName;
 #else
   /* Get our PID and build the name of the link in /proc */
@@ -1847,7 +1850,7 @@ void CUtil::GetItemsToScan(const std::string& videoPath,
   {
     for (const auto& subdir : sub_dirs)
     {
-      if (StringUtils::EqualsNoCase(item->GetLabel(), subdir))
+      if (UnicodeUtils::EqualsNoCase(item->GetLabel(), subdir))
         additionalPaths.push_back(item->GetPath());
     }
   }
@@ -1879,7 +1882,7 @@ void CUtil::ScanPathsForAssociatedItems(const std::string& videoName,
 
     URIUtils::RemoveExtension(strCandidate);
     // NOTE: We don't know if one of videoName or strCandidate is URL-encoded and the other is not, so try both
-    if (StringUtils::StartsWithNoCase(strCandidate, videoName) || (StringUtils::StartsWithNoCase(strCandidate, CURL::Decode(videoName))))
+    if (UnicodeUtils::StartsWithNoCase(strCandidate, videoName) || (UnicodeUtils::StartsWithNoCase(strCandidate, CURL::Decode(videoName))))
     {
       if (URIUtils::IsRAR(pItem->GetPath()) || URIUtils::IsZIP(pItem->GetPath()))
         CUtil::ScanArchiveForAssociatedItems(pItem->GetPath(), "", item_exts, associatedFiles);
@@ -1939,13 +1942,13 @@ int CUtil::ScanArchiveForAssociatedItems(const std::string& strArchivePath,
     size_t fnl = videoNameNoExt.size();
     // NOTE: We don't know if videoNameNoExt is URL-encoded, so try both
     if (fnl &&
-      !(StringUtils::StartsWithNoCase(URIUtils::GetFileName(strPathInRar), videoNameNoExt) ||
-        StringUtils::StartsWithNoCase(URIUtils::GetFileName(strPathInRar), CURL::Decode(videoNameNoExt))))
+      !(UnicodeUtils::StartsWithNoCase(URIUtils::GetFileName(strPathInRar), videoNameNoExt) ||
+        UnicodeUtils::StartsWithNoCase(URIUtils::GetFileName(strPathInRar), CURL::Decode(videoNameNoExt))))
       continue;
 
     for (const auto& ext : item_exts)
     {
-      if (StringUtils::EqualsNoCase(strExt, ext))
+      if (UnicodeUtils::EqualsNoCase(strExt, ext))
       {
         CLog::Log(LOGINFO, "{}: found associated file {}", __FUNCTION__,
                   CURL::GetRedacted(strPathInRar));
@@ -2017,7 +2020,7 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
     items.Append(moreItems);
   }
 
-  std::vector<std::string> exts = StringUtils::Split(subtitleExtensions, '|');
+  std::vector<std::string> exts = UnicodeUtils::Split(subtitleExtensions, '|');
   exts.erase(std::remove(exts.begin(), exts.end(), ".zip"), exts.end());
   exts.erase(std::remove(exts.begin(), exts.end(), ".rar"), exts.end());
 
@@ -2068,7 +2071,7 @@ ExternalStreamInfo CUtil::GetExternalStreamDetailsFromFilename(const std::string
   URIUtils::RemoveExtension(toParse);
 
   // we check left part - if it's same as video base name - strip it
-  if (StringUtils::StartsWithNoCase(toParse, videoBaseName))
+  if (UnicodeUtils::StartsWithNoCase(toParse, videoBaseName))
     toParse = toParse.substr(videoBaseName.length());
   else if (URIUtils::GetExtension(associatedFile) == ".sub" && URIUtils::IsInArchive(associatedFile))
   {
@@ -2093,7 +2096,7 @@ ExternalStreamInfo CUtil::GetExternalStreamDetailsFromFilename(const std::string
     {
       // try to recognize a flag
       std::string flag_tmp(*it);
-      StringUtils::ToLower(flag_tmp);
+      UnicodeUtils::FoldCase(flag_tmp);
       if (!flag_tmp.compare("none"))
       {
         info.flag |= StreamFlags::FLAG_NONE;
@@ -2126,7 +2129,7 @@ ExternalStreamInfo CUtil::GetExternalStreamDetailsFromFilename(const std::string
   }
   name += " ";
   name += g_localizeStrings.Get(21602); // External
-  StringUtils::Trim(name);
+  UnicodeUtils::Trim(name);
   info.name = StringUtils::RemoveDuplicatedSpacesAndTabs(name);
   if (info.flag == 0)
     info.flag = StreamFlags::FLAG_NONE;
@@ -2157,7 +2160,7 @@ bool CUtil::FindVobSubPair(const std::vector<std::string>& vecSubtitles, const s
           (URIUtils::PathEquals(URIUtils::ReplaceExtension(strIdxPath,""),
                                 URIUtils::ReplaceExtension(subtitlePath,"")) ||
            (strSubDirectory.size() >= 11 &&
-            StringUtils::EqualsNoCase(strSubDirectory.substr(6, strSubDirectory.length()-11), URIUtils::ReplaceExtension(strIdxPath,"")))))
+            UnicodeUtils::EqualsNoCase(strSubDirectory.substr(6, strSubDirectory.length()-11), URIUtils::ReplaceExtension(strIdxPath,"")))))
       {
         strSubPath = subtitlePath;
         return true;
@@ -2187,7 +2190,7 @@ bool CUtil::IsVobSub(const std::vector<std::string>& vecSubtitles, const std::st
           (URIUtils::PathEquals(URIUtils::ReplaceExtension(subtitlePath,""),
                                 URIUtils::ReplaceExtension(strSubPath,"")) ||
            (strSubDirectory.size() >= 11 &&
-            StringUtils::EqualsNoCase(strSubDirectory.substr(6, strSubDirectory.length()-11), URIUtils::ReplaceExtension(subtitlePath,"")))))
+            UnicodeUtils::EqualsNoCase(strSubDirectory.substr(6, strSubDirectory.length()-11), URIUtils::ReplaceExtension(subtitlePath,"")))))
         return true;
     }
   }
@@ -2272,7 +2275,7 @@ void CUtil::ScanForExternalAudio(const std::string& videoPath, std::vector<std::
   const std::vector<std::string> common_sub_dirs = { "audio", "tracks"};
   GetItemsToScan(strBasePath, CServiceBroker::GetFileExtensionProvider().GetMusicExtensions(), common_sub_dirs, items);
 
-  std::vector<std::string> exts = StringUtils::Split(CServiceBroker::GetFileExtensionProvider().GetMusicExtensions(), "|");
+  std::vector<std::string> exts = UnicodeUtils::Split(CServiceBroker::GetFileExtensionProvider().GetMusicExtensions(), "|");
 
   CVideoDatabase database;
   database.Open();

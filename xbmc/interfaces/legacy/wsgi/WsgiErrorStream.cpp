@@ -10,6 +10,7 @@
 
 #include "network/httprequesthandler/python/HTTPPythonRequest.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 namespace XBMCAddon

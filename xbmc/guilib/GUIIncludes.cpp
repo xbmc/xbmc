@@ -14,6 +14,7 @@
 #include "guilib/guiinfo/GUIInfoLabel.h"
 #include "interfaces/info/SkinVariable.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
@@ -119,7 +120,7 @@ bool CGUIIncludes::Load_Internal(const std::string &file)
   }
 
   TiXmlElement *root = doc.RootElement();
-  if (!root || !StringUtils::EqualsNoCase(root->Value(), "includes"))
+  if (!root || !UnicodeUtils::EqualsNoCase(root->Value(), "includes"))
   {
     CLog::Log(LOGERROR, "Error loading include file {}: Root element <includes> required.", file);
     return false;
@@ -660,7 +661,7 @@ CGUIIncludes::ResolveParamsResult CGUIIncludes::ResolveParameters(const std::str
 
 std::string CGUIIncludes::ResolveConstant(const std::string &constant) const
 {
-  std::vector<std::string> values = StringUtils::Split(constant, ",");
+  std::vector<std::string> values = UnicodeUtils::Split(constant, ",");
   for (auto& i : values)
   {
     std::map<std::string, std::string>::const_iterator it = m_constants.find(i);

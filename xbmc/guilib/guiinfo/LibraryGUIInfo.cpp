@@ -18,6 +18,7 @@
 #include "profiles/ProfileManager.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoLibraryQueue.h"
@@ -229,7 +230,7 @@ bool CLibraryGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contex
       int artistcount = -1;
       for (const auto &role : m_libraryRoleCounts)
       {
-        if (StringUtils::EqualsNoCase(strRole, role.first))
+        if (UnicodeUtils::EqualsNoCase(strRole, role.first))
         {
           artistcount = role.second;
           break;

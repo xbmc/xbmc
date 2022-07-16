@@ -12,6 +12,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/Archive.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
@@ -224,9 +225,9 @@ void CDateTimeSpan::SetFromPeriod(const std::string &period)
   if (pos != std::string::npos)
   {
     std::string units = period.substr(pos, 3);
-    if (StringUtils::EqualsNoCase(units, "wee"))
+    if (UnicodeUtils::EqualsNoCase(units, "wee"))
       days *= 7;
-    else if (StringUtils::EqualsNoCase(units, "mon"))
+    else if (UnicodeUtils::EqualsNoCase(units, "mon"))
       days *= 31;
   }
 
@@ -706,7 +707,7 @@ bool CDateTime::SetFromDateString(const std::string &date)
   size_t iPos2 = date.find(',');
   std::string strDay = (date.size() >= iPos) ? date.substr(iPos, iPos2-iPos) : "";
   std::string strYear = date.substr(date.find(' ', iPos2) + 1);
-  while (months[j] && StringUtils::CompareNoCase(strMonth, months[j]) != 0)
+  while (months[j] && UnicodeUtils::CompareNoCase(strMonth, months[j]) != 0)
     j++;
   if (!months[j])
     return false;
@@ -993,7 +994,7 @@ bool CDateTime::SetFromW3CDateTime(const std::string &dateTime, bool ignoreTimez
   if (!ignoreTimezone && !zone.empty())
   {
     // check if the timezone is UTC
-    if (StringUtils::StartsWith(zone, "Z"))
+    if (UnicodeUtils::StartsWith(zone, "Z"))
       return SetFromUTCDateTime(tmpDateTime);
     else
     {
@@ -1001,9 +1002,9 @@ bool CDateTime::SetFromW3CDateTime(const std::string &dateTime, bool ignoreTimez
       CDateTimeSpan zoneSpan; zoneSpan.SetFromTimeString(zone.substr(1));
       if (zoneSpan.GetSecondsTotal() != 0)
       {
-        if (StringUtils::StartsWith(zone, "+"))
+        if (UnicodeUtils::StartsWith(zone, "+"))
           tmpDateTime -= zoneSpan;
-        else if (StringUtils::StartsWith(zone, "-"))
+        else if (UnicodeUtils::StartsWith(zone, "-"))
           tmpDateTime += zoneSpan;
       }
     }
@@ -1074,7 +1075,7 @@ bool CDateTime::SetFromDBTime(const std::string &time)
 bool CDateTime::SetFromRFC1123DateTime(const std::string &dateTime)
 {
   std::string date = dateTime;
-  StringUtils::Trim(date);
+  UnicodeUtils::Trim(date);
 
   if (date.size() != 29)
     return false;
@@ -1203,7 +1204,7 @@ std::string CDateTime::GetAsLocalizedTime(const std::string &format, bool withSe
         i=length;
       }
 
-      StringUtils::Replace(strPart, "''", "'");
+      UnicodeUtils::Replace(strPart, "''", "'");
 
       strOut+=strPart;
     }
@@ -1362,7 +1363,7 @@ std::string CDateTime::GetAsLocalizedDate(const std::string &strFormat) const
         strPart = strFormat.substr(i + 1, length - i - 1);
         i = length;
       }
-      StringUtils::Replace(strPart, "''", "'");
+      UnicodeUtils::Replace(strPart, "''", "'");
       strOut+=strPart;
     }
     else if (c=='D' || c=='d') // parse days
@@ -1573,7 +1574,7 @@ int CDateTime::MonthStringToMonthNum(const std::string& month)
   const char* abr_months[] = {"jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"};
 
   int i = 0;
-  for (; i < 12 && !StringUtils::EqualsNoCase(month, months[i]) && !StringUtils::EqualsNoCase(month, abr_months[i]); i++);
+  for (; i < 12 && !UnicodeUtils::EqualsNoCase(month, months[i]) && !UnicodeUtils::EqualsNoCase(month, abr_months[i]); i++);
   i++;
 
   return i;

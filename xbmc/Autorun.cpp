@@ -37,6 +37,7 @@
 #include "storage/MediaManager.h"
 #include "video/VideoDatabase.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
@@ -183,7 +184,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
         name = URIUtils::GetFileName(name);
 
         // Check if the current foldername indicates a DVD structure (name is "VIDEO_TS")
-        if (StringUtils::EqualsNoCase(name, "VIDEO_TS") && bAllowVideo
+        if (UnicodeUtils::EqualsNoCase(name, "VIDEO_TS") && bAllowVideo
         && (bypassSettings || bAutorunDVDs))
         {
           std::string path = URIUtils::AddFileToFolder(pItem->GetPath(), "VIDEO_TS.IFO");
@@ -208,7 +209,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
         // Check if the current foldername indicates a Blu-Ray structure (default is "BDMV").
         // A BR should also include an "AACS" folder for encryption, Sony-BRs can also include update folders for PS3 (PS3_UPDATE / PS3_VPRM).
         //! @todo for the time being, the DVD autorun settings are used to determine if the BR should be started automatically.
-        if (StringUtils::EqualsNoCase(name, "BDMV") && bAllowVideo
+        if (UnicodeUtils::EqualsNoCase(name, "BDMV") && bAllowVideo
         && (bypassSettings || bAutorunDVDs))
         {
           CFileItemPtr item(new CFileItem(URIUtils::AddFileToFolder(pItem->GetPath(), "index.bdmv"), false));
@@ -233,7 +234,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
         CFileItemList items, sitems;
 
         // Advanced Content HD DVD (most discs?)
-        if (StringUtils::EqualsNoCase(name, "ADV_OBJ"))
+        if (UnicodeUtils::EqualsNoCase(name, "ADV_OBJ"))
         {
           CLog::Log(LOGINFO,"HD DVD: Checking for playlist.");
           // find playlist file
@@ -250,7 +251,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
         }
 
         // Standard Content HD DVD (few discs?)
-        if (StringUtils::EqualsNoCase(name, "HVDVD_TS") && bAllowVideo
+        if (UnicodeUtils::EqualsNoCase(name, "HVDVD_TS") && bAllowVideo
         && (bypassSettings || bAutorunDVDs))
         {
           if (hddvdname == "")
@@ -338,9 +339,9 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
 
         // Video CDs can have multiple file formats. First we need to determine which one is used on the CD
         std::string strExt;
-        if (StringUtils::EqualsNoCase(name, "MPEGAV"))
+        if (UnicodeUtils::EqualsNoCase(name, "MPEGAV"))
           strExt = ".dat";
-        if (StringUtils::EqualsNoCase(name, "MPEG2"))
+        if (UnicodeUtils::EqualsNoCase(name, "MPEG2"))
           strExt = ".mpg";
 
         // If a file format was extracted we are sure this is a VCD. Autoplay if settings indicate we should.

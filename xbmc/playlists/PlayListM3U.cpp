@@ -13,6 +13,7 @@
 #include "filesystem/File.h"
 #include "music/tags/MusicInfoTag.h"
 #include "utils/CharsetConverter.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoInfoTag.h"
@@ -83,9 +84,9 @@ bool CPlayListM3U::Load(const std::string& strFileName)
   while (file.ReadString(szLine, 4095))
   {
     strLine = szLine;
-    StringUtils::Trim(strLine);
+    UnicodeUtils::Trim(strLine);
 
-    if (StringUtils::StartsWith(strLine, InfoMarker))
+    if (UnicodeUtils::StartsWith(strLine, InfoMarker))
     {
       // start of info
       size_t iColon = strLine.find(':');
@@ -103,7 +104,7 @@ bool CPlayListM3U::Load(const std::string& strFileName)
         g_charsetConverter.unknownToUTF8(strInfo);
       }
     }
-    else if (StringUtils::StartsWith(strLine, OffsetMarker))
+    else if (UnicodeUtils::StartsWith(strLine, OffsetMarker))
     {
       size_t iColon = strLine.find(':');
       size_t iComma = strLine.find(',');
@@ -118,8 +119,8 @@ bool CPlayListM3U::Load(const std::string& strFileName)
         iEndOffset = atoi(strLine.substr(iComma).c_str());
       }
     }
-    else if (StringUtils::StartsWith(strLine, PropertyMarker)
-    || StringUtils::StartsWith(strLine, VLCOptMarker))
+    else if (UnicodeUtils::StartsWith(strLine, PropertyMarker)
+    || UnicodeUtils::StartsWith(strLine, VLCOptMarker))
     {
       size_t iColon = strLine.find(':');
       size_t iEqualSign = strLine.find('=');
@@ -129,13 +130,13 @@ bool CPlayListM3U::Load(const std::string& strFileName)
       {
         std::string strFirst, strSecond;
         properties.emplace_back(
-          StringUtils::Trim((strFirst = strLine.substr(iColon + 1, iEqualSign - iColon - 1))),
-          StringUtils::Trim((strSecond = strLine.substr(iEqualSign + 1))));
+          UnicodeUtils::Trim((strFirst = strLine.substr(iColon + 1, iEqualSign - iColon - 1))),
+          UnicodeUtils::Trim((strSecond = strLine.substr(iEqualSign + 1))));
       }
     }
     else if (strLine != StartMarker &&
-             !StringUtils::StartsWith(strLine, ArtistMarker) &&
-             !StringUtils::StartsWith(strLine, AlbumMarker))
+             !UnicodeUtils::StartsWith(strLine, ArtistMarker) &&
+             !UnicodeUtils::StartsWith(strLine, AlbumMarker))
     {
       std::string strFileName = strLine;
 
@@ -144,7 +145,7 @@ bool CPlayListM3U::Load(const std::string& strFileName)
 
       // Skip self - do not load playlist recursively
       // We compare case-less in case user has input incorrect case of the current playlist
-      if (StringUtils::EqualsNoCase(URIUtils::GetFileName(strFileName), m_strPlayListName))
+      if (UnicodeUtils::EqualsNoCase(URIUtils::GetFileName(strFileName), m_strPlayListName))
         continue;
 
       if (strFileName.length() > 0)
@@ -257,18 +258,18 @@ std::map< std::string, std::string > CPlayListM3U::ParseStreamLine(const std::st
   std::string strParams(streamLine.substr(strlen(StreamMarker) + 1));
 
   // separate the parameters
-  std::vector<std::string> vecParams = StringUtils::Split(strParams, ",");
+  std::vector<std::string> vecParams = UnicodeUtils::Split(strParams, ",");
   for (std::vector<std::string>::iterator i = vecParams.begin(); i != vecParams.end(); ++i)
   {
     // split the param, ensure there was an =
-    StringUtils::Trim(*i);
-    std::vector<std::string> vecTuple = StringUtils::Split(*i, "=");
+    UnicodeUtils::Trim(*i);
+    std::vector<std::string> vecTuple = UnicodeUtils::Split(*i, "=");
     if (vecTuple.size() < 2)
       continue;
 
     // remove white space from name and value and store it in the dictionary
-    StringUtils::Trim(vecTuple[0]);
-    StringUtils::Trim(vecTuple[1]);
+    UnicodeUtils::Trim(vecTuple[0]);
+    UnicodeUtils::Trim(vecTuple[1]);
     params[vecTuple[0]] = vecTuple[1];
   }
 

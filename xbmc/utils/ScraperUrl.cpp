@@ -20,6 +20,7 @@
 #include "utils/CharsetDetection.h"
 #include "utils/Mime.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
@@ -175,13 +176,13 @@ bool CScraperUrl::ParseAndAppendUrl(const TiXmlElement* element)
   url.m_spoof = XMLUtils::GetAttribute(element, "spoof");
 
   const char* szPost = element->Attribute("post");
-  if (szPost && StringUtils::CompareNoCase(szPost, "yes") == 0)
+  if (szPost && UnicodeUtils::CompareNoCase(szPost, "yes") == 0)
     url.m_post = true;
   else
     url.m_post = false;
 
   const char* szIsGz = element->Attribute("gzip");
-  if (szIsGz && StringUtils::CompareNoCase(szIsGz, "yes") == 0)
+  if (szIsGz && UnicodeUtils::CompareNoCase(szIsGz, "yes") == 0)
     url.m_isgz = true;
   else
     url.m_isgz = false;
@@ -189,7 +190,7 @@ bool CScraperUrl::ParseAndAppendUrl(const TiXmlElement* element)
   url.m_cache = XMLUtils::GetAttribute(element, "cache");
 
   const char* szType = element->Attribute("type");
-  if (szType && StringUtils::CompareNoCase(szType, "season") == 0)
+  if (szType && UnicodeUtils::CompareNoCase(szType, "season") == 0)
   {
     url.m_type = UrlType::Season;
     const char* szSeason = element->Attribute("season");
@@ -390,7 +391,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL,
     }
   }
   else if (ftype == CMime::FileTypePlainText ||
-           StringUtils::EqualsNoCase(mimeType.substr(0, 5), "text/"))
+           UnicodeUtils::EqualsNoCase(mimeType.substr(0, 5), "text/"))
   {
     std::string realTextCharset;
     std::string converted;

@@ -11,6 +11,7 @@
 #include "XBDateTime.h"
 #include "utils/ScraperUrl.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 #include <map>
 #include <string>
@@ -204,8 +205,8 @@ public:
 
   bool operator==(const CMusicRole& a) const
   {
-    if (StringUtils::EqualsNoCase(m_strRole, a.m_strRole))
-      return StringUtils::EqualsNoCase(m_strArtist, a.m_strArtist);
+    if (UnicodeUtils::EqualsNoCase(m_strRole, a.m_strRole))
+      return UnicodeUtils::EqualsNoCase(m_strArtist, a.m_strArtist);
     else
       return false;
   }

@@ -13,6 +13,7 @@
 #include "GUIWindowManager.h"
 #include "ServiceBroker.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 CGUIAction::CGUIAction(int controlID)
 {

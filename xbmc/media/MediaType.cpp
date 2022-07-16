@@ -10,6 +10,7 @@
 
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 #include <utility>
 
@@ -78,7 +79,7 @@ bool CMediaTypes::IsContainer(const MediaType &mediaType)
 std::map<std::string, CMediaTypes::MediaTypeInfo>::const_iterator CMediaTypes::findMediaType(const std::string &mediaType)
 {
   std::string strMediaType = mediaType;
-  StringUtils::ToLower(strMediaType);
+  UnicodeUtils::FoldCase(strMediaType);
 
   std::map<std::string, MediaTypeInfo>::const_iterator it = m_mediaTypes.find(strMediaType);
   if (it != m_mediaTypes.end())

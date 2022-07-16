@@ -15,6 +15,7 @@
 #include "guilib/GUIListItem.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 using namespace KODI::GUILIB::GUIINFO;
@@ -246,7 +247,7 @@ void CGUIInfoLabel::Parse(const std::string &label, int context)
       if (pos2 != std::string::npos)
       {
         // decipher the block
-        std::vector<std::string> params = StringUtils::Split(work.substr(pos1 + len, pos2 - pos1 - len), ",");
+        std::vector<std::string> params = UnicodeUtils::Split(work.substr(pos1 + len, pos2 - pos1 - len), ",");
         if (!params.empty())
         {
           CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
@@ -292,10 +293,10 @@ CGUIInfoLabel::CInfoPortion::CInfoPortion(int info, const std::string &prefix, c
   m_info = info;
   m_escaped = escaped;
   // filter our prefix and postfix for comma's
-  StringUtils::Replace(m_prefix, "$COMMA", ",");
-  StringUtils::Replace(m_postfix, "$COMMA", ",");
-  StringUtils::Replace(m_prefix, "$LBRACKET", "["); StringUtils::Replace(m_prefix, "$RBRACKET", "]");
-  StringUtils::Replace(m_postfix, "$LBRACKET", "["); StringUtils::Replace(m_postfix, "$RBRACKET", "]");
+  UnicodeUtils::Replace(m_prefix, "$COMMA", ",");
+  UnicodeUtils::Replace(m_postfix, "$COMMA", ",");
+  UnicodeUtils::Replace(m_prefix, "$LBRACKET", "["); UnicodeUtils::Replace(m_prefix, "$RBRACKET", "]");
+  UnicodeUtils::Replace(m_postfix, "$LBRACKET", "["); UnicodeUtils::Replace(m_postfix, "$RBRACKET", "]");
 }
 
 bool CGUIInfoLabel::CInfoPortion::NeedsUpdate(const std::string &label) const
@@ -317,8 +318,8 @@ std::string CGUIInfoLabel::CInfoPortion::Get() const
   std::string label = m_prefix + m_label + m_postfix;
   if (m_escaped) // escape all quotes and backslashes, then quote
   {
-    StringUtils::Replace(label, "\\", "\\\\");
-    StringUtils::Replace(label, "\"", "\\\"");
+    UnicodeUtils::Replace(label, "\\", "\\\\");
+    UnicodeUtils::Replace(label, "\"", "\\\"");
     return "\"" + label + "\"";
   }
   return label;

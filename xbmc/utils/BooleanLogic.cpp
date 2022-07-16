@@ -9,6 +9,7 @@
 #include "BooleanLogic.h"
 
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
@@ -28,9 +29,9 @@ bool CBooleanLogicValue::Deserialize(const TiXmlNode *node)
   const char *strNegated = elem->Attribute("negated");
   if (strNegated != NULL)
   {
-    if (StringUtils::EqualsNoCase(strNegated, "true"))
+    if (UnicodeUtils::EqualsNoCase(strNegated, "true"))
       m_negated = true;
-    else if (!StringUtils::EqualsNoCase(strNegated, "false"))
+    else if (!UnicodeUtils::EqualsNoCase(strNegated, "false"))
     {
       CLog::Log(LOGDEBUG, "CBooleanLogicValue: invalid negated value \"{}\"", strNegated);
       return false;
@@ -64,13 +65,13 @@ bool CBooleanLogicOperation::Deserialize(const TiXmlNode *node)
   while (operationNode != NULL)
   {
     std::string tag = operationNode->ValueStr();
-    if (StringUtils::EqualsNoCase(tag, "and") || StringUtils::EqualsNoCase(tag, "or"))
+    if (UnicodeUtils::EqualsNoCase(tag, "and") || UnicodeUtils::EqualsNoCase(tag, "or"))
     {
       CBooleanLogicOperationPtr operation = CBooleanLogicOperationPtr(newOperation());
       if (operation == NULL)
         return false;
 
-      operation->SetOperation(StringUtils::EqualsNoCase(tag, "and") ? BooleanLogicOperationAnd : BooleanLogicOperationOr);
+      operation->SetOperation(UnicodeUtils::EqualsNoCase(tag, "and") ? BooleanLogicOperationAnd : BooleanLogicOperationOr);
       if (!operation->Deserialize(operationNode))
       {
         CLog::Log(LOGDEBUG, "CBooleanLogicOperation: failed to deserialize <{}> definition", tag);
@@ -85,7 +86,7 @@ bool CBooleanLogicOperation::Deserialize(const TiXmlNode *node)
       if (value == NULL)
         return false;
 
-      if (StringUtils::EqualsNoCase(tag, value->GetTag()))
+      if (UnicodeUtils::EqualsNoCase(tag, value->GetTag()))
       {
         if (!value->Deserialize(operationNode))
         {

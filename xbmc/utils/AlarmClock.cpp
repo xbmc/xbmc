@@ -16,6 +16,7 @@
 #include "log.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 #include <mutex>
 #include <utility>
@@ -32,7 +33,7 @@ void CAlarmClock::Start(const std::string& strName, float n_secs, const std::str
 {
   // make lower case so that lookups are case-insensitive
   std::string lowerName(strName);
-  StringUtils::ToLower(lowerName);
+  UnicodeUtils::FoldCase(lowerName);
   Stop(lowerName);
   SAlarmClockEvent event;
   event.m_fSecs = static_cast<double>(n_secs);
@@ -47,7 +48,7 @@ void CAlarmClock::Start(const std::string& strName, float n_secs, const std::str
 
   uint32_t labelAlarmClock;
   uint32_t labelStarted;
-  if (StringUtils::EqualsNoCase(strName, "shutdowntimer"))
+  if (UnicodeUtils::EqualsNoCase(strName, "shutdowntimer"))
   {
     labelAlarmClock = 20144;
     labelStarted = 20146;
@@ -83,14 +84,14 @@ void CAlarmClock::Stop(const std::string& strName, bool bSilent /* false */)
   std::unique_lock<CCriticalSection> lock(m_events);
 
   std::string lowerName(strName);
-  StringUtils::ToLower(lowerName);          // lookup as lowercase only
+  UnicodeUtils::FoldCase(lowerName);          // lookup as lowercase only
   std::map<std::string,SAlarmClockEvent>::iterator iter = m_event.find(lowerName);
 
   if (iter == m_event.end())
     return;
 
   uint32_t labelAlarmClock;
-  if (StringUtils::EqualsNoCase(strName, "shutdowntimer"))
+  if (UnicodeUtils::EqualsNoCase(strName, "shutdowntimer"))
     labelAlarmClock = 20144;
   else
     labelAlarmClock = 13208;

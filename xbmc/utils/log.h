@@ -29,6 +29,7 @@
 #include "settings/lib/SettingDefinitions.h"
 #include "utils/IPlatformLog.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/logtypes.h"
 
 #include <string>
@@ -130,7 +131,7 @@ private:
     auto message = fmt::format(format, std::forward<Args>(args)...);
 
     // fixup newline alignment, number of spaces should equal prefix length
-    StringUtils::Replace(message, "\n", "\n                                                   ");
+    UnicodeUtils::Replace(message, "\n", "\n                                                   ");
 
     m_defaultLogger->log(level, message);
   }

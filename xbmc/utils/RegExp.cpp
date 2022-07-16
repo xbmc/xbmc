@@ -10,6 +10,7 @@
 
 #include "log.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Utf8Utils.h"
 
 #include <algorithm>

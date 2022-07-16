@@ -285,7 +285,7 @@ bool CMusicThumbLoader::FillLibraryArt(CFileItem &item)
       else
       {
         if (tag.GetType() == MediaTypeAlbum)
-          StringUtils::Replace(artitem.prefix, "albumartist", "artist");
+          UnicodeUtils::Replace(artitem.prefix, "albumartist", "artist");
         artname = artitem.prefix + "." + artitem.artType;
       }
 

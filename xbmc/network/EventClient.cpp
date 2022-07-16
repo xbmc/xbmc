@@ -20,6 +20,7 @@
 #include "input/KeyboardTranslator.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
@@ -70,7 +71,7 @@ void CEventButtonState::Load()
   else
   {
     if (m_mapName.length() > 3 &&
-        (StringUtils::StartsWith(m_mapName, "JS")) )
+        (UnicodeUtils::StartsWith(m_mapName, "JS")) )
     {
       m_joystickName = m_mapName.substr(2);  // <num>:joyname
       m_iControllerNumber = (unsigned char)(*(m_joystickName.c_str()))
@@ -79,7 +80,7 @@ void CEventButtonState::Load()
     }
 
     if (m_mapName.length() > 3 &&
-        (StringUtils::StartsWith(m_mapName, "CC")) ) // custom map - CC:<controllerName>
+        (UnicodeUtils::StartsWith(m_mapName, "CC")) ) // custom map - CC:<controllerName>
     {
       m_customControllerName = m_mapName.substr(3);
     }

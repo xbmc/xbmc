@@ -20,6 +20,7 @@
 #include "settings/lib/Setting.h"
 #include "utils/RssReader.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
@@ -112,7 +113,7 @@ bool CRssManager::Load()
   }
 
   const TiXmlElement *pRootElement = rssDoc.RootElement();
-  if (pRootElement == NULL || !StringUtils::EqualsNoCase(pRootElement->ValueStr(), "rssfeeds"))
+  if (pRootElement == NULL || !UnicodeUtils::EqualsNoCase(pRootElement->ValueStr(), "rssfeeds"))
   {
     CLog::Log(LOGERROR, "CRssManager: error loading {}, no <rssfeeds> node", rssXML);
     return false;
@@ -127,7 +128,7 @@ bool CRssManager::Load()
     {
       RssSet set;
       set.rtl = pSet->Attribute("rtl") != NULL &&
-                StringUtils::CompareNoCase(pSet->Attribute("rtl"), "true") == 0;
+                UnicodeUtils::CompareNoCase(pSet->Attribute("rtl"), "true") == 0;
       const TiXmlElement* pFeed = pSet->FirstChildElement("feed");
       while (pFeed != NULL)
       {

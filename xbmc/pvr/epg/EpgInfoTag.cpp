@@ -18,6 +18,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
@@ -361,7 +362,7 @@ const std::string CPVREpgInfoTag::GetCastLabel() const
   for (const auto& castEntry : m_cast)
     strLabel += StringUtils::Format("{}\n", castEntry);
 
-  return StringUtils::TrimRight(strLabel, "\n");
+  return UnicodeUtils::TrimRight(strLabel, "\n");
 }
 
 const std::string CPVREpgInfoTag::GetDirectorsLabel() const
@@ -406,7 +407,7 @@ void CPVREpgInfoTag::SetGenre(int iGenreType, int iGenreSubType, const char* str
   if (m_genre.empty())
   {
     // Determine the genre description from the type and subtype IDs.
-    m_genre = StringUtils::Split(
+    m_genre = UnicodeUtils::Split(
         CPVREpg::ConvertGenreIdToString(iGenreType, iGenreSubType),
         CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
   }
@@ -539,7 +540,7 @@ bool CPVREpgInfoTag::Update(const CPVREpgInfoTag& tag, bool bUpdateBroadcastId /
     else
     {
       /* Determine genre description by type/subtype */
-      m_genre = StringUtils::Split(CPVREpg::ConvertGenreIdToString(tag.m_iGenreType, tag.m_iGenreSubType), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
+      m_genre = UnicodeUtils::Split(CPVREpg::ConvertGenreIdToString(tag.m_iGenreType, tag.m_iGenreSubType), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
     }
     m_firstAired = tag.m_firstAired;
     m_iParentalRating = tag.m_iParentalRating;
@@ -677,7 +678,7 @@ bool CPVREpgInfoTag::IsLive() const
 
 const std::vector<std::string> CPVREpgInfoTag::Tokenize(const std::string& str)
 {
-  return StringUtils::Split(str, EPG_STRING_TOKEN_SEPARATOR);
+  return UnicodeUtils::Split(str, EPG_STRING_TOKEN_SEPARATOR);
 }
 
 const std::string CPVREpgInfoTag::DeTokenize(const std::vector<std::string>& tokens)

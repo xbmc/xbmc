@@ -11,7 +11,8 @@
 #include "FileItem.h"
 #include "RegExp.h"
 #include "ServiceBroker.h"
-#include "StringUtils.h"
+#include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "URIUtils.h"
 #include "Util.h"
 #include "Variant.h"
@@ -21,6 +22,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/UnicodeUtils.h"
 #include "video/VideoInfoTag.h"
 
 #include <cassert>
@@ -462,7 +464,7 @@ void CLabelFormatter::FillMusicMaskContent(const char mask, const std::string &v
     tag->SetYear(atol(value.c_str()));
     break;
   case 'D':
-    tag->SetDuration(StringUtils::TimeStringToSeconds(value));
+    tag->SetDuration(UnicodeUtils::TimeStringToSeconds(value));
     break;
   case 'R': // rating
     tag->SetRating(value[0]);

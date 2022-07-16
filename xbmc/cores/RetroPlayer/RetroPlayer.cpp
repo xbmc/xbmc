@@ -45,6 +45,7 @@
 #include "utils/JobManager.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 #include "windowing/WinSystem.h"
 

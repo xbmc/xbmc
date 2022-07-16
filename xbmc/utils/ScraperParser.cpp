@@ -15,6 +15,7 @@
 #include "addons/Scraper.h"
 #include "URL.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "log.h"
 #include "CharsetConverter.h"
 #ifdef HAVE_LIBXSLT
@@ -190,18 +191,18 @@ void CScraperParser::ParseExpression(const std::string& input, std::string& dest
     bool bInsensitive=true;
     const char* sensitive = pExpression->Attribute("cs");
     if (sensitive)
-      if (StringUtils::CompareNoCase(sensitive, "yes") == 0)
+      if (UnicodeUtils::CompareNoCase(sensitive, "yes") == 0)
         bInsensitive=false; // match case sensitive
 
     CRegExp::utf8Mode eUtf8 = CRegExp::autoUtf8;
     const char* const strUtf8 = pExpression->Attribute("utf8");
     if (strUtf8)
     {
-      if (StringUtils::CompareNoCase(strUtf8, "yes") == 0)
+      if (UnicodeUtils::CompareNoCase(strUtf8, "yes") == 0)
         eUtf8 = CRegExp::forceUtf8;
-      else if (StringUtils::CompareNoCase(strUtf8, "no") == 0)
+      else if (UnicodeUtils::CompareNoCase(strUtf8, "no") == 0)
         eUtf8 = CRegExp::asciiOnly;
-      else if (StringUtils::CompareNoCase(strUtf8, "auto") == 0)
+      else if (UnicodeUtils::CompareNoCase(strUtf8, "auto") == 0)
         eUtf8 = CRegExp::autoUtf8;
     }
 
@@ -222,12 +223,12 @@ void CScraperParser::ParseExpression(const std::string& input, std::string& dest
     bool bRepeat = false;
     const char* szRepeat = pExpression->Attribute("repeat");
     if (szRepeat)
-      if (StringUtils::CompareNoCase(szRepeat, "yes") == 0)
+      if (UnicodeUtils::CompareNoCase(szRepeat, "yes") == 0)
         bRepeat = true;
 
     const char* szClear = pExpression->Attribute("clear");
     if (szClear)
-      if (StringUtils::CompareNoCase(szClear, "yes") == 0)
+      if (UnicodeUtils::CompareNoCase(szClear, "yes") == 0)
         dest=""; // clear no matter if regexp fails
 
     bool bClean[MAX_SCRAPER_BUFFERS];
@@ -248,7 +249,7 @@ void CScraperParser::ParseExpression(const std::string& input, std::string& dest
     int iCompare = -1;
     pExpression->QueryIntAttribute("compare",&iCompare);
     if (iCompare > -1)
-      StringUtils::ToLower(m_param[iCompare-1]);
+      UnicodeUtils::FoldCase(m_param[iCompare-1]);
     std::string curInput = input;
     for (int iBuf=0;iBuf<MAX_SCRAPER_BUFFERS;++iBuf)
     {
@@ -298,18 +299,18 @@ void CScraperParser::ParseExpression(const std::string& input, std::string& dest
 
       int iLen = reg.GetFindLen();
       // nasty hack #1 - & means \0 in a replace string
-      StringUtils::Replace(strCurOutput, "&","!!!AMPAMP!!!");
+      UnicodeUtils::Replace(strCurOutput, "&","!!!AMPAMP!!!");
       std::string result = reg.GetReplaceString(strCurOutput);
       if (!result.empty())
       {
         std::string strResult(result);
-        StringUtils::Replace(strResult, "!!!AMPAMP!!!","&");
+        UnicodeUtils::Replace(strResult, "!!!AMPAMP!!!","&");
         Clean(strResult);
         ReplaceBuffers(strResult);
         if (iCompare > -1)
         {
           std::string strResultNoCase = strResult;
-          StringUtils::ToLower(strResultNoCase);
+          UnicodeUtils::FoldCase(strResultNoCase);
           if (strResultNoCase.find(m_param[iCompare-1]) != std::string::npos)
             dest += strResult;
         }
@@ -465,7 +466,7 @@ const std::string CScraperParser::Parse(const std::string& strTag,
   std::string tmp = m_param[iResult-1];
 
   const char* szClearBuffers = pChildElement->Attribute("clearbuffers");
-  if (!szClearBuffers || StringUtils::CompareNoCase(szClearBuffers, "no") != 0)
+  if (!szClearBuffers || UnicodeUtils::CompareNoCase(szClearBuffers, "no") != 0)
     ClearBuffers();
 
   return tmp;
@@ -483,7 +484,7 @@ void CScraperParser::Clean(std::string& strDirty)
       strBuffer = strDirty.substr(i+11,i2-i-11);
       std::string strConverted(strBuffer);
       HTML::CHTMLUtil::RemoveTags(strConverted);
-      StringUtils::Trim(strConverted);
+      UnicodeUtils::Trim(strConverted);
       strDirty.replace(i, i2-i+11, strConverted);
       i += strConverted.size();
     }
@@ -497,7 +498,7 @@ void CScraperParser::Clean(std::string& strDirty)
     if ((i2 = strDirty.find("!!!TRIM!!!",i+10)) != std::string::npos)
     {
       strBuffer = strDirty.substr(i+10,i2-i-10);
-      StringUtils::Trim(strBuffer);
+      UnicodeUtils::Trim(strBuffer);
       strDirty.replace(i, i2-i+10, strBuffer);
       i += strBuffer.size();
     }
@@ -516,7 +517,7 @@ void CScraperParser::Clean(std::string& strDirty)
       std::wstring wConverted;
       HTML::CHTMLUtil::ConvertHTMLToW(wbuffer,wConverted);
       g_charsetConverter.wToUTF8(wConverted, strBuffer, false);
-      StringUtils::Trim(strBuffer);
+      UnicodeUtils::Trim(strBuffer);
       ConvertJSON(strBuffer);
       strDirty.replace(i, i2-i+14, strBuffer);
       i += strBuffer.size();
@@ -564,7 +565,7 @@ void CScraperParser::ConvertJSON(std::string &string)
     string.replace(string.begin()+pos1-2, string.begin()+pos2+reg2.GetSubLength(2), replace);
   }
 
-  StringUtils::Replace(string, "\\\"","\"");
+  UnicodeUtils::Replace(string, "\\\"","\"");
 }
 
 void CScraperParser::ClearBuffers()

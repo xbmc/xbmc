@@ -18,6 +18,7 @@
 #include "utils/FileExtensionProvider.h"
 #include "utils/HTMLUtil.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
@@ -181,7 +182,7 @@ static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* 
     else if(scheme == "urn:boxee:source")
       item->SetProperty("boxee:provider_source", text);
     else
-      vtag->m_genre = StringUtils::Split(text, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
+      vtag->m_genre = UnicodeUtils::Split(text, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
   }
   else if(name == "rating")
   {
@@ -207,7 +208,7 @@ static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* 
     }
   }
   else if(name == "copyright")
-    vtag->m_studio = StringUtils::Split(text, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
+    vtag->m_studio = UnicodeUtils::Split(text, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
   else if(name == "keywords")
     item->SetProperty("keywords", text);
 
@@ -233,7 +234,7 @@ static void ParseItemItunes(CFileItem* item, SResources& resources, TiXmlElement
   else if(name == "author")
     vtag->m_writingCredits.push_back(text);
   else if(name == "duration")
-    vtag->SetDuration(StringUtils::TimeStringToSeconds(text));
+    vtag->SetDuration(UnicodeUtils::TimeStringToSeconds(text));
   else if(name == "keywords")
     item->SetProperty("keywords", text);
 }
@@ -332,7 +333,7 @@ static void ParseItemBoxee(CFileItem* item, SResources& resources, TiXmlElement*
   else if(name == "content_type")
     item->SetMimeType(text);
   else if(name == "runtime")
-    vtag->SetDuration(StringUtils::TimeStringToSeconds(text));
+    vtag->SetDuration(UnicodeUtils::TimeStringToSeconds(text));
   else if(name == "episode")
     vtag->m_iEpisode = atoi(text.c_str());
   else if(name == "season")
@@ -362,7 +363,7 @@ static void ParseItemZink(CFileItem* item, SResources& resources, TiXmlElement* 
   else if(name == "duration")
     vtag->SetDuration(atoi(text.c_str()));
   else if(name == "durationstr")
-    vtag->SetDuration(StringUtils::TimeStringToSeconds(text));
+    vtag->SetDuration(UnicodeUtils::TimeStringToSeconds(text));
 }
 
 static void ParseItemSVT(CFileItem* item, SResources& resources, TiXmlElement* element, const std::string& name, const std::string& xmlns, const std::string& path)
@@ -379,7 +380,7 @@ static void ParseItemSVT(CFileItem* item, SResources& resources, TiXmlElement* e
   else if (name == "broadcasts")
   {
     CURL url(path);
-    if(StringUtils::StartsWith(url.GetFileName(), "v1/"))
+    if(UnicodeUtils::StartsWith(url.GetFileName(), "v1/"))
     {
       SResource res;
       res.tag  = "svtplay:broadcasts";
@@ -424,7 +425,7 @@ static bool FindMime(const SResources& resources, const std::string& mime)
 {
   for (const auto& it : resources)
   {
-    if (StringUtils::StartsWithNoCase(it.mime, mime))
+    if (UnicodeUtils::StartsWithNoCase(it.mime, mime))
       return true;
   }
   return false;
@@ -456,7 +457,7 @@ static void ParseItem(CFileItem* item, TiXmlElement* root, const std::string& pa
   {
     for(SResources::iterator it = resources.begin(); it != resources.end(); it++)
     {
-      if(!StringUtils::StartsWith(it->mime, mime))
+      if(!UnicodeUtils::StartsWith(it->mime, mime))
         continue;
 
       if(it->tag == *type)
@@ -500,14 +501,14 @@ static void ParseItem(CFileItem* item, TiXmlElement* root, const std::string& pa
       item->SetProperty("duration", StringUtils::SecondsToTimeString(best->duration));
 
     /* handling of mimetypes fo directories are sub optimal at best */
-    if(best->mime == "application/rss+xml" && StringUtils::StartsWithNoCase(item->GetPath(), "http://"))
+    if(best->mime == "application/rss+xml" && UnicodeUtils::StartsWithNoCase(item->GetPath(), "http://"))
       item->SetPath("rss://" + item->GetPath().substr(7));
 
-    if(best->mime == "application/rss+xml" && StringUtils::StartsWithNoCase(item->GetPath(), "https://"))
+    if(best->mime == "application/rss+xml" && UnicodeUtils::StartsWithNoCase(item->GetPath(), "https://"))
       item->SetPath("rsss://" + item->GetPath().substr(8));
 
-    if(StringUtils::StartsWithNoCase(item->GetPath(), "rss://")
-      || StringUtils::StartsWithNoCase(item->GetPath(), "rsss://"))
+    if(UnicodeUtils::StartsWithNoCase(item->GetPath(), "rss://")
+      || UnicodeUtils::StartsWithNoCase(item->GetPath(), "rsss://"))
       item->m_bIsFolder = true;
     else
       item->m_bIsFolder = false;
@@ -521,7 +522,7 @@ static void ParseItem(CFileItem* item, TiXmlElement* root, const std::string& pa
     CVideoInfoTag* vtag = item->GetVideoInfoTag();
 
     if(item->HasProperty("duration")    && !vtag->GetDuration())
-      vtag->SetDuration(StringUtils::TimeStringToSeconds(item->GetProperty("duration").asString()));
+      vtag->SetDuration(UnicodeUtils::TimeStringToSeconds(item->GetProperty("duration").asString()));
 
     if(item->HasProperty("description") && vtag->m_strPlot.empty())
       vtag->m_strPlot = item->GetProperty("description").asString();

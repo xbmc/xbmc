@@ -13,6 +13,7 @@
 #include "utils/HTMLUtil.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 CDVDSubtitleTagSami::~CDVDSubtitleTagSami()
 {
@@ -37,7 +38,7 @@ bool CDVDSubtitleTagSami::Init()
 
 void CDVDSubtitleTagSami::ConvertLine(std::string& strUTF8, const char* langClassID)
 {
-  StringUtils::Trim(strUTF8);
+  UnicodeUtils::Trim(strUTF8);
 
   int pos = 0;
   int del_start = 0;
@@ -45,7 +46,7 @@ void CDVDSubtitleTagSami::ConvertLine(std::string& strUTF8, const char* langClas
   {
     // Parser for SubRip/SAMI Tags
     std::string fullTag = m_tags->GetMatch(0);
-    StringUtils::ToLower(fullTag);
+    UnicodeUtils::FoldCase(fullTag);
     strUTF8.erase(pos, fullTag.length());
     if (fullTag == "<b>")
     {
@@ -101,7 +102,7 @@ void CDVDSubtitleTagSami::ConvertLine(std::string& strUTF8, const char* langClas
       strUTF8.insert(pos, "{\\c}");
       pos += 4;
     }
-    else if (StringUtils::StartsWith(fullTag, "<font"))
+    else if (UnicodeUtils::StartsWith(fullTag, "<font"))
     {
       int pos2 = 5;
       while ((pos2 = m_tagOptions->RegFind(fullTag.c_str(), pos2)) >= 0)
@@ -144,13 +145,13 @@ void CDVDSubtitleTagSami::ConvertLine(std::string& strUTF8, const char* langClas
       }
     }
     // Parse specific SAMI Tags (all below)
-    else if (langClassID && (StringUtils::StartsWith(fullTag, "<p ")))
+    else if (langClassID && (UnicodeUtils::StartsWith(fullTag, "<p ")))
     {
       int pos2 = 3;
       while ((pos2 = m_tagOptions->RegFind(fullTag.c_str(), pos2)) >= 0)
       {
         std::string tagOptionName = m_tagOptions->GetMatch(1);
-        std::string tagOptionValue = StringUtils::ToLower(m_tagOptions->GetMatch(2));
+        std::string tagOptionValue = m_tagOptions->GetMatch(2);
         pos2 += static_cast<int>(tagOptionName.length() + tagOptionValue.length());
         if (tagOptionName == "class")
         {
@@ -159,7 +160,7 @@ void CDVDSubtitleTagSami::ConvertLine(std::string& strUTF8, const char* langClas
             strUTF8.erase(del_start, pos - del_start);
             pos = del_start;
           }
-          if (!tagOptionValue.compare(langClassID))
+          if (UnicodeUtils::EqualsNoCase(tagOptionValue, langClassID) )
           {
             m_flag[FLAG_LANGUAGE] = false;
           }
@@ -178,7 +179,7 @@ void CDVDSubtitleTagSami::ConvertLine(std::string& strUTF8, const char* langClas
       pos = del_start;
       m_flag[FLAG_LANGUAGE] = false;
     }
-    else if ((fullTag == "\\n") || (StringUtils::StartsWith(fullTag, "<br") && !strUTF8.empty()))
+    else if ((fullTag == "\\n") || (UnicodeUtils::StartsWith(fullTag, "<br") && !strUTF8.empty()))
     {
       strUTF8.insert(pos, "\n");
       pos += 1;
@@ -250,13 +251,13 @@ void CDVDSubtitleTagSami::LoadHead(CDVDSubtitleStream* samiStream)
   std::string line;
   while (samiStream->ReadLine(line))
   {
-    StringUtils::Trim(line);
+    UnicodeUtils::Trim(line);
 
-    if (StringUtils::EqualsNoCase(line, "<BODY>"))
+    if (UnicodeUtils::EqualsNoCase(line, "<BODY>"))
       break;
     if (inSTYLE)
     {
-      if (StringUtils::EqualsNoCase(line, "</STYLE>"))
+      if (UnicodeUtils::EqualsNoCase(line, "</STYLE>"))
         break;
       else
       {
@@ -267,16 +268,16 @@ void CDVDSubtitleTagSami::LoadHead(CDVDSubtitleStream* samiStream)
           lc.Name = reg.GetMatch(2);
           lc.Lang = reg.GetMatch(3);
           lc.SAMIType = reg.GetMatch(4);
-          StringUtils::Trim(lc.Name);
-          StringUtils::Trim(lc.Lang);
-          StringUtils::Trim(lc.SAMIType);
+          UnicodeUtils::Trim(lc.Name);
+          UnicodeUtils::Trim(lc.Lang);
+          UnicodeUtils::Trim(lc.SAMIType);
           m_Langclass.push_back(lc);
         }
       }
     }
     else
     {
-      if (StringUtils::EqualsNoCase(line, "<STYLE TYPE=\"text/css\">"))
+      if (UnicodeUtils::EqualsNoCase(line, "<STYLE TYPE=\"text/css\">"))
         inSTYLE = true;
     }
   }

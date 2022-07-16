@@ -18,6 +18,7 @@
 #include "settings/lib/SettingDefinitions.h"
 #include "settings/lib/SettingsManager.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 #include <mutex>
 
@@ -179,7 +180,7 @@ void CActiveAESettings::SettingOptionsAudioDevicesFillerGeneral(
 
       list.emplace_back(sink->first, sink->second);
 
-      if (StringUtils::EqualsNoCase(current, sink->second))
+      if (UnicodeUtils::EqualsNoCase(current, sink->second))
         foundValue = true;
     }
   }

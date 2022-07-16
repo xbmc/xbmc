@@ -15,6 +15,7 @@
 #include "pvr/addons/PVRClient.h"
 #include "pvr/addons/PVRClients.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
@@ -200,7 +201,7 @@ namespace
 
 const std::vector<std::string> Tokenize(const std::string& str)
 {
-  return StringUtils::Split(str, PROVIDER_STRING_TOKEN_SEPARATOR);
+  return UnicodeUtils::Split(str, PROVIDER_STRING_TOKEN_SEPARATOR);
 }
 
 const std::string DeTokenize(const std::vector<std::string>& tokens)

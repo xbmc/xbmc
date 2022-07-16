@@ -16,6 +16,7 @@
 #include "peripherals/devices/PeripheralJoystick.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+#include "utils/UnicodeUtils.h"
 
 #include <algorithm>
 #include <memory>
@@ -342,7 +343,7 @@ bool CPeripheralBusAddon::SplitLocation(const std::string& strLocation,
                                         PeripheralAddonPtr& addon,
                                         unsigned int& peripheralIndex) const
 {
-  std::vector<std::string> parts = StringUtils::Split(strLocation, "/");
+  std::vector<std::string> parts = UnicodeUtils::Split(strLocation, "/");
   if (parts.size() == 2)
   {
     addon.reset();

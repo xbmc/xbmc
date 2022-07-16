@@ -12,6 +12,7 @@
 #include "SettingDefinitions.h"
 #include "SettingsManager.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
@@ -36,7 +37,7 @@ template<class T> void addISetting(const TiXmlNode *node, const T &item, std::ve
       {
         for (typename std::vector<T>::iterator it = items.begin(); it != items.end(); ++it)
         {
-          if (!StringUtils::EqualsNoCase((*it)->GetId(), positionId))
+          if (!UnicodeUtils::EqualsNoCase((*it)->GetId(), positionId))
             continue;
 
           typename std::vector<T>::iterator positionIt = it;

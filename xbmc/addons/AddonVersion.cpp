@@ -9,6 +9,7 @@
 #include "AddonVersion.h"
 
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 #include <ctype.h>
@@ -31,7 +32,7 @@ namespace ADDON
                          "0.0.0" :
                          [&version] {
                              auto versionLowerCase = std::string(version);
-                             StringUtils::ToLower(versionLowerCase);
+                             UnicodeUtils::FoldCase(versionLowerCase);
                              return versionLowerCase;
                          }())
   {

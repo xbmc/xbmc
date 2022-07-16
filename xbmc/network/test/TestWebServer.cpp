@@ -25,6 +25,7 @@
 #include "test/TestUtils.h"
 #include "utils/JSONVariantParser.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 
@@ -283,7 +284,7 @@ protected:
     multipartBoundary = "--" + multipartBoundary;
 
     ASSERT_EQ(0U, result.find(multipartBoundary));
-    std::vector<std::string> rangeParts = StringUtils::Split(result, multipartBoundary);
+    std::vector<std::string> rangeParts = UnicodeUtils::Split(result, multipartBoundary);
     // the first part is not really a part and is therefore empty (the place before the first boundary)
     ASSERT_TRUE(rangeParts.front().empty());
     rangeParts.erase(rangeParts.begin());
@@ -295,7 +296,7 @@ protected:
     for (size_t i = 0; i < rangeParts.size(); ++i)
     {
       std::string data = rangeParts.at(i);
-      StringUtils::Trim(data, " \r\n");
+      UnicodeUtils::Trim(data, " \r\n");
 
       // find the separator between header and data
       size_t pos = data.find("\r\n\r\n");
@@ -317,7 +318,7 @@ protected:
 
       // parse and check Content-Range
       std::string contentRangeHeader = rangeHeader.GetValue(MHD_HTTP_HEADER_CONTENT_RANGE);
-      std::vector<std::string> contentRangeHeaderParts = StringUtils::Split(contentRangeHeader, "/");
+      std::vector<std::string> contentRangeHeaderParts = UnicodeUtils::Split(contentRangeHeader, "/");
       ASSERT_EQ(2U, contentRangeHeaderParts.size());
 
       // check the length of the range
@@ -331,7 +332,7 @@ protected:
       contentRangeDefinition = contentRangeDefinition.substr(6);
 
       // check the start and end positions of the range
-      std::vector<std::string> contentRangeParts = StringUtils::Split(contentRangeDefinition, "-");
+      std::vector<std::string> contentRangeParts = UnicodeUtils::Split(contentRangeDefinition, "-");
       ASSERT_EQ(2U, contentRangeParts.size());
       EXPECT_TRUE(StringUtils::IsNaturalNumber(contentRangeParts.front()));
       uint64_t contentRangeStart = str2uint64(contentRangeParts.front());
@@ -767,7 +768,7 @@ TEST_F(TestWebServer, CanGetRangedFileRange0_2xEnd)
 TEST_F(TestWebServer, CanGetRangedFileRange0_First)
 {
   const std::string rangedFileContent = TEST_FILES_DATA_RANGES;
-  std::vector<std::string> rangedContent = StringUtils::Split(TEST_FILES_DATA_RANGES, ";");
+  std::vector<std::string> rangedContent = UnicodeUtils::Split(TEST_FILES_DATA_RANGES, ";");
   const std::string range = GenerateRangeHeaderValue(0, rangedContent.front().size() - 1);
 
   CHttpRanges ranges;
@@ -784,7 +785,7 @@ TEST_F(TestWebServer, CanGetRangedFileRange0_First)
 TEST_F(TestWebServer, CanGetRangedFileRangeFirst_Second)
 {
   const std::string rangedFileContent = TEST_FILES_DATA_RANGES;
-  std::vector<std::string> rangedContent = StringUtils::Split(TEST_FILES_DATA_RANGES, ";");
+  std::vector<std::string> rangedContent = UnicodeUtils::Split(TEST_FILES_DATA_RANGES, ";");
   const std::string range = GenerateRangeHeaderValue(rangedContent.front().size() + 1, rangedContent.front().size() + 1 + rangedContent.at(2).size() - 1);
 
   CHttpRanges ranges;
@@ -801,7 +802,7 @@ TEST_F(TestWebServer, CanGetRangedFileRangeFirst_Second)
 TEST_F(TestWebServer, CanGetRangedFileRange_Last)
 {
   const std::string rangedFileContent = TEST_FILES_DATA_RANGES;
-  std::vector<std::string> rangedContent = StringUtils::Split(TEST_FILES_DATA_RANGES, ";");
+  std::vector<std::string> rangedContent = UnicodeUtils::Split(TEST_FILES_DATA_RANGES, ";");
   const std::string range =
       StringUtils::Format("bytes=-{}", static_cast<unsigned int>(rangedContent.back().size()));
 
@@ -819,7 +820,7 @@ TEST_F(TestWebServer, CanGetRangedFileRange_Last)
 TEST_F(TestWebServer, CanGetRangedFileRangeFirstSecond)
 {
   const std::string rangedFileContent = TEST_FILES_DATA_RANGES;
-  std::vector<std::string> rangedContent = StringUtils::Split(TEST_FILES_DATA_RANGES, ";");
+  std::vector<std::string> rangedContent = UnicodeUtils::Split(TEST_FILES_DATA_RANGES, ";");
   const std::string range = StringUtils::Format(
       "bytes=0-{},{}-{}", static_cast<unsigned int>(rangedContent.front().size() - 1),
       static_cast<unsigned int>(rangedContent.front().size() + 1),
@@ -840,7 +841,7 @@ TEST_F(TestWebServer, CanGetRangedFileRangeFirstSecond)
 TEST_F(TestWebServer, CanGetRangedFileRangeFirstSecondLast)
 {
   const std::string rangedFileContent = TEST_FILES_DATA_RANGES;
-  std::vector<std::string> rangedContent = StringUtils::Split(TEST_FILES_DATA_RANGES, ";");
+  std::vector<std::string> rangedContent = UnicodeUtils::Split(TEST_FILES_DATA_RANGES, ";");
   const std::string range = StringUtils::Format(
       "bytes=0-{},{}-{},-{}", static_cast<unsigned int>(rangedContent.front().size() - 1),
       static_cast<unsigned int>(rangedContent.front().size() + 1),

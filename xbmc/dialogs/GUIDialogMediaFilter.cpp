@@ -448,7 +448,7 @@ void CGUIDialogMediaFilter::InitializeSettings()
       std::vector<std::string> values;
       if (filter.rule != NULL && !filter.rule->m_parameter.empty())
       {
-        values = StringUtils::Split(filter.rule->GetParameter(), DATABASEQUERY_RULE_VALUE_SEPARATOR);
+        values = UnicodeUtils::Split(filter.rule->GetParameter(), DATABASEQUERY_RULE_VALUE_SEPARATOR);
         if (values.size() == 1 && values.at(0).empty())
           values.erase(values.begin());
       }

@@ -10,6 +10,7 @@
 
 #include "network/httprequesthandler/python/HTTPPythonRequest.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 namespace XBMCAddon
 {
@@ -69,7 +70,7 @@ namespace XBMCAddon
       String line = read(size);
 
       // remove any trailing \r\n
-      StringUtils::TrimRight(line, "\r\n");
+      UnicodeUtils::TrimRight(line, "\r\n");
 
       return line;
     }

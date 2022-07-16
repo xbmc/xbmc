@@ -23,6 +23,7 @@
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
@@ -634,7 +635,7 @@ void CGUIBaseContainer::OnJumpLetter(const std::string& letter, bool skip /*=fal
     std::string label = item->GetLabel();
     if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING))
       label = SortUtils::RemoveArticles(label);
-    if (0 == StringUtils::CompareNoCase(label, m_match, m_match.size()))
+    if (UnicodeUtils::StartsWithNoCase(label, m_match))
     {
       SelectItem(i);
       return;
@@ -1103,12 +1104,15 @@ void CGUIBaseContainer::UpdateScrollByLetter()
   {
     CGUIListItemPtr item = m_items[i];
     // The letter offset jumping is only for ASCII characters at present, and
-    // our checks are all done in uppercase
+    // our checks are all done in uppercase.
+    // To avoid problems with "Turkic I" use caseless compare (which is locale
+    // independent).
+
     std::string nextLetter;
     std::wstring character = item->GetSortLabel().substr(0, 1);
-    StringUtils::ToUpper(character);
     g_charsetConverter.wToUTF8(character, nextLetter);
-    if (currentMatch != nextLetter)
+
+    if (! UnicodeUtils::EqualsNoCase(currentMatch, nextLetter))
     {
       currentMatch = nextLetter;
       m_letterOffsets.emplace_back(static_cast<int>(i), currentMatch);

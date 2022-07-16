@@ -41,6 +41,7 @@
 #include "utils/FileUtils.h"
 #include "utils/LegacyPathTranslation.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -335,7 +336,7 @@ bool CGUIWindowMusicNav::OnClick(int iItem, const std::string &player /* = "" */
   if (iItem < 0 || iItem >= m_vecItems->Size()) return false;
 
   CFileItemPtr item = m_vecItems->Get(iItem);
-  if (StringUtils::StartsWith(item->GetPath(), "musicsearch://"))
+  if (UnicodeUtils::StartsWith(item->GetPath(), "musicsearch://"))
   {
     if (m_searchWithEdit)
       OnSearchUpdate();
@@ -386,7 +387,7 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
   }
 
   // update our content in the info manager
-  if (StringUtils::StartsWithNoCase(strDirectory, "videodb://") || items.IsVideoDb())
+  if (UnicodeUtils::StartsWithNoCase(strDirectory, "videodb://") || items.IsVideoDb())
   {
     CVideoDatabaseDirectory dir;
     VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(items.GetPath());
@@ -412,7 +413,7 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
     else
       items.SetContent("");
   }
-  else if (StringUtils::StartsWithNoCase(strDirectory, "musicdb://") || items.IsMusicDb())
+  else if (UnicodeUtils::StartsWithNoCase(strDirectory, "musicdb://") || items.IsMusicDb())
   {
     CMusicDatabaseDirectory dir;
     NODE_TYPE node = dir.GetDirectoryChildType(items.GetPath());
@@ -472,11 +473,11 @@ void CGUIWindowMusicNav::UpdateButtons()
     {
       CFileItemPtr pItem = m_vecItems->Get(i);
       if (pItem->IsParentFolder()) iItems--;
-      if (StringUtils::StartsWith(pItem->GetPath(), "/-1/")) iItems--;
+      if (UnicodeUtils::StartsWith(pItem->GetPath(), "/-1/")) iItems--;
     }
     // or the last item
     if (m_vecItems->Size() > 2 &&
-      StringUtils::StartsWith(m_vecItems->Get(m_vecItems->Size()-1)->GetPath(), "/-1/"))
+      UnicodeUtils::StartsWith(m_vecItems->Get(m_vecItems->Size()-1)->GetPath(), "/-1/"))
       iItems--;
   }
   std::string items = StringUtils::Format("{} {}", iItems, g_localizeStrings.Get(127));
@@ -589,7 +590,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
           !URIUtils::IsLibraryContent(item->GetPath()) && // database folder or .xsp files
           !URIUtils::IsSpecial(item->GetPath()) && !item->IsPlugin() && !item->IsScript() &&
           !item->IsPlayList() && // .m3u etc. that as flagged as folders when playlistasfolders
-          !StringUtils::StartsWithNoCase(item->GetPath(), "addons://") &&
+          !UnicodeUtils::StartsWithNoCase(item->GetPath(), "addons://") &&
           (profileManager->GetCurrentProfile().canWriteDatabases() ||
            g_passwordManager.bMasterUser))
       {
@@ -601,7 +602,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
       if (!item->IsParentFolder() && !dir.IsAllItem(item->GetPath()))
       {
         if (item->m_bIsFolder && !item->IsVideoDb() &&
-          !item->IsPlugin() && !StringUtils::StartsWithNoCase(item->GetPath(), "musicsearch://"))
+          !item->IsPlugin() && !UnicodeUtils::StartsWithNoCase(item->GetPath(), "musicsearch://"))
         {
           if (item->IsAlbum())
             // enable query all albums button only in album view
@@ -625,8 +626,8 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
           }
 
           //Change information provider
-          if (StringUtils::EqualsNoCase(m_vecItems->GetContent(), "albums") ||
-              StringUtils::EqualsNoCase(m_vecItems->GetContent(), "artists"))
+          if (UnicodeUtils::EqualsNoCase(m_vecItems->GetContent(), "albums") ||
+              UnicodeUtils::EqualsNoCase(m_vecItems->GetContent(), "artists"))
           {
             // we allow the user to set information provider for albums and artists
             buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20195);
@@ -687,7 +688,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         return CGUIWindowMusicBase::OnContextButton(itemNumber,button);
 
       // music videos - artists
-      if (StringUtils::StartsWithNoCase(item->GetPath(), "videodb://musicvideos/artists/"))
+      if (UnicodeUtils::StartsWithNoCase(item->GetPath(), "videodb://musicvideos/artists/"))
       {
         int idArtist = m_musicdatabase.GetArtistByName(item->GetLabel());
         if (idArtist == -1)
@@ -704,7 +705,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       }
 
       // music videos - albums
-      if (StringUtils::StartsWithNoCase(item->GetPath(), "videodb://musicvideos/albums/"))
+      if (UnicodeUtils::StartsWithNoCase(item->GetPath(), "videodb://musicvideos/albums/"))
       {
         int idAlbum = m_musicdatabase.GetAlbumByName(item->GetLabel());
         if (idAlbum == -1)
@@ -911,7 +912,7 @@ void CGUIWindowMusicNav::AddSearchFolder()
 
 std::string CGUIWindowMusicNav::GetStartFolder(const std::string &dir)
 {
-  std::string lower(dir); StringUtils::ToLower(lower);
+  std::string lower(dir); UnicodeUtils::FoldCase(lower);
   if (lower == "genres")
     return "musicdb://genres/";
   else if (lower == "artists")

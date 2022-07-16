@@ -218,6 +218,8 @@ void CNetworkWin10::queryInterfaceList()
   struct ci_less
   {
     // case-independent (ci) compare_less
+
+  	// TODO: NOT Unicode safe
     struct nocase_compare
     {
       bool operator() (const unsigned int& c1, const unsigned int& c2) const {

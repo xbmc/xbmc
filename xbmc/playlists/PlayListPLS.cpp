@@ -14,6 +14,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
@@ -56,7 +57,7 @@ bool CPlayListPLS::Load(const std::string &strFile)
   Clear();
 
   bool bShoutCast = false;
-  if( StringUtils::StartsWithNoCase(strFileName, "shout://") )
+  if( UnicodeUtils::StartsWithNoCase(strFileName, "shout://") )
   {
     strFileName.replace(0, 8, "http://");
     m_strBasePath = "";
@@ -92,8 +93,8 @@ bool CPlayListPLS::Load(const std::string &strFile)
       return size() > 0;
     }
     strLine = szLine;
-    StringUtils::Trim(strLine);
-    if(StringUtils::EqualsNoCase(strLine, START_PLAYLIST_MARKER))
+    UnicodeUtils::Trim(strLine);
+    if(UnicodeUtils::EqualsNoCase(strLine, START_PLAYLIST_MARKER))
       break;
 
     // if there is something else before playlist marker, this isn't a pls file
@@ -105,21 +106,21 @@ bool CPlayListPLS::Load(const std::string &strFile)
   while (file.ReadString(szLine, sizeof(szLine) ) )
   {
     strLine = szLine;
-    StringUtils::RemoveCRLF(strLine);
+    UnicodeUtils::RemoveCRLF(strLine);
     size_t iPosEqual = strLine.find('=');
     if (iPosEqual != std::string::npos)
     {
       std::string strLeft = strLine.substr(0, iPosEqual);
       iPosEqual++;
       std::string strValue = strLine.substr(iPosEqual);
-      StringUtils::ToLower(strLeft);
-      StringUtils::TrimLeft(strLeft);
+      UnicodeUtils::FoldCase(strLeft);
+      UnicodeUtils::TrimLeft(strLeft);
 
       if (strLeft == "numberofentries")
       {
         m_vecItems.reserve(atoi(strValue.c_str()));
       }
-      else if (StringUtils::StartsWith(strLeft, "file"))
+      else if (UnicodeUtils::StartsWith(strLeft, "file"))
       {
         std::vector <int>::size_type idx = atoi(strLeft.c_str() + 4);
         if (!Resize(idx))
@@ -129,7 +130,7 @@ bool CPlayListPLS::Load(const std::string &strFile)
         }
 
         // Skip self - do not load playlist recursively
-        if (StringUtils::EqualsNoCase(URIUtils::GetFileName(strValue),
+        if (UnicodeUtils::EqualsNoCase(URIUtils::GetFileName(strValue),
                                       URIUtils::GetFileName(strFileName)))
           continue;
 
@@ -144,7 +145,7 @@ bool CPlayListPLS::Load(const std::string &strFile)
         g_charsetConverter.unknownToUTF8(strValue);
         m_vecItems[idx - 1]->SetPath(strValue);
       }
-      else if (StringUtils::StartsWith(strLeft, "title"))
+      else if (UnicodeUtils::StartsWith(strLeft, "title"))
       {
         std::vector <int>::size_type idx = atoi(strLeft.c_str() + 5);
         if (!Resize(idx))
@@ -155,7 +156,7 @@ bool CPlayListPLS::Load(const std::string &strFile)
         g_charsetConverter.unknownToUTF8(strValue);
         m_vecItems[idx - 1]->SetLabel(strValue);
       }
-      else if (StringUtils::StartsWith(strLeft, "length"))
+      else if (UnicodeUtils::StartsWith(strLeft, "length"))
       {
         std::vector <int>::size_type idx = atoi(strLeft.c_str() + 6);
         if (!Resize(idx))
@@ -309,7 +310,7 @@ bool CPlayListASX::LoadData(std::istream& stream)
     TiXmlNode *pChild = NULL;
     std::string value;
     value = pNode->Value();
-    StringUtils::ToLower(value);
+    UnicodeUtils::FoldCase(value);
     pNode->SetValue(value);
     while(pNode)
     {
@@ -319,14 +320,14 @@ bool CPlayListASX::LoadData(std::istream& stream)
         if (pChild->Type() == TiXmlNode::TINYXML_ELEMENT)
         {
           value = pChild->Value();
-          StringUtils::ToLower(value);
+          UnicodeUtils::FoldCase(value);
           pChild->SetValue(value);
 
           TiXmlAttribute* pAttr = pChild->ToElement()->FirstAttribute();
           while(pAttr)
           {
             value = pAttr->Name();
-            StringUtils::ToLower(value);
+            UnicodeUtils::FoldCase(value);
             pAttr->SetName(value);
             pAttr = pAttr->Next();
           }

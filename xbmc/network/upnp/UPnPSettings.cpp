@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "filesystem/File.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
@@ -64,7 +65,7 @@ bool CUPnPSettings::Load(const std::string &file)
   }
 
   TiXmlElement *pRootElement = doc.RootElement();
-  if (pRootElement == NULL || !StringUtils::EqualsNoCase(pRootElement->Value(), XML_UPNP))
+  if (pRootElement == NULL || !UnicodeUtils::EqualsNoCase(pRootElement->Value(), XML_UPNP))
   {
     m_logger->error("error loading {}, no <upnpserver> node", file);
     return false;

@@ -24,6 +24,7 @@
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/VideoPlayer/Interface/DemuxCrypto.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 #include "platform/android/activity/AndroidFeatures.h"
@@ -52,7 +53,7 @@ static bool IsDownmixDecoder(const std::string &name)
   };
   for (const char **ptr = downmixDecoders; *ptr; ptr++)
   {
-    if (!StringUtils::CompareNoCase(*ptr, name, strlen(*ptr)))
+    if (UnicodeUtils::StartsWithNoCase(name, *ptr))
       return true;
   }
   return false;
@@ -66,7 +67,7 @@ static bool IsDecoderWhitelisted(const std::string &name)
   };
   for (const char **ptr = whitelistDecoders; *ptr; ptr++)
   {
-    if (!StringUtils::CompareNoCase(*ptr, name, strlen(*ptr)))
+    if (UnicodeUtils::StartsWithNoCase(name, *ptr))
       return true;
   }
   return false;

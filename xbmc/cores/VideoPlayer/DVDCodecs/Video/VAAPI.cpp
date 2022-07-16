@@ -20,6 +20,7 @@
 #include "settings/lib/Setting.h"
 #include "utils/MemUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
@@ -67,13 +68,13 @@ constexpr auto SETTING_VIDEOPLAYER_PREFERVAAPIRENDER = "videoplayer.prefervaapir
 void VAAPI::VaErrorCallback(void *user_context, const char *message)
 {
   std::string str{message};
-  CLog::Log(LOGERROR, "libva error: {}", StringUtils::TrimRight(str));
+  CLog::Log(LOGERROR, "libva error: {}", UnicodeUtils::TrimRight(str));
 }
 
 void VAAPI::VaInfoCallback(void *user_context, const char *message)
 {
   std::string str{message};
-  CLog::Log(LOGDEBUG, "libva info: {}", StringUtils::TrimRight(str));
+  CLog::Log(LOGDEBUG, "libva info: {}", UnicodeUtils::TrimRight(str));
 }
 
 //-----------------------------------------------------------------------------
@@ -580,7 +581,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
     return false;
   }
 
-  m_vaapiConfig.driverIsMesa = StringUtils::StartsWith(vaQueryVendorString(m_vaapiConfig.context->GetDisplay()), "Mesa");
+  m_vaapiConfig.driverIsMesa = UnicodeUtils::StartsWith(vaQueryVendorString(m_vaapiConfig.context->GetDisplay()), "Mesa");
   m_vaapiConfig.vidWidth = avctx->width;
   m_vaapiConfig.vidHeight = avctx->height;
   m_vaapiConfig.outWidth = avctx->width;

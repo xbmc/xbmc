@@ -18,6 +18,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/Digest.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 
 #include "dialogs/GUIDialogKeyboardGeneric.h"
@@ -222,7 +223,7 @@ int CGUIKeyboardFactory::ShowAndVerifyPassword(std::string& strPassword, const s
   if (!strPassword.empty())
   {
     std::string md5pword2 = CDigest::Calculate(CDigest::Type::MD5, strUserInput);
-    if (StringUtils::EqualsNoCase(strPassword, md5pword2))
+    if (UnicodeUtils::EqualsNoCase(strPassword, md5pword2))
       return 0;     // user entered correct password
     else return 1;  // user must have entered an incorrect password
   }

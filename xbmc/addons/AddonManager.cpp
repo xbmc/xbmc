@@ -23,6 +23,7 @@
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
@@ -1090,8 +1091,8 @@ bool CAddonMgr::IsCompatible(const IAddon& addon) const
     {
       // Intentionally only check the xbmc.* and kodi.* magic dependencies. Everything else will
       // not be missing anyway, unless addon was installed in an unsupported way.
-      if (StringUtils::StartsWith(dependency.id, "xbmc.") ||
-          StringUtils::StartsWith(dependency.id, "kodi."))
+      if (UnicodeUtils::StartsWith(dependency.id, "xbmc.") ||
+          UnicodeUtils::StartsWith(dependency.id, "kodi."))
       {
         AddonPtr addon;
         bool haveAddon = GetAddon(dependency.id, addon, ADDON_UNKNOWN, OnlyEnabled::CHOICE_YES);
@@ -1111,8 +1112,8 @@ bool CAddonMgr::IsCompatible(const AddonInfoPtr& addonInfo) const
     {
       // Intentionally only check the xbmc.* and kodi.* magic dependencies. Everything else will
       // not be missing anyway, unless addon was installed in an unsupported way.
-      if (StringUtils::StartsWith(dependency.id, "xbmc.") ||
-          StringUtils::StartsWith(dependency.id, "kodi."))
+      if (UnicodeUtils::StartsWith(dependency.id, "xbmc.") ||
+          UnicodeUtils::StartsWith(dependency.id, "kodi."))
       {
         AddonInfoPtr addonInfo = GetAddonInfo(dependency.id);
         if (!addonInfo || !addonInfo->MeetsVersion(dependency.versionMin, dependency.version))
@@ -1142,8 +1143,8 @@ std::vector<DependencyInfo> CAddonMgr::GetDepsRecursive(const std::string& id,
   {
     auto current_dep = *toProcess.begin();
     toProcess.erase(toProcess.begin());
-    if (StringUtils::StartsWith(current_dep.id, "xbmc.") ||
-        StringUtils::StartsWith(current_dep.id, "kodi."))
+    if (UnicodeUtils::StartsWith(current_dep.id, "xbmc.") ||
+        UnicodeUtils::StartsWith(current_dep.id, "kodi."))
       continue;
 
     auto added_it = std::find_if(added.begin(), added.end(), [&](const DependencyInfo& d){ return d.id == current_dep.id;});

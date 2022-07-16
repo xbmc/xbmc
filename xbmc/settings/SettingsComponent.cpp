@@ -25,6 +25,7 @@
 #include "settings/Settings.h"
 #include "settings/SubtitlesSettings.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #ifdef TARGET_WINDOWS
@@ -168,7 +169,7 @@ bool CSettingsComponent::InitDirectoriesLinux(bool bPlatformDirectories)
   std::string appPath;
   std::string appName = CCompileInfo::GetAppName();
   std::string dotLowerAppName = "." + appName;
-  StringUtils::ToLower(dotLowerAppName);
+  UnicodeUtils::FoldCase(dotLowerAppName);
   const char* envAppHome = "KODI_HOME";
   const char* envAppBinHome = "KODI_BIN_HOME";
   const char* envAppTemp = "KODI_TEMP";
@@ -309,7 +310,7 @@ bool CSettingsComponent::InitDirectoriesOSX(bool bPlatformDirectories)
 #endif
 
     std::string dotLowerAppName = "." + appName;
-    StringUtils::ToLower(dotLowerAppName);
+    UnicodeUtils::FoldCase(dotLowerAppName);
     // location for temp files
 #if defined(TARGET_DARWIN_EMBEDDED)
     std::string strTempPath = URIUtils::AddFileToFolder(

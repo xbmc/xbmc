@@ -135,7 +135,7 @@ void CDVDSubtitlesLibass::Configure()
     ass_add_font(m_library, const_cast<char*>(fileName.c_str()),
                  reinterpret_cast<char*>(buffer.data()), static_cast<int>(buffer.size()));
 #endif
-    if (StringUtils::CompareNoCase(fileName, FONT::FONT_DEFAULT_FILENAME) == 0)
+    if (UnicodeUtils::CompareNoCase(fileName, FONT::FONT_DEFAULT_FILENAME) == 0)
     {
       m_defaultFontFamilyName = FONT::GetFontFamily(buffer);
     }

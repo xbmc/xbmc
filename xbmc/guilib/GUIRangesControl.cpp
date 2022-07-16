@@ -11,6 +11,7 @@
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 #include <cmath>
@@ -386,7 +387,7 @@ void CGUIRangesControl::UpdateInfo(const CGUIListItem* item /* = nullptr */)
       std::vector<std::pair<float, float>> ranges;
 
       // Parse csv string into ranges...
-      const std::vector<std::string> values = StringUtils::Split(value, ',');
+      const std::vector<std::string> values = UnicodeUtils::Split(value, ',');
 
       // we must have an even number of values
       if (values.size() % 2 == 0)

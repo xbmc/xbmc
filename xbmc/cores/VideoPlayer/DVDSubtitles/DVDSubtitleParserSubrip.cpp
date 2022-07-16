@@ -11,6 +11,7 @@
 #include "DVDSubtitleTagSami.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 CDVDSubtitleParserSubrip::CDVDSubtitleParserSubrip(std::unique_ptr<CDVDSubtitleStream>&& pStream,
                                                    const std::string& strFile)
@@ -39,7 +40,7 @@ bool CDVDSubtitleParserSubrip::Open(CDVDStreamInfo& hints)
 
   while (m_pStream->ReadLine(line))
   {
-    StringUtils::Trim(line);
+    UnicodeUtils::Trim(line);
 
     if (line.length() > 0)
     {
@@ -62,7 +63,7 @@ bool CDVDSubtitleParserSubrip::Open(CDVDStreamInfo& hints)
         std::string convText;
         while (m_pStream->ReadLine(line))
         {
-          StringUtils::Trim(line);
+          UnicodeUtils::Trim(line);
 
           // empty line, next subtitle is about to start
           if (line.empty())

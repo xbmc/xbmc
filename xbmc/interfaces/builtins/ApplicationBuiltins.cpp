@@ -20,6 +20,7 @@
 #include "utils/FileOperationJob.h"
 #include "utils/JSONVariantParser.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -97,7 +98,7 @@ static int SetVolume(const std::vector<std::string>& params)
   g_application.SetVolume(volume);
   if(oldVolume != volume)
   {
-    if(params.size() > 1 && StringUtils::EqualsNoCase(params[1], "showVolumeBar"))
+    if(params.size() > 1 && UnicodeUtils::EqualsNoCase(params[1], "showVolumeBar"))
     {
       CServiceBroker::GetAppMessenger()->PostMsg(
           TMSG_VOLUME_SHOW, oldVolume < volume ? ACTION_VOLUME_UP : ACTION_VOLUME_DOWN);

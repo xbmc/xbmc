@@ -11,6 +11,7 @@
 #include "ActionIDs.h"
 #include "interfaces/builtins/Builtins.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 #include <map>
@@ -293,7 +294,7 @@ bool CActionTranslator::TranslateString(std::string strAction, unsigned int& act
   if (strAction.empty())
     return false;
 
-  StringUtils::ToLower(strAction);
+  UnicodeUtils::FoldCase(strAction);
 
   auto it = ActionMappings.find(strAction);
   if (it != ActionMappings.end())

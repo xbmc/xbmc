@@ -13,6 +13,7 @@
 #include "test/TestUtils.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 #include <stdlib.h>
@@ -35,7 +36,7 @@ TEST_F(Testlog, Log)
   CRegExp regex;
 
   std::string appName = CCompileInfo::GetAppName();
-  StringUtils::ToLower(appName);
+  UnicodeUtils::FoldCase(appName);
   logfile = CSpecialProtocol::TranslatePath("special://temp/") + appName + ".log";
   CServiceBroker::GetLogging().Initialize(
       CSpecialProtocol::TranslatePath("special://temp/").c_str());
@@ -81,7 +82,7 @@ TEST_F(Testlog, SetLogLevel)
   std::string logfile;
 
   std::string appName = CCompileInfo::GetAppName();
-  StringUtils::ToLower(appName);
+  UnicodeUtils::FoldCase(appName);
   logfile = CSpecialProtocol::TranslatePath("special://temp/") + appName + ".log";
   CServiceBroker::GetLogging().Initialize(
       CSpecialProtocol::TranslatePath("special://temp/").c_str());

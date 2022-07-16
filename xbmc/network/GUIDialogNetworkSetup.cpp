@@ -21,6 +21,7 @@
 #include "settings/lib/Setting.h"
 #include "settings/windows/GUIControlSettings.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
@@ -356,7 +357,7 @@ std::string CGUIDialogNetworkSetup::ConstructPath() const
 
     if (url.IsProtocol("smb") && username.find('\\') != std::string::npos)
     {
-      auto pair = StringUtils::Split(username, "\\", 2);
+      auto pair = UnicodeUtils::Split(username, "\\", 2);
       url.SetDomain(pair[0]);
       url.SetUserName(pair[1]);
     }
@@ -447,7 +448,7 @@ void CGUIDialogNetworkSetup::UpdateAvailableProtocols()
       if (!addon->GetProtocolInfo().type.empty())
       {
         // only use first protocol
-        auto prots = StringUtils::Split(info.type, "|");
+        auto prots = UnicodeUtils::Split(info.type, "|");
         m_protocols.emplace_back(Protocol{
             info.supportPath, info.supportUsername, info.supportPassword, info.supportPort,
             info.supportBrowsing, info.defaultPort, prots.front(), info.label, addon->ID()});

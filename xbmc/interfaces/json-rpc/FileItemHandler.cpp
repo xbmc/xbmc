@@ -30,6 +30,7 @@
 #include "pvr/timers/PVRTimers.h"
 #include "utils/ISerializable.h"
 #include "utils/SortUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
@@ -65,7 +66,7 @@ bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, 
       {
         // string -> Video.Cast
         const std::vector<std::string> actors =
-            StringUtils::Split(info[field].asString(), EPG_STRING_TOKEN_SEPARATOR);
+            UnicodeUtils::Split(info[field].asString(), EPG_STRING_TOKEN_SEPARATOR);
 
         result[field] = CVariant(CVariant::VariantTypeArray);
         for (const auto& actor : actors)
@@ -79,7 +80,7 @@ bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, 
       else if (field == "director" || field == "writer")
       {
         // string -> Array.String
-        result[field] = StringUtils::Split(info[field].asString(), EPG_STRING_TOKEN_SEPARATOR);
+        result[field] = UnicodeUtils::Split(info[field].asString(), EPG_STRING_TOKEN_SEPARATOR);
         return true;
       }
       else if (field == "isrecording")
@@ -403,7 +404,7 @@ void CFileItemHandler::HandleFileItem(const char* ID,
       else if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > 0)
         object[ID] = item->GetVideoInfoTag()->m_iDbId;
 
-      if (StringUtils::CompareNoCase(ID, "id") == 0)
+      if (UnicodeUtils::CompareNoCase(ID, "id") == 0)
       {
         if (item->HasPVRChannelInfoTag())
           object["type"] = "channel";

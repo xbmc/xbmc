@@ -56,6 +56,7 @@
 #include "utils/MathUtils.h"
 #include "utils/Random.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
@@ -319,7 +320,7 @@ void CMusicDatabase::CreateAnalytics()
      Recursion avoided using WHEN but SQLite has PRAGMA recursive-triggers off by default anyway.
     // ! @todo: once on SQLite v3.31 we could use a generated column for dateModified as real
   */
-  bool bisMySQL = StringUtils::EqualsNoCase(
+  bool bisMySQL = UnicodeUtils::EqualsNoCase(
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseMusic.type, "mysql");
 
   if (!bisMySQL)
@@ -545,14 +546,14 @@ void CMusicDatabase::CreateViews()
 void CMusicDatabase::CreateNativeDBFunctions()
 {
   // Create native functions in MySQL/MariaDB database only
-  if (!StringUtils::EqualsNoCase(
+  if (!UnicodeUtils::EqualsNoCase(
           CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseMusic.type,
           "mysql"))
     return;
   CLog::Log(LOGINFO, "Create native MySQL/MariaDB functions");
   /* Functions to do the natural number sorting and all ascii symbol char at top adjustments to
      default utf8_general_ci collation that SQLite does via a collation sequence callback
-     function to StringUtils::AlphaNumericCompare
+     function to UnicodeUtils::AlphaNumericCompare
      !@todo: the video needs these defined too for sorting in DB, then creation can be made common
   */
   // clang-format off
@@ -977,10 +978,10 @@ void CMusicDatabase::NormaliseSongDates(std::string& strRelease, std::string& st
 {
   // Validate we have ISO8601 format date strings YYYY, YYYY-MM, or YYYY-MM-DD
   int iDate;
-  iDate = StringUtils::DateStringToYYYYMMDD(strRelease);
+  iDate = UnicodeUtils::DateStringToYYYYMMDD(strRelease);
   if (iDate < 0)
     strRelease.clear();
-  iDate = StringUtils::DateStringToYYYYMMDD(strOriginal);
+  iDate = UnicodeUtils::DateStringToYYYYMMDD(strOriginal);
   if (iDate < 0)
     strOriginal.clear();
   // Avoid missing release or original values unless both invalid or empty
@@ -1391,7 +1392,7 @@ int CMusicDatabase::AddAlbum(const std::string& strAlbum,
                           strArtist.c_str(), strAlbum.c_str());
     m_pDS->query(strSQL);
     std::string strCheckFlag = strType;
-    StringUtils::ToLower(strCheckFlag);
+    UnicodeUtils::FoldCase(strCheckFlag);
     if (strCheckFlag.find("boxset") != std::string::npos) //boxset flagged in album type
       bBoxedSet = true;
     if (m_pDS->num_rows() == 0)
@@ -1509,7 +1510,7 @@ int CMusicDatabase::UpdateAlbum(int idAlbum,
   // Art URLs limited on MySQL databases to 65535 characters (TEXT field)
   // Truncate value cleaning up xml when URLs exceeds this
   std::string strImageURLs = strImage;
-  if (StringUtils::EqualsNoCase(
+  if (UnicodeUtils::EqualsNoCase(
           CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseMusic.type,
           "mysql"))
     TrimImageURLs(strImageURLs, 65535);
@@ -1675,7 +1676,7 @@ int CMusicDatabase::AddGenre(std::string& strGenre)
   std::string strSQL;
   try
   {
-    StringUtils::Trim(strGenre);
+    UnicodeUtils::Trim(strGenre);
 
     if (strGenre.empty())
       strGenre = g_localizeStrings.Get(13205); // Unknown
@@ -1956,7 +1957,7 @@ int CMusicDatabase::UpdateArtist(int idArtist,
   // Art URLs limited on MySQL databases to 65535 characters (TEXT field)
   // Truncate value cleaning up xml when URLs exceeds this
   std::string strImageURLs = strImage;
-  if (StringUtils::EqualsNoCase(
+  if (UnicodeUtils::EqualsNoCase(
           CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseMusic.type,
           "mysql"))
     TrimImageURLs(strImageURLs, 65535);
@@ -2413,7 +2414,7 @@ void CMusicDatabase::AddSongContributors(int idSong,
   size_t countComposer = 0;
   if (!strSort.empty())
   {
-    composerSort = StringUtils::Split(
+    composerSort = UnicodeUtils::Split(
         strSort,
         CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
   }
@@ -2957,7 +2958,7 @@ CSong CMusicDatabase::GetSongFromDataset(const dbiplus::sql_record* const record
   song.strArtistDesc = record->at(offset + song_strArtists).get_asString();
   song.strArtistSort = record->at(offset + song_strArtistSort).get_asString();
   // Get the full genre string
-  song.genre = StringUtils::Split(
+  song.genre = UnicodeUtils::Split(
       record->at(offset + song_strGenres).get_asString(),
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
   // and the rest...
@@ -3126,7 +3127,7 @@ CAlbum CMusicDatabase::GetAlbumFromDataset(const dbiplus::sql_record* const reco
   album.strArtistDesc = record->at(offset + album_strArtists).get_asString();
   album.strArtistSort = record->at(offset + album_strArtistSort).get_asString();
   album.genre =
-      StringUtils::Split(record->at(offset + album_strGenres).get_asString(), itemSeparator);
+      UnicodeUtils::Split(record->at(offset + album_strGenres).get_asString(), itemSeparator);
   album.strReleaseDate = record->at(offset + album_strReleaseDate).get_asString();
   album.strOrigReleaseDate = record->at(offset + album_strOrigReleaseDate).get_asString();
   album.bBoxedSet = record->at(offset + album_bBoxedSet).get_asInt() == 1;
@@ -3137,11 +3138,11 @@ CAlbum CMusicDatabase::GetAlbumFromDataset(const dbiplus::sql_record* const reco
   album.iVotes = record->at(offset + album_iVotes).get_asInt();
   album.strReview = record->at(offset + album_strReview).get_asString();
   album.styles =
-      StringUtils::Split(record->at(offset + album_strStyles).get_asString(), itemSeparator);
+      UnicodeUtils::Split(record->at(offset + album_strStyles).get_asString(), itemSeparator);
   album.moods =
-      StringUtils::Split(record->at(offset + album_strMoods).get_asString(), itemSeparator);
+      UnicodeUtils::Split(record->at(offset + album_strMoods).get_asString(), itemSeparator);
   album.themes =
-      StringUtils::Split(record->at(offset + album_strThemes).get_asString(), itemSeparator);
+      UnicodeUtils::Split(record->at(offset + album_strThemes).get_asString(), itemSeparator);
   album.strLabel = record->at(offset + album_strLabel).get_asString();
   album.strType = record->at(offset + album_strType).get_asString();
   album.strReleaseStatus = record->at(offset + album_strReleaseStatus).get_asString();
@@ -3211,20 +3212,20 @@ CArtist CMusicDatabase::GetArtistFromDataset(const dbiplus::sql_record* const re
   artist.strGender = record->at(offset + artist_strGender).get_asString();
   artist.strDisambiguation = record->at(offset + artist_strDisambiguation).get_asString();
   artist.genre =
-      StringUtils::Split(record->at(offset + artist_strGenres).get_asString(), itemSeparator);
+      UnicodeUtils::Split(record->at(offset + artist_strGenres).get_asString(), itemSeparator);
   artist.strBiography = record->at(offset + artist_strBiography).get_asString();
   artist.styles =
-      StringUtils::Split(record->at(offset + artist_strStyles).get_asString(), itemSeparator);
+      UnicodeUtils::Split(record->at(offset + artist_strStyles).get_asString(), itemSeparator);
   artist.moods =
-      StringUtils::Split(record->at(offset + artist_strMoods).get_asString(), itemSeparator);
+      UnicodeUtils::Split(record->at(offset + artist_strMoods).get_asString(), itemSeparator);
   artist.strBorn = record->at(offset + artist_strBorn).get_asString();
   artist.strFormed = record->at(offset + artist_strFormed).get_asString();
   artist.strDied = record->at(offset + artist_strDied).get_asString();
   artist.strDisbanded = record->at(offset + artist_strDisbanded).get_asString();
   artist.yearsActive =
-      StringUtils::Split(record->at(offset + artist_strYearsActive).get_asString(), itemSeparator);
+      UnicodeUtils::Split(record->at(offset + artist_strYearsActive).get_asString(), itemSeparator);
   artist.instruments =
-      StringUtils::Split(record->at(offset + artist_strInstruments).get_asString(), itemSeparator);
+      UnicodeUtils::Split(record->at(offset + artist_strInstruments).get_asString(), itemSeparator);
   artist.bScrapedMBID = record->at(offset + artist_bScrapedMBID).get_asInt() == 1;
   artist.strLastScraped = record->at(offset + artist_lastScraped).get_asString();
   artist.SetDateAdded(record->at(offset + artist_dateAdded).get_asString());
@@ -4106,7 +4107,7 @@ bool CMusicDatabase::CleanupSongsByIds(const std::string& strSongIds)
       //  Special case for streams inside an audio decoder package file.
       //  The last dir in the path is the audio file that
       //  contains the stream, so test if its there
-      if (StringUtils::EndsWith(URIUtils::GetExtension(strFileName),
+      if (UnicodeUtils::EndsWith(URIUtils::GetExtension(strFileName),
                                 KODI_ADDON_AUDIODECODER_TRACK_EXT))
       {
         strFileName = URIUtils::GetDirectory(strFileName);
@@ -5081,7 +5082,7 @@ bool CMusicDatabase::GetYearsNav(const std::string& strBaseDir,
         CSettings::SETTING_MUSICLIBRARY_USEORIGINALDATE);
 
     useOriginalYears =
-        useOriginalYears || StringUtils::StartsWith(strBaseDir, "musicdb://originalyears/");
+        useOriginalYears || UnicodeUtils::StartsWith(strBaseDir, "musicdb://originalyears/");
 
     if (!useOriginalYears)
     { // Get years from year part of release date
@@ -5696,9 +5697,9 @@ bool CMusicDatabase::GetAlbumsByWhere(
     // Modify order to use correct calculated year field
     if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
             CSettings::SETTING_MUSICLIBRARY_USEORIGINALDATE))
-      StringUtils::Replace(extFilter.order, "iYear", "CAST(strReleaseDate AS INTEGER)");
+      UnicodeUtils::Replace(extFilter.order, "iYear", "CAST(strReleaseDate AS INTEGER)");
     else
-      StringUtils::Replace(extFilter.order, "iYear", "CAST(strOrigReleaseDate AS INTEGER)");
+      UnicodeUtils::Replace(extFilter.order, "iYear", "CAST(strOrigReleaseDate AS INTEGER)");
 
     strSQLExtra.clear();
     if (!BuildSQL(strSQLExtra, extFilter, strSQLExtra))
@@ -6062,7 +6063,7 @@ bool CMusicDatabase::GetSongsFullByWhere(
     else
     {
       std::string strSQLsong = strSQLExtra;
-      StringUtils::Replace(strSQLsong, "songview", "song");
+      UnicodeUtils::Replace(strSQLsong, "songview", "song");
       total = GetSingleValueInt("SELECT COUNT(1) FROM song " + strSQLsong, m_pDS);
     }
 
@@ -6086,9 +6087,9 @@ bool CMusicDatabase::GetSongsFullByWhere(
     // Modify order to use correct calculated year field
     if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
             CSettings::SETTING_MUSICLIBRARY_USEORIGINALDATE))
-      StringUtils::Replace(extFilter.order, "iYear", "CAST(strReleaseDate AS INTEGER)");
+      UnicodeUtils::Replace(extFilter.order, "iYear", "CAST(strReleaseDate AS INTEGER)");
     else
-      StringUtils::Replace(extFilter.order, "iYear", "CAST(strOrigReleaseDate AS INTEGER)");
+      UnicodeUtils::Replace(extFilter.order, "iYear", "CAST(strOrigReleaseDate AS INTEGER)");
 
     std::string strFields = "songview.*";
     if (!artistData || limitedInSQL)
@@ -6117,8 +6118,8 @@ bool CMusicDatabase::GetSongsFullByWhere(
         joinFilter.order = extFilter.order;
       if (limitedInSQL)
       {
-        StringUtils::Replace(joinFilter.join, "songview.idSong", "sv.idSong");
-        StringUtils::Replace(joinFilter.order, "songview.", "sv.");
+        UnicodeUtils::Replace(joinFilter.join, "songview.idSong", "sv.idSong");
+        UnicodeUtils::Replace(joinFilter.order, "songview.", "sv.");
       }
       else
         joinFilter.where = extFilter.where;
@@ -6487,8 +6488,8 @@ bool CMusicDatabase::GetArtistsByWhereJSON(
       return false;
 
     // Replace view names in filter with table names
-    StringUtils::Replace(extFilter.where, "artistview", "artist");
-    StringUtils::Replace(extFilter.where, "albumview", "album");
+    UnicodeUtils::Replace(extFilter.where, "artistview", "artist");
+    UnicodeUtils::Replace(extFilter.where, "albumview", "album");
 
     std::string strSQLExtra;
     if (!BuildSQL(strSQLExtra, extFilter, strSQLExtra))
@@ -6525,8 +6526,8 @@ bool CMusicDatabase::GetArtistsByWhereJSON(
     // Get order by (and any scalar query artist fields)
     int iAddedFields = GetOrderFilter(MediaTypeArtist, sortDescription, extFilter);
     // Replace artistview field names in order by artist table field names
-    StringUtils::Replace(extFilter.order, "artistview", "artist");
-    StringUtils::Replace(extFilter.fields, "artistview", "artist");
+    UnicodeUtils::Replace(extFilter.order, "artistview", "artist");
+    UnicodeUtils::Replace(extFilter.fields, "artistview", "artist");
 
     // Grab and adjust artist sort field that may have been added to filter
     // These need to be added to the end of the artist table field list
@@ -6616,7 +6617,7 @@ bool CMusicDatabase::GetArtistsByWhereJSON(
     {
       // Repeat inline view order (that always includes idArtist) on join query
       std::string order = extFilter.order;
-      StringUtils::Replace(order, "artist.", "a1.");
+      UnicodeUtils::Replace(order, "artist.", "a1.");
       joinFilter.AppendOrder(order);
     }
     else
@@ -6945,7 +6946,7 @@ bool CMusicDatabase::GetArtistsByWhereJSON(
               artistObj[JSONtoDBArtist[dbfieldindex[i]].fieldJSON] =
                   record->at(1 + i).get_asFloat();
             else if (JSONtoDBArtist[dbfieldindex[i]].formatJSON == "array")
-              artistObj[JSONtoDBArtist[dbfieldindex[i]].fieldJSON] = StringUtils::Split(
+              artistObj[JSONtoDBArtist[dbfieldindex[i]].fieldJSON] = UnicodeUtils::Split(
                   record->at(1 + i).get_asString(), CServiceBroker::GetSettingsComponent()
                                                         ->GetAdvancedSettings()
                                                         ->m_musicItemSeparator);
@@ -7226,7 +7227,7 @@ bool CMusicDatabase::GetAlbumsByWhereJSON(
       return false;
 
     // Replace view names in filter with table names
-    StringUtils::Replace(extFilter.where, "artistview", "artist");
+    UnicodeUtils::Replace(extFilter.where, "artistview", "artist");
 
     std::string strSQLExtra;
     if (!BuildSQL(strSQLExtra, extFilter, strSQLExtra))
@@ -7336,7 +7337,7 @@ bool CMusicDatabase::GetAlbumsByWhereJSON(
     {
       // Repeat inline view order (that always includes idAlbum) on join query
       std::string order = extFilter.order;
-      StringUtils::Replace(order, "albumview.", "a1.");
+      UnicodeUtils::Replace(order, "albumview.", "a1.");
       joinFilter.AppendOrder(order);
     }
     else
@@ -7389,9 +7390,9 @@ bool CMusicDatabase::GetAlbumsByWhereJSON(
     // Modify query to use correct year field
     if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
             CSettings::SETTING_MUSICLIBRARY_USEORIGINALDATE))
-      StringUtils::Replace(strSQL, "<datefield>", "strReleaseDate");
+      UnicodeUtils::Replace(strSQL, "<datefield>", "strReleaseDate");
     else
-      StringUtils::Replace(strSQL, "<datefield>", "strOrigReleaseDate");
+      UnicodeUtils::Replace(strSQL, "<datefield>", "strOrigReleaseDate");
 
     CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL);
     // run query
@@ -7430,7 +7431,7 @@ bool CMusicDatabase::GetAlbumsByWhereJSON(
           if (albumObj.isMember("sourceid"))
           {
             std::vector<std::string> sources =
-                StringUtils::Split(albumObj["sourceid"].asString(), ";");
+                UnicodeUtils::Split(albumObj["sourceid"].asString(), ";");
             albumObj["sourceid"] = CVariant(CVariant::VariantTypeArray);
             for (size_t i = 0; i < sources.size(); i++)
               albumObj["sourceid"].append(atoi(sources[i].c_str()));
@@ -7453,7 +7454,7 @@ bool CMusicDatabase::GetAlbumsByWhereJSON(
             {
               // Convert "20,Jazz,54,New Age,65,Rock" into array of objects
               std::vector<std::string> values =
-                  StringUtils::Split(record->at(1 + i).get_asString(), ",");
+                  UnicodeUtils::Split(record->at(1 + i).get_asString(), ",");
               if (values.size() % 2 == 0) // Must contain an even number of entries
               {
                 for (size_t j = 0; j + 1 < values.size(); j += 2)
@@ -7481,7 +7482,7 @@ bool CMusicDatabase::GetAlbumsByWhereJSON(
               albumObj[JSONtoDBAlbum[dbfieldindex[i]].fieldJSON] =
                   std::max(record->at(1 + i).get_asFloat(), 0.f);
             else if (JSONtoDBAlbum[dbfieldindex[i]].formatJSON == "array")
-              albumObj[JSONtoDBAlbum[dbfieldindex[i]].fieldJSON] = StringUtils::Split(
+              albumObj[JSONtoDBAlbum[dbfieldindex[i]].fieldJSON] = UnicodeUtils::Split(
                   record->at(1 + i).get_asString(), CServiceBroker::GetSettingsComponent()
                                                         ->GetAdvancedSettings()
                                                         ->m_musicItemSeparator);
@@ -7653,12 +7654,12 @@ bool CMusicDatabase::GetSongsByWhereJSON(
       return false;
 
     // Replace view names in filter with table names
-    StringUtils::Replace(extFilter.where, "artistview", "artist");
-    StringUtils::Replace(extFilter.where, "albumview", "album");
-    StringUtils::Replace(extFilter.where, "songview.strPath", "strPath");
-    StringUtils::Replace(extFilter.where, "songview.strAlbum", "strAlbum");
-    StringUtils::Replace(extFilter.where, "songview", "song");
-    StringUtils::Replace(extFilter.where, "songartistview", "song_artist");
+    UnicodeUtils::Replace(extFilter.where, "artistview", "artist");
+    UnicodeUtils::Replace(extFilter.where, "albumview", "album");
+    UnicodeUtils::Replace(extFilter.where, "songview.strPath", "strPath");
+    UnicodeUtils::Replace(extFilter.where, "songview.strAlbum", "strAlbum");
+    UnicodeUtils::Replace(extFilter.where, "songview", "song");
+    UnicodeUtils::Replace(extFilter.where, "songartistview", "song_artist");
 
     // JOIN album and path tables needed by filter rules in where clause
     if (extFilter.where.find("album.") != std::string::npos ||
@@ -7685,18 +7686,18 @@ bool CMusicDatabase::GetSongsByWhereJSON(
     // Replace songview field names in order by with song, album path table field names
     // Field names in album same as song:
     //   idAlbum, strArtistDisp, strArtistSort, strGenres, iYear, bCompilation
-    StringUtils::Replace(extFilter.order, "songview.strPath", "strPath");
-    StringUtils::Replace(extFilter.order, "songview.strAlbum", "strAlbum");
-    StringUtils::Replace(extFilter.order, "songview.bCompilation", "album.bCompilation");
-    StringUtils::Replace(extFilter.order, "songview.strArtists", "song.strArtistDisp");
-    StringUtils::Replace(extFilter.order, "songview.strAlbumArtists", "album.strArtistDisp");
-    StringUtils::Replace(extFilter.order, "songview.strAlbumArtistSort", "album.strArtistSort");
-    StringUtils::Replace(extFilter.order, "songview.strAlbumReleaseType", "strReleaseType");
-    StringUtils::Replace(extFilter.order, "songview", "song");
-    StringUtils::Replace(extFilter.fields, " strArtistSort", " song.strArtistSort");
-    StringUtils::Replace(extFilter.fields, "songview.strArtists", "song.strArtistDisp");
-    StringUtils::Replace(extFilter.fields, "songview.strAlbum", "strAlbum");
-    StringUtils::Replace(extFilter.fields, "songview.strTitle", "strTitle");
+    UnicodeUtils::Replace(extFilter.order, "songview.strPath", "strPath");
+    UnicodeUtils::Replace(extFilter.order, "songview.strAlbum", "strAlbum");
+    UnicodeUtils::Replace(extFilter.order, "songview.bCompilation", "album.bCompilation");
+    UnicodeUtils::Replace(extFilter.order, "songview.strArtists", "song.strArtistDisp");
+    UnicodeUtils::Replace(extFilter.order, "songview.strAlbumArtists", "album.strArtistDisp");
+    UnicodeUtils::Replace(extFilter.order, "songview.strAlbumArtistSort", "album.strArtistSort");
+    UnicodeUtils::Replace(extFilter.order, "songview.strAlbumReleaseType", "strReleaseType");
+    UnicodeUtils::Replace(extFilter.order, "songview", "song");
+    UnicodeUtils::Replace(extFilter.fields, " strArtistSort", " song.strArtistSort");
+    UnicodeUtils::Replace(extFilter.fields, "songview.strArtists", "song.strArtistDisp");
+    UnicodeUtils::Replace(extFilter.fields, "songview.strAlbum", "strAlbum");
+    UnicodeUtils::Replace(extFilter.fields, "songview.strTitle", "strTitle");
 
     // Grab calculated artist/title sort fields that may have been added to filter
     // These need to be added to the end of the song table field list
@@ -7757,7 +7758,7 @@ bool CMusicDatabase::GetSongsByWhereJSON(
       }
       else if (foundJSON)
       { // Field from join found in JSON request
-        if (!StringUtils::StartsWith(JSONtoDBSong[i].fieldDB, "Role_"))
+        if (!UnicodeUtils::StartsWith(JSONtoDBSong[i].fieldDB, "Role_"))
         {
           joinLayout.SetField(i - index_idAlbumArtist, JSONtoDBSong[i].SQL, true);
         }
@@ -7780,7 +7781,7 @@ bool CMusicDatabase::GetSongsByWhereJSON(
       for (const auto& name : rolefieldlist)
       {
         int idRole = -1;
-        if (StringUtils::StartsWith(name, "display"))
+        if (UnicodeUtils::StartsWith(name, "display"))
           idRole = GetRoleByName(name.substr(7));
         roleidlist.emplace_back(idRole);
       }
@@ -7824,8 +7825,8 @@ bool CMusicDatabase::GetSongsByWhereJSON(
       // Repeat inline view order (that always includes idSong) on join query
       std::string order = extFilter.order;
       order = extFilter.order;
-      StringUtils::Replace(order, "album.", "sv.");
-      StringUtils::Replace(order, "song.", "sv.");
+      UnicodeUtils::Replace(order, "album.", "sv.");
+      UnicodeUtils::Replace(order, "song.", "sv.");
       joinFilter.AppendOrder(order);
     }
     else
@@ -7972,9 +7973,9 @@ bool CMusicDatabase::GetSongsByWhereJSON(
     // Modify query to use correct year field
     if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
             CSettings::SETTING_MUSICLIBRARY_USEORIGINALDATE))
-      StringUtils::Replace(strSQL, "<datefield>", "song.strReleaseDate");
+      UnicodeUtils::Replace(strSQL, "<datefield>", "song.strReleaseDate");
     else
-      StringUtils::Replace(strSQL, "<datefield>", "song.strOrigReleaseDate");
+      UnicodeUtils::Replace(strSQL, "<datefield>", "song.strOrigReleaseDate");
 
     CLog::Log(LOGDEBUG, "{} query: {}", __FUNCTION__, strSQL);
 
@@ -8020,7 +8021,7 @@ bool CMusicDatabase::GetSongsByWhereJSON(
           {
             for (const auto& displayXXX : rolefieldlist)
             {
-              if (!StringUtils::StartsWith(displayXXX, "display"))
+              if (!UnicodeUtils::StartsWith(displayXXX, "display"))
               {
                 // "contributors"
                 if (!songObj.isMember(displayXXX))
@@ -8081,7 +8082,7 @@ bool CMusicDatabase::GetSongsByWhereJSON(
               songObj[JSONtoDBSong[dbfieldindex[i]].fieldJSON] =
                   std::max(record->at(1 + i).get_asFloat(), 0.f);
             else if (JSONtoDBSong[dbfieldindex[i]].formatJSON == "array")
-              songObj[JSONtoDBSong[dbfieldindex[i]].fieldJSON] = StringUtils::Split(
+              songObj[JSONtoDBSong[dbfieldindex[i]].fieldJSON] = UnicodeUtils::Split(
                   record->at(1 + i).get_asString(), CServiceBroker::GetSettingsComponent()
                                                         ->GetAdvancedSettings()
                                                         ->m_musicItemSeparator);
@@ -8095,7 +8096,7 @@ bool CMusicDatabase::GetSongsByWhereJSON(
         if (songObj.isMember("sourceid"))
         {
           std::vector<std::string> sources =
-              StringUtils::Split(songObj["sourceid"].asString(), ";");
+              UnicodeUtils::Split(songObj["sourceid"].asString(), ";");
           songObj["sourceid"] = CVariant(CVariant::VariantTypeArray);
           for (size_t i = 0; i < sources.size(); i++)
             songObj["sourceid"].append(atoi(sources[i].c_str()));
@@ -8248,8 +8249,8 @@ std::string CMusicDatabase::GetIgnoreArticleSQL(const std::string& strField)
     }
     std::string tokenclause = token;
     //Escape any ' or % in the token
-    StringUtils::Replace(tokenclause, "'", "''");
-    StringUtils::Replace(tokenclause, "%", "%%");
+    UnicodeUtils::Replace(tokenclause, "'", "''");
+    UnicodeUtils::Replace(tokenclause, "%", "%%");
     // Single %, _ and ' so avoid using PrepareSQL
     tokenclause = strField + " LIKE '" + tokenclause + "%'";
     if (token.find('_') != std::string::npos)
@@ -8322,7 +8323,7 @@ std::string CMusicDatabase::AlphanumericSortSQL(const std::string& strField,
     DESC = " DESC";
   std::string strSort;
 
-  if (StringUtils::EqualsNoCase(
+  if (UnicodeUtils::EqualsNoCase(
           CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseMusic.type,
           "mysql"))
     strSort = PrepareSQL("udfNaturalSortFormat(%s, 8, '.')%s", strField.c_str(), DESC.c_str());
@@ -9215,7 +9216,7 @@ void CMusicDatabase::UpdateTables(int version)
                 "aspect=\"fanart\" preview')");
     // Art URLs limited on MySQL databases to 65535 characters (TEXT field)
     // Truncate the fanart when total URLs exceeds this
-    bool bisMySQL = StringUtils::EqualsNoCase(
+    bool bisMySQL = UnicodeUtils::EqualsNoCase(
         CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseMusic.type,
         "mysql");
     if (bisMySQL)
@@ -9743,7 +9744,7 @@ bool CMusicDatabase::GetAlbumFolder(const CAlbum& album,
   // @todo: Does UFT8 matter or need normalizing?
   // @todo: Simplify punctuation removing unicode appostraphes, "..." etc.?
   strFolder = CUtil::MakeLegalFileName(album.strAlbum, LEGAL_WIN32_COMPAT);
-  StringUtils::Replace(strFolder, " _ ", "_");
+  UnicodeUtils::Replace(strFolder, " _ ", "_");
 
   // Check <first albumartist name>/<albumname> is unique e.g. 2 x Bruckner Symphony No. 3
   // To have duplicate albumartist/album names at least one will have mbid, so append start of mbid to folder.
@@ -9779,7 +9780,7 @@ bool CMusicDatabase::GetArtistFolderName(const std::string& strArtist,
   // @todo: Does UFT8 matter or need normalizing?
   // @todo: Simplify punctuation removing unicode appostraphes, "..." etc.?
   strFolder = CUtil::MakeLegalFileName(strArtist, LEGAL_WIN32_COMPAT);
-  StringUtils::Replace(strFolder, " _ ", "_");
+  UnicodeUtils::Replace(strFolder, " _ ", "_");
 
   // Ensure <artist name> is unique e.g. 2 x John Williams.
   // To have duplicate artist names there must both have mbids, so append start of mbid to folder.
@@ -10808,7 +10809,7 @@ bool CMusicDatabase::UpdateArtistSortNames(int idArtist /*=-1*/)
 
   // MySQL syntax for GROUP_CONCAT with order is different from that in SQLite
   // (not handled by PrepareSQL)
-  bool bisMySQL = StringUtils::EqualsNoCase(
+  bool bisMySQL = UnicodeUtils::EqualsNoCase(
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseMusic.type, "mysql");
 
   BeginMultipleExecute();
@@ -11450,11 +11451,11 @@ bool CMusicDatabase::SetScraperAll(const std::string& strBaseDir, const ADDON::S
       return false;
 
     std::string itemType = musicUrl.GetType();
-    if (StringUtils::EqualsNoCase(itemType, "artists"))
+    if (UnicodeUtils::EqualsNoCase(itemType, "artists"))
     {
       content = CONTENT_ARTISTS;
     }
-    else if (StringUtils::EqualsNoCase(itemType, "albums"))
+    else if (UnicodeUtils::EqualsNoCase(itemType, "albums"))
     {
       content = CONTENT_ALBUMS;
     }
@@ -11466,8 +11467,8 @@ bool CMusicDatabase::SetScraperAll(const std::string& strBaseDir, const ADDON::S
       return false;
 
     // Replace view names with table names
-    StringUtils::Replace(strSQLWhere, "artistview", "artist");
-    StringUtils::Replace(strSQLWhere, "albumview", "album");
+    UnicodeUtils::Replace(strSQLWhere, "artistview", "artist");
+    UnicodeUtils::Replace(strSQLWhere, "albumview", "album");
 
     BeginTransaction();
     // Clear current scraper settings (0 => default scraper used)
@@ -11672,24 +11673,24 @@ bool CMusicDatabase::GetItems(const std::string& strBaseDir,
                               const Filter& filter /* = Filter() */,
                               const SortDescription& sortDescription /* = SortDescription() */)
 {
-  if (StringUtils::EqualsNoCase(itemType, "genres"))
+  if (UnicodeUtils::EqualsNoCase(itemType, "genres"))
     return GetGenresNav(strBaseDir, items, filter);
-  else if (StringUtils::EqualsNoCase(itemType, "sources"))
+  else if (UnicodeUtils::EqualsNoCase(itemType, "sources"))
     return GetSourcesNav(strBaseDir, items, filter);
-  else if (StringUtils::EqualsNoCase(itemType, "years"))
+  else if (UnicodeUtils::EqualsNoCase(itemType, "years"))
     return GetYearsNav(strBaseDir, items, filter);
-  else if (StringUtils::EqualsNoCase(itemType, "roles"))
+  else if (UnicodeUtils::EqualsNoCase(itemType, "roles"))
     return GetRolesNav(strBaseDir, items, filter);
-  else if (StringUtils::EqualsNoCase(itemType, "artists"))
+  else if (UnicodeUtils::EqualsNoCase(itemType, "artists"))
     return GetArtistsNav(strBaseDir, items,
                          !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
                              CSettings::SETTING_MUSICLIBRARY_SHOWCOMPILATIONARTISTS),
                          -1, -1, -1, filter, sortDescription);
-  else if (StringUtils::EqualsNoCase(itemType, "albums"))
+  else if (UnicodeUtils::EqualsNoCase(itemType, "albums"))
     return GetAlbumsByWhere(strBaseDir, filter, items, sortDescription);
-  else if (StringUtils::EqualsNoCase(itemType, "discs"))
+  else if (UnicodeUtils::EqualsNoCase(itemType, "discs"))
     return GetDiscsByWhere(strBaseDir, filter, items, sortDescription);
-  else if (StringUtils::EqualsNoCase(itemType, "songs"))
+  else if (UnicodeUtils::EqualsNoCase(itemType, "songs"))
     return GetSongsFullByWhere(strBaseDir, filter, items, sortDescription, true);
 
   return false;
@@ -11697,17 +11698,17 @@ bool CMusicDatabase::GetItems(const std::string& strBaseDir,
 
 std::string CMusicDatabase::GetItemById(const std::string& itemType, int id)
 {
-  if (StringUtils::EqualsNoCase(itemType, "genres"))
+  if (UnicodeUtils::EqualsNoCase(itemType, "genres"))
     return GetGenreById(id);
-  else if (StringUtils::EqualsNoCase(itemType, "sources"))
+  else if (UnicodeUtils::EqualsNoCase(itemType, "sources"))
     return GetSourceById(id);
-  else if (StringUtils::EqualsNoCase(itemType, "years"))
+  else if (UnicodeUtils::EqualsNoCase(itemType, "years"))
     return std::to_string(id);
-  else if (StringUtils::EqualsNoCase(itemType, "artists"))
+  else if (UnicodeUtils::EqualsNoCase(itemType, "artists"))
     return GetArtistById(id);
-  else if (StringUtils::EqualsNoCase(itemType, "albums"))
+  else if (UnicodeUtils::EqualsNoCase(itemType, "albums"))
     return GetAlbumById(id);
-  else if (StringUtils::EqualsNoCase(itemType, "roles"))
+  else if (UnicodeUtils::EqualsNoCase(itemType, "roles"))
     return GetRoleById(id);
 
   return "";
@@ -12199,10 +12200,10 @@ void CMusicDatabase::ImportFromXML(const std::string& xmlFile, CGUIDialogProgres
     // Count the number of artists, albums and songs
     while (entry)
     {
-      if (StringUtils::CompareNoCase(entry->Value(), "artist", 6) == 0 ||
-          StringUtils::CompareNoCase(entry->Value(), "album", 5) == 0)
+      if (UnicodeUtils::StartsWithNoCase(entry->Value(), "artist")||
+          UnicodeUtils::StartsWithNoCase(entry->Value(), "album"))
         total++;
-      else if (StringUtils::CompareNoCase(entry->Value(), "song", 4) == 0)
+      else if (UnicodeUtils::StartsWithNoCase(entry->Value(), "song"))
         songtotal++;
 
       entry = entry->NextSiblingElement();
@@ -12213,7 +12214,7 @@ void CMusicDatabase::ImportFromXML(const std::string& xmlFile, CGUIDialogProgres
     while (entry)
     {
       std::string strTitle;
-      if (StringUtils::CompareNoCase(entry->Value(), "artist", 6) == 0)
+      if (UnicodeUtils::StartsWithNoCase(entry->Value(), "artist"))
       {
         CArtist importedArtist;
         importedArtist.Load(entry);
@@ -12233,7 +12234,7 @@ void CMusicDatabase::ImportFromXML(const std::string& xmlFile, CGUIDialogProgres
                     __FUNCTION__, importedArtist.strArtist);
         current++;
       }
-      else if (StringUtils::CompareNoCase(entry->Value(), "album", 5) == 0)
+      else if (UnicodeUtils::StartsWithNoCase(entry->Value(), "album"))
       {
         CAlbum importedAlbum;
         importedAlbum.Load(entry);
@@ -12330,7 +12331,7 @@ bool CMusicDatabase::ImportSongHistory(const std::string& xmlFile,
       float fRating = 0.0;
       int iVotes;
       std::string strSQLSong;
-      if (StringUtils::CompareNoCase(entry->Value(), "song", 4) == 0)
+      if (UnicodeUtils::StartsWithNoCase(entry->Value(), "song"))
       {
         XMLUtils::GetString(entry, "artistdesc", strArtistDisp);
         XMLUtils::GetString(entry, "title", strTitle);
@@ -12679,7 +12680,7 @@ void CMusicDatabase::SetPropertiesFromAlbum(CFileItem& item, const CAlbum& album
   item.SetProperty("album_totaldiscs", album.iTotalDiscs);
   item.SetProperty("album_releasetype", CAlbum::ReleaseTypeToString(album.releaseType));
   item.SetProperty("album_duration",
-                   StringUtils::SecondsToTimeString(album.iAlbumDuration,
+      StringUtils::SecondsToTimeString(album.iAlbumDuration,
                                                     static_cast<TIME_FORMAT>(TIME_FORMAT_GUESS)));
 }
 
@@ -13100,9 +13101,9 @@ int CMusicDatabase::GetOrderFilter(const std::string& type,
   {
     //Add field for adjusted name sorting using sort name and ignoring articles
     std::string sortSQL;
-    if (StringUtils::EndsWith(name, "strArtists") || StringUtils::EndsWith(name, "strArtist"))
+    if (UnicodeUtils::EndsWith(name, "strArtists") || UnicodeUtils::EndsWith(name, "strArtist"))
     {
-      if (StringUtils::EndsWith(name, "strArtists"))
+      if (UnicodeUtils::EndsWith(name, "strArtists"))
         sortSQL = SortnameBuildSQL("artistsortname", sorting.sortAttributes, name, "strArtistSort");
       else
         sortSQL = SortnameBuildSQL("artistsortname", sorting.sortAttributes, name, "strSortName");
@@ -13115,7 +13116,7 @@ int CMusicDatabase::GetOrderFilter(const std::string& type,
       // Natural number case-insensitive sort
       filter.AppendOrder(AlphanumericSortSQL(name, sorting.sortOrder));
     }
-    else if (StringUtils::EndsWith(name, "strAlbum") || StringUtils::EndsWith(name, "strTitle"))
+    else if (UnicodeUtils::EndsWith(name, "strAlbum") || UnicodeUtils::EndsWith(name, "strTitle"))
     {
       sortSQL = SortnameBuildSQL("titlesortname", sorting.sortAttributes, name, "");
       if (!sortSQL.empty())
@@ -13127,7 +13128,7 @@ int CMusicDatabase::GetOrderFilter(const std::string& type,
       // Natural number case-insensitive sort
       filter.AppendOrder(AlphanumericSortSQL(name, sorting.sortOrder));
     }
-    else if (StringUtils::EndsWith(name, "strGenres"))
+    else if (UnicodeUtils::EndsWith(name, "strGenres"))
       // Natural number case-insensitive sort
       filter.AppendOrder(AlphanumericSortSQL(name, sorting.sortOrder));
     else

@@ -10,6 +10,7 @@
 
 #include "Key.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 #include <string>
@@ -19,7 +20,7 @@ uint32_t CGamepadTranslator::TranslateString(std::string strButton)
   if (strButton.empty())
     return 0;
 
-  StringUtils::ToLower(strButton);
+  UnicodeUtils::FoldCase(strButton);
 
   uint32_t buttonCode = 0;
   if (strButton == "a")

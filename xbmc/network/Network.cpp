@@ -23,6 +23,7 @@
 #include "utils/CharsetConverter.h"
 #endif
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/XTimeUtils.h"
 
 /* slightly modified in_ether taken from the etherboot project (http://sourceforge.net/projects/etherboot) */
@@ -133,14 +134,14 @@ bool CNetworkBase::IsLocalHost(const std::string& hostname)
   if (hostname.empty())
     return false;
 
-  if (StringUtils::StartsWith(hostname, "127.")
+  if (UnicodeUtils::StartsWith(hostname, "127.")
       || (hostname == "::1")
-      || StringUtils::EqualsNoCase(hostname, "localhost"))
+      || UnicodeUtils::EqualsNoCase(hostname, "localhost"))
     return true;
 
   std::string myhostname;
   if (GetHostName(myhostname)
-      && StringUtils::EqualsNoCase(hostname, myhostname))
+      && UnicodeUtils::EqualsNoCase(hostname, myhostname))
     return true;
 
   std::vector<CNetworkInterface*>& ifaces = GetInterfaceList();

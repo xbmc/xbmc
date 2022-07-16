@@ -28,6 +28,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/Digest.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
@@ -241,9 +242,9 @@ void ClearPhotoAssetCache()
     CFileItemPtr pItem = items[i];
     if (!pItem->m_bIsFolder)
     {
-      if (StringUtils::StartsWithNoCase(pItem->GetLabel(), "airplayasset") &&
-          (StringUtils::EndsWithNoCase(pItem->GetLabel(), ".jpg") ||
-           StringUtils::EndsWithNoCase(pItem->GetLabel(), ".png") ))
+      if (UnicodeUtils::StartsWithNoCase(pItem->GetLabel(), "airplayasset") &&
+          (UnicodeUtils::EndsWithNoCase(pItem->GetLabel(), ".jpg") ||
+           UnicodeUtils::EndsWithNoCase(pItem->GetLabel(), ".png") ))
       {
         XFILE::CFile::Delete(pItem->GetPath());
       }
@@ -648,15 +649,15 @@ std::string calcResponse(const std::string& username,
 //from a string field1="value1", field2="value2" it parses the value to a field
 std::string getFieldFromString(const std::string &str, const char* field)
 {
-  std::vector<std::string> tmpAr1 = StringUtils::Split(str, ",");
+  std::vector<std::string> tmpAr1 = UnicodeUtils::Split(str, ",");
   for (const auto& i : tmpAr1)
   {
     if (i.find(field) != std::string::npos)
     {
-      std::vector<std::string> tmpAr2 = StringUtils::Split(i, "=");
+      std::vector<std::string> tmpAr2 = UnicodeUtils::Split(i, "=");
       if (tmpAr2.size() == 2)
       {
-        StringUtils::Replace(tmpAr2[1], "\"", "");//remove quotes
+        UnicodeUtils::Replace(tmpAr2[1], "\"", "");//remove quotes
         return tmpAr2[1];
       }
     }
@@ -715,7 +716,7 @@ bool CAirPlayServer::CTCPClient::checkAuthorization(const std::string& authStr,
      std::string realm = AUTH_REALM;
      std::string ourResponse = calcResponse(username, ServerInstance->m_password, realm, method, uri, m_authNonce);
      std::string theirResponse = getFieldFromString(authStr, "response");
-     if (!StringUtils::EqualsNoCase(theirResponse, ourResponse))
+     if (!UnicodeUtils::EqualsNoCase(theirResponse, ourResponse))
      {
        authValid = false;
        CLog::Log(LOGDEBUG, "AirAuth: response mismatch - our: {} theirs: {}", ourResponse,

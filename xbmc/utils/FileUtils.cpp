@@ -12,7 +12,8 @@
 #include "FileOperationJob.h"
 #include "JobManager.h"
 #include "ServiceBroker.h"
-#include "StringUtils.h"
+#include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "URIUtils.h"
 #include "URL.h"
 #include "Util.h"
@@ -25,6 +26,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
@@ -105,39 +107,39 @@ bool CFileUtils::RemoteAccessAllowed(const std::string &strPath)
   while (URIUtils::IsInArchive(realPath))
     realPath = CURL(realPath).GetHostName();
 
-  if (StringUtils::StartsWithNoCase(realPath, "virtualpath://upnproot/"))
+  if (UnicodeUtils::StartsWithNoCase(realPath, "virtualpath://upnproot/"))
     return true;
-  else if (StringUtils::StartsWithNoCase(realPath, "musicdb://"))
+  else if (UnicodeUtils::StartsWithNoCase(realPath, "musicdb://"))
     return true;
-  else if (StringUtils::StartsWithNoCase(realPath, "videodb://"))
+  else if (UnicodeUtils::StartsWithNoCase(realPath, "videodb://"))
     return true;
-  else if (StringUtils::StartsWithNoCase(realPath, "library://video"))
+  else if (UnicodeUtils::StartsWithNoCase(realPath, "library://video"))
     return true;
-  else if (StringUtils::StartsWithNoCase(realPath, "library://music"))
+  else if (UnicodeUtils::StartsWithNoCase(realPath, "library://music"))
     return true;
-  else if (StringUtils::StartsWithNoCase(realPath, "sources://video"))
+  else if (UnicodeUtils::StartsWithNoCase(realPath, "sources://video"))
     return true;
-  else if (StringUtils::StartsWithNoCase(realPath, "special://musicplaylists"))
+  else if (UnicodeUtils::StartsWithNoCase(realPath, "special://musicplaylists"))
     return true;
-  else if (StringUtils::StartsWithNoCase(realPath, "special://profile/playlists"))
+  else if (UnicodeUtils::StartsWithNoCase(realPath, "special://profile/playlists"))
     return true;
-  else if (StringUtils::StartsWithNoCase(realPath, "special://videoplaylists"))
+  else if (UnicodeUtils::StartsWithNoCase(realPath, "special://videoplaylists"))
     return true;
-  else if (StringUtils::StartsWithNoCase(realPath, "special://skin"))
+  else if (UnicodeUtils::StartsWithNoCase(realPath, "special://skin"))
     return true;
-  else if (StringUtils::StartsWithNoCase(realPath, "special://profile/addon_data"))
+  else if (UnicodeUtils::StartsWithNoCase(realPath, "special://profile/addon_data"))
     return true;
-  else if (StringUtils::StartsWithNoCase(realPath, "addons://sources"))
+  else if (UnicodeUtils::StartsWithNoCase(realPath, "addons://sources"))
     return true;
-  else if (StringUtils::StartsWithNoCase(realPath, "upnp://"))
+  else if (UnicodeUtils::StartsWithNoCase(realPath, "upnp://"))
     return true;
-  else if (StringUtils::StartsWithNoCase(realPath, "plugin://"))
+  else if (UnicodeUtils::StartsWithNoCase(realPath, "plugin://"))
     return true;
   else
   {
     std::string strPlaylistsPath = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH);
     URIUtils::RemoveSlashAtEnd(strPlaylistsPath);
-    if (StringUtils::StartsWithNoCase(realPath, strPlaylistsPath))
+    if (UnicodeUtils::StartsWithNoCase(realPath, strPlaylistsPath))
       return true;
   }
   bool isSource;
@@ -283,7 +285,7 @@ bool CFileUtils::CheckFileAccessAllowed(const std::string &filePath)
     isImage = true;
     decodePath.erase(pos, 8);
     URIUtils::RemoveSlashAtEnd(decodePath);
-    if (StringUtils::StartsWith(decodePath, "music@") || StringUtils::StartsWith(decodePath, "video@"))
+    if (UnicodeUtils::StartsWith(decodePath, "music@") || UnicodeUtils::StartsWith(decodePath, "video@"))
       decodePath.erase(pos, 6);
   }
 
@@ -316,7 +318,7 @@ bool CFileUtils::CheckFileAccessAllowed(const std::string &filePath)
         whiteEntry = realtemp;
         free(realtemp);
       }
-      if (StringUtils::StartsWith(realPath, whiteEntry))
+      if (UnicodeUtils::StartsWith(realPath, whiteEntry))
         return true;
     }
     // check sources with realPath
@@ -341,7 +343,7 @@ bool CFileUtils::CheckFileAccessAllowed(const std::string &filePath)
         g_charsetConverter.wToUTF8(fullpathW, fullpath, false);
         for (const std::string& whiteEntry : whitelist)
         {
-          if (StringUtils::StartsWith(fullpath, whiteEntry))
+          if (UnicodeUtils::StartsWith(fullpath, whiteEntry))
             return true;
         }
         return CFileUtils::RemoteAccessAllowed(fullpath);

@@ -11,6 +11,7 @@
 #include "URL.h"
 #include "WinLibraryDirectory.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
@@ -292,8 +293,8 @@ bool CWinLibraryFile::IsInAccessList(const CURL& url)
       packagePath = FromW(Package::Current().InstalledLocation().Path().c_str());
 
     // don't check files inside local folder and installation folder
-    if ( StringUtils::StartsWithNoCase(url.Get(), localPath)
-      || StringUtils::StartsWithNoCase(url.Get(), packagePath))
+    if ( UnicodeUtils::StartsWithNoCase(url.Get(), localPath)
+      || UnicodeUtils::StartsWithNoCase(url.Get(), packagePath))
       return false;
 
     return IsInList(url, StorageApplicationPermissions::FutureAccessList())

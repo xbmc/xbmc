@@ -20,6 +20,7 @@
 #include "utils/FileUtils.h"
 #include "utils/Mime.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -402,9 +403,9 @@ MHD_RESULT CWebServer::FinalizeRequest(const std::shared_ptr<IHTTPRequestHandler
     if (handler->CanBeCached() && maxAge == 0 && !responseDetails.contentType.empty())
     {
       // don't cache HTML, CSS and JavaScript files
-      if (!StringUtils::EqualsNoCase(responseDetails.contentType, "text/html") &&
-          !StringUtils::EqualsNoCase(responseDetails.contentType, "text/css") &&
-          !StringUtils::EqualsNoCase(responseDetails.contentType, "application/javascript"))
+      if (!UnicodeUtils::EqualsNoCase(responseDetails.contentType, "text/html") &&
+          !UnicodeUtils::EqualsNoCase(responseDetails.contentType, "text/css") &&
+          !UnicodeUtils::EqualsNoCase(responseDetails.contentType, "application/javascript"))
         maxAge = CDateTimeSpan(365, 0, 0, 0).GetSecondsTotal();
     }
 
@@ -466,10 +467,10 @@ bool CWebServer::IsRequestCacheable(const HTTPRequest& request) const
       request.connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_CACHE_CONTROL);
   if (!cacheControl.empty())
   {
-    std::vector<std::string> cacheControls = StringUtils::Split(cacheControl, ",");
+    std::vector<std::string> cacheControls = UnicodeUtils::Split(cacheControl, ",");
     for (auto control : cacheControls)
     {
-      control = StringUtils::Trim(control);
+      control = UnicodeUtils::Trim(control);
 
       // handle no-cache
       if (control.compare(HEADER_VALUE_NO_CACHE) == 0)
@@ -532,8 +533,8 @@ void CWebServer::SetupPostDataProcessing(const HTTPRequest& request,
 
   // if the content-type is neither application/x-ww-form-urlencoded nor multipart/form-data we need
   // to handle it ourselves
-  if (!StringUtils::EqualsNoCase(contentType, MHD_HTTP_POST_ENCODING_FORM_URLENCODED) &&
-      !StringUtils::EqualsNoCase(contentType, MHD_HTTP_POST_ENCODING_MULTIPART_FORMDATA))
+  if (!UnicodeUtils::EqualsNoCase(contentType, MHD_HTTP_POST_ENCODING_FORM_URLENCODED) &&
+      !UnicodeUtils::EqualsNoCase(contentType, MHD_HTTP_POST_ENCODING_MULTIPART_FORMDATA))
     return;
 
   // otherwise we can use MHD's POST processor
@@ -813,7 +814,7 @@ MHD_RESULT CWebServer::CreateFileDownloadResponse(
   if (mimeType.empty())
   {
     std::string ext = URIUtils::GetExtension(filePath);
-    StringUtils::ToLower(ext);
+    UnicodeUtils::FoldCase(ext);
     mimeType = CreateMimeTypeFromExtension(ext.c_str());
   }
 

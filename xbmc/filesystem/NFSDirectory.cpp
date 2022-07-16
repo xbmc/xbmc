@@ -15,6 +15,7 @@
 #include "FileItem.h"
 #include "NFSDirectory.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
@@ -267,8 +268,8 @@ bool CNFSDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     bIsDir = tmpDirent.type == NF3DIR;
     lTimeDate = tmpDirent.mtime.tv_sec;
 
-    if (!StringUtils::EqualsNoCase(strName,".") && !StringUtils::EqualsNoCase(strName,"..")
-        && !StringUtils::EqualsNoCase(strName,"lost+found"))
+    if (!UnicodeUtils::EqualsNoCase(strName,".") && !UnicodeUtils::EqualsNoCase(strName,"..")
+        && !UnicodeUtils::EqualsNoCase(strName,"lost+found"))
     {
       if(lTimeDate == 0) // if modification date is missing, use create date
       {

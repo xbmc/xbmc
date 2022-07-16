@@ -13,6 +13,7 @@
 #include "storage/MediaManager.h"
 #include "utils/JobManager.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 #include "platform/win10/AsyncHelpers.h"
@@ -257,8 +258,8 @@ void CStorageProvider::GetDrivesByType(VECSOURCES & localDrives, Drive_Types eDr
       }
     }
 
-    StringUtils::Replace(share.strName, ":\\", ":");
-    StringUtils::Replace(share.strPath, ":\\", ":");
+    UnicodeUtils::Replace(share.strName, ":\\", ":");
+    UnicodeUtils::Replace(share.strPath, ":\\", ":");
     share.m_ignore = true;
     if (!bUseDCD)
     {

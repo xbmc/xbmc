@@ -22,6 +22,7 @@
 #ifdef TARGET_POSIX
 #include <dirent.h>
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #endif
 
 const CProfileManager *CSpecialProtocol::m_profileManager = nullptr;
@@ -240,7 +241,7 @@ std::string CSpecialProtocol::TranslatePathConvertCase(const std::string& path)
         while ((de = readdir(dir)) != NULL)
         {
           // check if there's a file with same name but different case
-          if (StringUtils::CompareNoCase(de->d_name, tokens[i]) == 0)
+          if (UnicodeUtils::CompareNoCase(de->d_name, tokens[i]) == 0)
           {
             result += "/";
             result += de->d_name;

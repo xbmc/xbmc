@@ -18,6 +18,7 @@
 #include "PlatformDefs.h"
 #endif
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 class CSetting;
 
@@ -146,7 +147,7 @@ public:
   static PeripheralType GetTypeFromString(const std::string& strType)
   {
     std::string strTypeLowerCase(strType);
-    StringUtils::ToLower(strTypeLowerCase);
+    UnicodeUtils::FoldCase(strTypeLowerCase);
 
     if (strTypeLowerCase == "bluetooth")
       return PERIPHERAL_BLUETOOTH;
@@ -204,7 +205,7 @@ public:
   static PeripheralBusType GetBusTypeFromString(const std::string& strType)
   {
     std::string strTypeLowerCase(strType);
-    StringUtils::ToLower(strTypeLowerCase);
+    UnicodeUtils::FoldCase(strTypeLowerCase);
 
     if (strTypeLowerCase == "usb")
       return PERIPHERAL_BUS_USB;
@@ -267,7 +268,7 @@ public:
   static PeripheralFeature GetFeatureTypeFromString(const std::string& strType)
   {
     std::string strTypeLowerCase(strType);
-    StringUtils::ToLower(strTypeLowerCase);
+    UnicodeUtils::FoldCase(strTypeLowerCase);
 
     if (strTypeLowerCase == "hid")
       return FEATURE_HID;
@@ -329,7 +330,7 @@ public:
   {
     return m_iVendorId == right.m_iVendorId && m_iProductId == right.m_iProductId &&
            m_type == right.m_type && m_busType == right.m_busType &&
-           StringUtils::EqualsNoCase(m_strLocation, right.m_strLocation);
+           UnicodeUtils::EqualsNoCase(m_strLocation, right.m_strLocation);
   }
 
   bool operator!=(const PeripheralScanResult& right) const { return !(*this == right); }

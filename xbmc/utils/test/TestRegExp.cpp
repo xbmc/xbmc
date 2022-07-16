@@ -15,6 +15,7 @@
 #include "filesystem/SpecialProtocol.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 #include <gtest/gtest.h>
@@ -139,7 +140,7 @@ TEST_F(TestRegExpLog, DumpOvector)
   XFILE::CFile file;
 
   std::string appName = CCompileInfo::GetAppName();
-  StringUtils::ToLower(appName);
+  UnicodeUtils::FoldCase(appName);
   logfile = CSpecialProtocol::TranslatePath("special://temp/") + appName + ".log";
   CServiceBroker::GetLogging().Initialize(
       CSpecialProtocol::TranslatePath("special://temp/").c_str());

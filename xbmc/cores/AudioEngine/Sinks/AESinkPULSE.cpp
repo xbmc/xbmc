@@ -13,6 +13,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 #include <array>
@@ -365,7 +366,7 @@ static void SinkInfoCallback(pa_context *c, const pa_sink_info *i, int eol, void
         sinkStruct->isNWDevice = true;
 
       sinkStruct->isBTDevice =
-          StringUtils::EndsWithNoCase(std::string(i->name), std::string("a2dp_sink"));
+          UnicodeUtils::EndsWithNoCase(std::string(i->name), std::string("a2dp_sink"));
       if (sinkStruct->isBTDevice)
         CLog::Log(LOGINFO, "Found BT Device - will adjust buffers to larger values");
 
@@ -804,7 +805,7 @@ bool CAESinkPULSE::Initialize(AEAudioFormat &format, std::string &device)
 
   // get real sample rate of the device we want to open - to avoid resampling
   bool isDefaultDevice = false;
-  if(StringUtils::EndsWithNoCase(device, std::string("default")))
+  if(UnicodeUtils::EndsWithNoCase(device, std::string("default")))
     isDefaultDevice = true;
 
   WaitForOperation(pa_context_get_sink_info_by_name(m_Context, isDefaultDevice ? NULL : device.c_str(), SinkInfoCallback, &sinkStruct), m_MainLoop, "Get Sink Info");

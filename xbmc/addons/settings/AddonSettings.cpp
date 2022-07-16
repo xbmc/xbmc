@@ -30,6 +30,7 @@
 #include "settings/lib/SettingsManager.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
@@ -153,7 +154,7 @@ CAddonSettings::CAddonSettings(const std::shared_ptr<const IAddon>& addon)
 
 std::shared_ptr<CSetting> CAddonSettings::CreateSetting(const std::string &settingType, const std::string &settingId, CSettingsManager *settingsManager /* = NULL */) const
 {
-  if (StringUtils::EqualsNoCase(settingType, "urlencodedstring"))
+  if (UnicodeUtils::EqualsNoCase(settingType, "urlencodedstring"))
     return std::make_shared<CSettingUrlEncodedString>(settingId, settingsManager);
 
   return CSettingCreator::CreateSetting(settingType, settingId, settingsManager);
@@ -172,9 +173,9 @@ void CAddonSettings::OnSettingAction(const std::shared_ptr<const CSetting>& sett
     {
       actionData = settingAction->GetData();
       // replace $CWD with the url of the add-on
-      StringUtils::Replace(actionData, "$CWD", m_addonPath);
+      UnicodeUtils::Replace(actionData, "$CWD", m_addonPath);
       // replace $ID with the id of the add-on
-      StringUtils::Replace(actionData, "$ID", m_addonId);
+      UnicodeUtils::Replace(actionData, "$ID", m_addonId);
     }
   }
 
@@ -440,7 +441,7 @@ bool CAddonSettings::ParseSettingVersion(const CXBMCTinyXML& doc, uint32_t& vers
   if (root == nullptr)
     return false;
 
-  if (!StringUtils::EqualsNoCase(root->ValueStr(), SETTING_XML_ROOT))
+  if (!UnicodeUtils::EqualsNoCase(root->ValueStr(), SETTING_XML_ROOT))
   {
     m_logger->error("error reading setting definitions: no <settings> tag");
     return false;
@@ -479,7 +480,7 @@ std::shared_ptr<CSettingGroup> CAddonSettings::ParseOldSettingElement(
       const auto settingId = XMLUtils::GetAttribute(settingElement, "id");
       const auto defaultValue = XMLUtils::GetAttribute(settingElement, "default");
       const auto settingValues = XMLUtils::GetAttribute(settingElement, "values");
-      const auto settingLValues = StringUtils::Split(XMLUtils::GetAttribute(settingElement, "lvalues"), OldSettingValuesSeparator);
+      const auto settingLValues = UnicodeUtils::Split(XMLUtils::GetAttribute(settingElement, "lvalues"), OldSettingValuesSeparator);
       int settingLabel = -1;
       bool settingLabelParsed = ParseOldLabel(settingElement, settingId, settingLabel);
 
@@ -589,18 +590,18 @@ std::shared_ptr<CSettingGroup> CAddonSettings::ParseOldSettingElement(
 
         // parse enable status
         const auto conditionEnable = XMLUtils::GetAttribute(settingElement, "enable");
-        if (StringUtils::EqualsNoCase(conditionEnable, "true"))
+        if (UnicodeUtils::EqualsNoCase(conditionEnable, "true"))
           setting->SetEnabled(true);
-        else if (StringUtils::EqualsNoCase(conditionEnable, "false"))
+        else if (UnicodeUtils::EqualsNoCase(conditionEnable, "false"))
           setting->SetEnabled(false);
         else if (!conditionEnable.empty())
           settingWithConditions.enableCondition = conditionEnable;
 
         // parse visible status
         const auto conditionVisible = XMLUtils::GetAttribute(settingElement, "visible");
-        if (StringUtils::EqualsNoCase(conditionVisible, "true"))
+        if (UnicodeUtils::EqualsNoCase(conditionVisible, "true"))
           setting->SetVisible(true);
-        else if (StringUtils::EqualsNoCase(conditionVisible, "false"))
+        else if (UnicodeUtils::EqualsNoCase(conditionVisible, "false"))
           setting->SetVisible(false);
         else if (!conditionVisible.empty())
           settingWithConditions.visibleCondition = conditionVisible;
@@ -737,9 +738,9 @@ SettingPtr CAddonSettings::InitializeFromOldSettingAction(const std::string& set
   // parse the action attribute
   std::string action = XMLUtils::GetAttribute(settingElement, "action");
   // replace $CWD with the url of the add-on
-  StringUtils::Replace(action, "$CWD", m_addonPath);
+  UnicodeUtils::Replace(action, "$CWD", m_addonPath);
   // replace $ID with the id of the add-on
-  StringUtils::Replace(action, "$ID", m_addonId);
+  UnicodeUtils::Replace(action, "$ID", m_addonId);
 
   // prepare the setting's control
   auto control = std::make_shared<CSettingControlButton>();
@@ -772,7 +773,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingAction(const std::string& set
   // get any options
   std::string option = XMLUtils::GetAttribute(settingElement, "option");
   // handle the "close" option
-  if (StringUtils::EqualsNoCase(option, "close"))
+  if (UnicodeUtils::EqualsNoCase(option, "close"))
     control->SetCloseDialog(true);
 
   setting->SetControl(control);
@@ -822,7 +823,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingTextIpAddress(const std::stri
   else if (settingType == "text")
   {
 
-    if (StringUtils::EqualsNoCase(option, "urlencoded"))
+    if (UnicodeUtils::EqualsNoCase(option, "urlencoded"))
     {
       setting = std::make_shared<CSettingUrlEncodedString>(settingId, GetSettingsManager());
       control->SetFormat("urlencoded");
@@ -831,7 +832,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingTextIpAddress(const std::stri
     {
       setting = std::make_shared<CSettingString>(settingId, GetSettingsManager());
       control->SetFormat("string");
-      control->SetHidden(StringUtils::EqualsNoCase(option, "hidden"));
+      control->SetHidden(UnicodeUtils::EqualsNoCase(option, "hidden"));
     }
   }
 
@@ -879,10 +880,10 @@ SettingPtr CAddonSettings::InitializeFromOldSettingPath(const std::string& setti
   if (!mask.empty())
   {
     // convert mask qualifiers
-    StringUtils::Replace(mask, "$AUDIO", audioMask);
-    StringUtils::Replace(mask, "$VIDEO", videoMask);
-    StringUtils::Replace(mask, "$IMAGE", imageMask);
-    StringUtils::Replace(mask, "$EXECUTABLE", execMask);
+    UnicodeUtils::Replace(mask, "$AUDIO", audioMask);
+    UnicodeUtils::Replace(mask, "$VIDEO", videoMask);
+    UnicodeUtils::Replace(mask, "$IMAGE", imageMask);
+    UnicodeUtils::Replace(mask, "$EXECUTABLE", execMask);
   }
   else
   {
@@ -899,7 +900,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingPath(const std::string& setti
 
   // parse options
   const auto option = XMLUtils::GetAttribute(settingElement, "option");
-  setting->SetWritable(StringUtils::EqualsNoCase(option, "writeable"));
+  setting->SetWritable(UnicodeUtils::EqualsNoCase(option, "writeable"));
 
   auto control = std::make_shared<CSettingControlButton>();
   if (settingType == "folder")
@@ -911,7 +912,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingPath(const std::string& setti
     control->SetFormat("file");
 
     // parse the options
-    const auto options = StringUtils::Split(option, OldSettingValuesSeparator);
+    const auto options = UnicodeUtils::Split(option, OldSettingValuesSeparator);
     control->SetUseImageThumbs(std::find(options.cbegin(), options.cend(), "usethumbs") != options.cend());
     control->SetUseFileDirectories(std::find(options.cbegin(), options.cend(), "treatasfolder") != options.cend());
   }
@@ -956,7 +957,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingSelect(const std::string& set
   if (!settingLValues.empty())
     values = settingLValues;
   else
-    values = StringUtils::Split(settingValues, OldSettingValuesSeparator);
+    values = UnicodeUtils::Split(settingValues, OldSettingValuesSeparator);
 
   SettingPtr setting = nullptr;
   if (!values.empty())
@@ -1014,11 +1015,11 @@ SettingPtr CAddonSettings::InitializeFromOldSettingAddon(const std::string& sett
 {
   // get addon types
   std::string addonTypeStr = XMLUtils::GetAttribute(settingElement, "addontype");
-  const auto addonTypesStr = StringUtils::Split(addonTypeStr, ",");
+  const auto addonTypesStr = UnicodeUtils::Split(addonTypeStr, ",");
   std::set<ADDON::TYPE> addonTypes;
   for (auto addonType : addonTypesStr)
   {
-    auto type = ADDON::CAddonInfo::TranslateType(StringUtils::Trim(addonType));
+    auto type = ADDON::CAddonInfo::TranslateType(UnicodeUtils::Trim(addonType));
     if (type != ADDON::ADDON_UNKNOWN)
       addonTypes.insert(type);
   }
@@ -1037,7 +1038,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingAddon(const std::string& sett
   }
 
   // parse addon ids
-  auto addonIds = StringUtils::Split(defaultValue, ",");
+  auto addonIds = UnicodeUtils::Split(defaultValue, ",");
 
   // parse multiselect option
   bool multiselect = false;
@@ -1086,10 +1087,10 @@ SettingPtr CAddonSettings::InitializeFromOldSettingEnums(const std::string& sett
       values.push_back(CDateTime(2000, 1, 1, hour, 0, 0).GetAsLocalizedTime(g_langInfo.GetTimeFormat(), false));
   }
   else
-    values = StringUtils::Split(settingValues, OldSettingValuesSeparator);
+    values = UnicodeUtils::Split(settingValues, OldSettingValuesSeparator);
 
   // process entries
-  const auto settingEntries = StringUtils::Split(XMLUtils::GetAttribute(settingElement, "entries"), OldSettingValuesSeparator);
+  const auto settingEntries = UnicodeUtils::Split(XMLUtils::GetAttribute(settingElement, "entries"), OldSettingValuesSeparator);
 
   // process sort
   bool sortAscending = false;
@@ -1238,7 +1239,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingSlider(const std::string& set
 {
   // parse range
   double min = 0.0, max = 100.0, step = 1.0;
-  const auto range = StringUtils::Split(XMLUtils::GetAttribute(settingElement, "range"), ',');
+  const auto range = UnicodeUtils::Split(XMLUtils::GetAttribute(settingElement, "range"), ',');
 
   if (range.size() > 1)
   {
@@ -1255,7 +1256,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingSlider(const std::string& set
 
   // parse option
   auto option = XMLUtils::GetAttribute(settingElement, "option");
-  if (option.empty() || StringUtils::EqualsNoCase(option, "float"))
+  if (option.empty() || UnicodeUtils::EqualsNoCase(option, "float"))
   {
     auto setting = std::make_shared<CSettingNumber>(settingId, GetSettingsManager());
     if (setting->FromString(defaultValue))
@@ -1273,7 +1274,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingSlider(const std::string& set
     return setting;
   }
 
-  if (StringUtils::EqualsNoCase(option, "int") || StringUtils::EqualsNoCase(option, "percent"))
+  if (UnicodeUtils::EqualsNoCase(option, "int") || UnicodeUtils::EqualsNoCase(option, "percent"))
   {
     auto setting = std::make_shared<CSettingInt>(settingId, GetSettingsManager());
     if (setting->FromString(defaultValue))
@@ -1284,7 +1285,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingSlider(const std::string& set
     setting->SetMaximum(static_cast<int>(max));
 
     auto control = std::make_shared<CSettingControlSlider>();
-    control->SetFormat(StringUtils::EqualsNoCase(option, "int") ? "integer" : "percentage");
+    control->SetFormat(UnicodeUtils::EqualsNoCase(option, "int") ? "integer" : "percentage");
     control->SetPopup(false);
     setting->SetControl(control);
 
@@ -1304,7 +1305,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingFileWithSource(const std::str
   setting->SetDefault(defaultValue);
 
   if (source.find("$PROFILE") != std::string::npos)
-    StringUtils::Replace(source, "$PROFILE", m_addonProfile);
+    UnicodeUtils::Replace(source, "$PROFILE", m_addonProfile);
   else
     source = URIUtils::AddFileToFolder(m_addonPath, source);
 
@@ -1315,7 +1316,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingFileWithSource(const std::str
 
   // process option
   std::string option = XMLUtils::GetAttribute(settingElement, "option");
-  setting->SetHideExtension(StringUtils::EqualsNoCase(option, "hideext"));
+  setting->SetHideExtension(UnicodeUtils::EqualsNoCase(option, "hideext"));
 
   setting->SetOptionsFiller(FileEnumSettingOptionsFiller);
 
@@ -1496,7 +1497,7 @@ bool CAddonSettings::ParseOldCondition(const std::shared_ptr<const CSetting>& se
 
 bool CAddonSettings::ParseOldConditionExpression(std::string str, ConditionExpression& expression)
 {
-  StringUtils::Trim(str);
+  UnicodeUtils::Trim(str);
 
   size_t posOpen = str.find('(');
   size_t posSep = str.find(',', posOpen);
@@ -1510,16 +1511,16 @@ bool CAddonSettings::ParseOldConditionExpression(std::string str, ConditionExpre
   auto op = str.substr(0, posOpen);
 
   // check if the operator is negated
-  expression.m_negated = StringUtils::StartsWith(op, "!");
+  expression.m_negated = UnicodeUtils::StartsWith(op, "!");
   if (expression.m_negated)
     op = op.substr(1);
 
   // parse the operator
-  if (StringUtils::EqualsNoCase(op, "eq"))
+  if (UnicodeUtils::EqualsNoCase(op, "eq"))
     expression.m_operator = SettingDependencyOperator::Equals;
-  else if (StringUtils::EqualsNoCase(op, "gt"))
+  else if (UnicodeUtils::EqualsNoCase(op, "gt"))
     expression.m_operator = SettingDependencyOperator::GreaterThan;
-  else if (StringUtils::EqualsNoCase(op, "lt"))
+  else if (UnicodeUtils::EqualsNoCase(op, "lt"))
     expression.m_operator = SettingDependencyOperator::LessThan;
   else
     return false;

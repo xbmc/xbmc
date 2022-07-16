@@ -24,6 +24,7 @@
 #include "utils/Digest.h"
 #include "utils/Mime.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
@@ -214,7 +215,7 @@ bool CRepository::FetchIndex(const DirInfo& repo,
   if (repo.checksumType != CDigest::Type::INVALID)
   {
     std::string actualDigest = CDigest::Calculate(repo.checksumType, response);
-    if (!StringUtils::EqualsNoCase(digest, actualDigest))
+    if (!UnicodeUtils::EqualsNoCase(digest, actualDigest))
     {
       CLog::Log(LOGERROR, "CRepository: {} index has wrong digest {}, expected: {}", repo.info, actualDigest, digest);
       return false;
@@ -304,7 +305,7 @@ CRepository::DirInfo CRepository::ParseDirConfiguration(const CAddonExtensions& 
   }
 
   std::string hashStr = configuration.GetValue("hashes").asString();
-  StringUtils::ToLower(hashStr);
+  UnicodeUtils::FoldCase(hashStr);
   if (hashStr == "true")
   {
     // Deprecated alias

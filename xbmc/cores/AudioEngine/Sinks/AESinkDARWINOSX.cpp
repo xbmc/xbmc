@@ -17,6 +17,7 @@
 #include "threads/SystemClock.h"
 #include "utils/MemUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 
@@ -194,7 +195,7 @@ bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)
   }
 
   CADeviceList devices = GetDevices();
-  if (StringUtils::EqualsNoCase(device, "default"))
+  if (UnicodeUtils::EqualsNoCase(device, "default"))
   {
     CCoreAudioHardware::GetOutputDeviceName(device);
     deviceID = CCoreAudioHardware::GetDefaultOutputDevice();

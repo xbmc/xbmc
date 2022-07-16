@@ -9,6 +9,7 @@
 #include "DAVCommon.h"
 
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 using namespace XFILE;
@@ -34,7 +35,7 @@ bool CDAVCommon::ValueWithoutNamespace(const TiXmlNode *pNode, const std::string
     return false;
   }
 
-  std::vector<std::string> tag = StringUtils::Split(pElement->ValueStr(), ":", 2);
+  std::vector<std::string> tag = UnicodeUtils::Split(pElement->ValueStr(), ":", 2);
 
   if (tag.size() == 1 && tag[0] == value)
   {

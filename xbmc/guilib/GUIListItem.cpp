@@ -12,13 +12,14 @@
 #include "utils/Archive.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 
 #include <utility>
 
 bool CGUIListItem::icompare::operator()(const std::string &s1, const std::string &s2) const
 {
-  return StringUtils::CompareNoCase(s1, s2) < 0;
+  return UnicodeUtils::CompareNoCase(s1, s2) < 0;
 }
 
 CGUIListItem::CGUIListItem(const CGUIListItem& item)

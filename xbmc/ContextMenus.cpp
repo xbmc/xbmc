@@ -83,9 +83,9 @@ bool CAddRemoveFavourite::IsVisible(const CFileItem& item) const
           !URIUtils::IsProtocol(item.GetPath(), "musicsearch") &&
           // Hide this item for all PVR EPG/timers/search except EPG/timer/timer rules/search root
           // folders.
-          !StringUtils::StartsWith(item.GetPath(), "pvr://guide/") &&
-          !StringUtils::StartsWith(item.GetPath(), "pvr://timers/") &&
-          !StringUtils::StartsWith(item.GetPath(), "pvr://search/")) ||
+          !UnicodeUtils::StartsWith(item.GetPath(), "pvr://guide/") &&
+          !UnicodeUtils::StartsWith(item.GetPath(), "pvr://timers/") &&
+          !UnicodeUtils::StartsWith(item.GetPath(), "pvr://search/")) ||
          item.GetPath() == "pvr://guide/tv/" || item.GetPath() == "pvr://guide/radio/" ||
          item.GetPath() == "pvr://timers/tv/timers/" ||
          item.GetPath() == "pvr://timers/radio/timers/" ||

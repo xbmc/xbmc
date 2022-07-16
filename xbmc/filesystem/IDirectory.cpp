@@ -13,6 +13,7 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 
 using namespace KODI::MESSAGING;
@@ -61,10 +62,10 @@ bool IDirectory::IsAllowed(const CURL& url) const
 
     // Allow filenames of the form video_ts.ifo or vts_##_0.ifo
 
-    return StringUtils::EqualsNoCase(fileName, "video_ts.ifo") ||
+    return UnicodeUtils::EqualsNoCase(fileName, "video_ts.ifo") ||
           (fileName.length() == 12 &&
-           StringUtils::StartsWithNoCase(fileName, "vts_") &&
-           StringUtils::EndsWithNoCase(fileName, "_0.ifo"));
+           UnicodeUtils::StartsWithNoCase(fileName, "vts_") &&
+           UnicodeUtils::EndsWithNoCase(fileName, "_0.ifo"));
   }
 
   if (URIUtils::HasExtension(url, ".dat"))
@@ -73,16 +74,16 @@ bool IDirectory::IsAllowed(const CURL& url) const
     std::string folder = URIUtils::GetDirectory(fileName);
     URIUtils::RemoveSlashAtEnd(folder);
     folder = URIUtils::GetFileName(folder);
-    if (StringUtils::EqualsNoCase(folder, "vcd") ||
-        StringUtils::EqualsNoCase(folder, "mpegav") ||
-        StringUtils::EqualsNoCase(folder, "cdda"))
+    if (UnicodeUtils::EqualsNoCase(folder, "vcd") ||
+        UnicodeUtils::EqualsNoCase(folder, "mpegav") ||
+        UnicodeUtils::EqualsNoCase(folder, "cdda"))
     {
       // Allow filenames of the form AVSEQ##(#).DAT, ITEM###(#).DAT
       // and MUSIC##(#).DAT
       return (fileName.length() == 11 || fileName.length() == 12) &&
-             (StringUtils::StartsWithNoCase(fileName, "AVSEQ") ||
-              StringUtils::StartsWithNoCase(fileName, "MUSIC") ||
-              StringUtils::StartsWithNoCase(fileName, "ITEM"));
+             (UnicodeUtils::StartsWithNoCase(fileName, "AVSEQ") ||
+              UnicodeUtils::StartsWithNoCase(fileName, "MUSIC") ||
+              UnicodeUtils::StartsWithNoCase(fileName, "ITEM"));
     }
   }
   return true;
@@ -102,7 +103,7 @@ void IDirectory::SetMask(const std::string& strMask)
 {
   m_strFileMask = strMask;
   // ensure it's completed with a | so that filtering is easy.
-  StringUtils::ToLower(m_strFileMask);
+  UnicodeUtils::FoldCase(m_strFileMask);
   if (m_strFileMask.size() && m_strFileMask[m_strFileMask.size() - 1] != '|')
     m_strFileMask += '|';
 }

@@ -16,6 +16,7 @@
 #include "input/Key.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 static const SliderAction actions[] = {
     {"seek", "PlayerControl(SeekPercentage({:2f}))", PLAYER_PROGRESS, false},
@@ -762,7 +763,7 @@ void CGUISliderControl::SetAction(const std::string &action)
 {
   for (const SliderAction& a : actions)
   {
-    if (StringUtils::EqualsNoCase(action, a.action))
+    if (UnicodeUtils::EqualsNoCase(action, a.action))
     {
       m_action = &a;
       return;

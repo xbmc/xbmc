@@ -76,9 +76,9 @@ bool CPeripheralHID::InitialiseFeature(const PeripheralFeature feature)
 
 void CPeripheralHID::OnSettingChanged(const std::string& strChangedSetting)
 {
-  if (m_bInitialised && ((StringUtils::EqualsNoCase(strChangedSetting, "keymap") &&
+  if (m_bInitialised && ((UnicodeUtils::EqualsNoCase(strChangedSetting, "keymap") &&
                           !GetSettingBool("do_not_use_custom_keymap")) ||
-                         StringUtils::EqualsNoCase(strChangedSetting, "keymap_enabled")))
+                         UnicodeUtils::EqualsNoCase(strChangedSetting, "keymap_enabled")))
   {
     m_bInitialised = false;
     InitialiseFeature(FEATURE_HID);

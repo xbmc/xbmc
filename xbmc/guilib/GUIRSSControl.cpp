@@ -15,6 +15,7 @@
 #include "utils/RssManager.h"
 #include "utils/RssReader.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 #include <mutex>
 
@@ -118,7 +119,7 @@ void CGUIRSSControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyre
       {
         if (m_strRSSTags != "")
         {
-          std::vector<std::string> tags = StringUtils::Split(m_strRSSTags, ",");
+          std::vector<std::string> tags = UnicodeUtils::Split(m_strRSSTags, ",");
           for (const std::string& i : tags)
             m_pReader->AddTag(i);
         }

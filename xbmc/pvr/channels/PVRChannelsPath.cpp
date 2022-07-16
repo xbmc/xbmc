@@ -10,6 +10,7 @@
 
 #include "URL.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
@@ -66,11 +67,11 @@ CPVRChannelsPath::CPVRChannelsPath(const std::string& strPath)
 
       case Kind::GROUP:
       {
-        std::vector<std::string> tokens = StringUtils::Split(segment, "_");
+        std::vector<std::string> tokens = UnicodeUtils::Split(segment, "_");
         if (tokens.size() == 2)
         {
           m_clientID = tokens[0];
-          tokens = StringUtils::Split(tokens[1], ".");
+          tokens = UnicodeUtils::Split(tokens[1], ".");
           if (tokens.size() == 2 && tokens[1] == "pvr")
           {
             std::string channelUID = tokens[0];

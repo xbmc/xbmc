@@ -15,6 +15,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
@@ -152,7 +153,7 @@ void CSkinSettings::MigrateSettings(const ADDON::SkinPtr& skin)
   std::set<ADDON::CSkinSettingPtr> settingsCopy(m_settings.begin(), m_settings.end());
   for (const auto& setting : settingsCopy)
   {
-    if (!StringUtils::StartsWith(setting->name, skinId + "."))
+    if (!UnicodeUtils::StartsWith(setting->name, skinId + "."))
       continue;
 
     std::string settingName = setting->name.substr(skinId.size() + 1);

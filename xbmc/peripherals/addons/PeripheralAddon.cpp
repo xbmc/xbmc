@@ -20,6 +20,7 @@
 #include "peripherals/bus/virtual/PeripheralBusAddon.h"
 #include "peripherals/devices/PeripheralJoystick.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -272,7 +273,7 @@ PeripheralPtr CPeripheralAddon::GetByPath(const std::string& strPath) const
   std::unique_lock<CCriticalSection> lock(m_critSection);
   for (const auto& it : m_peripherals)
   {
-    if (StringUtils::EqualsNoCase(strPath, it.second->FileLocation()))
+    if (UnicodeUtils::EqualsNoCase(strPath, it.second->FileLocation()))
     {
       result = it.second;
       break;

@@ -22,6 +22,7 @@
 
 #include "filesystem/SpecialProtocol.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 #include "platform/darwin/tvos/TVOSNSUserDefaults.h"
@@ -38,8 +39,8 @@ CTVOSFile::~CTVOSFile()
 
 bool CTVOSFile::WantsFile(const CURL& url)
 {
-  if (!StringUtils::EqualsNoCase(url.GetFileType(), "xml") ||
-      StringUtils::StartsWithNoCase(url.GetFileNameWithoutPath(), "customcontroller.SiriRemote"))
+  if (!UnicodeUtils::EqualsNoCase(url.GetFileType(), "xml") ||
+      UnicodeUtils::StartsWithNoCase(url.GetFileNameWithoutPath(), "customcontroller.SiriRemote"))
     return false;
   return CTVOSNSUserDefaults::IsKeyFromPath(url.Get());
 }

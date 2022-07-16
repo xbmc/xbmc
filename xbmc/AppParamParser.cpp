@@ -13,6 +13,7 @@
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/SystemInfo.h"
 #include "utils/log.h"
 
@@ -83,7 +84,10 @@ void CAppParamParser::DisplayVersion()
 void CAppParamParser::DisplayHelp()
 {
   std::string lcAppName = CSysInfo::GetAppName();
-  StringUtils::ToLower(lcAppName);
+
+  // Avoids Turkic-I problem, and possibly more. Probably don't need anything more sophisticated
+
+  UnicodeUtils::ToLower(lcAppName, icu::Locale::getEnglish());
 
   std::cout << StringUtils::Format(helpText, lcAppName, CSysInfo::GetAppName());
 }

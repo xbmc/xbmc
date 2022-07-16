@@ -15,6 +15,7 @@
 #include "pvr/channels/PVRChannel.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
@@ -202,7 +203,7 @@ void CAnnouncementManager::DoAnnounce(AnnouncementFlag flag,
       {
         std::string path = item->GetPath();
         std::string videoInfoTagPath(item->GetVideoInfoTag()->m_strFileNameAndPath);
-        if (StringUtils::StartsWith(videoInfoTagPath, "removable://"))
+        if (UnicodeUtils::StartsWith(videoInfoTagPath, "removable://"))
           path = videoInfoTagPath;
         if (videodatabase.LoadVideoInfo(path, *item->GetVideoInfoTag(), VideoDbDetailsNone))
           id = item->GetVideoInfoTag()->m_iDbId;

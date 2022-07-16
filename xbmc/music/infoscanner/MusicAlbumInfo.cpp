@@ -11,6 +11,7 @@
 #include "addons/Scraper.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 using namespace MUSIC_GRABBER;
 

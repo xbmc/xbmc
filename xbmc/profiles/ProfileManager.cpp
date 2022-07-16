@@ -150,7 +150,7 @@ bool CProfileManager::Load()
     if (profilesDoc.LoadFile(file))
     {
       const TiXmlElement *rootElement = profilesDoc.RootElement();
-      if (rootElement && StringUtils::EqualsNoCase(rootElement->Value(), XML_PROFILES))
+      if (rootElement && UnicodeUtils::EqualsNoCase(rootElement->Value(), XML_PROFILES))
       {
         XMLUtils::GetUInt(rootElement, XML_LAST_LOADED, m_lastUsedProfile);
         XMLUtils::GetBoolean(rootElement, XML_LOGIN_SCREEN, m_usingLoginScreen);
@@ -576,7 +576,7 @@ int CProfileManager::GetProfileIndex(const std::string &name) const
   std::unique_lock<CCriticalSection> lock(m_critical);
   for (int i = 0; i < static_cast<int>(m_profiles.size()); i++)
   {
-    if (StringUtils::EqualsNoCase(m_profiles[i].getName(), name))
+    if (UnicodeUtils::EqualsNoCase(m_profiles[i].getName(), name))
       return i;
   }
 

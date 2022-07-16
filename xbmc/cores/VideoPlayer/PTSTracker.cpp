@@ -11,6 +11,7 @@
 #include "DVDCodecs/DVDCodecUtils.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -317,7 +318,7 @@ std::string CPtsTracker::GetPatternStr()
   for (unsigned int i = 0; i < m_pattern.size(); i++)
     patternstr += StringUtils::Format("{:.2f} ", m_pattern[i]);
 
-  StringUtils::Trim(patternstr);
+  UnicodeUtils::Trim(patternstr);
 
   return patternstr;
 }

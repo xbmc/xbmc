@@ -15,6 +15,7 @@
 #include "guilib/WindowIDs.h"
 #include "input/WindowTranslator.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 
@@ -56,7 +57,7 @@ JSONRPC_STATUS CFavouritesOperations::GetFavourites(const std::string &method, I
     if (fields.find("thumbnail") !=  fields.end())
       object["thumbnail"] = item->GetArt("thumb");
 
-    if (StringUtils::EqualsNoCase(function, "ActivateWindow"))
+    if (UnicodeUtils::EqualsNoCase(function, "ActivateWindow"))
     {
       object["type"] = "window";
       if (fields.find("window") != fields.end())
@@ -74,19 +75,19 @@ JSONRPC_STATUS CFavouritesOperations::GetFavourites(const std::string &method, I
           object["windowparameter"] = "";
       }
     }
-    else if (StringUtils::EqualsNoCase(function, "PlayMedia"))
+    else if (UnicodeUtils::EqualsNoCase(function, "PlayMedia"))
     {
       object["type"] = "media";
       if (fields.find("path") !=  fields.end())
         object["path"] = parameters[0];
     }
-    else if (StringUtils::EqualsNoCase(function, "RunScript"))
+    else if (UnicodeUtils::EqualsNoCase(function, "RunScript"))
     {
       object["type"] = "script";
       if (fields.find("path") !=  fields.end())
         object["path"] = parameters[0];
     }
-    else if (StringUtils::EqualsNoCase(function, "StartAndroidActivity"))
+    else if (UnicodeUtils::EqualsNoCase(function, "StartAndroidActivity"))
     {
       object["type"] = "androidapp";
       if (fields.find("path") !=  fields.end())

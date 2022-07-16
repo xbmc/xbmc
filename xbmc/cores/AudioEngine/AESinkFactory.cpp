@@ -11,6 +11,7 @@
 #include "Interfaces/AESink.h"
 #include "ServiceBroker.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -48,7 +49,7 @@ void CAESinkFactory::ParseDevice(std::string &device, std::string &driver)
 
     for (const auto& reg : m_AESinkRegEntry)
     {
-      if (!StringUtils::EqualsNoCase(driver, reg.second.sinkName))
+      if (!UnicodeUtils::EqualsNoCase(driver, reg.second.sinkName))
         continue;
 
       device = device.substr(pos + 1, device.length() - pos - 1);

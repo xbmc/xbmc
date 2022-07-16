@@ -25,6 +25,7 @@
 #include "utils/Geometry.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
@@ -155,7 +156,7 @@ bool CDVDInputStreamBluray::Open()
     openDisc = base.IsProtectedBlurayDisc();
 
     // check for a menu call for an image file
-    if (StringUtils::EqualsNoCase(filename, "menu"))
+    if (UnicodeUtils::EqualsNoCase(filename, "menu"))
     {
       //get rid of the udf:// protocol
       CURL url2(root);

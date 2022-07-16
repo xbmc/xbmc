@@ -28,6 +28,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/FontUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "windowing/WinSystem.h"
 
 namespace
@@ -62,7 +63,7 @@ bool CheckMasterLock(const std::string& condition,
                      const SettingConstPtr& setting,
                      void* data)
 {
-  return g_passwordManager.IsMasterLockUnlocked(StringUtils::EqualsNoCase(value, "true"));
+  return g_passwordManager.IsMasterLockUnlocked(UnicodeUtils::EqualsNoCase(value, "true"));
 }
 
 bool HasPeripherals(const std::string& condition,
@@ -227,13 +228,13 @@ bool ProfileHasSettingsLocked(const std::string& condition,
                               void* data)
 {
   LOCK_LEVEL::SETTINGS_LOCK slValue=LOCK_LEVEL::ALL;
-  if (StringUtils::EqualsNoCase(value, "none"))
+  if (UnicodeUtils::EqualsNoCase(value, "none"))
     slValue = LOCK_LEVEL::NONE;
-  else if (StringUtils::EqualsNoCase(value, "standard"))
+  else if (UnicodeUtils::EqualsNoCase(value, "standard"))
     slValue = LOCK_LEVEL::STANDARD;
-  else if (StringUtils::EqualsNoCase(value, "advanced"))
+  else if (UnicodeUtils::EqualsNoCase(value, "advanced"))
     slValue = LOCK_LEVEL::ADVANCED;
-  else if (StringUtils::EqualsNoCase(value, "expert"))
+  else if (UnicodeUtils::EqualsNoCase(value, "expert"))
     slValue = LOCK_LEVEL::EXPERT;
   return slValue <= CSettingConditions::GetCurrentProfile().settingsLockLevel();
 }

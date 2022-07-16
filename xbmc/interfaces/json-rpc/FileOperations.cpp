@@ -23,6 +23,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/FileUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
@@ -33,7 +34,7 @@ using namespace JSONRPC;
 JSONRPC_STATUS CFileOperations::GetRootDirectory(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   std::string media = parameterObject["media"].asString();
-  StringUtils::ToLower(media);
+  UnicodeUtils::FoldCase(media);
 
   VECSOURCES *sources = CMediaSourceSettings::GetInstance().GetSources(media);
   if (sources)
@@ -70,7 +71,7 @@ JSONRPC_STATUS CFileOperations::GetRootDirectory(const std::string &method, ITra
 JSONRPC_STATUS CFileOperations::GetDirectory(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   std::string media = parameterObject["media"].asString();
-  StringUtils::ToLower(media);
+  UnicodeUtils::FoldCase(media);
 
   CFileItemList items;
   std::string strPath = parameterObject["directory"].asString();
@@ -217,7 +218,7 @@ JSONRPC_STATUS CFileOperations::GetFileDetails(const std::string &method, ITrans
 JSONRPC_STATUS CFileOperations::SetFileDetails(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   std::string media = parameterObject["media"].asString();
-  StringUtils::ToLower(media);
+  UnicodeUtils::FoldCase(media);
 
   if (media.compare("video") != 0)
     return InvalidParams;
@@ -344,7 +345,7 @@ bool CFileOperations::FillFileItemList(const CVariant &parameterObject, CFileIte
   if (parameterObject.isMember("directory"))
   {
     std::string media =  parameterObject["media"].asString();
-    StringUtils::ToLower(media);
+    UnicodeUtils::FoldCase(media);
 
     std::string strPath = parameterObject["directory"].asString();
     if (!strPath.empty())

@@ -46,6 +46,7 @@
 #include "utils/JobManager.h"
 #include "utils/FileOperationJob.h"
 #include "utils/FileUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "Autorun.h"
@@ -1274,7 +1275,7 @@ void CGUIWindowFileManager::SetInitialPath(const std::string &path)
   if (!strDestination.empty())
   {
     // open root
-    if (StringUtils::EqualsNoCase(strDestination, "$ROOT"))
+    if (UnicodeUtils::EqualsNoCase(strDestination, "$ROOT"))
     {
       m_Directory[0]->SetPath("");
       CLog::Log(LOGINFO, "  Success! Opening root listing.");

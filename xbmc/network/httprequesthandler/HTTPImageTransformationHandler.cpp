@@ -15,6 +15,7 @@
 #include "network/httprequesthandler/HTTPRequestHandlerUtils.h"
 #include "utils/Mime.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 
 #include <map>
@@ -61,7 +62,7 @@ CHTTPImageTransformationHandler::CHTTPImageTransformationHandler(const HTTPReque
 
   // determine the content type
   std::string ext = URIUtils::GetExtension(pathToUrl.GetHostName());
-  StringUtils::ToLower(ext);
+  UnicodeUtils::FoldCase(ext);
   m_response.contentType = CMime::GetMimeType(ext);
 
   //! @todo determine the maximum age

@@ -67,6 +67,9 @@
 // local helper function: replace substrings
 std::string strReplace(const std::string& str, const std::string& from, const std::string& to)
 {
+
+	// TODO: Unicode This will fail with multibyte
+
   std::string result;
   size_t prevPos = 0;
   size_t pos;

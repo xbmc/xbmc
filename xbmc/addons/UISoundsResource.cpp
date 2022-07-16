@@ -12,6 +12,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 
 
@@ -20,7 +21,7 @@ namespace ADDON
 
 bool CUISoundsResource::IsAllowed(const std::string& file) const
 {
-  return StringUtils::EqualsNoCase(file, "sounds.xml")
+  return UnicodeUtils::EqualsNoCase(file, "sounds.xml")
       || URIUtils::HasExtension(file, ".wav");
 }
 

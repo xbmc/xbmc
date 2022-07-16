@@ -107,28 +107,28 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
 #ifdef HAVE_LIBBLURAY
   else if (fileitem.IsType(".bdmv") || fileitem.IsType(".mpls")
           || fileitem.IsType(".bdm") || fileitem.IsType(".mpl")
-          || StringUtils::StartsWithNoCase(file, "bluray:"))
+          || UnicodeUtils::StartsWithNoCase(file, "bluray:"))
     return std::shared_ptr<CDVDInputStreamBluray>(new CDVDInputStreamBluray(pPlayer, fileitem));
 #endif
-  else if (StringUtils::StartsWithNoCase(file, "rtp://") ||
-           StringUtils::StartsWithNoCase(file, "rtsp://") ||
-           StringUtils::StartsWithNoCase(file, "rtsps://") ||
-           StringUtils::StartsWithNoCase(file, "satip://") ||
-           StringUtils::StartsWithNoCase(file, "sdp://") ||
-           StringUtils::StartsWithNoCase(file, "udp://") ||
-           StringUtils::StartsWithNoCase(file, "tcp://") ||
-           StringUtils::StartsWithNoCase(file, "mms://") ||
-           StringUtils::StartsWithNoCase(file, "mmst://") ||
-           StringUtils::StartsWithNoCase(file, "mmsh://") ||
-           StringUtils::StartsWithNoCase(file, "rtmp://") ||
-           StringUtils::StartsWithNoCase(file, "rtmpt://") ||
-           StringUtils::StartsWithNoCase(file, "rtmpe://") ||
-           StringUtils::StartsWithNoCase(file, "rtmpte://") ||
-           StringUtils::StartsWithNoCase(file, "rtmps://"))
+  else if (UnicodeUtils::StartsWithNoCase(file, "rtp://") ||
+           UnicodeUtils::StartsWithNoCase(file, "rtsp://") ||
+           UnicodeUtils::StartsWithNoCase(file, "rtsps://") ||
+           UnicodeUtils::StartsWithNoCase(file, "satip://") ||
+           UnicodeUtils::StartsWithNoCase(file, "sdp://") ||
+           UnicodeUtils::StartsWithNoCase(file, "udp://") ||
+           UnicodeUtils::StartsWithNoCase(file, "tcp://") ||
+           UnicodeUtils::StartsWithNoCase(file, "mms://") ||
+           UnicodeUtils::StartsWithNoCase(file, "mmst://") ||
+           UnicodeUtils::StartsWithNoCase(file, "mmsh://") ||
+           UnicodeUtils::StartsWithNoCase(file, "rtmp://") ||
+           UnicodeUtils::StartsWithNoCase(file, "rtmpt://") ||
+           UnicodeUtils::StartsWithNoCase(file, "rtmpe://") ||
+           UnicodeUtils::StartsWithNoCase(file, "rtmpte://") ||
+           UnicodeUtils::StartsWithNoCase(file, "rtmps://"))
   {
     return std::shared_ptr<CDVDInputStreamFFmpeg>(new CDVDInputStreamFFmpeg(fileitem));
   }
-  else if(StringUtils::StartsWithNoCase(file, "stack://"))
+  else if(UnicodeUtils::StartsWithNoCase(file, "stack://"))
     return std::shared_ptr<CDVDInputStreamStack>(new CDVDInputStreamStack(fileitem));
 
   CFileItem finalFileitem(fileitem);

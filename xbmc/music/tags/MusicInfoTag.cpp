@@ -16,6 +16,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/Archive.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 
 #include <algorithm>
@@ -117,7 +118,7 @@ const std::string& CMusicInfoTag::GetOriginalDate() const
 
 const std::string MUSIC_INFO::CMusicInfoTag::GetOriginalYear() const
 {
-  return StringUtils::Left(m_strOriginalDate, 4);
+  return UnicodeUtils::Left(m_strOriginalDate, 4);
 }
 
 int CMusicInfoTag::GetAlbumId() const
@@ -303,7 +304,7 @@ const std::string& CMusicInfoTag::GetReleaseDate() const
 
 const std::string MUSIC_INFO::CMusicInfoTag::GetReleaseYear() const
 {
-  return StringUtils::Left(m_strReleaseDate, 4);
+  return UnicodeUtils::Left(m_strReleaseDate, 4);
 }
 
 // This is the Musicbrainz release status tag. See https://musicbrainz.org/doc/Release#Status
@@ -338,7 +339,7 @@ void CMusicInfoTag::SetArtist(const std::string& strArtist)
   if (!strArtist.empty())
   {
     SetArtistDesc(strArtist);
-    SetArtist(StringUtils::Split(strArtist, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator));
+    SetArtist(UnicodeUtils::Split(strArtist, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator));
   }
   else
   {
@@ -386,7 +387,7 @@ void CMusicInfoTag::SetAlbumArtist(const std::string& strAlbumArtist)
   if (!strAlbumArtist.empty())
   {
     SetAlbumArtistDesc(strAlbumArtist);
-    SetAlbumArtist(StringUtils::Split(strAlbumArtist, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator));
+    SetAlbumArtist(UnicodeUtils::Split(strAlbumArtist, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator));
   }
   else
   {
@@ -415,7 +416,7 @@ void CMusicInfoTag::SetAlbumArtistSort(const std::string& strAlbumArtistSort)
 void CMusicInfoTag::SetGenre(const std::string& strGenre, bool bTrim /* = false*/)
 {
   if (!strGenre.empty())
-    SetGenre(StringUtils::Split(strGenre, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator), bTrim);
+    SetGenre(UnicodeUtils::Split(strGenre, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator), bTrim);
   else
     m_genre.clear();
 }
@@ -425,7 +426,7 @@ void CMusicInfoTag::SetGenre(const std::vector<std::string>& genres, bool bTrim 
   m_genre = genres;
   if (bTrim)
     for (auto genre : m_genre)
-      StringUtils::Trim(genre);
+      UnicodeUtils::Trim(genre);
 }
 
 void CMusicInfoTag::SetYear(int year)
@@ -495,15 +496,15 @@ void CMusicInfoTag::AddReleaseDate(const std::string& strDateYear, bool isMonth 
     std::string strYYYY = GetReleaseYear();
     if (strYYYY.empty())
       strYYYY = "0000"; // Fake year when TYER not read yet
-    m_strReleaseDate = StringUtils::Format("{}-{}-{}", strYYYY, StringUtils::Left(strDateYear, 2),
-                                           StringUtils::Right(strDateYear, 2));
+    m_strReleaseDate = StringUtils::Format("{}-{}-{}", strYYYY, UnicodeUtils::Left(strDateYear, 2),
+                                           UnicodeUtils::Right(strDateYear, 2));
   }
   // Given YYYY only (from YEAR tag) and already have YYYY-MM or YYYY-MM-DD (from DATE tag)
   else if (strDateYear.size() == 4 && (m_strReleaseDate.size() > 4))
   {
     // Have 0000-MM-DD where ID3 v2.3 TDAT tag read first, fill YYYY part from TYER
     if (GetReleaseYear() == "0000")
-      StringUtils::Replace(m_strReleaseDate, "0000", strDateYear);
+      UnicodeUtils::Replace(m_strReleaseDate, "0000", strDateYear);
   }
   else
     m_strReleaseDate = strDateYear;  // Could be YYYY, YYYY-MM or YYYY-MM-DD
@@ -907,7 +908,7 @@ void CMusicInfoTag::Serialize(CVariant& value) const
   // A longer term solution would be to ensure that when individual artists are to be returned then the song_artist and artist tables
   // are queried.
   if (m_artist.empty())
-    value["artist"] = StringUtils::Split(GetArtistString(), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
+    value["artist"] = UnicodeUtils::Split(GetArtistString(), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
 
   value["displayartist"] = GetArtistString();
   value["displayalbumartist"] = GetAlbumArtistString();
@@ -941,7 +942,7 @@ void CMusicInfoTag::Serialize(CVariant& value) const
   value["displayconductor"] = GetArtistStringForRole("conductor"); //TPE3
   value["displayorchestra"] = GetArtistStringForRole("orchestra");
   value["displaylyricist"] = GetArtistStringForRole("lyricist");   //TEXT
-  value["mood"] = StringUtils::Split(m_strMood, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
+  value["mood"] = UnicodeUtils::Split(m_strMood, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
   value["recordlabel"] = m_strRecordLabel;
   value["rating"] = m_Rating;
   value["userrating"] = m_Userrating;
@@ -1199,7 +1200,7 @@ void CMusicInfoTag::AppendArtist(const std::string &artist)
 {
   for (unsigned int index = 0; index < m_artist.size(); index++)
   {
-    if (StringUtils::EqualsNoCase(artist, m_artist.at(index)))
+    if (UnicodeUtils::EqualsNoCase(artist, m_artist.at(index)))
       return;
   }
 
@@ -1210,7 +1211,7 @@ void CMusicInfoTag::AppendAlbumArtist(const std::string &albumArtist)
 {
   for (unsigned int index = 0; index < m_albumArtist.size(); index++)
   {
-    if (StringUtils::EqualsNoCase(albumArtist, m_albumArtist.at(index)))
+    if (UnicodeUtils::EqualsNoCase(albumArtist, m_albumArtist.at(index)))
       return;
   }
 
@@ -1221,7 +1222,7 @@ void CMusicInfoTag::AppendGenre(const std::string &genre)
 {
   for (unsigned int index = 0; index < m_genre.size(); index++)
   {
-    if (StringUtils::EqualsNoCase(genre, m_genre.at(index)))
+    if (UnicodeUtils::EqualsNoCase(genre, m_genre.at(index)))
       return;
   }
 
@@ -1231,7 +1232,7 @@ void CMusicInfoTag::AppendGenre(const std::string &genre)
 void CMusicInfoTag::AddArtistRole(const std::string& Role, const std::string& strArtist)
 {
   if (!strArtist.empty() && !Role.empty())
-    AddArtistRole(Role, StringUtils::Split(strArtist, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator));
+    AddArtistRole(Role, UnicodeUtils::Split(strArtist, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator));
 }
 
 void CMusicInfoTag::AddArtistRole(const std::string& Role, const std::vector<std::string>& artists)
@@ -1257,7 +1258,7 @@ const std::string CMusicInfoTag::GetArtistStringForRole(const std::string& strRo
   std::vector<std::string> artistvector;
   for (const auto& credit : m_musicRoles)
   {
-    if (StringUtils::EqualsNoCase(credit.GetRoleDesc(), strRole))
+    if (UnicodeUtils::EqualsNoCase(credit.GetRoleDesc(), strRole))
       artistvector.push_back(credit.GetArtist());
   }
   return StringUtils::Join(artistvector, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator);
@@ -1270,7 +1271,7 @@ const std::string CMusicInfoTag::GetContributorsText() const
   {
     strLabel += StringUtils::Format("{}\n", credit.GetArtist());
   }
-  return StringUtils::TrimRight(strLabel, "\n");
+  return UnicodeUtils::TrimRight(strLabel, "\n");
 }
 
 const std::string CMusicInfoTag::GetContributorsAndRolesText() const
@@ -1280,7 +1281,7 @@ const std::string CMusicInfoTag::GetContributorsAndRolesText() const
   {
     strLabel += StringUtils::Format("{} - {}\n", credit.GetRoleDesc(), credit.GetArtist());
   }
-  return StringUtils::TrimRight(strLabel, "\n");
+  return UnicodeUtils::TrimRight(strLabel, "\n");
 }
 
 
@@ -1297,7 +1298,7 @@ void CMusicInfoTag::SetContributors(const VECMUSICROLES& contributors)
 std::string CMusicInfoTag::Trim(const std::string &value) const
 {
   std::string trimmedValue(value);
-  StringUtils::TrimLeft(trimmedValue, " ");
-  StringUtils::TrimRight(trimmedValue, " \n\r");
+  UnicodeUtils::TrimLeft(trimmedValue, " ");
+  UnicodeUtils::TrimRight(trimmedValue, " \n\r");
   return trimmedValue;
 }

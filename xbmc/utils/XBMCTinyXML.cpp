@@ -14,6 +14,7 @@
 #include "utils/CharsetConverter.h"
 #include "utils/CharsetDetection.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Utf8Utils.h"
 #include "utils/log.h"
 
@@ -38,7 +39,9 @@ CXBMCTinyXML::CXBMCTinyXML(const std::string& documentName)
 CXBMCTinyXML::CXBMCTinyXML(const std::string& documentName, const std::string& documentCharset)
 : TiXmlDocument(documentName), m_SuggestedCharset(documentCharset)
 {
-  StringUtils::ToUpper(m_SuggestedCharset);
+  // TODO: Unicode, Why upper case? Why not Fold case?
+  
+  UnicodeUtils::ToUpper(m_SuggestedCharset, icu::Locale::getEnglish()); // Avoids Turkic-I and other issues
 }
 
 bool CXBMCTinyXML::LoadFile(TiXmlEncoding encoding)
@@ -84,7 +87,10 @@ bool CXBMCTinyXML::LoadFile(const std::string& _filename, TiXmlEncoding encoding
 bool CXBMCTinyXML::LoadFile(const std::string& _filename, const std::string& documentCharset)
 {
   m_SuggestedCharset = documentCharset;
-  StringUtils::ToUpper(m_SuggestedCharset);
+  
+  // TODO: Unicode, Why uppercase? Why not FoldCase?
+  
+  UnicodeUtils::ToUpper(m_SuggestedCharset, icu::Locale::getEnglish()); // Avoids Turkic-I and other issues
   return LoadFile(_filename, TIXML_ENCODING_UNKNOWN);
 }
 
@@ -122,7 +128,11 @@ bool CXBMCTinyXML::SaveFile(const std::string& filename) const
 bool CXBMCTinyXML::Parse(const std::string& data, const std::string& dataCharset)
 {
   m_SuggestedCharset = dataCharset;
-  StringUtils::ToUpper(m_SuggestedCharset);
+  
+  // TODO: Unicode, verify. Why upper case? Why not FoldCase?
+ 
+  UnicodeUtils::ToUpper(m_SuggestedCharset, icu::Locale::getEnglish()); // Avoids Turkic-I and other issues
+
   return Parse(data, TIXML_ENCODING_UNKNOWN);
 }
 

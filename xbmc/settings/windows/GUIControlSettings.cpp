@@ -41,6 +41,7 @@
 #include "storage/MediaManager.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
@@ -87,13 +88,13 @@ static CFileItemPtr GetFileItem(const std::string& label,
 template<class SettingOption>
 static bool CompareSettingOptionAseconding(const SettingOption& lhs, const SettingOption& rhs)
 {
-  return StringUtils::CompareNoCase(lhs.label, rhs.label) < 0;
+  return UnicodeUtils::CompareNoCase(lhs.label, rhs.label) < 0;
 }
 
 template<class SettingOption>
 static bool CompareSettingOptionDeseconding(const SettingOption& lhs, const SettingOption& rhs)
 {
-  return StringUtils::CompareNoCase(lhs.label, rhs.label) > 0;
+  return UnicodeUtils::CompareNoCase(lhs.label, rhs.label) > 0;
 }
 
 static bool GetIntegerOptions(const SettingConstPtr& setting,
@@ -729,7 +730,7 @@ bool CGUIControlListSetting::OnClick()
           strLabel, CVariant{ Localize(control->GetAddButtonLabel()) }, false))
         {
           // Validate new value is unique and truncate at any comma
-          StringUtils::Trim(strLabel);
+          UnicodeUtils::Trim(strLabel);
           strLabel = strLabel.substr(0, strLabel.find(','));
           if (!strLabel.empty())
           {
@@ -1177,7 +1178,7 @@ bool CGUIControlButtonSetting::GetPath(const std::shared_ptr<CSettingPath>& path
   const std::vector<std::string>& sources = pathSetting->GetSources();
   for (const auto& source : sources)
   {
-    if (StringUtils::EqualsNoCase(source, "local"))
+    if (UnicodeUtils::EqualsNoCase(source, "local"))
       localSharesOnly = true;
     else
     {

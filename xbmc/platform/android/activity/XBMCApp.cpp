@@ -83,6 +83,7 @@
 #include "powermanagement/PowerManager.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -504,7 +505,7 @@ bool CXBMCApp::EnableWakeLock(bool on)
   if (!m_wakeLock)
   {
     std::string appName = CCompileInfo::GetAppName();
-    StringUtils::ToLower(appName);
+    UnicodeUtils::FoldCase(appName);
     std::string className = CCompileInfo::GetPackage();
     // SCREEN_BRIGHT_WAKE_LOCK is marked as deprecated but there is no real alternatives for now
     m_wakeLock =
@@ -1092,7 +1093,7 @@ bool CXBMCApp::GetStorageUsage(const std::string &path, std::string &usage)
 
   fmt.width(PATH_MAXLEN);
   fmt << std::left
-      << (path.size() < PATH_MAXLEN - 1 ? path : StringUtils::Left(path, PATH_MAXLEN - 4) + "...");
+      << (path.size() < PATH_MAXLEN - 1 ? path : UnicodeUtils::Left(path, PATH_MAXLEN - 4) + "...");
 
   fmt.width(11);
   fmt << std::right << totalSize << "G";
@@ -1466,7 +1467,7 @@ void CXBMCApp::SetupEnv()
   setenv("KODI_ANDROID_APK", getPackageResourcePath().c_str(), 0);
 
   std::string appName = CCompileInfo::GetAppName();
-  StringUtils::ToLower(appName);
+  UnicodeUtils::FoldCase(appName);
   std::string className = CCompileInfo::GetPackage();
 
   std::string cacheDir = getCacheDir().getAbsolutePath();
@@ -1521,7 +1522,7 @@ std::string CXBMCApp::GetFilenameFromIntent(const CJNIIntent &intent)
     if (!data)
       return ret;
     std::string scheme = data.getScheme();
-    StringUtils::ToLower(scheme);
+    UnicodeUtils::FoldCase(scheme);
     if (scheme == "content")
     {
       std::vector<std::string> filePathColumn;

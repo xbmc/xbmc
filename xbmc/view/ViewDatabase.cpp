@@ -16,6 +16,7 @@
 #include "utils/log.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "view/ViewState.h"
 
@@ -66,12 +67,12 @@ void CViewDatabase::UpdateTables(int version)
       {
         std::string originalPath = m_pDS->fv(1).get_asString();
         std::string path = originalPath;
-        if (StringUtils::StartsWithNoCase(path, "musicdb://"))
+        if (UnicodeUtils::StartsWithNoCase(path, "musicdb://"))
           path = CLegacyPathTranslation::TranslateMusicDbPath(path);
-        else if (StringUtils::StartsWithNoCase(path, "videodb://"))
+        else if (UnicodeUtils::StartsWithNoCase(path, "videodb://"))
           path = CLegacyPathTranslation::TranslateVideoDbPath(path);
 
-        if (!StringUtils::EqualsNoCase(path, originalPath))
+        if (!UnicodeUtils::EqualsNoCase(path, originalPath))
           paths.emplace_back(m_pDS->fv(0).get_asInt(), path);
         m_pDS->next();
       }

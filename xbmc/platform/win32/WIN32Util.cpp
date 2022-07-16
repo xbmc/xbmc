@@ -210,7 +210,7 @@ bool CWIN32Util::XBMCShellExecute(const std::string &strPath, bool bWaitForScrip
   std::string strParams;
   std::string strWorkingDir;
 
-  StringUtils::Trim(strCommand);
+  UnicodeUtils::Trim(strCommand);
   if (strCommand.empty())
   {
     return false;
@@ -228,7 +228,7 @@ bool CWIN32Util::XBMCShellExecute(const std::string &strPath, bool bWaitForScrip
     strParams = strCommand.substr(iIndex + 1);
   }
 
-  StringUtils::Replace(strExe, "\"", "");
+  UnicodeUtils::Replace(strExe, "\"", "");
 
   strWorkingDir = strExe;
   iIndex = strWorkingDir.rfind('\\');
@@ -387,10 +387,10 @@ std::string CWIN32Util::GetProfilePath(const bool platformDirectories)
 std::string CWIN32Util::UncToSmb(const std::string &strPath)
 {
   std::string strRetPath(strPath);
-  if(StringUtils::StartsWith(strRetPath, "\\\\"))
+  if(UnicodeUtils::StartsWith(strRetPath, "\\\\"))
   {
     strRetPath = "smb:" + strPath;
-    StringUtils::Replace(strRetPath, '\\', '/');
+    UnicodeUtils::Replace(strRetPath, '\\', '/');
   }
   return strRetPath;
 }
@@ -398,10 +398,10 @@ std::string CWIN32Util::UncToSmb(const std::string &strPath)
 std::string CWIN32Util::SmbToUnc(const std::string &strPath)
 {
   std::string strRetPath(strPath);
-  if(StringUtils::StartsWithNoCase(strRetPath, "smb://"))
+  if(UnicodeUtils::StartsWithNoCase(strRetPath, "smb://"))
   {
-    StringUtils::Replace(strRetPath, "smb://", "\\\\");
-    StringUtils::Replace(strRetPath, '/', '\\');
+    UnicodeUtils::Replace(strRetPath, "smb://", "\\\\");
+    UnicodeUtils::Replace(strRetPath, '/', '\\');
   }
   return strRetPath;
 }
@@ -986,7 +986,7 @@ extern "C" {
     for (; n1 != NULL; n1 = n2, n2 = NULL) {
       for (i = 0; i < c; i++, n1++) {
         len = strlen(*n1);
-        if (StringUtils::CompareNoCase(*n1, (const char*)bp, len) == 0)
+        if (UnicodeUtils::StartsWithNoCase((const char*)bp, *n1))
         {
           *tgt = i;
           return bp + len;
@@ -1498,7 +1498,7 @@ VideoDriverInfo CWIN32Util::GetVideoDriverInfo(const UINT vendorId, const std::w
     if (vendorId == PCIV_NVIDIA)
     {
       std::string ver(info.version);
-      StringUtils::Replace(ver, ".", "");
+      UnicodeUtils::Replace(ver, ".", "");
       info.majorVersion = std::stoi(ver.substr(ver.length() - 5, 3));
       info.minorVersion = std::stoi(ver.substr(ver.length() - 2, 2));
     }

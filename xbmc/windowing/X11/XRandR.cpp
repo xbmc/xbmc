@@ -11,6 +11,7 @@
 #include "CompileInfo.h"
 #include "threads/SystemClock.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
@@ -63,7 +64,7 @@ bool CXRandR::Query(bool force, int screennum, bool ignoreoff)
 {
   std::string cmd;
   std::string appname = CCompileInfo::GetAppName();
-  StringUtils::ToLower(appname);
+  UnicodeUtils::FoldCase(appname);
   if (getenv("KODI_BIN_HOME"))
   {
     cmd  = getenv("KODI_BIN_HOME");
@@ -99,8 +100,8 @@ bool CXRandR::Query(bool force, int screennum, bool ignoreoff)
   {
     XOutput xoutput;
     xoutput.name = output->Attribute("name");
-    StringUtils::Trim(xoutput.name);
-    xoutput.isConnected = (StringUtils::CompareNoCase(output->Attribute("connected"), "true") == 0);
+    UnicodeUtils::Trim(xoutput.name);
+    xoutput.isConnected = (UnicodeUtils::CompareNoCase(output->Attribute("connected"), "true") == 0);
     xoutput.screen = screennum;
     xoutput.w = (output->Attribute("w") != NULL ? atoi(output->Attribute("w")) : 0);
     xoutput.h = (output->Attribute("h") != NULL ? atoi(output->Attribute("h")) : 0);
@@ -110,8 +111,8 @@ bool CXRandR::Query(bool force, int screennum, bool ignoreoff)
     xoutput.wmm = (output->Attribute("wmm") != NULL ? atoi(output->Attribute("wmm")) : 0);
     xoutput.hmm = (output->Attribute("hmm") != NULL ? atoi(output->Attribute("hmm")) : 0);
     if (output->Attribute("rotation") != NULL &&
-        (StringUtils::CompareNoCase(output->Attribute("rotation"), "left") == 0 ||
-         StringUtils::CompareNoCase(output->Attribute("rotation"), "right") == 0))
+        (UnicodeUtils::CompareNoCase(output->Attribute("rotation"), "left") == 0 ||
+         UnicodeUtils::CompareNoCase(output->Attribute("rotation"), "right") == 0))
     {
       xoutput.isRotated = true;
     }
@@ -130,8 +131,8 @@ bool CXRandR::Query(bool force, int screennum, bool ignoreoff)
       xmode.hz = atof(mode->Attribute("hz"));
       xmode.w = atoi(mode->Attribute("w"));
       xmode.h = atoi(mode->Attribute("h"));
-      xmode.isPreferred = (StringUtils::CompareNoCase(mode->Attribute("preferred"), "true") == 0);
-      xmode.isCurrent = (StringUtils::CompareNoCase(mode->Attribute("current"), "true") == 0);
+      xmode.isPreferred = (UnicodeUtils::CompareNoCase(mode->Attribute("preferred"), "true") == 0);
+      xmode.isCurrent = (UnicodeUtils::CompareNoCase(mode->Attribute("current"), "true") == 0);
       xoutput.modes.push_back(xmode);
       if (xmode.isCurrent)
         hascurrent = true;
@@ -153,7 +154,7 @@ bool CXRandR::TurnOffOutput(const std::string& name)
 
   std::string cmd;
   std::string appname = CCompileInfo::GetAppName();
-  StringUtils::ToLower(appname);
+  UnicodeUtils::FoldCase(appname);
 
   if (getenv("KODI_BIN_HOME"))
   {
@@ -327,7 +328,7 @@ bool CXRandR::SetMode(const XOutput& output, const XMode& mode)
   m_currentOutput = outputFound.name;
   m_currentMode = modeFound.id;
   std::string appname = CCompileInfo::GetAppName();
-  StringUtils::ToLower(appname);
+  UnicodeUtils::FoldCase(appname);
   char cmd[255];
 
   if (getenv("KODI_BIN_HOME"))
@@ -404,7 +405,7 @@ void CXRandR::LoadCustomModeLinesToAllOutputs(void)
   }
 
   TiXmlElement *pRootElement = xmlDoc.RootElement();
-  if (StringUtils::CompareNoCase(pRootElement->Value(), "modelines") != 0)
+  if (UnicodeUtils::CompareNoCase(pRootElement->Value(), "modelines") != 0)
   {
     //! @todo ERROR
     return;
@@ -417,11 +418,11 @@ void CXRandR::LoadCustomModeLinesToAllOutputs(void)
   for (TiXmlElement* modeline = pRootElement->FirstChildElement("modeline"); modeline; modeline = modeline->NextSiblingElement("modeline"))
   {
     name = modeline->Attribute("label");
-    StringUtils::Trim(name);
+    UnicodeUtils::Trim(name);
     strModeLine = modeline->FirstChild()->Value();
-    StringUtils::Trim(strModeLine);
+    UnicodeUtils::Trim(strModeLine);
     std::string appname = CCompileInfo::GetAppName();
-    StringUtils::ToLower(appname);
+    UnicodeUtils::FoldCase(appname);
 
     if (getenv("KODI_BIN_HOME"))
     {

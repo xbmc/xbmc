@@ -58,8 +58,8 @@ void CGUIWindowHome::OnInitWindow()
 {
   // for shared databases (ie mysql) always force an update on return to home
   // this is a temporary solution until remote announcements can be delivered
-  if (StringUtils::EqualsNoCase(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseVideo.type, "mysql") ||
-      StringUtils::EqualsNoCase(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseMusic.type, "mysql") )
+  if (UnicodeUtils::EqualsNoCase(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseVideo.type, "mysql") ||
+      UnicodeUtils::EqualsNoCase(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseMusic.type, "mysql") )
     m_updateRA = (Audio | Video | Totals);
   AddRecentlyAddedJobs( m_updateRA );
 

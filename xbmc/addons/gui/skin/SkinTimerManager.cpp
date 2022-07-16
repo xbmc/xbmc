@@ -12,6 +12,7 @@
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
 #include "interfaces/builtins/Builtins.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
@@ -44,7 +45,7 @@ void CSkinTimerManager::LoadTimers(const std::string& path)
   }
 
   TiXmlElement* root = doc.RootElement();
-  if (!root || !StringUtils::EqualsNoCase(root->Value(), "timers"))
+  if (!root || !UnicodeUtils::EqualsNoCase(root->Value(), "timers"))
   {
     CLog::LogF(LOGERROR, "Error loading timers file {}: Root element <timers> required.", path);
     return;
@@ -90,7 +91,7 @@ void CSkinTimerManager::LoadTimerInternal(const TiXmlElement* node)
     startInfo = CServiceBroker::GetGUI()->GetInfoManager().Register(
         node->FirstChild("start")->FirstChild()->ValueStr());
     // check if timer needs to be reset after start
-    if (node->Attribute("reset") && StringUtils::EqualsNoCase(node->Attribute("reset"), "true"))
+    if (node->Attribute("reset") && UnicodeUtils::EqualsNoCase(node->Attribute("reset"), "true"))
     {
       resetOnStart = true;
     }

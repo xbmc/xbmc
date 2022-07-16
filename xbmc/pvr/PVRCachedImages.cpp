@@ -13,6 +13,7 @@
 #include "TextureDatabase.h"
 #include "URL.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
@@ -90,5 +91,5 @@ int CPVRCachedImages::Cleanup(const std::vector<PVRImagePattern>& urlPatterns,
 
 std::string CPVRCachedImages::UnwrapImageURL(const std::string& url)
 {
-  return StringUtils::StartsWith(url, "image://") ? CURL(url).GetHostName() : url;
+  return UnicodeUtils::StartsWith(url, "image://") ? CURL(url).GetHostName() : url;
 }

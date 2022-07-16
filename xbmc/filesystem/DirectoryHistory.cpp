@@ -9,6 +9,7 @@
 #include "DirectoryHistory.h"
 
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
@@ -127,7 +128,7 @@ void CDirectoryHistory::ClearPathHistory()
 
 bool CDirectoryHistory::IsMusicSearchUrl(CPathHistoryItem &i)
 {
-  return StringUtils::StartsWith(i.GetPath(), "musicsearch://");
+  return UnicodeUtils::StartsWith(i.GetPath(), "musicsearch://");
 }
 
 void CDirectoryHistory::ClearSearchHistory()
@@ -144,11 +145,16 @@ void CDirectoryHistory::DumpPathHistory()
               m_vecPathHistory[i].m_strFilterPath);
 }
 
-std::string CDirectoryHistory::preparePath(const std::string &strDirectory, bool tolower /* = true */)
+std::string CDirectoryHistory::preparePath(const std::string &strDirectory, bool foldCase /* = true */)
 {
+  // Use FoldCase instead of ToLower because case folding is more
+  // normalizing. ToLower tries to preserve language rules, whereas
+  // FoldCase ignores locale. In particular, folding does not have the
+  // 'Turkic "I" problem'. It also strips insignificant accents, etc.
+  
   std::string strDir = strDirectory;
-  if (tolower)
-    StringUtils::ToLower(strDir);
+  if (foldCase)
+    UnicodeUtils::FoldCase(strDir);
 
   URIUtils::RemoveSlashAtEnd(strDir);
 

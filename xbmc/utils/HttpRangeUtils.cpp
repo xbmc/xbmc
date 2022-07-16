@@ -14,6 +14,7 @@
 #include "network/httprequesthandler/IHTTPRequestHandler.h"
 #endif // HAS_WEB_SERVER
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 
 #include <inttypes.h>
@@ -237,7 +238,7 @@ bool CHttpRanges::Parse(const std::string& header, uint64_t totalLength)
 {
   m_ranges.clear();
 
-  if (header.empty() || totalLength == 0 || !StringUtils::StartsWithNoCase(header, "bytes="))
+  if (header.empty() || totalLength == 0 || !UnicodeUtils::StartsWithNoCase(header, "bytes="))
     return false;
 
   uint64_t lastPossiblePosition = totalLength - 1;
@@ -246,7 +247,7 @@ bool CHttpRanges::Parse(const std::string& header, uint64_t totalLength)
   std::string rangesValue = header.substr(6);
 
   // split the value of the "Range" header by ","
-  std::vector<std::string> rangeValues = StringUtils::Split(rangesValue, ",");
+  std::vector<std::string> rangeValues = UnicodeUtils::Split(rangesValue, ",");
 
   for (std::vector<std::string>::const_iterator range = rangeValues.begin(); range != rangeValues.end(); ++range)
   {
@@ -254,7 +255,7 @@ bool CHttpRanges::Parse(const std::string& header, uint64_t totalLength)
     if (range->find("-") == std::string::npos)
       return false;
 
-    std::vector<std::string> positions = StringUtils::Split(*range, "-");
+    std::vector<std::string> positions = UnicodeUtils::Split(*range, "-");
     if (positions.size() != 2)
       return false;
 

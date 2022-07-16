@@ -54,6 +54,7 @@
 #include "utils/CharsetConverter.h"
 #include "utils/RssManager.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
@@ -107,7 +108,7 @@ static const ControlMapping controls[] = {
 CGUIControl::GUICONTROLTYPES CGUIControlFactory::TranslateControlType(const std::string &type)
 {
   for (const ControlMapping& control : controls)
-    if (StringUtils::EqualsNoCase(type, control.name))
+    if (UnicodeUtils::EqualsNoCase(type, control.name))
       return control.type;
   return CGUIControl::GUICONTROL_UNKNOWN;
 }
@@ -195,7 +196,7 @@ bool CGUIControlFactory::GetDimension(const TiXmlNode *pRootNode, const char* st
 {
   const TiXmlElement* pNode = pRootNode->FirstChildElement(strTag);
   if (!pNode || !pNode->FirstChild()) return false;
-  if (0 == StringUtils::CompareNoCase("auto", pNode->FirstChild()->Value(), 4))
+  if (UnicodeUtils::StartsWithNoCase(pNode->FirstChild()->Value(), "auto"))
   { // auto-width - at least min must be set
     value = ParsePosition(pNode->Attribute("max"), parentSize);
     min = ParsePosition(pNode->Attribute("min"), parentSize);
@@ -296,32 +297,32 @@ bool CGUIControlFactory::GetAspectRatio(const TiXmlNode* pRootNode, const char* 
     return false;
 
   ratio = node->FirstChild()->Value();
-  if (StringUtils::EqualsNoCase(ratio, "keep")) aspect.ratio = CAspectRatio::AR_KEEP;
-  else if (StringUtils::EqualsNoCase(ratio, "scale")) aspect.ratio = CAspectRatio::AR_SCALE;
-  else if (StringUtils::EqualsNoCase(ratio, "center")) aspect.ratio = CAspectRatio::AR_CENTER;
-  else if (StringUtils::EqualsNoCase(ratio, "stretch")) aspect.ratio = CAspectRatio::AR_STRETCH;
+  if (UnicodeUtils::EqualsNoCase(ratio, "keep")) aspect.ratio = CAspectRatio::AR_KEEP;
+  else if (UnicodeUtils::EqualsNoCase(ratio, "scale")) aspect.ratio = CAspectRatio::AR_SCALE;
+  else if (UnicodeUtils::EqualsNoCase(ratio, "center")) aspect.ratio = CAspectRatio::AR_CENTER;
+  else if (UnicodeUtils::EqualsNoCase(ratio, "stretch")) aspect.ratio = CAspectRatio::AR_STRETCH;
 
   const char *attribute = node->Attribute("align");
   if (attribute)
   {
     std::string align(attribute);
-    if (StringUtils::EqualsNoCase(align, "center")) aspect.align = ASPECT_ALIGN_CENTER | (aspect.align & ASPECT_ALIGNY_MASK);
-    else if (StringUtils::EqualsNoCase(align, "right")) aspect.align = ASPECT_ALIGN_RIGHT | (aspect.align & ASPECT_ALIGNY_MASK);
-    else if (StringUtils::EqualsNoCase(align, "left")) aspect.align = ASPECT_ALIGN_LEFT | (aspect.align & ASPECT_ALIGNY_MASK);
+    if (UnicodeUtils::EqualsNoCase(align, "center")) aspect.align = ASPECT_ALIGN_CENTER | (aspect.align & ASPECT_ALIGNY_MASK);
+    else if (UnicodeUtils::EqualsNoCase(align, "right")) aspect.align = ASPECT_ALIGN_RIGHT | (aspect.align & ASPECT_ALIGNY_MASK);
+    else if (UnicodeUtils::EqualsNoCase(align, "left")) aspect.align = ASPECT_ALIGN_LEFT | (aspect.align & ASPECT_ALIGNY_MASK);
   }
   attribute = node->Attribute("aligny");
   if (attribute)
   {
     std::string align(attribute);
-    if (StringUtils::EqualsNoCase(align, "center")) aspect.align = ASPECT_ALIGNY_CENTER | (aspect.align & ASPECT_ALIGN_MASK);
-    else if (StringUtils::EqualsNoCase(align, "bottom")) aspect.align = ASPECT_ALIGNY_BOTTOM | (aspect.align & ASPECT_ALIGN_MASK);
-    else if (StringUtils::EqualsNoCase(align, "top")) aspect.align = ASPECT_ALIGNY_TOP | (aspect.align & ASPECT_ALIGN_MASK);
+    if (UnicodeUtils::EqualsNoCase(align, "center")) aspect.align = ASPECT_ALIGNY_CENTER | (aspect.align & ASPECT_ALIGN_MASK);
+    else if (UnicodeUtils::EqualsNoCase(align, "bottom")) aspect.align = ASPECT_ALIGNY_BOTTOM | (aspect.align & ASPECT_ALIGN_MASK);
+    else if (UnicodeUtils::EqualsNoCase(align, "top")) aspect.align = ASPECT_ALIGNY_TOP | (aspect.align & ASPECT_ALIGN_MASK);
   }
   attribute = node->Attribute("scalediffuse");
   if (attribute)
   {
     std::string scale(attribute);
-    if (StringUtils::EqualsNoCase(scale, "true") || StringUtils::EqualsNoCase(scale, "yes"))
+    if (UnicodeUtils::EqualsNoCase(scale, "true") || UnicodeUtils::EqualsNoCase(scale, "yes"))
       aspect.scaleDiffuse = true;
     else
       aspect.scaleDiffuse = false;
@@ -346,19 +347,19 @@ bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strT
   {
     GetRectFromString(border, image.border);
     const char* borderinfill = pNode->Attribute("infill");
-    image.m_infill = (!borderinfill || !StringUtils::EqualsNoCase(borderinfill, "false"));
+    image.m_infill = (!borderinfill || !UnicodeUtils::EqualsNoCase(borderinfill, "false"));
   }
   image.orientation = 0;
   const char *flipX = pNode->Attribute("flipx");
-  if (flipX && StringUtils::CompareNoCase(flipX, "true") == 0)
+  if (flipX && UnicodeUtils::CompareNoCase(flipX, "true") == 0)
     image.orientation = 1;
   const char *flipY = pNode->Attribute("flipy");
-  if (flipY && StringUtils::CompareNoCase(flipY, "true") == 0)
+  if (flipY && UnicodeUtils::CompareNoCase(flipY, "true") == 0)
     image.orientation = 3 - image.orientation; // either 3 or 2
   image.diffuse = XMLUtils::GetAttribute(pNode, "diffuse");
   image.diffuseColor.Parse(XMLUtils::GetAttribute(pNode, "colordiffuse"), 0);
   const char *background = pNode->Attribute("background");
-  if (background && StringUtils::CompareNoCase(background, "true", 4) == 0)
+  if (background && UnicodeUtils::StartsWithNoCase(background, "true"))
     image.useLarge = true;
   image.filename = pNode->FirstChild() ? pNode->FirstChild()->Value() : "";
   return true;
@@ -367,7 +368,7 @@ bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strT
 void CGUIControlFactory::GetRectFromString(const std::string &string, CRect &rect)
 {
   // format is rect="left[,top,right,bottom]"
-  std::vector<std::string> strRect = StringUtils::Split(string, ',');
+  std::vector<std::string> strRect = UnicodeUtils::Split(string, ',');
   if (strRect.size() == 1)
   {
     rect.x1 = (float)atof(strRect[0].c_str());
@@ -465,7 +466,7 @@ bool CGUIControlFactory::GetAnimations(TiXmlNode *control, const CRect &rect, in
       CAnimation anim;
       anim.Create(node, rect, context);
       animations.push_back(anim);
-      if (StringUtils::CompareNoCase(node->FirstChild()->Value(), "VisibleChange") == 0)
+      if (UnicodeUtils::CompareNoCase(node->FirstChild()->Value(), "VisibleChange") == 0)
       { // add the hidden one as well
         TiXmlElement hidden(*node);
         hidden.FirstChild()->SetValue("hidden");
@@ -885,7 +886,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   if (XMLUtils::GetInt(pControlNode, "defaultcontrol", defaultControl))
   {
     const char *always = pControlNode->FirstChildElement("defaultcontrol")->Attribute("always");
-    if (always && StringUtils::CompareNoCase(always, "true", 4) == 0)
+    if (always && UnicodeUtils::StartsWithNoCase(always, "true"))
       defaultAlways = true;
   }
   XMLUtils::GetInt(pControlNode, "pagecontrol", pageControl);
@@ -986,7 +987,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
   if (XMLUtils::GetString(pControlNode, "subtype", strSubType))
   {
-    StringUtils::ToLower(strSubType);
+    UnicodeUtils::FoldCase(strSubType);
 
     if ( strSubType == "int")
       iType = SPIN_CONTROL_TYPE_INT;
@@ -1030,7 +1031,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
   if ( XMLUtils::GetString(pControlNode, "orientation", strTmp) )
   {
-    StringUtils::ToLower(strTmp);
+    UnicodeUtils::FoldCase(strTmp);
     if (strTmp == "horizontal")
       orientation = HORIZONTAL;
   }

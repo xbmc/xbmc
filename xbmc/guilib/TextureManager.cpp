@@ -17,6 +17,7 @@
 #include "guilib/TextureBundle.h"
 #include "guilib/TextureFormats.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
@@ -337,7 +338,7 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
   const auto start = std::chrono::steady_clock::now();
 #endif
 
-  if (bundle >= 0 && StringUtils::EndsWithNoCase(strPath, ".gif"))
+  if (bundle >= 0 && UnicodeUtils::EndsWithNoCase(strPath, ".gif"))
   {
     CTextureMap* pMap = nullptr;
     std::vector<std::pair<std::unique_ptr<CTexture>, int>> textures;
@@ -365,13 +366,13 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
     m_vecTextures.push_back(pMap);
     return pMap->GetTexture();
   }
-  else if (StringUtils::EndsWithNoCase(strPath, ".gif") ||
-           StringUtils::EndsWithNoCase(strPath, ".apng"))
+  else if (UnicodeUtils::EndsWithNoCase(strPath, ".gif") ||
+           UnicodeUtils::EndsWithNoCase(strPath, ".apng"))
   {
     std::string mimeType;
-    if (StringUtils::EndsWithNoCase(strPath, ".gif"))
+    if (UnicodeUtils::EndsWithNoCase(strPath, ".gif"))
       mimeType = "image/gif";
-    else if (StringUtils::EndsWithNoCase(strPath, ".apng"))
+    else if (UnicodeUtils::EndsWithNoCase(strPath, ".apng"))
       mimeType = "image/apng";
 
     XFILE::CFile file;

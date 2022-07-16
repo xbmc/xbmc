@@ -27,6 +27,7 @@
 #include "utils/ContentUtils.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoInfoTag.h"
@@ -93,6 +94,8 @@ NPT_String
 GetMimeType(const char* filename,
             const PLT_HttpRequestContext* context /* = NULL */)
 {
+	  // NPT ONLY works with ASCII.
+
     NPT_String ext = URIUtils::GetExtension(filename).c_str();
     ext.TrimLeft('.');
     ext = ext.ToLowercase();
@@ -116,6 +119,8 @@ GetMimeType(const CFileItem& item,
 
     if (URIUtils::IsStack(path))
         path = XFILE::CStackDirectory::GetFirstStackedFile(path);
+
+    // NPT ONLY works with ASCII
 
     NPT_String ext = URIUtils::GetExtension(path).c_str();
     ext.TrimLeft('.');
@@ -865,7 +870,7 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
                     tag.m_artist.emplace_back(object.m_People.artists.GetItem(index)->name.GetChars());
             }
             else if (!object.m_Creator.IsEmpty() && object.m_Creator != "Unknown")
-                tag.m_artist = StringUtils::Split(object.m_Creator.GetChars(), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
+                tag.m_artist = UnicodeUtils::Split(object.m_Creator.GetChars(), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
             tag.m_strAlbum = object.m_Affiliation.album;
         }
         else
@@ -948,6 +953,8 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
 CFileItemPtr BuildObject(PLT_MediaObject* entry,
                          UPnPService      upnp_service /* = UPnPServiceNone */)
 {
+  // NPT ONLY works with ASCII
+
   NPT_String ObjectClass = entry->m_ObjectClass.type.ToLowercase();
 
   CFileItemPtr pItem(new CFileItem((const char*)entry->m_Title));

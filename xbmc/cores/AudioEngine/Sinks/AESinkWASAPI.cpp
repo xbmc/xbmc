@@ -14,6 +14,7 @@
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
 #include "utils/TimeUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
@@ -94,7 +95,7 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, std::string &device)
   sinkReqFormat = format.m_dataFormat;
   sinkRetFormat = AE_FMT_INVALID;
 
-  if(StringUtils::EndsWithNoCase(device, std::string("default")))
+  if(UnicodeUtils::EndsWithNoCase(device, std::string("default")))
     bdefault = true;
 
   if(!bdefault)

@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "messaging/ApplicationMessenger.h"
 #include "powermanagement/PowerManager.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 
 using namespace JSONRPC;
@@ -22,7 +23,7 @@ JSONRPC_STATUS CXBMCOperations::GetInfoLabels(const std::string &method, ITransp
   for (unsigned int i = 0; i < parameterObject["labels"].size(); i++)
   {
     std::string field = parameterObject["labels"][i].asString();
-    StringUtils::ToLower(field);
+    UnicodeUtils::FoldCase(field);
 
     info.push_back(parameterObject["labels"][i].asString());
   }
@@ -53,7 +54,7 @@ JSONRPC_STATUS CXBMCOperations::GetInfoBooleans(const std::string &method, ITran
   for (unsigned int i = 0; i < parameterObject["booleans"].size(); i++)
   {
     std::string field = parameterObject["booleans"][i].asString();
-    StringUtils::ToLower(field);
+    UnicodeUtils::FoldCase(field);
 
     // Need to override power management of whats in infomanager since jsonrpc
     // have a security layer aswell.

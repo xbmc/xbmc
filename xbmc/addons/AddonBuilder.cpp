@@ -25,6 +25,7 @@
 #include "games/controllers/Controller.h"
 #include "pvr/addons/PVRClient.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 using namespace KODI;
 
@@ -45,7 +46,7 @@ AddonPtr CAddonBuilder::Generate(const AddonInfoPtr& info, TYPE type)
   if (type == ADDON_SCREENSAVER)
   {
     // built in screensaver or python screensaver
-    if (StringUtils::StartsWithNoCase(info->ID(), "screensaver.xbmc.builtin.") ||
+    if (UnicodeUtils::StartsWithNoCase(info->ID(), "screensaver.xbmc.builtin.") ||
         URIUtils::HasExtension(info->LibName(), ".py"))
       return std::make_shared<CAddon>(info, type);
   }
@@ -54,7 +55,7 @@ AddonPtr CAddonBuilder::Generate(const AddonInfoPtr& info, TYPE type)
   if (type == ADDON_AUDIOENCODER)
   {
     // built in audio encoder
-    if (StringUtils::StartsWithNoCase(info->ID(), "audioencoder.kodi.builtin."))
+    if (UnicodeUtils::StartsWithNoCase(info->ID(), "audioencoder.kodi.builtin."))
       return std::make_shared<CAddonDll>(info, type);
   }
 

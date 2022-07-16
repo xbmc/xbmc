@@ -15,6 +15,7 @@
 #include "exports/emu_msvcrt.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 #include "platform/win32/CharsetConverter.h"
@@ -313,8 +314,8 @@ void Win32DllLoader::OverrideImports(const std::string &dll)
 
 bool Win32DllLoader::NeedsHooking(const char *dllName)
 {
-  if ( !StringUtils::EndsWithNoCase(dllName, "libdvdcss-2.dll")
-  && !StringUtils::EndsWithNoCase(dllName, "libdvdnav.dll"))
+  if ( !UnicodeUtils::EndsWithNoCase(dllName, "libdvdcss-2.dll")
+  && !UnicodeUtils::EndsWithNoCase(dllName, "libdvdnav.dll"))
     return false;
 
   LibraryLoader *loader = DllLoaderContainer::GetModule(dllName);

@@ -41,6 +41,7 @@
 #include "threads/SingleLock.h"
 #include "threads/SystemClock.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 #include <cmath>
 #include <ctime>
@@ -449,7 +450,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
       case LISTITEM_EPISODENAME:
         strValue = recording->EpisodeName();
         // fixup multiline episode name strings (which do not fit in any way in our GUI)
-        StringUtils::Replace(strValue, "\n", ", ");
+        UnicodeUtils::Replace(strValue, "\n", ", ");
         return true;
       case VIDEOPLAYER_CHANNEL_NAME:
       case LISTITEM_CHANNEL_NAME:
@@ -687,7 +688,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
         {
           strValue = epgTag->EpisodeName();
           // fixup multiline episode name strings (which do not fit in any way in our GUI)
-          StringUtils::Replace(strValue, "\n", ", ");
+          UnicodeUtils::Replace(strValue, "\n", ", ");
         }
         return true;
       case VIDEOPLAYER_CAST:
@@ -1494,7 +1495,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem* item, const CGUIInfo
     case VIDEOPLAYER_CONTENT:
       if (item->IsPVRChannel())
       {
-        bValue = StringUtils::EqualsNoCase(info.GetData3(), "livetv");
+        bValue = UnicodeUtils::EqualsNoCase(info.GetData3(), "livetv");
         return bValue; // if no match for this provider, other providers shall be asked.
       }
       break;

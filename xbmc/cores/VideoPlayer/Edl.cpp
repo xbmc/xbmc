@@ -16,6 +16,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
@@ -140,7 +141,7 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
       strFields[1] = strFields[0];
     }
 
-    if (StringUtils::StartsWith(strFields[0], "##"))
+    if (UnicodeUtils::StartsWith(strFields[0], "##"))
     {
       CLog::Log(LOGDEBUG, "Skipping comment line {} in EDL file: {}", iLine,
                 CURL::GetRedacted(edlFilename));
@@ -155,10 +156,10 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
     {
       if (strFields[i].find(':') != std::string::npos) // HH:MM:SS.sss format
       {
-        std::vector<std::string> fieldParts = StringUtils::Split(strFields[i], '.');
+        std::vector<std::string> fieldParts = UnicodeUtils::Split(strFields[i], '.');
         if (fieldParts.size() == 1) // No ms
         {
-          editStartEnd[i] = StringUtils::TimeStringToSeconds(fieldParts[0]) *
+          editStartEnd[i] = UnicodeUtils::TimeStringToSeconds(fieldParts[0]) *
                             static_cast<int64_t>(1000); // seconds to ms
         }
         else if (fieldParts.size() == 2) // Has ms. Everything after the dot (.) is ms
@@ -179,7 +180,7 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
             fieldParts[1] = fieldParts[1].substr(0, 3);
           }
           editStartEnd[i] =
-              static_cast<int64_t>(StringUtils::TimeStringToSeconds(fieldParts[0])) * 1000 +
+              static_cast<int64_t>(UnicodeUtils::TimeStringToSeconds(fieldParts[0])) * 1000 +
               std::atoi(fieldParts[1].c_str()); // seconds to ms
         }
         else

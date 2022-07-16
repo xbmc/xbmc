@@ -29,6 +29,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoInfoTag.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
@@ -535,7 +536,7 @@ bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int co
         if (window)
           content = window->CurrentDirectory().GetContent();
       }
-      value = StringUtils::EqualsNoCase(info.GetData3(), content);
+      value = UnicodeUtils::EqualsNoCase(info.GetData3(), content);
       return true;
     }
     case CONTAINER_ROW:
@@ -761,7 +762,7 @@ bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int co
       else
       {
         CGUIWindow *window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(m_nextWindowID);
-        if (window && StringUtils::EqualsNoCase(URIUtils::GetFileName(window->GetProperty("xmlfile").asString()), info.GetData3()))
+        if (window && UnicodeUtils::EqualsNoCase(URIUtils::GetFileName(window->GetProperty("xmlfile").asString()), info.GetData3()))
         {
           value = true;
           return true;
@@ -779,7 +780,7 @@ bool CGUIControlsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int co
       else
       {
         CGUIWindow *window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(m_prevWindowID);
-        if (window && StringUtils::EqualsNoCase(URIUtils::GetFileName(window->GetProperty("xmlfile").asString()), info.GetData3()))
+        if (window && UnicodeUtils::EqualsNoCase(URIUtils::GetFileName(window->GetProperty("xmlfile").asString()), info.GetData3()))
         {
           value = true;
           return true;

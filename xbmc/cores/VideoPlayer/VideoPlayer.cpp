@@ -58,6 +58,7 @@
 #include "utils/StreamDetails.h"
 #include "utils/StreamUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -104,9 +105,9 @@ public:
     currentSubStream(subStream)
   {
     const std::string subtitleLang = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOCALE_SUBTITLELANGUAGE);
-    original = StringUtils::EqualsNoCase(subtitleLang, "original");
-    nosub = StringUtils::EqualsNoCase(subtitleLang, "none");
-    onlyforced = StringUtils::EqualsNoCase(subtitleLang, "forced_only");
+    original = UnicodeUtils::EqualsNoCase(subtitleLang, "original");
+    nosub = UnicodeUtils::EqualsNoCase(subtitleLang, "none");
+    onlyforced = UnicodeUtils::EqualsNoCase(subtitleLang, "forced_only");
   };
 
   bool operator()(const SelectionStream& ss) const
@@ -168,9 +169,9 @@ public:
 
     const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 
-    if (!StringUtils::EqualsNoCase(settings->GetString(CSettings::SETTING_LOCALE_AUDIOLANGUAGE), "mediadefault"))
+    if (!UnicodeUtils::EqualsNoCase(settings->GetString(CSettings::SETTING_LOCALE_AUDIOLANGUAGE), "mediadefault"))
     {
-      if (!StringUtils::EqualsNoCase(settings->GetString(CSettings::SETTING_LOCALE_AUDIOLANGUAGE), "original"))
+      if (!UnicodeUtils::EqualsNoCase(settings->GetString(CSettings::SETTING_LOCALE_AUDIOLANGUAGE), "original"))
       {
         std::string audio_language = g_langInfo.GetAudioLanguage();
         PREDICATE_RETURN(g_LangCodeExpander.CompareISO639Codes(audio_language, lh.language)
@@ -238,7 +239,7 @@ private:
 public:
   explicit PredicateSubtitlePriority(const std::string& lang, int stream, bool ison)
   : audiolang(lang),
-    original(StringUtils::EqualsNoCase(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOCALE_SUBTITLELANGUAGE), "original")),
+    original(UnicodeUtils::EqualsNoCase(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOCALE_SUBTITLELANGUAGE), "original")),
     subson(ison),
     filter(lang, stream),
     subStream(stream)
@@ -759,7 +760,7 @@ bool CVideoPlayer::OpenInputStream()
   // correct the filename if needed
   std::string filename(m_item.GetPath());
   if (URIUtils::IsProtocol(filename, "dvd") ||
-      StringUtils::EqualsNoCase(filename, "iso9660://video_ts/video_ts.ifo"))
+      UnicodeUtils::EqualsNoCase(filename, "iso9660://video_ts/video_ts.ifo"))
   {
     m_item.SetPath(CServiceBroker::GetMediaManager().TranslateDevicePath(""));
   }

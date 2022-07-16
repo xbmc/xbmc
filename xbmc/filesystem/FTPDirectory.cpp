@@ -14,6 +14,7 @@
 #include "URL.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 
 #include <climits>
@@ -30,7 +31,7 @@ bool CFTPDirectory::GetDirectory(const CURL& url2, CFileItemList &items)
   CURL url(url2);
 
   std::string path = url.GetFileName();
-  if( !path.empty() && !StringUtils::EndsWith(path, "/") )
+  if( !path.empty() && !UnicodeUtils::EndsWith(path, "/") )
   {
     path += "/";
     url.SetFileName(path);
@@ -46,7 +47,7 @@ bool CFTPDirectory::GetDirectory(const CURL& url2, CFileItemList &items)
   {
     std::string strBuffer = buffer;
 
-    StringUtils::RemoveCRLF(strBuffer);
+    UnicodeUtils::RemoveCRLF(strBuffer);
 
     CFTPParse parse;
     if (parse.FTPParse(strBuffer))

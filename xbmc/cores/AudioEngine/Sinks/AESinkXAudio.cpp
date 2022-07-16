@@ -15,6 +15,7 @@
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
@@ -638,7 +639,7 @@ bool CAESinkXAudio::InitializeInternal(std::string deviceId, AEAudioFormat &form
     wfxex.SubFormat                   = KSDATAFORMAT_SUBTYPE_PCM;
   }
 
-  bool bdefault = StringUtils::EndsWithNoCase(deviceId, std::string("default"));
+  bool bdefault = UnicodeUtils::EndsWithNoCase(deviceId, std::string("default"));
 
   HRESULT hr;
   IXAudio2MasteringVoice* pMasterVoice = nullptr;
@@ -880,8 +881,7 @@ bool CAESinkXAudio::IsUSBDevice()
   hr = pProperty->GetValue(PKEY_Device_EnumeratorName, &varName);
 
   std::string str = localWideToUtf(varName.pwszVal);
-  StringUtils::ToUpper(str);
-  ret = (str == "USB");
+  ret = UnicodeUtils::EqualsNoCase(str, "USB");
   PropVariantClear(&varName);
   if (pProperty)
     pProperty->Release();

@@ -19,6 +19,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
@@ -74,7 +75,7 @@ bool CTextureBundleXBT::OpenBundle()
     // if we are the theme bundle, we only load if the user has chosen
     // a valid theme (or the skin has a default one)
     std::string theme = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_SKINTHEME);
-    if (!theme.empty() && !StringUtils::EqualsNoCase(theme, "SKINDEFAULT"))
+    if (!theme.empty() && !UnicodeUtils::EqualsNoCase(theme, "SKINDEFAULT"))
     {
       std::string themeXBT(URIUtils::ReplaceExtension(theme, ".xbt"));
       m_path = URIUtils::AddFileToFolder(CServiceBroker::GetWinSystem()->GetGfxContext().GetMediaDir(), "media", themeXBT);
@@ -141,7 +142,7 @@ std::vector<std::string> CTextureBundleXBT::GetTexturesFromPath(const std::strin
   for (size_t i = 0; i < files.size(); i++)
   {
     std::string filePath = files[i].GetPath();
-    if (StringUtils::StartsWithNoCase(filePath, testPath))
+    if (UnicodeUtils::StartsWithNoCase(filePath, testPath))
       textures.emplace_back(std::move(filePath));
   }
 
@@ -256,9 +257,9 @@ void CTextureBundleXBT::SetThemeBundle(bool themeBundle)
 // lower case + using forward slash rather than back slash
 std::string CTextureBundleXBT::Normalize(std::string name)
 {
-  StringUtils::Trim(name);
-  StringUtils::ToLower(name);
-  StringUtils::Replace(name, '\\', '/');
+  UnicodeUtils::Trim(name);
+  UnicodeUtils::FoldCase(name);
+  UnicodeUtils::Replace(name, '\\', '/');
 
   return name;
 }

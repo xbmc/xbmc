@@ -11,6 +11,7 @@
 #include "cores/DllLoader/DllLoaderContainer.h"
 #include "utils/GlobalsHandling.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 #include <mutex>
@@ -39,7 +40,7 @@ LibraryLoader *CSectionLoader::LoadDLL(const std::string &dllname, bool bDelayUn
   for (int i = 0; i < (int)g_sectionLoader.m_vecLoadedDLLs.size(); ++i)
   {
     CDll& dll = g_sectionLoader.m_vecLoadedDLLs[i];
-    if (StringUtils::EqualsNoCase(dll.m_strDllName, dllname))
+    if (UnicodeUtils::EqualsNoCase(dll.m_strDllName, dllname))
     {
       dll.m_lReferenceCount++;
       return dll.m_pDll;
@@ -71,7 +72,7 @@ void CSectionLoader::UnloadDLL(const std::string &dllname)
   for (int i = 0; i < (int)g_sectionLoader.m_vecLoadedDLLs.size(); ++i)
   {
     CDll& dll = g_sectionLoader.m_vecLoadedDLLs[i];
-    if (StringUtils::EqualsNoCase(dll.m_strDllName, dllname))
+    if (UnicodeUtils::EqualsNoCase(dll.m_strDllName, dllname))
     {
       dll.m_lReferenceCount--;
       if (0 == dll.m_lReferenceCount)

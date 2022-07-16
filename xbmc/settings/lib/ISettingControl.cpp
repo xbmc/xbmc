@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "SettingDefinitions.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
@@ -43,13 +44,13 @@ bool ISettingControl::Deserialize(const TiXmlNode *node, bool update /* = false 
 
   if ((strTmp = elem->Attribute(SETTING_XML_ATTR_DELAYED)) != nullptr)
   {
-    if (!StringUtils::EqualsNoCase(strTmp, "false") && !StringUtils::EqualsNoCase(strTmp, "true"))
+    if (!UnicodeUtils::EqualsNoCase(strTmp, "false") && !UnicodeUtils::EqualsNoCase(strTmp, "true"))
     {
       s_logger->error("error reading \"{}\" attribute of <control>", SETTING_XML_ATTR_DELAYED);
       return false;
     }
     else
-      m_delayed = StringUtils::EqualsNoCase(strTmp, "true");
+      m_delayed = UnicodeUtils::EqualsNoCase(strTmp, "true");
   }
 
   return true;

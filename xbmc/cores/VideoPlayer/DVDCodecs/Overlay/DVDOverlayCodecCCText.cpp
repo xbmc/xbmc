@@ -128,7 +128,7 @@ void CDVDOverlayCodecCCText::PostProcess(std::string& text)
   // The data that come from InputStream could contains \r chars
   // we have to remove them all because it causes to display empty box "tofu"
   //! @todo This must be removed after the rework of the CC decoders
-  StringUtils::Replace(text, "\r", "");
+  UnicodeUtils::Replace(text, "\r", "");
   CSubtitlesAdapter::PostProcess(text);
 }
 

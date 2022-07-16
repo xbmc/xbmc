@@ -29,6 +29,7 @@
 #include "settings/lib/SettingsManager.h"
 #include "settings/windows/GUIControlSettings.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
@@ -1214,7 +1215,7 @@ bool CGUIDialogPVRTimerSettings::TypeReadOnlyCondition(const std::string& condit
     return false;
   }
 
-  if (!StringUtils::EqualsNoCase(value, "true"))
+  if (!UnicodeUtils::EqualsNoCase(value, "true"))
     return false;
 
   std::string cond(condition);
@@ -1281,7 +1282,7 @@ bool CGUIDialogPVRTimerSettings::TypeSupportsCondition(const std::string& condit
     return false;
   }
 
-  if (!StringUtils::EqualsNoCase(value, "true"))
+  if (!UnicodeUtils::EqualsNoCase(value, "true"))
     return false;
 
   int idx = std::static_pointer_cast<const CSettingInt>(setting)->GetValue();
@@ -1365,7 +1366,7 @@ bool CGUIDialogPVRTimerSettings::StartAnytimeSetCondition(const std::string& con
     return false;
   }
 
-  if (!StringUtils::EqualsNoCase(value, "true"))
+  if (!UnicodeUtils::EqualsNoCase(value, "true"))
     return false;
 
   // "any time" setting is only relevant for epg-based timers.
@@ -1412,7 +1413,7 @@ bool CGUIDialogPVRTimerSettings::EndAnytimeSetCondition(const std::string& condi
     return false;
   }
 
-  if (!StringUtils::EqualsNoCase(value, "true"))
+  if (!UnicodeUtils::EqualsNoCase(value, "true"))
     return false;
 
   // "any time" setting is only relevant for epg-based timers.

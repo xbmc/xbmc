@@ -17,6 +17,7 @@
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 CDVDDemuxVobsub::CDVDDemuxVobsub() = default;
 
@@ -181,7 +182,7 @@ bool CDVDDemuxVobsub::ParseDelay(SState& state, std::string& line)
   int h,m,s,ms;
   bool negative = false;
 
-  StringUtils::Trim(line);
+  UnicodeUtils::Trim(line);
 
   if (line[0] == '-')
   {
@@ -201,7 +202,7 @@ bool CDVDDemuxVobsub::ParseId(SState& state, std::string& line)
 {
   std::unique_ptr<CStream> stream(new CStream(this));
 
-  StringUtils::Trim(line);
+  UnicodeUtils::Trim(line);
   stream->language = line.substr(0, 2);
 
   size_t pos = line.find_first_of(',');
@@ -210,7 +211,7 @@ bool CDVDDemuxVobsub::ParseId(SState& state, std::string& line)
     pos += 1;
     line.erase(0, pos);
   }
-  StringUtils::TrimLeft(line);
+  UnicodeUtils::TrimLeft(line);
   pos = line.find_first_of(':');
   if (pos != std::string::npos && line.substr(0, pos + 1) == "index:")
   {
@@ -245,7 +246,7 @@ bool CDVDDemuxVobsub::ParseTimestamp(SState& state, std::string& line)
   int h,m,s,ms;
   STimestamp timestamp;
 
-  StringUtils::Trim(line);
+  UnicodeUtils::Trim(line);
   if (sscanf(line.c_str(), "%d:%d:%d:%d, filepos:%" PRIx64, &h, &m, &s, &ms, &timestamp.pos) != 5)
     return false;
 

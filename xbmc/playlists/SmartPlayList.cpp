@@ -22,6 +22,7 @@
 #include "utils/StreamDetails.h"
 #include "utils/StringUtils.h"
 #include "utils/StringValidation.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
@@ -167,7 +168,7 @@ CSmartPlaylistRule::CSmartPlaylistRule() = default;
 int CSmartPlaylistRule::TranslateField(const char *field) const
 {
   for (const translateField& f : fields)
-    if (StringUtils::EqualsNoCase(field, f.string)) return f.field;
+    if (UnicodeUtils::EqualsNoCase(field, f.string)) return f.field;
   return FieldNone;
 }
 
@@ -196,7 +197,7 @@ Field CSmartPlaylistRule::TranslateGroup(const char *group)
 {
   for (const auto & i : groups)
   {
-    if (StringUtils::EqualsNoCase(group, i.name))
+    if (UnicodeUtils::EqualsNoCase(group, i.name))
       return i.field;
   }
 
@@ -257,7 +258,7 @@ bool CSmartPlaylistRule::Validate(const std::string &input, void *data)
     return true;
 
   // split the input into multiple values and validate every value separately
-  std::vector<std::string> values = StringUtils::Split(input, RULE_VALUE_SEPARATOR);
+  std::vector<std::string> values = UnicodeUtils::Split(input, RULE_VALUE_SEPARATOR);
   for (std::vector<std::string>::const_iterator it = values.begin(); it != values.end(); ++it)
   {
     if (!validator(*it, data))
@@ -271,7 +272,7 @@ bool CSmartPlaylistRule::ValidateRating(const std::string &input, void *data)
 {
   char *end = NULL;
   std::string strRating = input;
-  StringUtils::Trim(strRating);
+  UnicodeUtils::Trim(strRating);
 
   double rating = std::strtod(strRating.c_str(), &end);
   return (end == NULL || *end == '\0') &&
@@ -281,7 +282,7 @@ bool CSmartPlaylistRule::ValidateRating(const std::string &input, void *data)
 bool CSmartPlaylistRule::ValidateMyRating(const std::string &input, void *data)
 {
   std::string strRating = input;
-  StringUtils::Trim(strRating);
+  UnicodeUtils::Trim(strRating);
 
   int rating = atoi(strRating.c_str());
   return StringValidation::IsPositiveInteger(input, data) && rating <= 10;
@@ -830,7 +831,7 @@ std::string CSmartPlaylistRule::FormatParameter(const std::string &operatorStrin
   // special-casing
   if (m_field == FieldTime || m_field == FieldAlbumDuration)
   { // translate time to seconds
-    std::string seconds = std::to_string(StringUtils::TimeStringToSeconds(param));
+    std::string seconds = std::to_string(UnicodeUtils::TimeStringToSeconds(param));
     return db.PrepareSQL(operatorString, seconds.c_str());
   }
   return CDatabaseQueryRule::FormatParameter(operatorString, param, db, strType);
@@ -1201,7 +1202,7 @@ const TiXmlNode* CSmartPlaylist::readName(const TiXmlNode *root)
   if (rootElem == NULL)
     return NULL;
 
-  if (!StringUtils::EqualsNoCase(root->Value(), "smartplaylist"))
+  if (!UnicodeUtils::EqualsNoCase(root->Value(), "smartplaylist"))
   {
     CLog::Log(LOGERROR, "Error loading Smart playlist");
     return NULL;
@@ -1324,7 +1325,7 @@ bool CSmartPlaylist::Load(const CVariant &obj)
   {
     const CVariant &order = obj["order"];
     if (order.isMember("direction") && order["direction"].isString())
-      m_orderDirection = StringUtils::EqualsNoCase(order["direction"].asString(), "ascending") ? SortOrderAscending : SortOrderDescending;
+      m_orderDirection = UnicodeUtils::EqualsNoCase(order["direction"].asString(), "ascending") ? SortOrderAscending : SortOrderDescending;
 
     if (order.isMember("ignorefolders") && obj["ignorefolders"].isBoolean())
       m_orderAttributes = obj["ignorefolders"].asBoolean() ? SortAttributeIgnoreFolders : SortAttributeNone;
@@ -1347,7 +1348,7 @@ bool CSmartPlaylist::LoadFromXML(const TiXmlNode *root, const std::string &encod
 
   std::string tmp;
   if (XMLUtils::GetString(root, "match", tmp))
-    m_ruleCombination.SetType(StringUtils::EqualsNoCase(tmp, "all") ? CSmartPlaylistRuleCombination::CombinationAnd : CSmartPlaylistRuleCombination::CombinationOr);
+    m_ruleCombination.SetType(UnicodeUtils::EqualsNoCase(tmp, "all") ? CSmartPlaylistRuleCombination::CombinationAnd : CSmartPlaylistRuleCombination::CombinationOr);
 
   // now the rules
   const TiXmlNode *ruleNode = root->FirstChild("rule");
@@ -1365,7 +1366,7 @@ bool CSmartPlaylist::LoadFromXML(const TiXmlNode *root, const std::string &encod
   {
     m_group = groupElement->FirstChild()->ValueStr();
     const char* mixed = groupElement->Attribute("mixed");
-    m_groupMixed = mixed != NULL && StringUtils::EqualsNoCase(mixed, "true");
+    m_groupMixed = mixed != NULL && UnicodeUtils::EqualsNoCase(mixed, "true");
   }
 
   // now any limits
@@ -1379,11 +1380,11 @@ bool CSmartPlaylist::LoadFromXML(const TiXmlNode *root, const std::string &encod
   {
     const char *direction = order->Attribute("direction");
     if (direction)
-      m_orderDirection = StringUtils::EqualsNoCase(direction, "ascending") ? SortOrderAscending : SortOrderDescending;
+      m_orderDirection = UnicodeUtils::EqualsNoCase(direction, "ascending") ? SortOrderAscending : SortOrderDescending;
 
     const char *ignorefolders = order->Attribute("ignorefolders");
     if (ignorefolders != NULL)
-      m_orderAttributes = StringUtils::EqualsNoCase(ignorefolders, "true") ? SortAttributeIgnoreFolders : SortAttributeNone;
+      m_orderAttributes = UnicodeUtils::EqualsNoCase(ignorefolders, "true") ? SortAttributeIgnoreFolders : SortAttributeNone;
 
     m_orderField = CSmartPlaylistRule::TranslateOrder(order->FirstChild()->Value());
   }

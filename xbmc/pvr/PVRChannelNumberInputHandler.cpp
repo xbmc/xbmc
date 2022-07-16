@@ -12,6 +12,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -117,9 +118,9 @@ void CPVRChannelNumberInputHandler::AppendChannelNumberCharacter(char cCharacter
     const std::string channel = *it;
     ++it;
 
-    if (StringUtils::StartsWith(channel, m_inputBuffer))
+    if (UnicodeUtils::StartsWith(channel, m_inputBuffer))
     {
-      if (it != m_sortedChannelNumbers.end() && StringUtils::StartsWith(*it, m_inputBuffer))
+      if (it != m_sortedChannelNumbers.end() && UnicodeUtils::StartsWith(*it, m_inputBuffer))
       {
         // there are alternative numbers; wait for more input
         break;

@@ -18,6 +18,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 #include "video/VideoInfoTag.h"
@@ -223,7 +224,7 @@ namespace XBMCAddon
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
       String lowerKey = key;
-      StringUtils::ToLower(lowerKey);
+      UnicodeUtils::FoldCase(lowerKey);
       if (lowerKey == "startoffset")
       { // special case for start offset - don't actually store in a property
         setStartOffsetRaw(strtod(value.c_str(), nullptr));
@@ -270,7 +271,7 @@ namespace XBMCAddon
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
       String lowerKey = key;
-      StringUtils::ToLower(lowerKey);
+      UnicodeUtils::FoldCase(lowerKey);
       std::string value;
       if (lowerKey == "startoffset")
       { // special case for start offset - don't actually store in a property,
@@ -375,13 +376,14 @@ namespace XBMCAddon
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
 
       bool hasDeprecatedInfoLabel = false;
-      if (StringUtils::CompareNoCase(type, "video") == 0)
+      if (UnicodeUtils::CompareNoCase(type, "video") == 0)
       {
         using InfoTagVideo = xbmc::InfoTagVideo;
         auto videotag = GetVideoInfoTag();
         for (const auto& it : infoLabels)
         {
-          const auto key = StringUtils::ToLower(it.first);
+          String key = it.first;
+          UnicodeUtils::FoldCase(key);
           const InfoLabelValue& alt = it.second;
           const String value(alt.which() == first ? alt.former() : emptyString);
 
@@ -543,7 +545,7 @@ namespace XBMCAddon
             "removed in future Kodi versions. Please use the respective setter in InfoTagVideo.");
         }
       }
-      else if (StringUtils::CompareNoCase(type, "music") == 0)
+      else if (UnicodeUtils::CompareNoCase(type, "music") == 0)
       {
         String mediaType;
         int dbId = -1;
@@ -552,7 +554,8 @@ namespace XBMCAddon
         auto musictag = GetMusicInfoTag();
         for (const auto& it : infoLabels)
         {
-          const auto key = StringUtils::ToLower(it.first);
+          String key = it.first;
+          UnicodeUtils::FoldCase(key);
           const auto& alt = it.second;
           const String value(alt.which() == first ? alt.former() : emptyString);
 
@@ -565,6 +568,7 @@ namespace XBMCAddon
             setDateTimeRaw(value);
           else
           {
+          UnicodeUtils::FoldCase(key);
             hasDeprecatedInfoLabel = true;
 
             if (key == "dbid")
@@ -632,11 +636,12 @@ namespace XBMCAddon
               "removed in future Kodi versions. Please use the respective setter in InfoTagMusic.");
         }
       }
-      else if (StringUtils::CompareNoCase(type, "pictures") == 0)
+      else if (UnicodeUtils::CompareNoCase(type, "pictures") == 0)
       {
         for (const auto& it : infoLabels)
         {
-          const auto key = StringUtils::ToLower(it.first);
+          String key = it.first;
+          UnicodeUtils::FoldCase(key);
           const auto& alt = it.second;
           const String value(alt.which() == first ? alt.former() : emptyString);
 
@@ -655,13 +660,13 @@ namespace XBMCAddon
             hasDeprecatedInfoLabel = true;
 
             String exifkey = key;
-            if (!StringUtils::StartsWithNoCase(exifkey, "exif:") || exifkey.length() < 6)
+            if (!UnicodeUtils::StartsWithNoCase(exifkey, "exif:") || exifkey.length() < 6)
             {
               CLog::Log(LOGWARNING, "ListItem.setInfo: unknown pictures info key \"{}\"", key);
               continue;
             }
 
-            exifkey = StringUtils::Mid(exifkey, 5);
+            exifkey = UnicodeUtils::Mid(exifkey, 5);
             if (exifkey == "resolution")
               xbmc::InfoTagPicture::setResolutionRaw(item->GetPictureInfoTag(), value);
             else if (exifkey == "exiftime")
@@ -678,12 +683,13 @@ namespace XBMCAddon
                                 "use the respective setter in InfoTagPicture.");
         }
       }
-      else if (StringUtils::EqualsNoCase(type, "game"))
+      else if (UnicodeUtils::EqualsNoCase(type, "game"))
       {
         auto gametag = item->GetGameInfoTag();
         for (const auto& it : infoLabels)
         {
-          const auto key = StringUtils::ToLower(it.first);
+          String key = it.first;
+          UnicodeUtils::FoldCase(key);
           const auto& alt = it.second;
           const String value(alt.which() == first ? alt.former() : emptyString);
 
@@ -808,7 +814,7 @@ namespace XBMCAddon
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
 
       auto infoTag = GetVideoInfoTag();
-      if (StringUtils::CompareNoCase(cType, "video") == 0)
+      if (UnicodeUtils::CompareNoCase(cType, "video") == 0)
       {
         CStreamDetailVideo* video = new CStreamDetailVideo;
         for (const auto& it : dictionary)
@@ -833,7 +839,7 @@ namespace XBMCAddon
         }
         xbmc::InfoTagVideo::addStreamRaw(infoTag, video);
       }
-      else if (StringUtils::CompareNoCase(cType, "audio") == 0)
+      else if (UnicodeUtils::CompareNoCase(cType, "audio") == 0)
       {
         CStreamDetailAudio* audio = new CStreamDetailAudio;
         for (const auto& it : dictionary)
@@ -850,7 +856,7 @@ namespace XBMCAddon
         }
         xbmc::InfoTagVideo::addStreamRaw(infoTag, audio);
       }
-      else if (StringUtils::CompareNoCase(cType, "subtitle") == 0)
+      else if (UnicodeUtils::CompareNoCase(cType, "subtitle") == 0)
       {
         CStreamDetailSubtitle* subtitle = new CStreamDetailSubtitle;
         for (const auto& it : dictionary)
@@ -923,7 +929,7 @@ namespace XBMCAddon
       {
         if (value.empty())
           value = alt.former();
-        return StringUtils::Split(value, separator);
+        return UnicodeUtils::Split(value, separator);
       }
 
       std::vector<std::string> els;
@@ -1025,7 +1031,7 @@ namespace XBMCAddon
 
     void ListItem::setSpecialSortRaw(std::string specialSort)
     {
-      StringUtils::ToLower(specialSort);
+      UnicodeUtils::FoldCase(specialSort);
 
       if (specialSort == "bottom")
         item->SetSpecialSort(SortSpecialOnBottom);
@@ -1040,13 +1046,13 @@ namespace XBMCAddon
 
     void ListItem::addArtRaw(std::string type, const std::string& url)
     {
-      StringUtils::ToLower(type);
+      UnicodeUtils::FoldCase(type);
       item->SetArt(type, url);
     }
 
     void ListItem::addPropertyRaw(std::string type, const CVariant& value)
     {
-      StringUtils::ToLower(type);
+      UnicodeUtils::FoldCase(type);
       item->SetProperty(type, value);
     }
 

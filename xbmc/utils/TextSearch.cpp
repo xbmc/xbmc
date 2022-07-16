@@ -8,7 +8,8 @@
 
 #include "TextSearch.h"
 
-#include "StringUtils.h"
+#include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 CTextSearch::CTextSearch(const std::string &strSearchTerms, bool bCaseSensitive /* = false */, TextSearchDefault defaultSearchMode /* = SEARCH_DEFAULT_OR */)
 {
@@ -27,8 +28,16 @@ bool CTextSearch::Search(const std::string &strHaystack) const
     return false;
 
   std::string strSearch(strHaystack);
+  
+  // TODO: Unicode- Searching is probably more complicated with
+  // multiple languages than this code can handle. For now, using
+  // FoldCase instead of ToLower since FoldCase is better at
+  // normalizing strings than ToLower. ToLower can behave in 
+  // interesting ways in other languages (Turkic "I" problem
+  // comes to mind).
+  
   if (!m_bCaseSensitive)
-    StringUtils::ToLower(strSearch);
+    UnicodeUtils::FoldCase(strSearch); // TODO: fpf Verify
 
   /* check whether any of the NOT terms matches and return false if there's a match */
   for (unsigned int iNotPtr = 0; iNotPtr < m_NOT.size(); iNotPtr++)
@@ -65,7 +74,7 @@ void CTextSearch::GetAndCutNextTerm(std::string &strSearchTerm, std::string &str
 {
   std::string strFindNext(" ");
 
-  if (StringUtils::EndsWith(strSearchTerm, "\""))
+  if (UnicodeUtils::EndsWith(strSearchTerm, "\""))
   {
     strSearchTerm.erase(0, 1);
     strFindNext = "\"";
@@ -87,10 +96,10 @@ void CTextSearch::GetAndCutNextTerm(std::string &strSearchTerm, std::string &str
 void CTextSearch::ExtractSearchTerms(const std::string &strSearchTerm, TextSearchDefault defaultSearchMode)
 {
   std::string strParsedSearchTerm(strSearchTerm);
-  StringUtils::Trim(strParsedSearchTerm);
+  UnicodeUtils::Trim(strParsedSearchTerm);
 
   if (!m_bCaseSensitive)
-    StringUtils::ToLower(strParsedSearchTerm);
+    UnicodeUtils::FoldCase(strParsedSearchTerm);
 
   bool bNextAND(defaultSearchMode == SEARCH_DEFAULT_AND);
   bool bNextOR(defaultSearchMode == SEARCH_DEFAULT_OR);
@@ -98,21 +107,21 @@ void CTextSearch::ExtractSearchTerms(const std::string &strSearchTerm, TextSearc
 
   while (strParsedSearchTerm.length() > 0)
   {
-    StringUtils::TrimLeft(strParsedSearchTerm);
+    UnicodeUtils::TrimLeft(strParsedSearchTerm);
 
-    if (StringUtils::StartsWith(strParsedSearchTerm, "!") || StringUtils::StartsWithNoCase(strParsedSearchTerm, "not"))
+    if (UnicodeUtils::StartsWith(strParsedSearchTerm, "!") || UnicodeUtils::StartsWithNoCase(strParsedSearchTerm, "not"))
     {
       std::string strDummy;
       GetAndCutNextTerm(strParsedSearchTerm, strDummy);
       bNextNOT = true;
     }
-    else if (StringUtils::StartsWith(strParsedSearchTerm, "+") || StringUtils::StartsWithNoCase(strParsedSearchTerm, "and"))
+    else if (UnicodeUtils::StartsWith(strParsedSearchTerm, "+") || UnicodeUtils::StartsWithNoCase(strParsedSearchTerm, "and"))
     {
       std::string strDummy;
       GetAndCutNextTerm(strParsedSearchTerm, strDummy);
       bNextAND = true;
     }
-    else if (StringUtils::StartsWith(strParsedSearchTerm, "|") || StringUtils::StartsWithNoCase(strParsedSearchTerm, "or"))
+    else if (UnicodeUtils::StartsWith(strParsedSearchTerm, "|") || UnicodeUtils::StartsWithNoCase(strParsedSearchTerm, "or"))
     {
       std::string strDummy;
       GetAndCutNextTerm(strParsedSearchTerm, strDummy);
@@ -141,6 +150,6 @@ void CTextSearch::ExtractSearchTerms(const std::string &strSearchTerm, TextSearc
       bNextNOT = (defaultSearchMode == SEARCH_DEFAULT_NOT);
     }
 
-    StringUtils::TrimLeft(strParsedSearchTerm);
+    UnicodeUtils::TrimLeft(strParsedSearchTerm);
   }
 }

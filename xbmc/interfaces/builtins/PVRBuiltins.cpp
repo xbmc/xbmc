@@ -18,6 +18,7 @@
 #include "pvr/guilib/PVRGUIActions.h"
 #include "pvr/windows/GUIWindowPVRGuide.h"
 #include "utils/log.h"
+#include "utils/UnicodeUtils.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -113,7 +114,7 @@ int EpgGridControl(const std::vector<std::string>& params)
   }
 
   std::string param(params[0]);
-  StringUtils::ToLower(param);
+  UnicodeUtils::FoldCase(param);
 
   if (param == "firstprogramme")
   {
@@ -131,7 +132,7 @@ int EpgGridControl(const std::vector<std::string>& params)
   {
     guideWindow->OpenDateSelectionDialog();
   }
-  else if (StringUtils::StartsWithNoCase(param, "+") || StringUtils::StartsWithNoCase(param, "-"))
+  else if (UnicodeUtils::StartsWithNoCase(param, "+") || UnicodeUtils::StartsWithNoCase(param, "-"))
   {
     // jump back/forward n hours
     if (std::regex_match(param, std::regex("[(-|+)|][0-9]+")))

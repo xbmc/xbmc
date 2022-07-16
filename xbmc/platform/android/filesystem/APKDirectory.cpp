@@ -12,6 +12,7 @@
 #include "FileItem.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
@@ -46,7 +47,7 @@ bool CAPKDirectory::GetDirectory(const CURL& url, CFileItemList &items)
     test_name = zip_get_name(zip_archive, zip_index, zip_flags);
 
     // check for non matching path.
-    if (!StringUtils::StartsWith(test_name, path))
+    if (!UnicodeUtils::StartsWith(test_name, path))
       continue;
 
     // libzip does not index folders, only filenames. We search for a /,

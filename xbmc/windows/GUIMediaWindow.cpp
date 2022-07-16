@@ -55,6 +55,7 @@
 #include "utils/log.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "view/GUIViewState.h"
@@ -140,7 +141,7 @@ bool CGUIMediaWindow::Load(TiXmlElement *pRootElement)
   if (element && element->FirstChild())
   { // format is <views>50,29,51,95</views>
     const std::string &allViews = element->FirstChild()->ValueStr();
-    std::vector<std::string> views = StringUtils::Split(allViews, ",");
+    std::vector<std::string> views = UnicodeUtils::Split(allViews, ",");
     for (std::vector<std::string>::const_iterator i = views.begin(); i != views.end(); ++i)
     {
       int controlID = atol(i->c_str());
@@ -520,8 +521,8 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       std::string dir = message.GetStringParam(0);
       const std::string& ret = message.GetStringParam(1);
       const std::string& swap = message.GetStringParam(message.GetNumStringParams() - 1);
-      const bool returning = StringUtils::EqualsNoCase(ret, "return");
-      const bool replacing = StringUtils::EqualsNoCase(swap, "replace");
+      const bool returning = UnicodeUtils::EqualsNoCase(ret, "return");
+      const bool replacing = UnicodeUtils::EqualsNoCase(swap, "replace");
 
       if (!dir.empty())
       {
@@ -1141,7 +1142,7 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
       CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_MUSIC_PLAYLIST_EDITOR,"newplaylist://");
       return true;
     }
-    else if (StringUtils::StartsWithNoCase(pItem->GetPath(), "newsmartplaylist://"))
+    else if (UnicodeUtils::StartsWithNoCase(pItem->GetPath(), "newsmartplaylist://"))
     {
       m_vecItems->RemoveDiscCache(GetID());
       if (CGUIDialogSmartPlaylistEditor::NewPlaylist(pItem->GetPath().substr(19)))
@@ -1260,7 +1261,7 @@ bool CGUIMediaWindow::GoParentFolder()
   // Keep going until there's nothing left or they dont match anymore.
   while (!parentPath.empty() &&
          (URIUtils::PathEquals(parentPath, currentPath, true) ||
-          StringUtils::EndsWith(parentPath, ".xml/") || StringUtils::EndsWith(parentPath, ".xml")))
+          UnicodeUtils::EndsWith(parentPath, ".xml/") || UnicodeUtils::EndsWith(parentPath, ".xml")))
   {
     m_history.RemoveParentPath();
     parentPath = m_history.GetParentPath();
@@ -1394,7 +1395,7 @@ void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, std::str
     strHistoryString = RemoveParameterFromPath(strHistoryString, "filter");
 
   URIUtils::RemoveSlashAtEnd(strHistoryString);
-  StringUtils::ToLower(strHistoryString);
+  UnicodeUtils::FoldCase(strHistoryString);
 }
 
 /*!
@@ -1522,7 +1523,7 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr& item, const std::s
     for (int i = 0; i < m_vecItems->Size(); i++)
     {
       std::string path = URIUtils::GetFileName(m_vecItems->Get(i)->GetDynPath());
-      if (StringUtils::EqualsNoCase(path, "VIDEO_TS.IFO"))
+      if (UnicodeUtils::EqualsNoCase(path, "VIDEO_TS.IFO"))
       {
         mainDVD = path;
         break;
@@ -2021,8 +2022,7 @@ bool CGUIMediaWindow::GetFilteredItems(const std::string &filter, CFileItemList 
     result = GetAdvanceFilteredItems(items);
 
   std::string trimmedFilter(filter);
-  StringUtils::TrimLeft(trimmedFilter);
-  StringUtils::ToLower(trimmedFilter);
+  UnicodeUtils::TrimLeft(trimmedFilter);
 
   if (trimmedFilter.empty())
     return result;
@@ -2053,8 +2053,7 @@ bool CGUIMediaWindow::GetFilteredItems(const std::string &filter, CFileItemList 
     if (numericMatch)
       StringUtils::WordToDigits(match);
 
-    size_t pos = StringUtils::FindWords(match.c_str(), trimmedFilter.c_str());
-    if (pos != std::string::npos)
+    if (UnicodeUtils::FindWord(match, trimmedFilter))
       filteredItems.Add(item);
   }
 
@@ -2081,7 +2080,7 @@ bool CGUIMediaWindow::GetAdvanceFilteredItems(CFileItemList &items)
   for (int j = 0; j < resultItems.Size(); j++)
   {
     std::string itemPath = CURL(resultItems[j]->GetPath()).GetWithoutOptions();
-    StringUtils::ToLower(itemPath);
+    UnicodeUtils::FoldCase(itemPath);
 
     lookup[itemPath] = resultItems[j];
   }
@@ -2102,7 +2101,7 @@ bool CGUIMediaWindow::GetAdvanceFilteredItems(CFileItemList &items)
     // by comparing their paths (but ignoring any special
     // options because they differ from filter to filter)
     std::string path = CURL(item->GetPath()).GetWithoutOptions();
-    StringUtils::ToLower(path);
+    UnicodeUtils::FoldCase(path);
 
     std::map<std::string, CFileItemPtr>::iterator itItem = lookup.find(path);
     if (itItem != lookup.end())
@@ -2175,12 +2174,12 @@ bool CGUIMediaWindow::Filter(bool advanced /* = true */)
 
 std::string CGUIMediaWindow::GetStartFolder(const std::string &dir)
 {
-  if (StringUtils::EqualsNoCase(dir, "$root") ||
-      StringUtils::EqualsNoCase(dir, "root"))
+  if (UnicodeUtils::EqualsNoCase(dir, "$root") ||
+      UnicodeUtils::EqualsNoCase(dir, "root"))
     return "";
 
   // Let plugins handle their own urls themselves
-  if (StringUtils::StartsWith(dir, "plugin://"))
+  if (UnicodeUtils::StartsWith(dir, "plugin://"))
     return dir;
 
 //! @todo This ifdef block probably belongs somewhere else. Move it to a better place!

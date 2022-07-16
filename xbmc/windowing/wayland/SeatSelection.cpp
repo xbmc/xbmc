@@ -12,6 +12,7 @@
 #include "Registry.h"
 #include "WinEventsWayland.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 #include "platform/posix/utils/FileHandle.h"
@@ -92,7 +93,7 @@ CSeatSelection::CSeatSelection(CConnection& connection, wayland::seat_t const& s
       auto mimeIt = std::find_first_of(MIME_TYPES_PREFERENCE.cbegin(), MIME_TYPES_PREFERENCE.cend(),
                                        m_mimeTypeOffers.cbegin(), m_mimeTypeOffers.cend(),
                                        // static_cast needed for overload resolution
-                                       static_cast<bool (*)(std::string const&, std::string const&)> (&StringUtils::EqualsNoCase));
+                                       static_cast<bool (*)(std::string const&, std::string const&)> (&UnicodeUtils::EqualsNoCase));
       if (mimeIt != MIME_TYPES_PREFERENCE.cend())
       {
         m_matchedMimeType = *mimeIt;

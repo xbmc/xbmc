@@ -10,6 +10,7 @@
 
 #include "URL.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 
 using namespace XFILE;
@@ -52,7 +53,7 @@ VIDEODB_CONTENT_TYPE CVideoDatabaseFile::GetType(const CURL& url)
   if (strPath.empty())
     return VIDEODB_CONTENT_UNKNOWN;
 
-  std::vector<std::string> pathElem = StringUtils::Split(strPath, "/");
+  std::vector<std::string> pathElem = UnicodeUtils::Split(strPath, "/");
   if (pathElem.size() == 0)
     return VIDEODB_CONTENT_UNKNOWN;
 

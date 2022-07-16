@@ -13,6 +13,7 @@
 #include "peripherals/Peripherals.h"
 #include "peripherals/devices/Peripheral.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
@@ -334,7 +335,7 @@ PeripheralPtr CPeripheralBus::GetByPath(const std::string& strPath) const
   std::unique_lock<CCriticalSection> lock(m_critSection);
   for (auto& peripheral : m_peripherals)
   {
-    if (StringUtils::EqualsNoCase(strPath, peripheral->FileLocation()))
+    if (UnicodeUtils::EqualsNoCase(strPath, peripheral->FileLocation()))
     {
       result = peripheral;
       break;

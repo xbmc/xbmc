@@ -19,6 +19,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoDatabase.h"
 
@@ -71,7 +72,7 @@ namespace XFILE
 
     std::string option = !filter ? "xsp" : "filter";
     std::string group = playlist.GetGroup();
-    bool isGrouped = !group.empty() && !StringUtils::EqualsNoCase(group, "none") && !playlist.IsGroupMixed();
+    bool isGrouped = !group.empty() && !UnicodeUtils::EqualsNoCase(group, "none") && !playlist.IsGroupMixed();
 
     // get all virtual folders and add them to the item list
     playlist.GetVirtualFolders(virtualFolders);
@@ -324,7 +325,7 @@ namespace XFILE
         CSmartPlaylist playlist;
         if (playlist.OpenAndReadName(item->GetURL()))
         {
-          if (StringUtils::EqualsNoCase(playlist.GetName(), name))
+          if (UnicodeUtils::EqualsNoCase(playlist.GetName(), name))
             return item->GetPath();
         }
       }

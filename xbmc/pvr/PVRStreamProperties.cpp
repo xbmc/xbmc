@@ -10,6 +10,7 @@
 
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_general.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 #include <algorithm>
 
@@ -36,5 +37,5 @@ bool CPVRStreamProperties::EPGPlaybackAsLive() const
   const auto it = std::find_if(cbegin(), cend(), [](const auto& prop) {
     return prop.first == PVR_STREAM_PROPERTY_EPGPLAYBACKASLIVE;
   });
-  return it != cend() ? StringUtils::EqualsNoCase((*it).second, "true") : false;
+  return it != cend() ? UnicodeUtils::EqualsNoCase((*it).second, "true") : false;
 }

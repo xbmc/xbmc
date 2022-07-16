@@ -33,7 +33,7 @@ static int LoadProfile(const std::vector<std::string>& params)
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
   int index = profileManager->GetProfileIndex(params[0]);
-  bool prompt = (params.size() == 2 && StringUtils::EqualsNoCase(params[1], "prompt"));
+  bool prompt = (params.size() == 2 && UnicodeUtils::EqualsNoCase(params[1], "prompt"));
   bool bCanceled;
   if (index >= 0
       && (profileManager->GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE

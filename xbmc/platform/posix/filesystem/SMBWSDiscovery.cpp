@@ -12,6 +12,7 @@
 #include "ServiceBroker.h"
 #include "network/IWSDiscovery.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 #include "platform/posix/filesystem/SMBWSDiscoveryListener.h"
@@ -104,7 +105,7 @@ bool CWSDiscoveryPosix::GetCached(const std::string& strHostName, std::string& s
   std::unique_lock<CCriticalSection> lock(m_critWSD);
   for (const auto& item : m_vecWSDInfo)
   {
-    if (!item.computer.empty() && StringUtils::StartsWithNoCase(item.computer, match))
+    if (!item.computer.empty() && UnicodeUtils::StartsWithNoCase(item.computer, match))
     {
       strIpAddress = item.xaddrs_host;
       CLog::Log(LOGDEBUG, LOGWSDISCOVERY, "CWSDiscoveryPosix::Lookup - {} -> {}", strHostName,

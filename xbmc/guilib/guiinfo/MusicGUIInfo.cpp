@@ -281,7 +281,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       // LISTITEM_*
       /////////////////////////////////////////////////////////////////////////////////////////////
       case LISTITEM_PROPERTY:
-        if (StringUtils::StartsWithNoCase(info.GetData3(), "Role."))
+        if (UnicodeUtils::StartsWithNoCase(info.GetData3(), "Role."))
         {
           // "Role.xxxx" properties are held in music tag
           std::string property = info.GetData3();
@@ -359,7 +359,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         if (info.m_info == LISTITEM_FILE_EXTENSION)
         {
           std::string strExtension = URIUtils::GetExtension(value);
-          value = StringUtils::TrimLeft(strExtension, ".");
+          value = UnicodeUtils::TrimLeft(strExtension, ".");
         }
         return true;
       case LISTITEM_FOLDERNAME:
@@ -405,7 +405,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
     // MUSICPLAYER_*
     ///////////////////////////////////////////////////////////////////////////////////////////////
     case MUSICPLAYER_PROPERTY:
-      if (StringUtils::StartsWithNoCase(info.GetData3(), "Role.") && item->HasMusicInfoTag())
+      if (UnicodeUtils::StartsWithNoCase(info.GetData3(), "Role.") && item->HasMusicInfoTag())
       {
         // "Role.xxxx" properties are held in music tag
         std::string property = info.GetData3();
@@ -623,7 +623,7 @@ bool CMusicGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextW
     // MUSICPLAYER_*
     ///////////////////////////////////////////////////////////////////////////////////////////////
     case MUSICPLAYER_CONTENT:
-      value = StringUtils::EqualsNoCase(info.GetData3(), "files");
+      value = UnicodeUtils::EqualsNoCase(info.GetData3(), "files");
       return value; // if no match for this provider, other providers shall be asked.
     case MUSICPLAYER_HASPREVIOUS:
       // requires current playlist be PLAYLIST_MUSIC

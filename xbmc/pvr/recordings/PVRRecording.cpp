@@ -24,6 +24,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
@@ -433,12 +434,12 @@ void CPVRRecording::Update(const CPVRRecording& tag, const CPVRClient& client)
   else
   {
     /* Determine genre description by type/subtype */
-    m_genre = StringUtils::Split(CPVREpg::ConvertGenreIdToString(tag.m_iGenreType, tag.m_iGenreSubType), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
+    m_genre = UnicodeUtils::Split(CPVREpg::ConvertGenreIdToString(tag.m_iGenreType, tag.m_iGenreSubType), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
   }
 
   //Old Method of identifying TV show title and subtitle using m_strDirectory and strPlotOutline (deprecated)
   std::string strShow = StringUtils::Format("{} - ", g_localizeStrings.Get(20364));
-  if (StringUtils::StartsWithNoCase(m_strPlotOutline, strShow))
+  if (UnicodeUtils::StartsWithNoCase(m_strPlotOutline, strShow))
   {
     CLog::Log(LOGWARNING, "PVR addon provides episode name in strPlotOutline which is deprecated");
     std::string strEpisode = m_strPlotOutline;
@@ -567,12 +568,12 @@ void CPVRRecording::SetGenre(int iGenreType, int iGenreSubType, const std::strin
   if ((iGenreType == EPG_GENRE_USE_STRING || iGenreSubType == EPG_GENRE_USE_STRING) && !strGenre.empty())
   {
     /* Type and sub type are not given. Use the provided genre description if available. */
-    m_genre = StringUtils::Split(strGenre, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
+    m_genre = UnicodeUtils::Split(strGenre, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
   }
   else
   {
     /* Determine the genre description from the type and subtype IDs */
-    m_genre = StringUtils::Split(CPVREpg::ConvertGenreIdToString(iGenreType, iGenreSubType), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
+    m_genre = UnicodeUtils::Split(CPVREpg::ConvertGenreIdToString(iGenreType, iGenreSubType), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
   }
 }
 

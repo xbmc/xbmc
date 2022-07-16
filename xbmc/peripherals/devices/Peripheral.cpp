@@ -21,6 +21,7 @@
 #include "peripherals/bus/virtual/PeripheralBusAddon.h"
 #include "settings/lib/Setting.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
@@ -144,7 +145,7 @@ bool CPeripheral::Initialise(void)
   m_manager.GetSettingsFromMapping(*this);
 
   std::string safeDeviceName = m_strDeviceName;
-  StringUtils::Replace(safeDeviceName, ' ', '_');
+  UnicodeUtils::Replace(safeDeviceName, ' ', '_');
 
   if (m_iVendorId == 0x0000 && m_iProductId == 0x0000)
   {
@@ -456,7 +457,7 @@ bool CPeripheral::SetSetting(const std::string& strKey, const std::string& strVa
           std::static_pointer_cast<CSettingString>((*it).second.m_setting);
       if (stringSetting)
       {
-        bChanged = !StringUtils::EqualsNoCase(stringSetting->GetValue(), strValue);
+        bChanged = !UnicodeUtils::EqualsNoCase(stringSetting->GetValue(), strValue);
         stringSetting->SetValue(strValue);
         if (bChanged && m_bInitialised)
           m_changedSettings.insert(strKey);
@@ -704,7 +705,7 @@ std::string CPeripheral::GetIcon() const
 
 bool CPeripheral::operator==(const PeripheralScanResult& right) const
 {
-  return StringUtils::EqualsNoCase(m_strLocation, right.m_strLocation);
+  return UnicodeUtils::EqualsNoCase(m_strLocation, right.m_strLocation);
 }
 
 bool CPeripheral::operator!=(const PeripheralScanResult& right) const

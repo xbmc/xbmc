@@ -80,7 +80,7 @@ bool CDRMPlane::SupportsFormatAndModifier(uint32_t format, uint64_t modifier)
 void CDRMPlane::FindModifiers()
 {
   auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(), [](auto& prop) {
-    return StringUtils::EqualsNoCase(prop->name, "IN_FORMATS");
+    return UnicodeUtils::EqualsNoCase(prop->name, "IN_FORMATS");
   });
 
   uint64_t blob_id = 0;

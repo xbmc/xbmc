@@ -46,6 +46,7 @@
 #include "utils/FileUtils.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoInfoScanner.h"
@@ -251,7 +252,7 @@ void CGUIDialogVideoInfo::OnInitWindow()
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
   const std::string uniqueId = m_movieItem->GetProperty("xxuniqueid").asString();
-  if (uniqueId.empty() || !StringUtils::StartsWithNoCase(uniqueId.c_str(), "xx"))
+  if (uniqueId.empty() || !UnicodeUtils::StartsWithNoCase(uniqueId.c_str(), "xx"))
     CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_REFRESH,
         (profileManager->GetCurrentProfile().canWriteDatabases() ||
         g_passwordManager.bMasterUser));
@@ -259,7 +260,7 @@ void CGUIDialogVideoInfo::OnInitWindow()
     CONTROL_DISABLE(CONTROL_BTN_REFRESH);
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB,
       (profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) &&
-      !StringUtils::StartsWithNoCase(m_movieItem->GetVideoInfoTag()->
+      !UnicodeUtils::StartsWithNoCase(m_movieItem->GetVideoInfoTag()->
       GetUniqueID().c_str(), "plugin"));
   // Disable video user rating button for plugins and sets as they don't have tables to save this
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_USERRATING, !m_movieItem->IsPlugin() && m_movieItem->GetVideoInfoTag()->m_type != MediaTypeVideoCollection);
@@ -268,7 +269,7 @@ void CGUIDialogVideoInfo::OnInitWindow()
   if (type == VIDEODB_CONTENT_TVSHOWS || type == VIDEODB_CONTENT_MOVIES)
     CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_FANART, (profileManager->
         GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) &&
-        !StringUtils::StartsWithNoCase(m_movieItem->GetVideoInfoTag()->
+        !UnicodeUtils::StartsWithNoCase(m_movieItem->GetVideoInfoTag()->
         GetUniqueID().c_str(), "plugin"));
   else
     CONTROL_DISABLE(CONTROL_BTN_GET_FANART);
@@ -460,7 +461,7 @@ void CGUIDialogVideoInfo::Update()
               setting, CSettings::VIDEOLIBRARY_PLOTS_SHOW_UNWATCHED_TVSHOWEPISODES))))
       strTmp = g_localizeStrings.Get(20370);
 
-  StringUtils::Trim(strTmp);
+  UnicodeUtils::Trim(strTmp);
   SetLabel(CONTROL_TEXTAREA, strTmp);
 
   CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, m_castList);
@@ -962,7 +963,7 @@ void CGUIDialogVideoInfo::OnGetArt()
         result != "thumb://Current") // user didn't choose the one they have
     {
       std::string newThumb;
-      if (StringUtils::StartsWith(result, "thumb://Remote"))
+      if (UnicodeUtils::StartsWith(result, "thumb://Remote"))
       {
         int number = atoi(result.substr(14).c_str());
         newThumb = thumbs[number];
@@ -1084,13 +1085,13 @@ void CGUIDialogVideoInfo::OnGetFanart()
   CServiceBroker::GetMediaManager().GetLocalDrives(sources);
   bool flip=false;
   if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20437), result, &flip, 20445) ||
-    StringUtils::EqualsNoCase(result, "fanart://Current"))
+    UnicodeUtils::EqualsNoCase(result, "fanart://Current"))
     return;   // user cancelled
 
-  if (StringUtils::EqualsNoCase(result, "fanart://Local"))
+  if (UnicodeUtils::EqualsNoCase(result, "fanart://Local"))
     result = strLocal;
 
-  if (StringUtils::EqualsNoCase(result, "fanart://Embedded"))
+  if (UnicodeUtils::EqualsNoCase(result, "fanart://Embedded"))
   {
     unsigned int current = m_movieItem->GetVideoInfoTag()->m_fanart.GetNumFanarts();
     int found = -1;
@@ -1114,7 +1115,7 @@ void CGUIDialogVideoInfo::OnGetFanart()
     result = embeddedArt;
   }
 
-  if (StringUtils::StartsWith(result, "fanart://Remote"))
+  if (UnicodeUtils::StartsWith(result, "fanart://Remote"))
   {
     int iFanart = atoi(result.substr(15).c_str());
     // set new primary fanart, and update our database accordingly
@@ -1127,7 +1128,7 @@ void CGUIDialogVideoInfo::OnGetFanart()
     }
     result = m_movieItem->GetVideoInfoTag()->m_fanart.GetImageURL();
   }
-  else if (StringUtils::EqualsNoCase(result, "fanart://None") || !CFile::Exists(result))
+  else if (UnicodeUtils::EqualsNoCase(result, "fanart://None") || !CFile::Exists(result))
     result.clear();
 
   // set the fanart image
@@ -1613,10 +1614,10 @@ bool CGUIDialogVideoInfo::DeleteVideoItem(const CFileItemPtr &item, bool unavail
   {
     std::string strDeletePath = item->GetVideoInfoTag()->GetPath();
 
-    if (StringUtils::EqualsNoCase(URIUtils::GetFileName(strDeletePath), "VIDEO_TS.IFO"))
+    if (UnicodeUtils::EqualsNoCase(URIUtils::GetFileName(strDeletePath), "VIDEO_TS.IFO"))
     {
       strDeletePath = URIUtils::GetDirectory(strDeletePath);
-      if (StringUtils::EndsWithNoCase(strDeletePath, "video_ts/"))
+      if (UnicodeUtils::EndsWithNoCase(strDeletePath, "video_ts/"))
       {
         URIUtils::RemoveSlashAtEnd(strDeletePath);
         strDeletePath = URIUtils::GetDirectory(strDeletePath);
@@ -2002,7 +2003,7 @@ std::string FindLocalMovieSetArtworkFile(const CFileItemPtr& item, const std::st
   {
     std::string candidate = URIUtils::GetFileName(artFile->GetPath());
     URIUtils::RemoveExtension(candidate);
-    if (StringUtils::EqualsNoCase(candidate, artType))
+    if (UnicodeUtils::EqualsNoCase(candidate, artType))
       return artFile->GetPath();
   }
   return "";
@@ -2206,9 +2207,9 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const CFileItemPtr &item, const
   // new thumbnail
   if (result == "thumb://None")
     result.clear();
-  else if (StringUtils::StartsWith(result, "thumb://Remote"))
+  else if (UnicodeUtils::StartsWith(result, "thumb://Remote"))
   {
-    int number = atoi(StringUtils::Mid(result, 14).c_str());
+    int number = atoi(UnicodeUtils::Mid(result, 14).c_str());
     result = thumbs[number];
   }
 
@@ -2383,10 +2384,10 @@ bool CGUIDialogVideoInfo::OnGetFanart(const CFileItemPtr &videoItem)
   AddItemPathToFileBrowserSources(sources, item);
   bool flip = false;
   if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20437), result, &flip, 20445) ||
-      StringUtils::EqualsNoCase(result, "fanart://Current"))
+      UnicodeUtils::EqualsNoCase(result, "fanart://Current"))
     return false;
 
-  else if (StringUtils::EqualsNoCase(result, "fanart://None") || !CFile::Exists(result))
+  else if (UnicodeUtils::EqualsNoCase(result, "fanart://None") || !CFile::Exists(result))
     result.clear();
   if (!result.empty() && flip)
     result = CTextureUtils::GetWrappedImageURL(result, "", "flipped");

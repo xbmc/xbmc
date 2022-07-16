@@ -33,6 +33,7 @@
 #include "settings/lib/SettingsManager.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
@@ -355,8 +356,8 @@ CAction CStereoscopicsManager::ConvertActionCommandToAction(const std::string &c
 {
   std::string cmd = command;
   std::string para = parameter;
-  StringUtils::ToLower(cmd);
-  StringUtils::ToLower(para);
+  UnicodeUtils::FoldCase(cmd);
+  UnicodeUtils::FoldCase(para);
   if (cmd == "setstereomode")
   {
     int actionId = -1;

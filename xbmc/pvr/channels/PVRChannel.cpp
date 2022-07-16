@@ -20,6 +20,7 @@
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/providers/PVRProviders.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
@@ -327,7 +328,7 @@ bool CPVRChannel::SetArchive(bool bHasArchive)
 
 bool CPVRChannel::SetIconPath(const std::string& strIconPath, bool bIsUserSetIcon /* = false */)
 {
-  if (StringUtils::StartsWith(strIconPath, "image://"))
+  if (UnicodeUtils::StartsWith(strIconPath, "image://"))
   {
     CLog::LogF(LOGERROR, "Not allowed to call this method with an image URL");
     return false;

@@ -12,6 +12,7 @@
 #include "filesystem/File.h"
 #include "media/MediaLockState.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
@@ -86,7 +87,7 @@ bool CPlayListXML::Load( const std::string& strFileName )
   TiXmlElement *pRootElement = xmlDoc.RootElement();
 
   // If the stream does not contain "streams", still ok. Not an error.
-  if (!pRootElement || StringUtils::CompareNoCase(pRootElement->Value(), "streams"))
+  if (!pRootElement || UnicodeUtils::CompareNoCase(pRootElement->Value(), "streams"))
   {
     CLog::Log(LOGERROR, "Playlist {} has no <streams> root", strFileName);
     return false;

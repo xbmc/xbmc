@@ -16,6 +16,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 
 using namespace KODI::MESSAGING;
@@ -89,7 +90,7 @@ CLanguageResource::CLanguageResource(const AddonInfoPtr& addonInfo)
 
 bool CLanguageResource::IsInUse() const
 {
-  return StringUtils::EqualsNoCase(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOCALE_LANGUAGE), ID());
+  return UnicodeUtils::EqualsNoCase(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOCALE_LANGUAGE), ID());
 }
 
 void CLanguageResource::OnPostInstall(bool update, bool modal)
@@ -111,8 +112,8 @@ void CLanguageResource::OnPostInstall(bool update, bool modal)
 bool CLanguageResource::IsAllowed(const std::string &file) const
 {
   return file.empty() ||
-         StringUtils::EqualsNoCase(file.c_str(), "langinfo.xml") ||
-         StringUtils::EqualsNoCase(file.c_str(), "strings.po");
+         UnicodeUtils::EqualsNoCase(file.c_str(), "langinfo.xml") ||
+         UnicodeUtils::EqualsNoCase(file.c_str(), "strings.po");
 }
 
 std::string CLanguageResource::GetAddonId(const std::string& locale)
@@ -121,10 +122,10 @@ std::string CLanguageResource::GetAddonId(const std::string& locale)
     return "";
 
   std::string addonId = locale;
-  if (!StringUtils::StartsWith(addonId, LANGUAGE_ADDON_PREFIX))
+  if (!UnicodeUtils::StartsWith(addonId, LANGUAGE_ADDON_PREFIX))
     addonId = LANGUAGE_ADDON_PREFIX + locale;
 
-  StringUtils::ToLower(addonId);
+  UnicodeUtils::FoldCase(addonId);
   return addonId;
 }
 

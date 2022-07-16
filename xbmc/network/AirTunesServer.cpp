@@ -36,6 +36,7 @@
 #include "utils/EndianSwap.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
@@ -455,14 +456,14 @@ void CAirTunesServer::SetupRemoteControl()
   std::vector<CZeroconfBrowser::ZeroconfService> services = CZeroconfBrowser::GetInstance()->GetFoundServices();
   for (auto service : services )
   {
-    if (StringUtils::EqualsNoCase(service.GetType(), std::string(ZEROCONF_DACP_SERVICE) + "."))
+    if (UnicodeUtils::EqualsNoCase(service.GetType(), std::string(ZEROCONF_DACP_SERVICE) + "."))
     {
 #define DACP_NAME_PREFIX "iTunes_Ctrl_"
       // name has the form "iTunes_Ctrl_56B29BB6CB904862"
       // were we are interested in the 56B29BB6CB904862 identifier
-      if (StringUtils::StartsWithNoCase(service.GetName(), DACP_NAME_PREFIX))
+      if (UnicodeUtils::StartsWithNoCase(service.GetName(), DACP_NAME_PREFIX))
       {
-        std::vector<std::string> tokens = StringUtils::Split(service.GetName(), DACP_NAME_PREFIX);
+        std::vector<std::string> tokens = UnicodeUtils::Split(service.GetName(), DACP_NAME_PREFIX);
         // if we found the service matching the given identifier
         if (tokens.size() > 1 && tokens[1] == m_dacp_id)
         {
@@ -577,7 +578,7 @@ bool CAirTunesServer::StartServer(int port, bool nonlocal, bool usePassword, con
   if (net)
   {
     m_macAddress = net->GetMacAddress();
-    StringUtils::Replace(m_macAddress, ":","");
+    UnicodeUtils::Replace(m_macAddress, ":","");
     while (m_macAddress.size() < 12)
     {
       m_macAddress = '0' + m_macAddress;

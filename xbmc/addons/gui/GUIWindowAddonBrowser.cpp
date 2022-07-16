@@ -35,6 +35,7 @@
 #include "storage/MediaManager.h"
 #include "threads/IRunnable.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 
 #include <utility>
@@ -287,7 +288,7 @@ static bool IsForeign(const std::string& languages)
   if (languages.empty())
     return false;
 
-  for (const auto& lang : StringUtils::Split(languages, " "))
+  for (const auto& lang : UnicodeUtils::Split(languages, " "))
   {
     if (lang == "en" || lang == g_langInfo.GetLocale().GetLanguageCode() ||
         lang == g_langInfo.GetLocale().ToShortString())
@@ -629,13 +630,13 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE>& types,
 
 std::string CGUIWindowAddonBrowser::GetStartFolder(const std::string& dir)
 {
-  if (StringUtils::StartsWith(dir, "addons://"))
+  if (UnicodeUtils::StartsWith(dir, "addons://"))
   {
-    if (StringUtils::StartsWith(dir, "addons://default_binary_addons_source/"))
+    if (UnicodeUtils::StartsWith(dir, "addons://default_binary_addons_source/"))
     {
       const bool all = CServiceBroker::GetPlatform().SupportsUserInstalledBinaryAddons();
       std::string startDir = dir;
-      StringUtils::Replace(startDir, "/default_binary_addons_source/", all ? "/all/" : "/user/");
+      UnicodeUtils::Replace(startDir, "/default_binary_addons_source/", all ? "/all/" : "/user/");
       return startDir;
     }
     else

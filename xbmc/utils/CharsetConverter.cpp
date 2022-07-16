@@ -15,6 +15,7 @@
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDefinitions.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Utf8Utils.h"
 
 #include <algorithm>
@@ -615,7 +616,7 @@ std::string CCharsetConverter::getCharsetLabelByName(const std::string& charsetN
 {
   for(SCharsetMapping* c = g_charsets; c->charset; c++)
   {
-    if (StringUtils::EqualsNoCase(charsetName,c->charset))
+    if (UnicodeUtils::EqualsNoCase(charsetName,c->charset))
       return c->caption;
   }
 
@@ -626,7 +627,7 @@ std::string CCharsetConverter::getCharsetNameByLabel(const std::string& charsetL
 {
   for(SCharsetMapping* c = g_charsets; c->charset; c++)
   {
-    if (StringUtils::EqualsNoCase(charsetLabel, c->caption))
+    if (UnicodeUtils::EqualsNoCase(charsetLabel, c->caption))
       return c->charset;
   }
 

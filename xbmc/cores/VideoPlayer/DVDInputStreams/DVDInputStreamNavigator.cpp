@@ -18,6 +18,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "guilib/LocalizeStrings.h"
 #if defined(TARGET_DARWIN_OSX)
 #include "platform/darwin/osx/CocoaInterface.h"
@@ -1072,7 +1073,7 @@ void CDVDInputStreamNavigator::SetAudioStreamName(AudioStreamInfo &info, const a
     info.name += temp;
   }
 
-  StringUtils::TrimLeft(info.name);
+  UnicodeUtils::TrimLeft(info.name);
 }
 
 AudioStreamInfo CDVDInputStreamNavigator::GetAudioStreamInfo(const int iId)

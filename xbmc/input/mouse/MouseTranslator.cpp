@@ -11,6 +11,7 @@
 #include "MouseStat.h"
 #include "input/Key.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
@@ -53,7 +54,7 @@ uint32_t CMouseTranslator::TranslateCommand(const TiXmlElement* pButton)
     std::string szKey = pButton->ValueStr();
     if (!szKey.empty())
     {
-      StringUtils::ToLower(szKey);
+      UnicodeUtils::FoldCase(szKey);
 
       auto it = MouseKeys.find(szKey);
       if (it != MouseKeys.end())

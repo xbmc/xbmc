@@ -12,6 +12,7 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 #include <utility>
 
@@ -44,7 +45,7 @@ void CPluginSource::SetProvides(const std::string &content)
 {
   if (!content.empty())
   {
-    std::vector<std::string> provides = StringUtils::Split(content, ' ');
+    std::vector<std::string> provides = UnicodeUtils::Split(content, ' ');
     for (std::vector<std::string>::const_iterator i = provides.begin(); i != provides.end(); ++i)
     {
       Content content = Translate(*i);

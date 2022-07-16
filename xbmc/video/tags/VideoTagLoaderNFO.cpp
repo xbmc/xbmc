@@ -14,6 +14,7 @@
 #include "filesystem/File.h"
 #include "filesystem/StackDirectory.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoInfoTag.h"
@@ -151,7 +152,7 @@ std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,
     {
       URIUtils::RemoveSlashAtEnd(strPath); // need no slash for the check that follows
       CFileItem item2;
-      if (StringUtils::EndsWithNoCase(strPath, "cd1"))
+      if (UnicodeUtils::EndsWithNoCase(strPath, "cd1"))
       {
         strPath.erase(strPath.size() - 3);
         item2.SetPath(URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(item.GetPath())));

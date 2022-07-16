@@ -93,8 +93,8 @@ bool CSettingPath::Deserialize(const TiXmlNode *node, bool update /* = false */)
 bool CSettingPath::SetValue(const std::string &value)
 {
   // for backwards compatibility to Frodo
-  if (StringUtils::EqualsNoCase(value, "select folder") ||
-      StringUtils::EqualsNoCase(value, "select writable folder"))
+  if (UnicodeUtils::EqualsNoCase(value, "select folder") ||
+      UnicodeUtils::EqualsNoCase(value, "select writable folder"))
     return CSettingString::SetValue("");
 
   return CSettingString::SetValue(value);
@@ -125,10 +125,10 @@ std::string CSettingPath::GetMasking(const CFileExtensionProvider& fileExtension
     return execMask;
 
   // convert mask qualifiers
-  StringUtils::Replace(masking, "$AUDIO", audioMask);
-  StringUtils::Replace(masking, "$VIDEO", videoMask);
-  StringUtils::Replace(masking, "$IMAGE", imageMask);
-  StringUtils::Replace(masking, "$EXECUTABLE", execMask);
+  UnicodeUtils::Replace(masking, "$AUDIO", audioMask);
+  UnicodeUtils::Replace(masking, "$VIDEO", videoMask);
+  UnicodeUtils::Replace(masking, "$IMAGE", imageMask);
+  UnicodeUtils::Replace(masking, "$EXECUTABLE", execMask);
 
   return masking;
 }

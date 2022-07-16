@@ -8,7 +8,8 @@
 
 #pragma once
 
-#include "StringUtils.h"
+#include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 #include <iostream>
 #include <memory>
@@ -124,7 +125,7 @@ inline bool operator==(TypedDigest const& left, TypedDigest const& right)
   {
     throw std::logic_error("Cannot compare digests of different type");
   }
-  return StringUtils::EqualsNoCase(left.value, right.value);
+  return UnicodeUtils::EqualsNoCase(left.value, right.value);
 }
 
 inline bool operator!=(TypedDigest const& left, TypedDigest const& right)

@@ -24,6 +24,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/BitstreamStats.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
@@ -64,7 +65,7 @@ bool CFile::Copy(const CURL& url2, const CURL& dest, XFILE::IFileCallback* pCall
 
   // special case for zips - ignore caching
   CURL url(url2);
-  if (StringUtils::StartsWith(url.Get(), "zip://") || URIUtils::IsInAPK(url.Get()))
+  if (UnicodeUtils::StartsWith(url.Get(), "zip://") || URIUtils::IsInAPK(url.Get()))
     url.SetOptions("?cache=no");
   if (file.Open(url.Get(), READ_TRUNCATED | READ_CHUNKED))
   {

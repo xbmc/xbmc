@@ -15,6 +15,7 @@
 #include "cores/AudioEngine/Sinks/windows/AESinkFactoryWin.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
@@ -132,7 +133,7 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
   std::string deviceFriendlyName;
   DirectSoundEnumerate(DSEnumCallback, &DSDeviceList);
 
-  if(StringUtils::EndsWithNoCase(device, std::string("default")))
+  if(UnicodeUtils::EndsWithNoCase(device, std::string("default")))
     strDeviceGUID = GetDefaultDevice();
 
   for (std::list<DSDevice>::iterator itt = DSDeviceList.begin(); itt != DSDeviceList.end(); ++itt)
@@ -142,7 +143,7 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, std::string &device)
       hr = (UuidToString((*itt).lpGuid, &wszUuid));
       std::string sztmp = KODI::PLATFORM::WINDOWS::FromW(reinterpret_cast<wchar_t*>(wszUuid));
       std::string szGUID = "{" + std::string(sztmp.begin(), sztmp.end()) + "}";
-      if (StringUtils::CompareNoCase(szGUID, strDeviceGUID) == 0)
+      if (UnicodeUtils::CompareNoCase(szGUID, strDeviceGUID) == 0)
       {
         deviceGUID = (*itt).lpGuid;
         deviceFriendlyName = (*itt).name.c_str();

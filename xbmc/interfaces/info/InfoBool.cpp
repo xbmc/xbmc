@@ -9,6 +9,7 @@
 #include "InfoBool.h"
 
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 namespace INFO
 {
@@ -20,6 +21,6 @@ namespace INFO
       m_refreshCounter(0),
       m_parentRefreshCounter(refreshCounter)
   {
-    StringUtils::ToLower(m_expression);
+    UnicodeUtils::FoldCase(m_expression);
   }
 }

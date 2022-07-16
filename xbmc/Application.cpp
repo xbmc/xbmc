@@ -92,6 +92,7 @@
 #include "utils/FileExtensionProvider.h"
 #include "utils/SystemInfo.h"
 #include "utils/TimeUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 #include "windowing/WinSystem.h"
@@ -2362,7 +2363,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
         {
           CBookmark bookmark;
           std::string path = item.GetPath();
-          if (item.HasVideoInfoTag() && StringUtils::StartsWith(item.GetVideoInfoTag()->m_strFileNameAndPath, "removable://"))
+          if (item.HasVideoInfoTag() && UnicodeUtils::StartsWith(item.GetVideoInfoTag()->m_strFileNameAndPath, "removable://"))
             path = item.GetVideoInfoTag()->m_strFileNameAndPath;
           else if (item.HasProperty("original_listitem_url") && URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
             path = item.GetProperty("original_listitem_url").asString();
@@ -3521,7 +3522,7 @@ void CApplication::PrintStartupLog()
   m_ServiceManager->GetNetwork().GetHostName(hostname);
   CLog::Log(LOGINFO, "Local hostname: {}", hostname);
   std::string lowerAppName = CCompileInfo::GetAppName();
-  StringUtils::ToLower(lowerAppName);
+  UnicodeUtils::FoldCase(lowerAppName);
   CLog::Log(LOGINFO, "Log File is located: {}.log",
             CSpecialProtocol::TranslatePath("special://logpath/" + lowerAppName));
   CRegExp::LogCheckUtf8Support();

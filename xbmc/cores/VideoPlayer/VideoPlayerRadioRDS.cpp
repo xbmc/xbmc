@@ -45,6 +45,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 #include <mutex>

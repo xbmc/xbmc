@@ -40,6 +40,7 @@
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
 #include "utils/TimeUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "windowing/WinSystem.h"
 #include "windows/GUIMediaWindow.h"
 
@@ -319,7 +320,7 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
 #if defined(TARGET_LINUX)
     case SYSTEM_PLATFORM_WINDOWING:
       value = CServiceBroker::GetWinSystem()->GetName();
-      StringUtils::ToCapitalize(value);
+      UnicodeUtils::ToCapitalize(value);
       return true;
 #endif
     case SYSTEM_SUPPORTED_HDR_TYPES:
@@ -675,7 +676,7 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       return true;
     case SYSTEM_SETTING:
     {
-      if (StringUtils::EqualsNoCase(info.GetData3(), "hidewatched"))
+      if (UnicodeUtils::EqualsNoCase(info.GetData3(), "hidewatched"))
       {
         CGUIMediaWindow* window = GUIINFO::GetMediaWindow(contextWindow);
         if (window)

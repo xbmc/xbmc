@@ -9,6 +9,7 @@
 #include "ReplayGain.h"
 
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 #include <stdlib.h>
 
@@ -84,7 +85,7 @@ std::string ReplayGain::Get() const
 
 void ReplayGain::Set(const std::string& strReplayGain)
 {
-  std::vector<std::string> values = StringUtils::Split(strReplayGain, ",");
+  std::vector<std::string> values = UnicodeUtils::Split(strReplayGain, ",");
   if (values.size() == 4)
   {
     ParseGain(ALBUM, values[0]);

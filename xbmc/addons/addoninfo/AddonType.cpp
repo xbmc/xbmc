@@ -9,6 +9,7 @@
 #include "AddonType.h"
 
 #include "addons/addoninfo/AddonInfo.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 
 namespace ADDON
@@ -43,7 +44,7 @@ void CAddonType::SetProvides(const std::string& content)
     if (GetValue("provides").empty())
       Insert("provides", content);
 
-    for (const auto& provide : StringUtils::Split(content, ' '))
+    for (const auto& provide : UnicodeUtils::Split(content, ' '))
     {
       TYPE content = CAddonInfo::TranslateSubContent(provide);
       if (content != ADDON_UNKNOWN)

@@ -55,6 +55,7 @@
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
@@ -509,7 +510,7 @@ bool CPeripherals::LoadMappings()
   }
 
   TiXmlElement* pRootElement = xmlDoc.RootElement();
-  if (!pRootElement || StringUtils::CompareNoCase(pRootElement->Value(), "peripherals") != 0)
+  if (!pRootElement || UnicodeUtils::CompareNoCase(pRootElement->Value(), "peripherals") != 0)
   {
     CLog::Log(LOGERROR, "{} - peripherals.xml does not contain <peripherals>", __FUNCTION__);
     return false;
@@ -528,10 +529,10 @@ bool CPeripherals::LoadMappings()
     {
       // The vendor_product attribute is a list of comma separated vendor:product pairs
       std::vector<std::string> vpArray =
-          StringUtils::Split(currentNode->Attribute("vendor_product"), ",");
+          UnicodeUtils::Split(currentNode->Attribute("vendor_product"), ",");
       for (const auto& i : vpArray)
       {
-        std::vector<std::string> idArray = StringUtils::Split(i, ":");
+        std::vector<std::string> idArray = UnicodeUtils::Split(i, ":");
         if (idArray.size() != 2)
         {
           CLog::Log(LOGERROR, "{} - ignoring node \"{}\" with invalid vendor_product attribute",
@@ -601,7 +602,7 @@ void CPeripherals::GetSettingsFromMappingsFile(
       float fMax = currentNode->Attribute("max") ? (float)atof(currentNode->Attribute("max")) : 0;
       setting = std::make_shared<CSettingNumber>(strKey, iLabelId, fValue, fMin, fStep, fMax);
     }
-    else if (StringUtils::EqualsNoCase(strSettingsType, "enum"))
+    else if (UnicodeUtils::EqualsNoCase(strSettingsType, "enum"))
     {
       std::string strEnums = XMLUtils::GetAttribute(currentNode, "lvalues");
       if (!strEnums.empty())
@@ -655,7 +656,7 @@ void CPeripherals::GetSettingsFromMappingsFile(
 
 void CPeripherals::GetDirectory(const std::string& strPath, CFileItemList& items) const
 {
-  if (!StringUtils::StartsWithNoCase(strPath, "peripherals://"))
+  if (!UnicodeUtils::StartsWithNoCase(strPath, "peripherals://"))
     return;
 
   std::string strPathCut = strPath.substr(14);
@@ -664,8 +665,8 @@ void CPeripherals::GetDirectory(const std::string& strPath, CFileItemList& items
   std::unique_lock<CCriticalSection> lock(m_critSectionBusses);
   for (const auto& bus : m_busses)
   {
-    if (StringUtils::EqualsNoCase(strBus, "all") ||
-        StringUtils::EqualsNoCase(strBus, PeripheralTypeTranslator::BusTypeToString(bus->Type())))
+    if (UnicodeUtils::EqualsNoCase(strBus, "all") ||
+        UnicodeUtils::EqualsNoCase(strBus, PeripheralTypeTranslator::BusTypeToString(bus->Type())))
       bus->GetDirectory(strPath, items);
   }
 }
@@ -674,7 +675,7 @@ PeripheralPtr CPeripherals::GetByPath(const std::string& strPath) const
 {
   PeripheralPtr result;
 
-  if (!StringUtils::StartsWithNoCase(strPath, "peripherals://"))
+  if (!UnicodeUtils::StartsWithNoCase(strPath, "peripherals://"))
     return result;
 
   std::string strPathCut = strPath.substr(14);
@@ -683,7 +684,7 @@ PeripheralPtr CPeripherals::GetByPath(const std::string& strPath) const
   std::unique_lock<CCriticalSection> lock(m_critSectionBusses);
   for (const auto& bus : m_busses)
   {
-    if (StringUtils::EqualsNoCase(strBus, PeripheralTypeTranslator::BusTypeToString(bus->Type())))
+    if (UnicodeUtils::EqualsNoCase(strBus, PeripheralTypeTranslator::BusTypeToString(bus->Type())))
     {
       result = bus->GetByPath(strPath);
       break;

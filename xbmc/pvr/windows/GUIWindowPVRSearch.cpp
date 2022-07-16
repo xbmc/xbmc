@@ -30,6 +30,7 @@
 #include "pvr/guilib/PVRGUIActions.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "threads/IRunnable.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 
@@ -370,7 +371,7 @@ void CGUIWindowPVRSearchBase::UpdateButtons()
     if (header.empty())
     {
       header = m_searchfilter->GetSearchTerm();
-      StringUtils::Trim(header, "\"");
+      UnicodeUtils::Trim(header, "\"");
     }
   }
   SET_CONTROL_LABEL(CONTROL_LABEL_HEADER1, header);
@@ -495,7 +496,7 @@ void CGUIWindowPVRSearchBase::SetSearchFilter(
         if (title.empty())
           title = g_localizeStrings.Get(137); // "Search"
         else
-          StringUtils::Trim(title, "\"");
+          UnicodeUtils::Trim(title, "\"");
 
         m_searchfilter->SetTitle(title);
       }

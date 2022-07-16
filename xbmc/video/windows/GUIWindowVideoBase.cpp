@@ -48,6 +48,7 @@
 #include "utils/FileUtils.h"
 #include "utils/GroupUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -515,7 +516,7 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
       {
         std::string strPath = items[i]->GetPath();
         URIUtils::RemoveSlashAtEnd(strPath);
-        if (StringUtils::EndsWithNoCase(strPath, "sample")) // skip sample folders
+        if (UnicodeUtils::EndsWithNoCase(strPath, "sample")) // skip sample folders
         {
           continue;
         }
@@ -632,10 +633,10 @@ bool CGUIWindowVideoBase::OnSelect(int iItem)
 
   std::string path = item->GetPath();
   if (!item->m_bIsFolder && path != "add" &&
-      !StringUtils::StartsWith(path, "newsmartplaylist://") &&
-      !StringUtils::StartsWith(path, "newplaylist://") &&
-      !StringUtils::StartsWith(path, "newtag://") &&
-      !StringUtils::StartsWith(path, "script://"))
+      !UnicodeUtils::StartsWith(path, "newsmartplaylist://") &&
+      !UnicodeUtils::StartsWith(path, "newplaylist://") &&
+      !UnicodeUtils::StartsWith(path, "newtag://") &&
+      !UnicodeUtils::StartsWith(path, "script://"))
     return OnFileAction(iItem, CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_MYVIDEOS_SELECTACTION), "");
 
   return CGUIMediaWindow::OnSelect(iItem);
@@ -727,7 +728,7 @@ bool CGUIWindowVideoBase::OnItemInfo(int iItem)
 
   if (item->m_bIsFolder &&
       item->IsVideoDb() &&
-      StringUtils::StartsWith(item->GetPath(), "videodb://movies/sets/"))
+      UnicodeUtils::StartsWith(item->GetPath(), "videodb://movies/sets/"))
     return ShowIMDB(item, nullptr, true);
 
   ADDON::ScraperPtr scraper;
@@ -882,7 +883,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
           buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 208);
         }
 
-        if (!m_vecItems->GetPath().empty() && !StringUtils::StartsWithNoCase(item->GetPath(), "newsmartplaylist://") && !StringUtils::StartsWithNoCase(item->GetPath(), "newtag://")
+        if (!m_vecItems->GetPath().empty() && !UnicodeUtils::StartsWithNoCase(item->GetPath(), "newsmartplaylist://") && !UnicodeUtils::StartsWithNoCase(item->GetPath(), "newtag://")
             && !m_vecItems->IsSourcesPath())
         {
           buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347);      // Add to Playlist
@@ -1378,7 +1379,7 @@ void CGUIWindowVideoBase::GetGroupedItems(CFileItemList &items)
     mixed = items.GetProperty(PROPERTY_GROUP_MIXED).asBoolean();
 
   // group == "none" completely suppresses any grouping
-  if (!StringUtils::EqualsNoCase(group, "none"))
+  if (!UnicodeUtils::EqualsNoCase(group, "none"))
   {
     CQueryParams params;
     CVideoDatabaseDirectory dir;
@@ -1387,7 +1388,7 @@ void CGUIWindowVideoBase::GetGroupedItems(CFileItemList &items)
     const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
     if (items.GetContent() == "movies" && params.GetSetId() <= 0 &&
         nodeType == NODE_TYPE_TITLE_MOVIES &&
-       (settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_GROUPMOVIESETS) || (StringUtils::EqualsNoCase(group, "sets") && mixed)))
+       (settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_GROUPMOVIESETS) || (UnicodeUtils::EqualsNoCase(group, "sets") && mixed)))
     {
       CFileItemList groupedItems;
       GroupAttribute groupAttributes = settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_GROUPSINGLEITEMSETS) ? GroupAttributeNone : GroupAttributeIgnoreSingleItems;
@@ -1410,10 +1411,10 @@ bool CGUIWindowVideoBase::CheckFilterAdvanced(CFileItemList &items) const
 {
   const std::string& content = items.GetContent();
   if ((items.IsVideoDb() || CanContainFilter(m_strFilterPath)) &&
-      (StringUtils::EqualsNoCase(content, "movies")   ||
-       StringUtils::EqualsNoCase(content, "tvshows")  ||
-       StringUtils::EqualsNoCase(content, "episodes") ||
-       StringUtils::EqualsNoCase(content, "musicvideos")))
+      (UnicodeUtils::EqualsNoCase(content, "movies")   ||
+       UnicodeUtils::EqualsNoCase(content, "tvshows")  ||
+       UnicodeUtils::EqualsNoCase(content, "episodes") ||
+       UnicodeUtils::EqualsNoCase(content, "musicvideos")))
     return true;
 
   return false;
@@ -1431,7 +1432,7 @@ void CGUIWindowVideoBase::OnSearch()
   if (!CGUIKeyboardFactory::ShowAndGetInput(strSearch, CVariant{g_localizeStrings.Get(16017)}, false))
     return ;
 
-  StringUtils::ToLower(strSearch);
+  UnicodeUtils::FoldCase(strSearch);
   if (m_dlgProgress)
   {
     m_dlgProgress->SetHeading(CVariant{194});
@@ -1560,7 +1561,7 @@ void CGUIWindowVideoBase::OnScan(const std::string& strPath, bool scanAll)
 
 std::string CGUIWindowVideoBase::GetStartFolder(const std::string &dir)
 {
-  std::string lower(dir); StringUtils::ToLower(lower);
+  std::string lower(dir); UnicodeUtils::FoldCase(lower);
   if (lower == "$playlists" || lower == "playlists")
     return "special://videoplaylists/";
   else if (lower == "plugins" || lower == "addons")

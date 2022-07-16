@@ -13,6 +13,7 @@
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 
 CDVDSubtitleParserSami::CDVDSubtitleParserSami(std::unique_ptr<CDVDSubtitleStream>&& pStream,
@@ -43,7 +44,12 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo& hints)
 
   std::string strFileName;
   std::string strClassID;
-  strFileName = StringUtils::ToLower(URIUtils::GetFileName(m_filename));
+  strFileName = URIUtils::GetFileName(m_filename);
+
+  // TODO: Unicode fpf Using ToLower is frequently a mistake, especially for file names
+  // Changed all ToLower to FoldCase
+
+  UnicodeUtils::FoldCase(strFileName);
 
   CDVDSubtitleTagSami TagConv;
   if (!TagConv.Init())
@@ -57,10 +63,11 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo& hints)
     for (unsigned int i = 0; i < TagConv.m_Langclass.size(); i++)
     {
       std::string langName = TagConv.m_Langclass[i].Name;
-      StringUtils::ToLower(langName);
+      UnicodeUtils::FoldCase(langName);
       if (strFileName.find(langName) != std::string::npos)
       {
         strClassID = TagConv.m_Langclass[i].ID;
+        UnicodeUtils::FoldCase(strClassID);
         break;
       }
     }
@@ -74,7 +81,7 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo& hints)
   const char* langClassID = NULL;
   if (!strClassID.empty())
   {
-    StringUtils::ToLower(strClassID);
+    UnicodeUtils::FoldCase(strClassID);
     langClassID = strClassID.c_str();
   }
 
@@ -94,7 +101,7 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo& hints)
     if (regClassID.RegFind(line) > -1)
     {
       lastLangClassID = regClassID.GetMatch(1);
-      StringUtils::ToLower(lastLangClassID);
+      UnicodeUtils::FoldCase(lastLangClassID);
     }
 
     int pos = regLine.RegFind(line);

@@ -10,6 +10,7 @@
 
 #include "filesystem/File.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 
 using namespace PLAYLIST;
@@ -45,15 +46,15 @@ bool CPlayListURL::Load(const std::string& strFileName)
   while (file.ReadString(szLine, 1024))
   {
     strLine = szLine;
-    StringUtils::RemoveCRLF(strLine);
+    UnicodeUtils::RemoveCRLF(strLine);
 
-    if (StringUtils::StartsWith(strLine, "[InternetShortcut]"))
+    if (UnicodeUtils::StartsWith(strLine, "[InternetShortcut]"))
     {
       if (file.ReadString(szLine,1024))
       {
         strLine  = szLine;
-        StringUtils::RemoveCRLF(strLine);
-        if (StringUtils::StartsWith(strLine, "URL="))
+        UnicodeUtils::RemoveCRLF(strLine);
+        if (UnicodeUtils::StartsWith(strLine, "URL="))
         {
           CFileItemPtr newItem(new CFileItem(strLine.substr(4), false));
           Add(newItem);

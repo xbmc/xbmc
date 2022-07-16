@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "SettingDefinitions.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
@@ -54,9 +55,9 @@ bool CSettingUpdate::Deserialize(const TiXmlNode *node)
 
 bool CSettingUpdate::setType(const std::string &type)
 {
-  if (StringUtils::EqualsNoCase(type, "change"))
+  if (UnicodeUtils::EqualsNoCase(type, "change"))
     m_type = SettingUpdateType::Change;
-  else if (StringUtils::EqualsNoCase(type, "rename"))
+  else if (UnicodeUtils::EqualsNoCase(type, "rename"))
     m_type = SettingUpdateType::Rename;
   else
     return false;

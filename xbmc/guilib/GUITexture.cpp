@@ -12,6 +12,7 @@
 #include "TextureManager.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "windowing/GraphicContext.h"
 
 #include <stdexcept>
@@ -684,7 +685,7 @@ bool CGUITexture::SetFileName(const std::string& filename)
   m_info.filename = filename;
 
   // disable large loader and cache for gifs
-  if (StringUtils::EndsWithNoCase(m_info.filename, ".gif"))
+  if (UnicodeUtils::EndsWithNoCase(m_info.filename, ".gif"))
   {
     m_info.useLarge = false;
     SetUseCache(false);

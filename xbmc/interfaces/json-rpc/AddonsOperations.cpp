@@ -17,6 +17,7 @@
 #include "filesystem/File.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 
 using namespace JSONRPC;
@@ -197,13 +198,13 @@ JSONRPC_STATUS CAddonsOperations::ExecuteAddon(const std::string &method, ITrans
     {
       if (it != params.begin_array())
         argv += ",";
-      argv += StringUtils::Paramify(it->asString());
+      argv += UnicodeUtils::Paramify(it->asString());
     }
   }
   else if (params.isString())
   {
     if (!params.empty())
-      argv = StringUtils::Paramify(params.asString());
+      argv = UnicodeUtils::Paramify(params.asString());
   }
 
   std::string cmd;

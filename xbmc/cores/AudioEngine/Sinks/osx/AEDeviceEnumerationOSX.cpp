@@ -12,6 +12,7 @@
 #include "cores/AudioEngine/Sinks/osx/CoreAudioChannelLayout.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 #include <sstream>
@@ -98,7 +99,7 @@ bool AEDeviceEnumerationOSX::isDigitalDevice() const
   if (!isDigital)
   {
     std::string devNameLower = m_caDevice.GetName();
-    StringUtils::ToLower(devNameLower);
+    UnicodeUtils::FoldCase(devNameLower);
     isDigital = devNameLower.find("digital") != std::string::npos;
   }
   return isDigital;

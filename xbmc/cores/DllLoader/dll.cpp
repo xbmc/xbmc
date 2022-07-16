@@ -14,6 +14,7 @@
 #include "dll_util.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/log.h"
+#include "utils/UnicodeUtils.h"
 
 #include <climits>
 
@@ -198,7 +199,7 @@ extern "C" intptr_t (*__stdcall dllGetProcAddress(HMODULE hModule, const char* f
       /* some dll's require us to always return a function or it will fail, other's  */
       /* decide functionality depending on if the functions exist and may fail      */
       if (dll->IsSystemDll() && track &&
-          StringUtils::CompareNoCase(track->pDll->GetName(), "CoreAVCDecoder.ax") == 0)
+          UnicodeUtils::CompareNoCase(track->pDll->GetName(), "CoreAVCDecoder.ax") == 0)
       {
         address = (void*)create_dummy_function(dll->GetName(), function);
         tracker_dll_data_track(track->pDll, (uintptr_t)address);

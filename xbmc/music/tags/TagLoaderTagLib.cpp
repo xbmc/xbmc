@@ -55,6 +55,7 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "ServiceBroker.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
@@ -1007,7 +1008,7 @@ void CTagLoaderTagLib::SetArtistSort(CMusicInfoTag &tag, const std::vector<std::
 void CTagLoaderTagLib::SetArtistHints(CMusicInfoTag &tag, const std::vector<std::string> &values)
 {
   if (values.size() == 1)
-    tag.SetMusicBrainzArtistHints(StringUtils::Split(values[0], CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator));
+    tag.SetMusicBrainzArtistHints(UnicodeUtils::Split(values[0], CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator));
   else
     tag.SetMusicBrainzArtistHints(values);
 }
@@ -1021,7 +1022,7 @@ std::vector<std::string> CTagLoaderTagLib::SplitMBID(const std::vector<std::stri
   // MBIDs to make sure we hit them all...
   std::vector<std::string> ret;
   std::string value = values[0];
-  StringUtils::ToLower(value);
+  UnicodeUtils::FoldCase(value);
   CRegExp reg;
   if (reg.RegComp("([[:xdigit:]]{8}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{12})"))
   {
@@ -1054,7 +1055,7 @@ void CTagLoaderTagLib::SetAlbumArtistSort(CMusicInfoTag &tag, const std::vector<
 void CTagLoaderTagLib::SetAlbumArtistHints(CMusicInfoTag &tag, const std::vector<std::string> &values)
 {
   if (values.size() == 1)
-    tag.SetMusicBrainzAlbumArtistHints(StringUtils::Split(values[0], CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator));
+    tag.SetMusicBrainzAlbumArtistHints(UnicodeUtils::Split(values[0], CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator));
   else
     tag.SetMusicBrainzAlbumArtistHints(values);
 }
@@ -1132,12 +1133,12 @@ void CTagLoaderTagLib::AddArtistRole(CMusicInfoTag &tag, const std::vector<std::
   {
     std::vector<std::string> roles;
     //Split into individual roles
-    roles = StringUtils::Split(values[i], separators);
+    roles = UnicodeUtils::Split(values[i], separators);
     for (auto role : roles)
     {
-      StringUtils::Trim(role);
-      StringUtils::ToCapitalize(role);
-      tag.AddArtistRole(role, StringUtils::Split(values[i + 1], ","));
+      UnicodeUtils::Trim(role);
+      UnicodeUtils::ToCapitalize(role);
+      tag.AddArtistRole(role, UnicodeUtils::Split(values[i + 1], ","));
     }
   }
 }
@@ -1167,16 +1168,16 @@ void CTagLoaderTagLib::AddArtistInstrument(CMusicInfoTag &tag, const std::vector
       strArtist.erase(firstLim, lastLim - firstLim + 1);
       std::string strRole = values[i].substr(firstLim + 1, lastLim - firstLim - 1);
       //Split into individual roles
-      roles = StringUtils::Split(strRole, separators);
+      roles = UnicodeUtils::Split(strRole, separators);
     }
-    StringUtils::Trim(strArtist);
+    UnicodeUtils::Trim(strArtist);
     if (roles.empty())
       tag.AddArtistRole("Performer", strArtist);
     else
       for (auto role : roles)
       {
-        StringUtils::Trim(role);
-        StringUtils::ToCapitalize(role);
+        UnicodeUtils::Trim(role);
+        UnicodeUtils::ToCapitalize(role);
         tag.AddArtistRole(role, strArtist);
       }
   }
@@ -1185,7 +1186,7 @@ void CTagLoaderTagLib::AddArtistInstrument(CMusicInfoTag &tag, const std::vector
 bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, const std::string& fallbackFileExtension, EmbeddedArt *art /* = NULL */)
 {
   std::string strExtension = URIUtils::GetExtension(strFileName);
-  StringUtils::TrimLeft(strExtension, ".");
+  UnicodeUtils::TrimLeft(strExtension, ".");
 
   if (strExtension.empty())
   {
@@ -1194,7 +1195,7 @@ bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, 
       return false;
   }
 
-  StringUtils::ToLower(strExtension);
+  UnicodeUtils::FoldCase(strExtension);
   TagLibVFSStream*           stream = new TagLibVFSStream(strFileName, true);
   if (!stream)
   {

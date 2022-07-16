@@ -16,6 +16,7 @@
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
@@ -55,7 +56,7 @@ CInputStreamAddon::CInputStreamAddon(const AddonInfoPtr& addonInfo,
   m_fileItemProps = StringUtils::Tokenize(listitemprops, "|");
   for (auto &key : m_fileItemProps)
   {
-    StringUtils::Trim(key);
+    UnicodeUtils::Trim(key);
     key = name + "." + key;
   }
   m_caps = {};
@@ -93,7 +94,7 @@ bool CInputStreamAddon::Supports(const AddonInfoPtr& addonInfo, const CFileItem&
       std::vector<std::string> protocolsList = StringUtils::Tokenize(protocols, "|");
       for (auto& value : protocolsList)
       {
-        StringUtils::Trim(value);
+        UnicodeUtils::Trim(value);
         if (value == protocol)
           return true;
       }
@@ -109,7 +110,7 @@ bool CInputStreamAddon::Supports(const AddonInfoPtr& addonInfo, const CFileItem&
       std::vector<std::string> extensionsList = StringUtils::Tokenize(extensions, "|");
       for (auto& value : extensionsList)
       {
-        StringUtils::Trim(value);
+        UnicodeUtils::Trim(value);
         if (value == filetype)
           return true;
       }
@@ -390,7 +391,7 @@ KODI_HANDLE CInputStreamAddon::cb_get_stream_transfer(KODI_HANDLE handle,
   if (stream->m_streamType != INPUTSTREAM_TYPE_TELETEXT &&
       stream->m_streamType != INPUTSTREAM_TYPE_RDS)
   {
-    StringUtils::ToLower(codecName);
+    UnicodeUtils::FoldCase(codecName);
     codec = avcodec_find_decoder_by_name(codecName.c_str());
     if (!codec)
       return nullptr;

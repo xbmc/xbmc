@@ -125,7 +125,7 @@ CFileItemPtr CBlurayDirectory::GetTitle(const BLURAY_TITLE_INFO* title, const st
   item->m_strTitle = buf;
   item->SetLabel(buf);
   chap = StringUtils::Format(g_localizeStrings.Get(25007), title->chapter_count,
-                             StringUtils::SecondsToTimeString(duration));
+      StringUtils::SecondsToTimeString(duration));
   item->SetLabel2(chap);
   item->m_dwSize = 0;
   item->SetArt("icon", "DefaultVideo.png");
@@ -310,7 +310,7 @@ std::vector<BLURAY_TITLE_INFO*> CBlurayDirectory::GetUserPlaylists()
     while ((maxLines > 0) && file.ReadString(buffer, 1024))
     {
       maxLines--;
-      if (StringUtils::StartsWithNoCase(buffer, "playlists"))
+      if (UnicodeUtils::StartsWithNoCase(buffer, "playlists"))
       {
         int pos = 0;
         while ((pos = pl.RegFind(buffer, static_cast<unsigned int>(pos))) >= 0)

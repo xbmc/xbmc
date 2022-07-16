@@ -17,6 +17,7 @@
 #include "messaging/helpers/DialogOKHelper.h"
 #include "utils/Digest.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 
 #include <utility>
@@ -109,7 +110,7 @@ bool CGUIDialogGamepad::OnAction(const CAction &action)
 
     std::string md5pword2 = CDigest::Calculate(CDigest::Type::MD5, m_strUserInput);
 
-    if (!StringUtils::EqualsNoCase(m_strPassword, md5pword2))
+    if (!UnicodeUtils::EqualsNoCase(m_strPassword, md5pword2))
     {
       // incorrect password entered
       m_iRetries--;

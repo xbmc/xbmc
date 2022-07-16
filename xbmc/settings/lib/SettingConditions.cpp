@@ -11,6 +11,7 @@
 #include "SettingDefinitions.h"
 #include "SettingsManager.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/XBMCTinyXML.h"
 
 bool CSettingConditionItem::Deserialize(const TiXmlNode *node)
@@ -99,7 +100,7 @@ void CSettingConditionsManager::AddCondition(std::string condition)
   if (condition.empty())
     return;
 
-  StringUtils::ToLower(condition);
+  UnicodeUtils::FoldCase(condition);
 
   m_defines.insert(condition);
 }
@@ -109,7 +110,7 @@ void CSettingConditionsManager::AddDynamicCondition(std::string identifier, Sett
   if (identifier.empty() || condition == nullptr)
     return;
 
-  StringUtils::ToLower(identifier);
+  UnicodeUtils::FoldCase(identifier);
 
   m_conditions.emplace(identifier, std::make_pair(condition, data));
 }
@@ -119,7 +120,7 @@ void CSettingConditionsManager::RemoveDynamicCondition(std::string identifier)
   if (identifier.empty())
     return;
 
-  StringUtils::ToLower(identifier);
+  UnicodeUtils::FoldCase(identifier);
 
   auto it = m_conditions.find(identifier);
   if (it != m_conditions.end())
@@ -134,13 +135,13 @@ bool CSettingConditionsManager::Check(
   if (condition.empty())
     return false;
 
-  StringUtils::ToLower(condition);
+  UnicodeUtils::FoldCase(condition);
 
   // special handling of "isdefined" conditions
   if (condition == "isdefined")
   {
     std::string tmpValue = value;
-    StringUtils::ToLower(tmpValue);
+    UnicodeUtils::FoldCase(tmpValue);
 
     return m_defines.find(tmpValue) != m_defines.end();
   }

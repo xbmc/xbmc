@@ -28,6 +28,7 @@
 #if defined(HAS_UDFREAD)
 #include "UDFDirectory.h"
 #endif
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 #include "network/WakeOnAccess.h"
 
@@ -105,7 +106,7 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
   {
     for (const auto& vfsAddon : CServiceBroker::GetVFSAddonCache().GetAddonInstances())
     {
-      auto prots = StringUtils::Split(vfsAddon->GetProtocols(), "|");
+      auto prots = UnicodeUtils::Split(vfsAddon->GetProtocols(), "|");
 
       if (vfsAddon->HasDirectories() && std::find(prots.begin(), prots.end(), url.GetProtocol()) != prots.end())
         return new CVFSEntryIDirectoryWrapper(vfsAddon);

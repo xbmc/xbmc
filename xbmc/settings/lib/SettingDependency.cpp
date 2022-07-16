@@ -13,6 +13,7 @@
 #include "SettingDefinitions.h"
 #include "SettingsManager.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
@@ -206,9 +207,9 @@ bool CSettingDependencyCondition::Check() const
 
 bool CSettingDependencyCondition::setTarget(const std::string &target)
 {
-  if (StringUtils::EqualsNoCase(target, "setting"))
+  if (UnicodeUtils::EqualsNoCase(target, "setting"))
     m_target = SettingDependencyTarget::Setting;
-  else if (StringUtils::EqualsNoCase(target, "property"))
+  else if (UnicodeUtils::EqualsNoCase(target, "property"))
     m_target = SettingDependencyTarget::Property;
   else
     return false;
@@ -219,32 +220,32 @@ bool CSettingDependencyCondition::setTarget(const std::string &target)
 bool CSettingDependencyCondition::setOperator(const std::string &op)
 {
   size_t length = 0;
-  if (StringUtils::EndsWithNoCase(op, "is"))
+  if (UnicodeUtils::EndsWithNoCase(op, "is"))
   {
     m_operator = SettingDependencyOperator::Equals;
     length = 2;
   }
-  else if (StringUtils::EndsWithNoCase(op, "lessthan"))
+  else if (UnicodeUtils::EndsWithNoCase(op, "lessthan"))
   {
     m_operator = SettingDependencyOperator::LessThan;
     length = 8;
   }
-  else if (StringUtils::EndsWithNoCase(op, "lt"))
+  else if (UnicodeUtils::EndsWithNoCase(op, "lt"))
   {
     m_operator = SettingDependencyOperator::LessThan;
     length = 2;
   }
-  else if (StringUtils::EndsWithNoCase(op, "greaterthan"))
+  else if (UnicodeUtils::EndsWithNoCase(op, "greaterthan"))
   {
     m_operator = SettingDependencyOperator::GreaterThan;
     length = 11;
   }
-  else if (StringUtils::EndsWithNoCase(op, "gt"))
+  else if (UnicodeUtils::EndsWithNoCase(op, "gt"))
   {
     m_operator = SettingDependencyOperator::GreaterThan;
     length = 2;
   }
-  else if (StringUtils::EndsWithNoCase(op, "contains"))
+  else if (UnicodeUtils::EndsWithNoCase(op, "contains"))
   {
     m_operator = SettingDependencyOperator::Contains;
     length = 8;
@@ -254,7 +255,7 @@ bool CSettingDependencyCondition::setOperator(const std::string &op)
     return false;
   if (op.size() == length + 1)
   {
-    if (!StringUtils::StartsWith(op, "!"))
+    if (!UnicodeUtils::StartsWith(op, "!"))
       return false;
     m_negated = true;
   }
@@ -408,11 +409,11 @@ CSettingDependencyConditionCombinationPtr CSettingDependency::Or()
 
 bool CSettingDependency::setType(const std::string &type)
 {
-  if (StringUtils::EqualsNoCase(type, "enable"))
+  if (UnicodeUtils::EqualsNoCase(type, "enable"))
     m_type = SettingDependencyType::Enable;
-  else if (StringUtils::EqualsNoCase(type, "update"))
+  else if (UnicodeUtils::EqualsNoCase(type, "update"))
     m_type = SettingDependencyType::Update;
-  else if (StringUtils::EqualsNoCase(type, "visible"))
+  else if (UnicodeUtils::EqualsNoCase(type, "visible"))
     m_type = SettingDependencyType::Visible;
   else
     return false;

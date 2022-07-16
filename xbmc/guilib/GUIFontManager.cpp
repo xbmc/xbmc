@@ -32,6 +32,7 @@
 #include "settings/lib/SettingDefinitions.h"
 #include "utils/FontUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
@@ -317,7 +318,7 @@ void GUIFontManager::Unload(const std::string& strFontName)
 {
   for (auto iFont = m_vecFonts.begin(); iFont != m_vecFonts.end(); ++iFont)
   {
-    if (StringUtils::EqualsNoCase((*iFont)->GetFontName(), strFontName))
+    if (UnicodeUtils::EqualsNoCase((*iFont)->GetFontName(), strFontName))
     {
       m_vecFonts.erase(iFont);
       return;
@@ -341,7 +342,7 @@ CGUIFontTTF* GUIFontManager::GetFontFile(const std::string& fontIdent)
 {
   for (const auto& it : m_vecFontFiles)
   {
-    if (StringUtils::EqualsNoCase(it->GetFontIdent(), fontIdent))
+    if (UnicodeUtils::EqualsNoCase(it->GetFontIdent(), fontIdent))
       return it.get();
   }
 
@@ -353,12 +354,12 @@ CGUIFont* GUIFontManager::GetFont(const std::string& strFontName, bool fallback 
   for (const auto& it : m_vecFonts)
   {
     CGUIFont* pFont = it.get();
-    if (StringUtils::EqualsNoCase(pFont->GetFontName(), strFontName))
+    if (UnicodeUtils::EqualsNoCase(pFont->GetFontName(), strFontName))
       return pFont;
   }
 
   // fall back to "font13" if we have none
-  if (fallback && !strFontName.empty() && !StringUtils::EqualsNoCase(strFontName, "font13"))
+  if (fallback && !strFontName.empty() && !UnicodeUtils::EqualsNoCase(strFontName, "font13"))
     return GetFont("font13");
 
   return nullptr;
@@ -437,7 +438,7 @@ void GUIFontManager::LoadFonts(const std::string& fontSet)
       if (firstFont.empty())
         firstFont = idAttr;
 
-      if (StringUtils::EqualsNoCase(fontSet, idAttr))
+      if (UnicodeUtils::EqualsNoCase(fontSet, idAttr))
       {
         LoadFonts(pChild->FirstChild("font"));
         return;
@@ -483,9 +484,11 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
 
     if (!fontName.empty() && URIUtils::HasExtension(fileName, ".ttf"))
     {
-      //! @todo Why do we tolower() this shit?
+      //! @todo Why do we FoldCase() this shit?
+    	// TODO: Verify. Probably to 1) handle OS's with case insensitive file system
+    	// 2) Consistency (avoids problems with sloppy case in filenaming).
       std::string strFontFileName = fileName;
-      StringUtils::ToLower(strFontFileName);
+      UnicodeUtils::FoldCase(strFontFileName);
       LoadTTF(fontName, strFontFileName, textColor, shadowColor, iSize, iStyle, false, lineSpacing,
               aspect);
     }

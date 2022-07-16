@@ -41,6 +41,7 @@
 #include "utils/FileExtensionProvider.h"
 #include "utils/ProgressJob.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 
 using namespace XFILE;
@@ -815,7 +816,7 @@ void CGUIDialogMusicInfo::OnGetArt()
         {
           std::string strCandidate = URIUtils::GetFileName(items[j]->GetPath());
           URIUtils::RemoveExtension(strCandidate);
-          if (StringUtils::EqualsNoCase(strCandidate, type))
+          if (UnicodeUtils::EqualsNoCase(strCandidate, type))
           {
             localArt = items[j]->GetPath();
             break;
@@ -852,7 +853,7 @@ void CGUIDialogMusicInfo::OnGetArt()
   for (auto& item : items)
   {
     // Skip images from remote sources, recache done by refresh (could be slow)
-    if (StringUtils::StartsWith(item->GetPath(), "thumb://Remote"))
+    if (UnicodeUtils::StartsWith(item->GetPath(), "thumb://Remote"))
       continue;
     std::string thumb(item->GetArt("thumb"));
     if (thumb.empty())
@@ -882,14 +883,14 @@ void CGUIDialogMusicInfo::OnGetArt()
     // User didn't choose the one they have.
     // Overwrite with the new art or clear it
     std::string newArt;
-    if (StringUtils::StartsWith(result, "thumb://Remote"))
+    if (UnicodeUtils::StartsWith(result, "thumb://Remote"))
     {
       int number = atoi(result.substr(14).c_str());
       newArt = remotethumbs[number];
     }
     else if (result == "thumb://Thumb")
       newArt = m_item->GetArt("thumb");
-    else if (StringUtils::StartsWith(result, "Local Art: "))
+    else if (UnicodeUtils::StartsWith(result, "Local Art: "))
       newArt = localArt;
     else if (CFile::Exists(result))
       newArt = result;
@@ -950,7 +951,7 @@ void CGUIDialogMusicInfo::ShowForArtist(int idArtist)
 void CGUIDialogMusicInfo::ShowFor(CFileItem* pItem)
 {
   if (pItem->IsParentFolder() || URIUtils::IsSpecial(pItem->GetPath()) ||
-    StringUtils::StartsWithNoCase(pItem->GetPath(), "musicsearch://"))
+    UnicodeUtils::StartsWithNoCase(pItem->GetPath(), "musicsearch://"))
     return; // nothing to do
 
   if (!pItem->m_bIsFolder)

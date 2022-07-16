@@ -11,6 +11,7 @@
 #include "URL.h"
 #include "music/MusicDatabase.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 
 using namespace XFILE;
@@ -41,7 +42,7 @@ std::string CMusicDatabaseFile::TranslateUrl(const CURL& url)
   if (!musicDatabase.GetSong(idSong, song))
     return "";
 
-  StringUtils::ToLower(strExtension);
+  UnicodeUtils::FoldCase(strExtension);
   if (!URIUtils::HasExtension(song.strFileName, strExtension))
     return "";
 

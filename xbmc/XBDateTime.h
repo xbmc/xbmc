@@ -18,7 +18,7 @@
 /*! \brief TIME_FORMAT enum/bitmask used for formatting time strings
  Note the use of bitmasking, e.g.
   TIME_FORMAT_HH_MM_SS = TIME_FORMAT_HH | TIME_FORMAT_MM | TIME_FORMAT_SS
- \sa StringUtils::SecondsToTimeString
+ \sa UnicodeUtils::SecondsToTimeString
  \note For InfoLabels use the equivalent value listed (bold)
   on the description of each enum value.
  \note<b>Example:</b> 3661 seconds => h=1, hh=01, m=1, mm=01, ss=01, hours=1, mins=61, secs=3661

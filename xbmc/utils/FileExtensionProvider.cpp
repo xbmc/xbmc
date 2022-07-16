@@ -15,6 +15,7 @@
 #include "addons/ImageDecoder.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 
 #include <string>
@@ -105,7 +106,7 @@ bool CFileExtensionProvider::CanOperateExtension(const std::string& path) const
 
   // Get file extensions to find addon related to it.
   std::string strExtension = URIUtils::GetExtension(path);
-  StringUtils::ToLower(strExtension);
+  UnicodeUtils::FoldCase(strExtension);
   if (!strExtension.empty() && CServiceBroker::IsBinaryAddonCacheUp())
   {
     std::vector<std::unique_ptr<KODI::ADDONS::IAddonSupportCheck>> supportList;
@@ -224,7 +225,7 @@ void CFileExtensionProvider::SetAddonExtensions(const TYPE& type)
         if (addonInfo->Type(type)->GetValue("@encodedhostname").asBoolean())
         {
           std::string prot = addonInfo->Type(type)->GetValue("@protocols").asString();
-          auto prots = StringUtils::Split(prot, "|");
+          auto prots = UnicodeUtils::Split(prot, "|");
           for (const std::string& it : prots)
             m_encoded.push_back(it);
         }

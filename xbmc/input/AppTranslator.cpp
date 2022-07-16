@@ -10,6 +10,7 @@
 
 #include "Key.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 #include <map>
@@ -54,7 +55,7 @@ uint32_t CAppTranslator::TranslateAppCommand(const std::string& szButton)
 {
 #ifdef TARGET_WINDOWS
   std::string strAppCommand = szButton;
-  StringUtils::ToLower(strAppCommand);
+  UnicodeUtils::FoldCase(strAppCommand);
 
   auto it = AppCommands.find(strAppCommand);
   if (it != AppCommands.end())

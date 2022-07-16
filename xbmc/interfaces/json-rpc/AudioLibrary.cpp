@@ -25,6 +25,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 
@@ -714,7 +715,7 @@ JSONRPC_STATUS CAudioLibrary::GetAvailableArt(const std::string& method, ITransp
     return InternalError;
 
   std::string artType = parameterObject["arttype"].asString();
-  StringUtils::ToLower(artType);
+  UnicodeUtils::FoldCase(artType);
 
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())
@@ -1028,7 +1029,7 @@ JSONRPC_STATUS CAudioLibrary::Scan(const std::string &method, ITransportLayer *t
 {
   std::string directory = parameterObject["directory"].asString();
   std::string cmd =
-      StringUtils::Format("updatelibrary(music, {}, {})", StringUtils::Paramify(directory),
+      StringUtils::Format("updatelibrary(music, {}, {})", UnicodeUtils::Paramify(directory),
                           parameterObject["showdialogs"].asBoolean() ? "true" : "false");
 
   CServiceBroker::GetAppMessenger()->SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, cmd);
@@ -1040,7 +1041,7 @@ JSONRPC_STATUS CAudioLibrary::Export(const std::string &method, ITransportLayer 
   std::string cmd;
   if (parameterObject["options"].isMember("path"))
     cmd = StringUtils::Format("exportlibrary2(music, singlefile, {}, albums, albumartists)",
-                              StringUtils::Paramify(parameterObject["options"]["path"].asString()));
+                              UnicodeUtils::Paramify(parameterObject["options"]["path"].asString()));
   else
   {
     cmd = "exportlibrary2(music, library, dummy, albums, albumartists";

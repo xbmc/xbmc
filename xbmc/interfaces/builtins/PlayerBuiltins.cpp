@@ -28,6 +28,7 @@
 #include "storage/MediaManager.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/PlayerController.h"
@@ -61,7 +62,7 @@ static int PlayOffset(const std::vector<std::string>& params)
   // playlist.playoffset(music|video,offset)
   std::string strPos = params[0];
   std::string paramlow(params[0]);
-  StringUtils::ToLower(paramlow);
+  UnicodeUtils::FoldCase(paramlow);
   if (params.size() > 1)
   {
     // ignore any other parameters if present
@@ -112,7 +113,7 @@ static int PlayerControl(const std::vector<std::string>& params)
   g_application.WakeUpScreenSaverAndDPMS();
 
   std::string paramlow(params[0]);
-  StringUtils::ToLower(paramlow);
+  UnicodeUtils::FoldCase(paramlow);
 
   if (paramlow ==  "play")
   { // play/pause
@@ -129,7 +130,7 @@ static int PlayerControl(const std::vector<std::string>& params)
   {
     g_application.StopPlaying();
   }
-  else if (StringUtils::StartsWithNoCase(params[0], "frameadvance"))
+  else if (UnicodeUtils::StartsWithNoCase(params[0], "frameadvance"))
   {
     std::string strFrames;
     if (params[0].size() == 12)
@@ -140,7 +141,7 @@ static int PlayerControl(const std::vector<std::string>& params)
     else
 
     strFrames = params[0].substr(13);
-    StringUtils::TrimRight(strFrames, ")");
+    UnicodeUtils::TrimRight(strFrames, ")");
     float frames = (float) atof(strFrames.c_str());
     g_application.GetAppPlayer().FrameAdvance(frames);
   }
@@ -183,7 +184,7 @@ static int PlayerControl(const std::vector<std::string>& params)
       g_application.GetAppPlayer().SetTempo(playTempo);
     }
   }
-  else if (StringUtils::StartsWithNoCase(params[0], "tempo"))
+  else if (UnicodeUtils::StartsWithNoCase(params[0], "tempo"))
   {
     if (params[0].size() == 5)
       CLog::Log(LOGERROR, "PlayerControl(tempo(n)) called with no argument");
@@ -196,7 +197,7 @@ static int PlayerControl(const std::vector<std::string>& params)
       if (player.SupportsTempo() && player.IsPlaying() && !player.IsPaused())
       {
         std::string strTempo = params[0].substr(6);
-        StringUtils::TrimRight(strTempo, ")");
+        UnicodeUtils::TrimRight(strTempo, ")");
         float playTempo = strtof(strTempo.c_str(), nullptr);
 
         player.SetTempo(playTempo);
@@ -231,7 +232,7 @@ static int PlayerControl(const std::vector<std::string>& params)
     if (g_application.GetAppPlayer().IsPlaying())
       g_application.GetAppPlayer().Seek(true, false);
   }
-  else if (StringUtils::StartsWithNoCase(params[0], "seekpercentage"))
+  else if (UnicodeUtils::StartsWithNoCase(params[0], "seekpercentage"))
   {
     std::string offset;
     if (params[0].size() == 14)
@@ -243,7 +244,7 @@ static int PlayerControl(const std::vector<std::string>& params)
     {
       // Don't bother checking the argument: an invalid arg will do seek(0)
       offset = params[0].substr(15);
-      StringUtils::TrimRight(offset, ")");
+      UnicodeUtils::TrimRight(offset, ")");
       float offsetpercent = (float) atof(offset.c_str());
       if (offsetpercent < 0 || offsetpercent > 100)
         CLog::Log(LOGERROR, "PlayerControl(seekpercentage(n)) argument, {:f}, must be 0-100",
@@ -257,19 +258,19 @@ static int PlayerControl(const std::vector<std::string>& params)
     if( g_application.GetAppPlayer().IsPlaying() )
       g_application.GetAppPlayer().OnAction(CAction(ACTION_SHOW_VIDEOMENU));
   }
-  else if (StringUtils::StartsWithNoCase(params[0], "partymode"))
+  else if (UnicodeUtils::StartsWithNoCase(params[0], "partymode"))
   {
     std::string strXspPath;
     //empty param=music, "music"=music, "video"=video, else xsp path
     PartyModeContext context = PARTYMODECONTEXT_MUSIC;
     if (params[0].size() > 9)
     {
-      if (params[0].size() == 16 && StringUtils::EndsWithNoCase(params[0], "video)"))
+      if (params[0].size() == 16 && UnicodeUtils::EndsWithNoCase(params[0], "video)"))
         context = PARTYMODECONTEXT_VIDEO;
-      else if (params[0].size() != 16 || !StringUtils::EndsWithNoCase(params[0], "music)"))
+      else if (params[0].size() != 16 || !UnicodeUtils::EndsWithNoCase(params[0], "music)"))
       {
         strXspPath = params[0].substr(10);
-        StringUtils::TrimRight(strXspPath, ")");
+        UnicodeUtils::TrimRight(strXspPath, ")");
         context = PARTYMODECONTEXT_UNKNOWN;
       }
     }
@@ -289,7 +290,7 @@ static int PlayerControl(const std::vector<std::string>& params)
       return 0;
 
     // check to see if we should notify the user
-    bool notify = (params.size() == 2 && StringUtils::EqualsNoCase(params[1], "notify"));
+    bool notify = (params.size() == 2 && UnicodeUtils::EqualsNoCase(params[1], "notify"));
     CServiceBroker::GetPlaylistPlayer().SetShuffle(iPlaylist, !shuffled, notify);
 
     // save settings for now playing windows
@@ -310,14 +311,14 @@ static int PlayerControl(const std::vector<std::string>& params)
     CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_RANDOM, 0, 0, iPlaylist, CServiceBroker::GetPlaylistPlayer().IsShuffled(iPlaylist));
     CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
   }
-  else if (StringUtils::StartsWithNoCase(params[0], "repeat"))
+  else if (UnicodeUtils::StartsWithNoCase(params[0], "repeat"))
   {
     // get current playlist
     int iPlaylist = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
     PLAYLIST::REPEAT_STATE previous_state = CServiceBroker::GetPlaylistPlayer().GetRepeat(iPlaylist);
 
     std::string paramlow(params[0]);
-    StringUtils::ToLower(paramlow);
+    UnicodeUtils::FoldCase(paramlow);
 
     PLAYLIST::REPEAT_STATE state;
     if (paramlow == "repeatall")
@@ -337,7 +338,7 @@ static int PlayerControl(const std::vector<std::string>& params)
       return 0;
 
     // check to see if we should notify the user
-    bool notify = (params.size() == 2 && StringUtils::EqualsNoCase(params[1], "notify"));
+    bool notify = (params.size() == 2 && UnicodeUtils::EqualsNoCase(params[1], "notify"));
     CServiceBroker::GetPlaylistPlayer().SetRepeat(iPlaylist, state, notify);
 
     // save settings for now playing windows
@@ -356,7 +357,7 @@ static int PlayerControl(const std::vector<std::string>& params)
     CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_REPEAT, 0, 0, iPlaylist, (int)state);
     CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
   }
-  else if (StringUtils::StartsWithNoCase(params[0], "resumelivetv"))
+  else if (UnicodeUtils::StartsWithNoCase(params[0], "resumelivetv"))
   {
     CFileItem& fileItem(g_application.CurrentFileItem());
     std::shared_ptr<PVR::CPVRChannel> channel = fileItem.HasPVRRecordingInfoTag() ? fileItem.GetPVRRecordingInfoTag()->Channel() : std::shared_ptr<PVR::CPVRChannel>();
@@ -396,7 +397,7 @@ static int PlayDVD(const std::vector<std::string>& params)
 {
 #ifdef HAS_DVD_DRIVE
   bool restart = false;
-  if (!params.empty() && StringUtils::EqualsNoCase(params[0], "restart"))
+  if (!params.empty() && UnicodeUtils::EqualsNoCase(params[0], "restart"))
     restart = true;
   MEDIA_DETECT::CAutorun::PlayDisc(CServiceBroker::GetMediaManager().GetDiscPath(), true, restart);
 #endif
@@ -435,22 +436,22 @@ static int PlayMedia(const std::vector<std::string>& params)
   int playOffset = 0;
   for (unsigned int i = 1 ; i < params.size() ; i++)
   {
-    if (StringUtils::EqualsNoCase(params[i], "isdir"))
+    if (UnicodeUtils::EqualsNoCase(params[i], "isdir"))
       item.m_bIsFolder = true;
     else if (params[i] == "1") // set fullscreen or windowed
       CMediaSettings::GetInstance().SetMediaStartWindowed(true);
-    else if (StringUtils::EqualsNoCase(params[i], "resume"))
+    else if (UnicodeUtils::EqualsNoCase(params[i], "resume"))
     {
       // force the item to resume (if applicable) (see CApplication::PlayMedia)
       item.m_lStartOffset = STARTOFFSET_RESUME;
       askToResume = false;
     }
-    else if (StringUtils::EqualsNoCase(params[i], "noresume"))
+    else if (UnicodeUtils::EqualsNoCase(params[i], "noresume"))
     {
       // force the item to start at the beginning (m_lStartOffset is initialized to 0)
       askToResume = false;
     }
-    else if (StringUtils::StartsWithNoCase(params[i], "playoffset=")) {
+    else if (UnicodeUtils::StartsWithNoCase(params[i], "playoffset=")) {
       playOffset = atoi(params[i].substr(11).c_str()) - 1;
       item.SetProperty("playlist_starting_track", playOffset);
     }

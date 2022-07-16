@@ -12,16 +12,17 @@
 #include "settings/SettingDateTime.h"
 #include "settings/SettingPath.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 std::shared_ptr<CSetting> CSettingCreator::CreateSetting(const std::string &settingType, const std::string &settingId, CSettingsManager *settingsManager /* = nullptr */) const
 {
-  if (StringUtils::EqualsNoCase(settingType, "addon"))
+  if (UnicodeUtils::EqualsNoCase(settingType, "addon"))
     return std::make_shared<CSettingAddon>(settingId, settingsManager);
-  else if (StringUtils::EqualsNoCase(settingType, "path"))
+  else if (UnicodeUtils::EqualsNoCase(settingType, "path"))
     return std::make_shared<CSettingPath>(settingId, settingsManager);
-  else if (StringUtils::EqualsNoCase(settingType, "date"))
+  else if (UnicodeUtils::EqualsNoCase(settingType, "date"))
     return std::make_shared<CSettingDate>(settingId, settingsManager);
-  else if (StringUtils::EqualsNoCase(settingType, "time"))
+  else if (UnicodeUtils::EqualsNoCase(settingType, "time"))
     return std::make_shared<CSettingTime>(settingId, settingsManager);
 
   return nullptr;

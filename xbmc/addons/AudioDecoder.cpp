@@ -200,7 +200,7 @@ bool CAudioDecoder::Load(const std::string& fileName,
     {
       const std::string mimetype =
           CMime::GetMimeType(URIUtils::GetExtension(ifcTag.cover_art_path));
-      if (StringUtils::StartsWith(mimetype, "image/"))
+      if (UnicodeUtils::StartsWith(mimetype, "image/"))
       {
         XFILE::CFile file;
         std::vector<uint8_t> buf;

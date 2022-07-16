@@ -55,6 +55,7 @@
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/XTimeUtils.h"
@@ -270,14 +271,14 @@ bool CGUIWindowMusicBase::OnAction(const CAction &action)
 
 void CGUIWindowMusicBase::OnItemInfoAll(const std::string& strPath, bool refresh)
 {
-  if (StringUtils::EqualsNoCase(m_vecItems->GetContent(), "albums"))
+  if (UnicodeUtils::EqualsNoCase(m_vecItems->GetContent(), "albums"))
   {
     if (CMusicLibraryQueue::GetInstance().IsScanningLibrary())
       return;
 
     CMusicLibraryQueue::GetInstance().StartAlbumScan(strPath, refresh);
   }
-  else if (StringUtils::EqualsNoCase(m_vecItems->GetContent(), "artists"))
+  else if (UnicodeUtils::EqualsNoCase(m_vecItems->GetContent(), "artists"))
   {
     if (CMusicLibraryQueue::GetInstance().IsScanningLibrary())
       return;
@@ -959,9 +960,9 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
   {
     // We want to expand disc images when browsing in file view but not on library, smartplaylist
     // or node menu music windows
-    if (!items.GetPath().empty() && !StringUtils::StartsWithNoCase(items.GetPath(), "musicdb://") &&
-        !StringUtils::StartsWithNoCase(items.GetPath(), "special://") &&
-        !StringUtils::StartsWithNoCase(items.GetPath(), "library://"))
+    if (!items.GetPath().empty() && !UnicodeUtils::StartsWithNoCase(items.GetPath(), "musicdb://") &&
+        !UnicodeUtils::StartsWithNoCase(items.GetPath(), "special://") &&
+        !UnicodeUtils::StartsWithNoCase(items.GetPath(), "library://"))
       CDirectory::FilterFileDirectories(items, ".iso", true);
 
     CMusicThumbLoader loader;
@@ -997,7 +998,7 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
         else
         {
           if (dirType == MediaTypeAlbum)
-            StringUtils::Replace(artitem.prefix, "albumartist", "artist");
+            UnicodeUtils::Replace(artitem.prefix, "albumartist", "artist");
           artname = artitem.prefix + "." + artitem.artType;
         }
       artmap.insert(std::make_pair(artname, artitem.url));
@@ -1051,9 +1052,9 @@ bool CGUIWindowMusicBase::CheckFilterAdvanced(CFileItemList &items) const
 {
   const std::string& content = items.GetContent();
   if ((items.IsMusicDb() || CanContainFilter(m_strFilterPath)) &&
-      (StringUtils::EqualsNoCase(content, "artists") ||
-       StringUtils::EqualsNoCase(content, "albums")  ||
-       StringUtils::EqualsNoCase(content, "songs")))
+      (UnicodeUtils::EqualsNoCase(content, "artists") ||
+       UnicodeUtils::EqualsNoCase(content, "albums")  ||
+       UnicodeUtils::EqualsNoCase(content, "songs")))
     return true;
 
   return false;
@@ -1142,7 +1143,7 @@ void CGUIWindowMusicBase::OnInitWindow()
 
 std::string CGUIWindowMusicBase::GetStartFolder(const std::string &dir)
 {
-  std::string lower(dir); StringUtils::ToLower(lower);
+  std::string lower(dir); UnicodeUtils::FoldCase(lower);
   if (lower == "plugins" || lower == "addons")
     return "addons://sources/audio/";
   else if (lower == "$playlists" || lower == "playlists")

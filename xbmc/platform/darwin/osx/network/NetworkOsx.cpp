@@ -22,6 +22,7 @@
 #include <net/route.h>
 #include <netinet/if_ether.h>
 #include <sys/sockio.h>
+#include "utils/UnicodeUtils.h"
 
 CNetworkInterfaceOsx::CNetworkInterfaceOsx(CNetworkPosix* network,
                                            const std::string& interfaceName,
@@ -187,7 +188,7 @@ std::vector<std::string> CNetworkOsx::GetNameServers()
     char buffer[256] = {'\0'};
     if (fread(buffer, sizeof(char), sizeof(buffer), pipe) > 0 && !ferror(pipe))
     {
-      tmpStr = StringUtils::Split(buffer, "\n");
+      tmpStr = UnicodeUtils::Split(buffer, "\n");
       for (unsigned int i = 0; i < tmpStr.size(); i++)
       {
         // result looks like this - > '  nameserver[0] : 192.168.1.1'

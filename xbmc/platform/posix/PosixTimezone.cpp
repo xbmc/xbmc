@@ -17,6 +17,7 @@
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "XBDateTime.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDefinitions.h"
@@ -45,7 +46,7 @@ CPosixTimezone::CPosixTimezone()
       {
          tokens.clear();
          s = line;
-         StringUtils::Trim(s);
+         UnicodeUtils::Trim(s);
 
          if (s.length() == 0)
             continue;
@@ -99,7 +100,7 @@ CPosixTimezone::CPosixTimezone()
       while (getdelim(&line, &linelen, '\n', fp) > 0)
       {
          s = line;
-         StringUtils::Trim(s);
+         UnicodeUtils::Trim(s);
 
         //! @todo STRING_CLEANUP
          if (s.length() == 0)
@@ -260,7 +261,7 @@ void CPosixTimezone::SettingOptionsTimezonesFiller(const std::shared_ptr<const C
   std::vector<std::string> timezones = g_timezone.GetTimezonesByCountry(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOCALE_TIMEZONECOUNTRY));
   for (unsigned int i = 0; i < timezones.size(); i++)
   {
-    if (!found && StringUtils::EqualsNoCase(timezones[i], current))
+    if (!found && UnicodeUtils::EqualsNoCase(timezones[i], current))
       found = true;
 
     list.emplace_back(timezones[i], timezones[i]);

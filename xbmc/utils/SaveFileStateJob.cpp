@@ -12,7 +12,8 @@
 #include "FileItem.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
-#include "StringUtils.h"
+#include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "URIUtils.h"
 #include "URL.h"
 #include "Util.h"
@@ -24,6 +25,7 @@
 #include "music/MusicDatabase.h"
 #include "music/tags/MusicInfoTag.h"
 #include "network/upnp/UPnP.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 #include "video/Bookmark.h"
 #include "video/VideoDatabase.h"
@@ -34,7 +36,7 @@ void CSaveFileState::DoWork(CFileItem& item,
 {
   std::string progressTrackingFile = item.GetPath();
 
-  if (item.HasVideoInfoTag() && StringUtils::StartsWith(item.GetVideoInfoTag()->m_strFileNameAndPath, "removable://"))
+  if (item.HasVideoInfoTag() && UnicodeUtils::StartsWith(item.GetVideoInfoTag()->m_strFileNameAndPath, "removable://"))
     progressTrackingFile = item.GetVideoInfoTag()->m_strFileNameAndPath; // this variable contains removable:// suffixed by disc label+uniqueid or is empty if label not uniquely identified
   else if (item.HasVideoInfoTag() && item.IsVideoDb())
     progressTrackingFile = item.GetVideoInfoTag()->m_strFileNameAndPath; // we need the file url of the video db item to create the bookmark

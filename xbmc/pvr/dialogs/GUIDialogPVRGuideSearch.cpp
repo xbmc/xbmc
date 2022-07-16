@@ -21,6 +21,7 @@
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/epg/EpgSearchFilter.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 #include <string>
 #include <utility>
@@ -200,7 +201,7 @@ bool CGUIDialogPVRGuideSearch::OnMessage(CGUIMessage& message)
           if (title.empty())
             title = g_localizeStrings.Get(137); // "Search"
           else
-            StringUtils::Trim(title, "\"");
+            UnicodeUtils::Trim(title, "\"");
 
           if (!CGUIKeyboardFactory::ShowAndGetInput(
                   title, CVariant{g_localizeStrings.Get(528)}, // "Enter title"

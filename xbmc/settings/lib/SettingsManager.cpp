@@ -13,6 +13,7 @@
 #include "SettingDefinitions.h"
 #include "SettingSection.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
@@ -33,7 +34,7 @@ bool ParseSettingIdentifier(const std::string& settingId, std::string& categoryT
   if (settingId.empty())
     return false;
 
-  auto parts = StringUtils::Split(settingId, Separator);
+  auto parts = UnicodeUtils::Split(settingId, Separator);
   if (parts.size() < 1 || parts.at(0).empty())
     return false;
 
@@ -85,7 +86,7 @@ bool CSettingsManager::Initialize(const TiXmlElement *root)
   if (m_initialized || root == nullptr)
     return false;
 
-  if (!StringUtils::EqualsNoCase(root->ValueStr(), SETTING_XML_ROOT))
+  if (!UnicodeUtils::EqualsNoCase(root->ValueStr(), SETTING_XML_ROOT))
   {
     m_logger->error("error reading settings definition: doesn't contain <" SETTING_XML_ROOT
                     "> tag");
@@ -552,7 +553,7 @@ SettingSectionPtr CSettingsManager::GetSection(std::string section) const
   if (section.empty())
     return nullptr;
 
-  StringUtils::ToLower(section);
+  UnicodeUtils::FoldCase(section);
 
   auto sectionIt = m_sections.find(section);
   if (sectionIt != m_sections.end())
@@ -941,9 +942,9 @@ void CSettingsManager::OnSettingPropertyChanged(const std::shared_ptr<const CSet
   // check the changed property and if it may have an influence on the
   // children of the setting
   SettingDependencyType dependencyType = SettingDependencyType::Unknown;
-  if (StringUtils::EqualsNoCase(propertyName, "enabled"))
+  if (UnicodeUtils::EqualsNoCase(propertyName, "enabled"))
     dependencyType = SettingDependencyType::Enable;
-  else if (StringUtils::EqualsNoCase(propertyName, "visible"))
+  else if (UnicodeUtils::EqualsNoCase(propertyName, "visible"))
     dependencyType = SettingDependencyType::Visible;
 
   if (dependencyType != SettingDependencyType::Unknown)
@@ -955,21 +956,21 @@ void CSettingsManager::OnSettingPropertyChanged(const std::shared_ptr<const CSet
 
 SettingPtr CSettingsManager::CreateSetting(const std::string &settingType, const std::string &settingId, CSettingsManager *settingsManager /* = nullptr */) const
 {
-  if (StringUtils::EqualsNoCase(settingType, "boolean"))
+  if (UnicodeUtils::EqualsNoCase(settingType, "boolean"))
     return std::make_shared<CSettingBool>(settingId, const_cast<CSettingsManager*>(this));
-  else if (StringUtils::EqualsNoCase(settingType, "integer"))
+  else if (UnicodeUtils::EqualsNoCase(settingType, "integer"))
     return std::make_shared<CSettingInt>(settingId, const_cast<CSettingsManager*>(this));
-  else if (StringUtils::EqualsNoCase(settingType, "number"))
+  else if (UnicodeUtils::EqualsNoCase(settingType, "number"))
     return std::make_shared<CSettingNumber>(settingId, const_cast<CSettingsManager*>(this));
-  else if (StringUtils::EqualsNoCase(settingType, "string"))
+  else if (UnicodeUtils::EqualsNoCase(settingType, "string"))
     return std::make_shared<CSettingString>(settingId, const_cast<CSettingsManager*>(this));
-  else if (StringUtils::EqualsNoCase(settingType, "action"))
+  else if (UnicodeUtils::EqualsNoCase(settingType, "action"))
     return std::make_shared<CSettingAction>(settingId, const_cast<CSettingsManager*>(this));
   else if (settingType.size() > 6 &&
-           StringUtils::StartsWith(settingType, "list[") &&
-           StringUtils::EndsWith(settingType, "]"))
+           UnicodeUtils::StartsWith(settingType, "list[") &&
+           UnicodeUtils::EndsWith(settingType, "]"))
   {
-    std::string elementType = StringUtils::Mid(settingType, 5, settingType.size() - 6);
+    std::string elementType = UnicodeUtils::Mid(settingType, 5, settingType.size() - 6);
     SettingPtr elementSetting = CreateSetting(elementType, settingId + ".definition", const_cast<CSettingsManager*>(this));
     if (elementSetting != nullptr)
       return std::make_shared<CSettingList>(settingId, elementSetting, const_cast<CSettingsManager*>(this));
@@ -1094,7 +1095,7 @@ bool CSettingsManager::LoadSetting(const TiXmlNode* node, const SettingPtr& sett
 
   // check if the default="true" attribute is set for the value
   auto isDefaultAttribute = settingElement->Attribute(SETTING_XML_ELM_DEFAULT);
-  bool isDefault = isDefaultAttribute != nullptr && StringUtils::EqualsNoCase(isDefaultAttribute, "true");
+  bool isDefault = isDefaultAttribute != nullptr && UnicodeUtils::EqualsNoCase(isDefaultAttribute, "true");
 
   if (!setting->FromString(settingElement->FirstChild() != nullptr ? settingElement->FirstChild()->ValueStr() : StringUtils::Empty))
   {
@@ -1407,18 +1408,18 @@ void CSettingsManager::ResolveSettingDependencies(const Setting& setting)
 
 CSettingsManager::SettingMap::const_iterator CSettingsManager::FindSetting(std::string settingId) const
 {
-  StringUtils::ToLower(settingId);
+  UnicodeUtils::FoldCase(settingId);
   return m_settings.find(settingId);
 }
 
 CSettingsManager::SettingMap::iterator CSettingsManager::FindSetting(std::string settingId)
 {
-  StringUtils::ToLower(settingId);
+  UnicodeUtils::FoldCase(settingId);
   return m_settings.find(settingId);
 }
 
 std::pair<CSettingsManager::SettingMap::iterator, bool> CSettingsManager::InsertSetting(std::string settingId, const Setting& setting)
 {
-  StringUtils::ToLower(settingId);
+  UnicodeUtils::FoldCase(settingId);
   return m_settings.insert(std::make_pair(settingId, setting));
 }

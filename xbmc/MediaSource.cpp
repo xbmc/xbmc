@@ -13,6 +13,7 @@
 #include "filesystem/MultiPathDirectory.h"
 #include "media/MediaLockState.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 
 using namespace XFILE;
@@ -47,7 +48,7 @@ void CMediaSource::FromNameAndPaths(const std::string &category, const std::stri
 
   if (URIUtils::IsMultiPath(strPath))
     m_iDriveType = SOURCE_TYPE_VPATH;
-  else if (StringUtils::StartsWithNoCase(strPath, "udf:"))
+  else if (UnicodeUtils::StartsWithNoCase(strPath, "udf:"))
   {
     m_iDriveType = SOURCE_TYPE_VIRTUAL_DVD;
     strPath = "D:\\";
@@ -85,7 +86,7 @@ void AddOrReplace(VECSOURCES& sources, const VECSOURCES& extras)
     unsigned int j;
     for ( j=0;j<sources.size();++j)
     {
-      if (StringUtils::EqualsNoCase(sources[j].strPath, extras[i].strPath))
+      if (UnicodeUtils::EqualsNoCase(sources[j].strPath, extras[i].strPath))
       {
         sources[j] = extras[i];
         break;
@@ -101,7 +102,7 @@ void AddOrReplace(VECSOURCES& sources, const CMediaSource& source)
   unsigned int i;
   for( i=0;i<sources.size();++i )
   {
-    if (StringUtils::EqualsNoCase(sources[i].strPath, source.strPath))
+    if (UnicodeUtils::EqualsNoCase(sources[i].strPath, source.strPath))
     {
       sources[i] = source;
       break;

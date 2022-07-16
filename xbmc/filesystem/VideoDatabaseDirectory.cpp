@@ -19,6 +19,7 @@
 #include "utils/Crc32.h"
 #include "utils/LegacyPathTranslation.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoDatabase.h"
 
@@ -125,7 +126,7 @@ void CVideoDatabaseDirectory::ClearDirectoryCache(const std::string& strDirector
 
 bool CVideoDatabaseDirectory::IsAllItem(const std::string& strDirectory)
 {
-  if (StringUtils::EndsWith(strDirectory, "/-1/"))
+  if (UnicodeUtils::EndsWith(strDirectory, "/-1/"))
     return true;
   return false;
 }

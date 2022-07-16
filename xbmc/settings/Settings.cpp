@@ -53,6 +53,7 @@
 #include "utils/RssManager.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
@@ -580,7 +581,7 @@ bool CSettings::LoadSetting(const TiXmlNode *node, const std::string &settingId)
 bool CSettings::GetBool(const std::string& id) const
 {
   // Backward compatibility (skins use this setting)
-  if (StringUtils::EqualsNoCase(id, "lookandfeel.enablemouse"))
+  if (UnicodeUtils::EqualsNoCase(id, "lookandfeel.enablemouse"))
     return CSettingsBase::GetBool(CSettings::SETTING_INPUT_ENABLEMOUSE);
 
   return CSettingsBase::GetBool(id);

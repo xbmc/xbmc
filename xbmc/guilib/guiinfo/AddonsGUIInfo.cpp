@@ -16,6 +16,7 @@
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 using namespace KODI::GUILIB::GUIINFO;
 

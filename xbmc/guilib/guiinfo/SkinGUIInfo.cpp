@@ -17,6 +17,7 @@
 #include "settings/SettingsComponent.h"
 #include "settings/SkinSettings.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 
 using namespace KODI::GUILIB::GUIINFO;
@@ -114,7 +115,7 @@ bool CSkinGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextWi
     }
     case SKIN_STRING_IS_EQUAL:
     {
-      value = StringUtils::EqualsNoCase(CSkinSettings::GetInstance().GetString(info.GetData1()), info.GetData3());
+      value = UnicodeUtils::EqualsNoCase(CSkinSettings::GetInstance().GetString(info.GetData1()), info.GetData3());
       return true;
     }
     case SKIN_STRING:
@@ -126,7 +127,7 @@ bool CSkinGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextWi
     {
       std::string theme = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_SKINTHEME);
       URIUtils::RemoveExtension(theme);
-      value = StringUtils::EqualsNoCase(theme, info.GetData3());
+      value = UnicodeUtils::EqualsNoCase(theme, info.GetData3());
       return true;
     }
     case SKIN_TIMER_IS_RUNNING:

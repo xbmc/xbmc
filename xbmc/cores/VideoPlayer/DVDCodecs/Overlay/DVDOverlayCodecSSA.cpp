@@ -18,6 +18,7 @@
 #include "settings/SettingsComponent.h"
 #include "settings/SubtitlesSettings.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 #include <memory>
 
@@ -81,7 +82,7 @@ OverlayMessage CDVDOverlayCodecSSA::Decode(DemuxPacket* pPacket)
     for (size_t i = 0; i < lines.size(); i++)
     {
       line = lines[i];
-      StringUtils::Trim(line);
+      UnicodeUtils::Trim(line);
       std::unique_ptr<char[]> layer(new char[line.length() + 1]);
 
       if (sscanf(line.c_str(), "%*[^:]:%[^,],%d:%d:%d%*c%d,%d:%d:%d%*c%d", layer.get(), &sh, &sm,

@@ -133,7 +133,7 @@ bool CDecoderFilterManager::Load()
   }
 
   const TiXmlElement *pRootElement = xmlDoc.RootElement();
-  if (!pRootElement || !StringUtils::EqualsNoCase(pRootElement->ValueStr(), TAG_ROOT))
+  if (!pRootElement || !UnicodeUtils::EqualsNoCase(pRootElement->ValueStr(), TAG_ROOT))
   {
     CLog::Log(LOGERROR, "{}: invalid root element ({})", CLASSNAME, pRootElement->ValueStr());
     return false;

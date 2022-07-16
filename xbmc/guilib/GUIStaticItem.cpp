@@ -12,6 +12,7 @@
 #include "GUIInfoManager.h"
 #include "guilib/GUIComponent.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 
@@ -79,15 +80,15 @@ void CGUIStaticItem::UpdateProperties(int contextWindow)
   {
     const GUIINFO::CGUIInfoLabel& info = i.first;
     const std::string& name = i.second;
-    bool preferTexture = StringUtils::CompareNoCase("label", name, 5) != 0;
+    bool preferTexture = ! UnicodeUtils::StartsWithNoCase(name, "label");
     const std::string& value(info.GetLabel(contextWindow, preferTexture));
-    if (StringUtils::EqualsNoCase(name, "label"))
+    if (UnicodeUtils::EqualsNoCase(name, "label"))
       SetLabel(value);
-    else if (StringUtils::EqualsNoCase(name, "label2"))
+    else if (UnicodeUtils::EqualsNoCase(name, "label2"))
       SetLabel2(value);
-    else if (StringUtils::EqualsNoCase(name, "thumb"))
+    else if (UnicodeUtils::EqualsNoCase(name, "thumb"))
       SetArt("thumb", value);
-    else if (StringUtils::EqualsNoCase(name, "icon"))
+    else if (UnicodeUtils::EqualsNoCase(name, "icon"))
       SetArt("icon", value);
     else
       SetProperty(name, value.c_str());

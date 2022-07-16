@@ -9,6 +9,7 @@
 #include "HTMLUtil.h"
 
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 #include <wctype.h>
 
@@ -193,7 +194,7 @@ void CHTMLUtil::ConvertHTMLToW(const std::wstring& strHTML, std::wstring& strStr
   strStripped = strHTML;
   while (mappings[iPos].html)
   {
-    StringUtils::Replace(strStripped, mappings[iPos].html,std::wstring(1, mappings[iPos].w));
+    UnicodeUtils::Replace(strStripped, mappings[iPos].html,std::wstring(1, mappings[iPos].w));
     iPos++;
   }
 
@@ -222,7 +223,7 @@ void CHTMLUtil::ConvertHTMLToW(const std::wstring& strHTML, std::wstring& strStr
     else
       num = StringUtils::Format(L"&#x{};", num);
 
-    StringUtils::Replace(strStripped, num,std::wstring(1,val));
+    UnicodeUtils::Replace(strStripped, num,std::wstring(1,val));
     iPos = strStripped.find(L"&#", iStart);
   }
 }

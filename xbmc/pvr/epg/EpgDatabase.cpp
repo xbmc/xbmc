@@ -16,6 +16,7 @@
 #include "pvr/epg/EpgSearchFilter.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 #include <memory>
@@ -176,7 +177,7 @@ void CPVREpgDatabase::UpdateTables(int iVersion)
 
   if (iVersion < 13)
   {
-    const bool isMySQL = StringUtils::EqualsNoCase(
+    const bool isMySQL = UnicodeUtils::EqualsNoCase(
         CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_databaseEpg.type, "mysql");
 
     m_pDS->exec(
@@ -535,7 +536,7 @@ public:
         result += strFieldName;
     }
 
-    StringUtils::TrimRight(result);
+    UnicodeUtils::TrimRight(result);
     result += ")";
     return result;
   }
@@ -544,33 +545,33 @@ private:
   void Parse(const std::string& strSearchTerm)
   {
     std::string strParsedSearchTerm(strSearchTerm);
-    StringUtils::Trim(strParsedSearchTerm);
+    UnicodeUtils::Trim(strParsedSearchTerm);
 
     std::string strFragment;
 
     bool bNextOR = false;
     while (!strParsedSearchTerm.empty())
     {
-      StringUtils::TrimLeft(strParsedSearchTerm);
+      UnicodeUtils::TrimLeft(strParsedSearchTerm);
 
-      if (StringUtils::StartsWith(strParsedSearchTerm, "!") ||
-          StringUtils::StartsWithNoCase(strParsedSearchTerm, "not"))
+      if (UnicodeUtils::StartsWith(strParsedSearchTerm, "!") ||
+          UnicodeUtils::StartsWithNoCase(strParsedSearchTerm, "not"))
       {
         std::string strDummy;
         GetAndCutNextTerm(strParsedSearchTerm, strDummy);
         strFragment += " NOT ";
         bNextOR = false;
       }
-      else if (StringUtils::StartsWith(strParsedSearchTerm, "+") ||
-               StringUtils::StartsWithNoCase(strParsedSearchTerm, "and"))
+      else if (UnicodeUtils::StartsWith(strParsedSearchTerm, "+") ||
+               UnicodeUtils::StartsWithNoCase(strParsedSearchTerm, "and"))
       {
         std::string strDummy;
         GetAndCutNextTerm(strParsedSearchTerm, strDummy);
         strFragment += " AND ";
         bNextOR = false;
       }
-      else if (StringUtils::StartsWith(strParsedSearchTerm, "|") ||
-               StringUtils::StartsWithNoCase(strParsedSearchTerm, "or"))
+      else if (UnicodeUtils::StartsWith(strParsedSearchTerm, "|") ||
+               UnicodeUtils::StartsWithNoCase(strParsedSearchTerm, "or"))
       {
         std::string strDummy;
         GetAndCutNextTerm(strParsedSearchTerm, strDummy);
@@ -592,7 +593,7 @@ private:
           strFragment.clear();
 
           strFragment += ") LIKE UPPER('%";
-          StringUtils::Replace(strTerm, "'", "''"); // escape '
+          UnicodeUtils::Replace(strTerm, "'", "''"); // escape '
           strFragment += strTerm;
           strFragment += "%')) ";
 
@@ -604,7 +605,7 @@ private:
         }
       }
 
-      StringUtils::TrimLeft(strParsedSearchTerm);
+      UnicodeUtils::TrimLeft(strParsedSearchTerm);
     }
 
     if (!strFragment.empty())
@@ -615,7 +616,7 @@ private:
   {
     std::string strFindNext(" ");
 
-    if (StringUtils::EndsWith(strSearchTerm, "\""))
+    if (UnicodeUtils::EndsWith(strSearchTerm, "\""))
     {
       strSearchTerm.erase(0, 1);
       strFindNext = "\"";

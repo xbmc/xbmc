@@ -13,6 +13,7 @@
 #include "peripherals/addons/PeripheralAddonTranslator.h"
 #include "peripherals/devices/PeripheralJoystick.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 #include "platform/android/activity/XBMCApp.h"
@@ -356,7 +357,7 @@ std::string CPeripheralBusAndroid::GetDeviceLocation(int deviceId)
 bool CPeripheralBusAndroid::GetDeviceId(const std::string& deviceLocation, int& deviceId)
 {
   if (deviceLocation.empty() ||
-      !StringUtils::StartsWith(deviceLocation, DeviceLocationPrefix) ||
+      !UnicodeUtils::StartsWith(deviceLocation, DeviceLocationPrefix) ||
       deviceLocation.size() <= DeviceLocationPrefix.size())
     return false;
 

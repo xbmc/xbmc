@@ -16,6 +16,7 @@
 #include "input/Key.h"
 #include "utils/ColorUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -188,7 +189,7 @@ int CGUIDialogColorPicker::GetSelectedItem() const
     return -1;
   for (int index = 0; index < m_vecList->Size(); index++)
   {
-    if (StringUtils::CompareNoCase(m_selectedColor, m_vecList->Get(index)->GetLabel2()) == 0)
+    if (UnicodeUtils::CompareNoCase(m_selectedColor, m_vecList->Get(index)->GetLabel2()) == 0)
     {
       return index;
     }

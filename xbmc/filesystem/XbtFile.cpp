@@ -14,6 +14,7 @@
 #include "guilib/TextureBundleXBT.h"
 #include "guilib/XBTFReader.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 #include <algorithm>
 #include <climits>
@@ -354,7 +355,7 @@ bool CXbtFile::GetReaderAndFile(const CURL& url, CXBTFReaderPtr& reader, CXBTFFi
 
   // CXBTFReader stores all filenames in lower case
   std::string fileName = xbtUrl.GetFileName();
-  StringUtils::ToLower(fileName);
+  UnicodeUtils::FoldCase(fileName);
 
   return reader->Get(fileName, file);
 }

@@ -8,7 +8,9 @@
 
 #include "Digest.h"
 
-#include "StringUtils.h"
+#include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
+#include "UnicodeUtils.h"
 
 #include <array>
 #include <stdexcept>
@@ -69,7 +71,7 @@ std::string CDigest::TypeToString(Type type)
 CDigest::Type CDigest::TypeFromString(std::string const& type)
 {
   std::string typeLower{type};
-  StringUtils::ToLower(typeLower);
+  UnicodeUtils::FoldCase(typeLower);
   if (type == "md5")
   {
     return Type::MD5;

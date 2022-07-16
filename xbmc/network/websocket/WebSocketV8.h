@@ -9,6 +9,7 @@
 #pragma once
 
 #include "WebSocket.h"
+#include "utils/UnicodeUtils.h"
 
 #include <string>
 

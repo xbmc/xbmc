@@ -20,6 +20,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "URL.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 #include "utils/Variant.h"
@@ -157,14 +158,14 @@ void CExternalPlayer::Process()
   {
     for (unsigned int i = 0; i < m_filenameReplacers.size(); i++)
     {
-      std::vector<std::string> vecSplit = StringUtils::Split(m_filenameReplacers[i], " , ");
+      std::vector<std::string> vecSplit = UnicodeUtils::Split(m_filenameReplacers[i], " , ");
 
       // something is wrong, go to next substitution
       if (vecSplit.size() != 4)
         continue;
 
       std::string strMatch = vecSplit[0];
-      StringUtils::Replace(strMatch, ",,",",");
+      UnicodeUtils::Replace(strMatch, ",,",",");
       bool bCaseless = vecSplit[3].find('i') != std::string::npos;
       CRegExp regExp(bCaseless, CRegExp::autoUtf8);
 
@@ -177,7 +178,7 @@ void CExternalPlayer::Process()
       if (regExp.RegFind(mainFile) > -1)
       {
         std::string strPat = vecSplit[1];
-        StringUtils::Replace(strPat, ",,",",");
+        UnicodeUtils::Replace(strPat, ",,",",");
 
         if (!regExp.RegComp(strPat.c_str()))
         { // invalid regexp - complain in logs
@@ -186,7 +187,7 @@ void CExternalPlayer::Process()
         }
 
         std::string strRep = vecSplit[2];
-        StringUtils::Replace(strRep, ",,",",");
+        UnicodeUtils::Replace(strRep, ",,",",");
         bool bGlobal = vecSplit[3].find('g') != std::string::npos;
         bool bStop = vecSplit[3].find('s') != std::string::npos;
         int iStart = 0;
@@ -215,7 +216,7 @@ void CExternalPlayer::Process()
   std::string strFArgs;
 #if defined(TARGET_WINDOWS_DESKTOP)
   // W32 batch-file handline
-  if (StringUtils::EndsWith(m_filename, ".bat") || StringUtils::EndsWith(m_filename, ".cmd"))
+  if (UnicodeUtils::EndsWith(m_filename, ".bat") || UnicodeUtils::EndsWith(m_filename, ".cmd"))
   {
     // MSDN says you just need to do this, but cmd's handing of spaces and
     // quotes is soo broken it seems to work much better if you just omit
@@ -232,10 +233,10 @@ void CExternalPlayer::Process()
   strFArgs.append("\" ");
   strFArgs.append(m_args);
 
-  int nReplaced = StringUtils::Replace(strFArgs, "{0}", mainFile);
+  int nReplaced = UnicodeUtils::Replace(strFArgs, "{0}", mainFile);
 
   if (!nReplaced)
-    nReplaced = StringUtils::Replace(strFArgs, "{1}", mainFile) + StringUtils::Replace(strFArgs, "{2}", archiveContent);
+    nReplaced = UnicodeUtils::Replace(strFArgs, "{1}", mainFile) + UnicodeUtils::Replace(strFArgs, "{2}", archiveContent);
 
   if (!nReplaced)
   {
@@ -571,7 +572,7 @@ bool CExternalPlayer::Initialize(TiXmlElement* pConfig)
   {
 #ifdef TARGET_WINDOWS_DESKTOP
     // Default depends on whether player is a batch file
-    m_hideconsole = StringUtils::EndsWith(m_filename, ".bat");
+    m_hideconsole = UnicodeUtils::EndsWith(m_filename, ".bat");
 #endif
   }
 
@@ -623,16 +624,16 @@ void CExternalPlayer::GetCustomRegexpReplacers(TiXmlElement *pRootElement,
   int iAction = 0; // overwrite
   // for backward compatibility
   const char* szAppend = pRootElement->Attribute("append");
-  if ((szAppend && StringUtils::CompareNoCase(szAppend, "yes") == 0))
+  if ((szAppend && UnicodeUtils::CompareNoCase(szAppend, "yes") == 0))
     iAction = 1;
   // action takes precedence if both attributes exist
   const char* szAction = pRootElement->Attribute("action");
   if (szAction)
   {
     iAction = 0; // overwrite
-    if (StringUtils::CompareNoCase(szAction, "append") == 0)
+    if (UnicodeUtils::CompareNoCase(szAction, "append") == 0)
       iAction = 1; // append
-    else if (StringUtils::CompareNoCase(szAction, "prepend") == 0)
+    else if (UnicodeUtils::CompareNoCase(szAction, "prepend") == 0)
       iAction = 2; // prepend
   }
   if (iAction == 0)
@@ -646,8 +647,8 @@ void CExternalPlayer::GetCustomRegexpReplacers(TiXmlElement *pRootElement,
     {
       const char* szGlobal = pReplacer->Attribute("global");
       const char* szStop = pReplacer->Attribute("stop");
-      bool bGlobal = szGlobal && StringUtils::CompareNoCase(szGlobal, "true") == 0;
-      bool bStop = szStop && StringUtils::CompareNoCase(szStop, "true") == 0;
+      bool bGlobal = szGlobal && UnicodeUtils::CompareNoCase(szGlobal, "true") == 0;
+      bool bStop = szStop && UnicodeUtils::CompareNoCase(szStop, "true") == 0;
 
       std::string strMatch;
       std::string strPat;
@@ -664,9 +665,9 @@ void CExternalPlayer::GetCustomRegexpReplacers(TiXmlElement *pRootElement,
         CLog::Log(LOGDEBUG, "    Global:[{}] Stop:[{}]", bGlobal ? "true" : "false",
                   bStop ? "true" : "false");
         // keep literal commas since we use comma as a separator
-        StringUtils::Replace(strMatch, ",",",,");
-        StringUtils::Replace(strPat, ",",",,");
-        StringUtils::Replace(strRep, ",",",,");
+        UnicodeUtils::Replace(strMatch, ",",",,");
+        UnicodeUtils::Replace(strPat, ",",",,");
+        UnicodeUtils::Replace(strRep, ",",",,");
 
         std::string strReplacer = strMatch + " , " + strPat + " , " + strRep + " , " + (bGlobal ? "g" : "") + (bStop ? "s" : "");
         if (iAction == 2)

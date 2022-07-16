@@ -13,6 +13,7 @@
 #include "settings/SettingsComponent.h"
 #include "settings/lib/SettingsManager.h"
 #include "utils/log.h"
+#include "utils/UnicodeUtils.h"
 #include "windowing/GraphicContext.h"
 
 #include "platform/android/activity/XBMCApp.h"
@@ -163,7 +164,7 @@ CAndroidUtils::CAndroidUtils()
     displaySize = CJNISystemProperties::get("sys.display-size", "");
     if (!displaySize.empty())
     {
-      std::vector<std::string> aSize = StringUtils::Split(displaySize, "x");
+      std::vector<std::string> aSize = UnicodeUtils::Split(displaySize, "x");
       if (aSize.size() == 2)
       {
         m_width = StringUtils::IsInteger(aSize[0]) ? atoi(aSize[0].c_str()) : 0;

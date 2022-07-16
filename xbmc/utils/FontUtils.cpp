@@ -9,7 +9,8 @@
 #include "FontUtils.h"
 
 #include "FileItem.h"
-#include "StringUtils.h"
+#include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "URIUtils.h"
 #include "Util.h"
 #include "filesystem/Directory.h"

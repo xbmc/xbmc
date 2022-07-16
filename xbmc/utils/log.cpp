@@ -17,6 +17,7 @@
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 
 #include <cstring>
@@ -103,7 +104,7 @@ void CLog::Initialize(const std::string& path)
 
   // put together the path to the log file(s)
   std::string appName = CCompileInfo::GetAppName();
-  StringUtils::ToLower(appName);
+  UnicodeUtils::FoldCase(appName);
   const std::string filePathBase = URIUtils::AddFileToFolder(path, appName);
   const std::string filePath = filePathBase + LogFileExtension;
   const std::string oldFilePath = filePathBase + ".old" + LogFileExtension;

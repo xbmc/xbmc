@@ -19,6 +19,7 @@
 #include "messaging/helpers/DialogOKHelper.h"
 #include "utils/Digest.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 
 #include <cassert>
@@ -417,7 +418,7 @@ void CGUIDialogNumeric::SetMode(INPUT_MODE mode, const std::string &initial)
     else if (m_mode == INPUT_DATE)
     {
       std::string tmp = initial;
-      StringUtils::Replace(tmp, '/', '.');
+      UnicodeUtils::Replace(tmp, '/', '.');
       dateTime.SetFromDBDate(tmp);
     }
 
@@ -430,7 +431,7 @@ void CGUIDialogNumeric::SetMode(INPUT_MODE mode, const std::string &initial)
   else if (m_mode == INPUT_IP_ADDRESS)
   {
     m_lastblock = 3;
-    auto blocks = StringUtils::Split(initial, '.');
+    auto blocks = UnicodeUtils::Split(initial, '.');
     if (blocks.size() != 4)
       return;
 
@@ -479,7 +480,7 @@ bool CGUIDialogNumeric::ShowAndGetSeconds(std::string &timeString, const std::st
 {
   CGUIDialogNumeric *pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogNumeric>(WINDOW_DIALOG_NUMERIC);
   if (!pDialog) return false;
-  int seconds = StringUtils::TimeStringToSeconds(timeString);
+  int seconds = UnicodeUtils::TimeStringToSeconds(timeString);
   KODI::TIME::SystemTime time = {};
   time.hour = seconds / 3600;
   time.minute = (seconds - time.hour * 3600) / 60;
@@ -656,7 +657,7 @@ InputVerificationResult CGUIDialogNumeric::ShowAndVerifyInput(std::string& strTo
     return InputVerificationResult::SUCCESS;
   }
 
-  return StringUtils::EqualsNoCase(strToVerify, md5pword2) ? InputVerificationResult::SUCCESS : InputVerificationResult::FAILED;
+  return UnicodeUtils::EqualsNoCase(strToVerify, md5pword2) ? InputVerificationResult::SUCCESS : InputVerificationResult::FAILED;
 }
 
 bool CGUIDialogNumeric::IsConfirmed() const

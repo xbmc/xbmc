@@ -29,6 +29,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "listproviders/StaticProvider.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/XBMCTinyXML.h"
 
 using namespace KODI;
@@ -778,10 +779,10 @@ namespace XBMCAddon
         const String& cAttr = pTuple.second();
 
         TiXmlElement pNode("animation");
-        std::vector<std::string> attrs = StringUtils::Split(cAttr, " ");
+        std::vector<std::string> attrs = UnicodeUtils::Split(cAttr, " ");
         for (const auto& i : attrs)
         {
-          std::vector<std::string> attrs2 = StringUtils::Split(i, "=");
+          std::vector<std::string> attrs2 = UnicodeUtils::Split(i, "=");
           if (attrs2.size() == 2)
             pNode.SetAttribute(attrs2[0], attrs2[1]);
         }

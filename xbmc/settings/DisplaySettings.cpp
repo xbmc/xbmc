@@ -23,6 +23,7 @@
 #include "settings/lib/SettingDefinitions.h"
 #include "storage/MediaManager.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
@@ -144,7 +145,7 @@ bool CDisplaySettings::Load(const TiXmlNode *settings)
     bool found = false;
     for (ResolutionInfos::const_iterator  it = m_calibrations.begin(); it != m_calibrations.end(); ++it)
     {
-      if (StringUtils::EqualsNoCase(it->strMode, cal.strMode))
+      if (UnicodeUtils::EqualsNoCase(it->strMode, cal.strMode))
       {
         found = true;
         break;
@@ -518,7 +519,7 @@ void CDisplaySettings::ApplyCalibrations()
     // find resolutions
     for (size_t res = RES_DESKTOP; res < m_resolutions.size(); ++res)
     {
-      if (StringUtils::EqualsNoCase(itCal->strMode, m_resolutions[res].strMode))
+      if (UnicodeUtils::EqualsNoCase(itCal->strMode, m_resolutions[res].strMode))
       {
         // overscan
         m_resolutions[res].Overscan.left = itCal->Overscan.left;
@@ -572,13 +573,13 @@ void CDisplaySettings::UpdateCalibrations()
   // Add new (unique) resolutions
   for (ResolutionInfos::const_iterator res(m_resolutions.cbegin() + RES_CUSTOM); res != m_resolutions.cend(); ++res)
     if (std::find_if(m_calibrations.cbegin(), m_calibrations.cend(),
-      [&](const RESOLUTION_INFO& info) { return StringUtils::EqualsNoCase(res->strMode, info.strMode); }) == m_calibrations.cend())
+      [&](const RESOLUTION_INFO& info) { return UnicodeUtils::EqualsNoCase(res->strMode, info.strMode); }) == m_calibrations.cend())
         m_calibrations.push_back(*res);
 
   for (auto &cal : m_calibrations)
   {
     ResolutionInfos::const_iterator res(std::find_if(m_resolutions.cbegin() + RES_DESKTOP, m_resolutions.cend(),
-    [&](const RESOLUTION_INFO& info) { return StringUtils::EqualsNoCase(cal.strMode, info.strMode); }));
+    [&](const RESOLUTION_INFO& info) { return UnicodeUtils::EqualsNoCase(cal.strMode, info.strMode); }));
 
     if (res != m_resolutions.cend())
     {
@@ -639,18 +640,18 @@ RESOLUTION CDisplaySettings::GetResolutionFromString(const std::string &strResol
   else if (strResolution.size() >= 20)
   {
     // format: WWWWWHHHHHRRR.RRRRRP333, where W = width, H = height, R = refresh, P = interlace, 3 = stereo mode
-    int width = std::strtol(StringUtils::Mid(strResolution, 0,5).c_str(), NULL, 10);
-    int height = std::strtol(StringUtils::Mid(strResolution, 5,5).c_str(), NULL, 10);
-    float refresh = (float)std::strtod(StringUtils::Mid(strResolution, 10,9).c_str(), NULL);
+    int width = std::strtol(UnicodeUtils::Mid(strResolution, 0,5).c_str(), NULL, 10);
+    int height = std::strtol(UnicodeUtils::Mid(strResolution, 5,5).c_str(), NULL, 10);
+    float refresh = (float)std::strtod(UnicodeUtils::Mid(strResolution, 10,9).c_str(), NULL);
     unsigned flags = 0;
 
     // look for 'i' and treat everything else as progressive,
-    if(StringUtils::Mid(strResolution, 19,1) == "i")
+    if(UnicodeUtils::Mid(strResolution, 19,1) == "i")
       flags |= D3DPRESENTFLAG_INTERLACED;
 
-    if(StringUtils::Mid(strResolution, 20,3) == "sbs")
+    if(UnicodeUtils::Mid(strResolution, 20,3) == "sbs")
       flags |= D3DPRESENTFLAG_MODE3DSBS;
-    else if(StringUtils::Mid(strResolution, 20,3) == "tab")
+    else if(UnicodeUtils::Mid(strResolution, 20,3) == "tab")
       flags |= D3DPRESENTFLAG_MODE3DTB;
 
     std::map<RESOLUTION, RESOLUTION_INFO> resolutionInfos;
@@ -759,7 +760,7 @@ void CDisplaySettings::SettingOptionsRefreshRatesFiller(const SettingConstPtr& s
   for (std::vector<REFRESHRATE>::const_iterator refreshrate = refreshrates.begin(); refreshrate != refreshrates.end(); ++refreshrate)
   {
     std::string screenmode = GetStringFromResolution((RESOLUTION)refreshrate->ResInfo_Index, refreshrate->RefreshRate);
-    if (!match && StringUtils::EqualsNoCase(std::static_pointer_cast<const CSettingString>(setting)->GetValue(), screenmode))
+    if (!match && UnicodeUtils::EqualsNoCase(std::static_pointer_cast<const CSettingString>(setting)->GetValue(), screenmode))
       match = true;
     list.emplace_back(StringUtils::Format("{:.2f}", refreshrate->RefreshRate), screenmode);
   }

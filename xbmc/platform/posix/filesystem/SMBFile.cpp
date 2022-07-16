@@ -24,6 +24,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
@@ -137,7 +138,7 @@ void CSMB::Init()
 
         // set wins server if there's one. name resolve order defaults to 'lmhosts host wins bcast'.
         // if no WINS server has been specified the wins method will be ignored.
-        if (settings->GetString(CSettings::SETTING_SMB_WINSSERVER).length() > 0 && !StringUtils::EqualsNoCase(settings->GetString(CSettings::SETTING_SMB_WINSSERVER), "0.0.0.0") )
+        if (settings->GetString(CSettings::SETTING_SMB_WINSSERVER).length() > 0 && !UnicodeUtils::EqualsNoCase(settings->GetString(CSettings::SETTING_SMB_WINSSERVER), "0.0.0.0") )
         {
           fprintf(f, "\twins server = %s\n", settings->GetString(CSettings::SETTING_SMB_WINSSERVER).c_str());
           fprintf(f, "\tname resolve order = bcast wins host\n");
@@ -692,8 +693,8 @@ bool CSMBFile::OpenForWrite(const CURL& url, bool bOverWrite)
 bool CSMBFile::IsValidFile(const std::string& strFileName)
 {
   if (strFileName.find('/') == std::string::npos || /* doesn't have sharename */
-      StringUtils::EndsWith(strFileName, "/.") || /* not current folder */
-      StringUtils::EndsWith(strFileName, "/.."))  /* not parent folder */
+      UnicodeUtils::EndsWith(strFileName, "/.") || /* not current folder */
+      UnicodeUtils::EndsWith(strFileName, "/.."))  /* not parent folder */
       return false;
   return true;
 }

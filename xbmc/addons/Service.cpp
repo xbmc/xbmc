@@ -10,6 +10,7 @@
 #include "AddonManager.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 #include <mutex>
@@ -79,7 +80,7 @@ void CServiceAddonManager::Start(const AddonPtr& addon)
     return;
   }
 
-  if (StringUtils::EndsWith(addon->LibPath(), ".py"))
+  if (UnicodeUtils::EndsWith(addon->LibPath(), ".py"))
   {
     CLog::Log(LOGDEBUG, "CServiceAddonManager: starting {}", addon->ID());
     auto handle = CScriptInvocationManager::GetInstance().ExecuteAsync(addon->LibPath(), addon);

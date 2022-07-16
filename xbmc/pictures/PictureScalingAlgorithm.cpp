@@ -14,6 +14,7 @@ extern "C" {
 
 #include "PictureScalingAlgorithm.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 CPictureScalingAlgorithm::Algorithm CPictureScalingAlgorithm::Default = CPictureScalingAlgorithm::Bicubic;
 
@@ -34,7 +35,7 @@ CPictureScalingAlgorithm::AlgorithmMap CPictureScalingAlgorithm::m_algorithms = 
 CPictureScalingAlgorithm::Algorithm CPictureScalingAlgorithm::FromString(const std::string& scalingAlgorithm)
 {
   const auto& algorithm = std::find_if(m_algorithms.begin(), m_algorithms.end(),
-    [&scalingAlgorithm](const std::pair<Algorithm, ScalingAlgorithm>& algo) { return StringUtils::EqualsNoCase(algo.second.name, scalingAlgorithm); });
+    [&scalingAlgorithm](const std::pair<Algorithm, ScalingAlgorithm>& algo) { return UnicodeUtils::EqualsNoCase(algo.second.name, scalingAlgorithm); });
   if (algorithm != m_algorithms.end())
     return algorithm->first;
 

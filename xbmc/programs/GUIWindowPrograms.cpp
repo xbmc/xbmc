@@ -21,6 +21,7 @@
 #include "media/MediaLockState.h"
 #include "settings/MediaSourceSettings.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 #define CONTROL_BTNVIEWASICONS 2
 #define CONTROL_BTNSORTBY      3
@@ -146,7 +147,7 @@ bool CGUIWindowPrograms::OnPlayMedia(int iItem, const std::string&)
 
 std::string CGUIWindowPrograms::GetStartFolder(const std::string &dir)
 {
-  std::string lower(dir); StringUtils::ToLower(lower);
+  std::string lower(dir); UnicodeUtils::FoldCase(lower);
   if (lower == "plugins" || lower == "addons")
     return "addons://sources/executable/";
   else if (lower == "androidapps")

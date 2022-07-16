@@ -8,7 +8,8 @@
 
 #include "Fanart.h"
 
-#include "StringUtils.h"
+#include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
@@ -155,10 +156,10 @@ bool CFanart::ParseColors(const std::string &colorsIn, std::string &colorsOut)
   if (colorsIn[0] == '|')
   { // need conversion
     colorsOut.clear();
-    std::vector<std::string> strColors = StringUtils::Split(colorsIn, "|");
+    std::vector<std::string> strColors = UnicodeUtils::Split(colorsIn, "|");
     for (int i = 0; i < std::min((int)strColors.size()-1, (int)max_fanart_colors); i++)
     { // split up each color
-      std::vector<std::string> strTriplets = StringUtils::Split(strColors[i+1], ",");
+      std::vector<std::string> strTriplets = UnicodeUtils::Split(strColors[i+1], ",");
       if (strTriplets.size() == 3)
       { // convert
         if (colorsOut.size())

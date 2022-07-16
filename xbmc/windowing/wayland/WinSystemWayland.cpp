@@ -39,6 +39,7 @@
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 #include "windowing/linux/OSScreenSaverFreedesktop.h"
 

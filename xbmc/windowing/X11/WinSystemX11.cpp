@@ -23,6 +23,7 @@
 #include "settings/lib/Setting.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
@@ -346,7 +347,7 @@ void CWinSystemX11::UpdateResolutions()
       std::vector<XOutput> outputs = g_xrandr.GetModes();
       for (size_t i=0; i<outputs.size(); i++)
       {
-        if (StringUtils::EqualsNoCase(outputs[i].name, m_userOutput))
+        if (UnicodeUtils::EqualsNoCase(outputs[i].name, m_userOutput))
           continue;
         g_xrandr.TurnOffOutput(outputs[i].name);
       }
@@ -432,7 +433,7 @@ bool CWinSystemX11::HasCalibration(const RESOLUTION_INFO &resInfo)
   XOutput *out = g_xrandr.GetOutput(m_currentOutput);
 
   // keep calibrations done on a not connected output
-  if (!StringUtils::EqualsNoCase(out->name, resInfo.strOutput))
+  if (!UnicodeUtils::EqualsNoCase(out->name, resInfo.strOutput))
     return true;
 
   // keep calibrations not updated with resolution data
@@ -483,7 +484,7 @@ std::vector<std::string> CWinSystemX11::GetConnectedOutputs()
 
 bool CWinSystemX11::IsCurrentOutput(const std::string& output)
 {
-  return (StringUtils::EqualsNoCase(output, "Default")) || (m_currentOutput.compare(output.c_str()) == 0);
+  return (UnicodeUtils::EqualsNoCase(output, "Default")) || (m_currentOutput.compare(output.c_str()) == 0);
 }
 
 void CWinSystemX11::ShowOSMouse(bool show)
@@ -602,7 +603,7 @@ void CWinSystemX11::RecreateWindow()
   for (i = RES_DESKTOP; i < CDisplaySettings::GetInstance().ResolutionInfoSize(); ++i)
   {
     res = CDisplaySettings::GetInstance().GetResolutionInfo(i);
-    if (StringUtils::EqualsNoCase(CDisplaySettings::GetInstance().GetResolutionInfo(i).strId, mode.id))
+    if (UnicodeUtils::EqualsNoCase(CDisplaySettings::GetInstance().GetResolutionInfo(i).strId, mode.id))
     {
       found = true;
       break;

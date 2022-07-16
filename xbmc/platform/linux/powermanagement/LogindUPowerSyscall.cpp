@@ -10,6 +10,7 @@
 #include "LogindUPowerSyscall.h"
 
 #include "utils/log.h"
+#include "utils/UnicodeUtils.h"
 
 #include <string.h>
 
@@ -145,7 +146,7 @@ bool CLogindUPowerSyscall::HasLogind()
       {
         char *seat;
         dbus_message_iter_get_basic(&strIter, &seat);
-        if (StringUtils::StartsWith(seat, "seat"))
+        if (UnicodeUtils::StartsWith(seat, "seat"))
         {
             CLog::Log(LOGDEBUG, "LogindUPowerSyscall::HasLogind - found seat: {}", seat);
             return true;

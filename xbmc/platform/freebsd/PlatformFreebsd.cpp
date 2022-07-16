@@ -83,23 +83,23 @@ bool CPlatformFreebsd::InitStageOne()
   if (getenv("KODI_AE_SINK"))
     envSink = getenv("KODI_AE_SINK");
 
-  if (StringUtils::EqualsNoCase(envSink, "ALSA"))
+  if (UnicodeUtils::EqualsNoCase(envSink, "ALSA"))
   {
     OPTIONALS::ALSARegister();
   }
-  else if (StringUtils::EqualsNoCase(envSink, "PULSE"))
+  else if (UnicodeUtils::EqualsNoCase(envSink, "PULSE"))
   {
     OPTIONALS::PulseAudioRegister();
   }
-  else if (StringUtils::EqualsNoCase(envSink, "OSS"))
+  else if (UnicodeUtils::EqualsNoCase(envSink, "OSS"))
   {
     OPTIONALS::OSSRegister();
   }
-  else if (StringUtils::EqualsNoCase(envSink, "SNDIO"))
+  else if (UnicodeUtils::EqualsNoCase(envSink, "SNDIO"))
   {
     OPTIONALS::SndioRegister();
   }
-  else if (StringUtils::EqualsNoCase(envSink, "ALSA+PULSE"))
+  else if (UnicodeUtils::EqualsNoCase(envSink, "ALSA+PULSE"))
   {
     OPTIONALS::ALSARegister();
     OPTIONALS::PulseAudioRegister();

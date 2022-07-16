@@ -22,6 +22,7 @@
 #include "settings/lib/Setting.h"
 #include "utils/POUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/XTimeUtils.h"
@@ -115,7 +116,7 @@ void CWeatherJob::LocalizeOverviewToken(std::string &token)
 
 void CWeatherJob::LocalizeOverview(std::string &str)
 {
-  std::vector<std::string> words = StringUtils::Split(str, " ");
+  std::vector<std::string> words = UnicodeUtils::Split(str, " ");
   for (std::vector<std::string>::iterator i = words.begin(); i != words.end(); ++i)
     LocalizeOverviewToken(*i);
   str = StringUtils::Join(words, " ");

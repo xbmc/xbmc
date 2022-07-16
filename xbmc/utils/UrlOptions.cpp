@@ -10,6 +10,7 @@
 
 #include "URL.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 CUrlOptions::CUrlOptions() = default;
@@ -115,7 +116,7 @@ void CUrlOptions::AddOptions(const std::string &options)
   }
 
   // split the options by & and process them one by one
-  for (const auto &option : StringUtils::Split(strOptions, "&"))
+  for (const auto &option : UnicodeUtils::Split(strOptions, "&"))
   {
     if (option.empty())
       continue;

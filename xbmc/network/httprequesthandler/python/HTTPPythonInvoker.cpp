@@ -57,10 +57,10 @@ void CHTTPPythonInvoker::onError(const std::string& exceptionType /* = "" */, co
 
   // replace all special characters
 
-  StringUtils::Replace(output, "<", "&lt;");
-  StringUtils::Replace(output, ">", "&gt;");
-  StringUtils::Replace(output, " ", "&nbsp;");
-  StringUtils::Replace(output, "\n", "\n<br />");
+  UnicodeUtils::Replace(output, "<", "&lt;");
+  UnicodeUtils::Replace(output, ">", "&gt;");
+  UnicodeUtils::Replace(output, " ", "&nbsp;");
+  UnicodeUtils::Replace(output, "\n", "\n<br />");
 
   if (!exceptionType.empty())
   {

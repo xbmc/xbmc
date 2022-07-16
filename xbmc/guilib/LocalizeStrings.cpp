@@ -114,7 +114,7 @@ static bool LoadStr2Mem(const std::string &pathname_in, const std::string &langu
       return false;
   }
 
-  bool useSourceLang = StringUtils::EqualsNoCase(language, LANGUAGE_DEFAULT) || StringUtils::EqualsNoCase(language, LANGUAGE_OLD_DEFAULT);
+  bool useSourceLang = UnicodeUtils::EqualsNoCase(language, LANGUAGE_DEFAULT) || UnicodeUtils::EqualsNoCase(language, LANGUAGE_OLD_DEFAULT);
 
   return LoadPO(URIUtils::AddFileToFolder(pathname, "strings.po"), strings, encoding, offset, useSourceLang);
 }
@@ -124,12 +124,12 @@ static bool LoadWithFallback(const std::string& path, const std::string& languag
   std::string encoding;
   if (!LoadStr2Mem(path, language, strings, encoding))
   {
-    if (StringUtils::EqualsNoCase(language, LANGUAGE_DEFAULT)) // no fallback, nothing to do
+    if (UnicodeUtils::EqualsNoCase(language, LANGUAGE_DEFAULT)) // no fallback, nothing to do
       return false;
   }
 
   // load the fallback
-  if (!StringUtils::EqualsNoCase(language, LANGUAGE_DEFAULT))
+  if (!UnicodeUtils::EqualsNoCase(language, LANGUAGE_DEFAULT))
     LoadStr2Mem(path, LANGUAGE_DEFAULT, strings, encoding);
 
   return true;

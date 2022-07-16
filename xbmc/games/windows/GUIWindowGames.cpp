@@ -28,6 +28,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 
 #include <algorithm>
@@ -284,7 +285,7 @@ std::string CGUIWindowGames::GetStartFolder(const std::string& dir)
 {
   // From CGUIWindowPictures::GetStartFolder()
 
-  if (StringUtils::EqualsNoCase(dir, "plugins") || StringUtils::EqualsNoCase(dir, "addons"))
+  if (UnicodeUtils::EqualsNoCase(dir, "plugins") || UnicodeUtils::EqualsNoCase(dir, "addons"))
   {
     return "addons://sources/game/";
   }

@@ -9,6 +9,7 @@
 #include "ShellSurface.h"
 
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 using namespace KODI::WINDOWING::WAYLAND;
 

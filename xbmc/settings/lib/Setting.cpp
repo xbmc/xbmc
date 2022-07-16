@@ -12,6 +12,7 @@
 #include "SettingDefinitions.h"
 #include "SettingsManager.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
@@ -53,14 +54,14 @@ bool DeserializeOptionsSort(const TiXmlElement* optionsElement, SettingOptionsSo
   if (optionsElement->QueryStringAttribute("sort", &sort) != TIXML_SUCCESS)
     return true;
 
-  if (StringUtils::EqualsNoCase(sort, "false") || StringUtils::EqualsNoCase(sort, "off") ||
-    StringUtils::EqualsNoCase(sort, "no") || StringUtils::EqualsNoCase(sort, "disabled"))
+  if (UnicodeUtils::EqualsNoCase(sort, "false") || UnicodeUtils::EqualsNoCase(sort, "off") ||
+    UnicodeUtils::EqualsNoCase(sort, "no") || UnicodeUtils::EqualsNoCase(sort, "disabled"))
     optionsSort = SettingOptionsSort::NoSorting;
-  else if (StringUtils::EqualsNoCase(sort, "asc") || StringUtils::EqualsNoCase(sort, "ascending") ||
-    StringUtils::EqualsNoCase(sort, "true") || StringUtils::EqualsNoCase(sort, "on") ||
-    StringUtils::EqualsNoCase(sort, "yes") || StringUtils::EqualsNoCase(sort, "enabled"))
+  else if (UnicodeUtils::EqualsNoCase(sort, "asc") || UnicodeUtils::EqualsNoCase(sort, "ascending") ||
+    UnicodeUtils::EqualsNoCase(sort, "true") || UnicodeUtils::EqualsNoCase(sort, "on") ||
+    UnicodeUtils::EqualsNoCase(sort, "yes") || UnicodeUtils::EqualsNoCase(sort, "enabled"))
     optionsSort = SettingOptionsSort::Ascending;
-  else if (StringUtils::EqualsNoCase(sort, "desc") || StringUtils::EqualsNoCase(sort, "descending"))
+  else if (UnicodeUtils::EqualsNoCase(sort, "desc") || UnicodeUtils::EqualsNoCase(sort, "descending"))
     optionsSort = SettingOptionsSort::Descending;
   else
     return false;
@@ -617,7 +618,7 @@ void CSettingList::copy(const SettingList &srcValues, SettingList &dstValues)
 
 bool CSettingList::fromString(const std::string &strValue, SettingList &values) const
 {
-  return fromValues(StringUtils::Split(strValue, m_delimiter), values);
+  return fromValues(UnicodeUtils::Split(strValue, m_delimiter), values);
 }
 
 bool CSettingList::fromValues(const std::vector<std::string> &strValues, SettingList &values) const
@@ -793,12 +794,12 @@ void CSettingBool::copy(const CSettingBool &setting)
 
 bool CSettingBool::fromString(const std::string &strValue, bool &value) const
 {
-  if (StringUtils::EqualsNoCase(strValue, "true"))
+  if (UnicodeUtils::EqualsNoCase(strValue, "true"))
   {
     value = true;
     return true;
   }
-  if (StringUtils::EqualsNoCase(strValue, "false"))
+  if (UnicodeUtils::EqualsNoCase(strValue, "false"))
   {
     value = false;
     return true;

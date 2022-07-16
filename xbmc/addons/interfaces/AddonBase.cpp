@@ -264,31 +264,31 @@ char* Interface_Base::get_addon_info(const KODI_ADDON_BACKEND_HDL hdl, const cha
   }
 
   std::string str;
-  if (StringUtils::CompareNoCase(id, "author") == 0)
+  if (UnicodeUtils::CompareNoCase(id, "author") == 0)
     str = addon->Author();
-  else if (StringUtils::CompareNoCase(id, "changelog") == 0)
+  else if (UnicodeUtils::CompareNoCase(id, "changelog") == 0)
     str = addon->ChangeLog();
-  else if (StringUtils::CompareNoCase(id, "description") == 0)
+  else if (UnicodeUtils::CompareNoCase(id, "description") == 0)
     str = addon->Description();
-  else if (StringUtils::CompareNoCase(id, "disclaimer") == 0)
+  else if (UnicodeUtils::CompareNoCase(id, "disclaimer") == 0)
     str = addon->Disclaimer();
-  else if (StringUtils::CompareNoCase(id, "fanart") == 0)
+  else if (UnicodeUtils::CompareNoCase(id, "fanart") == 0)
     str = addon->FanArt();
-  else if (StringUtils::CompareNoCase(id, "icon") == 0)
+  else if (UnicodeUtils::CompareNoCase(id, "icon") == 0)
     str = addon->Icon();
-  else if (StringUtils::CompareNoCase(id, "id") == 0)
+  else if (UnicodeUtils::CompareNoCase(id, "id") == 0)
     str = addon->ID();
-  else if (StringUtils::CompareNoCase(id, "name") == 0)
+  else if (UnicodeUtils::CompareNoCase(id, "name") == 0)
     str = addon->Name();
-  else if (StringUtils::CompareNoCase(id, "path") == 0)
+  else if (UnicodeUtils::CompareNoCase(id, "path") == 0)
     str = addon->Path();
-  else if (StringUtils::CompareNoCase(id, "profile") == 0)
+  else if (UnicodeUtils::CompareNoCase(id, "profile") == 0)
     str = addon->Profile();
-  else if (StringUtils::CompareNoCase(id, "summary") == 0)
+  else if (UnicodeUtils::CompareNoCase(id, "summary") == 0)
     str = addon->Summary();
-  else if (StringUtils::CompareNoCase(id, "type") == 0)
+  else if (UnicodeUtils::CompareNoCase(id, "type") == 0)
     str = ADDON::CAddonInfo::TranslateType(addon->Type());
-  else if (StringUtils::CompareNoCase(id, "version") == 0)
+  else if (UnicodeUtils::CompareNoCase(id, "version") == 0)
     str = addon->Version().asString();
   else
   {

@@ -35,6 +35,7 @@
 #include "storage/MediaManager.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -95,7 +96,7 @@ bool CGUIDialogFileBrowser::OnAction(const CAction &action)
       CFileItemPtr pItem = (*m_vecItems)[iItem];
       for (unsigned int i=0;i<m_shares.size();++i)
       {
-        if (StringUtils::EqualsNoCase(m_shares[i].strName, pItem->GetLabel()) && m_shares[i].m_ignore)
+        if (UnicodeUtils::EqualsNoCase(m_shares[i].strName, pItem->GetLabel()) && m_shares[i].m_ignore)
           return false;
       }
 

@@ -13,6 +13,7 @@
 #include "rendering/RenderSystem.h"
 #include "utils/GLUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 #ifdef HAS_GLES
@@ -118,7 +119,7 @@ bool CShader::InsertSource(const std::string& filename, const std::string& loc)
 std::string CShader::GetSourceWithLineNumbers() const
 {
   int i{1};
-  auto lines = StringUtils::Split(m_source, "\n");
+  auto lines = UnicodeUtils::Split(m_source, "\n");
   for (auto& line : lines)
   {
     line.insert(0, StringUtils::Format("{:3}: ", i));

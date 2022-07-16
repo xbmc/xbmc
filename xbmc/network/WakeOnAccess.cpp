@@ -24,6 +24,7 @@
 #include "settings/lib/Setting.h"
 #include "utils/JobManager.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
@@ -572,7 +573,7 @@ bool CWakeOnAccess::FindOrTouchHostEntry(const std::string& hostName, bool upnpM
 
   for (auto& server : m_entries)
   {
-    if (upnp ? StringUtils::EqualsNoCase(upnp->m_mac, server.mac) : StringUtils::EqualsNoCase(hostName, server.host))
+    if (upnp ? UnicodeUtils::EqualsNoCase(upnp->m_mac, server.mac) : UnicodeUtils::EqualsNoCase(hostName, server.host))
     {
       CDateTime now = CDateTime::GetCurrentDateTime();
 
@@ -610,7 +611,7 @@ void CWakeOnAccess::TouchHostEntry(const std::string& hostName, bool upnpMode)
 
   for (auto& server : m_entries)
   {
-    if (upnp ? StringUtils::EqualsNoCase(upnp->m_mac, server.mac) : StringUtils::EqualsNoCase(hostName, server.host))
+    if (upnp ? UnicodeUtils::EqualsNoCase(upnp->m_mac, server.mac) : UnicodeUtils::EqualsNoCase(hostName, server.host))
     {
       server.nextWake = CDateTime::GetCurrentDateTime() + server.timeout;
 
@@ -625,7 +626,7 @@ void CWakeOnAccess::TouchHostEntry(const std::string& hostName, bool upnpMode)
 static void AddHost (const std::string& host, std::vector<std::string>& hosts)
 {
   for (const auto& it : hosts)
-    if (StringUtils::EqualsNoCase(host, it))
+    if (UnicodeUtils::EqualsNoCase(host, it))
       return; // already there ..
 
   if (!host.empty())
@@ -634,7 +635,7 @@ static void AddHost (const std::string& host, std::vector<std::string>& hosts)
 
 static void AddHostFromDatabase(const DatabaseSettings& setting, std::vector<std::string>& hosts)
 {
-  if (StringUtils::EqualsNoCase(setting.type, "mysql"))
+  if (UnicodeUtils::EqualsNoCase(setting.type, "mysql"))
     AddHost(setting.host, hosts);
 }
 
@@ -714,7 +715,7 @@ void CWakeOnAccess::SaveMACDiscoveryResult(const std::string& host, const std::s
 
   for (auto& i : m_entries)
   {
-    if (StringUtils::EqualsNoCase(host, i.host))
+    if (UnicodeUtils::EqualsNoCase(host, i.host))
     {
       i.mac = mac;
       ShowDiscoveryMessage(__FUNCTION__, host.c_str(), false);
@@ -811,7 +812,7 @@ void CWakeOnAccess::LoadFromXML()
   }
 
   TiXmlElement* pRootElement = xmlDoc.RootElement();
-  if (StringUtils::CompareNoCase(pRootElement->Value(), "onaccesswakeup"))
+  if (UnicodeUtils::CompareNoCase(pRootElement->Value(), "onaccesswakeup"))
   {
     CLog::Log(LOGERROR, "{} - XML file {} doesn't contain <onaccesswakeup>", __FUNCTION__,
               GetSettingFile());

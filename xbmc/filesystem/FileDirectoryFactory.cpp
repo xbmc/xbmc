@@ -35,6 +35,7 @@
 #include "playlists/PlayListFactory.h"
 #include "playlists/SmartPlayList.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 using namespace ADDON;
@@ -64,7 +65,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
 
   // Get file extensions to find addon related to it.
   std::string strExtension = URIUtils::GetExtension(url);
-  StringUtils::ToLower(strExtension);
+  UnicodeUtils::FoldCase(strExtension);
 
   if (!strExtension.empty() && CServiceBroker::IsBinaryAddonCacheUp())
   {
@@ -74,7 +75,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
      * @note: Do not check audio decoder files that are already open, they cannot
      * contain any further sub-folders.
      */
-    if (!StringUtils::EndsWith(strExtension, KODI_ADDON_AUDIODECODER_TRACK_EXT))
+    if (!UnicodeUtils::EndsWith(strExtension, KODI_ADDON_AUDIODECODER_TRACK_EXT))
     {
       auto addonInfos = CServiceBroker::GetExtsMimeSupportList().GetExtensionSupportedAddonInfos(
           strExtension, CExtsMimeSupportList::FilterSelect::hasTracks);
@@ -100,7 +101,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
     {
       if (vfsAddon->HasFileDirectories())
       {
-        auto exts = StringUtils::Split(vfsAddon->GetExtensions(), "|");
+        auto exts = UnicodeUtils::Split(vfsAddon->GetExtensions(), "|");
         if (std::find(exts.begin(), exts.end(), strExtension) != exts.end())
         {
           CVFSEntryIFileDirectoryWrapper* wrap = new CVFSEntryIFileDirectoryWrapper(vfsAddon);

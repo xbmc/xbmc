@@ -18,6 +18,7 @@
 #include "utils/HTMLUtil.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
@@ -77,7 +78,7 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   {
     /* if Content-Length is found and its not text/html, URL is pointing to file so don't treat URL as HTTPDirectory */
     if (!http.GetHttpHeader().GetValue("Content-Length").empty() &&
-        !StringUtils::StartsWithNoCase(http.GetHttpHeader().GetValue("Content-type"), "text/html"))
+        !UnicodeUtils::StartsWithNoCase(http.GetHttpHeader().GetValue("Content-type"), "text/html"))
     {
       return false;
     }
@@ -102,12 +103,12 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       std::string strLink = reItem.GetMatch(1);
       std::string strName = reItem.GetMatch(2);
       std::string strMetadata = reItem.GetMatch(3);
-      StringUtils::Trim(strMetadata);
+      UnicodeUtils::Trim(strMetadata);
 
       if(strLink[0] == '/')
         strLink = strLink.substr(1);
 
-      std::string strNameTemp = StringUtils::Trim(strName);
+      std::string strNameTemp = UnicodeUtils::Trim(strName);
 
       std::wstring wName, wLink, wConverted;
       if (fileCharset.empty())
@@ -161,8 +162,8 @@ bool CHTTPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       URIUtils::RemoveSlashAtEnd(strLinkTemp);
       strLinkTemp = CURL::Decode(strLinkTemp);
 
-      if (StringUtils::EndsWith(strNameTemp, "..>") &&
-          StringUtils::StartsWith(strLinkTemp, strNameTemp.substr(0, strNameTemp.length() - 3)))
+      if (UnicodeUtils::EndsWith(strNameTemp, "..>") &&
+          UnicodeUtils::StartsWith(strLinkTemp, strNameTemp.substr(0, strNameTemp.length() - 3)))
         strName = strNameTemp = strLinkTemp;
 
       /* Per RFC 1808 § 5.3, relative paths containing a colon ":" should be either prefixed with

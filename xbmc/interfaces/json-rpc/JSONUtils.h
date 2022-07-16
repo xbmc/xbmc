@@ -15,6 +15,7 @@
 #include "utils/JSONVariantWriter.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 
 #include <stdlib.h>
@@ -82,8 +83,8 @@ namespace JSONRPC
     {
       std::string method = parameterObject["sort"]["method"].asString();
       std::string order = parameterObject["sort"]["order"].asString();
-      StringUtils::ToLower(method);
-      StringUtils::ToLower(order);
+      UnicodeUtils::FoldCase(method);
+      UnicodeUtils::FoldCase(order);
 
       // parse the sort attributes
       sortAttributes = SortAttributeNone;

@@ -43,6 +43,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/JobManager.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
@@ -95,7 +96,7 @@ bool CMediaManager::LoadSources()
     return false;
 
   TiXmlElement* pRootElement = xmlDoc.RootElement();
-  if (!pRootElement || StringUtils::CompareNoCase(pRootElement->Value(), "mediasources") != 0)
+  if (!pRootElement || UnicodeUtils::CompareNoCase(pRootElement->Value(), "mediasources") != 0)
   {
     CLog::Log(LOGERROR, "Error loading {}, Line {} ({})", MEDIA_SOURCES_XML, xmlDoc.ErrorRow(),
               xmlDoc.ErrorDesc());
@@ -372,7 +373,7 @@ std::string CMediaManager::TranslateDevicePath(const std::string& devicePath, bo
   std::string strDevice = devicePath;
   // fallback for cdda://local/ and empty devicePath
 #ifdef HAS_DVD_DRIVE
-  if(devicePath.empty() || StringUtils::StartsWith(devicePath, "cdda://local"))
+  if(devicePath.empty() || UnicodeUtils::StartsWith(devicePath, "cdda://local"))
     strDevice = m_strFirstAvailDrive;
 #endif
 
@@ -381,7 +382,7 @@ std::string CMediaManager::TranslateDevicePath(const std::string& devicePath, bo
     return "";
 
   if(bReturnAsDevice == false)
-    StringUtils::Replace(strDevice, "\\\\.\\","");
+    UnicodeUtils::Replace(strDevice, "\\\\.\\","");
   else if(!strDevice.empty() && strDevice[1]==':')
     strDevice = StringUtils::Format("\\\\.\\{}:", strDevice[0]);
 
@@ -553,7 +554,7 @@ std::string CMediaManager::GetDiskLabel(const std::string& devicePath)
   if(GetVolumeInformationW(strDeviceW.c_str(), cVolumenName, 127, NULL, NULL, NULL, cFSName, 127)==0)
     return "";
   g_charsetConverter.wToUTF8(cVolumenName, strDevice);
-  info.name = StringUtils::TrimRight(strDevice, " ");
+  info.name = UnicodeUtils::TrimRight(strDevice, " ");
   if (!info.name.empty())
     m_mapDiscInfo[mediaPath] = info;
 
@@ -751,8 +752,8 @@ UTILS::DISCS::DiscInfo CMediaManager::GetDiscInfo(const std::string& mediaPath)
   // Try finding VIDEO_TS/VIDEO_TS.IFO - this indicates a DVD disc is inserted
   std::string pathVideoTS = URIUtils::AddFileToFolder(mediaPath, "VIDEO_TS", "VIDEO_TS.IFO");
   // correct the filename if needed
-  if (StringUtils::StartsWith(mediaPath, "dvd://") ||
-      StringUtils::StartsWith(mediaPath, "iso9660://"))
+  if (UnicodeUtils::StartsWith(mediaPath, "dvd://") ||
+      UnicodeUtils::StartsWith(mediaPath, "iso9660://"))
   {
     pathVideoTS = TranslateDevicePath("");
   }
@@ -795,7 +796,7 @@ bool CMediaManager::playStubFile(const CFileItem& item)
   if (discStubXML.LoadFile(item.GetPath()))
   {
     TiXmlElement* pRootElement = discStubXML.RootElement();
-    if (!pRootElement || StringUtils::CompareNoCase(pRootElement->Value(), "discstub") != 0)
+    if (!pRootElement || UnicodeUtils::CompareNoCase(pRootElement->Value(), "discstub") != 0)
       CLog::Log(LOGINFO, "No <discstub> node found for {}. Using default info dialog message",
                 item.GetPath());
     else

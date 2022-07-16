@@ -40,6 +40,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -2078,7 +2079,9 @@ public:
       return retVal;
 
     std::string strUpperCodecName = strCodecName;
-    StringUtils::ToUpper(strUpperCodecName);
+    UnicodeUtils::ToUpper(strUpperCodecName, icu::Locale::getEnglish()); // Avoids Turkic-I and other issues);
+
+    // TODO Unicode  m_lookup Why doesn't this use FoldCase values out of consistency?
 
     std::map<std::string, PVR_CODEC>::const_iterator it = m_lookup.find(strUpperCodecName);
     if (it != m_lookup.end())
@@ -2102,7 +2105,9 @@ private:
         tmp.codec_id = codec->id;
 
         std::string strUpperCodecName = codec->name;
-        StringUtils::ToUpper(strUpperCodecName);
+        UnicodeUtils::ToUpper(strUpperCodecName, icu::Locale::getEnglish()); // Avoids Turkic-I and other issues);
+
+        // TODO Unicode  m_lookup Why doesn't this use FoldCase values out of consistency?
 
         m_lookup.insert(std::make_pair(strUpperCodecName, tmp));
       }
@@ -2111,11 +2116,17 @@ private:
     // teletext is not returned by av_codec_next. we got our own decoder
     tmp.codec_type = PVR_CODEC_TYPE_SUBTITLE;
     tmp.codec_id = AV_CODEC_ID_DVB_TELETEXT;
+
+    // TODO Unicode  m_lookup Why doesn't this use FoldCase values out of consistency?
+
     m_lookup.insert(std::make_pair("TELETEXT", tmp));
 
     // rds is not returned by av_codec_next. we got our own decoder
     tmp.codec_type = PVR_CODEC_TYPE_RDS;
     tmp.codec_id = AV_CODEC_ID_NONE;
+
+    // TODO Unicode  m_lookup Why doesn't this use FoldCase values out of consistency?
+
     m_lookup.insert(std::make_pair("RDS", tmp));
   }
 

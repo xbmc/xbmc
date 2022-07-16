@@ -18,6 +18,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 
 using namespace ADDON;
 
@@ -207,33 +208,33 @@ namespace XBMCAddon
 
     String Addon::getAddonInfo(const char* id)
     {
-      if (StringUtils::CompareNoCase(id, "author") == 0)
+      if (UnicodeUtils::CompareNoCase(id, "author") == 0)
         return pAddon->Author();
-      else if (StringUtils::CompareNoCase(id, "changelog") == 0)
+      else if (UnicodeUtils::CompareNoCase(id, "changelog") == 0)
         return pAddon->ChangeLog();
-      else if (StringUtils::CompareNoCase(id, "description") == 0)
+      else if (UnicodeUtils::CompareNoCase(id, "description") == 0)
         return pAddon->Description();
-      else if (StringUtils::CompareNoCase(id, "disclaimer") == 0)
+      else if (UnicodeUtils::CompareNoCase(id, "disclaimer") == 0)
         return pAddon->Disclaimer();
-      else if (StringUtils::CompareNoCase(id, "fanart") == 0)
+      else if (UnicodeUtils::CompareNoCase(id, "fanart") == 0)
         return pAddon->FanArt();
-      else if (StringUtils::CompareNoCase(id, "icon") == 0)
+      else if (UnicodeUtils::CompareNoCase(id, "icon") == 0)
         return pAddon->Icon();
-      else if (StringUtils::CompareNoCase(id, "id") == 0)
+      else if (UnicodeUtils::CompareNoCase(id, "id") == 0)
         return pAddon->ID();
-      else if (StringUtils::CompareNoCase(id, "name") == 0)
+      else if (UnicodeUtils::CompareNoCase(id, "name") == 0)
         return pAddon->Name();
-      else if (StringUtils::CompareNoCase(id, "path") == 0)
+      else if (UnicodeUtils::CompareNoCase(id, "path") == 0)
         return pAddon->Path();
-      else if (StringUtils::CompareNoCase(id, "profile") == 0)
+      else if (UnicodeUtils::CompareNoCase(id, "profile") == 0)
         return pAddon->Profile();
-      else if (StringUtils::CompareNoCase(id, "stars") == 0)
+      else if (UnicodeUtils::CompareNoCase(id, "stars") == 0)
         return StringUtils::Format("-1");
-      else if (StringUtils::CompareNoCase(id, "summary") == 0)
+      else if (UnicodeUtils::CompareNoCase(id, "summary") == 0)
         return pAddon->Summary();
-      else if (StringUtils::CompareNoCase(id, "type") == 0)
+      else if (UnicodeUtils::CompareNoCase(id, "type") == 0)
         return ADDON::CAddonInfo::TranslateType(pAddon->Type());
-      else if (StringUtils::CompareNoCase(id, "version") == 0)
+      else if (UnicodeUtils::CompareNoCase(id, "version") == 0)
         return pAddon->Version().asString();
       else
         throw AddonException("'%s' is an invalid Id", id);

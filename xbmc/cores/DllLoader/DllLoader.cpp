@@ -16,6 +16,7 @@
 #include "dll_util.h"
 #include <limits>
 #include "utils/log.h"
+#include "utils/UnicodeUtils.h"
 
 #ifdef TARGET_WINDOWS
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
@@ -621,7 +622,7 @@ bool DllLoader::Load()
       // but the export isn't really needed for normal operation
       // and dll works anyway, so let's ignore it
 
-      if (StringUtils::CompareNoCase(GetName(), "vp7vfw.dll") != 0)
+      if (UnicodeUtils::CompareNoCase(GetName(), "vp7vfw.dll") != 0)
         return false;
 
 

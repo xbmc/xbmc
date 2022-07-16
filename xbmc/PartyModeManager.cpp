@@ -26,6 +26,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/Random.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
@@ -71,9 +72,9 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
     if (context == PARTYMODECONTEXT_UNKNOWN)
     {
       //get it from the xsp file
-      m_bIsVideo = (StringUtils::EqualsNoCase(m_type, "video") ||
-        StringUtils::EqualsNoCase(m_type, "musicvideos") ||
-        StringUtils::EqualsNoCase(m_type, "mixed"));
+      m_bIsVideo = (UnicodeUtils::EqualsNoCase(m_type, "video") ||
+        UnicodeUtils::EqualsNoCase(m_type, "musicvideos") ||
+        UnicodeUtils::EqualsNoCase(m_type, "mixed"));
     }
   }
   else if (m_bIsVideo)
@@ -97,8 +98,8 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
   unsigned int videocount = 0;
   auto start = std::chrono::steady_clock::now();
 
-  if (StringUtils::EqualsNoCase(m_type, "songs") ||
-      StringUtils::EqualsNoCase(m_type, "mixed"))
+  if (UnicodeUtils::EqualsNoCase(m_type, "songs") ||
+      UnicodeUtils::EqualsNoCase(m_type, "mixed"))
   {
     CMusicDatabase db;
     if (db.Open())
@@ -113,7 +114,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
       CLog::Log(LOGINFO, "PARTY MODE MANAGER: Registering filter:[{}]", strCurrentFilterMusic);
       songcount = db.GetRandomSongIDs(CDatabase::Filter(strCurrentFilterMusic), m_songIDCache);
       m_iMatchingSongs = static_cast<int>(songcount);
-      if (m_iMatchingSongs < 1 && StringUtils::EqualsNoCase(m_type, "songs"))
+      if (m_iMatchingSongs < 1 && UnicodeUtils::EqualsNoCase(m_type, "songs"))
       {
         pDialog->Close();
         db.Close();
@@ -130,8 +131,8 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
     db.Close();
   }
 
-  if (StringUtils::EqualsNoCase(m_type, "musicvideos") ||
-      StringUtils::EqualsNoCase(m_type, "mixed"))
+  if (UnicodeUtils::EqualsNoCase(m_type, "musicvideos") ||
+      UnicodeUtils::EqualsNoCase(m_type, "mixed"))
   {
     std::vector< std::pair<int,int> > songIDs2;
     CVideoDatabase db;
@@ -197,7 +198,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
 
   pDialog->Close();
   // open now playing window
-  if (StringUtils::EqualsNoCase(m_type, "songs"))
+  if (UnicodeUtils::EqualsNoCase(m_type, "songs"))
   {
     if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() != WINDOW_MUSIC_PLAYLIST)
       CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_MUSIC_PLAYLIST);

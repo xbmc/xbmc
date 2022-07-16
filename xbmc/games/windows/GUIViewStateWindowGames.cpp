@@ -14,6 +14,7 @@
 #include "guilib/WindowIDs.h"
 #include "settings/MediaSourceSettings.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "view/ViewState.h"
 #include "view/ViewStateSettings.h"
 #include "windowing/GraphicContext.h" // include before ViewState.h

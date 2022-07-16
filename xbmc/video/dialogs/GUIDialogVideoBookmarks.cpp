@@ -28,6 +28,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/Crc32.h"
 #include "utils/StringUtils.h"
+#include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -271,7 +272,7 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
     std::string time = StringUtils::SecondsToTimeString((long) pos, TIME_FORMAT_HH_MM_SS);
 
     if (chapterName.empty() ||
-        StringUtils::StartsWithNoCase(chapterName, time) ||
+        UnicodeUtils::StartsWithNoCase(chapterName, time) ||
         StringUtils::IsNaturalNumber(chapterName))
       chapterName = StringUtils::Format(g_localizeStrings.Get(25010), i);
 
