@@ -152,10 +152,7 @@ public:
   std::string GetMimeType() const { return m_cStructure->m_mimeType; }
 
   /// @brief Amount of available properties.
-  unsigned int GetPropertiesAmount() const
-  {
-    return m_cStructure->m_nCountInfoValues;
-  }
+  unsigned int GetPropertiesAmount() const { return m_cStructure->m_nCountInfoValues; }
 
   /// @brief List of available properties-
   const std::map<std::string, std::string> GetProperties() const
@@ -1781,7 +1778,7 @@ private:
 
   void SetAddonStruct(KODI_ADDON_INSTANCE_STRUCT* instance)
   {
-    int api[3] = { 0, 0, 0 };
+    int api[3] = {0, 0, 0};
     sscanf(GetInstanceAPIVersion().c_str(), "%d.%d.%d", &api[0], &api[1], &api[2]);
 
     instance->hdl = this;
@@ -1853,7 +1850,6 @@ private:
     InputstreamCapabilities caps(capabilities);
     static_cast<CInstanceInputStream*>(instance->toAddon->addonInstance)->GetCapabilities(caps);
   }
-
 
   // IDemux
   inline static bool ADDON_GetStreamIds(const AddonInstance_InputStream* instance,

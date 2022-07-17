@@ -27,24 +27,24 @@ extern "C"
   /// @ingroup cpp_kodi_addon_pvr_Defs_Stream
   /// @brief Maximum of allowed streams
   ///
-  #define PVR_STREAM_MAX_STREAMS 20
+#define PVR_STREAM_MAX_STREAMS 20
   //----------------------------------------------------------------------------
 
   //============================================================================
   /// @ingroup cpp_kodi_addon_pvr_Defs_Stream
   /// @brief Invalid codec identifier
   ///
-  #define PVR_INVALID_CODEC_ID 0
+#define PVR_INVALID_CODEC_ID 0
   //----------------------------------------------------------------------------
 
   //============================================================================
   /// @ingroup cpp_kodi_addon_pvr_Defs_Stream
   /// @brief Invalid codec
   ///
-  #define PVR_INVALID_CODEC \
-    { \
-      PVR_CODEC_TYPE_UNKNOWN, PVR_INVALID_CODEC_ID \
-    }
+#define PVR_INVALID_CODEC \
+  { \
+    PVR_CODEC_TYPE_UNKNOWN, PVR_INVALID_CODEC_ID \
+  }
   //----------------------------------------------------------------------------
 
   //============================================================================

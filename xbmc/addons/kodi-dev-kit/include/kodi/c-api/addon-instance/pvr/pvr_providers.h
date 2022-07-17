@@ -25,7 +25,7 @@ extern "C"
   /// @brief Denotes that no provider uid is available.
   ///
   /// Special @ref kodi::addon::PVRChannel::SetClientProviderUid()
-  #define PVR_PROVIDER_INVALID_UID -1
+#define PVR_PROVIDER_INVALID_UID -1
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -33,7 +33,7 @@ extern "C"
   /// @brief Separator to use in strings containing different tokens, for example
   /// country and language.
   ///
-  #define PROVIDER_STRING_TOKEN_SEPARATOR ","
+#define PROVIDER_STRING_TOKEN_SEPARATOR ","
 
   //============================================================================
   /// @defgroup cpp_kodi_addon_pvr_Defs_Channel_PVR_PROVIDER_TYPE enum PVR_PROVIDER_TYPE

@@ -27,7 +27,7 @@ extern "C"
   /// Special @ref kodi::addon::PVRTimer::SetClientChannelUid() and
   /// @ref kodi::addon::PVRRecording::SetChannelUid() value to indicate that no
   /// channel uid is available.
-  #define PVR_CHANNEL_INVALID_UID -1
+#define PVR_CHANNEL_INVALID_UID -1
   //----------------------------------------------------------------------------
 
   /*!
@@ -78,7 +78,7 @@ extern "C"
   /// @brief Special @ref cpp_kodi_addon_pvr_Defs_Channel_PVRDescrambleInfo
   /// value to indicate that a struct member's value is not available
   ///
-  #define PVR_DESCRAMBLE_INFO_NOT_AVAILABLE -1
+#define PVR_DESCRAMBLE_INFO_NOT_AVAILABLE -1
   //----------------------------------------------------------------------------
 
   /*!

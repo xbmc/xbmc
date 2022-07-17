@@ -259,7 +259,6 @@ public:
   PVRSignalStatus(const PVRSignalStatus& type) : CStructHdl(type) {}
   /*! \endcond */
 
-
   /// @defgroup cpp_kodi_addon_pvr_Defs_Channel_PVRSignalStatus_Help Value Help
   /// @ingroup cpp_kodi_addon_pvr_Defs_Channel_PVRSignalStatus
   ///
