@@ -16,6 +16,8 @@
 
 #ifdef __cplusplus
 
+#include "tools/StringUtils.h"
+
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
@@ -23,8 +25,6 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
-
-#include "tools/StringUtils.h"
 
 namespace kodi
 {
@@ -1051,7 +1051,6 @@ inline std::string ATTR_DLL_LOCAL GetLocalizedString(uint32_t labelId,
   return retString;
 }
 //------------------------------------------------------------------------------
-
 
 //##############################################################################
 /// @ingroup cpp_kodi_addon

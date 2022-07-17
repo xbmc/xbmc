@@ -706,7 +706,6 @@ private:
         ->SendEvent(kodi::addon::PeripheralEvent(*event));
   }
 
-
   inline static PERIPHERAL_ERROR ADDON_GetJoystickInfo(
       const AddonInstance_Peripheral* addonInstance, unsigned int index, JOYSTICK_INFO* info)
   {

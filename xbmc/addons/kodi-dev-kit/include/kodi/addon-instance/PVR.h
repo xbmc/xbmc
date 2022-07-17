@@ -3297,7 +3297,6 @@ private:
 
   //--==----==----==----==----==----==----==----==----==----==----==----==----==
 
-
   inline static PVR_ERROR ADDON_GetTimerTypes(const AddonInstance_PVR* instance,
                                               PVR_TIMER_TYPE* types,
                                               int* typesCount)

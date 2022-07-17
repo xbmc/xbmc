@@ -116,7 +116,6 @@ extern "C"
     bool (*change_keyboard_layout)(void* kodiBase, char** layout_name);
   } AddonToKodiFuncTable_kodi;
 
-
 #ifdef __cplusplus
 } /* extern "C" */
 #endif /* __cplusplus */

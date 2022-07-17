@@ -524,7 +524,7 @@ extern "C"
   /// @brief Separator to use in strings containing different tokens, for example
   /// writers, directors, actors of an event.
   ///
-  #define EPG_STRING_TOKEN_SEPARATOR ","
+#define EPG_STRING_TOKEN_SEPARATOR ","
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -570,7 +570,7 @@ extern "C"
   /// Special @ref kodi::addon::PVREPGTag::SetUniqueBroadcastId() value to
   /// indicate that a tag has not a valid EPG event uid.
   ///
-  #define EPG_TAG_INVALID_UID 0
+#define EPG_TAG_INVALID_UID 0
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -579,7 +579,7 @@ extern "C"
   /// and @ref kodi::addon::PVREPGTag::SetEpisodePartNumber() value to indicate
   /// it is not to be used.
   ///
-  #define EPG_TAG_INVALID_SERIES_EPISODE -1
+#define EPG_TAG_INVALID_SERIES_EPISODE -1
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -587,7 +587,7 @@ extern "C"
   /// @brief Timeframe value for use with @ref kodi::addon::CInstancePVRClient::SetEPGTimeFrame()
   /// function to indicate "no timeframe".
   ///
-  #define EPG_TIMEFRAME_UNLIMITED -1
+#define EPG_TIMEFRAME_UNLIMITED -1
   //----------------------------------------------------------------------------
 
   //============================================================================
