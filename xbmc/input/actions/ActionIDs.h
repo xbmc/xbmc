@@ -329,7 +329,8 @@ constexpr const int ACTION_PREV_SCENE = 139; //!< switch to previous scene/cutpo
 constexpr const int ACTION_NEXT_LETTER = 140; //!< jump through a list or container by letter
 constexpr const int ACTION_PREV_LETTER = 141;
 
-constexpr const int ACTION_JUMP_SMS2 = 142; //!< jump direct to a particular letter using SMS-style input
+//! Jump direct to a particular letter using SMS-style input
+constexpr const int ACTION_JUMP_SMS2 = 142;
 constexpr const int ACTION_JUMP_SMS3 = 143;
 constexpr const int ACTION_JUMP_SMS4 = 144;
 constexpr const int ACTION_JUMP_SMS5 = 145;
@@ -381,10 +382,17 @@ constexpr const int ACTION_TOGGLE_DIGITAL_ANALOG = 202; //!< switch digital <-> 
 constexpr const int ACTION_RELOAD_KEYMAPS = 203; //!< reloads CButtonTranslator's keymaps
 constexpr const int ACTION_GUIPROFILE_BEGIN = 204; //!< start the GUIControlProfiler running
 
-constexpr const int ACTION_TELETEXT_RED = 215; //!< Teletext Color button <b>Red</b> to control TopText
-constexpr const int ACTION_TELETEXT_GREEN = 216; //!< Teletext Color button <b>Green</b> to control TopText
-constexpr const int ACTION_TELETEXT_YELLOW = 217; //!< Teletext Color button <b>Yellow</b> to control TopText
-constexpr const int ACTION_TELETEXT_BLUE = 218; //!< Teletext Color button <b>Blue</b> to control TopText
+//! Teletext Color button <b>Red</b> to control TopText
+constexpr const int ACTION_TELETEXT_RED = 215;
+
+//! Teletext Color button <b>Green</b> to control TopText
+constexpr const int ACTION_TELETEXT_GREEN = 216;
+
+//! Teletext Color button <b>Yellow</b> to control TopText
+constexpr const int ACTION_TELETEXT_YELLOW = 217;
+
+//! Teletext Color button <b>Blue</b> to control TopText
+constexpr const int ACTION_TELETEXT_BLUE = 218;
 
 constexpr const int ACTION_INCREASE_PAR = 219;
 constexpr const int ACTION_DECREASE_PAR = 220;
@@ -392,7 +400,8 @@ constexpr const int ACTION_DECREASE_PAR = 220;
 constexpr const int ACTION_VSHIFT_UP = 227; //!< shift up video image in VideoPlayer
 constexpr const int ACTION_VSHIFT_DOWN = 228; //!< shift down video image in VideoPlayer
 
-constexpr const int ACTION_PLAYER_PLAYPAUSE = 229; //!< Play/pause. If playing it pauses, if paused it plays.
+//! Play/pause. If playing it pauses, if paused it plays.
+constexpr const int ACTION_PLAYER_PLAYPAUSE = 229;
 
 constexpr const int ACTION_SUBTITLE_VSHIFT_UP = 230; //!< shift up subtitles in VideoPlayer
 constexpr const int ACTION_SUBTITLE_VSHIFT_DOWN = 231; //!< shift down subtitles in VideoPlayer
@@ -418,13 +427,15 @@ constexpr const int ACTION_INPUT_TEXT = 244;
 constexpr const int ACTION_VOLUME_SET = 245;
 constexpr const int ACTION_TOGGLE_COMMSKIP = 246;
 
-constexpr const int ACTION_BROWSE_SUBTITLE = 247; //!< Browse for subtitle. Can be used in videofullscreen
+//! Browse for subtitle. Can be used in videofullscreen
+constexpr const int ACTION_BROWSE_SUBTITLE = 247;
 
 constexpr const int ACTION_PLAYER_RESET = 248; //!< Send a reset command to the active game
 
 constexpr const int ACTION_TOGGLE_FONT = 249; //!< Toggle font. Used in TextViewer dialog
 
-constexpr const int ACTION_VIDEO_NEXT_STREAM = 250; //!< Cycle video streams. Used in videofullscreen.
+//! Cycle video streams. Used in videofullscreen.
+constexpr const int ACTION_VIDEO_NEXT_STREAM = 250;
 
 //! Used to queue an item to the next position in the playlist
 constexpr const int ACTION_QUEUE_ITEM_NEXT = 251;
