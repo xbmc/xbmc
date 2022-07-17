@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include "General.h"
 #include "../../AddonBase.h"
 #include "../../c-api/addon-instance/pvr.h"
+#include "General.h"
 
 //¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
 // "C++" Definitions group 6 - PVR timers
@@ -735,9 +735,8 @@ public:
   /// --------------------------------------------------------------------------
   ///
   /// @copydetails cpp_kodi_addon_pvr_Defs_PVRTypeIntValue_Help
-  void SetPreventDuplicateEpisodes(
-      const std::vector<PVRTypeIntValue>& preventDuplicateEpisodes,
-      int preventDuplicateEpisodesDefault = -1)
+  void SetPreventDuplicateEpisodes(const std::vector<PVRTypeIntValue>& preventDuplicateEpisodes,
+                                   int preventDuplicateEpisodesDefault = -1)
   {
     m_cStructure->iPreventDuplicateEpisodesSize =
         static_cast<unsigned int>(preventDuplicateEpisodes.size());

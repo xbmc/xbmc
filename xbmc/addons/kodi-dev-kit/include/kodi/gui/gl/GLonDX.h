@@ -12,14 +12,15 @@
 
 #if defined(WIN32) && defined(HAS_ANGLE)
 
-#include <EGL/egl.h>
-#include <EGL/eglext.h>
 #include <angle_gl.h>
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include <kodi/AddonBase.h>
 #include <kodi/gui/General.h>
 #include <wrl/client.h>
+
+#include <EGL/egl.h>
+#include <EGL/eglext.h>
 
 #pragma comment(lib, "d3dcompiler.lib")
 #ifndef GL_CLIENT_VERSION
@@ -389,7 +390,7 @@ using CRenderHelper = gl::CGLonDX;
 } /* namespace kodi */
 
 #else /* defined(WIN32) && defined(HAS_ANGLE) */
-#pragma message ( "WARNING: GLonDX.h only be available on Windows by use of Angle as depend!" )
+#pragma message("WARNING: GLonDX.h only be available on Windows by use of Angle as depend!")
 #endif /* defined(WIN32) && defined(HAS_ANGLE) */
 
 #endif /* __cplusplus */

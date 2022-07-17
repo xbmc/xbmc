@@ -151,7 +151,7 @@ extern "C"
 
   /// @brief the URL of the stream that should be played.
   ///
-  #define PVR_STREAM_PROPERTY_STREAMURL "streamurl"
+#define PVR_STREAM_PROPERTY_STREAMURL "streamurl"
 
   /// @brief To define in stream properties the name of the inputstream add-on
   /// that should be used.
@@ -159,7 +159,7 @@ extern "C"
   /// Leave blank to use Kodi's built-in playing capabilities or to allow ffmpeg
   /// to handle directly set to @ref PVR_STREAM_PROPERTY_VALUE_INPUTSTREAMFFMPEG.
   ///
-  #define PVR_STREAM_PROPERTY_INPUTSTREAM STREAM_PROPERTY_INPUTSTREAM
+#define PVR_STREAM_PROPERTY_INPUTSTREAM STREAM_PROPERTY_INPUTSTREAM
 
   /// @brief To define in stream properties the player the inputstream add-on
   /// should use.
@@ -169,7 +169,7 @@ extern "C"
   /// - "videodefaultplayer"
   /// - "audiodefaultplayer"
   ///
-  #define PVR_STREAM_PROPERTY_INPUTSTREAM_PLAYER STREAM_PROPERTY_INPUTSTREAM_PLAYER
+#define PVR_STREAM_PROPERTY_INPUTSTREAM_PLAYER STREAM_PROPERTY_INPUTSTREAM_PLAYER
 
   /// @brief Identification string for an input stream.
   ///
@@ -230,29 +230,29 @@ extern "C"
   /// ...
   /// ~~~~~~~~~~~~~
   ///
-  #define PVR_STREAM_PROPERTY_INPUTSTREAM_INSTANCE_ID STREAM_PROPERTY_INPUTSTREAM_INSTANCE_ID
+#define PVR_STREAM_PROPERTY_INPUTSTREAM_INSTANCE_ID STREAM_PROPERTY_INPUTSTREAM_INSTANCE_ID
 
   /// @brief the MIME type of the stream that should be played.
   ///
-  #define PVR_STREAM_PROPERTY_MIMETYPE "mimetype"
+#define PVR_STREAM_PROPERTY_MIMETYPE "mimetype"
 
   /// @brief <b>"true"</b> to denote that the stream that should be played is a
   /// realtime stream.
   ///
   /// Any other value indicates that this is no realtime stream.
   ///
-  #define PVR_STREAM_PROPERTY_ISREALTIMESTREAM STREAM_PROPERTY_ISREALTIMESTREAM
+#define PVR_STREAM_PROPERTY_ISREALTIMESTREAM STREAM_PROPERTY_ISREALTIMESTREAM
 
   /// @brief <b>"true"</b> to denote that if the stream is from an EPG tag.
   ///
   /// It should be played is a live stream. Otherwise if it's a EPG tag it will
   /// play as normal video.
   ///
-  #define PVR_STREAM_PROPERTY_EPGPLAYBACKASLIVE "epgplaybackaslive"
+#define PVR_STREAM_PROPERTY_EPGPLAYBACKASLIVE "epgplaybackaslive"
 
   /// @brief Special value for @ref PVR_STREAM_PROPERTY_INPUTSTREAM to use
   /// ffmpeg to directly play a stream URL.
-  #define PVR_STREAM_PROPERTY_VALUE_INPUTSTREAMFFMPEG STREAM_PROPERTY_VALUE_INPUTSTREAMFFMPEG
+#define PVR_STREAM_PROPERTY_VALUE_INPUTSTREAMFFMPEG STREAM_PROPERTY_VALUE_INPUTSTREAMFFMPEG
 
   ///@}
   //-----------------------------------------------------------------------------

@@ -24,7 +24,7 @@ extern "C"
   {
     void* (*get_jni_env)();
     int (*get_sdk_version)();
-    const char *(*get_class_name)();
+    const char* (*get_class_name)();
   };
 
 #ifdef __cplusplus

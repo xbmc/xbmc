@@ -186,7 +186,7 @@ public:
   ///   return false;
   /// ~~~~~~~~~~~~~
   ///
-  template <typename T>
+  template<typename T>
   bool RegisterSymbol(T& functionPtr, const char* strFunctionPtr)
   {
     functionPtr = reinterpret_cast<T>(dlsym(m_dll, strFunctionPtr));

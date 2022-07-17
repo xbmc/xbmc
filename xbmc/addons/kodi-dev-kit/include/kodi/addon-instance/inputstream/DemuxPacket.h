@@ -8,5 +8,5 @@
 
 #pragma once
 
-#include "TimingConstants.h"
 #include "../../c-api/addon-instance/inputstream/demux_packet.h"
+#include "TimingConstants.h"
