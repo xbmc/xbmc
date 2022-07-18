@@ -10,6 +10,7 @@
 // python.h should always be included first before any other includes
 #include <mutex>
 #include <Python.h>
+#include <pyconfig.h>
 // clang-format on
 
 #include "XBPython.h"
@@ -516,6 +517,25 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker* invoker)
       CEnvironment::putenv("PYTHONCASEOK=1");
 #endif
 #endif
+
+    PyPreConfig preConfig;
+    PyStatus status;
+    PyPreConfig_InitPythonConfig(&preConfig);
+
+    // Guarantee that at a minimum, the encoding of filesystem names is utf8
+    // Make sure that C/C++ locale is configured before calling this.
+
+    // When Kodi 19.1 patch for Turkish Locale breaking Kodi very badly, the patch set
+    // locale to C. This broke Python in multiple ways, including Forcing the default
+    // filesystem name encoding to ASCII, requiring every addon to explicitly set
+    // the encoding to UTF-8 in order to create files with non-ASCII. This got
+    // even worse when 3rd party code was involved.
+
+    preConfig.utf8_mode = 1;
+    status = Py_PreInitialize(&preConfig);
+
+    if (PyStatus_Exception(status)){
+    }
 
     Py_Initialize();
 
