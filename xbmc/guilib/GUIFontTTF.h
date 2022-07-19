@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "GUIFont.h"
 #include "utils/ColorUtils.h"
 #include "utils/Geometry.h"
 
@@ -74,7 +75,10 @@ struct SVertex
 
 class CGUIFontTTF
 {
-  static constexpr size_t LOOKUPTABLE_SIZE = 256 * 8;
+  // use lookup table for the first 4096 glyphs (almost any letter or symbol) to
+  // speed up GUI rendering and decrease CPU usage and less memory reallocations
+  static constexpr int MAX_GLYPH_IDX = 4096;
+  static constexpr size_t LOOKUPTABLE_SIZE = MAX_GLYPH_IDX * FONT_STYLES_COUNT;
 
   friend class CGUIFont;
 
@@ -209,7 +213,8 @@ protected:
   UTILS::COLOR::Color m_color{UTILS::COLOR::NONE};
 
   Character* m_char{nullptr}; // our characters
-  Character* m_charquick[LOOKUPTABLE_SIZE]{nullptr}; // ascii chars (7 styles) here
+  // room for the first MAX_GLYPH_IDX glyphs in 7 styles
+  Character* m_charquick[LOOKUPTABLE_SIZE]{nullptr};
   int m_maxChars{0}; // size of character array (can be incremented)
   int m_numChars{0}; // the current number of cached characters
 

@@ -8,7 +8,6 @@
 
 #include "GUIFontTTF.h"
 
-#include "GUIFont.h"
 #include "GUIFontManager.h"
 #include "ServiceBroker.h"
 #include "Texture.h"
@@ -737,15 +736,15 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr, FT_UInt glyph
   if (letter == L'\r')
     return nullptr;
 
-  const character_t style = (chr & 0x7000000) >> 24;
+  const character_t style = (chr & 0x7000000) >> 24; // style = 0 - 6
 
   if (!glyphIndex)
     glyphIndex = FT_Get_Char_Index(m_face, letter);
 
-  // quick access to ascii chars
-  if (letter < 255 && glyphIndex < 255)
+  // quick access to the most frequently used glyphs
+  if (glyphIndex < MAX_GLYPH_IDX)
   {
-    character_t ch = (style << 8) | glyphIndex;
+    character_t ch = (style << 12) | glyphIndex; // 2^12 = 4096
 
     if (ch < LOOKUPTABLE_SIZE && m_charquick[ch])
       return m_charquick[ch];
@@ -812,12 +811,13 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr, FT_UInt glyph
   m_nestedBeginCount = nestedBeginCount;
 
   // fixup quick access
-  memset(m_charquick, 0, sizeof(m_charquick));
+  *m_charquick = {};
   for (int i = 0; i < m_numChars; i++)
   {
-    if (m_char[i].m_letter < 255 && m_char[i].m_glyphIndex < 255)
+    if (m_char[i].m_glyphIndex < MAX_GLYPH_IDX)
     {
-      character_t ch = ((m_char[i].m_glyphAndStyle & 0xffff0000) >> 8) | m_char[i].m_glyphIndex;
+      // >> 16 is style (0-6), then 16 - 12 (>> 4) is equivalent to style * 4096
+      character_t ch = ((m_char[i].m_glyphAndStyle & 0xffff0000) >> 4) | m_char[i].m_glyphIndex;
 
       if (ch < LOOKUPTABLE_SIZE)
         m_charquick[ch] = m_char + i;
