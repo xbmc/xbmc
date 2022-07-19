@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-07-01 08:07+0000\n"
+"PO-Revision-Date: 2022-07-10 19:48+0000\n"
 "Last-Translator: Oskari Lavinto <olavinto@protonmail.com>\n"
 "Language-Team: Finnish <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/fi_fi/>\n"
 "Language: fi_fi\n"
@@ -96,7 +96,7 @@ msgstr "Pikselimuoto"
 #. Label to show the system memory usage
 msgctxt "#31021"
 msgid "System memory usage"
-msgstr "Järjestelmän muistin varaus"
+msgstr "Keskusmuistin varaus"
 
 msgctxt "#31024"
 msgid "Page"
@@ -104,7 +104,7 @@ msgstr "Sivu"
 
 msgctxt "#31030"
 msgid "Info List"
-msgstr "Infolista"
+msgstr "Tietolista"
 
 msgctxt "#31038"
 msgid "Login"
@@ -148,11 +148,11 @@ msgstr "Päättyy"
 
 msgctxt "#31050"
 msgid "Sort: Ascending"
-msgstr "Järjestys: nouseva"
+msgstr "Järjestys: Nouseva"
 
 msgctxt "#31051"
 msgid "Sort: Descending"
-msgstr "Järjestys: laskeva"
+msgstr "Järjestys: Laskeva"
 
 msgctxt "#31055"
 msgid "Open playlist"
@@ -200,7 +200,7 @@ msgstr "Tietolähde"
 
 msgctxt "#31309"
 msgid "System Memory Used:"
-msgstr "Järjestelmämuistin varaus:"
+msgstr "Keskusmuistin varaus:"
 
 msgctxt "#31320"
 msgid "Last Logged In"
@@ -268,7 +268,7 @@ msgstr "Näytä järjestelmätiedot · Laitteistotiedot · Tarkasta vapaa tallen
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
-msgstr "Valitse Kodi-käyttäjäprofiilisi[CR]ja kirjaudu sisään"
+msgstr "Jatka kirjatumalla[CR]Kodi-käyttäjäprofiilillesi"
 
 msgctxt "#31548"
 msgid "Home menu"
@@ -284,7 +284,7 @@ msgstr "Taustat"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"
-msgstr "Lisäosan pikavalinta"
+msgstr "Lisäosapikavalinta"
 
 msgctxt "#31552"
 msgid "SYNC"
@@ -391,7 +391,7 @@ msgstr "Järjestelmän renderöintinopeus"
 #. Label to show the system CPU usage
 msgctxt "#31609"
 msgid "System CPU usage"
-msgstr "Järjestelmän suoritinkäyttö"
+msgstr "Prosessorin kuormitus"
 
 #. Label to show the media (metadata) info page
 msgctxt "#31610"
@@ -405,7 +405,7 @@ msgstr "Järjestelmä"
 
 msgctxt "#31900"
 msgid "First Run"
-msgstr "Ensimmäinen käynnistys"
+msgstr "Ensimmäinen käyttökerta"
 
 msgctxt "#31901"
 msgid "There are two things to know about navigating Estouchy"
@@ -421,7 +421,7 @@ msgstr "Toistettavan videon tai äänen nimike näkyy ruudun yläreunassa. Sitä
 
 msgctxt "#31904"
 msgid "Now Playing Title..."
-msgstr "Parhaillaan toistetaan nimikettä..."
+msgstr "Toistetaan parhaillaan..."
 
 #~ msgctxt "#31406"
 #~ msgid "Configure display · Configure audio · Configure internet access · Configure power saving· Configure logging"
