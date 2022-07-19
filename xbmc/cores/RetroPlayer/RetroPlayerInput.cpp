@@ -8,6 +8,8 @@
 
 #include "RetroPlayerInput.h"
 
+#include "cores/RetroPlayer/process/RPProcessInfo.h"
+#include "cores/RetroPlayer/rendering/RenderContext.h"
 #include "peripherals/EventPollHandle.h"
 #include "peripherals/Peripherals.h"
 #include "utils/log.h"
@@ -15,8 +17,12 @@
 using namespace KODI;
 using namespace RETRO;
 
-CRetroPlayerInput::CRetroPlayerInput(PERIPHERALS::CPeripherals& peripheralManager)
-  : m_peripheralManager(peripheralManager)
+CRetroPlayerInput::CRetroPlayerInput(PERIPHERALS::CPeripherals& peripheralManager,
+                                     CRPProcessInfo& processInfo,
+                                     GAME::GameClientPtr gameClient)
+  : m_peripheralManager(peripheralManager),
+    m_processInfo(processInfo),
+    m_gameClient(std::move(gameClient))
 {
   CLog::Log(LOGDEBUG, "RetroPlayer[INPUT]: Initializing input");
 
@@ -28,6 +34,24 @@ CRetroPlayerInput::~CRetroPlayerInput()
   CLog::Log(LOGDEBUG, "RetroPlayer[INPUT]: Deinitializing input");
 
   m_inputPollHandle.reset();
+}
+
+void CRetroPlayerInput::StartAgentManager()
+{
+  if (!m_bAgentManagerStarted)
+  {
+    m_bAgentManagerStarted = true;
+    m_processInfo.GetRenderContext().StartAgentManager(m_gameClient);
+  }
+}
+
+void CRetroPlayerInput::StopAgentManager()
+{
+  if (m_bAgentManagerStarted)
+  {
+    m_bAgentManagerStarted = false;
+    m_processInfo.GetRenderContext().StopAgentManager();
+  }
 }
 
 void CRetroPlayerInput::SetSpeed(double speed)
