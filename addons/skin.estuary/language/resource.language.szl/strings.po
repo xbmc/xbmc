@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-07-01 08:26+0000\n"
+"PO-Revision-Date: 2022-07-18 16:36+0000\n"
 "Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Silesian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/szl/>\n"
 "Language: szl\n"
@@ -510,7 +510,7 @@ msgstr ""
 #. Label to show player info page
 msgctxt "#31138"
 msgid "Player"
-msgstr ""
+msgstr "Ôdgrowocz"
 
 #. Label to show video decoder name
 msgctxt "#31139"
