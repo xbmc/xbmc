@@ -48,11 +48,11 @@ CControllerTree CGameClientTopology::GetControllerTree(const GameClientPortVec& 
 }
 
 CPortNode CGameClientTopology::GetPortNode(const GameClientPortPtr& port,
-                                           const std::string& address)
+                                           const std::string& controllerAddress)
 {
   CPortNode portNode;
 
-  std::string portAddress = MakeAddress(address, port->ID());
+  std::string portAddress = MakeAddress(controllerAddress, port->ID());
 
   portNode.SetConnected(false);
   portNode.SetPortType(port->PortType());
@@ -72,14 +72,15 @@ CPortNode CGameClientTopology::GetPortNode(const GameClientPortPtr& port,
 }
 
 CControllerNode CGameClientTopology::GetControllerNode(const GameClientDevicePtr& device,
-                                                       const std::string& address)
+                                                       const std::string& portAddress)
 {
   CControllerNode controllerNode;
 
-  std::string controllerAddress = MakeAddress(address, device->Controller()->ID());
+  const std::string controllerAddress = MakeAddress(portAddress, device->Controller()->ID());
 
   controllerNode.SetController(device->Controller());
-  controllerNode.SetAddress(controllerAddress);
+  controllerNode.SetPortAddress(portAddress);
+  controllerNode.SetControllerAddress(controllerAddress);
 
   PortVec ports;
   for (const GameClientPortPtr& port : device->Ports())

@@ -147,7 +147,7 @@ unsigned int CControllerGrid::AddController(const CPortNode& port,
   vertex.bConnected = port.IsConnected();
   vertex.portType = port.GetPortType();
   vertex.controller = activeController.GetController();
-  vertex.address = activeController.GetAddress();
+  vertex.address = activeController.GetControllerAddress();
   for (const CControllerNode& node : port.GetCompatibleControllers())
     vertex.compatible.emplace_back(node.GetController());
   column.emplace_back(std::move(vertex));

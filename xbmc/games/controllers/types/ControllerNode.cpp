@@ -30,7 +30,8 @@ CControllerNode& CControllerNode::operator=(const CControllerNode& rhs)
   if (this != &rhs)
   {
     m_controller = rhs.m_controller;
-    m_address = rhs.m_address;
+    m_portAddress = rhs.m_portAddress;
+    m_controllerAddress = rhs.m_controllerAddress;
     m_hub.reset(new CControllerHub(*rhs.m_hub));
   }
 
@@ -42,7 +43,8 @@ CControllerNode& CControllerNode::operator=(CControllerNode&& rhs) noexcept
   if (this != &rhs)
   {
     m_controller = std::move(rhs.m_controller);
-    m_address = std::move(rhs.m_address);
+    m_portAddress = std::move(rhs.m_portAddress);
+    m_controllerAddress = std::move(rhs.m_controllerAddress);
     m_hub = std::move(rhs.m_hub);
   }
 
@@ -52,7 +54,8 @@ CControllerNode& CControllerNode::operator=(CControllerNode&& rhs) noexcept
 void CControllerNode::Clear()
 {
   m_controller.reset();
-  m_address.clear();
+  m_portAddress.clear();
+  m_controllerAddress.clear();
   m_hub.reset(new CControllerHub);
 }
 
@@ -79,9 +82,14 @@ void CControllerNode::GetControllers(ControllerVector& controllers) const
   m_hub->GetControllers(controllers);
 }
 
-void CControllerNode::SetAddress(std::string address)
+void CControllerNode::SetPortAddress(std::string portAddress)
 {
-  m_address = std::move(address);
+  m_portAddress = std::move(portAddress);
+}
+
+void CControllerNode::SetControllerAddress(std::string controllerAddress)
+{
+  m_controllerAddress = std::move(controllerAddress);
 }
 
 void CControllerNode::SetHub(CControllerHub hub)
