@@ -17,6 +17,7 @@
 
 #include <array>
 #include <cmath>
+#include <tuple>
 
 using namespace KODI;
 using namespace JOYSTICK;
@@ -102,13 +103,16 @@ bool CInputHandling::OnDigitalMotion(const CDriverPrimitive& source, bool bPress
   FeatureName featureName;
   if (m_buttonMap->GetFeature(source, featureName))
   {
-    FeaturePtr& feature = m_features[featureName];
+    auto it = m_features.find(featureName);
+    if (it == m_features.end())
+    {
+      FeaturePtr feature(CreateFeature(featureName));
+      if (feature)
+        std::tie(it, std::ignore) = m_features.insert({featureName, std::move(feature)});
+    }
 
-    if (!feature)
-      feature = FeaturePtr(CreateFeature(featureName));
-
-    if (feature)
-      bHandled = feature->OnDigitalMotion(source, bPressed);
+    if (it != m_features.end())
+      bHandled = it->second->OnDigitalMotion(source, bPressed);
   }
   else if (bPressed)
   {
@@ -131,13 +135,16 @@ bool CInputHandling::OnAnalogMotion(const CDriverPrimitive& source, float magnit
   FeatureName featureName;
   if (m_buttonMap->GetFeature(source, featureName))
   {
-    FeaturePtr& feature = m_features[featureName];
+    auto it = m_features.find(featureName);
+    if (it == m_features.end())
+    {
+      FeaturePtr feature(CreateFeature(featureName));
+      if (feature)
+        std::tie(it, std::ignore) = m_features.insert({featureName, std::move(feature)});
+    }
 
-    if (!feature)
-      feature = FeaturePtr(CreateFeature(featureName));
-
-    if (feature)
-      bHandled = feature->OnAnalogMotion(source, magnitude);
+    if (it != m_features.end())
+      bHandled = it->second->OnAnalogMotion(source, magnitude);
   }
 
   return bHandled;
