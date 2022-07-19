@@ -195,8 +195,9 @@ bool CServiceManager::InitStageThree(const std::shared_ptr<CProfileManager>& pro
   // Peripherals depends on strings being loaded before stage 3
   m_peripherals->Initialise();
 
-  m_gameServices.reset(new GAME::CGameServices(*m_gameControllerManager, *m_gameRenderManager,
-                                               *m_peripherals, *profileManager));
+  m_gameServices =
+      std::make_unique<GAME::CGameServices>(*m_gameControllerManager, *m_gameRenderManager,
+                                            *m_peripherals, *profileManager, *m_inputManager);
 
   m_contextMenuManager->Init();
 
