@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-06-26 13:01+0000\n"
+"PO-Revision-Date: 2022-07-16 11:32+0000\n"
 "Last-Translator: Oskari Lavinto <olavinto@protonmail.com>\n"
 "Language-Team: Finnish <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/fi_fi/>\n"
 "Language: fi_fi\n"
@@ -23,7 +23,7 @@ msgstr "Estuary-ulkoasun ovat kehittäneet phil65 ja Piers. (Kodin oletusulkoasu
 
 msgctxt "Addon Description"
 msgid "Estuary is the default skin for Kodi 17.0 and above. It attempts to be easy for first time Kodi users to understand and use."
-msgstr "Estuary on Kodin oletusulkoasu versiosta 17.0 lähtien. Sen on tarkoitus olla uusille Kodi-käyttäjille selkeä ja helppokäyttöinen."
+msgstr "Estuary on Kodin oletusulkoasu alkaen versiosta 17.0. Sen on tarkoitus olla uusille Kodi-käyttäjille selkeä ja helppokäyttöinen."
 
 msgctxt "Addon Disclaimer"
 msgid "Estuary is the default skin for Kodi, removing it may cause issues"
@@ -155,7 +155,7 @@ msgstr "Kirjautunut viimeksi"
 #. Label to show the system memory usage
 msgctxt "#31030"
 msgid "System memory usage"
-msgstr "Järjestelmän muistin varaus"
+msgstr "Keskusmuistin varaus"
 
 msgctxt "#31031"
 msgid "Version info"
@@ -175,7 +175,7 @@ msgstr "Laajat tiedot"
 
 msgctxt "#31035"
 msgid "Pages"
-msgstr "Sivut"
+msgstr "Sivua"
 
 msgctxt "#31036"
 msgid "items"
@@ -183,7 +183,7 @@ msgstr "kohdetta"
 
 msgctxt "#31037"
 msgid "Selected track"
-msgstr "Valittu kappale"
+msgstr "Aktiivinen kappale"
 
 msgctxt "#31038"
 msgid "Rewind"
@@ -203,7 +203,7 @@ msgstr "Toistolistan valinnat"
 
 msgctxt "#31043"
 msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
-msgstr "Valitse älykkään toistolistan tyyppi ja hakuehdot. Tälle automaattisesti päivittyvälle listalle lisätään kaikki mediakirjastosi kohteet, jotka täyttävät asettamasi ehdot."
+msgstr "Valitse älytoistolistan tyyppi ja hakuehdot. Tälle automaattisesti päivittyvälle listalle lisätään kaikki mediakirjastosi kohteet, jotka täyttävät asettamasi ehdot."
 
 msgctxt "#31044"
 msgid "Add group"
@@ -355,7 +355,7 @@ msgstr "Kanavavalinnat"
 
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
-msgstr "Valitse Kodi-käyttäjäprofiilisi[CR]kirjautuaksesi ja jatkaaksesi"
+msgstr "Jatka kirjatumalla[CR]Kodi-käyttäjäprofiilillesi"
 
 #. viewtype name
 msgctxt "#31099"
@@ -365,7 +365,7 @@ msgstr "Kuvakeseinä"
 #. viewtype name
 msgctxt "#31100"
 msgid "Shift"
-msgstr "Vaihto"
+msgstr "Siirtyvä"
 
 #. viewtype name
 msgctxt "#31101"
@@ -428,7 +428,7 @@ msgstr "Poista tämä päävalikon kohde"
 
 msgctxt "#31117"
 msgid "Edit nodes"
-msgstr "Muokkaa somuja"
+msgstr "Muokkaa solmuja"
 
 msgctxt "#31118"
 msgid "Enter add-on browser"
@@ -713,7 +713,7 @@ msgstr "Järjestelmän renderöintinopeus"
 #. Label to show the system CPU usage
 msgctxt "#31609"
 msgid "System CPU usage"
-msgstr "Järjestelmän suoritinkäyttö"
+msgstr "Prosessorin kuormitus"
 
 #. Label to show the media (metadata) info page
 msgctxt "#31610"
