@@ -9,6 +9,7 @@
 #pragma once
 
 #include "input/mouse/interfaces/IMouseInputHandler.h"
+#include "peripherals/PeripheralTypes.h"
 
 namespace KODI
 {
@@ -52,11 +53,22 @@ public:
   bool OnButtonPress(const std::string& button) override;
   void OnButtonRelease(const std::string& button) override;
 
+  // Input accessors
+  const std::string& GetControllerID() const { return m_controllerId; }
+  const PERIPHERALS::PeripheralPtr& GetSource() const { return m_sourcePeripheral; }
+
+  // Input mutators
+  void SetSource(PERIPHERALS::PeripheralPtr sourcePeripheral);
+  void ClearSource();
+
 private:
   // Construction parameters
   CGameClient& m_gameClient;
   const std::string m_controllerId;
   MOUSE::IMouseInputProvider* const m_inputProvider;
+
+  // Input parameters
+  PERIPHERALS::PeripheralPtr m_sourcePeripheral;
 };
 } // namespace GAME
 } // namespace KODI
