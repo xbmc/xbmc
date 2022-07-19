@@ -126,7 +126,10 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
     {
       m_streamManager.reset(new CRPStreamManager(*m_renderManager, *m_processInfo));
 
-      m_input.reset(new CRetroPlayerInput(CServiceBroker::GetPeripherals()));
+      // Initialize input
+      m_input = std::make_unique<CRetroPlayerInput>(CServiceBroker::GetPeripherals(),
+                                                    *m_processInfo, m_gameClient);
+      m_input->StartAgentManager();
 
       if (!bStandalone)
       {
@@ -233,13 +236,17 @@ bool CRetroPlayer::CloseFile(bool reopen /* = false */)
 
   m_playback.reset();
 
+  if (m_input)
+    m_input->StopAgentManager();
+
+  m_cheevos.reset();
+
   if (m_gameClient)
     m_gameClient->CloseFile();
 
   m_input.reset();
-  m_streamManager.reset();
 
-  m_cheevos.reset();
+  m_streamManager.reset();
 
   if (m_gameClient)
     m_gameClient->Unload();

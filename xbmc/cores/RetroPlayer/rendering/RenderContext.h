@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "games/GameTypes.h"
 #include "utils/ColorUtils.h"
 #include "utils/Geometry.h"
 #include "windowing/Resolution.h"
@@ -31,6 +32,11 @@ enum class GL_SHADER_METHOD
 
 namespace KODI
 {
+namespace GAME
+{
+class CGameServices;
+}
+
 namespace RETRO
 {
 class CRenderContext
@@ -40,7 +46,8 @@ public:
                  CWinSystemBase* windowing,
                  CGraphicContext& graphicsContext,
                  CDisplaySettings& displaySettings,
-                 CMediaSettings& mediaSettings);
+                 CMediaSettings& mediaSettings,
+                 GAME::CGameServices& gameServices);
 
   CRenderSystemBase* Rendering() { return m_rendering; }
   CWinSystemBase* Windowing() { return m_windowing; }
@@ -94,6 +101,10 @@ public:
   ::CGameSettings& GetGameSettings();
   ::CGameSettings& GetDefaultGameSettings();
 
+  // Agent functions
+  void StartAgentManager(GAME::GameClientPtr gameClient);
+  void StopAgentManager();
+
 private:
   // Construction parameters
   CRenderSystemBase* const m_rendering;
@@ -101,6 +112,7 @@ private:
   CGraphicContext& m_graphicsContext;
   CDisplaySettings& m_displaySettings;
   CMediaSettings& m_mediaSettings;
+  GAME::CGameServices& m_gameServices;
 };
 } // namespace RETRO
 } // namespace KODI
