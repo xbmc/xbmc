@@ -471,6 +471,7 @@ bool CGameClientInput::OpenKeyboard(const ControllerPtr& controller,
   {
     m_keyboard =
         std::make_unique<CGameClientKeyboard>(m_gameClient, controller->ID(), keyboard.get());
+    m_keyboard->SetSource(keyboard);
     return true;
   }
 
@@ -539,6 +540,7 @@ bool CGameClientInput::OpenMouse(const ControllerPtr& controller,
   if (bSuccess)
   {
     m_mouse = std::make_unique<CGameClientMouse>(m_gameClient, controller->ID(), mouse.get());
+    m_mouse->SetSource(mouse);
     return true;
   }
 
