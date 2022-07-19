@@ -75,10 +75,11 @@ public:
 
   // Input accessors
   const std::string& GetPortAddress() const { return m_portAddress; }
-  const ControllerPtr& GetController() const { return m_controller; }
+  ControllerPtr GetController() const { return m_controller; }
   std::string GetControllerAddress() const;
-  const PERIPHERALS::PeripheralPtr& GetSource() const { return m_sourcePeripheral; }
+  PERIPHERALS::PeripheralPtr GetSource() const { return m_sourcePeripheral; }
   std::string GetSourceLocation() const;
+  float GetActivation() const;
 
   // Input mutators
   void SetSource(PERIPHERALS::PeripheralPtr sourcePeripheral);
