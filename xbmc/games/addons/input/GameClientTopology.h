@@ -32,7 +32,7 @@ public:
 
 private:
   static CControllerTree GetControllerTree(const GameClientPortVec& ports);
-  static CPortNode GetPortNode(const GameClientPortPtr& port, const std::string& address);
+  static CPortNode GetPortNode(const GameClientPortPtr& port, const std::string& controllerAddress);
   static CControllerNode GetControllerNode(const GameClientDevicePtr& device,
                                            const std::string& portAddress);
 
