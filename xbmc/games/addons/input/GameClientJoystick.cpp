@@ -13,6 +13,7 @@
 #include "games/controllers/Controller.h"
 #include "games/ports/input/PortInput.h"
 #include "input/joysticks/interfaces/IInputReceiver.h"
+#include "peripherals/devices/Peripheral.h"
 #include "utils/log.h"
 
 #include <assert.h>
@@ -167,6 +168,24 @@ bool CGameClientJoystick::OnThrottleMotion(const std::string& feature,
   event.axis.position = position;
 
   return m_gameClient.Input().InputEvent(event);
+}
+
+std::string CGameClientJoystick::GetSourceLocation() const
+{
+  if (m_sourcePeripheral)
+    return m_sourcePeripheral->Location();
+
+  return "";
+}
+
+void CGameClientJoystick::SetSource(PERIPHERALS::PeripheralPtr sourcePeripheral)
+{
+  m_sourcePeripheral = std::move(sourcePeripheral);
+}
+
+void CGameClientJoystick::ClearSource()
+{
+  m_sourcePeripheral.reset();
 }
 
 bool CGameClientJoystick::SetRumble(const std::string& feature, float magnitude)
