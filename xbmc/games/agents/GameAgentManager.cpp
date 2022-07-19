@@ -133,6 +133,16 @@ bool CGameAgentManager::OnButtonPress(MOUSE::BUTTON_ID button)
   return false;
 }
 
+float CGameAgentManager::GetPortActivation(const std::string& portAddress) const
+{
+  float activation = 0.0f;
+
+  if (m_gameClient)
+    activation = m_gameClient->Input().GetPortActivation(portAddress);
+
+  return activation;
+}
+
 void CGameAgentManager::ProcessJoysticks(PERIPHERALS::EventLockHandlePtr& inputHandlingLock)
 {
   // Get system joysticks.
