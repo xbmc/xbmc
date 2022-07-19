@@ -23,6 +23,8 @@ class IInputProvider;
 
 namespace GAME
 {
+class CControllerActivity;
+
 class CPortInput : public JOYSTICK::IInputHandler, public IKeymapEnvironment
 {
 public:
@@ -32,7 +34,8 @@ public:
   void RegisterInput(JOYSTICK::IInputProvider* provider);
   void UnregisterInput(JOYSTICK::IInputProvider* provider);
 
-  JOYSTICK::IInputHandler* InputHandler() { return m_gameInput; }
+  // Input parameters
+  float GetActivation() const;
 
   // Implementation of IInputHandler
   std::string ControllerID() const override;
@@ -54,7 +57,7 @@ public:
   bool OnThrottleMotion(const std::string& feature,
                         float position,
                         unsigned int motionTimeMs) override;
-  void OnInputFrame() override {}
+  void OnInputFrame() override;
 
   // Implementation of IKeymapEnvironment
   int GetWindowID() const override;
@@ -72,6 +75,9 @@ private:
 
   // Prevents input falling through to Kodi when not handled by the game
   std::unique_ptr<JOYSTICK::IInputHandler> m_inputSink;
+
+  // Records controller activity
+  std::unique_ptr<CControllerActivity> m_controllerActivity;
 };
 } // namespace GAME
 } // namespace KODI

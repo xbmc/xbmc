@@ -254,10 +254,12 @@
 									<shadowcolor>text_shadow</shadowcolor>
 									<align>right</align>
 								</control>
-								<control type="image">
+								<control type="gamecontroller">
 									<right>12</right>
 									<width>100</width>
 									<texture>$INFO[ListItem.Icon]</texture>
+									<portaddress>$INFO[ListItem.FilenameAndPath]</portaddress>
+									<controllerdiffuse>button_focus</controllerdiffuse>
 								</control>
 							</control>
 						</itemlayout>
@@ -287,10 +289,12 @@
 									<shadowcolor>text_shadow</shadowcolor>
 									<align>right</align>
 								</control>
-								<control type="image">
+								<control type="gamecontroller">
 									<right>12</right>
 									<width>100</width>
 									<texture>$INFO[ListItem.Icon]</texture>
+									<portaddress>$INFO[ListItem.FilenameAndPath]</portaddress>
+									<controllerdiffuse>button_focus</controllerdiffuse>
 								</control>
 							</control>
 						</focusedlayout>

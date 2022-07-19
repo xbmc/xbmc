@@ -166,6 +166,17 @@ bool CGameClientInput::InputEvent(const game_input_event& event)
   return bHandled;
 }
 
+float CGameClientInput::GetPortActivation(const std::string& portAddress)
+{
+  float activation = 0.0f;
+
+  auto it = m_joysticks.find(portAddress);
+  if (it != m_joysticks.end())
+    activation = it->second->GetActivation();
+
+  return activation;
+}
+
 void CGameClientInput::LoadTopology()
 {
   game_input_topology* topologyStruct = nullptr;
