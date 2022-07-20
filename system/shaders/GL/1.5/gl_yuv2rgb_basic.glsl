@@ -97,6 +97,7 @@ vec4 process()
   rgb.rgb = pow(max(vec3(0), rgb.rgb), vec3(m_gammaSrc));
   rgb.rgb = max(vec3(0), m_primMat * rgb.rgb);
   rgb.rgb = pow(rgb.rgb, vec3(m_gammaDstInv));
+#endif
 
 #if defined(KODI_TONE_MAPPING_REINHARD)
   float luma = dot(rgb.rgb, m_coefsDst);
@@ -115,8 +116,6 @@ vec4 process()
   float wp = m_luminance / 100.0;
   rgb.rgb = hable(rgb.rgb * wp) / hable(vec3(wp));
   rgb.rgb = pow(rgb.rgb, vec3(1.0 / 2.2));
-#endif
-
 #endif
 
   return rgb;
