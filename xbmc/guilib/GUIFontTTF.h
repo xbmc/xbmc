@@ -110,19 +110,15 @@ public:
 protected:
   explicit CGUIFontTTF(const std::string& fontIdent);
 
-
   struct Glyph
   {
-    hb_glyph_info_t m_glyphInfo;
-    hb_glyph_position_t m_glyphPosition;
+    hb_glyph_info_t m_glyphInfo{};
+    hb_glyph_position_t m_glyphPosition{};
 
-    // converter for harfbuzz library
-    Glyph(hb_glyph_info_t gInfo, hb_glyph_position_t gPos)
+    Glyph(const hb_glyph_info_t& glyphInfo, const hb_glyph_position_t& glyphPosition)
+      : m_glyphInfo(glyphInfo), m_glyphPosition(glyphPosition)
     {
-      m_glyphInfo = gInfo;
-      m_glyphPosition = gPos;
     }
-    Glyph() {}
   };
 
   struct Character
