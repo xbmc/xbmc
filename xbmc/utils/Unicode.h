@@ -2,10 +2,16 @@
 
 //#include <locale>
 
+#include <climits>
+#include <iterator>
+#include <stddef.h>
+#include <string>
+#include <tuple>
+#include <type_traits>
+#include <vector>
+
 #include <bits/stdint-intn.h>
 #include <bits/stdint-uintn.h>
-#include <stddef.h>
-#include <tuple>
 #include <unicode/brkiter.h>
 #include <unicode/locid.h>
 #include <unicode/platform.h>
@@ -14,11 +20,6 @@
 #include <unicode/unistr.h>
 #include <unicode/utypes.h>
 #include <unicode/uversion.h>
-#include <climits>
-#include <iterator>
-#include <string>
-#include <type_traits>
-#include <vector>
 
 template<typename E>
 constexpr auto to_underlying(E e) noexcept
@@ -71,9 +72,9 @@ enum class StringOptions : uint32_t
    *
    */
   FOLD_CASE_DEFAULT = 0, // U_FOLD_CASE_DEFAULT,
-      FOLD_CASE_EXCLUDE_SPECIAL_I = 1, // U_FOLD_CASE_EXCLUDE_SPECIAL_I
+  FOLD_CASE_EXCLUDE_SPECIAL_I = 1, // U_FOLD_CASE_EXCLUDE_SPECIAL_I
 
-      /**
+  /**
        * Titlecase the string as a whole rather than each word.
        * (Titlecase only the character at index 0, possibly adjusted.)
        * Option bits value for titlecasing APIs that take an options bit set.
@@ -84,8 +85,8 @@ enum class StringOptions : uint32_t
        * @see U_TITLECASE_ADJUST_TO_CASED
        * @stable ICU 60
        */
-      TITLECASE_WHOLE_STRING = 0x20,
-      /**
+  TITLECASE_WHOLE_STRING = 0x20,
+  /**
        * Titlecase sentences rather than words.
        * (Titlecase only the first character of each sentence, possibly adjusted.)
        * Option bits value for titlecasing APIs that take an options bit set.
@@ -97,9 +98,9 @@ enum class StringOptions : uint32_t
        * @stable ICU 60
        */
 
-      TITLE_CASE_SENTENCES = 0X40, // U_TITLECASE_SENTENCES
+  TITLE_CASE_SENTENCES = 0X40, // U_TITLECASE_SENTENCES
 
-      /**
+  /**
        * Do not lowercase non-initial parts of words when titlecasing.
        * Option bit for titlecasing APIs that take an options bit set.
        *
@@ -117,9 +118,9 @@ enum class StringOptions : uint32_t
        * @stable ICU 3.8
        */
 
-      TITLE_CASE_NO_LOWERCASE = 0x100, // U_TITLECASE_NO_LOWERCASE
+  TITLE_CASE_NO_LOWERCASE = 0x100, // U_TITLECASE_NO_LOWERCASE
 
-      /**
+  /**
        * Do not adjust the titlecasing BreakIterator indexes;
        * titlecase exactly the characters at breaks from the iterator.
        * Option bit for titlecasing APIs that take an options bit set.
@@ -142,9 +143,9 @@ enum class StringOptions : uint32_t
        * @stable ICU 3.8
        */
 
-      TITLE_CASE_NO_BREAK_ADJUSTMENT = 0x200, // U_TITLECASE_NO_BREAK_ADJUSTMENT
+  TITLE_CASE_NO_BREAK_ADJUSTMENT = 0x200, // U_TITLECASE_NO_BREAK_ADJUSTMENT
 
-      /**
+  /**
        * Adjust each titlecasing BreakIterator index to the next cased character.
        * (See the Unicode Standard, chapter 3, Default Case Conversion, R3 toTitlecase(X).)
        * Option bit for titlecasing APIs that take an options bit set.
@@ -163,9 +164,9 @@ enum class StringOptions : uint32_t
        * @stable ICU 60
        */
 
-      TITLE_CASE_ADJUST_TO_CASED = 0X400, // U_TITLECASE_ADJUST_TO_CASED
+  TITLE_CASE_ADJUST_TO_CASED = 0X400, // U_TITLECASE_ADJUST_TO_CASED
 
-      /**
+  /**
        * Option for string transformation functions to not first reset the Edits object.
        * Used for example in some case-mapping and normalization functions.
        *
@@ -175,9 +176,9 @@ enum class StringOptions : uint32_t
        * @stable ICU 60
        */
 
-      EDITS_NO_RESET = 0X2000, // U_EDITS_NO_RESET
+  EDITS_NO_RESET = 0X2000, // U_EDITS_NO_RESET
 
-      /**
+  /**
        * Omit unchanged text when recording how source substrings
        * relate to changed and unchanged result substrings.
        * Used for example in some case-mapping and normalization functions.
@@ -187,42 +188,42 @@ enum class StringOptions : uint32_t
        * @see Normalizer2
        * @stable ICU 60
        */
-      OMIT_UNCHANGED_TEXT = 0x4000, // U_OMIT_UNCHANGED_TEXT
+  OMIT_UNCHANGED_TEXT = 0x4000, // U_OMIT_UNCHANGED_TEXT
 
-      /**
+  /**
        * Option bit for u_strCaseCompare, u_strcasecmp, unorm_compare, etc:
        * Compare strings in code point order instead of code unit order.
        * @stable ICU 2.2
        */
-      COMPARE_CODE_POINT_ORDER = 0x8000, // U_COMPARE_CODE_POINT_ORDER
-      /**
+  COMPARE_CODE_POINT_ORDER = 0x8000, // U_COMPARE_CODE_POINT_ORDER
+  /**
        * Option bit for unorm_compare:
        * Perform case-insensitive comparison.
        * @stable ICU 2.2
        */
-      COMPARE_IGNORE_CASE = 0x10000, // U_COMPARE_IGNORE_CASE
+  COMPARE_IGNORE_CASE = 0x10000, // U_COMPARE_IGNORE_CASE
 
-      /**
+  /**
        * Option bit for unorm_compare:
        * Both input strings are assumed to fulfill FCD conditions.
        * @stable ICU 2.2
        */
-      NORM_INPUT_IS_FCD = 0X20000 // UNORM_INPUT_IS_FCD
+  NORM_INPUT_IS_FCD = 0X20000 // UNORM_INPUT_IS_FCD
 
-      // Related definitions elsewhere.
-      // Options that are not meaningful in the same functions
-      // can share the same bits.
-      //
-      // Public:
-      // unicode/unorm.h #define UNORM_COMPARE_NORM_OPTIONS_SHIFT 20
-      //
-      // Internal: (may change or be removed)
-      // ucase.h #define _STRCASECMP_OPTIONS_MASK 0xffff
-      // ucase.h #define _FOLD_CASE_OPTIONS_MASK 7
-      // ucasemap_imp.h #define U_TITLECASE_ITERATOR_MASK 0xe0
-      // ucasemap_imp.h #define U_TITLECASE_ADJUSTMENT_MASK 0x600
-      // ustr_imp.h #define _STRNCMP_STYLE 0x1000
-      // unormcmp.cpp #define _COMPARE_EQUIV 0x80000
+  // Related definitions elsewhere.
+  // Options that are not meaningful in the same functions
+  // can share the same bits.
+  //
+  // Public:
+  // unicode/unorm.h #define UNORM_COMPARE_NORM_OPTIONS_SHIFT 20
+  //
+  // Internal: (may change or be removed)
+  // ucase.h #define _STRCASECMP_OPTIONS_MASK 0xffff
+  // ucase.h #define _FOLD_CASE_OPTIONS_MASK 7
+  // ucasemap_imp.h #define U_TITLECASE_ITERATOR_MASK 0xe0
+  // ucasemap_imp.h #define U_TITLECASE_ADJUSTMENT_MASK 0x600
+  // ustr_imp.h #define _STRNCMP_STYLE 0x1000
+  // unormcmp.cpp #define _COMPARE_EQUIV 0x80000
 
 };
 
@@ -244,14 +245,14 @@ enum class RegexpFlag : uint32_t
   /**  Enable case insensitive matching.  @stable ICU 2.4 */
   UREGEX_CASE_INSENSITIVE = 2,
 
-      /**  Allow white space and comments within patterns  @stable ICU 2.4 */
-      UREGEX_COMMENTS = 4,
+  /**  Allow white space and comments within patterns  @stable ICU 2.4 */
+  UREGEX_COMMENTS = 4,
 
-      /**  If set, '.' matches line terminators,  otherwise '.' matching stops at line end.
+  /**  If set, '.' matches line terminators,  otherwise '.' matching stops at line end.
        *  @stable ICU 2.4 */
-      UREGEX_DOTALL = 32,
+  UREGEX_DOTALL = 32,
 
-      /**  If set, treat the entire pattern as a literal string.
+  /**  If set, treat the entire pattern as a literal string.
        *  Metacharacters or escape sequences in the input sequence will be given
        *  no special meaning.
        *
@@ -261,38 +262,38 @@ enum class RegexpFlag : uint32_t
        *
        * @stable ICU 4.0
        */
-      UREGEX_LITERAL = 16,
+  UREGEX_LITERAL = 16,
 
-      /**   Control behavior of "$" and "^"
+  /**   Control behavior of "$" and "^"
        *    If set, recognize line terminators within string,
        *    otherwise, match only at start and end of input string.
        *   @stable ICU 2.4 */
-      UREGEX_MULTILINE = 8,
+  UREGEX_MULTILINE = 8,
 
-      /**   Unix-only line endings.
+  /**   Unix-only line endings.
        *   When this mode is enabled, only \\u000a is recognized as a line ending
        *    in the behavior of ., ^, and $.
        *   @stable ICU 4.0
        */
-      UREGEX_UNIX_LINES = 1,
+  UREGEX_UNIX_LINES = 1,
 
-      /**  Unicode word boundaries.
+  /**  Unicode word boundaries.
        *     If set, \b uses the Unicode TR 29 definition of word boundaries.
        *     Warning: Unicode word boundaries are quite different from
        *     traditional regular expression word boundaries.  See
        *     http://unicode.org/reports/tr29/#Word_Boundaries
        *     @stable ICU 2.8
        */
-      UREGEX_UWORD = 256,
+  UREGEX_UWORD = 256,
 
-      /**  Error on Unrecognized backslash escapes.
+  /**  Error on Unrecognized backslash escapes.
        *     If set, fail with an error on patterns that contain
        *     backslash-escaped ASCII letters without a known special
        *     meaning.  If this flag is not set, these
        *     escaped letters represent themselves.
        *     @stable ICU 4.0
        */
-      UREGEX_ERROR_ON_UNKNOWN_ESCAPES = 512
+  UREGEX_ERROR_ON_UNKNOWN_ESCAPES = 512
 
 };
 inline RegexpFlag operator|(RegexpFlag a, RegexpFlag b)
@@ -302,13 +303,16 @@ inline RegexpFlag operator|(RegexpFlag a, RegexpFlag b)
 
 enum class NormalizerType : int
 {
-  NFC = 0, NFD = 1, NFKC = 2, NFKD = 3, NFCKCASEFOLD = 4
+  NFC = 0,
+  NFD = 1,
+  NFKC = 2,
+  NFKD = 3,
+  NFCKCASEFOLD = 4
 };
 
 class Unicode
 {
 public:
-
   /*
    * Constants, based on std::string::npos which allow the ability to
    * distinguish between several states. Currently only in use by GetCharPosition.
@@ -331,7 +335,7 @@ public:
    *  \param str UTF8 string to convert
    *  \return converted wstring
    */
-  static std::wstring UTF8ToWString(const std::string &str);
+  static std::wstring UTF8ToWString(const std::string& str);
 
   /*!
    * \brief Convert a wstring to UTF8
@@ -339,7 +343,7 @@ public:
    * \param str wstring to convert
    * \return string converted to UTF8
    */
-  static std::string WStringToUTF8(const std::wstring &str);
+  static std::string WStringToUTF8(const std::wstring& str);
 
 private:
   /*!
@@ -360,9 +364,12 @@ private:
    * Note that malformed Unicode codepoints will be converted to place-holder
    * "substitute" Unicode codepoints.
    */
-  static UChar* StringToUChar(const std::string &src, UChar *buffer, size_t bufferSize,
-      int32_t &destLength, const size_t src_offset = 0,
-      const size_t src_length = std::string::npos);
+  static UChar* StringToUChar(const std::string& src,
+                              UChar* buffer,
+                              size_t bufferSize,
+                              int32_t& destLength,
+                              const size_t src_offset = 0,
+                              const size_t src_length = std::string::npos);
 
   /*!
    * \brief Convert a UTF-8 string into a UChar buffer
@@ -381,8 +388,11 @@ private:
    * Note that malformed Unicode codepoints will be converted to place-holder
    * "substitute" Unicode codepoints.
    */
-  static UChar* StringToUChar(const char *src, UChar *buffer, size_t bufferSize,
-      int32_t &destLength, const size_t length = std::string::npos);
+  static UChar* StringToUChar(const char* src,
+                              UChar* buffer,
+                              size_t bufferSize,
+                              int32_t& destLength,
+                              const size_t length = std::string::npos);
 
   /*!
    * \brief Convert a wchar_t array into a UChar buffer
@@ -401,8 +411,11 @@ private:
    * Note that malformed Unicode codepoints will be converted to place-holder
    * "substitute" Unicode codepoints.
    */
-  static UChar* WcharToUChar(const wchar_t *src, UChar *buffer, size_t bufferSize,
-      int32_t &destLength, const size_t length = std::string::npos);
+  static UChar* WcharToUChar(const wchar_t* src,
+                             UChar* buffer,
+                             size_t bufferSize,
+                             int32_t& destLength,
+                             const size_t length = std::string::npos);
 
   /*!
    * \brief Convert a UChar (UTF-16) array into a UTF-8 std::string
@@ -421,8 +434,11 @@ private:
    * Note that malformed Unicode codepoints will be converted to place-holder
    * "substitute" Unicode codepoints.
    */
-  static std::string UCharToString(const UChar *u_str, char *buffer, size_t bufferSize,
-      int32_t &destLength, const size_t u_str_length);
+  static std::string UCharToString(const UChar* u_str,
+                                   char* buffer,
+                                   size_t bufferSize,
+                                   int32_t& destLength,
+                                   const size_t u_str_length);
 
   /*!
    * \brief Convert a UChar (UTF-16) array into a wchar_t (Unicode, UChar32) buffer
@@ -441,8 +457,11 @@ private:
    * Note that malformed Unicode codepoints will be converted to place-holder
    * "substitute" Unicode codepoints.
    */
-  static wchar_t* UCharToWChar(const UChar *u_str, wchar_t *buffer, size_t bufferSize,
-      int32_t &destLength, const size_t length = std::string::npos);
+  static wchar_t* UCharToWChar(const UChar* u_str,
+                               wchar_t* buffer,
+                               size_t bufferSize,
+                               int32_t& destLength,
+                               const size_t length = std::string::npos);
 
   /*!
    * \brief convert a wstring to a UnicodeString
@@ -452,12 +471,12 @@ private:
    *         for the rare machine that defines wchar_t as 16 bits then it is
    *         converted to UChar* or something similar
    */
-  static icu::UnicodeString ToUnicodeString(const std::wstring &wStr)
+  static icu::UnicodeString ToUnicodeString(const std::wstring& wStr)
   {
-#if U_SIZEOF_WCHAR_T==2
+#if U_SIZEOF_WCHAR_T == 2
     return icu::UnicodeString(wStr.data(), wStr.length());
 #else
-    return icu::UnicodeString::fromUTF32((int32_t*) wStr.data(), wStr.length());
+    return icu::UnicodeString::fromUTF32((int32_t*)wStr.data(), wStr.length());
 #endif
   }
 
@@ -468,7 +487,7 @@ private:
    * \return UnicodeString
    */
 
-  static icu::UnicodeString ToUnicodeString(const std::string &src)
+  static icu::UnicodeString ToUnicodeString(const std::string& src)
   {
     return icu::UnicodeString::fromUTF8(src);
   }
@@ -481,7 +500,7 @@ private:
    *
    * A StringPiece can be a std:string or a char*
    */
-  static icu::UnicodeString ToUnicodeString(const icu::StringPiece &src)
+  static icu::UnicodeString ToUnicodeString(const icu::StringPiece& src)
   {
     return icu::UnicodeString::fromUTF8(src);
   }
@@ -599,7 +618,7 @@ public:
    * \return the icu::Locale defined by the language and country code
    *         specified by locale
    */
-  static icu::Locale GetICULocale(const std::locale &locale);
+  static icu::Locale GetICULocale(const std::locale& locale);
 
   /*!
    * \brief A simple wrapper around icu::Locale
@@ -625,8 +644,10 @@ public:
    * Note: More information can be found in unicode/locid.h (part of ICU library).
    */
 
-  static icu::Locale GetICULocale(const char *language, const char *country = 0,
-      const char *variant = 0, const char *keywordsAndValues = 0);
+  static icu::Locale GetICULocale(const char* language,
+                                  const char* country = 0,
+                                  const char* variant = 0,
+                                  const char* keywordsAndValues = 0);
 
   /*!
    * \brief Construct a simple locale id based upon an icu::Locale
@@ -661,7 +682,7 @@ public:
    * See StringOptions for the more details.
    */
 
-  static const std::wstring FoldCase(const std::wstring &src, const StringOptions options);
+  static const std::wstring FoldCase(const std::wstring& src, const StringOptions options);
 
   /*!
    *  \brief Folds the case of a wstring, independent of Locale.
@@ -685,10 +706,9 @@ public:
    *
    * See StringOptions for the more details.
    */
-  static const std::string FoldCase(const std::string &src, const StringOptions options);
+  static const std::string FoldCase(const std::string& src, const StringOptions options);
 
 private:
-
   /*!
    *  \brief Folds the case of a StringPiece (UTF-8), independent of Locale.
    *
@@ -715,8 +735,10 @@ private:
    *
    * See StringOptions for the more details.
    */
-  static void FoldCase(const icu::StringPiece strPiece, icu::CheckedArrayByteSink &sink,
-      UErrorCode &status, const int32_t options);
+  static void FoldCase(const icu::StringPiece strPiece,
+                       icu::CheckedArrayByteSink& sink,
+                       UErrorCode& status,
+                       const int32_t options);
 
 public:
   /*!
@@ -734,8 +756,9 @@ public:
    *  \param NormalizerType select the appropriate Normalizer for the job
    *  \return Normalized string
    */
-  static const std::wstring Normalize(const std::wstring &src, const StringOptions option,
-      const NormalizerType NormalizerType = NormalizerType::NFKC);
+  static const std::wstring Normalize(const std::wstring& src,
+                                      const StringOptions option,
+                                      const NormalizerType NormalizerType = NormalizerType::NFKC);
 
   /*!
    *  \brief Normalizes a string. Not expected to be used outside of UnicodeUtils.
@@ -752,8 +775,9 @@ public:
    * \param NormalizerType select the appropriate Normalizer for the job
    * \return Normalized string
    */
-  static const std::string Normalize(const std::string &src, const StringOptions options,
-      const NormalizerType NormalizerType = NormalizerType::NFKC);
+  static const std::string Normalize(const std::string& src,
+                                     const StringOptions options,
+                                     const NormalizerType NormalizerType = NormalizerType::NFKC);
 
 private:
   /*!
@@ -772,8 +796,12 @@ private:
    *        at default value.
    * \param NormalizerType select the appropriate Normalizer for the job
    */
-  static void Normalize(const icu::StringPiece strPiece, icu::CheckedArrayByteSink &sink,
-      UErrorCode &status, const int32_t options, const NormalizerType NormalizerType);
+  static void Normalize(const icu::StringPiece strPiece,
+                        icu::CheckedArrayByteSink& sink,
+                        UErrorCode& status,
+                        const int32_t options,
+                        const NormalizerType NormalizerType);
+
 public:
   /*!
    * \brief Converts a string to Upper case according to locale.
@@ -786,10 +814,9 @@ public:
    *        country, etc. from this locale
    * \return str with every character changed to upper case
    */
-  static const std::string ToUpper(const std::string &src, const icu::Locale &locale);
+  static const std::string ToUpper(const std::string& src, const icu::Locale& locale);
 
 private:
-
   /*!
    * \brief Converts a UChar buffer to Upper case according to locale.
    *
@@ -805,12 +832,15 @@ private:
    * \param status UErrorCode indicating the status of the operation. Make sure to
    *        set to U_ZERO_ERROR before calling this function
    */
-  static void ToUpper(UChar *p_u_src_buffer, int32_t u_src_length, const icu::Locale locale,
-      UChar *p_u_toupper_buffer, const int32_t u_toupper_buffer_size, int32_t &to_upper_length,
-      UErrorCode &status);
+  static void ToUpper(UChar* p_u_src_buffer,
+                      int32_t u_src_length,
+                      const icu::Locale locale,
+                      UChar* p_u_toupper_buffer,
+                      const int32_t u_toupper_buffer_size,
+                      int32_t& to_upper_length,
+                      UErrorCode& status);
 
 public:
-
   /*!
    * \brief Converts a string to Lower case according to icu:Locale.
    *
@@ -821,7 +851,7 @@ public:
    * \param icu::Locale provides the rules about changing case
    * \return the lower case version of src
    */
-  static const std::string ToLower(const std::string &src, const icu::Locale &locale);
+  static const std::string ToLower(const std::string& src, const icu::Locale& locale);
 
   /*!
    *  \brief Capitalizes a string using Legacy Kodi rules.
@@ -832,7 +862,7 @@ public:
    * \param src string to capitalize
    * \return src capitalized
    */
-  static const std::string ToCapitalize(const std::string &src, const icu::Locale &locale);
+  static const std::string ToCapitalize(const std::string& src, const icu::Locale& locale);
   /*!
    *  \brief Capitalizes a wstring using Legacy Kodi rules.
    *
@@ -842,7 +872,7 @@ public:
    * \param src string to capitalize
    * \return src capitalized
    */
-  static const std::wstring ToCapitalize(const std::wstring &src, const icu::Locale &locale);
+  static const std::wstring ToCapitalize(const std::wstring& src, const icu::Locale& locale);
 
   /*!
    *  \brief TitleCase a wstring using icu::Locale.
@@ -856,7 +886,7 @@ public:
    *  \param locale
    *  \return src in TitleCase
    */
-  static const std::wstring ToTitle(const std::wstring &src, const icu::Locale &locale);
+  static const std::wstring ToTitle(const std::wstring& src, const icu::Locale& locale);
 
   /*!
    *  \brief TitleCase a string using icu::Locale.
@@ -870,7 +900,7 @@ public:
    *  \param locale
    *  \return src in TitleCase
    */
-  static const std::string ToTitle(const std::string &src, const icu::Locale &locale);
+  static const std::string ToTitle(const std::string& src, const icu::Locale& locale);
 
   /*!
    * \brief Compares two wstrings using codepoint order. Locale does not matter.
@@ -892,8 +922,13 @@ public:
    * needed when other string manipulations which alter the order of bytes within
    * a string. More study is needed.
    */
-  static int8_t StrCmp(const std::wstring &s1, size_t s1_start, size_t s1_length,
-      const std::wstring &s2, size_t s2_start, size_t s2_length, const bool Normalize = false);
+  static int8_t StrCmp(const std::wstring& s1,
+                       size_t s1_start,
+                       size_t s1_length,
+                       const std::wstring& s2,
+                       size_t s2_start,
+                       size_t s2_length,
+                       const bool Normalize = false);
 
   /*!
    * \brief Compares two strings using codepoint order.
@@ -915,8 +950,13 @@ public:
    * needed when other string manipulations which alter the order of bytes within
    * a string. More study is needed.
    */
-  static int8_t StrCmp(const std::string &s1, size_t s1_start, size_t s1_length,
-      const std::string &s2, size_t s2_start, size_t s2_length, const bool Normalize = false);
+  static int8_t StrCmp(const std::string& s1,
+                       size_t s1_start,
+                       size_t s1_length,
+                       const std::string& s2,
+                       size_t s2_start,
+                       size_t s2_length,
+                       const bool Normalize = false);
 
   /*!
    * \brief Performs a bit-wise comparison of two wstrings, after case folding each.
@@ -942,8 +982,10 @@ public:
    * = 0 if str1 contains the same characters as s2,
    * > 0 if the characters in s1 are bitwise greater than the characters in s2.
    */
-  static int StrCaseCmp(const std::wstring &s1, const std::wstring &s2,
-      const StringOptions options, const bool Normalize = false);
+  static int StrCaseCmp(const std::wstring& s1,
+                        const std::wstring& s2,
+                        const StringOptions options,
+                        const bool Normalize = false);
 
   /*!
    * \brief Performs a bit-wise comparison of two strings, after case folding each.
@@ -969,8 +1011,10 @@ public:
    * = 0 if str1 contains the same characters as s2,
    * > 0 if the characters in s1 are bitwise greater than the characters in s2.
    */
-  static int StrCaseCmp(const std::string &s1, const std::string &s2,
-      const StringOptions options, const bool normalize = false);
+  static int StrCaseCmp(const std::string& s1,
+                        const std::string& s2,
+                        const StringOptions options,
+                        const bool normalize = false);
 
   /*!
    * \brief Performs a bit-wise comparison of two strings, after case folding each.
@@ -997,8 +1041,11 @@ public:
    * = 0 if str1 contains the same characters as s2,
    * > 0 if the characters in s1 are bitwise greater than the characters in s2.
    */
-  static int StrCaseCmp(const std::string &s1, const std::string &s2, size_t n,
-      const StringOptions options, const bool Normalize = false);
+  static int StrCaseCmp(const std::string& s1,
+                        const std::string& s2,
+                        size_t n,
+                        const StringOptions options,
+                        const bool Normalize = false);
 
   /*!
    * \brief Performs a bit-wise comparison of two strings, after case folding each.
@@ -1028,9 +1075,14 @@ public:
    * = 0 if str1 contains the same characters as s2,
    * > 0 if the characters in s1 are bitwise greater than the characters in s2.
    */
-  static int StrCaseCmp(const std::string &s1, size_t s1_start, size_t s1_length,
-      const std::string &s2, size_t s2_start, size_t s2_length, const StringOptions options,
-      const bool Normalize = false);
+  static int StrCaseCmp(const std::string& s1,
+                        size_t s1_start,
+                        size_t s1_length,
+                        const std::string& s2,
+                        size_t s2_start,
+                        size_t s2_length,
+                        const StringOptions options,
+                        const bool Normalize = false);
   /*!
    * \brief Initializes the icu Collator for this thread, such as before sorting a
    * table.
@@ -1095,7 +1147,7 @@ public:
    * \return A value < 0, 0 or > 0 depending upon whether left collates before,
    *         equal to or after right
    */
-  static int32_t Collate(const std::wstring &left, const std::wstring &right);
+  static int32_t Collate(const std::wstring& left, const std::wstring& right);
 
   /*!
    * \brief Determines if a string begins with another string
@@ -1104,7 +1156,7 @@ public:
    * \param s2 string to find at beginning of s1
    * \return true if s1 starts with s2, otherwise false
    */
-  static bool StartsWith(const std::string &s1, const std::string &s2);
+  static bool StartsWith(const std::string& s1, const std::string& s2);
   /*
    * \brief Determines if a string begins with another string, ignoring case
    *
@@ -1113,8 +1165,9 @@ public:
    * \param options controls behavior of case folding, normally leave at default
    * \return true if s1 starts with s2, otherwise false
    */
-  static bool StartsWithNoCase(const std::string &s1, const std::string &s2,
-      const StringOptions options);
+  static bool StartsWithNoCase(const std::string& s1,
+                               const std::string& s2,
+                               const StringOptions options);
 
   /*!
    * \brief Determines if a string ends with another string
@@ -1123,7 +1176,7 @@ public:
    * \param s2 string to find at end of s1
    * \return true if s1 ends with s2, otherwise false
    */
-  static bool EndsWith(const std::string &s1, const std::string &s2);
+  static bool EndsWith(const std::string& s1, const std::string& s2);
 
   /*!
    * \brief Determines if a string ends with another string, ignoring case
@@ -1133,8 +1186,9 @@ public:
    * \param options controls behavior of case folding, normally leave at default
    * \return true if s1 ends with s2, otherwise false
    */
-  static bool EndsWithNoCase(const std::string &s1, const std::string &s2,
-      const StringOptions options);
+  static bool EndsWithNoCase(const std::string& s1,
+                             const std::string& s2,
+                             const StringOptions options);
 
   /*!
    * \brief Get the leftmost side of a UTF-8 string, limited by character count
@@ -1149,8 +1203,10 @@ public:
    * \param keepLeft controls how charCount is interpreted
    * \return leftmost characters of string, length determined by charCount
    */
-  static std::string Left(const std::string &str, size_t charCount,
-      const icu::Locale icuLocale, const bool keepLeft = true);
+  static std::string Left(const std::string& str,
+                          size_t charCount,
+                          const icu::Locale icuLocale,
+                          const bool keepLeft = true);
 
   /*!
    *  \brief Get a substring of a UTF-8 string
@@ -1164,8 +1220,9 @@ public:
    * \return substring of str, beginning with character 'firstCharIndex',
    *         length determined by charCount
    */
-  static std::string Mid(const std::string &str, size_t startCharIndex,
-      size_t charCount = std::string::npos);
+  static std::string Mid(const std::string& str,
+                         size_t startCharIndex,
+                         size_t charCount = std::string::npos);
 
   /*!
    * \brief Get the rightmost side of a UTF-8 string, using character boundary
@@ -1188,11 +1245,12 @@ public:
    *
    * std::string x = Right(str, 2, false, Unicode::GetDefaultICULocale());
    */
-  static std::string Right(const std::string &str, size_t charCount,
-      const icu::Locale &icuLocale, bool keepRight = true);
+  static std::string Right(const std::string& str,
+                           size_t charCount,
+                           const icu::Locale& icuLocale,
+                           bool keepRight = true);
 
 private:
-
   /*!
    * \brief configures UText for a UTF-8 string
    *
@@ -1209,7 +1267,7 @@ private:
    * *** Note: utext_close(<return value>) MUST be called when finished using the iterator
    * or there will be a memory leak.
    */
-  static UText * ConfigUText(const std::string& str, UText* ut = nullptr);
+  static UText* ConfigUText(const std::string& str, UText* ut = nullptr);
 
   /*!
    * \brief Configures a Character BreakIterator for use
@@ -1233,15 +1291,22 @@ private:
    * \icuLocale locale to configure the iterator for
    * \return true is returned on success, otherwise false.
    */
-  static icu::BreakIterator* ConfigCharBreakIter(const icu::UnicodeString& str, const icu::Locale& icuLocale);
+  static icu::BreakIterator* ConfigCharBreakIter(const icu::UnicodeString& str,
+                                                 const icu::Locale& icuLocale);
 
-
-  static size_t GetCharPosition(icu::BreakIterator* cbi, size_t stringLength, size_t charCount, const bool left, const bool keepLeft);
+  static size_t GetCharPosition(icu::BreakIterator* cbi,
+                                size_t stringLength,
+                                size_t charCount,
+                                const bool left,
+                                const bool keepLeft);
 
 public:
-
-  static size_t GetCharPosition(icu::BreakIterator * cbi, const std::string &str, const size_t charCount,
-      const bool left, const bool keepLeft, const icu::Locale& icuLocale);
+  static size_t GetCharPosition(icu::BreakIterator* cbi,
+                                const std::string& str,
+                                const size_t charCount,
+                                const bool left,
+                                const bool keepLeft,
+                                const icu::Locale& icuLocale);
 
   /*!
    * \brief Gets the byte-offset of a Unicode character relative to a reference
@@ -1268,11 +1333,17 @@ public:
    * left=false keepLeft=false  Returns offset of first byte of nth char from right end.
    *                            Character 0 is AFTER the last character.  Used by Right(x)
    */
-  static size_t GetCharPosition(const std::string &str, const size_t charCountArg, const bool left,
-      const bool keepLeft, const icu::Locale &icuLocale);
+  static size_t GetCharPosition(const std::string& str,
+                                const size_t charCountArg,
+                                const bool left,
+                                const bool keepLeft,
+                                const icu::Locale& icuLocale);
 
-  size_t GetCharPosition(const icu::UnicodeString &uStr, const size_t charCountArg, const bool left,
-      const bool keepLeft, const icu::Locale &icuLocale);
+  size_t GetCharPosition(const icu::UnicodeString& uStr,
+                         const size_t charCountArg,
+                         const bool left,
+                         const bool keepLeft,
+                         const icu::Locale& icuLocale);
   /*!
    * \brief Gets the byte-offset of a Unicode character relative to a reference
    *
@@ -1321,7 +1392,7 @@ public:
    * 205F          ; White_Space # Zs       MEDIUM MATHEMATICAL SPACE
    * 3000          ; White_Space # Zs       IDEOGRAPHIC SPACE
    */
-  static std::string Trim(const std::string &str);
+  static std::string Trim(const std::string& str);
 
   /*!
    * \brief Removes leading whitespace from a string
@@ -1331,7 +1402,7 @@ public:
    *
    * See Trim(str) for more details about what counts as whitespace
    */
-  static std::string TrimLeft(const std::string &str);
+  static std::string TrimLeft(const std::string& str);
 
   /*!
    * \brief Remove a set of characters from beginning of str
@@ -1344,7 +1415,7 @@ public:
    * \param trimChars (characters) to remove from str
    * \return trimmed string
    */
-  static std::string TrimLeft(const std::string &str, const std::string trimChars);
+  static std::string TrimLeft(const std::string& str, const std::string trimChars);
 
   /*!
    * \brief Removes trailing whitespace from a string
@@ -1354,7 +1425,7 @@ public:
    *
    * See Trim(str) for more details about what counts as whitespace
    */
-  static std::string TrimRight(const std::string &str);
+  static std::string TrimRight(const std::string& str);
 
   /*!
    * \brief Remove a set of characters from end of str
@@ -1367,7 +1438,7 @@ public:
    * \param trimChars (characters) to remove from str
    * \return trimmed string
    */
-  static std::string TrimRight(const std::string &str, const std::string trimChars);
+  static std::string TrimRight(const std::string& str, const std::string trimChars);
 
   /*!
    * \brief Remove a set of characters from ends of str
@@ -1380,8 +1451,10 @@ public:
    * \param trimRight if true, then trim from right end of string
    * \return trimmed string
    */
-  static std::string Trim(const std::string &str, const std::string &trimStrings, const bool trimLeft,
-      const bool trimRight);
+  static std::string Trim(const std::string& str,
+                          const std::string& trimStrings,
+                          const bool trimLeft,
+                          const bool trimRight);
 
   /*!
    * \brief Remove a set of strings from ends of str
@@ -1394,8 +1467,10 @@ public:
    * \param trimRight if true, then trim from right end of string
    * \return trimmed string
    */
-  static std::string Trim(const std::string &str,
-      const std::vector<std::string> &trimStrings, const bool trimLeft, const bool trimRight);
+  static std::string Trim(const std::string& str,
+                          const std::vector<std::string>& trimStrings,
+                          const bool trimLeft,
+                          const bool trimRight);
 
 private:
   /*!
@@ -1407,8 +1482,10 @@ private:
    * \param trimRight if true, then trim from right end of string
    * \return trimmed UnicodeString
    */
-  static icu::UnicodeString Trim(const icu::UnicodeString &str, const icu::UnicodeString &trimChars,
-      const bool trimLeft, const bool trimRight);
+  static icu::UnicodeString Trim(const icu::UnicodeString& str,
+                                 const icu::UnicodeString& trimChars,
+                                 const bool trimLeft,
+                                 const bool trimRight);
 
   /*!
    * \brief Remove a set of UnicodeStrings from ends of a UnicodeString
@@ -1419,8 +1496,10 @@ private:
    * \param trimRight if true, then trim from right end of string
    * \return trimmed UnicodeString
    */
-  static icu::UnicodeString Trim(const icu::UnicodeString &uStr,
-      const std::vector<icu::UnicodeString> &trimStrings, const bool trimLeft, const bool trimRight);
+  static icu::UnicodeString Trim(const icu::UnicodeString& uStr,
+                                 const std::vector<icu::UnicodeString>& trimStrings,
+                                 const bool trimLeft,
+                                 const bool trimRight);
 
   /*!
    * \brief Remove whitespace from a UnicodeString
@@ -1430,8 +1509,9 @@ private:
    * \param trimRight if true, then trim from right end of string
    * \return trimmed string
    */
-  static icu::UnicodeString Trim(const icu::UnicodeString &str, const bool trimLeft,
-      const bool trimRight);
+  static icu::UnicodeString Trim(const icu::UnicodeString& str,
+                                 const bool trimLeft,
+                                 const bool trimRight);
 
 public:
   /*!
@@ -1497,8 +1577,9 @@ public:
    *        means no limit.
    * \return vector of split strings
    */
-  static std::vector<std::string> SplitMulti(const std::vector<std::string> &input,
-      const std::vector<std::string> &delimiters, size_t iMaxStrings = 0);
+  static std::vector<std::string> SplitMulti(const std::vector<std::string>& input,
+                                             const std::vector<std::string>& delimiters,
+                                             size_t iMaxStrings = 0);
 
 private:
   /*!
@@ -1563,8 +1644,11 @@ private:
    *        means no limit.
    * \return vector of split strings
    */
-  static std::vector<icu::UnicodeString> SplitMulti(const std::vector<icu::UnicodeString> &input,
-      const std::vector<icu::UnicodeString> &delimiters, size_t iMaxStrings/* = 0 */);
+  static std::vector<icu::UnicodeString> SplitMulti(
+      const std::vector<icu::UnicodeString>& input,
+      const std::vector<icu::UnicodeString>& delimiters,
+      size_t iMaxStrings /* = 0 */);
+
 public:
   /*!
    * \brief Replaces every occurrence of a substring in string and returns the count of replacements
@@ -1577,12 +1661,13 @@ public:
    * \param newText string to replace with
    * \return Count of the number of changes
    */
-  [[deprecated("FindAndReplace is faster, returned count not used.") ]]
-   static std::tuple<std::string, int> FindCountAndReplace(const std::string &src, const std::string &oldText,
-       const std::string &newText);
+  [[deprecated(
+      "FindAndReplace is faster, returned count not used.")]] static std::tuple<std::string, int>
+  FindCountAndReplace(const std::string& src,
+                      const std::string& oldText,
+                      const std::string& newText);
 
 private:
-
   /*!
    * \brief Replace all occurrences of characters in oldText with the characters
    *        in newText
@@ -1591,8 +1676,10 @@ private:
    * \return a Tuple with a reference to the modified src and an int containing
    *         the number of times the oldText was replaced.
    */
-  static std::tuple<icu::UnicodeString, int> FindCountAndReplace(const icu::UnicodeString &kSrc,
-      const icu::UnicodeString &kOldText, const icu::UnicodeString &kNewText);
+  static std::tuple<icu::UnicodeString, int> FindCountAndReplace(
+      const icu::UnicodeString& kSrc,
+      const icu::UnicodeString& kOldText,
+      const icu::UnicodeString& kNewText);
 
   /*!
    * \brief Replace all occurrences of characters in oldText with the characters
@@ -1620,10 +1707,15 @@ private:
    * \return a Tuple with a reference to the modified src and an int containing
    *         the number of times the oldText was replaced.
    */
-  static std::tuple<icu::UnicodeString, int>
-  FindCountAndReplace(const icu::UnicodeString &srcText, const int32_t start, const int32_t length,
-      const icu::UnicodeString &oldText, const int32_t oldStart, const int32_t oldLength,
-      const icu::UnicodeString &newText, const int32_t newStart, const int32_t newLength);
+  static std::tuple<icu::UnicodeString, int> FindCountAndReplace(const icu::UnicodeString& srcText,
+                                                                 const int32_t start,
+                                                                 const int32_t length,
+                                                                 const icu::UnicodeString& oldText,
+                                                                 const int32_t oldStart,
+                                                                 const int32_t oldLength,
+                                                                 const icu::UnicodeString& newText,
+                                                                 const int32_t newStart,
+                                                                 const int32_t newLength);
 
 public:
   /*!
@@ -1643,7 +1735,7 @@ public:
    *      digit in str. Same for Latin letters. Otherwise, skip one character
    *      Skip any whitespace characters
    */
-  static bool FindWord(const std::string &str, const std::string &word);
+  static bool FindWord(const std::string& str, const std::string& word);
 
   /*!
    * \brief Replaces every occurrence of a string within another string
@@ -1656,8 +1748,9 @@ public:
    * \parm newStr string to replace with
    * \return the modified string.
    */
-  static std::string FindAndReplace(const std::string &str, const std::string oldText,
-      const std::string newText);
+  static std::string FindAndReplace(const std::string& str,
+                                    const std::string oldText,
+                                    const std::string newText);
 
   /*!
    * \brief Find a regular expressoin pattern in a str
@@ -1672,7 +1765,7 @@ public:
    * https://unicode-org.github.io/icu/userguide/strings/regexp.html
    *
    */
-  static size_t RegexFind(const std::string &str, const std::string pattern, const int flags);
+  static size_t RegexFind(const std::string& str, const std::string pattern, const int flags);
 
   /*!
    * \brief Replace a matching pattern in a string with another value
@@ -1686,11 +1779,12 @@ public:
    * \param flags:  See enum RegexpFlag in uregex.h
    *
    */
-  static std::string RegexReplaceAll(const std::string &str, const std::string pattern,
-      const std::string replace, const int flags);
+  static std::string RegexReplaceAll(const std::string& str,
+                                     const std::string pattern,
+                                     const std::string replace,
+                                     const int flags);
 
 private:
-
   /*!
    * \brief Replace all occurrences of a regular expression in a string
    *
@@ -1704,8 +1798,10 @@ private:
    * \param flags see enum Unicode::RegexpFlag
    * \return copy of UString modified as necessary according to the parameters
    */
-  icu::UnicodeString RegexReplaceAll(const icu::UnicodeString &uString,
-      const icu::UnicodeString uPattern, const icu::UnicodeString uReplace, const int flags);
+  icu::UnicodeString RegexReplaceAll(const icu::UnicodeString& uString,
+                                     const icu::UnicodeString uPattern,
+                                     const icu::UnicodeString uReplace,
+                                     const int flags);
 
 public:
   /*!
@@ -1719,8 +1815,9 @@ public:
    *        which prevents interpreting strFind as a regular expression.
    * \return a count of the number of occurrences found.
    */
-  static int32_t countOccurances(const std::string &strInput, const std::string &strFind,
-      const int flags);
+  static int32_t countOccurances(const std::string& strInput,
+                                 const std::string& strFind,
+                                 const int flags);
 
   /*! \brief Splits the given input string using the given delimiter into separate strings.
 
@@ -1734,7 +1831,10 @@ public:
    *       that was put there
    */
   template<typename OutputIt>
-  static OutputIt SplitTo(OutputIt d_first, const std::string &input, const char delimiter, size_t iMaxStrings /*= 0*/)
+  static OutputIt SplitTo(OutputIt d_first,
+                          const std::string& input,
+                          const char delimiter,
+                          size_t iMaxStrings /*= 0*/)
   {
     return SplitTo(d_first, input, std::string(1, delimiter), iMaxStrings);
   }
@@ -1766,8 +1866,10 @@ public:
    *  A Few examples can be found in UnicodeUtils as well as TestUnicodeUtils
    */
   template<typename OutputIt>
-  static OutputIt SplitTo(OutputIt d_first, const std::string &input,
-      const std::vector<std::string> &delimiters, size_t iMaxStrings /* = 0 */)
+  static OutputIt SplitTo(OutputIt d_first,
+                          const std::string& input,
+                          const std::vector<std::string>& delimiters,
+                          size_t iMaxStrings /* = 0 */)
   {
     // TODO: Verify why this can not be done with plain string.
 
@@ -1821,8 +1923,10 @@ public:
    *  A Few examples can be found in UnicodeUtils as well as TestUnicodeUtils
    */
   template<typename OutputIt>
-  static OutputIt SplitTo(OutputIt d_first, const std::string &input, const std::string &delimiter,
-      size_t iMaxStrings = 0)
+  static OutputIt SplitTo(OutputIt d_first,
+                          const std::string& input,
+                          const std::string& delimiter,
+                          size_t iMaxStrings = 0)
   {
     OutputIt dest = d_first;
 
@@ -1839,7 +1943,8 @@ public:
     std::vector<icu::UnicodeString> uResult = std::vector<icu::UnicodeString>();
 
     bool omitEmptyStrings = false;
-    Unicode::SplitTo(std::back_inserter(uResult), uInput, uDelimiter, iMaxStrings, omitEmptyStrings);
+    Unicode::SplitTo(std::back_inserter(uResult), uInput, uDelimiter, iMaxStrings,
+                     omitEmptyStrings);
 
     // Convert back to utf-8
     // std::cout << "Unicode.SplitTo input: " << input << " delim: " << delimiter
@@ -1855,7 +1960,6 @@ public:
   }
 
 private:
-
   /*!
    * \brief Splits the given input string at each delimiter
    *
@@ -1872,8 +1976,11 @@ private:
    * \param omitEmptyStrings controls whether empty strings are sent to d_first or not
    */
   template<typename OutputIt>
-  static OutputIt SplitTo(OutputIt d_first, const icu::UnicodeString &uInput,
-      const icu::UnicodeString &uDelimiter, size_t iMaxStrings = 0, const bool omitEmptyStrings = false);
+  static OutputIt SplitTo(OutputIt d_first,
+                          const icu::UnicodeString& uInput,
+                          const icu::UnicodeString& uDelimiter,
+                          size_t iMaxStrings = 0,
+                          const bool omitEmptyStrings = false);
 
   /*!
    * \brief Splits the given input string at each of the delimiters
@@ -1892,8 +1999,11 @@ private:
    * \param omitEmptyStrings controls whether empty strings are sent to d_first or not
    */
   template<typename OutputIt>
-  static OutputIt SplitTo(OutputIt d_first, icu::UnicodeString uInput,
-      const std::vector<icu::UnicodeString> &uDelimiters,  size_t iMaxStrings = 0, const bool omitEmptyStrings = false);
+  static OutputIt SplitTo(OutputIt d_first,
+                          icu::UnicodeString uInput,
+                          const std::vector<icu::UnicodeString>& uDelimiters,
+                          size_t iMaxStrings = 0,
+                          const bool omitEmptyStrings = false);
 
   /*!
    * \brief indicates whether a string contains any of a vector of keywords
@@ -1903,10 +2013,9 @@ private:
    * returned
    * \return true of str contains any of the strings in keywords
    */
-  static bool Contains(const std::string &str, const std::vector<std::string> &keywords);
+  static bool Contains(const std::string& str, const std::vector<std::string>& keywords);
 
 private:
-
   /*!
    * \brief detects whether a codepoint is a latin character or not
    *
@@ -1921,5 +2030,4 @@ private:
    *         otherwise false
    */
   static bool IsLatinChar(const UChar32 codepoint);
-
 };

@@ -6,35 +6,38 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <locale>
-#include "utils/UnicodeUtils.h"
-#include "utils/UnicodeUtils.h"
 #include "unicode/uloc.h"
+#include "utils/UnicodeUtils.h"
 
 #include <algorithm>
+#include <locale>
 
 #include <gtest/gtest.h>
 enum class ECG
 {
-  A, B
+  A,
+  B
 };
 
 enum EG
 {
-  C, D
+  C,
+  D
 };
 
 namespace test_enum
 {
 enum class ECN
 {
-  A = 1, B
+  A = 1,
+  B
 };
 enum EN
 {
-  C = 1, D
+  C = 1,
+  D
 };
-}
+} // namespace test_enum
 
 namespace TestUnicodeUtils
 {
@@ -51,52 +54,38 @@ namespace TestUnicodeUtils
 // TODO: It may be a good idea to normalize everything on
 // input and renormalize when something requires it.
 // A: U+006f (o) + U+0302 (◌̂) + U+0323 (◌̣): o◌̣◌̂
-const char32_t MULTI_CODEPOINT_CHAR_1_VARIENT_1[] =
-{ 0x006f, 0x0302, 0x0323 };
+const char32_t MULTI_CODEPOINT_CHAR_1_VARIENT_1[] = {0x006f, 0x0302, 0x0323};
 // B: U+006f (o) + U+0323 (◌̣) + U+0302 (◌̂)
-const char32_t MULTI_CODEPOINT_CHAR_1_VARIENT_2[] =
-{ 0x006f, 0x0323, 0x302 };
+const char32_t MULTI_CODEPOINT_CHAR_1_VARIENT_2[] = {0x006f, 0x0323, 0x302};
 // C: U+00f4 (ô) + U+0323 (◌̣)
-const char32_t MULTI_CODEPOINT_CHAR_1_VARIENT_3[] =
-{ 0x00f4, 0x0323 };
+const char32_t MULTI_CODEPOINT_CHAR_1_VARIENT_3[] = {0x00f4, 0x0323};
 // D: U+1ecd (ọ) + U+0302 (◌̂)
-const char32_t MULTI_CODEPOINT_CHAR_1_VARIENT_4[] =
-{ 0x1ecd, 0x0302 };
+const char32_t MULTI_CODEPOINT_CHAR_1_VARIENT_4[] = {0x1ecd, 0x0302};
 // E: U+1ed9 (ộ)
-const char32_t MULTI_CODEPOINT_CHAR_1_VARIENT_5[] =
-{ 0x1ed9 };
+const char32_t MULTI_CODEPOINT_CHAR_1_VARIENT_5[] = {0x1ed9};
 
 // UTF8 versions of the above.
 
-const char UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_1[] =
-{ "\x6f\xcc\x82\xcc\xa3\x00" };
-const char UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_2[] =
-{ "\x6f\xcc\xa3\xcc\x82\x00" };
-const char UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_3[] =
-{ "\xc3\xb4\xcc\xa3\x00" };
-const char UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_4[] =
-{ "\xe1\xbb\x8d\xcc\x82\x00" };
-const char UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_5[] =
-{ "\xe1\xbb\x99\x00" };
+const char UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_1[] = {"\x6f\xcc\x82\xcc\xa3\x00"};
+const char UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_2[] = {"\x6f\xcc\xa3\xcc\x82\x00"};
+const char UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_3[] = {"\xc3\xb4\xcc\xa3\x00"};
+const char UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_4[] = {"\xe1\xbb\x8d\xcc\x82\x00"};
+const char UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_5[] = {"\xe1\xbb\x99\x00"};
 
 // 			u"óóßChloë" // German "Sharp-S" ß is (mostly) equivalent to ss (lower case).
 //                     Lower case of two SS characters can either be ss or ß,
 //                     depending upon context.
 // óóßChloë
-const char UTF8_GERMAN_SAMPLE[] =
-{ "\xc3\xb3\xc3\xb3\xc3\x9f\x43\x68\x6c\x6f\xc3\xab" };
+const char UTF8_GERMAN_SAMPLE[] = {"\xc3\xb3\xc3\xb3\xc3\x9f\x43\x68\x6c\x6f\xc3\xab"};
 // u"ÓÓSSCHLOË";
-const char* UTF8_GERMAN_UPPER =
-{ "\xc3\x93\xc3\x93\x53\x53\x43\x48\x4c\x4f\xc3\x8b" };
+const char* UTF8_GERMAN_UPPER = {"\xc3\x93\xc3\x93\x53\x53\x43\x48\x4c\x4f\xc3\x8b"};
 // u"óósschloë"
-const char UTF8_GERMAN_LOWER[] =
-{ "\xc3\xb3\xc3\xb3\xc3\x9f\x63\x68\x6c\x6f\xc3\xab" };
+const char UTF8_GERMAN_LOWER[] = {"\xc3\xb3\xc3\xb3\xc3\x9f\x63\x68\x6c\x6f\xc3\xab"};
 
 // óóßchloë
-const char* UTF8_GERMAN_LOWER_SS =
-{ "\xc3\xb3\xc3\xb3\x73\x73\x63\x68\x6c\x6f\xc3\xab" };
+const char* UTF8_GERMAN_LOWER_SS = {"\xc3\xb3\xc3\xb3\x73\x73\x63\x68\x6c\x6f\xc3\xab"};
 // u"óósschloë";
-}
+} // namespace TestUnicodeUtils
 
 /**
  * Sample long, multicodepoint emojiis
@@ -260,7 +249,7 @@ TEST(TestUnicodeUtils, Turkic_I)
    * ı (Dotless small I) \u0131  -> ı (Dotless small I)                \u0131
    */
   std::string varstr = std::string(originalInput); // hex: 0049 0069 0130 0131
-  std::string refstr = "iii̇ı";  // hex: 0069 0069 0069 0307 0131
+  std::string refstr = "iii̇ı"; // hex: 0069 0069 0069 0307 0131
   // Convert to native Unicode, UChar32
   std::string orig = std::string(varstr);
   std::wstring w_varstr_in = Unicode::UTF8ToWString(varstr);
@@ -589,10 +578,10 @@ TEST(TestUnicodeUtils, Compare)
   right = TestUnicodeUtils::UTF8_GERMAN_LOWER_SS; // óósschloë // Does not convert SS to ß
   expectedResult = 0;
   EXPECT_NE(UnicodeUtils::Compare(left, right), expectedResult);
-
 }
 
-TEST(TestUnicodeUtils, CompareNoCase) {
+TEST(TestUnicodeUtils, CompareNoCase)
+{
 
   std::string left;
   std::string right;
@@ -618,10 +607,10 @@ TEST(TestUnicodeUtils, CompareNoCase) {
   right = TestUnicodeUtils::UTF8_GERMAN_LOWER_SS; // óósschloë // Does not convert SS to ß
   expectedResult = 0;
   EXPECT_EQ(UnicodeUtils::CompareNoCase(left, right), expectedResult);
-
 }
 
-TEST(TestUnicodeUtils, CompareNoCase_Advanced) {
+TEST(TestUnicodeUtils, CompareNoCase_Advanced)
+{
 
   std::string left;
   std::string right;
@@ -725,17 +714,17 @@ TEST(TestUnicodeUtils, CompareNoCase_Advanced) {
   expectedResult = 0;
   EXPECT_EQ(UnicodeUtils::CompareNoCase(left, right), expectedResult);
 
-  length = 4;   // max bytes to compare, here 4 is last byte of second char for both strings
+  length = 4; // max bytes to compare, here 4 is last byte of second char for both strings
   // and for lower case version
   expectedResult = 0;
   EXPECT_EQ(UnicodeUtils::CompareNoCase(left, right, length), expectedResult);
 
-  length = 3;   // max bytes to compare, length is at first byte of second char for
+  length = 3; // max bytes to compare, length is at first byte of second char for
   // both strings and lower case version
   expectedResult = 0;
   EXPECT_EQ(UnicodeUtils::CompareNoCase(left, right, length), expectedResult);
 
-  length = 6;   // max bytes to compare, of left's second S and right's last byte of
+  length = 6; // max bytes to compare, of left's second S and right's last byte of
   // sharp-s "ß" and after folding would be the second s, if all other
   // characters were single byte, but it may still work out, I'm not sure
   // how the other characters fold.
@@ -754,18 +743,17 @@ TEST(TestUnicodeUtils, CompareNoCase_Advanced) {
   expectedResult = 0;
   EXPECT_EQ(UnicodeUtils::CompareNoCase(left, right), expectedResult);
 
-  left = TestUnicodeUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_1;  // 6 bytes
+  left = TestUnicodeUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_1; // 6 bytes
   right = TestUnicodeUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_5; // 4 bytes
   length = 4; // Last byte of 4 byte version and at 4th byte of 6 bytes.
   expectedResult = 0;
   EXPECT_NE(UnicodeUtils::CompareNoCase(left, right), expectedResult);
 
-
   // Boundary Tests
   // length of 0 means no limit
 
   normalize = false;
-  left =  "abciI123ABC ";
+  left = "abciI123ABC ";
   right = "ABCIi123abc ";
   length = 0;
   expectedResult = 0;
@@ -774,7 +762,7 @@ TEST(TestUnicodeUtils, CompareNoCase_Advanced) {
   normalize = false;
   left = "";
   right = "ABCIi123abc ";
-  length = 0;   // No length limit
+  length = 0; // No length limit
   expectedResult = -1;
   EXPECT_EQ(UnicodeUtils::CompareNoCase(left, right, length, opt, normalize), expectedResult);
 
@@ -805,7 +793,6 @@ TEST(TestUnicodeUtils, CompareNoCase_Advanced) {
   length = 32;
   expectedResult = 0;
   EXPECT_EQ(UnicodeUtils::CompareNoCase(left, right, length, opt, normalize), expectedResult);
-
 }
 
 TEST(TestUnicodeUtils, StartsWith)
@@ -838,21 +825,21 @@ TEST(TestUnicodeUtils, StartsWith)
   p = "";
   EXPECT_TRUE(UnicodeUtils::StartsWith(input, p));
   EXPECT_TRUE(UnicodeUtils::StartsWith(refstr, p));
-
 }
 
 TEST(TestUnicodeUtils, StartsWithNoCase)
 {
   std::string refstr = "test";
   std::string input;
-  char * p;
+  char* p;
 
   EXPECT_FALSE(UnicodeUtils::StartsWithNoCase(refstr, "x"));
   EXPECT_TRUE(UnicodeUtils::StartsWithNoCase(refstr, "Te"));
   EXPECT_TRUE(UnicodeUtils::StartsWithNoCase(refstr, "TesT"));
   EXPECT_FALSE(UnicodeUtils::StartsWithNoCase(refstr, "Te st"));
   EXPECT_FALSE(UnicodeUtils::StartsWithNoCase(refstr, "test "));
-  EXPECT_TRUE(UnicodeUtils::StartsWithNoCase(refstr, "test\0")); // Embedded null terminates string operation
+  EXPECT_TRUE(UnicodeUtils::StartsWithNoCase(
+      refstr, "test\0")); // Embedded null terminates string operation
 
   p = "tEs";
   EXPECT_TRUE(UnicodeUtils::StartsWithNoCase(refstr, p));
@@ -884,7 +871,6 @@ TEST(TestUnicodeUtils, StartsWithNoCase)
   p = "";
   EXPECT_TRUE(UnicodeUtils::StartsWithNoCase(input, p));
 }
-
 
 TEST(TestUnicodeUtils, EndsWith)
 {
@@ -973,7 +959,8 @@ TEST(TestUnicodeUtils, Left_Advanced)
 
   // Multi-byte characters character count != byte count
 
-  origstr = std::string(TestUnicodeUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_1); // 3 codepoints, 1 char
+  origstr =
+      std::string(TestUnicodeUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_1); // 3 codepoints, 1 char
   refstr = "";
   varstr = UnicodeUtils::Left(origstr, 0, getUSEnglishLocale(), true);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
@@ -982,7 +969,8 @@ TEST(TestUnicodeUtils, Left_Advanced)
   // to a single codepoint. We are NOT normalizing here.
 
   origstr = std::string(TestUnicodeUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_1);
-  refstr = std::string(TestUnicodeUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_5); // 2 codepoints, 1 char
+  refstr =
+      std::string(TestUnicodeUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_5); // 2 codepoints, 1 char
   varstr = UnicodeUtils::Left(origstr, 2, getUSEnglishLocale());
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
@@ -1243,7 +1231,6 @@ TEST(TestUnicodeUtils, GetCharPosition)
   expectedResult = Unicode::BEFORE_START;
   EXPECT_EQ(expectedResult, result);
 
-
   result = UnicodeUtils::GetCharPosition(testString, std::string::npos, left, keepLeft, icuLocale);
   expectedResult = Unicode::BEFORE_START;
   EXPECT_EQ(expectedResult, result);
@@ -1260,13 +1247,13 @@ TEST(TestUnicodeUtils, GetCharPosition)
   left = true;
   keepLeft = true;
   result = UnicodeUtils::GetCharPosition(testString, 0, left, keepLeft, icuLocale);
-  expectedResult = 2;  // Last byte of lower open double quote
+  expectedResult = 2; // Last byte of lower open double quote
   EXPECT_EQ(expectedResult, result);
 
   left = true;
   keepLeft = true;
   result = UnicodeUtils::GetCharPosition(testString, 1, left, keepLeft, icuLocale);
-  expectedResult = 3;  // W after quote
+  expectedResult = 3; // W after quote
   EXPECT_EQ(expectedResult, result);
 
   //  left=false keepLeft=true   Returns offset of first byte of nth character (0-n). Used by Right(x, false)
@@ -1315,13 +1302,13 @@ TEST(TestUnicodeUtils, GetCharPosition)
   left = true;
   keepLeft = true;
   result = UnicodeUtils::GetCharPosition(testString, 7, left, keepLeft, icuLocale);
-  expectedResult = 9;  // Byte BEFORE U-umlaut
+  expectedResult = 9; // Byte BEFORE U-umlaut
   EXPECT_EQ(expectedResult, result);
 
   left = true;
   keepLeft = true;
   result = UnicodeUtils::GetCharPosition(testString, 8, left, keepLeft, icuLocale);
-  expectedResult = 11;  // Last Byte of U-umlaut
+  expectedResult = 11; // Last Byte of U-umlaut
   EXPECT_EQ(expectedResult, result);
 
   //  left=false keepLeft=true   Returns offset of first byte of nth character (0-n). Used by Right(x, false)
@@ -1345,24 +1332,26 @@ TEST(TestUnicodeUtils, GetCharPosition)
 
   left = true;
   keepLeft = false;
-  result = UnicodeUtils::GetCharPosition(testString, 10, left, keepLeft, icuLocale); // S-sharp \xc3\x9f
-  expectedResult = 40;  // Last Byte of S-Sharp
+  result =
+      UnicodeUtils::GetCharPosition(testString, 10, left, keepLeft, icuLocale); // S-sharp \xc3\x9f
+  expectedResult = 40; // Last Byte of S-Sharp
   EXPECT_EQ(expectedResult, result);
 
   //  left=false keepLeft=true   Returns offset of first byte of nth character (0-n). Used by Right(x, false)
 
   left = false;
   keepLeft = true;
-  result = UnicodeUtils::GetCharPosition(testString, 35, left, keepLeft, icuLocale); // S-sharp \xc3\x9f
+  result =
+      UnicodeUtils::GetCharPosition(testString, 35, left, keepLeft, icuLocale); // S-sharp \xc3\x9f
   expectedResult = 39;
   EXPECT_EQ(expectedResult, result);
 
   left = true;
   keepLeft = true;
-  result = UnicodeUtils::GetCharPosition(testString, 35, left, keepLeft, icuLocale); // S-sharp \xc3\x9f
+  result =
+      UnicodeUtils::GetCharPosition(testString, 35, left, keepLeft, icuLocale); // S-sharp \xc3\x9f
   expectedResult = 40;
   EXPECT_EQ(expectedResult, result);
-
 
   // Test with consecutive multi-byte characters at beginning and end of string
 
@@ -1384,13 +1373,13 @@ TEST(TestUnicodeUtils, GetCharPosition)
   left = true;
   keepLeft = true;
   result = UnicodeUtils::GetCharPosition(testString, 0, left, keepLeft, icuLocale);
-  expectedResult = 2;  // Last byte of 诺 e8 af ba
+  expectedResult = 2; // Last byte of 诺 e8 af ba
   EXPECT_EQ(expectedResult, result);
 
   left = true;
   keepLeft = true;
   result = UnicodeUtils::GetCharPosition(testString, 1, left, keepLeft, icuLocale);
-  expectedResult = 5;  // Last byte of 贝 e8 b4 9d
+  expectedResult = 5; // Last byte of 贝 e8 b4 9d
   EXPECT_EQ(expectedResult, result);
 
   //  left=false keepLeft=true   Returns offset of first byte of (n - 1)th character (0-n). Used by Right(x, false)
@@ -1407,7 +1396,6 @@ TEST(TestUnicodeUtils, GetCharPosition)
   result = UnicodeUtils::GetCharPosition(testString, 1, left, keepLeft, icuLocale);
   expectedResult = 3; // First Byte of 贝 e8 b4 9d
   EXPECT_EQ(expectedResult, result);
-
 }
 
 TEST(TestUnicodeUtils, Trim)
@@ -1431,7 +1419,7 @@ TEST(TestUnicodeUtils, Trim)
   EXPECT_STREQ(result.c_str(), refstr.c_str());
 
   refstr = "";
-  varstr=" ";
+  varstr = " ";
   result = UnicodeUtils::Trim(varstr, " \t");
   EXPECT_STREQ(result.c_str(), refstr.c_str());
 }
@@ -1478,7 +1466,6 @@ TEST(TestUnicodeUtils, TrimRight)
   EXPECT_STREQ(refstr.c_str(), result.c_str());
 }
 
-
 TEST(TestUnicodeUtils, Trim_Multiple)
 {
   std::string input;
@@ -1519,7 +1506,6 @@ TEST(TestUnicodeUtils, Trim_Multiple)
   result = Unicode::Trim(input, trimmableStrs, trimStart, trimEnd);
   EXPECT_STREQ(result.c_str(), expectedResult.c_str());
 }
-
 
 TEST(TestUnicodeUtils, Replace)
 {
@@ -1642,16 +1628,20 @@ TEST(TestUnicodeUtils, FoldCase)
 
 TEST(TestUnicodeUtils, FoldCase_W)
 {
-  std::wstring w_s1 = Unicode::UTF8ToWString(std::string(TestUnicodeUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_5));
-  std::wstring w_s2 = Unicode::UTF8ToWString(std::string(TestUnicodeUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_1));
+  std::wstring w_s1 =
+      Unicode::UTF8ToWString(std::string(TestUnicodeUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_5));
+  std::wstring w_s2 =
+      Unicode::UTF8ToWString(std::string(TestUnicodeUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_1));
 
   UnicodeUtils::FoldCase(w_s1);
   UnicodeUtils::FoldCase(w_s2);
   int32_t result = UnicodeUtils::Compare(w_s1, w_s2);
   EXPECT_NE(result, 0);
 
-  w_s1 = Unicode::UTF8ToWString(std::string(TestUnicodeUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_5));
-  w_s2 = Unicode::UTF8ToWString(std::string(TestUnicodeUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_1));
+  w_s1 =
+      Unicode::UTF8ToWString(std::string(TestUnicodeUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_5));
+  w_s2 =
+      Unicode::UTF8ToWString(std::string(TestUnicodeUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_1));
   UnicodeUtils::FoldCase(w_s1, StringOptions::FOLD_CASE_DEFAULT);
   UnicodeUtils::FoldCase(w_s2, StringOptions::FOLD_CASE_DEFAULT);
   // td::cout << "Turkic folded s1: " << s1 << std::endl;
@@ -1741,7 +1731,8 @@ TEST(TestUnicodeUtils, Normalize)
   // is not being tested, neither are the other alternatives to it.
 
   std::string s1 = TestUnicodeUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_1;
-  std::string result = UnicodeUtils::Normalize(s1, StringOptions::FOLD_CASE_DEFAULT, NormalizerType::NFD);
+  std::string result =
+      UnicodeUtils::Normalize(s1, StringOptions::FOLD_CASE_DEFAULT, NormalizerType::NFD);
   int cmp = UnicodeUtils::Compare(result, TestUnicodeUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_2);
   EXPECT_EQ(cmp, 0);
 
@@ -1789,8 +1780,7 @@ TEST(TestUnicodeUtils, Split)
 
   std::vector<std::string> expectedResult;
   varresults = UnicodeUtils::Split(",a,,aa,,", ",");
-  expectedResult =
-  { "", "a", "", "aa", "", "" };
+  expectedResult = {"", "a", "", "aa", "", ""};
   size_t idx = 0;
   EXPECT_EQ(expectedResult.size(), varresults.size());
 
@@ -1804,8 +1794,7 @@ TEST(TestUnicodeUtils, Split)
   }
 
   varresults = UnicodeUtils::Split(",a,,,aa,,,", ",");
-  expectedResult =
-  { "", "a", "", "", "aa", "", "", "" };
+  expectedResult = {"", "a", "", "", "aa", "", "", ""};
   EXPECT_EQ(expectedResult.size(), varresults.size());
   idx = 0;
   for (auto i : expectedResult)
@@ -1817,10 +1806,8 @@ TEST(TestUnicodeUtils, Split)
     }
   }
 
-  varresults = UnicodeUtils::Split(",-+a,,--++aa,,-+",
-      { ",", "-", "+" });
-  expectedResult =
-  { "", "", "", "a", "", "", "", "", "", "aa", "", "", "", "" };
+  varresults = UnicodeUtils::Split(",-+a,,--++aa,,-+", {",", "-", "+"});
+  expectedResult = {"", "", "", "a", "", "", "", "", "", "aa", "", "", "", ""};
   EXPECT_EQ(expectedResult.size(), varresults.size());
   idx = 0;
   for (auto i : expectedResult)
@@ -1831,10 +1818,8 @@ TEST(TestUnicodeUtils, Split)
       idx++;
     }
   }
-  varresults = UnicodeUtils::Split(",-+a,,--++aa,,-+",
-      { "-", "+", "," });
-  expectedResult =
-  { "", "", "", "a", "", "", "", "", "", "aa", "", "", "", "" };
+  varresults = UnicodeUtils::Split(",-+a,,--++aa,,-+", {"-", "+", ","});
+  expectedResult = {"", "", "", "a", "", "", "", "", "", "aa", "", "", "", ""};
   EXPECT_EQ(expectedResult.size(), varresults.size());
   idx = 0;
   for (auto i : expectedResult)
@@ -1845,10 +1830,8 @@ TEST(TestUnicodeUtils, Split)
       idx++;
     }
   }
-  varresults = UnicodeUtils::Split(",-+a,,--++aa,,-+",
-      { "+", ",", "-" });
-  expectedResult =
-  { "", "", "", "a", "", "", "", "", "", "aa", "", "", "", "" };
+  varresults = UnicodeUtils::Split(",-+a,,--++aa,,-+", {"+", ",", "-"});
+  expectedResult = {"", "", "", "a", "", "", "", "", "", "aa", "", "", "", ""};
   EXPECT_EQ(expectedResult.size(), varresults.size());
   idx = 0;
   for (auto i : expectedResult)
@@ -1860,10 +1843,8 @@ TEST(TestUnicodeUtils, Split)
     }
   }
   // This result looks incorrect, but verified against Matrix 19.4 behavior
-  varresults = UnicodeUtils::Split("a,,,a,,,,,,aa,,,a",
-      { ",", "-", "+" });
-  expectedResult =
-  { "a", "", "", "a", "", "", "", "", "", "aa", "", "", "a" };
+  varresults = UnicodeUtils::Split("a,,,a,,,,,,aa,,,a", {",", "-", "+"});
+  expectedResult = {"a", "", "", "a", "", "", "", "", "", "aa", "", "", "a"};
   EXPECT_EQ(expectedResult.size(), varresults.size());
   idx = 0;
   for (auto i : expectedResult)
@@ -1875,10 +1856,8 @@ TEST(TestUnicodeUtils, Split)
     }
   }
 
-  varresults = UnicodeUtils::Split("a,-+a,,--++aa,-+a",
-      { ",", "-", "+" });
-  expectedResult =
-  { "a", "", "", "a", "", "", "", "", "", "aa", "", "", "a" };
+  varresults = UnicodeUtils::Split("a,-+a,,--++aa,-+a", {",", "-", "+"});
+  expectedResult = {"a", "", "", "a", "", "", "", "", "", "aa", "", "", "a"};
   EXPECT_EQ(expectedResult.size(), varresults.size());
   idx = 0;
   for (auto i : expectedResult)
@@ -1894,9 +1873,9 @@ TEST(TestUnicodeUtils, Split)
 
   EXPECT_EQ(4U, UnicodeUtils::Split("a bc  d ef ghi ", " ", 4).size());
   EXPECT_STREQ("d ef ghi ", UnicodeUtils::Split("a bc  d ef ghi ", " ", 4).at(3).c_str())
-  << "Last part must include rest of the input string";
+      << "Last part must include rest of the input string";
   EXPECT_EQ(7U, UnicodeUtils::Split("a bc  d ef ghi ", " ").size())
-  << "Result must be 7 strings including two empty strings";
+      << "Result must be 7 strings including two empty strings";
   EXPECT_STREQ("bc", UnicodeUtils::Split("a bc  d ef ghi ", " ").at(1).c_str());
   EXPECT_STREQ("", UnicodeUtils::Split("a bc  d ef ghi ", " ").at(2).c_str());
   EXPECT_STREQ("", UnicodeUtils::Split("a bc  d ef ghi ", " ").at(6).c_str());
@@ -1915,7 +1894,7 @@ TEST(TestUnicodeUtils, Split)
   EXPECT_EQ(4U, UnicodeUtils::Split("a bc  d ef ghi ", ' ', 4).size());
   EXPECT_STREQ("d ef ghi ", UnicodeUtils::Split("a bc  d ef ghi ", ' ', 4).at(3).c_str());
   EXPECT_EQ(7U, UnicodeUtils::Split("a bc  d ef ghi ", ' ').size())
-  << "Result must be 7 strings including two empty strings";
+      << "Result must be 7 strings including two empty strings";
   EXPECT_STREQ("bc", UnicodeUtils::Split("a bc  d ef ghi ", ' ').at(1).c_str());
   EXPECT_STREQ("", UnicodeUtils::Split("a bc  d ef ghi ", ' ').at(2).c_str());
   EXPECT_STREQ("", UnicodeUtils::Split("a bc  d ef ghi ", ' ').at(6).c_str());
@@ -2051,8 +2030,7 @@ TEST(TestUnicodeUtils, SplitMulti)
   // Legacy (Matrix 19.4) result does not remove all null strings
   // expectedResult = {"a", "b", "c", "d", "e", "foo", "g", "", "h", "", "", "p", "q", "r", "s",
   //                  "x&extra", "y"};
-  expectedResult = {"a", "b", "c", "d", "e", "foo", "g", "h", "p", "q", "r", "s",
-      "x&extra", "y"};
+  expectedResult = {"a", "b", "c", "d", "e", "foo", "g", "h", "p", "q", "r", "s", "x&extra", "y"};
   result = UnicodeUtils::SplitMulti(input, delimiters, 0);
   EXPECT_EQ(expectedResult.size(), result.size());
   idx = 0;
@@ -2084,7 +2062,7 @@ TEST(TestUnicodeUtils, SplitMulti)
   delimiters = {",", " ", "-"};
   // The following has a minor bug and is present in Matrix 19.4. Should not return null strings
   // expectedResult =  {"a", "b", "e", "e", "f", "c", "d", "", "", "sworn", "enemy", "is", "not", "here"};
-  expectedResult =  {"a", "b", "e", "e", "f", "c", "d", "sworn", "enemy", "is", "not", "here"};
+  expectedResult = {"a", "b", "e", "e", "f", "c", "d", "sworn", "enemy", "is", "not", "here"};
 
   result = UnicodeUtils::SplitMulti(input, delimiters);
   EXPECT_EQ(expectedResult.size(), result.size());
@@ -2117,10 +2095,10 @@ TEST(TestUnicodeUtils, Collate)
   EXPECT_GT(var, ref);
 
   EXPECT_TRUE(Unicode::InitializeCollator(getTurkicLocale(), true));
-  const std::wstring s3 = std::wstring(
-      Unicode::UTF8ToWString(TestUnicodeUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_5));
-  const std::wstring s4 = std::wstring(
-      Unicode::UTF8ToWString(TestUnicodeUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_1));
+  const std::wstring s3 =
+      std::wstring(Unicode::UTF8ToWString(TestUnicodeUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_5));
+  const std::wstring s4 =
+      std::wstring(Unicode::UTF8ToWString(TestUnicodeUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_1));
   var = UnicodeUtils::Collate(s3, s4);
   EXPECT_EQ(var, 0);
 

@@ -8,13 +8,14 @@
 
 #pragma once
 
+#include <locale>
+#include <stddef.h>
+#include <type_traits>
+#include <vector>
+
 #include <bits/stdint-intn.h>
 #include <bits/stdint-uintn.h>
 #include <fmt/core.h>
-#include <stddef.h>
-#include <locale>
-#include <type_traits>
-#include <vector>
 
 //-----------------------------------------------------------------------
 //
@@ -29,7 +30,6 @@
 //  Modified to use J O'Leary's std::string class by kraqh3d
 //
 //------------------------------------------------------------------------
-
 
 // TODO: Move to make/cmake file
 // USE_ICU_COLLATOR chooses between ICU and legacy Kodi collation
@@ -60,11 +60,11 @@
  */
 #undef USE_FINDWORD_REGEX
 
-#include <stdarg.h>   // others depend on this
 #include <climits>
-#include <string>
-#include <sstream>
 #include <iostream>
+#include <sstream>
+#include <stdarg.h> // others depend on this
+#include <string>
 
 // workaround for broken [[deprecated]] in coverity
 #if defined(__COVERITY__)
@@ -113,8 +113,7 @@ constexpr auto EnumToInt(T&& arg) noexcept
 class StringUtils
 {
 public:
-
-	/**
+  /**
 	 *  A Brief description of some of the Unicode issues: (Work in Progress)
 	 *  DO NOT take this as definitive! It is from my current understanding.
 	 *
@@ -134,13 +133,12 @@ public:
   template<typename... Args>
   static std::string Format(const std::string& fmt, Args&&... args)
   {
-  	// Note that there is an ICU version of Format
+    // Note that there is an ICU version of Format
 
     // coverity[fun_call_w_exception : FALSE]
 
     return ::fmt::format(fmt, EnumToInt(std::forward<Args>(args))...);
-     // Can NOT call CLog::Log from here due to recursion
-
+    // Can NOT call CLog::Log from here due to recursion
   }
 
   /*!
@@ -155,7 +153,7 @@ public:
   {
     // coverity[fun_call_w_exception : FALSE]
 
-  	// TODO: Unicode- Which Locale is used? Unicode safe?
+    // TODO: Unicode- Which Locale is used? Unicode safe?
 
     return ::fmt::format(fmt, EnumToInt(std::forward<Args>(args))...);
     // Can NOT call CLog::Log due to recursion!
@@ -183,7 +181,7 @@ public:
     * \param str to modify
     * \return trimmed string, same as str argument.
     */
-   static std::string& RemoveDuplicatedSpacesAndTabs(std::string& str);
+  static std::string& RemoveDuplicatedSpacesAndTabs(std::string& str);
 
   /*! \brief Builds a string by appending every string from a container, separated by a delimiter
    *
@@ -281,10 +279,7 @@ public:
    * \param chr C-char (byte) to examine
    * \return true if char matches regex [0-9], else false
    */
-  inline static bool isasciidigit(char chr)
-  {
-    return chr >= '0' && chr <= '9';
-  }
+  inline static bool isasciidigit(char chr) { return chr >= '0' && chr <= '9'; }
 
   /*!
    * \brief Determines whether the given character is an ASCII hexadecimal digit or not
@@ -360,7 +355,7 @@ public:
     return isasciiuppercaseletter(chr) || isasciilowercaseletter(chr) || isasciidigit(chr);
   }
 
- /*!
+  /*!
   * \brief converts the given number into a human-friendly string representing a size in bytes.
   *
   * The returned string is a power of two:

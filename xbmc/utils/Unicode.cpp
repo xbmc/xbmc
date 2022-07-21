@@ -1,6 +1,17 @@
 #include "Unicode.h"
 
+#include "../LangInfo.h"
+#include "../commons/ilog.h"
+#include "../utils/log.h"
+#include "Locale.h"
+
+#include <algorithm>
+#include <chrono>
+#include <cmath>
+#include <codecvt>
+#include <locale>
 #include <stdlib.h>
+
 #include <unicode/bytestream.h>
 #include <unicode/casemap.h>
 #include <unicode/coll.h>
@@ -13,26 +24,16 @@
 #include <unicode/urename.h>
 #include <unicode/ustring.h>
 #include <unicode/utext.h>
-#include <algorithm>
-#include <chrono>
-#include <cmath>
-#include <codecvt>
-#include <locale>
-
-#include "../commons/ilog.h"
-#include "../LangInfo.h"
-#include "../utils/log.h"
-#include "Locale.h"
 
 // convert UTF-8 string to wstring
-std::wstring Unicode::UTF8ToWString(const std::string &str)
+std::wstring Unicode::UTF8ToWString(const std::string& str)
 {
   std::wstring_convert<std::codecvt_utf8<wchar_t>> myconv;
   return myconv.from_bytes(str);
 }
 
 // convert wstring to UTF-8 string
-std::string Unicode::WStringToUTF8(const std::wstring &str)
+std::string Unicode::WStringToUTF8(const std::wstring& str)
 {
   std::wstring_convert<std::codecvt_utf8<wchar_t>> myconv;
   return myconv.to_bytes(str);
@@ -61,8 +62,8 @@ const inline std::string toString(icu::UnicodeString str)
 size_t Unicode::GetBasicUTF8BufferSize(const size_t utf8_length, float scale)
 {
 
-  float scale_factor = std::fmin((float) scale, 1.5);
-  return (size_t) (200 + int(utf8_length * scale_factor));
+  float scale_factor = std::fmin((float)scale, 1.5);
+  return (size_t)(200 + int(utf8_length * scale_factor));
 }
 
 /*!
@@ -81,8 +82,8 @@ size_t Unicode::GetWcharToUCharBufferSize(const size_t wchar_length, const size_
   // UTF-16 string. We overestimate the capacity just slightly,
   // just in case there are a few supplementary characters.
   // Add a bit more for some growth.
-  int scale_factor = std::min((int) scale, 1);
-  return (size_t) (200 + (wchar_length + (wchar_length >> 4) + 4) * scale_factor);
+  int scale_factor = std::min((int)scale, 1);
+  return (size_t)(200 + (wchar_length + (wchar_length >> 4) + 4) * scale_factor);
 }
 
 /**
@@ -103,8 +104,8 @@ size_t Unicode::GetUCharBufferSize(const size_t utf8_length, const float scale)
   // utf8 string will comfortably fit in a UChar string
   // of same char length. Add a bit more for some growth.
 
-  int scale_factor = std::fmin((int) scale, 1.0);
-  return (size_t) (200 + (int) (utf8_length * scale_factor));
+  int scale_factor = std::fmin((int)scale, 1.0);
+  return (size_t)(200 + (int)(utf8_length * scale_factor));
 }
 
 /**
@@ -123,8 +124,8 @@ size_t Unicode::GetUCharBufferSize(const size_t utf8_length, const float scale)
 size_t Unicode::GetUCharWorkingSize(const size_t uchar_length, const size_t scale)
 {
   //  Add a bit more for some growth.
-  int scale_factor = std::min((int) scale, 2);
-  return (size_t) (200 + uchar_length * scale_factor);
+  int scale_factor = std::min((int)scale, 2);
+  return (size_t)(200 + uchar_length * scale_factor);
 }
 
 /**
@@ -146,8 +147,8 @@ size_t Unicode::GetUTF8BufferSize(const size_t uchar_length, const size_t scale)
   // as many bytes as the source has UChars.
   // The "worst cases" are writing systems like Indic, Thai and CJK with
   // 3:1 bytes:UChars.
-  int scale_factor = std::min((int) scale, 1);
-  return (size_t) (200 + uchar_length * 3 * scale_factor);
+  int scale_factor = std::min((int)scale, 1);
+  return (size_t)(200 + uchar_length * 3 * scale_factor);
 }
 
 /**
@@ -171,16 +172,16 @@ size_t Unicode::GetUTF8BufferSize(const size_t uchar_length, const size_t scale)
  */
 size_t Unicode::GetWCharBufferSize(const size_t uchar_length, const size_t scale)
 {
-  size_t scale_factor = std::min((int) scale, 1);
-#if U_SIZEOF_WCHAR_T==4
+  size_t scale_factor = std::min((int)scale, 1);
+#if U_SIZEOF_WCHAR_T == 4
 
   // When converting from UTF-16 to UTF-32, the result will have at most 2 times
   // as many bytes as the source has UChars.
 
-  return (size_t) (200 + uchar_length * 2 * scale_factor);
+  return (size_t)(200 + uchar_length * 2 * scale_factor);
 #else
   // When converting from UTF-16 to UTF-16, the size is the same
-  return (size_t) (200 + uchar_length * scale_factor);
+  return (size_t)(200 + uchar_length * scale_factor);
 #endif
 }
 
@@ -210,16 +211,22 @@ size_t Unicode::GetWCharBufferSize(const size_t uchar_length, const size_t scale
  * the content.
  *
  */
-UChar* Unicode::StringToUChar(const std::string &src, UChar *buffer, const size_t bufferSize,
-    int32_t &destLength, const size_t src_offset /* = 0 */,
-    const size_t src_length /* = std::string::npos */)
+UChar* Unicode::StringToUChar(const std::string& src,
+                              UChar* buffer,
+                              const size_t bufferSize,
+                              int32_t& destLength,
+                              const size_t src_offset /* = 0 */,
+                              const size_t src_length /* = std::string::npos */)
 {
   size_t length = std::min(src.length(), src_length);
   return Unicode::StringToUChar(src.data() + src_offset, buffer, bufferSize, destLength, length);
 }
 
-UChar* Unicode::StringToUChar(const char *src, UChar *buffer, const size_t bufferSize,
-    int32_t &destLength, const size_t length /* = std::string::npos */)
+UChar* Unicode::StringToUChar(const char* src,
+                              UChar* buffer,
+                              const size_t bufferSize,
+                              int32_t& destLength,
+                              const size_t length /* = std::string::npos */)
 {
   int32_t srcLength;
 
@@ -230,7 +237,7 @@ UChar* Unicode::StringToUChar(const char *src, UChar *buffer, const size_t buffe
 
   // Substitute codepoint to use when a corrupt UTF8 codepoint is encountered.
 
-  const UChar32 subchar = (UChar32) 0xFFFD;
+  const UChar32 subchar = (UChar32)0xFFFD;
 
   if (length == std::string::npos)
     srcLength = -1;
@@ -239,7 +246,7 @@ UChar* Unicode::StringToUChar(const char *src, UChar *buffer, const size_t buffe
 
   UErrorCode status = U_ZERO_ERROR;
   u_strFromUTF8WithSub(buffer, bufferSize, &destLength, src, srcLength, subchar,
-      &numberOfSubstitutions, &status);
+                       &numberOfSubstitutions, &status);
 
   if (numberOfSubstitutions > 0)
   {
@@ -247,11 +254,11 @@ UChar* Unicode::StringToUChar(const char *src, UChar *buffer, const size_t buffe
     char utf8Buffer[utf8BufferSize];
     int32_t utf8ActualLength = 0;
     const UChar* ucharBuffer = buffer;
-    const size_t u_str_length = (size_t) destLength;
+    const size_t u_str_length = (size_t)destLength;
     std::string newStr = Unicode::UCharToString(ucharBuffer, utf8Buffer, utf8BufferSize,
-        utf8ActualLength, u_str_length);
+                                                utf8ActualLength, u_str_length);
     CLog::Log(LOGDEBUG, "{} codepoint substitutions Unicode::StringToUChar utf8: {} UChar: {}\n",
-        numberOfSubstitutions, src, newStr);
+              numberOfSubstitutions, src, newStr);
   }
   if (U_FAILURE(status))
   {
@@ -261,8 +268,11 @@ UChar* Unicode::StringToUChar(const char *src, UChar *buffer, const size_t buffe
   return buffer;
 }
 
-std::string Unicode::UCharToString(const UChar *u_str, char *utf8Buffer, size_t utf8BufferSize,
-    int32_t &utf8ActualLength, const size_t u_str_length)
+std::string Unicode::UCharToString(const UChar* u_str,
+                                   char* utf8Buffer,
+                                   size_t utf8BufferSize,
+                                   int32_t& utf8ActualLength,
+                                   const size_t u_str_length)
 {
   UErrorCode status = U_ZERO_ERROR;
 
@@ -274,7 +284,7 @@ std::string Unicode::UCharToString(const UChar *u_str, char *utf8Buffer, size_t 
 
   // Substitute codepoint to use when a corrupt UTF8 codepoint is encountered.
 
-  const UChar32 subchar = (UChar32) 0xFFFD;
+  const UChar32 subchar = (UChar32)0xFFFD;
   // UChar string can expand to up to 3x UTF8 chars
 
   int32_t u_str_length_param;
@@ -285,12 +295,13 @@ std::string Unicode::UCharToString(const UChar *u_str, char *utf8Buffer, size_t 
 
   status = U_ZERO_ERROR;
   u_strToUTF8WithSub(utf8Buffer, utf8BufferSize, &utf8ActualLength, u_str, u_str_length_param,
-      subchar, &numberOfSubstitutions, &status);
+                     subchar, &numberOfSubstitutions, &status);
 
   if (numberOfSubstitutions > 0)
   {
-    CLog::Log(LOGDEBUG, "Unicode::UCharToString {} codepoint substitutions made in Unicode::UCharToString\n",
-        numberOfSubstitutions);
+    CLog::Log(LOGDEBUG,
+              "Unicode::UCharToString {} codepoint substitutions made in Unicode::UCharToString\n",
+              numberOfSubstitutions);
   }
   if (U_FAILURE(status))
   {
@@ -302,8 +313,11 @@ std::string Unicode::UCharToString(const UChar *u_str, char *utf8Buffer, size_t 
   return result;
 }
 
-UChar* Unicode::WcharToUChar(const wchar_t *src, UChar *buffer, size_t bufferSize,
-    int32_t &destLength, const size_t length /* = std::string::npos */)
+UChar* Unicode::WcharToUChar(const wchar_t* src,
+                             UChar* buffer,
+                             size_t bufferSize,
+                             int32_t& destLength,
+                             const size_t length /* = std::string::npos */)
 {
   int32_t srcLength;
 
@@ -314,7 +328,7 @@ UChar* Unicode::WcharToUChar(const wchar_t *src, UChar *buffer, size_t bufferSiz
 
   // Substitute codepoint to use when a corrupt codepoint is encountered.
 
-  const UChar32 subchar = (UChar32) 0xFFFD;
+  const UChar32 subchar = (UChar32)0xFFFD;
   if (length == std::string::npos)
     srcLength = -1;
   else
@@ -322,19 +336,20 @@ UChar* Unicode::WcharToUChar(const wchar_t *src, UChar *buffer, size_t bufferSiz
 
   UErrorCode status = U_ZERO_ERROR;
 
-#if U_SIZEOF_WCHAR_T==4
-  u_strFromUTF32WithSub(buffer, bufferSize, &destLength, (int32_t*) src, srcLength, subchar,
-      &numberOfSubstitutions, &status);
+#if U_SIZEOF_WCHAR_T == 4
+  u_strFromUTF32WithSub(buffer, bufferSize, &destLength, (int32_t*)src, srcLength, subchar,
+                        &numberOfSubstitutions, &status);
 #else
   // Should be a way to do substitutions on bad 'codepoints' as above.
   u_strFromWCS(buffer, bufferSize, &destLength, src, srcLength, /* subchar,
-			&numberOfSubstitutions, */ &status);
+			&numberOfSubstitutions, */
+               &status);
 #endif
 
   if (numberOfSubstitutions > 0)
   {
     CLog::Log(LOGDEBUG, "{} codepoint substitutions made in Unicode::WcharToUChar\n",
-        numberOfSubstitutions);
+              numberOfSubstitutions);
   }
   if (U_FAILURE(status))
   {
@@ -344,8 +359,11 @@ UChar* Unicode::WcharToUChar(const wchar_t *src, UChar *buffer, size_t bufferSiz
   return buffer;
 }
 
-wchar_t* Unicode::UCharToWChar(const UChar *u_str, wchar_t *buffer, size_t bufferSize,
-    int32_t &destLength, const size_t u_str_length)
+wchar_t* Unicode::UCharToWChar(const UChar* u_str,
+                               wchar_t* buffer,
+                               size_t bufferSize,
+                               int32_t& destLength,
+                               const size_t u_str_length)
 {
   UErrorCode status = U_ZERO_ERROR;
 
@@ -368,12 +386,13 @@ wchar_t* Unicode::UCharToWChar(const UChar *u_str, wchar_t *buffer, size_t buffe
 
   status = U_ZERO_ERROR;
   u_strToWCS(buffer, bufferSize, &destLength, u_str, u_str_length_param, /* subchar,
-   &numberOfSubstitutions, */&status);
+   &numberOfSubstitutions, */
+             &status);
 
   if (numberOfSubstitutions > 0)
   {
     CLog::Log(LOGDEBUG, "{} codepoint substitutions made in Unicode::UCharToWChar\n",
-        numberOfSubstitutions);
+              numberOfSubstitutions);
   }
   if (U_FAILURE(status))
   {
@@ -412,7 +431,7 @@ bool Unicode::IsLatinChar(const UChar32 codepoint)
   return false;
 }
 
-icu::Locale Unicode::GetICULocale(const std::locale &locale)
+icu::Locale Unicode::GetICULocale(const std::locale& locale)
 {
 
   UErrorCode status = U_ZERO_ERROR;
@@ -458,8 +477,10 @@ icu::Locale Unicode::GetDefaultICULocale()
   return icu_locale;
 }
 
-icu::Locale Unicode::GetICULocale(const char *language, const char *country, const char *variant,
-    const char *keywordsAndValues)
+icu::Locale Unicode::GetICULocale(const char* language,
+                                  const char* country,
+                                  const char* variant,
+                                  const char* keywordsAndValues)
 {
 
   UErrorCode status = U_ZERO_ERROR;
@@ -472,7 +493,7 @@ icu::Locale Unicode::GetICULocale(const char *language, const char *country, con
   return icu_locale;
 }
 
-const std::string Unicode::ToUpper(const std::string &src, const icu::Locale &locale)
+const std::string Unicode::ToUpper(const std::string& src, const icu::Locale& locale)
 {
   // TODO: Change to icu::CaseMap::utf8ToUpper or ucasemap_utf8ToUpper
 
@@ -503,7 +524,7 @@ const std::string Unicode::ToUpper(const std::string &src, const icu::Locale &lo
   int32_t toupper_length = 0;
 
   Unicode::ToUpper(p_u_src, u_src_actual_length, currentLocale, p_u_toupper_buffer, u_toupper_size,
-      toupper_length, status);
+                   toupper_length, status);
 
   if (U_FAILURE(status))
   {
@@ -516,13 +537,17 @@ const std::string Unicode::ToUpper(const std::string &src, const icu::Locale &lo
   char utf8_buffer[utf8_buffer_size];
   int32_t utf8_actual_length = 0;
   std::string result = Unicode::UCharToString(p_u_toupper_buffer, utf8_buffer, utf8_buffer_size,
-      utf8_actual_length, toupper_length);
+                                              utf8_actual_length, toupper_length);
   return result;
 }
 
-void Unicode::ToUpper(UChar *p_u_src_buffer, int32_t u_src_length, const icu::Locale locale,
-    UChar *p_u_toupper_buffer, const int32_t u_toupper_buffer_size, int32_t &to_upper_length,
-    UErrorCode &status)
+void Unicode::ToUpper(UChar* p_u_src_buffer,
+                      int32_t u_src_length,
+                      const icu::Locale locale,
+                      UChar* p_u_toupper_buffer,
+                      const int32_t u_toupper_buffer_size,
+                      int32_t& to_upper_length,
+                      UErrorCode& status)
 {
   if (u_src_length == 0)
   {
@@ -533,7 +558,7 @@ void Unicode::ToUpper(UChar *p_u_src_buffer, int32_t u_src_length, const icu::Lo
   status = U_ZERO_ERROR;
   std::string localeId = Unicode::GetICULocaleId(locale);
   to_upper_length = u_strToUpper(p_u_toupper_buffer, u_toupper_buffer_size, p_u_src_buffer,
-      u_src_length, localeId.data(), &status);
+                                 u_src_length, localeId.data(), &status);
 
   if (U_FAILURE(status))
   {
@@ -543,7 +568,7 @@ void Unicode::ToUpper(UChar *p_u_src_buffer, int32_t u_src_length, const icu::Lo
   }
 }
 
-const std::string Unicode::ToLower(const std::string &src, const icu::Locale &locale)
+const std::string Unicode::ToLower(const std::string& src, const icu::Locale& locale)
 {
   // TODO: Replace with icu::CaseMap::utf8ToLower or ucasemap_utf8ToLower
 
@@ -559,7 +584,7 @@ const std::string Unicode::ToLower(const std::string &src, const icu::Locale &lo
   return result;
 }
 
-const std::wstring Unicode::ToCapitalize(const std::wstring &src, const icu::Locale &locale)
+const std::wstring Unicode::ToCapitalize(const std::wstring& src, const icu::Locale& locale)
 {
   std::string localeId = "none";
   if (locale != nullptr)
@@ -596,13 +621,13 @@ const std::wstring Unicode::ToCapitalize(const std::wstring &src, const icu::Loc
   wchar_t wchar_buffer[wchar_buffer_size];
   int32_t destLength = 0;
   Unicode::UCharToWChar(titleCase.getBuffer(), wchar_buffer, wchar_buffer_size, destLength,
-      (size_t) titleCase.length());
+                        (size_t)titleCase.length());
 
-  std::wstring wresult = std::wstring(wchar_buffer, (size_t) destLength);
+  std::wstring wresult = std::wstring(wchar_buffer, (size_t)destLength);
   return wresult;
 }
 
-const std::string Unicode::ToCapitalize(const std::string &src, const icu::Locale &locale)
+const std::string Unicode::ToCapitalize(const std::string& src, const icu::Locale& locale)
 {
 
   icu::UnicodeString uString = Unicode::ToUnicodeString(src);
@@ -645,7 +670,7 @@ const std::string Unicode::ToCapitalize(const std::string &src, const icu::Local
  *
  */
 
-const std::wstring Unicode::ToTitle(const std::wstring &src, const icu::Locale &locale)
+const std::wstring Unicode::ToTitle(const std::wstring& src, const icu::Locale& locale)
 {
   UErrorCode status = U_ZERO_ERROR;
 
@@ -671,7 +696,7 @@ const std::wstring Unicode::ToTitle(const std::wstring &src, const icu::Locale &
   return wResult;
 }
 
-const std::string Unicode::ToTitle(const std::string &src, const icu::Locale &locale)
+const std::string Unicode::ToTitle(const std::string& src, const icu::Locale& locale)
 {
   // TODO: change to use icu::CaseMap::utf8toTitle or ucasemap_utf8ToTitle
 
@@ -694,7 +719,7 @@ const std::string Unicode::ToTitle(const std::string &src, const icu::Locale &lo
   return utf8Result;
 }
 
-const std::wstring Unicode::FoldCase(const std::wstring &src, const StringOptions options)
+const std::wstring Unicode::FoldCase(const std::wstring& src, const StringOptions options)
 {
   // ICU wchar_t support is spotty. Convert to native UChars (UTF-16).
 
@@ -714,9 +739,9 @@ const std::wstring Unicode::FoldCase(const std::wstring &src, const StringOption
   Unicode::WcharToUChar(src.data(), u_src, u_src_size, destLength1, src.length());
 
   UErrorCode status = U_ZERO_ERROR;
-  int32_t folded_length = 0;  // In UChars
-  folded_length = icu::CaseMap::fold(to_underlying(options), u_src, (int) src.length(), u_dest,
-      (int) u_dest_size, nullptr, status);
+  int32_t folded_length = 0; // In UChars
+  folded_length = icu::CaseMap::fold(to_underlying(options), u_src, (int)src.length(), u_dest,
+                                     (int)u_dest_size, nullptr, status);
 
   int32_t destLength = 0; // Length in wchars
   int wchar_buffer_size = Unicode::GetWCharBufferSize(folded_length, 2);
@@ -726,7 +751,7 @@ const std::wstring Unicode::FoldCase(const std::wstring &src, const StringOption
   return result;
 }
 
-const std::string Unicode::FoldCase(const std::string &src, const StringOptions options)
+const std::string Unicode::FoldCase(const std::string& src, const StringOptions options)
 {
   std::string result = std::string();
   if (src.length() == 0)
@@ -746,7 +771,7 @@ const std::string Unicode::FoldCase(const std::string &src, const StringOptions 
     if (sink.NumberOfBytesAppended() > bufferSize)
     {
       CLog::Log(LOGERROR, "Error in Unicode::FoldCase: buffer not large enough need: {}\n",
-          sink.NumberOfBytesAppended());
+                sink.NumberOfBytesAppended());
       return result = std::string(src);
     }
     else
@@ -777,8 +802,10 @@ const std::string Unicode::FoldCase(const std::string &src, const StringOptions 
  Notes: length and number of bytes in strPiece may change during folding/normalization
  */
 
-void Unicode::FoldCase(const icu::StringPiece strPiece, icu::CheckedArrayByteSink &sink,
-    UErrorCode &status, const int32_t options)
+void Unicode::FoldCase(const icu::StringPiece strPiece,
+                       icu::CheckedArrayByteSink& sink,
+                       UErrorCode& status,
+                       const int32_t options)
 {
   icu::CaseMap::utf8Fold(options, strPiece, sink, nullptr, status);
   return;
@@ -798,8 +825,9 @@ void Unicode::FoldCase(const icu::StringPiece strPiece, icu::CheckedArrayByteSin
  \return src
  */
 
-const std::wstring Unicode::Normalize(const std::wstring &src, const StringOptions option,
-    const NormalizerType NormalizerType)
+const std::wstring Unicode::Normalize(const std::wstring& src,
+                                      const StringOptions option,
+                                      const NormalizerType NormalizerType)
 {
   // ICU wchar_t support is spotty. Convert to native UChars (UTF-16).
 
@@ -818,7 +846,7 @@ const std::wstring Unicode::Normalize(const std::wstring &src, const StringOptio
   Unicode::WcharToUChar(src.data(), u_src, u_src_size, destLength1, src.length());
 
   UErrorCode status = U_ZERO_ERROR;
-  int32_t folded_length = 0;  // In UChars
+  int32_t folded_length = 0; // In UChars
   // Folds and Normalizes at same time.
 
   const UNormalizer2* Normalizer;
@@ -852,8 +880,8 @@ const std::wstring Unicode::Normalize(const std::wstring &src, const StringOptio
     }
   }
 
-  folded_length = unorm2_normalize(Normalizer, u_src, (int) src.length(), u_dest, (int) u_dest_size,
-      &status);
+  folded_length =
+      unorm2_normalize(Normalizer, u_src, (int)src.length(), u_dest, (int)u_dest_size, &status);
 
   std::wstring result;
   if (not U_FAILURE(status))
@@ -883,8 +911,9 @@ const std::wstring Unicode::Normalize(const std::wstring &src, const StringOptio
  \return src
  */
 
-const std::string Unicode::Normalize(const std::string &src, const StringOptions options,
-    const NormalizerType NormalizerType)
+const std::string Unicode::Normalize(const std::string& src,
+                                     const StringOptions options,
+                                     const NormalizerType NormalizerType)
 {
   if (src.length() == 0)
     return "";
@@ -904,7 +933,7 @@ const std::string Unicode::Normalize(const std::string &src, const StringOptions
     if (sink.NumberOfBytesAppended() > bufferSize)
     {
       CLog::Log(LOGERROR, "Error in Unicode::Normalize buffer not large enough need: {}\n",
-          sink.NumberOfBytesAppended());
+                sink.NumberOfBytesAppended());
     }
     else
     {
@@ -939,8 +968,11 @@ const std::string Unicode::Normalize(const std::string &src, const StringOptions
  this up. The type of normalization to use depends upon the goal.
  */
 
-void Unicode::Normalize(const icu::StringPiece strPiece, icu::CheckedArrayByteSink &sink,
-    UErrorCode &status, const int32_t options, const NormalizerType NormalizerType)
+void Unicode::Normalize(const icu::StringPiece strPiece,
+                        icu::CheckedArrayByteSink& sink,
+                        UErrorCode& status,
+                        const int32_t options,
+                        const NormalizerType NormalizerType)
 {
   const icu::Normalizer2* normalizer;
   bool composeMode;
@@ -1008,8 +1040,10 @@ void Unicode::Normalize(const icu::StringPiece strPiece, icu::CheckedArrayByteSi
   }
 }
 
-int Unicode::StrCaseCmp(const std::wstring &s1, const std::wstring &s2, const StringOptions options,
-    const bool Normalize /* = false */)
+int Unicode::StrCaseCmp(const std::wstring& s1,
+                        const std::wstring& s2,
+                        const StringOptions options,
+                        const bool Normalize /* = false */)
 {
   // TODO: Add normalization
 
@@ -1058,8 +1092,10 @@ int Unicode::StrCaseCmp(const std::wstring &s1, const std::wstring &s2, const St
   return result;
 }
 
-int Unicode::StrCaseCmp(const std::string &s1, const std::string &s2, const StringOptions options,
-    const bool Normalize /* = false */)
+int Unicode::StrCaseCmp(const std::string& s1,
+                        const std::string& s2,
+                        const StringOptions options,
+                        const bool Normalize /* = false */)
 {
 
   if (s1.empty() and s2.empty())
@@ -1106,9 +1142,14 @@ int Unicode::StrCaseCmp(const std::string &s1, const std::string &s2, const Stri
   return result;
 }
 
-int Unicode::StrCaseCmp(const std::string &s1, size_t s1_start, size_t s1_length,
-    const std::string &s2, size_t s2_start, size_t s2_length, const StringOptions options,
-    const bool Normalize /* = false */)
+int Unicode::StrCaseCmp(const std::string& s1,
+                        size_t s1_start,
+                        size_t s1_length,
+                        const std::string& s2,
+                        size_t s2_start,
+                        size_t s2_length,
+                        const StringOptions options,
+                        const bool Normalize /* = false */)
 {
 
   // Lengths are relative to UTF8 encoding. Only send the bytes
@@ -1160,8 +1201,11 @@ int Unicode::StrCaseCmp(const std::string &s1, size_t s1_start, size_t s1_length
   return result;
 }
 
-int Unicode::StrCaseCmp(const std::string &s1, const std::string &s2, size_t n,
-    const StringOptions options, const bool Normalize /* = false */)
+int Unicode::StrCaseCmp(const std::string& s1,
+                        const std::string& s2,
+                        size_t n,
+                        const StringOptions options,
+                        const bool Normalize /* = false */)
 {
 
   size_t n1 = std::min(n, s1.length());
@@ -1170,8 +1214,13 @@ int Unicode::StrCaseCmp(const std::string &s1, const std::string &s2, size_t n,
   return Unicode::StrCaseCmp(s1, 0, n1, s2, 0, n2, options, Normalize);
 }
 
-int8_t Unicode::StrCmp(const std::wstring &s1, size_t s1_start, size_t s1_length,
-    const std::wstring &s2, size_t s2_start, size_t s2_length, const bool Normalize /* = false */)
+int8_t Unicode::StrCmp(const std::wstring& s1,
+                       size_t s1_start,
+                       size_t s1_length,
+                       const std::wstring& s2,
+                       size_t s2_start,
+                       size_t s2_length,
+                       const bool Normalize /* = false */)
 {
 
   // TODO: Use faster icu::Collator::compareUTF8()
@@ -1200,8 +1249,13 @@ int8_t Unicode::StrCmp(const std::wstring &s1, size_t s1_start, size_t s1_length
   return result;
 }
 
-int8_t Unicode::StrCmp(const std::string &s1, size_t s1_start, size_t s1_length,
-    const std::string &s2, size_t s2_start, size_t s2_length, const bool Normalize /* = false */)
+int8_t Unicode::StrCmp(const std::string& s1,
+                       size_t s1_start,
+                       size_t s1_length,
+                       const std::string& s2,
+                       size_t s2_start,
+                       size_t s2_length,
+                       const bool Normalize /* = false */)
 {
 
   // TODO: Use faster icu::Collator::compareUTF8()
@@ -1233,15 +1287,16 @@ int8_t Unicode::StrCmp(const std::string &s1, size_t s1_start, size_t s1_length,
   return result;
 }
 
-bool Unicode::StartsWith(const std::string &s1, const std::string &s2)
+bool Unicode::StartsWith(const std::string& s1, const std::string& s2)
 {
   icu::UnicodeString uString1 = Unicode::ToUnicodeString(s1);
   icu::UnicodeString uString2 = Unicode::ToUnicodeString(s2);
   return uString1.startsWith(uString2);
 }
 
-bool Unicode::StartsWithNoCase(const std::string &s1, const std::string &s2,
-    const StringOptions options)
+bool Unicode::StartsWithNoCase(const std::string& s1,
+                               const std::string& s2,
+                               const StringOptions options)
 {
   icu::UnicodeString uString1 = Unicode::ToUnicodeString(s1);
   icu::UnicodeString uString2 = Unicode::ToUnicodeString(s2);
@@ -1251,15 +1306,16 @@ bool Unicode::StartsWithNoCase(const std::string &s1, const std::string &s2,
   UBool result = uString1.startsWith(uString2);
   return result;
 }
-bool Unicode::EndsWith(const std::string &s1, const std::string &s2)
+bool Unicode::EndsWith(const std::string& s1, const std::string& s2)
 {
   icu::UnicodeString uString1 = Unicode::ToUnicodeString(s1);
   icu::UnicodeString uString2 = Unicode::ToUnicodeString(s2);
   return uString1.endsWith(uString2);
 }
 
-bool Unicode::EndsWithNoCase(const std::string &s1, const std::string &s2,
-    const StringOptions options)
+bool Unicode::EndsWithNoCase(const std::string& s1,
+                             const std::string& s2,
+                             const StringOptions options)
 {
   icu::UnicodeString uString1 = Unicode::ToUnicodeString(s1);
   icu::UnicodeString uString2 = Unicode::ToUnicodeString(s2);
@@ -1283,8 +1339,10 @@ bool Unicode::EndsWithNoCase(const std::string &s1, const std::string &s2,
  * \return leftmost characters of string, length determined by charCount
  *
  */
-std::string Unicode::Left(const std::string &str, const size_t charCount,
-    const icu::Locale icuLocale, const bool keepLeft /* = true */)
+std::string Unicode::Left(const std::string& str,
+                          const size_t charCount,
+                          const icu::Locale icuLocale,
+                          const bool keepLeft /* = true */)
 {
   if (charCount == 0)
   {
@@ -1301,9 +1359,9 @@ std::string Unicode::Left(const std::string &str, const size_t charCount,
 
   size_t charIdx = charCount - 1;
   if (!keepLeft)
-    charIdx++;  // Need first byte of next char
+    charIdx++; // Need first byte of next char
 
-  UText * ut = Unicode::ConfigUText(result);
+  UText* ut = Unicode::ConfigUText(result);
   if (ut == nullptr)
   {
     result = std::string(str);
@@ -1317,7 +1375,7 @@ std::string Unicode::Left(const std::string &str, const size_t charCount,
     return result;
   }
   utf8Index = Unicode::GetCharPosition(cbi, result.length(), charIdx, true, keepLeft);
-  delete(cbi);
+  delete (cbi);
   ut = utext_close(ut);
 
   size_t bytesToCopy = 0;
@@ -1342,11 +1400,11 @@ std::string Unicode::Left(const std::string &str, const size_t charCount,
   {
     if (utf8Index == std::string::npos) // Error
     {
-      bytesToCopy = result.length();  // Remove none
+      bytesToCopy = result.length(); // Remove none
     }
     else if (utf8Index == BEFORE_START)
     {
-      bytesToCopy = 0;  // Remove none
+      bytesToCopy = 0; // Remove none
     }
     else if (utf8Index == AFTER_END)
     {
@@ -1371,8 +1429,9 @@ std::string Unicode::Left(const std::string &str, const size_t charCount,
  * \return substring of str, beginning with character 'firstCharIndex',
  *         length determined by charCount
  */
-std::string Unicode::Mid(const std::string &str, size_t startCharCount,
-    size_t charCount /* = std::string::npos */)
+std::string Unicode::Mid(const std::string& str,
+                         size_t startCharCount,
+                         size_t charCount /* = std::string::npos */)
 {
   size_t startUTF8Index;
   size_t endUTF8Index;
@@ -1381,7 +1440,7 @@ std::string Unicode::Mid(const std::string &str, size_t startCharCount,
   if (result.compare(str) != 0)
     CLog::Log(LOGINFO, "Unicode::Mid Normalized string different from original");
 
-  UText * ut = Unicode::ConfigUText(result);
+  UText* ut = Unicode::ConfigUText(result);
   if (ut == nullptr)
   {
     result = std::string(str);
@@ -1429,7 +1488,6 @@ std::string Unicode::Mid(const std::string &str, size_t startCharCount,
     return result;
   }
 
-
   // We specify here how many characters to copy from the first substring. But we have to translate
   // the character count into a byteindex. It does look like we want the normal Left(xxx, n) copy:
   //
@@ -1442,7 +1500,7 @@ std::string Unicode::Mid(const std::string &str, size_t startCharCount,
   keepLeft = true;
   endUTF8Index = Unicode::GetCharPosition(cbi, result.length(), charCount, left, keepLeft);
   ut = utext_close(ut); // Does free(ut)
-  delete(cbi);
+  delete (cbi);
 
   size_t bytesToCopy = 0;
   if (endUTF8Index == std::string::npos) // Error
@@ -1463,8 +1521,10 @@ std::string Unicode::Mid(const std::string &str, size_t startCharCount,
   return result.substr(0, bytesToCopy);
 }
 
-std::string Unicode::Right(const std::string &str, size_t charCount, const icu::Locale &icuLocale,
-    bool keepRight)
+std::string Unicode::Right(const std::string& str,
+                           size_t charCount,
+                           const icu::Locale& icuLocale,
+                           bool keepRight)
 {
   size_t utf8Index;
   std::string result;
@@ -1480,7 +1540,7 @@ std::string Unicode::Right(const std::string &str, size_t charCount, const icu::
   if (result.compare(str) != 0)
     CLog::Log(LOGINFO, "Unicode::Right Normalized string different from original");
 
-  UText * ut = Unicode::ConfigUText(result);
+  UText* ut = Unicode::ConfigUText(result);
   if (ut == nullptr)
   {
     result = std::string(str);
@@ -1502,7 +1562,7 @@ std::string Unicode::Right(const std::string &str, size_t charCount, const icu::
 
   utf8Index = Unicode::GetCharPosition(cbi, result.length(), charIdx, false, !keepRight);
   ut = utext_close(ut); // Does delete
-  delete(cbi);
+  delete (cbi);
   cbi = nullptr;
 
   if (keepRight)
@@ -1547,7 +1607,7 @@ std::string Unicode::Right(const std::string &str, size_t charCount, const icu::
 // thread_local icu::BreakIterator* m_cbi = nullptr;
 // thread_local icu::Locale m_cbi_locale = nullptr;
 
-UText * Unicode::ConfigUText(const std::string& str, UText* ut /* = nullptr */)
+UText* Unicode::ConfigUText(const std::string& str, UText* ut /* = nullptr */)
 {
   UErrorCode status = U_ZERO_ERROR;
 
@@ -1588,7 +1648,8 @@ icu::BreakIterator* Unicode::ConfigCharBreakIter(UText* ut, const icu::Locale& i
     // If was not on boundary, isBoundary advanced to next boundary (if there was one).
     // What happens if we were on last character of string?
 
-    CLog::Log(LOGWARNING,
+    CLog::Log(
+        LOGWARNING,
         "Unicode::ConfigCharBreakIter string is malformed, does not start with valid character.\n");
     return nullptr;
   }
@@ -1604,7 +1665,7 @@ icu::BreakIterator* Unicode::ReConfigCharBreakIter(UText* ut, icu::BreakIterator
   if (U_FAILURE(status))
   {
     CLog::Log(LOGERROR, "Error in Unicode::ReConfigCharBreakIter: {}\n", status);
-    delete(cbi);
+    delete (cbi);
     return nullptr;
   }
   if (not cbi->isBoundary(0))
@@ -1612,16 +1673,19 @@ icu::BreakIterator* Unicode::ReConfigCharBreakIter(UText* ut, icu::BreakIterator
     // If was not on boundary, isBoundary advanced to next boundary (if there was one).
     // What happens if we were on last character of string?
 
-    CLog::Log(LOGWARNING,
-        "Unicode::ReConfigCharBreakIter string is malformed, does not start with valid character.\n");
+    CLog::Log(LOGWARNING, "Unicode::ReConfigCharBreakIter string is malformed, does not start with "
+                          "valid character.\n");
     delete (cbi);
     return nullptr;
   }
   return cbi;
 }
 
-size_t Unicode::GetCharPosition(icu::BreakIterator* cbi, size_t stringLength, size_t charCount, const bool left,
-    const bool keepLeft)
+size_t Unicode::GetCharPosition(icu::BreakIterator* cbi,
+                                size_t stringLength,
+                                size_t charCount,
+                                const bool left,
+                                const bool keepLeft)
 {
   size_t uCharIndex = std::string::npos;
   if (charCount > stringLength) // Deal with unsignededness...
@@ -1629,7 +1693,7 @@ size_t Unicode::GetCharPosition(icu::BreakIterator* cbi, size_t stringLength, si
 
   if (keepLeft) // Get to nth character from the left
   {
-    uCharIndex = cbi->first();      // At charCount 0
+    uCharIndex = cbi->first(); // At charCount 0
     uCharIndex = cbi->next(charCount);
     // There is a boundary between the last character and the end of string
     // Have to check both against npos and length (sigh)
@@ -1644,7 +1708,7 @@ size_t Unicode::GetCharPosition(icu::BreakIterator* cbi, size_t stringLength, si
   }
   else // Get to nth character from right, character 0 is BEYOND last character
   {
-    cbi->last();  // BEYOND last
+    cbi->last(); // BEYOND last
     cbi->preceding(stringLength);
     uCharIndex = cbi->next(-charCount);
     if (uCharIndex == std::string::npos)
@@ -1659,7 +1723,7 @@ size_t Unicode::GetCharPosition(icu::BreakIterator* cbi, size_t stringLength, si
 
   if (uCharIndex < AFTER_END)
   {
-    if (left)  // Return offset of last byte of current character
+    if (left) // Return offset of last byte of current character
     {
       uCharIndex = cbi->next();
       uCharIndex--;
@@ -1668,7 +1732,8 @@ size_t Unicode::GetCharPosition(icu::BreakIterator* cbi, size_t stringLength, si
   return uCharIndex;
 }
 
-icu::BreakIterator* Unicode::ConfigCharBreakIter(const icu::UnicodeString &str, const icu::Locale &icuLocale)
+icu::BreakIterator* Unicode::ConfigCharBreakIter(const icu::UnicodeString& str,
+                                                 const icu::Locale& icuLocale)
 {
   UErrorCode status = U_ZERO_ERROR;
   icu::BreakIterator* cbi = nullptr;
@@ -1691,7 +1756,8 @@ icu::BreakIterator* Unicode::ConfigCharBreakIter(const icu::UnicodeString &str, 
     // If was not on boundary, isBoundary advanced to next boundary (if there was one).
     // What happens if we were on last character of string?
 
-    CLog::Log(LOGWARNING,
+    CLog::Log(
+        LOGWARNING,
         "Unicode::ConfigCharBreakIter string is malformed, does not start with valid character.");
     delete cbi;
     return nullptr;
@@ -1699,9 +1765,11 @@ icu::BreakIterator* Unicode::ConfigCharBreakIter(const icu::UnicodeString &str, 
   return cbi;
 }
 
-
-size_t Unicode::GetCharPosition(const icu::UnicodeString &uStr, const size_t charCountArg, const bool left,
-    const bool keepLeft, const icu::Locale &icuLocale)
+size_t Unicode::GetCharPosition(const icu::UnicodeString& uStr,
+                                const size_t charCountArg,
+                                const bool left,
+                                const bool keepLeft,
+                                const icu::Locale& icuLocale)
 {
 
   icu::BreakIterator* cbi = Unicode::ConfigCharBreakIter(uStr, icuLocale);
@@ -1711,14 +1779,17 @@ size_t Unicode::GetCharPosition(const icu::UnicodeString &uStr, const size_t cha
   }
 
   size_t charIdx = Unicode::GetCharPosition(cbi, uStr.length(), charCountArg, left, keepLeft);
-  delete(cbi);
+  delete (cbi);
   return charIdx;
 }
 
-size_t Unicode::GetCharPosition(const std::string &str, const size_t charCountArg, const bool left,
-    const bool keepLeft, const icu::Locale &icuLocale)
+size_t Unicode::GetCharPosition(const std::string& str,
+                                const size_t charCountArg,
+                                const bool left,
+                                const bool keepLeft,
+                                const icu::Locale& icuLocale)
 {
-  UText * ut = Unicode::ConfigUText(str);
+  UText* ut = Unicode::ConfigUText(str);
   if (ut == nullptr)
     return Unicode::ERROR;
 
@@ -1730,12 +1801,12 @@ size_t Unicode::GetCharPosition(const std::string &str, const size_t charCountAr
   }
 
   size_t utf8Index = Unicode::GetCharPosition(cbi, str.length(), charCountArg, left, keepLeft);
-  delete(cbi);
+  delete (cbi);
   ut = utext_close(ut);
   return utf8Index;
 }
 
-std::string Unicode::Trim(const std::string &str)
+std::string Unicode::Trim(const std::string& str)
 {
   // TODO: change to use uniset.h spanUTF8
 
@@ -1745,7 +1816,7 @@ std::string Unicode::Trim(const std::string &str)
   return result;
 }
 
-std::string Unicode::TrimLeft(const std::string &str)
+std::string Unicode::TrimLeft(const std::string& str)
 {
   // TODO: change to use uniset.h spanUTF8
 
@@ -1755,7 +1826,7 @@ std::string Unicode::TrimLeft(const std::string &str)
   return result;
 }
 
-std::string Unicode::TrimLeft(const std::string &str, const std::string trimChars)
+std::string Unicode::TrimLeft(const std::string& str, const std::string trimChars)
 {
 
   // TODO: change to use uniset.h spanUTF8
@@ -1767,7 +1838,7 @@ std::string Unicode::TrimLeft(const std::string &str, const std::string trimChar
   return result;
 }
 
-std::string Unicode::TrimRight(const std::string &str)
+std::string Unicode::TrimRight(const std::string& str)
 {
   // TODO: change to use uniset.h spanBackUTF8
 
@@ -1777,7 +1848,7 @@ std::string Unicode::TrimRight(const std::string &str)
   return result;
 }
 
-std::string Unicode::TrimRight(const std::string &str, const std::string trimChars)
+std::string Unicode::TrimRight(const std::string& str, const std::string trimChars)
 {
   // TODO: change to use uniset.h spanBackUTF8
 
@@ -1794,8 +1865,10 @@ std::string Unicode::TrimRight(const std::string &str, const std::string trimCha
 // TODO: What if trimChars has a non-Character in it (i.e. an accent without a
 // character that it is attached to?
 
-icu::UnicodeString Unicode::Trim(const icu::UnicodeString &uStr,
-    const icu::UnicodeString &trimChars, const bool trimLeft, const bool trimRight)
+icu::UnicodeString Unicode::Trim(const icu::UnicodeString& uStr,
+                                 const icu::UnicodeString& trimChars,
+                                 const bool trimLeft,
+                                 const bool trimRight)
 {
   // TODO: BROKEN for multi UChar characters. Use Character iterator, or similar.
   // TODO: Revisit use of size_t with int32_t
@@ -1808,7 +1881,7 @@ icu::UnicodeString Unicode::Trim(const icu::UnicodeString &uStr,
   size_t chars_to_delete = 0;
   if (trimLeft)
   {
-    for (size_t i = 0; i < (size_t) str.length(); i += 1)
+    for (size_t i = 0; i < (size_t)str.length(); i += 1)
     {
       UChar ch = str[i];
       if (trimChars.indexOf(ch) == -1)
@@ -1850,8 +1923,10 @@ icu::UnicodeString Unicode::Trim(const icu::UnicodeString &uStr,
   return str;
 }
 
-std::string Unicode::Trim(const std::string &str, const std::vector<std::string> &trimChars,
-    const bool trimLeft, const bool trimRight)
+std::string Unicode::Trim(const std::string& str,
+                          const std::vector<std::string>& trimChars,
+                          const bool trimLeft,
+                          const bool trimRight)
 {
   icu::UnicodeString uStr = Unicode::ToUnicodeString(str);
   std::vector<icu::UnicodeString> uDeleteStrings = std::vector<icu::UnicodeString>();
@@ -1866,8 +1941,10 @@ std::string Unicode::Trim(const std::string &str, const std::vector<std::string>
   return result;
 }
 
-icu::UnicodeString Unicode::Trim(const icu::UnicodeString &uStr,
-    const std::vector<icu::UnicodeString> &trimStrings, const bool trimLeft, const bool trimRight)
+icu::UnicodeString Unicode::Trim(const icu::UnicodeString& uStr,
+                                 const std::vector<icu::UnicodeString>& trimStrings,
+                                 const bool trimLeft,
+                                 const bool trimRight)
 {
   // TODO: change to use uniset.h spanUTF8 & spanBackUTF8
   // TODO: Can be made a bit faster by sorting trimChars by codepoint prior to entry
@@ -1877,7 +1954,7 @@ icu::UnicodeString Unicode::Trim(const icu::UnicodeString &uStr,
   if (str.length() == 0 or trimStrings.size() == 0)
     return str;
 
-  icu::BreakIterator * cbi = Unicode::ConfigCharBreakIter(str, Unicode::GetDefaultICULocale());
+  icu::BreakIterator* cbi = Unicode::ConfigCharBreakIter(str, Unicode::GetDefaultICULocale());
   if (cbi == nullptr)
   {
     CLog::Log(LOGERROR, "Unicode::Trim ConfigCharBreakIter failed for {}\n", toString(str));
@@ -1894,7 +1971,7 @@ icu::UnicodeString Unicode::Trim(const icu::UnicodeString &uStr,
     size_t charCount = 0;
     size_t charStart = 0;
     size_t firstUCharToDelete = str.length();
-    size_t charEnd = str.length();  // length in code-units (UTF-16), which is 1 or 2.
+    size_t charEnd = str.length(); // length in code-units (UTF-16), which is 1 or 2.
 
     while (charStart < Unicode::AFTER_END)
     {
@@ -1917,13 +1994,13 @@ icu::UnicodeString Unicode::Trim(const icu::UnicodeString &uStr,
       charEnd = charStart;
       charCount++;
     } // while
-    if (firstUCharToDelete < (size_t) str.length())
+    if (firstUCharToDelete < (size_t)str.length())
       str.remove(firstUCharToDelete, str.length());
   }
 
   if (trimLeft)
   {
-    bool left = false;  // Iterator to give index of first code-unit (UChar) of charCount
+    bool left = false; // Iterator to give index of first code-unit (UChar) of charCount
     bool keepLeft = true;
     size_t lastUCharToDelete = 0;
     size_t charCount = 0;
@@ -1943,7 +2020,7 @@ icu::UnicodeString Unicode::Trim(const icu::UnicodeString &uStr,
           if (charStart < Unicode::AFTER_END)
             lastUCharToDelete = nextCharStart;
           else
-            lastUCharToDelete = (size_t) (str.length() - 1);
+            lastUCharToDelete = (size_t)(str.length() - 1);
           charDeleted = true;
           break;
         }
@@ -1957,12 +2034,13 @@ icu::UnicodeString Unicode::Trim(const icu::UnicodeString &uStr,
       str.remove(0, lastUCharToDelete);
   }
 
-  delete(cbi);
+  delete (cbi);
   return str;
 }
 
-icu::UnicodeString Unicode::Trim(const icu::UnicodeString &uStr, const bool trimLeft,
-    const bool trimRight)
+icu::UnicodeString Unicode::Trim(const icu::UnicodeString& uStr,
+                                 const bool trimLeft,
+                                 const bool trimRight)
 {
 
   // TODO: Revisit use of size_t with int32_t
@@ -1975,7 +2053,7 @@ icu::UnicodeString Unicode::Trim(const icu::UnicodeString &uStr, const bool trim
   size_t chars_to_delete = 0;
   if (trimLeft)
   {
-    for (size_t i = 0; i < (size_t) str.length(); i += 1)
+    for (size_t i = 0; i < (size_t)str.length(); i += 1)
     {
       UChar ch = str[i];
       if (!u_isWhitespace(ch))
@@ -2015,11 +2093,12 @@ icu::UnicodeString Unicode::Trim(const icu::UnicodeString &uStr, const bool trim
     }
   }
   return str;
-
 }
 
-std::string Unicode::Trim(const std::string &str, const std::string &trimChars,
-    const bool trimLeft, const bool trimRight)
+std::string Unicode::Trim(const std::string& str,
+                          const std::string& trimChars,
+                          const bool trimLeft,
+                          const bool trimRight)
 {
   // TODO: change to use uniset.h spanUTF8 & spanBackUTF8
 
@@ -2042,7 +2121,7 @@ std::string Unicode::Trim(const std::string &str, const std::string &trimChars,
   }
   else
   {
-    UText * ut = Unicode::ConfigUText(trimChars);
+    UText* ut = Unicode::ConfigUText(trimChars);
     if (ut == nullptr)
     {
       std::string result = std::string(str);
@@ -2058,7 +2137,8 @@ std::string Unicode::Trim(const std::string &str, const std::string &trimChars,
 
     size_t charCount = 0;
     size_t charStart = 0;
-    size_t lastByte = trimChars.length() + 1; // Anything larger that length should do, but not string::npos
+    size_t lastByte =
+        trimChars.length() + 1; // Anything larger that length should do, but not string::npos
 
     bool left = true;
     bool keepLeft = true;
@@ -2075,14 +2155,14 @@ std::string Unicode::Trim(const std::string &str, const std::string &trimChars,
       }
     }
     ut = utext_close(ut); // Does free
-    delete(cbi);
+    delete (cbi);
     cbi = nullptr;
   }
   uString = Unicode::Trim(uString, deleteSet, trimLeft, trimRight);
 
   // uString = Unicode::Trim(uString, kDelChars, trimLeft, trimRight);
 
-  if ((size_t) uString.length() == str.length())
+  if ((size_t)uString.length() == str.length())
   {
     std::string result = std::string(str);
     return result;
@@ -2093,50 +2173,56 @@ std::string Unicode::Trim(const std::string &str, const std::string &trimChars,
   return result;
 }
 
-[[deprecated("FindAndReplace is faster, returned count not used.") ]]
-std::tuple<std::string, int> Unicode::FindCountAndReplace(const std::string &src,
-    const std::string &oldText, const std::string &newText)
+[[deprecated("FindAndReplace is faster, returned count not used.")]] std::tuple<std::string, int>
+Unicode::FindCountAndReplace(const std::string& src,
+                             const std::string& oldText,
+                             const std::string& newText)
 {
   // TODO: Try to change API to just return if something was changed
 
   icu::UnicodeString kSrc = Unicode::ToUnicodeString(src);
   icu::UnicodeString kOldText = Unicode::ToUnicodeString(oldText);
   icu::UnicodeString kNewText = Unicode::ToUnicodeString(newText);
-  std::tuple<icu::UnicodeString, int> result = Unicode::FindCountAndReplace(kSrc, kOldText,
-      kNewText);
+  std::tuple<icu::UnicodeString, int> result =
+      Unicode::FindCountAndReplace(kSrc, kOldText, kNewText);
   icu::UnicodeString kResultStr = std::get<0>(result);
   int changes = std::get<1>(result);
   std::string resultStr = std::string();
   kResultStr.toUTF8String(resultStr);
-  return
-      { resultStr, changes};
+  return {resultStr, changes};
 }
 
-[[deprecated("FindAndReplace is faster, returned count not used.") ]]
-std::tuple<icu::UnicodeString, int> Unicode::FindCountAndReplace(const icu::UnicodeString &kSrc,
-    const icu::UnicodeString &kOldText, const icu::UnicodeString &kNewText)
+[[deprecated(
+    "FindAndReplace is faster, returned count not used.")]] std::tuple<icu::UnicodeString, int>
+Unicode::FindCountAndReplace(const icu::UnicodeString& kSrc,
+                             const icu::UnicodeString& kOldText,
+                             const icu::UnicodeString& kNewText)
 {
   return Unicode::FindCountAndReplace(kSrc, 0, kSrc.length(), kOldText, 0, kOldText.length(),
-      kNewText, 0, kNewText.length());
+                                      kNewText, 0, kNewText.length());
 }
 
-[[deprecated("FindAndReplace is faster, returned count not used.") ]]
-std::tuple<icu::UnicodeString, int> Unicode::FindCountAndReplace(const icu::UnicodeString &srcText,
-    const int32_t srcStart, const int32_t srcLength, const icu::UnicodeString &oldText,
-    const int32_t oldStart, const int32_t oldLength, const icu::UnicodeString &newText,
-    const int32_t newStart, const int32_t newLength)
+[[deprecated(
+    "FindAndReplace is faster, returned count not used.")]] std::tuple<icu::UnicodeString, int>
+Unicode::FindCountAndReplace(const icu::UnicodeString& srcText,
+                             const int32_t srcStart,
+                             const int32_t srcLength,
+                             const icu::UnicodeString& oldText,
+                             const int32_t oldStart,
+                             const int32_t oldLength,
+                             const icu::UnicodeString& newText,
+                             const int32_t newStart,
+                             const int32_t newLength)
 {
   int changes = 0;
   icu::UnicodeString resultStr = icu::UnicodeString(srcText);
   if (srcText.isBogus() || oldText.isBogus() || newText.isBogus())
   {
-    return
-        { resultStr, changes};
+    return {resultStr, changes};
   }
   if (oldLength == 0)
   {
-    return
-        { resultStr, changes};
+    return {resultStr, changes};
   }
 
   int32_t length = srcLength;
@@ -2159,11 +2245,10 @@ std::tuple<icu::UnicodeString, int> Unicode::FindCountAndReplace(const icu::Unic
       changes++;
     }
   }
-  return
-      { resultStr, changes};
+  return {resultStr, changes};
 }
 
-bool Unicode::FindWord(const std::string &str, const std::string &word)
+bool Unicode::FindWord(const std::string& str, const std::string& word)
 {
 
   std::string input = str;
@@ -2234,25 +2319,22 @@ bool Unicode::FindWord(const std::string &str, const std::string &word)
         do
         {
           offset = uString.moveIndex32(offset, 1); // Start of next codepoint
-        }
-        while (offset < uString.length() and u_isdigit(uString.char32At(offset)));
+        } while (offset < uString.length() and u_isdigit(uString.char32At(offset)));
 
         // In some languages (Chinese, Japanese...) a single character
         // is a word, not a letter. Using u_isUAlphabetic for such
         // character returns true, but misleading in this context.
         // Use u_isalpha instead. Using a word breakiterator is much
         // more accurate, but it would change this function's behavior
-
       }
-      else if (offset < uString.length() and Unicode::IsLatinChar(uString.char32At(offset))
-      and u_isalpha(uString.char32At(offset)))
+      else if (offset < uString.length() and Unicode::IsLatinChar(uString.char32At(offset)) and
+               u_isalpha(uString.char32At(offset)))
       {
         do
         {
           offset = uString.moveIndex32(offset, 1);
-        }
-        while (offset < uString.length() and Unicode::IsLatinChar(uString.char32At(offset))
-        and u_isalpha(uString.char32At(offset)));
+        } while (offset < uString.length() and Unicode::IsLatinChar(uString.char32At(offset)) and
+                 u_isalpha(uString.char32At(offset)));
       }
       else
       {
@@ -2275,7 +2357,7 @@ bool Unicode::FindWord(const std::string &str, const std::string &word)
   }
   CLog::Log(LOGINFO, "FindWord {} out: {} idx: {}\n", input, str, index);
 
-  return index  < Unicode::AFTER_END;
+  return index < Unicode::AFTER_END;
 }
 
 /*
@@ -2283,8 +2365,9 @@ bool Unicode::FindWord(const std::string &str, const std::string &word)
  *
  */
 
-std::string Unicode::FindAndReplace(const std::string &str, const std::string oldText,
-    const std::string newText)
+std::string Unicode::FindAndReplace(const std::string& str,
+                                    const std::string oldText,
+                                    const std::string newText)
 {
   icu::UnicodeString uString = Unicode::ToUnicodeString(str);
   icu::UnicodeString uOldText = Unicode::ToUnicodeString(oldText);
@@ -2303,7 +2386,7 @@ std::string Unicode::FindAndReplace(const std::string &str, const std::string ol
  * https://unicode-org.github.io/icu/userguide/strings/regexp.html
  *
  */
-size_t Unicode::RegexFind(const std::string &str, const std::string pattern, const int flags)
+size_t Unicode::RegexFind(const std::string& str, const std::string pattern, const int flags)
 {
   // TODO: incomplete. Poorly defined
 
@@ -2365,8 +2448,10 @@ size_t Unicode::RegexFind(const std::string &str, const std::string pattern, con
  * https://unicode-org.github.io/icu/userguide/strings/regexp.html
  *
  */
-std::string Unicode::RegexReplaceAll(const std::string &str, const std::string pattern,
-    const std::string replace, const int flags)
+std::string Unicode::RegexReplaceAll(const std::string& str,
+                                     const std::string pattern,
+                                     const std::string replace,
+                                     const int flags)
 {
   icu::UnicodeString uString = Unicode::ToUnicodeString(str);
   icu::UnicodeString uPattern = Unicode::ToUnicodeString(pattern);
@@ -2395,8 +2480,10 @@ std::string Unicode::RegexReplaceAll(const std::string &str, const std::string p
   return result;
 }
 
-icu::UnicodeString Unicode::RegexReplaceAll(const icu::UnicodeString &uString,
-    const icu::UnicodeString kPattern, const icu::UnicodeString kReplace, const int flags)
+icu::UnicodeString Unicode::RegexReplaceAll(const icu::UnicodeString& uString,
+                                            const icu::UnicodeString kPattern,
+                                            const icu::UnicodeString kReplace,
+                                            const int flags)
 {
   UErrorCode status = U_ZERO_ERROR;
   icu::RegexMatcher* matcher = new icu::RegexMatcher(kPattern, uString, flags, status);
@@ -2421,8 +2508,9 @@ icu::UnicodeString Unicode::RegexReplaceAll(const icu::UnicodeString &uString,
   return uResult;
 }
 
-int32_t Unicode::countOccurances(const std::string &strInput, const std::string &strFind,
-    const int flags)
+int32_t Unicode::countOccurances(const std::string& strInput,
+                                 const std::string& strFind,
+                                 const int flags)
 {
   icu::UnicodeString kstr = Unicode::ToUnicodeString(strInput);
   icu::UnicodeString kstrFind = Unicode::ToUnicodeString(strFind);
@@ -2449,9 +2537,11 @@ int32_t Unicode::countOccurances(const std::string &strInput, const std::string 
  */
 
 template<typename OutputIt>
-OutputIt Unicode::SplitTo(OutputIt d_first, const icu::UnicodeString &kInput,
-    const icu::UnicodeString &kDelimiter, size_t iMaxStrings /* = 0 */,
-    const bool omitEmptyStrings /* = false */)
+OutputIt Unicode::SplitTo(OutputIt d_first,
+                          const icu::UnicodeString& kInput,
+                          const icu::UnicodeString& kDelimiter,
+                          size_t iMaxStrings /* = 0 */,
+                          const bool omitEmptyStrings /* = false */)
 {
 
   OutputIt dest = d_first;
@@ -2478,7 +2568,7 @@ OutputIt Unicode::SplitTo(OutputIt d_first, const icu::UnicodeString &kInput,
     {
       // Once limit reached, append remaining text to result and leave
 
-      if (!omitEmptyStrings or (textPos < (size_t) kInput.length()))
+      if (!omitEmptyStrings or (textPos < (size_t)kInput.length()))
       {
         *d_first++ = kInput.tempSubString(textPos);
       }
@@ -2500,15 +2590,16 @@ OutputIt Unicode::SplitTo(OutputIt d_first, const icu::UnicodeString &kInput,
       *d_first++ = kInput.tempSubString(textPos, uNextDelim - textPos);
     }
     textPos = uNextDelim + delimLen;
-  }
-  while (nextDelim != ::std::string::npos);
+  } while (nextDelim != ::std::string::npos);
   return dest;
 }
 
 template<typename OutputIt>
-OutputIt Unicode::SplitTo(OutputIt d_first, icu::UnicodeString uInput,
-    const std::vector<icu::UnicodeString> &uDelimiters, size_t iMaxStrings/* = 0*/,
-    const bool omitEmptyStrings /*= false*/)
+OutputIt Unicode::SplitTo(OutputIt d_first,
+                          icu::UnicodeString uInput,
+                          const std::vector<icu::UnicodeString>& uDelimiters,
+                          size_t iMaxStrings /* = 0*/,
+                          const bool omitEmptyStrings /*= false*/)
 {
 
   OutputIt dest = d_first;
@@ -2545,8 +2636,10 @@ OutputIt Unicode::SplitTo(OutputIt d_first, icu::UnicodeString uInput,
   return dest;
 }
 
-std::vector<icu::UnicodeString> Unicode::SplitMulti(const std::vector<icu::UnicodeString> &input,
-    const std::vector<icu::UnicodeString> &delimiters, size_t iMaxStrings)
+std::vector<icu::UnicodeString> Unicode::SplitMulti(
+    const std::vector<icu::UnicodeString>& input,
+    const std::vector<icu::UnicodeString>& delimiters,
+    size_t iMaxStrings)
 {
   // For SplitMulti, returning empty strings does not make much sense since you can't correlate
   // what it relates to.
@@ -2579,7 +2672,7 @@ std::vector<icu::UnicodeString> Unicode::SplitMulti(const std::vector<icu::Unico
       {
         substrings.clear();
         Unicode::SplitTo(std::back_inserter(substrings), results[i], delimiters[di], iMaxStrings,
-            omitEmptyStrings);
+                         omitEmptyStrings);
         for (size_t j = 0; j < substrings.size(); j++)
           strings1.push_back(substrings[j]);
       }
@@ -2601,7 +2694,7 @@ std::vector<icu::UnicodeString> Unicode::SplitMulti(const std::vector<icu::Unico
       {
         substrings.clear();
         Unicode::SplitTo(std::back_inserter(substrings), results[i], delimiters[di], iNew + 1,
-            omitEmptyStrings);
+                         omitEmptyStrings);
         iNew = iNew - substrings.size() + 1;
         for (size_t j = 0; j < substrings.size(); j++)
           strings1.push_back(substrings[j]);
@@ -2618,8 +2711,9 @@ std::vector<icu::UnicodeString> Unicode::SplitMulti(const std::vector<icu::Unico
   return results;
 }
 
-std::vector<std::string> Unicode::SplitMulti(const std::vector<std::string> &input,
-    const std::vector<std::string> &delimiters, size_t iMaxStrings)
+std::vector<std::string> Unicode::SplitMulti(const std::vector<std::string>& input,
+                                             const std::vector<std::string>& delimiters,
+                                             size_t iMaxStrings)
 {
   if (input.empty())
     return std::vector<std::string>();
@@ -2660,7 +2754,7 @@ std::vector<std::string> Unicode::SplitMulti(const std::vector<std::string> &inp
   return results;
 }
 
-bool Unicode::Contains(const std::string &str, const std::vector<std::string> &keywords)
+bool Unicode::Contains(const std::string& str, const std::vector<std::string>& keywords)
 {
 
   // Moved code to here because it may need more than just
@@ -2701,7 +2795,9 @@ bool Unicode::InitializeCollator(icu::Locale icuLocale, bool Normalize /* = fals
   if (U_FAILURE(status))
   {
     icuLocale.getDisplayName(dispName);
-    CLog::Log(LOGWARNING, "Unicode::InitializeCollator failed to create the collator for : \"{}\"\n", toString(dispName));
+    CLog::Log(LOGWARNING,
+              "Unicode::InitializeCollator failed to create the collator for : \"{}\"\n",
+              toString(dispName));
     return false;
   }
   myCollatorStart = std::chrono::steady_clock::now();
@@ -2721,15 +2817,17 @@ bool Unicode::InitializeCollator(icu::Locale icuLocale, bool Normalize /* = fals
   if (U_FAILURE(status))
   {
     icuLocale.getDisplayName(dispName);
-    CLog::Log(LOGWARNING, "Unicode::InitializeCollator failed to set normalization for the collator: \"{}\"\n",
-        toString(dispName));
+    CLog::Log(LOGWARNING,
+              "Unicode::InitializeCollator failed to set normalization for the collator: \"{}\"\n",
+              toString(dispName));
     return false;
   }
   myCollator->setAttribute(UCOL_NUMERIC_COLLATION, UCOL_ON, status);
   if (U_FAILURE(status))
   {
     icuLocale.getDisplayName(dispName);
-    CLog::Log(LOGWARNING, "Unicode::InitializeCollator failed to set numeric collation: \"{}\"\n", toString(dispName));
+    CLog::Log(LOGWARNING, "Unicode::InitializeCollator failed to set numeric collation: \"{}\"\n",
+              toString(dispName));
     return false;
   }
   return true;
@@ -2739,8 +2837,9 @@ void Unicode::SortCompleted(int sortItems)
 {
   // using namespace std::chrono;
   std::chrono::steady_clock::time_point myCollatorStop = std::chrono::steady_clock::now();
-  int micros = std::chrono::duration_cast<std::chrono::microseconds>(
-      myCollatorStop - myCollatorStart).count();
+  int micros =
+      std::chrono::duration_cast<std::chrono::microseconds>(myCollatorStop - myCollatorStart)
+          .count();
   CLog::Log(LOGINFO, "Sort of {} records took {} µs\n", sortItems, micros);
 }
 
@@ -2762,7 +2861,7 @@ void Unicode::SortCompleted(int sortItems)
  * https://unicode-org.github.io/icu/userguide/collation/faq.html
  *
  */
-int32_t Unicode::Collate(const std::wstring &left, const std::wstring &right)
+int32_t Unicode::Collate(const std::wstring& left, const std::wstring& right)
 {
 
   // TODO: Create UTF8 version of Collate for coll.h compareUTF8
@@ -2790,11 +2889,10 @@ int32_t Unicode::Collate(const std::wstring &left, const std::wstring &right)
   status = U_ZERO_ERROR;
   UCollationResult result;
   result = myCollator->compare(leftBuffer, actualLeftBufferLength, rightBuffer,
-      actualRightBufferLength, status);
+                               actualRightBufferLength, status);
   if (U_FAILURE(status))
   {
     CLog::Log(LOGWARNING, "Unicode::Collate Failed compare");
   }
   return result;
 }
-

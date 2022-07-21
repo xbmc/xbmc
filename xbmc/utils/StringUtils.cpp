@@ -20,15 +20,16 @@
 //------------------------------------------------------------------------
 #include "StringUtils.h"
 
-#include <unicode/utf8.h>
+#include "../commons/ilog.h"
+#include "UnicodeUtils.h"
+
 #include <cctype>
 #include <cstdio>
 #include <cstring>
 #include <cwchar>
 #include <iterator>
 
-#include "../commons/ilog.h"
-#include "UnicodeUtils.h"
+#include <unicode/utf8.h>
 
 #ifdef HAVE_NEW_CROSSGUID
 #include <crossguid/guid.hpp>
@@ -42,8 +43,8 @@
 
 #include "CharsetConverter.h"
 #include "LangInfo.h"
-#include <tuple>
 #include "Util.h"
+#include "utils/log.h"
 
 #include <algorithm>
 #include <array>
@@ -52,20 +53,19 @@
 #include <inttypes.h>
 #include <iomanip>
 #include <math.h>
-#include <memory.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <fstrcmp.h>
+#include <tuple>
 
-#include "utils/log.h"
+#include <fstrcmp.h>
+#include <memory.h>
 
 // don't move or std functions end up in PCRE namespace
 // clang-format off
 #include "utils/RegExp.h"
 // clang-format on
-
 
 #define FORMAT_BLOCK_SIZE 512 // # of bytes for initial allocation for printf
 
@@ -92,38 +92,40 @@ static constexpr const char* ADDON_GUID_RE = "^(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-
 /* empty string for use in returns by ref */
 const std::string StringUtils::Empty = "";
 
-std::string StringUtils::FormatV(const char *fmt, va_list args) {
-	if (!fmt || !fmt[0])
-		return "";
+std::string StringUtils::FormatV(const char* fmt, va_list args)
+{
+  if (!fmt || !fmt[0])
+    return "";
 
-	int size = FORMAT_BLOCK_SIZE;
-	va_list argCopy;
+  int size = FORMAT_BLOCK_SIZE;
+  va_list argCopy;
 
-	while (true) {
-		char *cstr = reinterpret_cast<char*>(malloc(sizeof(char) * size));
-		if (!cstr)
-			return "";
+  while (true)
+  {
+    char* cstr = reinterpret_cast<char*>(malloc(sizeof(char) * size));
+    if (!cstr)
+      return "";
 
-		va_copy(argCopy, args);
-		int nActual = vsnprintf(cstr, size, fmt, argCopy);
-		va_end(argCopy);
+    va_copy(argCopy, args);
+    int nActual = vsnprintf(cstr, size, fmt, argCopy);
+    va_end(argCopy);
 
-		if (nActual > -1 && nActual < size) // We got a valid result
-				{
-			std::string str(cstr, nActual);
-			free(cstr);
-		 	//CLog::Log(LOGINFO, "StringUtils::FormatV: {}\n", str);
-		 	//std::cout << "StringUtils::FormatV: " << str << std::endl;
+    if (nActual > -1 && nActual < size) // We got a valid result
+    {
+      std::string str(cstr, nActual);
+      free(cstr);
+      //CLog::Log(LOGINFO, "StringUtils::FormatV: {}\n", str);
+      //std::cout << "StringUtils::FormatV: " << str << std::endl;
 
-			return str;
-		}
-		free(cstr);
+      return str;
+    }
+    free(cstr);
 #ifndef TARGET_WINDOWS
-		if (nActual > -1)                   // Exactly what we will need (glibc 2.1)
-			size = nActual + 1;
-		else
-			// Let's try to double the size (glibc 2.0)
-			size *= 2;
+    if (nActual > -1) // Exactly what we will need (glibc 2.1)
+      size = nActual + 1;
+    else
+      // Let's try to double the size (glibc 2.0)
+      size *= 2;
 #else  // TARGET_WINDOWS
     va_copy(argCopy, args);
     size = _vscprintf(fmt, argCopy);
@@ -133,41 +135,43 @@ std::string StringUtils::FormatV(const char *fmt, va_list args) {
     else
       size++; // increment for null-termination
 #endif // TARGET_WINDOWS
-	}
+  }
 
-	return ""; // unreachable
+  return ""; // unreachable
 }
 
-std::wstring StringUtils::FormatV(const wchar_t *fmt, va_list args) {
-	if (!fmt || !fmt[0])
-		return L"";
+std::wstring StringUtils::FormatV(const wchar_t* fmt, va_list args)
+{
+  if (!fmt || !fmt[0])
+    return L"";
 
-	int size = FORMAT_BLOCK_SIZE;
-	va_list argCopy;
+  int size = FORMAT_BLOCK_SIZE;
+  va_list argCopy;
 
-	while (true) {
-		wchar_t *cstr = reinterpret_cast<wchar_t*>(malloc(sizeof(wchar_t) * size));
-		if (!cstr)
-			return L"";
+  while (true)
+  {
+    wchar_t* cstr = reinterpret_cast<wchar_t*>(malloc(sizeof(wchar_t) * size));
+    if (!cstr)
+      return L"";
 
-		va_copy(argCopy, args);
-		int nActual = vswprintf(cstr, size, fmt, argCopy);
-		va_end(argCopy);
+    va_copy(argCopy, args);
+    int nActual = vswprintf(cstr, size, fmt, argCopy);
+    va_end(argCopy);
 
-		if (nActual > -1 && nActual < size) // We got a valid result
-				{
-			std::wstring str(cstr, nActual);
-			free(cstr);
-			return str;
-		}
-		free(cstr);
+    if (nActual > -1 && nActual < size) // We got a valid result
+    {
+      std::wstring str(cstr, nActual);
+      free(cstr);
+      return str;
+    }
+    free(cstr);
 
 #ifndef TARGET_WINDOWS
-		if (nActual > -1)                   // Exactly what we will need (glibc 2.1)
-			size = nActual + 1;
-		else
-			// Let's try to double the size (glibc 2.0)
-			size *= 2;
+    if (nActual > -1) // Exactly what we will need (glibc 2.1)
+      size = nActual + 1;
+    else
+      // Let's try to double the size (glibc 2.0)
+      size *= 2;
 #else  // TARGET_WINDOWS
     va_copy(argCopy, args);
     size = _vscwprintf(fmt, argCopy);
@@ -177,12 +181,12 @@ std::wstring StringUtils::FormatV(const wchar_t *fmt, va_list args) {
     else
       size++; // increment for null-termination
 #endif // TARGET_WINDOWS
-	}
+  }
 
-	return L"";
+  return L"";
 }
 
-int StringUtils::ReturnDigits(const std::string &str)
+int StringUtils::ReturnDigits(const std::string& str)
 {
   std::stringstream ss;
   bool digitFound = false;
@@ -203,8 +207,8 @@ int StringUtils::ReturnDigits(const std::string &str)
 }
 std::string& StringUtils::RemoveDuplicatedSpacesAndTabs(std::string& str)
 {
-	// Since removing only ASCII spaces and tabs there is no need to convert to/from
-	// Unicode.
+  // Since removing only ASCII spaces and tabs there is no need to convert to/from
+  // Unicode.
 
   std::string::iterator it = str.begin();
   bool onSpace = false;
@@ -472,61 +476,67 @@ static const uint16_t* const planemap[256] = {
 };
 // clang-format on
 
-static wchar_t GetCollationWeight(const wchar_t &r) {
-	// Lookup the "weight" of a UTF8 char, equivalent lowercase ascii letter, in the plane map,
-	// the character comparison value used by using "accent folding" collation utf8_general_ci
-	// in MySQL (AKA utf8mb3_general_ci in MariaDB 10)
-	auto index = r >> 8;
-	if (index > 255)
-		return 0xFFFD;
-	auto plane = planemap[index];
-	if (plane == nullptr)
-		return r;
-	return static_cast<wchar_t>(plane[r & 0xFF]);
+static wchar_t GetCollationWeight(const wchar_t& r)
+{
+  // Lookup the "weight" of a UTF8 char, equivalent lowercase ascii letter, in the plane map,
+  // the character comparison value used by using "accent folding" collation utf8_general_ci
+  // in MySQL (AKA utf8mb3_general_ci in MariaDB 10)
+  auto index = r >> 8;
+  if (index > 255)
+    return 0xFFFD;
+  auto plane = planemap[index];
+  if (plane == nullptr)
+    return r;
+  return static_cast<wchar_t>(plane[r & 0xFF]);
 }
-int64_t StringUtils::AlphaNumericCompare(const wchar_t *left,
-		const wchar_t *right) {
-	const wchar_t *l = left;
-	const wchar_t *r = right;
-	const wchar_t *ld, *rd;
-	wchar_t lc, rc;
-	int64_t lnum, rnum;
-	bool lsym, rsym;
+int64_t StringUtils::AlphaNumericCompare(const wchar_t* left, const wchar_t* right)
+{
+  const wchar_t* l = left;
+  const wchar_t* r = right;
+  const wchar_t *ld, *rd;
+  wchar_t lc, rc;
+  int64_t lnum, rnum;
+  bool lsym, rsym;
 
-	// Normal sort, compare characters until there is a difference....
-	// EXCEPT, if you encounter numbers, hold off comparison until you have
-	// the entire numeric sequence and then compare the numeric value.
-	// If the numbers are the same, then continue with the character
-	// comparison.
+  // Normal sort, compare characters until there is a difference....
+  // EXCEPT, if you encounter numbers, hold off comparison until you have
+  // the entire numeric sequence and then compare the numeric value.
+  // If the numbers are the same, then continue with the character
+  // comparison.
 
-	while (*l != 0 && *r != 0) {
-		// If the current character from both strings are numbers, then
-		// we want a numeric comparison
-		if (*l >= L'0' && *l <= L'9' && *r >= L'0' && *r <= L'9') {
-			ld = l;
-			lnum = *ld++ - L'0';
-			// First, create an integer numeric value for the left side from
-			// up to 15 numeric characters from the left
-			while (*ld >= L'0' && *ld <= L'9' && ld < l + 15) { // compare only up to 15 digits
-				lnum *= 10;
-				lnum += *ld++ - L'0';
-			}
-			rd = r;
-			rnum = *rd++ - L'0';
-			// Same for the right side. Lengths don't have to be the same.
-			while (*rd >= L'0' && *rd <= L'9' && rd < r + 15) { // compare only up to 15 digits
-				rnum *= 10;
-				rnum += *rd++ - L'0';
-			}
-			// do we have numbers?
-			if (lnum != rnum) { // yes - and they're different!
-				return lnum - rnum;
-			}
-			// Advance pointers to end of numeric values
-			l = ld;
-			r = rd;
-			continue;
-		}
+  while (*l != 0 && *r != 0)
+  {
+    // If the current character from both strings are numbers, then
+    // we want a numeric comparison
+    if (*l >= L'0' && *l <= L'9' && *r >= L'0' && *r <= L'9')
+    {
+      ld = l;
+      lnum = *ld++ - L'0';
+      // First, create an integer numeric value for the left side from
+      // up to 15 numeric characters from the left
+      while (*ld >= L'0' && *ld <= L'9' && ld < l + 15)
+      { // compare only up to 15 digits
+        lnum *= 10;
+        lnum += *ld++ - L'0';
+      }
+      rd = r;
+      rnum = *rd++ - L'0';
+      // Same for the right side. Lengths don't have to be the same.
+      while (*rd >= L'0' && *rd <= L'9' && rd < r + 15)
+      { // compare only up to 15 digits
+        rnum *= 10;
+        rnum += *rd++ - L'0';
+      }
+      // do we have numbers?
+      if (lnum != rnum)
+      { // yes - and they're different!
+        return lnum - rnum;
+      }
+      // Advance pointers to end of numeric values
+      l = ld;
+      r = rd;
+      continue;
+    }
 
     lc = *l;
     rc = *r;
@@ -569,30 +579,37 @@ int64_t StringUtils::AlphaNumericCompare(const wchar_t *left,
     if (rc >= L'A' && rc <= L'Z')
       rc += L'a' - L'A';
 
-		if (lc != rc) {
-			if (!g_langInfo.UseLocaleCollation()) {
-				// Compare unicode (having applied accent folding collation to non-ascii chars).
-				int i = wcsncmp(&lc, &rc, 1);
-				return i;
-			} else {
-				// Fetch collation facet from locale to do comparison of wide char although on some
+    if (lc != rc)
+    {
+      if (!g_langInfo.UseLocaleCollation())
+      {
+        // Compare unicode (having applied accent folding collation to non-ascii chars).
+        int i = wcsncmp(&lc, &rc, 1);
+        return i;
+      }
+      else
+      {
+        // Fetch collation facet from locale to do comparison of wide char although on some
         // platforms this is not langauge specific but just compares unicode
-				const std::collate<wchar_t> &coll =
-						std::use_facet<std::collate<wchar_t>>(g_langInfo.GetSystemLocale());
-				int cmp_res = coll.compare(&lc, &lc + 1, &rc, &rc + 1);
-				if (cmp_res != 0)
-					return cmp_res;
-			}
-		}
-		l++;
-		r++;
-	}
-	if (*r) { // r is longer
-		return -1;
-	} else if (*l) { // l is longer
-		return 1;
-	}
-	return 0; // files are the same
+        const std::collate<wchar_t>& coll =
+            std::use_facet<std::collate<wchar_t>>(g_langInfo.GetSystemLocale());
+        int cmp_res = coll.compare(&lc, &lc + 1, &rc, &rc + 1);
+        if (cmp_res != 0)
+          return cmp_res;
+      }
+    }
+    l++;
+    r++;
+  }
+  if (*r)
+  { // r is longer
+    return -1;
+  }
+  else if (*l)
+  { // l is longer
+    return 1;
+  }
+  return 0; // files are the same
 }
 /*
  Convert the UTF8 character to which z points into a 31-bit Unicode point.
@@ -604,33 +621,35 @@ int64_t StringUtils::AlphaNumericCompare(const wchar_t *left,
  1110zzzz  10yyyyyy  10xxxxxx             00000000 zzzzyyyy yyxxxxxx
  11110uuu  10uuzzzz  10yyyyyy  10xxxxxx   000uuuuu zzzzyyyy yyxxxxxx
  */
-static uint32_t UTF8ToUnicode(const unsigned char *z, int nKey,
-		unsigned char &bytes) {
-	// Lookup table used decode the first byte of a multi-byte UTF8 character
-	// clang-format off
+static uint32_t UTF8ToUnicode(const unsigned char* z, int nKey, unsigned char& bytes)
+{
+  // Lookup table used decode the first byte of a multi-byte UTF8 character
+  // clang-format off
 	static const unsigned char utf8Trans1[] = { 0x00, 0x01, 0x02, 0x03, 0x04,
 			0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10,
 			0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b, 0x1c,
 			0x1d, 0x1e, 0x1f, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
 			0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x00, 0x01, 0x02, 0x03, 0x04,
 			0x05, 0x06, 0x07, 0x00, 0x01, 0x02, 0x03, 0x00, 0x01, 0x00, 0x00, };
-	// clang-format on
+  // clang-format on
 
-	uint32_t c;
-	bytes = 0;
-	c = z[0];
-	if (c >= 0xc0) {
-		c = utf8Trans1[c - 0xc0];
-		int index = 1;
-		while (index < nKey && (z[index] & 0xc0) == 0x80) {
-			c = (c << 6) + (0x3f & z[index]);
-			index++;
-		}
-		if (c < 0x80 || (c & 0xFFFFF800) == 0xD800 || (c & 0xFFFFFFFE) == 0xFFFE)
-			c = 0xFFFD;
-		bytes = static_cast<unsigned char>(index - 1);
-	}
-	return c;
+  uint32_t c;
+  bytes = 0;
+  c = z[0];
+  if (c >= 0xc0)
+  {
+    c = utf8Trans1[c - 0xc0];
+    int index = 1;
+    while (index < nKey && (z[index] & 0xc0) == 0x80)
+    {
+      c = (c << 6) + (0x3f & z[index]);
+      index++;
+    }
+    if (c < 0x80 || (c & 0xFFFFF800) == 0xD800 || (c & 0xFFFFFFFE) == 0xFFFE)
+      c = 0xFFFD;
+    bytes = static_cast<unsigned char>(index - 1);
+  }
+  return c;
 }
 
 /*
@@ -765,38 +784,45 @@ int StringUtils::AlphaNumericCollation(int nKey1, const void* pKey1, int nKey2, 
   return (nKey1 - nKey2);
 }
 
-std::string StringUtils::ISODateToLocalizedDate(const std::string &strIsoDate) {
-	// Convert ISO8601 date strings YYYY, YYYY-MM, or YYYY-MM-DD to (partial) localized date strings
-	// TODO: ICU has date formatters for many locales
-	CDateTime date;
-	std::string formattedDate = strIsoDate;
-	if (formattedDate.size() == 10) {
-		date.SetFromDBDate(strIsoDate);
-		formattedDate = date.GetAsLocalizedDate();
-	} else if (formattedDate.size() == 7) {
-		std::string strFormat = date.GetAsLocalizedDate(false);
-		std::string tempdate;
-		// find which date separator we are using.  Can be -./
-		size_t pos = strFormat.find_first_of("-./");
-		if (pos != std::string::npos) {
-			bool yearFirst = strFormat.find("1601") == 0; // true if year comes first
-			std::string sep = strFormat.substr(pos, 1);
-			if (yearFirst) { // build formatted date with year first, then separator and month
-				tempdate = formattedDate.substr(0, 4);
-				tempdate += sep;
-				tempdate += formattedDate.substr(5, 2);
-			} else {
-				tempdate = formattedDate.substr(5, 2);
-				tempdate += sep;
-				tempdate += formattedDate.substr(0, 4);
-			}
-			formattedDate = tempdate;
-		}
-		// return either just the year or the locally formatted version of the ISO date
-	}
-	return formattedDate;
+std::string StringUtils::ISODateToLocalizedDate(const std::string& strIsoDate)
+{
+  // Convert ISO8601 date strings YYYY, YYYY-MM, or YYYY-MM-DD to (partial) localized date strings
+  // TODO: ICU has date formatters for many locales
+  CDateTime date;
+  std::string formattedDate = strIsoDate;
+  if (formattedDate.size() == 10)
+  {
+    date.SetFromDBDate(strIsoDate);
+    formattedDate = date.GetAsLocalizedDate();
+  }
+  else if (formattedDate.size() == 7)
+  {
+    std::string strFormat = date.GetAsLocalizedDate(false);
+    std::string tempdate;
+    // find which date separator we are using.  Can be -./
+    size_t pos = strFormat.find_first_of("-./");
+    if (pos != std::string::npos)
+    {
+      bool yearFirst = strFormat.find("1601") == 0; // true if year comes first
+      std::string sep = strFormat.substr(pos, 1);
+      if (yearFirst)
+      { // build formatted date with year first, then separator and month
+        tempdate = formattedDate.substr(0, 4);
+        tempdate += sep;
+        tempdate += formattedDate.substr(5, 2);
+      }
+      else
+      {
+        tempdate = formattedDate.substr(5, 2);
+        tempdate += sep;
+        tempdate += formattedDate.substr(0, 4);
+      }
+      formattedDate = tempdate;
+    }
+    // return either just the year or the locally formatted version of the ISO date
+  }
+  return formattedDate;
 }
-
 
 std::string StringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
 {
@@ -839,11 +865,11 @@ std::string StringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
 
 bool StringUtils::IsNaturalNumber(const std::string& str)
 {
-	// Since this function is only looking for whitespace and
-	// digits, it is reasonably safe to assume single byte.
-	// If by some reason, multibyte utf-8 is passed, then
-	// it is highly unlikely (probably impossible) for
-	// this to return true.
+  // Since this function is only looking for whitespace and
+  // digits, it is reasonably safe to assume single byte.
+  // If by some reason, multibyte utf-8 is passed, then
+  // it is highly unlikely (probably impossible) for
+  // this to return true.
 
   size_t i = 0, n = 0;
   // allow whitespace,digits,whitespace
@@ -892,23 +918,25 @@ bool StringUtils::IsInteger(const std::string& str)
   return i == str.size() && n > 0;
 }
 
-int StringUtils::asciidigitvalue(char chr) {
-	if (!isasciidigit(chr))
-		return -1;
+int StringUtils::asciidigitvalue(char chr)
+{
+  if (!isasciidigit(chr))
+    return -1;
 
-	return chr - '0';
+  return chr - '0';
 }
 
-int StringUtils::asciixdigitvalue(char chr) {
-	int v = asciidigitvalue(chr);
-	if (v >= 0)
-		return v;
-	if (chr >= 'a' && chr <= 'f')
-		return chr - 'a' + 10;
-	if (chr >= 'A' && chr <= 'F')
-		return chr - 'A' + 10;
+int StringUtils::asciixdigitvalue(char chr)
+{
+  int v = asciidigitvalue(chr);
+  if (v >= 0)
+    return v;
+  if (chr >= 'a' && chr <= 'f')
+    return chr - 'a' + 10;
+  if (chr >= 'A' && chr <= 'F')
+    return chr - 'A' + 10;
 
-	return -1;
+  return -1;
 }
 
 std::string StringUtils::SizeToString(int64_t size)
@@ -973,7 +1001,7 @@ std::string StringUtils::ToHexadecimal(const std::string& in)
   return ss.str();
 }
 
-void StringUtils::WordToDigits(std::string &word)
+void StringUtils::WordToDigits(std::string& word)
 {
 
   // Works ONLY with ASCII!
@@ -983,18 +1011,18 @@ void StringUtils::WordToDigits(std::string &word)
   for (unsigned int i = 0; i < word.size(); ++i)
   { // NB: This assumes ascii, which probably needs extending at some  point.
     char letter = word[i];
-    if (letter > 0x7f) {
-      CLog::Log(LOGWARNING, "StringUtils.WordToDigits: Non-ASCII input: {}\n",
-          word);
+    if (letter > 0x7f)
+    {
+      CLog::Log(LOGWARNING, "StringUtils.WordToDigits: Non-ASCII input: {}\n", word);
     }
 
     if ((letter >= 'a' && letter <= 'z')) // assume contiguous letter range
     {
-      word[i] = word_to_letter[letter-'a'];
+      word[i] = word_to_letter[letter - 'a'];
     }
     else if (letter < '0' || letter > '9') // We want to keep 0-9!
     {
-      word[i] = ' ';  // replace everything else with a space
+      word[i] = ' '; // replace everything else with a space
     }
   }
 }
@@ -1004,12 +1032,14 @@ void StringUtils::WordToDigits(std::string &word)
  */
 int StringUtils::FindEndBracket(const std::string &str, char opener, char closer, int startPos)
 {
-	if (not isascii(opener)) {
-	 	CLog::Log(LOGWARNING, "StringUtils::FindEndBracket opener is non-ASCII: {}\n", opener);
-	}
-	else if (not isascii(closer)) {
-	 	CLog::Log(LOGWARNING, "StringUtils::FindEndBracket closer is non-ASCII: {}\n", closer);
-	}
+  if (not isascii(opener))
+  {
+    CLog::Log(LOGWARNING, "StringUtils::FindEndBracket opener is non-ASCII: {}\n", opener);
+  }
+  else if (not isascii(closer))
+  {
+    CLog::Log(LOGWARNING, "StringUtils::FindEndBracket closer is non-ASCII: {}\n", closer);
+  }
   int blocks = 1;
   for (unsigned int i = startPos; i < str.size(); i++)
   {
@@ -1044,72 +1074,77 @@ std::string StringUtils::CreateUUID()
 #endif
 }
 
-bool StringUtils::ValidateUUID(const std::string &uuid) {
-	CRegExp guidRE;
-	guidRE.RegComp(ADDON_GUID_RE);
-	return (guidRE.RegFind(uuid.c_str()) == 0);
+bool StringUtils::ValidateUUID(const std::string& uuid)
+{
+  CRegExp guidRE;
+  guidRE.RegComp(ADDON_GUID_RE);
+  return (guidRE.RegFind(uuid.c_str()) == 0);
 }
 
-double StringUtils::CompareFuzzy(const std::string &left,
-		const std::string &right) {
-	/*  TODO: Unicode. Examine if this works with Unicode. Does it need locale?
+double StringUtils::CompareFuzzy(const std::string& left, const std::string& right)
+{
+  /*  TODO: Unicode. Examine if this works with Unicode. Does it need locale?
 	 *        Should strings be case folded and Normalized first?
 	 *        Other packages exist (mostly python) that take locale
 	 *        most are vague about Unicode.
 	 *        Google's BERT and TensorFlow are interesting (mostly python).
 	 */
 
-	std::cout << "CompareFuzzy left: " << left << " right: " << right << std::endl;
-	return (0.5
-			+ fstrcmp(left.c_str(), right.c_str()) * (left.length() + right.length()))
-			/ 2.0;
+  std::cout << "CompareFuzzy left: " << left << " right: " << right << std::endl;
+  return (0.5 + fstrcmp(left.c_str(), right.c_str()) * (left.length() + right.length())) / 2.0;
 }
 
-int StringUtils::FindBestMatch(const std::string &str,
-		const std::vector<std::string> &strings, double &matchscore) {
+int StringUtils::FindBestMatch(const std::string& str,
+                               const std::vector<std::string>& strings,
+                               double& matchscore)
+{
 
-	// TODO: NOT Unicode safe
+  // TODO: NOT Unicode safe
 
-	int best = -1;
-	matchscore = 0;
+  int best = -1;
+  matchscore = 0;
 
-	int i = 0;
-	for (std::vector<std::string>::const_iterator it = strings.begin();
-			it != strings.end(); ++it, i++) {
-		int maxlength = std::max(str.length(), it->length());
-		double score = StringUtils::CompareFuzzy(str, *it) / maxlength;
-		if (score > matchscore) {
-			matchscore = score;
-			best = i;
-		}
-	}
-	std::cout << "FindBestMatch score: " << matchscore << " best: " << best << std::endl;
-	return best;
+  int i = 0;
+  for (std::vector<std::string>::const_iterator it = strings.begin(); it != strings.end();
+       ++it, i++)
+  {
+    int maxlength = std::max(str.length(), it->length());
+    double score = StringUtils::CompareFuzzy(str, *it) / maxlength;
+    if (score > matchscore)
+    {
+      matchscore = score;
+      best = i;
+    }
+  }
+  std::cout << "FindBestMatch score: " << matchscore << " best: " << best << std::endl;
+  return best;
 }
 
-size_t StringUtils::utf8_strlen(const char *s) {
-	size_t length = 0;
-	while (*s) {
-		if (U8_IS_LEAD(*s++))
-			length ++;
-	}
+size_t StringUtils::utf8_strlen(const char* s)
+{
+  size_t length = 0;
+  while (*s)
+  {
+    if (U8_IS_LEAD(*s++))
+      length++;
+  }
 
-	return length;
+  return length;
 }
-
 
 /**
  * Note: delimiters is a string of one or more ASCII single-character delimiters.
  *       input may be utf-8.
  */
-std::vector<std::string> StringUtils::Tokenize(const std::string &input,
-		const std::string &delimiters) {
-	// TODO:  Need Tests!!
+std::vector<std::string> StringUtils::Tokenize(const std::string& input,
+                                               const std::string& delimiters)
+{
+  // TODO:  Need Tests!!
   // TODO: Convert to Unicode
 
-	std::vector < std::string > tokens = std::vector<std::string>();
-	Tokenize(input, tokens, delimiters);
-	return tokens;
+  std::vector<std::string> tokens = std::vector<std::string>();
+  Tokenize(input, tokens, delimiters);
+  return tokens;
 }
 
 /**
@@ -1119,9 +1154,10 @@ std::vector<std::string> StringUtils::Tokenize(const std::string &input,
 
 void StringUtils::Tokenize(const std::string& input, std::vector<std::string>& tokens, const std::string& delimiters)
 {
-	if (UnicodeUtils::ContainsNonAscii(delimiters)) {
-	 	CLog::Log(LOGWARNING, "StringUtils::Tokenize contains non-ASCII delimiter: {}\n", delimiters);
-	}
+  if (UnicodeUtils::ContainsNonAscii(delimiters))
+  {
+    CLog::Log(LOGWARNING, "StringUtils::Tokenize contains non-ASCII delimiter: {}\n", delimiters);
+  }
   tokens.clear();
   // Skip delimiters at beginning.
   std::string::size_type dataPos = input.find_first_not_of(delimiters);
@@ -1140,11 +1176,11 @@ void StringUtils::Tokenize(const std::string& input, std::vector<std::string>& t
  * Note: delimiter is a single ASCII character that separates tokens.
  *       input may be utf-8.
  */
-std::vector<std::string> StringUtils::Tokenize(const std::string &input,
-		const char delimiter) {
-	std::vector < std::string > tokens;
-	Tokenize(input, tokens, delimiter);
-	return tokens;
+std::vector<std::string> StringUtils::Tokenize(const std::string& input, const char delimiter)
+{
+  std::vector<std::string> tokens;
+  Tokenize(input, tokens, delimiter);
+  return tokens;
 }
 
 /**
@@ -1155,9 +1191,10 @@ std::vector<std::string> StringUtils::Tokenize(const std::string &input,
 void StringUtils::Tokenize(const std::string& input, std::vector<std::string>& tokens, const char delimiter)
 {
   tokens.clear();
-	if (not isascii(delimiter)) {
-	 	CLog::Log(LOGWARNING, "StringUtils::Tokenize contains non-ASCII delimiter: {}s\n", delimiter);
-	}
+  if (not isascii(delimiter))
+  {
+    CLog::Log(LOGWARNING, "StringUtils::Tokenize contains non-ASCII delimiter: {}s\n", delimiter);
+  }
   // Skip delimiters at beginning.
   std::string::size_type dataPos = input.find_first_not_of(delimiter);
   while (dataPos != std::string::npos)
