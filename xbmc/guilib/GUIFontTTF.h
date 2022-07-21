@@ -132,7 +132,6 @@ protected:
     float m_advance;
     FT_UInt m_glyphIndex;
     character_t m_glyphAndStyle;
-    wchar_t m_letter;
   };
 
   struct RunInfo
@@ -171,7 +170,7 @@ protected:
 
   // Stuff for pre-rendering for speed
   Character* GetCharacter(character_t letter, FT_UInt glyphIndex);
-  bool CacheCharacter(wchar_t letter, uint32_t style, Character* ch, FT_UInt glyphIndex);
+  bool CacheCharacter(FT_UInt glyphIndex, uint32_t style, Character* ch);
   void RenderCharacter(CGraphicContext& context,
                        float posX,
                        float posY,

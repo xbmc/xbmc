@@ -485,7 +485,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
 
       // grab the next character
       Character* ch = &characters.front();
-      if (ch->m_letter == 0)
+      if (ch->m_glyphAndStyle == 0)
       {
         characters.pop();
         continue;
@@ -584,7 +584,8 @@ float CGUIFontTTF::GetTextWidthInternal(const vecText& text, const std::vector<G
   float width = 0;
   for (auto it = glyphs.begin(); it != glyphs.end(); it++)
   {
-    Character* c = GetCharacter(text[(*it).m_glyphInfo.cluster], (*it).m_glyphInfo.codepoint);
+    const character_t ch = text[(*it).m_glyphInfo.cluster];
+    Character* c = GetCharacter(ch, (*it).m_glyphInfo.codepoint);
     if (c)
     {
       // If last character in line, we want to add render width
@@ -592,7 +593,7 @@ float CGUIFontTTF::GetTextWidthInternal(const vecText& text, const std::vector<G
       // choped on the end (as render width is larger than advance then).
       if (std::next(it) == glyphs.end())
         width += std::max(c->m_right - c->m_left + c->m_offsetX, c->m_advance);
-      else if ((c->m_letter & 0xffff) == static_cast<character_t>('\t'))
+      else if ((ch & 0xffff) == static_cast<character_t>('\t'))
         width += GetTabSpaceLength();
       else
         width += c->m_advance;
@@ -607,7 +608,7 @@ float CGUIFontTTF::GetCharWidthInternal(character_t ch)
   Character* c = GetCharacter(ch, 0);
   if (c)
   {
-    if ((c->m_letter & 0xffff) == static_cast<character_t>('\t'))
+    if ((ch & 0xffff) == static_cast<character_t>('\t'))
       return GetTabSpaceLength();
     else
       return c->m_advance;
@@ -790,13 +791,13 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr, FT_UInt glyph
   m_nestedBeginCount = 1;
   if (nestedBeginCount)
     End();
-  if (!CacheCharacter(letter, style, m_char + low, glyphIndex))
+  if (!CacheCharacter(glyphIndex, style, m_char + low))
   { // unable to cache character - try clearing them all out and starting over
     CLog::LogF(LOGDEBUG, "Unable to cache character. Clearing character cache of {} characters",
                m_numChars);
     ClearCharacterCache();
     low = 0;
-    if (!CacheCharacter(letter, style, m_char + low, glyphIndex))
+    if (!CacheCharacter(glyphIndex, style, m_char))
     {
       CLog::LogF(LOGERROR, "Unable to cache character (out of memory?)");
       if (nestedBeginCount)
@@ -827,12 +828,12 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr, FT_UInt glyph
   return m_char + low;
 }
 
-bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch, FT_UInt glyphIndex)
+bool CGUIFontTTF::CacheCharacter(FT_UInt glyphIndex, uint32_t style, Character* ch)
 {
   FT_Glyph glyph = nullptr;
   if (FT_Load_Glyph(m_face, glyphIndex, FT_LOAD_TARGET_LIGHT))
   {
-    CLog::LogF(LOGDEBUG, "Failed to load glyph {:x}", static_cast<uint32_t>(letter));
+    CLog::LogF(LOGDEBUG, "Failed to load glyph {:x}", glyphIndex);
     return false;
   }
 
@@ -848,7 +849,7 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch, 
   // grab the glyph
   if (FT_Get_Glyph(m_face->glyph, &glyph))
   {
-    CLog::LogF(LOGDEBUG, "Failed to get glyph {:x}", static_cast<uint32_t>(letter));
+    CLog::LogF(LOGDEBUG, "Failed to get glyph {:x}", glyphIndex);
     return false;
   }
   if (m_stroker)
@@ -856,7 +857,7 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch, 
   // render the glyph
   if (FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, nullptr, 1))
   {
-    CLog::LogF(LOGDEBUG, "Failed to render glyph {:x} to a bitmap", static_cast<uint32_t>(letter));
+    CLog::LogF(LOGDEBUG, "Failed to render glyph {:x} to a bitmap", glyphIndex);
     return false;
   }
 
@@ -913,7 +914,6 @@ bool CGUIFontTTF::CacheCharacter(wchar_t letter, uint32_t style, Character* ch, 
   // set the character in our table
   ch->m_glyphAndStyle = (style << 16) | glyphIndex;
   ch->m_glyphIndex = glyphIndex;
-  ch->m_letter = letter;
   ch->m_offsetX = static_cast<short>(bitGlyph->left);
   ch->m_offsetY = static_cast<short>(m_cellBaseLine - bitGlyph->top);
   ch->m_left = isEmptyGlyph ? 0.0f : (static_cast<float>(m_posX) + ch->m_offsetX);
