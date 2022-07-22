@@ -223,36 +223,32 @@ bool CPythonInvoker::execute(const std::string& script, std::vector<std::wstring
         addPath(CSpecialProtocol::TranslatePath(addons[i]->LibPath()));
     }
 
-    // we want to use sys.path so it includes site-packages
-    // if this fails, default to using Py_GetPath
-    PyObject* sysMod(PyImport_ImportModule("sys")); // must call Py_DECREF when finished
-    PyObject* sysModDict(PyModule_GetDict(sysMod)); // borrowed ref, no need to delete
-    PyObject* pathObj(PyDict_GetItemString(sysModDict, "path")); // borrowed ref, no need to delete
+    PyObject* sysPath = PySys_GetObject("path");
+    Py_ssize_t listSize = PyList_Size(sysPath);
 
-    if (pathObj != NULL && PyList_Check(pathObj))
+    if (listSize > 0)
+      CLog::Log(LOGDEBUG, "CPythonInvoker({}): default python path:", GetId());
+
+    for (Py_ssize_t index = 0; index < listSize; index++)
     {
-      for (int i = 0; i < PyList_Size(pathObj); i++)
-      {
-        PyObject* e = PyList_GetItem(pathObj, i); // borrowed ref, no need to delete
-        if (e != NULL && PyUnicode_Check(e))
-          addPath(PyUnicode_AsUTF8(e)); // returns internal data, don't delete or modify
-      }
-    }
-    else
-    {
-      std::string GetPath;
-      g_charsetConverter.wToUTF8(Py_GetPath(), GetPath);
-      addPath(GetPath);
+      PyObject* pyPath = PyList_GetItem(sysPath, index);
+
+      CLog::Log(LOGDEBUG, "CPythonInvoker({}):   {}", GetId(), PyUnicode_AsUTF8(pyPath));
     }
 
-    Py_DECREF(sysMod); // release ref to sysMod
+    if (!m_pythonPath.empty())
+      CLog::Log(LOGDEBUG, "CPythonInvoker({}): adding path:", GetId());
 
-    CLog::Log(LOGDEBUG, "CPythonInvoker({}, {}): setting the Python path to {}", GetId(),
-              m_sourceFile, m_pythonPath);
+    std::vector<std::string> pythonPath = StringUtils::Split(m_pythonPath, PY_PATH_SEP);
+    for (const auto& path : pythonPath)
+    {
+      PyObject* pyPath = PyUnicode_FromString(path.c_str());
+      PyList_Append(sysPath, pyPath);
 
-    std::wstring pypath;
-    g_charsetConverter.utf8ToW(m_pythonPath, pypath);
-    PySys_SetPath(pypath.c_str());
+      CLog::Log(LOGDEBUG, "CPythonInvoker({}):  {}", GetId(), PyUnicode_AsUTF8(pyPath));
+
+      Py_DECREF(pyPath);
+    }
 
     { // set the m_threadState to this new interp
       std::unique_lock<CCriticalSection> lockMe(m_critical);
