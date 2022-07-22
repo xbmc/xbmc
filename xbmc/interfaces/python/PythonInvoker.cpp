@@ -142,7 +142,7 @@ bool CPythonInvoker::execute(const std::string& script, std::vector<std::wstring
 {
   // copy the code/script into a local string buffer
   m_sourceFile = script;
-  m_pythonPath.clear();
+  std::set<std::string> pythonPath;
 
   CLog::Log(LOGDEBUG, "CPythonInvoker({}, {}): start processing", GetId(), m_sourceFile);
 
@@ -198,7 +198,7 @@ bool CPythonInvoker::execute(const std::string& script, std::vector<std::wstring
 
     // get path from script file name and add python path's
     // this is used for python so it will search modules from script path first
-    addPath(scriptDir);
+    pythonPath.emplace(scriptDir);
 
     // add all addon module dependencies to path
     if (m_addon)
@@ -206,7 +206,7 @@ bool CPythonInvoker::execute(const std::string& script, std::vector<std::wstring
       std::set<std::string> paths;
       getAddonModuleDeps(m_addon, paths);
       for (const auto& it : paths)
-        addPath(it);
+        pythonPath.emplace(it);
     }
     else
     { // for backwards compatibility.
@@ -220,7 +220,7 @@ bool CPythonInvoker::execute(const std::string& script, std::vector<std::wstring
       ADDON::VECADDONS addons;
       CServiceBroker::GetAddonMgr().GetAddons(addons, ADDON::ADDON_SCRIPT_MODULE);
       for (unsigned int i = 0; i < addons.size(); ++i)
-        addPath(CSpecialProtocol::TranslatePath(addons[i]->LibPath()));
+        pythonPath.emplace(CSpecialProtocol::TranslatePath(addons[i]->LibPath()));
     }
 
     PyObject* sysPath = PySys_GetObject("path");
@@ -236,10 +236,9 @@ bool CPythonInvoker::execute(const std::string& script, std::vector<std::wstring
       CLog::Log(LOGDEBUG, "CPythonInvoker({}):   {}", GetId(), PyUnicode_AsUTF8(pyPath));
     }
 
-    if (!m_pythonPath.empty())
+    if (!pythonPath.empty())
       CLog::Log(LOGDEBUG, "CPythonInvoker({}): adding path:", GetId());
 
-    std::vector<std::string> pythonPath = StringUtils::Split(m_pythonPath, PY_PATH_SEP);
     for (const auto& path : pythonPath)
     {
       PyObject* pyPath = PyUnicode_FromString(path.c_str());
@@ -719,15 +718,4 @@ void CPythonInvoker::getAddonModuleDeps(const ADDON::AddonPtr& addon, std::set<s
       }
     }
   }
-}
-
-void CPythonInvoker::addPath(const std::string& path)
-{
-  if (path.empty())
-    return;
-
-  if (!m_pythonPath.empty())
-    m_pythonPath += PY_PATH_SEP;
-
-  m_pythonPath += path;
 }
