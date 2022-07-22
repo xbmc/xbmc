@@ -531,10 +531,6 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker* invoker)
     if (!PyGILState_Check())
       PyEval_RestoreThread((PyThreadState*)m_mainThreadState);
 
-    const wchar_t* python_argv[1] = {L""};
-    //! @bug libpython isn't const correct
-    PySys_SetArgv(1, const_cast<wchar_t**>(python_argv));
-
     if (!(m_mainThreadState = PyThreadState_Get()))
       CLog::Log(LOGERROR, "Python threadstate is NULL.");
     savestate = PyEval_SaveThread();
