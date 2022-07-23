@@ -170,6 +170,7 @@ void CAdvancedSettings::Initialize()
   m_videoFpsDetect = 1;
   m_maxTempo = 1.55f;
   m_videoPreferStereoStream = false;
+  m_ptBt2020Primaries = false;
 
   m_videoDefaultLatency = 0.0;
 
@@ -652,6 +653,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetInt(pElement, "useocclusionquery", m_videoCaptureUseOcclusionQuery, -1, 1);
     XMLUtils::GetBoolean(pElement,"vdpauInvTelecine",m_videoVDPAUtelecine);
     XMLUtils::GetBoolean(pElement,"vdpauHDdeintSkipChroma",m_videoVDPAUdeintSkipChromaHD);
+    XMLUtils::GetBoolean(pElement, "passthroughBt2020Primaries", m_ptBt2020Primaries);
 
     TiXmlElement* pAdjustRefreshrate = pElement->FirstChildElement("adjustrefreshrate");
     if (pAdjustRefreshrate)

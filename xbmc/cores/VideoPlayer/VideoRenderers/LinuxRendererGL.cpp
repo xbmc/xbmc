@@ -120,6 +120,7 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_useDithering = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool("videoscreen.dither");
   m_ditherDepth = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt("videoscreen.ditherdepth");
   m_fullRange = !CServiceBroker::GetWinSystem()->UseLimitedColor();
+  m_ptbt2020 = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_ptBt2020Primaries;
 
   m_fbo.width = 0.0;
   m_fbo.height = 0.0;
@@ -903,9 +904,9 @@ void CLinuxRendererGL::LoadShaders(int field)
     m_toneMapMethod = m_videoSettings.m_ToneMapMethod;
 
     AVColorPrimaries dstPrimaries = AVColorPrimaries::AVCOL_PRI_BT709;
-    if (m_srcPrimaries == AVColorPrimaries::AVCOL_PRI_BT2020)
+    if (m_ptbt2020 && m_srcPrimaries == AVColorPrimaries::AVCOL_PRI_BT2020)
     {
-      dstPrimaries = m_srcPrimaries;
+      dstPrimaries = AVColorPrimaries::AVCOL_PRI_BT2020;
     }
 
     if (m_renderQuality == RQ_SINGLEPASS)
