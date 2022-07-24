@@ -55,7 +55,8 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <string>
+#include <string_view>
 #include <time.h>
 #include <tuple>
 
@@ -192,58 +193,48 @@ void UnicodeUtils::FoldCase(std::wstring& str,
 
 void UnicodeUtils::ToCapitalize(std::wstring& str)
 {
-  icu::Locale icuLocale = Unicode::GetDefaultICULocale();
-#ifdef USE_TO_TITLE_FOR_CAPITALIZE
-  Unicode::ToTitle(str, icuLocale);
-#else
-  std::wstring result = Unicode::ToCapitalize(str, icuLocale);
+  std::wstring result = Unicode::ToCapitalize(str);
   str.swap(result);
-#endif
   return;
 }
 
 void UnicodeUtils::ToCapitalize(std::string& str)
 {
-  icu::Locale icuLocale = Unicode::GetDefaultICULocale();
-#ifdef USE_TO_TITLE_FOR_CAPITALIZE
-  Unicode::ToTitle(str, icuLocale);
-#else
-  std::string result = Unicode::ToCapitalize(str, icuLocale);
+  std::string result = Unicode::ToCapitalize(str);
   str.swap(result);
-#endif
   return;
 }
 
-std::wstring UnicodeUtils::TitleCase(const std::wstring& str, const std::locale& locale)
+std::wstring UnicodeUtils::TitleCase(const std::wstring_view& str, const std::locale& locale)
 {
   icu::Locale icuLocale = Unicode::GetICULocale(locale);
-  std::wstring result = Unicode::ToTitle(str, icuLocale);
+  std::wstring result = Unicode::TitleCase(str, icuLocale);
   return result;
 }
 
-std::wstring UnicodeUtils::TitleCase(const std::wstring& str)
+std::wstring UnicodeUtils::TitleCase(const std::wstring_view& str)
 {
   icu::Locale icuLocale = Unicode::GetDefaultICULocale();
-  std::wstring result = Unicode::ToTitle(str, icuLocale);
+  std::wstring result = Unicode::TitleCase(str, icuLocale);
   return result;
 }
 
-std::string UnicodeUtils::TitleCase(const std::string& str, const std::locale& locale)
+std::string UnicodeUtils::TitleCase(const std::string_view& str, const std::locale& locale)
 {
   icu::Locale icuLocale = Unicode::GetICULocale(locale);
-  std::string result = Unicode::ToTitle(str, icuLocale);
+  std::string result = Unicode::TitleCase(str, icuLocale);
   return result;
 }
 
-std::string UnicodeUtils::TitleCase(const std::string& str)
+std::string UnicodeUtils::TitleCase(const std::string_view& str)
 {
   icu::Locale icuLocale = Unicode::GetDefaultICULocale();
-  std::string result = Unicode::ToTitle(str, icuLocale);
+  std::string result = Unicode::TitleCase(str, icuLocale);
   return result;
 }
 
 const std::wstring UnicodeUtils::Normalize(
-    const std::wstring& src,
+    const std::wstring_view& src,
     const StringOptions opt /* = StringOptions::FOLD_CASE_DEFAULT */,
     const NormalizerType NormalizerType)
 {
@@ -251,27 +242,27 @@ const std::wstring UnicodeUtils::Normalize(
 }
 
 const std::string UnicodeUtils::Normalize(
-    const std::string& src,
+    const std::string_view& src,
     const StringOptions opt /* = StringOptions::FOLD_CASE_DEFAULT */,
     const NormalizerType NormalizerType)
 {
   return Unicode::Normalize(src, opt, NormalizerType);
 }
 
-bool UnicodeUtils::Equals(const std::string& str1, const std::string& str2)
+bool UnicodeUtils::Equals(const std::string_view& str1, const std::string_view& str2)
 {
   int8_t rc = Unicode::StrCmp(str1, 0, str1.length(), str2, 0, str2.length());
   return rc == (int8_t)0;
 }
 
-bool UnicodeUtils::Equals(const std::wstring& str1, const std::wstring& str2)
+bool UnicodeUtils::Equals(const std::wstring_view& str1, const std::wstring_view& str2)
 {
   int8_t rc = Unicode::StrCmp(str1, 0, str1.length(), str2, 0, str2.length());
   return rc == 0;
 }
 
-bool UnicodeUtils::EqualsNoCase(const std::string& str1,
-                                const std::string& str2,
+bool UnicodeUtils::EqualsNoCase(const std::string_view& str1,
+                                const std::string_view& str2,
                                 StringOptions opt /* = StringOptions::FOLD_CASE_DEFAULT */,
                                 const bool Normalize /* = false */)
 {
@@ -288,11 +279,11 @@ bool UnicodeUtils::EqualsNoCase(const std::string& str1,
   rc = rc == 0;
   return rc;
 }
-
+/*
 bool UnicodeUtils::EqualsNoCase(const std::string& str1,
                                 const char* s2,
-                                StringOptions opt /* StringOptions::FOLD_CASE_DEFAULT */,
-                                const bool Normalize /* = false */)
+                                StringOptions opt / * StringOptions::FOLD_CASE_DEFAULT * /,
+                                const bool Normalize / * = false * /)
 {
   std::string str2 = std::string(s2);
   return EqualsNoCase(str1, str2, opt, Normalize);
@@ -300,15 +291,16 @@ bool UnicodeUtils::EqualsNoCase(const std::string& str1,
 
 bool UnicodeUtils::EqualsNoCase(const char* s1,
                                 const char* s2,
-                                StringOptions opt /* = StringOptions::FOLD_CASE_DEFAULT */,
-                                const bool Normalize /* = false */)
+                                StringOptions opt / * = StringOptions::FOLD_CASE_DEFAULT * /,
+                                const bool Normalize / * = false * /)
 {
   std::string str1 = std::string(s1);
   std::string str2 = std::string(s2);
   return EqualsNoCase(str1, str2, opt, Normalize);
 }
+*/
 
-int UnicodeUtils::Compare(const std::wstring& str1, const std::wstring& str2)
+int UnicodeUtils::Compare(const std::wstring_view& str1, const std::wstring_view& str2)
 {
 
   int32_t str1_length = str1.length();
@@ -319,7 +311,7 @@ int UnicodeUtils::Compare(const std::wstring& str1, const std::wstring& str2)
   return rc;
 }
 
-int UnicodeUtils::Compare(const std::string& str1, const std::string& str2)
+int UnicodeUtils::Compare(const std::string_view& str1, const std::string_view& str2)
 {
 
   int32_t str1_length = str1.length();
@@ -330,8 +322,8 @@ int UnicodeUtils::Compare(const std::string& str1, const std::string& str2)
   return rc;
 }
 
-int UnicodeUtils::CompareNoCase(const std::wstring& str1,
-                                const std::wstring& str2,
+int UnicodeUtils::CompareNoCase(const std::wstring_view& str1,
+                                const std::wstring_view& str2,
                                 StringOptions opt /* = StringOptions::FOLD_CASE_DEFAULT */,
                                 const bool Normalize /* = false */)
 {
@@ -339,8 +331,8 @@ int UnicodeUtils::CompareNoCase(const std::wstring& str1,
   int rc = Unicode::StrCaseCmp(str1, str2, opt, Normalize);
   return rc;
 }
-int UnicodeUtils::CompareNoCase(const std::string& str1,
-                                const std::string& str2,
+int UnicodeUtils::CompareNoCase(const std::string_view& str1,
+                                const std::string_view& str2,
                                 StringOptions opt /* = StringOptions::FOLD_CASE_DEFAULT */,
                                 const bool Normalize /* = false */)
 {
@@ -358,8 +350,8 @@ int UnicodeUtils::CompareNoCase(const char* s1,
   return UnicodeUtils::CompareNoCase(str1, str2, opt, Normalize);
 }
 
-int UnicodeUtils::CompareNoCase(const std::string& str1,
-                                const std::string& str2,
+int UnicodeUtils::CompareNoCase(const std::string_view& str1,
+                                const std::string_view& str2,
                                 size_t n,
                                 StringOptions opt /* = StringOptions::FOLD_CASE_DEFAULT */,
                                 const bool Normalize /* = false */)
@@ -399,14 +391,14 @@ int UnicodeUtils::CompareNoCase(const char* s1,
   return UnicodeUtils::CompareNoCase(str1, str2, n, opt, Normalize);
 }
 
-std::string UnicodeUtils::Left(const std::string& str, const size_t charCount, const bool keepLeft)
+std::string UnicodeUtils::Left(const std::string_view& str, const size_t charCount, const bool keepLeft)
 {
   std::string result = Unicode::Left(str, charCount, Unicode::GetDefaultICULocale(), keepLeft);
 
   return result;
 }
 
-std::string UnicodeUtils::Left(const std::string& str,
+std::string UnicodeUtils::Left(const std::string_view& str,
                                const size_t charCount,
                                const icu::Locale& icuLocale,
                                const bool keepLeft /* = true */)
@@ -416,7 +408,7 @@ std::string UnicodeUtils::Left(const std::string& str,
   return result;
 }
 
-std::string UnicodeUtils::Mid(const std::string& str,
+std::string UnicodeUtils::Mid(const std::string_view& str,
                               const size_t firstCharIndex,
                               const size_t charCount /* = std::string::npos */)
 {
@@ -424,7 +416,7 @@ std::string UnicodeUtils::Mid(const std::string& str,
   return result;
 }
 
-std::string UnicodeUtils::Right(const std::string& str,
+std::string UnicodeUtils::Right(const std::string_view& str,
                                 const size_t charCount,
                                 bool keepRight /* = true */)
 {
@@ -432,7 +424,7 @@ std::string UnicodeUtils::Right(const std::string& str,
   return result;
 }
 
-std::string UnicodeUtils::Right(const std::string& str,
+std::string UnicodeUtils::Right(const std::string_view& str,
                                 const size_t charCount,
                                 const icu::Locale& icuLocale,
                                 bool keepRight /* = true */)
@@ -441,7 +433,7 @@ std::string UnicodeUtils::Right(const std::string& str,
   return result;
 }
 
-size_t UnicodeUtils::GetCharPosition(const std::string& str,
+size_t UnicodeUtils::GetCharPosition(const std::string_view& str,
                                      size_t charCount,
                                      const bool left,
                                      const bool keepLeft,
@@ -452,7 +444,7 @@ size_t UnicodeUtils::GetCharPosition(const std::string& str,
   return byteIndex;
 }
 
-size_t UnicodeUtils::GetCharPosition(const std::string& str,
+size_t UnicodeUtils::GetCharPosition(const std::string_view& str,
                                      size_t charCount,
                                      const bool left,
                                      const bool keepLeft,
@@ -464,7 +456,7 @@ size_t UnicodeUtils::GetCharPosition(const std::string& str,
   return byteIndex;
 }
 
-size_t UnicodeUtils::GetCharPosition(const std::string& str,
+size_t UnicodeUtils::GetCharPosition(const std::string_view& str,
                                      size_t charCount,
                                      const bool left,
                                      const bool keepLeft)
@@ -521,11 +513,10 @@ std::string& UnicodeUtils::TrimRight(std::string& str, const char* const chars)
   return str;
 }
 
-std::string UnicodeUtils::FindAndReplace(const std::string& str,
-                                         const std::string oldText,
-                                         const std::string newText)
+std::string UnicodeUtils::FindAndReplace(const std::string_view& str,
+                                         const std::string_view oldText,
+                                         const std::string_view newText)
 {
-  std::string orig = str;
   return Unicode::FindAndReplace(str, oldText, newText);
 }
 
@@ -538,9 +529,9 @@ std::string UnicodeUtils::FindAndReplace(const std::string& str,
   return UnicodeUtils::FindAndReplace(str, s_oldText, s_newText);
 }
 
-std::string UnicodeUtils::RegexReplaceAll(const std::string& str,
-                                          const std::string pattern,
-                                          const std::string newStr,
+std::string UnicodeUtils::RegexReplaceAll(const std::string_view& str,
+                                          const std::string_view pattern,
+                                          const std::string_view newStr,
                                           const int flags)
 {
   std::string result = Unicode::RegexReplaceAll(str, pattern, newStr, flags);
@@ -569,7 +560,7 @@ int UnicodeUtils::Replace(std::string& str, char oldChar, char newChar)
 /**
  * Replaces every occurrence of oldStr with newStr in str. Not regex based.
  */
-int UnicodeUtils::Replace(std::string& str, const std::string& oldStr, const std::string& newStr)
+int UnicodeUtils::Replace(std::string& str, const std::string_view& oldStr, const std::string_view& newStr)
 {
   std::string orig = str;
   if (oldStr.empty() or str.empty())
@@ -583,7 +574,7 @@ int UnicodeUtils::Replace(std::string& str, const std::string& oldStr, const std
   return changes;
 }
 
-int UnicodeUtils::Replace(std::wstring& str, const std::wstring& oldStr, const std::wstring& newStr)
+int UnicodeUtils::Replace(std::wstring& str, const std::wstring_view& oldStr, const std::wstring_view& newStr)
 {
   if (oldStr.empty() or str.empty())
     return 0;
@@ -599,12 +590,12 @@ int UnicodeUtils::Replace(std::wstring& str, const std::wstring& oldStr, const s
   return changes;
 }
 
-bool UnicodeUtils::StartsWith(const std::string& str1, const std::string& str2)
+bool UnicodeUtils::StartsWith(const std::string_view& str1, const std::string_view& str2)
 {
   return Unicode::StartsWith(str1, str2);
 }
 
-bool UnicodeUtils::StartsWith(const std::string& str1, const char* s2)
+bool UnicodeUtils::StartsWith(const std::string_view& str1, const char* s2)
 {
   return StartsWith(str1, std::string(s2));
 }
@@ -614,8 +605,8 @@ bool UnicodeUtils::StartsWith(const char* s1, const char* s2)
   return StartsWith(std::string(s1), std::string(s2));
 }
 
-bool UnicodeUtils::StartsWithNoCase(const std::string& str1,
-                                    const std::string& str2,
+bool UnicodeUtils::StartsWithNoCase(const std::string_view& str1,
+                                    const std::string_view& str2,
                                     StringOptions opt)
 {
   if (str1.length() == 0 and str2.length() == 0)
@@ -630,7 +621,7 @@ bool UnicodeUtils::StartsWithNoCase(const std::string& str1,
   return Unicode::StartsWithNoCase(str1, str2, opt);
 }
 
-bool UnicodeUtils::StartsWithNoCase(const std::string& str1, const char* s2, StringOptions opt)
+bool UnicodeUtils::StartsWithNoCase(const std::string_view& str1, const char* s2, StringOptions opt)
 {
   return StartsWithNoCase(str1, std::string(s2), opt);
 }
@@ -640,34 +631,34 @@ bool UnicodeUtils::StartsWithNoCase(const char* s1, const char* s2, StringOption
   return StartsWithNoCase(std::string(s1), std::string(s2), opt);
 }
 
-bool UnicodeUtils::EndsWith(const std::string& str1, const std::string& str2)
+bool UnicodeUtils::EndsWith(const std::string_view& str1, const std::string_view& str2)
 {
   const bool result = Unicode::EndsWith(str1, str2);
   return result;
 }
 
-bool UnicodeUtils::EndsWith(const std::string& str1, const char* s2)
+bool UnicodeUtils::EndsWith(const std::string_view& str1, const char* s2)
 {
   std::string str2 = std::string(s2);
   return EndsWith(str1, str2);
 }
 
-bool UnicodeUtils::EndsWithNoCase(const std::string& str1,
-                                  const std::string& str2,
+bool UnicodeUtils::EndsWithNoCase(const std::string_view& str1,
+                                  const std::string_view& str2,
                                   StringOptions opt)
 {
   bool result = Unicode::EndsWithNoCase(str1, str2, opt);
   return result;
 }
 
-bool UnicodeUtils::EndsWithNoCase(const std::string& str1, const char* s2, StringOptions opt)
+bool UnicodeUtils::EndsWithNoCase(const std::string_view& str1, const char* s2, StringOptions opt)
 {
   std::string str2 = std::string(s2);
   return EndsWithNoCase(str1, str2, opt);
 }
 
 std::vector<std::string> UnicodeUtils::Split(const std::string& input,
-                                             const std::string& delimiter,
+                                             const std::string_view& delimiter,
                                              const size_t iMaxStrings)
 {
   if (ContainsNonAscii(delimiter))
@@ -682,7 +673,7 @@ std::vector<std::string> UnicodeUtils::Split(const std::string& input,
   else
   {
     if (not input.empty())
-      result.push_back(input); // TODO: Verify that we return empty vector.
+      result.push_back(input);
   }
   return result;
 }
@@ -738,7 +729,7 @@ std::vector<std::string> UnicodeUtils::SplitMulti(const std::vector<std::string>
 }
 
 // returns the number of occurrences of strFind in strInput.
-int UnicodeUtils::FindNumber(const std::string& strInput, const std::string& strFind)
+int UnicodeUtils::FindNumber(const std::string_view& strInput, const std::string_view& strFind)
 {
   int numFound =
       Unicode::countOccurances(strInput, strFind, to_underlying(RegexpFlag::UREGEX_LITERAL));
@@ -764,7 +755,7 @@ void UnicodeUtils::SortCompleted(int sortItems)
   Unicode::SortCompleted(sortItems);
 }
 
-int32_t UnicodeUtils::Collate(const std::wstring& left, const std::wstring& right)
+int32_t UnicodeUtils::Collate(const std::wstring_view& left, const std::wstring_view& right)
 {
   return Unicode::Collate(left, right);
 }
@@ -772,7 +763,7 @@ int32_t UnicodeUtils::Collate(const std::wstring& left, const std::wstring& righ
 int64_t UnicodeUtils::AlphaNumericCompare(const wchar_t* left, const wchar_t* right)
 {
 #ifdef USE_ICU_COLLATOR
-  int64_t result = UnicodeUtils::Collate(left, right);
+  int64_t result = UnicodeUtils::Collate(std::wstring_view{left}, std::wstring_view{right});
 #else
   int64_t result = StringUtils::AlphaNumericCompare(left, right);
 #endif
@@ -792,7 +783,7 @@ int UnicodeUtils::DateStringToYYYYMMDD(const std::string& dateString)
     return -1;
 }
 
-long UnicodeUtils::TimeStringToSeconds(const std::string& timeString)
+long UnicodeUtils::TimeStringToSeconds(const std::string_view& timeString)
 {
   std::string strCopy(timeString);
   UnicodeUtils::Trim(strCopy);
@@ -819,12 +810,12 @@ void UnicodeUtils::RemoveCRLF(std::string& strLine)
   UnicodeUtils::TrimRight(strLine, "\n\r");
 }
 
-bool UnicodeUtils::FindWord(const std::string& str, const std::string& word)
+bool UnicodeUtils::FindWord(const std::string_view& str, const std::string_view& word)
 {
   return Unicode::FindWord(str, word);
 }
 
-std::string UnicodeUtils::Paramify(const std::string& param)
+std::string UnicodeUtils::Paramify(const std::string_view& param)
 {
   std::string result = Unicode::FindAndReplace(param, "\\", "\\\\");
 

@@ -60,6 +60,7 @@
 #include <sstream>
 #include <stdarg.h> // others depend on this
 #include <string>
+#include <string_view>
 
 // workaround for broken [[deprecated]] in coverity
 #if defined(__COVERITY__)
@@ -398,7 +399,7 @@ public:
    *  \param locale
    *  \return str in TitleCase
    */
-  static std::wstring TitleCase(const std::wstring& str, const std::locale& locale);
+  static std::wstring TitleCase(const std::wstring_view& str, const std::locale& locale);
 
   /*!
    *  \brief TitleCase a wstring using LangInfo::GetSystemLocale.
@@ -413,7 +414,7 @@ public:
    *  \param locale
    *  \return str in TitleCase
    */
-  static std::wstring TitleCase(const std::wstring& str);
+  static std::wstring TitleCase(const std::wstring_view& str);
 
   /*!
    *  \brief TitleCase a wstring using locale.
@@ -428,7 +429,7 @@ public:
    *  \param locale
    *  \return str in TitleCase
    */
-  static std::string TitleCase(const std::string& str, const std::locale& locale);
+  static std::string TitleCase(const std::string_view& str, const std::locale& locale);
 
   /*!
    *  \brief TitleCase a string using LangInfo::GetSystemLocale.
@@ -443,7 +444,7 @@ public:
    *  \param locale
    *  \return str in TitleCase
    */
-  static std::string TitleCase(const std::string& str);
+  static std::string TitleCase(const std::string_view& str);
 
   /*!
    *  \brief Determines if two strings are identical in content.
@@ -456,7 +457,7 @@ public:
    * \return true if both strings are identical, otherwise false
    */
 
-  static bool Equals(const std::string& str1, const std::string& str2);
+  static bool Equals(const std::string_view& str1, const std::string_view& str2);
 
   /*!
    * \brief determines if two wstrings are identical in content.
@@ -468,7 +469,7 @@ public:
    * \param str2 the other wstring to compare
    * \return true if both wstrings are identical, otherwise false
    */
-  static bool Equals(const std::wstring& str1, const std::wstring& str2);
+  static bool Equals(const std::wstring_view& str1, const std::wstring_view& str2);
 
   // TODO: Add wstring version of EqualsNoCase
   // TODO: Give guidance on when and what type of Normalization to use.
@@ -494,8 +495,8 @@ public:
    *        case folding
    * \return true if both strings compare after case folding, otherwise false
    */
-  static bool EqualsNoCase(const std::string& str1,
-                           const std::string& str2,
+  static bool EqualsNoCase(const std::string_view& str1,
+                           const std::string_view& str2,
                            const StringOptions opt = StringOptions::FOLD_CASE_DEFAULT,
                            const bool Normalize = false);
 
@@ -520,10 +521,12 @@ public:
    *        case folding
    * \return true if both strings compare after case folding, otherwise false
    */
-  static bool EqualsNoCase(const std::string& str1,
-                           const char* s2,
+  /*
+  static bool EqualsNoCase(const std::string_view& str1,
+                           //const char* s2,
                            const StringOptions opt = StringOptions::FOLD_CASE_DEFAULT,
                            const bool Normalize = false);
+   */
 
   /*!
    * \brief Determines if two strings are the same, after case folding each.
@@ -546,11 +549,12 @@ public:
    *        case folding
    * \return true if both strings compare after case folding, otherwise false
    */
+  /*
   static bool EqualsNoCase(const char* s1,
                            const char* s2,
                            StringOptions opt = StringOptions::FOLD_CASE_DEFAULT,
                            const bool Normalize = false);
-
+*/
   /*!
    * \brief Compares two wstrings using codepoint order. Locale does not matter.
    *
@@ -560,7 +564,7 @@ public:
    * \param str2 one of the strings to compare
    * \return <0 or 0 or >0 as usual for string comparisons
    */
-  static int Compare(const std::wstring& str1, const std::wstring& str2);
+  static int Compare(const std::wstring_view& str1, const std::wstring_view& str2);
 
   /*!
    * \brief Compares two strings using codepoint order. Locale does not matter.
@@ -570,7 +574,7 @@ public:
    * \param str2 one of the strings to compare
    * \return <0 or 0 or >0 as usual for string comparisons
    */
-  static int Compare(const std::string& str1, const std::string& str2);
+  static int Compare(const std::string_view& str1, const std::string_view& str2);
 
   /*!
    * \brief Performs a bit-wise comparison of two wstrings, after case folding each.
@@ -596,8 +600,8 @@ public:
    * = 0 if str1 contains the same characters as str2,
    * > 0 if the characters in str1 are bitwise greater than the characters in str2.
    */
-  static int CompareNoCase(const std::wstring& str1,
-                           const std::wstring& str2,
+  static int CompareNoCase(const std::wstring_view& str1,
+                           const std::wstring_view& str2,
                            StringOptions opt = StringOptions::FOLD_CASE_DEFAULT,
                            const bool Normalize = false);
 
@@ -625,8 +629,8 @@ public:
    * = 0 if str1 contains the same characters as str2,
    * > 0 if the characters in str1 are bitwise greater than the characters in str2.
    */
-  static int CompareNoCase(const std::string& str1,
-                           const std::string& str2,
+  static int CompareNoCase(const std::string_view& str1,
+                           const std::string_view& str2,
                            StringOptions opt = StringOptions::FOLD_CASE_DEFAULT,
                            const bool Normalize = false);
 
@@ -690,8 +694,8 @@ public:
    */
   [[deprecated("StartsWith/EndsWith may be better choices. Multibyte characters, case folding and "
                "byte lengths don't mix.")]] static int
-  CompareNoCase(const std::string& str1,
-                const std::string& str2,
+  CompareNoCase(const std::string_view& str1,
+                const std::string_view& str2,
                 size_t n,
                 StringOptions opt = StringOptions::FOLD_CASE_DEFAULT,
                 const bool Normalize = false);
@@ -752,7 +756,7 @@ public:
    *
    * std::string x = Left(str, 2, false);
    */
-  static std::string Left(const std::string& str,
+  static std::string Left(const std::string_view& str,
                           const size_t charCount,
                           const bool keepLeft = true);
 
@@ -777,7 +781,7 @@ public:
    * std::string x = Left(str, 2, false, Unicode::GetDefaultICULocale());
    */
 
-  static std::string Left(const std::string& str,
+  static std::string Left(const std::string_view& str,
                           const size_t charCount,
                           const icu::Locale& icuLocale,
                           const bool keepLeft = true);
@@ -798,7 +802,7 @@ public:
    * \return substring of str, beginning with character 'startChar',
    *         length determined by charCount
    */
-  static std::string Mid(const std::string& str,
+  static std::string Mid(const std::string_view& str,
                          const size_t startChar,
                          const size_t charCount = std::string::npos);
 
@@ -822,7 +826,7 @@ public:
    *
    * std::string x = Right(str, 2, false);
    */
-  static std::string Right(const std::string& str, const size_t charCount, bool keepRight = true);
+  static std::string Right(const std::string_view& str, const size_t charCount, bool keepRight = true);
 
   /*!
    * \brief Get the rightmost end of a UTF-8 string, using character boundary
@@ -845,7 +849,7 @@ public:
    *
    * std::string x = Right(str, 2, false, Unicode::GetDefaultICULocale());
    */
-  static std::string Right(const std::string& str,
+  static std::string Right(const std::string_view& str,
                            const size_t charCount,
                            const icu::Locale& icuLocale,
                            bool keepRight = true);
@@ -874,7 +878,7 @@ public:
    * left=false keepLeft=false  Returns offset of first byte of nth char from right end.
    *                            Character 0 is AFTER the last character.  Used by Right(x)
    */
-  static size_t GetCharPosition(const std::string& str,
+  static size_t GetCharPosition(const std::string_view& str,
                                 size_t charCount,
                                 const bool left,
                                 const bool keepLeft,
@@ -903,7 +907,7 @@ public:
    * left=false keepLeft=false  Returns offset of first byte of nth char from right end.
    *                            Character 0 is AFTER the last character.  Used by Right(x)
    */
-  static size_t GetCharPosition(const std::string& str,
+  static size_t GetCharPosition(const std::string_view& str,
                                 size_t charCount,
                                 const bool left,
                                 const bool keepLeft,
@@ -933,7 +937,7 @@ public:
    * left=false keepLeft=false  Returns offset of first byte of nth char from right end.
    *                            Character 0 is AFTER the last character.  Used by Right(x)
    */
-  static size_t GetCharPosition(const std::string& str,
+  static size_t GetCharPosition(const std::string_view& str,
                                 size_t charCount,
                                 const bool left,
                                 const bool keepLeft);
@@ -959,7 +963,7 @@ public:
    *
    * std::string x = Right(str, 2, false, Unicode::GetDefaultICULocale());
    */
-  static std::string Right(const std::string& str,
+  static std::string Right(const std::string_view& str,
                            const size_t charCount,
                            bool rightReference,
                            const icu::Locale& icuLocale);
@@ -1072,7 +1076,7 @@ public:
    * \return Count of the number of changes
    */
   [[deprecated("FindAndReplace is faster, returned count not used.")]] static int Replace(
-      std::string& str, const std::string& oldStr, const std::string& newStr);
+      std::string& str, const std::string_view& oldStr, const std::string_view& newStr);
 
   /*!
    * \brief Replaces every occurrence of a wstring within another wstring in-place
@@ -1086,7 +1090,7 @@ public:
    * \return Count of the number of changes
    */
   [[deprecated("FindAndReplace is faster, returned count not used.")]] static int Replace(
-      std::wstring& str, const std::wstring& oldStr, const std::wstring& newStr);
+      std::wstring& str, const std::wstring_view& oldStr, const std::wstring_view& newStr);
 
   /*!
    * \brief Replaces every occurrence of a string within another string
@@ -1099,9 +1103,9 @@ public:
    * \parm newStr string to replace with
    * \return the modified string.
    */
-  static std::string FindAndReplace(const std::string& str,
-                                    const std::string oldText,
-                                    const std::string newText);
+  static std::string FindAndReplace(const std::string_view& str,
+                                    const std::string_view oldText,
+                                    const std::string_view newText);
 
   /*!
    * \brief Replaces every occurrence of a string within another string.
@@ -1130,9 +1134,9 @@ public:
    * \param flags controls behavior of regular expression engine
    * \return result of regular expression
    */
-  std::string RegexReplaceAll(const std::string& str,
-                              const std::string pattern,
-                              const std::string newStr,
+  std::string RegexReplaceAll(const std::string_view& str,
+                              const std::string_view pattern,
+                              const std::string_view newStr,
                               const int flags);
 
   /*!
@@ -1144,7 +1148,7 @@ public:
    *
    * Note: Embedded nulls in str1 or str2 behaves as a null-terminated string behaves
    */
-  static bool StartsWith(const std::string& str1, const std::string& str2);
+  static bool StartsWith(const std::string_view& str1, const std::string_view& str2);
 
   /*!
    * \brief Determines if a string begins with another string
@@ -1155,7 +1159,7 @@ public:
    *
    *  Note: Embedded nulls in str1 or str2 behaves as a null-terminated string behaves
    */
-  static bool StartsWith(const std::string& str1, const char* s2);
+  static bool StartsWith(const std::string_view& str1, const char* s2);
 
   /*!
    * \brief Determines if a string begins with another string
@@ -1181,8 +1185,8 @@ public:
    *
    * Note: Embedded nulls in str1 or str2 behaves as a null-terminated string behaves
    */
-  static bool StartsWithNoCase(const std::string& str1,
-                               const std::string& str2,
+  static bool StartsWithNoCase(const std::string_view& str1,
+                               const std::string_view& str2,
                                StringOptions opt = StringOptions::FOLD_CASE_DEFAULT);
 
   /*!
@@ -1197,7 +1201,7 @@ public:
    *
    * Note: Embedded nulls in str1 or str2 behaves as a null-terminated string behaves
    */
-  static bool StartsWithNoCase(const std::string& str1,
+  static bool StartsWithNoCase(const std::string_view& str1,
                                const char* s2,
                                StringOptions opt = StringOptions::FOLD_CASE_DEFAULT);
 
@@ -1224,7 +1228,7 @@ public:
    *
    * Note: Embedded nulls in str1 or str2 behaves as a null-terminated string behaves
    */
-  static bool EndsWith(const std::string& str1, const std::string& str2);
+  static bool EndsWith(const std::string_view& str1, const std::string_view& str2);
 
   /*!
    * \brief Determines if a string ends with another string
@@ -1235,7 +1239,7 @@ public:
    *
    * Note: Embedded nulls in str1 or str2 behaves as a null-terminated string behaves
    */
-  static bool EndsWith(const std::string& str1, const char* s2);
+  static bool EndsWith(const std::string_view& str1, const char* s2);
 
   /*! \brief Determines if a string ends with another string while ignoring case
    *
@@ -1244,8 +1248,8 @@ public:
    * \param opt controls behavior of case folding
    * \return true if str1 ends with str2, otherwise false
    */
-  static bool EndsWithNoCase(const std::string& str1,
-                             const std::string& str2,
+  static bool EndsWithNoCase(const std::string_view& str1,
+                             const std::string_view& str2,
                              StringOptions opt = StringOptions::FOLD_CASE_DEFAULT);
 
   /*!
@@ -1256,7 +1260,7 @@ public:
    * \param opt controls behavior of case folding, normally leave at default
    * \return true if str1 starts with s2, otherwise false
    */
-  static bool EndsWithNoCase(const std::string& str1,
+  static bool EndsWithNoCase(const std::string_view& str1,
                              const char* s2,
                              StringOptions opt = StringOptions::FOLD_CASE_DEFAULT);
 
@@ -1276,7 +1280,7 @@ public:
    *  \return Normalized string
    */
 
-  static const std::wstring Normalize(const std::wstring& src,
+  static const std::wstring Normalize(const std::wstring_view& src,
                                       const StringOptions opt = StringOptions::FOLD_CASE_DEFAULT,
                                       const NormalizerType NormalizerType = NormalizerType::NFKC);
 
@@ -1296,7 +1300,7 @@ public:
    * \return Normalized string
    */
 
-  static const std::string Normalize(const std::string& src,
+  static const std::string Normalize(const std::string_view& src,
                                      const StringOptions opt = StringOptions::FOLD_CASE_DEFAULT,
                                      const NormalizerType NormalizerType = NormalizerType::NFKC);
 
@@ -1377,7 +1381,7 @@ public:
    *          > 0 if left collates > right
    */
 
-  static int32_t Collate(const std::wstring& left, const std::wstring& right);
+  static int32_t Collate(const std::wstring_view& left, const std::wstring_view& right);
 
   /*!
    * \brief Performs locale sensitive wchar_t* comparison.
@@ -1407,7 +1411,7 @@ public:
    * \param iMaxStrings (optional) Maximum number of generated split strings
    */
   static std::vector<std::string> Split(const std::string& input,
-                                        const std::string& delimiter,
+                                        const std::string_view& delimiter,
                                         size_t iMaxStrings = 0);
 
   /*!
@@ -1515,7 +1519,7 @@ public:
    * \param strFind string to count occurrences in strInput
    * \return count of the number of occurrences found
    */
-  static int FindNumber(const std::string& strInput, const std::string& strFind);
+  static int FindNumber(const std::string_view& strInput, const std::string_view& strFind);
 
   /*! \brief Compares two strings based on the rules of the given locale
    *
@@ -1580,7 +1584,7 @@ public:
    *
    *   ex: " 14:57 " or "  23 min"
    */
-  static long TimeStringToSeconds(const std::string& timeString);
+  static long TimeStringToSeconds(const std::string_view& timeString);
 
   /*!
    * \brief Strip any trailing \n and \r characters.
@@ -1595,7 +1599,7 @@ public:
    * \param str String to be examined for non-ASCII
    * \return true if non-ASCII characters found, otherwise false
    */
-  inline static bool ContainsNonAscii(std::string str)
+  inline static bool ContainsNonAscii(const std::string_view str)
   {
     for (size_t i = 0; i < str.length(); i++)
     {
@@ -1613,7 +1617,7 @@ public:
    * \param str String to be examined for non-ASCII
    * \return true if non-ASCII characters found, otherwise false
    */
-  inline static bool ContainsNonAscii(std::wstring str)
+  inline static bool ContainsNonAscii(const std::wstring_view str)
   {
     for (size_t i = 0; i < str.length(); i++)
     {
@@ -1643,7 +1647,7 @@ public:
    *      Skip any whitespace characters
    */
 
-  static bool FindWord(const std::string& str, const std::string& word);
+  static bool FindWord(const std::string_view& str, const std::string_view& word);
 
   /*!
    * \brief Converts a date string into an integer format
@@ -1671,12 +1675,12 @@ public:
    * \param param String to escape/paramify
    * \return Escaped/Paramified string
    */
-  static std::string Paramify(const std::string& param);
+  static std::string Paramify(const std::string_view& param);
 };
 
 struct sortstringbyname
 {
-  bool operator()(const std::string& strItem1, const std::string& strItem2) const
+  bool operator()(const std::string_view& strItem1, const std::string_view& strItem2) const
   {
     return UnicodeUtils::CompareNoCase(strItem1, strItem2) < 0;
   }
