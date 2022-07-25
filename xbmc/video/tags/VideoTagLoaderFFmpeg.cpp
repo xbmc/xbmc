@@ -175,16 +175,32 @@ CInfoScanner::INFO_TYPE CVideoTagLoaderFFmpeg::LoadMKV(CVideoInfoTag& tag,
     CNfoFile nfo;
     auto* data = m_fctx->streams[m_metadata_stream]->codecpar->extradata;
     const char* content = reinterpret_cast<const char*>(data);
-    nfo.GetDetails(tag, content);
     if (!m_override_data)
+    {
+      nfo.GetDetails(tag, content);
       return CInfoScanner::FULL_NFO;
+    }
+    else
+    {
+      nfo.Create(content, m_info);
+      m_url = nfo.ScraperUrl();
+      return CInfoScanner::URL_NFO;
+    }
   }
 
   AVDictionaryEntry* avtag = nullptr;
   bool hastag = false;
   while ((avtag = av_dict_get(m_fctx->metadata, "", avtag, AV_DICT_IGNORE_SUFFIX)))
   {
-    if (StringUtils::CompareNoCase(avtag->key, "title") == 0)
+    if (StringUtils::CompareNoCase(avtag->key, "imdburl") == 0 ||
+        StringUtils::CompareNoCase(avtag->key, "tmdburl") == 0)
+    {
+      CNfoFile nfo;
+      nfo.Create(avtag->value, m_info);
+      m_url = nfo.ScraperUrl();
+      return CInfoScanner::URL_NFO;
+    }
+    else if (StringUtils::CompareNoCase(avtag->key, "title") == 0)
       tag.SetTitle(avtag->value);
     else if (StringUtils::CompareNoCase(avtag->key, "director") == 0)
     {
