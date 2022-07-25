@@ -539,8 +539,11 @@ bool CAddonDatabase::FindByAddonId(const std::string& addonId, ADDON::VECADDONS&
         "AND EXISTS (SELECT * FROM installed WHERE installed.addonID=repoID AND installed.enabled=1) "
         "AND addons.addonID='%s'", addonId.c_str());
 
-    VECADDONS addons;
     m_pDS->query(sql.c_str());
+
+    VECADDONS addons;
+    addons.reserve(m_pDS->num_rows());
+
     while (!m_pDS->eof())
     {
       CAddonInfoBuilder::CFromDB builder;
@@ -742,6 +745,8 @@ bool CAddonDatabase::GetRepositoryContent(const std::string& id, VECADDONS& addo
     }
 
     VECADDONS result;
+    result.reserve(m_pDS->num_rows());
+
     while (!m_pDS->eof())
     {
       std::string addonId = m_pDS->fv("addonID").get_asString();
