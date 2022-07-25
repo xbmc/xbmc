@@ -539,7 +539,7 @@ bool CAddonDatabase::FindByAddonId(const std::string& addonId, ADDON::VECADDONS&
         "AND EXISTS (SELECT * FROM installed WHERE installed.addonID=repoID AND installed.enabled=1) "
         "AND addons.addonID='%s'", addonId.c_str());
 
-    m_pDS->query(sql.c_str());
+    m_pDS->query(sql);
 
     VECADDONS addons;
     addons.reserve(m_pDS->num_rows());
@@ -583,14 +583,14 @@ bool CAddonDatabase::GetAddon(const std::string& addonID, const AddonVersion& ve
     if (!m_pDS)
       return false;
 
-  std::string sql = PrepareSQL(
-      "SELECT addons.id FROM addons "
-      "JOIN addonlinkrepo ON addonlinkrepo.idAddon=addons.id "
-      "JOIN repo ON repo.id=addonlinkrepo.idRepo "
-      "WHERE addons.addonID='%s' AND addons.version='%s' AND repo.addonID='%s'",
-      addonID.c_str(), version.asString().c_str(), repoId.c_str());
+    const std::string sql =
+        PrepareSQL("SELECT addons.id FROM addons "
+                   "JOIN addonlinkrepo ON addonlinkrepo.idAddon=addons.id "
+                   "JOIN repo ON repo.id=addonlinkrepo.idRepo "
+                   "WHERE addons.addonID='%s' AND addons.version='%s' AND repo.addonID='%s'",
+                   addonID.c_str(), version.asString().c_str(), repoId.c_str());
 
-    m_pDS->query(sql.c_str());
+    m_pDS->query(sql);
     if (m_pDS->eof())
       return false;
 
