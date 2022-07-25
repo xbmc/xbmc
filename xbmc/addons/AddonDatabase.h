@@ -49,9 +49,6 @@ public:
   ~CAddonDatabase() override;
   bool Open() override;
 
-  /*! @deprecated: use CAddonMgr::FindInstallableById */
-  bool GetAddon(const std::string& addonID, ADDON::AddonPtr& addon);
-
   /*! \brief Get an addon with a specific version and repository. */
   bool GetAddon(const std::string& addonID, const ADDON::AddonVersion& version, const std::string& repoId, ADDON::AddonPtr& addon);
 
