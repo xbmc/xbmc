@@ -116,13 +116,12 @@ void CAddonInstaller::GetInstallList(VECADDONS &addons) const
   }
   lock.unlock();
 
-  CAddonDatabase database;
-  database.Open();
-  for (std::vector<std::string>::iterator it = addonIDs.begin(); it != addonIDs.end(); ++it)
+  auto& addonMgr = CServiceBroker::GetAddonMgr();
+  for (const auto& addonId : addonIDs)
   {
     AddonPtr addon;
-    if (database.GetAddon(*it, addon))
-      addons.push_back(addon);
+    if (addonMgr.FindInstallableById(addonId, addon))
+      addons.emplace_back(std::move(addon));
   }
 }
 
@@ -168,9 +167,7 @@ bool CAddonInstaller::InstallModal(const std::string& addonID,
                   // the addon - should we enable it?
 
   // check we have it available
-  CAddonDatabase database;
-  database.Open();
-  if (!database.GetAddon(addonID, addon))
+  if (!CServiceBroker::GetAddonMgr().FindInstallableById(addonID, addon))
     return false;
 
   // if specified ask the user if he wants it installed
@@ -379,9 +376,6 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
   if (addon == NULL)
     return true; // a NULL addon has no dependencies
 
-  if (!database.Open())
-    return false;
-
   for (const auto& it : addon->GetDependencies())
   {
     const std::string &addonID = it.id;
@@ -395,12 +389,12 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
         (!haveInstalledAddon && !optional))
     {
       // we have it but our version isn't good enough, or we don't have it and we need it
-      if (!database.GetAddon(addonID, dep) || !dep->MeetsVersion(versionMin, version))
+      if (!dep->MeetsVersion(versionMin, version) ||
+          !CServiceBroker::GetAddonMgr().FindInstallableById(addonID, dep))
       {
         // we don't have it in a repo, or we have it but the version isn't good enough, so dep isn't satisfied.
         CLog::Log(LOGDEBUG, "CAddonInstallJob[{}]: requires {} version {} which is not available",
                   addon->ID(), addonID, version.asString());
-        database.Close();
 
         // fill in the details of the failed dependency
         failedDep.first = addonID;
@@ -411,12 +405,11 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
     }
 
     // need to enable the dependency
-    if (dep && CServiceBroker::GetAddonMgr().IsAddonDisabled(addonID))
-      if (!CServiceBroker::GetAddonMgr().EnableAddon(addonID))
-      {
-        database.Close();
-        return false;
-      }
+    if (dep && CServiceBroker::GetAddonMgr().IsAddonDisabled(addonID) &&
+        !CServiceBroker::GetAddonMgr().EnableAddon(addonID))
+    {
+      return false;
+    }
 
     // at this point we have our dep, or the dep is optional (and we don't have it) so check that it's OK as well
     //! @todo should we assume that installed deps are OK?
@@ -1076,12 +1069,7 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
 void CAddonInstallJob::ReportInstallError(const std::string& addonID, const std::string& fileName, const std::string& message /* = "" */)
 {
   AddonPtr addon;
-  CAddonDatabase database;
-  if (database.Open())
-  {
-    database.GetAddon(addonID, addon);
-    database.Close();
-  }
+  CServiceBroker::GetAddonMgr().FindInstallableById(addonID, addon);
 
   MarkFinished();
 
@@ -1146,17 +1134,23 @@ bool CAddonUnInstallJob::DoWork()
   }
 
   AddonPtr addon;
-  CAddonDatabase database;
+
   // try to get the addon object from the repository as the local one does not exist anymore
   // if that doesn't work fall back to the local one
-  if (!database.Open() || !database.GetAddon(m_addon->ID(), addon) || addon == NULL)
+  if (!CServiceBroker::GetAddonMgr().FindInstallableById(m_addon->ID(), addon) || addon == nullptr)
+  {
     addon = m_addon;
+  }
+
   auto eventLog = CServiceBroker::GetEventLog();
   if (eventLog)
-    eventLog->Add(EventPtr(new CAddonManagementEvent(addon, 24144)));
+    eventLog->Add(EventPtr(new CAddonManagementEvent(addon, 24144))); // Add-on uninstalled
 
   CServiceBroker::GetAddonMgr().OnPostUnInstall(m_addon->ID());
-  database.OnPostUnInstall(m_addon->ID());
+
+  CAddonDatabase database;
+  if (database.Open())
+    database.OnPostUnInstall(m_addon->ID());
 
   ADDON::OnPostUnInstall(m_addon);
 

@@ -371,7 +371,8 @@ bool CRepositoryUpdateJob::DoWork()
     for (const auto& addon : addons)
     {
       AddonPtr oldAddon;
-      if (database.GetAddon(addon->ID(), oldAddon) && addon->Version() > oldAddon->Version())
+      if (addon->Version() > oldAddon->Version() &&
+          CServiceBroker::GetAddonMgr().FindInstallableById(addon->ID(), oldAddon))
       {
         if (!oldAddon->Icon().empty() || !oldAddon->Art().empty() || !oldAddon->Screenshots().empty())
           CLog::Log(LOGDEBUG, "CRepository: invalidating cached art for '{}'", addon->ID());
