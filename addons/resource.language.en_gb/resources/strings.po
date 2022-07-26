@@ -12321,7 +12321,7 @@ msgstr ""
 
 #: xbmc/playlists/SmartPlaylist.cpp
 msgctxt "#20074"
-msgid "MPAA rating"
+msgid "Certificate"
 msgstr ""
 
 #: xbmc/windows/GUIWindowLoginScreen.cpp
