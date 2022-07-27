@@ -23,6 +23,15 @@ protected:
   bool AutoPlayNextItem() override;
 };
 
+class CGUIViewStateVideoPlaylist : public CGUIViewStateWindowVideo
+{
+public:
+  explicit CGUIViewStateVideoPlaylist(const CFileItemList& items);
+
+protected:
+  void SaveViewState() override;
+};
+
 class CGUIViewStateWindowVideoNav : public CGUIViewStateWindowVideo
 {
 public:

@@ -893,6 +893,7 @@ bool CGUIWindowMusicBase::OnPlayMedia(int iItem, const std::string &player)
       OnQueueItem(iItem);
       return true;
     }
+    pItem->SetProperty("playlist_type_hint", PLAYLIST_MUSIC);
     CServiceBroker::GetPlaylistPlayer().Play(pItem, player);
     return true;
   }

@@ -280,6 +280,7 @@ void SetPathAndPlay(CFileItem& item)
   }
   else
   {
+    item.SetProperty("playlist_type_hint", PLAYLIST_VIDEO);
     CServiceBroker::GetPlaylistPlayer().Play(std::make_shared<CFileItem>(item), "");
   }
 }
