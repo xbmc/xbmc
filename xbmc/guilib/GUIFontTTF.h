@@ -110,19 +110,15 @@ public:
 protected:
   explicit CGUIFontTTF(const std::string& fontIdent);
 
-
   struct Glyph
   {
-    hb_glyph_info_t m_glyphInfo;
-    hb_glyph_position_t m_glyphPosition;
+    hb_glyph_info_t m_glyphInfo{};
+    hb_glyph_position_t m_glyphPosition{};
 
-    // converter for harfbuzz library
-    Glyph(hb_glyph_info_t gInfo, hb_glyph_position_t gPos)
+    Glyph(const hb_glyph_info_t& glyphInfo, const hb_glyph_position_t& glyphPosition)
+      : m_glyphInfo(glyphInfo), m_glyphPosition(glyphPosition)
     {
-      m_glyphInfo = gInfo;
-      m_glyphPosition = gPos;
     }
-    Glyph() {}
   };
 
   struct Character
@@ -136,7 +132,6 @@ protected:
     float m_advance;
     FT_UInt m_glyphIndex;
     character_t m_glyphAndStyle;
-    wchar_t m_letter;
   };
 
   struct RunInfo
@@ -175,7 +170,7 @@ protected:
 
   // Stuff for pre-rendering for speed
   Character* GetCharacter(character_t letter, FT_UInt glyphIndex);
-  bool CacheCharacter(wchar_t letter, uint32_t style, Character* ch, FT_UInt glyphIndex);
+  bool CacheCharacter(FT_UInt glyphIndex, uint32_t style, Character* ch);
   void RenderCharacter(CGraphicContext& context,
                        float posX,
                        float posY,
