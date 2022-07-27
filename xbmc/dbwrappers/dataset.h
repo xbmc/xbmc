@@ -248,8 +248,6 @@ protected:
   virtual const field_value f_old(const char *f);
 
 public:
-
- virtual int str_compare(const char * s1, const char * s2);
 /* constructor */
   Dataset();
   explicit Dataset(Database *newDb);

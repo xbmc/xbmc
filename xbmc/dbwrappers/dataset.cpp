@@ -12,6 +12,7 @@
 
 #include "dataset.h"
 
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -310,10 +311,13 @@ bool Dataset::set_field_value(const char *f_name, const field_value &value) {
   bool found = false;
   if ((ds_state == dsInsert) || (ds_state == dsEdit)) {
       for (unsigned int i=0; i < fields_object->size(); i++)
-	if (str_compare((*edit_object)[i].props.name.c_str(), f_name)==0) {
-			     (*edit_object)[i].val = value;
-			     found = true;
-	}
+      {
+        if (StringUtils::EqualsNoCase((*edit_object)[i].props.name.c_str(), f_name))
+        {
+          (*edit_object)[i].val = value;
+          found = true;
+        }
+      }
       if (!found) throw DbErrors("Field not found: %s",f_name);
     return true;
   }
@@ -356,9 +360,12 @@ const field_value Dataset::get_field_value(const char *f_name) {
   {
     if (ds_state == dsEdit || ds_state == dsInsert){
       for (unsigned int i=0; i < edit_object->size(); i++)
-        if (str_compare((*edit_object)[i].props.name.c_str(), f_name)==0) {
+      {
+        if (StringUtils::EqualsNoCase((*edit_object)[i].props.name.c_str(), f_name))
+        {
           return (*edit_object)[i].val;
         }
+      }
       throw DbErrors("Field not found: %s",f_name);
     }
     else
@@ -372,10 +379,14 @@ const field_value Dataset::get_field_value(const char *f_name) {
         name++;
 
       for (unsigned int i=0; i < fields_object->size(); i++)
-        if (str_compare((*fields_object)[i].props.name.c_str(), f_name) == 0 || (name && str_compare((*fields_object)[i].props.name.c_str(), name) == 0)) {
+      {
+        if (StringUtils::EqualsNoCase((*fields_object)[i].props.name.c_str(), f_name) ||
+            (name && StringUtils::EqualsNoCase((*fields_object)[i].props.name.c_str(), name)))
+        {
           fieldIndexMap_Entries[fieldIndexMapID].fieldIndex = i;
           return (*fields_object)[i].val;
         }
+      }
     }
     throw DbErrors("Field not found: %s",f_name);
   }
@@ -419,22 +430,6 @@ const field_value Dataset::f_old(const char *f_name) {
   field_value fv;
   return fv;
 }
-
-int Dataset::str_compare(const char * s1, const char * s2) {
- 	std::string ts1 = s1;
- 	std::string ts2 = s2;
- 	std::string::const_iterator p = ts1.begin();
- 	std::string::const_iterator p2 = ts2.begin();
- 	while (p!=ts1.end() && p2 != ts2.end()) {
- 		if (toupper(*p)!=toupper(*p2))
- 			return (toupper(*p)<toupper(*p2)) ? -1 : 1;
- 		++p;
- 		++p2;
- 	}
- 	return (ts2.size() == ts1.size())? 0:
- 		(ts1.size()<ts2.size())? -1 : 1;
- }
-
 
 void Dataset::setParamList(const ParamList &params){
   plist = params;
