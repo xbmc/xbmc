@@ -330,7 +330,7 @@ bool Dataset::get_index_map_entry(const char *f_name) {
   if (~fieldIndexMapID)
   {
     unsigned int next(fieldIndexMapID+1 >= fieldIndexMap_Entries.size() ? 0 : fieldIndexMapID + 1);
-    if (fieldIndexMap_Entries[next].strName == f_name) //Yes, our assumption hits.
+    if (strncmp(fieldIndexMap_Entries[next].strName, f_name, strlen(f_name)) == 0)
     {
       fieldIndexMapID = next;
       return true;

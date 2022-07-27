@@ -394,10 +394,33 @@ public:
 /* Struct to store an indexMapped field access entry */
   struct FieldIndexMapEntry
   {
-    explicit FieldIndexMapEntry(const char* name) : fieldIndex(~0), strName(name) {}
-    bool operator<(const FieldIndexMapEntry& other) const { return strName < other.strName; }
-    unsigned int fieldIndex;
-    std::string strName;
+    explicit FieldIndexMapEntry(const char* name) : strName(strdup(name)) {}
+
+    FieldIndexMapEntry(const FieldIndexMapEntry& other)
+      : fieldIndex(other.fieldIndex), strName(strdup(other.strName))
+    {
+    }
+
+    ~FieldIndexMapEntry() { free(strName); }
+
+    FieldIndexMapEntry& operator=(const FieldIndexMapEntry& other)
+    {
+      if (this != &other)
+      {
+        fieldIndex = other.fieldIndex;
+        free(strName);
+        strName = strdup(other.strName);
+      }
+      return *this;
+    }
+
+    bool operator<(const FieldIndexMapEntry& other) const
+    {
+      return strncmp(strName, other.strName, strlen(other.strName)) < 0;
+    }
+
+    unsigned int fieldIndex{static_cast<unsigned int>(~0)};
+    char* strName{nullptr};
   };
 
 /* Comparator to quickly find an indexMapped field access entry in the unsorted fieldIndexMap_Entries vector */
