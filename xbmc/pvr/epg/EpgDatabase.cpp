@@ -428,7 +428,6 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::CreateEpgTag(
     newTag->m_strParentalRatingCode = m_pDS->fv("sParentalRatingCode").get_asString();
     newTag->SetGenre(m_pDS->fv("iGenreType").get_asInt(), m_pDS->fv("iGenreSubType").get_asInt(),
                      m_pDS->fv("sGenre").get_asString().c_str());
-    newTag->UpdatePath();
 
     return newTag;
   }

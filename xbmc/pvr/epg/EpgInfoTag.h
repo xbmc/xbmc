@@ -460,11 +460,6 @@ namespace PVR
     void SetGenre(int iGenreType, int iGenreSubType, const char* strGenre);
 
     /*!
-     * @brief Update the path of this tag.
-     */
-    void UpdatePath();
-
-    /*!
      * @brief Get current time, taking timeshifting into account.
      * @return The playing time.
      */
@@ -492,7 +487,6 @@ namespace PVR
     std::vector<std::string> m_genre; /*!< genre */
     std::string m_strEpisodeName; /*!< episode name */
     CPVRCachedImage m_iconPath; /*!< the path to the icon */
-    std::string m_strFileNameAndPath; /*!< the filename and path */
     CDateTime m_startTime; /*!< event start time */
     CDateTime m_endTime; /*!< event end time */
     CDateTime m_firstAired; /*!< first airdate */
