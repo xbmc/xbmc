@@ -118,11 +118,43 @@ private:
   std::unique_ptr<CGameClientTopology> m_topology;
   using ControllerLayoutMap = std::map<std::string, std::unique_ptr<CGameClientController>>;
   ControllerLayoutMap m_controllerLayouts;
+
+  /*!
+   * \brief Map of port address to joystick handler
+   *
+   * The port address is a string that identifies the adress of the port.
+   *
+   * The joystick handler connects to joystick input of the game client.
+   *
+   * This property is always populated with the default joystick configuration
+   * (i.e. all ports are connected to the first controller they accept).
+   */
   JoystickMap m_joysticks;
+
   PortMap m_portMap;
+
   std::unique_ptr<CPortManager> m_portManager;
+
+  /*!
+   * \brief Keyboard handler
+   *
+   * This connects to the keyboard input of the game client.
+   */
   std::unique_ptr<CGameClientKeyboard> m_keyboard;
+
+  /*!
+   * \brief Mouse handler
+   *
+   * This connects to the mouse input of the game client.
+   */
   std::unique_ptr<CGameClientMouse> m_mouse;
+
+  /*!
+   * \brief Hardware input handler
+   *
+   * This connects to input from game console hardware belonging to the game
+   * client.
+   */
   std::unique_ptr<CGameClientHardware> m_hardware;
 };
 } // namespace GAME
