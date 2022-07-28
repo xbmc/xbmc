@@ -59,8 +59,6 @@ CPVREpgInfoTag::CPVREpgInfoTag(const std::shared_ptr<CPVREpgChannelData>& channe
       0, 0, 0, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection);
   m_startTime = start + correction;
   m_endTime = end + correction;
-
-  UpdatePath();
 }
 
 CPVREpgInfoTag::CPVREpgInfoTag(const EPG_TAG& data,
@@ -130,8 +128,6 @@ CPVREpgInfoTag::CPVREpgInfoTag(const EPG_TAG& data,
     m_strSeriesLink = data.strSeriesLink;
   if (data.strParentalRatingCode)
     m_strParentalRatingCode = data.strParentalRatingCode;
-
-  UpdatePath();
 }
 
 void CPVREpgInfoTag::SetChannelData(const std::shared_ptr<CPVREpgChannelData>& data)
@@ -182,7 +178,7 @@ void CPVREpgInfoTag::Serialize(CVariant& value) const
   value["year"] = m_iYear;
   value["imdbnumber"] = m_strIMDBNumber;
   value["genre"] = m_genre;
-  value["filenameandpath"] = m_strFileNameAndPath;
+  value["filenameandpath"] = Path();
   value["starttime"] = m_startTime.IsValid() ? m_startTime.GetAsDBDateTime() : StringUtils::Empty;
   value["endtime"] = m_endTime.IsValid() ? m_endTime.GetAsDBDateTime() : StringUtils::Empty;
   value["runtime"] = GetDuration() / 60;
@@ -484,7 +480,7 @@ std::string CPVREpgInfoTag::ClientIconPath() const
 
 std::string CPVREpgInfoTag::Path() const
 {
-  return m_strFileNameAndPath;
+  return StringUtils::Format("pvr://guide/{:04}/{}.epg", EpgID(), m_startTime.GetAsDBDateTime());
 }
 
 bool CPVREpgInfoTag::Update(const CPVREpgInfoTag& tag, bool bUpdateBroadcastId /* = true */)
@@ -552,8 +548,6 @@ bool CPVREpgInfoTag::Update(const CPVREpgInfoTag& tag, bool bUpdateBroadcastId /
     m_iUniqueBroadcastID = tag.m_iUniqueBroadcastID;
     m_iconPath = tag.m_iconPath;
     m_channelData = tag.m_channelData;
-
-    UpdatePath();
   }
 
   return bChanged;
@@ -583,12 +577,6 @@ std::vector<PVR_EDL_ENTRY> CPVREpgInfoTag::GetEdl() const
   return edls;
 }
 
-void CPVREpgInfoTag::UpdatePath()
-{
-  m_strFileNameAndPath =
-      StringUtils::Format("pvr://guide/{:04}/{}.epg", EpgID(), m_startTime.GetAsDBDateTime());
-}
-
 int CPVREpgInfoTag::EpgID() const
 {
   return m_iEpgID;
@@ -598,7 +586,6 @@ void CPVREpgInfoTag::SetEpgID(int iEpgID)
 {
   m_iEpgID = iEpgID;
   m_iconPath.SetOwner(StringUtils::Format(IMAGE_OWNER_PATTERN, m_iEpgID));
-  UpdatePath(); // Note: path contains epg id.
 }
 
 bool CPVREpgInfoTag::IsRecordable() const
