@@ -23,6 +23,9 @@ else ifeq ($(GEN),Ninja)
   CMAKE_BUILD_ARGUMENTS = -G "Ninja" -DCMAKE_BUILD_TYPE=$(Configuration)
 else
   CMAKE_BUILD_ARGUMENTS = -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=$(Configuration)
+  ifeq ($(OS),osx)
+    CMAKE_BUILD_ARGUMENTS += -DCMAKE_DEPENDS_USE_COMPILER=OFF
+  endif
 endif
 
 ifeq ($(OS),osx)
