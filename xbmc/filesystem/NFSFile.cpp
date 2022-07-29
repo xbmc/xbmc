@@ -49,10 +49,16 @@ constexpr auto CONTEXT_TIMEOUT = 6min;
 
 constexpr auto KEEP_ALIVE_TIMEOUT = 3min;
 
+constexpr auto IDLE_TIMEOUT = 3min;
+
 } // namespace
 
 CNfsConnection::CNfsConnection()
-  : m_pNfsContext(NULL), m_exportPath(""), m_hostName(""), m_resolvedHostName("")
+  : m_pNfsContext(NULL),
+    m_exportPath(""),
+    m_hostName(""),
+    m_resolvedHostName(""),
+    m_IdleTimeout(std::chrono::steady_clock::now() + IDLE_TIMEOUT)
 {
 }
 
@@ -339,11 +345,9 @@ void CNfsConnection::CheckIfIdle()
     std::unique_lock<CCriticalSection> lock(*this);
     if (m_OpenConnections == 0 /* check again - when locked */)
     {
-      if (m_IdleTimeout > 0)
-      {
-        m_IdleTimeout--;
-      }
-      else
+      const auto now = std::chrono::steady_clock::now();
+
+      if (m_IdleTimeout < now)
       {
         CLog::Log(LOGINFO, "NFS is idle. Closing the remaining connections.");
         gNfsConnection.Deinit();
@@ -473,7 +477,8 @@ void CNfsConnection::AddIdleConnection()
   m_OpenConnections--;
   /* If we close a file we reset the idle timer so that we don't have any weird behaviours if a user
    leaves the movie paused for a long while and then press stop */
-  m_IdleTimeout = 180;
+  const auto now = std::chrono::steady_clock::now();
+  m_IdleTimeout = now + IDLE_TIMEOUT;
 }
 
 
