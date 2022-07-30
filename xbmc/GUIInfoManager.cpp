@@ -36,6 +36,7 @@
 #include <iterator>
 #include <memory>
 #include <mutex>
+#include <string_view>
 
 using namespace KODI::GUILIB;
 using namespace KODI::GUILIB::GUIINFO;
@@ -9946,8 +9947,12 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
           std::array<int, 2> data = {-1, -1};
           for (size_t i = 0; i < data.size(); i++)
           {
-            std::from_chars_result result = std::from_chars(
-                prop.param(i).data(), prop.param(i).data() + prop.param(i).size(), data.at(i));
+            std::string_view v = prop.param(i);
+            v.remove_prefix(std::min(v.find_first_not_of(" "), v.size()));
+
+            std::from_chars_result result =
+                std::from_chars(v.data(), v.data() + v.size(), data.at(i));
+
             if (result.ec == std::errc::invalid_argument)
             {
               // could not translate provided value to int, translate the info string
@@ -10854,9 +10859,16 @@ bool CGUIInfoManager::GetMultiInfoBool(const CGUIInfo &info, int contextWindow, 
               // Handle the case when a value contains time separator (:). This makes Integer.IsGreater
               // useful for Player.Time* members without adding a separate set of members returning time in seconds
               if (value.find_first_of(':') != value.npos)
+              {
                 intValue = StringUtils::TimeStringToSeconds(value);
+              }
               else
-                std::from_chars(value.data(), value.data() + value.size(), intValue);
+              {
+                std::string_view v = value;
+                v.remove_prefix(std::min(v.find_first_not_of(" "), v.size()));
+
+                std::from_chars(v.data(), v.data() + v.size(), intValue);
+              }
             }
             return intValue;
           };
