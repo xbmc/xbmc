@@ -754,6 +754,8 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr, FT_UInt glyph
   // letters are stored based on style and glyph
   character_t ch = (style << 16) | glyphIndex;
 
+  // perform binary search on sorted array by m_glyphAndStyle and
+  // if not found obtains position to insert the new m_char to keep sorted
   int low = 0;
   int high = m_numChars - 1;
   while (low <= high)
@@ -768,6 +770,8 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr, FT_UInt glyph
   }
   // if we get to here, then low is where we should insert the new character
 
+  int startIndex = low;
+
   // increase the size of the buffer if we need it
   if (m_numChars >= m_maxChars)
   { // need to increase the size of the buffer
@@ -780,6 +784,7 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr, FT_UInt glyph
     }
     m_char = newTable;
     m_maxChars += CHAR_CHUNK;
+    startIndex = 0;
   }
   else
   { // just move the data along as necessary
@@ -797,6 +802,7 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr, FT_UInt glyph
                m_numChars);
     ClearCharacterCache();
     low = 0;
+    startIndex = 0;
     if (!CacheCharacter(glyphIndex, style, m_char))
     {
       CLog::LogF(LOGERROR, "Unable to cache character (out of memory?)");
@@ -811,9 +817,8 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr, FT_UInt glyph
     Begin();
   m_nestedBeginCount = nestedBeginCount;
 
-  // fixup quick access
-  *m_charquick = {};
-  for (int i = 0; i < m_numChars; i++)
+  // update the lookup table with only the m_char addresses that have changed
+  for (int i = startIndex; i < m_numChars; i++)
   {
     if (m_char[i].m_glyphIndex < MAX_GLYPH_IDX)
     {
