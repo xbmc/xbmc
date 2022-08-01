@@ -195,11 +195,9 @@ void CGUIFontTTF::ClearCharacterCache()
   DeleteHardwareTexture();
 
   m_texture = nullptr;
-  delete[] m_char;
-  m_char = new Character[CHAR_CHUNK];
+  m_char.clear();
+  m_char.reserve(CHAR_CHUNK);
   memset(m_charquick, 0, sizeof(m_charquick));
-  m_numChars = 0;
-  m_maxChars = CHAR_CHUNK;
   // set the posX and posY so that our texture will be created on first character write.
   m_posX = m_textureWidth;
   m_posY = -static_cast<int>(GetTextureLineHeight());
@@ -210,11 +208,7 @@ void CGUIFontTTF::Clear()
 {
   m_texture.reset();
   m_texture = nullptr;
-  delete[] m_char;
   memset(m_charquick, 0, sizeof(m_charquick));
-  m_char = nullptr;
-  m_maxChars = 0;
-  m_numChars = 0;
   m_posX = 0;
   m_posY = 0;
   m_nestedBeginCount = 0;
@@ -299,11 +293,6 @@ bool CGUIFontTTF::Load(
 
   m_texture.reset();
   m_texture = nullptr;
-  delete[] m_char;
-  m_char = nullptr;
-
-  m_maxChars = 0;
-  m_numChars = 0;
 
   m_textureHeight = 0;
   m_textureWidth = ((m_cellHeight * CHARS_PER_TEXTURE_LINE) & ~63) + 64;
@@ -780,7 +769,7 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr, FT_UInt glyph
   // perform binary search on sorted array by m_glyphAndStyle and
   // if not found obtains position to insert the new m_char to keep sorted
   int low = 0;
-  int high = m_numChars - 1;
+  int high = m_char.size() - 1;
   while (low <= high)
   {
     int mid = (low + high) >> 1;
@@ -796,37 +785,29 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr, FT_UInt glyph
   int startIndex = low;
 
   // increase the size of the buffer if we need it
-  if (m_numChars >= m_maxChars)
-  { // need to increase the size of the buffer
-    Character* newTable = new Character[m_maxChars + CHAR_CHUNK];
-    if (m_char)
-    {
-      memcpy(newTable, m_char, low * sizeof(Character));
-      memcpy(newTable + low + 1, m_char + low, (m_numChars - low) * sizeof(Character));
-      delete[] m_char;
-    }
-    m_char = newTable;
-    m_maxChars += CHAR_CHUNK;
+  if (m_char.size() == m_char.capacity())
+  {
+    m_char.reserve(m_char.capacity() + CHAR_CHUNK);
     startIndex = 0;
   }
-  else
-  { // just move the data along as necessary
-    memmove(m_char + low + 1, m_char + low, (m_numChars - low) * sizeof(Character));
-  }
+
   // render the character to our texture
   // must End() as we can't render text to our texture during a Begin(), End() block
   unsigned int nestedBeginCount = m_nestedBeginCount;
   m_nestedBeginCount = 1;
   if (nestedBeginCount)
     End();
-  if (!CacheCharacter(glyphIndex, style, m_char + low))
+
+  m_char.emplace(m_char.begin() + low);
+  if (!CacheCharacter(glyphIndex, style, m_char.data() + low))
   { // unable to cache character - try clearing them all out and starting over
     CLog::LogF(LOGDEBUG, "Unable to cache character. Clearing character cache of {} characters",
-               m_numChars);
+               m_char.size());
     ClearCharacterCache();
     low = 0;
     startIndex = 0;
-    if (!CacheCharacter(glyphIndex, style, m_char))
+    m_char.emplace(m_char.begin());
+    if (!CacheCharacter(glyphIndex, style, m_char.data()))
     {
       CLog::LogF(LOGERROR, "Unable to cache character (out of memory?)");
       if (nestedBeginCount)
@@ -841,7 +822,7 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr, FT_UInt glyph
   m_nestedBeginCount = nestedBeginCount;
 
   // update the lookup table with only the m_char addresses that have changed
-  for (int i = startIndex; i < m_numChars; i++)
+  for (size_t i = startIndex; i < m_char.size(); ++i)
   {
     if (m_char[i].m_glyphIndex < MAX_GLYPH_IDX)
     {
@@ -849,11 +830,11 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr, FT_UInt glyph
       character_t ch = ((m_char[i].m_glyphAndStyle & 0xffff0000) >> 4) | m_char[i].m_glyphIndex;
 
       if (ch < LOOKUPTABLE_SIZE)
-        m_charquick[ch] = m_char + i;
+        m_charquick[ch] = m_char.data() + i;
     }
   }
 
-  return m_char + low;
+  return m_char.data() + low;
 }
 
 bool CGUIFontTTF::CacheCharacter(FT_UInt glyphIndex, uint32_t style, Character* ch)
@@ -967,7 +948,6 @@ bool CGUIFontTTF::CacheCharacter(FT_UInt glyphIndex, uint32_t style, Character* 
     m_posX += SPACING_BETWEEN_CHARACTERS_IN_TEXTURE +
               static_cast<unsigned short>(ch->m_right - ch->m_left);
   }
-  m_numChars++;
 
   // free the glyph
   FT_Done_Glyph(glyph);
