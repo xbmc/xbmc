@@ -10783,7 +10783,7 @@ bool CVideoDatabase::SetSingleValue(const std::string &table, const std::string 
 std::string CVideoDatabase::GetSafeFile(const std::string &dir, const std::string &name) const
 {
   std::string safeThumb(name);
-  UnicodeUtils::Replace(safeThumb, ' ', '_');
+  UnicodeUtils::Replace(safeThumb, " ", "_");
   return URIUtils::AddFileToFolder(dir, CUtil::MakeLegalFileName(safeThumb));
 }
 

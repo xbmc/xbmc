@@ -94,7 +94,7 @@ UTILS::COLOR::Color CGUIColorManager::GetColor(const std::string& color) const
 {
   // look in our color map
   std::string trimmed(color);
-  UnicodeUtils::TrimLeft(trimmed, "= ");
+  UnicodeUtils::TrimLeft(trimmed, {"= "});
   const auto it = m_colors.find(trimmed);
   if (it != m_colors.end())
     return (*it).second;

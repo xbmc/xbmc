@@ -145,7 +145,7 @@ bool CPeripheral::Initialise(void)
   m_manager.GetSettingsFromMapping(*this);
 
   std::string safeDeviceName = m_strDeviceName;
-  UnicodeUtils::Replace(safeDeviceName, ' ', '_');
+  UnicodeUtils::Replace(safeDeviceName, " ", "_");
 
   if (m_iVendorId == 0x0000 && m_iProductId == 0x0000)
   {

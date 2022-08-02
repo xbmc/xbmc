@@ -25,6 +25,9 @@
 #include <algorithm>
 #include <memory>
 #include <regex>
+#include <string>
+#include <string_view>
+#include <vector>
 
 namespace
 {
@@ -292,8 +295,8 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
       element = child->FirstChildElement("platform");
       if (element && element->GetText() != nullptr)
       {
-        auto platforms = UnicodeUtils::Split(element->GetText(),
-                                            {" ", "\t", "\n", "\r"});
+        std::vector<std::string_view> delimiters{" ", "\t", "\n", "\r"};
+        auto platforms = UnicodeUtils::Split(element->GetText(), delimiters);
         platforms.erase(std::remove_if(platforms.begin(), platforms.end(),
                         [](const std::string& platform) { return platform.empty(); }),
                         platforms.cend());

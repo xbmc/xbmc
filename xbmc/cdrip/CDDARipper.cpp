@@ -219,7 +219,7 @@ std::string CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTa
     if (strAlbumArtist.empty())
       strAlbumArtist = "Unknown Artist";
     else
-      UnicodeUtils::Replace(strAlbumArtist, '/', '_');
+      UnicodeUtils::Replace(strAlbumArtist, "/", "_");
     UnicodeUtils::Replace(strAlbumDir, "%A", strAlbumArtist);
   }
 
@@ -231,7 +231,7 @@ std::string CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTa
       strAlbum = StringUtils::Format("Unknown Album {}",
                                      CDateTime::GetCurrentDateTime().GetAsLocalizedDateTime());
     else
-      UnicodeUtils::Replace(strAlbum, '/', '_');
+      UnicodeUtils::Replace(strAlbum, "/", "_");
     UnicodeUtils::Replace(strAlbumDir, "%B", strAlbum);
   }
 
@@ -244,7 +244,7 @@ std::string CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTa
     if (strGenre.empty())
       strGenre = "Unknown Genre";
     else
-      UnicodeUtils::Replace(strGenre, '/', '_');
+      UnicodeUtils::Replace(strGenre, "/", "_");
     UnicodeUtils::Replace(strAlbumDir, "%G", strGenre);
   }
 
@@ -255,7 +255,7 @@ std::string CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTa
     if (strYear.empty())
       strYear = "Unknown Year";
     else
-      UnicodeUtils::Replace(strYear, '/', '_');
+      UnicodeUtils::Replace(strYear, "/", "_");
     UnicodeUtils::Replace(strAlbumDir, "%Y", strYear);
   }
 

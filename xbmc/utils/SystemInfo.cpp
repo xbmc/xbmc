@@ -1122,7 +1122,7 @@ std::string CSysInfo::GetUserAgent()
   if (lastDotPos != std::string::npos && iOSVersion.find('.') != lastDotPos
       && iOSVersion.find_first_not_of('0', lastDotPos + 1) == std::string::npos)
     iOSVersion.erase(lastDotPos);
-  UnicodeUtils::Replace(iOSVersion, '.', '_');
+  UnicodeUtils::Replace(iOSVersion, ".", "_");
   if (iDev == "AppleTV")
   {
     // check if it's ATV4 (AppleTV5,3) or later
@@ -1145,7 +1145,7 @@ std::string CSysInfo::GetUserAgent()
     result += "Intel ";
   result += "Mac OS X ";
   std::string OSXVersion(GetOsVersion());
-  UnicodeUtils::Replace(OSXVersion, '.', '_');
+  UnicodeUtils::Replace(OSXVersion, ".", "_");
   result += OSXVersion;
 #endif
 #elif defined(TARGET_ANDROID)
@@ -1204,7 +1204,7 @@ std::string CSysInfo::GetUserAgent()
     iDevVer = "0.0";
   else
     iDevVer.assign(iDevStr, iDevStrDigit, std::string::npos);
-  UnicodeUtils::Replace(iDevVer, ',', '.');
+  UnicodeUtils::Replace(iDevVer, ",", ".");
   result += " HW_" + iDev + "/" + iDevVer;
 #endif
   // add more device IDs here if needed.
@@ -1217,7 +1217,7 @@ std::string CSysInfo::GetUserAgent()
   if (uname(&un1) == 0)
   {
     std::string cpuStr(un1.machine);
-    UnicodeUtils::Replace(cpuStr, ' ', '_');
+    UnicodeUtils::Replace(cpuStr, " ", "_");
     result += " Sys_CPU/" + cpuStr;
   }
 #endif
@@ -1225,7 +1225,7 @@ std::string CSysInfo::GetUserAgent()
   result += " App_Bitness/" + std::to_string(GetXbmcBitness());
 
   std::string fullVer(CSysInfo::GetVersion());
-  UnicodeUtils::Replace(fullVer, ' ', '-');
+  UnicodeUtils::Replace(fullVer, " ", "-");
   result += " Version/" + fullVer;
 
   return result;

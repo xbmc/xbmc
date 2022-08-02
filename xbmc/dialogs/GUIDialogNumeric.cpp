@@ -418,7 +418,7 @@ void CGUIDialogNumeric::SetMode(INPUT_MODE mode, const std::string &initial)
     else if (m_mode == INPUT_DATE)
     {
       std::string tmp = initial;
-      UnicodeUtils::Replace(tmp, '/', '.');
+      UnicodeUtils::Replace(tmp, "/", ".");
       dateTime.SetFromDBDate(tmp);
     }
 
@@ -431,7 +431,7 @@ void CGUIDialogNumeric::SetMode(INPUT_MODE mode, const std::string &initial)
   else if (m_mode == INPUT_IP_ADDRESS)
   {
     m_lastblock = 3;
-    auto blocks = UnicodeUtils::Split(initial, '.');
+    auto blocks = UnicodeUtils::Split(initial, ".");
     if (blocks.size() != 4)
       return;
 

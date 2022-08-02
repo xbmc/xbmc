@@ -390,7 +390,7 @@ std::string CWIN32Util::UncToSmb(const std::string &strPath)
   if(UnicodeUtils::StartsWith(strRetPath, "\\\\"))
   {
     strRetPath = "smb:" + strPath;
-    UnicodeUtils::Replace(strRetPath, '\\', '/');
+    UnicodeUtils::Replace(strRetPath, "\\", "/");
   }
   return strRetPath;
 }
@@ -401,7 +401,7 @@ std::string CWIN32Util::SmbToUnc(const std::string &strPath)
   if(UnicodeUtils::StartsWithNoCase(strRetPath, "smb://"))
   {
     UnicodeUtils::Replace(strRetPath, "smb://", "\\\\");
-    UnicodeUtils::Replace(strRetPath, '/', '\\');
+    UnicodeUtils::Replace(strRetPath, "/", "\\");
   }
   return strRetPath;
 }

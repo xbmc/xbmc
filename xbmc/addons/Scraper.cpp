@@ -892,7 +892,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl,
     return vcscurl;
 
   if (!fFirst)
-    UnicodeUtils::Replace(sTitle, '-', ' ');
+    UnicodeUtils::Replace(sTitle, "-", " ");
 
   if (m_isPython)
   {

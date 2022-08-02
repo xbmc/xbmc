@@ -110,7 +110,7 @@ bool CVirtualDirectory::IsSource(const std::string& strPath, VECSOURCES *sources
   // ie. f:/video and f:\video was not be recognised as the same directory,
   // resulting in navigation to a lower directory then the share.
   if(URIUtils::IsDOSPath(strPathCpy))
-    UnicodeUtils::Replace(strPathCpy, '/', '\\');
+    UnicodeUtils::Replace(strPathCpy, "/", "\\");
 
   VECSOURCES shares;
   if (sources)
@@ -123,7 +123,7 @@ bool CVirtualDirectory::IsSource(const std::string& strPath, VECSOURCES *sources
     std::string strShare = share.strPath;
     UnicodeUtils::TrimRight(strShare, "/\\");
     if(URIUtils::IsDOSPath(strShare))
-      UnicodeUtils::Replace(strShare, '/', '\\');
+      UnicodeUtils::Replace(strShare, "/", "\\");
     if (strShare == strPathCpy)
     {
       if (name)

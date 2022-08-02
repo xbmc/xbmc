@@ -904,20 +904,20 @@ std::string CUtil::MakeLegalFileName(const std::string &strFile, int LegalType)
 {
   std::string result = strFile;
 
-  UnicodeUtils::Replace(result, '/', '_');
-  UnicodeUtils::Replace(result, '\\', '_');
-  UnicodeUtils::Replace(result, '?', '_');
+  UnicodeUtils::Replace(result, "/", "_");
+  UnicodeUtils::Replace(result, "\\", "_");
+  UnicodeUtils::Replace(result, "?", "_");
 
   if (LegalType == LEGAL_WIN32_COMPAT)
   {
     // just filter out some illegal characters on windows
-    UnicodeUtils::Replace(result, ':', '_');
-    UnicodeUtils::Replace(result, '*', '_');
-    UnicodeUtils::Replace(result, '?', '_');
-    UnicodeUtils::Replace(result, '\"', '_');
-    UnicodeUtils::Replace(result, '<', '_');
-    UnicodeUtils::Replace(result, '>', '_');
-    UnicodeUtils::Replace(result, '|', '_');
+    UnicodeUtils::Replace(result, ":", "_");
+    UnicodeUtils::Replace(result, "*", "_");
+    UnicodeUtils::Replace(result, "?", "_");
+    UnicodeUtils::Replace(result, "\"", "_");
+    UnicodeUtils::Replace(result, "<", "_");
+    UnicodeUtils::Replace(result, ">", "_");
+    UnicodeUtils::Replace(result, "|", "_");
     UnicodeUtils::TrimRight(result, ". ");
   }
   return result;
@@ -969,7 +969,7 @@ std::string CUtil::ValidatePath(const std::string &path, bool bFixDoubleSlashes 
 #ifdef TARGET_WINDOWS
   if (URIUtils::IsDOSPath(path))
   {
-    UnicodeUtils::Replace(result, '/', '\\');
+    UnicodeUtils::Replace(result, "/", "\\");
     /* The double slash correction should only be used when *absolutely*
        necessary! This applies to certain DLLs or use from Python DLLs/scripts
        that incorrectly generate double (back) slashes.
@@ -987,7 +987,7 @@ std::string CUtil::ValidatePath(const std::string &path, bool bFixDoubleSlashes 
   else if (path.find("://") != std::string::npos || path.find(":\\\\") != std::string::npos)
 #endif
   {
-    UnicodeUtils::Replace(result, '\\', '/');
+    UnicodeUtils::Replace(result, "\\", "/");
     /* The double slash correction should only be used when *absolutely*
        necessary! This applies to certain DLLs or use from Python DLLs/scripts
        that incorrectly generate double (back) slashes.

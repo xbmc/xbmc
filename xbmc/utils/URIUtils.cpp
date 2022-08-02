@@ -275,14 +275,23 @@ void URIUtils::GetCommonPath(std::string& strParent, const std::string& strPath)
   // find the common path of parent and path
   unsigned int j = 1;
 
-  // TODO: Unicode Recode to take into account multi-byte characters in paths.
-  //       Truncating utf-8 strings at arbitrary points results in malformed characters.
-  //       Perhaps this does not matter if your are looking for exact match, but
-  //       it would be better to use something like "StartsWithNoCase" if possible.
+  // TODO: The lengths of folded Unicode strings are not necessarily the same
+  //       as the original. Further, some Unicode "characters" can:
+  //       * take up more than one Unicode codepoint
+  //       * be represented by different sequences, and lengths of codepoints
+  //       How likely this can occur in this situation I can not say. Probably
+  //       not too likely.
 
-  while (j <= std::min(strParent.size(), strPath.size()) &&
-         UnicodeUtils::CompareNoCase(strParent, strPath, j) == 0)
+  bool finished = false;
+  while (not finished)
+  {
+    std::string_view parentSV{strParent.data(), j};
+    std::string_view pathSV{strPath.data(), j};
+    if (not UnicodeUtils::EqualsNoCase(parentSV, pathSV))
+      break;
     j++;
+  }
+
   strParent.erase(j - 1);
   // they should at least share a / at the end, though for things such as path/cd1 and path/cd2 there won't be
   if (!HasSlashAtEnd(strParent))
@@ -1357,9 +1366,9 @@ std::string URIUtils::AddFileToFolder(const std::string& strFolder,
 
   // correct any slash directions
   if (!IsDOSPath(strFolder))
-    UnicodeUtils::Replace(strResult, '\\', '/');
+    UnicodeUtils::Replace(strResult, "\\", "/");
   else
-    UnicodeUtils::Replace(strResult, '/', '\\');
+    UnicodeUtils::Replace(strResult, "/", "\\");
 
   return strResult;
 }
@@ -1396,8 +1405,8 @@ CURL URIUtils::CreateArchivePath(const std::string& type,
      code (and elsewhere) doesn't pass in non-posix paths.
    */
   std::string strBuffer(pathInArchive);
-  UnicodeUtils::Replace(strBuffer, '\\', '/');
-  UnicodeUtils::TrimLeft(strBuffer, "/");
+  UnicodeUtils::Replace(strBuffer, "\\", "/");
+  UnicodeUtils::TrimLeft(strBuffer, {"/"});
   url.SetFileName(strBuffer);
 
   return url;

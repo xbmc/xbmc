@@ -1128,14 +1128,14 @@ std::string CLangInfo::PrepareTimeFormat(const std::string& timeFormat, bool use
   if (use24HourClock)
   {
     // replace all "h" with "H"
-    UnicodeUtils::Replace(preparedTimeFormat, 'h', 'H');
+    UnicodeUtils::Replace(preparedTimeFormat, "h", "H");
 
     // remove any "xx" for meridiem
     UnicodeUtils::Replace(preparedTimeFormat, "x", "");
   }
   else
     // replace all "H" with "h"
-    UnicodeUtils::Replace(preparedTimeFormat, 'H', 'h');
+    UnicodeUtils::Replace(preparedTimeFormat, "H", "h");
 
   UnicodeUtils::Trim(preparedTimeFormat);
 

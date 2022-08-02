@@ -297,7 +297,7 @@ void CURL::Parse(const std::string& strURL1)
     }
   }
 
-  UnicodeUtils::Replace(m_strFileName, '\\', '/');
+  UnicodeUtils::Replace(m_strFileName, "\\", "/");
 
   /* update extension + sharename */
   SetFileName(m_strFileName);
