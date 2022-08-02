@@ -233,12 +233,12 @@ void CExternalPlayer::Process()
   strFArgs.append("\" ");
   strFArgs.append(m_args);
 
-  int nReplaced = UnicodeUtils::Replace(strFArgs, "{0}", mainFile);
+  bool replaced = UnicodeUtils::Replace(strFArgs, "{0}", mainFile);
 
-  if (!nReplaced)
-    nReplaced = UnicodeUtils::Replace(strFArgs, "{1}", mainFile) + UnicodeUtils::Replace(strFArgs, "{2}", archiveContent);
+  if (! replaced)
+    replaced = UnicodeUtils::Replace(strFArgs, "{1}", mainFile) || UnicodeUtils::Replace(strFArgs, "{2}", archiveContent);
 
-  if (!nReplaced)
+  if (! replaced)
   {
     strFArgs.append(" \"");
     strFArgs.append(mainFile);
