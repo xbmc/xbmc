@@ -359,8 +359,7 @@ public:
    * Note: For more details, see
    *       FoldCase(std::wstring &str, const StringOptions opt = StringOptions::FOLD_CASE_DEFAULT);
    *
-   *
-   * TODO: Modify to return str (see StartsWithNoCase)
+   * TODO: Consider Modify to return str (see StartsWithNoCase)
    */
   static void FoldCase(std::string& str,
                        const StringOptions opt = StringOptions::FOLD_CASE_DEFAULT);
@@ -372,7 +371,6 @@ public:
    * See TitleCase for a more locale aware solution.
    *
    * \param str string to capitalize in place
-   * \return str capitalized
    */
   static void ToCapitalize(std::wstring& str);
 
@@ -383,7 +381,6 @@ public:
    * See TitleCase for a more locale aware solution.
    *
    * \param str string to capitalize in place
-   * \return str capitalized
    */
   static void ToCapitalize(std::string& str);
 
@@ -399,7 +396,7 @@ public:
    *  \param locale
    *  \return str in TitleCase
    */
-  static std::wstring TitleCase(const std::wstring_view& str, const std::locale& locale);
+  static std::wstring TitleCase(std::wstring_view str, const std::locale& locale);
 
   /*!
    *  \brief TitleCase a wstring using LangInfo::GetSystemLocale.
@@ -414,7 +411,7 @@ public:
    *  \param locale
    *  \return str in TitleCase
    */
-  static std::wstring TitleCase(const std::wstring_view& str);
+  static std::wstring TitleCase(std::wstring_view str);
 
   /*!
    *  \brief TitleCase a wstring using locale.
@@ -454,10 +451,12 @@ public:
    *
    * \param str1 one of the strings to compare
    * \param str2 the other string to compare
+   * \param normalize if true, normalize strings prior to comparison, default = false
    * \return true if both strings are identical, otherwise false
    */
 
-  static bool Equals(const std::string_view& str1, const std::string_view& str2);
+  static bool Equals(const std::string_view& str1, const std::string_view& str2,
+      const bool normalize = false);
 
   /*!
    * \brief determines if two wstrings are identical in content.
@@ -467,9 +466,12 @@ public:
    *
    * \param str1 one of the wstrings to compare
    * \param str2 the other wstring to compare
+   * \param normalize if true, normalize strings prior to comparison, default = false
+   *
    * \return true if both wstrings are identical, otherwise false
    */
-  static bool Equals(const std::wstring_view& str1, const std::wstring_view& str2);
+  static bool Equals(std::wstring_view str1, std::wstring_view str2,
+      const bool normalize = false);
 
   // TODO: Add wstring version of EqualsNoCase
   // TODO: Give guidance on when and what type of Normalization to use.
@@ -478,7 +480,7 @@ public:
    * \brief Determines if two strings are the same, after case folding each.
    *
    * Logically equivalent to Equals(FoldCase(str1, opt)), FoldCase(str2, opt))
-   * or, if Normalize == true: Equals(NFD(FoldCase(NFD(str1))), NFD(FoldCase(NFD(str2))))
+   * or, if normalize == true: Equals(NFD(FoldCase(NFD(str1))), NFD(FoldCase(NFD(str2))))
    * (NFD is a type of normalization)
    *
    * Note: When normalization = true, the string comparison is done incrementally
@@ -498,13 +500,13 @@ public:
   static bool EqualsNoCase(const std::string_view& str1,
                            const std::string_view& str2,
                            const StringOptions opt = StringOptions::FOLD_CASE_DEFAULT,
-                           const bool Normalize = false);
+                           const bool normalize = false);
 
   /*!
    * \brief Determines if two strings are the same, after case folding each.
    *
    * Logically equivalent to Equals(FoldCase(str1, opt)), FoldCase(s2, opt))
-   * or, if Normalize == true: Equals(NFD(FoldCase(NFD(str1))), NFD(FoldCase(NFD(s2))))
+   * or, if normalize == true: Equals(NFD(FoldCase(NFD(str1))), NFD(FoldCase(NFD(s2))))
    * (NFD is a type of normalization)
    *
    * Note: When normalization = true, the string comparison is done incrementally
@@ -525,14 +527,14 @@ public:
   static bool EqualsNoCase(const std::string_view& str1,
                            //const char* s2,
                            const StringOptions opt = StringOptions::FOLD_CASE_DEFAULT,
-                           const bool Normalize = false);
+                           const bool normalize = false);
    */
 
   /*!
    * \brief Determines if two strings are the same, after case folding each.
    *
    * Logically equivalent to Equals(FoldCase(s1, opt)), FoldCase(s2, opt))
-   * or, if Normalize == true: Equals(NFD(FoldCase(NFD(s1))), NFD(FoldCase(NFD(s2))))
+   * or, if normalize == true: Equals(NFD(FoldCase(NFD(s1))), NFD(FoldCase(NFD(s2))))
    * (NFD is a type of normalization)
    *
    * Note: When normalization = true, the string comparison is done incrementally
@@ -553,7 +555,7 @@ public:
   static bool EqualsNoCase(const char* s1,
                            const char* s2,
                            StringOptions opt = StringOptions::FOLD_CASE_DEFAULT,
-                           const bool Normalize = false);
+                           const bool normalize = false);
 */
   /*!
    * \brief Compares two wstrings using codepoint order. Locale does not matter.
@@ -562,9 +564,12 @@ public:
    *
    * \param str1 one of the strings to compare
    * \param str2 one of the strings to compare
+   * \param normalize if true, normalize strings prior to comparison, default = false
+   *
    * \return <0 or 0 or >0 as usual for string comparisons
    */
-  static int Compare(const std::wstring_view& str1, const std::wstring_view& str2);
+  static int Compare(std::wstring_view str1, std::wstring_view str2,
+      bool normalize = false);
 
   /*!
    * \brief Compares two strings using codepoint order. Locale does not matter.
@@ -572,15 +577,17 @@ public:
    * DO NOT USE for collation
    * \param str1 one of the strings to compare
    * \param str2 one of the strings to compare
+   * \param normalize if true, normalize strings prior to comparison, default = false
    * \return <0 or 0 or >0 as usual for string comparisons
    */
-  static int Compare(const std::string_view& str1, const std::string_view& str2);
+  static int Compare(const std::string_view& str1, const std::string_view& str2,
+      bool normalize = false);
 
   /*!
    * \brief Performs a bit-wise comparison of two wstrings, after case folding each.
    *
    * Logically equivalent to Compare(FoldCase(str1, opt)), FoldCase(str2, opt))
-   * or, if Normalize == true: Compare(NFD(FoldCase(NFD(str1))), NFD(FoldCase(NFD(str2))))
+   * or, if normalize == true: Compare(NFD(FoldCase(NFD(str1))), NFD(FoldCase(NFD(str2))))
    * (NFD is a type of normalization)
    *
    * Note: When normalization = true, the string comparison is done incrementally
@@ -600,16 +607,16 @@ public:
    * = 0 if str1 contains the same characters as str2,
    * > 0 if the characters in str1 are bitwise greater than the characters in str2.
    */
-  static int CompareNoCase(const std::wstring_view& str1,
-                           const std::wstring_view& str2,
+  static int CompareNoCase(std::wstring_view str1,
+                           std::wstring_view str2,
                            StringOptions opt = StringOptions::FOLD_CASE_DEFAULT,
-                           const bool Normalize = false);
+                           const bool normalize = false);
 
   /*!
    * \brief Performs a bit-wise comparison of two strings, after case folding each.
    *
    * Logically equivalent to Compare(FoldCase(str1, opt)), FoldCase(str2, opt))
-   * or, if Normalize == true: Compare(NFD(FoldCase(NFD(str1))), NFD(FoldCase(NFD(str2))))
+   * or, if normalize == true: Compare(NFD(FoldCase(NFD(str1))), NFD(FoldCase(NFD(str2))))
    * (NFD is a type of normalization)
    *
    * Note: When normalization = true, the string comparison is done incrementally
@@ -632,13 +639,13 @@ public:
   static int CompareNoCase(const std::string_view& str1,
                            const std::string_view& str2,
                            StringOptions opt = StringOptions::FOLD_CASE_DEFAULT,
-                           const bool Normalize = false);
+                           const bool normalize = false);
 
   /*!
    * \brief Performs a bit-wise comparison of two strings, after case folding each.
    *
    * Logically equivalent to Compare(FoldCase(s1, opt)), FoldCase(s2, opt))
-   * or, if Normalize == true: Compare(NFD(FoldCase(NFD(s1))), NFD(FoldCase(NFD(s2))))
+   * or, if normalize == true: Compare(NFD(FoldCase(NFD(s1))), NFD(FoldCase(NFD(s2))))
    * (NFD is a type of normalization)
    *
    * Note: When normalization = true, the string comparison is done incrementally
@@ -658,16 +665,17 @@ public:
    * = 0 if s1 contains the same characters as s2,
    * > 0 if the characters in s1 are bitwise greater than the characters in s2.
    */
+  /*
   static int CompareNoCase(const char* s1,
                            const char* s2,
                            StringOptions opt = StringOptions::FOLD_CASE_DEFAULT,
-                           const bool Normalize = false);
-
+                           const bool normalize = false);
+*/
   /*!
    * \brief Performs a bit-wise comparison of two strings, after case folding each.
    *
    * Logically equivalent to Compare(FoldCase(str1, opt)), FoldCase(str2, opt))
-   * or, if Normalize == true: Compare(NFD(FoldCase(NFD(str1))), NFD(FoldCase(NFD(str2))))
+   * or, if normalize == true: Compare(NFD(FoldCase(NFD(str1))), NFD(FoldCase(NFD(str2))))
    * (NFD is a type of normalization)
    *
    * Note: Use of the byte-length argument n is STRONGLY discouraged since
@@ -692,19 +700,20 @@ public:
    * = 0 if str1 contains the same characters as str2,
    * > 0 if the characters in str1 are bitwise greater than the characters in str2.
    */
+  /*
   [[deprecated("StartsWith/EndsWith may be better choices. Multibyte characters, case folding and "
                "byte lengths don't mix.")]] static int
   CompareNoCase(const std::string_view& str1,
                 const std::string_view& str2,
                 size_t n,
                 StringOptions opt = StringOptions::FOLD_CASE_DEFAULT,
-                const bool Normalize = false);
-
+                const bool normalize = false);
+*/
   /*!
    * \brief Performs a bit-wise comparison of two strings, after case folding each.
    *
    * Logically equivalent to Compare(FoldCase(s1, opt)), FoldCase(s2, opt))
-   * or, if Normalize == true: Compare(NFD(FoldCase(NFD(s1))), NFD(FoldCase(NFD(s2))))
+   * or, if normalize == true: Compare(NFD(FoldCase(NFD(s1))), NFD(FoldCase(NFD(s2))))
    * (NFD is a type of normalization)
    *
    * NOTE: Limiting the number of bytes to compare via the option n may produce
@@ -728,14 +737,15 @@ public:
    * = 0 if s1 contains the same characters as s2,
    * > 0 if the characters in s1 are bitwise greater than the characters in s2.
    */
-
+/*
   [[deprecated("StartsWith/EndsWith may be better choices. Multibyte characters, case folding and "
                "byte lengths don't mix.")]] static int
   CompareNoCase(const char* s1,
                 const char* s2,
                 size_t n,
                 StringOptions opt = StringOptions::FOLD_CASE_DEFAULT,
-                const bool Normalize = false);
+                const bool normalize = false);
+*/
 
   /*!
    * \brief Get the leftmost side of a UTF-8 string, using the character
@@ -998,7 +1008,7 @@ public:
    * Note: Prior algorithm only supported chars containing ASCII characters.
    * This implementation allows for chars to be any utf-8 characters. (Does NOT Normalize).
    */
-  static std::string& Trim(std::string& str, const char* const chars);
+  static std::string& Trim(std::string& str, std::string_view trimSet);
 
   /*!
    *  \brief Remove all whitespace from beginning of str in-place
@@ -1024,7 +1034,7 @@ public:
    * Note: Prior algorithm only supported chars containing ASCII characters.
    * This implementation allows for chars to be any utf-8 characters. (Does NOT Normalize).
    */
-  static std::string& TrimLeft(std::string& str, const char* const chars);
+  static std::string& TrimLeft(std::string& str, std::string_view trimChars);
 
   /*!
    * \brief Remove all whitespace from end of str in-place
@@ -1048,49 +1058,40 @@ public:
    * Note: Prior algorithm only supported chars containing ASCII characters.
    * This implementation allows for chars to be any utf-8 characters. (Does NOT Normalize).
    */
-  static std::string& TrimRight(std::string& str, const char* const chars);
+  static std::string& TrimRight(std::string& str, std::string_view trimChars);
 
   /*!
    * \brief Replaces every occurrence of a char in string.
    *
-   * Somewhat less efficient than FindAndReplace because this one returns a count
-   * of the number of changes.
-   *
    * \param str String to make changes to in-place
    * \param oldChar character to be replaced
    * \param newChar character to replace with
-   * \return Count of the number of changes
+   * \return true if at least one change was made, otherwise false
    */
-  [[deprecated("FindAndReplace is faster, returned count not used.")]] static int Replace(
-      std::string& str, char oldChar, char newChar);
+ // static bool Replace(
+ //     std::string& str, char oldChar, char newChar);
 
   /*!
    * \brief Replaces every occurrence of a string within another string.
    *
-   * Somewhat less efficient than FindAndReplace because this one returns a count
-   * of the number of changes.
-   *
    * \param str String to make changes to in-place
    * \param oldStr string to be replaced
    * \param newStr string to replace with
-   * \return Count of the number of changes
+   * \return true if at least one change was made, otherwise false
    */
-  [[deprecated("FindAndReplace is faster, returned count not used.")]] static int Replace(
+  static bool Replace(
       std::string& str, const std::string_view& oldStr, const std::string_view& newStr);
 
   /*!
    * \brief Replaces every occurrence of a wstring within another wstring in-place
    *
-   *  Somewhat less efficient than FindAndReplace because this one returns a count
-   *  of the number of changes.
-   *
    * \param str String to make changes to
    * \param oldStr string to be replaced
    * \parm newStr string to replace with
-   * \return Count of the number of changes
+   * \return true if at least one change was made, otherwise false
    */
-  [[deprecated("FindAndReplace is faster, returned count not used.")]] static int Replace(
-      std::wstring& str, const std::wstring_view& oldStr, const std::wstring_view& newStr);
+  static bool Replace(
+      std::wstring& str, std::wstring_view oldStr, std::wstring_view newStr);
 
   /*!
    * \brief Replaces every occurrence of a string within another string
@@ -1106,21 +1107,6 @@ public:
   static std::string FindAndReplace(const std::string_view& str,
                                     const std::string_view oldText,
                                     const std::string_view newText);
-
-  /*!
-   * \brief Replaces every occurrence of a string within another string.
-   *
-   * Should be more efficient than Replace since it directly uses an icu library
-   * routine and does not have to count changes.
-   *
-   * \param str String to make changes to
-   * \param oldStr string to be replaced
-   * \parm newStr string to replace with
-   * \return the modified string
-   */
-  static std::string FindAndReplace(const std::string& str,
-                                    const char* oldText,
-                                    const char* newText);
 
   /*!
    * \brief Replaces every occurrence of a regex pattern with a string in another string.
@@ -1159,7 +1145,7 @@ public:
    *
    *  Note: Embedded nulls in str1 or str2 behaves as a null-terminated string behaves
    */
-  static bool StartsWith(const std::string_view& str1, const char* s2);
+  //static bool StartsWith(const std::string_view& str1, const char* s2);
 
   /*!
    * \brief Determines if a string begins with another string
@@ -1171,7 +1157,7 @@ public:
    *  Note: Embedded nulls in str1 or str2 behaves as a null-terminated string behaves
    *
    */
-  static bool StartsWith(const char* s1, const char* s2);
+  //static bool StartsWith(const char* s1, const char* s2);
 
   /*!
    * \brief Determines if a string begins with another string, ignoring their case
@@ -1201,9 +1187,9 @@ public:
    *
    * Note: Embedded nulls in str1 or str2 behaves as a null-terminated string behaves
    */
-  static bool StartsWithNoCase(const std::string_view& str1,
-                               const char* s2,
-                               StringOptions opt = StringOptions::FOLD_CASE_DEFAULT);
+  //static bool StartsWithNoCase(const std::string_view& str1,
+  //                             const char* s2,
+  //                             StringOptions opt = StringOptions::FOLD_CASE_DEFAULT);
 
   /*!
    * \brief Determines if a string begins with another string, ignoring their case
@@ -1215,9 +1201,9 @@ public:
    * \param opt controls behavior of case folding, normally leave at default
    * \return true if s1 starts with s2, otherwise false
    */
-  static bool StartsWithNoCase(const char* s1,
-                               const char* s2,
-                               StringOptions opt = StringOptions::FOLD_CASE_DEFAULT);
+  //static bool StartsWithNoCase(const char* s1,
+  //                             const char* s2,
+  //                             StringOptions opt = StringOptions::FOLD_CASE_DEFAULT);
 
   /*!
    * \brief Determines if a string ends with another string
@@ -1239,7 +1225,7 @@ public:
    *
    * Note: Embedded nulls in str1 or str2 behaves as a null-terminated string behaves
    */
-  static bool EndsWith(const std::string_view& str1, const char* s2);
+  //static bool EndsWith(const std::string_view& str1, const char* s2);
 
   /*! \brief Determines if a string ends with another string while ignoring case
    *
@@ -1260,9 +1246,9 @@ public:
    * \param opt controls behavior of case folding, normally leave at default
    * \return true if str1 starts with s2, otherwise false
    */
-  static bool EndsWithNoCase(const std::string_view& str1,
-                             const char* s2,
-                             StringOptions opt = StringOptions::FOLD_CASE_DEFAULT);
+  //static bool EndsWithNoCase(const std::string_view& str1,
+  //                           const char* s2,
+  //                           StringOptions opt = StringOptions::FOLD_CASE_DEFAULT);
 
   /*!
    *  \brief Normalizes a wstring. Not expected to be used outside of UnicodeUtils.
@@ -1280,7 +1266,7 @@ public:
    *  \return Normalized string
    */
 
-  static const std::wstring Normalize(const std::wstring_view& src,
+  static const std::wstring Normalize(std::wstring_view src,
                                       const StringOptions opt = StringOptions::FOLD_CASE_DEFAULT,
                                       const NormalizerType NormalizerType = NormalizerType::NFKC);
 
@@ -1320,7 +1306,7 @@ public:
    *                  Frequently not required. Some free normalization always occurs.
    * \return true if initialization was successful, otherwise false.
    */
-  static bool InitializeCollator(const icu::Locale& icuLocale, bool Normalize = false);
+  static bool InitializeCollator(const icu::Locale& icuLocale, bool normalize = false);
 
   /*!
    * \brief Initializes the Collator for this thread, such as before sorting a
@@ -1338,7 +1324,7 @@ public:
    *                  Frequently not required. Some free normalization always occurs.
    * \return true if initialization was successful, otherwise false.
    */
-  static bool InitializeCollator(const std::locale& locale, bool Normalize = false);
+  static bool InitializeCollator(const std::locale& locale, bool normalize = false);
 
   /*!
    * \brief Initializes the Collator for this thread using LangInfo::GetSystemLocale,
@@ -1356,7 +1342,7 @@ public:
    *                  Frequently not required. Some free normalization always occurs.
    * \return true of initialization was successful, otherwise false.
    */
-  static bool InitializeCollator(bool Normalize = false);
+  static bool InitializeCollator(bool normalize = false);
 
   /*!
    * \brief Provides the ability to collect basic performance info for the previous sort
@@ -1381,7 +1367,7 @@ public:
    *          > 0 if left collates > right
    */
 
-  static int32_t Collate(const std::wstring_view& left, const std::wstring_view& right);
+  static int32_t Collate(std::wstring_view left, std::wstring_view right);
 
   /*!
    * \brief Performs locale sensitive wchar_t* comparison.
@@ -1397,7 +1383,7 @@ public:
    */
   static int32_t Collate(const wchar_t* left, const wchar_t* right)
   {
-    return UnicodeUtils::Collate(std::wstring(left), std::wstring(right));
+    return UnicodeUtils::Collate(std::wstring_view(left), std::wstring_view(right));
   }
 
   /*!
@@ -1410,8 +1396,8 @@ public:
    * \param delimiter used to split the input string
    * \param iMaxStrings (optional) Maximum number of generated split strings
    */
-  static std::vector<std::string> Split(const std::string& input,
-                                        const std::string_view& delimiter,
+  static std::vector<std::string> Split(std::string_view input,
+                                        std::string_view delimiter,
                                         size_t iMaxStrings = 0);
 
   /*!
@@ -1433,7 +1419,7 @@ public:
    * \param iMaxStrings Maximum number of generated split strings. The default value
    *        of 0 places no limit on the generated strings.
    */
-  static std::vector<std::string> Split(const std::string& input,
+  static std::vector<std::string> Split(std::string_view input,
                                         const char delimiter,
                                         size_t iMaxStrings = 0);
 
@@ -1444,8 +1430,17 @@ public:
    * \param delimiters used to split the input string as described above
    * \return a Vector of substrings
    */
-  static std::vector<std::string> Split(const std::string& input,
-                                        const std::vector<std::string>& delimiters);
+  static std::vector<std::string> Split(std::string_view input,
+                                        const std::vector<std::string_view>& delimiters);
+
+  // TODO: Need a solution (Template?) that will allow one method that takes both Vector<string>
+  // and Vector<string_view>
+  static std::vector<std::string> Split(std::string_view input,
+                                        const std::vector<std::string>& delimiters)
+  {
+    std::vector<std::string_view> svDelimiters(delimiters.begin(), delimiters.end());
+    return Split(input, svDelimiters);
+  }
 
   /*!
    * \brief Splits each input string with each delimiter string producing a vector of split strings
@@ -1510,16 +1505,42 @@ public:
    *        means no limit.
    * \return vector of split strings
    */
+  static std::vector<std::string> SplitMulti(const std::vector<std::string_view>& input,
+                                             const std::vector<std::string_view>& delimiters,
+                                             size_t iMaxStrings = 0);
+
+  // TODO: Need a solution (Template?) that will allow one method that takes both Vector<string>
+  // and Vector<string_view>
+
   static std::vector<std::string> SplitMulti(const std::vector<std::string>& input,
                                              const std::vector<std::string>& delimiters,
-                                             size_t iMaxStrings = 0);
+                                             size_t iMaxStrings = 0)
+  {
+    std::vector<std::string_view> svInput(input.begin(), input.end());
+    std::vector<std::string_view> svDelimiters(delimiters.begin(), delimiters.end());
+
+    return SplitMulti(svInput, svDelimiters, iMaxStrings);
+  }
+
+  static std::vector<std::string_view> ToStringView(const std::vector<std::string>& input)
+  {
+    std::vector<std::string_view> svInput(input.begin(), input.end());
+    return svInput;
+  }
+
+  static std::vector<std::string> ToString(const std::vector<std::string_view>& input)
+  {
+    std::vector<std::string> svInput(input.begin(), input.end());
+    return svInput;
+  }
+
   /*! \brief Counts the occurrences of strFind in strInput
    *
    * \param strInput string to be searched
    * \param strFind string to count occurrences in strInput
    * \return count of the number of occurrences found
    */
-  static int FindNumber(const std::string_view& strInput, const std::string_view& strFind);
+  static int FindNumber(std::string_view strInput, std::string_view strFind);
 
   /*! \brief Compares two strings based on the rules of the given locale
    *
@@ -1534,8 +1555,8 @@ public:
    * \param locale supplies rules for comparison
    * \return < 0 if left < right based upon comparison based on comparison rules
    */
-  static int64_t AlphaNumericCompare(const wchar_t* left,
-                                     const wchar_t* right,
+  static int64_t AlphaNumericCompare(std::wstring_view  left,
+                                     std::wstring_view right,
                                      const std::locale& locale);
 
   /*! \brief Compares two strings based on the rules of LocaleInfo.GestSystemLocale
@@ -1551,7 +1572,7 @@ public:
    * \param locale supplies rules for comparison
    * \return < 0 if left < right based upon comparison based on comparison rules
    */
-  static int64_t AlphaNumericCompare(const wchar_t* left, const wchar_t* right);
+  static int64_t AlphaNumericCompare(std::wstring_view left, std::wstring_view right);
 
   /*!
    * SQLite collating function, see sqlite3_create_collation
@@ -1617,7 +1638,7 @@ public:
    * \param str String to be examined for non-ASCII
    * \return true if non-ASCII characters found, otherwise false
    */
-  inline static bool ContainsNonAscii(const std::wstring_view str)
+  inline static bool ContainsNonAscii(std::wstring_view str)
   {
     for (size_t i = 0; i < str.length(); i++)
     {

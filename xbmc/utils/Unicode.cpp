@@ -71,9 +71,10 @@
  */
 
 
-static const int BUFFER_PAD = 0; // 200;
+static const size_t BUFFER_PAD = 0;
+static const bool useScale = false;
 
-std::u16string Unicode::UTF8ToUTF16(const std::string_view& str)
+std::u16string Unicode::UTF8ToUTF16(std::string_view str)
 {
   // Note: Faster, but does not do Unicode validation and
   // replacing bad Unicode with substitute Unicode to mark it
@@ -97,7 +98,7 @@ std::u32string Unicode::UTF8ToUTF32(const std::string_view &str)
   return conv.from_bytes(str.data(), str.data() + str.length());
 }
 
-std::wstring Unicode::UTF8ToWString(const std::string_view& str)
+std::wstring Unicode::UTF8ToWString(std::string_view str)
 {
   std::wstring_convert<std::codecvt_utf8<wchar_t>> conv;
   std::wstring result = conv.from_bytes(str.data(), str.data() + str.length());
@@ -142,7 +143,7 @@ std::u16string Unicode::UTF32ToUTF16(const std::u32string_view &str)
       bytes.length() / sizeof(char16_t));
 }
 
-std::string Unicode::WStringToUTF8(const std::wstring_view& str)
+std::string Unicode::WStringToUTF8(std::wstring_view str)
 {
   std::wstring_convert<std::codecvt_utf8<wchar_t>> conv;
   std::string result = conv.to_bytes(str.data(), str.data() + str.length());
@@ -181,8 +182,11 @@ inline std::wstring ToWstring(icu::UnicodeString& ustr)
 size_t Unicode::GetUTF8WorkingSize(const size_t utf8Length, float scale /* = 1.5 */)
 {
 
-  float scaleFactor = std::fmax((float)scale, 1.5);
-  return (size_t)(BUFFER_PAD + int(utf8Length * scaleFactor));
+  float scaleFactor = 1.5;
+  if (useScale)
+    scaleFactor = std::fmax(scale, 1.5);
+
+  return (BUFFER_PAD + (size_t)(utf8Length * scaleFactor));
 }
 
 
@@ -204,8 +208,12 @@ size_t Unicode::GetUTF8ToUTF16BufferSize(const size_t utf8_length, const float s
   // utf8 string will comfortably fit in a UChar string
   // of same char length. Add a bit more for some growth.
 
-  int scale_factor = std::fmax((int)scale, 1.0);
-  return (size_t)(BUFFER_PAD + (int)(utf8_length * scale_factor));
+
+  float scaleFactor = 1.0;
+  if (useScale)
+    scaleFactor = std::fmax(scale, 1.0);
+
+  return (BUFFER_PAD + (size_t)(utf8_length * scaleFactor));
 }
 
 /*!
@@ -217,26 +225,34 @@ size_t Unicode::GetUTF8ToUTF16BufferSize(const size_t utf8_length, const float s
  * \return A size a bit larger than wchar_length, plus BUFFER_PAD.
  */
 
-size_t Unicode::GetWcharToUTF16BufferSize(const size_t wchar_length, const size_t scale /* = 1*/)
+size_t Unicode::GetWcharToUTF16BufferSize(const size_t wchar_length, const float scale /* = 1.0*/)
 {
 
   // Most UTF-32 strings will be BMP-only and result in a same-length
   // UTF-16 string. We overestimate the capacity just slightly,
   // just in case there are a few supplementary characters.
   // Add a bit more for some growth.
-  int scale_factor = std::max((int)scale, 1);
-  return (size_t)(BUFFER_PAD + (wchar_length + (wchar_length >> 4) + 4) * scale_factor);
+
+  float scaleFactor = 1.0;
+  if (useScale)
+    scaleFactor = std::fmax(scale, 1.0);
+  return (BUFFER_PAD + (size_t)(wchar_length + (wchar_length >> 4) + 4) * scaleFactor);
 }
 
-size_t Unicode::GetUTF16ToUTF32BufferSize(const size_t uchar_length, const size_t scale /* = 1*/)
+size_t Unicode::GetUTF16ToUTF32BufferSize(const size_t uchar_length, const float scale /* = 1*/)
 {
 
   // Most UTF-32 strings will be BMP-only and result in a same-length
   // UTF-16 string. We overestimate the capacity just slightly,
   // just in case there are a few supplementary characters.
   // Add a bit more for some growth.
-  int scale_factor = std::max((int)scale, 1);
-  return (size_t)(BUFFER_PAD + (uchar_length + (uchar_length >> 4) + 4) * scale_factor);
+
+
+  float scaleFactor = 1.0;
+  if (useScale)
+    scaleFactor = std::fmax(scale, 1.0);
+
+  return BUFFER_PAD + (size_t)((uchar_length + ((uchar_length >> 4) + 4)) * scaleFactor);
 }
 
 /*!
@@ -248,7 +264,7 @@ size_t Unicode::GetUTF16ToUTF32BufferSize(const size_t uchar_length, const size_
  * \return A size a bit larger than wchar_length, plus BUFFER_PAD.
  */
 
-size_t Unicode::GetUTF16ToWcharBufferSize(const size_t uchar_length, const size_t scale /* = 1*/)
+size_t Unicode::GetUTF16ToWcharBufferSize(const size_t uchar_length, const float scale /* = 1.0*/)
 {
 #if U_SIZEOF_WCHAR_T == 4
   return Unicode::GetUTF16ToUTF32BufferSize(uchar_length, scale);
@@ -270,10 +286,14 @@ size_t Unicode::GetUTF16ToWcharBufferSize(const size_t uchar_length, const size_
  * Note that a UTF-16 string will be at most as long as the UTF-8 string.
  */
 
-size_t Unicode::GetUTF16WorkingSize(const size_t utf16length, const float scale)
+size_t Unicode::GetUTF16WorkingSize(const size_t utf16length, const float scale /* = 2.0 */)
 {
-  float scale_factor = std::fmax((float)scale, 2.0);
-  return (size_t)(BUFFER_PAD + int(utf16length * scale_factor));
+
+  float scaleFactor = 2.0;
+  if (useScale)
+    scaleFactor = std::fmax(scale, 2.0);
+
+  return (BUFFER_PAD + size_t(utf16length * scaleFactor));
 }
 
 /**
@@ -289,14 +309,19 @@ size_t Unicode::GetUTF16WorkingSize(const size_t utf16length, const float scale)
  * room for the 'worst case' UTF-8  expansion required for Indic, Thai and CJK.
  */
 
-size_t Unicode::GetUTF16ToUTF8BufferSize(const size_t uchar_length, const size_t scale)
+size_t Unicode::GetUTF16ToUTF8BufferSize(const size_t uchar_length, const float scale /* = 2.0 */)
 {
   // When converting from UTF-16 to UTF-8, the result will have at most 3 times
   // as many bytes as the source has UChars.
   // The "worst cases" are writing systems like Indic, Thai and CJK with
   // 3:1 bytes:UChars.
-  int scale_factor = std::fmax((int)scale, 1);
-  return (size_t)(BUFFER_PAD + uchar_length * 3 * scale_factor);
+
+  float scaleFactor = 2.0;
+  if (useScale)
+    scaleFactor = std::fmax(scale, 2.0);
+
+
+  return BUFFER_PAD + (size_t)(uchar_length * 3 * scaleFactor);
 }
 
 /**
@@ -309,7 +334,7 @@ size_t Unicode::GetUTF16ToUTF8BufferSize(const size_t uchar_length, const size_t
  *
  * On the systems with a wchar_t representing a 16-bit UTF-16 code unit, then the
  * number of code units (and bytes) required to represent a UTF-16 UChar in wchar_t
- * will bhe the same as the original string.
+ * will the the same as the original string.
  *
  * param uchar_length number of UTF-16 code units in original string
  * param scale scale factor to multiply uchar_length by to allow for growth
@@ -318,30 +343,29 @@ size_t Unicode::GetUTF16ToUTF8BufferSize(const size_t uchar_length, const size_t
  * Note that an additional BUFFER_PAD code units is added to the result to allow for growth
  *
  */
-size_t Unicode::GetUTF16ToWCharBufferSize(const size_t uchar_length, const size_t scale)
+size_t Unicode::GetUTF16ToWCharBufferSize(const size_t uchar_length, const float scale /* = 1.0 */)
 {
-  size_t scale_factor = std::max((int)scale, 1);
+
+  float scaleFactor = 1.0;
+  if (useScale)
+    scaleFactor = std::fmax(scale, 1.0);
 #if U_SIZEOF_WCHAR_T == 4
 
-  // When converting from UTF-16 to UTF-32, the result will have at most 2 times
-  // as many bytes as the source has UChars.
+  // When converting from UTF-16 to UTF-32, the result will have at most same number
+  // of codepoints as the source has UChars.
 
-  return (size_t)(BUFFER_PAD + uchar_length * 2 * scale_factor);
+  return BUFFER_PAD + (size_t)(uchar_length * scaleFactor);
 #else
   // When converting from UTF-16 to UTF-16, the size is the same
-  return (size_t)(BUFFER_PAD + uchar_length * scale_factor);
+  return BUFFER_PAD + (size_t)(uchar_length * scaleFactor);
 #endif
 }
 
-std::u16string_view Unicode::UTF8ToUTF16WithSub(const std::string_view& src,
+std::u16string_view Unicode::_UTF8ToUTF16WithSub(std::string_view src,
     UChar* buffer,
-    const size_t bufferSize,
-    const size_t src_offset /* = 0 */,
-    const size_t src_length /* = std::string::npos */)
+    const size_t bufferSize)
 
 {
-  size_t length = std::min(src.length(), src_length);
-  int32_t srcLength;
 
   // Number of corrupt UTF8 codepoints in string. Can be caused by truncating beginning
   // or end of string in mid multi-byte character
@@ -352,38 +376,33 @@ std::u16string_view Unicode::UTF8ToUTF16WithSub(const std::string_view& src,
 
   const UChar32 subchar = (UChar32)0xFFFD; // Displays as (�)
 
-  if (length == std::string::npos)
-    srcLength = -1;
-  else
-    srcLength = length;
-
   UErrorCode status = U_ZERO_ERROR;
   int32_t utf8ActualLength = 0;
-  u_strFromUTF8WithSub(buffer, bufferSize, &utf8ActualLength, src.data() + src_offset, srcLength, subchar,
+  u_strFromUTF8WithSub(buffer, bufferSize, &utf8ActualLength, src.data(), src.length(), subchar,
       &numberOfSubstitutions, &status);
 
   if (numberOfSubstitutions > 0)
   {
     std::string newStr = Unicode::UTF16ToUTF8({buffer, (size_t)utf8ActualLength});
 
-    CLog::Log(LOGDEBUG, "{} codepoint substitutions Unicode::UTF8ToUTF16WithSub utf8: {} UChar: {}\n",
-        numberOfSubstitutions, src, newStr);
+    // Don't log bad string or recursion while logging
+
+    CLog::Log(LOGDEBUG, "{} codepoint substitutions Unicode::_UTF8ToUTF16WithSub UChar: {}\n",
+        numberOfSubstitutions, newStr);
   }
 
   size_t resultLength = (size_t) utf8ActualLength;
   if (U_FAILURE(status))
   {
-    CLog::Log(LOGERROR, "Error in Unicode::UTF8ToUTF16WithSub: {}\n", status);
+    CLog::Log(LOGERROR, "Error in Unicode::_UTF8ToUTF16WithSub: {}\n", status);
     buffer[0] = '\0';
     resultLength = 0;
   }
   return {buffer, resultLength};
 }
 
-std::string_view Unicode::UTF16ToUTF8WithSub(const UChar* u_str,
-    char* utf8Buffer,
-    size_t utf8BufferSize,
-    const size_t u_str_length)
+std::string_view Unicode::_UTF16ToUTF8WithSub(const std::u16string_view src,
+    char* utf8Buffer, size_t utf8BufferSize)
 {
   UErrorCode status = U_ZERO_ERROR;
 
@@ -399,15 +418,9 @@ std::string_view Unicode::UTF16ToUTF8WithSub(const UChar* u_str,
   const UChar32 subchar = (UChar32)0xFFFD; // Displays as "�"
   // UChar string can expand to up to 3x UTF8 chars
 
-  int32_t u_str_length_param;
-  if (u_str_length == std::string::npos)
-    u_str_length_param = -1;
-  else
-    u_str_length_param = u_str_length;
-
   status = U_ZERO_ERROR;
   int32_t utf8ActualLength = 0;
-  u_strToUTF8WithSub(utf8Buffer, utf8BufferSize, &utf8ActualLength, u_str, u_str_length_param,
+  u_strToUTF8WithSub(utf8Buffer, utf8BufferSize, &utf8ActualLength, src.data(), src.length(),
       subchar, &numberOfSubstitutions, &status);
 
   if (numberOfSubstitutions > 0)
@@ -427,37 +440,28 @@ std::string_view Unicode::UTF16ToUTF8WithSub(const UChar* u_str,
   return {utf8Buffer, length};
 }
 
-wchar_t* Unicode::UTF16ToWChar(const UChar* u_str,
-    wchar_t* buffer,
-    size_t bufferSize,
-    int32_t& destLength,
-    const size_t u_str_length)
+std::wstring_view Unicode::_UTF16ToWString(const std::u16string_view str,
+                             wchar_t* buffer,
+                             size_t bufferSize)
 {
   UErrorCode status = U_ZERO_ERROR;
 
-  int32_t u_str_length_param;
-  if (u_str_length == std::string::npos)
-    u_str_length_param = -1;
-  else
-    u_str_length_param = u_str_length;
-
   status = U_ZERO_ERROR;
-  u_strToWCS(buffer, bufferSize, &destLength, u_str, u_str_length_param,
+  int32_t destLength = 0;
+  u_strToWCS(buffer, bufferSize, &destLength, str.data(), str.length(),
       &status);
 
   if (U_FAILURE(status))
   {
     CLog::Log(LOGERROR, "Error in Unicode::UTF16ToWChar: {}\n", status);
-    return nullptr;
+    return {L""};
   }
-  return buffer;
+  return std::wstring_view{buffer, (size_t)destLength};
 }
 
-std::u16string_view Unicode::WStringToUTF16WithSub(const std::wstring_view src,
+std::u16string_view Unicode::_WStringToUTF16WithSub(std::wstring_view src,
     char16_t * buffer,
-    const size_t bufferSize,
-    const size_t srcOffset /* = 0 */,
-    const size_t src_length /* = std::string::npos */)
+    const size_t bufferSize)
 {
   // Number of corrupt UTF16 codepoints in string. Can be caused by truncating beginning
   // or end of string in mid multi-byte character
@@ -472,11 +476,11 @@ std::u16string_view Unicode::WStringToUTF16WithSub(const std::wstring_view src,
   int32_t destLength;
 #if U_SIZEOF_WCHAR_T == 4
   u_strFromUTF32WithSub((char16_t *) buffer, (int32_t) bufferSize, &destLength,
-      (int32_t*)src.data(), (int32_t)(src.length() + srcOffset), subchar,
+      (int32_t*)src.data(), (int32_t)(src.length()), subchar,
       &numberOfSubstitutions, &status);
 #else
   // Should be a way to do substitutions on bad 'codepoints' as above.
-  u_strFromWCS(buffer, bufferSize, &destLength, src.data(), srcLength, /* subchar,
+  u_strFromWCS(buffer, bufferSize, &destLength, (wchar_t *)src.data(), (int32_t) src.length(), /* subchar,
 			&numberOfSubstitutions, */
       &status);
 #endif
@@ -571,15 +575,16 @@ icu::Locale Unicode::GetDefaultICULocale()
   return icu_locale;
 }
 
-icu::Locale Unicode::GetICULocale(const char* language,
-    const char* country,
-    const char* variant,
-    const char* keywordsAndValues)
+icu::Locale Unicode::GetICULocale(std::string_view language,
+    std::string_view country,
+    std::string_view variant,
+    std::string_view keywordsAndValues)
 {
 
   UErrorCode status = U_ZERO_ERROR;
 
-  icu::Locale icu_locale = icu::Locale(language, country, variant, keywordsAndValues = 0);
+  icu::Locale icu_locale = icu::Locale(language.data(), country.data(), variant.data(),
+      keywordsAndValues.data());
   if (U_FAILURE(status))
   {
     CLog::Log(LOGERROR, "Error in Unicode::GetICULocale: {}\n", status);
@@ -587,7 +592,7 @@ icu::Locale Unicode::GetICULocale(const char* language,
   return icu_locale;
 }
 
-std::string Unicode::ToUpper(const std::string_view& s1, const icu::Locale& locale)
+std::string Unicode::ToUpper(std::string_view s1, const icu::Locale& locale)
 {
 
   icu::Locale currentLocale = locale;
@@ -601,7 +606,7 @@ std::string Unicode::ToUpper(const std::string_view& s1, const icu::Locale& loca
 
   size_t s1BufferSize = Unicode::GetUTF8ToUTF16BufferSize(s1.length(), 1.5);
   UChar s1Buffer[s1BufferSize];
-  std::u16string_view sv1 = Unicode::UTF8ToUTF16WithSub(s1, s1Buffer, s1BufferSize);
+  std::u16string_view sv1 = Unicode::_UTF8ToUTF16WithSub(s1, s1Buffer, s1BufferSize);
 
   // Place to write the Upper-case text
 
@@ -631,7 +636,7 @@ std::string Unicode::ToUpper(const std::string_view& s1, const icu::Locale& loca
   return result;
 }
 
-const std::string Unicode::ToLower(const std::string& s1, const icu::Locale& locale)
+const std::string Unicode::ToLower(const std::string_view s1, const icu::Locale& locale)
 {
   icu::Locale currentLocale = locale;
   if (currentLocale == nullptr)
@@ -644,7 +649,7 @@ const std::string Unicode::ToLower(const std::string& s1, const icu::Locale& loc
 
   size_t s1BufferSize = Unicode::GetUTF8ToUTF16BufferSize(s1.length(), 1.5);
   UChar s1Buffer[s1BufferSize];
-  std::u16string_view sv1 = Unicode::UTF8ToUTF16WithSub(s1, s1Buffer, s1BufferSize);
+  std::u16string_view sv1 = Unicode::_UTF8ToUTF16WithSub(s1, s1Buffer, s1BufferSize);
 
   // Place to write the Lower-case text
 
@@ -674,13 +679,13 @@ const std::string Unicode::ToLower(const std::string& s1, const icu::Locale& loc
   return result;
 }
 
-const std::wstring Unicode::ToCapitalize(const std::wstring_view& s1)
+const std::wstring Unicode::ToCapitalize(std::wstring_view s1)
 {
   // Convert s1 to utf16 using stack allocated buffer
 
   size_t s1BufferSize = Unicode::GetWcharToUTF16BufferSize(s1.length(), 1);
   UChar s1Buffer[s1BufferSize];
-  std::u16string_view sv1 = Unicode::WStringToUTF16WithSub(s1, s1Buffer, s1BufferSize);
+  std::u16string_view sv1 = Unicode::_WStringToUTF16WithSub(s1, s1Buffer, s1BufferSize);
 
   // UnicodeString also using stack allocated memory
   // Base buffer size based on utf16 version of s1 that it will manipulate
@@ -734,13 +739,13 @@ const std::wstring Unicode::ToCapitalize(const std::wstring_view& s1)
   return result;
 }
 
-const std::string Unicode::ToCapitalize(const std::string_view& s1)
+const std::string Unicode::ToCapitalize(std::string_view s1)
 {
   // Convert s1 to utf16 using stack allocated buffer
 
   size_t s1BufferSize = Unicode::GetUTF8ToUTF16BufferSize(s1.length(), 1.5);
   UChar s1Buffer[s1BufferSize];
-  std::u16string_view sv1 = Unicode::UTF8ToUTF16WithSub(s1, s1Buffer, s1BufferSize);
+  std::u16string_view sv1 = Unicode::_UTF8ToUTF16WithSub(s1, s1Buffer, s1BufferSize);
 
   // UnicodeString also using stack allocated memory
   // Base buffer size based on utf16 version of s1 that it will manipulate
@@ -791,7 +796,7 @@ const std::string Unicode::ToCapitalize(const std::string_view& s1)
   return utf8Result;
 }
 
-const std::wstring Unicode::TitleCase(const std::wstring_view& s1, const icu::Locale& locale)
+const std::wstring Unicode::TitleCase(std::wstring_view s1, const icu::Locale& locale)
 {
   UErrorCode status = U_ZERO_ERROR;
   std::wstring wResult;
@@ -808,7 +813,9 @@ const std::wstring Unicode::TitleCase(const std::wstring_view& s1, const icu::Lo
 
   size_t s1BufferSize = Unicode::GetWcharToUTF16BufferSize(s1.length(), 1.5);
   UChar s1Buffer[s1BufferSize];
-  std::u16string_view sv1 = Unicode::WStringToUTF16WithSub(s1, s1Buffer, s1BufferSize);
+   std::u16string_view sv1 = Unicode::_WStringToUTF16WithSub(s1, s1Buffer, s1BufferSize);
+
+ 
 
   size_t s2BufferSize = Unicode::GetUTF16WorkingSize(sv1.length(), 2);
   UChar s2Buffer[s2BufferSize];
@@ -843,7 +850,7 @@ const std::wstring Unicode::TitleCase(const std::wstring_view& s1, const icu::Lo
   return wResult;
 }
 
-const std::string Unicode::TitleCase(const std::string_view& s1, const icu::Locale& locale)
+const std::string Unicode::TitleCase(std::string_view s1, const icu::Locale& locale)
 {
   UErrorCode status = U_ZERO_ERROR;
   std::string result;
@@ -861,7 +868,7 @@ const std::string Unicode::TitleCase(const std::string_view& s1, const icu::Loca
 
   size_t s1BufferSize = Unicode::GetUTF8ToUTF16BufferSize(s1.length(), 1.5);
   UChar s1Buffer[s1BufferSize];
-  std::u16string_view sv1 = Unicode::UTF8ToUTF16WithSub(s1, s1Buffer, s1BufferSize);
+  std::u16string_view sv1 = Unicode::_UTF8ToUTF16WithSub(s1, s1Buffer, s1BufferSize);
 
   size_t s2BufferSize = Unicode::GetUTF16WorkingSize(sv1.length(), 2);
   UChar s2Buffer[s2BufferSize];
@@ -894,7 +901,7 @@ const std::string Unicode::TitleCase(const std::string_view& s1, const icu::Loca
   return result;
 }
 
-std::wstring Unicode::FoldCase(const std::wstring_view& s1, const StringOptions options)
+std::wstring Unicode::FoldCase(std::wstring_view s1, const StringOptions options)
 {
   std::wstring result;
   if (s1.length() == 0)
@@ -904,63 +911,23 @@ std::wstring Unicode::FoldCase(const std::wstring_view& s1, const StringOptions 
 
   size_t s1BufferSize = Unicode::GetWcharToUTF16BufferSize(s1.length(), 2);
   UChar s1Buffer[s1BufferSize];
-  std::u16string_view sv1 = Unicode::WStringToUTF16WithSub(s1, s1Buffer, s1BufferSize);
+  std::u16string_view sv1 = Unicode::_WStringToUTF16WithSub(s1, s1Buffer, s1BufferSize);
 
   // Create buffer to hold case fold
 
-  // Retry capability if size estimate too low. This should not be needed given
-  // that buffer size estimates tend to be a bit generous.
+  size_t s2BufferSize = Unicode::GetUTF16WorkingSize(sv1.length(), 2.0);
+  UChar s2Buffer[s2BufferSize];
+  std::u16string_view sv2 = {s2Buffer, s2BufferSize};
 
-  int forceBufferSize = 0;
-  bool finished = false;
-  UErrorCode status = U_ZERO_ERROR;
-  while (not finished)
-  {
-    status = U_ZERO_ERROR;
-    size_t s2BufferSize = forceBufferSize;
-    if (forceBufferSize == 0)
-      s2BufferSize = Unicode::GetUTF16WorkingSize(sv1.length(), 1);
+  // sv2 wraps the buffer returned in svFolded (but with different length)
 
-    UChar s2Buffer[s2BufferSize];
-    std::u16string_view sv2 = {s2Buffer, s2BufferSize};
-
-    size_t u_folded_length = 0; // In UChars
-    u_folded_length = (size_t) icu::CaseMap::fold(to_underlying(options), sv1.data(),
-        sv1.length(), (UChar *)sv2.data(),
-        (int)sv2.length(), nullptr, status);
-
-    finished = true;
-    if (U_FAILURE(status))
-    {
-      if (status == U_BUFFER_OVERFLOW_ERROR)
-      {
-        finished = false;
-        forceBufferSize = u_folded_length + 1; // for null
-        CLog::Log(LOGINFO, "Retry in Unicode::FoldCase_w: buffer not large enough need: {}\n",
-            u_folded_length);
-      }
-      else
-      {
-        result = std::wstring(s1);
-        CLog::Log(LOGERROR, "Error in Unicode::FoldCase: {}\n", status);
-      }
-    }
-    else
-    {
-      // sv2.length is readonly. Create new stringView using u_folded_length
-
-      std::u16string_view svFolded = {sv2.data(), u_folded_length};
-
-      // Assuming that the returned UChar string has no invalid code-units, other than the ones
-      // marked invalid in the first place. Therefore, we can use the cheaper conversion to wchar_t.
-
-      result = Unicode::UTF16ToWString(svFolded);
-    }
-  }
+  std::u16string_view svFolded = Unicode::_FoldCase(sv1, sv2, options);
+  result = Unicode::UTF16ToWString(svFolded);
   return result;
 }
 
-std::string Unicode::FoldCase(const std::string_view& s1, const StringOptions options)
+
+std::string Unicode::FoldCase(std::string_view s1, const StringOptions options)
 {
   std::string result = std::string();
   if (s1.length() == 0)
@@ -968,41 +935,53 @@ std::string Unicode::FoldCase(const std::string_view& s1, const StringOptions op
 
   // Create buffer on stack
 
-  size_t s1BufferSize = Unicode::GetUTF8WorkingSize(s1.length(), 1.5);
-  char s1Buffer[s1BufferSize];
+  size_t s1BufferSize = Unicode::GetUTF8ToUTF16BufferSize(s1.length(), 1.5);
+  char16_t s1Buffer[s1BufferSize];
+  std::u16string_view sv1 = Unicode::_UTF8ToUTF16WithSub(s1, s1Buffer, s1BufferSize);
 
-  // Using byte sink this time. Not many apis support it, but UnicodeString does
+  // Create buffer to hold case fold
 
-  icu::CheckedArrayByteSink sink = icu::CheckedArrayByteSink(s1Buffer, s1BufferSize);
+  size_t s2BufferSize = Unicode::GetUTF16WorkingSize(sv1.length(), 2.0);
+  UChar s2Buffer[s2BufferSize];
+  std::u16string_view sv2 = {s2Buffer, s2BufferSize};
 
-  UErrorCode status = U_ZERO_ERROR;
-  icu::StringPiece sp = icu::StringPiece(s1); // StringPiece similar to string_view
-  icu::CaseMap::utf8Fold((size_t) options, sp, sink, nullptr, status);
+  // sv2 wraps the buffer returned in svFolded (but with different length)
+  // If length 0, then error occurred. Logged reason, but no indication here.
 
-  if (U_FAILURE(status))
-  {
-    // Buffer should be big enough
-    if (sink.Overflowed())
-    {
-      CLog::Log(LOGERROR, "Error in Unicode::FoldCase: buffer not large enough need: {}\n",
-          sink.NumberOfBytesAppended());
-      return result = std::string(s1);
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "Error in Unicode::FoldCase: {}\n", status);
-      return result = std::string(s1);
-    }
-  }
-  else
-  {
-    size_t size = sink.NumberOfBytesWritten();
-    result = std::string(s1Buffer, size);
-  }
+  std::u16string_view svFolded = Unicode::_FoldCase(sv1, sv2, options);
+  result = Unicode::UTF16ToUTF8(svFolded);
   return result;
 }
 
-const std::wstring Unicode::Normalize(const std::wstring_view& s1,
+std::u16string_view Unicode::_FoldCase(const std::u16string_view s1,std::u16string_view outBuffer,
+    const StringOptions options)
+{
+  std::u16string_view result;
+  UErrorCode status = U_ZERO_ERROR;
+    size_t uFoldedLength = 0; // In UChars
+    uFoldedLength = (size_t) icu::CaseMap::fold(to_underlying(options), s1.data(),
+        s1.length(), (UChar *)outBuffer.data(),
+        (int)outBuffer.length(), nullptr, status);
+
+    if (U_FAILURE(status))
+    {
+      if (status == U_BUFFER_OVERFLOW_ERROR)
+      {
+        CLog::Log(LOGINFO, "Retry in Unicode::FoldCase_w: buffer not large enough need: {}\n",
+            uFoldedLength + 1);
+      }
+      ((char16_t *) outBuffer.data())[0] = 0;
+      result = {outBuffer.data(), 0}; // empty
+    }
+    else
+    {
+      result = {outBuffer.data(), uFoldedLength};
+    }
+  return result;
+}
+
+
+const std::wstring Unicode::Normalize(std::wstring_view s1,
     const StringOptions option,
     const NormalizerType NormalizerType)
 {
@@ -1046,7 +1025,7 @@ const std::wstring Unicode::Normalize(const std::wstring_view& s1,
   size_t s1BufferSize = Unicode::GetWcharToUTF16BufferSize(s1.length(), 2);
   UChar s1Buffer[s1BufferSize];
 
-  std::u16string_view sv1 = Unicode::WStringToUTF16WithSub(s1, s1Buffer, s1BufferSize);
+  std::u16string_view sv1 = Unicode::_WStringToUTF16WithSub(s1, s1Buffer, s1BufferSize);
 
   size_t nBufferSize = Unicode::GetUTF16WorkingSize(sv1.length(), 2);
   char16_t nBuffer[nBufferSize];
@@ -1072,9 +1051,9 @@ const std::wstring Unicode::Normalize(const std::wstring_view& s1,
   return result;
 }
 
-const std::string Unicode::Normalize(const std::string_view& s1,
+const std::string Unicode::Normalize(std::string_view s1,
     const StringOptions options,
-    const NormalizerType NormalizerType)
+    const NormalizerType normalizerType)
 {
   if (s1.length() == 0)
     return "";
@@ -1088,7 +1067,7 @@ const std::string Unicode::Normalize(const std::string_view& s1,
   icu::CheckedArrayByteSink s1Sink = icu::CheckedArrayByteSink((char *)sv1.data(), sv1.length());
 
   UErrorCode status = U_ZERO_ERROR;
-  Unicode::Normalize(s1, s1Sink, status, to_underlying(options), NormalizerType);
+  Unicode::Normalize(s1, s1Sink, status, to_underlying(options), normalizerType);
 
   std::string result;
   if (U_FAILURE(status))
@@ -1182,8 +1161,8 @@ void Unicode::Normalize(const std::string_view src,
   }
 }
 
-int Unicode::StrCaseCmp(const std::wstring_view& s1,
-    const std::wstring_view& s2,
+int Unicode::StrCaseCmp(std::wstring_view s1,
+    std::wstring_view s2,
     const StringOptions options,
     const bool normalize /* = false */)
 {
@@ -1203,8 +1182,8 @@ int Unicode::StrCaseCmp(const std::wstring_view& s1,
   size_t s2BufferSize = Unicode::GetWcharToUTF16BufferSize(s2.length(), 2);
   UChar s2Buffer[s2BufferSize];
 
-  std::u16string_view sv1 = Unicode::WStringToUTF16WithSub(s1, s1Buffer, s1BufferSize);
-  std::u16string_view sv2 = Unicode::WStringToUTF16WithSub(s2, s2Buffer, s2BufferSize);
+  std::u16string_view sv1 = Unicode::_WStringToUTF16WithSub(s1, s1Buffer, s1BufferSize);
+  std::u16string_view sv2 = Unicode::_WStringToUTF16WithSub(s2, s2Buffer, s2BufferSize);
 
   UErrorCode status = U_ZERO_ERROR;
   int result;
@@ -1229,8 +1208,8 @@ int Unicode::StrCaseCmp(const std::wstring_view& s1,
   return result;
 }
 
-int Unicode::StrCaseCmp(const std::string_view& s1,
-    const std::string_view& s2,
+int Unicode::StrCaseCmp(std::string_view s1,
+    std::string_view s2,
     const StringOptions options,
     const bool normalize /* = false */)
 {
@@ -1251,8 +1230,8 @@ int Unicode::StrCaseCmp(const std::string_view& s1,
   size_t s2BufferSize = Unicode::GetUTF8ToUTF16BufferSize(s2.length(), 2);
   UChar s2Buffer[s2BufferSize];
 
-  std::u16string_view sv1 = Unicode::UTF8ToUTF16WithSub(s1, s1Buffer, s1BufferSize);
-  std::u16string_view sv2 = Unicode::UTF8ToUTF16WithSub(s2, s2Buffer, s2BufferSize);
+  std::u16string_view sv1 = Unicode::_UTF8ToUTF16WithSub(s1, s1Buffer, s1BufferSize);
+  std::u16string_view sv2 = Unicode::_UTF8ToUTF16WithSub(s2, s2Buffer, s2BufferSize);
 
   int result;
   UErrorCode status = U_ZERO_ERROR;
@@ -1265,10 +1244,8 @@ int Unicode::StrCaseCmp(const std::string_view& s1,
   }
   else
   {
-    StringOptions opts = options | StringOptions::COMPARE_IGNORE_CASE;
-
     result = unorm_compare(sv1.data(), sv1.length(), sv2.data(),
-        sv2.length(), to_underlying(opts), &status);
+        sv2.length(), to_underlying(options), &status);
   }
   if (U_FAILURE(status))
   {
@@ -1278,139 +1255,47 @@ int Unicode::StrCaseCmp(const std::string_view& s1,
   return result;
 }
 
-int Unicode::StrCaseCmp(const std::string_view& s1,
-    size_t s1_start,
-    size_t s1_length,
-    const std::string_view& s2,
-    size_t s2_start,
-    size_t s2_length,
-    const StringOptions options,
+int8_t Unicode::StrCmp(std::wstring_view s1,
+    std::wstring_view s2,
     const bool normalize /* = false */)
 {
-
-  // Lengths are relative to UTF8 encoding. Only send the bytes
-  // specified to the Unicode lib, otherwise there would be
-  // no way to apply the start and length later.
-  // If a multi-byte character is truncated the resulting
-  // UTF8ToUTF16WithSub conversion will contain U+FFFD codepoints Displays as "�"
-
-  if (s1.empty() and s2.empty())
-    return 0;
-
-  if (s1.empty())
-    return -1;
-
-  if (s2.empty())
-    return 1;
-
   // Create buffer on stack
 
-  // TODO: Validate s1_start, s1_length, etc. are valid (within string and
-  //       are on at least code-unit boundaries).
-
-  // Use given length instead of from string (s1).
-
-  size_t s1BufferSize = Unicode::GetUTF8ToUTF16BufferSize(s1_length, 2);
+  size_t s1BufferSize = Unicode::GetWcharToUTF16BufferSize(s1.length(), 2);
   UChar s1Buffer[s1BufferSize];
-  size_t s2BufferSize = Unicode::GetUTF8ToUTF16BufferSize(s2_length, 2);
+  size_t s2BufferSize = Unicode::GetWcharToUTF16BufferSize(s2.length(), 2);
   UChar s2Buffer[s2BufferSize];
 
-  std::u16string_view sv1 = Unicode::UTF8ToUTF16WithSub(s1, s1Buffer, s1BufferSize,
-      s1_start, s1_length);
-  std::u16string_view sv2 = Unicode::UTF8ToUTF16WithSub(s2, s2Buffer, s2BufferSize,
-      s2_start, s2_length);
+  std::u16string_view sv1 = Unicode::_WStringToUTF16WithSub(s1, s1Buffer, s1BufferSize);
+  std::u16string_view sv2 = Unicode::_WStringToUTF16WithSub(s2, s2Buffer, s2BufferSize);
 
-  UErrorCode status = U_ZERO_ERROR;
-  int result;
-  if (not normalize)
+  int8_t result;
+  if (normalize)
   {
-    result = u_strCaseCompare((char16_t *)sv1.data(), (int32_t) sv1.length(),
-        (char16_t *)sv2.data(), (int32_t) sv2.length(), to_underlying(options),
-        &status);
+    UErrorCode status = U_ZERO_ERROR;
+
+    result = unorm_compare(sv1.data(), sv1.length(), sv2.data(), sv2.length(),
+        0, &status);
+    if (U_FAILURE(status))
+    {
+      CLog::Log(LOGERROR, "Error in Unicode::StrCmp {}\n", status);
+      result = 0;  // Doesn't matter much
+    }
   }
   else
   {
-    StringOptions opts = options | StringOptions::COMPARE_IGNORE_CASE;
-    result = unorm_compare(sv1.data(), sv1.length(), sv2.data(), sv2.length(),
-        to_underlying(opts), &status);
+    // Bitwise comparison in codepoint order (no normalization, or locale considerations etc.).
+
+    result = u_strCompare(sv1.data(), sv1.length(), sv2.data(), sv2.length(), true);
   }
-  if (U_FAILURE(status))
-  {
-    CLog::Log(LOGERROR, "Error in Unicode::StrCaseCmp {}\n", status);
-    result = 0;  // Doesn't matter much
-  }
-  return result;
+
+return result;
 }
 
-int Unicode::StrCaseCmp(const std::string_view& s1,
-    const std::string_view& s2,
-    size_t n,
-    const StringOptions options,
+int8_t Unicode::StrCmp(std::string_view s1,
+    std::string_view s2,
     const bool normalize /* = false */)
 {
-
-  size_t n1 = std::min(n, s1.length());
-  size_t n2 = std::min(n, s2.length());
-
-  return Unicode::StrCaseCmp(s1, 0, n1, s2, 0, n2, options, normalize);
-}
-
-int8_t Unicode::StrCmp(const std::wstring_view& s1,
-    size_t s1_start,
-    size_t s1_length,
-    const std::wstring_view& s2,
-    size_t s2_start,
-    size_t s2_length,
-    const bool normalize /* = false */)
-{
-
-  // TODO: Use faster icu::Collator::compareUTF8()
-  // TODO: Implement Normalize
-
-  // Lengths are relative to wchar_t encoding (usually 32-bit Unicode codepoints,
-  // but can be UTF-16). Only send the bytes specified to the Unicode lib, otherwise
-  // there would be no way to apply the start and length later.
-
-  // Create buffer on stack
-
-  // TODO: Validate s1_start, s1_length, etc. are valid (within string and
-  //       are on at least code-unit boundaries).
-
-  // Use given length instead of from string (s1).
-
-  size_t s1BufferSize = Unicode::GetWcharToUTF16BufferSize(s1_length, 2);
-  UChar s1Buffer[s1BufferSize];
-  size_t s2BufferSize = Unicode::GetWcharToUTF16BufferSize(s2_length, 2);
-  UChar s2Buffer[s2BufferSize];
-
-  std::u16string_view sv1 = Unicode::WStringToUTF16WithSub(s1, s1Buffer, s1BufferSize,
-      s1_start, s1_length);
-  std::u16string_view sv2 = Unicode::WStringToUTF16WithSub(s2, s2Buffer, s2BufferSize,
-      s2_start, s2_length);
-
-  // Bitwise comparison in codepoint order (no normalization, or locale considerations etc.).
-  // Could use u_strcmp, but it does not take lengths
-
-  int8_t result = u_strCompare(sv1.data(), sv1.length(), sv2.data(), sv2.length(), true);
-  return result;
-}
-
-int8_t Unicode::StrCmp(const std::string_view& s1,
-    size_t s1_start,
-    size_t s1_length,
-    const std::string_view& s2,
-    size_t s2_start,
-    size_t s2_length,
-    const bool normalize /* = false */)
-{
-
-  // TODO: Use faster icu::Collator::compareUTF8()
-  // TODO: Implement Normalize
-
-  // Lengths are relative to UTF8 encoding. Only send the bytes
-  // specified to the Unicode lib, otherwise there would be
-  // no way to apply the start and length later.
-
   // Create buffer on stack
 
   size_t u_s1_size = Unicode::GetUTF8ToUTF16BufferSize(s1.length(), 2);
@@ -1418,17 +1303,32 @@ int8_t Unicode::StrCmp(const std::string_view& s1,
   size_t u_s2_size = Unicode::GetUTF8ToUTF16BufferSize(s2.length(), 2);
   UChar u_s2[u_s2_size];
 
-  std::u16string_view sv1 = Unicode::UTF8ToUTF16WithSub(s1, u_s1, u_s1_size);
-  std::u16string_view sv2 = Unicode::UTF8ToUTF16WithSub(s2, u_s2, u_s2_size);
+  std::u16string_view sv1 = Unicode::_UTF8ToUTF16WithSub(s1, u_s1, u_s1_size);
+  std::u16string_view sv2 = Unicode::_UTF8ToUTF16WithSub(s2, u_s2, u_s2_size);
 
-  // Bitwise comparison in codepoint order (no normalization, or locale considerations etc.).
-  // Could use u_strcmp, but it does not take lengths
+  int8_t result;
+  if (normalize)
+  {
+    UErrorCode status = U_ZERO_ERROR;
 
-  int8_t result = u_strCompare(sv1.data(), sv1.length(), sv2.data(), sv2.length(), true);
-  return result;
+    result = unorm_compare(sv1.data(), sv1.length(), sv2.data(), sv2.length(),
+        0, &status);
+    if (U_FAILURE(status))
+    {
+      CLog::Log(LOGERROR, "Error in Unicode::StrCmp {}\n", status);
+      result = 0;  // Doesn't matter much
+    }
+  }
+  else
+  {
+    // Bitwise comparison in codepoint order (no normalization, or locale considerations etc.).
+
+    result = u_strCompare(sv1.data(), sv1.length(), sv2.data(), sv2.length(), true);
+  }
+return result;
 }
 
-bool Unicode::StartsWith(const std::string_view& s1, const std::string_view& s2)
+bool Unicode::StartsWith(std::string_view s1, std::string_view s2)
 {
   // Create buffer on stack
 
@@ -1442,8 +1342,8 @@ bool Unicode::StartsWith(const std::string_view& s1, const std::string_view& s2)
   size_t s2BufferSize = Unicode::GetUTF8ToUTF16BufferSize(s2.length(), 2);
   char16_t s2Buffer[s2BufferSize];
 
-  std::u16string_view sv1 = Unicode::UTF8ToUTF16WithSub(s1, (char16_t *)s1Buffer, s1BufferSize);
-  std::u16string_view sv2 = Unicode::UTF8ToUTF16WithSub(s2, (char16_t *)s2Buffer, s2BufferSize);
+  std::u16string_view sv1 = Unicode::_UTF8ToUTF16WithSub(s1, (char16_t *)s1Buffer, s1BufferSize);
+  std::u16string_view sv2 = Unicode::_UTF8ToUTF16WithSub(s2, (char16_t *)s2Buffer, s2BufferSize);
 
   // stack Buffers backing UnicodeString
 
@@ -1468,8 +1368,8 @@ bool Unicode::StartsWith(const std::string_view& s1, const std::string_view& s2)
   return uString1.startsWith(uString2);
 }
 
-bool Unicode::StartsWithNoCase(const std::string_view& s1,
-    const std::string_view& s2,
+bool Unicode::StartsWithNoCase(std::string_view s1,
+    std::string_view s2,
     const StringOptions options)
 {
   // Create buffer on stack
@@ -1484,8 +1384,8 @@ bool Unicode::StartsWithNoCase(const std::string_view& s1,
   size_t s2BufferSize = Unicode::GetUTF8ToUTF16BufferSize(s2.length(), 2);
   char16_t s2Buffer[s2BufferSize];
 
-  std::u16string_view sv1 = Unicode::UTF8ToUTF16WithSub(s1, (char16_t *)s1Buffer, s1BufferSize);
-  std::u16string_view sv2 = Unicode::UTF8ToUTF16WithSub(s2, (char16_t *)s2Buffer, s2BufferSize);
+  std::u16string_view sv1 = Unicode::_UTF8ToUTF16WithSub(s1, (char16_t *)s1Buffer, s1BufferSize);
+  std::u16string_view sv2 = Unicode::_UTF8ToUTF16WithSub(s2, (char16_t *)s2Buffer, s2BufferSize);
 
   // stack Buffers backing UnicodeString
 
@@ -1513,7 +1413,7 @@ bool Unicode::StartsWithNoCase(const std::string_view& s1,
   UBool result = uString1.startsWith(uString2);
   return result;
 }
-bool Unicode::EndsWith(const std::string_view& s1, const std::string_view& s2)
+bool Unicode::EndsWith(std::string_view s1, std::string_view s2)
 {
   // Create buffer on stack
 
@@ -1527,8 +1427,8 @@ bool Unicode::EndsWith(const std::string_view& s1, const std::string_view& s2)
   size_t s2BufferSize = Unicode::GetUTF8ToUTF16BufferSize(s2.length(), 2);
   char16_t s2Buffer[s2BufferSize];
 
-  std::u16string_view sv1 = Unicode::UTF8ToUTF16WithSub(s1, (char16_t *)s1Buffer, s1BufferSize);
-  std::u16string_view sv2 = Unicode::UTF8ToUTF16WithSub(s2, (char16_t *)s2Buffer, s2BufferSize);
+  std::u16string_view sv1 = Unicode::_UTF8ToUTF16WithSub(s1, (char16_t *)s1Buffer, s1BufferSize);
+  std::u16string_view sv2 = Unicode::_UTF8ToUTF16WithSub(s2, (char16_t *)s2Buffer, s2BufferSize);
 
   // stack Buffers backing UnicodeString
 
@@ -1553,8 +1453,8 @@ bool Unicode::EndsWith(const std::string_view& s1, const std::string_view& s2)
   return uString1.endsWith(uString2);
 }
 
-bool Unicode::EndsWithNoCase(const std::string_view& s1,
-    const std::string_view& s2,
+bool Unicode::EndsWithNoCase(std::string_view s1,
+    std::string_view s2,
     const StringOptions options)
 {
   // Create buffer on stack
@@ -1569,8 +1469,8 @@ bool Unicode::EndsWithNoCase(const std::string_view& s1,
   size_t s2BufferSize = Unicode::GetUTF8ToUTF16BufferSize(s2.length(), 2);
   char16_t s2Buffer[s2BufferSize];
 
-  std::u16string_view sv1 = Unicode::UTF8ToUTF16WithSub(s1, (char16_t *)s1Buffer, s1BufferSize);
-  std::u16string_view sv2 = Unicode::UTF8ToUTF16WithSub(s2, (char16_t *)s2Buffer, s2BufferSize);
+  std::u16string_view sv1 = Unicode::_UTF8ToUTF16WithSub(s1, (char16_t *)s1Buffer, s1BufferSize);
+  std::u16string_view sv2 = Unicode::_UTF8ToUTF16WithSub(s2, (char16_t *)s2Buffer, s2BufferSize);
 
   // stack Buffers backing UnicodeString
 
@@ -1612,7 +1512,7 @@ bool Unicode::EndsWithNoCase(const std::string_view& s1,
  * \return leftmost characters of string, length determined by charCount
  *
  */
-std::string Unicode::Left(const std::string_view& str,
+std::string Unicode::Left(std::string_view str,
     const size_t charCount,
     const icu::Locale icuLocale,
     const bool keepLeft /* = true */)
@@ -1702,7 +1602,7 @@ std::string Unicode::Left(const std::string_view& str,
  * \return substring of str, beginning with character 'firstCharIndex',
  *         length determined by charCount
  */
-std::string Unicode::Mid(const std::string_view& str,
+std::string Unicode::Mid(std::string_view str,
     size_t startCharCount,
     size_t charCount /* = std::string::npos */)
 {
@@ -1794,7 +1694,7 @@ std::string Unicode::Mid(const std::string_view& str,
   return result.substr(0, bytesToCopy);
 }
 
-std::string Unicode::Right(const std::string_view& str,
+std::string Unicode::Right(std::string_view str,
     size_t charCount,
     const icu::Locale& icuLocale,
     bool keepRight)
@@ -1873,12 +1773,26 @@ std::string Unicode::Right(const std::string_view& str,
   return result.substr(utf8Index, std::string::npos);
 }
 
-UText* Unicode::ConfigUText(const std::string_view& str, UText* ut /* = nullptr */)
+UText* Unicode::ConfigUText(std::string_view str, UText* ut /* = nullptr */)
 {
   UErrorCode status = U_ZERO_ERROR;
 
   status = U_ZERO_ERROR;
   ut = utext_openUTF8(ut, str.data(), str.length(), &status);
+  if (U_FAILURE(status))
+  {
+    CLog::Log(LOGERROR, "Error in Unicode::ConfigUText: {}\n", status);
+    return nullptr;
+  }
+  return ut;
+}
+
+UText* Unicode::ConfigUText(const std::u16string_view& str, UText* ut /* = nullptr */)
+{
+  UErrorCode status = U_ZERO_ERROR;
+
+  status = U_ZERO_ERROR;
+  ut = utext_openUChars(ut, str.data(), str.length(), &status);
   if (U_FAILURE(status))
   {
     CLog::Log(LOGERROR, "Error in Unicode::ConfigUText: {}\n", status);
@@ -2053,7 +1967,7 @@ size_t Unicode::GetCharPosition(const icu::UnicodeString& uStr,
   return charIdx;
 }
 
-size_t Unicode::GetCharPosition(const std::string_view& str,
+size_t Unicode::GetCharPosition(std::string_view str,
     const size_t charCountArg,
     const bool left,
     const bool keepLeft,
@@ -2076,7 +1990,7 @@ size_t Unicode::GetCharPosition(const std::string_view& str,
   return utf8Index;
 }
 
-std::string Unicode::Trim(const std::string_view& s1)
+std::string Unicode::Trim(std::string_view s1)
 {
   // TODO: change to use uniset.h spanUTF8
 
@@ -2090,7 +2004,7 @@ std::string Unicode::Trim(const std::string_view& s1)
   size_t s1BufferSize = Unicode::GetUTF8ToUTF16BufferSize(s1.length(), 2);
   char16_t s1Buffer[s1BufferSize];
 
-  std::u16string_view sv1 = Unicode::UTF8ToUTF16WithSub(s1, (char16_t *)s1Buffer, s1BufferSize);
+  std::u16string_view sv1 = Unicode::_UTF8ToUTF16WithSub(s1, (char16_t *)s1Buffer, s1BufferSize);
 
   // stack Buffers backing UnicodeString
 
@@ -2111,84 +2025,84 @@ std::string Unicode::Trim(const std::string_view& s1)
   return result;
 }
 
-std::string Unicode::TrimLeft(const std::string_view& s1)
+std::string Unicode::TrimLeft(std::string_view s1)
 {
   // TODO: change to use uniset.h spanUTF8
 
-   // Create buffer on stack
+  // Create buffer on stack
 
-   // TODO: Validate s1_start, s1_length, etc. are valid (within string and
-   //       are on at least code-unit boundaries).
+  // TODO: Validate s1_start, s1_length, etc. are valid (within string and
+  //       are on at least code-unit boundaries).
 
-   // Use given length instead of from string (s1).
+  // Use given length instead of from string (s1).
 
-   size_t s1BufferSize = Unicode::GetUTF8ToUTF16BufferSize(s1.length(), 2);
-   char16_t s1Buffer[s1BufferSize];
+  size_t s1BufferSize = Unicode::GetUTF8ToUTF16BufferSize(s1.length(), 2);
+  char16_t s1Buffer[s1BufferSize];
 
-   std::u16string_view sv1 = Unicode::UTF8ToUTF16WithSub(s1, (char16_t *)s1Buffer, s1BufferSize);
+  std::u16string_view sv1 = Unicode::_UTF8ToUTF16WithSub(s1, (char16_t *)s1Buffer, s1BufferSize);
 
-   // stack Buffers backing UnicodeString
+  // stack Buffers backing UnicodeString
 
-   size_t us1BufferSize = Unicode::GetUTF16WorkingSize(sv1.length(), 3);
-   char16_t us1Buffer[us1BufferSize];
+  size_t us1BufferSize = Unicode::GetUTF16WorkingSize(sv1.length(), 3);
+  char16_t us1Buffer[us1BufferSize];
 
-   std::u16string_view usSV1{us1Buffer, us1BufferSize};
+  std::u16string_view usSV1{us1Buffer, us1BufferSize};
 
-   // Allocate empty buffer to UnicodeString
-   icu::UnicodeString uString1 = icu::UnicodeString((char16_t *)usSV1.data(), 0, (int32_t) usSV1.length());
+  // Allocate empty buffer to UnicodeString
+  icu::UnicodeString uString1 = icu::UnicodeString((char16_t *)usSV1.data(), 0, (int32_t) usSV1.length());
 
-   // Copy utf16 version of s1 to UnicodeString
+  // Copy utf16 version of s1 to UnicodeString
 
-   uString1.append(sv1.data(), 0, sv1.length());
+  uString1.append(sv1.data(), 0, sv1.length());
 
   std::string result = std::string();
   Unicode::Trim(uString1, true, false).toUTF8String(result);
   return result;
 }
 
-std::string Unicode::TrimLeft(const std::string_view& s1, const std::string_view s2)
+std::string Unicode::TrimLeft(std::string_view s1, const std::string_view s2)
 {
   // Create buffer on stack
 
-   // TODO: Validate s1_start, s1_length, etc. are valid (within string and
-   //       are on at least code-unit boundaries).
+  // TODO: Validate s1_start, s1_length, etc. are valid (within string and
+  //       are on at least code-unit boundaries).
 
-   // Use given length instead of from string (s1).
+  // Use given length instead of from string (s1).
 
-   size_t s1BufferSize = Unicode::GetUTF8ToUTF16BufferSize(s1.length(), 2);
-   char16_t s1Buffer[s1BufferSize];
-   size_t s2BufferSize = Unicode::GetUTF8ToUTF16BufferSize(s2.length(), 2);
-   char16_t s2Buffer[s2BufferSize];
+  size_t s1BufferSize = Unicode::GetUTF8ToUTF16BufferSize(s1.length(), 2);
+  char16_t s1Buffer[s1BufferSize];
+  size_t s2BufferSize = Unicode::GetUTF8ToUTF16BufferSize(s2.length(), 2);
+  char16_t s2Buffer[s2BufferSize];
 
-   std::u16string_view sv1 = Unicode::UTF8ToUTF16WithSub(s1, (char16_t *)s1Buffer, s1BufferSize);
-   std::u16string_view sv2 = Unicode::UTF8ToUTF16WithSub(s2, (char16_t *)s2Buffer, s2BufferSize);
+  std::u16string_view sv1 = Unicode::_UTF8ToUTF16WithSub(s1, (char16_t *)s1Buffer, s1BufferSize);
+  std::u16string_view sv2 = Unicode::_UTF8ToUTF16WithSub(s2, (char16_t *)s2Buffer, s2BufferSize);
 
-   // stack Buffers backing UnicodeString
+  // stack Buffers backing UnicodeString
 
-   size_t us1BufferSize = Unicode::GetUTF16WorkingSize(sv1.length(), 3);
-   char16_t us1Buffer[us1BufferSize];
-   size_t us2BufferSize = Unicode::GetUTF16WorkingSize(sv2.length(), 3);
-   char16_t us2Buffer[us2BufferSize];
+  size_t us1BufferSize = Unicode::GetUTF16WorkingSize(sv1.length(), 3);
+  char16_t us1Buffer[us1BufferSize];
+  size_t us2BufferSize = Unicode::GetUTF16WorkingSize(sv2.length(), 3);
+  char16_t us2Buffer[us2BufferSize];
 
-   std::u16string_view usSV1{us1Buffer, us1BufferSize};
-   std::u16string_view usSV2{us2Buffer, us2BufferSize};
+  std::u16string_view usSV1{us1Buffer, us1BufferSize};
+  std::u16string_view usSV2{us2Buffer, us2BufferSize};
 
 
-   // Allocate empty buffer to UnicodeString
-   icu::UnicodeString uString1 = icu::UnicodeString((char16_t *)usSV1.data(), 0, (int32_t) usSV1.length());
-   icu::UnicodeString uTrimChars = icu::UnicodeString((char16_t *)usSV2.data(), 0, (int32_t) usSV2.length());
+  // Allocate empty buffer to UnicodeString
+  icu::UnicodeString uString1 = icu::UnicodeString((char16_t *)usSV1.data(), 0, (int32_t) usSV1.length());
+  icu::UnicodeString uTrimChars = icu::UnicodeString((char16_t *)usSV2.data(), 0, (int32_t) usSV2.length());
 
-   // Copy utf16 version of s1 to UnicodeString
+  // Copy utf16 version of s1 to UnicodeString
 
-   uString1.append(sv1.data(), 0, sv1.length());
-   uTrimChars.append(sv2.data(), 0, sv2.length());
+  uString1.append(sv1.data(), 0, sv1.length());
+  uTrimChars.append(sv2.data(), 0, sv2.length());
 
   std::string result = std::string();
   Unicode::Trim(uString1, uTrimChars, true, false).toUTF8String(result);
   return result;
 }
 
-std::string Unicode::TrimRight(const std::string_view& str)
+std::string Unicode::TrimRight(std::string_view str)
 {
   // TODO: change to use uniset.h spanBackUTF8
 
@@ -2198,40 +2112,40 @@ std::string Unicode::TrimRight(const std::string_view& str)
   return result;
 }
 
-std::string Unicode::TrimRight(const std::string_view& s1, const std::string_view trimChars)
+std::string Unicode::TrimRight(std::string_view s1, const std::string_view trimChars)
 {
   // Create buffer on stack
 
-   // TODO: Validate s1_start, s1_length, etc. are valid (within string and
-   //       are on at least code-unit boundaries).
+  // TODO: Validate s1_start, s1_length, etc. are valid (within string and
+  //       are on at least code-unit boundaries).
 
-   // Use given length instead of from string (s1).
+  // Use given length instead of from string (s1).
 
-   size_t s1BufferSize = Unicode::GetUTF8ToUTF16BufferSize(s1.length(), 2);
-   char16_t s1Buffer[s1BufferSize];
-   size_t s2BufferSize = Unicode::GetUTF8ToUTF16BufferSize(trimChars.length(), 2);
-   char16_t s2Buffer[s2BufferSize];
+  size_t s1BufferSize = Unicode::GetUTF8ToUTF16BufferSize(s1.length(), 2);
+  char16_t s1Buffer[s1BufferSize];
+  size_t s2BufferSize = Unicode::GetUTF8ToUTF16BufferSize(trimChars.length(), 2);
+  char16_t s2Buffer[s2BufferSize];
 
-   std::u16string_view sv1 = Unicode::UTF8ToUTF16WithSub(s1, (char16_t *)s1Buffer, s1BufferSize);
-   std::u16string_view sv2 = Unicode::UTF8ToUTF16WithSub(trimChars, (char16_t *)s2Buffer, s2BufferSize);
+  std::u16string_view sv1 = Unicode::_UTF8ToUTF16WithSub(s1, (char16_t *)s1Buffer, s1BufferSize);
+  std::u16string_view sv2 = Unicode::_UTF8ToUTF16WithSub(trimChars, (char16_t *)s2Buffer, s2BufferSize);
 
-   // stack Buffers backing UnicodeString
+  // stack Buffers backing UnicodeString
 
-   size_t us1BufferSize = Unicode::GetUTF16WorkingSize(sv1.length(), 3);
-   char16_t us1Buffer[us1BufferSize];
-   size_t us2BufferSize = Unicode::GetUTF16WorkingSize(sv2.length(), 3);
-   char16_t us2Buffer[us2BufferSize];
+  size_t us1BufferSize = Unicode::GetUTF16WorkingSize(sv1.length(), 3);
+  char16_t us1Buffer[us1BufferSize];
+  size_t us2BufferSize = Unicode::GetUTF16WorkingSize(sv2.length(), 3);
+  char16_t us2Buffer[us2BufferSize];
 
-   std::u16string_view usSV1{us1Buffer, us1BufferSize};
-   std::u16string_view usSV2{us2Buffer, us2BufferSize};
+  std::u16string_view usSV1{us1Buffer, us1BufferSize};
+  std::u16string_view usSV2{us2Buffer, us2BufferSize};
 
-   // Allocate empty buffer to UnicodeStrings
-   icu::UnicodeString uString1 = icu::UnicodeString((char16_t *)usSV1.data(), 0, (int32_t) usSV1.length());
-   icu::UnicodeString uTrimChars = icu::UnicodeString((char16_t *)usSV2.data(), 0, (int32_t) usSV2.length());
+  // Allocate empty buffer to UnicodeStrings
+  icu::UnicodeString uString1 = icu::UnicodeString((char16_t *)usSV1.data(), 0, (int32_t) usSV1.length());
+  icu::UnicodeString uTrimChars = icu::UnicodeString((char16_t *)usSV2.data(), 0, (int32_t) usSV2.length());
 
-   // Could create stack-based UnicodeString for return value. However it would
-   // be pass by reference.... For now, allocate it from heap in the function and be
-   // done with it. Cleaner, if a tiny bit slower.
+  // Could create stack-based UnicodeString for return value. However it would
+  // be pass by reference.... For now, allocate it from heap in the function and be
+  // done with it. Cleaner, if a tiny bit slower.
 
   std::string result = std::string();
   Unicode::Trim(uString1, uTrimChars, false, true).toUTF8String(result);
@@ -2302,14 +2216,14 @@ icu::UnicodeString Unicode::Trim(const icu::UnicodeString& uStr,
   return str;
 }
 
-std::string Unicode::Trim(const std::string_view& str,
-    const std::vector<std::string>& trimChars,
+std::string Unicode::Trim(std::string_view str,
+    const std::vector<std::string_view>& trimStrings,
     const bool trimLeft,
     const bool trimRight)
 {
   icu::UnicodeString uStr = Unicode::ToUnicodeString(str);
   std::vector<icu::UnicodeString> uDeleteStrings = std::vector<icu::UnicodeString>();
-  for (auto delString : trimChars)
+  for (auto delString : trimStrings)
   {
     icu::UnicodeString utrimChars = Unicode::ToUnicodeString(delString);
     uDeleteStrings.push_back(utrimChars);
@@ -2474,8 +2388,8 @@ icu::UnicodeString Unicode::Trim(const icu::UnicodeString& uStr,
   return str;
 }
 
-std::string Unicode::Trim(const std::string_view& str,
-    const std::string_view& trimChars,
+std::string Unicode::Trim(std::string_view str,
+    std::string_view trimChars,
     const bool trimLeft,
     const bool trimRight)
 {
@@ -2495,8 +2409,8 @@ std::string Unicode::Trim(const std::string_view& str,
   std::vector<icu::UnicodeString> deleteSet = std::vector<icu::UnicodeString>();
   if (trimChars.length() == 1)
   {
-    icu::UnicodeString kDelChars = Unicode::ToUnicodeString(trimChars);
-    deleteSet.push_back(kDelChars);
+    icu::UnicodeString uDelChars = Unicode::ToUnicodeString(trimChars);
+    deleteSet.push_back(uDelChars);
   }
   else
   {
@@ -2549,32 +2463,33 @@ std::string Unicode::Trim(const std::string_view& str,
   result = uString.toUTF8String(result);
   return result;
 }
-
+/*
 [[deprecated("FindAndReplace is faster, returned count not used.")]] std::tuple<std::string, int>
-Unicode::FindCountAndReplace(const std::string_view& src,
-    const std::string_view& oldText,
-    const std::string_view& newText)
+Unicode::FindCountAndReplace(std::string_view src,
+    std::string_view oldText,
+    std::string_view newText)
 {
-  icu::UnicodeString kSrc = Unicode::ToUnicodeString(src);
-  icu::UnicodeString kOldText = Unicode::ToUnicodeString(oldText);
-  icu::UnicodeString kNewText = Unicode::ToUnicodeString(newText);
+  icu::UnicodeString uSrc = Unicode::ToUnicodeString(src);
+  icu::UnicodeString uOldText = Unicode::ToUnicodeString(oldText);
+  icu::UnicodeString uNewText = Unicode::ToUnicodeString(newText);
   std::tuple<icu::UnicodeString, int> result =
-      Unicode::FindCountAndReplace(kSrc, kOldText, kNewText);
+      Unicode::FindCountAndReplace(uSrc, uOldText, uNewText);
   icu::UnicodeString kResultStr = std::get<0>(result);
   int changes = std::get<1>(result);
   std::string resultStr = std::string();
   kResultStr.toUTF8String(resultStr);
   return {resultStr, changes};
 }
-
+*/
+/*
 [[deprecated(
     "FindAndReplace is faster, returned count not used.")]] std::tuple<icu::UnicodeString, int>
-Unicode::FindCountAndReplace(const icu::UnicodeString& kSrc,
-    const icu::UnicodeString& kOldText,
-    const icu::UnicodeString& kNewText)
+Unicode::FindCountAndReplace(const icu::UnicodeString& src,
+    const icu::UnicodeString& oldText,
+    const icu::UnicodeString&newText)
 {
-  return Unicode::FindCountAndReplace(kSrc, 0, kSrc.length(), kOldText, 0, kOldText.length(),
-      kNewText, 0, kNewText.length());
+  return Unicode::FindCountAndReplace(src, 0, src.length(), oldText, 0, oldText.length(),
+      newText, 0, newText.length());
 }
 
 [[deprecated(
@@ -2621,9 +2536,60 @@ Unicode::FindCountAndReplace(const icu::UnicodeString& srcText,
     }
   }
   return {resultStr, changes};
-}
+} */
 
-bool Unicode::FindWord(const std::string_view& str, const std::string_view& word)
+/*
+size_t Unicode::FindDifference(const std::string_view left, const std::string_view right,
+    bool caseless / * = false * /)
+{
+  if (left.length() == 0 or right.length() == 0)
+    return 0;
+
+  std::string result = std::string();
+
+   // Convert to UTF16
+
+   size_t left_s1_bufferSize = Unicode::GetUTF8ToUTF16BufferSize(left.length(), 1.5);
+   char16_t left_s1_buffer[left_s1_bufferSize];
+   std::u16string_view left_sv1 = Unicode::_UTF8ToUTF16WithSub(left, left_s1_buffer, left_s1_bufferSize);
+
+
+   size_t right_s1_bufferSize = Unicode::GetUTF8ToUTF16BufferSize(right.length(), 1.5);
+   char16_t right_s1_buffer[right_s1_bufferSize];
+   std::u16string_view right_sv1 = Unicode::_UTF8ToUTF16WithSub(right, right_s1_buffer, right_s1_bufferSize);
+
+   // Create buffers to hold case fold results
+
+   size_t left_s2_bufferSize = Unicode::GetUTF8ToUTF16BufferSize(left_sv1.length(), 1.5);
+    char16_t left_s2_buffer[left_s2_bufferSize];
+    std::u16string_view left_sv2{left_s2_buffer, left_s2_bufferSize};
+
+
+    size_t right_s2_bufferSize = Unicode::GetUTF8ToUTF16BufferSize(right_sv1.length(), 1.5);
+    char16_t right_s2_buffer[right_s2_bufferSize];
+    std::u16string_view right_sv2{right_s2_buffer, right_s2_bufferSize};
+
+    // Finally, can find where strings differ
+
+    // So far haven't found a way to FoldCase one codepoint at a time. Must exist.
+    // In the mean time, will do an iterative search:
+    // Check first character
+    // Check both full-length strings
+    // based upon where the difference is, (i.e 1/3 of the way into the shorter
+    // string, then set the next try at 1/3 of length of original string)
+
+    // Check first character. If no match, we are done.
+
+    // This is fraught with peril. Two strings that are caselesslesly equivalent, do not
+    // necessarily have the same length. Will return length of the original shorter string.
+
+    std::u16string_view leftFolded = Unicode::_FoldCase(left_sv1, left_sv2);
+
+    std::u16string_view rightFolded = Unicode::_FoldCase(right_sv1, left_sv2);
+}
+*/
+
+bool Unicode::FindWord(std::string_view str, std::string_view word)
 {
 
   icu::UnicodeString uString = Unicode::ToUnicodeString(str);
@@ -2738,7 +2704,7 @@ bool Unicode::FindWord(const std::string_view& str, const std::string_view& word
  *
  */
 
-std::string Unicode::FindAndReplace(const std::string_view& str,
+std::string Unicode::FindAndReplace(std::string_view str,
     const std::string_view oldText,
     const std::string_view newText)
 {
@@ -2746,82 +2712,19 @@ std::string Unicode::FindAndReplace(const std::string_view& str,
   icu::UnicodeString uOldText = Unicode::ToUnicodeString(oldText);
   icu::UnicodeString uNewText = Unicode::ToUnicodeString(newText);
 
-  uString.findAndReplace(uOldText, uNewText);
+  icu::UnicodeString x = uString.findAndReplace(uOldText, uNewText);
 
   std::string resultStr = std::string();
   resultStr = uString.toUTF8String(resultStr);
   return resultStr;
 }
-
 /*
  * Regular expression patterns for this lib can be found at:
  * normal whitespace pattern: "\h"
  * https://unicode-org.github.io/icu/userguide/strings/regexp.html
  *
  */
-size_t Unicode::RegexFind(const std::string_view& str, const std::string_view pattern, const int flags)
-{
-  // TODO: incomplete. Poorly defined
-
-  icu::UnicodeString uString = Unicode::ToUnicodeString(str);
-  icu::UnicodeString uPattern = Unicode::ToUnicodeString(pattern);
-  size_t index = str.npos;
-
-  UErrorCode status = U_ZERO_ERROR;
-  icu::RegexMatcher* matcher = new icu::RegexMatcher(uPattern, uString, flags, status);
-
-  if (U_FAILURE(status))
-  {
-    CLog::Log(LOGERROR, "Error in Unicode::RegexFind a {}\n", status);
-    delete (matcher);
-    return index;
-  }
-
-  while (matcher->find())
-  {
-    index = matcher->start(status);
-    if (U_FAILURE(status))
-    {
-      CLog::Log(LOGERROR, "Error in Unicode::RegexFind 2 {}\n", status);
-      delete (matcher);
-      return index;
-    }
-    int groups = matcher->groupCount();
-
-    for (int i = 0; i <= groups; i++) // group 0 is not included in count.
-    {
-      icu::UnicodeString match = matcher->group(i, status);
-      if (U_FAILURE(status))
-      {
-        CLog::Log(LOGERROR, "Error in Unicode::RegexFind c {}\n", status);
-        delete (matcher);
-        return index;
-      }
-      if (match.length() > 0)
-      {
-        index = matcher->start(i, status);
-        if (U_FAILURE(status))
-        {
-          CLog::Log(LOGERROR, "Error in Unicode::RegexFind d {}\n", status);
-          delete (matcher);
-          return index;
-        }
-      }
-      std::string val = std::string();
-      match.toUTF8String(val);
-    }
-  }
-  delete (matcher);
-  return index;
-}
-
-/*
- * Regular expression patterns for this lib can be found at:
- * normal whitespace pattern: "\h"
- * https://unicode-org.github.io/icu/userguide/strings/regexp.html
- *
- */
-std::string Unicode::RegexReplaceAll(const std::string_view& str,
+std::string Unicode::RegexReplaceAll(std::string_view str,
     const std::string_view pattern,
     const std::string_view replace,
     const int flags)
@@ -2853,45 +2756,45 @@ std::string Unicode::RegexReplaceAll(const std::string_view& str,
   return result;
 }
 
-icu::UnicodeString Unicode::RegexReplaceAll(const icu::UnicodeString& uString,
-    const icu::UnicodeString kPattern,
-    const icu::UnicodeString kReplace,
+icu::UnicodeString Unicode::RegexReplaceAll(const icu::UnicodeString& str,
+    const icu::UnicodeString pattern,
+    const icu::UnicodeString uReplace,
     const int flags)
 {
   UErrorCode status = U_ZERO_ERROR;
-  icu::RegexMatcher* matcher = new icu::RegexMatcher(kPattern, uString, flags, status);
+  icu::RegexMatcher* matcher = new icu::RegexMatcher(pattern, str, flags, status);
   if (U_FAILURE(status))
   {
     CLog::Log(LOGERROR, "Error in Unicode::RegexReplaceAll a {}\n", status);
     delete matcher;
-    icu::UnicodeString uResult = icu::UnicodeString(uString);
+    icu::UnicodeString uResult = icu::UnicodeString(str);
     return uResult;
   }
-  icu::UnicodeString result = matcher->replaceAll(kReplace, status);
+  icu::UnicodeString result = matcher->replaceAll(uReplace, status);
   if (U_FAILURE(status))
   {
     CLog::Log(LOGERROR, "Error in Unicode::RegexReplaceAll b {}\n", status);
     delete matcher;
-    icu::UnicodeString uResult = icu::UnicodeString(uString);
+    icu::UnicodeString uResult = icu::UnicodeString(str);
     return uResult;
   }
 
   delete matcher;
-  icu::UnicodeString uResult = icu::UnicodeString(uString);
+  icu::UnicodeString uResult = icu::UnicodeString(str);
   return uResult;
 }
 
-int32_t Unicode::countOccurances(const std::string_view& strInput,
-    const std::string_view& strFind,
+int32_t Unicode::countOccurances(std::string_view strInput,
+    std::string_view strFind,
     const int flags)
 {
-  icu::UnicodeString kstr = Unicode::ToUnicodeString(strInput);
-  icu::UnicodeString kstrFind = Unicode::ToUnicodeString(strFind);
+  icu::UnicodeString uStr = Unicode::ToUnicodeString(strInput);
+  icu::UnicodeString uStrFind = Unicode::ToUnicodeString(strFind);
   int32_t count = 0;
 
   UErrorCode status = U_ZERO_ERROR;
 
-  icu::RegexMatcher* matcher = new icu::RegexMatcher(kstrFind, kstr, flags, status);
+  icu::RegexMatcher* matcher = new icu::RegexMatcher(uStrFind, uStr, flags, status);
   if (U_FAILURE(status))
   {
     CLog::Log(LOGERROR, "Error in Unicode::countOccurances {}\n", status);
@@ -2911,8 +2814,8 @@ int32_t Unicode::countOccurances(const std::string_view& strInput,
 
 template<typename OutputIt>
 OutputIt Unicode::SplitTo(OutputIt d_first,
-    const icu::UnicodeString& kInput,
-    const icu::UnicodeString& kDelimiter,
+    const icu::UnicodeString& uInput,
+    const icu::UnicodeString& uDelimiter,
     size_t iMaxStrings /* = 0 */,
     const bool omitEmptyStrings /* = false */)
 {
@@ -2920,18 +2823,18 @@ OutputIt Unicode::SplitTo(OutputIt d_first,
   OutputIt dest = d_first;
 
   // If empty string in, then nothing out (not even empty string)
-  if (kInput.isEmpty())
+  if (uInput.isEmpty())
     return dest;
 
   // If Nothing to split with, then no change to the input
 
-  if (kDelimiter.isEmpty())
+  if (uDelimiter.isEmpty())
   {
-    *d_first++ = kInput;
+    *d_first++ = uInput;
     return dest;
   }
 
-  const size_t delimLen = kDelimiter.length();
+  const size_t delimLen = uDelimiter.length();
   size_t nextDelim;
   size_t textPos = 0;
   do
@@ -2941,14 +2844,14 @@ OutputIt Unicode::SplitTo(OutputIt d_first,
     {
       // Once limit reached, append remaining text to result and leave
 
-      if (!omitEmptyStrings or (textPos < (size_t)kInput.length()))
+      if (!omitEmptyStrings or (textPos < (size_t)uInput.length()))
       {
-        *d_first++ = kInput.tempSubString(textPos);
+        *d_first++ = uInput.tempSubString(textPos);
       }
       break;
     }
 
-    nextDelim = kInput.indexOf(kDelimiter, textPos);
+    nextDelim = uInput.indexOf(uDelimiter, textPos);
     size_t uNextDelim = nextDelim; // std::string::npos / -1 handled differently
 
     // UnicodeString.tempSubstring changes any length < 0 (npos) to 0
@@ -2956,11 +2859,11 @@ OutputIt Unicode::SplitTo(OutputIt d_first,
     // to the maximum usable size (like std::string functions).
 
     if (uNextDelim == std::string::npos)
-      uNextDelim = kInput.length();
+      uNextDelim = uInput.length();
 
     if (!omitEmptyStrings or (uNextDelim > textPos))
     {
-      *d_first++ = kInput.tempSubString(textPos, uNextDelim - textPos);
+      *d_first++ = uInput.tempSubString(textPos, uNextDelim - textPos);
     }
     textPos = uNextDelim + delimLen;
   } while (nextDelim != ::std::string::npos);
@@ -3084,8 +2987,8 @@ std::vector<icu::UnicodeString> Unicode::SplitMulti(
   return results;
 }
 
-std::vector<std::string> Unicode::SplitMulti(const std::vector<std::string>& input,
-    const std::vector<std::string>& delimiters,
+std::vector<std::string> Unicode::SplitMulti(const std::vector<std::string_view>& input,
+    const std::vector<std::string_view>& delimiters,
     size_t iMaxStrings)
 {
   if (input.empty())
@@ -3095,34 +2998,34 @@ std::vector<std::string> Unicode::SplitMulti(const std::vector<std::string>& inp
 
   if (delimiters.empty() || (iMaxStrings > 0 && iMaxStrings <= input.size()))
   {
-    results = std::vector<std::string>(input);
+    results = UnicodeUtils::ToString(input);
     return results;
   }
 
-  std::vector<icu::UnicodeString> kInput = std::vector<icu::UnicodeString>();
-  std::vector<icu::UnicodeString> kDelimiters = std::vector<icu::UnicodeString>();
+  std::vector<icu::UnicodeString> uInput = std::vector<icu::UnicodeString>();
+  std::vector<icu::UnicodeString> uDelimiters = std::vector<icu::UnicodeString>();
 
   for (size_t i = 0; i < input.size(); i++)
   {
-    icu::UnicodeString kI = Unicode::ToUnicodeString(input[i]);
-    kInput.push_back(kI);
+    icu::UnicodeString uI = Unicode::ToUnicodeString(input[i]);
+    uInput.push_back(uI);
   }
 
   for (size_t i = 0; i < delimiters.size(); i++)
   {
-    icu::UnicodeString kD = Unicode::ToUnicodeString(delimiters[i]);
-    kDelimiters.push_back(kD);
+    icu::UnicodeString uD = Unicode::ToUnicodeString(delimiters[i]);
+    uDelimiters.push_back(uD);
   }
 
-  std::vector<icu::UnicodeString> kResults = SplitMulti(kInput, kDelimiters, iMaxStrings);
+  std::vector<icu::UnicodeString> uResults = SplitMulti(uInput, uDelimiters, iMaxStrings);
 
   results = std::vector<std::string>();
-  for (size_t i = 0; i < kResults.size(); i++)
+  for (size_t i = 0; i < uResults.size(); i++)
   {
     // Assuming that the returned UChar string has no invalid code-units, other than the ones
     // marked invalid in the first place. Therefore, we can use the cheaper conversion to UTF8.
 
-    std::u16string_view  UCharStr = std::u16string_view(kResults[i].getBuffer(), kResults[i].length());
+    std::u16string_view  UCharStr = std::u16string_view(uResults[i].getBuffer(), uResults[i].length());
     std::string tempStr = Unicode::UTF16ToUTF8(UCharStr);
     results.push_back(tempStr);
   }
@@ -3130,14 +3033,14 @@ std::vector<std::string> Unicode::SplitMulti(const std::vector<std::string>& inp
   return results;
 }
 
-bool Unicode::Contains(const std::string_view& str, const std::vector<std::string>& keywords)
+bool Unicode::Contains(std::string_view str, const std::vector<std::string_view>& keywords)
 {
 
   // Moved code to here because it may need more than just
   // byte compare, but for the moment just do byte compare, as was
   // originally done.
 
-  for (std::vector<std::string>::const_iterator it = keywords.begin(); it != keywords.end(); ++it)
+  for (std::vector<std::string_view>::const_iterator it = keywords.begin(); it != keywords.end(); ++it)
   {
     if (str.find(*it) != str.npos)
       return true;
@@ -3150,13 +3053,13 @@ thread_local icu::Collator* myCollator = nullptr;
 thread_local std::chrono::steady_clock::time_point myCollatorStart =
     std::chrono::steady_clock::now();
 
-bool Unicode::InitializeCollator(std::locale locale, bool Normalize /* = false */)
+bool Unicode::InitializeCollator(std::locale locale, bool normalize /* = false */)
 {
   icu::Locale icuLocale = Unicode::GetICULocale(locale);
-  return Unicode::InitializeCollator(icuLocale, Normalize);
+  return Unicode::InitializeCollator(icuLocale, normalize);
 }
 
-bool Unicode::InitializeCollator(icu::Locale icuLocale, bool Normalize /* = false */)
+bool Unicode::InitializeCollator(icu::Locale icuLocale, bool normalize /* = false */)
 {
   UErrorCode status = U_ZERO_ERROR;
   icu::UnicodeString dispName;
@@ -3185,7 +3088,7 @@ bool Unicode::InitializeCollator(icu::Locale icuLocale, bool Normalize /* = fals
 
   status = U_ZERO_ERROR;
 
-  if (Normalize)
+  if (normalize)
     myCollator->setAttribute(UCOL_NORMALIZATION_MODE, UCOL_ON, status);
   else
     myCollator->setAttribute(UCOL_NORMALIZATION_MODE, UCOL_OFF, status);
@@ -3236,7 +3139,7 @@ void Unicode::SortCompleted(int sortItems)
  * https://unicode-org.github.io/icu/userguide/collation/faq.html
  *
  */
-int32_t Unicode::Collate(const std::wstring_view& left, const std::wstring_view& right)
+int32_t Unicode::Collate(std::wstring_view left, std::wstring_view right)
 {
 
   // TODO: Create UTF8 version of Collate for coll.h compareUTF8
@@ -3254,11 +3157,11 @@ int32_t Unicode::Collate(const std::wstring_view& left, const std::wstring_view&
 
   size_t leftBufferSize = Unicode::GetWcharToUTF16BufferSize(left.length(), 1);
   UChar leftBuffer[leftBufferSize];
-  std::u16string_view lsv = Unicode::WStringToUTF16WithSub(left, leftBuffer, leftBufferSize);
+  std::u16string_view lsv = Unicode::_WStringToUTF16WithSub(left, leftBuffer, leftBufferSize);
 
   size_t rightBufferSize = Unicode::GetWcharToUTF16BufferSize(right.length(), 1);
   UChar rightBuffer[rightBufferSize];
-  std::u16string_view rsv = Unicode::WStringToUTF16WithSub(right, rightBuffer, rightBufferSize);
+  std::u16string_view rsv = Unicode::_WStringToUTF16WithSub(right, rightBuffer, rightBufferSize);
 
   status = U_ZERO_ERROR;
   UCollationResult result;
@@ -3269,3 +3172,41 @@ int32_t Unicode::Collate(const std::wstring_view& left, const std::wstring_view&
   }
   return result;
 }
+
+int32_t Unicode::Collate(std::u16string_view left, std::u16string_view right)
+{
+
+  // TODO: Create UTF8 version of Collate for coll.h compareUTF8
+
+  UErrorCode status = U_ZERO_ERROR;
+
+  if (myCollator == nullptr)
+  {
+    CLog::Log(LOGWARNING, "Unicode::Collate_16 Collator NOT configured\n");
+    return INT_MIN;
+  }
+
+  status = U_ZERO_ERROR;
+  UCollationResult result;
+  result = myCollator->compare(left.data(), left.length(), right.data(), right.length(), status);
+  if (U_FAILURE(status))
+  {
+    CLog::Log(LOGWARNING, "Unicode::Collate_16 Failed compare");
+  }
+  return result;
+}
+
+const std::u16string Unicode::TestHeapLessUTF8ToUTF16(std::string_view s1)
+{
+   std::u16string result = Unicode::UTF8ToUTF16(s1);
+   return result;
+ }
+
+const std::string Unicode::TestHeapLessUTF16ToUTF8(std::u16string_view s1)
+{
+
+ // No stack needed in this case
+
+   std::string result = Unicode::UTF16ToUTF8(s1);
+   return result;
+ }

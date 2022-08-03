@@ -28,6 +28,12 @@ constexpr auto to_underlying(E e) noexcept
   return static_cast<std::underlying_type_t<E>>(e);
 }
 
+// #define PRIVATE private:
+
+// Disable private for testing
+
+#define PRIVATE
+
 enum class StringOptions : uint32_t
 {
 
@@ -332,7 +338,7 @@ public:
    *   \param str UTF8 string_view to convert
    *   \return converted utf16 string
    */
-  static std::u16string UTF8ToUTF16(const std::string_view& str);
+  static std::u16string UTF8ToUTF16(std::string_view str);
 
   /*!
    * \brief Convert utf-8 string_view to utf-32 (native Unicode codepoint format)
@@ -350,7 +356,7 @@ public:
    *  \param str UTF8 string_view to convert
    *  \return converted wstring
    */
-  static std::wstring UTF8ToWString(const std::string_view& str);
+  static std::wstring UTF8ToWString(std::string_view str);
 
   /*!
    *  \brief Convert a UTF16 u16string_view to utf8
@@ -404,19 +410,19 @@ public:
    * \param str wstring_view to convert
    * \return string converted to UTF8
    */
-  static std::string WStringToUTF8(const std::wstring_view& str);
+  static std::string WStringToUTF8(std::wstring_view str);
 
-private:
+  PRIVATE
   /*!
    * \brief Convert a string_view into a u16string. Malformed codepoints are
    * replaced by 0xFFFD which displays as "�"
+   *
+   * NOTE: returned u16string_view is only valid as long as the buffer exists
    *
    * \param src UTF8 string to convert to UChars and write to a UTF16 buffer
    * \param buffer to write to
    * \param bufferSize maximum number of UChars that can be written to
    *         the buffer.
-   * \param src_offset offset (in bytes) to begin the conversion to UChars
-   * \param src_length maximum number of UTF-8 bytes to convert to UChars
    * \return a reference to buffer
    *
    * Avoids allocating temp space from the heap by having buffer be a local
@@ -425,20 +431,19 @@ private:
    * Substituting malformed codepoints to 0xFFFD does not significantly impact
    * performance.
    */
-  static std::u16string_view UTF8ToUTF16WithSub(const std::string_view& src,
+  static std::u16string_view _UTF8ToUTF16WithSub(std::string_view src,
                               UChar* buffer,
-                              size_t bufferSize,
-                              const size_t src_offset = 0,
-                              const size_t src_length = std::string::npos);
+                              size_t bufferSize);
 
   /*!
    * \brief Convert a wchar_t array into a u16string_view.  Malformed codepoints are
    * replaced by 0xFFFD which displays as "�"
    *
+   * NOTE: returned string_vew is only valid as long as the buffer exists
+   *
    * \param src wstring_view to convert to UChars and write to a UChar buffer
    * \param buffer backs the returned u16string_view
-   * \param bufferSize size of buffer
-   * \param srcOffset offset (in wchar_t) to begin the conversion to UChars
+
    * \param length maximum number of Unicode codepoints (wchar_t) to convert to UChars
    * \return u16string_view backed by buffer
    *
@@ -448,26 +453,25 @@ private:
    * Substituting malformed codepoints to 0xFFFD does not significantly impact
    * performance.
    */
-  static std::u16string_view WStringToUTF16WithSub(const std::wstring_view src,
+  static std::u16string_view _WStringToUTF16WithSub(std::wstring_view src,
                                char16_t * buffer,
-                               const size_t bufferSize,
-                               const size_t srcOffset = 0,
-                               const size_t src_length  = std::string::npos);
+                               const size_t bufferSize);
 
   /*!
    * \brief Convert a UChar (UTF-16) array into a UTF-8 std::string_view  Malformed codepoints are
    * replaced by 0xFFFD which displays as "�"
+   *
+   * NOTE: returned string_vew is only valid as long as the buffer exists
    *
    * Note: Should probably use UTF16ToUTF8 instead. This function substitutes malformed
    *       unicode into substitute unicode. Given that this is conversion FROM Unicode,
    *       it is most likely that any malformed unicode has been detected and
    *       replaced with substitute unicode, leaving little value here.
    *
-   * \param u_str UChar (UTF-16) array to convert to UTF-8 and write to a std::string
+   * \param src u16string_view to convert to UTF-8 and write to a std::string
    * \param buffer scratch char* to write UTF-8 characters to
    * \param bufferSize maximum number of bytes that can be written to
    *         the buffer.
-   * \param str_length maximum number of UChars to convert to UTF-8
    * \return std::string_view backed by buffer
    *
    * Avoids allocating temp space from the heap by having buffer be a local
@@ -476,30 +480,27 @@ private:
    * Substituting malformed codepoints to 0xFFFD does not significantly impact
    * performance.
    */
-  static std::string_view UTF16ToUTF8WithSub(const UChar* u_str,
+  static std::string_view _UTF16ToUTF8WithSub(const std::u16string_view src,
                                    char* buffer,
-                                   size_t bufferSize,
-                                   const size_t u_str_length);
+                                   size_t bufferSize);
 
   /*!
-   * \brief Convert a UChar (UTF-16) array into a wchar_t (Unicode, UChar32) buffer
+   * \brief Convert a u16string_view into a wstring
    *
-   * \param u_str UChar (UTF-16) array to convert to UTF-32 and write to a UChar buffer
+   * NOTE: returned wstring_view is only valid as long as the buffer exists
+   *
+   * \param str u16string_view to convert to wchar_t
    * \param buffer scratch wchar_t* to write Unicode characters to
    * \param bufferSize maximum number of codepoints (32-bit) that can be written to
    *         the buffer.
-   * \param destLength set to the actual number of codepoints written when complete
-   * \param str_length maximum number UChars to convert to WChar (Unicode)
    * \return a reference to buffer
    *
    * Avoids allocating temp space from the heap by having buffer be a local
    * (stack-based) array.
    */
-  static wchar_t* UTF16ToWChar(const UChar* u_str,
+  static std::wstring_view _UTF16ToWString(const std::u16string_view str,
                                wchar_t* buffer,
-                               size_t bufferSize,
-                               int32_t& destLength,
-                               const size_t length = std::string::npos);
+                               size_t bufferSize);
 
   /*!
    * \brief convert a wstring_view to a UnicodeString
@@ -508,7 +509,7 @@ private:
    * \param wStr wstring to convert
    * \return UnicodeString
    */
-  static icu::UnicodeString ToUnicodeString(const std::wstring_view& wStr,
+  static icu::UnicodeString ToUnicodeString(std::wstring_view wStr,
       char16_t* buffer, size_t bufferLength, size_t bufferCapacity)
   {
     icu::UnicodeString us = icu::UnicodeString(buffer, bufferLength, bufferCapacity);
@@ -528,7 +529,7 @@ private:
    * \return UnicodeString
    */
 
-  static icu::UnicodeString ToUnicodeString(const std::string_view& src)
+  static icu::UnicodeString ToUnicodeString(std::string_view src)
   {
     return icu::UnicodeString::fromUTF8(src);
   }
@@ -572,7 +573,7 @@ private:
    * \param scale multiplier to apply to get larger buffer
    * \return A size a bit larger than wchar_length, plus 200.
    */
-  static size_t GetWcharToUTF16BufferSize(const size_t wchar_length, const size_t scale = 1);
+  static size_t GetWcharToUTF16BufferSize(const size_t wchar_length, const float scale = 1.0);
 
   /*!
    * \brief Calculates the maximum number of UTF32 codeunits required by a UTF16
@@ -582,7 +583,7 @@ private:
    * \param scale multiplier to apply to get larger buffer
    * \return A size a bit larger than wchar_length, plus 200.
    */
-  static size_t GetUTF16ToUTF32BufferSize(const size_t uchar_length, const size_t scale = 1);
+  static size_t GetUTF16ToUTF32BufferSize(const size_t uchar_length, const float scale = 1.0);
 
   /*!
    * \brief Calculates the maximum number of wchar_t code-units (UTF32/UTF16)
@@ -592,7 +593,7 @@ private:
    * \param scale multiplier to apply to get larger buffer
    * \return A size a bit larger than wchar_length, plus 200.
    */
-  static size_t GetUTF16ToWcharBufferSize(const size_t uchar_length, const size_t scale = 1);
+  static size_t GetUTF16ToWcharBufferSize(const size_t uchar_length, const float scale = 1.0);
 
   /*!
    * \brief Up-sizes the length of UTF16 string to accommodate the size
@@ -609,7 +610,7 @@ private:
    *
    * Note that a UTF-16 string will be at most as long as the UTF-8 string.
    */
-  static size_t GetUTF16WorkingSize(const size_t utf16length, const float scale);
+  static size_t GetUTF16WorkingSize(const size_t utf16length, const float scale = 2.0);
 
   /*!
    * \brief Calculates the maximum number of UTF-8 bytes required by a UTF-16 string.
@@ -626,7 +627,7 @@ private:
    * returned is 3 times the number of UTF-16 code unites. This leaves enough
    * room for the 'worst case' UTF-8  expansion required for Indic, Thai and CJK.
    */
-  static size_t GetUTF16ToUTF8BufferSize(const size_t utf16Length, const size_t scale);
+  static size_t GetUTF16ToUTF8BufferSize(const size_t utf16Length, const float scale = 2.0);
 
   /*!
    * \brief Calculates the maximum number of wchar_t code units required to
@@ -648,7 +649,7 @@ private:
    * Note that an additional 200 code units is added to the result to allow for growth
    *
    */
-  static size_t GetUTF16ToWCharBufferSize(const size_t utf16Length, const size_t scale);
+  static size_t GetUTF16ToWCharBufferSize(const size_t utf16Length, const float scale = 1.0);
 
 public:
   /*!
@@ -692,11 +693,10 @@ public:
    * Note: More information can be found in unicode/locid.h (part of ICU library).
    */
 
-  static icu::Locale GetICULocale(const char* language,
-                                  const char* country = 0,
-                                  const char* variant = 0,
-                                  const char* keywordsAndValues = 0);
-
+  static icu::Locale GetICULocale(std::string_view language,
+                                  std::string_view country = std::string_view(),
+                                  std::string_view variant = std::string_view(),
+                                  std::string_view keywordsAndValues = std::string_view());
   /*!
    * \brief Construct a simple locale id based upon an icu::Locale
    *
@@ -729,8 +729,8 @@ public:
    *
    * See StringOptions for the more details.
    */
-
-  static std::wstring FoldCase(const std::wstring_view& src, const StringOptions options);
+  static std::wstring FoldCase(std::wstring_view src,
+      const StringOptions options = StringOptions::FOLD_CASE_DEFAULT);
 
   /*!
    *  \brief Folds the case of a wstring, independent of Locale.
@@ -754,9 +754,12 @@ public:
    *
    * See StringOptions for the more details.
    */
-  static std::string FoldCase(const std::string_view& src, const StringOptions options);
+  static std::string FoldCase(std::string_view src, const StringOptions options = StringOptions::FOLD_CASE_DEFAULT);
 
-private:
+PRIVATE
+  static std::u16string_view _FoldCase(const std::u16string_view s1,std::u16string_view outBuffer,
+      const StringOptions options = StringOptions::FOLD_CASE_DEFAULT);
+
   /*!
    *  \brief Folds the case of a StringPiece (UTF-8), independent of Locale.
    *
@@ -801,12 +804,12 @@ public:
    *  \param str string to Normalize.
    *  \param options fine tunes behavior. See StringOptions. Frequently can leave
    *         at default value.
-   *  \param NormalizerType select the appropriate Normalizer for the job
+   *  \param normalizerType select the appropriate Normalizer for the job
    *  \return Normalized string
    */
-  static const std::wstring Normalize(const std::wstring_view& src,
+  static const std::wstring Normalize(std::wstring_view src,
                                       const StringOptions option,
-                                      const NormalizerType NormalizerType = NormalizerType::NFKC);
+                                      const NormalizerType normalizerType = NormalizerType::NFKC);
 
   /*!
    *  \brief Normalizes a string. Not expected to be used outside of UnicodeUtils.
@@ -820,14 +823,14 @@ public:
    * \param str string to Normalize.
    * \param options fine tunes behavior. See StringOptions. Frequently can leave
    *        at default value.
-   * \param NormalizerType select the appropriate Normalizer for the job
+   * \param normalizerType select the appropriate Normalizer for the job
    * \return Normalized string
    */
-  static const std::string Normalize(const std::string_view& src,
+  static const std::string Normalize(std::string_view src,
                                      const StringOptions options,
-                                     const NormalizerType NormalizerType = NormalizerType::NFKC);
+                                     const NormalizerType normalizerType = NormalizerType::NFKC);
 
-private:
+  PRIVATE
   /*!
    *  \brief Normalizes a StringPiece (utf-8). Not expected to be used outside of
    *   Unicode.
@@ -842,13 +845,13 @@ private:
    *        set to U_ZERO_ERROR before calling this function
    * \param options fine tunes behavior. See StringOptions. Frequently can leave
    *        at default value.
-   * \param NormalizerType select the appropriate Normalizer for the job
+   * \param normalizerType select the appropriate Normalizer for the job
    */
   static void Normalize(const std::string_view strPiece,
                         icu::CheckedArrayByteSink& sink,
                         UErrorCode& status,
                         const int32_t options,
-                        const NormalizerType NormalizerType);
+                        const NormalizerType normalizerType);
 
 public:
   /*!
@@ -862,9 +865,9 @@ public:
    *        country, etc. from this locale
    * \return str with every character changed to upper case
    */
-  static std::string ToUpper(const std::string_view& src, const icu::Locale& locale);
+  static std::string ToUpper(std::string_view src, const icu::Locale& locale);
 
-private:
+PRIVATE
   /*!
    * \brief Converts a UChar buffer to Upper case according to locale.
    *
@@ -879,13 +882,14 @@ private:
    * \param status UErrorCode indicating the status of the operation. Make sure to
    *        set to U_ZERO_ERROR before calling this function
    */
+  /*
   static void ToUpper(std::u16string_view src,
                       const icu::Locale locale,
                       UChar* p_u_toupper_buffer,
                       const int32_t u_toupper_buffer_size,
                       int32_t& to_upper_length,
                       UErrorCode& status);
-
+*/
 public:
   /*!
    * \brief Converts a string to Lower case according to icu:Locale.
@@ -897,7 +901,7 @@ public:
    * \param icu::Locale provides the rules about changing case
    * \return the lower case version of src
    */
-  static const std::string ToLower(const std::string& src, const icu::Locale& locale);
+  static const std::string ToLower(std::string_view src, const icu::Locale& locale);
 
   /*!
    *  \brief Capitalizes a string using Legacy Kodi rules.
@@ -908,7 +912,7 @@ public:
    * \param src string to capitalize
    * \return src capitalized
    */
-  static const std::string ToCapitalize(const std::string_view& src);
+  static const std::string ToCapitalize(std::string_view src);
   /*!
    *  \brief Capitalizes a wstring using Legacy Kodi rules.
    *
@@ -918,7 +922,7 @@ public:
    * \param src string to capitalize
    * \return src capitalized
    */
-  static const std::wstring ToCapitalize(const std::wstring_view& src);
+  static const std::wstring ToCapitalize(std::wstring_view src);
 
   /*!
    *  \brief TitleCase a wstring using icu::Locale.
@@ -932,7 +936,7 @@ public:
    *  \param locale
    *  \return src in TitleCase
    */
-  static const std::wstring TitleCase(const std::wstring_view& src, const icu::Locale& locale);
+  static const std::wstring TitleCase(std::wstring_view src, const icu::Locale& locale);
 
   /*!
    *  \brief TitleCase a string using icu::Locale.
@@ -946,17 +950,13 @@ public:
    *  \param locale
    *  \return src in TitleCase
    */
-  static const std::string TitleCase(const std::string_view& src, const icu::Locale& locale);
+  static const std::string TitleCase(std::string_view src, const icu::Locale& locale);
 
   /*!
    * \brief Compares two wstrings using codepoint order. Locale does not matter.
    *
    * \param s1 one of the strings to compare
-   * \param s1_start specifies the beginning byte of s1 to compare
-   * \param s1_length specifies the number of bytes of s1 to compare
    * \param s2 one of the strings to compare
-   * \param s2_start specifies the beginning byte of s2 to compare
-   * \param s2_length specifies the number of bytes of s2 to compare
    * \param normalize sometimes strings require normalization to compare properly.
    *        Not normally required.
    * \return <0 or 0 or >0 as usual for string comparisons
@@ -968,23 +968,15 @@ public:
    * needed when other string manipulations which alter the order of bytes within
    * a string. More study is needed.
    */
-  static int8_t StrCmp(const std::wstring_view& s1,
-                       size_t s1_start,
-                       size_t s1_length,
-                       const std::wstring_view& s2,
-                       size_t s2_start,
-                       size_t s2_length,
-                       const bool Normalize = false);
+  static int8_t StrCmp(std::wstring_view s1,
+                       std::wstring_view s2,
+                       const bool normalize = false);
 
   /*!
    * \brief Compares two strings using codepoint order.
    *
    * \param s1 one of the strings to compare
-   * \param s1_start specifies the beginning byte of s1 to compare
-   * \param s1_length specifies the number of bytes of s1 to compare
    * \param s2 one of the strings to compare
-   * \param s2_start specifies the beginning byte of s2 to compare
-   * \param s2_length specifies the number of bytes of s2 to compare
    * \param normalize sometimes strings require normalization to compare properly.
    *        Not normally required.
    * \return <0 or 0 or >0 as usual for string comparisons
@@ -996,19 +988,15 @@ public:
    * needed when other string manipulations which alter the order of bytes within
    * a string. More study is needed.
    */
-  static int8_t StrCmp(const std::string_view& s1,
-                       size_t s1_start,
-                       size_t s1_length,
-                       const std::string_view& s2,
-                       size_t s2_start,
-                       size_t s2_length,
-                       const bool Normalize = false);
+  static int8_t StrCmp(std::string_view s1,
+                       std::string_view s2,
+                       const bool normalize = false);
 
   /*!
    * \brief Performs a bit-wise comparison of two wstrings, after case folding each.
    *
    * Logically equivalent to StrCmp(FoldCase(str1, opt)), FoldCase(str2, opt))
-   * or, if Normalize == true: Strcmp(NFD(FoldCase(NFD(str1))), NFD(FoldCase(NFD(str2))))
+   * or, if normalize == true: Strcmp(NFD(FoldCase(NFD(str1))), NFD(FoldCase(NFD(str2))))
    * (NFD is a type of normalization)
    *
    * Note: When normalization = true, the string comparison is done incrementally
@@ -1021,83 +1009,23 @@ public:
    * \param s1 one of the strings to compare
    * \param s2 one of the strings to compare
    * \param opt StringOptions to apply. Generally leave at the default value
-   * \param Normalize Controls whether normalization is performed before and after
+   * \param normalize Controls whether normalization is performed before and after
    *        case folding
    * \return The result of bitwise character comparison:
    * < 0 if the characters s1 are bitwise less than the characters in s2,
    * = 0 if str1 contains the same characters as s2,
    * > 0 if the characters in s1 are bitwise greater than the characters in s2.
    */
-  static int StrCaseCmp(const std::wstring_view& s1,
-                        const std::wstring_view& s2,
-                        const StringOptions options,
-                        const bool Normalize = false);
-
-  /*!
-   * \brief Performs a bit-wise comparison of two strings, after case folding each.
-   *
-   * Logically equivalent to StrCmp(FoldCase(str1, opt)), FoldCase(str2, opt))
-   * or, if Normalize == true: Strcmp(NFD(FoldCase(NFD(str1))), NFD(FoldCase(NFD(str2))))
-   * (NFD is a type of normalization)
-   *
-   * Note: When normalization = true, the string comparison is done incrementally
-   * as the strings are Normalized and folded. Otherwise, case folding is applied
-   * to the entire string first.
-   *
-   * Note In most cases normalization should not be required, using Normalize
-   * may yield better results.
-   *
-   * \param s1 one of the strings to compare
-   * \param s2 one of the strings to compare
-   * \param opt StringOptions to apply. Generally leave at the default value
-   * \param Normalize Controls whether normalization is performed before and after
-   *        case folding
-   * \return The result of bitwise character comparison:
-   * < 0 if the characters s1 are bitwise less than the characters in s2,
-   * = 0 if str1 contains the same characters as s2,
-   * > 0 if the characters in s1 are bitwise greater than the characters in s2.
-   */
-  static int StrCaseCmp(const std::string_view& s1,
-                        const std::string_view& s2,
+  static int StrCaseCmp(std::wstring_view s1,
+                        std::wstring_view s2,
                         const StringOptions options,
                         const bool normalize = false);
 
   /*!
    * \brief Performs a bit-wise comparison of two strings, after case folding each.
    *
-   * Logically equivalent to StrCmp(FoldCase(str1, options)), 0, n, FoldCase(str2, options), 0, n)
-   * or, if Normalize == true: Strcmp(NFD(FoldCase(NFD(str1))), 0, n,  NFD(FoldCase(NFD(str2))), 0, n)
-   * (NFD is a type of normalization)
-   *
-   * Note: When normalization = true, the string comparison is done incrementally
-   * as the strings are Normalized and folded. Otherwise, case folding is applied
-   * to the entire string first.
-   *
-   * Note In most cases normalization should not be required, using Normalize
-   * may yield better results.
-   *
-   * \param s1 one of the strings to compare
-   * \param s2 one of the strings to compare
-   * \param n number of bytes to compare from each string
-   * \param opt StringOptions to apply. Generally leave at the default value
-   * \param Normalize Controls whether normalization is performed before and after
-   *        case folding
-   * \return The result of bitwise character comparison:
-   * < 0 if the characters s1 are bitwise less than the characters in s2,
-   * = 0 if str1 contains the same characters as s2,
-   * > 0 if the characters in s1 are bitwise greater than the characters in s2.
-   */
-  static int StrCaseCmp(const std::string_view& s1,
-                        const std::string_view& s2,
-                        size_t n,
-                        const StringOptions options,
-                        const bool Normalize = false);
-
-  /*!
-   * \brief Performs a bit-wise comparison of two strings, after case folding each.
-   *
    * Logically equivalent to StrCmp(FoldCase(str1, opt)), FoldCase(str2, opt))
-   * or, if Normalize == true: Strcmp(NFD(FoldCase(NFD(str1))), NFD(FoldCase(NFD(str2))))
+   * or, if normalize == true: Strcmp(NFD(FoldCase(NFD(str1))), NFD(FoldCase(NFD(str2))))
    * (NFD is a type of normalization)
    *
    * Note: When normalization = true, the string comparison is done incrementally
@@ -1108,27 +1036,20 @@ public:
    * may yield better results.
    *
    * \param s1 one of the strings to compare
-   * \param s1_start specifies the starting byte of s1 to compare
-   * \param s1_length specifies the number of bytes of s1 to compare
    * \param s2 one of the strings to compare
-   * \param s2_start specifies the starting byte of s2 to compare
-   * \param s2_length specifies the number of bytes of s2 to compare
    * \param opt StringOptions to apply. Generally leave at the default value
-   * \param Normalize Controls whether normalization is performed before and after
+   * \param normalize Controls whether normalization is performed before and after
    *        case folding
    * \return The result of bitwise character comparison:
    * < 0 if the characters s1 are bitwise less than the characters in s2,
    * = 0 if str1 contains the same characters as s2,
    * > 0 if the characters in s1 are bitwise greater than the characters in s2.
    */
-  static int StrCaseCmp(const std::string_view& s1,
-                        size_t s1_start,
-                        size_t s1_length,
-                        const std::string_view& s2,
-                        size_t s2_start,
-                        size_t s2_length,
+  static int StrCaseCmp(std::string_view s1,
+                        std::string_view s2,
                         const StringOptions options,
-                        const bool Normalize = false);
+                        const bool normalize = false);
+
   /*!
    * \brief Initializes the icu Collator for this thread, such as before sorting a
    * table.
@@ -1141,7 +1062,7 @@ public:
    *       Also starts the elapsed-time timer for the sort. See SortCompleted.
    *
    * \param locale Collation order will be based on the icu::Locale derived from this locale.
-   * \param Normalize Controls whether normalization is performed prior to collation.
+   * \param normalize Controls whether normalization is performed prior to collation.
    *                  Frequently not required. Some free normalization always occurs.
    * \return true if initialization was successful, otherwise false.
    *
@@ -1151,7 +1072,7 @@ public:
    *
    * See the documentation for UCOL_NORMALIZATION_MODE for more info.
    */
-  static bool InitializeCollator(const std::locale locale, bool Normalize = false);
+  static bool InitializeCollator(const std::locale locale, bool normalize = false);
 
   /*!
    * \brief Initializes the icu Collator for this thread, such as before sorting a
@@ -1165,7 +1086,7 @@ public:
    *       Also starts the elapsed-time timer for the sort. See SortCompleted.
    *
    * \param icuLocale Collation order will be based on the given locale.
-   * \param Normalize Controls whether normalization is performed prior to collation.
+   * \param normalize Controls whether normalization is performed prior to collation.
    *                  Frequently not required. Some free normalization always occurs.
    * \return true if initialization was successful, otherwise false.
    *
@@ -1175,7 +1096,7 @@ public:
    *
    * See the documentation for UCOL_NORMALIZATION_MODE for more info.
    */
-  static bool InitializeCollator(const icu::Locale icuLocale, bool Normalize = false);
+  static bool InitializeCollator(const icu::Locale icuLocale, bool normalize = false);
 
   /*!
    * \brief Allows some performance statistics to be generated based upon the previous sort
@@ -1193,7 +1114,18 @@ public:
    * \return A value < 0, 0 or > 0 depending upon whether left collates before,
    *         equal to or after right
    */
-  static int32_t Collate(const std::wstring_view& left, const std::wstring_view& right);
+  static int32_t Collate(std::wstring_view left, std::wstring_view right);
+
+  /*!
+   * \brief Collates two u16string_vies using the most recent collator setup in the same
+   * thread by InitializeCollator.
+   *
+   * \param left one of the strings to collate
+   * \param right the other string to collate
+   * \return A value < 0, 0 or > 0 depending upon whether left collates before,
+   *         equal to or after right
+   */
+  static int32_t Collate(std::u16string_view left, std::u16string_view right);
 
   /*!
    * \brief Determines if a string begins with another string
@@ -1202,7 +1134,7 @@ public:
    * \param s2 string to find at beginning of s1
    * \return true if s1 starts with s2, otherwise false
    */
-  static bool StartsWith(const std::string_view& s1, const std::string_view& s2);
+  static bool StartsWith(std::string_view s1, std::string_view s2);
   /*
    * \brief Determines if a string begins with another string, ignoring case
    *
@@ -1211,8 +1143,8 @@ public:
    * \param options controls behavior of case folding, normally leave at default
    * \return true if s1 starts with s2, otherwise false
    */
-  static bool StartsWithNoCase(const std::string_view& s1,
-                               const std::string_view& s2,
+  static bool StartsWithNoCase(std::string_view s1,
+                               std::string_view s2,
                                const StringOptions options);
 
   /*!
@@ -1222,7 +1154,7 @@ public:
    * \param s2 string to find at end of s1
    * \return true if s1 ends with s2, otherwise false
    */
-  static bool EndsWith(const std::string_view& s1, const std::string_view& s2);
+  static bool EndsWith(std::string_view s1, std::string_view s2);
 
   /*!
    * \brief Determines if a string ends with another string, ignoring case
@@ -1232,8 +1164,8 @@ public:
    * \param options controls behavior of case folding, normally leave at default
    * \return true if s1 ends with s2, otherwise false
    */
-  static bool EndsWithNoCase(const std::string_view& s1,
-                             const std::string_view& s2,
+  static bool EndsWithNoCase(std::string_view s1,
+                             std::string_view s2,
                              const StringOptions options);
 
   /*!
@@ -1249,7 +1181,7 @@ public:
    * \param keepLeft controls how charCount is interpreted
    * \return leftmost characters of string, length determined by charCount
    */
-  static std::string Left(const std::string_view& str,
+  static std::string Left(std::string_view str,
                           size_t charCount,
                           const icu::Locale icuLocale,
                           const bool keepLeft = true);
@@ -1266,7 +1198,7 @@ public:
    * \return substring of str, beginning with character 'firstCharIndex',
    *         length determined by charCount
    */
-  static std::string Mid(const std::string_view& str,
+  static std::string Mid(std::string_view str,
                          size_t startCharIndex,
                          size_t charCount = std::string::npos);
 
@@ -1291,36 +1223,59 @@ public:
    *
    * std::string x = Right(str, 2, false, Unicode::GetDefaultICULocale());
    */
-  static std::string Right(const std::string_view& str,
+  static std::string Right(std::string_view str,
                            size_t charCount,
                            const icu::Locale& icuLocale,
                            bool keepRight = true);
 
-private:
+  PRIVATE
   /*!
    * \brief configures UText for a UTF-8 string
    *
-   * For those methods which can take a UText, this allows for a UTF-8 string to be
-   * used without converting it to UTF-16/UnicodeString up-front. Instead it can be done
-   * on demand as the string is iterated. Having to manually free one or more pointers can
-   * be a pain. Further, some methods have to scan the entire string up-front, depending upon
-   * what is being done.
+   * UText provides a means to let some ICU APIs work with UTF8 without conversion to
+   * UTF-16 or a UnicodeString first. It is fairly new to the api and its use is fairly
+   * limited at this time. Currently, Kodi uses it for BreakIteration (
+   * Character/Word BreakIterator). If the string is changed, the UText must be
+   * reconfigured.
    *
    * \param str UTF-8 string to create the UText for
+   * \param ut utext object to reuse. If nullptr, then create new utext object
    * \return a UText object that contains the passed UTF8 string for the iterator
    *           On error, nullptr is returned
    *
-   * *** Note: utext_close(<return value>) MUST be called when finished using the iterator
+   * *** Note: utext_close(<return value>) MUST be called when finished using the Utext
    * or there will be a memory leak.
    */
-  static UText* ConfigUText(const std::string_view& str, UText* ut = nullptr);
+  static UText* ConfigUText(std::string_view str, UText* ut = nullptr);
+
+  /*!
+     * \brief configures UText for a u16string_view
+     *
+     * UText provides a means to use the BreakIterator (
+     * Character/Word BreakIterator). If the string is changed, the UText must be
+     * reconfigured.
+     *
+     * \param str u16string_view to create the UText for
+     * \param ut utext object to reuse. If nullptr, then create new utext object
+     * \return a UText object that contains the passed UTF8 string for the iterator
+     *           On error, nullptr is returned
+     *
+     * *** Note: utext_close(<return value>) MUST be called when finished using the Utext
+     * or there will be a memory leak.
+     */
+  static UText* ConfigUText(const std::u16string_view& str, UText* ut = nullptr);
 
   /*!
    * \brief Configures a Character BreakIterator for use
    *
-   * \param str UTF-8 string to create the Character BreakIterator for
-   * \icuLocale locale to configure the iterator for
-   * \return a Character BreakIterator object that uses the passed UTF8 string for the iterator
+   *    A "character/grapheme" can be composed of one or more 32-bit Unicode codepoints.
+   *    Rules for character breaks is locale dependent. See ICU's documentation
+   *    on CharacterBreakIterator, or inspect the code here for more information.
+   *
+   * \param ut Utext to create the Character BreakIterator for using the current string
+   *           that the UText has been configured for
+   * \param icuLocale locale to configure the iterator with
+   * \return a Character BreakIterator object that can iterate a over the UText's string
    *           On error, nullptr is returned.
    *
    * *** Note: utext_close(<return value>) MUST be called when finished using the iterator, including
@@ -1328,10 +1283,22 @@ private:
    */
   static icu::BreakIterator* ConfigCharBreakIter(UText* ut, const icu::Locale& icuLocale);
 
+  /*!
+   * \brief Modifies the configuration of a Character BreakIterator for use. Typically used
+   *        after the UText's string has been changed
+   *
+   * \param ut UText configured by ConfigUText
+   * \icuLocale locale to configure the iterator with
+   * \return a Character BreakIterator object that uses the UText's string for iteration
+   *           On error, nullptr is returned.
+   *
+   * *** Note: utext_close(<return value>) MUST be called when finished using the iterator, including
+   * when this method returns nullptr, or there will be a memory leak.
+   */
   static icu::BreakIterator* ReConfigCharBreakIter(UText* ut, icu::BreakIterator* cbi);
 
   /*!
-   * \brief Configures a Character BreakIterator for use
+   * \brief Configures a new Character BreakIterator for use
    *
    * \param str String to create the Character BreakIterator for
    * \icuLocale locale to configure the iterator for
@@ -1339,7 +1306,13 @@ private:
    */
   static icu::BreakIterator* ConfigCharBreakIter(const icu::UnicodeString& str,
                                                  const icu::Locale& icuLocale);
-
+  /*!
+   * \brief Configures a Character BreakIterator for use
+   *
+   * \param str String to create the Character BreakIterator for
+   * \icuLocale locale to configure the iterator for
+   * \return true is returned on success, otherwise false.
+   */
   static size_t GetCharPosition(icu::BreakIterator* cbi,
                                 size_t stringLength,
                                 size_t charCount,
@@ -1348,7 +1321,7 @@ private:
 
 public:
   static size_t GetCharPosition(icu::BreakIterator* cbi,
-                                const std::string_view& str,
+                                std::string_view str,
                                 const size_t charCount,
                                 const bool left,
                                 const bool keepLeft,
@@ -1364,7 +1337,7 @@ public:
    * are based on characters NOT bytes.
    *
    * \param str UTF-8 string to get index from
-   * \param charCount number of characters from reference point to get byte index for
+   * \param charCountArg number of characters from reference point to get byte index for
    * \param left + keepLeft define how character index is measured. See comment below
    * \param keepLeft + left define how character index is measured. See comment below
    * \param icuLocale fine-tunes character boundary rules
@@ -1379,17 +1352,12 @@ public:
    * left=false keepLeft=false  Returns offset of first byte of nth char from right end.
    *                            Character 0 is AFTER the last character.  Used by Right(x)
    */
-  static size_t GetCharPosition(const std::string_view& str,
+  static size_t GetCharPosition(std::string_view str,
                                 const size_t charCountArg,
                                 const bool left,
                                 const bool keepLeft,
                                 const icu::Locale& icuLocale);
 
-  size_t GetCharPosition(const icu::UnicodeString& uStr,
-                         const size_t charCountArg,
-                         const bool left,
-                         const bool keepLeft,
-                         const icu::Locale& icuLocale);
   /*!
    * \brief Gets the byte-offset of a Unicode character relative to a reference
    *
@@ -1399,8 +1367,8 @@ public:
    * Unicode characters may consist of multiple codepoints. This function's parameters
    * are based on characters NOT bytes.
    *
-   * \param str UTF-8 string to get index from
-   * \param charCount number of characters from reference point to get byte index for
+   * \param uStr UnicodeString to create get index from
+   * \param charCountArg number of characters from reference point to get byte index for
    * \param left + keepLeft define how character index is measured. See comment below
    * \param keepLeft + left define how character index is measured. See comment below
    * \param icuLocale fine-tunes character boundary rules
@@ -1414,13 +1382,16 @@ public:
    * left=false keepLeft=true   Returns offset of first byte of nth character (0-n). Used by Right(x, false)
    * left=false keepLeft=false  Returns offset of first byte of nth char from right end.
    *                            Character 0 is AFTER the last character.  Used by Right(x)
-   * /
-  static size_t GetCharPosition(const icu::UnicodeString &str, const size_t charCount,
-      const bool left, const bool keepLeft, const icu::Locale& icuLocale);
    */
-
+  size_t GetCharPosition(const icu::UnicodeString& uStr,
+                         const size_t charCountArg,
+                         const bool left,
+                         const bool keepLeft,
+                         const icu::Locale& icuLocale);
+public:
   /*!
    * \brief Removes leading and trailing whitespace from the string
+   *
    * \param str string to trim
    * \return trimmed string
    *
@@ -1438,7 +1409,7 @@ public:
    * 205F          ; White_Space # Zs       MEDIUM MATHEMATICAL SPACE
    * 3000          ; White_Space # Zs       IDEOGRAPHIC SPACE
    */
-  static std::string Trim(const std::string_view& str);
+  static std::string Trim(std::string_view str);
 
   /*!
    * \brief Removes leading whitespace from a string
@@ -1448,7 +1419,7 @@ public:
    *
    * See Trim(str) for more details about what counts as whitespace
    */
-  static std::string TrimLeft(const std::string_view& str);
+  static std::string TrimLeft(std::string_view str);
 
   /*!
    * \brief Remove a set of characters from beginning of str
@@ -1461,7 +1432,7 @@ public:
    * \param trimChars (characters) to remove from str
    * \return trimmed string
    */
-  static std::string TrimLeft(const std::string_view& str, const std::string_view trimChars);
+  static std::string TrimLeft(std::string_view str, const std::string_view trimChars);
 
   /*!
    * \brief Removes trailing whitespace from a string
@@ -1471,7 +1442,7 @@ public:
    *
    * See Trim(str) for more details about what counts as whitespace
    */
-  static std::string TrimRight(const std::string_view& str);
+  static std::string TrimRight(std::string_view str);
 
   /*!
    * \brief Remove a set of characters from end of str
@@ -1484,7 +1455,7 @@ public:
    * \param trimChars (characters) to remove from str
    * \return trimmed string
    */
-  static std::string TrimRight(const std::string_view& str, const std::string_view trimChars);
+  static std::string TrimRight(std::string_view str, const std::string_view trimChars);
 
   /*!
    * \brief Remove a set of characters from ends of str
@@ -1497,8 +1468,8 @@ public:
    * \param trimRight if true, then trim from right end of string
    * \return trimmed string
    */
-  static std::string Trim(const std::string_view& str,
-                          const std::string_view& trimStrings,
+  static std::string Trim(std::string_view str,
+                          std::string_view trimStrings,
                           const bool trimLeft,
                           const bool trimRight);
 
@@ -1513,12 +1484,12 @@ public:
    * \param trimRight if true, then trim from right end of string
    * \return trimmed string
    */
-  static std::string Trim(const std::string_view& str,
-                          const std::vector<std::string>& trimStrings,
+  static std::string Trim(std::string_view str,
+                          const std::vector<std::string_view>& trimStrings,
                           const bool trimLeft,
                           const bool trimRight);
 
-private:
+  PRIVATE
   /*!
    * \brief Remove a set of characters from ends of a UnicodeString
    *
@@ -1623,11 +1594,11 @@ public:
    *        means no limit.
    * \return vector of split strings
    */
-  static std::vector<std::string> SplitMulti(const std::vector<std::string>& input,
-                                             const std::vector<std::string>& delimiters,
+  static std::vector<std::string> SplitMulti(const std::vector<std::string_view>& input,
+                                             const std::vector<std::string_view>& delimiters,
                                              size_t iMaxStrings = 0);
 
-private:
+  PRIVATE
   /*!
    * \brief Splits each input UnicodeString with each delimiter UnicodeString
    * producing a vector of split UnicodeStrings  omitting any null strings.
@@ -1707,26 +1678,29 @@ public:
    * \param newText string to replace with
    * \return Count of the number of changes
    */
+  /*
   [[deprecated(
       "FindAndReplace is faster, returned count not used.")]] static std::tuple<std::string, int>
-  FindCountAndReplace(const std::string_view& src,
-                      const std::string_view& oldText,
-                      const std::string_view& newText);
-
-private:
+  FindCountAndReplace(std::string_view src,
+                      std::string_view oldText,
+                      std::string_view newText);
+*/
+  PRIVATE
   /*!
    * \brief Replace all occurrences of characters in oldText with the characters
    *        in newText
+   * \param src string to replace text in
    * \param oldText the text containing the search text
    * \param newText the text containing the replacement text
    * \return a Tuple with a reference to the modified src and an int containing
    *         the number of times the oldText was replaced.
    */
+  /*
   static std::tuple<icu::UnicodeString, int> FindCountAndReplace(
-      const icu::UnicodeString& kSrc,
-      const icu::UnicodeString& kOldText,
-      const icu::UnicodeString& kNewText);
-
+      const icu::UnicodeString& src,
+      const icu::UnicodeString& oldText,
+      const icu::UnicodeString& newText);
+*/
   /*!
    * \brief Replace all occurrences of characters in oldText with the characters
    *        in newText
@@ -1753,6 +1727,7 @@ private:
    * \return a Tuple with a reference to the modified src and an int containing
    *         the number of times the oldText was replaced.
    */
+  /*
   static std::tuple<icu::UnicodeString, int> FindCountAndReplace(const icu::UnicodeString& srcText,
                                                                  const int32_t start,
                                                                  const int32_t length,
@@ -1762,8 +1737,19 @@ private:
                                                                  const icu::UnicodeString& newText,
                                                                  const int32_t newStart,
                                                                  const int32_t newLength);
-
+*/
 public:
+  /*!
+   * \brief Finds where two strings differ
+   *
+   * \param s1 string to search from
+   * \param s2 string to search for in s1
+   * \param caseless if true, then perform a caseless match
+   * \return index of first non-natching character/grapheme
+   */
+  // static size_t FindDifference(const std::string_view s1, const std::string_view s2,
+  //     bool caseless = false);
+
   /*!
    * \brief Determine if "word" is present in string
    *
@@ -1781,7 +1767,7 @@ public:
    *      digit in str. Same for Latin letters. Otherwise, skip one character
    *      Skip any whitespace characters
    */
-  static bool FindWord(const std::string_view& str, const std::string_view& word);
+  static bool FindWord(std::string_view str, std::string_view word);
 
   /*!
    * \brief Replaces every occurrence of a string within another string
@@ -1794,24 +1780,9 @@ public:
    * \parm newStr string to replace with
    * \return the modified string.
    */
-  static std::string FindAndReplace(const std::string_view& str,
+  static std::string FindAndReplace(std::string_view str,
                                     const std::string_view oldText,
                                     const std::string_view newText);
-
-  /*!
-   * \brief Find a regular expressoin pattern in a str
-   *
-   * \param str string to search
-   * \param pattern icu::regex pattern
-   * \param flags that control behavior of regex. See enum RegexpFlag
-   * \return byte offset at beginning of first match of the pattern or
-   *         string::npos if no match found
-   *
-   * Regular expression patterns for this lib can be found at:
-   * https://unicode-org.github.io/icu/userguide/strings/regexp.html
-   *
-   */
-  static size_t RegexFind(const std::string_view& str, const std::string_view pattern, const int flags);
 
   /*!
    * \brief Replace a matching pattern in a string with another value
@@ -1825,12 +1796,12 @@ public:
    * \param flags:  See enum RegexpFlag in uregex.h
    *
    */
-  static std::string RegexReplaceAll(const std::string_view& str,
+  static std::string RegexReplaceAll(std::string_view str,
                                      const std::string_view pattern,
                                      const std::string_view replace,
                                      const int flags);
 
-private:
+  PRIVATE
   /*!
    * \brief Replace all occurrences of a regular expression in a string
    *
@@ -1861,8 +1832,8 @@ public:
    *        which prevents interpreting strFind as a regular expression.
    * \return a count of the number of occurrences found.
    */
-  static int32_t countOccurances(const std::string_view& strInput,
-                                 const std::string_view& strFind,
+  static int32_t countOccurances(std::string_view strInput,
+                                 std::string_view strFind,
                                  const int flags);
 
   /*! \brief Splits the given input string using the given delimiter into separate strings.
@@ -1876,14 +1847,15 @@ public:
    \return output iterator to the element in the destination range, one past the last element
    *       that was put there
    */
+  /*
   template<typename OutputIt>
   static OutputIt SplitTo(OutputIt d_first,
-                          const std::string_view& input,
+                          std::string_view input,
                           const char delimiter,
-                          size_t iMaxStrings /*= 0*/)
+                          size_t iMaxStrings / *= 0* /)
   {
     return SplitTo(d_first, input, std::string(1, delimiter), iMaxStrings);
-  }
+  } */
 
   /*!
    * \brief Splits the given input string at each delimiter in the set delimiters
@@ -1913,8 +1885,8 @@ public:
    */
   template<typename OutputIt>
   static OutputIt SplitTo(OutputIt d_first,
-                          const std::string_view& input,
-                          const std::vector<std::string>& delimiters,
+                          std::string_view input,
+                          const std::vector<std::string_view>& delimiters,
                           size_t iMaxStrings /* = 0 */)
   {
     // TODO: Verify why this can not be done with plain string.
@@ -1970,8 +1942,8 @@ public:
    */
   template<typename OutputIt>
   static OutputIt SplitTo(OutputIt d_first,
-                          const std::string_view& input,
-                          const std::string_view& delimiter,
+                           std::string_view input,
+                           std::string_view delimiter,
                           size_t iMaxStrings = 0)
   {
     OutputIt dest = d_first;
@@ -2005,7 +1977,7 @@ public:
     return dest;
   }
 
-private:
+  PRIVATE
   /*!
    * \brief Splits the given input string at each delimiter
    *
@@ -2059,9 +2031,14 @@ private:
    * returned
    * \return true of str contains any of the strings in keywords
    */
-  static bool Contains(const std::string_view& str, const std::vector<std::string>& keywords);
+  static bool Contains(std::string_view str, const std::vector<std::string_view>& keywords);
 
-private:
+public:
+  static const std::u16string TestHeapLessUTF8ToUTF16(std::string_view s1);
+
+  static const std::string TestHeapLessUTF16ToUTF8(std::u16string_view s1);
+
+  PRIVATE
   /*!
    * \brief detects whether a codepoint is a latin character or not
    *
