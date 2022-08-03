@@ -133,7 +133,7 @@ protected:
 
 TEST_F(TestRegExpLog, DumpOvector)
 {
-  CRegExp regex;
+  CRegExp regex = CRegExp(true); //caseless
   std::string logfile, logstring;
   char buf[100];
   ssize_t bytesread;
