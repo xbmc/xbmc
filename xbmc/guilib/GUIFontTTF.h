@@ -214,6 +214,7 @@ protected:
   int m_maxChars{0}; // size of character array (can be incremented)
   int m_numChars{0}; // the current number of cached characters
 
+  bool m_ellipseCached{false};
   float m_ellipsesWidth{0.0f}; // this is used every character (width of '.')
 
   unsigned int m_cellBaseLine{0};
