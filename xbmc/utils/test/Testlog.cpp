@@ -33,7 +33,7 @@ TEST_F(Testlog, Log)
   char buf[100];
   ssize_t bytesread;
   XFILE::CFile file;
-  CRegExp regex;
+  CRegExp regex = CRegExp(true); // fold case
 
   std::string appName = CCompileInfo::GetAppName();
   UnicodeUtils::FoldCase(appName);
@@ -69,7 +69,7 @@ TEST_F(Testlog, Log)
   EXPECT_GE(regex.RegFind(logstring), 0);
   EXPECT_TRUE(regex.RegComp(".*ERROR <general>: error log message.*"));
   EXPECT_GE(regex.RegFind(logstring), 0);
-  EXPECT_TRUE(regex.RegComp(".*FATAL <general>: fatal log message.*"));
+  EXPECT_TRUE(regex.RegComp(".*CRITICAL <general>: fatal log message.*"));
   EXPECT_GE(regex.RegFind(logstring), 0);
   EXPECT_TRUE(regex.RegComp(".*OFF <general>: none type log message.*"));
   EXPECT_GE(regex.RegFind(logstring), 0);
