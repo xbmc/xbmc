@@ -172,7 +172,7 @@ public:
    * \param str to extract number from
    * \return int value of found string
    */
-  static int ReturnDigits(const std::string &str);
+  static int ReturnDigits(std::string_view str);
 
   /*!
     * \brief Converts tabs to spaces and then removes duplicate space characters
@@ -259,7 +259,7 @@ public:
    * \param str the string to check
    * \return true if the string is a natural number, false otherwise.
    */
-  static bool IsNaturalNumber(const std::string& str);
+  static bool IsNaturalNumber(std::string_view str);
 
   /*!
    * \brief check whether a string is an integer.
@@ -269,7 +269,7 @@ public:
    * \param str the string to check
    * \return true if the string is an integer, false otherwise.
    */
-  static bool IsInteger(const std::string& str);
+  static bool IsInteger(std::string_view str);
 
   /*!
    * \brief Determines whether the given character is an ASCII digit or not
@@ -387,7 +387,7 @@ public:
    * \return the index of the matching close-bracket, or std::string::npos if not found.
    *
    */
-  static int FindEndBracket(const std::string &str, char opener, char closer, int startPos = 0);
+  static int FindEndBracket(std::string_view str, char opener, char closer, int startPos = 0);
 
   static std::string ISODateToLocalizedDate (const std::string& strIsoDate);
 
@@ -429,7 +429,7 @@ public:
    *
    * example: "abc\n" -> "6162630a"
    */
-  static std::string ToHexadecimal(const std::string& in);
+  static std::string ToHexadecimal(std::string_view in);
   /*! \brief Format the string with locale separators.
 
   Format the string with locale separators.
@@ -483,7 +483,7 @@ public:
    * \param delimiters one or more ASCII characters to use as token separators
    *
    */
-  static void Tokenize(const std::string& input, std::vector<std::string>& tokens, const std::string& delimiters);
+  static void Tokenize(const std::string& input, std::vector<std::string>& tokens, std::string_view delimiters);
 
   /*!
    * \brief Splits a string into tokens delimited by a single ASCII character.

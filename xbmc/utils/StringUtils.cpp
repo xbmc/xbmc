@@ -186,7 +186,7 @@ std::wstring StringUtils::FormatV(const wchar_t* fmt, va_list args)
   return L"";
 }
 
-int StringUtils::ReturnDigits(const std::string& str)
+int StringUtils::ReturnDigits(std::string_view str)
 {
   std::stringstream ss;
   bool digitFound = false;
@@ -863,7 +863,7 @@ std::string StringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
   return strHMS;
 }
 
-bool StringUtils::IsNaturalNumber(const std::string& str)
+bool StringUtils::IsNaturalNumber(std::string_view str)
 {
   // Since this function is only looking for whitespace and
   // digits, it is reasonably safe to assume single byte.
@@ -901,7 +901,7 @@ bool StringUtils::IsNaturalNumber(const std::string& str)
  *
  * TODO: Is there any demand for a leading '+'?
  */
-bool StringUtils::IsInteger(const std::string& str)
+bool StringUtils::IsInteger(std::string_view str)
 {
   size_t i = 0, n = 0;
   // allow whitespace,-,digits,whitespace
@@ -991,7 +991,7 @@ std::string StringUtils::BinaryStringToString(const std::string& in)
   return out;
 }
 
-std::string StringUtils::ToHexadecimal(const std::string& in)
+std::string StringUtils::ToHexadecimal(std::string_view in)
 {
   std::ostringstream ss;
   ss << std::hex;
@@ -1030,7 +1030,7 @@ void StringUtils::WordToDigits(std::string& word)
 /*
  * Guaranteed to work ONLY with ASCII 'brackets'. String may be utf-8.
  */
-int StringUtils::FindEndBracket(const std::string &str, char opener, char closer, int startPos)
+int StringUtils::FindEndBracket(std::string_view str, char opener, char closer, int startPos)
 {
   if (not isascii(opener))
   {
@@ -1152,7 +1152,7 @@ std::vector<std::string> StringUtils::Tokenize(const std::string& input,
  *       Should work with non-ASCII input
  */
 
-void StringUtils::Tokenize(const std::string& input, std::vector<std::string>& tokens, const std::string& delimiters)
+void StringUtils::Tokenize(const std::string& input, std::vector<std::string>& tokens, std::string_view delimiters)
 {
   if (UnicodeUtils::ContainsNonAscii(delimiters))
   {
