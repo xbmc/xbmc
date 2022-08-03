@@ -221,6 +221,18 @@ bool CWebVTTHandler::Initialize()
   return true;
 }
 
+void CWebVTTHandler::Reset()
+{
+  m_previousLines[0].clear();
+  m_previousLines[1].clear();
+  m_previousLines[2].clear();
+  m_currentSection = WebvttSection::UNDEFINED;
+  m_cueCurrentCssStyleSelectors.clear();
+  m_cueCssStyles.clear();
+  AddDefaultCssClasses();
+  m_offset = 0;
+}
+
 bool CWebVTTHandler::CheckSignature(const std::string& data)
 {
   // Check the sequence of chars to identify WebVTT signature

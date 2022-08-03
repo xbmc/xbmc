@@ -117,6 +117,9 @@ OverlayMessage COverlayCodecWebVTT::Decode(DemuxPacket* pPacket)
 
     // We send an empty line to mark the end of the last Cue
     m_webvttHandler.DecodeLine("", &subtitleList);
+
+    // Reset to decode next packet
+    m_webvttHandler.Reset();
   }
 
   for (auto& subData : subtitleList)

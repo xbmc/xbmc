@@ -129,6 +129,11 @@ public:
   */
   bool Initialize();
 
+  /*
+   * \brief Reset handler data
+   */
+  void Reset();
+
   /*!
   * \brief Verify the validity of the WebVTT signature
   */
