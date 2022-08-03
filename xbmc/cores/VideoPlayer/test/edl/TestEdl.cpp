@@ -227,8 +227,8 @@ TEST_F(TestEdl, TestSnapStreamEDL)
   EXPECT_EQ(edl.GetSceneMarkers().size(), 3 * 2); // start and end of each commbreak
   // snapstream beyond tv uses ms * 10000
   // check if first commbreak (4235230000 - 5936600000) is 423.523 sec - 593.660 sec
-  EXPECT_EQ(edl.GetEditList().front().start, static_cast<int>(423.523 * 1000));
-  EXPECT_EQ(edl.GetEditList().front().end, static_cast<int>(593.660 * 1000));
+  EXPECT_EQ(edl.GetEditList().front().start, std::lround(423.523 * 1000));
+  EXPECT_EQ(edl.GetEditList().front().end, std::lround(593.660 * 1000));
 }
 
 TEST_F(TestEdl, TestComSkipVersion1EDL)
@@ -251,8 +251,8 @@ TEST_F(TestEdl, TestComSkipVersion1EDL)
   EXPECT_EQ(edl.GetCutMarkers().empty(), true);
   EXPECT_EQ(edl.GetEditList().size(), 3);
   EXPECT_EQ(edl.GetSceneMarkers().size(), 3 * 2); // start and end of each commbreak
-  EXPECT_EQ(edl.GetEditList().front().start, static_cast<int>(12693 / fps * 1000));
-  EXPECT_EQ(edl.GetEditList().front().end, static_cast<int>(17792 / fps * 1000));
+  EXPECT_EQ(edl.GetEditList().front().start, std::lround(12693 / fps * 1000));
+  EXPECT_EQ(edl.GetEditList().front().end, std::lround(17792 / fps * 1000));
 }
 
 TEST_F(TestEdl, TestComSkipVersion2EDL)
@@ -274,8 +274,8 @@ TEST_F(TestEdl, TestComSkipVersion2EDL)
   EXPECT_EQ(edl.GetCutMarkers().empty(), true);
   EXPECT_EQ(edl.GetEditList().size(), 3);
   EXPECT_EQ(edl.GetSceneMarkers().size(), 3 * 2); // start and end of each commbreak
-  EXPECT_EQ(edl.GetEditList().front().start, static_cast<int>(12693 / fpsInEdlFile * 1000));
-  EXPECT_EQ(edl.GetEditList().front().end, static_cast<int>(17792 / fpsInEdlFile * 1000));
+  EXPECT_EQ(edl.GetEditList().front().start, std::lround(12693 / fpsInEdlFile * 1000));
+  EXPECT_EQ(edl.GetEditList().front().end, std::lround(17792 / fpsInEdlFile * 1000));
 }
 
 TEST_F(TestEdl, TestRuntimeSetEDL)
@@ -328,7 +328,7 @@ TEST_F(TestEdl, TestCommBreakAdvancedSettings)
   EXPECT_EQ(edl.GetEditList().at(3).start, 52 * 1000);
   EXPECT_EQ(edl.GetEditList().at(3).end, 60 * 1000);
   EXPECT_EQ(edl.GetEditList().at(4).start, 62 * 1000);
-  EXPECT_EQ(edl.GetEditList().at(4).end, static_cast<int>(65.1 * 1000));
+  EXPECT_EQ(edl.GetEditList().at(4).end, std::lround(65.1 * 1000));
   // now lets change autowait and autowind and check the edits are correcly adjusted
   edl.Clear();
   advancedSettings->m_iEdlCommBreakAutowait = 3; // secs
@@ -420,7 +420,7 @@ TEST_F(TestEdl, TestMergeSmallCommbreaks)
   // and ending at the last edit time
   EXPECT_EQ(edl.GetEditList().size(), 1);
   EXPECT_EQ(edl.GetEditList().at(0).start, 0);
-  EXPECT_EQ(edl.GetEditList().at(0).end, static_cast<int>(65.1 * 1000));
+  EXPECT_EQ(edl.GetEditList().at(0).end, std::lround(65.1 * 1000));
 }
 
 TEST_F(TestEdl, TestMergeSmallCommbreaksAdvanced)
@@ -455,5 +455,5 @@ TEST_F(TestEdl, TestMergeSmallCommbreaksAdvanced)
   EXPECT_EQ(edl.GetEditList().at(0).end - edl.GetEditList().at(0).start, (32 - 10) * 1000);
   // 4th, 5th and 6th commbreaks joined
   EXPECT_EQ(edl.GetEditList().at(1).end - edl.GetEditList().at(1).start,
-            static_cast<int>((65.1 - 37) * 1000));
+            std::lround((65.1 - 37) * 1000));
 }
