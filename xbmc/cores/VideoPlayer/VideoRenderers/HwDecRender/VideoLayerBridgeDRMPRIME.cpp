@@ -8,8 +8,10 @@
 
 #include "VideoLayerBridgeDRMPRIME.h"
 
+#include "ServiceBroker.h"
 #include "cores/VideoPlayer/Buffers/VideoBufferDRMPRIME.h"
 #include "utils/log.h"
+#include "windowing/WinSystem.h"
 #include "windowing/gbm/drm/DRMAtomic.h"
 
 #include <utility>
@@ -35,17 +37,12 @@ void CVideoLayerBridgeDRMPRIME::Disable()
   m_DRM->AddProperty(plane, "FB_ID", 0);
   m_DRM->AddProperty(plane, "CRTC_ID", 0);
 
-  // disable HDR metadata
-  auto connector = m_DRM->GetConnector();
-  if (connector->SupportsProperty("HDR_OUTPUT_METADATA"))
-  {
-    m_DRM->AddProperty(connector, "HDR_OUTPUT_METADATA", 0);
-    m_DRM->SetActive(true);
+  auto winSystem = CServiceBroker::GetWinSystem();
+  if (!winSystem)
+    return;
 
-    if (m_hdr_blob_id)
-      drmModeDestroyPropertyBlob(m_DRM->GetFileDescriptor(), m_hdr_blob_id);
-    m_hdr_blob_id = 0;
-  }
+  // disable HDR metadata
+  winSystem->SetHDR(nullptr);
 }
 
 void CVideoLayerBridgeDRMPRIME::Acquire(CVideoBufferDRMPRIME* buffer)
@@ -159,7 +156,13 @@ void CVideoLayerBridgeDRMPRIME::Unmap(CVideoBufferDRMPRIME* buffer)
 
 void CVideoLayerBridgeDRMPRIME::Configure(CVideoBufferDRMPRIME* buffer)
 {
+  auto winSystem = CServiceBroker::GetWinSystem();
+  if (!winSystem)
+    return;
+
   const VideoPicture& picture = buffer->GetPicture();
+
+  winSystem->SetHDR(&picture);
 
   auto plane = m_DRM->GetVideoPlane();
 
@@ -172,64 +175,6 @@ void CVideoLayerBridgeDRMPRIME::Configure(CVideoBufferDRMPRIME* buffer)
   std::tie(result, value) = plane->GetPropertyValue("COLOR_RANGE", GetColorRange(picture));
   if (result)
     m_DRM->AddProperty(plane, "COLOR_RANGE", value);
-
-  auto connector = m_DRM->GetConnector();
-  if (connector->SupportsProperty("HDR_OUTPUT_METADATA"))
-  {
-    m_hdr_metadata.metadata_type = HDMI_STATIC_METADATA_TYPE1;
-    m_hdr_metadata.hdmi_metadata_type1.eotf = GetEOTF(picture);
-    m_hdr_metadata.hdmi_metadata_type1.metadata_type = HDMI_STATIC_METADATA_TYPE1;
-
-    if (m_hdr_blob_id)
-      drmModeDestroyPropertyBlob(m_DRM->GetFileDescriptor(), m_hdr_blob_id);
-    m_hdr_blob_id = 0;
-
-    if (m_hdr_metadata.hdmi_metadata_type1.eotf)
-    {
-      const AVMasteringDisplayMetadata* mdmd = GetMasteringDisplayMetadata(picture);
-      if (mdmd && mdmd->has_primaries)
-      {
-        // Convert to unsigned 16-bit values in units of 0.00002,
-        // where 0x0000 represents zero and 0xC350 represents 1.0000
-        for (int i = 0; i < 3; i++)
-        {
-          m_hdr_metadata.hdmi_metadata_type1.display_primaries[i].x =
-              std::round(av_q2d(mdmd->display_primaries[i][0]) * 50000.0);
-          m_hdr_metadata.hdmi_metadata_type1.display_primaries[i].y =
-              std::round(av_q2d(mdmd->display_primaries[i][1]) * 50000.0);
-        }
-        m_hdr_metadata.hdmi_metadata_type1.white_point.x =
-            std::round(av_q2d(mdmd->white_point[0]) * 50000.0);
-        m_hdr_metadata.hdmi_metadata_type1.white_point.y =
-            std::round(av_q2d(mdmd->white_point[1]) * 50000.0);
-      }
-      if (mdmd && mdmd->has_luminance)
-      {
-        // Convert to unsigned 16-bit value in units of 1 cd/m2,
-        // where 0x0001 represents 1 cd/m2 and 0xFFFF represents 65535 cd/m2
-        m_hdr_metadata.hdmi_metadata_type1.max_display_mastering_luminance =
-            std::round(av_q2d(mdmd->max_luminance));
-
-        // Convert to unsigned 16-bit value in units of 0.0001 cd/m2,
-        // where 0x0001 represents 0.0001 cd/m2 and 0xFFFF represents 6.5535 cd/m2
-        m_hdr_metadata.hdmi_metadata_type1.min_display_mastering_luminance =
-            std::round(av_q2d(mdmd->min_luminance) * 10000.0);
-      }
-
-      const AVContentLightMetadata* clmd = GetContentLightMetadata(picture);
-      if (clmd)
-      {
-        m_hdr_metadata.hdmi_metadata_type1.max_cll = clmd->MaxCLL;
-        m_hdr_metadata.hdmi_metadata_type1.max_fall = clmd->MaxFALL;
-      }
-
-      drmModeCreatePropertyBlob(m_DRM->GetFileDescriptor(), &m_hdr_metadata, sizeof(m_hdr_metadata),
-                                &m_hdr_blob_id);
-    }
-
-    m_DRM->AddProperty(connector, "HDR_OUTPUT_METADATA", m_hdr_blob_id);
-    m_DRM->SetActive(true);
-  }
 }
 
 void CVideoLayerBridgeDRMPRIME::SetVideoPlane(CVideoBufferDRMPRIME* buffer, const CRect& destRect)
