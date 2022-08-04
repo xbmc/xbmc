@@ -372,6 +372,13 @@ if(WIN32)
 endif()
 
 # main binary
+set(ICU4C_LIB ${CMAKE_INSTALL_PREFIX}/lib)
+target_link_libraries(lib${APP_NAME_LC} PUBLIC
+ 					${ICU4C_LIB}/libicudata.so
+                    ${ICU4C_LIB}/libicui18n.so
+                    ${ICU4C_LIB}/libicuio.so
+                    ${ICU4C_LIB}/libicutu.so
+                    ${ICU4C_LIB}/libicuuc.so)             
 if(NOT CORE_SYSTEM_NAME STREQUAL android)
   if(CORE_SYSTEM_NAME STREQUAL windowsstore)
     winstore_add_target_properties(${APP_NAME_LC})
