@@ -19,7 +19,7 @@ function(add_addon_depends addon searchpath)
     if(NOT (file MATCHES CMakeLists.txt OR
             file MATCHES install.txt OR
             file MATCHES noinstall.txt OR
-            file MATCHES flags.txt OR
+            file MATCHES "flags.*[.]txt" OR
             file MATCHES deps.txt OR
             file MATCHES "[a-z]+-deps[.]txt" OR
             file MATCHES platforms.txt))
@@ -57,6 +57,15 @@ function(add_addon_depends addon searchpath)
           string(REPLACE " " ";" extraflags ${extraflags})
 
           message(STATUS "${id} extraflags: ${extraflags}")
+        endif()
+
+        if(EXISTS ${dir}/flags-${CPU}.txt)
+          set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${dir}/flags-${CPU}.txt)
+          file(STRINGS ${dir}/flags-${CPU}.txt archextraflags)
+          string(REPLACE " " ";" archextraflags ${archextraflags})
+
+          message(STATUS "${id} ${CPU} extraflags: ${archextraflags}")
+          list(APPEND extraflags ${archextraflags})
         endif()
 
         set(BUILD_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}
