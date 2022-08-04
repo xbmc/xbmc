@@ -55,7 +55,8 @@ main(int, char**)
         return 1;
 
     char buf[256];
-    while (gets(buf)) {
+    while (true) {
+        fgets(buf, 256, stdin);
         if (*buf == 'q')
             break;
     }

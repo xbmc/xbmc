@@ -148,7 +148,8 @@ main(int /* argc */, char** argv)
     NPT_LOG_INFO("Press 'q' to quit.");
 
     char buf[256];
-    while (gets(buf)) {
+    while (true) {
+        fgets(buf, 256, stdin);
         if (*buf == 'q')
             break;
     }
