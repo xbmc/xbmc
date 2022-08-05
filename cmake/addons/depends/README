@@ -23,6 +23,7 @@ are:
   * install.txt: instructions on how to install the dependency's built files
   * noinstall.txt: no installation step required (content is ignored)
   * flags.txt: additional build flags
+  * flags-<CPU>.txt: additional arch specific platform build flags
   * deps.txt: whitespace separated list of dependencies of this dependency
 
 The buildsystem uses the following depends-related variables (which can be passed
