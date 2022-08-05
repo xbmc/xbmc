@@ -52,8 +52,10 @@ namespace
 {
 constexpr int VERTEX_PER_GLYPH = 4; // number of vertex for each glyph
 constexpr int CHARS_PER_TEXTURE_LINE = 20; // number characters to cache per texture line
+constexpr int MAX_TRANSLATED_VERTEX = 32; // max number of structs CTranslatedVertices expect to use
+constexpr int MAX_GLYPHS_PER_TEXT_LINE = 1024; // max number of glyphs per text line expect to use
 constexpr unsigned int SPACING_BETWEEN_CHARACTERS_IN_TEXTURE = 1;
-constexpr int CHAR_CHUNK = 64; // 64 chars allocated at a time (1024 bytes)
+constexpr int CHAR_CHUNK = 64; // 64 chars allocated at a time (2048 bytes)
 constexpr int GLYPH_STRENGTH_BOLD = 24;
 constexpr int GLYPH_STRENGTH_LIGHT = -48;
 constexpr int TAB_SPACE_LENGTH = 4;
@@ -165,7 +167,6 @@ CGUIFontTTF::CGUIFontTTF(const std::string& fontIdent)
     m_dynamicCache(*this),
     m_renderSystem(CServiceBroker::GetRenderSystem())
 {
-  m_vertex.reserve(VERTEX_PER_GLYPH * 1024);
 }
 
 CGUIFontTTF::~CGUIFontTTF(void)
@@ -317,11 +318,6 @@ bool CGUIFontTTF::Load(
   m_posX = m_textureWidth;
   m_posY = -static_cast<int>(GetTextureLineHeight());
 
-  // cache the ellipses width
-  Character* ellipse = GetCharacter(L'.', 0);
-  if (ellipse)
-    m_ellipsesWidth = ellipse->m_advance;
-
   return true;
 }
 
@@ -364,7 +360,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
   Begin();
   uint32_t rawAlignment = alignment;
   bool dirtyCache(false);
-  bool hardwareClipping = m_renderSystem->ScissorsCanEffectClipping();
+  const bool hardwareClipping = m_renderSystem->ScissorsCanEffectClipping();
   CGUIFontCacheStaticPosition staticPos(x, y);
   CGUIFontCacheDynamicPosition dynamicPos;
   if (hardwareClipping)
@@ -385,12 +381,34 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
                        : static_cast<std::shared_ptr<std::vector<SVertex>>&>(m_staticCache.Lookup(
                              context, staticPos, colors, text, alignment, maxPixelWidth, scrolling,
                              std::chrono::steady_clock::now(), dirtyCache));
+
+  // reserves vertex vector capacity, only the ones that are going to be used
+  if (hardwareClipping)
+  {
+    if (m_vertexTrans.capacity() == 0)
+      m_vertexTrans.reserve(MAX_TRANSLATED_VERTEX);
+  }
+  else
+  {
+    if (m_vertex.capacity() == 0)
+      m_vertex.reserve(VERTEX_PER_GLYPH * MAX_GLYPHS_PER_TEXT_LINE);
+  }
+
   if (dirtyCache)
   {
     const std::vector<Glyph> glyphs = GetHarfBuzzShapedGlyphs(text);
     // save the origin, which is scaled separately
     m_originX = x;
     m_originY = y;
+
+    // cache the ellipses width
+    if (!m_ellipseCached)
+    {
+      m_ellipseCached = true;
+      Character* ellipse = GetCharacter(L'.', 0);
+      if (ellipse)
+        m_ellipsesWidth = ellipse->m_advance;
+    }
 
     // Check if we will really need to truncate or justify the text
     if (alignment & XBFONT_TRUNCATED)
