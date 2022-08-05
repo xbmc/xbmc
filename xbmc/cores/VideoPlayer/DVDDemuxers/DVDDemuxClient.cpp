@@ -339,7 +339,7 @@ DemuxPacket* CDVDDemuxClient::Read()
 
   if (!IsVideoReady())
   {
-    m_packet.reset();
+    CDVDDemuxUtils::FreeDemuxPacket(m_packet.release());
     DemuxPacket *pPacket = CDVDDemuxUtils::AllocateDemuxPacket(0);
     pPacket->demuxerId = m_demuxerId;
     return pPacket;
