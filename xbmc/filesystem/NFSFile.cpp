@@ -31,15 +31,6 @@
 #include <sys\stat.h>
 #endif
 
-// KEEP_ALIVE_TIMEOUT is decremented every half a second
-// 360 * 0.5s == 180s == 3mins
-// so when no read was done for 3mins and files are open
-// do the nfs keep alive for the open files
-#define KEEP_ALIVE_TIMEOUT 360
-
-// 6 mins (360s) cached context timeout
-#define CONTEXT_TIMEOUT 360000
-
 #if defined(TARGET_WINDOWS)
 #define S_IRGRP 0
 #define S_IROTH 0
@@ -49,8 +40,25 @@
 
 using namespace XFILE;
 
+using namespace std::chrono_literals;
+
+namespace
+{
+
+constexpr auto CONTEXT_TIMEOUT = 6min;
+
+constexpr auto KEEP_ALIVE_TIMEOUT = 3min;
+
+constexpr auto IDLE_TIMEOUT = 3min;
+
+} // namespace
+
 CNfsConnection::CNfsConnection()
-  : m_pNfsContext(NULL), m_exportPath(""), m_hostName(""), m_resolvedHostName("")
+  : m_pNfsContext(NULL),
+    m_exportPath(""),
+    m_hostName(""),
+    m_resolvedHostName(""),
+    m_IdleTimeout(std::chrono::steady_clock::now() + IDLE_TIMEOUT)
 {
 }
 
@@ -139,7 +147,7 @@ struct nfs_context *CNfsConnection::getContextFromMap(const std::string &exportn
     auto now = std::chrono::steady_clock::now();
     auto duration =
         std::chrono::duration_cast<std::chrono::milliseconds>(now - it->second.lastAccessedTime);
-    if (duration.count() < CONTEXT_TIMEOUT || forceCacheHit)
+    if (duration < CONTEXT_TIMEOUT || forceCacheHit)
     {
       //its not timedout yet or caller wants the cached entry regardless of timeout
       //refresh access time of that
@@ -274,7 +282,7 @@ bool CNfsConnection::Connect(const CURL& url, std::string &relativePath)
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - m_lastAccessedTime);
 
   if ((ret && (exportPath != m_exportPath || url.GetHostName() != m_hostName)) ||
-      duration.count() > CONTEXT_TIMEOUT)
+      duration > CONTEXT_TIMEOUT)
   {
     CNfsConnection::ContextStatus contextRet = getContextForExport(url.GetHostName() + exportPath);
 
@@ -337,11 +345,9 @@ void CNfsConnection::CheckIfIdle()
     std::unique_lock<CCriticalSection> lock(*this);
     if (m_OpenConnections == 0 /* check again - when locked */)
     {
-      if (m_IdleTimeout > 0)
-      {
-        m_IdleTimeout--;
-      }
-      else
+      const auto now = std::chrono::steady_clock::now();
+
+      if (m_IdleTimeout < now)
       {
         CLog::Log(LOGINFO, "NFS is idle. Closing the remaining connections.");
         gNfsConnection.Deinit();
@@ -352,14 +358,13 @@ void CNfsConnection::CheckIfIdle()
   if( m_pNfsContext != NULL )
   {
     std::unique_lock<CCriticalSection> lock(keepAliveLock);
+
+    const auto now = std::chrono::steady_clock::now();
+
     //handle keep alive on opened files
     for (auto& it : m_KeepAliveTimeouts)
     {
-      if (it.second.refreshCounter > 0)
-      {
-        it.second.refreshCounter--;
-      }
-      else
+      if (it.second.refreshTime < now)
       {
         keepAlive(it.second.exportPath, it.first);
         //reset timeout
@@ -392,7 +397,7 @@ void CNfsConnection::resetKeepAlive(const std::string& _exportPath, struct nfsfh
 
   //adds new keys - refreshes existing ones
   m_KeepAliveTimeouts[_pFileHandle].exportPath = _exportPath;
-  m_KeepAliveTimeouts[_pFileHandle].refreshCounter = KEEP_ALIVE_TIMEOUT;
+  m_KeepAliveTimeouts[_pFileHandle].refreshTime = m_lastAccessedTime + KEEP_ALIVE_TIMEOUT;
 }
 
 //keep alive the filehandles nfs connection
@@ -411,7 +416,8 @@ void CNfsConnection::keepAlive(const std::string& _exportPath, struct nfsfh* _pF
   if (!pContext)// this should normally never happen - paranoia
     pContext = m_pNfsContext;
 
-  CLog::Log(LOGINFO, "NFS: sending keep alive after {} s.", KEEP_ALIVE_TIMEOUT / 2);
+  CLog::Log(LOGINFO, "NFS: sending keep alive after {} s.",
+            std::chrono::duration_cast<std::chrono::seconds>(KEEP_ALIVE_TIMEOUT).count());
   std::unique_lock<CCriticalSection> lock(*this);
   nfs_lseek(pContext, _pFileHandle, 0, SEEK_CUR, &offset);
   nfs_read(pContext, _pFileHandle, 32, buffer);
@@ -471,7 +477,8 @@ void CNfsConnection::AddIdleConnection()
   m_OpenConnections--;
   /* If we close a file we reset the idle timer so that we don't have any weird behaviours if a user
    leaves the movie paused for a long while and then press stop */
-  m_IdleTimeout = 180;
+  const auto now = std::chrono::steady_clock::now();
+  m_IdleTimeout = now + IDLE_TIMEOUT;
 }
 
 
