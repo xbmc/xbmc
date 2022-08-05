@@ -204,6 +204,7 @@ protected:
    Accounts for spacing between lines to avoid characters overlapping.
    */
   unsigned int GetTextureLineHeight() const;
+  unsigned int GetMaxFontHeight() const;
 
   UTILS::COLOR::Color m_color{UTILS::COLOR::NONE};
 
@@ -217,6 +218,7 @@ protected:
 
   unsigned int m_cellBaseLine{0};
   unsigned int m_cellHeight{0};
+  unsigned int m_maxFontHeight{0};
 
   unsigned int m_nestedBeginCount{0}; // speedups
 
