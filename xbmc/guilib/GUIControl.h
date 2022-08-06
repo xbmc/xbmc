@@ -370,6 +370,7 @@ protected:
   float m_stereo;
   TransformMatrix m_transform;
   TransformMatrix m_cachedTransform; // Contains the absolute transform the control
+  bool m_isCulled{true};
 
   static const unsigned int DIRTY_STATE_CONTROL = 1; //This control is dirty
   static const unsigned int DIRTY_STATE_CHILD = 2; //One / more children are dirty
