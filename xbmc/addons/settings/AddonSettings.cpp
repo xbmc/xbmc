@@ -39,6 +39,9 @@
 #include <mutex>
 #include <vector>
 
+namespace
+{
+
 static const std::string OldSettingValuesSeparator = "|";
 
 static const int UnknownSettingLabelIdStart = 100000;
@@ -140,6 +143,8 @@ SettingPtr AddSettingWithoutDefinition(ADDON::CAddonSettings& settings,
 
   return setting;
 }
+
+} // namespace
 
 namespace ADDON
 {
