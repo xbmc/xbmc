@@ -84,14 +84,14 @@ CAddonMgr::~CAddonMgr()
 IAddonMgrCallback* CAddonMgr::GetCallbackForType(TYPE type)
 {
   if (m_managers.find(type) == m_managers.end())
-    return NULL;
+    return nullptr;
   else
     return m_managers[type];
 }
 
 bool CAddonMgr::RegisterAddonMgrCallback(const TYPE type, IAddonMgrCallback* cb)
 {
-  if (cb == NULL)
+  if (cb == nullptr)
     return false;
 
   m_managers.erase(type);
@@ -635,7 +635,7 @@ bool CAddonMgr::GetAddon(const std::string& str,
       if (runningAddon)
         addon = runningAddon;
     }
-    return NULL != addon.get();
+    return nullptr != addon.get();
   }
 
   return false;
@@ -842,7 +842,7 @@ bool CAddonMgr::DisableAddon(const std::string& id, AddonDisabledReason disabled
   //success
   CLog::Log(LOGDEBUG, "CAddonMgr: {} disabled", id);
   AddonPtr addon;
-  if (GetAddon(id, addon, ADDON_UNKNOWN, OnlyEnabled::CHOICE_NO) && addon != NULL)
+  if (GetAddon(id, addon, ADDON_UNKNOWN, OnlyEnabled::CHOICE_NO) && addon != nullptr)
   {
     auto eventLog = CServiceBroker::GetEventLog();
     if (eventLog)

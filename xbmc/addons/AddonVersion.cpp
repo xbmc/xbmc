@@ -38,7 +38,7 @@ namespace ADDON
     size_t pos = mUpstream.find(':');
     if (pos != std::string::npos)
     {
-      mEpoch = strtol(mUpstream.c_str(), NULL, 10);
+      mEpoch = strtol(mUpstream.c_str(), nullptr, 10);
       mUpstream.erase(0, pos+1);
     }
 

@@ -150,7 +150,7 @@ public:
   \param database the database instance to update. Defaults to NULL.
   \return true if dependencies are available, false otherwise.
   */
-  bool CheckDependencies(const ADDON::AddonPtr &addon, CAddonDatabase *database = NULL);
+  bool CheckDependencies(const ADDON::AddonPtr& addon, CAddonDatabase* database = nullptr);
 
   /*! \brief Check whether dependencies of an addon exist or are installable.
    Iterates through the addon's dependencies, checking they're installed or installable.
@@ -160,7 +160,9 @@ public:
    \param database the database instance to update. Defaults to NULL.
    \return true if dependencies are available, false otherwise.
    */
-  bool CheckDependencies(const ADDON::AddonPtr &addon, std::pair<std::string, std::string> &failedDep, CAddonDatabase *database = NULL);
+  bool CheckDependencies(const ADDON::AddonPtr& addon,
+                         std::pair<std::string, std::string>& failedDep,
+                         CAddonDatabase* database = nullptr);
 
   /*! \brief Check if an installation job for a given add-on is already queued up
    *  \param ID The ID of the add-on

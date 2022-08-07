@@ -164,7 +164,7 @@ CAddonSettings::CAddonSettings(const std::shared_ptr<const IAddon>& addon)
 std::shared_ptr<CSetting> CAddonSettings::CreateSetting(
     const std::string& settingType,
     const std::string& settingId,
-    CSettingsManager* settingsManager /* = NULL */) const
+    CSettingsManager* settingsManager /* = nullptr */) const
 {
   if (StringUtils::EqualsNoCase(settingType, "urlencodedstring"))
     return std::make_shared<CSettingUrlEncodedString>(settingId, settingsManager);

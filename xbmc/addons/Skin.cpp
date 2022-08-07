@@ -295,7 +295,8 @@ void CSkinInfo::StartTimerEvaluation()
   m_skinTimerManager.Start();
 }
 
-void CSkinInfo::ResolveIncludes(TiXmlElement *node, std::map<INFO::InfoPtr, bool>* xmlIncludeConditions /* = NULL */)
+void CSkinInfo::ResolveIncludes(TiXmlElement* node,
+                                std::map<INFO::InfoPtr, bool>* xmlIncludeConditions /* = nullptr */)
 {
   if(xmlIncludeConditions)
     xmlIncludeConditions->clear();
@@ -517,7 +518,7 @@ void CSkinInfo::SettingOptionsSkinFontsFiller(const SettingConstPtr& setting,
   {
     const char* idAttr = pChild->Attribute("id");
     const char* idLocAttr = pChild->Attribute("idloc");
-    if (idAttr != NULL)
+    if (idAttr != nullptr)
     {
       if (idLocAttr)
         list.emplace_back(g_localizeStrings.Get(atoi(idLocAttr)), idAttr);
@@ -866,7 +867,7 @@ bool CSkinInfo::SettingsToXML(CXBMCTinyXML &doc) const
   // add the <skinsettings> tag
   TiXmlElement rootElement(XML_SETTINGS);
   TiXmlNode *settingsNode = doc.InsertEndChild(rootElement);
-  if (settingsNode == NULL)
+  if (settingsNode == nullptr)
   {
     CLog::Log(LOGWARNING, "CSkinInfo: could not create <settings> tag");
     return false;
