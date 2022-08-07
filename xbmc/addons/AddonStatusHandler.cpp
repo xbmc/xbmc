@@ -38,9 +38,10 @@ namespace ADDON
 
 CCriticalSection CAddonStatusHandler::m_critSection;
 
-CAddonStatusHandler::CAddonStatusHandler(const std::string &addonID, ADDON_STATUS status, std::string message, bool sameThread)
-  : CThread(("AddonStatus " + addonID).c_str()),
-    m_status(ADDON_STATUS_UNKNOWN)
+CAddonStatusHandler::CAddonStatusHandler(const std::string& addonID,
+                                         ADDON_STATUS status,
+                                         bool sameThread)
+  : CThread(("AddonStatus " + addonID).c_str()), m_status(ADDON_STATUS_UNKNOWN)
 {
   //! @todo The status handled CAddonStatusHandler by is related to the class, not the instance
   //! having CAddonMgr construct an instance makes no sense
@@ -52,8 +53,7 @@ CAddonStatusHandler::CAddonStatusHandler(const std::string &addonID, ADDON_STATU
             "Called Add-on status handler for '{}' of clientName:{}, clientID:{} (same Thread={})",
             status, m_addon->Name(), m_addon->ID(), sameThread ? "yes" : "no");
 
-  m_status  = status;
-  m_message = std::move(message);
+  m_status = status;
 
   if (sameThread)
   {
@@ -101,7 +101,6 @@ void CAddonStatusHandler::Process()
     pDialogYesNo->SetHeading(CVariant{heading});
     pDialogYesNo->SetLine(1, CVariant{24070});
     pDialogYesNo->SetLine(2, CVariant{24072});
-    pDialogYesNo->SetLine(3, CVariant{m_message});
     pDialogYesNo->Open();
 
     if (!pDialogYesNo->IsConfirmed()) return;
