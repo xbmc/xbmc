@@ -205,6 +205,8 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
     addon->m_path = URIUtils::AddFileToFolder(repo.datadir, addon->m_id, StringUtils::Format("{}-{}.zip", addon->m_id, addon->m_version.asString()));
   }
 
+  addon->m_profilePath = StringUtils::Format("special://profile/addon_data/{}/", addon->m_id);
+
   /*
    * Parse addon.xml:
    * <extension>

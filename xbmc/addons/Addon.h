@@ -101,7 +101,7 @@ public:
   std::string Summary() const override { return m_addonInfo->Summary(); }
   std::string Description() const override { return m_addonInfo->Description(); }
   std::string Path() const override { return m_addonInfo->Path(); }
-  std::string Profile() const override { return m_profilePath; }
+  std::string Profile() const override { return m_addonInfo->ProfilePath(); }
   std::string LibPath() const override;
   std::string Author() const override { return m_addonInfo->Author(); }
   std::string ChangeLog() const override { return m_addonInfo->ChangeLog(); }
@@ -305,7 +305,6 @@ private:
   bool m_loadSettingsFailed;
   bool m_hasUserSettings;
 
-  std::string m_profilePath;
   mutable std::shared_ptr<CAddonSettings> m_settings;
   const TYPE m_type;
 };
