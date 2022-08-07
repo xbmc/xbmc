@@ -8,23 +8,23 @@
 
 #include "Addon.h"
 
-#include <algorithm>
-#include <string.h>
-#include <ostream>
-#include <utility>
-#include <vector>
-
 #include "AddonManager.h"
+#include "RepositoryUpdater.h"
+#include "ServiceBroker.h"
 #include "addons/settings/AddonSettings.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
-#include "RepositoryUpdater.h"
 #include "settings/Settings.h"
-#include "ServiceBroker.h"
-#include "utils/log.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
+#include "utils/log.h"
+
+#include <algorithm>
+#include <ostream>
+#include <string.h>
+#include <utility>
+#include <vector>
 
 #ifdef HAS_PYTHON
 #include "interfaces/python/XBPython.h"
@@ -82,7 +82,8 @@ bool CAddon::LoadSettings(bool bForce, bool loadUserSettings /* = true */)
     GetSettings()->Uninitialize();
 
   // load the settings definition XML file
-  auto addonSettingsDefinitionFile = URIUtils::AddFileToFolder(m_addonInfo->Path(), "resources", "settings.xml");
+  auto addonSettingsDefinitionFile =
+      URIUtils::AddFileToFolder(m_addonInfo->Path(), "resources", "settings.xml");
   CXBMCTinyXML addonSettingsDefinitionDoc;
   if (!addonSettingsDefinitionDoc.LoadFile(addonSettingsDefinitionFile))
   {
@@ -305,7 +306,7 @@ bool CAddon::UpdateSettingString(const std::string& key, const std::string& valu
   return UpdateSettingValue<CSettingString>(*this, key, value);
 }
 
-bool CAddon::SettingsFromXML(const CXBMCTinyXML &doc, bool loadDefaults /* = false */)
+bool CAddon::SettingsFromXML(const CXBMCTinyXML& doc, bool loadDefaults /* = false */)
 {
   if (doc.RootElement() == nullptr)
     return false;
@@ -336,7 +337,7 @@ bool CAddon::SettingsFromXML(const CXBMCTinyXML &doc, bool loadDefaults /* = fal
   return true;
 }
 
-bool CAddon::SettingsToXML(CXBMCTinyXML &doc) const
+bool CAddon::SettingsToXML(CXBMCTinyXML& doc) const
 {
   if (!SettingsInitialized())
     return false;
@@ -376,7 +377,7 @@ std::string CAddon::LibPath() const
   return URIUtils::AddFileToFolder(m_addonInfo->Path(), libName);
 }
 
-AddonVersion CAddon::GetDependencyVersion(const std::string &dependencyID) const
+AddonVersion CAddon::GetDependencyVersion(const std::string& dependencyID) const
 {
   return m_addonInfo->DependencyVersion(dependencyID);
 }
@@ -403,5 +404,4 @@ void OnPostUnInstall(const AddonPtr& addon)
   addon->OnPostUnInstall();
 }
 
-} /* namespace ADDON */
-
+} // namespace ADDON
