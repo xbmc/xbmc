@@ -211,7 +211,7 @@ bool CAddonInstaller::InstallOrUpdateDependency(const ADDON::AddonPtr& dependsId
 
 bool CAddonInstaller::RemoveDependency(const std::shared_ptr<IAddon>& dependsId) const
 {
-  bool removeData = CDirectory::Exists("special://profile/addon_data/" + dependsId->ID());
+  const bool removeData = CDirectory::Exists(dependsId->Profile());
   CAddonUnInstallJob removeDependencyJob(dependsId, removeData);
   removeDependencyJob.SetRecurseOrphaned(RecurseOrphaned::CHOICE_NO);
 
@@ -1130,7 +1130,7 @@ bool CAddonUnInstallJob::DoWork()
   ClearFavourites();
   if (m_removeData)
   {
-    CFileUtils::DeleteItem("special://profile/addon_data/"+m_addon->ID()+"/");
+    CFileUtils::DeleteItem(m_addon->Profile());
   }
 
   AddonPtr addon;
