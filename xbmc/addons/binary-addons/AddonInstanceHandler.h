@@ -25,11 +25,11 @@ public:
   IAddonInstanceHandler(ADDON_TYPE type,
                         const AddonInfoPtr& addonInfo,
                         KODI_HANDLE parentInstance = nullptr,
-                        const std::string& instanceID = "");
+                        const std::string& uniqueWorkID = "");
   virtual ~IAddonInstanceHandler();
 
   ADDON_TYPE UsedType() const { return m_type; }
-  const std::string& InstanceID() { return m_instanceId; }
+  const std::string& UniqueWorkID() { return m_uniqueWorkID; }
 
   std::string ID() const;
   std::string Name() const;
@@ -85,7 +85,7 @@ private:
                                           const char* value);
 
   ADDON_TYPE m_type;
-  std::string m_instanceId;
+  std::string m_uniqueWorkID;
   KODI_HANDLE m_parentInstance;
   AddonInfoPtr m_addonInfo;
   BinaryAddonBasePtr m_addonBase;
