@@ -38,13 +38,9 @@ namespace ADDON
 
 CAddon::CAddon(const AddonInfoPtr& addonInfo, TYPE addonType)
   : m_addonInfo(addonInfo),
-    m_userSettingsPath(),
-    m_loadSettingsFailed(false),
-    m_hasUserSettings(false),
-    m_settings(nullptr),
+    m_userSettingsPath(URIUtils::AddFileToFolder(addonInfo->ProfilePath(), "settings.xml")),
     m_type(addonType == ADDON_UNKNOWN ? addonInfo->MainType() : addonType)
 {
-  m_userSettingsPath = URIUtils::AddFileToFolder(addonInfo->ProfilePath(), "settings.xml");
 }
 
 /**

@@ -299,11 +299,11 @@ protected:
   virtual bool SettingsToXML(CXBMCTinyXML& doc) const;
 
   const AddonInfoPtr m_addonInfo;
-  std::string m_userSettingsPath;
 
 private:
-  bool m_loadSettingsFailed;
-  bool m_hasUserSettings;
+  bool m_loadSettingsFailed{false};
+  bool m_hasUserSettings{false};
+  std::string m_userSettingsPath;
 
   mutable std::shared_ptr<CAddonSettings> m_settings;
   const TYPE m_type;
