@@ -105,7 +105,7 @@ SettingPtr AddSettingWithoutDefinition(ADDON::CAddonSettings& settings,
   SettingSectionPtr section;
   if (sections.empty())
     section =
-        std::make_shared<CSettingSection>(settings.GetAddon()->ID(), settings.GetSettingsManager());
+        std::make_shared<CSettingSection>(settings.GetAddonId(), settings.GetSettingsManager());
   else
     section = sections.back();
 
@@ -151,7 +151,6 @@ namespace ADDON
 
 CAddonSettings::CAddonSettings(const std::shared_ptr<const IAddon>& addon)
   : CSettingsBase(),
-    m_addon(addon),
     m_addonId(addon->ID()),
     m_addonPath(addon->Path()),
     m_addonProfile(addon->Profile()),
