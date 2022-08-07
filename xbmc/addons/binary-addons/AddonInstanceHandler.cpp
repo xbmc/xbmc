@@ -25,17 +25,17 @@ CCriticalSection IAddonInstanceHandler::m_cdSec;
 IAddonInstanceHandler::IAddonInstanceHandler(ADDON_TYPE type,
                                              const AddonInfoPtr& addonInfo,
                                              KODI_HANDLE parentInstance /* = nullptr*/,
-                                             const std::string& instanceID /* = ""*/)
+                                             const std::string& uniqueWorkID /* = ""*/)
   : m_type(type), m_parentInstance(parentInstance), m_addonInfo(addonInfo)
 {
   // if no special instance ID is given generate one from class pointer (is
   // faster as unique id and also safe enough for them).
-  m_instanceId = !instanceID.empty() ? instanceID : StringUtils::Format("{}", fmt::ptr(this));
+  m_uniqueWorkID = !uniqueWorkID.empty() ? uniqueWorkID : StringUtils::Format("{}", fmt::ptr(this));
   m_addonBase = CServiceBroker::GetBinaryAddonManager().GetAddonBase(addonInfo, this, m_addon);
 
   KODI_ADDON_INSTANCE_INFO* info = new KODI_ADDON_INSTANCE_INFO();
-  info->number = 0;
-  info->id = m_instanceId.c_str();
+  info->number = 0; // @todo change within next big API change to "instance_id"
+  info->id = m_uniqueWorkID.c_str(); // @todo change within next big API change to "unique_work_id"
   info->version = kodi::addon::GetTypeVersion(m_type);
   info->type = m_type;
   info->kodi = this;
