@@ -23,6 +23,7 @@
 #include "settings/lib/SettingsManager.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
 #include "view/ViewStateSettings.h"
 
 #define CONTROL_BTN_LEVELS 20
@@ -52,6 +53,16 @@ bool CGUIDialogAddonSettings::OnMessage(CGUIMessage& message)
     {
       const std::string& settingId = message.GetStringParam(0);
       const std::string& settingValue = message.GetStringParam(1);
+      const ADDON::AddonInstanceId instanceId = message.GetParam1();
+
+      if (instanceId != m_instanceId)
+      {
+        CLog::Log(LOGERROR,
+                  "CGUIDialogAddonSettings::{}: Set value \"{}\" from add-on \"{}\" called with "
+                  "invalid instance id (given: {}, needed: {})",
+                  __func__, m_addon->ID(), settingId, instanceId, m_instanceId);
+        break;
+      }
 
       std::shared_ptr<CSetting> setting = GetSettingsManager()->GetSetting(settingId);
       if (setting != nullptr)
@@ -128,7 +139,9 @@ bool CGUIDialogAddonSettings::ShowForAddon(const ADDON::AddonPtr& addon,
   if (!g_passwordManager.CheckMenuLock(WINDOW_ADDON_BROWSER))
     return false;
 
-  if (!addon->HasSettings())
+  ADDON::AddonInstanceId instanceId = ADDON::ADDON_SETTINGS_ID;
+
+  if (!addon->HasSettings(instanceId))
   {
     // addon does not support settings, inform user
     HELPERS::ShowOKDialogText(CVariant{24000}, CVariant{24030});
@@ -143,6 +156,7 @@ bool CGUIDialogAddonSettings::ShowForAddon(const ADDON::AddonPtr& addon,
     return false;
 
   dialog->m_addon = addon;
+  dialog->m_instanceId = instanceId;
   dialog->m_saveToDisk = saveToDisk;
   dialog->Open();
 
@@ -150,7 +164,7 @@ bool CGUIDialogAddonSettings::ShowForAddon(const ADDON::AddonPtr& addon,
     return false;
 
   if (saveToDisk)
-    addon->SaveSettings();
+    addon->SaveSettings(dialog->m_instanceId);
 
   return true;
 }
@@ -169,7 +183,7 @@ void CGUIDialogAddonSettings::SaveAndClose()
 
   // check if we need to save the settings
   if (dialog->m_saveToDisk && dialog->m_addon != nullptr)
-    dialog->m_addon->SaveSettings();
+    dialog->m_addon->SaveSettings(dialog->m_instanceId);
 
   // close the dialog
   dialog->Close();
@@ -185,10 +199,10 @@ std::string CGUIDialogAddonSettings::GetCurrentAddonID() const
 
 void CGUIDialogAddonSettings::SetupView()
 {
-  if (m_addon == nullptr || m_addon->GetSettings() == nullptr)
+  if (m_addon == nullptr || m_addon->GetSettings(m_instanceId) == nullptr)
     return;
 
-  auto settings = m_addon->GetSettings();
+  auto settings = m_addon->GetSettings(m_instanceId);
   if (!settings->IsLoaded())
     return;
 
@@ -228,7 +242,7 @@ std::string CGUIDialogAddonSettings::GetSettingsLabel(const std::shared_ptr<ISet
     return label;
 
   // try the addon settings
-  label = m_addon->GetSettings()->GetSettingLabel(setting->GetLabel());
+  label = m_addon->GetSettings(m_instanceId)->GetSettingLabel(setting->GetLabel());
   if (!label.empty())
     return label;
 
@@ -255,16 +269,16 @@ std::shared_ptr<CSettingSection> CGUIDialogAddonSettings::GetSection()
 
 CSettingsManager* CGUIDialogAddonSettings::GetSettingsManager() const
 {
-  if (m_addon == nullptr || m_addon->GetSettings() == nullptr)
+  if (m_addon == nullptr || m_addon->GetSettings(m_instanceId) == nullptr)
     return nullptr;
 
-  return m_addon->GetSettings()->GetSettingsManager();
+  return m_addon->GetSettings(m_instanceId)->GetSettingsManager();
 }
 
 void CGUIDialogAddonSettings::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
 {
-  if (m_addon == nullptr || m_addon->GetSettings() == nullptr)
+  if (m_addon == nullptr || m_addon->GetSettings(m_instanceId) == nullptr)
     return;
 
-  m_addon->GetSettings()->OnSettingAction(setting);
+  m_addon->GetSettings(m_instanceId)->OnSettingAction(setting);
 }

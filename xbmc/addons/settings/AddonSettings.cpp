@@ -12,6 +12,7 @@
 #include "GUIInfoManager.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"
+#include "addons/binary-addons/AddonInstanceHandler.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
 #include "addons/settings/SettingUrlEncodedString.h"
 #include "filesystem/Directory.h"
@@ -149,15 +150,17 @@ SettingPtr AddSettingWithoutDefinition(ADDON::CAddonSettings& settings,
 namespace ADDON
 {
 
-CAddonSettings::CAddonSettings(const std::shared_ptr<const IAddon>& addon)
+CAddonSettings::CAddonSettings(const std::shared_ptr<const IAddon>& addon,
+                               AddonInstanceId instanceId)
   : CSettingsBase(),
     m_addonId(addon->ID()),
     m_addonPath(addon->Path()),
     m_addonProfile(addon->Profile()),
+    m_instanceId(instanceId),
     m_unidentifiedSettingId(0),
     m_unknownSettingLabelId(UnknownSettingLabelIdStart),
     m_logger(CServiceBroker::GetLogging().GetLogger(
-        StringUtils::Format("CAddonSettings[{}]", m_addonId)))
+        StringUtils::Format("CAddonSettings[{}@{}]", m_instanceId, m_addonId)))
 {
 }
 

@@ -385,7 +385,7 @@ std::shared_ptr<CAddonSettings> CAddon::GetSettings(AddonInstanceId id /* = ADDO
   // initialize addon settings if necessary
   if (m_settings == nullptr)
   {
-    m_settings = std::make_shared<CAddonSettings>(enable_shared_from_this::shared_from_this());
+    m_settings = std::make_shared<CAddonSettings>(enable_shared_from_this::shared_from_this(), id);
     LoadSettings(false, true, id);
   }
 
