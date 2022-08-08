@@ -244,7 +244,7 @@ void CFileExtensionProvider::OnAddonEvent(const AddonEvent& event)
   {
     for (auto &type : ADDON_TYPES)
     {
-      if (m_addonManager.HasType(event.id, type))
+      if (m_addonManager.HasType(event.addonId, type))
       {
         SetAddonExtensions(type);
         break;

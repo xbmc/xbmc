@@ -206,7 +206,7 @@ void CGUIControllerWindow::OnEvent(const ADDON::AddonEvent& event)
       typeid(event) == typeid(AddonEvents::UnInstalled) ||
       typeid(event) == typeid(AddonEvents::ReInstalled))
   {
-    if (CServiceBroker::GetAddonMgr().HasType(event.id, ADDON_GAME_CONTROLLER))
+    if (CServiceBroker::GetAddonMgr().HasType(event.addonId, ADDON_GAME_CONTROLLER))
     {
       UpdateButtons();
     }

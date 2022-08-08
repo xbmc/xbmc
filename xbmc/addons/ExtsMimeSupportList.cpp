@@ -41,13 +41,13 @@ void CExtsMimeSupportList::OnEvent(const AddonEvent& event)
       typeid(event) == typeid(AddonEvents::Disabled) ||
       typeid(event) == typeid(AddonEvents::ReInstalled))
   {
-    if (m_addonMgr.HasType(event.id, ADDON_AUDIODECODER) ||
-        m_addonMgr.HasType(event.id, ADDON_IMAGEDECODER))
-      Update(event.id);
+    if (m_addonMgr.HasType(event.addonId, ADDON_AUDIODECODER) ||
+        m_addonMgr.HasType(event.addonId, ADDON_IMAGEDECODER))
+      Update(event.addonId);
   }
   else if (typeid(event) == typeid(AddonEvents::UnInstalled))
   {
-    Update(event.id);
+    Update(event.addonId);
   }
 }
 

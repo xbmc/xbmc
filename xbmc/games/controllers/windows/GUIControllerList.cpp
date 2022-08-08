@@ -175,7 +175,7 @@ void CGUIControllerList::OnEvent(const ADDON::AddonEvent& event)
     // Focus installed add-on
     if (typeid(event) == typeid(ADDON::AddonEvents::Enabled) ||
         typeid(event) == typeid(ADDON::AddonEvents::ReInstalled))
-      msg.SetStringParam(event.id);
+      msg.SetStringParam(event.addonId);
 
     CServiceBroker::GetAppMessenger()->SendGUIMessage(msg, m_guiWindow->GetID());
   }

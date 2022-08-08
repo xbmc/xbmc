@@ -15,8 +15,8 @@ namespace ADDON
 
 struct AddonEvent
 {
-  std::string id;
-  explicit AddonEvent(std::string id) : id(std::move(id)) {}
+  std::string addonId;
+  explicit AddonEvent(std::string addonId) : addonId(std::move(addonId)) {}
 
   // Note: Do not remove the virtual dtor. There are types derived from AddonEvent (see below)
   //       and there are several places where 'typeid' is used to determine the runtime type of
@@ -32,7 +32,7 @@ namespace AddonEvents
  */
 struct Enabled : AddonEvent
 {
-  explicit Enabled(std::string id) : AddonEvent(std::move(id)) {}
+  explicit Enabled(std::string addonId) : AddonEvent(std::move(addonId)) {}
 };
 
 /**
@@ -40,7 +40,7 @@ struct Enabled : AddonEvent
  */
 struct Disabled : AddonEvent
 {
-  explicit Disabled(std::string id) : AddonEvent(std::move(id)) {}
+  explicit Disabled(std::string addonId) : AddonEvent(std::move(addonId)) {}
 };
 
 /**
@@ -48,7 +48,7 @@ struct Disabled : AddonEvent
  */
 struct MetadataChanged : AddonEvent
 {
-  explicit MetadataChanged(std::string id) : AddonEvent(std::move(id)) {}
+  explicit MetadataChanged(std::string addonId) : AddonEvent(std::move(addonId)) {}
 };
 
 /**
@@ -57,7 +57,7 @@ struct MetadataChanged : AddonEvent
  */
 struct ReInstalled : AddonEvent
 {
-  explicit ReInstalled(std::string id) : AddonEvent(std::move(id)) {}
+  explicit ReInstalled(std::string addonId) : AddonEvent(std::move(addonId)) {}
 };
 
 /**
@@ -65,7 +65,7 @@ struct ReInstalled : AddonEvent
  */
 struct UnInstalled : AddonEvent
 {
-  explicit UnInstalled(std::string id) : AddonEvent(std::move(id)) {}
+  explicit UnInstalled(std::string addonId) : AddonEvent(std::move(addonId)) {}
 };
 
 /**
@@ -73,7 +73,7 @@ struct UnInstalled : AddonEvent
  */
 struct Load : AddonEvent
 {
-  explicit Load(std::string id) : AddonEvent(std::move(id)) {}
+  explicit Load(std::string addonId) : AddonEvent(std::move(addonId)) {}
 };
 
 /**
@@ -81,7 +81,7 @@ struct Load : AddonEvent
  */
 struct Unload : AddonEvent
 {
-  explicit Unload(std::string id) : AddonEvent(std::move(id)) {}
+  explicit Unload(std::string addonId) : AddonEvent(std::move(addonId)) {}
 };
 
 /**
@@ -89,7 +89,7 @@ struct Unload : AddonEvent
  */
 struct AutoUpdateStateChanged : AddonEvent
 {
-  explicit AutoUpdateStateChanged(std::string id) : AddonEvent(std::move(id)) {}
+  explicit AutoUpdateStateChanged(std::string addonId) : AddonEvent(std::move(addonId)) {}
 };
 
 } // namespace AddonEvents

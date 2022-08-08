@@ -97,7 +97,7 @@ void CBinaryAddonCache::OnEvent(const AddonEvent& event)
   {
     for (auto &type : ADDONS_TO_CACHE)
     {
-      if (CServiceBroker::GetAddonMgr().HasType(event.id, type))
+      if (CServiceBroker::GetAddonMgr().HasType(event.addonId, type))
       {
         Update();
         break;

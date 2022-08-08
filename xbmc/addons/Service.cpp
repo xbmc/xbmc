@@ -33,17 +33,17 @@ void CServiceAddonManager::OnEvent(const ADDON::AddonEvent& event)
 {
   if (typeid(event) == typeid(ADDON::AddonEvents::Enabled))
   {
-    Start(event.id);
+    Start(event.addonId);
   }
   else if (typeid(event) == typeid(ADDON::AddonEvents::ReInstalled))
   {
-    Stop(event.id);
-    Start(event.id);
+    Stop(event.addonId);
+    Start(event.addonId);
   }
   else if (typeid(event) == typeid(ADDON::AddonEvents::Disabled) ||
            typeid(event) == typeid(ADDON::AddonEvents::Unload))
   {
-    Stop(event.id);
+    Stop(event.addonId);
   }
 }
 
