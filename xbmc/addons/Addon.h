@@ -132,103 +132,198 @@ public:
     return it != m_addonInfo->Art().end() ? it->second : "";
   }
 
-  /*! \brief Check whether the this addon can be configured or not
-   \return true if the addon has settings, false otherwise
-   \sa LoadSettings, LoadUserSettings, SaveSettings, HasUserSettings, GetSetting, UpdateSetting
+  /*!
+   * \brief Check whether this add-on can be configured by the user.
+   *
+   * \return true if the add-on has settings, false otherwise
    */
-  bool HasSettings() override;
+  bool CanHaveAddonOrInstanceSettings() override;
 
-  /*! \brief Check whether the user has configured this addon or not
-   \return true if previously saved settings are found, false otherwise
-   \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, GetSetting, UpdateSetting
+  /*!
+   * \brief Check whether this add-on can be configured by the user.
+   *
+   * \param[in] id Instance identifier to use, use @ref ADDON_SETTINGS_ID
+   *               to denote global add-on settings from settings.xml.
+   * \return true if the add-on has settings, false otherwise
+   *
+   * \sa LoadSettings, LoadUserSettings, SaveSettings, HasUserSettings, GetSetting, UpdateSetting
    */
-  virtual bool HasUserSettings();
+  bool HasSettings(AddonInstanceId id = ADDON_SETTINGS_ID) override;
 
-  /*! \brief Save any user configured settings
-   \sa LoadSettings, LoadUserSettings, HasSettings, HasUserSettings, GetSetting, UpdateSetting
+  /*!
+   * \brief Check whether the user has configured this add-on or not.
+   *
+   * \param[in] id Instance identifier to use, use @ref ADDON_SETTINGS_ID
+   *               to denote global add-on settings from settings.xml.
+   * \return true if previously saved settings are found, false otherwise
+   *
+   * \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, GetSetting, UpdateSetting
    */
-  void SaveSettings() override;
+  bool HasUserSettings(AddonInstanceId id = ADDON_SETTINGS_ID) override;
 
-  /*! \brief Update a user-configured setting with a new value
-   \param key the id of the setting to update
-   \param value the value that the setting should take
-   \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting
+  /*!
+   * \brief Save any user configured settings
+   *
+   * \param[in] instance Instance identifier to use, use @ref ADDON_SETTINGS_ID
+   *                     to denote global add-on settings from settings.xml.
+   *
+   * \sa LoadSettings, LoadUserSettings, HasSettings, HasUserSettings, GetSetting, UpdateSetting
    */
-  void UpdateSetting(const std::string& key, const std::string& value) override;
+  void SaveSettings(AddonInstanceId id = ADDON_SETTINGS_ID) override;
 
-  /*! \brief Update a user-configured setting with a new boolean value
-  \param key the id of the setting to update
-  \param value the value that the setting should take
-  \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting
-  */
-  bool UpdateSettingBool(const std::string& key, bool value) override;
-
-  /*! \brief Update a user-configured setting with a new integer value
-  \param key the id of the setting to update
-  \param value the value that the setting should take
-  \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting
-  */
-  bool UpdateSettingInt(const std::string& key, int value) override;
-
-  /*! \brief Update a user-configured setting with a new number value
-  \param key the id of the setting to update
-  \param value the value that the setting should take
-  \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting
-  */
-  bool UpdateSettingNumber(const std::string& key, double value) override;
-
-  /*! \brief Update a user-configured setting with a new string value
-  \param key the id of the setting to update
-  \param value the value that the setting should take
-  \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting
-  */
-  bool UpdateSettingString(const std::string& key, const std::string& value) override;
-
-  /*! \brief Retrieve a particular settings value
-   If a previously configured user setting is available, we return it's value, else we return the default (if available)
-   \param key the id of the setting to retrieve
-   \return the current value of the setting, or the default if the setting has yet to be configured.
-   \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, UpdateSetting
+  /*!
+   * \brief Update a user-configured setting with a new value.
+   *
+   * \param[in] key the id of the setting to update
+   * \param[in] value the value that the setting should take
+   * \param[in] id Instance identifier to use, use @ref ADDON_SETTINGS_ID
+   *               to denote global add-on settings from settings.xml.
+   *
+   * \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting
    */
-  std::string GetSetting(const std::string& key) override;
+  void UpdateSetting(const std::string& key,
+                     const std::string& value,
+                     AddonInstanceId id = ADDON_SETTINGS_ID) override;
 
-  /*! \brief Retrieve a particular settings value as boolean
-  If a previously configured user setting is available, we return it's value, else we return the default (if available)
-  \param key the id of the setting to retrieve
-  \param value the current value of the setting, or the default if the setting has yet to be configured
-  \return true if the setting's value was retrieved, false otherwise.
-  \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, UpdateSetting
-  */
-  bool GetSettingBool(const std::string& key, bool& value) override;
+  /*!
+   * \brief Update a user-configured setting with a new boolean value.
+   *
+   * \param[in] key the id of the setting to update
+   * \param[in] value the value that the setting should take
+   * \param[in] id Instance identifier to use, use @ref ADDON_SETTINGS_ID
+   *               to denote global add-on settings from settings.xml.
+   *
+   * \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting
+   */
+  bool UpdateSettingBool(const std::string& key,
+                         bool value,
+                         AddonInstanceId id = ADDON_SETTINGS_ID) override;
 
-  /*! \brief Retrieve a particular settings value as integer
-  If a previously configured user setting is available, we return it's value, else we return the default (if available)
-  \param key the id of the setting to retrieve
-  \param value the current value of the setting, or the default if the setting has yet to be configured
-  \return true if the setting's value was retrieved, false otherwise.
-  \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, UpdateSetting
-  */
-  bool GetSettingInt(const std::string& key, int& value) override;
+  /*!
+   * \brief Update a user-configured setting with a new integer value.
+   *
+   * \param[in] key the id of the setting to update
+   * \param[in] value the value that the setting should take
+   * \param[in] id Instance identifier to use, use @ref ADDON_SETTINGS_ID
+   *               to denote global add-on settings from settings.xml.
+   *
+   * \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting
+   */
+  bool UpdateSettingInt(const std::string& key,
+                        int value,
+                        AddonInstanceId id = ADDON_SETTINGS_ID) override;
 
-  /*! \brief Retrieve a particular settings value as number
-  If a previously configured user setting is available, we return it's value, else we return the default (if available)
-  \param key the id of the setting to retrieve
-  \param value the current value of the setting, or the default if the setting has yet to be configured
-  \return true if the setting's value was retrieved, false otherwise.
-  \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, UpdateSetting
-  */
-  bool GetSettingNumber(const std::string& key, double& value) override;
+  /*!
+   * \brief Update a user-configured setting with a new number value.
+   *
+   * \param[in] key the id of the setting to update
+   * \param[in] value the value that the setting should take
+   * \param[in] id Instance identifier to use, use @ref ADDON_SETTINGS_ID
+   *               to denote global add-on settings from settings.xml.
+   *
+   * \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting
+   */
+  bool UpdateSettingNumber(const std::string& key,
+                           double value,
+                           AddonInstanceId id = ADDON_SETTINGS_ID) override;
 
-  /*! \brief Retrieve a particular settings value as string
-  If a previously configured user setting is available, we return it's value, else we return the default (if available)
-  \param key the id of the setting to retrieve
-  \param value the current value of the setting, or the default if the setting has yet to be configured
-  \return true if the setting's value was retrieved, false otherwise.
-  \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, UpdateSetting
-  */
-  bool GetSettingString(const std::string& key, std::string& value) override;
+  /*!
+   * \brief Update a user-configured setting with a new string value.
+   *
+   * \param[in] key the id of the setting to update
+   * \param[in] value the value that the setting should take
+   * \param[in] id Instance identifier to use, use @ref ADDON_SETTINGS_ID
+   *               to denote global add-on settings from settings.xml.
+   *
+   * \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting
+   */
+  bool UpdateSettingString(const std::string& key,
+                           const std::string& value,
+                           AddonInstanceId id = ADDON_SETTINGS_ID) override;
 
-  std::shared_ptr<CAddonSettings> GetSettings() override;
+  /*!
+   * \brief Retrieve a particular settings value.
+   *
+   * If a previously configured user setting is available, we return it's value, else we return the default (if available).
+   *
+   * \param[in] key the id of the setting to retrieve
+   * \param[in] id Instance identifier to use, use @ref ADDON_SETTINGS_ID
+   *               to denote global add-on settings from settings.xml.
+   * \return the current value of the setting, or the default if the setting has yet to be configured.
+   *
+   * \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, UpdateSetting
+   */
+  std::string GetSetting(const std::string& key, AddonInstanceId id = ADDON_SETTINGS_ID) override;
+
+  /*!
+   * \brief Retrieve a particular settings value as boolean.
+   *
+   * If a previously configured user setting is available, we return it's value, else we return the default (if available).
+   *
+   * \param[in] key the id of the setting to retrieve
+   * \param[out] value the current value of the setting, or the default if the setting has yet to be configured
+   * \param[in] id Instance identifier to use, use @ref ADDON_SETTINGS_ID
+   *               to denote global add-on settings from settings.xml.
+   * \return true if the setting's value was retrieved, false otherwise.
+   *
+   * \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, UpdateSetting
+   */
+  bool GetSettingBool(const std::string& key,
+                      bool& value,
+                      AddonInstanceId id = ADDON_SETTINGS_ID) override;
+
+  /*!
+   * \brief Retrieve a particular settings value as integer.
+   *
+   * If a previously configured user setting is available, we return it's value, else we return the default (if available)
+   *
+   * \param[in] key the id of the setting to retrieve
+   * \param[out] value the current value of the setting, or the default if the setting has yet to be configured
+   * \param[in] id Instance identifier to use, use @ref ADDON_SETTINGS_ID
+   *               to denote global add-on settings from settings.xml.
+   * \return true if the setting's value was retrieved, false otherwise.
+   *
+   * \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, UpdateSetting
+   */
+  bool GetSettingInt(const std::string& key,
+                     int& value,
+                     AddonInstanceId id = ADDON_SETTINGS_ID) override;
+
+  /*!
+   * \brief Retrieve a particular settings value as number.
+   *
+   * If a previously configured user setting is available, we return it's value, else we return the default (if available)
+   *
+   * \param[in] key the id of the setting to retrieve
+   * \param[out] value the current value of the setting, or the default if the setting has yet to be configured
+   * \param[in] id Instance identifier to use, use @ref ADDON_SETTINGS_ID
+   *               to denote global add-on settings from settings.xml.
+   * \return true if the setting's value was retrieved, false otherwise.
+   *
+   * \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, UpdateSetting
+   */
+  bool GetSettingNumber(const std::string& key,
+                        double& value,
+                        AddonInstanceId id = ADDON_SETTINGS_ID) override;
+
+  /*!
+   * \brief Retrieve a particular settings value as string
+   *
+   * If a previously configured user setting is available, we return it's value, else we return the default (if available)
+   *
+   * \param[in] key the id of the setting to retrieve
+   * \param[out] value the current value of the setting, or the default if the setting has yet to be configured
+   * \param[in] id Instance identifier to use, use @ref ADDON_SETTINGS_ID
+   *               to denote global add-on settings from settings.xml.
+   * \return true if the setting's value was retrieved, false otherwise.
+   *
+   * \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, UpdateSetting
+   */
+  bool GetSettingString(const std::string& key,
+                        std::string& value,
+                        AddonInstanceId id = ADDON_SETTINGS_ID) override;
+
+  std::shared_ptr<CAddonSettings> GetSettings(AddonInstanceId id = ADDON_SETTINGS_ID) override;
 
   /*! \brief get the required version of a dependency.
    \param dependencyID the addon ID of the dependency.
@@ -244,9 +339,9 @@ public:
   {
     return m_addonInfo->MeetsVersion(versionMin, version);
   }
-  bool ReloadSettings() override;
+  bool ReloadSettings(AddonInstanceId id = ADDON_SETTINGS_ID) override;
 
-  void ResetSettings() override;
+  void ResetSettings(AddonInstanceId id = ADDON_SETTINGS_ID) override;
 
   /*! \brief retrieve the running instance of an add-on if it persists while running.
    */
@@ -258,45 +353,85 @@ public:
   void OnPostUnInstall() override{};
 
 protected:
-  /*! \brief Whether or not the settings have been initialized. */
-  virtual bool SettingsInitialized() const;
-
-  /*! \brief Whether or not the settings have been loaded. */
-  virtual bool SettingsLoaded() const;
-
-  /*! \brief Load the default settings and override these with any previously configured user settings
-   \param bForce force the load of settings even if they are already loaded (reload)
-   \param loadUserSettings whether or not to load user settings
-   \return true if settings exist, false otherwise
-   \sa LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting, UpdateSetting
+  /*!
+   * \brief Whether or not the settings have been initialized.
+   *
+   * \param[in] id Instance identifier to use, use @ref ADDON_SETTINGS_ID
+   *               to denote global add-on settings from settings.xml.
+   * \return true if settings initialize was successfull
    */
-  bool LoadSettings(bool bForce, bool loadUserSettings = true);
+  virtual bool SettingsInitialized(AddonInstanceId id = ADDON_SETTINGS_ID) const;
 
-  /*! \brief Load the user settings
-   \return true if user settings exist, false otherwise
-   \sa LoadSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting, UpdateSetting
+  /*!
+   * \brief Whether or not the settings have been loaded.
+   *
+   * \param[in] id Instance identifier to use, use @ref ADDON_SETTINGS_ID
+   *               to denote global add-on settings from settings.xml.
+   * \return true if settings are loaded correct
    */
-  virtual bool LoadUserSettings();
+  virtual bool SettingsLoaded(AddonInstanceId id = ADDON_SETTINGS_ID) const;
 
-  /* \brief Whether there are settings to be saved
-   \sa SaveSettings
+  /*!
+   * \brief Load the default settings and override these with any previously configured user settings
+   *
+   * \param[in] bForce force the load of settings even if they are already loaded (reload)
+   * \param[in] loadUserSettings whether or not to load user settings
+   * \param[in] id Instance identifier to use, use @ref ADDON_SETTINGS_ID
+   *               to denote global add-on settings from settings.xml.
+   * \return true if settings exist, false otherwise
+   *
+   * \sa LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting, UpdateSetting
    */
-  virtual bool HasSettingsToSave() const;
+  bool LoadSettings(bool bForce, bool loadUserSettings, AddonInstanceId id = ADDON_SETTINGS_ID);
 
-  /*! \brief Parse settings from an XML document
-   \param doc XML document to parse for settings
-   \param loadDefaults if true, the default attribute is used and settings are reset prior to parsing, else the value attribute is used.
-   \return true if settings are loaded, false otherwise
-   \sa SettingsToXML
+  /*!
+   * \brief Load the user settings
+   *
+   * \param[in] id Instance identifier to use, use @ref ADDON_SETTINGS_ID
+   *               to denote global add-on settings from settings.xml.
+   * \return true if user settings exist, false otherwise
+   *
+   * \sa LoadSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting, UpdateSetting
    */
-  virtual bool SettingsFromXML(const CXBMCTinyXML& doc, bool loadDefaults = false);
+  virtual bool LoadUserSettings(AddonInstanceId id = ADDON_SETTINGS_ID);
 
-  /*! \brief Write settings into an XML document
-   \param doc XML document to receive the settings
-   \return true if settings are saved, false otherwise
-   \sa SettingsFromXML
+  /*!
+   * \brief Whether there are settings to be saved
+   *
+   * \param[in] id Instance identifier to use, use @ref ADDON_SETTINGS_ID
+   *               to denote global add-on settings from settings.xml.
+   * \return true if settings has to save
+   *
+   * \sa SaveSettings
    */
-  virtual bool SettingsToXML(CXBMCTinyXML& doc) const;
+  virtual bool HasSettingsToSave(AddonInstanceId id = ADDON_SETTINGS_ID) const;
+
+  /*!
+   * \brief Parse settings from an XML document
+   *
+   * \param[in] doc XML document to parse for settings
+   * \param[in] loadDefaults if true, the default attribute is used and settings are reset prior to parsing, else the value attribute is used.
+   * \param[in] id Instance identifier to use, use @ref ADDON_SETTINGS_ID
+   *               to denote global add-on settings from settings.xml.
+   * \return true if settings are loaded, false otherwise
+   *
+   * \sa SettingsToXML
+   */
+  virtual bool SettingsFromXML(const CXBMCTinyXML& doc,
+                               bool loadDefaults,
+                               AddonInstanceId id = ADDON_SETTINGS_ID);
+
+  /*!
+   * \brief Write settings into an XML document
+   *
+   * \param[out] doc XML document to receive the settings
+   * \param[in] id Instance identifier to use, use @ref ADDON_SETTINGS_ID
+   *               to denote global add-on settings from settings.xml.
+   * \return true if settings are saved, false otherwise
+   *
+   * \sa SettingsFromXML
+   */
+  virtual bool SettingsToXML(CXBMCTinyXML& doc, AddonInstanceId id = ADDON_SETTINGS_ID) const;
 
   const AddonInfoPtr m_addonInfo;
 

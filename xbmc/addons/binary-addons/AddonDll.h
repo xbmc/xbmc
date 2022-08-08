@@ -55,7 +55,7 @@ public:
   std::string LibPath() const override;
 
   // addon settings
-  void SaveSettings() override;
+  void SaveSettings(AddonInstanceId id = ADDON_SETTINGS_ID) override;
 
   bool DllLoaded(void) const;
 
@@ -145,7 +145,7 @@ private:
   std::map<ADDON_INSTANCE_HANDLER, KODI_ADDON_INSTANCE_STRUCT*> m_usedInstances;
   CAddonDllInformer* m_informer = nullptr;
 
-  virtual ADDON_STATUS TransferSettings();
+  virtual ADDON_STATUS TransferSettings(AddonInstanceId instanceId);
 
   /*!
    * This structure, which is fixed to the addon headers, makes use of the at

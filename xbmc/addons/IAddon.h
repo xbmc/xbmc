@@ -18,6 +18,22 @@ class TiXmlElement;
 namespace ADDON
 {
 
+using AddonInstanceId = uint32_t;
+
+/*!
+ * @brief Identifier denoting default add-on instance.
+ *
+ * All numbers greater than 0 denote add-ons with support for multiple instances.
+ */
+constexpr AddonInstanceId ADDON_SINGLETON_INSTANCE_ID = 0;
+
+/*!
+ * @brief Identifier denoting default add-on settings.xml.
+ *
+ * All numbers greater than 0 denote add-on instances with an individual set of settings.
+ */
+constexpr AddonInstanceId ADDON_SETTINGS_ID = ADDON_SINGLETON_INSTANCE_ID;
+
 class IAddon;
 typedef std::shared_ptr<IAddon> AddonPtr;
 class CInstanceVisualization;
@@ -65,24 +81,45 @@ public:
   virtual std::string OriginName() const = 0;
   virtual uint64_t PackageSize() const = 0;
   virtual const InfoMap& ExtraInfo() const = 0;
-  virtual bool HasSettings() = 0;
-  virtual void SaveSettings() = 0;
-  virtual void UpdateSetting(const std::string& key, const std::string& value) = 0;
-  virtual bool UpdateSettingBool(const std::string& key, bool value) = 0;
-  virtual bool UpdateSettingInt(const std::string& key, int value) = 0;
-  virtual bool UpdateSettingNumber(const std::string& key, double value) = 0;
-  virtual bool UpdateSettingString(const std::string& key, const std::string& value) = 0;
-  virtual std::string GetSetting(const std::string& key) = 0;
-  virtual bool GetSettingBool(const std::string& key, bool& value) = 0;
-  virtual bool GetSettingInt(const std::string& key, int& value) = 0;
-  virtual bool GetSettingNumber(const std::string& key, double& value) = 0;
-  virtual bool GetSettingString(const std::string& key, std::string& value) = 0;
-  virtual std::shared_ptr<CAddonSettings> GetSettings() = 0;
+  virtual bool CanHaveAddonOrInstanceSettings() = 0;
+  virtual bool HasSettings(AddonInstanceId id = ADDON_SETTINGS_ID) = 0;
+  virtual bool HasUserSettings(AddonInstanceId id = ADDON_SETTINGS_ID) = 0;
+  virtual void SaveSettings(AddonInstanceId id = ADDON_SETTINGS_ID) = 0;
+  virtual void UpdateSetting(const std::string& key,
+                             const std::string& value,
+                             AddonInstanceId id = ADDON_SETTINGS_ID) = 0;
+  virtual bool UpdateSettingBool(const std::string& key,
+                                 bool value,
+                                 AddonInstanceId id = ADDON_SETTINGS_ID) = 0;
+  virtual bool UpdateSettingInt(const std::string& key,
+                                int value,
+                                AddonInstanceId id = ADDON_SETTINGS_ID) = 0;
+  virtual bool UpdateSettingNumber(const std::string& key,
+                                   double value,
+                                   AddonInstanceId id = ADDON_SETTINGS_ID) = 0;
+  virtual bool UpdateSettingString(const std::string& key,
+                                   const std::string& value,
+                                   AddonInstanceId id = ADDON_SETTINGS_ID) = 0;
+  virtual std::string GetSetting(const std::string& key,
+                                 AddonInstanceId id = ADDON_SETTINGS_ID) = 0;
+  virtual bool GetSettingBool(const std::string& key,
+                              bool& value,
+                              AddonInstanceId id = ADDON_SETTINGS_ID) = 0;
+  virtual bool GetSettingInt(const std::string& key,
+                             int& value,
+                             AddonInstanceId id = ADDON_SETTINGS_ID) = 0;
+  virtual bool GetSettingNumber(const std::string& key,
+                                double& value,
+                                AddonInstanceId id = ADDON_SETTINGS_ID) = 0;
+  virtual bool GetSettingString(const std::string& key,
+                                std::string& value,
+                                AddonInstanceId id = ADDON_SETTINGS_ID) = 0;
+  virtual std::shared_ptr<CAddonSettings> GetSettings(AddonInstanceId id = ADDON_SETTINGS_ID) = 0;
   virtual const std::vector<DependencyInfo>& GetDependencies() const = 0;
   virtual AddonVersion GetDependencyVersion(const std::string& dependencyID) const = 0;
   virtual bool MeetsVersion(const AddonVersion& versionMin, const AddonVersion& version) const = 0;
-  virtual bool ReloadSettings() = 0;
-  virtual void ResetSettings() = 0;
+  virtual bool ReloadSettings(AddonInstanceId id = ADDON_SETTINGS_ID) = 0;
+  virtual void ResetSettings(AddonInstanceId id = ADDON_SETTINGS_ID) = 0;
   virtual AddonPtr GetRunningInstance() const = 0;
   virtual void OnPreInstall() = 0;
   virtual void OnPostInstall(bool update, bool modal) = 0;

@@ -172,12 +172,12 @@ bool CScraper::SetPathSettings(CONTENT_TYPE content, const std::string &xml)
 
   CXBMCTinyXML doc;
   doc.Parse(xml);
-  return SettingsFromXML(doc);
+  return SettingsFromXML(doc, false);
 }
 
 std::string CScraper::GetPathSettings()
 {
-  if (!LoadSettings(false))
+  if (!LoadSettings(false, true))
     return "";
 
   std::stringstream stream;
@@ -333,7 +333,7 @@ std::string CScraper::GetPathSettingsAsJSON()
 {
   static const std::string EmptyPathSettings = "{}";
 
-  if (!LoadSettings(false))
+  if (!LoadSettings(false, true))
     return EmptyPathSettings;
 
   CSettingsValueFlatJsonSerializer jsonSerializer;

@@ -149,7 +149,7 @@ namespace ADDON
 
     void AddToUpdateableAddons(AddonPtr &pAddon);
     void RemoveFromUpdateableAddons(AddonPtr &pAddon);
-    bool ReloadSettings(const std::string &id);
+    bool ReloadSettings(const std::string& addonId, AddonInstanceId instanceId);
 
     /*! Get addons with available updates */
     std::vector<std::shared_ptr<IAddon>> GetAvailableUpdates() const;
