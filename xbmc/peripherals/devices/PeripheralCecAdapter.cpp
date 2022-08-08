@@ -50,6 +50,9 @@ using namespace std::chrono_literals;
 #define LOCALISED_ID_HIBERNATE 13010
 #define LOCALISED_ID_QUIT 13009
 #define LOCALISED_ID_IGNORE 36028
+#define LOCALISED_ID_RECORDING_DEVICE 36051
+#define LOCALISED_ID_PLAYBACK_DEVICE 36052
+#define LOCALISED_ID_TUNER_DEVICE 36053
 
 #define LOCALISED_ID_NONE 231
 
@@ -1345,12 +1348,19 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
 
   // set the primary device type
   m_configuration.deviceTypes.Clear();
-  int iDeviceType = GetSettingInt("device_type");
-  if (iDeviceType != (int)CEC_DEVICE_TYPE_RECORDING_DEVICE &&
-      iDeviceType != (int)CEC_DEVICE_TYPE_PLAYBACK_DEVICE &&
-      iDeviceType != (int)CEC_DEVICE_TYPE_TUNER)
-    iDeviceType = (int)CEC_DEVICE_TYPE_RECORDING_DEVICE;
-  m_configuration.deviceTypes.Add((cec_device_type)iDeviceType);
+  switch (GetSettingInt("device_type"))
+  {
+    case LOCALISED_ID_PLAYBACK_DEVICE:
+      m_configuration.deviceTypes.Add(CEC_DEVICE_TYPE_PLAYBACK_DEVICE);
+      break;
+    case LOCALISED_ID_TUNER_DEVICE:
+      m_configuration.deviceTypes.Add(CEC_DEVICE_TYPE_TUNER);
+      break;
+    case LOCALISED_ID_RECORDING_DEVICE:
+    default:
+      m_configuration.deviceTypes.Add(CEC_DEVICE_TYPE_RECORDING_DEVICE);
+      break;
+  }
 
   // always try to autodetect the address.
   // when the firmware supports this, it will override the physical address, connected device and
