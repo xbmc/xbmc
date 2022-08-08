@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "addons/IAddon.h"
 #include "addons/kodi-dev-kit/include/kodi/AddonBase.h"
 
 extern "C"
@@ -35,6 +36,7 @@ struct Interface_Base
   static void DeInitInterface(AddonGlobalInterface& addonInterface);
   static void RegisterInterface(ADDON_GET_INTERFACE_FN fn);
   static bool UpdateSettingInActiveDialog(CAddonDll* addon,
+                                          AddonInstanceId instanceId,
                                           const char* id,
                                           const std::string& value);
 

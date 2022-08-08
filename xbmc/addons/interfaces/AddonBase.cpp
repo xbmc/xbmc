@@ -106,6 +106,7 @@ void Interface_Base::RegisterInterface(ADDON_GET_INTERFACE_FN fn)
 }
 
 bool Interface_Base::UpdateSettingInActiveDialog(CAddonDll* addon,
+                                                 AddonInstanceId instanceId,
                                                  const char* id,
                                                  const std::string& value)
 {
@@ -123,6 +124,7 @@ bool Interface_Base::UpdateSettingInActiveDialog(CAddonDll* addon,
   params.emplace_back(id);
   params.push_back(value);
   message.SetStringParams(params);
+  message.SetParam1(instanceId);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message,
                                                                  WINDOW_DIALOG_ADDON_SETTINGS);
 
@@ -518,7 +520,8 @@ bool Interface_Base::set_setting_bool(const KODI_ADDON_BACKEND_HDL hdl, const ch
     return false;
   }
 
-  if (Interface_Base::UpdateSettingInActiveDialog(addon, id, value ? "true" : "false"))
+  if (Interface_Base::UpdateSettingInActiveDialog(addon, ADDON_SETTINGS_ID, id,
+                                                  value ? "true" : "false"))
     return true;
 
   if (!addon->UpdateSettingBool(id, value))
@@ -543,7 +546,8 @@ bool Interface_Base::set_setting_int(const KODI_ADDON_BACKEND_HDL hdl, const cha
     return false;
   }
 
-  if (Interface_Base::UpdateSettingInActiveDialog(addon, id, std::to_string(value)))
+  if (Interface_Base::UpdateSettingInActiveDialog(addon, ADDON_SETTINGS_ID, id,
+                                                  std::to_string(value)))
     return true;
 
   if (!addon->UpdateSettingInt(id, value))
@@ -570,7 +574,8 @@ bool Interface_Base::set_setting_float(const KODI_ADDON_BACKEND_HDL hdl,
     return false;
   }
 
-  if (Interface_Base::UpdateSettingInActiveDialog(addon, id, StringUtils::Format("{:f}", value)))
+  if (Interface_Base::UpdateSettingInActiveDialog(addon, ADDON_SETTINGS_ID, id,
+                                                  StringUtils::Format("{:f}", value)))
     return true;
 
   if (!addon->UpdateSettingNumber(id, static_cast<double>(value)))
@@ -597,7 +602,7 @@ bool Interface_Base::set_setting_string(const KODI_ADDON_BACKEND_HDL hdl,
     return false;
   }
 
-  if (Interface_Base::UpdateSettingInActiveDialog(addon, id, value))
+  if (Interface_Base::UpdateSettingInActiveDialog(addon, ADDON_SETTINGS_ID, id, value))
     return true;
 
   if (!addon->UpdateSettingString(id, value))

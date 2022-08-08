@@ -19,7 +19,8 @@ CAddonVideoCodec::CAddonVideoCodec(CProcessInfo& processInfo,
                                    ADDON::AddonInfoPtr& addonInfo,
                                    KODI_HANDLE parentInstance)
   : CDVDVideoCodec(processInfo),
-    IAddonInstanceHandler(ADDON_INSTANCE_VIDEOCODEC, addonInfo, parentInstance),
+    IAddonInstanceHandler(
+        ADDON_INSTANCE_VIDEOCODEC, addonInfo, ADDON::ADDON_INSTANCE_ID_UNUSED, parentInstance),
     m_codecFlags(0),
     m_displayAspect(0.0f)
 {
