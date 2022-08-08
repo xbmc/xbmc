@@ -42,9 +42,9 @@
 namespace
 {
 
-static const std::string OldSettingValuesSeparator = "|";
+constexpr auto OldSettingValuesSeparator = "|";
 
-static const int UnknownSettingLabelIdStart = 100000;
+constexpr int UnknownSettingLabelIdStart = 100000;
 
 bool InfoBool(const std::string& condition,
               const std::string& value,
