@@ -2951,7 +2951,7 @@ void CApplication::ConfigureAndEnableAddons()
                                           CVariant{24059}, // Would you like to enable this add-on?
                                           CVariant{addon->Name()}) == DialogResponse::CHOICE_YES)
         {
-          if (addon->HasSettings())
+          if (addon->CanHaveAddonOrInstanceSettings())
           {
             if (CGUIDialogAddonSettings::ShowForAddon(addon))
             {

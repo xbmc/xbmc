@@ -198,14 +198,15 @@ struct AddonIdFinder
     std::string m_id;
 };
 
-bool CAddonMgr::ReloadSettings(const std::string &id)
+bool CAddonMgr::ReloadSettings(const std::string& addonId, AddonInstanceId instanceId)
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  VECADDONS::iterator it = std::find_if(m_updateableAddons.begin(), m_updateableAddons.end(), AddonIdFinder(id));
+  VECADDONS::iterator it =
+      std::find_if(m_updateableAddons.begin(), m_updateableAddons.end(), AddonIdFinder(addonId));
 
   if( it != m_updateableAddons.end())
   {
-    return (*it)->ReloadSettings();
+    return (*it)->ReloadSettings(instanceId);
   }
   return false;
 }

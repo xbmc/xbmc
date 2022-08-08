@@ -46,24 +46,32 @@ CAddon::CAddon(const AddonInfoPtr& addonInfo, TYPE addonType)
 /**
  * Settings Handling
  */
-bool CAddon::HasSettings()
+
+bool CAddon::CanHaveAddonOrInstanceSettings()
 {
-  return LoadSettings(false) && m_settings->HasSettings();
+  return HasSettings(ADDON_SETTINGS_ID);
 }
 
-bool CAddon::SettingsInitialized() const
+bool CAddon::HasSettings(AddonInstanceId id /* = ADDON_SETTINGS_ID */)
+{
+  return LoadSettings(false, true, id) && m_settings->HasSettings();
+}
+
+bool CAddon::SettingsInitialized(AddonInstanceId id /* = ADDON_SETTINGS_ID */) const
 {
   return m_settings != nullptr && m_settings->IsInitialized();
 }
 
-bool CAddon::SettingsLoaded() const
+bool CAddon::SettingsLoaded(AddonInstanceId id /* = ADDON_SETTINGS_ID */) const
 {
   return m_settings != nullptr && m_settings->IsLoaded();
 }
 
-bool CAddon::LoadSettings(bool bForce, bool loadUserSettings /* = true */)
+bool CAddon::LoadSettings(bool bForce,
+                          bool loadUserSettings,
+                          AddonInstanceId id /* = ADDON_SETTINGS_ID */)
 {
-  if (SettingsInitialized() && !bForce)
+  if (SettingsInitialized(id) && !bForce)
     return true;
 
   if (m_loadSettingsFailed)
@@ -73,8 +81,8 @@ bool CAddon::LoadSettings(bool bForce, bool loadUserSettings /* = true */)
   m_loadSettingsFailed = true;
 
   // reset the settings if we are forced to
-  if (SettingsInitialized() && bForce)
-    GetSettings()->Uninitialize();
+  if (SettingsInitialized(id) && bForce)
+    GetSettings(id)->Uninitialize();
 
   // load the settings definition XML file
   auto addonSettingsDefinitionFile =
@@ -93,7 +101,7 @@ bool CAddon::LoadSettings(bool bForce, bool loadUserSettings /* = true */)
   }
 
   // initialize the settings definition
-  if (!GetSettings()->Initialize(addonSettingsDefinitionDoc))
+  if (!GetSettings(id)->Initialize(addonSettingsDefinitionDoc))
   {
     CLog::Log(LOGERROR, "CAddon[{}]: failed to initialize addon settings", ID());
     return false;
@@ -104,32 +112,32 @@ bool CAddon::LoadSettings(bool bForce, bool loadUserSettings /* = true */)
 
   // load user settings / values
   if (loadUserSettings)
-    LoadUserSettings();
+    LoadUserSettings(id);
 
   return true;
 }
 
-bool CAddon::HasUserSettings()
+bool CAddon::HasUserSettings(AddonInstanceId id /* = ADDON_SETTINGS_ID */)
 {
-  if (!LoadSettings(false))
+  if (!LoadSettings(false, true, id))
     return false;
 
-  return SettingsLoaded() && m_hasUserSettings;
+  return SettingsLoaded(id) && m_hasUserSettings;
 }
 
-bool CAddon::ReloadSettings()
+bool CAddon::ReloadSettings(AddonInstanceId id /* = ADDON_SETTINGS_ID */)
 {
-  return LoadSettings(true);
+  return LoadSettings(true, true, id);
 }
 
-void CAddon::ResetSettings()
+void CAddon::ResetSettings(AddonInstanceId id /* = ADDON_SETTINGS_ID */)
 {
   m_settings.reset();
 }
 
-bool CAddon::LoadUserSettings()
+bool CAddon::LoadUserSettings(AddonInstanceId id /* = ADDON_SETTINGS_ID */)
 {
-  if (!SettingsInitialized())
+  if (!SettingsInitialized(id))
     return false;
 
   m_hasUserSettings = false;
@@ -138,7 +146,7 @@ bool CAddon::LoadUserSettings()
   if (!CFile::Exists(m_userSettingsPath))
   {
     // mark the settings as loaded
-    GetSettings()->SetLoaded();
+    GetSettings(id)->SetLoaded();
     return true;
   }
 
@@ -150,17 +158,17 @@ bool CAddon::LoadUserSettings()
     return false;
   }
 
-  return SettingsFromXML(doc);
+  return SettingsFromXML(doc, false, id);
 }
 
-bool CAddon::HasSettingsToSave() const
+bool CAddon::HasSettingsToSave(AddonInstanceId id /* = ADDON_SETTINGS_ID */) const
 {
-  return SettingsLoaded();
+  return SettingsLoaded(id);
 }
 
-void CAddon::SaveSettings(void)
+void CAddon::SaveSettings(AddonInstanceId id /* = ADDON_SETTINGS_ID */)
 {
-  if (!HasSettingsToSave())
+  if (!HasSettingsToSave(id))
     return; // no settings to save
 
   // break down the path into directories
@@ -175,21 +183,21 @@ void CAddon::SaveSettings(void)
 
   // create the XML file
   CXBMCTinyXML doc;
-  if (SettingsToXML(doc))
+  if (SettingsToXML(doc, id))
     doc.SaveFile(m_userSettingsPath);
 
   m_hasUserSettings = true;
 
   //push the settings changes to the running addon instance
-  CServiceBroker::GetAddonMgr().ReloadSettings(ID());
+  CServiceBroker::GetAddonMgr().ReloadSettings(ID(), id);
 #ifdef HAS_PYTHON
   CServiceBroker::GetXBPython().OnSettingsChanged(ID());
 #endif
 }
 
-std::string CAddon::GetSetting(const std::string& key)
+std::string CAddon::GetSetting(const std::string& key, AddonInstanceId id)
 {
-  if (key.empty() || !LoadSettings(false))
+  if (key.empty() || !LoadSettings(false, true, id))
     return ""; // no settings available
 
   auto setting = m_settings->GetSetting(key);
@@ -200,12 +208,15 @@ std::string CAddon::GetSetting(const std::string& key)
 }
 
 template<class TSetting>
-bool GetSettingValue(CAddon& addon, const std::string& key, typename TSetting::Value& value)
+bool GetSettingValue(CAddon& addon,
+                     AddonInstanceId instanceId,
+                     const std::string& key,
+                     typename TSetting::Value& value)
 {
-  if (key.empty() || !addon.HasSettings())
+  if (key.empty() || !addon.HasSettings(instanceId))
     return false;
 
-  auto setting = addon.GetSettings()->GetSetting(key);
+  auto setting = addon.GetSettings(instanceId)->GetSetting(key);
   if (setting == nullptr || setting->GetType() != TSetting::Type())
     return false;
 
@@ -213,29 +224,39 @@ bool GetSettingValue(CAddon& addon, const std::string& key, typename TSetting::V
   return true;
 }
 
-bool CAddon::GetSettingBool(const std::string& key, bool& value)
+bool CAddon::GetSettingBool(const std::string& key,
+                            bool& value,
+                            AddonInstanceId id /* = ADDON_SETTINGS_ID */)
 {
-  return GetSettingValue<CSettingBool>(*this, key, value);
+  return GetSettingValue<CSettingBool>(*this, id, key, value);
 }
 
-bool CAddon::GetSettingInt(const std::string& key, int& value)
+bool CAddon::GetSettingInt(const std::string& key,
+                           int& value,
+                           AddonInstanceId id /* = ADDON_SETTINGS_ID */)
 {
-  return GetSettingValue<CSettingInt>(*this, key, value);
+  return GetSettingValue<CSettingInt>(*this, id, key, value);
 }
 
-bool CAddon::GetSettingNumber(const std::string& key, double& value)
+bool CAddon::GetSettingNumber(const std::string& key,
+                              double& value,
+                              AddonInstanceId id /* = ADDON_SETTINGS_ID */)
 {
-  return GetSettingValue<CSettingNumber>(*this, key, value);
+  return GetSettingValue<CSettingNumber>(*this, id, key, value);
 }
 
-bool CAddon::GetSettingString(const std::string& key, std::string& value)
+bool CAddon::GetSettingString(const std::string& key,
+                              std::string& value,
+                              AddonInstanceId id /* = ADDON_SETTINGS_ID */)
 {
-  return GetSettingValue<CSettingString>(*this, key, value);
+  return GetSettingValue<CSettingString>(*this, id, key, value);
 }
 
-void CAddon::UpdateSetting(const std::string& key, const std::string& value)
+void CAddon::UpdateSetting(const std::string& key,
+                           const std::string& value,
+                           AddonInstanceId id /* = ADDON_SETTINGS_ID */)
 {
-  if (key.empty() || !LoadSettings(false))
+  if (key.empty() || !LoadSettings(false, true, id))
     return;
 
   // try to get the setting
@@ -256,18 +277,21 @@ void CAddon::UpdateSetting(const std::string& key, const std::string& value)
 }
 
 template<class TSetting>
-bool UpdateSettingValue(CAddon& addon, const std::string& key, typename TSetting::Value value)
+bool UpdateSettingValue(CAddon& addon,
+                        AddonInstanceId instanceId,
+                        const std::string& key,
+                        typename TSetting::Value value)
 {
-  if (key.empty() || !addon.HasSettings())
+  if (key.empty() || !addon.HasSettings(instanceId))
     return false;
 
   // try to get the setting
-  auto setting = addon.GetSettings()->GetSetting(key);
+  auto setting = addon.GetSettings(instanceId)->GetSetting(key);
 
   // if the setting doesn't exist, try to add it
   if (setting == nullptr)
   {
-    setting = addon.GetSettings()->AddSetting(key, value);
+    setting = addon.GetSettings(instanceId)->AddSetting(key, value);
     if (setting == nullptr)
     {
       CLog::Log(LOGERROR, "CAddon[{}]: failed to add undefined setting \"{}\"", addon.ID(), key);
@@ -281,35 +305,45 @@ bool UpdateSettingValue(CAddon& addon, const std::string& key, typename TSetting
   return std::static_pointer_cast<TSetting>(setting)->SetValue(value);
 }
 
-bool CAddon::UpdateSettingBool(const std::string& key, bool value)
+bool CAddon::UpdateSettingBool(const std::string& key,
+                               bool value,
+                               AddonInstanceId id /* = ADDON_SETTINGS_ID */)
 {
-  return UpdateSettingValue<CSettingBool>(*this, key, value);
+  return UpdateSettingValue<CSettingBool>(*this, id, key, value);
 }
 
-bool CAddon::UpdateSettingInt(const std::string& key, int value)
+bool CAddon::UpdateSettingInt(const std::string& key,
+                              int value,
+                              AddonInstanceId id /* = ADDON_SETTINGS_ID */)
 {
-  return UpdateSettingValue<CSettingInt>(*this, key, value);
+  return UpdateSettingValue<CSettingInt>(*this, id, key, value);
 }
 
-bool CAddon::UpdateSettingNumber(const std::string& key, double value)
+bool CAddon::UpdateSettingNumber(const std::string& key,
+                                 double value,
+                                 AddonInstanceId id /* = ADDON_SETTINGS_ID */)
 {
-  return UpdateSettingValue<CSettingNumber>(*this, key, value);
+  return UpdateSettingValue<CSettingNumber>(*this, id, key, value);
 }
 
-bool CAddon::UpdateSettingString(const std::string& key, const std::string& value)
+bool CAddon::UpdateSettingString(const std::string& key,
+                                 const std::string& value,
+                                 AddonInstanceId id /* = ADDON_SETTINGS_ID */)
 {
-  return UpdateSettingValue<CSettingString>(*this, key, value);
+  return UpdateSettingValue<CSettingString>(*this, id, key, value);
 }
 
-bool CAddon::SettingsFromXML(const CXBMCTinyXML& doc, bool loadDefaults /* = false */)
+bool CAddon::SettingsFromXML(const CXBMCTinyXML& doc,
+                             bool loadDefaults,
+                             AddonInstanceId id /* = ADDON_SETTINGS_ID */)
 {
   if (doc.RootElement() == nullptr)
     return false;
 
   // if the settings haven't been initialized yet, try it from the given XML
-  if (!SettingsInitialized())
+  if (!SettingsInitialized(id))
   {
-    if (!GetSettings()->Initialize(doc))
+    if (!GetSettings(id)->Initialize(doc))
     {
       CLog::Log(LOGERROR, "CAddon[{}]: failed to initialize addon settings", ID());
       return false;
@@ -318,10 +352,10 @@ bool CAddon::SettingsFromXML(const CXBMCTinyXML& doc, bool loadDefaults /* = fal
 
   // reset all setting values to their default value
   if (loadDefaults)
-    GetSettings()->SetDefaults();
+    GetSettings(id)->SetDefaults();
 
   // try to load the setting's values from the given XML
-  if (!GetSettings()->Load(doc))
+  if (!GetSettings(id)->Load(doc))
   {
     CLog::Log(LOGERROR, "CAddon[{}]: failed to load user settings", ID());
     return false;
@@ -332,9 +366,9 @@ bool CAddon::SettingsFromXML(const CXBMCTinyXML& doc, bool loadDefaults /* = fal
   return true;
 }
 
-bool CAddon::SettingsToXML(CXBMCTinyXML& doc) const
+bool CAddon::SettingsToXML(CXBMCTinyXML& doc, AddonInstanceId id /* = ADDON_SETTINGS_ID */) const
 {
-  if (!SettingsInitialized())
+  if (!SettingsInitialized(id))
     return false;
 
   if (!m_settings->Save(doc))
@@ -346,13 +380,13 @@ bool CAddon::SettingsToXML(CXBMCTinyXML& doc) const
   return true;
 }
 
-std::shared_ptr<CAddonSettings> CAddon::GetSettings()
+std::shared_ptr<CAddonSettings> CAddon::GetSettings(AddonInstanceId id /* = ADDON_SETTINGS_ID */)
 {
   // initialize addon settings if necessary
   if (m_settings == nullptr)
   {
     m_settings = std::make_shared<CAddonSettings>(enable_shared_from_this::shared_from_this());
-    LoadSettings(false);
+    LoadSettings(false, true, id);
   }
 
   return m_settings;

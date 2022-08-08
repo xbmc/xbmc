@@ -26,7 +26,7 @@ bool CAddonSettings::IsVisible(const CFileItem& item) const
   return item.HasAddonInfo() &&
          CServiceBroker::GetAddonMgr().GetAddon(item.GetAddonInfo()->ID(), addon, ADDON_UNKNOWN,
                                                 OnlyEnabled::CHOICE_NO) &&
-         addon->HasSettings();
+         addon->CanHaveAddonOrInstanceSettings();
 }
 
 bool CAddonSettings::Execute(const CFileItemPtr& item) const
