@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "IAddon.h"
+
 #include <string>
 
 namespace ADDON
@@ -16,7 +18,13 @@ namespace ADDON
 struct AddonEvent
 {
   std::string addonId;
+  AddonInstanceId instanceId{ADDON_SINGLETON_INSTANCE_ID};
+
   explicit AddonEvent(std::string addonId) : addonId(std::move(addonId)) {}
+  AddonEvent(std::string addonId, AddonInstanceId instanceId)
+    : addonId(std::move(addonId)), instanceId(instanceId)
+  {
+  }
 
   // Note: Do not remove the virtual dtor. There are types derived from AddonEvent (see below)
   //       and there are several places where 'typeid' is used to determine the runtime type of
@@ -41,6 +49,28 @@ struct Enabled : AddonEvent
 struct Disabled : AddonEvent
 {
   explicit Disabled(std::string addonId) : AddonEvent(std::move(addonId)) {}
+};
+
+/**
+ * Emitted after a new usable add-on instance was added.
+ */
+struct InstanceAdded : AddonEvent
+{
+  InstanceAdded(std::string addonId, AddonInstanceId instanceId)
+    : AddonEvent(std::move(addonId), instanceId)
+  {
+  }
+};
+
+/**
+ * Emitted after an add-on instance was removed.
+ */
+struct InstanceRemoved : AddonEvent
+{
+  InstanceRemoved(std::string addonId, AddonInstanceId instanceId)
+    : AddonEvent(std::move(addonId), instanceId)
+  {
+  }
 };
 
 /**
