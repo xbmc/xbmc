@@ -382,6 +382,26 @@ namespace ADDON
     void PublishEventAutoUpdateStateChanged(const std::string& id);
     void UpdateLastUsed(const std::string& id);
 
+    /*!
+     * \brief Launches event @ref AddonEvent::InstanceAdded
+     *
+     * This is called when a new instance is added in add-on settings.
+     *
+     * \param[in] addonId Add-on id to pass through
+     * \param[in] instanceId Identifier of the add-on instance
+     */
+    void PublishInstanceAdded(const std::string& addonId, AddonInstanceId instanceId);
+
+    /*!
+     * \brief Launches event @ref AddonEvent::InstanceRemoved
+     *
+     * This is called when an instance is removed in add-on settings.
+     *
+     * \param[in] addonId Add-on id to pass through
+     * \param[in] instanceId Identifier of the add-on instance
+     */
+    void PublishInstanceRemoved(const std::string& addonId, AddonInstanceId instanceId);
+
     /*! \brief Load the addon in the given path
      This loads the addon using c-pluff which parses the addon descriptor file.
      \param path folder that contains the addon.
