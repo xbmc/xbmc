@@ -260,7 +260,7 @@ void CPVRClients::OnAddonEvent(const AddonEvent& event)
       typeid(event) == typeid(AddonEvents::ReInstalled))
   {
     // update addons
-    const std::string id = event.id;
+    const std::string id = event.addonId;
     if (CServiceBroker::GetAddonMgr().HasType(id, ADDON_PVRDLL))
     {
       CServiceBroker::GetJobManager()->Submit([this, id] {
