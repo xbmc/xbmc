@@ -7,23 +7,23 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-02-26 16:13+0000\n"
-"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"PO-Revision-Date: 2022-08-08 11:14+0000\n"
+"Last-Translator: Xean <xeanhort007@gmail.com>\n"
 "Language-Team: Catalan (Spain) <https://kodi.weblate.cloud/projects/kodi-core/audioencoder-kodi-builtin-wma/ca_es/>\n"
 "Language: ca_es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.11\n"
+"X-Generator: Weblate 4.13\n"
 
 msgctxt "Addon Summary"
 msgid "WMA Audio Encoder"
-msgstr ""
+msgstr "Codificador d'àudio WMA"
 
 msgctxt "Addon Description"
 msgid "Windows Media Audio, Microsoft’s lossy audio format."
-msgstr ""
+msgstr "Windows Media Audio, el format d'àudio amb pèrdua de Microsoft."
 
 #. Bitrate to use on for compression
 #: resources/settings.xml
@@ -35,7 +35,7 @@ msgstr "Taxa de bits"
 #: resources/settings.xml
 msgctxt "#30001"
 msgid "Select which bitrate to use for the WMA audio encoder for audio compression."
-msgstr ""
+msgstr "Selecciona la taxa de bits a utilitzar pel codificador d'àudio WMA per a la compressió d'àudio."
 
 #. Value format for with bitrate edited field
 #: resources/settings.xml
