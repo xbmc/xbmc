@@ -348,7 +348,7 @@ void CGUIEditControl::OnClick()
   {
     ClearMD5();
     m_edit.clear();
-    g_charsetConverter.utf8ToW(utf8, m_text2);
+    g_charsetConverter.utf8ToW(utf8, m_text2, false);
     m_cursorPos = m_text2.size();
     UpdateText();
     m_cursorPos = m_text2.size();
@@ -672,7 +672,7 @@ void CGUIEditControl::OnPasteClipboard()
 
   // Get text from the clipboard
   utf8_text = CServiceBroker::GetWinSystem()->GetClipboardText();
-  g_charsetConverter.utf8ToW(utf8_text, unicode_text);
+  g_charsetConverter.utf8ToW(utf8_text, unicode_text, false);
 
   // Insert the pasted text at the current cursor position.
   if (unicode_text.length() > 0)
