@@ -77,6 +77,12 @@ public:
   */
   void FlushEvents();
 
+  /*!
+  * \brief Get PlayResY value
+  * \return The PlayResY value of current track
+  */
+  int GetPlayResY();
+
 protected:
   /*!
   * \brief Create a new empty ASS track
@@ -139,7 +145,6 @@ protected:
   */
   void ChangeEventStopTime(int eventId, double stopTime);
 
-
   friend class CSubtitlesAdapter;
 
 
@@ -160,6 +165,5 @@ private:
 
   // default allocated style ID for the kodi user configured subtitle style
   int m_defaultKodiStyleId{ASS_NO_ID};
-  bool m_drawWithinBlackBars{false};
   std::string m_defaultFontFamilyName;
 };

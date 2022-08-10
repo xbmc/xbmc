@@ -14480,7 +14480,7 @@ msgstr ""
 #. Item list value of setting with label #21460 "Subtitle position on screen"
 #: system/settings/settings.xml
 msgctxt "#21463"
-msgid "Below video"
+msgid "Bottom of screen"
 msgstr ""
 
 #. Item list value of setting with label #21460 "Subtitle position on screen"
@@ -14492,7 +14492,7 @@ msgstr ""
 #. Item list value of setting with label #21460 "Subtitle position on screen"
 #: system/settings/settings.xml
 msgctxt "#21465"
-msgid "Above video"
+msgid "Top of screen"
 msgstr ""
 
 #. Description of setting with label #21416 "Select first unwatched TV show season/episode"
@@ -19312,7 +19312,7 @@ msgstr ""
 #. Description of setting with label #21460 "Subtitle location on screen"
 #: system/settings/settings.xml
 msgctxt "#36192"
-msgid "Location of subtitles on the screen. [Below] / [Above video] When possible the subtitles will be positioned inside the black bars (depends on video encoding). Please note that some forced positions in the subtitles cannot be changed."
+msgid "Location of subtitles on the screen. [Bottom of video] / [Top of video] When possible the subtitles will be positioned within the video area (depends on video encoding). Please note that some forced positions in the subtitles cannot be changed."
 msgstr ""
 
 #. Description of settings category with label #14087 "DVDs"
@@ -23153,4 +23153,10 @@ msgstr ""
 #: system/settings/settings.xml
 msgctxt "#39188"
 msgid "No background"
+msgstr ""
+
+#. Window screen calibration: calibration by using the subtitle bar
+#: xbmc/settings/windows/GUIWindowSettingsScreenCalibration.cpp
+msgctxt "#39189"
+msgid "Available only with manual subtitle position"
 msgstr ""

@@ -168,14 +168,6 @@ float CSubtitlesSettings::GetVerticalMarginPerc()
 {
   // We return the vertical margin as percentage
   // to fit the current screen resolution
-  const Align subAlign{GetAlignment()};
-
-  // If the user has set the alignment type to keep the subtitle text
-  // inside the black bars, we override user vertical margin
-  // to try avoid go off the black bars
-  if (subAlign == Align::BOTTOM_OUTSIDE || subAlign == Align::TOP_OUTSIDE)
-    return MARGIN_VERTICAL_BLACKBARS;
-
   return static_cast<float>(m_settings->GetNumber(CSettings::SETTING_SUBTITLES_MARGINVERTICAL));
 }
 
