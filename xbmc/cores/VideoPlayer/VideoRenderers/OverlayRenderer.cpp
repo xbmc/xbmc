@@ -308,15 +308,12 @@ void CRenderer::SetStereoMode(const std::string &stereomode)
 void CRenderer::SetSubtitleVerticalPosition(const int value, bool save)
 {
   std::unique_lock<CCriticalSection> lock(m_section);
-  m_subtitlePosition = value + m_subtitleVerticalMargin;
-  if (save)
+  m_subtitlePosition = value;
+
+  if (save && m_subtitleAlign == SUBTITLES::Align::MANUAL)
   {
-    RESOLUTION_INFO resInfo = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
-    resInfo.iSubtitles = m_subtitlePosition;
-    CServiceBroker::GetWinSystem()->GetGfxContext().SetResInfo(
-        CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution(), resInfo);
-    m_subtitlePosResInfo = m_subtitlePosition;
-    // We save the value only when playback is stopped
+    m_subtitlePosResInfo = POSRESINFO_SAVE_CHANGES;
+    // We save the value to XML file settings when playback is stopped
     // to avoid saving to disk too many times
     m_saveSubtitlePosition = true;
   }
@@ -324,15 +321,35 @@ void CRenderer::SetSubtitleVerticalPosition(const int value, bool save)
 
 void CRenderer::ResetSubtitlePosition()
 {
+  // In the 'pos' var the vertical margin has been substracted because
+  // we need to know the actual text baseline position on screen
+  int pos{0};
   m_saveSubtitlePosition = false;
   RESOLUTION_INFO resInfo = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
-  m_subtitleVerticalMargin =
-      resInfo.iHeight / 100 *
-      CServiceBroker::GetSettingsComponent()->GetSubtitlesSettings()->GetVerticalMarginPerc();
-  m_subtitlePosResInfo = resInfo.iSubtitles;
+
+  if (m_subtitleAlign == SUBTITLES::Align::MANUAL)
+  {
+    // The position must be fixed to match the subtitle calibration bar
+    m_subtitleVerticalMargin = static_cast<int>(
+        static_cast<float>(resInfo.iHeight) / 100 *
+        CServiceBroker::GetSettingsComponent()->GetSubtitlesSettings()->GetVerticalMarginPerc());
+
+    m_subtitlePosResInfo = resInfo.iSubtitles;
+    pos = resInfo.iSubtitles - m_subtitleVerticalMargin;
+  }
+  else
+  {
+    // The position must be relative to the screen frame
+    m_subtitleVerticalMargin = static_cast<int>(
+        static_cast<float>(m_rv.Height()) / 100 *
+        CServiceBroker::GetSettingsComponent()->GetSubtitlesSettings()->GetVerticalMarginPerc());
+
+    m_subtitlePosResInfo = static_cast<int>(m_rv.Height());
+    pos = static_cast<int>(m_rv.Height()) - m_subtitleVerticalMargin + resInfo.Overscan.top;
+  }
+
   // Update player value (and callback to CRenderer::SetSubtitleVerticalPosition)
-  g_application.GetAppPlayer().SetSubtitleVerticalPosition(
-      resInfo.iSubtitles - m_subtitleVerticalMargin, false);
+  g_application.GetAppPlayer().SetSubtitleVerticalPosition(pos, false);
 }
 
 void CRenderer::CreateSubtitlesStyle()
@@ -379,9 +396,6 @@ void CRenderer::CreateSubtitlesStyle()
   else
     m_overlayStyle->alignment = SUBTITLES::STYLE::FontAlign::SUB_CENTER;
 
-  if (subAlign == SUBTITLES::Align::BOTTOM_OUTSIDE || subAlign == SUBTITLES::Align::TOP_OUTSIDE)
-    m_overlayStyle->drawWithinBlackBars = true;
-
   m_overlayStyle->assOverrideFont = settings->IsOverrideFonts();
 
   SUBTITLES::OverrideStyles overrideStyles = settings->GetOverrideStyles();
@@ -397,7 +411,9 @@ void CRenderer::CreateSubtitlesStyle()
   // Changing vertical margin while in playback causes side effects when you
   // rewind the video, displaying the previous text position (test Libass 15.2)
   // for now vertical margin setting will be disabled during playback
-  m_overlayStyle->marginVertical = m_subtitleVerticalMargin;
+  m_overlayStyle->marginVertical =
+      static_cast<int>(SUBTITLES::STYLE::VIEWPORT_HEIGHT / 100 *
+                       static_cast<double>(settings->GetVerticalMarginPerc()));
 
   m_overlayStyle->blur = settings->GetBlurSize();
 }
@@ -436,12 +452,22 @@ COverlay* CRenderer::ConvertLibass(
 
   // Set position of subtitles based on video calibration settings
   RESOLUTION_INFO resInfo = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
+  // Keep track of subtitle position value change,
+  // can be changed by GUI Calibration or by window mode/resolution change or
+  // by user manual change (e.g. keyboard shortcut)
   if (m_subtitlePosResInfo != resInfo.iSubtitles)
   {
-    // Keep track of subtitle position value change,
-    // can be changed by GUI Calibration or by window mode/resolution change or
-    // by user manual change (e.g. keyboard shortcut)
-    ResetSubtitlePosition();
+    if (m_subtitlePosResInfo == POSRESINFO_SAVE_CHANGES)
+    {
+      // m_subtitlePosition has been changed
+      // and has been requested to save the value to resInfo
+      resInfo.iSubtitles = m_subtitlePosition + m_subtitleVerticalMargin;
+      CServiceBroker::GetWinSystem()->GetGfxContext().SetResInfo(
+          CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution(), resInfo);
+      m_subtitlePosResInfo = m_subtitlePosition + m_subtitleVerticalMargin;
+    }
+    else
+      ResetSubtitlePosition();
   }
 
   // rOpts.position and margins (set to style) can invalidate the text
@@ -450,28 +476,39 @@ COverlay* CRenderer::ConvertLibass(
   // override setting is enabled only
   if (o->IsForcedMargins())
   {
-    rOpts.disableVerticalMargin = true;
+    rOpts.marginsMode = SUBTITLES::STYLE::MarginsMode::DISABLED;
   }
-  else
+  else if (m_subtitleAlign == SUBTITLES::Align::MANUAL)
   {
-    double subPosPx{static_cast<double>(m_subtitlePosition)};
-    //! @todo Libass scale the margins values (style) that influence
-    // the text position. With the subtitle calibration bar we shift the
-    // position of the bar with margins, to make the bar match the text.
-    // When we move the calibration bar the text will no longer match the bar
-    // to fix this problem is needed add a kind of calculation to compensate
-    // the scale difference, its not clear what formula could be used,
-    // the following calculation works quite well but not perfectly
-    double scaledMargin{static_cast<double>(m_subtitleVerticalMargin) /
-                        SUBTITLES::STYLE::VIEWPORT_HEIGHT * (subPosPx - resInfo.Overscan.top)};
-    subPosPx -= static_cast<double>(m_subtitleVerticalMargin) - scaledMargin;
+    // When vertical margins are used Libass apply a displacement in percentage
+    // of the height available to line position, this displacement causes
+    // problems with subtitle calibration bar on Video Calibration window,
+    // so when you moving the subtitle bar of the GUI the text will no longer
+    // match the bar, this calculation compensates for the displacement.
+    // Note also that the displacement compensation will cause a different
+    // default position of the text, different from the other alignment positions
+    double posPx = static_cast<double>(m_subtitlePosition - resInfo.Overscan.top);
 
-    // We need to scale the position to resolution based on overscan values
-    subPosPx = static_cast<double>(subPosPx - resInfo.Overscan.top) /
-               (resInfo.Overscan.bottom - resInfo.Overscan.top) * resInfo.iHeight;
+    int assPlayResY = o->GetLibassHandler()->GetPlayResY();
+    double assVertMargin = static_cast<double>(overlayStyle->marginVertical) *
+                           (static_cast<double>(assPlayResY) / 720);
+    double vertMarginScaled = assVertMargin / assPlayResY * static_cast<double>(rOpts.frameHeight);
 
-    // Specify the position currently works only with bottom alignment
-    rOpts.position = 100.0 - subPosPx * 100.0 / resInfo.iHeight;
+    double pos = posPx / (static_cast<double>(rOpts.frameHeight) - vertMarginScaled);
+    rOpts.position = 100 - pos * 100;
+  }
+  else if (m_subtitleAlign == SUBTITLES::Align::BOTTOM_OUTSIDE)
+  {
+    // To keep consistent the position of text as other alignment positions
+    // we avoid apply the displacement compensation
+    double posPx =
+        static_cast<double>(m_subtitlePosition + m_subtitleVerticalMargin - resInfo.Overscan.top);
+    rOpts.position = 100 - posPx / static_cast<double>(rOpts.frameHeight) * 100;
+  }
+  else if (m_subtitleAlign == SUBTITLES::Align::BOTTOM_INSIDE ||
+           m_subtitleAlign == SUBTITLES::Align::TOP_INSIDE)
+  {
+    rOpts.marginsMode = SUBTITLES::STYLE::MarginsMode::INSIDE_VIDEO;
   }
 
   // Set the horizontal text alignment (currently used to improve readability on CC subtitles only)
@@ -591,7 +628,7 @@ void CRenderer::Notify(const Observable& obs, const ObservableMessage msg)
     case ObservableMessagePositionChanged:
     {
       std::unique_lock<CCriticalSection> lock(m_section);
-      m_subtitlePosResInfo = -1; // Force call ResetSubtitlePosition()
+      m_subtitlePosResInfo = POSRESINFO_UNSET;
       break;
     }
     default:
@@ -601,7 +638,8 @@ void CRenderer::Notify(const Observable& obs, const ObservableMessage msg)
 
 void CRenderer::LoadSettings()
 {
-  m_subtitleHorizontalAlign =
-      CServiceBroker::GetSettingsComponent()->GetSubtitlesSettings()->GetHorizontalAlignment();
+  const auto settings{CServiceBroker::GetSettingsComponent()->GetSubtitlesSettings()};
+  m_subtitleHorizontalAlign = settings->GetHorizontalAlignment();
+  m_subtitleAlign = settings->GetAlignment();
   ResetSubtitlePosition();
 }

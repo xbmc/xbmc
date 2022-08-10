@@ -505,7 +505,7 @@
       <group id="1" label="39186">
         <setting id="subtitles.align" type="integer" label="21460" help="36192">
           <level>2</level>
-          <default>1</default> <!-- Align::BOTTOM_INSIDE -->
+          <default>2</default> <!-- Align::BOTTOM_OUTSIDE -->
           <constraints>
             <options>
               <option label="21461">0</option> <!-- Align::MANUAL -->
@@ -527,7 +527,7 @@
         </setting>
         <setting id="subtitles.fontsize" type="integer" label="289" help="36186">
           <level>3</level>
-          <default>42</default>
+          <default>42</default> <!-- in pixels -->
           <constraints>
             <minimum>12</minimum>
             <step>2</step>
@@ -563,7 +563,7 @@
         </setting>
         <setting id="subtitles.bordersize" type="integer" label="39159">
           <level>3</level>
-          <default>30</default>
+          <default>25</default>
           <dependencies>
             <dependency type="enable" setting="subtitles.backgroundtype" operator="!is">2</dependency>
           </dependencies>
@@ -662,16 +662,18 @@
         </setting>
         <setting id="subtitles.marginvertical" type="number" label="39182" help="39183">
           <level>3</level>
-          <default>7.75</default>
+          <default>4.95</default>
           <constraints>
             <minimum>0</minimum>
-            <step>0.25</step>
+            <step>0.05</step>
             <maximum>50</maximum>
           </constraints>
           <dependencies>
             <dependency type="enable" on="property" operator="!is" name="isplaying" />
           </dependencies>
-          <control type="slider" format="percentage"/>
+          <control type="slider" format="percentage">
+            <format>{:.2f} %</format>
+          </control>
         </setting>
         <setting id="subtitles.overridefonts" type="boolean" label="21368" help="36190">
           <level>3</level>

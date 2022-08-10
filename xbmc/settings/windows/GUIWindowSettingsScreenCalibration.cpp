@@ -195,7 +195,9 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
 
       // Get the allowable resolutions that we can calibrate...
       m_Res.clear();
-      if (g_application.GetAppPlayer().IsPlayingVideo())
+
+      bool isPlayingVideo{g_application.GetAppPlayer().IsPlayingVideo()};
+      if (isPlayingVideo)
       { // don't allow resolution switching if we are playing a video
 
         g_application.GetAppPlayer().TriggerUpdateResolution();
@@ -214,6 +216,12 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
 
       // Setup the first control
       m_iControl = CONTROL_TOP_LEFT;
+
+      m_isSubtitleBarEnabled =
+          !(CServiceBroker::GetSettingsComponent()->GetSubtitlesSettings()->GetAlignment() !=
+                SUBTITLES::Align::MANUAL &&
+            isPlayingVideo);
+
       ResetControls();
       return true;
     }
@@ -316,9 +324,9 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
   RESOLUTION_INFO info =
       CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(m_Res[m_iCurRes]);
 
-  m_subtitleVerticalMargin =
-      info.iHeight / 100 *
-      CServiceBroker::GetSettingsComponent()->GetSubtitlesSettings()->GetVerticalMarginPerc();
+  m_subtitleVerticalMargin = static_cast<int>(
+      static_cast<float>(info.iHeight) / 100 *
+      CServiceBroker::GetSettingsComponent()->GetSubtitlesSettings()->GetVerticalMarginPerc());
 
   if (pControl)
   {
@@ -367,6 +375,7 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
                               m_subtitleVerticalMargin);
     pControl->SetLocation(0, info.iSubtitles + m_subtitlesHalfSpace - m_subtitleVerticalMargin,
                           false);
+    pControl->SetEnabled(m_isSubtitleBarEnabled);
   }
   // The pixel ratio control
   CGUIResizeControl* pResize = dynamic_cast<CGUIResizeControl*>(GetControl(CONTROL_PIXEL_RATIO));
@@ -475,12 +484,21 @@ bool CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
 
         case CONTROL_SUBTITLES:
         {
-          info.iSubtitles =
-              pControl->GetYLocation() - m_subtitlesHalfSpace + m_subtitleVerticalMargin;
-          labelDescription = StringUtils::Format("[B]{}[/B][CR]{}", g_localizeStrings.Get(277),
-                                                 g_localizeStrings.Get(278));
-          labelValue = StringUtils::Format(g_localizeStrings.Get(39184), info.iSubtitles,
-                                           info.iSubtitles - m_subtitleVerticalMargin);
+          if (m_isSubtitleBarEnabled)
+          {
+            info.iSubtitles =
+                pControl->GetYLocation() - m_subtitlesHalfSpace + m_subtitleVerticalMargin;
+
+            labelDescription = StringUtils::Format("[B]{}[/B][CR]{}", g_localizeStrings.Get(277),
+                                                   g_localizeStrings.Get(278));
+            labelValue = StringUtils::Format(g_localizeStrings.Get(39184), info.iSubtitles,
+                                             info.iSubtitles - m_subtitleVerticalMargin);
+          }
+          else
+          {
+            labelDescription = StringUtils::Format("[B]{}[/B][CR]{}", g_localizeStrings.Get(277),
+                                                   g_localizeStrings.Get(39189));
+          }
         }
         break;
 

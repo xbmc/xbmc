@@ -151,8 +151,6 @@ void CDVDSubtitlesLibass::Configure()
                 UTILS::FONT::FONTPATH::GetSystemFontPath(FONT::FONT_DEFAULT_FILENAME).c_str(),
                 m_defaultFontFamilyName.c_str(), ASS_FONTPROVIDER_AUTODETECT, nullptr, 1);
 
-  ass_set_font_scale(m_renderer, 1);
-
   // Extract font must be set before loading ASS/SSA data,
   // after that cannot be changed
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
@@ -208,8 +206,8 @@ bool CDVDSubtitlesLibass::CreateTrack()
   m_track->track_type = m_track->TRACK_TYPE_ASS;
   m_track->Timer = 100.;
   // Set fixed values to PlayRes to allow the use of style override code for positioning
-  m_track->PlayResX = (int)VIEWPORT_WIDTH;
-  m_track->PlayResY = (int)VIEWPORT_HEIGHT;
+  m_track->PlayResX = static_cast<int>(VIEWPORT_WIDTH);
+  m_track->PlayResY = static_cast<int>(VIEWPORT_HEIGHT);
   m_track->Kerning = true; // Font kerning improves the letterspacing
   m_track->WrapStyle = 1; // The line feed \n doesn't break but wraps (instead \N breaks)
 
@@ -275,14 +273,25 @@ ASS_Image* CDVDSubtitlesLibass::RenderImage(double pts,
   if (updateStyle || m_currentDefaultStyleId == ASS_NO_ID)
   {
     ApplyStyle(subStyle, opts);
-    m_drawWithinBlackBars = subStyle->drawWithinBlackBars;
   }
 
   double sar = static_cast<double>(opts.sourceWidth) / static_cast<double>(opts.sourceHeight);
   double dar = static_cast<double>(opts.videoWidth) / static_cast<double>(opts.videoHeight);
-
+  ass_set_pixel_aspect(m_renderer, dar / sar);
   ass_set_frame_size(m_renderer, static_cast<int>(opts.frameWidth),
                      static_cast<int>(opts.frameHeight));
+
+  double fontScale{1.0};
+  int marginTop{0};
+  int marginLeft{0};
+
+  if (opts.marginsMode == MarginsMode::INSIDE_VIDEO ||
+      (m_subtitleType == NATIVE && subStyle->assOverrideStyles != OverrideStyles::POSITIONS &&
+       subStyle->assOverrideStyles != OverrideStyles::STYLES_POSITIONS))
+  {
+    marginTop = static_cast<int>((opts.frameHeight - opts.videoHeight) / 2);
+    marginLeft = static_cast<int>((opts.frameWidth - opts.videoWidth) / 2);
+  }
 
   if (m_subtitleType == NATIVE)
   {
@@ -291,24 +300,25 @@ ASS_Image* CDVDSubtitlesLibass::RenderImage(double pts,
   }
   else
   {
+    // Keep storage to default to keep consistent subtitles effects
+    // (like borders) when video resolution change while in playback
     ass_set_storage_size(m_renderer, 0, 0);
+
+    if (marginTop > 0)
+    {
+      // Make font size relative to window size instead of video,
+      // to show same font size even if the video do not cover in full
+      // the window (cropped videos) and player add black bars
+      fontScale *= static_cast<double>(opts.frameHeight / opts.videoHeight);
+    }
   }
 
-  int marginTop{0};
-  int marginLeft{0};
-  if (m_drawWithinBlackBars)
-  {
-    marginTop = static_cast<int>((opts.frameHeight - opts.videoHeight) / 2);
-    marginLeft = static_cast<int>((opts.frameWidth - opts.videoWidth) / 2);
-  }
+  ass_set_font_scale(m_renderer, fontScale);
+
   ass_set_margins(m_renderer, marginTop, marginTop, marginLeft, marginLeft);
+  ass_set_use_margins(m_renderer, 0);
 
-  ass_set_use_margins(m_renderer, m_drawWithinBlackBars);
-
-  // Vertical text position in percent (if 0 do nothing)
   ass_set_line_position(m_renderer, opts.position);
-
-  ass_set_pixel_aspect(m_renderer, dar / sar);
 
   // For posterity ass_render_frame have an inconsistent rendering for overlapped subtitles cases,
   // if the playback occurs in sequence (without seeks) the overlapped subtitles lines will be rendered in right order
@@ -349,21 +359,19 @@ void CDVDSubtitlesLibass::ApplyStyle(const std::shared_ptr<struct style>& subSty
     free(style->Name);
     style->Name = strdup("KodiDefault");
 
-    // Calculate the scale (influence ASS style properties)
-    double scale = 1.0;
-    int playResY;
+    // Calculate the scale
+    // Font size, borders, etc... are specified in pixel unit in scaled
+    // for a window height of 720, so we need to rescale to our PlayResY
+    double playResY{static_cast<double>(m_track->PlayResY)};
+    double scaleDefault{playResY / 720};
+    double scale{scaleDefault};
     if (m_subtitleType == NATIVE &&
         (subStyle->assOverrideStyles == OverrideStyles::STYLES ||
          subStyle->assOverrideStyles == OverrideStyles::STYLES_POSITIONS ||
          subStyle->assOverrideFont))
     {
       // With styles overridden the PlayResY will be changed to 288
-      playResY = 288;
-      scale = 288. / 720;
-    }
-    else
-    {
-      playResY = m_track->PlayResY;
+      scale = 288.0 / 720;
     }
 
     // It is mandatory set the FontName, the text is case sensitive
@@ -374,8 +382,8 @@ void CDVDSubtitlesLibass::ApplyStyle(const std::shared_ptr<struct style>& subSty
       style->FontName = strdup(subStyle->fontName.c_str());
 
     // Configure the font properties
-    // FIXME: The font size need to be scaled to be shown in right PT size
-    style->FontSize = (subStyle->fontSize / 720) * playResY;
+    style->FontSize = subStyle->fontSize * scale;
+
     // Modifies the width/height of the font (1 = 100%)
     style->ScaleX = 1.0;
     style->ScaleY = 1.0;
@@ -449,21 +457,26 @@ void CDVDSubtitlesLibass::ApplyStyle(const std::shared_ptr<struct style>& subSty
 
     style->Blur = (10.00 / 100 * subStyle->blur);
 
-    double marginLR = 20;
-    if (opts.horizontalAlignment != HorizontalAlign::DISABLED)
-    {
-      // If the subtitle text is aligned on the left or right
-      // of the screen, we set an extra left/right margin
-      marginLR += static_cast<double>(opts.frameWidth) / 10;
-    }
-
     // Set the margins (in pixel)
-    style->MarginL = static_cast<int>(marginLR * scale);
-    style->MarginR = static_cast<int>(marginLR * scale);
-    if (opts.disableVerticalMargin)
+    if (opts.marginsMode == MarginsMode::DISABLED)
+    {
+      style->MarginL = 0;
+      style->MarginR = 0;
       style->MarginV = 0;
+    }
     else
-      style->MarginV = static_cast<int>(subStyle->marginVertical * scale);
+    {
+      double marginLR = 20;
+      if (opts.horizontalAlignment != HorizontalAlign::DISABLED)
+      {
+        // If the subtitle text is aligned on the left or right
+        // of the screen, we set an extra left/right margin
+        marginLR += static_cast<double>(opts.frameWidth) / 10;
+      }
+      style->MarginL = static_cast<int>(marginLR * scaleDefault);
+      style->MarginR = static_cast<int>(marginLR * scaleDefault);
+      style->MarginV = static_cast<int>(subStyle->marginVertical * scaleDefault);
+    }
 
     // Set the vertical alignment
     if (subStyle->alignment == FontAlign::TOP_LEFT ||
@@ -504,6 +517,16 @@ void CDVDSubtitlesLibass::ApplyStyle(const std::shared_ptr<struct style>& subSty
     ConfigureAssOverride(subStyle, style);
     m_currentDefaultStyleId = m_track->default_style;
   }
+}
+
+int CDVDSubtitlesLibass::GetPlayResY()
+{
+  if (!m_track)
+  {
+    CLog::Log(LOGERROR, "{} - ASS renderer/ASS track not initialized.", __FUNCTION__);
+    return VIEWPORT_HEIGHT;
+  }
+  return m_track->PlayResY;
 }
 
 void CDVDSubtitlesLibass::ConfigureAssOverride(const std::shared_ptr<struct style>& subStyle,
