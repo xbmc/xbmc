@@ -53,6 +53,14 @@ enum MOUSE_BUTTON
   MOUSE_EXTRA_BUTTON4
 };
 
+enum class HoldAction
+{
+  NONE, //no action should occur
+  DRAG_START, //a drag action has started
+  DRAG, //a drag action is in progress
+  DRAG_END //a drag action has finished
+};
+
 // this holds everything we know about the current state of the mouse
 struct MouseState
 {
@@ -91,7 +99,7 @@ public:
   MOUSE_STATE GetState() const { return m_pointerState; }
   uint32_t GetKey() const;
 
-  int GetHold(int ButtonID) const;
+  HoldAction GetHold(int ButtonID) const;
   inline int GetX(void) const { return m_mouseState.x; }
   inline int GetY(void) const { return m_mouseState.y; }
   inline int GetDX(void) const { return m_mouseState.dx; }
@@ -197,7 +205,7 @@ private:
 
   bool bClick[MOUSE_MAX_BUTTON];
   bool bDoubleClick[MOUSE_MAX_BUTTON];
-  int bHold[MOUSE_MAX_BUTTON];
+  HoldAction m_hold[MOUSE_MAX_BUTTON];
   bool bLongClick[MOUSE_MAX_BUTTON];
 
   uint32_t m_Key;
