@@ -30,7 +30,7 @@
 					<width>526</width>
 					<height>801</height>
 					<aspectratio>scale</aspectratio>
-					<texture fallback="DefaultVideo.png">$VAR[InfoDialogPosterVar]</texture>
+					<texture fallback="DefaultVideo.png" background="true">$VAR[InfoDialogPosterVar]</texture>
 				</control>
 				<control type="group">
 					<visible>String.IsEqual(ListItem.DBType,episode) | String.IsEqual(ListItem.DBType,video)</visible>

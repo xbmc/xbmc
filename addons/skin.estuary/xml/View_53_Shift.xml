@@ -79,7 +79,7 @@
 							<width>370</width>
 							<height>480</height>
 							<aspectratio aligny="center">keep</aspectratio>
-							<texture fallback="DefaultVideo.png">$VAR[ShiftThumbVar]</texture>
+							<texture fallback="DefaultVideo.png" background="true">$VAR[ShiftThumbVar]</texture>
 							<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
@@ -166,7 +166,7 @@
 							<width>370</width>
 							<height>480</height>
 							<aspectratio aligny="center">keep</aspectratio>
-							<texture fallback="DefaultVideo.png">$VAR[ShiftThumbVar]</texture>
+							<texture fallback="DefaultVideo.png" background="true">$VAR[ShiftThumbVar]</texture>
 							<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
