@@ -99,6 +99,12 @@ function(add_addon_depends addon searchpath)
           message(${BUILD_ARGS})
         endif()
 
+        if(ADDON_EXTRA_ARGS)
+          string(REPLACE " " ";" ADDON_EXTRA_ARGS ${ADDON_EXTRA_ARGS})
+          list(APPEND BUILD_ARGS ${ADDON_EXTRA_ARGS})
+          message("Addon Extra Args: ${ADDON_EXTRA_ARGS}")
+        endif()
+
         # used for addons where need special folders to store there content (if
         # not set the addon define it byself).
         # e.g. Google Chromium addon where his git bring:
