@@ -1042,7 +1042,7 @@ bool CFileItem::IsGame() const
 
 bool CFileItem::IsPicture() const
 {
-  if(StringUtils::StartsWithNoCase(m_mimetype, "image/"))
+  if (StringUtils::StartsWithNoCase(m_mimetype, "image/"))
     return true;
 
   if (HasPictureInfoTag())
@@ -1057,7 +1057,14 @@ bool CFileItem::IsPicture() const
   if (HasVideoInfoTag())
     return false;
 
-  return CUtil::IsPicture(m_strPath);
+  if (HasPVRTimerInfoTag() || HasPVRChannelInfoTag() || HasPVRChannelGroupMemberInfoTag() ||
+      HasPVRRecordingInfoTag() || HasEPGInfoTag() || HasEPGSearchFilter())
+    return false;
+
+  if (!m_strPath.empty())
+    return CUtil::IsPicture(m_strPath);
+
+  return false;
 }
 
 bool CFileItem::IsLyrics() const
