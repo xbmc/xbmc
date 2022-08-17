@@ -758,7 +758,7 @@ public:
       m_strEpisodeName(kodiTag->EpisodeName()),
       m_strIconPath(kodiTag->ClientIconPath()),
       m_strSeriesLink(kodiTag->SeriesLink()),
-      m_strGenreDescription(kodiTag->GetGenresLabel()),
+      m_strGenreDescription(kodiTag->GenreDescription()),
       m_strParentalRatingCode(kodiTag->ParentalRatingCode())
   {
     time_t t;
