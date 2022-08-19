@@ -40,8 +40,13 @@ constexpr const char* signatureCharsBOM = "\xEF\xBB\xBF\x57\x45\x42\x56\x54\x54"
 constexpr const char* signatureChars = "\x57\x45\x42\x56\x54\x54";
 constexpr char signatureLastChars[] = {'\x0A', '\x0D', '\x20', '\x09'};
 
-constexpr char cueTimePattern[] =
-    "^(\\d{2}:)?(\\d{2}):(\\d{2}\\.\\d{3})[ \\t]*-->[ \\t]*(\\d{2}:)?(\\d{2}):(\\d{2}\\.\\d{3})";
+constexpr char tagPattern[] = "<(\\/)?([^a-zA-Z >]+)?([^\\d:. >]+)?(\\.[^ >]+)?(?> ([^>]+))?>";
+
+constexpr char cueTimePattern[] = "^(?>(\\d{2}):)?(\\d{2}):(\\d{2}\\.\\d{3})"
+                                  "[ \\t]*-->[ \\t]*"
+                                  "(?>(\\d{2}):)?(\\d{2}):(\\d{2}\\.\\d{3})";
+
+constexpr char timePattern[] = "<(?>(\\d{2}):)?(\\d{2}):(\\d{2}\\.\\d{3})>";
 
 // Regex patterns for cue properties
 const std::map<std::string, std::string> cuePropsPatterns = {
@@ -53,18 +58,24 @@ const std::map<std::string, std::string> cuePropsPatterns = {
     {"vertical", "vertical\\:(rl|lr)"},
     {"snapToLines", "snapToLines\\:(true|false)"}};
 
-constexpr char cueCssTagPattern[] = "::cue\\(([^\\(]+)\\)|::cue {";
+constexpr char cueCssTagPattern[] = "::cue\\(([^\\(]+)\\)|(?>(::cue)\\(?\\)?) *{";
 
 const std::map<std::string, std::string> cueCssPatterns = {
-    {"colorName", "color:\\s*([a-zA-Z]+)(;|\\s)"},
+    {"colorName", "color:\\s*([a-zA-Z]+)($|;|\\s|})"},
     {"colorRGB", "color:\\s?rgba?\\((\\d{1,3},\\d{1,3},\\d{1,3})(,\\d{1,3})?\\)"},
-    {"fontStyle", "font-style:\\s*(italic)(;|\\s)"},
-    {"fontWeight", "font-weight:\\s*(bold)(;|\\s)"},
-    {"textDecoration", "text-decoration:\\s*(underline)(;|\\s)"}};
+    {"fontStyle", "font-style:\\s*(italic)($|;|\\s|})"},
+    {"fontWeight", "font-weight:\\s*(bold)($|;|\\s|})"},
+    {"textDecoration", "text-decoration:\\s*(underline)($|;|\\s|})"}};
 
-const std::map<std::string, std::string> cueCssDefaultColorsClasses = {
-    {"c.white", "FFFFFF"},  {"c.lime", "00FF00"},    {"c.cyan", "00FFFF"}, {"c.red", "FF0000"},
-    {"c.yellow", "FFFF00"}, {"c.magenta", "FF00FF"}, {"c.blue", "0000FF"}, {"c.black", "000000"}};
+const std::map<std::string, webvttCssStyle> cueCssDefaultColorClasses = {
+    {".white", {WebvttSelector::CLASS, ".white", "FFFFFF"}},
+    {".lime", {WebvttSelector::CLASS, ".lime", "00FF00"}},
+    {".cyan", {WebvttSelector::CLASS, ".cyan", "00FFFF"}},
+    {".red", {WebvttSelector::CLASS, ".red", "FF0000"}},
+    {".yellow", {WebvttSelector::CLASS, ".yellow", "FFFF00"}},
+    {".magenta", {WebvttSelector::CLASS, ".magenta", "FF00FF"}},
+    {".blue", {WebvttSelector::CLASS, ".blue", "0000FF"}},
+    {".black", {WebvttSelector::CLASS, ".black", "000000"}}};
 
 enum FlagTags
 {
@@ -100,64 +111,64 @@ void InsertTextPos(std::string& text, const std::string& insert, int& pos)
 std::string ConvertStyleToOpenTags(int flagTags[], webvttCssStyle& style)
 {
   std::string tags;
-  if (style.isFontBold)
+  if (style.m_isFontBold)
   {
     if (flagTags[FLAG_TAG_BOLD] == 0)
       tags += "{\\b1}";
     flagTags[FLAG_TAG_BOLD] += 1;
   }
-  if (style.isFontItalic)
+  if (style.m_isFontItalic)
   {
     if (flagTags[FLAG_TAG_ITALIC] == 0)
       tags += "{\\i1}";
     flagTags[FLAG_TAG_ITALIC] += 1;
   }
-  if (style.isFontUnderline)
+  if (style.m_isFontUnderline)
   {
     if (flagTags[FLAG_TAG_UNDERLINE] == 0)
       tags += "{\\u1}";
     flagTags[FLAG_TAG_UNDERLINE] += 1;
   }
-  if (!style.color.empty())
+  if (!style.m_color.empty())
   {
     if (flagTags[FLAG_TAG_COLOR] > 0)
       tags += "{\\c}";
     flagTags[FLAG_TAG_COLOR] += 1;
-    tags += "{\\c&H" + style.color + "&}";
+    tags += "{\\c&H" + style.m_color + "&}";
   }
   return tags;
 }
 
 std::string ConvertStyleToCloseTags(int flagTags[],
-                                    webvttCssStyle& style,
-                                    webvttCssStyle& baseStyle)
+                                    webvttCssStyle* style,
+                                    webvttCssStyle* baseStyle)
 {
   std::string tags;
-  if (style.isFontBold)
+  if (style->m_isFontBold)
   {
     flagTags[FLAG_TAG_BOLD] = flagTags[FLAG_TAG_BOLD] > 0 ? (flagTags[FLAG_TAG_BOLD] - 1) : 0;
     if (flagTags[FLAG_TAG_BOLD] == 0)
       tags += "{\\b0}";
   }
-  if (style.isFontItalic)
+  if (style->m_isFontItalic)
   {
     flagTags[FLAG_TAG_ITALIC] = flagTags[FLAG_TAG_ITALIC] > 0 ? (flagTags[FLAG_TAG_ITALIC] - 1) : 0;
     if (flagTags[FLAG_TAG_ITALIC] == 0)
       tags += "{\\i0}";
   }
-  if (style.isFontUnderline)
+  if (style->m_isFontUnderline)
   {
     flagTags[FLAG_TAG_UNDERLINE] =
         flagTags[FLAG_TAG_UNDERLINE] > 0 ? (flagTags[FLAG_TAG_UNDERLINE] - 1) : 0;
     if (flagTags[FLAG_TAG_UNDERLINE] == 0)
       tags += "{\\u0}";
   }
-  if (!style.color.empty())
+  if (!style->m_color.empty())
   {
     flagTags[FLAG_TAG_COLOR] = flagTags[FLAG_TAG_COLOR] > 0 ? (flagTags[FLAG_TAG_COLOR] - 1) : 0;
     tags += "{\\c}";
-    if (flagTags[FLAG_TAG_COLOR] > 0 && !baseStyle.color.empty())
-      tags += "{\\c&H" + baseStyle.color + "&}";
+    if (flagTags[FLAG_TAG_COLOR] > 0 && !baseStyle->m_color.empty())
+      tags += "{\\c&H" + baseStyle->m_color + "&}";
   }
   return tags;
 }
@@ -190,9 +201,11 @@ bool CWebVTTHandler::Initialize()
   AddDefaultCssClasses();
 
   // Compile regex patterns
-  if (!m_tagsRegex.RegComp("<\\/?([^>]*)>"))
+  if (!m_tagsRegex.RegComp(tagPattern))
     return false;
   if (!m_cueTimeRegex.RegComp(cueTimePattern))
+    return false;
+  if (!m_timeRegex.RegComp(timePattern))
     return false;
   if (!m_cueCssTagRegex.RegComp(cueCssTagPattern))
     return false;
@@ -221,13 +234,22 @@ bool CWebVTTHandler::Initialize()
   return true;
 }
 
+void CWebVTTHandler::Reset()
+{
+  m_previousLines[0].clear();
+  m_previousLines[1].clear();
+  m_previousLines[2].clear();
+  m_currentSection = WebvttSection::UNDEFINED;
+  m_offset = 0;
+}
+
 bool CWebVTTHandler::CheckSignature(const std::string& data)
 {
   // Check the sequence of chars to identify WebVTT signature
   if (ValidateSignature(data, signatureCharsBOM) || ValidateSignature(data, signatureChars))
     return true;
 
-  CLog::Log(LOGERROR, "{} - WebVTT signature not valid", __FUNCTION__);
+  CLog::LogF(LOGERROR, "WebVTT signature not valid");
   return false;
 }
 
@@ -269,22 +291,14 @@ void CWebVTTHandler::DecodeLine(std::string line, std::vector<subtitleData>* sub
         if ((regLocal.RegFind(line) >= 0 && regLocal.GetSubCount() == 4) &&
             regMpegTs.RegFind(line) >= 0)
         {
-          int locHrs = 0;
-          int locMins;
-          double locSecs;
-          if (!regLocal.GetMatch(2).empty())
-            locHrs = std::stoi(regLocal.GetMatch(2).c_str());
-          locMins = std::stoi(regLocal.GetMatch(3).c_str());
-          locSecs = std::atof(regLocal.GetMatch(4).c_str());
-          tsLocalUs = (static_cast<double>(locHrs * 3600 + locMins * 60) + locSecs) * DVD_TIME_BASE;
+          tsLocalUs = GetTimeFromRegexTS(regLocal, 2);
           // Converts a 90 kHz clock timestamp to a timestamp in microseconds
           tsMpegUs = std::stod(regMpegTs.GetMatch(1)) * MICROS_PER_SECOND / MPEG_TIMESCALE;
         }
         else
         {
-          CLog::Log(LOGERROR,
-                    "{} - Failed to get X-TIMESTAMP-MAP values, subtitles could be out of sync",
-                    __FUNCTION__);
+          CLog::LogF(LOGERROR,
+                     "Failed to get X-TIMESTAMP-MAP values, subtitles could be out of sync");
         }
 
         // offset = periodStart + tsMpegUs - tsLocalUs
@@ -292,9 +306,8 @@ void CWebVTTHandler::DecodeLine(std::string line, std::vector<subtitleData>* sub
       }
       else
       {
-        CLog::Log(LOGERROR,
-                  "{} - Failed to compile X-TIMESTAMP-MAP regexes, subtitles could be out of sync",
-                  __FUNCTION__);
+        CLog::LogF(LOGERROR,
+                   "Failed to compile X-TIMESTAMP-MAP regexes, subtitles could be out of sync");
       }
     }
     else if (IsCueLine(line))
@@ -311,20 +324,18 @@ void CWebVTTHandler::DecodeLine(std::string line, std::vector<subtitleData>* sub
     {
       if (m_currentSection == WebvttSection::CUE_TEXT && !m_subtitleData.text.empty())
       {
-        CLog::Log(LOGWARNING,
-                  "{} - Malformed cue, is missing the empty line for the end of cue section",
-                  __FUNCTION__);
+        CLog::LogF(LOGWARNING,
+                   "Malformed cue, is missing the empty line for the end of cue section");
 
         // Recover the current cue, add the subtitle to the list
-        ConvertSubtitle(m_subtitleData.text);
-        subList->emplace_back(m_subtitleData);
+        ConvertAddSubtitle(subList);
 
         // Change to a new cue section
         m_currentSection = WebvttSection::CUE;
       }
       else if (m_currentSection == WebvttSection::CUE_TEXT)
       {
-        CLog::Log(LOGWARNING, "{} - Malformed cue, the cue is within the text area", __FUNCTION__);
+        CLog::LogF(LOGWARNING, "Malformed cue, the cue is within the text area");
         return; // Continue to try again for possible subtitle text after this line
       }
 
@@ -352,15 +363,12 @@ void CWebVTTHandler::DecodeLine(std::string line, std::vector<subtitleData>* sub
       {
         if (m_subtitleData.text.empty())
         {
-          CLog::Log(LOGWARNING, "{} - Malformed cue, is missing the subtitle text", __FUNCTION__);
+          CLog::LogF(LOGWARNING, "Malformed cue, is missing the subtitle text");
           m_currentSection = WebvttSection::UNDEFINED;
           return; // This cue will be skipped
         }
 
-        // Add the current subtitle to the list
-        // Convert tags and apply the CSS Styles converted
-        ConvertSubtitle(m_subtitleData.text);
-        subList->emplace_back(m_subtitleData);
+        ConvertAddSubtitle(subList);
 
         m_currentSection = WebvttSection::CUE;
       }
@@ -393,68 +401,73 @@ void CWebVTTHandler::DecodeLine(std::string line, std::vector<subtitleData>* sub
     if (line.empty()) // End of section
       m_currentSection = WebvttSection::UNDEFINED;
   }
-  else if (m_currentSection == WebvttSection::STYLE)
+  else if (m_currentSection == WebvttSection::STYLE ||
+           m_currentSection == WebvttSection::STYLE_CONTENT)
   {
-    // CSS Styles are not supported in full
-    // here there is the support for font styles and colors.
-    // Currently supported cue selectors:
-    // Cue                            ::cue
-    // Type selector                  ::cue(b)
-    // Type selector (multiple lines) ::cue(b), ::cue(i), ::cue(c), ...
-    // Class selector                 ::cue(.hello)
-    // Class selector assigned        ::cue(c.hello)
+    // Non-implemented CSS selector features:
+    // - Attribute selector [lang="xx-yy"] for applicable language
+    // - Pseudo-classes
+    // - Cue region
+    // - Cascading classes for color-background (takes only first color)
 
-    if (m_cueCurrentCssStyleSelectors.empty())
-      m_feedCssStyle = webvttCssStyle();
-
-    // Collect all CSS cue selectors (can be assigned more than one on multiple lines)
-    if (m_cueCssTagRegex.RegFind(line) >= 0)
+    if (line.empty()) // End of section
     {
-      std::string selectorName = m_cueCssTagRegex.GetMatch(1);
-      UTILS::CSS::Escape(selectorName);
-      m_cueCurrentCssStyleSelectors.emplace_back(selectorName);
-      // Recover possible css data in-line with the cue
-      line =
-          line.substr(m_cueCssTagRegex.GetFindLen(), line.length() - m_cueCssTagRegex.GetFindLen());
-      if (line.empty())
-        line = " "; // To prevent early exit
+      m_feedCssSelectorNames.clear();
+      m_currentSection = WebvttSection::UNDEFINED;
     }
 
-    // Start parse the CSS Style properties
-    if (!m_cueCurrentCssStyleSelectors.empty())
+    if (m_currentSection == WebvttSection::STYLE)
     {
-      m_feedCssStyle.selectorName = m_cueCurrentCssStyleSelectors[0];
+      if (m_feedCssSelectorNames.empty())
+        m_feedCssStyle = webvttCssStyle();
 
-      // Detect the selector type
-      if (m_feedCssStyle.selectorName.empty())
-        m_feedCssStyle.selectorType = WebvttSelector::ANY;
-      else if (m_feedCssStyle.selectorName.compare(0, 1, "#") == 0)
-        m_feedCssStyle.selectorType = WebvttSelector::ID;
-      else if (m_feedCssStyle.selectorName.find('.') != std::string::npos)
-        m_feedCssStyle.selectorType = WebvttSelector::CLASS;
-      else if (m_feedCssStyle.selectorName.find('[') !=
-               std::string::npos) // Attribute selector not implemented
-        m_feedCssStyle.selectorType = WebvttSelector::UNSUPPORTED;
-      else if (m_feedCssStyle.selectorName.compare(0, 1, ":") ==
-               0) // Pseudo-classes not implemented
-        m_feedCssStyle.selectorType = WebvttSelector::UNSUPPORTED;
-      else
-        m_feedCssStyle.selectorType = WebvttSelector::TYPE;
-
-      if (m_feedCssStyle.selectorType == WebvttSelector::UNSUPPORTED)
+      // Collect cue selectors (also handle multiple inline selectors)
+      for (std::string& cueSelector : StringUtils::Split(line, ','))
       {
-        m_cueCurrentCssStyleSelectors.clear();
-        m_currentSection = WebvttSection::UNDEFINED;
-        return;
+        if (m_cueCssTagRegex.RegFind(cueSelector) >= 0)
+        {
+          std::string selectorName = m_cueCssTagRegex.GetMatch(m_cueCssTagRegex.GetSubCount());
+          UTILS::CSS::Escape(selectorName);
+          m_feedCssSelectorNames.emplace_back(selectorName);
+        }
       }
 
-      // Get and store the CSS Style properties
-      // Here we collect all text styles data converted as tags,
-      // for other implementations that not concern text styles
-      // add new variables to webvttCssStyle struct
+      if (line.find('{') != std::string::npos && !m_feedCssSelectorNames.empty())
+      {
+        // Detect the selector type, from the first selector name
+        std::string_view selectorName = m_feedCssSelectorNames[0];
 
+        if (selectorName == "::cue")
+          m_feedCssStyle.m_selectorType = WebvttSelector::ANY;
+        else if (selectorName[0] == '#')
+          m_feedCssStyle.m_selectorType = WebvttSelector::ID;
+        else if (selectorName.find('.') != std::string::npos)
+          m_feedCssStyle.m_selectorType = WebvttSelector::CLASS;
+        else if (selectorName.compare(0, 9, "lang[lang") == 0 ||
+                 selectorName.compare(0, 7, "v[voice") == 0)
+          m_feedCssStyle.m_selectorType = WebvttSelector::ATTRIBUTE;
+        else if (selectorName[0] == ':') // Pseudo-classes not implemented
+          m_feedCssStyle.m_selectorType = WebvttSelector::UNSUPPORTED;
+        else
+          m_feedCssStyle.m_selectorType = WebvttSelector::TYPE;
+
+        if (m_feedCssStyle.m_selectorType == WebvttSelector::UNSUPPORTED)
+        {
+          m_feedCssSelectorNames.clear();
+          m_currentSection = WebvttSection::UNDEFINED;
+          return;
+        }
+
+        // Go through to recover possible data inline with the selector
+        m_currentSection = WebvttSection::STYLE_CONTENT;
+      }
+    }
+
+    if (m_currentSection == WebvttSection::STYLE_CONTENT)
+    {
+      // Get and store the CSS Style properties
       // Font color
-      std::string colorName = GetCueCssValue("colorName", line);
+      const std::string colorName = GetCueCssValue("colorName", line);
       if (!colorName.empty()) // From CSS Color name
       {
         if (!m_CSSColorsLoaded) // Load colors in lazy way
@@ -467,53 +480,62 @@ void CWebVTTHandler::DecodeLine(std::string line, std::vector<subtitleData>* sub
                          });
         if (colorInfo != m_CSSColors.end())
         {
-          uint32_t color = UTILS::COLOR::ConvertToBGR(colorInfo->second.colorARGB);
-          m_feedCssStyle.color = StringUtils::Format("{:6x}", color);
+          const uint32_t color = UTILS::COLOR::ConvertToBGR(colorInfo->second.colorARGB);
+          m_feedCssStyle.m_color = StringUtils::Format("{:6x}", color);
         }
       }
       std::string colorRGB = GetCueCssValue("colorRGB", line);
       if (!colorRGB.empty()) // From CSS Color numeric R,G,B values
       {
-        auto intValues = StringUtils::Split(colorRGB, ",");
+        const auto intValues = StringUtils::Split(colorRGB, ",");
         uint32_t color = UTILS::COLOR::ConvertIntToRGB(
             std::stoi(intValues[2]), std::stoi(intValues[1]), std::stoi(intValues[0]));
-        m_feedCssStyle.color = StringUtils::Format("{:6x}", color);
+        m_feedCssStyle.m_color = StringUtils::Format("{:6x}", color);
       }
       // Font bold
       if (!GetCueCssValue("fontWeight", line).empty())
-        m_feedCssStyle.isFontBold = true;
+        m_feedCssStyle.m_isFontBold = true;
       // Font italic
       if (!GetCueCssValue("fontStyle", line).empty())
-        m_feedCssStyle.isFontItalic = true;
+        m_feedCssStyle.m_isFontItalic = true;
       // Font underline
       if (!GetCueCssValue("textDecoration", line).empty())
-        m_feedCssStyle.isFontUnderline = true;
-    }
+        m_feedCssStyle.m_isFontUnderline = true;
 
-    if (line == "}" || line.empty()) // End of current style
-    {
-      if (!m_cueCurrentCssStyleSelectors.empty())
+      if (line.find('}') != std::string::npos || line.empty()) // End of current style
       {
         // Store the style
-        m_cueCssStyles.emplace_back(m_feedCssStyle);
-
-        if (m_feedCssStyle.selectorType == WebvttSelector::TYPE)
+        // Overwrite existing selectors to allow authors to change default classes
+        auto& selectorTypeMap = m_cssSelectors[m_feedCssStyle.m_selectorType];
+        // For multiple selectors, copy the style for each one
+        for (std::string_view selectorName : m_feedCssSelectorNames)
         {
-          // If there are multiple type selectors, copy the style for each one
-          for (size_t i = 1; i < m_cueCurrentCssStyleSelectors.size(); i++)
+          webvttCssStyle cssStyleCopy = m_feedCssStyle;
+          // Convert CSS syntax to WebVTT syntax selector
+          std::string selectorNameConv{selectorName};
+          if (m_feedCssStyle.m_selectorType == WebvttSelector::ATTRIBUTE)
           {
-            webvttCssStyle cssStyleCopy = m_feedCssStyle;
-            cssStyleCopy.selectorName = m_cueCurrentCssStyleSelectors[i];
-            m_cueCssStyles.emplace_back(cssStyleCopy);
+            selectorNameConv = selectorName.substr(0, selectorName.find('['));
+            selectorNameConv += " ";
+            const size_t attribPosStart = selectorName.find('"');
+            const size_t attribPosEnd = selectorName.find_last_of('"');
+            if (attribPosEnd > attribPosStart)
+            {
+              selectorNameConv +=
+                  selectorName.substr(attribPosStart + 1, attribPosEnd - 1 - attribPosStart);
+            }
           }
+          else if (m_feedCssStyle.m_selectorType == WebvttSelector::ID)
+            selectorNameConv.erase(0, 1); // Remove # char
+
+          cssStyleCopy.m_selectorName = selectorNameConv;
+          selectorTypeMap[selectorNameConv] = cssStyleCopy;
         }
-        m_cueCurrentCssStyleSelectors.clear();
+        m_feedCssSelectorNames.clear();
+
+        // Let's go back to "STYLE" to parse multiple "::cue" on the same section
+        m_currentSection = WebvttSection::STYLE;
       }
-    }
-    if (line.empty()) // End of section
-    {
-      m_cueCurrentCssStyleSelectors.clear();
-      m_currentSection = WebvttSection::UNDEFINED;
     }
   }
   else if (m_currentSection == WebvttSection::REGION)
@@ -537,37 +559,20 @@ bool CWebVTTHandler::IsCueLine(std::string& line)
 void CWebVTTHandler::GetCueData(std::string& cueText)
 {
   std::string cueSettings;
-  int sHours = 0;
-  int sMinutes;
-  double sSeconds;
-  int eHours = 0;
-  int eMinutes;
-  double eSeconds;
   // Valid time formats: (included with or without spaces near -->)
   // 00:00.000 --> 00:00.000
   // 00:00:00.000 --> 00:00:00.000
   if (m_cueTimeRegex.GetSubCount() == 6)
   {
-    if (!m_cueTimeRegex.GetMatch(1).empty())
-      sHours = std::stoi(m_cueTimeRegex.GetMatch(1).c_str());
-    sMinutes = std::stoi(m_cueTimeRegex.GetMatch(2).c_str());
-    sSeconds = std::atof(m_cueTimeRegex.GetMatch(3).c_str());
-    if (!m_cueTimeRegex.GetMatch(4).empty())
-      eHours = std::stoi(m_cueTimeRegex.GetMatch(4).c_str());
-    eMinutes = std::stoi(m_cueTimeRegex.GetMatch(5).c_str());
-    eSeconds = std::atof(m_cueTimeRegex.GetMatch(6).c_str());
-
-    m_subtitleData.startTime =
-        (static_cast<double>(sHours * 3600 + sMinutes * 60) + sSeconds) * DVD_TIME_BASE + m_offset;
-    m_subtitleData.stopTime =
-        (static_cast<double>(eHours * 3600 + eMinutes * 60) + eSeconds) * DVD_TIME_BASE + m_offset;
+    m_subtitleData.startTime = GetTimeFromRegexTS(m_cueTimeRegex) + m_offset;
+    m_subtitleData.stopTime = GetTimeFromRegexTS(m_cueTimeRegex, 4) + m_offset;
     cueSettings =
         cueText.substr(m_cueTimeRegex.GetFindLen(), cueText.length() - m_cueTimeRegex.GetFindLen());
     StringUtils::Trim(cueSettings);
   }
   else // This should never happen
   {
-    CLog::Log(LOGERROR, "{} - Cue timing not found", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Cue timing not found");
   }
 
   // Parse the cue settings
@@ -579,7 +584,7 @@ void CWebVTTHandler::GetCueSettings(std::string& cueSettings)
   webvttCueSettings settings;
   // settings.regionId = ""; // "region" is not supported
 
-  std::string cueVertical =
+  const std::string cueVertical =
       GetCueSettingValue("vertical", cueSettings, ""); // Ref. Writing direction
   if (cueVertical == "lr")
     settings.verticalAlign = WebvttVAlign::VERTICAL_LR;
@@ -588,16 +593,18 @@ void CWebVTTHandler::GetCueSettings(std::string& cueSettings)
   else
     settings.verticalAlign = WebvttVAlign::HORIZONTAL;
 
-  std::string cuePos = GetCueSettingValue("position", cueSettings, "auto");
+  const std::string cuePos = GetCueSettingValue("position", cueSettings, "auto");
   if (cuePos == "auto")
     settings.position.isAuto = true;
   else
   {
     settings.position.isAuto = false;
     settings.position.value = std::stod(cuePos.c_str());
+    if (settings.position.value > 100) // Not valid
+      settings.position.value = 50;
   }
 
-  std::string cuePosAlign = GetCueSettingValue("positionAlign", cueSettings, "auto");
+  const std::string cuePosAlign = GetCueSettingValue("positionAlign", cueSettings, "auto");
   if (cuePosAlign == "line-left")
     settings.positionAlign = WebvttAlign::LEFT;
   else if (cuePosAlign == "line-right")
@@ -611,10 +618,12 @@ void CWebVTTHandler::GetCueSettings(std::string& cueSettings)
   else
     settings.positionAlign = WebvttAlign::AUTO;
 
-  std::string cueSize = GetCueSettingValue("size", cueSettings, "100.00");
+  const std::string cueSize = GetCueSettingValue("size", cueSettings, "100.00");
   settings.size = std::stod(cueSize.c_str());
+  if (settings.size > 100.0) // Not valid
+    settings.size = 100.0;
 
-  std::string cueSnapToLines = GetCueSettingValue("snapToLines", cueSettings, "true");
+  const std::string cueSnapToLines = GetCueSettingValue("snapToLines", cueSettings, "true");
   settings.snapToLines = cueSnapToLines == "true";
 
   std::string cueLine = GetCueSettingValue("line", cueSettings, "auto");
@@ -635,7 +644,7 @@ void CWebVTTHandler::GetCueSettings(std::string& cueSettings)
 
   // The optional "alignment" property of "line" setting is not supported.
 
-  std::string cueAlign = GetCueSettingValue("align", cueSettings, "");
+  const std::string cueAlign = GetCueSettingValue("align", cueSettings, "");
   if (cueAlign == "left")
     settings.align = WebvttAlign::LEFT;
   else if (cueAlign == "right")
@@ -805,8 +814,8 @@ void CWebVTTHandler::CalculateTextPosition(std::string& subtitleText)
 
   m_subtitleData.textAlign = textAlign;
   m_subtitleData.useMargins = !m_overridePositions;
-  m_subtitleData.marginLeft = marginLeft;
-  m_subtitleData.marginRight = marginRight;
+  m_subtitleData.marginLeft = std::max(marginLeft, 0);
+  m_subtitleData.marginRight = std::max(marginRight, 0);
   m_subtitleData.marginVertical = marginVertical;
 }
 
@@ -830,45 +839,37 @@ std::string CWebVTTHandler::GetCueCssValue(const std::string& cssPropName, std::
 
 void CWebVTTHandler::AddDefaultCssClasses()
 {
-  // Add the default class colors
-  for (auto& cClass : cueCssDefaultColorsClasses)
-  {
-    webvttCssStyle style;
-    style.selectorType = WebvttSelector::CLASS;
-    style.selectorName = cClass.first;
-    // Color hex values need to be in BGR format
-    style.color =
-        cClass.second.substr(4, 2) + cClass.second.substr(2, 2) + cClass.second.substr(0, 2);
-    m_cueCssStyles.emplace_back(style);
-  }
+  m_cssSelectors[WebvttSelector::CLASS] = cueCssDefaultColorClasses;
 }
 
 bool CWebVTTHandler::GetBaseStyle(webvttCssStyle& style)
 {
-  // Get the style applied to all cue's (type WebvttSelector::ANY) and without name
+  // Get the style applied to all cue's
   bool isBaseStyleFound = false;
   if (!m_overrideStyle)
   {
-    auto itBaseStyle =
-        std::find_if(m_cueCssStyles.begin(), m_cueCssStyles.end(), FindCssStyleName(""));
-    isBaseStyleFound = itBaseStyle != m_cueCssStyles.end();
-    if (isBaseStyleFound)
-      style = *itBaseStyle;
+    auto& selectorAnyMap = m_cssSelectors[WebvttSelector::ANY];
+    auto itBaseStyle = selectorAnyMap.find("::cue");
+    if (itBaseStyle != selectorAnyMap.end())
+    {
+      style = itBaseStyle->second;
+      isBaseStyleFound = true;
+    }
   }
 
-  // Try find the CSS Style by cue ID (WebvttSelector::ID)
+  // Try find the CSS Style by cue ID
   // and merge it to the base style
   if (!m_subtitleData.cueSettings.id.empty())
   {
-    auto itCssStyle = std::find_if(m_cueCssStyles.begin(), m_cueCssStyles.end(),
-                                   FindCssStyleName("#" + m_subtitleData.cueSettings.id));
-    if (itCssStyle != m_cueCssStyles.end())
+    auto& selectorIdMap = m_cssSelectors[WebvttSelector::ID];
+    auto itCssStyle = selectorIdMap.find(m_subtitleData.cueSettings.id);
+    if (itCssStyle != selectorIdMap.end())
     {
-      webvttCssStyle& idStyle = *itCssStyle;
-      style.isFontBold = style.isFontBold || idStyle.isFontBold;
-      style.isFontItalic = style.isFontItalic || idStyle.isFontItalic;
-      style.isFontUnderline = style.isFontUnderline || idStyle.isFontUnderline;
-      style.color = idStyle.color.empty() ? style.color : idStyle.color;
+      webvttCssStyle& idStyle = itCssStyle->second;
+      style.m_isFontBold = style.m_isFontBold || idStyle.m_isFontBold;
+      style.m_isFontItalic = style.m_isFontItalic || idStyle.m_isFontItalic;
+      style.m_isFontUnderline = style.m_isFontUnderline || idStyle.m_isFontUnderline;
+      style.m_color = idStyle.m_color.empty() ? style.m_color : idStyle.m_color;
       return true;
     }
   }
@@ -880,74 +881,101 @@ void CWebVTTHandler::ConvertSubtitle(std::string& text)
   int pos = 0;
   int flagTags[FLAG_TAG_COUNT] = {0};
 
+  std::string textRaw;
+  int lastPos{0};
   webvttCssStyle baseStyle;
   bool isBaseStyleSet = GetBaseStyle(baseStyle);
 
   if (isBaseStyleSet)
-    text = ConvertStyleToOpenTags(flagTags, baseStyle) + text;
-
-  // Map to store opened CSS tags [tag/class selector]+[style selector name used]
-  std::map<std::string, std::string> cssTagsOpened;
-  // Scan all tags
-  while ((pos = m_tagsRegex.RegFind(text.c_str(), pos)) >= 0)
   {
-    std::string fullTag = m_tagsRegex.GetMatch(0);
-    StringUtils::ToLower(fullTag);
-    // Get tag name only (e.g. full tag is "</c>", tagName will be "c")
-    std::string tagName = m_tagsRegex.GetMatch(1);
-
-    text.erase(pos, fullTag.length());
-
-    if (fullTag.substr(1, 1) == "/")
-      InsertCssStyleCloseTag(tagName, text, pos, flagTags, cssTagsOpened, baseStyle);
-
-    if (fullTag == "<b>" || StringUtils::StartsWith(fullTag, "<b."))
-    {
-      if (flagTags[FLAG_TAG_BOLD] == 0)
-        InsertTextPos(text, "{\\b1}", pos);
-      flagTags[FLAG_TAG_BOLD] += 1;
-    }
-    else if (fullTag == "</b>" && flagTags[FLAG_TAG_BOLD] > 0)
-    {
-      flagTags[FLAG_TAG_BOLD] = flagTags[FLAG_TAG_BOLD] > 0 ? (flagTags[FLAG_TAG_BOLD] - 1) : 0;
-      if (flagTags[FLAG_TAG_BOLD] == 0)
-        InsertTextPos(text, "{\\b0}", pos);
-    }
-    else if (fullTag == "<i>" || StringUtils::StartsWith(fullTag, "<i."))
-    {
-      if (flagTags[FLAG_TAG_ITALIC] == 0)
-        InsertTextPos(text, "{\\i1}", pos);
-      flagTags[FLAG_TAG_ITALIC] += 1;
-    }
-    else if (fullTag == "</i>" && flagTags[FLAG_TAG_ITALIC] > 0)
-    {
-      flagTags[FLAG_TAG_ITALIC] =
-          flagTags[FLAG_TAG_ITALIC] > 0 ? (flagTags[FLAG_TAG_ITALIC] - 1) : 0;
-      if (flagTags[FLAG_TAG_ITALIC] == 0)
-        InsertTextPos(text, "{\\i0}", pos);
-    }
-    else if (fullTag == "<u>" || StringUtils::StartsWith(fullTag, "<u."))
-    {
-      if (flagTags[FLAG_TAG_UNDERLINE] == 0)
-        InsertTextPos(text, "{\\u1}", pos);
-      flagTags[FLAG_TAG_UNDERLINE] += 1;
-    }
-    else if (fullTag == "</u>" && flagTags[FLAG_TAG_UNDERLINE] > 0)
-    {
-      flagTags[FLAG_TAG_UNDERLINE] =
-          flagTags[FLAG_TAG_UNDERLINE] > 0 ? (flagTags[FLAG_TAG_UNDERLINE] - 1) : 0;
-      if (flagTags[FLAG_TAG_UNDERLINE] == 0)
-        InsertTextPos(text, "{\\u0}", pos);
-    }
-
-    if (fullTag.substr(1, 1) != "/")
-      InsertCssStyleStartTag(tagName, text, pos, flagTags, cssTagsOpened);
+    const std::string baseStyleTag = ConvertStyleToOpenTags(flagTags, baseStyle);
+    text.insert(0, baseStyleTag);
+    lastPos = baseStyleTag.length();
   }
+
+  // Map to store opened CSS tags [tag name]+[style selector]
+  std::deque<std::pair<std::string, webvttCssStyle*>> cssTagsOpened;
+  // Scan all tags
+  while ((pos = m_tagsRegex.RegFind(text, pos)) >= 0)
+  {
+    tagToken tag;
+    tag.m_token = StringUtils::ToLower(m_tagsRegex.GetMatch(0));
+    tag.m_isClosing = m_tagsRegex.GetMatch(1) == "/";
+    if (!m_tagsRegex.GetMatch(2).empty())
+      tag.m_timestampTag = tag.m_token;
+    tag.m_tag = StringUtils::ToLower(m_tagsRegex.GetMatch(3));
+    tag.m_classes = StringUtils::Split(m_tagsRegex.GetMatch(4).erase(0, 1), ".");
+    tag.m_annotation = m_tagsRegex.GetMatch(5);
+
+    text.erase(pos, tag.m_token.length());
+    // Keep a copy of the text without tags
+    textRaw += text.substr(lastPos, pos - lastPos);
+
+    if (tag.m_isClosing)
+      InsertCssStyleCloseTag(tag, text, pos, flagTags, cssTagsOpened, baseStyle);
+
+    if (tag.m_tag == "b")
+    {
+      if (!tag.m_isClosing)
+      {
+        if (flagTags[FLAG_TAG_BOLD] == 0)
+          InsertTextPos(text, "{\\b1}", pos);
+        flagTags[FLAG_TAG_BOLD] += 1;
+      }
+      else if (flagTags[FLAG_TAG_BOLD] > 0)
+      { // Closing tag (if previously opened)
+        flagTags[FLAG_TAG_BOLD] = flagTags[FLAG_TAG_BOLD] > 0 ? (flagTags[FLAG_TAG_BOLD] - 1) : 0;
+        if (flagTags[FLAG_TAG_BOLD] == 0)
+          InsertTextPos(text, "{\\b0}", pos);
+      }
+    }
+    else if (tag.m_tag == "i")
+    {
+      if (!tag.m_isClosing)
+      {
+        if (flagTags[FLAG_TAG_ITALIC] == 0)
+          InsertTextPos(text, "{\\i1}", pos);
+        flagTags[FLAG_TAG_ITALIC] += 1;
+      }
+      else if (flagTags[FLAG_TAG_ITALIC] > 0)
+      { // Closing tag (if previously opened)
+        flagTags[FLAG_TAG_ITALIC] =
+            flagTags[FLAG_TAG_ITALIC] > 0 ? (flagTags[FLAG_TAG_ITALIC] - 1) : 0;
+        if (flagTags[FLAG_TAG_ITALIC] == 0)
+          InsertTextPos(text, "{\\i0}", pos);
+      }
+    }
+    else if (tag.m_tag == "u")
+    {
+      if (!tag.m_isClosing)
+      {
+        if (flagTags[FLAG_TAG_UNDERLINE] == 0)
+          InsertTextPos(text, "{\\u1}", pos);
+        flagTags[FLAG_TAG_UNDERLINE] += 1;
+      }
+      else if (flagTags[FLAG_TAG_ITALIC] > 0)
+      { // Closing tag (if previously opened)
+        flagTags[FLAG_TAG_UNDERLINE] =
+            flagTags[FLAG_TAG_UNDERLINE] > 0 ? (flagTags[FLAG_TAG_UNDERLINE] - 1) : 0;
+        if (flagTags[FLAG_TAG_UNDERLINE] == 0)
+          InsertTextPos(text, "{\\u0}", pos);
+      }
+    }
+
+    if (!tag.m_isClosing)
+      InsertCssStyleStartTag(tag, text, pos, flagTags, cssTagsOpened);
+
+    lastPos = pos;
+  }
+  // Keep a copy of the text without tags
+  textRaw += text.substr(lastPos);
+
+  m_subtitleData.textRaw = textRaw;
 
   if (isBaseStyleSet)
   {
-    webvttCssStyle emptyStyle;
-    text += ConvertStyleToCloseTags(flagTags, baseStyle, emptyStyle);
+    webvttCssStyle emptyStyle{};
+    text += ConvertStyleToCloseTags(flagTags, &baseStyle, &emptyStyle);
   }
 
   // Check for malformed tags still opened
@@ -975,57 +1003,131 @@ void CWebVTTHandler::ConvertSubtitle(std::string& text)
   }
 }
 
-void CWebVTTHandler::InsertCssStyleStartTag(std::string& tagName,
-                                            std::string& text,
-                                            int& pos,
-                                            int flagTags[],
-                                            std::map<std::string, std::string>& cssTagsOpened)
+void CWebVTTHandler::InsertCssStyleStartTag(
+    const tagToken& tag,
+    std::string& text,
+    int& pos,
+    int flagTags[],
+    std::deque<std::pair<std::string, webvttCssStyle*>>& cssTagsOpened)
 {
-  // Get class selector (e.g. full tag is "<c.loud>", the class selection will be ".loud")
-  std::string classSelectorName;
-  auto dotPos = tagName.find('.');
-  if (dotPos != std::string::npos)
-    classSelectorName = tagName.substr(dotPos, tagName.length() - dotPos);
+  if (!tag.m_timestampTag.empty())
+  {
+    // Timestamp tag will be interpreded as karaoke effect
+    if (m_timeRegex.RegFind(tag.m_timestampTag) >= 0)
+    {
+      const double timeStart = GetTimeFromRegexTS(m_timeRegex) + m_offset;
+      // Libass works with duration instead of timestamp
+      // so we need to find the next timestamp
+      double timeEnd = m_subtitleData.stopTime;
+      if (m_timeRegex.RegFind(text) >= 0)
+        timeEnd = GetTimeFromRegexTS(m_timeRegex) + m_offset;
 
-  auto itCssStyle =
-      std::find_if(m_cueCssStyles.begin(), m_cueCssStyles.end(), FindCssStyleName(tagName));
-  if (itCssStyle == m_cueCssStyles.end() && !classSelectorName.empty())
-    itCssStyle = std::find_if(m_cueCssStyles.begin(), m_cueCssStyles.end(),
-                              FindCssStyleName(classSelectorName));
-  if (itCssStyle != m_cueCssStyles.end())
+      if (timeStart <= timeEnd)
+      {
+        int duration = static_cast<int>(timeEnd - timeStart) / 10000;
+        std::string assTag = "{\\k" + std::to_string(duration) + "}";
+        text.insert(pos, assTag);
+        pos += static_cast<int>(assTag.length());
+      }
+      else
+        CLog::LogF(LOGERROR, "Unable to get duration from timestamp: {}", tag.m_timestampTag);
+    }
+    else
+      CLog::LogF(LOGERROR, "Error parsing timestamp tag: {}", tag.m_timestampTag);
+
+    return;
+  }
+
+  bool hasAttribute = !tag.m_annotation.empty() && (tag.m_tag == "lang" || tag.m_tag == "v");
+
+  webvttCssStyle* cssStyle{nullptr};
+  if (hasAttribute)
+  {
+    auto& selectorMap = m_cssSelectors[WebvttSelector::ATTRIBUTE];
+    auto itCssStyle = selectorMap.find(tag.m_tag + " " + tag.m_annotation);
+    if (itCssStyle != selectorMap.end())
+      cssStyle = &itCssStyle->second;
+  }
+  else if (!tag.m_classes.empty())
+  {
+    auto& selectorMap = m_cssSelectors[WebvttSelector::CLASS];
+    // Cascading classes not implemented
+    const std::string className = "." + tag.m_classes[0];
+    // Class selector that target a specific element have the priority
+    auto itCssStyle = selectorMap.find(tag.m_tag + className);
+    if (itCssStyle != selectorMap.end())
+      cssStyle = &itCssStyle->second;
+
+    if (!cssStyle)
+    {
+      auto itCssStyle = selectorMap.find(className);
+      if (itCssStyle != selectorMap.end())
+        cssStyle = &itCssStyle->second;
+    }
+  }
+  else
+  {
+    auto& selectorMap = m_cssSelectors[WebvttSelector::TYPE];
+    auto itCssStyle = selectorMap.find(tag.m_tag);
+    if (itCssStyle != selectorMap.end())
+      cssStyle = &itCssStyle->second;
+  }
+
+  if (cssStyle)
   {
     // Insert the CSS Style converted as tags
-    auto& cssStyle = *itCssStyle;
-    std::string tags = ConvertStyleToOpenTags(flagTags, cssStyle);
+    const std::string tags = ConvertStyleToOpenTags(flagTags, *cssStyle);
     text.insert(pos, tags);
     pos += static_cast<int>(tags.length());
-    // Keep track of the opened tag to be closed
-    // or when we have to insert the closing tags we do not know what style we are closing
-    cssTagsOpened.insert({tagName, cssStyle.selectorName});
+    // Keep track of the opened tags
+    cssTagsOpened.emplace_front(tag.m_tag, cssStyle);
   }
 }
 
-void CWebVTTHandler::InsertCssStyleCloseTag(std::string& tagName,
-                                            std::string& text,
-                                            int& pos,
-                                            int flagTags[],
-                                            std::map<std::string, std::string>& cssTagsOpened,
-                                            webvttCssStyle& baseStyle)
+void CWebVTTHandler::InsertCssStyleCloseTag(
+    const tagToken& tag,
+    std::string& text,
+    int& pos,
+    int flagTags[],
+    std::deque<std::pair<std::string, webvttCssStyle*>>& cssTagsOpened,
+    webvttCssStyle& baseStyle)
 {
-  auto itCssTagToClose = cssTagsOpened.find(tagName);
-  if (itCssTagToClose != cssTagsOpened.end())
+  if (cssTagsOpened.empty())
+    return;
+
+  std::pair<std::string, webvttCssStyle*> stylePair = cssTagsOpened.front();
+  if (stylePair.first == tag.m_tag)
   {
-    // Get the style used to open the tag
-    auto itCssStyle = std::find_if(m_cueCssStyles.begin(), m_cueCssStyles.end(),
-                                   FindCssStyleName(itCssTagToClose->second));
-    if (itCssStyle != m_cueCssStyles.end())
+    cssTagsOpened.pop_front();
+    webvttCssStyle* style = &baseStyle;
+    if (!cssTagsOpened.empty())
+      style = cssTagsOpened.front().second;
+    const std::string tags = ConvertStyleToCloseTags(flagTags, stylePair.second, style);
+    text.insert(pos, tags);
+    pos += static_cast<int>(tags.length());
+  }
+}
+
+void CWebVTTHandler::ConvertAddSubtitle(std::vector<subtitleData>* subList)
+{
+  // Convert tags and apply the CSS Styles converted
+  ConvertSubtitle(m_subtitleData.text);
+
+  if (!subList->empty())
+  {
+    // Youtube WebVTT can have multiple cues with same time, text and position
+    // sometimes with different css color but only last cue will be visible
+    // this cause unexpected results on screen so we keep only the last one
+    const subtitleData& prevSub = subList->back();
+    if (prevSub.startTime == m_subtitleData.startTime &&
+        prevSub.stopTime == m_subtitleData.stopTime && prevSub.textRaw == m_subtitleData.textRaw &&
+        prevSub.cueSettings == m_subtitleData.cueSettings)
     {
-      std::string tags = ConvertStyleToCloseTags(flagTags, *itCssStyle, baseStyle);
-      text.insert(pos, tags);
-      pos += static_cast<int>(tags.length());
-      cssTagsOpened.erase(itCssTagToClose);
+      subList->pop_back();
     }
   }
+
+  subList->emplace_back(m_subtitleData);
 }
 
 void CWebVTTHandler::LoadColors()
@@ -1035,4 +1137,14 @@ void CWebVTTHandler::LoadColors()
       CSpecialProtocol::TranslatePathConvertCase("special://xbmc/system/colors.xml"), m_CSSColors,
       false);
   m_CSSColorsLoaded = true;
+}
+
+double CWebVTTHandler::GetTimeFromRegexTS(CRegExp& regex, int indexStart /* = 1 */)
+{
+  int sHours = 0;
+  if (!regex.GetMatch(indexStart).empty())
+    sHours = std::stoi(regex.GetMatch(indexStart).c_str());
+  int sMinutes = std::stoi(regex.GetMatch(indexStart + 1).c_str());
+  int sSeconds = std::atof(regex.GetMatch(indexStart + 2).c_str());
+  return (static_cast<double>(sHours * 3600 + sMinutes * 60) + sSeconds) * DVD_TIME_BASE;
 }
