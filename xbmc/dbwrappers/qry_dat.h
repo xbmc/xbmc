@@ -227,8 +227,7 @@ public:
 
 struct field_prop
 {
-  std::string name, display_name;
-  std::string field_table; //?
+  std::string name;
 };
 
 struct field
