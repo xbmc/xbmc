@@ -13,7 +13,6 @@
 #pragma once
 
 #include <iostream>
-#include <map>
 #include <stdint.h>
 #include <string>
 #include <vector>
@@ -241,11 +240,6 @@ typedef std::vector<field_value> sql_record;
 typedef std::vector<field_prop> record_prop;
 typedef std::vector<sql_record*> query_data;
 typedef field_value variant;
-
-//typedef Fields::iterator fld_itor;
-typedef sql_record::iterator rec_itor;
-typedef record_prop::iterator recprop_itor;
-typedef query_data::iterator qry_itor;
 
 class result_set
 {
