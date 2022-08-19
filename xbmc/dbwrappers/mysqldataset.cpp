@@ -1741,7 +1741,11 @@ void MysqlDataset::fill_fields()
     const unsigned int ncols = result.record_header.size();
     fields_object->resize(ncols);
     for (unsigned int i = 0; i < ncols; i++)
+    {
       (*fields_object)[i].props = result.record_header[i];
+      std::string name = result.record_header[i].name;
+      name2indexMap.insert({str_toLower(name.data()), i});
+    }
   }
 
   //Filling result
