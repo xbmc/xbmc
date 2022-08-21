@@ -4113,6 +4113,36 @@ const infomap retroplayer[] =
 ///             microcontroller.
 ///     <p>
 ///   }
+///   \table_row3{   <b>`SmartHome.HasTrain`</b>,
+///                  \anchor SmartHome_HasTrain
+///                  _boolean_,
+///     @return **True** if a LEGO train has been seen recently.
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.TrainCPU`</b>,
+///                  \anchor SmartHome_TrainCPU
+///                  _string_,
+///     @return The CPU utilization of the computer powering a LEGO train.
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.TrainMemory`</b>,
+///                  \anchor SmartHome_TrainMemory
+///                  _string_,
+///     @return The RAM utilization of the computer powering a LEGO train.
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.TrainSupply`</b>,
+///                  \anchor SmartHome_TrainSupply
+///                  _string_,
+///     @return The supply voltage being provided to a LEGO train's engine
+///     <p>
+///   }
+///   \table_row3{   <b>`SmartHome.TrainMessage`</b>,
+///                  \anchor SmartHome_TrainMessage
+///                  _string_,
+///     @return The last string message logged by the LEGO train's microcontroller.
+///     <p>
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -4124,6 +4154,11 @@ const infomap smarthome[] = {
     {"stationcurrent", SMARTHOME_STATION_CURRENT},
     {"stationcpu", SMARTHOME_STATION_CPU},
     {"stationmessage", SMARTHOME_STATION_MESSAGE},
+    {"hastrain", SMARTHOME_HAS_TRAIN},
+    {"traincpu", SMARTHOME_TRAIN_CPU},
+    {"trainmemory", SMARTHOME_TRAIN_MEMORY},
+    {"trainsupply", SMARTHOME_TRAIN_SUPPLY},
+    {"trainmessage", SMARTHOME_TRAIN_MESSAGE},
     // clang-format on
 };
 

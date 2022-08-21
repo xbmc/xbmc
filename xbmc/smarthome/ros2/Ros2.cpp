@@ -78,6 +78,11 @@ IStationHUD* CRos2::GetStationHUD() const
   return m_node->GetStationHUD();
 }
 
+ITrainHUD* CRos2::GetTrainHUD() const
+{
+  return m_node->GetTrainHUD();
+}
+
 void CRos2::FrameMove()
 {
   //! @todo Remove GUI dependency

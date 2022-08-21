@@ -17,11 +17,12 @@ namespace KODI
 namespace SMART_HOME
 {
 class IStationHUD;
+class ITrainHUD;
 
 class CSmartHomeGuiInfo : public GUILIB::GUIINFO::IGUIInfoProvider
 {
 public:
-  CSmartHomeGuiInfo(CGUIInfoManager& infoManager, IStationHUD& stationHud);
+  CSmartHomeGuiInfo(CGUIInfoManager& infoManager, IStationHUD& stationHud, ITrainHUD& trainHud);
   ~CSmartHomeGuiInfo() override;
 
   void Initialize();
@@ -63,6 +64,7 @@ private:
   // Construction parameters
   CGUIInfoManager& m_infoManager;
   IStationHUD& m_stationHud;
+  ITrainHUD& m_trainHud;
 };
 } // namespace SMART_HOME
 } // namespace KODI

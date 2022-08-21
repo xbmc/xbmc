@@ -5,6 +5,7 @@ if (ENABLE_ROS2)
                       Ros2InputPublisher.cpp
                       Ros2Node.cpp
                       Ros2StationSubscriber.cpp
+                      Ros2TrainSubscriber.cpp
                       Ros2Translator.cpp
                       Ros2VideoSubscription.cpp
   )
@@ -12,6 +13,7 @@ if (ENABLE_ROS2)
                       Ros2InputPublisher.h
                       Ros2Node.h
                       Ros2StationSubscriber.h
+                      Ros2TrainSubscriber.h
                       Ros2Translator.h
                       Ros2VideoSubscription.h
   )
