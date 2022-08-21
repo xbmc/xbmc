@@ -36,6 +36,7 @@ constexpr int ASS_BORDER_STYLE_BOX = 3; // Box + drop shadow
 constexpr int ASS_BORDER_STYLE_SQUARE_BOX = 4; // Square box + outline
 
 constexpr int ASS_FONT_ENCODING_AUTO = -1;
+constexpr int COLOR_OPACITY_30 = 30;
 
 // Convert RGB/ARGB to RGBA by also applying the opacity value
 COLOR::Color ConvColor(COLOR::Color argbColor, int opacity = 100)
@@ -402,12 +403,11 @@ void CDVDSubtitlesLibass::ApplyStyle(const std::shared_ptr<struct style>& subSty
     style->Bold = isFontBold * -1;
     style->Italic = isFontItalic * -1;
 
-    // Compute the font color, depending on the opacity
-    COLOR::Color subColor = ConvColor(subStyle->fontColor, subStyle->fontOpacity);
     // Set default subtitles color
-    style->PrimaryColour = subColor;
-    // Set SecondaryColour may be used to prevent an onscreen collision
-    style->SecondaryColour = subColor;
+    style->PrimaryColour = ConvColor(subStyle->fontColor, subStyle->fontOpacity);
+    // Set secondary colour for karaoke
+    // left part is filled with PrimaryColour, right one with SecondaryColour
+    style->SecondaryColour = ConvColor(subStyle->fontColor, COLOR_OPACITY_30);
 
     // Configure the effects
     double lineSpacing = 0.0;
