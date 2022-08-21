@@ -611,10 +611,10 @@ void CGUISliderControl::SetFromPosition(const CPoint &point, bool guessSelector 
 
   switch (m_iType)
   {
-  case SLIDER_CONTROL_TYPE_FLOAT:
+    case SLIDER_CONTROL_TYPE_FLOAT:
     {
-      float fValue = m_fStart + (m_fEnd - m_fStart) * fPercent;
-      SetFloatValue(fValue, m_currentSelector, true);
+      float fValue = m_fStart + (m_fEnd - m_fStart) * fPercent + m_fInterval / 2;
+      SetFloatValue(MathUtils::RoundF(fValue, m_fInterval), m_currentSelector, true);
       break;
     }
 

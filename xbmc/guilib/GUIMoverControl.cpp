@@ -200,6 +200,9 @@ void CGUIMoverControl::SetInvalid()
 
 void CGUIMoverControl::Move(int iX, int iY)
 {
+  if (!m_enabled)
+    return;
+
   int iLocX = m_iLocationX + iX;
   int iLocY = m_iLocationY + iY;
   // check if we are within the bounds

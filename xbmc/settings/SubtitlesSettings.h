@@ -27,10 +27,6 @@ namespace SUBTITLES
 // even if the default app font could be changed
 constexpr const char* FONT_DEFAULT_FAMILYNAME = "DEFAULT";
 
-// Default vertical margin used for the alignment
-// to keep the text inside the black bars
-constexpr float MARGIN_VERTICAL_BLACKBARS = 2.75f; // in %
-
 enum class Align
 {
   MANUAL = 0,
@@ -112,7 +108,7 @@ public:
 
   /*!
    * \brief Get font size
-   * \return The font size in PT
+   * \return The font size in PX
    */
   int GetFontSize();
 
