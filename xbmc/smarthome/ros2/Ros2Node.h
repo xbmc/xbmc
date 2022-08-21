@@ -27,10 +27,12 @@ namespace SMART_HOME
 {
 class CRos2InputPublisher;
 class CRos2StationSubscriber;
+class CRos2TrainSubscriber;
 class CRos2VideoSubscription;
 class CSmartHomeGuiBridge;
 class CSmartHomeInputManager;
 class IStationHUD;
+class ITrainHUD;
 
 class CRos2Node : public IRunnable
 {
@@ -46,6 +48,7 @@ public:
   void RegisterImageTopic(CSmartHomeGuiBridge& guiBridge, const std::string& topic);
   void UnregisterImageTopic(const std::string& topic);
   IStationHUD* GetStationHUD() const;
+  ITrainHUD* GetTrainHUD() const;
 
   //! @todo Remove GUI dependency
   void FrameMove();
@@ -62,6 +65,7 @@ private:
   std::map<std::string, std::unique_ptr<CRos2VideoSubscription>> m_videoSubs; // Topic -> subscriber
   std::unique_ptr<CRos2InputPublisher> m_peripheralPublisher;
   std::unique_ptr<CRos2StationSubscriber> m_stationSubscriber;
+  std::unique_ptr<CRos2TrainSubscriber> m_trainSubscriber;
 
   // Threading parameters
   std::unique_ptr<CThread> m_thread;

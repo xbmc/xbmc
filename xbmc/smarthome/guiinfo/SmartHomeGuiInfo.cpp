@@ -12,13 +12,16 @@
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "smarthome/guiinfo/IStationHUD.h"
+#include "smarthome/guiinfo/ITrainHUD.h"
 #include "utils/StringUtils.h"
 
 using namespace KODI;
 using namespace SMART_HOME;
 
-CSmartHomeGuiInfo::CSmartHomeGuiInfo(CGUIInfoManager& infoManager, IStationHUD& stationHud)
-  : m_infoManager(infoManager), m_stationHud(stationHud)
+CSmartHomeGuiInfo::CSmartHomeGuiInfo(CGUIInfoManager& infoManager,
+                                     IStationHUD& stationHud,
+                                     ITrainHUD& trainHud)
+  : m_infoManager(infoManager), m_stationHud(stationHud), m_trainHud(trainHud)
 {
 }
 
@@ -70,6 +73,26 @@ bool CSmartHomeGuiInfo::GetLabel(std::string& value,
       value = m_stationHud.Message();
       return true;
     }
+    case SMARTHOME_TRAIN_CPU:
+    {
+      value = StringUtils::Format("{} %", m_trainHud.CPUPercent());
+      return true;
+    }
+    case SMARTHOME_TRAIN_MEMORY:
+    {
+      value = StringUtils::Format("{} %", m_trainHud.MemoryPercent());
+      return true;
+    }
+    case SMARTHOME_TRAIN_SUPPLY:
+    {
+      value = StringUtils::Format("{:0.2f} V", m_trainHud.SupplyVoltage());
+      return true;
+    }
+    case SMARTHOME_TRAIN_MESSAGE:
+    {
+      value = m_trainHud.Message();
+      return true;
+    }
     default:
       break;
   }
@@ -90,6 +113,11 @@ bool CSmartHomeGuiInfo::GetBool(bool& value,
     case SMARTHOME_HAS_STATION:
     {
       value = m_stationHud.IsActive();
+      return true;
+    }
+    case SMARTHOME_HAS_TRAIN:
+    {
+      value = m_trainHud.IsActive();
       return true;
     }
     default:

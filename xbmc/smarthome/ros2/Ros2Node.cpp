@@ -10,6 +10,7 @@
 
 #include "Ros2InputPublisher.h"
 #include "Ros2StationSubscriber.h"
+#include "Ros2TrainSubscriber.h"
 #include "Ros2VideoSubscription.h"
 #include "ServiceBroker.h"
 #include "network/Network.h"
@@ -58,6 +59,8 @@ void CRos2Node::Initialize()
   // Subscribers
   m_stationSubscriber = std::make_unique<CRos2StationSubscriber>(m_node);
   m_stationSubscriber->Initialize();
+  m_trainSubscriber = std::make_unique<CRos2TrainSubscriber>(m_node);
+  m_trainSubscriber->Initialize();
 
   // Create thread
   m_thread->Create(false);
@@ -88,6 +91,12 @@ void CRos2Node::Deinitialize()
     m_stationSubscriber.reset();
   }
 
+  if (m_trainSubscriber)
+  {
+    m_trainSubscriber->Deinitialize();
+    m_trainSubscriber.reset();
+  }
+
   m_thread.reset();
   m_node.reset();
 }
@@ -112,6 +121,11 @@ void CRos2Node::UnregisterImageTopic(const std::string& topic)
 IStationHUD* CRos2Node::GetStationHUD() const
 {
   return m_stationSubscriber.get();
+}
+
+ITrainHUD* CRos2Node::GetTrainHUD() const
+{
+  return m_trainSubscriber.get();
 }
 
 void CRos2Node::FrameMove()

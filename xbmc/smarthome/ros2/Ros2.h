@@ -37,6 +37,7 @@ public:
   void RegisterImageTopic(const std::string& topic) override;
   void UnregisterImageTopic(const std::string& topic) override;
   IStationHUD* GetStationHUD() const override;
+  ITrainHUD* GetTrainHUD() const override;
   void FrameMove() override;
 
 private:
