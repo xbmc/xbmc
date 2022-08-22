@@ -115,10 +115,13 @@ struct renderOpts
 {
   float frameWidth;
   float frameHeight;
+  // Video size width, may be influenced by video settings (e.g. zoom)
   float videoWidth;
+  // Video size height, may be influenced by video settings (e.g. zoom)
   float videoHeight;
   float sourceWidth;
   float sourceHeight;
+  float m_par; // Set the pixel aspect ratio
   MarginsMode marginsMode = MarginsMode::DEFAULT;
   // Vertical line position of subtitles in percentage
   // only for bottom alignment, 0 = bottom (no change), 100 = on top

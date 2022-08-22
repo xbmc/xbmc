@@ -64,7 +64,7 @@ COverlayQuadsDX::COverlayQuadsDX(ASS_Image* images, float width, float height)
 {
   m_width  = 1.0;
   m_height = 1.0;
-  m_align  = ALIGN_VIDEO;
+  m_align = ALIGN_SCREEN;
   m_pos    = POSITION_RELATIVE;
   m_x      = 0.0f;
   m_y      = 0.0f;

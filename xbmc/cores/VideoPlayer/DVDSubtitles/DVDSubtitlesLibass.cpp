@@ -23,6 +23,7 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
+#include <algorithm>
 #include <cstring>
 #include <mutex>
 
@@ -276,48 +277,54 @@ ASS_Image* CDVDSubtitlesLibass::RenderImage(double pts,
     ApplyStyle(subStyle, opts);
   }
 
-  double sar = static_cast<double>(opts.sourceWidth) / static_cast<double>(opts.sourceHeight);
-  double dar = static_cast<double>(opts.videoWidth) / static_cast<double>(opts.videoHeight);
-  ass_set_pixel_aspect(m_renderer, dar / sar);
+  // Reversed par value
+  // from: >1 tighter pixels, <1 wider pixels
+  // to: <1 tighter pixels, >1 wider pixels
+  float par = (opts.m_par - 2.0f) * -1;
+  ass_set_pixel_aspect(m_renderer, static_cast<double>(par));
+
   ass_set_frame_size(m_renderer, static_cast<int>(opts.frameWidth),
                      static_cast<int>(opts.frameHeight));
 
-  double fontScale{1.0};
-  int marginTop{0};
-  int marginLeft{0};
-
-  if (opts.marginsMode == MarginsMode::INSIDE_VIDEO ||
-      (m_subtitleType == NATIVE && subStyle->assOverrideStyles != OverrideStyles::POSITIONS &&
-       subStyle->assOverrideStyles != OverrideStyles::STYLES_POSITIONS))
-  {
-    marginTop = static_cast<int>((opts.frameHeight - opts.videoHeight) / 2);
-    marginLeft = static_cast<int>((opts.frameWidth - opts.videoWidth) / 2);
-  }
+  bool useFrameMargins;
 
   if (m_subtitleType == NATIVE)
   {
     ass_set_storage_size(m_renderer, static_cast<int>(opts.sourceWidth),
                          static_cast<int>(opts.sourceHeight));
+    useFrameMargins = opts.marginsMode != MarginsMode::DISABLED;
   }
   else
   {
     // Keep storage to default to keep consistent subtitles effects
     // (like borders) when video resolution change while in playback
     ass_set_storage_size(m_renderer, 0, 0);
-
-    if (marginTop > 0)
-    {
-      // Make font size relative to window size instead of video,
-      // to show same font size even if the video do not cover in full
-      // the window (cropped videos) and player add black bars
-      fontScale *= static_cast<double>(opts.frameHeight / opts.videoHeight);
-    }
+    useFrameMargins = opts.marginsMode == MarginsMode::INSIDE_VIDEO;
   }
 
-  ass_set_font_scale(m_renderer, fontScale);
+  int marginTop{0};
+  int marginLeft{0};
+  if (useFrameMargins)
+  {
+    marginTop =
+        static_cast<int>((opts.frameHeight - std::min(opts.videoHeight, opts.frameHeight)) / 2);
+    marginLeft =
+        static_cast<int>((opts.frameWidth - std::min(opts.videoWidth, opts.frameWidth)) / 2);
+  }
 
   ass_set_margins(m_renderer, marginTop, marginTop, marginLeft, marginLeft);
   ass_set_use_margins(m_renderer, 0);
+
+  float fontScale{1.0f};
+  if (opts.marginsMode == MarginsMode::INSIDE_VIDEO)
+  {
+    // Make font size relative to window size instead of video,
+    // to show same font size even if the video do not cover in full the
+    // window (e.g. cropped videos, zoom effect) and player add black bars.
+    fontScale *= std::max(opts.frameHeight / opts.videoHeight, 1.0f);
+  }
+
+  ass_set_font_scale(m_renderer, static_cast<double>(fontScale));
 
   ass_set_line_position(m_renderer, opts.position);
 
