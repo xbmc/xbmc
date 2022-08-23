@@ -85,7 +85,7 @@ public:
   bool IsFullScreenVideo();
   bool IsCalibrating();
   RESOLUTION GetVideoResolution();
-  void Clear(UTILS::COLOR::Color color = 0);
+  void Clear(UTILS::COLOR::Color color);
   RESOLUTION_INFO GetResInfo();
   void SetRenderingResolution(const RESOLUTION_INFO& res, bool needsScaling);
   UTILS::COLOR::Color MergeAlpha(UTILS::COLOR::Color color);

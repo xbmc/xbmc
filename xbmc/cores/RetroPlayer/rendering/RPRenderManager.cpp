@@ -371,7 +371,7 @@ void CRPRenderManager::RenderControl(bool bClear,
   // Calculate alpha
   UTILS::COLOR::Color alpha = 255;
   if (bUseAlpha)
-    alpha = m_renderContext.MergeAlpha(0xFF000000) >> 24;
+    alpha = m_renderContext.MergeAlpha(UTILS::COLOR::BLACK) >> 24;
 
   RenderInternal(renderer, renderBuffer, false, alpha);
 
