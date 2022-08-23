@@ -107,7 +107,7 @@ bool URIUtils::HasExtension(const std::string& strFileName, const std::string& s
 
   for (const auto& ext : extensionsLower)
   {
-    if (ext == extensionLower)
+    if (StringUtils::EndsWith(ext, extensionLower))
       return true;
   }
 
