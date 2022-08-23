@@ -192,7 +192,8 @@ void CRPBaseRenderer::PreRender(bool clear)
 
   // Clear screen
   if (clear)
-    m_context.Clear(m_context.UseLimitedColor() ? 0x101010 : 0);
+    m_context.Clear(m_context.UseLimitedColor() ? UTILS::COLOR::LIMITED_BLACK
+                                                : UTILS::COLOR::BLACK);
 }
 
 void CRPBaseRenderer::PostRender()
