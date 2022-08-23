@@ -364,7 +364,7 @@ void CRPRenderManager::RenderControl(bool bClear,
     CRect region = renderRegion;
     region.Intersect(old);
     m_renderContext.SetScissors(region);
-    m_renderContext.Clear(0);
+    m_renderContext.Clear(UTILS::COLOR::BLACK);
     m_renderContext.SetScissors(old);
   }
 
