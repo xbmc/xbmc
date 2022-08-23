@@ -21,6 +21,7 @@ namespace COLOR
 typedef uint32_t Color;
 
 constexpr Color BLACK = 0xFF000000;
+constexpr Color LIMITED_BLACK = 0xFF101010;
 constexpr Color BLUE = 0xFF0099FF;
 constexpr Color BRIGHTGREEN = 0xFF00FF00;
 constexpr Color CYAN = 0xFF00FFFF;

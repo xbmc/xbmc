@@ -253,7 +253,7 @@ RESOLUTION CRenderContext::GetVideoResolution()
   return m_graphicsContext.GetVideoResolution();
 }
 
-void CRenderContext::Clear(UTILS::COLOR::Color color /* = 0 */)
+void CRenderContext::Clear(UTILS::COLOR::Color color)
 {
   m_graphicsContext.Clear(color);
 }
