@@ -36,10 +36,14 @@
 
 enum MOUSE_STATE
 {
-  MOUSE_STATE_NORMAL = 1, /*! < Normal state */
-  MOUSE_STATE_FOCUS, /*! < Control below the mouse is currently in focus */
-  MOUSE_STATE_DRAG, /*! < A drag operation is being performed */
-  MOUSE_STATE_CLICK /*! < A mousebutton is being clicked */
+  /*! Normal state */
+  MOUSE_STATE_NORMAL = 1,
+  /*! Control below the mouse is currently in focus */
+  MOUSE_STATE_FOCUS,
+  /*! A drag operation is being performed */
+  MOUSE_STATE_DRAG,
+  /*! A mousebutton is being clicked */
+  MOUSE_STATE_CLICK
 };
 
 enum MOUSE_BUTTON
@@ -55,22 +59,33 @@ enum MOUSE_BUTTON
 
 enum class HoldAction
 {
-  NONE, //no action should occur
-  DRAG_START, //a drag action has started
-  DRAG, //a drag action is in progress
-  DRAG_END //a drag action has finished
+  /*! No action should occur */
+  NONE,
+  /*! A drag action has started */
+  DRAG_START,
+  /*! A drag action is in progress */
+  DRAG,
+  /*! A drag action has finished */
+  DRAG_END
 };
 
-// this holds everything we know about the current state of the mouse
+//! Holds everything we know about the current state of the mouse
 struct MouseState
 {
-  int x; // x location
-  int y; // y location
-  int16_t dx; // change in x
-  int16_t dy; // change in y
-  int8_t dz; // change in z (wheel)
-  bool button[MOUSE_MAX_BUTTON]; // current state of the buttons
-  bool active; // true if the mouse is active
+  /*! X location */
+  int x;
+  /*! Y location */
+  int y;
+  /*! Change in x */
+  int16_t dx;
+  /*! Change in y */
+  int16_t dy;
+  /*! Change in z (wheel) */
+  int8_t dz;
+  /*! Current state of the buttons */
+  bool button[MOUSE_MAX_BUTTON];
+  /*! True if the mouse is active */
+  bool active;
 };
 
 struct MousePosition
