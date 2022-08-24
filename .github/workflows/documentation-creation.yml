@@ -4,6 +4,9 @@ on:
   push:
     branches: [ master, main, Matrix, Leia ]
 
+permissions:
+  contents: read
+
 jobs:
   build:
     if: github.repository == 'xbmc/xbmc'
