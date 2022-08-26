@@ -15,8 +15,8 @@
 #include <androidjni/Context.h>
 
 CZeroconfAndroid::CZeroconfAndroid()
+  : m_manager(CJNIContext::getSystemService(CJNIContext::NSD_SERVICE))
 {
-  m_manager = CJNIContext::getSystemService(CJNIContext::NSD_SERVICE);
 }
 
 CZeroconfAndroid::~CZeroconfAndroid()

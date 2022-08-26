@@ -38,9 +38,8 @@
 extern HWND g_hWnd;
 #endif
 
-CPowerManager::CPowerManager()
+CPowerManager::CPowerManager() : m_settings(CServiceBroker::GetSettingsComponent()->GetSettings())
 {
-  m_settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   m_settings->GetSettingsManager()->RegisterSettingOptionsFiller("shutdownstates", SettingOptionsShutdownStatesFiller);
 }
 

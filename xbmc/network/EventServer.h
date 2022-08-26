@@ -72,7 +72,7 @@ namespace EVENTSERVER
     int              m_iListenTimeout;
     int              m_iMaxClients;
     std::vector<uint8_t> m_pPacketBuffer;
-    std::atomic<bool>  m_bRunning;
+    std::atomic<bool> m_bRunning = false;
     CCriticalSection m_critSection;
     bool             m_bRefreshSettings;
   };

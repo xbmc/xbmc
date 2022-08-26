@@ -28,7 +28,6 @@ public:
 
 CDVDDemuxBXA::CDVDDemuxBXA() : CDVDDemux()
 {
-  m_pInput = NULL;
   m_stream = NULL;
   m_bytes = 0;
   memset(&m_header, 0x0, sizeof(Demux_BXA_FmtHeader));

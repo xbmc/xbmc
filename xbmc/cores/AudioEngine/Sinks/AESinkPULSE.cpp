@@ -741,7 +741,6 @@ CAESinkPULSE::CAESinkPULSE()
   m_IsStreamPaused = false;
   m_volume_needs_update = false;
   m_periodSize = 0;
-  m_requestedBytes = 0;
   pa_cvolume_init(&m_Volume);
 }
 

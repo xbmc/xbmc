@@ -85,11 +85,9 @@ static const struct StereoModeMap StringToGuiModeMap[] =
   {}
 };
 
-
 CStereoscopicsManager::CStereoscopicsManager()
+  : m_settings(CServiceBroker::GetSettingsComponent()->GetSettings())
 {
-  m_settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-
   m_stereoModeSetByUser = RENDER_STEREO_MODE_UNDEFINED;
   m_lastStereoModeSetByUser = RENDER_STEREO_MODE_UNDEFINED;
 

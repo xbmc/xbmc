@@ -15,13 +15,13 @@ using namespace MUSIC_GRABBER;
 using namespace ADDON;
 using namespace std::chrono_literals;
 
-CMusicInfoScraper::CMusicInfoScraper(const ADDON::ScraperPtr &scraper) : CThread("MusicInfoScraper")
+CMusicInfoScraper::CMusicInfoScraper(const ADDON::ScraperPtr& scraper)
+  : CThread("MusicInfoScraper"), m_scraper(scraper)
 {
   m_bSucceeded=false;
   m_bCanceled=false;
   m_iAlbum=-1;
   m_iArtist=-1;
-  m_scraper = scraper;
   m_http = new XFILE::CCurlFile;
 }
 

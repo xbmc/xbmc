@@ -41,7 +41,6 @@ std::unique_ptr<CEventServer> CEventServer::m_pInstance;
 CEventServer::CEventServer() : CThread("EventServer")
 {
   m_bStop         = false;
-  m_bRunning      = false;
   m_bRefreshSettings = false;
 
   // default timeout in ms for receiving a single packet

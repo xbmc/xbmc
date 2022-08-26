@@ -35,9 +35,9 @@ protected:
 
 protected:
   CdIo_t* m_pCdIo;
-  lsn_t m_lsnStart;  // Start of m_iTrack in logical sector number
-  lsn_t m_lsnCurrent; // Position inside the track in logical sector number
-  lsn_t m_lsnEnd;   // End of m_iTrack in logical sector number
+  lsn_t m_lsnStart = CDIO_INVALID_LSN; // Start of m_iTrack in logical sector number
+  lsn_t m_lsnCurrent = CDIO_INVALID_LSN; // Position inside the track in logical sector number
+  lsn_t m_lsnEnd = CDIO_INVALID_LSN; // End of m_iTrack in logical sector number
   int m_iSectorCount; // max number of sectors to read at once
   std::shared_ptr<MEDIA_DETECT::CLibcdio> m_cdio;
 };

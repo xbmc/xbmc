@@ -26,8 +26,6 @@ VideoPlayerCodec::VideoPlayerCodec()
 {
   m_CodecName = "VideoPlayer";
   m_pDemuxer = NULL;
-  m_pInputStream = NULL;
-  m_pAudioCodec = NULL;
   m_nAudioStream = -1;
   m_nDecodedLen = 0;
   m_bInited = false;

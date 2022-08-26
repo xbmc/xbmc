@@ -17,7 +17,6 @@ CFTPParse::CFTPParse()
   m_flagtrycwd = 0;
   m_flagtryretr = 0;
   m_size = 0;
-  m_time = 0;
 }
 
 std::string CFTPParse::getName()
