@@ -511,7 +511,7 @@ bool CXBMCApp::EnableWakeLock(bool on)
         std::make_unique<CJNIWakeLock>(CJNIPowerManager(getSystemService("power"))
                                            .newWakeLock(CJNIPowerManager::SCREEN_BRIGHT_WAKE_LOCK |
                                                             CJNIPowerManager::ON_AFTER_RELEASE,
-                                                        className.c_str()));
+                                                        className));
     m_wakeLock->setReferenceCounted(false);
   }
 
@@ -1494,7 +1494,7 @@ void CXBMCApp::SetupEnv()
   {
     CJNIFile androidPath = getExternalFilesDir("");
     if (!androidPath)
-      androidPath = getDir(className.c_str(), 1);
+      androidPath = getDir(className, 1);
 
     if (androidPath)
       externalDir = androidPath.getAbsolutePath();

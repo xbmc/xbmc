@@ -412,7 +412,7 @@ bool CDatabase::ResultQuery(const std::string& strQuery) const
     if (nullptr == m_pDS)
       return bReturn;
 
-    std::string strPreparedQuery = PrepareSQL(strQuery.c_str());
+    std::string strPreparedQuery = PrepareSQL(strQuery);
 
     bReturn = m_pDS->query(strPreparedQuery);
   }

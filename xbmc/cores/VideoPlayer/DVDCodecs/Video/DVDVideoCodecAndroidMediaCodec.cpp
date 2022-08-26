@@ -1345,7 +1345,7 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
   // setup a MediaFormat to match the video content,
   // used by codec during configure
   CJNIMediaFormat mediaformat =
-      CJNIMediaFormat::createVideoFormat(m_mime.c_str(), m_hints.width, m_hints.height);
+      CJNIMediaFormat::createVideoFormat(m_mime, m_hints.width, m_hints.height);
   mediaformat.setInteger(CJNIMediaFormat::KEY_MAX_INPUT_SIZE, 0);
 
   if (CJNIBase::GetSDKVersion() >= 23 && m_render_surface)

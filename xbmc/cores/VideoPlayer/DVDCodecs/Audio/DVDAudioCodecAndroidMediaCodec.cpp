@@ -519,8 +519,8 @@ bool CDVDAudioCodecAndroidMediaCodec::ConfigureMediaCodec(void)
 {
   // setup a MediaFormat to match the audio content,
   // used by codec during configure
-  CJNIMediaFormat mediaformat(CJNIMediaFormat::createAudioFormat(
-    m_mime.c_str(), m_hints.samplerate, m_hints.channels));
+  CJNIMediaFormat mediaformat(
+      CJNIMediaFormat::createAudioFormat(m_mime, m_hints.samplerate, m_hints.channels));
 
   if (!m_decryptCodec)
   {
