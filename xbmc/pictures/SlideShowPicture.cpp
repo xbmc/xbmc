@@ -52,9 +52,8 @@ using namespace Microsoft::WRL;
 
 static float zoomamount[10] = { 1.0f, 1.2f, 1.5f, 2.0f, 2.8f, 4.0f, 6.0f, 9.0f, 13.5f, 20.0f };
 
-CSlideShowPic::CSlideShowPic()
+CSlideShowPic::CSlideShowPic() : m_pImage(nullptr)
 {
-  m_pImage = NULL;
   m_bIsLoaded = false;
   m_bIsFinished = false;
   m_bDrawNextImage = false;

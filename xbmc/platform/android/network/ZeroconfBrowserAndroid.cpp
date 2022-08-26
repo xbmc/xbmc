@@ -22,8 +22,8 @@
 #include <androidjni/jutils-details.hpp>
 
 CZeroconfBrowserAndroid::CZeroconfBrowserAndroid()
+  : m_manager(CJNIContext::getSystemService(CJNIContext::NSD_SERVICE))
 {
-  m_manager = CJNIContext::getSystemService(CJNIContext::NSD_SERVICE);
 }
 
 CZeroconfBrowserAndroid::~CZeroconfBrowserAndroid()

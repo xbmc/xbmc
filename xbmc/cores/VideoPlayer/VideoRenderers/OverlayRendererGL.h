@@ -34,7 +34,7 @@ namespace OVERLAY {
 
     void Render(SRenderState& state) override;
 
-    GLuint m_texture;
+    GLuint m_texture = 0;
     float  m_u;
     float  m_v;
     bool   m_pma; /*< is alpha in texture premultiplied in the values */
@@ -58,7 +58,7 @@ namespace OVERLAY {
 
     std::vector<VERTEX> m_vertex;
 
-    GLuint m_texture;
+    GLuint m_texture = 0;
     float m_u;
     float m_v;
   };

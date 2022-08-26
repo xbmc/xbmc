@@ -49,7 +49,7 @@ protected:
 
   AEAudioFormat m_format;
   AVCodecContext* m_pCodecContext;
-  enum AVSampleFormat m_iSampleFormat;
+  enum AVSampleFormat m_iSampleFormat = AV_SAMPLE_FMT_NONE;
   CAEChannelInfo m_channelLayout;
   enum AVMatrixEncoding m_matrixEncoding = AV_MATRIX_ENCODING_NONE;
   AVFrame* m_pFrame;

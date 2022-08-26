@@ -26,11 +26,6 @@ CColorManager::CColorManager()
   m_curClutSize = 0;
   m_curCmsToken = 0;
   m_curCmsMode = 0;
-  m_cur3dlutFile = "";
-  m_curIccProfile = "";
-#if defined(HAVE_LCMS2)
-  m_hProfile = nullptr;
-#endif  //defined(HAVE_LCMS2)
 }
 
 #if defined(HAVE_LCMS2)

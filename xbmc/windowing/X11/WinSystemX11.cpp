@@ -42,12 +42,9 @@ using namespace std::chrono_literals;
 CWinSystemX11::CWinSystemX11() : CWinSystemBase()
 {
   m_dpy = NULL;
-  m_glWindow = 0;
-  m_mainWindow = 0;
   m_bWasFullScreenBeforeMinimize = false;
   m_minimized = false;
   m_bIgnoreNextFocusMessage = false;
-  m_invisibleCursor = 0;
   m_bIsInternalXrr = false;
   m_delayDispReset = false;
 

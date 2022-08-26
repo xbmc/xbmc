@@ -23,7 +23,6 @@ using namespace std::chrono_literals;
 
 CAudioSinkAE::CAudioSinkAE(CDVDClock *clock) : m_pClock(clock)
 {
-  m_pAudioStream = NULL;
   m_bPassthrough = false;
   m_iBitsPerSample = 0;
   m_sampleRate = 0;

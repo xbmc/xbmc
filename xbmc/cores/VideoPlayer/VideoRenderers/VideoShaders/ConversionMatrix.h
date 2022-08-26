@@ -22,7 +22,7 @@ class CMatrix
 public:
   CMatrix() = default;
   explicit CMatrix(const CMatrix<Order - 1>& other);
-  explicit CMatrix(const std::array<std::array<float, Order>, Order>& other) { m_mat = other; }
+  explicit CMatrix(const std::array<std::array<float, Order>, Order>& other) : m_mat(other) {}
   explicit CMatrix(const std::array<std::array<float, Order - 1>, Order - 1>& other);
   virtual ~CMatrix() = default;
 

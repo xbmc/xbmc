@@ -140,7 +140,7 @@ protected:
 
   bool m_bConfigured{false};
   bool m_bValidated{false};
-  GLenum m_textureTarget;
+  GLenum m_textureTarget = GL_TEXTURE_2D;
   int m_renderMethod{RENDER_GLSL};
   RenderQuality m_renderQuality{RQ_SINGLEPASS};
 

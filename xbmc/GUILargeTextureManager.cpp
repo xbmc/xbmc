@@ -24,10 +24,9 @@
 #include <exception>
 #include <mutex>
 
-CImageLoader::CImageLoader(const std::string &path, const bool useCache):
-  m_path(path)
+CImageLoader::CImageLoader(const std::string& path, const bool useCache)
+  : m_path(path), m_texture(nullptr)
 {
-  m_texture = NULL;
   m_use_cache = useCache;
 }
 

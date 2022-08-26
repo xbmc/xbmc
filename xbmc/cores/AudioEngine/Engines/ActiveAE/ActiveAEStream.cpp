@@ -18,10 +18,10 @@
 using namespace ActiveAE;
 using namespace std::chrono_literals;
 
-CActiveAEStream::CActiveAEStream(AEAudioFormat *format, unsigned int streamid, CActiveAE *ae)
+CActiveAEStream::CActiveAEStream(AEAudioFormat* format, unsigned int streamid, CActiveAE* ae)
+  : m_format(*format)
 {
   m_activeAE = ae;
-  m_format = *format;
   m_id = streamid;
   m_bufferedTime = 0;
   m_currentBuffer = NULL;
@@ -590,9 +590,11 @@ void CActiveAEStream::RegisterSlave(IAEStream *slave)
 // CActiveAEStreamBuffers
 //------------------------------------------------------------------------------
 
-CActiveAEStreamBuffers::CActiveAEStreamBuffers(const AEAudioFormat& inputFormat, const AEAudioFormat& outputFormat, AEQuality quality)
+CActiveAEStreamBuffers::CActiveAEStreamBuffers(const AEAudioFormat& inputFormat,
+                                               const AEAudioFormat& outputFormat,
+                                               AEQuality quality)
+  : m_inputFormat(inputFormat)
 {
-  m_inputFormat = inputFormat;
   m_resampleBuffers = new CActiveAEBufferPoolResample(inputFormat, outputFormat, quality);
   m_atempoBuffers = new CActiveAEBufferPoolAtempo(outputFormat);
 }

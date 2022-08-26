@@ -19,8 +19,6 @@ using namespace KODI::WINDOWING::X11;
 CGLContextGLX::CGLContextGLX(Display *dpy) : CGLContext(dpy)
 {
   m_extPrefix = "GLX_";
-  m_glxWindow = 0;
-  m_glxContext = 0;
   m_vsyncMode = 0;
 }
 

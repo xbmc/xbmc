@@ -190,7 +190,6 @@ protected:
       m_lStackPartNumber = 0;
       m_lStackPartStartTimeMs = 0;
       m_lStackTotalTimeMs = 0;
-      m_pStack = nullptr;
     };
     uint64_t m_lStackPartStartTimeMs;
     uint64_t m_lStackTotalTimeMs;

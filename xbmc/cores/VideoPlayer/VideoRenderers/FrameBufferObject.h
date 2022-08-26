@@ -66,11 +66,11 @@ public:
   void EndRender() const;
 
 private:
-  GLuint m_fbo;
+  GLuint m_fbo = 0;
   bool   m_valid;
   bool   m_bound;
   bool   m_supported;
-  GLuint m_texid;
+  GLuint m_texid = 0;
 };
 
 

@@ -200,7 +200,6 @@ static int64_t dvd_file_seek(void* h, int64_t pos, int whence)
 CDVDDemuxFFmpeg::CDVDDemuxFFmpeg() : CDVDDemux()
 {
   m_pFormatContext = NULL;
-  m_pInput = NULL;
   m_ioContext = NULL;
   m_currentPts = DVD_NOPTS_VALUE;
   m_bMatroska = false;

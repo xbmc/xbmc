@@ -20,7 +20,6 @@ using namespace std::chrono_literals;
 CDVDMessageQueue::CDVDMessageQueue(const std::string &owner) : m_hEvent(true), m_owner(owner)
 {
   m_iDataSize     = 0;
-  m_bAbortRequest = false;
   m_bInitialized = false;
 
   m_TimeBack = DVD_NOPTS_VALUE;

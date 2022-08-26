@@ -22,9 +22,8 @@
 static int teletextFadeAmount = 0;
 
 CGUIDialogTeletext::CGUIDialogTeletext()
-    : CGUIDialog(WINDOW_DIALOG_OSD_TELETEXT, "")
+  : CGUIDialog(WINDOW_DIALOG_OSD_TELETEXT, ""), m_pTxtTexture(nullptr)
 {
-  m_pTxtTexture = NULL;
   m_renderOrder = RENDER_ORDER_DIALOG_TELETEXT;
 }
 

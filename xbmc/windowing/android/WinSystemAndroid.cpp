@@ -45,8 +45,6 @@ using namespace std::chrono_literals;
 
 CWinSystemAndroid::CWinSystemAndroid()
 {
-  m_nativeDisplay = EGL_NO_DISPLAY;
-
   m_displayWidth = 0;
   m_displayHeight = 0;
 

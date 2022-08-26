@@ -17,23 +17,18 @@
 
 using namespace Shaders;
 
-GLSLOutput::GLSLOutput(int texunit, bool useDithering, unsigned int ditherDepth, bool fullrange, GLuint clutTex, int clutSize)
+GLSLOutput::GLSLOutput(int texunit,
+                       bool useDithering,
+                       unsigned int ditherDepth,
+                       bool fullrange,
+                       GLuint clutTex,
+                       int clutSize)
+  : m_tCLUTTex(clutTex)
 {
   // set member variable initial values
   m_1stTexUnit = texunit;
   m_uDither = m_1stTexUnit+0;
   m_uCLUT = m_1stTexUnit+1;
-
-  //   textures
-  m_tDitherTex  = 0;
-  m_tCLUTTex  = clutTex;
-
-  //   shader attribute handles
-  m_hDither      = -1;
-  m_hDitherQuant = -1;
-  m_hDitherSize  = -1;
-  m_hCLUT        = -1;
-  m_hCLUTSize    = -1;
 
   m_dither = useDithering;
   m_ditherDepth = ditherDepth;

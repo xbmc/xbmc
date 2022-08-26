@@ -35,7 +35,6 @@ using namespace PLAYLIST;
 CPlayList::CPlayList(int id)
   : m_id(id)
 {
-  m_strPlayListName = "";
   m_iPlayableItems = -1;
   m_bShuffled = false;
   m_bWasPlayed = false;

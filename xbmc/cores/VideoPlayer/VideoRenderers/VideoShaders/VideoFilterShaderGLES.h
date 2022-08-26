@@ -49,21 +49,21 @@ protected:
   int m_height;
   float m_stepX;
   float m_stepY;
-  GLint m_sourceTexUnit;
+  GLint m_sourceTexUnit = 0;
 
   // shader attribute handles
-  GLint m_hSourceTex;
-  GLint m_hStepXY;
+  GLint m_hSourceTex = 0;
+  GLint m_hStepXY = 0;
 
-  GLint m_hVertex;
-  GLint m_hcoord;
-  GLint m_hProj;
-  GLint m_hModel;
-  GLint m_hAlpha;
+  GLint m_hVertex = -1;
+  GLint m_hcoord = -1;
+  GLint m_hProj = -1;
+  GLint m_hModel = -1;
+  GLint m_hAlpha = -1;
 
   const GLfloat* m_proj;
   const GLfloat* m_model;
-  GLfloat m_alpha;
+  GLfloat m_alpha = -1;
   };
 
   class ConvolutionFilterShader : public BaseVideoFilterShader
@@ -80,10 +80,10 @@ protected:
 
   protected:
     // kernel textures
-    GLuint m_kernelTex1;
+    GLuint m_kernelTex1 = 0;
 
     // shader handles to kernel textures
-    GLint m_hKernTex;
+    GLint m_hKernTex = -1;
 
     ESCALINGMETHOD m_method;
     bool m_floattex; //if float textures are supported

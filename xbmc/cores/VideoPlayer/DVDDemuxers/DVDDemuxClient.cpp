@@ -51,8 +51,6 @@ class CDemuxStreamClientInternalTpl : public CDemuxStreamClientInternal, public 
 
 CDVDDemuxClient::CDVDDemuxClient() : CDVDDemux()
 {
-  m_pInput = nullptr;
-  m_IDemux = nullptr;
   m_streams.clear();
 }
 

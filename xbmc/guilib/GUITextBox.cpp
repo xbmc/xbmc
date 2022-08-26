@@ -46,12 +46,11 @@ CGUITextBox::CGUITextBox(int parentID, int controlID, float posX, float posY, fl
     SetMonoFont(labelInfoMono->font);
 }
 
-CGUITextBox::CGUITextBox(const CGUITextBox &from)
-: CGUIControl(from), CGUITextLayout(from)
+CGUITextBox::CGUITextBox(const CGUITextBox& from)
+  : CGUIControl(from), CGUITextLayout(from), m_autoScrollCondition(from.m_autoScrollCondition)
 {
   m_pageControl = from.m_pageControl;
   m_scrollTime = from.m_scrollTime;
-  m_autoScrollCondition = from.m_autoScrollCondition;
   m_autoScrollTime = from.m_autoScrollTime;
   m_autoScrollDelay = from.m_autoScrollDelay;
   m_minHeight = from.m_minHeight;

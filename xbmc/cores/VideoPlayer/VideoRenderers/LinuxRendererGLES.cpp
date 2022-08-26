@@ -36,7 +36,6 @@ using namespace Shaders::GLES;
 
 CLinuxRendererGLES::CLinuxRendererGLES()
 {
-  m_textureTarget = GL_TEXTURE_2D;
   m_format = AV_PIX_FMT_NONE;
 
   m_fullRange = !CServiceBroker::GetWinSystem()->UseLimitedColor();

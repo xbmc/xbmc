@@ -13,7 +13,6 @@
 
 CDBusMessage::CDBusMessage(const char *destination, const char *object, const char *interface, const char *method)
 {
-  m_reply = nullptr;
   m_message.reset(dbus_message_new_method_call(destination, object, interface, method));
   if (!m_message)
   {

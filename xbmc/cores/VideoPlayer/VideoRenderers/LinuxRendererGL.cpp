@@ -112,8 +112,6 @@ bool CLinuxRendererGL::Register()
 
 CLinuxRendererGL::CLinuxRendererGL()
 {
-  m_textureTarget = GL_TEXTURE_2D;
-
   m_iFlags = 0;
   m_format = AV_PIX_FMT_NONE;
 

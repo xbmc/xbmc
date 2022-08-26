@@ -165,7 +165,7 @@ private:
   void Create3dLut(cmsHTRANSFORM transform, CMS_DATA_FORMAT format, int clutSize, uint16_t *clutData);
 
   // keep current display profile loaded here
-  cmsHPROFILE m_hProfile;
+  cmsHPROFILE m_hProfile = nullptr;
   cmsCIEXYZ   m_blackPoint = { 0, 0, 0 };
 
   // display parameters (gamma, input/output offset, primaries, whitepoint, intent?)

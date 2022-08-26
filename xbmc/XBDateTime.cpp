@@ -249,15 +249,13 @@ CDateTime::CDateTime(const KODI::TIME::SystemTime& time)
   m_state = ToFileTime(time, m_time) ? valid : invalid;
 }
 
-CDateTime::CDateTime(const KODI::TIME::FileTime& time)
+CDateTime::CDateTime(const KODI::TIME::FileTime& time) : m_time(time)
 {
-  m_time=time;
   SetValid(true);
 }
 
-CDateTime::CDateTime(const CDateTime& time)
+CDateTime::CDateTime(const CDateTime& time) : m_time(time.m_time)
 {
-  m_time=time.m_time;
   m_state=time.m_state;
 }
 

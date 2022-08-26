@@ -19,7 +19,7 @@ class TiXmlElement;
 class CKeyboardLayout
 {
 public:
-  CKeyboardLayout();
+  CKeyboardLayout() = default;
   virtual ~CKeyboardLayout();
   IInputCodingTablePtr GetCodingTable() { return m_codingtable; }
 

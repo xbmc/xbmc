@@ -28,7 +28,6 @@ CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg(CProcessInfo &processInfo) : CDVDAudi
   m_layout = 0;
 
   m_pFrame = nullptr;
-  m_iSampleFormat = AV_SAMPLE_FMT_NONE;
   m_eof = false;
 }
 

@@ -419,7 +419,7 @@ private:
   void SetValidDRMVaDisplayFromRenderNode();
   static CVAAPIContext *m_context;
   static CCriticalSection m_section;
-  VADisplay m_display;
+  VADisplay m_display = NULL;
   int m_refCount;
   int m_profileCount;
   VAProfile *m_profiles;
@@ -587,11 +587,11 @@ protected:
   bool CheckSuccess(VAStatus status, const std::string& function);
   void Dispose();
   void Advance();
-  VAConfigID m_configId;
-  VAContextID m_contextId;
+  VAConfigID m_configId = VA_INVALID_ID;
+  VAContextID m_contextId = VA_INVALID_ID;
   CVideoSurfaces m_videoSurfaces;
   std::deque<CVaapiDecodedPicture> m_decodedPics;
-  VABufferID m_filter;
+  VABufferID m_filter = VA_INVALID_ID;
   int m_forwardRefs, m_backwardRefs;
   int m_currentIdx;
   int m_frameCount;

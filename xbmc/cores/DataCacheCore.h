@@ -196,7 +196,7 @@ public:
   int64_t GetMaxTime();
 
 protected:
-  std::atomic_bool m_hasAVInfoChanges;
+  std::atomic_bool m_hasAVInfoChanges = false;
 
   CCriticalSection m_videoPlayerSection;
   struct SPlayerVideoInfo

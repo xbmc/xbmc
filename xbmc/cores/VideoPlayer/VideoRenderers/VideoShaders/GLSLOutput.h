@@ -48,14 +48,14 @@ namespace Shaders
     // defines
 
     // attribute locations
-    GLint m_hDither;
-    GLint m_hDitherQuant;
-    GLint m_hDitherSize;
-    GLint m_hCLUT;
-    GLint m_hCLUTSize;
+    GLint m_hDither = -1;
+    GLint m_hDitherQuant = -1;
+    GLint m_hDitherSize = -1;
+    GLint m_hCLUT = -1;
+    GLint m_hCLUTSize = -1;
 
     // textures
-    GLuint m_tDitherTex;
+    GLuint m_tDitherTex = 0;
     GLuint m_tCLUTTex;
   };
 }

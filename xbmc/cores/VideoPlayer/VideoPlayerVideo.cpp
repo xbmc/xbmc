@@ -55,11 +55,9 @@ CVideoPlayerVideo::CVideoPlayerVideo(CDVDClock* pClock
 {
   m_pClock = pClock;
   m_pOverlayContainer = pOverlayContainer;
-  m_pVideoCodec = NULL;
   m_speed = DVD_PLAYSPEED_NORMAL;
 
   m_bRenderSubs = false;
-  m_stalled = false;
   m_paused = false;
   m_syncState = IDVDStreamPlayer::SYNC_STARTING;
   m_iSubtitleDelay = 0;

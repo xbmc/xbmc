@@ -48,11 +48,9 @@ CThumbExtractor::CThumbExtractor(const CFileItem& item,
                                  const std::string& target,
                                  int64_t pos,
                                  bool fillStreamDetails)
+  : m_target(target), m_listpath(listpath), m_item(item)
 {
-  m_listpath = listpath;
-  m_target = target;
   m_thumb = thumb;
-  m_item = item;
   m_pos = pos;
   m_fillStreamDetails = fillStreamDetails;
 

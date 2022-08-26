@@ -14,10 +14,9 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 
-CGUIWindowSplash::CGUIWindowSplash(void) : CGUIWindow(WINDOW_SPLASH, "")
+CGUIWindowSplash::CGUIWindowSplash(void) : CGUIWindow(WINDOW_SPLASH, ""), m_image(nullptr)
 {
   m_loadType = LOAD_ON_GUI_INIT;
-  m_image = nullptr;
 }
 
 CGUIWindowSplash::~CGUIWindowSplash(void) = default;
