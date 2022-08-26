@@ -1109,7 +1109,7 @@ int CVideoLibrary::GetDetailsFromJsonParameters(const CVariant& parameterObject)
   const CVariant& properties = parameterObject["properties"];
   int details = VideoDbDetailsNone;
   for (CVariant::const_iterator_array itr = properties.begin_array(); itr != properties.end_array();
-       itr++)
+       ++itr)
   {
     std::string propertyValue = itr->asString();
     if (propertyValue == "cast")
@@ -1233,7 +1233,7 @@ void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTa
   if (ParameterNotNull(parameterObject, "ratings"))
   {
     CVariant ratings = parameterObject["ratings"];
-    for (CVariant::const_iterator_map rIt = ratings.begin_map(); rIt != ratings.end_map(); rIt++)
+    for (CVariant::const_iterator_map rIt = ratings.begin_map(); rIt != ratings.end_map(); ++rIt)
     {
       if (rIt->second.isObject() && ParameterNotNull(rIt->second, "rating"))
       {
@@ -1269,7 +1269,8 @@ void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTa
   if (ParameterNotNull(parameterObject, "uniqueid"))
   {
     CVariant uniqueids = parameterObject["uniqueid"];
-    for (CVariant::const_iterator_map idIt = uniqueids.begin_map(); idIt != uniqueids.end_map(); idIt++)
+    for (CVariant::const_iterator_map idIt = uniqueids.begin_map(); idIt != uniqueids.end_map();
+         ++idIt)
     {
       if (idIt->second.isString() && !idIt->second.asString().empty())
       {
@@ -1356,7 +1357,7 @@ void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTa
   if (ParameterNotNull(parameterObject, "art"))
   {
     CVariant art = parameterObject["art"];
-    for (CVariant::const_iterator_map artIt = art.begin_map(); artIt != art.end_map(); artIt++)
+    for (CVariant::const_iterator_map artIt = art.begin_map(); artIt != art.end_map(); ++artIt)
     {
       if (artIt->second.isString() && !artIt->second.asString().empty())
       {

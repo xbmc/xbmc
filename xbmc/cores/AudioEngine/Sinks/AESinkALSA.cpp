@@ -1241,7 +1241,7 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
       if (baseName == "sysdefault" && cardsWithSurround.find(card) != cardsWithSurround.end())
         iter = list.erase(iter);
       else
-        iter++;
+        ++iter;
     }
   }
 

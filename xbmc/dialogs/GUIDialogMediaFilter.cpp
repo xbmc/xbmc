@@ -644,7 +644,8 @@ int CGUIDialogMediaFilter::GetItems(const Filter &filter, std::vector<std::strin
 
   // remove the rule for the field of the filter we want to retrieve items for
   CSmartPlaylist tmpFilter = *m_filter;
-  for (CDatabaseQueryRules::iterator rule = tmpFilter.m_ruleCombination.m_rules.begin(); rule != tmpFilter.m_ruleCombination.m_rules.end(); rule++)
+  for (CDatabaseQueryRules::iterator rule = tmpFilter.m_ruleCombination.m_rules.begin();
+       rule != tmpFilter.m_ruleCombination.m_rules.end(); ++rule)
   {
     if ((*rule)->m_field == filter.field)
     {
@@ -740,7 +741,8 @@ CSmartPlaylistRule* CGUIDialogMediaFilter::AddRule(Field field, CDatabaseQueryRu
 
 void CGUIDialogMediaFilter::DeleteRule(Field field)
 {
-  for (CDatabaseQueryRules::iterator rule = m_filter->m_ruleCombination.m_rules.begin(); rule != m_filter->m_ruleCombination.m_rules.end(); rule++)
+  for (CDatabaseQueryRules::iterator rule = m_filter->m_ruleCombination.m_rules.begin();
+       rule != m_filter->m_ruleCombination.m_rules.end(); ++rule)
   {
     if ((*rule)->m_field == field)
     {

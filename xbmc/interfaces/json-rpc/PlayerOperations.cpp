@@ -195,7 +195,8 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const std::string &method, ITransportL
         }
 
         bool additionalInfo = false;
-        for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array(); itr != parameterObject["properties"].end_array(); itr++)
+        for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array();
+             itr != parameterObject["properties"].end_array(); ++itr)
         {
           std::string fieldValue = itr->asString();
           if (fieldValue == "cast" || fieldValue == "set" || fieldValue == "setid" || fieldValue == "showlink" || fieldValue == "resume" ||

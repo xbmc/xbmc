@@ -307,7 +307,8 @@ void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const 
   std::set<std::string> fields;
   if (parameterObject.isMember("properties") && parameterObject["properties"].isArray())
   {
-    for (CVariant::const_iterator_array field = parameterObject["properties"].begin_array(); field != parameterObject["properties"].end_array(); field++)
+    for (CVariant::const_iterator_array field = parameterObject["properties"].begin_array();
+         field != parameterObject["properties"].end_array(); ++field)
       fields.insert(field->asString());
   }
 
@@ -334,7 +335,8 @@ void CFileItemHandler::HandleFileItem(const char* ID,
   std::set<std::string> fields;
   if (parameterObject.isMember("properties") && parameterObject["properties"].isArray())
   {
-    for (CVariant::const_iterator_array field = parameterObject["properties"].begin_array(); field != parameterObject["properties"].end_array(); field++)
+    for (CVariant::const_iterator_array field = parameterObject["properties"].begin_array();
+         field != parameterObject["properties"].end_array(); ++field)
       fields.insert(field->asString());
   }
 
