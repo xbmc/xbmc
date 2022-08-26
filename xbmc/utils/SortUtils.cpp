@@ -23,7 +23,7 @@ std::string ArrayToString(SortAttribute attributes, const CVariant &variant, con
   std::vector<std::string> strArray;
   if (variant.isArray())
   {
-    for (CVariant::const_iterator_array it = variant.begin_array(); it != variant.end_array(); it++)
+    for (CVariant::const_iterator_array it = variant.begin_array(); it != variant.end_array(); ++it)
     {
       if (attributes & SortAttributeIgnoreArticle)
         strArray.push_back(SortUtils::RemoveArticles(it->asString()));

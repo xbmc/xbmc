@@ -87,7 +87,7 @@ extern "C" int debug_callback(CURL_HANDLE *handle, curl_infotype info, char *out
   while (it != vecLines.end())
   {
     CLog::Log(LOGDEBUG, "Curl::Debug - {}{}", infotype, (*it));
-    it++;
+    ++it;
   }
   return 0;
 }
@@ -798,7 +798,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     //! @todo create a tokenizer that doesn't skip empty's
     StringUtils::Tokenize(filename, array, "/");
     filename.clear();
-    for(std::vector<std::string>::iterator it = array.begin(); it != array.end(); it++)
+    for (std::vector<std::string>::iterator it = array.begin(); it != array.end(); ++it)
     {
       if(it != array.begin())
         filename += "/";
