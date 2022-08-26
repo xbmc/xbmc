@@ -1575,7 +1575,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
 #if defined(TARGET_DARWIN)
     CLog::Log(LOGINFO, "ExecWait is not implemented on this platform");
 #elif defined(TARGET_POSIX)
-    CUtil::RunCommandLine(pMsg->strParam.c_str(), (pMsg->param1 == 1));
+    CUtil::RunCommandLine(pMsg->strParam, (pMsg->param1 == 1));
 #elif defined(TARGET_WINDOWS)
     CWIN32Util::XBMCShellExecute(pMsg->strParam.c_str(), (pMsg->param1 == 1));
 #endif
