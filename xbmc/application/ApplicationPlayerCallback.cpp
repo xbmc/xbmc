@@ -317,7 +317,8 @@ void CApplicationPlayerCallback::RequestVideoSettings(const CFileItem& fileItem)
   }
 }
 
-void CApplicationPlayerCallback::StoreVideoSettings(const CFileItem& fileItem, CVideoSettings vs)
+void CApplicationPlayerCallback::StoreVideoSettings(const CFileItem& fileItem,
+                                                    const CVideoSettings& vs)
 {
   CVideoDatabase dbs;
   if (dbs.Open())
