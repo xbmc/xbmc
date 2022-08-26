@@ -73,7 +73,6 @@ CCocoaPowerSyscall::CCocoaPowerSyscall()
   m_HasBattery = -1;
   m_BatteryPercent = 100;
   m_SentBatteryMessage = false;
-  m_power_source = NULL;
   CreateOSPowerCallBacks();
 }
 

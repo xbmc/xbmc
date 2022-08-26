@@ -29,8 +29,9 @@ public:
   void SetVSync(bool enable) override;
   void SwapBuffers() override;
   void QueryExtensions() override;
-  GLXWindow m_glxWindow;
-  GLXContext m_glxContext;
+  GLXWindow m_glxWindow = 0;
+  GLXContext m_glxContext = 0;
+
 protected:
   bool IsSuitableVisual(XVisualInfo *vInfo);
 

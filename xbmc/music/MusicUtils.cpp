@@ -62,8 +62,9 @@ namespace MUSIC_UTILS
         if (pSongItem->HasProperty("artistid"))
         {
           // Check artistid property when we have it
-          for (CVariant::const_iterator_array varid = pSongItem->GetProperty("artistid").begin_array();
-            varid != pSongItem->GetProperty("artistid").end_array(); varid++)
+          for (CVariant::const_iterator_array varid =
+                   pSongItem->GetProperty("artistid").begin_array();
+               varid != pSongItem->GetProperty("artistid").end_array(); ++varid)
           {
             int idArtist = static_cast<int>(varid->asInteger());
             result = (itemID == idArtist);

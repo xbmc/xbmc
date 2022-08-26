@@ -52,7 +52,8 @@ JSONRPC_STATUS CGUIOperations::ActivateWindow(const std::string &method, ITransp
   if (iWindow != WINDOW_INVALID)
   {
     std::vector<std::string> params;
-    for (CVariant::const_iterator_array param = parameterObject["parameters"].begin_array(); param != parameterObject["parameters"].end_array(); param++)
+    for (CVariant::const_iterator_array param = parameterObject["parameters"].begin_array();
+         param != parameterObject["parameters"].end_array(); ++param)
     {
       if (param->isString() && !param->empty())
         params.push_back(param->asString());

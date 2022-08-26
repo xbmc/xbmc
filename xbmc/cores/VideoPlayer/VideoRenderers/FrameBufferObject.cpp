@@ -19,11 +19,9 @@
 
 CFrameBufferObject::CFrameBufferObject()
 {
-  m_fbo = 0;
   m_valid = false;
   m_supported = false;
   m_bound = false;
-  m_texid = 0;
 }
 
 bool CFrameBufferObject::IsSupported()

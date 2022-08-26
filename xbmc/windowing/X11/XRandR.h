@@ -17,8 +17,6 @@ class XMode
 public:
   XMode()
   {
-    id="";
-    name="";
     hz=0.0f;
     isPreferred=false;
     isCurrent=false;
@@ -60,7 +58,6 @@ class XOutput
 public:
   XOutput()
   {
-    name = "";
     isConnected = false;
     w = h = x = y = wmm = hmm = 0;
   }

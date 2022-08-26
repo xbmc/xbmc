@@ -336,7 +336,8 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
     for (unsigned int index = 0; index < tag.m_genre.size(); index++)
       object.m_Affiliation.genres.Add(tag.m_genre.at(index).c_str());
 
-    for(CVideoInfoTag::iCast it = tag.m_cast.begin();it != tag.m_cast.end();it++) {
+    for (CVideoInfoTag::iCast it = tag.m_cast.begin(); it != tag.m_cast.end(); ++it)
+    {
         object.m_People.actors.Add(it->strName.c_str(), it->strRole.c_str());
     }
 

@@ -87,7 +87,6 @@ CVAAPIContext::CVAAPIContext()
   m_context = 0;
   m_refCount = 0;
   m_profiles = NULL;
-  m_display = NULL;
 }
 
 void CVAAPIContext::Release(CDecoder *decoder)
@@ -2364,9 +2363,6 @@ void CSkipPostproc::Discard(COutput *output, ReadyToDispose cb)
 
 CVppPostproc::CVppPostproc()
 {
-  m_contextId = VA_INVALID_ID;
-  m_configId = VA_INVALID_ID;
-  m_filter = VA_INVALID_ID;
 }
 
 CVppPostproc::~CVppPostproc()

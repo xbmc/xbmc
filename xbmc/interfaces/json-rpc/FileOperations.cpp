@@ -144,7 +144,8 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const std::string &method, ITranspo
       param["properties"] = CVariant(CVariant::VariantTypeArray);
 
     bool hasFileField = false;
-    for (CVariant::const_iterator_array itr = param["properties"].begin_array(); itr != param["properties"].end_array(); itr++)
+    for (CVariant::const_iterator_array itr = param["properties"].begin_array();
+         itr != param["properties"].end_array(); ++itr)
     {
       if (itr->asString().compare("file") == 0)
       {
@@ -197,7 +198,8 @@ JSONRPC_STATUS CFileOperations::GetFileDetails(const std::string &method, ITrans
     param["properties"] = CVariant(CVariant::VariantTypeArray);
 
   bool hasFileField = false;
-  for (CVariant::const_iterator_array itr = param["properties"].begin_array(); itr != param["properties"].end_array(); itr++)
+  for (CVariant::const_iterator_array itr = param["properties"].begin_array();
+       itr != param["properties"].end_array(); ++itr)
   {
     if (itr->asString().compare("file") == 0)
     {

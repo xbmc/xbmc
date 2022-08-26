@@ -27,9 +27,8 @@
 #include <mutex>
 
 CGUIAudioManager::CGUIAudioManager()
+  : m_settings(CServiceBroker::GetSettingsComponent()->GetSettings())
 {
-  m_settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-
   m_bEnabled = false;
 
   m_settings->RegisterCallback(this, {CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN,

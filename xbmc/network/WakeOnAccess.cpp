@@ -91,10 +91,7 @@ static void ShowDiscoveryMessage(const char* function, const char* server_name, 
 
 struct UPnPServer
 {
-  UPnPServer()
-  {
-    m_nextWake = CDateTime::GetCurrentDateTime();
-  }
+  UPnPServer() : m_nextWake(CDateTime::GetCurrentDateTime()) {}
   bool operator == (const UPnPServer& server) const { return server.m_uuid == m_uuid; }
   bool operator != (const UPnPServer& server) const { return !(*this == server); }
   bool operator == (const std::string& server_uuid) const { return server_uuid == m_uuid; }

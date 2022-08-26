@@ -48,9 +48,8 @@ class GameControllerLayout
 public:
   /*! @cond PRIVATE */
   explicit GameControllerLayout() = default;
-  GameControllerLayout(const game_controller_layout& layout)
+  GameControllerLayout(const game_controller_layout& layout) : controller_id(layout.controller_id)
   {
-    controller_id = layout.controller_id;
     provides_input = layout.provides_input;
     for (unsigned int i = 0; i < layout.digital_button_count; ++i)
       digital_buttons.push_back(layout.digital_buttons[i]);

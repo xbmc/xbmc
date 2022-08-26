@@ -87,7 +87,7 @@ extern "C" int debug_callback(CURL_HANDLE *handle, curl_infotype info, char *out
   while (it != vecLines.end())
   {
     CLog::Log(LOGDEBUG, "Curl::Debug - {}{}", infotype, (*it));
-    it++;
+    ++it;
   }
   return 0;
 }
@@ -427,16 +427,9 @@ CCurlFile::CCurlFile()
   m_connecttimeout = 0;
   m_redirectlimit = 5;
   m_lowspeedtime = 0;
-  m_ftpauth = "";
-  m_ftpport = "";
   m_ftppasvip = false;
   m_bufferSize = 32768;
-  m_postdata = "";
   m_postdataset = false;
-  m_username = "";
-  m_password = "";
-  m_httpauth = "";
-  m_cipherlist = "";
   m_state = new CReadState();
   m_oldState = NULL;
   m_skipshout = false;
@@ -798,7 +791,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     //! @todo create a tokenizer that doesn't skip empty's
     StringUtils::Tokenize(filename, array, "/");
     filename.clear();
-    for(std::vector<std::string>::iterator it = array.begin(); it != array.end(); it++)
+    for (std::vector<std::string>::iterator it = array.begin(); it != array.end(); ++it)
     {
       if(it != array.begin())
         filename += "/";

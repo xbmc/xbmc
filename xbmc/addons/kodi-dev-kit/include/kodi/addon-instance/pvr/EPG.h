@@ -49,22 +49,23 @@ public:
     m_cStructure->iEpisodeNumber = EPG_TAG_INVALID_SERIES_EPISODE;
     m_cStructure->iEpisodePartNumber = EPG_TAG_INVALID_SERIES_EPISODE;
   }
-  PVREPGTag(const PVREPGTag& epg) : CStructHdl(epg)
+  PVREPGTag(const PVREPGTag& epg)
+    : CStructHdl(epg),
+      m_title(epg.m_title),
+      m_plotOutline(epg.m_plotOutline),
+      m_plot(epg.m_plot),
+      m_originalTitle(epg.m_originalTitle),
+      m_cast(epg.m_cast),
+      m_director(epg.m_director),
+      m_writer(epg.m_writer),
+      m_IMDBNumber(epg.m_IMDBNumber),
+      m_episodeName(epg.m_episodeName),
+      m_iconPath(epg.m_iconPath),
+      m_seriesLink(epg.m_seriesLink),
+      m_genreDescription(epg.m_genreDescription),
+      m_parentalRatingCode(epg.m_parentalRatingCode),
+      m_firstAired(epg.m_firstAired)
   {
-    m_title = epg.m_title;
-    m_plotOutline = epg.m_plotOutline;
-    m_plot = epg.m_plot;
-    m_originalTitle = epg.m_originalTitle;
-    m_cast = epg.m_cast;
-    m_director = epg.m_director;
-    m_writer = epg.m_writer;
-    m_IMDBNumber = epg.m_IMDBNumber;
-    m_iconPath = epg.m_iconPath;
-    m_genreDescription = epg.m_genreDescription;
-    m_parentalRatingCode = epg.m_parentalRatingCode;
-    m_episodeName = epg.m_episodeName;
-    m_seriesLink = epg.m_seriesLink;
-    m_firstAired = epg.m_firstAired;
   }
   /*! \endcond */
 

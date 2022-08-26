@@ -900,7 +900,7 @@ JSONRPC_STATUS JSONSchemaTypeDefinition::Check(const CVariant& value,
       {
         CVariant::const_iterator_map iter;
         CVariant::const_iterator_map iterEnd = value.end_map();
-        for (iter = value.begin_map(); iter != iterEnd; iter++)
+        for (iter = value.begin_map(); iter != iterEnd; ++iter)
         {
           if (properties.find(iter->first) != properties.end())
             continue;
