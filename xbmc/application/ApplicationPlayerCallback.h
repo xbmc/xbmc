@@ -34,7 +34,7 @@ public:
   void OnAVChange() override;
   void OnAVStarted(const CFileItem& file) override;
   void RequestVideoSettings(const CFileItem& fileItem) override;
-  void StoreVideoSettings(const CFileItem& fileItem, CVideoSettings vs) override;
+  void StoreVideoSettings(const CFileItem& fileItem, const CVideoSettings& vs) override;
 
 protected:
   CApplicationPlayer& m_appPlayer; //!< Reference to application player

@@ -72,7 +72,7 @@ float CRenderManager::GetAspectRatio()
     return 1.0f;
 }
 
-void CRenderManager::SetVideoSettings(CVideoSettings settings)
+void CRenderManager::SetVideoSettings(const CVideoSettings& settings)
 {
   std::unique_lock<CCriticalSection> lock(m_statelock);
   if (m_pRenderer)

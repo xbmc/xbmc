@@ -33,5 +33,5 @@ public:
   virtual void OnAVChange() {}
   virtual void OnAVStarted(const CFileItem& file) {}
   virtual void RequestVideoSettings(const CFileItem& fileItem) {}
-  virtual void StoreVideoSettings(const CFileItem& fileItem, CVideoSettings vs) {}
+  virtual void StoreVideoSettings(const CFileItem& fileItem, const CVideoSettings& vs) {}
 };
