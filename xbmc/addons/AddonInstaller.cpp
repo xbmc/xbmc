@@ -389,8 +389,8 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
         (!haveInstalledAddon && !optional))
     {
       // we have it but our version isn't good enough, or we don't have it and we need it
-      if (!dep->MeetsVersion(versionMin, version) ||
-          !CServiceBroker::GetAddonMgr().FindInstallableById(addonID, dep))
+      if (!CServiceBroker::GetAddonMgr().FindInstallableById(addonID, dep) ||
+          (dep && !dep->MeetsVersion(versionMin, version)))
       {
         // we don't have it in a repo, or we have it but the version isn't good enough, so dep isn't satisfied.
         CLog::Log(LOGDEBUG, "CAddonInstallJob[{}]: requires {} version {} which is not available",
