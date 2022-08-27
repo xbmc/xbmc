@@ -288,11 +288,11 @@ void CRenderer::SetVideoRect(CRect &source, CRect &dest, CRect &view)
 {
   if (m_rv != view) // Screen resolution is changed
   {
+    m_rv = view;
     OnViewChange();
   }
   m_rs = source;
   m_rd = dest;
-  m_rv = view;
 }
 
 void CRenderer::OnViewChange()
@@ -470,6 +470,8 @@ COverlay* CRenderer::ConvertLibass(
       ResetSubtitlePosition();
   }
 
+  rOpts.m_par = resInfo.fPixelRatio;
+
   // rOpts.position and margins (set to style) can invalidate the text
   // positions to subtitles type that make use of margins to position text on
   // the screen (e.g. ASS/WebVTT) then we allow to set them when position
@@ -549,14 +551,6 @@ COverlay* CRenderer::ConvertLibass(
   overlay = new COverlayQuadsDX(images, rOpts.frameWidth, rOpts.frameHeight);
 #endif
 
-  // scale to video dimensions
-  if (overlay)
-  {
-    overlay->m_width = rOpts.frameWidth / rOpts.videoWidth;
-    overlay->m_height = rOpts.frameHeight / rOpts.videoHeight;
-    overlay->m_x = (rOpts.videoWidth - rOpts.frameWidth) / 2 / rOpts.videoWidth;
-    overlay->m_y = (rOpts.videoHeight - rOpts.frameHeight) / 2 / rOpts.videoHeight;
-  }
   m_textureCache[m_textureid] = overlay;
   o->m_textureid = m_textureid;
   m_textureid++;
