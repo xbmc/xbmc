@@ -59,8 +59,8 @@
 #define CONTROL_LIST_SCREENSHOTS 50
 
 using namespace KODI;
-using namespace KODI::ADDONS;
 using namespace ADDON;
+using namespace KODI::ADDONS;
 using namespace XFILE;
 using namespace KODI::MESSAGING;
 

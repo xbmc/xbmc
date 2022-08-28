@@ -80,6 +80,7 @@ protected:
   bool InitializeDefinitions() override { return false; }
 
 private:
+  bool AddInstanceSettings();
   bool InitializeDefinitions(const CXBMCTinyXML& doc);
 
   bool ParseSettingVersion(const CXBMCTinyXML& doc, uint32_t& version) const;
