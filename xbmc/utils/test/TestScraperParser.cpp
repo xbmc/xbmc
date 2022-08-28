@@ -16,11 +16,9 @@ TEST(TestScraperParser, General)
   CScraperParser a;
 
   a.Clear();
-  EXPECT_TRUE(
-    a.Load(XBMC_REF_FILE_PATH("/addons/metadata.themoviedb.org/tmdb.xml")));
+  EXPECT_TRUE(a.Load(XBMC_REF_FILE_PATH("/addons/metadata.local/local.xml")));
 
-  EXPECT_STREQ(
-    XBMC_REF_FILE_PATH("/addons/metadata.themoviedb.org/tmdb.xml").c_str(),
-    a.GetFilename().c_str());
+  EXPECT_STREQ(XBMC_REF_FILE_PATH("/addons/metadata.local/local.xml").c_str(),
+               a.GetFilename().c_str());
   EXPECT_STREQ("UTF-8", a.GetSearchStringEncoding().c_str());
 }
