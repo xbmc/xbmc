@@ -360,6 +360,20 @@ ADDON_STATUS CAddonDll::TransferSettings(AddonInstanceId instanceId)
   auto settings = GetSettings(instanceId);
   if (settings != nullptr)
   {
+    KODI_ADDON_INSTANCE_FUNC* instanceTarget{nullptr};
+    KODI_ADDON_INSTANCE_HDL instanceHandle{nullptr};
+    if (instanceId != ADDON_SETTINGS_ID)
+    {
+      const auto it = std::find_if(
+          m_usedInstances.begin(), m_usedInstances.end(),
+          [instanceId](const auto& data) { return data.second->info->number == instanceId; });
+      if (it == m_usedInstances.end())
+        return ADDON_STATUS_UNKNOWN;
+
+      instanceTarget = it->second->functions;
+      instanceHandle = it->second->hdl;
+    }
+
     for (const auto& section : settings->GetSections())
     {
       for (const auto& category : section->GetCategories())
@@ -368,51 +382,105 @@ ADDON_STATUS CAddonDll::TransferSettings(AddonInstanceId instanceId)
         {
           for (const auto& setting : group->GetSettings())
           {
+            if (StringUtils::StartsWith(setting->GetId(), ADDON_SETTING_INSTANCE_GROUP))
+              continue; // skip internal settings
+
             ADDON_STATUS status = ADDON_STATUS_OK;
             const char* id = setting->GetId().c_str();
+
             switch (setting->GetType())
             {
               case SettingType::Boolean:
               {
                 bool tmp = std::static_pointer_cast<CSettingBool>(setting)->GetValue();
-                if (m_interface.toAddon->setting_change_boolean)
-                  status =
-                      m_interface.toAddon->setting_change_boolean(m_interface.addonBase, id, tmp);
+                if (instanceId == ADDON_SETTINGS_ID)
+                {
+                  if (m_interface.toAddon->setting_change_boolean)
+                    status =
+                        m_interface.toAddon->setting_change_boolean(m_interface.addonBase, id, tmp);
+                }
+                else if (instanceTarget && instanceHandle)
+                {
+                  if (instanceTarget->instance_setting_change_boolean)
+                    status =
+                        instanceTarget->instance_setting_change_boolean(instanceHandle, id, tmp);
+                }
                 break;
               }
 
               case SettingType::Integer:
               {
                 int tmp = std::static_pointer_cast<CSettingInt>(setting)->GetValue();
-                if (m_interface.toAddon->setting_change_integer)
-                  status =
-                      m_interface.toAddon->setting_change_integer(m_interface.addonBase, id, tmp);
+                if (instanceId == ADDON_SETTINGS_ID)
+                {
+                  if (m_interface.toAddon->setting_change_integer)
+                    status =
+                        m_interface.toAddon->setting_change_integer(m_interface.addonBase, id, tmp);
+                }
+                else if (instanceTarget && instanceHandle)
+                {
+                  if (instanceTarget->instance_setting_change_integer)
+                    status =
+                        instanceTarget->instance_setting_change_integer(instanceHandle, id, tmp);
+                }
                 break;
               }
 
               case SettingType::Number:
               {
                 float tmpf = static_cast<float>(std::static_pointer_cast<CSettingNumber>(setting)->GetValue());
-                if (m_interface.toAddon->setting_change_float)
-                  status =
-                      m_interface.toAddon->setting_change_float(m_interface.addonBase, id, tmpf);
+                if (instanceId == ADDON_SETTINGS_ID)
+                {
+                  if (m_interface.toAddon->setting_change_float)
+                    status =
+                        m_interface.toAddon->setting_change_float(m_interface.addonBase, id, tmpf);
+                }
+                else if (instanceTarget && instanceHandle)
+                {
+                  if (instanceTarget->instance_setting_change_float)
+                    status =
+                        instanceTarget->instance_setting_change_float(instanceHandle, id, tmpf);
+                }
                 break;
               }
 
               case SettingType::String:
-                if (m_interface.toAddon->setting_change_string)
-                  status = m_interface.toAddon->setting_change_string(
-                      m_interface.addonBase, id,
-                      std::static_pointer_cast<CSettingString>(setting)->GetValue().c_str());
+              {
+                if (instanceId == ADDON_SETTINGS_ID)
+                {
+                  if (m_interface.toAddon->setting_change_string)
+                    status = m_interface.toAddon->setting_change_string(
+                        m_interface.addonBase, id,
+                        std::static_pointer_cast<CSettingString>(setting)->GetValue().c_str());
+                }
+                else if (instanceTarget && instanceHandle)
+                {
+                  if (instanceTarget->instance_setting_change_string)
+                    status = instanceTarget->instance_setting_change_string(
+                        instanceHandle, id,
+                        std::static_pointer_cast<CSettingString>(setting)->GetValue().c_str());
+                }
                 break;
+              }
 
               default:
+              {
                 // log unknowns as an error, but go ahead and transfer the string
                 CLog::Log(LOGERROR, "Unknown setting type of '{}' for {}", id, Name());
-                if (m_interface.toAddon->setting_change_string)
-                  status = m_interface.toAddon->setting_change_string(m_interface.addonBase, id,
-                                                                      setting->ToString().c_str());
+                if (instanceId == ADDON_SETTINGS_ID)
+                {
+                  if (m_interface.toAddon->setting_change_string)
+                    status = m_interface.toAddon->setting_change_string(
+                        m_interface.addonBase, id, setting->ToString().c_str());
+                }
+                else if (instanceTarget && instanceHandle)
+                {
+                  if (instanceTarget->instance_setting_change_string)
+                    status = instanceTarget->instance_setting_change_string(
+                        instanceHandle, id, setting->ToString().c_str());
+                }
                 break;
+              }
             }
 
             if (status == ADDON_STATUS_NEED_RESTART)

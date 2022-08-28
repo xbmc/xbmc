@@ -481,11 +481,19 @@ protected:
   const AddonInfoPtr m_addonInfo;
 
 private:
-  bool m_loadSettingsFailed{false};
-  bool m_hasUserSettings{false};
-  std::string m_userSettingsPath;
+  struct CSettingsData
+  {
+    bool m_loadSettingsFailed{false};
+    bool m_hasUserSettings{false};
+    std::string m_addonSettingsPath;
+    std::string m_userSettingsPath;
+    std::shared_ptr<CAddonSettings> m_addonSettings;
+  };
 
-  mutable std::shared_ptr<CAddonSettings> m_settings;
+  bool InitSettings(AddonInstanceId id);
+  std::shared_ptr<CAddonSettings> FindInstanceSettings(AddonInstanceId id) const;
+
+  mutable std::unordered_map<AddonInstanceId, CSettingsData> m_settings;
   const TYPE m_type;
 };
 

@@ -265,7 +265,6 @@ protected:
 
   static CSkinSettingPtr ParseSetting(const TiXmlElement* element);
 
-  bool SettingsInitialized(AddonInstanceId id = ADDON_SETTINGS_ID) const override;
   bool SettingsLoaded(AddonInstanceId id = ADDON_SETTINGS_ID) const override;
   bool SettingsFromXML(const CXBMCTinyXML& doc,
                        bool loadDefaults,
