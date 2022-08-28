@@ -16,17 +16,13 @@ addons/metadata.artists.universal/*
 addons/metadata.common.allmusic.com/*
 addons/metadata.common.fanart.tv/*
 addons/metadata.common.htbackdrops.com/*
-addons/metadata.common.imdb.com/*
 addons/metadata.common.musicbrainz.org/*
 addons/metadata.common.theaudiodb.com/*
-addons/metadata.common.themoviedb.org/*
 addons/metadata.generic.albums/*
 addons/metadata.generic.artists/*
 addons/metadata.local/*
 addons/metadata.themoviedb.org.python/*
-addons/metadata.themoviedb.org/*
 addons/metadata.tvshows.themoviedb.org.python/*
-addons/metadata.tvshows.themoviedb.org/*
 addons/repository.xbmc.org/*
 addons/resource.images.weathericons.default/*
 addons/resource.language.en_gb/*
