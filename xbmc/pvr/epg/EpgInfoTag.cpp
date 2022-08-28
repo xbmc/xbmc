@@ -59,15 +59,15 @@ CPVREpgInfoTag::CPVREpgInfoTag(const std::shared_ptr<CPVREpgChannelData>& channe
       0, 0, 0, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection);
   m_startTime = start + correction;
   m_endTime = end + correction;
-
-  UpdatePath();
 }
 
 CPVREpgInfoTag::CPVREpgInfoTag(const EPG_TAG& data,
                                int iClientId,
                                const std::shared_ptr<CPVREpgChannelData>& channelData,
                                int iEpgID)
-  : m_iParentalRating(data.iParentalRating),
+  : m_iGenreType(data.iGenreType),
+    m_iGenreSubType(data.iGenreSubType),
+    m_iParentalRating(data.iParentalRating),
     m_iStarRating(data.iStarRating),
     m_iSeriesNumber(data.iSeriesNumber),
     m_iEpisodeNumber(data.iEpisodeNumber),
@@ -105,11 +105,11 @@ CPVREpgInfoTag::CPVREpgInfoTag(const EPG_TAG& data,
     m_channelData = std::make_shared<CPVREpgChannelData>(iClientId, data.iUniqueChannelId);
   }
 
-  SetGenre(data.iGenreType, data.iGenreSubType, data.strGenreDescription);
-
   // explicit NULL check, because there is no implicit NULL constructor for std::string
   if (data.strTitle)
     m_strTitle = data.strTitle;
+  if (data.strGenreDescription)
+    m_strGenreDescription = data.strGenreDescription;
   if (data.strPlotOutline)
     m_strPlotOutline = data.strPlotOutline;
   if (data.strPlot)
@@ -130,8 +130,6 @@ CPVREpgInfoTag::CPVREpgInfoTag(const EPG_TAG& data,
     m_strSeriesLink = data.strSeriesLink;
   if (data.strParentalRatingCode)
     m_strParentalRatingCode = data.strParentalRatingCode;
-
-  UpdatePath();
 }
 
 void CPVREpgInfoTag::SetChannelData(const std::shared_ptr<CPVREpgChannelData>& data)
@@ -181,8 +179,8 @@ void CPVREpgInfoTag::Serialize(CVariant& value) const
   value["writer"] = DeTokenize(m_writers);
   value["year"] = m_iYear;
   value["imdbnumber"] = m_strIMDBNumber;
-  value["genre"] = m_genre;
-  value["filenameandpath"] = m_strFileNameAndPath;
+  value["genre"] = Genre();
+  value["filenameandpath"] = Path();
   value["starttime"] = m_startTime.IsValid() ? m_startTime.GetAsDBDateTime() : StringUtils::Empty;
   value["endtime"] = m_endTime.IsValid() ? m_endTime.GetAsDBDateTime() : StringUtils::Empty;
   value["runtime"] = GetDuration() / 60;
@@ -376,7 +374,8 @@ const std::string CPVREpgInfoTag::GetWritersLabel() const
 
 const std::string CPVREpgInfoTag::GetGenresLabel() const
 {
-  return StringUtils::Join(m_genre, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
+  return StringUtils::Join(
+      Genre(), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
 }
 
 int CPVREpgInfoTag::Year() const
@@ -389,29 +388,6 @@ std::string CPVREpgInfoTag::IMDBNumber() const
   return m_strIMDBNumber;
 }
 
-void CPVREpgInfoTag::SetGenre(int iGenreType, int iGenreSubType, const char* strGenre)
-{
-  if (m_iGenreType != iGenreType || m_iGenreSubType != iGenreSubType)
-  {
-    m_iGenreType = iGenreType;
-    m_iGenreSubType = iGenreSubType;
-    if ((iGenreType == EPG_GENRE_USE_STRING || iGenreSubType == EPG_GENRE_USE_STRING) && (strGenre != NULL) && (strlen(strGenre) > 0))
-    {
-      /* Type and sub type are both not given. No EPG color coding possible unless sub type is used to specify
-       * EPG_GENRE_USE_STRING leaving type available for genre category, use the provided genre description for the text. */
-      m_genre = Tokenize(strGenre);
-    }
-  }
-
-  if (m_genre.empty())
-  {
-    // Determine the genre description from the type and subtype IDs.
-    m_genre = StringUtils::Split(
-        CPVREpg::ConvertGenreIdToString(iGenreType, iGenreSubType),
-        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
-  }
-}
-
 int CPVREpgInfoTag::GenreType() const
 {
   return m_iGenreType;
@@ -422,8 +398,30 @@ int CPVREpgInfoTag::GenreSubType() const
   return m_iGenreSubType;
 }
 
+std::string CPVREpgInfoTag::GenreDescription() const
+{
+  return m_strGenreDescription;
+}
+
 const std::vector<std::string> CPVREpgInfoTag::Genre() const
 {
+  if (m_genre.empty())
+  {
+    if ((m_iGenreType == EPG_GENRE_USE_STRING || m_iGenreSubType == EPG_GENRE_USE_STRING) &&
+        !m_strGenreDescription.empty())
+    {
+      // Type and sub type are both not given. No EPG color coding possible unless sub type is
+      // used to specify EPG_GENRE_USE_STRING leaving type available for genre category, use the
+      // provided genre description for the text.
+      m_genre = Tokenize(m_strGenreDescription);
+    }
+
+    if (m_genre.empty())
+    {
+      // Determine the genre from the type and subtype IDs.
+      m_genre = Tokenize(CPVREpg::ConvertGenreIdToString(m_iGenreType, m_iGenreSubType));
+    }
+  }
   return m_genre;
 }
 
@@ -484,7 +482,7 @@ std::string CPVREpgInfoTag::ClientIconPath() const
 
 std::string CPVREpgInfoTag::Path() const
 {
-  return m_strFileNameAndPath;
+  return StringUtils::Format("pvr://guide/{:04}/{}.epg", EpgID(), m_startTime.GetAsDBDateTime());
 }
 
 bool CPVREpgInfoTag::Update(const CPVREpgInfoTag& tag, bool bUpdateBroadcastId /* = true */)
@@ -497,7 +495,8 @@ bool CPVREpgInfoTag::Update(const CPVREpgInfoTag& tag, bool bUpdateBroadcastId /
        m_iYear != tag.m_iYear || m_strIMDBNumber != tag.m_strIMDBNumber ||
        m_startTime != tag.m_startTime || m_endTime != tag.m_endTime ||
        m_iGenreType != tag.m_iGenreType || m_iGenreSubType != tag.m_iGenreSubType ||
-       m_firstAired != tag.m_firstAired || m_iParentalRating != tag.m_iParentalRating ||
+       m_strGenreDescription != tag.m_strGenreDescription || m_firstAired != tag.m_firstAired ||
+       m_iParentalRating != tag.m_iParentalRating ||
        m_strParentalRatingCode != tag.m_strParentalRatingCode ||
        m_iStarRating != tag.m_iStarRating || m_iEpisodeNumber != tag.m_iEpisodeNumber ||
        m_iEpisodePart != tag.m_iEpisodePart || m_iSeriesNumber != tag.m_iSeriesNumber ||
@@ -527,20 +526,11 @@ bool CPVREpgInfoTag::Update(const CPVREpgInfoTag& tag, bool bUpdateBroadcastId /
     m_endTime = tag.m_endTime;
     m_iGenreType = tag.m_iGenreType;
     m_iGenreSubType = tag.m_iGenreSubType;
+    m_strGenreDescription = tag.m_strGenreDescription;
+    m_genre = tag.m_genre;
     m_iEpgID = tag.m_iEpgID;
     m_iFlags = tag.m_iFlags;
     m_strSeriesLink = tag.m_strSeriesLink;
-
-    if (m_iGenreType == EPG_GENRE_USE_STRING || m_iGenreSubType == EPG_GENRE_USE_STRING)
-    {
-      /* No type/subtype. Use the provided description */
-      m_genre = tag.m_genre;
-    }
-    else
-    {
-      /* Determine genre description by type/subtype */
-      m_genre = StringUtils::Split(CPVREpg::ConvertGenreIdToString(tag.m_iGenreType, tag.m_iGenreSubType), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
-    }
     m_firstAired = tag.m_firstAired;
     m_iParentalRating = tag.m_iParentalRating;
     m_strParentalRatingCode = tag.m_strParentalRatingCode;
@@ -552,8 +542,6 @@ bool CPVREpgInfoTag::Update(const CPVREpgInfoTag& tag, bool bUpdateBroadcastId /
     m_iUniqueBroadcastID = tag.m_iUniqueBroadcastID;
     m_iconPath = tag.m_iconPath;
     m_channelData = tag.m_channelData;
-
-    UpdatePath();
   }
 
   return bChanged;
@@ -583,12 +571,6 @@ std::vector<PVR_EDL_ENTRY> CPVREpgInfoTag::GetEdl() const
   return edls;
 }
 
-void CPVREpgInfoTag::UpdatePath()
-{
-  m_strFileNameAndPath =
-      StringUtils::Format("pvr://guide/{:04}/{}.epg", EpgID(), m_startTime.GetAsDBDateTime());
-}
-
 int CPVREpgInfoTag::EpgID() const
 {
   return m_iEpgID;
@@ -598,7 +580,6 @@ void CPVREpgInfoTag::SetEpgID(int iEpgID)
 {
   m_iEpgID = iEpgID;
   m_iconPath.SetOwner(StringUtils::Format(IMAGE_OWNER_PATTERN, m_iEpgID));
-  UpdatePath(); // Note: path contains epg id.
 }
 
 bool CPVREpgInfoTag::IsRecordable() const
