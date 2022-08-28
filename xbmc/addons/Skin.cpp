@@ -814,14 +814,6 @@ CSkinSettingPtr CSkinInfo::ParseSetting(const TiXmlElement* element)
   return setting;
 }
 
-bool CSkinInfo::SettingsInitialized(AddonInstanceId id /* = ADDON_SETTINGS_ID */) const
-{
-  if (id != ADDON_SETTINGS_ID)
-    return false;
-
-  return true;
-}
-
 bool CSkinInfo::SettingsLoaded(AddonInstanceId id /* = ADDON_SETTINGS_ID */) const
 {
   if (id != ADDON_SETTINGS_ID)
