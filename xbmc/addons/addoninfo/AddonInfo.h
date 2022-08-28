@@ -27,6 +27,8 @@ class CAddonInfo;
 typedef std::shared_ptr<CAddonInfo> AddonInfoPtr;
 typedef std::vector<AddonInfoPtr> AddonInfos;
 
+using AddonInstanceId = uint32_t;
+
 /*!
  * Defines the default language code used as fallback in case the requested language is not
  * available. Used, for instance, to handle content from addon.xml.
@@ -61,6 +63,26 @@ enum class AddonUpdateRule
   USER_DISABLED_AUTO_UPDATE = 1, //!< automatic updates disabled via AddonInfo dialog
   PIN_OLD_VERSION = 2, //!< user downgraded to an older version
   PIN_ZIP_INSTALL = 3, //!< user installed manually from zip
+};
+
+/*!
+ * @brief Independent add-on instance support.
+ *
+ * Used to be able to find out its instance path for the respective add-on types.
+ */
+enum class AddonInstanceSupport
+{
+  //! If add-on type does not support instances.
+  SUPPORT_NONE = 0,
+
+  //! If add-on type needs support for several instances individually.
+  SUPPORT_MANDATORY = 1,
+
+  //! If add-on type can support several instances individually.
+  SUPPORT_OPTIONAL = 2,
+
+  //! If add-on type supports multiple instances using independent settings.
+  SUPPORT_SETTINGS = 3,
 };
 
 /*!
@@ -218,6 +240,13 @@ public:
   CDateTime LastUpdated() const { return m_lastUpdated; }
   CDateTime LastUsed() const { return m_lastUsed; }
 
+  bool SupportsMultipleInstances() const;
+  AddonInstanceSupport InstanceUseType() const { return m_addonInstanceSupportType; }
+
+  bool SupportsAddonSettings() const { return m_supportsAddonSettings; }
+  bool SupportsInstanceSettings() const { return m_supportsInstanceSettings; }
+  std::vector<AddonInstanceId> GetKnownInstanceIds() const;
+
   /*!
     * @brief Utilities to translate add-on parts to his requested part.
     */
@@ -226,6 +255,7 @@ public:
   static std::string TranslateIconType(TYPE type);
   static TYPE TranslateType(const std::string& string);
   static TYPE TranslateSubContent(const std::string& content);
+  static AddonInstanceSupport InstanceSupportType(TYPE type);
   //@}
 
 private:
@@ -266,6 +296,9 @@ private:
   std::string m_libname;
   InfoMap m_extrainfo;
   std::vector<std::string> m_platforms;
+  AddonInstanceSupport m_addonInstanceSupportType{AddonInstanceSupport::SUPPORT_NONE};
+  bool m_supportsAddonSettings{false};
+  bool m_supportsInstanceSettings{false};
 
   const std::string& GetTranslatedText(const std::unordered_map<std::string, std::string>& locales) const;
 };
