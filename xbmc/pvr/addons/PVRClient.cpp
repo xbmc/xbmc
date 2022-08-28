@@ -62,8 +62,8 @@ namespace PVR
 
 #define DEFAULT_INFO_STRING_VALUE "unknown"
 
-CPVRClient::CPVRClient(const ADDON::AddonInfoPtr& addonInfo)
-  : IAddonInstanceHandler(ADDON_INSTANCE_PVR, addonInfo)
+CPVRClient::CPVRClient(const ADDON::AddonInfoPtr& addonInfo, ADDON::AddonInstanceId instanceId)
+  : IAddonInstanceHandler(ADDON_INSTANCE_PVR, addonInfo, instanceId)
 {
   // Create all interface parts independent to make API changes easier if
   // something is added
@@ -92,7 +92,7 @@ void CPVRClient::StopRunningInstance()
 {
   // stop the pvr manager and stop and unload the running pvr addon. pvr manager will be restarted on demand.
   CServiceBroker::GetPVRManager().Stop();
-  CServiceBroker::GetPVRManager().Clients()->StopClient(ID(), false);
+  CServiceBroker::GetPVRManager().Clients()->StopClient(ID(), InstanceId(), false);
 }
 
 void CPVRClient::OnPreInstall()

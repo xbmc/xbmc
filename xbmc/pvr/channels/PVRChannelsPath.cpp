@@ -69,7 +69,18 @@ CPVRChannelsPath::CPVRChannelsPath(const std::string& strPath)
         std::vector<std::string> tokens = StringUtils::Split(segment, "_");
         if (tokens.size() == 2)
         {
-          m_clientID = tokens[0];
+          std::vector<std::string> instance = StringUtils::Split(tokens[0], "@");
+          if (instance.size() == 2)
+          {
+            m_instanceID = std::atoi(instance[0].c_str());
+            m_clientID = instance[1];
+          }
+          else
+          {
+            m_instanceID = ADDON::ADDON_SINGLETON_INSTANCE_ID;
+            m_clientID = tokens[0];
+          }
+
           tokens = StringUtils::Split(tokens[1], ".");
           if (tokens.size() == 2 && tokens[1] == "pvr")
           {
@@ -81,7 +92,8 @@ CPVRChannelsPath::CPVRChannelsPath(const std::string& strPath)
 
         if (!m_clientID.empty() && m_iChannelUID >= 0)
         {
-          m_kind = Kind::CHANNEL; // pvr://channels/(tv|radio)/<groupname>/<addonid>_<channeluid>.pvr
+          m_kind = Kind::
+              CHANNEL; // pvr://channels/(tv|radio)/<groupname>/<instanceid>@<addonid>_<channeluid>.pvr
         }
         else
         {
@@ -141,7 +153,11 @@ CPVRChannelsPath::CPVRChannelsPath(bool bRadio, const std::string& strGroupName)
     m_path.append("/");
 }
 
-CPVRChannelsPath::CPVRChannelsPath(bool bRadio, const std::string& strGroupName, const std::string& strClientID, int iChannelUID)
+CPVRChannelsPath::CPVRChannelsPath(bool bRadio,
+                                   const std::string& strGroupName,
+                                   const std::string& strClientID,
+                                   ADDON::AddonInstanceId instanceID,
+                                   int iChannelUID)
   : m_bRadio(bRadio)
 {
   if (!strGroupName.empty() && !strClientID.empty() && iChannelUID >= 0)
@@ -149,9 +165,10 @@ CPVRChannelsPath::CPVRChannelsPath(bool bRadio, const std::string& strGroupName,
     m_kind = Kind::CHANNEL;
     m_group = strGroupName;
     m_clientID = strClientID;
+    m_instanceID = instanceID;
     m_iChannelUID = iChannelUID;
-    m_path = StringUtils::Format("pvr://channels/{}/{}/{}_{}.pvr", bRadio ? "radio" : "tv",
-                                 CURL::Encode(m_group), m_clientID, m_iChannelUID);
+    m_path = StringUtils::Format("pvr://channels/{}/{}/{}@{}_{}.pvr", bRadio ? "radio" : "tv",
+                                 CURL::Encode(m_group), m_instanceID, m_clientID, m_iChannelUID);
   }
 }
 

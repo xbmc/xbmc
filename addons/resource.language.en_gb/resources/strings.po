@@ -1443,8 +1443,9 @@ msgstr ""
 #. Label of 'Enabled' radiobutton in PVR timer settings dialog
 #. Label of timers state in PVR timer/timer rule window
 #: system/peripherals.xml
-#: xbmc/filesystem/AddonsDirectory.cpp
 #: system/settings/settings.xml
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
+#: xbmc/filesystem/AddonsDirectory.cpp
 #: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
 msgctxt "#305"
@@ -2562,6 +2563,7 @@ msgid "Sort by: {0:s}"
 msgstr ""
 
 #. generic "name" label used in different places
+#: xbmc/addons/settings/AddonSettings.cpp
 #: xbmc/pvr/windows/GUIViewStatePVR.cpp
 #: xbmc/view/GUIViewState.cpp
 msgctxt "#551"
@@ -4901,28 +4903,73 @@ msgctxt "#10008"
 msgid "Play next"
 msgstr ""
 
-#empty strings from id 10009 to 10010
+#. Header label for add-on configuration removal dialog
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
+msgctxt "#10009"
+msgid "Confirm add-on configuration removal"
+msgstr ""
+
+#. Header label for add-on configuration removal selection dialog
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
+msgctxt "#10010"
+msgid "Select add-on configuration to remove"
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10011"
 msgid "Settings - Videos - Screen calibration"
 msgstr ""
 
-#empty strings from id 10012 to 10015
+#. Header label for add-on configuration selection dialog
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
+msgctxt "#10012"
+msgid "Add-on configurations and settings"
+msgstr ""
+
+#. Item label used in add-on configuration selection dialog
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
+msgctxt "#10013"
+msgid "Edit add-on settings"
+msgstr ""
+
+#. Item label used in add-on configuration selection dialog
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
+msgctxt "#10014"
+msgid "Add add-on configuration"
+msgstr ""
+
+#.Item label used in add-on configuration selection dialog
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
+msgctxt "#10015"
+msgid "Remove add-on configuration"
+msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10016"
 msgid "Settings - System"
 msgstr ""
 
-#empty string with id 10017
+#. Settings group label
+#: xbmc/addons/settings/AddonSettings.cpp
+msgctxt "#10017"
+msgid "Add-on configuration"
+msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10018"
 msgid "Settings - Service"
 msgstr ""
 
-#empty strings from id 10019 to 10020
+#. Item label for add-on configuration removal dialog
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
+msgctxt "#10019"
+msgid "Do you want to remove the add-on configuration \"{0:s}\"?"
+msgstr ""
+
+#.Item label used in add-on setup selection dialog
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
+msgctxt "#10020"
+msgid "Edit \"{0:s}\" [{1:s}]"
+msgstr ""
 
 msgctxt "#10021"
 msgid "Settings - TV"
@@ -6264,10 +6311,11 @@ msgstr ""
 #empty strings from id 13102 to 13105
 
 #. generic "disabled" label used in different places
-#: xbmc/peripherals/bus/PeripheralBus.cpp
 #: system/settings/settings.xml
+#: xbmc/peripherals/bus/PeripheralBus.cpp
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
 #: xbmc/addons/GUIWindowAddonBrowser.cpp
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
 msgctxt "#13106"
 msgid "Disabled"
 msgstr ""
@@ -6465,6 +6513,7 @@ msgstr ""
 #. generic "unknown" label used in different places
 #: xbmc/GUIInfoManager.cpp
 #: xbmc/LangInfo.cpp
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
 #: xbmc/music/MusicDatabase.cpp
 #: xbmc/peripherals/bus/PeripheralBus.cpp
 #: xbmc/peripherals/devices/Peripheral.cpp
@@ -9895,6 +9944,7 @@ msgstr ""
 
 #. generic warning label used at several places
 #: xbmc/addons/AddonSystemSettings.cpp
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
 #: xbmc/network/NetworkServices.cpp
 #: xbmc/pvr/channels/PVRChannelGroupInternal.cpp
 #: xbmc/pvr/PVRManager.cpp

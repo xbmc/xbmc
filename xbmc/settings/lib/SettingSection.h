@@ -122,6 +122,7 @@ public:
   bool CanAccess() const;
 
   void AddGroup(const SettingGroupPtr& group);
+  void AddGroupToFront(const SettingGroupPtr& group);
   void AddGroups(const SettingGroupList &groups);
 
 private:

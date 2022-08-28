@@ -218,6 +218,67 @@ void CAddonSettings::OnSettingAction(const std::shared_ptr<const CSetting>& sett
   CServiceBroker::GetAppMessenger()->SendMsg(TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr, actionData);
 }
 
+bool CAddonSettings::AddInstanceSettings()
+{
+  if (GetSetting(ADDON_SETTING_INSTANCE_NAME_VALUE) ||
+      GetSetting(ADDON_SETTING_INSTANCE_ENABLED_VALUE))
+  {
+    CLog::Log(
+        LOGDEBUG,
+        "CAddonSettings::{} - Add-on {} using instance setting values byself, Kodi's add ignored",
+        __func__, m_addonId);
+    return true;
+  }
+
+  auto mgr = GetSettingsManager();
+  if (!mgr)
+    return false;
+
+  auto sections = mgr->GetSections();
+  if (sections.empty())
+    return false;
+
+  SettingSectionPtr section = *sections.begin();
+
+  auto categories = section->GetCategories();
+  if (categories.empty())
+    return false;
+
+  SettingCategoryPtr category = *categories.begin();
+
+  auto groups = category->GetGroups();
+  auto itr = std::find_if(groups.begin(), groups.end(), [](SettingGroupPtr group) {
+    return group->GetId() == ADDON_SETTING_INSTANCE_GROUP;
+  });
+
+  SettingGroupPtr group;
+  if (itr != groups.end())
+  {
+    group = *itr;
+  }
+  else
+  {
+    group = std::make_shared<CSettingGroup>(ADDON_SETTING_INSTANCE_GROUP, mgr);
+    group->SetLabel(10017); // Add-on configuration
+    category->AddGroupToFront(group);
+  }
+
+  const std::shared_ptr<CSettingString> name =
+      std::make_shared<CSettingString>(ADDON_SETTING_INSTANCE_NAME_VALUE, 551, "", mgr); // Name
+  name->SetAllowEmpty(false);
+  name->SetControl(std::make_shared<CSettingControlEdit>());
+  if (!mgr->AddSetting(name, section, category, group))
+    return false;
+
+  const std::shared_ptr<CSettingBool> enabled = std::make_shared<CSettingBool>(
+      ADDON_SETTING_INSTANCE_ENABLED_VALUE, 305, true, mgr); // Enabled
+  enabled->SetControl(std::make_shared<CSettingControlCheckmark>());
+  if (!mgr->AddSetting(enabled, section, category, group))
+    return false;
+
+  return true;
+}
+
 bool CAddonSettings::Initialize(const CXBMCTinyXML& doc, bool allowEmpty /* = false */)
 {
   std::unique_lock<CCriticalSection> lock(m_critical);
@@ -234,6 +295,10 @@ bool CAddonSettings::Initialize(const CXBMCTinyXML& doc, bool allowEmpty /* = fa
 
   // load the settings definitions
   if (!InitializeDefinitions(doc) && !allowEmpty)
+    return false;
+
+  // Add internal settings to set values about instance set
+  if (m_instanceId > 0 && !AddInstanceSettings())
     return false;
 
   GetSettingsManager()->SetInitialized();
