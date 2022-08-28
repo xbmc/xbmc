@@ -213,10 +213,12 @@ void CPVRClients::UpdateAddons(const std::string& changedAddonId /*= ""*/)
   }
 }
 
-bool CPVRClients::RequestRestart(const std::string& id, bool bDataChanged)
+bool CPVRClients::RequestRestart(const std::string& addonId,
+                                 ADDON::AddonInstanceId instanceId,
+                                 bool bDataChanged)
 {
-  CServiceBroker::GetJobManager()->Submit([this, id] {
-    UpdateAddons(id);
+  CServiceBroker::GetJobManager()->Submit([this, addonId] {
+    UpdateAddons(addonId);
     return true;
   });
   return true;
