@@ -133,6 +133,51 @@ public:
   }
 
   /*!
+   * \brief Check add-on for support from independent work instances.
+   *
+   * \return true if the add-on supports individual add-on instances, false otherwise
+   */
+  bool SupportsMultipleInstances() const override;
+
+  /*!
+   * \brief Return the used instance path type of the add-on type.
+   *
+   * \return The route used to instance handling, @ref AddonInstanceUse::NONE if not supported.
+   */
+  AddonInstanceSupport InstanceUseType() const override;
+
+  /*!
+   * \brief Gives active, independently working instance identifiers for this add-on.
+   *
+   * This function is supported if add-on type has defined
+   * @ref AddonInstanceUse::BY_SETTINGS and the associated settings
+   * are available.
+   *
+   * \return List of active instance identifiers.
+   */
+  std::vector<AddonInstanceId> GetKnownInstanceIds() const override;
+
+  /*!
+   * \brief Check whether the add-on supports individual settings per add-on instance.
+   *
+   * This function is supported if add-on type has defined
+   * @ref AddonInstanceUse::BY_SETTINGS
+   *
+   * \return true if the add-on supports individual settings per add-on instance, false otherwise
+   */
+  bool SupportsInstanceSettings() const override;
+
+  /*!
+   * \brief Delete selected instance settings from storage.
+   *
+   * The related instance-settings-[0-9...].xml file will be deleted by this method.
+   *
+   * \param[in] instance Instance identifier to use.
+   * \return true on success, false otherwise.
+   */
+  bool DeleteInstanceSettings(AddonInstanceId instance) override;
+
+  /*!
    * \brief Check whether this add-on can be configured by the user.
    *
    * \return true if the add-on has settings, false otherwise

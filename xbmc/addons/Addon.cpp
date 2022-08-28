@@ -47,6 +47,31 @@ CAddon::CAddon(const AddonInfoPtr& addonInfo, TYPE addonType)
  * Settings Handling
  */
 
+std::vector<AddonInstanceId> CAddon::GetKnownInstanceIds() const
+{
+  return m_addonInfo->GetKnownInstanceIds();
+}
+
+bool CAddon::SupportsMultipleInstances() const
+{
+  return m_addonInfo->SupportsMultipleInstances();
+}
+
+AddonInstanceSupport CAddon::InstanceUseType() const
+{
+  return m_addonInfo->InstanceUseType();
+}
+
+bool CAddon::SupportsInstanceSettings() const
+{
+  return m_addonInfo->SupportsInstanceSettings();
+}
+
+bool CAddon::DeleteInstanceSettings(AddonInstanceId instance)
+{
+  return false;
+}
+
 bool CAddon::CanHaveAddonOrInstanceSettings()
 {
   return HasSettings(ADDON_SETTINGS_ID);
