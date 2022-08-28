@@ -195,6 +195,7 @@ public:
   const std::string& Forum() const { return m_forum; }
   const std::string& EMail() const { return m_email; }
   const std::string& Path() const { return m_path; }
+  const std::string& ProfilePath() const { return m_profilePath; }
   const std::string& ChangeLog() const { return GetTranslatedText(m_changelog); }
   const std::string& Icon() const { return m_icon; }
   const ArtMap& Art() const { return m_art; }
@@ -247,6 +248,7 @@ private:
   std::string m_forum;
   std::string m_email;
   std::string m_path;
+  std::string m_profilePath;
   std::unordered_map<std::string, std::string> m_changelog;
   std::string m_icon;
   ArtMap m_art;

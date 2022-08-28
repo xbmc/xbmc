@@ -324,17 +324,17 @@ void CPeripheralBusAddon::OnEvent(const ADDON::AddonEvent& event)
   if (typeid(event) == typeid(ADDON::AddonEvents::Enabled) ||
       typeid(event) == typeid(ADDON::AddonEvents::ReInstalled))
   {
-    if (CServiceBroker::GetAddonMgr().HasType(event.id, ADDON::ADDON_PERIPHERALDLL))
+    if (CServiceBroker::GetAddonMgr().HasType(event.addonId, ADDON::ADDON_PERIPHERALDLL))
       UpdateAddons();
   }
   else if (typeid(event) == typeid(ADDON::AddonEvents::Disabled))
   {
-    if (CServiceBroker::GetAddonMgr().HasType(event.id, ADDON::ADDON_PERIPHERALDLL))
-      UnRegisterAddon(event.id);
+    if (CServiceBroker::GetAddonMgr().HasType(event.addonId, ADDON::ADDON_PERIPHERALDLL))
+      UnRegisterAddon(event.addonId);
   }
   else if (typeid(event) == typeid(ADDON::AddonEvents::UnInstalled))
   {
-    UnRegisterAddon(event.id);
+    UnRegisterAddon(event.addonId);
   }
 }
 

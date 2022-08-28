@@ -106,7 +106,7 @@ void CVFSAddonCache::OnEvent(const AddonEvent& event)
   {
     for (const auto& vfs : m_addonsInstances)
     {
-      if (vfs->ID() == event.id && !vfs->GetZeroconfType().empty())
+      if (vfs->ID() == event.addonId && !vfs->GetZeroconfType().empty())
         CZeroconfBrowser::GetInstance()->RemoveServiceType(vfs->GetZeroconfType());
     }
   }
@@ -115,12 +115,12 @@ void CVFSAddonCache::OnEvent(const AddonEvent& event)
       typeid(event) == typeid(AddonEvents::Disabled) ||
       typeid(event) == typeid(AddonEvents::ReInstalled))
   {
-    if (CServiceBroker::GetAddonMgr().HasType(event.id, ADDON_VFS))
-      Update(event.id);
+    if (CServiceBroker::GetAddonMgr().HasType(event.addonId, ADDON_VFS))
+      Update(event.addonId);
   }
   else if (typeid(event) == typeid(AddonEvents::UnInstalled))
   {
-    Update(event.id);
+    Update(event.addonId);
   }
 }
 
@@ -582,13 +582,13 @@ CVFSEntryIFileWrapper::~CVFSEntryIFileWrapper()
 bool CVFSEntryIFileWrapper::Open(const CURL& url)
 {
   m_context = m_addon->Open(url);
-  return m_context != NULL;
+  return m_context != nullptr;
 }
 
 bool CVFSEntryIFileWrapper::OpenForWrite(const CURL& url, bool bOverWrite)
 {
   m_context = m_addon->OpenForWrite(url, bOverWrite);
-  return m_context != NULL;
+  return m_context != nullptr;
 }
 
 bool CVFSEntryIFileWrapper::Exists(const CURL& url)
@@ -635,7 +635,7 @@ void CVFSEntryIFileWrapper::Close()
   if (m_context)
   {
     m_addon->Close(m_context);
-    m_context = NULL;
+    m_context = nullptr;
   }
 }
 

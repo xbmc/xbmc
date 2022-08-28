@@ -211,7 +211,7 @@ bool CAddonInstaller::InstallOrUpdateDependency(const ADDON::AddonPtr& dependsId
 
 bool CAddonInstaller::RemoveDependency(const std::shared_ptr<IAddon>& dependsId) const
 {
-  bool removeData = CDirectory::Exists("special://profile/addon_data/" + dependsId->ID());
+  const bool removeData = CDirectory::Exists(dependsId->Profile());
   CAddonUnInstallJob removeDependencyJob(dependsId, removeData);
   removeDependencyJob.SetRecurseOrphaned(RecurseOrphaned::CHOICE_NO);
 
@@ -352,13 +352,16 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
   return false;
 }
 
-bool CAddonInstaller::CheckDependencies(const AddonPtr &addon, CAddonDatabase *database /* = NULL */)
+bool CAddonInstaller::CheckDependencies(const AddonPtr& addon,
+                                        CAddonDatabase* database /* = nullptr */)
 {
   std::pair<std::string, std::string> failedDep;
   return CheckDependencies(addon, failedDep, database);
 }
 
-bool CAddonInstaller::CheckDependencies(const AddonPtr &addon, std::pair<std::string, std::string> &failedDep, CAddonDatabase *database /* = NULL */)
+bool CAddonInstaller::CheckDependencies(const AddonPtr& addon,
+                                        std::pair<std::string, std::string>& failedDep,
+                                        CAddonDatabase* database /* = nullptr */)
 {
   std::vector<std::string> preDeps;
   preDeps.push_back(addon->ID());
@@ -373,8 +376,8 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
                                         std::vector<std::string>& preDeps, CAddonDatabase &database,
                                         std::pair<std::string, std::string> &failedDep)
 {
-  if (addon == NULL)
-    return true; // a NULL addon has no dependencies
+  if (addon == nullptr)
+    return true; // a nullptr addon has no dependencies
 
   for (const auto& it : addon->GetDependencies())
   {
@@ -1075,7 +1078,7 @@ void CAddonInstallJob::ReportInstallError(const std::string& addonID, const std:
 
   std::string msg = message;
   EventPtr activity;
-  if (addon != NULL)
+  if (addon != nullptr)
   {
     AddonPtr addon2;
     bool success = CServiceBroker::GetAddonMgr().GetAddon(addonID, addon2, ADDON_UNKNOWN,
@@ -1130,7 +1133,7 @@ bool CAddonUnInstallJob::DoWork()
   ClearFavourites();
   if (m_removeData)
   {
-    CFileUtils::DeleteItem("special://profile/addon_data/"+m_addon->ID()+"/");
+    CFileUtils::DeleteItem(m_addon->Profile());
   }
 
   AddonPtr addon;
