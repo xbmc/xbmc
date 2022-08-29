@@ -290,11 +290,10 @@ void CSkinInfo::LoadTimers()
   m_skinTimerManager.LoadTimers(timersPath);
 }
 
-void CSkinInfo::StartTimerEvaluation()
+void CSkinInfo::ProcessTimers()
 {
-  m_skinTimerManager.Start();
+  m_skinTimerManager.Process();
 }
-
 void CSkinInfo::ResolveIncludes(TiXmlElement* node,
                                 std::map<INFO::InfoPtr, bool>* xmlIncludeConditions /* = nullptr */)
 {

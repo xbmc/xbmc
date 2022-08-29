@@ -20,19 +20,6 @@
 
 using namespace std::chrono_literals;
 
-CSkinTimerManager::CSkinTimerManager() : CThread("SkinTimers")
-{
-}
-
-void CSkinTimerManager::Start()
-{
-  std::unique_lock<CCriticalSection> lock(m_timerCriticalSection);
-  if (!m_timers.empty())
-  {
-    Create();
-  }
-}
-
 void CSkinTimerManager::LoadTimers(const std::string& path)
 {
   CXBMCTinyXML doc;
@@ -51,7 +38,6 @@ void CSkinTimerManager::LoadTimers(const std::string& path)
   }
 
   const TiXmlElement* timerNode = root->FirstChildElement("timer");
-  std::unique_lock<CCriticalSection> lock(m_timerCriticalSection);
   while (timerNode)
   {
     LoadTimerInternal(timerNode);
@@ -146,7 +132,6 @@ void CSkinTimerManager::LoadTimerInternal(const TiXmlElement* node)
 
 bool CSkinTimerManager::TimerIsRunning(const std::string& timer) const
 {
-  std::unique_lock<CCriticalSection> lock(m_timerCriticalSection);
   if (m_timers.count(timer) == 0)
   {
     CLog::LogF(LOGERROR, "Couldn't find Skin Timer with name: {}", timer);
@@ -157,7 +142,6 @@ bool CSkinTimerManager::TimerIsRunning(const std::string& timer) const
 
 float CSkinTimerManager::GetTimerElapsedSeconds(const std::string& timer) const
 {
-  std::unique_lock<CCriticalSection> lock(m_timerCriticalSection);
   if (m_timers.count(timer) == 0)
   {
     CLog::LogF(LOGERROR, "Couldn't find Skin Timer with name: {}", timer);
@@ -168,7 +152,6 @@ float CSkinTimerManager::GetTimerElapsedSeconds(const std::string& timer) const
 
 void CSkinTimerManager::TimerStart(const std::string& timer) const
 {
-  std::unique_lock<CCriticalSection> lock(m_timerCriticalSection);
   if (m_timers.count(timer) == 0)
   {
     CLog::LogF(LOGERROR, "Couldn't find Skin Timer with name: {}", timer);
@@ -179,7 +162,6 @@ void CSkinTimerManager::TimerStart(const std::string& timer) const
 
 void CSkinTimerManager::TimerStop(const std::string& timer) const
 {
-  std::unique_lock<CCriticalSection> lock(m_timerCriticalSection);
   if (m_timers.count(timer) == 0)
   {
     CLog::LogF(LOGERROR, "Couldn't find Skin Timer with name: {}", timer);
@@ -190,14 +172,11 @@ void CSkinTimerManager::TimerStop(const std::string& timer) const
 
 void CSkinTimerManager::Stop()
 {
-  StopThread();
-
   // skintimers, as infomanager clients register info conditions/expressions in the infomanager.
   // The infomanager is linked to skins, being initialized or cleared when
   // skins are loaded (or unloaded). All the registered boolean conditions from
   // skin timers will end up being removed when the skin is unloaded. However, to
   // self-contain this component unregister them all here.
-  std::unique_lock<CCriticalSection> lock(m_timerCriticalSection);
   for (auto const& [key, val] : m_timers)
   {
     const std::unique_ptr<CSkinTimer>::pointer timer = val.get();
@@ -217,33 +196,22 @@ void CSkinTimerManager::Stop()
   m_timers.clear();
 }
 
-void CSkinTimerManager::StopThread(bool bWait /*= true*/)
-{
-  std::unique_lock<CCriticalSection> lock(m_timerCriticalSection);
-  m_bStop = true;
-  CThread::StopThread(bWait);
-}
-
 void CSkinTimerManager::Process()
 {
-  while (!m_bStop)
+  for (const auto& [key, val] : m_timers)
   {
-    for (auto const& [key, val] : m_timers)
+    const std::unique_ptr<CSkinTimer>::pointer timer = val.get();
+    if (!timer->IsRunning() && timer->VerifyStartCondition())
     {
-      const std::unique_ptr<CSkinTimer>::pointer timer = val.get();
-      if (!timer->IsRunning() && timer->VerifyStartCondition())
-      {
-        timer->Start();
-      }
-      else if (timer->IsRunning() && timer->VerifyStopCondition())
-      {
-        timer->Stop();
-      }
-      if (timer->GetElapsedSeconds() > 0 && timer->VerifyResetCondition())
-      {
-        timer->Reset();
-      }
+      timer->Start();
     }
-    Sleep(500ms);
+    else if (timer->IsRunning() && timer->VerifyStopCondition())
+    {
+      timer->Stop();
+    }
+    if (timer->GetElapsedSeconds() > 0 && timer->VerifyResetCondition())
+    {
+      timer->Reset();
+    }
   }
 }
