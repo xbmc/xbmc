@@ -648,6 +648,20 @@ std::string CLangInfo::GetSubtitleCharSet() const
   return charsetSetting->GetValue();
 }
 
+void CLangInfo::GetAddonsLanguageCodes(std::map<std::string, std::string>& languages)
+{
+  ADDON::VECADDONS addons;
+  CServiceBroker::GetAddonMgr().GetAddons(addons, ADDON::ADDON_RESOURCE_LANGUAGE);
+  for (const auto& addon : addons)
+  {
+    const LanguageResourcePtr langAddon =
+        std::dynamic_pointer_cast<ADDON::CLanguageResource>(addon);
+    std::string langCode{langAddon->GetLocale().ToShortStringLC()};
+    StringUtils::Replace(langCode, '_', '-');
+    languages.emplace(langCode, addon->Name());
+  }
+}
+
 LanguageResourcePtr CLangInfo::GetLanguageAddon(const std::string& locale /* = "" */) const
 {
   if (locale.empty() ||
@@ -665,6 +679,24 @@ LanguageResourcePtr CLangInfo::GetLanguageAddon(const std::string& locale /* = "
     return std::dynamic_pointer_cast<ADDON::CLanguageResource>(addon);
 
   return NULL;
+}
+
+std::string CLangInfo::ConvertEnglishNameToAddonLocale(const std::string& langName)
+{
+  ADDON::VECADDONS addons;
+  CServiceBroker::GetAddonMgr().GetAddons(addons, ADDON::ADDON_RESOURCE_LANGUAGE);
+  for (const auto& addon : addons)
+  {
+    if (StringUtils::CompareNoCase(addon->Name(), langName) == 0)
+    {
+      const LanguageResourcePtr langAddon =
+          std::dynamic_pointer_cast<ADDON::CLanguageResource>(addon);
+      std::string locale = langAddon->GetLocale().ToShortStringLC();
+      StringUtils::Replace(locale, '_', '-');
+      return locale;
+    }
+  }
+  return "";
 }
 
 std::string CLangInfo::GetEnglishLanguageName(const std::string& locale /* = "" */) const
@@ -1167,9 +1199,9 @@ void CLangInfo::SettingOptionsISO6391LanguagesFiller(const SettingConstPtr& sett
                                                      std::string& current,
                                                      void* data)
 {
-  // get a list of language names
-  std::vector<std::string> languages = g_LangCodeExpander.GetLanguageNames(CLangCodeExpander::ISO_639_1, true);
-  sort(languages.begin(), languages.end(), sortstringbyname());
+  std::vector<std::string> languages = g_LangCodeExpander.GetLanguageNames(
+      CLangCodeExpander::ISO_639_1, CLangCodeExpander::LANG_LIST::INCLUDE_USERDEFINED);
+
   for (const auto &language : languages)
     list.emplace_back(language, language);
 }
@@ -1486,15 +1518,9 @@ void CLangInfo::SettingOptionsSpeedUnitsFiller(const SettingConstPtr& setting,
 
 void CLangInfo::AddLanguages(std::vector<StringSettingOption> &list)
 {
-  std::string dummy;
-  std::vector<StringSettingOption> languages;
-  SettingOptionsISO6391LanguagesFiller(NULL, languages, dummy, NULL);
-  SettingOptionsLanguageNamesFiller(NULL, languages, dummy, NULL);
+  std::vector<std::string> languages = g_LangCodeExpander.GetLanguageNames(
+      CLangCodeExpander::ISO_639_1, CLangCodeExpander::LANG_LIST::INCLUDE_ADDONS_USERDEFINED);
 
-  // convert the vector to a set to remove duplicates
-  std::set<StringSettingOption, SortLanguage> tmp(
-    languages.begin(), languages.end(), SortLanguage());
-
-  list.reserve(list.size() + tmp.size());
-  list.insert(list.end(), tmp.begin(), tmp.end());
+  for (const auto& language : languages)
+    list.emplace_back(language, language);
 }

@@ -59,6 +59,12 @@ public:
   // implementation of ISettingsHandler
   void OnSettingsLoaded() override;
 
+  /*
+   * \brief Get language codes list of the installed language addons.
+   * \param languages [OUT] The list of languages (language code, name).
+   */
+  static void GetAddonsLanguageCodes(std::map<std::string, std::string>& languages);
+
   /*!
    \brief Returns the language addon for the given locale (or the current one).
 
@@ -74,9 +80,17 @@ public:
   const std::string& GetLanguageCode() const { return m_languageCodeGeneral; }
 
   /*!
-   \brief Returns the given language's name in English
+   * \brief Convert an english language name to an addon locale,
+   *        by searching in the installed language addons.
+   * \param langName [IN] The english language name
+   * \return The locale for the given english name, or empty if not found
+   */
+  static std::string ConvertEnglishNameToAddonLocale(const std::string& langName);
 
-   \param locale (optional) Locale of the language (current if empty)
+  /*!
+   * \brief Get the english language name from given locale,
+   *        by searching in the installed language addons.
+   * \param locale [OPT] Locale of the language (current if empty)
    */
   std::string GetEnglishLanguageName(const std::string& locale = "") const;
 
