@@ -198,7 +198,7 @@ void CSkinTimerManager::Stop()
 
 void CSkinTimerManager::Process()
 {
-  for (auto const& [key, val] : m_timers)
+  for (const auto& [key, val] : m_timers)
   {
     const std::unique_ptr<CSkinTimer>::pointer timer = val.get();
     if (!timer->IsRunning() && timer->VerifyStartCondition())
