@@ -102,6 +102,16 @@ public:
   */
   std::string ConvertToISO6392T(const std::string& lang);
 
+  /*
+   * \brief Find a language code with subtag (e.g. zh-tw, zh-Hans) in to a string.
+   *        This function find a limited set of IETF BCP47 specs, so:
+   *        language tag + region subtag, or, language tag + script subtag.
+   *        The language code can be found also if wrapped with round brackets.
+   * \param str The string where find the language code.
+   * \return The language code found in the string, otherwise empty string
+   */
+  static std::string FindLanguageCodeWithSubtag(const std::string& str);
+
 #ifdef TARGET_WINDOWS
   static bool ConvertISO31661Alpha2ToISO31661Alpha3(const std::string& strISO31661Alpha2, std::string& strISO31661Alpha3);
   static bool ConvertWindowsLanguageCodeToISO6392B(const std::string& strWindowsLanguageCode, std::string& strISO6392B);
