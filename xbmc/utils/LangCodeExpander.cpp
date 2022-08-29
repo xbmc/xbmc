@@ -8,6 +8,7 @@
 
 #include "LangCodeExpander.h"
 
+#include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 
@@ -545,6 +546,18 @@ std::string CLangCodeExpander::ConvertToISO6392T(const std::string& lang)
   }
 
   return lang;
+}
+
+std::string CLangCodeExpander::FindLanguageCodeWithSubtag(const std::string& str)
+{
+  CRegExp regLangCode;
+  if (regLangCode.RegComp(
+          "(?:^|\\s|\\()(([A-Za-z]{2,3})-([A-Za-z]{2}|[0-9]{3}|[A-Za-z]{4}))(?:$|\\s|\\))") &&
+      regLangCode.RegFind(str) >= 0)
+  {
+    return regLangCode.GetMatch(1);
+  }
+  return "";
 }
 
 // clang-format off
