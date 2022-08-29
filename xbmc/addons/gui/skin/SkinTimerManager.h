@@ -9,7 +9,6 @@
 #pragma once
 
 #include "SkinTimer.h"
-#include "threads/Thread.h"
 
 #include <map>
 #include <memory>
@@ -18,25 +17,23 @@
 /*! \brief CSkinTimerManager is the container and manager for Skin timers. Its role is that of
  * checking if the timer boolean conditions are valid, start or stop timers and execute the respective
  * builtin actions linked to the timer lifecycle
+ * \note This component should only be called by the main/rendering thread
  * \sa Skin_Timers
  * \sa CSkinTimer
  */
-class CSkinTimerManager : public CThread
+class CSkinTimerManager
 {
 public:
   /*! \brief Skin timer manager constructor */
-  CSkinTimerManager();
+  CSkinTimerManager() = default;
 
   /*! \brief Default skin timer manager destructor */
-  ~CSkinTimerManager() override = default;
+  ~CSkinTimerManager() = default;
 
   /*! \brief Loads all the skin timers
   * \param path - the path for the skin Timers.xml file
   */
   void LoadTimers(const std::string& path);
-
-  /*! \brief Starts the manager */
-  void Start();
 
   /*! \brief Stops the manager */
   void Stop();
@@ -65,13 +62,8 @@ public:
 
   // CThread methods
 
-  /*! \brief Start and run the main manager loop */
-  void Process() override;
-
-  /*! \brief Stop the manager thread
-   \param bWait - If the callee should wait for the thread to exit (default is true)
-   */
-  void StopThread(bool bWait = true) override;
+  /*! \brief Run the main manager processing loop */
+  void Process();
 
 private:
   /*! \brief Loads a specific timer
@@ -82,6 +74,4 @@ private:
 
   /*! Container for the skin timers */
   std::map<std::string, std::unique_ptr<CSkinTimer>> m_timers;
-
-  mutable CCriticalSection m_timerCriticalSection;
 };

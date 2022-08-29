@@ -206,10 +206,6 @@ bool CApplicationSkinHandling::LoadSkin(const std::string& skinID,
     }
   }
 
-  // start timer manager after all windows were loaded and skin state was restored since timers might depend on
-  // boolean conditions that reference specific windows
-  g_SkinInfo->StartTimerEvaluation();
-
   return true;
 }
 
@@ -503,4 +499,10 @@ bool CApplicationSkinHandling::OnSettingChanged(const CSetting& setting)
     return false;
 
   return true;
+}
+
+void CApplicationSkinHandling::ProcessSkin() const
+{
+  if (g_SkinInfo != nullptr)
+    g_SkinInfo->ProcessTimers();
 }
