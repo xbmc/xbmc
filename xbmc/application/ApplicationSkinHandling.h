@@ -32,6 +32,11 @@ protected:
   bool LoadCustomWindows();
   void ReloadSkin(bool confirm, IMsgTargetCallback* msgCb, IWindowManagerCallback* wCb);
 
+  /*!
+ * \brief Called by the application main/render thread for processing operations belonging to the skin
+ */
+  void ProcessSkin() const;
+
   CApplicationPlayer& m_appPlayer;
   bool m_saveSkinOnUnloading = true;
   bool m_confirmSkinChange = true;
