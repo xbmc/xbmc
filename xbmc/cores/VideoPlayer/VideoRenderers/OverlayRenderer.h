@@ -190,7 +190,7 @@ namespace OVERLAY {
     bool m_saveSubtitlePosition{false}; // To save subtitle position permanently
     KODI::SUBTITLES::HorizontalAlign m_subtitleHorizontalAlign{
         KODI::SUBTITLES::HorizontalAlign::CENTER};
-    KODI::SUBTITLES::Align m_subtitleAlign{KODI::SUBTITLES::Align::BOTTOM_INSIDE};
+    KODI::SUBTITLES::Align m_subtitleAlign{KODI::SUBTITLES::Align::BOTTOM_OUTSIDE};
 
     std::shared_ptr<struct KODI::SUBTITLES::STYLE::style> m_overlayStyle;
     std::atomic<bool> m_isSettingsChanged{false};

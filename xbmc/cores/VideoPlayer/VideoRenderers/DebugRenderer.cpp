@@ -148,5 +148,5 @@ void CDebugRenderer::CRenderer::CreateSubtitlesStyle()
   m_debugOverlayStyle = std::make_shared<KODI::SUBTITLES::STYLE::style>();
   m_debugOverlayStyle->fontName = KODI::SUBTITLES::FONT_DEFAULT_FAMILYNAME;
   m_debugOverlayStyle->fontSize = 20.0;
-  m_debugOverlayStyle->marginVertical = 30;
+  m_debugOverlayStyle->marginVertical = 12;
 }
