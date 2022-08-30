@@ -2983,9 +2983,6 @@ void CApplication::Process()
   // (this can only be done after CServiceBroker::GetGUI()->GetWindowManager().Render())
   CServiceBroker::GetAppMessenger()->ProcessWindowMessages();
 
-  // process skin resources (skin timers)
-  ProcessSkin();
-
   // handle any active scripts
 
   {
@@ -3014,6 +3011,9 @@ void CApplication::Process()
 // We get called every 500ms
 void CApplication::ProcessSlow()
 {
+  // process skin resources (skin timers)
+  ProcessSkin();
+
   CServiceBroker::GetPowerManager().ProcessEvents();
 
 #if defined(TARGET_DARWIN_OSX) && defined(SDL_FOUND)
