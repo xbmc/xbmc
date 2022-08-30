@@ -33,9 +33,9 @@ public:
   * \param resetOnStart - if the timer should be reset when started (i.e. start from zero if true or resumed if false)
   */
   CSkinTimer(const std::string& name,
-             const INFO::InfoPtr startCondition,
-             const INFO::InfoPtr resetCondition,
-             const INFO::InfoPtr stopCondition,
+             const INFO::InfoPtr& startCondition,
+             const INFO::InfoPtr& resetCondition,
+             const INFO::InfoPtr& stopCondition,
              const std::string& startAction,
              const std::string& stopAction,
              bool resetOnStart);

@@ -10699,7 +10699,7 @@ INFO::InfoPtr CGUIInfoManager::Register(const std::string &expression, int conte
   return *(res.first);
 }
 
-void CGUIInfoManager::UnRegister(INFO::InfoPtr expression)
+void CGUIInfoManager::UnRegister(const INFO::InfoPtr& expression)
 {
   std::unique_lock<CCriticalSection> lock(m_critInfo);
   m_bools.erase(expression);
