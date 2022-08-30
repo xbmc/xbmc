@@ -1018,7 +1018,7 @@ bool URIUtils::IsInternetStream(const CURL& url, bool bStrictCheck /* = false */
     return true;
 
   // Check for true internetstreams
-  std::string protocol = url.GetProtocol();
+  const std::string& protocol = url.GetProtocol();
   if (CURL::IsProtocolEqual(protocol, "http") || CURL::IsProtocolEqual(protocol, "https") ||
       CURL::IsProtocolEqual(protocol, "tcp") || CURL::IsProtocolEqual(protocol, "udp") ||
       CURL::IsProtocolEqual(protocol, "rtp") || CURL::IsProtocolEqual(protocol, "sdp") ||
