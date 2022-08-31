@@ -1,0 +1,97 @@
+package @APP_PACKAGE@.content;
+
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.ParcelFileDescriptor;
+import android.util.Log;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+
+public class XBMCExternalFileContentProvider extends XBMCContentProvider
+{
+  private static String TAG = "@APP_NAME@_EXTERNAL_File_Provider";
+
+  public static final String AUTHORITY = AUTHORITY_ROOT + ".external.file";
+
+  private static final HashMap<String, String> MIME_TYPES=new HashMap<String, String>();
+
+  private static final List<String> ALLOWED;
+
+  static {
+    MIME_TYPES
+      .put(".xml", "application/xml");
+
+    ALLOWED=Arrays.asList(
+      "/.kodi/userdata/playercorefactory.xml",
+      "/.kodi/userdata/sources.xml",
+      "/.kodi/userdata/mediasources.xml",
+      "/.kodi/userdata/passwords.xml",
+      "/.kodi/userdata/guisettings.xml"
+    );
+  }
+
+  private File getFileIfAllowed(Uri uri) throws FileNotFoundException {
+    if (!ALLOWED.contains(uri.getPath())) {
+      throw new FileNotFoundException("Not allowed: "+uri.getPath());
+    };
+    return new File(getContext().getExternalFilesDir(null), uri.getPath());
+  }
+
+  @Override
+  public String getType(Uri uri) {
+    String path=uri.toString();
+
+    for (String extension : MIME_TYPES.keySet()) {
+      if (path.endsWith(extension)) {
+        return(MIME_TYPES.get(extension));
+      }
+    }
+
+    return(null);
+  }
+
+  @Override
+  public ParcelFileDescriptor openFile(Uri uri, String mode) throws FileNotFoundException {
+    File f=getFileIfAllowed(uri);
+    return ParcelFileDescriptor.open(f, ParcelFileDescriptor.parseMode(mode));
+  }
+
+  @Override
+  public boolean onCreate()
+  {
+    return true;
+  }
+
+  @Override
+  public int delete(Uri arg0, String arg1, String[] arg2)
+  {
+    // TODO Auto-generated method stub
+    return 0;
+  }
+
+  @Override
+  public Uri insert(Uri arg0, ContentValues arg1)
+  {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public int update(Uri arg0, ContentValues arg1, String arg2, String[] arg3)
+  {
+    // TODO Auto-generated method stub
+    return 0;
+  }
+
+  @Override
+  public Cursor query(Uri uri, String[] projection, String selection,
+                      String[] selectionArgs, String sortOrder)
+  {
+    return null;
+  }
+}

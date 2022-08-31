@@ -80,6 +80,7 @@ set(package_files strings.xml
                   src/model/Song.java
                   src/model/MusicVideo.java
                   src/model/Media.java
+                  src/content/XBMCExternalFileContentProvider.java
                   src/content/XBMCFileContentProvider.java
                   src/content/XBMCMediaContentProvider.java
                   src/content/XBMCContentProvider.java
