@@ -1,0 +1,6 @@
+LIBNAME=libicu
+BASE_URL=https://github.com/unicode-org/icu/releases/download
+DOWNLOAD_VERSION=release-71-1/icu4c-71_1-src.tgz
+VERSION=release-71-1/icu4c-71_1
+ARCHIVE=$(VERSION)-src.tgz
+SHA512=1fd2a20aef48369d1f06e2bb74584877b8ad0eb529320b976264ec2db87420bae242715795f372dbc513ea80047bc49077a064e78205cd5e8b33d746fd2a2912
