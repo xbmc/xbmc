@@ -180,6 +180,15 @@ void UnicodeUtils::FoldCase(std::string& str,
   str.swap(result);
 }
 
+std::string UnicodeUtils::FoldCase(std::string_view str, const StringOptions opt /*  = StringOptions::FOLD_CASE_DEFAULT */)
+{
+  if (str.length() == 0)
+    return std::string(str);
+
+  std::string result = Unicode::FoldCase(str, opt);
+  return result;
+}
+
 void UnicodeUtils::FoldCase(std::wstring& str,
                             const StringOptions opt /*  = StringOptions::FOLD_CASE_DEFAULT */)
 {
@@ -235,18 +244,16 @@ std::string UnicodeUtils::TitleCase(const std::string_view& str)
 
 const std::wstring UnicodeUtils::Normalize(
     std::wstring_view src,
-    const StringOptions opt /* = StringOptions::FOLD_CASE_DEFAULT */,
     const NormalizerType NormalizerType)
 {
-  return Unicode::Normalize(src, opt, NormalizerType);
+  return Unicode::Normalize(src, NormalizerType);
 }
 
 const std::string UnicodeUtils::Normalize(
     const std::string_view& src,
-    const StringOptions opt /* = StringOptions::FOLD_CASE_DEFAULT */,
     const NormalizerType NormalizerType)
 {
-  return Unicode::Normalize(src, opt, NormalizerType);
+  return Unicode::Normalize(src, NormalizerType);
 }
 
 bool UnicodeUtils::Equals(const std::string_view& str1, const std::string_view& str2,

@@ -279,7 +279,10 @@ public:
    * \param chr C-char (byte) to examine
    * \return true if char matches regex [0-9], else false
    */
-  inline static bool isasciidigit(char chr) { return chr >= '0' && chr <= '9'; }
+  inline static bool isasciidigit(char chr)
+  {
+    return chr >= '0' && chr <= '9';
+  }
 
   /*!
    * \brief Determines whether the given character is an ASCII hexadecimal digit or not

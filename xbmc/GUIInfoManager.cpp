@@ -11215,10 +11215,7 @@ std::string CGUIInfoManager::GetMultiInfoItemLabel(const CFileItem *item, int co
         //       type? Perhaps a "T" for Tau makes sense. How is this accomplished?
 
         UnicodeUtils::ToUpper(label);
-
-        // FOLD_CASE_DEFAULT only impacts case-folding normalizer. Here a no-op
-
-        UnicodeUtils::Normalize(label, StringOptions::FOLD_CASE_DEFAULT, NormalizerType::NFKD);
+        UnicodeUtils::Normalize(label, NormalizerType::NFKD);
 
         std::wstring character = label.substr(0, 1);
         g_charsetConverter.wToUTF8(character, letter);

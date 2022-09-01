@@ -61,112 +61,15 @@
  * be copied. UnicodeString will not release the memory
  */
 
-/*
- * Using C++ built in conversions with the assumption that it is easier
- * and faster. However, it is possible that the system does not have the
- * same language support as the ICU library. Perhaps one normalizes
- * and the other does not, so perhaps it is a mistake.
- *
- * Fortunately it would not be difficult to rectify.
- */
 
 
 static const size_t BUFFER_PAD = 0;
 static const bool useScale = false;
 
-std::u16string Unicode::UTF8ToUTF16(std::string_view str)
-{
-  // Note: Faster, but does not do Unicode validation and
-  // replacing bad Unicode with substitute Unicode to mark it
-  // as malformed. Besides reporting the problem, the substitute
-  // code units prevent further breakage.
-  //
-  // Going in the other direction, from UChar, any damage or
-  // substitutions have likely already been addressed, so unless
-  // experience dictates otherwise, use the faster, UTF16-> xx
-  // versions instead of the ones that can replace bad unicode
-  // with substitute.
 
-  std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> conv;
-  std::u16string result = conv.from_bytes(&str[0], &str[0] + str.length());
-  return result;
-}
-
-std::u32string Unicode::UTF8ToUTF32(const std::string_view &str)
-{
-  std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> conv;
-  return conv.from_bytes(str.data(), str.data() + str.length());
-}
-
-std::wstring Unicode::UTF8ToWString(std::string_view str)
-{
-  std::wstring_convert<std::codecvt_utf8<wchar_t>> conv;
-  std::wstring result = conv.from_bytes(str.data(), str.data() + str.length());
-  return result;
-}
-
-std::string Unicode::UTF16ToUTF8(const std::u16string_view& str)
-{
-  std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> conv;
-  std::string result = conv.to_bytes(str.data(), str.data() + str.length());
-  return result;
-}
-
-std::u32string Unicode::UTF16ToUTF32(const std::u16string_view& str)
-{
-  std::wstring_convert<std::codecvt_utf16<char32_t>, char32_t> conv;
-  std::u32string result = conv.from_bytes(reinterpret_cast<const char*>(str.data()),
-      reinterpret_cast<const char*>(str.data() + str.length()));
-  return result;
-}
-
-std::wstring Unicode::UTF16ToWString(const std::u16string_view &str)
-{
-  std::wstring_convert<std::codecvt_utf16<wchar_t, 0x10ffff, std::little_endian>, wchar_t> conv;
-
-  std::wstring wstr = conv.from_bytes(reinterpret_cast<const char*>(str.data()),
-      reinterpret_cast<const char*>(str.data() + str.size()));
-  return wstr;
-}
-
-std::string Unicode::UTF32ToUTF8(const std::u32string_view &str)
-{
-  std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> conv;
-  return conv.to_bytes(str.data(), str.data() + str.length());
-}
-
-std::u16string Unicode::UTF32ToUTF16(const std::u32string_view &str)
-{
-  std::wstring_convert<std::codecvt_utf16<char32_t>, char32_t> conv;
-  std::string bytes = conv.to_bytes(str.data(), str.data() + str.length());
-  return std::u16string(reinterpret_cast<const char16_t*>(bytes.c_str()),
-      bytes.length() / sizeof(char16_t));
-}
-
-std::string Unicode::WStringToUTF8(std::wstring_view str)
-{
-  std::wstring_convert<std::codecvt_utf8<wchar_t>> conv;
-  std::string result = conv.to_bytes(str.data(), str.data() + str.length());
-  return result;
-}
-
-inline std::string ToString(icu::UnicodeString& str)
-{
-  std::string tempStr = std::string();
-  tempStr = str.toUTF8String(tempStr);
-  return tempStr;
-}
-
-inline std::wstring ToWstring(icu::UnicodeString& ustr)
-{
-  // Could use UnicodeString.toUTF32, but is a bit messier. But it
-  // may be better to consistently use same conversion routines.
-  // Also have to worry about systems where sizeof(wchar_t) is 2
-
-  std::u16string_view buffer = std::u16string_view(ustr.getBuffer(), ustr.length());
-  std::wstring result = Unicode::UTF16ToWString(buffer);
-  return result;
-}
+/*
+ *       B U F F E R   S I Z E
+ */
 
 /**
  * Calculates a 'reasonable' buffer size to give some room for growth in a utf-8
@@ -361,6 +264,134 @@ size_t Unicode::GetUTF16ToWCharBufferSize(const size_t uchar_length, const float
 #endif
 }
 
+/*
+ *                 C O N V E R S I O N S
+ *
+ * Using C++ built in conversions with the assumption that it is easier
+ * and faster. However, it is possible that the system does not have the
+ * same language support as the ICU library. Perhaps one normalizes
+ * and the other does not, so perhaps it is a mistake.
+ *
+ * Fortunately it would not be difficult to rectify.
+ */
+
+std::u16string Unicode::UTF8ToUTF16(std::string_view str)
+{
+  // Note: Probably faster, but does not do Unicode validation and
+  // replacing bad Unicode with substitute Unicode to mark it
+  // as malformed. Besides reporting the problem, the substitute
+  // code units prevent further breakage.
+  //
+  // Going in the other direction, from UChar, any damage or
+  // substitutions have likely already been addressed, so unless
+  // experience dictates otherwise, use the faster, UTF16-> xx
+  // versions instead of the ones that can replace bad unicode
+  // with substitute.
+
+  std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> conv;
+  std::u16string result = conv.from_bytes(&str[0], &str[0] + str.length());
+  return result;
+}
+
+std::u32string Unicode::UTF8ToUTF32(const std::string_view &str)
+{
+  std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> conv;
+  return conv.from_bytes(str.data(), str.data() + str.length());
+}
+
+std::wstring Unicode::UTF8ToWString(std::string_view str)
+{
+  std::wstring_convert<std::codecvt_utf8<wchar_t>> conv;
+  std::wstring result = conv.from_bytes(str.data(), str.data() + str.length());
+  return result;
+}
+
+std::string Unicode::UTF16ToUTF8(const std::u16string_view& str)
+{
+  std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> conv;
+  std::string result = conv.to_bytes(str.data(), str.data() + str.length());
+  return result;
+}
+
+std::u32string Unicode::UTF16ToUTF32(const std::u16string_view& str)
+{
+  std::wstring_convert<std::codecvt_utf16<char32_t>, char32_t> conv;
+  std::u32string result = conv.from_bytes(reinterpret_cast<const char*>(str.data()),
+      reinterpret_cast<const char*>(str.data() + str.length()));
+  return result;
+}
+
+std::wstring Unicode::UTF16ToWString(const std::u16string_view &str)
+{
+  std::wstring_convert<std::codecvt_utf16<wchar_t, 0x10ffff, std::little_endian>, wchar_t> conv;
+
+  std::wstring wstr = conv.from_bytes(reinterpret_cast<const char*>(str.data()),
+      reinterpret_cast<const char*>(str.data() + str.size()));
+  return wstr;
+}
+
+std::string Unicode::UTF32ToUTF8(const std::u32string_view &str)
+{
+  std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> conv;
+  return conv.to_bytes(str.data(), str.data() + str.length());
+}
+
+std::u16string Unicode::UTF32ToUTF16(const std::u32string_view &str)
+{
+  std::wstring_convert<std::codecvt_utf16<char32_t>, char32_t> conv;
+  std::string bytes = conv.to_bytes(str.data(), str.data() + str.length());
+  return std::u16string(reinterpret_cast<const char16_t*>(bytes.data()),
+      bytes.length() / sizeof(char16_t));
+}
+
+std::u16string Unicode::WStringToUTF16(std::wstring_view sv1)
+{
+  size_t s1BufferSize = Unicode::GetWcharToUTF16BufferSize(sv1.length(), 1.5);
+  UChar s1Buffer[s1BufferSize];
+  std::u16string_view sv2 = Unicode::_WStringToUTF16WithSub(sv1, s1Buffer, s1BufferSize);
+  return std::u16string(sv2);
+}
+
+std::string Unicode::WStringToUTF8(std::wstring_view str)
+{
+  std::wstring_convert<std::codecvt_utf8<wchar_t>> conv;
+  std::string result = conv.to_bytes(str.data(), str.data() + str.length());
+  return result;
+}
+
+icu::UnicodeString Unicode::WStringToUnicodeString(std::wstring_view sv1)
+{
+  size_t s1BufferSize = Unicode::GetWcharToUTF16BufferSize(sv1.length(), 1.5);
+  UChar s1Buffer[s1BufferSize];
+  std::u16string_view svU16 = Unicode::_WStringToUTF16WithSub(sv1, s1Buffer, s1BufferSize);
+  icu::UnicodeString us = icu::UnicodeString(svU16.data(), svU16.length());
+  return us;
+}
+
+inline std::string ToString(icu::UnicodeString& str)
+{
+  std::string tempStr = std::string();
+  tempStr = str.toUTF8String(tempStr);
+  return tempStr;
+}
+
+inline std::wstring ToWstring(icu::UnicodeString& ustr)
+{
+  // Could use UnicodeString.toUTF32, but is a bit messier. But it
+  // may be better to consistently use same conversion routines.
+  // Also have to worry about systems where sizeof(wchar_t) is 2
+
+  std::u16string_view buffer = std::u16string_view(ustr.getBuffer(), ustr.length());
+  std::wstring result = Unicode::UTF16ToWString(buffer);
+  return result;
+}
+
+/*
+ *                   ICU library
+ *               C O N V E R S I O N
+ *            (with bad code unit substitution)
+ */
+
 std::u16string_view Unicode::_UTF8ToUTF16WithSub(std::string_view src,
     UChar* buffer,
     const size_t bufferSize)
@@ -441,8 +472,8 @@ std::string_view Unicode::_UTF16ToUTF8WithSub(const std::u16string_view src,
 }
 
 std::wstring_view Unicode::_UTF16ToWString(const std::u16string_view str,
-                             wchar_t* buffer,
-                             size_t bufferSize)
+    wchar_t* buffer,
+    size_t bufferSize)
 {
   UErrorCode status = U_ZERO_ERROR;
 
@@ -602,6 +633,11 @@ std::string Unicode::ToUpper(std::string_view s1, const icu::Locale& locale)
   if (s1.length() == 0)
     return std::string(s1);
 
+  icu::UnicodeString us = icu::UnicodeString::fromUTF8(s1);
+  icu::UnicodeString result = us.toUpper(locale);
+  return ToString(result);
+
+  /*
   // Create buffer on stack
 
   size_t s1BufferSize = Unicode::GetUTF8ToUTF16BufferSize(s1.length(), 1.5);
@@ -634,6 +670,7 @@ std::string Unicode::ToUpper(std::string_view s1, const icu::Locale& locale)
 
   std::string result = Unicode::UTF16ToUTF8(svResult);
   return result;
+   */
 }
 
 const std::string Unicode::ToLower(const std::string_view s1, const icu::Locale& locale)
@@ -645,6 +682,11 @@ const std::string Unicode::ToLower(const std::string_view s1, const icu::Locale&
   if (s1.length() == 0)
     return std::string(s1);
 
+  icu::UnicodeString us = icu::UnicodeString::fromUTF8(s1);
+  icu::UnicodeString result = us.toLower(locale);
+  return ToString(result);
+
+  /*
   // Create buffer on stack
 
   size_t s1BufferSize = Unicode::GetUTF8ToUTF16BufferSize(s1.length(), 1.5);
@@ -677,99 +719,28 @@ const std::string Unicode::ToLower(const std::string_view s1, const icu::Locale&
 
   std::string result = Unicode::UTF16ToUTF8(svResult);
   return result;
+   */
 }
 
 const std::wstring Unicode::ToCapitalize(std::wstring_view s1)
 {
-  // Convert s1 to utf16 using stack allocated buffer
-
-  size_t s1BufferSize = Unicode::GetWcharToUTF16BufferSize(s1.length(), 1);
-  UChar s1Buffer[s1BufferSize];
-  std::u16string_view sv1 = Unicode::_WStringToUTF16WithSub(s1, s1Buffer, s1BufferSize);
-
-  // UnicodeString also using stack allocated memory
-  // Base buffer size based on utf16 version of s1 that it will manipulate
-
-  size_t s2BufferSize = Unicode::GetUTF16WorkingSize(sv1.length(), 2);
-  UChar s2Buffer[s2BufferSize];
-  std::u16string_view sv2 = {s2Buffer, s2BufferSize};
-
-  // Allocate empty buffer to UnicodeString
-  icu::UnicodeString uString = icu::UnicodeString((char16_t *)sv2.data(), 0, (int32_t) sv2.length());
-
-  // Copy utf16 version of s1 to UnicodeString
-
-  uString.append(sv1.data(), 0, sv1.length());
-
-  icu::StringCharacterIterator iter = icu::StringCharacterIterator(uString);
-
-  // Create buffer for second UnicodeString
-
-  size_t s3BufferSize = Unicode::GetUTF16WorkingSize(sv1.length(), 2);
-  UChar s3Buffer[s3BufferSize];
-  std::u16string_view sv3 = {s3Buffer, s3BufferSize};
-
-  icu::UnicodeString titleCase = icu::UnicodeString((char16_t *)sv3.data(), 0, (int32_t) sv3.length());
-
-  // Use simple ToUpper, which changes a single codepoint. Using TitleCase would be
-  // better
-
-  bool isFirstLetter = true;
-  while (iter.hasNext())
-  {
-    UChar32 cp = iter.next32PostInc();
-
-    if (u_isspace(cp) || (u_ispunct(cp) && cp != '\''))
-    {
-      isFirstLetter = true;
-    }
-    else if (isFirstLetter)
-    {
-      cp = u_toupper(cp);
-      isFirstLetter = false;
-    }
-    titleCase += cp;
-  }
-
-  // Assuming that the returned UChar string has no invalid code-units, other than the ones
-  // marked invalid in the first place. Therefore, we can use the cheaper conversion to wchar_t.
-
-  std::u16string_view  UCharStr = std::u16string_view(titleCase.getBuffer(), titleCase.length());
-  std::wstring result = Unicode::UTF16ToWString(UCharStr);
-  return result;
+  std::u16string u16 = Unicode::WStringToUTF16(s1);
+  icu::UnicodeString us = icu::UnicodeString(u16.data(), u16.length());
+  icu::UnicodeString usResult = Unicode::ToCapitalize(us);
+  return ToWstring(usResult);
 }
 
 const std::string Unicode::ToCapitalize(std::string_view s1)
 {
-  // Convert s1 to utf16 using stack allocated buffer
+  icu::UnicodeString us = icu::UnicodeString::fromUTF8(s1);
+  icu::UnicodeString usResult = Unicode::ToCapitalize(us);
+  return ToString(usResult);
+}
 
-  size_t s1BufferSize = Unicode::GetUTF8ToUTF16BufferSize(s1.length(), 1.5);
-  UChar s1Buffer[s1BufferSize];
-  std::u16string_view sv1 = Unicode::_UTF8ToUTF16WithSub(s1, s1Buffer, s1BufferSize);
-
-  // UnicodeString also using stack allocated memory
-  // Base buffer size based on utf16 version of s1 that it will manipulate
-
-  size_t s2BufferSize = Unicode::GetUTF16WorkingSize(sv1.length(), 2);
-  UChar s2Buffer[s2BufferSize];
-  std::u16string_view sv2 = {s2Buffer, s2BufferSize};
-
-  // Allocate empty buffer to UnicodeString
-  icu::UnicodeString uString = icu::UnicodeString((char16_t *)sv2.data(), 0, (int32_t) sv2.length());
-
-  // Copy utf16 version of s1 to UnicodeString
-
-  uString.append(sv1.data(), 0, sv1.length());
-
-  icu::StringCharacterIterator iter = icu::StringCharacterIterator(uString);
-
-  // Create buffer for second UnicodeString
-
-  size_t s3BufferSize = Unicode::GetUTF16WorkingSize(sv1.length(), 2);
-  UChar s3Buffer[s3BufferSize];
-  std::u16string_view sv3 = {s3Buffer, s3BufferSize};
-
-  icu::UnicodeString titleCase = icu::UnicodeString((char16_t *)sv3.data(), 0, (int32_t)sv3.length());
+const icu::UnicodeString Unicode::ToCapitalize(icu::UnicodeString us)
+{
+  icu::UnicodeString capitalized = icu::UnicodeString();
+  icu::StringCharacterIterator iter = icu::StringCharacterIterator(us);
 
   // Use simple ToUpper, which changes a single codepoint. Using TitleCase would be
   // better
@@ -788,15 +759,13 @@ const std::string Unicode::ToCapitalize(std::string_view s1)
       cp = u_toupper(cp);
       isFirstLetter = false;
     }
-    titleCase += cp;
+    capitalized += cp;
   }
 
-  std::string utf8Result = std::string();
-  utf8Result = titleCase.toUTF8String(utf8Result);
-  return utf8Result;
+  return capitalized;
 }
 
-const std::wstring Unicode::TitleCase(std::wstring_view s1, const icu::Locale& locale)
+const std::wstring Unicode::TitleCase(std::wstring_view sv1, const icu::Locale& locale)
 {
   UErrorCode status = U_ZERO_ERROR;
   std::wstring wResult;
@@ -806,16 +775,21 @@ const std::wstring Unicode::TitleCase(std::wstring_view s1, const icu::Locale& l
   if (U_FAILURE(status))
   {
     CLog::Log(LOGERROR, "Error in Unicode::TitleCase_w: {}\n", status);
-    return std::wstring(s1);
+    return std::wstring(sv1);
   }
 
+  icu::UnicodeString us = Unicode::WStringToUnicodeString(sv1);
+  icu::UnicodeString result = us.toTitle(wordIterator);
+  wResult = ToWstring(result);
+
+  delete wordIterator;
+  return wResult;
+  /*
   // Create buffer on stack
 
   size_t s1BufferSize = Unicode::GetWcharToUTF16BufferSize(s1.length(), 1.5);
   UChar s1Buffer[s1BufferSize];
-   std::u16string_view sv1 = Unicode::_WStringToUTF16WithSub(s1, s1Buffer, s1BufferSize);
-
- 
+  std::u16string_view sv1 = Unicode::_WStringToUTF16WithSub(s1, s1Buffer, s1BufferSize);
 
   size_t s2BufferSize = Unicode::GetUTF16WorkingSize(sv1.length(), 2);
   UChar s2Buffer[s2BufferSize];
@@ -848,6 +822,7 @@ const std::wstring Unicode::TitleCase(std::wstring_view s1, const icu::Locale& l
 
   delete wordIterator;
   return wResult;
+   */
 }
 
 const std::string Unicode::TitleCase(std::string_view s1, const icu::Locale& locale)
@@ -855,6 +830,27 @@ const std::string Unicode::TitleCase(std::string_view s1, const icu::Locale& loc
   UErrorCode status = U_ZERO_ERROR;
   std::string result;
 
+  icu::BreakIterator* wordIterator = icu::BreakIterator::createWordInstance(locale, status);
+
+  if (U_FAILURE(status))
+  {
+    CLog::Log(LOGERROR, "Error in Unicode::TitleCase_w: {}\n", status);
+    return std::string(s1);
+  }
+
+  size_t s1BufferSize = Unicode::GetUTF8ToUTF16BufferSize(s1.length(), 1.5);
+  UChar s1Buffer[s1BufferSize];
+  std::u16string_view sv1 = Unicode::_UTF8ToUTF16WithSub(s1, s1Buffer, s1BufferSize);
+
+  icu::UnicodeString us = icu::UnicodeString(sv1.data(), sv1.length());
+  icu::UnicodeString uTitle = us.toTitle(wordIterator);
+  result = ToString(uTitle);
+
+  delete wordIterator;
+  return result;
+
+
+  /*
   icu::BreakIterator* wordIterator = icu::BreakIterator::createWordInstance(locale, status);
 
   if (U_FAILURE(status))
@@ -899,14 +895,20 @@ const std::string Unicode::TitleCase(std::string_view s1, const icu::Locale& loc
     result = Unicode::UTF16ToUTF8(svResult);
   }
   return result;
+   */
 }
 
-std::wstring Unicode::FoldCase(std::wstring_view s1, const StringOptions options)
+std::wstring Unicode::FoldCase(std::wstring_view sv1, const StringOptions options)
 {
   std::wstring result;
-  if (s1.length() == 0)
-    return result = std::wstring(s1);
+  if (sv1.length() == 0)
+    return result = std::wstring(sv1);
 
+  icu::UnicodeString us = Unicode::WStringToUnicodeString(sv1);
+  icu::UnicodeString uResult = us.foldCase(to_underlying(options));
+  return ToWstring(uResult);
+
+  /*
   // Create buffer on stack. sv1 input, sv2 = fold output
 
   size_t s1BufferSize = Unicode::GetWcharToUTF16BufferSize(s1.length(), 2);
@@ -924,15 +926,22 @@ std::wstring Unicode::FoldCase(std::wstring_view s1, const StringOptions options
   std::u16string_view svFolded = Unicode::_FoldCase(sv1, sv2, options);
   result = Unicode::UTF16ToWString(svFolded);
   return result;
+   */
 }
 
 
-std::string Unicode::FoldCase(std::string_view s1, const StringOptions options)
+std::string Unicode::FoldCase(std::string_view sv1, const StringOptions options)
 {
   std::string result = std::string();
-  if (s1.length() == 0)
-    return result = std::string(s1);
+  if (sv1.length() == 0)
+    return result = std::string(sv1);
 
+  icu::UnicodeString us = icu::UnicodeString::fromUTF8(sv1);
+  icu::UnicodeString uResult = us.foldCase(to_underlying(options));
+  return ToString(uResult);
+
+
+  /*
   // Create buffer on stack
 
   size_t s1BufferSize = Unicode::GetUTF8ToUTF16BufferSize(s1.length(), 1.5);
@@ -951,11 +960,14 @@ std::string Unicode::FoldCase(std::string_view s1, const StringOptions options)
   std::u16string_view svFolded = Unicode::_FoldCase(sv1, sv2, options);
   result = Unicode::UTF16ToUTF8(svFolded);
   return result;
+   */
 }
 
+/*
 std::u16string_view Unicode::_FoldCase(const std::u16string_view s1,std::u16string_view outBuffer,
     const StringOptions options)
 {
+
   std::u16string_view result;
   UErrorCode status = U_ZERO_ERROR;
     size_t uFoldedLength = 0; // In UChars
@@ -979,115 +991,93 @@ std::u16string_view Unicode::_FoldCase(const std::u16string_view s1,std::u16stri
     }
   return result;
 }
+ */
 
+const std::wstring Unicode::Normalize(std::wstring_view sv1,
+    const NormalizerType normalizerType)
+{
+  if (sv1.length() == 0)
+    return {sv1.data(), sv1.length()};
 
-const std::wstring Unicode::Normalize(std::wstring_view s1,
-    const StringOptions option,
+  icu::UnicodeString us = Unicode::WStringToUnicodeString(sv1);
+  icu::UnicodeString usNormalized = Unicode::Normalize(us, normalizerType);
+
+  return ToWstring(usNormalized);
+}
+
+const std::string Unicode::Normalize(std::string_view sv1,
+    const NormalizerType normalizerType)
+{
+  if (sv1.length() == 0)
+    return "";
+
+  icu::UnicodeString us = icu::UnicodeString::fromUTF8(sv1);
+  icu::UnicodeString usNormalized = Unicode::Normalize(us, normalizerType);
+
+  return ToString(usNormalized);
+}
+
+const icu::UnicodeString Unicode::Normalize(const icu::UnicodeString& us1,
     const NormalizerType NormalizerType)
 {
-  if (s1.length() == 0)
-    return {s1.data(), s1.length()};
+  if (us1.length() == 0)
+    return icu::UnicodeString(us1);
 
   UErrorCode status = U_ZERO_ERROR;
-
-  const UNormalizer2* normalizer;
+  const icu::Normalizer2* normalizer;
+  bool composeMode;
 
   switch (NormalizerType)
   {
     case NormalizerType::NFC:
     {
-      normalizer = unorm2_getNFCInstance(&status);
+      normalizer = icu::Normalizer2::getNFCInstance(status);
+      composeMode = true;
       break;
     }
     case NormalizerType::NFD:
     {
-      normalizer = unorm2_getNFDInstance(&status);
+      normalizer = icu::Normalizer2::getNFDInstance(status);
+      composeMode = false;
       break;
     }
     case NormalizerType::NFKC:
     {
-      normalizer = unorm2_getNFKCInstance(&status);
+      normalizer = icu::Normalizer2::getNFKCInstance(status);
+      composeMode = true;
       break;
     }
     case NormalizerType::NFKD:
     {
-      normalizer = unorm2_getNFKDInstance(&status);
+      normalizer = icu::Normalizer2::getNFKDInstance(status);
+      composeMode = false;
       break;
     }
     case NormalizerType::NFCKCASEFOLD:
     {
-      normalizer = unorm2_getNFKCCasefoldInstance(&status);
+      normalizer = icu::Normalizer2::getNFKCCasefoldInstance(status);
+      composeMode = true;
       break;
     }
   }
-  // Create stack buffer for result of normalization
-
-  size_t s1BufferSize = Unicode::GetWcharToUTF16BufferSize(s1.length(), 2);
-  UChar s1Buffer[s1BufferSize];
-
-  std::u16string_view sv1 = Unicode::_WStringToUTF16WithSub(s1, s1Buffer, s1BufferSize);
-
-  size_t nBufferSize = Unicode::GetUTF16WorkingSize(sv1.length(), 2);
-  char16_t nBuffer[nBufferSize];
-
-  // Folds and Normalizes at same time.
-  size_t normalizedLength;
-  normalizedLength =
-      unorm2_normalize(normalizer, (char16_t *)sv1.data(), sv1.length(), nBuffer,
-          nBufferSize, &status);
-
-  // Same data but different length from nBuffer
-
-  std::u16string_view svNormalized = {nBuffer, normalizedLength};
-
-  std::wstring result;
-  if (not U_FAILURE(status))
-  {
-    result = Unicode::UTF16ToWString(svNormalized);
-  }
-  else
-    result = {s1.data(), s1.length()}; // Do the best we can
-
-  return result;
-}
-
-const std::string Unicode::Normalize(std::string_view s1,
-    const StringOptions options,
-    const NormalizerType normalizerType)
-{
-  if (s1.length() == 0)
-    return "";
-
-  // Create buffer on stack
-
-  size_t s1BufferSize = Unicode::GetUTF8WorkingSize(s1.length(), 2);
-  char s1Buffer[s1BufferSize];
-  std::string_view sv1{s1Buffer, s1BufferSize};
-
-  icu::CheckedArrayByteSink s1Sink = icu::CheckedArrayByteSink((char *)sv1.data(), sv1.length());
-
-  UErrorCode status = U_ZERO_ERROR;
-  Unicode::Normalize(s1, s1Sink, status, to_underlying(options), normalizerType);
-
-  std::string result;
+  icu::UnicodeString result;
   if (U_FAILURE(status))
   {
-    result = std::string(s1);
-    if (s1Sink.Overflowed())
-    {
-      CLog::Log(LOGERROR, "Error in Unicode::Normalize buffer not large enough need: {}\n",
-          s1Sink.NumberOfBytesAppended());
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "Error in Unicode::Normalize: {}\n", status);
-    }
+    CLog::Log(LOGINFO, "Error in Unicode::Normalize create:");
   }
   else
   {
-    size_t size = s1Sink.NumberOfBytesWritten();
-    result = std::string(sv1.data(), size);
+    status = U_ZERO_ERROR;
+    result = normalizer->normalize(us1, status);
+
+    if (U_FAILURE(status))
+      CLog::Log(LOGINFO, "Error in Unicode::Normalize call: ");
   }
+  if (U_FAILURE(status))
+  {
+    result = icu::UnicodeString(us1);
+  }
+
   return result;
 }
 
@@ -1289,7 +1279,7 @@ int8_t Unicode::StrCmp(std::wstring_view s1,
     result = u_strCompare(sv1.data(), sv1.length(), sv2.data(), sv2.length(), true);
   }
 
-return result;
+  return result;
 }
 
 int8_t Unicode::StrCmp(std::string_view s1,
@@ -1325,7 +1315,7 @@ int8_t Unicode::StrCmp(std::string_view s1,
 
     result = u_strCompare(sv1.data(), sv1.length(), sv2.data(), sv2.length(), true);
   }
-return result;
+  return result;
 }
 
 bool Unicode::StartsWith(std::string_view s1, std::string_view s2)
@@ -1526,7 +1516,7 @@ std::string Unicode::Left(std::string_view str,
   }
   size_t utf8Index;
   std::string result;
-  result = Unicode::Normalize(str, StringOptions::FOLD_CASE_DEFAULT, NormalizerType::NFC);
+  result = Unicode::Normalize(str, NormalizerType::NFC);
   if (result.compare(str) != 0)
     CLog::Log(LOGINFO, "Unicode::Left Normalized string different from original");
 
@@ -1609,7 +1599,7 @@ std::string Unicode::Mid(std::string_view str,
   size_t startUTF8Index;
   size_t endUTF8Index;
   std::string result;
-  result = Unicode::Normalize(str, StringOptions::FOLD_CASE_DEFAULT, NormalizerType::NFC);
+  result = Unicode::Normalize(str, NormalizerType::NFC);
   if (result.compare(str) != 0)
     CLog::Log(LOGINFO, "Unicode::Mid Normalized string different from original");
 
@@ -1709,7 +1699,7 @@ std::string Unicode::Right(std::string_view str,
       return std::string(str);
   }
 
-  result = Unicode::Normalize(str, StringOptions::FOLD_CASE_DEFAULT, NormalizerType::NFC);
+  result = Unicode::Normalize(str, NormalizerType::NFC);
   if (result.compare(str) != 0)
     CLog::Log(LOGINFO, "Unicode::Right Normalized string different from original");
 
@@ -2480,7 +2470,7 @@ Unicode::FindCountAndReplace(std::string_view src,
   kResultStr.toUTF8String(resultStr);
   return {resultStr, changes};
 }
-*/
+ */
 /*
 [[deprecated(
     "FindAndReplace is faster, returned count not used.")]] std::tuple<icu::UnicodeString, int>
@@ -2587,7 +2577,7 @@ size_t Unicode::FindDifference(const std::string_view left, const std::string_vi
 
     std::u16string_view rightFolded = Unicode::_FoldCase(right_sv1, left_sv2);
 }
-*/
+ */
 
 bool Unicode::FindWord(std::string_view str, std::string_view word)
 {
@@ -3198,15 +3188,15 @@ int32_t Unicode::Collate(std::u16string_view left, std::u16string_view right)
 
 const std::u16string Unicode::TestHeapLessUTF8ToUTF16(std::string_view s1)
 {
-   std::u16string result = Unicode::UTF8ToUTF16(s1);
-   return result;
- }
+  std::u16string result = Unicode::UTF8ToUTF16(s1);
+  return result;
+}
 
 const std::string Unicode::TestHeapLessUTF16ToUTF8(std::u16string_view s1)
 {
 
- // No stack needed in this case
+  // No stack needed in this case
 
-   std::string result = Unicode::UTF16ToUTF8(s1);
-   return result;
- }
+  std::string result = Unicode::UTF16ToUTF8(s1);
+  return result;
+}

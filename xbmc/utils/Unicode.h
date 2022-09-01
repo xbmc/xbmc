@@ -397,11 +397,23 @@ public:
   /*!
    *  \brief Convert a u32string_view to u16string
    *   Does NOT handle malformed Unicode
+   *   Does NOT add null terminator to un-terminated string
    *
    *  \param str u32string_view to convert
    *  \return converted u16string
    */
   static std::u16string UTF32ToUTF16(const std::u32string_view& str);
+
+
+  /*!
+   *  \brief Convert a wstring_view to u16string
+   *   Does NOT handle malformed Unicode
+   *   Does NOT add null terminator to un-terminated string
+   *
+   *  \param str u32string_view to convert
+   *  \return converted u16string
+   */
+  static std::u16string WStringToUTF16(std::wstring_view sv1);
 
   /*!
    * \brief Convert a wstring_view to UTF8
@@ -411,6 +423,15 @@ public:
    * \return string converted to UTF8
    */
   static std::string WStringToUTF8(std::wstring_view str);
+
+  /*!
+   * \brief Convert a wstring_view to UnicodeString
+   *   Does handle malformed Unicode
+   *
+   * \param str wstring_view to convert
+   * \return string converted to UnicodeString
+   */
+  static icu::UnicodeString WStringToUnicodeString(std::wstring_view sv1);
 
   PRIVATE
   /*!
@@ -756,10 +777,6 @@ public:
    */
   static std::string FoldCase(std::string_view src, const StringOptions options = StringOptions::FOLD_CASE_DEFAULT);
 
-PRIVATE
-  static std::u16string_view _FoldCase(const std::u16string_view s1,std::u16string_view outBuffer,
-      const StringOptions options = StringOptions::FOLD_CASE_DEFAULT);
-
   /*!
    *  \brief Folds the case of a StringPiece (UTF-8), independent of Locale.
    *
@@ -802,13 +819,10 @@ public:
    *  at: https://unicode-org.github.io/icu/userguide/transforms/normalization/
    *
    *  \param str string to Normalize.
-   *  \param options fine tunes behavior. See StringOptions. Frequently can leave
-   *         at default value.
    *  \param normalizerType select the appropriate Normalizer for the job
    *  \return Normalized string
    */
   static const std::wstring Normalize(std::wstring_view src,
-                                      const StringOptions option,
                                       const NormalizerType normalizerType = NormalizerType::NFKC);
 
   /*!
@@ -821,16 +835,30 @@ public:
    * at: https://unicode-org.github.io/icu/userguide/transforms/normalization/
    *
    * \param str string to Normalize.
-   * \param options fine tunes behavior. See StringOptions. Frequently can leave
-   *        at default value.
    * \param normalizerType select the appropriate Normalizer for the job
    * \return Normalized string
    */
   static const std::string Normalize(std::string_view src,
-                                     const StringOptions options,
                                      const NormalizerType normalizerType = NormalizerType::NFKC);
 
   PRIVATE
+
+  /*!
+     *  \brief Normalizes a UnicodeString. Not expected to be used outside of
+     *   Unicode.
+     *
+     * There are multiple Normalizations that can be performed on Unicode. Fortunately
+     * normalization is not needed in many situations. An introduction can be found
+     * at: https://unicode-org.github.io/icu/userguide/transforms/normalization/
+     *
+     * \param strPiece UTF-8 string to Normalize.
+     * \param sink a CheckedArrayByteSink that wraps the output UTF-8 buffer
+     * \param normalizerType select the appropriate Normalizer for the job\
+     * \return UnicodeString containing the normalization
+     */
+  static const icu::UnicodeString Normalize(const icu::UnicodeString& us1,
+      const NormalizerType NormalizerType);
+
   /*!
    *  \brief Normalizes a StringPiece (utf-8). Not expected to be used outside of
    *   Unicode.
@@ -923,6 +951,12 @@ public:
    * \return src capitalized
    */
   static const std::wstring ToCapitalize(std::wstring_view src);
+
+
+PRIVATE
+  static const icu::UnicodeString ToCapitalize(icu::UnicodeString us);
+
+public:
 
   /*!
    *  \brief TitleCase a wstring using icu::Locale.

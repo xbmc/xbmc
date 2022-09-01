@@ -234,6 +234,7 @@ public:
    *        country, etc. from this locale
    */
   static void ToLower(std::string& str, const std::locale& locale);
+  static std::string ToLower(const std::string_view str);
 
   /*!
    * \brief Converts a string to Lower case according to locale.
@@ -265,6 +266,7 @@ public:
    *        country, etc. from this locale
    */
   static void ToLower(std::wstring& str, const std::locale& locale);
+  static std::wstring ToLower(const std::wstring_view str, const std::locale &locale);
 
   /*!
    * \brief Converts a wstring to Lower case according to locale.
@@ -275,6 +277,7 @@ public:
    * \param locale controls the conversion rules
    */
   static void ToLower(std::wstring& str, const icu::Locale& locale);
+  static std::wstring ToLower(const std::wstring_view str, const icu::Locale &locale);
 
   /*!
    * \brief Converts a wstring to Lower case using LangInfo::GetSystemLocale
@@ -284,6 +287,7 @@ public:
    * \param str string to change case on in-place
    */
   static void ToLower(std::wstring& str);
+  static std::wstring ToLower(const std::wstring_view str);
 
   /*!
    *  \brief Folds the case of a string. Locale Independent.
@@ -344,6 +348,8 @@ public:
    */
   static void FoldCase(std::wstring& str,
                        const StringOptions opt = StringOptions::FOLD_CASE_DEFAULT);
+  static std::wstring FoldCase(std::wstring_view str,
+      const StringOptions opt = StringOptions::FOLD_CASE_DEFAULT);
 
   /*!
    *  \brief Folds the case of a string.
@@ -363,6 +369,8 @@ public:
    */
   static void FoldCase(std::string& str,
                        const StringOptions opt = StringOptions::FOLD_CASE_DEFAULT);
+  static std::string  FoldCase(std::string_view str,
+      const StringOptions opt = StringOptions::FOLD_CASE_DEFAULT);
 
   /*!
    *  \brief Capitalizes a wstring using Legacy Kodi rules
@@ -1260,14 +1268,11 @@ public:
    *  at: https://unicode-org.github.io/icu/userguide/transforms/normalization/
    *
    *  \param str string to Normalize.
-   *  \param options fine tunes behavior. See StringOptions. Frequently can leave
-   *         at default value.
    *  \param NormalizerType select the appropriate Normalizer for the job
    *  \return Normalized string
    */
 
   static const std::wstring Normalize(std::wstring_view src,
-                                      const StringOptions opt = StringOptions::FOLD_CASE_DEFAULT,
                                       const NormalizerType NormalizerType = NormalizerType::NFKC);
 
   /*!
@@ -1280,14 +1285,11 @@ public:
    * at: https://unicode-org.github.io/icu/userguide/transforms/normalization/
    *
    * \param str string to Normalize.
-   * \param options fine tunes behavior. See StringOptions. Frequently can leave
-   *        at default value.
    * \param NormalizerType select the appropriate Normalizer for the job
    * \return Normalized string
    */
 
   static const std::string Normalize(const std::string_view& src,
-                                     const StringOptions opt = StringOptions::FOLD_CASE_DEFAULT,
                                      const NormalizerType NormalizerType = NormalizerType::NFKC);
 
   /*!

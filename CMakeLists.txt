@@ -61,6 +61,7 @@ option(ENABLE_TESTING     "Enable testing support?" ON)
 option(ENABLE_INTERNAL_CROSSGUID "Enable internal crossguid?" ON)
 # use ffmpeg from depends or system
 option(ENABLE_INTERNAL_FFMPEG "Enable internal ffmpeg?" OFF)
+option(ENABLE_INTERNAL_LIBICU "Enable internal libicu?" ON)
 option(ENABLE_INTERNAL_RapidJSON "Enable internal rapidjson?" ON)
 cmake_dependent_option(ENABLE_INTERNAL_FLATBUFFERS "Enable internal flatbuffers?" OFF "DEFINED USE_INTERNAL_LIBS;NOT USE_INTERNAL_LIBS" ON)
 cmake_dependent_option(ENABLE_INTERNAL_NFS "Enable internal libnfs?" OFF "DEFINED USE_INTERNAL_LIBS;NOT USE_INTERNAL_LIBS" ON)
@@ -171,6 +172,7 @@ set(required_deps ASS
                   Iconv
                   KissFFT
                   LibDvd
+                  LibICU
                   Lzo2
                   OpenSSL>=1.1.0
                   PCRE

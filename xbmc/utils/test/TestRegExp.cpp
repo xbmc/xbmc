@@ -164,7 +164,8 @@ TEST_F(TestRegExpLog, DumpOvector)
 
   EXPECT_TRUE(regex.RegComp(".*DEBUG <general>: regexp ovector=\\{\\[0,12\\],\\[0,4\\],"
                             "\\[5,11\\]\\}.*"));
-  EXPECT_GE(regex.RegFind(logstring), 0);
+  int v = regex.RegFind(logstring);
+  EXPECT_GE(v, 0);
 
   EXPECT_TRUE(XFILE::CFile::Delete(logfile));
 }
