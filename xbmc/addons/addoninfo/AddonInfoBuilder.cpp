@@ -688,7 +688,7 @@ bool CAddonInfoBuilder::PlatformSupportsAddon(const AddonInfoPtr& addon)
     "osx-x86_64",
 #elif defined(__aarch64__)
     "osxarm64",
-    "osx-aarch64",
+    "osx-arm64",
 #else
 #warning no architecture dependant platform tag
 #endif
