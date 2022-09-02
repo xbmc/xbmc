@@ -8,6 +8,8 @@
 
 #include "LangCodeExpander.h"
 
+#include "LangInfo.h"
+#include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 
@@ -83,39 +85,36 @@ void CLangCodeExpander::LoadUserCodes(const TiXmlElement* pRootElement)
 
 bool CLangCodeExpander::Lookup(const std::string& code, std::string& desc)
 {
+  if (LookupInUserMap(code, desc))
+    return true;
+
+  if (LookupInLangAddons(code, desc))
+    return true;
+
+  // Language code with subtag is supported only with language addons
+  // or with user defined map, then if not found we fallback by obtaining
+  // the primary code description only and appending the remaining
   int iSplit = code.find('-');
   if (iSplit > 0)
   {
-    std::string strLeft, strRight;
-    const bool bLeft = Lookup(code.substr(0, iSplit), strLeft);
-    const bool bRight = Lookup(code.substr(iSplit + 1), strRight);
-    if (bLeft || bRight)
+    std::string primaryTagDesc;
+    const bool hasPrimaryTagDesc = Lookup(code.substr(0, iSplit), primaryTagDesc);
+    std::string subtagCode = code.substr(iSplit + 1);
+    if (hasPrimaryTagDesc)
     {
-      desc = "";
-      if (strLeft.length() > 0)
-        desc = strLeft;
+      if (primaryTagDesc.length() > 0)
+        desc = primaryTagDesc;
       else
         desc = code.substr(0, iSplit);
 
-      if (strRight.length() > 0)
-      {
-        desc += " - ";
-        desc += strRight;
-      }
-      else
-      {
-        desc += " - ";
-        desc += code.substr(iSplit + 1);
-      }
+      if (subtagCode.length() > 0)
+        desc += " - " + subtagCode;
 
       return true;
     }
 
     return false;
   }
-
-  if (LookupInUserMap(code, desc))
-    return true;
 
   if (LookupInISO639Tables(code, desc))
     return true;
@@ -200,11 +199,16 @@ bool CLangCodeExpander::ConvertToISO6392B(const std::string& strCharCode,
   }
   else if (strCharCode.size() > 3)
   {
+    // First try search on language addons
+    strISO6392B = g_langInfo.ConvertEnglishNameToAddonLocale(strCharCode);
+    if (!strISO6392B.empty())
+      return true;
+
     for (const auto& codes : g_iso639_2)
     {
       if (StringUtils::EqualsNoCase(strCharCode, codes.name))
       {
-        CodeToString(codes.code, strISO6392B);
+        strISO6392B = CodeToString(codes.code);
         return true;
       }
     }
@@ -360,6 +364,8 @@ bool CLangCodeExpander::ReverseLookup(const std::string& desc, std::string& code
 
   std::string descTmp(desc);
   StringUtils::Trim(descTmp);
+
+  // First find to user-defined languages
   for (STRINGLOOKUPTABLE::const_iterator it = m_mapUser.begin(); it != m_mapUser.end(); ++it)
   {
     if (StringUtils::EqualsNoCase(descTmp, it->second))
@@ -369,11 +375,16 @@ bool CLangCodeExpander::ReverseLookup(const std::string& desc, std::string& code
     }
   }
 
+  // Find on language addons
+  code = g_langInfo.ConvertEnglishNameToAddonLocale(descTmp);
+  if (!code.empty())
+    return true;
+
   for (const auto& codes : g_iso639_1)
   {
     if (StringUtils::EqualsNoCase(descTmp, codes.name))
     {
-      CodeToString(codes.code, code);
+      code = CodeToString(codes.code);
       return true;
     }
   }
@@ -382,7 +393,7 @@ bool CLangCodeExpander::ReverseLookup(const std::string& desc, std::string& code
   {
     if (StringUtils::EqualsNoCase(descTmp, codes.name))
     {
-      CodeToString(codes.code, code);
+      code = CodeToString(codes.code);
       return true;
     }
   }
@@ -408,6 +419,20 @@ bool CLangCodeExpander::LookupInUserMap(const std::string& code, std::string& de
   }
 
   return false;
+}
+
+bool CLangCodeExpander::LookupInLangAddons(const std::string& code, std::string& desc)
+{
+  if (code.empty())
+    return false;
+
+  std::string sCode{code};
+  StringUtils::Trim(sCode);
+  StringUtils::ToLower(sCode);
+  StringUtils::Replace(sCode, '-', '_');
+
+  desc = g_langInfo.GetEnglishLanguageName(sCode);
+  return !desc.empty();
 }
 
 bool CLangCodeExpander::LookupInISO639Tables(const std::string& code, std::string& desc)
@@ -447,18 +472,19 @@ bool CLangCodeExpander::LookupInISO639Tables(const std::string& code, std::strin
   return false;
 }
 
-void CLangCodeExpander::CodeToString(long code, std::string& ret)
+std::string CLangCodeExpander::CodeToString(long code)
 {
-  ret.clear();
+  std::string ret;
   for (unsigned int j = 0; j < 4; j++)
   {
     char c = (char)code & 0xFF;
     if (c == '\0')
-      return;
+      break;
 
     ret.insert(0, 1, c);
     code >>= 8;
   }
+  return ret;
 }
 
 bool CLangCodeExpander::CompareFullLanguageNames(const std::string& lang1, const std::string& lang2)
@@ -483,22 +509,40 @@ bool CLangCodeExpander::CompareFullLanguageNames(const std::string& lang1, const
 }
 
 std::vector<std::string> CLangCodeExpander::GetLanguageNames(
-    LANGFORMATS format /* = CLangCodeExpander::ISO_639_1 */, bool customNames /* = false */)
+    LANGFORMATS format /* = CLangCodeExpander::ISO_639_1 */,
+    LANG_LIST list /* = LANG_LIST::DEFAULT */)
 {
-  std::vector<std::string> languages;
+  std::map<std::string, std::string> langMap;
 
   if (format == CLangCodeExpander::ISO_639_2)
-    std::transform(g_iso639_2.begin(), g_iso639_2.end(), std::back_inserter(languages),
-                   [](const LCENTRY& e) { return e.name; });
+    std::transform(g_iso639_2.begin(), g_iso639_2.end(), std::inserter(langMap, langMap.end()),
+                   [](const LCENTRY& e) { return std::make_pair(CodeToString(e.code), e.name); });
   else
-    std::transform(g_iso639_1.begin(), g_iso639_1.end(), std::back_inserter(languages),
-                   [](const LCENTRY& e) { return e.name; });
+    std::transform(g_iso639_1.begin(), g_iso639_1.end(), std::inserter(langMap, langMap.end()),
+                   [](const LCENTRY& e) { return std::make_pair(CodeToString(e.code), e.name); });
 
-  if (customNames)
-    std::transform(m_mapUser.begin(), m_mapUser.end(), std::back_inserter(languages),
-                   [](const STRINGLOOKUPTABLE::value_type& e) { return e.second; });
+  if (list == LANG_LIST::INCLUDE_ADDONS || list == LANG_LIST::INCLUDE_ADDONS_USERDEFINED)
+  {
+    g_langInfo.GetAddonsLanguageCodes(langMap);
+  }
 
-  return languages;
+  // User-defined languages can override existing ones
+  if (list == LANG_LIST::INCLUDE_USERDEFINED || list == LANG_LIST::INCLUDE_ADDONS_USERDEFINED)
+  {
+    for (const auto& value : m_mapUser)
+    {
+      langMap[value.first] = value.second;
+    }
+  }
+
+  // Sort by name and remove duplicates
+  std::set<std::string, sortstringbyname> languages;
+  for (const auto& lang : langMap)
+  {
+    languages.insert(lang.second);
+  }
+
+  return std::vector<std::string>(languages.begin(), languages.end());
 }
 
 bool CLangCodeExpander::CompareISO639Codes(const std::string& code1, const std::string& code2)
@@ -545,6 +589,18 @@ std::string CLangCodeExpander::ConvertToISO6392T(const std::string& lang)
   }
 
   return lang;
+}
+
+std::string CLangCodeExpander::FindLanguageCodeWithSubtag(const std::string& str)
+{
+  CRegExp regLangCode;
+  if (regLangCode.RegComp(
+          "(?:^|\\s|\\()(([A-Za-z]{2,3})-([A-Za-z]{2}|[0-9]{3}|[A-Za-z]{4}))(?:$|\\s|\\))") &&
+      regLangCode.RegFind(str) >= 0)
+  {
+    return regLangCode.GetMatch(1);
+  }
+  return "";
 }
 
 // clang-format off
