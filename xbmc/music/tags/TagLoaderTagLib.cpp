@@ -66,6 +66,7 @@
 
 using namespace TagLib;
 using namespace MUSIC_INFO;
+using namespace std::string_view_literals;
 
 namespace
 {
@@ -1127,7 +1128,7 @@ void CTagLoaderTagLib::AddArtistRole(CMusicInfoTag &tag, const std::vector<std::
     return;
 
   // Vector of possible separators
-  const std::vector<std::string> separators{ ";", "/", ",", "&", " and " };
+  const std::vector<std::string_view> separators{ ";"sv, "/"sv, ","sv, "&"sv, " and "sv };
 
   for (size_t i = 0; i + 1 < values.size(); i += 2)
   {
@@ -1154,7 +1155,7 @@ void CTagLoaderTagLib::AddArtistInstrument(CMusicInfoTag &tag, const std::vector
      taken as artist name.
   */
   // Vector of possible separators
-  const std::vector<std::string> separators{";", "/", ",", "&", " and "};
+  const std::vector<std::string_view> separators{ ";"sv, "/"sv, ","sv, "&"sv, " and "sv };
 
   for (size_t i = 0; i < values.size(); ++i)
   {

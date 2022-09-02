@@ -61,6 +61,7 @@
 using namespace KODI;
 using namespace KODI::GUILIB;
 using namespace PVR;
+using namespace std::string_view_literals;
 
 typedef struct
 {
@@ -368,7 +369,7 @@ bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strT
 void CGUIControlFactory::GetRectFromString(const std::string &string, CRect &rect)
 {
   // format is rect="left[,top,right,bottom]"
-  std::vector<std::string> strRect = UnicodeUtils::Split(string, ',');
+  std::vector<std::string> strRect = UnicodeUtils::Split(string, ","sv);
   if (strRect.size() == 1)
   {
     rect.x1 = (float)atof(strRect[0].c_str());

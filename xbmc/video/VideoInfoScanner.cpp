@@ -53,6 +53,7 @@
 using namespace XFILE;
 using namespace ADDON;
 using namespace KODI::MESSAGING;
+using namespace std::string_view_literals;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
 using KODI::UTILITY::CDigest;
@@ -2174,7 +2175,7 @@ namespace VIDEO
       if (i->thumb.empty())
       {
         std::string thumbFile = i->strName;
-        UnicodeUtils::Replace(thumbFile, " ", "_");
+        UnicodeUtils::Replace(thumbFile, " "sv, "_"sv);
         for (int j = 0; j < items.Size(); j++)
         {
           std::string compare = URIUtils::GetFileName(items[j]->GetPath());

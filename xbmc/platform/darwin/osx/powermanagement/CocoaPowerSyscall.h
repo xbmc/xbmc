@@ -54,5 +54,5 @@ private:
   io_connect_t m_root_port;             // a reference to the Root Power Domain IOService
   io_object_t  m_notifier_object;       // notifier object, used to deregister later
   IONotificationPortRef m_notify_port;  // notification port allocated by IORegisterForSystemPower
-  CFRunLoopSourceRef m_power_source;
+  CFRunLoopSourceRef m_power_source = NULL;
 };

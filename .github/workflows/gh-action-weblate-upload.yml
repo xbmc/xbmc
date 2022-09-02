@@ -9,6 +9,9 @@ on:
     paths:
       - "addons/resource.language.en_gb/resources/strings.po"
       - ".github/workflows/gh-action-weblate-upload.yml"
+permissions:
+  contents: read
+
 jobs:
   weblate:
     if: github.repository == 'xbmc/xbmc'

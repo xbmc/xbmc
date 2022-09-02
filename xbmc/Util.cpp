@@ -93,6 +93,7 @@ using namespace MEDIA_DETECT;
 
 using namespace XFILE;
 using namespace PLAYLIST;
+using namespace std::string_view_literals;
 using KODI::UTILITY::CDigest;
 
 #if !defined(TARGET_WINDOWS)
@@ -890,7 +891,7 @@ bool CUtil::CreateDirectoryEx(const std::string& strPath)
     return false;
   std::string dir(dirs.front());
   URIUtils::AddSlashAtEnd(dir);
-  for (std::vector<std::string>::const_iterator it = dirs.begin() + 1; it != dirs.end(); it ++)
+  for (std::vector<std::string>::const_iterator it = dirs.begin() + 1; it != dirs.end(); ++it)
   {
     dir = URIUtils::AddFileToFolder(dir, *it);
     CDirectory::Create(dir);
@@ -904,21 +905,21 @@ std::string CUtil::MakeLegalFileName(const std::string &strFile, int LegalType)
 {
   std::string result = strFile;
 
-  UnicodeUtils::Replace(result, "/", "_");
-  UnicodeUtils::Replace(result, "\\", "_");
-  UnicodeUtils::Replace(result, "?", "_");
+  UnicodeUtils::Replace(result, "/"sv, "_"sv);
+  UnicodeUtils::Replace(result, "\\"sv, "_"sv);
+  UnicodeUtils::Replace(result, "?"sv, "_"sv);
 
   if (LegalType == LEGAL_WIN32_COMPAT)
   {
     // just filter out some illegal characters on windows
-    UnicodeUtils::Replace(result, ":", "_");
-    UnicodeUtils::Replace(result, "*", "_");
-    UnicodeUtils::Replace(result, "?", "_");
-    UnicodeUtils::Replace(result, "\"", "_");
-    UnicodeUtils::Replace(result, "<", "_");
-    UnicodeUtils::Replace(result, ">", "_");
-    UnicodeUtils::Replace(result, "|", "_");
-    UnicodeUtils::TrimRight(result, ". ");
+    UnicodeUtils::Replace(result, ":"sv, "_"sv);
+    UnicodeUtils::Replace(result, "*"sv, "_"sv);
+    UnicodeUtils::Replace(result, "?"sv, "_"sv);
+    UnicodeUtils::Replace(result, "\""sv, "_"sv);
+    UnicodeUtils::Replace(result, "<"sv, "_"sv);
+    UnicodeUtils::Replace(result, ">"sv, "_"sv);
+    UnicodeUtils::Replace(result, "|"sv, "_"sv);
+    UnicodeUtils::TrimRight(result, ". "sv);
   }
   return result;
 }
@@ -942,7 +943,7 @@ std::string CUtil::MakeLegalPath(const std::string &strPathAndFile, int LegalTyp
   // "protocol://domain"
   std::string dir(dirs.front());
   URIUtils::AddSlashAtEnd(dir);
-  for (std::vector<std::string>::const_iterator it = dirs.begin() + 1; it != dirs.end(); it ++)
+  for (std::vector<std::string>::const_iterator it = dirs.begin() + 1; it != dirs.end(); ++it)
     dir = URIUtils::AddFileToFolder(dir, MakeLegalFileName(*it, LegalType));
   if (trailingSlash) URIUtils::AddSlashAtEnd(dir);
   return dir;
@@ -957,19 +958,19 @@ std::string CUtil::ValidatePath(const std::string &path, bool bFixDoubleSlashes 
   // recurse and crash XBMC
   if (URIUtils::IsURL(path) &&
       (path.find('%') != std::string::npos ||
-      UnicodeUtils::StartsWithNoCase(path, "apk:") ||
-      UnicodeUtils::StartsWithNoCase(path, "zip:") ||
-      UnicodeUtils::StartsWithNoCase(path, "rar:") ||
-      UnicodeUtils::StartsWithNoCase(path, "stack:") ||
-      UnicodeUtils::StartsWithNoCase(path, "bluray:") ||
-      UnicodeUtils::StartsWithNoCase(path, "multipath:") ))
+      UnicodeUtils::StartsWithNoCase(path, "apk:"sv) ||
+      UnicodeUtils::StartsWithNoCase(path, "zip:"sv) ||
+      UnicodeUtils::StartsWithNoCase(path, "rar:"sv) ||
+      UnicodeUtils::StartsWithNoCase(path, "stack:"sv) ||
+      UnicodeUtils::StartsWithNoCase(path, "bluray:"sv) ||
+      UnicodeUtils::StartsWithNoCase(path, "multipath:"sv) ))
     return result;
 
   // check the path for incorrect slashes
 #ifdef TARGET_WINDOWS
   if (URIUtils::IsDOSPath(path))
   {
-    UnicodeUtils::Replace(result, "/", "\\");
+    UnicodeUtils::Replace(result, "/"sv, "\\"sv);
     /* The double slash correction should only be used when *absolutely*
        necessary! This applies to certain DLLs or use from Python DLLs/scripts
        that incorrectly generate double (back) slashes.
@@ -987,7 +988,7 @@ std::string CUtil::ValidatePath(const std::string &path, bool bFixDoubleSlashes 
   else if (path.find("://") != std::string::npos || path.find(":\\\\") != std::string::npos)
 #endif
   {
-    UnicodeUtils::Replace(result, "\\", "/");
+    UnicodeUtils::Replace(result, "\\"sv, "/"sv);
     /* The double slash correction should only be used when *absolutely*
        necessary! This applies to certain DLLs or use from Python DLLs/scripts
        that incorrectly generate double (back) slashes.
@@ -2020,7 +2021,7 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
     items.Append(moreItems);
   }
 
-  std::vector<std::string> exts = UnicodeUtils::Split(subtitleExtensions, '|');
+  std::vector<std::string> exts = UnicodeUtils::Split(subtitleExtensions, "|"sv);
   exts.erase(std::remove(exts.begin(), exts.end(), ".zip"), exts.end());
   exts.erase(std::remove(exts.begin(), exts.end(), ".rar"), exts.end());
 

@@ -138,7 +138,7 @@ private:
   }
 
   DBusMessagePtr m_message;
-  DBusMessagePtr m_reply;
+  DBusMessagePtr m_reply = nullptr;
   DBusMessageIter m_args;
   bool m_haveArgs;
 };

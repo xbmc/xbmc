@@ -70,6 +70,7 @@ using namespace VIDEO;
 using namespace ADDON;
 using namespace KODI::MESSAGING;
 using namespace KODI::GUILIB;
+using namespace std::string_view_literals;
 
 //********************************************************************************************************************************
 CVideoDatabase::CVideoDatabase(void) = default;
@@ -10783,7 +10784,7 @@ bool CVideoDatabase::SetSingleValue(const std::string &table, const std::string 
 std::string CVideoDatabase::GetSafeFile(const std::string &dir, const std::string &name) const
 {
   std::string safeThumb(name);
-  UnicodeUtils::Replace(safeThumb, " ", "_");
+  UnicodeUtils::Replace(safeThumb, " "sv, "_"sv);
   return URIUtils::AddFileToFolder(dir, CUtil::MakeLegalFileName(safeThumb));
 }
 

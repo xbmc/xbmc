@@ -16,6 +16,8 @@
 
 #include <cmath>
 
+using namespace std::string_view_literals;
+
 CGUIRangesControl::CGUIRange::CGUIRange(float fPosX,
                                         float fPosY,
                                         float fWidth,
@@ -387,7 +389,7 @@ void CGUIRangesControl::UpdateInfo(const CGUIListItem* item /* = nullptr */)
       std::vector<std::pair<float, float>> ranges;
 
       // Parse csv string into ranges...
-      const std::vector<std::string> values = UnicodeUtils::Split(value, ',');
+      const std::vector<std::string> values = UnicodeUtils::Split(value, ","sv);
 
       // we must have an even number of values
       if (values.size() % 2 == 0)

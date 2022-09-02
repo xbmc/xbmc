@@ -17,6 +17,8 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
+using namespace std::string_view_literals;
+
 CGUIColorManager::CGUIColorManager(void) = default;
 
 CGUIColorManager::~CGUIColorManager(void)
@@ -94,7 +96,7 @@ UTILS::COLOR::Color CGUIColorManager::GetColor(const std::string& color) const
 {
   // look in our color map
   std::string trimmed(color);
-  UnicodeUtils::TrimLeft(trimmed, {"= "});
+  UnicodeUtils::TrimLeft(trimmed, "= "sv);
   const auto it = m_colors.find(trimmed);
   if (it != m_colors.end())
     return (*it).second;

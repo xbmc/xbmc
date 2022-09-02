@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-07-01 08:26+0000\n"
-"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"PO-Revision-Date: 2022-08-08 11:14+0000\n"
+"Last-Translator: Xean <xeanhort007@gmail.com>\n"
 "Language-Team: Catalan (Spain) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/ca_es/>\n"
 "Language: ca_es\n"
 "MIME-Version: 1.0\n"
@@ -361,7 +361,7 @@ msgstr "Aspecte del vídeo"
 #. Label to show the video bitrate
 msgctxt "#31603"
 msgid "Video bitrate"
-msgstr ""
+msgstr "Taxa de bits del vídeo"
 
 #. Label to show the audio codec name
 msgctxt "#31604"
@@ -376,7 +376,7 @@ msgstr "Canals d'àudio"
 #. Label to show the audio bitrate
 msgctxt "#31606"
 msgid "Audio bitrate"
-msgstr ""
+msgstr "Taxa de bits d'àudio"
 
 #. Label to show the screen resolution
 msgctxt "#31607"
@@ -386,7 +386,7 @@ msgstr "Resolució de pantalla"
 #. Label to show the system rendering speed
 msgctxt "#31608"
 msgid "System rendering speed"
-msgstr ""
+msgstr "Velocitat de renderització del sistema"
 
 #. Label to show the system CPU usage
 msgctxt "#31609"

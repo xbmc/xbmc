@@ -22,6 +22,7 @@
 
 using KODI::PLATFORM::WINDOWS::FromW;
 using namespace WSDiscovery;
+using namespace std::string_view_literals;
 
 namespace WSDiscovery
 {
@@ -289,7 +290,7 @@ std::wstring CWSDiscoveryWindows::ResolveHostName(const std::wstring& serverIP)
 {
   std::wstring hostName = serverIP;
 
-  std::vector<std::string> ip = UnicodeUtils::Split(FromW(serverIP), '.', 4);
+  std::vector<std::string> ip = UnicodeUtils::Split(FromW(serverIP), "."sv, 4);
   std::string reverse = StringUtils::Format("{}.{}.{}.{}.IN-ADDR.ARPA", ip[3], ip[2], ip[1], ip[0]);
 
   PDNS_RECORD pDnsRecord = nullptr;

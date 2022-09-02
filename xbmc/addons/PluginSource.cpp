@@ -16,6 +16,8 @@
 
 #include <utility>
 
+using namespace std::string_view_literals;
+
 namespace ADDON
 {
 
@@ -45,7 +47,7 @@ void CPluginSource::SetProvides(const std::string &content)
 {
   if (!content.empty())
   {
-    std::vector<std::string> provides = UnicodeUtils::Split(content, ' ');
+    std::vector<std::string> provides = UnicodeUtils::Split(content, " "sv);
     for (std::vector<std::string>::const_iterator i = provides.begin(); i != provides.end(); ++i)
     {
       Content content = Translate(*i);

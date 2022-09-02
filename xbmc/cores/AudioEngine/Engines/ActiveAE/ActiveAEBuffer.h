@@ -28,7 +28,7 @@ namespace ActiveAE
 class CSoundPacket
 {
 public:
-  CSoundPacket(SampleConfig conf, int samples);
+  CSoundPacket(const SampleConfig& conf, int samples);
   ~CSoundPacket();
   uint8_t **data;                        // array with pointers to planes of data
   SampleConfig config;

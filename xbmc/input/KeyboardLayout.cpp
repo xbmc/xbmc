@@ -19,11 +19,6 @@
 #include <algorithm>
 #include <set>
 
-CKeyboardLayout::CKeyboardLayout()
-{
-  m_codingtable = NULL;
-}
-
 CKeyboardLayout::~CKeyboardLayout() = default;
 
 bool CKeyboardLayout::Load(const TiXmlElement* element)

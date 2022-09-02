@@ -268,10 +268,6 @@ YUV2RGBBobShader::YUV2RGBBobShader(EShaderFormat format,
                                    ETONEMAPMETHOD toneMapMethod)
   : BaseYUV2RGBGLSLShader(format, dstPrimaries, srcPrimaries, toneMap, toneMapMethod)
 {
-  m_hStepX = -1;
-  m_hStepY = -1;
-  m_hField = -1;
-
   PixelShader()->LoadSource("gles_yuv2rgb_bob.frag", m_defines);
   PixelShader()->InsertSource("gles_tonemap.frag", "void main()");
 }

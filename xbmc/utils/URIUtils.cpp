@@ -33,6 +33,7 @@
 
 using namespace PVR;
 using namespace XFILE;
+using namespace std::string_view_literals;
 
 const CAdvancedSettings* URIUtils::m_advancedSettings = nullptr;
 
@@ -93,32 +94,23 @@ bool URIUtils::HasExtension(const std::string& strFileName, const std::string& s
 {
   if (IsURL(strFileName))
   {
-    CURL url(strFileName);
+    const CURL url(strFileName);
     return HasExtension(url.GetFileName(), strExtensions);
   }
 
-  // Search backwards so that '.' can be used as a search terminator.
-  std::string::const_reverse_iterator itExtensions = strExtensions.rbegin();
-  while (itExtensions != strExtensions.rend())
+  const size_t pos = strFileName.find_last_of("./\\");
+  if (pos == std::string::npos || strFileName[pos] != '.')
+    return false;
+
+  const std::string extensionLower = UnicodeUtils::FoldCase(strFileName.substr(pos));
+
+  const std::vector<std::string> extensionsLower =
+      UnicodeUtils::Split(UnicodeUtils::FoldCase(strExtensions), "|"sv);
+
+  for (const auto& ext : extensionsLower)
   {
-  	// TODO: Unicode- Change to use FoldCase
-
-    // Iterate backwards over strFileName until we hit a '.' or a mismatch
-    for (std::string::const_reverse_iterator itFileName = strFileName.rbegin();
-         itFileName != strFileName.rend() && itExtensions != strExtensions.rend() &&
-         tolower(*itFileName) == *itExtensions;
-         ++itFileName, ++itExtensions)
-    {
-      if (*itExtensions == '.')
-        return true; // Match
-    }
-
-    // No match. Look for more extensions to try.
-    while (itExtensions != strExtensions.rend() && *itExtensions != '|')
-      ++itExtensions;
-
-    while (itExtensions != strExtensions.rend() && *itExtensions == '|')
-      ++itExtensions;
+    if (UnicodeUtils::EndsWith(ext, extensionLower))
+      return true;
   }
 
   return false;
@@ -282,8 +274,7 @@ void URIUtils::GetCommonPath(std::string& strParent, const std::string& strPath)
   //       How likely this can occur in this situation I can not say. Probably
   //       not too likely.
 
-  bool finished = false;
-  while (not finished)
+  while (j <= std::min(strParent.size(), strPath.size()))
   {
     std::string_view parentSV{strParent.data(), j};
     std::string_view pathSV{strPath.data(), j};
@@ -291,7 +282,6 @@ void URIUtils::GetCommonPath(std::string& strParent, const std::string& strPath)
       break;
     j++;
   }
-
   strParent.erase(j - 1);
   // they should at least share a / at the end, though for things such as path/cd1 and path/cd2 there won't be
   if (!HasSlashAtEnd(strParent))
@@ -1046,7 +1036,7 @@ bool URIUtils::IsInternetStream(const CURL& url, bool bStrictCheck /* = false */
     return true;
 
   // Check for true internetstreams
-  std::string protocol = url.GetProtocol();
+  const std::string& protocol = url.GetProtocol();
   if (CURL::IsProtocolEqual(protocol, "http") || CURL::IsProtocolEqual(protocol, "https") ||
       CURL::IsProtocolEqual(protocol, "tcp") || CURL::IsProtocolEqual(protocol, "udp") ||
       CURL::IsProtocolEqual(protocol, "rtp") || CURL::IsProtocolEqual(protocol, "sdp") ||
@@ -1366,9 +1356,9 @@ std::string URIUtils::AddFileToFolder(const std::string& strFolder,
 
   // correct any slash directions
   if (!IsDOSPath(strFolder))
-    UnicodeUtils::Replace(strResult, "\\", "/");
+    UnicodeUtils::Replace(strResult, "\\"sv, "/"sv);
   else
-    UnicodeUtils::Replace(strResult, "/", "\\");
+    UnicodeUtils::Replace(strResult, "/"sv, "\\"sv);
 
   return strResult;
 }
@@ -1405,8 +1395,8 @@ CURL URIUtils::CreateArchivePath(const std::string& type,
      code (and elsewhere) doesn't pass in non-posix paths.
    */
   std::string strBuffer(pathInArchive);
-  UnicodeUtils::Replace(strBuffer, "\\", "/");
-  UnicodeUtils::TrimLeft(strBuffer, {"/"});
+  UnicodeUtils::Replace(strBuffer, "\\"sv, "/"sv);
+  UnicodeUtils::TrimLeft(strBuffer, "/"sv);
   url.SetFileName(strBuffer);
 
   return url;

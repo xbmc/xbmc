@@ -31,6 +31,7 @@
 using namespace KODI::GUILIB;
 using namespace KODI::GUILIB::GUIINFO;
 using namespace MUSIC_INFO;
+using namespace std::string_view_literals;
 
 bool CMusicGUIInfo::InitCurrentItem(CFileItem *item)
 {
@@ -359,7 +360,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         if (info.m_info == LISTITEM_FILE_EXTENSION)
         {
           std::string strExtension = URIUtils::GetExtension(value);
-          value = UnicodeUtils::TrimLeft(strExtension, {"."});
+          value = UnicodeUtils::TrimLeft(strExtension, "."sv);
         }
         return true;
       case LISTITEM_FOLDERNAME:

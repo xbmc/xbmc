@@ -12,6 +12,7 @@
 #include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 
+using namespace std::string_view_literals;
 namespace ADDON
 {
 static const std::set<TYPE> dependencyTypes = {
@@ -44,7 +45,7 @@ void CAddonType::SetProvides(const std::string& content)
     if (GetValue("provides").empty())
       Insert("provides", content);
 
-    for (const auto& provide : UnicodeUtils::Split(content, ' '))
+    for (const auto& provide : UnicodeUtils::Split(content, " "sv))
     {
       TYPE content = CAddonInfo::TranslateSubContent(provide);
       if (content != ADDON_UNKNOWN)

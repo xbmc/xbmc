@@ -341,8 +341,21 @@ bool CPlayerController::OnAction(const CAction &action)
 
       case ACTION_SUBTITLE_VSHIFT_UP:
       {
+        const auto settings{CServiceBroker::GetSettingsComponent()->GetSubtitlesSettings()};
+        SUBTITLES::Align subAlign{settings->GetAlignment()};
+        if (subAlign != SUBTITLES::Align::BOTTOM_OUTSIDE && subAlign != SUBTITLES::Align::MANUAL)
+          return true;
+
         RESOLUTION_INFO resInfo = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
         CVideoSettings vs = g_application.GetAppPlayer().GetVideoSettings();
+
+        int maxPos = resInfo.Overscan.bottom;
+        if (subAlign == SUBTITLES::Align::BOTTOM_OUTSIDE)
+        {
+          maxPos =
+              resInfo.Overscan.bottom + static_cast<int>(static_cast<float>(resInfo.iHeight) / 100 *
+                                                         settings->GetVerticalMarginPerc());
+        }
 
         vs.m_subtitleVerticalPosition -=
             static_cast<int>(m_movingSpeed.GetUpdatedDistance(ACTION_SUBTITLE_VSHIFT_UP));
@@ -352,26 +365,42 @@ bool CPlayerController::OnAction(const CAction &action)
                                                                  action.GetText() == "save");
 
         ShowSlider(action.GetID(), 277, static_cast<float>(vs.m_subtitleVerticalPosition),
-                   static_cast<float>(resInfo.Overscan.top), 1.0f,
-                   static_cast<float>(resInfo.Overscan.bottom));
+                   static_cast<float>(resInfo.Overscan.top), 1.0f, static_cast<float>(maxPos));
         return true;
       }
 
       case ACTION_SUBTITLE_VSHIFT_DOWN:
       {
+        const auto settings{CServiceBroker::GetSettingsComponent()->GetSubtitlesSettings()};
+        SUBTITLES::Align subAlign{settings->GetAlignment()};
+        if (subAlign != SUBTITLES::Align::BOTTOM_OUTSIDE && subAlign != SUBTITLES::Align::MANUAL)
+          return true;
+
         RESOLUTION_INFO resInfo = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
         CVideoSettings vs = g_application.GetAppPlayer().GetVideoSettings();
 
+        int maxPos = resInfo.Overscan.bottom;
+        if (subAlign == SUBTITLES::Align::BOTTOM_OUTSIDE)
+        {
+          // In this case the position not includes the vertical margin,
+          // so to be able to move the text to the bottom of the screen
+          // we must extend the maximum position with the vertical margin.
+          // Note that the text may go also slightly off-screen, this is
+          // caused by Libass see "displacement compensation" on OverlayRenderer
+          maxPos =
+              resInfo.Overscan.bottom + static_cast<int>(static_cast<float>(resInfo.iHeight) / 100 *
+                                                         settings->GetVerticalMarginPerc());
+        }
+
         vs.m_subtitleVerticalPosition +=
             static_cast<int>(m_movingSpeed.GetUpdatedDistance(ACTION_SUBTITLE_VSHIFT_DOWN));
-        if (vs.m_subtitleVerticalPosition > resInfo.Overscan.bottom)
-          vs.m_subtitleVerticalPosition = resInfo.Overscan.bottom;
+        if (vs.m_subtitleVerticalPosition > maxPos)
+          vs.m_subtitleVerticalPosition = maxPos;
         g_application.GetAppPlayer().SetSubtitleVerticalPosition(vs.m_subtitleVerticalPosition,
                                                                  action.GetText() == "save");
 
         ShowSlider(action.GetID(), 277, static_cast<float>(vs.m_subtitleVerticalPosition),
-                   static_cast<float>(resInfo.Overscan.top), 1.0f,
-                   static_cast<float>(resInfo.Overscan.bottom));
+                   static_cast<float>(resInfo.Overscan.top), 1.0f, static_cast<float>(maxPos));
         return true;
       }
 

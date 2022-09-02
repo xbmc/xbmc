@@ -26,6 +26,7 @@
 
 using namespace dbiplus;
 using namespace PVR;
+using namespace std::string_view_literals;
 
 namespace
 {
@@ -427,9 +428,9 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::CreateEpgTag(
     newTag->m_iFlags = m_pDS->fv("iFlags").get_asInt();
     newTag->m_strSeriesLink = m_pDS->fv("sSeriesLink").get_asString();
     newTag->m_strParentalRatingCode = m_pDS->fv("sParentalRatingCode").get_asString();
-    newTag->SetGenre(m_pDS->fv("iGenreType").get_asInt(), m_pDS->fv("iGenreSubType").get_asInt(),
-                     m_pDS->fv("sGenre").get_asString().c_str());
-    newTag->UpdatePath();
+    newTag->m_iGenreType = m_pDS->fv("iGenreType").get_asInt();
+    newTag->m_iGenreSubType = m_pDS->fv("iGenreSubType").get_asInt();
+    newTag->m_strGenreDescription = m_pDS->fv("sGenre").get_asString();
 
     return newTag;
   }
@@ -593,7 +594,7 @@ private:
           strFragment.clear();
 
           strFragment += ") LIKE UPPER('%";
-          UnicodeUtils::Replace(strTerm, "'", "''"); // escape '
+          UnicodeUtils::Replace(strTerm, "'"sv, "''"sv); // escape '
           strFragment += strTerm;
           strFragment += "%')) ";
 
@@ -1194,9 +1195,6 @@ bool CPVREpgDatabase::QueuePersistQuery(const CPVREpgInfoTag& tag)
   int iBroadcastId = tag.DatabaseID();
   std::string strQuery;
 
-  /* Only store the genre string when needed */
-  std::string strGenre = (tag.GenreType() == EPG_GENRE_USE_STRING || tag.GenreSubType() == EPG_GENRE_USE_STRING) ? tag.DeTokenize(tag.Genre()) : "";
-
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
   if (iBroadcastId < 0)
@@ -1216,7 +1214,7 @@ bool CPVREpgDatabase::QueuePersistQuery(const CPVREpgInfoTag& tag)
         tag.OriginalTitle().c_str(), tag.DeTokenize(tag.Cast()).c_str(),
         tag.DeTokenize(tag.Directors()).c_str(), tag.DeTokenize(tag.Writers()).c_str(), tag.Year(),
         tag.IMDBNumber().c_str(), tag.ClientIconPath().c_str(), tag.GenreType(), tag.GenreSubType(),
-        strGenre.c_str(), sFirstAired.c_str(), tag.ParentalRating(), tag.StarRating(),
+        tag.GenreDescription().c_str(), sFirstAired.c_str(), tag.ParentalRating(), tag.StarRating(),
         tag.SeriesNumber(), tag.EpisodeNumber(), tag.EpisodePart(), tag.EpisodeName().c_str(),
         tag.Flags(), tag.SeriesLink().c_str(), tag.ParentalRatingCode().c_str(),
         tag.UniqueBroadcastID());
@@ -1238,7 +1236,7 @@ bool CPVREpgDatabase::QueuePersistQuery(const CPVREpgInfoTag& tag)
         tag.OriginalTitle().c_str(), tag.DeTokenize(tag.Cast()).c_str(),
         tag.DeTokenize(tag.Directors()).c_str(), tag.DeTokenize(tag.Writers()).c_str(), tag.Year(),
         tag.IMDBNumber().c_str(), tag.ClientIconPath().c_str(), tag.GenreType(), tag.GenreSubType(),
-        strGenre.c_str(), sFirstAired.c_str(), tag.ParentalRating(), tag.StarRating(),
+        tag.GenreDescription().c_str(), sFirstAired.c_str(), tag.ParentalRating(), tag.StarRating(),
         tag.SeriesNumber(), tag.EpisodeNumber(), tag.EpisodePart(), tag.EpisodeName().c_str(),
         tag.Flags(), tag.SeriesLink().c_str(), tag.ParentalRatingCode().c_str(),
         tag.UniqueBroadcastID(), iBroadcastId);

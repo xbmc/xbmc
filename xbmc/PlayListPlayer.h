@@ -61,8 +61,11 @@ public:
   bool PlaySongId(int songId);
   bool Play();
 
-  /*! \brief Creates a new playlist for an item and starts playing it
-   \param pItem The item to play.
+  /*!
+   * \brief Creates a new playlist for an item and starts playing it
+   * \param pItem The item to play.
+   * \param player The player name.
+   * \return True if has success, otherwise false.
    */
   bool Play(const CFileItemPtr& pItem, const std::string& player);
 

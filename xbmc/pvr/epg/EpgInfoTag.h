@@ -267,6 +267,12 @@ namespace PVR
     int GenreSubType() const;
 
     /*!
+     * @brief Get the genre description of this event.
+     * @return The genre.
+     */
+    std::string GenreDescription() const;
+
+    /*!
      * @brief Get the genre as human readable string.
      * @return The genre.
      */
@@ -453,18 +459,6 @@ namespace PVR
     CPVREpgInfoTag& operator =(const CPVREpgInfoTag& other) = delete;
 
     /*!
-     * @brief Change the genre of this event.
-     * @param iGenreType The genre type ID.
-     * @param iGenreSubType The genre subtype ID.
-     */
-    void SetGenre(int iGenreType, int iGenreSubType, const char* strGenre);
-
-    /*!
-     * @brief Update the path of this tag.
-     */
-    void UpdatePath();
-
-    /*!
      * @brief Get current time, taking timeshifting into account.
      * @return The playing time.
      */
@@ -473,6 +467,7 @@ namespace PVR
     int m_iDatabaseID = -1; /*!< database ID */
     int m_iGenreType = 0; /*!< genre type */
     int m_iGenreSubType = 0; /*!< genre subtype */
+    std::string m_strGenreDescription; /*!< genre description */
     int m_iParentalRating = 0; /*!< parental rating */
     std::string m_strParentalRatingCode; /*!< parental rating code */
     int m_iStarRating = 0; /*!< star rating */
@@ -489,10 +484,9 @@ namespace PVR
     std::vector<std::string> m_writers; /*!< writer(s) */
     int m_iYear = 0; /*!< year */
     std::string m_strIMDBNumber; /*!< imdb number */
-    std::vector<std::string> m_genre; /*!< genre */
+    mutable std::vector<std::string> m_genre; /*!< genre */
     std::string m_strEpisodeName; /*!< episode name */
     CPVRCachedImage m_iconPath; /*!< the path to the icon */
-    std::string m_strFileNameAndPath; /*!< the filename and path */
     CDateTime m_startTime; /*!< event start time */
     CDateTime m_endTime; /*!< event end time */
     CDateTime m_firstAired; /*!< first airdate */

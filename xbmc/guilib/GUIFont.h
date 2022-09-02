@@ -53,6 +53,7 @@ constexpr int FONT_STYLE_UPPERCASE = (1 << 3);
 constexpr int FONT_STYLE_LOWERCASE = (1 << 4);
 constexpr int FONT_STYLE_CAPITALIZE = (1 << 5);
 constexpr int FONT_STYLE_MASK = 0xFF;
+constexpr int FONT_STYLES_COUNT = 7;
 
 class CScrollInfo
 {

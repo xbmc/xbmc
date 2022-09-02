@@ -49,6 +49,8 @@ using KODI::MESSAGING::HELPERS::DialogResponse;
 
 std::shared_ptr<ADDON::CSkinInfo> g_SkinInfo;
 
+using namespace std::string_view_literals;
+
 namespace
 {
 constexpr auto DELAY = 500ms;
@@ -175,7 +177,7 @@ CSkinInfo::CSkinInfo(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, ADDON_SK
     std::string strAspect = values.second.GetValue("res@aspect").asString();
     float aspect = 0;
 
-    std::vector<std::string> fracs = UnicodeUtils::Split(strAspect, ':');
+    std::vector<std::string> fracs = UnicodeUtils::Split(strAspect, ":"sv);
     if (fracs.size() == 2)
       aspect = (float)(atof(fracs[0].c_str())/atof(fracs[1].c_str()));
     if (width > 0 && height > 0)
@@ -291,12 +293,12 @@ void CSkinInfo::LoadTimers()
   m_skinTimerManager.LoadTimers(timersPath);
 }
 
-void CSkinInfo::StartTimerEvaluation()
+void CSkinInfo::ProcessTimers()
 {
-  m_skinTimerManager.Start();
+  m_skinTimerManager.Process();
 }
-
-void CSkinInfo::ResolveIncludes(TiXmlElement *node, std::map<INFO::InfoPtr, bool>* xmlIncludeConditions /* = NULL */)
+void CSkinInfo::ResolveIncludes(TiXmlElement* node,
+                                std::map<INFO::InfoPtr, bool>* xmlIncludeConditions /* = nullptr */)
 {
   if(xmlIncludeConditions)
     xmlIncludeConditions->clear();
@@ -518,7 +520,7 @@ void CSkinInfo::SettingOptionsSkinFontsFiller(const SettingConstPtr& setting,
   {
     const char* idAttr = pChild->Attribute("id");
     const char* idLocAttr = pChild->Attribute("idloc");
-    if (idAttr != NULL)
+    if (idAttr != nullptr)
     {
       if (idLocAttr)
         list.emplace_back(g_localizeStrings.Get(atoi(idLocAttr)), idAttr);
@@ -867,7 +869,7 @@ bool CSkinInfo::SettingsToXML(CXBMCTinyXML &doc) const
   // add the <skinsettings> tag
   TiXmlElement rootElement(XML_SETTINGS);
   TiXmlNode *settingsNode = doc.InsertEndChild(rootElement);
-  if (settingsNode == NULL)
+  if (settingsNode == nullptr)
   {
     CLog::Log(LOGWARNING, "CSkinInfo: could not create <settings> tag");
     return false;

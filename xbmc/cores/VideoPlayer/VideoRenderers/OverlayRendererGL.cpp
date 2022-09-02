@@ -161,8 +161,6 @@ static void LoadTexture(GLenum target
 
 COverlayTextureGL::COverlayTextureGL(CDVDOverlayImage* o, CRect& rSource)
 {
-  m_texture = 0;
-
   glGenTextures(1, &m_texture);
   glBindTexture(GL_TEXTURE_2D, m_texture);
 
@@ -230,8 +228,6 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlayImage* o, CRect& rSource)
 
 COverlayTextureGL::COverlayTextureGL(CDVDOverlaySpu* o)
 {
-  m_texture = 0;
-
   int min_x, max_x, min_y, max_y;
   std::vector<uint32_t> rgba(o->width * o->height);
 
@@ -263,11 +259,10 @@ COverlayGlyphGL::COverlayGlyphGL(ASS_Image* images, float width, float height)
 {
   m_width  = 1.0;
   m_height = 1.0;
-  m_align  = ALIGN_VIDEO;
+  m_align = ALIGN_SCREEN;
   m_pos    = POSITION_RELATIVE;
   m_x      = 0.0f;
   m_y      = 0.0f;
-  m_texture = 0;
 
   SQuads quads;
   if (!convert_quad(images, quads, static_cast<int>(width)))

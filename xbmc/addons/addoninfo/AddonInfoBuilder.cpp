@@ -25,9 +25,8 @@
 #include <algorithm>
 #include <memory>
 #include <regex>
-#include <string>
-#include <string_view>
-#include <vector>
+
+using namespace std::string_view_literals;
 
 namespace
 {
@@ -209,6 +208,8 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
     addon->m_path = URIUtils::AddFileToFolder(repo.datadir, addon->m_id, StringUtils::Format("{}-{}.zip", addon->m_id, addon->m_version.asString()));
   }
 
+  addon->m_profilePath = StringUtils::Format("special://profile/addon_data/{}/", addon->m_id);
+
   /*
    * Parse addon.xml:
    * <extension>
@@ -295,8 +296,8 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
       element = child->FirstChildElement("platform");
       if (element && element->GetText() != nullptr)
       {
-        std::vector<std::string_view> delimiters{" ", "\t", "\n", "\r"};
-        auto platforms = UnicodeUtils::Split(element->GetText(), delimiters);
+        auto platforms = UnicodeUtils::Split(element->GetText(),
+                                            {" "sv, "\t"sv, "\n"sv, "\r"sv});
         platforms.erase(std::remove_if(platforms.begin(), platforms.end(),
                         [](const std::string& platform) { return platform.empty(); }),
                         platforms.cend());

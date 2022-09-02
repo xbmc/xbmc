@@ -45,6 +45,7 @@
 using namespace XFILE;
 using namespace MUSIC_GRABBER;
 using namespace VIDEO;
+using namespace std::string_view_literals;
 
 namespace ADDON
 {
@@ -477,8 +478,8 @@ CScraperUrl CScraper::NfoUrl(const std::string &sNfoContent)
        with start and end-tags we're not able to use it.
        Check for the desired Elements instead.
       */
-      TiXmlElement *pxeUrl = NULL;
-      TiXmlElement *pId = NULL;
+      TiXmlElement* pxeUrl = nullptr;
+      TiXmlElement* pId = nullptr;
       if (!strcmp(doc.RootElement()->Value(), "details"))
       {
         pxeUrl = doc.RootElement()->FirstChildElement("url");
@@ -553,8 +554,8 @@ CScraperUrl CScraper::ResolveIDToUrl(const std::string &externalID)
        with start and end-tags we're not able to use it.
        Check for the desired Elements instead.
        */
-      TiXmlElement *pxeUrl = NULL;
-      TiXmlElement *pId = NULL;
+      TiXmlElement* pxeUrl = nullptr;
+      TiXmlElement* pId = nullptr;
       if (!strcmp(doc.RootElement()->Value(), "details"))
       {
         pxeUrl = doc.RootElement()->FirstChildElement("url");
@@ -892,7 +893,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl,
     return vcscurl;
 
   if (!fFirst)
-    UnicodeUtils::Replace(sTitle, "-", " ");
+    UnicodeUtils::Replace(sTitle, "-"sv, " "sv);
 
   if (m_isPython)
   {
@@ -949,7 +950,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl,
     if (fSort)
     {
       const char *sorted = xhResults.Element()->Attribute("sorted");
-      if (sorted != NULL)
+      if (sorted != nullptr)
         fSort = !UnicodeUtils::EqualsNoCase(sorted, "yes");
     }
 

@@ -6,14 +6,9 @@ PUSHD %~dp0\..\..\..
 SET WORKSPACE=%CD%
 POPD
 cd %WORKSPACE%\kodi-build.%TARGET_PLATFORM%
-SET builddeps_dir=%WORKSPACE%\project\BuildDependencies
-SET msys_dir=%builddeps_dir%\msys64
-IF NOT EXIST %msys_dir% (SET msys_dir=%builddeps_dir%\msys32)
-SET awk_exe=%msys_dir%\usr\bin\awk.exe
-SET sed_exe=%msys_dir%\usr\bin\sed.exe
 
 REM read the version values from version.txt
-FOR /f %%i IN ('%awk_exe% "/APP_NAME/ {print $2}" %WORKSPACE%\version.txt') DO SET APP_NAME=%%i
+FOR /f "tokens=1,2" %%i IN (%WORKSPACE%\version.txt) DO IF "%%i" == "APP_NAME" SET APP_NAME=%%j
 
 CLS
 COLOR 1B
@@ -54,7 +49,7 @@ ECHO Running testsuite...
   rem <testcase name="IsStarted" status="notrun" time="0" classname="TestWebServer"/>
   rem becomes
   rem <testcase name="IsStarted" status="notrun" time="0" classname="TestWebServer"><skipped/></testcase>
-  %sed_exe% "s/<testcase\(.*\)\"notrun\"\(.*\)\/>$/<testcase\1\"notrun\"\2><skipped\/><\/testcase>/" %WORKSPACE%\gtestresults.xml > %WORKSPACE%\gtestresults-skipped.xml
+  @PowerShell "(GC %WORKSPACE%\gtestresults.xml)|%%{$_ -Replace '(<testcase.+)("notrun")(.+)(/>)','$1$2$3><skipped/></testcase>'}|SC %WORKSPACE%\gtestresults-skipped.xml"
   del %WORKSPACE%\gtestresults.xml
   move %WORKSPACE%\gtestresults-skipped.xml %WORKSPACE%\gtestresults.xml
 ECHO Done running testsuite!

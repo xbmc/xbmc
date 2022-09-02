@@ -23,6 +23,7 @@ are:
   * install.txt: instructions on how to install the dependency's built files
   * noinstall.txt: no installation step required (content is ignored)
   * flags.txt: additional build flags
+  * flags-<CPU>.txt: additional arch specific platform build flags
   * deps.txt: whitespace separated list of dependencies of this dependency
 
 The buildsystem uses the following depends-related variables (which can be passed
@@ -30,3 +31,5 @@ into it when executing cmake with the -D<variable-name>=<value> option) to e.g.
 access specific paths:
   * DEPENDS_TO_BUILD is a quoted, space delimited list of <dependency>s that
     you want to build (default is "all").
+  * ADDON_EXTRA_ARGS is a quoted, space delimited list of arguments passed to
+    all <dependency>s built (eg -DADDON_EXTRA_ARGS="-Darg1=1 -Darg2=2").

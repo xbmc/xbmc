@@ -35,6 +35,7 @@
 #include <stdexcept>
 
 using namespace PVR;
+using namespace std::string_view_literals;
 
 static std::string shortDateFormats[] = {
   // short date formats using "/"
@@ -1128,14 +1129,14 @@ std::string CLangInfo::PrepareTimeFormat(const std::string& timeFormat, bool use
   if (use24HourClock)
   {
     // replace all "h" with "H"
-    UnicodeUtils::Replace(preparedTimeFormat, "h", "H");
+    UnicodeUtils::Replace(preparedTimeFormat, "h"sv, "H"sv);
 
     // remove any "xx" for meridiem
-    UnicodeUtils::Replace(preparedTimeFormat, "x", "");
+    UnicodeUtils::Replace(preparedTimeFormat, "x"sv, ""sv);
   }
   else
     // replace all "H" with "h"
-    UnicodeUtils::Replace(preparedTimeFormat, "H", "h");
+    UnicodeUtils::Replace(preparedTimeFormat, "H"sv, "h"sv);
 
   UnicodeUtils::Trim(preparedTimeFormat);
 

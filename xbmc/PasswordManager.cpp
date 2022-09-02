@@ -19,6 +19,8 @@
 
 #include <mutex>
 
+using namespace std::string_view_literals;
+
 CPasswordManager &CPasswordManager::GetInstance()
 {
   static CPasswordManager sPasswordManager;
@@ -73,7 +75,7 @@ bool CPasswordManager::PromptToAuthenticateURL(CURL &url)
 
   if (url.IsProtocol("smb") && name.find('\\') != std::string::npos)
   {
-    auto pair = UnicodeUtils::Split(name, '\\', 2);
+    auto pair = UnicodeUtils::Split(name, "\\"sv, 2);
     url.SetDomain(pair[0]);
     url.SetUserName(pair[1]);
   }

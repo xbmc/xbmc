@@ -41,9 +41,9 @@ endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
   set(CMAKE_OSX_SYSROOT @use_sdk_path@)
+  set(CMAKE_LIBRARY_PATH ${CMAKE_FIND_ROOT_PATH}/lib:@use_sdk_path@/lib:/usr/X11R6/lib)
+  set(CMAKE_INCLUDE_PATH ${CMAKE_FIND_ROOT_PATH}/include:@use_sdk_path@/include:/usr/X11R6/include)
   list(APPEND CMAKE_FIND_ROOT_PATH ${CMAKE_OSX_SYSROOT} ${CMAKE_OSX_SYSROOT}/usr /usr/X11R6)
-  set(CMAKE_LIBRARY_PATH @CMAKE_FIND_ROOT_PATH@/lib:@use_sdk_path@/lib:/usr/X11R6/lib)
-  set(CMAKE_INCLUDE_PATH @CMAKE_FIND_ROOT_PATH@/include:@use_sdk_path@/include:/usr/X11R6/include)
 endif()
 set(CMAKE_SYSTEM_VERSION 1)
 

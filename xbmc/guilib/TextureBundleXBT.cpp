@@ -41,6 +41,8 @@
 #endif
 #endif
 
+using namespace std::string_view_literals;
+
 CTextureBundleXBT::CTextureBundleXBT()
   : m_TimeStamp{0}
   , m_themeBundle{false}
@@ -259,7 +261,7 @@ std::string CTextureBundleXBT::Normalize(std::string name)
 {
   UnicodeUtils::Trim(name);
   UnicodeUtils::FoldCase(name);
-  UnicodeUtils::Replace(name, "\\", "/");
+  UnicodeUtils::Replace(name, "\\"sv, "/"sv);
 
   return name;
 }

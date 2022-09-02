@@ -25,6 +25,7 @@
 #include <vector>
 
 using namespace ADDON;
+using namespace std::string_view_literals;
 
 CURL::~CURL() = default;
 
@@ -297,7 +298,7 @@ void CURL::Parse(const std::string& strURL1)
     }
   }
 
-  UnicodeUtils::Replace(m_strFileName, "\\", "/");
+  UnicodeUtils::Replace(m_strFileName, "\\"sv, "/"sv);
 
   /* update extension + sharename */
   SetFileName(m_strFileName);

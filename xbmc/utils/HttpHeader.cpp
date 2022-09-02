@@ -12,6 +12,8 @@
 #include "utils/StringUtils.h"
 #include "utils/UnicodeUtils.h"
 
+using namespace std::string_view_literals;
+
 // header white space characters according to RFC 2616
 const char* const CHttpHeader::m_whitespaceChars = " \t";
 
@@ -222,7 +224,7 @@ std::string CHttpHeader::GetCharset(void) const
             return charset;
           else
           { // charset contains quoted string (allowed according to RFC 2616)
-            UnicodeUtils::Replace(charset, "\\", ""); // unescape chars, ignoring possible '\"' and '\\'
+            UnicodeUtils::Replace(charset, "\\"sv, ""sv); // unescape chars, ignoring possible '\"' and '\\'
             const size_t closingQ = charset.find('"', 1);
             if (closingQ == std::string::npos)
               return ""; // no closing quote

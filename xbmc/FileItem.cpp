@@ -830,7 +830,7 @@ void CFileItem::ToSortable(SortItem &sortable, Field field) const
 void CFileItem::ToSortable(SortItem &sortable, const Fields &fields) const
 {
   Fields::const_iterator it;
-  for (it = fields.begin(); it != fields.end(); it++)
+  for (it = fields.begin(); it != fields.end(); ++it)
     ToSortable(sortable, *it);
 
   /* FieldLabel is used as a fallback by all sorters and therefore has to be present as well */
@@ -1058,7 +1058,14 @@ bool CFileItem::IsPicture() const
   if (HasVideoInfoTag())
     return false;
 
-  return CUtil::IsPicture(m_strPath);
+  if (HasPVRTimerInfoTag() || HasPVRChannelInfoTag() || HasPVRChannelGroupMemberInfoTag() ||
+      HasPVRRecordingInfoTag() || HasEPGInfoTag() || HasEPGSearchFilter())
+    return false;
+
+  if (!m_strPath.empty())
+    return CUtil::IsPicture(m_strPath);
+
+  return false;
 }
 
 bool CFileItem::IsLyrics() const
@@ -2024,7 +2031,8 @@ void CFileItem::LoadEmbeddedCue()
     {
       std::vector<std::string> MediaFileVec;
       cuesheet->GetMediaFiles(MediaFileVec);
-      for (std::vector<std::string>::iterator itMedia = MediaFileVec.begin(); itMedia != MediaFileVec.end(); itMedia++)
+      for (std::vector<std::string>::iterator itMedia = MediaFileVec.begin();
+           itMedia != MediaFileVec.end(); ++itMedia)
         cuesheet->UpdateMediaFile(*itMedia, GetPath());
       SetCueDocument(cuesheet);
     }
@@ -2342,7 +2350,7 @@ bool CFileItemList::Copy(const CFileItemList& items, bool copyItems /* = true */
   return true;
 }
 
-CFileItemPtr CFileItemList::Get(int iItem)
+CFileItemPtr CFileItemList::Get(int iItem) const
 {
   std::unique_lock<CCriticalSection> lock(m_lock);
 
@@ -2352,46 +2360,14 @@ CFileItemPtr CFileItemList::Get(int iItem)
   return CFileItemPtr();
 }
 
-const CFileItemPtr CFileItemList::Get(int iItem) const
-{
-  std::unique_lock<CCriticalSection> lock(m_lock);
-
-  if (iItem > -1 && iItem < (int)m_items.size())
-    return m_items[iItem];
-
-  return CFileItemPtr();
-}
-
-CFileItemPtr CFileItemList::Get(const std::string& strPath)
+CFileItemPtr CFileItemList::Get(const std::string& strPath) const
 {
   std::unique_lock<CCriticalSection> lock(m_lock);
 
   if (m_fastLookup)
   {
-    IMAPFILEITEMS it = m_map.find(m_ignoreURLOptions ? CURL(strPath).GetWithoutOptions() : strPath);
-    if (it != m_map.end())
-      return it->second;
-
-    return CFileItemPtr();
-  }
-  // slow method...
-  for (unsigned int i = 0; i < m_items.size(); i++)
-  {
-    CFileItemPtr pItem = m_items[i];
-    if (pItem->IsPath(m_ignoreURLOptions ? CURL(strPath).GetWithoutOptions() : strPath))
-      return pItem;
-  }
-
-  return CFileItemPtr();
-}
-
-const CFileItemPtr CFileItemList::Get(const std::string& strPath) const
-{
-  std::unique_lock<CCriticalSection> lock(m_lock);
-
-  if (m_fastLookup)
-  {
-    std::map<std::string, CFileItemPtr>::const_iterator it = m_map.find(m_ignoreURLOptions ? CURL(strPath).GetWithoutOptions() : strPath);
+    MAPFILEITEMS::const_iterator it =
+        m_map.find(m_ignoreURLOptions ? CURL(strPath).GetWithoutOptions() : strPath);
     if (it != m_map.end())
       return it->second;
 
@@ -2486,7 +2462,7 @@ void CFileItemList::Sort(SortDescription sortDescription)
   // apply the new order to the existing CFileItems
   VECFILEITEMS sortedFileItems;
   sortedFileItems.reserve(Size());
-  for (SortItems::const_iterator it = sortItems.begin(); it != sortItems.end(); it++)
+  for (SortItems::const_iterator it = sortItems.begin(); it != sortItems.end(); ++it)
   {
     CFileItemPtr item = m_items[(int)(*it)->at(FieldId).asInteger()];
     // Set the sort label in the CFileItem
@@ -2711,7 +2687,8 @@ void CFileItemList::FilterCueItems()
           cuesheet->GetMediaFiles(MediaFileVec);
 
           // queue the cue sheet and the underlying media file for deletion
-          for(std::vector<std::string>::iterator itMedia = MediaFileVec.begin(); itMedia != MediaFileVec.end(); itMedia++)
+          for (std::vector<std::string>::iterator itMedia = MediaFileVec.begin();
+               itMedia != MediaFileVec.end(); ++itMedia)
           {
             std::string strMediaFile = *itMedia;
             std::string fileFromCue = strMediaFile; // save the file from the cue we're matching against,
@@ -2828,7 +2805,7 @@ void CFileItemList::StackFolders()
     else
       folderRegExps.push_back(folderRegExp);
 
-    strExpression++;
+    ++strExpression;
   }
 
   if (!folderRegExp.IsCompiled())
@@ -2890,7 +2867,7 @@ void CFileItemList::StackFolders()
             if (nFiles == 1)
               *item = *items[index];
           }
-          expr++;
+          ++expr;
         }
 
         // check for dvd folders
@@ -2930,7 +2907,7 @@ void CFileItemList::StackFiles()
         CLog::Log(LOGERROR, "Invalid video stack RE ({}). Must have 4 captures.",
                   strRegExp->c_str());
     }
-    strRegExp++;
+    ++strRegExp;
   }
 
   // now stack the files, some of which may be from the previous stack iteration
@@ -3023,7 +3000,7 @@ void CFileItemList::StackFiles()
                 else // Sequel
                 {
                   offset = 0;
-                  expr++;
+                  ++expr;
                   break;
                 }
               }
@@ -3035,21 +3012,21 @@ void CFileItemList::StackFiles()
               else // Extension mismatch
               {
                 offset = 0;
-                expr++;
+                ++expr;
                 break;
               }
             }
             else // Title mismatch
             {
               offset = 0;
-              expr++;
+              ++expr;
               break;
             }
           }
           else // No match 2, next expression
           {
             offset = 0;
-            expr++;
+            ++expr;
             break;
           }
           j++;
@@ -3060,7 +3037,7 @@ void CFileItemList::StackFiles()
       else // No match 1
       {
         offset = 0;
-        expr++;
+        ++expr;
       }
       if (stack.size() > 1)
       {
@@ -3879,7 +3856,7 @@ std::string CFileItem::FindTrailer() const
     {
       matchRegExps.push_back(tmpRegExp);
     }
-    strRegExp++;
+    ++strRegExp;
   }
 
   std::string strTrailer;
@@ -3906,7 +3883,7 @@ std::string CFileItem::FindTrailer() const
           i = items.Size();
           break;
         }
-        expr++;
+        ++expr;
       }
     }
   }

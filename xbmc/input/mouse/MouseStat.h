@@ -36,10 +36,14 @@
 
 enum MOUSE_STATE
 {
-  MOUSE_STATE_NORMAL = 1, /*! < Normal state */
-  MOUSE_STATE_FOCUS, /*! < Control below the mouse is currently in focus */
-  MOUSE_STATE_DRAG, /*! < A drag operation is being performed */
-  MOUSE_STATE_CLICK /*! < A mousebutton is being clicked */
+  /*! Normal state */
+  MOUSE_STATE_NORMAL = 1,
+  /*! Control below the mouse is currently in focus */
+  MOUSE_STATE_FOCUS,
+  /*! A drag operation is being performed */
+  MOUSE_STATE_DRAG,
+  /*! A mousebutton is being clicked */
+  MOUSE_STATE_CLICK
 };
 
 enum MOUSE_BUTTON
@@ -53,16 +57,35 @@ enum MOUSE_BUTTON
   MOUSE_EXTRA_BUTTON4
 };
 
-// this holds everything we know about the current state of the mouse
+enum class HoldAction
+{
+  /*! No action should occur */
+  NONE,
+  /*! A drag action has started */
+  DRAG_START,
+  /*! A drag action is in progress */
+  DRAG,
+  /*! A drag action has finished */
+  DRAG_END
+};
+
+//! Holds everything we know about the current state of the mouse
 struct MouseState
 {
-  int x; // x location
-  int y; // y location
-  int16_t dx; // change in x
-  int16_t dy; // change in y
-  int8_t dz; // change in z (wheel)
-  bool button[MOUSE_MAX_BUTTON]; // current state of the buttons
-  bool active; // true if the mouse is active
+  /*! X location */
+  int x;
+  /*! Y location */
+  int y;
+  /*! Change in x */
+  int16_t dx;
+  /*! Change in y */
+  int16_t dy;
+  /*! Change in z (wheel) */
+  int8_t dz;
+  /*! Current state of the buttons */
+  bool button[MOUSE_MAX_BUTTON];
+  /*! True if the mouse is active */
+  bool active;
 };
 
 struct MousePosition
@@ -91,7 +114,7 @@ public:
   MOUSE_STATE GetState() const { return m_pointerState; }
   uint32_t GetKey() const;
 
-  int GetHold(int ButtonID) const;
+  HoldAction GetHold(int ButtonID) const;
   inline int GetX(void) const { return m_mouseState.x; }
   inline int GetY(void) const { return m_mouseState.y; }
   inline int GetDX(void) const { return m_mouseState.dx; }
@@ -197,7 +220,7 @@ private:
 
   bool bClick[MOUSE_MAX_BUTTON];
   bool bDoubleClick[MOUSE_MAX_BUTTON];
-  int bHold[MOUSE_MAX_BUTTON];
+  HoldAction m_hold[MOUSE_MAX_BUTTON];
   bool bLongClick[MOUSE_MAX_BUTTON];
 
   uint32_t m_Key;

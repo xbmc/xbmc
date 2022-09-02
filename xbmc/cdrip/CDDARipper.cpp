@@ -41,6 +41,7 @@ using namespace XFILE;
 using namespace MUSIC_INFO;
 using namespace KODI::MESSAGING;
 using namespace KODI::CDRIP;
+using namespace std::string_view_literals;
 
 CCDDARipper& CCDDARipper::GetInstance()
 {
@@ -219,7 +220,7 @@ std::string CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTa
     if (strAlbumArtist.empty())
       strAlbumArtist = "Unknown Artist";
     else
-      UnicodeUtils::Replace(strAlbumArtist, "/", "_");
+      UnicodeUtils::Replace(strAlbumArtist, "/"sv, "_"sv);
     UnicodeUtils::Replace(strAlbumDir, "%A", strAlbumArtist);
   }
 
@@ -231,7 +232,7 @@ std::string CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTa
       strAlbum = StringUtils::Format("Unknown Album {}",
                                      CDateTime::GetCurrentDateTime().GetAsLocalizedDateTime());
     else
-      UnicodeUtils::Replace(strAlbum, "/", "_");
+      UnicodeUtils::Replace(strAlbum, "/", "_"sv);
     UnicodeUtils::Replace(strAlbumDir, "%B", strAlbum);
   }
 
@@ -244,7 +245,7 @@ std::string CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTa
     if (strGenre.empty())
       strGenre = "Unknown Genre";
     else
-      UnicodeUtils::Replace(strGenre, "/", "_");
+      UnicodeUtils::Replace(strGenre, "/"sv, "_"sv);
     UnicodeUtils::Replace(strAlbumDir, "%G", strGenre);
   }
 
@@ -255,7 +256,7 @@ std::string CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTa
     if (strYear.empty())
       strYear = "Unknown Year";
     else
-      UnicodeUtils::Replace(strYear, "/", "_");
+      UnicodeUtils::Replace(strYear, "/"sv, "_"sv);
     UnicodeUtils::Replace(strAlbumDir, "%Y", strYear);
   }
 

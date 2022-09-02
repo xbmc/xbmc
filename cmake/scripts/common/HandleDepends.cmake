@@ -19,7 +19,7 @@ function(add_addon_depends addon searchpath)
     if(NOT (file MATCHES CMakeLists.txt OR
             file MATCHES install.txt OR
             file MATCHES noinstall.txt OR
-            file MATCHES flags.txt OR
+            file MATCHES "flags.*[.]txt" OR
             file MATCHES deps.txt OR
             file MATCHES "[a-z]+-deps[.]txt" OR
             file MATCHES platforms.txt))
@@ -59,6 +59,15 @@ function(add_addon_depends addon searchpath)
           message(STATUS "${id} extraflags: ${extraflags}")
         endif()
 
+        if(EXISTS ${dir}/flags-${CPU}.txt)
+          set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS ${dir}/flags-${CPU}.txt)
+          file(STRINGS ${dir}/flags-${CPU}.txt archextraflags)
+          string(REPLACE " " ";" archextraflags ${archextraflags})
+
+          message(STATUS "${id} ${CPU} extraflags: ${archextraflags}")
+          list(APPEND extraflags ${archextraflags})
+        endif()
+
         set(BUILD_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}
                        -DOUTPUT_DIR=${OUTPUT_DIR}
                        -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
@@ -88,6 +97,12 @@ function(add_addon_depends addon searchpath)
           list(APPEND BUILD_ARGS -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE})
           message("toolchain specified")
           message(${BUILD_ARGS})
+        endif()
+
+        if(ADDON_EXTRA_ARGS)
+          string(REPLACE " " ";" ADDON_EXTRA_ARGS ${ADDON_EXTRA_ARGS})
+          list(APPEND BUILD_ARGS ${ADDON_EXTRA_ARGS})
+          message("Addon Extra Args: ${ADDON_EXTRA_ARGS}")
         endif()
 
         # used for addons where need special folders to store there content (if

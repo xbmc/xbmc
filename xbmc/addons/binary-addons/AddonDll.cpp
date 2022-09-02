@@ -196,7 +196,7 @@ ADDON_STATUS CAddonDll::Create(KODI_ADDON_INSTANCE_STRUCT* firstKodiInstance)
     if ((status = TransferSettings()) == ADDON_STATUS_OK)
       m_initialized = true;
     else
-      new CAddonStatusHandler(ID(), status, "", false);
+      new CAddonStatusHandler(ID(), status, false);
   }
   else
   { // Addon failed initialization
@@ -427,7 +427,7 @@ ADDON_STATUS CAddonDll::TransferSettings()
 
   if (restart || reportStatus != ADDON_STATUS_OK)
   {
-    new CAddonStatusHandler(ID(), restart ? ADDON_STATUS_NEED_RESTART : reportStatus, "", true);
+    new CAddonStatusHandler(ID(), restart ? ADDON_STATUS_NEED_RESTART : reportStatus, true);
   }
 
   return ADDON_STATUS_OK;

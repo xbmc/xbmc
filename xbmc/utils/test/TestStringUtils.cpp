@@ -6,35 +6,31 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include <locale>
 #include "utils/StringUtils.h"
 
 #include <algorithm>
-#include <locale>
 
 #include <gtest/gtest.h>
 enum class ECG
 {
-  A,
-  B
+  A, B
 };
 
 enum EG
 {
-  C,
-  D
+  C, D
 };
 
 namespace test_enum
 {
 enum class ECN
 {
-  A = 1,
-  B
+  A = 1, B
 };
 enum EN
 {
-  C = 1,
-  D
+  C = 1, D
 };
 }
 
@@ -42,8 +38,8 @@ TEST(TestStringUtils, Format)
 {
   std::string refstr = "test 25 2.7 ff FF";
 
-  std::string varstr =
-      StringUtils::Format("{} {} {:.1f} {:x} {:02X}", "test", 25, 2.743f, 0x00ff, 0x00ff);
+  std::string varstr = StringUtils::Format("{} {} {:.1f} {:x} {:02X}", "test", 25, 2.743f, 0x00ff,
+      0x00ff);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
   varstr = StringUtils::Format("", "test", 25, 2.743f, 0x00ff, 0x00ff);
@@ -264,11 +260,14 @@ TEST(TestStringUtils, ToHexadecimal)
 {
   EXPECT_STREQ("", StringUtils::ToHexadecimal("").c_str());
   EXPECT_STREQ("616263", StringUtils::ToHexadecimal("abc").c_str());
-  std::string a{"a\0b\n", 4};
+  std::string a
+  { "a\0b\n", 4 };
   EXPECT_STREQ("6100620a", StringUtils::ToHexadecimal(a).c_str());
-  std::string nul{"\0", 1};
+  std::string nul
+  { "\0", 1 };
   EXPECT_STREQ("00", StringUtils::ToHexadecimal(nul).c_str());
-  std::string ff{"\xFF", 1};
+  std::string ff
+  { "\xFF", 1 };
   EXPECT_STREQ("ff", StringUtils::ToHexadecimal(ff).c_str());
 }
 
@@ -285,8 +284,8 @@ TEST(TestStringUtils, WordToDigits)
   StringUtils::WordToDigits(var);
   EXPECT_STREQ(ref.c_str(), var.c_str());
 
-  ref = "83 8  8 464";
-  var = "Te?t @t\tinG";
-  StringUtils::WordToDigits(var);
-  EXPECT_STREQ(ref.c_str(), var.c_str());
+   ref = "83 8  8 464";
+   var = "Te?t @t\tinG";
+   StringUtils::WordToDigits(var);
+   EXPECT_STREQ(ref.c_str(), var.c_str());
 }

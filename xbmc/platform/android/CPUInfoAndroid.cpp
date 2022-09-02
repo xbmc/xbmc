@@ -17,6 +17,8 @@
 
 #include <array>
 
+using namespace std::string_view_literals;
+
 std::shared_ptr<CCPUInfo> CCPUInfo::GetCPUInfo()
 {
   return std::make_shared<CCPUInfoAndroid>();
@@ -32,7 +34,7 @@ CCPUInfoAndroid::CCPUInfoAndroid()
 
     if (0 < m_posixFile->Read(buffer.data(), buffer.size()))
     {
-      for (const auto& line : UnicodeUtils::Split(buffer.data(), '\n'))
+      for (const auto& line : UnicodeUtils::Split(buffer.data(), "\n"sv))
       {
         if (line.find("vendor_id") != std::string::npos)
           m_cpuVendor = line.substr(line.find(':') + 2);

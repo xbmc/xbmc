@@ -38,6 +38,7 @@
 
 using namespace ADDON;
 using namespace XFILE;
+using namespace std::string_view_literals;
 
 CAdvancedSettings::CAdvancedSettings()
 {
@@ -1251,7 +1252,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
   if (!seekSteps.empty())
   {
     m_seekSteps.clear();
-    std::vector<std::string> steps = UnicodeUtils::Split(seekSteps, ',');
+    std::vector<std::string> steps = UnicodeUtils::Split(seekSteps, ","sv);
     for(std::vector<std::string>::iterator it = steps.begin(); it != steps.end(); ++it)
       m_seekSteps.push_back(atoi((*it).c_str()));
   }
@@ -1398,7 +1399,7 @@ void CAdvancedSettings::GetCustomExtensions(TiXmlElement *pRootElement, std::str
     extensions += "|" + extraExtensions;
   if (XMLUtils::GetString(pRootElement, "remove", extraExtensions) && !extraExtensions.empty())
   {
-    std::vector<std::string> exts = UnicodeUtils::Split(extraExtensions, '|');
+    std::vector<std::string> exts = UnicodeUtils::Split(extraExtensions, "|"sv);
     for (std::vector<std::string>::const_iterator i = exts.begin(); i != exts.end(); ++i)
     {
       size_t iPos = extensions.find(*i);

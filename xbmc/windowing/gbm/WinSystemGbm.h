@@ -57,6 +57,9 @@ public:
   void Register(IDispResource* resource) override;
   void Unregister(IDispResource* resource) override;
 
+  bool SetHDR(const VideoPicture* videoPicture) override;
+  bool IsHDRDisplay() override;
+
   std::shared_ptr<CVideoLayerBridge> GetVideoLayerBridge() const { return m_videoLayerBridge; }
   void RegisterVideoLayerBridge(std::shared_ptr<CVideoLayerBridge> bridge)
   {
@@ -83,6 +86,9 @@ protected:
   bool m_dispReset = false;
   XbmcThreads::EndTime<> m_dispResetTimer;
   std::unique_ptr<CLibInputHandler> m_libinput;
+
+private:
+  uint32_t m_hdr_blob_id = 0;
 };
 
 }

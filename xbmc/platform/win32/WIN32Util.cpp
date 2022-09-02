@@ -58,6 +58,7 @@ using namespace winrt::Windows::Graphics::Display;
 using namespace winrt::Windows::Graphics::Display::Core;
 using namespace winrt::Windows::Storage;
 #endif
+using namespace std::string_view_literals;
 
 CWIN32Util::CWIN32Util(void)
 {
@@ -390,7 +391,7 @@ std::string CWIN32Util::UncToSmb(const std::string &strPath)
   if(UnicodeUtils::StartsWith(strRetPath, "\\\\"))
   {
     strRetPath = "smb:" + strPath;
-    UnicodeUtils::Replace(strRetPath, "\\", "/");
+    UnicodeUtils::Replace(strRetPath, "\\"sv, "/"sv);
   }
   return strRetPath;
 }
@@ -400,8 +401,8 @@ std::string CWIN32Util::SmbToUnc(const std::string &strPath)
   std::string strRetPath(strPath);
   if(UnicodeUtils::StartsWithNoCase(strRetPath, "smb://"))
   {
-    UnicodeUtils::Replace(strRetPath, "smb://", "\\\\");
-    UnicodeUtils::Replace(strRetPath, "/", "\\");
+    UnicodeUtils::Replace(strRetPath, "smb://"sv, "\\\\"sv);
+    UnicodeUtils::Replace(strRetPath, "/"sv, "\\"sv);
   }
   return strRetPath;
 }

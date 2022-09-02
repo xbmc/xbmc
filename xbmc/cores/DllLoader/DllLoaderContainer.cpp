@@ -22,6 +22,8 @@
 #include "utils/log.h"
 #include "URL.h"
 
+using namespace std::string_view_literals;
+
 #if defined(TARGET_WINDOWS)
 #define ENV_PARTIAL_PATH \
                  "special://xbmcbin/;" \
@@ -162,11 +164,11 @@ LibraryLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCu
 
 #if defined(TARGET_ANDROID)
   std::string systemLibs = getenv("KODI_ANDROID_SYSTEM_LIBS");
-  vecEnv = UnicodeUtils::Split(systemLibs, ':');
+  vecEnv = UnicodeUtils::Split(systemLibs, ":"sv);
   std::string localLibs = getenv("KODI_ANDROID_LIBS");
   vecEnv.insert(vecEnv.begin(),localLibs);
 #else
-  vecEnv = UnicodeUtils::Split(ENV_PATH, ';');
+  vecEnv = UnicodeUtils::Split(ENV_PATH, ";"sv);
 #endif
   LibraryLoader* pDll = NULL;
 

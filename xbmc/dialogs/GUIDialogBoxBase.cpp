@@ -20,6 +20,8 @@
 #define CONTROL_LINES_START 2
 #define CONTROL_TEXTBOX     9
 
+using namespace std::string_view_literals;
+
 CGUIDialogBoxBase::CGUIDialogBoxBase(int id, const std::string &xmlFile)
     : CGUIDialog(id, xmlFile)
 {
@@ -65,7 +67,7 @@ void CGUIDialogBoxBase::SetLine(unsigned int iLine, const CVariant& line)
 {
   std::string label = GetLocalized(line);
   std::unique_lock<CCriticalSection> lock(m_section);
-  std::vector<std::string> lines = UnicodeUtils::Split(m_text, '\n');
+  std::vector<std::string> lines = UnicodeUtils::Split(m_text, "\n"sv);
   if (iLine >= lines.size())
     lines.resize(iLine+1);
   lines[iLine] = label;

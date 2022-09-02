@@ -15,8 +15,14 @@ on:
       - '**screensaver.xbmc.builtin.dim**addon.xml'
       - '**screensaver.xbmc.builtin.dim**resource.language.**strings.po'
 
+permissions:
+  contents: read
+
 jobs:
   default:
+    permissions:
+      contents: write  # for peter-evans/create-pull-request to create branch
+      pull-requests: write  # for peter-evans/create-pull-request to create a PR
     if: github.repository == 'xbmc/xbmc'
     runs-on: ubuntu-latest
 

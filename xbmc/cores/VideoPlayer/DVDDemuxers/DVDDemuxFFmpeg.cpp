@@ -201,7 +201,6 @@ static int64_t dvd_file_seek(void* h, int64_t pos, int whence)
 CDVDDemuxFFmpeg::CDVDDemuxFFmpeg() : CDVDDemux()
 {
   m_pFormatContext = NULL;
-  m_pInput = NULL;
   m_ioContext = NULL;
   m_currentPts = DVD_NOPTS_VALUE;
   m_bMatroska = false;
@@ -996,7 +995,7 @@ double CDVDDemuxFFmpeg::ConvertTimestamp(int64_t pts, int den, int num)
   if ((!menuInterface || menuInterface->GetSupportedMenuType() != MenuType::NATIVE) &&
       m_pFormatContext->start_time != static_cast<int64_t>(AV_NOPTS_VALUE))
   {
-    starttime = static_cast<double>(m_pFormatContext->start_time / AV_TIME_BASE);
+    starttime = static_cast<double>(m_pFormatContext->start_time) / AV_TIME_BASE;
   }
 
   if (m_checkTransportStream)

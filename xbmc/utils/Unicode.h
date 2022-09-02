@@ -1919,7 +1919,7 @@ public:
    */
   template<typename OutputIt>
   static OutputIt SplitTo(OutputIt d_first,
-                          std::string_view input,
+                          const std::string_view input,
                           const std::vector<std::string_view>& delimiters,
                           size_t iMaxStrings /* = 0 */)
   {
@@ -1976,8 +1976,8 @@ public:
    */
   template<typename OutputIt>
   static OutputIt SplitTo(OutputIt d_first,
-                           std::string_view input,
-                           std::string_view delimiter,
+                          const std::string_view input,
+                          const std::string_view delimiter,
                           size_t iMaxStrings = 0)
   {
     OutputIt dest = d_first;

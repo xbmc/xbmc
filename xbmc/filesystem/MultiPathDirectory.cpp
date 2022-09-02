@@ -24,7 +24,7 @@
 #include "utils/log.h"
 
 using namespace XFILE;
-
+using namespace std::string_view_literals;
 using namespace std::chrono_literals;
 
 //
@@ -160,7 +160,7 @@ bool CMultiPathDirectory::GetPaths(const std::string& path, std::vector<std::str
   path1.erase(path1.find_last_not_of('/')+1);
 
   // split on "/"
-  std::vector<std::string> temp = UnicodeUtils::Split(path1, '/');
+  std::vector<std::string> temp = UnicodeUtils::Split(path1, "/"sv);
   if (temp.empty())
     return false;
 
@@ -177,7 +177,7 @@ bool CMultiPathDirectory::HasPath(const std::string& strPath, const std::string&
   URIUtils::RemoveSlashAtEnd(strPath1);
 
   // split on "/"
-  std::vector<std::string> vecTemp = UnicodeUtils::Split(strPath1, '/');
+  std::vector<std::string> vecTemp = UnicodeUtils::Split(strPath1, "/"sv);
   if (vecTemp.empty())
     return false;
 

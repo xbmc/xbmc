@@ -87,7 +87,7 @@ size_t Unicode::GetUTF8WorkingSize(const size_t utf8Length, float scale /* = 1.5
 
   float scaleFactor = 1.5;
   if (useScale)
-    scaleFactor = std::fmax(scale, 1.5);
+    scaleFactor = std::fmax(scale, float(1.5));
 
   return (BUFFER_PAD + (size_t)(utf8Length * scaleFactor));
 }
@@ -114,7 +114,7 @@ size_t Unicode::GetUTF8ToUTF16BufferSize(const size_t utf8_length, const float s
 
   float scaleFactor = 1.0;
   if (useScale)
-    scaleFactor = std::fmax(scale, 1.0);
+    scaleFactor = std::fmax(scale, float(1.0));
 
   return (BUFFER_PAD + (size_t)(utf8_length * scaleFactor));
 }
@@ -138,7 +138,7 @@ size_t Unicode::GetWcharToUTF16BufferSize(const size_t wchar_length, const float
 
   float scaleFactor = 1.0;
   if (useScale)
-    scaleFactor = std::fmax(scale, 1.0);
+    scaleFactor = std::fmax(scale, float(1.0));
   return (BUFFER_PAD + (size_t)(wchar_length + (wchar_length >> 4) + 4) * scaleFactor);
 }
 
@@ -153,7 +153,7 @@ size_t Unicode::GetUTF16ToUTF32BufferSize(const size_t uchar_length, const float
 
   float scaleFactor = 1.0;
   if (useScale)
-    scaleFactor = std::fmax(scale, 1.0);
+    scaleFactor = std::fmax(scale, float(1.0));
 
   return BUFFER_PAD + (size_t)((uchar_length + ((uchar_length >> 4) + 4)) * scaleFactor);
 }
@@ -194,7 +194,7 @@ size_t Unicode::GetUTF16WorkingSize(const size_t utf16length, const float scale 
 
   float scaleFactor = 2.0;
   if (useScale)
-    scaleFactor = std::fmax(scale, 2.0);
+    scaleFactor = std::fmax(scale, float(2.0));
 
   return (BUFFER_PAD + size_t(utf16length * scaleFactor));
 }
@@ -221,7 +221,7 @@ size_t Unicode::GetUTF16ToUTF8BufferSize(const size_t uchar_length, const float 
 
   float scaleFactor = 2.0;
   if (useScale)
-    scaleFactor = std::fmax(scale, 2.0);
+    scaleFactor = std::fmax(scale, float(2.0));
 
 
   return BUFFER_PAD + (size_t)(uchar_length * 3 * scaleFactor);
@@ -251,7 +251,7 @@ size_t Unicode::GetUTF16ToWCharBufferSize(const size_t uchar_length, const float
 
   float scaleFactor = 1.0;
   if (useScale)
-    scaleFactor = std::fmax(scale, 1.0);
+    scaleFactor = std::fmax(scale, float(1.0));
 #if U_SIZEOF_WCHAR_T == 4
 
   // When converting from UTF-16 to UTF-32, the result will have at most same number

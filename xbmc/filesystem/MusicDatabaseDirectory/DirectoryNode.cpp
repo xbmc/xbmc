@@ -32,6 +32,7 @@
 #include "utils/URIUtils.h"
 
 using namespace XFILE::MUSICDATABASEDIRECTORY;
+using namespace std::string_view_literals;
 
 //  Constructor is protected use ParseURL()
 CDirectoryNode::CDirectoryNode(NODE_TYPE Type, const std::string& strName, CDirectoryNode* pParent)
@@ -54,7 +55,7 @@ CDirectoryNode* CDirectoryNode::ParseURL(const std::string& strPath)
   std::string strDirectory=url.GetFileName();
   URIUtils::RemoveSlashAtEnd(strDirectory);
 
-  std::vector<std::string> Path = UnicodeUtils::Split(strDirectory, '/');
+  std::vector<std::string> Path = UnicodeUtils::Split(strDirectory, "/"sv);
   Path.insert(Path.begin(), "");
 
   CDirectoryNode* pNode = nullptr;

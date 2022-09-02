@@ -49,21 +49,11 @@ public:
   ~CAddonDatabase() override;
   bool Open() override;
 
-  /*! @deprecated: use CAddonMgr::FindInstallableById */
-  bool GetAddon(const std::string& addonID, ADDON::AddonPtr& addon);
-
   /*! \brief Get an addon with a specific version and repository. */
   bool GetAddon(const std::string& addonID, const ADDON::AddonVersion& version, const std::string& repoId, ADDON::AddonPtr& addon);
 
   /*! Get the addon IDs that have been set to disabled */
   bool GetDisabled(std::map<std::string, ADDON::AddonDisabledReason>& addons);
-
-  /*! @deprecated: use FindByAddonId */
-  bool GetAvailableVersions(const std::string& addonId,
-      std::vector<std::pair<ADDON::AddonVersion, std::string>>& versionsInfo);
-
-  /*! @deprecated use CAddonMgr::FindInstallableById */
-  std::pair<ADDON::AddonVersion, std::string> GetAddonVersion(const std::string &id);
 
   /*! Returns all addons in the repositories with id `addonId`. */
   bool FindByAddonId(const std::string& addonId, ADDON::VECADDONS& addons) const;

@@ -26,7 +26,7 @@ public:
   struct keepAliveStruct
   {
     std::string exportPath;
-    uint64_t refreshCounter;
+    std::chrono::time_point<std::chrono::steady_clock> refreshTime;
   };
   typedef std::map<struct nfsfh  *, struct keepAliveStruct> tFileKeepAliveMap;
 
@@ -82,8 +82,8 @@ private:
   std::string m_resolvedHostName;//current connected host - as ip
   uint64_t m_readChunkSize = 0;//current read chunksize of connected server
   uint64_t m_writeChunkSize = 0;//current write chunksize of connected server
-  int m_OpenConnections = 0;//number of open connections
-  unsigned int m_IdleTimeout = 0;//timeout for idle connection close and dyunload
+  int m_OpenConnections = 0; //number of open connections
+  std::chrono::time_point<std::chrono::steady_clock> m_IdleTimeout;
   tFileKeepAliveMap m_KeepAliveTimeouts;//mapping filehandles to its idle timeout
   tOpenContextMap m_openContextMap;//unique map for tracking all open contexts
   std::chrono::time_point<std::chrono::steady_clock>

@@ -18,6 +18,8 @@
 
 #include <cstdlib>
 
+using namespace std::string_view_literals;
+
 #define SECONDS_PER_DAY 86400L
 #define SECONDS_PER_HOUR 3600L
 #define SECONDS_PER_MINUTE 60L
@@ -250,15 +252,13 @@ CDateTime::CDateTime(const KODI::TIME::SystemTime& time)
   m_state = ToFileTime(time, m_time) ? valid : invalid;
 }
 
-CDateTime::CDateTime(const KODI::TIME::FileTime& time)
+CDateTime::CDateTime(const KODI::TIME::FileTime& time) : m_time(time)
 {
-  m_time=time;
   SetValid(true);
 }
 
-CDateTime::CDateTime(const CDateTime& time)
+CDateTime::CDateTime(const CDateTime& time) : m_time(time.m_time)
 {
-  m_time=time.m_time;
   m_state=time.m_state;
 }
 
@@ -1204,7 +1204,7 @@ std::string CDateTime::GetAsLocalizedTime(const std::string &format, bool withSe
         i=length;
       }
 
-      UnicodeUtils::Replace(strPart, "''", "'");
+      UnicodeUtils::Replace(strPart, "''"sv, "'"sv);
 
       strOut+=strPart;
     }
@@ -1363,7 +1363,7 @@ std::string CDateTime::GetAsLocalizedDate(const std::string &strFormat) const
         strPart = strFormat.substr(i + 1, length - i - 1);
         i = length;
       }
-      UnicodeUtils::Replace(strPart, "''", "'");
+      UnicodeUtils::Replace(strPart, "''"sv, "'"sv);
       strOut+=strPart;
     }
     else if (c=='D' || c=='d') // parse days

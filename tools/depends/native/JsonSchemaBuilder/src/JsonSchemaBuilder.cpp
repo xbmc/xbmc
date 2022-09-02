@@ -61,7 +61,7 @@ void print_json(std::ifstream &in, std::ofstream &out)
     out << "  ";
     bool started = false;
     closing = false;
-    for (std::string::iterator itr = line.begin(); itr != line.end(); itr++)
+    for (std::string::iterator itr = line.begin(); itr != line.end(); ++itr)
     {
       // Skip \r characters
       if (*itr == '\r') {

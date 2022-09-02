@@ -30,6 +30,7 @@
 
 using namespace EDL;
 using namespace XFILE;
+using namespace std::string_view_literals;
 
 CEdl::CEdl()
 {
@@ -156,7 +157,7 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
     {
       if (strFields[i].find(':') != std::string::npos) // HH:MM:SS.sss format
       {
-        std::vector<std::string> fieldParts = UnicodeUtils::Split(strFields[i], '.');
+        std::vector<std::string> fieldParts = UnicodeUtils::Split(strFields[i], "."sv);
         if (fieldParts.size() == 1) // No ms
         {
           editStartEnd[i] = UnicodeUtils::TimeStringToSeconds(fieldParts[0]) *
@@ -207,8 +208,7 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
       }
       else // Plain old seconds in float format, e.g. 123.45
       {
-        editStartEnd[i] =
-            static_cast<int64_t>(std::atof(strFields[i].c_str()) * 1000); // seconds to ms
+        editStartEnd[i] = std::lround(std::atof(strFields[i].c_str()) * 1000); // seconds to ms
       }
     }
 
@@ -345,8 +345,8 @@ bool CEdl::ReadComskip(const std::string& strMovie, const float fFramesPerSecond
     if (sscanf(szBuffer, "%lf %lf", &dStartFrame, &dEndFrame) == 2)
     {
       Edit edit;
-      edit.start = static_cast<int64_t>(dStartFrame / static_cast<double>(fFrameRate) * 1000.0);
-      edit.end = static_cast<int64_t>(dEndFrame / static_cast<double>(fFrameRate) * 1000.0);
+      edit.start = std::lround(dStartFrame / static_cast<double>(fFrameRate) * 1000.0);
+      edit.end = std::lround(dEndFrame / static_cast<double>(fFrameRate) * 1000.0);
       edit.action = Action::COMM_BREAK;
       bValid = AddEdit(edit);
     }
@@ -428,8 +428,8 @@ bool CEdl::ReadVideoReDo(const std::string& strMovie)
          *  Times need adjusting by 1/10,000 to get ms.
          */
         Edit edit;
-        edit.start = static_cast<int64_t>(dStart / 10000);
-        edit.end = static_cast<int64_t>(dEnd / 10000);
+        edit.start = std::lround(dStart / 10000);
+        edit.end = std::lround(dEnd / 10000);
         edit.action = Action::CUT;
         bValid = AddEdit(edit);
       }
@@ -441,7 +441,8 @@ bool CEdl::ReadVideoReDo(const std::string& strMovie)
       int iScene;
       double dSceneMarker;
       if (sscanf(szBuffer + strlen(VIDEOREDO_TAG_SCENE), " %i>%lf", &iScene, &dSceneMarker) == 2)
-        bValid = AddSceneMarker((int64_t)(dSceneMarker / 10000)); // Times need adjusting by 1/10,000 to get ms.
+        bValid = AddSceneMarker(
+            std::lround(dSceneMarker / 10000)); // Times need adjusting by 1/10,000 to get ms.
       else
         bValid = false;
     }
@@ -527,8 +528,8 @@ bool CEdl::ReadBeyondTV(const std::string& strMovie)
        * atof() returns 0 if there were any problems and will subsequently be rejected in AddEdit().
        */
       Edit edit;
-      edit.start = static_cast<int64_t>((std::atof(pStart->FirstChild()->Value()) / 10000));
-      edit.end = static_cast<int64_t>((std::atof(pEnd->FirstChild()->Value()) / 10000));
+      edit.start = std::lround((std::atof(pStart->FirstChild()->Value()) / 10000));
+      edit.end = std::lround((std::atof(pEnd->FirstChild()->Value()) / 10000));
       edit.action = Action::COMM_BREAK;
       bValid = AddEdit(edit);
     }

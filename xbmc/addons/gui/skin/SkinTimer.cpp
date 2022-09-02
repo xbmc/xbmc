@@ -11,9 +11,9 @@
 #include "interfaces/info/Info.h"
 
 CSkinTimer::CSkinTimer(const std::string& name,
-                       const INFO::InfoPtr startCondition,
-                       const INFO::InfoPtr resetCondition,
-                       const INFO::InfoPtr stopCondition,
+                       const INFO::InfoPtr& startCondition,
+                       const INFO::InfoPtr& resetCondition,
+                       const INFO::InfoPtr& stopCondition,
                        const std::string& startAction,
                        const std::string& stopAction,
                        bool resetOnStart)

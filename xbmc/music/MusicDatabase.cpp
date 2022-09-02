@@ -78,6 +78,7 @@ using KODI::MESSAGING::HELPERS::DialogResponse;
 using namespace CDDB;
 using namespace MEDIA_DETECT;
 #endif
+using namespace std::string_view_literals;
 
 static void AnnounceRemove(const std::string& content, int id)
 {
@@ -8249,8 +8250,8 @@ std::string CMusicDatabase::GetIgnoreArticleSQL(const std::string& strField)
     }
     std::string tokenclause = token;
     //Escape any ' or % in the token
-    UnicodeUtils::Replace(tokenclause, "'", "''");
-    UnicodeUtils::Replace(tokenclause, "%", "%%");
+    UnicodeUtils::Replace(tokenclause, "'"sv, "''sv");
+    UnicodeUtils::Replace(tokenclause, "%"sv, "%%"sv);
     // Single %, _ and ' so avoid using PrepareSQL
     tokenclause = strField + " LIKE '" + tokenclause + "%'";
     if (token.find('_') != std::string::npos)

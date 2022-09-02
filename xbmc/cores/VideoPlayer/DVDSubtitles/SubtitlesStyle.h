@@ -68,10 +68,20 @@ enum class OverrideStyles
   STYLES_POSITIONS
 };
 
+enum class MarginsMode
+{
+  // Use style margins only
+  DEFAULT,
+  // Apply margins to position text within the video area (cropped videos)
+  INSIDE_VIDEO,
+  // Disable any kind of margin
+  DISABLED
+};
+
 struct style
 {
   std::string fontName; // Font family name
-  double fontSize; // Font size in PT
+  double fontSize; // Font size in pixel
   FontStyle fontStyle = FontStyle::NORMAL;
   UTILS::COLOR::Color fontColor = UTILS::COLOR::WHITE;
   int fontBorderSize = 15; // In %
@@ -88,7 +98,7 @@ struct style
   OverrideStyles assOverrideStyles = OverrideStyles::DISABLED;
   // Override fonts to native ASS/SSA format type only
   bool assOverrideFont = false;
-  bool drawWithinBlackBars = false;
+  // Vertical margin value in pixels scaled for VIEWPORT_HEIGHT
   int marginVertical = MARGIN_VERTICAL;
   int blur = 0; // In %
 };
@@ -105,12 +115,16 @@ struct renderOpts
 {
   float frameWidth;
   float frameHeight;
+  // Video size width, may be influenced by video settings (e.g. zoom)
   float videoWidth;
+  // Video size height, may be influenced by video settings (e.g. zoom)
   float videoHeight;
   float sourceWidth;
   float sourceHeight;
-  bool disableVerticalMargin = false;
-  // position: vertical line position of subtitles in percent. 0 = no change (bottom), 100 = on top.
+  float m_par; // Set the pixel aspect ratio
+  MarginsMode marginsMode = MarginsMode::DEFAULT;
+  // Vertical line position of subtitles in percentage
+  // only for bottom alignment, 0 = bottom (no change), 100 = on top
   double position = 0;
   HorizontalAlign horizontalAlignment = HorizontalAlign::DISABLED;
 };

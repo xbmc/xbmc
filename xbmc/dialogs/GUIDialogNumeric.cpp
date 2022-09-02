@@ -35,6 +35,8 @@
 
 using namespace KODI::MESSAGING;
 using KODI::UTILITY::CDigest;
+using namespace std::string_view_literals;
+
 
 CGUIDialogNumeric::CGUIDialogNumeric(void)
   : CGUIDialog(WINDOW_DIALOG_NUMERIC, "DialogNumeric.xml"),
@@ -418,7 +420,7 @@ void CGUIDialogNumeric::SetMode(INPUT_MODE mode, const std::string &initial)
     else if (m_mode == INPUT_DATE)
     {
       std::string tmp = initial;
-      UnicodeUtils::Replace(tmp, "/", ".");
+      UnicodeUtils::Replace(tmp, "/"sv, "."sv);
       dateTime.SetFromDBDate(tmp);
     }
 
@@ -431,7 +433,7 @@ void CGUIDialogNumeric::SetMode(INPUT_MODE mode, const std::string &initial)
   else if (m_mode == INPUT_IP_ADDRESS)
   {
     m_lastblock = 3;
-    auto blocks = UnicodeUtils::Split(initial, ".");
+    auto blocks = UnicodeUtils::Split(initial, "."sv);
     if (blocks.size() != 4)
       return;
 
