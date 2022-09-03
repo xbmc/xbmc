@@ -79,24 +79,30 @@ namespace PVR
     /*!
      * @brief Update add-ons from the AddonManager
      * @param changedAddonId The id of the changed addon, empty string denotes 'any addon'.
+     * @param changedInstanceId The Identifier of the changed add-on instance
      */
-    void UpdateAddons(const std::string& changedAddonId = "");
+    void UpdateAddons(const std::string& changedAddonId = "",
+                      ADDON::AddonInstanceId changedInstanceId = 0);
 
     /*!
      * @brief Restart a single client add-on.
-     * @param id The add-on to restart.
+     * @param addonId The add-on to restart.
+     * @param instanceId Instance identifier to use
      * @param bDataChanged True if the client's data changed, false otherwise (unused).
      * @return True if the client was found and restarted, false otherwise.
      */
-    bool RequestRestart(const std::string& id, bool bDataChanged) override;
+    bool RequestRestart(const std::string& addonId,
+                        ADDON::AddonInstanceId instanceId,
+                        bool bDataChanged) override;
 
     /*!
      * @brief Stop a client.
-     * @param id The client to stop.
+     * @param addonId The client to stop.
+     * @param instance Identifier of the add-on instance.
      * @param bRestart If true, restart the client.
      * @return True if the client was found, false otherwise.
      */
-    bool StopClient(const std::string& id, bool bRestart);
+    bool StopClient(const std::string& addonId, ADDON::AddonInstanceId instance, bool bRestart);
 
     /*!
      * @brief Handle addon events (enable, disable, ...).
@@ -106,10 +112,11 @@ namespace PVR
 
     /*!
      * @brief Get a client's numeric ID given its string ID.
-     * @param strId The string ID.
+     * @param addonId The string ID.
+     * @param instance Identifier of the add-on instance.
      * @return The numeric ID matching the given string ID, -1 on error.
      */
-    int GetClientId(const std::string& strId) const;
+    int GetClientId(const std::string& addonId, ADDON::AddonInstanceId instance) const;
 
     /*!
      * @brief Get the number of created clients.
@@ -415,17 +422,19 @@ namespace PVR
 
     /*!
      * @brief Check whether a client is known.
-     * @param id The addon id to check.
+     * @param addonId The add-on id to check.
+     * @param instance Identifier of the add-on instance.
      * @return True if this client is known, false otherwise.
      */
-    bool IsKnownClient(const std::string& id) const;
+    bool IsKnownClient(const std::string& addonId, ADDON::AddonInstanceId instance) const;
 
     /*!
      * @brief Check whether an given addon instance is a created pvr client.
-     * @param id The addon id.
+     * @param addonId The add-on id.
+     * @param instance Identifier of the add-on instance.
      * @return True if the the addon represents a created client, false otherwise.
      */
-    bool IsCreatedClient(const std::string& id) const;
+    bool IsCreatedClient(const std::string& addonId, ADDON::AddonInstanceId instance) const;
 
     /*!
      * @brief Get all created clients and clients not (yet) ready to use.

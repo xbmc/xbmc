@@ -59,8 +59,8 @@
 #define CONTROL_LIST_SCREENSHOTS 50
 
 using namespace KODI;
-using namespace KODI::ADDONS;
 using namespace ADDON;
+using namespace KODI::ADDONS;
 using namespace XFILE;
 using namespace KODI::MESSAGING;
 
@@ -260,9 +260,9 @@ void CGUIDialogAddonInfo::UpdateControls(PerformButtonFocus performButtonFocus)
     label = 21479;
   SET_CONTROL_LABEL(CONTROL_BTN_SELECT, label);
 
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SETTINGS, isInstalled && m_localAddon->HasSettings());
-  if (isInstalled && m_localAddon->HasSettings() &&
-      performButtonFocus == PerformButtonFocus::CHOICE_YES)
+  const bool hasSettings = m_localAddon->CanHaveAddonOrInstanceSettings();
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SETTINGS, isInstalled && hasSettings);
+  if (isInstalled && hasSettings && performButtonFocus == PerformButtonFocus::CHOICE_YES)
   {
     SET_CONTROL_FOCUS(CONTROL_BTN_SETTINGS, 0);
   }

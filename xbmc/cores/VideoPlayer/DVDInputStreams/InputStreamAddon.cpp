@@ -44,7 +44,8 @@ CInputStreamAddon::CInputStreamAddon(const AddonInfoPtr& addonInfo,
                                      IVideoPlayer* player,
                                      const CFileItem& fileitem,
                                      const std::string& instanceId)
-  : IAddonInstanceHandler(ADDON_INSTANCE_INPUTSTREAM, addonInfo, nullptr, instanceId),
+  : IAddonInstanceHandler(
+        ADDON_INSTANCE_INPUTSTREAM, addonInfo, ADDON_INSTANCE_ID_UNUSED, nullptr, instanceId),
     CDVDInputStream(DVDSTREAM_TYPE_ADDON, fileitem),
     m_player(player)
 {

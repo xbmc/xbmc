@@ -198,14 +198,15 @@ struct AddonIdFinder
     std::string m_id;
 };
 
-bool CAddonMgr::ReloadSettings(const std::string &id)
+bool CAddonMgr::ReloadSettings(const std::string& addonId, AddonInstanceId instanceId)
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  VECADDONS::iterator it = std::find_if(m_updateableAddons.begin(), m_updateableAddons.end(), AddonIdFinder(id));
+  VECADDONS::iterator it =
+      std::find_if(m_updateableAddons.begin(), m_updateableAddons.end(), AddonIdFinder(addonId));
 
   if( it != m_updateableAddons.end())
   {
-    return (*it)->ReloadSettings();
+    return (*it)->ReloadSettings(instanceId);
   }
   return false;
 }
@@ -1080,6 +1081,16 @@ bool CAddonMgr::IsAutoUpdateable(const std::string& id) const
 void CAddonMgr::PublishEventAutoUpdateStateChanged(const std::string& id)
 {
   m_events.Publish(AddonEvents::AutoUpdateStateChanged(id));
+}
+
+void CAddonMgr::PublishInstanceAdded(const std::string& addonId, AddonInstanceId instanceId)
+{
+  m_events.Publish(AddonEvents::InstanceAdded(addonId, instanceId));
+}
+
+void CAddonMgr::PublishInstanceRemoved(const std::string& addonId, AddonInstanceId instanceId)
+{
+  m_events.Publish(AddonEvents::InstanceRemoved(addonId, instanceId));
 }
 
 bool CAddonMgr::IsCompatible(const IAddon& addon) const

@@ -44,6 +44,7 @@ namespace XBMCAddon
       params.emplace_back(id);
       params.push_back(value);
       message.SetStringParams(params);
+      message.SetParam1(ADDON_SETTINGS_ID);
       CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message, WINDOW_DIALOG_ADDON_SETTINGS);
 
       return true;
