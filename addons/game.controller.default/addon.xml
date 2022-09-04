@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="game.controller.default"
         name="Default Controller"
-        version="1.0.31"
+        version="1.0.33"
         provider-name="Team Kodi">
     <extension point="kodi.game.controller" library="resources/layout.xml"/>
     <extension point="xbmc.addon.metadata">
@@ -26,6 +26,7 @@
         <summary lang="hu_HU">Alap kontroller</summary>
         <summary lang="id_ID">Kontrol Bawaan</summary>
         <summary lang="is_IS">Sjálfgefin stýring</summary>
+        <summary lang="it_IT">Controller predefinito</summary>
         <summary lang="ko_KR">기본 콘트롤러</summary>
         <summary lang="lt_LT">Numatytasis valdiklis</summary>
         <summary lang="nl_NL">Standaard Controller</summary>
@@ -55,6 +56,7 @@
         <description lang="hu_HU">Az alapértelmezett médiaközpont -vezérlő az Xbox 360 vezérlőn alapul.</description>
         <description lang="id_ID">Pengontrol pusat media default didasarkan pada pengontrol Xbox 360.</description>
         <description lang="is_IS">Sjálfgefin stýring margmiðlunarmiðstöðvar er byggð á Xbox 360 stýringunni.</description>
+        <description lang="it_IT">Il controller predefinito del media center è basato sul controller Xbox 360.</description>
         <description lang="ko_KR">기본 미디어 센터 컨트롤러는 Xbox 360 컨트롤러를 기반으로 합니다.</description>
         <description lang="lt_LT">Numatytasis media centro valdiklis yra paremtas Xbox 360 valdikliu.</description>
         <description lang="nl_NL">De standaard media centrum controller is gebaseerd op de Xbox 360 controller.</description>
@@ -82,6 +84,7 @@
         <disclaimer lang="hu_HU">Kép credit: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="id_ID">Sumber gambar: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="is_IS">Mynd frá: Wikipedia (wikipedia.org)</disclaimer>
+        <disclaimer lang="it_IT">Credito immagine: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="ko_KR">이미지 제공: Wikipedia(wikipedia.org)</disclaimer>
         <disclaimer lang="lt_LT">Atvaizdo šaltinis: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="nl_NL">Bron afbeelding: Wikipedia (wikipedia.org)</disclaimer>
