@@ -215,9 +215,9 @@ void CPVRGUIInfo::UpdateQualityData()
   const int channelUid = playbackState->GetPlayingChannelUniqueID();
   if (channelUid > 0)
   {
-    std::shared_ptr<CPVRClient> client;
-    CServiceBroker::GetPVRManager().Clients()->GetCreatedClient(playbackState->GetPlayingClientID(),
-                                                                client);
+    const std::shared_ptr<CPVRClient> client =
+        CServiceBroker::GetPVRManager().Clients()->GetCreatedClient(
+            playbackState->GetPlayingClientID());
     if (client)
       client->SignalQuality(channelUid, qualityInfo);
   }
@@ -239,9 +239,9 @@ void CPVRGUIInfo::UpdateDescrambleData()
   const int channelUid = playbackState->GetPlayingChannelUniqueID();
   if (channelUid > 0)
   {
-    std::shared_ptr<CPVRClient> client;
-    CServiceBroker::GetPVRManager().Clients()->GetCreatedClient(playbackState->GetPlayingClientID(),
-                                                                client);
+    const std::shared_ptr<CPVRClient> client =
+        CServiceBroker::GetPVRManager().Clients()->GetCreatedClient(
+            playbackState->GetPlayingClientID());
     if (client)
       client->GetDescrambleInfo(channelUid, descrambleInfo);
   }

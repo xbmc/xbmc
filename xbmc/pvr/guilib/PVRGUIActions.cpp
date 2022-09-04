@@ -1698,8 +1698,7 @@ namespace PVR
 
   bool CPVRGUIActions::ProcessSettingsMenuHooks()
   {
-    CPVRClientMap clients;
-    CServiceBroker::GetPVRManager().Clients()->GetCreatedClients(clients);
+    const CPVRClientMap clients = CServiceBroker::GetPVRManager().Clients()->GetCreatedClients();
 
     std::vector<std::pair<std::shared_ptr<CPVRClient>, CPVRClientMenuHook>> settingsHooks;
     for (const auto& client : clients)

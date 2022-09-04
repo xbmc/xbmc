@@ -246,8 +246,9 @@ bool CPVRChannelGroup::UpdateClientPriorities()
 
     if (bUseBackendChannelOrder)
     {
-      std::shared_ptr<CPVRClient> client;
-      if (!clients->GetCreatedClient(member->Channel()->ClientID(), client))
+      const std::shared_ptr<CPVRClient> client =
+          clients->GetCreatedClient(member->Channel()->ClientID());
+      if (!client)
         continue;
 
       iNewPriority = client->GetPriority();

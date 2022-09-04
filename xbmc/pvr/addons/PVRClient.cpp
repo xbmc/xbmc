@@ -9,6 +9,7 @@
 #include "PVRClient.h"
 
 #include "ServiceBroker.h"
+#include "addons/AddonManager.h"
 #include "addons/kodi-dev-kit/include/kodi/addon-instance/PVR.h" // added for compile test on related sources only!
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxUtils.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -62,8 +63,10 @@ namespace PVR
 
 #define DEFAULT_INFO_STRING_VALUE "unknown"
 
-CPVRClient::CPVRClient(const ADDON::AddonInfoPtr& addonInfo, ADDON::AddonInstanceId instanceId)
-  : IAddonInstanceHandler(ADDON_INSTANCE_PVR, addonInfo, instanceId)
+CPVRClient::CPVRClient(const ADDON::AddonInfoPtr& addonInfo,
+                       ADDON::AddonInstanceId instanceId,
+                       int clientId)
+  : IAddonInstanceHandler(ADDON_INSTANCE_PVR, addonInfo, instanceId), m_iClientId(clientId)
 {
   // Create all interface parts independent to make API changes easier if
   // something is added
@@ -92,7 +95,7 @@ void CPVRClient::StopRunningInstance()
 {
   // stop the pvr manager and stop and unload the running pvr addon. pvr manager will be restarted on demand.
   CServiceBroker::GetPVRManager().Stop();
-  CServiceBroker::GetPVRManager().Clients()->StopClient(ID(), InstanceId(), false);
+  CServiceBroker::GetPVRManager().Clients()->StopClient(m_iClientId, false);
 }
 
 void CPVRClient::OnPreInstall()
@@ -106,7 +109,7 @@ void CPVRClient::OnPreUnInstall()
   StopRunningInstance();
 }
 
-void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)
+void CPVRClient::ResetProperties()
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
@@ -120,7 +123,6 @@ void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)
   m_connectionState = PVR_CONNECTION_STATE_UNKNOWN;
   m_prevConnectionState = PVR_CONNECTION_STATE_UNKNOWN;
   m_ignoreClient = false;
-  m_iClientId = iClientId;
   m_iPriority = 0;
   m_bPriorityFetched = false;
   m_strBackendVersion = DEFAULT_INFO_STRING_VALUE;
@@ -165,13 +167,11 @@ void CPVRClient::ResetProperties(int iClientId /* = PVR_INVALID_CLIENT_ID */)
   memset(m_ifc.pvr->toAddon, 0, sizeof(KodiToAddonFuncTable_PVR));
 }
 
-ADDON_STATUS CPVRClient::Create(int iClientId)
+ADDON_STATUS CPVRClient::Create()
 {
   ADDON_STATUS status(ADDON_STATUS_UNKNOWN);
-  if (iClientId <= PVR_INVALID_CLIENT_ID)
-    return status;
 
-  ResetProperties(iClientId);
+  ResetProperties();
 
   /* initialise the add-on */
   CLog::LogFC(LOGDEBUG, LOGPVR, "Creating PVR add-on instance '{}'", ID());
@@ -222,11 +222,8 @@ void CPVRClient::Continue()
 
 void CPVRClient::ReCreate()
 {
-  int iClientID(m_iClientId);
   Destroy();
-
-  /* recreate the instance */
-  Create(iClientID);
+  Create();
 }
 
 bool CPVRClient::ReadyToUse() const
@@ -271,6 +268,21 @@ bool CPVRClient::IgnoreClient() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_ignoreClient;
+}
+
+bool CPVRClient::IsEnabled() const
+{
+  if (InstanceId() == ADDON_SINGLETON_INSTANCE_ID)
+  {
+    return !CServiceBroker::GetAddonMgr().IsAddonDisabled(ID());
+  }
+  else
+  {
+    bool instanceEnabled{false};
+    Addon()->ReloadSettings(InstanceId());
+    Addon()->GetSettingBool(ADDON_SETTING_INSTANCE_ENABLED_VALUE, instanceEnabled, InstanceId());
+    return instanceEnabled;
+  }
 }
 
 int CPVRClient::GetID() const
