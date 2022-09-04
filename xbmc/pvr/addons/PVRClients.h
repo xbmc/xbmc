@@ -77,11 +77,11 @@ namespace PVR
     void Continue();
 
     /*!
-     * @brief Update add-ons from the AddonManager
+     * @brief Update all clients, sync with Addon Manager state (start, restart, shutdown clients).
      * @param changedAddonId The id of the changed addon, empty string denotes 'any addon'.
      * @param changedInstanceId The Identifier of the changed add-on instance
      */
-    void UpdateAddons(
+    void UpdateClients(
         const std::string& changedAddonId = "",
         ADDON::AddonInstanceId changedInstanceId = ADDON::ADDON_SINGLETON_INSTANCE_ID);
 
@@ -408,6 +408,13 @@ namespace PVR
      * @return The list of known instance ids.
      */
     std::vector<ADDON::AddonInstanceId> GetKnownInstanceIds(const std::string& addonID) const;
+
+    bool GetAddonsWithStatus(
+        const std::string& changedAddonId,
+        std::vector<std::pair<ADDON::AddonInfoPtr, bool>>& addonsWithStatus) const;
+
+    std::vector<std::pair<ADDON::AddonInstanceId, bool>> GetInstanceIdsWithStatus(
+        const ADDON::AddonInfoPtr& addon, bool addonIsEnabled) const;
 
     /*!
      * @brief Get the client instance for a given client id.

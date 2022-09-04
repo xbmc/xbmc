@@ -51,7 +51,7 @@ CPVRClients::~CPVRClients()
 
 void CPVRClients::Start()
 {
-  UpdateAddons();
+  UpdateClients();
 }
 
 void CPVRClients::Stop()
@@ -72,70 +72,30 @@ void CPVRClients::Continue()
   }
 }
 
-void CPVRClients::UpdateAddons(
+void CPVRClients::UpdateClients(
     const std::string& changedAddonId /* = "" */,
     ADDON::AddonInstanceId changedInstanceId /* = ADDON::ADDON_SINGLETON_INSTANCE_ID */)
 {
-  std::vector<AddonInfoPtr> addons;
-  CServiceBroker::GetAddonMgr().GetAddonInfos(addons, false, ADDON_PVRDLL);
-
-  if (addons.empty())
+  std::vector<std::pair<AddonInfoPtr, bool>> addonsWithStatus;
+  if (!GetAddonsWithStatus(changedAddonId, addonsWithStatus))
     return;
 
-  bool bFoundChangedAddon = changedAddonId.empty();
-  std::vector<std::pair<AddonInfoPtr, bool>> addonsWithStatus;
-  for (const auto& addon : addons)
-  {
-    bool bEnabled = !CServiceBroker::GetAddonMgr().IsAddonDisabled(addon->ID());
-    addonsWithStatus.emplace_back(std::make_pair(addon, bEnabled));
-
-    if (!bFoundChangedAddon && addon->ID() == changedAddonId)
-      bFoundChangedAddon = true;
-  }
-
-  if (!bFoundChangedAddon)
-    return; // changed addon is not a known pvr client addon, so nothing to update
-
-  addons.clear();
-
-  std::vector<std::shared_ptr<CPVRClient>> addonsToCreate; // client
-  std::vector<std::pair<int, std::string>> addonsToReCreate; // client id, addon name
-  std::vector<int> addonsToDestroy; // client id
+  std::vector<std::shared_ptr<CPVRClient>> clientsToCreate; // client
+  std::vector<std::pair<int, std::string>> clientsToReCreate; // client id, addon name
+  std::vector<int> clientsToDestroy; // client id
 
   {
     std::unique_lock<CCriticalSection> lock(m_critSection);
     for (const auto& addonWithStatus : addonsWithStatus)
     {
-      AddonInfoPtr addon = addonWithStatus.first;
-      bool bEnabled = addonWithStatus.second;
+      const AddonInfoPtr addon = addonWithStatus.first;
+      const std::vector<std::pair<ADDON::AddonInstanceId, bool>> instanceIdsWithStatus =
+          GetInstanceIdsWithStatus(addon, addonWithStatus.second);
 
-      std::vector<std::pair<ADDON::AddonInstanceId, bool>> instanceIdsWithStatus;
+      for (const auto& instanceIdWithStatus : instanceIdsWithStatus)
       {
-        std::vector<ADDON::AddonInstanceId> instanceIds = addon->GetKnownInstanceIds();
-        std::transform(instanceIds.cbegin(), instanceIds.cend(),
-                       std::back_inserter(instanceIdsWithStatus), [bEnabled](const auto& id) {
-                         return std::pair<ADDON::AddonInstanceId, bool>(id, bEnabled);
-                       });
-
-        // find removed instances
-        const std::vector<ADDON::AddonInstanceId> knownInstanceIds =
-            GetKnownInstanceIds(addon->ID());
-        for (const auto& knownInstanceId : knownInstanceIds)
-        {
-          if (std::find(instanceIds.begin(), instanceIds.end(), knownInstanceId) ==
-              instanceIds.end())
-          {
-            // instance was removed
-            instanceIdsWithStatus.emplace_back(
-                std::pair<ADDON::AddonInstanceId, bool>(knownInstanceId, false));
-          }
-        }
-      }
-
-      for (const auto& instanceInfo : instanceIdsWithStatus)
-      {
-        const ADDON::AddonInstanceId instanceId = instanceInfo.first;
-        bool instanceEnabled = instanceInfo.second;
+        const ADDON::AddonInstanceId instanceId = instanceIdWithStatus.first;
+        bool instanceEnabled = instanceIdWithStatus.second;
         const CPVRClientUID clientUID(addon->ID(), instanceId);
         const int clientId = clientUID.GetUID();
 
@@ -161,9 +121,9 @@ void CPVRClients::UpdateAddons(
             instanceEnabled = client->IsEnabled();
 
           if (instanceEnabled)
-            addonsToCreate.emplace_back(client);
+            clientsToCreate.emplace_back(client);
           else
-            addonsToDestroy.emplace_back(clientId);
+            clientsToDestroy.emplace_back(clientId);
         }
         else if (IsCreatedClient(clientId))
         {
@@ -175,15 +135,15 @@ void CPVRClients::UpdateAddons(
           }
 
           if (instanceEnabled)
-            addonsToReCreate.emplace_back(clientId, addon->Name());
+            clientsToReCreate.emplace_back(clientId, addon->Name());
           else
-            addonsToDestroy.emplace_back(clientId);
+            clientsToDestroy.emplace_back(clientId);
         }
       }
     }
   }
 
-  if (!addonsToCreate.empty() || !addonsToReCreate.empty() || !addonsToDestroy.empty())
+  if (!clientsToCreate.empty() || !clientsToReCreate.empty() || !clientsToDestroy.empty())
   {
     CServiceBroker::GetPVRManager().Stop();
 
@@ -191,54 +151,54 @@ void CPVRClients::UpdateAddons(
         g_localizeStrings.Get(19239)); // Creating PVR clients
 
     unsigned int i = 0;
-    for (const auto& addon : addonsToCreate)
+    for (const auto& client : clientsToCreate)
     {
-      progressHandler->UpdateProgress(addon->Name(), i++,
-                                      addonsToCreate.size() + addonsToReCreate.size());
+      progressHandler->UpdateProgress(client->Name(), i++,
+                                      clientsToCreate.size() + clientsToReCreate.size());
 
-      const ADDON_STATUS status = addon->Create();
+      const ADDON_STATUS status = client->Create();
 
       if (status != ADDON_STATUS_OK)
       {
-        CLog::LogF(LOGERROR, "Failed to create add-on {}, status = {}", addon->ID(), status);
+        CLog::LogF(LOGERROR, "Failed to create add-on {}, status = {}", client->ID(), status);
         if (status == ADDON_STATUS_PERMANENT_FAILURE)
         {
-          CServiceBroker::GetAddonMgr().DisableAddon(addon->ID(),
+          CServiceBroker::GetAddonMgr().DisableAddon(client->ID(),
                                                      AddonDisabledReason::PERMANENT_FAILURE);
-          CServiceBroker::GetJobManager()->AddJob(new CPVREventLogJob(true, true, addon->Name(),
+          CServiceBroker::GetJobManager()->AddJob(new CPVREventLogJob(true, true, client->Name(),
                                                                       g_localizeStrings.Get(24070),
-                                                                      addon->Icon()),
+                                                                      client->Icon()),
                                                   nullptr);
         }
       }
     }
 
-    for (const auto& addon : addonsToReCreate)
+    for (const auto& clientInfo : clientsToReCreate)
     {
-      progressHandler->UpdateProgress(addon.second, i++,
-                                      addonsToCreate.size() + addonsToReCreate.size());
+      progressHandler->UpdateProgress(clientInfo.second, i++,
+                                      clientsToCreate.size() + clientsToReCreate.size());
 
-      // recreate client
-      StopClient(addon.first, true);
+      // stop and recreate client
+      StopClient(clientInfo.first, true /* restart */);
     }
 
     progressHandler.reset();
 
-    for (const auto& addon : addonsToDestroy)
+    for (const auto& client : clientsToDestroy)
     {
       // destroy client
-      StopClient(addon, false);
+      StopClient(client, false /* no restart */);
     }
 
-    if (!addonsToCreate.empty())
+    if (!clientsToCreate.empty())
     {
       // update created clients map
       std::unique_lock<CCriticalSection> lock(m_critSection);
-      for (const auto& addon : addonsToCreate)
+      for (const auto& client : clientsToCreate)
       {
-        if (m_clientMap.find(addon->GetID()) == m_clientMap.end())
+        if (m_clientMap.find(client->GetID()) == m_clientMap.end())
         {
-          m_clientMap.insert(std::make_pair(addon->GetID(), addon));
+          m_clientMap.insert({client->GetID(), client});
         }
       }
     }
@@ -252,7 +212,7 @@ bool CPVRClients::RequestRestart(const std::string& addonId,
                                  bool bDataChanged)
 {
   CServiceBroker::GetJobManager()->Submit([this, addonId, instanceId] {
-    UpdateAddons(addonId, instanceId);
+    UpdateClients(addonId, instanceId);
     return true;
   });
   return true;
@@ -302,7 +262,7 @@ void CPVRClients::OnAddonEvent(const AddonEvent& event)
     if (CServiceBroker::GetAddonMgr().HasType(addonId, ADDON_PVRDLL))
     {
       CServiceBroker::GetJobManager()->Submit([this, addonId, instanceId] {
-        UpdateAddons(addonId, instanceId);
+        UpdateClients(addonId, instanceId);
         return true;
       });
     }
@@ -531,6 +491,55 @@ std::vector<ADDON::AddonInstanceId> CPVRClients::GetKnownInstanceIds(
   }
 
   return instanceIds;
+}
+
+bool CPVRClients::GetAddonsWithStatus(
+    const std::string& changedAddonId,
+    std::vector<std::pair<AddonInfoPtr, bool>>& addonsWithStatus) const
+{
+  std::vector<AddonInfoPtr> addons;
+  CServiceBroker::GetAddonMgr().GetAddonInfos(addons, false, ADDON_PVRDLL);
+
+  if (addons.empty())
+    return false;
+
+  bool foundChangedAddon = changedAddonId.empty();
+  for (const auto& addon : addons)
+  {
+    bool enabled = !CServiceBroker::GetAddonMgr().IsAddonDisabled(addon->ID());
+    addonsWithStatus.emplace_back(std::make_pair(addon, enabled));
+
+    if (!foundChangedAddon && addon->ID() == changedAddonId)
+      foundChangedAddon = true;
+  }
+
+  return foundChangedAddon;
+}
+
+std::vector<std::pair<ADDON::AddonInstanceId, bool>> CPVRClients::GetInstanceIdsWithStatus(
+    const AddonInfoPtr& addon, bool addonIsEnabled) const
+{
+  std::vector<std::pair<ADDON::AddonInstanceId, bool>> instanceIdsWithStatus;
+
+  std::vector<ADDON::AddonInstanceId> instanceIds = addon->GetKnownInstanceIds();
+  std::transform(instanceIds.cbegin(), instanceIds.cend(),
+                 std::back_inserter(instanceIdsWithStatus), [addonIsEnabled](const auto& id) {
+                   return std::pair<ADDON::AddonInstanceId, bool>(id, addonIsEnabled);
+                 });
+
+  // find removed instances
+  const std::vector<ADDON::AddonInstanceId> knownInstanceIds = GetKnownInstanceIds(addon->ID());
+  for (const auto& knownInstanceId : knownInstanceIds)
+  {
+    if (std::find(instanceIds.begin(), instanceIds.end(), knownInstanceId) == instanceIds.end())
+    {
+      // instance was removed
+      instanceIdsWithStatus.emplace_back(
+          std::pair<ADDON::AddonInstanceId, bool>(knownInstanceId, false));
+    }
+  }
+
+  return instanceIdsWithStatus;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
