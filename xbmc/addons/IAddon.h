@@ -32,6 +32,11 @@ constexpr const char* ADDON_SETTING_INSTANCE_ENABLED_VALUE = "kodi_addon_instanc
 constexpr AddonInstanceId ADDON_SINGLETON_INSTANCE_ID = 0;
 
 /*!
+ * @brief Identifier denoting initial first add-on instance.
+ */
+constexpr AddonInstanceId ADDON_FIRST_INSTANCE_ID = 1;
+
+/*!
  * @brief Identifier denoting add-on instance id as unused.
  *
  * @sa ADDON::IAddonInstanceHandler

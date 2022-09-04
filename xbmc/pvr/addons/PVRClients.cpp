@@ -33,11 +33,15 @@ using namespace PVR;
 
 namespace
 {
-int ClientIdFromAddonId(const std::string& addonID, ADDON::AddonInstanceId instance)
+int ClientIdFromAddonIdAndInstanceId(const std::string& addonID, ADDON::AddonInstanceId instanceID)
 {
   std::hash<std::string> hasher;
-  int iClientId =
-      static_cast<int>(hasher((instance > 0 ? std::to_string(instance) + "@" : "") + addonID));
+
+  // Note: For database backwards compatibility reasons the hash of the first instance
+  // must be calculated just from the addonId, not from addonId and instanceId.
+  int iClientId = static_cast<int>(
+      hasher((instanceID > ADDON::ADDON_FIRST_INSTANCE_ID ? std::to_string(instanceID) + "@" : "") +
+             addonID));
   if (iClientId < 0)
     iClientId = -iClientId;
   return iClientId;
@@ -137,14 +141,6 @@ void CPVRClients::UpdateAddons(const std::string& changedAddonId /*= ""*/,
         }
       }
 
-      if (instanceIdsWithStatus.empty() && addon->SupportsInstanceSettings())
-      {
-        // User has not yet created an instance configuration.
-        // Create an instance with default instance settings.
-        instanceIdsWithStatus.emplace_back(
-            std::pair<ADDON::AddonInstanceId, bool>(1, bEnabled)); //! @todo get rid of magic number
-      }
-
       for (const auto& instanceInfo : instanceIdsWithStatus)
       {
         const ADDON::AddonInstanceId instanceId = instanceInfo.first;
@@ -153,7 +149,7 @@ void CPVRClients::UpdateAddons(const std::string& changedAddonId /*= ""*/,
         if (instanceEnabled &&
             (!IsKnownClient(addon->ID(), instanceId) || !IsCreatedClient(addon->ID(), instanceId)))
         {
-          int iClientId = ClientIdFromAddonId(addon->ID(), instanceId);
+          int iClientId = ClientIdFromAddonIdAndInstanceId(addon->ID(), instanceId);
 
           std::shared_ptr<CPVRClient> client;
           if (IsKnownClient(addon->ID(), instanceId))
@@ -446,7 +442,8 @@ std::vector<CVariant> CPVRClients::GetClientProviderInfos() const
       if (IsKnownClient(addonInfo->ID(), instanceId))
         clientProviderInfo["clientid"] = GetClientId(addonInfo->ID(), instanceId);
       else
-        clientProviderInfo["clientid"] = ClientIdFromAddonId(addonInfo->ID(), instanceId);
+        clientProviderInfo["clientid"] =
+            ClientIdFromAddonIdAndInstanceId(addonInfo->ID(), instanceId);
       clientProviderInfo["addonid"] = addonInfo->ID();
       clientProviderInfo["instanceid"] = instanceId;
       clientProviderInfo["enabled"] =
@@ -486,7 +483,7 @@ PVR_ERROR CPVRClients::GetCallableClients(CPVRClientMap& clientsReady,
     std::vector<ADDON::AddonInstanceId> instanceIds = addon->GetKnownInstanceIds();
     for (const auto& instanceId : instanceIds)
     {
-      int iClientId = ClientIdFromAddonId(addon->ID(), instanceId);
+      int iClientId = ClientIdFromAddonIdAndInstanceId(addon->ID(), instanceId);
       std::shared_ptr<CPVRClient> client;
       GetClient(iClientId, client);
 
