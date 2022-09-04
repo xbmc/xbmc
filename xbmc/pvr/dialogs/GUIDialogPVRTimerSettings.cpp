@@ -820,8 +820,7 @@ void CGUIDialogPVRTimerSettings::InitializeChannelsList()
   int index = 0;
 
   // Add special "any channel" entries - one for every client (used for epg-based timer rules).
-  CPVRClientMap clients;
-  CServiceBroker::GetPVRManager().Clients()->GetCreatedClients(clients);
+  const CPVRClientMap clients = CServiceBroker::GetPVRManager().Clients()->GetCreatedClients();
   for (const auto& client : clients)
   {
     m_channelEntries.insert({index, ChannelDescriptor(PVR_CHANNEL_INVALID_UID,
