@@ -485,9 +485,9 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
 
   if (m_state == WINDOW_STATE_WINDOWED)
   {
-    WINDOWINFO wi;
+    WINDOWINFO wi = {};
     wi.cbSize = sizeof(WINDOWINFO);
-    if (GetWindowInfo(m_hWnd, &wi))
+    if (GetWindowInfo(m_hWnd, &wi) && wi.rcClient.top > 0)
     {
       m_nLeft = wi.rcClient.left;
       m_nTop = wi.rcClient.top;
