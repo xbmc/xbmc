@@ -162,6 +162,8 @@ bool CGUIDialogAddonSettings::ShowForAddon(const ADDON::AddonPtr& addon,
     {
       while (true)
       {
+        const std::vector<ADDON::AddonInstanceId> ids = addon->GetKnownInstanceIds();
+
         CFileItemList itemsGeneral;
         CFileItemList itemsInstances;
 
@@ -175,6 +177,8 @@ bool CGUIDialogAddonSettings::ShowForAddon(const ADDON::AddonPtr& addon,
           item->SetProperty("id", ADD_INSTANCE);
           itemsGeneral.Add(item);
         }
+        // Have always minimal 1 available and not allow this button in this case
+        if (ids.size() > 1)
         {
           const CFileItemPtr item = std::make_shared<CFileItem>(
               g_localizeStrings.Get(10015)); // Remove add-on configuration
@@ -189,7 +193,6 @@ bool CGUIDialogAddonSettings::ShowForAddon(const ADDON::AddonPtr& addon,
           itemsGeneral.Add(item);
         }
 
-        const std::vector<ADDON::AddonInstanceId> ids = addon->GetKnownInstanceIds();
         ADDON::AddonInstanceId highestId = 0;
         for (const auto& id : ids)
         {

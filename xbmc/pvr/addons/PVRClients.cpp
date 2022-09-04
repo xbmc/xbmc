@@ -137,14 +137,6 @@ void CPVRClients::UpdateAddons(const std::string& changedAddonId /*= ""*/,
         }
       }
 
-      if (instanceIdsWithStatus.empty() && addon->SupportsInstanceSettings())
-      {
-        // User has not yet created an instance configuration.
-        // Create an instance with default instance settings.
-        instanceIdsWithStatus.emplace_back(
-            std::pair<ADDON::AddonInstanceId, bool>(1, bEnabled)); //! @todo get rid of magic number
-      }
-
       for (const auto& instanceInfo : instanceIdsWithStatus)
       {
         const ADDON::AddonInstanceId instanceId = instanceInfo.first;
