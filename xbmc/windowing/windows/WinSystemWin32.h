@@ -167,6 +167,7 @@ protected:
   void OnDisplayBack();
   void ResolutionChanged();
   static void SetForegroundWindowInternal(HWND hWnd);
+  static RECT GetVirtualScreenRect();
 
   HWND m_hWnd;
   HMONITOR m_hMonitor;
@@ -195,6 +196,9 @@ protected:
   std::vector<MONITOR_DETAILS> m_displays;
 
   NOTIFYICONDATA m_trayIcon = {};
+
+  static const char* SETTING_WINDOW_TOP;
+  static const char* SETTING_WINDOW_LEFT;
 };
 
 extern HWND g_hWnd;

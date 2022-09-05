@@ -148,6 +148,17 @@ void CWinSystemWin32DX::OnMove(int x, int y)
     m_deviceResources->SetMonitor(newMonitor);
     m_hMonitor = newMonitor;
   }
+
+  // Save window position if not fullscreen
+  if (!IsFullScreen() && (m_nLeft != x || m_nTop != y))
+  {
+    m_nLeft = x;
+    m_nTop = y;
+    const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+    settings->SetInt(SETTING_WINDOW_LEFT, x);
+    settings->SetInt(SETTING_WINDOW_TOP, y);
+    settings->Save();
+  }
 }
 
 bool CWinSystemWin32DX::DPIChanged(WORD dpi, RECT windowRect) const
