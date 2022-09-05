@@ -95,6 +95,11 @@ public:
   std::string GetEnglishLanguageName(const std::string& locale = "") const;
 
   /*!
+   * \brief Reload currently used language, its details and strings.
+   */
+  void ReloadCurrentLanguage();
+
+  /*!
   \brief Sets and loads the given (or configured) language, its details and strings.
 
   \param strLanguage (optional) Language to be loaded.

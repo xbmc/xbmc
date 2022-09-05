@@ -708,6 +708,11 @@ std::string CLangInfo::GetEnglishLanguageName(const std::string& locale /* = "" 
   return addon->Name();
 }
 
+void CLangInfo::ReloadCurrentLanguage()
+{
+  SetLanguage("", true);
+}
+
 bool CLangInfo::SetLanguage(std::string language /* = "" */, bool reloadServices /* = true */)
 {
   if (language.empty())
