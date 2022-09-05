@@ -199,3 +199,6 @@ if(NOT USE_INTERNAL_LIBS)
     set(USE_INTERNAL_LIBS OFF)
   endif()
 endif()
+
+# Atomic library
+list(APPEND PLATFORM_REQUIRED_DEPS Atomic)
