@@ -1143,8 +1143,8 @@ double CWebVTTHandler::GetTimeFromRegexTS(CRegExp& regex, int indexStart /* = 1 
 {
   int sHours = 0;
   if (!regex.GetMatch(indexStart).empty())
-    sHours = std::stoi(regex.GetMatch(indexStart).c_str());
-  int sMinutes = std::stoi(regex.GetMatch(indexStart + 1).c_str());
-  int sSeconds = std::atof(regex.GetMatch(indexStart + 2).c_str());
+    sHours = std::stoi(regex.GetMatch(indexStart));
+  int sMinutes = std::stoi(regex.GetMatch(indexStart + 1));
+  double sSeconds = std::stod(regex.GetMatch(indexStart + 2));
   return (static_cast<double>(sHours * 3600 + sMinutes * 60) + sSeconds) * DVD_TIME_BASE;
 }
