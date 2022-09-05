@@ -56,7 +56,7 @@ TEST(TestPVRChannelsPath, Parse_TV_Root_1)
   EXPECT_FALSE(path.IsHiddenChannelGroup());
   EXPECT_FALSE(path.IsChannel());
   EXPECT_EQ(path.GetGroupName(), "");
-  EXPECT_EQ(path.GetClientID(), "");
+  EXPECT_EQ(path.GetAddonID(), "");
   EXPECT_EQ(path.GetChannelUID(), -1);
 }
 
@@ -73,7 +73,7 @@ TEST(TestPVRChannelsPath, Parse_TV_Root_2)
   EXPECT_FALSE(path.IsHiddenChannelGroup());
   EXPECT_FALSE(path.IsChannel());
   EXPECT_EQ(path.GetGroupName(), "");
-  EXPECT_EQ(path.GetClientID(), "");
+  EXPECT_EQ(path.GetAddonID(), "");
   EXPECT_EQ(path.GetChannelUID(), -1);
 }
 
@@ -90,7 +90,7 @@ TEST(TestPVRChannelsPath, Parse_Radio_Root_1)
   EXPECT_FALSE(path.IsHiddenChannelGroup());
   EXPECT_FALSE(path.IsChannel());
   EXPECT_EQ(path.GetGroupName(), "");
-  EXPECT_EQ(path.GetClientID(), "");
+  EXPECT_EQ(path.GetAddonID(), "");
   EXPECT_EQ(path.GetChannelUID(), -1);
 }
 
@@ -107,7 +107,7 @@ TEST(TestPVRChannelsPath, Parse_Radio_Root_2)
   EXPECT_FALSE(path.IsHiddenChannelGroup());
   EXPECT_FALSE(path.IsChannel());
   EXPECT_EQ(path.GetGroupName(), "");
-  EXPECT_EQ(path.GetClientID(), "");
+  EXPECT_EQ(path.GetAddonID(), "");
   EXPECT_EQ(path.GetChannelUID(), -1);
 }
 
@@ -131,7 +131,7 @@ TEST(TestPVRChannelsPath, Parse_TV_Group_1)
   EXPECT_FALSE(path.IsHiddenChannelGroup());
   EXPECT_FALSE(path.IsChannel());
   EXPECT_EQ(path.GetGroupName(), "Group1");
-  EXPECT_EQ(path.GetClientID(), "");
+  EXPECT_EQ(path.GetAddonID(), "");
   EXPECT_EQ(path.GetChannelUID(), -1);
 }
 
@@ -148,7 +148,7 @@ TEST(TestPVRChannelsPath, Parse_TV_Group_2)
   EXPECT_FALSE(path.IsHiddenChannelGroup());
   EXPECT_FALSE(path.IsChannel());
   EXPECT_EQ(path.GetGroupName(), "Group1");
-  EXPECT_EQ(path.GetClientID(), "");
+  EXPECT_EQ(path.GetAddonID(), "");
   EXPECT_EQ(path.GetChannelUID(), -1);
 }
 
@@ -165,7 +165,7 @@ TEST(TestPVRChannelsPath, Parse_Hidden_TV_Group)
   EXPECT_TRUE(path.IsHiddenChannelGroup());
   EXPECT_FALSE(path.IsChannel());
   EXPECT_EQ(path.GetGroupName(), ".hidden");
-  EXPECT_EQ(path.GetClientID(), "");
+  EXPECT_EQ(path.GetAddonID(), "");
   EXPECT_EQ(path.GetChannelUID(), -1);
 }
 
@@ -182,7 +182,7 @@ TEST(TestPVRChannelsPath, Parse_Special_TV_Group)
   EXPECT_FALSE(path.IsHiddenChannelGroup());
   EXPECT_FALSE(path.IsChannel());
   EXPECT_EQ(path.GetGroupName(), "foo/bar baz");
-  EXPECT_EQ(path.GetClientID(), "");
+  EXPECT_EQ(path.GetAddonID(), "");
   EXPECT_EQ(path.GetChannelUID(), -1);
 }
 
@@ -207,7 +207,7 @@ TEST(TestPVRChannelsPath, Parse_Radio_Group)
   EXPECT_FALSE(path.IsHiddenChannelGroup());
   EXPECT_FALSE(path.IsChannel());
   EXPECT_EQ(path.GetGroupName(), "Group1");
-  EXPECT_EQ(path.GetClientID(), "");
+  EXPECT_EQ(path.GetAddonID(), "");
   EXPECT_EQ(path.GetChannelUID(), -1);
 }
 
@@ -224,7 +224,7 @@ TEST(TestPVRChannelsPath, Parse_TV_Channel)
   EXPECT_FALSE(path.IsHiddenChannelGroup());
   EXPECT_TRUE(path.IsChannel());
   EXPECT_EQ(path.GetGroupName(), "Group1");
-  EXPECT_EQ(path.GetClientID(), "pvr.demo");
+  EXPECT_EQ(path.GetAddonID(), "pvr.demo");
   EXPECT_EQ(path.GetInstanceID(), 5);
   EXPECT_EQ(path.GetChannelUID(), 4711);
 }
@@ -306,7 +306,7 @@ TEST(TestPVRChannelsPath, TV_Channelgroup)
   EXPECT_FALSE(path.IsHiddenChannelGroup());
   EXPECT_FALSE(path.IsChannel());
   EXPECT_EQ(path.GetGroupName(), "Group1");
-  EXPECT_EQ(path.GetClientID(), "");
+  EXPECT_EQ(path.GetAddonID(), "");
   EXPECT_EQ(path.GetChannelUID(), -1);
 }
 
@@ -323,7 +323,7 @@ TEST(TestPVRChannelsPath, Radio_Channelgroup)
   EXPECT_FALSE(path.IsHiddenChannelGroup());
   EXPECT_FALSE(path.IsChannel());
   EXPECT_EQ(path.GetGroupName(), "Group1");
-  EXPECT_EQ(path.GetClientID(), "");
+  EXPECT_EQ(path.GetAddonID(), "");
   EXPECT_EQ(path.GetChannelUID(), -1);
 }
 
@@ -340,7 +340,7 @@ TEST(TestPVRChannelsPath, Hidden_TV_Channelgroup)
   EXPECT_TRUE(path.IsHiddenChannelGroup());
   EXPECT_FALSE(path.IsChannel());
   EXPECT_EQ(path.GetGroupName(), ".hidden");
-  EXPECT_EQ(path.GetClientID(), "");
+  EXPECT_EQ(path.GetAddonID(), "");
   EXPECT_EQ(path.GetChannelUID(), -1);
 }
 
@@ -357,7 +357,7 @@ TEST(TestPVRChannelsPath, Hidden_Radio_Channelgroup)
   EXPECT_TRUE(path.IsHiddenChannelGroup());
   EXPECT_FALSE(path.IsChannel());
   EXPECT_EQ(path.GetGroupName(), ".hidden");
-  EXPECT_EQ(path.GetClientID(), "");
+  EXPECT_EQ(path.GetAddonID(), "");
   EXPECT_EQ(path.GetChannelUID(), -1);
 }
 
@@ -374,7 +374,7 @@ TEST(TestPVRChannelsPath, TV_Channel)
   EXPECT_FALSE(path.IsHiddenChannelGroup());
   EXPECT_TRUE(path.IsChannel());
   EXPECT_EQ(path.GetGroupName(), "Group1");
-  EXPECT_EQ(path.GetClientID(), "pvr.demo");
+  EXPECT_EQ(path.GetAddonID(), "pvr.demo");
   EXPECT_EQ(path.GetChannelUID(), 4711);
 }
 
@@ -391,7 +391,7 @@ TEST(TestPVRChannelsPath, Radio_Channel)
   EXPECT_FALSE(path.IsHiddenChannelGroup());
   EXPECT_TRUE(path.IsChannel());
   EXPECT_EQ(path.GetGroupName(), "Group1");
-  EXPECT_EQ(path.GetClientID(), "pvr.demo");
+  EXPECT_EQ(path.GetAddonID(), "pvr.demo");
   EXPECT_EQ(path.GetChannelUID(), 4711);
 }
 
