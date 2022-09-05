@@ -25,7 +25,7 @@ namespace PVR
     CPVRChannelsPath(bool bRadio, bool bHidden, const std::string& strGroupName);
     CPVRChannelsPath(bool bRadio,
                      const std::string& strGroupName,
-                     const std::string& strClientID,
+                     const std::string& strAddonID,
                      ADDON::AddonInstanceId instanceID,
                      int iChannelUID);
 
@@ -45,7 +45,7 @@ namespace PVR
     bool IsRadio() const { return m_bRadio; }
 
     const std::string& GetGroupName() const { return m_group; }
-    const std::string& GetClientID() const { return m_clientID; }
+    const std::string& GetAddonID() const { return m_addonID; }
     ADDON::AddonInstanceId GetInstanceID() const { return m_instanceID; }
     int GetChannelUID() const { return m_iChannelUID; }
 
@@ -66,7 +66,7 @@ namespace PVR
     bool m_bRadio = false;;
     std::string m_path;
     std::string m_group;
-    std::string m_clientID;
+    std::string m_addonID;
     ADDON::AddonInstanceId m_instanceID{ADDON::ADDON_SINGLETON_INSTANCE_ID};
     int m_iChannelUID = -1;
   };
