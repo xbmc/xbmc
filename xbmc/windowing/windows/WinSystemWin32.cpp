@@ -41,6 +41,9 @@
 
 using namespace std::chrono_literals;
 
+const char* CWinSystemWin32::SETTING_WINDOW_TOP = "window.top";
+const char* CWinSystemWin32::SETTING_WINDOW_LEFT = "window.left";
+
 CWinSystemWin32::CWinSystemWin32()
   : CWinSystemBase()
   , PtrGetGestureInfo(nullptr)
@@ -170,9 +173,25 @@ bool CWinSystemWin32::CreateNewWindow(const std::string& name, bool fullScreen, 
 
   if (state == WINDOW_STATE_WINDOWED)
   {
-    // centering window at desktop
-    m_nLeft += (screenRect.right - screenRect.left) / 2 - m_nWidth / 2;
-    m_nTop += (screenRect.bottom - screenRect.top) / 2 - m_nHeight / 2;
+    const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+    const int top = settings->GetInt(SETTING_WINDOW_TOP);
+    const int left = settings->GetInt(SETTING_WINDOW_LEFT);
+    const RECT vsRect = GetVirtualScreenRect();
+
+    // we check that window is inside of virtual screen rect (sum of all monitors)
+    if (top != 0 && left != 0 && top > vsRect.top && top + m_nHeight < vsRect.bottom &&
+        left > vsRect.left && left + m_nWidth < vsRect.right)
+    {
+      // restore previous window position
+      m_nLeft = left;
+      m_nTop = top;
+    }
+    else
+    {
+      // centering window at desktop
+      m_nLeft += (screenRect.right - screenRect.left) / 2 - m_nWidth / 2;
+      m_nTop += (screenRect.bottom - screenRect.top) / 2 - m_nHeight / 2;
+    }
     m_ValidWindowedPosition = true;
   }
 
@@ -362,6 +381,24 @@ void CWinSystemWin32::AdjustWindow(bool forceResize)
   {
     windowAfter = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_alwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST;
 
+    if (!m_ValidWindowedPosition)
+    {
+      const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+      const int top = settings->GetInt(SETTING_WINDOW_TOP);
+      const int left = settings->GetInt(SETTING_WINDOW_LEFT);
+      const RECT vsRect = GetVirtualScreenRect();
+
+      // we check that window is inside of virtual screen rect (sum of all monitors)
+      if (top != 0 && left != 0 && top > vsRect.top && top + m_nHeight < vsRect.bottom &&
+          left > vsRect.left && left + m_nWidth < vsRect.right)
+      {
+        // restore previous window position
+        m_nTop = top;
+        m_nLeft = left;
+        m_ValidWindowedPosition = true;
+      }
+    }
+
     rc.left = m_nLeft;
     rc.right = m_nLeft + m_nWidth;
     rc.top = m_nTop;
@@ -372,6 +409,7 @@ void CWinSystemWin32::AdjustWindow(bool forceResize)
 
     if (!m_ValidWindowedPosition || hMon == nullptr || hMon != hMon2)
     {
+      // centering window at desktop
       RECT newScreenRect = ScreenRect(hMon2);
       rc.left = m_nLeft = newScreenRect.left + ((newScreenRect.right - newScreenRect.left) / 2) - (m_nWidth / 2);
       rc.top = m_nTop = newScreenRect.top + ((newScreenRect.bottom - newScreenRect.top) / 2) - (m_nHeight / 2);
@@ -1235,4 +1273,15 @@ WINDOW_STATE CWinSystemWin32::GetState(bool fullScreen) const
 bool CWinSystemWin32::MessagePump()
 {
   return m_winEvents->MessagePump();
+}
+
+RECT CWinSystemWin32::GetVirtualScreenRect()
+{
+  RECT rect = {};
+  rect.left = GetSystemMetrics(SM_XVIRTUALSCREEN);
+  rect.right = GetSystemMetrics(SM_CXVIRTUALSCREEN) + rect.left;
+  rect.top = GetSystemMetrics(SM_YVIRTUALSCREEN);
+  rect.bottom = GetSystemMetrics(SM_CYVIRTUALSCREEN) + rect.top;
+
+  return rect;
 }
