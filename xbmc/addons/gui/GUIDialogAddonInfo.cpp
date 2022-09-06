@@ -260,7 +260,7 @@ void CGUIDialogAddonInfo::UpdateControls(PerformButtonFocus performButtonFocus)
     label = 21479;
   SET_CONTROL_LABEL(CONTROL_BTN_SELECT, label);
 
-  const bool hasSettings = m_localAddon->CanHaveAddonOrInstanceSettings();
+  const bool hasSettings = m_localAddon && m_localAddon->CanHaveAddonOrInstanceSettings();
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SETTINGS, isInstalled && hasSettings);
   if (isInstalled && hasSettings && performButtonFocus == PerformButtonFocus::CHOICE_YES)
   {
