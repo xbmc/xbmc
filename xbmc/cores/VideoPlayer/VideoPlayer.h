@@ -257,7 +257,7 @@ public:
   void Seek(bool bPlus, bool bLargeStep, bool bChapterOverride) override;
   bool SeekScene(bool bPlus = true) override;
   void SeekPercentage(float iPercent) override;
-  float GetCachePercentage() override;
+  float GetCachePercentage() const override;
 
   void SetDynamicRangeCompression(long drc) override;
   bool CanPause() override;
@@ -352,7 +352,7 @@ public:
   int OnDiscNavResult(void* pData, int iMessage) override;
   void GetVideoResolution(unsigned int &width, unsigned int &height) override;
 
-  CVideoSettings GetVideoSettings() override;
+  CVideoSettings GetVideoSettings() const override;
   void SetVideoSettings(CVideoSettings& settings) override;
 
   void SetUpdateStreamDetails();

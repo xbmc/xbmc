@@ -3263,7 +3263,7 @@ float CVideoPlayer::GetPercentage()
   return GetTime() * 100 / (float)iTotalTime;
 }
 
-float CVideoPlayer::GetCachePercentage()
+float CVideoPlayer::GetCachePercentage() const
 {
   std::unique_lock<CCriticalSection> lock(m_StateSection);
   return (float) (m_State.cache_offset * 100); // NOTE: Percentage returned is relative
@@ -4876,7 +4876,7 @@ void CVideoPlayer::SetDynamicRangeCompression(long drc)
   m_VideoPlayerAudio->SetDynamicRangeCompression(drc);
 }
 
-CVideoSettings CVideoPlayer::GetVideoSettings()
+CVideoSettings CVideoPlayer::GetVideoSettings() const
 {
   return m_processInfo->GetVideoSettings();
 }

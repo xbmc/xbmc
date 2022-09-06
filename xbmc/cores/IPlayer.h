@@ -106,7 +106,7 @@ public:
   virtual void Seek(bool bPlus = true, bool bLargeStep = false, bool bChapterOverride = false) = 0;
   virtual bool SeekScene(bool bPlus = true) {return false;}
   virtual void SeekPercentage(float fPercent = 0){}
-  virtual float GetCachePercentage(){ return 0;}
+  virtual float GetCachePercentage() const { return 0; }
   virtual void SetMute(bool bOnOff){}
   virtual void SetVolume(float volume){}
   virtual void SetDynamicRangeCompression(long drc){}
@@ -253,7 +253,7 @@ public:
   }
 
   // video and audio settings
-  virtual CVideoSettings GetVideoSettings() { return CVideoSettings(); }
+  virtual CVideoSettings GetVideoSettings() const { return CVideoSettings(); }
   virtual void SetVideoSettings(CVideoSettings& settings) {}
 
   /*!
