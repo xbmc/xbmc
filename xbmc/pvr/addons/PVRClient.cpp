@@ -10,9 +10,8 @@
 
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
-#include "addons/kodi-dev-kit/include/kodi/addon-instance/PVR.h" // added for compile test on related sources only!
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxUtils.h"
-#include "dialogs/GUIDialogKaiToast.h"
+#include "dialogs/GUIDialogKaiToast.h" //! @todo get rid of GUI in core
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
 #include "filesystem/SpecialProtocol.h"
@@ -43,8 +42,6 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
-#include <algorithm>
-#include <iterator>
 #include <map>
 #include <memory>
 #include <mutex>
@@ -2144,74 +2141,6 @@ PVR_CODEC CPVRClient::cb_get_codec_by_name(const void* kodiInstance, const char*
       true);
 
   return result;
-}
-
-CPVRClientCapabilities::CPVRClientCapabilities(const CPVRClientCapabilities& other)
-{
-  if (other.m_addonCapabilities)
-    m_addonCapabilities.reset(new PVR_ADDON_CAPABILITIES(*other.m_addonCapabilities));
-  InitRecordingsLifetimeValues();
-}
-
-const CPVRClientCapabilities& CPVRClientCapabilities::operator=(const CPVRClientCapabilities& other)
-{
-  if (other.m_addonCapabilities)
-    m_addonCapabilities.reset(new PVR_ADDON_CAPABILITIES(*other.m_addonCapabilities));
-  InitRecordingsLifetimeValues();
-  return *this;
-}
-
-const CPVRClientCapabilities& CPVRClientCapabilities::operator=(
-    const PVR_ADDON_CAPABILITIES& addonCapabilities)
-{
-  m_addonCapabilities.reset(new PVR_ADDON_CAPABILITIES(addonCapabilities));
-  InitRecordingsLifetimeValues();
-  return *this;
-}
-
-void CPVRClientCapabilities::clear()
-{
-  m_recordingsLifetimeValues.clear();
-  m_addonCapabilities.reset();
-}
-
-void CPVRClientCapabilities::InitRecordingsLifetimeValues()
-{
-  m_recordingsLifetimeValues.clear();
-  if (m_addonCapabilities && m_addonCapabilities->iRecordingsLifetimesSize > 0)
-  {
-    for (unsigned int i = 0; i < m_addonCapabilities->iRecordingsLifetimesSize; ++i)
-    {
-      int iValue = m_addonCapabilities->recordingsLifetimeValues[i].iValue;
-      std::string strDescr(m_addonCapabilities->recordingsLifetimeValues[i].strDescription);
-      if (strDescr.empty())
-      {
-        // No description given by addon. Create one from value.
-        strDescr = std::to_string(iValue);
-      }
-      m_recordingsLifetimeValues.emplace_back(strDescr, iValue);
-    }
-  }
-  else if (SupportsRecordingsLifetimeChange())
-  {
-    // No values given by addon, but lifetime supported. Use default values 1..365
-    for (int i = 1; i < 366; ++i)
-    {
-      m_recordingsLifetimeValues.emplace_back(StringUtils::Format(g_localizeStrings.Get(17999), i),
-                                              i); // "{} days"
-    }
-  }
-  else
-  {
-    // No lifetime supported.
-  }
-}
-
-void CPVRClientCapabilities::GetRecordingsLifetimeValues(
-    std::vector<std::pair<std::string, int>>& list) const
-{
-  std::copy(m_recordingsLifetimeValues.cbegin(), m_recordingsLifetimeValues.cend(),
-            std::back_inserter(list));
 }
 
 } // namespace PVR
