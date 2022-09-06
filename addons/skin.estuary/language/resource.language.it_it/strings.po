@@ -5,17 +5,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-01-20 16:13+0000\n"
-"Last-Translator: Venice Man <marco@spezzamonte.it>\n"
+"PO-Revision-Date: 2022-08-30 07:20+0000\n"
+"Last-Translator: Massimo Pissarello <mapi68@gmail.com>\n"
 "Language-Team: Italian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/it_it/>\n"
 "Language: it_it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.14\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -134,7 +134,7 @@ msgstr "Scegli la valutazione da mostrare per gli elementi multimediali"
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
-msgstr "Nessun preferito trovato. Puoi aggiungere qualunque elemento dalle viste multimediali a questa lista usando il menù contestuale."
+msgstr "Nessun preferito trovato. Puoi aggiungere qualunque elemento dalle viste multimediali a questa lista usando il menu contestuale."
 
 msgctxt "#31026"
 msgid "Timeshift"
@@ -259,7 +259,7 @@ msgstr "Select + Start"
 
 msgctxt "#31061"
 msgid "Main menu items"
-msgstr "Elementi menù principale"
+msgstr "Elementi menu principale"
 
 msgctxt "#31062"
 msgid "Choose weather fanart pack"
@@ -424,7 +424,7 @@ msgstr "Alterna sottotitoli"
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
-msgstr "Rimuovi questo elemento menù principale"
+msgstr "Rimuovi questo elemento menu principale"
 
 msgctxt "#31117"
 msgid "Edit nodes"
@@ -476,7 +476,7 @@ msgstr "Impostazioni generali che si applicano a tutte le aree della skin."
 
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
-msgstr "Impostazioni relative al menù principale: Configura la schermata home come ti piace."
+msgstr "Impostazioni relative al menu principale: Configura la schermata home come ti piace."
 
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
@@ -510,7 +510,7 @@ msgstr "PVR"
 #. Label to show player info page
 msgctxt "#31138"
 msgid "Player"
-msgstr "Player"
+msgstr "Riproduzione"
 
 #. Label to show video decoder name
 msgctxt "#31139"
@@ -647,22 +647,22 @@ msgstr "Impostazioni relative agli Artwork."
 #. Label for OSD settings category
 msgctxt "#31170"
 msgid "On screen display"
-msgstr ""
+msgstr "Visualizzazione su schermo"
 
 #. Helper text for the label of OSD settings category
 msgctxt "#31171"
 msgid "On screen display (OSD) related settings"
-msgstr ""
+msgstr "Impostazioni relative alla visualizzazione su schermo (OSD)"
 
 #. Setting Automatically close video OSD
 msgctxt "#31172"
 msgid "Automatically close video OSD"
-msgstr ""
+msgstr "Chiudi automaticamente l'OSD video"
 
 #. Setting auto close time for video osd
 msgctxt "#31173"
 msgid "Video OSD autoclose time (seconds)"
-msgstr ""
+msgstr "Tempo di chiusura automatica OSD video (secondi)"
 
 # empty strings from id 31170 to 31599
 #. Label to show the video codec name
