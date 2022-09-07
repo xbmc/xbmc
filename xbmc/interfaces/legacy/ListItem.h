@@ -1006,11 +1006,13 @@ namespace XBMCAddon
       /// | TotalTime     | float (7848.0) - Set the total time of the item in seconds
       /// | OverrideInfotag | string - "true", "false" - When true will override all info from previous listitem
       /// | ForceResolvePlugin | string - "true", "false" - When true ensures that a plugin will always receive callbacks to resolve paths (useful for playlist cases)
+      /// | rtsp_transport | string - "udp", "udp_multicast" or "tcp" - Allow to force the rtsp transport mode for rtsp streams
       ///
       ///-----------------------------------------------------------------------
       /// @python_v20 OverrideInfotag property added
       /// @python_v20 **ResumeTime** and **TotalTime** deprecated. Use **InfoTagVideo.setResumePoint()** instead.
       /// @python_v20 ForceResolvePlugin property added
+      /// @python_v20 rtsp_transport property added
       ///
       /// **Example:**
       /// ~~~~~~~~~~~~~{.py}
