@@ -1326,7 +1326,7 @@ void CGUIWindowSlideShow::GetCheckedSize(float width, float height, int &maxWidt
 std::string CGUIWindowSlideShow::GetPicturePath(CFileItem *item)
 {
   bool isVideo = item->IsVideo();
-  std::string picturePath = item->GetPath();
+  std::string picturePath = item->GetDynPath();
   if (isVideo)
   {
     picturePath = item->GetArt("thumb");
