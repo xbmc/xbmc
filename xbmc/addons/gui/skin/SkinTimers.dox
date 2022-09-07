@@ -1,14 +1,14 @@
 /*!
 
 \page Skin_Timers Skin Timers
-\brief **Programatic time-based objects for Skins**
+\brief **Programatic time-based resources for Skins**
 
 \tableofcontents
 
 --------------------------------------------------------------------------------
 \section Skin_Timers_sect1 Description
 
-Skin timers are skin objects that are dependent on time and can be fully controlled from skins either using
+Skin timers are skin resources that are dependent on time and can be fully controlled from skins either using
 \link page_List_of_built_in_functions **Builtin functions**\endlink or
 \link modules__infolabels_boolean_conditions **Infolabels and Boolean conditions**\endlink. One can see them
 as stopwatches that can be activated and deactivated automatically depending on the value of info expressions or simply activated/deactivated
@@ -49,8 +49,8 @@ The following example illustrates the simplest possible skin timer. This timer i
 
 This timer can be controlled from your skin by executing the \link Builtin_SkinStartTimer `Skin.TimerStart(mymanualtimer)` builtin\endlink or
 \link Builtin_SkinStopTimer `Skin.TimerStop(mymanualtimer)` builtin\endlink. You can define the visibility of skin elements based on the internal
-properties of the timer, such as the fact that the timer is active/running using \link Skin_TimerIsRunning `Skin.TimerIsRunning(mymanualtimer)` builtin\endlink
-or depending on the elapsed time (e.g. 5 seconds) using \link Skin_TimerElapsedSecs Integer.IsGreaterOrEqual(Skin.TimerElapsedSecs(mymanualtimer),5)\endlink.
+properties of the timer, such as the fact that the timer is active/running using \link Skin_TimerIsRunning `Skin.TimerIsRunning(mymanualtimer)` info\endlink
+or depending on the elapsed time (e.g. 5 seconds) using the \link Skin_TimerElapsedSecs Integer.IsGreaterOrEqual(Skin.TimerElapsedSecs(mymanualtimer),5) info\endlink.
 
 The following timer is a variation of the previous timer but with the added ability of being automatically stopped by the skinning engine after a maximum of elapsed
 5 seconds without having to issue the `Skin.TimerStop(mymanualtimer)` builtin:
