@@ -123,7 +123,7 @@ endif()
  # By default, every function call is renamed with a version suffix
  # Guarantees that you link with same version you compiled with.
  # Complicates finding symbols with IDE, etc. Note that this setting
- # impacts both the libraries that at created (--enable-renaming) 
+ # impacts both the libraries that are created (--enable-renaming) 
  # as well as the functions called by application code
  # (-DU_DISABLE_RENAMING)
  

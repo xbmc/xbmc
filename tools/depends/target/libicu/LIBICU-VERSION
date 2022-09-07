@@ -1,3 +1,4 @@
+# Must modify FindLibICU.cmake along with any changes here
 LIBNAME=libicu
 BASE_URL=https://github.com/unicode-org/icu/releases/download
 DOWNLOAD_VERSION=release-71-1/icu4c-71_1-src.tgz
