@@ -102,7 +102,8 @@ void CPVRClients::UpdateClients(
         if (instanceEnabled && (!IsKnownClient(clientId) || !IsCreatedClient(clientId)))
         {
           std::shared_ptr<CPVRClient> client;
-          if (IsKnownClient(clientId))
+          const bool isKnownClient = IsKnownClient(clientId);
+          if (isKnownClient)
           {
             client = GetClient(clientId);
           }
@@ -122,7 +123,7 @@ void CPVRClients::UpdateClients(
 
           if (instanceEnabled)
             clientsToCreate.emplace_back(client);
-          else
+          else if (isKnownClient)
             clientsToDestroy.emplace_back(clientId);
         }
         else if (IsCreatedClient(clientId))
