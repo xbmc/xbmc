@@ -920,6 +920,19 @@ AVDictionary* CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput()
       av_dict_set(&options, "http_proxy", urlStream.str().c_str(), 0);
     }
 
+    // rtsp options
+    if (url.IsProtocol("rtsp"))
+    {
+      CVariant transportProp{m_pInput->GetProperty("rtsp_transport")};
+      if (!transportProp.isNull() &&
+          (transportProp == "tcp" || transportProp == "udp" || transportProp == "udp_multicast"))
+      {
+        CLog::LogF(LOGDEBUG, "GetFFMpegOptionsFromInput() Forcing rtsp transport protocol to '{}'",
+                   transportProp.asString());
+        av_dict_set(&options, "rtsp_transport", transportProp.asString().c_str(), 0);
+      }
+    }
+
     // rtmp options
     if (url.IsProtocol("rtmp")  || url.IsProtocol("rtmpt")  ||
         url.IsProtocol("rtmpe") || url.IsProtocol("rtmpte") ||
