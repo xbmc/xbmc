@@ -239,8 +239,10 @@ bool CTextureCacheJob::UpdateableURL(const std::string &url) const
 
 std::string CTextureCacheJob::GetImageHash(const std::string &url)
 {
-  // silently ignore - we cannot state these
-  if (URIUtils::IsProtocol(url,"addons") || URIUtils::IsProtocol(url,"plugin"))
+  // silently ignore - we cannot stat these
+  // in the case of upnp thumbs are/should be provided when filling the directory list, there's no reason to stat all object ids
+  if (URIUtils::IsProtocol(url, "addons") || URIUtils::IsProtocol(url, "plugin") ||
+      URIUtils::IsProtocol(url, "upnp"))
     return "";
 
   struct __stat64 st;
