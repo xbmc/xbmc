@@ -19,6 +19,7 @@ namespace KODI::UTILS::COLOR
 {
 
 using Color = uint32_t;
+using ColorIndex = unsigned int;
 
 // Custom colors
 
@@ -27,6 +28,7 @@ constexpr Color LIMITED_BLACK = 0xFF101010;
 
 // W3C HTML color list
 
+constexpr Color WHITE = 0xFFFFFFFF;
 constexpr Color WHITE = 0xFFFFFFFF;
 constexpr Color SILVER = 0xFFC0C0C0;
 constexpr Color GRAY = 0xFF808080;
@@ -45,6 +47,8 @@ constexpr Color FUCHSIA = 0xFFFF00FF;
 constexpr Color PURPLE = 0xFF800080;
 constexpr Color MAGENTA = 0xFFFF00FF;
 constexpr Color CYAN = 0xFF00FFFF;
+
+constexpr ColorIndex INDEX_DEFAULT = 0;
 
 struct ColorInfo
 {

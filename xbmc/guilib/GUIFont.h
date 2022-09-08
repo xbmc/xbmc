@@ -13,6 +13,7 @@
 \brief
 */
 
+#include "guilib/GUIVecText.h"
 #include "utils/ColorUtils.h"
 
 #include <assert.h>
@@ -21,9 +22,6 @@
 #include <stdint.h>
 #include <string>
 #include <vector>
-
-typedef uint32_t character_t;
-typedef std::vector<character_t> vecText;
 
 class CGUIFontTTF;
 class CGraphicContext;
@@ -153,7 +151,8 @@ public:
   bool UpdateScrollInfo(std::span<const character_t> text, CScrollInfo& scrollInfo);
 
   float GetTextWidth(std::span<const character_t> text);
-  float GetCharWidth(character_t ch);
+  float GetCharWidth(const character_t& ch);
+  float GetCharWidth(char32_t ch);
   float GetTextHeight(int numLines) const;
   float GetTextBaseLine() const;
   float GetLineHeight() const;

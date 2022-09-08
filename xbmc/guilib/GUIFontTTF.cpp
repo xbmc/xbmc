@@ -60,34 +60,8 @@ constexpr int GLYPH_STRENGTH_BOLD = 24;
 constexpr int GLYPH_STRENGTH_LIGHT = -48;
 constexpr int TAB_SPACE_LENGTH = 4;
 
-// \brief Check for conflicting alignments
-void ValidateAlignments(uint32_t& aligns)
-{
-  // Validate the horizontal alignment (XBFONT_LEFT is implicit unless otherwise specified)
-  {
-    const uint32_t hAligns = XBFONT_RIGHT | XBFONT_CENTER_X | XBFONT_JUSTIFIED;
-    const uint32_t commonFlags = hAligns & aligns;
-    // Check if at least 2 bits are set, it means multiple aligns
-    if ((commonFlags & (commonFlags - 1)) != 0)
-    {
-      CLog::LogF(LOGERROR, "Text with invalid multiple horizontal alignments");
-      aligns &= ~commonFlags;
-    }
-  }
-
-  // Validate truncate alignment
-  {
-    const uint32_t truncateAligns = XBFONT_TRUNCATED | XBFONT_TRUNCATED_LEFT;
-    const uint32_t commonFlags = truncateAligns & aligns;
-    // Check if at least 2 bits are set, it means multiple aligns
-    if ((commonFlags & (commonFlags - 1)) != 0)
-    {
-      CLog::LogF(LOGERROR, "Text with invalid multiple truncate alignments");
-      aligns &= ~commonFlags;
-      aligns |= XBFONT_TRUNCATED;
-    }
-  }
-}
+static const character_t DUMMY_POINT('.', FONT_STYLE_NORMAL, UTILS::COLOR::INDEX_DEFAULT);
+static const character_t DUMMY_SPACE('X', FONT_STYLE_NORMAL, UTILS::COLOR::INDEX_DEFAULT);
 
 } /* namespace */
 
@@ -465,7 +439,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
     if (!m_ellipseCached)
     {
       m_ellipseCached = true;
-      Character* ellipse = GetCharacter(L'.', 0);
+      Character* ellipse = GetCharacter(DUMMY_POINT, 0);
       if (ellipse)
         m_ellipsesWidth = ellipse->m_advance;
     }
@@ -518,7 +492,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
         Character* ch = GetCharacter(text[glyph.m_glyphInfo.cluster], glyph.m_glyphInfo.codepoint);
         if (ch)
         {
-          if ((text[glyph.m_glyphInfo.cluster] & 0xffff) == L' ')
+          if (text[glyph.m_glyphInfo.cluster].letter == static_cast<char32_t>(' '))
             numSpaces += 1;
           linePixels += ch->m_advance;
         }
@@ -536,7 +510,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
     // would invalidate the texture coordinates.
     std::queue<Character> characters;
     if (alignment & XBFONT_TRUNCATED)
-      GetCharacter(L'.', 0);
+      GetCharacter(DUMMY_POINT, 0);
     for (const auto& glyph : glyphs)
     {
       Character* ch = GetCharacter(text[glyph.m_glyphInfo.cluster], glyph.m_glyphInfo.codepoint);
@@ -566,7 +540,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
     {
       // If starting text on a new line, determine justification effects
       // Get the current letter in the CStdString
-      KODI::UTILS::COLOR::Color color = (text[glyph.m_glyphInfo.cluster] & 0xff0000) >> 16;
+      KODI::UTILS::COLOR::Color color = text[glyph.m_glyphInfo.cluster].color;
       if (color >= colors.size())
         color = 0;
       color = colors[color];
@@ -574,7 +548,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
       // grab the next character
       Character* ch = &characters.front();
 
-      if ((text[glyph.m_glyphInfo.cluster] & 0xffff) == static_cast<character_t>('\t'))
+      if (text[glyph.m_glyphInfo.cluster].letter == static_cast<char32_t>('\t'))
       {
         const float tabwidth = GetTabSpaceLength();
         const float a = cursorX / tabwidth;
@@ -590,7 +564,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
         {
           // Yup. Let's draw the ellipses, then bail
           // Perhaps we should really bail to the next line in this case??
-          Character* period = GetCharacter(L'.', 0);
+          Character* period = GetCharacter(DUMMY_POINT, 0);
           if (!period)
             break;
 
@@ -614,7 +588,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
                       *tempVertices);
       if (alignment & XBFONT_JUSTIFIED)
       {
-        if ((text[glyph.m_glyphInfo.cluster] & 0xffff) == L' ')
+        if (text[glyph.m_glyphInfo.cluster].letter == static_cast<char32_t>(' '))
           cursorX += ch->m_advance + spacePerSpaceCharacter;
         else
           cursorX += ch->m_advance;
@@ -675,7 +649,7 @@ float CGUIFontTTF::GetTextWidthInternal(std::span<const character_t> text,
   float width = 0;
   for (auto it = glyphs.begin(); it != glyphs.end(); it++)
   {
-    const character_t ch = text[(*it).m_glyphInfo.cluster];
+    const character_t& ch = text[(*it).m_glyphInfo.cluster];
     Character* c = GetCharacter(ch, (*it).m_glyphInfo.codepoint);
     if (c)
     {
@@ -684,7 +658,7 @@ float CGUIFontTTF::GetTextWidthInternal(std::span<const character_t> text,
       // choped on the end (as render width is larger than advance then).
       if (std::next(it) == glyphs.end())
         width += std::max(c->m_right - c->m_left + c->m_offsetX, c->m_advance);
-      else if ((ch & 0xffff) == static_cast<character_t>('\t'))
+      else if (ch.letter == static_cast<decltype(ch.letter)>('\t'))
         width += GetTabSpaceLength();
       else
         width += c->m_advance;
@@ -694,12 +668,12 @@ float CGUIFontTTF::GetTextWidthInternal(std::span<const character_t> text,
   return width;
 }
 
-float CGUIFontTTF::GetCharWidthInternal(character_t ch)
+float CGUIFontTTF::GetCharWidthInternal(const character_t& ch)
 {
   Character* c = GetCharacter(ch, 0);
   if (c)
   {
-    if ((ch & 0xffff) == static_cast<character_t>('\t'))
+    if (ch.letter == static_cast<decltype(ch.letter)>('\t'))
       return GetTabSpaceLength();
     else
       return c->m_advance;
@@ -750,7 +724,7 @@ std::vector<CGUIFontTTF::Glyph> CGUIFontTTF::GetHarfBuzzShapedGlyphs(
   scripts.reserve(text.size());
   for (const auto& character : text)
   {
-    scripts.emplace_back(hb_unicode_script(ufuncs, static_cast<wchar_t>(0xffff & character)));
+    scripts.emplace_back(hb_unicode_script(ufuncs, character.letter));
   }
 
   // HB_SCRIPT_COMMON or HB_SCRIPT_INHERITED should be replaced with previous script
@@ -807,7 +781,7 @@ std::vector<CGUIFontTTF::Glyph> CGUIFontTTF::GetHarfBuzzShapedGlyphs(
 
     for (unsigned int j = run.m_startOffset; j < run.m_endOffset; j++)
     {
-      hb_buffer_add(run.m_buffer, static_cast<wchar_t>(0xffff & text[j]), j);
+      hb_buffer_add(run.m_buffer, text[j].letter, j);
     }
 
     hb_buffer_set_content_type(run.m_buffer, HB_BUFFER_CONTENT_TYPE_UNICODE);
@@ -827,30 +801,30 @@ std::vector<CGUIFontTTF::Glyph> CGUIFontTTF::GetHarfBuzzShapedGlyphs(
   return glyphs;
 }
 
-CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr, FT_UInt glyphIndex)
+CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(const character_t& chr, FT_UInt glyphIndex)
 {
-  const wchar_t letter = static_cast<wchar_t>(chr & 0xffff);
+  const auto letter = chr.letter;
 
   // ignore linebreaks
-  if (letter == L'\r')
+  if (letter == static_cast<decltype(letter)>('\r'))
     return nullptr;
 
-  const character_t style = (chr & 0x7000000) >> 24; // style = 0 - 6
+  const auto style = chr.style;
 
   if (!glyphIndex)
-    glyphIndex = FT_Get_Char_Index(m_face, letter);
+    glyphIndex = FT_Get_Char_Index(m_face, chr.letter);
 
   // quick access to the most frequently used glyphs
   if (glyphIndex < MAX_GLYPH_IDX)
   {
-    character_t ch = (style << 12) | glyphIndex; // 2^12 = 4096
+    const uint32_t ch = (style << 12) | glyphIndex; // 2^12 = 4096
 
     if (ch < LOOKUPTABLE_SIZE && m_charquick[ch])
       return m_charquick[ch];
   }
 
   // letters are stored based on style and glyph
-  character_t ch = (style << 16) | glyphIndex;
+  const glyph_and_style_t ch = (static_cast<glyph_and_style_t>(style) << 32) | glyphIndex;
 
   // perform binary search on sorted array by m_glyphAndStyle and
   // if not found obtains position to insert the new m_char to keep sorted
@@ -912,8 +886,9 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(character_t chr, FT_UInt glyph
   {
     if (m_char[i].m_glyphIndex < MAX_GLYPH_IDX)
     {
-      // >> 16 is style (0-6), then 16 - 12 (>> 4) is equivalent to style * 4096
-      character_t ch = ((m_char[i].m_glyphAndStyle & 0xffff0000) >> 4) | m_char[i].m_glyphIndex;
+      // >> 32 is style (0-6), then 32 - 12 (>> 20) is equivalent to style * 4096
+      const uint32_t ch =
+          ((m_char[i].m_glyphAndStyle & 0xFFFFFFFF00000000) >> 20) | m_char[i].m_glyphIndex;
 
       if (ch < LOOKUPTABLE_SIZE)
         m_charquick[ch] = m_char.data() + i;
@@ -1009,7 +984,7 @@ bool CGUIFontTTF::CacheCharacter(FT_UInt glyphIndex, uint32_t style, Character* 
   }
 
   // set the character in our table
-  ch->m_glyphAndStyle = (style << 16) | glyphIndex;
+  ch->m_glyphAndStyle = (static_cast<decltype(ch->m_glyphAndStyle)>(style) << 32) | glyphIndex;
   ch->m_glyphIndex = glyphIndex;
   ch->m_offsetX = static_cast<short>(bitGlyph->left);
   ch->m_offsetY = static_cast<short>(m_cellBaseLine - bitGlyph->top);
@@ -1276,6 +1251,6 @@ void CGUIFontTTF::SetGlyphStrength(FT_GlyphSlot slot, int glyphStrength)
 
 float CGUIFontTTF::GetTabSpaceLength()
 {
-  const Character* c = GetCharacter(static_cast<character_t>('X'), 0);
+  const Character* c = GetCharacter(DUMMY_SPACE, 0);
   return c ? c->m_advance * TAB_SPACE_LENGTH : 28.0f * TAB_SPACE_LENGTH;
 }
