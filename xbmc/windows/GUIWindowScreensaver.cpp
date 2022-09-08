@@ -19,12 +19,11 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 
-CGUIWindowScreensaver::CGUIWindowScreensaver(void)
-  : CGUIWindow(WINDOW_SCREENSAVER, "")
+CGUIWindowScreensaver::CGUIWindowScreensaver() : CGUIWindow(WINDOW_SCREENSAVER, "")
 {
 }
 
-void CGUIWindowScreensaver::Process(unsigned int currentTime, CDirtyRegionList &regions)
+void CGUIWindowScreensaver::Process(unsigned int currentTime, CDirtyRegionList& regions)
 {
   MarkDirtyRegion();
   CGUIWindow::Process(currentTime, regions);
@@ -49,7 +48,7 @@ void CGUIWindowScreensaver::Render()
 }
 
 // called when the mouse is moved/clicked etc. etc.
-EVENT_RESULT CGUIWindowScreensaver::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
+EVENT_RESULT CGUIWindowScreensaver::OnMouseEvent(const CPoint& point, const CMouseEvent& event)
 {
   CServiceBroker::GetGUI()->GetWindowManager().PreviousWindow();
   return EVENT_RESULT_HANDLED;
@@ -59,7 +58,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
 {
   switch (message.GetMessage())
   {
-  case GUI_MSG_WINDOW_DEINIT:
+    case GUI_MSG_WINDOW_DEINIT:
     {
       if (m_addon)
       {
@@ -71,7 +70,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
     }
     break;
 
-  case GUI_MSG_WINDOW_INIT:
+    case GUI_MSG_WINDOW_INIT:
     {
       CGUIWindow::OnMessage(message);
 
@@ -87,14 +86,14 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
       return m_addon->Start();
     }
 
-  case GUI_MSG_CHECK_LOCK:
-    if (!g_passwordManager.IsProfileLockUnlocked())
-    {
-      g_application.SetScreenSaverLockFailed();
-      return false;
-    }
-    g_application.SetScreenSaverUnlocked();
-    return true;
+    case GUI_MSG_CHECK_LOCK:
+      if (!g_passwordManager.IsProfileLockUnlocked())
+      {
+        g_application.SetScreenSaverLockFailed();
+        return false;
+      }
+      g_application.SetScreenSaverUnlocked();
+      return true;
   }
 
   return CGUIWindow::OnMessage(message);
