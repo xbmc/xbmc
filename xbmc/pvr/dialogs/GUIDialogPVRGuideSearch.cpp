@@ -74,9 +74,7 @@ void CGUIDialogPVRGuideSearch::UpdateChannelSpin()
     labels.emplace_back(g_localizeStrings.Get(19217), EPG_SEARCH_UNSET); // All TV channels
 
   std::shared_ptr<CPVRChannelGroup> group;
-  if (iChannelGroup == EPG_SEARCH_UNSET)
-    group = CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(m_searchFilter->IsRadio());
-  else
+  if (iChannelGroup != EPG_SEARCH_UNSET)
     group = CServiceBroker::GetPVRManager().ChannelGroups()->GetByIdFromAll(iChannelGroup);
 
   if (!group)
@@ -93,7 +91,8 @@ void CGUIDialogPVRGuideSearch::UpdateChannelSpin()
     m_channelsMap.insert(std::make_pair(iIndex, groupMember));
 
     if (iSelectedChannel == EPG_SEARCH_UNSET &&
-        groupMember->ChannelUID() == m_searchFilter->GetChannelUID())
+        groupMember->ChannelUID() == m_searchFilter->GetChannelUID() &&
+        groupMember->ClientID() == m_searchFilter->GetClientID())
       iSelectedChannel = iIndex;
 
     ++iIndex;
@@ -104,14 +103,20 @@ void CGUIDialogPVRGuideSearch::UpdateChannelSpin()
 
 void CGUIDialogPVRGuideSearch::UpdateGroupsSpin()
 {
-  std::vector< std::pair<std::string, int> > labels;
+  std::vector<std::pair<std::string, int>> labels;
+  const std::vector<std::shared_ptr<CPVRChannelGroup>> groups =
+      CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_searchFilter->IsRadio())->GetMembers();
+  int selectedGroup = EPG_SEARCH_UNSET;
+  for (const auto& group : groups)
+  {
+    labels.emplace_back(group->GroupName(), group->GroupID());
 
-  /* groups */
-  std::vector<std::shared_ptr<CPVRChannelGroup>> groups = CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_searchFilter->IsRadio())->GetMembers();
-  for (std::vector<std::shared_ptr<CPVRChannelGroup>>::const_iterator it = groups.begin(); it != groups.end(); ++it)
-    labels.emplace_back((*it)->GroupName(), (*it)->GroupID());
+    if (selectedGroup == EPG_SEARCH_UNSET &&
+        group->GroupID() == m_searchFilter->GetChannelGroupID())
+      selectedGroup = group->GroupID();
+  }
 
-  SET_CONTROL_LABELS(CONTROL_SPIN_GROUPS, 0, &labels);
+  SET_CONTROL_LABELS(CONTROL_SPIN_GROUPS, selectedGroup, &labels);
 }
 
 void CGUIDialogPVRGuideSearch::UpdateGenreSpin()
@@ -294,6 +299,7 @@ void CGUIDialogPVRGuideSearch::UpdateSearchFilter()
   auto it = m_channelsMap.find(GetSpinValue(CONTROL_SPIN_CHANNELS));
   m_searchFilter->SetClientID(it == m_channelsMap.end() ? -1 : (*it).second->ClientID());
   m_searchFilter->SetChannelUID(it == m_channelsMap.end() ? -1 : (*it).second->ChannelUID());
+  m_searchFilter->SetChannelGroupID(GetSpinValue(CONTROL_SPIN_GROUPS));
 
   const CDateTime start =
       ReadDateTime(GetEditValue(CONTROL_EDIT_START_DATE), GetEditValue(CONTROL_EDIT_START_TIME));
