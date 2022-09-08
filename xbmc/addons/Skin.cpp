@@ -276,7 +276,8 @@ bool CSkinInfo::HasSkinFile(const std::string &strFile) const
 
 void CSkinInfo::LoadIncludes()
 {
-  std::string includesPath = CSpecialProtocol::TranslatePathConvertCase(GetSkinPath("includes.xml"));
+  std::string includesPath =
+      CSpecialProtocol::TranslatePathConvertCase(GetSkinPath("Includes.xml"));
   CLog::Log(LOGINFO, "Loading skin includes from {}", includesPath);
   m_includes.Clear();
   m_includes.Load(includesPath);
