@@ -10,6 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgContainer.h"
@@ -341,7 +342,8 @@ bool CPVREpgSearchFilter::MatchChannel(const std::shared_ptr<CPVREpgInfoTag>& ta
 {
   return tag && (tag->IsRadio() == m_bIsRadio) &&
          (m_iClientID == -1 || tag->ClientID() == m_iClientID) &&
-         (m_iChannelUID == -1 || tag->UniqueChannelID() == m_iChannelUID);
+         (m_iChannelUID == -1 || tag->UniqueChannelID() == m_iChannelUID) &&
+         CServiceBroker::GetPVRManager().Clients()->IsCreatedClient(tag->ClientID());
 }
 
 bool CPVREpgSearchFilter::MatchFreeToAir(const std::shared_ptr<CPVREpgInfoTag>& tag) const
