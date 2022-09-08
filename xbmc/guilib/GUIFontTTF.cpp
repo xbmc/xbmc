@@ -841,6 +841,12 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
     return;
   }
 
+  // Check first character (by RTOL is them the last) about his standard alignment and change to related language
+  // NOTE: "maxPixelWidth" needs set to use as this, without we not know on which position the right side start.
+  bool useRTOLChar = false;
+  if (maxPixelWidth > 0)
+    alignment = GetNeededAlignment(text[text.size() - 1].letter, alignment, useRTOLChar);
+
   Begin();
   uint32_t rawAlignment = alignment;
   bool dirtyCache(false);
@@ -911,7 +917,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
     float startY =
         (alignment & XBFONT_CENTER_Y) ? -0.5f * m_fontMain.m_cellHeight : 0; // vertical centering
 
-    if (alignment & (XBFONT_RIGHT | XBFONT_CENTER_X))
+    if (!useRTOLChar && alignment & (XBFONT_RIGHT | XBFONT_CENTER_X))
     {
       // Get the extent of this line
       float w = GetTextWidthInternal(text, glyphs);
@@ -950,101 +956,199 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
     float offsetX = 0;
     float offsetY = 0;
 
+    // Reserve vector space: 4 vertex for each glyph
+    tempVertices->reserve(VERTEX_PER_GLYPH * glyphs.size());
+
     // Collect all the Character info in a first pass, in case any of them
     // are not currently cached and cause the texture to be enlarged, which
     // would invalidate the texture coordinates.
     std::queue<Character> characters;
     if (alignment & XBFONT_TRUNCATED)
       GetCharacter(DUMMY_POINT, 0, &m_fontMain);
-    for (const auto& glyph : glyphs)
+
+    if (!useRTOLChar)
     {
-      Character* ch = GetCharacter(text[glyph.m_glyphInfo.cluster], glyph.m_glyphInfo.codepoint,
-                                   glyph.m_fontData);
-      if (!ch)
+      for (const auto& glyph : glyphs)
       {
-        Character null = {};
-        characters.push(null);
-        continue;
-      }
-      characters.push(*ch);
-
-      if (maxPixelWidth > 0 &&
-          cursorX + ((alignment & XBFONT_TRUNCATED) ? ch->m_advance + 3 * m_ellipsesWidth : 0) >
-              maxPixelWidth)
-        break;
-      cursorX += ch->m_advance;
-    }
-
-    // Reserve vector space: 4 vertex for each glyph
-    tempVertices->reserve(VERTEX_PER_GLYPH * glyphs.size());
-    cursorX = 0;
-
-    for (const auto& glyph : glyphs)
-    {
-      // If starting text on a new line, determine justification effects
-      // Get the current letter in the CStdString
-      UTILS::COLOR::Color color = text[glyph.m_glyphInfo.cluster].color;
-      if (color >= colors.size())
-        color = 0;
-      color = colors[color];
-
-      // grab the next character
-      Character* ch = &characters.front();
-      if (ch->m_glyphAndStyle == 0)
-      {
-        characters.pop();
-        continue;
-      }
-
-      if (text[glyph.m_glyphInfo.cluster].letter == static_cast<char32_t>('\t'))
-      {
-        const float tabwidth = GetTabSpaceLength();
-        const float a = cursorX / tabwidth;
-        cursorX += tabwidth - ((a - floorf(a)) * tabwidth);
-        characters.pop();
-        continue;
-      }
-
-      if (alignment & XBFONT_TRUNCATED)
-      {
-        // Check if we will be exceeded the max allowed width
-        if (cursorX + ch->m_advance + 3 * m_ellipsesWidth > maxPixelWidth)
+        Character* ch = GetCharacter(text[glyph.m_glyphInfo.cluster], glyph.m_glyphInfo.codepoint,
+                                     glyph.m_fontData);
+        if (!ch)
         {
-          // Yup. Let's draw the ellipses, then bail
-          // Perhaps we should really bail to the next line in this case??
-          Character* period = GetCharacter(DUMMY_POINT, 0, &m_fontMain);
-          if (!period)
-            break;
-
-          for (int i = 0; i < 3; i++)
-          {
-            RenderCharacter(context, startX + cursorX, startY, period, color, !scrolling,
-                            *tempVertices);
-            cursorX += period->m_advance;
-          }
-          break;
+          Character null = {};
+          characters.push(null);
+          continue;
         }
-      }
-      else if (maxPixelWidth > 0 && cursorX > maxPixelWidth)
-        break; // exceeded max allowed width - stop rendering
+        characters.push(*ch);
 
-      offsetX = static_cast<float>(
-          MathUtils::round_int(static_cast<double>(glyph.m_glyphPosition.x_offset) / 64));
-      offsetY = static_cast<float>(
-          MathUtils::round_int(static_cast<double>(glyph.m_glyphPosition.y_offset) / 64));
-      RenderCharacter(context, startX + cursorX + offsetX, startY - offsetY, ch, color, !scrolling,
-                      *tempVertices);
-      if (alignment & XBFONT_JUSTIFIED)
+        if (maxPixelWidth > 0 &&
+            cursorX + ((alignment & XBFONT_TRUNCATED) ? ch->m_advance + 3 * m_ellipsesWidth : 0) >
+                maxPixelWidth)
+          break;
+        cursorX += ch->m_advance;
+      }
+
+      cursorX = 0;
+
+      for (const auto& glyph : glyphs)
       {
-        if (text[glyph.m_glyphInfo.cluster].letter == static_cast<char32_t>(' '))
-          cursorX += ch->m_advance + spacePerSpaceCharacter;
+        // If starting text on a new line, determine justification effects
+        // Get the current letter in the CStdString
+        UTILS::COLOR::Color color = text[glyph.m_glyphInfo.cluster].color;
+        if (color >= colors.size())
+          color = 0;
+        color = colors[color];
+
+        // grab the next character
+        Character* ch = &characters.front();
+        if (ch->m_glyphAndStyle == 0)
+        {
+          characters.pop();
+          continue;
+        }
+
+        if (text[glyph.m_glyphInfo.cluster].letter == static_cast<char32_t>('\t'))
+        {
+          const float tabwidth = GetTabSpaceLength();
+          const float a = cursorX / tabwidth;
+          cursorX += tabwidth - ((a - floorf(a)) * tabwidth);
+          characters.pop();
+          continue;
+        }
+
+        if (alignment & XBFONT_TRUNCATED)
+        {
+          // Check if we will be exceeded the max allowed width
+          if (cursorX + ch->m_advance + 3 * m_ellipsesWidth > maxPixelWidth)
+          {
+            // Yup. Let's draw the ellipses, then bail
+            // Perhaps we should really bail to the next line in this case??
+            Character* period = GetCharacter(DUMMY_POINT, 0, &m_fontMain);
+            if (!period)
+              break;
+
+            for (int i = 0; i < 3; i++)
+            {
+              RenderCharacter(context, startX + cursorX, startY, period, color, !scrolling,
+                              *tempVertices);
+              cursorX += period->m_advance;
+            }
+            break;
+          }
+        }
+        else if (maxPixelWidth > 0 && cursorX > maxPixelWidth)
+          break; // exceeded max allowed width - stop rendering
+
+        offsetX = static_cast<float>(
+            MathUtils::round_int(static_cast<double>(glyph.m_glyphPosition.x_offset) / 64));
+        offsetY = static_cast<float>(
+            MathUtils::round_int(static_cast<double>(glyph.m_glyphPosition.y_offset) / 64));
+        RenderCharacter(context, startX + cursorX + offsetX, startY - offsetY, ch, color,
+                        !scrolling, *tempVertices);
+        if (alignment & XBFONT_JUSTIFIED)
+        {
+          if (text[glyph.m_glyphInfo.cluster].letter == static_cast<char32_t>(' '))
+            cursorX += ch->m_advance + spacePerSpaceCharacter;
+          else
+            cursorX += ch->m_advance;
+        }
         else
           cursorX += ch->m_advance;
+        characters.pop();
       }
-      else
-        cursorX += ch->m_advance;
-      characters.pop();
     }
+    else
+    {
+      // With RTOL use we needs to go backward about the used string and to have in right
+      // character flow and positions.
+      auto glyph = glyphs.end();
+      while (glyph != glyphs.begin())
+      {
+        --glyph;
+        Character* ch = GetCharacter(text[glyph->m_glyphInfo.cluster], glyph->m_glyphInfo.codepoint,
+                                     glyph->m_fontData);
+        if (!ch)
+        {
+          Character null = {};
+          characters.push(null);
+          continue;
+        }
+        characters.push(*ch);
+
+        if (maxPixelWidth > 0 &&
+            cursorX + ((alignment & XBFONT_TRUNCATED) ? ch->m_advance + 3 * m_ellipsesWidth : 0) >
+                maxPixelWidth)
+          break;
+        cursorX += ch->m_advance;
+      }
+
+      cursorX = maxPixelWidth;
+
+      glyph = glyphs.end();
+      while (glyph != glyphs.begin())
+      {
+        --glyph;
+
+        // If starting text on a new line, determine justification effects
+        // Get the current letter in the CStdString
+        UTILS::COLOR::Color color = text[glyph->m_glyphInfo.cluster].color;
+        if (color >= colors.size())
+          color = 0;
+        color = colors[color];
+
+        // grab the next character
+        Character* ch = &characters.front();
+        if (ch->m_glyphAndStyle == 0)
+        {
+          characters.pop();
+          continue;
+        }
+
+        if (text[glyph->m_glyphInfo.cluster].letter == static_cast<char32_t>('\t'))
+        {
+          const float tabwidth = GetTabSpaceLength();
+          const float a = cursorX / tabwidth;
+          cursorX -= ((a - floorf(a)) * tabwidth);
+          characters.pop();
+          continue;
+        }
+
+        if (alignment & XBFONT_TRUNCATED)
+        {
+          // Check if we will be exceeded the max allowed width
+          if (cursorX + ch->m_advance + 3 * m_ellipsesWidth > maxPixelWidth)
+          {
+            // Yup. Let's draw the ellipses, then bail
+            // Perhaps we should really bail to the next line in this case??
+            Character* period = GetCharacter(DUMMY_POINT, 0, &m_fontMain);
+            if (!period)
+              break;
+
+            for (int i = 0; i < 3; i++)
+            {
+              cursorX -= period->m_advance;
+              RenderCharacter(context, startX + cursorX, startY, period, color, !scrolling,
+                              *tempVertices);
+            }
+            break;
+          }
+        }
+        else if (cursorX < 0)
+          break; // exceeded max allowed width - stop rendering
+
+        offsetX = static_cast<float>(
+            MathUtils::round_int(static_cast<double>(glyph->m_glyphPosition.x_offset -
+                                                     glyph->m_glyphPosition.x_advance) /
+                                 64));
+        offsetY = static_cast<float>(
+            MathUtils::round_int(static_cast<double>(glyph->m_glyphPosition.y_offset) / 64));
+        RenderCharacter(context, startX + cursorX + offsetX, startY - offsetY, ch, color,
+                        !scrolling, *tempVertices);
+
+        cursorX -= ch->m_advance;
+        characters.pop();
+      }
+    }
+
     if (hardwareClipping)
     {
       CVertexBuffer& vertexBuffer =
@@ -1439,6 +1543,41 @@ CFontData* CGUIFontTTF::FindFallback(char32_t letter, const CFontTable*& fontTab
   m_fallbackUsed.emplace_back(*it2, data);
 
   return data.get();
+}
+
+uint32_t CGUIFontTTF::GetNeededAlignment(char32_t firstLetter,
+                                         uint32_t alignmentDefault,
+                                         bool& useRTOLChar)
+{
+  // Check character is an standard left aligned about typical UTF codes to prevent unneeded works.
+  // Also not use if already defined as centered character.
+  if (firstLetter < 0x00052F || alignmentDefault & XBFONT_CENTER_X ||
+      alignmentDefault & XBFONT_JUSTIFIED)
+    return alignmentDefault;
+
+  // Check font by Kodi and make alignment to opposite.
+  auto it = std::find_if(
+      fontFallbacks.begin(), fontFallbacks.end(), [firstLetter](const CFontTable& data) {
+        return (firstLetter >= data.m_unicode_code_begin && firstLetter <= data.m_unicode_code_end);
+      });
+  if (it != fontFallbacks.end())
+  {
+    if (it->alignment == CFontTable::ALIGN::RTOL)
+    {
+      useRTOLChar = true;
+
+      if (alignmentDefault & XBFONT_RIGHT)
+      {
+        alignmentDefault &= ~XBFONT_RIGHT;
+      }
+      else
+      {
+        alignmentDefault |= XBFONT_RIGHT;
+      }
+    }
+  }
+
+  return alignmentDefault;
 }
 
 bool CGUIFontTTF::CacheCharacter(FT_UInt glyphIndex,

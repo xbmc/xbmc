@@ -342,6 +342,7 @@ protected:
 private:
   float GetTabSpaceLength();
   CFontData* FindFallback(char32_t letter, const CFontTable*& fontTable);
+  uint32_t GetNeededAlignment(char32_t firstLetter, uint32_t alignmentDefault, bool& useRTOLChar);
 
   virtual bool FirstBegin() = 0;
   virtual void LastEnd() = 0;
