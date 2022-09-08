@@ -19,6 +19,7 @@ namespace COLOR
 {
 
 typedef uint32_t Color;
+typedef unsigned int ColorIndex;
 
 constexpr Color BLACK = 0xFF000000;
 constexpr Color BLUE = 0xFF0099FF;
@@ -31,6 +32,8 @@ constexpr Color NONE = 0x00000000;
 constexpr Color WHITE = 0xFFFFFFFF;
 constexpr Color YELLOW = 0xFFFFFF00;
 constexpr Color YELLOWGREEN = 0xFFCCFF00;
+
+constexpr ColorIndex INDEX_DEFAULT = 0;
 
 struct ColorInfo
 {

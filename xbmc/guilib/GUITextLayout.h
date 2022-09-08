@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "guilib/GUIVecText.h"
 #include "utils/ColorUtils.h"
 
 #include <stdint.h>
@@ -33,17 +34,12 @@ class CScrollInfo;
 // 5.  Each item in the vector is length-calculated, and then layout occurs governed by alignment and wrapping rules.
 // 6.  A new vector<CGUIString> is constructed
 
-typedef uint32_t character_t;
-typedef std::vector<character_t> vecText;
-
 class CGUIString
 {
 public:
   typedef vecText::const_iterator iString;
 
   CGUIString(iString start, iString end, bool carriageReturn);
-
-  std::string GetAsString() const;
 
   vecText m_text;
   bool m_carriageReturn; // true if we have a carriage return here
@@ -177,15 +173,21 @@ protected:
 private:
   inline bool IsSpace(character_t letter) const XBMC_FORCE_INLINE
   {
-    return (letter & 0xffff) == L' ';
+    return letter.letter == static_cast<char32_t>(' ');
   };
   inline bool CanWrapAtLetter(character_t letter) const XBMC_FORCE_INLINE
   {
-    character_t ch = letter & 0xffff;
-    return ch == L' ' || (ch >=0x4e00 && ch <= 0x9fff);
+    char32_t ch = letter.letter;
+    return ch == static_cast<char32_t>(' ') || (ch >= 0x4e00 && ch <= 0x9fff);
   };
-  static void AppendToUTF32(const std::string &utf8, character_t colStyle, vecText &utf32);
-  static void AppendToUTF32(const std::wstring &utf16, character_t colStyle, vecText &utf32);
+  static void AppendToUTF32(const std::string& utf8,
+                            int style,
+                            UTILS::COLOR::Color color,
+                            vecText& utf32);
+  static void AppendToUTF32(const std::wstring& utf16,
+                            int style,
+                            UTILS::COLOR::Color color,
+                            vecText& utf32);
   static void ParseText(const std::wstring& text,
                         uint32_t defaultStyle,
                         UTILS::COLOR::Color defaultColor,

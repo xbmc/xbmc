@@ -30,7 +30,8 @@ CScrollInfo::CScrollInfo(unsigned int wait /* = 50 */,
   g_charsetConverter.utf8ToW(scrollSuffix, wsuffix);
   m_suffix.clear();
   m_suffix.reserve(wsuffix.size());
-  m_suffix = vecText(wsuffix.begin(), wsuffix.end());
+  for (vecText::size_type i = 0; i < wsuffix.size(); i++)
+    m_suffix.emplace_back(wsuffix[i], FONT_STYLE_NORMAL, UTILS::COLOR::INDEX_DEFAULT);
   Reset();
 }
 
@@ -276,7 +277,7 @@ float CGUIFont::GetTextWidth(const vecText& text)
   return m_font->GetTextWidthInternal(text) * context.GetGUIScaleX();
 }
 
-float CGUIFont::GetCharWidth(character_t ch)
+float CGUIFont::GetCharWidth(const character_t& ch)
 {
   CWinSystemBase* const winSystem = CServiceBroker::GetWinSystem();
   if (!m_font || !winSystem)
@@ -286,6 +287,11 @@ float CGUIFont::GetCharWidth(character_t ch)
 
   std::unique_lock<CCriticalSection> lock(context);
   return m_font->GetCharWidthInternal(ch) * context.GetGUIScaleX();
+}
+
+float CGUIFont::GetCharWidth(char32_t ch)
+{
+  return GetCharWidth(character_t(ch, FONT_STYLE_NORMAL, UTILS::COLOR::INDEX_DEFAULT));
 }
 
 float CGUIFont::GetTextHeight(int numLines) const

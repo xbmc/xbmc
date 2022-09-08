@@ -559,19 +559,19 @@ bool CGUIEditControl::SetStyledText(const std::wstring &text)
 
   for (unsigned int i = 0; i < text.size(); i++)
   {
-    uint32_t ch = text[i] | style;
+    UTILS::COLOR::ColorIndex color = 0;
     if (m_editLength > 0 && startSelection <= i && i < endSelection)
-      ch |= (2 << 16); // highlight the letters we're playing with
+      color = 2; // highlight the letters we're playing with
     else if (!m_edit.empty() && (i < startHighlight || i >= endHighlight))
-      ch |= (1 << 16); // dim the bits we're not editing
-    styled.push_back(ch);
+      color = 1; // dim the bits we're not editing
+    styled.emplace_back(text[i], style, color);
   }
 
   // show the cursor
-  uint32_t ch = L'|' | style;
+  UTILS::COLOR::ColorIndex color = 0;
   if ((++m_cursorBlink % 64) > 32)
-    ch |= (3 << 16);
-  styled.insert(styled.begin() + m_cursorPos, ch);
+    color = 3;
+  styled.insert(styled.begin() + m_cursorPos, character_t('|', style, color));
 
   return m_label2.SetStyledText(styled, colors);
 }

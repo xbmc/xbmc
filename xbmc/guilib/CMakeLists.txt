@@ -131,6 +131,7 @@ set(HEADERS DDSImage.h
             GUITextLayout.h
             GUITexture.h
             GUIToggleButtonControl.h
+            GUIVecText.h
             GUIVideoControl.h
             GUIVisualisationControl.h
             GUIWindow.h

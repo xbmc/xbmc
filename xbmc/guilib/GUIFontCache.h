@@ -113,7 +113,11 @@ struct CGUIFontCacheHash
     /* Not much effort has gone into choosing this hash function */
     size_t hash = 0, i;
     for (i = 0; i < 3 && i < key.m_text.size(); ++i)
-      hash += key.m_text[i];
+    {
+      hash += key.m_text[i].letter;
+      hash += key.m_text[i].style;
+      hash += key.m_text[i].color;
+    }
     if (key.m_colors.size())
       hash += key.m_colors[0];
     hash += static_cast<size_t>(MatrixHashContribution(key)); // horrible

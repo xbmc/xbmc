@@ -89,19 +89,20 @@ void CGUILabelControl::UpdateInfo(const CGUIListItem *item)
 
     for (unsigned int i = 0; i < utf16.size(); i++)
     {
-      uint32_t ch = utf16[i] | style;
+      UTILS::COLOR::ColorIndex color = 0;
       if ((m_startSelection < m_endSelection) && (m_startSelection <= i && i < m_endSelection))
-        ch |= (2 << 16);
+        color = 2;
       else if ((m_startHighlight < m_endHighlight) && (i < m_startHighlight || i >= m_endHighlight))
-        ch |= (1 << 16);
-      text.push_back(ch);
+        color = 1;
+      text.emplace_back(utf16[i], style, color);
     }
     if (m_bShowCursor && m_iCursorPos >= 0 && (unsigned int)m_iCursorPos <= utf16.size())
     {
-      uint32_t ch = L'|' | style;
+      UTILS::COLOR::ColorIndex color = 0;
       if ((++m_dwCounter % 50) <= 25)
-        ch |= (3 << 16);
-      text.insert(text.begin() + m_iCursorPos, ch);
+        color = 3;
+      text.insert(text.begin() + m_iCursorPos,
+                  character_t(static_cast<char32_t>('|'), style, color));
     }
     changed |= m_label.SetMaxRect(m_posX, m_posY, GetMaxWidth(), m_height);
     changed |= m_label.SetStyledText(text, colors);

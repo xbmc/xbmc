@@ -718,9 +718,9 @@ float CGUIDialogKeyboardGeneric::GetStringWidth(const std::wstring & utf16)
 {
   vecText utf32;
 
-  utf32.resize(utf16.size());
+  utf32.reserve(utf16.size());
   for (unsigned int i = 0; i < utf16.size(); i++)
-    utf32[i] = utf16[i];
+    utf32.emplace_back(utf16[i], FONT_STYLE_NORMAL, UTILS::COLOR::INDEX_DEFAULT);
 
   return m_listfont->GetTextWidth(utf32);
 }

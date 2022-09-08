@@ -204,17 +204,14 @@ void CRssReader::getFeed(vecText &text)
   text.clear();
   // double the spaces at the start of the set
   for (int j = 0; j < m_spacesBetweenFeeds; j++)
-    text.push_back(L' ');
+    text.emplace_back(' ', FONT_STYLE_NORMAL, UTILS::COLOR::INDEX_DEFAULT);
   for (unsigned int i = 0; i < m_strFeed.size(); i++)
   {
     for (int j = 0; j < m_spacesBetweenFeeds; j++)
-      text.push_back(L' ');
+      text.emplace_back(' ', FONT_STYLE_NORMAL, UTILS::COLOR::INDEX_DEFAULT);
 
     for (unsigned int j = 0; j < m_strFeed[i].size(); j++)
-    {
-      character_t letter = m_strFeed[i][j] | ((m_strColors[i][j] - 48) << 16);
-      text.push_back(letter);
-    }
+      text.emplace_back(m_strFeed[i][j], FONT_STYLE_NORMAL, m_strColors[i][j] - 48);
   }
 }
 

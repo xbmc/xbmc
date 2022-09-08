@@ -9,6 +9,7 @@
 #pragma once
 
 #include "GUIFont.h"
+#include "guilib/GUIVecText.h"
 #include "utils/ColorUtils.h"
 #include "utils/Geometry.h"
 
@@ -44,9 +45,6 @@ typedef struct FT_LibraryRec_* FT_Library;
 typedef struct FT_GlyphSlotRec_* FT_GlyphSlot;
 typedef struct FT_BitmapGlyphRec_* FT_BitmapGlyph;
 typedef struct FT_StrokerRec_* FT_Stroker;
-
-typedef uint32_t character_t;
-typedef std::vector<character_t> vecText;
 
 /*!
  \ingroup textures
@@ -121,6 +119,8 @@ protected:
     }
   };
 
+  typedef uint64_t glyph_and_style_t;
+
   struct Character
   {
     short m_offsetX;
@@ -131,7 +131,7 @@ protected:
     float m_bottom;
     float m_advance;
     FT_UInt m_glyphIndex;
-    character_t m_glyphAndStyle;
+    glyph_and_style_t m_glyphAndStyle;
   };
 
   struct RunInfo
@@ -151,7 +151,7 @@ protected:
 
   float GetTextWidthInternal(const vecText& text);
   float GetTextWidthInternal(const vecText& text, const std::vector<Glyph>& glyph);
-  float GetCharWidthInternal(character_t ch);
+  float GetCharWidthInternal(const character_t& ch);
   float GetTextHeight(float lineSpacing, int numLines) const;
   float GetTextBaseLine() const { return static_cast<float>(m_cellBaseLine); }
   float GetLineHeight(float lineSpacing) const;
@@ -169,7 +169,7 @@ protected:
   float m_height{0.0f};
 
   // Stuff for pre-rendering for speed
-  Character* GetCharacter(character_t letter, FT_UInt glyphIndex);
+  Character* GetCharacter(const character_t& letter, FT_UInt glyphIndex);
   bool CacheCharacter(FT_UInt glyphIndex, uint32_t style, Character* ch);
   void RenderCharacter(CGraphicContext& context,
                        float posX,
