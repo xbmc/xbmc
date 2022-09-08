@@ -304,11 +304,7 @@ std::shared_ptr<CPVRClient> CPVRManager::GetClient(const CFileItem& item) const
 
 std::shared_ptr<CPVRClient> CPVRManager::GetClient(int iClientId) const
 {
-  std::shared_ptr<CPVRClient> client;
-  if (iClientId != PVR_INVALID_CLIENT_ID)
-    m_addons->GetCreatedClient(iClientId, client);
-
-  return client;
+  return m_addons->GetCreatedClient(iClientId);
 }
 
 std::shared_ptr<CPVRGUIActions> CPVRManager::GUIActions() const
@@ -682,8 +678,7 @@ bool CPVRManager::UpdateComponents(ManagerState stateToCheck,
                                    const std::unique_ptr<CPVRGUIProgressHandler>& progressHandler)
 {
   // find clients which appeared since last check and update them
-  CPVRClientMap clientMap;
-  m_addons->GetCreatedClients(clientMap);
+  const CPVRClientMap clientMap = m_addons->GetCreatedClients();
   if (clientMap.empty())
   {
     CLog::LogFC(LOGDEBUG, LOGPVR, "All created PVR clients gone!");

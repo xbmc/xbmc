@@ -77,12 +77,13 @@ namespace PVR
     void Continue();
 
     /*!
-     * @brief Update add-ons from the AddonManager
+     * @brief Update all clients, sync with Addon Manager state (start, restart, shutdown clients).
      * @param changedAddonId The id of the changed addon, empty string denotes 'any addon'.
      * @param changedInstanceId The Identifier of the changed add-on instance
      */
-    void UpdateAddons(const std::string& changedAddonId = "",
-                      ADDON::AddonInstanceId changedInstanceId = 0);
+    void UpdateClients(
+        const std::string& changedAddonId = "",
+        ADDON::AddonInstanceId changedInstanceId = ADDON::ADDON_SINGLETON_INSTANCE_ID);
 
     /*!
      * @brief Restart a single client add-on.
@@ -97,26 +98,17 @@ namespace PVR
 
     /*!
      * @brief Stop a client.
-     * @param addonId The client to stop.
-     * @param instance Identifier of the add-on instance.
-     * @param bRestart If true, restart the client.
+     * @param clientId The id of the client to stop.
+     * @param restart If true, restart the client.
      * @return True if the client was found, false otherwise.
      */
-    bool StopClient(const std::string& addonId, ADDON::AddonInstanceId instance, bool bRestart);
+    bool StopClient(int clientId, bool restart);
 
     /*!
      * @brief Handle addon events (enable, disable, ...).
      * @param event The addon event.
      */
     void OnAddonEvent(const ADDON::AddonEvent& event);
-
-    /*!
-     * @brief Get a client's numeric ID given its string ID.
-     * @param addonId The string ID.
-     * @param instance Identifier of the add-on instance.
-     * @return The numeric ID matching the given string ID, -1 on error.
-     */
-    int GetClientId(const std::string& addonId, ADDON::AddonInstanceId instance) const;
 
     /*!
      * @brief Get the number of created clients.
@@ -138,25 +130,17 @@ namespace PVR
     bool IsCreatedClient(int iClientId) const;
 
     /*!
-     * @brief Get the instance of the client, if it's created.
-     * @param iClientId The ID of the client to get.
-     * @param addon Will be filled with requested client on success, null otherwise.
-     * @return True on success, false otherwise.
+     * @brief Get the the client for the given client id, if it is created.
+     * @param clientId The ID of the client to get.
+     * @return The client if found, nullptr otherwise.
      */
-    bool GetCreatedClient(int iClientId, std::shared_ptr<CPVRClient>& addon) const;
-
-    /*!
-     * @brief Get info required for providers. Include both enabled and disabled PVR add-ons
-     * @return A list containing the information required to create client providers.
-     */
-    std::vector<CVariant> GetClientProviderInfos() const;
+    std::shared_ptr<CPVRClient> GetCreatedClient(int clientId) const;
 
     /*!
      * @brief Get all created clients.
-     * @param clients All created clients will be added to this map.
-     * @return The amount of clients added to the map.
+     * @return All created clients.
      */
-    int GetCreatedClients(CPVRClientMap& clients) const;
+    CPVRClientMap GetCreatedClients() const;
 
     /*!
      * @brief Get the ID of the first created client.
@@ -188,6 +172,12 @@ namespace PVR
      * @return A list of enabled client infos.
      */
     std::vector<CVariant> GetEnabledClientInfos() const;
+
+    /*!
+     * @brief Get info required for providers. Include both enabled and disabled PVR add-ons
+     * @return A list containing the information required to create client providers.
+     */
+    std::vector<CVariant> GetClientProviderInfos() const;
 
     //@}
 
@@ -413,28 +403,32 @@ namespace PVR
 
   private:
     /*!
-     * @brief Get the client instance for a given client id.
-     * @param iClientId The id of the client to get.
-     * @param addon The client.
-     * @return True if the client was found, false otherwise.
+     * @brief Get the known instance ids for a given addon id.
+     * @param addonID The addon id.
+     * @return The list of known instance ids.
      */
-    bool GetClient(int iClientId, std::shared_ptr<CPVRClient>& addon) const;
+    std::vector<ADDON::AddonInstanceId> GetKnownInstanceIds(const std::string& addonID) const;
+
+    bool GetAddonsWithStatus(
+        const std::string& changedAddonId,
+        std::vector<std::pair<ADDON::AddonInfoPtr, bool>>& addonsWithStatus) const;
+
+    std::vector<std::pair<ADDON::AddonInstanceId, bool>> GetInstanceIdsWithStatus(
+        const ADDON::AddonInfoPtr& addon, bool addonIsEnabled) const;
+
+    /*!
+     * @brief Get the client instance for a given client id.
+     * @param clientId The id of the client to get.
+     * @return The client if found, nullptr otherwise.
+     */
+    std::shared_ptr<CPVRClient> GetClient(int clientId) const;
 
     /*!
      * @brief Check whether a client is known.
-     * @param addonId The add-on id to check.
-     * @param instance Identifier of the add-on instance.
+     * @param iClientId The id of the client to check.
      * @return True if this client is known, false otherwise.
      */
-    bool IsKnownClient(const std::string& addonId, ADDON::AddonInstanceId instance) const;
-
-    /*!
-     * @brief Check whether an given addon instance is a created pvr client.
-     * @param addonId The add-on id.
-     * @param instance Identifier of the add-on instance.
-     * @return True if the the addon represents a created client, false otherwise.
-     */
-    bool IsCreatedClient(const std::string& addonId, ADDON::AddonInstanceId instance) const;
+    bool IsKnownClient(int iClientId) const;
 
     /*!
      * @brief Get all created clients and clients not (yet) ready to use.
