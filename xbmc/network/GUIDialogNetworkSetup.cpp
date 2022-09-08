@@ -439,7 +439,7 @@ void CGUIDialogNetworkSetup::UpdateAvailableProtocols()
   m_protocols.emplace_back(Protocol{true, true, true, false, true, 0, "smb", 20171, ""});
 #endif
   // protocols from vfs addon next
-  if (CServiceBroker::IsBinaryAddonCacheUp())
+  if (CServiceBroker::IsAddonInterfaceUp())
   {
     for (const auto& addon : CServiceBroker::GetVFSAddonCache().GetAddonInstances())
     {

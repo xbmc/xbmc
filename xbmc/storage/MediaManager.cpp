@@ -201,7 +201,7 @@ void CMediaManager::GetNetworkLocations(VECSOURCES &locations, bool autolocation
     locations.push_back(share);
 #endif
 
-    if (CServiceBroker::IsBinaryAddonCacheUp())
+    if (CServiceBroker::IsAddonInterfaceUp())
     {
       for (const auto& addon : CServiceBroker::GetVFSAddonCache().GetAddonInstances())
       {
