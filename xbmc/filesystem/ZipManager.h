@@ -19,9 +19,10 @@
 #define CHDR_SIZE 46
 #define ECDREC_SIZE 22
 
+#include <cstring>
+#include <map>
 #include <string>
 #include <vector>
-#include <map>
 
 class CURL;
 
@@ -67,6 +68,14 @@ public:
 private:
   std::map<std::string,std::vector<SZipEntry> > mZipMap;
   std::map<std::string,int64_t> mZipDate;
+
+  template<typename T>
+  static T ReadUnaligned(const void* mem)
+  {
+    T var;
+    std::memcpy(&var, mem, sizeof(T));
+    return var;
+  }
 };
 
 extern CZipManager g_ZipManager;
