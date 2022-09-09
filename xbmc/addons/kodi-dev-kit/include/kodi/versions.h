@@ -37,7 +37,7 @@
 // because cmake uses this area in this form to perform its addon dependency
 // check.
 // clang-format off
-#define ADDON_GLOBAL_VERSION_MAIN                     "2.0.1"
+#define ADDON_GLOBAL_VERSION_MAIN                     "2.0.2"
 #define ADDON_GLOBAL_VERSION_MAIN_MIN                 "2.0.0"
 #define ADDON_GLOBAL_VERSION_MAIN_XML_ID              "kodi.binary.global.main"
 #define ADDON_GLOBAL_VERSION_MAIN_DEPENDS             "AddonBase.h" \
