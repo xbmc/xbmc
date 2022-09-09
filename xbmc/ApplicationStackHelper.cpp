@@ -89,7 +89,7 @@ int CApplicationStackHelper::InitializeStackStartPartAndOffset(const CFileItem& 
   {
     // first assume values passed to the stack
     int selectedFile = item.m_lStartPartNumber;
-    startoffset = item.m_lStartOffset;
+    startoffset = item.GetStartOffset();
 
     // check if we instructed the stack to resume from default
     if (startoffset == STARTOFFSET_RESUME) // selected file is not specified, pick the 'last' resume point
@@ -153,7 +153,7 @@ int CApplicationStackHelper::InitializeStackStartPartAndOffset(const CFileItem& 
       if (haveTimes)
       {
         // set end time in every part
-        GetStackPartFileItem(i).m_lEndOffset = times[i];
+        GetStackPartFileItem(i).SetEndOffset(times[i]);
       }
       else
       {
@@ -165,7 +165,7 @@ int CApplicationStackHelper::InitializeStackStartPartAndOffset(const CFileItem& 
         }
         totalTimeMs += duration;
         // set end time in every part
-        GetStackPartFileItem(i).m_lEndOffset = totalTimeMs;
+        GetStackPartFileItem(i).SetEndOffset(totalTimeMs);
         times.push_back(totalTimeMs);
       }
       // set start time in every part
@@ -176,9 +176,9 @@ int CApplicationStackHelper::InitializeStackStartPartAndOffset(const CFileItem& 
     for (int i = 0; i < m_currentStack->Size(); i++)
       SetRegisteredStackTotalTimeMs(GetStackPartFileItem(i), totalTimeMs);
 
-    uint64_t msecs = item.m_lStartOffset;
+    uint64_t msecs = item.GetStartOffset();
 
-    if (!haveTimes || item.m_lStartOffset == STARTOFFSET_RESUME)
+    if (!haveTimes || item.GetStartOffset() == STARTOFFSET_RESUME)
     {
       if (dbs.Open())
       {
@@ -186,7 +186,7 @@ int CApplicationStackHelper::InitializeStackStartPartAndOffset(const CFileItem& 
         if (!haveTimes && !times.empty())
           dbs.SetStackTimes(item.GetPath(), times);
 
-        if (item.m_lStartOffset == STARTOFFSET_RESUME)
+        if (item.GetStartOffset() == STARTOFFSET_RESUME)
         {
           // can only resume seek here, not dvdstate
           CBookmark bookmark;

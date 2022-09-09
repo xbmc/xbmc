@@ -195,7 +195,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
               CServiceBroker::GetMediaManager().GetDiskUniqueId(strDrive);
 
           if (!startFromBeginning && !item->GetVideoInfoTag()->m_strFileNameAndPath.empty())
-            item->m_lStartOffset = STARTOFFSET_RESUME;
+            item->SetStartOffset(STARTOFFSET_RESUME);
 
           CServiceBroker::GetPlaylistPlayer().ClearPlaylist(PLAYLIST_VIDEO);
           CServiceBroker::GetPlaylistPlayer().SetShuffle (PLAYLIST_VIDEO, false);
@@ -217,7 +217,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
               CServiceBroker::GetMediaManager().GetDiskUniqueId(strDrive);
 
           if (!startFromBeginning && !item->GetVideoInfoTag()->m_strFileNameAndPath.empty())
-            item->m_lStartOffset = STARTOFFSET_RESUME;
+            item->SetStartOffset(STARTOFFSET_RESUME);
 
           CServiceBroker::GetPlaylistPlayer().ClearPlaylist(PLAYLIST_VIDEO);
           CServiceBroker::GetPlaylistPlayer().SetShuffle (PLAYLIST_VIDEO, false);
@@ -310,7 +310,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
                 CServiceBroker::GetMediaManager().GetDiskUniqueId(strDrive);
 
             if (!startFromBeginning && !item.GetVideoInfoTag()->m_strFileNameAndPath.empty())
-            item.m_lStartOffset = STARTOFFSET_RESUME;
+              item.SetStartOffset(STARTOFFSET_RESUME);
 
             // get playername
             std::string hdVideoPlayer = CServiceBroker::GetPlayerCoreFactory().GetDefaultPlayer(item);

@@ -275,7 +275,7 @@ namespace XBMCAddon
       if (lowerKey == "startoffset")
       { // special case for start offset - don't actually store in a property,
         // we store it in item.m_lStartOffset instead
-        value = StringUtils::Format("{:f}", CUtil::ConvertMilliSecsToSecs(item->m_lStartOffset));
+        value = StringUtils::Format("{:f}", CUtil::ConvertMilliSecsToSecs(item->GetStartOffset()));
       }
       else if (lowerKey == "totaltime")
       {
@@ -1015,7 +1015,7 @@ namespace XBMCAddon
     void ListItem::setStartOffsetRaw(double startOffset)
     {
       // we store the offset in frames, or 1/75th of a second
-      item->m_lStartOffset = CUtil::ConvertSecsToMilliSecs(startOffset);
+      item->SetStartOffset(CUtil::ConvertSecsToMilliSecs(startOffset));
     }
 
     void ListItem::setMimeTypeRaw(const std::string& mimetype)

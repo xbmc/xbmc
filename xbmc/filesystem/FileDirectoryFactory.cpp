@@ -236,7 +236,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
 
   if (pItem->IsAudioBook())
   {
-    if (!pItem->HasMusicInfoTag() || pItem->m_lEndOffset <= 0)
+    if (!pItem->HasMusicInfoTag() || pItem->GetEndOffset() <= 0)
     {
       std::unique_ptr<CAudioBookFileDirectory> pDir(new CAudioBookFileDirectory);
       if (pDir->ContainsFiles(url))

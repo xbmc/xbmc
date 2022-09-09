@@ -650,7 +650,7 @@ bool CGUIWindowVideoBase::OnFileAction(int iItem, int action, const std::string&
 
   // Reset the current start offset. The actual resume
   // option is set in the switch, based on the action passed.
-  item->m_lStartOffset = 0;
+  item->SetStartOffset(0);
 
   switch (action)
   {
@@ -694,7 +694,7 @@ bool CGUIWindowVideoBase::OnFileAction(int iItem, int action, const std::string&
     OnPopupMenu(iItem);
     return true;
   case SELECT_ACTION_RESUME:
-    item->m_lStartOffset = STARTOFFSET_RESUME;
+    item->SetStartOffset(STARTOFFSET_RESUME);
     break;
   case SELECT_ACTION_PLAYPART:
     if (!OnPlayStackPart(iItem))
@@ -815,7 +815,7 @@ bool CGUIWindowVideoBase::ShowResumeMenu(CFileItem &item)
       if (retVal < 0)
         return false; // don't do anything
       if (retVal == 1)
-        item.m_lStartOffset = STARTOFFSET_RESUME;
+        item.SetStartOffset(STARTOFFSET_RESUME);
     }
   }
   return true;
@@ -984,7 +984,7 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
     if (CFileItem(CStackDirectory::GetFirstStackedFile(path),false).IsDiscImage())
     {
       std::string resumeString = CGUIWindowVideoBase::GetResumeString(*(parts[selectedFile].get()));
-      stack->m_lStartOffset = 0;
+      stack->SetStartOffset(0);
       if (!resumeString.empty())
       {
         CContextButtons choices;
@@ -992,7 +992,11 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
         choices.Add(SELECT_ACTION_PLAY, 12021);   // Play from beginning
         int value = CGUIDialogContextMenu::ShowAndGetChoice(choices);
         if (value == SELECT_ACTION_RESUME)
-          GetResumeItemOffset(parts[selectedFile].get(), stack->m_lStartOffset, stack->m_lStartPartNumber);
+        {
+          int64_t startOffset{0};
+          GetResumeItemOffset(parts[selectedFile].get(), startOffset, stack->m_lStartPartNumber);
+          stack->SetStartOffset(startOffset);
+        }
         else if (value != SELECT_ACTION_PLAY)
           return false; // if not selected PLAY, then we changed our mind so return
       }
@@ -1005,10 +1009,10 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
       {
         std::vector<uint64_t> times;
         if (m_database.GetStackTimes(path,times))
-          stack->m_lStartOffset = times[selectedFile - 1];
+          stack->SetStartOffset(times[selectedFile - 1]);
       }
       else
-        stack->m_lStartOffset = 0;
+        stack->SetStartOffset(0);
     }
 
 

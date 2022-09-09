@@ -116,7 +116,7 @@ bool CPluginDirectory::GetResolvedPluginResult(CFileItem& resultItem)
     // to avoid deadlocks (plugin:// paths can resolve to plugin:// paths)
     for (unsigned int i = 0; URIUtils::IsPlugin(lastResolvedPath) && i < maxPluginResolutions; ++i)
     {
-      bool resume = resultItem.m_lStartOffset == STARTOFFSET_RESUME;
+      bool resume = resultItem.GetStartOffset() == STARTOFFSET_RESUME;
 
       // we modify the item so that it becomes a real URL
       if (!XFILE::CPluginDirectory::GetPluginResult(lastResolvedPath, resultItem, resume) ||
@@ -157,7 +157,8 @@ bool CPluginDirectory::GetPluginResult(const std::string& strPath, CFileItem &re
       resultItem.MergeInfo(*newDir.m_fileResult);
 
     if (newDir.m_fileResult->HasVideoInfoTag() && newDir.m_fileResult->GetVideoInfoTag()->GetResumePoint().IsSet())
-      resultItem.m_lStartOffset = STARTOFFSET_RESUME; // resume point set in the resume item, so force resume
+      resultItem.SetStartOffset(
+          STARTOFFSET_RESUME); // resume point set in the resume item, so force resume
   }
 
   return success;

@@ -1201,7 +1201,7 @@ namespace PVR
       choices.Add(CONTEXT_BUTTON_PLAY_ITEM, 12021); // Play from beginning
       int choice = CGUIDialogContextMenu::ShowAndGetChoice(choices);
       if (choice > 0)
-        item->m_lStartOffset = choice == CONTEXT_BUTTON_RESUME_ITEM ? STARTOFFSET_RESUME : 0;
+        item->SetStartOffset(choice == CONTEXT_BUTTON_RESUME_ITEM ? STARTOFFSET_RESUME : 0);
       else
         bPlayIt = false; // context menu cancelled
     }
@@ -1213,12 +1213,12 @@ namespace PVR
     bool bCanResume = !GetResumeLabel(*item).empty();
     if (bCanResume)
     {
-      item->m_lStartOffset = STARTOFFSET_RESUME;
+      item->SetStartOffset(STARTOFFSET_RESUME);
     }
     else
     {
       if (bFallbackToPlay)
-        item->m_lStartOffset = 0;
+        item->SetStartOffset(0);
       else
         return false;
     }
@@ -1306,7 +1306,7 @@ namespace PVR
     if (!bCheckResume || CheckResumeRecording(item))
     {
       CFileItem* itemToPlay = new CFileItem(recording);
-      itemToPlay->m_lStartOffset = item->m_lStartOffset;
+      itemToPlay->SetStartOffset(item->GetStartOffset());
       StartPlayback(itemToPlay, true);
     }
     return true;

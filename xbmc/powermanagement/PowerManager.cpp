@@ -253,17 +253,19 @@ void CPowerManager::StorePlayerState()
     m_lastUsedPlayer = appPlayer.GetCurrentPlayer();
     m_lastPlayedFileItem.reset(new CFileItem(g_application.CurrentFileItem()));
     // set the actual offset instead of store and load it from database
-    m_lastPlayedFileItem->m_lStartOffset = appPlayer.GetTime();
+    m_lastPlayedFileItem->SetStartOffset(appPlayer.GetTime());
     // in case of regular stack, correct the start offset by adding current part start time
     if (g_application.GetAppStackHelper().IsPlayingRegularStack())
-      m_lastPlayedFileItem->m_lStartOffset += g_application.GetAppStackHelper().GetCurrentStackPartStartTimeMs();
+      m_lastPlayedFileItem->SetStartOffset(
+          m_lastPlayedFileItem->GetStartOffset() +
+          g_application.GetAppStackHelper().GetCurrentStackPartStartTimeMs());
     // in case of iso stack, keep track of part number
     m_lastPlayedFileItem->m_lStartPartNumber = g_application.GetAppStackHelper().IsPlayingISOStack() ? g_application.GetAppStackHelper().GetCurrentPartNumber() + 1 : 1;
     // for iso and iso stacks, keep track of playerstate
     m_lastPlayedFileItem->SetProperty("savedplayerstate", appPlayer.GetPlayerState());
     CLog::Log(LOGDEBUG,
               "CPowerManager::StorePlayerState - store last played item (startOffset: {} ms)",
-              m_lastPlayedFileItem->m_lStartOffset);
+              m_lastPlayedFileItem->GetStartOffset());
   }
   else
   {
@@ -279,7 +281,7 @@ void CPowerManager::RestorePlayerState()
 
   CLog::Log(LOGDEBUG,
             "CPowerManager::RestorePlayerState - resume last played item (startOffset: {} ms)",
-            m_lastPlayedFileItem->m_lStartOffset);
+            m_lastPlayedFileItem->GetStartOffset());
   g_application.PlayFile(*m_lastPlayedFileItem, m_lastUsedPlayer);
 }
 

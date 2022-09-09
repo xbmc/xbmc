@@ -524,7 +524,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
     else if (!pItem->IsNFO() && (pItem->IsAudio() || pItem->IsVideo()))
     {
       CFileItemPtr itemCheck = queuedItems.Get(pItem->GetPath());
-      if (!itemCheck || itemCheck->m_lStartOffset != pItem->m_lStartOffset)
+      if (!itemCheck || itemCheck->GetStartOffset() != pItem->GetStartOffset())
       { // add item
         CFileItemPtr item(new CFileItem(*pItem));
         m_musicdatabase.SetPropertiesForFileItem(*item);
@@ -1074,11 +1074,9 @@ bool CGUIWindowMusicBase::OnSelect(int iItem)
     if (m_musicdatabase.GetResumeBookmarkForAudioBook(*item, bookmark) && bookmark > 0)
     {
       // find which chapter the bookmark belongs to
-      auto itemIt = std::find_if(
-        m_vecItems->cbegin(),
-        m_vecItems->cend(),
-        [&](const CFileItemPtr& item) { return bookmark < item->m_lEndOffset; }
-      );
+      auto itemIt =
+          std::find_if(m_vecItems->cbegin(), m_vecItems->cend(),
+                       [&](const CFileItemPtr& item) { return bookmark < item->GetEndOffset(); });
 
       if (itemIt != m_vecItems->cend())
       {
