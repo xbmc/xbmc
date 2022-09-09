@@ -6,8 +6,8 @@
  *  See LICENSES/README.md for more information.
  */
 
-#ifndef C_API_ADDONINSTANCE_IMAGE_DECODER_H
-#define C_API_ADDONINSTANCE_IMAGE_DECODER_H
+#ifndef C_API_ADDONINSTANCE_IMAGEDECODER_H
+#define C_API_ADDONINSTANCE_IMAGEDECODER_H
 
 #include "../addon_base.h"
 
@@ -447,4 +447,4 @@ extern "C"
 } /* extern "C" */
 #endif /* __cplusplus */
 
-#endif /* !C_API_ADDONINSTANCE_IMAGE_DECODER_H */
+#endif /* !C_API_ADDONINSTANCE_IMAGEDECODER_H */
