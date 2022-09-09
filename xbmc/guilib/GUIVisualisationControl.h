@@ -28,6 +28,7 @@ public:
   const float* Get() const;
   int Size() const;
   void Set(const float* psBuffer, int iSize);
+
 private:
   CAudioBuffer(const CAudioBuffer&) = delete;
   CAudioBuffer& operator=(const CAudioBuffer&) = delete;
@@ -39,9 +40,13 @@ private:
 class CGUIVisualisationControl : public CGUIControl, public IAudioCallback
 {
 public:
-  CGUIVisualisationControl(int parentID, int controlID, float posX, float posY, float width, float height);
-  CGUIVisualisationControl(const CGUIVisualisationControl &from);
-  CGUIVisualisationControl *Clone() const override { return new CGUIVisualisationControl(*this); }; //! @todo check for naughties
+  CGUIVisualisationControl(
+      int parentID, int controlID, float posX, float posY, float width, float height);
+  CGUIVisualisationControl(const CGUIVisualisationControl& from);
+  CGUIVisualisationControl* Clone() const override
+  {
+    return new CGUIVisualisationControl(*this);
+  }; //! @todo check for naughties
 
   // Child functions related to IAudioCallback
   void OnInitialize(int channels, int samplesPerSec, int bitsPerSample) override;
@@ -49,13 +54,13 @@ public:
 
   // Child functions related to CGUIControl
   void FreeResources(bool immediately = false) override;
-  void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions) override;
+  void Process(unsigned int currentTime, CDirtyRegionList& dirtyregions) override;
   void Render() override;
-  void UpdateVisibility(const CGUIListItem *item = nullptr) override;
-  bool OnAction(const CAction &action) override;
-  bool OnMessage(CGUIMessage &message) override;
+  void UpdateVisibility(const CGUIListItem* item = nullptr) override;
+  bool OnAction(const CAction& action) override;
+  bool OnMessage(CGUIMessage& message) override;
   bool CanFocus() const override { return false; }
-  bool CanFocusFromPoint(const CPoint &point) const override;
+  bool CanFocusFromPoint(const CPoint& point) const override;
 
   std::string Name();
   void UpdateTrack();

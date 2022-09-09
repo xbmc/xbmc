@@ -18,7 +18,6 @@ namespace kodi
 namespace addon
 {
 
-
 //==============================================================================
 /// @defgroup cpp_kodi_addon_visualization_Defs_VisualizationTrack class VisualizationTrack
 /// @ingroup cpp_kodi_addon_visualization_Defs
@@ -45,10 +44,7 @@ class VisualizationTrack
 public:
   /*! \cond PRIVATE */
   VisualizationTrack() = default;
-  VisualizationTrack(const VisualizationTrack& tag)
-  {
-    *this = tag;
-  }
+  VisualizationTrack(const VisualizationTrack& tag) { *this = tag; }
 
   VisualizationTrack& operator=(const VisualizationTrack& right)
   {
