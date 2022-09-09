@@ -28,16 +28,20 @@ void CGUIWindowScreensaver::Process(unsigned int currentTime, CDirtyRegionList &
 {
   MarkDirtyRegion();
   CGUIWindow::Process(currentTime, regions);
-  m_renderRegion.SetRect(0, 0, (float)CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth(), (float)CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight());
+  const auto& context = CServiceBroker::GetWinSystem()->GetGfxContext();
+  m_renderRegion.SetRect(0, 0, static_cast<float>(context.GetWidth()),
+                         static_cast<float>(context.GetHeight()));
 }
 
 void CGUIWindowScreensaver::Render()
 {
   if (m_addon)
   {
-    CServiceBroker::GetWinSystem()->GetGfxContext().CaptureStateBlock();
+    auto& context = CServiceBroker::GetWinSystem()->GetGfxContext();
+
+    context.CaptureStateBlock();
     m_addon->Render();
-    CServiceBroker::GetWinSystem()->GetGfxContext().ApplyStateBlock();
+    context.ApplyStateBlock();
     return;
   }
 
