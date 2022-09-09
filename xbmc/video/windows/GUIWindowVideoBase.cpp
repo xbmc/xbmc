@@ -580,7 +580,7 @@ void CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item, int64_t& st
   startoffset = 0;
   partNumber = 0;
 
-  if (!item->IsNFO() && !item->IsPlayList())
+  if (item->IsResumable())
   {
     if (item->GetCurrentResumeTimeAndPartNumber(startoffset, partNumber))
     {
