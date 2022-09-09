@@ -105,9 +105,6 @@ typedef intptr_t ssize_t;
 #include <sys/types.h>
 #endif // TARGET_POSIX
 
-// Hardware specific device context interface
-#define ADDON_HARDWARE_CONTEXT void*
-
 /*
  * To have a on add-on and kodi itself handled string always on known size!
  */
@@ -123,6 +120,9 @@ extern "C"
   typedef void* KODI_ADDON_BACKEND_HDL;
   typedef void* KODI_ADDON_INSTANCE_HDL;
   typedef void* KODI_ADDON_INSTANCE_BACKEND_HDL;
+
+  // Hardware specific device context interface
+  typedef void* ADDON_HARDWARE_CONTEXT;
 
   typedef void* KODI_ADDON_FUNC_DUMMY;
 
