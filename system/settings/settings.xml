@@ -1548,6 +1548,10 @@
   <section id="pvr" label="14204" help="36201">
     <category id="pvrmanager" label="128" help="36202">
       <group id="1" label="19279">
+        <setting id="pvrmanager.addons" type="action" label="19345" help="19346">
+          <level>1</level>
+          <control type="button" format="action" />
+        </setting>
         <setting id="pvrclient.menuhook" type="action" label="19280" help="36252">
           <level>1</level>
           <control type="button" format="action" />

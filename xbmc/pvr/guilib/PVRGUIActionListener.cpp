@@ -38,19 +38,14 @@ namespace PVR
 CPVRGUIActionListener::CPVRGUIActionListener()
 {
   g_application.RegisterActionListener(this);
-  CServiceBroker::GetSettingsComponent()->GetSettings()->RegisterCallback(this, {
-    CSettings::SETTING_PVRPARENTAL_ENABLED,
-    CSettings::SETTING_PVRMANAGER_RESETDB,
-    CSettings::SETTING_EPG_RESETEPG,
-    CSettings::SETTING_PVRMANAGER_CLIENTPRIORITIES,
-    CSettings::SETTING_PVRMANAGER_CHANNELMANAGER,
-    CSettings::SETTING_PVRMANAGER_GROUPMANAGER,
-    CSettings::SETTING_PVRMANAGER_CHANNELSCAN,
-    CSettings::SETTING_PVRMENU_SEARCHICONS,
-    CSettings::SETTING_PVRCLIENT_MENUHOOK,
-    CSettings::SETTING_EPG_PAST_DAYSTODISPLAY,
-    CSettings::SETTING_EPG_FUTURE_DAYSTODISPLAY
-  });
+  CServiceBroker::GetSettingsComponent()->GetSettings()->RegisterCallback(
+      this,
+      {CSettings::SETTING_PVRPARENTAL_ENABLED, CSettings::SETTING_PVRMANAGER_RESETDB,
+       CSettings::SETTING_EPG_RESETEPG, CSettings::SETTING_PVRMANAGER_ADDONS,
+       CSettings::SETTING_PVRMANAGER_CLIENTPRIORITIES, CSettings::SETTING_PVRMANAGER_CHANNELMANAGER,
+       CSettings::SETTING_PVRMANAGER_GROUPMANAGER, CSettings::SETTING_PVRMANAGER_CHANNELSCAN,
+       CSettings::SETTING_PVRMENU_SEARCHICONS, CSettings::SETTING_PVRCLIENT_MENUHOOK,
+       CSettings::SETTING_EPG_PAST_DAYSTODISPLAY, CSettings::SETTING_EPG_FUTURE_DAYSTODISPLAY});
 }
 
 CPVRGUIActionListener::~CPVRGUIActionListener()
@@ -366,6 +361,12 @@ void CPVRGUIActionListener::OnSettingAction(const std::shared_ptr<const CSetting
   else if (settingId == CSettings::SETTING_PVRCLIENT_MENUHOOK)
   {
     CServiceBroker::GetPVRManager().GUIActions()->ProcessSettingsMenuHooks();
+  }
+  else if (settingId == CSettings::SETTING_PVRMANAGER_ADDONS)
+  {
+    const std::vector<std::string> params{"addons://default_binary_addons_source/kodi.pvrclient",
+                                          "return"};
+    CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_ADDON_BROWSER, params);
   }
 }
 

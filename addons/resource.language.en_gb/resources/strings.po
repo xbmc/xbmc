@@ -11433,7 +11433,19 @@ msgctxt "#19344"
 msgid "Do you want to set a reminder for the selected programme or to switch to the current programme?"
 msgstr ""
 
-#empty strings from id 19345 to 19498
+#. settings label to open add-ons manager window with available PVR client add-ons
+#: system/settings/settings.xml
+msgctxt "#19345"
+msgid "PVR client add-ons"
+msgstr ""
+
+#. help text for setting to open add-ons manager window with available PVR client add-ons
+#: system/settings/settings.xml
+msgctxt "#19346"
+msgid "Display and manage available PVR client add-ons."
+msgstr ""
+
+#empty strings from id 19347 to 19498
 
 #. label for epg genre value
 #: xbmc/pvr/epg/Epg.cpp
