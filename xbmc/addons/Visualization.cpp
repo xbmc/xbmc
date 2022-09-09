@@ -67,7 +67,10 @@ CVisualization::~CVisualization()
   delete m_ifc.visualization;
 }
 
-bool CVisualization::Start(int channels, int samplesPerSec, int bitsPerSample, const std::string& songName)
+bool CVisualization::Start(int channels,
+                           int samplesPerSec,
+                           int bitsPerSample,
+                           const std::string& songName)
 {
   if (m_ifc.visualization->toAddon->start)
     return m_ifc.visualization->toAddon->start(m_ifc.visualization, channels, samplesPerSec,
@@ -81,7 +84,10 @@ void CVisualization::Stop()
     m_ifc.visualization->toAddon->stop(m_ifc.visualization);
 }
 
-void CVisualization::AudioData(const float* audioData, int audioDataLength, float *freqData, int freqDataLength)
+void CVisualization::AudioData(const float* audioData,
+                               int audioDataLength,
+                               float* freqData,
+                               int freqDataLength)
 {
   if (m_ifc.visualization->toAddon->audio_data)
     m_ifc.visualization->toAddon->audio_data(m_ifc.visualization, audioData, audioDataLength,
@@ -101,7 +107,7 @@ void CVisualization::Render()
     m_ifc.visualization->toAddon->render(m_ifc.visualization);
 }
 
-void CVisualization::GetInfo(VIS_INFO *info)
+void CVisualization::GetInfo(VIS_INFO* info)
 {
   if (m_ifc.visualization->toAddon->get_info)
     m_ifc.visualization->toAddon->get_info(m_ifc.visualization, info);
@@ -168,7 +174,7 @@ bool CVisualization::HasPresets()
   return !m_presets.empty();
 }
 
-bool CVisualization::GetPresetList(std::vector<std::string> &vecpresets)
+bool CVisualization::GetPresetList(std::vector<std::string>& vecpresets)
 {
   vecpresets = m_presets;
   return !m_presets.empty();
@@ -197,10 +203,10 @@ bool CVisualization::IsLocked()
 
 void CVisualization::transfer_preset(void* kodiInstance, const char* preset)
 {
-  CVisualization *addon = static_cast<CVisualization*>(kodiInstance);
+  CVisualization* addon = static_cast<CVisualization*>(kodiInstance);
   if (!addon || !preset)
   {
-    CLog::Log(LOGERROR, "CVisualization::{} - invalid handler data", __FUNCTION__);
+    CLog::Log(LOGERROR, "CVisualization::{} - invalid handler data", __func__);
     return;
   }
 
@@ -212,11 +218,11 @@ void CVisualization::clear_presets(void* kodiInstance)
   CVisualization* addon = static_cast<CVisualization*>(kodiInstance);
   if (!addon)
   {
-    CLog::Log(LOGERROR, "CVisualization::{} - invalid handler data", __FUNCTION__);
+    CLog::Log(LOGERROR, "CVisualization::{} - invalid handler data", __func__);
     return;
   }
 
   addon->m_presets.clear();
 }
 
-} /* namespace ADDON */
+} // namespace ADDON

@@ -22,10 +22,10 @@ public:
 
   bool Start(int channels, int samplesPerSec, int bitsPerSample, const std::string& songName);
   void Stop();
-  void AudioData(const float* audioData, int audioDataLength, float *freqData, int freqDataLength);
+  void AudioData(const float* audioData, int audioDataLength, float* freqData, int freqDataLength);
   bool IsDirty();
   void Render();
-  void GetInfo(VIS_INFO *info);
+  void GetInfo(VIS_INFO* info);
   bool NextPreset();
   bool PrevPreset();
   bool LoadPreset(int select);
@@ -51,4 +51,4 @@ private:
   static void clear_presets(void* kodiInstance);
 };
 
-} /* namespace ADDON */
+} // namespace ADDON

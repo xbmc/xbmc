@@ -26,16 +26,16 @@ extern "C"
 
   struct VIS_TRACK
   {
-    const char *title;
-    const char *artist;
-    const char *album;
-    const char *albumArtist;
-    const char *genre;
-    const char *comment;
-    const char *lyrics;
+    const char* title;
+    const char* artist;
+    const char* album;
+    const char* albumArtist;
+    const char* genre;
+    const char* comment;
+    const char* lyrics;
 
-    const char *reserved1;
-    const char *reserved2;
+    const char* reserved1;
+    const char* reserved2;
 
     int trackNumber;
     int discNumber;
