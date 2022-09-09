@@ -18,6 +18,8 @@ extern "C"
 {
 #endif /* __cplusplus */
 
+  typedef KODI_ADDON_INSTANCE_HDL KODI_ADDON_VISUALIZATION_HDL;
+
   struct VIS_INFO
   {
     bool bWantsFreq;
@@ -59,47 +61,43 @@ extern "C"
 
   typedef struct AddonToKodiFuncTable_Visualization
   {
-    KODI_HANDLE kodiInstance;
-    void(__cdecl* transfer_preset)(KODI_HANDLE kodiInstance, const char* preset);
-    void(__cdecl* clear_presets)(KODI_HANDLE kodiInstance);
+    void(__cdecl* transfer_preset)(const KODI_HANDLE hdl, const char* preset);
+    void(__cdecl* clear_presets)(const KODI_HANDLE hdl);
   } AddonToKodiFuncTable_Visualization;
 
   struct AddonInstance_Visualization;
 
   typedef struct KodiToAddonFuncTable_Visualization
   {
-    KODI_HANDLE addonInstance;
-    bool(__cdecl* start)(const struct AddonInstance_Visualization* instance,
+    bool(__cdecl* start)(const KODI_ADDON_VISUALIZATION_HDL hdl,
                          int channels,
                          int samples_per_sec,
                          int bits_per_sample,
                          const char* song_name);
-    void(__cdecl* stop)(const struct AddonInstance_Visualization* instance);
+    void(__cdecl* stop)(const KODI_ADDON_VISUALIZATION_HDL hdl);
 
-    void(__cdecl* get_info)(const struct AddonInstance_Visualization* instance,
-                            struct VIS_INFO* info);
+    void(__cdecl* get_info)(const KODI_ADDON_VISUALIZATION_HDL hdl, struct VIS_INFO* info);
 
-    void(__cdecl* audio_data)(const struct AddonInstance_Visualization* instance,
+    void(__cdecl* audio_data)(const KODI_ADDON_VISUALIZATION_HDL hdl,
                               const float* audio_data,
                               int audio_data_length,
                               float* freq_data,
                               int freq_data_length);
-    bool(__cdecl* is_dirty)(const struct AddonInstance_Visualization* instance);
-    void(__cdecl* render)(const struct AddonInstance_Visualization* instance);
+    bool(__cdecl* is_dirty)(const KODI_ADDON_VISUALIZATION_HDL hdl);
+    void(__cdecl* render)(const KODI_ADDON_VISUALIZATION_HDL hdl);
 
-    unsigned int(__cdecl* get_presets)(const struct AddonInstance_Visualization* instance);
-    int(__cdecl* get_active_preset)(const struct AddonInstance_Visualization* instance);
-    bool(__cdecl* prev_preset)(const struct AddonInstance_Visualization* instance);
-    bool(__cdecl* next_preset)(const struct AddonInstance_Visualization* instance);
-    bool(__cdecl* load_preset)(const struct AddonInstance_Visualization* instance, int select);
-    bool(__cdecl* random_preset)(const struct AddonInstance_Visualization* instance);
-    bool(__cdecl* lock_preset)(const struct AddonInstance_Visualization* instance);
-    bool(__cdecl* rate_preset)(const struct AddonInstance_Visualization* instance, bool plus_minus);
-    bool(__cdecl* is_locked)(const struct AddonInstance_Visualization* instance);
+    unsigned int(__cdecl* get_presets)(const KODI_ADDON_VISUALIZATION_HDL hdl);
+    int(__cdecl* get_active_preset)(const KODI_ADDON_VISUALIZATION_HDL hdl);
+    bool(__cdecl* prev_preset)(const KODI_ADDON_VISUALIZATION_HDL hdl);
+    bool(__cdecl* next_preset)(const KODI_ADDON_VISUALIZATION_HDL hdl);
+    bool(__cdecl* load_preset)(const KODI_ADDON_VISUALIZATION_HDL hdl, int select);
+    bool(__cdecl* random_preset)(const KODI_ADDON_VISUALIZATION_HDL hdl);
+    bool(__cdecl* lock_preset)(const KODI_ADDON_VISUALIZATION_HDL hdl);
+    bool(__cdecl* rate_preset)(const KODI_ADDON_VISUALIZATION_HDL hdl, bool plus_minus);
+    bool(__cdecl* is_locked)(const KODI_ADDON_VISUALIZATION_HDL hdl);
 
-    bool(__cdecl* update_albumart)(const struct AddonInstance_Visualization* instance,
-                                   const char* albumart);
-    bool(__cdecl* update_track)(const struct AddonInstance_Visualization* instance,
+    bool(__cdecl* update_albumart)(const KODI_ADDON_VISUALIZATION_HDL hdl, const char* albumart);
+    bool(__cdecl* update_track)(const KODI_ADDON_VISUALIZATION_HDL hdl,
                                 const struct VIS_TRACK* track);
   } KodiToAddonFuncTable_Visualization;
 
