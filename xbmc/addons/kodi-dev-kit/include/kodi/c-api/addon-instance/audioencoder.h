@@ -16,7 +16,7 @@ extern "C"
 {
 #endif /* __cplusplus */
 
-  typedef void* KODI_ADDON_AUDIOENCODER_HDL;
+  typedef KODI_ADDON_INSTANCE_HDL KODI_ADDON_AUDIOENCODER_HDL;
 
   struct KODI_ADDON_AUDIOENCODER_INFO_TAG
   {
