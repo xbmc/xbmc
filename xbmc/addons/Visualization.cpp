@@ -15,6 +15,23 @@
 namespace ADDON
 {
 
+namespace
+{
+
+void transfer_preset(const KODI_HANDLE hdl, const char* preset)
+{
+  if (hdl && preset)
+    static_cast<CVisualization*>(hdl)->TransferPreset(preset);
+}
+
+void clear_presets(const KODI_HANDLE hdl)
+{
+  if (hdl)
+    static_cast<CVisualization*>(hdl)->ClearPresets();
+}
+
+} // namespace
+
 CVisualization::CVisualization(const AddonInfoPtr& addonInfo, float x, float y, float w, float h)
   : IAddonInstanceHandler(ADDON_INSTANCE_VISUALIZATION, addonInfo)
 {
@@ -190,28 +207,14 @@ bool CVisualization::IsLocked()
   return false;
 }
 
-void CVisualization::transfer_preset(void* kodiInstance, const char* preset)
+void CVisualization::TransferPreset(const std::string& preset)
 {
-  CVisualization* addon = static_cast<CVisualization*>(kodiInstance);
-  if (!addon || !preset)
-  {
-    CLog::Log(LOGERROR, "CVisualization::{} - invalid handler data", __func__);
-    return;
-  }
-
-  addon->m_presets.emplace_back(preset);
+  m_presets.emplace_back(preset);
 }
 
-void CVisualization::clear_presets(void* kodiInstance)
+void CVisualization::ClearPresets()
 {
-  CVisualization* addon = static_cast<CVisualization*>(kodiInstance);
-  if (!addon)
-  {
-    CLog::Log(LOGERROR, "CVisualization::{} - invalid handler data", __func__);
-    return;
-  }
-
-  addon->m_presets.clear();
+  m_presets.clear();
 }
 
 } // namespace ADDON

@@ -40,12 +40,12 @@ public:
   std::string GetActivePresetName();
   bool IsLocked();
 
+  // Addon callback functions
+  void TransferPreset(const std::string& preset);
+  void ClearPresets();
+
 private:
   std::vector<std::string> m_presets; /*!< cached preset list */
-
-  // Static function to transfer data from add-on to kodi
-  static void transfer_preset(void* kodiInstance, const char* preset);
-  static void clear_presets(void* kodiInstance);
 };
 
 } // namespace ADDON
