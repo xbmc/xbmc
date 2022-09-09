@@ -31,7 +31,6 @@ CVisualization::CVisualization(const AddonInfoPtr& addonInfo, float x, float y, 
       CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo().fPixelRatio;
 
   m_ifc.visualization->toKodi = new AddonToKodiFuncTable_Visualization();
-  m_ifc.visualization->toKodi->kodiInstance = this;
   m_ifc.visualization->toKodi->transfer_preset = transfer_preset;
   m_ifc.visualization->toKodi->clear_presets = clear_presets;
 
@@ -46,7 +45,7 @@ CVisualization::CVisualization(const AddonInfoPtr& addonInfo, float x, float y, 
 
   /* presets becomes send with "transfer_preset" during call of function below */
   if (m_ifc.visualization->toAddon->get_presets)
-    m_ifc.visualization->toAddon->get_presets(m_ifc.visualization);
+    m_ifc.visualization->toAddon->get_presets(m_ifc.hdl);
 }
 
 CVisualization::~CVisualization()
@@ -66,15 +65,15 @@ bool CVisualization::Start(int channels,
                            const std::string& songName)
 {
   if (m_ifc.visualization->toAddon->start)
-    return m_ifc.visualization->toAddon->start(m_ifc.visualization, channels, samplesPerSec,
-                                               bitsPerSample, songName.c_str());
+    return m_ifc.visualization->toAddon->start(m_ifc.hdl, channels, samplesPerSec, bitsPerSample,
+                                               songName.c_str());
   return false;
 }
 
 void CVisualization::Stop()
 {
   if (m_ifc.visualization->toAddon->stop)
-    m_ifc.visualization->toAddon->stop(m_ifc.visualization);
+    m_ifc.visualization->toAddon->stop(m_ifc.hdl);
 }
 
 void CVisualization::AudioData(const float* audioData,
@@ -83,82 +82,82 @@ void CVisualization::AudioData(const float* audioData,
                                int freqDataLength)
 {
   if (m_ifc.visualization->toAddon->audio_data)
-    m_ifc.visualization->toAddon->audio_data(m_ifc.visualization, audioData, audioDataLength,
-                                             freqData, freqDataLength);
+    m_ifc.visualization->toAddon->audio_data(m_ifc.hdl, audioData, audioDataLength, freqData,
+                                             freqDataLength);
 }
 
 bool CVisualization::IsDirty()
 {
   if (m_ifc.visualization->toAddon->is_dirty)
-    return m_ifc.visualization->toAddon->is_dirty(m_ifc.visualization);
+    return m_ifc.visualization->toAddon->is_dirty(m_ifc.hdl);
   return false;
 }
 
 void CVisualization::Render()
 {
   if (m_ifc.visualization->toAddon->render)
-    m_ifc.visualization->toAddon->render(m_ifc.visualization);
+    m_ifc.visualization->toAddon->render(m_ifc.hdl);
 }
 
 void CVisualization::GetInfo(VIS_INFO* info)
 {
   if (m_ifc.visualization->toAddon->get_info)
-    m_ifc.visualization->toAddon->get_info(m_ifc.visualization, info);
+    m_ifc.visualization->toAddon->get_info(m_ifc.hdl, info);
 }
 
 bool CVisualization::NextPreset()
 {
   if (m_ifc.visualization->toAddon->next_preset)
-    return m_ifc.visualization->toAddon->next_preset(m_ifc.visualization);
+    return m_ifc.visualization->toAddon->next_preset(m_ifc.hdl);
   return false;
 }
 
 bool CVisualization::PrevPreset()
 {
   if (m_ifc.visualization->toAddon->prev_preset)
-    return m_ifc.visualization->toAddon->prev_preset(m_ifc.visualization);
+    return m_ifc.visualization->toAddon->prev_preset(m_ifc.hdl);
   return false;
 }
 
 bool CVisualization::LoadPreset(int select)
 {
   if (m_ifc.visualization->toAddon->load_preset)
-    return m_ifc.visualization->toAddon->load_preset(m_ifc.visualization, select);
+    return m_ifc.visualization->toAddon->load_preset(m_ifc.hdl, select);
   return false;
 }
 
 bool CVisualization::RandomPreset()
 {
   if (m_ifc.visualization->toAddon->random_preset)
-    return m_ifc.visualization->toAddon->random_preset(m_ifc.visualization);
+    return m_ifc.visualization->toAddon->random_preset(m_ifc.hdl);
   return false;
 }
 
 bool CVisualization::LockPreset()
 {
   if (m_ifc.visualization->toAddon->lock_preset)
-    return m_ifc.visualization->toAddon->lock_preset(m_ifc.visualization);
+    return m_ifc.visualization->toAddon->lock_preset(m_ifc.hdl);
   return false;
 }
 
 bool CVisualization::RatePreset(bool plus_minus)
 {
   if (m_ifc.visualization->toAddon->rate_preset)
-    return m_ifc.visualization->toAddon->rate_preset(m_ifc.visualization, plus_minus);
+    return m_ifc.visualization->toAddon->rate_preset(m_ifc.hdl, plus_minus);
   return false;
 }
 
 bool CVisualization::UpdateAlbumart(const char* albumart)
 {
   if (m_ifc.visualization->toAddon->update_albumart)
-    return m_ifc.visualization->toAddon->update_albumart(m_ifc.visualization, albumart);
+    return m_ifc.visualization->toAddon->update_albumart(m_ifc.hdl, albumart);
   return false;
 }
 
 bool CVisualization::UpdateTrack(const VIS_TRACK* track)
 {
   if (m_ifc.visualization->toAddon->update_track)
-    return m_ifc.visualization->toAddon->update_track(m_ifc.visualization, track);
+    return m_ifc.visualization->toAddon->update_track(m_ifc.hdl, track);
   return false;
 }
 
@@ -176,7 +175,7 @@ bool CVisualization::GetPresetList(std::vector<std::string>& vecpresets)
 int CVisualization::GetActivePreset()
 {
   if (m_ifc.visualization->toAddon->get_active_preset)
-    return m_ifc.visualization->toAddon->get_active_preset(m_ifc.visualization);
+    return m_ifc.visualization->toAddon->get_active_preset(m_ifc.hdl);
   return -1;
 }
 
@@ -190,7 +189,7 @@ std::string CVisualization::GetActivePresetName()
 bool CVisualization::IsLocked()
 {
   if (m_ifc.visualization->toAddon->is_locked)
-    return m_ifc.visualization->toAddon->is_locked(m_ifc.visualization);
+    return m_ifc.visualization->toAddon->is_locked(m_ifc.hdl);
   return false;
 }
 
