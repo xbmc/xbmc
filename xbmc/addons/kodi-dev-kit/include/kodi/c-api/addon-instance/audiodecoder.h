@@ -45,7 +45,7 @@ extern "C"
 {
 #endif /* __cplusplus */
 
-  typedef void* KODI_ADDON_AUDIODECODER_HDL;
+  typedef KODI_ADDON_INSTANCE_HDL KODI_ADDON_AUDIODECODER_HDL;
 
   //============================================================================
   /// @defgroup cpp_kodi_addon_audiodecoder_Defs_AUDIODECODER_READ_RETURN enum AUDIODECODER_READ_RETURN
