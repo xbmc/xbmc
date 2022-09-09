@@ -276,7 +276,7 @@ private:
 /// public:
 ///   CMyVisualization();
 ///
-///   bool Start(int channels, int samplesPerSec, int bitsPerSample, std::string songName) override;
+///   bool Start(int channels, int samplesPerSec, int bitsPerSample, const std::string& songName) override;
 ///   void AudioData(const float* audioData, size_t audioDataLength) override;
 ///   void Render() override;
 /// };
@@ -286,7 +286,7 @@ private:
 ///   ...
 /// }
 ///
-/// bool CMyVisualization::Start(int channels, int samplesPerSec, int bitsPerSample, std::string songName)
+/// bool CMyVisualization::Start(int channels, int samplesPerSec, int bitsPerSample, const std::string& songName)
 /// {
 ///   ...
 ///   return true;
@@ -320,7 +320,7 @@ private:
 /// public:
 ///   CMyVisualization(const kodi::addon::IInstanceInfo& instance);
 ///
-///   bool Start(int channels, int samplesPerSec, int bitsPerSample, std::string songName) override;
+///   bool Start(int channels, int samplesPerSec, int bitsPerSample, const std::string& songName) override;
 ///   void AudioData(const float* audioData, size_t audioDataLength) override;
 ///   void Render() override;
 /// };
@@ -331,7 +331,7 @@ private:
 ///   ...
 /// }
 ///
-/// bool CMyVisualization::Start(int channels, int samplesPerSec, int bitsPerSample, std::string songName)
+/// bool CMyVisualization::Start(int channels, int samplesPerSec, int bitsPerSample, const std::string& songName)
 /// {
 ///   ...
 ///   return true;
@@ -469,7 +469,10 @@ public:
   /// @param[in] songName The name of the currently-playing song
   /// @return true if start successful done
   ///
-  virtual bool Start(int channels, int samplesPerSec, int bitsPerSample, std::string songName)
+  virtual bool Start(int channels,
+                     int samplesPerSec,
+                     int bitsPerSample,
+                     const std::string& songName)
   {
     return true;
   }
@@ -619,7 +622,7 @@ public:
   /// @param[in] albumart Path to the current album art image
   /// @return Return true if the image is used
   ///
-  virtual bool UpdateAlbumart(std::string albumart) { return false; }
+  virtual bool UpdateAlbumart(const std::string& albumart) { return false; }
   //----------------------------------------------------------------------------
 
   //============================================================================
