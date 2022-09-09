@@ -10515,7 +10515,7 @@ msgctxt "#19191"
 msgid "PVR service"
 msgstr ""
 
-#. error message box text stating that none of the available pvr clients does support channel scanning
+#. info message box text stating that none of the available pvr clients does support channel scanning
 #: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19192"
 msgid "None of the connected PVR backends supports scanning for channels."
@@ -11445,7 +11445,13 @@ msgctxt "#19346"
 msgid "Display and manage available PVR client add-ons."
 msgstr ""
 
-#empty strings from id 19347 to 19498
+#. info message box text stating that none of the available pvr clients does provide client-specific settings
+#: xbmc/pvr/PVRGUIActions.cpp
+msgctxt "#19347"
+msgid "None of the active PVR clients provide client-specific settings."
+msgstr ""
+
+#empty strings from id 19348 to 19498
 
 #. label for epg genre value
 #: xbmc/pvr/epg/Epg.cpp
