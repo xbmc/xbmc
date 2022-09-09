@@ -1015,8 +1015,8 @@ CFileItemPtr BuildObject(PLT_MediaObject* entry,
         UPNP::PopulateTagFromObject(*pItem->GetMusicInfoTag(), *entry, res, upnp_service);
 
     } else if(image) {
-        //CPictureInfoTag* tag = pItem->GetPictureInfoTag();
-
+      //! @todo fill pictureinfotag?
+      GetResource(entry, *pItem);
     }
   }
 
@@ -1137,6 +1137,12 @@ bool GetResource(const PLT_MediaObject* entry, CFileItem& item)
 
     if (resource.m_ProtocolInfo.GetContentType().Compare("application/octet-stream") != 0) {
       item.SetMimeType((const char*)resource.m_ProtocolInfo.GetContentType());
+    }
+
+    // if this is an image fill the thumb of the item
+    if (StringUtils::StartsWithNoCase(resource.m_ProtocolInfo.GetContentType(), "image"))
+    {
+      item.SetArt("thumb", std::string(resource.m_Uri));
     }
   } else {
     logger->error("invalid protocol info '{}'", (const char*)(resource.m_ProtocolInfo.ToString()));
