@@ -295,7 +295,7 @@ bool CResume::Execute(const CFileItemPtr& itemIn) const
     return MEDIA_DETECT::CAutorun::PlayDisc(item.GetPath(), true, false);
 #endif
 
-  item.m_lStartOffset = STARTOFFSET_RESUME;
+  item.SetStartOffset(STARTOFFSET_RESUME);
   SetPathAndPlay(item);
   return true;
 };

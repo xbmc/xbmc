@@ -298,10 +298,9 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn)
     // if this is the case we don't need to open a new stream
     std::string newURL = file.GetDynURL().GetFileName();
     std::string oldURL = m_currentStream->m_fileItem.GetDynURL().GetFileName();
-    if (newURL.compare(oldURL) == 0 &&
-        file.m_lStartOffset &&
-        file.m_lStartOffset == m_currentStream->m_fileItem.m_lEndOffset &&
-        m_currentStream && m_currentStream->m_prepareTriggered)
+    if (newURL.compare(oldURL) == 0 && file.GetStartOffset() &&
+        file.GetStartOffset() == m_currentStream->m_fileItem.GetEndOffset() && m_currentStream &&
+        m_currentStream->m_prepareTriggered)
     {
       m_currentStream->m_nextFileItem.reset(new CFileItem(file));
       m_upcomingCrossfadeMS = 0;
@@ -316,15 +315,15 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn)
   // Start stream at zero offset
   si->m_startOffset = 0;
   //File item start offset defines where in song to resume
-  double starttime = CUtil::ConvertMilliSecsToSecs(si->m_fileItem.m_lStartOffset);
+  double starttime = CUtil::ConvertMilliSecsToSecs(si->m_fileItem.GetStartOffset());
 
   // Music from cuesheet => "item_start" and offset match
   // Start offset defines where this song starts in file of multiple songs
   if (si->m_fileItem.HasProperty("item_start") &&
-      (si->m_fileItem.GetProperty("item_start").asInteger() == si->m_fileItem.m_lStartOffset))
+      (si->m_fileItem.GetProperty("item_start").asInteger() == si->m_fileItem.GetStartOffset()))
   {
     // Start stream at offset from cuesheet
-    si->m_startOffset = si->m_fileItem.m_lStartOffset;
+    si->m_startOffset = si->m_fileItem.GetStartOffset();
     starttime = 0; // No resume point
   }
 
@@ -369,7 +368,7 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn)
   /* init the streaminfo struct */
   si->m_audioFormat = si->m_decoder.GetFormat();
   // si->m_startOffset already initialized
-  si->m_endOffset = file.m_lEndOffset;
+  si->m_endOffset = file.GetEndOffset();
   si->m_bytesPerSample = CAEUtil::DataFormatToBits(si->m_audioFormat.m_dataFormat) >> 3;
   si->m_bytesPerFrame = si->m_bytesPerSample * si->m_audioFormat.m_channelLayout.Count();
   si->m_started = false;
@@ -798,9 +797,9 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &freeBufferTime)
       CloseFileCB(*si);
 
       // update current stream with info of next track
-      si->m_startOffset = si->m_nextFileItem->m_lStartOffset;
-      if (si->m_nextFileItem->m_lEndOffset)
-        si->m_endOffset = si->m_nextFileItem->m_lEndOffset;
+      si->m_startOffset = si->m_nextFileItem->GetStartOffset();
+      if (si->m_nextFileItem->GetEndOffset())
+        si->m_endOffset = si->m_nextFileItem->GetEndOffset();
       else
         si->m_endOffset = 0;
       si->m_framesSent = 0;
