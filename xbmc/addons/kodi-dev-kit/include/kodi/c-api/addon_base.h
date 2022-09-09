@@ -75,7 +75,11 @@
 #if __GNUC__ >= 4
 #define ATTR_DLL_IMPORT __attribute__((visibility("default")))
 #define ATTR_DLL_EXPORT __attribute__((visibility("default")))
+#ifndef SWIG
 #define ATTR_DLL_LOCAL __attribute__((visibility("hidden")))
+#else
+#define ATTR_DLL_LOCAL
+#endif
 #else
 #define ATTR_DLL_IMPORT
 #define ATTR_DLL_EXPORT
