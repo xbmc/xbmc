@@ -339,10 +339,11 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   // libdav1d av1 sw decoding is implemented as a separate decoder
   // in ffmpeg which is always found first when calling `avcodec_find_decoder`.
-  // To get hwaccels we look for decoders registered for `av1`.
+  // To get hwaccels we look for decoders registered for `av1` (unless sw decoding is enforced).
   // The decoder state check is needed to succesfully fallback to sw decoding if
-  // necessary.
-  if (hints.codec == AV_CODEC_ID_AV1 && m_decoderState != STATE_HW_FAILED)
+  // necessary (on retry).
+  if (hints.codec == AV_CODEC_ID_AV1 && m_decoderState != STATE_HW_FAILED &&
+      !(hints.codecOptions & CODEC_FORCE_SOFTWARE))
     pCodec = avcodec_find_decoder_by_name("av1");
 
   if (!pCodec)
