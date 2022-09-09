@@ -1709,7 +1709,13 @@ namespace PVR
     }
 
     if (settingsHooks.empty())
+    {
+      HELPERS::ShowOKDialogText(
+          CVariant{19033}, // "Information"
+          CVariant{
+              19347}); // "None of the active PVR clients does provide client-specific settings."
       return true; // no settings hooks, no error
+    }
 
     auto selectedHook = settingsHooks.begin();
 
