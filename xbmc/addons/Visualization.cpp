@@ -76,14 +76,10 @@ void CVisualization::Stop()
     m_ifc.visualization->toAddon->stop(m_ifc.hdl);
 }
 
-void CVisualization::AudioData(const float* audioData,
-                               int audioDataLength,
-                               float* freqData,
-                               int freqDataLength)
+void CVisualization::AudioData(const float* audioData, int audioDataLength)
 {
   if (m_ifc.visualization->toAddon->audio_data)
-    m_ifc.visualization->toAddon->audio_data(m_ifc.hdl, audioData, audioDataLength, freqData,
-                                             freqDataLength);
+    m_ifc.visualization->toAddon->audio_data(m_ifc.hdl, audioData, audioDataLength);
 }
 
 bool CVisualization::IsDirty()
@@ -99,10 +95,11 @@ void CVisualization::Render()
     m_ifc.visualization->toAddon->render(m_ifc.hdl);
 }
 
-void CVisualization::GetInfo(VIS_INFO* info)
+int CVisualization::GetSyncDelay()
 {
-  if (m_ifc.visualization->toAddon->get_info)
-    m_ifc.visualization->toAddon->get_info(m_ifc.hdl, info);
+  if (m_ifc.visualization->toAddon->get_sync_delay)
+    m_ifc.visualization->toAddon->get_sync_delay(m_ifc.hdl);
+  return 0;
 }
 
 bool CVisualization::NextPreset()

@@ -20,12 +20,6 @@ extern "C"
 
   typedef KODI_ADDON_INSTANCE_HDL KODI_ADDON_VISUALIZATION_HDL;
 
-  struct VIS_INFO
-  {
-    bool bWantsFreq;
-    int iSyncDelay;
-  };
-
   struct VIS_TRACK
   {
     const char* title;
@@ -76,13 +70,11 @@ extern "C"
                          const char* song_name);
     void(__cdecl* stop)(const KODI_ADDON_VISUALIZATION_HDL hdl);
 
-    void(__cdecl* get_info)(const KODI_ADDON_VISUALIZATION_HDL hdl, struct VIS_INFO* info);
+    int(__cdecl* get_sync_delay)(const KODI_ADDON_VISUALIZATION_HDL hdl);
 
     void(__cdecl* audio_data)(const KODI_ADDON_VISUALIZATION_HDL hdl,
                               const float* audio_data,
-                              int audio_data_length,
-                              float* freq_data,
-                              int freq_data_length);
+                              size_t audio_data_length);
     bool(__cdecl* is_dirty)(const KODI_ADDON_VISUALIZATION_HDL hdl);
     void(__cdecl* render)(const KODI_ADDON_VISUALIZATION_HDL hdl);
 

@@ -277,7 +277,7 @@ private:
 ///   CMyVisualization();
 ///
 ///   bool Start(int channels, int samplesPerSec, int bitsPerSample, std::string songName) override;
-///   void AudioData(const float* audioData, int audioDataLength, float* freqData, int freqDataLength) override;
+///   void AudioData(const float* audioData, size_t audioDataLength) override;
 ///   void Render() override;
 /// };
 ///
@@ -292,7 +292,7 @@ private:
 ///   return true;
 /// }
 ///
-/// void CMyVisualization::AudioData(const float* audioData, int audioDataLength, float* freqData, int freqDataLength)
+/// void CMyVisualization::AudioData(const float* audioData, size_t audioDataLength)
 /// {
 ///   ...
 /// }
@@ -321,7 +321,7 @@ private:
 ///   CMyVisualization(const kodi::addon::IInstanceInfo& instance);
 ///
 ///   bool Start(int channels, int samplesPerSec, int bitsPerSample, std::string songName) override;
-///   void AudioData(const float* audioData, int audioDataLength, float* freqData, int freqDataLength) override;
+///   void AudioData(const float* audioData, size_t audioDataLength) override;
 ///   void Render() override;
 /// };
 ///
@@ -337,7 +337,7 @@ private:
 ///   return true;
 /// }
 ///
-/// void CMyVisualization::AudioData(const float* audioData, int audioDataLength, float* freqData, int freqDataLength)
+/// void CMyVisualization::AudioData(const float* audioData, size_t audioDataLength)
 /// {
 ///   ...
 /// }
@@ -489,20 +489,8 @@ public:
   ///
   /// @param[in] audioData The raw audio data
   /// @param[in] audioDataLength Length of the audioData array
-  /// @param[in] freqData The [FFT](https://en.wikipedia.org/wiki/Fast_Fourier_transform)
-  ///                     of the audio data
-  /// @param[in] freqDataLength Length of frequency data array
   ///
-  /// Values **freqData** and **freqDataLength** are used if GetInfo() returns
-  /// true for the `wantsFreq` parameter. Otherwise, **freqData** is set to
-  /// `nullptr` and **freqDataLength** is `0`.
-  ///
-  virtual void AudioData(const float* audioData,
-                         int audioDataLength,
-                         float* freqData,
-                         int freqDataLength)
-  {
-  }
+  virtual void AudioData(const float* audioData, size_t audioDataLength) {}
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -526,20 +514,11 @@ public:
   /// @ingroup cpp_kodi_addon_visualization
   /// @brief Used to get the number of buffers from the current visualization.
   ///
-  /// @param[out] wantsFreq Indicates whether the add-on wants FFT data. If set
-  ///                       to true, the **freqData** and **freqDataLength**
-  ///                       parameters of @ref AudioData() are used
-  /// @param[out] syncDelay The number of buffers to delay before calling
-  ///                       @ref AudioData()
+  /// @return The number of buffers to delay before calling @ref AudioData()
   ///
-  /// @note If this function is not implemented, it will default to
-  /// `wantsFreq` = false and `syncDelay` = 0.
+  /// @note If this function is not implemented, it will default to 0.
   ///
-  virtual void GetInfo(bool& wantsFreq, int& syncDelay)
-  {
-    wantsFreq = false;
-    syncDelay = 0;
-  }
+  virtual int GetSyncDelay() { return 0; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -793,7 +772,7 @@ private:
     m_instanceData->visualization->toAddon->audio_data = ADDON_audio_data;
     m_instanceData->visualization->toAddon->is_dirty = ADDON_is_dirty;
     m_instanceData->visualization->toAddon->render = ADDON_render;
-    m_instanceData->visualization->toAddon->get_info = ADDON_get_info;
+    m_instanceData->visualization->toAddon->get_sync_delay = ADDON_get_sync_delay;
     m_instanceData->visualization->toAddon->prev_preset = ADDON_prev_preset;
     m_instanceData->visualization->toAddon->next_preset = ADDON_next_preset;
     m_instanceData->visualization->toAddon->load_preset = ADDON_load_preset;
@@ -827,12 +806,9 @@ private:
 
   inline static void ADDON_audio_data(const KODI_ADDON_VISUALIZATION_HDL hdl,
                                       const float* audioData,
-                                      int audioDataLength,
-                                      float* freqData,
-                                      int freqDataLength)
+                                      size_t audioDataLength)
   {
-    static_cast<CInstanceVisualization*>(hdl)->AudioData(audioData, audioDataLength, freqData,
-                                                         freqDataLength);
+    static_cast<CInstanceVisualization*>(hdl)->AudioData(audioData, audioDataLength);
   }
 
   inline static bool ADDON_is_dirty(const KODI_ADDON_VISUALIZATION_HDL hdl)
@@ -850,9 +826,9 @@ private:
     thisClass->m_renderHelper->End();
   }
 
-  inline static void ADDON_get_info(const KODI_ADDON_VISUALIZATION_HDL hdl, VIS_INFO* info)
+  inline static int ADDON_get_sync_delay(const KODI_ADDON_VISUALIZATION_HDL hdl)
   {
-    static_cast<CInstanceVisualization*>(hdl)->GetInfo(info->bWantsFreq, info->iSyncDelay);
+    return static_cast<CInstanceVisualization*>(hdl)->GetSyncDelay();
   }
 
   inline static unsigned int ADDON_get_presets(const KODI_ADDON_VISUALIZATION_HDL hdl)
