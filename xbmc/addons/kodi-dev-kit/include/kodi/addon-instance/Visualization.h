@@ -166,7 +166,7 @@ public:
   ///@}
 
 private:
-  VisualizationTrack(const VIS_TRACK* tag)
+  VisualizationTrack(const KODI_ADDON_VISUALIZATION_TRACK* tag)
   {
     if (!tag)
       return;
@@ -900,7 +900,7 @@ private:
   }
 
   inline static bool ADDON_update_track(const KODI_ADDON_VISUALIZATION_HDL hdl,
-                                        const VIS_TRACK* track)
+                                        const KODI_ADDON_VISUALIZATION_TRACK* track)
   {
     VisualizationTrack cppTrack(track);
     return static_cast<CInstanceVisualization*>(hdl)->UpdateTrack(cppTrack);

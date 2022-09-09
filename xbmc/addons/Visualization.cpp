@@ -167,7 +167,7 @@ bool CVisualization::UpdateAlbumart(const char* albumart)
   return false;
 }
 
-bool CVisualization::UpdateTrack(const VIS_TRACK* track)
+bool CVisualization::UpdateTrack(const KODI_ADDON_VISUALIZATION_TRACK* track)
 {
   if (m_ifc.visualization->toAddon->update_track)
     return m_ifc.visualization->toAddon->update_track(m_ifc.hdl, track);

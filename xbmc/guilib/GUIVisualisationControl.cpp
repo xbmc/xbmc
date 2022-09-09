@@ -284,7 +284,7 @@ void CGUIVisualisationControl::UpdateTrack()
       tag->GetGenre(),
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator));
 
-  VIS_TRACK track = {};
+  KODI_ADDON_VISUALIZATION_TRACK track = {};
   track.title = tag->GetTitle().c_str();
   track.artist = artist.c_str();
   track.album = tag->GetAlbum().c_str();
