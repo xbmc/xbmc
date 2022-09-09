@@ -13,8 +13,9 @@
 #define NOMINMAX
 #endif
 
-#include "stdbool.h"
-#include "stdint.h"
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 
 #ifndef TARGET_WINDOWS
 #ifndef __cdecl
