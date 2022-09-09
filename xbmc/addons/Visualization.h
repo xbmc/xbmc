@@ -41,9 +41,6 @@ public:
   bool IsLocked();
 
 private:
-  std::string m_name; /*!< To add-on sended name */
-  std::string m_presetsPath; /*!< To add-on sended preset path */
-  std::string m_profilePath; /*!< To add-on sended profile path */
   std::vector<std::string> m_presets; /*!< cached preset list */
 
   // Static function to transfer data from add-on to kodi

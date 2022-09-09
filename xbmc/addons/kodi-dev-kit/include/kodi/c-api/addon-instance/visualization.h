@@ -55,9 +55,6 @@ extern "C"
     int width;
     int height;
     float pixelRatio;
-    const char* name;
-    const char* presets;
-    const char* profile;
   } AddonProps_Visualization;
 
   typedef struct AddonToKodiFuncTable_Visualization
