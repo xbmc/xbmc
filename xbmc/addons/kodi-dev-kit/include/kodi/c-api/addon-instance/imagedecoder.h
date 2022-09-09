@@ -371,21 +371,21 @@ extern "C"
     int width;
     int height;
     float distance;
-    ADDON_IMG_ORIENTATION orientation;
-    ADDON_IMG_COLOR color;
-    ADDON_IMG_METERING_MODE metering_mode;
+    enum ADDON_IMG_ORIENTATION orientation;
+    enum ADDON_IMG_COLOR color;
+    enum ADDON_IMG_METERING_MODE metering_mode;
     float exposure_time;
     float exposure_bias;
-    ADDON_IMG_EXPOSURE_PROGRAM exposure_program;
-    ADDON_IMG_EXPOSURE_MODE exposure_mode;
+    enum ADDON_IMG_EXPOSURE_PROGRAM exposure_program;
+    enum ADDON_IMG_EXPOSURE_MODE exposure_mode;
     time_t time_created;
     float aperture_f_number;
-    ADDON_IMG_FLASH_TYPE flash_used;
+    enum ADDON_IMG_FLASH_TYPE flash_used;
     int focal_length;
     int focal_length_in_35mm_format;
     float digital_zoom_ratio;
     float iso_speed;
-    ADDON_IMG_LIGHT_SOURCE light_source;
+    enum ADDON_IMG_LIGHT_SOURCE light_source;
 
     bool gps_info_present;
     char latitude_ref;
