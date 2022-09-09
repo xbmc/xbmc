@@ -43,7 +43,7 @@ extern "C"
     int reserved4;
   };
 
-  typedef struct AddonProps_Visualization
+  struct KODI_ADDON_VISUALIZATION_PROPS
   {
     ADDON_HARDWARE_CONTEXT device;
     int x;
@@ -51,10 +51,12 @@ extern "C"
     int width;
     int height;
     float pixelRatio;
-  } AddonProps_Visualization;
+  };
 
   typedef struct AddonToKodiFuncTable_Visualization
   {
+    void(__cdecl* get_properties)(const KODI_HANDLE hdl,
+                                  struct KODI_ADDON_VISUALIZATION_PROPS* props);
     void(__cdecl* transfer_preset)(const KODI_HANDLE hdl, const char* preset);
     void(__cdecl* clear_presets)(const KODI_HANDLE hdl);
   } AddonToKodiFuncTable_Visualization;
@@ -95,7 +97,6 @@ extern "C"
 
   typedef struct AddonInstance_Visualization
   {
-    struct AddonProps_Visualization* props;
     struct AddonToKodiFuncTable_Visualization* toKodi;
     struct KodiToAddonFuncTable_Visualization* toAddon;
   } AddonInstance_Visualization;

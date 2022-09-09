@@ -711,7 +711,7 @@ public:
   /// ..
   /// ~~~~~~~~~~~~~
   ///
-  inline kodi::HardwareContext Device() { return m_instanceData->visualization->props->device; }
+  inline kodi::HardwareContext Device() { return m_props.device; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -720,7 +720,7 @@ public:
   ///
   /// @return The X position, in pixels
   ///
-  inline int X() { return m_instanceData->visualization->props->x; }
+  inline int X() { return m_props.x; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -729,7 +729,7 @@ public:
   ///
   /// @return The Y position, in pixels
   ///
-  inline int Y() { return m_instanceData->visualization->props->y; }
+  inline int Y() { return m_props.y; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -738,7 +738,7 @@ public:
   ///
   /// @return The width, in pixels
   ///
-  inline int Width() { return m_instanceData->visualization->props->width; }
+  inline int Width() { return m_props.width; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -747,7 +747,7 @@ public:
   ///
   /// @return The height, in pixels
   ///
-  inline int Height() { return m_instanceData->visualization->props->height; }
+  inline int Height() { return m_props.height; }
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -757,7 +757,7 @@ public:
   ///
   /// @return The pixel aspect ratio used by the display
   ///
-  inline float PixelRatio() { return m_instanceData->visualization->props->pixelRatio; }
+  inline float PixelRatio() { return m_props.pixelRatio; }
   //----------------------------------------------------------------------------
 
   ///@}
@@ -784,6 +784,8 @@ private:
     m_instanceData->visualization->toAddon->get_presets = ADDON_get_presets;
     m_instanceData->visualization->toAddon->get_active_preset = ADDON_get_active_preset;
     m_instanceData->visualization->toAddon->is_locked = ADDON_is_locked;
+
+    m_instanceData->visualization->toKodi->get_properties(instance->info->kodi, &m_props);
   }
 
   inline static bool ADDON_start(const KODI_ADDON_VISUALIZATION_HDL hdl,
@@ -904,6 +906,7 @@ private:
   std::shared_ptr<kodi::gui::IRenderHelper> m_renderHelper;
   bool m_presetLockedByUser = false;
   KODI_ADDON_INSTANCE_STRUCT* m_instanceData{nullptr};
+  KODI_ADDON_VISUALIZATION_PROPS m_props = {};
 };
 
 } /* namespace addon */

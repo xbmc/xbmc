@@ -41,10 +41,15 @@ public:
   bool IsLocked();
 
   // Addon callback functions
+  void GetProperties(struct KODI_ADDON_VISUALIZATION_PROPS* props);
   void TransferPreset(const std::string& preset);
   void ClearPresets();
 
 private:
+  const int m_x;
+  const int m_y;
+  const int m_width;
+  const int m_height;
   std::vector<std::string> m_presets; /*!< cached preset list */
 };
 

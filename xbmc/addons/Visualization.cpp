@@ -18,6 +18,12 @@ namespace ADDON
 namespace
 {
 
+void get_properties(const KODI_HANDLE hdl, struct KODI_ADDON_VISUALIZATION_PROPS* props)
+{
+  if (hdl)
+    static_cast<CVisualization*>(hdl)->GetProperties(props);
+}
+
 void transfer_preset(const KODI_HANDLE hdl, const char* preset)
 {
   if (hdl && preset)
@@ -33,25 +39,19 @@ void clear_presets(const KODI_HANDLE hdl)
 } // namespace
 
 CVisualization::CVisualization(const AddonInfoPtr& addonInfo, float x, float y, float w, float h)
-  : IAddonInstanceHandler(ADDON_INSTANCE_VISUALIZATION, addonInfo)
+  : IAddonInstanceHandler(ADDON_INSTANCE_VISUALIZATION, addonInfo),
+    m_x(static_cast<int>(x)),
+    m_y(static_cast<int>(y)),
+    m_width(static_cast<int>(w)),
+    m_height(static_cast<int>(h))
 {
   // Setup new Visualization instance
   m_ifc.visualization = new AddonInstance_Visualization;
-
-  m_ifc.visualization->props = new AddonProps_Visualization();
-  m_ifc.visualization->props->x = static_cast<int>(x);
-  m_ifc.visualization->props->y = static_cast<int>(y);
-  m_ifc.visualization->props->width = static_cast<int>(w);
-  m_ifc.visualization->props->height = static_cast<int>(h);
-  m_ifc.visualization->props->device = CServiceBroker::GetWinSystem()->GetHWContext();
-  m_ifc.visualization->props->pixelRatio =
-      CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo().fPixelRatio;
-
+  m_ifc.visualization->toAddon = new KodiToAddonFuncTable_Visualization();
   m_ifc.visualization->toKodi = new AddonToKodiFuncTable_Visualization();
+  m_ifc.visualization->toKodi->get_properties = get_properties;
   m_ifc.visualization->toKodi->transfer_preset = transfer_preset;
   m_ifc.visualization->toKodi->clear_presets = clear_presets;
-
-  m_ifc.visualization->toAddon = new KodiToAddonFuncTable_Visualization();
 
   /* Open the class "kodi::addon::CInstanceVisualization" on add-on side */
   if (CreateInstance() != ADDON_STATUS_OK)
@@ -72,7 +72,6 @@ CVisualization::~CVisualization()
 
   delete m_ifc.visualization->toAddon;
   delete m_ifc.visualization->toKodi;
-  delete m_ifc.visualization->props;
   delete m_ifc.visualization;
 }
 
@@ -215,6 +214,23 @@ void CVisualization::TransferPreset(const std::string& preset)
 void CVisualization::ClearPresets()
 {
   m_presets.clear();
+}
+
+void CVisualization::GetProperties(struct KODI_ADDON_VISUALIZATION_PROPS* props)
+{
+  if (!props)
+    return;
+
+  const auto winSystem = CServiceBroker::GetWinSystem();
+  if (!winSystem)
+    return;
+
+  props->x = m_x;
+  props->y = m_y;
+  props->width = m_width;
+  props->height = m_height;
+  props->device = winSystem->GetHWContext();
+  props->pixelRatio = winSystem->GetGfxContext().GetResInfo().fPixelRatio;
 }
 
 } // namespace ADDON
