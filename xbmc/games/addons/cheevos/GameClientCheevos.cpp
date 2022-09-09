@@ -8,6 +8,7 @@
 
 #include "GameClientCheevos.h"
 
+#include "FileItem.h"
 #include "ServiceBroker.h"
 #include "TextureCache.h"
 #include "XBDateTime.h"
@@ -20,10 +21,12 @@
 #include "games/dialogs/DialogGameDefines.h"
 #include "games/dialogs/osd/DialogGameIndicators.h"
 #include "games/dialogs/osd/LeaderboardUtils.h"
+#include "games/tags/GameInfoTag.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
+#include "messaging/ApplicationMessenger.h"
 #include "resources/LocalizeStrings.h"
 #include "resources/ResourcesComponent.h"
 #include "utils/StringUtils.h"
@@ -32,6 +35,7 @@
 #include <algorithm>
 #include <array>
 #include <ctime>
+#include <memory>
 #include <mutex>
 #include <utility>
 #include <vector>
@@ -302,6 +306,14 @@ void CGameClientCheevos::OnConnectionChanged(bool connected)
 void CGameClientCheevos::OnRichPresenceUpdated(const std::string& evaluation)
 {
   CServiceBroker::GetGameServices().AchievementRuntime().SetRichPresence(evaluation);
+
+  if (evaluation.empty())
+    return;
+
+  auto file = std::make_unique<CFileItem>();
+  file->GetGameInfoTag()->SetCaption(evaluation);
+
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_UPDATE_PLAYER_ITEM, -1, -1, file.release());
 }
 
 void CGameClientCheevos::OnLoginResult(const game_rc_login_result& data)
