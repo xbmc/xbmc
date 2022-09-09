@@ -782,37 +782,6 @@ public:
   inline float PixelRatio() { return m_instanceData->visualization->props->pixelRatio; }
   //----------------------------------------------------------------------------
 
-  //============================================================================
-  /// @ingroup cpp_kodi_addon_visualization_CB
-  /// @brief Used to get the name of the add-on defined in `addon.xml`.
-  ///
-  /// @return The add-on name
-  ///
-  inline std::string Name() { return m_instanceData->visualization->props->name; }
-  //----------------------------------------------------------------------------
-
-  //============================================================================
-  /// @ingroup cpp_kodi_addon_visualization_CB
-  /// @brief Used to get the full path where the add-on is installed.
-  ///
-  /// @return The add-on installation path
-  ///
-  inline std::string Presets() { return m_instanceData->visualization->props->presets; }
-  //----------------------------------------------------------------------------
-
-  //============================================================================
-  /// @ingroup cpp_kodi_addon_visualization_CB
-  /// @brief Used to get the full path to the add-on's user profile.
-  ///
-  /// @note The trailing folder (consisting of the add-on's ID) is not created
-  /// by default. If it is needed, you must call kodi::vfs::CreateDirectory()
-  /// to create the folder.
-  ///
-  /// @return Path to the user profile
-  ///
-  inline std::string Profile() { return m_instanceData->visualization->props->profile; }
-  //----------------------------------------------------------------------------
-
   ///@}
 
 private:

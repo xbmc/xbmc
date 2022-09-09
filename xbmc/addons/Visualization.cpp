@@ -19,10 +19,6 @@ CVisualization::CVisualization(const AddonInfoPtr& addonInfo, float x, float y, 
   : IAddonInstanceHandler(ADDON_INSTANCE_VISUALIZATION, addonInfo)
 {
   // Setup new Visualization instance
-  m_name = Name();
-  m_presetsPath = CSpecialProtocol::TranslatePath(Path());
-  m_profilePath = CSpecialProtocol::TranslatePath(Profile());
-
   m_ifc.visualization = new AddonInstance_Visualization;
 
   m_ifc.visualization->props = new AddonProps_Visualization();
@@ -33,9 +29,6 @@ CVisualization::CVisualization(const AddonInfoPtr& addonInfo, float x, float y, 
   m_ifc.visualization->props->device = CServiceBroker::GetWinSystem()->GetHWContext();
   m_ifc.visualization->props->pixelRatio =
       CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo().fPixelRatio;
-  m_ifc.visualization->props->name = m_name.c_str();
-  m_ifc.visualization->props->presets = m_presetsPath.c_str();
-  m_ifc.visualization->props->profile = m_profilePath.c_str();
 
   m_ifc.visualization->toKodi = new AddonToKodiFuncTable_Visualization();
   m_ifc.visualization->toKodi->kodiInstance = this;
