@@ -260,24 +260,8 @@ void CGUIVisualisationControl::OnAudioData(const float* audioData, unsigned int 
   std::unique_ptr<CAudioBuffer> ptrAudioBuffer = std::move(m_vecBuffers.front());
   m_vecBuffers.pop_front();
 
-  // Fourier transform the data if the vis wants it...
-  if (m_wantsFreq)
-  {
-    const float* psAudioData = ptrAudioBuffer->Get();
-
-    if (!m_transform)
-      m_transform.reset(new RFFT(AUDIO_BUFFER_SIZE / 2, false)); // half due to stereo
-
-    m_transform->calc(psAudioData, m_freq);
-
-    // Transfer data to our visualisation
-    m_instance->AudioData(psAudioData, ptrAudioBuffer->Size(), m_freq,
-                          AUDIO_BUFFER_SIZE / 2); // half due to complex-conjugate
-  }
-  else
-  { // Transfer data to our visualisation
-    m_instance->AudioData(ptrAudioBuffer->Get(), ptrAudioBuffer->Size(), nullptr, 0);
-  }
+  // Transfer data to our visualisation
+  m_instance->AudioData(ptrAudioBuffer->Get(), ptrAudioBuffer->Size());
 }
 
 void CGUIVisualisationControl::UpdateTrack()
@@ -446,14 +430,9 @@ void CGUIVisualisationControl::CreateBuffers()
 {
   ClearBuffers();
 
-  // Get the number of buffers from the current vis
-  VIS_INFO info{false, 0};
-
+  m_numBuffers = 1;
   if (m_instance)
-    m_instance->GetInfo(&info);
-
-  m_numBuffers = info.iSyncDelay + 1;
-  m_wantsFreq = info.bWantsFreq;
+    m_numBuffers += m_instance->GetSyncDelay();
   if (m_numBuffers > MAX_AUDIO_BUFFERS)
     m_numBuffers = MAX_AUDIO_BUFFERS;
   if (m_numBuffers < 1)
@@ -462,15 +441,6 @@ void CGUIVisualisationControl::CreateBuffers()
 
 void CGUIVisualisationControl::ClearBuffers()
 {
-  m_wantsFreq = false;
   m_numBuffers = 0;
   m_vecBuffers.clear();
-
-  for (float& freq : m_freq)
-  {
-    freq = 0.0f;
-  }
-
-  if (m_transform)
-    m_transform.reset();
 }
