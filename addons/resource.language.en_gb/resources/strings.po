@@ -4916,6 +4916,7 @@ msgstr ""
 #: xbmc/addons/gui/GUIDialogAddonSettings.cpp
 msgctxt "#10010"
 msgid "Select add-on configuration to remove"
+msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10011"
