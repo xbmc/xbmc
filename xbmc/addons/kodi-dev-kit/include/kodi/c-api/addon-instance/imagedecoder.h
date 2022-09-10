@@ -16,7 +16,7 @@ extern "C"
 {
 #endif /* __cplusplus */
 
-  typedef void* KODI_ADDON_IMAGEDECODER_HDL;
+  typedef KODI_ADDON_INSTANCE_HDL KODI_ADDON_IMAGEDECODER_HDL;
 
   //============================================================================
   /// @defgroup cpp_kodi_addon_imagedecoder_Defs_ADDON_IMG_FMT enum ADDON_IMG_FMT

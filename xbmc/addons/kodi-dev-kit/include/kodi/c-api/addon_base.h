@@ -13,8 +13,9 @@
 #define NOMINMAX
 #endif
 
-#include "stdbool.h"
-#include "stdint.h"
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 
 #ifndef TARGET_WINDOWS
 #ifndef __cdecl
@@ -74,7 +75,11 @@
 #if __GNUC__ >= 4
 #define ATTR_DLL_IMPORT __attribute__((visibility("default")))
 #define ATTR_DLL_EXPORT __attribute__((visibility("default")))
+#ifndef SWIG
 #define ATTR_DLL_LOCAL __attribute__((visibility("hidden")))
+#else
+#define ATTR_DLL_LOCAL
+#endif
 #else
 #define ATTR_DLL_IMPORT
 #define ATTR_DLL_EXPORT
@@ -100,9 +105,6 @@ typedef intptr_t ssize_t;
 #include <sys/types.h>
 #endif // TARGET_POSIX
 
-// Hardware specific device context interface
-#define ADDON_HARDWARE_CONTEXT void*
-
 /*
  * To have a on add-on and kodi itself handled string always on known size!
  */
@@ -118,6 +120,9 @@ extern "C"
   typedef void* KODI_ADDON_BACKEND_HDL;
   typedef void* KODI_ADDON_INSTANCE_HDL;
   typedef void* KODI_ADDON_INSTANCE_BACKEND_HDL;
+
+  // Hardware specific device context interface
+  typedef void* ADDON_HARDWARE_CONTEXT;
 
   typedef void* KODI_ADDON_FUNC_DUMMY;
 
