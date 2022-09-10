@@ -416,7 +416,7 @@ void CSkinInfo::OnPreInstall()
                                                "UnloadSkin");
 }
 
-void CSkinInfo::OnPostInstall(bool update, bool modal)
+void CSkinInfo::OnPostInstall(bool update, bool modal, AddonOptPostInstValue optValue)
 {
   if (CServiceBroker::GetGUI()->GetSkinInfo() == nullptr)
   {
