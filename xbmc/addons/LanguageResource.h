@@ -15,6 +15,7 @@
 
 namespace ADDON
 {
+
 class CLanguageResource : public CResource
 {
 public:
@@ -22,7 +23,7 @@ public:
 
   bool IsInUse() const override;
 
-  void OnPostInstall(bool update, bool modal) override;
+  void OnPostInstall(bool update, bool modal, AddonOptPostInstValue optValue) override;
 
   bool IsAllowed(const std::string &file) const override;
 

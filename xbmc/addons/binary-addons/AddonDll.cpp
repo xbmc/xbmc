@@ -307,10 +307,10 @@ void CAddonDll::OnPreInstall()
     m_binaryAddonBase->OnPreInstall();
 }
 
-void CAddonDll::OnPostInstall(bool update, bool modal)
+void CAddonDll::OnPostInstall(bool update, bool modal, AddonOptPostInstValue optValue)
 {
   if (m_binaryAddonBase)
-    m_binaryAddonBase->OnPostInstall(update, modal);
+    m_binaryAddonBase->OnPostInstall(update, modal, optValue);
 }
 
 void CAddonDll::OnPreUnInstall()

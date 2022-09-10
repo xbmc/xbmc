@@ -93,10 +93,14 @@ public:
    \param addonID the addon ID of the item to install
    \param background whether to install in the background or not.
    \param modal whether to show a modal dialog when not installing in background
+   \param[in] optValue Optional parameter given to addon by OnPostInstall to set special type related works
    \return true on successful install, false on failure.
    \sa DoInstall
    */
-  bool InstallOrUpdate(const std::string& addonID, BackgroundJob background, ModalJob modal);
+  bool InstallOrUpdate(const std::string& addonID,
+                       BackgroundJob background,
+                       ModalJob modal,
+                       AddonOptPostInstValue optValue = AddonOptPostInstValue::UNUSED);
 
   /*! \brief Install a dependency from a specific repository
    \param dependsId the dependency to install
@@ -202,6 +206,7 @@ private:
    *  \param dependsInstall whether this is the installation of a dependency addon
    *  \param allowCheckForUpdates whether content update check after installation of
    *         a repository addon is allowed
+   *  \param[in] optValue Optional parameter given to addon by OnPostInstall to set special type related works
    *  \return true on successful install, false on failure.
    */
   bool DoInstall(const ADDON::AddonPtr& addon,
@@ -210,7 +215,8 @@ private:
                  ModalJob modal,
                  AutoUpdateJob autoUpdate,
                  DependencyJob dependsInstall,
-                 AllowCheckForUpdates allowCheckForUpdates);
+                 AllowCheckForUpdates allowCheckForUpdates,
+                 AddonOptPostInstValue optValue);
 
   /*! \brief Check whether dependencies of an addon exist or are installable.
    Iterates through the addon's dependencies, checking they're installed or installable.
@@ -236,7 +242,8 @@ class CAddonInstallJob : public CFileOperationJob
 public:
   CAddonInstallJob(const ADDON::AddonPtr& addon,
                    const ADDON::RepositoryPtr& repo,
-                   AutoUpdateJob isAutoUpdate);
+                   AutoUpdateJob isAutoUpdate,
+                   AddonOptPostInstValue optValue);
 
   bool DoWork() override;
 
@@ -286,6 +293,7 @@ private:
   DependencyJob m_dependsInstall = DependencyJob::CHOICE_NO;
   AllowCheckForUpdates m_allowCheckForUpdates = AllowCheckForUpdates::CHOICE_YES;
   const char* m_currentType = TYPE_DOWNLOAD;
+  AddonOptPostInstValue m_addonOptPostInstValue;
 };
 
 class CAddonUnInstallJob : public CFileOperationJob

@@ -38,7 +38,7 @@ namespace ADDON
     AddonDllPtr GetActiveAddon();
 
     void OnPreInstall();
-    void OnPostInstall(bool update, bool modal);
+    void OnPostInstall(bool update, bool modal, AddonOptPostInstValue optValue);
     void OnPreUnInstall();
     void OnPostUnInstall();
 

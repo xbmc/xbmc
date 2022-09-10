@@ -29,7 +29,7 @@ bool CUISoundsResource::IsInUse() const
   return CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN) == ID();
 }
 
-void CUISoundsResource::OnPostInstall(bool update, bool modal)
+void CUISoundsResource::OnPostInstall(bool update, bool modal, AddonOptPostInstValue optValue)
 {
   CGUIComponent* gui = CServiceBroker::GetGUI();
   if (IsInUse() && gui)

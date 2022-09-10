@@ -187,10 +187,11 @@ bool CAddonInstaller::InstallModal(const std::string& addonID,
                                                 OnlyEnabled::CHOICE_YES);
 }
 
-
-bool CAddonInstaller::InstallOrUpdate(const std::string& addonID,
-                                      BackgroundJob background,
-                                      ModalJob modal)
+bool CAddonInstaller::InstallOrUpdate(
+    const std::string& addonID,
+    BackgroundJob background,
+    ModalJob modal,
+    AddonOptPostInstValue optValue /* = AddonOptPostInstValue::UNUSED */)
 {
   AddonPtr addon;
   RepositoryPtr repo;
@@ -198,7 +199,7 @@ bool CAddonInstaller::InstallOrUpdate(const std::string& addonID,
     return false;
 
   return DoInstall(addon, repo, background, modal, AutoUpdateJob::CHOICE_NO,
-                   DependencyJob::CHOICE_NO, AllowCheckForUpdates::CHOICE_YES);
+                   DependencyJob::CHOICE_NO, AllowCheckForUpdates::CHOICE_YES, optValue);
 }
 
 bool CAddonInstaller::InstallOrUpdateDependency(const ADDON::AddonPtr& dependsId,
@@ -206,7 +207,7 @@ bool CAddonInstaller::InstallOrUpdateDependency(const ADDON::AddonPtr& dependsId
 {
   return DoInstall(dependsId, repo, BackgroundJob::CHOICE_NO, ModalJob::CHOICE_NO,
                    AutoUpdateJob::CHOICE_NO, DependencyJob::CHOICE_YES,
-                   AllowCheckForUpdates::CHOICE_YES);
+                   AllowCheckForUpdates::CHOICE_YES, AddonOptPostInstValue::UNUSED);
 }
 
 bool CAddonInstaller::RemoveDependency(const std::shared_ptr<IAddon>& dependsId) const
@@ -264,7 +265,7 @@ bool CAddonInstaller::Install(const std::string& addonId,
 
   return DoInstall(addon, std::static_pointer_cast<CRepository>(repo), BackgroundJob::CHOICE_YES,
                    ModalJob::CHOICE_NO, AutoUpdateJob::CHOICE_NO, DependencyJob::CHOICE_NO,
-                   AllowCheckForUpdates::CHOICE_YES);
+                   AllowCheckForUpdates::CHOICE_YES, AddonOptPostInstValue::UNUSED);
 }
 
 bool CAddonInstaller::DoInstall(const AddonPtr& addon,
@@ -273,14 +274,15 @@ bool CAddonInstaller::DoInstall(const AddonPtr& addon,
                                 ModalJob modal,
                                 AutoUpdateJob autoUpdate,
                                 DependencyJob dependsInstall,
-                                AllowCheckForUpdates allowCheckForUpdates)
+                                AllowCheckForUpdates allowCheckForUpdates,
+                                AddonOptPostInstValue optValue)
 {
   // check whether we already have the addon installing
   std::unique_lock<CCriticalSection> lock(m_critSection);
   if (m_downloadJobs.find(addon->ID()) != m_downloadJobs.end())
     return false;
 
-  CAddonInstallJob* installJob = new CAddonInstallJob(addon, repo, autoUpdate);
+  CAddonInstallJob* installJob = new CAddonInstallJob(addon, repo, autoUpdate, optValue);
   if (background == BackgroundJob::CHOICE_YES)
   {
     // Workaround: because CAddonInstallJob is blocking waiting for other jobs, it needs to be run
@@ -343,7 +345,7 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
   if (CServiceBroker::GetAddonMgr().LoadAddonDescription(items[0]->GetPath(), addon))
     return DoInstall(addon, RepositoryPtr(), BackgroundJob::CHOICE_YES, ModalJob::CHOICE_NO,
                      AutoUpdateJob::CHOICE_NO, DependencyJob::CHOICE_NO,
-                     AllowCheckForUpdates::CHOICE_YES);
+                     AllowCheckForUpdates::CHOICE_YES, AddonOptPostInstValue::UNUSED);
 
   if (eventLog)
     eventLog->AddWithNotification(EventPtr(
@@ -497,7 +499,8 @@ void CAddonInstaller::InstallAddons(const VECADDONS& addons,
     RepositoryPtr repo;
     if (CAddonInstallJob::GetAddon(addon->ID(), repo, toInstall))
       DoInstall(toInstall, repo, BackgroundJob::CHOICE_NO, ModalJob::CHOICE_NO,
-                AutoUpdateJob::CHOICE_YES, DependencyJob::CHOICE_NO, allowCheckForUpdates);
+                AutoUpdateJob::CHOICE_YES, DependencyJob::CHOICE_NO, allowCheckForUpdates,
+                AddonOptPostInstValue::UNUSED);
   }
   if (wait)
   {
@@ -535,8 +538,9 @@ int64_t CAddonInstaller::EnumeratePackageFolder(
 
 CAddonInstallJob::CAddonInstallJob(const AddonPtr& addon,
                                    const RepositoryPtr& repo,
-                                   AutoUpdateJob isAutoUpdate)
-  : m_addon(addon), m_repo(repo), m_isAutoUpdate(isAutoUpdate)
+                                   AutoUpdateJob isAutoUpdate,
+                                   AddonOptPostInstValue optValue)
+  : m_addon(addon), m_repo(repo), m_isAutoUpdate(isAutoUpdate), m_addonOptPostInstValue(optValue)
 {
   AddonPtr dummy;
   m_isUpdate = CServiceBroker::GetAddonMgr().GetAddon(addon->ID(), dummy, ADDON_UNKNOWN,
@@ -720,7 +724,7 @@ bool CAddonInstallJob::DoWork()
   g_localizeStrings.LoadAddonStrings(URIUtils::AddFileToFolder(m_addon->Path(), "resources/language/"),
       CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOCALE_LANGUAGE), m_addon->ID());
 
-  ADDON::OnPostInstall(m_addon, m_isUpdate, IsModal());
+  ADDON::OnPostInstall(m_addon, m_isUpdate, IsModal(), m_addonOptPostInstValue);
 
   // Write origin to database via addon manager, where this information is up-to-date.
   // Needed to set origin correctly for new installed addons.
@@ -1022,7 +1026,7 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
           if (IsModal())
           {
             CAddonInstallJob dependencyJob(dependencyToInstall, repoForDep,
-                                           AutoUpdateJob::CHOICE_NO);
+                                           AutoUpdateJob::CHOICE_NO, AddonOptPostInstValue::UNUSED);
             dependencyJob.SetDependsInstall(DependencyJob::CHOICE_YES);
 
             // pass our progress indicators to the temporary job and don't allow it to

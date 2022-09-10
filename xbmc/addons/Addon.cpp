@@ -501,9 +501,9 @@ void OnPreInstall(const AddonPtr& addon)
   addon->OnPreInstall();
 }
 
-void OnPostInstall(const AddonPtr& addon, bool update, bool modal)
+void OnPostInstall(const AddonPtr& addon, bool update, bool modal, AddonOptPostInstValue optValue)
 {
-  addon->OnPostInstall(update, modal);
+  addon->OnPostInstall(update, modal, optValue);
 }
 
 void OnPreUnInstall(const AddonPtr& addon)

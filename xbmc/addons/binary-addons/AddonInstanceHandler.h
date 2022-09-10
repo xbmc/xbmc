@@ -72,7 +72,7 @@ public:
   AddonInfoPtr GetAddonInfo() const { return m_addonInfo; }
 
   virtual void OnPreInstall() {}
-  virtual void OnPostInstall(bool update, bool modal) {}
+  virtual void OnPostInstall(bool update, bool modal, AddonOptPostInstValue optValue) {}
   virtual void OnPreUnInstall() {}
   virtual void OnPostUnInstall() {}
 

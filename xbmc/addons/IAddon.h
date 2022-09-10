@@ -20,6 +20,16 @@ namespace ADDON
 
 using AddonInstanceId = uint32_t;
 
+/*!
+ * @brief To set on @ref IAddon::OnPostInstall additional values, these can vary
+ * between individual add-on types.
+ */
+enum class AddonOptPostInstValue
+{
+  //! Default value if unused on add-on type.
+  UNUSED = -1
+};
+
 constexpr const char* ADDON_SETTING_INSTANCE_GROUP = "kodi_addon_instance";
 constexpr const char* ADDON_SETTING_INSTANCE_NAME_VALUE = "kodi_addon_instance_name";
 constexpr const char* ADDON_SETTING_INSTANCE_ENABLED_VALUE = "kodi_addon_instance_enabled";
@@ -143,7 +153,7 @@ public:
   virtual void ResetSettings(AddonInstanceId id = ADDON_SETTINGS_ID) = 0;
   virtual AddonPtr GetRunningInstance() const = 0;
   virtual void OnPreInstall() = 0;
-  virtual void OnPostInstall(bool update, bool modal) = 0;
+  virtual void OnPostInstall(bool update, bool modal, AddonOptPostInstValue optValue) = 0;
   virtual void OnPreUnInstall() = 0;
   virtual void OnPostUnInstall() = 0;
 };

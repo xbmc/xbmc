@@ -101,7 +101,7 @@ public:
   AddonPtr GetRunningInstance() const override;
 
   void OnPreInstall() override;
-  void OnPostInstall(bool update, bool modal) override;
+  void OnPostInstall(bool update, bool modal, AddonOptPostInstValue optValue) override;
   void OnPreUnInstall() override;
   void OnPostUnInstall() override;
 

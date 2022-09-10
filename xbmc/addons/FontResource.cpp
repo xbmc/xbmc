@@ -22,7 +22,7 @@ using namespace XFILE;
 namespace ADDON
 {
 
-void CFontResource::OnPostInstall(bool update, bool modal)
+void CFontResource::OnPostInstall(bool update, bool modal, AddonOptPostInstValue optValue)
 {
   std::string skin = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
   const auto& deps =

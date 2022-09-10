@@ -234,7 +234,7 @@ public:
   static std::set<CSkinSettingPtr> ParseSettings(const TiXmlElement* rootElement);
 
   void OnPreInstall() override;
-  void OnPostInstall(bool update, bool modal) override;
+  void OnPostInstall(bool update, bool modal, AddonOptPostInstValue optValue) override;
 
   // skin timer methods
 

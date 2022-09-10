@@ -92,7 +92,7 @@ bool CLanguageResource::IsInUse() const
   return StringUtils::EqualsNoCase(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOCALE_LANGUAGE), ID());
 }
 
-void CLanguageResource::OnPostInstall(bool update, bool modal)
+void CLanguageResource::OnPostInstall(bool update, bool modal, AddonOptPostInstValue optValue)
 {
   if (!g_SkinInfo)
     return;

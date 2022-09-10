@@ -83,11 +83,11 @@ void CBinaryAddonBase::OnPreInstall()
     instance->OnPreInstall();
 }
 
-void CBinaryAddonBase::OnPostInstall(bool update, bool modal)
+void CBinaryAddonBase::OnPostInstall(bool update, bool modal, AddonOptPostInstValue optValue)
 {
   const std::unordered_set<IAddonInstanceHandler*> activeAddonHandlers = m_activeAddonHandlers;
   for (const auto& instance : activeAddonHandlers)
-    instance->OnPostInstall(update, modal);
+    instance->OnPostInstall(update, modal, optValue);
 }
 
 void CBinaryAddonBase::OnPreUnInstall()
