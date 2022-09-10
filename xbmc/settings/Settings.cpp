@@ -211,6 +211,7 @@ constexpr const char* CSettings::SETTING_PVRMANAGER_CHANNELMANAGER;
 constexpr const char* CSettings::SETTING_PVRMANAGER_GROUPMANAGER;
 constexpr const char* CSettings::SETTING_PVRMANAGER_CHANNELSCAN;
 constexpr const char* CSettings::SETTING_PVRMANAGER_RESETDB;
+constexpr const char* CSettings::SETTING_PVRMANAGER_ADDONS;
 constexpr const char* CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO;
 constexpr const char* CSettings::SETTING_PVRMENU_CLOSECHANNELOSDONSWITCH;
 constexpr const char* CSettings::SETTING_PVRMENU_ICONPATH;
