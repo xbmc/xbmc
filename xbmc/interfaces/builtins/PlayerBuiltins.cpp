@@ -413,6 +413,8 @@ static int PlayDVD(const std::vector<std::string>& params)
  *           params[1,...] = "resume" to force resuming (optional).
  *           params[1,...] = "noresume" to force not resuming (optional).
  *           params[1,...] = "playoffset=<offset>" to start playback from a given position in a playlist (optional).
+ *           params[1,...] = "playlist_type_hint=<id>" to set the playlist type if a playlist file (e.g. STRM) is played (optional),
+ *                           for <id> value refer to PlayList.h PLAYLIST_MUSIC / PLAYLIST_VIDEO values, if not set will fallback to music playlist.
  */
 static int PlayMedia(const std::vector<std::string>& params)
 {
@@ -454,6 +456,12 @@ static int PlayMedia(const std::vector<std::string>& params)
     else if (StringUtils::StartsWithNoCase(params[i], "playoffset=")) {
       playOffset = atoi(params[i].substr(11).c_str()) - 1;
       item.SetProperty("playlist_starting_track", playOffset);
+    }
+    else if (StringUtils::StartsWithNoCase(params[i], "playlist_type_hint="))
+    {
+      // Set the playlist type for the playlist file (e.g. STRM)
+      int playlistTypeHint = std::stoi(params[i].substr(19));
+      item.SetProperty("playlist_type_hint", playlistTypeHint);
     }
   }
 
