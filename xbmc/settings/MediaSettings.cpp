@@ -18,6 +18,7 @@
 #include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/MusicLibraryQueue.h"
+#include "playlists/PlayList.h"
 #include "settings/Settings.h"
 #include "settings/dialogs/GUIDialogLibExportSettings.h"
 #include "settings/lib/Setting.h"

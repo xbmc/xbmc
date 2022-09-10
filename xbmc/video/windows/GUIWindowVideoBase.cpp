@@ -34,7 +34,6 @@
 #include "input/Key.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/dialogs/GUIDialogMusicInfo.h"
-#include "playlists/PlayList.h"
 #include "playlists/PlayListFactory.h"
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
