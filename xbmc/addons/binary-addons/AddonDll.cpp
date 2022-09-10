@@ -295,7 +295,7 @@ void CAddonDll::RegisterInformer(CAddonDllInformer* informer)
 
 AddonPtr CAddonDll::GetRunningInstance() const
 {
-  if (CServiceBroker::IsBinaryAddonCacheUp())
+  if (CServiceBroker::IsAddonInterfaceUp())
     return CServiceBroker::GetBinaryAddonManager().GetRunningAddon(ID());
 
   return AddonPtr();

@@ -101,7 +101,7 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
   if (pDir)
     return pDir;
 
-  if (!url.GetProtocol().empty() && CServiceBroker::IsBinaryAddonCacheUp())
+  if (!url.GetProtocol().empty() && CServiceBroker::IsAddonInterfaceUp())
   {
     for (const auto& vfsAddon : CServiceBroker::GetVFSAddonCache().GetAddonInstances())
     {

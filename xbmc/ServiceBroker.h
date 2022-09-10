@@ -153,7 +153,7 @@ public:
   static ADDON::CRepositoryUpdater& GetRepositoryUpdater();
   static CInputManager& GetInputManager();
   static CFileExtensionProvider& GetFileExtensionProvider();
-  static bool IsBinaryAddonCacheUp();
+  static bool IsAddonInterfaceUp();
   static bool IsServiceManagerUp();
   static CNetworkBase& GetNetwork();
   static CPowerManager& GetPowerManager();

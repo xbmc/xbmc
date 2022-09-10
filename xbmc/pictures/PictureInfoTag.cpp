@@ -132,7 +132,7 @@ bool CPictureInfoTag::Load(const std::string &path)
   // Get file extensions to find addon related to it.
   std::string strExtension = URIUtils::GetExtension(path);
   StringUtils::ToLower(strExtension);
-  if (!strExtension.empty() && CServiceBroker::IsBinaryAddonCacheUp())
+  if (!strExtension.empty() && CServiceBroker::IsAddonInterfaceUp())
   {
     // Load via available image decoder addons
     auto addonInfos = CServiceBroker::GetExtsMimeSupportList().GetExtensionSupportedAddonInfos(

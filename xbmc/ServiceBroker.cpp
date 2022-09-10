@@ -213,7 +213,7 @@ CNetworkBase& CServiceBroker::GetNetwork()
   return g_application.m_ServiceManager->GetNetwork();
 }
 
-bool CServiceBroker::IsBinaryAddonCacheUp()
+bool CServiceBroker::IsAddonInterfaceUp()
 {
   return g_application.m_ServiceManager && g_application.m_ServiceManager->init_level > 1;
 }

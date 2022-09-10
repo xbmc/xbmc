@@ -1486,8 +1486,7 @@ bool CUtil::SupportsWriteFileOperations(const std::string& strPath)
   if (URIUtils::IsMultiPath(strPath))
     return CMultiPathDirectory::SupportsWriteFileOperations(strPath);
 
-
-  if (CServiceBroker::IsBinaryAddonCacheUp())
+  if (CServiceBroker::IsAddonInterfaceUp())
   {
     CURL url(strPath);
     for (const auto& addon : CServiceBroker::GetVFSAddonCache().GetAddonInstances())
