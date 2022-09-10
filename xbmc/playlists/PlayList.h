@@ -14,6 +14,11 @@
 #include <string>
 #include <vector>
 
+constexpr int PLAYLIST_NONE = -1;
+constexpr int PLAYLIST_MUSIC = 0;
+constexpr int PLAYLIST_VIDEO = 1;
+constexpr int PLAYLIST_PICTURE = 2;
+
 namespace PLAYLIST
 {
 class CPlayList

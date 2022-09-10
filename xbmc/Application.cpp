@@ -37,6 +37,7 @@
 #include "network/EventServer.h"
 #include "network/Network.h"
 #include "platform/Environment.h"
+#include "playlists/PlayList.h"
 #include "playlists/PlayListFactory.h"
 #include "threads/SystemClock.h"
 #include "utils/JobManager.h"

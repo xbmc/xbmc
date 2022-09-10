@@ -27,6 +27,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "music/MusicDatabase.h"
 #include "pictures/GUIWindowSlideShow.h"
+#include "playlists/PlayList.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRPlaybackState.h"
 #include "pvr/channels/PVRChannel.h"

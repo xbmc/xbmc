@@ -29,6 +29,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "input/InputManager.h"
 #include "music/MusicLibraryQueue.h"
+#include "playlists/PlayList.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/SettingsManager.h"

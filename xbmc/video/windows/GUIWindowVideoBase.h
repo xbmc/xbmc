@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "PlayListPlayer.h"
+#include "playlists/PlayList.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoThumbLoader.h"
 #include "windows/GUIMediaWindow.h"

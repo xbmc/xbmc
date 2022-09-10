@@ -11,7 +11,6 @@
 #include "Application.h"
 #include "GUIUserMessages.h"
 #include "PartyModeManager.h"
-#include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
