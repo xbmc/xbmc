@@ -1156,7 +1156,8 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimers::GetTimerForEpgTag(const std::share
           return timersEntry;
 
         if (timersEntry->m_iClientChannelUid != PVR_CHANNEL_INVALID_UID &&
-            timersEntry->m_iClientChannelUid == epgTag->UniqueChannelID())
+            timersEntry->m_iClientChannelUid == epgTag->UniqueChannelID() &&
+            timersEntry->m_iClientId == epgTag->ClientID())
         {
           if (timersEntry->UniqueBroadcastID() != EPG_TAG_INVALID_UID &&
               timersEntry->UniqueBroadcastID() == epgTag->UniqueBroadcastID())
