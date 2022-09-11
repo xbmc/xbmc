@@ -262,7 +262,7 @@ void CAnnouncementManager::DoAnnounce(AnnouncementFlag flag,
       if (musicdatabase.Open())
       {
         CSong song;
-        if (musicdatabase.GetSongByFileName(item->GetPath(), song, item->m_lStartOffset))
+        if (musicdatabase.GetSongByFileName(item->GetPath(), song, item->GetStartOffset()))
         {
           item->GetMusicInfoTag()->SetSong(song);
           id = item->GetMusicInfoTag()->GetDatabaseId();

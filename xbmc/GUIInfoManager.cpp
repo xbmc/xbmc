@@ -11292,13 +11292,13 @@ void CGUIInfoManager::ResetCache()
 void CGUIInfoManager::SetCurrentVideoTag(const CVideoInfoTag &tag)
 {
   m_currentFile->SetFromVideoInfoTag(tag);
-  m_currentFile->m_lStartOffset = 0;
+  m_currentFile->SetStartOffset(0);
 }
 
 void CGUIInfoManager::SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag &tag)
 {
   m_currentFile->SetFromMusicInfoTag(tag);
-  m_currentFile->m_lStartOffset = 0;
+  m_currentFile->SetStartOffset(0);
 }
 
 const MUSIC_INFO::CMusicInfoTag* CGUIInfoManager::GetCurrentSongTag() const

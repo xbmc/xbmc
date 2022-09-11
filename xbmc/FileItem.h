@@ -362,6 +362,38 @@ public:
    */
   bool GetCurrentResumeTimeAndPartNumber(int64_t& startOffset, int& partNumber) const;
 
+  /*!
+   * \brief Test if this item type can be resumed.
+   * \return True if this item can be resumed, false otherwise.
+   */
+  bool IsResumable() const;
+
+  /*!
+   * \brief Get the offset where start the playback.
+   * \return The offset value as ms.
+   *         Can return also special value -1, see define STARTOFFSET_RESUME.
+   */
+  int64_t GetStartOffset() const { return m_lStartOffset; }
+
+  /*!
+   * \brief Set the offset where start the playback.
+   * \param offset Set the offset value as ms,
+                   or the special value STARTOFFSET_RESUME.
+   */
+  void SetStartOffset(const int64_t offset) { m_lStartOffset = offset; }
+
+  /*!
+   * \brief Get the end offset.
+   * \return The offset value as ms.
+   */
+  int64_t GetEndOffset() const { return m_lEndOffset; }
+
+  /*!
+   * \brief Set the end offset.
+   * \param offset Set the offset as ms.
+   */
+  void SetEndOffset(const int64_t offset) { m_lEndOffset = offset; }
+
   inline bool HasPictureInfoTag() const
   {
     return m_pictureInfoTag != NULL;
@@ -573,9 +605,7 @@ public:
   std::string m_strTitle;
   int m_iprogramCount;
   int m_idepth;
-  int64_t m_lStartOffset;
   int m_lStartPartNumber;
-  int64_t m_lEndOffset;
   LockType m_iLockMode;
   std::string m_strLockCode;
   int m_iHasLock; // 0 - no lock 1 - lock, but unlocked 2 - locked
@@ -626,6 +656,8 @@ private:
   KODI::GAME::CGameInfoTag* m_gameInfoTag;
   EventPtr m_eventLogEntry;
   bool m_bIsAlbum;
+  int64_t m_lStartOffset;
+  int64_t m_lEndOffset;
 
   CCueDocumentPtr m_cueDocument;
 };

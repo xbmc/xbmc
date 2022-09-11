@@ -102,19 +102,22 @@ bool CAudioBookFileDirectory::GetDirectory(const CURL& url,
     item->SetLabel(StringUtils::Format("{0:02}. {1} - {2}", i + 1,
                                        item->GetMusicInfoTag()->GetAlbum(),
                                        item->GetMusicInfoTag()->GetTitle()));
-    item->m_lStartOffset = CUtil::ConvertSecsToMilliSecs(m_fctx->chapters[i]->start*av_q2d(m_fctx->chapters[i]->time_base));
-    item->m_lEndOffset = m_fctx->chapters[i]->end*av_q2d(m_fctx->chapters[i]->time_base);
+    item->SetStartOffset(CUtil::ConvertSecsToMilliSecs(m_fctx->chapters[i]->start *
+                                                       av_q2d(m_fctx->chapters[i]->time_base)));
+    item->SetEndOffset(m_fctx->chapters[i]->end * av_q2d(m_fctx->chapters[i]->time_base));
     int compare = m_fctx->duration / (AV_TIME_BASE);
-    if (item->m_lEndOffset < 0 || item->m_lEndOffset > compare)
+    if (item->GetEndOffset() < 0 || item->GetEndOffset() > compare)
     {
       if (i < m_fctx->nb_chapters-1)
-        item->m_lEndOffset = m_fctx->chapters[i+1]->start*av_q2d(m_fctx->chapters[i+1]->time_base);
+        item->SetEndOffset(m_fctx->chapters[i + 1]->start *
+                           av_q2d(m_fctx->chapters[i + 1]->time_base));
       else
-        item->m_lEndOffset = compare;
+        item->SetEndOffset(compare);
     }
-    item->m_lEndOffset = CUtil::ConvertSecsToMilliSecs(item->m_lEndOffset);
-    item->GetMusicInfoTag()->SetDuration(CUtil::ConvertMilliSecsToSecsInt(item->m_lEndOffset - item->m_lStartOffset));
-    item->SetProperty("item_start", item->m_lStartOffset);
+    item->SetEndOffset(CUtil::ConvertSecsToMilliSecs(item->GetEndOffset()));
+    item->GetMusicInfoTag()->SetDuration(
+        CUtil::ConvertMilliSecsToSecsInt(item->GetEndOffset() - item->GetStartOffset()));
+    item->SetProperty("item_start", item->GetStartOffset());
     if (!thumb.empty())
       item->SetArt("thumb", thumb);
     items.Add(item);

@@ -1120,7 +1120,7 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
   }
   else if (pItem->IsPlugin() && !pItem->GetProperty("isplayable").asBoolean())
   {
-    bool resume = pItem->m_lStartOffset == STARTOFFSET_RESUME;
+    bool resume = pItem->GetStartOffset() == STARTOFFSET_RESUME;
     return XFILE::CPluginDirectory::RunScriptWithParams(pItem->GetPath(), resume);
   }
 #if defined(TARGET_ANDROID)
@@ -1376,11 +1376,12 @@ void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, std::str
       strHistoryString = pItem->GetLabel() + strPath;
     }
   }
-  else if (pItem->m_lEndOffset>pItem->m_lStartOffset && pItem->m_lStartOffset != -1)
+  else if (pItem->GetEndOffset() > pItem->GetStartOffset() &&
+           pItem->GetStartOffset() != STARTOFFSET_RESUME)
   {
     // Could be a cue item, all items of a cue share the same filename
     // so add the offsets to build the history string
-    strHistoryString = StringUtils::Format("{}{}", pItem->m_lStartOffset, pItem->m_lEndOffset);
+    strHistoryString = StringUtils::Format("{}{}", pItem->GetStartOffset(), pItem->GetEndOffset());
     strHistoryString += pItem->GetPath();
   }
   else
@@ -1492,8 +1493,8 @@ bool CGUIMediaWindow::OnPlayMedia(int iItem, const std::string &player)
   else
     bResult = g_application.PlayFile(*pItem, player);
 
-  if (pItem->m_lStartOffset == STARTOFFSET_RESUME)
-    pItem->m_lStartOffset = 0;
+  if (pItem->GetStartOffset() == STARTOFFSET_RESUME)
+    pItem->SetStartOffset(0);
 
   return bResult;
 }
@@ -1607,7 +1608,7 @@ void CGUIMediaWindow::UpdateFileList()
         CServiceBroker::GetPlaylistPlayer().Add(iPlaylist, pItem);
 
       if (pItem->GetPath() == playlistItem.GetPath() &&
-          pItem->m_lStartOffset == playlistItem.m_lStartOffset)
+          pItem->GetStartOffset() == playlistItem.GetStartOffset())
         CServiceBroker::GetPlaylistPlayer().SetCurrentSong(CServiceBroker::GetPlaylistPlayer().GetPlaylist(iPlaylist).size() - 1);
     }
   }

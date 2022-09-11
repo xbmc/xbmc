@@ -1321,7 +1321,7 @@ bool CApplication::OnAction(const CAction &action)
       std::string player = playerCoreFactory.SelectPlayerDialog(players);
       if (!player.empty())
       {
-        item.m_lStartOffset = CUtil::ConvertSecsToMilliSecs(GetTime());
+        item.SetStartOffset(CUtil::ConvertSecsToMilliSecs(GetTime()));
         PlayFile(item, player, true);
       }
     }
@@ -2258,7 +2258,7 @@ bool CApplication::PlayStack(CFileItem& item, bool bRestart)
   int startoffset = m_stackHelper.InitializeStackStartPartAndOffset(item);
 
   CFileItem selectedStackPart = m_stackHelper.GetCurrentStackPartFileItem();
-  selectedStackPart.m_lStartOffset = startoffset;
+  selectedStackPart.SetStartOffset(startoffset);
 
   if (item.HasProperty("savedplayerstate"))
   {
@@ -2318,10 +2318,10 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   if (item.HasProperty("StartPercent"))
   {
     options.startpercent = item.GetProperty("StartPercent").asDouble();
-    item.m_lStartOffset = 0;
+    item.SetStartOffset(0);
   }
 
-  options.starttime = CUtil::ConvertMilliSecsToSecs(item.m_lStartOffset);
+  options.starttime = CUtil::ConvertMilliSecsToSecs(item.GetStartOffset());
 
   if (bRestart)
   {
@@ -2347,11 +2347,11 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
 
       if (item.HasProperty("savedplayerstate"))
       {
-        options.starttime = CUtil::ConvertMilliSecsToSecs(item.m_lStartOffset);
+        options.starttime = CUtil::ConvertMilliSecsToSecs(item.GetStartOffset());
         options.state = item.GetProperty("savedplayerstate").asString();
         item.ClearProperty("savedplayerstate");
       }
-      else if (item.m_lStartOffset == STARTOFFSET_RESUME)
+      else if (item.GetStartOffset() == STARTOFFSET_RESUME)
       {
         options.starttime = 0.0;
         if (item.IsResumePointSet())
@@ -2437,7 +2437,8 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   else if(m_stackHelper.IsPlayingRegularStack())
   {
     //! @todo - this will fail if user seeks back to first file in stack
-    if(m_stackHelper.GetCurrentPartNumber() == 0 || m_stackHelper.GetRegisteredStack(item)->m_lStartOffset != 0)
+    if (m_stackHelper.GetCurrentPartNumber() == 0 ||
+        m_stackHelper.GetRegisteredStack(item)->GetStartOffset() != 0)
       options.fullscreen = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->
           m_fullScreenOnMovieStart && !CMediaSettings::GetInstance().DoesMediaStartWindowed();
     else
@@ -3161,7 +3162,7 @@ void CApplication::Restart(bool bSamePosition)
   std::string state = m_appPlayer.GetPlayerState();
 
   // set the requested starttime
-  m_itemCurrentFile->m_lStartOffset = CUtil::ConvertSecsToMilliSecs(time);
+  m_itemCurrentFile->SetStartOffset(CUtil::ConvertSecsToMilliSecs(time));
 
   // reopen the file
   if (PlayFile(*m_itemCurrentFile, "", true))
@@ -3268,7 +3269,7 @@ void CApplication::SeekTime( double dTime )
       { // seeking to a new file
         m_stackHelper.SetStackPartCurrentFileItem(partNumberToPlay);
         CFileItem *item = new CFileItem(m_stackHelper.GetCurrentStackPartFileItem());
-        item->m_lStartOffset = static_cast<uint64_t>(dTime * 1000.0) - startOfNewFile;
+        item->SetStartOffset(static_cast<uint64_t>(dTime * 1000.0) - startOfNewFile);
         // don't just call "PlayFile" here, as we are quite likely called from the
         // player thread, so we won't be able to delete ourselves.
         CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 1, 0, static_cast<void*>(item));

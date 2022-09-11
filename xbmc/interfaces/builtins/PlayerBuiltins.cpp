@@ -445,7 +445,7 @@ static int PlayMedia(const std::vector<std::string>& params)
     else if (StringUtils::EqualsNoCase(params[i], "resume"))
     {
       // force the item to resume (if applicable) (see CApplication::PlayMedia)
-      item.m_lStartOffset = STARTOFFSET_RESUME;
+      item.SetStartOffset(STARTOFFSET_RESUME);
       askToResume = false;
     }
     else if (StringUtils::EqualsNoCase(params[i], "noresume"))
