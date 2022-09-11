@@ -351,6 +351,12 @@ public:
    */
   bool GetCurrentResumeTimeAndPartNumber(int64_t& startOffset, int& partNumber) const;
 
+  /*!
+   * \brief Test if this item type can be resumed.
+   * \return True if this item can be resumed, false otherwise.
+   */
+  bool IsResumable() const;
+
   inline bool HasPictureInfoTag() const
   {
     return m_pictureInfoTag != NULL;
