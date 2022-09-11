@@ -10,6 +10,7 @@
 
 #include "Application.h"
 #include "Autorun.h"
+#include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"

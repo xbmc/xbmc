@@ -8,6 +8,7 @@
 
 #include "GUIInfoHelper.h"
 
+#include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindow.h"

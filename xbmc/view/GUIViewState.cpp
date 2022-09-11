@@ -28,6 +28,7 @@
 #include "guilib/TextureManager.h"
 #include "music/GUIViewStateMusic.h"
 #include "pictures/GUIViewStatePictures.h"
+#include "playlists/PlayList.h"
 #include "profiles/ProfileManager.h"
 #include "programs/GUIViewStatePrograms.h"
 #include "pvr/windows/GUIViewStatePVR.h"
