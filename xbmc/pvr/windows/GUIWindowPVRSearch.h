@@ -70,6 +70,7 @@ namespace PVR
     CGUIWindowPVRTVSearch() : CGUIWindowPVRSearchBase(false, WINDOW_TV_SEARCH, "MyPVRSearch.xml") {}
 
   protected:
+    std::string GetStartFolder(const std::string& dir) override;
     std::string GetDirectoryPath() override;
   };
 
@@ -79,6 +80,7 @@ namespace PVR
     CGUIWindowPVRRadioSearch() : CGUIWindowPVRSearchBase(true, WINDOW_RADIO_SEARCH, "MyPVRSearch.xml") {}
 
   protected:
+    std::string GetStartFolder(const std::string& dir) override;
     std::string GetDirectoryPath() override;
   };
 }

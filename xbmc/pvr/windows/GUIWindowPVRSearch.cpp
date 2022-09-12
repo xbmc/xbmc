@@ -505,11 +505,21 @@ void CGUIWindowPVRSearchBase::SetSearchFilter(
   m_searchfilter = searchFilter;
 }
 
+std::string CGUIWindowPVRTVSearch::GetStartFolder(const std::string& dir)
+{
+  return CPVREpgSearchPath::PATH_TV_SEARCH;
+}
+
 std::string CGUIWindowPVRTVSearch::GetDirectoryPath()
 {
   return URIUtils::PathHasParent(m_vecItems->GetPath(), CPVREpgSearchPath::PATH_TV_SEARCH)
              ? m_vecItems->GetPath()
              : CPVREpgSearchPath::PATH_TV_SEARCH;
+}
+
+std::string CGUIWindowPVRRadioSearch::GetStartFolder(const std::string& dir)
+{
+  return CPVREpgSearchPath::PATH_RADIO_SEARCH;
 }
 
 std::string CGUIWindowPVRRadioSearch::GetDirectoryPath()
