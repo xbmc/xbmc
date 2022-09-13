@@ -1070,13 +1070,6 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     // restore the windowed window level
     [[last_view window] setLevel:last_window_level];
 
-    // Get rid of the new window we created.
-    if (windowedFullScreenwindow != nil)
-    {
-      [windowedFullScreenwindow close];
-      windowedFullScreenwindow = nil;
-    }
-
     // Unblank.
     // Force the unblank when returning from fullscreen, we get called with blankOtherDisplays set false.
     //if (blankOtherDisplays)
