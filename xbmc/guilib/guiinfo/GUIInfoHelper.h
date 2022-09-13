@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "playlists/PlayList.h"
+#include "PlayListPlayer.h"
 
 #include <memory>
 #include <string>

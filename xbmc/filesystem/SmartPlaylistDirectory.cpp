@@ -9,12 +9,12 @@
 #include "SmartPlaylistDirectory.h"
 
 #include "FileItem.h"
+#include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/FileDirectoryFactory.h"
 #include "music/MusicDatabase.h"
-#include "playlists/PlayList.h"
 #include "playlists/SmartPlayList.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"

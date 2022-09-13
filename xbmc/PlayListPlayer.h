@@ -15,6 +15,11 @@
 #include <chrono>
 #include <memory>
 
+#define PLAYLIST_NONE    -1
+#define PLAYLIST_MUSIC   0
+#define PLAYLIST_VIDEO   1
+#define PLAYLIST_PICTURE 2
+
 class CAction;
 class CFileItem; typedef std::shared_ptr<CFileItem> CFileItemPtr;
 class CFileItemList;

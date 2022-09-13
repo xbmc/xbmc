@@ -9,6 +9,7 @@
 #include "ApplicationPlayer.h"
 
 #include "Application.h"
+#include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "cores/DataCacheCore.h"
 #include "cores/IPlayer.h"
@@ -16,7 +17,6 @@
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "playlists/PlayList.h"
 #include "settings/MediaSettings.h"
 
 #include <mutex>

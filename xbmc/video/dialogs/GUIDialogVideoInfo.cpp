@@ -34,7 +34,6 @@
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/MusicDatabase.h"
 #include "music/dialogs/GUIDialogMusicInfo.h"
-#include "playlists/PlayList.h"
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"

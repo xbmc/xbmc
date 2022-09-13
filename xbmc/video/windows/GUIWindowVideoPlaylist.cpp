@@ -21,7 +21,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/Key.h"
-#include "playlists/PlayList.h"
 #include "playlists/PlayListM3U.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"

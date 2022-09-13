@@ -28,7 +28,6 @@
 #include "network/Network.h"
 #include "pictures/GUIWindowSlideShow.h"
 #include "pictures/PictureInfoTag.h"
-#include "playlists/PlayList.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"

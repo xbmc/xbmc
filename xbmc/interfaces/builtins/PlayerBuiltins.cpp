@@ -18,7 +18,6 @@
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "playlists/PlayList.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/guilib/PVRGUIActions.h"
