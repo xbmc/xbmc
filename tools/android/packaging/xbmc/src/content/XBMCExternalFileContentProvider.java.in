@@ -9,9 +9,7 @@ import android.util.Log;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 public class XBMCExternalFileContentProvider extends XBMCContentProvider
 {
@@ -21,21 +19,11 @@ public class XBMCExternalFileContentProvider extends XBMCContentProvider
 
   private static final HashMap<String, String> MIME_TYPES=new HashMap<String, String>();
 
-  private static final List<String> ALLOWED;
-
   private SharedPreferences mPreferences;
 
   static {
     MIME_TYPES
       .put(".xml", "application/xml");
-
-    ALLOWED=Arrays.asList(
-      "/.kodi/userdata/playercorefactory.xml",
-      "/.kodi/userdata/sources.xml",
-      "/.kodi/userdata/mediasources.xml",
-      "/.kodi/userdata/passwords.xml",
-      "/.kodi/userdata/guisettings.xml"
-    );
   }
 
   private File getFileIfAllowed(Uri uri) throws FileNotFoundException {
@@ -43,9 +31,6 @@ public class XBMCExternalFileContentProvider extends XBMCContentProvider
     if (!mPreferences.getBoolean(requester, false)) {
       throw new FileNotFoundException("Denied application: "+requester);
     }
-    if (!ALLOWED.contains(uri.getPath())) {
-      throw new FileNotFoundException("Not allowed: "+uri.getPath());
-    };
     return new File(getContext().getExternalFilesDir(null), uri.getPath());
   }
 
