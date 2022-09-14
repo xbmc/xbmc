@@ -212,7 +212,6 @@ protected:
   result_set result;
   result_set exec_res;
   bool autorefresh;
-  char* errmsg;
 
   bool active; // Is Query Opened?
   bool haveError;
