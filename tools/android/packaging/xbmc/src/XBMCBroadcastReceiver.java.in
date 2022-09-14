@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.util.Log;
 
 public class XBMCBroadcastReceiver extends BroadcastReceiver
@@ -25,6 +27,16 @@ public class XBMCBroadcastReceiver extends BroadcastReceiver
         i = manager.getLaunchIntentForPackage("@APP_PACKAGE@");
         i.addCategory(Intent.CATEGORY_LAUNCHER);
         context.startActivity(i);
+      }
+    }
+    else if (Intent.ACTION_PACKAGE_FULLY_REMOVED.equals(intent.getAction()))
+    {
+      Uri uri = Uri.parse(intent.getDataString());
+      SharedPreferences preferences = context.getSharedPreferences("external_permissions", 0);
+      String pkgName = uri.getSchemeSpecificPart();
+      if (preferences.contains(pkgName)) {
+        Log.d(TAG, "Removed external permissions for "+pkgName);
+        preferences.edit().remove(pkgName).commit();
       }
     }
     else

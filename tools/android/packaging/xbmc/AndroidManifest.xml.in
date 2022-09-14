@@ -115,6 +115,20 @@
                 android:name="android.app.lib_name"
                 android:value="@APP_NAME_LC@" />
         </activity>
+        <activity
+            android:name=".ExternalPermission"
+            android:configChanges="orientation|keyboard|keyboardHidden|navigation|touchscreen|screenLayout|screenSize|colorMode"
+            android:finishOnTaskLaunch="true"
+            android:launchMode="singleInstance"
+            android:exported="true"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/AppTheme">
+
+            <intent-filter>
+                <action android:name="@APP_PACKAGE@.permission.ExternalFiles" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
         <receiver android:name=".XBMCBroadcastReceiver"
                   android:exported="true">
@@ -123,6 +137,10 @@
                 <action android:name="android.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED" />
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_FULLY_REMOVED"  />
+                <data android:scheme="package" />
             </intent-filter>
         </receiver>
 
@@ -138,7 +156,7 @@
         <provider
             android:name=".content.XBMCExternalFileContentProvider"
             android:authorities="@APP_PACKAGE@.external.file"
-            android:exported="true" />
+            android:exported="true"/>
         <provider
             android:name=".content.XBMCYTDLContentProvider"
             android:authorities="@APP_PACKAGE@.ytdl"

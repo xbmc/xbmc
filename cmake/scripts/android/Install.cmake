@@ -44,6 +44,7 @@ set(package_files strings.xml
                   searchable.xml
                   AndroidManifest.xml
                   build.gradle
+                  src/ExternalPermission.java
                   src/Splash.java
                   src/Main.java
                   src/XBMCBroadcastReceiver.java

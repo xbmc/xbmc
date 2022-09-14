@@ -1,0 +1,72 @@
+package @APP_PACKAGE@;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.Bundle;
+
+public class ExternalPermission extends Activity
+{
+    public static final String PERMISSION_ACTION = "@APP_PACKAGE@.permission.ExternalFiles";
+
+    private SharedPreferences mPreferences;
+
+    private void acceptPackage(String pkgName) {
+        mPreferences.edit().putBoolean(pkgName, true).commit();
+    }
+
+    private void denyPackage(String pkgName) {
+        mPreferences.edit().putBoolean(pkgName, false).commit();
+    }
+
+    private boolean newPackage(String pkgName) {
+        return !mPreferences.contains(pkgName);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mPreferences = getSharedPreferences("external_permissions", 0);
+        setContentView(R.layout.activity_splash);
+        if (getIntent() != null && PERMISSION_ACTION.equals(getIntent().getAction())) {
+            final String requester = getReferrer().getHost();
+            if (newPackage(requester)) {
+                AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setCancelable(false)
+                    .setTitle("WARNING")
+                    .setMessage(requester+" requested access to @APP_NAME@'s external settings directory. If you approve this request, "+requester+
+                        " will have permission to change your configurations, or even read stored passwords for your media sources."+
+                        "\n Only accept the request if you really trust that application!")
+                    .setPositiveButton("Accept", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            acceptPackage(requester);
+                            setResult(Activity.RESULT_OK);
+                            finish();
+                        }
+                    })
+                    .setNeutralButton("Deny", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            setResult(Activity.RESULT_CANCELED);
+                            finish();
+                        }
+                    })
+                    .setNegativeButton("Deny and don't ask again", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            setResult(Activity.RESULT_CANCELED);
+                            denyPackage(requester);
+                            finish();
+                        }
+                    })
+                    .show();
+                return;
+            }
+        }
+        finish();
+    }
+}

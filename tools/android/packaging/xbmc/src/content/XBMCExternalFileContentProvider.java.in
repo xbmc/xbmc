@@ -1,6 +1,7 @@
 package @APP_PACKAGE@.content;
 
 import android.content.ContentValues;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
@@ -22,6 +23,8 @@ public class XBMCExternalFileContentProvider extends XBMCContentProvider
 
   private static final List<String> ALLOWED;
 
+  private SharedPreferences mPreferences;
+
   static {
     MIME_TYPES
       .put(".xml", "application/xml");
@@ -36,6 +39,10 @@ public class XBMCExternalFileContentProvider extends XBMCContentProvider
   }
 
   private File getFileIfAllowed(Uri uri) throws FileNotFoundException {
+    final String requester = getCallingPackage();
+    if (!mPreferences.getBoolean(requester, false)) {
+      throw new FileNotFoundException("Denied application: "+requester);
+    }
     if (!ALLOWED.contains(uri.getPath())) {
       throw new FileNotFoundException("Not allowed: "+uri.getPath());
     };
@@ -64,6 +71,7 @@ public class XBMCExternalFileContentProvider extends XBMCContentProvider
   @Override
   public boolean onCreate()
   {
+    mPreferences = getContext().getSharedPreferences("external_permissions", 0);
     return true;
   }
 
