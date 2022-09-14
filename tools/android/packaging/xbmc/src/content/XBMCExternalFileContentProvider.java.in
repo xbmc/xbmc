@@ -40,7 +40,7 @@ public class XBMCExternalFileContentProvider extends XBMCContentProvider
     String path=uri.toString();
 
     for (String extension : MIME_TYPES.keySet()) {
-      if (path.endsWith(extension)) {
+      if (path.toLowerCase().endsWith(extension)) {
         return(MIME_TYPES.get(extension));
       }
     }
