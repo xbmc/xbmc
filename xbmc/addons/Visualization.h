@@ -11,13 +11,15 @@
 #include "addons/binary-addons/AddonInstanceHandler.h"
 #include "addons/kodi-dev-kit/include/kodi/addon-instance/Visualization.h"
 
-namespace ADDON
+namespace KODI
+{
+namespace ADDONS
 {
 
-class CVisualization : public IAddonInstanceHandler
+class CVisualization : public ADDON::IAddonInstanceHandler
 {
 public:
-  CVisualization(const AddonInfoPtr& addonInfo, float x, float y, float w, float h);
+  CVisualization(const ADDON::AddonInfoPtr& addonInfo, float x, float y, float w, float h);
   ~CVisualization() override;
 
   bool Start(int channels, int samplesPerSec, int bitsPerSample, const std::string& songName);
@@ -53,4 +55,5 @@ private:
   std::vector<std::string> m_presets; /*!< cached preset list */
 };
 
-} // namespace ADDON
+} // namespace ADDONS
+} // namespace KODI

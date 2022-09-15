@@ -12,8 +12,8 @@
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
 
-namespace ADDON
-{
+using namespace ADDON;
+using namespace KODI::ADDONS;
 
 namespace
 {
@@ -232,5 +232,3 @@ void CVisualization::GetProperties(struct KODI_ADDON_VISUALIZATION_PROPS* props)
   props->device = winSystem->GetHWContext();
   props->pixelRatio = winSystem->GetGfxContext().GetResInfo().fPixelRatio;
 }
-
-} // namespace ADDON
