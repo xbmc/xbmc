@@ -22,6 +22,7 @@ It should work if you're using macOS. If that is the case, read **[macOS specifi
 8. **[Package](#8-package)**
 9. **[Install](#9-install)**
 10. **[Debugging Kodi](#10-debugging-kodi)**
+11. **[Accessing Kodi External Data Folder From Applications](#11-accessing-kodi-external-data-folder-from-applications)**
 
 ## 1. Document conventions
 This guide assumes you are using `terminal`, also known as `console`, `command-line` or simply `cli`. Commands need to be run at the terminal, one at a time and in the provided order.
@@ -378,4 +379,57 @@ GDB can be used to debug, though the support is rather primitive. Rather than us
 This will open the installed version of Kodi and break. The warnings can be ignored as we have the appropriate paths already setup.
 
 **[back to top](#table-of-contents)** | **[back to section top](#10-debugging-kodi)**
+  
+## 11. Accessing Kodi External Data Folder From Applications
+
+After Android 11, accessing this folder from other applications became challenging, and might end up completely unavailable in future versions.
+For this reason we implemented a Content Provider, for which you can request access from you application.
+  
+Check whether the installed Kodi version has this provider
+```
+ public static final String KODI_CONTENT_URI = "content://org.xbmc.kodi.external.file/";
+  
+ public static boolean hasKodiProvider() {
+   return getContext().getContentResolver().getType(Uri.parse(KODI_CONTENT_URI + "check.xml")) != null;
+ }
+```
+  
+To check if your app already has access, you can try a file open
+```
+ public static boolean hasKodiProviderAccess() {
+    try {
+        MyApplication.getContext().getContentResolver().openInputStream(Uri.parse(KODI_CONTENT_URI + "check.xml"));
+        return true;
+    } catch (FileNotFoundException e) {
+        if (e.getMessage() != null && e.getMessage().contains("Denied application")) {
+            // No access
+            return false;
+        } else {
+            // Failed for some other reason. In this case the file really doesn't exist.
+            return true;
+        }
+    }
+ }
+```
+  
+To request access, send the following Intent to Kodi
+```
+ Intent kodi = new Intent("org.xbmc.kodi.permission.ExternalFiles");
+ kodi.setPackage("org.xbmc.kodi");
+ startActivityForResult(kodi, REQ_KODI_PERM); //REQ_KODI_PERM can be any integer
+```
+  
+And you can get the result of this request in `onActivityResult`
+```
+ protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+   if (requestCode == REQ_KODI_PERM) {
+    if (resultCode == Activity.RESULT_OK) {
+      // Access granted by the user
+    } else {
+      // Access not granted. The user might even denied requests from your app for it's installation time.
+    }
+  }
+```
+  
+**[back to top](#table-of-contents)** | **[back to section top](#11-accessing-kodi-external-data-folder-from-applications)**
 
