@@ -380,7 +380,7 @@ bool CGUIVisualisationControl::InitVisualization()
   if (y + h > context.GetHeight())
     h = context.GetHeight() - y;
 
-  m_instance = new KODI::ADDONS::CVisualization(addonBase, x, y, w, h);
+  m_instance.reset(new KODI::ADDONS::CVisualization(addonBase, x, y, w, h));
   CreateBuffers();
 
   m_alreadyStarted = false;
@@ -420,8 +420,7 @@ void CGUIVisualisationControl::DeInitVisualization()
       m_alreadyStarted = false;
     }
 
-    delete m_instance;
-    m_instance = nullptr;
+    m_instance.reset();
   }
 
   ClearBuffers();
