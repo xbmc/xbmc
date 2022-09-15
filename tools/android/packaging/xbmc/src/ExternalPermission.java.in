@@ -44,21 +44,21 @@ public class ExternalPermission extends Activity
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             acceptPackage(requester);
-                            setResult(Activity.RESULT_OK);
+                            setResult(Activity.RESULT_OK, new Intent("ACCEPTED"));
                             finish();
                         }
                     })
                     .setNeutralButton("Deny", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            setResult(Activity.RESULT_CANCELED);
+                            setResult(Activity.RESULT_CANCELED, new Intent("DENIED"));
                             finish();
                         }
                     })
                     .setNegativeButton("Deny and don't ask again", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            setResult(Activity.RESULT_CANCELED);
+                            setResult(Activity.RESULT_CANCELED, new Intent("DENIED_PERMANENTLY"));
                             denyPackage(requester);
                             finish();
                         }
