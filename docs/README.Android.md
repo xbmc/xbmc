@@ -1,6 +1,6 @@
 ![Kodi Logo](resources/banner_slim.png)
 
-# Android build guide
+# Android developer guide
 This guide has been tested with Ubuntu 16.04 (Xenial) x86_64. It is meant to cross-compile Kodi for Android using **[Kodi's unified depends build system](../tools/depends/README.md)**. Please read it in full before you proceed to familiarize yourself with the build procedure.
 
 It should work if you're using macOS. If that is the case, read **[macOS specific prerequisites](#35-macos-specific-prerequisites)** first.
@@ -425,8 +425,10 @@ And you can get the result of this request in `onActivityResult`
    if (requestCode == REQ_KODI_PERM) {
     if (resultCode == Activity.RESULT_OK) {
       // Access granted by the user
+    } else if (data != null && "DENIED_PERMANENTLY".equals(data.getAction()) {
+      // The user denied access permanently. That is until your application is reinstalled.
     } else {
-      // Access not granted. The user might even denied requests from your app for it's installation time.
+      // The user denied access, but you can request again.
     }
   }
 ```
