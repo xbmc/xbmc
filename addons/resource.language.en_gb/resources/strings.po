@@ -18621,7 +18621,13 @@ msgctxt "#36012"
 msgid "Couldn't initialise the CEC adapter. Please check your settings."
 msgstr ""
 
-#empty strings from id 36013 to 36014
+#. CEC adapter setting to set the type of device that libCEC reports to the TV (Recording, Playback or Tuner Device)
+#: system/peripherals.xml
+msgctxt "#36013"
+msgid "CEC client device mode"
+msgstr ""
+
+#empty strings from id 36014 to 36014
 
 #: system/peripherals.xml
 msgctxt "#36015"
@@ -18819,7 +18825,25 @@ msgctxt "#36050"
 msgid "On start"
 msgstr ""
 
-#empty strings from id 36051 to 36097
+#. Item list value of setting with label #36013 "CEC client device mode"
+#: system/peripherals.xml
+msgctxt "#36051"
+msgid "Recording Device"
+msgstr ""
+
+#. Item list value of setting with label #36013 "CEC client device mode"
+#: system/peripherals.xml
+msgctxt "#36052"
+msgid "Playback Device"
+msgstr ""
+
+#. Item list value of setting with label #36013 "CEC client device mode"
+#: system/peripherals.xml
+msgctxt "#36053"
+msgid "Tuner Device"
+msgstr ""
+
+#empty strings from id 36054 to 36097
 
 #. Label of setting "System / Display / Use 10 bit for SDR"
 #: system/settings/settings.xml
