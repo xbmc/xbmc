@@ -914,10 +914,9 @@ static bool needtoshowme = true;
 
 bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
-  static NSWindow* windowedFullScreenwindow = NULL;
-  static NSScreen* last_window_screen = NULL;
+  static NSWindow* windowedFullScreenwindow = nil;
   static NSPoint last_window_origin;
-  static NSView* last_view = NULL;
+  static NSView* last_view = nil;
   static NSSize last_view_size;
   static NSPoint last_view_origin;
   static NSInteger last_window_level = NSNormalWindowLevel;
@@ -962,7 +961,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     return false;
   }
 
-  if (windowedFullScreenwindow != NULL)
+  if (windowedFullScreenwindow != nil)
   {
     [windowedFullScreenwindow close];
     windowedFullScreenwindow = nil;
@@ -971,20 +970,19 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   if (m_bFullScreen)
   {
     // FullScreen Mode
-    NSOpenGLContext* newContext = NULL;
+    NSOpenGLContext* newContext = nil;
 
     // Save info about the windowed context so we can restore it when returning to windowed.
     last_view = [cur_context view];
     last_view_size = [last_view frame].size;
     last_view_origin = [last_view frame].origin;
-    last_window_screen = [[last_view window] screen];
     last_window_origin = [[last_view window] frame].origin;
     last_window_level = [[last_view window] level];
 
     // This is Cocoa Windowed FullScreen Mode
     // Get the screen rect of our current display
     NSScreen* pScreen = [[NSScreen screens] objectAtIndex:m_lastDisplayNr];
-    NSRect    screenRect = [pScreen frame];
+    NSRect screenRect = [pScreen frame];
 
     // remove frame origin offset of original display
     screenRect.origin = NSZeroPoint;
@@ -995,6 +993,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     backing:NSBackingStoreBuffered
     defer:NO
     screen:pScreen];
+    windowedFullScreenwindow.releasedWhenClosed = NO;
 
     [windowedFullScreenwindow setBackgroundColor:[NSColor blackColor]];
     [windowedFullScreenwindow makeKeyAndOrderFront:nil];
@@ -1047,8 +1046,8 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     // Release old context if we created it.
     if (CWinSystemOSXImpl::m_lastOwnedContext == cur_context)
     {
-      [ NSOpenGLContext clearCurrentContext ];
-      [ cur_context clearDrawable ];
+      [NSOpenGLContext clearCurrentContext];
+      [cur_context clearDrawable];
     }
 
     // activate context
@@ -1069,13 +1068,6 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     // restore the windowed window level
     [[last_view window] setLevel:last_window_level];
 
-    // Get rid of the new window we created.
-    if (windowedFullScreenwindow != nil)
-    {
-      [windowedFullScreenwindow close];
-      windowedFullScreenwindow = nil;
-    }
-
     // Unblank.
     // Force the unblank when returning from fullscreen, we get called with blankOtherDisplays set false.
     //if (blankOtherDisplays)
@@ -1090,16 +1082,14 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     [newContext setView:last_view];
     [[last_view window] setFrameOrigin:last_window_origin];
     // return the mouse bounds in SDL view to previous size
-    [ last_view setFrameSize:last_view_size ];
-    [ last_view setFrameOrigin:last_view_origin ];
-    // done with restoring windowed window, don't set last_view to NULL as we can lose it under dual displays.
-    //last_window_screen = NULL;
+    [last_view setFrameSize:last_view_size];
+    [last_view setFrameOrigin:last_view_origin];
 
     // Release the fullscreen context.
     if (CWinSystemOSXImpl::m_lastOwnedContext == cur_context)
     {
-      [ NSOpenGLContext clearCurrentContext ];
-      [ cur_context clearDrawable ];
+      [NSOpenGLContext clearCurrentContext];
+      [cur_context clearDrawable];
     }
 
     // Activate context.
