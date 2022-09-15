@@ -26,6 +26,10 @@ public class ExternalPermission extends Activity
         return !mPreferences.contains(pkgName);
     }
 
+    private boolean acceptedPackage(String pkgName) {
+        return mPreferences.getBoolean(pkgName, false);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +69,12 @@ public class ExternalPermission extends Activity
                     })
                     .show();
                 return;
+            } else {
+                if (acceptedPackage(requester)) {
+                    setResult(Activity.RESULT_OK, new Intent("ACCEPTED"));
+                } else {
+                    setResult(Activity.RESULT_CANCELED, new Intent("DENIED_PERMANENTLY"));
+                }
             }
         }
         finish();
