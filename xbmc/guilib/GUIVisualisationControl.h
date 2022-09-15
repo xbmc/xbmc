@@ -99,5 +99,5 @@ private:
   std::string m_presetsPath; /*!< To add-on sended preset path */
   std::string m_profilePath; /*!< To add-on sended profile path */
 
-  KODI::ADDONS::CVisualization* m_instance{nullptr};
+  std::unique_ptr<KODI::ADDONS::CVisualization> m_instance;
 };
