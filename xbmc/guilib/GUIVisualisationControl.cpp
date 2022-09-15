@@ -15,6 +15,7 @@
 #include "GUIWindowManager.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
+#include "addons/Visualization.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
@@ -379,7 +380,7 @@ bool CGUIVisualisationControl::InitVisualization()
   if (y + h > context.GetHeight())
     h = context.GetHeight() - y;
 
-  m_instance = new ADDON::CVisualization(addonBase, x, y, w, h);
+  m_instance = new KODI::ADDONS::CVisualization(addonBase, x, y, w, h);
   CreateBuffers();
 
   m_alreadyStarted = false;

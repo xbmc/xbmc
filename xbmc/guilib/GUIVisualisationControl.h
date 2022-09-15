@@ -9,12 +9,19 @@
 #pragma once
 
 #include "GUIControl.h"
-#include "addons/Visualization.h"
 #include "cores/AudioEngine/Interfaces/IAudioCallback.h"
 
 #include <list>
 #include <string>
 #include <vector>
+
+namespace KODI
+{
+namespace ADDONS
+{
+class CVisualization;
+} // namespace ADDONS
+} // namespace KODI
 
 class CAudioBuffer
 {
@@ -92,5 +99,5 @@ private:
   std::string m_presetsPath; /*!< To add-on sended preset path */
   std::string m_profilePath; /*!< To add-on sended profile path */
 
-  ADDON::CVisualization* m_instance{nullptr};
+  KODI::ADDONS::CVisualization* m_instance{nullptr};
 };
