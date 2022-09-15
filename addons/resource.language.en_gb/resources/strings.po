@@ -4849,7 +4849,31 @@ msgctxt "#2107"
 msgid "Installation of the add-on \"{0:s}\" to support the character type \"{1:s}\" failed."
 msgstr ""
 
-#empty strings from id 2108 to 2202
+#. Setting using a selection dialog to choose how a font is installed to the language.
+#: system/settings/settings.xml
+msgctxt "#2108"
+msgid "Language font installation"
+msgstr ""
+
+#. Help text for the setting at #2108.
+#: system/settings/settings.xml
+msgctxt "#2109"
+msgid "The method how to install the font needed for the language."
+msgstr ""
+
+#. Value for setting with label #2108 "Languages font installation method"
+#: system/settings/settings.xml
+msgctxt "#2110"
+msgid "Always, if not available"
+msgstr ""
+
+#. Value for setting with label #2108 "Languages font installation method"
+#: system/settings/settings.xml
+msgctxt "#2111"
+msgid "With user confirmation"
+msgstr ""
+
+#empty strings from id 2112 to 2202
 
 #: system/settings/settings.xml
 msgctxt "#2203"
@@ -13693,6 +13717,7 @@ msgstr ""
 
 #. Value for setting with label #19171 "PVR & Live TV / Playback / Switch to full screen"
 #. Value for setting with label #36098 "System / Display / Use 10 bit for SDR"
+#. Value for setting with label #2108 "Languages font installation method"
 #: system/settings/settings.xml
 msgctxt "#20420"
 msgid "Never"

@@ -23,6 +23,8 @@
 #include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "rendering/RenderSystem.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "threads/SystemClock.h"
 #include "utils/MathUtils.h"
 #include "utils/URIUtils.h"
@@ -441,6 +443,15 @@ public:
     if (WasFailed(m_addonId) || CServiceBroker::GetAddonMgr().IsAddonInstalled(m_addonId))
       return false;
 
+    const InstallMethod method =
+        static_cast<InstallMethod>(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+            CSettings::SETTING_LOCALE_FONTINSTALL));
+    if (method == InstallMethod::NEVER)
+    {
+      m_installFailed.emplace(m_addonId, JOB_CANCEL_TIMEOUT);
+      return false;
+    }
+
     std::shared_ptr<IAddon> addon;
     if (!CServiceBroker::GetAddonMgr().FindInstallableById(m_addonId, addon))
     {
@@ -452,7 +463,8 @@ public:
     const std::string heading = g_localizeStrings.Get(2105);
     const std::string message = StringUtils::Format(g_localizeStrings.Get(2106), m_addonId,
                                                     addon->Name(), m_fontTable.m_name);
-    if (HELPERS::ShowYesNoDialogText(heading, message) == DialogResponse::CHOICE_YES)
+    if (method == InstallMethod::NO_ASK ||
+        HELPERS::ShowYesNoDialogText(heading, message) == DialogResponse::CHOICE_YES)
     {
       const bool ret = CAddonInstaller::GetInstance().InstallOrUpdate(
           m_addonId, BackgroundJob::CHOICE_NO, ModalJob::CHOICE_NO,
@@ -501,6 +513,13 @@ public:
   }
 
 private:
+  enum class InstallMethod
+  {
+    NEVER = 0,
+    NO_ASK,
+    ASK_USER,
+  };
+
   static CCriticalSection m_installLock;
   static CCriticalSection m_installFailedLock;
   static std::unordered_map<std::string, XbmcThreads::EndTime<>> m_installFailed;

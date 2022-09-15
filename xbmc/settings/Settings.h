@@ -44,6 +44,7 @@ public:
   static constexpr auto SETTING_LOCALE_COUNTRY = "locale.country";
   static constexpr auto SETTING_LOCALE_CHARSET = "locale.charset";
   static constexpr auto SETTING_LOCALE_KEYBOARDLAYOUTS = "locale.keyboardlayouts";
+  static constexpr auto SETTING_LOCALE_FONTINSTALL = "locale.fontinstall";
   static constexpr auto SETTING_LOCALE_ACTIVEKEYBOARDLAYOUT = "locale.activekeyboardlayout";
   static constexpr auto SETTING_LOCALE_TIMEZONECOUNTRY = "locale.timezonecountry";
   static constexpr auto SETTING_LOCALE_TIMEZONE = "locale.timezone";

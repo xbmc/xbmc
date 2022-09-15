@@ -80,6 +80,7 @@ constexpr const char* CSettings::SETTING_LOCALE_LANGUAGE;
 constexpr const char* CSettings::SETTING_LOCALE_COUNTRY;
 constexpr const char* CSettings::SETTING_LOCALE_CHARSET;
 constexpr const char* CSettings::SETTING_LOCALE_KEYBOARDLAYOUTS;
+constexpr const char* CSettings::SETTING_LOCALE_FONTINSTALL;
 constexpr const char* CSettings::SETTING_LOCALE_ACTIVEKEYBOARDLAYOUT;
 constexpr const char* CSettings::SETTING_LOCALE_TIMEZONECOUNTRY;
 constexpr const char* CSettings::SETTING_LOCALE_TIMEZONE;

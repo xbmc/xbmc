@@ -3795,6 +3795,18 @@
             <multiselect>true</multiselect>
           </control>
         </setting>
+        <setting id="locale.fontinstall" type="integer" label="2108" help="2109">
+          <level>1</level>
+          <default>1</default> <!-- InstallMethod::NO_ASK -->
+          <constraints>
+            <options>
+              <option label="20420">0</option> <!-- InstallMethod::NEVER -->
+              <option label="2110">1</option> <!-- InstallMethod::NO_ASK -->
+              <option label="2111">2</option> <!-- InstallMethod::ASK_USER -->
+            </options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
         <setting id="locale.activekeyboardlayout" type="string" label="0" help="0">
           <level>4</level>
           <default>English QWERTY</default>
