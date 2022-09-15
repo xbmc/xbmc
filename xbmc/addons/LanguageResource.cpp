@@ -97,9 +97,13 @@ void CLanguageResource::OnPostInstall(bool update, bool modal, AddonOptPostInstV
   if (!g_SkinInfo)
     return;
 
-  if (IsInUse() || (!update && !modal &&
-                    (HELPERS::ShowYesNoDialogText(CVariant{Name()}, CVariant{24132}) ==
-                     DialogResponse::CHOICE_YES)))
+  if (optValue == AddonOptPostInstValue::POST_INSTALL_LANGUAGE_RESOURCE_NO_SELECT)
+  {
+    g_langInfo.ReloadCurrentLanguage();
+  }
+  else if (IsInUse() || (!update && !modal &&
+                         (HELPERS::ShowYesNoDialogText(CVariant{Name()}, CVariant{24132}) ==
+                          DialogResponse::CHOICE_YES)))
   {
     if (IsInUse())
       g_langInfo.SetLanguage(ID());

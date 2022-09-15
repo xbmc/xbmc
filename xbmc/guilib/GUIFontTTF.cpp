@@ -9,14 +9,23 @@
 #include "GUIFontTTF.h"
 
 #include "GUIFontManager.h"
+#include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "Texture.h"
 #include "URL.h"
+#include "addons/AddonInstaller.h"
+#include "addons/AddonManager.h"
+#include "addons/LanguageResource.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
+#include "guilib/LocalizeStrings.h"
+#include "messaging/helpers/DialogHelper.h"
+#include "messaging/helpers/DialogOKHelper.h"
 #include "rendering/RenderSystem.h"
 #include "threads/SystemClock.h"
 #include "utils/MathUtils.h"
+#include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
@@ -24,6 +33,7 @@
 #include <math.h>
 #include <memory>
 #include <queue>
+#include <unordered_map>
 #include <utility>
 
 // stuff for freetype
@@ -60,8 +70,448 @@ constexpr int GLYPH_STRENGTH_BOLD = 24;
 constexpr int GLYPH_STRENGTH_LIGHT = -48;
 constexpr int TAB_SPACE_LENGTH = 4;
 
+constexpr std::chrono::hours JOB_RETRY_TIMEOUT{24};
+constexpr std::chrono::hours JOB_CANCEL_TIMEOUT{std::numeric_limits<std::chrono::hours>::max()};
+
 static const character_t DUMMY_POINT('.', FONT_STYLE_NORMAL, UTILS::COLOR::INDEX_DEFAULT);
 static const character_t DUMMY_SPACE('X', FONT_STYLE_NORMAL, UTILS::COLOR::INDEX_DEFAULT);
+
+static constexpr std::array<std::pair<CFontTable::ADDON, const char*>, 20> fontAddons = {
+    {{CFontTable::ADDON::RESOURCE_LANGUAGE_AM_ET, "resource.language.am_et"},
+     {CFontTable::ADDON::RESOURCE_LANGUAGE_AR_SA, "resource.language.ar_sa"},
+     {CFontTable::ADDON::RESOURCE_LANGUAGE_HE_IL, "resource.language.he_il"},
+     {CFontTable::ADDON::RESOURCE_LANGUAGE_KO_KR, "resource.language.ko_kr"},
+     {CFontTable::ADDON::RESOURCE_LANGUAGE_KN_IN, "resource.language.kn_in"},
+     {CFontTable::ADDON::RESOURCE_LANGUAGE_HI_IN, "resource.language.hi_in"},
+     {CFontTable::ADDON::RESOURCE_LANGUAGE_HY_AM, "resource.language.hy_am"},
+     {CFontTable::ADDON::RESOURCE_LANGUAGE_JA_JP, "resource.language.ja_jp"},
+     {CFontTable::ADDON::RESOURCE_LANGUAGE_ML_IN, "resource.language.ml_in"},
+     {CFontTable::ADDON::RESOURCE_LANGUAGE_MY_MM, "resource.language.my_mm"},
+     {CFontTable::ADDON::RESOURCE_LANGUAGE_SI_LK, "resource.language.si_lk"},
+     {CFontTable::ADDON::RESOURCE_LANGUAGE_TA_IN, "resource.language.ta_in"},
+     {CFontTable::ADDON::RESOURCE_LANGUAGE_TE_IN, "resource.language.te_in"},
+     {CFontTable::ADDON::RESOURCE_LANGUAGE_TH_TH, "resource.language.th_th"},
+     {CFontTable::ADDON::RESOURCE_LANGUAGE_ZH_CN, "resource.language.zh_cn"},
+     {CFontTable::ADDON::RESOURCE_LANGUAGE_ZH_TW, "resource.language.zh_tw"},
+     {CFontTable::ADDON::RESOURCE_FONT_ACTIVE, "resource.font.active"},
+     {CFontTable::ADDON::RESOURCE_FONT_LIMITED, "resource.font.limited"},
+     {CFontTable::ADDON::RESOURCE_FONT_EXCLUDED, "resource.font.excluded"},
+     {CFontTable::ADDON::RESOURCE_FONT_EMOJI, "resource.font.coloremoji"}}};
+
+// List about available characters:
+// - https://www.utf8-chartable.de/unicode-utf8-table.pl
+// - https://en.wikipedia.org/wiki/Unicode_block
+// List about language code:
+// - https://help.phrase.com/help/language-codes
+//
+// clang-format off
+static constexpr std::array<CFontTable, 281> fontFallbacks = {
+  {{0x000000, 0x00007F, "NotoSans-Regular.ttf", CFontTable::ALIGN::LTOR, "Basic Latin", CFontTable::ADDON::IN_KODI},
+   {0x000080, 0x0000FF, "NotoSans-Regular.ttf", CFontTable::ALIGN::LTOR, "Latin-1 Supplement", CFontTable::ADDON::IN_KODI},
+   {0x000100, 0x00017F, "NotoSans-Regular.ttf", CFontTable::ALIGN::LTOR, "Latin-1 Extended-A", CFontTable::ADDON::IN_KODI},
+   {0x000180, 0x00024F, "NotoSans-Regular.ttf", CFontTable::ALIGN::LTOR, "Latin-1 Extended-B", CFontTable::ADDON::IN_KODI},
+   {0x000250, 0x0002AF, "NotoSans-Regular.ttf", CFontTable::ALIGN::LTOR, "IPA Extensions", CFontTable::ADDON::IN_KODI},
+   {0x0002B0, 0x0002FF, "NotoSans-Regular.ttf", CFontTable::ALIGN::LTOR, "Spacing Modifier Letters", CFontTable::ADDON::IN_KODI},
+   {0x000300, 0x00036F, "NotoSans-Regular.ttf", CFontTable::ALIGN::LTOR, "Combining Diacritical Marks", CFontTable::ADDON::IN_KODI},
+   {0x000370, 0x0003FF, "NotoSans-Regular.ttf", CFontTable::ALIGN::LTOR, "Greek and Coptic", CFontTable::ADDON::IN_KODI},
+   {0x000400, 0x0004FF, "NotoSans-Regular.ttf", CFontTable::ALIGN::LTOR, "Cyrillic", CFontTable::ADDON::IN_KODI},
+   {0x000500, 0x00052F, "NotoSans-Regular.ttf", CFontTable::ALIGN::LTOR, "Cyrillic Supplement", CFontTable::ADDON::IN_KODI},
+   {0x000530, 0x00058F, "NotoSansArmenian-Regular.ttf", CFontTable::ALIGN::LTOR, "Armenian", CFontTable::ADDON::RESOURCE_LANGUAGE_HY_AM},
+   {0x000590, 0x0005FF, "NotoSansHebrew-Regular.ttf", CFontTable::ALIGN::RTOL, "Hebrew", CFontTable::ADDON::RESOURCE_LANGUAGE_HE_IL},
+   {0x000600, 0x0006FF, "NotoSansArabic-Regular.ttf", CFontTable::ALIGN::RTOL, "Arabic", CFontTable::ADDON::RESOURCE_LANGUAGE_AR_SA},
+   {0x000700, 0x00074F, "NotoSansSyriac-Regular.ttf", CFontTable::ALIGN::RTOL, "Syriac", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x000750, 0x00077F, "NotoSansArabic-Regular.ttf", CFontTable::ALIGN::RTOL, "Arabic Supplement", CFontTable::ADDON::RESOURCE_LANGUAGE_AR_SA},
+   {0x000780, 0x0007BF, "NotoSansThaana-Regular.ttf", CFontTable::ALIGN::RTOL, "Thaana", CFontTable::ADDON::RESOURCE_FONT_ACTIVE}, /* dv_mv */
+   {0x0007C0, 0x0007FF, "NotoSansNKo-Regular.ttf", CFontTable::ALIGN::RTOL, "NKo", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x000800, 0x00083F, "NotoSansSamaritan-Regular.ttf", CFontTable::ALIGN::RTOL, "Samaritan", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x000840, 0x00085F, "NotoSansMandaic-Regular.ttf", CFontTable::ALIGN::RTOL, "Mandaic", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x000860, 0x00086F, "NotoSansSyriac-Regular.ttf", CFontTable::ALIGN::RTOL, "Syriac Supplement", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x0008A0, 0x0008FF, "NotoSansArabic-Regular.ttf", CFontTable::ALIGN::RTOL, "Arabic Extended-A", CFontTable::ADDON::RESOURCE_LANGUAGE_AR_SA},
+   {0x000900, 0x00097F, "NotoSansDevanagari-Regular.ttf", CFontTable::ALIGN::LTOR, "Devanagari", CFontTable::ADDON::RESOURCE_LANGUAGE_HI_IN},
+   {0x000980, 0x0009FF, "NotoSansBengali-Regular.ttf", CFontTable::ALIGN::LTOR, "Bengali", CFontTable::ADDON::RESOURCE_FONT_ACTIVE}, /* bn_in */
+   {0x000A00, 0x000A7F, "NotoSansGurmukhi-Regular.ttf", CFontTable::ALIGN::LTOR, "Gurmukhi", CFontTable::ADDON::RESOURCE_FONT_ACTIVE}, /* pa_in */
+   {0x000A80, 0x000AFF, "NotoSansGujarati-Regular.ttf", CFontTable::ALIGN::LTOR, "Gujarati", CFontTable::ADDON::RESOURCE_FONT_ACTIVE}, /* gu_in */
+   {0x000B00, 0x000B7F, "NotoSansOriya-Regular.ttf", CFontTable::ALIGN::LTOR, "Oriya", CFontTable::ADDON::RESOURCE_FONT_ACTIVE}, /* or_in */
+   {0x000B80, 0x000BFF, "NotoSansTamil-Regular.ttf", CFontTable::ALIGN::LTOR, "Tamil", CFontTable::ADDON::RESOURCE_LANGUAGE_TA_IN},
+   {0x000C00, 0x000C7F, "NotoSansTelugu-Regular.ttf", CFontTable::ALIGN::LTOR, "Telugu", CFontTable::ADDON::RESOURCE_LANGUAGE_TE_IN},
+   {0x000C80, 0x000CFF, "NotoSansKannada-Regular.ttf", CFontTable::ALIGN::LTOR, "Kannada", CFontTable::ADDON::RESOURCE_LANGUAGE_KN_IN},
+   {0x000D00, 0x000D7F, "NotoSansMalayalam-Regular.ttf", CFontTable::ALIGN::LTOR, "Malayalam", CFontTable::ADDON::RESOURCE_LANGUAGE_ML_IN},
+   {0x000D80, 0x000DFF, "NotoSansSinhala-Regular.ttf", CFontTable::ALIGN::LTOR, "Sinhala", CFontTable::ADDON::RESOURCE_LANGUAGE_SI_LK},
+   {0x000E00, 0x000E7F, "NotoSansThai-Regular.ttf", CFontTable::ALIGN::LTOR, "Thai", CFontTable::ADDON::RESOURCE_LANGUAGE_TH_TH},
+   {0x000E80, 0x000EFF, "NotoSansLao-Regular.ttf", CFontTable::ALIGN::LTOR, "Lao", CFontTable::ADDON::RESOURCE_FONT_ACTIVE}, /* lo_la */
+   {0x000F00, 0x000FFF, "NotoSansTibetan-Regular.ttf", CFontTable::ALIGN::LTOR, "Tibetan", CFontTable::ADDON::RESOURCE_FONT_ACTIVE}, /* bo_cn & bo_in */
+   {0x001000, 0x00109F, "NotoSansMyanmar-Regular.ttf", CFontTable::ALIGN::LTOR, "Myanmar", CFontTable::ADDON::RESOURCE_LANGUAGE_MY_MM},
+   {0x0010A0, 0x0010FF, "NotoSansGeorgian-Regular.ttf", CFontTable::ALIGN::LTOR, "Georgian", CFontTable::ADDON::RESOURCE_FONT_ACTIVE}, /* ka_ge */
+   {0x001100, 0x0011FF, "NotoSansKR-Regular.ttf", CFontTable::ALIGN::LTOR, "Hangul Jamo", CFontTable::ADDON::RESOURCE_LANGUAGE_KO_KR},
+   {0x001200, 0x00137F, "NotoSansEthiopic-Regular.ttf", CFontTable::ALIGN::LTOR, "Ethiopic", CFontTable::ADDON::RESOURCE_LANGUAGE_AM_ET},
+   {0x001380, 0x00139F, "NotoSansEthiopic-Regular.ttf", CFontTable::ALIGN::LTOR, "Ethiopic Supplement", CFontTable::ADDON::RESOURCE_LANGUAGE_AM_ET},
+   {0x0013A0, 0x0013FF, "NotoSansCherokee-Regular.ttf", CFontTable::ALIGN::LTOR, "Cherokee", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x001400, 0x00167F, "NotoSansCanadianAboriginal-Regular.ttf", CFontTable::ALIGN::LTOR, "Unified Canadian Aboriginal Syllabics", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x001680, 0x00169F, "NotoSansOgham-Regular.ttf", CFontTable::ALIGN::LTOR, "Ogham", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x0016A0, 0x0016FF, "NotoSansRunic-Regular.ttf", CFontTable::ALIGN::LTOR, "Runic", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x001700, 0x00171F, "NotoSansTagalog-Regular.ttf", CFontTable::ALIGN::LTOR, "Tagalog", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x001720, 0x00173F, "NotoSansHanunoo-Regular.ttf", CFontTable::ALIGN::LTOR, "Hanunoo", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x001740, 0x00175F, "NotoSansBuhid-Regular.ttf", CFontTable::ALIGN::LTOR, "Buhid", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x001760, 0x00177F, "NotoSansTagbanwa-Regular.ttf", CFontTable::ALIGN::LTOR, "Tagbanwa", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x001780, 0x0017FF, "NotoSansKhmer-Regular.ttf", CFontTable::ALIGN::LTOR, "Khmer", CFontTable::ADDON::RESOURCE_FONT_ACTIVE}, /* km_kh */
+   {0x001800, 0x0018AF, "NotoSansMongolian-Regular.ttf", CFontTable::ALIGN::LTOR, "Mongolian", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x0018B0, 0x0018FF, "NotoSansCanadianAboriginal-Regular.ttf", CFontTable::ALIGN::LTOR, "Unified Canadian Aboriginal Syllabics Extended", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x001900, 0x00194F, "NotoSansLimbu-Regular.ttf", CFontTable::ALIGN::LTOR, "Limbu", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x001950, 0x00197F, "NotoSansTaiLe-Regular.ttf", CFontTable::ALIGN::LTOR, "Tai Le", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x001980, 0x0019DF, "NotoSansNewTaiLue-Regular.ttf", CFontTable::ALIGN::LTOR, "New Tai Lue", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x0019E0, 0x0019FF, "NotoSansKhmer-Regular.ttf", CFontTable::ALIGN::LTOR, "Khmer Symbols", CFontTable::ADDON::RESOURCE_FONT_ACTIVE}, /* km_kh */
+   {0x001A00, 0x001A1F, "NotoSansBuginese-Regular.ttf", CFontTable::ALIGN::LTOR, "Buginese", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x001A20, 0x001AAF, "NotoSansTaiTham-Regular.ttf", CFontTable::ALIGN::LTOR, "Tai Tham", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x001AB0, 0x001AFF, "NotoSans-Regular.ttf", CFontTable::ALIGN::LTOR, "Combining Diacritical Marks Extended", CFontTable::ADDON::IN_KODI},
+   {0x001B00, 0x001B7F, "NotoSansBalinese-Regular.ttf", CFontTable::ALIGN::LTOR, "Balinese", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x001B80, 0x001BBF, "NotoSansSundanese-Regular.ttf", CFontTable::ALIGN::LTOR, "Sundanese", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x001BC0, 0x001BFF, "NotoSansBatak-Regular.ttf", CFontTable::ALIGN::LTOR, "Batak", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x001C00, 0x001C4F, "NotoSansLepcha-Regular.ttf", CFontTable::ALIGN::LTOR, "Lepcha", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x001C50, 0x001C7F, "NotoSansOlChiki-Regular.ttf", CFontTable::ALIGN::LTOR, "Ol Chiki", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x001C80, 0x001C8F, "NotoSans-Regular.ttf", CFontTable::ALIGN::LTOR, "Cyrillic Extended-C", CFontTable::ADDON::IN_KODI},
+   {0x001C90, 0x001CBF, "NotoSansGeorgian-Regular.ttf", CFontTable::ALIGN::LTOR, "Georgian Extended", CFontTable::ADDON::RESOURCE_FONT_ACTIVE}, /* ka_ge */
+   {0x001CC0, 0x001CCF, "NotoSansSundanese-Regular.ttf", CFontTable::ALIGN::LTOR, "Sundanese Supplement", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x001CD0, 0x001CFF, "NotoSansDevanagari-Regular.ttf", CFontTable::ALIGN::LTOR, "Vedik Extension", CFontTable::ADDON::RESOURCE_LANGUAGE_HI_IN},
+   {0x001D00, 0x001D7F, "NotoSans-Regular.ttf", CFontTable::ALIGN::LTOR, "Phonetic Extensions", CFontTable::ADDON::IN_KODI},
+   {0x001D80, 0x001DBF, "NotoSans-Regular.ttf", CFontTable::ALIGN::LTOR, "Phonetic Extensions Supplement", CFontTable::ADDON::IN_KODI},
+   {0x001DC0, 0x001DFF, "NotoSans-Regular.ttf", CFontTable::ALIGN::LTOR, "Combining Diacritical Marks Supplement", CFontTable::ADDON::IN_KODI},
+   {0x001E00, 0x001EFF, "NotoSans-Regular.ttf", CFontTable::ALIGN::LTOR, "Latin-1 Extended Additional", CFontTable::ADDON::IN_KODI},
+   {0x001F00, 0x001FFF, "NotoSans-Regular.ttf", CFontTable::ALIGN::LTOR, "Greek Extended", CFontTable::ADDON::IN_KODI},
+   {0x002000, 0x00206F, "NotoSans-Regular.ttf", CFontTable::ALIGN::LTOR, "General Punctuation", CFontTable::ADDON::IN_KODI},
+   {0x002070, 0x00209F, "NotoSans-Regular.ttf", CFontTable::ALIGN::LTOR, "Superscripts and Subscripts", CFontTable::ADDON::IN_KODI},
+   {0x0020A0, 0x0020CF, "NotoSansDisplay-Regular.ttf", CFontTable::ALIGN::LTOR, "Currency Symbols", CFontTable::ADDON::IN_KODI},
+   {0x0020D0, 0x0020FF, "NotoSansSymbols-Regular.ttf", CFontTable::ALIGN::LTOR, "Combining Diacritical Marks for Symbols", CFontTable::ADDON::IN_KODI},
+   {0x002100, 0x00214F, "NotoSansDisplay-Regular.ttf", CFontTable::ALIGN::LTOR, "Letterlike Symbols", CFontTable::ADDON::IN_KODI},
+   {0x002150, 0x00218F, "NotoSansSymbols-Regular.ttf", CFontTable::ALIGN::LTOR,  "Number Forms", CFontTable::ADDON::IN_KODI},
+   {0x002190, 0x0021FF, "NotoSansMath-Regular.ttf", CFontTable::ALIGN::LTOR, "Arrows", CFontTable::ADDON::IN_KODI},
+   {0x002200, 0x0022FF, "NotoSansMath-Regular.ttf", CFontTable::ALIGN::LTOR, "Mathematical Operations", CFontTable::ADDON::IN_KODI},
+   {0x002300, 0x0023FF, "NotoSansSymbols2-Regular.ttf", CFontTable::ALIGN::LTOR, "Miscellaneous Technical", CFontTable::ADDON::IN_KODI},
+   {0x002400, 0x00243F, "NotoSansSymbols2-Regular.ttf", CFontTable::ALIGN::LTOR, "Control Pictures", CFontTable::ADDON::IN_KODI},
+   {0x002440, 0x00245F, "NotoSansSymbols2-Regular.ttf", CFontTable::ALIGN::LTOR, "Optical Chracter Recognition", CFontTable::ADDON::IN_KODI},
+   {0x002460, 0x0024FF, "NotoSansSymbols2-Regular.ttf", CFontTable::ALIGN::LTOR, "Enclosed Alphanumerics", CFontTable::ADDON::IN_KODI},
+   {0x002500, 0x00257F, "NotoSansMono-Regular.ttf", CFontTable::ALIGN::LTOR, "Box Drawing", CFontTable::ADDON::IN_KODI},
+   {0x002580, 0x00259F, "NotoSansMono-Regular.ttf", CFontTable::ALIGN::LTOR, "Block Elements", CFontTable::ADDON::IN_KODI},
+   {0x0025A0, 0x0025FF, "NotoSansSymbols2-Regular.ttf", CFontTable::ALIGN::LTOR, "Geometric Shapes", CFontTable::ADDON::IN_KODI},
+   {0x002600, 0x0026FF, "NotoSansSymbols2-Regular.ttf", CFontTable::ALIGN::LTOR, "Miscellaneous Symbols", CFontTable::ADDON::IN_KODI},
+   {0x002700, 0x0027BF, "NotoSansSymbols2-Regular.ttf", CFontTable::ALIGN::LTOR, "Dingbats", CFontTable::ADDON::IN_KODI},
+   {0x0027C0, 0x0027EF, "NotoSansMath-Regular.ttf", CFontTable::ALIGN::LTOR, "Miscellaneous Mathematical Symbols-A", CFontTable::ADDON::IN_KODI},
+   {0x0027F0, 0x0027FF, "NotoSansMath-Regular.ttf", CFontTable::ALIGN::LTOR, "Supplemental Arrows-A", CFontTable::ADDON::IN_KODI},
+   {0x002800, 0x0028FF, "NotoSansSymbols2-Regular.ttf", CFontTable::ALIGN::LTOR, "Braille Pattern", CFontTable::ADDON::IN_KODI},
+   {0x002900, 0x00297F, "NotoSansMath-Regular.ttf", CFontTable::ALIGN::LTOR, "Supplemental Arrows-B", CFontTable::ADDON::IN_KODI},
+   {0x002980, 0x0029FF, "NotoSansMath-Regular.ttf", CFontTable::ALIGN::LTOR, "Miscellaneous Mathematical Symbols-B", CFontTable::ADDON::IN_KODI},
+   {0x002A00, 0x002AFF, "NotoSansMath-Regular.ttf", CFontTable::ALIGN::LTOR, "Supplemental Mathematic Operators", CFontTable::ADDON::IN_KODI},
+   {0x002B00, 0x002BFF, "NotoSansSymbols2-Regular.ttf", CFontTable::ALIGN::LTOR, "Miscellaneous Symbols and Arrows", CFontTable::ADDON::IN_KODI},
+   {0x002C00, 0x002C5F, "NotoSansGlagolitic-Regular.ttf", CFontTable::ALIGN::LTOR, "Glagolitic", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x002C60, 0x002C7F, "NotoSans-Regular.ttf", CFontTable::ALIGN::LTOR, "Latin Extended-C", CFontTable::ADDON::IN_KODI},
+   {0x002C80, 0x002CFF, "NotoSansCoptic-Regular.ttf", CFontTable::ALIGN::LTOR, "Coptic", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x002D00, 0x002D2F, "NotoSansGeorgian-Regular.ttf", CFontTable::ALIGN::LTOR, "Georgian Supplement", CFontTable::ADDON::RESOURCE_FONT_ACTIVE}, /* ka_ge */
+   {0x002D30, 0x002D7F, "NotoSansTifinagh-Regular.ttf", CFontTable::ALIGN::LTOR, "Tifinagh", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x002D80, 0x002DDF, "NotoSansEthiopic-Regular.ttf", CFontTable::ALIGN::LTOR, "Ethiopic Extended", CFontTable::ADDON::RESOURCE_LANGUAGE_AM_ET},
+   {0x002DE0, 0x002DFF, "NotoSans-Regular.ttf", CFontTable::ALIGN::LTOR, "Cyrillic Extended-A", CFontTable::ADDON::IN_KODI},
+   {0x002E00, 0x002E7F, "NotoSans-Regular.ttf", CFontTable::ALIGN::LTOR, "Supplemental Punctuation", CFontTable::ADDON::IN_KODI},
+   {0x002E80, 0x002EFF, "NotoSansSC-Regular.ttf", CFontTable::ALIGN::LTOR, "CJK Radicals Supplement", CFontTable::ADDON::RESOURCE_LANGUAGE_ZH_CN},
+   {0x002F00, 0x002FDF, "NotoSansSC-Regular.ttf", CFontTable::ALIGN::LTOR, "Kangxi Radicals", CFontTable::ADDON::RESOURCE_LANGUAGE_ZH_CN},
+   {0x002FF0, 0x002FFF, "NotoSansSC-Regular.ttf", CFontTable::ALIGN::LTOR, "Ideographic Description Character", CFontTable::ADDON::RESOURCE_LANGUAGE_ZH_CN},
+   {0x003000, 0x00303F, "NotoSansSC-Regular.ttf", CFontTable::ALIGN::LTOR, "CJK Symbols and Punctuation", CFontTable::ADDON::RESOURCE_LANGUAGE_ZH_CN},
+   {0x003040, 0x00309F, "NotoSansSC-Regular.ttf", CFontTable::ALIGN::LTOR, "Hiragana", CFontTable::ADDON::RESOURCE_LANGUAGE_ZH_CN},
+   {0x0030A0, 0x0030FF, "NotoSansSC-Regular.ttf", CFontTable::ALIGN::LTOR, "Katakana", CFontTable::ADDON::RESOURCE_LANGUAGE_ZH_CN},
+   {0x003100, 0x00312F, "NotoSansSC-Regular.ttf", CFontTable::ALIGN::LTOR, "Bopomofo", CFontTable::ADDON::RESOURCE_LANGUAGE_ZH_CN},
+   {0x003130, 0x00318F, "NotoSansSC-Regular.ttf", CFontTable::ALIGN::LTOR, "Hangul Compatibility Jamo", CFontTable::ADDON::RESOURCE_LANGUAGE_ZH_CN},
+   {0x003190, 0x00319F, "NotoSansSC-Regular.ttf", CFontTable::ALIGN::LTOR, "Kanbun", CFontTable::ADDON::RESOURCE_LANGUAGE_ZH_CN},
+   {0x0031A0, 0x0031BF, "NotoSansSC-Regular.ttf", CFontTable::ALIGN::LTOR, "Bopomofo Extended", CFontTable::ADDON::RESOURCE_LANGUAGE_ZH_CN},
+   {0x0031C0, 0x0031EF, "NotoSansSC-Regular.ttf", CFontTable::ALIGN::LTOR, "CJK Strokes", CFontTable::ADDON::RESOURCE_LANGUAGE_ZH_CN},
+   {0x0031F0, 0x0031FF, "NotoSansSC-Regular.ttf", CFontTable::ALIGN::LTOR, "Katakana Phonetic Extensions", CFontTable::ADDON::RESOURCE_LANGUAGE_ZH_CN},
+   {0x003200, 0x0032FF, "NotoSansSC-Regular.ttf", CFontTable::ALIGN::LTOR, "Enclosed CJK Letters and Months", CFontTable::ADDON::RESOURCE_LANGUAGE_ZH_CN},
+   {0x003300, 0x0033FF, "NotoSansSC-Regular.ttf", CFontTable::ALIGN::LTOR, "CJK Compatibility", CFontTable::ADDON::RESOURCE_LANGUAGE_ZH_CN},
+   {0x003400, 0x004DBF, "NotoSansSC-Regular.ttf", CFontTable::ALIGN::LTOR, "CJK Unified Ideographics Extensions A", CFontTable::ADDON::RESOURCE_LANGUAGE_ZH_CN},
+   {0x004DC0, 0x004DFF, "NotoSansSymbols2-Regular.ttf", CFontTable::ALIGN::LTOR, "Yijing Hexagram Symbols", CFontTable::ADDON::IN_KODI},
+   {0x004E00, 0x009FFF, "NotoSansSC-Regular.ttf", CFontTable::ALIGN::LTOR, "CJK Unified Ideographics", CFontTable::ADDON::RESOURCE_LANGUAGE_ZH_CN},
+   {0x00A000, 0x00A48F, "NotoSansYi-Regular.ttf", CFontTable::ALIGN::LTOR, "Yi Syllables", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x00A490, 0x00A4CF, "NotoSansYi-Regular.ttf", CFontTable::ALIGN::LTOR, "Yi Radicals", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x00A4D0, 0x00A4FF, "NotoSansLisu-Regular.ttf", CFontTable::ALIGN::LTOR, "Lisu", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x00A500, 0x00A63F, "NotoSansVai-Regular.ttf", CFontTable::ALIGN::LTOR, "Vai", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x00A640, 0x00A69F, "NotoSans-Regular.ttf", CFontTable::ALIGN::LTOR, "Cyrillic Extended-B", CFontTable::ADDON::IN_KODI},
+   {0x00A6A0, 0x00A6FF, "NotoSansBamum-Regular.ttf", CFontTable::ALIGN::LTOR, "Bamum", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x00A700, 0x00A71F, "NotoSans-Regular.ttf", CFontTable::ALIGN::LTOR, "Modifier Tone Letters", CFontTable::ADDON::IN_KODI},
+   {0x00A720, 0x00A7FF, "NotoSans-Regular.ttf", CFontTable::ALIGN::LTOR, "Latin Extended-D", CFontTable::ADDON::IN_KODI},
+   {0x00A800, 0x00A82F, "NotoSansSylotiNagri-Regular.ttf", CFontTable::ALIGN::LTOR, "Syloti Nagri", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x00A830, 0x00A83F, "NotoSansKannada-Regular.ttf", CFontTable::ALIGN::LTOR, "Common Indic Number Forms", CFontTable::ADDON::RESOURCE_LANGUAGE_KN_IN},
+   {0x00A840, 0x00A87F, "NotoSansPhagsPa-Regular.ttf", CFontTable::ALIGN::LTOR, "Phags-pa", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x00A880, 0x00A8DF, "NotoSansSaurashtra-Regular.ttf", CFontTable::ALIGN::LTOR, "Saurashtra", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x00A8E0, 0x00A8FF, "NotoSansDevanagari-Regular.ttf", CFontTable::ALIGN::LTOR, "Devanagari Extended", CFontTable::ADDON::RESOURCE_LANGUAGE_HI_IN},
+   {0x00A900, 0x00A92F, "NotoSansKayahLi-Regular.ttf", CFontTable::ALIGN::LTOR, "Kayah Li", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x00A930, 0x00A95F, "NotoSansRejang-Regular.ttf", CFontTable::ALIGN::LTOR, "Rejang", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x00A960, 0x00A97F, "NotoSansKR-Regular.ttf", CFontTable::ALIGN::LTOR, "Hangul Jamo Extended-A", CFontTable::ADDON::RESOURCE_LANGUAGE_KO_KR},
+   {0x00A980, 0x00A9DF, "NotoSansJavanese-Regular.ttf", CFontTable::ALIGN::LTOR, "Javanese", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x00A9E0, 0x00A9FF, "NotoSansMyanmar-Regular.ttf", CFontTable::ALIGN::LTOR, "Myanmar Extended-B", CFontTable::ADDON::IN_KODI},
+   {0x00AA00, 0x00AA5F, "NotoSansCham-Regular.ttf", CFontTable::ALIGN::LTOR, "Cham", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x00AA60, 0x00AA7F, "NotoSansMyanmar-Regular.ttf", CFontTable::ALIGN::LTOR, "Myanmar Extended-A", CFontTable::ADDON::IN_KODI},
+   {0x00AA80, 0x00AADF, "NotoSansTaiViet-Regular.ttf", CFontTable::ALIGN::LTOR, "Tai Viet", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x00AAE0, 0x00AAFF, "NotoSansMeeteiMayek-Regular.ttf", CFontTable::ALIGN::LTOR, "Meetei Mayek Extension", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x00AB00, 0x00AB2F, "NotoSansEthiopic-Regular.ttf", CFontTable::ALIGN::LTOR, "Ethiopic Extension-A", CFontTable::ADDON::RESOURCE_LANGUAGE_AM_ET},
+   {0x00AB30, 0x00AB6F, "NotoSans-Regular.ttf", CFontTable::ALIGN::LTOR, "Latin Extended-E", CFontTable::ADDON::IN_KODI},
+   {0x00AB70, 0x00ABBF, "NotoSansCherokee-Regular.ttf", CFontTable::ALIGN::LTOR, "Cherokee Supplement", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x00ABC0, 0x00ABFF, "NotoSansMeeteiMayek-Regular.ttf", CFontTable::ALIGN::LTOR, "Meetei Mayek", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x00AC00, 0x00D7AF, "NotoSansKR-Regular.ttf", CFontTable::ALIGN::LTOR, "Hangul Syllable", CFontTable::ADDON::RESOURCE_LANGUAGE_KO_KR},
+   {0x00D7B0, 0x00D7FF, "NotoSansKR-Regular.ttf", CFontTable::ALIGN::LTOR, "Hangul Jamo Extended-B", CFontTable::ADDON::RESOURCE_LANGUAGE_KO_KR},
+   //{0x00D800, 0x00DB7F, "", CFontTable::ALIGN::LTOR, "High Surrogates", CFontTable::ADDON::NOT_USED},
+   //{0x00DB80, 0x00DBFF, "", CFontTable::ALIGN::LTOR, "Private Use High Surrogates", CFontTable::ADDON::NOT_USED},
+   //{0x00DC00, 0x00DFFF, "", CFontTable::ALIGN::LTOR, "Low Surrogates", CFontTable::ADDON::NOT_USED},
+   //{0x00E000, 0x00F8FF, "", CFontTable::ALIGN::LTOR, "Private Use Area", CFontTable::ADDON::NOT_USED},
+   {0x00F900, 0x00FAFF, "NotoSansJP-Regular.ttf", CFontTable::ALIGN::LTOR, "CJK Compatibility Ideographics", CFontTable::ADDON::RESOURCE_LANGUAGE_JA_JP},
+   {0x00FB00, 0x00FB4F, "NotoSans-Regular.ttf", CFontTable::ALIGN::LTOR, "Alphabetic Presentation Forms", CFontTable::ADDON::IN_KODI},
+   {0x00FB50, 0x00FDFF, "NotoSansArabic-Regular.ttf", CFontTable::ALIGN::RTOL, "Arabic Presentation Forms", CFontTable::ADDON::RESOURCE_LANGUAGE_AR_SA},
+   //{0x00FE00, 0x00FE0F, "", CFontTable::ALIGN::LTOR, "Variation Selectors", CFontTable::ADDON::NOT_USED},
+   {0x00FE10, 0x00FE1F, "NotoSansSC-Regular.ttf", CFontTable::ALIGN::LTOR, "Vertical Forms", CFontTable::ADDON::RESOURCE_LANGUAGE_ZH_CN},
+   {0x00FE20, 0x00FE2F, "NotoSans-Regular.ttf", CFontTable::ALIGN::LTOR, "Combining Half Masks", CFontTable::ADDON::IN_KODI},
+   {0x00FE30, 0x00FE4F, "NotoSansSC-Regular.ttf", CFontTable::ALIGN::LTOR, "CJK Compatibility Forms", CFontTable::ADDON::RESOURCE_LANGUAGE_ZH_CN},
+   {0x00FE50, 0x00FE6F, "NotoSansSC-Regular.ttf", CFontTable::ALIGN::LTOR, "Small Form Variants", CFontTable::ADDON::RESOURCE_LANGUAGE_ZH_CN},
+   {0x00FE70, 0x00FEFF, "NotoSansArabic-Regular.ttf", CFontTable::ALIGN::RTOL, "Arabic Presentation Forms-B", CFontTable::ADDON::RESOURCE_LANGUAGE_AR_SA},
+   {0x00FF00, 0x00FFEF, "NotoSansSC-Regular.ttf", CFontTable::ALIGN::LTOR, "Halfwidth and Fullwidth Forms", CFontTable::ADDON::RESOURCE_LANGUAGE_ZH_CN},
+   {0x00FFF0, 0x00FFFF, "NotoSans-Regular.ttf", CFontTable::ALIGN::LTOR, "Specials", CFontTable::ADDON::IN_KODI},
+   {0x010000, 0x01007F, "NotoSansLinearB-Regular.ttf", CFontTable::ALIGN::LTOR, "Linear B Syllable", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x010080, 0x0100FF, "NotoSansLinearB-Regular.ttf", CFontTable::ALIGN::LTOR, "Linear B Ideograms", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x010100, 0x01013F, "NotoSansLinearB-Regular.ttf", CFontTable::ALIGN::LTOR, "Aegean Numbers", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x010140, 0x01018F, "NotoSansSymbols2-Regular.ttf", CFontTable::ALIGN::LTOR, "Ancient Greek Numbers", CFontTable::ADDON::IN_KODI},
+   {0x010190, 0x0101CF, "NotoSansSymbols2-Regular.ttf", CFontTable::ALIGN::LTOR, "Ancient Symbols", CFontTable::ADDON::IN_KODI},
+   {0x0101D0, 0x0101FF, "NotoSansSymbols2-Regular.ttf", CFontTable::ALIGN::LTOR, "Phaistos Disc", CFontTable::ADDON::IN_KODI},
+   {0x010280, 0x01029F, "NotoSansLycian-Regular.ttf", CFontTable::ALIGN::LTOR, "Lycian", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x0102A0, 0x0102DF, "NotoSansCarian-Regular.ttf", CFontTable::ALIGN::LTOR, "Carian", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x0102E0, 0x0102FF, "NotoSansCoptic-Regular.ttf", CFontTable::ALIGN::LTOR, "Coptic Epact Numbers", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x010300, 0x01032F, "NotoSansOldItalic-Regular.ttf", CFontTable::ALIGN::LTOR, "Old Italic", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x010330, 0x01034F, "NotoSansGothic-Regular.ttf", CFontTable::ALIGN::LTOR, "Gothic", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x010350, 0x01037F, "NotoSansOldPermic-Regular.ttf", CFontTable::ALIGN::LTOR, "Old Permic", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x010380, 0x01039F, "NotoSansUgaritic-Regular.ttf", CFontTable::ALIGN::LTOR, "Ugaritic", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x0103A0, 0x0103DF, "NotoSansOldPersian-Regular.ttf", CFontTable::ALIGN::LTOR, "Old Persian", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x010400, 0x01044F, "NotoSansDeseret-Regular.ttf", CFontTable::ALIGN::LTOR, "Deseret", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x010450, 0x01047F, "NotoSansShavian-Regular.ttf", CFontTable::ALIGN::LTOR, "Shavian", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x010480, 0x0104AF, "NotoSansOsmanya-Regular.ttf", CFontTable::ALIGN::LTOR, "Osmanya", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x0104B0, 0x0104FF, "NotoSansOsage-Regular.ttf", CFontTable::ALIGN::LTOR, "Osage", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x010500, 0x01052F, "NotoSansElbasan-Regular.ttf", CFontTable::ALIGN::LTOR, "Elbasan", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x010530, 0x01056F, "NotoSansCaucasianAlbanian-Regular.ttf", CFontTable::ALIGN::LTOR, "Caucasian Albanian", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   //{0x010570, 0x0105BF, "", CFontTable::ALIGN::LTOR, "Vithkuqi", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x010600, 0x01077F, "NotoSansLinearA-Regular.ttf", CFontTable::ALIGN::LTOR, "Linear A", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x010800, 0x01083F, "NotoSansCypriot-Regular.ttf", CFontTable::ALIGN::RTOL, "Cypriot Syllable", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x010840, 0x01085F, "NotoSansImperialAramaic-Regular.ttf", CFontTable::ALIGN::RTOL, "Imperial Aramaic", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x010860, 0x01087F, "NotoSansPalmyrene-Regular.ttf", CFontTable::ALIGN::RTOL, "Palmyrene", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x010880, 0x0108AF, "NotoSansNabataean-Regular.ttf", CFontTable::ALIGN::RTOL, "Nabataean", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x0108E0, 0x0108FF, "NotoSansHatran-Regular.ttf", CFontTable::ALIGN::RTOL, "Hatran", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x010900, 0x01091F, "NotoSansPhoenician-Regular.ttf", CFontTable::ALIGN::RTOL, "Phoenician", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x010920, 0x01093F, "NotoSansLydian-Regular.ttf", CFontTable::ALIGN::RTOL, "Lydian", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x010980, 0x01099F, "NotoSansMeroitic-Regular.ttf", CFontTable::ALIGN::RTOL, "Meroitic Hieroglyphic", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x0109A0, 0x0109FF, "NotoSansMeroitic-Regular.ttf", CFontTable::ALIGN::RTOL, "Meroitic Cursive", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x010A00, 0x010A5F, "NotoSansKharoshthi-Regular.ttf", CFontTable::ALIGN::RTOL, "Kharoshthi", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x010A60, 0x010A7F, "NotoSansOldSouthArabian-Regular.ttf", CFontTable::ALIGN::RTOL, "Old South Arabian", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x010A80, 0x010A9F, "NotoSansOldNorthArabian-Regular.ttf", CFontTable::ALIGN::RTOL, "Old North Arabian", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x010AC0, 0x010AFF, "NotoSansManichaean-Regular.ttf", CFontTable::ALIGN::RTOL, "Manichaean", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x010B00, 0x010B3F, "NotoSansAvestan-Regular.ttf", CFontTable::ALIGN::RTOL, "Avestan", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x010B40, 0x010B5F, "NotoSansInscriptionalParthian-Regular.ttf", CFontTable::ALIGN::RTOL, "Inscriptional Parthian", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x010B60, 0x010B7F, "NotoSansInscriptionalPahlavi-Regular.ttf", CFontTable::ALIGN::RTOL, "Inscriptional Pahlavi", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x010B80, 0x010BAF, "NotoSansPsalterPahlavi-Regular.ttf", CFontTable::ALIGN::RTOL, "Psalter Pahlavi", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x010C00, 0x010C4F, "NotoSansOldTurkic-Regular.ttf", CFontTable::ALIGN::RTOL, "Old Turkic", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x010C80, 0x010CFF, "NotoSansOldHungarian-Regular.ttf", CFontTable::ALIGN::RTOL, "Old Hungarian", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x010D00, 0x010D3F, "NotoSansHanifiRohingya-Regular.ttf", CFontTable::ALIGN::RTOL, "Hanifi Rohingya", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x010E60, 0x010E7F, "NotoSansSymbols2-Regular.ttf", CFontTable::ALIGN::LTOR, "Rumi Numeral Symbols", CFontTable::ADDON::IN_KODI},
+   {0x010E80, 0x010EBF, "NotoSerifYezidi-Regular.ttf", CFontTable::ALIGN::LTOR, "Yezidi", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x010F00, 0x010F2F, "NotoSansOldSogdian-Regular.ttf", CFontTable::ALIGN::RTOL, "Old Sogdian", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x010F30, 0x010F6F, "NotoSansSogdian-Regular.ttf", CFontTable::ALIGN::RTOL, "Sogdian", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   //{0x010FB0, 0x010FDF, "", CFontTable::ALIGN::LTOR, "Chorasmian", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x010FE0, 0x010FFF, "NotoSansElymaic-Regular.ttf", CFontTable::ALIGN::RTOL, "Elymaic", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x011000, 0x01107F, "NotoSansBrahmi-Regular.ttf", CFontTable::ALIGN::LTOR, "Brahmi", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x011080, 0x0110CF, "NotoSansKaithi-Regular.ttf", CFontTable::ALIGN::LTOR, "Kaithi", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x0110D0, 0x0110FF, "NotoSansSoraSompeng-Regular.ttf", CFontTable::ALIGN::LTOR, "Sora Sompeng", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x011100, 0x01114F, "NotoSansChakma-Regular.ttf", CFontTable::ALIGN::LTOR, "Chakma", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x011150, 0x01117F, "NotoSansMahajani-Regular.ttf", CFontTable::ALIGN::LTOR, "Mahajani", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x011180, 0x0111DF, "NotoSansSharada-Regular.ttf", CFontTable::ALIGN::LTOR, "Sharada", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x0111E0, 0x0111FF, "NotoSansSinhala-Regular.ttf", CFontTable::ALIGN::LTOR, "Sinhala Archaic Numbers", CFontTable::ADDON::IN_KODI},
+   {0x011200, 0x01124F, "NotoSansKhojki-Regular.ttf", CFontTable::ALIGN::LTOR, "Khojki", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x011280, 0x0112AF, "NotoSansMultani-Regular.ttf", CFontTable::ALIGN::LTOR, "Multani", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x0112B0, 0x0112FF, "NotoSansKhudawadi-Regular.ttf", CFontTable::ALIGN::LTOR, "Khudawadi", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x011300, 0x01137F, "NotoSansGrantha-Regular.ttf", CFontTable::ALIGN::LTOR, "Grantha", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x011400, 0x01147F, "NotoSansNewa-Regular.ttf", CFontTable::ALIGN::LTOR, "Newa", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x011480, 0x0114DF, "NotoSansTirhuta-Regular.ttf", CFontTable::ALIGN::LTOR, "Tirhuta", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x011580, 0x0115FF, "NotoSansSiddham-Regular.ttf", CFontTable::ALIGN::LTOR, "Siddham", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x011600, 0x01165F, "NotoSansModi-Regular.ttf", CFontTable::ALIGN::LTOR, "Modi", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x011660, 0x01167F, "NotoSansMongolian-Regular.ttf", CFontTable::ALIGN::LTOR, "Mongolian Supplement", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x011680, 0x0116CF, "NotoSansTakri-Regular.ttf", CFontTable::ALIGN::LTOR, "Takri", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x0117D0, 0x01173F, "NotoSerifAhom-Regular.ttf", CFontTable::ALIGN::LTOR, "Ahom", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x011800, 0x01184F, "NotoSerifDogra-Regular.ttf", CFontTable::ALIGN::LTOR, "Dogra", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x0118A0, 0x0118FF, "NotoSansWarangCiti-Regular.ttf", CFontTable::ALIGN::LTOR, "Warang Citi", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   //{0x011900, 0x01195F, "", CFontTable::ALIGN::LTOR, "Dives Akuru", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   //{0x0119A0, 0x0119FF, "", CFontTable::ALIGN::LTOR, "Nandinagari", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x011A00, 0x011A4F, "NotoSansZanabazarSquare-Regular.ttf", CFontTable::ALIGN::LTOR, "Zanabazar Square", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x011A50, 0x011AAF, "NotoSansSoyombo-Regular.ttf", CFontTable::ALIGN::LTOR, "Soyombo", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x011AC0, 0x011AFF, "NotoSansPauCinHau-Regular.ttf", CFontTable::ALIGN::LTOR, "Pau Cin Hau", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x011C00, 0x011C6F, "NotoSansBhaiksuki-Regular.ttf", CFontTable::ALIGN::LTOR, "Bhaiksuki", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x011C70, 0x011CBF, "NotoSansMarchen-Regular.ttf", CFontTable::ALIGN::LTOR, "Marchen", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x011D00, 0x011D5F, "NotoSansMasaramGondi-Regular.ttf", CFontTable::ALIGN::LTOR, "Masaram Gondi", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x011D60, 0x011DAF, "NotoSansGunjalaGondi-Regular.ttf", CFontTable::ALIGN::LTOR, "Gunjala Gondi", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   //{0x011EE0, 0x011EFF, "", CFontTable::ALIGN::LTOR, "Makasar", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x011FB0, 0x011FBF, "NotoSansLisu-Regular.ttf", CFontTable::ALIGN::LTOR, "Lisu Supplement", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x011FC0, 0x011FFF, "NotoSansTamilSupplement-Regular.ttf", CFontTable::ALIGN::LTOR, "Tamil Supplement", CFontTable::ADDON::RESOURCE_LANGUAGE_TA_IN},
+   {0x012000, 0x0123FF, "NotoSansCuneiform-Regular.ttf", CFontTable::ALIGN::LTOR, "Cuneiform", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x012400, 0x01247F, "NotoSansCuneiform-Regular.ttf", CFontTable::ALIGN::LTOR, "Cuneiform Numbers and Punctuation", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x012480, 0x01254F, "NotoSansCuneiform-Regular.ttf", CFontTable::ALIGN::LTOR, "Early Dynastic Cuneiform", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x013000, 0x01342F, "NotoSansEgyptianHieroglyphs-Regular.ttf", CFontTable::ALIGN::LTOR, "Egyptian Hieroglyphs", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   //{0x013430, 0x01343F, "", CFontTable::ALIGN::LTOR, "Egyptian Hieroglyphs Format Controls", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x014400, 0x01467F, "NotoSansAnatolianHieroglyphs-Regular.ttf", CFontTable::ALIGN::LTOR, "Anatolian Hieroglyphs", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x016800, 0x016A3F, "NotoSansBamum-Regular.ttf", CFontTable::ALIGN::LTOR, "Bamum Supplement", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x016A40, 0x016A6F, "NotoSansMro-Regular.ttf", CFontTable::ALIGN::LTOR, "Mro", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   //{0x016A70, 0x016AC9, "", CFontTable::ALIGN::LTOR, "Tangsa", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x016AD0, 0x016AFF, "NotoSansBassaVah-Regular.ttf", CFontTable::ALIGN::LTOR, "Bassa Vah", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x016B00, 0x016B8F, "NotoSansPahawhHmong-Regular.ttf", CFontTable::ALIGN::LTOR, "Pahawh Hmong", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x016E40, 0x016E9F, "NotoSansMedefaidrin-Regular.ttf", CFontTable::ALIGN::LTOR, "Medefaidrin", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x016F00, 0x016F9F, "NotoSansMiao-Regular.ttf", CFontTable::ALIGN::LTOR, "Miao", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x016FE0, 0x016FE0, "NotoSerifTangut-Regular.ttf", CFontTable::ALIGN::LTOR, "Ideographic Symbols and Punctuation", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x016FE0, 0x016FFF, "NotoSansNushu-Regular.ttf", CFontTable::ALIGN::LTOR, "Ideographic Symbols and Punctuation", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x017000, 0x0187FF, "NotoSerifTangut-Regular.ttf", CFontTable::ALIGN::LTOR, "Tangut", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x018800, 0x018AFF, "NotoSerifTangut-Regular.ttf", CFontTable::ALIGN::LTOR, "Tangut Components", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   //{0x018B00, 0x018CFF, "", CFontTable::ALIGN::LTOR, "Khitan Small Script", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x018D00, 0x018D8F, "NotoSerifTangut-Regular.ttf", CFontTable::ALIGN::LTOR, "Tangut Supplement", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   //{0x01B000, 0x01B0FF, "", CFontTable::ALIGN::LTOR, "Kana Supplement", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   //{0x01B100, 0x01B12F, "", CFontTable::ALIGN::LTOR, "Kana Extended-A", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   //{0x01B130, 0x01B16F, "", CFontTable::ALIGN::LTOR, "Small Kana Extension", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x01B170, 0x01B2FF, "NotoSansNushu-Regular.ttf", CFontTable::ALIGN::LTOR, "Nushu", CFontTable::ADDON::IN_KODI},
+   {0x01BC00, 0x01BC9F, "NotoSansDuployan-Regular.ttf", CFontTable::ALIGN::LTOR, "Duployan", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x01BCA0, 0x01BCAF, "NotoSansDuployan-Regular.ttf", CFontTable::ALIGN::LTOR, "Shorthand Format Controls", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x01BC00, 0x01BC9F, "NotoMusic-Regular.ttf", CFontTable::ALIGN::LTOR, "Byzantine Musical Symbols", CFontTable::ADDON::IN_KODI},
+   {0x01D100, 0x01D1FF, "NotoMusic-Regular.ttf", CFontTable::ALIGN::LTOR, "Musical Symbols", CFontTable::ADDON::IN_KODI},
+   {0x01D200, 0x01D24F, "NotoMusic-Regular.ttf", CFontTable::ALIGN::LTOR, "Ancient Greek Musical Notation", CFontTable::ADDON::IN_KODI},
+   {0x01D2E0, 0x01D2FF, "NotoSansMayanNumerals-Regular.ttf", CFontTable::ALIGN::LTOR, "Mayan Numerals", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x01D300, 0x01D35F, "NotoSansSymbols2-Regular.ttf", CFontTable::ALIGN::LTOR, "Tai Xuan Jing Symbols", CFontTable::ADDON::IN_KODI},
+   {0x01D400, 0x01D7FF, "NotoSansMath-Regular.ttf", CFontTable::ALIGN::LTOR, "Mathematical Alphanumeric Symbols", CFontTable::ADDON::IN_KODI},
+   {0x01D800, 0x01DAFF, "NotoSansSignWriting-Regular.ttf", CFontTable::ALIGN::LTOR, "Sutton SignWriting", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x01E000, 0x01E02F, "NotoSansGlagolitic-Regular.ttf", CFontTable::ALIGN::LTOR, "Glagolitic Supplement", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x01E100, 0x01E14F, "NotoSerifNyiakengPuachueHmong-Regular.ttf", CFontTable::ALIGN::LTOR, "Nyiakeng Puachue Hmong", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   //{0x01E290, 0x01E2BF, "", CFontTable::ALIGN::LTOR, "Toto", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x01E2C0, 0x01E2FF, "NotoSansWancho-Regular.ttf", CFontTable::ALIGN::LTOR, "Wancho", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x01E800, 0x01E8DF, "NotoSansMendeKikakui-Regular.ttf", CFontTable::ALIGN::RTOL, "Mende Kikakui", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x01E900, 0x01E95F, "NotoSansAdlam-Regular.ttf", CFontTable::ALIGN::RTOL, "Adlam", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   {0x01EC70, 0x01ECBF, "NotoSansIndicSiyaqNumbers-Regular.ttf", CFontTable::ALIGN::LTOR, "Indic Siyaq Numbers", CFontTable::ADDON::RESOURCE_FONT_LIMITED},
+   //{0x01ED00, 0x01ED4F, "", CFontTable::ALIGN::LTOR, "Ottoman Siyaq Numbers", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x01EE00, 0x01EEFF, "NotoSansMath-Regular.ttf", CFontTable::ALIGN::LTOR, "Arabic Mathematical Alphabetic Symbols", CFontTable::ADDON::IN_KODI},
+   {0x01F000, 0x01F02F, "NotoSansSymbols2-Regular.ttf", CFontTable::ALIGN::LTOR, "Mahjong Tiles", CFontTable::ADDON::IN_KODI},
+   //{0x010F70, 0x010FAF, "", CFontTable::ALIGN::LTOR, "Old Uyghur", CFontTable::ADDON::RESOURCE_FONT_EXCLUDED},
+   {0x01F0A0, 0x01F0FF, "NotoSansSymbols2-Regular.ttf", CFontTable::ALIGN::LTOR, "Playing Cards", CFontTable::ADDON::IN_KODI},
+   {0x01F100, 0x01F1FF, "NotoSansSymbols-Regular.ttf", CFontTable::ALIGN::LTOR, "Enclosed Alphanumeric Supplement", CFontTable::ADDON::IN_KODI},
+   {0x01F200, 0x01F2FF, "NotoSansSC-Regular.ttf", CFontTable::ALIGN::LTOR, "Enclosed Ideographic Supplement", CFontTable::ADDON::RESOURCE_LANGUAGE_ZH_CN},
+   {0x01F300, 0x01F5FF, "NotoColorEmoji-Regular.ttf", CFontTable::ALIGN::LTOR, "Miscellaneous Symbols and Pictographs", CFontTable::ADDON::RESOURCE_FONT_EMOJI},
+   {0x01F600, 0x01F64F, "NotoColorEmoji-Regular.ttf", CFontTable::ALIGN::LTOR, "Emoticons", CFontTable::ADDON::RESOURCE_FONT_EMOJI},
+   {0x01F650, 0x01F67F, "NotoSansSymbols2-Regular.ttf", CFontTable::ALIGN::LTOR, "Omamental Dingbats", CFontTable::ADDON::IN_KODI},
+   {0x01F680, 0x01F6FF, "NotoColorEmoji-Regular.ttf", CFontTable::ALIGN::LTOR, "Transport and Map Symbols", CFontTable::ADDON::RESOURCE_FONT_EMOJI},
+   {0x01F700, 0x01F77F, "NotoSansSymbols-Regular.ttf", CFontTable::ALIGN::LTOR, "Alchemical Symbols", CFontTable::ADDON::IN_KODI},
+   {0x01F780, 0x01F7FF, "NotoSansSymbols2-Regular.ttf", CFontTable::ALIGN::LTOR, "Geometric Shapes Extended", CFontTable::ADDON::IN_KODI},
+   {0x01F800, 0x01F8FF, "NotoSansSymbols2-Regular.ttf", CFontTable::ALIGN::LTOR, "Supplemental Arrows-C", CFontTable::ADDON::IN_KODI},
+   {0x01F900, 0x01F9FF, "NotoColorEmoji-Regular.ttf", CFontTable::ALIGN::LTOR, "Supplemental Symbols and Pictographs", CFontTable::ADDON::RESOURCE_FONT_EMOJI},
+   {0x01FA00, 0x01FA6F, "NotoSansSymbols2-Regular.ttf", CFontTable::ALIGN::LTOR, "Chess Symbols", CFontTable::ADDON::IN_KODI},
+   {0x01FA70, 0x01FAFF, "NotoSansSymbols2-Regular.ttf", CFontTable::ALIGN::LTOR, "Symbols and Pictographs Extended-A", CFontTable::ADDON::IN_KODI},
+   {0x01FB00, 0x01FBFF, "NotoSansSymbols2-Regular.ttf", CFontTable::ALIGN::LTOR, "Symbols for Legacy Computing", CFontTable::ADDON::IN_KODI},
+   // About here and below to strange to look, swaps between JP, SC, TC and KR, buah :-(
+   //{0x020000, 0x02A6DF, "", CFontTable::ALIGN::LTOR, "CJK Unified Ideographics Extension B", CFontTable::ADDON::IN_KODI},
+   //{0x02A700, 0x02B73F, "", CFontTable::ALIGN::LTOR, "CJK Unified Ideographics Extension C", CFontTable::ADDON::IN_KODI},
+   //{0x02A740, 0x02B81F, "", CFontTable::ALIGN::LTOR, "CJK Unified Ideographics Extension D", CFontTable::ADDON::IN_KODI},
+   //{0x02B820, 0x02CEAF, "", CFontTable::ALIGN::LTOR, "CJK Unified Ideographics Extension E", CFontTable::ADDON::IN_KODI},
+   //{0x02CEB0, 0x02EBEF, "", CFontTable::ALIGN::LTOR, "CJK Unified Ideographics Extension F", CFontTable::ADDON::IN_KODI},
+   //{0x02F800, 0x02FA1F, "", CFontTable::ALIGN::LTOR, "CJK Compatibility Ideographic Supplement", CFontTable::ADDON::IN_KODI},
+   //{0x030000, 0x03134F, "", CFontTable::ALIGN::LTOR, "CJK Unified Ideographics Extension F", CFontTable::ADDON::IN_KODI},
+   // Not relates to character for view
+   //{0x0E0000, 0x0E007F, "", CFontTable::ALIGN::LTOR, "Tags", CFontTable::ADDON::NOT_USED},
+   //{0x0E0100, 0x0E01EF, "", CFontTable::ALIGN::LTOR, "Variation Selectors Supplement", CFontTable::ADDON::NOT_USED},
+   //{0x0F0000, 0x0FFFFF, "", CFontTable::ALIGN::LTOR, "Supplementary Private Use Area-A", CFontTable::ADDON::NOT_USED},
+   //{0x100000, 0x10FFFF, "", CFontTable::ALIGN::LTOR, "Supplementary Private Use Area-B", CFontTable::ADDON::NOT_USED},
+  }};
+// clang-format on
+
+class InstallLanguageJob : public CJob
+{
+public:
+  inline InstallLanguageJob(const CFontTable& fontTable, const std::string& addonId)
+    : m_fontTable(fontTable), m_addonId(addonId)
+  {
+  }
+
+  bool DoWork() override
+  {
+    using namespace ADDON;
+    using namespace KODI::MESSAGING;
+    using KODI::MESSAGING::HELPERS::DialogResponse;
+
+    std::unique_lock<CCriticalSection> lock(m_installLock);
+
+    if (WasFailed(m_addonId) || CServiceBroker::GetAddonMgr().IsAddonInstalled(m_addonId))
+      return false;
+
+    std::shared_ptr<IAddon> addon;
+    if (!CServiceBroker::GetAddonMgr().FindInstallableById(m_addonId, addon))
+    {
+      CLog::Log(LOGERROR, "InstallLanguageJob::{}: Failed to get {} from installable repo content",
+                __func__, m_addonId);
+      return false;
+    }
+
+    const std::string heading = g_localizeStrings.Get(2105);
+    const std::string message = StringUtils::Format(g_localizeStrings.Get(2106), m_addonId,
+                                                    addon->Name(), m_fontTable.m_name);
+    if (HELPERS::ShowYesNoDialogText(heading, message) == DialogResponse::CHOICE_YES)
+    {
+      const bool ret = CAddonInstaller::GetInstance().InstallOrUpdate(
+          m_addonId, BackgroundJob::CHOICE_NO, ModalJob::CHOICE_NO,
+          AddonOptPostInstValue::POST_INSTALL_LANGUAGE_RESOURCE_NO_SELECT);
+      if (!ret)
+      {
+        {
+          // If failed, prevent future install works
+          std::unique_lock<CCriticalSection> lock(m_installFailedLock);
+          m_installFailed.emplace(m_addonId, JOB_RETRY_TIMEOUT);
+        }
+
+        CLog::Log(LOGERROR, "InstallLanguageJob::{}: Failed to install {}", __func__, m_addonId);
+        const std::string message =
+            StringUtils::Format(g_localizeStrings.Get(2107), m_addonId, m_fontTable.m_name);
+        HELPERS::ShowOKDialogText(257 /*"Error"*/, message);
+      }
+
+      return ret;
+    }
+    else
+    {
+      // If cancelled, prevent future install until Kodi is restarted and font needed again
+      std::unique_lock<CCriticalSection> lock(m_installFailedLock);
+      m_installFailed.emplace(m_addonId, JOB_CANCEL_TIMEOUT);
+      return false;
+    }
+
+    return false;
+  }
+
+  static bool WasFailed(const std::string& addonId)
+  {
+    std::unique_lock<CCriticalSection> lock(m_installFailedLock);
+
+    auto itr = m_installFailed.find(addonId);
+    if (itr != m_installFailed.end())
+    {
+      if (itr->second.GetInitialTimeoutValue() == JOB_CANCEL_TIMEOUT || !itr->second.IsTimePast())
+        return true;
+
+      m_installFailed.erase(itr);
+    }
+
+    return false;
+  }
+
+private:
+  static CCriticalSection m_installLock;
+  static CCriticalSection m_installFailedLock;
+  static std::unordered_map<std::string, XbmcThreads::EndTime<>> m_installFailed;
+
+  const CFontTable& m_fontTable;
+  const std::string m_addonId;
+};
+
+CCriticalSection InstallLanguageJob::m_installLock;
+CCriticalSection InstallLanguageJob::m_installFailedLock;
+std::unordered_map<std::string, XbmcThreads::EndTime<>> InstallLanguageJob::m_installFailed;
 
 } /* namespace */
 
@@ -89,7 +539,7 @@ public:
       return nullptr;
     }
 
-    FT_Face face;
+    FT_Face face = nullptr;
 
     // ok, now load the font face
     CURL realFile(CSpecialProtocol::TranslatePath(filename));
@@ -165,6 +615,32 @@ private:
 XBMC_GLOBAL_REF(CFreeTypeLibrary, g_freeTypeLibrary); // our freetype library
 #define g_freeTypeLibrary XBMC_GLOBAL_USE(CFreeTypeLibrary)
 
+CFontData::~CFontData()
+{
+  Clear();
+}
+
+void CFontData::Clear()
+{
+  if (m_hbFont)
+    hb_font_destroy(m_hbFont);
+  m_hbFont = nullptr;
+  if (m_face)
+    g_freeTypeLibrary.ReleaseFont(m_face);
+  m_face = nullptr;
+  if (m_stroker)
+    g_freeTypeLibrary.ReleaseStroker(m_stroker);
+  m_stroker = nullptr;
+  m_fontFileInMemory.clear();
+  m_char.clear();
+}
+
+void CFontData::ClearCharacterCache()
+{
+  m_char.clear();
+  m_char.reserve(CHAR_CHUNK);
+}
+
 CGUIFontTTF::CGUIFontTTF(const std::string& fontIdent)
   : m_fontIdent(fontIdent),
     m_staticCache(*this),
@@ -191,7 +667,6 @@ void CGUIFontTTF::RemoveReference()
     g_fontManager.FreeFontFile(this);
 }
 
-
 void CGUIFontTTF::ClearCharacterCache()
 {
   m_texture.reset();
@@ -199,8 +674,9 @@ void CGUIFontTTF::ClearCharacterCache()
   DeleteHardwareTexture();
 
   m_texture = nullptr;
-  m_char.clear();
-  m_char.reserve(CHAR_CHUNK);
+  m_fontMain.ClearCharacterCache();
+  for (const auto& data : m_fallbackUsed)
+    data.second->ClearCharacterCache();
   memset(m_charquick, 0, sizeof(m_charquick));
   // set the posX and posY so that our texture will be created on first character write.
   m_posX = m_textureWidth;
@@ -217,34 +693,32 @@ void CGUIFontTTF::Clear()
   m_posY = 0;
   m_nestedBeginCount = 0;
 
-  if (m_hbFont)
-    hb_font_destroy(m_hbFont);
-  m_hbFont = nullptr;
-  if (m_face)
-    g_freeTypeLibrary.ReleaseFont(m_face);
-  m_face = nullptr;
-  if (m_stroker)
-    g_freeTypeLibrary.ReleaseStroker(m_stroker);
-  m_stroker = nullptr;
+  m_fontMain.Clear();
+  for (const auto& data : m_fallbackUsed)
+    data.second->Clear();
 
   m_vertexTrans.clear();
   m_vertex.clear();
-
-  m_fontFileInMemory.clear();
 }
 
-bool CGUIFontTTF::Load(
-    const std::string& strFilename, float height, float aspect, float lineSpacing, bool border)
+bool CGUIFontTTF::LoadFont(const std::string& strFileName,
+                           float height,
+                           float aspect,
+                           float lineSpacing,
+                           bool border,
+                           bool mainFont,
+                           CFontData& data)
 {
   // we now know that this object is unique - only the GUIFont objects are non-unique, so no need
   // for reference tracking these fonts
-  m_face = g_freeTypeLibrary.GetFont(strFilename, height, aspect, m_fontFileInMemory);
-  if (!m_face)
+  data.m_face = g_freeTypeLibrary.GetFont(strFileName, height, aspect, data.m_fontFileInMemory);
+  if (!data.m_face)
     return false;
 
-  m_hbFont = hb_ft_font_create(m_face, 0);
-  if (!m_hbFont)
+  data.m_hbFont = hb_ft_font_create_referenced(data.m_face);
+  if (!data.m_hbFont)
     return false;
+
   /*
    the values used are described below
 
@@ -263,8 +737,8 @@ bool CGUIFontTTF::Load(
      m_cellHeight  _ _ _ _ _ p _ _ _ _ _ _/_ _ _ _ _  bbox.yMin, descender
 
    */
-  int cellDescender = std::min<int>(m_face->bbox.yMin, m_face->descender);
-  int cellAscender = std::max<int>(m_face->bbox.yMax, m_face->ascender);
+  int cellDescender = std::min<int>(data.m_face->bbox.yMin, data.m_face->descender);
+  int cellAscender = std::max<int>(data.m_face->bbox.yMax, data.m_face->ascender);
 
   if (border)
   {
@@ -272,34 +746,51 @@ bool CGUIFontTTF::Load(
      add on the strength of any border - the non-bordered font needs
      aligning with the bordered font by utilising GetTextBaseLine()
      */
-    FT_Pos strength = FT_MulFix(m_face->units_per_EM, m_face->size->metrics.y_scale) / 12;
+    FT_Pos strength = FT_MulFix(data.m_face->units_per_EM, data.m_face->size->metrics.y_scale) / 12;
     if (strength < 128)
       strength = 128;
 
     cellDescender -= strength;
     cellAscender += strength;
 
-    m_stroker = g_freeTypeLibrary.GetStroker();
-    if (m_stroker)
-      FT_Stroker_Set(m_stroker, strength, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND, 0);
+    data.m_stroker = g_freeTypeLibrary.GetStroker();
+    if (data.m_stroker)
+      FT_Stroker_Set(data.m_stroker, strength, FT_STROKER_LINECAP_ROUND, FT_STROKER_LINEJOIN_ROUND,
+                     0);
   }
 
   // scale to pixel sizing, rounding so that maximal extent is obtained
-  float scaler = height / m_face->units_per_EM;
+  float scaler = height / data.m_face->units_per_EM;
+
   cellDescender =
       MathUtils::round_int(cellDescender * static_cast<double>(scaler) - 0.5); // round down
   cellAscender = MathUtils::round_int(cellAscender * static_cast<double>(scaler) + 0.5); // round up
 
-  m_cellBaseLine = cellAscender;
-  m_cellHeight = cellAscender - cellDescender;
+  data.m_cellBaseLine = cellAscender;
+  data.m_cellHeight = cellAscender - cellDescender;
+  data.m_mainFont = mainFont;
+  return true;
+}
+
+bool CGUIFontTTF::Load(
+    const std::string& strFilename, float height, float aspect, float lineSpacing, bool border)
+{
+  // we now know that this object is unique - only the GUIFont objects are non-unique, so no need
+  // for reference tracking these fonts
+
+  if (!LoadFont(strFilename, height, aspect, lineSpacing, border, true, m_fontMain))
+    return false;
 
   m_height = height;
+  m_aspect = aspect;
+  m_lineSpacing = lineSpacing;
+  m_border = border;
 
   m_texture.reset();
   m_texture = nullptr;
 
   m_textureHeight = 0;
-  m_textureWidth = ((m_cellHeight * CHARS_PER_TEXTURE_LINE) & ~63) + 64;
+  m_textureWidth = ((m_fontMain.m_cellHeight * CHARS_PER_TEXTURE_LINE) & ~63) + 64;
 
   m_textureWidth = CTexture::PadPow2(m_textureWidth);
 
@@ -398,7 +889,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
     if (!m_ellipseCached)
     {
       m_ellipseCached = true;
-      Character* ellipse = GetCharacter(DUMMY_POINT, 0);
+      Character* ellipse = GetCharacter(DUMMY_POINT, 0, &m_fontMain);
       if (ellipse)
         m_ellipsesWidth = ellipse->m_advance;
     }
@@ -417,7 +908,8 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
 
     // calculate sizing information
     float startX = 0;
-    float startY = (alignment & XBFONT_CENTER_Y) ? -0.5f * m_cellHeight : 0; // vertical centering
+    float startY =
+        (alignment & XBFONT_CENTER_Y) ? -0.5f * m_fontMain.m_cellHeight : 0; // vertical centering
 
     if (alignment & (XBFONT_RIGHT | XBFONT_CENTER_X))
     {
@@ -441,7 +933,8 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
       float linePixels = 0;
       for (const auto& glyph : glyphs)
       {
-        Character* ch = GetCharacter(text[glyph.m_glyphInfo.cluster], glyph.m_glyphInfo.codepoint);
+        Character* ch = GetCharacter(text[glyph.m_glyphInfo.cluster], glyph.m_glyphInfo.codepoint,
+                                     glyph.m_fontData);
         if (ch)
         {
           if (text[glyph.m_glyphInfo.cluster].letter == static_cast<char32_t>(' '))
@@ -462,10 +955,11 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
     // would invalidate the texture coordinates.
     std::queue<Character> characters;
     if (alignment & XBFONT_TRUNCATED)
-      GetCharacter(DUMMY_POINT, 0);
+      GetCharacter(DUMMY_POINT, 0, &m_fontMain);
     for (const auto& glyph : glyphs)
     {
-      Character* ch = GetCharacter(text[glyph.m_glyphInfo.cluster], glyph.m_glyphInfo.codepoint);
+      Character* ch = GetCharacter(text[glyph.m_glyphInfo.cluster], glyph.m_glyphInfo.codepoint,
+                                   glyph.m_fontData);
       if (!ch)
       {
         Character null = {};
@@ -518,7 +1012,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
         {
           // Yup. Let's draw the ellipses, then bail
           // Perhaps we should really bail to the next line in this case??
-          Character* period = GetCharacter(DUMMY_POINT, 0);
+          Character* period = GetCharacter(DUMMY_POINT, 0, &m_fontMain);
           if (!period)
             break;
 
@@ -582,7 +1076,6 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
   End();
 }
 
-
 float CGUIFontTTF::GetTextWidthInternal(const vecText& text)
 {
   const std::vector<Glyph> glyphs = GetHarfBuzzShapedGlyphs(text);
@@ -596,7 +1089,7 @@ float CGUIFontTTF::GetTextWidthInternal(const vecText& text, const std::vector<G
   for (auto it = glyphs.begin(); it != glyphs.end(); it++)
   {
     const character_t& ch = text[(*it).m_glyphInfo.cluster];
-    Character* c = GetCharacter(ch, (*it).m_glyphInfo.codepoint);
+    Character* c = GetCharacter(ch, (*it).m_glyphInfo.codepoint, (*it).m_fontData);
     if (c)
     {
       // If last character in line, we want to add render width
@@ -616,7 +1109,7 @@ float CGUIFontTTF::GetTextWidthInternal(const vecText& text, const std::vector<G
 
 float CGUIFontTTF::GetCharWidthInternal(const character_t& ch)
 {
-  Character* c = GetCharacter(ch, 0);
+  Character* c = GetCharacter(ch, 0, nullptr);
   if (c)
   {
     if (ch.letter == static_cast<decltype(ch.letter)>('\t'))
@@ -630,20 +1123,19 @@ float CGUIFontTTF::GetCharWidthInternal(const character_t& ch)
 
 float CGUIFontTTF::GetTextHeight(float lineSpacing, int numLines) const
 {
-  return static_cast<float>(numLines - 1) * GetLineHeight(lineSpacing) + m_cellHeight;
+  return static_cast<float>(numLines - 1) * GetLineHeight(lineSpacing) + m_fontMain.m_cellHeight;
 }
 
 float CGUIFontTTF::GetLineHeight(float lineSpacing) const
 {
-  if (!m_face)
-    return 0.0f;
-
-  return lineSpacing * m_face->size->metrics.height / 64.0f;
+  if (m_fontMain.m_face)
+    return lineSpacing * m_fontMain.m_face->size->metrics.height / 64.0f;
+  return 0.0f;
 }
 
 unsigned int CGUIFontTTF::GetTextureLineHeight() const
 {
-  return m_cellHeight + SPACING_BETWEEN_CHARACTERS_IN_TEXTURE;
+  return m_fontMain.m_cellHeight + SPACING_BETWEEN_CHARACTERS_IN_TEXTURE;
 }
 
 unsigned int CGUIFontTTF::GetMaxFontHeight() const
@@ -655,111 +1147,120 @@ std::vector<CGUIFontTTF::Glyph> CGUIFontTTF::GetHarfBuzzShapedGlyphs(const vecTe
 {
   std::vector<Glyph> glyphs;
   if (text.empty())
-  {
     return glyphs;
-  }
 
-  std::vector<hb_script_t> scripts;
+  struct RunInfo
+  {
+    unsigned int startOffset;
+    unsigned int endOffset;
+    hb_script_t script;
+    hb_glyph_info_t* glyphInfos;
+    hb_glyph_position_t* glyphPositions;
+    CFontData* font;
+    const CFontTable* fontTable{nullptr};
+  };
+
   std::vector<RunInfo> runs;
+  unsigned int start = 0;
+  unsigned int end = 0;
   hb_unicode_funcs_t* ufuncs = hb_unicode_funcs_get_default();
-  hb_script_t lastScript;
-  int lastScriptIndex = -1;
-  int lastSetIndex = -1;
+  hb_script_t scriptNow = HB_SCRIPT_UNKNOWN;
+  hb_script_t scriptLast = HB_SCRIPT_UNKNOWN;
 
-  for (const auto& character : text)
+  do
   {
-    scripts.emplace_back(hb_unicode_script(ufuncs, character.letter));
-  }
+    const char32_t wchar = text[end].letter;
 
-  // HB_SCRIPT_COMMON or HB_SCRIPT_INHERITED should be replaced with previous script
-  for (size_t i = 0; i < scripts.size(); ++i)
-  {
-    if (scripts[i] == HB_SCRIPT_COMMON || scripts[i] == HB_SCRIPT_INHERITED)
+    // if below 256 force to use latin ANSI characters
+    scriptNow = (wchar < 256) ? HB_SCRIPT_LATIN : hb_unicode_script(ufuncs, wchar);
+    if (scriptNow != scriptLast)
     {
-      if (lastScriptIndex != -1)
+      if (end > 0)
       {
-        scripts[i] = lastScript;
-        lastSetIndex = i;
+        RunInfo info;
+        info.startOffset = start;
+        info.endOffset = end;
+        info.script = scriptLast;
+        info.font = FindFallback(text[info.startOffset].letter, info.fontTable);
+        runs.emplace_back(info);
+        start = end;
       }
+      scriptLast = scriptNow;
     }
-    else
-    {
-      for (size_t j = lastSetIndex + 1; j < i; ++j)
-        scripts[j] = scripts[i];
-      lastScript = scripts[i];
-      lastScriptIndex = i;
-      lastSetIndex = i;
-    }
-  }
+  } while (++end < text.size());
 
-  lastScript = scripts[0];
-  int lastRunStart = 0;
+  RunInfo info;
+  info.startOffset = start;
+  info.endOffset = text.size();
+  info.script = scriptLast;
+  info.font = FindFallback(text[info.endOffset - 1].letter, info.fontTable);
+  runs.emplace_back(info);
 
-  for (unsigned int i = 0; i <= static_cast<unsigned int>(scripts.size()); ++i)
-  {
-    if (i == scripts.size() || scripts[i] != lastScript)
-    {
-      RunInfo run{};
-      run.m_startOffset = lastRunStart;
-      run.m_endOffset = i;
-      run.m_script = lastScript;
-      runs.emplace_back(run);
-
-      if (i < scripts.size())
-      {
-        lastScript = scripts[i];
-        lastRunStart = i;
-      }
-      else
-      {
-        break;
-      }
-    }
-  }
-
+  hb_buffer_t* buffer = hb_buffer_create();
   for (auto& run : runs)
   {
-    run.m_buffer = hb_buffer_create();
-    hb_buffer_set_direction(run.m_buffer, static_cast<hb_direction_t>(HB_DIRECTION_LTR));
-    hb_buffer_set_script(run.m_buffer, run.m_script);
+    hb_buffer_reset(buffer);
+    hb_buffer_set_direction(buffer, static_cast<hb_direction_t>(HB_DIRECTION_LTR));
+    hb_buffer_set_script(buffer, run.script);
+    hb_buffer_set_content_type(buffer, HB_BUFFER_CONTENT_TYPE_UNICODE);
 
-    for (unsigned int j = run.m_startOffset; j < run.m_endOffset; j++)
+    for (unsigned int j = run.startOffset; j < run.endOffset; j++)
     {
-      hb_buffer_add(run.m_buffer, text[j].letter, j);
+      hb_buffer_add(buffer, text[j].letter, j);
     }
 
-    hb_buffer_set_content_type(run.m_buffer, HB_BUFFER_CONTENT_TYPE_UNICODE);
-    hb_shape(m_hbFont, run.m_buffer, nullptr, 0);
+    if (run.font)
+      hb_shape(run.font->m_hbFont, buffer, nullptr, 0);
+
     unsigned int glyphCount;
-    run.m_glyphInfos = hb_buffer_get_glyph_infos(run.m_buffer, &glyphCount);
-    run.m_glyphPositions = hb_buffer_get_glyph_positions(run.m_buffer, &glyphCount);
+    run.glyphInfos = hb_buffer_get_glyph_infos(buffer, &glyphCount);
+    run.glyphPositions = hb_buffer_get_glyph_positions(buffer, &glyphCount);
 
     for (size_t k = 0; k < glyphCount; k++)
     {
-      glyphs.emplace_back(run.m_glyphInfos[k], run.m_glyphPositions[k]);
+      glyphs.emplace_back(run.glyphInfos[k], run.glyphPositions[k], run.font);
     }
-
-    hb_buffer_destroy(run.m_buffer);
   }
+  hb_buffer_destroy(buffer);
 
   return glyphs;
 }
 
-CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(const character_t& chr, FT_UInt glyphIndex)
+Character* CGUIFontTTF::GetCharacter(const character_t& chr,
+                                     FT_UInt glyphIndex,
+                                     CFontData* fontData)
 {
   const auto letter = chr.letter;
 
   // ignore linebreaks
-  if (letter == static_cast<decltype(letter)>('\r'))
+  if (letter == static_cast<decltype(chr.letter)>('\r'))
     return nullptr;
 
   const auto style = chr.style;
 
+  if (!fontData)
+  {
+    glyphIndex = FT_Get_Char_Index(m_fontMain.m_face, chr.letter);
+    if (glyphIndex != 0)
+      fontData = &m_fontMain;
+    else
+    {
+      const CFontTable* fontTable;
+      fontData = FindFallback(chr.letter, fontTable);
+      if (!fontData || (glyphIndex = FT_Get_Char_Index(fontData->m_face, chr.letter)) == 0)
+      {
+        CLog::LogF(LOGERROR, "Unable to find font about character {:x}, font data found: {}",
+                   static_cast<uint32_t>(chr.letter), fontData ? "yes" : "no");
+        return nullptr;
+      }
+    }
+  }
+
   if (!glyphIndex)
-    glyphIndex = FT_Get_Char_Index(m_face, chr.letter);
+    glyphIndex = FT_Get_Char_Index(fontData->m_face, chr.letter);
 
   // quick access to the most frequently used glyphs
-  if (glyphIndex < MAX_GLYPH_IDX)
+  if (glyphIndex < MAX_GLYPH_IDX && fontData->m_mainFont)
   {
     const uint32_t ch = (style << 12) | glyphIndex; // 2^12 = 4096
 
@@ -773,25 +1274,25 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(const character_t& chr, FT_UIn
   // perform binary search on sorted array by m_glyphAndStyle and
   // if not found obtains position to insert the new m_char to keep sorted
   int low = 0;
-  int high = m_char.size() - 1;
+  int high = fontData->m_char.size() - 1;
   while (low <= high)
   {
     int mid = (low + high) >> 1;
-    if (ch > m_char[mid].m_glyphAndStyle)
+    if (ch > fontData->m_char[mid].m_glyphAndStyle)
       low = mid + 1;
-    else if (ch < m_char[mid].m_glyphAndStyle)
+    else if (ch < fontData->m_char[mid].m_glyphAndStyle)
       high = mid - 1;
     else
-      return &m_char[mid];
+      return &fontData->m_char[mid];
   }
   // if we get to here, then low is where we should insert the new character
 
   int startIndex = low;
 
   // increase the size of the buffer if we need it
-  if (m_char.size() == m_char.capacity())
+  if (fontData->m_char.size() == fontData->m_char.capacity())
   {
-    m_char.reserve(m_char.capacity() + CHAR_CHUNK);
+    fontData->m_char.reserve(fontData->m_char.capacity() + CHAR_CHUNK);
     startIndex = 0;
   }
 
@@ -799,19 +1300,20 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(const character_t& chr, FT_UIn
   // must End() as we can't render text to our texture during a Begin(), End() block
   unsigned int nestedBeginCount = m_nestedBeginCount;
   m_nestedBeginCount = 1;
+
   if (nestedBeginCount)
     End();
 
-  m_char.emplace(m_char.begin() + low);
-  if (!CacheCharacter(glyphIndex, style, m_char.data() + low))
+  fontData->m_char.emplace(fontData->m_char.begin() + low);
+  if (!CacheCharacter(glyphIndex, style, fontData->m_char.data() + low, fontData))
   { // unable to cache character - try clearing them all out and starting over
     CLog::LogF(LOGDEBUG, "Unable to cache character. Clearing character cache of {} characters",
-               m_char.size());
+               fontData->m_char.size());
     ClearCharacterCache();
     low = 0;
     startIndex = 0;
-    m_char.emplace(m_char.begin());
-    if (!CacheCharacter(glyphIndex, style, m_char.data()))
+    fontData->m_char.emplace(fontData->m_char.begin());
+    if (!CacheCharacter(glyphIndex, style, fontData->m_char.data(), fontData))
     {
       CLog::LogF(LOGERROR, "Unable to cache character (out of memory?)");
       if (nestedBeginCount)
@@ -825,27 +1327,127 @@ CGUIFontTTF::Character* CGUIFontTTF::GetCharacter(const character_t& chr, FT_UIn
     Begin();
   m_nestedBeginCount = nestedBeginCount;
 
-  // update the lookup table with only the m_char addresses that have changed
-  for (size_t i = startIndex; i < m_char.size(); ++i)
+  if (fontData->m_mainFont)
   {
-    if (m_char[i].m_glyphIndex < MAX_GLYPH_IDX)
+    // update the lookup table with only the m_char addresses that have changed
+    for (size_t i = startIndex; i < fontData->m_char.size(); ++i)
     {
-      // >> 32 is style (0-6), then 32 - 12 (>> 20) is equivalent to style * 4096
-      const uint32_t ch =
-          ((m_char[i].m_glyphAndStyle & 0xFFFFFFFF00000000) >> 20) | m_char[i].m_glyphIndex;
+      if (fontData->m_char[i].m_glyphIndex < MAX_GLYPH_IDX)
+      {
+        // >> 32 is style (0-6), then 32 - 12 (>> 20) is equivalent to style * 4096
+        const uint32_t ch = ((fontData->m_char[i].m_glyphAndStyle & 0xFFFFFFFF00000000) >> 20) |
+                            fontData->m_char[i].m_glyphIndex;
 
-      if (ch < LOOKUPTABLE_SIZE)
-        m_charquick[ch] = m_char.data() + i;
+        if (ch < LOOKUPTABLE_SIZE)
+          m_charquick[ch] = fontData->m_char.data() + i;
+      }
     }
   }
 
-  return m_char.data() + low;
+  return fontData->m_char.data() + low;
 }
 
-bool CGUIFontTTF::CacheCharacter(FT_UInt glyphIndex, uint32_t style, Character* ch)
+CFontData* CGUIFontTTF::FindFallback(char32_t letter, const CFontTable*& fontTable)
+{
+  FT_UInt glyphIndex = FT_Get_Char_Index(m_fontMain.m_face, letter);
+  if (glyphIndex)
+    return &m_fontMain;
+
+  // Check font already known and active
+  auto it = std::find_if(m_fallbackUsed.begin(), m_fallbackUsed.end(),
+                         [letter](std::pair<CFontTable, std::shared_ptr<CFontData>>& data) {
+                           return (letter >= data.first.m_unicode_code_begin &&
+                                   letter <= data.first.m_unicode_code_end);
+                         });
+  if (it != m_fallbackUsed.end())
+  {
+    fontTable = &it->first;
+    return it->second.get();
+  }
+
+  // Check font by Kodi
+  auto it2 =
+      std::find_if(fontFallbacks.begin(), fontFallbacks.end(), [letter](const CFontTable& data) {
+        return (letter >= data.m_unicode_code_begin && letter <= data.m_unicode_code_end);
+      });
+  if (it2 == fontFallbacks.end())
+  {
+    fontTable = nullptr;
+    return &m_fontMain;
+  }
+
+  // Check now font already used in on another unicode range
+  auto it3 = std::find_if(m_fallbackUsed.begin(), m_fallbackUsed.end(),
+                          [it2](std::pair<CFontTable, std::shared_ptr<CFontData>>& data) {
+                            return (it2->m_filename == data.first.m_filename);
+                          });
+  if (it3 != m_fallbackUsed.end())
+  {
+    m_fallbackUsed.emplace_back(it3->first, it3->second);
+    fontTable = &it3->first;
+    return it3->second.get();
+  }
+
+  // If supported and before not used create it here
+  std::string strPath;
+  if (it2->m_addon == CFontTable::ADDON::IN_KODI)
+  {
+    strPath = StringUtils::Format("special://xbmc/media/Fonts/{}", it2->m_filename);
+  }
+  else
+  {
+    if (!CServiceBroker::IsAddonInterfaceUp())
+      return &m_fontMain;
+
+    auto it4 = std::find_if(fontAddons.begin(), fontAddons.end(),
+                            [it2](std::pair<CFontTable::ADDON, const char*> data) {
+                              return (it2->m_addon == data.first);
+                            });
+    if (it4 == fontAddons.end())
+    {
+      fontTable = nullptr;
+      return &m_fontMain;
+    }
+
+    using namespace ADDON;
+
+    std::shared_ptr<CAddonInfo> addonInfo = CServiceBroker::GetAddonMgr().GetAddonInfo(it4->second);
+    if (addonInfo)
+    {
+      strPath = CSpecialProtocol::TranslatePath(
+          URIUtils::AddFileToFolder(addonInfo->Path(), "resources/fonts/", it2->m_filename));
+    }
+    else
+    {
+      // Check it was already tried to install, if yes prevent any further tries
+      if (!InstallLanguageJob::WasFailed(it4->second))
+        CServiceBroker::GetJobManager()->AddJob(new InstallLanguageJob(*it2, it4->second), nullptr);
+
+      // Return as fail with main, update becomes done on job
+      return &m_fontMain;
+    }
+  }
+
+  std::shared_ptr<CFontData> data = std::make_shared<CFontData>();
+  if (!LoadFont(strPath, m_height, m_aspect, m_lineSpacing, m_border, false, *data.get()))
+  {
+    fontTable = nullptr;
+    return &m_fontMain;
+  }
+
+  fontTable = &*it2;
+  m_fallbackUsed.emplace_back(*it2, data);
+
+  return data.get();
+}
+
+bool CGUIFontTTF::CacheCharacter(FT_UInt glyphIndex,
+                                 uint32_t style,
+                                 Character* ch,
+                                 CFontData* fontData)
 {
   FT_Glyph glyph = nullptr;
-  if (FT_Load_Glyph(m_face, glyphIndex, FT_LOAD_TARGET_LIGHT))
+  if (FT_Load_Glyph(fontData->m_face, glyphIndex, FT_LOAD_TARGET_LIGHT))
   {
     CLog::LogF(LOGDEBUG, "Failed to load glyph {:x}", glyphIndex);
     return false;
@@ -853,21 +1455,21 @@ bool CGUIFontTTF::CacheCharacter(FT_UInt glyphIndex, uint32_t style, Character* 
 
   // make bold if applicable
   if (style & FONT_STYLE_BOLD)
-    SetGlyphStrength(m_face->glyph, GLYPH_STRENGTH_BOLD);
+    SetGlyphStrength(fontData->m_face->glyph, fontData->m_face, GLYPH_STRENGTH_BOLD);
   // and italics if applicable
   if (style & FONT_STYLE_ITALICS)
-    ObliqueGlyph(m_face->glyph);
+    ObliqueGlyph(fontData->m_face->glyph);
   // and light if applicable
   if (style & FONT_STYLE_LIGHT)
-    SetGlyphStrength(m_face->glyph, GLYPH_STRENGTH_LIGHT);
+    SetGlyphStrength(fontData->m_face->glyph, fontData->m_face, GLYPH_STRENGTH_LIGHT);
   // grab the glyph
-  if (FT_Get_Glyph(m_face->glyph, &glyph))
+  if (FT_Get_Glyph(fontData->m_face->glyph, &glyph))
   {
     CLog::LogF(LOGDEBUG, "Failed to get glyph {:x}", glyphIndex);
     return false;
   }
-  if (m_stroker)
-    FT_Glyph_StrokeBorder(&glyph, m_stroker, 0, 1);
+  if (fontData->m_stroker)
+    FT_Glyph_StrokeBorder(&glyph, fontData->m_stroker, 0, 1);
   // render the glyph
   if (FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, nullptr, 1))
   {
@@ -928,16 +1530,16 @@ bool CGUIFontTTF::CacheCharacter(FT_UInt glyphIndex, uint32_t style, Character* 
   }
 
   // set the character in our table
-  ch->m_glyphAndStyle = (static_cast<decltype(ch->m_glyphAndStyle)>(style) << 32) | glyphIndex;
+  ch->m_glyphAndStyle = (static_cast<glyph_and_style_t>(style) << 32) | glyphIndex;
   ch->m_glyphIndex = glyphIndex;
   ch->m_offsetX = static_cast<short>(bitGlyph->left);
-  ch->m_offsetY = static_cast<short>(m_cellBaseLine - bitGlyph->top);
+  ch->m_offsetY = static_cast<short>(m_fontMain.m_cellBaseLine - bitGlyph->top);
   ch->m_left = isEmptyGlyph ? 0.0f : (static_cast<float>(m_posX));
   ch->m_top = isEmptyGlyph ? 0.0f : (static_cast<float>(m_posY));
   ch->m_right = ch->m_left + bitmap.width;
   ch->m_bottom = ch->m_top + bitmap.rows;
-  ch->m_advance =
-      static_cast<float>(MathUtils::round_int(static_cast<double>(m_face->glyph->advance.x) / 64));
+  ch->m_advance = static_cast<float>(
+      MathUtils::round_int(static_cast<double>(fontData->m_face->glyph->advance.x) / 64));
 
   // we need only render if we actually have some pixels
   if (!isEmptyGlyph)
@@ -1138,13 +1740,13 @@ void CGUIFontTTF::ObliqueGlyph(FT_GlyphSlot slot)
 }
 
 // Embolden code - original taken from freetype2 (ftsynth.c)
-void CGUIFontTTF::SetGlyphStrength(FT_GlyphSlot slot, int glyphStrength)
+void CGUIFontTTF::SetGlyphStrength(FT_GlyphSlot slot, FT_Face face, int glyphStrength)
 {
   if (slot->format != FT_GLYPH_FORMAT_OUTLINE)
     return;
 
   /* some reasonable strength */
-  FT_Pos strength = FT_MulFix(m_face->units_per_EM, m_face->size->metrics.y_scale) / glyphStrength;
+  FT_Pos strength = FT_MulFix(face->units_per_EM, face->size->metrics.y_scale) / glyphStrength;
 
   FT_BBox bbox_before, bbox_after;
   FT_Outline_Get_CBox(&slot->outline, &bbox_before);
@@ -1171,6 +1773,6 @@ void CGUIFontTTF::SetGlyphStrength(FT_GlyphSlot slot, int glyphStrength)
 
 float CGUIFontTTF::GetTabSpaceLength()
 {
-  const Character* c = GetCharacter(DUMMY_SPACE, 0);
+  const Character* c = GetCharacter(DUMMY_SPACE, 0, &m_fontMain);
   return c ? c->m_advance * TAB_SPACE_LENGTH : 28.0f * TAB_SPACE_LENGTH;
 }

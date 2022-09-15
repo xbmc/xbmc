@@ -4831,7 +4831,25 @@ msgctxt "#2104"
 msgid "Check the log for more information."
 msgstr ""
 
-#empty strings from id 2105 to 2202
+#. Header of a dialog which with text #2106 advises the user to install a missing font for their language.
+#: xbmc/guilib/GUIFontTTF.cpp
+msgctxt "#2105"
+msgid "Missing font language support"
+msgstr ""
+
+#. Text in a Yes/No dialog advising the user to install a missing font for their language. Value {0:s} declares the add-on identification, value {1:s} the add-on name and value {2:s} the name of the character type.
+#: xbmc/guilib/GUIFontTTF.cpp
+msgctxt "#2106"
+msgid "Do you want to install the add-on to support characters?[CR][CR]Add-on: {0:s} ({1:s})[CR]Character Typ: \"{2:s}\""
+msgstr ""
+
+#. OK dialog text to notify user that his language associated font installation failed. Value {0:s} declares the add-on identification and value {1:s} the name of the character type.
+#: xbmc/guilib/GUIFontTTF.cpp
+msgctxt "#2107"
+msgid "Installation of the add-on \"{0:s}\" to support the character type \"{1:s}\" failed."
+msgstr ""
+
+#empty strings from id 2108 to 2202
 
 #: system/settings/settings.xml
 msgctxt "#2203"

@@ -27,7 +27,11 @@ using AddonInstanceId = uint32_t;
 enum class AddonOptPostInstValue
 {
   //! Default value if unused on add-on type.
-  UNUSED = -1
+  UNUSED = 0,
+
+  //! Used for add-on type "kodi.resource.font" to prevent an yes/no selection dialog.
+  //! As a background to carry out an automatically started installation for the required font.
+  POST_INSTALL_LANGUAGE_RESOURCE_NO_SELECT
 };
 
 constexpr const char* ADDON_SETTING_INSTANCE_GROUP = "kodi_addon_instance";

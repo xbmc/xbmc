@@ -70,6 +70,85 @@ struct SVertex
 
 #include "GUIFontCache.h"
 
+typedef uint64_t glyph_and_style_t;
+
+struct Character
+{
+  short m_offsetX;
+  short m_offsetY;
+  float m_left;
+  float m_top;
+  float m_right;
+  float m_bottom;
+  float m_advance;
+  FT_UInt m_glyphIndex;
+  glyph_and_style_t m_glyphAndStyle;
+};
+
+struct CFontData
+{
+  CFontData() = default;
+  ~CFontData();
+  void Clear();
+  void ClearCharacterCache();
+
+  bool m_mainFont{false};
+
+  unsigned int m_cellBaseLine{0};
+  unsigned int m_cellHeight{0};
+
+  // freetype stuff
+  FT_Face m_face{nullptr};
+  FT_Stroker m_stroker{nullptr};
+
+  hb_font_t* m_hbFont{nullptr};
+
+  // used only in some cases, see CFreeTypeLibrary::GetFont()
+  std::vector<uint8_t> m_fontFileInMemory;
+
+  std::vector<Character> m_char; // our characters
+};
+
+struct CFontTable
+{
+  enum class ADDON
+  {
+    IN_KODI = 0,
+    RESOURCE_FONT_EXCLUDED,
+    RESOURCE_FONT_LIMITED,
+    RESOURCE_FONT_ACTIVE,
+    RESOURCE_FONT_EMOJI,
+    RESOURCE_LANGUAGE_AM_ET,
+    RESOURCE_LANGUAGE_AR_SA,
+    RESOURCE_LANGUAGE_HE_IL,
+    RESOURCE_LANGUAGE_HI_IN,
+    RESOURCE_LANGUAGE_HY_AM,
+    RESOURCE_LANGUAGE_KN_IN,
+    RESOURCE_LANGUAGE_KO_KR,
+    RESOURCE_LANGUAGE_JA_JP,
+    RESOURCE_LANGUAGE_ML_IN,
+    RESOURCE_LANGUAGE_MY_MM,
+    RESOURCE_LANGUAGE_SI_LK,
+    RESOURCE_LANGUAGE_TA_IN,
+    RESOURCE_LANGUAGE_TE_IN,
+    RESOURCE_LANGUAGE_TH_TH,
+    RESOURCE_LANGUAGE_ZH_CN,
+    RESOURCE_LANGUAGE_ZH_TW,
+    NOT_USED
+  };
+
+  enum class ALIGN
+  {
+    LTOR,
+    RTOL
+  };
+  char32_t m_unicode_code_begin;
+  char32_t m_unicode_code_end;
+  const char* m_filename;
+  ALIGN alignment;
+  const char* m_name;
+  ADDON m_addon;
+};
 
 class CGUIFontTTF
 {
@@ -112,26 +191,15 @@ protected:
   {
     hb_glyph_info_t m_glyphInfo{};
     hb_glyph_position_t m_glyphPosition{};
+    CFontData* m_fontData{nullptr};
 
-    Glyph(const hb_glyph_info_t& glyphInfo, const hb_glyph_position_t& glyphPosition)
-      : m_glyphInfo(glyphInfo), m_glyphPosition(glyphPosition)
+    Glyph(const hb_glyph_info_t& glyphInfo,
+          const hb_glyph_position_t& glyphPosition,
+          CFontData* fData)
+      : m_glyphInfo(glyphInfo), m_glyphPosition(glyphPosition), m_fontData(fData)
     {
     }
-  };
-
-  typedef uint64_t glyph_and_style_t;
-
-  struct Character
-  {
-    short m_offsetX;
-    short m_offsetY;
-    float m_left;
-    float m_top;
-    float m_right;
-    float m_bottom;
-    float m_advance;
-    FT_UInt m_glyphIndex;
-    glyph_and_style_t m_glyphAndStyle;
+    Glyph(CFontData* fData) : m_fontData(fData) {}
   };
 
   struct RunInfo
@@ -153,7 +221,7 @@ protected:
   float GetTextWidthInternal(const vecText& text, const std::vector<Glyph>& glyph);
   float GetCharWidthInternal(const character_t& ch);
   float GetTextHeight(float lineSpacing, int numLines) const;
-  float GetTextBaseLine() const { return static_cast<float>(m_cellBaseLine); }
+  float GetTextBaseLine() const { return static_cast<float>(m_fontMain.m_cellBaseLine); }
   float GetLineHeight(float lineSpacing) const;
   float GetFontHeight() const { return m_height; }
 
@@ -167,10 +235,13 @@ protected:
                         bool scrolling);
 
   float m_height{0.0f};
+  float m_aspect{1.0f};
+  float m_lineSpacing{1.0f};
+  bool m_border{false};
 
   // Stuff for pre-rendering for speed
-  Character* GetCharacter(const character_t& letter, FT_UInt glyphIndex);
-  bool CacheCharacter(FT_UInt glyphIndex, uint32_t style, Character* ch);
+  Character* GetCharacter(const character_t& letter, FT_UInt glyphIndex, CFontData* fontData);
+  bool CacheCharacter(FT_UInt glyphIndex, uint32_t style, Character* ch, CFontData* fontData);
   void RenderCharacter(CGraphicContext& context,
                        float posX,
                        float posY,
@@ -188,12 +259,20 @@ protected:
                                  unsigned int y2) = 0;
   virtual void DeleteHardwareTexture() = 0;
 
+  bool LoadFont(const std::string& strFileName,
+                float height,
+                float aspect,
+                float lineSpacing,
+                bool border,
+                bool mainFont,
+                CFontData& data);
+
   // modifying glyphs
-  void SetGlyphStrength(FT_GlyphSlot slot, int glyphStrength);
+  static void SetGlyphStrength(FT_GlyphSlot slot, FT_Face face, int glyphStrength);
   static void ObliqueGlyph(FT_GlyphSlot slot);
 
-  std::unique_ptr<CTexture>
-      m_texture; // texture that holds our rendered characters (8bit alpha only)
+  // texture that holds our rendered characters (8bit alpha only)
+  std::unique_ptr<CTexture> m_texture;
 
   unsigned int m_textureWidth{0}; // width of our texture
   unsigned int m_textureHeight{0}; // height of our texture
@@ -208,8 +287,6 @@ protected:
 
   UTILS::COLOR::Color m_color{UTILS::COLOR::NONE};
 
-  std::vector<Character> m_char; // our characters
-
   // room for the first MAX_GLYPH_IDX glyphs in 7 styles
   Character* m_charquick[LOOKUPTABLE_SIZE]{nullptr};
 
@@ -222,16 +299,12 @@ protected:
 
   unsigned int m_nestedBeginCount{0}; // speedups
 
-  // freetype stuff
-  FT_Face m_face{nullptr};
-  FT_Stroker m_stroker{nullptr};
-
-  hb_font_t* m_hbFont{nullptr};
-
   float m_originX{0.0f};
   float m_originY{0.0f};
 
   unsigned int m_nTexture{0};
+
+  CFontData m_fontMain;
 
   struct CTranslatedVertices
   {
@@ -260,8 +333,6 @@ protected:
   float m_textureScaleY{0.0f};
 
   const std::string m_fontIdent;
-  std::vector<uint8_t>
-      m_fontFileInMemory; // used only in some cases, see CFreeTypeLibrary::GetFont()
 
   CGUIFontCache<CGUIFontCacheStaticPosition, CGUIFontCacheStaticValue> m_staticCache;
   CGUIFontCache<CGUIFontCacheDynamicPosition, CGUIFontCacheDynamicValue> m_dynamicCache;
@@ -270,10 +341,13 @@ protected:
 
 private:
   float GetTabSpaceLength();
+  CFontData* FindFallback(char32_t letter, const CFontTable*& fontTable);
 
   virtual bool FirstBegin() = 0;
   virtual void LastEnd() = 0;
   CGUIFontTTF(const CGUIFontTTF&) = delete;
   CGUIFontTTF& operator=(const CGUIFontTTF&) = delete;
   int m_referenceCount{0};
+
+  std::vector<std::pair<CFontTable, std::shared_ptr<CFontData>>> m_fallbackUsed;
 };
