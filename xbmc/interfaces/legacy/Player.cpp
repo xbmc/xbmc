@@ -31,7 +31,7 @@ namespace XBMCAddon
 
     Player::Player()
     {
-      iPlayList = PLAYLIST_MUSIC;
+      iPlayList = PLAYLIST::TYPE_MUSIC;
 
       // now that we're done, register hook me into the system
       if (languageHook)

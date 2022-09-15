@@ -14,7 +14,7 @@
 #include "filesystem/File.h"
 #include "filesystem/FileDirectoryFactory.h"
 #include "music/MusicDatabase.h"
-#include "playlists/PlayList.h"
+#include "playlists/PlayListTypes.h"
 #include "playlists/SmartPlayList.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -73,7 +73,8 @@ namespace XFILE
     std::string option = !filter ? "xsp" : "filter";
     std::string group = playlist.GetGroup();
     bool isGrouped = !group.empty() && !StringUtils::EqualsNoCase(group, "none") && !playlist.IsGroupMixed();
-    int playlistTypeHint = PLAYLIST_NONE; // Hint for playlist files like STRM
+    // Hint for playlist files like STRM
+    PLAYLIST::Id playlistTypeHint = PLAYLIST::TYPE_NONE;
 
     // get all virtual folders and add them to the item list
     playlist.GetVirtualFolders(virtualFolders);
@@ -94,7 +95,7 @@ namespace XFILE
         playlist.GetType() == "tvshows" ||
         playlist.GetType() == "episodes")
     {
-      playlistTypeHint = PLAYLIST_VIDEO;
+      playlistTypeHint = PLAYLIST::TYPE_VIDEO;
       CVideoDatabase db;
       if (db.Open())
       {
@@ -150,7 +151,7 @@ namespace XFILE
     }
     else if (playlist.IsMusicType() || playlist.GetType().empty())
     {
-      playlistTypeHint = PLAYLIST_MUSIC;
+      playlistTypeHint = PLAYLIST::TYPE_MUSIC;
       CMusicDatabase db;
       if (db.Open())
       {
@@ -208,7 +209,7 @@ namespace XFILE
 
     if (playlist.GetType() == "musicvideos" || playlist.GetType() == "mixed")
     {
-      playlistTypeHint = PLAYLIST_VIDEO;
+      playlistTypeHint = PLAYLIST::TYPE_VIDEO;
       CVideoDatabase db;
       if (db.Open())
       {

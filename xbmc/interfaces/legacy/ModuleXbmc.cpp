@@ -29,7 +29,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "network/Network.h"
 #include "network/NetworkServices.h"
-#include "playlists/PlayList.h"
+#include "playlists/PlayListTypes.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
@@ -552,8 +552,14 @@ namespace XBMCAddon
       return CNetworkServices::ES_ZEROCONF;
     }
 
-    int getPLAYLIST_MUSIC() { return PLAYLIST_MUSIC; }
-    int getPLAYLIST_VIDEO() { return PLAYLIST_VIDEO; }
+    int getPLAYLIST_MUSIC()
+    {
+      return PLAYLIST::TYPE_MUSIC;
+    }
+    int getPLAYLIST_VIDEO()
+    {
+      return PLAYLIST::TYPE_VIDEO;
+    }
     int getTRAY_OPEN()
     {
       return static_cast<int>(TrayState::OPEN);

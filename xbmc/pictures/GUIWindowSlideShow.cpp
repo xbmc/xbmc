@@ -28,7 +28,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "pictures/GUIViewStatePictures.h"
 #include "pictures/PictureThumbLoader.h"
-#include "playlists/PlayList.h"
+#include "playlists/PlayListTypes.h"
 #include "rendering/RenderSystem.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
@@ -156,7 +156,7 @@ void CGUIWindowSlideShow::AnnouncePlayerPlay(const CFileItemPtr& item)
 {
   CVariant param;
   param["player"]["speed"] = m_bSlideShow && !m_bPause ? 1 : 0;
-  param["player"]["playerid"] = PLAYLIST_PICTURE;
+  param["player"]["playerid"] = PLAYLIST::TYPE_PICTURE;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPlay", item, param);
 }
 
@@ -164,14 +164,14 @@ void CGUIWindowSlideShow::AnnouncePlayerPause(const CFileItemPtr& item)
 {
   CVariant param;
   param["player"]["speed"] = 0;
-  param["player"]["playerid"] = PLAYLIST_PICTURE;
+  param["player"]["playerid"] = PLAYLIST::TYPE_PICTURE;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPause", item, param);
 }
 
 void CGUIWindowSlideShow::AnnouncePlayerStop(const CFileItemPtr& item)
 {
   CVariant param;
-  param["player"]["playerid"] = PLAYLIST_PICTURE;
+  param["player"]["playerid"] = PLAYLIST::TYPE_PICTURE;
   param["end"] = true;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnStop", item, param);
 }
@@ -179,14 +179,14 @@ void CGUIWindowSlideShow::AnnouncePlayerStop(const CFileItemPtr& item)
 void CGUIWindowSlideShow::AnnouncePlaylistClear()
 {
   CVariant data;
-  data["playlistid"] = PLAYLIST_PICTURE;
+  data["playlistid"] = PLAYLIST::TYPE_PICTURE;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Playlist, "OnClear", data);
 }
 
 void CGUIWindowSlideShow::AnnouncePlaylistAdd(const CFileItemPtr& item, int pos)
 {
   CVariant data;
-  data["playlistid"] = PLAYLIST_PICTURE;
+  data["playlistid"] = PLAYLIST::TYPE_PICTURE;
   data["position"] = pos;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Playlist, "OnAdd", item, data);
 }
@@ -197,7 +197,7 @@ void CGUIWindowSlideShow::AnnouncePropertyChanged(const std::string &strProperty
     return;
 
   CVariant data;
-  data["player"]["playerid"] = PLAYLIST_PICTURE;
+  data["player"]["playerid"] = PLAYLIST::TYPE_PICTURE;
   data["property"][strProperty] = value;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPropertyChanged",
                                                      data);
@@ -1273,7 +1273,7 @@ void CGUIWindowSlideShow::RunSlideShow(const std::string &strPath,
   {
     CVariant param;
     param["player"]["speed"] = 0;
-    param["player"]["playerid"] = PLAYLIST_PICTURE;
+    param["player"]["playerid"] = PLAYLIST::TYPE_PICTURE;
     CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPlay",
                                                        GetCurrentSlide(), param);
   }

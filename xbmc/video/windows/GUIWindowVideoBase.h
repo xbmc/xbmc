@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "playlists/PlayList.h"
+#include "playlists/PlayListTypes.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoThumbLoader.h"
 #include "windows/GUIMediaWindow.h"
@@ -111,7 +111,7 @@ protected:
   bool OnPlayMedia(int iItem, const std::string &player = "") override;
   bool OnPlayAndQueueMedia(const CFileItemPtr& item, const std::string& player = "") override;
   using CGUIMediaWindow::LoadPlayList;
-  void LoadPlayList(const std::string& strPlayList, int iPlayList = PLAYLIST_VIDEO);
+  void LoadPlayList(const std::string& strPlayList, PLAYLIST::Id playlistId = PLAYLIST::TYPE_VIDEO);
 
   bool ShowIMDB(CFileItemPtr item, const ADDON::ScraperPtr& content, bool fromDB);
 

@@ -12,8 +12,6 @@
 #include "playlists/PlayListFactory.h"
 #include "utils/URIUtils.h"
 
-using namespace PLAYLIST;
-
 namespace XBMCAddon
 {
   namespace xbmc
@@ -24,8 +22,7 @@ namespace XBMCAddon
       iPlayList(playList), pPlayList(NULL)
     {
       // we do not create our own playlist, just using the ones from playlistplayer
-      if (iPlayList != PLAYLIST_MUSIC &&
-          iPlayList != PLAYLIST_VIDEO)
+      if (iPlayList != PLAYLIST::TYPE_MUSIC && iPlayList != PLAYLIST::TYPE_VIDEO)
         throw PlayListException("PlayList does not exist");
 
       pPlayList = &CServiceBroker::GetPlaylistPlayer().GetPlaylist(playList);
@@ -68,7 +65,7 @@ namespace XBMCAddon
 
         // load a playlist like .m3u, .pls
         // first get correct factory to load playlist
-        std::unique_ptr<CPlayList> pPlayList (CPlayListFactory::Create(item));
+        std::unique_ptr<PLAYLIST::CPlayList> pPlayList(PLAYLIST::CPlayListFactory::Create(item));
         if (nullptr != pPlayList)
         {
           // load it
