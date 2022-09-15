@@ -163,6 +163,8 @@ public:
                             const std::string& intent = std::string(),
                             const std::string& dataType = std::string(),
                             const std::string& dataURI = std::string(),
+                            const std::string& action = std::string(),
+                            const std::string& category = std::string(),
                             const std::string& flags = std::string(),
                             const std::string& extras = std::string());
   std::vector<androidPackage> GetApplications() const;

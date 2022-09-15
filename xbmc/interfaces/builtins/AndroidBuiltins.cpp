@@ -17,8 +17,10 @@
  *           params[1] = intent (optional)
  *           params[2] = datatype (optional)
  *           params[3] = dataURI (optional)
- *           params[4] = flags (optional)
- *           params[5] = extras (optional)
+ *           params[4] = action (optional)
+ *           params[5] = category (optional)
+ *           params[6] = flags (optional)
+ *           params[7] = extras (optional)
  */
 static int LaunchAndroidActivity(const std::vector<std::string>& params)
 {
