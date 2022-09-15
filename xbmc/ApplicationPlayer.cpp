@@ -16,7 +16,6 @@
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "playlists/PlayList.h"
 #include "settings/MediaSettings.h"
 
 #include <mutex>
@@ -225,15 +224,15 @@ bool CApplicationPlayer::HasGame() const
   return (player && player->HasGame());
 }
 
-int CApplicationPlayer::GetPreferredPlaylist() const
+PLAYLIST::Id CApplicationPlayer::GetPreferredPlaylist() const
 {
   if (IsPlayingVideo())
-    return PLAYLIST_VIDEO;
+    return PLAYLIST::TYPE_VIDEO;
 
   if (IsPlayingAudio())
-    return PLAYLIST_MUSIC;
+    return PLAYLIST::TYPE_MUSIC;
 
-  return PLAYLIST_NONE;
+  return PLAYLIST::TYPE_NONE;
 }
 
 bool CApplicationPlayer::HasRDS() const

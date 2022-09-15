@@ -34,7 +34,7 @@
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/MusicDatabase.h"
 #include "music/dialogs/GUIDialogMusicInfo.h"
-#include "playlists/PlayList.h"
+#include "playlists/PlayListTypes.h"
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
@@ -740,7 +740,7 @@ void CGUIDialogVideoInfo::Play(bool resume)
       Open();
       return;
     }
-    m_movieItem->SetProperty("playlist_type_hint", PLAYLIST_VIDEO);
+    m_movieItem->SetProperty("playlist_type_hint", PLAYLIST::TYPE_VIDEO);
 
     pWindow->PlayMovie(m_movieItem.get());
   }

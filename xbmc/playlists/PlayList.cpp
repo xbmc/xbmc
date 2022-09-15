@@ -32,8 +32,7 @@ using namespace MUSIC_INFO;
 using namespace XFILE;
 using namespace PLAYLIST;
 
-CPlayList::CPlayList(int id)
-  : m_id(id)
+CPlayList::CPlayList(Id id /* = PLAYLIST::TYPE_NONE */) : m_id(id)
 {
   m_iPlayableItems = -1;
   m_bShuffled = false;
@@ -42,7 +41,7 @@ CPlayList::CPlayList(int id)
 
 void CPlayList::AnnounceRemove(int pos)
 {
-  if (m_id < 0)
+  if (m_id == TYPE_NONE)
     return;
 
   CVariant data;
@@ -53,7 +52,7 @@ void CPlayList::AnnounceRemove(int pos)
 
 void CPlayList::AnnounceClear()
 {
-  if (m_id < 0)
+  if (m_id == TYPE_NONE)
     return;
 
   CVariant data;
@@ -63,7 +62,7 @@ void CPlayList::AnnounceClear()
 
 void CPlayList::AnnounceAdd(const CFileItemPtr& item, int pos)
 {
-  if (m_id < 0)
+  if (m_id == TYPE_NONE)
     return;
 
   CVariant data;
