@@ -16,9 +16,6 @@
 #include <string>
 #include <vector>
 
-#define AUDIO_BUFFER_SIZE 512 // MUST BE A POWER OF 2!!!
-#define MAX_AUDIO_BUFFERS 16
-
 class CAudioBuffer
 {
 public:
@@ -76,10 +73,10 @@ private:
   inline void CreateBuffers();
   inline void ClearBuffers();
 
-  bool m_callStart;
-  bool m_alreadyStarted;
-  bool m_attemptedLoad;
-  bool m_updateTrack;
+  bool m_callStart{false};
+  bool m_alreadyStarted{false};
+  bool m_attemptedLoad{false};
+  bool m_updateTrack{false};
 
   std::list<std::unique_ptr<CAudioBuffer>> m_vecBuffers;
   unsigned int m_numBuffers; /*!< Number of Audio buffers */
@@ -95,5 +92,5 @@ private:
   std::string m_presetsPath; /*!< To add-on sended preset path */
   std::string m_profilePath; /*!< To add-on sended profile path */
 
-  ADDON::CVisualization* m_instance;
+  ADDON::CVisualization* m_instance{nullptr};
 };

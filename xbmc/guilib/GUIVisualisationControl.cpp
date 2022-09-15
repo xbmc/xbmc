@@ -26,11 +26,10 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
-using namespace ADDON;
-
-#define LABEL_ROW1 10
-#define LABEL_ROW2 11
-#define LABEL_ROW3 12
+namespace
+{
+constexpr unsigned int MAX_AUDIO_BUFFERS = 16;
+} // namespace
 
 CAudioBuffer::CAudioBuffer(int iSize)
 {
@@ -65,22 +64,13 @@ void CAudioBuffer::Set(const float* psBuffer, int iSize)
 
 CGUIVisualisationControl::CGUIVisualisationControl(
     int parentID, int controlID, float posX, float posY, float width, float height)
-  : CGUIControl(parentID, controlID, posX, posY, width, height),
-    m_callStart(false),
-    m_alreadyStarted(false),
-    m_attemptedLoad(false),
-    m_updateTrack(false),
-    m_instance(nullptr)
+  : CGUIControl(parentID, controlID, posX, posY, width, height)
 {
   ControlType = GUICONTROL_VISUALISATION;
 }
 
 CGUIVisualisationControl::CGUIVisualisationControl(const CGUIVisualisationControl& from)
-  : CGUIControl(from),
-    m_callStart(false),
-    m_alreadyStarted(false),
-    m_attemptedLoad(false),
-    m_instance(nullptr)
+  : CGUIControl(from)
 {
   ControlType = GUICONTROL_VISUALISATION;
 }
@@ -162,7 +152,9 @@ void CGUIVisualisationControl::Process(unsigned int currentTime, CDirtyRegionLis
     }
     else if (m_callStart && m_instance)
     {
-      CServiceBroker::GetWinSystem()->GetGfxContext().CaptureStateBlock();
+      auto& context = CServiceBroker::GetWinSystem()->GetGfxContext();
+
+      context.CaptureStateBlock();
       if (m_alreadyStarted)
       {
         m_instance->Stop();
@@ -175,7 +167,7 @@ void CGUIVisualisationControl::Process(unsigned int currentTime, CDirtyRegionLis
       if (tag && !tag->GetTitle().empty())
         songTitle = tag->GetTitle();
       m_alreadyStarted = m_instance->Start(m_channels, m_samplesPerSec, m_bitsPerSample, songTitle);
-      CServiceBroker::GetWinSystem()->GetGfxContext().ApplyStateBlock();
+      context.ApplyStateBlock();
       m_callStart = false;
       m_updateTrack = true;
     }
@@ -197,16 +189,18 @@ void CGUIVisualisationControl::Render()
 {
   if (m_instance && m_alreadyStarted)
   {
+    auto& context = CServiceBroker::GetWinSystem()->GetGfxContext();
+
     /*
      * set the viewport - note: We currently don't have any control over how
      * the addon renders, so the best we can do is attempt to define
      * a viewport??
      */
-    CServiceBroker::GetWinSystem()->GetGfxContext().SetViewPort(m_posX, m_posY, m_width, m_height);
-    CServiceBroker::GetWinSystem()->GetGfxContext().CaptureStateBlock();
+    context.SetViewPort(m_posX, m_posY, m_width, m_height);
+    context.CaptureStateBlock();
     m_instance->Render();
-    CServiceBroker::GetWinSystem()->GetGfxContext().ApplyStateBlock();
-    CServiceBroker::GetWinSystem()->GetGfxContext().RestoreViewPort();
+    context.ApplyStateBlock();
+    context.RestoreViewPort();
   }
 
   CGUIControl::Render();
@@ -251,7 +245,6 @@ void CGUIVisualisationControl::OnAudioData(const float* audioData, unsigned int 
   // Save our audio data in the buffers
   std::unique_ptr<CAudioBuffer> pBuffer(new CAudioBuffer(audioDataLength));
   pBuffer->Set(audioData, audioDataLength);
-  //m_vecBuffers.push_back(pBuffer.release());
   m_vecBuffers.emplace_back(std::move(pBuffer));
 
   if (m_vecBuffers.size() < m_numBuffers)
@@ -284,9 +277,9 @@ void CGUIVisualisationControl::UpdateTrack()
   if (!tag)
     return;
 
-  std::string artist(tag->GetArtistString());
-  std::string albumArtist(tag->GetAlbumArtistString());
-  std::string genre(StringUtils::Join(
+  const std::string artist(tag->GetArtistString());
+  const std::string albumArtist(tag->GetAlbumArtistString());
+  const std::string genre(StringUtils::Join(
       tag->GetGenre(),
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_musicItemSeparator));
 
@@ -355,6 +348,11 @@ bool CGUIVisualisationControl::GetPresetList(std::vector<std::string>& vecpreset
 
 bool CGUIVisualisationControl::InitVisualization()
 {
+  IAE* ae = CServiceBroker::GetActiveAE();
+  CWinSystemBase* const winSystem = CServiceBroker::GetWinSystem();
+  if (!ae || !winSystem)
+    return false;
+
   const std::string addon = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
       CSettings::SETTING_MUSICPLAYER_VISUALISATION);
   const ADDON::AddonInfoPtr addonBase =
@@ -362,40 +360,40 @@ bool CGUIVisualisationControl::InitVisualization()
   if (!addonBase)
     return false;
 
-  CServiceBroker::GetActiveAE()->RegisterAudioCallback(this);
+  ae->RegisterAudioCallback(this);
 
-  CServiceBroker::GetWinSystem()->GetGfxContext().CaptureStateBlock();
+  auto& context = winSystem->GetGfxContext();
 
-  float x = CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalXCoord(GetXPosition(),
-                                                                             GetYPosition());
-  float y = CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalYCoord(GetXPosition(),
-                                                                             GetYPosition());
-  float w = CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalXCoord(
-                GetXPosition() + GetWidth(), GetYPosition() + GetHeight()) -
-            x;
-  float h = CServiceBroker::GetWinSystem()->GetGfxContext().ScaleFinalYCoord(
-                GetXPosition() + GetWidth(), GetYPosition() + GetHeight()) -
-            y;
+  context.CaptureStateBlock();
+
+  float x = context.ScaleFinalXCoord(GetXPosition(), GetYPosition());
+  float y = context.ScaleFinalYCoord(GetXPosition(), GetYPosition());
+  float w = context.ScaleFinalXCoord(GetXPosition() + GetWidth(), GetYPosition() + GetHeight()) - x;
+  float h = context.ScaleFinalYCoord(GetXPosition() + GetWidth(), GetYPosition() + GetHeight()) - y;
   if (x < 0)
     x = 0;
   if (y < 0)
     y = 0;
-  if (x + w > CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth())
-    w = CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth() - x;
-  if (y + h > CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight())
-    h = CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight() - y;
+  if (x + w > context.GetWidth())
+    w = context.GetWidth() - x;
+  if (y + h > context.GetHeight())
+    h = context.GetHeight() - y;
 
   m_instance = new ADDON::CVisualization(addonBase, x, y, w, h);
   CreateBuffers();
 
   m_alreadyStarted = false;
-  CServiceBroker::GetWinSystem()->GetGfxContext().ApplyStateBlock();
+  context.ApplyStateBlock();
   return true;
 }
 
 void CGUIVisualisationControl::DeInitVisualization()
 {
   if (!m_attemptedLoad)
+    return;
+
+  CWinSystemBase* const winSystem = CServiceBroker::GetWinSystem();
+  if (!winSystem)
     return;
 
   IAE* ae = CServiceBroker::GetActiveAE();
@@ -413,9 +411,11 @@ void CGUIVisualisationControl::DeInitVisualization()
   {
     if (m_alreadyStarted)
     {
-      CServiceBroker::GetWinSystem()->GetGfxContext().CaptureStateBlock();
+      auto& context = winSystem->GetGfxContext();
+
+      context.CaptureStateBlock();
       m_instance->Stop();
-      CServiceBroker::GetWinSystem()->GetGfxContext().ApplyStateBlock();
+      context.ApplyStateBlock();
       m_alreadyStarted = false;
     }
 
