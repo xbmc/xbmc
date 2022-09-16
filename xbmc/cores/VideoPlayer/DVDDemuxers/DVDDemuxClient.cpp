@@ -748,11 +748,11 @@ void CDVDDemuxClient::OpenStream(int id)
   }
 }
 
-void CDVDDemuxClient::SetVideoResolution(int width, int height)
+void CDVDDemuxClient::SetVideoResolution(unsigned int width, unsigned int height)
 {
   if (m_IDemux)
   {
-    m_IDemux->SetVideoResolution(width, height);
+    m_IDemux->SetVideoResolution(width, height, width, height);
   }
 }
 
