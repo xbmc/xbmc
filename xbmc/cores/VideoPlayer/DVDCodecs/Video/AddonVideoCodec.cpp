@@ -118,6 +118,26 @@ bool CAddonVideoCodec::CopyToInitData(VIDEOCODEC_INITDATA &initData, CDVDStreamI
       return false;
     }
     break;
+  case AV_CODEC_ID_AV1:
+    initData.codec = VIDEOCODEC_AV1;
+    switch (hints.profile)
+    {
+    case FF_PROFILE_UNKNOWN:
+      initData.codecProfile = STREAMCODEC_PROFILE::CodecProfileUnknown;
+      break;
+    case FF_PROFILE_AV1_MAIN:
+      initData.codecProfile = STREAMCODEC_PROFILE::AV1CodecProfileMain;
+      break;
+    case FF_PROFILE_AV1_HIGH:
+      initData.codecProfile = STREAMCODEC_PROFILE::AV1CodecProfileHigh;
+      break;
+    case FF_PROFILE_AV1_PROFESSIONAL:
+      initData.codecProfile = STREAMCODEC_PROFILE::AV1CodecProfileProfessional;
+      break;
+    default:
+      return false;
+    }
+    break;
   default:
     return false;
   }
