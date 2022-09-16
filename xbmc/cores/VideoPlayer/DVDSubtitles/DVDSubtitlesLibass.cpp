@@ -292,7 +292,8 @@ ASS_Image* CDVDSubtitlesLibass::RenderImage(double pts,
   {
     ass_set_storage_size(m_renderer, static_cast<int>(opts.sourceWidth),
                          static_cast<int>(opts.sourceHeight));
-    useFrameMargins = opts.marginsMode != MarginsMode::DISABLED;
+    useFrameMargins =
+        opts.marginsMode == MarginsMode::DISABLED || opts.marginsMode == MarginsMode::INSIDE_VIDEO;
   }
   else
   {
