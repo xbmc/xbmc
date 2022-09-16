@@ -101,6 +101,7 @@ public:
   virtual bool HasAudio() const = 0;
   virtual bool HasGame() const { return false; }
   virtual bool HasRDS() const { return false; }
+  virtual bool HasID3() const { return false; }
   virtual bool IsPassthrough() const { return false;}
   virtual bool CanSeek() {return true;}
   virtual void Seek(bool bPlus = true, bool bLargeStep = false, bool bChapterOverride = false) = 0;

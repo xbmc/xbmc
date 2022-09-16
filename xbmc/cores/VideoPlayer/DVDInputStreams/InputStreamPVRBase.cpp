@@ -343,6 +343,17 @@ void CInputStreamPVRBase::UpdateStreamMap()
 
       dStream = streamRadioRDS;
     }
+    else if (stream.iCodecType == PVR_CODEC_TYPE_ID3)
+    {
+      std::shared_ptr<CDemuxStreamAudioID3> streamAudioID3;
+
+      if (dStream)
+        streamAudioID3 = std::dynamic_pointer_cast<CDemuxStreamAudioID3>(dStream);
+      if (!streamAudioID3)
+        streamAudioID3 = std::make_shared<CDemuxStreamAudioID3>();
+
+      dStream = std::move(streamAudioID3);
+    }
     else
       dStream = std::make_shared<CDemuxStream>();
 

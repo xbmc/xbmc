@@ -47,7 +47,8 @@ enum StreamType
   STREAM_DATA, // data stream
   STREAM_SUBTITLE, // subtitle stream
   STREAM_TELETEXT, // Teletext data stream
-  STREAM_RADIO_RDS // Radio RDS data stream
+  STREAM_RADIO_RDS, // Radio RDS data stream
+  STREAM_AUDIO_ID3 // Audio ID3 data stream
 };
 
 enum StreamSource
@@ -197,6 +198,12 @@ public:
   {
     type = STREAM_TELETEXT;
   }
+};
+
+class CDemuxStreamAudioID3 : public CDemuxStream
+{
+public:
+  CDemuxStreamAudioID3() : CDemuxStream() { type = STREAM_AUDIO_ID3; }
 };
 
 class CDemuxStreamRadioRDS : public CDemuxStream

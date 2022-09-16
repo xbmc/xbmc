@@ -2126,6 +2126,11 @@ private:
     tmp.codec_type = PVR_CODEC_TYPE_RDS;
     tmp.codec_id = AV_CODEC_ID_NONE;
     m_lookup.insert(std::make_pair("RDS", tmp));
+
+    // ID3 is not returned by av_codec_next. we got our own decoder
+    tmp.codec_type = PVR_CODEC_TYPE_ID3;
+    tmp.codec_id = AV_CODEC_ID_NONE;
+    m_lookup.insert({"ID3", tmp});
   }
 
   std::map<std::string, PVR_CODEC> m_lookup;
