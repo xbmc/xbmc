@@ -110,6 +110,10 @@ else()
   set(ENABLE_STATIC_LIBS FALSE)
 endif()
 
+if(COMMAND target_precompile_headers)
+  option(ENABLE_PCH "Enable CMake precompiled header support?" ON)
+endif()
+
 core_find_git_rev(APP_SCMID FULL)
 
 # Dynamically loaded libraries built with the project
@@ -376,6 +380,67 @@ source_group_by_folder(lib${APP_NAME_LC} RELATIVE ${CMAKE_SOURCE_DIR}/xbmc)
 if(WIN32)
   add_precompiled_header(lib${APP_NAME_LC} pch.h ${CMAKE_SOURCE_DIR}/xbmc/platform/win32/pch.cpp)
   set_language_cxx(lib${APP_NAME_LC})
+elseif(ENABLE_PCH AND COMMAND target_precompile_headers)
+  # Add dummy .c and .cpp to force the creation of the PCH for both languages
+  target_sources(lib${APP_NAME_LC} PRIVATE
+    ${CMAKE_SOURCE_DIR}/xbmc/platform/common/pch_dummy.c
+    ${CMAKE_SOURCE_DIR}/xbmc/platform/common/pch_dummy.cpp)
+
+  target_precompile_headers(lib${APP_NAME_LC} PRIVATE
+    # STL headers
+    $<$<COMPILE_LANGUAGE:CXX>:<algorithm$<ANGLE-R>>
+    $<$<COMPILE_LANGUAGE:CXX>:<chrono$<ANGLE-R>>
+    $<$<COMPILE_LANGUAGE:CXX>:<deque$<ANGLE-R>>
+    $<$<COMPILE_LANGUAGE:CXX>:<exception$<ANGLE-R>>
+    $<$<COMPILE_LANGUAGE:CXX>:<fstream$<ANGLE-R>>
+    $<$<COMPILE_LANGUAGE:CXX>:<functional$<ANGLE-R>>
+    $<$<COMPILE_LANGUAGE:CXX>:<future$<ANGLE-R>>
+    $<$<COMPILE_LANGUAGE:CXX>:<iostream$<ANGLE-R>>
+    $<$<COMPILE_LANGUAGE:CXX>:<list$<ANGLE-R>>
+    $<$<COMPILE_LANGUAGE:CXX>:<map$<ANGLE-R>>
+    $<$<COMPILE_LANGUAGE:CXX>:<memory$<ANGLE-R>>
+    $<$<COMPILE_LANGUAGE:CXX>:<regex$<ANGLE-R>>
+    $<$<COMPILE_LANGUAGE:CXX>:<string$<ANGLE-R>>
+    $<$<COMPILE_LANGUAGE:CXX>:<unordered_map$<ANGLE-R>>
+    $<$<COMPILE_LANGUAGE:CXX>:<variant$<ANGLE-R>>
+    $<$<COMPILE_LANGUAGE:CXX>:<vector$<ANGLE-R>>
+
+    # C Headers
+    $<$<COMPILE_LANGUAGE:CXX>:<cstdint$<ANGLE-R>>
+    $<$<COMPILE_LANGUAGE:CXX>:<cstdio$<ANGLE-R>>
+    $<$<COMPILE_LANGUAGE:CXX>:<cstdlib$<ANGLE-R>>
+    $<$<COMPILE_LANGUAGE:CXX>:<cstring$<ANGLE-R>>
+
+    # fmtlib
+    $<$<COMPILE_LANGUAGE:CXX>:<fmt/chrono.h$<ANGLE-R>>
+    $<$<COMPILE_LANGUAGE:CXX>:<fmt/color.h$<ANGLE-R>>
+    $<$<COMPILE_LANGUAGE:CXX>:<fmt/compile.h$<ANGLE-R>>
+    $<$<COMPILE_LANGUAGE:CXX>:<fmt/core.h$<ANGLE-R>>
+    $<$<COMPILE_LANGUAGE:CXX>:<fmt/format.h$<ANGLE-R>>
+    $<$<COMPILE_LANGUAGE:CXX>:<fmt/os.h$<ANGLE-R>>
+    $<$<COMPILE_LANGUAGE:CXX>:<fmt/ostream.h$<ANGLE-R>>
+    $<$<COMPILE_LANGUAGE:CXX>:<fmt/printf.h$<ANGLE-R>>
+    $<$<COMPILE_LANGUAGE:CXX>:<fmt/xchar.h$<ANGLE-R>>
+
+    # spdlog
+    $<$<COMPILE_LANGUAGE:CXX>:<spdlog/spdlog.h$<ANGLE-R>>
+
+    # Needed to silence a redefinition warning
+    $<$<COMPILE_LANGUAGE:CXX>:"utils/log.h">
+
+    # Dummy C PCH so we don't have to special case the hand full of C
+    # libraries we are creating
+    $<$<COMPILE_LANGUAGE:C>:<stdlib.h$<ANGLE-R>>
+  )
+
+  foreach(dependency ${core_DEPENDS})
+    get_target_property(target_type ${dependency} TYPE)
+    # Shared libraries aren't compatible with the shared PCH because they
+    # are compiled as position independent code
+    if(NOT ${target_type} EQUAL "SHARED_LIBRARY")
+      target_precompile_headers(${dependency} REUSE_FROM lib${APP_NAME_LC})
+    endif()
+  endforeach()
 endif()
 
 # main binary
@@ -549,6 +614,9 @@ if(VERBOSE)
   message(STATUS "CMAKE_CXX_FLAGS       : ${CMAKE_CXX_FLAGS}")
   message(STATUS "CMAKE_EXE_LINKER_FLAGS: ${CMAKE_EXE_LINKER_FLAGS}")
   message(STATUS "LTO_OPTIMIZATION      : ${CMAKE_INTERPROCEDURAL_OPTIMIZATION}")
+  if(COMMAND target_precompile_headers)
+    message(STATUS "ENABLE_PCH:           : ${ENABLE_PCH}")
+  endif()
   if(CMAKE_INTERPROCEDURAL_OPTIMIZATION)
     message(STATUS "CMAKE_CXX_COMPILE_OPTIONS_IPO: ${CMAKE_CXX_COMPILE_OPTIONS_IPO}")
     message(STATUS "CMAKE_C_COMPILE_OPTIONS_IPO  : ${CMAKE_C_COMPILE_OPTIONS_IPO}")
