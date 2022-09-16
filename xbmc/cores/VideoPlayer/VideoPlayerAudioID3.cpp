@@ -29,7 +29,7 @@
 using namespace TagLib;
 
 CVideoPlayerAudioID3::CVideoPlayerAudioID3(CProcessInfo& processInfo)
-  : CThread("VideoPlayerAudioID3"), IDVDStreamPlayer(processInfo), m_messageQueue("id3")
+  : IDVDStreamPlayer(processInfo), CThread("VideoPlayerAudioID3"), m_messageQueue("id3")
 {
   CLog::Log(LOGDEBUG, "Audio ID3 tag processor - new {}", __FUNCTION__);
 }
