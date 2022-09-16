@@ -602,8 +602,8 @@ public:
   /// See https://github.com/FFmpeg/FFmpeg/blob/master/libavcodec/codec_desc.c about
   /// available names.
   ///
-  /// @remark On @ref INPUTSTREAM_TYPE_TELETEXT and @ref INPUTSTREAM_TYPE_RDS
-  /// this can be ignored and leaved empty.
+  /// @remark On @ref INPUTSTREAM_TYPE_TELETEXT, @ref INPUTSTREAM_TYPE_RDS, and
+  /// @ref INPUTSTREAM_TYPE_ID3 this can be ignored and leaved empty.
   ///
   /// @param[in] codeName Codec name
   void SetCodecName(const std::string& codecName)

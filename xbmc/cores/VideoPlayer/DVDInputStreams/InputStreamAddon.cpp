@@ -389,7 +389,7 @@ KODI_HANDLE CInputStreamAddon::cb_get_stream_transfer(KODI_HANDLE handle,
   AVCodec* codec = nullptr;
 
   if (stream->m_streamType != INPUTSTREAM_TYPE_TELETEXT &&
-      stream->m_streamType != INPUTSTREAM_TYPE_RDS)
+      stream->m_streamType != INPUTSTREAM_TYPE_RDS && stream->m_streamType != INPUTSTREAM_TYPE_ID3)
   {
     StringUtils::ToLower(codecName);
     codec = avcodec_find_decoder_by_name(codecName.c_str());
@@ -497,6 +497,11 @@ KODI_HANDLE CInputStreamAddon::cb_get_stream_transfer(KODI_HANDLE handle,
   {
     CDemuxStreamRadioRDS* rdsStream = new CDemuxStreamRadioRDS();
     demuxStream = rdsStream;
+  }
+  else if (stream->m_streamType == INPUTSTREAM_TYPE_ID3)
+  {
+    CDemuxStreamAudioID3* id3Stream = new CDemuxStreamAudioID3();
+    demuxStream = id3Stream;
   }
   else
     return nullptr;

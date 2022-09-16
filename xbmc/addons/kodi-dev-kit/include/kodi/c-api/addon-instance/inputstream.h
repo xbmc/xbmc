@@ -179,6 +179,9 @@ extern "C"
 
     /// @brief **5 :** To identify @ref cpp_kodi_addon_inputstream_Defs_Info as Radio RDS
     INPUTSTREAM_TYPE_RDS,
+
+    /// @brief **6 :** To identify @ref cpp_kodi_addon_inputstream_Defs_Info as Audio ID3 tags
+    INPUTSTREAM_TYPE_ID3,
   };
   ///@}
   //------------------------------------------------------------------------------
