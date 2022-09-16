@@ -104,7 +104,7 @@ endif()
 
 
 add_library(upnp STATIC ${SOURCES} ${HEADERS})
-target_compile_definitions(upnp PUBLIC -DNPT_CONFIG_ENABLE_LOGGING)
+target_compile_definitions(upnp PRIVATE -DNPT_CONFIG_ENABLE_LOGGING)
 if(CORE_SYSTEM_NAME STREQUAL "freebsd")
   target_compile_definitions(upnp PUBLIC -DNPT_CONFIG_HAVE_GETADDRINFO)
 endif()
