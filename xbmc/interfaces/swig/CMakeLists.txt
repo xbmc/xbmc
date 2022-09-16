@@ -55,8 +55,6 @@ foreach(INPUT IN LISTS INPUTS)
 endforeach()
 
 add_library(python_binding STATIC ${SOURCES})
-set_target_properties(python_binding PROPERTIES POSITION_INDEPENDENT_CODE TRUE
-                                                FOLDER "Build Utilities")
 set(core_DEPENDS python_binding ${core_DEPENDS} CACHE STRING "" FORCE)
 add_dependencies(python_binding ${GLOBAL_TARGET_DEPS})
 
