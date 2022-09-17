@@ -1994,6 +1994,14 @@ const infomap system_labels[] = {
 ///     @return **True** if 'hide watched items' is selected.
 ///     <p>
 ///   }
+///   \table_row3{   <b>`System.Setting(hideunwatchedepisodethumbs)`</b>,
+///                  \anchor System_Setting_HideUnwatchedEpisodeThumbs
+///                  _boolean_,
+///     @return **True** if 'hide unwatched episode setting is enabled'\, **False** otherwise.
+///     <p><hr>
+///     @skinning_v20 **[New Boolean Condition]** \link System_Setting_HideUnwatchedEpisodeThumbs `System.Setting(hideunwatchedepisodethumbs)`\endlink
+///     <p>
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
