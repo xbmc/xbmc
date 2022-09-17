@@ -34,10 +34,10 @@ public class ExternalPermission extends Activity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPreferences = getSharedPreferences("external_permissions", 0);
-        setContentView(R.layout.activity_splash);
-        if (getIntent() != null && PERMISSION_ACTION.equals(getIntent().getAction())) {
-            final String requester = getReferrer().getHost();
+        final String requester = getCallingPackage();
+        if (getIntent() != null && PERMISSION_ACTION.equals(getIntent().getAction()) && requester != null) {
             if (newPackage(requester)) {
+                setContentView(R.layout.activity_splash);
                 AlertDialog dialog = new AlertDialog.Builder(this)
                     .setCancelable(false)
                     .setTitle("WARNING")
