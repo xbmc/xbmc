@@ -103,7 +103,7 @@ public:
   virtual ~CMouseStat();
 
   void Initialize();
-  void HandleEvent(XBMC_Event& newEvent);
+  void HandleEvent(const XBMC_Event& newEvent);
   void SetResolution(int maxX, int maxY, float speedX, float speedY);
   bool IsActive();
   bool IsEnabled() const;
