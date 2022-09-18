@@ -249,7 +249,7 @@
 					<height>330</height>
 					<aspectratio aligny="bottom">keep</aspectratio>
 					<fadetime>300</fadetime>
-					<texture background="true">$INFO[ListItem.Icon]</texture>
+					<texture background="true">$VAR[ShiftThumbVar]</texture>
 					<visible>String.IsEqual(ListItem.DbType,episode)</visible>
 				</control>
 				<control type="image">
