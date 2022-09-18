@@ -23,7 +23,7 @@
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "network/Network.h"
-#include "playlists/PlayList.h"
+#include "playlists/PlayListTypes.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Digest.h"
@@ -176,7 +176,7 @@ void CAirPlayServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
     {
       bool shouldRestoreVolume = true;
       if (data.isMember("player") && data["player"].isMember("playerid"))
-        shouldRestoreVolume = (data["player"]["playerid"] != PLAYLIST_PICTURE);
+        shouldRestoreVolume = (data["player"]["playerid"] != PLAYLIST::TYPE_PICTURE);
 
       if (shouldRestoreVolume)
         restoreVolume();

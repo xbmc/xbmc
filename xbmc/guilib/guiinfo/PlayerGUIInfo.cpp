@@ -536,8 +536,8 @@ bool CPlayerGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
     case PLAYLIST_ISRANDOM:
     {
       PLAYLIST::CPlayListPlayer& player = CServiceBroker::GetPlaylistPlayer();
-      int playlistid = info.GetData1();
-      if (info.GetData2() > 0 && playlistid > PLAYLIST_NONE)
+      PLAYLIST::Id playlistid = info.GetData1();
+      if (info.GetData2() > 0 && playlistid != PLAYLIST::TYPE_NONE)
         value = player.IsShuffled(playlistid);
       else
         value = player.IsShuffled(player.GetCurrentPlaylist());
@@ -546,21 +546,21 @@ bool CPlayerGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
     case PLAYLIST_ISREPEAT:
     {
       PLAYLIST::CPlayListPlayer& player = CServiceBroker::GetPlaylistPlayer();
-      int playlistid = info.GetData1();
-      if (info.GetData2() > 0 && playlistid > PLAYLIST_NONE)
-        value = (player.GetRepeat(playlistid) == PLAYLIST::REPEAT_ALL);
+      PLAYLIST::Id playlistid = info.GetData1();
+      if (info.GetData2() > 0 && playlistid != PLAYLIST::TYPE_NONE)
+        value = (player.GetRepeat(playlistid) == PLAYLIST::RepeatState::ALL);
       else
-        value = player.GetRepeat(player.GetCurrentPlaylist()) == PLAYLIST::REPEAT_ALL;
+        value = player.GetRepeat(player.GetCurrentPlaylist()) == PLAYLIST::RepeatState::ALL;
       return true;
     }
     case PLAYLIST_ISREPEATONE:
     {
       PLAYLIST::CPlayListPlayer& player = CServiceBroker::GetPlaylistPlayer();
-      int playlistid = info.GetData1();
-      if (info.GetData2() > 0 && playlistid > PLAYLIST_NONE)
-        value = (player.GetRepeat(playlistid) == PLAYLIST::REPEAT_ONE);
+      PLAYLIST::Id playlistid = info.GetData1();
+      if (info.GetData2() > 0 && playlistid != PLAYLIST::TYPE_NONE)
+        value = (player.GetRepeat(playlistid) == PLAYLIST::RepeatState::ONE);
       else
-        value = player.GetRepeat(player.GetCurrentPlaylist()) == PLAYLIST::REPEAT_ONE;
+        value = player.GetRepeat(player.GetCurrentPlaylist()) == PLAYLIST::RepeatState::ONE;
       return true;
     }
 

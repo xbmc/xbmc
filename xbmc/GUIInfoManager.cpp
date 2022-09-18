@@ -22,7 +22,7 @@
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/info/InfoExpression.h"
 #include "messaging/ApplicationMessenger.h"
-#include "playlists/PlayList.h"
+#include "playlists/PlayListTypes.h"
 #include "settings/SkinSettings.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
@@ -10364,13 +10364,13 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
           return ret;
         else
         {
-          int playlistid = PLAYLIST_NONE;
+          PLAYLIST::Id playlistid = PLAYLIST::TYPE_NONE;
           if (StringUtils::EqualsNoCase(prop.param(), "video"))
-            playlistid = PLAYLIST_VIDEO;
+            playlistid = PLAYLIST::TYPE_VIDEO;
           else if (StringUtils::EqualsNoCase(prop.param(), "music"))
-            playlistid = PLAYLIST_MUSIC;
+            playlistid = PLAYLIST::TYPE_MUSIC;
 
-          if (playlistid > PLAYLIST_NONE)
+          if (playlistid != PLAYLIST::TYPE_NONE)
             return AddMultiInfo(CGUIInfo(ret, playlistid, 1));
         }
       }

@@ -11,7 +11,7 @@
 #include "FileItem.h"
 #include "music/MusicDatabase.h"
 #include "music/tags/MusicInfoTag.h"
-#include "playlists/PlayList.h"
+#include "playlists/PlayListTypes.h"
 #include "pvr/channels/PVRChannel.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
@@ -187,7 +187,10 @@ void CAnnouncementManager::DoAnnounce(AnnouncementFlag flag,
     object["item"]["channeltype"] = channel->IsRadio() ? "radio" : "tv";
 
     if (data.isMember("player") && data["player"].isMember("playerid"))
-      object["player"]["playerid"] = channel->IsRadio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO;
+    {
+      object["player"]["playerid"] =
+          channel->IsRadio() ? PLAYLIST::TYPE_MUSIC : PLAYLIST::TYPE_VIDEO;
+    }
   }
   else if (item->HasVideoInfoTag() && !item->HasPVRRecordingInfoTag())
   {

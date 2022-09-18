@@ -34,13 +34,14 @@
 #include "input/Key.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/dialogs/GUIDialogMusicInfo.h"
+#include "playlists/PlayList.h"
 #include "playlists/PlayListFactory.h"
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
+#include "settings/SettingUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "settings/SettingUtils.h"
 #include "settings/dialogs/GUIDialogContentSettings.h"
 #include "storage/MediaManager.h"
 #include "utils/FileExtensionProvider.h"
@@ -57,7 +58,6 @@
 #include "view/GUIViewState.h"
 
 using namespace XFILE;
-using namespace PLAYLIST;
 using namespace VIDEODATABASEDIRECTORY;
 using namespace VIDEO;
 using namespace ADDON;
@@ -95,8 +95,8 @@ bool CGUIWindowVideoBase::OnAction(const CAction &action)
     return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_SCAN);
   else if (action.GetID() == ACTION_SHOW_PLAYLIST)
   {
-    if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_VIDEO ||
-        CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST_VIDEO).size() > 0)
+    if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST::TYPE_VIDEO ||
+        CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST::TYPE_VIDEO).size() > 0)
     {
       CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_VIDEO_PLAYLIST);
       return true;
@@ -439,11 +439,11 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItemPtr item, const ScraperPtr &info2, b
 void CGUIWindowVideoBase::OnQueueItem(int iItem, bool first)
 {
   // Determine the proper list to queue this element
-  int playlist = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
-  if (playlist == PLAYLIST_NONE)
-    playlist = g_application.GetAppPlayer().GetPreferredPlaylist();
-  if (playlist == PLAYLIST_NONE)
-    playlist = PLAYLIST_VIDEO;
+  PLAYLIST::Id playlistId = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
+  if (playlistId == PLAYLIST::TYPE_NONE)
+    playlistId = g_application.GetAppPlayer().GetPreferredPlaylist();
+  if (playlistId == PLAYLIST::TYPE_NONE)
+    playlistId = PLAYLIST::TYPE_VIDEO;
 
   // don't re-queue items from playlist window
   if ( iItem < 0 || iItem >= m_vecItems->Size() || GetID() == WINDOW_VIDEO_PLAYLIST ) return ;
@@ -468,10 +468,13 @@ void CGUIWindowVideoBase::OnQueueItem(int iItem, bool first)
   }
 
   if (first && g_application.GetAppPlayer().IsPlaying())
-    CServiceBroker::GetPlaylistPlayer().Insert(playlist, queuedItems, CServiceBroker::GetPlaylistPlayer().GetCurrentSong()+1);
+  {
+    CServiceBroker::GetPlaylistPlayer().Insert(
+        playlistId, queuedItems, CServiceBroker::GetPlaylistPlayer().GetCurrentSong() + 1);
+  }
   else
-    CServiceBroker::GetPlaylistPlayer().Add(playlist, queuedItems);
-  CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(playlist);
+    CServiceBroker::GetPlaylistPlayer().Add(playlistId, queuedItems);
+  CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(playlistId);
   // video does not auto play on queue like music
   m_viewControl.SetSelectedItem(iItem + 1);
 }
@@ -532,7 +535,7 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
     // just an item
     if (pItem->IsPlayList())
     {
-      std::unique_ptr<CPlayList> pPlayList (CPlayListFactory::Create(*pItem));
+      std::unique_ptr<PLAYLIST::CPlayList> pPlayList(PLAYLIST::CPlayListFactory::Create(*pItem));
       if (pPlayList)
       {
         // load it
@@ -542,7 +545,7 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
           return; //hmmm unable to load playlist?
         }
 
-        CPlayList playlist = *pPlayList;
+        PLAYLIST::CPlayList playlist = *pPlayList;
         for (int i = 0; i < playlist.size(); ++i)
         {
           AddItemToPlayList(playlist[i], queuedItems);
@@ -1149,7 +1152,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem, const std::string &player)
   // party mode
   if (g_partyModeManager.IsEnabled(PARTYMODECONTEXT_VIDEO))
   {
-    CPlayList playlistTemp;
+    PLAYLIST::CPlayList playlistTemp;
     playlistTemp.Add(pItem);
     g_partyModeManager.AddUserSongs(playlistTemp, true);
     return true;
@@ -1158,7 +1161,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem, const std::string &player)
   // Reset Playlistplayer, playback started now does
   // not use the playlistplayer.
   CServiceBroker::GetPlaylistPlayer().Reset();
-  CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST_NONE);
+  CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST::TYPE_NONE);
 
   CFileItem item(*pItem);
   if (pItem->IsVideoDb())
@@ -1168,7 +1171,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem, const std::string &player)
   }
   CLog::Log(LOGDEBUG, "{} {}", __FUNCTION__, CURL::GetRedacted(item.GetPath()));
 
-  item.SetProperty("playlist_type_hint", PLAYLIST_VIDEO);
+  item.SetProperty("playlist_type_hint", PLAYLIST::TYPE_VIDEO);
 
   PlayMovie(&item, player);
 
@@ -1178,9 +1181,12 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem, const std::string &player)
 bool CGUIWindowVideoBase::OnPlayAndQueueMedia(const CFileItemPtr& item, const std::string& player)
 {
   // Get the current playlist and make sure it is not shuffled
-  int iPlaylist = m_guiState->GetPlaylist();
-  if (iPlaylist != PLAYLIST_NONE && CServiceBroker::GetPlaylistPlayer().IsShuffled(iPlaylist))
-     CServiceBroker::GetPlaylistPlayer().SetShuffle(iPlaylist, false);
+  PLAYLIST::Id playlistId = m_guiState->GetPlaylist();
+  if (playlistId != PLAYLIST::TYPE_NONE &&
+      CServiceBroker::GetPlaylistPlayer().IsShuffled(playlistId))
+  {
+    CServiceBroker::GetPlaylistPlayer().SetShuffle(playlistId, false);
+  }
 
   CFileItemPtr movieItem(new CFileItem(*item));
 
@@ -1236,7 +1242,8 @@ void CGUIWindowVideoBase::OnDeleteItem(const CFileItemPtr& item)
   }
 }
 
-void CGUIWindowVideoBase::LoadPlayList(const std::string& strPlayList, int iPlayList /* = PLAYLIST_VIDEO */)
+void CGUIWindowVideoBase::LoadPlayList(const std::string& strPlayList,
+                                       PLAYLIST::Id playlistId /* = PLAYLIST::TYPE_VIDEO */)
 {
   // if partymode is active, we disable it
   if (g_partyModeManager.IsEnabled())
@@ -1244,7 +1251,7 @@ void CGUIWindowVideoBase::LoadPlayList(const std::string& strPlayList, int iPlay
 
   // load a playlist like .m3u, .pls
   // first get correct factory to load playlist
-  std::unique_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPlayList));
+  std::unique_ptr<PLAYLIST::CPlayList> pPlayList(PLAYLIST::CPlayListFactory::Create(strPlayList));
   if (pPlayList)
   {
     // load it
@@ -1255,7 +1262,7 @@ void CGUIWindowVideoBase::LoadPlayList(const std::string& strPlayList, int iPlay
     }
   }
 
-  if (g_application.ProcessAndStartPlaylist(strPlayList, *pPlayList, iPlayList))
+  if (g_application.ProcessAndStartPlaylist(strPlayList, *pPlayList, playlistId))
   {
     if (m_guiState)
       m_guiState->SetPlaylistDirectory("playlistvideo://");
@@ -1288,16 +1295,16 @@ void CGUIWindowVideoBase::PlayItem(int iItem, const std::string &player)
     CFileItemList queuedItems;
     AddItemToPlayList(item, queuedItems);
 
-    CServiceBroker::GetPlaylistPlayer().ClearPlaylist(PLAYLIST_VIDEO);
+    CServiceBroker::GetPlaylistPlayer().ClearPlaylist(PLAYLIST::TYPE_VIDEO);
     CServiceBroker::GetPlaylistPlayer().Reset();
-    CServiceBroker::GetPlaylistPlayer().Add(PLAYLIST_VIDEO, queuedItems);
-    CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST_VIDEO);
+    CServiceBroker::GetPlaylistPlayer().Add(PLAYLIST::TYPE_VIDEO, queuedItems);
+    CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST::TYPE_VIDEO);
     CServiceBroker::GetPlaylistPlayer().Play();
   }
   else if (pItem->IsPlayList())
   {
     // load the playlist the old way
-    LoadPlayList(pItem->GetPath(), PLAYLIST_VIDEO);
+    LoadPlayList(pItem->GetPath(), PLAYLIST::TYPE_VIDEO);
   }
   else
   {

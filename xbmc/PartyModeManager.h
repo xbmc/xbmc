@@ -17,7 +17,8 @@ class CFileItem; typedef std::shared_ptr<CFileItem> CFileItemPtr;
 class CFileItemList;
 namespace PLAYLIST
 {
-  class CPlayList;
+using Id = int;
+class CPlayList;
 }
 
 typedef enum
@@ -58,6 +59,7 @@ private:
   void ClearState();
   void UpdateStats();
   void Announce();
+  PLAYLIST::Id GetPlaylistId() const;
 
   // state
   bool m_bEnabled;

@@ -149,8 +149,11 @@ public:
   int  GetMessageMask() override;
   void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg) override;
 
-  bool PlayMedia(CFileItem& item, const std::string &player, int iPlaylist);
-  bool ProcessAndStartPlaylist(const std::string& strPlayList, PLAYLIST::CPlayList& playlist, int iPlaylist, int track=0);
+  bool PlayMedia(CFileItem& item, const std::string& player, PLAYLIST::Id playlistId);
+  bool ProcessAndStartPlaylist(const std::string& strPlayList,
+                               PLAYLIST::CPlayList& playlist,
+                               PLAYLIST::Id playlistId,
+                               int track = 0);
   bool PlayFile(CFileItem item, const std::string& player, bool bRestart = false);
   void StopPlaying();
   void Restart(bool bSamePosition = true);

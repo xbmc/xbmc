@@ -15,6 +15,7 @@ set(HEADERS PlayList.h
             PlayListFactory.h
             PlayListM3U.h
             PlayListPLS.h
+            PlayListTypes.h
             PlayListURL.h
             PlayListWPL.h
             PlayListXML.h

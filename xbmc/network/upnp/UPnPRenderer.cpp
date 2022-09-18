@@ -28,7 +28,6 @@
 #include "network/Network.h"
 #include "pictures/GUIWindowSlideShow.h"
 #include "pictures/PictureInfoTag.h"
-#include "playlists/PlayList.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -590,18 +589,18 @@ CUPnPRenderer::OnSetNextAVTransportURI(PLT_ActionReference& action)
 
     if (g_application.GetAppPlayer().IsPlaying()) {
 
-        int playlist = PLAYLIST_MUSIC;
-        if(item->IsVideo())
-          playlist = PLAYLIST_VIDEO;
+      PLAYLIST::Id playlistId = PLAYLIST::TYPE_MUSIC;
+      if (item->IsVideo())
+        playlistId = PLAYLIST::TYPE_VIDEO;
 
-        {
-          std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
-          CServiceBroker::GetPlaylistPlayer().ClearPlaylist(playlist);
-          CServiceBroker::GetPlaylistPlayer().Add(playlist, item);
+      {
+        std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+        CServiceBroker::GetPlaylistPlayer().ClearPlaylist(playlistId);
+        CServiceBroker::GetPlaylistPlayer().Add(playlistId, item);
 
-          CServiceBroker::GetPlaylistPlayer().SetCurrentSong(-1);
-          CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(playlist);
-        }
+        CServiceBroker::GetPlaylistPlayer().SetCurrentSong(-1);
+        CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(playlistId);
+      }
 
         CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
         CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);

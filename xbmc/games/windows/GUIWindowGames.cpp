@@ -23,7 +23,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
 #include "media/MediaLockState.h"
-#include "playlists/PlayList.h"
+#include "playlists/PlayListTypes.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -336,5 +336,5 @@ void CGUIWindowGames::OnItemInfo(int itemNumber)
 bool CGUIWindowGames::PlayGame(const CFileItem& item)
 {
   CFileItem itemCopy(item);
-  return g_application.PlayMedia(itemCopy, "", PLAYLIST_NONE);
+  return g_application.PlayMedia(itemCopy, "", PLAYLIST::TYPE_NONE);
 }

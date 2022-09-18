@@ -28,7 +28,6 @@
 #include "guilib/TextureManager.h"
 #include "music/GUIViewStateMusic.h"
 #include "pictures/GUIViewStatePictures.h"
-#include "playlists/PlayList.h"
 #include "profiles/ProfileManager.h"
 #include "programs/GUIViewStatePrograms.h"
 #include "pvr/windows/GUIViewStatePVR.h"
@@ -191,7 +190,7 @@ CGUIViewState::CGUIViewState(const CFileItemList& items) : m_items(items)
 {
   m_currentViewAsControl = 0;
   m_currentSortMethod = 0;
-  m_playlist = PLAYLIST_NONE;
+  m_playlist = PLAYLIST::TYPE_NONE;
 }
 
 CGUIViewState::~CGUIViewState() = default;
@@ -404,7 +403,7 @@ bool CGUIViewState::DisableAddSourceButtons()
   return true;
 }
 
-int CGUIViewState::GetPlaylist() const
+PLAYLIST::Id CGUIViewState::GetPlaylist() const
 {
   return m_playlist;
 }
@@ -482,7 +481,7 @@ void CGUIViewState::SetSortOrder(SortOrder sortOrder)
 
 bool CGUIViewState::AutoPlayNextVideoItem() const
 {
-  if (GetPlaylist() != PLAYLIST_VIDEO)
+  if (GetPlaylist() != PLAYLIST::TYPE_VIDEO)
     return false;
 
   int settingValue(-1);
@@ -588,9 +587,9 @@ CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGU
     {
       PluginPtr plugin = std::static_pointer_cast<CPluginSource>(addon);
       if (plugin->Provides(CPluginSource::AUDIO))
-        m_playlist = PLAYLIST_MUSIC;
+        m_playlist = PLAYLIST::TYPE_MUSIC;
       if (plugin->Provides(CPluginSource::VIDEO))
-        m_playlist = PLAYLIST_VIDEO;
+        m_playlist = PLAYLIST::TYPE_VIDEO;
     }
   }
 

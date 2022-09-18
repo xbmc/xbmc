@@ -185,18 +185,18 @@ void QueueRecordings(const std::shared_ptr<CFileItem>& item, bool bPlayNext)
   PLAYLIST::CPlayListPlayer& player = CServiceBroker::GetPlaylistPlayer();
 
   // Determine the proper list to queue this element
-  int playlist = player.GetCurrentPlaylist();
-  if (playlist == PLAYLIST_NONE)
-    playlist = g_application.GetAppPlayer().GetPreferredPlaylist();
-  if (playlist == PLAYLIST_NONE)
-    playlist = PLAYLIST_VIDEO;
+  PLAYLIST::Id playlistId = player.GetCurrentPlaylist();
+  if (playlistId == PLAYLIST::TYPE_NONE)
+    playlistId = g_application.GetAppPlayer().GetPreferredPlaylist();
+  if (playlistId == PLAYLIST::TYPE_NONE)
+    playlistId = PLAYLIST::TYPE_VIDEO;
 
   if (bPlayNext && g_application.GetAppPlayer().IsPlaying())
-    player.Insert(playlist, queuedItems, player.GetCurrentSong() + 1);
+    player.Insert(playlistId, queuedItems, player.GetCurrentSong() + 1);
   else
-    player.Add(playlist, queuedItems);
+    player.Add(playlistId, queuedItems);
 
-  player.SetCurrentPlaylist(playlist);
+  player.SetCurrentPlaylist(playlistId);
 }
 
 void PlayAndQueueRecordings(const std::shared_ptr<CFileItem>& item, int windowId)
@@ -210,12 +210,12 @@ void PlayAndQueueRecordings(const std::shared_ptr<CFileItem>& item, int windowId
 
   PLAYLIST::CPlayListPlayer& player = CServiceBroker::GetPlaylistPlayer();
 
-  player.ClearPlaylist(PLAYLIST_VIDEO);
+  player.ClearPlaylist(PLAYLIST::TYPE_VIDEO);
   player.Reset();
-  player.Add(PLAYLIST_VIDEO, queuedItems);
+  player.Add(PLAYLIST::TYPE_VIDEO, queuedItems);
 
   // figure out where to start playback
-  PLAYLIST::CPlayList& playList = player.GetPlaylist(PLAYLIST_VIDEO);
+  PLAYLIST::CPlayList& playList = player.GetPlaylist(PLAYLIST::TYPE_VIDEO);
   int itemToPlay = 0;
 
   for (int i = 0; i < queuedItems.Size(); ++i)
@@ -227,13 +227,13 @@ void PlayAndQueueRecordings(const std::shared_ptr<CFileItem>& item, int windowId
     }
   }
 
-  if (player.IsShuffled(PLAYLIST_VIDEO))
+  if (player.IsShuffled(PLAYLIST::TYPE_VIDEO))
   {
     playList.Swap(0, playList.FindOrder(itemToPlay));
     itemToPlay = 0;
   }
 
-  player.SetCurrentPlaylist(PLAYLIST_VIDEO);
+  player.SetCurrentPlaylist(PLAYLIST::TYPE_VIDEO);
   player.Play(itemToPlay, "");
 }
 
@@ -262,7 +262,7 @@ void SetPathAndPlay(CFileItem& item)
 
   if (item.IsLiveTV()) // pvr tv or pvr radio?
   {
-    g_application.PlayMedia(item, "", PLAYLIST_NONE);
+    g_application.PlayMedia(item, "", PLAYLIST::TYPE_VIDEO);
   }
   else if (IsActiveRecordingsFolder(item))
   {
@@ -272,16 +272,16 @@ void SetPathAndPlay(CFileItem& item)
 
     PLAYLIST::CPlayListPlayer& player = CServiceBroker::GetPlaylistPlayer();
 
-    player.ClearPlaylist(PLAYLIST_VIDEO);
+    player.ClearPlaylist(PLAYLIST::TYPE_VIDEO);
     player.Reset();
-    player.Add(PLAYLIST_VIDEO, queuedItems);
-    player.SetCurrentPlaylist(PLAYLIST_VIDEO);
+    player.Add(PLAYLIST::TYPE_VIDEO, queuedItems);
+    player.SetCurrentPlaylist(PLAYLIST::TYPE_VIDEO);
 
     player.Play();
   }
   else
   {
-    item.SetProperty("playlist_type_hint", PLAYLIST_VIDEO);
+    item.SetProperty("playlist_type_hint", PLAYLIST::TYPE_VIDEO);
     CServiceBroker::GetPlaylistPlayer().Play(std::make_shared<CFileItem>(item), "");
   }
 }
