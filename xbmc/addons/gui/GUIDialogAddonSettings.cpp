@@ -222,7 +222,9 @@ bool CGUIDialogAddonSettings::ShowForAddon(const ADDON::AddonPtr& addon,
         for (auto& it : itemsInstances)
           dialog->Add(*it);
 
-        dialog->SetButtonFocus(true);
+        // Select first instance config item or first item
+        dialog->SetSelected(itemsInstances.Size() > 0 ? itemsGeneral.Size() : 0);
+
         dialog->Open();
 
         if (dialog->IsButtonPressed())
