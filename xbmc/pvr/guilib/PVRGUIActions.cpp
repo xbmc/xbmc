@@ -525,6 +525,7 @@ namespace PVR
     {
       if (m_pDlgSelect)
       {
+        m_pDlgSelect->Reset();
         m_pDlgSelect->SetMultiSelection(false);
         m_pDlgSelect->SetHeading(CVariant{19086}); // Instant recording action
       }
