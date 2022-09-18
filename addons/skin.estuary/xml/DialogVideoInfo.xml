@@ -34,7 +34,7 @@
 				</control>
 				<control type="group">
 					<visible>String.IsEqual(ListItem.DBType,episode) | String.IsEqual(ListItem.DBType,video)</visible>
-					<visible>!String.IsEmpty(ListItem.Thumb) + !String.IsEqual(ListItem.Thumb,ListItem.Art(poster))</visible>
+					<visible>!String.IsEmpty(ListItem.Art(thumb)) + !String.IsEqual(ListItem.Art(thumb),ListItem.Art(poster))</visible>
 					<control type="image">
 						<left>4</left>
 						<top>4</top>
@@ -49,7 +49,7 @@
 						<width>506</width>
 						<height>801</height>
 						<aspectratio>keep</aspectratio>
-						<texture>$INFO[ListItem.Thumb]</texture>
+						<texture>$VAR[ShiftThumbVar]</texture>
 						<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 						<bordersize>20</bordersize>
 					</control>
