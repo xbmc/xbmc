@@ -257,7 +257,7 @@ bool CGUIDialogAddonSettings::ShowForAddon(const ADDON::AddonPtr& addon,
               item.SetLabel((*it).GetProperty("name").asString());
               dialog->Add(item);
             }
-            dialog->SetButtonFocus(true);
+            dialog->SetSelected(0);
             dialog->Open();
             if (dialog->IsButtonPressed())
               continue;
