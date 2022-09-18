@@ -34,7 +34,7 @@ void CMouseStat::Initialize()
   SetResolution(720, 576, 1, 1);
 }
 
-void CMouseStat::HandleEvent(XBMC_Event& newEvent)
+void CMouseStat::HandleEvent(const XBMC_Event& newEvent)
 {
   // Save the mouse position and the size of the last move
   int dx, dy;
