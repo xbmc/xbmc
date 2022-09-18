@@ -186,6 +186,8 @@ void CMouseStat::HandleEvent(XBMC_Event& newEvent)
         case HoldAction::DRAG_END:
           m_Key = KEY_MOUSE_DRAG_END;
           break;
+        default:
+          break;
       }
     }
     else if (m_hold[MOUSE_RIGHT_BUTTON] != HoldAction::NONE)
@@ -200,6 +202,8 @@ void CMouseStat::HandleEvent(XBMC_Event& newEvent)
           break;
         case HoldAction::DRAG_END:
           m_Key = KEY_MOUSE_RDRAG_END;
+          break;
+        default:
           break;
       }
     }
