@@ -18,11 +18,7 @@
 
 CMouseStat::CMouseStat()
 {
-  m_pointerState = MOUSE_STATE_NORMAL;
   SetEnabled();
-  m_speedX = m_speedY = 0;
-  m_maxX = m_maxY = 0;
-  memset(&m_mouseState, 0, sizeof(m_mouseState));
   m_Key = KEY_MOUSE_NOOP;
 }
 
