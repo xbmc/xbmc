@@ -103,7 +103,7 @@ public:
   virtual ~CMouseStat();
 
   void Initialize();
-  void HandleEvent(XBMC_Event& newEvent);
+  void HandleEvent(const XBMC_Event& newEvent);
   void SetResolution(int maxX, int maxY, float speedX, float speedY);
   bool IsActive();
   bool IsEnabled() const;
@@ -205,23 +205,23 @@ private:
   bool MovedPastThreshold() const;
 
   // state of the mouse
-  MOUSE_STATE m_pointerState;
-  MouseState m_mouseState;
+  MOUSE_STATE m_pointerState{MOUSE_STATE_NORMAL};
+  MouseState m_mouseState{};
   bool m_mouseEnabled;
   CButtonState m_buttonState[MOUSE_MAX_BUTTON];
 
-  int m_maxX;
-  int m_maxY;
-  float m_speedX;
-  float m_speedY;
+  int m_maxX{0};
+  int m_maxY{0};
+  float m_speedX{0.0f};
+  float m_speedY{0.0f};
 
   // active/click timers
   unsigned int m_lastActiveTime;
 
-  bool bClick[MOUSE_MAX_BUTTON];
-  bool bDoubleClick[MOUSE_MAX_BUTTON];
-  HoldAction m_hold[MOUSE_MAX_BUTTON];
-  bool bLongClick[MOUSE_MAX_BUTTON];
+  bool bClick[MOUSE_MAX_BUTTON]{};
+  bool bDoubleClick[MOUSE_MAX_BUTTON]{};
+  HoldAction m_hold[MOUSE_MAX_BUTTON]{};
+  bool bLongClick[MOUSE_MAX_BUTTON]{};
 
   uint32_t m_Key;
 };
