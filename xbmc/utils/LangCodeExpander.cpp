@@ -88,6 +88,9 @@ bool CLangCodeExpander::Lookup(const std::string& code, std::string& desc)
   if (LookupInUserMap(code, desc))
     return true;
 
+  if (LookupInISO639Tables(code, desc))
+    return true;
+
   if (LookupInLangAddons(code, desc))
     return true;
 
@@ -112,12 +115,7 @@ bool CLangCodeExpander::Lookup(const std::string& code, std::string& desc)
 
       return true;
     }
-
-    return false;
   }
-
-  if (LookupInISO639Tables(code, desc))
-    return true;
 
   return false;
 }
@@ -199,11 +197,6 @@ bool CLangCodeExpander::ConvertToISO6392B(const std::string& strCharCode,
   }
   else if (strCharCode.size() > 3)
   {
-    // First try search on language addons
-    strISO6392B = g_langInfo.ConvertEnglishNameToAddonLocale(strCharCode);
-    if (!strISO6392B.empty())
-      return true;
-
     for (const auto& codes : g_iso639_2)
     {
       if (StringUtils::EqualsNoCase(strCharCode, codes.name))
@@ -212,6 +205,11 @@ bool CLangCodeExpander::ConvertToISO6392B(const std::string& strCharCode,
         return true;
       }
     }
+
+    // Try search on language addons
+    strISO6392B = g_langInfo.ConvertEnglishNameToAddonLocale(strCharCode);
+    if (!strISO6392B.empty())
+      return true;
   }
   return false;
 }
@@ -375,11 +373,6 @@ bool CLangCodeExpander::ReverseLookup(const std::string& desc, std::string& code
     }
   }
 
-  // Find on language addons
-  code = g_langInfo.ConvertEnglishNameToAddonLocale(descTmp);
-  if (!code.empty())
-    return true;
-
   for (const auto& codes : g_iso639_1)
   {
     if (StringUtils::EqualsNoCase(descTmp, codes.name))
@@ -397,6 +390,11 @@ bool CLangCodeExpander::ReverseLookup(const std::string& desc, std::string& code
       return true;
     }
   }
+
+  // Find on language addons
+  code = g_langInfo.ConvertEnglishNameToAddonLocale(descTmp);
+  if (!code.empty())
+    return true;
 
   return false;
 }
