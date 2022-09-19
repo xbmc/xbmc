@@ -37,7 +37,6 @@ constexpr int ASS_BORDER_STYLE_BOX = 3; // Box + drop shadow
 constexpr int ASS_BORDER_STYLE_SQUARE_BOX = 4; // Square box + outline
 
 constexpr int ASS_FONT_ENCODING_AUTO = -1;
-constexpr int COLOR_OPACITY_30 = 30;
 
 // Convert RGB/ARGB to RGBA by also applying the opacity value
 COLOR::Color ConvColor(COLOR::Color argbColor, int opacity = 100)
@@ -411,11 +410,20 @@ void CDVDSubtitlesLibass::ApplyStyle(const std::shared_ptr<struct style>& subSty
     style->Bold = isFontBold * -1;
     style->Italic = isFontItalic * -1;
 
+    //! @todo Libass has a problem with color transparencies when set to:
+    //! PrimaryColour/SecondaryColour/OutlineColour by causing a gap between border
+    //! and text color. As workaround the SecondaryColour must have no transparency
+    //! this will fix just use cases without transparencies, for a full fix will be
+    //! needed in future update libass library having the gap fix.
+
     // Set default subtitles color
     style->PrimaryColour = ConvColor(subStyle->fontColor, subStyle->fontOpacity);
     // Set secondary colour for karaoke
     // left part is filled with PrimaryColour, right one with SecondaryColour
-    style->SecondaryColour = ConvColor(subStyle->fontColor, COLOR_OPACITY_30);
+    //! @bug in libass - force secondary color without transparency otherwise
+    //! cause a visible color gap, we also avoid reusing the same primary
+    //! color otherwise the karaoke effect will not be visible.
+    style->SecondaryColour = ConvColor(COLOR::BLACK);
 
     // Configure the effects
     double lineSpacing = 0.0;
