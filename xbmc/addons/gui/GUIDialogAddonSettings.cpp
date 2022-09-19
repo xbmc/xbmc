@@ -162,7 +162,8 @@ bool CGUIDialogAddonSettings::ShowForAddon(const ADDON::AddonPtr& addon,
     {
       while (true)
       {
-        const std::vector<ADDON::AddonInstanceId> ids = addon->GetKnownInstanceIds();
+        std::vector<ADDON::AddonInstanceId> ids = addon->GetKnownInstanceIds();
+        std::sort(ids.begin(), ids.end(), [](const auto& a, const auto& b) { return a < b; });
 
         CFileItemList itemsGeneral;
         CFileItemList itemsInstances;
