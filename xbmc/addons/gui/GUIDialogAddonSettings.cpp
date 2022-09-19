@@ -202,11 +202,6 @@ bool CGUIDialogAddonSettings::ShowForMultipleInstances(const ADDON::AddonPtr& ad
     return false;
   }
 
-  static constexpr int ADDON_SETTINGS = 0;
-  static constexpr int ADD_INSTANCE = 100;
-  static constexpr int REMOVE_INSTANCE = 101;
-  static constexpr int GENERAL_BUTTON_START = ADD_INSTANCE;
-
   ADDON::AddonInstanceId instanceId = ADDON::ADDON_SETTINGS_ID;
   bool newInstance{false};
 
@@ -218,28 +213,6 @@ bool CGUIDialogAddonSettings::ShowForMultipleInstances(const ADDON::AddonPtr& ad
     dialog->Reset();
     dialog->SetHeading(10012); // Add-on configurations and settings
     dialog->SetUseDetails(false);
-
-    CFileItemList itemsGeneral;
-
-    CFileItemPtr item =
-        std::make_shared<CFileItem>(g_localizeStrings.Get(10014)); // Add add-on configuration
-    item->SetProperty("id", ADD_INSTANCE);
-    itemsGeneral.Add(item);
-
-    if (ids.size() > 1) // Forbid removal of last instance
-    {
-      item =
-          std::make_shared<CFileItem>(g_localizeStrings.Get(10015)); // Remove add-on configuration
-      item->SetProperty("id", REMOVE_INSTANCE);
-      itemsGeneral.Add(item);
-    }
-
-    if (addon->HasSettings(ADDON_SETTINGS_ID))
-    {
-      item = std::make_shared<CFileItem>(g_localizeStrings.Get(10013)); // Edit Add-on settings
-      item->SetProperty("id", ADDON_SETTINGS);
-      itemsGeneral.Add(item);
-    }
 
     CFileItemList itemsInstances;
     ADDON::AddonInstanceId highestId = 0;
@@ -257,12 +230,38 @@ bool CGUIDialogAddonSettings::ShowForMultipleInstances(const ADDON::AddonPtr& ad
           g_localizeStrings.Get(10020), name,
           g_localizeStrings.Get(enabled ? 305 : 13106)); // Edit "config name" [enabled state]
 
-      item = std::make_shared<CFileItem>(label);
+      const CFileItemPtr item = std::make_shared<CFileItem>(label);
       item->SetProperty("id", id);
       item->SetProperty("name", name);
       itemsInstances.Add(item);
+
       if (id > highestId)
         highestId = id;
+    }
+
+    CFileItemList itemsGeneral;
+
+    const ADDON::AddonInstanceId addInstanceId = highestId + 1;
+    const ADDON::AddonInstanceId removeInstanceId = highestId + 2;
+
+    CFileItemPtr item =
+        std::make_shared<CFileItem>(g_localizeStrings.Get(10014)); // Add add-on configuration
+    item->SetProperty("id", addInstanceId);
+    itemsGeneral.Add(item);
+
+    if (ids.size() > 1) // Forbid removal of last instance
+    {
+      item =
+          std::make_shared<CFileItem>(g_localizeStrings.Get(10015)); // Remove add-on configuration
+      item->SetProperty("id", removeInstanceId);
+      itemsGeneral.Add(item);
+    }
+
+    if (addon->HasSettings(ADDON_SETTINGS_ID))
+    {
+      item = std::make_shared<CFileItem>(g_localizeStrings.Get(10013)); // Edit Add-on settings
+      item->SetProperty("id", ADDON_SETTINGS_ID);
+      itemsGeneral.Add(item);
     }
 
     for (auto& it : itemsGeneral)
@@ -281,11 +280,7 @@ bool CGUIDialogAddonSettings::ShowForMultipleInstances(const ADDON::AddonPtr& ad
 
     item = dialog->GetSelectedFileItem();
     instanceId = item->GetProperty("id").asInteger();
-    if (instanceId < GENERAL_BUTTON_START)
-    {
-      break;
-    }
-    else if (instanceId == ADD_INSTANCE)
+    if (instanceId == addInstanceId)
     {
       instanceId = highestId + 1;
       addon->GetSettings(instanceId);
@@ -295,7 +290,7 @@ bool CGUIDialogAddonSettings::ShowForMultipleInstances(const ADDON::AddonPtr& ad
       newInstance = true;
       break;
     }
-    else if (instanceId == REMOVE_INSTANCE)
+    else if (instanceId == removeInstanceId)
     {
       dialog->Reset();
       dialog->SetHeading(10010); // Select add-on configuration to remove
@@ -329,6 +324,11 @@ bool CGUIDialogAddonSettings::ShowForMultipleInstances(const ADDON::AddonPtr& ad
 
         return false;
       }
+    }
+    else
+    {
+      // edit instance settings or edit addon settings selected; open settings dialog
+      break;
     }
   } // while (true)
 
