@@ -202,9 +202,7 @@ bool CGUIDialogAddonSettings::ShowForMultipleInstances(const ADDON::AddonPtr& ad
     return false;
   }
 
-  ADDON::AddonInstanceId instanceId = ADDON::ADDON_SETTINGS_ID;
-  bool newInstance{false};
-
+  int lastSelected = -1;
   while (true)
   {
     std::vector<ADDON::AddonInstanceId> ids = addon->GetKnownInstanceIds();
@@ -270,25 +268,40 @@ bool CGUIDialogAddonSettings::ShowForMultipleInstances(const ADDON::AddonPtr& ad
     for (auto& it : itemsInstances)
       dialog->Add(*it);
 
-    // Select first instance config item or first item
-    dialog->SetSelected(itemsInstances.Size() > 0 ? itemsGeneral.Size() : 0);
+    // Select last selected item, first instance config item or first item
+    if (lastSelected >= 0)
+      dialog->SetSelected(lastSelected);
+    else
+      dialog->SetSelected(itemsInstances.Size() > 0 ? itemsGeneral.Size() : 0);
 
     dialog->Open();
 
     if (dialog->IsButtonPressed() || !dialog->IsConfirmed())
-      return false;
+      break;
+
+    lastSelected = dialog->GetSelectedItem();
 
     item = dialog->GetSelectedFileItem();
-    instanceId = item->GetProperty("id").asInteger();
+    ADDON::AddonInstanceId instanceId = item->GetProperty("id").asInteger();
+
     if (instanceId == addInstanceId)
     {
       instanceId = highestId + 1;
+
       addon->GetSettings(instanceId);
       addon->UpdateSettingString(ADDON_SETTING_INSTANCE_NAME_VALUE, "", instanceId);
       addon->UpdateSettingBool(ADDON_SETTING_INSTANCE_ENABLED_VALUE, true, instanceId);
       addon->SaveSettings(instanceId);
-      newInstance = true;
-      break;
+
+      if (ShowForSingleInstance(addon, saveToDisk, instanceId))
+      {
+        CServiceBroker::GetAddonMgr().PublishInstanceAdded(addon->ID(), instanceId);
+      }
+      else
+      {
+        // Remove instance settings if not succeeded (e.g. dialog cancelled)
+        addon->DeleteInstanceSettings(instanceId);
+      }
     }
     else if (instanceId == removeInstanceId)
     {
@@ -321,43 +334,33 @@ bool CGUIDialogAddonSettings::ShowForMultipleInstances(const ADDON::AddonPtr& ad
           addon->DeleteInstanceSettings(instanceId);
           CServiceBroker::GetAddonMgr().PublishInstanceRemoved(addon->ID(), instanceId);
         }
-
-        return false;
       }
     }
     else
     {
       // edit instance settings or edit addon settings selected; open settings dialog
-      break;
+
+      bool enabled = false;
+      addon->GetSettingBool(ADDON_SETTING_INSTANCE_ENABLED_VALUE, enabled, instanceId);
+
+      if (ShowForSingleInstance(addon, saveToDisk, instanceId) && instanceId != ADDON_SETTINGS_ID)
+      {
+        // Publish new/removed instance configuration and start the use of new instance
+        bool enabledNow = false;
+        addon->GetSettingBool(ADDON_SETTING_INSTANCE_ENABLED_VALUE, enabledNow, instanceId);
+        if (enabled != enabledNow)
+        {
+          if (enabledNow)
+            CServiceBroker::GetAddonMgr().PublishInstanceAdded(addon->ID(), instanceId);
+          else
+            CServiceBroker::GetAddonMgr().PublishInstanceRemoved(addon->ID(), instanceId);
+        }
+      }
     }
+
+    // refresh selection dialog content...
+
   } // while (true)
-
-  bool enabled = false;
-  addon->GetSettingBool(ADDON_SETTING_INSTANCE_ENABLED_VALUE, enabled, instanceId);
-
-  if (ShowForSingleInstance(addon, saveToDisk, instanceId))
-  {
-    if (instanceId != ADDON_SETTINGS_ID)
-    {
-      // Publish new/removed instance configuration and start the use of new instance
-      bool enabledNow = false;
-      addon->GetSettingBool(ADDON_SETTING_INSTANCE_ENABLED_VALUE, enabledNow, instanceId);
-      if (newInstance || enabled != enabledNow)
-      {
-        CServiceBroker::GetAddonMgr().PublishInstanceAdded(addon->ID(), instanceId);
-      }
-      else if (!enabledNow && enabled != enabledNow)
-      {
-        CServiceBroker::GetAddonMgr().PublishInstanceRemoved(addon->ID(), instanceId);
-      }
-    }
-  }
-  else if (newInstance)
-  {
-    // Remove instance settings if just added but not succeeded (e.g. dialog cancelled)
-    addon->DeleteInstanceSettings(instanceId);
-    return false;
-  }
 
   return true;
 }
