@@ -9,7 +9,8 @@
 #import "LibInputHandler.h"
 
 #include "ServiceBroker.h"
-#include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPowerHandling.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/CustomControllerTranslator.h"
@@ -41,11 +42,13 @@
           buttonId, actionID, actionName))
   {
     // break screensaver
-    g_application.ResetSystemIdleTimer();
-    g_application.ResetScreenSaver();
+    auto& components = CServiceBroker::GetAppComponents();
+    const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+    appPower->ResetSystemIdleTimer();
+    appPower->ResetScreenSaver();
 
     // in case we wokeup the screensaver or screen - eat that action...
-    if (g_application.WakeUpScreenSaverAndDPMS())
+    if (appPower->WakeUpScreenSaverAndDPMS())
       return;
     CServiceBroker::GetInputManager().QueueAction(CAction(actionID, 1.0f, 0.0f, actionName));
   }

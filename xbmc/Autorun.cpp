@@ -14,6 +14,8 @@
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPowerHandling.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "filesystem/Directory.h"
 #include "filesystem/DirectoryFactory.h"
@@ -69,8 +71,10 @@ bool CAutorun::ExecuteAutorun(const std::string& path)
   if ( pInfo == NULL )
     return false;
 
-  g_application.ResetScreenSaver();
-  g_application.WakeUpScreenSaverAndDPMS();  // turn off the screensaver if it's active
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+  appPower->ResetScreenSaver();
+  appPower->WakeUpScreenSaverAndDPMS(); // turn off the screensaver if it's active
 
   bool success = false;
 

@@ -10,7 +10,8 @@
 
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
-#include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPowerHandling.h"
 #include "guilib/GUITexture.h"
 #include "utils/ColorUtils.h"
 #include "windowing/GraphicContext.h"
@@ -26,12 +27,14 @@ CGUIWindowScreensaverDim::CGUIWindowScreensaverDim(void)
 
 void CGUIWindowScreensaverDim::UpdateVisibility()
 {
-  if (g_application.IsInScreenSaver())
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+  if (appPower->IsInScreenSaver())
   {
     if (m_visible)
       return;
 
-    std::string usedId = g_application.ScreensaverIdInUse();
+    std::string usedId = appPower->ScreensaverIdInUse();
     if  (usedId == "screensaver.xbmc.builtin.dim" ||
          usedId == "screensaver.xbmc.builtin.black")
     {

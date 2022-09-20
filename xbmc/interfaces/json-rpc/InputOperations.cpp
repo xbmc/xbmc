@@ -9,7 +9,8 @@
 #include "InputOperations.h"
 
 #include "ServiceBroker.h"
-#include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPowerHandling.h"
 #include "guilib/GUIAudioManager.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindow.h"
@@ -27,18 +28,19 @@ using namespace JSONRPC;
 //! 1 million dupes
 bool CInputOperations::handleScreenSaver()
 {
-  g_application.ResetScreenSaver();
-  if (g_application.WakeUpScreenSaverAndDPMS())
-    return true;
-
-  return false;
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+  appPower->ResetScreenSaver();
+  return appPower->WakeUpScreenSaverAndDPMS();
 }
 
 JSONRPC_STATUS CInputOperations::SendAction(int actionID, bool wakeScreensaver /* = true */, bool waitResult /* = false */)
 {
-  if(!wakeScreensaver || !handleScreenSaver())
+  if (!wakeScreensaver || !handleScreenSaver())
   {
-    g_application.ResetSystemIdleTimer();
+    auto& components = CServiceBroker::GetAppComponents();
+    const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+    appPower->ResetSystemIdleTimer();
     CGUIComponent* gui = CServiceBroker::GetGUI();
     if (gui)
       gui->GetAudioManager().PlayActionSound(actionID);
