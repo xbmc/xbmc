@@ -64,6 +64,9 @@ constexpr const int GUI_MSG_SCAN_FINISHED           = GUI_MSG_USER + 13;
 //  Player has requested the next item for caching purposes (PAPlayer)
 constexpr const int GUI_MSG_QUEUE_NEXT_ITEM         = GUI_MSG_USER + 16;
 
+//  Playback request for the trailer of a given item
+constexpr const int GUI_MSG_PLAY_TRAILER = GUI_MSG_USER + 17;
+
 // Visualisation messages when loading/unloading
 constexpr const int GUI_MSG_VISUALISATION_UNLOADING = GUI_MSG_USER + 117; // sent by vis
 constexpr const int GUI_MSG_VISUALISATION_LOADED    = GUI_MSG_USER + 118; // sent by vis

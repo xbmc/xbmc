@@ -44,3 +44,18 @@ const std::string ContentUtils::GetPreferredArtImage(const CFileItem& item)
   }
   return item.GetArt("thumb");
 }
+
+std::unique_ptr<CFileItem> ContentUtils::GeneratePlayableTrailerItem(const CFileItem& item,
+                                                                     const std::string& label)
+{
+  std::unique_ptr<CFileItem> trailerItem = std::make_unique<CFileItem>();
+  trailerItem->SetPath(item.GetVideoInfoTag()->m_strTrailer);
+  CVideoInfoTag* videoInfoTag = trailerItem->GetVideoInfoTag();
+  *videoInfoTag = *item.GetVideoInfoTag();
+  videoInfoTag->m_streamDetails.Reset();
+  videoInfoTag->m_strTitle = StringUtils::Format("{} ({})", videoInfoTag->m_strTitle, label);
+  trailerItem->SetArt(item.GetArt());
+  videoInfoTag->m_iDbId = -1;
+  videoInfoTag->m_iFileId = -1;
+  return trailerItem;
+}
