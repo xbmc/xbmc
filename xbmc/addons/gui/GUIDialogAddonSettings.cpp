@@ -182,7 +182,10 @@ bool CGUIDialogAddonSettings::ShowForSingleInstance(
   dialog->Open();
 
   if (!dialog->IsConfirmed())
+  {
+    addon->ReloadSettings(instanceId);
     return false;
+  }
 
   if (saveToDisk)
     addon->SaveSettings(instanceId);
