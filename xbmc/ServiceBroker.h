@@ -51,10 +51,13 @@ class CApplicationMessenger;
 } // namespace KODI
 
 class CAppParams;
+template<class T>
+class CComponentContainer;
 class CContextMenuManager;
 class XBPython;
 class CDataCacheCore;
 class IAE;
+class IApplicationComponent;
 class CFavouritesService;
 class CInputManager;
 class CFileExtensionProvider;
@@ -162,6 +165,7 @@ public:
   static CDatabaseManager& GetDatabaseManager();
   static CEventLog* GetEventLog();
   static CMediaManager& GetMediaManager();
+  static CComponentContainer<IApplicationComponent>& GetAppComponents();
 
   static CGUIComponent* GetGUI();
   static void RegisterGUI(CGUIComponent* gui);
