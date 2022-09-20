@@ -14,7 +14,8 @@
 #include "Util.h"
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/gui/GUIWindowAddonBrowser.h"
-#include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationSkinHandling.h"
 #include "dialogs/GUIDialogColorPicker.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogNumeric.h"
@@ -39,8 +40,9 @@ using namespace ADDON;
 static int ReloadSkin(const std::vector<std::string>& params)
 {
   //  Reload the skin
-  g_application.ReloadSkin(!params.empty() &&
-                           StringUtils::EqualsNoCase(params[0], "confirm"));
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appSkin = components.GetComponent<CApplicationSkinHandling>();
+  appSkin->ReloadSkin(!params.empty() && StringUtils::EqualsNoCase(params[0], "confirm"));
 
   return 0;
 }
@@ -50,7 +52,9 @@ static int ReloadSkin(const std::vector<std::string>& params)
  */
 static int UnloadSkin(const std::vector<std::string>& params)
 {
-  g_application.UnloadSkin();
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appSkin = components.GetComponent<CApplicationSkinHandling>();
+  appSkin->UnloadSkin();
 
   return 0;
 }
@@ -421,7 +425,9 @@ static int SetTheme(const std::vector<std::string>& params)
   if (StringUtils::EqualsNoCase(colorTheme, "Textures.xml"))
     colorTheme = "defaults.xml";
   settings->SetString(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS, colorTheme);
-  g_application.ReloadSkin();
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appSkin = components.GetComponent<CApplicationSkinHandling>();
+  appSkin->ReloadSkin();
 
   return 0;
 }
