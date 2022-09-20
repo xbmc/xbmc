@@ -283,6 +283,11 @@ CMediaManager& CServiceBroker::GetMediaManager()
   return g_application.m_ServiceManager->GetMediaManager();
 }
 
+CApplicationComponents& CServiceBroker::GetAppComponents()
+{
+  return g_application;
+}
+
 CGUIComponent* CServiceBroker::GetGUI()
 {
   return g_serviceBroker.m_pGUI;
