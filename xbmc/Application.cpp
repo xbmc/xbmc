@@ -39,6 +39,7 @@
 #include "platform/Environment.h"
 #include "playlists/PlayListFactory.h"
 #include "threads/SystemClock.h"
+#include "utils/ContentUtils.h"
 #include "utils/JobManager.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/Screenshot.h"
@@ -2777,6 +2778,33 @@ bool CApplication::OnMessage(CGUIMessage& message)
       return true;
     }
     break;
+
+    case GUI_MSG_PLAY_TRAILER:
+    {
+      const CFileItem* item = dynamic_cast<CFileItem*>(message.GetItem().get());
+      if (item == nullptr)
+      {
+        CLog::LogF(LOGERROR, "Supplied item is not a CFileItem! Trailer cannot be played.");
+        return false;
+      }
+
+      std::unique_ptr<CFileItem> trailerItem =
+          ContentUtils::GeneratePlayableTrailerItem(*item, g_localizeStrings.Get(20410));
+
+      if (item->IsPlayList())
+      {
+        std::unique_ptr<CFileItemList> fileitemList = std::make_unique<CFileItemList>();
+        fileitemList->Add(std::move(trailerItem));
+        CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, -1, -1,
+                                                   static_cast<void*>(fileitemList.release()));
+      }
+      else
+      {
+        CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 1, 0,
+                                                   static_cast<void*>(trailerItem.release()));
+      }
+      break;
+    }
 
   case GUI_MSG_PLAYBACK_STOPPED:
     m_playerEvent.Set();
