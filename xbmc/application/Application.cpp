@@ -30,6 +30,7 @@
 #include "application/ApplicationPlayer.h"
 #include "application/ApplicationPowerHandling.h"
 #include "application/ApplicationSkinHandling.h"
+#include "application/ApplicationStackHelper.h"
 #include "application/ApplicationVolumeHandling.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "cores/IPlayer.h"
@@ -221,12 +222,10 @@ using namespace std::chrono_literals;
 #define MAX_FFWD_SPEED 5
 
 CApplication::CApplication(void)
-  : CApplicationPlayerCallback(m_stackHelper)
+  :
 #ifdef HAS_DVD_DRIVE
-    ,
-    m_Autorun(new CAutorun())
+    m_Autorun(new CAutorun()),
 #endif
-    ,
     m_pInertialScrollingHandler(new CInertialScrollingHandler()),
     m_WaitingExternalCalls(0)
 {
@@ -242,10 +241,12 @@ CApplication::CApplication(void)
   RegisterComponent(std::make_shared<CApplicationPowerHandling>());
   RegisterComponent(std::make_shared<CApplicationSkinHandling>(this, this, m_bInitializing));
   RegisterComponent(std::make_shared<CApplicationVolumeHandling>());
+  RegisterComponent(std::make_shared<CApplicationStackHelper>());
 }
 
 CApplication::~CApplication(void)
 {
+  DeregisterComponent(typeid(CApplicationStackHelper));
   DeregisterComponent(typeid(CApplicationVolumeHandling));
   DeregisterComponent(typeid(CApplicationSkinHandling));
   DeregisterComponent(typeid(CApplicationPowerHandling));
@@ -2301,12 +2302,13 @@ bool CApplication::PlayMedia(CFileItem& item, const std::string& player, PLAYLIS
 // return value: same with PlayFile()
 bool CApplication::PlayStack(CFileItem& item, bool bRestart)
 {
-  if (!m_stackHelper.InitializeStack(item))
+  const auto stackHelper = GetComponent<CApplicationStackHelper>();
+  if (!stackHelper->InitializeStack(item))
     return false;
 
-  int startoffset = m_stackHelper.InitializeStackStartPartAndOffset(item);
+  int startoffset = stackHelper->InitializeStackStartPartAndOffset(item);
 
-  CFileItem selectedStackPart = m_stackHelper.GetCurrentStackPartFileItem();
+  CFileItem selectedStackPart = stackHelper->GetCurrentStackPartFileItem();
   selectedStackPart.SetStartOffset(startoffset);
 
   if (item.HasProperty("savedplayerstate"))
@@ -2325,6 +2327,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
     item.FillInMimeType();
 
   const auto appPlayer = GetComponent<CApplicationPlayer>();
+  const auto stackHelper = GetComponent<CApplicationStackHelper>();
 
   if (!bRestart)
   {
@@ -2332,7 +2335,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
     appPlayer->SetPlaySpeed(1);
 
     m_nextPlaylistItem = -1;
-    m_stackHelper.Clear();
+    stackHelper->Clear();
 
     if (item.IsVideo())
       CUtil::ClearSubtitles();
@@ -2380,7 +2383,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
     if (item.HasVideoInfoTag())
       options.state = item.GetVideoInfoTag()->GetResumePoint().playerState;
   }
-  if (!bRestart || m_stackHelper.IsPlayingISOStack())
+  if (!bRestart || stackHelper->IsPlayingISOStack())
   {
     // the following code block is only applicable when bRestart is false OR to ISO stacks
 
@@ -2485,11 +2488,11 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
         CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_fullScreenOnMovieStart &&
         !CMediaSettings::GetInstance().DoesMediaStartWindowed();
   }
-  else if(m_stackHelper.IsPlayingRegularStack())
+  else if (stackHelper->IsPlayingRegularStack())
   {
     //! @todo - this will fail if user seeks back to first file in stack
-    if (m_stackHelper.GetCurrentPartNumber() == 0 ||
-        m_stackHelper.GetRegisteredStack(item)->GetStartOffset() != 0)
+    if (stackHelper->GetCurrentPartNumber() == 0 ||
+        stackHelper->GetRegisteredStack(item)->GetStartOffset() != 0)
       options.fullscreen = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->
           m_fullScreenOnMovieStart && !CMediaSettings::GetInstance().DoesMediaStartWindowed();
     else
@@ -2547,6 +2550,8 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
 void CApplication::PlaybackCleanup()
 {
   const auto appPlayer = GetComponent<CApplicationPlayer>();
+  const auto stackHelper = GetComponent<CApplicationStackHelper>();
+
   if (!appPlayer->IsPlaying())
   {
     CGUIComponent *gui = CServiceBroker::GetGUI();
@@ -2597,7 +2602,7 @@ void CApplication::PlaybackCleanup()
 
   if (!appPlayer->IsPlaying())
   {
-    m_stackHelper.Clear();
+    stackHelper->Clear();
     appPlayer->ResetPlayer();
   }
 
@@ -2870,10 +2875,12 @@ bool CApplication::OnMessage(CGUIMessage& message)
      return true;
 
   case GUI_MSG_PLAYBACK_ENDED:
+  {
     m_playerEvent.Set();
-    if (m_stackHelper.IsPlayingRegularStack() && m_stackHelper.HasNextStackPartFileItem())
+    const auto stackHelper = GetComponent<CApplicationStackHelper>();
+    if (stackHelper->IsPlayingRegularStack() && stackHelper->HasNextStackPartFileItem())
     { // just play the next item in the stack
-      PlayFile(m_stackHelper.SetNextStackPartCurrentFileItem(), "", true);
+      PlayFile(stackHelper->SetNextStackPartCurrentFileItem(), "", true);
       return true;
     }
     ResetCurrentItem();
@@ -2886,6 +2893,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
     CServiceBroker::GetXBPython().OnPlayBackEnded();
 #endif
     return true;
+  }
 
   case GUI_MSG_PLAYLISTPLAYER_STOPPED:
     ResetCurrentItem();
@@ -3283,8 +3291,10 @@ CFileItem& CApplication::CurrentFileItem()
 
 const CFileItem& CApplication::CurrentUnstackedItem()
 {
-  if (m_stackHelper.IsPlayingISOStack() || m_stackHelper.IsPlayingRegularStack())
-    return m_stackHelper.GetCurrentStackPartFileItem();
+  const auto stackHelper = GetComponent<CApplicationStackHelper>();
+
+  if (stackHelper->IsPlayingISOStack() || stackHelper->IsPlayingRegularStack())
+    return stackHelper->GetCurrentStackPartFileItem();
   else
     return *m_itemCurrentFile;
 }
@@ -3298,10 +3308,12 @@ double CApplication::GetTotalTime() const
   double rc = 0.0;
 
   const auto appPlayer = GetComponent<CApplicationPlayer>();
+  const auto stackHelper = GetComponent<CApplicationStackHelper>();
+
   if (appPlayer->IsPlaying())
   {
-    if (m_stackHelper.IsPlayingRegularStack())
-      rc = m_stackHelper.GetStackTotalTimeMs() * 0.001;
+    if (stackHelper->IsPlayingRegularStack())
+      rc = stackHelper->GetStackTotalTimeMs() * 0.001;
     else
       rc = appPlayer->GetTotalTime() * 0.001;
   }
@@ -3317,11 +3329,13 @@ double CApplication::GetTime() const
   double rc = 0.0;
 
   const auto appPlayer = GetComponent<CApplicationPlayer>();
+  const auto stackHelper = GetComponent<CApplicationStackHelper>();
+
   if (appPlayer->IsPlaying())
   {
-    if (m_stackHelper.IsPlayingRegularStack())
+    if (stackHelper->IsPlayingRegularStack())
     {
-      uint64_t startOfCurrentFile = m_stackHelper.GetCurrentStackPartStartTimeMs();
+      uint64_t startOfCurrentFile = stackHelper->GetCurrentStackPartStartTimeMs();
       rc = (startOfCurrentFile + appPlayer->GetTime()) * 0.001;
     }
     else
@@ -3339,24 +3353,28 @@ double CApplication::GetTime() const
 void CApplication::SeekTime( double dTime )
 {
   const auto appPlayer = GetComponent<CApplicationPlayer>();
+  const auto stackHelper = GetComponent<CApplicationStackHelper>();
+
   if (appPlayer->IsPlaying() && (dTime >= 0.0))
   {
     if (!appPlayer->CanSeek())
       return;
-    if (m_stackHelper.IsPlayingRegularStack())
+
+    if (stackHelper->IsPlayingRegularStack())
     {
       // find the item in the stack we are seeking to, and load the new
       // file if necessary, and calculate the correct seek within the new
       // file.  Otherwise, just fall through to the usual routine if the
       // time is higher than our total time.
-      int partNumberToPlay = m_stackHelper.GetStackPartNumberAtTimeMs(static_cast<uint64_t>(dTime * 1000.0));
-      uint64_t startOfNewFile = m_stackHelper.GetStackPartStartTimeMs(partNumberToPlay);
-      if (partNumberToPlay == m_stackHelper.GetCurrentPartNumber())
+      int partNumberToPlay =
+          stackHelper->GetStackPartNumberAtTimeMs(static_cast<uint64_t>(dTime * 1000.0));
+      uint64_t startOfNewFile = stackHelper->GetStackPartStartTimeMs(partNumberToPlay);
+      if (partNumberToPlay == stackHelper->GetCurrentPartNumber())
         appPlayer->SeekTime(static_cast<uint64_t>(dTime * 1000.0) - startOfNewFile);
       else
       { // seeking to a new file
-        m_stackHelper.SetStackPartCurrentFileItem(partNumberToPlay);
-        CFileItem *item = new CFileItem(m_stackHelper.GetCurrentStackPartFileItem());
+        stackHelper->SetStackPartCurrentFileItem(partNumberToPlay);
+        CFileItem* item = new CFileItem(stackHelper->GetCurrentStackPartFileItem());
         item->SetStartOffset(static_cast<uint64_t>(dTime * 1000.0) - startOfNewFile);
         // don't just call "PlayFile" here, as we are quite likely called from the
         // player thread, so we won't be able to delete ourselves.
@@ -3372,6 +3390,8 @@ void CApplication::SeekTime( double dTime )
 float CApplication::GetPercentage() const
 {
   const auto appPlayer = GetComponent<CApplicationPlayer>();
+  const auto stackHelper = GetComponent<CApplicationStackHelper>();
+
   if (appPlayer->IsPlaying())
   {
     if (appPlayer->GetTotalTime() == 0 && appPlayer->IsPlayingAudio() &&
@@ -3382,7 +3402,7 @@ float CApplication::GetPercentage() const
         return (float)(GetTime() / tag.GetDuration() * 100);
     }
 
-    if (m_stackHelper.IsPlayingRegularStack())
+    if (stackHelper->IsPlayingRegularStack())
     {
       double totalTime = GetTotalTime();
       if (totalTime > 0.0)
@@ -3397,10 +3417,12 @@ float CApplication::GetPercentage() const
 float CApplication::GetCachePercentage() const
 {
   const auto appPlayer = GetComponent<CApplicationPlayer>();
+  const auto stackHelper = GetComponent<CApplicationStackHelper>();
+
   if (appPlayer->IsPlaying())
   {
     // Note that the player returns a relative cache percentage and we want an absolute percentage
-    if (m_stackHelper.IsPlayingRegularStack())
+    if (stackHelper->IsPlayingRegularStack())
     {
       float stackedTotalTime = (float) GetTotalTime();
       // We need to take into account the stack's total time vs. currently playing file's total time
@@ -3418,11 +3440,13 @@ float CApplication::GetCachePercentage() const
 void CApplication::SeekPercentage(float percent)
 {
   const auto appPlayer = GetComponent<CApplicationPlayer>();
+  const auto stackHelper = GetComponent<CApplicationStackHelper>();
+
   if (appPlayer->IsPlaying() && (percent >= 0.0f))
   {
     if (!appPlayer->CanSeek())
       return;
-    if (m_stackHelper.IsPlayingRegularStack())
+    if (stackHelper->IsPlayingRegularStack())
       SeekTime(static_cast<double>(percent) * 0.01 * GetTotalTime());
     else
       appPlayer->SeekPercentage(percent);
@@ -3433,11 +3457,6 @@ std::string CApplication::GetCurrentPlayer()
 {
   const auto appPlayer = GetComponent<CApplicationPlayer>();
   return appPlayer->GetCurrentPlayer();
-}
-
-const CApplicationStackHelper& CApplication::GetAppStackHelper() const
-{
-  return m_stackHelper;
 }
 
 void CApplication::UpdateLibraries()
