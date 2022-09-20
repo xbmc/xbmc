@@ -12,7 +12,6 @@
 #include "application/ApplicationEnums.h"
 #include "application/ApplicationPlayerCallback.h"
 #include "application/ApplicationSettingsHandling.h"
-#include "application/ApplicationStackHelper.h"
 #include "guilib/IMsgTargetCallback.h"
 #include "guilib/IWindowManagerCallback.h"
 #include "messaging/IMessageTarget.h"
@@ -121,7 +120,6 @@ public:
   const CFileItem& CurrentUnstackedItem();
   bool OnMessage(CGUIMessage& message) override;
   std::string GetCurrentPlayer();
-  const CApplicationStackHelper& GetAppStackHelper() const;
 
   int  GetMessageMask() override;
   void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg) override;
@@ -252,7 +250,6 @@ private:
   std::atomic_uint m_WaitingExternalCalls;        /*!< counts threads which are waiting to be processed in FrameMove */
   unsigned int m_ProcessedExternalCalls = 0;      /*!< counts calls which are processed during one "door open" cycle in FrameMove */
   unsigned int m_ProcessedExternalDecay = 0;      /*!< counts to close door after a few frames of no python activity */
-  CApplicationStackHelper m_stackHelper;
   int m_ExitCode{EXITCODE_QUIT};
 };
 

@@ -16,6 +16,7 @@
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "application/ApplicationPowerHandling.h"
+#include "application/ApplicationStackHelper.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "dialogs/GUIDialogBusyNoCancel.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -262,12 +263,13 @@ void CPowerManager::StorePlayerState()
     // set the actual offset instead of store and load it from database
     m_lastPlayedFileItem->SetStartOffset(appPlayer->GetTime());
     // in case of regular stack, correct the start offset by adding current part start time
-    if (g_application.GetAppStackHelper().IsPlayingRegularStack())
-      m_lastPlayedFileItem->SetStartOffset(
-          m_lastPlayedFileItem->GetStartOffset() +
-          g_application.GetAppStackHelper().GetCurrentStackPartStartTimeMs());
+    const auto stackHelper = components.GetComponent<CApplicationStackHelper>();
+    if (stackHelper->IsPlayingRegularStack())
+      m_lastPlayedFileItem->SetStartOffset(m_lastPlayedFileItem->GetStartOffset() +
+                                           stackHelper->GetCurrentStackPartStartTimeMs());
     // in case of iso stack, keep track of part number
-    m_lastPlayedFileItem->m_lStartPartNumber = g_application.GetAppStackHelper().IsPlayingISOStack() ? g_application.GetAppStackHelper().GetCurrentPartNumber() + 1 : 1;
+    m_lastPlayedFileItem->m_lStartPartNumber =
+        stackHelper->IsPlayingISOStack() ? stackHelper->GetCurrentPartNumber() + 1 : 1;
     // for iso and iso stacks, keep track of playerstate
     m_lastPlayedFileItem->SetProperty("savedplayerstate", appPlayer->GetPlayerState());
     CLog::Log(LOGDEBUG,
