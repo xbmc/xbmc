@@ -11451,7 +11451,13 @@ msgctxt "#19347"
 msgid "None of the active PVR clients provide client-specific settings."
 msgstr ""
 
-#empty strings from id 19348 to 19498
+#. label for 'by provider' sort method
+#: xbmc/utils/SortUtils.cpp
+msgctxt "#19348"
+msgid "Provider"
+msgstr ""
+
+#empty strings from id 19349 to 19498
 
 #. label for epg genre value
 #: xbmc/pvr/epg/Epg.cpp
