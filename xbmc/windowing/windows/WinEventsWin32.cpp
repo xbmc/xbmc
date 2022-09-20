@@ -16,6 +16,8 @@
 #include "WinKeyMap.h"
 #include "application/AppInboundProtocol.h"
 #include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPowerHandling.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIControl.h" // for EVENT_RESULT
 #include "guilib/GUIWindowManager.h"
@@ -287,11 +289,13 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       break;
     case WM_SHOWWINDOW:
       {
-        bool active = g_application.GetRenderGUI();
+        const auto& components = CServiceBroker::GetAppComponents();
+        const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+        bool active = appPower->GetRenderGUI();
         if (appPort)
           appPort->SetRenderGUI(wParam != 0);
-        if (g_application.GetRenderGUI() != active)
-          DX::Windowing()->NotifyAppActiveChange(g_application.GetRenderGUI());
+        if (appPower->GetRenderGUI() != active)
+          DX::Windowing()->NotifyAppActiveChange(appPower->GetRenderGUI());
         CLog::LogFC(LOGDEBUG, LOGWINDOWING, "WM_SHOWWINDOW -> window is {}",
                     wParam != 0 ? "shown" : "hidden");
       }
@@ -300,7 +304,9 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       {
         CLog::LogFC(LOGDEBUG, LOGWINDOWING, "WM_ACTIVATE -> window is {}",
                     LOWORD(wParam) != WA_INACTIVE ? "active" : "inactive");
-        bool active = g_application.GetRenderGUI();
+        const auto& components = CServiceBroker::GetAppComponents();
+        const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+        bool active = appPower->GetRenderGUI();
         if (HIWORD(wParam))
         {
           if (appPort)
@@ -323,10 +329,10 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 
           }
         }
-        if (g_application.GetRenderGUI() != active)
-          DX::Windowing()->NotifyAppActiveChange(g_application.GetRenderGUI());
+        if (appPower->GetRenderGUI() != active)
+          DX::Windowing()->NotifyAppActiveChange(appPower->GetRenderGUI());
         CLog::LogFC(LOGDEBUG, LOGWINDOWING, "window is {}",
-                    g_application.GetRenderGUI() ? "active" : "inactive");
+                    appPower->GetRenderGUI() ? "active" : "inactive");
       }
       break;
     case WM_SETFOCUS:
@@ -454,11 +460,13 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       CLog::LogFC(LOGDEBUG, LOGWINDOWING, "APPCOMMAND {}", appcmd);
 
       // Reset the screen saver
-      g_application.ResetScreenSaver();
+      auto& components = CServiceBroker::GetAppComponents();
+      const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+      appPower->ResetScreenSaver();
 
       // If we were currently in the screen saver wake up and don't process the
       // appcommand
-      if (g_application.WakeUpScreenSaverAndDPMS())
+      if (appPower->WakeUpScreenSaverAndDPMS())
         return true;
 
       // Retrieve the action associated with this appcommand from the mapping table
@@ -565,12 +573,17 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       return(0);
     }
     case WM_DISPLAYCHANGE:
+    {
       CLog::LogFC(LOGDEBUG, LOGWINDOWING, "display change event");
-      if (g_application.GetRenderGUI() && !DX::Windowing()->IsAlteringWindow() && GET_X_LPARAM(lParam) > 0 && GET_Y_LPARAM(lParam) > 0)
+      const auto& components = CServiceBroker::GetAppComponents();
+      const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+      if (appPower->GetRenderGUI() && !DX::Windowing()->IsAlteringWindow() &&
+          GET_X_LPARAM(lParam) > 0 && GET_Y_LPARAM(lParam) > 0)
       {
         DX::Windowing()->UpdateResolutions();
       }
       return(0);
+    }
     case WM_ENTERSIZEMOVE:
       {
         DX::Windowing()->SetSizeMoveMode(true);
@@ -589,7 +602,9 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           // tell the device about new position
           DX::Windowing()->OnMove(newEvent.move.x, newEvent.move.y);
           // tell the application about new position
-          if (g_application.GetRenderGUI() && !DX::Windowing()->IsAlteringWindow())
+          const auto& components = CServiceBroker::GetAppComponents();
+          const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+          if (appPower->GetRenderGUI() && !DX::Windowing()->IsAlteringWindow())
           {
             if (appPort)
               appPort->OnEvent(newEvent);
@@ -605,7 +620,10 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           // tell the device about new size
           DX::Windowing()->OnResize(newEvent.resize.w, newEvent.resize.h);
           // tell the application about new size
-          if (g_application.GetRenderGUI() && !DX::Windowing()->IsAlteringWindow() && newEvent.resize.w > 0 && newEvent.resize.h > 0)
+          const auto& components = CServiceBroker::GetAppComponents();
+          const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+          if (appPower->GetRenderGUI() && !DX::Windowing()->IsAlteringWindow() &&
+              newEvent.resize.w > 0 && newEvent.resize.h > 0)
           {
             if (appPort)
               appPort->OnEvent(newEvent);
@@ -619,7 +637,9 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         if (!DX::Windowing()->IsMinimized())
         {
           DX::Windowing()->SetMinimized(true);
-          if (!g_application.GetRenderGUI())
+          const auto& components = CServiceBroker::GetAppComponents();
+          const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+          if (appPower->GetRenderGUI())
           {
             if (appPort)
               appPort->SetRenderGUI(false);
@@ -629,7 +649,9 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       else if (DX::Windowing()->IsMinimized())
       {
         DX::Windowing()->SetMinimized(false);
-        if (!g_application.GetRenderGUI())
+        const auto& components = CServiceBroker::GetAppComponents();
+        const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+        if (!appPower->GetRenderGUI())
         {
           if (appPort)
             appPort->SetRenderGUI(true);
@@ -662,7 +684,10 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           // tell device about new size
           DX::Windowing()->OnResize(newEvent.resize.w, newEvent.resize.h);
           // tell application about size changes
-          if (g_application.GetRenderGUI() && !DX::Windowing()->IsAlteringWindow() && newEvent.resize.w > 0 && newEvent.resize.h > 0)
+          const auto& components = CServiceBroker::GetAppComponents();
+          const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+          if (appPower->GetRenderGUI() && !DX::Windowing()->IsAlteringWindow() &&
+              newEvent.resize.w > 0 && newEvent.resize.h > 0)
           {
             if (appPort)
               appPort->OnEvent(newEvent);
@@ -689,7 +714,9 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 
           // tell the device about new position
           DX::Windowing()->OnMove(newEvent.move.x, newEvent.move.y);
-          if (g_application.GetRenderGUI() && !DX::Windowing()->IsAlteringWindow())
+          const auto& components = CServiceBroker::GetAppComponents();
+          const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+          if (appPower->GetRenderGUI() && !DX::Windowing()->IsAlteringWindow())
           {
             if (appPort)
               appPort->OnEvent(newEvent);
@@ -816,7 +843,9 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         case WM_LBUTTONDBLCLK:
         {
           DX::Windowing()->SetMinimized(false);
-          if (!g_application.GetRenderGUI())
+          const auto& components = CServiceBroker::GetAppComponents();
+          const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+          if (!appPower->GetRenderGUI())
           {
             if (appPort)
               appPort->SetRenderGUI(true);

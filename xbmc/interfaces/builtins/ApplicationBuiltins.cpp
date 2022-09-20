@@ -10,6 +10,8 @@
 
 #include "ServiceBroker.h"
 #include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPowerHandling.h"
 #include "filesystem/ZipManager.h"
 #include "input/actions/ActionIDs.h"
 #include "interfaces/AnnouncementManager.h"
@@ -124,7 +126,9 @@ static int ToggleDebug(const std::vector<std::string>& params)
  */
 static int ToggleDPMS(const std::vector<std::string>& params)
 {
-  g_application.ToggleDPMS(true);
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+  appPower->ToggleDPMS(true);
 
   return 0;
 }

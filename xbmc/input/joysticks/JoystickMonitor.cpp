@@ -9,7 +9,8 @@
 #include "JoystickMonitor.h"
 
 #include "ServiceBroker.h"
-#include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPowerHandling.h"
 #include "games/controllers/ControllerIDs.h"
 #include "input/InputManager.h"
 
@@ -28,7 +29,9 @@ std::string CJoystickMonitor::ControllerID() const
 bool CJoystickMonitor::AcceptsInput(const FeatureName& feature) const
 {
   // Only accept input when screen saver is active
-  return g_application.IsInScreenSaver();
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+  return appPower->IsInScreenSaver();
 }
 
 bool CJoystickMonitor::OnButtonPress(const FeatureName& feature, bool bPressed)
@@ -98,7 +101,11 @@ bool CJoystickMonitor::OnThrottleMotion(const FeatureName& feature,
 
 bool CJoystickMonitor::ResetTimers(void)
 {
-  g_application.ResetSystemIdleTimer();
-  g_application.ResetScreenSaver();
-  return g_application.WakeUpScreenSaverAndDPMS();
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+  appPower->ResetSystemIdleTimer();
+  appPower->ResetScreenSaver();
+  return appPower->WakeUpScreenSaverAndDPMS();
+
+  return true;
 }

@@ -13,7 +13,8 @@
 #include "ServiceBroker.h"
 #include "addons/binary-addons/AddonDll.h"
 #include "addons/kodi-dev-kit/include/kodi/General.h"
-#include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPowerHandling.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "input/KeyboardLayout.h"
 #include "input/KeyboardLayoutManager.h"
@@ -301,7 +302,9 @@ int Interface_General::get_global_idle_time(void* kodiBase)
     return -1;
   }
 
-  return g_application.GlobalIdleTime();
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+  return appPower->GlobalIdleTime();
 }
 
 bool Interface_General::is_addon_avilable(void* kodiBase,
