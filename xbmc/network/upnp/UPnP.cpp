@@ -20,7 +20,6 @@
 #include "UPnPServer.h"
 #include "UPnPSettings.h"
 #include "URL.h"
-#include "Util.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"

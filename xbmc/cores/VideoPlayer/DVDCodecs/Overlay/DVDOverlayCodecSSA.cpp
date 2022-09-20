@@ -12,7 +12,6 @@
 #include "DVDOverlaySSA.h"
 #include "DVDStreamInfo.h"
 #include "ServiceBroker.h"
-#include "Util.h"
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "settings/SettingsComponent.h"

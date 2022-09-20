@@ -14,7 +14,6 @@
 #include "InputOperations.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"
-#include "Util.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/StringUtils.h"

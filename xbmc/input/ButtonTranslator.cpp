@@ -16,7 +16,6 @@
 #include "IRTranslator.h"
 #include "Key.h"
 #include "KeyboardTranslator.h"
-#include "Util.h"
 #include "WindowTranslator.h"
 #include "filesystem/Directory.h"
 #include "guilib/WindowIDs.h"

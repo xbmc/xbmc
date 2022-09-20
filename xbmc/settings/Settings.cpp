@@ -12,7 +12,6 @@
 #include "Autorun.h"
 #include "GUIPassword.h"
 #include "LangInfo.h"
-#include "Util.h"
 #include "addons/AddonSystemSettings.h"
 #include "addons/Skin.h"
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
