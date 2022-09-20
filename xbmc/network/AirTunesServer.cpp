@@ -17,6 +17,8 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "application/Application.h"
+#include "application/ApplicationActionListeners.h"
+#include "application/ApplicationComponents.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxBXA.h"
 #include "filesystem/File.h"
 #include "filesystem/PipeFile.h"
@@ -670,16 +672,19 @@ CAirTunesServer::~CAirTunesServer()
 
 void CAirTunesServer::RegisterActionListener(bool doRegister)
 {
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appListener = components.GetComponent<CApplicationActionListeners>();
+
   if (doRegister)
   {
     CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
-    g_application.RegisterActionListener(this);
+    appListener->RegisterActionListener(this);
     ServerInstance->Create();
   }
   else
   {
     CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
-    g_application.UnregisterActionListener(this);
+    appListener->UnregisterActionListener(this);
     ServerInstance->StopThread(true);
   }
 }
