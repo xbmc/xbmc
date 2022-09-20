@@ -22,7 +22,6 @@
 #include "FileItem.h"
 #include "PasswordManager.h"
 #include "ServiceBroker.h"
-#include "Util.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"

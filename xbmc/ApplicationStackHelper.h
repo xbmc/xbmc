@@ -8,8 +8,14 @@
 
 #pragma once
 
-#include "FileItem.h"
-#include "Util.h"
+#include "threads/CriticalSection.h"
+
+#include <map>
+#include <memory>
+#include <string>
+
+class CFileItem;
+class CFileItemList;
 
 class CApplicationStackHelper
 {
@@ -40,17 +46,17 @@ public:
   /*!
   \brief Returns true if Application is currently playing an ISO stack
   */
-  bool IsPlayingISOStack() const { return m_currentStack->Size() > 0 && m_currentStackIsDiscImageStack; }
+  bool IsPlayingISOStack() const;
 
   /*!
   \brief Returns true if Application is currently playing a Regular (non-ISO) stack
   */
-  bool IsPlayingRegularStack() const { return m_currentStack->Size() > 0 && !m_currentStackIsDiscImageStack; }
+  bool IsPlayingRegularStack() const;
 
   /*!
   \brief returns true if there is a next part available
   */
-  bool HasNextStackPartFileItem() const { return m_currentStackPosition < m_currentStack->Size() - 1; }
+  bool HasNextStackPartFileItem() const;
 
   /*!
   \brief sets the next stack part as the current and returns a reference to it
@@ -81,10 +87,7 @@ public:
   \brief Returns the end time of a FileItem part of a (non-ISO) stack playback
   \param partNumber the requested part number in the stack
   */
-  uint64_t GetStackPartEndTimeMs(int partNumber) const
-  {
-    return GetStackPartFileItem(partNumber).GetEndOffset();
-  }
+  uint64_t GetStackPartEndTimeMs(int partNumber) const;
 
   /*!
   \brief Returns the start time of a FileItem part of a (non-ISO) stack playback
@@ -100,7 +103,7 @@ public:
   /*!
   \brief Returns the total time of a (non-ISO) stack playback
   */
-  uint64_t GetStackTotalTimeMs() const { return GetStackPartEndTimeMs(m_currentStack->Size() - 1); }
+  uint64_t GetStackTotalTimeMs() const;
 
   /*!
   \brief Returns the stack part number corresponding to the given timestamp in a (non-ISO) stack playback
@@ -131,7 +134,7 @@ public:
   \param item the reference to the item that is part of a stack
   \param stackItem the smart pointer to the stack CFileItem
   */
-  void SetRegisteredStack(const CFileItem& item, CFileItemPtr stackItem);
+  void SetRegisteredStack(const CFileItem& item, std::shared_ptr<CFileItem> stackItem);
 
   /*!
   \brief Returns the part number of the part in the parameter
@@ -179,11 +182,8 @@ protected:
   \brief Returns a FileItem part of a (non-ISO) stack playback
   \param partNumber the requested part number in the stack
   */
-  CFileItem& GetStackPartFileItem(int partNumber) { return *(*m_currentStack)[partNumber]; }
-  const CFileItem& GetStackPartFileItem(int partNumber) const
-  {
-    return *(*m_currentStack)[partNumber];
-  }
+  CFileItem& GetStackPartFileItem(int partNumber);
+  const CFileItem& GetStackPartFileItem(int partNumber) const;
 
   class StackPartInformation
   {
@@ -197,7 +197,7 @@ protected:
     uint64_t m_lStackPartStartTimeMs;
     uint64_t m_lStackTotalTimeMs;
     int m_lStackPartNumber;
-    CFileItemPtr m_pStack;
+    std::shared_ptr<CFileItem> m_pStack;
   };
 
   typedef std::shared_ptr<StackPartInformation> StackPartInformationPtr;

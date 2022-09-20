@@ -8,7 +8,6 @@
 
 #include "ApplicationStackHelper.h"
 
-#include "ApplicationPlayer.h"
 #include "Util.h"
 #include "cores/VideoPlayer/DVDFileInfo.h"
 #include "filesystem/StackDirectory.h"
@@ -61,7 +60,7 @@ bool CApplicationStackHelper::InitializeStack(const CFileItem & item)
   if (!item.IsStack())
     return false;
 
-  CFileItemPtr stack(new CFileItem(item));
+  auto stack = std::make_shared<CFileItem>(item);
 
   Clear();
   // read and determine kind of stack
@@ -208,6 +207,31 @@ int CApplicationStackHelper::InitializeStackStartPartAndOffset(const CFileItem& 
   return startoffset;
 }
 
+bool CApplicationStackHelper::IsPlayingISOStack() const
+{
+  return m_currentStack->Size() > 0 && m_currentStackIsDiscImageStack;
+}
+
+bool CApplicationStackHelper::IsPlayingRegularStack() const
+{
+  return m_currentStack->Size() > 0 && !m_currentStackIsDiscImageStack;
+}
+
+bool CApplicationStackHelper::HasNextStackPartFileItem() const
+{
+  return m_currentStackPosition < m_currentStack->Size() - 1;
+}
+
+uint64_t CApplicationStackHelper::GetStackPartEndTimeMs(int partNumber) const
+{
+  return GetStackPartFileItem(partNumber).GetEndOffset();
+}
+
+uint64_t CApplicationStackHelper::GetStackTotalTimeMs() const
+{
+  return GetStackPartEndTimeMs(m_currentStack->Size() - 1);
+}
+
 int CApplicationStackHelper::GetStackPartNumberAtTimeMs(uint64_t msecs)
 {
   if (msecs > 0)
@@ -239,9 +263,20 @@ bool CApplicationStackHelper::HasRegisteredStack(const CFileItem& item) const
   return it != m_stackmap.end() && it->second != nullptr;
 }
 
-void CApplicationStackHelper::SetRegisteredStack(const CFileItem& item, CFileItemPtr stackItem)
+void CApplicationStackHelper::SetRegisteredStack(const CFileItem& item,
+                                                 std::shared_ptr<CFileItem> stackItem)
 {
   GetStackPartInformation(item.GetPath())->m_pStack = std::move(stackItem);
+}
+
+CFileItem& CApplicationStackHelper::GetStackPartFileItem(int partNumber)
+{
+  return *(*m_currentStack)[partNumber];
+}
+
+const CFileItem& CApplicationStackHelper::GetStackPartFileItem(int partNumber) const
+{
+  return *(*m_currentStack)[partNumber];
 }
 
 int CApplicationStackHelper::GetRegisteredStackPartNumber(const CFileItem& item)

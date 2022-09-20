@@ -15,6 +15,7 @@
 #include "PlayListPlayer.h"
 #include "SeekHandler.h"
 #include "ServiceBroker.h"
+#include "Util.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
