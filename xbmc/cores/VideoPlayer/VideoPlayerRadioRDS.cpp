@@ -26,6 +26,8 @@
 #include "Interface/DemuxPacket.h"
 #include "ServiceBroker.h"
 #include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationVolumeHandling.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GUIComponent.h"
@@ -882,10 +884,12 @@ unsigned int CDVDRadioRDSData::DecodeTA_TP(const uint8_t* msgElement)
   {
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(19021), g_localizeStrings.Get(29930));
     m_TA_TP_TrafficAdvisory = true;
-    m_TA_TP_TrafficVolume = g_application.GetVolumePercent();
+    auto& components = CServiceBroker::GetAppComponents();
+    const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
+    m_TA_TP_TrafficVolume = appVolume->GetVolumePercent();
     float trafAdvVol = (float)CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt("pvrplayback.trafficadvisoryvolume");
     if (trafAdvVol)
-      g_application.SetVolume(m_TA_TP_TrafficVolume+trafAdvVol);
+      appVolume->SetVolume(m_TA_TP_TrafficVolume + trafAdvVol);
 
     CVariant data(CVariant::VariantTypeObject);
     data["on"] = true;
@@ -895,7 +899,9 @@ unsigned int CDVDRadioRDSData::DecodeTA_TP(const uint8_t* msgElement)
   if (!traffic_announcement && m_TA_TP_TrafficAdvisory && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool("pvrplayback.trafficadvisory"))
   {
     m_TA_TP_TrafficAdvisory = false;
-    g_application.SetVolume(m_TA_TP_TrafficVolume);
+    auto& components = CServiceBroker::GetAppComponents();
+    const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
+    appVolume->SetVolume(m_TA_TP_TrafficVolume);
 
     CVariant data(CVariant::VariantTypeObject);
     data["on"] = false;
