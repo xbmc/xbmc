@@ -131,7 +131,7 @@ public:
   \param item the reference to the item that is part of a stack
   \param stackItem the smart pointer to the stack CFileItem
   */
-  void SetRegisteredStack(const CFileItem& item, CFileItemPtr stackItem);
+  void SetRegisteredStack(const CFileItem& item, std::shared_ptr<CFileItem> stackItem);
 
   /*!
   \brief Returns the part number of the part in the parameter
@@ -197,7 +197,7 @@ protected:
     uint64_t m_lStackPartStartTimeMs;
     uint64_t m_lStackTotalTimeMs;
     int m_lStackPartNumber;
-    CFileItemPtr m_pStack;
+    std::shared_ptr<CFileItem> m_pStack;
   };
 
   typedef std::shared_ptr<StackPartInformation> StackPartInformationPtr;

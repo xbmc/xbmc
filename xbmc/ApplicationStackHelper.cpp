@@ -61,7 +61,7 @@ bool CApplicationStackHelper::InitializeStack(const CFileItem & item)
   if (!item.IsStack())
     return false;
 
-  CFileItemPtr stack(new CFileItem(item));
+  auto stack = std::make_shared<CFileItem>(item);
 
   Clear();
   // read and determine kind of stack
@@ -239,7 +239,8 @@ bool CApplicationStackHelper::HasRegisteredStack(const CFileItem& item) const
   return it != m_stackmap.end() && it->second != nullptr;
 }
 
-void CApplicationStackHelper::SetRegisteredStack(const CFileItem& item, CFileItemPtr stackItem)
+void CApplicationStackHelper::SetRegisteredStack(const CFileItem& item,
+                                                 std::shared_ptr<CFileItem> stackItem)
 {
   GetStackPartInformation(item.GetPath())->m_pStack = std::move(stackItem);
 }
