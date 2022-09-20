@@ -8,9 +8,12 @@
 
 #pragma once
 
+#include "application/IApplicationComponent.h"
+
 #include <vector>
 
 class CAction;
+class CApplication;
 class CCriticalSection;
 class IActionListener;
 
@@ -18,8 +21,10 @@ class IActionListener;
  * \brief Class handling application support for action listeners.
  */
 
-class CApplicationActionListeners
+class CApplicationActionListeners : public IApplicationComponent
 {
+  friend class CApplication;
+
 public:
   CApplicationActionListeners(CCriticalSection& sect);
 

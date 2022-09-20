@@ -9,7 +9,6 @@
 #pragma once
 
 #include "ServiceManager.h"
-#include "application/ApplicationActionListeners.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationEnums.h"
 #include "application/ApplicationPlayer.h"
@@ -90,7 +89,6 @@ class CApplication : public IWindowManagerCallback,
                      public IMsgTargetCallback,
                      public KODI::MESSAGING::IMessageTarget,
                      public CApplicationComponents,
-                     public CApplicationActionListeners,
                      public CApplicationPlayerCallback,
                      public CApplicationPowerHandling,
                      public CApplicationSettingsHandling,
