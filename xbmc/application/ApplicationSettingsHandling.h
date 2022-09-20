@@ -13,7 +13,6 @@
 #include "settings/lib/ISettingsHandler.h"
 
 class CApplicationVolumeHandling;
-class CApplicationSkinHandling;
 
 /*!
  * \brief Class handling application support for settings.
@@ -24,8 +23,7 @@ class CApplicationSettingsHandling : public ISettingCallback,
                                      public ISubSettings
 {
 public:
-  CApplicationSettingsHandling(CApplicationSkinHandling& skinHandling,
-                               CApplicationVolumeHandling& volumeHandling);
+  explicit CApplicationSettingsHandling(CApplicationVolumeHandling& volumeHandling);
 
 protected:
   void RegisterSettings();
@@ -39,6 +37,5 @@ protected:
                        const char* oldSettingId,
                        const TiXmlNode* oldSettingNode) override;
 
-  CApplicationSkinHandling& m_skinHandling;
   CApplicationVolumeHandling& m_volumeHandling;
 };

@@ -8,8 +8,11 @@
 
 #pragma once
 
+#include "application/IApplicationComponent.h"
+
 #include <string>
 
+class CApplication;
 class CSetting;
 class IMsgTargetCallback;
 class IWindowManagerCallback;
@@ -17,8 +20,10 @@ class IWindowManagerCallback;
 /*!
  * \brief Class handling application support for skin management.
  */
-class CApplicationSkinHandling
+class CApplicationSkinHandling : public IApplicationComponent
 {
+  friend class CApplication;
+
 public:
   CApplicationSkinHandling(IMsgTargetCallback* msgCb,
                            IWindowManagerCallback* wCb,
