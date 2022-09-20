@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "application/IApplicationComponent.h"
 #include "threads/CriticalSection.h"
 
 #include <map>
@@ -17,7 +18,7 @@
 class CFileItem;
 class CFileItemList;
 
-class CApplicationStackHelper
+class CApplicationStackHelper : public IApplicationComponent
 {
 public:
   CApplicationStackHelper(void);
