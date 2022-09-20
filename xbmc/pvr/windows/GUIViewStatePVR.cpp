@@ -28,6 +28,9 @@ CGUIViewStateWindowPVRChannels::CGUIViewStateWindowPVRChannels(const int windowI
   AddSortMethod(SortByChannel,             551,   LABEL_MASKS("%L", "", "%L", ""));      // "Name"           : Filename, empty | Foldername, empty
   AddSortMethod(SortByLastPlayed,          568,   LABEL_MASKS("%L", "%p", "%L", "%p"));  // "Last played"    : Filename, LastPlayed | Foldername, LastPlayed
   AddSortMethod(SortByClientChannelOrder,  19315, LABEL_MASKS("%L", "", "%L", ""));      // "Backend number" : Filename, empty | Foldername, empty
+  AddSortMethod(
+      SortByProvider, 19348,
+      LABEL_MASKS("%L", "", "%L", "")); // "Provider" : Filename, empty | Foldername, empty
 
   // Default sorting
   SetSortMethod(SortByChannelNumber);
@@ -56,6 +59,9 @@ CGUIViewStateWindowPVRRecordings::CGUIViewStateWindowPVRRecordings(const int win
   }
   // "Episode" : Filename, DateTime | Foldername, empty
   AddSortMethod(SortByEpisodeNumber, 20359, LABEL_MASKS("%L", "%d", "%L", ""));
+  AddSortMethod(
+      SortByProvider, 19348,
+      LABEL_MASKS("%L", "", "%L", "")); // "Provider" : Filename, empty | Foldername, empty
 
   SetSortMethod(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()
                 ->m_PVRDefaultSortOrder);
@@ -79,6 +85,8 @@ CGUIViewStateWindowPVRGuide::CGUIViewStateWindowPVRGuide(const int windowId, con
   AddSortMethod(SortByChannel,                                 551,   LABEL_MASKS("%L", "", "%L", ""));     // "Name"           : Filename, empty | Foldername, empty
   AddSortMethod(SortByLastPlayed,    SortAttributeIgnoreLabel, 568,   LABEL_MASKS("%L", "%p", "%L", "%p")); // "Last played"    : Filename, LastPlayed | Foldername, LastPlayed
   AddSortMethod(SortByClientChannelOrder,                      19315, LABEL_MASKS("%L", "", "%L", ""));     // "Backend number" : Filename, empty | Foldername, empty
+  AddSortMethod(SortByProvider, 19348, // "Provider"
+                LABEL_MASKS("%L", "", "%L", "")); // Filename, empty | Foldername, empty
 
   // Default sorting
   SetSortMethod(SortByChannelNumber);

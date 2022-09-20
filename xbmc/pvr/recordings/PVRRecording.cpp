@@ -208,6 +208,8 @@ void CPVRRecording::ToSortable(SortItem& sortable, Field field) const
   std::unique_lock<CCriticalSection> lock(m_critSection);
   if (field == FieldSize)
     sortable[FieldSize] = m_sizeInBytes;
+  else if (field == FieldProvider)
+    sortable[FieldProvider] = StringUtils::Format("{} {}", m_iClientId, m_iClientProviderUniqueId);
   else
     CVideoInfoTag::ToSortable(sortable, field);
 }
