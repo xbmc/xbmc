@@ -58,6 +58,11 @@ void CApplicationPowerHandling::ResetSystemIdleTimer()
   m_idleTimer.StartZero();
 }
 
+void CApplicationPowerHandling::ResetNavigationTimer()
+{
+  m_navigationTimer.StartZero();
+}
+
 void CApplicationPowerHandling::SetRenderGUI(bool renderGUI)
 {
   if (renderGUI && !m_renderGUI)
