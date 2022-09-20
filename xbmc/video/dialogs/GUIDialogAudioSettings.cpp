@@ -11,12 +11,13 @@
 #include "GUIPassword.h"
 #include "ServiceBroker.h"
 #include "addons/Skin.h"
-#include "application/Application.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
+#include "application/ApplicationVolumeHandling.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/IPlayer.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "guilib/GUIMessage.h"
 #include "guilib/LocalizeStrings.h"
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
@@ -52,11 +53,12 @@ CGUIDialogAudioSettings::~CGUIDialogAudioSettings() = default;
 void CGUIDialogAudioSettings::FrameMove()
 {
   // update the volume setting if necessary
-  float newVolume = g_application.GetVolumeRatio();
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
+  float newVolume = appVolume->GetVolumeRatio();
   if (newVolume != m_volume)
     GetSettingsManager()->SetNumber(SETTING_AUDIO_VOLUME, static_cast<double>(newVolume));
 
-  const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
   if (appPlayer->HasPlayer())
   {
@@ -106,7 +108,8 @@ void CGUIDialogAudioSettings::OnSettingChanged(const std::shared_ptr<const CSett
   if (settingId == SETTING_AUDIO_VOLUME)
   {
     m_volume = static_cast<float>(std::static_pointer_cast<const CSettingNumber>(setting)->GetValue());
-    g_application.SetVolume(m_volume, false); // false - value is not in percent
+    const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
+    appVolume->SetVolume(m_volume, false); // false - value is not in percent
   }
   else if (settingId == SETTING_AUDIO_VOLUME_AMPLIFICATION)
   {
@@ -245,7 +248,8 @@ void CGUIDialogAudioSettings::InitializeSettings()
 
   // audio settings
   // audio volume setting
-  m_volume = g_application.GetVolumeRatio();
+  const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
+  m_volume = appVolume->GetVolumeRatio();
   std::shared_ptr<CSettingNumber> settingAudioVolume =
       AddSlider(groupAudio, SETTING_AUDIO_VOLUME, 13376, SettingLevel::Basic, m_volume, 14054,
                 CApplicationVolumeHandling::VOLUME_MINIMUM,

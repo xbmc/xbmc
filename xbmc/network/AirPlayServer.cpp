@@ -14,9 +14,9 @@
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "URL.h"
-#include "application/Application.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
+#include "application/ApplicationVolumeHandling.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "input/actions/Action.h"
@@ -736,16 +736,24 @@ void CAirPlayServer::backupVolume()
   std::unique_lock<CCriticalSection> lock(ServerInstanceLock);
 
   if (ServerInstance && ServerInstance->m_origVolume == -1)
-    ServerInstance->m_origVolume = (int)g_application.GetVolumePercent();
+  {
+    const auto& components = CServiceBroker::GetAppComponents();
+    const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
+    ServerInstance->m_origVolume = static_cast<int>(appVolume->GetVolumePercent());
+  }
 }
 
 void CAirPlayServer::restoreVolume()
 {
   std::unique_lock<CCriticalSection> lock(ServerInstanceLock);
 
-  if (ServerInstance && ServerInstance->m_origVolume != -1 && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_SERVICES_AIRPLAYVOLUMECONTROL))
+  const auto& settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  if (ServerInstance && ServerInstance->m_origVolume != -1 &&
+      settings->GetBool(CSettings::SETTING_SERVICES_AIRPLAYVOLUMECONTROL))
   {
-    g_application.SetVolume((float)ServerInstance->m_origVolume);
+    auto& components = CServiceBroker::GetAppComponents();
+    const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
+    appVolume->SetVolume(static_cast<float>(ServerInstance->m_origVolume));
     ServerInstance->m_origVolume = -1;
   }
 }
@@ -849,12 +857,16 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
       }
       else if (volume >= 0 && volume <= 1)
       {
-        float oldVolume = g_application.GetVolumePercent();
+        auto& components = CServiceBroker::GetAppComponents();
+        const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
+        float oldVolume = appVolume->GetVolumePercent();
         volume *= 100;
-        if(oldVolume != volume && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_SERVICES_AIRPLAYVOLUMECONTROL))
+        const auto& settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+        if (oldVolume != volume &&
+            settings->GetBool(CSettings::SETTING_SERVICES_AIRPLAYVOLUMECONTROL))
         {
           backupVolume();
-          g_application.SetVolume(volume);
+          appVolume->SetVolume(volume);
           CServiceBroker::GetAppMessenger()->PostMsg(
               TMSG_VOLUME_SHOW, oldVolume < volume ? ACTION_VOLUME_UP : ACTION_VOLUME_DOWN);
         }

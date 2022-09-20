@@ -9,10 +9,11 @@
 #include "PeripheralCecAdapter.h"
 
 #include "ServiceBroker.h"
-#include "application/Application.h"
 #include "application/ApplicationComponents.h"
+#include "application/ApplicationEnums.h"
 #include "application/ApplicationPlayer.h"
 #include "application/ApplicationPowerHandling.h"
+#include "application/ApplicationVolumeHandling.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -1619,8 +1620,10 @@ std::string CPeripheralCecAdapterUpdateThread::UpdateAudioSystemStatus(void)
 
     // set amp present
     m_adapter->SetAudioSystemConnected(true);
-    g_application.SetMute(false);
-    g_application.SetVolume(CApplicationVolumeHandling::VOLUME_MAXIMUM, false);
+    auto& components = CServiceBroker::GetAppComponents();
+    const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
+    appVolume->SetMute(false);
+    appVolume->SetVolume(CApplicationVolumeHandling::VOLUME_MAXIMUM, false);
   }
   else
   {
