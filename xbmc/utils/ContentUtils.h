@@ -10,6 +10,7 @@
 
 #include "media/MediaType.h"
 
+#include <memory>
 #include <string>
 
 class CFileItem;
@@ -25,4 +26,13 @@ public:
     \return the preferred art image
   */
   static const std::string GetPreferredArtImage(const CFileItem& item);
+
+  /*! \brief Gets a trailer playable file item for a given item. Essentially this creates a new item which contains
+   the original item infotag and has the playable path and label changed.
+    \param item The CFileItem to process
+    \param label The label for the new item
+    \return a pointer to the trailer item
+  */
+  static std::unique_ptr<CFileItem> GeneratePlayableTrailerItem(const CFileItem& item,
+                                                                const std::string& label);
 };
