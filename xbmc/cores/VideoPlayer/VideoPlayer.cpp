@@ -8,7 +8,6 @@
 
 #include "VideoPlayer.h"
 
-#include "Application.h"
 #include "DVDCodecs/DVDCodecUtils.h"
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDDemuxers/DVDDemuxCC.h"
@@ -19,6 +18,7 @@
 #include "DVDFileInfo.h"
 #include "DVDInputStreams/DVDFactoryInputStream.h"
 #include "DVDInputStreams/DVDInputStream.h"
+#include "application/Application.h"
 
 #include <mutex>
 #if defined(HAVE_LIBBLURAY)

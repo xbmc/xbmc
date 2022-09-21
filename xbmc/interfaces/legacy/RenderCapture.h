@@ -9,8 +9,8 @@
 #pragma once
 
 #include "AddonClass.h"
-#include "Application.h"
 #include "Exception.h"
+#include "application/Application.h"
 #include "commons/Buffer.h"
 
 namespace XBMCAddon

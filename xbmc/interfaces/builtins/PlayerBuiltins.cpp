@@ -8,7 +8,6 @@
 
 #include "PlayerBuiltins.h"
 
-#include "Application.h"
 #include "FileItem.h"
 #include "GUIUserMessages.h"
 #include "PartyModeManager.h"
@@ -16,6 +15,7 @@
 #include "SeekHandler.h"
 #include "ServiceBroker.h"
 #include "Util.h"
+#include "application/Application.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"

@@ -8,11 +8,11 @@
 
 #include "AddonBase.h"
 
-#include "Application.h"
 #include "GUIUserMessages.h"
 #include "addons/binary-addons/AddonDll.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
 #include "addons/settings/AddonSettings.h"
+#include "application/Application.h"
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIComponent.h"

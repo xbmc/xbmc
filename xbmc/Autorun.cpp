@@ -8,29 +8,29 @@
 
 #include "Autorun.h"
 
-#include <stdlib.h>
-
-#include "Application.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
+#include "application/Application.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
-#include "filesystem/StackDirectory.h"
 #include "filesystem/Directory.h"
 #include "filesystem/DirectoryFactory.h"
 #include "filesystem/File.h"
+#include "filesystem/StackDirectory.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
+#include "playlists/PlayList.h"
 #include "profiles/ProfileManager.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDefinitions.h"
-#include "playlists/PlayList.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
+
+#include <stdlib.h>
 #ifndef TARGET_WINDOWS
 #include "storage/DetectDVDType.h"
 #endif

@@ -8,9 +8,9 @@
 
 #include "SeekHandler.h"
 
-#include "Application.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
+#include "application/Application.h"
 #include "cores/DataCacheCore.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"

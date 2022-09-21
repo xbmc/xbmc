@@ -8,7 +8,6 @@
 
 #include "GUIWindowSlideShow.h"
 
-#include "Application.h"
 #include "FileItem.h"
 #include "GUIDialogPictureInfo.h"
 #include "GUIInfoManager.h"
@@ -16,6 +15,7 @@
 #include "ServiceBroker.h"
 #include "TextureDatabase.h"
 #include "URL.h"
+#include "application/Application.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUILabelControl.h"

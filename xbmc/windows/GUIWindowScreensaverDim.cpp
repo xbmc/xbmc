@@ -8,9 +8,9 @@
 
 #include "GUIWindowScreensaverDim.h"
 
-#include "Application.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
+#include "application/Application.h"
 #include "guilib/GUITexture.h"
 #include "utils/ColorUtils.h"
 #include "windowing/GraphicContext.h"

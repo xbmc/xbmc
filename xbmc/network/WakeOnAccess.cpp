@@ -6,9 +6,11 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "Application.h"
+#include "WakeOnAccess.h"
+
 #include "DNSNameCache.h"
 #include "ServiceBroker.h"
+#include "application/Application.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "filesystem/SpecialProtocol.h"
@@ -41,8 +43,6 @@
 #include "network/upnp/UPnP.h"
 #include <Platinum/Source/Platinum/Platinum.h>
 #endif
-
-#include "WakeOnAccess.h"
 
 #define DEFAULT_NETWORK_INIT_SEC      (20)   // wait 20 sec for network after startup or resume
 #define DEFAULT_NETWORK_SETTLE_MS     (500)  // require 500ms of consistent network availability before trusting it

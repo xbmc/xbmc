@@ -6,13 +6,12 @@
  *  See LICENSES/README.md for more information.
  */
 
-
 #include "WinSystemX11GLESContext.h"
 
-#include "Application.h"
 #include "GLContextEGL.h"
 #include "OptionalsReg.h"
 #include "X11DPMSSupport.h"
+#include "application/Application.h"
 #include "cores/RetroPlayer/process/X11/RPProcessInfoX11.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererOpenGLES.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"

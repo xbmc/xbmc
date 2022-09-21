@@ -8,9 +8,9 @@
 
 #include "MusicUtils.h"
 
-#include "Application.h"
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
+#include "application/Application.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"

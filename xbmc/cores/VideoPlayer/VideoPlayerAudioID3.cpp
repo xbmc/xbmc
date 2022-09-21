@@ -8,11 +8,11 @@
 
 #include "VideoPlayerAudioID3.h"
 
-#include "Application.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDStreamInfo.h"
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
+#include "application/Application.h"
 #include "guilib/GUIComponent.h"
 #include "music/tags/MusicInfoTag.h"
 #include "utils/EmbeddedArt.h"

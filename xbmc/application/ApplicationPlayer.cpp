@@ -8,8 +8,8 @@
 
 #include "ApplicationPlayer.h"
 
-#include "Application.h"
 #include "ServiceBroker.h"
+#include "application/Application.h"
 #include "cores/DataCacheCore.h"
 #include "cores/IPlayer.h"
 #include "cores/VideoPlayer/VideoPlayer.h"

@@ -8,10 +8,10 @@
 
 #include "ContextMenus.h"
 
-#include "Application.h"
 #include "Autorun.h"
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
+#include "application/Application.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"

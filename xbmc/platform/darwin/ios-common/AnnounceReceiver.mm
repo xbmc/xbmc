@@ -8,11 +8,11 @@
 
 #import "platform/darwin/ios-common/AnnounceReceiver.h"
 
-#include "Application.h"
 #include "FileItem.h"
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "TextureCache.h"
+#include "application/Application.h"
 #include "filesystem/SpecialProtocol.h"
 #include "music/MusicDatabase.h"
 #include "music/tags/MusicInfoTag.h"

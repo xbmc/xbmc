@@ -8,7 +8,6 @@
 
 #include "SaveFileStateJob.h"
 
-#include "Application.h"
 #include "FileItem.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
@@ -16,6 +15,7 @@
 #include "URIUtils.h"
 #include "URL.h"
 #include "Util.h"
+#include "application/Application.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"

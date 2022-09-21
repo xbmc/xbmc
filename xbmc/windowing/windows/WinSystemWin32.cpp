@@ -8,11 +8,11 @@
 
 #include "WinSystemWin32.h"
 
-#include "Application.h"
 #include "ServiceBroker.h"
 #include "VideoSyncD3D.h"
 #include "WIN32Util.h"
 #include "WinEventsWin32.h"
+#include "application/Application.h"
 #include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Sinks/AESinkDirectSound.h"
 #include "cores/AudioEngine/Sinks/AESinkWASAPI.h"

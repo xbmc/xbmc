@@ -8,12 +8,12 @@
 
 #include "guilib/guiinfo/VideoGUIInfo.h"
 
-#include "Application.h"
 #include "FileItem.h"
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
+#include "application/Application.h"
 #include "cores/DataCacheCore.h"
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
 #include "guilib/GUIComponent.h"

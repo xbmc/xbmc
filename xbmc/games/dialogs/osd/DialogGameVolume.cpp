@@ -8,8 +8,8 @@
 
 #include "DialogGameVolume.h"
 
-#include "Application.h"
 #include "ServiceBroker.h"
+#include "application/Application.h"
 #include "dialogs/GUIDialogVolumeBar.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIDialog.h"

@@ -6,13 +6,12 @@
  *  See LICENSES/README.md for more information.
  */
 
-
 #import "TVOSTopShelf.h"
 
-#include "Application.h"
 #include "DatabaseManager.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
+#include "application/Application.h"
 #include "filesystem/File.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
