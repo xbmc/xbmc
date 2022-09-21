@@ -44,9 +44,14 @@
 
 using namespace KODI::MESSAGING;
 
-bool CApplicationSkinHandling::LoadSkin(const std::string& skinID,
-                                        IMsgTargetCallback* msgCb,
-                                        IWindowManagerCallback* wCb)
+CApplicationSkinHandling::CApplicationSkinHandling(IMsgTargetCallback* msgCb,
+                                                   IWindowManagerCallback* wCb,
+                                                   bool& bInitializing)
+  : m_msgCb(msgCb), m_wCb(wCb), m_bInitializing(bInitializing)
+{
+}
+
+bool CApplicationSkinHandling::LoadSkin(const std::string& skinID)
 {
   ADDON::SkinPtr skin;
   {
@@ -151,12 +156,12 @@ bool CApplicationSkinHandling::LoadSkin(const std::string& skinID,
   CLog::Log(LOGDEBUG, "Load Skin XML: {:.2f} ms", duration.count());
 
   CLog::Log(LOGINFO, "  initialize new skin...");
-  CServiceBroker::GetGUI()->GetWindowManager().AddMsgTarget(msgCb);
+  CServiceBroker::GetGUI()->GetWindowManager().AddMsgTarget(m_msgCb);
   CServiceBroker::GetGUI()->GetWindowManager().AddMsgTarget(&CServiceBroker::GetPlaylistPlayer());
   CServiceBroker::GetGUI()->GetWindowManager().AddMsgTarget(&g_fontManager);
   CServiceBroker::GetGUI()->GetWindowManager().AddMsgTarget(
       &CServiceBroker::GetGUI()->GetStereoscopicsManager());
-  CServiceBroker::GetGUI()->GetWindowManager().SetCallback(*wCb);
+  CServiceBroker::GetGUI()->GetWindowManager().SetCallback(*m_wCb);
 
   //@todo should be done by GUIComponents
   CServiceBroker::GetGUI()->GetWindowManager().Initialize();
@@ -366,12 +371,10 @@ bool CApplicationSkinHandling::LoadCustomWindows()
   return true;
 }
 
-void CApplicationSkinHandling::ReloadSkin(bool confirm,
-                                          IMsgTargetCallback* msgCb,
-                                          IWindowManagerCallback* wCb)
+void CApplicationSkinHandling::ReloadSkin(bool confirm)
 {
-  //  if (!g_SkinInfo || m_bInitializing)
-  //    return; // Don't allow reload before skin is loaded by system
+  if (!g_SkinInfo || m_bInitializing)
+    return; // Don't allow reload before skin is loaded by system
 
   std::string oldSkin = g_SkinInfo->ID();
 
@@ -381,7 +384,7 @@ void CApplicationSkinHandling::ReloadSkin(bool confirm,
 
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   std::string newSkin = settings->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
-  if (LoadSkin(newSkin, msgCb, wCb))
+  if (LoadSkin(newSkin))
   {
     /* The Reset() or SetString() below will cause recursion, so the m_confirmSkinChange boolean is set so as to not prompt the
        user as to whether they want to keep the current skin. */

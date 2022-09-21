@@ -20,21 +20,29 @@ class IWindowManagerCallback;
 class CApplicationSkinHandling
 {
 public:
+  CApplicationSkinHandling(IMsgTargetCallback* msgCb,
+                           IWindowManagerCallback* wCb,
+                           bool& bInitializing);
+
   void UnloadSkin();
 
   bool OnSettingChanged(const CSetting& setting);
+  void ReloadSkin(bool confirm = false);
 
 protected:
-  bool LoadSkin(const std::string& skinID, IMsgTargetCallback* msgCb, IWindowManagerCallback* wCb);
+  bool LoadSkin(const std::string& skinID);
   bool LoadCustomWindows();
-  void ReloadSkin(bool confirm, IMsgTargetCallback* msgCb, IWindowManagerCallback* wCb);
 
   /*!
- * \brief Called by the application main/render thread for processing operations belonging to the skin
+ * \brief Called by the application main/render thread for processing
+ *        operations belonging to the skin.
  */
   void ProcessSkin() const;
 
   bool m_saveSkinOnUnloading = true;
   bool m_confirmSkinChange = true;
   bool m_ignoreSkinSettingChanges = false;
+  IMsgTargetCallback* m_msgCb;
+  IWindowManagerCallback* m_wCb;
+  bool& m_bInitializing;
 };
