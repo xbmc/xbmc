@@ -6,11 +6,10 @@
  *  See LICENSES/README.md for more information.
  */
 
-
 #include "WinEventsTVOS.h"
 
-#include "AppInboundProtocol.h"
 #include "ServiceBroker.h"
+#include "application/AppInboundProtocol.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/InputManager.h"
 #include "input/XBMC_vkeys.h"

@@ -8,7 +8,6 @@
 
 #include "Application.h"
 
-#include "AppInboundProtocol.h"
 #include "Autorun.h"
 #include "GUIInfoManager.h"
 #include "HDRStatus.h"
@@ -18,6 +17,7 @@
 #include "Util.h"
 #include "addons/Skin.h"
 #include "addons/VFSEntry.h"
+#include "application/AppInboundProtocol.h"
 #include "application/AppParams.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "cores/IPlayer.h"

@@ -9,8 +9,8 @@
 
 #import "XBMCApplication.h"
 
-#include "AppInboundProtocol.h"
 #include "ServiceBroker.h"
+#include "application/AppInboundProtocol.h"
 #include "application/AppParamParser.h"
 #include "messaging/ApplicationMessenger.h"
 #include "platform/xbmc.h"

@@ -8,9 +8,9 @@
 
 #include "IRServerSuite.h"
 
-#include "AppInboundProtocol.h"
 #include "IrssMessage.h"
 #include "ServiceBroker.h"
+#include "application/AppInboundProtocol.h"
 #include "profiles/ProfileManager.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"

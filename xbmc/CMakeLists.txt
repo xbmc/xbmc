@@ -1,5 +1,4 @@
 set(SOURCES Application.cpp
-            AppInboundProtocol.cpp
             ApplicationPlayer.cpp
             ApplicationStackHelper.cpp
             AutoSwitch.cpp
@@ -37,7 +36,6 @@ set(SOURCES Application.cpp
             XBDateTime.cpp)
 
 set(HEADERS Application.h
-            AppInboundProtocol.h
             ApplicationPlayer.h
             ApplicationStackHelper.h
             AutoSwitch.h

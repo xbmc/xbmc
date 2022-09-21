@@ -8,9 +8,9 @@
 
 #include "WinSystemOSXSDL.h"
 
-#include "AppInboundProtocol.h"
 #include "CompileInfo.h"
 #include "ServiceBroker.h"
+#include "application/AppInboundProtocol.h"
 #include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Sinks/AESinkDARWINOSX.h"
 #include "cores/RetroPlayer/process/osx/RPProcessInfoOSX.h"
