@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "ApplicationStackHelper.h"
 #include "ServiceManager.h"
 #include "application/ApplicationActionListeners.h"
 #include "application/ApplicationPlayer.h"
@@ -16,6 +15,7 @@
 #include "application/ApplicationPowerHandling.h"
 #include "application/ApplicationSettingsHandling.h"
 #include "application/ApplicationSkinHandling.h"
+#include "application/ApplicationStackHelper.h"
 #include "application/ApplicationVolumeHandling.h"
 #include "cores/IPlayerCallback.h"
 #include "guilib/IMsgTargetCallback.h"

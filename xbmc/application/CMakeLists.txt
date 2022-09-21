@@ -6,6 +6,7 @@ set(SOURCES AppEnvironment.cpp
             ApplicationPowerHandling.cpp
             ApplicationSettingsHandling.cpp
             ApplicationSkinHandling.cpp
+            ApplicationStackHelper.cpp
             ApplicationVolumeHandling.cpp
             AppParamParser.cpp
             AppParams.cpp)
@@ -18,6 +19,7 @@ set(HEADERS AppEnvironment.h
             ApplicationPowerHandling.h
             ApplicationSettingsHandling.h
             ApplicationSkinHandling.h
+            ApplicationStackHelper.h
             ApplicationVolumeHandling.h
             AppParamParser.h
             AppParams.h)
