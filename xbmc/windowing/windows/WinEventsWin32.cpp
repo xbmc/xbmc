@@ -11,11 +11,11 @@
 #endif
 #include "WinEventsWin32.h"
 
-#include "Application.h"
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "WinKeyMap.h"
 #include "application/AppInboundProtocol.h"
+#include "application/Application.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIControl.h" // for EVENT_RESULT
 #include "guilib/GUIWindowManager.h"
@@ -46,6 +46,10 @@
 #include <dbt.h>
 
 HWND g_hWnd = nullptr;
+
+#ifdef IsMinimized
+#undef IsMinimized
+#endif
 
 #ifndef LODWORD
 #define LODWORD(longval) ((DWORD)((DWORDLONG)(longval)))

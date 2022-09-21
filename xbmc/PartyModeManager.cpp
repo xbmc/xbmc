@@ -8,11 +8,11 @@
 
 #include "PartyModeManager.h"
 
-#include "Application.h"
 #include "FileItem.h"
 #include "GUIUserMessages.h"
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
+#include "application/Application.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"

@@ -8,12 +8,12 @@
 
 #include "GUIWindowMusicPlaylist.h"
 
-#include "Application.h"
 #include "GUIUserMessages.h"
 #include "PartyModeManager.h"
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "Util.h"
+#include "application/Application.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "dialogs/GUIDialogSmartPlaylistEditor.h"
 #include "guilib/GUIComponent.h"

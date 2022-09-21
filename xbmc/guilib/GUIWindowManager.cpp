@@ -8,7 +8,6 @@
 
 #include "GUIWindowManager.h"
 
-#include "Application.h"
 #include "GUIAudioManager.h"
 #include "GUIDialog.h"
 #include "GUIInfoManager.h"
@@ -19,6 +18,7 @@
 #include "addons/Skin.h"
 #include "addons/gui/GUIWindowAddonBrowser.h"
 #include "addons/interfaces/gui/Window.h"
+#include "application/Application.h"
 #include "events/windows/GUIWindowEventLog.h"
 #include "favourites/GUIDialogFavourites.h"
 #include "input/Key.h"

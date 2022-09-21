@@ -8,8 +8,8 @@
 
 #include "GUIWindowSettingsScreenCalibration.h"
 
-#include "Application.h"
 #include "ServiceBroker.h"
+#include "application/Application.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMoverControl.h"

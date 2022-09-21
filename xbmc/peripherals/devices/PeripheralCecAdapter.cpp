@@ -8,8 +8,8 @@
 
 #include "PeripheralCecAdapter.h"
 
-#include "Application.h"
 #include "ServiceBroker.h"
+#include "application/Application.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"

@@ -7,7 +7,7 @@
  */
 #include "RenderSystemDX.h"
 
-#include "Application.h"
+#include "application/Application.h"
 
 #include <mutex>
 #if defined(TARGET_WINDOWS_DESKTOP)

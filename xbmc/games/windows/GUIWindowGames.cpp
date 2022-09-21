@@ -8,13 +8,13 @@
 
 #include "GUIWindowGames.h"
 
-#include "Application.h"
 #include "FileItem.h"
 #include "GUIPassword.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
 #include "addons/gui/GUIDialogAddonInfo.h"
+#include "application/Application.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogMediaSource.h"
 #include "dialogs/GUIDialogProgress.h"

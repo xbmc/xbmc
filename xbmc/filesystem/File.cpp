@@ -10,7 +10,6 @@
 
 #include "File.h"
 
-#include "Application.h"
 #include "Directory.h"
 #include "DirectoryCache.h"
 #include "FileCache.h"
@@ -18,6 +17,7 @@
 #include "IFile.h"
 #include "PasswordManager.h"
 #include "ServiceBroker.h"
+#include "application/Application.h"
 #include "commons/Exception.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"

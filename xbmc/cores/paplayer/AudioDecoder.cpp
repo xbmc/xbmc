@@ -8,10 +8,10 @@
 
 #include "AudioDecoder.h"
 
-#include "Application.h"
 #include "CodecFactory.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
+#include "application/Application.h"
 #include "music/tags/MusicInfoTag.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"

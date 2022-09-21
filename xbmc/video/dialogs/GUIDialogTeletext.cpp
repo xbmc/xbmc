@@ -8,8 +8,8 @@
 
 #include "GUIDialogTeletext.h"
 
-#include "Application.h"
 #include "ServiceBroker.h"
+#include "application/Application.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GUITexture.h"
 #include "guilib/LocalizeStrings.h"

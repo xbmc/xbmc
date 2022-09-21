@@ -8,7 +8,6 @@
 
 #include "LibraryBuiltins.h"
 
-#include "Application.h"
 #include "GUIUserMessages.h"
 #include "MediaSource.h"
 #include "ServiceBroker.h"

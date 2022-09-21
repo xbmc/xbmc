@@ -8,9 +8,9 @@
 
 #include "PVRGUIInfo.h"
 
-#include "Application.h"
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
+#include "application/Application.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"

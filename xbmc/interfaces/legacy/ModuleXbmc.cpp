@@ -11,7 +11,6 @@
 #include "ModuleXbmc.h"
 
 #include "AddonUtils.h"
-#include "Application.h"
 #include "FileItem.h"
 #include "GUIInfoManager.h"
 #include "LangInfo.h"
@@ -19,6 +18,7 @@
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "aojsonrpc.h"
+#include "application/Application.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "filesystem/File.h"
 #include "guilib/GUIAudioManager.h"

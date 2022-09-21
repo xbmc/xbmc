@@ -7,10 +7,11 @@
  */
 
 #include "AddonUtils.h"
-#include "Application.h"
-#include "utils/XBMCTinyXML.h"
-#include "addons/Skin.h"
+
 #include "LanguageHook.h"
+#include "addons/Skin.h"
+#include "application/Application.h"
+#include "utils/XBMCTinyXML.h"
 #ifdef ENABLE_XBMC_TRACE_API
 #include "utils/log.h"
 #endif

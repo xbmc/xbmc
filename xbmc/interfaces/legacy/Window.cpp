@@ -8,10 +8,10 @@
 
 #include "Window.h"
 
-#include "Application.h"
 #include "ServiceBroker.h"
 #include "WindowException.h"
 #include "WindowInterceptor.h"
+#include "application/Application.h"
 #include "guilib/GUIButtonControl.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIEditControl.h"

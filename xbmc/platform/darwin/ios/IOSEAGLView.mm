@@ -8,7 +8,6 @@
 
 #import "IOSEAGLView.h"
 
-#include "Application.h"
 #import "IOSScreenManager.h"
 #include "ServiceBroker.h"
 #include "Util.h"
@@ -16,6 +15,7 @@
 #include "application/AppEnvironment.h"
 #include "application/AppInboundProtocol.h"
 #include "application/AppParams.h"
+#include "application/Application.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"

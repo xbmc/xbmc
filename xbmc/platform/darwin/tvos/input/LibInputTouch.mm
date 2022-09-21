@@ -8,8 +8,8 @@
 
 #import "LibInputTouch.h"
 
-#include "Application.h"
 #include "ServiceBroker.h"
+#include "application/Application.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"

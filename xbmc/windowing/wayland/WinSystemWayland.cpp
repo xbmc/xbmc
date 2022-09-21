@@ -8,7 +8,6 @@
 
 #include "WinSystemWayland.h"
 
-#include "Application.h"
 #include "CompileInfo.h"
 #include "Connection.h"
 #include "OSScreenSaverIdleInhibitUnstableV1.h"
@@ -22,6 +21,7 @@
 #include "VideoSyncWpPresentation.h"
 #include "WinEventsWayland.h"
 #include "WindowDecorator.h"
+#include "application/Application.h"
 #include "cores/RetroPlayer/process/wayland/RPProcessInfoWayland.h"
 #include "cores/VideoPlayer/Process/wayland/ProcessInfoWayland.h"
 #include "guilib/DispResource.h"

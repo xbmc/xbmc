@@ -8,7 +8,6 @@
 
 #include "GUIVisualisationControl.h"
 
-#include "Application.h"
 #include "GUIComponent.h"
 #include "GUIInfoManager.h"
 #include "GUIUserMessages.h"
@@ -16,6 +15,7 @@
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/Visualization.h"
+#include "application/Application.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"

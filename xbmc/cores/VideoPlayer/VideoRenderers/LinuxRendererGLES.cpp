@@ -8,13 +8,13 @@
 
 #include "LinuxRendererGLES.h"
 
-#include "Application.h"
 #include "RenderCapture.h"
 #include "RenderCaptureGLES.h"
 #include "RenderFactory.h"
 #include "ServiceBroker.h"
 #include "VideoShaders/VideoFilterShaderGLES.h"
 #include "VideoShaders/YUV2RGBShaderGLES.h"
+#include "application/Application.h"
 #include "cores/IPlayer.h"
 #include "guilib/Texture.h"
 #include "rendering/MatrixGL.h"

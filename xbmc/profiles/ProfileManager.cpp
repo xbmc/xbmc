@@ -41,26 +41,25 @@
 #if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
 #include "storage/DetectDVDType.h"
 #endif
-#include "utils/FileUtils.h"
-#include "utils/log.h"
-#include "utils/StringUtils.h"
-#include "utils/URIUtils.h"
-#include "utils/Variant.h"
-#include "utils/XMLUtils.h"
-
+#include "ContextMenuManager.h" //! @todo Remove me
+#include "PlayListPlayer.h" //! @todo Remove me
 #include "addons/AddonManager.h" //! @todo Remove me
 #include "addons/Service.h" //! @todo Remove me
+#include "application/Application.h" //! @todo Remove me
 #include "favourites/FavouritesService.h" //! @todo Remove me
 #include "guilib/StereoscopicsManager.h" //! @todo Remove me
 #include "interfaces/json-rpc/JSONRPC.h" //! @todo Remove me
 #include "network/Network.h" //! @todo Remove me
 #include "network/NetworkServices.h" //! @todo Remove me
 #include "pvr/PVRManager.h" //! @todo Remove me
-#include "video/VideoLibraryQueue.h"//! @todo Remove me
+#include "utils/FileUtils.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/Variant.h"
+#include "utils/XMLUtils.h"
+#include "utils/log.h"
+#include "video/VideoLibraryQueue.h" //! @todo Remove me
 #include "weather/WeatherManager.h" //! @todo Remove me
-#include "Application.h" //! @todo Remove me
-#include "ContextMenuManager.h" //! @todo Remove me
-#include "PlayListPlayer.h" //! @todo Remove me
 
 //! @todo
 //! eventually the profile should dictate where special://masterprofile/ is

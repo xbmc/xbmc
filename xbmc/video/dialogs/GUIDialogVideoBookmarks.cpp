@@ -8,11 +8,11 @@
 
 #include "GUIDialogVideoBookmarks.h"
 
-#include "Application.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "TextureCache.h"
 #include "Util.h"
+#include "application/Application.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/File.h"

@@ -8,13 +8,13 @@
  */
 #include "UPnPPlayer.h"
 
-#include "Application.h"
 #include "FileItem.h"
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
 #include "ThumbLoader.h"
 #include "UPnP.h"
 #include "UPnPInternal.h"
+#include "application/Application.h"
 #include "cores/DataCacheCore.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "guilib/GUIComponent.h"

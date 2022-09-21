@@ -8,8 +8,8 @@
 
 #include "PeripheralJoystick.h"
 
-#include "Application.h"
 #include "ServiceBroker.h"
+#include "application/Application.h"
 #include "games/GameServices.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerIDs.h"

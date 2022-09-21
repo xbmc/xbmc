@@ -11,11 +11,11 @@
 
 #include "AirPlayServer.h"
 
-#include "Application.h"
 #include "CompileInfo.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "application/Application.h"
 #include "cores/IPlayer.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"

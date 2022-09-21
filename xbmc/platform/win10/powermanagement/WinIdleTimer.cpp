@@ -7,7 +7,7 @@
  */
 #include "powermanagement/WinIdleTimer.h"
 
-#include "Application.h"
+#include "application/Application.h"
 
 #include <winrt/Windows.System.Display.h>
 

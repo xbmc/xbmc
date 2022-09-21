@@ -8,22 +8,21 @@
 
 #include "DetectDVDType.h"
 
+#include "GUIUserMessages.h"
+#include "ServiceBroker.h"
+#include "application/Application.h"
 #include "cdioSupport.h"
 #include "filesystem/File.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
+#include "storage/MediaManager.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <mutex>
-#include "settings/AdvancedSettings.h"
-#include "settings/SettingsComponent.h"
-#include "GUIUserMessages.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"
-#include "Application.h"
-#include "ServiceBroker.h"
-#include "storage/MediaManager.h"
-
 
 using namespace XFILE;
 using namespace MEDIA_DETECT;

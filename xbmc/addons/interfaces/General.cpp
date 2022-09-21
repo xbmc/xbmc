@@ -8,13 +8,13 @@
 
 #include "General.h"
 
-#include "Application.h"
 #include "CompileInfo.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "addons/binary-addons/AddonDll.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
 #include "addons/kodi-dev-kit/include/kodi/General.h"
+#include "application/Application.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "input/KeyboardLayout.h"
 #include "input/KeyboardLayoutManager.h"

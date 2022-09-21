@@ -8,10 +8,10 @@
 
 #include "GUIDialogVideoSettings.h"
 
-#include "Application.h"
 #include "GUIPassword.h"
 #include "ServiceBroker.h"
 #include "addons/Skin.h"
+#include "application/Application.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"

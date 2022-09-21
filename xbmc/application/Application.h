@@ -10,6 +10,7 @@
 
 #include "ServiceManager.h"
 #include "application/ApplicationActionListeners.h"
+#include "application/ApplicationEnums.h"
 #include "application/ApplicationPlayer.h"
 #include "application/ApplicationPlayerCallback.h"
 #include "application/ApplicationPowerHandling.h"
@@ -83,22 +84,6 @@ namespace MUSIC_INFO
 {
   class CMusicInfoScanner;
 }
-
-enum StartupAction
-{
-  STARTUP_ACTION_NONE = 0,
-  STARTUP_ACTION_PLAY_TV,
-  STARTUP_ACTION_PLAY_RADIO
-};
-
-// Do not change the numbers; external scripts depend on them
-enum
-{
-  EXITCODE_QUIT = 0,
-  EXITCODE_POWERDOWN = 64,
-  EXITCODE_RESTARTAPP = 65,
-  EXITCODE_REBOOT = 66,
-};
 
 class CApplication : public IWindowManagerCallback,
                      public IMsgTargetCallback,

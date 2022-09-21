@@ -8,10 +8,10 @@
 
 #include "GUIOperations.h"
 
-#include "Application.h"
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
+#include "application/Application.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"

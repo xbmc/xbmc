@@ -7,19 +7,20 @@
  */
 
 #include "GUIMediaWindow.h"
-#include "Application.h"
-#include "ServiceBroker.h"
-#include "messaging/ApplicationMessenger.h"
+
 #include "ContextMenuManager.h"
 #include "FileItemListModification.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
 #include "PartyModeManager.h"
 #include "PlayListPlayer.h"
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
 #include "addons/AddonManager.h"
 #include "addons/PluginSource.h"
+#include "application/Application.h"
+#include "messaging/ApplicationMessenger.h"
 #if defined(TARGET_ANDROID)
 #include "platform/android/activity/XBMCApp.h"
 #endif

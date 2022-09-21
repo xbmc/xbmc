@@ -8,11 +8,11 @@
 
 #import "IOSScreenManager.h"
 
-#include "Application.h"
 #import "IOSEAGLView.h"
 #import "IOSExternalTouchController.h"
 #include "ServiceBroker.h"
 #import "XBMCController.h"
+#include "application/Application.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "settings/DisplaySettings.h"
 #include "threads/Event.h"

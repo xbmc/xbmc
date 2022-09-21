@@ -8,7 +8,6 @@
 
 #include "GUIDialogSubtitleSettings.h"
 
-#include "Application.h"
 #include "FileItem.h"
 #include "GUIDialogSubtitles.h"
 #include "GUIPassword.h"
@@ -16,6 +15,7 @@
 #include "URL.h"
 #include "addons/Skin.h"
 #include "addons/VFSEntry.h"
+#include "application/Application.h"
 #include "cores/IPlayer.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogYesNo.h"

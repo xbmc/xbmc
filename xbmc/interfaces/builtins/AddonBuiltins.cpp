@@ -8,7 +8,6 @@
 
 #include "AddonBuiltins.h"
 
-#include "Application.h"
 #include "FileItem.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
@@ -20,6 +19,7 @@
 #include "addons/RepositoryUpdater.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
 #include "addons/gui/GUIWindowAddonBrowser.h"
+#include "application/Application.h"
 #include "filesystem/PluginDirectory.h"
 #include "games/tags/GameInfoTag.h"
 #include "guilib/GUIComponent.h"

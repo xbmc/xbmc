@@ -6,19 +6,20 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "Application.h"
-#include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlayImage.h"
-#include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlaySpu.h"
-#include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlaySSA.h"
-#include "guilib/D3DResource.h"
-#include "windowing/GraphicContext.h"
-#include "guilib/GUIShaderDX.h"
+#include "OverlayRendererDX.h"
+
 #include "OverlayRenderer.h"
 #include "OverlayRendererUtil.h"
-#include "OverlayRendererDX.h"
-#include "rendering/dx/RenderContext.h"
+#include "application/Application.h"
+#include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlayImage.h"
+#include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlaySSA.h"
+#include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlaySpu.h"
+#include "guilib/D3DResource.h"
+#include "guilib/GUIShaderDX.h"
 #include "rendering/dx/DeviceResources.h"
+#include "rendering/dx/RenderContext.h"
 #include "utils/log.h"
+#include "windowing/GraphicContext.h"
 
 #ifndef ASSERT
 #include <crtdbg.h>

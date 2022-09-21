@@ -7,8 +7,8 @@
  */
 #include "AESinkPULSE.h"
 
-#include "Application.h"
 #include "ServiceBroker.h"
+#include "application/Application.h"
 #include "cores/AudioEngine/AESinkFactory.h"
 #include "guilib/LocalizeStrings.h"
 #include "threads/SingleLock.h"

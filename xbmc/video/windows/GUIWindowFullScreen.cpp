@@ -7,31 +7,32 @@
  */
 
 #include "GUIWindowFullScreen.h"
-#include "GUIWindowFullScreenDefines.h"
-#include "Application.h"
-#include "ServiceBroker.h"
-#include "messaging/ApplicationMessenger.h"
+
+#include "FileItem.h"
 #include "GUIInfoManager.h"
+#include "GUIWindowFullScreenDefines.h"
+#include "ServiceBroker.h"
+#include "application/Application.h"
+#include "cores/IPlayer.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUILabelControl.h"
-#include "video/dialogs/GUIDialogSubtitleSettings.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
+#include "guilib/guiinfo/GUIInfoLabels.h"
 #include "input/Key.h"
-#include "video/dialogs/GUIDialogFullScreenInfo.h"
+#include "messaging/ApplicationMessenger.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "FileItem.h"
-#include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
-#include "windowing/WinSystem.h"
-#include "cores/IPlayer.h"
-#include "guilib/guiinfo/GUIInfoLabels.h"
 #include "video/ViewModeSettings.h"
+#include "video/dialogs/GUIDialogFullScreenInfo.h"
+#include "video/dialogs/GUIDialogSubtitleSettings.h"
+#include "windowing/WinSystem.h"
 
-#include <stdio.h>
 #include <algorithm>
+#include <stdio.h>
 #if defined(TARGET_DARWIN)
 #include "platform/posix/PosixResourceCounter.h"
 #endif

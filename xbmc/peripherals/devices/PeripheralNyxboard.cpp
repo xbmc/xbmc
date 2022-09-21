@@ -8,8 +8,8 @@
 
 #include "PeripheralNyxboard.h"
 
-#include "Application.h"
 #include "PeripheralHID.h"
+#include "application/Application.h"
 #include "utils/log.h"
 
 using namespace PERIPHERALS;

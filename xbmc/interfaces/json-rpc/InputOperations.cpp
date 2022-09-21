@@ -8,8 +8,8 @@
 
 #include "InputOperations.h"
 
-#include "Application.h"
 #include "ServiceBroker.h"
+#include "application/Application.h"
 #include "guilib/GUIAudioManager.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindow.h"

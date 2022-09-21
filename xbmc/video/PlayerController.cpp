@@ -8,8 +8,8 @@
 
 #include "PlayerController.h"
 
-#include "Application.h"
 #include "ServiceBroker.h"
+#include "application/Application.h"
 #include "cores/IPlayer.h"
 #include "cores/VideoPlayer/VideoRenderers/OverlayRenderer.h"
 #include "dialogs/GUIDialogKaiToast.h"

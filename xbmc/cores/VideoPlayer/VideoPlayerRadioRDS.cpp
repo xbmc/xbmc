@@ -20,7 +20,6 @@
 
 #include "VideoPlayerRadioRDS.h"
 
-#include "Application.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
@@ -30,6 +29,7 @@
 #include "GUIInfoManager.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
+#include "application/Application.h"
 #include "cores/FFmpeg.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "dialogs/GUIDialogKaiToast.h"
