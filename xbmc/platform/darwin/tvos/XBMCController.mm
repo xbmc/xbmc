@@ -8,12 +8,12 @@
 
 #import "platform/darwin/tvos/XBMCController.h"
 
-#include "AppParams.h"
 #include "Application.h"
 #include "CompileInfo.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "application/AppEnvironment.h"
+#include "application/AppParams.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"

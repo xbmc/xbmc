@@ -6,10 +6,10 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "AppParams.h"
 #include "CompileInfo.h"
 #include "ServiceBroker.h"
 #include "application/AppParamParser.h"
+#include "application/AppParams.h"
 #include "platform/Environment.h"
 #include "platform/xbmc.h"
 #include "threads/Thread.h"
