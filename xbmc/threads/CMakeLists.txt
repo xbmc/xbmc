@@ -11,6 +11,7 @@ set(HEADERS Condition.h
             SystemClock.h
             Thread.h
             Timer.h
-            IThreadImpl.h)
+            IThreadImpl.h
+            IRunnable.h)
 
 core_add_library(threads)
