@@ -9,9 +9,9 @@
 #import "OSXGLView.h"
 
 #include "AppInboundProtocol.h"
-#include "AppParamParser.h"
 #include "Application.h"
 #include "ServiceBroker.h"
+#include "application/AppParamParser.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
