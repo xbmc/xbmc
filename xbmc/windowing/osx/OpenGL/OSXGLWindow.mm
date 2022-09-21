@@ -8,9 +8,9 @@
 
 #import "OSXGLWindow.h"
 
-#include "AppInboundProtocol.h"
 #include "Application.h"
 #include "ServiceBroker.h"
+#include "application/AppInboundProtocol.h"
 #include "application/AppParamParser.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
