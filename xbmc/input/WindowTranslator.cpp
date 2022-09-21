@@ -10,6 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "application/Application.h"
+#include "application/ApplicationPlayer.h"
 #include "guilib/WindowIDs.h"
 #include "pvr/PVRManager.h"
 #include "pvr/guilib/PVRGUIActionsChannels.h"

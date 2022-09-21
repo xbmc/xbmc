@@ -11,6 +11,7 @@
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "application/Application.h"
+#include "application/ApplicationPlayer.h"
 #include "cdioSupport.h"
 #include "filesystem/File.h"
 #include "guilib/GUIComponent.h"

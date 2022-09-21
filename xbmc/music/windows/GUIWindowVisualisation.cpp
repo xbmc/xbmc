@@ -12,6 +12,7 @@
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "application/Application.h"
+#include "application/ApplicationPlayer.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"

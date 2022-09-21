@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "application/Application.h"
 #include "filesystem/ZipManager.h"
+#include "input/actions/ActionIDs.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "network/Network.h"

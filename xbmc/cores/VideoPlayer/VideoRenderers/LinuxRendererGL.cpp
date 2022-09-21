@@ -18,6 +18,7 @@
 #include "VideoShaders/VideoFilterShaderGL.h"
 #include "VideoShaders/YUV2RGBShaderGL.h"
 #include "application/Application.h"
+#include "application/ApplicationPlayer.h"
 #include "cores/FFmpeg.h"
 #include "cores/IPlayer.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"

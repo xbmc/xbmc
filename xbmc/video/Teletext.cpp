@@ -16,6 +16,7 @@
 #include "Teletext.h"
 
 #include "application/Application.h"
+#include "application/ApplicationPlayer.h"
 #include "filesystem/SpecialProtocol.h"
 #include "input/Key.h"
 #include "utils/log.h"

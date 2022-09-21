@@ -13,6 +13,7 @@
 #include "ServiceBroker.h"
 #include "WindowIDs.h"
 #include "application/Application.h"
+#include "application/ApplicationPlayer.h"
 #include "input/Key.h"
 #include "utils/ColorUtils.h"
 

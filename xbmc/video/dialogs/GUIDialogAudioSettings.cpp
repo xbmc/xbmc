@@ -13,6 +13,7 @@
 #include "URL.h"
 #include "addons/Skin.h"
 #include "application/Application.h"
+#include "application/ApplicationPlayer.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/IPlayer.h"
 #include "dialogs/GUIDialogYesNo.h"

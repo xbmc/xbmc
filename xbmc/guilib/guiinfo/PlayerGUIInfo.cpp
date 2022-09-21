@@ -14,6 +14,7 @@
 #include "URL.h"
 #include "Util.h"
 #include "application/Application.h"
+#include "application/ApplicationPlayer.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/DataCacheCore.h"
 #include "cores/EdlEdit.h"

@@ -13,6 +13,7 @@
 #include "TextureCache.h"
 #include "Util.h"
 #include "application/Application.h"
+#include "application/ApplicationPlayer.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/File.h"

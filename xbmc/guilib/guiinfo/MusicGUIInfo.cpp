@@ -15,6 +15,7 @@
 #include "URL.h"
 #include "Util.h"
 #include "application/Application.h"
+#include "application/ApplicationPlayer.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoHelper.h"

@@ -18,6 +18,7 @@
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "application/Application.h"
+#include "application/ApplicationPlayer.h"
 #include "cores/DataCacheCore.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogSelect.h"

@@ -10,6 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "application/Application.h"
+#include "application/ApplicationPlayer.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GUITexture.h"
 #include "guilib/LocalizeStrings.h"

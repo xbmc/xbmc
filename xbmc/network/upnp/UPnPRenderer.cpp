@@ -18,6 +18,7 @@
 #include "UPnPInternal.h"
 #include "URL.h"
 #include "application/Application.h"
+#include "application/ApplicationPlayer.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"

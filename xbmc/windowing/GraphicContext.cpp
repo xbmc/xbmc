@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "WinSystem.h"
 #include "application/Application.h"
+#include "application/ApplicationPlayer.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/TextureManager.h"

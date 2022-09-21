@@ -11,6 +11,7 @@
 #include "GUIInfoManager.h"
 #include "SeekHandler.h"
 #include "application/Application.h"
+#include "application/ApplicationPlayer.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 

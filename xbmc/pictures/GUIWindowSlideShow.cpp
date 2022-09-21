@@ -16,6 +16,7 @@
 #include "TextureDatabase.h"
 #include "URL.h"
 #include "application/Application.h"
+#include "application/ApplicationPlayer.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUILabelControl.h"

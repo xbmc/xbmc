@@ -22,6 +22,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
+#include "input/actions/ActionIDs.h"
 #include "media/MediaLockState.h"
 #include "playlists/PlayListTypes.h"
 #include "settings/MediaSourceSettings.h"
