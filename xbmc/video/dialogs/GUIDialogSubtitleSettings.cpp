@@ -16,6 +16,7 @@
 #include "addons/Skin.h"
 #include "addons/VFSEntry.h"
 #include "application/Application.h"
+#include "application/ApplicationPlayer.h"
 #include "cores/IPlayer.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogYesNo.h"

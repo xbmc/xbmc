@@ -9,7 +9,6 @@
 #pragma once
 
 class CAction;
-class CApplicationPlayer;
 class CSetting;
 class CSettings;
 class TiXmlNode;
@@ -29,8 +28,6 @@ public:
     int iType;
     bool bAvoidClipping;
   };
-
-  explicit CApplicationVolumeHandling(CApplicationPlayer& appPlayer);
 
   float GetVolumePercent() const;
   float GetVolumeRatio() const;
@@ -63,7 +60,6 @@ protected:
 
   void VolumeChanged();
 
-  CApplicationPlayer& m_appPlayer; //!< Reference to application player
   bool m_muted = false;
   float m_volumeLevel = VOLUME_MAXIMUM;
   ReplayGainSettings m_replayGainSettings;

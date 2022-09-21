@@ -12,6 +12,7 @@
 #include "addons/AddonManager.h"
 #include "addons/Skin.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
+#include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "application/ApplicationPowerHandling.h"
 #include "application/ApplicationSkinHandling.h"
@@ -40,14 +41,10 @@ bool IsPlaying(const std::string& condition,
 } // namespace
 
 CApplicationSettingsHandling::CApplicationSettingsHandling(
-    CApplicationPlayer& appPlayer,
     CApplicationPowerHandling& powerHandling,
     CApplicationSkinHandling& skinHandling,
     CApplicationVolumeHandling& volumeHandling)
-  : m_appPlayerRef(appPlayer),
-    m_powerHandling(powerHandling),
-    m_skinHandling(skinHandling),
-    m_volumeHandling(volumeHandling)
+  : m_powerHandling(powerHandling), m_skinHandling(skinHandling), m_volumeHandling(volumeHandling)
 {
 }
 
@@ -84,12 +81,17 @@ void CApplicationSettingsHandling::RegisterSettings()
                                        CSettings::SETTING_SOURCE_PICTURES,
                                        CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN});
 
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (!appPlayer)
+    return;
+
   settingsMgr->RegisterCallback(
-      &m_appPlayerRef.GetSeekHandler(),
+      &appPlayer->GetSeekHandler(),
       {CSettings::SETTING_VIDEOPLAYER_SEEKDELAY, CSettings::SETTING_VIDEOPLAYER_SEEKSTEPS,
        CSettings::SETTING_MUSICPLAYER_SEEKDELAY, CSettings::SETTING_MUSICPLAYER_SEEKSTEPS});
 
-  settingsMgr->AddDynamicCondition("isplaying", IsPlaying, &m_appPlayerRef);
+  settingsMgr->AddDynamicCondition("isplaying", IsPlaying, appPlayer.get());
 
   settings->RegisterSubSettings(this);
 }
@@ -98,10 +100,14 @@ void CApplicationSettingsHandling::UnregisterSettings()
 {
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   CSettingsManager* settingsMgr = settings->GetSettingsManager();
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (!appPlayer)
+    return;
 
   settings->UnregisterSubSettings(this);
   settingsMgr->RemoveDynamicCondition("isplaying");
-  settingsMgr->UnregisterCallback(&m_appPlayerRef.GetSeekHandler());
+  settingsMgr->UnregisterCallback(&appPlayer->GetSeekHandler());
   settingsMgr->UnregisterCallback(this);
   settingsMgr->UnregisterSettingsHandler(this);
 }

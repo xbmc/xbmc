@@ -11,7 +11,6 @@
 #include "ServiceManager.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationEnums.h"
-#include "application/ApplicationPlayer.h"
 #include "application/ApplicationPlayerCallback.h"
 #include "application/ApplicationPowerHandling.h"
 #include "application/ApplicationSettingsHandling.h"
@@ -22,6 +21,7 @@
 #include "guilib/IMsgTargetCallback.h"
 #include "guilib/IWindowManagerCallback.h"
 #include "messaging/IMessageTarget.h"
+#include "playlists/PlayListTypes.h"
 #include "threads/SystemClock.h"
 #include "threads/Thread.h"
 #include "utils/GlobalsHandling.h"
@@ -37,6 +37,7 @@
 #include <vector>
 
 class CAction;
+class CApplicationPlayer;
 class CFileItem;
 class CFileItemList;
 class CKey;
@@ -271,7 +272,6 @@ private:
   std::atomic_uint m_WaitingExternalCalls;        /*!< counts threads which are waiting to be processed in FrameMove */
   unsigned int m_ProcessedExternalCalls = 0;      /*!< counts calls which are processed during one "door open" cycle in FrameMove */
   unsigned int m_ProcessedExternalDecay = 0;      /*!< counts to close door after a few frames of no python activity */
-  CApplicationPlayer m_appPlayer;
   CApplicationStackHelper m_stackHelper;
   int m_ExitCode{EXITCODE_QUIT};
 };

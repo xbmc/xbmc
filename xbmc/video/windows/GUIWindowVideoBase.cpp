@@ -19,6 +19,7 @@
 #include "Util.h"
 #include "addons/gui/GUIDialogAddonInfo.h"
 #include "application/Application.h"
+#include "application/ApplicationPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"
