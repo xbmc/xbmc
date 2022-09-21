@@ -8,11 +8,11 @@
 
 #include "ApplicationSettingsHandling.h"
 
-#include "ApplicationPlayer.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/Skin.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
+#include "application/ApplicationPlayer.h"
 #include "application/ApplicationPowerHandling.h"
 #include "application/ApplicationSkinHandling.h"
 #include "application/ApplicationVolumeHandling.h"

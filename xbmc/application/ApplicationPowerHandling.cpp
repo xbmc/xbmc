@@ -8,11 +8,11 @@
 
 #include "ApplicationPowerHandling.h"
 
-#include "ApplicationPlayer.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
+#include "application/ApplicationPlayer.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"

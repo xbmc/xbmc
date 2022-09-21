@@ -8,8 +8,8 @@
 
 #include "ApplicationVolumeHandling.h"
 
-#include "ApplicationPlayer.h"
 #include "ServiceBroker.h"
+#include "application/ApplicationPlayer.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "dialogs/GUIDialogVolumeBar.h"
 #include "guilib/GUIComponent.h"

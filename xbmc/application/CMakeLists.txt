@@ -1,6 +1,7 @@
 set(SOURCES AppEnvironment.cpp
             AppInboundProtocol.cpp
             ApplicationActionListeners.cpp
+            ApplicationPlayer.cpp
             ApplicationPlayerCallback.cpp
             ApplicationPowerHandling.cpp
             ApplicationSettingsHandling.cpp
@@ -12,6 +13,7 @@ set(SOURCES AppEnvironment.cpp
 set(HEADERS AppEnvironment.h
             AppInboundProtocol.h
             ApplicationActionListeners.h
+            ApplicationPlayer.h
             ApplicationPlayerCallback.h
             ApplicationPowerHandling.h
             ApplicationSettingsHandling.h

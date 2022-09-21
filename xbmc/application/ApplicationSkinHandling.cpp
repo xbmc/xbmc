@@ -8,7 +8,6 @@
 
 #include "ApplicationSkinHandling.h"
 
-#include "ApplicationPlayer.h"
 #include "GUIInfoManager.h"
 #include "GUILargeTextureManager.h"
 #include "GUIUserMessages.h"
@@ -17,6 +16,7 @@
 #include "TextureCache.h"
 #include "addons/AddonManager.h"
 #include "addons/Skin.h"
+#include "application/ApplicationPlayer.h"
 #include "dialogs/GUIDialogButtonMenu.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogSubMenu.h"

@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include "ApplicationPlayer.h"
 #include "ApplicationStackHelper.h"
 #include "ServiceManager.h"
 #include "application/ApplicationActionListeners.h"
+#include "application/ApplicationPlayer.h"
 #include "application/ApplicationPlayerCallback.h"
 #include "application/ApplicationPowerHandling.h"
 #include "application/ApplicationSettingsHandling.h"
