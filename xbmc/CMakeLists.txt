@@ -1,5 +1,4 @@
 set(SOURCES Application.cpp
-            ApplicationStackHelper.cpp
             AutoSwitch.cpp
             BackgroundInfoLoader.cpp
             ContextMenuItem.cpp
@@ -35,7 +34,6 @@ set(SOURCES Application.cpp
             XBDateTime.cpp)
 
 set(HEADERS Application.h
-            ApplicationStackHelper.h
             AutoSwitch.h
             BackgroundInfoLoader.h
             CompileInfo.h
