@@ -19,6 +19,7 @@
 #include "application/Application.h"
 #include "application/ApplicationActionListeners.h"
 #include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxBXA.h"
 #include "filesystem/File.h"
 #include "filesystem/PipeFile.h"

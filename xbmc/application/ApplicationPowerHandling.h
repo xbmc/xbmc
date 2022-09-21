@@ -22,7 +22,6 @@ class IAddon;
 using AddonPtr = std::shared_ptr<IAddon>;
 } // namespace ADDON
 
-class CApplicationPlayer;
 class CSetting;
 
 /*!
@@ -32,8 +31,6 @@ class CSetting;
 class CApplicationPowerHandling
 {
 public:
-  explicit CApplicationPowerHandling(CApplicationPlayer& appPlayer);
-
   bool IsInScreenSaver() const { return m_screensaverActive; }
   bool IsScreenSaverInhibited() const;
   void ResetScreenSaver();
@@ -108,6 +105,4 @@ protected:
   KODI::WINDOWING::COSScreenSaverInhibitor m_globalScreensaverInhibitor;
   // Inhibitor that is active e.g. during video playback
   KODI::WINDOWING::COSScreenSaverInhibitor m_screensaverInhibitor;
-
-  CApplicationPlayer& m_appPlayer; //!< Reference to application player
 };

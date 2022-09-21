@@ -16,6 +16,7 @@
 #include "addons/AddonManager.h"
 #include "addons/Visualization.h"
 #include "application/Application.h"
+#include "application/ApplicationPlayer.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"

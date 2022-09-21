@@ -9,6 +9,7 @@
 #pragma once
 
 #include "SeekHandler.h"
+#include "application/IApplicationComponent.h"
 #include "cores/IPlayer.h"
 #include "cores/MenuType.h"
 #include "playlists/PlayListTypes.h"
@@ -30,7 +31,7 @@ struct VideoStreamInfo;
 struct SubtitleStreamInfo;
 struct TextCacheStruct_t;
 
-class CApplicationPlayer
+class CApplicationPlayer : public IApplicationComponent
 {
 public:
   CApplicationPlayer() = default;

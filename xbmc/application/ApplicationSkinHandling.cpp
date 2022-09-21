@@ -16,6 +16,7 @@
 #include "TextureCache.h"
 #include "addons/AddonManager.h"
 #include "addons/Skin.h"
+#include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "dialogs/GUIDialogButtonMenu.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -41,11 +42,6 @@
 
 using namespace KODI::MESSAGING;
 
-CApplicationSkinHandling::CApplicationSkinHandling(CApplicationPlayer& appPlayer)
-  : m_appPlayer(appPlayer)
-{
-}
-
 bool CApplicationSkinHandling::LoadSkin(const std::string& skinID,
                                         IMsgTargetCallback* msgCb,
                                         IWindowManagerCallback* wCb)
@@ -69,12 +65,14 @@ bool CApplicationSkinHandling::LoadSkin(const std::string& skinID,
     GAME,
   } previousRenderingState = RENDERING_STATE::NONE;
 
-  if (m_appPlayer.IsPlayingVideo())
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (appPlayer && appPlayer->IsPlayingVideo())
   {
-    bPreviousPlayingState = !m_appPlayer.IsPausedPlayback();
+    bPreviousPlayingState = !appPlayer->IsPausedPlayback();
     if (bPreviousPlayingState)
-      m_appPlayer.Pause();
-    m_appPlayer.FlushRenderer();
+      appPlayer->Pause();
+    appPlayer->FlushRenderer();
     if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
     {
       CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_HOME);
@@ -188,10 +186,10 @@ bool CApplicationSkinHandling::LoadSkin(const std::string& skinID,
   }
 
   // restore player and rendering state
-  if (m_appPlayer.IsPlayingVideo())
+  if (appPlayer && appPlayer->IsPlayingVideo())
   {
     if (bPreviousPlayingState)
-      m_appPlayer.Pause();
+      appPlayer->Pause();
 
     switch (previousRenderingState)
     {

@@ -16,6 +16,7 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "application/Application.h"
+#include "application/ApplicationPlayer.h"
 #include "cores/IPlayer.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"

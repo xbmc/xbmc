@@ -11,7 +11,10 @@
 #include "AddonClass.h"
 #include "Exception.h"
 #include "application/Application.h"
+#include "application/ApplicationPlayer.h"
 #include "commons/Buffer.h"
+
+#include <climits>
 
 namespace XBMCAddon
 {

@@ -19,6 +19,7 @@
 #include "Util.h"
 #include "VideoLibrary.h"
 #include "application/Application.h"
+#include "application/ApplicationPlayer.h"
 #include "cores/IPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "guilib/GUIWindowManager.h"

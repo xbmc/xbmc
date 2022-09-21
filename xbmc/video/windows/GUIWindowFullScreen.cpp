@@ -13,6 +13,7 @@
 #include "GUIWindowFullScreenDefines.h"
 #include "ServiceBroker.h"
 #include "application/Application.h"
+#include "application/ApplicationPlayer.h"
 #include "cores/IPlayer.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUILabelControl.h"

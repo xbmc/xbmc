@@ -20,6 +20,7 @@
 #include "guilib/StereoscopicsManager.h"
 #include "input/ButtonTranslator.h"
 #include "input/WindowTranslator.h"
+#include "input/actions/ActionIDs.h"
 #include "input/actions/ActionTranslator.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
