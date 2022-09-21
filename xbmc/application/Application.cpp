@@ -219,7 +219,8 @@ using namespace std::chrono_literals;
 
 CApplication::CApplication(void)
   : CApplicationPlayerCallback(m_stackHelper),
-    CApplicationSettingsHandling(*this, *this)
+    CApplicationSettingsHandling(*this, *this),
+    CApplicationSkinHandling(this, this, m_bInitializing)
 #ifdef HAS_DVD_DRIVE
     ,
     m_Autorun(new CAutorun())
@@ -737,12 +738,12 @@ bool CApplication::Initialize()
     CServiceBroker::RegisterTextureCache(std::make_shared<CTextureCache>());
 
     std::string skinId = settings->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
-    if (!CApplicationSkinHandling::LoadSkin(skinId, this, this))
+    if (!CApplicationSkinHandling::LoadSkin(skinId))
     {
       CLog::Log(LOGERROR, "Failed to load skin '{}'", skinId);
       std::string defaultSkin =
           std::static_pointer_cast<const CSettingString>(setting)->GetDefault();
-      if (!CApplicationSkinHandling::LoadSkin(defaultSkin, this, this))
+      if (!CApplicationSkinHandling::LoadSkin(defaultSkin))
       {
         CLog::Log(LOGFATAL, "Default skin '{}' could not be loaded! Terminating..", defaultSkin);
         return false;
@@ -841,14 +842,6 @@ bool CApplication::OnSettingsSaving() const
   // a lot of screens try to save settings on deinit and deinit is
   // called for every screen when the application is stopping
   return !m_bStop;
-}
-
-void CApplication::ReloadSkin(bool confirm/*=false*/)
-{
-  if (!g_SkinInfo || m_bInitializing)
-    return; // Don't allow reload before skin is loaded by system
-
-  CApplicationSkinHandling::ReloadSkin(confirm, this, this);
 }
 
 void CApplication::Render()
