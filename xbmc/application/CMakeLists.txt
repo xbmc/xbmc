@@ -5,7 +5,8 @@ set(SOURCES AppEnvironment.cpp
             ApplicationSettingsHandling.cpp
             ApplicationSkinHandling.cpp
             ApplicationVolumeHandling.cpp
-            AppParamParser.cpp)
+            AppParamParser.cpp
+            AppParams.cpp)
 
 set(HEADERS AppEnvironment.h
             ApplicationActionListeners.h
@@ -14,6 +15,7 @@ set(HEADERS AppEnvironment.h
             ApplicationSettingsHandling.h
             ApplicationSkinHandling.h
             ApplicationVolumeHandling.h
-            AppParamParser.h)
+            AppParamParser.h
+            AppParams.h)
 
 core_add_library(application)

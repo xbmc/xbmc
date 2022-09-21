@@ -8,9 +8,9 @@
 
 #include "AdvancedSettings.h"
 
-#include "AppParams.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"
+#include "application/AppParams.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "network/DNSNameCache.h"

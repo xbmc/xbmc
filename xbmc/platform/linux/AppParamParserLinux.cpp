@@ -8,8 +8,8 @@
 
 #include "AppParamParserLinux.h"
 
-#include "AppParams.h"
 #include "CompileInfo.h"
+#include "application/AppParams.h"
 #include "utils/StringUtils.h"
 
 #include <algorithm>

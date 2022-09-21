@@ -8,12 +8,12 @@
 
 #include "Settings.h"
 
-#include "AppParams.h"
 #include "Autorun.h"
 #include "GUIPassword.h"
 #include "LangInfo.h"
 #include "addons/AddonSystemSettings.h"
 #include "addons/Skin.h"
+#include "application/AppParams.h"
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
 #include "filesystem/File.h"
 #include "guilib/GUIFontManager.h"

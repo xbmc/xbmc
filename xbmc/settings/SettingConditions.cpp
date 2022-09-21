@@ -8,10 +8,10 @@
 
 #include "SettingConditions.h"
 
-#include "AppParams.h"
 #include "LockType.h"
 #include "addons/AddonManager.h"
 #include "addons/Skin.h"
+#include "application/AppParams.h"
 #if defined(TARGET_ANDROID)
 #include "platform/android/activity/AndroidFeatures.h"
 #endif // defined(TARGET_ANDROID)
