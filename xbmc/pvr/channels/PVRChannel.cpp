@@ -33,8 +33,7 @@ const std::string CPVRChannel::IMAGE_OWNER_PATTERN = "pvrchannel_{}";
 
 bool CPVRChannel::operator==(const CPVRChannel& right) const
 {
-  return (m_bIsRadio == right.m_bIsRadio &&
-          m_iUniqueId == right.m_iUniqueId &&
+  return (m_bIsRadio == right.m_bIsRadio && m_iUniqueId == right.m_iUniqueId &&
           m_iClientId == right.m_iClientId);
 }
 
@@ -91,8 +90,8 @@ void CPVRChannel::Serialize(CVariant& value) const
   value["hidden"] = m_bIsHidden;
   value["locked"] = m_bIsLocked;
   value["icon"] = ClientIconPath();
-  value["channel"]  = m_strChannelName;
-  value["uniqueid"]  = m_iUniqueId;
+  value["channel"] = m_strChannelName;
+  value["uniqueid"] = m_iUniqueId;
   CDateTime lastPlayed(m_iLastWatched);
   value["lastplayed"] = lastPlayed.IsValid() ? lastPlayed.GetAsDBDate() : "";
 
@@ -144,9 +143,8 @@ bool CPVRChannel::CreateEPG()
   std::unique_lock<CCriticalSection> lock(m_critSection);
   if (!m_epg)
   {
-    m_epg = CServiceBroker::GetPVRManager().EpgContainer().CreateChannelEpg(m_iEpgId,
-                                                                            m_strEPGScraper,
-                                                                            std::make_shared<CPVREpgChannelData>(*this));
+    m_epg = CServiceBroker::GetPVRManager().EpgContainer().CreateChannelEpg(
+        m_iEpgId, m_strEPGScraper, std::make_shared<CPVREpgChannelData>(*this));
     if (m_epg)
     {
       if (m_epg->EpgID() != m_iEpgId)
@@ -412,50 +410,37 @@ std::string CPVRChannel::GetEncryptionName(int iCaid)
   // http://en.wikipedia.org/wiki/Conditional_access_system
   std::string strName(g_localizeStrings.Get(13205)); /* Unknown */
 
-  if (     iCaid == 0x0000)
+  if (iCaid == 0x0000)
     strName = g_localizeStrings.Get(19013); /* Free To Air */
-  else if (iCaid >= 0x0001 &&
-           iCaid <= 0x009F)
+  else if (iCaid >= 0x0001 && iCaid <= 0x009F)
     strName = g_localizeStrings.Get(19014); /* Fixed */
-  else if (iCaid >= 0x00A0 &&
-           iCaid<= 0x00A1)
+  else if (iCaid >= 0x00A0 && iCaid <= 0x00A1)
     strName = g_localizeStrings.Get(338); /* Analog */
-  else if (iCaid >= 0x00A2 &&
-           iCaid <= 0x00FF)
+  else if (iCaid >= 0x00A2 && iCaid <= 0x00FF)
     strName = g_localizeStrings.Get(19014); /* Fixed */
-  else if (iCaid >= 0x0100 &&
-           iCaid <= 0x01FF)
+  else if (iCaid >= 0x0100 && iCaid <= 0x01FF)
     strName = "SECA Mediaguard";
   else if (iCaid == 0x0464)
     strName = "EuroDec";
-  else if (iCaid >= 0x0500 &&
-           iCaid <= 0x05FF)
+  else if (iCaid >= 0x0500 && iCaid <= 0x05FF)
     strName = "Viaccess";
-  else if (iCaid >= 0x0600 &&
-           iCaid <= 0x06FF)
+  else if (iCaid >= 0x0600 && iCaid <= 0x06FF)
     strName = "Irdeto";
-  else if (iCaid >= 0x0900 &&
-           iCaid <= 0x09FF)
+  else if (iCaid >= 0x0900 && iCaid <= 0x09FF)
     strName = "NDS Videoguard";
-  else if (iCaid >= 0x0B00 &&
-           iCaid <= 0x0BFF)
+  else if (iCaid >= 0x0B00 && iCaid <= 0x0BFF)
     strName = "Conax";
-  else if (iCaid >= 0x0D00 &&
-           iCaid <= 0x0DFF)
+  else if (iCaid >= 0x0D00 && iCaid <= 0x0DFF)
     strName = "CryptoWorks";
-  else if (iCaid >= 0x0E00 &&
-           iCaid <= 0x0EFF)
+  else if (iCaid >= 0x0E00 && iCaid <= 0x0EFF)
     strName = "PowerVu";
   else if (iCaid == 0x1000)
     strName = "RAS";
-  else if (iCaid >= 0x1200 &&
-           iCaid <= 0x12FF)
+  else if (iCaid >= 0x1200 && iCaid <= 0x12FF)
     strName = "NagraVision";
-  else if (iCaid >= 0x1700 &&
-           iCaid <= 0x17FF)
+  else if (iCaid >= 0x1700 && iCaid <= 0x17FF)
     strName = "BetaCrypt";
-  else if (iCaid >= 0x1800 &&
-           iCaid <= 0x18FF)
+  else if (iCaid >= 0x1800 && iCaid <= 0x18FF)
     strName = "NagraVision";
   else if (iCaid == 0x22F0)
     strName = "Codicrypt";
@@ -481,8 +466,7 @@ std::string CPVRChannel::GetEncryptionName(int iCaid)
     strName = "SkyCrypt";
   else if (iCaid == 0x4A63)
     strName = "Neotion SHL";
-  else if (iCaid >= 0x4A64 &&
-           iCaid <= 0x4A6F)
+  else if (iCaid >= 0x4A64 && iCaid <= 0x4A6F)
     strName = "SkyCrypt";
   else if (iCaid == 0x4A80)
     strName = "ThalesCrypt";
@@ -490,8 +474,7 @@ std::string CPVRChannel::GetEncryptionName(int iCaid)
     strName = "KeyFly";
   else if (iCaid == 0x4ABF)
     strName = "DG-Crypt";
-  else if (iCaid >= 0x4AD0 &&
-           iCaid <= 0x4AD1)
+  else if (iCaid >= 0x4AD0 && iCaid <= 0x4AD1)
     strName = "X-Crypt";
   else if (iCaid == 0x4AD4)
     strName = "OmniCrypt";
@@ -657,8 +640,11 @@ void CPVRChannel::ToSortable(SortItem& sortable, Field field) const
   else if (field == FieldLastPlayed)
   {
     const CDateTime lastWatched(m_iLastWatched);
-    sortable[FieldLastPlayed] = lastWatched.IsValid() ? lastWatched.GetAsDBDateTime() : StringUtils::Empty;
+    sortable[FieldLastPlayed] =
+        lastWatched.IsValid() ? lastWatched.GetAsDBDateTime() : StringUtils::Empty;
   }
+  else if (field == FieldProvider)
+    sortable[FieldProvider] = StringUtils::Format("{} {}", m_iClientId, m_iClientProviderUid);
 }
 
 int CPVRChannel::ChannelID() const
