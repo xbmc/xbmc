@@ -8,12 +8,12 @@
 
 #include "guilib/guiinfo/SystemGUIInfo.h"
 
-#include "AppParams.h"
-#include "Application.h"
 #include "GUIPassword.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
+#include "application/AppParams.h"
+#include "application/Application.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"

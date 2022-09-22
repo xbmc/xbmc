@@ -8,11 +8,11 @@
 
 #include "GUIVideoControl.h"
 
-#include "Application.h"
 #include "GUIComponent.h"
 #include "GUIWindowManager.h"
 #include "ServiceBroker.h"
 #include "WindowIDs.h"
+#include "application/Application.h"
 #include "input/Key.h"
 #include "utils/ColorUtils.h"
 

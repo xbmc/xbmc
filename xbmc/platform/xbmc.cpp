@@ -6,8 +6,8 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "AppEnvironment.h"
-#include "Application.h"
+#include "application/AppEnvironment.h"
+#include "application/Application.h"
 #include "platform/MessagePrinter.h"
 
 #ifdef TARGET_WINDOWS_DESKTOP

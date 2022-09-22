@@ -8,12 +8,12 @@
 
 #import "XBMCController.h"
 
-#include "AppInboundProtocol.h"
-#include "Application.h"
 #include "CompileInfo.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "Util.h"
+#include "application/AppInboundProtocol.h"
+#include "application/Application.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIControl.h"
 #include "input/Key.h"

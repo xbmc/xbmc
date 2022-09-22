@@ -9,41 +9,47 @@
 #ifndef _USE_MATH_DEFINES
 #define _USE_MATH_DEFINES
 #endif
-#include <dbt.h>
-#include <math.h>
-#include <Shlobj.h>
-#include <Windowsx.h>
+#include "WinEventsWin32.h"
 
-#include "Application.h"
-#include "AppInboundProtocol.h"
+#include "ServiceBroker.h"
+#include "Util.h"
+#include "WinKeyMap.h"
+#include "application/AppInboundProtocol.h"
+#include "application/Application.h"
 #include "guilib/GUIComponent.h"
-#include "guilib/GUIControl.h"       // for EVENT_RESULT
+#include "guilib/GUIControl.h" // for EVENT_RESULT
 #include "guilib/GUIWindowManager.h"
+#include "input/InputManager.h"
 #include "input/mouse/MouseStat.h"
 #include "input/touch/generic/GenericTouchActionHandler.h"
 #include "input/touch/generic/GenericTouchSwipeDetector.h"
-#include "input/InputManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "network/Zeroconf.h"
 #include "network/ZeroconfBrowser.h"
+#include "peripherals/Peripherals.h"
+#include "rendering/dx/RenderContext.h"
+#include "storage/MediaManager.h"
+#include "utils/JobManager.h"
+#include "utils/StringUtils.h"
+#include "utils/log.h"
+
 #include "platform/win32/CharsetConverter.h"
+#include "platform/win32/WIN32Util.h"
 #include "platform/win32/powermanagement/Win32PowerSyscall.h"
 #include "platform/win32/storage/Win32StorageProvider.h"
-#include "platform/win32/WIN32Util.h"
-#include "peripherals/Peripherals.h"
-#include "ServiceBroker.h"
-#include "storage/MediaManager.h"
-#include "Util.h"
-#include "utils/JobManager.h"
-#include "utils/log.h"
-#include "utils/StringUtils.h"
-#include "rendering/dx/RenderContext.h"
-#include "WinKeyMap.h"
-#include "WinEventsWin32.h"
 
 #include <array>
+#include <math.h>
+
+#include <Shlobj.h>
+#include <Windowsx.h>
+#include <dbt.h>
 
 HWND g_hWnd = nullptr;
+
+#ifdef IsMinimized
+#undef IsMinimized
+#endif
 
 #ifndef LODWORD
 #define LODWORD(longval) ((DWORD)((DWORDLONG)(longval)))

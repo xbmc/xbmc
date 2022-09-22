@@ -8,11 +8,11 @@
 
 #include "ApplicationPlayerCallback.h"
 
-#include "ApplicationPlayer.h"
-#include "ApplicationStackHelper.h"
 #include "GUIUserMessages.h"
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
+#include "application/ApplicationPlayer.h"
+#include "application/ApplicationStackHelper.h"
 #include "cores/DataCacheCore.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"

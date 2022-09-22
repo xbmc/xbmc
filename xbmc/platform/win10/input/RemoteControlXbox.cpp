@@ -8,8 +8,8 @@
 
 #include "RemoteControlXbox.h"
 
-#include "AppInboundProtocol.h"
 #include "ServiceBroker.h"
+#include "application/AppInboundProtocol.h"
 #include "input/remote/IRRemote.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"

@@ -8,7 +8,7 @@
 
 #import "DarwinEmbedKeyboardView.h"
 
-#include "Application.h"
+#include "application/Application.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "threads/Event.h"
 #include "utils/log.h"

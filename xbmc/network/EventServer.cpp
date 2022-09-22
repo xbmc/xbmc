@@ -8,12 +8,12 @@
 
 #include "EventServer.h"
 
-#include "Application.h"
 #include "EventClient.h"
 #include "EventPacket.h"
 #include "ServiceBroker.h"
 #include "Socket.h"
 #include "Zeroconf.h"
+#include "application/Application.h"
 #include "guilib/GUIAudioManager.h"
 #include "input/Key.h"
 #include "input/actions/ActionTranslator.h"

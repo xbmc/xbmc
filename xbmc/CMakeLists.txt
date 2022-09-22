@@ -1,11 +1,4 @@
-set(SOURCES Application.cpp
-            AppInboundProtocol.cpp
-            ApplicationPlayer.cpp
-            ApplicationStackHelper.cpp
-            AppEnvironment.cpp
-            AppParamParser.cpp
-            AppParams.cpp
-            AutoSwitch.cpp
+set(SOURCES AutoSwitch.cpp
             BackgroundInfoLoader.cpp
             ContextMenuItem.cpp
             ContextMenuManager.cpp
@@ -39,14 +32,7 @@ set(SOURCES Application.cpp
             Util.cpp
             XBDateTime.cpp)
 
-set(HEADERS AppEnvironment.h
-            AppParamParser.h
-            AppParams.h
-            Application.h
-            AppInboundProtocol.h
-            ApplicationPlayer.h
-            ApplicationStackHelper.h
-            AutoSwitch.h
+set(HEADERS AutoSwitch.h
             BackgroundInfoLoader.h
             CompileInfo.h
             ContextMenuItem.h

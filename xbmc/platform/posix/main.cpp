@@ -13,8 +13,8 @@
 #endif
 #endif
 
-#include "AppParamParser.h"
 #include "PlatformPosix.h"
+#include "application/AppParamParser.h"
 #include "platform/xbmc.h"
 
 #if defined(TARGET_LINUX) || defined(TARGET_FREEBSD)

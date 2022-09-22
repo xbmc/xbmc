@@ -7,7 +7,6 @@
  */
 #include "UPnPRenderer.h"
 
-#include "Application.h"
 #include "FileItem.h"
 #include "GUIInfoManager.h"
 #include "GUIUserMessages.h"
@@ -18,6 +17,7 @@
 #include "UPnP.h"
 #include "UPnPInternal.h"
 #include "URL.h"
+#include "application/Application.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"

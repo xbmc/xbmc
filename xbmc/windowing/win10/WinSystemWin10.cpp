@@ -8,9 +8,9 @@
 
 #include "WinSystemWin10.h"
 
-#include "Application.h"
 #include "ServiceBroker.h"
 #include "WinEventsWin10.h"
+#include "application/Application.h"
 #include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Sinks/AESinkWASAPI.h"
 #include "cores/AudioEngine/Sinks/AESinkXAudio.h"

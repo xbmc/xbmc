@@ -8,11 +8,11 @@
 
 #include "TestBasicEnvironment.h"
 
-#include "AppEnvironment.h"
-#include "AppParams.h"
-#include "Application.h"
 #include "ServiceBroker.h"
 #include "TestUtils.h"
+#include "application/AppEnvironment.h"
+#include "application/AppParams.h"
+#include "application/Application.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"

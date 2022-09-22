@@ -11,12 +11,12 @@
 
 #include "AirTunesServer.h"
 
-#include "Application.h"
 #include "CompileInfo.h"
 #include "FileItem.h"
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "application/Application.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxBXA.h"
 #include "filesystem/File.h"
 #include "filesystem/PipeFile.h"

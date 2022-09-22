@@ -8,8 +8,8 @@
 
 #include "WindowTranslator.h"
 
-#include "Application.h"
 #include "ServiceBroker.h"
+#include "application/Application.h"
 #include "guilib/WindowIDs.h"
 #include "pvr/PVRManager.h"
 #include "pvr/guilib/PVRGUIActions.h"

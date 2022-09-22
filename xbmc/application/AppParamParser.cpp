@@ -8,10 +8,10 @@
 
 #include "AppParamParser.h"
 
-#include "AppParams.h"
 #include "CompileInfo.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
+#include "application/AppParams.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
 #include "utils/log.h"

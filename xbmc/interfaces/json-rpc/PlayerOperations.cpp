@@ -8,7 +8,6 @@
 
 #include "PlayerOperations.h"
 
-#include "Application.h"
 #include "AudioLibrary.h"
 #include "FileItem.h"
 #include "GUIInfoManager.h"
@@ -19,6 +18,7 @@
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "VideoLibrary.h"
+#include "application/Application.h"
 #include "cores/IPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "guilib/GUIWindowManager.h"

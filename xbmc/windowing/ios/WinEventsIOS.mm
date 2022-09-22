@@ -8,7 +8,7 @@
 
 #include "WinEventsIOS.h"
 
-#include "AppInboundProtocol.h"
+#include "application/AppInboundProtocol.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/InputManager.h"
 #include "input/XBMC_vkeys.h"

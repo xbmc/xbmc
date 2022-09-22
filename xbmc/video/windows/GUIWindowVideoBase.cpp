@@ -8,7 +8,6 @@
 
 #include "GUIWindowVideoBase.h"
 
-#include "Application.h"
 #include "Autorun.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
@@ -19,6 +18,7 @@
 #include "URL.h"
 #include "Util.h"
 #include "addons/gui/GUIDialogAddonInfo.h"
+#include "application/Application.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"

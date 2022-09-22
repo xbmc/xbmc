@@ -8,11 +8,11 @@
 
 #include "GameWindowFullScreen.h"
 
-#include "Application.h" //! @todo Remove me
-#include "ApplicationPlayer.h" //! @todo Remove me
 #include "GUIInfoManager.h" //! @todo Remove me
 #include "GameWindowFullScreenText.h"
 #include "ServiceBroker.h"
+#include "application/Application.h" //! @todo Remove me
+#include "application/ApplicationPlayer.h" //! @todo Remove me
 #include "cores/RetroPlayer/guibridge/GUIGameRenderManager.h"
 #include "cores/RetroPlayer/guibridge/GUIRenderHandle.h"
 #include "games/GameServices.h"

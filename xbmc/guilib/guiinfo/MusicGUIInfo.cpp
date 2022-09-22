@@ -8,13 +8,13 @@
 
 #include "guilib/guiinfo/MusicGUIInfo.h"
 
-#include "Application.h"
 #include "FileItem.h"
 #include "PartyModeManager.h"
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
+#include "application/Application.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoHelper.h"

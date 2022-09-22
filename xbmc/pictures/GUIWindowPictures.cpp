@@ -8,7 +8,6 @@
 
 #include "GUIWindowPictures.h"
 
-#include "Application.h"
 #include "Autorun.h"
 #include "GUIDialogPictureInfo.h"
 #include "GUIPassword.h"
@@ -18,6 +17,7 @@
 #include "URL.h"
 #include "Util.h"
 #include "addons/gui/GUIDialogAddonInfo.h"
+#include "application/Application.h"
 #include "dialogs/GUIDialogMediaSource.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "guilib/GUIComponent.h"

@@ -11,13 +11,13 @@
 
 #include "LinuxRendererGL.h"
 
-#include "Application.h"
 #include "RenderCapture.h"
 #include "RenderCaptureGL.h"
 #include "RenderFactory.h"
 #include "ServiceBroker.h"
 #include "VideoShaders/VideoFilterShaderGL.h"
 #include "VideoShaders/YUV2RGBShaderGL.h"
+#include "application/Application.h"
 #include "cores/FFmpeg.h"
 #include "cores/IPlayer.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
