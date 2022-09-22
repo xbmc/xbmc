@@ -12,13 +12,13 @@
 #include "ServiceBroker.h"
 #include "application/ApplicationEnums.h"
 #include "cores/DataCacheCore.h"
+#include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIComponent.h"
-#include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
@@ -41,18 +41,15 @@
 #include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/dialogs/GUIDialogPVRChannelGuide.h"
-#include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/epg/EpgDatabase.h"
 #include "pvr/epg/EpgInfoTag.h"
-#include "pvr/epg/EpgSearchFilter.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
-#include "pvr/windows/GUIWindowPVRSearch.h"
+#include "pvr/windows/GUIWindowPVRBase.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "utils/StringUtils.h"
@@ -72,27 +69,6 @@
 
 using namespace KODI::MESSAGING;
 
-namespace
-{
-PVR::CGUIWindowPVRSearchBase* GetSearchWindow(bool bRadio)
-{
-  const int windowSearchId = bRadio ? WINDOW_RADIO_SEARCH : WINDOW_TV_SEARCH;
-
-  PVR::CGUIWindowPVRSearchBase* windowSearch;
-
-  CGUIWindowManager& windowMgr = CServiceBroker::GetGUI()->GetWindowManager();
-  if (bRadio)
-    windowSearch = windowMgr.GetWindow<PVR::CGUIWindowPVRRadioSearch>(windowSearchId);
-  else
-    windowSearch = windowMgr.GetWindow<PVR::CGUIWindowPVRTVSearch>(windowSearchId);
-
-  if (!windowSearch)
-    CLog::LogF(LOGERROR, "Unable to get {}!", bRadio ? "WINDOW_RADIO_SEARCH" : "WINDOW_TV_SEARCH");
-
-  return windowSearch;
-}
-} // unnamed namespace
-
 namespace PVR
 {
 CPVRGUIActions::CPVRGUIActions()
@@ -105,82 +81,6 @@ CPVRGUIActions::CPVRGUIActions()
                 CSettings::SETTING_PVRPOWERMANAGEMENT_BACKENDIDLETIME})
 {
 }
-
-  bool CPVRGUIActions::ShowEPGInfo(const CFileItemPtr& item) const
-  {
-    const std::shared_ptr<CPVRChannel> channel(CPVRItem(item).GetChannel());
-    if (channel && CheckParentalLock(channel) != ParentalCheckResult::SUCCESS)
-      return false;
-
-    const std::shared_ptr<CPVREpgInfoTag> epgTag(CPVRItem(item).GetEpgInfoTag());
-    if (!epgTag)
-    {
-      CLog::LogF(LOGERROR, "No epg tag!");
-      return false;
-    }
-
-    CGUIDialogPVRGuideInfo* pDlgInfo = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogPVRGuideInfo>(WINDOW_DIALOG_PVR_GUIDE_INFO);
-    if (!pDlgInfo)
-    {
-      CLog::LogF(LOGERROR, "Unable to get WINDOW_DIALOG_PVR_GUIDE_INFO!");
-      return false;
-    }
-
-    pDlgInfo->SetProgInfo(epgTag);
-    pDlgInfo->Open();
-    return true;
-  }
-
-
-  bool CPVRGUIActions::ShowChannelEPG(const CFileItemPtr& item) const
-  {
-    const std::shared_ptr<CPVRChannel> channel(CPVRItem(item).GetChannel());
-    if (channel && CheckParentalLock(channel) != ParentalCheckResult::SUCCESS)
-      return false;
-
-    CGUIDialogPVRChannelGuide* pDlgInfo = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogPVRChannelGuide>(WINDOW_DIALOG_PVR_CHANNEL_GUIDE);
-    if (!pDlgInfo)
-    {
-      CLog::LogF(LOGERROR, "Unable to get WINDOW_DIALOG_PVR_CHANNEL_GUIDE!");
-      return false;
-    }
-
-    pDlgInfo->Open(channel);
-    return true;
-  }
-
-  bool CPVRGUIActions::FindSimilar(const std::shared_ptr<CFileItem>& item) const
-  {
-    CGUIWindowPVRSearchBase* windowSearch = GetSearchWindow(CPVRItem(item).IsRadio());
-    if (!windowSearch)
-      return false;
-
-    //! @todo If we want dialogs to spawn program search in a clean way - without having to force-close any
-    //        other dialogs - we must introduce a search dialog with functionality similar to the search window.
-
-    for (int iId = CServiceBroker::GetGUI()->GetWindowManager().GetTopmostModalDialog(true /* ignoreClosing */);
-         iId != WINDOW_INVALID;
-         iId = CServiceBroker::GetGUI()->GetWindowManager().GetTopmostModalDialog(true /* ignoreClosing */))
-    {
-      CLog::LogF(LOGWARNING,
-                 "Have to close modal dialog with id {} before search window can be opened.", iId);
-
-      CGUIWindow* window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow(iId);
-      if (window)
-      {
-        window->Close();
-      }
-      else
-      {
-        CLog::LogF(LOGERROR, "Unable to get window instance {}! Cannot open search window.", iId);
-        return false; // return, otherwise we run into an endless loop
-      }
-    }
-
-    windowSearch->SetItemToSearch(item);
-    CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(windowSearch->GetID());
-    return true;
-  };
 
   std::string CPVRGUIActions::GetResumeLabel(const CFileItem& item) const
   {
@@ -1447,86 +1347,6 @@ CPVRGUIActions::CPVRGUIActions()
     else if (item->HasEPGSearchFilter())
     {
       return EditSavedSearch(item);
-    }
-    return false;
-  }
-
-  bool CPVRGUIActions::ExecuteSavedSearch(const std::shared_ptr<CFileItem>& item)
-  {
-    const auto searchFilter = item->GetEPGSearchFilter();
-
-    if (!searchFilter)
-    {
-      CLog::LogF(LOGERROR, "Wrong item type. No EPG search filter present.");
-      return false;
-    }
-
-    CGUIWindowPVRSearchBase* windowSearch = GetSearchWindow(searchFilter->IsRadio());
-    if (!windowSearch)
-      return false;
-
-    windowSearch->SetItemToSearch(item);
-    CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(windowSearch->GetID());
-    return true;
-  }
-
-  bool CPVRGUIActions::EditSavedSearch(const std::shared_ptr<CFileItem>& item)
-  {
-    const auto searchFilter = item->GetEPGSearchFilter();
-
-    if (!searchFilter)
-    {
-      CLog::LogF(LOGERROR, "Wrong item type. No EPG search filter present.");
-      return false;
-    }
-
-    CGUIWindowPVRSearchBase* windowSearch = GetSearchWindow(searchFilter->IsRadio());
-    if (!windowSearch)
-      return false;
-
-    if (windowSearch->OpenDialogSearch(item) == CGUIDialogPVRGuideSearch::Result::SEARCH)
-      CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(windowSearch->GetID());
-
-    return true;
-  }
-
-  bool CPVRGUIActions::RenameSavedSearch(const std::shared_ptr<CFileItem>& item)
-  {
-    const auto searchFilter = item->GetEPGSearchFilter();
-
-    if (!searchFilter)
-    {
-      CLog::LogF(LOGERROR, "Wrong item type. No EPG search filter present.");
-      return false;
-    }
-
-    std::string title = searchFilter->GetTitle();
-    if (CGUIKeyboardFactory::ShowAndGetInput(title,
-                                             CVariant{g_localizeStrings.Get(528)}, // "Enter title"
-                                             false))
-    {
-      searchFilter->SetTitle(title);
-      CServiceBroker::GetPVRManager().EpgContainer().PersistSavedSearch(*searchFilter);
-      return true;
-    }
-    return false;
-  }
-
-  bool CPVRGUIActions::DeleteSavedSearch(const std::shared_ptr<CFileItem>& item)
-  {
-    const auto searchFilter = item->GetEPGSearchFilter();
-
-    if (!searchFilter)
-    {
-      CLog::LogF(LOGERROR, "Wrong item type. No EPG search filter present.");
-      return false;
-    }
-
-    if (CGUIDialogYesNo::ShowAndGetInput(CVariant{122}, // "Confirm delete"
-                                         CVariant{19338}, // "Delete this saved search?"
-                                         CVariant{""}, CVariant{item->GetLabel()}))
-    {
-      return CServiceBroker::GetPVRManager().EpgContainer().DeleteSavedSearch(*searchFilter);
     }
     return false;
   }
