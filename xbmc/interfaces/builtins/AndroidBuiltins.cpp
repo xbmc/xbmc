@@ -19,6 +19,8 @@
  *           params[3] = dataURI (optional)
  *           params[4] = flags (optional)
  *           params[5] = extras (optional)
+ *           params[6] = action (optional)
+ *           params[7] = category (optional)
  */
 static int LaunchAndroidActivity(const std::vector<std::string>& params)
 {

@@ -971,13 +971,15 @@ std::vector<androidPackage> CXBMCApp::GetApplications() const
   return m_applications;
 }
 
-// Note intent, dataType, dataURI, flags, extras all default to ""
+// Note intent, dataType, dataURI, action, category, flags, extras all default to ""
 bool CXBMCApp::StartActivity(const std::string& package,
                              const std::string& intent,
                              const std::string& dataType,
                              const std::string& dataURI,
                              const std::string& flags,
-                             const std::string& extras)
+                             const std::string& extras,
+                             const std::string& action,
+                             const std::string& category)
 {
   CLog::LogF(LOGDEBUG, "package: {}", package);
   CLog::LogF(LOGDEBUG, "intent: {}", intent);
@@ -985,6 +987,8 @@ bool CXBMCApp::StartActivity(const std::string& package,
   CLog::LogF(LOGDEBUG, "dataURI: {}", dataURI);
   CLog::LogF(LOGDEBUG, "flags: {}", flags);
   CLog::LogF(LOGDEBUG, "extras: {}", extras);
+  CLog::LogF(LOGDEBUG, "action: {}", action);
+  CLog::LogF(LOGDEBUG, "category: {}", category);
 
   CJNIIntent newIntent = intent.empty() ?
     GetPackageManager().getLaunchIntentForPackage(package) :
@@ -1004,6 +1008,12 @@ bool CXBMCApp::StartActivity(const std::string& package,
 
     newIntent.setDataAndType(jniURI, dataType);
   }
+
+  if (!action.empty())
+    newIntent.setAction(action);
+
+  if (!category.empty())
+    newIntent.addCategory(category);
 
   if (!flags.empty())
   {
@@ -1036,7 +1046,11 @@ bool CXBMCApp::StartActivity(const std::string& package,
       }
 
       if (e["type"] == "string")
+      {
         newIntent.putExtra(e["key"].GetString(), e["value"].GetString());
+        CLog::LogF(LOGDEBUG, "Putting extra key: {}, value: {}", e["key"].GetString(),
+                   e["value"].GetString());
+      }
       else
         CLog::LogF(LOGDEBUG, "Intent extras data type ({}) not implemented", e["type"].GetString());
     }
@@ -1047,6 +1061,7 @@ bool CXBMCApp::StartActivity(const std::string& package,
   if (xbmc_jnienv()->ExceptionCheck())
   {
     CLog::LogF(LOGERROR, "ExceptionOccurred launching {}", package);
+    xbmc_jnienv()->ExceptionDescribe();
     xbmc_jnienv()->ExceptionClear();
     return false;
   }
