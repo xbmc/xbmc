@@ -4,6 +4,7 @@ set(SOURCES GUIEPGGridContainer.cpp
             PVRGUIActions.cpp
             PVRGUIActionsChannels.cpp
             PVRGUIActionsEPG.cpp
+            PVRGUIActionsParentalControl.cpp
             PVRGUIActionsPlayback.cpp
             PVRGUIActionsPowerManagement.cpp
             PVRGUIActionsRecordings.cpp
@@ -18,6 +19,7 @@ set(HEADERS GUIEPGGridContainer.h
             PVRGUIActions.h
             PVRGUIActionsChannels.h
             PVRGUIActionsEPG.h
+            PVRGUIActionsParentalControl.h
             PVRGUIActionsPlayback.h
             PVRGUIActionsPowerManagement.h
             PVRGUIActionsRecordings.h

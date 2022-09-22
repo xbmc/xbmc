@@ -10,6 +10,7 @@
 
 #include "pvr/guilib/PVRGUIActionsChannels.h"
 #include "pvr/guilib/PVRGUIActionsEPG.h"
+#include "pvr/guilib/PVRGUIActionsParentalControl.h"
 #include "pvr/guilib/PVRGUIActionsPlayback.h"
 #include "pvr/guilib/PVRGUIActionsPowerManagement.h"
 #include "pvr/guilib/PVRGUIActionsRecordings.h"
@@ -24,17 +25,9 @@ class CFileItem;
 
 namespace PVR
 {
-enum class ParentalCheckResult
-{
-  CANCELED,
-  FAILED,
-  SUCCESS
-};
-
-class CPVRChannel;
-
 class CPVRGUIActions : public CPVRGUIActionsChannels,
                        public CPVRGUIActionsEPG,
+                       public CPVRGUIActionsParentalControl,
                        public CPVRGUIActionsPlayback,
                        public CPVRGUIActionsPowerManagement,
                        public CPVRGUIActionsRecordings,
@@ -56,19 +49,6 @@ public:
    * @return true on success, false otherwise.
    */
   bool ResetPVRDatabase(bool bResetEPGOnly);
-
-  /*!
-   * @brief Check if channel is parental locked. Ask for PIN if necessary.
-   * @param channel The channel to do the check for.
-   * @return the result of the check (success, failed, or canceled by user).
-   */
-  ParentalCheckResult CheckParentalLock(const std::shared_ptr<CPVRChannel>& channel) const;
-
-  /*!
-   * @brief Open Numeric dialog to check for parental PIN.
-   * @return the result of the check (success, failed, or canceled by user).
-   */
-  ParentalCheckResult CheckParentalPIN() const;
 
   /*!
    * @brief Get the currently selected item path; used across several windows/dialogs to share item selection.

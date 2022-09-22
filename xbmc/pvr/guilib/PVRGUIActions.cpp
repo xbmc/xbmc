@@ -53,8 +53,7 @@ using namespace KODI::MESSAGING;
 namespace PVR
 {
 CPVRGUIActions::CPVRGUIActions()
-  : m_settings({CSettings::SETTING_PVRMANAGER_PRESELECTPLAYINGCHANNEL,
-                CSettings::SETTING_PVRPARENTAL_PIN, CSettings::SETTING_PVRPARENTAL_ENABLED})
+  : m_settings({CSettings::SETTING_PVRMANAGER_PRESELECTPLAYINGCHANNEL})
 {
 }
 
@@ -412,47 +411,6 @@ CPVRGUIActions::CPVRGUIActions()
     pDlgProgress->SetPercentage(100);
     pDlgProgress->Close();
     return true;
-  }
-
-  ParentalCheckResult CPVRGUIActions::CheckParentalLock(const std::shared_ptr<CPVRChannel>& channel) const
-  {
-    if (!CServiceBroker::GetPVRManager().IsParentalLocked(channel))
-      return ParentalCheckResult::SUCCESS;
-
-    ParentalCheckResult ret = CheckParentalPIN();
-
-    if (ret == ParentalCheckResult::FAILED)
-      CLog::LogF(LOGERROR, "Parental lock verification failed for channel '{}': wrong PIN entered.",
-                 channel->ChannelName());
-
-    return ret;
-  }
-
-  ParentalCheckResult CPVRGUIActions::CheckParentalPIN() const
-  {
-    if (!m_settings.GetBoolValue(CSettings::SETTING_PVRPARENTAL_ENABLED))
-      return ParentalCheckResult::SUCCESS;
-
-    std::string pinCode = m_settings.GetStringValue(CSettings::SETTING_PVRPARENTAL_PIN);
-    if (pinCode.empty())
-      return ParentalCheckResult::SUCCESS;
-
-    InputVerificationResult ret = CGUIDialogNumeric::ShowAndVerifyInput(pinCode, g_localizeStrings.Get(19262), true); // "Parental control. Enter PIN:"
-
-    if (ret == InputVerificationResult::SUCCESS)
-    {
-      CServiceBroker::GetPVRManager().RestartParentalTimer();
-      return ParentalCheckResult::SUCCESS;
-    }
-    else if (ret == InputVerificationResult::FAILED)
-    {
-      HELPERS::ShowOKDialogText(CVariant{19264}, CVariant{19265}); // "Incorrect PIN", "The entered PIN was incorrect."
-      return ParentalCheckResult::FAILED;
-    }
-    else
-    {
-      return ParentalCheckResult::CANCELED;
-    }
   }
 
   void CPVRGUIActions::SetSelectedItemPath(bool bRadio, const std::string& path)
