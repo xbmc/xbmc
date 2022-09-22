@@ -252,7 +252,7 @@ protected:
 
   void HandlePortEvents();
 
-  CInertialScrollingHandler *m_pInertialScrollingHandler;
+  std::unique_ptr<CInertialScrollingHandler> m_pInertialScrollingHandler;
 
   std::vector<ADDON::AddonInfoPtr>
       m_incompatibleAddons; /*!< Result of addon migration (incompatible addon infos) */
