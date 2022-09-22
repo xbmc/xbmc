@@ -5,6 +5,7 @@ set(SOURCES GUIEPGGridContainer.cpp
             PVRGUIActionsChannels.cpp
             PVRGUIActionsEPG.cpp
             PVRGUIActionsPlayback.cpp
+            PVRGUIActionsPowerManagement.cpp
             PVRGUIActionsRecordings.cpp
             PVRGUIActionsTimers.cpp
             PVRGUIChannelIconUpdater.cpp
@@ -18,6 +19,7 @@ set(HEADERS GUIEPGGridContainer.h
             PVRGUIActionsChannels.h
             PVRGUIActionsEPG.h
             PVRGUIActionsPlayback.h
+            PVRGUIActionsPowerManagement.h
             PVRGUIActionsRecordings.h
             PVRGUIActionsTimers.h
             PVRGUIChannelIconUpdater.h
