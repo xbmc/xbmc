@@ -10,10 +10,8 @@
 
 #include "FileItem.h"
 #include "ServiceBroker.h"
-#include "Util.h"
 #include "application/ApplicationEnums.h"
 #include "cores/DataCacheCore.h"
-#include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogProgress.h"
@@ -45,8 +43,6 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/dialogs/GUIDialogPVRChannelGuide.h"
 #include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
-#include "pvr/dialogs/GUIDialogPVRRecordingInfo.h"
-#include "pvr/dialogs/GUIDialogPVRRecordingSettings.h"
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/epg/EpgDatabase.h"
 #include "pvr/epg/EpgInfoTag.h"
@@ -59,7 +55,6 @@
 #include "pvr/windows/GUIWindowPVRSearch.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
-#include "threads/IRunnable.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -71,7 +66,6 @@
 #include <iterator>
 #include <memory>
 #include <mutex>
-#include <numeric>
 #include <string>
 #include <utility>
 #include <vector>
@@ -101,155 +95,16 @@ PVR::CGUIWindowPVRSearchBase* GetSearchWindow(bool bRadio)
 
 namespace PVR
 {
-  class AsyncRecordingAction : private IRunnable
-  {
-  public:
-    bool Execute(const CFileItemPtr& item);
-
-  protected:
-    AsyncRecordingAction() = default;
-
-  private:
-    // IRunnable implementation
-    void Run() override;
-
-    // the worker function
-    virtual bool DoRun(const CFileItemPtr& item) = 0;
-
-    CFileItemPtr m_item;
-    bool m_bSuccess = false;
-  };
-
-  bool AsyncRecordingAction::Execute(const CFileItemPtr& item)
-  {
-    m_item = item;
-    CGUIDialogBusy::Wait(this, 100, false);
-    return m_bSuccess;
-  }
-
-  void AsyncRecordingAction::Run()
-  {
-    m_bSuccess = DoRun(m_item);
-
-    if (m_bSuccess)
-      CServiceBroker::GetPVRManager().TriggerRecordingsUpdate();
-  }
-
-  class AsyncRenameRecording : public AsyncRecordingAction
-  {
-  public:
-    explicit AsyncRenameRecording(const std::string& strNewName) : m_strNewName(strNewName) {}
-
-  private:
-    bool DoRun(const std::shared_ptr<CFileItem>& item) override
-    {
-      if (item->IsUsablePVRRecording())
-      {
-        return item->GetPVRRecordingInfoTag()->Rename(m_strNewName);
-      }
-      else
-      {
-        CLog::LogF(LOGERROR, "Cannot rename item '{}': no valid recording tag", item->GetPath());
-        return false;
-      }
-    }
-    std::string m_strNewName;
-  };
-
-  class AsyncDeleteRecording : public AsyncRecordingAction
-  {
-  public:
-    explicit AsyncDeleteRecording(bool bWatchedOnly = false) : m_bWatchedOnly(bWatchedOnly) {}
-
-  private:
-    bool DoRun(const std::shared_ptr<CFileItem>& item) override
-    {
-      CFileItemList items;
-      if (item->m_bIsFolder)
-      {
-        CUtil::GetRecursiveListing(item->GetPath(), items, "", XFILE::DIR_FLAG_NO_FILE_INFO);
-      }
-      else
-      {
-        items.Add(item);
-      }
-
-      return std::accumulate(
-          items.cbegin(), items.cend(), true, [this](bool success, const auto& itemToDelete) {
-            return (itemToDelete->IsPVRRecording() &&
-                    (!m_bWatchedOnly ||
-                     itemToDelete->GetPVRRecordingInfoTag()->GetPlayCount() > 0) &&
-                    !itemToDelete->GetPVRRecordingInfoTag()->Delete())
-                       ? false
-                       : success;
-          });
-    }
-    bool m_bWatchedOnly = false;
-  };
-
-  class AsyncEmptyRecordingsTrash : public AsyncRecordingAction
-  {
-  private:
-    bool DoRun(const std::shared_ptr<CFileItem>& item) override
-    {
-      return CServiceBroker::GetPVRManager().Clients()->DeleteAllRecordingsFromTrash() == PVR_ERROR_NO_ERROR;
-    }
-  };
-
-  class AsyncUndeleteRecording : public AsyncRecordingAction
-  {
-  private:
-    bool DoRun(const std::shared_ptr<CFileItem>& item) override
-    {
-      if (item->IsDeletedPVRRecording())
-      {
-        return item->GetPVRRecordingInfoTag()->Undelete();
-      }
-      else
-      {
-        CLog::LogF(LOGERROR, "Cannot undelete item '{}': no valid recording tag", item->GetPath());
-        return false;
-      }
-    }
-  };
-
-  class AsyncSetRecordingPlayCount : public AsyncRecordingAction
-  {
-  private:
-    bool DoRun(const CFileItemPtr& item) override
-    {
-      const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(*item);
-      if (client)
-      {
-        const std::shared_ptr<CPVRRecording> recording = item->GetPVRRecordingInfoTag();
-        return client->SetRecordingPlayCount(*recording, recording->GetLocalPlayCount()) == PVR_ERROR_NO_ERROR;
-      }
-      return false;
-    }
-  };
-
-  class AsyncSetRecordingLifetime : public AsyncRecordingAction
-  {
-  private:
-    bool DoRun(const CFileItemPtr& item) override
-    {
-      const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(*item);
-      if (client)
-        return client->SetRecordingLifetime(*item->GetPVRRecordingInfoTag()) == PVR_ERROR_NO_ERROR;
-      return false;
-    }
-  };
-
-  CPVRGUIActions::CPVRGUIActions()
-    : m_settings({CSettings::SETTING_LOOKANDFEEL_STARTUPACTION,
-                  CSettings::SETTING_PVRMANAGER_PRESELECTPLAYINGCHANNEL,
-                  CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH,
-                  CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREENCHANNELTYPES,
-                  CSettings::SETTING_PVRPARENTAL_PIN, CSettings::SETTING_PVRPARENTAL_ENABLED,
-                  CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME,
-                  CSettings::SETTING_PVRPOWERMANAGEMENT_BACKENDIDLETIME})
-  {
-  }
+CPVRGUIActions::CPVRGUIActions()
+  : m_settings({CSettings::SETTING_LOOKANDFEEL_STARTUPACTION,
+                CSettings::SETTING_PVRMANAGER_PRESELECTPLAYINGCHANNEL,
+                CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH,
+                CSettings::SETTING_PVRPLAYBACK_SWITCHTOFULLSCREENCHANNELTYPES,
+                CSettings::SETTING_PVRPARENTAL_PIN, CSettings::SETTING_PVRPARENTAL_ENABLED,
+                CSettings::SETTING_PVRPOWERMANAGEMENT_DAILYWAKEUPTIME,
+                CSettings::SETTING_PVRPOWERMANAGEMENT_BACKENDIDLETIME})
+{
+}
 
   bool CPVRGUIActions::ShowEPGInfo(const CFileItemPtr& item) const
   {
@@ -294,27 +149,6 @@ namespace PVR
     return true;
   }
 
-
-  bool CPVRGUIActions::ShowRecordingInfo(const CFileItemPtr& item) const
-  {
-    if (!item->IsPVRRecording())
-    {
-      CLog::LogF(LOGERROR, "No recording!");
-      return false;
-    }
-
-    CGUIDialogPVRRecordingInfo* pDlgInfo = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogPVRRecordingInfo>(WINDOW_DIALOG_PVR_RECORDING_INFO);
-    if (!pDlgInfo)
-    {
-      CLog::LogF(LOGERROR, "Unable to get WINDOW_DIALOG_PVR_RECORDING_INFO!");
-      return false;
-    }
-
-    pDlgInfo->SetRecording(item.get());
-    pDlgInfo->Open();
-    return true;
-  }
-
   bool CPVRGUIActions::FindSimilar(const std::shared_ptr<CFileItem>& item) const
   {
     CGUIWindowPVRSearchBase* windowSearch = GetSearchWindow(CPVRItem(item).IsRadio());
@@ -347,151 +181,6 @@ namespace PVR
     CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(windowSearch->GetID());
     return true;
   };
-
-  bool CPVRGUIActions::EditRecording(const CFileItemPtr& item) const
-  {
-    const std::shared_ptr<CPVRRecording> recording = CPVRItem(item).GetRecording();
-    if (!recording)
-    {
-      CLog::LogF(LOGERROR, "No recording!");
-      return false;
-    }
-
-    std::shared_ptr<CPVRRecording> origRecording(new CPVRRecording);
-    origRecording->Update(*recording,
-                          *CServiceBroker::GetPVRManager().GetClient(recording->m_iClientId));
-
-    if (!ShowRecordingSettings(recording))
-      return false;
-
-    if (origRecording->m_strTitle != recording->m_strTitle)
-    {
-      if (!AsyncRenameRecording(recording->m_strTitle).Execute(item))
-        CLog::LogF(LOGERROR, "Renaming recording failed!");
-    }
-
-    if (origRecording->GetLocalPlayCount() != recording->GetLocalPlayCount())
-    {
-      if (!AsyncSetRecordingPlayCount().Execute(item))
-        CLog::LogF(LOGERROR, "Setting recording playcount failed!");
-    }
-
-    if (origRecording->m_iLifetime != recording->m_iLifetime)
-    {
-      if (!AsyncSetRecordingLifetime().Execute(item))
-        CLog::LogF(LOGERROR, "Setting recording lifetime failed!");
-    }
-
-    return true;
-  }
-
-  bool CPVRGUIActions::CanEditRecording(const CFileItem& item) const
-  {
-    return CGUIDialogPVRRecordingSettings::CanEditRecording(item);
-  }
-
-  bool CPVRGUIActions::DeleteRecording(const CFileItemPtr& item) const
-  {
-    if ((!item->IsPVRRecording() && !item->m_bIsFolder) || item->IsParentFolder())
-      return false;
-
-    if (!ConfirmDeleteRecording(item))
-      return false;
-
-    if (!AsyncDeleteRecording().Execute(item))
-    {
-      HELPERS::ShowOKDialogText(CVariant{257}, CVariant{19111}); // "Error", "PVR backend error. Check the log for more information about this message."
-      return false;
-    }
-
-    return true;
-  }
-
-  bool CPVRGUIActions::ConfirmDeleteRecording(const CFileItemPtr& item) const
-  {
-    return CGUIDialogYesNo::ShowAndGetInput(CVariant{122}, // "Confirm delete"
-                                            item->m_bIsFolder
-                                              ? CVariant{19113} // "Delete all recordings in this folder?"
-                                              : item->GetPVRRecordingInfoTag()->IsDeleted()
-                                                ? CVariant{19294}  // "Remove this deleted recording from trash? This operation cannot be reverted."
-                                                : CVariant{19112}, // "Delete this recording?"
-                                            CVariant{""},
-                                            CVariant{item->GetLabel()});
-  }
-
-  bool CPVRGUIActions::DeleteWatchedRecordings(const std::shared_ptr<CFileItem>& item) const
-  {
-    if (!item->m_bIsFolder || item->IsParentFolder())
-      return false;
-
-    if (!ConfirmDeleteWatchedRecordings(item))
-      return false;
-
-    if (!AsyncDeleteRecording(true).Execute(item))
-    {
-      HELPERS::ShowOKDialogText(
-          CVariant{257},
-          CVariant{
-              19111}); // "Error", "PVR backend error. Check the log for more information about this message."
-      return false;
-    }
-
-    return true;
-  }
-
-  bool CPVRGUIActions::ConfirmDeleteWatchedRecordings(const std::shared_ptr<CFileItem>& item) const
-  {
-    return CGUIDialogYesNo::ShowAndGetInput(
-        CVariant{122}, // "Confirm delete"
-        CVariant{19328}, // "Delete all watched recordings in this folder?"
-        CVariant{""}, CVariant{item->GetLabel()});
-  }
-
-  bool CPVRGUIActions::DeleteAllRecordingsFromTrash() const
-  {
-    if (!ConfirmDeleteAllRecordingsFromTrash())
-      return false;
-
-    if (!AsyncEmptyRecordingsTrash().Execute(CFileItemPtr()))
-      return false;
-
-    return true;
-  }
-
-  bool CPVRGUIActions::ConfirmDeleteAllRecordingsFromTrash() const
-  {
-    return CGUIDialogYesNo::ShowAndGetInput(CVariant{19292},  // "Delete all permanently"
-                                            CVariant{19293}); // "Remove all deleted recordings from trash? This operation cannot be reverted."
-  }
-
-  bool CPVRGUIActions::UndeleteRecording(const CFileItemPtr& item) const
-  {
-    if (!item->IsDeletedPVRRecording())
-      return false;
-
-    if (!AsyncUndeleteRecording().Execute(item))
-    {
-      HELPERS::ShowOKDialogText(CVariant{257}, CVariant{19111}); // "Error", "PVR backend error. Check the log for more information about this message."
-      return false;
-    }
-
-    return true;
-  }
-
-  bool CPVRGUIActions::ShowRecordingSettings(const std::shared_ptr<CPVRRecording>& recording) const
-  {
-    CGUIDialogPVRRecordingSettings* pDlgInfo = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogPVRRecordingSettings>(WINDOW_DIALOG_PVR_RECORDING_SETTING);
-    if (!pDlgInfo)
-    {
-      CLog::LogF(LOGERROR, "Unable to get WINDOW_DIALOG_PVR_RECORDING_SETTING!");
-      return false;
-    }
-
-    pDlgInfo->SetRecording(recording);
-    pDlgInfo->Open();
-
-    return pDlgInfo->IsConfirmed();
-  }
 
   std::string CPVRGUIActions::GetResumeLabel(const CFileItem& item) const
   {
@@ -1943,4 +1632,4 @@ namespace PVR
     }
   }
 
-} // namespace PVR
+  } // namespace PVR
