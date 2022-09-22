@@ -2,6 +2,7 @@ set(SOURCES GUIEPGGridContainer.cpp
             GUIEPGGridContainerModel.cpp
             PVRGUIActionListener.cpp
             PVRGUIActions.cpp
+            PVRGUIActionsTimers.cpp
             PVRGUIChannelIconUpdater.cpp
             PVRGUIChannelNavigator.cpp
             PVRGUIProgressHandler.cpp)
@@ -10,6 +11,7 @@ set(HEADERS GUIEPGGridContainer.h
             GUIEPGGridContainerModel.h
             PVRGUIActionListener.h
             PVRGUIActions.h
+            PVRGUIActionsTimers.h
             PVRGUIChannelIconUpdater.h
             PVRGUIChannelNavigator.h
             PVRGUIProgressHandler.h)
