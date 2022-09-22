@@ -2,6 +2,7 @@ set(SOURCES GUIEPGGridContainer.cpp
             GUIEPGGridContainerModel.cpp
             PVRGUIActionListener.cpp
             PVRGUIActions.cpp
+            PVRGUIActionsChannels.cpp
             PVRGUIActionsEPG.cpp
             PVRGUIActionsPlayback.cpp
             PVRGUIActionsRecordings.cpp
@@ -14,6 +15,7 @@ set(HEADERS GUIEPGGridContainer.h
             GUIEPGGridContainerModel.h
             PVRGUIActionListener.h
             PVRGUIActions.h
+            PVRGUIActionsChannels.h
             PVRGUIActionsEPG.h
             PVRGUIActionsPlayback.h
             PVRGUIActionsRecordings.h
