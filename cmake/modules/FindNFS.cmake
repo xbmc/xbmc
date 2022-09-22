@@ -31,11 +31,6 @@ if(NOT LIBNFS_FOUND)
                    -DENABLE_UTILS=OFF
                    -DENABLE_EXAMPLES=OFF)
 
-    # Patch merged upstream. drop when a release > 5.0.1 occurs
-    set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/001-fix-cmake-build.patch")
-
-    generate_patchcommand("${patches}")
-
     BUILD_DEP_TARGET()
 
     set(NFS_LIBRARY ${${MODULE}_LIBRARY})
