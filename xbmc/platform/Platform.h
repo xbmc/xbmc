@@ -8,11 +8,7 @@
 
 #pragma once
 
-#include "threads/CriticalSection.h"
-
-#include <memory>
-#include <typeindex>
-#include <unordered_map>
+#include "utils/ComponentContainer.h"
 
 //! \brief Base class for services.
 class IPlatformService
@@ -26,7 +22,7 @@ public:
  * Contains methods to retrieve platform specific information
  * and methods for doing platform specific environment preparation/initialisation
  */
-class CPlatform
+class CPlatform : public CComponentContainer<IPlatformService>
 {
 public:
   /**\brief Creates the Platform object
@@ -100,40 +96,6 @@ public:
   template<class T>
   std::shared_ptr<T> GetService()
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
-    const auto it = m_services.find(std::type_index(typeid(T)));
-    if (it != m_services.end())
-      return std::static_pointer_cast<T>((*it).second);
-
-    return nullptr;
+    return this->GetComponent<T>();
   }
-
-protected:
-  /**\brief Register a new platform service instance.
-   */
-  void RegisterService(const std::shared_ptr<IPlatformService>& service)
-  {
-    if (!service)
-      return;
-
-    // Note: Extra var needed to avoid clang warning
-    // "Expression with side effects will be evaluated despite being used as an operand to 'typeid'"
-    // https://stackoverflow.com/questions/46494928/clang-warning-on-expression-side-effects
-    const auto& serviceRef = *service;
-
-    std::unique_lock<CCriticalSection> lock(m_critSection);
-    m_services.insert({std::type_index(typeid(serviceRef)), service});
-  }
-
-  /**\brief Deregister a platform service instance.
-   */
-  void DeregisterService(const std::type_info& typeInfo)
-  {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
-    m_services.erase(typeInfo);
-  }
-
-private:
-  CCriticalSection m_critSection;
-  std::unordered_map<std::type_index, std::shared_ptr<IPlatformService>> m_services;
 };

@@ -90,6 +90,7 @@ set(HEADERS ActorProtocol.h
             CharsetDetection.h
             CPUInfo.h
             ColorUtils.h
+            ComponentContainer.h
             ContentUtils.h
             Crc32.h
             CSSUtils.h

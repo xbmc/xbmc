@@ -129,12 +129,12 @@ bool CPlatformLinux::InitStageOne()
   m_lirc.reset(OPTIONALS::LircRegister());
 
 #if defined(HAS_ALSA)
-  RegisterService(std::make_shared<CFDEventMonitor>());
+  RegisterComponent(std::make_shared<CFDEventMonitor>());
 #if defined(HAVE_LIBUDEV)
-  RegisterService(std::make_shared<CALSADeviceMonitor>());
+  RegisterComponent(std::make_shared<CALSADeviceMonitor>());
 #endif
 #if !defined(HAVE_X11)
-  RegisterService(std::make_shared<CALSAHControlMonitor>());
+  RegisterComponent(std::make_shared<CALSAHControlMonitor>());
 #endif
 #endif // HAS_ALSA
   return true;
@@ -144,12 +144,12 @@ void CPlatformLinux::DeinitStageOne()
 {
 #if defined(HAS_ALSA)
 #if !defined(HAVE_X11)
-  DeregisterService(typeid(CALSAHControlMonitor));
+  DeregisterComponent(typeid(CALSAHControlMonitor));
 #endif
 #if defined(HAVE_LIBUDEV)
-  DeregisterService(typeid(CALSADeviceMonitor));
+  DeregisterComponent(typeid(CALSADeviceMonitor));
 #endif
-  DeregisterService(typeid(CFDEventMonitor));
+  DeregisterComponent(typeid(CFDEventMonitor));
 #endif // HAS_ALSA
 }
 
