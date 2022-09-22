@@ -11,6 +11,7 @@
 #include "pvr/guilib/PVRGUIActionsChannels.h"
 #include "pvr/guilib/PVRGUIActionsEPG.h"
 #include "pvr/guilib/PVRGUIActionsPlayback.h"
+#include "pvr/guilib/PVRGUIActionsPowerManagement.h"
 #include "pvr/guilib/PVRGUIActionsRecordings.h"
 #include "pvr/guilib/PVRGUIActionsTimers.h"
 #include "pvr/settings/PVRSettings.h"
@@ -31,11 +32,11 @@ enum class ParentalCheckResult
 };
 
 class CPVRChannel;
-class CPVRTimerInfoTag;
 
 class CPVRGUIActions : public CPVRGUIActionsChannels,
                        public CPVRGUIActionsEPG,
                        public CPVRGUIActionsPlayback,
+                       public CPVRGUIActionsPowerManagement,
                        public CPVRGUIActionsRecordings,
                        public CPVRGUIActionsTimers
 {
@@ -70,18 +71,6 @@ public:
   ParentalCheckResult CheckParentalPIN() const;
 
   /*!
-   * @brief Check whether the system Kodi is running on can be powered down
-   *        (shutdown/reboot/suspend/hibernate) without stopping any active
-   *        recordings and/or without preventing the start of recordings
-   *        scheduled for now + pvrpowermanagement.backendidletime.
-   * @param bAskUser True to informs user in case of potential
-   *        data loss. User can decide to allow powerdown anyway. False to
-   *        not to ask user and to not confirm power down.
-   * @return True if system can be safely powered down, false otherwise.
-   */
-  bool CanSystemPowerdown(bool bAskUser = true) const;
-
-  /*!
    * @brief Get the currently selected item path; used across several windows/dialogs to share item selection.
    * @param bRadio True to query the selected path for PVR radio, false for Live TV.
    * @return the path.
@@ -104,10 +93,6 @@ public:
 private:
   CPVRGUIActions(const CPVRGUIActions&) = delete;
   CPVRGUIActions const& operator=(CPVRGUIActions const&) = delete;
-
-  bool AllLocalBackendsIdle(std::shared_ptr<CPVRTimerInfoTag>& causingEvent) const;
-  bool EventOccursOnLocalBackend(const std::shared_ptr<CFileItem>& item) const;
-  bool IsNextEventWithinBackendIdleTime() const;
 
   mutable CCriticalSection m_critSection;
   CPVRSettings m_settings;
