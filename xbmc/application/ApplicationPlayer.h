@@ -165,6 +165,7 @@ public:
   void SetVideoSettings(CVideoSettings& settings);
 
   CSeekHandler& GetSeekHandler();
+  const CSeekHandler& GetSeekHandler() const;
 
   void SetUpdateStreamDetails();
 

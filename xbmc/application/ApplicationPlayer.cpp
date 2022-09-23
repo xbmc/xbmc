@@ -1012,6 +1012,11 @@ CSeekHandler& CApplicationPlayer::GetSeekHandler()
   return m_seekHandler;
 }
 
+const CSeekHandler& CApplicationPlayer::GetSeekHandler() const
+{
+  return m_seekHandler;
+}
+
 void CApplicationPlayer::SetUpdateStreamDetails()
 {
   std::shared_ptr<IPlayer> player = GetInternal();
