@@ -11,7 +11,7 @@
 #include "GUIInfoManager.h" //! @todo Remove me
 #include "GameWindowFullScreenText.h"
 #include "ServiceBroker.h"
-#include "application/Application.h" //! @todo Remove me
+#include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h" //! @todo Remove me
 #include "cores/RetroPlayer/guibridge/GUIGameRenderManager.h"
 #include "cores/RetroPlayer/guibridge/GUIRenderHandle.h"
@@ -190,7 +190,9 @@ void CGameWindowFullScreen::OnInitWindow()
     //! @todo We need to route this check through the GUI bridge. By adding the
     //        dependency to the application player here, we are prevented from
     //        having multiple players.
-    if (!g_application.GetAppPlayer().HasGameAgent())
+    const auto& components = CServiceBroker::GetAppComponents();
+    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+    if (!appPlayer->HasGameAgent())
     {
       gameSettings.SetShowOSDHelp(true);
       TriggerOSD();
