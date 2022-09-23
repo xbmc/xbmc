@@ -93,6 +93,7 @@ public:
   int GetSubtitleCount();
   void GetSubtitleStreamInfo(int index, SubtitleStreamInfo &info);
   bool GetSubtitleVisible();
+  bool HasTeletextCache() const;
   std::shared_ptr<TextCacheStruct_t> GetTeletextCache();
   int64_t GetTime() const;
   int64_t GetMinTime() const;

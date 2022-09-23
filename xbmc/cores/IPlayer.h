@@ -152,7 +152,8 @@ public:
   virtual void SetProgram(int progId) {}
   virtual int GetProgramsCount() { return 0; }
 
-  virtual std::shared_ptr<TextCacheStruct_t> GetTeletextCache() { return NULL; }
+  virtual bool HasTeletextCache() const { return false; }
+  virtual std::shared_ptr<TextCacheStruct_t> GetTeletextCache() { return nullptr; }
   virtual void LoadPage(int p, int sp, unsigned char* buffer) {}
 
   virtual int  GetChapterCount()                               { return 0; }
