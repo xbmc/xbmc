@@ -3432,11 +3432,6 @@ void CApplication::SeekPercentage(float percent)
   }
 }
 
-CApplicationPlayer& CApplication::GetAppPlayer()
-{
-  return *GetComponent<CApplicationPlayer>();
-}
-
 std::string CApplication::GetCurrentPlayer()
 {
   const auto appPlayer = GetComponent<CApplicationPlayer>();
