@@ -63,8 +63,7 @@ TEST(TestComponentContainer, Generic)
   EXPECT_EQ(t2->a, 2);
 
   // check that third component is not there
-  const auto t3 = container.GetComponent<DerivedType3>();
-  EXPECT_TRUE(t3 == nullptr);
+  EXPECT_THROW(container.GetComponent<DerivedType3>(), std::logic_error);
 
   // check that component instance is constant
   const auto t4 = container.GetComponent<DerivedType1>();
