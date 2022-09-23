@@ -10,6 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "application/Application.h"
+#include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "guilib/WindowIDs.h"
 #include "pvr/PVRManager.h"
@@ -286,10 +287,12 @@ CWindowTranslator::WindowMapByID CWindowTranslator::CreateWindowMappingByID()
 
 int CWindowTranslator::GetVirtualWindow(int windowId)
 {
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
   if (windowId == WINDOW_FULLSCREEN_VIDEO)
   {
     // check if we're in a DVD menu
-    if (g_application.GetAppPlayer().IsInMenu())
+    if (appPlayer->IsInMenu())
       return WINDOW_VIDEO_MENU;
     // special casing for Live TV
     else if (g_application.CurrentFileItem().HasPVRChannelInfoTag())
@@ -308,7 +311,7 @@ int CWindowTranslator::GetVirtualWindow(int windowId)
         return WINDOW_FULLSCREEN_LIVETV;
     }
     // special casing for numeric seek
-    else if (g_application.GetAppPlayer().GetSeekHandler().HasTimeCode())
+    else if (appPlayer && appPlayer->GetSeekHandler().HasTimeCode())
       return WINDOW_VIDEO_TIME_SEEK;
   }
   else if (windowId == WINDOW_VISUALISATION)
@@ -330,7 +333,7 @@ int CWindowTranslator::GetVirtualWindow(int windowId)
         return WINDOW_FULLSCREEN_RADIO;
     }
     // special casing for numeric seek
-    else if (g_application.GetAppPlayer().GetSeekHandler().HasTimeCode())
+    else if (appPlayer && appPlayer->GetSeekHandler().HasTimeCode())
       return WINDOW_VIDEO_TIME_SEEK;
   }
 
