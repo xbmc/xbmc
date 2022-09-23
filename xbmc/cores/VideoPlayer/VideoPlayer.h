@@ -306,6 +306,7 @@ public:
   int GetProgramsCount() override;
 
   std::shared_ptr<TextCacheStruct_t> GetTeletextCache() override;
+  bool HasTeletextCache() const override;
   void LoadPage(int p, int sp, unsigned char* buffer) override;
 
   int  GetChapterCount() override;
