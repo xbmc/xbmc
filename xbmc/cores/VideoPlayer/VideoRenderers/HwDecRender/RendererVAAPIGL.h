@@ -36,8 +36,8 @@ public:
   bool Flush(bool saveBuffers) override;
 
   // Feature support
-  bool Supports(ERENDERFEATURE feature) override;
-  bool Supports(ESCALINGMETHOD method) override;
+  bool Supports(ERENDERFEATURE feature) const override;
+  bool Supports(ESCALINGMETHOD method) const override;
 
 protected:
   bool LoadShadersHook() override;

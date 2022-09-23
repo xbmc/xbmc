@@ -389,7 +389,7 @@ void CRendererDRMPRIMEGLES::Render(unsigned int flags, int index)
   buf.fence->CreateFence();
 }
 
-bool CRendererDRMPRIMEGLES::Supports(ERENDERFEATURE feature)
+bool CRendererDRMPRIMEGLES::Supports(ERENDERFEATURE feature) const
 {
   switch (feature)
   {
@@ -404,7 +404,7 @@ bool CRendererDRMPRIMEGLES::Supports(ERENDERFEATURE feature)
   }
 }
 
-bool CRendererDRMPRIMEGLES::Supports(ESCALINGMETHOD method)
+bool CRendererDRMPRIMEGLES::Supports(ESCALINGMETHOD method) const
 {
   switch (method)
   {
