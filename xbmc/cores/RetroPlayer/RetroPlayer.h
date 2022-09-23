@@ -48,12 +48,12 @@ public:
   bool OpenFile(const CFileItem& file, const CPlayerOptions& options) override;
   bool CloseFile(bool reopen = false) override;
   bool IsPlaying() const override;
-  bool CanPause() override;
+  bool CanPause() const override;
   void Pause() override;
   bool HasVideo() const override { return true; }
   bool HasAudio() const override { return true; }
   bool HasGame() const override { return true; }
-  bool CanSeek() override;
+  bool CanSeek() const override;
   void Seek(bool bPlus = true, bool bLargeStep = false, bool bChapterOverride = false) override;
   void SeekPercentage(float fPercent = 0) override;
   float GetCachePercentage() const override;
@@ -66,8 +66,8 @@ public:
   bool SetPlayerState(const std::string& state) override;
   void FrameMove() override;
   void Render(bool clear, uint32_t alpha = 255, bool gui = true) override;
-  bool IsRenderingVideo() override;
-  bool HasGameAgent() override;
+  bool IsRenderingVideo() const override;
+  bool HasGameAgent() const override;
 
   // Implementation of IGameCallback
   std::string GameClientID() const override;

@@ -31,7 +31,7 @@ public:
   void Pause() override;
   bool HasVideo() const override;
   bool HasAudio() const override;
-  bool CanSeek() override;
+  bool CanSeek() const override;
   void Seek(bool bPlus, bool bLargeStep, bool bChapterOverride) override;
   void SeekPercentage(float iPercent) override;
   void SetVolume(float volume) override {}
@@ -46,7 +46,6 @@ public:
   void SetSpeed(float speed) override;
   void DoAudioWork() override {}
 
-  std::string GetPlayerState() override;
   bool SetPlayerState(const std::string& state) override;
 
 #if defined(TARGET_WINDOWS_DESKTOP)

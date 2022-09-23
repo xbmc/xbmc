@@ -498,7 +498,7 @@ bool CExternalPlayer::HasAudio() const
   return false;
 }
 
-bool CExternalPlayer::CanSeek()
+bool CExternalPlayer::CanSeek() const
 {
   return false;
 }
@@ -537,11 +537,6 @@ void CExternalPlayer::SetSpeed(float speed)
 {
   m_speed = speed;
   CDataCacheCore::GetInstance().SetSpeed(1.0, speed);
-}
-
-std::string CExternalPlayer::GetPlayerState()
-{
-  return "";
 }
 
 bool CExternalPlayer::SetPlayerState(const std::string& state)
