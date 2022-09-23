@@ -18,7 +18,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
 
-bool CRendererHQ::Supports(ESCALINGMETHOD method)
+bool CRendererHQ::Supports(ESCALINGMETHOD method) const
 {
   if (method == VS_SCALINGMETHOD_AUTO)
     return true;

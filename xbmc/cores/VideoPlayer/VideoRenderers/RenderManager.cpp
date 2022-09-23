@@ -56,14 +56,14 @@ CRenderManager::~CRenderManager()
   delete m_pRenderer;
 }
 
-void CRenderManager::GetVideoRect(CRect &source, CRect &dest, CRect &view)
+void CRenderManager::GetVideoRect(CRect& source, CRect& dest, CRect& view) const
 {
   std::unique_lock<CCriticalSection> lock(m_statelock);
   if (m_pRenderer)
     m_pRenderer->GetVideoRect(source, dest, view);
 }
 
-float CRenderManager::GetAspectRatio()
+float CRenderManager::GetAspectRatio() const
 {
   std::unique_lock<CCriticalSection> lock(m_statelock);
   if (m_pRenderer)
@@ -1061,7 +1061,7 @@ void CRenderManager::AddOverlay(CDVDOverlay* o, double pts)
   m_overlays.AddOverlay(o, pts, idx);
 }
 
-bool CRenderManager::Supports(ERENDERFEATURE feature)
+bool CRenderManager::Supports(ERENDERFEATURE feature) const
 {
   std::unique_lock<CCriticalSection> lock(m_statelock);
   if (m_pRenderer)
@@ -1070,7 +1070,7 @@ bool CRenderManager::Supports(ERENDERFEATURE feature)
     return false;
 }
 
-bool CRenderManager::Supports(ESCALINGMETHOD method)
+bool CRenderManager::Supports(ESCALINGMETHOD method) const
 {
   std::unique_lock<CCriticalSection> lock(m_statelock);
   if (m_pRenderer)

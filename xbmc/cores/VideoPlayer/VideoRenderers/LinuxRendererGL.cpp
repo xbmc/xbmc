@@ -2537,7 +2537,7 @@ void CLinuxRendererGL::SetTextureFilter(GLenum method)
   }
 }
 
-bool CLinuxRendererGL::Supports(ERENDERFEATURE feature)
+bool CLinuxRendererGL::Supports(ERENDERFEATURE feature) const
 {
   if (feature == RENDERFEATURE_STRETCH ||
       feature == RENDERFEATURE_NONLINSTRETCH ||
@@ -2559,7 +2559,7 @@ bool CLinuxRendererGL::SupportsMultiPassRendering()
   return m_renderSystem->IsExtSupported("GL_EXT_framebuffer_object");
 }
 
-bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
+bool CLinuxRendererGL::Supports(ESCALINGMETHOD method) const
 {
   //nearest neighbor doesn't work on YUY2 and UYVY
   if (method == VS_SCALINGMETHOD_NEAREST &&

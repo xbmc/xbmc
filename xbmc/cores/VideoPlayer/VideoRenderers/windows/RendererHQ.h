@@ -12,7 +12,7 @@
 class CRendererHQ : public CRendererBase
 {
 public:
-  bool Supports(ESCALINGMETHOD method) override;
+  bool Supports(ESCALINGMETHOD method) const override;
 
 protected:
   explicit CRendererHQ(CVideoSettings& videoSettings) : CRendererBase(videoSettings) {}

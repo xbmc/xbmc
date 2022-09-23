@@ -270,7 +270,7 @@ bool CWinRenderer::Flush(bool saveBuffers)
   return m_renderer->Flush(saveBuffers);
 }
 
-bool CWinRenderer::Supports(ERENDERFEATURE feature)
+bool CWinRenderer::Supports(ERENDERFEATURE feature) const
 {
   if(feature == RENDERFEATURE_BRIGHTNESS)
     return true;
@@ -291,7 +291,7 @@ bool CWinRenderer::Supports(ERENDERFEATURE feature)
   return false;
 }
 
-bool CWinRenderer::Supports(ESCALINGMETHOD method)
+bool CWinRenderer::Supports(ESCALINGMETHOD method) const
 {
   if (!m_bConfigured)
     return false;

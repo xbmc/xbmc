@@ -71,8 +71,8 @@ public:
 
   // Feature support
   virtual bool SupportsMultiPassRendering() = 0;
-  virtual bool Supports(ERENDERFEATURE feature) { return false; }
-  virtual bool Supports(ESCALINGMETHOD method) = 0;
+  virtual bool Supports(ERENDERFEATURE feature) const { return false; }
+  virtual bool Supports(ESCALINGMETHOD method) const = 0;
 
   virtual bool WantsDoublePass() { return false; }
 
@@ -83,7 +83,7 @@ public:
   \param dest is the target rendering area honoring aspect ratio of source
   \param view is the entire target rendering area for the video (including black bars)
   */
-  void GetVideoRect(CRect &source, CRect &dest, CRect &view);
+  void GetVideoRect(CRect& source, CRect& dest, CRect& view) const;
   float GetAspectRatio() const;
 
   static void SettingOptionsRenderMethodsFiller(const std::shared_ptr<const CSetting>& setting,

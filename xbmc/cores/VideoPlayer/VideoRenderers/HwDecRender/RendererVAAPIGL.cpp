@@ -138,12 +138,12 @@ bool CRendererVAAPIGL::ConfigChanged(const VideoPicture& picture)
   return false;
 }
 
-bool CRendererVAAPIGL::Supports(ERENDERFEATURE feature)
+bool CRendererVAAPIGL::Supports(ERENDERFEATURE feature) const
 {
   return CLinuxRendererGL::Supports(feature);
 }
 
-bool CRendererVAAPIGL::Supports(ESCALINGMETHOD method)
+bool CRendererVAAPIGL::Supports(ESCALINGMETHOD method) const
 {
   return CLinuxRendererGL::Supports(method);
 }

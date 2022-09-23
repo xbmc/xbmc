@@ -71,7 +71,7 @@ void CRendererShaders::GetWeight(std::map<RenderMethod, int>& weights, const Vid
     weights[RENDER_PS] = weight;
 }
 
-bool CRendererShaders::Supports(ESCALINGMETHOD method)
+bool CRendererShaders::Supports(ESCALINGMETHOD method) const
 {
   if (method == VS_SCALINGMETHOD_LINEAR)
     return true;
