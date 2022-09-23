@@ -43,7 +43,7 @@ public class ExternalPermission extends Activity
                     .setTitle("WARNING")
                     .setMessage(requester+" requested access to @APP_NAME@'s external settings directory. If you approve this request, "+requester+
                         " will have permission to change your configurations, or even read stored passwords for your media sources."+
-                        "\n Only accept the request if you really trust that application!")
+                        "\nOnly accept the request if you really trust that application!")
                     .setPositiveButton("Accept", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
