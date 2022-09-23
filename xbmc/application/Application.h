@@ -37,7 +37,6 @@
 #include <vector>
 
 class CAction;
-class CApplicationPlayer;
 class CFileItem;
 class CFileItemList;
 class CKey;
@@ -128,7 +127,6 @@ public:
   std::shared_ptr<CFileItem> CurrentFileItemPtr();
   const CFileItem& CurrentUnstackedItem();
   bool OnMessage(CGUIMessage& message) override;
-  CApplicationPlayer& GetAppPlayer();
   std::string GetCurrentPlayer();
   const CApplicationStackHelper& GetAppStackHelper() const;
 
