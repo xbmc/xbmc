@@ -485,13 +485,22 @@ bool CApplicationPlayer::CanPause()
   return (player && player->CanPause());
 }
 
+bool CApplicationPlayer::HasTeletextCache() const
+{
+  const auto player = GetInternal();
+  if (player)
+    return player->HasTeletextCache();
+  else
+    return false;
+}
+
 std::shared_ptr<TextCacheStruct_t> CApplicationPlayer::GetTeletextCache()
 {
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)
     return player->GetTeletextCache();
   else
-    return NULL;
+    return nullptr;
 }
 
 float CApplicationPlayer::GetPercentage() const

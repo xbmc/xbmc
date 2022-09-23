@@ -3374,9 +3374,14 @@ void CVideoPlayer::SetSubtitleVerticalPosition(int value, bool save)
 std::shared_ptr<TextCacheStruct_t> CVideoPlayer::GetTeletextCache()
 {
   if (m_CurrentTeletext.id < 0)
-    return 0;
+    return nullptr;
 
   return m_VideoPlayerTeletext->GetTeletextCache();
+}
+
+bool CVideoPlayer::HasTeletextCache() const
+{
+  return m_CurrentTeletext.id >= 0;
 }
 
 void CVideoPlayer::LoadPage(int p, int sp, unsigned char* buffer)
