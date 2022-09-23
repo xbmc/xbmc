@@ -262,7 +262,7 @@ bool CRetroPlayer::IsPlaying() const
   return false;
 }
 
-bool CRetroPlayer::CanPause()
+bool CRetroPlayer::CanPause() const
 {
   return m_playback->CanPause();
 }
@@ -282,7 +282,7 @@ void CRetroPlayer::Pause()
   SetSpeed(speed);
 }
 
-bool CRetroPlayer::CanSeek()
+bool CRetroPlayer::CanSeek() const
 {
   return m_playback->CanSeek();
 }
@@ -488,7 +488,7 @@ bool CRetroPlayer::IsRenderingVideo()
   return true;
 }
 
-bool CRetroPlayer::HasGameAgent()
+bool CRetroPlayer::HasGameAgent() const
 {
   if (m_gameClient)
     return m_gameClient->Input().HasAgent();
