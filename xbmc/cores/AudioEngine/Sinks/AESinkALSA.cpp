@@ -1100,8 +1100,7 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
 {
 #if defined(HAVE_LIBUDEV)
   const auto deviceMonitor = CServiceBroker::GetPlatform().GetService<CALSADeviceMonitor>();
-  if (deviceMonitor)
-    deviceMonitor->Start();
+  deviceMonitor->Start();
 #endif
 
   /* ensure that ALSA has been initialized */
@@ -1119,8 +1118,7 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
 
 #if !defined(HAVE_X11)
   const auto controlMonitor = CServiceBroker::GetPlatform().GetService<CALSAHControlMonitor>();
-  if (controlMonitor)
-    controlMonitor->Clear();
+  controlMonitor->Clear();
 #endif
 
   /* Always enumerate the default device.
@@ -1204,8 +1202,7 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   snd_device_name_free_hint(hints);
 
 #if !defined(HAVE_X11)
-  if (controlMonitor)
-    controlMonitor->Start();
+  controlMonitor->Start();
 #endif
 
   /* set the displayname for default device */
@@ -1419,8 +1416,7 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
             /* add ELD to monitoring */
             const auto controlMonitor =
                 CServiceBroker::GetPlatform().GetService<CALSAHControlMonitor>();
-            if (controlMonitor)
-              controlMonitor->Add(strHwName, SND_CTL_ELEM_IFACE_PCM, dev, "ELD");
+            controlMonitor->Add(strHwName, SND_CTL_ELEM_IFACE_PCM, dev, "ELD");
 #endif
 
             if (!GetELD(hctl, dev, info, badHDMI))
@@ -1674,13 +1670,11 @@ void CAESinkALSA::Cleanup()
 {
 #if HAVE_LIBUDEV
   const auto deviceMonitor = CServiceBroker::GetPlatform().GetService<CALSADeviceMonitor>();
-  if (deviceMonitor)
-    deviceMonitor->Stop();
+  deviceMonitor->Stop();
 #endif
 
 #if !defined(HAVE_X11)
   const auto controlMonitor = CServiceBroker::GetPlatform().GetService<CALSAHControlMonitor>();
-  if (controlMonitor)
-    controlMonitor->Clear();
+  controlMonitor->Clear();
 #endif
 }

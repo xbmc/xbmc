@@ -13,8 +13,10 @@
 #include <cstddef>
 #include <memory>
 #include <mutex>
+#include <stdexcept>
 #include <typeindex>
 #include <unordered_map>
+#include <utility>
 
 //! \brief A generic container for components.
 //! \details A component has to be derived from the BaseType.
@@ -28,12 +30,7 @@ public:
   template<class T>
   std::shared_ptr<T> GetComponent()
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
-    const auto it = m_components.find(std::type_index(typeid(T)));
-    if (it != m_components.end())
-      return std::static_pointer_cast<T>((*it).second);
-
-    return nullptr;
+    return std::const_pointer_cast<T>(std::as_const(*this).template GetComponent<T>());
   }
 
   //! \brief Obtain a component.
@@ -45,7 +42,7 @@ public:
     if (it != m_components.end())
       return std::static_pointer_cast<const T>((*it).second);
 
-    return nullptr;
+    throw std::logic_error("ComponentContainer: Attempt to obtain non-existent component");
   }
 
   //! \brief Returns number of registered components.
