@@ -53,9 +53,9 @@ public:
   virtual EINTERLACEMETHOD GetFallbackDeintMethod();
   virtual void SetSwDeinterlacingMethods();
   void UpdateDeinterlacingMethods(std::list<EINTERLACEMETHOD> &methods);
-  bool Supports(EINTERLACEMETHOD method);
+  bool Supports(EINTERLACEMETHOD method) const;
   void SetDeinterlacingMethodDefault(EINTERLACEMETHOD method);
-  EINTERLACEMETHOD GetDeinterlacingMethodDefault();
+  EINTERLACEMETHOD GetDeinterlacingMethodDefault() const;
   CVideoBufferManager& GetVideoBufferManager();
   std::vector<AVPixelFormat> GetPixFormats();
   void SetPixFormats(std::vector<AVPixelFormat> &formats);
@@ -136,7 +136,7 @@ protected:
   bool m_videoIsInterlaced;
   std::list<EINTERLACEMETHOD> m_deintMethods;
   EINTERLACEMETHOD m_deintMethodDefault;
-  CCriticalSection m_videoCodecSection;
+  mutable CCriticalSection m_videoCodecSection;
   CVideoBufferManager m_videoBufferManager;
   std::vector<AVPixelFormat> m_pixFormats;
 
