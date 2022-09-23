@@ -40,7 +40,7 @@ public:
   void Pause() override;
   bool HasVideo() const override { return false; }
   bool HasAudio() const override { return true; }
-  bool CanSeek() override;
+  bool CanSeek() const override;
   void Seek(bool bPlus = true, bool bLargeStep = false, bool bChapterOverride = false) override;
   void SeekPercentage(float fPercent = 0.0f) override;
   void SetVolume(float volume) override;
@@ -48,12 +48,12 @@ public:
   void SetSpeed(float speed = 0) override;
   int GetCacheLevel() const override;
   void SetTotalTime(int64_t time) override;
-  void GetAudioStreamInfo(int index, AudioStreamInfo &info) override;
+  void GetAudioStreamInfo(int index, AudioStreamInfo& info) const override;
   void SetTime(int64_t time) override;
   void SeekTime(int64_t iTime = 0) override;
-  void GetAudioCapabilities(std::vector<int> &audioCaps) override {}
+  void GetAudioCapabilities(std::vector<int>& audioCaps) const override {}
 
-  int GetAudioStreamCount() override { return 1; }
+  int GetAudioStreamCount() const override { return 1; }
   int GetAudioStream() override { return 0; }
 
   // implementation of IJobCallback

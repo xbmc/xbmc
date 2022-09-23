@@ -41,9 +41,6 @@ public:
   void SeekPercentage(float fPercent = 0) override;
   void SetVolume(float volume) override;
 
-  int GetChapterCount() override { return 0; }
-  int GetChapter() override { return -1; }
-  void GetChapterName(std::string& strChapterName, int chapterIdx = -1) override { }
   int SeekChapter(int iChapter) override { return -1; }
 
   void SeekTime(int64_t iTime = 0) override;
