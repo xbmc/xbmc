@@ -3,6 +3,7 @@ set(SOURCES GUIEPGGridContainer.cpp
             PVRGUIActionListener.cpp
             PVRGUIActions.cpp
             PVRGUIActionsChannels.cpp
+            PVRGUIActionsClients.cpp
             PVRGUIActionsDatabase.cpp
             PVRGUIActionsEPG.cpp
             PVRGUIActionsParentalControl.cpp
@@ -19,6 +20,7 @@ set(HEADERS GUIEPGGridContainer.h
             PVRGUIActionListener.h
             PVRGUIActions.h
             PVRGUIActionsChannels.h
+            PVRGUIActionsClients.h
             PVRGUIActionsDatabase.h
             PVRGUIActionsEPG.h
             PVRGUIActionsParentalControl.h

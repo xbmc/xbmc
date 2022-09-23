@@ -9,6 +9,7 @@
 #pragma once
 
 #include "pvr/guilib/PVRGUIActionsChannels.h"
+#include "pvr/guilib/PVRGUIActionsClients.h"
 #include "pvr/guilib/PVRGUIActionsDatabase.h"
 #include "pvr/guilib/PVRGUIActionsEPG.h"
 #include "pvr/guilib/PVRGUIActionsParentalControl.h"
@@ -27,6 +28,7 @@ class CFileItem;
 namespace PVR
 {
 class CPVRGUIActions : public CPVRGUIActionsChannels,
+                       public CPVRGUIActionsClients,
                        public CPVRGUIActionsDatabase,
                        public CPVRGUIActionsEPG,
                        public CPVRGUIActionsParentalControl,
@@ -38,12 +40,6 @@ class CPVRGUIActions : public CPVRGUIActionsChannels,
 public:
   CPVRGUIActions();
   virtual ~CPVRGUIActions() = default;
-
-  /*!
-   * @brief Select and invoke client-specific settings actions
-   * @return true on success, false otherwise.
-   */
-  bool ProcessSettingsMenuHooks();
 
   /*!
    * @brief Get the currently selected item path; used across several windows/dialogs to share item selection.
