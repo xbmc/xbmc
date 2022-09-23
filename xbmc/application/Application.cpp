@@ -245,7 +245,6 @@ CApplication::CApplication(void)
 
 CApplication::~CApplication(void)
 {
-  delete m_pInertialScrollingHandler;
 }
 
 bool CApplication::OnEvent(XBMC_Event& newEvent)
