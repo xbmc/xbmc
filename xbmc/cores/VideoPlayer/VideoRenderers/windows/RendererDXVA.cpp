@@ -232,7 +232,7 @@ void CRendererDXVA::FillBuffersSet(CRenderBuffer* (&buffers)[8])
   }
 }
 
-bool CRendererDXVA::Supports(ESCALINGMETHOD method)
+bool CRendererDXVA::Supports(ESCALINGMETHOD method) const
 {
   if (method == VS_SCALINGMETHOD_DXVA_HARDWARE)
     return true;
