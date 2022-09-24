@@ -28,6 +28,7 @@
 #include "pvr/epg/EpgSearchFilter.h"
 #include "pvr/epg/EpgSearchPath.h"
 #include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/guilib/PVRGUIActionsEPG.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "threads/IRunnable.h"
 #include "utils/URIUtils.h"
@@ -262,7 +263,7 @@ bool CGUIWindowPVRSearchBase::OnMessage(CGUIMessage& message)
             }
             else
             {
-              CServiceBroker::GetPVRManager().GUIActions()->ShowEPGInfo(pItem);
+              CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ShowEPGInfo(pItem);
             }
             return true;
           }

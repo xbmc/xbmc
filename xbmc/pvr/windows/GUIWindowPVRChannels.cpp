@@ -34,6 +34,7 @@
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/guilib/PVRGUIActions.h"
 #include "pvr/guilib/PVRGUIActionsChannels.h"
+#include "pvr/guilib/PVRGUIActionsEPG.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
@@ -170,7 +171,8 @@ bool CGUIWindowPVRChannelsBase::OnMessage(CGUIMessage& message)
              CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(m_vecItems->Get(iItem), true);
              break;
            case ACTION_SHOW_INFO:
-             CServiceBroker::GetPVRManager().GUIActions()->ShowEPGInfo(m_vecItems->Get(iItem));
+             CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ShowEPGInfo(
+                 m_vecItems->Get(iItem));
              break;
            case ACTION_DELETE_ITEM:
              CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().HideChannel(

@@ -19,6 +19,7 @@
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/guilib/PVRGUIActions.h" //! @todo decouple
 #include "pvr/guilib/PVRGUIActionsChannels.h"
+#include "pvr/guilib/PVRGUIActionsEPG.h"
 #include "settings/Settings.h"
 
 #include <memory>
@@ -74,11 +75,11 @@ bool CPVRGUIActionsUtils::OnInfo(const std::shared_ptr<CFileItem>& item)
   }
   else if (item->HasPVRChannelInfoTag() || item->HasPVRTimerInfoTag())
   {
-    return CServiceBroker::GetPVRManager().GUIActions()->ShowEPGInfo(item);
+    return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ShowEPGInfo(item);
   }
   else if (item->HasEPGSearchFilter())
   {
-    return CServiceBroker::GetPVRManager().GUIActions()->EditSavedSearch(item);
+    return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().EditSavedSearch(item);
   }
   return false;
 }

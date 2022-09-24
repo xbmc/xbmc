@@ -19,6 +19,7 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/guilib/PVRGUIActionsEPG.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
@@ -173,7 +174,7 @@ namespace PVR
       if (item->GetPVRRecordingInfoTag())
         return CServiceBroker::GetPVRManager().GUIActions()->ShowRecordingInfo(item);
 
-      return CServiceBroker::GetPVRManager().GUIActions()->ShowEPGInfo(item);
+      return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ShowEPGInfo(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -190,7 +191,7 @@ namespace PVR
 
     bool ShowChannelGuide::Execute(const CFileItemPtr& item) const
     {
-      return CServiceBroker::GetPVRManager().GUIActions()->ShowChannelEPG(item);
+      return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ShowChannelEPG(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -218,7 +219,7 @@ namespace PVR
 
     bool FindSimilar::Execute(const CFileItemPtr& item) const
     {
-      return CServiceBroker::GetPVRManager().GUIActions()->FindSimilar(item);
+      return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().FindSimilar(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -653,7 +654,7 @@ namespace PVR
 
     bool ExecuteSearch::Execute(const std::shared_ptr<CFileItem>& item) const
     {
-      return CServiceBroker::GetPVRManager().GUIActions()->ExecuteSavedSearch(item);
+      return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ExecuteSavedSearch(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -666,7 +667,7 @@ namespace PVR
 
     bool EditSearch::Execute(const std::shared_ptr<CFileItem>& item) const
     {
-      return CServiceBroker::GetPVRManager().GUIActions()->EditSavedSearch(item);
+      return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().EditSavedSearch(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -679,7 +680,7 @@ namespace PVR
 
     bool RenameSearch::Execute(const std::shared_ptr<CFileItem>& item) const
     {
-      return CServiceBroker::GetPVRManager().GUIActions()->RenameSavedSearch(item);
+      return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().RenameSavedSearch(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -692,7 +693,7 @@ namespace PVR
 
     bool DeleteSearch::Execute(const std::shared_ptr<CFileItem>& item) const
     {
-      return CServiceBroker::GetPVRManager().GUIActions()->DeleteSavedSearch(item);
+      return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().DeleteSavedSearch(item);
     }
 
   } // namespace CONEXTMENUITEM

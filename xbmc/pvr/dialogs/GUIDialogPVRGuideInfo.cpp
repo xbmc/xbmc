@@ -15,6 +15,7 @@
 #include "pvr/addons/PVRClient.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/guilib/PVRGUIActionsEPG.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
@@ -149,7 +150,8 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonFind(const CGUIMessage& message)
   if (message.GetSenderId() == CONTROL_BTN_FIND)
   {
     Close();
-    return CServiceBroker::GetPVRManager().GUIActions()->FindSimilar(std::make_shared<CFileItem>(m_progItem));
+    return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().FindSimilar(
+        std::make_shared<CFileItem>(m_progItem));
   }
 
   return bReturn;
