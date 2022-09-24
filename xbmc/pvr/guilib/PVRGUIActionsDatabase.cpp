@@ -153,7 +153,7 @@ private:
 
 } // unnamed namespace
 
-bool CPVRGUIActionsDatabase::ResetPVRDatabase(bool bResetEPGOnly)
+bool CPVRGUIActionsDatabase::ResetDatabase(bool bResetEPGOnly)
 {
   CGUIDialogProgress* pDlgProgress =
       CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(

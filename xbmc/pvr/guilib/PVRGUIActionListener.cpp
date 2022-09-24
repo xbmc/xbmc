@@ -29,6 +29,7 @@
 #include "pvr/guilib/PVRGUIActions.h"
 #include "pvr/guilib/PVRGUIActionsChannels.h"
 #include "pvr/guilib/PVRGUIActionsClients.h"
+#include "pvr/guilib/PVRGUIActionsDatabase.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
@@ -341,11 +342,11 @@ void CPVRGUIActionListener::OnSettingAction(const std::shared_ptr<const CSetting
   const std::string& settingId = setting->GetId();
   if (settingId == CSettings::SETTING_PVRMANAGER_RESETDB)
   {
-    CServiceBroker::GetPVRManager().GUIActions()->ResetPVRDatabase(false);
+    CServiceBroker::GetPVRManager().Get<PVR::GUI::Database>().ResetDatabase(false);
   }
   else if (settingId == CSettings::SETTING_EPG_RESETEPG)
   {
-    CServiceBroker::GetPVRManager().GUIActions()->ResetPVRDatabase(true);
+    CServiceBroker::GetPVRManager().Get<PVR::GUI::Database>().ResetDatabase(true);
   }
   else if (settingId == CSettings::SETTING_PVRMANAGER_CLIENTPRIORITIES)
   {

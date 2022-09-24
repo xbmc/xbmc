@@ -10,6 +10,7 @@
 
 #include "pvr/guilib/PVRGUIActionsChannels.h"
 #include "pvr/guilib/PVRGUIActionsClients.h"
+#include "pvr/guilib/PVRGUIActionsDatabase.h"
 
 #include <memory>
 
@@ -19,10 +20,12 @@ CPVRComponentRegistration::CPVRComponentRegistration()
 {
   RegisterComponent(std::make_shared<CPVRGUIActionsChannels>());
   RegisterComponent(std::make_shared<CPVRGUIActionsClients>());
+  RegisterComponent(std::make_shared<CPVRGUIActionsDatabase>());
 }
 
 CPVRComponentRegistration::~CPVRComponentRegistration()
 {
+  DeregisterComponent(typeid(CPVRGUIActionsDatabase));
   DeregisterComponent(typeid(CPVRGUIActionsClients));
   DeregisterComponent(typeid(CPVRGUIActionsChannels));
 }
