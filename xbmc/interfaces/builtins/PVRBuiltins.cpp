@@ -15,7 +15,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "pvr/PVRManager.h"
-#include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/guilib/PVRGUIActionsTimers.h"
 #include "pvr/windows/GUIWindowPVRGuide.h"
 #include "utils/log.h"
 
@@ -39,7 +39,7 @@ static int SearchMissingIcons(const std::vector<std::string>& params)
  */
 static int ToggleRecordPlayingChannel(const std::vector<std::string>& params)
 {
-  CServiceBroker::GetPVRManager().GUIActions()->ToggleRecordingOnPlayingChannel();
+  CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().ToggleRecordingOnPlayingChannel();
   return 0;
 }
 

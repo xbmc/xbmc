@@ -38,6 +38,7 @@
 #include "pvr/guilib/PVRGUIActionsChannels.h"
 #include "pvr/guilib/PVRGUIActionsEPG.h"
 #include "pvr/guilib/PVRGUIActionsPlayback.h"
+#include "pvr/guilib/PVRGUIActionsTimers.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
 #include "settings/Settings.h"
@@ -452,7 +453,7 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
                   bReturn = true;
                   break;
                 case EPG_SELECT_ACTION_RECORD:
-                  CServiceBroker::GetPVRManager().GUIActions()->ToggleTimer(pItem);
+                  CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().ToggleTimer(pItem);
                   bReturn = true;
                   break;
                 case EPG_SELECT_ACTION_SMART_SELECT:
@@ -474,7 +475,7 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
                     {
                       // future event
                       if (CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(tag))
-                        CServiceBroker::GetPVRManager().GUIActions()->EditTimer(pItem);
+                        CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().EditTimer(pItem);
                       else
                       {
                         bool bCanRecord = true;
@@ -494,7 +495,8 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
                                                          CVariant{iTextID}, CVariant{iNoButtonID},
                                                          CVariant{19165}); // Yes => "Switch"
                         if (ret == HELPERS::DialogResponse::CHOICE_NO)
-                          CServiceBroker::GetPVRManager().GUIActions()->AddTimer(pItem, false);
+                          CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().AddTimer(pItem,
+                                                                                           false);
                         else if (ret == HELPERS::DialogResponse::CHOICE_YES)
                           CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(
                               pItem, true);
@@ -527,11 +529,12 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
               bReturn = true;
               break;
             case ACTION_RECORD:
-              CServiceBroker::GetPVRManager().GUIActions()->ToggleTimer(pItem);
+              CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().ToggleTimer(pItem);
               bReturn = true;
               break;
             case ACTION_PVR_SHOW_TIMER_RULE:
-              CServiceBroker::GetPVRManager().GUIActions()->AddTimerRule(pItem, true, false);
+              CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().AddTimerRule(pItem, true,
+                                                                                   false);
               bReturn = true;
               break;
             case ACTION_CONTEXT_MENU:
