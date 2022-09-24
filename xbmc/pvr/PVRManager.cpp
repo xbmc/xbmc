@@ -23,7 +23,6 @@
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
-#include "pvr/guilib/PVRGUIActions.h"
 #include "pvr/guilib/PVRGUIActionsChannels.h"
 #include "pvr/guilib/PVRGUIActionsPlayback.h"
 #include "pvr/guilib/PVRGUIChannelIconUpdater.h"
@@ -198,7 +197,6 @@ CPVRManager::CPVRManager()
     m_timers(new CPVRTimers),
     m_addons(new CPVRClients),
     m_guiInfo(new CPVRGUIInfo),
-    m_guiActions(new CPVRGUIActions),
     m_components(new CPVRComponentRegistration),
     m_epgContainer(m_events),
     m_pendingUpdates(new CPVRManagerJobQueue),
@@ -309,12 +307,6 @@ std::shared_ptr<CPVRClient> CPVRManager::GetClient(const CFileItem& item) const
 std::shared_ptr<CPVRClient> CPVRManager::GetClient(int iClientId) const
 {
   return m_addons->GetCreatedClient(iClientId);
-}
-
-std::shared_ptr<CPVRGUIActions> CPVRManager::GUIActions() const
-{
-  // note: m_guiActions is const (only set/reset in ctor/dtor). no need for a lock here.
-  return m_guiActions;
 }
 
 std::shared_ptr<CPVRPlaybackState> CPVRManager::PlaybackState() const
