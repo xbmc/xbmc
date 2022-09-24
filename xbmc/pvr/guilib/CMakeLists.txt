@@ -18,7 +18,6 @@ set(SOURCES GUIEPGGridContainer.cpp
 set(HEADERS GUIEPGGridContainer.h
             GUIEPGGridContainerModel.h
             PVRGUIActionListener.h
-            PVRGUIActions.h
             PVRGUIActionsChannels.h
             PVRGUIActionsClients.h
             PVRGUIActionsDatabase.h
