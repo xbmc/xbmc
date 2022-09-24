@@ -12,7 +12,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
-#include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/guilib/PVRGUIActionsParentalControl.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/SettingsManager.h"
@@ -227,5 +227,6 @@ bool CPVRSettings::CheckParentalPin(const std::string& condition,
                                     const std::shared_ptr<const CSetting>& setting,
                                     void* data)
 {
-  return CServiceBroker::GetPVRManager().GUIActions()->CheckParentalPIN() == ParentalCheckResult::SUCCESS;
+  return CServiceBroker::GetPVRManager().Get<PVR::GUI::Parental>().CheckParentalPIN() ==
+         ParentalCheckResult::SUCCESS;
 }

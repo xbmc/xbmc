@@ -34,7 +34,7 @@
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/dialogs/GUIDialogPVRGroupManager.h"
-#include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/guilib/PVRGUIActionsParentalControl.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
@@ -339,7 +339,8 @@ bool CGUIDialogPVRChannelManager::OnClickButtonRadioParentalLocked()
   bool selected(msg.GetParam1() == 1);
 
   // ask for PIN first
-  if (CServiceBroker::GetPVRManager().GUIActions()->CheckParentalPIN() != ParentalCheckResult::SUCCESS)
+  if (CServiceBroker::GetPVRManager().Get<PVR::GUI::Parental>().CheckParentalPIN() !=
+      ParentalCheckResult::SUCCESS)
   { // failed - reset to previous
     SET_CONTROL_SELECTED(GetID(), RADIOBUTTON_PARENTAL_LOCK, !selected);
     return false;

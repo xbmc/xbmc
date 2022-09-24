@@ -30,6 +30,7 @@
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/guilib/PVRGUIActions.h" //! @todo decouple
 #include "pvr/guilib/PVRGUIActionsChannels.h"
+#include "pvr/guilib/PVRGUIActionsParentalControl.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
@@ -137,8 +138,7 @@ bool CPVRGUIActionsTimers::AddTimer(const std::shared_ptr<CFileItem>& item,
     return false;
   }
 
-  //! @todo decouple
-  if (CServiceBroker::GetPVRManager().GUIActions()->CheckParentalLock(channel) !=
+  if (CServiceBroker::GetPVRManager().Get<PVR::GUI::Parental>().CheckParentalLock(channel) !=
       ParentalCheckResult::SUCCESS)
     return false;
 
@@ -214,9 +214,8 @@ bool CPVRGUIActionsTimers::AddTimer(const std::shared_ptr<CPVRTimerInfoTag>& ite
     return false;
   }
 
-  //! @todo decouple
-  if (CServiceBroker::GetPVRManager().GUIActions()->CheckParentalLock(item->Channel()) !=
-      ParentalCheckResult::SUCCESS)
+  if (CServiceBroker::GetPVRManager().Get<PVR::GUI::Parental>().CheckParentalLock(
+          item->Channel()) != ParentalCheckResult::SUCCESS)
     return false;
 
   if (!CServiceBroker::GetPVRManager().Timers()->AddTimer(item))
@@ -368,8 +367,7 @@ bool CPVRGUIActionsTimers::SetRecordingOnChannel(const std::shared_ptr<CPVRChann
   if (!channel)
     return bReturn;
 
-  //! @todo decouple
-  if (CServiceBroker::GetPVRManager().GUIActions()->CheckParentalLock(channel) !=
+  if (CServiceBroker::GetPVRManager().Get<PVR::GUI::Parental>().CheckParentalLock(channel) !=
       ParentalCheckResult::SUCCESS)
     return bReturn;
 
