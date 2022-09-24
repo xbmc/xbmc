@@ -12,6 +12,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
+#include "pvr/PVRComponentRegistration.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRPlaybackState.h"
 #include "pvr/addons/PVRClient.h"
@@ -196,6 +197,7 @@ CPVRManager::CPVRManager()
     m_addons(new CPVRClients),
     m_guiInfo(new CPVRGUIInfo),
     m_guiActions(new CPVRGUIActions),
+    m_components(new CPVRComponentRegistration),
     m_epgContainer(m_events),
     m_pendingUpdates(new CPVRManagerJobQueue),
     m_database(new CPVRDatabase),
