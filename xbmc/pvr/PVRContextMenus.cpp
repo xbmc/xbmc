@@ -21,6 +21,7 @@
 #include "pvr/guilib/PVRGUIActions.h"
 #include "pvr/guilib/PVRGUIActionsEPG.h"
 #include "pvr/guilib/PVRGUIActionsPlayback.h"
+#include "pvr/guilib/PVRGUIActionsRecordings.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
@@ -174,7 +175,7 @@ namespace PVR
     bool ShowInformation::Execute(const CFileItemPtr& item) const
     {
       if (item->GetPVRRecordingInfoTag())
-        return CServiceBroker::GetPVRManager().GUIActions()->ShowRecordingInfo(item);
+        return CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().ShowRecordingInfo(item);
 
       return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ShowEPGInfo(item);
     }
@@ -329,14 +330,14 @@ namespace PVR
       const std::shared_ptr<CPVRRecording> recording(item.GetPVRRecordingInfoTag());
       if (recording && !recording->IsDeleted() && !recording->IsInProgress())
       {
-        return CServiceBroker::GetPVRManager().GUIActions()->CanEditRecording(item);
+        return CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().CanEditRecording(item);
       }
       return false;
     }
 
     bool EditRecording::Execute(const CFileItemPtr& item) const
     {
-      return CServiceBroker::GetPVRManager().GUIActions()->EditRecording(item);
+      return CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().EditRecording(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -374,7 +375,7 @@ namespace PVR
 
     bool DeleteRecording::Execute(const CFileItemPtr& item) const
     {
-      return CServiceBroker::GetPVRManager().GUIActions()->DeleteRecording(item);
+      return CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().DeleteRecording(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -391,7 +392,7 @@ namespace PVR
 
     bool UndeleteRecording::Execute(const CFileItemPtr& item) const
     {
-      return CServiceBroker::GetPVRManager().GUIActions()->UndeleteRecording(item);
+      return CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().UndeleteRecording(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -408,7 +409,8 @@ namespace PVR
 
     bool DeleteWatchedRecordings::Execute(const std::shared_ptr<CFileItem>& item) const
     {
-      return CServiceBroker::GetPVRManager().GUIActions()->DeleteWatchedRecordings(item);
+      return CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().DeleteWatchedRecordings(
+          item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
