@@ -32,6 +32,7 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/guilib/PVRGUIActions.h" //! @todo decouple
+#include "pvr/guilib/PVRGUIActionsChannels.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "settings/MediaSettings.h"
@@ -222,9 +223,8 @@ bool CPVRGUIActionsPlayback::PlayEpgTag(const CFileItemPtr& item) const
   CFileItem* itemToPlay = nullptr;
   if (props.EPGPlaybackAsLive())
   {
-    //! @todo decouple
     const std::shared_ptr<CPVRChannelGroupMember> groupMember =
-        CServiceBroker::GetPVRManager().GUIActions()->GetChannelGroupMember(*item);
+        CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().GetChannelGroupMember(*item);
     if (!groupMember)
       return false;
 
@@ -316,9 +316,8 @@ bool CPVRGUIActionsPlayback::SwitchToChannel(const CFileItemPtr& item, bool bChe
         bFullscreen = true;
         break;
     }
-    //! @todo decouple
     const std::shared_ptr<CPVRChannelGroupMember> groupMember =
-        CServiceBroker::GetPVRManager().GUIActions()->GetChannelGroupMember(*item);
+        CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().GetChannelGroupMember(*item);
     if (!groupMember)
       return false;
 

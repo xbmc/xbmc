@@ -20,6 +20,7 @@
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/guilib/PVRGUIActionsChannels.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
@@ -144,7 +145,7 @@ JSONRPC_STATUS CPVROperations::GetChannelDetails(const std::string &method, ITra
     return InvalidParams;
 
   const std::shared_ptr<CPVRChannelGroupMember> groupMember =
-      CServiceBroker::GetPVRManager().GUIActions()->GetChannelGroupMember(channel);
+      CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().GetChannelGroupMember(channel);
   if (!groupMember)
     return InvalidParams;
 
@@ -292,13 +293,13 @@ JSONRPC_STATUS CPVROperations::Scan(const std::string &method, ITransportLayer *
 
   if (parameterObject.isMember("clientid"))
   {
-    if (CServiceBroker::GetPVRManager().GUIActions()->StartChannelScan(
+    if (CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().StartChannelScan(
             parameterObject["clientid"].asInteger()))
       return ACK;
   }
   else
   {
-    if (CServiceBroker::GetPVRManager().GUIActions()->StartChannelScan())
+    if (CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().StartChannelScan())
       return ACK;
   }
 
@@ -321,7 +322,7 @@ JSONRPC_STATUS CPVROperations::GetPropertyValue(const std::string &property, CVa
   else if (property == "scanning")
   {
     if (started)
-      result = CServiceBroker::GetPVRManager().GUIActions()->IsRunningChannelScan();
+      result = CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().IsRunningChannelScan();
     else
       result = false;
   }

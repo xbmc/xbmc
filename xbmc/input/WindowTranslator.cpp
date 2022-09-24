@@ -12,7 +12,7 @@
 #include "application/Application.h"
 #include "guilib/WindowIDs.h"
 #include "pvr/PVRManager.h"
-#include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/guilib/PVRGUIActionsChannels.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -294,11 +294,14 @@ int CWindowTranslator::GetVirtualWindow(int windowId)
     else if (g_application.CurrentFileItem().HasPVRChannelInfoTag())
     {
       if (CServiceBroker::GetPVRManager()
-              .GUIActions()
-              ->GetChannelNumberInputHandler()
+              .Get<PVR::GUI::Channels>()
+              .GetChannelNumberInputHandler()
               .HasChannelNumber())
         return WINDOW_FULLSCREEN_LIVETV_INPUT;
-      else if (CServiceBroker::GetPVRManager().GUIActions()->GetChannelNavigator().IsPreview())
+      else if (CServiceBroker::GetPVRManager()
+                   .Get<PVR::GUI::Channels>()
+                   .GetChannelNavigator()
+                   .IsPreview())
         return WINDOW_FULLSCREEN_LIVETV_PREVIEW;
       else
         return WINDOW_FULLSCREEN_LIVETV;
@@ -313,11 +316,14 @@ int CWindowTranslator::GetVirtualWindow(int windowId)
     if (g_application.CurrentFileItem().HasPVRChannelInfoTag())
     {
       if (CServiceBroker::GetPVRManager()
-              .GUIActions()
-              ->GetChannelNumberInputHandler()
+              .Get<PVR::GUI::Channels>()
+              .GetChannelNumberInputHandler()
               .HasChannelNumber())
         return WINDOW_FULLSCREEN_RADIO_INPUT;
-      else if (CServiceBroker::GetPVRManager().GUIActions()->GetChannelNavigator().IsPreview())
+      else if (CServiceBroker::GetPVRManager()
+                   .Get<PVR::GUI::Channels>()
+                   .GetChannelNavigator()
+                   .IsPreview())
         return WINDOW_FULLSCREEN_RADIO_PREVIEW;
       else
         return WINDOW_FULLSCREEN_RADIO;

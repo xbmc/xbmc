@@ -21,7 +21,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
-#include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/guilib/PVRGUIActionsChannels.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "settings/MediaSettings.h"
 #include "settings/Settings.h"
@@ -371,7 +371,7 @@ static int PlayerControl(const std::vector<std::string>& params)
     if (channel)
     {
       const std::shared_ptr<PVR::CPVRChannelGroupMember> groupMember =
-          CServiceBroker::GetPVRManager().GUIActions()->GetChannelGroupMember(channel);
+          CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().GetChannelGroupMember(channel);
       if (!groupMember)
       {
         CLog::Log(LOGERROR, "ResumeLiveTv could not obtain channel group member for channel: {}",

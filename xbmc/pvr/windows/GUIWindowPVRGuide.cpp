@@ -35,6 +35,7 @@
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/guilib/GUIEPGGridContainer.h"
 #include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/guilib/PVRGUIActionsChannels.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
 #include "settings/Settings.h"
@@ -410,7 +411,10 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
             message.GetParam1() == ACTION_MOUSE_LEFT_CLICK)
         {
           // If direct channel number input is active, select the entered channel.
-          if (CServiceBroker::GetPVRManager().GUIActions()->GetChannelNumberInputHandler().CheckInputAndExecuteAction())
+          if (CServiceBroker::GetPVRManager()
+                  .Get<PVR::GUI::Channels>()
+                  .GetChannelNumberInputHandler()
+                  .CheckInputAndExecuteAction())
           {
             bReturn = true;
             break;
