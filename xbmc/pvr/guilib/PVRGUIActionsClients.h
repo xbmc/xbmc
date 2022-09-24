@@ -8,9 +8,11 @@
 
 #pragma once
 
+#include "pvr/IPVRComponent.h"
+
 namespace PVR
 {
-class CPVRGUIActionsClients
+class CPVRGUIActionsClients : public IPVRComponent
 {
 public:
   CPVRGUIActionsClients() = default;
@@ -26,5 +28,11 @@ private:
   CPVRGUIActionsClients(const CPVRGUIActionsClients&) = delete;
   CPVRGUIActionsClients const& operator=(CPVRGUIActionsClients const&) = delete;
 };
+
+namespace GUI
+{
+// pretty scope and name
+using Clients = CPVRGUIActionsClients;
+} // namespace GUI
 
 } // namespace PVR
