@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "pvr/IPVRComponent.h"
 #include "pvr/settings/PVRSettings.h"
 
 #include <memory>
@@ -18,7 +19,7 @@ namespace PVR
 {
 class CPVRTimerInfoTag;
 
-class CPVRGUIActionsPowerManagement
+class CPVRGUIActionsPowerManagement : public IPVRComponent
 {
 public:
   CPVRGUIActionsPowerManagement();
@@ -44,5 +45,11 @@ private:
 
   CPVRSettings m_settings;
 };
+
+namespace GUI
+{
+// pretty scope and name
+using PowerManagement = CPVRGUIActionsPowerManagement;
+} // namespace GUI
 
 } // namespace PVR
