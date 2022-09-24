@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "pvr/IPVRComponent.h"
 #include "pvr/PVRChannelNumberInputHandler.h"
 #include "pvr/guilib/PVRGUIChannelNavigator.h"
 
@@ -43,7 +44,7 @@ private:
   void SwitchToPreviousChannel();
 };
 
-class CPVRGUIActionsChannels
+class CPVRGUIActionsChannels : public IPVRComponent
 {
 public:
   CPVRGUIActionsChannels() = default;
@@ -123,5 +124,11 @@ private:
   bool m_bChannelScanRunning{false};
   CPVRGUIChannelNavigator m_channelNavigator;
 };
+
+namespace GUI
+{
+// pretty scope and name
+using Channels = CPVRGUIActionsChannels;
+} // namespace GUI
 
 } // namespace PVR

@@ -25,6 +25,7 @@
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/guilib/PVRGUIActionsChannels.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
@@ -162,7 +163,10 @@ bool CPVRGUIActionListener::OnAction(const CAction& action)
           int iRemote = bIsJumpSMS ? action.GetID() - (ACTION_JUMP_SMS2 - REMOTE_2) : action.GetID();
           cCharacter = static_cast<char>(iRemote - REMOTE_0) + '0';
         }
-        CServiceBroker::GetPVRManager().GUIActions()->GetChannelNumberInputHandler().AppendChannelNumberCharacter(cCharacter);
+        CServiceBroker::GetPVRManager()
+            .Get<PVR::GUI::Channels>()
+            .GetChannelNumberInputHandler()
+            .AppendChannelNumberCharacter(cCharacter);
         return true;
       }
       return false;
@@ -173,7 +177,7 @@ bool CPVRGUIActionListener::OnAction(const CAction& action)
       if (!bIsPlayingPVR)
         return false;
 
-      CServiceBroker::GetPVRManager().GUIActions()->GetChannelNavigator().ToggleInfo();
+      CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().GetChannelNavigator().ToggleInfo();
       return true;
     }
 
@@ -183,15 +187,25 @@ bool CPVRGUIActionListener::OnAction(const CAction& action)
         return false;
 
       // If the button that caused this action matches action "Select" ...
-      if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH) &&
-          CServiceBroker::GetPVRManager().GUIActions()->GetChannelNavigator().IsPreview())
+      if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+              CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH) &&
+          CServiceBroker::GetPVRManager()
+              .Get<PVR::GUI::Channels>()
+              .GetChannelNavigator()
+              .IsPreview())
       {
         // ... and if "confirm channel switch" setting is active and a channel
         // preview is currently shown, switch to the currently previewed channel.
-        CServiceBroker::GetPVRManager().GUIActions()->GetChannelNavigator().SwitchToCurrentChannel();
+        CServiceBroker::GetPVRManager()
+            .Get<PVR::GUI::Channels>()
+            .GetChannelNavigator()
+            .SwitchToCurrentChannel();
         return true;
       }
-      else if (CServiceBroker::GetPVRManager().GUIActions()->GetChannelNumberInputHandler().CheckInputAndExecuteAction())
+      else if (CServiceBroker::GetPVRManager()
+                   .Get<PVR::GUI::Channels>()
+                   .GetChannelNumberInputHandler()
+                   .CheckInputAndExecuteAction())
       {
         // ... or if the action was processed by direct channel number input, we're done.
         return true;
@@ -223,7 +237,10 @@ bool CPVRGUIActionListener::OnAction(const CAction& action)
       if (!bIsPlayingPVR)
         return false;
 
-      CServiceBroker::GetPVRManager().GUIActions()->GetChannelNavigator().SelectNextChannel(GetChannelSwitchMode(action.GetID()));
+      CServiceBroker::GetPVRManager()
+          .Get<PVR::GUI::Channels>()
+          .GetChannelNavigator()
+          .SelectNextChannel(GetChannelSwitchMode(action.GetID()));
       return true;
     }
 
@@ -233,7 +250,10 @@ bool CPVRGUIActionListener::OnAction(const CAction& action)
       if (!bIsPlayingPVR)
         return false;
 
-      CServiceBroker::GetPVRManager().GUIActions()->GetChannelNavigator().SelectPreviousChannel(GetChannelSwitchMode(action.GetID()));
+      CServiceBroker::GetPVRManager()
+          .Get<PVR::GUI::Channels>()
+          .GetChannelNavigator()
+          .SelectPreviousChannel(GetChannelSwitchMode(action.GetID()));
       return true;
     }
 
@@ -352,7 +372,7 @@ void CPVRGUIActionListener::OnSettingAction(const std::shared_ptr<const CSetting
   }
   else if (settingId == CSettings::SETTING_PVRMANAGER_CHANNELSCAN)
   {
-    CServiceBroker::GetPVRManager().GUIActions()->StartChannelScan();
+    CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().StartChannelScan();
   }
   else if (settingId == CSettings::SETTING_PVRMENU_SEARCHICONS)
   {

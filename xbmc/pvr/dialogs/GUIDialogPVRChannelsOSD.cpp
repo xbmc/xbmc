@@ -24,6 +24,7 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/guilib/PVRGUIActionsChannels.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 
@@ -105,7 +106,10 @@ bool CGUIDialogPVRChannelsOSD::OnAction(const CAction& action)
     case ACTION_MOUSE_LEFT_CLICK:
     {
       // If direct channel number input is active, select the entered channel.
-      if (CServiceBroker::GetPVRManager().GUIActions()->GetChannelNumberInputHandler().CheckInputAndExecuteAction())
+      if (CServiceBroker::GetPVRManager()
+              .Get<PVR::GUI::Channels>()
+              .GetChannelNumberInputHandler()
+              .CheckInputAndExecuteAction())
         return true;
 
       if (m_viewControl.HasControl(GetFocusedControlID()))

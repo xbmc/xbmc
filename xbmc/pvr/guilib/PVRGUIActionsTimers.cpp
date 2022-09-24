@@ -29,6 +29,7 @@
 #include "pvr/dialogs/GUIDialogPVRTimerSettings.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/guilib/PVRGUIActions.h" //! @todo decouple
+#include "pvr/guilib/PVRGUIActionsChannels.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
@@ -976,9 +977,9 @@ void CPVRGUIActionsTimers::AnnounceReminder(const std::shared_ptr<CPVRTimerInfoT
 
   if (bSwitch)
   {
-    //! @todo decouple
     const std::shared_ptr<CPVRChannelGroupMember> groupMember =
-        CServiceBroker::GetPVRManager().GUIActions()->GetChannelGroupMember(timer->Channel());
+        CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().GetChannelGroupMember(
+            timer->Channel());
     if (groupMember)
     {
       //! @todo decouple

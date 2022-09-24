@@ -326,9 +326,7 @@ CPVRGUIChannelNavigator& CPVRGUIActionsChannels::GetChannelNavigator()
 
 void CPVRGUIActionsChannels::OnPlaybackStarted(const CFileItemPtr& item)
 {
-  //! @todo decouple
-  const std::shared_ptr<CPVRChannelGroupMember> groupMember =
-      CServiceBroker::GetPVRManager().GUIActions()->GetChannelGroupMember(*item);
+  const std::shared_ptr<CPVRChannelGroupMember> groupMember = GetChannelGroupMember(*item);
   if (groupMember)
   {
     m_channelNavigator.SetPlayingChannel(groupMember);

@@ -24,6 +24,7 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/guilib/PVRGUIActionsChannels.h"
 #include "pvr/guilib/PVRGUIChannelIconUpdater.h"
 #include "pvr/guilib/PVRGUIProgressHandler.h"
 #include "pvr/guilib/guiinfo/PVRGUIInfo.h"
@@ -827,7 +828,7 @@ bool CPVRManager::IsCurrentlyParentalLocked(const std::shared_ptr<CPVRChannel>& 
 void CPVRManager::OnPlaybackStarted(const CFileItemPtr& item)
 {
   m_playbackState->OnPlaybackStarted(item);
-  m_guiActions->OnPlaybackStarted(item);
+  Get<PVR::GUI::Channels>().OnPlaybackStarted(item);
   m_epgContainer.OnPlaybackStarted();
 }
 
@@ -837,7 +838,7 @@ void CPVRManager::OnPlaybackStopped(const CFileItemPtr& item)
   if (m_playbackState->OnPlaybackStopped(item))
     PublishEvent(PVREvent::ChannelPlaybackStopped);
 
-  m_guiActions->OnPlaybackStopped(item);
+  Get<PVR::GUI::Channels>().OnPlaybackStopped(item);
   m_epgContainer.OnPlaybackStopped();
 }
 

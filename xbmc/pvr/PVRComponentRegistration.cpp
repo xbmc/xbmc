@@ -8,14 +8,18 @@
 
 #include "PVRComponentRegistration.h"
 
+#include "pvr/guilib/PVRGUIActionsChannels.h"
+
 #include <memory>
 
 using namespace PVR;
 
 CPVRComponentRegistration::CPVRComponentRegistration()
 {
+  RegisterComponent(std::make_shared<CPVRGUIActionsChannels>());
 }
 
 CPVRComponentRegistration::~CPVRComponentRegistration()
 {
+  DeregisterComponent(typeid(CPVRGUIActionsChannels));
 }

@@ -18,6 +18,7 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/guilib/PVRGUIActions.h" //! @todo decouple
+#include "pvr/guilib/PVRGUIActionsChannels.h"
 #include "settings/Settings.h"
 
 #include <memory>
@@ -49,7 +50,7 @@ std::string CPVRGUIActionsUtils::GetSelectedItemPath(bool bRadio) const
     // if preselect playing channel is activated, return the path of the playing channel, if any.
     const std::shared_ptr<CPVRChannel> playingChannel = mgr.PlaybackState()->GetPlayingChannel();
     if (playingChannel && playingChannel->IsRadio() == bRadio)
-      return mgr.GUIActions()->GetChannelGroupMember(playingChannel)->Path();
+      return mgr.Get<PVR::GUI::Channels>().GetChannelGroupMember(playingChannel)->Path();
 
     const std::shared_ptr<CPVREpgInfoTag> playingTag = mgr.PlaybackState()->GetPlayingEpgTag();
     if (playingTag && playingTag->IsRadio() == bRadio)
@@ -57,7 +58,7 @@ std::string CPVRGUIActionsUtils::GetSelectedItemPath(bool bRadio) const
       const std::shared_ptr<CPVRChannel> channel =
           mgr.ChannelGroups()->GetChannelForEpgTag(playingTag);
       if (channel)
-        return mgr.GUIActions()->GetChannelGroupMember(channel)->Path();
+        return mgr.Get<PVR::GUI::Channels>().GetChannelGroupMember(channel)->Path();
     }
   }
 
