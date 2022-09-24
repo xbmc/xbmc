@@ -22,7 +22,7 @@
 #include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/epg/EpgSearchFilter.h"
-#include "pvr/guilib/PVRGUIActions.h" //! @todo decouple
+#include "pvr/guilib/PVRGUIActionsParentalControl.h"
 #include "pvr/windows/GUIWindowPVRSearch.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -56,9 +56,8 @@ PVR::CGUIWindowPVRSearchBase* GetSearchWindow(bool bRadio)
 bool CPVRGUIActionsEPG::ShowEPGInfo(const CFileItemPtr& item) const
 {
   const std::shared_ptr<CPVRChannel> channel(CPVRItem(item).GetChannel());
-  //! @todo decouple
-  if (channel && CServiceBroker::GetPVRManager().GUIActions()->CheckParentalLock(channel) !=
-                     ParentalCheckResult::SUCCESS)
+  if (channel && CServiceBroker::GetPVRManager().Get<PVR::GUI::Parental>().CheckParentalLock(
+                     channel) != ParentalCheckResult::SUCCESS)
     return false;
 
   const std::shared_ptr<CPVREpgInfoTag> epgTag(CPVRItem(item).GetEpgInfoTag());
@@ -85,9 +84,8 @@ bool CPVRGUIActionsEPG::ShowEPGInfo(const CFileItemPtr& item) const
 bool CPVRGUIActionsEPG::ShowChannelEPG(const CFileItemPtr& item) const
 {
   const std::shared_ptr<CPVRChannel> channel(CPVRItem(item).GetChannel());
-  //! @todo decouple
-  if (channel && CServiceBroker::GetPVRManager().GUIActions()->CheckParentalLock(channel) !=
-                     ParentalCheckResult::SUCCESS)
+  if (channel && CServiceBroker::GetPVRManager().Get<PVR::GUI::Parental>().CheckParentalLock(
+                     channel) != ParentalCheckResult::SUCCESS)
     return false;
 
   CGUIDialogPVRChannelGuide* pDlgInfo =

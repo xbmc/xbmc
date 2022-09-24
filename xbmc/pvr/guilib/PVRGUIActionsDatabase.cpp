@@ -23,7 +23,7 @@
 #include "pvr/PVRPlaybackState.h"
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/epg/EpgDatabase.h"
-#include "pvr/guilib/PVRGUIActions.h" //! @todo decouple
+#include "pvr/guilib/PVRGUIActionsParentalControl.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
 #include "utils/StringUtils.h"
@@ -183,8 +183,7 @@ bool CPVRGUIActionsDatabase::ResetDatabase(bool bResetEPGOnly)
   }
   else
   {
-    //! @todo decouple
-    if (CServiceBroker::GetPVRManager().GUIActions()->CheckParentalPIN() !=
+    if (CServiceBroker::GetPVRManager().Get<PVR::GUI::Parental>().CheckParentalPIN() !=
         ParentalCheckResult::SUCCESS)
       return false;
 

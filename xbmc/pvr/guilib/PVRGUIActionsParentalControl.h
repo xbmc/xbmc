@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "pvr/IPVRComponent.h"
 #include "pvr/settings/PVRSettings.h"
 
 #include <memory>
@@ -23,7 +24,7 @@ enum class ParentalCheckResult
 
 class CPVRChannel;
 
-class CPVRGUIActionsParentalControl
+class CPVRGUIActionsParentalControl : public IPVRComponent
 {
 public:
   CPVRGUIActionsParentalControl();
@@ -48,5 +49,11 @@ private:
 
   CPVRSettings m_settings;
 };
+
+namespace GUI
+{
+// pretty scope and name
+using Parental = CPVRGUIActionsParentalControl;
+} // namespace GUI
 
 } // namespace PVR
