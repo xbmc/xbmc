@@ -9,12 +9,16 @@
 #include "Application.h"
 
 #include "Autorun.h"
+#include "CompileInfo.h"
 #include "GUIInfoManager.h"
 #include "HDRStatus.h"
 #include "LangInfo.h"
 #include "PlayListPlayer.h"
 #include "URL.h"
 #include "Util.h"
+#include "addons/AddonInstaller.h"
+#include "addons/AddonManager.h"
+#include "addons/RepositoryUpdater.h"
 #include "addons/Skin.h"
 #include "addons/VFSEntry.h"
 #include "application/AppInboundProtocol.h"
@@ -25,6 +29,7 @@
 #include "cores/IPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "dialogs/GUIDialogBusy.h"
+#include "dialogs/GUIDialogCache.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
@@ -36,6 +41,7 @@
 #include "interfaces/builtins/Builtins.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "music/MusicLibraryQueue.h"
+#include "music/tags/MusicInfoTag.h"
 #include "network/EventServer.h"
 #include "network/Network.h"
 #include "platform/Environment.h"
@@ -137,17 +143,9 @@
 #include "video/dialogs/GUIDialogVideoBookmarks.h"
 
 // PVR related include Files
-#include "CompileInfo.h"
-#include "addons/AddonInstaller.h"
-#include "addons/AddonManager.h"
-#include "addons/RepositoryUpdater.h"
-#include "dialogs/GUIDialogCache.h"
-#include "music/tags/MusicInfoTag.h"
 #include "pvr/PVRManager.h"
-#include "pvr/guilib/PVRGUIActions.h"
 #include "pvr/guilib/PVRGUIActionsPlayback.h"
-#include "utils/URIUtils.h"
-#include "utils/XMLUtils.h"
+#include "pvr/guilib/PVRGUIActionsPowerManagement.h"
 
 #ifdef TARGET_WINDOWS
 #include "win32util.h"
@@ -165,12 +163,14 @@
 #include <cdio/logging.h>
 #endif
 
-#include "storage/MediaManager.h"
-#include "utils/SaveFileStateJob.h"
-#include "utils/AlarmClock.h"
-#include "utils/StringUtils.h"
 #include "DatabaseManager.h"
 #include "input/InputManager.h"
+#include "storage/MediaManager.h"
+#include "utils/AlarmClock.h"
+#include "utils/SaveFileStateJob.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/XMLUtils.h"
 
 #ifdef TARGET_POSIX
 #include "platform/posix/XHandle.h"
@@ -1055,7 +1055,7 @@ bool CApplication::OnAction(const CAction &action)
   if (action.GetID() == ACTION_BUILT_IN_FUNCTION)
   {
     if (!CBuiltins::GetInstance().IsSystemPowerdownCommand(action.GetName()) ||
-        CServiceBroker::GetPVRManager().GUIActions()->CanSystemPowerdown())
+        CServiceBroker::GetPVRManager().Get<PVR::GUI::PowerManagement>().CanSystemPowerdown())
     {
       CBuiltins::GetInstance().Execute(action.GetName());
       m_navigationTimer.StartZero();
@@ -1435,7 +1435,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
   uint32_t msg = pMsg->dwMessage;
   if (msg == TMSG_SYSTEM_POWERDOWN)
   {
-    if (CServiceBroker::GetPVRManager().GUIActions()->CanSystemPowerdown())
+    if (CServiceBroker::GetPVRManager().Get<PVR::GUI::PowerManagement>().CanSystemPowerdown())
       msg = pMsg->param1; // perform requested shutdown action
     else
       return; // no shutdown
@@ -2910,7 +2910,7 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr, const CGUIListItemPt
   if (CBuiltins::GetInstance().HasCommand(actionStr))
   {
     if (!CBuiltins::GetInstance().IsSystemPowerdownCommand(actionStr) ||
-        CServiceBroker::GetPVRManager().GUIActions()->CanSystemPowerdown())
+        CServiceBroker::GetPVRManager().Get<PVR::GUI::PowerManagement>().CanSystemPowerdown())
       CBuiltins::GetInstance().Execute(actionStr);
   }
   else
