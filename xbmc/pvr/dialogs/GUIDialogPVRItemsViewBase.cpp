@@ -15,7 +15,7 @@
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "pvr/PVRManager.h"
-#include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/guilib/PVRGUIActionsEPG.h"
 #include "view/ViewState.h"
 
 #include <utility>
@@ -95,7 +95,7 @@ void CGUIDialogPVRItemsViewBase::ShowInfo(int itemIdx)
   if (!item)
     return;
 
-  CServiceBroker::GetPVRManager().GUIActions()->ShowEPGInfo(item);
+  CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ShowEPGInfo(item);
 }
 
 bool CGUIDialogPVRItemsViewBase::ContextMenu(int itemIdx)

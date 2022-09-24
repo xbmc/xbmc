@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "pvr/guilib/PVRGUIActionsEPG.h"
 #include "pvr/guilib/PVRGUIActionsParentalControl.h"
 #include "pvr/guilib/PVRGUIActionsPlayback.h"
 #include "pvr/guilib/PVRGUIActionsPowerManagement.h"
@@ -18,8 +17,7 @@
 
 namespace PVR
 {
-class CPVRGUIActions : public CPVRGUIActionsEPG,
-                       public CPVRGUIActionsParentalControl,
+class CPVRGUIActions : public CPVRGUIActionsParentalControl,
                        public CPVRGUIActionsPlayback,
                        public CPVRGUIActionsPowerManagement,
                        public CPVRGUIActionsRecordings,

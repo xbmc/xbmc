@@ -13,6 +13,7 @@
 #include "guilib/GUIMessage.h"
 #include "pvr/PVRManager.h"
 #include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/guilib/PVRGUIActionsEPG.h"
 
 using namespace PVR;
 
@@ -78,7 +79,7 @@ bool CGUIDialogPVRRecordingInfo::OnClickButtonFind(const CGUIMessage& message)
     Close();
 
     if (m_recordItem)
-      CServiceBroker::GetPVRManager().GUIActions()->FindSimilar(m_recordItem);
+      CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().FindSimilar(m_recordItem);
 
     bReturn = true;
   }

@@ -36,6 +36,7 @@
 #include "pvr/guilib/GUIEPGGridContainer.h"
 #include "pvr/guilib/PVRGUIActions.h"
 #include "pvr/guilib/PVRGUIActionsChannels.h"
+#include "pvr/guilib/PVRGUIActionsEPG.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
 #include "settings/Settings.h"
@@ -444,7 +445,7 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
                   bReturn = true;
                   break;
                 case EPG_SELECT_ACTION_INFO:
-                  CServiceBroker::GetPVRManager().GUIActions()->ShowEPGInfo(pItem);
+                  CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ShowEPGInfo(pItem);
                   bReturn = true;
                   break;
                 case EPG_SELECT_ACTION_RECORD:
@@ -502,7 +503,7 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
                       else if (tag->IsPlayable())
                         CServiceBroker::GetPVRManager().GUIActions()->PlayEpgTag(pItem);
                       else
-                        CServiceBroker::GetPVRManager().GUIActions()->ShowEPGInfo(pItem);
+                        CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ShowEPGInfo(pItem);
                     }
                     bReturn = true;
                   }
@@ -511,7 +512,7 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
               }
               break;
             case ACTION_SHOW_INFO:
-              CServiceBroker::GetPVRManager().GUIActions()->ShowEPGInfo(pItem);
+              CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ShowEPGInfo(pItem);
               bReturn = true;
               break;
             case ACTION_PLAYER_PLAY:

@@ -8,13 +8,15 @@
 
 #pragma once
 
+#include "pvr/IPVRComponent.h"
+
 #include <memory>
 
 class CFileItem;
 
 namespace PVR
 {
-class CPVRGUIActionsEPG
+class CPVRGUIActionsEPG : public IPVRComponent
 {
 public:
   CPVRGUIActionsEPG() = default;
@@ -74,5 +76,11 @@ private:
   CPVRGUIActionsEPG(const CPVRGUIActionsEPG&) = delete;
   CPVRGUIActionsEPG const& operator=(CPVRGUIActionsEPG const&) = delete;
 };
+
+namespace GUI
+{
+// pretty scope and name
+using EPG = CPVRGUIActionsEPG;
+} // namespace GUI
 
 } // namespace PVR
