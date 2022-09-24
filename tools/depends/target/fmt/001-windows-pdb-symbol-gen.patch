@@ -1,6 +1,6 @@
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -268,9 +268,20 @@
+@@ -249,10 +249,21 @@
  
  set(FMT_DEBUG_POSTFIX d CACHE STRING "Debug library postfix.")
  
@@ -16,12 +16,13 @@
 +else()
  set_target_properties(fmt PROPERTIES
    VERSION ${FMT_VERSION} SOVERSION ${CPACK_PACKAGE_VERSION_MAJOR}
+   PUBLIC_HEADER "${FMT_HEADERS}"
    DEBUG_POSTFIX "${FMT_DEBUG_POSTFIX}")
 +endif()
  
  # Set FMT_LIB_NAME for pkg-config fmt.pc. We cannot use the OUTPUT_NAME target
  # property because it's not set by default.
-@@ -361,6 +372,18 @@
+@@ -339,6 +350,18 @@
    install(EXPORT ${targets_export_name} DESTINATION ${FMT_CMAKE_DIR}
            NAMESPACE fmt::)
  
@@ -39,4 +40,4 @@
 +
    install(FILES $<TARGET_PDB_FILE:${INSTALL_TARGETS}>
            DESTINATION ${FMT_LIB_DIR} OPTIONAL)
-   install(FILES ${FMT_HEADERS} DESTINATION "${FMT_INC_DIR}/fmt")
+   install(FILES "${pkgconfig}" DESTINATION "${FMT_PKGCONFIG_DIR}")
