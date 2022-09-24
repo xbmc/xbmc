@@ -25,6 +25,7 @@
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/guilib/PVRGUIActions.h"
 #include "pvr/guilib/PVRGUIActionsChannels.h"
+#include "pvr/guilib/PVRGUIActionsPlayback.h"
 #include "pvr/guilib/PVRGUIChannelIconUpdater.h"
 #include "pvr/guilib/PVRGUIProgressHandler.h"
 #include "pvr/guilib/guiinfo/PVRGUIInfo.h"
@@ -778,7 +779,7 @@ void CPVRManager::TriggerPlayChannelOnStartup()
   if (IsStarted())
   {
     CServiceBroker::GetJobManager()->Submit(
-        [this] { return GUIActions()->PlayChannelOnStartup(); });
+        [this] { return Get<PVR::GUI::Playback>().PlayChannelOnStartup(); });
   }
 }
 

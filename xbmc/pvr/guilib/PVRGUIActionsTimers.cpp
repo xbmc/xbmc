@@ -28,9 +28,9 @@
 #include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/dialogs/GUIDialogPVRTimerSettings.h"
 #include "pvr/epg/EpgInfoTag.h"
-#include "pvr/guilib/PVRGUIActions.h" //! @todo decouple
 #include "pvr/guilib/PVRGUIActionsChannels.h"
 #include "pvr/guilib/PVRGUIActionsParentalControl.h"
+#include "pvr/guilib/PVRGUIActionsPlayback.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
@@ -980,8 +980,7 @@ void CPVRGUIActionsTimers::AnnounceReminder(const std::shared_ptr<CPVRTimerInfoT
             timer->Channel());
     if (groupMember)
     {
-      //! @todo decouple
-      CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(
+      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(
           std::make_shared<CFileItem>(groupMember), false);
 
       if (bAutoClosed)

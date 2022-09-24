@@ -16,6 +16,7 @@
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/guilib/PVRGUIActions.h"
 #include "pvr/guilib/PVRGUIActionsEPG.h"
+#include "pvr/guilib/PVRGUIActionsPlayback.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
@@ -131,11 +132,13 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonPlay(const CGUIMessage& message)
 
     const CFileItemPtr item(new CFileItem(m_progItem));
     if (message.GetSenderId() == CONTROL_BTN_PLAY_RECORDING)
-      CServiceBroker::GetPVRManager().GUIActions()->PlayRecording(item, true /* bCheckResume */);
+      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(
+          item, true /* bCheckResume */);
     else if (message.GetSenderId() == CONTROL_BTN_PLAY_EPGTAG && m_progItem->IsPlayable())
-      CServiceBroker::GetPVRManager().GUIActions()->PlayEpgTag(item);
+      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayEpgTag(item);
     else
-      CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(item, true /* bCheckResume */);
+      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(
+          item, true /* bCheckResume */);
 
     bReturn = true;
   }

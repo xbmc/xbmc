@@ -20,6 +20,7 @@
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/guilib/PVRGUIActions.h"
 #include "pvr/guilib/PVRGUIActionsEPG.h"
+#include "pvr/guilib/PVRGUIActionsPlayback.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
@@ -119,7 +120,7 @@ namespace PVR
 
     bool PlayEpgTag::Execute(const CFileItemPtr& item) const
     {
-      return CServiceBroker::GetPVRManager().GUIActions()->PlayEpgTag(item);
+      return CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayEpgTag(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -136,7 +137,8 @@ namespace PVR
 
     bool PlayRecording::Execute(const CFileItemPtr& item) const
     {
-      return CServiceBroker::GetPVRManager().GUIActions()->PlayRecording(item, true /* bCheckResume */);
+      return CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(
+          item, true /* bCheckResume */);
     }
 
     ///////////////////////////////////////////////////////////////////////////////

@@ -135,17 +135,17 @@
 #include "video/dialogs/GUIDialogVideoBookmarks.h"
 
 // PVR related include Files
-#include "pvr/PVRManager.h"
-#include "pvr/guilib/PVRGUIActions.h"
-
-#include "dialogs/GUIDialogCache.h"
-#include "utils/URIUtils.h"
-#include "utils/XMLUtils.h"
+#include "CompileInfo.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
 #include "addons/RepositoryUpdater.h"
+#include "dialogs/GUIDialogCache.h"
 #include "music/tags/MusicInfoTag.h"
-#include "CompileInfo.h"
+#include "pvr/PVRManager.h"
+#include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/guilib/PVRGUIActionsPlayback.h"
+#include "utils/URIUtils.h"
+#include "utils/XMLUtils.h"
 
 #ifdef TARGET_WINDOWS
 #include "win32util.h"
@@ -2234,7 +2234,8 @@ bool CApplication::PlayMedia(CFileItem& item, const std::string& player, PLAYLIS
   }
   else if (item.IsPVR())
   {
-    return CServiceBroker::GetPVRManager().GUIActions()->PlayMedia(CFileItemPtr(new CFileItem(item)));
+    return CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayMedia(
+        CFileItemPtr(new CFileItem(item)));
   }
 
   CURL path(item.GetPath());
