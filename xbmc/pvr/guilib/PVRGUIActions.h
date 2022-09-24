@@ -17,13 +17,7 @@
 #include "pvr/guilib/PVRGUIActionsPowerManagement.h"
 #include "pvr/guilib/PVRGUIActionsRecordings.h"
 #include "pvr/guilib/PVRGUIActionsTimers.h"
-#include "pvr/settings/PVRSettings.h"
-#include "threads/CriticalSection.h"
-
-#include <memory>
-#include <string>
-
-class CFileItem;
+#include "pvr/guilib/PVRGUIActionsUtils.h"
 
 namespace PVR
 {
@@ -35,40 +29,12 @@ class CPVRGUIActions : public CPVRGUIActionsChannels,
                        public CPVRGUIActionsPlayback,
                        public CPVRGUIActionsPowerManagement,
                        public CPVRGUIActionsRecordings,
-                       public CPVRGUIActionsTimers
+                       public CPVRGUIActionsTimers,
+                       public CPVRGUIActionsUtils
 {
 public:
-  CPVRGUIActions();
+  CPVRGUIActions() = default;
   virtual ~CPVRGUIActions() = default;
-
-  /*!
-   * @brief Get the currently selected item path; used across several windows/dialogs to share item selection.
-   * @param bRadio True to query the selected path for PVR radio, false for Live TV.
-   * @return the path.
-   */
-  std::string GetSelectedItemPath(bool bRadio) const;
-
-  /*!
-   * @brief Set the currently selected item path; used across several windows/dialogs to share item selection.
-   * @param bRadio True to set the selected path for PVR radio, false for Live TV.
-   * @param path The new path to set.
-   */
-  void SetSelectedItemPath(bool bRadio, const std::string& path);
-
-  /*!
-   * @brief Process info action for the given item.
-   * @param item The item.
-   */
-  bool OnInfo(const std::shared_ptr<CFileItem>& item);
-
-private:
-  CPVRGUIActions(const CPVRGUIActions&) = delete;
-  CPVRGUIActions const& operator=(CPVRGUIActions const&) = delete;
-
-  mutable CCriticalSection m_critSection;
-  CPVRSettings m_settings;
-  std::string m_selectedItemPathTV;
-  std::string m_selectedItemPathRadio;
 };
 
 } // namespace PVR
