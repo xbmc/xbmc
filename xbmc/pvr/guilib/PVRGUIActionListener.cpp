@@ -28,6 +28,7 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/guilib/PVRGUIActions.h"
 #include "pvr/guilib/PVRGUIActionsChannels.h"
+#include "pvr/guilib/PVRGUIActionsClients.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
@@ -386,7 +387,7 @@ void CPVRGUIActionListener::OnSettingAction(const std::shared_ptr<const CSetting
   }
   else if (settingId == CSettings::SETTING_PVRCLIENT_MENUHOOK)
   {
-    CServiceBroker::GetPVRManager().GUIActions()->ProcessSettingsMenuHooks();
+    CServiceBroker::GetPVRManager().Get<PVR::GUI::Clients>().ProcessSettingsMenuHooks();
   }
   else if (settingId == CSettings::SETTING_PVRMANAGER_ADDONS)
   {
