@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "pvr/IPVRComponent.h"
+
 #include <memory>
 
 class CFileItem;
@@ -16,7 +18,7 @@ namespace PVR
 {
 class CPVRRecording;
 
-class CPVRGUIActionsRecordings
+class CPVRGUIActionsRecordings : public IPVRComponent
 {
 public:
   CPVRGUIActionsRecordings() = default;
@@ -102,5 +104,11 @@ private:
    */
   bool ShowRecordingSettings(const std::shared_ptr<CPVRRecording>& recording) const;
 };
+
+namespace GUI
+{
+// pretty scope and name
+using Recordings = CPVRGUIActionsRecordings;
+} // namespace GUI
 
 } // namespace PVR

@@ -8,15 +8,12 @@
 
 #pragma once
 
-#include "pvr/guilib/PVRGUIActionsRecordings.h"
 #include "pvr/guilib/PVRGUIActionsTimers.h"
 #include "pvr/guilib/PVRGUIActionsUtils.h"
 
 namespace PVR
 {
-class CPVRGUIActions : public CPVRGUIActionsRecordings,
-                       public CPVRGUIActionsTimers,
-                       public CPVRGUIActionsUtils
+class CPVRGUIActions : public CPVRGUIActionsTimers, public CPVRGUIActionsUtils
 {
 public:
   CPVRGUIActions() = default;

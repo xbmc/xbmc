@@ -18,8 +18,8 @@
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "pvr/PVRManager.h"
-#include "pvr/guilib/PVRGUIActions.h"
 #include "pvr/guilib/PVRGUIActionsPlayback.h"
+#include "pvr/guilib/PVRGUIActionsRecordings.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
@@ -260,7 +260,8 @@ bool CGUIWindowPVRRecordingsBase::OnMessage(CGUIMessage& message)
                     bReturn = true;
                     break;
                   case SELECT_ACTION_INFO:
-                    CServiceBroker::GetPVRManager().GUIActions()->ShowRecordingInfo(item);
+                    CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().ShowRecordingInfo(
+                        item);
                     bReturn = true;
                     break;
                   default:
@@ -276,11 +277,11 @@ bool CGUIWindowPVRRecordingsBase::OnMessage(CGUIMessage& message)
               bReturn = true;
               break;
             case ACTION_SHOW_INFO:
-              CServiceBroker::GetPVRManager().GUIActions()->ShowRecordingInfo(item);
+              CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().ShowRecordingInfo(item);
               bReturn = true;
               break;
             case ACTION_DELETE_ITEM:
-              CServiceBroker::GetPVRManager().GUIActions()->DeleteRecording(item);
+              CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().DeleteRecording(item);
               bReturn = true;
               break;
             default:
@@ -346,7 +347,7 @@ bool CGUIWindowPVRRecordingsBase::OnContextButtonDeleteAll(CFileItem* item, CONT
 {
   if (button == CONTEXT_BUTTON_DELETE_ALL)
   {
-    CServiceBroker::GetPVRManager().GUIActions()->DeleteAllRecordingsFromTrash();
+    CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().DeleteAllRecordingsFromTrash();
     return true;
   }
 

@@ -17,9 +17,9 @@
 #include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
-#include "pvr/guilib/PVRGUIActions.h" //! @todo decouple
 #include "pvr/guilib/PVRGUIActionsChannels.h"
 #include "pvr/guilib/PVRGUIActionsEPG.h"
+#include "pvr/guilib/PVRGUIActionsRecordings.h"
 #include "settings/Settings.h"
 
 #include <memory>
@@ -71,7 +71,7 @@ bool CPVRGUIActionsUtils::OnInfo(const std::shared_ptr<CFileItem>& item)
 {
   if (item->HasPVRRecordingInfoTag())
   {
-    return CServiceBroker::GetPVRManager().GUIActions()->ShowRecordingInfo(item);
+    return CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().ShowRecordingInfo(item);
   }
   else if (item->HasPVRChannelInfoTag() || item->HasPVRTimerInfoTag())
   {

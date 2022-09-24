@@ -15,6 +15,7 @@
 #include "pvr/guilib/PVRGUIActionsParentalControl.h"
 #include "pvr/guilib/PVRGUIActionsPlayback.h"
 #include "pvr/guilib/PVRGUIActionsPowerManagement.h"
+#include "pvr/guilib/PVRGUIActionsRecordings.h"
 
 #include <memory>
 
@@ -29,10 +30,12 @@ CPVRComponentRegistration::CPVRComponentRegistration()
   RegisterComponent(std::make_shared<CPVRGUIActionsParentalControl>());
   RegisterComponent(std::make_shared<CPVRGUIActionsPlayback>());
   RegisterComponent(std::make_shared<CPVRGUIActionsPowerManagement>());
+  RegisterComponent(std::make_shared<CPVRGUIActionsRecordings>());
 }
 
 CPVRComponentRegistration::~CPVRComponentRegistration()
 {
+  DeregisterComponent(typeid(CPVRGUIActionsRecordings));
   DeregisterComponent(typeid(CPVRGUIActionsPowerManagement));
   DeregisterComponent(typeid(CPVRGUIActionsPlayback));
   DeregisterComponent(typeid(CPVRGUIActionsParentalControl));
