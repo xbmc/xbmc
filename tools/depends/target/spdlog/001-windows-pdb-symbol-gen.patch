@@ -1,6 +1,6 @@
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -236,6 +236,26 @@
+@@ -239,6 +239,26 @@
      endif()
  endforeach()
  
@@ -27,7 +27,7 @@
  if(SPDLOG_NO_EXCEPTIONS AND NOT MSVC)
      target_compile_options(spdlog PRIVATE -fno-exceptions)
  endif()
-@@ -293,6 +313,22 @@
+@@ -296,6 +316,22 @@
      endif()
  
      # ---------------------------------------------------------------------------------------
