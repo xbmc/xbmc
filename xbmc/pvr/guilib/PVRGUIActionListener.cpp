@@ -26,11 +26,11 @@
 #include "pvr/channels/PVRChannelGroup.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/guilib/PVRGUIActions.h"
 #include "pvr/guilib/PVRGUIActionsChannels.h"
 #include "pvr/guilib/PVRGUIActionsClients.h"
 #include "pvr/guilib/PVRGUIActionsDatabase.h"
 #include "pvr/guilib/PVRGUIActionsPlayback.h"
+#include "pvr/guilib/PVRGUIActionsTimers.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
@@ -295,13 +295,13 @@ bool CPVRGUIActionListener::OnAction(const CAction& action)
 
     case ACTION_RECORD:
     {
-      CServiceBroker::GetPVRManager().GUIActions()->ToggleRecordingOnPlayingChannel();
+      CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().ToggleRecordingOnPlayingChannel();
       return true;
     }
 
     case ACTION_PVR_ANNOUNCE_REMINDERS:
     {
-      CServiceBroker::GetPVRManager().GUIActions()->AnnounceReminders();
+      CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().AnnounceReminders();
       return true;
     }
   }

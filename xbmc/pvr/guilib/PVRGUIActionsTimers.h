@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "pvr/IPVRComponent.h"
 #include "pvr/settings/PVRSettings.h"
 
 #include <memory>
@@ -19,7 +20,7 @@ namespace PVR
 class CPVRChannel;
 class CPVRTimerInfoTag;
 
-class CPVRGUIActionsTimers
+class CPVRGUIActionsTimers : public IPVRComponent
 {
 public:
   CPVRGUIActionsTimers();
@@ -225,5 +226,11 @@ private:
   CPVRSettings m_settings;
   mutable bool m_bReminderAnnouncementRunning{false};
 };
+
+namespace GUI
+{
+// pretty scope and name
+using Timers = CPVRGUIActionsTimers;
+} // namespace GUI
 
 } // namespace PVR
