@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "pvr/IPVRComponent.h"
 #include "pvr/settings/PVRSettings.h"
 #include "threads/CriticalSection.h"
 
@@ -18,7 +19,7 @@ class CFileItem;
 
 namespace PVR
 {
-class CPVRGUIActionsUtils
+class CPVRGUIActionsUtils : public IPVRComponent
 {
 public:
   CPVRGUIActionsUtils();
@@ -55,5 +56,11 @@ private:
   std::string m_selectedItemPathTV;
   std::string m_selectedItemPathRadio;
 };
+
+namespace GUI
+{
+// pretty scope and name
+using Utils = CPVRGUIActionsUtils;
+} // namespace GUI
 
 } // namespace PVR

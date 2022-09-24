@@ -34,11 +34,11 @@
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/guilib/GUIEPGGridContainer.h"
-#include "pvr/guilib/PVRGUIActions.h"
 #include "pvr/guilib/PVRGUIActionsChannels.h"
 #include "pvr/guilib/PVRGUIActionsEPG.h"
 #include "pvr/guilib/PVRGUIActionsPlayback.h"
 #include "pvr/guilib/PVRGUIActionsTimers.h"
+#include "pvr/guilib/PVRGUIActionsUtils.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
 #include "settings/Settings.h"
@@ -80,7 +80,7 @@ void CGUIWindowPVRGuideBase::InitEpgGridControl()
     CPVRManager& mgr = CServiceBroker::GetPVRManager();
 
     const std::shared_ptr<CPVRChannel> channel =
-        mgr.ChannelGroups()->GetByPath(mgr.GUIActions()->GetSelectedItemPath(m_bRadio));
+        mgr.ChannelGroups()->GetByPath(mgr.Get<PVR::GUI::Utils>().GetSelectedItemPath(m_bRadio));
 
     if (channel)
     {
@@ -198,8 +198,8 @@ void CGUIWindowPVRGuideBase::UpdateSelectedItemPath()
     const std::shared_ptr<CPVRChannelGroupMember> groupMember =
         epgGridContainer->GetSelectedChannelGroupMember();
     if (groupMember)
-      CServiceBroker::GetPVRManager().GUIActions()->SetSelectedItemPath(m_bRadio,
-                                                                        groupMember->Path());
+      CServiceBroker::GetPVRManager().Get<PVR::GUI::Utils>().SetSelectedItemPath(
+          m_bRadio, groupMember->Path());
   }
 }
 
@@ -228,7 +228,8 @@ bool CGUIWindowPVRGuideBase::Update(const std::string& strDirectory, bool update
   {
     CGUIEPGGridContainer* epgGridContainer = GetGridControl();
     if (epgGridContainer)
-      m_bChannelSelectionRestored = epgGridContainer->SetChannel(CServiceBroker::GetPVRManager().GUIActions()->GetSelectedItemPath(m_bRadio));
+      m_bChannelSelectionRestored = epgGridContainer->SetChannel(
+          CServiceBroker::GetPVRManager().Get<PVR::GUI::Utils>().GetSelectedItemPath(m_bRadio));
   }
 
   return bReturn;
