@@ -8,11 +8,9 @@
 
 #pragma once
 
-#include "pvr/guilib/PVRGUIActionsUtils.h"
-
 namespace PVR
 {
-class CPVRGUIActions : public CPVRGUIActionsUtils
+class CPVRGUIActions
 {
 public:
   CPVRGUIActions() = default;

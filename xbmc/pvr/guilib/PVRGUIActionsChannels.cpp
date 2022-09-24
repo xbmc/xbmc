@@ -29,7 +29,7 @@
 #include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/guilib/PVRGUIActions.h" //! @todo decouple
+#include "pvr/guilib/PVRGUIActionsUtils.h"
 #include "pvr/windows/GUIWindowPVRBase.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -330,8 +330,7 @@ void CPVRGUIActionsChannels::OnPlaybackStarted(const CFileItemPtr& item)
   if (groupMember)
   {
     m_channelNavigator.SetPlayingChannel(groupMember);
-    //! @todo decouple
-    CServiceBroker::GetPVRManager().GUIActions()->SetSelectedItemPath(
+    CServiceBroker::GetPVRManager().Get<PVR::GUI::Utils>().SetSelectedItemPath(
         groupMember->Channel()->IsRadio(), groupMember->Path());
   }
 }

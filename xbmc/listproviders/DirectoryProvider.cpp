@@ -22,7 +22,7 @@
 #include "pictures/PictureThumbLoader.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRThumbLoader.h"
-#include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/guilib/PVRGUIActionsUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/JobManager.h"
@@ -440,7 +440,7 @@ bool CDirectoryProvider::OnInfo(const CGUIListItemPtr& item)
   }
   else if (fileItem->IsPVR())
   {
-    return CServiceBroker::GetPVRManager().GUIActions()->OnInfo(fileItem);
+    return CServiceBroker::GetPVRManager().Get<PVR::GUI::Utils>().OnInfo(fileItem);
   }
   else if (fileItem->HasVideoInfoTag())
   {

@@ -23,9 +23,9 @@
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgContainer.h"
-#include "pvr/guilib/PVRGUIActions.h"
 #include "pvr/guilib/PVRGUIActionsChannels.h"
 #include "pvr/guilib/PVRGUIActionsPlayback.h"
+#include "pvr/guilib/PVRGUIActionsUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 
@@ -90,7 +90,8 @@ void CGUIDialogPVRChannelsOSD::OnDeinitWindow(int nextWindowID)
 {
   if (m_group)
   {
-    CServiceBroker::GetPVRManager().GUIActions()->SetSelectedItemPath(m_group->IsRadio(), m_viewControl.GetSelectedItemPath());
+    CServiceBroker::GetPVRManager().Get<PVR::GUI::Utils>().SetSelectedItemPath(
+        m_group->IsRadio(), m_viewControl.GetSelectedItemPath());
 
     // next OnInitWindow will set the group which is then selected
     m_group.reset();
@@ -191,7 +192,8 @@ void CGUIDialogPVRChannelsOSD::Update()
       if (!m_group)
       {
         m_group = group;
-        m_viewControl.SetSelectedItem(pvrMgr.GUIActions()->GetSelectedItemPath(channel->IsRadio()));
+        m_viewControl.SetSelectedItem(
+            pvrMgr.Get<PVR::GUI::Utils>().GetSelectedItemPath(channel->IsRadio()));
         SaveSelectedItemPath(group->GroupID());
       }
     }

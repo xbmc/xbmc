@@ -28,7 +28,7 @@
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/filesystem/PVRGUIDirectory.h"
-#include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/guilib/PVRGUIActionsUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
@@ -144,7 +144,8 @@ CGUIWindowPVRBase::~CGUIWindowPVRBase()
 
 void CGUIWindowPVRBase::UpdateSelectedItemPath()
 {
-  CServiceBroker::GetPVRManager().GUIActions()->SetSelectedItemPath(m_bRadio, m_viewControl.GetSelectedItemPath());
+  CServiceBroker::GetPVRManager().Get<PVR::GUI::Utils>().SetSelectedItemPath(
+      m_bRadio, m_viewControl.GetSelectedItemPath());
 }
 
 void CGUIWindowPVRBase::RegisterObservers()
@@ -288,7 +289,8 @@ void CGUIWindowPVRBase::OnInitWindow()
     CGUIMediaWindow::OnInitWindow();
 
     // mark item as selected by channel path
-    m_viewControl.SetSelectedItem(CServiceBroker::GetPVRManager().GUIActions()->GetSelectedItemPath(m_bRadio));
+    m_viewControl.SetSelectedItem(
+        CServiceBroker::GetPVRManager().Get<PVR::GUI::Utils>().GetSelectedItemPath(m_bRadio));
 
     // This has to be done after base class OnInitWindow to restore correct selection
     m_channelGroupsSelector->SelectChannelGroup(GetChannelGroup());
