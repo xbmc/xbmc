@@ -8,9 +8,11 @@
 
 #pragma once
 
+#include "pvr/IPVRComponent.h"
+
 namespace PVR
 {
-class CPVRGUIActionsDatabase
+class CPVRGUIActionsDatabase : public IPVRComponent
 {
 public:
   CPVRGUIActionsDatabase() = default;
@@ -22,11 +24,17 @@ public:
    * database.
    * @return true on success, false otherwise.
    */
-  bool ResetPVRDatabase(bool bResetEPGOnly);
+  bool ResetDatabase(bool bResetEPGOnly);
 
 private:
   CPVRGUIActionsDatabase(const CPVRGUIActionsDatabase&) = delete;
   CPVRGUIActionsDatabase const& operator=(CPVRGUIActionsDatabase const&) = delete;
 };
+
+namespace GUI
+{
+// pretty scope and name
+using Database = CPVRGUIActionsDatabase;
+} // namespace GUI
 
 } // namespace PVR
