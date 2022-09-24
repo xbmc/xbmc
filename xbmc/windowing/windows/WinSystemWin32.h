@@ -69,10 +69,6 @@ struct MONITOR_DETAILS
   std::wstring DeviceNameW;
 };
 
-#ifdef IsMinimized
-#undef IsMinimized
-#endif
-
 class CIRServerSuite;
 
 class CWinSystemWin32 : public CWinSystemBase
