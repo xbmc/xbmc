@@ -10,6 +10,7 @@
 
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_general.h"
 #include "interfaces/IAnnouncer.h"
+#include "pvr/PVRComponentRegistration.h"
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/guilib/PVRGUIActionListener.h"
 #include "pvr/settings/PVRSettings.h"
@@ -106,6 +107,16 @@ namespace PVR
                   const std::string& sender,
                   const std::string& message,
                   const CVariant& data) override;
+
+    /*!
+     * @brief Get a PVR component.
+     * @return The component.
+     */
+    template<class T>
+    T& Get()
+    {
+      return *m_components->GetComponent<T>();
+    }
 
     /*!
      * @brief Get the providers container.
@@ -449,6 +460,7 @@ namespace PVR
     std::shared_ptr<CPVRClients> m_addons; /*!< pointer to the pvr addon container */
     std::unique_ptr<CPVRGUIInfo> m_guiInfo; /*!< pointer to the guiinfo data */
     std::shared_ptr<CPVRGUIActions> m_guiActions; /*!< pointer to the pvr gui actions */
+    std::shared_ptr<CPVRComponentRegistration> m_components; /*!< pointer to the PVR components */
     CPVREpgContainer m_epgContainer; /*!< the epg container */
     //@}
 
