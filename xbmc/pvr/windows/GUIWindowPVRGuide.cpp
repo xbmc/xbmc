@@ -37,6 +37,7 @@
 #include "pvr/guilib/PVRGUIActions.h"
 #include "pvr/guilib/PVRGUIActionsChannels.h"
 #include "pvr/guilib/PVRGUIActionsEPG.h"
+#include "pvr/guilib/PVRGUIActionsPlayback.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
 #include "settings/Settings.h"
@@ -437,11 +438,13 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
                   bReturn = true;
                   break;
                 case EPG_SELECT_ACTION_SWITCH:
-                  CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(pItem, true);
+                  CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(pItem,
+                                                                                            true);
                   bReturn = true;
                   break;
                 case EPG_SELECT_ACTION_PLAY_RECORDING:
-                  CServiceBroker::GetPVRManager().GUIActions()->PlayRecording(pItem, true);
+                  CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(pItem,
+                                                                                          true);
                   bReturn = true;
                   break;
                 case EPG_SELECT_ACTION_INFO:
@@ -464,7 +467,8 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
                     if (start <= now && now <= end)
                     {
                       // current event
-                      CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(pItem, true);
+                      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(
+                          pItem, true);
                     }
                     else if (now < start)
                     {
@@ -492,16 +496,18 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
                         if (ret == HELPERS::DialogResponse::CHOICE_NO)
                           CServiceBroker::GetPVRManager().GUIActions()->AddTimer(pItem, false);
                         else if (ret == HELPERS::DialogResponse::CHOICE_YES)
-                          CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(pItem, true);
+                          CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(
+                              pItem, true);
                       }
                     }
                     else
                     {
                       // past event
                       if (CServiceBroker::GetPVRManager().Recordings()->GetRecordingForEpgTag(tag))
-                        CServiceBroker::GetPVRManager().GUIActions()->PlayRecording(pItem, true);
+                        CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(
+                            pItem, true);
                       else if (tag->IsPlayable())
-                        CServiceBroker::GetPVRManager().GUIActions()->PlayEpgTag(pItem);
+                        CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayEpgTag(pItem);
                       else
                         CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ShowEPGInfo(pItem);
                     }
@@ -516,7 +522,8 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
               bReturn = true;
               break;
             case ACTION_PLAYER_PLAY:
-              CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(pItem, true);
+              CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(pItem,
+                                                                                        true);
               bReturn = true;
               break;
             case ACTION_RECORD:

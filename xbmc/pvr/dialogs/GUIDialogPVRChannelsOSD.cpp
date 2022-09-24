@@ -25,6 +25,7 @@
 #include "pvr/epg/EpgContainer.h"
 #include "pvr/guilib/PVRGUIActions.h"
 #include "pvr/guilib/PVRGUIActionsChannels.h"
+#include "pvr/guilib/PVRGUIActionsPlayback.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 
@@ -241,7 +242,8 @@ void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_PVRMENU_CLOSECHANNELOSDONSWITCH))
     Close();
 
-  CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(itemptr, true /* bCheckResume */);
+  CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(
+      itemptr, true /* bCheckResume */);
 }
 
 void CGUIDialogPVRChannelsOSD::Notify(const PVREvent& event)

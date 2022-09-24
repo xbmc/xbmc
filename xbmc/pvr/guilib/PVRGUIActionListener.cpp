@@ -30,6 +30,7 @@
 #include "pvr/guilib/PVRGUIActionsChannels.h"
 #include "pvr/guilib/PVRGUIActionsClients.h"
 #include "pvr/guilib/PVRGUIActionsDatabase.h"
+#include "pvr/guilib/PVRGUIActionsPlayback.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
@@ -114,15 +115,18 @@ bool CPVRGUIActionListener::OnAction(const CAction& action)
       {
         case ACTION_PVR_PLAY:
           if (!bIsPlayingPVR)
-            CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(PlaybackTypeAny);
+            CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(
+                PlaybackTypeAny);
           break;
         case ACTION_PVR_PLAY_TV:
           if (!bIsPlayingPVR || g_application.CurrentFileItem().GetPVRChannelInfoTag()->IsRadio())
-            CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(PlaybackTypeTV);
+            CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(
+                PlaybackTypeTV);
           break;
         case ACTION_PVR_PLAY_RADIO:
           if (!bIsPlayingPVR || !g_application.CurrentFileItem().GetPVRChannelInfoTag()->IsRadio())
-            CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(PlaybackTypeRadio);
+            CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(
+                PlaybackTypeRadio);
           break;
       }
       return true;
@@ -226,7 +230,7 @@ bool CPVRGUIActionListener::OnAction(const CAction& action)
       if (!bIsPlayingPVR)
         return false;
 
-      CServiceBroker::GetPVRManager().GUIActions()->SeekForward();
+      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SeekForward();
       return true;
     }
 
@@ -235,7 +239,8 @@ bool CPVRGUIActionListener::OnAction(const CAction& action)
       if (!bIsPlayingPVR)
         return false;
 
-      CServiceBroker::GetPVRManager().GUIActions()->SeekBackward(CApplication::ACTION_PREV_ITEM_THRESHOLD);
+      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SeekBackward(
+          CApplication::ACTION_PREV_ITEM_THRESHOLD);
       return true;
     }
 
@@ -283,7 +288,7 @@ bool CPVRGUIActionListener::OnAction(const CAction& action)
       if (!groupMember)
         return false;
 
-      CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(
+      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(
           std::make_shared<CFileItem>(groupMember), false);
       return true;
     }

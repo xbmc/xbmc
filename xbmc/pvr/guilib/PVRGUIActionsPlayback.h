@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "pvr/IPVRComponent.h"
 #include "pvr/settings/PVRSettings.h"
 
 #include <memory>
@@ -26,7 +27,7 @@ enum PlaybackType
 
 class CPVRStreamProperties;
 
-class CPVRGUIActionsPlayback
+class CPVRGUIActionsPlayback : public IPVRComponent
 {
 public:
   CPVRGUIActionsPlayback();
@@ -140,5 +141,11 @@ private:
 
   CPVRSettings m_settings;
 };
+
+namespace GUI
+{
+// pretty scope and name
+using Playback = CPVRGUIActionsPlayback;
+} // namespace GUI
 
 } // namespace PVR

@@ -19,6 +19,7 @@
 #include "input/actions/ActionIDs.h"
 #include "pvr/PVRManager.h"
 #include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/guilib/PVRGUIActionsPlayback.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
@@ -236,7 +237,8 @@ bool CGUIWindowPVRRecordingsBase::OnMessage(CGUIMessage& message)
 
               if (message.GetParam1() == ACTION_PLAYER_PLAY)
               {
-                CServiceBroker::GetPVRManager().GUIActions()->PlayRecording(item, true /* check resume */);
+                CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(
+                    item, true /* check resume */);
                 bReturn = true;
               }
               else
@@ -248,11 +250,13 @@ bool CGUIWindowPVRRecordingsBase::OnMessage(CGUIMessage& message)
                     bReturn = true;
                     break;
                   case SELECT_ACTION_PLAY_OR_RESUME:
-                    CServiceBroker::GetPVRManager().GUIActions()->PlayRecording(item, true /* check resume */);
+                    CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(
+                        item, true /* check resume */);
                     bReturn = true;
                     break;
                   case SELECT_ACTION_RESUME:
-                    CServiceBroker::GetPVRManager().GUIActions()->ResumePlayRecording(item, true /* fall back to play if no resume possible */);
+                    CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().ResumePlayRecording(
+                        item, true /* fall back to play if no resume possible */);
                     bReturn = true;
                     break;
                   case SELECT_ACTION_INFO:
