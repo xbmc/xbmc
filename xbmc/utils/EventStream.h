@@ -26,7 +26,7 @@ public:
   template<typename A>
   void Subscribe(A* owner, void (A::*fn)(const Event&))
   {
-    auto subscription = std::make_shared<detail::CSubscription<Event, A>>(owner, fn);
+    auto subscription = std::make_shared<EventStreamDetail::CSubscription<Event, A>>(owner, fn);
     std::unique_lock<CCriticalSection> lock(m_criticalSection);
     m_subscriptions.emplace_back(std::move(subscription));
   }
@@ -34,7 +34,7 @@ public:
   template<typename A>
   void Unsubscribe(A* obj)
   {
-    std::vector<std::shared_ptr<detail::ISubscription<Event>>> toCancel;
+    std::vector<std::shared_ptr<EventStreamDetail::ISubscription<Event>>> toCancel;
     {
       std::unique_lock<CCriticalSection> lock(m_criticalSection);
       auto it = m_subscriptions.begin();
@@ -56,7 +56,7 @@ public:
   }
 
 protected:
-  std::vector<std::shared_ptr<detail::ISubscription<Event>>> m_subscriptions;
+  std::vector<std::shared_ptr<EventStreamDetail::ISubscription<Event>>> m_subscriptions;
   CCriticalSection m_criticalSection;
 };
 

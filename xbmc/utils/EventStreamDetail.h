@@ -12,7 +12,7 @@
 
 #include <mutex>
 
-namespace detail
+namespace EventStreamDetail
 {
 
 template<typename Event>
