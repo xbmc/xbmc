@@ -36,6 +36,7 @@ namespace GUIINFO
 namespace PVR
 {
   enum class PVREvent;
+  struct PVRChannelNumberInputChangedEvent;
 
   class CPVRGUIInfo : public KODI::GUILIB::GUIINFO::CGUIInfoProvider, private CThread
   {
@@ -51,6 +52,12 @@ namespace PVR
      * @param event The event.
      */
     void Notify(const PVREvent& event);
+
+    /*!
+     * @brief CEventStream callback for channel number input changes.
+     * @param event The event.
+     */
+    void Notify(const PVRChannelNumberInputChangedEvent& event);
 
     // KODI::GUILIB::GUIINFO::IGUIInfoProvider implementation
     bool InitCurrentItem(CFileItem* item) override;
@@ -158,6 +165,8 @@ namespace PVR
     PVR_SIGNAL_STATUS m_qualityInfo; /*!< stream quality information */
     PVR_DESCRAMBLE_INFO m_descrambleInfo; /*!< stream descramble information */
     std::vector<SBackend> m_backendProperties;
+
+    std::string m_channelNumberInput;
 
     mutable CCriticalSection m_critSection;
 

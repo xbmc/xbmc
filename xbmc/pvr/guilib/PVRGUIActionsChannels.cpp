@@ -153,6 +153,31 @@ void CPVRChannelSwitchingInputHandler::SwitchToPreviousChannel()
 CPVRGUIActionsChannels::CPVRGUIActionsChannels()
   : m_settings({CSettings::SETTING_PVRMANAGER_PRESELECTPLAYINGCHANNEL})
 {
+  RegisterChannelNumberInputHandler(&m_channelNumberInputHandler);
+}
+
+CPVRGUIActionsChannels::~CPVRGUIActionsChannels()
+{
+  DeregisterChannelNumberInputHandler(&m_channelNumberInputHandler);
+}
+
+void CPVRGUIActionsChannels::RegisterChannelNumberInputHandler(
+    CPVRChannelNumberInputHandler* handler)
+{
+  if (handler)
+    handler->Events().Subscribe(this, &CPVRGUIActionsChannels::Notify);
+}
+
+void CPVRGUIActionsChannels::DeregisterChannelNumberInputHandler(
+    CPVRChannelNumberInputHandler* handler)
+{
+  if (handler)
+    handler->Events().Unsubscribe(this);
+}
+
+void CPVRGUIActionsChannels::Notify(const PVRChannelNumberInputChangedEvent& event)
+{
+  m_events.Publish(event);
 }
 
 bool CPVRGUIActionsChannels::HideChannel(const std::shared_ptr<CFileItem>& item) const

@@ -47,9 +47,14 @@ CGUIWindowPVRChannelsBase::CGUIWindowPVRChannelsBase(bool bRadio, int id, const 
   CGUIWindowPVRBase(bRadio, id, xmlFile),
   m_bShowHiddenChannels(false)
 {
+  CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().RegisterChannelNumberInputHandler(this);
 }
 
-CGUIWindowPVRChannelsBase::~CGUIWindowPVRChannelsBase() = default;
+CGUIWindowPVRChannelsBase::~CGUIWindowPVRChannelsBase()
+{
+  CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().DeregisterChannelNumberInputHandler(
+      this);
+}
 
 void CGUIWindowPVRChannelsBase::GetContextButtons(int itemNumber, CContextButtons& buttons)
 {

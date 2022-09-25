@@ -11,12 +11,20 @@
 #include "pvr/channels/PVRChannelNumber.h"
 #include "threads/CriticalSection.h"
 #include "threads/Timer.h"
+#include "utils/EventStream.h"
 
 #include <string>
 #include <vector>
 
 namespace PVR
 {
+struct PVRChannelNumberInputChangedEvent
+{
+  explicit PVRChannelNumberInputChangedEvent(const std::string& input) : m_input(input) {}
+  virtual ~PVRChannelNumberInputChangedEvent() = default;
+
+  std::string m_input;
+};
 
 class CPVRChannelNumberInputHandler : private ITimerCallback
 {
@@ -33,6 +41,12 @@ public:
   CPVRChannelNumberInputHandler(int iDelay, int iMaxDigits = CHANNEL_NUMBER_INPUT_MAX_DIGITS);
 
   ~CPVRChannelNumberInputHandler() override = default;
+
+  /*!
+   * @brief Get the events available for CEventStream.
+   * @return The events.
+   */
+  CEventStream<PVRChannelNumberInputChangedEvent>& Events() { return m_events; }
 
   // implementation of ITimerCallback
   void OnTimeout() override;
@@ -90,12 +104,15 @@ protected:
 private:
   void ExecuteAction();
 
+  void SetLabel(const std::string& label);
+
   std::vector<std::string> m_sortedChannelNumbers;
   const int m_iDelay;
   const int m_iMaxDigits;
   std::string m_inputBuffer;
   std::string m_label;
   CTimer m_timer;
+  CEventSource<PVRChannelNumberInputChangedEvent> m_events;
 };
 
 } // namespace PVR
