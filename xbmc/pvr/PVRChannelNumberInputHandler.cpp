@@ -62,7 +62,7 @@ void CPVRChannelNumberInputHandler::OnTimeout()
 
 void CPVRChannelNumberInputHandler::ExecuteAction()
 {
-  m_timer.Stop();
+  m_timer.Stop(true /* wait until worker thread ended */);
   OnTimeout();
 }
 
