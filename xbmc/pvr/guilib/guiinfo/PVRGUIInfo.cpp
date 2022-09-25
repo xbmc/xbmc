@@ -124,7 +124,10 @@ void CPVRGUIInfo::Start()
 void CPVRGUIInfo::Stop()
 {
   StopThread();
-  CServiceBroker::GetPVRManager().Events().Unsubscribe(this);
+
+  auto& mgr = CServiceBroker::GetPVRManager();
+  mgr.Get<PVR::GUI::Channels>().Events().Unsubscribe(this);
+  mgr.Events().Unsubscribe(this);
 
   CGUIComponent* gui = CServiceBroker::GetGUI();
   if (gui)
@@ -140,14 +143,23 @@ void CPVRGUIInfo::Notify(const PVREvent& event)
     UpdateTimersCache();
 }
 
+void CPVRGUIInfo::Notify(const PVRChannelNumberInputChangedEvent& event)
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  m_channelNumberInput = event.m_input;
+}
+
 void CPVRGUIInfo::Process()
 {
   auto toggleIntervalMs = std::chrono::milliseconds(
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRInfoToggleInterval);
   XbmcThreads::EndTime<> cacheTimer(toggleIntervalMs);
 
+  auto& mgr = CServiceBroker::GetPVRManager();
+  mgr.Events().Subscribe(this, &CPVRGUIInfo::Notify);
+  mgr.Get<PVR::GUI::Channels>().Events().Subscribe(this, &CPVRGUIInfo::Notify);
+
   /* updated on request */
-  CServiceBroker::GetPVRManager().Events().Subscribe(this, &CPVRGUIInfo::Notify);
   UpdateTimersCache();
 
   /* update the backend cache once initially */
@@ -1005,10 +1017,7 @@ bool CPVRGUIInfo::GetPVRLabel(const CFileItem* item, const CGUIInfo& info, std::
       CharInfoTotalDiskSpace(strValue);
       return true;
     case PVR_CHANNEL_NUMBER_INPUT:
-      strValue = CServiceBroker::GetPVRManager()
-                     .Get<PVR::GUI::Channels>()
-                     .GetChannelNumberInputHandler()
-                     .GetChannelNumberLabel();
+      strValue = m_channelNumberInput;
       return true;
   }
 

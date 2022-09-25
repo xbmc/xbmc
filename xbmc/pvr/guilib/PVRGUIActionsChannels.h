@@ -50,7 +50,31 @@ class CPVRGUIActionsChannels : public IPVRComponent
 {
 public:
   CPVRGUIActionsChannels();
-  ~CPVRGUIActionsChannels() override = default;
+  ~CPVRGUIActionsChannels() override;
+
+  /*!
+   * @brief Get the events available for CEventStream.
+   * @return The events.
+   */
+  CEventStream<PVRChannelNumberInputChangedEvent>& Events() { return m_events; }
+
+  /*!
+   * @brief Register a handler for channel number input.
+   * @param handler The handler to register.
+   */
+  void RegisterChannelNumberInputHandler(CPVRChannelNumberInputHandler* handler);
+
+  /*!
+   * @brief Deregister a handler for channel number input.
+   * @param handler The handler to deregister.
+   */
+  void DeregisterChannelNumberInputHandler(CPVRChannelNumberInputHandler* handler);
+
+  /*!
+   * @brief CEventStream callback for channel number input changes.
+   * @param event The event.
+   */
+  void Notify(const PVRChannelNumberInputChangedEvent& event);
 
   /*!
    * @brief Hide a channel, always showing a confirmation dialog.
@@ -141,6 +165,7 @@ private:
   CPVRChannelSwitchingInputHandler m_channelNumberInputHandler;
   bool m_bChannelScanRunning{false};
   CPVRGUIChannelNavigator m_channelNavigator;
+  CEventSource<PVRChannelNumberInputChangedEvent> m_events;
 
   mutable CCriticalSection m_critSection;
   CPVRSettings m_settings;

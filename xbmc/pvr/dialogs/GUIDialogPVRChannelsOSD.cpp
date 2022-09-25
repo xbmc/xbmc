@@ -41,11 +41,14 @@ using namespace std::chrono_literals;
 CGUIDialogPVRChannelsOSD::CGUIDialogPVRChannelsOSD()
 : CGUIDialogPVRItemsViewBase(WINDOW_DIALOG_PVR_OSD_CHANNELS, "DialogPVRChannelsOSD.xml")
 {
+  CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().RegisterChannelNumberInputHandler(this);
 }
 
 CGUIDialogPVRChannelsOSD::~CGUIDialogPVRChannelsOSD()
 {
-  CServiceBroker::GetPVRManager().Events().Unsubscribe(this);
+  auto& mgr = CServiceBroker::GetPVRManager();
+  mgr.Events().Unsubscribe(this);
+  mgr.Get<PVR::GUI::Channels>().DeregisterChannelNumberInputHandler(this);
 }
 
 bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
