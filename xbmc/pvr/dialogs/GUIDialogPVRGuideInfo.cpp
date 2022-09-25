@@ -60,19 +60,21 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonRecord(const CGUIMessage& message)
 
   if (message.GetSenderId() == CONTROL_BTN_RECORD)
   {
-    const std::shared_ptr<CPVRTimerInfoTag> timerTag = CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(m_progItem);
+    auto& mgr = CServiceBroker::GetPVRManager();
+
+    const std::shared_ptr<CPVRTimerInfoTag> timerTag =
+        mgr.Timers()->GetTimerForEpgTag(m_progItem->GetEPGInfoTag());
     if (timerTag)
     {
       const CFileItemPtr item(new CFileItem(timerTag));
       if (timerTag->IsRecording())
-        bReturn = CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().StopRecording(item);
+        bReturn = mgr.Get<PVR::GUI::Timers>().StopRecording(item);
       else
-        bReturn = CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().DeleteTimer(item);
+        bReturn = mgr.Get<PVR::GUI::Timers>().DeleteTimer(item);
     }
     else
     {
-      const CFileItemPtr item(new CFileItem(m_progItem));
-      bReturn = CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().AddTimer(item, false);
+      bReturn = mgr.Get<PVR::GUI::Timers>().AddTimer(m_progItem, false);
     }
   }
 
@@ -88,11 +90,10 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonAddTimer(const CGUIMessage& message)
 
   if (message.GetSenderId() == CONTROL_BTN_ADD_TIMER)
   {
-    if (m_progItem && !CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(m_progItem))
+    auto& mgr = CServiceBroker::GetPVRManager();
+    if (m_progItem && !mgr.Timers()->GetTimerForEpgTag(m_progItem->GetEPGInfoTag()))
     {
-      const CFileItemPtr item(new CFileItem(m_progItem));
-      bReturn =
-          CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().AddTimerRule(item, true, true);
+      bReturn = mgr.Get<PVR::GUI::Timers>().AddTimerRule(m_progItem, true, true);
     }
   }
 
@@ -108,10 +109,10 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonSetReminder(const CGUIMessage& message
 
   if (message.GetSenderId() == CONTROL_BTN_SET_REMINDER)
   {
-    if (m_progItem && !CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(m_progItem))
+    auto& mgr = CServiceBroker::GetPVRManager();
+    if (m_progItem && !mgr.Timers()->GetTimerForEpgTag(m_progItem->GetEPGInfoTag()))
     {
-      const std::shared_ptr<CFileItem> item = std::make_shared<CFileItem>(m_progItem);
-      bReturn = CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().AddReminder(item);
+      bReturn = mgr.Get<PVR::GUI::Timers>().AddReminder(m_progItem);
     }
   }
 
@@ -131,15 +132,15 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonPlay(const CGUIMessage& message)
   {
     Close();
 
-    const CFileItemPtr item(new CFileItem(m_progItem));
     if (message.GetSenderId() == CONTROL_BTN_PLAY_RECORDING)
       CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(
-          item, true /* bCheckResume */);
-    else if (message.GetSenderId() == CONTROL_BTN_PLAY_EPGTAG && m_progItem->IsPlayable())
-      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayEpgTag(item);
+          m_progItem, true /* bCheckResume */);
+    else if (message.GetSenderId() == CONTROL_BTN_PLAY_EPGTAG &&
+             m_progItem->GetEPGInfoTag()->IsPlayable())
+      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayEpgTag(m_progItem);
     else
       CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(
-          item, true /* bCheckResume */);
+          m_progItem, true /* bCheckResume */);
 
     bReturn = true;
   }
@@ -154,8 +155,7 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonFind(const CGUIMessage& message)
   if (message.GetSenderId() == CONTROL_BTN_FIND)
   {
     Close();
-    return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().FindSimilar(
-        std::make_shared<CFileItem>(m_progItem));
+    return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().FindSimilar(m_progItem);
   }
 
   return bReturn;
@@ -183,17 +183,14 @@ bool CGUIDialogPVRGuideInfo::OnInfo(int actionID)
   return true;
 }
 
-void CGUIDialogPVRGuideInfo::SetProgInfo(const std::shared_ptr<CPVREpgInfoTag>& tag)
+void CGUIDialogPVRGuideInfo::SetProgInfo(const std::shared_ptr<CFileItem>& item)
 {
-  m_progItem = tag;
+  m_progItem = item;
 }
 
 CFileItemPtr CGUIDialogPVRGuideInfo::GetCurrentListItem(int offset)
 {
-  if (!m_progItem)
-    return {};
-
-  return std::make_shared<CFileItem>(m_progItem);
+  return m_progItem;
 }
 
 void CGUIDialogPVRGuideInfo::OnInitWindow()
@@ -206,7 +203,10 @@ void CGUIDialogPVRGuideInfo::OnInitWindow()
     return;
   }
 
-  if (!CServiceBroker::GetPVRManager().Recordings()->GetRecordingForEpgTag(m_progItem))
+  auto& mgr = CServiceBroker::GetPVRManager();
+  const auto epgTag = m_progItem->GetEPGInfoTag();
+
+  if (!mgr.Recordings()->GetRecordingForEpgTag(epgTag))
   {
     /* not recording. hide the play recording button */
     SET_CONTROL_HIDDEN(CONTROL_BTN_PLAY_RECORDING);
@@ -214,8 +214,8 @@ void CGUIDialogPVRGuideInfo::OnInitWindow()
 
   bool bHideRecord = true;
   bool bHideAddTimer = true;
-  const std::shared_ptr<CPVRTimerInfoTag> timer = CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(m_progItem);
-  bool bHideSetReminder = timer || (m_progItem->StartAsLocalTime() <= CDateTime::GetCurrentDateTime());
+  const std::shared_ptr<CPVRTimerInfoTag> timer = mgr.Timers()->GetTimerForEpgTag(epgTag);
+  bool bHideSetReminder = timer || (epgTag->StartAsLocalTime() <= CDateTime::GetCurrentDateTime());
 
   if (timer)
   {
@@ -230,9 +230,9 @@ void CGUIDialogPVRGuideInfo::OnInitWindow()
       bHideRecord = false;
     }
   }
-  else if (m_progItem->IsRecordable())
+  else if (epgTag->IsRecordable())
   {
-    const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_progItem->ClientID());
+    const std::shared_ptr<CPVRClient> client = mgr.GetClient(epgTag->ClientID());
     if (client && client->GetClientCapabilities().SupportsTimers())
     {
       SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 264); /* Record */
@@ -241,7 +241,7 @@ void CGUIDialogPVRGuideInfo::OnInitWindow()
     }
   }
 
-  if (!m_progItem->IsPlayable())
+  if (!epgTag->IsPlayable())
     SET_CONTROL_HIDDEN(CONTROL_BTN_PLAY_EPGTAG);
 
   if (bHideRecord)

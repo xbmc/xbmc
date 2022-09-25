@@ -16,8 +16,6 @@ class CGUIMessage;
 
 namespace PVR
 {
-  class CPVREpgInfoTag;
-
   class CGUIDialogPVRGuideInfo : public CGUIDialog
   {
   public:
@@ -28,7 +26,7 @@ namespace PVR
     bool HasListItems() const override { return true; }
     CFileItemPtr GetCurrentListItem(int offset = 0) override;
 
-    void SetProgInfo(const std::shared_ptr<CPVREpgInfoTag>& tag);
+    void SetProgInfo(const std::shared_ptr<CFileItem>& item);
 
   protected:
     void OnInitWindow() override;
@@ -41,6 +39,6 @@ namespace PVR
     bool OnClickButtonAddTimer(const CGUIMessage& message);
     bool OnClickButtonSetReminder(const CGUIMessage& message);
 
-    std::shared_ptr<CPVREpgInfoTag> m_progItem;
+    std::shared_ptr<CFileItem> m_progItem;
   };
 }
