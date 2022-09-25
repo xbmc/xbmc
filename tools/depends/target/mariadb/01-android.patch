@@ -1,6 +1,6 @@
 --- a/cmake/CheckIncludeFiles.cmake
 +++ b/cmake/CheckIncludeFiles.cmake
-@@ -55,4 +55,11 @@
+@@ -50,4 +50,11 @@
  CHECK_INCLUDE_FILES (ucontext.h HAVE_FILE_UCONTEXT_H)
  IF(NOT HAVE_FILE_UCONTEXT_H)
    CHECK_INCLUDE_FILES (sys/ucontext.h HAVE_FILE_UCONTEXT_H)
@@ -14,36 +14,11 @@
  ENDIF()
 --- a/cmake/CheckTypes.cmake
 +++ b/cmake/CheckTypes.cmake
-@@ -22,6 +22,7 @@
+@@ -21,7 +21,6 @@
+ CHECK_TYPE_SIZE(size_t SIZEOF_SIZE_T)
  SET(CMAKE_EXTRA_INCLUDE_FILES sys/types.h)
- CHECK_TYPE_SIZE(uchar SIZEOF_UCHAR)
  CHECK_TYPE_SIZE(uint SIZEOF_UINT)
-+CHECK_TYPE_SIZE(ushort SIZEOF_USHORT)
+-CHECK_TYPE_SIZE(uint SIZEOF_USHORT)
  CHECK_TYPE_SIZE(ulong SIZEOF_ULONG)
  CHECK_TYPE_SIZE(int8 SIZEOF_INT8)
  CHECK_TYPE_SIZE(uint8 SIZEOF_UINT8)
---- a/include/ma_config.h.in
-+++ b/include/ma_config.h.in
-@@ -88,6 +88,11 @@
- # define HAVE_UINT 1
- #endif
- 
-+#cmakedefine SIZEOF_USHORT @SIZEOF_USHORT@
-+#if SIZEOF_USHORT
-+# define HAVE_USHORT 1
-+#endif
-+
- #cmakedefine SIZEOF_ULONG @SIZEOF_ULONG@
- #if defined(SIZEOF_ULONG)
- # define HAVE_ULONG 1
---- a/include/ma_global.h
-+++ b/include/ma_global.h
-@@ -253,6 +253,8 @@
- 
- #if defined(__EMX__) || !defined(HAVE_UINT)
- typedef unsigned int uint;
-+#endif
-+#if defined(__EMX__) || !defined(HAVE_USHORT)
- typedef unsigned short ushort;
- #endif
- 

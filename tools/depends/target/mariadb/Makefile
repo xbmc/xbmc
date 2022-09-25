@@ -1,11 +1,8 @@
-include ../../Makefile.include
-DEPS = ../../Makefile.include Makefile 01-android.patch 04-pthread.patch ../../download-files.include
-
-LIBNAME=mariadb
-VERSION=3.1.15
-ARCHIVE=$(LIBNAME)-connector-c-$(VERSION).tar.gz
-SHA512=c64a69fecf1e0053748fb24b82614fc8d862de79d139f848283a504d72b521bc6bf29119a86fc9cca57c3578812702483cc408c8a684e35887108f172eaa3c56
-include ../../download-files.include
+include ../../Makefile.include MARIADB-VERSION ../../download-files.include
+DEPS = ../../Makefile.include MARIADB-VERSION Makefile ../../download-files.include \
+                                  01-android.patch \
+                                  02-fix-CONC-612.patch \
+                                  04-pthread.patch
 
 LIBDYLIB=$(PLATFORM)/build/lib$(LIBNAME)/lib$(LIBNAME)client.a
 
@@ -21,11 +18,13 @@ endif
 
 all: .installed-$(PLATFORM)
 
-
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)/build
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+ifeq ($(OS),android)
 	cd $(PLATFORM); patch -p1 -i ../01-android.patch
+endif
+	cd $(PLATFORM); patch -p1 -i ../02-fix-CONC-612.patch
 ifeq ($(OS),linux)
 	cd $(PLATFORM); patch -p1 -i ../04-pthread.patch
 endif

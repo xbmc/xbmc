@@ -1,6 +1,6 @@
---- a/CMakeLists.txt	2021-06-28 08:00:02.761728364 +0000
-+++ b/CMakeLists.txt	2021-06-28 08:00:29.198289581 +0000
-@@ -293,7 +293,7 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -310,7 +310,7 @@
      IF(OPENSSL_FOUND)
        ADD_DEFINITIONS(-DHAVE_OPENSSL -DHAVE_TLS)
        SET(SSL_SOURCES "${CC_SOURCE_DIR}/libmariadb/secure/openssl.c")

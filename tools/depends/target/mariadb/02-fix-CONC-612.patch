@@ -1,0 +1,21 @@
+--- a/plugins/pvio/pvio_socket.c
++++ b/plugins/pvio/pvio_socket.c
+@@ -643,12 +643,18 @@ static int pvio_socket_internal_connect(MARIADB_PVIO *pvio,
+ 
+ #ifndef _WIN32
+   do {
++    int save_errno;
+     rc= connect(csock->socket, (struct sockaddr*) name, (int)namelen);
+ 
+     if (time(NULL) - start_t > (time_t)timeout/1000)
+       break;
+ 
++    /* CONC-612: Since usleep may fail and will set errno (On MacOSX usleep
++      always sets errno=ETIMEDOUT), we need to save and restore errno */
++    save_errno= errno;
+     usleep(wait_conn);
++    errno= save_errno;
++
+     wait_conn= wait_conn >= 1000000 ? 1000000 : wait_conn * 2;
+ 
+   } while (rc == -1 && (errno == EINTR || errno == EAGAIN));
