@@ -42,20 +42,18 @@
 #include <math.h>
 
 #include <Shlobj.h>
-#include <Windowsx.h>
 #include <dbt.h>
 
 HWND g_hWnd = nullptr;
-
-#ifdef IsMinimized
-#undef IsMinimized
-#endif
 
 #ifndef LODWORD
 #define LODWORD(longval) ((DWORD)((DWORDLONG)(longval)))
 #endif
 
 #define ROTATE_ANGLE_DEGREE(arg) GID_ROTATE_ANGLE_FROM_ARGUMENT(LODWORD(arg)) * 180 / M_PI
+
+#define GET_X_LPARAM(lp) ((int)(short)LOWORD(lp))
+#define GET_Y_LPARAM(lp) ((int)(short)HIWORD(lp))
 
 /* Masks for processing the windows KEYDOWN and KEYUP messages */
 #define REPEATED_KEYMASK  (1<<30)
