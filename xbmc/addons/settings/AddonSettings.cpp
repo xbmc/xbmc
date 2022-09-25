@@ -247,9 +247,9 @@ bool CAddonSettings::AddInstanceSettings()
   SettingCategoryPtr category = *categories.begin();
 
   auto groups = category->GetGroups();
-  auto itr = std::find_if(groups.begin(), groups.end(), [](SettingGroupPtr group) {
-    return group->GetId() == ADDON_SETTING_INSTANCE_GROUP;
-  });
+  auto itr = std::find_if(groups.begin(), groups.end(),
+                          [](const SettingGroupPtr& group)
+                          { return group->GetId() == ADDON_SETTING_INSTANCE_GROUP; });
 
   SettingGroupPtr group;
   if (itr != groups.end())
