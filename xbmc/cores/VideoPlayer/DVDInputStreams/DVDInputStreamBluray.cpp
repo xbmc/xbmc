@@ -487,6 +487,11 @@ void CDVDInputStreamBluray::ProcessEvent() {
       m_player->OnDiscNavResult(static_cast<void*>(&pid), BD_EVENT_STILL);
     break;
 
+  case BD_EVENT_DISCONTINUITY:
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_DISCONTINUITY");
+    m_hold = HOLD_STILL;
+    break;
+
     /* playback position */
 
   case BD_EVENT_ANGLE:
