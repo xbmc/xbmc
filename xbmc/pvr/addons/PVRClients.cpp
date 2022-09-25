@@ -317,7 +317,7 @@ bool CPVRClients::IsCreatedClient(int iClientId) const
 
 std::shared_ptr<CPVRClient> CPVRClients::GetCreatedClient(int clientId) const
 {
-  const std::shared_ptr<CPVRClient> client = GetClient(clientId);
+  std::shared_ptr<CPVRClient> client = GetClient(clientId);
   if (client && client->ReadyToUse())
     return client;
 

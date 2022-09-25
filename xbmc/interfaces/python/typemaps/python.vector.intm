@@ -31,6 +31,6 @@
                                    'ltype' : swigTypeParser.SwigType_ltype(vectype),
                                    'sequence' : sequence
                                    ])}
-        ${api}${accessor}push_back(std::move(entry${seq}));
+        ${api}${accessor}push_back(<% if (swigTypeParser.SwigType_ispointer(vectype) || vectype in ["bool", "double", "int"]) { %>entry${seq}<% } else { %>std::move(entry${seq})<% } %>);
       }
     }
